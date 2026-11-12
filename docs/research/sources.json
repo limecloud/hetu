@@ -1,0 +1,472 @@
+{
+  "schema_version": "1.0.0",
+  "as_of": "2026-11-12",
+  "digest_policy": "SHA-256 identifies the recorded response representation or repository bytes; it is not a publisher signature.",
+  "sources": [
+    {
+      "id": "mcp-current-index",
+      "source_type": "official_web",
+      "url": "https://modelcontextprotocol.io/specification/2026-07-28/index.md",
+      "final_url": "https://modelcontextprotocol.io/specification/2026-07-28/index.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "863d749e9ada9472565a65503647883eb2985c6247ba5b86ff901ecb29e26392",
+      "representation": "markdown_response",
+      "content_status": "read",
+      "scope": "MCP protocol and extensions"
+    },
+    {
+      "id": "mcp-changelog",
+      "source_type": "official_web",
+      "url": "https://modelcontextprotocol.io/specification/2026-07-28/changelog.md",
+      "final_url": "https://modelcontextprotocol.io/specification/2026-07-28/changelog.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "280533e289ca1a638973b06f6f4d8a8aff735a3c3fe594ffb32696d63de530f6",
+      "representation": "markdown_response",
+      "content_status": "read",
+      "scope": "MCP protocol and extensions"
+    },
+    {
+      "id": "mcp-tools",
+      "source_type": "official_web",
+      "url": "https://modelcontextprotocol.io/specification/2026-07-28/server/tools.md",
+      "final_url": "https://modelcontextprotocol.io/specification/2026-07-28/server/tools.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "ffd2f284b837a0e00b2cb0a366dfa76d90ff579b759dfdc91f9fcabb8e51e76b",
+      "representation": "markdown_response",
+      "content_status": "read",
+      "scope": "MCP protocol and extensions"
+    },
+    {
+      "id": "mcp-resources",
+      "source_type": "official_web",
+      "url": "https://modelcontextprotocol.io/specification/2026-07-28/server/resources.md",
+      "final_url": "https://modelcontextprotocol.io/specification/2026-07-28/server/resources.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "07da86abf4d8818c526b125b905a86fe6817e0dfbbce0cf22e025f5a96f8c947",
+      "representation": "markdown_response",
+      "content_status": "read",
+      "scope": "MCP protocol and extensions"
+    },
+    {
+      "id": "mcp-stdio",
+      "source_type": "official_web",
+      "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio.md",
+      "final_url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "5bcdc2e5ed677a3015d002685de79e436327f6d6a77577dcb20720b22b96e5f2",
+      "representation": "markdown_response",
+      "content_status": "read",
+      "scope": "MCP protocol and extensions"
+    },
+    {
+      "id": "mcp-sdk",
+      "source_type": "official_web",
+      "url": "https://modelcontextprotocol.io/docs/2026-07-28/sdk.md",
+      "final_url": "https://modelcontextprotocol.io/docs/2026-07-28/sdk.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "4ef8c429437efcff2e948e868c53f2a0b129eb62850fda2389ef206e86aaaea9",
+      "representation": "markdown_response",
+      "content_status": "read",
+      "scope": "MCP protocol and extensions"
+    },
+    {
+      "id": "mcp-apps",
+      "source_type": "official_web",
+      "url": "https://modelcontextprotocol.io/extensions/apps/overview.md",
+      "final_url": "https://modelcontextprotocol.io/extensions/apps/overview.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "5c1d70733c9e1962ee45825aca76a89ff21b79ceec4260ccde3ce2c99d91743f",
+      "representation": "markdown_response",
+      "content_status": "read",
+      "scope": "MCP protocol and extensions"
+    },
+    {
+      "id": "openai-plugin-build",
+      "source_type": "official_web",
+      "url": "https://developers.openai.com/plugins/build/plugins.md",
+      "final_url": "https://developers.openai.com/plugins/build/plugins.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "b913de64a45a90f14fba0d4b0654444f1f60f4e2d4f79f3dd41332895f79721d",
+      "representation": "markdown_response",
+      "content_status": "read",
+      "scope": "OpenAI plugin packaging and host capabilities"
+    },
+    {
+      "id": "openai-ui",
+      "source_type": "official_web",
+      "url": "https://developers.openai.com/plugins/build/chatgpt-ui.md",
+      "final_url": "https://developers.openai.com/plugins/build/chatgpt-ui.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "4e5835aed17db410ea224bf56adadf54eced1e9724f628c41a319ef063a173dd",
+      "representation": "markdown_response",
+      "content_status": "read",
+      "scope": "OpenAI plugin packaging and host capabilities"
+    },
+    {
+      "id": "chrome-lifecycle",
+      "source_type": "official_web",
+      "url": "https://developer.chrome.com/docs/extensions/develop/concepts/service-workers/lifecycle",
+      "final_url": "https://developer.chrome.com/docs/extensions/develop/concepts/service-workers/lifecycle",
+      "retrieved_on": "2026-11-12",
+      "sha256": "3ff57efc99a1412ddc4e12f92322d00cdbe68173e5277b94aa63b81b94421220",
+      "representation": "extracted_text",
+      "content_status": "read",
+      "scope": "Browser platform capabilities"
+    },
+    {
+      "id": "chrome-native-messaging",
+      "source_type": "official_web",
+      "url": "https://developer.chrome.com/docs/extensions/develop/concepts/native-messaging",
+      "final_url": "https://developer.chrome.com/docs/extensions/develop/concepts/native-messaging",
+      "retrieved_on": "2026-11-12",
+      "sha256": "9598ccea6d58605cf64bcf50346282134216a77b025b84867b6725d6ccf28074",
+      "representation": "extracted_text",
+      "content_status": "read",
+      "scope": "Browser platform capabilities"
+    },
+    {
+      "id": "file-system-api",
+      "source_type": "platform_reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/File_System_API",
+      "final_url": "https://developer.mozilla.org/en-US/docs/Web/API/File_System_API",
+      "retrieved_on": "2026-11-12",
+      "sha256": "b08141107d0c0610290d8c0ca8c4dfd37238df7d4c82bd90509600563c4de70d",
+      "representation": "extracted_text",
+      "content_status": "read",
+      "scope": "Browser platform capabilities"
+    },
+    {
+      "id": "service-worker-offline",
+      "source_type": "platform_reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API",
+      "final_url": "https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API",
+      "retrieved_on": "2026-11-12",
+      "sha256": "3cf6c6c720d8f1408a5d41ff70a68483ca55387d2e4e18349f76e7a7682ed841",
+      "representation": "extracted_text",
+      "content_status": "read",
+      "scope": "Browser platform capabilities"
+    },
+    {
+      "id": "isomorphic-git",
+      "source_type": "official_web",
+      "url": "https://isomorphic-git.org/docs/en/quickstart",
+      "final_url": "https://isomorphic-git.org/docs/en/quickstart",
+      "retrieved_on": "2026-11-12",
+      "sha256": "a89aea32d1050bab4808364cbadd52e1d51c588eef731abf30480ae9ccba337b",
+      "representation": "extracted_text",
+      "content_status": "read",
+      "scope": "Browser platform capabilities"
+    },
+    {
+      "id": "mcp-auth",
+      "source_type": "official_web",
+      "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/index.md",
+      "final_url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/index.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "59bc8d07ef88538e4d4e539ca1c846c3ae3162e7911dc29453495cddeac18444",
+      "representation": "markdown_response",
+      "content_status": "read",
+      "scope": "MCP protocol and extensions"
+    },
+    {
+      "id": "mcp-versioning",
+      "source_type": "official_web",
+      "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning.md",
+      "final_url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "41fff387e09db6ce368347f96cd0b965fd43ceaa1d5f148c69ce52b5989d83b7",
+      "representation": "markdown_response",
+      "content_status": "read",
+      "scope": "MCP protocol and extensions"
+    },
+    {
+      "id": "openai-desktop-only",
+      "source_type": "official_web",
+      "url": "https://developers.openai.com/plugins/deploy/desktop-only.md",
+      "final_url": "https://developers.openai.com/plugins/deploy/desktop-only.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "3b0a685108acbf6c95eaa733d09a4dfb104b7b630497d22ed558640ec2431be7",
+      "representation": "markdown_response",
+      "content_status": "read",
+      "scope": "OpenAI plugin packaging and host capabilities"
+    },
+    {
+      "id": "mcp-index",
+      "source_type": "official_web",
+      "url": "https://modelcontextprotocol.io/llms.txt",
+      "retrieved_on": "2026-11-12",
+      "sha256": "b02ed8108168d99a15e40d5ddba8bbe3a9d0dbbf6a41f82fc01c70d92c1186c6",
+      "representation": "text_response",
+      "content_status": "read",
+      "scope": "Official documentation index or product documentation"
+    },
+    {
+      "id": "openai-plugins",
+      "source_type": "official_web",
+      "url": "https://learn.chatgpt.com/docs/plugins",
+      "retrieved_on": "2026-11-12",
+      "sha256": "085c0df7642fd6df27a3e61cbc7ffc27f05a960bd841458d2c82a7c4bcaa52b2",
+      "representation": "text_response",
+      "content_status": "read",
+      "scope": "Official documentation index or product documentation"
+    },
+    {
+      "id": "openai-mcp",
+      "source_type": "official_web",
+      "url": "https://learn.chatgpt.com/docs/extend/mcp?surface=cli",
+      "retrieved_on": "2026-11-12",
+      "sha256": "df557aba6799129cd0b96e027c88f96ab64052c03de65449503702eadc83cb1b",
+      "representation": "text_response",
+      "content_status": "read",
+      "scope": "Official documentation index or product documentation"
+    },
+    {
+      "id": "openai-skills",
+      "source_type": "official_web",
+      "url": "https://learn.chatgpt.com/docs/build-skills",
+      "retrieved_on": "2026-11-12",
+      "sha256": "3dbf73926592899f689786f05d5008f23777e91d8ceedd1b5d73adab6b983492",
+      "representation": "text_response",
+      "content_status": "read",
+      "scope": "Official documentation index or product documentation"
+    },
+    {
+      "id": "axi:README.md",
+      "source_type": "repository_file",
+      "repository": "axi",
+      "path": "README.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "eeddd84ba58089eaeb6248daeb3aacba783bc4687c17458cd413f6da5dfe9a75",
+      "content_status": "read",
+      "scope": "Reference contract or architecture; no runtime dependency"
+    },
+    {
+      "id": "axi:content/schemas/0.2.1/axi.schema.json",
+      "source_type": "repository_file",
+      "repository": "axi",
+      "path": "content/schemas/0.2.1/axi.schema.json",
+      "retrieved_on": "2026-11-12",
+      "sha256": "22f8c9a18b46fe0363f3c538f74e77973ac0c17353daba8cd270f9957bb011ad",
+      "content_status": "read",
+      "scope": "Reference contract or architecture; no runtime dependency"
+    },
+    {
+      "id": "axi:content/specification/0.2.1/model.md",
+      "source_type": "repository_file",
+      "repository": "axi",
+      "path": "content/specification/0.2.1/model.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "3bab02722bfaf19865c2ba2de9558b953e7adca9f3e84bcde9b7bc9769973d29",
+      "content_status": "read",
+      "scope": "Reference contract or architecture; no runtime dependency"
+    },
+    {
+      "id": "axi:content/specification/0.2.1/results.md",
+      "source_type": "repository_file",
+      "repository": "axi",
+      "path": "content/specification/0.2.1/results.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "9d97e67e1d0c2117dbcbb6aa81176c5dbfb48b717180ea7b32a0b1b45651df0d",
+      "content_status": "read",
+      "scope": "Reference contract or architecture; no runtime dependency"
+    },
+    {
+      "id": "axi:content/specification/0.2.1/recovery.md",
+      "source_type": "repository_file",
+      "repository": "axi",
+      "path": "content/specification/0.2.1/recovery.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "a0331e0c89f2b29fe5afdbbd66895ba90c0e0b4f9d4c98a8e43744dec233aedf",
+      "content_status": "read",
+      "scope": "Reference contract or architecture; no runtime dependency"
+    },
+    {
+      "id": "axi:content/specification/0.2.1/discovery.md",
+      "source_type": "repository_file",
+      "repository": "axi",
+      "path": "content/specification/0.2.1/discovery.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "643310c66be62d4acb55bd49736d9ae77560d2ed6c3f138eec0b3e1abf501927",
+      "content_status": "read",
+      "scope": "Reference contract or architecture; no runtime dependency"
+    },
+    {
+      "id": "axi:content/develop/mcp.md",
+      "source_type": "repository_file",
+      "repository": "axi",
+      "path": "content/develop/mcp.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "58166c54c94b26f7de3c20c4bc1bec64daedf9c5bf5ae82ed66f6a528b8f6195",
+      "content_status": "read",
+      "scope": "Reference contract or architecture; no runtime dependency"
+    },
+    {
+      "id": "axi:content/ecosystem/codex/plugins.md",
+      "source_type": "repository_file",
+      "repository": "axi",
+      "path": "content/ecosystem/codex/plugins.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "90b2a30af9167683833cdf30bb2fe60ebe0220d4677f7e7e2fe7840244e04778",
+      "content_status": "read",
+      "scope": "Reference contract or architecture; no runtime dependency"
+    },
+    {
+      "id": "axi:content/ecosystem/codex/interfaces.md",
+      "source_type": "repository_file",
+      "repository": "axi",
+      "path": "content/ecosystem/codex/interfaces.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "9be8f8aa48ca131aee906f2883400cd549e548e0f88e778d9796acb4a41476ff",
+      "content_status": "read",
+      "scope": "Reference contract or architecture; no runtime dependency"
+    },
+    {
+      "id": "axi:content/ecosystem/mcp-apps.md",
+      "source_type": "repository_file",
+      "repository": "axi",
+      "path": "content/ecosystem/mcp-apps.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "6177ea39baf27adf80f59320dad8cc2463c30800bc5381177418b18c6dedd43e",
+      "content_status": "read",
+      "scope": "Reference contract or architecture; no runtime dependency"
+    },
+    {
+      "id": "axi:content/reference/adoption.md",
+      "source_type": "repository_file",
+      "repository": "axi",
+      "path": "content/reference/adoption.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "ed9c6d49442e273212df140d4ddf59d8aff87932e174ffe91e896ebaf3a3b98f",
+      "content_status": "read",
+      "scope": "Reference contract or architecture; no runtime dependency"
+    },
+    {
+      "id": "shou:Package.swift",
+      "source_type": "repository_file",
+      "repository": "shou",
+      "path": "Package.swift",
+      "retrieved_on": "2026-11-12",
+      "sha256": "f324e399038990e45d3ab21baa8fdb3f53f056a06964f9c02caf1863fd58ce99",
+      "content_status": "read",
+      "scope": "Reference contract or architecture; no runtime dependency"
+    },
+    {
+      "id": "shou:apps/cli/Sources/ShouCLI.swift",
+      "source_type": "repository_file",
+      "repository": "shou",
+      "path": "apps/cli/Sources/ShouCLI.swift",
+      "retrieved_on": "2026-11-12",
+      "sha256": "1c241cf3ed790c6e86bacc917b58f2999654ed9c2d5cb1fe6f2ecc7a96338993",
+      "content_status": "read",
+      "scope": "Reference contract or architecture; no runtime dependency"
+    },
+    {
+      "id": "shou:apps/windows/src/Shou.Windows.Cli/Program.cs",
+      "source_type": "repository_file",
+      "repository": "shou",
+      "path": "apps/windows/src/Shou.Windows.Cli/Program.cs",
+      "retrieved_on": "2026-11-12",
+      "sha256": "886735049568ce2db69d9d9b8a98dc23022058001c342dfa20a7063288047b35",
+      "content_status": "read",
+      "scope": "Reference contract or architecture; no runtime dependency"
+    },
+    {
+      "id": "shou:docs/zh-CN/architecture/system-design.md",
+      "source_type": "repository_file",
+      "repository": "shou",
+      "path": "docs/zh-CN/architecture/system-design.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "a7e8d083502cef30bdf5b35e561533aab2d59a3c1c580da179a1f338dc1cdab0",
+      "content_status": "read",
+      "scope": "Reference contract or architecture; no runtime dependency"
+    },
+    {
+      "id": "shou:docs/zh-CN/architecture/monorepo-and-platforms.md",
+      "source_type": "repository_file",
+      "repository": "shou",
+      "path": "docs/zh-CN/architecture/monorepo-and-platforms.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "6498693f3531172e93e38129da604c173388c40e7cde1eb728409377e58a6b7b",
+      "content_status": "read",
+      "scope": "Reference contract or architecture; no runtime dependency"
+    },
+    {
+      "id": "shou:docs/zh-CN/engineering/npm-distribution.md",
+      "source_type": "repository_file",
+      "repository": "shou",
+      "path": "docs/zh-CN/engineering/npm-distribution.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "4c9c61de796f6f18424f78c513d9e31c4b4b16e4053cf7031059ab5906362290",
+      "content_status": "read",
+      "scope": "Reference contract or architecture; no runtime dependency"
+    },
+    {
+      "id": "limeiot:docs/README.md",
+      "source_type": "repository_file",
+      "repository": "limeiot",
+      "path": "docs/README.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "dfff8e64790c35c31906765d21e006a61d651abb9d7d828862a0776b32623c5c",
+      "content_status": "read",
+      "scope": "Reference contract or architecture; no runtime dependency"
+    },
+    {
+      "id": "limeiot:docs/01-产品需求PRD.md",
+      "source_type": "repository_file",
+      "repository": "limeiot",
+      "path": "docs/01-产品需求PRD.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "847ba426a4de23c953f71ee6a2f51d34d6f21bb7162d61e6eab420f0b36ec0a3",
+      "content_status": "read",
+      "scope": "Reference contract or architecture; no runtime dependency"
+    },
+    {
+      "id": "limeiot:docs/03-总体技术架构.md",
+      "source_type": "repository_file",
+      "repository": "limeiot",
+      "path": "docs/03-总体技术架构.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "e19cde1bc32f6a87113ea7dea9ce96524067cde5fa1652374c099e1bd139b3b2",
+      "content_status": "read",
+      "scope": "Reference contract or architecture; no runtime dependency"
+    },
+    {
+      "id": "limeiot:docs/21-Monorepo与开发规范.md",
+      "source_type": "repository_file",
+      "repository": "limeiot",
+      "path": "docs/21-Monorepo与开发规范.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "ed2a3c6fde50ef830bea3ae476e50ae85c6a5249a9d323bf8a225293f2c09b7f",
+      "content_status": "read",
+      "scope": "Reference contract or architecture; no runtime dependency"
+    },
+    {
+      "id": "limeiot:docs/23-测试策略与验收矩阵.md",
+      "source_type": "repository_file",
+      "repository": "limeiot",
+      "path": "docs/23-测试策略与验收矩阵.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "ef3129484b93d76a7df23ed42e9a45a1db45533de1d3c29b931096cfd0eae701",
+      "content_status": "read",
+      "scope": "Reference contract or architecture; no runtime dependency"
+    },
+    {
+      "id": "limeiot:docs/26-架构决策记录与风险.md",
+      "source_type": "repository_file",
+      "repository": "limeiot",
+      "path": "docs/26-架构决策记录与风险.md",
+      "retrieved_on": "2026-11-12",
+      "sha256": "f510eaad5d6d65746f10c885a6ef0bc62df5deb9eeda69234a1b7f8bee8768a9",
+      "content_status": "read",
+      "scope": "Reference contract or architecture; no runtime dependency"
+    },
+    {
+      "id": "fountain-syntax",
+      "source_type": "format_reference",
+      "url": "https://fountain.io/syntax/",
+      "retrieved_on": "2026-11-12",
+      "content_status": "access_challenge",
+      "scope": "Syntax entry only; grammar requires parser fixtures and authoritative specification"
+    }
+  ]
+}

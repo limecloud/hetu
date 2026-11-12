@@ -1,0 +1,66 @@
+---
+import { messages, route, source, prototype, type Locale } from '../lib/site';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const m = messages(locale);
+const icons = [
+  'M5 10h14v11H5z M8 10V7a4 4 0 0 1 8 0v3 M12 14v3',
+  'M3 11 12 3l9 8 M5 10v11h14V10 M9 21v-7h6v7',
+  'M5 3h14v18H5z M8 12l3 3 5-6',
+];
+---
+<div class="container">
+  <section class="hero">
+    <div class="hero-copy">
+      <span class="eyebrow"><span class="status-dot" aria-hidden="true"></span>{m.hero.eyebrow}</span>
+      <h1>{m.hero.line1}<br/><em>{m.hero.line2}</em></h1>
+      <p class="hero-description">{m.hero.description}</p>
+      <div class="hero-actions">
+        <a class="button primary" href={prototype(locale)}>{m.hero.primary}<span aria-hidden="true">↗</span></a>
+        <a class="button secondary" href={route(locale,'docs')}>{m.hero.secondary}<span aria-hidden="true">→</span></a>
+      </div>
+      <p class="hero-note">{m.hero.note}</p>
+    </div>
+    <div class="hero-visual">
+      <img class="hero-art" src="/images/hero-scene.webp" width="1046" height="1024" alt={m.hero.alt} fetchpriority="high"/>
+      <span class="scene-label">{locale==='en'?'Xiaotu':'河图小图'} <span>／</span> {locale==='en'?'Your story companion':'陪你守住每一个设定'}</span>
+    </div>
+  </section>
+  <div class="assurances">
+    {m.promises.map((promise,index)=><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d={icons[index]}/></svg><span><b>{promise.title}</b><small>{promise.description}</small></span></div>)}
+  </div>
+  <section class="section workspace-section">
+    <div class="section-head">
+      <div><span class="eyebrow">{m.workspace.eyebrow}</span><h2>{m.workspace.title}</h2></div>
+      <a class="text-link" href={prototype(locale)}>{m.workspace.cta} <span aria-hidden="true">↗</span></a>
+    </div>
+    <p class="section-intro">{m.workspace.body}</p>
+    <a class="workspace-frame" href={prototype(locale)} aria-label={m.workspace.cta}>
+      <img class="product-shot" src={locale==='en'?'/images/prototype-desktop-en.webp':'/images/prototype-desktop.webp'} width="1536" height="1024" alt={m.workspace.alt} loading="lazy"/>
+    </a>
+    <p class="image-caption">{m.workspace.caption}</p>
+  </section>
+  <section class="section features-section" id="features">
+    <div class="section-head"><div><span class="eyebrow">{m.features.eyebrow}</span><h2>{m.features.title}</h2></div><p>{m.features.intro}</p></div>
+    <div class="feature-grid">
+      {m.features.items.map((item,index)=><article class="feature">
+        <div class="feature-art"><img src={'/images/'+item.image} width="1254" height="1254" alt={item.alt} loading="lazy"/></div>
+        <span class="feature-number">0{index+1}</span><h3>{item.title}</h3><p>{item.body}</p>
+      </article>)}
+    </div>
+  </section>
+  <section class="section workflow-section">
+    <div class="section-head"><div><span class="eyebrow">{m.workflow.eyebrow}</span><h2>{m.workflow.title}</h2></div><a class="text-link" href={route(locale,'workflow')}>{m.nav.workflow} <span aria-hidden="true">→</span></a></div>
+    <div class="steps">{m.workflow.steps.map((step,index)=><article class="step"><span>0{index+1}</span><h3>{step.title}</h3><p>{step.body}</p></article>)}</div>
+  </section>
+  <section class="format-section">
+    <div><span class="eyebrow">{locale==='en'?'FAMILIAR FORMATS. CLEAR HANDOFFS.':'从写作到交稿，使用熟悉的格式'}</span><h2>{m.formats.title}</h2><p>{m.formats.body}</p><a class="text-link" href={route(locale,'docs/formats-and-delivery')}>{m.formats.cta} <span aria-hidden="true">→</span></a></div>
+    <div class="format-files" aria-label={locale==='en'?'Document formats':'文档格式'}>
+      {['.md','.fountain','.docx','.pdf'].map((format,index)=><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 2h9l5 5v15H5z M14 2v6h5 M9 13h6 M9 17h6"/></svg><b>{format}</b><span>{m.formats.labels[index]}</span></div>)}
+    </div>
+  </section>
+  <section class="closing-section">
+    <div class="closing-copy"><img src="/brand/mascot-master.png" width="160" height="160" alt="" loading="lazy"/><div><span class="eyebrow">{m.open.eyebrow}</span><h2>{m.open.title}</h2><p>{m.open.body}</p></div></div>
+    <a class="button primary" href={source} rel="noreferrer">{m.open.cta} <span aria-hidden="true">↗</span></a>
+  </section>
+</div>

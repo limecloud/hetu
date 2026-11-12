@@ -1,0 +1,24 @@
+---
+import Site from '../layouts/Site.astro';
+import { docs, renderDoc, type Doc } from '../lib/docs';
+import { messages, route, type Locale } from '../lib/site';
+interface Props { doc: Doc; locale: Locale; }
+const { doc, locale } = Astro.props;
+const m = messages(locale);
+const { html, headings, hasMermaid } = await renderDoc(doc, locale);
+const position = docs.findIndex(item => item.id === doc.id);
+const previous = docs[position - 1], next = docs[position + 1];
+---
+<Site locale={locale} page={`docs/${doc.id}`} title={doc.title[locale]} description={doc.description[locale]}>
+  <div class="container"><details class="doc-mobile-nav"><summary>{m.docs.title} · {doc.title[locale]}</summary><nav>{docs.map(item => <a href={route(locale, `docs/${item.id}`)} aria-current={item.id === doc.id ? 'page' : undefined}>{item.title[locale]}</a>)}</nav></details><div class="doc-shell">
+    <nav class="doc-sidebar" aria-label={m.docs.title}><div><a class="doc-back" href={route(locale, 'docs')}>← {m.docs.back}</a>{docs.map(item => <a href={route(locale, `docs/${item.id}`)} aria-current={item.id === doc.id ? 'page' : undefined}>{item.title[locale]}</a>)}</div></nav>
+    <article class="doc-article" lang={locale}>
+      <p class="guide-notice">{m.docs.note}</p>
+      <Fragment set:html={html}/>
+      <nav class="guide-pagination" aria-label={locale === 'en' ? 'More guides' : '继续阅读'}>{previous && <a href={route(locale, `docs/${previous.id}`)}>← {previous.title[locale]}</a>}{next && <a href={route(locale, `docs/${next.id}`)}>{next.title[locale]} →</a>}</nav>
+    </article>
+    <aside class="doc-toc"><div><strong>{m.docs.onPage}</strong>{headings.map(heading => <a href={'#' + heading.id}>{heading.text}</a>)}</div></aside>
+  </div></div>
+  {hasMermaid && <script src="/vendor/mermaid.min.js" is:inline></script>}
+  {hasMermaid && <script is:inline>mermaid.initialize({startOnLoad:true,securityLevel:'strict',theme:'neutral',fontFamily:'system-ui,sans-serif'});</script>}
+</Site>

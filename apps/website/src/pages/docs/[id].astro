@@ -1,0 +1,6 @@
+---
+import Document from '../../components/Document.astro';import {docs,type Doc} from '../../lib/docs';
+export function getStaticPaths(){return docs.map(doc=>({params:{id:doc.id},props:{doc}}));}
+interface Props{doc:Doc;}const {doc}=Astro.props;
+---
+<Document locale="zh-CN" doc={doc}/>

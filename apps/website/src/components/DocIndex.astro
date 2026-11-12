@@ -1,0 +1,12 @@
+---
+import { docs, groups } from '../lib/docs';
+import { messages, route, prototype, type Locale } from '../lib/site';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const m = messages(locale);
+---
+<div class="container subpage help-index">
+  <header class="page-hero"><span class="eyebrow">{locale === 'en' ? 'HETU HELP' : '河图使用指南'}</span><h1>{m.docs.title}</h1><p>{m.docs.intro}</p><a class="button primary" href={route(locale, 'docs/getting-started')}>{locale === 'en' ? 'Start here' : '从这里开始'} <span aria-hidden="true">→</span></a><a class="text-link guide-demo" href={prototype(locale)}>{m.workspace.cta} ↗</a></header>
+  <p class="guide-notice">{m.docs.note}</p>
+  {groups.map(group => <section class="guide-group"><h2>{group.title[locale]}</h2><div class="doc-index">{docs.filter(doc => doc.group === group.id).map(doc => <a href={route(locale, `docs/${doc.id}`)}><div><b>{doc.title[locale]}</b><small>{doc.description[locale]}</small></div><span aria-hidden="true">→</span></a>)}</div></section>)}
+</div>

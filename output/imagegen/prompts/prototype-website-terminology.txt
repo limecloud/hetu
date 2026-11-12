@@ -1,0 +1,3 @@
+Use case: text-localization
+Edit this website design image keeping the exact mascot, premium warm-ivory and jade visual style, layout and all other elements. Correct all Chinese terminology for fiction authors: headline should be exactly "让每个故事，
+自成一方世界。" Supporting line exactly "设定有据，创作有序。" Replace any 蓝图 with 设定集, especially feature label "统一设定集". Use body copy "管理角色、世界观与时间线，让小说与短剧共享同一套设定。" No Chinese term 蓝图 anywhere. Do not add released or download claims. Clear correct Chinese text.

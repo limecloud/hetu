@@ -1,0 +1,6 @@
+Use case: text-localization
+Asset type: English localized iOS and Android concept mockup for Hetu.
+Input image: edit target, the approved Chinese mobile concept.
+Primary request: localize every visible Chinese interface label, title and sample into legible English. Preserve the two phones, camera hardware, jade and paper palette, mascot, screen composition, lighting and original image dimensions. Text must be English only, with no Han characters.
+Brand: "Hetu". Product caption: "Your story, wherever you are". Project: "The Wuchuan Chronicles". Left phone: "Story Bible", "Characters", "Places", "Timeline", "Lin Zhou", "Protagonist", "Shen Ci", "Companion", "Wuchuan", "River town", "Locked · Revision 7". Navigation: "Home", "Story Bible", "Review", "Me". Right phone: "Draft Review", "Episode 1: A Rainy Arrival", "Awaiting review", "Timeline needs review", "Source reference", "Review comment", "Request changes", "Approve revision". Sample draft: "INT. INN - NIGHT", "Lin Zhou places an old jade clasp on the counter.", "The innkeeper pauses before handing him a room key.". Small footer caption: "Mobile design concept".
+Constraints: maintain clean native mobile design and visual hierarchy. Shorten or remove secondary filler instead of producing gibberish or overflowing labels. No new features. No watermark.

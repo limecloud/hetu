@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HetuSubmitDraftInput",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "package",
+    "source_format",
+    "content",
+    "blueprint_revision",
+    "operation_key"
+  ],
+  "properties": {
+    "package": {
+      "enum": [
+        "novel",
+        "drama",
+        "music-cue",
+        "visual-prompt"
+      ]
+    },
+    "source_format": {
+      "enum": [
+        "markdown",
+        "fountain"
+      ]
+    },
+    "content": {
+      "type": "string",
+      "minLength": 1
+    },
+    "blueprint_revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "operation_key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "target_document_id": {
+      "type": "string",
+      "pattern": "^doc_[0-9a-f-]{36}$"
+    },
+    "base_revision_id": {
+      "type": "string",
+      "pattern": "^rev_[0-9a-f-]{36}$"
+    },
+    "parent_draft_id": {
+      "type": "string",
+      "pattern": "^draft_[0-9a-f-]{36}$"
+    }
+  },
+  "oneOf": [
+    {
+      "required": [
+        "title"
+      ],
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "target_document_id"
+            ]
+          },
+          {
+            "required": [
+              "base_revision_id"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "required": [
+        "target_document_id",
+        "base_revision_id"
+      ]
+    }
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "package": {
+            "const": "drama"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "source_format": {
+            "const": "fountain"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "source_format": {
+            "const": "markdown"
+          }
+        }
+      }
+    }
+  ]
+}

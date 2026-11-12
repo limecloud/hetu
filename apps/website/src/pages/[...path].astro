@@ -1,0 +1,6 @@
+---
+import Site from '../layouts/Site.astro';import Home from '../components/Home.astro';import Content from '../components/Content.astro';import Brand from '../components/Brand.astro';import {route,messages,type Locale} from '../lib/site';
+export function getStaticPaths(){return (['zh-CN','en'] as const).flatMap(locale=>['','workflow','integrations','faq','brand'].map(page=>({params:{path:route(locale,page).replace(/^\//,'').replace(/\/$/,'')||undefined},props:{locale,page}})));}
+interface Props{locale:Locale;page:string;}const {locale,page}=Astro.props;const m=messages(locale);const title=page==='workflow'?m.workflow.title:page==='integrations'?m.integrations.title:page==='faq'?m.faq.title:undefined;
+---
+<Site locale={locale} page={page} title={page==='brand'?(locale==='en'?'Brand & design':'品牌与设计'):title}>{page===''?<Home locale={locale}/>:page==='brand'?<Brand locale={locale}/>:<Content locale={locale} page={page}/>}</Site>

@@ -1,0 +1,2 @@
+Use case: text-localization
+Edit this desktop UI image, preserving the whole layout, mascot, typography, editor content and design. Make only terminology corrections for Chinese fiction writers: every visible "蓝图" becomes "设定集"; "蓝图已锁定" becomes "设定已锁定"; source reference "IP 蓝图（锁定）" becomes "IP 设定集（锁定）". The sidebar item is "设定集". Do not retain the Chinese term 蓝图 anywhere. In consistency checks avoid claiming free-text understanding is certain: replace the three green claims with "已知角色已关联", "规则检查已完成", "来源引用可定位". Preserve other elements. Crisp native professional Chinese UI.

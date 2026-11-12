@@ -1,0 +1,2 @@
+Use case: text-localization
+Edit this mobile companion design board, preserving every mascot, phone, screen layout and visual style. Correct all Chinese author-facing terms: every visible 蓝图 becomes 设定集; subtitle under the work name should be "IP 设定集 · 长篇连载"; bottom tabs 工作台 设定集 审核 我的. Change sidebar marketing line "中文 IP 蓝图工作台" to "中文 IP 创作工作台". Do not retain Chinese term 蓝图 anywhere. Keep title "Hetu Mobile · 设计预览". Chinese labels must be crisp and readable. Do not change functionality or add claims.

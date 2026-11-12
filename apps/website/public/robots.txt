@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /prototype/
+Sitemap: https://hetu.limeai.run/sitemap.xml
