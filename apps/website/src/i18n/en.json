@@ -209,7 +209,7 @@
     "description": "A local creative workspace for authors and independent IP studios.",
     "status": "v0.2.0 · macOS source implementation; homepage prototype uses in-page demo data.",
     "license": "Core license: Apache-2.0",
-    "privacy": "No form data collection, cookies or analytics. Demo input stays in this page; the hosting platform processes connection data under its network operating policies.",
+    "privacy": "Demo input stays in this page. The site has no accounts and sets no cookies. Hosting may process connection and performance data under its privacy policies.",
     "design": "Interactive prototype",
     "rights": "Hetu Luoshu"
   }

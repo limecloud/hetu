@@ -251,9 +251,15 @@ test('固定引文在当前文字变化后保留，定位失败不选择替代�
 for (const locale of ['zh-CN', 'en']) {
   for (const width of [375, 1440]) {
     test(`${locale} ${width}px 安装入口共享题材套件状态并保留作品关联`, async ({ page }) => {
-      const errors: string[] = [], writes: string[] = [];
+      const errors: string[] = [], writes: string[] = [], requests: string[] = [];
       page.on('pageerror', error => errors.push(error.message));
-      page.on('request', request => { if (request.method() !== 'GET') writes.push(request.url()); });
+      page.on('request', request => {
+        requests.push(request.url() + '\n' + (request.postData() ?? ''));
+        const url = new URL(request.url());
+        // Pages 的同源性能回执与安装操作分开；下方仍检查每个请求不携带演示输入。
+        const performanceReceipt = url.origin === new URL(page.url()).origin && url.pathname === '/cdn-cgi/rum' && request.method() === 'POST';
+        if (request.method() !== 'GET' && !performanceReceipt) writes.push(request.url());
+      });
       await page.setViewportSize({ width, height: 960 });
       await page.goto(locale === 'en' ? '/en/#prototype' : '/#prototype');
       const demo = page.locator('.demo');
@@ -299,6 +305,12 @@ for (const locale of ['zh-CN', 'en']) {
       await expect(demo.locator('[name="agent-suite"]')).toHaveValue('general');
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
       await expect(page).toHaveURL(/#prototype$/);
+      for (const request of requests) {
+        for (const input of ['独立创作 Book', '作者 Author']) {
+          expect(request).not.toContain(input);
+          expect(request).not.toContain(encodeURIComponent(input));
+        }
+      }
       expect(writes).toEqual([]);
       expect(errors).toEqual([]);
     });
