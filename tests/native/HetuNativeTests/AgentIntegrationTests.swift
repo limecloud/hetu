@@ -8,6 +8,17 @@ private func agentCheck(_ condition: Bool, _ message: String) throws {
 
 extension NativeTests {
     @MainActor static func agentIntegrationTests(_ root: URL, preferences: UserDefaults) throws {
+        let brokenCLI = root.appendingPathComponent("旧 CLI 入口")
+        let validCLI = root.appendingPathComponent("有效 CLI 入口")
+        for directory in [brokenCLI, validCLI] { try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true) }
+        let broken = brokenCLI.appendingPathComponent("codex"), valid = validCLI.appendingPathComponent("codex")
+        try Data("#!/不存在的河图测试解释器/node\n".utf8).write(to: broken)
+        try Data("#!/bin/sh\nexit 0\n".utf8).write(to: valid)
+        for file in [broken, valid] { try FileManager.default.setAttributes([.posixPermissions: 0o700], ofItemAtPath: file.path) }
+        let searchPath = brokenCLI.path + ":" + validCLI.path
+        try agentCheck(AgentSuiteInstaller.findCodex(searchPath: searchPath) == valid, "旧 CLI 的解释器已丢失，仍遮蔽后续有效入口")
+        try Data("#!/usr/bin/env missing-hetu-test-runtime\n".utf8).write(to: broken)
+        try agentCheck(AgentSuiteInstaller.findCodex(searchPath: searchPath) == valid, "env 解释器不在 PATH 中仍被选中")
         let settings = AgentIntegrationSettings(preferences: preferences)
         settings.defaultClient = .codex
         try agentCheck(settings.association(for: "old-book").client == .none, "默认客户端影响了旧作品")
@@ -19,13 +30,30 @@ extension NativeTests {
         try agentCheck(restarted.association(for: "second-book").client == .codex, "作品客户端串用")
 
         let catalog = try AgentSuiteCatalog.bundled()
+        let matched = catalog.matchingSuites(query: "女频末世无CP")
+        try agentCheck(matched.contains { $0.id == "apocalypse" } && !matched.contains { $0.id == "modern-romance" }, "女频末世无CP被强行路由言情")
+        try agentCheck(catalog.matchingSuites(query: "无限流", platform: "qidian", channel: "male").contains { $0.id == "infinite" }, "起点无限流没有对应套件")
+        try agentCheck(catalog.matchingSuites(query: "都市日常", platform: "fanqie", channel: "male").contains { $0.id == "urban-daily" }, "平台频道筛选丢失实际题材")
+        let advice = try AgentSuiteAdvice.parse("{\"recommendations\":[{\"suiteID\":\"apocalypse\",\"reason\":\"女频末世，无CP，重建社区\"}]}", catalog: catalog)
+        try agentCheck(advice.recommendations.first?.suiteID == "apocalypse", "无法读取外部Agent的有效选型建议")
+        for invalid in [
+            "{\"recommendations\":[{\"suiteID\":\"unknown-plugin\",\"reason\":\"安装目录外插件\"}]}",
+            "{\"recommendations\":[{\"suiteID\":\"apocalypse\",\"reason\":\"\"}]}",
+            "{\"recommendations\":[{\"suiteID\":\"apocalypse\",\"reason\":\"一\"},{\"suiteID\":\"apocalypse\",\"reason\":\"二\"}]}",
+            "{\"recommendations\":[]}", String(repeating: "x", count: 32_769)
+        ] {
+            var rejected = false
+            do { _ = try AgentSuiteAdvice.parse(invalid, catalog: catalog) } catch { rejected = true }
+            try agentCheck(rejected, "无效或越界的外部Agent建议被接受")
+        }
+        try agentCheck(settings.association(for: "second-book").suiteID == "general", "读取建议时静默改变作品套件")
         guard let general = catalog.suites.first(where: { $0.id == "general" }),
               let military = catalog.suites.first(where: { $0.id == "military" }) else { throw AgentCheckFailure(message: "缺少实际分发套件") }
         let codex = root.appendingPathComponent("测试客户端")
         let inspector = AgentPackageInspector(codexDirectory: codex, workbuddyDirectory: root.appendingPathComponent("测试 WorkBuddy"))
         for suite in catalog.suites {
             let actual = inspector.inspect(suite: suite, catalog: catalog, client: .codex, selectedDirectory: catalog.directory(for: suite))
-            try agentCheck(actual.state == .filesFound && actual.missingSkills.isEmpty && actual.version == "0.1.0", "分发套件不完整或被误报已安装：\(suite.id)")
+            try agentCheck(actual.state == .filesFound && actual.missingSkills.isEmpty && actual.version == "0.2.1", "分发套件不完整或被误报已安装：\(suite.id)")
         }
         try agentCheck(inspector.inspect(suite: military, catalog: catalog, client: .codex).state == .notFound, "没有客户端目录却报告安装")
         let cache = codex.appendingPathComponent("plugins/cache/test-market/hetu-military/revision-a")
@@ -57,7 +85,12 @@ extension NativeTests {
         let duplicate = cache.deletingLastPathComponent().appendingPathComponent("revision-b")
         try FileManager.default.copyItem(at: cache, to: duplicate)
         try agentCheck(inspector.inspect(suite: military, catalog: catalog, client: .codex).state == .ambiguous, "多个缓存版本被猜成当前加载包")
-        try FileManager.default.removeItem(at: duplicate.appendingPathComponent("references/military.md"))
+        let method = duplicate.appendingPathComponent("references/craft/scenes.md")
+        let methodBytes = try Data(contentsOf: method)
+        try FileManager.default.removeItem(at: method)
+        try agentCheck(inspector.inspect(suite: military, catalog: catalog, client: .codex, selectedDirectory: duplicate).state == .invalid, "入口齐全但方法案例缺失仍显示完整")
+        try methodBytes.write(to: method)
+        try FileManager.default.removeItem(at: duplicate.appendingPathComponent("references/genre.md"))
         try agentCheck(inspector.inspect(suite: military, catalog: catalog, client: .codex, selectedDirectory: duplicate).state == .invalid, "题材方法缺失仍显示为有效套件")
         let missing = cache.appendingPathComponent("skills/hetu-revise/SKILL.md")
         try FileManager.default.removeItem(at: missing)

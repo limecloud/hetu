@@ -1431,6 +1431,39 @@
       "representation": "html_response",
       "content_status": "read",
       "scope": "Agent edit boundaries: selection, interaction locks, separate reference revisions and human review; no third-party runtime interoperability verified"
+    },
+    {
+      "id": "mcp-apps-specification",
+      "source_type": "official_repository",
+      "url": "https://raw.githubusercontent.com/modelcontextprotocol/ext-apps/main/specification/2026-01-26/apps.mdx",
+      "final_url": "https://raw.githubusercontent.com/modelcontextprotocol/ext-apps/main/specification/2026-01-26/apps.mdx",
+      "retrieved_on": "2026-11-13",
+      "sha256": "ee452a7d1b9b7fb900acfeb4d6932d3963375b0f3f37d196a4b93eb80312af0e",
+      "representation": "raw_mdx_response",
+      "content_status": "read",
+      "scope": "MCP Apps resource metadata, sandbox and bridge protocol; reference design, not specific host compatibility"
+    },
+    {
+      "id": "mcp-apps-sdk-published",
+      "source_type": "official_package",
+      "url": "https://registry.npmjs.org/@modelcontextprotocol/ext-apps/2.0.4",
+      "final_url": "https://registry.npmjs.org/@modelcontextprotocol/ext-apps/2.0.4",
+      "retrieved_on": "2026-11-13",
+      "sha256": "d75b048b82b1288616eddf9cbe132a221c28b0fa1c2a2b4ad14b386f59da97df",
+      "representation": "npm_registry_json_response",
+      "content_status": "read",
+      "scope": "Published MCP Apps SDK 2.0.4; package exports and dependency metadata"
+    },
+    {
+      "id": "mcp-typescript-client-2.4-options",
+      "source_type": "official_package",
+      "url": "https://registry.npmjs.org/@modelcontextprotocol/client/-/client-2.4.0.tgz",
+      "final_url": "https://registry.npmjs.org/@modelcontextprotocol/client/-/client-2.4.0.tgz",
+      "retrieved_on": "2026-11-13",
+      "sha256": "9e8a7724bca48a1b774a35ffc324d57674b714055949cbd5902060086df290a8",
+      "representation": "installed npm artifact bytes: dist/client-BTIWJvaF.d.mts; package integrity is recorded separately in package-lock.json",
+      "content_status": "read",
+      "scope": "ClientOptions.versionNegotiation defaults, modern pinned discovery and automatic request metadata; SDK behavior, not third-party host compatibility"
     }
   ]
 }

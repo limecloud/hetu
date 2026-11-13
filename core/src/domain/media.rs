@@ -10,11 +10,7 @@ pub fn definition(name: &str) -> Value {
         serde_json::from_str(include_str!("../../../contracts/schemas/media.schema.json"))
             .expect("embedded media schema")
     });
-    let mut result = schema["$defs"][name].clone();
-    assert!(result.is_object(), "registered media schema definition");
-    result["$schema"] = schema["$schema"].clone();
-    result["$defs"] = schema["$defs"].clone();
-    result
+    super::schema::definition(schema, name)
 }
 
 pub fn package(kind: &str) -> &'static str {

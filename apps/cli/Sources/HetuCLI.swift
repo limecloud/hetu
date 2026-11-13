@@ -8,7 +8,7 @@ struct HetuCLI {
             let args = Array(CommandLine.arguments.dropFirst())
             if args.isEmpty || args == ["--help"] {
                 print("""
-                河图 Hetu · 本地创作工作台
+                河图洛书 Hetu Luoshu 本地创作工作台
 
                 hetu --workspace <目录> capabilities
                 hetu --workspace <目录> call <hetu.action> --input <JSON 文件或 ->

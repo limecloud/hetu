@@ -182,7 +182,7 @@ struct PlotWorkbenchView: View {
     private var skipped: some View {
         DisclosureGroup(model.t("plot.skipped", ["count": String(plot["coverage"]["unparsed_ranges"].array.count)])) {
             ForEach(Array(plot["coverage"]["unparsed_ranges"].array.prefix(skippedLimit).enumerated()), id: \.offset) { _, item in
-                Text(model.t("plot.skip." + (item["reason"].string ?? "no_structural_signal")) + " · \(item["byte_start"].integer ?? 0)…\(item["byte_end"].integer ?? 0)").font(.caption).frame(maxWidth: .infinity, alignment: .leading)
+                Text(model.t("plot.skip." + (item["reason"].string ?? "no_structural_signal")) + "  \(item["byte_start"].integer ?? 0)…\(item["byte_end"].integer ?? 0)").font(.caption).frame(maxWidth: .infinity, alignment: .leading)
             }
             if skippedLimit < plot["coverage"]["unparsed_ranges"].array.count { Button(model.t("plot.more")) { skippedLimit += 100 } }
         }
@@ -190,7 +190,7 @@ struct PlotWorkbenchView: View {
     private func edgeLabel(_ edge: JSONValue) -> String {
         let from = (nodes.firstIndex { $0["node_id"] == edge["from_node_id"] } ?? 0) + 1
         let to = (nodes.firstIndex { $0["node_id"] == edge["to_node_id"] } ?? 0) + 1
-        return "\(from) → \(to) · " + model.t("plot.relation." + (edge["relation"].string ?? "narrative_next")) + " · " + model.t("plot.verification." + (edge["verification"].string ?? "needs_author_review"))
+        return "\(from) → \(to)  " + model.t("plot.relation." + (edge["relation"].string ?? "narrative_next")) + "  " + model.t("plot.verification." + (edge["verification"].string ?? "needs_author_review"))
     }
     private func dateLabel(_ value: String) -> String { model.localizer.date(value) }
     private func validateAnnotations() async {

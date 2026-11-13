@@ -13,7 +13,7 @@ func dramaOrderedNodes(_ plot: JSONValue) -> [JSONValue] {
     }
 }
 @MainActor func dramaNodeLabel(_ node: JSONValue, model: WorkspaceModel) -> String {
-    model.t("plot.kind." + (node["kind"].string ?? "action")) + " · " + String((node["source_refs"].array.first?["quote"].string ?? "").prefix(60)).replacingOccurrences(of: "\n", with: " ")
+    model.t("plot.kind." + (node["kind"].string ?? "action")) + "  " + String((node["source_refs"].array.first?["quote"].string ?? "").prefix(60)).replacingOccurrences(of: "\n", with: " ")
 }
 struct DramaBuildSheet: View {
     let model: WorkspaceModel

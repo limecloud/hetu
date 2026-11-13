@@ -22,7 +22,7 @@
 
 Prompt 字段支持简体中文和英文；界面语言、Prompt 语言和封面文字语言分别选择。英文界面不能自动翻译作者的中文书名。`background_only` 生成无文字底图，河图洛书可叠加真实书名与笔名；`title_and_author` 要求生成图包含指定文字，结果仍须作者校对。
 
-界面区分“等待外部结果”“发现文件”“正在检查”“候选可预览”“部分结果”“结果需处理”和“已选用”。创建请求只能显示等待状态；没有实际宿主事件时，不显示“Codex 正在绘图”、生成百分比或完成倒计时。
+请求观察状态区分“等待外部结果”“发现文件”“部分结果”和“候选可预览”。检查中的加载状态、具体错误和当前选用记录分别展示，不混入请求状态枚举。创建请求只能显示等待状态；没有实际宿主事件时，不显示“Codex 正在绘图”、生成百分比或完成倒计时。
 
 ## 3. 固定目录与交接
 
@@ -50,7 +50,7 @@ my-novel/
 
 ## 4. 数据合同与不变量
 
-机器合同分别为 [CoverRequest](../contracts/schemas/cover-request.schema.json) 与 [CoverResult](../contracts/schemas/cover-result.schema.json)，均使用 `schema_version=1.0.0`、UTF-8 JSON、UTC RFC 3339 与闭合字段。
+文件交接合同为 [CoverRequest](../contracts/schemas/cover-request.schema.json) 与 [CoverResult](../contracts/schemas/cover-result.schema.json)；选用记录和应用动作输入见 [BookCover Schema](../contracts/schemas/book-cover.schema.json)。记录均使用 `schema_version=1.0.0`、UTF-8 JSON、UTC RFC 3339 与闭合字段。
 
 | 对象 | 主要字段 | 语义 |
 | --- | --- | --- |
@@ -59,19 +59,26 @@ my-novel/
 | design | `art_direction, width, height, text_mode, cover_language, candidate_count` | 目标像素、文字方式及 1～4 张候选；每次请求单独确认数量 |
 | CoverResult | `workspace_id, request_id, request_sha256, completed_at, candidates[]` | Agent 完成声明；摘要指向请求文件原始字节，需内核重新核验 |
 | Candidate | `filename, sha256, size_bytes, width, height, media_type, used_prompt, generator` | 实际图片字节、尺寸、Prompt 与生成来源声明；generator 只在确知时记录 model |
-| BookCover | `revision, asset_ref, source_ref, presentation, previous_sha256` | 作者选用后的版本记录；`asset_ref={asset_id,revision,sha256}`；`source_ref={request_id,request_sha256,filename,sha256}` 或手工导入来源 |
+| BookCover | `workspace_id, revision, asset_ref, source_ref, presentation, width, height, previous_sha256, actor_ref, created_at` | 作者选用后的版本记录；`asset_ref={asset_id,revision,sha256}` 固定素材修订；宽高为原件实际尺寸 |
+| source_ref | `kind` 及对应来源字段 | `author_supplied` 保存原始文件名；`external_agent` 保存固定 candidate_ref、请求与候选快照；`existing_asset` 保存原素材引用；均不保存外部文件绝对路径 |
+| candidate_ref | `request_id, request_sha256, result_sha256, filename, sha256` | 同时固定请求、回执和图片字节；回执改变后先重新检查，不能沿用旧候选引用 |
 | presentation | `crop_rect, title_overlay, author_overlay` | 原图坐标系内的归一化裁切范围与可编辑真实文字；修改展示不改原图 |
 
 JSON Schema 校验结构后，还须校验跨字段和文件事实：
 
 - 请求身份与 `.heturc.json`、请求文件名和输出目录相同；结果的工作区、请求 ID 与原始请求摘要完全匹配。
-- 文件名在同一回执内唯一，候选数量等于请求数量；少于请求数量时可展示已有合法图片并标记部分结果，不将整个请求标为完成。
+- 书名、视觉方向和最终 Prompt 不能只有空白；请求创建独立重验，不依赖界面已执行过预览。
+- 文件名在同一回执内唯一，候选数量不超过请求数量；少于请求数量时可展示已有合法图片并标记部分结果，不将整个请求标为完成。
 - 结果路径只允许 inbox 内单个候选文件名，禁止目录逃逸、符号／硬链接、设备文件与可执行文件。
 - 图片限 PNG、JPEG、WebP，签名、解码、媒体类型和扩展名相符；每图不超过 32 MiB，宽高各为 64～8192，像素总量不超过 6400 万。
 - 重新读取实际文件的字节数、SHA-256 与尺寸；不信任 Agent 自报的解码结果。像素尺寸不匹配目标时说明差异，作者可修改目标创建新请求，不能静默拉伸。
 - 候选通过不等于生成版权得到验证；素材来源记录为 Agent 声明，权利状态延用通用媒体合同，默认不授予可再分发权限。
 
 书名、笔名或其他封面输入变更后，历史任务保留并显示与当前资料不同。作者仍可明确选择历史图；不会自动把新标题烧录进旧图。已有同一回执和摘要时复查不重复导入；相同路径出现不同字节时作为冲突处理，不修改历史摘要。
+
+当前选用位于 `packages/visual-prompt/covers/cover.json`，不可变修订位于 `.hetu/covers/<revision>.json`。首次 `previous_sha256=null`，后继固定上一修订的原始字节摘要；读取历史核验同一作品、连续版本及摘要链，单次最多1000条。缩略图根据裁切参数从受管原件重建，等比缩放至最长边512像素，不能覆盖原件。
+
+Mac 封面管理中的“封面历史”按版本预览原件与当时排版。作者点击“用作当前封面”后，以当前封面修订为基线建立新版本；保留全部旧版本，不回退或覆盖历史。其他窗口已选用新封面时，要求刷新比较。
 
 ## 5. 配套 Skill
 
@@ -81,14 +88,19 @@ Skill 不假定某个图像工具始终存在，不内置供应商或密钥，�
 
 ## 6. 应用动作
 
-以下是设计动作；能力发现仅发布当前构建实际实现的合同。Skill 使用上述文件交接，不依赖未发布动作。
+动作修订由能力目录公布。下列封面动作均为作者入口；Skill 使用上述文件交接，不取得作者选用权限。
 
 | 动作 | 输入 | 结果 | 边界 |
 | --- | --- | --- | --- |
-| `hetu.covers.preview_prompt` | 作者确认的 book、design、Prompt 修改 | 完整 Prompt、资料清单、输出预览 | 仅作者；无落盘、无网络 |
-| `hetu.covers.create_request` | 预览的固定输入、`operation_key` | 不可变请求、摘要、可复制调用说明 | 仅作者；保留原键；不调用或自动启动 Agent |
-| `hetu.covers.list_candidates` | `request_id, cursor?, limit?` | 核验状态、候选摘要和下一游标 | 仅当前授权作品；默认 20，最多 100；有界重查 |
-| `hetu.covers.select` | 固定候选引用或手工素材引用、`expected_cover`、展示参数、`operation_key` | 素材引用、封面新修订、缩略图更新 | 仅作者；`expected_cover=null` 仅允许首次选用，后续需修订和摘要 CAS |
+| `hetu.covers.get` | `revision?` | 选用记录、`expected_cover`、预览及已核验素材 | 不传修订读取当前；未选用返回 null；历史读取不改变当前封面 |
+| `hetu.covers.inspect_file` | `file_path` | 原文件摘要、字节数、实际尺寸、类型和预览 | 作者通过文件面板选择本机图片；完整解码，无导入副作用 |
+| `hetu.covers.preview_prompt` | `book, design, language_tag` | `request, prompt, effect=preview_only` | 无落盘、无网络；Prompt 可在创建前修改 |
+| `hetu.covers.create_request` | 最终 `request, operation_key` | 不可变请求、摘要、相对路径及等待状态 | 保留原键；不调用或自动启动 Agent |
+| `hetu.covers.list_requests` | `cursor?, limit?` | 固定请求及摘要、`next_cursor` | 默认20，最多100；按请求ID排序，单次枚举不超过1000条 |
+| `hetu.covers.list_candidates` | `request_id` | 请求、回执摘要、核验状态、候选及预览 | 一次核验本请求最多4张图片，不接受任意输出路径 |
+| `hetu.covers.select` | `source, expected_cover, presentation, operation_key` | 素材引用、封面新修订及预览 | `expected_cover=null` 仅允许首次选用，后续需 `{revision,sha256}` CAS |
+
+选用来源 `source` 三选一：`file` 包含 `file_path,expected_file={sha256,size_bytes}`；`candidate` 包含查询返回的完整 `reference`；`asset` 包含固定 `asset_ref`。裁切范围为 `x,y,width,height`，各值位于原图归一化坐标内且不能越界；首次不裁切使用 `{x:0,y:0,width:1,height:1}`。选择无文字底图时，作者可叠加当前真实书名和笔名；选择已有文字图片时默认不重复叠字。
 
 选用事务协调素材导入、BookCover 新版本、原操作与审计；缩略图是可重建投影。Agent 对候选的提交不能改变作者封面选择，不扩张为对 `assets.import` 或作品元数据的任意写权限。
 

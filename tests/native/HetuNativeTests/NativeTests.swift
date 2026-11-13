@@ -18,9 +18,23 @@ private func check(_ value: Bool, _ message: String) throws { if !value { throw 
         let preferencesName = "run.limeai.hetu.tests.\(UUID().uuidString)"
         let preferences = UserDefaults(suiteName: preferencesName)!
         defer { preferences.removePersistentDomain(forName: preferencesName) }
+        if CommandLine.arguments.contains("--creation-projects") { try await CreationProjectTests.run(root: root); return }
+        if CommandLine.arguments.contains("--covers") { try await CoverTests.run(root: root); return }
+        if CommandLine.arguments.contains("--window-layout") { try WindowLayoutTests.run(); return }
+        if CommandLine.arguments.contains("--local-task-view") { try await LocalTaskViewTests.run(root: root); return }
+        if CommandLine.arguments.contains("--media") { try await mediaTests(root, recovery: recovery, preferences: preferences); return }
+        if CommandLine.arguments.contains("--agent-integration") {
+            try agentIntegrationTests(root, preferences: preferences)
+            try await AgentInstallerTests.run(root: root)
+            return
+        }
         try agentIntegrationTests(root, preferences: preferences)
         try await AgentInstallerTests.run(root: root)
         try await CreativeTaskTests.run(root: root)
+        try await CreationProjectTests.run(root: root)
+        try await CoverTests.run(root: root)
+        try WindowLayoutTests.run()
+        try await LocalTaskViewTests.run(root: root)
         let model = WorkspaceModel(locale: "zh-CN", recovery: recovery, preferences: preferences, library: LibraryStore(directory: await recovery.directory.appendingPathComponent("Library")))
         let workspaceURL = root.appendingPathComponent("中文作品")
         try check(await model.open(workspaceURL, title: "雾港"), "原生状态未创建工作区")
@@ -172,7 +186,8 @@ private func check(_ value: Bool, _ message: String) throws { if !value { throw 
         let imported = try await direct.data(pending.action, input: input)
         try FileManager.default.removeItem(at: file)
         let restarted = WorkspaceModel(locale: "en", recovery: recovery, preferences: preferences, library: LibraryStore(directory: await recovery.directory.appendingPathComponent("Library")))
-        try check(await restarted.open(workspaceURL) && restarted.pendingStructureOperations == [pending], "重启后未保留素材导入原操作")
+        try check(await restarted.open(workspaceURL), "素材导入后重新打开作品失败：\(restarted.message ?? "")")
+        try check(restarted.pendingStructureOperations == [pending], "重启后未保留素材导入原操作")
         let replayed = await restarted.workspaceAction(pending.action, input: input, onFailure: { error = $0; _ = $1 })
         try check(replayed == imported && restarted.pendingStructureOperations.isEmpty, "原键恢复未返回同一素材或未清理请求")
         let blob = workspaceURL.appendingPathComponent(imported["asset"]["blob"]["path"].string ?? "")

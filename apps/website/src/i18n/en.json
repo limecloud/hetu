@@ -25,7 +25,7 @@
     "description": "Give every book its own cover, chapters and story bible.\nWrite, trace the plot and shape adaptations on your terms.",
     "primary": "Try the workspace here",
     "secondary": "Read the user guide",
-    "note": "v0.2.0 · Native macOS implementation · In-page demo data",
+    "note": "v0.3.0 / Native macOS implementation / In-page demo data",
     "alt": "Hetu Luoshu’s little dragon-horse beside three independent books, an open manuscript and river-inspired scrolls"
   },
   "promises": [
@@ -127,27 +127,26 @@
     "language": "Chinese first, with English support"
   },
   "integrations": {
-    "eyebrow": "Open connections. Clear boundaries.",
+    "eyebrow": "Help your assistant understand your story",
     "title": "Agents assist. Authors decide.",
-    "intro": "The standalone stdio MCP server binds one author-selected local workspace. External agents can read canon, submit references and organize structure. Hetu Luoshu includes no chat, models or generation API.",
+    "intro": "A survival story and an urban slice of life need different writing methods. Choose a suite for this book and use it with your own Codex, Claude Code or WorkBuddy, or write entirely on your own.",
     "layers": [
       {
-        "title": "Story bible and rules",
-        "body": "Author-confirmed canon is the baseline. Agents cannot unlock or rewrite canon, or approve their own drafts."
+        "title": "Say what you want to work on",
+        "body": "A title, an outline, a passage of dialogue or a cover: ask for one thing at a time and include the story details you have already decided."
       },
       {
-        "title": "MCP tools and resources",
-        "body": "Canon reads, reference submission, plot, drama outlines, checks and author-approved snapshots use current core contracts. The list below comes directly from the machine tool catalog."
+        "title": "Choose methods for this book",
+        "body": "Find one Skills suite that fits your genre. If you are unsure, discuss the direction with your assistant before making the choice yourself."
       },
       {
-        "title": "Task handoff and candidate return",
-        "body": "The integration design covers choosing a client, installing an extension, copying a task prompt and receiving candidates. Plugins, Apps and local browser interactions need separate host verification."
+        "title": "Read the suggestion and decide",
+        "body": "An assistant offers suggestions. Check the characters and plot, keep the parts you want, and make the final decision about your manuscript."
       }
     ],
-    "toolsTitle": "Currently implemented MCP tools",
-    "status": "Tools come from the current repository catalog. Installing an extension does not grant full file or Git permissions. Real host compatibility is verified separately from the application build.",
+    "status": "Writing methods are installed in the external assistant you choose. The homepage is a demo and does not install or connect an assistant.",
     "manual": "A complete workflow without an agent",
-    "manualBody": "The local client supports manual book creation, editing, canon, structural checks, review, adoption, finalization and local snapshots. External collaboration is optional. This website establishes no real connection."
+    "manualBody": "Create books, write chapters and organize characters and world details yourself. Bring in an assistant when you want help and keep your own pace."
   },
   "formats": {
     "title": "Editable for authors. Readable for recipients.",
@@ -166,48 +165,48 @@
     "items": [
       {
         "q": "Will Hetu Luoshu write my novel for me?",
-        "a": "No. The core contains no model or generation API. It organizes canon, storage, extraction, validation, review and delivery. Write manually or choose your own external agent."
+        "a": "No. Write yourself or ask your own Codex, Claude Code or WorkBuddy to discuss ideas and prepare reference drafts. Hetu Luoshu organizes your books, story details and revisions. You decide what to use."
       },
       {
         "q": "Can an agent change my story bible?",
-        "a": "Managed interfaces do not let agents change canon, unlock it or approve their own drafts. Locks control the authoring workflow. Other programs still operate under OS file permissions; Hetu Luoshu does not claim absolute isolation."
+        "a": "An assistant working through a Hetu Luoshu task cannot unlock your story bible or approve final text for you. When using other tools, also check which files you have allowed them to access."
       },
       {
         "q": "Will consistency checks detect every out-of-character moment?",
-        "a": "No. Deterministic checks require explicit facts and structure. Complex motivation, personality and expression receive source-backed advisories with coverage and uncertainty. Authors make the final judgment."
+        "a": "No. Written facts about characters, time and world rules are easier to check; complex motivations and personality still need your judgment. Checks provide clues for your own review."
       },
       {
         "q": "Which platforms and languages are included?",
-        "a": "Development implementations include the native macOS client, Rust core, Swift CLI and standalone MCP server, with Chinese and English interfaces. Windows follows full Mac verification as a separate implementation. Mobile visuals are concepts only."
+        "a": "The current focus is Mac, with Simplified Chinese and English interfaces. Windows and mobile clients are not part of this release."
       },
       {
         "q": "Can I download an application?",
-        "a": "0.2.0 publishes source, the website and its homepage demo. Follow the repository instructions to build a local macOS development app. Its ad-hoc signature is not a notarized distribution package."
+        "a": "Version 0.3.0 provides source code and the homepage demo, without a ready-to-install app package. Users with a development environment can build the Mac app. Authors can start directly in the homepage demo."
       },
       {
         "q": "Will my work be uploaded or become open source?",
-        "a": "Author IP workspaces are separate from the software repository. The core runs locally, without collecting manuscripts or uploading by default. Remote Git and external agents require explicit selection and authorization."
+        "a": "Your own books stay in the local folder you choose. Open-source software does not make your novel open source. You choose whether to share material with an external assistant or sync it elsewhere."
       },
       {
         "q": "How do I deliver a novel or script?",
-        "a": "Keep Markdown or Fountain text, revisions and provenance, and agree on the recipient’s template. DOCX, PDF conversion and complete bundles require release-specific verification. The homepage demo creates no delivery files."
+        "a": "Check the editor or recipient's required format, then use the export options available in your client. The homepage demo lets you try the workflow and does not create submission files."
       },
       {
         "q": "What are the license and costs?",
-        "a": "The core repository uses Apache-2.0. Multimedia routing is a separate optional plugin direction, with providers chosen by users. The core has no compute billing or generation-service dependency."
+        "a": "The source code uses the Apache-2.0 open-source license. Accounts and service fees for external assistants are handled by those clients. Hetu Luoshu does not sell model services."
       }
     ]
   },
   "docs": {
     "title": "User guide",
-    "intro": "Start in the library, organize books and chapters, inspect plot and reference drafts, and understand adoption, finalization and versions.",
-    "note": "The interactive prototype uses sample data within this page. Refreshing resets it; it does not save or access your files.",
+    "intro": "Follow the screenshots to open a book, write a passage, and ask your own creative assistant for help when you need it.",
+    "note": "The homepage uses sample books and resets on refresh. The Mac app saves your own work on your computer.",
     "back": "All guides",
     "onPage": "On this page"
   },
   "footer": {
     "description": "A local creative workspace for authors and independent IP studios.",
-    "status": "v0.2.0 · macOS source implementation; homepage prototype uses in-page demo data.",
+    "status": "v0.3.0 / macOS source implementation; homepage prototype uses in-page demo data.",
     "license": "Core license: Apache-2.0",
     "privacy": "Demo input stays in this page. The site has no accounts and sets no cookies. Hosting may process connection and performance data under its privacy policies.",
     "design": "Interactive prototype",

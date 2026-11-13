@@ -5,7 +5,7 @@ import HetuNative
 struct NovelDetailsView: View {
     let model: WorkspaceModel
     @State private var editing = false
-    @State private var coverInstallation = false
+    @State private var managingCover = false
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 28) {
@@ -18,8 +18,12 @@ struct NovelDetailsView: View {
                 }
                 HStack(alignment: .top, spacing: 32) {
                     VStack(spacing: 12) {
-                        BookCoverView(title: model.title, author: model.novelMetadata["author_name"].string ?? "", identity: model.workspaceID).frame(width: 168, height: 252)
-                        Button(model.t("agent.cover_install")) { coverInstallation = true }.controlSize(.small)
+                        BookCoverView(title: model.title, author: model.novelMetadata["author_name"].string ?? "", identity: model.workspaceID,
+                            imageData: model.cover["preview"]["base64"].string.flatMap { Data(base64Encoded: $0) },
+                            titleOverlay: model.cover["cover"]["presentation"]["title_overlay"].string,
+                            authorOverlay: model.cover["cover"]["presentation"]["author_overlay"].string).frame(width: 168, height: 252)
+                        Button(model.t("cover.manage")) { managingCover = true }.controlSize(.small).disabled(model.novel["initialized"].bool != true)
+                        if let error = model.cover["error"].string { Text(error).font(.caption).foregroundStyle(.red) }
                     }
                     VStack(alignment: .leading, spacing: 18) {
                         Text(model.title).font(.system(size: 28, weight: .medium, design: .serif)).textSelection(.enabled)
@@ -43,7 +47,7 @@ struct NovelDetailsView: View {
             }.padding(36).frame(maxWidth: 980, alignment: .leading).frame(maxWidth: .infinity, alignment: .leading)
         }.workbenchPage()
             .sheet(isPresented: $editing) { NovelMetadataSheet(model: model) }
-            .sheet(isPresented: $coverInstallation) { AgentInstallationSheet(settings: model.agentIntegration, workspaceID: model.workspaceID, localizer: model.localizer) }
+            .sheet(isPresented: $managingCover) { CoverWorkbenchSheet(model: model) }
     }
 }
 

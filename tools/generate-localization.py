@@ -81,6 +81,7 @@ def generate():
     creative = ROOT / "contracts/schemas/creative-task.schema.json"
     if creative.exists():
         families["creative.state."] = json.loads(creative.read_text())["$defs"]["state_record"]["properties"]["state"]["enum"]
+    families["cover.state."] = json.loads((ROOT / "contracts/schemas/book-cover.schema.json").read_text())["$defs"]["candidate_state"]["enum"]
     referenced.update(finding["message_key"]["enum"])
     for prefix in prefixes:
         if prefix not in families:

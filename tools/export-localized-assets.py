@@ -60,15 +60,40 @@ for locale in ("zh-CN", "en"):
     relative = "assets/marketing/social-og-en.png" if english else "assets/marketing/social-og.png"
     card.save(ROOT / relative)
     record(relative, locale=locale, derived_from="assets/brand/mascot-master.png")
-    board = Image.open(ROOT / "assets/brand/icon-overview.png").convert("RGB")
+    board = Image.new("RGB", (1440, 1040), cream)
     draw = ImageDraw.Draw(board)
-    draw.rectangle((0, 0, board.width, 80), fill=cream)
     label = "Hetu Luoshu · Cross-platform icons" if english else "河图洛书 Hetu Luoshu · 跨平台图标"
-    font = ImageFont.load_default(size=28) if english else ImageFont.truetype(str(chinese_font), 28)
-    draw.text((40, 25), label, font=font, fill=ink)
+    font = ImageFont.load_default(size=34) if english else ImageFont.truetype(str(chinese_font), 34)
+    draw.text((48, 30), label, font=font, fill=ink)
+    platforms = [
+        ("macOS", "ICNS · 16-1024 px", "assets/brand/icons/macos/icon-1024.png"),
+        ("Windows", "Multi-size ICO · PNG", "assets/brand/icons/windows/icon-256.png"),
+        ("Web", "Favicon · PWA · Maskable", "assets/brand/icons/web/icon-512.png"),
+        ("iOS", "PNG · 40-1024 px", "assets/brand/icons/ios/app-icon-1024.png"),
+        ("Android", "Adaptive · Legacy · Monochrome", "assets/brand/icons/android/xxxhdpi/legacy.png"),
+        ("Dark" if english else "深色外观", "PNG · 1024 px", "assets/brand/app-icon-dark-1024.png"),
+    ]
+    for index, (title, detail, source) in enumerate(platforms):
+        x, y = 48 + (index % 3) * 456, 100 + (index // 3) * 354
+        draw.rounded_rectangle((x, y, x + 432, y + 330), radius=18, fill="#fffdfa", outline="#e3e7de", width=1)
+        icon = ImageOps.contain(Image.open(ROOT / source).convert("RGBA"), (184, 184))
+        board.paste(icon, (x + (432 - icon.width) // 2, y + 26), icon)
+        title_font = ImageFont.load_default(size=29) if english else ImageFont.truetype(str(chinese_font), 29)
+        draw.text((x + 216, y + 232), title, font=title_font, fill=ink, anchor="mt")
+        draw.text((x + 216, y + 278), detail, font=ImageFont.load_default(size=20), fill="#5f6f66", anchor="mt")
+    size_label = "Small-size previews · actual pixels" if english else "小尺寸预览 · 原始像素"
+    font = ImageFont.load_default(size=23) if english else ImageFont.truetype(str(chinese_font), 23)
+    draw.text((48, 840), size_label, font=font, fill=ink)
+    for index, size in enumerate((16, 24, 32, 48, 64, 128)):
+        source = f"assets/brand/icons/web/icon-{size}.png"
+        icon = Image.open(ROOT / source).convert("RGBA")
+        center = 440 + index * 164
+        board.paste(icon, (center - size // 2, 952 - size), icon)
+        draw.text((center, 976), str(size), font=ImageFont.load_default(size=21), fill="#5f6f66", anchor="mt")
     relative = "assets/brand/icon-overview-en.png" if english else "assets/brand/icon-overview.png"
     board.save(ROOT / relative)
-    record(relative, locale=locale, **({"derived_from": "assets/brand/icon-overview.png"} if english else {}))
+    record(relative, locale=locale, source_assets=[source for _, _, source in platforms],
+           layout_source="tools/export-localized-assets.py")
     for dark in (False, True):
         lockup = Image.new("RGBA", (1280, 640), (0, 0, 0, 0))
         symbol = ImageOps.contain(Image.open(ROOT / "assets/brand/mascot-master.png"), (440, 530))

@@ -562,7 +562,7 @@ struct HistoricalEntityDetails: View {
                 }
             case .faction:
                 ForEach(Array(entity["relations"].array.enumerated()), id: \.offset) { _, relation in
-                    field("faction.relations", name(relation["target_ref"]) + " · " + model.t("faction.relation." + (relation["type"].string ?? "neutral")))
+                    field("faction.relations", name(relation["target_ref"]) + "  " + model.t("faction.relation." + (relation["type"].string ?? "neutral")))
                 }
             case .location:
                 field("location.parent", entity["parent_ref"] == .null ? model.t("reference.none") : name(entity["parent_ref"]))

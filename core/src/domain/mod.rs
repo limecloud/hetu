@@ -7,6 +7,7 @@ pub mod drama_comparison;
 pub mod media;
 pub mod novel;
 pub mod plot;
+pub(crate) mod schema;
 pub mod script;
 pub mod validation;
 
@@ -83,7 +84,10 @@ pub fn checked_id(value: &str, prefix: &str) -> Result<String> {
     Ok(value.into())
 }
 pub fn success(action: &str, scope: &str, data: Value) -> Value {
-    json!({"spec_version":"0.2.1","kind":"result","action":action,"contract_revision":"1", "status":"succeeded","context":{"scope_id":scope},"data":data})
+    let mut result = json!({"spec_version":"0.2.1","kind":"result","action":action,"contract_revision":"1", "status":"succeeded","context":{"scope_id":scope}});
+    // data 已是完整 JSON 树，直接转移所有权，避免重复遍历并序列化大结果。
+    result["data"] = data;
+    result
 }
 pub fn failure(action: &str, scope: &str, error: &Error) -> Value {
     let resolution = match error.code {

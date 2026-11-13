@@ -39,9 +39,10 @@ struct AuthorLibraryView: View {
             Spacer()
             Button(locale == "en" ? "中文" : "EN") { locale = locale == "en" ? "zh-CN" : "en" }.buttonStyle(.plain)
             WorkbenchSettingsButton(locale: locale)
+            WorkspaceZoomButton(localizer: model.localizer)
             Button(model.t("library.add"), action: onAdd)
             Button(model.t("workspace.new"), action: onNew).buttonStyle(WorkbenchButtonStyle(primary: true))
-        }.padding(.leading, 82).padding(.trailing, 32).frame(height: 70).background(WorkbenchPalette.surface.opacity(0.32))
+        }.padding(.horizontal, 32).frame(height: 70).background(WorkbenchPalette.surface.opacity(0.32))
     }
     private var sidebar: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -102,7 +103,7 @@ struct AuthorLibraryView: View {
     private func libraryRow(_ entry: LibraryEntry) -> some View {
         Button { onOpen(entry) } label: {
             HStack(spacing: 18) {
-                BookCoverView(title: entry.title, author: entry.authorName, identity: entry.workspaceID, compact: true).frame(width: 42, height: 63)
+                BookCoverView(title: entry.title, author: entry.authorName, identity: entry.workspaceID, compact: true, imageData: entry.coverPreview, titleOverlay: entry.coverTitle, authorOverlay: entry.coverAuthor).frame(width: 42, height: 63)
                 VStack(alignment: .leading, spacing: 6) {
                     Text(entry.title).font(.headline)
                     Text(entry.authorName.isEmpty ? model.t("library.no_author") : entry.authorName).font(.caption).foregroundStyle(WorkbenchPalette.muted)
@@ -116,7 +117,7 @@ struct AuthorLibraryView: View {
     private func bookCard(_ entry: LibraryEntry) -> some View {
         Button { onOpen(entry) } label: {
             VStack(alignment: .leading, spacing: 10) {
-                BookCoverView(title: entry.title, author: entry.authorName, identity: entry.workspaceID).aspectRatio(2.0 / 3.0, contentMode: .fit)
+                BookCoverView(title: entry.title, author: entry.authorName, identity: entry.workspaceID, imageData: entry.coverPreview, titleOverlay: entry.coverTitle, authorOverlay: entry.coverAuthor).aspectRatio(2.0 / 3.0, contentMode: .fit)
                 Text(entry.title).font(.system(size: 15, weight: .semibold)).lineLimit(1)
                 Text(entry.authorName.isEmpty ? model.t("library.no_author") : entry.authorName).font(.caption).foregroundStyle(WorkbenchPalette.muted).lineLimit(1)
                 HStack {

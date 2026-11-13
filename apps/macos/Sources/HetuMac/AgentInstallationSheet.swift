@@ -25,13 +25,23 @@ struct AgentInstallationSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
             Text(t("agent.install_title")).font(.title2)
+            ScrollView {
+                installationForm.frame(maxWidth: .infinity, alignment: .leading).padding(.trailing, 4)
+            }
+            installationActions
+        }.padding(24)
+            .frame(width: 580, height: min(760, max(420, WorkspaceWindowLayout.mainVisibleFrame.height - 120)))
+            .interactiveDismissDisabled(installing)
+            .onChange(of: client) { _, _ in feedback = nil; succeeded = false }
+            .onChange(of: suiteID) { _, _ in feedback = nil; succeeded = false }
+    }
+    private var installationForm: some View {
+        VStack(alignment: .leading, spacing: 18) {
             Picker(t("agent.work_client"), selection: $client) {
                 ForEach(AgentClient.allCases, id: \.self) { Text(t($0.titleKey)).tag($0) }
             }.disabled(installing)
             if let catalog {
-                Picker(t("agent.suite"), selection: $suiteID) {
-                    ForEach(catalog.suites) { Text(t($0.titleKey)).tag($0.id) }
-                }.disabled(installing)
+                AgentSuitePicker(catalog: catalog, suiteID: $suiteID, localizer: localizer).disabled(installing)
             }
             Text(t(client == .codex ? "agent.install_scope.codex" : client == .workbuddy ? "agent.install_scope.workbuddy" : "agent.install_scope.other"))
                 .font(.callout).foregroundStyle(WorkbenchPalette.muted).lineSpacing(4)
@@ -55,15 +65,15 @@ struct AgentInstallationSheet: View {
                 Label(feedback, systemImage: succeeded ? "checkmark.circle" : "exclamationmark.triangle")
                     .font(.callout).foregroundStyle(succeeded ? WorkbenchPalette.jade : WorkbenchPalette.muted)
             }
-            HStack {
-                Button(t("common.close")) { dismiss() }.keyboardShortcut(.cancelAction).disabled(installing)
-                Spacer()
-                Button(t(client == .codex ? "agent.install_codex" : "agent.install_files")) { Task { await install() } }
-                    .keyboardShortcut(.defaultAction).disabled(installing || ![.codex, .workbuddy].contains(client) || catalog == nil || (client == .codex && executable == nil))
-            }
-        }.padding(24).frame(width: 580).interactiveDismissDisabled(installing)
-            .onChange(of: client) { _, _ in feedback = nil; succeeded = false }
-            .onChange(of: suiteID) { _, _ in feedback = nil; succeeded = false }
+        }
+    }
+    private var installationActions: some View {
+        HStack {
+            Button(t("common.close")) { dismiss() }.keyboardShortcut(.cancelAction).disabled(installing)
+            Spacer()
+            Button(t(client == .codex ? "agent.install_codex" : "agent.install_files")) { Task { await install() } }
+                .keyboardShortcut(.defaultAction).disabled(installing || ![.codex, .workbuddy].contains(client) || catalog == nil || (client == .codex && executable == nil))
+        }
     }
     private func install() async {
         guard let catalog, let suite = catalog.suites.first(where: { $0.id == suiteID }), !installing else { return }

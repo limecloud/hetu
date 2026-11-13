@@ -177,7 +177,7 @@ struct PlotEdgeEditor: View {
     private func nodePicker(_ key: String, selection: Binding<String>) -> some View {
         Picker(model.t(key), selection: selection) {
             ForEach(Array(nodes.enumerated()), id: \.offset) { index, node in
-                Text("\(index + 1). " + model.t("plot.kind." + (node["kind"].string ?? "action")) + " · " + String((node["source_refs"].array.first?["quote"].string ?? "").prefix(36))).tag(node["node_id"].string ?? "")
+                Text("\(index + 1). " + model.t("plot.kind." + (node["kind"].string ?? "action")) + "  " + String((node["source_refs"].array.first?["quote"].string ?? "").prefix(36))).tag(node["node_id"].string ?? "")
             }
         }
     }

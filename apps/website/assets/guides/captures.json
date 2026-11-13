@@ -1,0 +1,86 @@
+{
+  "quickstart-library-en.webp": {
+    "width": 2368,
+    "height": 1564,
+    "sha256": "541414e898b223b9901bcd3721c330121f2e993c46f375b7bd3dcfdd3a94ccf3",
+    "source": "homepage-prototype"
+  },
+  "quickstart-library-zh-CN.webp": {
+    "width": 2368,
+    "height": 1566,
+    "sha256": "5fed3aead13e5360a73d5873c0d08ab6e048180cdfcb8dfcd3d1b8a88a8eb98f",
+    "source": "homepage-prototype"
+  },
+  "quickstart-review-en.webp": {
+    "width": 2368,
+    "height": 1402,
+    "sha256": "f03ea6a40de3eabbd889a452e54bbf5d0bdfa18fa7759104d566dd971c7203d8",
+    "source": "homepage-prototype"
+  },
+  "quickstart-review-zh-CN.webp": {
+    "width": 2368,
+    "height": 1398,
+    "sha256": "865420076a353bffe8ac2ccd73e9acb851cf3432cbeb62222a26625cd0203a91",
+    "source": "homepage-prototype"
+  },
+  "quickstart-writing-en.webp": {
+    "width": 2368,
+    "height": 1402,
+    "sha256": "9330ae28009156d79d4c669142028a5db9c977e27f689d396f6da63faefa2d0e",
+    "source": "homepage-prototype"
+  },
+  "quickstart-writing-zh-CN.webp": {
+    "width": 2368,
+    "height": 1398,
+    "sha256": "b814d2a3d157d94e313f137200e47e3998919373264db222096e25dbeca1c7f8",
+    "source": "homepage-prototype"
+  },
+  "mac-library-zh-CN.webp": {
+    "width": 2560,
+    "height": 1290,
+    "sha256": "5d99910d3560d1f7766e16c61cce4aa840040e22e9a0669d2ea16d8c2fe60b0a",
+    "source": "mac-development"
+  },
+  "mac-new-book-zh-CN.webp": {
+    "width": 980,
+    "height": 780,
+    "sha256": "41a88d7e0dce9246a663c8685d25095264c771eb5432f1ee50a73ce0da83a665",
+    "source": "mac-development"
+  },
+  "mac-skills-zh-CN.webp": {
+    "width": 502,
+    "height": 263,
+    "sha256": "33adaf566050b1514d0ce65e2ce14178e75fcc60b878c4b6358e2b2bb7ca9ad1",
+    "source": "mac-development",
+    "crop": [
+      466,
+      52,
+      968,
+      315
+    ]
+  },
+  "mac-library-en.webp": {
+    "width": 2560,
+    "height": 1290,
+    "sha256": "ba05d4d4e5126c613c68e02afd56414ecbe93f0084afb14bd20793a4dd075e81",
+    "source": "mac-development"
+  },
+  "mac-new-book-en.webp": {
+    "width": 980,
+    "height": 780,
+    "sha256": "99698d04dbfd871361106a3abd94aac4c4ee1d989ae9dc265da93f875cd88f34",
+    "source": "mac-development"
+  },
+  "mac-skills-en.webp": {
+    "width": 502,
+    "height": 263,
+    "sha256": "04e3f1c5a49c0163ff822cdc9e8a5b65a1ec38fa7011caefe84a166edcd81273",
+    "source": "mac-development",
+    "crop": [
+      466,
+      52,
+      968,
+      315
+    ]
+  }
+}

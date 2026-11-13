@@ -10,7 +10,7 @@ Agree on templates, scope and revisions with the recipient. File formats, indust
 | Independent screenplay | Fountain | Created from an outline and edited separately |
 | Collaboration and reading | DOCX, PDF, TXT | Conversion and complete bundles require release-specific verification |
 
-The homepage demo exports no ZIP, DOCX or PDF. Repository designs do not prove every converter is implemented, and the current MCP tools do not include bundle export.
+The homepage demo does not download submission files. In the Mac app, use the export options actually available to you and check the recipient's required format before handing over your work.
 
 ## Before a handoff
 

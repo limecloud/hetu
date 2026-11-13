@@ -1,0 +1,6 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "hetu-danmei",
+  "version": "0.2.1",
+  "description": "河图洛书双男主关系创作套件：八个任务与本题材方法，按作品选择安装"
+}

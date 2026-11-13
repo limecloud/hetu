@@ -1,5 +1,6 @@
 ---
 import { prototype, type Locale } from '../lib/site';
+import { assetURL } from '../lib/assets';
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const en = locale === 'en';
@@ -15,6 +16,6 @@ const entries = [
   { title: en?'Share your story workspace':'分享你的故事工作台', body: en?'Localized social artwork at 1200 × 630 pixels.':'1200 × 630 分享图，中英文分别排版。', image:'/images/social-og'+(en?'-en':'')+'.png' },
 ];
 ---
-<div class="container subpage"><header class="page-hero"><span class="eyebrow">HETU LUOSHU · BRAND & DESIGN</span><h1>{en?'A companion for your story world.':'让故事世界，有一个可爱的模样。'}</h1><p>{en?'Brand artwork, platform icons and localized interface concepts. Artwork illustrates the product design; it does not represent released applications.':'品牌形象、跨平台图标与界面设计。图片展示产品设计，交互原型使用演示数据。'}</p></header>
-<div class="brand-downloads"><a class="button secondary" href={'/resources/brand/wordmark'+(en?'-en':'')+'.png'} download>{en?'Wordmark · light':'字标 · 浅底'} ↓</a><a class="button secondary" href={'/resources/brand/wordmark'+(en?'-en':'')+'-dark.png'} download>{en?'Wordmark · dark':'字标 · 深底'} ↓</a><a class="button secondary" href="/resources/brand/Hetu.icns" download>macOS .icns ↓</a><a class="button secondary" href="/resources/brand/hetu.ico" download>Windows .ico ↓</a><a class="button secondary" href="/brand/favicon.ico" download>Web favicon ↓</a></div>
-<div class="brand-gallery">{entries.map(entry=><article><a href={entry.href || entry.image}><div class:list={['brand-image',{'square':entry.square}]}><img src={entry.image} alt={entry.title} loading="lazy"/></div></a><h2>{entry.title}</h2><p>{entry.body}</p></article>)}</div></div>
+<div class="container subpage"><header class="page-hero"><span class="eyebrow">HETU LUOSHU</span><h1>{en?'A companion for your story world.':'让故事世界，有一个可爱的模样。'}</h1><p>{en?'Brand artwork, platform icons and localized interface concepts. Artwork illustrates the product design; it does not represent released applications.':'品牌形象、跨平台图标与界面设计。图片展示产品设计，交互原型使用演示数据。'}</p></header>
+<div class="brand-downloads"><a class="button secondary" href={assetURL('/resources/brand/wordmark'+(en?'-en':'')+'.png')} download>{en?'Wordmark, light':'浅底字标'} ↓</a><a class="button secondary" href={assetURL('/resources/brand/wordmark'+(en?'-en':'')+'-dark.png')} download>{en?'Wordmark, dark':'深底字标'} ↓</a><a class="button secondary" href={assetURL("/resources/brand/Hetu.icns")} download>macOS .icns ↓</a><a class="button secondary" href={assetURL("/resources/brand/hetu.ico")} download>Windows .ico ↓</a><a class="button secondary" href={assetURL("/brand/favicon.ico")} download>Web favicon ↓</a></div>
+<div class="brand-gallery">{entries.map(entry=><article><a href={entry.href?.includes('#') ? entry.href : assetURL(entry.href || entry.image)}><div class:list={['brand-image',{'square':entry.square}]}><img src={assetURL(entry.image)} alt={entry.title} loading="lazy"/></div></a><h2>{entry.title}</h2><p>{entry.body}</p></article>)}</div></div>

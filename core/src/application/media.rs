@@ -119,7 +119,7 @@ impl Kernel {
         }
         unreachable!("validated media revision range")
     }
-    fn stage_media_record(
+    pub(super) fn stage_media_record(
         &self,
         object: &str,
         record: &Value,

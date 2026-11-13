@@ -8,6 +8,7 @@ use std::collections::BTreeMap;
 use std::path::Path;
 use std::sync::OnceLock;
 mod creation;
+mod covers;
 mod creative_tasks;
 mod document_lifecycle;
 mod drafts;
@@ -72,6 +73,11 @@ fn catalog() -> &'static Value {
                 .expect("embedded action catalog");
         for action in catalog["actions"].as_array_mut().unwrap() {
             if let Some(reference) = action["input_schema_ref"].as_str() {
+                if let Some(definition) = reference.strip_prefix("schemas/book-cover.schema.json#/$defs/") {
+                    action["input_schema"] = covers::definition(definition);
+                    action.as_object_mut().unwrap().remove("input_schema_ref");
+                    continue;
+                }
                 if let Some(definition) =
                     reference.strip_prefix("schemas/novel.schema.json#/$defs/")
                 {
@@ -218,22 +224,26 @@ fn schema(value: &Value, schema: &Value) -> Result<()> {
     Ok(())
 }
 fn validate_action_input(action: &str, input: &Value) -> Result<()> {
-    static VALIDATORS: OnceLock<BTreeMap<String, jsonschema::Validator>> = OnceLock::new();
+    static VALIDATORS: OnceLock<BTreeMap<String, OnceLock<jsonschema::Validator>>> = OnceLock::new();
     let validators = VALIDATORS.get_or_init(|| {
         catalog()["actions"]
             .as_array()
             .unwrap()
             .iter()
-            .map(|item| {
-                (
-                    item["name"].as_str().unwrap().to_owned(),
-                    jsonschema::validator_for(&item["input_schema"])
-                        .expect("embedded action validator"),
-                )
-            })
+            .map(|item| (item["name"].as_str().unwrap().to_owned(), OnceLock::new()))
             .collect()
     });
-    if let Some(error) = validators[action].iter_errors(input).next() {
+    // 打开单个任务无需先编译整个动作目录；每个动作仍使用同一份完整输入合同。
+    let validator = validators[action].get_or_init(|| {
+        let descriptor = catalog()["actions"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|item| item["name"] == action)
+            .expect("registered action");
+        jsonschema::validator_for(&descriptor["input_schema"]).expect("embedded action validator")
+    });
+    if let Some(error) = validator.iter_errors(input).next() {
         return Err(Error::new(
             "invalid_input",
             format!("输入不符合合同：{}", error.instance_path),
@@ -764,9 +774,19 @@ impl Kernel {
     }
     fn dispatch(&self, action: &str, input: &Value, changes: &mut Changes) -> Result<Value> {
         match action {
-            "hetu.capabilities.get" => Ok(
-                json!({"abi_version":1,"schema_version":"1.0.0","scope_ref":{"kind":self.scope_kind(),"id":self.scope()},"task_id":self.task_id,"actions":catalog()["actions"].as_array().unwrap().iter().filter(|a|self.action_available(a)).collect::<Vec<_>>(),"entry_mode":if self.author { "author" } else { "agent" }}),
-            ),
+            "hetu.capabilities.get" => {
+                let mut result = json!({"abi_version":1,"schema_version":"1.0.0","scope_ref":{"kind":self.scope_kind(),"id":self.scope()},"task_id":self.task_id,"entry_mode":if self.author { "author" } else { "agent" }});
+                result["actions"] = Value::Array(
+                    catalog()["actions"]
+                        .as_array()
+                        .unwrap()
+                        .iter()
+                        .filter(|a| self.action_available(a))
+                        .cloned()
+                        .collect(),
+                );
+                Ok(result)
+            }
             "hetu.creation_projects.get" => self.get_creation_project(input),
             "hetu.creation_projects.save" => self.save_creation_project(input, changes),
             "hetu.creative_tasks.preview_prompt" => self.preview_creative_task(input),
@@ -781,6 +801,13 @@ impl Kernel {
             "hetu.interactions.save_selection" => self.save_task_selection(input, changes),
             "hetu.workspaces.get" | "hetu.workspaces.list" => Ok(json!({"workspace":self.config})),
             "hetu.novels.get" => self.get_novel(),
+            "hetu.covers.get" => self.get_cover(input),
+            "hetu.covers.inspect_file" => self.inspect_cover_file(input),
+            "hetu.covers.preview_prompt" => self.preview_cover_prompt(input),
+            "hetu.covers.create_request" => self.create_cover_request(input, changes),
+            "hetu.covers.list_requests" => self.list_cover_requests(input),
+            "hetu.covers.list_candidates" => self.list_cover_candidates(input),
+            "hetu.covers.select" => self.select_cover(input, changes),
             "hetu.novels.initialize" => self.initialize_novel(input, changes),
             "hetu.novels.update" => self.update_novel(input, changes, false),
             "hetu.novels.save_structure" => self.update_novel(input, changes, true),

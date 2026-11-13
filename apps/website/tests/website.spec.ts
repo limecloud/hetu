@@ -1,4 +1,11 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import manifest from '../../../assets/manifest.json' with { type: 'json' };
+import agentCatalog from '../../../integrations/catalog.json' with { type: 'json' };
+import nativeStrings from '../../../assets/localization/native.json' with { type: 'json' };
+
+const militaryVersion = JSON.parse(readFileSync(new URL('../../../integrations/codex/hetu-military/plugin.json', import.meta.url), 'utf8')).version;
 
 for (const width of [375, 768, 1440]) {
   for (const locale of ['zh-CN', 'en']) {
@@ -48,8 +55,8 @@ test('移动菜单、语言切换与文档位置保留', async ({ page }) => {
 
 test('英文首页原型使用英文演示内容，切换界面不翻译正文', async ({ page }) => {
   await page.goto('/en/');
-  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /social-og-en\.png$/);
-  await page.locator('.hero-actions a').first().click();
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /social-og-en\.png\?v=[a-f0-9]{16}$/);
+  await page.locator('.hero-actions a[href="/en/#prototype"]').click();
   await expect(page).toHaveURL(/\/en\/#prototype$/);
   await page.locator('[data-action="open-book"][data-book="0"]').click();
   const manuscript = await page.locator('[name="manuscript"]').inputValue();
@@ -58,24 +65,69 @@ test('英文首页原型使用英文演示内容，切换界面不翻译正文',
   await expect(page.locator('.demo')).toHaveAttribute('lang', 'zh-CN');
   await expect(page.locator('[name="manuscript"]')).toHaveValue(manuscript);
   await page.goto('/en/brand/');
-  await expect(page.locator('img[src="/images/prototype-mobile-en.webp"]')).toHaveCount(1);
+  await expect(page.locator('img[src^="/images/prototype-mobile-en.webp?v="]')).toHaveCount(1);
+});
+
+test('双语品牌展示、下载、分享卡与动态书库使用当前资产版本', async ({ page, request }) => {
+  test.setTimeout(120_000);
+  const requested = new Set<string>();
+  const resources = new Map<string, URL>();
+  page.on('request', request => requested.add(request.url()));
+  for (const prefix of ['', '/en']) for (const width of [375, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto(prefix + '/brand/');
+    for (const image of await page.locator('main img').all()) await image.scrollIntoViewIfNeeded();
+    const urls = await page.locator('main img, .brand-downloads a, .brand-gallery a, meta[property="og:image"]').evaluateAll(elements => elements.map(element => element.getAttribute('src') ?? element.getAttribute('href') ?? element.getAttribute('content')));
+    for (const href of urls) {
+      if (!href || href.includes('#')) continue;
+      const url = new URL(href, page.url());
+      expect(url.searchParams.get('v'), href).toMatch(/^[a-f0-9]{16}$/);
+      resources.set(url.pathname + url.search, url);
+    }
+    await page.evaluate(() => { document.documentElement.style.scrollBehavior = 'auto'; window.scrollTo(0, 0); });
+    await page.screenshot({ path: `test-results/brand-version-${prefix ? 'en' : 'zh-CN'}-${width}.png`, fullPage: true });
+    await page.goto(prefix + '/#prototype');
+    await expect(page.locator('.demo-book-card')).toHaveCount(3);
+    for (const image of await page.locator('.demo img').all()) await image.scrollIntoViewIfNeeded();
+    await expect.poll(() => page.locator('.demo img').evaluateAll(images => images.every(image => image instanceof HTMLImageElement && image.complete && image.naturalWidth > 0))).toBe(true);
+    const sources = await page.locator('.hero-art, .demo img').evaluateAll(images => images.map(image => image.getAttribute('src')!));
+    expect(sources.length).toBeGreaterThan(4);
+    for (const src of sources) {
+      const url = new URL(src, page.url());
+      expect(url.searchParams.get('v'), src).toMatch(/^[a-f0-9]{16}$/);
+      expect(requested.has(url.href), src).toBe(true);
+    }
+  }
+  const entries = [...resources];
+  for (let index = 0; index < entries.length; index += 4) {
+    await Promise.all(entries.slice(index, index + 4).map(async ([href, url]) => {
+      const response = await request.get(href, { timeout: 15_000 });
+      expect(response.status(), href).toBe(200);
+      const digest = createHash('sha256').update(await response.body()).digest('hex');
+      expect(digest.slice(0, 16), href).toBe(url.searchParams.get('v'));
+      if (url.pathname !== '/resources/manifest.json') {
+        const asset = manifest.assets.find(asset => url.pathname.endsWith('/' + asset.path.split('/').at(-1)));
+        expect(asset?.sha256, href).toBe(digest);
+      }
+    }));
+  }
 });
 
 test('使用指南完整双语，工程文档及源副本不对外发布', async ({ page, request }) => {
   test.setTimeout(120_000);
-  const slugs = ['getting-started', 'writing', 'story-bible', 'adaptation', 'review', 'formats-and-delivery', 'agents', 'data-and-backup'];
+  const slugs = ['getting-started', 'download-and-install', 'codex-first-task', 'skills', 'writing', 'story-bible', 'adaptation', 'review', 'formats-and-delivery', 'agents', 'data-and-backup'];
   for (const prefix of ['', '/en']) {
     await page.goto(`${prefix}/docs/`);
-    await expect(page.locator('.doc-index a')).toHaveCount(8);
+    await expect(page.locator('.doc-index a')).toHaveCount(slugs.length);
     await expect(page.locator('main')).not.toContainText(/产品需求 PRD|产品与工程文档|研究与官方资料/);
     for (const slug of slugs) {
       await page.goto(`${prefix}/docs/${slug}/`);
       await expect(page.locator('.doc-article h1')).toHaveCount(1);
       await expect(page.locator('.doc-article')).toHaveAttribute('lang', prefix ? 'en' : 'zh-CN');
       if (prefix) expect(await page.locator('.doc-article').innerText()).not.toMatch(/\p{Script=Han}/u);
-      if (slug === 'getting-started') {
-        await page.waitForFunction(() => document.querySelector('.mermaid svg'));
-        await expect(page.locator('.mermaid .error-icon')).toHaveCount(0);
+      if (slug === 'getting-started') await expect(page.locator('.doc-article img')).toHaveCount(4);
+      if (slug !== 'download-and-install') {
+        await expect(page.locator('.doc-article pre, .doc-article .mermaid')).toHaveCount(0);
       }
     }
   }
@@ -150,8 +202,8 @@ test('首页原型区分保存、参考稿审核、局部采纳与作者独立�
   expect(errors).toEqual([]);
 });
 
-test('书库搜索筛选、作品隔离、未命名筹备和新建章节', async ({ page }) => {
-  await page.goto('/#prototype');
+test('书库搜索筛选与作品隔离保留未保存内容', async ({ page }) => {
+  await page.goto('/#prototype', { waitUntil: 'domcontentloaded' });
   await page.locator('[name="search"]').fill('不存在的作品');
   await expect(page.locator('.demo-book-card')).toHaveCount(0);
   await expect(page.locator('.demo-empty')).toBeVisible();
@@ -173,7 +225,10 @@ test('书库搜索筛选、作品隔离、未命名筹备和新建章节', async
   await page.locator('[data-action="library"]').click();
   await page.locator('[data-action="open-book"][data-book="0"]').click();
   await expect(page.locator('[name="manuscript"]')).toHaveValue(original + '\n未保存的修改。');
-  await page.locator('[data-action="library"]').click();
+});
+
+test('未命名筹备可补资料、创建章节且刷新后重置演示', async ({ page }) => {
+  await page.goto('/#prototype', { waitUntil: 'domcontentloaded' });
   await page.locator('[data-action="new-book"]').click();
   await page.locator('dialog button[type="submit"]').click();
   await expect(page.locator('[name="title"]')).toHaveValue('未命名作品');
@@ -185,7 +240,7 @@ test('书库搜索筛选、作品隔离、未命名筹备和新建章节', async
   await page.locator('[name="new-title"]').fill('第一章 开始');
   await page.locator('dialog button[type="submit"]').click();
   await expect(page.locator('.demo-document-head h3')).toHaveText('第一章 开始');
-  await page.reload();
+  await page.reload({ waitUntil: 'domcontentloaded' });
   await expect(page.locator('.demo-book-card')).toHaveCount(3);
 });
 
@@ -248,32 +303,77 @@ test('固定引文在当前文字变化后保留，定位失败不选择替代�
   await expect(page.locator('[data-action="new-chapter"]')).toBeFocused();
 });
 
+function watchDemoRequests(page: Page) {
+  const errors: string[] = [], writes: string[] = [], requests: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  page.on('request', request => {
+    requests.push(request.url() + '\n' + (request.postData() ?? ''));
+    const url = new URL(request.url());
+    // 同源性能回执仍检查不携带演示输入。
+    const receipt = url.origin === new URL(page.url()).origin && url.pathname === '/cdn-cgi/rum' && request.method() === 'POST';
+    if (request.method() !== 'GET' && !receipt) writes.push(request.url());
+  });
+  return async () => {
+    for (const request of requests) for (const input of ['独立创作 Book', '作者 Author']) {
+      expect(request).not.toContain(input);
+      expect(request).not.toContain(encodeURIComponent(input));
+    }
+    expect(writes).toEqual([]);
+    expect(errors).toEqual([]);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    await expect(page).toHaveURL(/#prototype$/);
+  };
+}
+
 for (const locale of ['zh-CN', 'en']) {
   for (const width of [375, 1440]) {
-    test(`${locale} ${width}px 安装入口共享题材套件状态并保留作品关联`, async ({ page }) => {
-      const errors: string[] = [], writes: string[] = [], requests: string[] = [];
-      page.on('pageerror', error => errors.push(error.message));
-      page.on('request', request => {
-        requests.push(request.url() + '\n' + (request.postData() ?? ''));
-        const url = new URL(request.url());
-        // Pages 的同源性能回执与安装操作分开；下方仍检查每个请求不携带演示输入。
-        const performanceReceipt = url.origin === new URL(page.url()).origin && url.pathname === '/cdn-cgi/rum' && request.method() === 'POST';
-        if (request.method() !== 'GET' && !performanceReceipt) writes.push(request.url());
-      });
+    const name = `${locale} ${width}px`;
+    const url = locale === 'en' ? '/en/#prototype' : '/#prototype';
+
+    test(`${name} 设置完整题材目录、安装状态与新书默认值`, async ({ page }) => {
+      const verifyRequests = watchDemoRequests(page);
       await page.setViewportSize({ width, height: 960 });
-      await page.goto(locale === 'en' ? '/en/#prototype' : '/#prototype');
+      await page.goto(url, { waitUntil: 'domcontentloaded' });
       const demo = page.locator('.demo');
+      const publicCatalog = JSON.parse((await demo.getAttribute('data-agent-catalog'))!);
+      expect(publicCatalog.suites).toHaveLength(agentCatalog.suites.length);
+      expect(publicCatalog).not.toHaveProperty('taxonomy');
+      expect(publicCatalog.suites.every((suite: Record<string, unknown>) => !('requiredFiles' in suite))).toBe(true);
       await demo.locator('[data-action="settings"]').click();
       await demo.locator('[name="agent-client"]').selectOption('workbuddy');
+      const expectedOptions = agentCatalog.suites.map(suite => ({
+        value: suite.id,
+        title: nativeStrings[suite.titleKey as keyof typeof nativeStrings][locale as 'zh-CN' | 'en'],
+      }));
+      await expect.poll(() => demo.locator('[name="agent-suite"] option').evaluateAll(options => options.map(option => ({
+        value: (option as HTMLOptionElement).value,
+        title: option.textContent,
+      })))).toEqual(expectedOptions);
+      for (const id of ['apocalypse', 'infinite']) {
+        await demo.locator('[name="agent-suite"]').selectOption(id);
+        await demo.locator('[data-action="install-agent"]').click();
+        await expect(page.locator('dialog [name="agent-suite"]')).toHaveValue(id);
+        await expect(page.locator('dialog .demo-agent-skills li')).toHaveCount(8);
+        await page.keyboard.press('Escape');
+      }
       await demo.locator('[name="agent-suite"]').selectOption('military');
       await demo.locator('[data-action="install-agent"]').click();
       await expect(page.locator('dialog [name="agent-client"]')).toHaveValue('workbuddy');
       await expect(page.locator('dialog .demo-agent-skills li')).toHaveCount(8);
       await page.locator('dialog button[type="submit"]').click();
-      await expect(demo.locator('[data-agent-version]')).toHaveText('0.1.0');
+      await expect(demo.locator('[data-agent-version]')).toHaveText(militaryVersion);
       await demo.locator('[data-action="new-book"]').click();
       await expect(page.locator('dialog [name="agent-client"]')).toHaveValue('workbuddy');
       await expect(page.locator('dialog [name="agent-suite"]')).toHaveValue('general');
+      await verifyRequests();
+    });
+
+    test(`${name} 新书嵌套安装保留资料并同步封面入口`, async ({ page }) => {
+      const verifyRequests = watchDemoRequests(page);
+      await page.setViewportSize({ width, height: 960 });
+      await page.goto(url, { waitUntil: 'domcontentloaded' });
+      const demo = page.locator('.demo');
+      await demo.locator('[data-action="new-book"]').click();
       await page.locator('dialog [name="new-title"]').fill('独立创作 Book');
       await page.locator('dialog [name="new-author"]').fill('作者 Author');
       await page.locator('dialog [name="agent-client"]').selectOption('codex');
@@ -286,7 +386,7 @@ for (const locale of ['zh-CN', 'en']) {
       await page.locator('dialog button[type="submit"]').click();
       await expect(page.locator('dialog [name="new-title"]')).toHaveValue('独立创作 Book');
       await expect(page.locator('dialog [name="new-author"]')).toHaveValue('作者 Author');
-      await expect(page.locator('dialog [data-agent-version]')).toHaveText('0.1.0');
+      await expect(page.locator('dialog [data-agent-version]')).toHaveText(militaryVersion);
       await page.locator('dialog button[type="submit"]').click();
       await expect(demo.locator('[name="agent-client"]')).toHaveValue('codex');
       await expect(demo.locator('[name="agent-suite"]')).toHaveValue('military');
@@ -294,8 +394,27 @@ for (const locale of ['zh-CN', 'en']) {
       await expect(page.locator('dialog [name="agent-suite"]')).toHaveValue('military');
       await page.keyboard.press('Escape');
       await expect(demo.locator('[data-action="cover-install"]')).toBeFocused();
+      await verifyRequests();
+    });
+
+    test(`${name} 套件版本按客户端隔离并保留逐作品关联`, async ({ page }) => {
+      const verifyRequests = watchDemoRequests(page);
+      await page.setViewportSize({ width, height: 960 });
+      await page.goto(url, { waitUntil: 'domcontentloaded' });
+      const demo = page.locator('.demo');
+      await demo.locator('[data-action="settings"]').click();
       await demo.locator('[name="agent-client"]').selectOption('workbuddy');
-      await expect(demo.locator('[data-agent-version]')).toHaveText('0.1.0');
+      await demo.locator('[name="agent-suite"]').selectOption('military');
+      await demo.locator('[data-action="install-agent"]').click();
+      await page.locator('dialog button[type="submit"]').click();
+      await demo.locator('[data-action="new-book"]').click();
+      await page.locator('dialog [name="new-title"]').fill('独立创作 Book');
+      await page.locator('dialog [name="agent-client"]').selectOption('codex');
+      await page.locator('dialog [name="agent-suite"]').selectOption('military');
+      await page.locator('dialog button[type="submit"]').click();
+      await expect(demo.locator('[data-agent-state]')).toContainText(locale === 'en' ? 'not installed' : '未安装');
+      await demo.locator('[name="agent-client"]').selectOption('workbuddy');
+      await expect(demo.locator('[data-agent-version]')).toHaveText(militaryVersion);
       await demo.locator('[name="agent-suite"]').selectOption('general');
       await expect(demo.locator('[data-agent-state]')).toContainText(locale === 'en' ? 'not installed' : '未安装');
       await demo.locator('[data-action="library"]').click();
@@ -303,16 +422,7 @@ for (const locale of ['zh-CN', 'en']) {
       await demo.locator('[data-view="book"]').click();
       await expect(demo.locator('[name="agent-client"]')).toHaveValue('codex');
       await expect(demo.locator('[name="agent-suite"]')).toHaveValue('general');
-      expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-      await expect(page).toHaveURL(/#prototype$/);
-      for (const request of requests) {
-        for (const input of ['独立创作 Book', '作者 Author']) {
-          expect(request).not.toContain(input);
-          expect(request).not.toContain(encodeURIComponent(input));
-        }
-      }
-      expect(writes).toEqual([]);
-      expect(errors).toEqual([]);
+      await verifyRequests();
     });
   }
 }

@@ -1,5 +1,5 @@
 use super::store::Store;
-use crate::domain::{Result, ensure, id, media};
+use crate::domain::{Result, digest, ensure, id, media};
 use rustix::fs::{self, AtFlags, Mode, OFlags};
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
@@ -23,6 +23,89 @@ fn checked_file(file: &File) -> Result<std::fs::Metadata> {
         "媒体文件必须非空且不超过 2 GiB。",
     )?;
     Ok(metadata)
+}
+
+pub struct VerifiedImage {
+    pub scan: Value,
+    pub decoded: image::DynamicImage,
+}
+
+/// 封面与图片候选共用同一解码限额；文件签名本身不足以接受图片。
+pub fn decode_image(file: &mut File) -> Result<VerifiedImage> {
+    const LIMIT: u64 = 32 * 1024 * 1024;
+    let scan = scan(file, None)?;
+    ensure(
+        scan["size_bytes"]
+            .as_u64()
+            .is_some_and(|size| size <= LIMIT),
+        "hetu.budget_exceeded",
+        "图片不能超过 32 MiB。",
+    )?;
+    let format = match scan["media_type"].as_str() {
+        Some("image/png") => image::ImageFormat::Png,
+        Some("image/jpeg") => image::ImageFormat::Jpeg,
+        Some("image/webp") => image::ImageFormat::WebP,
+        _ => {
+            return Err(crate::domain::Error::new(
+                "hetu.unsupported_media",
+                "封面只支持 PNG、JPEG 和 WebP。",
+            ));
+        }
+    };
+    file.seek(SeekFrom::Start(0))?;
+    let mut raw = Vec::new();
+    (&mut *file).take(LIMIT + 1).read_to_end(&mut raw)?;
+    ensure(
+        raw.len() as u64 <= LIMIT && scan["sha256"] == digest(&raw),
+        "revision_conflict",
+        "图片读取期间发生变化。",
+    )?;
+    let (width, height) = image::ImageReader::with_format(std::io::Cursor::new(&raw), format)
+        .into_dimensions()
+        .map_err(|_| crate::domain::Error::new("hetu.unsupported_media", "图片头部或尺寸无效。"))?;
+    ensure(
+        (64..=8192).contains(&width)
+            && (64..=8192).contains(&height)
+            && u64::from(width) * u64::from(height) <= 64_000_000,
+        "hetu.budget_exceeded",
+        "图片宽高须为 64～8192，像素总量不超过 6400 万。",
+    )?;
+    let mut reader = image::ImageReader::with_format(std::io::Cursor::new(&raw), format);
+    let mut limits = image::Limits::default();
+    limits.max_image_width = Some(8192);
+    limits.max_image_height = Some(8192);
+    limits.max_alloc = Some(512 * 1024 * 1024);
+    reader.limits(limits);
+    let decoded = reader
+        .decode()
+        .map_err(|_| crate::domain::Error::new("hetu.unsupported_media", "图片无法完整解码。"))?;
+    Ok(VerifiedImage { scan, decoded })
+}
+
+pub fn image_preview(source: &image::DynamicImage) -> Result<Value> {
+    use base64::{Engine, engine::general_purpose::STANDARD};
+    let rgba = source
+        .thumbnail(source.width().min(512), source.height().min(512))
+        .to_rgba8();
+    let image = image::RgbImage::from_fn(rgba.width(), rgba.height(), |x, y| {
+        let pixel = rgba.get_pixel(x, y);
+        let alpha = u32::from(pixel[3]);
+        image::Rgb([0, 1, 2].map(|channel| {
+            ((u32::from(pixel[channel]) * alpha + 255 * (255 - alpha) + 127) / 255) as u8
+        }))
+    });
+    let mut bytes = Vec::new();
+    image::codecs::jpeg::JpegEncoder::new_with_quality(&mut bytes, 75)
+        .encode_image(&image)
+        .map_err(|_| crate::domain::Error::new("hetu.unsupported_media", "无法生成封面预览。"))?;
+    ensure(
+        bytes.len() <= 256 * 1024,
+        "hetu.budget_exceeded",
+        "封面预览超出传输预算。",
+    )?;
+    Ok(
+        json!({"media_type":"image/jpeg","base64":STANDARD.encode(bytes),"width":image.width(),"height":image.height()}),
+    )
 }
 
 pub fn selected_file(path: &Path) -> Result<File> {

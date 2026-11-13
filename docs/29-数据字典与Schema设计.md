@@ -290,9 +290,11 @@ Schema 负责结构，领域校验进一步要求 ID 符合 UUID 格式、修订
 
 ## 15. 小说封面任务与选用
 
-封面请求和外部结果分别使用 [CoverRequest Schema](../contracts/schemas/cover-request.schema.json) 与 [CoverResult Schema](../contracts/schemas/cover-result.schema.json)。字段语义、固定目录、图像限额和 BookCover 选用记录以[34](34-小说封面与Agent协作.md)为唯一专项来源。
+封面请求和外部结果分别使用 [CoverRequest Schema](../contracts/schemas/cover-request.schema.json) 与 [CoverResult Schema](../contracts/schemas/cover-result.schema.json)。[BookCover Schema](../contracts/schemas/book-cover.schema.json) 闭合定义选用记录、来源、展示参数和七个作者动作的输入。字段语义、固定目录与图像限额以[34](34-小说封面与Agent协作.md)为唯一专项来源。
 
 任务中的作品资料为本次设计快照，`request_sha256` 绑定原请求文件字节。结果中的路径、尺寸、摘要和生成器名称为不可信输入，读取时独立核验；作者封面引用仅由选用事务写入。书库缩略图是可重建缓存，不充当媒体原件、审核决定或版权凭证。
+
+BookCover 以 `revision,previous_sha256` 形成不可变历史，选用以当前修订和摘要 CAS。`source_ref` 按手工图片、外部候选、已有素材三种闭合结构保存来源，不携带外部绝对路径。原件及来源声明保留；`presentation` 只决定裁切与书名／笔名叠加。书库缓存包含预览字节与叠加文字，打开作品后由受管记录重建，封面损坏不阻止正文打开。
 
 ## 16. 建书筹备、外部任务与候选
 
@@ -307,6 +309,8 @@ Schema 负责结构，领域校验进一步要求 ID 符合 UUID 格式、修订
 | TaskSubmission | `schema_version, submission_id, task_ref, request_sha256, candidates, complete, missing_items, provenance, received_at` | 一批已核验的外部结果；不足为 partial_result，不能伪造成功；同键同输入返回同批 |
 | Candidate | `candidate_id, kind, relative_path, sha256, size_bytes, language_tag, source_refs` | kind 区分 concept、title、synopsis、outline、text、image；改稿保留 patches；可带 draft_ref，图片带实际宽高、类型与解码证据 |
 | InteractionDecision | `schema_version, decision_id, task_ref, candidate_refs, comment, actor_ref, effect, created_at, previous_decision_ref` | effect 固定 preference_only；CAS 在输入 expected 中，不冒充作者批准 |
+
+局部视图的 `image_previews[]` 是临时读取投影，不持久化为新的候选或封面：每项包含 `candidate_id,media_type,base64,width,height`，只关联当前批次中已核验的图片，使用最长边512像素以内的等比 JPEG，不放大小图，透明部分以白底预览。原始候选、来源摘要和正式封面选择保持独立。
 | ClientAdapterPreference | `adapter_id, user_confirmed_setup, last_capability_check` | 仅本机偏好；用户确认与技术检测分别保存，检查带时间、版本和范围 |
 
 `task_kind` 为 book_concept、book_profile、outline、cover、chapter_draft、revision 或 drama_draft。内部“任务已关闭”只结束河图洛书跟踪，不声明外部取消或退款。`client_adapter` 与 Skill／插件版本是本次交接记录，不授予工具权限或保证模型身份。

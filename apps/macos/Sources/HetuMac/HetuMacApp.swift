@@ -11,8 +11,9 @@ struct HetuMacApp: App {
         WindowGroup(id: "workspace") {
             WorkbenchView().preferredColorScheme(appearance == "dark" ? .dark : appearance == "light" ? .light : nil)
         }
-            .defaultSize(width: 1400, height: 900)
-            .windowStyle(.hiddenTitleBar)
+            .defaultSize(WorkspaceWindowLayout.preferredContentSize(in: WorkspaceWindowLayout.mainVisibleFrame))
+            .windowStyle(.titleBar)
+            .windowResizability(.automatic)
             .commands {
                 CommandGroup(replacing: .newItem) {
                     NewWindowButton().keyboardShortcut("n", modifiers: [.command, .shift])
@@ -91,6 +92,12 @@ private struct WindowActionButton: View {
     private var deciding = false
     private var protecting = false
     init(_ model: WorkspaceModel) { self.model = model }
+    func windowWillUseStandardFrame(_ window: NSWindow, defaultFrame newFrame: NSRect) -> NSRect {
+        WorkspaceWindowLayout.zoomFrame(for: window, proposed: newFrame)
+    }
+    func windowDidChangeScreen(_ notification: Notification) {
+        if let window = notification.object as? NSWindow { WorkspaceWindowLayout.configure(window) }
+    }
     func windowShouldClose(_ sender: NSWindow) -> Bool {
         if closing { return originalDelegate?.windowShouldClose?(sender) ?? true }
         guard !deciding else { return false }
@@ -163,6 +170,7 @@ private struct WindowAttachment: NSViewRepresentable {
                 window.titleVisibility = .hidden
                 window.titlebarAppearsTransparent = true
                 window.backgroundColor = WorkbenchPalette.pageColor
+                WorkspaceWindowLayout.configure(window)
                 if window.delegate !== coordinator { coordinator.originalDelegate = window.delegate; window.delegate = coordinator }
             }
         }
@@ -210,7 +218,8 @@ private struct WorkbenchView: View {
                     .disabled(model.busy)
             }
         }
-        .frame(minWidth: 1024, minHeight: 700)
+        .frame(minWidth: 960, minHeight: 620)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .navigationTitle(model.title)
         .environment(\.locale, Locale(identifier: model.locale == "en" ? "en" : "zh-Hans"))
         .background(WindowAttachment(coordinator: coordinator))

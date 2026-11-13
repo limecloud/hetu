@@ -148,7 +148,7 @@ struct ValidationWorkbenchView: View {
                 Spacer()
                 Button(model.t("validation.review")) { dispositionSheet = ValidationSheet(value: finding) }.buttonStyle(.borderless).disabled(model.busy)
             }
-            Text(model.t("rule.severity." + (finding["severity"].string ?? "info")) + " · " + model.t("validation.certainty." + (finding["certainty"].string ?? "unknown")) + " · " + ruleName(finding["rule_id"].string ?? "")).font(.caption).foregroundStyle(.secondary)
+            Text(model.t("rule.severity." + (finding["severity"].string ?? "info")) + "  " + model.t("validation.certainty." + (finding["certainty"].string ?? "unknown")) + "  " + ruleName(finding["rule_id"].string ?? "")).font(.caption).foregroundStyle(.secondary)
             FindingEvidenceView(model: model, finding: finding, blueprint: blueprint)
             ForEach(Array(finding["missing_prerequisites"].array.enumerated()), id: \.offset) { _, value in Text(model.t("validation.missing." + (value.string ?? "plot_nodes"))).foregroundStyle(.orange).font(.caption) }
             ForEach(Array(finding["source_refs"].array.enumerated()), id: \.offset) { _, source in
@@ -175,7 +175,7 @@ struct ValidationWorkbenchView: View {
     }
     private func dateLabel(_ value: String) -> String { model.localizer.date(value) }
     private func plotLabel(_ item: JSONValue) -> String {
-        dateLabel(item["created_at"].string ?? "") + " · " + model.t("plot.summary", ["nodes": String(item["node_count"].integer ?? 0), "confirmed": String(item["confirmed_count"].integer ?? 0)])
+        dateLabel(item["created_at"].string ?? "") + "  " + model.t("plot.summary", ["nodes": String(item["node_count"].integer ?? 0), "confirmed": String(item["confirmed_count"].integer ?? 0)])
     }
     private func loadPlots(more: Bool = false) async {
         guard !documentID.isEmpty else { plots = []; plotRevision = ""; return }

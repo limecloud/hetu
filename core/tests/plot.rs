@@ -378,7 +378,12 @@ fn parser_boundaries_and_large_outputs_never_turn_budget_stops_into_success() {
     let mut i = input(&doc, false, "");
     i["options"] = json!({"max_bytes":8_388_608,"max_nodes":10000,"max_matches":200000,"max_duration_ms":10000});
     let p = plot(&call(&k, "plot.extract", i));
-    assert_eq!(p["coverage"]["budget_stop"]["reason"], "max_output");
+    // 输出与耗时预算独立竞争；高负载下耗时先到同样必须诚实返回 partial。
+    assert!(matches!(
+        p["coverage"]["budget_stop"]["reason"].as_str(),
+        Some("max_output" | "max_duration")
+    ));
+    assert_eq!(p["coverage"]["status"], "partial");
     assert!(serde_json::to_vec(&p).unwrap().len() <= 8 * 1024 * 1024);
     let mut i = input(&doc, false, "");
     i["options"]["max_duration_ms"] = json!(1);

@@ -13,6 +13,9 @@ public struct LibraryEntry: Codable, Identifiable, Sendable, Equatable {
     public let status: String
     public let chapterCount: Int
     public let lastOpenedAt: Date
+    public let coverPreview: Data?
+    public let coverTitle: String?
+    public let coverAuthor: String?
     public var id: String { workspaceID }
 }
 
@@ -30,7 +33,7 @@ public actor LibraryStore {
         try locked { try read().entries.sorted { $0.lastOpenedAt > $1.lastOpenedAt } }
     }
 
-    public func register(url: URL, workspaceID: String, metadata: JSONValue, chapterCount: Int, opened: Bool = true) throws -> [LibraryEntry] {
+    public func register(url: URL, workspaceID: String, metadata: JSONValue, chapterCount: Int, opened: Bool = true, cover: JSONValue = .null) throws -> [LibraryEntry] {
         guard validID(workspaceID), url.isFileURL else { throw LibraryError.invalidRecord }
         let canonical = url.resolvingSymlinksInPath().standardizedFileURL
         let bookmark = try canonical.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil)
@@ -48,7 +51,10 @@ public actor LibraryStore {
                 title: metadata["title"].string ?? canonical.lastPathComponent,
                 authorName: metadata["author_name"].string ?? "", genre: metadata["genre"].string ?? "",
                 status: metadata["status"].string ?? "planning", chapterCount: chapterCount,
-                lastOpenedAt: opened ? Date() : previous?.lastOpenedAt ?? Date())
+                lastOpenedAt: opened ? Date() : previous?.lastOpenedAt ?? Date(),
+                coverPreview: cover["preview"]["base64"].string.flatMap { Data(base64Encoded: $0) },
+                coverTitle: cover["cover"]["presentation"]["title_overlay"].string,
+                coverAuthor: cover["cover"]["presentation"]["author_overlay"].string)
             catalog.entries.removeAll { $0.workspaceID == workspaceID }
             catalog.entries.append(entry)
             try write(catalog)

@@ -1,0 +1,788 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HetuBookCover",
+  "$ref": "#/$defs/record",
+  "$defs": {
+    "request": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "title": "HetuCoverRequest",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "workspace_id",
+        "request_id",
+        "book",
+        "design",
+        "prompt",
+        "output_relative_dir",
+        "created_at"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "workspace_id": {
+          "type": "string",
+          "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "request_id": {
+          "type": "string",
+          "pattern": "^cover_request_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "book": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "title",
+            "author_name",
+            "synopsis",
+            "language_tag"
+          ],
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "author_name": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "synopsis": {
+              "type": "string",
+              "maxLength": 4000
+            },
+            "language_tag": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 64
+            }
+          }
+        },
+        "design": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "art_direction",
+            "width",
+            "height",
+            "text_mode",
+            "cover_language",
+            "candidate_count"
+          ],
+          "properties": {
+            "art_direction": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4000
+            },
+            "width": {
+              "type": "integer",
+              "minimum": 64,
+              "maximum": 8192
+            },
+            "height": {
+              "type": "integer",
+              "minimum": 64,
+              "maximum": 8192
+            },
+            "text_mode": {
+              "enum": [
+                "background_only",
+                "title_and_author"
+              ]
+            },
+            "cover_language": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 64
+            },
+            "candidate_count": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4
+            }
+          }
+        },
+        "prompt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16000
+        },
+        "output_relative_dir": {
+          "type": "string",
+          "pattern": "^packages/visual-prompt/covers/inbox/cover_request_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "result": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "title": "HetuCoverResult",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "workspace_id",
+        "request_id",
+        "request_sha256",
+        "completed_at",
+        "candidates"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "workspace_id": {
+          "type": "string",
+          "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "request_id": {
+          "type": "string",
+          "pattern": "^cover_request_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "request_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "completed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "candidates": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "filename",
+              "sha256",
+              "size_bytes",
+              "width",
+              "height",
+              "media_type",
+              "used_prompt",
+              "generator"
+            ],
+            "properties": {
+              "filename": {
+                "type": "string",
+                "pattern": "^candidate-[0-9]{2}\\.(png|jpg|webp)$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "size_bytes": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 33554432
+              },
+              "width": {
+                "type": "integer",
+                "minimum": 64,
+                "maximum": 8192
+              },
+              "height": {
+                "type": "integer",
+                "minimum": 64,
+                "maximum": 8192
+              },
+              "media_type": {
+                "enum": [
+                  "image/png",
+                  "image/jpeg",
+                  "image/webp"
+                ]
+              },
+              "used_prompt": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 16000
+              },
+              "generator": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "agent",
+                  "tool"
+                ],
+                "properties": {
+                  "agent": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "tool": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "model": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "book": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "author_name",
+        "synopsis",
+        "language_tag"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "author_name": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "synopsis": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "language_tag": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 64
+        }
+      }
+    },
+    "design": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "art_direction",
+        "width",
+        "height",
+        "text_mode",
+        "cover_language",
+        "candidate_count"
+      ],
+      "properties": {
+        "art_direction": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 64,
+          "maximum": 8192
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 64,
+          "maximum": 8192
+        },
+        "text_mode": {
+          "enum": [
+            "background_only",
+            "title_and_author"
+          ]
+        },
+        "cover_language": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 64
+        },
+        "candidate_count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        }
+      }
+    },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "revision",
+        "sha256"
+      ]
+    },
+    "asset_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "asset_id": {
+          "type": "string",
+          "pattern": "^asset_[0-9a-f-]{36}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "asset_id",
+        "revision",
+        "sha256"
+      ]
+    },
+    "presentation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "crop_rect": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "x": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "y": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "width": {
+              "type": "number",
+              "minimum": 0.0001,
+              "maximum": 1
+            },
+            "height": {
+              "type": "number",
+              "minimum": 0.0001,
+              "maximum": 1
+            }
+          },
+          "required": [
+            "x",
+            "y",
+            "width",
+            "height"
+          ]
+        },
+        "title_overlay": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "author_overlay": {
+          "type": "string",
+          "maxLength": 200
+        }
+      },
+      "required": [
+        "crop_rect",
+        "title_overlay",
+        "author_overlay"
+      ]
+    },
+    "candidate_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "pattern": "^cover_request_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "request_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "result_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "filename": {
+          "type": "string",
+          "pattern": "^candidate-[0-9]{2}\\.(png|jpg|webp)$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "request_id",
+        "request_sha256",
+        "result_sha256",
+        "filename",
+        "sha256"
+      ]
+    },
+    "file_source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "file"
+        },
+        "file_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "expected_file": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "size_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 33554432
+            }
+          },
+          "required": [
+            "sha256",
+            "size_bytes"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "file_path",
+        "expected_file"
+      ]
+    },
+    "source": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "file"
+            },
+            "file_path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "expected_file": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "size_bytes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 33554432
+                }
+              },
+              "required": [
+                "sha256",
+                "size_bytes"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "file_path",
+            "expected_file"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "candidate"
+            },
+            "reference": {
+              "$ref": "#/$defs/candidate_ref"
+            }
+          },
+          "required": [
+            "kind",
+            "reference"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "asset"
+            },
+            "asset_ref": {
+              "$ref": "#/$defs/asset_ref"
+            }
+          },
+          "required": [
+            "kind",
+            "asset_ref"
+          ]
+        }
+      ]
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "workspace_id": {
+          "type": "string",
+          "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "previous_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "asset_ref": {
+          "$ref": "#/$defs/asset_ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/source_ref"
+        },
+        "presentation": {
+          "$ref": "#/$defs/presentation"
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 64,
+          "maximum": 8192
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 64,
+          "maximum": 8192
+        },
+        "actor_ref": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "schema_version",
+        "workspace_id",
+        "revision",
+        "previous_sha256",
+        "asset_ref",
+        "source_ref",
+        "presentation",
+        "width",
+        "height",
+        "actor_ref",
+        "created_at"
+      ]
+    },
+    "source_ref": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "original_filename"],
+          "properties": {
+            "kind": {"const": "author_supplied"},
+            "original_filename": {"type": "string", "minLength": 1, "maxLength": 512, "pattern": "^[^/]+$"}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "reference", "request", "candidate"],
+          "properties": {
+            "kind": {"const": "external_agent"},
+            "reference": {"$ref": "#/$defs/candidate_ref"},
+            "request": {"$ref": "#/$defs/request"},
+            "candidate": {"$ref": "#/$defs/result/properties/candidates/items"}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "asset_ref"],
+          "properties": {
+            "kind": {"const": "existing_asset"},
+            "asset_ref": {"$ref": "#/$defs/asset_ref"}
+          }
+        }
+      ]
+    },
+    "preview_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "book": {
+          "$ref": "#/$defs/book"
+        },
+        "design": {
+          "$ref": "#/$defs/design"
+        },
+        "language_tag": {
+          "enum": [
+            "zh-CN",
+            "en"
+          ]
+        }
+      },
+      "required": [
+        "book",
+        "design",
+        "language_tag"
+      ]
+    },
+    "create_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "request": {
+          "$ref": "#/$defs/request"
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "request",
+        "operation_key"
+      ]
+    },
+    "candidates_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "pattern": "^cover_request_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        }
+      },
+      "required": [
+        "request_id"
+      ]
+    },
+    "get_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": []
+    },
+    "list_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cursor": {
+          "type": "string",
+          "pattern": "^cover_request_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": []
+    },
+    "select_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/source"
+        },
+        "expected_cover": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/expected"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "presentation": {
+          "$ref": "#/$defs/presentation"
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "source",
+        "expected_cover",
+        "presentation",
+        "operation_key"
+      ]
+    },
+    "inspect_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "file_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      },
+      "required": [
+        "file_path"
+      ]
+    },
+    "candidate_state": {
+      "enum": [
+        "waiting_for_result",
+        "files_discovered",
+        "partial_result",
+        "candidates_ready"
+      ]
+    }
+  }
+}

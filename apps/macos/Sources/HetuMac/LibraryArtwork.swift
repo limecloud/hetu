@@ -40,24 +40,41 @@ struct BookCoverView: View {
     let author: String
     let identity: String
     var compact = false
+    var imageData: Data? = nil
+    var titleOverlay: String? = nil
+    var authorOverlay: String? = nil
     private var variant: Int { Int(identity.utf8.reduce(UInt64(0)) { ($0 &* 31) &+ UInt64($1) } % 3) }
     private var name: String { ["cover-river-jade", "cover-cloud-rose", "cover-stars-ink"][variant] }
+    private var selectedImage: NSImage? { imageData.flatMap(NSImage.init(data:)) }
+    private var hasOverlay: Bool { !(titleOverlay ?? title).isEmpty || !(authorOverlay ?? author).isEmpty }
+    private func fittedSize(image: NSImage?, in available: CGSize) -> CGSize {
+        guard let image, image.size.width > 0, image.size.height > 0 else { return available }
+        let scale = min(available.width / image.size.width, available.height / image.size.height)
+        return CGSize(width: image.size.width * scale, height: image.size.height * scale)
+    }
     var body: some View {
         GeometryReader { geometry in
+            let image = selectedImage
+            let size = fittedSize(image: image, in: geometry.size)
             ZStack(alignment: .topLeading) {
-                LibraryArtwork(name: name).frame(width: geometry.size.width, height: geometry.size.height).clipped()
-                if !compact {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text(title).font(.system(size: min(25, geometry.size.width * 0.14), weight: .medium, design: .serif)).lineSpacing(4).lineLimit(4)
-                        if !author.isEmpty { Text(author).font(.system(size: 10, weight: .medium)).lineLimit(1) }
-                    }.foregroundStyle(variant == 2 ? Color(red: 0.96, green: 0.93, blue: 0.85) : Color(red: 0.16, green: 0.23, blue: 0.21))
-                        .padding(.horizontal, geometry.size.width * 0.12).padding(.top, geometry.size.height * 0.09)
+                if let image {
+                    Image(nsImage: image).resizable().scaledToFit()
+                } else {
+                    LibraryArtwork(name: name).frame(width: size.width, height: size.height).clipped()
                 }
-            }.background(WorkbenchPalette.sidebar)
+                if !compact && hasOverlay {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text(titleOverlay ?? title).font(.system(size: max(12, min(25, size.width * 0.14)), weight: .medium, design: .serif)).lineSpacing(4).lineLimit(4)
+                        if !(authorOverlay ?? author).isEmpty { Text(authorOverlay ?? author).font(.system(size: 12, weight: .medium)).lineLimit(1) }
+                    }.foregroundStyle(image != nil ? WorkbenchPalette.ink : variant == 2 ? .white : WorkbenchPalette.ink)
+                        .padding(image != nil ? 8 : 0)
+                        .background { if image != nil { WorkbenchPalette.surface.opacity(0.94) } }
+                        .padding(.horizontal, size.width * 0.12).padding(.top, size.height * 0.09)
+                }
+            }.frame(width: size.width, height: size.height)
                 .clipShape(RoundedRectangle(cornerRadius: 4))
-                .overlay(alignment: .leading) { Rectangle().fill(.black.opacity(0.06)).frame(width: 3) }
-                .overlay(RoundedRectangle(cornerRadius: 4).strokeBorder(.black.opacity(0.06), lineWidth: 0.5))
-                .shadow(color: .black.opacity(0.08), radius: 6, x: 0, y: 3)
+                .overlay(RoundedRectangle(cornerRadius: 4).strokeBorder(WorkbenchPalette.line, lineWidth: 0.5))
+                .frame(width: geometry.size.width, height: geometry.size.height)
         }.accessibilityHidden(true)
     }
 }

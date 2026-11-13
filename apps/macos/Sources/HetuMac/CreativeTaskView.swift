@@ -151,6 +151,10 @@ struct CreativeTaskView: View {
             if copied { Text(model.t("creative.copied")).font(.caption).foregroundStyle(.secondary) }
             if !connection.isEmpty { Text(model.t("creative.connection_copied")).font(.caption).foregroundStyle(.secondary) }
             DisclosureGroup(model.t("creative.prompt")) { Text(task["request"]["prompt"].string ?? "").textSelection(.enabled) }
+            if let root = model.workspace?.url {
+                LocalTaskViewControls(root: root, scope: .workspace, taskRef: session.taskReference,
+                    brief: task["request"]["brief"].string ?? "", locale: model.locale, closed: task["observation"]["state"].string == "closed")
+            }
             HStack {
                 Text(task["request"]["output_contract"]["relative_inbox"].string ?? "").font(.system(.caption, design: .monospaced)).textSelection(.enabled)
                 Button(model.t("creative.import_result")) { Task { await session.inspectInbox() } }.disabled(held || task["observation"]["state"].string == "closed")

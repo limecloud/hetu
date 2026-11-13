@@ -20,6 +20,7 @@ rustix.workspace = true
 pulldown-cmark.workspace = true
 aho-corasick.workspace = true
 url = "2.5"
+base64 = "=0.22.1"
 image = { version = "=0.25.9", default-features = false, features = ["png", "jpeg", "webp"] }
 git2 = { version = "=0.20.4", default-features = false, features = ["vendored-libgit2"] }
 

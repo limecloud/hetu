@@ -59,7 +59,7 @@ struct FindingDispositionSheet: View {
                         VStack(alignment: .leading, spacing: 8) {
                             ForEach(Array(history.enumerated()), id: \.offset) { _, item in
                                 Text(model.t("validation.disposition." + (item["disposition"].string ?? "open"))).font(.headline)
-                                Text(model.t("validation.history_author") + " · " + model.localizer.date(item["created_at"].string ?? "")).font(.caption).foregroundStyle(.secondary)
+                                Text(model.t("validation.history_author") + "  " + model.localizer.date(item["created_at"].string ?? "")).font(.caption).foregroundStyle(.secondary)
                                 Text(item["reason"].string ?? "").textSelection(.enabled)
                                 Divider()
                             }

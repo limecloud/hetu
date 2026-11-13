@@ -8,11 +8,7 @@ pub fn definition(name: &str) -> Value {
         serde_json::from_str(include_str!("../../../contracts/schemas/novel.schema.json"))
             .expect("embedded novel schema")
     });
-    let mut result = schema["$defs"][name].clone();
-    assert!(result.is_object(), "registered novel definition");
-    result["$schema"] = schema["$schema"].clone();
-    result["$defs"] = schema["$defs"].clone();
-    result
+    super::schema::definition(schema, name)
 }
 
 pub fn validate_metadata(metadata: &Value) -> Result<()> {

@@ -15,6 +15,8 @@ npm run preview --workspace @hetu/website
 
 开发地址为 `http://127.0.0.1:4350`，构建预览为 `http://127.0.0.1:4351`。使用指南位于 `src/content/guides/zh-CN/` 与 `src/content/guides/en/`。首页 `/#prototype` 与 `/en/#prototype` 内嵌当前 macOS 布局的交互演示，不发布独立原型页面。构建读取根 `assets/`，不发布仓库 `docs/` 的工程文档；不编辑 `public/` 中生成的副本。
 
+展示图片、图标、下载及分享卡使用根 `assets/manifest.json` 核验摘要；作者指南的实际截图由本目录 `assets/guides/captures.json` 登记来源、尺寸与摘要。图片内容变化时，URL 的 `v` 参数随之更新；构建检查发布副本与摘要，防止旧 CDN 缓存继续显示旧图。
+
 ## 浏览器验证
 
 ```bash

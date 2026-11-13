@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0.0",
+  "resource_uri": "ui://hetu/task-view/1",
+  "mime_type": "text/html;profile=mcp-app",
+  "sdk": "@modelcontextprotocol/ext-apps@2.0.4",
+  "sha256": "b1370cd579233c92553d2af72d34670580f272c499fb59b4d417a7645f2191a5",
+  "size_bytes": 631235,
+  "source_sha256": {
+    "src/app.ts": "6c3dc8f16306a69038c095ee441a953b75510f4de9bf56c511c28333537b1335",
+    "src/app.css": "4c809bfe20b33a245fe87043df8aedd6447dea5cef4b2df8280e6bd3854fb09c",
+    "scripts/build.mjs": "cf32cf56121ee0a0ab08889cf92e7e208afe6ab4264b6eeb742dddeb46f7f7c5",
+    "package.json": "34f5e6b5cecff2fe40f37f8b19dceb2dbf2ae8f83d39b220890be72b299d508a",
+    "THIRD-PARTY-NOTICES.txt": "36e9fae898f6fb55b3130f3380a36f2e26875934b50c98499635faf84c3afbf0"
+  },
+  "inputs": [
+    "../../node_modules/@modelcontextprotocol/ext-apps/dist/src/app-with-deps.js",
+    "src/app.ts"
+  ]
+}

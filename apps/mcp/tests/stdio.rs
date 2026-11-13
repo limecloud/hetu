@@ -14,6 +14,8 @@ struct Client {
     output: BufReader<ChildStdout>,
     next_id: u64,
     deferred: BTreeMap<u64, Value>,
+    apps: bool,
+    last_request: String,
 }
 
 fn binary() -> std::ffi::OsString {
@@ -64,13 +66,20 @@ impl Client {
             child,
             next_id: 1,
             deferred: BTreeMap::new(),
+            apps: false,
+            last_request: String::new(),
         }
     }
     async fn send(&mut self, method: &str, mut params: Value, metadata: bool) -> u64 {
         let id = self.next_id;
         self.next_id += 1;
+        self.last_request = format!("{id} {method} {}", params["name"].as_str().or(params["uri"].as_str()).unwrap_or(""));
         if metadata {
-            params["_meta"] = meta();
+            let mut metadata = meta();
+            if self.apps {
+                metadata["io.modelcontextprotocol/clientCapabilities"] = json!({"extensions":{"io.modelcontextprotocol/ui":{"mimeTypes":["text/html;profile=mcp-app"]}}});
+            }
+            params["_meta"] = metadata;
         }
         let value = json!({"jsonrpc":"2.0","id":id,"method":method,"params":params});
         self.raw(&value.to_string()).await;
@@ -85,7 +94,7 @@ impl Client {
         let mut line = String::new();
         let bytes = tokio::time::timeout(Duration::from_secs(10), self.output.read_line(&mut line))
             .await
-            .unwrap()
+            .unwrap_or_else(|_| panic!("MCP response timeout: {}", self.last_request))
             .unwrap();
         assert!(bytes > 0, "server closed stdout unexpectedly");
         let response: Value =
@@ -172,6 +181,113 @@ impl Client {
             "normal protocol traffic must not log content: {stderr}"
         );
     }
+}
+
+#[tokio::test]
+async fn apps_resources_negotiate_per_request_and_keep_authority_bound_to_the_task() {
+    let (root, k) = setup();
+    let path = root.path().join("河图 离线测试 🌿");
+    let task = creative_task(&k, json!([]), None);
+    let mut client =
+        Client::start_task(&path, false, task["task_ref"]["task_id"].as_str().unwrap());
+    let listed = client.rpc("tools/list", json!({})).await;
+    assert!(listed["result"]["tools"][2].get("_meta").is_none());
+    client.apps = true;
+    let listed = client.rpc("tools/list", json!({})).await;
+    let resource_uri = listed["result"]["tools"][2]["_meta"]["ui"]["resourceUri"]
+        .as_str()
+        .unwrap();
+    assert_eq!(resource_uri, "ui://hetu/task-view/1");
+    let resource = client
+        .rpc("resources/read", json!({"uri":resource_uri}))
+        .await;
+    assert!(resource.get("error").is_none(), "{resource}");
+    let content = &resource["result"]["contents"][0];
+    assert_eq!(content["mimeType"], "text/html;profile=mcp-app");
+    assert_eq!(content["_meta"]["ui"]["csp"]["connectDomains"], json!([]));
+    assert!(
+        content["text"]
+            .as_str()
+            .unwrap()
+            .starts_with("<!doctype html>")
+    );
+    assert!(
+        !content["text"]
+            .as_str()
+            .unwrap()
+            .contains(task["task_ref"]["task_id"].as_str().unwrap())
+    );
+    let manifest: Value =
+        serde_json::from_str(include_str!("../resources/task-view.manifest.json")).unwrap();
+    assert_eq!(
+        manifest["sha256"],
+        format!(
+            "{:x}",
+            Sha256::digest(content["text"].as_str().unwrap().as_bytes())
+        )
+    );
+    let resources = client.rpc("resources/list", json!({})).await;
+    assert_eq!(
+        resources["result"]["resources"].as_array().unwrap().len(),
+        4
+    );
+    client.apps = false;
+    assert!(
+        client
+            .rpc("resources/read", json!({"uri":resource_uri}))
+            .await
+            .get("error")
+            .is_some()
+    );
+    let view = client
+        .tool("hetu_open_task_view", json!({"task_ref":task["task_ref"]}))
+        .await;
+    assert_eq!(view["data"]["effect"], "preference_only");
+    let result = client.tool("hetu_save_task_selection", json!({"task_ref":task["task_ref"],"expected":view["data"]["expected"],"candidate_refs":[],"comment":"保留悬念，不自动采纳。","operation_key":"app-feedback"})).await;
+    assert_eq!(result["status"], "succeeded", "{result}");
+    assert_eq!(result["data"]["effect"], "preference_only");
+    assert_eq!(
+        call(&k, "documents.list", json!({}))["data"]["documents"],
+        json!([])
+    );
+    let current = call(
+        &k,
+        "creative_tasks.get",
+        json!({"task_ref":task["task_ref"]}),
+    );
+    let closed = call(
+        &k,
+        "creative_tasks.close",
+        json!({"task_ref":task["task_ref"],"expected":current["data"]["expected"],"reason":"测试撤权","operation_key":"close-app"}),
+    );
+    assert_eq!(closed["status"], "succeeded", "{closed}");
+    client.apps = true;
+    assert!(
+        client
+            .rpc("resources/read", json!({"uri":resource_uri}))
+            .await
+            .get("error")
+            .is_some()
+    );
+    client.close().await;
+    let mut ordinary = Client::start(&path);
+    ordinary.apps = true;
+    let listed = ordinary.rpc("tools/list", json!({})).await;
+    assert!(
+        listed["result"]["tools"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .all(|tool| tool.get("_meta").is_none())
+    );
+    assert!(
+        ordinary
+            .rpc("resources/read", json!({"uri":resource_uri}))
+            .await
+            .get("error")
+            .is_some()
+    );
+    ordinary.close().await;
 }
 
 fn creative_task(k: &Kernel, refs: Value, edit: Option<Value>) -> Value {

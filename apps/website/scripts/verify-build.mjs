@@ -2,6 +2,7 @@ import { readFile, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 
 const root = fileURLToPath(new URL('../dist/', import.meta.url));
 async function walk(directory) {
@@ -16,6 +17,11 @@ async function walk(directory) {
 const files = await walk(root);
 const paths = new Set(files);
 const errors = [];
+const versions = JSON.parse(await readFile(new URL('../../../build/website/asset-versions.json', import.meta.url), 'utf8'));
+for (const [pathname, version] of Object.entries(versions)) {
+  const bytes = await readFile(path.join(root, pathname));
+  assert.equal(createHash('sha256').update(bytes).digest('hex').slice(0, 16), version, `发布资产版本不符：${pathname}`);
+}
 let links = 0;
 for (const file of files) {
   const relative = path.relative(root, file).replaceAll(path.sep, '/');
@@ -23,13 +29,24 @@ for (const file of files) {
   assert.ok(!/^(?:en\/)?docs\/\d{2}\//.test(relative), `编号工程规范不能发布到官网：${relative}`);
   assert.ok(!/^prototype\//.test(relative), `原型只能嵌入首页：${relative}`);
 }
+const localizedGuides = [];
 for (const locale of ['zh-CN', 'en']) {
   const directory = new URL(`../src/content/guides/${locale}/`, import.meta.url);
-  const guides = await readdir(directory);
-  assert.equal(guides.filter(file => file.endsWith('.md')).length, 8, '使用指南数量不一致');
+  const guides = (await readdir(directory)).filter(file => file.endsWith('.md')).sort();
+  assert.ok(guides.length > 0, '缺少使用指南');
+  localizedGuides.push(guides);
+  for (const guide of guides) {
+    const target = path.join(root, locale === 'en' ? 'en' : '', 'docs', guide.slice(0, -3), 'index.html');
+    assert.ok(paths.has(target), `使用指南未发布：${locale}/${guide}`);
+  }
 }
+assert.deepEqual(localizedGuides[0], localizedGuides[1], '中英文使用指南不对应');
 for (const file of files.filter(name => name.endsWith('.html'))) {
   const html = await readFile(file, 'utf8');
+  for (const match of html.matchAll(/(?:https:\/\/hetu\.limeai\.run)?\/(?:images|brand|resources)\/[^"'<>\s]+/g)) {
+    const url = new URL(match[0].replaceAll('&amp;', '&'), 'https://hetu.limeai.run');
+    if (versions[url.pathname] && url.searchParams.get('v') !== versions[url.pathname]) errors.push(`资产缺少正确版本：${path.relative(root, file)} → ${url.pathname}`);
+  }
   for (const match of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
     const href = match[1].replaceAll('&amp;', '&');
     if (/^(https?:|mailto:|data:|javascript:)/.test(href)) continue;

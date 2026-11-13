@@ -2,7 +2,8 @@
   "name": "hetu",
   "private": true,
   "workspaces": [
-    "apps/website"
+    "apps/website",
+    "apps/task-view"
   ],
   "engines": {
     "node": ">=24.21.0 <26"
@@ -11,7 +12,9 @@
     "dev": "npm run dev --workspace @hetu/website",
     "build": "npm run build --workspace @hetu/website",
     "check": "npm run check --workspace @hetu/website",
-    "deploy:website": "npm run deploy --workspace @hetu/website"
+    "deploy:website": "npm run deploy --workspace @hetu/website",
+    "build:task-view": "npm run build --workspace @hetu/task-view",
+    "test:task-view": "npm run test --workspace @hetu/task-view"
   },
-  "version": "0.2.0"
+  "version": "0.3.0"
 }

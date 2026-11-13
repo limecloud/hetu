@@ -234,8 +234,8 @@
     "purpose": "剧本文档分组"
   },
   "drama.script": {
-    "zh-CN": "短剧剧本 · Fountain",
-    "en": "Drama Script · Fountain",
+    "zh-CN": "短剧剧本（Fountain）",
+    "en": "Drama Script (Fountain)",
     "purpose": "Mac 原生界面：drama.script",
     "parameters": []
   },
@@ -318,8 +318,8 @@
     "parameters": []
   },
   "statistics.count": {
-    "zh-CN": "汉字 {han} · 英文词 {words} · 总字符 {characters}",
-    "en": "{han} Han characters · {words} English words · {characters} total characters",
+    "zh-CN": "汉字 {han}，英文词 {words}，总字符 {characters}",
+    "en": "{han} Han characters, {words} English words, {characters} total characters",
     "purpose": "Mac 原生界面：statistics.count",
     "parameters": [
       "han",
@@ -352,8 +352,8 @@
     "parameters": []
   },
   "draft.submitted": {
-    "zh-CN": "已提交 · 等待作者审核",
-    "en": "Submitted · Awaiting Author Review",
+    "zh-CN": "已提交，等待作者审核",
+    "en": "Submitted, Awaiting Author Review",
     "purpose": "Mac 原生界面：draft.submitted",
     "parameters": []
   },
@@ -712,16 +712,16 @@
     ]
   },
   "entity.new_title": {
-    "zh-CN": "添加设定 · {kind}",
-    "en": "Add Entry · {kind}",
+    "zh-CN": "添加{kind}",
+    "en": "Add {kind}",
     "purpose": "Mac 原生界面：entity.new_title",
     "parameters": [
       "kind"
     ]
   },
   "entity.edit_title": {
-    "zh-CN": "编辑设定 · {kind}",
-    "en": "Edit Entry · {kind}",
+    "zh-CN": "编辑{kind}",
+    "en": "Edit {kind}",
     "purpose": "Mac 原生界面：entity.edit_title",
     "parameters": [
       "kind"
@@ -1021,8 +1021,8 @@
     "parameters": []
   },
   "timeline.anchor_summary": {
-    "zh-CN": "{calendar} · 刻度 {tick}",
-    "en": "{calendar} · Tick {tick}",
+    "zh-CN": "{calendar}，刻度 {tick}",
+    "en": "{calendar}, Tick {tick}",
     "purpose": "Mac 原生界面：timeline.anchor_summary",
     "parameters": [
       "calendar",
@@ -1354,8 +1354,8 @@
     "purpose": "剧情整理工作台文案"
   },
   "plot.summary": {
-    "zh-CN": "节点 {nodes} · 已确认 {confirmed}",
-    "en": "Nodes: {nodes} · Confirmed: {confirmed}",
+    "zh-CN": "节点 {nodes}，已确认 {confirmed}",
+    "en": "Nodes: {nodes}, Confirmed: {confirmed}",
     "parameters": [
       "confirmed",
       "nodes"
@@ -1381,8 +1381,8 @@
     "purpose": "剧情整理工作台文案"
   },
   "plot.coverage_detail": {
-    "zh-CN": "已扫描 {bytes} 字节 · 设定集修订 {revision}",
-    "en": "Scanned {bytes} bytes · Story bible revision {revision}",
+    "zh-CN": "已扫描 {bytes} 字节，设定集修订 {revision}",
+    "en": "Scanned {bytes} bytes, Story bible revision {revision}",
     "parameters": [
       "bytes",
       "revision"
@@ -2062,8 +2062,8 @@
     "parameters": []
   },
   "validation.coverage": {
-    "zh-CN": "已扫描 {bytes} 字节 · 设定集修订 {revision} · 规则集 {version}",
-    "en": "Scanned {bytes} bytes · Story bible revision {revision} · Rule set {version}",
+    "zh-CN": "已扫描 {bytes} 字节，设定集修订 {revision}，规则集 {version}",
+    "en": "Scanned {bytes} bytes, Story bible revision {revision}, Rule set {version}",
     "purpose": "Mac 原生界面：validation.coverage",
     "parameters": [
       "bytes",
@@ -2072,8 +2072,8 @@
     ]
   },
   "validation.counts": {
-    "zh-CN": "检查单元：通过 {passed} · 有问题／提示 {finding} · 缺少前提 {unknown} · 不适用 {not_applicable}",
-    "en": "Check units: passed {passed} · Findings {finding} · Unknown {unknown} · Not applicable {not_applicable}",
+    "zh-CN": "检查单元：通过 {passed}，有问题／提示 {finding}，缺少前提 {unknown}，不适用 {not_applicable}",
+    "en": "Check units: passed {passed}, Findings {finding}, Unknown {unknown}, Not applicable {not_applicable}",
     "purpose": "Mac 原生界面：validation.counts",
     "parameters": [
       "finding",
@@ -2275,8 +2275,8 @@
     "parameters": []
   },
   "validation.fact_evidence": {
-    "zh-CN": "{name} · {predicate}：本段为“{asserted}”，设定为“{expected}”；时间：{time}。",
-    "en": "{name} · {predicate}: excerpt asserts “{asserted}”; story bible specifies “{expected}”. At: {time}.",
+    "zh-CN": "{name}，{predicate}：本段为“{asserted}”，设定为“{expected}”；时间：{time}。",
+    "en": "{name}, {predicate}: excerpt asserts “{asserted}”; story bible specifies “{expected}”. At: {time}.",
     "purpose": "Mac 原生界面：validation.fact_evidence",
     "parameters": [
       "asserted",
@@ -2524,8 +2524,8 @@
     "purpose": "短剧结构工作台"
   },
   "drama.summary": {
-    "zh-CN": "{episodes} 集 · {scenes} 场",
-    "en": "{episodes} episodes · {scenes} scenes",
+    "zh-CN": "{episodes} 集，{scenes} 场",
+    "en": "{episodes} episodes, {scenes} scenes",
     "parameters": [
       "episodes",
       "scenes"
@@ -2952,8 +2952,8 @@
     "parameters": []
   },
   "review.provenance": {
-    "zh-CN": "提交来源：{source} · {date} · 状态修订 {revision}",
-    "en": "Submitted by {source} · {date} · State revision {revision}",
+    "zh-CN": "提交来源：{source}，{date}，状态修订 {revision}",
+    "en": "Submitted by {source}, {date}, State revision {revision}",
     "purpose": "Mac 审核工作台：review.provenance",
     "parameters": [
       "date",
@@ -4020,16 +4020,16 @@
     "parameters": []
   },
   "shell.chapter_count": {
-    "zh-CN": "{count} 篇文档 · 点击切换",
-    "en": "{count} documents · Select to switch",
+    "zh-CN": "{count} 篇文档",
+    "en": "{count} documents",
     "purpose": "Mac 原生界面：shell.chapter_count",
     "parameters": [
       "count"
     ]
   },
   "shell.manuscript": {
-    "zh-CN": "正文 · 自动换行",
-    "en": "Manuscript · Word wrap",
+    "zh-CN": "正文",
+    "en": "Manuscript",
     "purpose": "Mac 原生界面：shell.manuscript",
     "parameters": []
   },
@@ -4420,7 +4420,7 @@
   },
   "library.book_count": {
     "zh-CN": "{count} 部独立作品",
-    "en": "Your local library · {count}",
+    "en": "Your local library, {count}",
     "purpose": "书库作品数量与标题辅助说明",
     "parameters": [
       "count"
@@ -4888,8 +4888,8 @@
     "parameters": []
   },
   "finalization.writing": {
-    "zh-CN": "写作稿 · 尚未定稿",
-    "en": "Working draft · not finalized",
+    "zh-CN": "写作稿，尚未定稿",
+    "en": "Working draft, not finalized",
     "purpose": "Mac 原生界面：finalization.writing",
     "parameters": []
   },
@@ -4900,8 +4900,8 @@
     "parameters": []
   },
   "finalization.new_writing": {
-    "zh-CN": "写作稿有新修改 · 旧定稿保留",
-    "en": "New working revision · earlier final preserved",
+    "zh-CN": "写作稿有新修改，旧定稿保留",
+    "en": "New working revision, earlier final preserved",
     "purpose": "Mac 原生界面：finalization.new_writing",
     "parameters": []
   },
@@ -4960,15 +4960,15 @@
     "parameters": []
   },
   "agent.suite.general": {
-    "zh-CN": "河图洛书·通用",
-    "en": "Hetu Luoshu · General",
-    "purpose": "Mac 原生界面：agent.suite.general",
+    "zh-CN": "河图洛书 通用创作",
+    "en": "Hetu Luoshu General writing",
+    "purpose": "按作品选择的题材套件名称",
     "parameters": []
   },
   "agent.suite.military": {
-    "zh-CN": "河图洛书·军事",
-    "en": "Hetu Luoshu · Military",
-    "purpose": "Mac 原生界面：agent.suite.military",
+    "zh-CN": "河图洛书 军事军旅",
+    "en": "Hetu Luoshu Military fiction",
+    "purpose": "按作品选择的题材套件名称",
     "parameters": []
   },
   "agent.refresh": {
@@ -5188,8 +5188,8 @@
     "parameters": []
   },
   "agent.guide.codex": {
-    "zh-CN": "查看随附套件，在 Codex 的插件目录按官方指南添加本地来源并安装。军事题材选择“河图洛书·军事”整套包。若已有多个缓存版本，请选择客户端实际使用的包目录；安装后开始新会话核对 Skills。",
-    "en": "Show the bundled suite, then follow the official guide to add a local source and install in Codex. Use the complete Hetu Luoshu · Military package for military fiction. If several cached versions exist, select the actual package used by your client. Start a new session to verify Skills.",
+    "zh-CN": "在 Codex 中按官方指南安装当前套件。安装后开启新会话，核对 Skills 是否可用。",
+    "en": "Follow the official guide to install the selected suite in Codex. Start a new session and check that its Skills are available.",
     "purpose": "Mac 原生界面：agent.guide.codex",
     "parameters": []
   },
@@ -5564,8 +5564,8 @@
     "parameters": []
   },
   "agent.cover_install": {
-    "zh-CN": "封面协作 · 安装 Skills",
-    "en": "Cover Collaboration · Install Skills",
+    "zh-CN": "安装封面 Skills",
+    "en": "Install cover skills",
     "purpose": "Mac 原生界面：agent.cover_install",
     "parameters": []
   },
@@ -5687,6 +5687,838 @@
     "zh-CN": "河图洛书",
     "en": "Hetu Luoshu",
     "purpose": "Mac 原生界面：品牌名称",
+    "parameters": []
+  },
+  "local_view.title": {
+    "zh-CN": "任务页面",
+    "en": "Task view",
+    "purpose": "Mac 本地任务页面：title",
+    "parameters": []
+  },
+  "local_view.note": {
+    "zh-CN": "按需打开当前任务，用于比较参考方案和记录意见。停止页面不会删除任务。",
+    "en": "Open a page for this task to compare references and record feedback. Stopping the page does not delete the task.",
+    "purpose": "Mac 本地任务页面：note",
+    "parameters": []
+  },
+  "local_view.start": {
+    "zh-CN": "启动任务页面",
+    "en": "Start task view",
+    "purpose": "Mac 本地任务页面：start",
+    "parameters": []
+  },
+  "local_view.starting": {
+    "zh-CN": "正在启动页面…",
+    "en": "Starting task view…",
+    "purpose": "Mac 本地任务页面：starting",
+    "parameters": []
+  },
+  "local_view.open_embedded": {
+    "zh-CN": "在软件内打开",
+    "en": "Open in app",
+    "purpose": "Mac 本地任务页面：open_embedded",
+    "parameters": []
+  },
+  "local_view.copy_url": {
+    "zh-CN": "复制页面地址",
+    "en": "Copy page URL",
+    "purpose": "Mac 本地任务页面：copy_url",
+    "parameters": []
+  },
+  "local_view.open_browser": {
+    "zh-CN": "在浏览器打开",
+    "en": "Open in browser",
+    "purpose": "Mac 本地任务页面：open_browser",
+    "parameters": []
+  },
+  "local_view.stop": {
+    "zh-CN": "停止页面并撤销访问",
+    "en": "Stop and revoke access",
+    "purpose": "Mac 本地任务页面：stop",
+    "parameters": []
+  },
+  "local_view.pair_title": {
+    "zh-CN": "确认浏览器配对",
+    "en": "Confirm browser pairing",
+    "purpose": "Mac 本地任务页面：pair_title",
+    "parameters": []
+  },
+  "local_view.pair_note": {
+    "zh-CN": "仅在配对码与正在打开的浏览器一致时批准。此浏览器只能查看当前任务、保存选择和意见，有效期最多15分钟。",
+    "en": "Approve only if this code matches the browser you opened. This browser can view this task and save preferences or feedback for up to 15 minutes.",
+    "purpose": "Mac 本地任务页面：pair_note",
+    "parameters": []
+  },
+  "local_view.approve": {
+    "zh-CN": "批准这个浏览器",
+    "en": "Approve this browser",
+    "purpose": "Mac 本地任务页面：approve",
+    "parameters": []
+  },
+  "local_view.deny": {
+    "zh-CN": "拒绝配对",
+    "en": "Deny pairing",
+    "purpose": "Mac 本地任务页面：deny",
+    "parameters": []
+  },
+  "local_view.runtime_missing": {
+    "zh-CN": "随附页面运行时不可用，请使用当前原生任务面板。",
+    "en": "The bundled page runtime is unavailable. Use the native task panel.",
+    "purpose": "Mac 本地任务页面：runtime_missing",
+    "parameters": []
+  },
+  "local_view.start_failed": {
+    "zh-CN": "任务页面未能启动或连接已结束，请重新打开当前任务。",
+    "en": "The task view failed to start or its connection ended. Reopen the current task.",
+    "purpose": "Mac 本地任务页面：start_failed",
+    "parameters": []
+  },
+  "local_view.ended": {
+    "zh-CN": "页面访问已结束，已保存的意见仍保留在原任务中。",
+    "en": "Page access has ended. Saved feedback remains in the original task.",
+    "purpose": "Mac 本地任务页面：ended",
+    "parameters": []
+  },
+  "creation.recovery_note": {
+    "zh-CN": "上次操作的结果需要核对。",
+    "en": "Check the result of the previous operation.",
+    "purpose": "Mac 新书筹备界面：creation.recovery_note",
+    "parameters": []
+  },
+  "creation.recover": {
+    "zh-CN": "恢复原操作",
+    "en": "Recover original operation",
+    "purpose": "Mac 新书筹备界面：creation.recover",
+    "parameters": []
+  },
+  "creation.save": {
+    "zh-CN": "保存筹备",
+    "en": "Save plan",
+    "purpose": "Mac 新书筹备界面：creation.save",
+    "parameters": []
+  },
+  "creation.create": {
+    "zh-CN": "创建小说",
+    "en": "Create book",
+    "purpose": "Mac 新书筹备界面：creation.create",
+    "parameters": []
+  },
+  "creation.close_question": {
+    "zh-CN": "保存这次筹备修改？",
+    "en": "Save your planning changes?",
+    "purpose": "Mac 新书筹备界面：creation.close_question",
+    "parameters": []
+  },
+  "creation.save_close": {
+    "zh-CN": "保存并关闭",
+    "en": "Save and close",
+    "purpose": "Mac 新书筹备界面：creation.save_close",
+    "parameters": []
+  },
+  "creation.leave_unsaved": {
+    "zh-CN": "不保存这次修改",
+    "en": "Leave changes unsaved",
+    "purpose": "Mac 新书筹备界面：creation.leave_unsaved",
+    "parameters": []
+  },
+  "creation.details": {
+    "zh-CN": "新书资料",
+    "en": "Book details",
+    "purpose": "Mac 新书筹备界面：creation.details",
+    "parameters": []
+  },
+  "creation.optional_title": {
+    "zh-CN": "书名，可以稍后填写",
+    "en": "Book title, optional while planning",
+    "purpose": "Mac 新书筹备界面：creation.optional_title",
+    "parameters": []
+  },
+  "creation.outline": {
+    "zh-CN": "故事大纲",
+    "en": "Story outline",
+    "purpose": "Mac 新书筹备界面：creation.outline",
+    "parameters": []
+  },
+  "creation.ideas": {
+    "zh-CN": "创作想法与要求",
+    "en": "Ideas and requirements",
+    "purpose": "Mac 新书筹备界面：creation.ideas",
+    "parameters": []
+  },
+  "creation.title_note": {
+    "zh-CN": "书名未定也能保存筹备；确认书名后再创建小说。",
+    "en": "Save your plan before choosing a title. Create the book when the title is ready.",
+    "purpose": "Mac 新书筹备界面：creation.title_note",
+    "parameters": []
+  },
+  "creation.saved": {
+    "zh-CN": "继续筹备",
+    "en": "Continue planning",
+    "purpose": "Mac 新书筹备界面：creation.saved",
+    "parameters": []
+  },
+  "creation.untitled": {
+    "zh-CN": "新书筹备",
+    "en": "Book plan",
+    "purpose": "Mac 新书筹备界面：creation.untitled",
+    "parameters": []
+  },
+  "creation.method": {
+    "zh-CN": "填写方式",
+    "en": "How to prepare",
+    "purpose": "Mac 新书筹备界面：creation.method",
+    "parameters": []
+  },
+  "creation.manual": {
+    "zh-CN": "我已有资料",
+    "en": "Enter my details",
+    "purpose": "Mac 新书筹备界面：creation.manual",
+    "parameters": []
+  },
+  "creation.external": {
+    "zh-CN": "借助外部 AI 构思",
+    "en": "Explore with an external AI",
+    "purpose": "Mac 新书筹备界面：creation.external",
+    "parameters": []
+  },
+  "creation.manual_note": {
+    "zh-CN": "填写资料后创建小说，也可以先保存筹备。",
+    "en": "Enter your details to create a book, or save a plan to continue later.",
+    "purpose": "Mac 新书筹备界面：creation.manual_note",
+    "parameters": []
+  },
+  "creation.task": {
+    "zh-CN": "构思内容",
+    "en": "Planning task",
+    "purpose": "Mac 新书筹备界面：creation.task",
+    "parameters": []
+  },
+  "creation.concept": {
+    "zh-CN": "书名与故事方向",
+    "en": "Title and story concept",
+    "purpose": "Mac 新书筹备界面：creation.concept",
+    "parameters": []
+  },
+  "creation.cover": {
+    "zh-CN": "封面方向",
+    "en": "Cover concepts",
+    "purpose": "Mac 新书筹备界面：creation.cover",
+    "parameters": []
+  },
+  "creation.cover_note": {
+    "zh-CN": "筹备封面仅供参考，创建小说后再导入并选用。",
+    "en": "Planning covers are references. Import and select a cover after creating the book.",
+    "purpose": "Mac 新书筹备界面：creation.cover_note",
+    "parameters": []
+  },
+  "creation.fill_field": {
+    "zh-CN": "填入资料",
+    "en": "Use in details",
+    "purpose": "Mac 新书筹备界面：creation.fill_field",
+    "parameters": []
+  },
+  "creation.open": {
+    "zh-CN": "选择建书筹备文件夹",
+    "en": "Choose a book planning folder",
+    "purpose": "Mac 新书筹备界面：creation.open",
+    "parameters": []
+  },
+  "creation.compare_disk": {
+    "zh-CN": "比较磁盘上的筹备资料",
+    "en": "Compare saved planning details",
+    "purpose": "Mac 新书筹备冲突比较：creation.compare_disk",
+    "parameters": []
+  },
+  "creation.use_latest_baseline": {
+    "zh-CN": "保留我的修改，使用最新基准",
+    "en": "Keep my edits and use the latest baseline",
+    "purpose": "Mac 新书筹备冲突比较：creation.use_latest_baseline",
+    "parameters": []
+  },
+  "cover.manage": {
+    "zh-CN": "封面",
+    "en": "Book Cover",
+    "purpose": "Mac 原生界面：cover.manage",
+    "parameters": []
+  },
+  "cover.current": {
+    "zh-CN": "当前封面",
+    "en": "Current Cover",
+    "purpose": "Mac 原生界面：cover.current",
+    "parameters": []
+  },
+  "cover.revision": {
+    "zh-CN": "封面第 {revision} 版",
+    "en": "Cover revision {revision}",
+    "purpose": "Mac 原生界面：cover.revision",
+    "parameters": [
+      "revision"
+    ]
+  },
+  "cover.placeholder": {
+    "zh-CN": "未选用封面，书库显示默认书封。",
+    "en": "No cover selected. The library uses a placeholder.",
+    "purpose": "Mac 原生界面：cover.placeholder",
+    "parameters": []
+  },
+  "cover.external": {
+    "zh-CN": "外部设计封面",
+    "en": "Design with an External Agent",
+    "purpose": "Mac 原生界面：cover.external",
+    "parameters": []
+  },
+  "cover.direction": {
+    "zh-CN": "视觉方向",
+    "en": "Visual Direction",
+    "purpose": "Mac 原生界面：cover.direction",
+    "parameters": []
+  },
+  "cover.outgoing": {
+    "zh-CN": "提供给外部的作品资料",
+    "en": "Book Details to Share",
+    "purpose": "Mac 原生界面：cover.outgoing",
+    "parameters": []
+  },
+  "cover.text_mode": {
+    "zh-CN": "文字方式",
+    "en": "Cover Text",
+    "purpose": "Mac 原生界面：cover.text_mode",
+    "parameters": []
+  },
+  "cover.background_only": {
+    "zh-CN": "无字底图",
+    "en": "Background Only",
+    "purpose": "Mac 原生界面：cover.background_only",
+    "parameters": []
+  },
+  "cover.title_and_author": {
+    "zh-CN": "图片包含书名和笔名",
+    "en": "Include Title and Author",
+    "purpose": "Mac 原生界面：cover.title_and_author",
+    "parameters": []
+  },
+  "cover.width": {
+    "zh-CN": "宽度",
+    "en": "Width",
+    "purpose": "Mac 原生界面：cover.width",
+    "parameters": []
+  },
+  "cover.height": {
+    "zh-CN": "高度",
+    "en": "Height",
+    "purpose": "Mac 原生界面：cover.height",
+    "parameters": []
+  },
+  "cover.count": {
+    "zh-CN": "候选数量：{count} 张",
+    "en": "Candidates: {count}",
+    "purpose": "Mac 原生界面：cover.count",
+    "parameters": [
+      "count"
+    ]
+  },
+  "cover.prompt_language": {
+    "zh-CN": "提示词语言",
+    "en": "Prompt Language",
+    "purpose": "Mac 原生界面：cover.prompt_language",
+    "parameters": []
+  },
+  "cover.cover_language": {
+    "zh-CN": "封面文字语言",
+    "en": "Cover Text Language",
+    "purpose": "Mac 原生界面：cover.cover_language",
+    "parameters": []
+  },
+  "cover.create_request": {
+    "zh-CN": "保存设计请求",
+    "en": "Save Design Request",
+    "purpose": "Mac 原生界面：cover.create_request",
+    "parameters": []
+  },
+  "cover.import": {
+    "zh-CN": "导入已有封面",
+    "en": "Import an Existing Cover",
+    "purpose": "Mac 原生界面：cover.import",
+    "parameters": []
+  },
+  "cover.choose_file": {
+    "zh-CN": "选择图片",
+    "en": "Choose Image",
+    "purpose": "Mac 原生界面：cover.choose_file",
+    "parameters": []
+  },
+  "cover.add_text": {
+    "zh-CN": "叠加当前书名和笔名",
+    "en": "Overlay Current Title and Author",
+    "purpose": "Mac 原生界面：cover.add_text",
+    "parameters": []
+  },
+  "cover.use": {
+    "zh-CN": "用作封面",
+    "en": "Use as Cover",
+    "purpose": "Mac 原生界面：cover.use",
+    "parameters": []
+  },
+  "cover.requests": {
+    "zh-CN": "设计请求",
+    "en": "Design Requests",
+    "purpose": "Mac 原生界面：cover.requests",
+    "parameters": []
+  },
+  "cover.recheck": {
+    "zh-CN": "检查外部结果",
+    "en": "Check External Results",
+    "purpose": "Mac 原生界面：cover.recheck",
+    "parameters": []
+  },
+  "cover.handoff": {
+    "zh-CN": "复制提示词，在所选客户端发送。",
+    "en": "Copy the prompt and send it in your selected client.",
+    "purpose": "Mac 原生界面：cover.handoff",
+    "parameters": []
+  },
+  "cover.book_changed": {
+    "zh-CN": "书名或笔名已变更，请核对历史候选。",
+    "en": "The title or author name has changed. Review this earlier candidate.",
+    "purpose": "Mac 原生界面：cover.book_changed",
+    "parameters": []
+  },
+  "cover.size_changed": {
+    "zh-CN": "实际尺寸与目标不同，预览保持原比例。",
+    "en": "Actual dimensions differ from the target. The preview keeps the original aspect ratio.",
+    "purpose": "Mac 原生界面：cover.size_changed",
+    "parameters": []
+  },
+  "cover.source": {
+    "zh-CN": "生成说明",
+    "en": "Generation Details",
+    "purpose": "Mac 原生界面：cover.source",
+    "parameters": []
+  },
+  "cover.state.waiting_for_result": {
+    "zh-CN": "等待外部结果",
+    "en": "Waiting for External Results",
+    "purpose": "Mac 原生界面：cover.state.waiting_for_result",
+    "parameters": []
+  },
+  "cover.state.files_discovered": {
+    "zh-CN": "发现图片，等待完整回执",
+    "en": "Images Found, Waiting for Result Manifest",
+    "purpose": "Mac 原生界面：cover.state.files_discovered",
+    "parameters": []
+  },
+  "cover.state.partial_result": {
+    "zh-CN": "已收到部分候选",
+    "en": "Partial Results Received",
+    "purpose": "Mac 原生界面：cover.state.partial_result",
+    "parameters": []
+  },
+  "cover.state.candidates_ready": {
+    "zh-CN": "候选可预览",
+    "en": "Candidates Ready",
+    "purpose": "Mac 原生界面：cover.state.candidates_ready",
+    "parameters": []
+  },
+  "agent.suite.espionage": {
+    "zh-CN": "河图洛书 抗战谍战",
+    "en": "Hetu Luoshu Espionage",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.historical": {
+    "zh-CN": "河图洛书 历史古代",
+    "en": "Hetu Luoshu Historical fiction",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.historical-brainstorm": {
+    "zh-CN": "河图洛书 历史脑洞",
+    "en": "Hetu Luoshu Alternative history",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.xuanhuan": {
+    "zh-CN": "河图洛书 传统玄幻",
+    "en": "Hetu Luoshu Eastern fantasy",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.xuanhuan-brainstorm": {
+    "zh-CN": "河图洛书 玄幻脑洞",
+    "en": "Hetu Luoshu High-concept fantasy",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.xianxia": {
+    "zh-CN": "河图洛书 东方仙侠",
+    "en": "Hetu Luoshu Cultivation fantasy",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.wuxia": {
+    "zh-CN": "河图洛书 武侠江湖",
+    "en": "Hetu Luoshu Wuxia",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.western-fantasy": {
+    "zh-CN": "河图洛书 西方奇幻",
+    "en": "Hetu Luoshu Western fantasy",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.urban-daily": {
+    "zh-CN": "河图洛书 都市日常",
+    "en": "Hetu Luoshu Urban slice of life",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.urban-brainstorm": {
+    "zh-CN": "河图洛书 都市脑洞",
+    "en": "Hetu Luoshu High-concept urban",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.urban-high-martial": {
+    "zh-CN": "河图洛书 都市高武",
+    "en": "Hetu Luoshu Urban martial fantasy",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.urban-cultivation": {
+    "zh-CN": "河图洛书 都市修真",
+    "en": "Hetu Luoshu Urban cultivation",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.urban-farming": {
+    "zh-CN": "河图洛书 都市种田",
+    "en": "Hetu Luoshu Urban and rural enterprise",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.business": {
+    "zh-CN": "河图洛书 职场商战",
+    "en": "Hetu Luoshu Business and careers",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.realistic": {
+    "zh-CN": "河图洛书 现实世情",
+    "en": "Hetu Luoshu Realist fiction",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.scifi": {
+    "zh-CN": "河图洛书 科幻未来",
+    "en": "Hetu Luoshu Science fiction",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.apocalypse": {
+    "zh-CN": "河图洛书 末世灾变",
+    "en": "Hetu Luoshu Apocalypse and survival",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.infinite": {
+    "zh-CN": "河图洛书 无限诸天",
+    "en": "Hetu Luoshu Infinite worlds",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.rules-horror": {
+    "zh-CN": "河图洛书 规则怪谈",
+    "en": "Hetu Luoshu Rules horror",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.mystery": {
+    "zh-CN": "河图洛书 悬疑推理",
+    "en": "Hetu Luoshu Mystery and detection",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.supernatural": {
+    "zh-CN": "河图洛书 悬疑灵异",
+    "en": "Hetu Luoshu Supernatural mystery",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.thriller": {
+    "zh-CN": "河图洛书 惊悚悬险",
+    "en": "Hetu Luoshu Thriller",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.gaming": {
+    "zh-CN": "河图洛书 游戏世界",
+    "en": "Hetu Luoshu Game worlds",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.esports": {
+    "zh-CN": "河图洛书 电竞竞技",
+    "en": "Hetu Luoshu Esports",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.sports": {
+    "zh-CN": "河图洛书 体育赛事",
+    "en": "Hetu Luoshu Sports fiction",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.light-novel": {
+    "zh-CN": "河图洛书 轻小说幻想",
+    "en": "Hetu Luoshu Light novels",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.derivative": {
+    "zh-CN": "河图洛书 衍生同人",
+    "en": "Hetu Luoshu Derivative fiction",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.historical-romance": {
+    "zh-CN": "河图洛书 古代言情",
+    "en": "Hetu Luoshu Historical romance",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.palace": {
+    "zh-CN": "河图洛书 宫斗宅斗",
+    "en": "Hetu Luoshu Palace and household intrigue",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.modern-romance": {
+    "zh-CN": "河图洛书 现代言情",
+    "en": "Hetu Luoshu Contemporary romance",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.ceo-romance": {
+    "zh-CN": "河图洛书 豪门总裁",
+    "en": "Hetu Luoshu Wealth and power romance",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.youth-romance": {
+    "zh-CN": "河图洛书 青春校园",
+    "en": "Hetu Luoshu Youth and campus",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.workplace-romance": {
+    "zh-CN": "河图洛书 职场婚恋",
+    "en": "Hetu Luoshu Work and relationships",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.fantasy-romance": {
+    "zh-CN": "河图洛书 玄幻言情",
+    "en": "Hetu Luoshu Fantasy romance",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.entertainment": {
+    "zh-CN": "河图洛书 文娱星光",
+    "en": "Hetu Luoshu Entertainment fiction",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.period": {
+    "zh-CN": "河图洛书 年代生活",
+    "en": "Hetu Luoshu Period life",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.farming": {
+    "zh-CN": "河图洛书 种田经营",
+    "en": "Hetu Luoshu Farming and community",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.quick-transmigration": {
+    "zh-CN": "河图洛书 快穿世界",
+    "en": "Hetu Luoshu Quick transmigration",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.danmei": {
+    "zh-CN": "河图洛书 双男主关系",
+    "en": "Hetu Luoshu Male-male relationships",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.baihe": {
+    "zh-CN": "河图洛书 双女主关系",
+    "en": "Hetu Luoshu Female-female relationships",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.war-god": {
+    "zh-CN": "河图洛书 战神赘婿",
+    "en": "Hetu Luoshu Hidden power and identity",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.short-story": {
+    "zh-CN": "河图洛书 短篇故事",
+    "en": "Hetu Luoshu Short fiction",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite.historical-life": {
+    "zh-CN": "河图洛书 古风世情",
+    "en": "Hetu Luoshu Historical social life",
+    "purpose": "按作品选择的题材套件名称",
+    "parameters": []
+  },
+  "agent.suite_scope": {
+    "zh-CN": "仅安装所选套件的任务与题材方法：",
+    "en": "Install only the tasks and methods in the selected suite:",
+    "purpose": "题材套件筛选与外部Agent选型",
+    "parameters": []
+  },
+  "agent.suite_find": {
+    "zh-CN": "按分类查找或由外部 Agent 引导",
+    "en": "Find by category or ask an external Agent",
+    "purpose": "题材套件筛选与外部Agent选型",
+    "parameters": []
+  },
+  "agent.suite_search": {
+    "zh-CN": "搜索题材、流派或标签，如末世、无限流",
+    "en": "Search genres or tags, e.g. apocalypse, infinite worlds",
+    "purpose": "题材套件筛选与外部Agent选型",
+    "parameters": []
+  },
+  "agent.platform": {
+    "zh-CN": "平台目录",
+    "en": "Platform catalog",
+    "purpose": "题材套件筛选与外部Agent选型",
+    "parameters": []
+  },
+  "agent.all_platforms": {
+    "zh-CN": "全部平台",
+    "en": "All platforms",
+    "purpose": "题材套件筛选与外部Agent选型",
+    "parameters": []
+  },
+  "agent.channel": {
+    "zh-CN": "读者频道",
+    "en": "Reader channel",
+    "purpose": "题材套件筛选与外部Agent选型",
+    "parameters": []
+  },
+  "agent.all_channels": {
+    "zh-CN": "全部频道",
+    "en": "All channels",
+    "purpose": "题材套件筛选与外部Agent选型",
+    "parameters": []
+  },
+  "agent.channel.male": {
+    "zh-CN": "男频",
+    "en": "Male readership",
+    "purpose": "题材套件筛选与外部Agent选型",
+    "parameters": []
+  },
+  "agent.channel.female": {
+    "zh-CN": "女频",
+    "en": "Female readership",
+    "purpose": "题材套件筛选与外部Agent选型",
+    "parameters": []
+  },
+  "agent.no_suite_match": {
+    "zh-CN": "未找到对应套件，可改用其他关键词或让外部 Agent 帮助定位。",
+    "en": "No matching suite. Try another term or ask an external Agent.",
+    "purpose": "题材套件筛选与外部Agent选型",
+    "parameters": []
+  },
+  "agent.directory_matches": {
+    "zh-CN": "根据题材与构思匹配的目录项（未进行 AI 分析）：",
+    "en": "Catalog matches for your genre and brief (no AI analysis):",
+    "purpose": "题材套件筛选与外部Agent选型",
+    "parameters": []
+  },
+  "agent.external_selection": {
+    "zh-CN": "由外部 Agent 引导选型",
+    "en": "Let an external Agent guide selection",
+    "purpose": "题材套件筛选与外部Agent选型",
+    "parameters": []
+  },
+  "agent.external_selection_note": {
+    "zh-CN": "将选型请求交给 Codex、Claude Code 等外部 Agent；把它返回的 JSON 粘到下方。选定一项后，再从安装窗口安装。河图不连接大模型。",
+    "en": "Give the selection request to Codex, Claude Code, or another external Agent, then paste its JSON below. Choose one recommendation and install it in the installation window. Hetu does not connect to models.",
+    "purpose": "题材套件筛选与外部Agent选型",
+    "parameters": []
+  },
+  "agent.selection_brief": {
+    "zh-CN": "交给 Agent 的创作意图（留空则使用当前题材与构思）",
+    "en": "Brief for the Agent (leave blank to use the current genre and idea)",
+    "purpose": "题材套件筛选与外部Agent选型",
+    "parameters": []
+  },
+  "agent.copy_selection_request": {
+    "zh-CN": "复制外部 Agent 选型请求",
+    "en": "Copy selection request for an external Agent",
+    "purpose": "题材套件筛选与外部Agent选型",
+    "parameters": []
+  },
+  "agent.selection_copied": {
+    "zh-CN": "已复制选型请求，请交给所选外部 Agent。",
+    "en": "Selection request copied. Give it to your chosen external Agent.",
+    "purpose": "题材套件筛选与外部Agent选型",
+    "parameters": []
+  },
+  "agent.agent_advice": {
+    "zh-CN": "粘贴外部 Agent 返回的推荐 JSON",
+    "en": "Paste recommendation JSON from an external Agent",
+    "purpose": "题材套件筛选与外部Agent选型",
+    "parameters": []
+  },
+  "agent.read_advice": {
+    "zh-CN": "读取 Agent 建议",
+    "en": "Read Agent recommendations",
+    "purpose": "题材套件筛选与外部Agent选型",
+    "parameters": []
+  },
+  "agent.invalid_advice": {
+    "zh-CN": "建议格式无效：需为目录内套件ID和理由，最多三项。",
+    "en": "Invalid advice: use catalog suite IDs and reasons, up to three recommendations.",
+    "purpose": "题材套件筛选与外部Agent选型",
+    "parameters": []
+  },
+  "agent.use_advice": {
+    "zh-CN": "选用此套件",
+    "en": "Choose this suite",
+    "purpose": "题材套件筛选与外部Agent选型",
+    "parameters": []
+  },
+  "window.zoom": {
+    "zh-CN": "放大或还原窗口",
+    "en": "Zoom or Restore Window",
+    "purpose": "工作台窗口缩放",
+    "parameters": []
+  },
+  "cover.history": {
+    "zh-CN": "封面历史",
+    "en": "Cover history",
+    "purpose": "Mac 封面历史操作",
+    "parameters": []
+  },
+  "cover.view_revision": {
+    "zh-CN": "查看版本",
+    "en": "View revision",
+    "purpose": "Mac 封面历史操作",
+    "parameters": []
+  },
+  "cover.restore": {
+    "zh-CN": "用作当前封面",
+    "en": "Use as current cover",
+    "purpose": "Mac 封面历史操作",
     "parameters": []
   }
 }

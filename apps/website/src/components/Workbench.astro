@@ -1,10 +1,23 @@
 ---
 import type { Locale } from '../lib/site';
+import catalog from '../../../../integrations/catalog.json';
+import nativeStrings from '../../../../assets/localization/native.json';
 import '../styles/workbench.css';
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
+const plugins = import.meta.glob<{ version: string }>('../../../../integrations/codex/*/plugin.json', { eager: true, import: 'default' });
+const strings = nativeStrings as Record<string, { 'zh-CN': string; en: string }>;
+const demoCatalog = {
+  skills: catalog.skills,
+  suites: catalog.suites.map(suite => {
+    const plugin = plugins[`../../../../integrations/codex/${suite.pluginName}/plugin.json`];
+    const title = strings[suite.titleKey];
+    if (!plugin?.version || !title?.['zh-CN'] || !title.en) throw new Error(`缺少题材包或双语名称：${suite.id}`);
+    return { id: suite.id, title, version: plugin.version };
+  }),
+};
 ---
-<div class="demo" data-hetu-demo data-locale={locale} data-theme="light" role="region" aria-label={locale === 'en' ? 'Interactive Hetu Luoshu workspace demo' : '河图洛书工作台交互演示'}>
+<div class="demo" data-hetu-demo data-agent-catalog={JSON.stringify(demoCatalog)} data-locale={locale} data-theme="light" role="region" aria-label={locale === 'en' ? 'Interactive Hetu Luoshu workspace demo' : '河图洛书工作台交互演示'}>
   <div class="demo-app"></div>
   <p class="demo-notice">{locale === 'en' ? 'In-page demo of the current macOS interface. No files, models or MCP connections are accessed. Refreshing resets all changes.' : '按当前 macOS 界面制作的页面内演示。不读写文件、不调用模型、不连接 MCP；刷新后所有修改重置。'}</p>
   <noscript><p>{locale === 'en' ? 'Enable JavaScript to try the demo. The user guides are available without it.' : '启用 JavaScript 后可操作演示；使用指南无需 JavaScript 即可阅读。'}</p></noscript>

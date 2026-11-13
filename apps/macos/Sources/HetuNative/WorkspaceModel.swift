@@ -17,6 +17,7 @@ public final class WorkspaceModel {
     public private(set) var info: JSONValue = .null
     public private(set) var bible: JSONValue = .null
     public private(set) var novel: JSONValue = .null
+    public private(set) var cover: JSONValue = .null
     public private(set) var libraryEntries: [LibraryEntry] = []
     public private(set) var documents: [DocumentItem] = []
     public private(set) var drafts: [JSONValue] = []
@@ -76,14 +77,16 @@ public final class WorkspaceModel {
             let info = try await next.data("hetu.workspaces.get")
             if let expectedWorkspaceID, info["workspace"]["workspace_id"].string != expectedWorkspaceID { throw LibraryStore.LibraryError.wrongWorkspace }
             let novel = try await next.data("hetu.novels.get")
+            let cover = await readCover(next)
             let bible = try await next.data("hetu.blueprints.get")
             let documents = try await next.data("hetu.documents.list")
             let drafts = try await next.data("hetu.drafts.list")
             let pendingOperations = try await recovery.structureOperations(workspaceID: info["workspace"]["workspace_id"].string ?? "")
             let metadata = novel["initialized"].bool == true ? novel["novel"]["metadata"] : .object(["title": info["workspace"]["title"]])
-            let entries = try await library.register(url: url, workspaceID: info["workspace"]["workspace_id"].string ?? "", metadata: metadata, chapterCount: novel["novel"]["chapters"].array.count)
+            let entries = try await library.register(url: url, workspaceID: info["workspace"]["workspace_id"].string ?? "", metadata: metadata, chapterCount: novel["novel"]["chapters"].array.count, cover: cover)
             recoveryTask?.cancel(); statisticsTask?.cancel()
             self.workspace = next; self.info = info; self.bible = bible; self.novel = novel; self.libraryEntries = entries
+            self.cover = cover
             self.documents = documents["documents"].array.map(DocumentItem.init)
             self.drafts = drafts["drafts"].array
             pendingStructureOperations = pendingOperations
@@ -98,6 +101,7 @@ public final class WorkspaceModel {
         do {
             bible = try await workspace.data("hetu.blueprints.get")
             novel = try await workspace.data("hetu.novels.get")
+            cover = await readCover(workspace)
             documents = try await workspace.data("hetu.documents.list")["documents"].array.map(DocumentItem.init)
             drafts = try await workspace.data("hetu.drafts.list")["drafts"].array
             try await updateLibraryProjection()
@@ -341,6 +345,10 @@ public final class WorkspaceModel {
                 novel = try await workspace.data("hetu.novels.get")
                 try await updateLibraryProjection()
             }
+            if action == "hetu.covers.select" {
+                cover = try await workspace.data("hetu.covers.get")
+                try await updateLibraryProjection()
+            }
             if let operation { try await recovery.removeOperation(operation); pendingStructureOperations = try await recovery.structureOperations(workspaceID: workspaceID) }
             return value
         }
@@ -373,14 +381,18 @@ public final class WorkspaceModel {
     public func returnToLibrary() async {
         guard !busy else { return }
         recoveryTask?.cancel(); statisticsTask?.cancel(); generation = UUID(); resetDocument()
-        workspace = nil; info = .null; bible = .null; novel = .null
+        workspace = nil; info = .null; bible = .null; novel = .null; cover = .null
         documents = []; drafts = []; pendingStructureOperations = []
         await loadLibrary()
     }
     private func updateLibraryProjection() async throws {
         guard let workspace else { return }
         let metadata = novel["initialized"].bool == true ? novelMetadata : .object(["title": info["workspace"]["title"]])
-        libraryEntries = try await library.register(url: workspace.url, workspaceID: workspaceID, metadata: metadata, chapterCount: chapters.count, opened: false)
+        libraryEntries = try await library.register(url: workspace.url, workspaceID: workspaceID, metadata: metadata, chapterCount: chapters.count, opened: false, cover: cover)
+    }
+    private func readCover(_ workspace: Workspace) async -> JSONValue {
+        do { return try await workspace.data("hetu.covers.get") }
+        catch { return .object(["error": .string(localizer.error(error))]) }
     }
     public func saveNovelMetadata(_ metadata: JSONValue, expected: JSONValue? = nil) async -> Bool {
         let initialized = novel["initialized"].bool == true

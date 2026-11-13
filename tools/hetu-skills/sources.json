@@ -1,0 +1,258 @@
+{
+  "schema_version": "2.0.0",
+  "sources": [
+    {
+      "id": "screenwriting",
+      "repository": "https://github.com/jtydhr88/screenwriting-skills",
+      "commit": "51115f18d160aa8b2ac5813e4432b6f0b425358f",
+      "license": "MIT",
+      "decision": "synthesis-reference",
+      "reviewedFiles": [
+        {
+          "path": "plugins/screenwriting/skills/chekhov-dramaturgy/SKILL.md",
+          "sha256": "1baaec90da04dce0f7d1e3d798843850660ca7bccc804c5ea0c5c1486e6191b6"
+        },
+        {
+          "path": "plugins/screenwriting/skills/chekhov-dramaturgy/reference.md",
+          "sha256": "62e0ca7f7ff3923de05c8aa7765e0fb77bf708c3ae2ff27253f72bbb60b33ebb"
+        },
+        {
+          "path": "plugins/screenwriting/skills/ozu-screenplay-style/SKILL.md",
+          "sha256": "b17c23abb6e9c48c8149fa312bc57139774b786563d662a267a4d93ba6043f98"
+        }
+      ],
+      "license_file": "licenses/screenwriting-MIT.txt",
+      "license_sha256": "dcf1862caccc15b318642682e347ae9794ca5d3376ece18a0e94773968959276"
+    },
+    {
+      "id": "story",
+      "repository": "https://github.com/danjdewhurst/story-skills",
+      "commit": "74dd2f92dd757d4b262085bddccb09ed5a4281d1",
+      "license": "MIT",
+      "decision": "synthesis-reference",
+      "reviewedFiles": [
+        {
+          "path": "skills/scene-craft/references/deep-pov.md",
+          "sha256": "5ff5924e63955504398ac2aa9ac9f6f957627ed1cfce0602200454ad8e3c7c32"
+        },
+        {
+          "path": "skills/scene-craft/references/dialogue-subtext.md",
+          "sha256": "5988bdb4ba9b596fe40125ece9a11c448a48fb3418d80a40eae1bbac12332514"
+        },
+        {
+          "path": "skills/scene-craft/references/exposition.md",
+          "sha256": "d9676f2b54c58fa2d1ac02db1aa0991f4b03a5d63c0184a54b1c2d603d769796"
+        }
+      ],
+      "license_file": "licenses/story-MIT.txt",
+      "license_sha256": "1c8c7a7b5bef62874f510f603f02ada40f5880668e8983d2fc7d1150b4318226"
+    },
+    {
+      "id": "webnovel",
+      "repository": "https://github.com/zenstory-ai/oh-story-claudecode",
+      "commit": "41a9b6c855d7d29a2bf214b4eefda2b10a0e8afb",
+      "license": "MIT",
+      "decision": "synthesis-reference",
+      "reviewedFiles": [
+        {
+          "path": "skills/story-long-write/references/character-basics.md",
+          "sha256": "e11fe53f693a3b359518efecbef685886044e7a9f660d815d2f15bf74668c171"
+        },
+        {
+          "path": "skills/story-long-write/references/character-relations.md",
+          "sha256": "d980256286ea50865ab09b53bb42376ed97aea7810d626e3310cee7612e6af12"
+        },
+        {
+          "path": "skills/story-long-write/references/dialogue-mastery.md",
+          "sha256": "6b33c4940188586691fcac85ed4b91cdc0e07ce3ee1da0b4dbdc5744587f30e3"
+        }
+      ],
+      "license_file": "licenses/webnovel-MIT.txt",
+      "license_sha256": "52c71355258924a967927780245f70677b38ff7d073c03f9096df33888f34653"
+    },
+    {
+      "id": "webnovel-writer",
+      "repository": "https://github.com/lingfengQAQ/webnovel-writer",
+      "commit": "e5b6a4b3798224dd2e78c806b6923abb3924dd56",
+      "license": "GPL-3.0",
+      "decision": "comparison-only",
+      "reviewedFiles": [
+        {
+          "path": "README.md",
+          "sha256": "45665748328012ddfeff6143dea9d3a4e12a8b0e5b3953fff3fbbba3e3f0ed57"
+        }
+      ],
+      "reason": "只对照覆盖与流程，不复制正文、代码或分类表。"
+    },
+    {
+      "id": "chinese-webnovel",
+      "repository": "https://github.com/Tomsawyerhu/Chinese-WebNovel-Skill",
+      "commit": "96709f477f4b59be856ebb10bec052dd0452b846",
+      "license": null,
+      "decision": "comparison-only",
+      "reviewedFiles": [
+        {
+          "path": "README.md",
+          "sha256": "4fa5abb04dda1d3475c172b2e9272d18e09c0ab3bdbaffe73e2cb14daf64e48f"
+        }
+      ],
+      "reason": "只对照覆盖与流程，不复制正文、代码或分类表。"
+    },
+    {
+      "id": "bookflow",
+      "repository": "https://github.com/LanyXiaosheng/bookflow-skill",
+      "commit": "eb56fb5c66ace4e0dd98027291c6912a2062c079",
+      "license": "MIT",
+      "decision": "synthesis-reference",
+      "reviewedFiles": [
+        {
+          "path": "references/factory/02-资产库/02-番茄短篇标题模板库.md",
+          "sha256": "6d6bc1bc4822699b6d0418f68409de3faa4ab7dbcb5d0bd111bebd6014e072c7"
+        },
+        {
+          "path": "references/factory/02-资产库/02-番茄短篇简介模板库.md",
+          "sha256": "94f2e281c64188acd99ed64338cad79c0aa082a63903ca226a7be4ab829af57a"
+        },
+        {
+          "path": "references/factory/02-资产库/02-番茄短篇冲突模板库.md",
+          "sha256": "8a1813ef8c25472f47cc57f79d447acfa5343c4754073eb384e1f32246a1dfa3"
+        }
+      ],
+      "license_file": "licenses/bookflow-MIT.txt",
+      "license_sha256": "44b86b87c41729aa8bc6e54e8d81303a0e725ca5bb291bde28e8c492285d8597"
+    },
+    {
+      "id": "chinese-novelist",
+      "repository": "https://github.com/PenglongHuang/chinese-novelist-skill",
+      "commit": "507d41567925eab520ad459db08fda83813e8051",
+      "license": "MIT",
+      "decision": "synthesis-reference",
+      "reviewedFiles": [
+        {
+          "path": "SKILL.md",
+          "sha256": "64629a252f85a540ef4b5e522b5d964e8bf05614a88c358d8b44d4e115cb246b"
+        },
+        {
+          "path": "references/guides/character-building.md",
+          "sha256": "036cd662bd806083825d739ae4777b94fbd0f56a77a04df1bc2f8b75e3ab3bf1"
+        }
+      ],
+      "license_file": "licenses/chinese-novelist-MIT.txt",
+      "license_sha256": "27315737dd6b5dd75d99eb148fa32fc3cafdeb1e51ea0b8b6242e88acf9a2117"
+    },
+    {
+      "id": "novel-writer",
+      "repository": "https://github.com/wordflowlab/novel-writer-skills",
+      "commit": "5bc9b373ff609e8910e0e8d179e4a697bf2b1268",
+      "license": "MIT",
+      "decision": "synthesis-reference",
+      "reviewedFiles": [
+        {
+          "path": "templates/skills/genre-knowledge/mystery/SKILL.md",
+          "sha256": "fbdb55abc0d5293602154d64ada127f519f4396fd032a8e7829e0c5daf87bc3e"
+        },
+        {
+          "path": "templates/skills/writing-techniques/scene-structure/SKILL.md",
+          "sha256": "6957bcefb32c7591855b6329c52d5b9520635873ba6c99c3f68990108455fe09"
+        }
+      ],
+      "license_file": "licenses/novel-writer-MIT.txt",
+      "license_sha256": "cceaaca22b4ef3ead856cf24036baabb924f48e094a2950959277c1d78e24e35"
+    },
+    {
+      "id": "webnovel-master",
+      "repository": "https://github.com/TianHengZhuang/Chinese-WebNovel-Master",
+      "commit": "d6730b63cd950ea8aa7af86293224d22b0873e8c",
+      "license": "MIT",
+      "decision": "synthesis-reference",
+      "reviewedFiles": [
+        {
+          "path": "SKILL.md",
+          "sha256": "64118caef4f1ab5a74257abe671486c345eb6d7461f528b9a12d73069dfdc6b6"
+        }
+      ],
+      "license_file": "licenses/webnovel-master-MIT.txt",
+      "license_sha256": "6ad9f25b48146e8c2ed94807eea0c410d5f27f7b6ce280de1093e46dcd73b7ab"
+    },
+    {
+      "id": "general-novel",
+      "repository": "https://github.com/xiaoyuCR7/general-novel-skill",
+      "commit": "f099e4bf9524e26c6e1680193ea215767e07e604",
+      "license": "MIT",
+      "decision": "synthesis-reference",
+      "reviewedFiles": [
+        {
+          "path": "SKILL.md",
+          "sha256": "1afc3aa17b349d102d801939a122be6766905efb2f22ae2c95d5c6e7eb5dbd8f"
+        },
+        {
+          "path": "references/genres/INDEX.md",
+          "sha256": "3ad057221be227979c25713567c72a3f9c3ec5d4cb5215adbabc4efb7368c8f7"
+        }
+      ],
+      "license_file": "licenses/general-novel-MIT.txt",
+      "license_sha256": "865ff2f8621f00bbac97a4e06f09aa7e628d9ac88332b31736873901fc62fc29"
+    }
+  ],
+  "classificationEvidence": [
+    {
+      "id": "qidian-mobile-20261113",
+      "url": "https://m.qidian.com/category/",
+      "kind": "official-public-page",
+      "observedOn": "2026-11-13",
+      "sha256": "499653aa0570a2f461e8ca5618434af5529e02ccd21f4d752410126b554f3617",
+      "scope": "男频主类及子类；SSR info，保留分类ID，不含作品量"
+    },
+    {
+      "id": "fanqie-official-labels",
+      "url": "https://fanqienovel.com/writer/zone/article/7617805652965982232",
+      "kind": "official-public-explanation",
+      "observedOn": "2026-11-13",
+      "sha256": "0b426dd458106be65dd153803c0ac3a56e4c2be612b3b2bb0d70b47d0eee1edf",
+      "scope": "阅读标签与内容标签的维度说明，不作为后台所有选项当前实测"
+    },
+    {
+      "id": "fanqie-reading-male",
+      "url": "https://github.com/zenstory-ai/oh-story-claudecode/blob/41a9b6c855d7d29a2bf214b4eefda2b10a0e8afb/skills/story-publish/references/fanqie-reading-male.md",
+      "kind": "pinned-secondary-transcription",
+      "verifiedOn": "2026-10-25",
+      "observedOn": "2026-11-13",
+      "sha256": "54c894711311be51caac2a5f5eb025f25f88088f8ba57419a99c5e05eed2452c",
+      "scope": "上游公开后台截图转录；已抽查女频阅读主类与短故事主类，不声称河图登录后台实测"
+    },
+    {
+      "id": "fanqie-reading-female",
+      "url": "https://github.com/zenstory-ai/oh-story-claudecode/blob/41a9b6c855d7d29a2bf214b4eefda2b10a0e8afb/skills/story-publish/references/fanqie-reading-female.md",
+      "kind": "pinned-secondary-transcription",
+      "verifiedOn": "2026-10-25",
+      "observedOn": "2026-11-13",
+      "sha256": "0b05e75427a6d72b3a4dbec73b8a65ffbabd9041ba8d839fab2eeacf17aa7a83",
+      "scope": "上游公开后台截图转录；已抽查女频阅读主类与短故事主类，不声称河图登录后台实测"
+    },
+    {
+      "id": "fanqie-content-tags",
+      "url": "https://github.com/zenstory-ai/oh-story-claudecode/blob/41a9b6c855d7d29a2bf214b4eefda2b10a0e8afb/skills/story-publish/references/fanqie-content-tags.md",
+      "kind": "pinned-secondary-transcription",
+      "verifiedOn": "2026-10-29",
+      "observedOn": "2026-11-13",
+      "sha256": "3e36430f20e668cc9e0b9fc67b925a8342f867142a71014a22adc60a8f469181",
+      "scope": "上游公开后台截图转录；已抽查女频阅读主类与短故事主类，不声称河图登录后台实测"
+    },
+    {
+      "id": "fanqie-short",
+      "url": "https://github.com/zenstory-ai/oh-story-claudecode/blob/41a9b6c855d7d29a2bf214b4eefda2b10a0e8afb/skills/story-publish/references/fanqie-short.md",
+      "kind": "pinned-secondary-transcription",
+      "verifiedOn": "2026-10-28",
+      "observedOn": "2026-11-13",
+      "sha256": "d3accd53e284853985cda8d03e782300bb526c4ab67c0a8973ea2003e1b35449",
+      "scope": "上游公开后台截图转录；已抽查女频阅读主类与短故事主类，不声称河图登录后台实测"
+    },
+    {
+      "id": "qdmm-unverified",
+      "url": "https://m.qdmm.com/category/",
+      "kind": "unavailable",
+      "observedOn": "2026-11-13",
+      "scope": "返回202挑战页，未取得女频分类，目录不冒称覆盖起点女生当前全量"
+    }
+  ]
+}

@@ -179,6 +179,10 @@ h1, h2, h3, p { margin-top: 0; }
 .doc-article blockquote { border-left: 3px solid #9cbfae; color: var(--muted); margin: 23px 0; padding: 1px 20px; }
 .doc-article li { margin: 6px 0; }
 .doc-article img { max-height: 600px; object-fit: contain; margin: 25px auto; }
+.doc-article .guide-image { display: block; overflow: hidden; margin-top: 24px; border: 1px solid var(--line); border-radius: 8px; }
+.doc-article .guide-image img { display: block; width: 100%; height: auto; max-height: none; margin: 0; }
+.guide-image-caption { display: block; margin: 8px 0 24px; color: var(--muted); font-size: 12px; line-height: 1.8; }
+.guide-image-caption > span { display: block; color: var(--jade); }
 .doc-toc { padding-top: 30px; }
 .doc-toc > div { position: sticky; top: 30px; }
 .doc-toc strong { font-size: 12px; }

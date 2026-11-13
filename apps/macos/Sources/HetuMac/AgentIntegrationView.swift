@@ -36,9 +36,7 @@ struct AgentIntegrationView: View {
                 ForEach(AgentClient.allCases, id: \.self) { Text(t($0.titleKey)).tag($0) }
             }.frame(maxWidth: 440)
             if let catalog {
-                Picker(t("agent.suite"), selection: Binding(get: { association.suiteID }, set: { change(AgentAssociation(client: association.client, suiteID: $0)) })) {
-                    ForEach(catalog.suites) { Text(t($0.titleKey)).tag($0.id) }
-                }.frame(maxWidth: 440)
+                AgentSuitePicker(catalog: catalog, suiteID: Binding(get: { association.suiteID }, set: { change(AgentAssociation(client: association.client, suiteID: $0)) }), localizer: localizer)
             } else { Label(t("agent.catalog_error"), systemImage: "exclamationmark.triangle").foregroundStyle(WorkbenchPalette.muted) }
             if association.client == .none {
                 Text(t("agent.manual_note")).font(.callout).foregroundStyle(WorkbenchPalette.muted)

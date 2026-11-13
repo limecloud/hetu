@@ -22,23 +22,51 @@ public struct AgentSuiteInstaller: Sendable {
             ?? FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".codex")
         self.codexExecutable = codexExecutable ?? Self.findCodex()
     }
-    public static func findCodex() -> URL? {
+    public static func findCodex(searchPath: String? = nil) -> URL? {
         let home = FileManager.default.homeDirectoryForCurrentUser
-        let paths = (ProcessInfo.processInfo.environment["PATH"] ?? "").components(separatedBy: ":").filter { $0.hasPrefix("/") }.map { URL(fileURLWithPath: $0).appendingPathComponent("codex") }
+        let environmentPath = searchPath ?? ProcessInfo.processInfo.environment["PATH"] ?? ""
+        let directories = environmentPath.components(separatedBy: ":").filter { $0.hasPrefix("/") }.map { URL(fileURLWithPath: $0) }
+        let paths = directories.map { $0.appendingPathComponent("codex") }
         let candidates = paths + [home.appendingPathComponent(".bun/bin/codex"), home.appendingPathComponent(".local/bin/codex"),
             URL(fileURLWithPath: "/opt/homebrew/bin/codex"), URL(fileURLWithPath: "/usr/local/bin/codex"),
             URL(fileURLWithPath: "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex")]
-        return candidates.first { FileManager.default.isExecutableFile(atPath: $0.path) }
+        return candidates.first { hasInterpreter($0, searchDirectories: directories) }
+    }
+    /// 只做有界入口预检；插件命令和版本仍在作者点击安装后由官方 CLI 回执核验。
+    private static func hasInterpreter(_ executable: URL, searchDirectories: [URL]) -> Bool {
+        guard FileManager.default.isExecutableFile(atPath: executable.path),
+              let file = try? FileHandle(forReadingFrom: executable) else { return false }
+        defer { try? file.close() }
+        guard let prefix = try? file.read(upToCount: 4096), !prefix.isEmpty else { return false }
+        guard prefix.starts(with: [0x23, 0x21]) else { return true }
+        let line = prefix.split(separator: 0x0A, maxSplits: 1).first!
+        guard let text = String(data: Data(line.dropFirst(2)), encoding: .utf8) else { return false }
+        let words = text.split(whereSeparator: { $0.isWhitespace }).map(String.init)
+        guard let interpreter = words.first, interpreter.hasPrefix("/"),
+              FileManager.default.isExecutableFile(atPath: interpreter) else { return false }
+        if URL(fileURLWithPath: interpreter).lastPathComponent != "env" { return true }
+        let arguments = Array(words.dropFirst())
+        let name = arguments.first == "-S" ? arguments.dropFirst().first : arguments.first
+        guard let name, !name.hasPrefix("-"), !name.contains("=") else { return false }
+        if name.hasPrefix("/") { return FileManager.default.isExecutableFile(atPath: name) }
+        return searchDirectories.contains { FileManager.default.isExecutableFile(atPath: $0.appendingPathComponent(name).path) }
     }
     public func installCodex(suite: AgentSuite, catalog: AgentSuiteCatalog) throws -> AgentInstallReceipt {
         guard let codexExecutable else { throw AgentInstallError.clientUnavailable }
         let source = catalog.directory(for: suite)
         let inspected = AgentPackageInspector(codexDirectory: codexDirectory).inspect(suite: suite, catalog: catalog, client: .codex, selectedDirectory: source)
         guard inspected.state == .filesFound, let version = inspected.version else { throw AgentInstallError.invalidPackage }
+        // 市场来源保持稳定；历史按版本登记的来源继续作为受管根，不移除或重建作者登记。
+        let marketName = "hetu-luoshu-" + suite.id
+        let market = try codexMarket(suite: suite, executable: codexExecutable)
+        let manifestURL = market.appendingPathComponent(".agents/plugins/marketplace.json")
+        let previousManifest = try existingCodexManifest(at: market, suite: suite)
+        let relativePackage = "./versions/\(version)/\(suite.pluginName)"
+        let package = market.appendingPathComponent(relativePackage)
+        guard package.resolvingSymlinksInPath().path.hasPrefix(market.resolvingSymlinksInPath().path + "/"),
+              manifestURL.resolvingSymlinksInPath().path.hasPrefix(market.resolvingSymlinksInPath().path + "/") else { throw AgentInstallError.destinationConflict }
+        try FileManager.default.createDirectory(at: package.deletingLastPathComponent(), withIntermediateDirectories: true)
         // 同版本内容不得静默覆盖；失败后保留原现场，可从官方登记回读恢复。
-        let market = supportDirectory.appendingPathComponent("codex/\(suite.id)/\(version)")
-        let package = market.appendingPathComponent(suite.pluginName)
-        try FileManager.default.createDirectory(at: market, withIntermediateDirectories: true)
         if FileManager.default.fileExists(atPath: package.path) {
             guard try fingerprint(source) == fingerprint(package) else { throw AgentInstallError.destinationConflict }
         } else {
@@ -47,17 +75,12 @@ public struct AgentSuiteInstaller: Sendable {
             try FileManager.default.copyItem(at: source, to: incoming)
             try FileManager.default.moveItem(at: incoming, to: package)
         }
-        let marketName = "hetu-luoshu-" + suite.id
-        let manifest: [String: Any] = ["name": marketName, "plugins": [["name": suite.pluginName,
-            "source": ["source": "local", "path": "./" + suite.pluginName],
-            "policy": ["installation": "AVAILABLE", "authentication": "ON_INSTALL"], "category": "Productivity"]]]
-        let directory = market.appendingPathComponent(".agents/plugins")
-        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        let bytes = try JSONSerialization.data(withJSONObject: manifest, options: [.sortedKeys])
-        let manifestURL = directory.appendingPathComponent("marketplace.json")
-        if FileManager.default.fileExists(atPath: manifestURL.path) {
-            guard try Data(contentsOf: manifestURL) == bytes else { throw AgentInstallError.destinationConflict }
-        } else { try bytes.write(to: manifestURL, options: .atomic) }
+        try FileManager.default.createDirectory(at: manifestURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+        let bytes = try marketplaceManifest(suite: suite, path: relativePackage)
+        if let previousManifest {
+            guard try Data(contentsOf: manifestURL) == previousManifest else { throw AgentInstallError.destinationConflict }
+        } else if FileManager.default.fileExists(atPath: manifestURL.path) { throw AgentInstallError.destinationConflict }
+        if previousManifest != bytes { try bytes.write(to: manifestURL, options: .atomic) }
         _ = try command(codexExecutable, ["plugin", "marketplace", "add", market.path, "--json"])
         let installed = try command(codexExecutable, ["plugin", "add", suite.pluginName + "@" + marketName, "--json"])
         let listed = try command(codexExecutable, ["plugin", "list", "--marketplace", marketName, "--json"])
@@ -68,6 +91,62 @@ public struct AgentSuiteInstaller: Sendable {
         guard destination.resolvingSymlinksInPath().path.hasPrefix(codexDirectory.resolvingSymlinksInPath().path + "/plugins/cache/") else { throw AgentInstallError.verificationFailed }
         guard try fingerprint(source) == fingerprint(destination) else { throw AgentInstallError.verificationFailed }
         return AgentInstallReceipt(directory: destination, version: version)
+    }
+    private func codexMarket(suite: AgentSuite, executable: URL) throws -> URL {
+        let root = supportDirectory.appendingPathComponent("codex/" + suite.id).resolvingSymlinksInPath().standardizedFileURL
+        let listed = try command(executable, ["plugin", "marketplace", "list", "--json"])
+        guard let records = listed["marketplaces"] as? [[String: Any]] else { throw AgentInstallError.verificationFailed }
+        let matches = records.filter { $0["name"] as? String == "hetu-luoshu-" + suite.id }
+        guard !matches.isEmpty else { return root }
+        guard matches.count == 1, let path = matches[0]["root"] as? String, path.hasPrefix("/"),
+              let source = matches[0]["marketplaceSource"] as? [String: Any], source["sourceType"] as? String == "local",
+              let sourcePath = source["source"] as? String, sourcePath.hasPrefix("/") else { throw AgentInstallError.destinationConflict }
+        let market = URL(fileURLWithPath: path).resolvingSymlinksInPath().standardizedFileURL
+        let legacy = market.deletingLastPathComponent() == root && validVersion(market.lastPathComponent)
+        guard (market == root || legacy), market == URL(fileURLWithPath: sourcePath).resolvingSymlinksInPath().standardizedFileURL,
+              FileManager.default.fileExists(atPath: market.appendingPathComponent(".agents/plugins/marketplace.json").path) else { throw AgentInstallError.destinationConflict }
+        return market
+    }
+    /// 只切换河图生成的单套件清单；额外字段、不同来源和作者改动都保留为冲突。
+    private func existingCodexManifest(at market: URL, suite: AgentSuite) throws -> Data? {
+        let file = market.appendingPathComponent(".agents/plugins/marketplace.json")
+        guard FileManager.default.fileExists(atPath: file.path) else { return nil }
+        guard file.resolvingSymlinksInPath().path.hasPrefix(market.path + "/") else { throw AgentInstallError.destinationConflict }
+        let object = try installationJSON(file)
+        guard let plugins = object["plugins"] as? [[String: Any]], plugins.count == 1,
+              let source = plugins[0]["source"] as? [String: Any], let path = source["path"] as? String else { throw AgentInstallError.destinationConflict }
+        let parts = path.components(separatedBy: "/")
+        let versioned = parts.count == 4 && parts[0] == "." && parts[1] == "versions" && validVersion(parts[2]) && parts[3] == suite.pluginName
+        let legacy = path == "./" + suite.pluginName && validVersion(market.lastPathComponent)
+        guard versioned || legacy,
+              try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys]) == marketplaceManifest(suite: suite, path: path) else { throw AgentInstallError.destinationConflict }
+        let package = market.appendingPathComponent(path)
+        guard package.resolvingSymlinksInPath().path.hasPrefix(market.path + "/") else { throw AgentInstallError.destinationConflict }
+        let manifest = try installationJSON(package.appendingPathComponent("plugin.json"))
+        let identity = try installationJSON(package.appendingPathComponent("hetu-suite.json"))
+        guard manifest["name"] as? String == suite.pluginName, let version = manifest["version"] as? String, validVersion(version),
+              identity["schema_version"] as? String == "1.0.0", identity["suite_id"] as? String == suite.id,
+              !versioned || parts[2] == version else { throw AgentInstallError.destinationConflict }
+        let cached = codexDirectory.appendingPathComponent("plugins/cache/hetu-luoshu-\(suite.id)/\(suite.pluginName)/\(version)")
+        if FileManager.default.fileExists(atPath: cached.path) {
+            guard try fingerprint(package) == fingerprint(cached) else { throw AgentInstallError.destinationConflict }
+        }
+        return try Data(contentsOf: file)
+    }
+    private func marketplaceManifest(suite: AgentSuite, path: String) throws -> Data {
+        let manifest: [String: Any] = ["name": "hetu-luoshu-" + suite.id, "plugins": [["name": suite.pluginName,
+            "source": ["source": "local", "path": path],
+            "policy": ["installation": "AVAILABLE", "authentication": "ON_INSTALL"], "category": "Productivity"]]]
+        return try JSONSerialization.data(withJSONObject: manifest, options: [.sortedKeys])
+    }
+    private func validVersion(_ version: String) -> Bool {
+        version.range(of: "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][A-Za-z0-9.-]+)?$", options: .regularExpression) != nil
+    }
+    private func installationJSON(_ file: URL) throws -> [String: Any] {
+        let values = try file.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey, .fileSizeKey])
+        guard values.isRegularFile == true, values.isSymbolicLink != true, let size = values.fileSize, size < 2_097_152,
+              let object = try JSONSerialization.jsonObject(with: Data(contentsOf: file)) as? [String: Any] else { throw AgentInstallError.destinationConflict }
+        return object
     }
     /// WorkBuddy 5.2.6 的个人 Skills 扫描递归读取 configDir/skills；不改它的账号或启用配置。
     public func installWorkBuddy(suite: AgentSuite, catalog: AgentSuiteCatalog, configDirectory: URL = AgentPackageInspector.defaultWorkbuddyDirectory) throws -> AgentInstallReceipt {

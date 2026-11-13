@@ -1,6 +1,8 @@
 ---
 import { messages, route, source, prototype, type Locale } from '../lib/site';
 import Workbench from './Workbench.astro';
+import SkillsCatalog from './SkillsCatalog.astro';
+import { assetURL } from '../lib/assets';
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const m = messages(locale);
@@ -17,13 +19,14 @@ const icons = [
       <h1>{m.hero.line1}<br/><em>{m.hero.line2}</em></h1>
       <p class="hero-description">{m.hero.description}</p>
       <div class="hero-actions">
-        <a class="button primary" href={prototype(locale)}>{m.hero.primary}<span aria-hidden="true">↗</span></a>
-        <a class="button secondary" href={route(locale,'docs')}>{m.hero.secondary}<span aria-hidden="true">→</span></a>
+        <a class="button primary" href={prototype(locale)}>{locale==='en'?'Try it now':'立即体验'}<span aria-hidden="true">↗</span></a>
+        <a class="button secondary" href={route(locale,'docs/download-and-install')}>{locale==='en'?'Get the Mac source':'获取 Mac 源码'}<span aria-hidden="true">→</span></a>
       </div>
+      <p class="hero-quick-start"><a class="text-link" href={route(locale,'docs/getting-started')}>{locale==='en'?'New here? Create your first book step by step':'第一次使用？一步步创建你的第一本书'}<span aria-hidden="true">→</span></a></p>
       <p class="hero-note">{m.hero.note}</p>
     </div>
     <div class="hero-visual">
-      <img class="hero-art" src="/images/hetu-luoshu-library-hero.webp" width="1280" height="1024" alt={m.hero.alt} fetchpriority="high"/>
+      <img class="hero-art" src={assetURL("/images/hetu-luoshu-library-hero.webp")} width="1280" height="1024" alt={m.hero.alt} fetchpriority="high"/>
       <span class="scene-label">{locale==='en'?'Xiaotu':'河图洛书小图'} <span>／</span> {locale==='en'?'Your story companion':'陪你守住每一个设定'}</span>
     </div>
   </section>
@@ -33,7 +36,7 @@ const icons = [
   <section class="section workspace-section" id="prototype">
     <div class="section-head">
       <div><span class="eyebrow">{m.workspace.eyebrow}</span><h2>{m.workspace.title}</h2></div>
-      <span class="demo-version">v0.2.0 · macOS</span>
+      <span class="demo-version">v0.3.0 / macOS</span>
     </div>
     <p class="section-intro">{m.workspace.body}</p>
     <Workbench locale={locale}/>
@@ -42,11 +45,12 @@ const icons = [
     <div class="section-head"><div><span class="eyebrow">{m.features.eyebrow}</span><h2>{m.features.title}</h2></div><p>{m.features.intro}</p></div>
     <div class="feature-grid">
       {m.features.items.map((item,index)=><article class="feature">
-        <div class="feature-art"><img src={'/images/'+item.image} width="1254" height="1254" alt={item.alt} loading="lazy"/></div>
+        <div class="feature-art"><img src={assetURL('/images/'+item.image)} width="1254" height="1254" alt={item.alt} loading="lazy"/></div>
         <span class="feature-number">0{index+1}</span><h3>{item.title}</h3><p>{item.body}</p>
       </article>)}
     </div>
   </section>
+  <SkillsCatalog locale={locale} compact/>
   <section class="section workflow-section">
     <div class="section-head"><div><span class="eyebrow">{m.workflow.eyebrow}</span><h2>{m.workflow.title}</h2></div><a class="text-link" href={route(locale,'workflow')}>{m.nav.workflow} <span aria-hidden="true">→</span></a></div>
     <div class="steps">{m.workflow.steps.map((step,index)=><article class="step"><span>0{index+1}</span><h3>{step.title}</h3><p>{step.body}</p></article>)}</div>
@@ -58,7 +62,7 @@ const icons = [
     </div>
   </section>
   <section class="closing-section">
-    <div class="closing-copy"><img src="/brand/mascot-master.png" width="160" height="160" alt="" loading="lazy"/><div><span class="eyebrow">{m.open.eyebrow}</span><h2>{m.open.title}</h2><p>{m.open.body}</p></div></div>
-    <a class="button primary" href={source} rel="noreferrer">{m.open.cta} <span aria-hidden="true">↗</span></a>
+    <div class="closing-copy"><img src={assetURL("/brand/mascot-master.png")} width="160" height="160" alt="" loading="lazy"/><div><span class="eyebrow">{m.open.eyebrow}</span><h2>{m.open.title}</h2><p>{m.open.body}</p></div></div>
+    <div class="closing-links"><a class="button primary" href={route(locale,'docs/getting-started')}>{locale==='en'?'Start your first book':'开始你的第一部作品'} <span aria-hidden="true">→</span></a><a class="text-link" href={source} rel="noreferrer">{m.open.cta} <span aria-hidden="true">↗</span></a></div>
   </section>
 </div>

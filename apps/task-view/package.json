@@ -1,0 +1,21 @@
+{
+  "name": "@hetu/task-view",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit && node scripts/build.mjs",
+    "check": "tsc --noEmit && node scripts/build.mjs --check",
+    "test": "npm run check && cargo build --locked --manifest-path ../../Cargo.toml -p hetu-mcp --example task_view_fixture --bin hetu-mcp && playwright test"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/ext-apps": "2.0.4"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/client": "2.4.0",
+    "@playwright/test": "1.64.1",
+    "@types/node": "24.19.2",
+    "esbuild": "0.28.2",
+    "typescript": "6.0.3"
+  }
+}

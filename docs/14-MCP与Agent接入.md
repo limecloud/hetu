@@ -41,7 +41,7 @@ Rust Server 使用官方 `rmcp =3.9.0`，关闭默认 feature，仅启用 Server
 | --- | --- | --- |
 | `hetu_read_creative_task` | `hetu.creative_tasks.get` | 读取当前固定任务、已提交候选及观察状态 |
 | `hetu_submit_creative_result` | `hetu.creative_tasks.submit_result` | 依请求摘要提交独立候选；受限改稿必须使用授权范围内的 patches |
-| `hetu_open_task_view` | `hetu.interactions.get` | 返回局部交互数据；此构建不登记 Apps HTML 资源 |
+| `hetu_open_task_view` | `hetu.interactions.get` | 返回任务局部数据；支持 Apps 的任务连接关联离线 HTML 面板 |
 | `hetu_save_task_selection` | `hetu.interactions.save_selection` | 保存任务内偏好；不采纳为正文、不选正式封面 |
 
 请求每次重新检查任务归属及关闭状态。作者关闭任务后，已经启动的任务进程也失去读取、提交和原操作查询权限；其他任务的 ID、摘要或操作键不能用于访问。
@@ -97,6 +97,12 @@ V1 MCP 不暴露 push／pull／branch／merge。用户从桌面或 CLI 执行这
 ## 6. MCP Apps 局部交互
 
 面板覆盖建书方向与书名／简介选择、大纲比较、封面等比预览、参考稿 diff 与批注；经工具的 `_meta.ui.resourceUri`、`ui://` HTML 资源及宿主桥接加载。UI 运行于受限环境，无任意文件系统、凭据或供应商网络访问。普通网页与 App 桥接分别适配。
+
+任务连接按每次请求的 `io.modelcontextprotocol/ui` 扩展声明检查 `mimeTypes`。支持 `text/html;profile=mcp-app` 时，工具关联 `ui://hetu/task-view/1`，`resources/list` 登记资源，`resources/read` 返回同一 MIME 的 HTML 和空外部域名 CSP；普通工作区连接不开放任务面板。读取资源及交互动作时重新检查原任务授权，关闭任务后旧连接也不能读取面板。
+
+面板源码位于 `apps/task-view/`，使用官方 `@modelcontextprotocol/ext-apps =2.0.4`，离线产物内嵌于 Rust 二进制；普通工具结果保留结构化数据和可读文本。中文优先，英文可切换；参考内容按纯文本展示，不执行候选中的 HTML。Core 为本任务图片生成最长边不超过512像素、单图不超过256 KiB的 JPEG 预览，不放大原图、不修改源文件；原始字节摘要、类型及解码核验失败时不返回预览。
+
+保存绑定固定任务、候选和 `expected`，结果未确认时保留原参数和操作键，先通过任务资源查询原操作；只有未找到原操作时才允许沿原键重试。收到新结果不会覆盖未保存意见，旧修订提交由 Core 拒绝。面板关闭不撤销已保存偏好，不授予定稿权限。构建与集成测试入口见[任务面板说明](../apps/task-view/README.md)。
 
 局部选择和意见通过受限动作记录 InteractionDecision；不能以页面保存直接创建作品、改正典、采纳正文、选用正式封面或定稿。作者在原生入口完成这些决定；模型调用或自动化点击不能冒充可信人类批准。动作可见性、只读 annotations 和宿主私有 UI 字段均不承担最终授权。
 

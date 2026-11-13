@@ -1,6 +1,6 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "hetu",
-  "version": "0.1.0",
-  "description": "河图洛书完整创作工作流 Skills：通用题材"
+  "version": "0.2.1",
+  "description": "河图洛书通用创作创作套件：八个任务与本题材方法，按作品选择安装"
 }

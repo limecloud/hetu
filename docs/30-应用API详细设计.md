@@ -187,7 +187,7 @@ Agent 通过 drafts.submit 创作，不通过 documents.save 直接覆盖正文�
 
 ### 7.1 小说封面与外部 Skill
 
-封面动作 `hetu.covers.preview_prompt`、`hetu.covers.create_request`、`hetu.covers.list_candidates`、`hetu.covers.select` 的输入、输出、权限和恢复以[34](34-小说封面与Agent协作.md)为专项合同。Prompt 预览无落盘；请求创建有原键；候选查询只核验本作品；选用为作者 CAS 事务。
+封面动作 `hetu.covers.get`、`hetu.covers.inspect_file`、`hetu.covers.preview_prompt`、`hetu.covers.create_request`、`hetu.covers.list_requests`、`hetu.covers.list_candidates`、`hetu.covers.select` 的输入、输出、权限和恢复以[34](34-小说封面与Agent协作.md)为专项合同，机器输入见 [BookCover Schema](../contracts/schemas/book-cover.schema.json)。预览和文件检查无导入副作用；请求创建保留原键；候选只核验本请求最多4张图片；请求列表独立分页；选用为作者 CAS 事务。
 
 外部 `hetu-cover` Skill 读取请求并写入固定 inbox，不需要为图像生成扩张八个基础 MCP 工具。核心不代理图像 API；候选回执不具有作者身份，也不能调用选用操作。
 
@@ -510,13 +510,29 @@ submit_result 先检查原键；请求摘要不符、跨 scope、目录逃逸、
 
 | 动作 | 输入 | 输出 | 权限与效果 |
 | --- | --- | --- | --- |
-| `hetu.interactions.get` | task_ref、view_kind、candidate_refs? | 单任务投影、UI资源引用、允许的局部动作 | MCP Apps、原生端或已配对页面；不含凭据与其他作品 |
-| `hetu.interactions.save_selection` | task_ref、candidate_refs、expected、selected_items、comment、operation_key | 固定 InteractionDecision 和新修订 | 受限交互会话；选择偏好不等于采纳、定稿或正式封面选用 |
-| `hetu.interactions.start_local_view` | task_ref、view_kind、operation_key | 页面实例、待配对入口、生命周期引用 | 仅作者；按需启动Node.js，不把授权秘密放入URL |
-| `hetu.interactions.pair` | 本机配对请求引用、作者确认的单任务范围、operation_key | 会话状态与有效期 | 仅原生可信作者入口；会话材料不返回模型可见结果 |
-| `hetu.interactions.stop_local_view` | 页面实例引用、operation_key | 已撤销会话和端口释放结果 | 作者／持有页面会话的应用；不取消生成或删除任务 |
+| `hetu.interactions.get` | task_ref | 单任务投影、image_previews、允许的局部动作 | 固定请求、当前批次候选与最后偏好；图片为本机核验后的等比 JPEG 缩略图，不含其他作品 |
+| `hetu.interactions.save_selection` | task_ref、candidate_refs、expected、comment、operation_key | 固定 InteractionDecision 和新修订 | 受限交互会话；选择偏好不等于采纳、定稿或正式封面选用 |
 
 同一内容视图有两种适配：MCP Apps 使用宿主工具桥接与 ui 资源；本地网页使用已配对的回环会话和 Node.js 白名单代理。普通网页不调用假定存在的 `window.openai`，MCP App 也不通过任意 fetch 绕过宿主权限。
+
+`get` 与 `save_selection` 的实际输入由 [creative-task.schema.json](../contracts/schemas/creative-task.schema.json) 定义。`image_previews[]` 每项包含 `candidate_id,media_type,base64,width,height`，媒体类型固定 `image/jpeg`，最长边不超过512像素，不放大源图，单图不超过256 KiB；只为已核验归属的当前批次图片生成，不接受路径或下载 URL。
+
+页面进程归原生应用会话管理，使用 `LocalTaskViewSession.start`、`approve`、`deny`、`stop`；这些是原生适配接口，不登记为 Core 动作或 Agent 工具。`start` 从可信当前作品／筹备与 `task_ref` 打开 agent 模式的任务句柄；`approve` 只能接受该实例经私有 IPC 提交的待配对引用。浏览器不能构造作者批准或切换句柄。停止不修改任务内容，不生成业务 operation_key。
+
+| 本地 HTTP 路由 | 合同 |
+| --- | --- |
+| `GET /`、`GET /host.js` | 固定配对页面和宿主脚本，不含作品资料 |
+| `GET /api/session` | 建立随机 HttpOnly、SameSite=Strict Cookie，返回同源 CSRF；配对前不返回 task_ref |
+| `POST /api/pair` | 空 JSON、精确 Origin、Cookie 与 CSRF；仅向原生端发送配对请求和六位核对码 |
+| `GET /view.html` | 已配对会话可读取静态 Apps 内容；iframe 使用 allow-scripts 沙箱 |
+| `POST /api/rpc` | 已配对会话；仅投影 open_task_view、save_task_selection 和当前任务 save_selection 原键查询；请求上限128 KiB |
+| `GET /api/events` | 已配对会话接收撤权事件；单会话最多两个连接 |
+
+Node 与原生端以私有 stdio JSONL 通信，IPC 修订为1。原生端发送 start、authorize、deny、response、stop；Node 发送 ready、pair_request、request、stopped。每个消息绑定随机 view_id，业务请求另带随机 id；原生端再次检查动作及 task_ref，并经受限 Core 句柄执行。Node 无业务文件路径、作者句柄或任意命令入口。
+
+配对请求有效期2分钟、已批准会话最多15分钟、页面实例最多30分钟。实例最多16个浏览器会话、32个连接、8个在途业务请求；单请求等待12秒，超时不自动重发保存。失回执使用原键查询。停止、父进程 EOF、实例到期或任务关闭均撤权；原生端以2秒间隔复核任务权限，当前任务变更／页面所属视图退出时同步停止旧实例。
+
+停止页面不回滚已经进入 Core 的在途写入，也不表示外部生成取消。迟到回执按 view_id 丢弃，不转入新任务；原任务的实际写入结果由作者或重新获权的原任务连接沿原键查询。
 
 这些是领域动作名，不是可随意 POST 的通用 HTTP execute。局部 HTTP 路由仅投影允许的动作，检查 Host、Origin、CSRF、会话及预算，再以应用组装的 scope 调用本机 IPC；浏览器不得选择任意 actor、root、action 或命令。精确页面路由属于版本化实现合同，不能把开发用固定端口写入插件。
 
@@ -528,7 +544,7 @@ submit_result 先检查原键；请求摘要不符、跨 scope、目录逃逸、
 | --- | --- | --- |
 | `hetu_read_creative_task` | creative_tasks.get | 获权任务读取，返回结构化文本及候选引用 |
 | `hetu_submit_creative_result` | creative_tasks.submit_result | 固定任务的候选提交，无采纳或定稿能力 |
-| `hetu_open_task_view` | interactions.get | 当前返回局部数据，无 Apps HTML 资源；Apps 和本地页面按18节扩展合同分别验收 |
+| `hetu_open_task_view` | interactions.get | 支持 Apps 的任务连接关联 `ui://hetu/task-view/1`；其他宿主返回相同业务数据，HTML 与宿主版本分别验收 |
 | `hetu_save_task_selection` | interactions.save_selection | 只对绑定任务记录偏好，服务端重新核验授权；不冒充作者采纳 |
 
 新增工具须同步 `contracts/tools/catalog.json`、Schema、宿主矩阵、Skill 方法及权限负例。用户复制 Prompt 是缺省交接方式；任何消息桥接都不能自动向另一会话发送内容、启动 Agent 循环或扩大授权。

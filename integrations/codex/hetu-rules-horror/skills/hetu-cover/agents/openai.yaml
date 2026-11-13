@@ -1,0 +1,4 @@
+interface:
+  display_name: "河图小说封面"
+  short_description: "读取河图封面任务，使用宿主图像工具生成候选图并写回作品目录"
+  default_prompt: "请使用 $hetu-cover 完成我提供的河图封面任务，将候选图片写入任务约定目录。"

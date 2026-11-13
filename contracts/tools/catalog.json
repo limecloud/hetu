@@ -95,7 +95,7 @@
       "name": "hetu_open_task_view",
       "action": "hetu.interactions.get",
       "title": "查看任务局部选择 / Read task selection view",
-      "description": "返回本任务的局部交互数据；此版本不注册 MCP Apps HTML 或启动浏览器。Return local selection data for this task; this version does not register MCP Apps HTML or start a browser.",
+      "description": "比较本任务参考方案。支持 MCP Apps 的宿主可展示局部选择面板；其他宿主返回同一任务数据。保存只记录偏好，不采纳正文或定稿。Compare references for this task, with an optional MCP Apps selection view. Other hosts receive the same task data. Preferences do not adopt or finalize content.",
       "profiles": [
         "task"
       ]

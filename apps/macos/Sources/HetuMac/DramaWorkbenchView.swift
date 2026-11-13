@@ -84,7 +84,7 @@ struct DramaWorkbenchView: View {
                 Picker(model.t("validation.plot_revision"), selection: $plotRevision) {
                     Text(model.t("plot.unspecified")).tag("")
                     ForEach(Array(plots.enumerated()), id: \.offset) { _, item in
-                        Text(model.localizer.date(item["created_at"].string ?? "") + " · " + model.t("plot.summary", ["nodes": String(item["node_count"].integer ?? 0), "confirmed": String(item["confirmed_count"].integer ?? 0)])).tag(item["plot_revision_id"].string ?? "")
+                        Text(model.localizer.date(item["created_at"].string ?? "") + "  " + model.t("plot.summary", ["nodes": String(item["node_count"].integer ?? 0), "confirmed": String(item["confirmed_count"].integer ?? 0)])).tag(item["plot_revision_id"].string ?? "")
                     }
                 }.frame(maxWidth: 380)
                 Button(model.t("drama.build")) {
@@ -155,7 +155,7 @@ struct DramaWorkbenchView: View {
                 Button { Task { await move(scene, episode: episode, index: index - 1) } } label: { Image(systemName: "arrow.up") }.help(model.t("drama.move_up")).accessibilityLabel(model.t("drama.move_up")).disabled(index == 0)
                 Button { Task { await move(scene, episode: episode, index: index + 1) } } label: { Image(systemName: "arrow.down") }.help(model.t("drama.move_down")).accessibilityLabel(model.t("drama.move_down")).disabled(index + 1 == episode["scenes"].array.count)
             }.disabled(hasPending)
-            Text((scene["location_ref"].string.map { displayName(model, reference: $0, blueprint: blueprint) } ?? model.t("plot.unspecified")) + " · " + model.t("location." + (scene["interior_exterior"].string ?? "unknown")) + " · " + model.t("plot.time_of_day." + (scene["time_of_day"].string ?? "unknown")))
+            Text((scene["location_ref"].string.map { displayName(model, reference: $0, blueprint: blueprint) } ?? model.t("plot.unspecified")) + "  " + model.t("location." + (scene["interior_exterior"].string ?? "unknown")) + "  " + model.t("plot.time_of_day." + (scene["time_of_day"].string ?? "unknown")))
             Text(scene["character_refs"].array.compactMap(\.string).map { displayName(model, reference: $0, blueprint: blueprint) }.joined(separator: model.locale == "en" ? ", " : "、")).foregroundStyle(.secondary)
             if !scene["missing_fields"].array.isEmpty {
                 Text(model.t("plot.missing_fields", ["fields": scene["missing_fields"].array.compactMap(\.string).map { model.t("drama.missing." + $0) }.joined(separator: model.locale == "en" ? ", " : "、")])).font(.caption).foregroundStyle(.orange)
@@ -180,7 +180,7 @@ struct DramaWorkbenchView: View {
             Text(model.t("drama.comparisons")).font(.headline)
             Text(model.t("drama.comparison_note")).font(.caption).foregroundStyle(.secondary)
             ForEach(Array(comparisons.enumerated()), id: \.offset) { _, item in
-                Button(model.localizer.date(item["created_at"].string ?? "") + " · " + model.t("drama.revision", ["revision": String(item["skeleton_ref"]["revision"].integer ?? 0)])) {
+                Button(model.localizer.date(item["created_at"].string ?? "") + "  " + model.t("drama.revision", ["revision": String(item["skeleton_ref"]["revision"].integer ?? 0)])) {
                     Task { if let next = await call("hetu.drama.get_comparison", ["comparison_id": item["comparison_id"]]) { await installComparison(next) } }
                 }
             }

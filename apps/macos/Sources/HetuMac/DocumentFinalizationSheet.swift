@@ -65,7 +65,7 @@ struct DocumentFinalizationSheet: View {
                 if !history["adoptions"].array.isEmpty {
                     Text(model.t("finalization.sources")).font(.headline)
                     ForEach(history["adoptions"].array.indices, id: \.self) { index in
-                        Text(model.localizer.date(history["adoptions"].array[index]["created_at"].string ?? "") + " · " + model.t("adoption.recorded")).font(.caption)
+                        Text(model.localizer.date(history["adoptions"].array[index]["created_at"].string ?? "") + "  " + model.t("adoption.recorded")).font(.caption)
                     }
                 }
                 if !history["finalizations"].array.isEmpty { finalizationHistory }
@@ -84,7 +84,7 @@ struct DocumentFinalizationSheet: View {
             Text(model.t("finalization.history")).font(.headline)
             ForEach(history["finalizations"].array.indices.reversed(), id: \.self) { index in
                 let item = history["finalizations"].array[index]
-                Text(model.t(item["decision"].string == "withdrawn" ? "finalization.withdrawn" : "finalization.confirmed") + " · " + model.localizer.date(item["created_at"].string ?? "")).font(.caption)
+                Text(model.t(item["decision"].string == "withdrawn" ? "finalization.withdrawn" : "finalization.confirmed") + "  " + model.localizer.date(item["created_at"].string ?? "")).font(.caption)
                 Text(item["comments"].string ?? "").textSelection(.enabled)
             }
         }

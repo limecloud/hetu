@@ -4,11 +4,7 @@ use std::collections::BTreeSet;
 pub(super) fn definition(name: &str) -> Value {
     static SCHEMA: OnceLock<Value> = OnceLock::new();
     let source = SCHEMA.get_or_init(|| serde_json::from_str(include_str!("../../../contracts/schemas/document-lifecycle.schema.json")).expect("embedded lifecycle schema"));
-    let mut value = source["$defs"][name].clone();
-    assert!(value.is_object(), "registered lifecycle definition");
-    value["$schema"] = source["$schema"].clone();
-    value["$defs"] = source["$defs"].clone();
-    value
+    domain::schema::definition(source, name)
 }
 
 fn seal(mut value: Value) -> Result<Value> {

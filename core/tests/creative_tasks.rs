@@ -386,7 +386,7 @@ fn image_candidates_are_decoded_and_preserve_aspect_ratio_without_selecting_a_co
             .unwrap(),
     );
     let mut buffer = std::io::Cursor::new(Vec::new());
-    image::DynamicImage::new_rgb8(128, 192)
+    image::DynamicImage::new_rgba8(128, 192)
         .write_to(&mut buffer, image::ImageFormat::Png)
         .unwrap();
     fs::write(inbox.join("cover.png"), buffer.get_ref()).unwrap();
@@ -400,6 +400,25 @@ fn image_candidates_are_decoded_and_preserve_aspect_ratio_without_selecting_a_co
     assert_eq!(saved["width"], 128);
     assert_eq!(saved["height"], 192);
     assert_eq!(saved["validation"], "decoded");
+    let view = ok(call(
+        &agent,
+        "interactions.get",
+        json!({"task_ref":task["task_ref"]}),
+    ));
+    assert_eq!(view["effect"], "preference_only");
+    let preview = &view["image_previews"][0];
+    assert_eq!(preview["candidate_id"], saved["candidate_id"]);
+    assert_eq!(preview["width"], 128);
+    assert_eq!(preview["height"], 192);
+    assert_eq!(preview["media_type"], "image/jpeg");
+    use base64::Engine;
+    let jpeg = base64::engine::general_purpose::STANDARD
+        .decode(preview["base64"].as_str().unwrap())
+        .unwrap();
+    assert!(jpeg.len() <= 256 * 1024);
+    let decoded = image::load_from_memory(&jpeg).unwrap();
+    assert_eq!((decoded.width(), decoded.height()), (128, 192));
+    assert!(decoded.to_rgb8().get_pixel(0, 0).0.iter().all(|channel| *channel >= 250));
     assert_eq!(
         fs::read(folder.path().join(saved["relative_path"].as_str().unwrap())).unwrap(),
         *buffer.get_ref()
@@ -426,6 +445,14 @@ fn image_candidates_are_decoded_and_preserve_aspect_ratio_without_selecting_a_co
         call(
             &agent,
             "creative_tasks.get",
+            json!({"task_ref":task["task_ref"]})
+        )["status"],
+        "succeeded"
+    );
+    assert_ne!(
+        call(
+            &agent,
+            "interactions.get",
             json!({"task_ref":task["task_ref"]})
         )["status"],
         "succeeded"

@@ -1,0 +1,125 @@
+---
+import { route, type Locale } from '../lib/site';
+import { skillCatalog, skillTasks, skillFamilies, familyLabel, platformLabel, channelLabel, featuredSuiteIDs } from '../lib/skills';
+import '../styles/skills.css';
+interface Props { locale: Locale; compact?: boolean; }
+const { locale, compact = false } = Astro.props;
+const en = locale === 'en';
+const suites = skillCatalog(locale);
+const shown = compact ? featuredSuiteIDs.map(id => suites.find(suite => suite.id === id)!) : suites;
+const tasks = skillTasks(locale);
+const headingID = compact ? 'skills-preview-title' : 'skills-catalog-title';
+const copy = en ? {
+  eyebrow: 'CHOOSE METHODS FOR YOUR STORY',
+  title: `${suites.length} genre suites. Find the right advice for your story.`,
+  intro: 'Cultivation, survival, infinite worlds, romance, mystery, and more: each suite offers advice on planning, drafting, revision, covers, and other writing tasks. Choose one for this book, or ask your external Agent to help you compare. The choice is yours.',
+  browse: 'Explore all genres and Skills',
+  scope: 'Choose one suite for this book. It already includes the shared writing methods, so your chosen Agent does not need the whole catalog.',
+  tasks: 'Eight tasks, grounded in the genre you choose',
+  taskIntro: 'Ask your external Agent for ideas or a reference draft when you want help. You choose what to use, what to change, and when the text is final.',
+  filter: 'Find a suite for your story', search: 'Search genre or platform category', placeholder: 'Try apocalypse, infinite worlds, romance…',
+  family: 'Story family', allFamilies: 'All families', platform: 'Platform classification', allPlatforms: 'All platforms',
+  channel: 'Readership channel', allChannels: 'All channels', reset: 'Reset filters',
+  count: `${suites.length} suites`, countSuffix: ' suites', empty: 'No suites match these filters. Try a broader genre, another platform, or reset the filters.',
+  scopeNote: 'Choose one suite by genre. Platform categories, readership channels, and tags help you find it; you do not need a separate package for each tag.',
+  version: 'Suite version', details: 'Read the Chinese Skills methods',
+  methodNote: 'The installed Skills are written in Chinese. Read a sample of their writing advice below.',
+  facts: 'Prepare your story', planning: 'Outline advice', profile: 'Title and synopsis', draft: 'Writing advice', review: 'What to check', cover: 'Cover ideas', adaptation: 'Adaptation advice', checks: 'Questions to ask yourself', example: 'When you run into this situation',
+  categories: 'Where to find it on each platform', categoryNote: 'The platform categories below are kept in Chinese for reference. Check your chosen platform again before submitting, as its categories may change.',
+  install: 'Choose one suite for your book', installIntro: 'Choose and install from settings, book creation, or the cover screen. Read the advice first and confirm your own choice. You can also keep writing without an Agent.',
+  guide: 'Choose and install Skills', start: 'Want help from Codex? Try your first task',
+} : {
+  eyebrow: '从故事出发，选择写作方法',
+  title: `${suites.length} 套题材方法，照顾每本书的不同。`,
+  intro: '修仙、末世、无限流、言情、悬疑……每套都提供构思、大纲、起草、改稿、封面等写作建议。先为这本书挑一套，也可以请自己使用的外部 Agent 帮你比较，最后由你决定。',
+  browse: '浏览全部题材与 Skills',
+  scope: '每本书先选一套，其中已包含共用写作方法。安装到你选用的 Agent 即可，无需把整个目录都装进去。',
+  tasks: '同样八类任务，使用对应题材的方法',
+  taskIntro: '需要帮助时，再请外部 Agent 准备方案或参考稿。你决定用哪一份、改哪些内容，以及何时定稿。',
+  filter: '找到适合这本书的套件', search: '搜索题材或平台分类', placeholder: '试试：末世、无限流、都市、古代言情……',
+  family: '题材大类', allFamilies: '全部题材', platform: '平台分类', allPlatforms: '全部平台',
+  channel: '读者频道', allChannels: '全部频道', reset: '重置筛选',
+  count: `${suites.length} 套题材套件`, countSuffix: ' 套题材套件', empty: '没有符合当前筛选的套件。试试更宽的题材名称、其他平台，或重置筛选。',
+  scopeNote: '按题材先选一套即可。平台分类、男频女频和标签帮助你查找，不用每个标签都装一个包。',
+  version: '套件版本', details: '展开题材方法与分类',
+  methodNote: '先看看这套方法会怎样帮助你写作。下面的建议也会交给你选用的 Agent。',
+  facts: '故事准备', planning: '大纲建议', profile: '书名与简介', draft: '写作建议', review: '检查提示', cover: '封面建议', adaptation: '改编建议', checks: '写完后问问自己', example: '遇到这种情况时',
+  categories: '在哪些平台分类下查找', categoryNote: '这里保留平台原有分类供你参考。分类可能调整，投稿前再到目标平台确认。',
+  install: '为这本书选一套，再决定安装', installIntro: '在设置、新建作品或封面入口，都能选择套件并安装。先看看是否适合这本书，最后由你确认；想自己写也可以。',
+  guide: '看图选择并安装 Skills', start: '想用 Codex 帮忙？跟着做第一项任务',
+};
+const methodFields = ['facts', 'planning', 'profile', 'draft', 'review', 'cover', 'adaptation'] as const;
+---
+<section class:list={['section', 'skills-section', { 'skills-preview': compact }]} id={compact ? 'skills' : 'skills-catalog'} aria-labelledby={headingID} data-skills-catalog={!compact ? '' : undefined} data-count-suffix={copy.countSuffix}>
+  <div class="section-head">
+    <div><span class="eyebrow">{copy.eyebrow}</span><h2 id={headingID}>{copy.title}</h2></div>
+    {compact && <a class="text-link" href={`${route(locale, 'integrations')}#skills-catalog`}>{copy.browse}<span aria-hidden="true">→</span></a>}
+  </div>
+  <p class="section-intro">{copy.intro}</p>
+  {!compact && <>
+    <div class="skills-task-heading"><h3>{copy.tasks}</h3><p>{copy.taskIntro}</p></div>
+    <ol class="skills-tasks">{tasks.map((task, index) => <li data-skill-task={task.id}><span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span><h4>{task.title}</h4><p>{task.description}</p></li>)}</ol>
+    <form class="skills-filters" role="search" aria-label={copy.filter} data-skills-filters>
+      <label class="skills-search"><span>{copy.search}</span><input type="search" name="genre" placeholder={copy.placeholder} autocomplete="off" data-skills-search/></label>
+      <label><span>{copy.family}</span><select name="family" data-skills-family><option value="">{copy.allFamilies}</option>{skillFamilies.map(family => <option value={family}>{familyLabel(family, locale)}</option>)}</select></label>
+      <label><span>{copy.platform}</span><select name="platform" data-skills-platform><option value="">{copy.allPlatforms}</option>{['fanqie', 'qidian'].map(platform => <option value={platform}>{platformLabel(platform, locale)}</option>)}</select></label>
+      <label><span>{copy.channel}</span><select name="channel" data-skills-channel><option value="">{copy.allChannels}</option>{['male', 'female', 'shared'].map(channel => <option value={channel}>{channelLabel(channel, locale)}</option>)}</select></label>
+      <button type="reset" class="skills-reset" data-skills-reset>{copy.reset}</button>
+    </form>
+    <div class="skills-result-heading"><p aria-live="polite" aria-atomic="true" data-skills-count>{copy.count}</p><span>{copy.scopeNote}</span></div>
+    <p class="skills-empty" data-skills-empty hidden>{copy.empty}</p>
+  </>}
+  <div class="skills-grid">
+    {shown.map(suite => <article class="skills-card" id={`suite-${suite.id}`} data-suite-id={suite.id} data-suite-search={suite.search} data-suite-family={suite.family} data-suite-sources={suite.sources}>
+      <div class="skills-card-heading"><span>{suite.familyLabel}</span><small>{copy.version} {suite.version}</small></div>
+      <h3>{suite.title}</h3><p class="skills-summary">{suite.summary}</p>
+      {compact ? <a class="text-link" href={`${route(locale, 'integrations')}#suite-${suite.id}`}>{en ? 'Explore this suite' : '了解这套方法'}<span aria-hidden="true">→</span></a> : <details class="skills-methods">
+        <summary>{copy.details}<span aria-hidden="true">+</span></summary>
+        <p class="skills-method-note">{copy.methodNote}</p>
+        <dl>{methodFields.map(field => <div><dt>{copy[field]}</dt><dd lang="zh-CN">{suite.genre[field]}</dd></div>)}</dl>
+        <h4>{copy.checks}</h4><ul lang="zh-CN">{suite.genre.checks.map(check => <li>{check}</li>)}</ul>
+        <h4>{copy.example}</h4><p class="skills-example" lang="zh-CN">{suite.genre.example}</p>
+        {suite.categories.length > 0 && <details class="skills-category-paths"><summary>{copy.categories} <span>({suite.categories.length})</span></summary><p>{copy.categoryNote}</p><ul lang="zh-CN">{suite.categories.map(category => <li data-category-search={`${category.name} ${category.path}`.toLocaleLowerCase()} data-category-source={`${category.platform}:${category.channel}`}>{category.path}</li>)}</ul></details>}
+      </details>}
+    </article>)}
+  </div>
+  <div class="skills-install-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z M8 8h8 M8 12h5 M8 16h6"/></svg><p>{copy.scope}</p></div>
+  {!compact && <div class="skills-install"><div><h3>{copy.install}</h3><p>{copy.installIntro}</p></div><div><a class="button primary" href={route(locale, 'docs/skills')}>{copy.guide}<span aria-hidden="true">→</span></a><a class="text-link" href={route(locale, 'docs/codex-first-task')}>{copy.start}<span aria-hidden="true">→</span></a></div></div>}
+</section>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-skills-catalog]').forEach(catalog => {
+    const form = catalog.querySelector<HTMLFormElement>('[data-skills-filters]');
+    const search = catalog.querySelector<HTMLInputElement>('[data-skills-search]');
+    const family = catalog.querySelector<HTMLSelectElement>('[data-skills-family]');
+    const platform = catalog.querySelector<HTMLSelectElement>('[data-skills-platform]');
+    const channel = catalog.querySelector<HTMLSelectElement>('[data-skills-channel]');
+    const count = catalog.querySelector<HTMLElement>('[data-skills-count]');
+    const empty = catalog.querySelector<HTMLElement>('[data-skills-empty]');
+    const cards = [...catalog.querySelectorAll<HTMLElement>('[data-suite-id]')];
+    if (!form || !search || !family || !platform || !channel || !count || !empty) return;
+    const update = () => {
+      const query = search.value.trim().toLocaleLowerCase();
+      let visible = 0;
+      cards.forEach(card => {
+        const sources = (card.dataset.suiteSources ?? '').split(' ');
+        const sourceMatches = (source: string) => {
+          const [sourcePlatform, sourceChannel] = source.split(':');
+          return (!platform.value || sourcePlatform === platform.value) && (!channel.value || sourceChannel === channel.value);
+        };
+        const scopeMatches = (!platform.value && !channel.value) || sources.some(sourceMatches);
+        const categoryMatches = [...card.querySelectorAll<HTMLElement>('[data-category-search]')].some(category => sourceMatches(category.dataset.categorySource ?? '') && category.dataset.categorySearch?.includes(query));
+        const textMatches = !query || card.dataset.suiteSearch?.includes(query) || categoryMatches;
+        const matches = (!family.value || card.dataset.suiteFamily === family.value) && scopeMatches && textMatches;
+        card.hidden = !matches;
+        if (matches) visible += 1;
+      });
+      count.textContent = `${visible}${catalog.dataset.countSuffix}`;
+      empty.hidden = visible > 0;
+    };
+    form.addEventListener('submit', event => event.preventDefault());
+    form.addEventListener('input', update);
+    form.addEventListener('change', update);
+    form.addEventListener('reset', () => requestAnimationFrame(update));
+    update();
+  });
+</script>

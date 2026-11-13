@@ -1378,6 +1378,62 @@
         "creation_project"
       ],
       "input_schema_ref": "schemas/creative-task.schema.json#/$defs/selection_input"
+    },
+    {
+      "name": "hetu.covers.get",
+      "purpose": "核验作者选用的封面与历史修订",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": true,
+      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/get_input"
+    },
+    {
+      "name": "hetu.covers.preview_prompt",
+      "purpose": "预览外部封面设计提示词",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": true,
+      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/preview_input"
+    },
+    {
+      "name": "hetu.covers.create_request",
+      "purpose": "保存作者确认的封面设计请求",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/create_input"
+    },
+    {
+      "name": "hetu.covers.list_requests",
+      "purpose": "列出当前作品的封面设计请求",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": true,
+      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/list_input"
+    },
+    {
+      "name": "hetu.covers.list_candidates",
+      "purpose": "核验外部封面回执与候选图片",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": true,
+      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/candidates_input"
+    },
+    {
+      "name": "hetu.covers.select",
+      "purpose": "由作者选用封面并保存素材与来源",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/select_input"
+    },
+    {
+      "name": "hetu.covers.inspect_file",
+      "purpose": "完整解码作者选择的封面并生成等比预览",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": true,
+      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/inspect_input"
     }
   ]
 }

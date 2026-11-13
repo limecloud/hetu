@@ -96,7 +96,7 @@ struct ReviewWorkbenchView: View {
                 Picker(model.t("review.report"), selection: $reportID) {
                     Text(model.t("plot.unspecified")).tag("")
                     ForEach(Array(context["reports"].array.enumerated()), id: \.offset) { _, item in
-                        Text(model.localizer.date(item["created_at"].string ?? "") + " · " + model.t("validation.status." + (item["status"].string ?? "partial")) + (item["stale"].bool == true ? " · " + model.t("review.old_report") : "")).tag(item["reference"]["report_id"].string ?? "")
+                        Text(model.localizer.date(item["created_at"].string ?? "") + "  " + model.t("validation.status." + (item["status"].string ?? "partial")) + (item["stale"].bool == true ? "  " + model.t("review.old_report") : "")).tag(item["reference"]["report_id"].string ?? "")
                     }
                 }.disabled(held)
                 if !reportID.isEmpty { Button(model.t("review.view_report")) { reportSheet = DramaSheet(value: .string(reportID)) } }
@@ -104,7 +104,7 @@ struct ReviewWorkbenchView: View {
                 if !context["decisions"].array.isEmpty {
                     Divider(); Text(model.t("review.history")).font(.headline)
                     ForEach(Array(context["decisions"].array.reversed().enumerated()), id: \.offset) { _, item in
-                        Text(model.t("review.decision." + (item["decision"].string ?? "rejected")) + " · " + model.localizer.date(item["decided_at"].string ?? "")).font(.headline)
+                        Text(model.t("review.decision." + (item["decision"].string ?? "rejected")) + "  " + model.localizer.date(item["decided_at"].string ?? "")).font(.headline)
                         Text(item["comments"].string ?? "").textSelection(.enabled)
                         if let note = item["private_comments"].string, !note.isEmpty { Text(model.t("review.private") + (model.locale == "en" ? ": " : "：") + note).foregroundStyle(.secondary).textSelection(.enabled) }
                         if let reason = item["coverage_acknowledgement"].string, !reason.isEmpty { Text(model.t("review.coverage") + (model.locale == "en" ? ": " : "：") + reason).font(.caption).textSelection(.enabled) }
@@ -189,7 +189,7 @@ struct ReviewReportSheet: View {
                     ValidationCoverageView(model: model, result: result, sourceTitle: model.t("review.content"))
                     ForEach(Array(result["report"]["findings"].array.enumerated()), id: \.offset) { _, finding in
                         Text(model.t(finding["message_key"].string ?? "validation.prerequisites")).font(.headline)
-                        Text(model.t("rule.severity." + (finding["severity"].string ?? "info")) + " · " + model.t("validation.certainty." + (finding["certainty"].string ?? "unknown"))).font(.caption).foregroundStyle(.secondary)
+                        Text(model.t("rule.severity." + (finding["severity"].string ?? "info")) + "  " + model.t("validation.certainty." + (finding["certainty"].string ?? "unknown"))).font(.caption).foregroundStyle(.secondary)
                         if !finding["missing_prerequisites"].array.isEmpty {
                             Text(finding["missing_prerequisites"].array.compactMap(\.string).map { model.t("validation.missing." + $0) }.joined(separator: "\n")).font(.caption)
                         }

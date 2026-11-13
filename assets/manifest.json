@@ -1012,10 +1012,19 @@
     },
     {
       "path": "assets/brand/icon-overview.png",
-      "width": 1000,
-      "height": 600,
-      "sha256": "246342241a8950cad72949d80b2c4657d0b5f55fc6405885e42174bb8231eab7",
-      "locale": "zh-CN"
+      "width": 1440,
+      "height": 1040,
+      "sha256": "2dbd1247b5d467a1da3ea945048799a71421d4bfa1c5ec122fc1616870375283",
+      "locale": "zh-CN",
+      "source_assets": [
+        "assets/brand/icons/macos/icon-1024.png",
+        "assets/brand/icons/windows/icon-256.png",
+        "assets/brand/icons/web/icon-512.png",
+        "assets/brand/icons/ios/app-icon-1024.png",
+        "assets/brand/icons/android/xxxhdpi/legacy.png",
+        "assets/brand/app-icon-dark-1024.png"
+      ],
+      "layout_source": "tools/export-localized-assets.py"
     },
     {
       "path": "assets/brand/wordmark.png",
@@ -1045,11 +1054,19 @@
     },
     {
       "path": "assets/brand/icon-overview-en.png",
-      "width": 1000,
-      "height": 600,
-      "sha256": "5fd5673c6428edfab71e8611ee37c75021842227b4315257301df005fadf1dc5",
+      "width": 1440,
+      "height": 1040,
+      "sha256": "4721a03c89ecdfc353ac529efa7c13b9ecc3cffd18d3dfe88ef9718b2c8cfea0",
       "locale": "en",
-      "derived_from": "assets/brand/icon-overview.png"
+      "source_assets": [
+        "assets/brand/icons/macos/icon-1024.png",
+        "assets/brand/icons/windows/icon-256.png",
+        "assets/brand/icons/web/icon-512.png",
+        "assets/brand/icons/ios/app-icon-1024.png",
+        "assets/brand/icons/android/xxxhdpi/legacy.png",
+        "assets/brand/app-icon-dark-1024.png"
+      ],
+      "layout_source": "tools/export-localized-assets.py"
     },
     {
       "path": "assets/brand/wordmark-en.png",

@@ -1,4 +1,5 @@
 mod resources;
+mod ui;
 
 use hetu_core::Kernel;
 use rmcp::{
@@ -257,11 +258,20 @@ impl ServerHandler for HetuServer {
     async fn list_tools(
         &self,
         request: Option<PaginatedRequestParams>,
-        _: RequestContext<RoleServer>,
+        context: RequestContext<RoleServer>,
     ) -> Result<ListToolsResult, ErrorData> {
         resources::no_cursor(request)?;
         Ok(ListToolsResult::with_all_items(
-            self.tools.iter().map(|(tool, _)| tool.clone()).collect(),
+            self.tools
+                .iter()
+                .map(|(tool, _)| {
+                    if self.kernel.bound_task().is_some() && ui::supported(&context) {
+                        ui::tool(tool.clone())
+                    } else {
+                        tool.clone()
+                    }
+                })
+                .collect(),
         ))
     }
 
@@ -300,10 +310,10 @@ impl ServerHandler for HetuServer {
     async fn list_resources(
         &self,
         request: Option<PaginatedRequestParams>,
-        _: RequestContext<RoleServer>,
+        context: RequestContext<RoleServer>,
     ) -> Result<ListResourcesResult, ErrorData> {
         resources::no_cursor(request)?;
-        let items = if let Some(root) = self.task_resource_root() {
+        let mut items = if let Some(root) = self.task_resource_root() {
             [
                 ("capabilities", "当前任务权限 / Task permissions"),
                 ("request", "固定任务及候选 / Fixed task and candidates"),
@@ -319,6 +329,9 @@ impl ServerHandler for HetuServer {
         } else {
             resources::directory(self.kernel.scope())
         };
+        if self.kernel.bound_task().is_some() && ui::supported(&context) {
+            items.push(ui::resource());
+        }
         Ok(ListResourcesResult::with_all_items(items))
     }
 
@@ -354,6 +367,29 @@ impl ServerHandler for HetuServer {
         request: ReadResourceRequestParams,
         context: RequestContext<RoleServer>,
     ) -> Result<ReadResourceResponse, ErrorData> {
+        if request.uri == ui::URI {
+            if self.kernel.bound_task().is_none() || !ui::supported(&context) {
+                return Err(ErrorData::invalid_params(
+                    "当前连接未开放任务面板 / Task view is not available on this connection",
+                    None,
+                ));
+            }
+            // 静态 UI 不含任务资料；仍在每次读取时核验原任务未撤权。
+            let result = self
+                .execute(
+                    "hetu.interactions.get",
+                    json!({"task_ref":self.task_ref()}),
+                    &context,
+                )
+                .await?;
+            if let Some(error) = result.get("error") {
+                return Err(ErrorData::invalid_request(
+                    "任务面板不可用，请回桌面端查看原任务 / Task view is unavailable; inspect the original task in the desktop app",
+                    Some(error.clone()),
+                ));
+            }
+            return Ok(ui::read()?.into());
+        }
         let (action, input, page) = if let Some(root) = self.task_resource_root() {
             let invalid = || {
                 ErrorData::invalid_params(

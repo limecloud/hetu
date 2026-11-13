@@ -257,14 +257,15 @@ sequenceDiagram
     node-->>desktop: 动态端口与非授权入口
     author->>browser: 打开本任务页面
     browser->>node: 请求配对
-    node->>core: 登记待配对浏览器会话
+    node->>desktop: 私有 IPC 发送配对请求与核对码
     author->>desktop: 核对并允许该单任务会话
-    desktop->>core: 授予局部查询与选择能力
-    core-->>node: 受限短期会话
+    desktop->>node: 批准当前待配对请求，限定原任务
     node-->>browser: 建立浏览器会话
     browser->>node: 读取候选，保存选择与意见
-    node->>core: 白名单用例，重验权限与修订
-    core-->>node: 实际结果与新修订
+    node->>desktop: 私有 IPC 转发白名单用例
+    desktop->>core: 任务受限句柄，重验权限与修订
+    core-->>desktop: 实际结果与新修订
+    desktop-->>node: 返回原请求回执
     node-->>browser: 当前任务的受限投影
     author->>desktop: 回看同一选择并完成验收
     author->>desktop: 停止页面或结束交互会话

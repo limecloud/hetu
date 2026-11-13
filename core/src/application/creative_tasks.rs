@@ -1,8 +1,5 @@
 use super::*;
-use std::{
-    collections::BTreeSet,
-    io::{Cursor, Read, Seek, SeekFrom},
-};
+use std::collections::BTreeSet;
 
 pub(super) const TASK_ACTIONS: &[&str] = &[
     "hetu.capabilities.get",
@@ -23,14 +20,10 @@ pub(super) fn definition(name: &str) -> Value {
         ))
         .expect("embedded creative task schema")
     });
-    let mut result = schema["$defs"][name].clone();
-    assert!(result.is_object(), "registered creative task definition");
-    result["$schema"] = schema["$schema"].clone();
-    result["$defs"] = schema["$defs"].clone();
-    result
+    domain::schema::definition(schema, name)
 }
 pub(super) fn record_schema(record: &Value, name: &str) -> Result<()> {
-    static VALIDATORS: OnceLock<BTreeMap<&str, jsonschema::Validator>> = OnceLock::new();
+    static VALIDATORS: OnceLock<BTreeMap<&str, OnceLock<jsonschema::Validator>>> = OnceLock::new();
     let validators = VALIDATORS.get_or_init(|| {
         [
             "project_record",
@@ -40,17 +33,15 @@ pub(super) fn record_schema(record: &Value, name: &str) -> Result<()> {
             "decision_record",
         ]
         .into_iter()
-        .map(|name| {
-            (
-                name,
-                jsonschema::validator_for(&definition(name))
-                    .expect("embedded creative record schema"),
-            )
-        })
+        .map(|name| (name, OnceLock::new()))
         .collect()
     });
+    // 任务连接只编译实际读取的记录合同，不为打开任务预热筹备与决定等无关合同。
+    let validator = validators[name].get_or_init(|| {
+        jsonschema::validator_for(&definition(name)).expect("embedded creative record schema")
+    });
     ensure(
-        validators[name].is_valid(record),
+        validator.is_valid(record),
         "hetu.integrity_failure",
         "筹备或任务记录不符合持久化合同。",
     )
@@ -781,27 +772,14 @@ impl Kernel {
             text(candidate, "file_name")?
         );
         let mut file = self.store.managed_media(&inbox)?;
-        let scan = crate::infrastructure::media::scan(&mut file, None)?;
+        let image = crate::infrastructure::media::decode_image(&mut file)?;
+        let scan = &image.scan;
         ensure(
-            scan["size_bytes"]
-                .as_u64()
-                .is_some_and(|size| size <= IMAGE_LIMIT)
-                && scan["sha256"] == candidate["sha256"],
+            scan["sha256"] == candidate["sha256"],
             "hetu.integrity_failure",
-            "图片超过 32 MiB 或摘要不符。",
+            "图片候选摘要不一致。",
         )?;
-        let format = match scan["media_type"].as_str() {
-            Some("image/png") => image::ImageFormat::Png,
-            Some("image/jpeg") => image::ImageFormat::Jpeg,
-            Some("image/webp") => image::ImageFormat::WebP,
-            _ => {
-                return Err(Error::new(
-                    "hetu.unsupported_media",
-                    "封面候选只支持 PNG、JPEG、WebP。",
-                ));
-            }
-        };
-        let extension = text(&scan, "extension")?;
+        let extension = text(scan, "extension")?;
         let name = text(candidate, "file_name")?;
         ensure(
             name.rsplit_once('.').is_some_and(|(_, ext)| {
@@ -811,36 +789,7 @@ impl Kernel {
             "invalid_input",
             "图片扩展名与实际媒体类型不一致。",
         )?;
-        file.seek(SeekFrom::Start(0))?;
-        let mut raw = Vec::new();
-        (&mut file).take(IMAGE_LIMIT + 1).read_to_end(&mut raw)?;
-        ensure(
-            raw.len() as u64 <= IMAGE_LIMIT && scan["sha256"] == digest(&raw),
-            "revision_conflict",
-            "图片读取期间发生变化。",
-        )?;
-        let (width, height) = image::ImageReader::with_format(Cursor::new(&raw), format)
-            .into_dimensions()
-            .map_err(|_| Error::new("hetu.unsupported_media", "图片头部或尺寸无效。"))?;
-        ensure(
-            (64..=8192).contains(&width)
-                && (64..=8192).contains(&height)
-                && u64::from(width) * u64::from(height) <= 64_000_000,
-            "hetu.budget_exceeded",
-            "图片宽高须为 64～8192，像素总量不超过 6400 万。",
-        )?;
-        let mut reader = image::ImageReader::with_format(Cursor::new(&raw), format);
-        let mut limits = image::Limits::default();
-        limits.max_image_width = Some(8192);
-        limits.max_image_height = Some(8192);
-        limits.max_alloc = Some(512 * 1024 * 1024);
-        reader.limits(limits);
-        reader.decode().map_err(|_| {
-            Error::new(
-                "hetu.unsupported_media",
-                "图片无法完整解码，不能登记为候选。",
-            )
-        })?;
+        let (width, height) = (image.decoded.width(), image.decoded.height());
         let blob = format!(
             "{}/candidates/{}.{}",
             root(text(task, "task_id")?)?,
@@ -1053,6 +1002,25 @@ impl Kernel {
         let mut result = self.get_creative_task(input)?;
         result["allowed_actions"] = json!(["hetu.interactions.save_selection"]);
         result["effect"] = json!("preference_only");
+        let mut previews = Vec::new();
+        if let Some(candidates) = result["submission"]["candidates"].as_array() {
+            for candidate in candidates.iter().filter(|item| item["kind"] == "image") {
+                // 路径与原字节已经过 read_submission 核验；缩略图不提供任意文件读取。
+                let mut file = self
+                    .store
+                    .managed_media(text(candidate, "relative_path")?)?;
+                let image = crate::infrastructure::media::decode_image(&mut file)?;
+                ensure(
+                    image.scan["sha256"] == candidate["sha256"],
+                    "revision_conflict",
+                    "封面候选读取期间发生变化。",
+                )?;
+                let mut preview = crate::infrastructure::media::image_preview(&image.decoded)?;
+                preview["candidate_id"] = candidate["candidate_id"].clone();
+                previews.push(preview);
+            }
+        }
+        result["image_previews"] = json!(previews);
         Ok(result)
     }
     pub(super) fn save_task_selection(

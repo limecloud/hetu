@@ -147,7 +147,7 @@ private struct ManuscriptInspectorView: View {
                     Label(model.t("shell.reference"), systemImage: "book").font(.system(size: 13, weight: .semibold))
                     Button(action: onBible) {
                         VStack(alignment: .leading, spacing: 6) {
-                            Text(model.title + " · " + model.t("bible.title")).font(.system(size: 12, weight: .medium))
+                            Text(model.title + "  " + model.t("bible.title")).font(.system(size: 12, weight: .medium))
                             Text(model.t("shell.reference_note")).font(.system(size: 11)).foregroundStyle(WorkbenchPalette.muted)
                         }.frame(maxWidth: .infinity, alignment: .leading)
                     }

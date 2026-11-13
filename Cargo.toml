@@ -6,7 +6,7 @@ resolver = "3"
 edition = "2024"
 rust-version = "1.93"
 license = "Apache-2.0"
-version = "0.2.0"
+version = "0.3.0"
 
 [workspace.dependencies]
 serde = { version = "1.0", features = ["derive"] }
@@ -24,6 +24,19 @@ aho-corasick = "1.1"
 lto = "thin"
 codegen-units = 1
 strip = "debuginfo"
+
+# Schema 编译位于本机入口的冷启动路径，开发包也需保留可交互的启动速度。
+[profile.dev.package.jsonschema]
+opt-level = 2
+
+[profile.dev.package.fancy-regex]
+opt-level = 2
+
+[profile.dev.package.regex-automata]
+opt-level = 2
+
+[profile.dev.package.regex-syntax]
+opt-level = 2
 
 [workspace.lints.rust]
 unsafe_op_in_unsafe_fn = "deny"

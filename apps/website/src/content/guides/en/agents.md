@@ -1,33 +1,46 @@
 # Work with external agents
 
-Manual book creation and writing need no agent. Choose an external client and permissions only when assistance is useful.
+Codex, Claude Code and WorkBuddy are separate creative assistants you choose to use. Hetu Luoshu keeps your books, details and manuscript organized. The assistant helps discuss directions, propose options and write references. You decide what to keep.
 
-## Current local connection
+For a first try, read [Plan a book with Codex](codex-first-task.md). You can also create books, write and maintain story facts entirely on your own.
 
-In the Mac client, open the same skills installer from Settings → AI collaboration, the new-book window, or beside the cover in Book details. Choose Codex or WorkBuddy, then the General or Military suite. Each genre suite includes setup, book creation, profile, outline, cover, drafting, revision and drama workflows.
+## 1. Choose your usual assistant
 
-Codex installation uses the local official CLI to register and enable the complete plugin, then checks its version and contents. WorkBuddy installation copies the complete suite into its personal skills directory, using distinct names for military workflows. Conflicting existing content is preserved and reported. Neither suite includes a model or generation service.
+In the Mac app, open Settings → AI Collaboration to choose the default client for new books. For an existing book, choose its client in book details.
 
-Client associations are saved per book. The default in Settings applies only to future books. Installation, skills version, plugin enablement, session loading and MCP connection are separate states. Finding files or finishing installation does not prove that a session loaded them or that a book is authorized. Start a new session as required by the host and verify its connection.
+For example, you can use Codex for a military novel and WorkBuddy for an urban story. Changing the default leaves existing book choices intact.
 
-The source includes a standalone stdio MCP server bound to one author-selected book workspace. The host starts it locally; this website never connects to your writing. Build and launch instructions live in the GitHub repository.
+## 2. Ask for one clear thing at a time
 
-Current tools read canon, submit reference drafts, organize plot and drama, validate evidence and handle fixed Git snapshots approved locally by the author. See [Integrations](/en/integrations/) for the current catalog. Installing an extension does not grant full disk or Git access.
+Before handing something over, decide what you need:
 
-## Hand off a task
+- For titles, describe the genre, readers, protagonist and intended mood.
+- For an outline, explain the main goal, conflict and any ending or turning point already decided.
+- For revision, provide the passage and explain what to preserve and what to change.
+- For a cover, provide the title, pen name, genre, main imagery and anything to avoid.
 
-The integration design covers choosing a client, installing an extension, copying a prompt and receiving candidates. Skills, Apps and task-local browser views need separate host verification. Hetu Luoshu provides no built-in chat or simulated generation progress.
+For example: “Revise this argument. Keep both characters' positions, make the dialogue more tense, do not add anyone new, and do not reveal the killer yet.”
 
-Copy a bounded task to your selected client, such as:
+## 3. Read the brief before sending it
 
-> Read the selected first chapter and confirmed canon. Submit a reference for the inn passage. Keep characters and time relationships intact, explain new details, and do not modify canon, overwrite text or finalize on my behalf.
+In a supported task screen, choose “Preview prompt and context” and read what you will share. Confirm and save the task, then choose “Copy task prompt” and paste it into your external Agent conversation.
 
-External clients provide models and services. This demo calls none and transfers no private files or keys.
+Share only what this task needs. Hetu Luoshu does not send messages or chat with models on your behalf. Manage accounts, sign-in and service costs in your chosen external client.
 
-## Results and recovery
+For a manual handoff, ask the assistant to reply in the conversation. Read its suggestions, then copy what you want into Hetu Luoshu. A chat reply does not enter the book automatically.
 
-Check input revisions, candidate content and citations. Even after review approval, the author chooses adoption scope and finalizes separately.
+## 4. Match the methods to the book
 
-If a write receipt is missing, inspect the original operation before repeating it. Ending a local interaction does not delete books, erase history or undo completed author decisions.
+Use “Install Skills Suite” to choose methods for military, apocalypse, romance or another genre. Shared writing methods are already included. Install the suite this book needs.
 
-Continue with [Checks and draft review](review.md).
+If unsure, copy a selection request to your Agent, read its reasons and decide. Follow [Choose and install Skills](skills.md) for the steps.
+
+## 5. Keep the decisions in your hands
+
+Check suggestions against your characters, timeline, world rules and original intention. Fluent prose can still introduce facts you have not decided to use.
+
+If a reference draft is already visible in Hetu Luoshu's review workspace, review it first and choose which parts to adopt. Approval does not change the manuscript automatically. After adoption, finalization is still a separate choice.
+
+If you have continued writing since receiving a suggestion, compare it with the current text before using it. Keep the original and ask for another direction whenever a proposal does not fit.
+
+Continue with [Checks and draft review](review.md). Developers can find advanced setup and source instructions in [Mac source build for developers](download-and-install.md).

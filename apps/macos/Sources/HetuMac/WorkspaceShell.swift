@@ -89,6 +89,7 @@ struct WorkspaceShell<Content: View>: View {
             Button(locale == "en" ? "中文" : "EN") { locale = locale == "en" ? "zh-CN" : "en" }
                 .buttonStyle(.plain).font(.system(size: 12)).help(model.t("language.title"))
             WorkbenchSettingsButton(locale: locale)
+            WorkspaceZoomButton(localizer: model.localizer)
             Button(model.t("document.save")) { Task { _ = await model.save() } }
                 .buttonStyle(WorkbenchButtonStyle(primary: true))
                 .disabled(!model.needsProtection || model.documentID.isEmpty || model.isComposing)
@@ -98,7 +99,7 @@ struct WorkspaceShell<Content: View>: View {
                 Button(model.t("common.refresh")) { Task { await model.refresh() } }
                 Button(model.t("workspace.open"), action: onOpenWorkspace)
             } label: { Image(systemName: "ellipsis") }.menuStyle(.borderlessButton).fixedSize().accessibilityLabel(model.t("shell.actions"))
-        }.padding(.leading, 82).padding(.trailing, 24).frame(height: 70).background(WorkbenchPalette.surface.opacity(0.32))
+        }.padding(.horizontal, 24).frame(height: 70).background(WorkbenchPalette.surface.opacity(0.32))
     }
     private var navigation: some View {
         VStack(alignment: .leading, spacing: 7) {
