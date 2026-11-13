@@ -1,9 +1,17 @@
+import agentCatalog from '../../../../integrations/catalog.json';
+import generalPlugin from '../../../../integrations/codex/hetu/plugin.json';
+import militaryPlugin from '../../../../integrations/codex/hetu-military/plugin.json';
+
+type AgentClient = 'none' | 'codex' | 'workbuddy' | 'claudeCode' | 'other';
+type AgentAssociation = { client: AgentClient; suiteID: string };
+type AgentContext = 'settings' | 'book' | 'new-book';
 type Chapter = { title: string; body: string; saved: string; revision: number; finalRevision?: number };
 type Book = {
   title: string; author: string; status: string; cover: string; synopsis: string; chapters: Chapter[];
   locked: boolean; decision: string; comment: string; snapshots: number[];
+  agent: AgentAssociation;
 };
-type View = 'library' | 'book' | 'novel' | 'bible' | 'drama' | 'reviews' | 'git' | 'media' | 'plot' | 'validation';
+type View = 'library' | 'settings' | 'book' | 'novel' | 'bible' | 'drama' | 'reviews' | 'git' | 'media' | 'plot' | 'validation';
 const escape = (value: string | number) => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
 const covers = ['cover-river-jade', 'cover-cloud-rose', 'cover-stars-ink'];
 
@@ -21,14 +29,19 @@ export function initializeWorkbench(root: HTMLElement) {
       chapters: [
         chapter(t('第一章 雨夜入城', 'Chapter 1 · A rainy arrival'), t('雨下了整整三日。\n\n林舟沿着青石街走进雾川，衣角滴下的水在门槛前积成细线。他摸了摸怀里的旧玉扣，推开客栈的木门。\n\n掌柜抬起头，目光在玉扣上停了一瞬。\n\n“借一间房。”林舟说。\n\n窗外，河上的灯火在雨中摇曳。', 'Rain had been falling for three days.\n\nLin Zhou walked into Wuchuan along the stone street. Water dripped from his coat. He touched the old jade clasp inside his pocket and opened the inn door.\n\nThe innkeeper looked up. His eyes paused on the clasp.\n\n“A room, please,” Lin Zhou said.\n\nOutside, lights swayed above the river.')),
         chapter(t('第二章 河上来信', 'Chapter 2 · A letter from the river'), t('翌日清晨，沈慈送来一封未署名的信。\n\n林舟拆开信封，只见纸上画着一条通往旧渡口的小路。', 'The next morning, Shen Ci brought an unsigned letter.\n\nLin Zhou opened it. A path to the old ferry crossing was drawn on the paper.')),
-      ], locked: true, decision: 'pending', comment: '', snapshots: [],
+      ], locked: true, decision: 'pending', comment: '', snapshots: [], agent: { client: 'codex', suiteID: 'general' },
     },
-    { title: t('云间来信', 'Letters above the clouds'), author: t('南山', 'Nan Shan'), status: 'planning', cover: covers[1], synopsis: t('在云与山之间，寻找一封没有收件人的信。', 'Between clouds and mountains, a letter waits for its recipient.'), chapters: [chapter(t('故事筹备', 'Story notes'), t('从一封信开始。', 'Begin with a letter.'))], locked: false, decision: 'pending', comment: '', snapshots: [] },
-    { title: t('星河旧事', 'Tales of the starlit river'), author: t('南山', 'Nan Shan'), status: 'completed', cover: covers[2], synopsis: t('一段关于星空、河流与归途的旧事。', 'A story of stars, rivers and the way home.'), chapters: [chapter(t('尾声 归途', 'Epilogue · Homeward'), t('抬头时，星河依旧。', 'Above them, the stars remained.'))], locked: true, decision: 'pending', comment: '', snapshots: [] },
+    { title: t('云间来信', 'Letters above the clouds'), author: t('南山', 'Nan Shan'), status: 'planning', cover: covers[1], synopsis: t('在云与山之间，寻找一封没有收件人的信。', 'Between clouds and mountains, a letter waits for its recipient.'), chapters: [chapter(t('故事筹备', 'Story notes'), t('从一封信开始。', 'Begin with a letter.'))], locked: false, decision: 'pending', comment: '', snapshots: [], agent: { client: 'workbuddy', suiteID: 'general' } },
+    { title: t('星河旧事', 'Tales of the starlit river'), author: t('南山', 'Nan Shan'), status: 'completed', cover: covers[2], synopsis: t('一段关于星空、河流与归途的旧事。', 'A story of stars, rivers and the way home.'), chapters: [chapter(t('尾声 归途', 'Epilogue · Homeward'), t('抬头时，星河依旧。', 'Above them, the stars remained.'))], locked: true, decision: 'pending', comment: '', snapshots: [], agent: { client: 'none', suiteID: 'general' } },
   ];
   let view: View = 'library', bookIndex = 0, chapterIndex = 0, filter = 'all', search = '', list = false;
   let theme = 'light', evidence = false, feedback = '', sourceVisible = false;
-  let dialog: '' | 'new-book' | 'new-chapter' | 'adopt' | 'finalize' | 'snapshot' = '';
+  let dialog: '' | 'new-book' | 'new-chapter' | 'adopt' | 'finalize' | 'snapshot' | 'install-agent' = '';
+  let defaultClient: AgentClient = 'none', settingsSuite = 'general';
+  let newBookDraft: AgentAssociation & { title: string; author: string } = { title: '', author: '', client: defaultClient, suiteID: 'general' };
+  let installContext: AgentContext = 'book';
+  let installDraft: AgentAssociation = { client: 'codex', suiteID: 'general' };
+  const installed = new Set<string>();
   let previewRevision = 0;
   const book = () => books[bookIndex];
   const current = () => book().chapters[chapterIndex];
@@ -60,8 +73,36 @@ export function initializeWorkbench(root: HTMLElement) {
   function count(text: string) {
     return `${Array.from(text.replace(/\s/g, '')).length} ${t('字符', 'characters')}`;
   }
+  const clients: AgentClient[] = ['none', 'codex', 'workbuddy', 'claudeCode', 'other'];
+  const clientName = (client: AgentClient) => ({ none: t('手工创作', 'Manual writing'), codex: 'Codex', workbuddy: 'WorkBuddy', claudeCode: 'Claude Code', other: t('其他客户端', 'Other client') })[client];
+  const suiteName = (id: string) => id === 'military' ? t('河图洛书·军事', 'Hetu Luoshu · Military') : t('河图洛书·通用', 'Hetu Luoshu · General');
+  const suiteVersion = (id: string) => id === 'military' ? militaryPlugin.version : generalPlugin.version;
+  const skillTitles: Record<string, [string, string]> = {
+    'hetu-setup': ['接入与授权', 'Setup and permissions'], 'hetu-book-create': ['创建作品', 'Book creation'],
+    'hetu-book-profile': ['作品资料', 'Book profile'], 'hetu-outline': ['故事大纲', 'Story outline'],
+    'hetu-cover': ['作品封面', 'Book cover'], 'hetu-draft': ['起草正文', 'Draft writing'],
+    'hetu-revise': ['正文改稿', 'Manuscript revision'], 'hetu-drama': ['短剧改编', 'Drama adaptation'],
+  };
+  const association = (context: AgentContext): AgentAssociation => context === 'settings' ? { client: defaultClient, suiteID: settingsSuite } : context === 'new-book' ? newBookDraft : book().agent;
+  const installationKey = (value: AgentAssociation) => `${value.client}/${value.suiteID}`;
+  function associate(context: AgentContext, value: AgentAssociation) {
+    if (context === 'settings') { defaultClient = value.client; settingsSuite = value.suiteID; }
+    else if (context === 'new-book') Object.assign(newBookDraft, value);
+    else book().agent = { ...value };
+  }
+  function agentSelectors(value: AgentAssociation, context: AgentContext | 'install') {
+    return `<div class="demo-agent-selectors"><label>${t(context === 'settings' ? '新作品默认客户端' : '创作客户端', context === 'settings' ? 'Default client for new books' : 'Writing client')}<select name="agent-client" data-agent-context="${context}">${clients.map(client => `<option value="${client}" ${client === value.client ? 'selected' : ''}>${clientName(client)}</option>`).join('')}</select></label><label>${t('题材 Skills 套件', 'Genre skills suite')}<select name="agent-suite" data-agent-context="${context}" ${value.client === 'none' ? 'disabled' : ''}>${agentCatalog.suites.map(suite => `<option value="${suite.id}" ${suite.id === value.suiteID ? 'selected' : ''}>${suiteName(suite.id)}</option>`).join('')}</select></label></div>`;
+  }
+  function agentPanel(context: AgentContext) {
+    const value = association(context), found = installed.has(installationKey(value));
+    const state = found ? value.client === 'codex' ? t('演示：已登记并启用', 'Demo: registered and enabled') : t('演示：套件文件已安装', 'Demo: suite files installed') : t('演示：未安装', 'Demo: not installed');
+    return `<section class="demo-agent" aria-label="${t('AI 协作', 'AI collaboration')}"><h4>${t('AI 协作', 'AI collaboration')}</h4>${agentSelectors(value, context)}${value.client === 'none' ? `<p class="demo-help">${t('手工创作无需安装 Skills。', 'Manual writing needs no skills installation.')}</p>` : `<dl class="demo-agent-status"><div><dt>${t('安装状态', 'Installation')}</dt><dd data-agent-state>${state}</dd></div><div><dt>${t('Skills 套件版本', 'Skills suite version')}</dt><dd data-agent-version>${found ? suiteVersion(value.suiteID) : t('未安装', 'Not installed')}</dd></div><div><dt>${t('会话与 MCP', 'Session and MCP')}</dt><dd>${t('未验证', 'Unverified')}</dd></div></dl><details><summary>${t('套件包含的 Skills', 'Skills in this suite')} (${agentCatalog.skills.length})</summary><ul class="demo-agent-skills">${agentCatalog.skills.map(skill => `<li><span>${t(...skillTitles[skill])}</span><small>${found ? suiteVersion(value.suiteID) : t('未安装', 'Not installed')}</small></li>`).join('')}</ul></details>${button('install-agent', t('安装 Skills 套件', 'Install skills suite'), false, `data-context="${context}"`)}`}<p class="demo-help">${t(context === 'settings' ? '默认客户端只用于之后创建的作品。此处仅演示，不检测或修改本机。' : '客户端按作品分别关联。网页只演示安装流程，不检测或修改本机。', context === 'settings' ? 'The default applies only to future books. This demo never inspects or changes your computer.' : 'Each book keeps its own client. The website demonstrates installation without inspecting or changing your computer.')}</p></section>`;
+  }
+  function settings() {
+    return `${heading(t('设置', 'Settings'), t('选择新作品默认使用的外部客户端，管理题材方法包。', 'Choose a default external client for new books and manage genre suites.'))}${button('library', t('返回书库', 'Back to library'))}${agentPanel('settings')}`;
+  }
   function details() {
-    return `${heading(t('作品资料', 'Book details'), t('每部作品有独立的资料、封面、卷章与设定。', 'Each book has its own details, cover, chapters and story bible.'))}<form data-form="details" class="demo-details-form"><div>${artwork(book().cover, 'demo-detail-cover')}<label>${t('演示封面', 'Sample cover')}<select name="cover">${covers.map((value, i) => `<option value="${value}" ${book().cover === value ? 'selected' : ''}>${t('封面', 'Cover')} ${i + 1}</option>`).join('')}</select></label></div><div class="demo-fields"><label>${t('书名', 'Title')}<input name="title" required maxlength="120" value="${escape(book().title)}"/></label><label>${t('作者', 'Author')}<input name="author" maxlength="80" value="${escape(book().author)}"/></label><label>${t('创作状态', 'Writing status')}<select name="status">${['planning', 'writing', 'completed', 'archived'].map(value => `<option value="${value}" ${book().status === value ? 'selected' : ''}>${escape(status(value))}</option>`).join('')}</select></label><label>${t('作品简介', 'Synopsis')}<textarea name="synopsis" rows="3">${escape(book().synopsis)}</textarea></label><button class="demo-primary" type="submit">${t('保存作品资料', 'Save book details')}</button></div></form>`;
+    return `${heading(t('作品资料', 'Book details'), t('每部作品有独立的资料、封面、卷章与设定。', 'Each book has its own details, cover, chapters and story bible.'))}<form data-form="details" class="demo-details-form"><div>${artwork(book().cover, 'demo-detail-cover')}<label>${t('演示封面', 'Sample cover')}<select name="cover">${covers.map((value, i) => `<option value="${value}" ${book().cover === value ? 'selected' : ''}>${t('封面', 'Cover')} ${i + 1}</option>`).join('')}</select></label>${button('cover-install', t('安装封面 Skills', 'Install cover skills'))}</div><div class="demo-fields"><label>${t('书名', 'Title')}<input name="title" required maxlength="120" value="${escape(book().title)}"/></label><label>${t('作者', 'Author')}<input name="author" maxlength="80" value="${escape(book().author)}"/></label><label>${t('创作状态', 'Writing status')}<select name="status">${['planning', 'writing', 'completed', 'archived'].map(value => `<option value="${value}" ${book().status === value ? 'selected' : ''}>${escape(status(value))}</option>`).join('')}</select></label><label>${t('作品简介', 'Synopsis')}<textarea name="synopsis" rows="3">${escape(book().synopsis)}</textarea></label><button class="demo-primary" type="submit">${t('保存作品资料', 'Save book details')}</button></div></form>${agentPanel('book')}`;
   }
   function bible() {
     return `${heading(t('设定集', 'Story bible'), t('作者确认的事实，供小说与改编共同引用。', 'Author-confirmed facts shared by the novel and adaptations.'), 'story-world' + (theme === 'dark' ? '-dark' : ''))}<div class="demo-inline-actions">${badge(book().locked ? t('已锁定', 'Locked') : t('已解锁', 'Unlocked'))}${button('lock', book().locked ? t('解锁设定', 'Unlock story bible') : t('锁定设定', 'Lock story bible'))}</div>${[t('林舟 · 主角', 'Lin Zhou · Protagonist'), t('沈慈 · 伙伴', 'Shen Ci · Companion'), t('雾川 · 河城', 'Wuchuan · River town')].map((name, i) => `<div class="demo-entity"><span class="demo-entity-icon">${['◇', '◇', '⌂'][i]}</span><div><strong>${name}</strong><p>${[t('携带一枚旧玉扣，来历待作者补充。', 'Carries an old jade clasp; its origin awaits author input.'), t('熟悉城中旧事，身份尚待展开。', 'Knows the city’s past; more remains to be revealed.'), t('山谷之间的河城，常年多雨。', 'A rainy river town in a mountain valley.')][i]}</p></div>${badge(t('已确认', 'Confirmed'))}</div>`).join('')}<p class="demo-help">${t('此处演示查看与锁定。解锁只改变作者编辑状态，不授予 Agent 设定集写权限。', 'This demo shows viewing and locking. Unlocking never grants agents permission to edit canon.')}</p>`;
@@ -91,7 +132,12 @@ export function initializeWorkbench(root: HTMLElement) {
     let title = '', body = '', action = '', label = '';
     if (dialog === 'new-book') {
       title = t('新建作品', 'New book'); action = 'create-book'; label = t('保存筹备', 'Save planning book');
-      body = `<label>${t('书名（可留空）', 'Title (optional)')}<input name="new-title" maxlength="120" placeholder="${t('还没有书名也可以开始', 'Start without a title')}"/></label><label>${t('作者', 'Author')}<input name="new-author" maxlength="80"/></label><p>${t('手工填写即可建书，不需要模型或 Agent。这里只创建页面内演示作品。', 'Create a book manually without a model or agent. This creates an in-page sample only.')}</p>`;
+      body = `<label>${t('书名（可留空）', 'Title (optional)')}<input name="new-title" maxlength="120" value="${escape(newBookDraft.title)}" placeholder="${t('还没有书名也可以开始', 'Start without a title')}"/></label><label>${t('作者', 'Author')}<input name="new-author" maxlength="80" value="${escape(newBookDraft.author)}"/></label>${agentPanel('new-book')}<p>${t('手工填写即可建书，不需要模型或 Agent。这里只创建页面内演示作品。', 'Create a book manually without a model or agent. This creates an in-page sample only.')}</p>`;
+    } else if (dialog === 'install-agent') {
+      title = t('安装 Skills 套件', 'Install skills suite'); action = 'confirm-install'; label = t('确认演示安装', 'Confirm demo installation');
+      const supported = ['codex', 'workbuddy'].includes(installDraft.client);
+      body = `${agentSelectors(installDraft, 'install')}<p>${escape(suiteName(installDraft.suiteID))} · ${t('版本', 'Version')} ${suiteVersion(installDraft.suiteID)}</p><ul class="demo-agent-skills">${agentCatalog.skills.map(skill => `<li>${t(...skillTitles[skill])}</li>`).join('')}</ul><p>${t(installDraft.client === 'codex' ? 'Mac 客户端通过 Codex 官方 CLI 安装完整插件，并回读启用状态、版本和文件摘要。' : installDraft.client === 'workbuddy' ? 'Mac 客户端将完整套件安装到 WorkBuddy 的 Skills 目录，核对版本和文件；会话加载需另行验证。' : '当前客户端请通过其官方入口安装；河图洛书内的一键安装支持 Codex 和 WorkBuddy。', installDraft.client === 'codex' ? 'The Mac client uses the official Codex CLI to install the complete plugin and verifies enabled state, version and file checksums.' : installDraft.client === 'workbuddy' ? 'The Mac client installs the complete suite in the WorkBuddy skills directory and checks its version and files. Session loading needs separate verification.' : 'Use this client’s official installation flow. In-app installation supports Codex and WorkBuddy.')}</p><p>${t('此处只更新页面内的演示状态，不会安装插件或连接本机。', 'This only updates in-page demo state. It never installs a plugin or connects to your computer.')}</p>`;
+      if (!supported) label = t('此客户端需手工安装', 'Manual installation required');
     } else if (dialog === 'new-chapter') {
       title = t('新建章节', 'New chapter'); action = 'create-chapter'; label = t('建立章节', 'Create chapter');
       body = `<label>${t('章节标题', 'Chapter title')}<input name="new-title" required maxlength="120"/></label>`;
@@ -105,14 +151,14 @@ export function initializeWorkbench(root: HTMLElement) {
       title = t('核对版本快照', 'Review snapshot'); action = 'confirm-snapshot'; label = t('确认演示快照', 'Confirm demo snapshot');
       body = `<p>${escape(book().title)} · ${escape(current().title)} · ${t('修订', 'Revision')} ${current().revision}</p><pre>${escape(current().saved.slice(0, 260))}</pre><p>${t('此确认只更新演示历史，不创建真实 Git 提交。', 'This confirmation only updates demo history. It creates no real Git commit.')}</p>`;
     }
-    return `<dialog class="demo-dialog" aria-labelledby="demo-dialog-title"><form data-form="${action}"><h3 id="demo-dialog-title">${title}</h3><div class="demo-fields">${body}</div><div class="demo-dialog-actions">${button('cancel', t('取消', 'Cancel'))}<button type="submit" class="demo-primary">${label}</button></div></form></dialog>`;
+    return `<dialog class="demo-dialog" aria-labelledby="demo-dialog-title"><form data-form="${action}"><h3 id="demo-dialog-title">${title}</h3><div class="demo-fields">${body}</div><div class="demo-dialog-actions">${button('cancel', t('取消', 'Cancel'))}<button type="submit" class="demo-primary" ${dialog === 'install-agent' && !['codex', 'workbuddy'].includes(installDraft.client) ? 'disabled' : ''}>${label}</button></div></form></dialog>`;
   }
   function render(focusHeading = false) {
     root.dataset.theme = theme;
     root.lang = english ? 'en' : 'zh-CN';
     const nav = `<aside class="demo-sidebar" aria-label="${t('作品导航', 'Book navigation')}">${button('library', t('‹ 返回书库', '‹ Back to library'))}<nav>${navItems.map(([id, zh, en]) => `<button type="button" data-action="view" data-view="${id}" aria-pressed="${view === id}">${t(zh, en)}</button>`).join('')}</nav><div class="demo-current-book">${artwork(book().cover)}<strong>${escape(book().title)}</strong></div></aside>`;
-    const contents = { book: details, novel: editor, bible, drama, reviews, git: versions, media, plot, validation };
-    app.innerHTML = `<div class="demo-toolbar"><div class="demo-app-brand"><img src="/brand/icon-64.png" alt="" width="28" height="28"/><strong>${t('河图', 'Hetu')}</strong></div><span class="demo-context">${view === 'library' ? t('作者书库', 'Author library') : escape(book().title)}</span><div class="demo-toolbar-actions">${view !== 'library' ? `<span class="demo-save-state" data-save-state>${dirty() ? t('未保存', 'Unsaved changes') : t('已保存', 'Saved')}</span>` : ''}${button('language', english ? '中文' : 'EN', false, `aria-label="${t('切换原型界面语言', 'Switch demo interface language')}"`)}${button('theme', theme === 'light' ? t('深色', 'Dark') : t('浅色', 'Light'), false, `aria-label="${t('切换原型主题', 'Switch demo theme')}"`)}${view === 'library' ? button('new-book', t('新建作品', 'New book'), true) : button('save', t('保存正文', 'Save text'), true, dirty() ? '' : 'disabled')}</div></div>${view === 'library' ? library() : `<div class="demo-workspace">${nav}<div class="demo-content ${view === 'novel' ? 'demo-content-writing' : ''}">${bookIndex !== 0 && ['bible', 'drama', 'reviews', 'plot', 'validation'].includes(view) ? heading(t('当前作品尚无相关记录', 'No records for this book yet'), t('每部作品独立保存。回到《雾川纪》可体验已准备的设定、剧情与参考稿。', 'Books keep independent records. Open Chronicles of Wuchuan to explore prepared canon, plot and reference samples.')) : contents[view]()}${sourceVisible ? `<div class="demo-source"><h4>${t('固定原文 · 修订 12', 'Fixed source · Revision 12')}</h4><p>${escape(initialEnglish ? 'He touched the old jade clasp inside his pocket and opened the inn door.' : '他摸了摸怀里的旧玉扣，推开客栈的木门。')}</p>${button('locate', t('在写作稿中定位', 'Locate in working text'))}</div>` : ''}</div></div>`}<div class="demo-feedback" role="status" aria-live="polite">${escape(feedback || t('点击作品封面进入写作台；所有操作都在本页完成。', 'Open a book to explore its workspace. Every demo action stays on this page.'))}</div>${dialogMarkup()}`;
+    const contents = { book: details, settings, novel: editor, bible, drama, reviews, git: versions, media, plot, validation };
+    app.innerHTML = `<div class="demo-toolbar"><div class="demo-app-brand"><img src="/brand/icon-64.png" alt="" width="28" height="28"/><strong>${t('河图洛书', 'Hetu Luoshu')}</strong></div><span class="demo-context">${view === 'library' ? t('作者书库', 'Author library') : escape(book().title)}</span><div class="demo-toolbar-actions">${!['library', 'settings'].includes(view) ? `<span class="demo-save-state" data-save-state>${dirty() ? t('未保存', 'Unsaved changes') : t('已保存', 'Saved')}</span>` : ''}${button('settings', t('设置', 'Settings'))}${button('language', english ? '中文' : 'EN', false, `aria-label="${t('切换原型界面语言', 'Switch demo interface language')}"`)}${button('theme', theme === 'light' ? t('深色', 'Dark') : t('浅色', 'Light'), false, `aria-label="${t('切换原型主题', 'Switch demo theme')}"`)}${['library', 'settings'].includes(view) ? button('new-book', t('新建作品', 'New book'), true) : button('save', t('保存正文', 'Save text'), true, dirty() ? '' : 'disabled')}</div></div>${view === 'library' ? library() : view === 'settings' ? `<div class="demo-content">${settings()}</div>` : `<div class="demo-workspace">${nav}<div class="demo-content ${view === 'novel' ? 'demo-content-writing' : ''}">${bookIndex !== 0 && ['bible', 'drama', 'reviews', 'plot', 'validation'].includes(view) ? heading(t('当前作品尚无相关记录', 'No records for this book yet'), t('每部作品独立保存。回到《雾川纪》可体验已准备的设定、剧情与参考稿。', 'Books keep independent records. Open Chronicles of Wuchuan to explore prepared canon, plot and reference samples.')) : contents[view]()}${sourceVisible ? `<div class="demo-source"><h4>${t('固定原文 · 修订 12', 'Fixed source · Revision 12')}</h4><p>${escape(initialEnglish ? 'He touched the old jade clasp inside his pocket and opened the inn door.' : '他摸了摸怀里的旧玉扣，推开客栈的木门。')}</p>${button('locate', t('在写作稿中定位', 'Locate in working text'))}</div>` : ''}</div></div>`}<div class="demo-feedback" role="status" aria-live="polite">${escape(feedback || t('点击作品封面进入写作台；所有操作都在本页完成。', 'Open a book to explore its workspace. Every demo action stays on this page.'))}</div>${dialogMarkup()}`;
     if (dialog) {
       const element = app.querySelector<HTMLDialogElement>('dialog')!;
       element.showModal();
@@ -124,7 +170,7 @@ export function initializeWorkbench(root: HTMLElement) {
   }
   let dialogOpener = '';
   function closeDialog() {
-    dialog = ''; render();
+    dialog = dialog === 'install-agent' && installContext === 'new-book' ? 'new-book' : ''; render();
     app.querySelector<HTMLElement>(`[data-action="${dialogOpener}"]`)?.focus({ preventScroll: true });
   }
   function openDialog(value: typeof dialog, opener: string) {
@@ -152,7 +198,20 @@ export function initializeWorkbench(root: HTMLElement) {
     }
     if (target.name === 'search') { search = target.value; app.querySelector('[data-book-results]')!.innerHTML = libraryCards(); }
     if (target.name === 'comment') book().comment = target.value;
+    if (dialog === 'new-book' && target.name === 'new-title') newBookDraft.title = target.value;
+    if (dialog === 'new-book' && target.name === 'new-author') newBookDraft.author = target.value;
     if (target.name === 'evidence' && target instanceof HTMLInputElement) evidence = target.checked;
+  });
+  app.addEventListener('change', event => {
+    const target = event.target;
+    if (!(target instanceof HTMLSelectElement) || !target.dataset.agentContext) return;
+    const context = target.dataset.agentContext as AgentContext | 'install';
+    const value = { ...(context === 'install' ? installDraft : association(context)) };
+    if (target.name === 'agent-client' && clients.includes(target.value as AgentClient)) value.client = target.value as AgentClient;
+    if (target.name === 'agent-suite' && agentCatalog.suites.some(suite => suite.id === target.value)) value.suiteID = target.value;
+    if (context === 'install') installDraft = value;
+    else associate(context, value);
+    render();
   });
   app.addEventListener('click', event => {
     if (!(event.target instanceof Element)) return;
@@ -162,6 +221,7 @@ export function initializeWorkbench(root: HTMLElement) {
     feedback = ''; sourceVisible = false;
     if (action === 'open-book') { bookIndex = Number(control.dataset.book); chapterIndex = 0; view = 'novel'; evidence = false; }
     else if (action === 'library') view = 'library';
+    else if (action === 'settings') view = 'settings';
     else if (action === 'view') { view = control.dataset.view as View; }
     else if (action === 'filter') filter = control.dataset.filter!;
     else if (action === 'layout') list = !list;
@@ -178,7 +238,13 @@ export function initializeWorkbench(root: HTMLElement) {
       const index = textarea.value.indexOf(sourceQuote());
       if (index < 0) { notify(t('原文片段已变化，请核对固定修订；不会默认定位到错误位置。', 'The excerpt has changed. Inspect the fixed revision; no substitute location was chosen.')); return; }
       textarea.focus({ preventScroll: true }); textarea.setSelectionRange(index, index + sourceQuote().length); return;
-    } else if (action === 'new-book' || action === 'new-chapter') { openDialog(action, action); return; }
+    } else if (action === 'new-book' || action === 'new-chapter') {
+      if (action === 'new-book') newBookDraft = { title: '', author: '', client: defaultClient, suiteID: 'general' };
+      openDialog(action, action); return;
+    } else if (action === 'install-agent' || action === 'cover-install') {
+      installContext = action === 'cover-install' ? 'book' : control.dataset.context as AgentContext;
+      installDraft = { ...association(installContext) }; openDialog('install-agent', action); return;
+    }
     else if (action === 'cancel') { closeDialog(); return; }
     else if (action === 'changes') {
       if (!book().comment.trim()) { notify(t('请先填写具体修改意见。', 'Enter a specific review comment first.')); return; }
@@ -202,13 +268,18 @@ export function initializeWorkbench(root: HTMLElement) {
     if (!(event.target instanceof HTMLFormElement)) return;
     event.preventDefault();
     const data = new FormData(event.target), action = event.target.dataset.form;
-    if (action === 'details') {
+    if (action === 'confirm-install') {
+      if (!['codex', 'workbuddy'].includes(installDraft.client)) return;
+      installed.add(installationKey(installDraft)); associate(installContext, installDraft);
+      feedback = t('演示套件已安装。真实安装请在 Mac 客户端执行，会话与 MCP 仍需验证。', 'Demo suite installed. Use the Mac client for real installation. Session and MCP remain unverified.');
+      dialog = installContext === 'new-book' ? 'new-book' : ''; render(); return;
+    } else if (action === 'details') {
       const title = String(data.get('title')).trim();
       if (!title) { notify(t('请填写书名。', 'Enter a title.')); return; }
       Object.assign(book(), { title, author: String(data.get('author')).trim(), status: String(data.get('status')), cover: String(data.get('cover')), synopsis: String(data.get('synopsis')) });
       feedback = t('演示作品资料已保存。', 'Sample book details saved.');
     } else if (action === 'create-book') {
-      books.push({ title: String(data.get('new-title')).trim() || t('未命名作品', 'Untitled book'), author: String(data.get('new-author')).trim(), status: 'planning', cover: covers[0], synopsis: '', chapters: [chapter(t('创作笔记', 'Writing notes'), '')], locked: false, decision: 'pending', comment: '', snapshots: [] });
+      books.push({ title: String(data.get('new-title')).trim() || t('未命名作品', 'Untitled book'), author: String(data.get('new-author')).trim(), status: 'planning', cover: covers[0], synopsis: '', chapters: [chapter(t('创作笔记', 'Writing notes'), '')], locked: false, decision: 'pending', comment: '', snapshots: [], agent: { client: newBookDraft.client, suiteID: newBookDraft.suiteID } });
       bookIndex = books.length - 1; chapterIndex = 0; evidence = false; view = 'book';
       feedback = t('筹备作品已建立。可以补充资料，再开始第一章。', 'Planning book created. Add details and begin your first chapter.');
     } else if (action === 'create-chapter') {

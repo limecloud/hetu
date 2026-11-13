@@ -1,0 +1,7 @@
+Use case: precise-object-edit
+Asset type: reusable merchandise photograph for the Hetu Luoshu brand kit
+Primary request: Remove every printed word, Chinese character, Roman letter and text logotype from the reference merchandise photo. Leave blank, clean material in those locations. Keep every existing jade-teal dragon-horse mascot decal, figurine, pin, notebook, mug, sticker and keychain. Preserve the original mascot identity exactly: ivory antlers, cream scroll mane, three small gold forehead dots, black bean eyes and coral seal necklace. The coral seal is an abstract ornament, never add a readable character. The notebook cover, mug base, sticker sheet heading and woven keychain must have absolutely no legible or pseudo text.
+Input image 1: edit target — the existing merchandise photo; preserve composition and recognizable objects.
+Style: premium soft 3D stationery product photography, warm ivory paper, jade ceramic, coral accent, believable materials and lighting.
+Composition: retain the reference flat lay, landscape 1536x1024, no cropped object, no new product or character. Leave the entire artwork free of text; the final localized brand typography is composed separately.
+Constraints: remove all old brand lettering. No words, no letters, no watermark, no extra fingers, no warped products. Keep proportions, colors, faces, lighting and camera angle unchanged.

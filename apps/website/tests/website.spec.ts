@@ -10,7 +10,8 @@ for (const width of [375, 768, 1440]) {
       await page.goto(locale === 'en' ? '/en/' : '/');
       await expect(page.locator('html')).toHaveAttribute('lang', locale);
       await expect(page.locator('h1')).toHaveCount(1);
-      await page.locator('footer').scrollIntoViewIfNeeded();
+      // 逐段访问，确保中段懒加载图片也进入过视口；直接跳到页尾不会请求它们。
+      for (const image of await page.locator('img').all()) await image.scrollIntoViewIfNeeded();
       await expect.poll(() => page.locator('img').evaluateAll(images => images.every(image => image instanceof HTMLImageElement && image.complete && image.naturalWidth > 0))).toBe(true);
       const distorted = await page.locator('img').evaluateAll(images => images.flatMap(image => {
         if (!(image instanceof HTMLImageElement)) return [];
@@ -246,3 +247,60 @@ test('固定引文在当前文字变化后保留，定位失败不选择替代�
   await expect(page.locator('dialog')).toHaveCount(0);
   await expect(page.locator('[data-action="new-chapter"]')).toBeFocused();
 });
+
+for (const locale of ['zh-CN', 'en']) {
+  for (const width of [375, 1440]) {
+    test(`${locale} ${width}px 安装入口共享题材套件状态并保留作品关联`, async ({ page }) => {
+      const errors: string[] = [], writes: string[] = [];
+      page.on('pageerror', error => errors.push(error.message));
+      page.on('request', request => { if (request.method() !== 'GET') writes.push(request.url()); });
+      await page.setViewportSize({ width, height: 960 });
+      await page.goto(locale === 'en' ? '/en/#prototype' : '/#prototype');
+      const demo = page.locator('.demo');
+      await demo.locator('[data-action="settings"]').click();
+      await demo.locator('[name="agent-client"]').selectOption('workbuddy');
+      await demo.locator('[name="agent-suite"]').selectOption('military');
+      await demo.locator('[data-action="install-agent"]').click();
+      await expect(page.locator('dialog [name="agent-client"]')).toHaveValue('workbuddy');
+      await expect(page.locator('dialog .demo-agent-skills li')).toHaveCount(8);
+      await page.locator('dialog button[type="submit"]').click();
+      await expect(demo.locator('[data-agent-version]')).toHaveText('0.1.0');
+      await demo.locator('[data-action="new-book"]').click();
+      await expect(page.locator('dialog [name="agent-client"]')).toHaveValue('workbuddy');
+      await expect(page.locator('dialog [name="agent-suite"]')).toHaveValue('general');
+      await page.locator('dialog [name="new-title"]').fill('独立创作 Book');
+      await page.locator('dialog [name="new-author"]').fill('作者 Author');
+      await page.locator('dialog [name="agent-client"]').selectOption('codex');
+      await page.locator('dialog [name="agent-suite"]').selectOption('military');
+      await page.locator('dialog [data-action="install-agent"]').click();
+      await page.locator('dialog [name="agent-client"]').selectOption('other');
+      await expect(page.locator('dialog button[type="submit"]')).toBeDisabled();
+      await page.locator('dialog [name="agent-client"]').selectOption('codex');
+      expect(await page.locator('dialog').evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+      await page.locator('dialog button[type="submit"]').click();
+      await expect(page.locator('dialog [name="new-title"]')).toHaveValue('独立创作 Book');
+      await expect(page.locator('dialog [name="new-author"]')).toHaveValue('作者 Author');
+      await expect(page.locator('dialog [data-agent-version]')).toHaveText('0.1.0');
+      await page.locator('dialog button[type="submit"]').click();
+      await expect(demo.locator('[name="agent-client"]')).toHaveValue('codex');
+      await expect(demo.locator('[name="agent-suite"]')).toHaveValue('military');
+      await demo.locator('[data-action="cover-install"]').click();
+      await expect(page.locator('dialog [name="agent-suite"]')).toHaveValue('military');
+      await page.keyboard.press('Escape');
+      await expect(demo.locator('[data-action="cover-install"]')).toBeFocused();
+      await demo.locator('[name="agent-client"]').selectOption('workbuddy');
+      await expect(demo.locator('[data-agent-version]')).toHaveText('0.1.0');
+      await demo.locator('[name="agent-suite"]').selectOption('general');
+      await expect(demo.locator('[data-agent-state]')).toContainText(locale === 'en' ? 'not installed' : '未安装');
+      await demo.locator('[data-action="library"]').click();
+      await demo.locator('[data-action="open-book"][data-book="0"]').click();
+      await demo.locator('[data-view="book"]').click();
+      await expect(demo.locator('[name="agent-client"]')).toHaveValue('codex');
+      await expect(demo.locator('[name="agent-suite"]')).toHaveValue('general');
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+      await expect(page).toHaveURL(/#prototype$/);
+      expect(writes).toEqual([]);
+      expect(errors).toEqual([]);
+    });
+  }
+}

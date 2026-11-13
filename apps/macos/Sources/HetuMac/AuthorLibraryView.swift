@@ -35,7 +35,7 @@ struct AuthorLibraryView: View {
     private var topbar: some View {
         HStack(spacing: 12) {
             Image(nsImage: NSApp.applicationIconImage).resizable().scaledToFit().frame(width: 34, height: 34).accessibilityHidden(true)
-            Text(locale == "en" ? "Hetu" : "河图").font(.system(size: 18, weight: .semibold))
+            Text(model.t("brand.name")).font(.system(size: 18, weight: .semibold))
             Spacer()
             Button(locale == "en" ? "中文" : "EN") { locale = locale == "en" ? "zh-CN" : "en" }.buttonStyle(.plain)
             WorkbenchSettingsButton(locale: locale)

@@ -300,17 +300,20 @@ Schema 负责结构，领域校验进一步要求 ID 符合 UUID 格式、修订
 | --- | --- | --- |
 | ScopeRef | `kind, id` | kind 为 creation_project 或 workspace，二选一；ID 和会话实际授权一致 |
 | CreationProject | `schema_version, project_id, revision, previous_sha256, brief, selected_fields, task_refs, created_workspace_ref, created_at, updated_at` | brief 可从一句话开始；选中字段可为空；created_workspace_ref 初始 null，只有作者创建回执可绑定 |
-| CreativeTaskRequest | `schema_version, task_id, scope_ref, request_revision, previous_sha256, task_kind, brief, input_refs, input_snapshot, client_adapter, skill_ref, prompt, prompt_language, output_contract, created_at` | 请求不可变，scope 和来源固定；不得从当前最新正文静默补上下文 |
-| OutputContract | `artifact_types, candidate_limit, byte_budget, submission_mode, relative_inbox` | 提交方式为已发布 MCP 动作或固定文件交接；路径受管，数量和预算在复制前可见 |
-| TaskObservation | `task_ref, revision, state, copied_at, submission_refs, last_checked_at` | 可重建的观察与交接记录；复制不证明已发送，状态不代表 Agent 正在运行 |
-| TaskSubmission | `schema_version, submission_id, task_ref, request_sha256, candidate_refs, provenance, received_at, validation` | 一批外部结果；候选缺失为 partial，不能伪造成功；同键同输入返回同批 |
-| Candidate | `candidate_id, kind, content_ref, sha256, size_bytes, language_tag, source_refs` | kind 区分 concept、title、synopsis、outline、text、image；正文／图像按专项格式核验 |
-| InteractionDecision | `schema_version, decision_id, task_ref, candidate_refs, expected, selected_items, comment, actor_ref, created_at, previous_decision_ref` | 保存局部偏好和意见；引用固定候选；不能含批准、角色或任意操作字段 |
+| CreativeTaskRequest | `schema_version, task_id, scope_ref, request_revision, previous_sha256, task_kind, brief, input_refs, input_snapshot, client_adapter, skill_ref, prompt, prompt_language, output_contract, edit_scope, created_at` | 请求不可变，scope 和来源固定；不得从当前最新正文静默补上下文；非改稿任务的 edit_scope 为 null |
+| EditScope | `document_id, revision_id, ranges` | 单文档；1～16个 UTF-8 半开范围及 quote，不重叠；空范围为指定插入点，整章也显式列范围 |
+| OutputContract | `artifact_types, candidate_limit, text_byte_limit, image_byte_limit, submission_mode, relative_inbox, revision_requires_patches` | 提交方式为 MCP 或固定 inbox；路径由任务身份推导，数量和预算在复制前可见 |
+| TaskObservation | `schema_version, task_id, scope_ref, revision, previous_sha256, state, copied_at, submission_refs, last_decision_ref, closed_reason, created_at, updated_at` | 持久修订及摘要链；复制不证明已发送，状态不代表 Agent 正在运行 |
+| TaskSubmission | `schema_version, submission_id, task_ref, request_sha256, candidates, complete, missing_items, provenance, received_at` | 一批已核验的外部结果；不足为 partial_result，不能伪造成功；同键同输入返回同批 |
+| Candidate | `candidate_id, kind, relative_path, sha256, size_bytes, language_tag, source_refs` | kind 区分 concept、title、synopsis、outline、text、image；改稿保留 patches；可带 draft_ref，图片带实际宽高、类型与解码证据 |
+| InteractionDecision | `schema_version, decision_id, task_ref, candidate_refs, comment, actor_ref, effect, created_at, previous_decision_ref` | effect 固定 preference_only；CAS 在输入 expected 中，不冒充作者批准 |
 | ClientAdapterPreference | `adapter_id, user_confirmed_setup, last_capability_check` | 仅本机偏好；用户确认与技术检测分别保存，检查带时间、版本和范围 |
 
-`task_kind` 为 book_concept、book_profile、outline、cover、chapter_draft、revision 或 drama_draft。内部“任务已关闭”只结束河图跟踪，不声明外部取消或退款。`client_adapter` 与 Skill／插件版本是本次交接记录，不授予工具权限或保证模型身份。
+`task_kind` 为 book_concept、book_profile、outline、cover、chapter_draft、revision 或 drama_draft。内部“任务已关闭”只结束河图洛书跟踪，不声明外部取消或退款。`client_adapter` 与 Skill／插件版本是本次交接记录，不授予工具权限或保证模型身份。
 
-TaskSubmission 的文件清单由 Agent 最后原子提交，内核核验实际字节、固定请求、范围和路径后登记。非法候选隔离且给出原因，合法部分可预览。一个任务允许多个明确批次，候选 ID 不由标题、数组位置或文件修改时间生成。
+TaskSubmission 的文件清单由 Agent 最后原子提交，内核核验实际字节、固定请求、范围和路径后登记。任一候选非法则该批不登记，不静默裁剪；合法但明确缺项的批次可按 partial_result 保存。一个任务允许多个明确批次，候选 ID 不由标题、数组位置或文件修改时间生成。
+
+改稿 Candidate 的 `patches` 每项为 `byte_start, byte_end, quote, replacement`，范围相对于任务固定原文。内核合成独立参考版本，范围外字节保持，不写作者 Document。任务持久化及输入的机器合同见[creative-task.schema.json](../contracts/schemas/creative-task.schema.json)；参考读取、修改范围与采纳权限分别核验，不能从文件路径或候选来源推导授权。
 
 建书候选的 `selected_fields` 每字段记录作者最终值及可空 candidate_ref，手工值无需伪造 AI 来源。创建后的作品保存选定来源快照，不能永久依赖用户应用数据目录的绝对路径。筹备转作品不会改变旧请求 scope。
 

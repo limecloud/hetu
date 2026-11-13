@@ -13,6 +13,8 @@ struct ManuscriptView: View {
     let onBible: () -> Void
     let onValidation: () -> Void
     var writing = WritingPreferences()
+    @State private var editSelection = NSRange(location: 0, length: 0)
+    @State private var creativeTask = false
     var body: some View {
         GeometryReader { geometry in
         HStack(spacing: 0) {
@@ -22,6 +24,7 @@ struct ManuscriptView: View {
                     Spacer(minLength: 10)
                     Text(model.t("shell.word_count", ["count": String(model.statistics.han)])).lineLimit(1)
                     Menu {
+                        Button(model.t("creative.title")) { creativeTask = true }.disabled(model.busy || model.isComposing || model.documentID.isEmpty)
                         Button(model.t("finalization.title"), action: onFinalization).disabled(model.needsProtection || model.isComposing || !model.pendingStructureOperations.isEmpty)
                         Button(model.t("review.submit"), action: onReview).disabled(model.needsProtection || model.isComposing || !model.pendingStructureOperations.isEmpty)
                         if model.loaded["document"]["structure_origin"] != .null { Button(model.t("script.mapping"), action: onMapping) }
@@ -46,7 +49,7 @@ struct ManuscriptView: View {
                 NativeTextEditor(text: model.text, documentID: model.documentID, replacementVersion: model.replacementVersion,
                     accessibleName: model.t("editor.body"), editable: !model.editorSuspended, readingMode: true,
                     presentation: writing.presentation(forScript: model.loaded["document"]["source_format"].string == "fountain"),
-                    onChange: { [id = model.documentID] value in model.edit(value, documentID: id) }, onComposition: model.setComposition, undoBaseline: model.adoptionUndoBaseline)
+                    onChange: { [id = model.documentID] value in model.edit(value, documentID: id) }, onComposition: model.setComposition, onSelection: { editSelection = $0 }, undoBaseline: model.adoptionUndoBaseline)
                 HStack {
                     Text(model.loaded["document"]["source_format"].string == "fountain" ? "Fountain" : "Markdown")
                     Spacer()
@@ -62,6 +65,8 @@ struct ManuscriptView: View {
             }
         }
         }
+        .sheet(isPresented: $creativeTask) { CreativeTaskView(model: model, selection: editSelection) }
+        .onChange(of: model.documentID) { _, _ in editSelection = NSRange(location: 0, length: 0) }
     }
     private func notice(_ key: String, action: String, perform: @escaping () -> Void) -> some View {
         HStack {

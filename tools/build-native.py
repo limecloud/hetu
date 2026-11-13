@@ -37,6 +37,7 @@ def package_app(channel):
     shutil.copy2(ROOT / "build/native/lib/libhetu_core.dylib", library)
     shutil.copytree(ROOT / ".build/debug/Hetu_HetuNative.bundle", contents / "Resources/Hetu_HetuNative.bundle", dirs_exist_ok=True)
     shutil.copytree(ROOT / ".build/debug/Hetu_HetuArtwork.bundle", contents / "Resources/Hetu_HetuArtwork.bundle", dirs_exist_ok=True)
+    shutil.copytree(ROOT / ".build/debug/Hetu_HetuIntegrationAssets.bundle", contents / "Resources/Hetu_HetuIntegrationAssets.bundle", dirs_exist_ok=True)
     shutil.copy2(ROOT / "assets/brand/icons/macos/Hetu.icns", contents / "Resources/Hetu.icns")
     mcp = contents / "Helpers/hetu-mcp"
     shutil.copy2(ROOT / "target/debug/hetu-mcp", mcp)
@@ -44,7 +45,7 @@ def package_app(channel):
     standalone.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(mcp, standalone)
     info = {
-        "CFBundleName": "Hetu", "CFBundleDisplayName": "河图 Hetu", "CFBundleIdentifier": "run.limeai.hetu",
+        "CFBundleName": "Hetu Luoshu", "CFBundleDisplayName": "河图洛书", "CFBundleIdentifier": "run.limeai.hetu",
         "CFBundleExecutable": "HetuMac", "CFBundlePackageType": "APPL", "CFBundleIconFile": "Hetu",
         "CFBundleShortVersionString": "0.2.0", "CFBundleVersion": "2", "LSMinimumSystemVersion": "14.0",
         "NSHighResolutionCapable": True, "NSPrincipalClass": "NSApplication",

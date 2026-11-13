@@ -1,6 +1,6 @@
 # MCP 与 Agent 接入
 
-基础工具对应 FR-13；创作任务和局部交互对应 FR-14／22～25。作者从河图选择客户端、安装扩展并复制 Prompt，在外部 Agent 对话和生成。河图不实现 Agent、不发送生成消息或调用模型 API。设计合同与当前可调用目录分别管理。
+基础工具对应 FR-13；创作任务和局部交互对应 FR-14／22～25。作者从河图洛书选择客户端、安装扩展并复制 Prompt，在外部 Agent 对话和生成。河图洛书不实现 Agent、不发送生成消息或调用模型 API。设计合同与当前可调用目录分别管理。
 
 ## 1. 传输、生命周期与授权
 
@@ -14,7 +14,7 @@
 
 Rust Server 使用官方 `rmcp =3.9.0`，关闭默认 feature，仅启用 Server 与 stdio 传输。协议版本列表固定为 `2026-07-28`。依赖由 `Cargo.lock` 固定；不启用 HTTP、OAuth、采样或模型请求。SDK 支持范围与来源见[27](27-Agent与Codex插件集成设计.md)。
 
-工作区授权来自启动参数 `--workspace <绝对路径>`；进程以 Agent 权限打开该单一工作区，不创建工作区、不接受作者模式参数。范围覆盖该作品中可由 Agent 读取的正文、草稿和公共审核投影。缩小范围需要独立授权合同，不能把工具 annotations 当成文档级权限。自报 Agent 名称、MCP clientInfo 和 roots 声明均不是权限凭据。
+工作区授权来自启动参数 `--workspace <绝对路径>`；进程以 Agent 权限打开该单一工作区，不创建工作区、不接受作者模式参数。普通工作区连接覆盖该作品中允许 Agent 读取的正文、草稿和公共审核投影。受限任务连接使用 `--workspace <绝对路径> --task <task_id>`，仅开放固定任务；筹备连接使用 `--creation-project <绝对路径> --task <task_id>`，必须绑定任务。三种启动方式不接受运行中切换范围；自报 Agent 名称、MCP clientInfo、roots 与工具 annotations 均不是权限凭据。
 
 ## 2. 工具目录与业务合同
 
@@ -34,6 +34,17 @@ Rust Server 使用官方 `rmcp =3.9.0`，关闭默认 feature，仅启用 Server
 `save_result=false`／`save_report=false` 不产生业务写入，且不接受 `operation_key`；保存派生结果也不得改变原著或设定集。草稿提交和诊断是独立动作。新草稿必须有标题，修改草稿必须指定目标与基线，返工用新稿接替明确的旧稿。
 
 `contracts/tools/catalog.json` 是工具名与内核动作映射的事实源。inputSchema 直接取自内核能力目录，outputSchema 采用 `contracts/schemas/result.schema.json` 并绑定准确 action；该 Schema 校验 AXI 封装，领域 `data` 按对应业务合同解释。Server 在返回前再次验证封装。工具目录只登记已实现能力。Git 快照通过独立作者批准后执行；Bundle 工具按交付完整性验收登记，不能返回模拟成功。
+
+目录以 `workspace` 与 `task` profile 分别投影。上表八项属于普通工作区连接；任务连接只发现以下四项，不同时开放正文查询、保存、设定修改、采纳、定稿或 Git 工具：
+
+| 任务工具 | 应用动作 | 效果 |
+| --- | --- | --- |
+| `hetu_read_creative_task` | `hetu.creative_tasks.get` | 读取当前固定任务、已提交候选及观察状态 |
+| `hetu_submit_creative_result` | `hetu.creative_tasks.submit_result` | 依请求摘要提交独立候选；受限改稿必须使用授权范围内的 patches |
+| `hetu_open_task_view` | `hetu.interactions.get` | 返回局部交互数据；此构建不登记 Apps HTML 资源 |
+| `hetu_save_task_selection` | `hetu.interactions.save_selection` | 保存任务内偏好；不采纳为正文、不选正式封面 |
+
+请求每次重新检查任务归属及关闭状态。作者关闭任务后，已经启动的任务进程也失去读取、提交和原操作查询权限；其他任务的 ID、摘要或操作键不能用于访问。
 
 ## 3. 资源与任务查询
 
@@ -61,7 +72,7 @@ Rust Server 使用官方 `rmcp =3.9.0`，关闭默认 feature，仅启用 Server
 
 通过资源读取原文、审核结果与原操作状态，避免只提供“写草稿”却无法读取驳回理由。Server 只声明当前构建实际实现并验收的扩展；没有订阅时通过查询观察，不虚报通知或 Apps 能力。资源按 private／零缓存有效期返回。
 
-创作任务扩展采用 scope 区分的资源根：正式作品沿用 `hetu://workspace/{workspace_id}/`，筹备为 `hetu://creation-project/{project_id}/`；其下以白名单提供 `creative-tasks/{task_id}`、固定请求、候选和局部选择。工具投影及发布条件见[30第19节](30-应用API详细设计.md#19-mcp-工具投影与兼容)。不借资源 URI 扫描书库、不返回应用私有凭据，通用作品工具在筹备 scope 中不可用。
+任务连接使用独立资源根 `hetu://task/{scope_kind}/{scope_id}/{task_id}/`，`scope_kind` 为 `workspace` 或 `creation_project`。仅提供 `capabilities`、`request`、`view`、`operations/{operation_id}` 与 `operations/by-key{?action,key}`；不开放普通工作区资源根。工具投影及交互扩展见[30第19节](30-应用API详细设计.md#19-mcp-工具投影与兼容)。不借资源 URI 扫描书库，不返回应用私有凭据。
 
 内核任务在阻塞线程执行，每个 Server 同时接受一个领域任务，繁忙立即返回 `workspace_busy`。单行输入上限 16 MiB，领域结果上限 8 MiB；超限结果保留已有原操作引用。取消可阻止尚未开始的任务；已开始的原子事务完成后沿原键恢复。EOF 关闭连接，进程退出前收束已经开始的内核任务。传输取消不等于业务撤销。
 

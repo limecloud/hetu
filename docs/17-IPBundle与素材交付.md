@@ -64,7 +64,7 @@ Bundle 的 `DELIVERY.md` 属于用户导出产物，不是软件仓库新增的�
 
 乐律线索保存情绪、场次、节拍／风格说明及音乐文件引用；视觉线索保存人物、场景、造型、构图说明及图片引用。线索描述是作者／Agent 提供的内容，核心只组织和校验引用。
 
-素材元数据包括 `asset_id, sha256, media_type, size_bytes, source_type, source_uri?, creator_statement?, rights_status, narrative_refs`。外部服务来源可以保留供应商任务 ID 与安全参数投影，生成来源由供应商／调用方声明，不能伪装为河图验证过的事实。
+素材元数据包括 `asset_id, sha256, media_type, size_bytes, source_type, source_uri?, creator_statement?, rights_status, narrative_refs`。外部服务来源可以保留供应商任务 ID 与安全参数投影，生成来源由供应商／调用方声明，不能伪装为河图洛书验证过的事实。
 
 大文件导入先复制到受管 staging、核对类型与摘要，再登记；不自动跟随 URL 下载，不接收可执行文件作为媒体。外部链接导出前清除凭据、私有签名查询参数和本机绝对路径。
 
@@ -84,7 +84,7 @@ Bundle 的 `DELIVERY.md` 属于用户导出产物，不是软件仓库新增的�
 
 ## 6. 接收方核验
 
-接收方无需安装河图即可解压阅读 Markdown／Fountain／JSON 和常规媒体。`bundle verify` 提供本地摘要、引用和清单检查，但不证明来源声明真实或材料具有版权。
+接收方无需安装河图洛书即可解压阅读 Markdown／Fountain／JSON 和常规媒体。`bundle verify` 提供本地摘要、引用和清单检查，但不证明来源声明真实或材料具有版权。
 
 剧本源格式为 Fountain，并随交付 profile 提供 DOCX／PDF 阅读稿；小说可提供 TXT／DOCX。转换版本、profile、损失报告与产物摘要进入 manifest。格式约束以[25](25-小说与剧本标准格式.md)为准，不能只给制片方一份私有 JSON 就宣称标准剧本交付。
 

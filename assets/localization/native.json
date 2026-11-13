@@ -1,7 +1,7 @@
 {
   "welcome.title": {
-    "zh-CN": "河图 Hetu",
-    "en": "Hetu",
+    "zh-CN": "河图洛书 Hetu Luoshu",
+    "en": "Hetu Luoshu",
     "purpose": "Mac 原生界面：welcome.title",
     "parameters": []
   },
@@ -24,8 +24,8 @@
     "parameters": []
   },
   "workspace.choose": {
-    "zh-CN": "选择河图作品文件夹",
-    "en": "Choose a Hetu book folder",
+    "zh-CN": "选择河图洛书作品文件夹",
+    "en": "Choose a Hetu Luoshu book folder",
     "purpose": "Mac 原生界面：workspace.choose",
     "parameters": []
   },
@@ -4180,8 +4180,8 @@
     "parameters": []
   },
   "library.empty_detail": {
-    "zh-CN": "新建小说，或将已有的河图作品加入书库。每部作品独立保存。",
-    "en": "Create a novel or add an existing Hetu book. Each book is stored independently.",
+    "zh-CN": "新建小说，或将已有的河图洛书作品加入书库。每部作品独立保存。",
+    "en": "Create a novel or add an existing Hetu Luoshu book. Each book is stored independently.",
     "purpose": "Mac 原生界面：library.empty_detail",
     "parameters": []
   },
@@ -4541,8 +4541,8 @@
     "parameters": []
   },
   "settings.applies_immediately": {
-    "zh-CN": "设置自动保存，并立即应用到所有河图窗口。",
-    "en": "Settings are saved automatically and apply to all Hetu windows.",
+    "zh-CN": "设置自动保存，并立即应用到所有河图洛书窗口。",
+    "en": "Settings are saved automatically and apply to all Hetu Luoshu windows.",
     "purpose": "Mac 原生设置：settings.applies_immediately",
     "parameters": []
   },
@@ -4625,8 +4625,8 @@
     "parameters": []
   },
   "settings.local_note": {
-    "zh-CN": "作品保存在各自的本地目录。河图不内置内容生成模型或生成服务接口。",
-    "en": "Books remain in their own local folders. Hetu does not include content generation models or generation APIs.",
+    "zh-CN": "作品保存在各自的本地目录。河图洛书不内置内容生成模型或生成服务接口。",
+    "en": "Books remain in their own local folders. Hetu Luoshu does not include content generation models or generation APIs.",
     "purpose": "Mac 原生设置：settings.local_note",
     "parameters": []
   },
@@ -4903,6 +4903,790 @@
     "zh-CN": "写作稿有新修改 · 旧定稿保留",
     "en": "New working revision · earlier final preserved",
     "purpose": "Mac 原生界面：finalization.new_writing",
+    "parameters": []
+  },
+  "agent.title": {
+    "zh-CN": "AI 协作",
+    "en": "AI Collaboration",
+    "purpose": "Mac 原生界面：agent.title",
+    "parameters": []
+  },
+  "agent.client.none": {
+    "zh-CN": "暂不使用 AI",
+    "en": "Write without AI",
+    "purpose": "Mac 原生界面：agent.client.none",
+    "parameters": []
+  },
+  "agent.client.codex": {
+    "zh-CN": "Codex",
+    "en": "Codex",
+    "purpose": "Mac 原生界面：agent.client.codex",
+    "parameters": []
+  },
+  "agent.client.workbuddy": {
+    "zh-CN": "WorkBuddy",
+    "en": "WorkBuddy",
+    "purpose": "Mac 原生界面：agent.client.workbuddy",
+    "parameters": []
+  },
+  "agent.client.claudeCode": {
+    "zh-CN": "Claude Code",
+    "en": "Claude Code",
+    "purpose": "Mac 原生界面：agent.client.claudeCode",
+    "parameters": []
+  },
+  "agent.client.other": {
+    "zh-CN": "其他客户端",
+    "en": "Other Client",
+    "purpose": "Mac 原生界面：agent.client.other",
+    "parameters": []
+  },
+  "agent.default_client": {
+    "zh-CN": "新作品默认客户端",
+    "en": "Default Client for New Books",
+    "purpose": "Mac 原生界面：agent.default_client",
+    "parameters": []
+  },
+  "agent.work_client": {
+    "zh-CN": "本作品客户端",
+    "en": "Client for This Book",
+    "purpose": "Mac 原生界面：agent.work_client",
+    "parameters": []
+  },
+  "agent.suite": {
+    "zh-CN": "题材 Skills 套件",
+    "en": "Genre Skills Suite",
+    "purpose": "Mac 原生界面：agent.suite",
+    "parameters": []
+  },
+  "agent.suite.general": {
+    "zh-CN": "河图洛书·通用",
+    "en": "Hetu Luoshu · General",
+    "purpose": "Mac 原生界面：agent.suite.general",
+    "parameters": []
+  },
+  "agent.suite.military": {
+    "zh-CN": "河图洛书·军事",
+    "en": "Hetu Luoshu · Military",
+    "purpose": "Mac 原生界面：agent.suite.military",
+    "parameters": []
+  },
+  "agent.refresh": {
+    "zh-CN": "重新检查",
+    "en": "Check Again",
+    "purpose": "Mac 原生界面：agent.refresh",
+    "parameters": []
+  },
+  "agent.catalog_error": {
+    "zh-CN": "无法读取随附套件，请检查应用资源。",
+    "en": "Unable to read bundled suites. Check the app resources.",
+    "purpose": "Mac 原生界面：agent.catalog_error",
+    "parameters": []
+  },
+  "agent.manual_note": {
+    "zh-CN": "可以直接创作。选择客户端后可检查对应题材套件。",
+    "en": "You can write directly. Choose a client to check its genre suite.",
+    "purpose": "Mac 原生界面：agent.manual_note",
+    "parameters": []
+  },
+  "agent.checking": {
+    "zh-CN": "正在检查本机套件…",
+    "en": "Checking local suite…",
+    "purpose": "Mac 原生界面：agent.checking",
+    "parameters": []
+  },
+  "agent.skills": {
+    "zh-CN": "套件包含的 Skills",
+    "en": "Skills in This Suite",
+    "purpose": "Mac 原生界面：agent.skills",
+    "parameters": []
+  },
+  "agent.skill_found": {
+    "zh-CN": "文件已发现",
+    "en": "File Found",
+    "purpose": "Mac 原生界面：agent.skill_found",
+    "parameters": []
+  },
+  "agent.skill_unverified": {
+    "zh-CN": "未验证安装",
+    "en": "Installation Unverified",
+    "purpose": "Mac 原生界面：agent.skill_unverified",
+    "parameters": []
+  },
+  "agent.package_guide": {
+    "zh-CN": "安装与连接说明",
+    "en": "Installation and Connection",
+    "purpose": "Mac 原生界面：agent.package_guide",
+    "parameters": []
+  },
+  "agent.bundled_package": {
+    "zh-CN": "查看随附套件",
+    "en": "Show Bundled Suite",
+    "purpose": "Mac 原生界面：agent.bundled_package",
+    "parameters": []
+  },
+  "agent.choose_package": {
+    "zh-CN": "选择实际包目录…",
+    "en": "Choose Actual Package…",
+    "purpose": "Mac 原生界面：agent.choose_package",
+    "parameters": []
+  },
+  "agent.auto_detect": {
+    "zh-CN": "恢复自动检测",
+    "en": "Use Automatic Detection",
+    "purpose": "Mac 原生界面：agent.auto_detect",
+    "parameters": []
+  },
+  "agent.default_note": {
+    "zh-CN": "默认客户端仅用于新作品。更改默认值不会改变已有作品的关联。",
+    "en": "The default applies to new books. Existing book associations stay as selected.",
+    "purpose": "Mac 原生界面：agent.default_note",
+    "parameters": []
+  },
+  "agent.work_note": {
+    "zh-CN": "客户端和套件选择保存在本机，逐作品独立；切换不改变作品内容或任务授权。",
+    "en": "Client and suite choices are local to each book. Content and task permissions stay intact.",
+    "purpose": "Mac 原生界面：agent.work_note",
+    "parameters": []
+  },
+  "agent.installation": {
+    "zh-CN": "套件检测",
+    "en": "Suite Detection",
+    "purpose": "Mac 原生界面：agent.installation",
+    "parameters": []
+  },
+  "agent.state.notFound": {
+    "zh-CN": "未发现安装记录或包文件",
+    "en": "No Installation Record or Package Found",
+    "purpose": "Mac 原生界面：agent.state.notFound",
+    "parameters": []
+  },
+  "agent.state.filesFound": {
+    "zh-CN": "已发现包文件，安装状态待验证",
+    "en": "Package Files Found; Installation Unverified",
+    "purpose": "Mac 原生界面：agent.state.filesFound",
+    "parameters": []
+  },
+  "agent.state.registered": {
+    "zh-CN": "已发现本机登记与包文件",
+    "en": "Local Registration and Package Found",
+    "purpose": "Mac 原生界面：agent.state.registered",
+    "parameters": []
+  },
+  "agent.state.partial": {
+    "zh-CN": "套件不完整，缺少部分 Skills",
+    "en": "Incomplete Suite; Some Skills Missing",
+    "purpose": "Mac 原生界面：agent.state.partial",
+    "parameters": []
+  },
+  "agent.state.invalid": {
+    "zh-CN": "包身份或文件无效",
+    "en": "Invalid Package Identity or Files",
+    "purpose": "Mac 原生界面：agent.state.invalid",
+    "parameters": []
+  },
+  "agent.state.ambiguous": {
+    "zh-CN": "发现多个包，请选择实际目录",
+    "en": "Multiple Packages Found; Choose the Actual One",
+    "purpose": "Mac 原生界面：agent.state.ambiguous",
+    "parameters": []
+  },
+  "agent.version": {
+    "zh-CN": "本机包版本",
+    "en": "Local Package Version",
+    "purpose": "Mac 原生界面：agent.version",
+    "parameters": []
+  },
+  "agent.bundled_version": {
+    "zh-CN": "随附套件版本",
+    "en": "Bundled Suite Version",
+    "purpose": "Mac 原生界面：agent.bundled_version",
+    "parameters": []
+  },
+  "agent.unknown": {
+    "zh-CN": "未知",
+    "en": "Unknown",
+    "purpose": "Mac 原生界面：agent.unknown",
+    "parameters": []
+  },
+  "agent.version_differs": {
+    "zh-CN": "本机包与随附版本不同，请在客户端核对更新。",
+    "en": "Local and bundled versions differ. Check updates in your client.",
+    "purpose": "Mac 原生界面：agent.version_differs",
+    "parameters": []
+  },
+  "agent.registration": {
+    "zh-CN": "Codex 本机启用配置",
+    "en": "Codex Local Enable Setting",
+    "purpose": "Mac 原生界面：agent.registration",
+    "parameters": []
+  },
+  "agent.registration.enabled": {
+    "zh-CN": "配置为启用",
+    "en": "Configured as Enabled",
+    "purpose": "Mac 原生界面：agent.registration.enabled",
+    "parameters": []
+  },
+  "agent.registration.disabled": {
+    "zh-CN": "配置为停用",
+    "en": "Configured as Disabled",
+    "purpose": "Mac 原生界面：agent.registration.disabled",
+    "parameters": []
+  },
+  "agent.registration.notFound": {
+    "zh-CN": "未发现对应登记",
+    "en": "No Matching Registration Found",
+    "purpose": "Mac 原生界面：agent.registration.notFound",
+    "parameters": []
+  },
+  "agent.registration.unknown": {
+    "zh-CN": "未验证",
+    "en": "Unverified",
+    "purpose": "Mac 原生界面：agent.registration.unknown",
+    "parameters": []
+  },
+  "agent.source": {
+    "zh-CN": "检测来源",
+    "en": "Detection Source",
+    "purpose": "Mac 原生界面：agent.source",
+    "parameters": []
+  },
+  "agent.checked_at": {
+    "zh-CN": "检查时间",
+    "en": "Checked At",
+    "purpose": "Mac 原生界面：agent.checked_at",
+    "parameters": []
+  },
+  "agent.session": {
+    "zh-CN": "当前会话加载",
+    "en": "Current Session Loading",
+    "purpose": "Mac 原生界面：agent.session",
+    "parameters": []
+  },
+  "agent.mcp": {
+    "zh-CN": "任务 MCP 连接",
+    "en": "Task MCP Connection",
+    "purpose": "Mac 原生界面：agent.mcp",
+    "parameters": []
+  },
+  "agent.unverified": {
+    "zh-CN": "待在客户端验证",
+    "en": "Verify in Client",
+    "purpose": "Mac 原生界面：agent.unverified",
+    "parameters": []
+  },
+  "agent.evidence_note": {
+    "zh-CN": "包文件与启用配置只证明本机可见信息。请在客户端的新会话核对 Skills 和任务连接。",
+    "en": "Package files and enable settings show local evidence. Verify Skills and the task connection in a new client session.",
+    "purpose": "Mac 原生界面：agent.evidence_note",
+    "parameters": []
+  },
+  "agent.choose_package_note": {
+    "zh-CN": "选择实际使用的插件根目录，包含 plugin.json 或 .codex-plugin/plugin.json。",
+    "en": "Choose the actual plugin root containing plugin.json or .codex-plugin/plugin.json.",
+    "purpose": "Mac 原生界面：agent.choose_package_note",
+    "parameters": []
+  },
+  "agent.guide.codex": {
+    "zh-CN": "查看随附套件，在 Codex 的插件目录按官方指南添加本地来源并安装。军事题材选择“河图洛书·军事”整套包。若已有多个缓存版本，请选择客户端实际使用的包目录；安装后开始新会话核对 Skills。",
+    "en": "Show the bundled suite, then follow the official guide to add a local source and install in Codex. Use the complete Hetu Luoshu · Military package for military fiction. If several cached versions exist, select the actual package used by your client. Start a new session to verify Skills.",
+    "purpose": "Mac 原生界面：agent.guide.codex",
+    "parameters": []
+  },
+  "agent.guide.other": {
+    "zh-CN": "查看随附套件，将整套 skills 目录和 references 一并保留，按所选客户端的官方方式导入。WorkBuddy 的安装位置及能力以其实际版本为准；河图洛书不会套用其他产品的配置路径。导入后选择实际包目录检查文件。",
+    "en": "Show the bundled suite and keep its complete skills and references directories together when importing with your client’s official method. WorkBuddy locations and capabilities depend on its actual version. After import, choose the actual package directory to inspect the files.",
+    "purpose": "Mac 原生界面：agent.guide.other",
+    "parameters": []
+  },
+  "agent.guide.scope": {
+    "zh-CN": "河图洛书不会自动修改全局客户端配置。包内方法与任务 MCP 分开接入：先在河图洛书准备明确任务，再按该任务提供的连接范围使用；文件检测不代表已连接或已生成。",
+    "en": "Hetu Luoshu does not change global client settings automatically. Prepare a specific task, then use its scoped MCP connection. File detection does not mean a connection or generation has completed.",
+    "purpose": "Mac 原生界面：agent.guide.scope",
+    "parameters": []
+  },
+  "agent.official_guide": {
+    "zh-CN": "Codex 官方插件指南",
+    "en": "Official Codex Plugin Guide",
+    "purpose": "Mac 原生界面：agent.official_guide",
+    "parameters": []
+  },
+  "agent.skill.hetu-setup": {
+    "zh-CN": "接入与任务恢复",
+    "en": "Setup and Task Recovery",
+    "purpose": "Mac 原生界面：agent.skill.hetu-setup",
+    "parameters": []
+  },
+  "agent.skill.hetu-book-create": {
+    "zh-CN": "建书构思",
+    "en": "Book Concept",
+    "purpose": "Mac 原生界面：agent.skill.hetu-book-create",
+    "parameters": []
+  },
+  "agent.skill.hetu-book-profile": {
+    "zh-CN": "作品资料与简介",
+    "en": "Book Profile and Synopsis",
+    "purpose": "Mac 原生界面：agent.skill.hetu-book-profile",
+    "parameters": []
+  },
+  "agent.skill.hetu-outline": {
+    "zh-CN": "总纲、卷纲与章纲",
+    "en": "Story, Volume and Chapter Outlines",
+    "purpose": "Mac 原生界面：agent.skill.hetu-outline",
+    "parameters": []
+  },
+  "agent.skill.hetu-cover": {
+    "zh-CN": "封面设计与候选",
+    "en": "Cover Design and Candidates",
+    "purpose": "Mac 原生界面：agent.skill.hetu-cover",
+    "parameters": []
+  },
+  "agent.skill.hetu-draft": {
+    "zh-CN": "章节起草与续写",
+    "en": "Chapter Drafting and Continuation",
+    "purpose": "Mac 原生界面：agent.skill.hetu-draft",
+    "parameters": []
+  },
+  "agent.skill.hetu-revise": {
+    "zh-CN": "选区改稿与返工",
+    "en": "Selected Text Revision and Rework",
+    "purpose": "Mac 原生界面：agent.skill.hetu-revise",
+    "parameters": []
+  },
+  "agent.skill.hetu-drama": {
+    "zh-CN": "短剧改编",
+    "en": "Short Drama Adaptation",
+    "purpose": "Mac 原生界面：agent.skill.hetu-drama",
+    "parameters": []
+  },
+  "agent.lock_version": {
+    "zh-CN": "Lock 记录版本",
+    "en": "Lock Record Version",
+    "purpose": "Mac 原生界面：agent.lock_version",
+    "parameters": []
+  },
+  "agent.lock_differs": {
+    "zh-CN": "Lock 与 manifest 版本不同；当前包版本以 manifest 为准，宿主加载待验证。",
+    "en": "Lock and manifest versions differ. The package version comes from the manifest; verify host loading separately.",
+    "purpose": "Mac 原生界面：agent.lock_differs",
+    "parameters": []
+  },
+  "agent.skill_version": {
+    "zh-CN": "随套件 {version}",
+    "en": "Suite {version}",
+    "purpose": "Mac 原生界面：Skill 随套件发布的版本",
+    "parameters": [
+      "version"
+    ]
+  },
+  "creative.title": {
+    "zh-CN": "请外部 AI 改稿",
+    "en": "Ask external AI to revise",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.title"
+  },
+  "creative.allowed": {
+    "zh-CN": "允许改动",
+    "en": "Allowed changes",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.allowed"
+  },
+  "creative.save_first": {
+    "zh-CN": "请先保存修订，再确认本次可改范围；未保存内容不会自动外发。",
+    "en": "Save a revision before choosing the edit scope. Unsaved text is not shared automatically.",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.save_first"
+  },
+  "creative.add_selection": {
+    "zh-CN": "加入选段",
+    "en": "Add selection",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.add_selection"
+  },
+  "creative.insert_here": {
+    "zh-CN": "在此续写",
+    "en": "Continue here",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.insert_here"
+  },
+  "creative.whole_chapter": {
+    "zh-CN": "整章改稿",
+    "en": "Revise whole chapter",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.whole_chapter"
+  },
+  "creative.insertion_point": {
+    "zh-CN": "指定插入点",
+    "en": "Specified insertion point",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.insertion_point"
+  },
+  "creative.reference_only": {
+    "zh-CN": "仅供参考",
+    "en": "Reference only",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.reference_only"
+  },
+  "creative.context_note": {
+    "zh-CN": "本章已保存原文、作品资料和勾选内容会作为参考；只有上方明确列出的范围允许改动。",
+    "en": "The saved chapter, book profile and checked sources are shared as context. Only the explicitly listed ranges may be changed.",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.context_note"
+  },
+  "creative.request": {
+    "zh-CN": "修改目标与需要保留的表达",
+    "en": "Revision request and what to preserve",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.request"
+  },
+  "creative.preview_prompt": {
+    "zh-CN": "预览提示词与资料",
+    "en": "Preview prompt and context",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.preview_prompt"
+  },
+  "creative.handoff_note": {
+    "zh-CN": "河图洛书准备任务，完整对话与生成在你选择的外部客户端进行。先配置本任务 MCP 连接；不使用 MCP 时按提示词写回固定结果目录。",
+    "en": "Hetu Luoshu prepares the task. Conversation and generation happen in your chosen external client. Configure the task MCP connection, or return files to the fixed inbox.",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.handoff_note"
+  },
+  "creative.prompt": {
+    "zh-CN": "任务提示词",
+    "en": "Task prompt",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.prompt"
+  },
+  "creative.outgoing": {
+    "zh-CN": "本次外发资料",
+    "en": "Context shared for this task",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.outgoing"
+  },
+  "creative.prepare": {
+    "zh-CN": "保存本次任务",
+    "en": "Save task",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.prepare"
+  },
+  "creative.history": {
+    "zh-CN": "本作品的协作任务",
+    "en": "Creative tasks for this book",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.history"
+  },
+  "creative.refresh": {
+    "zh-CN": "查看最新结果",
+    "en": "Refresh results",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.refresh"
+  },
+  "creative.more": {
+    "zh-CN": "加载更多",
+    "en": "Load more",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.more"
+  },
+  "creative.copy_prompt": {
+    "zh-CN": "复制任务提示词",
+    "en": "Copy task prompt",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.copy_prompt"
+  },
+  "creative.connection": {
+    "zh-CN": "复制本任务连接配置",
+    "en": "Copy task connection config",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.connection"
+  },
+  "creative.copied": {
+    "zh-CN": "提示词已复制，请到所选客户端继续。",
+    "en": "Prompt copied. Continue in your chosen client.",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.copied"
+  },
+  "creative.connection_copied": {
+    "zh-CN": "连接配置已复制，请按客户端的 MCP 配置格式添加；软件不会修改全局配置。",
+    "en": "Connection JSON copied. Add it using your client’s MCP configuration format. Global settings are not changed by the app.",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.connection_copied"
+  },
+  "creative.import_result": {
+    "zh-CN": "导入结果清单",
+    "en": "Import result manifest",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.import_result"
+  },
+  "creative.batches": {
+    "zh-CN": "查看历史批次",
+    "en": "View previous batches",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.batches"
+  },
+  "creative.close_task": {
+    "zh-CN": "结束本次协作",
+    "en": "Close this task",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.close_task"
+  },
+  "creative.closed_by_author": {
+    "zh-CN": "作者结束本次协作",
+    "en": "Author closed this task",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.closed_by_author"
+  },
+  "creative.close_note": {
+    "zh-CN": "结束后撤销本任务的后续 MCP 访问，保留已收到的候选；不会取消外部生成。",
+    "en": "Closing revokes further MCP access for this task and keeps received candidates. It does not cancel external generation.",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.close_note"
+  },
+  "creative.select_helper": {
+    "zh-CN": "选择随河图洛书提供的 hetu-mcp 可执行文件。这里只生成连接说明，不运行所选文件。",
+    "en": "Select the hetu-mcp executable supplied with Hetu Luoshu. This only creates connection instructions; it does not run the selected file.",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.select_helper"
+  },
+  "creative.stale": {
+    "zh-CN": "基于较早版本，仅供参考。请与当前写作稿重新比较。",
+    "en": "Based on an earlier revision. Compare it with your current working text.",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.stale"
+  },
+  "creative.reference_version": {
+    "zh-CN": "完整参考版本",
+    "en": "Full reference version",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.reference_version"
+  },
+  "creative.preview_changes": {
+    "zh-CN": "预览所选 {count} 处改动",
+    "en": "Preview {count} selected changes",
+    "parameters": [
+      "count"
+    ],
+    "purpose": "Mac 原生界面：creative.preview_changes"
+  },
+  "creative.manual_compare": {
+    "zh-CN": "与当前稿手动比较",
+    "en": "Compare manually with current text",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.manual_compare"
+  },
+  "creative.adopt_selected": {
+    "zh-CN": "采纳所选改动",
+    "en": "Adopt selected changes",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.adopt_selected"
+  },
+  "creative.adoption_note": {
+    "zh-CN": "未勾选的改动保留原文。采纳后生成新写作修订，旧定稿不变；也可以只作参考自行改写。",
+    "en": "Unchecked changes keep your original wording. Adoption creates a working revision and preserves the final version. You may also use this as reference and write your own text.",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.adoption_note"
+  },
+  "creative.error.scopeChanged": {
+    "zh-CN": "作品上下文已变化，请回当前作品重新发起任务。",
+    "en": "The book context changed. Start the task again from the current book.",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.error.scopeChanged"
+  },
+  "creative.error.saveRequired": {
+    "zh-CN": "请先完成输入并处理未保存稿，再准备或采纳改动。",
+    "en": "Finish text composition and resolve unsaved changes before preparing or adopting edits.",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.error.saveRequired"
+  },
+  "creative.error.invalidSelection": {
+    "zh-CN": "选区或基线已变化，请重新选择并预览；整章授权也需明确选择。",
+    "en": "The selection or baseline changed. Select and preview again. Whole-chapter access must also be explicit.",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.error.invalidSelection"
+  },
+  "creative.error.missingClient": {
+    "zh-CN": "请先选择本次使用的外部客户端。",
+    "en": "Choose an external client for this task.",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.error.missingClient"
+  },
+  "creative.error.invalidResult": {
+    "zh-CN": "任务或连接数据无效，请重新检查。",
+    "en": "The task or connection data is invalid. Check it again.",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.error.invalidResult"
+  },
+  "creative.error.budgetExceeded": {
+    "zh-CN": "结果清单超过读取上限，请缩小单批结果。",
+    "en": "The result manifest exceeds the read limit. Use a smaller batch.",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.error.budgetExceeded"
+  },
+  "creative.state.ready": {
+    "zh-CN": "任务已准备，尚未复制",
+    "en": "Task ready; prompt not copied",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.state.ready"
+  },
+  "creative.state.waiting_for_result": {
+    "zh-CN": "等待外部结果",
+    "en": "Waiting for external results",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.state.waiting_for_result"
+  },
+  "creative.state.result_received": {
+    "zh-CN": "已收到参考结果",
+    "en": "Reference results received",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.state.result_received"
+  },
+  "creative.state.partial_result": {
+    "zh-CN": "已收到部分结果",
+    "en": "Partial results received",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.state.partial_result"
+  },
+  "creative.state.closed": {
+    "zh-CN": "本次任务已结束",
+    "en": "Task closed",
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.state.closed"
+  },
+  "agent.client": {
+    "zh-CN": "外部客户端",
+    "en": "External client",
+    "parameters": [],
+    "purpose": "Mac 原生界面：agent.client"
+  },
+  "agent.install_title": {
+    "zh-CN": "安装 Skills 套件",
+    "en": "Install Skills Suite",
+    "purpose": "Mac 原生界面：agent.install_title",
+    "parameters": []
+  },
+  "agent.cover_install": {
+    "zh-CN": "封面协作 · 安装 Skills",
+    "en": "Cover Collaboration · Install Skills",
+    "purpose": "Mac 原生界面：agent.cover_install",
+    "parameters": []
+  },
+  "agent.install_scope.codex": {
+    "zh-CN": "将所选完整套件安装到本机 Codex，并启用对应插件。安装使用 Codex 官方 CLI 管理本机插件来源与配置；不会授予作品或任务读取权限。",
+    "en": "Install and enable the complete selected suite in local Codex using its official CLI. This does not grant access to books or tasks.",
+    "purpose": "Mac 原生界面：agent.install_scope.codex",
+    "parameters": []
+  },
+  "agent.install_scope.workbuddy": {
+    "zh-CN": "WorkBuddy 将安装到下方配置目录的 skills 子目录。完整题材包保留全部方法和参考资料；文件安装与当前会话加载分别核对。其他客户端可在安装说明中查看导入方式。",
+    "en": "For WorkBuddy, install the complete genre package into the skills subdirectory below. File installation and current session loading are checked separately. Other clients can use the import guide.",
+    "purpose": "Mac 原生界面：agent.install_scope.workbuddy",
+    "parameters": []
+  },
+  "agent.install_scope.other": {
+    "zh-CN": "请选择 Codex 或 WorkBuddy 安装完整题材套件。其他客户端请通过其官方入口安装，并单独核对 Skills 与 MCP 连接。",
+    "en": "Choose Codex or WorkBuddy to install a complete genre suite. For other clients, use their official installation flow and verify skills and MCP separately.",
+    "purpose": "Mac 原生界面：agent.install_scope.other",
+    "parameters": []
+  },
+  "agent.codex_cli": {
+    "zh-CN": "Codex CLI",
+    "en": "Codex CLI",
+    "purpose": "Mac 原生界面：agent.codex_cli",
+    "parameters": []
+  },
+  "agent.choose_cli": {
+    "zh-CN": "选择 Codex CLI…",
+    "en": "Choose Codex CLI…",
+    "purpose": "Mac 原生界面：agent.choose_cli",
+    "parameters": []
+  },
+  "agent.installing": {
+    "zh-CN": "正在安装并核对结果…",
+    "en": "Installing and verifying…",
+    "purpose": "Mac 原生界面：agent.installing",
+    "parameters": []
+  },
+  "agent.install_codex": {
+    "zh-CN": "安装到 Codex",
+    "en": "Install in Codex",
+    "purpose": "Mac 原生界面：agent.install_codex",
+    "parameters": []
+  },
+  "agent.install_files": {
+    "zh-CN": "安装套件文件…",
+    "en": "Install Suite Files…",
+    "purpose": "Mac 原生界面：agent.install_files",
+    "parameters": []
+  },
+  "agent.install_success": {
+    "zh-CN": "套件已安装并启用。请在客户端开始新会话，再连接具体创作任务。",
+    "en": "Suite installed and enabled. Start a new client session, then connect a specific creative task.",
+    "purpose": "Mac 原生界面：agent.install_success",
+    "parameters": []
+  },
+  "agent.install_error.clientUnavailable": {
+    "zh-CN": "未找到可用的客户端安装入口，请选择实际客户端或 CLI。",
+    "en": "No usable client installer was found. Choose the actual client or CLI.",
+    "purpose": "Mac 原生界面：agent.install_error.clientUnavailable",
+    "parameters": []
+  },
+  "agent.install_error.invalidPackage": {
+    "zh-CN": "随附套件缺失或无效，请检查应用资源。",
+    "en": "The bundled suite is missing or invalid. Check the app resources.",
+    "purpose": "Mac 原生界面：agent.install_error.invalidPackage",
+    "parameters": []
+  },
+  "agent.install_error.destinationConflict": {
+    "zh-CN": "目标已有不同内容，已保留原文件。请选择其他目录或先在客户端处理。",
+    "en": "The destination contains different content. Existing files were preserved. Choose another directory or resolve it in the client.",
+    "purpose": "Mac 原生界面：agent.install_error.destinationConflict",
+    "parameters": []
+  },
+  "agent.install_error.commandFailed": {
+    "zh-CN": "安装命令未完成，请检查客户端版本及权限；已有文件和登记已保留，可在客户端核对后继续。",
+    "en": "Installation did not complete. Check client version and permissions. Existing files and registration were preserved for inspection.",
+    "purpose": "Mac 原生界面：agent.install_error.commandFailed",
+    "parameters": []
+  },
+  "agent.install_error.verificationFailed": {
+    "zh-CN": "安装结果未通过回读核验，请在客户端检查原安装记录。",
+    "en": "Installation could not be verified. Check the original installation record in the client.",
+    "purpose": "Mac 原生界面：agent.install_error.verificationFailed",
+    "parameters": []
+  },
+  "agent.state.filesInstalled": {
+    "zh-CN": "套件文件已安装，客户端加载待验证",
+    "en": "Suite Files Installed; Client Loading Unverified",
+    "purpose": "Mac 原生界面：agent.state.filesInstalled",
+    "parameters": []
+  },
+  "agent.install_directory": {
+    "zh-CN": "安装目录",
+    "en": "Installation Directory",
+    "purpose": "Mac 原生界面：agent.install_directory",
+    "parameters": []
+  },
+  "agent.choose_workbuddy": {
+    "zh-CN": "选择 WorkBuddy 配置目录…",
+    "en": "Choose WorkBuddy Configuration Folder…",
+    "purpose": "Mac 原生界面：agent.choose_workbuddy",
+    "parameters": []
+  },
+  "agent.choose_workbuddy_note": {
+    "zh-CN": "选择 WorkBuddy 的配置根目录，套件将安装在其 skills 子目录。",
+    "en": "Choose the WorkBuddy configuration root. Suites will be installed in its skills subdirectory.",
+    "purpose": "Mac 原生界面：agent.choose_workbuddy_note",
+    "parameters": []
+  },
+  "agent.install_files_success": {
+    "zh-CN": "完整套件文件已安装并核对。请在 WorkBuddy 中刷新 Skills 或开始新会话检查加载。",
+    "en": "Complete suite files installed and verified. Refresh Skills in WorkBuddy or start a new session to check loading.",
+    "purpose": "Mac 原生界面：agent.install_files_success",
+    "parameters": []
+  },
+  "brand.name": {
+    "zh-CN": "河图洛书",
+    "en": "Hetu Luoshu",
+    "purpose": "Mac 原生界面：品牌名称",
     "parameters": []
   }
 }

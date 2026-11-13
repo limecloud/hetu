@@ -1365,6 +1365,72 @@
       "sha256": "a567564d0f88897c4506bb985b43eec78b07f0daf3569cff744ea4d860c57a07",
       "content_status": "static_analysis_and_file_read",
       "scope": "REA Evidence summary and selected shipped artifact digests; no remote service or target execution verified"
+    },
+    {
+      "id": "agent-edit-figma-locked",
+      "source_type": "official_web",
+      "url": "https://developers.figma.com/docs/plugins/api/properties/nodes-locked/",
+      "final_url": "https://developers.figma.com/docs/plugins/api/properties/nodes-locked/",
+      "retrieved_on": "2026-11-13",
+      "sha256": "7d565fd9c0710a411d7da59cfa0126941669d73193f47167dadefdc1482f2c73",
+      "representation": "html_response",
+      "content_status": "read",
+      "scope": "Agent edit boundaries: selection, interaction locks, separate reference revisions and human review; no third-party runtime interoperability verified"
+    },
+    {
+      "id": "agent-edit-figma-selection",
+      "source_type": "official_web",
+      "url": "https://developers.figma.com/docs/plugins/api/properties/PageNode-selection/",
+      "final_url": "https://developers.figma.com/docs/plugins/api/properties/PageNode-selection/",
+      "retrieved_on": "2026-11-13",
+      "sha256": "ca4559bb7cbf93de9b36e7c8a2819630b7ea89659eb51768da84063571418974",
+      "representation": "html_response",
+      "content_status": "read",
+      "scope": "Agent edit boundaries: selection, interaction locks, separate reference revisions and human review; no third-party runtime interoperability verified"
+    },
+    {
+      "id": "agent-edit-vscode-review",
+      "source_type": "official_web",
+      "url": "https://code.visualstudio.com/docs/copilot/chat/review-code-edits",
+      "final_url": "https://code.visualstudio.com/docs/agents/run/review-code-edits",
+      "retrieved_on": "2026-11-13",
+      "sha256": "cb5639492d7372890357b33b30c2f24e6d110245d4fe810c7916d3698239f0cb",
+      "representation": "html_response",
+      "content_status": "read",
+      "scope": "Agent edit boundaries: selection, interaction locks, separate reference revisions and human review; no third-party runtime interoperability verified"
+    },
+    {
+      "id": "agent-edit-zed-inline",
+      "source_type": "official_web",
+      "url": "https://zed.dev/docs/ai/inline-assistant",
+      "final_url": "https://zed.dev/docs/ai/inline-assistant",
+      "retrieved_on": "2026-11-13",
+      "sha256": "c732158a03fefbb7cd6be45ccd4b4089c529e042cfb5627ea9abcf6369d08905",
+      "representation": "markdown_response",
+      "content_status": "read",
+      "scope": "Agent edit boundaries: selection, interaction locks, separate reference revisions and human review; no third-party runtime interoperability verified"
+    },
+    {
+      "id": "agent-edit-github-agent",
+      "source_type": "official_web",
+      "url": "https://docs.github.com/en/copilot/concepts/agents/coding-agent/about-coding-agent",
+      "final_url": "https://docs.github.com/en/copilot/concepts/copilot-surfaces/copilot-on-github",
+      "retrieved_on": "2026-11-13",
+      "sha256": "111d78e3725b118f9d1c35c46be7aaa5cd8d2121cf598d1f6b053b95541df5fb",
+      "representation": "html_response",
+      "content_status": "read",
+      "scope": "Agent edit boundaries: selection, interaction locks, separate reference revisions and human review; no third-party runtime interoperability verified"
+    },
+    {
+      "id": "agent-edit-figma-branching",
+      "source_type": "official_web",
+      "url": "https://help.figma.com/hc/en-us/articles/360063144053-Guide-to-branching",
+      "final_url": "https://help.figma.com/hc/en-us/articles/360063144053-Guide-to-branching",
+      "retrieved_on": "2026-11-13",
+      "sha256": "67f06add8fb6a2ee1ce7a43688b6b7091bc31ba32153c70c212abbd0fb3e219b",
+      "representation": "html_response",
+      "content_status": "read",
+      "scope": "Agent edit boundaries: selection, interaction locks, separate reference revisions and human review; no third-party runtime interoperability verified"
     }
   ]
 }

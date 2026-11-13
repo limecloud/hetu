@@ -1,0 +1,6 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "hetu-military",
+  "version": "0.1.0",
+  "description": "河图洛书完整创作工作流 Skills：军事题材"
+}

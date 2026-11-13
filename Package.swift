@@ -20,9 +20,10 @@ let package = Package(
             linkerSettings: [.unsafeFlags(["-L", root + "/build/native/lib", "-Xlinker", "-rpath", "-Xlinker", root + "/build/native/lib", "-Xlinker", "-rpath", "-Xlinker", "@executable_path/../Frameworks"])]
         ),
         .target(name: "HetuArtwork", path: "assets/illustrations", exclude: ["prompts"], sources: ["Artwork.swift"], resources: [.copy("library")]),
+        .target(name: "HetuIntegrationAssets", path: "integrations", sources: ["IntegrationAssets.swift"], resources: [.copy("catalog.json"), .copy("codex")]),
         .executableTarget(name: "HetuCLI", dependencies: ["HetuCore"], path: "apps/cli/Sources"),
         .executableTarget(name: "HetuBridgeTests", dependencies: ["HetuCore"], path: "tests/native/HetuCoreTests"),
-        .target(name: "HetuNative", dependencies: ["HetuCore"], path: "apps/macos/Sources/HetuNative", exclude: ["Resources/Localizable.xcstrings"], resources: [.copy("Resources/NativeStrings.json")]),
+        .target(name: "HetuNative", dependencies: ["HetuCore", "HetuIntegrationAssets"], path: "apps/macos/Sources/HetuNative", exclude: ["Resources/Localizable.xcstrings"], resources: [.copy("Resources/NativeStrings.json")]),
         .executableTarget(name: "HetuMac", dependencies: ["HetuNative", "HetuCore", "HetuArtwork"], path: "apps/macos/Sources/HetuMac"),
         .executableTarget(name: "HetuNativeTests", dependencies: ["HetuNative", "HetuCore"], path: "tests/native/HetuNativeTests"),
     ]

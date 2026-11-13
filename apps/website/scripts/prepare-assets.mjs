@@ -7,7 +7,7 @@ await cp(new URL('assets/marketing/',repo),new URL('images/',out),{recursive:tru
 // 首页原型复用原生书库与工作台插画，不复制另一份原型页面。
 await cp(new URL('assets/illustrations/library/',repo),new URL('images/library/',out),{recursive:true});
 await mkdir(new URL('resources/brand/',out),{recursive:true});
-for(const name of ['mascot-master.png','icon-overview.png','icon-overview-en.png'])await copyFile(new URL('assets/brand/'+name,repo),new URL('resources/brand/'+name,out));
+for(const name of ['mascot-master.png','icon-overview.png','icon-overview-en.png','wordmark.png','wordmark-en.png','wordmark-dark.png','wordmark-en-dark.png'])await copyFile(new URL('assets/brand/'+name,repo),new URL('resources/brand/'+name,out));
 await copyFile(new URL('assets/brand/icons/macos/Hetu.icns',repo),new URL('resources/brand/Hetu.icns',out));
 await copyFile(new URL('assets/brand/icons/windows/hetu.ico',repo),new URL('resources/brand/hetu.ico',out));
 await copyFile(new URL('assets/manifest.json',repo),new URL('resources/manifest.json',out));

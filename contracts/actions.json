@@ -13,7 +13,11 @@
         "additionalProperties": false,
         "properties": {},
         "required": []
-      }
+      },
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ]
     },
     {
       "name": "hetu.workspaces.get",
@@ -407,7 +411,11 @@
           }
         },
         "required": []
-      }
+      },
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ]
     },
     {
       "name": "hetu.plot.extract",
@@ -1217,6 +1225,159 @@
       "effect": "read",
       "author_only": true,
       "input_schema_ref": "schemas/document-lifecycle.schema.json#/$defs/lifecycle_input"
+    },
+    {
+      "name": "hetu.creation_projects.get",
+      "purpose": "读取单项建书筹备",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": true,
+      "scopes": [
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/project_get_input"
+    },
+    {
+      "name": "hetu.creation_projects.save",
+      "purpose": "保存作者的筹备想法和所选资料",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "scopes": [
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/project_save_input"
+    },
+    {
+      "name": "hetu.creation_projects.create_novel",
+      "purpose": "从筹备创建独立小说并保存来源",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "scopes": [
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/create_novel_input"
+    },
+    {
+      "name": "hetu.creative_tasks.preview_prompt",
+      "purpose": "预览固定范围的外部协作提示词",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": true,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/preview_input"
+    },
+    {
+      "name": "hetu.creative_tasks.prepare",
+      "purpose": "准备外部任务，不发送生成请求",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/prepare_input"
+    },
+    {
+      "name": "hetu.creative_tasks.get",
+      "purpose": "读取指定任务与参考结果",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/get_input"
+    },
+    {
+      "name": "hetu.creative_tasks.list",
+      "purpose": "列出本范围的外部任务",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": true,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/list_input"
+    },
+    {
+      "name": "hetu.creative_tasks.submit_result",
+      "purpose": "向获权任务提交独立参考成果",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/submit_input"
+    },
+    {
+      "name": "hetu.creative_tasks.inspect_inbox",
+      "purpose": "核验指定任务收件文件并登记成果",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/inspect_input"
+    },
+    {
+      "name": "hetu.creative_tasks.close",
+      "purpose": "关闭本机任务跟踪并撤销后续任务访问",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/close_input"
+    },
+    {
+      "name": "hetu.creative_tasks.mark_copied",
+      "purpose": "记录作者已复制固定任务提示词",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/copy_input"
+    },
+    {
+      "name": "hetu.interactions.get",
+      "purpose": "读取当前任务的局部选择视图",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/interaction_get_input"
+    },
+    {
+      "name": "hetu.interactions.save_selection",
+      "purpose": "记录本任务候选偏好，不采纳或定稿",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/selection_input"
     }
   ]
 }

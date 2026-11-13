@@ -4,7 +4,7 @@
 
 ## 1. 官方资料与采用
 
-| 来源 | 正文确认的能力 | 河图的采用及限制 |
+| 来源 | 正文确认的能力 | 河图洛书的采用及限制 |
 | --- | --- | --- |
 | [OpenAI Plugins](https://learn.chatgpt.com/docs/plugins.md) | 插件组合 Skills 与 MCP；Codex CLI 有插件浏览入口，安装后新会话使用；IDE 插件支持范围不同 | 软件按客户端及运行表面给引导，不能统一给所有 Codex 表面同一安装承诺 |
 | [OpenAI Build skills](https://learn.chatgpt.com/docs/build-skills.md) | SKILL.md 元数据发现、按需加载、显式与隐式调用 | 为建书、资料、大纲、封面、文本和短剧提供专用方法，Prompt 指明任务及匹配 Skill |
@@ -19,15 +19,15 @@
 
 [MCP Apps 概览](https://modelcontextprotocol.io/extensions/apps/overview.md)将交互 UI 定义为工具描述关联的 HTML 资源：`_meta.ui.resourceUri` 指向 `ui://` 资源，宿主沙箱渲染，App 与宿主经 postMessage 上的协议交互。它支持工具代理、结果更新与上下文协作，具体能力由宿主控制。
 
-[构建指南](https://modelcontextprotocol.io/extensions/apps/build.md)给出 Node.js／TypeScript、资源打包及 `@modelcontextprotocol/ext-apps` 的示例。这是可选实现路线，不要求河图把 Rust MCP Server 改写为 Node.js，也不证明普通浏览器页面自带 Apps 桥接。
+[构建指南](https://modelcontextprotocol.io/extensions/apps/build.md)给出 Node.js／TypeScript、资源打包及 `@modelcontextprotocol/ext-apps` 的示例。这是可选实现路线，不要求河图洛书把 Rust MCP Server 改写为 Node.js，也不证明普通浏览器页面自带 Apps 桥接。
 
-官方明确 Apps 是 MCP 扩展、客户端支持不同。河图据此把 Apps 用于当前任务的书名选择、大纲比较、封面预览及批注，并为不支持的宿主保留结构化结果和原生入口。页面保存不等于作者定稿；模型或自动化都可能调用同一工具，服务端仍须控制最终权限。
+官方明确 Apps 是 MCP 扩展、客户端支持不同。河图洛书据此把 Apps 用于当前任务的书名选择、大纲比较、封面预览及批注，并为不支持的宿主保留结构化结果和原生入口。页面保存不等于作者定稿；模型或自动化都可能调用同一工具，服务端仍须控制最终权限。
 
 ## 3. AXI 参考与独立设计
 
 阅读的 AXI 资料包括 `content/ecosystem/codex/plugins.md`、`interfaces.md`、`mcp-apps.md`，以及 Claude Code、WorkBuddy 适配章节。采纳其方法／连接／交互分层、同任务持久化、原对象回读、CAS、未知结果恢复及按宿主验证的要求。
 
-AXI 是设计草案，未提供可直接复用的河图 Apps 或 Node.js 页面运行时。河图按业务需要设计“用户复制提示词”和按需本地页面：Node.js 只服务局部 UI，经受限 IPC 消费 Rust 用例，回环绑定、原生配对、Origin／CSRF 与单任务会话属于河图自身的安全合同。
+AXI 是设计草案，未提供可直接复用的河图洛书 Apps 或 Node.js 页面运行时。河图洛书按业务需要设计“用户复制提示词”和按需本地页面：Node.js 只服务局部 UI，经受限 IPC 消费 Rust 用例，回环绑定、原生配对、Origin／CSRF 与单任务会话属于河图洛书自身的安全合同。
 
 ## 4. 证据边界
 

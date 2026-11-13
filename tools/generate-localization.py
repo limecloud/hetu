@@ -68,6 +68,19 @@ def generate():
     families["media.kind."] = media["cue"]["properties"]["kind"]["enum"]
     families["media.rights."] = media["asset"]["properties"]["rights_status"]["enum"]
     families["media.source_type."] = media["source"]["properties"]["source_type"]["enum"]
+    agent_source = (ROOT / "apps/macos/Sources/HetuNative/AgentIntegration.swift").read_text()
+    for prefix, name in [("agent.client.", "AgentClient"), ("agent.state.", "AgentPackageState"), ("agent.registration.", "PluginRegistration")]:
+        cases = re.search(r"public enum " + name + r":[^{]+\{\s*case\s+([A-Za-z, ]+)", agent_source)
+        if not cases:
+            raise ValueError(f"无法读取原生枚举：{name}")
+        families[prefix] = [value.strip() for value in cases[1].split(",")]
+        referenced.update(prefix + value for value in families[prefix])
+    suites = json.loads((ROOT / "integrations/catalog.json").read_text())
+    families["agent.skill."] = suites["skills"]
+    referenced.update(suite["titleKey"] for suite in suites["suites"])
+    creative = ROOT / "contracts/schemas/creative-task.schema.json"
+    if creative.exists():
+        families["creative.state."] = json.loads(creative.read_text())["$defs"]["state_record"]["properties"]["state"]["enum"]
     referenced.update(finding["message_key"]["enum"])
     for prefix in prefixes:
         if prefix not in families:

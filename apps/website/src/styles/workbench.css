@@ -112,6 +112,19 @@
 .demo-dialog-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:24px; }
 .demo-diff { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 .demo-diff>div { padding:12px; border:1px solid var(--d-line); border-radius:6px; }
+.demo-agent { margin-top:24px; padding-top:20px; border-top:1px solid var(--d-line); }
+.demo-agent h4 { margin:0 0 14px; }
+.demo-agent-selectors { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.demo-agent-status { margin:16px 0; font-size:13px; }
+.demo-agent-status>div { display:flex; justify-content:space-between; gap:16px; padding:6px 0; }
+.demo-agent-status dt { color:var(--d-muted); }
+.demo-agent-status dd { margin:0; text-align:right; }
+.demo-agent details { margin-bottom:16px; font-size:13px; }
+.demo-agent summary { cursor:pointer; }
+.demo-agent-skills { list-style:none; padding:0; margin:12px 0; font-size:13px; }
+.demo-agent-skills li { display:flex; justify-content:space-between; gap:12px; padding:6px 0; border-bottom:1px solid var(--d-line); }
+.demo-agent-skills small { color:var(--d-muted); }
+.demo-details-form [data-action='cover-install'] { margin-top:12px; }
 .demo-sr { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
 @media(max-width:1000px) {
   .demo-library,.demo-workspace { grid-template-columns:140px minmax(0,1fr); }
@@ -161,6 +174,7 @@
   .demo-spot { width:64px; height:64px; }
   .demo h3 { font-size:21px; }
   .demo-details-form { grid-template-columns:1fr; gap:20px; }
+  .demo-agent-selectors { grid-template-columns:1fr; }
   .demo-detail-cover { width:112px; }
   .demo-entity { gap:10px; }
   .demo-entity>.demo-badge { display:none; }

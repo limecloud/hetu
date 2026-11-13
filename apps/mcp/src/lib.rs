@@ -50,6 +50,21 @@ struct Mapping {
     action: String,
     title: String,
     description: String,
+    profiles: Vec<String>,
+}
+
+#[derive(Clone, Copy)]
+pub enum ScopeKind {
+    Workspace,
+    CreationProject,
+}
+impl ScopeKind {
+    fn config_key(self) -> &'static str {
+        match self {
+            Self::Workspace => "workspace_path",
+            Self::CreationProject => "creation_project_path",
+        }
+    }
 }
 
 /// 权限只由启动入口构造，业务参数和客户端自报身份不能改变它。
@@ -63,12 +78,33 @@ pub struct HetuServer {
 
 impl HetuServer {
     pub fn open(workspace: &Path) -> Result<Self, Box<dyn std::error::Error>> {
-        if !workspace.is_absolute() {
+        Self::open_scope(workspace, ScopeKind::Workspace, None)
+    }
+
+    pub fn open_task(
+        root: &Path,
+        kind: ScopeKind,
+        task_id: &str,
+    ) -> Result<Self, Box<dyn std::error::Error>> {
+        Self::open_scope(root, kind, Some(task_id))
+    }
+
+    fn open_scope(
+        root: &Path,
+        kind: ScopeKind,
+        task_id: Option<&str>,
+    ) -> Result<Self, Box<dyn std::error::Error>> {
+        if !root.is_absolute() {
             return Err(
                 "工作区必须是显式的绝对路径 / Workspace must be an explicit absolute path".into(),
             );
         }
-        let kernel = Kernel::open(json!({"workspace_path":workspace,"mode":"agent"}))?;
+        let mut config = json!({"mode":"agent"});
+        config[kind.config_key()] = json!(root);
+        if let Some(task_id) = task_id {
+            config["task_id"] = json!(task_id);
+        }
+        let kernel = Kernel::open(config)?;
         let catalog = kernel
             .request(json!({"action":"hetu.capabilities.get","contract_revision":"1","input":{}}));
         let actions = catalog["data"]["actions"]
@@ -81,6 +117,16 @@ impl HetuServer {
         ))?;
         let mut tools = Vec::new();
         for mapping in mappings.tools {
+            if !mapping.profiles.iter().any(|profile| {
+                profile
+                    == if task_id.is_some() {
+                        "task"
+                    } else {
+                        "workspace"
+                    }
+            }) {
+                continue;
+            }
             let action = actions
                 .iter()
                 .find(|a| a["name"] == mapping.action && a["author_only"] == false)
@@ -126,6 +172,20 @@ impl HetuServer {
             output_validator: jsonschema::validator_for(&output)?,
             gate: Arc::new(Semaphore::new(1)),
         })
+    }
+
+    fn task_resource_root(&self) -> Option<String> {
+        self.kernel.bound_task().map(|task| {
+            format!(
+                "hetu://task/{}/{}/{task}/",
+                self.kernel.scope_kind(),
+                self.kernel.scope()
+            )
+        })
+    }
+
+    fn task_ref(&self) -> Value {
+        json!({"scope_ref":{"kind":self.kernel.scope_kind(),"id":self.kernel.scope()},"task_id":self.kernel.bound_task(),"request_revision":1})
     }
 
     fn failure(&self, action: &str, code: &str, message: &str) -> Value {
@@ -191,7 +251,7 @@ impl ServerHandler for HetuServer {
         ServerConfig::new(ServerCapabilities::builder().enable_tools().enable_resources().build())
             .with_protocol_version(ProtocolVersion::V_2026_07_28)
             .with_server_info(Implementation::new("hetu-mcp", env!("CARGO_PKG_VERSION")))
-            .with_instructions("河图保存作者的设定与创作资产，不生成内容。先读设定集和固定原文，再提交待审草稿。通过 resources/list 与 resources/templates/list 查找文档、审核意见、报告和原操作。写请求超时或取消后沿原 operation_key 恢复；取消不保证未写入。最终批准必须由作者在原生客户端完成。\nHetu stores author-owned story assets; it does not generate content. Read the story bible and fixed sources before submitting drafts. Discover resources for documents, review feedback, reports and original operations. After timeout or cancellation, recover with the original operation_key; cancellation does not prove that no write occurred. Only the author can approve in the native app.")
+            .with_instructions("河图洛书保存作者的设定与创作资产，不生成内容。先读设定集和固定原文，再提交待审草稿。通过 resources/list 与 resources/templates/list 查找文档、审核意见、报告和原操作。写请求超时或取消后沿原 operation_key 恢复；取消不保证未写入。最终批准必须由作者在原生客户端完成。\nHetu Luoshu stores author-owned story assets; it does not generate content. Read the story bible and fixed sources before submitting drafts. Discover resources for documents, review feedback, reports and original operations. After timeout or cancellation, recover with the original operation_key; cancellation does not prove that no write occurred. Only the author can approve in the native app.")
     }
 
     async fn list_tools(
@@ -243,9 +303,23 @@ impl ServerHandler for HetuServer {
         _: RequestContext<RoleServer>,
     ) -> Result<ListResourcesResult, ErrorData> {
         resources::no_cursor(request)?;
-        Ok(ListResourcesResult::with_all_items(resources::directory(
-            self.kernel.scope(),
-        )))
+        let items = if let Some(root) = self.task_resource_root() {
+            [
+                ("capabilities", "当前任务权限 / Task permissions"),
+                ("request", "固定任务及候选 / Fixed task and candidates"),
+                ("view", "局部选择数据 / Local selection data"),
+            ]
+            .into_iter()
+            .map(|(path, title)| {
+                Resource::new(format!("{root}{path}"), path)
+                    .with_title(title)
+                    .with_mime_type("application/json")
+            })
+            .collect()
+        } else {
+            resources::directory(self.kernel.scope())
+        };
+        Ok(ListResourcesResult::with_all_items(items))
     }
 
     async fn list_resource_templates(
@@ -254,9 +328,25 @@ impl ServerHandler for HetuServer {
         _: RequestContext<RoleServer>,
     ) -> Result<ListResourceTemplatesResult, ErrorData> {
         resources::no_cursor(request)?;
-        Ok(ListResourceTemplatesResult::with_all_items(
-            resources::templates(self.kernel.scope()),
-        ))
+        let items = if let Some(root) = self.task_resource_root() {
+            [
+                ("operations/{operation_id}", "本任务原操作 / Task operation"),
+                (
+                    "operations/by-key{?action,key}",
+                    "按原键恢复本任务 / Recover task by key",
+                ),
+            ]
+            .into_iter()
+            .map(|(path, title)| {
+                ResourceTemplate::new(format!("{root}{path}"), path)
+                    .with_title(title)
+                    .with_mime_type("application/json")
+            })
+            .collect()
+        } else {
+            resources::templates(self.kernel.scope())
+        };
+        Ok(ListResourceTemplatesResult::with_all_items(items))
     }
 
     async fn read_resource(
@@ -264,12 +354,46 @@ impl ServerHandler for HetuServer {
         request: ReadResourceRequestParams,
         context: RequestContext<RoleServer>,
     ) -> Result<ReadResourceResponse, ErrorData> {
-        let (action, input, page) = resources::route(self.kernel.scope(), &request.uri)?;
+        let (action, input, page) = if let Some(root) = self.task_resource_root() {
+            let invalid = || {
+                ErrorData::invalid_params(
+                    "资源不属于当前任务 / Resource is outside this task",
+                    None,
+                )
+            };
+            let path = request.uri.strip_prefix(&root).ok_or_else(invalid)?;
+            match path {
+                "request" => (
+                    "hetu.creative_tasks.get",
+                    json!({"task_ref":self.task_ref()}),
+                    None,
+                ),
+                "view" => (
+                    "hetu.interactions.get",
+                    json!({"task_ref":self.task_ref()}),
+                    None,
+                ),
+                _ => {
+                    let route = resources::route(
+                        self.kernel.scope(),
+                        &format!("hetu://workspace/{}/{path}", self.kernel.scope()),
+                    )?;
+                    if !matches!(route.0, "hetu.capabilities.get" | "hetu.operations.get") {
+                        return Err(invalid());
+                    }
+                    route
+                }
+            }
+        } else {
+            resources::route(self.kernel.scope(), &request.uri)?
+        };
         let mut result = self.execute(action, input, &context).await?;
         if let Some(page) = page {
             resources::paginate(&mut result, page)?;
         }
-        resources::links(self.kernel.scope(), &request.uri, &mut result);
+        if self.kernel.bound_task().is_none() {
+            resources::links(self.kernel.scope(), &request.uri, &mut result);
+        }
         let result = self.bounded_result(result);
         Ok(ReadResourceResult::new(vec![
             ResourceContents::text(result.to_string(), request.uri)

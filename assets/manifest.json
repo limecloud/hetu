@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "brand": "河图 Hetu",
+  "brand": "河图洛书 Hetu Luoshu",
   "mascot": "小图",
   "provider_origin": "https://img.aishenji.top",
   "generation_method": "imagegen skill bundled CLI with user-specified models",
@@ -195,6 +195,24 @@
       "width": 1448,
       "height": 1086,
       "prompt_source": "assets/illustrations/prompts/workbench-dark-v1.jsonl"
+    },
+    {
+      "path": "output/imagegen/hetu-luoshu-library-scene.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "602430f92b25ce44654d08d8432989e12da0bd5f2160a2b46c35763f3970c89d",
+      "width": 1536,
+      "height": 1024,
+      "prompt_source": "output/imagegen/prompts/hetu-luoshu-library-scene.txt",
+      "reference_image": "assets/brand/mascot-master.png"
+    },
+    {
+      "path": "output/imagegen/hetu-luoshu-merch-base-sunburst.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "a30ff37ca030cdee23e93b78a21c6bca9228493998f16de4decfa4e214c658c7",
+      "prompt_source": "output/imagegen/prompts/hetu-luoshu-merch.txt",
+      "reference_image": "output/imagegen/brand-merch.png"
     }
   ],
   "assets": [
@@ -213,15 +231,6 @@
       "size_bytes": 612423,
       "width": 1024,
       "height": 1024,
-      "format": "PNG",
-      "mode": "RGB"
-    },
-    {
-      "path": "assets/brand/icon-overview.png",
-      "sha256": "0978c47cf7906e08ff9a6fdf7d4200974d5067e88fb0c5fba8592037c26eeb3e",
-      "size_bytes": 132315,
-      "width": 1000,
-      "height": 600,
       "format": "PNG",
       "mode": "RGB"
     },
@@ -640,11 +649,6 @@
       "mode": "RGB"
     },
     {
-      "path": "assets/brand/icons/web/manifest.webmanifest",
-      "sha256": "6d6381dc49e22603e3dc8bd53881db458d701d062b4b3bc7ec4edc56677ee8f5",
-      "size_bytes": 668
-    },
-    {
       "path": "assets/brand/icons/web/maskable-192.png",
       "sha256": "7923e3450c45146d67696d214e675525ccd2056f2d93f2265f8b9e0d4212a5d7",
       "size_bytes": 18582,
@@ -740,15 +744,6 @@
       "size_bytes": 308
     },
     {
-      "path": "assets/marketing/brand-merch.webp",
-      "sha256": "dc4449088d0d94d2d193d6f192d64310f46b09862a39ef0491c21d1bd46fb719",
-      "size_bytes": 235968,
-      "width": 1536,
-      "height": 1024,
-      "format": "WEBP",
-      "mode": "RGB"
-    },
-    {
       "path": "assets/marketing/feature-blueprint.webp",
       "sha256": "ed85f4ff2648a9d6b2c162acebf3ed299477490be5d81d937b1b3d87496e4321",
       "size_bytes": 75436,
@@ -785,46 +780,6 @@
       "mode": "RGB"
     },
     {
-      "path": "assets/marketing/prototype-desktop.webp",
-      "sha256": "c55053404031c1cd2b661e1f64e26905b43dabc7c7a4a821196f1b0692bc1809",
-      "size_bytes": 43684,
-      "width": 1184,
-      "height": 782,
-      "format": "WEBP",
-      "mode": "RGB",
-      "derived_from": "output/design/prototype-desktop.png",
-      "locale": "zh-CN"
-    },
-    {
-      "path": "assets/marketing/prototype-mobile.webp",
-      "sha256": "91c5ffea4f6fbe9dbd303fc8cd213e72d20edcaf667ea1bd37425dbb8e687735",
-      "size_bytes": 145724,
-      "width": 1536,
-      "height": 1024,
-      "format": "WEBP",
-      "mode": "RGB"
-    },
-    {
-      "path": "assets/marketing/prototype-website.webp",
-      "sha256": "0824b9154cfcd6354ca8ebcadaf2ca897c94c95bf3882d53c5015f09ab414635",
-      "size_bytes": 59522,
-      "width": 1536,
-      "height": 1024,
-      "format": "WEBP",
-      "mode": "RGB",
-      "derived_from": "output/design/prototype-website.png",
-      "locale": "zh-CN"
-    },
-    {
-      "path": "assets/marketing/social-og.png",
-      "sha256": "b89897c8efd57223b4440a69ed1c6b6deafa99c383b73df5eb7a2fd78ac30d4c",
-      "size_bytes": 277378,
-      "width": 1200,
-      "height": 630,
-      "format": "PNG",
-      "mode": "RGB"
-    },
-    {
       "path": "assets/marketing/hero-scene.webp",
       "width": 1046,
       "height": 1024,
@@ -840,48 +795,6 @@
         "format": "webp",
         "quality": 92
       }
-    },
-    {
-      "path": "assets/marketing/prototype-desktop-en.webp",
-      "width": 1184,
-      "height": 782,
-      "sha256": "706305af0ec61f74c9b55cbbef62f41668a4b04056a5a931b3436e9064148e07",
-      "locale": "en",
-      "derived_from": "output/design/prototype-desktop-en.png",
-      "size_bytes": 48888
-    },
-    {
-      "path": "assets/marketing/prototype-mobile-en.webp",
-      "width": 1536,
-      "height": 1024,
-      "sha256": "29ecdf14d3518fd2c3e0b8665892e54dd670c0eda4c68ca9002a7126e29bca3b",
-      "locale": "en",
-      "derived_from": "output/imagegen/prototype-mobile-en.png"
-    },
-    {
-      "path": "assets/marketing/prototype-website-en.webp",
-      "width": 1536,
-      "height": 1024,
-      "sha256": "38cd40f57ff38ba553151777adf347c7dc96691233d71697f68e94679c31785c",
-      "locale": "en",
-      "derived_from": "output/design/prototype-website-en.png",
-      "size_bytes": 64490
-    },
-    {
-      "path": "assets/marketing/social-og-en.png",
-      "width": 1200,
-      "height": 630,
-      "sha256": "bbdb245c1c049cfeacee62ca8d17bc0e0f68eb72798f1e7aba61280579a22e50",
-      "locale": "en",
-      "derived_from": "assets/brand/mascot-master.png"
-    },
-    {
-      "path": "assets/brand/icon-overview-en.png",
-      "width": 1000,
-      "height": 600,
-      "sha256": "d6f2327235faa9a40cc2617e9735c6f5778d078a0b212ffca0d6c91d7df68a05",
-      "locale": "en",
-      "derived_from": "assets/brand/icon-overview.png"
     },
     {
       "path": "assets/illustrations/library/library-garden-light.jpg",
@@ -1021,6 +934,173 @@
       "derived_from": "output/imagegen/workbench-v1/media-collection-dark.png",
       "usage": "native-workbench",
       "text_in_image": false,
+      "resize": "proportional"
+    },
+    {
+      "path": "assets/marketing/brand-merch.webp",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "68782296489ddf4a7b128b46b82c0c2be91e80a12ac71cb1f3c9cdd5ab062a07",
+      "locale": "zh-CN",
+      "derived_from": "output/imagegen/hetu-luoshu-merch-base-sunburst.png",
+      "method": "localized-typesetting"
+    },
+    {
+      "path": "assets/marketing/brand-merch-en.webp",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "e8d62fbf2aff7599d7890680b8e29280b6a5f25238f76fe18fee575baaf9885b",
+      "locale": "en",
+      "derived_from": "output/imagegen/hetu-luoshu-merch-base-sunburst.png",
+      "method": "localized-typesetting"
+    },
+    {
+      "path": "assets/marketing/prototype-desktop.webp",
+      "width": 1184,
+      "height": 782,
+      "sha256": "b9f8409df11bbe0af23f7c1d777cfb1b75dcfb23fa01357cb54ea1ed65d6744d",
+      "locale": "zh-CN",
+      "derived_from": "output/design/prototype-desktop.png"
+    },
+    {
+      "path": "assets/marketing/prototype-desktop-en.webp",
+      "width": 1184,
+      "height": 782,
+      "sha256": "464e3ea91839232f9a207c9c5a7714d27379a6f78970ebd98f830449721a873c",
+      "locale": "en",
+      "derived_from": "output/design/prototype-desktop-en.png"
+    },
+    {
+      "path": "assets/marketing/prototype-mobile.webp",
+      "width": 1440,
+      "height": 1024,
+      "sha256": "be9badbbee8d56cc1e36b5c582cfec0570d2bdb648b8d1e618b3951a1ff394eb",
+      "locale": "zh-CN",
+      "derived_from": "output/design/prototype-mobile.png"
+    },
+    {
+      "path": "assets/marketing/prototype-mobile-en.webp",
+      "width": 1440,
+      "height": 1024,
+      "sha256": "181256cbb0a8c788efd0ec038e703d4e5fe3268dc2849566f66a5823e5fa4d3f",
+      "locale": "en",
+      "derived_from": "output/design/prototype-mobile-en.png"
+    },
+    {
+      "path": "assets/marketing/prototype-website.webp",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "22e3c286ef31cb22795abbf8422b4797571e74ff08397198711646c9c82261ed",
+      "locale": "zh-CN",
+      "derived_from": "output/design/prototype-website.png"
+    },
+    {
+      "path": "assets/marketing/prototype-website-en.webp",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "9911fa16118382168c48f4876c6d0624ae784945fa188260b4b90fa7be4401d5",
+      "locale": "en",
+      "derived_from": "output/design/prototype-website-en.png"
+    },
+    {
+      "path": "assets/marketing/social-og.png",
+      "width": 1200,
+      "height": 630,
+      "sha256": "262b336091f0e0b74f221862852a76c04957b358824b7b9f00a5cb42608234e2",
+      "locale": "zh-CN",
+      "derived_from": "assets/brand/mascot-master.png"
+    },
+    {
+      "path": "assets/brand/icon-overview.png",
+      "width": 1000,
+      "height": 600,
+      "sha256": "246342241a8950cad72949d80b2c4657d0b5f55fc6405885e42174bb8231eab7",
+      "locale": "zh-CN"
+    },
+    {
+      "path": "assets/brand/wordmark.png",
+      "width": 1280,
+      "height": 640,
+      "sha256": "9e580b6ce8a90f722bc4473c2fb8fc838876cc50260c7f988f4ef48a9b6b3d35",
+      "locale": "zh-CN",
+      "derived_from": "assets/brand/mascot-master.png",
+      "theme": "light"
+    },
+    {
+      "path": "assets/brand/wordmark-dark.png",
+      "width": 1280,
+      "height": 640,
+      "sha256": "f75e58b53d12a65f5e44343e54c172129e8f0c9c6324069b5f5f6a5609793c0d",
+      "locale": "zh-CN",
+      "derived_from": "assets/brand/mascot-master.png",
+      "theme": "dark"
+    },
+    {
+      "path": "assets/marketing/social-og-en.png",
+      "width": 1200,
+      "height": 630,
+      "sha256": "7bb04476168bd4193a8c0817abc12bfdd09dde530af0032997c1b072acd042e8",
+      "locale": "en",
+      "derived_from": "assets/brand/mascot-master.png"
+    },
+    {
+      "path": "assets/brand/icon-overview-en.png",
+      "width": 1000,
+      "height": 600,
+      "sha256": "5fd5673c6428edfab71e8611ee37c75021842227b4315257301df005fadf1dc5",
+      "locale": "en",
+      "derived_from": "assets/brand/icon-overview.png"
+    },
+    {
+      "path": "assets/brand/wordmark-en.png",
+      "width": 1280,
+      "height": 640,
+      "sha256": "84c46e12a81abaabdd01c2ec99a31112a2f1754541b11f73c8eecb6410bbac5b",
+      "locale": "en",
+      "derived_from": "assets/brand/mascot-master.png",
+      "theme": "light"
+    },
+    {
+      "path": "assets/brand/wordmark-en-dark.png",
+      "width": 1280,
+      "height": 640,
+      "sha256": "30aedc19f1629e105214ac185f37172d5b60afc445b46e89f590b4f56a47458a",
+      "locale": "en",
+      "derived_from": "assets/brand/mascot-master.png",
+      "theme": "dark"
+    },
+    {
+      "path": "assets/brand/icons/web/manifest.webmanifest",
+      "sha256": "e49f554501580791c7ad667736eaa5f2e6e8e37d2e89d1cad1109f05a9e55579",
+      "size_bytes": 687
+    },
+    {
+      "path": "assets/brand/icons/web/manifest-en.webmanifest",
+      "sha256": "56f8cd748b564ac9ebec3990d42c984b3afeccaae86ba0713b56cd1b6ca4ec32",
+      "size_bytes": 670
+    },
+    {
+      "path": "assets/marketing/hetu-luoshu-library-scene.webp",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "d13a036462890497a1e88457290d4ab5116efdc17d3ec7b420601b662a74ee0f",
+      "derived_from": "output/imagegen/hetu-luoshu-library-scene.png",
+      "text_in_image": false,
+      "resize": "proportional"
+    },
+    {
+      "path": "assets/marketing/hetu-luoshu-library-hero.webp",
+      "width": 1280,
+      "height": 1024,
+      "sha256": "a887455c2d37748d8c65bd68abfdd4310fdb3eb28b7fc02613b2a6d6abd3c0a0",
+      "derived_from": "output/imagegen/hetu-luoshu-library-scene.png",
+      "text_in_image": false,
+      "crop_box": [
+        256,
+        0,
+        1536,
+        1024
+      ],
       "resize": "proportional"
     }
   ]

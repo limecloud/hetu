@@ -5,6 +5,7 @@ import HetuNative
 struct NovelDetailsView: View {
     let model: WorkspaceModel
     @State private var editing = false
+    @State private var coverInstallation = false
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 28) {
@@ -16,7 +17,10 @@ struct NovelDetailsView: View {
                     Label(model.t("novel.initialize_detail"), systemImage: "info.circle").foregroundStyle(WorkbenchPalette.muted)
                 }
                 HStack(alignment: .top, spacing: 32) {
-                    BookCoverView(title: model.title, author: model.novelMetadata["author_name"].string ?? "", identity: model.workspaceID).frame(width: 168, height: 252)
+                    VStack(spacing: 12) {
+                        BookCoverView(title: model.title, author: model.novelMetadata["author_name"].string ?? "", identity: model.workspaceID).frame(width: 168, height: 252)
+                        Button(model.t("agent.cover_install")) { coverInstallation = true }.controlSize(.small)
+                    }
                     VStack(alignment: .leading, spacing: 18) {
                         Text(model.title).font(.system(size: 28, weight: .medium, design: .serif)).textSelection(.enabled)
                         LabeledContent(model.t("novel.author"), value: model.novelMetadata["author_name"].string.flatMap { $0.isEmpty ? nil : $0 } ?? model.t("library.no_author"))
@@ -30,6 +34,8 @@ struct NovelDetailsView: View {
                 Text(model.t("novel.synopsis")).font(.headline)
                 Text(model.novelMetadata["synopsis"].string.flatMap { $0.isEmpty ? nil : $0 } ?? model.t("novel.no_synopsis"))
                     .foregroundStyle(WorkbenchPalette.muted).lineSpacing(7).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading)
+                Divider()
+                AgentIntegrationView(settings: model.agentIntegration, workspaceID: model.workspaceID, localizer: model.localizer)
                 if let url = model.workspace?.url {
                     Divider()
                     LabeledContent(model.t("novel.folder")) { Text(url.path).textSelection(.enabled).font(.callout).foregroundStyle(WorkbenchPalette.muted) }
@@ -37,6 +43,7 @@ struct NovelDetailsView: View {
             }.padding(36).frame(maxWidth: 980, alignment: .leading).frame(maxWidth: .infinity, alignment: .leading)
         }.workbenchPage()
             .sheet(isPresented: $editing) { NovelMetadataSheet(model: model) }
+            .sheet(isPresented: $coverInstallation) { AgentInstallationSheet(settings: model.agentIntegration, workspaceID: model.workspaceID, localizer: model.localizer) }
     }
 }
 

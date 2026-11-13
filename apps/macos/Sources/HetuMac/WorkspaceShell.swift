@@ -65,8 +65,8 @@ struct WorkspaceShell<Content: View>: View {
         HStack(spacing: 20) {
             HStack(spacing: 9) {
                 Image(nsImage: NSApp.applicationIconImage).resizable().scaledToFit().frame(width: 34, height: 34).accessibilityHidden(true)
-                Text(locale == "en" ? "Hetu" : "河图").font(.system(size: 18, weight: .semibold))
-                if locale != "en" { Text("Hetu").font(.system(size: 15)).foregroundStyle(WorkbenchPalette.muted) }
+                Text(model.t("brand.name")).font(.system(size: 18, weight: .semibold))
+                if locale != "en" { Text("Hetu Luoshu").font(.system(size: 15)).foregroundStyle(WorkbenchPalette.muted) }
             }
             Rectangle().fill(WorkbenchPalette.line).frame(width: 1, height: 24)
             Menu {

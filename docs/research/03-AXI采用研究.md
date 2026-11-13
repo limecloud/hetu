@@ -17,16 +17,16 @@
 
 ## 采用范围
 
-河图计划采用 AXI JSON result／page 与精确 action 元数据；业务状态、诊断、版本和格式继续由 Hetu Schema 拥有。封装字段包括 spec_version、kind、action、contract_revision、context、operation、data 与 error；不在顶层随意增加 operation_id 或 pending_approval 枚举。
+河图洛书计划采用 AXI JSON result／page 与精确 action 元数据；业务状态、诊断、版本和格式继续由 Hetu Schema 拥有。封装字段包括 spec_version、kind、action、contract_revision、context、operation、data 与 error；不在顶层随意增加 operation_id 或 pending_approval 枚举。
 
 恢复必须先重新授权并查原键，再对首次执行做 CAS；否则成功写入后的同键重放会因版本已变化而被误判。固定输入摘要需发布规范化规则和跨语言向量，幂等记录与事务效果一起保存。
 
 错误优先复用 AXI 标准码；领域码命名空间为 `hetu.`。unknown 使用 result_unknown 与 recover 方向，不把没有查到记录自动解释为未发生外部副作用。
 
-交互设计采纳同任务、同事实源：Skills 负责方法，MCP 提供动态能力，Apps／本地网页记录局部选择，Core 保存唯一决定。河图的具体入口为软件准备任务、用户复制到所选客户端，生成只在客户端进行；按需 Node.js 页面是河图自己的适配实现，不能把 AXI 的设计说明当作现成网页服务。
+交互设计采纳同任务、同事实源：Skills 负责方法，MCP 提供动态能力，Apps／本地网页记录局部选择，Core 保存唯一决定。河图洛书的具体入口为软件准备任务、用户复制到所选客户端，生成只在客户端进行；按需 Node.js 页面是河图洛书自己的适配实现，不能把 AXI 的设计说明当作现成网页服务。
 
 ## 事实与限制
 
-AXI 当前是本团队设计草案，不是 MCP 官方规范或行业认证。参考实现是本地审核例子，不能直接宣称已经提供河图的 Server、Apps 和插件。Hetu 的采用清单需要逐项映射要求 ID、实现、正负例、制品与证据。
+AXI 当前是本团队设计草案，不是 MCP 官方规范或行业认证。参考实现是本地审核例子，不能直接宣称已经提供河图洛书的 Server、Apps 和插件。Hetu 的采用清单需要逐项映射要求 ID、实现、正负例、制品与证据。
 
-引入 Schema 时固定来源与摘要，保留许可归属，由共享合同生成消费者；河图不维护改名复制的 AXI 规范或相邻路径运行依赖。
+引入 Schema 时固定来源与摘要，保留许可归属，由共享合同生成消费者；河图洛书不维护改名复制的 AXI 规范或相邻路径运行依赖。

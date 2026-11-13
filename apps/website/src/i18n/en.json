@@ -11,11 +11,11 @@
     "menu": "Menu"
   },
   "brand": {
-    "name": "Hetu",
+    "name": "Hetu Luoshu",
     "tagline": "A clear foundation. Room to create."
   },
   "meta": {
-    "title": "Hetu — A local workspace for story worlds",
+    "title": "Hetu Luoshu — A local workspace for story worlds",
     "description": "Manage multiple novels in a local author library, with independent covers, chapters and story bibles. Explore plot, adaptation, reference review, excerpt adoption and separate finalization. macOS first."
   },
   "hero": {
@@ -26,7 +26,7 @@
     "primary": "Try the workspace here",
     "secondary": "Read the user guide",
     "note": "v0.2.0 · Native macOS implementation · In-page demo data",
-    "alt": "Hetu’s little dragon-horse beside a manuscript, story scroll and delivery box"
+    "alt": "Hetu Luoshu’s little dragon-horse beside three independent books, an open manuscript and river-inspired scrolls"
   },
   "promises": [
     {
@@ -68,11 +68,11 @@
     ]
   },
   "workspace": {
-    "eyebrow": "GET TO KNOW HETU, HANDS ON",
+    "eyebrow": "GET TO KNOW HETU LUOSHU, HANDS ON",
     "title": "Your library. Your story worlds.",
     "body": "Open a cover to manage details and chapters, write, inspect canon and plot, then try reference review, excerpt adoption and separate finalization. Layout and artwork follow the current macOS implementation.",
     "cta": "Try the homepage workspace",
-    "alt": "Hetu native desktop design with chapters, a manuscript editor and a story inspector",
+    "alt": "Hetu Luoshu native desktop design with chapters, a manuscript editor and a story inspector",
     "caption": "In-page demo. Refresh to reset."
   },
   "workflow": {
@@ -129,7 +129,7 @@
   "integrations": {
     "eyebrow": "Open connections. Clear boundaries.",
     "title": "Agents assist. Authors decide.",
-    "intro": "The standalone stdio MCP server binds one author-selected local workspace. External agents can read canon, submit references and organize structure. Hetu includes no chat, models or generation API.",
+    "intro": "The standalone stdio MCP server binds one author-selected local workspace. External agents can read canon, submit references and organize structure. Hetu Luoshu includes no chat, models or generation API.",
     "layers": [
       {
         "title": "Story bible and rules",
@@ -165,12 +165,12 @@
     "title": "Know the boundaries before you begin.",
     "items": [
       {
-        "q": "Will Hetu write my novel for me?",
+        "q": "Will Hetu Luoshu write my novel for me?",
         "a": "No. The core contains no model or generation API. It organizes canon, storage, extraction, validation, review and delivery. Write manually or choose your own external agent."
       },
       {
         "q": "Can an agent change my story bible?",
-        "a": "Managed interfaces do not let agents change canon, unlock it or approve their own drafts. Locks control the authoring workflow. Other programs still operate under OS file permissions; Hetu does not claim absolute isolation."
+        "a": "Managed interfaces do not let agents change canon, unlock it or approve their own drafts. Locks control the authoring workflow. Other programs still operate under OS file permissions; Hetu Luoshu does not claim absolute isolation."
       },
       {
         "q": "Will consistency checks detect every out-of-character moment?",
@@ -211,6 +211,6 @@
     "license": "Core license: Apache-2.0",
     "privacy": "No form data collection, cookies or analytics. Demo input stays in this page; the hosting platform processes connection data under its network operating policies.",
     "design": "Interactive prototype",
-    "rights": "Hetu"
+    "rights": "Hetu Luoshu"
   }
 }

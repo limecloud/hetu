@@ -19,12 +19,13 @@
 | 全程业务总览、稿件导入与交付封装 | 28～30 | UC-01／05～06／09～10／15～17／21 |
 | 中文检索、历史定位与当前章替换 | 31 | UC-28 |
 | 桌面、官网与本机 MCP 生命周期 | 32～33 | 本机部署及局部交互边界，服务端业务单独立项 |
+| 已有正文的选区改稿与权限 | 34 | UC-05／17／27 |
 
 ## 1. 系统上下文
 
 ```mermaid
 flowchart TB
-    author["作者或编剧"] <-->|"编辑、验收与复制 Prompt"| hetu["河图本地工作台"]
+    author["作者或编剧"] <-->|"编辑、验收与复制 Prompt"| hetu["河图洛书本地工作台"]
     author <-->|"粘贴 Prompt、对话与生成"| host["外部 Agent 与专用 Skills"]
     host <-->|"受限 MCP 或固定文件交接"| hetu
     hetu -->|"本机登记"| library["作者书库：多部独立小说"]
@@ -34,7 +35,7 @@ flowchart TB
     bundle -->|"作者自行交付"| recipient["接收方离线阅读与核验"]
 ```
 
-本图将河图作为一个产品系统，内部模块见第2节，独立进程和通道见第21节。河图不调用外部 Agent 生成、不代用户进行对话。Node.js 页面是按需辅助入口，MCP Apps 是宿主内的交互载体；二者均不替代原生创作软件或保存第二套作品事实。书库登记不合并作品目录，也不自动创建共同 IP。
+本图将河图洛书作为一个产品系统，内部模块见第2节，独立进程和通道见第21节。河图洛书不调用外部 Agent 生成、不代用户进行对话。Node.js 页面是按需辅助入口，MCP Apps 是宿主内的交互载体；二者均不替代原生创作软件或保存第二套作品事实。书库登记不合并作品目录，也不自动创建共同 IP。
 
 ## 2. 内部组件与依赖
 
@@ -71,7 +72,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    start(["打开河图书库"]) --> mode{"是否使用 AI 协作"}
+    start(["打开河图洛书书库"]) --> mode{"是否使用 AI 协作"}
     mode -->|"暂不需要"| manual["直接建书或导入手稿"]
     mode -->|"需要"| choose["选择客户端及使用表面"]
     choose --> type{"当前客户端"}
@@ -82,7 +83,7 @@ flowchart TD
     install --> newSession["按宿主要求开始新会话"]
     newSession --> check["只读检查 Skills、MCP 和当前范围"]
     check --> usable{"所需基础能力可用"}
-    usable -->|"是"| task["回河图准备并复制业务 Prompt"]
+    usable -->|"是"| task["回河图洛书准备并复制业务 Prompt"]
     usable -->|"否"| resolve["显示具体缺口或改用文件交接"]
     resolve --> task
     manual --> book["作者创建自己的独立作品"]
@@ -102,7 +103,7 @@ flowchart TD
     idea --> prompt["选择专用 Skill，预览并复制 Prompt"]
     prompt --> external["用户在外部 Agent 对话和生成"]
     external --> result["候选经 MCP 或固定 inbox 返回"]
-    result --> verify["河图核验并展示候选"]
+    result --> verify["河图洛书核验并展示候选"]
     verify --> choose["作者逐字段选择和编辑"]
     choose --> satisfied{"是否继续构思"}
     satisfied -->|"是"| prompt
@@ -112,7 +113,7 @@ flowchart TD
     cover -->|"本地导入或占位图"| write["开始写作"]
     cover -->|"外部设计"| coverPrompt["复制封面 Skill Prompt"]
     coverPrompt --> coverAgent["外部 Agent 生成并提交候选"]
-    coverAgent --> preview["河图等比预览，作者选用"]
+    coverAgent --> preview["河图洛书等比预览，作者选用"]
     preview --> write
 ```
 
@@ -123,10 +124,10 @@ flowchart TD
 ```mermaid
 sequenceDiagram
     actor author as 作者
-    participant desktop as 河图软件
+    participant desktop as 河图洛书软件
     participant host as 所选外部客户端
     participant package as 插件或 Skills 包
-    participant server as 河图 MCP
+    participant server as 河图洛书 MCP
     author->>desktop: 选择客户端及安装范围
     desktop-->>author: 显示来源、版本与对应引导
     author->>host: 安装 Codex Plugin 或适配的 Skills 与 MCP
@@ -140,14 +141,14 @@ sequenceDiagram
     desktop-->>author: 按所选客户端显示可复制 Prompt
 ```
 
-MCP `2026-07-28` 采用 `server/discover` 与每请求元数据，legacy 宿主使用独立适配；图中不将两套握手混为同一协议。河图不自动安装用户的 Agent 或启动生成对话。
+MCP `2026-07-28` 采用 `server/discover` 与每请求元数据，legacy 宿主使用独立适配；图中不将两套握手混为同一协议。河图洛书不自动安装用户的 Agent 或启动生成对话。
 
 ## 6. 建书构思与候选回传时序
 
 ```mermaid
 sequenceDiagram
     actor author as 作者
-    participant desktop as 河图建书界面
+    participant desktop as 河图洛书建书界面
     participant core as Core 与筹备存储
     participant host as 外部 Agent 与建书 Skill
     participant server as MCP 或文件交接入口
@@ -179,7 +180,7 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     actor author as 作者
-    participant desktop as 河图任务与编辑器
+    participant desktop as 河图洛书任务与编辑器
     participant host as 外部 Agent 与专用 Skill
     participant server as Hetu MCP
     participant core as Rust Core
@@ -207,7 +208,7 @@ sequenceDiagram
     author->>desktop: 按自己的风格继续编辑并保存
 ```
 
-本流程由作者按需进入，不是编辑或定稿的前置。接收候选只更新参考列表，不改作者正文、未保存缓冲或编辑焦点；作者可参照后自行改写，无需采纳。源文变化时进入三方比较，不自动把旧候选覆盖到新正文。要求 Agent 重写时由河图提供补充 Prompt，作者复制到客户端继续；资源通知不自动运行模型。
+本流程由作者按需进入，不是编辑或定稿的前置。接收候选只更新参考列表，不改作者正文、未保存缓冲或编辑焦点；作者可参照后自行改写，无需采纳。源文变化时进入三方比较，不自动把旧候选覆盖到新正文。要求 Agent 重写时由河图洛书提供补充 Prompt，作者复制到客户端继续；资源通知不自动运行模型。
 
 ## 8. MCP Apps 局部交互时序
 
@@ -218,7 +219,7 @@ sequenceDiagram
     participant app as 任务局部 App
     participant server as Hetu MCP
     participant core as 任务用例
-    participant desktop as 河图原生端
+    participant desktop as 河图洛书原生端
     host->>server: 发现工具与 UI 资源引用
     server-->>host: ui 资源和固定候选结果
     host->>app: 桥接初始化及能力协商
@@ -236,18 +237,18 @@ sequenceDiagram
     end
     host->>server: 回读原任务与选择记录
     server-->>host: 实际保存状态
-    author->>desktop: 回河图确认正式采纳或选用
+    author->>desktop: 回河图洛书确认正式采纳或选用
     desktop->>core: 重新核对权限、候选和当前基线
 ```
 
-App 选择不等于正文定稿。Apps 不可用时同一候选在河图显示，不能丢失结果或强制更换客户端。
+App 选择不等于正文定稿。Apps 不可用时同一候选在河图洛书显示，不能丢失结果或强制更换客户端。
 
 ## 9. 按需本地网页与浏览器时序
 
 ```mermaid
 sequenceDiagram
     actor author as 作者
-    participant desktop as 河图原生端
+    participant desktop as 河图洛书原生端
     participant node as 按需 Node.js 页面服务
     participant browser as 内置浏览器或 WebView
     participant core as Core 与本机授权
@@ -480,7 +481,7 @@ flowchart TD
 ```mermaid
 sequenceDiagram
     actor author as 作者或编剧
-    participant desktop as 河图结构工作台
+    participant desktop as 河图洛书结构工作台
     participant core as Rust 应用用例
     participant engine as 抽取与结构引擎
     participant storage as 固定修订与来源
@@ -846,8 +847,8 @@ flowchart TD
 
 ```mermaid
 flowchart TB
-    author["作者"] --> desktop["河图原生工作台"]
-    author --> agent["外部 Agent 与河图 Skills"]
+    author["作者"] --> desktop["河图洛书原生工作台"]
+    author --> agent["外部 Agent 与河图洛书 Skills"]
     agent -->|"获权 stdio"| localMcp["随软件提供的本机 MCP"]
     subgraph local["本机：当前产品主范围"]
         desktop --> core["Rust Core<br/>业务、权限与修订"]
@@ -869,7 +870,7 @@ flowchart TB
 ```mermaid
 sequenceDiagram
     actor U as 作者
-    participant D as 河图原生软件
+    participant D as 河图洛书原生软件
     participant A as 外部 Agent 宿主
     participant M as 本机 stdio MCP
     participant C as Rust Core 与本机作品
@@ -904,3 +905,68 @@ sequenceDiagram
 ```
 
 图示不依赖公网服务。读取和原操作查询仍检查当前授权；撤权后进程仍存在也不能继续访问。MCP Apps 随宿主面板管理，按需 Node.js 页面随发起它的应用会话管理，二者不共享启停信号。正式采纳、设定及定稿不因局部选择自动发生。
+
+## 34. 已有正文的受限外部改稿
+
+```mermaid
+flowchart TD
+    author["作者在当前章选择请外部 AI 改稿"] --> saved{"已有可引用的已保存修订"}
+    saved -->|"否"| save["完成中文组合输入，由作者保存或取消"]
+    save --> saved
+    saved -->|"是"| scope["确认允许改动：选区、整章或插入点"]
+    scope --> context["另选仅供参考的章节和设定<br/>上下文不扩大可改范围"]
+    context --> task["固定任务、版本及回传位置<br/>复制提示词到外部客户端"]
+    task --> agent["外部 Agent 提交范围内改稿补丁"]
+    task -.-> writing["作者可继续编辑<br/>结果到达不替换缓冲"]
+    agent --> check{"Core 核验任务、原文、字符边界及范围"}
+    check -->|"非法"| blocked["整批拒绝，说明具体原因<br/>作者正文和定稿不变"]
+    check -->|"合法"| candidate["保存独立参考版本<br/>旧基线结果可保留参考"]
+    candidate --> compare["比较原文、当前稿和 AI 改稿<br/>逐处采用或保留原文"]
+    writing --> compare
+    compare --> choice{"作者选择"}
+    choice -->|"仅作参考或放弃"| continueWriting["继续按自己的风格写作"]
+    choice -->|"采纳所选改动"| preview["处理未保存稿，重验预览和当前修订"]
+    preview -->|"当前稿变化"| compare
+    preview -->|"版本一致"| revision["新写作修订及来源记录<br/>旧定稿指针不变"]
+    revision --> continueWriting
+```
+
+```mermaid
+sequenceDiagram
+    actor U as 作者
+    participant D as 河图洛书编辑器
+    participant C as Rust Core
+    participant A as 外部 Agent
+    participant M as 本机任务 MCP
+    U->>D: 保存原文，确认可改范围及参考资料
+    D->>C: 预览并准备固定改稿任务
+    C-->>D: 任务引用、请求摘要及可编辑 Prompt
+    D-->>U: 复制提示词
+    U->>A: 在所选客户端粘贴并对话
+    A->>M: 读取绑定任务
+    M->>C: 重验任务范围与状态
+    C-->>A: 固定原文、参考资料及可改范围
+    opt 作者继续写作
+        U->>D: 修改正文并保存新修订
+        D->>C: 作者正文保存
+    end
+    A->>M: 提交 patches、请求摘要及原操作键
+    M->>C: 受限任务提交，不能调用作者保存
+    alt 补丁越界、引句错误或任务失权
+        C-->>A: 明确拒绝，不登记部分候选
+    else 合法补丁
+        C->>C: 基于任务原文合成独立参考稿
+        C-->>A: 候选回执，正文及定稿不变
+        D->>C: 作者查看已保存候选
+        C-->>D: 原文、当前稿、参考版本及基线状态
+        U->>D: 逐处选择并确认采纳所选改动
+        D->>C: 作者身份、完整采纳预览及原键
+        alt 当前修订与预览一致
+            C-->>D: 新写作修订和来源记录，旧定稿保留
+        else 当前稿已变化
+            C-->>D: 冲突，保留作者选择并重新比较
+        end
+    end
+```
+
+“允许改动”约束候选补丁，不授予正文保存权。任务访问、候选接收、采纳和定稿是不同边界；指定任务不能读取其他任务或隐式遍历全书。点击 Apps 的局部选择不取得作者身份。具体矩阵见[10第10节](10-原生客户端与交互设计.md#10-已有正文的外部改稿)，调用与数据见[30第17节](30-应用API详细设计.md#17-建书筹备与外部创作任务)及[29第16节](29-数据字典与Schema设计.md#16-建书筹备外部任务与候选)。

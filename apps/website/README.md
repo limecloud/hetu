@@ -1,4 +1,4 @@
-> 本组件属于[河图 Hetu](../../README.md)，全局信息见根 README。
+> 本组件属于[河图洛书 Hetu Luoshu](../../README.md)，全局信息见根 README。
 
 # 宣传网站
 

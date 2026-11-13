@@ -18,6 +18,9 @@ private func check(_ value: Bool, _ message: String) throws { if !value { throw 
         let preferencesName = "run.limeai.hetu.tests.\(UUID().uuidString)"
         let preferences = UserDefaults(suiteName: preferencesName)!
         defer { preferences.removePersistentDomain(forName: preferencesName) }
+        try agentIntegrationTests(root, preferences: preferences)
+        try await AgentInstallerTests.run(root: root)
+        try await CreativeTaskTests.run(root: root)
         let model = WorkspaceModel(locale: "zh-CN", recovery: recovery, preferences: preferences, library: LibraryStore(directory: await recovery.directory.appendingPathComponent("Library")))
         let workspaceURL = root.appendingPathComponent("中文作品")
         try check(await model.open(workspaceURL, title: "雾港"), "原生状态未创建工作区")

@@ -83,6 +83,7 @@ private struct WindowActionButton: View {
 
 @MainActor private final class WindowCoordinator: NSObject, NSWindowDelegate {
     let model: WorkspaceModel
+    var presentCreation: (() -> Void)?
     weak var window: NSWindow?
     // NSObject 动态转发入口是 nonisolated；写入来自 MainActor，读取前必须检查主线程。
     nonisolated(unsafe) weak var originalDelegate: (any NSWindowDelegate)?
@@ -142,16 +143,7 @@ private struct WindowActionButton: View {
             panel.message = model.t("workspace.choose")
             if panel.runModal() == .OK, let url = panel.url { _ = await model.open(url) }
         case .newWorkspace:
-            let alert = NSAlert(); alert.messageText = model.t("workspace.new")
-            let field = NSTextField(string: ""); field.placeholderString = model.t("workspace.title")
-            field.frame = NSRect(x: 0, y: 0, width: 320, height: 24); alert.accessoryView = field
-            alert.addButton(withTitle: model.t("common.continue")); alert.addButton(withTitle: model.t("common.cancel"))
-            alert.window.initialFirstResponder = field
-            guard alert.runModal() == .alertFirstButtonReturn, !field.stringValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
-            let panel = NSSavePanel(); panel.title = model.t("workspace.location"); panel.nameFieldStringValue = field.stringValue
-            panel.canCreateDirectories = true
-            panel.isExtensionHidden = false; panel.canSelectHiddenExtension = false
-            if panel.runModal() == .OK, let url = panel.url { _ = await model.open(url, title: field.stringValue) }
+            presentCreation?()
         case .save: break
         }
     }
@@ -187,6 +179,7 @@ private struct WorkbenchView: View {
     @State private var inspector = true
     @State private var draft: JSONValue = .null
     @State private var newDocument = false
+    @State private var newWorkspace = false
     @State private var manageStructure = false
     @State private var showRecovery = false
     @State private var showConflict = false
@@ -226,6 +219,7 @@ private struct WorkbenchView: View {
             Button(model.t("common.ok")) { model.message = nil }
         } message: { Text(model.message ?? "") }
         .sheet(isPresented: $newDocument) { NewDocumentSheet(model: model) { id in Task { await select(id) } } }
+        .sheet(isPresented: $newWorkspace) { NewWorkspaceSheet(model: model) }
         .sheet(isPresented: $manageStructure) { NovelStructureSheet(model: model) }
         .sheet(isPresented: $showRecovery) { recoverySheet }
         .sheet(isPresented: $showConflict) { conflictSheet }
@@ -255,7 +249,7 @@ private struct WorkbenchView: View {
             selection = ""; lastNovelID = ""; validationDocumentID = ""; draft = .null
             if !value.isEmpty { Task { await select(model.novel["initialized"].bool == true ? "novel" : "book") } }
         }
-        .onAppear { model.locale = selectedLocale }
+        .onAppear { model.locale = selectedLocale; coordinator.presentCreation = { newWorkspace = true } }
         .onChange(of: selectedLocale) { _, locale in model.locale = locale }
     }
     @ViewBuilder private var detail: some View {

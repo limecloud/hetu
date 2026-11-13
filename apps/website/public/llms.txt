@@ -1,8 +1,8 @@
-# 河图 Hetu
+# 河图洛书 Hetu Luoshu
 
 > Local IP creative workspace for authors and studios. Chinese first, English supported. Version 0.2.0. macOS source implementation; Windows follows separate implementation and verification.
 
-Hetu organizes a multi-book author library with independent covers, chapters, story bibles, plot, drama outlines, reference review, excerpt adoption, separate finalization and local Git snapshots. Format conversion and complete delivery bundles require release-specific verification. The core contains no models or generation APIs. External agents connect through local MCP; authors retain approval authority. Rule checks expose evidence, coverage and uncertainty.
+Hetu Luoshu organizes a multi-book author library with independent covers, chapters, story bibles, plot, drama outlines, reference review, excerpt adoption, separate finalization and local Git snapshots. Format conversion and complete delivery bundles require release-specific verification. The core contains no models or generation APIs. External agents connect through local MCP; authors retain approval authority. Rule checks expose evidence, coverage and uncertainty.
 
 - [中文首页](https://hetu.limeai.run/)
 - [English](https://hetu.limeai.run/en/)

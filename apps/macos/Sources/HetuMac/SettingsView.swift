@@ -26,6 +26,7 @@ struct HetuSettingsView: View {
     @AppStorage("Hetu.library.list") private var listMode = false
     @AppStorage("Hetu.git.authorName") private var authorName = ""
     @AppStorage("Hetu.git.authorEmail") private var authorEmail = ""
+    @State private var agentIntegration = AgentIntegrationSettings()
     private var writing = WritingPreferences()
     private var localizer: Localizer { Localizer(locale: locale) }
     private func t(_ key: String) -> String { localizer.text(key) }
@@ -33,6 +34,9 @@ struct HetuSettingsView: View {
         TabView {
             general.tabItem { Label(t("settings.general"), systemImage: "slider.horizontal.3") }
             editor.tabItem { Label(t("settings.writing"), systemImage: "textformat") }
+            ScrollView {
+                AgentIntegrationView(settings: agentIntegration, workspaceID: nil, localizer: localizer).padding(20)
+            }.tabItem { Label(t("agent.title"), systemImage: "puzzlepiece.extension") }
             versions.tabItem { Label(t("settings.versions"), systemImage: "arrow.triangle.branch") }
             about.tabItem { Label(t("settings.about"), systemImage: "info.circle") }
         }.padding(20).frame(width: 640, height: 490)
@@ -91,7 +95,7 @@ struct HetuSettingsView: View {
     private var about: some View {
         VStack(spacing: 18) {
             Image(nsImage: NSApp.applicationIconImage).resizable().scaledToFit().frame(width: 80, height: 80).accessibilityHidden(true)
-            Text(locale == "en" ? "Hetu" : "河图 Hetu").font(.system(size: 25, weight: .medium, design: .serif))
+            Text(t("welcome.title")).font(.system(size: 25, weight: .medium, design: .serif))
             Text(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "").font(.callout).foregroundStyle(WorkbenchPalette.muted)
             Text(t("welcome.subtitle")).font(.callout)
             Text(t("settings.local_note")).font(.callout).foregroundStyle(WorkbenchPalette.muted).multilineTextAlignment(.center).frame(maxWidth: 390)

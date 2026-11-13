@@ -12,8 +12,8 @@ if(isEnglishDemo){
  document.querySelector('.chapter-list h3').textContent='The Wuchuan Chronicles';
  $('chapterTitle').textContent=chapters[1].title;
  document.querySelector('.workspace-name').firstChild.textContent='The Wuchuan Chronicles ';
- document.querySelector('.brand span').textContent='Hetu';
- document.querySelector('.brand img').alt='Hetu';
+ document.querySelector('.brand span').textContent='Hetu Luoshu';
+ document.querySelector('.brand img').alt='Hetu Luoshu';
  document.querySelector('.app-sidebar').setAttribute('aria-label','Workspace navigation');
  document.querySelector('.review-body').innerHTML='1-2　INT. INN · NIGHT<br><br>Lin Zhou places the old jade clasp on the counter.<br>The innkeeper glances down, then pauses.<br><br>LIN ZHOU<br>“One room.”<br><br><span style="background:#fff1cf">Confirm when the jade clasp first appeared.</span>';
  const names=new Map([['林舟','Lin Zhou'],['沈慈','Shen Ci'],['雾川','Wuchuan'],['林','L'],['沈','S'],['雾','W']]);
@@ -32,7 +32,7 @@ function updateState(){
  if(review!=='pending'){$('reviewResult').textContent=message(review==='approved'?'演示：已记录通过决定。':'演示：已记录修改要求和批注。',review==='approved'?'Demo: approval recorded.':'Demo: changes and comment recorded.');}
  updateCount();
 }
-function changeLanguage(){locale=locale==='zh'?'en':'zh';document.documentElement.lang=locale==='zh'?'zh-CN':'en';document.querySelectorAll('[data-zh]').forEach(e=>e.innerHTML=e.dataset[locale]);document.querySelectorAll('[data-placeholder-zh]').forEach(e=>e.placeholder=e.dataset[locale==='zh'?'placeholderZh':'placeholderEn']);$('language').textContent=locale==='zh'?'EN':'中文';$('language').setAttribute('aria-label',message('切换为英文','Switch to Chinese'));$('manuscript').setAttribute('aria-label',message('章节正文','Chapter manuscript'));document.title=message('河图 · 交互原型','Hetu · Interactive Prototype');updateState();}
+function changeLanguage(){locale=locale==='zh'?'en':'zh';document.documentElement.lang=locale==='zh'?'zh-CN':'en';document.querySelectorAll('[data-zh]').forEach(e=>e.innerHTML=e.dataset[locale]);document.querySelectorAll('[data-placeholder-zh]').forEach(e=>e.placeholder=e.dataset[locale==='zh'?'placeholderZh':'placeholderEn']);$('language').textContent=locale==='zh'?'EN':'中文';$('language').setAttribute('aria-label',message('切换为英文','Switch to Chinese'));$('manuscript').setAttribute('aria-label',message('章节正文','Chapter manuscript'));document.title=message('河图洛书 · 交互原型','Hetu Luoshu · Interactive Prototype');updateState();}
 $('language').onclick=changeLanguage;
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===b.dataset.view));});
 document.querySelectorAll('[data-chapter]').forEach(b=>b.onclick=()=>{chapters[activeChapter].content=$('manuscript').value;activeChapter=+b.dataset.chapter;$('chapterTitle').textContent=chapters[activeChapter].title;$('manuscript').value=chapters[activeChapter].content;document.querySelectorAll('[data-chapter]').forEach(x=>x.classList.toggle('selected',x===b));updateCount();});

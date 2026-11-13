@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "1.0.0",
+  "suites": [
+    { "id": "general", "pluginName": "hetu", "titleKey": "agent.suite.general", "requiredFiles": ["references/task-contract.md"] },
+    { "id": "military", "pluginName": "hetu-military", "titleKey": "agent.suite.military", "requiredFiles": ["references/task-contract.md", "references/military.md"] }
+  ],
+  "skills": ["hetu-setup", "hetu-book-create", "hetu-book-profile", "hetu-outline", "hetu-cover", "hetu-draft", "hetu-revise", "hetu-drama"]
+}

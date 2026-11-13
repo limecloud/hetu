@@ -5,49 +5,109 @@
       "name": "hetu_read_blueprint",
       "action": "hetu.blueprints.get",
       "title": "读取设定集 / Read story bible",
-      "description": "读取当前或固定修订的作者设定集。Read the author's current or fixed story bible revision."
+      "description": "读取当前或固定修订的作者设定集。Read the author's current or fixed story bible revision.",
+      "profiles": [
+        "workspace"
+      ]
     },
     {
       "name": "hetu_write_draft",
       "action": "hetu.drafts.submit",
       "title": "提交待审草稿 / Submit draft",
-      "description": "保存调用方提供的文本，等待作者审核；不覆盖正式正文，不自动生成或检查。Save supplied text for author review; no generation, automatic validation or direct publication."
+      "description": "保存调用方提供的文本，等待作者审核；不覆盖正式正文，不自动生成或检查。Save supplied text for author review; no generation, automatic validation or direct publication.",
+      "profiles": [
+        "workspace"
+      ]
     },
     {
       "name": "hetu_extract_plot",
       "action": "hetu.plot.extract",
       "title": "整理剧情 / Extract plot",
-      "description": "从固定原文提取结构候选；覆盖不足保留 partial，需要作者确认。Extract structural candidates from fixed source revisions; partial coverage requires author review."
+      "description": "从固定原文提取结构候选；覆盖不足保留 partial，需要作者确认。Extract structural candidates from fixed source revisions; partial coverage requires author review.",
+      "profiles": [
+        "workspace"
+      ]
     },
     {
       "name": "hetu_build_drama_skeleton",
       "action": "hetu.drama.build_skeleton",
       "title": "建立短剧骨架 / Build drama skeleton",
-      "description": "从固定剧情整理分集场次，不生成台词、动作或镜头描述。Organize episodes and scenes from fixed plot evidence; no dialogue, action or shot generation."
+      "description": "从固定剧情整理分集场次，不生成台词、动作或镜头描述。Organize episodes and scenes from fixed plot evidence; no dialogue, action or shot generation.",
+      "profiles": [
+        "workspace"
+      ]
     },
     {
       "name": "hetu_validate_blueprint",
       "action": "hetu.validation.run",
       "title": "执行一致性检查 / Validate consistency",
-      "description": "检查固定剧情修订；问题和未覆盖范围是报告结果，不是工具故障。Validate a fixed plot revision; findings and uncovered premises are report outcomes, not tool failures."
+      "description": "检查固定剧情修订；问题和未覆盖范围是报告结果，不是工具故障。Validate a fixed plot revision; findings and uncovered premises are report outcomes, not tool failures.",
+      "profiles": [
+        "workspace"
+      ]
     },
     {
       "name": "hetu_list_workspace",
       "action": "hetu.workspaces.list",
       "title": "查看授权工作区 / List workspace",
-      "description": "读取启动时绑定的单一工作区和内容包。Read the single workspace and packages authorized at server startup. Discover documents and review feedback through resources."
+      "description": "读取启动时绑定的单一工作区和内容包。Read the single workspace and packages authorized at server startup. Discover documents and review feedback through resources.",
+      "profiles": [
+        "workspace"
+      ]
     },
     {
       "name": "hetu_validate_draft",
       "action": "hetu.reviews.validate",
       "title": "检查待审草稿 / Validate draft",
-      "description": "检查固定草稿或其人工校正剧情并保存审核证据；不能批准草稿。Validate a fixed draft or its author-corrected plot and save review evidence; cannot approve drafts."
+      "description": "检查固定草稿或其人工校正剧情并保存审核证据；不能批准草稿。Validate a fixed draft or its author-corrected plot and save review evidence; cannot approve drafts.",
+      "profiles": [
+        "workspace"
+      ]
     },
     {
       "name": "hetu_commit_snapshot",
       "action": "hetu.git.snapshot",
       "title": "准备或提交版本快照 / Prepare or commit snapshot",
-      "description": "准备固定文件、HEAD与提交身份，返回pending；仅可执行已经由作者在本机批准的同一快照。不能自行批准、初始化、切分支、推送或执行hooks。Prepare fixed files, HEAD and identity with pending status; execution requires the author’s matching local approval. Cannot approve, initialize, switch branches, push or execute hooks."
+      "description": "准备固定文件、HEAD与提交身份，返回pending；仅可执行已经由作者在本机批准的同一快照。不能自行批准、初始化、切分支、推送或执行hooks。Prepare fixed files, HEAD and identity with pending status; execution requires the author’s matching local approval. Cannot approve, initialize, switch branches, push or execute hooks.",
+      "profiles": [
+        "workspace"
+      ]
+    },
+    {
+      "name": "hetu_read_creative_task",
+      "action": "hetu.creative_tasks.get",
+      "title": "读取本次创作任务 / Read creative task",
+      "description": "读取连接绑定的固定任务、授权原文及参考候选；不能遍历其他章节、作品或任务。Read only the bound task, fixed authorized sources and reference candidates; no access to other documents, books or tasks.",
+      "profiles": [
+        "task"
+      ]
+    },
+    {
+      "name": "hetu_submit_creative_result",
+      "action": "hetu.creative_tasks.submit_result",
+      "title": "提交创作参考 / Submit creative references",
+      "description": "提交固定任务的独立候选；改稿只接受允许范围内的 UTF-8 patches。不覆盖作者正文、不采纳或定稿。Submit independent candidates for the fixed task; revisions require UTF-8 patches within edit_scope. Cannot save author documents, adopt or finalize.",
+      "profiles": [
+        "task"
+      ]
+    },
+    {
+      "name": "hetu_open_task_view",
+      "action": "hetu.interactions.get",
+      "title": "查看任务局部选择 / Read task selection view",
+      "description": "返回本任务的局部交互数据；此版本不注册 MCP Apps HTML 或启动浏览器。Return local selection data for this task; this version does not register MCP Apps HTML or start a browser.",
+      "profiles": [
+        "task"
+      ]
+    },
+    {
+      "name": "hetu_save_task_selection",
+      "action": "hetu.interactions.save_selection",
+      "title": "保存参考偏好 / Save reference preference",
+      "description": "仅保存候选偏好和意见；不代表作者采纳、创建作品、选用封面或确认定稿。Save candidate preferences and comments only; never adopts text, creates a book, selects its cover or finalizes.",
+      "profiles": [
+        "task"
+      ]
     }
   ]
 }

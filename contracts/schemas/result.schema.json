@@ -10,7 +10,7 @@
     "action": {"type":"string","pattern":"^hetu\\.[a-z_]+\\.[a-z_]+$"},
     "contract_revision": {"const":"1"},
     "status": {"enum":["succeeded","partial","pending","blocked","failed","unknown"]},
-    "context": {"type":"object","additionalProperties":false,"properties":{"scope_id":{"type":"string","pattern":"^workspace_[0-9a-f-]{36}$"}},"required":["scope_id"]},
+    "context": {"type":"object","additionalProperties":false,"properties":{"scope_id":{"type":"string","pattern":"^(workspace|project)_[0-9a-f-]{36}$"}},"required":["scope_id"]},
     "data": {"type":"object","description":"Action-specific domain payload; governed by that action's contract."},
     "error": {
       "type":"object","additionalProperties":false,

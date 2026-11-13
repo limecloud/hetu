@@ -2,6 +2,7 @@ import CHetu
 import Foundation
 
 public enum EntryMode: String, Sendable { case author, agent }
+public enum ContentScope: String, Sendable { case workspace, creationProject = "creation_project" }
 
 // 句柄不向 View/CLI 暴露；仅由 Workspace actor 串行访问。
 private final class CoreHandle: @unchecked Sendable {
@@ -27,19 +28,36 @@ public actor Workspace {
     private let handle: CoreHandle
     private let contractRevisions: [String: String]
     public nonisolated let url: URL
+    public nonisolated let scopeKind: ContentScope
+    public nonisolated let taskID: String?
     public let mode: EntryMode
 
-    public static func open(at url: URL, mode: EntryMode, title: String? = nil, locale: String = "zh-CN", operationKey: String? = nil, authorizationURL: URL? = nil) async throws -> Workspace {
-        try await Task.detached { try Workspace(at: url, mode: mode, title: title, locale: locale, operationKey: operationKey, authorizationURL: authorizationURL) }.value
-    }
-    private init(at url: URL, mode: EntryMode, title: String?, locale: String, operationKey: String?, authorizationURL: URL?) throws {
-        guard hetu_abi_version() == 1 else { throw CoreError.boundary(-3) }
+    public static func open(at url: URL, mode: EntryMode, title: String? = nil, locale: String = "zh-CN", operationKey: String? = nil, authorizationURL: URL? = nil, taskID: String? = nil) async throws -> Workspace {
         var config: [String: JSONValue] = ["workspace_path": .string(url.path), "mode": .string(mode.rawValue)]
         if let authorizationURL { config["authorization_path"] = .string(authorizationURL.path) }
+        if let taskID { config["task_id"] = .string(taskID) }
         if let title {
             guard let operationKey, !operationKey.isEmpty else { throw CoreError.invalidResponse }
             config["create"] = .object(["title": .string(title), "locale": .string(locale), "operation_key": .string(operationKey)])
         }
+        let prepared = config
+        return try await Task.detached { try Workspace(at: url, scopeKind: .workspace, taskID: taskID, mode: mode, config: prepared) }.value
+    }
+
+    public static func openCreationProject(at url: URL, mode: EntryMode = .author, brief: String? = nil, locale: String = "zh-CN", operationKey: String? = nil, authorizationURL: URL? = nil, taskID: String? = nil) async throws -> Workspace {
+        var config: [String: JSONValue] = ["creation_project_path": .string(url.path), "mode": .string(mode.rawValue)]
+        if let authorizationURL { config["authorization_path"] = .string(authorizationURL.path) }
+        if let taskID { config["task_id"] = .string(taskID) }
+        if let brief {
+            guard let operationKey, !operationKey.isEmpty else { throw CoreError.invalidResponse }
+            config["create_project"] = .object(["brief": .string(brief), "locale": .string(locale), "operation_key": .string(operationKey)])
+        }
+        let prepared = config
+        return try await Task.detached { try Workspace(at: url, scopeKind: .creationProject, taskID: taskID, mode: mode, config: prepared) }.value
+    }
+
+    private init(at url: URL, scopeKind: ContentScope, taskID: String?, mode: EntryMode, config: [String: JSONValue]) throws {
+        guard hetu_abi_version() == 1 else { throw CoreError.boundary(-3) }
         let bytes = try JSONValue.object(config).encoded()
         var pointer: OpaquePointer?
         var buffer = HetuBuffer(data: nil, size: 0)
@@ -52,6 +70,8 @@ public actor Workspace {
         let coreHandle = CoreHandle(pointer)
         self.handle = coreHandle
         self.url = url
+        self.scopeKind = scopeKind
+        self.taskID = taskID
         self.mode = mode
         let discovery = try JSONValue.object(["action": .string("hetu.capabilities.get"), "contract_revision": .string("1"), "input": .object([:])]).encoded()
         let catalog = try coreHandle.request(discovery).requiringSuccess()

@@ -1,4 +1,4 @@
-use hetu_mcp::{HetuServer, MAX_MESSAGE_BYTES};
+use hetu_mcp::{HetuServer, MAX_MESSAGE_BYTES, ScopeKind};
 use rmcp::{ServiceExt, service::ServerInitializeError, transport::async_rw::AsyncRwTransport};
 use std::{path::PathBuf, process::ExitCode};
 
@@ -12,17 +12,43 @@ async fn main() -> ExitCode {
     ) && args.next().is_none()
     {
         println!(
-            "河图 MCP Server / Hetu MCP Server\n\nhetu-mcp --workspace <绝对路径 / absolute path>\n\nstdio · MCP 2026-07-28 · Agent 权限 / Agent permissions"
+            "河图洛书 MCP Server / Hetu Luoshu MCP Server\n\nhetu-mcp --workspace <absolute path> [--task <task_id>]\nhetu-mcp --creation-project <absolute path> --task <task_id>\n\nstdio · MCP 2026-07-28 · Agent 权限 / Agent permissions"
         );
         return ExitCode::SUCCESS;
     }
-    if first.as_deref().and_then(|s| s.to_str()) != Some("--workspace") {
-        eprintln!("用法 / Usage: hetu-mcp --workspace <absolute path>");
-        return ExitCode::from(2);
-    }
+    let kind = match first.as_deref().and_then(|s| s.to_str()) {
+        Some("--workspace") => ScopeKind::Workspace,
+        Some("--creation-project") => ScopeKind::CreationProject,
+        _ => {
+            eprintln!(
+                "用法 / Usage: hetu-mcp --workspace <absolute path> [--task <task_id>] | --creation-project <absolute path> --task <task_id>"
+            );
+            return ExitCode::from(2);
+        }
+    };
     let Some(path) = args.next().map(PathBuf::from) else {
         eprintln!("需要工作区绝对路径 / Absolute workspace path required");
         return ExitCode::from(2);
+    };
+    let task = match args.next() {
+        None if matches!(kind, ScopeKind::Workspace) => None,
+        Some(flag) if flag == "--task" => match args
+            .next()
+            .and_then(|s| s.into_string().ok())
+            .filter(|s| !s.is_empty())
+        {
+            Some(task) => Some(task),
+            None => {
+                eprintln!("需要任务 ID / Task ID required");
+                return ExitCode::from(2);
+            }
+        },
+        _ => {
+            eprintln!(
+                "筹备须绑定任务，不支持身份覆盖 / Creation projects require a bound task; identity overrides are not supported"
+            );
+            return ExitCode::from(2);
+        }
     };
     if args.next().is_some() {
         eprintln!(
@@ -30,7 +56,12 @@ async fn main() -> ExitCode {
         );
         return ExitCode::from(2);
     }
-    let server = match HetuServer::open(&path) {
+    let opened = if let Some(task) = task {
+        HetuServer::open_task(&path, kind, &task)
+    } else {
+        HetuServer::open(&path)
+    };
+    let server = match opened {
         Ok(server) => server,
         Err(_) => {
             eprintln!(

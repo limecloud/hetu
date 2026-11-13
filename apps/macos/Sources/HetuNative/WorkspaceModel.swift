@@ -36,6 +36,7 @@ public final class WorkspaceModel {
     public private(set) var replacementVersion = 0
     public private(set) var adoptionUndoBaseline: String?
     public let windowID = UUID()
+    public let agentIntegration: AgentIntegrationSettings
     @ObservationIgnored private let recovery: RecoveryStore
     @ObservationIgnored private let preferences: UserDefaults
     @ObservationIgnored private let authorizationURL: URL?
@@ -46,12 +47,13 @@ public final class WorkspaceModel {
 
     public init(locale: String? = nil, recovery: RecoveryStore = RecoveryStore(), preferences: UserDefaults = .standard, authorizationURL: URL? = nil, library: LibraryStore = LibraryStore()) {
         self.preferences = preferences
+        self.agentIntegration = AgentIntegrationSettings(preferences: preferences)
         self.locale = locale ?? preferences.string(forKey: "Hetu.locale") ?? "zh-CN"
         self.recovery = recovery
         self.authorizationURL = authorizationURL
         self.library = library
     }
-    public var title: String { novel["novel"]["metadata"]["title"].string ?? info["workspace"]["title"].string ?? "Hetu" }
+    public var title: String { novel["novel"]["metadata"]["title"].string ?? info["workspace"]["title"].string ?? t("brand.name") }
     public var novelMetadata: JSONValue { novel["novel"]["metadata"] }
     public var volumes: [JSONValue] { novel["novel"]["volumes"].array }
     public var chapters: [JSONValue] { novel["novel"]["chapters"].array }

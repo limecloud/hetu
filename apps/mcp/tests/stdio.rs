@@ -28,13 +28,30 @@ impl Client {
         Self::start_with_home(path, None)
     }
     fn start_with_home(path: &Path, home: Option<&Path>) -> Self {
+        Self::start_config(path, home, "--workspace", None)
+    }
+    fn start_task(path: &Path, creation: bool, task: &str) -> Self {
+        Self::start_config(
+            path,
+            None,
+            if creation {
+                "--creation-project"
+            } else {
+                "--workspace"
+            },
+            Some(task),
+        )
+    }
+    fn start_config(path: &Path, home: Option<&Path>, scope: &str, task: Option<&str>) -> Self {
         let mut command = Command::new(binary());
         if let Some(home) = home {
             command.env("HOME", home);
         }
+        command.arg(scope).arg(path);
+        if let Some(task) = task {
+            command.arg("--task").arg(task);
+        }
         let mut child = command
-            .arg("--workspace")
-            .arg(path)
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
@@ -155,6 +172,183 @@ impl Client {
             "normal protocol traffic must not log content: {stderr}"
         );
     }
+}
+
+fn creative_task(k: &Kernel, refs: Value, edit: Option<Value>) -> Value {
+    let mut input = json!({"scope_ref":{"kind":k.scope_kind(),"id":k.scope()},"task_kind":if edit.is_some() {"revision"} else {"book_concept"},"brief":"只改允许的段落，保留我的表达。","input_refs":refs,"client_adapter":"codex","language_tag":"zh-CN"});
+    if let Some(edit) = edit {
+        input["edit_scope"] = edit;
+    }
+    let preview = call(k, "creative_tasks.preview_prompt", input);
+    assert_eq!(preview["status"], "succeeded", "{preview}");
+    let mut prepared = preview["data"]["prepare_input"].clone();
+    prepared["operation_key"] = json!(format!(
+        "prepare-{}",
+        preview["data"]["task_ref"]["task_id"].as_str().unwrap()
+    ));
+    let result = call(k, "creative_tasks.prepare", prepared);
+    assert_eq!(result["status"], "succeeded", "{result}");
+    result["data"].clone()
+}
+
+#[tokio::test]
+async fn task_connection_exposes_only_fixed_task_and_rejects_overwrite_and_revoked_access() {
+    let (_root, k) = setup();
+    let created = document(&k, "task-source");
+    let doc = call(
+        &k,
+        "documents.get",
+        json!({"document_id":created["document"]["document_id"]}),
+    )["data"]
+        .clone();
+    let original = doc["content"].as_str().unwrap();
+    let doc_id = &doc["document"]["document_id"];
+    let rev = &doc["revision"]["revision_id"];
+    let point = original.len();
+    let task = creative_task(
+        &k,
+        json!([{"kind":"document","document_id":doc_id,"revision_id":rev}]),
+        Some(
+            json!({"document_id":doc_id,"revision_id":rev,"ranges":[{"byte_start":point,"byte_end":point,"quote":""}]}),
+        ),
+    );
+    let another = creative_task(&k, json!([]), None);
+    let path = _root.path().join("河图 离线测试 🌿");
+    let mut client =
+        Client::start_task(&path, false, task["task_ref"]["task_id"].as_str().unwrap());
+    client.rpc("server/discover", json!({})).await;
+    let tools = client.rpc("tools/list", json!({})).await;
+    let names: Vec<_> = tools["result"]["tools"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|t| t["name"].as_str().unwrap())
+        .collect();
+    assert_eq!(
+        names,
+        vec![
+            "hetu_read_creative_task",
+            "hetu_submit_creative_result",
+            "hetu_open_task_view",
+            "hetu_save_task_selection"
+        ]
+    );
+    assert!(
+        client
+            .rpc(
+                "tools/call",
+                json!({"name":"hetu_write_draft","arguments":draft_args("bypass")})
+            )
+            .await
+            .get("error")
+            .is_some()
+    );
+    let loaded = client
+        .tool(
+            "hetu_read_creative_task",
+            json!({"task_ref":task["task_ref"]}),
+        )
+        .await;
+    assert_eq!(loaded["data"]["request"], task["request"]);
+    assert_eq!(
+        client
+            .tool(
+                "hetu_read_creative_task",
+                json!({"task_ref":another["task_ref"]})
+            )
+            .await["error"]["code"],
+        "forbidden"
+    );
+    let input = json!({"task_ref":task["task_ref"],"request_sha256":task["request_sha256"],"candidates":[{"kind":"text","title":"续写参考","source_format":"markdown","source_ref_indices":[0],"patches":[{"byte_start":point,"byte_end":point,"quote":"","replacement":"只有这一句。"}]}],"complete":true,"missing_items":[],"provenance":{"client":"stdio-test","skill_version":"1"},"operation_key":"submit"});
+    let result = client
+        .tool("hetu_submit_creative_result", input.clone())
+        .await;
+    assert_eq!(result["status"], "succeeded", "{result}");
+    assert_eq!(
+        client.tool("hetu_submit_creative_result", input).await,
+        result
+    );
+    let directory = client.rpc("resources/list", json!({})).await;
+    assert_eq!(
+        directory["result"]["resources"].as_array().unwrap().len(),
+        3
+    );
+    let task_root = format!(
+        "hetu://task/workspace/{}/{}/",
+        k.scope(),
+        task["task_ref"]["task_id"].as_str().unwrap()
+    );
+    let restored = client
+        .resource(&format!(
+            "{task_root}operations/by-key?action=hetu.creative_tasks.submit_result&key=submit"
+        ))
+        .await;
+    assert_eq!(restored["data"]["original_result"], result);
+    assert!(
+        client
+            .rpc("resources/read", json!({"uri":uri(&k,"documents")}))
+            .await
+            .get("error")
+            .is_some()
+    );
+    assert_eq!(
+        call(&k, "documents.get", json!({"document_id":doc_id}))["data"]["content"],
+        original
+    );
+    let current = call(
+        &k,
+        "creative_tasks.get",
+        json!({"task_ref":task["task_ref"]}),
+    );
+    assert_eq!(
+        call(
+            &k,
+            "creative_tasks.close",
+            json!({"task_ref":task["task_ref"],"expected":current["data"]["expected"],"reason":"结束本次改稿","operation_key":"close"})
+        )["status"],
+        "succeeded"
+    );
+    assert_eq!(
+        client.resource(&format!("{task_root}request")).await["error"]["code"],
+        "forbidden"
+    );
+    assert_eq!(
+        client
+            .resource(&format!(
+                "{task_root}operations/by-key?action=hetu.creative_tasks.submit_result&key=submit"
+            ))
+            .await["error"]["code"],
+        "forbidden"
+    );
+    client.close().await;
+}
+
+#[tokio::test]
+async fn nameless_creation_task_has_no_workspace_resources_or_author_tools() {
+    let root = tempfile::tempdir().unwrap();
+    let k=Kernel::open(json!({"creation_project_path":root.path(),"mode":"author","create_project":{"brief":"还没有书名","locale":"zh-CN","operation_key":"project"}})).unwrap();
+    let task = creative_task(&k, json!([]), None);
+    let mut client = Client::start_task(
+        root.path(),
+        true,
+        task["task_ref"]["task_id"].as_str().unwrap(),
+    );
+    client.rpc("server/discover", json!({})).await;
+    let loaded = client
+        .tool(
+            "hetu_read_creative_task",
+            json!({"task_ref":task["task_ref"]}),
+        )
+        .await;
+    assert_eq!(
+        loaded["data"]["request"]["scope_ref"]["kind"],
+        "creation_project"
+    );
+    let tools = client.rpc("tools/list", json!({})).await;
+    assert_eq!(tools["result"]["tools"].as_array().unwrap().len(), 4);
+    assert!(!root.path().join(".heturc.json").exists());
+    assert!(!root.path().join("packages").exists());
+    client.close().await;
 }
 fn validate_protocol(response: &Value) {
     let name = if response.get("error").is_some() {

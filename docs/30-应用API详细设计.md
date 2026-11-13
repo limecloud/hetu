@@ -475,23 +475,36 @@ C ABI 整数码、MCP 协议错误、AXI 执行结果、诊断 findings 和作�
 
 | 动作 | 输入 | 输出 | 入口与边界 |
 | --- | --- | --- | --- |
-| `hetu.creation_projects.create` | brief、language_tag、operation_key | 独立 project 与修订摘要 | 仅作者；书名可未定，不创建正式作品 |
+| `hetu.creation_projects.create` | 打开参数 `creation_project_path` 与 `create_project={brief,locale,operation_key}` | 独立 project 与修订摘要 | 仅作者的 scope 创建入口；书名可未定，不创建正式作品，不伪装为普通 request 动作 |
 | `hetu.creation_projects.get` | project_id、revision? | 已获权筹备及来源投影 | 不返回其他筹备或全部作品位置 |
-| `hetu.creation_projects.save` | project_id、expected、selected_fields、operation_key | 新筹备修订 | 仅作者；选中字段记录候选引用或手工来源 |
-| `hetu.creation_projects.create_novel` | project_ref、expected、作者确认的 metadata、目录句柄、selected_source_refs、operation_key | workspace、novel、创建回执和来源 | 仅作者；新作品身份固定，未知结果查原目标与原键，跨卷恢复按07 |
-| `hetu.creative_tasks.preview_prompt` | scope_ref、task_kind、brief、input_refs、client_adapter、skill_ref、output_options、language_tag | 外发资料、完整可编辑 Prompt、输出合同 | 仅作者；本地模板，无模型、无落盘 |
+| `hetu.creation_projects.save` | project_id、expected、brief、selected_fields、operation_key | 新筹备修订 | 仅作者；选中字段记录候选引用或手工来源 |
+| `hetu.creation_projects.create_novel` | project_id、expected、作者确认的 metadata、target_path、operation_key | workspace、novel、创建回执和来源 | 仅作者；来源从已保存 selected_fields 核验，新作品身份固定，未知结果查原目标与原键，跨卷恢复按07 |
+| `hetu.creative_tasks.preview_prompt` | scope_ref、task_kind、brief、input_refs、client_adapter、language_tag、candidate_limit?、edit_scope? | 外发资料、完整可编辑 Prompt、prepare_input、输出合同 | 仅作者；本地模板，无模型、无落盘；Skill 由任务类型确定 |
 | `hetu.creative_tasks.prepare` | 固定预览输入、作者编辑后的 Prompt、expected_scope、operation_key | 不可变 task_ref、请求摘要、可复制调用说明 | 仅作者；不启动客户端、不发送消息、不调用生成服务 |
-| `hetu.creative_tasks.get` | task_id、request_revision? | 固定请求、范围内候选摘要、交互决定及观察状态 | Agent 只读当前获权任务；Prompt 不含秘密 |
+| `hetu.creative_tasks.get` | task_ref、submission_id? | 固定请求、请求摘要、选定批次候选、交互决定及观察状态 | Agent 只读当前获权任务；Prompt 不含秘密；缺省读取最新批次 |
 | `hetu.creative_tasks.list` | 当前 scope、state?、cursor?、limit? | 任务摘要与 next_cursor | 游标绑定 scope／身份／筛选，默认20、最多100；不跨作品 |
-| `hetu.creative_tasks.submit_result` | task_ref、request_sha256、候选内容或固定 inbox 引用、provenance、operation_key | submission_ref、候选引用、核验结果及缺项 | Agent 可在精确任务提交；禁止任意路径和作者决定字段；不自动采纳 |
-| `hetu.creative_tasks.inspect_inbox` | task_ref、cursor?、limit? | 有界文件观察、已核验 submission 与具体错误 | 只能检查原请求输出根；半写入不标完成，重复检查不重复导入 |
+| `hetu.creative_tasks.submit_result` | task_ref、request_sha256、candidates、complete、missing_items、provenance、operation_key | submission_ref、submission、expected、approval_state | Agent 可在精确任务提交；候选内容／固定 inbox 文件／改稿 patches 三选一；禁止任意路径和作者决定字段，不自动采纳 |
+| `hetu.creative_tasks.inspect_inbox` | task_ref、file_name、manifest_sha256、operation_key | 核验后的提交回执或具体错误 | 只检查该任务 inbox 内的指定清单；摘要不符或半写入不登记，原键不重复导入 |
 | `hetu.creative_tasks.close` | task_ref、expected、reason、operation_key | 本机跟踪关闭记录 | 仅作者；不取消外部 Agent、不声称退款或删除文件 |
+| `hetu.creative_tasks.mark_copied` | task_ref、request_sha256、operation_key | copied_at、观察状态及 expected | 仅作者；记录实际复制，不显示 Agent 已启动 |
 
 文本候选复用 Markdown／Fountain 与 UTF-8 1 MiB 单稿预算；图片复用34的类型、尺寸及单图32 MiB预算。数量与请求合同取交集；新任务默认候选不超过4项，扩展上限由明确动作 Schema 发布。内联文本和文件来源互斥，不能将 HTTP URL 解释为自动下载指令。
 
 submit_result 先检查原键；请求摘要不符、跨 scope、目录逃逸、超出预算或格式不符分别返回明确阻断。合法但不足请求数量可返回 partial 并列明缺项，不能隐式产生更多生成请求。provenance 为来源声明，不承担版权认证或宿主身份认证。
 
 建书前的封面探索使用 creation_project scope 的 cover 任务；正式作品的 CoverRequest 保持34定义的 workspace 合同。作者创建作品后显式导入选定筹备候选，不给旧筹备会话增授作品权限。
+
+### 17.1 受限改稿合同
+
+机器输入及持久记录以[creative-task.schema.json](../contracts/schemas/creative-task.schema.json)为准。`task_kind=revision` 必须提供 `edit_scope={document_id,revision_id,ranges}`，该文档及修订也必须列入 `input_refs`；准备时必须仍是当前作者文档。`input_refs` 允许额外固定章节和设定供参考，不赋予这些对象的修改权。单篇原文及候选各不超过 UTF-8 1 MiB，序列化参考上下文总预算2 MiB；超限拒绝而不截断。
+
+`ranges` 是1～16个不重叠的 UTF-8 半开范围，每项包含 `byte_start,byte_end,quote`，空范围为作者指定的插入点。整章必须显式传完整范围；传入空数组、缺省范围或其他任务类型的 edit_scope 均不解释为全部授权。修改目标或范围须新任务，不能由 Agent 修改固定请求。
+
+改稿候选使用 `patches`，每项包含 `byte_start,byte_end,quote,replacement`，最多64处。原文、字符边界和范围包含关系须全都匹配；同点重复插入、重叠、NUL、越界或整章 `content` 替换均拒绝。合法补丁由 Core 在固定原文上合成为独立候选及参考稿，范围外字节不变。插入允许授权范围的两端；需要更窄限制时作者选择精确插入点。
+
+候选提交不要求当前写作稿仍等于基线：作者等待期间可继续写作，迟到结果仍保存旧来源。正式采纳必须按第7节重新固定当前稿和比较预览；不能把提交成功当作正文保存、检查通过或定稿。任一候选非法时整批不登记，不能仅裁掉越界部分后返回完成。
+
+任务连接只开放能力发现、原操作查询、当前任务读取与提交、局部投影及选择；每次请求重新核验绑定任务与关闭状态。普通工作区连接的通用权限不能因工具名存在而扩大到所有创作任务。相同动作及操作键在不同任务中隔离，知道其他任务的 ID、请求摘要或 operation ID 不授予访问权。
 
 ## 18. 局部选择与页面会话
 
@@ -511,11 +524,11 @@ submit_result 先检查原键；请求摘要不符、跨 scope、目录逃逸、
 
 八个基础工具保持原有业务范围；创作任务通过新增窄工具投影，不把 `hetu_list_workspace` 扩展成书库访问，也不把旧 `hetu_write_draft` 偷换为任意 JSON 或媒体写入入口。
 
-| 拟发布工具 | 应用动作 | 可见性与边界 |
+| 任务连接工具 | 应用动作 | 可见性与边界 |
 | --- | --- | --- |
 | `hetu_read_creative_task` | creative_tasks.get | 获权任务读取，返回结构化文本及候选引用 |
 | `hetu_submit_creative_result` | creative_tasks.submit_result | 固定任务的候选提交，无采纳或定稿能力 |
-| `hetu_open_task_view` | interactions.get | 适用时关联 Apps 资源；无 Apps 返回同一数据与原生入口，本地页面需先由作者启动 |
-| `hetu_save_task_selection` | interactions.save_selection | 按宿主支持限定 app／model 发现面，服务端仍核验受限会话；仅记录选择 |
+| `hetu_open_task_view` | interactions.get | 当前返回局部数据，无 Apps HTML 资源；Apps 和本地页面按18节扩展合同分别验收 |
+| `hetu_save_task_selection` | interactions.save_selection | 只对绑定任务记录偏好，服务端重新核验授权；不冒充作者采纳 |
 
 新增工具须同步 `contracts/tools/catalog.json`、Schema、宿主矩阵、Skill 方法及权限负例。用户复制 Prompt 是缺省交接方式；任何消息桥接都不能自动向另一会话发送内容、启动 Agent 循环或扩大授权。

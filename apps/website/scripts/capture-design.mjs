@@ -17,9 +17,14 @@ try {
     await page.goto(new URL(locale === 'en' ? '/en/' : '/', origin).href);
     await page.locator('.demo-book-card').first().waitFor();
     await page.locator('.demo-app img').evaluateAll(images => Promise.all(images.map(image => image.decode())));
-    await page.locator('.demo-app').screenshot({ path: fileURLToPath(new URL(`prototype-desktop${suffix}.png`, out)) });
     await page.locator('.hero-art').evaluate(image => image.decode());
+    await page.evaluate(() => { document.documentElement.style.scrollBehavior = 'auto'; window.scrollTo(0, 0); });
+    await page.waitForFunction(() => window.scrollY === 0);
     await page.screenshot({ path: fileURLToPath(new URL(`prototype-website${suffix}.png`, out)) });
+    await page.locator('.demo-app').screenshot({ path: fileURLToPath(new URL(`prototype-desktop${suffix}.png`, out)) });
+    await page.goto(new URL(`design/mobile.html${locale === 'en' ? '?lang=en' : ''}`, repo).href);
+    await page.locator('img').evaluateAll(images => Promise.all(images.map(image => image.decode())));
+    await page.locator('.board').screenshot({ path: fileURLToPath(new URL(`prototype-mobile${suffix}.png`, out)) });
   }
-  console.log('已从中英文首页导出当前书库演示与官网界面图。');
+  console.log('已导出中英文书库、官网与移动端设计概念图。');
 } finally { await browser.close(); }
