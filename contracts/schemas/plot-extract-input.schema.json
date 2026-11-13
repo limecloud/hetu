@@ -1,0 +1,60 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "document_revisions": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/source_input"
+      },
+      "minItems": 1,
+      "maxItems": 100
+    },
+    "blueprint_revision": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "options": {
+      "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/options"
+    },
+    "save_result": {
+      "type": "boolean"
+    },
+    "operation_key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    }
+  },
+  "required": [
+    "document_revisions",
+    "blueprint_revision",
+    "options",
+    "save_result"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "save_result": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "operation_key"
+        ]
+      },
+      "else": {
+        "not": {
+          "required": [
+            "operation_key"
+          ]
+        }
+      }
+    }
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

@@ -83,6 +83,118 @@
       "width": 1536,
       "height": 1024,
       "locale": "en"
+    },
+    {
+      "path": "output/imagegen/library-v2/library-garden-light.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "43ff76a182a69874afa9405147743c905e56d31eb6be2e1ba89046dedf26b5c0",
+      "width": 2172,
+      "height": 724,
+      "prompt_source": "assets/illustrations/prompts/library-v2.jsonl"
+    },
+    {
+      "path": "output/imagegen/library-v2/library-garden-dark.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "2320ec7e5039e58ce7b96e9b7b2bcd542ba1d1fc1d3d4461a3ee4e9c22e24a44",
+      "width": 2172,
+      "height": 724,
+      "prompt_source": "assets/illustrations/prompts/library-v2.jsonl"
+    },
+    {
+      "path": "output/imagegen/library-v2/cover-river-jade.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "e236ca78f131c598fb86843a27895bccfdb6403d15737b438d4054ddc1b2d2a8",
+      "width": 1024,
+      "height": 1536,
+      "prompt_source": "assets/illustrations/prompts/library-v2.jsonl"
+    },
+    {
+      "path": "output/imagegen/library-v2/cover-cloud-rose.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "e5a9d9062f0a18db62568df3ca51ee74f138acad38e3fc65a0e4c6ecf043edc7",
+      "width": 1024,
+      "height": 1536,
+      "prompt_source": "assets/illustrations/prompts/library-v2.jsonl"
+    },
+    {
+      "path": "output/imagegen/library-v2/cover-stars-ink.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "a5c3eb2c0d8b3c37717eee79b221f1e6555508fe4f58e5c7faa5d00190acac45",
+      "width": 1024,
+      "height": 1536,
+      "prompt_source": "assets/illustrations/prompts/library-v2.jsonl"
+    },
+    {
+      "path": "output/imagegen/library-v2/library-empty.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "3c248457596156fe7b63b97aba0630233dc4c0b5068e18d6756673b6bf2bd29e",
+      "width": 1254,
+      "height": 1254,
+      "prompt_source": "assets/illustrations/prompts/library-empty-v2.txt"
+    },
+    {
+      "path": "output/imagegen/workbench-v1/story-world.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "ca8bc6605a9565fee497ac711a17b35f87279701d5db5e54c76054d010c88216",
+      "width": 1536,
+      "height": 1024,
+      "prompt_source": "assets/illustrations/prompts/workbench-v1.jsonl"
+    },
+    {
+      "path": "output/imagegen/workbench-v1/drama-stage.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "31e13db3733a041bd3fd2d0932a85f7fa68b0787cfb89122bf61fe929e9c130f",
+      "width": 1536,
+      "height": 1024,
+      "prompt_source": "assets/illustrations/prompts/workbench-v1.jsonl"
+    },
+    {
+      "path": "output/imagegen/workbench-v1/review-desk.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "412e7ec63903ca319e6851853a5293a29ae2d9bbf0b21018f2e17d8d030450e7",
+      "width": 1536,
+      "height": 1024,
+      "prompt_source": "assets/illustrations/prompts/workbench-v1.jsonl"
+    },
+    {
+      "path": "output/imagegen/workbench-v1/media-collection.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "746af3f947ee2ed1e6f4de293b2dc1b5d01a987b51686771101dae7ac8344b93",
+      "width": 1536,
+      "height": 1024,
+      "prompt_source": "assets/illustrations/prompts/workbench-v1.jsonl"
+    },
+    {
+      "path": "output/imagegen/workbench-v1/story-world-dark.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "8873bf668dcb1f4a22020622b22d3d8b8915773eb2893a6980b6cc8bea56e44c",
+      "width": 1536,
+      "height": 1024,
+      "prompt_source": "assets/illustrations/prompts/workbench-dark-v1.jsonl"
+    },
+    {
+      "path": "output/imagegen/workbench-v1/drama-stage-dark.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "6b2aefde0cad59761c912c96d4510e457283b90e0d41228973ad2a7dfac80879",
+      "width": 1536,
+      "height": 1024,
+      "prompt_source": "assets/illustrations/prompts/workbench-dark-v1.jsonl"
+    },
+    {
+      "path": "output/imagegen/workbench-v1/review-desk-dark.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "0269b1c3537ac9788ae1dc019e6d77955ac816fda2254b193fa0cc9ee50b53ec",
+      "width": 1536,
+      "height": 1024,
+      "prompt_source": "assets/illustrations/prompts/workbench-dark-v1.jsonl"
+    },
+    {
+      "path": "output/imagegen/workbench-v1/media-collection-dark.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "e8fbb4620a70337c371cc5476fdb85baaa6613a96dff22dafaa64ba61907bcc4",
+      "width": 1448,
+      "height": 1086,
+      "prompt_source": "assets/illustrations/prompts/workbench-dark-v1.jsonl"
     }
   ],
   "assets": [
@@ -674,12 +786,14 @@
     },
     {
       "path": "assets/marketing/prototype-desktop.webp",
-      "sha256": "c8ac0038db390fee076ba627532ff5f7e03c9e3051b9a6605e342c1f459613da",
-      "size_bytes": 147204,
-      "width": 1536,
-      "height": 1024,
+      "sha256": "c55053404031c1cd2b661e1f64e26905b43dabc7c7a4a821196f1b0692bc1809",
+      "size_bytes": 43684,
+      "width": 1184,
+      "height": 782,
       "format": "WEBP",
-      "mode": "RGB"
+      "mode": "RGB",
+      "derived_from": "output/design/prototype-desktop.png",
+      "locale": "zh-CN"
     },
     {
       "path": "assets/marketing/prototype-mobile.webp",
@@ -692,12 +806,14 @@
     },
     {
       "path": "assets/marketing/prototype-website.webp",
-      "sha256": "3c32f9c8e80050991954cf309f3f0a56741a244daba5118525f9a22d7bae9e9f",
-      "size_bytes": 153804,
+      "sha256": "0824b9154cfcd6354ca8ebcadaf2ca897c94c95bf3882d53c5015f09ab414635",
+      "size_bytes": 59522,
       "width": 1536,
       "height": 1024,
       "format": "WEBP",
-      "mode": "RGB"
+      "mode": "RGB",
+      "derived_from": "output/design/prototype-website.png",
+      "locale": "zh-CN"
     },
     {
       "path": "assets/marketing/social-og.png",
@@ -727,11 +843,12 @@
     },
     {
       "path": "assets/marketing/prototype-desktop-en.webp",
-      "width": 1536,
-      "height": 1024,
-      "sha256": "6b6e05e65cec00e7ee90d419a23a025d095ca78106b915cbd2a734d49bfec2a2",
+      "width": 1184,
+      "height": 782,
+      "sha256": "706305af0ec61f74c9b55cbbef62f41668a4b04056a5a931b3436e9064148e07",
       "locale": "en",
-      "derived_from": "output/design/prototype-desktop-en.png"
+      "derived_from": "output/design/prototype-desktop-en.png",
+      "size_bytes": 48888
     },
     {
       "path": "assets/marketing/prototype-mobile-en.webp",
@@ -745,9 +862,10 @@
       "path": "assets/marketing/prototype-website-en.webp",
       "width": 1536,
       "height": 1024,
-      "sha256": "53b6be210f7bcb5915a20ecb69ff56e1a36a75e9ea07de22cda4ab48191f8734",
+      "sha256": "38cd40f57ff38ba553151777adf347c7dc96691233d71697f68e94679c31785c",
       "locale": "en",
-      "derived_from": "output/design/prototype-website-en.png"
+      "derived_from": "output/design/prototype-website-en.png",
+      "size_bytes": 64490
     },
     {
       "path": "assets/marketing/social-og-en.png",
@@ -764,6 +882,146 @@
       "sha256": "d6f2327235faa9a40cc2617e9735c6f5778d078a0b212ffca0d6c91d7df68a05",
       "locale": "en",
       "derived_from": "assets/brand/icon-overview.png"
+    },
+    {
+      "path": "assets/illustrations/library/library-garden-light.jpg",
+      "width": 1536,
+      "height": 512,
+      "sha256": "1a72324792a26225fcf564ded2d979c38fa498dcda4abb96d0f8340537cd9c75",
+      "derived_from": "output/imagegen/library-v2/library-garden-light.png",
+      "usage": "native-library",
+      "text_in_image": false,
+      "resize": "proportional"
+    },
+    {
+      "path": "assets/illustrations/library/library-garden-dark.jpg",
+      "width": 1536,
+      "height": 512,
+      "sha256": "69b8010c4bed6b8eb75106581df0905995de406fc22ca89fd51a413ee57dca24",
+      "derived_from": "output/imagegen/library-v2/library-garden-dark.png",
+      "usage": "native-library",
+      "text_in_image": false,
+      "resize": "proportional"
+    },
+    {
+      "path": "assets/illustrations/library/cover-river-jade.jpg",
+      "width": 768,
+      "height": 1152,
+      "sha256": "3b2cee375f3c704cd57652e39c36a989a2e5871dd567c55adb3d717379402ca4",
+      "derived_from": "output/imagegen/library-v2/cover-river-jade.png",
+      "usage": "native-library",
+      "text_in_image": false,
+      "resize": "proportional"
+    },
+    {
+      "path": "assets/illustrations/library/cover-cloud-rose.jpg",
+      "width": 768,
+      "height": 1152,
+      "sha256": "38a5cca41a4b2c897e9fef948d2655da2d76a7f022eb99c24f75bf583ee34952",
+      "derived_from": "output/imagegen/library-v2/cover-cloud-rose.png",
+      "usage": "native-library",
+      "text_in_image": false,
+      "resize": "proportional"
+    },
+    {
+      "path": "assets/illustrations/library/cover-stars-ink.jpg",
+      "width": 768,
+      "height": 1152,
+      "sha256": "507dea7239e077acacc8b0db60eabe5e7f03c03b42cfcb32f90ccb783ea2820b",
+      "derived_from": "output/imagegen/library-v2/cover-stars-ink.png",
+      "usage": "native-library",
+      "text_in_image": false,
+      "resize": "proportional"
+    },
+    {
+      "path": "assets/illustrations/library/library-empty.jpg",
+      "width": 1152,
+      "height": 1152,
+      "sha256": "a9ede52f9102bc4d9e6c776b253e42c3c0c733746749d060c304a7234c929443",
+      "derived_from": "output/imagegen/library-v2/library-empty.png",
+      "usage": "native-library",
+      "text_in_image": false,
+      "resize": "proportional"
+    },
+    {
+      "path": "assets/illustrations/library/story-world.jpg",
+      "width": 768,
+      "height": 512,
+      "sha256": "2394efe3fcb63c1c1588e91a2aad48e7d5f1c503b4193aeb02cfa0f12472e154",
+      "derived_from": "output/imagegen/workbench-v1/story-world.png",
+      "usage": "native-workbench",
+      "text_in_image": false,
+      "resize": "proportional"
+    },
+    {
+      "path": "assets/illustrations/library/drama-stage.jpg",
+      "width": 768,
+      "height": 512,
+      "sha256": "372a1d21fd2b80e2c6a7b44ed89a8858dfd0f3053806b70fb84118b83663f6cd",
+      "derived_from": "output/imagegen/workbench-v1/drama-stage.png",
+      "usage": "native-workbench",
+      "text_in_image": false,
+      "resize": "proportional"
+    },
+    {
+      "path": "assets/illustrations/library/review-desk.jpg",
+      "width": 768,
+      "height": 512,
+      "sha256": "b9a0d970a7f8e8ed2f0eca66ed525e1d28f06becbda6b13cd22dac3d7b1644b9",
+      "derived_from": "output/imagegen/workbench-v1/review-desk.png",
+      "usage": "native-workbench",
+      "text_in_image": false,
+      "resize": "proportional"
+    },
+    {
+      "path": "assets/illustrations/library/media-collection.jpg",
+      "width": 768,
+      "height": 512,
+      "sha256": "9ca643bafc781fdb51e4a21df372250278fff833e619bc3db3953940e9d195c4",
+      "derived_from": "output/imagegen/workbench-v1/media-collection.png",
+      "usage": "native-workbench",
+      "text_in_image": false,
+      "resize": "proportional"
+    },
+    {
+      "path": "assets/illustrations/library/story-world-dark.jpg",
+      "width": 768,
+      "height": 512,
+      "sha256": "10133009db19d533d36bd7c1fb1792a1263ba79114b23e90f33147c6f9ba176d",
+      "derived_from": "output/imagegen/workbench-v1/story-world-dark.png",
+      "usage": "native-workbench",
+      "text_in_image": false,
+      "resize": "proportional"
+    },
+    {
+      "path": "assets/illustrations/library/drama-stage-dark.jpg",
+      "width": 768,
+      "height": 512,
+      "sha256": "850ff19b5c902d8ab61e33eaeec746b4f91b24239ea781951c8b99f17f264350",
+      "derived_from": "output/imagegen/workbench-v1/drama-stage-dark.png",
+      "usage": "native-workbench",
+      "text_in_image": false,
+      "resize": "proportional"
+    },
+    {
+      "path": "assets/illustrations/library/review-desk-dark.jpg",
+      "width": 768,
+      "height": 512,
+      "sha256": "537608cf68bec0a87768a1f594a28c0b346a011f5dfb33470eab672f6f0c1dea",
+      "derived_from": "output/imagegen/workbench-v1/review-desk-dark.png",
+      "usage": "native-workbench",
+      "text_in_image": false,
+      "resize": "proportional"
+    },
+    {
+      "path": "assets/illustrations/library/media-collection-dark.jpg",
+      "width": 768,
+      "height": 576,
+      "sha256": "0fd7522c5b3f614718cc073fcbe8f840bcdec278c33e8dfa539e6a824185dc91",
+      "derived_from": "output/imagegen/workbench-v1/media-collection-dark.png",
+      "usage": "native-workbench",
+      "text_in_image": false,
+      "resize": "proportional"
     }
   ]
 }

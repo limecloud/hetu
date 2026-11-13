@@ -11,18 +11,15 @@ const browser = await chromium.launch({
 });
 try {
   const page = await browser.newPage({ viewport: { width: 1536, height: 1024 }, deviceScaleFactor: 1 });
-  await page.goto(new URL('design/workbench.html?lang=en', repo).href);
-  await page.locator('html[lang=en]').waitFor();
-  await page.locator('.brand img').evaluate(image => image.decode());
-  const text = await page.locator('body').innerText();
-  const chinese = text.match(/\p{Script=Han}+/gu)?.filter(word => word !== '中文') || [];
-  if (chinese.length) throw new Error('英文桌面原型含中文可见文案：' + chinese.join(', '));
-  await page.screenshot({ path: fileURLToPath(new URL('prototype-desktop-en.png', out)) });
-  console.log('已从英文原型导出桌面界面图。');
-  if (process.env.HETU_DESIGN_ORIGIN) {
-    await page.goto(new URL('/en/', process.env.HETU_DESIGN_ORIGIN).href);
+  const origin = process.env.HETU_DESIGN_ORIGIN || 'http://127.0.0.1:4351';
+  for (const locale of ['zh-CN', 'en']) {
+    const suffix = locale === 'en' ? '-en' : '';
+    await page.goto(new URL(locale === 'en' ? '/en/' : '/', origin).href);
+    await page.locator('.demo-book-card').first().waitFor();
+    await page.locator('.demo-app img').evaluateAll(images => Promise.all(images.map(image => image.decode())));
+    await page.locator('.demo-app').screenshot({ path: fileURLToPath(new URL(`prototype-desktop${suffix}.png`, out)) });
     await page.locator('.hero-art').evaluate(image => image.decode());
-    await page.screenshot({ path: fileURLToPath(new URL('prototype-website-en.png', out)) });
-    console.log('已从英文网站导出宣传页界面图。');
+    await page.screenshot({ path: fileURLToPath(new URL(`prototype-website${suffix}.png`, out)) });
   }
+  console.log('已从中英文首页导出当前书库演示与官网界面图。');
 } finally { await browser.close(); }

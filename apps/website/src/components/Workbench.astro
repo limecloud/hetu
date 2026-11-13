@@ -1,0 +1,15 @@
+---
+import type { Locale } from '../lib/site';
+import '../styles/workbench.css';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+---
+<div class="demo" data-hetu-demo data-locale={locale} data-theme="light" role="region" aria-label={locale === 'en' ? 'Interactive Hetu workspace demo' : '河图工作台交互演示'}>
+  <div class="demo-app"></div>
+  <p class="demo-notice">{locale === 'en' ? 'In-page demo of the current macOS interface. No files, models or MCP connections are accessed. Refreshing resets all changes.' : '按当前 macOS 界面制作的页面内演示。不读写文件、不调用模型、不连接 MCP；刷新后所有修改重置。'}</p>
+  <noscript><p>{locale === 'en' ? 'Enable JavaScript to try the demo. The user guides are available without it.' : '启用 JavaScript 后可操作演示；使用指南无需 JavaScript 即可阅读。'}</p></noscript>
+</div>
+<script>
+  import { initializeWorkbench } from '../scripts/workbench';
+  document.querySelectorAll<HTMLElement>('[data-hetu-demo]').forEach(initializeWorkbench);
+</script>

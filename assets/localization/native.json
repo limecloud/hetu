@@ -1,0 +1,4908 @@
+{
+  "welcome.title": {
+    "zh-CN": "河图 Hetu",
+    "en": "Hetu",
+    "purpose": "Mac 原生界面：welcome.title",
+    "parameters": []
+  },
+  "welcome.subtitle": {
+    "zh-CN": "设定有据，创作有序。",
+    "en": "Ground your story. Shape your world.",
+    "purpose": "Mac 原生界面：welcome.subtitle",
+    "parameters": []
+  },
+  "workspace.new": {
+    "zh-CN": "新建作品",
+    "en": "New Book",
+    "purpose": "Mac 原生界面：workspace.new",
+    "parameters": []
+  },
+  "workspace.open": {
+    "zh-CN": "打开作品…",
+    "en": "Open Book…",
+    "purpose": "Mac 原生界面：workspace.open",
+    "parameters": []
+  },
+  "workspace.choose": {
+    "zh-CN": "选择河图作品文件夹",
+    "en": "Choose a Hetu book folder",
+    "purpose": "Mac 原生界面：workspace.choose",
+    "parameters": []
+  },
+  "workspace.title": {
+    "zh-CN": "作品名称",
+    "en": "Book Title",
+    "purpose": "Mac 原生界面：workspace.title",
+    "parameters": []
+  },
+  "workspace.location": {
+    "zh-CN": "保存新作品到",
+    "en": "Save New Book",
+    "purpose": "Mac 原生界面：workspace.location",
+    "parameters": []
+  },
+  "workspace.recent": {
+    "zh-CN": "最近打开",
+    "en": "Recent Workspaces",
+    "purpose": "Mac 原生界面：workspace.recent",
+    "parameters": []
+  },
+  "common.continue": {
+    "zh-CN": "继续",
+    "en": "Continue",
+    "purpose": "Mac 原生界面：common.continue",
+    "parameters": []
+  },
+  "common.cancel": {
+    "zh-CN": "取消",
+    "en": "Cancel",
+    "purpose": "Mac 原生界面：common.cancel",
+    "parameters": []
+  },
+  "common.ok": {
+    "zh-CN": "好",
+    "en": "OK",
+    "purpose": "Mac 原生界面：common.ok",
+    "parameters": []
+  },
+  "common.close": {
+    "zh-CN": "关闭",
+    "en": "Close",
+    "purpose": "Mac 原生界面：common.close",
+    "parameters": []
+  },
+  "common.create": {
+    "zh-CN": "创建",
+    "en": "Create",
+    "purpose": "Mac 原生界面：common.create",
+    "parameters": []
+  },
+  "common.edit": {
+    "zh-CN": "编辑",
+    "en": "Edit",
+    "purpose": "Mac 原生界面：common.edit",
+    "parameters": []
+  },
+  "common.save": {
+    "zh-CN": "保存",
+    "en": "Save",
+    "purpose": "Mac 原生界面：common.save",
+    "parameters": []
+  },
+  "common.confirm": {
+    "zh-CN": "确认",
+    "en": "Confirm",
+    "purpose": "Mac 原生界面：common.confirm",
+    "parameters": []
+  },
+  "common.refresh": {
+    "zh-CN": "刷新列表",
+    "en": "Refresh Lists",
+    "purpose": "Mac 原生界面：common.refresh",
+    "parameters": []
+  },
+  "common.working": {
+    "zh-CN": "正在处理",
+    "en": "Working",
+    "purpose": "Mac 原生界面：common.working",
+    "parameters": []
+  },
+  "language.title": {
+    "zh-CN": "界面语言",
+    "en": "Interface Language",
+    "purpose": "Mac 原生界面：language.title",
+    "parameters": []
+  },
+  "bible.title": {
+    "zh-CN": "设定集",
+    "en": "Story Bible",
+    "purpose": "Mac 原生界面：bible.title",
+    "parameters": []
+  },
+  "bible.description": {
+    "zh-CN": "由作者维护的人物、地点、势力、时序、世界观与创作规则。",
+    "en": "Author-defined characters, locations, factions, chronology, world notes, and writing rules.",
+    "purpose": "Mac 原生界面：bible.description",
+    "parameters": []
+  },
+  "bible.locked": {
+    "zh-CN": "已锁定",
+    "en": "Locked",
+    "purpose": "Mac 原生界面：bible.locked",
+    "parameters": []
+  },
+  "bible.editable": {
+    "zh-CN": "可编辑",
+    "en": "Editable",
+    "purpose": "Mac 原生界面：bible.editable",
+    "parameters": []
+  },
+  "bible.lock": {
+    "zh-CN": "锁定设定",
+    "en": "Lock Story Bible",
+    "purpose": "Mac 原生界面：bible.lock",
+    "parameters": []
+  },
+  "bible.unlock": {
+    "zh-CN": "解锁设定",
+    "en": "Unlock Story Bible",
+    "purpose": "Mac 原生界面：bible.unlock",
+    "parameters": []
+  },
+  "bible.lock_detail": {
+    "zh-CN": "锁定后需由作者主动解锁才能编辑。Agent 始终不能修改设定集。",
+    "en": "Editing a locked Story Bible requires the author to unlock it. Agents cannot modify it.",
+    "purpose": "Mac 原生界面：bible.lock_detail",
+    "parameters": []
+  },
+  "bible.reason": {
+    "zh-CN": "操作原因",
+    "en": "Reason for this change",
+    "purpose": "Mac 原生界面：bible.reason",
+    "parameters": []
+  },
+  "character.new": {
+    "zh-CN": "添加角色",
+    "en": "Add Character",
+    "purpose": "Mac 原生界面：character.new",
+    "parameters": []
+  },
+  "character.edit": {
+    "zh-CN": "编辑角色",
+    "en": "Edit Character",
+    "purpose": "Mac 原生界面：character.edit",
+    "parameters": []
+  },
+  "character.name": {
+    "zh-CN": "姓名",
+    "en": "Name",
+    "purpose": "Mac 原生界面：character.name",
+    "parameters": []
+  },
+  "character.aliases": {
+    "zh-CN": "别名（每行一个）",
+    "en": "Aliases (one per line)",
+    "purpose": "Mac 原生界面：character.aliases",
+    "parameters": []
+  },
+  "character.traits": {
+    "zh-CN": "性格特征（每行一个）",
+    "en": "Traits (one per line)",
+    "purpose": "Mac 原生界面：character.traits",
+    "parameters": []
+  },
+  "character.description": {
+    "zh-CN": "角色介绍",
+    "en": "Description",
+    "purpose": "Mac 原生界面：character.description",
+    "parameters": []
+  },
+  "character.empty": {
+    "zh-CN": "还没有角色设定",
+    "en": "No Characters Yet",
+    "purpose": "Mac 原生界面：character.empty",
+    "parameters": []
+  },
+  "character.empty_detail": {
+    "zh-CN": "先添加一个角色，逐步整理作品设定。",
+    "en": "Add a character to begin organizing your story references.",
+    "purpose": "Mac 原生界面：character.empty_detail",
+    "parameters": []
+  },
+  "novel.title": {
+    "zh-CN": "小说",
+    "en": "Novel",
+    "purpose": "Mac 原生界面：novel.title",
+    "parameters": []
+  },
+  "novel.chapter": {
+    "zh-CN": "小说章节",
+    "en": "Novel Chapter",
+    "purpose": "Mac 原生界面：novel.chapter",
+    "parameters": []
+  },
+  "novel.outline": {
+    "zh-CN": "小说大纲",
+    "en": "Novel Outline",
+    "purpose": "Mac 原生界面：novel.outline",
+    "parameters": []
+  },
+  "drama.title": {
+    "zh-CN": "短剧",
+    "en": "Drama",
+    "parameters": [],
+    "purpose": "剧本文档分组"
+  },
+  "drama.script": {
+    "zh-CN": "短剧剧本 · Fountain",
+    "en": "Drama Script · Fountain",
+    "purpose": "Mac 原生界面：drama.script",
+    "parameters": []
+  },
+  "drama.note": {
+    "zh-CN": "改编笔记",
+    "en": "Adaptation Note",
+    "purpose": "Mac 原生界面：drama.note",
+    "parameters": []
+  },
+  "document.new": {
+    "zh-CN": "新建文档",
+    "en": "New Document",
+    "purpose": "Mac 原生界面：document.new",
+    "parameters": []
+  },
+  "document.save": {
+    "zh-CN": "保存修订",
+    "en": "Save Revision",
+    "purpose": "Mac 原生界面：document.save",
+    "parameters": []
+  },
+  "document.title": {
+    "zh-CN": "文档标题",
+    "en": "Document Title",
+    "purpose": "Mac 原生界面：document.title",
+    "parameters": []
+  },
+  "document.kind": {
+    "zh-CN": "文档类型",
+    "en": "Document Type",
+    "purpose": "Mac 原生界面：document.kind",
+    "parameters": []
+  },
+  "document.select": {
+    "zh-CN": "选择文档开始创作",
+    "en": "Select a Document to Write",
+    "purpose": "Mac 原生界面：document.select",
+    "parameters": []
+  },
+  "document.modified": {
+    "zh-CN": "尚未保存修订",
+    "en": "Unsaved Changes",
+    "purpose": "Mac 原生界面：document.modified",
+    "parameters": []
+  },
+  "document.saved": {
+    "zh-CN": "修订已保存",
+    "en": "Revision Saved",
+    "purpose": "Mac 原生界面：document.saved",
+    "parameters": []
+  },
+  "document.pending": {
+    "zh-CN": "待确认原保存结果",
+    "en": "Save Result Pending",
+    "purpose": "Mac 原生界面：document.pending",
+    "parameters": []
+  },
+  "document.revision_note": {
+    "zh-CN": "保存会保留当前版本；定稿需要单独确认。",
+    "en": "Saving creates a text revision. Final approval is a separate review decision.",
+    "purpose": "Mac 原生界面：document.revision_note",
+    "parameters": []
+  },
+  "document.language": {
+    "zh-CN": "内容语言",
+    "en": "Content Language",
+    "purpose": "Mac 原生界面：document.language",
+    "parameters": []
+  },
+  "editor.body": {
+    "zh-CN": "正文编辑器",
+    "en": "Manuscript Editor",
+    "purpose": "Mac 原生界面：editor.body",
+    "parameters": []
+  },
+  "inspector.title": {
+    "zh-CN": "文档信息",
+    "en": "Document Info",
+    "purpose": "Mac 原生界面：inspector.title",
+    "parameters": []
+  },
+  "statistics.count": {
+    "zh-CN": "汉字 {han} · 英文词 {words} · 总字符 {characters}",
+    "en": "{han} Han characters · {words} English words · {characters} total characters",
+    "purpose": "Mac 原生界面：statistics.count",
+    "parameters": [
+      "han",
+      "words",
+      "characters"
+    ]
+  },
+  "statistics.rule": {
+    "zh-CN": "汉字与英文词分别统计；总字符包括标点和空白，按完整 Unicode 字符计数。",
+    "en": "Han characters and English words are counted separately. Total characters include punctuation and spaces, counted as Unicode grapheme clusters.",
+    "purpose": "Mac 原生界面：statistics.rule",
+    "parameters": []
+  },
+  "draft.title": {
+    "zh-CN": "待审参考稿",
+    "en": "Submitted Drafts",
+    "purpose": "Mac 原生界面：draft.title",
+    "parameters": []
+  },
+  "draft.empty": {
+    "zh-CN": "还没有提交参考稿",
+    "en": "No submitted drafts",
+    "purpose": "Mac 原生界面：draft.empty",
+    "parameters": []
+  },
+  "draft.untitled": {
+    "zh-CN": "未命名参考稿",
+    "en": "Untitled Draft",
+    "purpose": "Mac 原生界面：draft.untitled",
+    "parameters": []
+  },
+  "draft.submitted": {
+    "zh-CN": "已提交 · 等待作者审核",
+    "en": "Submitted · Awaiting Author Review",
+    "purpose": "Mac 原生界面：draft.submitted",
+    "parameters": []
+  },
+  "draft.readonly": {
+    "zh-CN": "此处预览 Agent 提交的原始内容，不会覆盖正式正文。",
+    "en": "Preview the original submitted content. Manuscript revisions remain separate.",
+    "purpose": "Mac 原生界面：draft.readonly",
+    "parameters": []
+  },
+  "unsaved.title": {
+    "zh-CN": "保存“{title}”的修改？",
+    "en": "Save changes to “{title}”?",
+    "purpose": "Mac 原生界面：unsaved.title",
+    "parameters": [
+      "title"
+    ]
+  },
+  "unsaved.detail": {
+    "zh-CN": "可以保存正文修订，或仅保留本机恢复副本。选择取消可继续编辑。",
+    "en": "Save a manuscript revision or keep a local recovery copy. Cancel to continue editing.",
+    "purpose": "Mac 原生界面：unsaved.detail",
+    "parameters": []
+  },
+  "unsaved.keep": {
+    "zh-CN": "保留恢复副本",
+    "en": "Keep Recovery Copy",
+    "purpose": "Mac 原生界面：unsaved.keep",
+    "parameters": []
+  },
+  "recovery.available": {
+    "zh-CN": "发现本机恢复副本",
+    "en": "Local recovery copies found",
+    "purpose": "Mac 原生界面：recovery.available",
+    "parameters": []
+  },
+  "recovery.compare": {
+    "zh-CN": "查看恢复内容",
+    "en": "View Recovery Copies",
+    "purpose": "Mac 原生界面：recovery.compare",
+    "parameters": []
+  },
+  "recovery.title": {
+    "zh-CN": "恢复未保存内容",
+    "en": "Recover Unsaved Changes",
+    "purpose": "Mac 原生界面：recovery.title",
+    "parameters": []
+  },
+  "recovery.detail": {
+    "zh-CN": "请选择要恢复的副本。恢复保留原版本基线；磁盘正文有变动时，保存前会提示冲突。",
+    "en": "Choose a recovery copy. Its original revision is retained; changes on disk will require conflict review before saving.",
+    "purpose": "Mac 原生界面：recovery.detail",
+    "parameters": []
+  },
+  "recovery.restore": {
+    "zh-CN": "恢复到编辑器",
+    "en": "Restore to Editor",
+    "purpose": "Mac 原生界面：recovery.restore",
+    "parameters": []
+  },
+  "conflict.available": {
+    "zh-CN": "正文已有其他修订，编辑内容已保留",
+    "en": "Another revision exists. Your edits are preserved.",
+    "purpose": "Mac 原生界面：conflict.available",
+    "parameters": []
+  },
+  "conflict.compare": {
+    "zh-CN": "比较版本",
+    "en": "Compare Versions",
+    "purpose": "Mac 原生界面：conflict.compare",
+    "parameters": []
+  },
+  "conflict.title": {
+    "zh-CN": "比较正文版本",
+    "en": "Compare Manuscript Revisions",
+    "purpose": "Mac 原生界面：conflict.title",
+    "parameters": []
+  },
+  "conflict.detail": {
+    "zh-CN": "比较后可将磁盘修订设为新基线，保留编辑器中的文本。再次保存会创建新修订。",
+    "en": "After comparing, use the disk revision as the new baseline while keeping your editor text. Save again to create a revision.",
+    "purpose": "Mac 原生界面：conflict.detail",
+    "parameters": []
+  },
+  "conflict.disk": {
+    "zh-CN": "磁盘上的正文",
+    "en": "Manuscript on Disk",
+    "purpose": "Mac 原生界面：conflict.disk",
+    "parameters": []
+  },
+  "conflict.editor": {
+    "zh-CN": "当前编辑内容",
+    "en": "Current Editor Text",
+    "purpose": "Mac 原生界面：conflict.editor",
+    "parameters": []
+  },
+  "conflict.use_baseline": {
+    "zh-CN": "保留编辑内容，采用新基线",
+    "en": "Keep Edits and Use New Baseline",
+    "purpose": "Mac 原生界面：conflict.use_baseline",
+    "parameters": []
+  },
+  "error.title": {
+    "zh-CN": "操作未完成",
+    "en": "Action Incomplete",
+    "purpose": "Mac 原生界面：error.title",
+    "parameters": []
+  },
+  "error.generic": {
+    "zh-CN": "操作未完成，内容已保留。请检查工作区后重试。",
+    "en": "The action could not be completed. Your content is preserved. Check the workspace and try again.",
+    "purpose": "Mac 原生界面：error.generic",
+    "parameters": []
+  },
+  "error.recovery": {
+    "zh-CN": "无法保存本机恢复副本，请检查磁盘空间与权限。请勿关闭窗口。",
+    "en": "Unable to save a local recovery copy. Check disk space and permissions. Keep this window open.",
+    "purpose": "Mac 原生界面：error.recovery",
+    "parameters": []
+  },
+  "error.invalid_input": {
+    "zh-CN": "输入不符合要求，请检查名称、格式或内容长度。",
+    "en": "Check the name, format, and content length.",
+    "purpose": "Mac 原生界面：error.invalid_input",
+    "parameters": []
+  },
+  "error.forbidden": {
+    "zh-CN": "此操作需要作者权限。",
+    "en": "This action requires author access.",
+    "purpose": "Mac 原生界面：error.forbidden",
+    "parameters": []
+  },
+  "error.not_found": {
+    "zh-CN": "未找到内容，请刷新列表或重新打开作品。",
+    "en": "Content was not found. Refresh the lists or reopen the workspace.",
+    "purpose": "Mac 原生界面：error.not_found",
+    "parameters": []
+  },
+  "error.revision_conflict": {
+    "zh-CN": "正文已有新修订。请比较版本后再保存，当前编辑内容已保留。",
+    "en": "A newer manuscript revision exists. Compare versions before saving. Your edits are preserved.",
+    "purpose": "Mac 原生界面：error.revision_conflict",
+    "parameters": []
+  },
+  "error.hetu.blueprint_locked": {
+    "zh-CN": "设定集已锁定，请先由作者解锁。",
+    "en": "The Story Bible is locked. The author must unlock it first.",
+    "purpose": "Mac 原生界面：error.hetu.blueprint_locked",
+    "parameters": []
+  },
+  "error.hetu.stale_evidence": {
+    "zh-CN": "设定集已更新，请刷新后重新操作。",
+    "en": "The Story Bible has changed. Refresh and try again.",
+    "purpose": "Mac 原生界面：error.hetu.stale_evidence",
+    "parameters": []
+  },
+  "error.hetu.io_failure": {
+    "zh-CN": "文件操作未完成，请检查磁盘空间与访问权限。原保存操作会使用相同标识重试。",
+    "en": "A file operation failed. Check disk space and access permissions. Retrying the save will use its original operation key.",
+    "purpose": "Mac 原生界面：error.hetu.io_failure",
+    "parameters": []
+  },
+  "error.hetu.integrity_failure": {
+    "zh-CN": "工作区文件与记录不一致。内容已保留，请检查文件后重新打开。",
+    "en": "Workspace files do not match their records. Your edits are preserved. Check the files and reopen the workspace.",
+    "purpose": "Mac 原生界面：error.hetu.integrity_failure",
+    "parameters": []
+  },
+  "error.hetu.recovery_required": {
+    "zh-CN": "有未完成的文件事务，请检查工作区文件后重试原操作。",
+    "en": "A file transaction requires recovery. Check workspace files and retry the original operation.",
+    "purpose": "Mac 原生界面：error.hetu.recovery_required",
+    "parameters": []
+  },
+  "error.hetu.unsafe_path": {
+    "zh-CN": "无法安全访问文件，请检查权限、符号链接与硬链接。",
+    "en": "Files could not be accessed safely. Check permissions, symbolic links, and hard links.",
+    "purpose": "Mac 原生界面：error.hetu.unsafe_path",
+    "parameters": []
+  },
+  "error.hetu.workspace_busy": {
+    "zh-CN": "作品正在被另一进程写入，请稍后重试。",
+    "en": "Another process is writing to this workspace. Try again shortly.",
+    "purpose": "Mac 原生界面：error.hetu.workspace_busy",
+    "parameters": []
+  },
+  "window.new": {
+    "zh-CN": "新建窗口",
+    "en": "New Window",
+    "purpose": "Mac 原生界面：window.new",
+    "parameters": []
+  },
+  "language.chinese": {
+    "zh-CN": "简体中文",
+    "en": "Simplified Chinese",
+    "purpose": "Mac 原生界面：language.chinese",
+    "parameters": []
+  },
+  "language.english": {
+    "zh-CN": "英语",
+    "en": "English",
+    "purpose": "Mac 原生界面：language.english",
+    "parameters": []
+  },
+  "bible.history": {
+    "zh-CN": "设定修订",
+    "en": "Story Bible History",
+    "purpose": "Mac 原生界面：bible.history",
+    "parameters": []
+  },
+  "bible.history_detail": {
+    "zh-CN": "只读查看选定修订；不会将历史内容覆盖到当前设定。",
+    "en": "View a saved revision without replacing the current Story Bible.",
+    "purpose": "Mac 原生界面：bible.history_detail",
+    "parameters": []
+  },
+  "bible.revision": {
+    "zh-CN": "第 {revision} 次修订",
+    "en": "Revision {revision}",
+    "purpose": "Mac 原生界面：bible.revision",
+    "parameters": [
+      "revision"
+    ]
+  },
+  "bible.load_revision": {
+    "zh-CN": "查看修订",
+    "en": "View Revision",
+    "purpose": "Mac 原生界面：bible.load_revision",
+    "parameters": []
+  },
+  "entity.kind.character": {
+    "zh-CN": "角色",
+    "en": "Characters",
+    "purpose": "Mac 原生界面：entity.kind.character",
+    "parameters": []
+  },
+  "entity.kind.faction": {
+    "zh-CN": "势力",
+    "en": "Factions",
+    "purpose": "Mac 原生界面：entity.kind.faction",
+    "parameters": []
+  },
+  "entity.kind.location": {
+    "zh-CN": "地点",
+    "en": "Locations",
+    "purpose": "Mac 原生界面：entity.kind.location",
+    "parameters": []
+  },
+  "entity.kind.event": {
+    "zh-CN": "时间线",
+    "en": "Timeline",
+    "purpose": "Mac 原生界面：entity.kind.event",
+    "parameters": []
+  },
+  "entity.kind.world": {
+    "zh-CN": "世界观",
+    "en": "World",
+    "purpose": "Mac 原生界面：entity.kind.world",
+    "parameters": []
+  },
+  "entity.kind.rule": {
+    "zh-CN": "规则",
+    "en": "Rules",
+    "purpose": "Mac 原生界面：entity.kind.rule",
+    "parameters": []
+  },
+  "entity.add": {
+    "zh-CN": "添加设定",
+    "en": "Add Entry",
+    "purpose": "Mac 原生界面：entity.add",
+    "parameters": []
+  },
+  "entity.category": {
+    "zh-CN": "设定分类",
+    "en": "Category",
+    "purpose": "Mac 原生界面：entity.category",
+    "parameters": []
+  },
+  "entity.show_archived": {
+    "zh-CN": "显示归档项",
+    "en": "Show archived entries",
+    "purpose": "Mac 原生界面：entity.show_archived",
+    "parameters": []
+  },
+  "entity.archived": {
+    "zh-CN": "已归档",
+    "en": "Archived",
+    "purpose": "Mac 原生界面：entity.archived",
+    "parameters": []
+  },
+  "entity.archived_suffix": {
+    "zh-CN": "（已归档）",
+    "en": " (Archived)",
+    "purpose": "Mac 原生界面：entity.archived_suffix",
+    "parameters": []
+  },
+  "entity.archive": {
+    "zh-CN": "归档",
+    "en": "Archive",
+    "purpose": "Mac 原生界面：entity.archive",
+    "parameters": []
+  },
+  "entity.unarchive": {
+    "zh-CN": "取消归档",
+    "en": "Unarchive",
+    "purpose": "Mac 原生界面：entity.unarchive",
+    "parameters": []
+  },
+  "entity.unnamed": {
+    "zh-CN": "未命名设定",
+    "en": "Untitled Entry",
+    "purpose": "Mac 原生界面：entity.unnamed",
+    "parameters": []
+  },
+  "entity.unavailable": {
+    "zh-CN": "关联内容不可用",
+    "en": "Reference Unavailable",
+    "purpose": "Mac 原生界面：entity.unavailable",
+    "parameters": []
+  },
+  "entity.empty": {
+    "zh-CN": "还没有这类设定",
+    "en": "No Entries in This Category",
+    "purpose": "Mac 原生界面：entity.empty",
+    "parameters": []
+  },
+  "entity.empty_detail": {
+    "zh-CN": "添加作者确认的设定。内容保存前会检查引用与时间关系。",
+    "en": "Add author-confirmed entries. References and chronology are checked before saving.",
+    "purpose": "Mac 原生界面：entity.empty_detail",
+    "parameters": []
+  },
+  "entity.actions": {
+    "zh-CN": "设定操作",
+    "en": "Entry Actions",
+    "purpose": "Mac 原生界面：entity.actions",
+    "parameters": []
+  },
+  "entity.remove": {
+    "zh-CN": "移除设定",
+    "en": "Remove Entry",
+    "purpose": "Mac 原生界面：entity.remove",
+    "parameters": []
+  },
+  "entity.remove_title": {
+    "zh-CN": "确认移除当前设定？",
+    "en": "Remove This Entry?",
+    "purpose": "Mac 原生界面：entity.remove_title",
+    "parameters": []
+  },
+  "entity.remove_detail": {
+    "zh-CN": "将移除“{name}”的当前设定，历史修订仍保留。存在其他设定引用时会阻止移除。",
+    "en": "Remove “{name}” from the current Story Bible. Historical revisions are retained. Referenced entries cannot be removed.",
+    "purpose": "Mac 原生界面：entity.remove_detail",
+    "parameters": [
+      "name"
+    ]
+  },
+  "entity.new_title": {
+    "zh-CN": "添加设定 · {kind}",
+    "en": "Add Entry · {kind}",
+    "purpose": "Mac 原生界面：entity.new_title",
+    "parameters": [
+      "kind"
+    ]
+  },
+  "entity.edit_title": {
+    "zh-CN": "编辑设定 · {kind}",
+    "en": "Edit Entry · {kind}",
+    "purpose": "Mac 原生界面：entity.edit_title",
+    "parameters": [
+      "kind"
+    ]
+  },
+  "entity.name": {
+    "zh-CN": "名称或标题",
+    "en": "Name or Title",
+    "purpose": "Mac 原生界面：entity.name",
+    "parameters": []
+  },
+  "entity.description": {
+    "zh-CN": "说明",
+    "en": "Description",
+    "purpose": "Mac 原生界面：entity.description",
+    "parameters": []
+  },
+  "fact.title": {
+    "zh-CN": "角色特征与明确事实",
+    "en": "Traits and Explicit Facts",
+    "purpose": "Mac 原生界面：fact.title",
+    "parameters": []
+  },
+  "fact.count": {
+    "zh-CN": "{count} 条明确事实",
+    "en": "Confirmed facts: {count}",
+    "purpose": "Mac 原生界面：fact.count",
+    "parameters": [
+      "count"
+    ]
+  },
+  "fact.add": {
+    "zh-CN": "添加明确事实",
+    "en": "Add Explicit Fact",
+    "purpose": "Mac 原生界面：fact.add",
+    "parameters": []
+  },
+  "fact.remove": {
+    "zh-CN": "移除此事实",
+    "en": "Remove Fact",
+    "purpose": "Mac 原生界面：fact.remove",
+    "parameters": []
+  },
+  "fact.needs_event": {
+    "zh-CN": "先在时间线添加事件，再为可变事实指定有效期。",
+    "en": "Add timeline events before assigning validity intervals to changing facts.",
+    "purpose": "Mac 原生界面：fact.needs_event",
+    "parameters": []
+  },
+  "fact.edit": {
+    "zh-CN": "角色事实",
+    "en": "Character Fact",
+    "purpose": "Mac 原生界面：fact.edit",
+    "parameters": []
+  },
+  "fact.predicate": {
+    "zh-CN": "事实类型",
+    "en": "Fact Type",
+    "purpose": "Mac 原生界面：fact.predicate",
+    "parameters": []
+  },
+  "fact.predicate.identity": {
+    "zh-CN": "身份",
+    "en": "Identity",
+    "purpose": "Mac 原生界面：fact.predicate.identity",
+    "parameters": []
+  },
+  "fact.predicate.primary_faction": {
+    "zh-CN": "唯一归属",
+    "en": "Primary Faction",
+    "purpose": "Mac 原生界面：fact.predicate.primary_faction",
+    "parameters": []
+  },
+  "fact.predicate.life_state": {
+    "zh-CN": "生存状态",
+    "en": "Life State",
+    "purpose": "Mac 原生界面：fact.predicate.life_state",
+    "parameters": []
+  },
+  "fact.predicate.age": {
+    "zh-CN": "年龄",
+    "en": "Age",
+    "purpose": "Mac 原生界面：fact.predicate.age",
+    "parameters": []
+  },
+  "fact.value": {
+    "zh-CN": "事实内容",
+    "en": "Value",
+    "purpose": "Mac 原生界面：fact.value",
+    "parameters": []
+  },
+  "fact.age_value": {
+    "zh-CN": "年龄（非负整数）",
+    "en": "Age (nonnegative integer)",
+    "purpose": "Mac 原生界面：fact.age_value",
+    "parameters": []
+  },
+  "fact.life.alive": {
+    "zh-CN": "在世",
+    "en": "Alive",
+    "purpose": "Mac 原生界面：fact.life.alive",
+    "parameters": []
+  },
+  "fact.life.dead": {
+    "zh-CN": "已故",
+    "en": "Dead",
+    "purpose": "Mac 原生界面：fact.life.dead",
+    "parameters": []
+  },
+  "fact.valid_from": {
+    "zh-CN": "从此事件起有效",
+    "en": "Valid from Event",
+    "purpose": "Mac 原生界面：fact.valid_from",
+    "parameters": []
+  },
+  "fact.valid_to": {
+    "zh-CN": "到此事件前截止",
+    "en": "Valid until Event",
+    "purpose": "Mac 原生界面：fact.valid_to",
+    "parameters": []
+  },
+  "fact.open_end": {
+    "zh-CN": "未指定截止事件",
+    "en": "No End Event",
+    "purpose": "Mac 原生界面：fact.open_end",
+    "parameters": []
+  },
+  "fact.interval_detail": {
+    "zh-CN": "有效期包含起点，不包含截止事件。未指定截止不代表其他时段的事实已确认。",
+    "en": "Intervals include the start and exclude the end event. An open end does not establish facts outside the stated interval.",
+    "purpose": "Mac 原生界面：fact.interval_detail",
+    "parameters": []
+  },
+  "fact.summary": {
+    "zh-CN": "{predicate}：{value}",
+    "en": "{predicate}: {value}",
+    "purpose": "Mac 原生界面：fact.summary",
+    "parameters": [
+      "predicate",
+      "value"
+    ]
+  },
+  "faction.relations": {
+    "zh-CN": "势力关系",
+    "en": "Faction Relations",
+    "purpose": "Mac 原生界面：faction.relations",
+    "parameters": []
+  },
+  "faction.target": {
+    "zh-CN": "关联势力",
+    "en": "Related Faction",
+    "purpose": "Mac 原生界面：faction.target",
+    "parameters": []
+  },
+  "faction.relation_type": {
+    "zh-CN": "关系",
+    "en": "Relation",
+    "purpose": "Mac 原生界面：faction.relation_type",
+    "parameters": []
+  },
+  "faction.relation.ally": {
+    "zh-CN": "同盟",
+    "en": "Ally",
+    "purpose": "Mac 原生界面：faction.relation.ally",
+    "parameters": []
+  },
+  "faction.relation.enemy": {
+    "zh-CN": "敌对",
+    "en": "Enemy",
+    "purpose": "Mac 原生界面：faction.relation.enemy",
+    "parameters": []
+  },
+  "faction.relation.neutral": {
+    "zh-CN": "中立",
+    "en": "Neutral",
+    "purpose": "Mac 原生界面：faction.relation.neutral",
+    "parameters": []
+  },
+  "faction.relation.subordinate": {
+    "zh-CN": "隶属",
+    "en": "Subordinate To",
+    "purpose": "Mac 原生界面：faction.relation.subordinate",
+    "parameters": []
+  },
+  "faction.add_relation": {
+    "zh-CN": "添加势力关系",
+    "en": "Add Relation",
+    "purpose": "Mac 原生界面：faction.add_relation",
+    "parameters": []
+  },
+  "location.parent": {
+    "zh-CN": "所属地点",
+    "en": "Parent Location",
+    "purpose": "Mac 原生界面：location.parent",
+    "parameters": []
+  },
+  "location.interior_exterior": {
+    "zh-CN": "内外景属性",
+    "en": "Interior / Exterior",
+    "purpose": "Mac 原生界面：location.interior_exterior",
+    "parameters": []
+  },
+  "location.interior": {
+    "zh-CN": "内景",
+    "en": "Interior",
+    "purpose": "Mac 原生界面：location.interior",
+    "parameters": []
+  },
+  "location.exterior": {
+    "zh-CN": "外景",
+    "en": "Exterior",
+    "purpose": "Mac 原生界面：location.exterior",
+    "parameters": []
+  },
+  "location.mixed": {
+    "zh-CN": "内外景",
+    "en": "Mixed",
+    "purpose": "Mac 原生界面：location.mixed",
+    "parameters": []
+  },
+  "location.unknown": {
+    "zh-CN": "未知",
+    "en": "Unknown",
+    "purpose": "Mac 原生界面：location.unknown",
+    "parameters": []
+  },
+  "reference.choose": {
+    "zh-CN": "选择关联项",
+    "en": "Choose References",
+    "purpose": "Mac 原生界面：reference.choose",
+    "parameters": []
+  },
+  "reference.none": {
+    "zh-CN": "无",
+    "en": "None",
+    "purpose": "Mac 原生界面：reference.none",
+    "parameters": []
+  },
+  "reference.select": {
+    "zh-CN": "请选择",
+    "en": "Select…",
+    "purpose": "Mac 原生界面：reference.select",
+    "parameters": []
+  },
+  "reference.remove": {
+    "zh-CN": "移除此关联",
+    "en": "Remove Reference",
+    "purpose": "Mac 原生界面：reference.remove",
+    "parameters": []
+  },
+  "timeline.order": {
+    "zh-CN": "事件时序",
+    "en": "Event Order",
+    "purpose": "Mac 原生界面：timeline.order",
+    "parameters": []
+  },
+  "timeline.order_detail": {
+    "zh-CN": "时序按故事中的先后定义，不以章节顺序推断。",
+    "en": "Define the order within the story independently of chapter order.",
+    "purpose": "Mac 原生界面：timeline.order_detail",
+    "parameters": []
+  },
+  "timeline.before": {
+    "zh-CN": "早于以下事件",
+    "en": "Occurs before",
+    "purpose": "Mac 原生界面：timeline.before",
+    "parameters": []
+  },
+  "timeline.after": {
+    "zh-CN": "晚于以下事件",
+    "en": "Occurs after",
+    "purpose": "Mac 原生界面：timeline.after",
+    "parameters": []
+  },
+  "timeline.has_anchor": {
+    "zh-CN": "指定历法与时间刻度",
+    "en": "Assign a Calendar and Tick",
+    "purpose": "Mac 原生界面：timeline.has_anchor",
+    "parameters": []
+  },
+  "timeline.calendar": {
+    "zh-CN": "历法名称",
+    "en": "Calendar Name",
+    "purpose": "Mac 原生界面：timeline.calendar",
+    "parameters": []
+  },
+  "timeline.tick": {
+    "zh-CN": "时间刻度（整数）",
+    "en": "Time Tick (integer)",
+    "purpose": "Mac 原生界面：timeline.tick",
+    "parameters": []
+  },
+  "timeline.tick_detail": {
+    "zh-CN": "同一历法中的整数刻度可比较先后，相同刻度表示同时；不同历法不自动换算。",
+    "en": "Integer ticks are ordered within the same calendar. Equal ticks are simultaneous; different calendars are not automatically converted.",
+    "purpose": "Mac 原生界面：timeline.tick_detail",
+    "parameters": []
+  },
+  "timeline.anchor_summary": {
+    "zh-CN": "{calendar} · 刻度 {tick}",
+    "en": "{calendar} · Tick {tick}",
+    "purpose": "Mac 原生界面：timeline.anchor_summary",
+    "parameters": [
+      "calendar",
+      "tick"
+    ]
+  },
+  "rule.type": {
+    "zh-CN": "规则类型",
+    "en": "Rule Type",
+    "purpose": "Mac 原生界面：rule.type",
+    "parameters": []
+  },
+  "rule.type.required_reference": {
+    "zh-CN": "引用完整性",
+    "en": "Reference Integrity",
+    "purpose": "Mac 原生界面：rule.type.required_reference",
+    "parameters": []
+  },
+  "rule.type.fact_equals": {
+    "zh-CN": "明确事实一致性",
+    "en": "Explicit Fact Consistency",
+    "purpose": "Mac 原生界面：rule.type.fact_equals",
+    "parameters": []
+  },
+  "rule.type.event_precedes": {
+    "zh-CN": "事件先后约束",
+    "en": "Event Precedence",
+    "purpose": "Mac 原生界面：rule.type.event_precedes",
+    "parameters": []
+  },
+  "rule.type.forbidden_term": {
+    "zh-CN": "禁用词提示",
+    "en": "Forbidden Terms",
+    "purpose": "Mac 原生界面：rule.type.forbidden_term",
+    "parameters": []
+  },
+  "rule.type.world_constraint": {
+    "zh-CN": "世界观结构约束",
+    "en": "World Constraint",
+    "purpose": "Mac 原生界面：rule.type.world_constraint",
+    "parameters": []
+  },
+  "rule.type.advisory": {
+    "zh-CN": "创作提醒",
+    "en": "Author Advisory",
+    "purpose": "Mac 原生界面：rule.type.advisory",
+    "parameters": []
+  },
+  "rule.severity": {
+    "zh-CN": "严重级别",
+    "en": "Severity",
+    "purpose": "Mac 原生界面：rule.severity",
+    "parameters": []
+  },
+  "rule.severity.error": {
+    "zh-CN": "错误",
+    "en": "Error",
+    "purpose": "Mac 原生界面：rule.severity.error",
+    "parameters": []
+  },
+  "rule.severity.warning": {
+    "zh-CN": "警告",
+    "en": "Warning",
+    "purpose": "Mac 原生界面：rule.severity.warning",
+    "parameters": []
+  },
+  "rule.severity.info": {
+    "zh-CN": "提示",
+    "en": "Info",
+    "purpose": "Mac 原生界面：rule.severity.info",
+    "parameters": []
+  },
+  "rule.rationale": {
+    "zh-CN": "规则说明",
+    "en": "Rule Rationale",
+    "purpose": "Mac 原生界面：rule.rationale",
+    "parameters": []
+  },
+  "rule.exception": {
+    "zh-CN": "例外政策",
+    "en": "Exception Policy",
+    "purpose": "Mac 原生界面：rule.exception",
+    "parameters": []
+  },
+  "rule.exception.author_review": {
+    "zh-CN": "允许作者审阅具体例外",
+    "en": "Allow Author Review of Specific Exceptions",
+    "purpose": "Mac 原生界面：rule.exception.author_review",
+    "parameters": []
+  },
+  "rule.exception.none": {
+    "zh-CN": "不接受例外",
+    "en": "No Exceptions",
+    "purpose": "Mac 原生界面：rule.exception.none",
+    "parameters": []
+  },
+  "rule.scope": {
+    "zh-CN": "应用范围",
+    "en": "Scope",
+    "purpose": "Mac 原生界面：rule.scope",
+    "parameters": []
+  },
+  "rule.scope_detail": {
+    "zh-CN": "内容包必须至少选一个；文档或实体不选时覆盖该内容包的全部对应对象。多个筛选条件同时满足才适用。",
+    "en": "Choose at least one package. Empty document or entity selections include all corresponding objects. When set, all filters must match.",
+    "purpose": "Mac 原生界面：rule.scope_detail",
+    "parameters": []
+  },
+  "rule.documents": {
+    "zh-CN": "限定文档",
+    "en": "Documents",
+    "purpose": "Mac 原生界面：rule.documents",
+    "parameters": []
+  },
+  "rule.entities": {
+    "zh-CN": "限定实体",
+    "en": "Entities",
+    "purpose": "Mac 原生界面：rule.entities",
+    "parameters": []
+  },
+  "rule.earlier_event": {
+    "zh-CN": "先发生的事件",
+    "en": "Earlier Event",
+    "purpose": "Mac 原生界面：rule.earlier_event",
+    "parameters": []
+  },
+  "rule.later_event": {
+    "zh-CN": "后发生的事件",
+    "en": "Later Event",
+    "purpose": "Mac 原生界面：rule.later_event",
+    "parameters": []
+  },
+  "rule.terms": {
+    "zh-CN": "词条（每行一个）",
+    "en": "Terms (one per line)",
+    "purpose": "Mac 原生界面：rule.terms",
+    "parameters": []
+  },
+  "rule.term_exceptions": {
+    "zh-CN": "允许出现的完整短语（每行一个）",
+    "en": "Allowed Literal Phrases (one per line)",
+    "purpose": "Mac 原生界面：rule.term_exceptions",
+    "parameters": []
+  },
+  "rule.case_sensitive": {
+    "zh-CN": "区分大小写",
+    "en": "Case Sensitive",
+    "purpose": "Mac 原生界面：rule.case_sensitive",
+    "parameters": []
+  },
+  "rule.location": {
+    "zh-CN": "受限地点",
+    "en": "Restricted Location",
+    "purpose": "Mac 原生界面：rule.location",
+    "parameters": []
+  },
+  "rule.capability": {
+    "zh-CN": "禁止的能力标记",
+    "en": "Prohibited Capability Tag",
+    "purpose": "Mac 原生界面：rule.capability",
+    "parameters": []
+  },
+  "rule.advisory": {
+    "zh-CN": "创作提醒内容",
+    "en": "Advisory Text",
+    "purpose": "Mac 原生界面：rule.advisory",
+    "parameters": []
+  },
+  "rule.advisory_detail": {
+    "zh-CN": "提醒供作者或 Agent 参考，不会自动判定人物性格或剧情合理性。",
+    "en": "Advisories guide authors and agents without automatically judging characterization or plot plausibility.",
+    "purpose": "Mac 原生界面：rule.advisory_detail",
+    "parameters": []
+  },
+  "package.novel": {
+    "zh-CN": "小说",
+    "en": "Novel",
+    "purpose": "Mac 原生界面：package.novel",
+    "parameters": []
+  },
+  "package.drama": {
+    "zh-CN": "短剧",
+    "en": "Drama",
+    "purpose": "Mac 原生界面：package.drama",
+    "parameters": []
+  },
+  "package.music-cue": {
+    "zh-CN": "乐律线索",
+    "en": "Music Cues",
+    "purpose": "Mac 原生界面：package.music-cue",
+    "parameters": []
+  },
+  "package.visual-prompt": {
+    "zh-CN": "视觉线索",
+    "en": "Visual Cues",
+    "purpose": "Mac 原生界面：package.visual-prompt",
+    "parameters": []
+  },
+  "source.evidence": {
+    "zh-CN": "原文证据",
+    "en": "Source Evidence",
+    "purpose": "Mac 原生界面：source.evidence",
+    "parameters": []
+  },
+  "error.bible_conflict": {
+    "zh-CN": "设定集已有新修订，请刷新列表、核对变更后重新保存。",
+    "en": "The Story Bible has a newer revision. Refresh, compare the changes, and save again.",
+    "purpose": "Mac 原生界面：error.bible_conflict",
+    "parameters": []
+  },
+  "error.hetu.reference_in_use": {
+    "zh-CN": "关联对象不存在或仍被引用，请检查角色事实、势力、地点、事件与规则范围。",
+    "en": "A reference is missing or still in use. Check character facts, factions, locations, timeline events, and rule scope.",
+    "purpose": "Mac 原生界面：error.hetu.reference_in_use",
+    "parameters": []
+  },
+  "error.hetu.location_cycle": {
+    "zh-CN": "地点的父子关系形成循环，请检查所属地点。",
+    "en": "Parent locations form a cycle. Check the location hierarchy.",
+    "purpose": "Mac 原生界面：error.hetu.location_cycle",
+    "parameters": []
+  },
+  "error.hetu.timeline_cycle": {
+    "zh-CN": "事件先后、历法刻度或事实有效期互相矛盾，请检查时间关系。",
+    "en": "Event order, calendar ticks, or fact intervals contradict each other. Check the chronology.",
+    "purpose": "Mac 原生界面：error.hetu.timeline_cycle",
+    "parameters": []
+  },
+  "error.hetu.fact_conflict": {
+    "zh-CN": "同一角色在同一已知时段有互相矛盾的明确事实，请检查事实及有效期。",
+    "en": "A character has conflicting facts during a provably overlapping interval. Check the values and validity intervals.",
+    "purpose": "Mac 原生界面：error.hetu.fact_conflict",
+    "parameters": []
+  },
+  "error.hetu.duplicate_entity": {
+    "zh-CN": "设定实体或事实标识重复，请重新打开表单后保存。",
+    "en": "Duplicate entity or fact identifiers were found. Reopen the form and save again.",
+    "purpose": "Mac 原生界面：error.hetu.duplicate_entity",
+    "parameters": []
+  },
+  "error.hetu.invalid_source_ref": {
+    "zh-CN": "原文引用与固定修订不符，请检查引文和完整字符范围。",
+    "en": "Source evidence does not match its fixed revision. Check the quote and complete character boundaries.",
+    "purpose": "Mac 原生界面：error.hetu.invalid_source_ref",
+    "parameters": []
+  },
+  "error.hetu.budget_exceeded": {
+    "zh-CN": "内容或关联复杂度超过当前预算，请缩小操作范围后重试。",
+    "en": "Content size or relationship complexity exceeds the current budget. Reduce the operation scope and try again.",
+    "purpose": "Mac 原生界面：error.hetu.budget_exceeded",
+    "parameters": []
+  },
+  "entity.active": {
+    "zh-CN": "使用中",
+    "en": "Active",
+    "purpose": "设定实体未归档状态",
+    "parameters": []
+  },
+  "rule.revision": {
+    "zh-CN": "规则修订",
+    "en": "Rule Revision",
+    "purpose": "历史规则的独立修订号",
+    "parameters": []
+  },
+  "reference.filter": {
+    "zh-CN": "筛选关联项",
+    "en": "Filter References",
+    "purpose": "设定关联多选列表的名称筛选",
+    "parameters": []
+  },
+  "reference.all": {
+    "zh-CN": "全部",
+    "en": "All",
+    "purpose": "规则的文档或实体范围没有额外筛选条件",
+    "parameters": []
+  },
+  "plot.title": {
+    "zh-CN": "剧情整理",
+    "en": "Plot workbench",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.description": {
+    "zh-CN": "从已有正文提取结构候选，由作者核对原文、确认关联。",
+    "en": "Extract structural candidates from existing text, then verify evidence and references.",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.document": {
+    "zh-CN": "章节或剧本",
+    "en": "Chapter or script",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.extract": {
+    "zh-CN": "提取已保存正文",
+    "en": "Extract saved text",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.saved_source": {
+    "zh-CN": "提取使用磁盘上的正文修订和当前设定集；编辑器内容需先保存。",
+    "en": "Extraction uses the saved document revision and current story bible. Save editor changes first.",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.empty": {
+    "zh-CN": "选择正文，开始整理剧情",
+    "en": "Select a document to organize its plot",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.empty_detail": {
+    "zh-CN": "提取结果保留原文证据；人物、地点和故事时间由作者确认。",
+    "en": "Each result preserves source evidence. The author confirms characters, locations, and story time.",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.revisions": {
+    "zh-CN": "剧情修订",
+    "en": "Plot revisions",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.no_revisions": {
+    "zh-CN": "这篇正文还没有剧情修订。",
+    "en": "This document has no saved plot revisions.",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.summary": {
+    "zh-CN": "节点 {nodes} · 已确认 {confirmed}",
+    "en": "Nodes: {nodes} · Confirmed: {confirmed}",
+    "parameters": [
+      "confirmed",
+      "nodes"
+    ],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.more": {
+    "zh-CN": "加载更多",
+    "en": "Load more",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.coverage.complete": {
+    "zh-CN": "输入范围已扫描",
+    "en": "Input range scanned",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.coverage.partial": {
+    "zh-CN": "提取未完成",
+    "en": "Extraction incomplete",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.coverage_detail": {
+    "zh-CN": "已扫描 {bytes} 字节 · 设定集修订 {revision}",
+    "en": "Scanned {bytes} bytes · Story bible revision {revision}",
+    "parameters": [
+      "bytes",
+      "revision"
+    ],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.candidates_note": {
+    "zh-CN": "扫描完成不代表语义完整。词典命中是候选，空缺项保留未知；叙述先后不等于故事时序。",
+    "en": "Scanning does not establish semantic completeness. Name matches remain candidates, missing details stay unknown, and narrative order does not establish story time.",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.stale": {
+    "zh-CN": "正文或设定集已有新修订。此结果仍引用原修订，可核对后重新提取。",
+    "en": "The document or story bible has changed. This result retains its original sources; review them or extract again.",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.nodes": {
+    "zh-CN": "剧情节点",
+    "en": "Plot nodes",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.no_nodes": {
+    "zh-CN": "没有识别出结构候选，可以选取原文手动标注。",
+    "en": "No structural candidates were found. Select an excerpt to annotate it manually.",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.add_node": {
+    "zh-CN": "标注原文节点",
+    "en": "Annotate an excerpt",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.correct_node": {
+    "zh-CN": "校正剧情节点",
+    "en": "Correct plot node",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.add_edge": {
+    "zh-CN": "添加连线",
+    "en": "Add connection",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.source": {
+    "zh-CN": "核对原文",
+    "en": "View source",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.source_body": {
+    "zh-CN": "固定修订原文",
+    "en": "Source text at a fixed revision",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.locate": {
+    "zh-CN": "定位引文",
+    "en": "Locate excerpt",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.source_fixed": {
+    "zh-CN": "显示提取时的正文修订，当前编辑器内容不会被替换。",
+    "en": "This is the source revision used for extraction. The current editor buffer is preserved.",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.candidate_names": {
+    "zh-CN": "实体候选：{names}",
+    "en": "Entity candidates: {names}",
+    "parameters": [
+      "names"
+    ],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.confirmed_names": {
+    "zh-CN": "已确认实体：{names}",
+    "en": "Confirmed entities: {names}",
+    "parameters": [
+      "names"
+    ],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.unknown_names": {
+    "zh-CN": "未关联名称：{names}",
+    "en": "Unresolved names: {names}",
+    "parameters": [
+      "names"
+    ],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.missing_fields": {
+    "zh-CN": "待补充：{fields}",
+    "en": "Still needed: {fields}",
+    "parameters": [
+      "fields"
+    ],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.edges": {
+    "zh-CN": "节点连线",
+    "en": "Node connections",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.edges_note": {
+    "zh-CN": "自动连线只表达叙述顺序。因果关系需要作者明确确认。",
+    "en": "Automatic connections describe narrative order. Causal relationships require the author’s explicit confirmation.",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.remove_edge": {
+    "zh-CN": "移除连线",
+    "en": "Remove connection",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.skipped": {
+    "zh-CN": "未解析与忽略范围（{count}）",
+    "en": "Unparsed and excluded ranges ({count})",
+    "parameters": [
+      "count"
+    ],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.correction_note": {
+    "zh-CN": "校正绑定当前查看的原文与设定集修订，保存为新剧情修订，历史证据保留。",
+    "en": "Corrections use the source and story bible revisions shown here. Saving creates a new plot revision and preserves historical evidence.",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.original_document": {
+    "zh-CN": "原文修订",
+    "en": "Source revision",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.select_excerpt": {
+    "zh-CN": "在下方原文中选中一段文字作为证据，最多 16 KiB。",
+    "en": "Select an excerpt below as evidence, up to 16 KiB.",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.excerpt_too_large": {
+    "zh-CN": "选中的原文超过 16 KiB，请缩小选区。",
+    "en": "The excerpt exceeds 16 KiB. Select a smaller range.",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.classification": {
+    "zh-CN": "节点类型",
+    "en": "Node type",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.entity_refs": {
+    "zh-CN": "出场人物与势力",
+    "en": "Characters and factions",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.location": {
+    "zh-CN": "发生地点",
+    "en": "Location",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.story_time": {
+    "zh-CN": "故事时间锚点",
+    "en": "Story time anchor",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.speaker": {
+    "zh-CN": "说话人",
+    "en": "Speaker",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.speaker_note": {
+    "zh-CN": "选择说话人时会加入出场人物；保留未知也可保存。",
+    "en": "Selecting a speaker adds them to the character references. You can leave the speaker unknown.",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.time_of_day": {
+    "zh-CN": "日夜",
+    "en": "Time of day",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.verification": {
+    "zh-CN": "作者确认",
+    "en": "Author verification",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.unspecified": {
+    "zh-CN": "未知／未指定",
+    "en": "Unknown / unspecified",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.edge_evidence_note": {
+    "zh-CN": "以下引用起点节点的原文作为依据。请确认连线含义，因果关系不能成环。",
+    "en": "The source node’s excerpt is used as evidence. Confirm the relationship; causal connections cannot form a cycle.",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.edge_from": {
+    "zh-CN": "起点节点",
+    "en": "From node",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.edge_to": {
+    "zh-CN": "终点节点",
+    "en": "To node",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.edge_relation": {
+    "zh-CN": "关系",
+    "en": "Relationship",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.relation.causes": {
+    "zh-CN": "作者确认的因果",
+    "en": "Author-confirmed cause",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.relation.narrative_next": {
+    "zh-CN": "叙述先后",
+    "en": "Narrative order",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "error.hetu.plot_cycle": {
+    "zh-CN": "已确认的因果连线不能成环，请调整起点或终点。",
+    "en": "Confirmed causal connections cannot form a cycle. Choose different endpoints.",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "error.cursor_invalid": {
+    "zh-CN": "列表已经变化，请刷新后重新查询。",
+    "en": "The list has changed. Refresh and query again.",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.kind.scene": {
+    "zh-CN": "场景",
+    "en": "Scene",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.kind.action": {
+    "zh-CN": "动作",
+    "en": "Action",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.kind.dialogue": {
+    "zh-CN": "对白",
+    "en": "Dialogue",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.kind.conflict_candidate": {
+    "zh-CN": "冲突候选",
+    "en": "Conflict candidate",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.kind.foreshadow_candidate": {
+    "zh-CN": "伏笔候选",
+    "en": "Foreshadow candidate",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.time_of_day.day": {
+    "zh-CN": "日",
+    "en": "Day",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.time_of_day.night": {
+    "zh-CN": "夜",
+    "en": "Night",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.time_of_day.dawn": {
+    "zh-CN": "清晨",
+    "en": "Dawn",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.time_of_day.dusk": {
+    "zh-CN": "黄昏",
+    "en": "Dusk",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.time_of_day.unknown": {
+    "zh-CN": "未知",
+    "en": "Unknown",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.verification.needs_author_review": {
+    "zh-CN": "待核对",
+    "en": "Needs review",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.verification.confirmed": {
+    "zh-CN": "已确认",
+    "en": "Confirmed",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.verification.dismissed": {
+    "zh-CN": "已排除",
+    "en": "Dismissed",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.missing.classification_review": {
+    "zh-CN": "类型核对",
+    "en": "classification review",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.missing.entity_review": {
+    "zh-CN": "实体核对",
+    "en": "entity review",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.missing.location": {
+    "zh-CN": "地点",
+    "en": "location",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.missing.story_time": {
+    "zh-CN": "故事时间",
+    "en": "story time",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.missing.speaker": {
+    "zh-CN": "说话人",
+    "en": "speaker",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.missing.ambiguous_name": {
+    "zh-CN": "同名消歧",
+    "en": "name disambiguation",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.budget.max_bytes": {
+    "zh-CN": "达到文本字节预算，后续原文未扫描。",
+    "en": "The text byte budget was reached. Remaining text was not scanned.",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.budget.max_nodes": {
+    "zh-CN": "达到节点预算，后续候选未输出。",
+    "en": "The node budget was reached. Remaining candidates were not emitted.",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.budget.max_matches": {
+    "zh-CN": "达到词典匹配预算，后续候选未输出。",
+    "en": "The name matching budget was reached. Remaining candidates were not emitted.",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.budget.max_duration": {
+    "zh-CN": "达到处理时限，提取已停止。",
+    "en": "The processing time limit was reached. Extraction stopped.",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.budget.max_output": {
+    "zh-CN": "达到输出预算，提取已停止。",
+    "en": "The output budget was reached. Extraction stopped.",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.skip.code": {
+    "zh-CN": "代码范围",
+    "en": "Code range",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.skip.html": {
+    "zh-CN": "HTML 范围",
+    "en": "HTML range",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.skip.escaped_text": {
+    "zh-CN": "转义或实体文本",
+    "en": "Escaped or entity text",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.skip.no_structural_signal": {
+    "zh-CN": "未识别到结构线索",
+    "en": "No structural signal",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.skip.unclosed_quote": {
+    "zh-CN": "引号未闭合",
+    "en": "Unclosed quote",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.skip.segment_too_large": {
+    "zh-CN": "段落超过单条证据预算",
+    "en": "Segment exceeds evidence budget",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.skip.fountain_metadata": {
+    "zh-CN": "Fountain 元信息或注释",
+    "en": "Fountain metadata or note",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.method.markdown_heading": {
+    "zh-CN": "来源：Markdown 标题",
+    "en": "Source: Markdown heading",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.method.fountain_scene": {
+    "zh-CN": "来源：Fountain 场景标题",
+    "en": "Source: Fountain scene heading",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.method.scene_marker": {
+    "zh-CN": "来源：显式场景标记",
+    "en": "Source: explicit scene marker",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.method.quoted_dialogue": {
+    "zh-CN": "来源：成对引号",
+    "en": "Source: paired quotes",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.method.speaker_label": {
+    "zh-CN": "来源：人物冒号标记",
+    "en": "Source: speaker label",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.method.fountain_dialogue": {
+    "zh-CN": "来源：Fountain 对白块",
+    "en": "Source: Fountain dialogue block",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.method.dash_dialogue": {
+    "zh-CN": "来源：破折号对白",
+    "en": "Source: dash dialogue",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.method.action_terms": {
+    "zh-CN": "来源：受限动作词匹配",
+    "en": "Source: action term match",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.method.conflict_marker": {
+    "zh-CN": "来源：冲突标记或冲突词匹配",
+    "en": "Source: conflict marker or term match",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.method.foreshadow_marker": {
+    "zh-CN": "来源：显式伏笔标记",
+    "en": "Source: explicit foreshadow marker",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "plot.method.author_annotation": {
+    "zh-CN": "来源：作者原文标注",
+    "en": "Source: author annotation",
+    "parameters": [],
+    "purpose": "剧情整理工作台文案"
+  },
+  "common.remove": {
+    "zh-CN": "移除",
+    "en": "Remove",
+    "purpose": "Mac 原生界面：common.remove",
+    "parameters": []
+  },
+  "fact.subject": {
+    "zh-CN": "人物",
+    "en": "Character",
+    "purpose": "Mac 原生界面：fact.subject",
+    "parameters": []
+  },
+  "annotation.enabled": {
+    "zh-CN": "为这段原文添加结构标注",
+    "en": "Annotate this excerpt",
+    "purpose": "Mac 原生界面：annotation.enabled",
+    "parameters": []
+  },
+  "annotation.note": {
+    "zh-CN": "仅标注所选原文明确表达的内容。节点经作者确认、语境为实际发生且时间前提齐全时，事实与能力才参与确定性诊断。",
+    "en": "Annotate only what this excerpt explicitly states. Definite checks require an author-confirmed node, an actual-event context, and the necessary time information.",
+    "purpose": "Mac 原生界面：annotation.note",
+    "parameters": []
+  },
+  "annotation.context": {
+    "zh-CN": "陈述语境",
+    "en": "Statement context",
+    "purpose": "Mac 原生界面：annotation.context",
+    "parameters": []
+  },
+  "annotation.context.actual": {
+    "zh-CN": "实际发生／明确事实",
+    "en": "Actual event / explicit fact",
+    "purpose": "Mac 原生界面：annotation.context.actual",
+    "parameters": []
+  },
+  "annotation.context.unknown": {
+    "zh-CN": "尚未确定",
+    "en": "Unspecified",
+    "purpose": "Mac 原生界面：annotation.context.unknown",
+    "parameters": []
+  },
+  "annotation.context.dream": {
+    "zh-CN": "梦境",
+    "en": "Dream",
+    "purpose": "Mac 原生界面：annotation.context.dream",
+    "parameters": []
+  },
+  "annotation.context.hypothetical": {
+    "zh-CN": "假设／想象",
+    "en": "Hypothetical / imagined",
+    "purpose": "Mac 原生界面：annotation.context.hypothetical",
+    "parameters": []
+  },
+  "annotation.context.reported": {
+    "zh-CN": "转述／角色说法",
+    "en": "Reported / character claim",
+    "purpose": "Mac 原生界面：annotation.context.reported",
+    "parameters": []
+  },
+  "annotation.facts": {
+    "zh-CN": "本段叙述的事实",
+    "en": "Facts asserted in this excerpt",
+    "purpose": "Mac 原生界面：annotation.facts",
+    "parameters": []
+  },
+  "annotation.add_fact": {
+    "zh-CN": "添加事实",
+    "en": "Add a fact assertion",
+    "purpose": "Mac 原生界面：annotation.add_fact",
+    "parameters": []
+  },
+  "annotation.capabilities": {
+    "zh-CN": "本段实际使用的能力",
+    "en": "Capabilities used in this excerpt",
+    "purpose": "Mac 原生界面：annotation.capabilities",
+    "parameters": []
+  },
+  "annotation.capabilities_note": {
+    "zh-CN": "每行一项，与规则中的能力名称精确一致。启用标注后留空，表示作者确认本段未使用能力。",
+    "en": "One capability per line, matching the rule name exactly. An empty list with annotation enabled means the author confirms that no capability is used here.",
+    "purpose": "Mac 原生界面：annotation.capabilities_note",
+    "parameters": []
+  },
+  "plot.relation.story_before": {
+    "zh-CN": "故事时间早于（作者确认）",
+    "en": "Earlier in story time (author-confirmed)",
+    "purpose": "Mac 原生界面：plot.relation.story_before",
+    "parameters": []
+  },
+  "validation.title": {
+    "zh-CN": "一致性诊断",
+    "en": "Consistency checks",
+    "purpose": "Mac 原生界面：validation.title",
+    "parameters": []
+  },
+  "validation.description": {
+    "zh-CN": "按固定修订检查设定冲突、缺失前提和改编提示；报告保留原文证据。",
+    "en": "Check fixed revisions for conflicts, missing prerequisites, and adaptation hints. Reports preserve the source evidence.",
+    "purpose": "Mac 原生界面：validation.description",
+    "parameters": []
+  },
+  "validation.empty": {
+    "zh-CN": "选择剧情修订并执行诊断",
+    "en": "Select a plot revision to check",
+    "purpose": "Mac 原生界面：validation.empty",
+    "parameters": []
+  },
+  "validation.empty_detail": {
+    "zh-CN": "请先在剧情整理中提取节点并核对关联信息。已有报告可从左侧打开。",
+    "en": "Extract and review nodes in Plot organization first, or open an existing report from the list.",
+    "purpose": "Mac 原生界面：validation.empty_detail",
+    "parameters": []
+  },
+  "validation.plot_revision": {
+    "zh-CN": "剧情修订",
+    "en": "Plot revision",
+    "purpose": "Mac 原生界面：validation.plot_revision",
+    "parameters": []
+  },
+  "validation.run": {
+    "zh-CN": "执行诊断",
+    "en": "Run checks",
+    "purpose": "Mac 原生界面：validation.run",
+    "parameters": []
+  },
+  "validation.more_plots": {
+    "zh-CN": "载入更多剧情修订",
+    "en": "Load more plot revisions",
+    "purpose": "Mac 原生界面：validation.more_plots",
+    "parameters": []
+  },
+  "validation.needs_plot": {
+    "zh-CN": "这篇文档没有剧情修订，请先进入“剧情整理”提取。",
+    "en": "This document has no plot revisions. Extract one in Plot organization first.",
+    "purpose": "Mac 原生界面：validation.needs_plot",
+    "parameters": []
+  },
+  "validation.reports": {
+    "zh-CN": "诊断报告",
+    "en": "Reports",
+    "purpose": "Mac 原生界面：validation.reports",
+    "parameters": []
+  },
+  "validation.no_reports": {
+    "zh-CN": "当前剧情修订没有保存的报告。",
+    "en": "No saved reports for this plot revision.",
+    "purpose": "Mac 原生界面：validation.no_reports",
+    "parameters": []
+  },
+  "validation.summary": {
+    "zh-CN": "{count} 条诊断记录",
+    "en": "Findings: {count}",
+    "purpose": "Mac 原生界面：validation.summary",
+    "parameters": [
+      "count"
+    ]
+  },
+  "validation.status.complete": {
+    "zh-CN": "已完成所选检查",
+    "en": "Selected checks completed",
+    "purpose": "Mac 原生界面：validation.status.complete",
+    "parameters": []
+  },
+  "validation.status.partial": {
+    "zh-CN": "部分检查完成",
+    "en": "Checks partially completed",
+    "purpose": "Mac 原生界面：validation.status.partial",
+    "parameters": []
+  },
+  "validation.coverage": {
+    "zh-CN": "已扫描 {bytes} 字节 · 设定集修订 {revision} · 规则集 {version}",
+    "en": "Scanned {bytes} bytes · Story bible revision {revision} · Rule set {version}",
+    "purpose": "Mac 原生界面：validation.coverage",
+    "parameters": [
+      "bytes",
+      "revision",
+      "version"
+    ]
+  },
+  "validation.counts": {
+    "zh-CN": "检查单元：通过 {passed} · 有问题／提示 {finding} · 缺少前提 {unknown} · 不适用 {not_applicable}",
+    "en": "Check units: passed {passed} · Findings {finding} · Unknown {unknown} · Not applicable {not_applicable}",
+    "purpose": "Mac 原生界面：validation.counts",
+    "parameters": [
+      "finding",
+      "not_applicable",
+      "passed",
+      "unknown"
+    ]
+  },
+  "validation.stale": {
+    "zh-CN": "输入已有变化；此报告仅代表当时的固定修订。",
+    "en": "Inputs have changed. This report describes the fixed revisions recorded at the time.",
+    "purpose": "Mac 原生界面：validation.stale",
+    "parameters": []
+  },
+  "validation.coverage_note": {
+    "zh-CN": "完成扫描不代表全文没有问题。候选未确认、结构未标注和未解析内容不能计为通过；处置记录也不会改变报告结论。",
+    "en": "A completed scan does not establish consistency of the entire text. Unconfirmed candidates, missing annotations, and unparsed text cannot count as passed. Dispositions do not alter the original findings.",
+    "purpose": "Mac 原生界面：validation.coverage_note",
+    "parameters": []
+  },
+  "validation.coverage_details": {
+    "zh-CN": "检查覆盖详情",
+    "en": "Coverage details",
+    "purpose": "Mac 原生界面：validation.coverage_details",
+    "parameters": []
+  },
+  "validation.rule_coverage": {
+    "zh-CN": "启用 {enabled} 条规则，已运行 {executed} 条。",
+    "en": "Enabled {enabled} rules; executed {executed} rules.",
+    "purpose": "Mac 原生界面：validation.rule_coverage",
+    "parameters": [
+      "enabled",
+      "executed"
+    ]
+  },
+  "validation.unparsed": {
+    "zh-CN": "格式排除范围 {count} 处；剧情提取未解析范围 {plot_count} 处。",
+    "en": "Excluded format ranges: {count}; unparsed plot ranges: {plot_count}.",
+    "purpose": "Mac 原生界面：validation.unparsed",
+    "parameters": [
+      "count",
+      "plot_count"
+    ]
+  },
+  "validation.no_findings": {
+    "zh-CN": "当前筛选条件下没有诊断记录。请结合覆盖信息判断检查结果。",
+    "en": "No findings match these filters. Refer to coverage when assessing the result.",
+    "purpose": "Mac 原生界面：validation.no_findings",
+    "parameters": []
+  },
+  "validation.severity": {
+    "zh-CN": "严重程度",
+    "en": "Severity",
+    "purpose": "Mac 原生界面：validation.severity",
+    "parameters": []
+  },
+  "validation.certainty": {
+    "zh-CN": "确定性",
+    "en": "Certainty",
+    "purpose": "Mac 原生界面：validation.certainty",
+    "parameters": []
+  },
+  "validation.rule": {
+    "zh-CN": "规则",
+    "en": "Rule",
+    "purpose": "Mac 原生界面：validation.rule",
+    "parameters": []
+  },
+  "validation.disposition": {
+    "zh-CN": "处置状态",
+    "en": "Disposition",
+    "purpose": "Mac 原生界面：validation.disposition",
+    "parameters": []
+  },
+  "validation.all": {
+    "zh-CN": "全部",
+    "en": "All",
+    "purpose": "Mac 原生界面：validation.all",
+    "parameters": []
+  },
+  "validation.review": {
+    "zh-CN": "记录处置",
+    "en": "Record disposition",
+    "purpose": "Mac 原生界面：validation.review",
+    "parameters": []
+  },
+  "validation.adaptation": {
+    "zh-CN": "影视化提示",
+    "en": "Adaptation hints",
+    "purpose": "Mac 原生界面：validation.adaptation",
+    "parameters": []
+  },
+  "validation.certainty.certain": {
+    "zh-CN": "确定命中",
+    "en": "Definite match",
+    "purpose": "Mac 原生界面：validation.certainty.certain",
+    "parameters": []
+  },
+  "validation.certainty.heuristic": {
+    "zh-CN": "启发式提示",
+    "en": "Heuristic hint",
+    "purpose": "Mac 原生界面：validation.certainty.heuristic",
+    "parameters": []
+  },
+  "validation.certainty.unknown": {
+    "zh-CN": "缺少判定前提",
+    "en": "Missing prerequisites",
+    "purpose": "Mac 原生界面：validation.certainty.unknown",
+    "parameters": []
+  },
+  "validation.certainty.advisory": {
+    "zh-CN": "作者提示",
+    "en": "Author advisory",
+    "purpose": "Mac 原生界面：validation.certainty.advisory",
+    "parameters": []
+  },
+  "validation.disposition.open": {
+    "zh-CN": "待处理",
+    "en": "Open",
+    "purpose": "Mac 原生界面：validation.disposition.open",
+    "parameters": []
+  },
+  "validation.disposition.acknowledged": {
+    "zh-CN": "已知悉",
+    "en": "Acknowledged",
+    "purpose": "Mac 原生界面：validation.disposition.acknowledged",
+    "parameters": []
+  },
+  "validation.disposition.false_positive": {
+    "zh-CN": "作者标记误报",
+    "en": "Marked as false positive",
+    "purpose": "Mac 原生界面：validation.disposition.false_positive",
+    "parameters": []
+  },
+  "validation.disposition.accepted_exception": {
+    "zh-CN": "作者接受例外",
+    "en": "Exception accepted",
+    "purpose": "Mac 原生界面：validation.disposition.accepted_exception",
+    "parameters": []
+  },
+  "validation.disposition_note": {
+    "zh-CN": "处置绑定本报告的固定证据，保留理由与历史。更新正文或设定后需要重新诊断；不能据此豁免文件完整性错误。",
+    "en": "Dispositions bind to this report’s fixed evidence and retain the reason and history. Check again after editing the source or story bible. File-integrity errors cannot be waived.",
+    "purpose": "Mac 原生界面：validation.disposition_note",
+    "parameters": []
+  },
+  "validation.reason": {
+    "zh-CN": "处置理由",
+    "en": "Reason",
+    "purpose": "Mac 原生界面：validation.reason",
+    "parameters": []
+  },
+  "validation.prerequisites": {
+    "zh-CN": "缺少判定前提，请补充核对信息",
+    "en": "Missing prerequisites: add or review annotations",
+    "purpose": "Mac 原生界面：validation.prerequisites",
+    "parameters": []
+  },
+  "validation.fact_conflict": {
+    "zh-CN": "本段事实与设定集冲突",
+    "en": "An asserted fact conflicts with the story bible",
+    "purpose": "Mac 原生界面：validation.fact_conflict",
+    "parameters": []
+  },
+  "validation.world_conflict": {
+    "zh-CN": "本段能力使用违反地点规则",
+    "en": "A capability violates the location rule",
+    "purpose": "Mac 原生界面：validation.world_conflict",
+    "parameters": []
+  },
+  "validation.advisory": {
+    "zh-CN": "作者规则提示",
+    "en": "Author advisory",
+    "purpose": "Mac 原生界面：validation.advisory",
+    "parameters": []
+  },
+  "validation.forbidden_term": {
+    "zh-CN": "命中禁用词条",
+    "en": "Forbidden term matched",
+    "purpose": "Mac 原生界面：validation.forbidden_term",
+    "parameters": []
+  },
+  "validation.event_conflict": {
+    "zh-CN": "故事先后标注与事件规则相反",
+    "en": "Annotated story order reverses the event rule",
+    "purpose": "Mac 原生界面：validation.event_conflict",
+    "parameters": []
+  },
+  "validation.mental_density": {
+    "zh-CN": "心理标记较密集，建议核对可拍摄表达",
+    "en": "Frequent mental-state markers: review how this can be filmed",
+    "purpose": "Mac 原生界面：validation.mental_density",
+    "parameters": []
+  },
+  "validation.scene_missing": {
+    "zh-CN": "未提取到场景节点，建议核对场景信息",
+    "en": "No scene node was extracted: review scene information",
+    "purpose": "Mac 原生界面：validation.scene_missing",
+    "parameters": []
+  },
+  "validation.fact_evidence": {
+    "zh-CN": "{name} · {predicate}：本段为“{asserted}”，设定为“{expected}”；时间：{time}。",
+    "en": "{name} · {predicate}: excerpt asserts “{asserted}”; story bible specifies “{expected}”. At: {time}.",
+    "purpose": "Mac 原生界面：validation.fact_evidence",
+    "parameters": [
+      "asserted",
+      "expected",
+      "name",
+      "predicate",
+      "time"
+    ]
+  },
+  "validation.world_evidence": {
+    "zh-CN": "地点“{location}”禁止使用“{capability}”，本段标注使用了该能力。",
+    "en": "“{capability}” is forbidden at “{location}”, but this excerpt is annotated as using it.",
+    "purpose": "Mac 原生界面：validation.world_evidence",
+    "parameters": [
+      "capability",
+      "location"
+    ]
+  },
+  "validation.order_evidence": {
+    "zh-CN": "作者标注“{before}”发生在“{after}”之前，与规则要求相反。",
+    "en": "The author annotated “{before}” as preceding “{after}”, reversing the required order.",
+    "purpose": "Mac 原生界面：validation.order_evidence",
+    "parameters": [
+      "after",
+      "before"
+    ]
+  },
+  "validation.term_evidence": {
+    "zh-CN": "命中词条：{term}",
+    "en": "Matched term: {term}",
+    "purpose": "Mac 原生界面：validation.term_evidence",
+    "parameters": [
+      "term"
+    ]
+  },
+  "validation.mental_evidence": {
+    "zh-CN": "可见正文共 {characters} 个非空白字符，出现 {markers} 次心理标记。",
+    "en": "The visible text contains {characters} non-whitespace characters and {markers} mental-state markers.",
+    "purpose": "Mac 原生界面：validation.mental_evidence",
+    "parameters": [
+      "characters",
+      "markers"
+    ]
+  },
+  "validation.mental_note": {
+    "zh-CN": "规则集 1 的提示阈值为至少 3 次，且每千字不少于 10 次。此阈值不是行业标准，也不评价文学质量。",
+    "en": "Rule set 1 flags at least 3 occurrences at a rate of 10 per 1,000 characters. This threshold is not an industry standard or a measure of literary quality.",
+    "purpose": "Mac 原生界面：validation.mental_note",
+    "parameters": []
+  },
+  "validation.reference_evidence": {
+    "zh-CN": "尚未关联：{types}",
+    "en": "Missing references: {types}",
+    "purpose": "Mac 原生界面：validation.reference_evidence",
+    "parameters": [
+      "types"
+    ]
+  },
+  "validation.missing.author_confirmation": {
+    "zh-CN": "节点尚未经作者确认。",
+    "en": "The node has not been confirmed by the author.",
+    "purpose": "Mac 原生界面：validation.missing.author_confirmation",
+    "parameters": []
+  },
+  "validation.missing.statement_context": {
+    "zh-CN": "请标注实际发生、梦境、假设或转述等语境。",
+    "en": "Specify whether this is actual, dreamed, hypothetical, or reported.",
+    "purpose": "Mac 原生界面：validation.missing.statement_context",
+    "parameters": []
+  },
+  "validation.missing.scope_entities": {
+    "zh-CN": "规则范围依赖尚未确认的实体关联。",
+    "en": "The rule scope depends on unconfirmed entity references.",
+    "purpose": "Mac 原生界面：validation.missing.scope_entities",
+    "parameters": []
+  },
+  "validation.missing.required_references": {
+    "zh-CN": "请补充规则要求的人物、地点或势力关联。",
+    "en": "Add the character, location, or faction references required by the rule.",
+    "purpose": "Mac 原生界面：validation.missing.required_references",
+    "parameters": []
+  },
+  "validation.missing.story_time": {
+    "zh-CN": "请关联已知故事时间事件。",
+    "en": "Associate a known story-time event.",
+    "purpose": "Mac 原生界面：validation.missing.story_time",
+    "parameters": []
+  },
+  "validation.missing.fact_assertions": {
+    "zh-CN": "请标注本段明确写出的身份、年龄等事实。",
+    "en": "Annotate explicit factual assertions in this excerpt.",
+    "purpose": "Mac 原生界面：validation.missing.fact_assertions",
+    "parameters": []
+  },
+  "validation.missing.applicable_facts": {
+    "zh-CN": "该时间没有可证明适用的设定事实。",
+    "en": "No story-bible fact is provably applicable at this time.",
+    "purpose": "Mac 原生界面：validation.missing.applicable_facts",
+    "parameters": []
+  },
+  "validation.missing.location": {
+    "zh-CN": "请关联本段发生地点。",
+    "en": "Associate the location of this excerpt.",
+    "purpose": "Mac 原生界面：validation.missing.location",
+    "parameters": []
+  },
+  "validation.missing.plot_nodes": {
+    "zh-CN": "所选范围缺少可检查的剧情节点。",
+    "en": "The selection has no plot nodes that can be checked.",
+    "purpose": "Mac 原生界面：validation.missing.plot_nodes",
+    "parameters": []
+  },
+  "validation.missing.story_order_edges": {
+    "zh-CN": "请确认故事先后连线；叙述顺序不能作为时间证据。",
+    "en": "Confirm story-order edges. Narrative order is not evidence of story time.",
+    "purpose": "Mac 原生界面：validation.missing.story_order_edges",
+    "parameters": []
+  },
+  "validation.missing.scope_text_coverage": {
+    "zh-CN": "实体范围仅覆盖已确认节点；其余正文范围尚未确认归属。",
+    "en": "Entity scope covers confirmed nodes only. The remaining text has no confirmed entity association.",
+    "purpose": "Mac 原生界面：validation.missing.scope_text_coverage",
+    "parameters": []
+  },
+  "validation.missing.source_scan": {
+    "zh-CN": "原文扫描未完成，不能判为通过。",
+    "en": "The source scan is incomplete and cannot count as passed.",
+    "purpose": "Mac 原生界面：validation.missing.source_scan",
+    "parameters": []
+  },
+  "validation.budget.max_bytes": {
+    "zh-CN": "达到扫描字节限额。",
+    "en": "The scan byte limit was reached.",
+    "purpose": "Mac 原生界面：validation.budget.max_bytes",
+    "parameters": []
+  },
+  "validation.budget.max_duration": {
+    "zh-CN": "达到诊断时间限额。",
+    "en": "The check time limit was reached.",
+    "purpose": "Mac 原生界面：validation.budget.max_duration",
+    "parameters": []
+  },
+  "validation.budget.max_evaluations": {
+    "zh-CN": "达到检查单元限额。",
+    "en": "The check-unit limit was reached.",
+    "purpose": "Mac 原生界面：validation.budget.max_evaluations",
+    "parameters": []
+  },
+  "validation.budget.max_findings": {
+    "zh-CN": "达到诊断记录限额。",
+    "en": "The finding limit was reached.",
+    "purpose": "Mac 原生界面：validation.budget.max_findings",
+    "parameters": []
+  },
+  "validation.budget.max_matches": {
+    "zh-CN": "达到词条匹配限额。",
+    "en": "The term-match limit was reached.",
+    "purpose": "Mac 原生界面：validation.budget.max_matches",
+    "parameters": []
+  },
+  "validation.budget.max_output": {
+    "zh-CN": "达到报告输出限额。",
+    "en": "The report output limit was reached.",
+    "purpose": "Mac 原生界面：validation.budget.max_output",
+    "parameters": []
+  },
+  "validation.budget.chronology_budget": {
+    "zh-CN": "时间关系检查达到限额。",
+    "en": "The chronology-check budget was reached.",
+    "purpose": "Mac 原生界面：validation.budget.chronology_budget",
+    "parameters": []
+  },
+  "validation.budget.plot_partial": {
+    "zh-CN": "输入的剧情提取本身尚未完整，请先处理其覆盖缺口。",
+    "en": "The input plot extraction is partial. Review its coverage gaps first.",
+    "purpose": "Mac 原生界面：validation.budget.plot_partial",
+    "parameters": []
+  },
+  "validation.history": {
+    "zh-CN": "处置历史",
+    "en": "Disposition history",
+    "purpose": "Mac 原生界面：validation.history",
+    "parameters": []
+  },
+  "validation.history_author": {
+    "zh-CN": "审核人：作者",
+    "en": "Reviewer: author",
+    "purpose": "Mac 原生界面：validation.history_author",
+    "parameters": []
+  },
+  "drama.description": {
+    "zh-CN": "从固定剧情修订整理分集与分场，由作者补齐结构、审核改编。",
+    "en": "Organize fixed plot revisions into episodes and scenes, then review the adaptation.",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.empty": {
+    "zh-CN": "选择或新建短剧骨架",
+    "en": "Choose or build a structure",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.empty_detail": {
+    "zh-CN": "先在剧情整理中提取节点，再选择修订建立独立的结构候选。",
+    "en": "Extract plot nodes first, then select a revision to build a separate structure.",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.build": {
+    "zh-CN": "建立骨架候选",
+    "en": "Build structure",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.build_note": {
+    "zh-CN": "每次建立独立候选，保留既有人工结构和剧本。自动分场不添加台词、镜头或新剧情。",
+    "en": "Each build creates a separate candidate and preserves existing structures and scripts. It adds no dialogue, shots or plot.",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.anchors_note": {
+    "zh-CN": "勾选需要另起一集的节点。默认从首节点开始，按原著顺序保留锚点；片长与节奏由作者判断。",
+    "en": "Select nodes that start a new episode. The first node starts an episode by default. Anchors follow source order; timing and pacing require author review.",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.history": {
+    "zh-CN": "骨架修订",
+    "en": "Structure revisions",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.no_history": {
+    "zh-CN": "还没有保存的骨架。",
+    "en": "No saved structures.",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.revision": {
+    "zh-CN": "修订 {revision}",
+    "en": "Revision {revision}",
+    "parameters": [
+      "revision"
+    ],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.summary": {
+    "zh-CN": "{episodes} 集 · {scenes} 场",
+    "en": "{episodes} episodes · {scenes} scenes",
+    "parameters": [
+      "episodes",
+      "scenes"
+    ],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.source_note": {
+    "zh-CN": "固定设定集修订 {revision}，来源引用保留原著修订。",
+    "en": "Story bible revision {revision}; evidence retains the fixed source revisions.",
+    "parameters": [
+      "revision"
+    ],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.stale": {
+    "zh-CN": "输入已有更新。当前骨架保留历史证据，重新建立候选后由作者比较。",
+    "en": "Inputs have changed. This structure retains historical evidence; review a new candidate before replacing it.",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.add_episode": {
+    "zh-CN": "新增分集",
+    "en": "Add episode",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.add_scene": {
+    "zh-CN": "新增空场",
+    "en": "Add empty scene",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.episode": {
+    "zh-CN": "第 {number} 集",
+    "en": "Episode {number}",
+    "parameters": [
+      "number"
+    ],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.scene": {
+    "zh-CN": "{episode}-{scene} 场",
+    "en": "Scene {episode}-{scene}",
+    "parameters": [
+      "episode",
+      "scene"
+    ],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.scene_label": {
+    "zh-CN": "第 {number} 场",
+    "en": "Scene {number}",
+    "parameters": [
+      "number"
+    ],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.move_up": {
+    "zh-CN": "上移",
+    "en": "Move up",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.move_down": {
+    "zh-CN": "下移",
+    "en": "Move down",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.sources": {
+    "zh-CN": "原著证据（{count} 处）",
+    "en": "Source evidence ({count})",
+    "parameters": [
+      "count"
+    ],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.no_generated_text": {
+    "zh-CN": "台词与镜头描述留空，正文在独立剧本中编写。",
+    "en": "Dialogue and shot descriptions are empty. Write the script as a separate document.",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.compare": {
+    "zh-CN": "对比原著",
+    "en": "Compare sources",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.comparisons": {
+    "zh-CN": "原著差异报告",
+    "en": "Source comparison reports",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.comparison_note": {
+    "zh-CN": "比较节点映射、结构改动与所选原著修订；不判断对白语义，也不自动迁移改写后的来源。",
+    "en": "Compares node mappings, structural changes and selected source revisions. It does not assess dialogue meaning or remap rewritten sources.",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.comparison_stale": {
+    "zh-CN": "报告输入已有更新，请保留旧证据并重新对比。",
+    "en": "Report inputs have changed. Keep the old evidence and run a new comparison.",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.comparison_count": {
+    "zh-CN": "{count} 项结构差异",
+    "en": "{count} structural differences",
+    "parameters": [
+      "count"
+    ],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.comparison_limit": {
+    "zh-CN": "界面展示前 200 项，完整报告保存在工作区的短剧差异目录。",
+    "en": "Showing the first 200 items. The full report is saved in the workspace drama comparisons folder.",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.retry": {
+    "zh-CN": "查询／重试原操作",
+    "en": "Resume original operation",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.edit_scene": {
+    "zh-CN": "编辑场次结构",
+    "en": "Edit scene structure",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.edit_episode": {
+    "zh-CN": "编辑分集",
+    "en": "Edit episode",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.adaptation_note": {
+    "zh-CN": "改编说明",
+    "en": "Adaptation note",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.target_episode": {
+    "zh-CN": "所属分集",
+    "en": "Target episode",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.target_position": {
+    "zh-CN": "移动至第 {number} 位",
+    "en": "Move to position {number}",
+    "parameters": [
+      "number"
+    ],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.split_at": {
+    "zh-CN": "从此处拆分",
+    "en": "Split before",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.split_scene": {
+    "zh-CN": "拆为两场",
+    "en": "Split scene",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.split_episode": {
+    "zh-CN": "拆为两集",
+    "en": "Split episode",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.merge_next": {
+    "zh-CN": "与下一场合并",
+    "en": "Merge next scene",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.merge_next_episode": {
+    "zh-CN": "与下一集合并",
+    "en": "Merge next episode",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.omit_scene": {
+    "zh-CN": "移出骨架",
+    "en": "Omit scene",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.structure_note": {
+    "zh-CN": "拆分、合并或移出操作直接保存当前结构的新修订；上方尚未保存的表单修改不随操作提交。",
+    "en": "Split, merge and omit save a new revision of the current structure. Unsaved form edits above are excluded from those operations.",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.mapping": {
+    "zh-CN": "剧情来源与顺序",
+    "en": "Plot mapping and order",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.mapping_note": {
+    "zh-CN": "每个节点最多关联一场。取消关联保留原著，差异报告会列为删减；未分配的节点可以重新关联。",
+    "en": "Each node maps to at most one scene. Removing a mapping preserves the source and appears as an omission. Unassigned nodes can be mapped again.",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.unmapped_note": {
+    "zh-CN": "原文范围尚未形成结构节点，需回到剧情整理补标；它不表示原著被删除。",
+    "en": "This source range has no structural nodes. Annotate it in Plot; it does not mean the source was deleted.",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.field.title": {
+    "zh-CN": "标题",
+    "en": "Title",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.field.location_ref": {
+    "zh-CN": "地点",
+    "en": "Location",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.field.interior_exterior": {
+    "zh-CN": "内外景",
+    "en": "Interior / exterior",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.field.time_of_day": {
+    "zh-CN": "日夜",
+    "en": "Time of day",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.field.character_refs": {
+    "zh-CN": "出场人物",
+    "en": "Characters",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.missing.location": {
+    "zh-CN": "地点待补充",
+    "en": "Location needed",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.missing.interior_exterior": {
+    "zh-CN": "内外景待补充",
+    "en": "Interior / exterior needed",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.missing.time_of_day": {
+    "zh-CN": "日夜待补充",
+    "en": "Time of day needed",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.missing.characters": {
+    "zh-CN": "人物待补充",
+    "en": "Characters needed",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.missing.source_mapping": {
+    "zh-CN": "原著映射待补充",
+    "en": "Source mapping needed",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.missing.author_review": {
+    "zh-CN": "剧情候选待核对",
+    "en": "Plot candidates need review",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.diff.added": {
+    "zh-CN": "新增无来源场次",
+    "en": "Added scene without a source",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.diff.omitted": {
+    "zh-CN": "原著节点未纳入骨架",
+    "en": "Source node omitted",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.diff.reordered": {
+    "zh-CN": "原著节点顺序变化",
+    "en": "Source nodes reordered",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.diff.modified": {
+    "zh-CN": "结构关联与原著标注不同",
+    "en": "Structural associations changed",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.diff.unmapped": {
+    "zh-CN": "原文尚未映射",
+    "en": "Unmapped source range",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.diff.stale_source": {
+    "zh-CN": "原著修订已变化",
+    "en": "Source revision changed",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "drama.pending_note": {
+    "zh-CN": "有尚未确认结果的结构操作，请先使用原请求恢复。",
+    "en": "Some structure operations have unconfirmed results. Resume their original requests first.",
+    "parameters": [],
+    "purpose": "持久结构操作恢复"
+  },
+  "drama.resume_pending": {
+    "zh-CN": "恢复第 {number} 项结构操作",
+    "en": "Resume structure operation {number}",
+    "parameters": [
+      "number"
+    ],
+    "purpose": "持久结构操作恢复"
+  },
+  "drama.workbench_title": {
+    "zh-CN": "短剧骨架",
+    "en": "Drama structure",
+    "parameters": [],
+    "purpose": "短剧结构工作台"
+  },
+  "script.create": {
+    "zh-CN": "建立可编辑剧本…",
+    "en": "Create editable script…",
+    "purpose": "Mac 剧本结构来源：script.create",
+    "parameters": []
+  },
+  "script.create_note": {
+    "zh-CN": "从所选骨架建立独立 Fountain 文档，仅包含集号和场景标题。台词、动作、镜头、批注和来源原文均不写入。",
+    "en": "Create a separate Fountain document with episode sections and scene headings. Dialogue, action, shots, notes and source excerpts are left out.",
+    "purpose": "Mac 剧本结构来源：script.create_note",
+    "parameters": []
+  },
+  "script.old_structure": {
+    "zh-CN": "当前查看的是历史或过期结构。新剧本将固定使用这份修订，请确认选择。",
+    "en": "This structure is historical or stale. The new script will use this exact revision.",
+    "purpose": "Mac 剧本结构来源：script.old_structure",
+    "parameters": []
+  },
+  "script.mapping": {
+    "zh-CN": "结构来源",
+    "en": "Structure sources",
+    "purpose": "Mac 剧本结构来源：script.mapping",
+    "parameters": []
+  },
+  "script.mapping_note": {
+    "zh-CN": "映射绑定建立剧本时的固定修订。可查看初稿场景标题及原著证据；修改正文不会自动迁移这些范围。",
+    "en": "Mappings refer to the initial script revision. View its scene headings and original evidence. Editing the script does not move these ranges.",
+    "purpose": "Mac 剧本结构来源：script.mapping_note",
+    "parameters": []
+  },
+  "script.mapping_stale": {
+    "zh-CN": "正文、骨架或来源已有变化；此处仅展示固定初稿的历史映射。",
+    "en": "The script, structure or sources have changed. These mappings show the fixed initial revision.",
+    "purpose": "Mac 剧本结构来源：script.mapping_stale",
+    "parameters": []
+  },
+  "script.initial_heading": {
+    "zh-CN": "查看初稿场景标题",
+    "en": "View initial scene heading",
+    "purpose": "Mac 剧本结构来源：script.initial_heading",
+    "parameters": []
+  },
+  "error.hetu.format_unrepresentable": {
+    "zh-CN": "标题或地点含有不能直接表示为 Fountain 结构的空白或控制标记，请修改对应字段。",
+    "en": "A title or location contains whitespace or control markers that cannot be represented directly in Fountain. Edit the relevant field.",
+    "purpose": "Mac 剧本结构来源：error.hetu.format_unrepresentable",
+    "parameters": []
+  },
+  "script.source_fixed": {
+    "zh-CN": "这是建立剧本时的固定初稿，当前编辑缓冲保持不变。",
+    "en": "This is the fixed initial script revision. The current editor buffer is preserved.",
+    "purpose": "剧本初稿固定标题定位说明",
+    "parameters": []
+  },
+  "review.title": {
+    "zh-CN": "审核工作台",
+    "en": "Review workbench",
+    "purpose": "Mac 审核工作台：review.title",
+    "parameters": []
+  },
+  "review.pending": {
+    "zh-CN": "有操作结果尚未确认，请先恢复原操作。",
+    "en": "An operation has an unconfirmed result. Resume it before making new changes.",
+    "purpose": "Mac 审核工作台：review.pending",
+    "parameters": []
+  },
+  "review.state": {
+    "zh-CN": "审核状态",
+    "en": "Review state",
+    "purpose": "Mac 审核工作台：review.state",
+    "parameters": []
+  },
+  "review.all": {
+    "zh-CN": "全部状态",
+    "en": "All states",
+    "purpose": "Mac 审核工作台：review.all",
+    "parameters": []
+  },
+  "review.select": {
+    "zh-CN": "选择待审参考稿",
+    "en": "Select a reference draft",
+    "purpose": "Mac 原生界面：review.select",
+    "parameters": []
+  },
+  "review.provenance": {
+    "zh-CN": "提交来源：{source} · {date} · 状态修订 {revision}",
+    "en": "Submitted by {source} · {date} · State revision {revision}",
+    "purpose": "Mac 审核工作台：review.provenance",
+    "parameters": [
+      "date",
+      "revision",
+      "source"
+    ]
+  },
+  "review.agent": {
+    "zh-CN": "外部 AI 工具",
+    "en": "External AI tool",
+    "purpose": "Mac 原生界面：review.agent",
+    "parameters": []
+  },
+  "review.author": {
+    "zh-CN": "本机作者",
+    "en": "Local author",
+    "purpose": "Mac 审核工作台：review.author",
+    "parameters": []
+  },
+  "review.stale": {
+    "zh-CN": "关联来源或当前正文已有变化。请核对固定证据，批准新稿前需重新提交。",
+    "en": "Related sources or the working text have changed. Review the fixed evidence and submit an updated draft before a new approval.",
+    "purpose": "Mac 审核工作台：review.stale",
+    "parameters": []
+  },
+  "review.begin": {
+    "zh-CN": "开始审核",
+    "en": "Begin review",
+    "purpose": "Mac 审核工作台：review.begin",
+    "parameters": []
+  },
+  "review.validate": {
+    "zh-CN": "检查参考稿",
+    "en": "Check reference draft",
+    "purpose": "Mac 原生界面：review.validate",
+    "parameters": []
+  },
+  "review.compare": {
+    "zh-CN": "对照定稿与基线",
+    "en": "Compare with approved text or baseline",
+    "purpose": "Mac 审核工作台：review.compare",
+    "parameters": []
+  },
+  "review.rewrite": {
+    "zh-CN": "手工返工",
+    "en": "Revise draft manually",
+    "purpose": "Mac 审核工作台：review.rewrite",
+    "parameters": []
+  },
+  "review.open_document": {
+    "zh-CN": "打开写作稿",
+    "en": "Open working draft",
+    "purpose": "Mac 原生界面：review.open_document",
+    "parameters": []
+  },
+  "review.content": {
+    "zh-CN": "参考稿正文",
+    "en": "Reference text",
+    "purpose": "Mac 原生界面：review.content",
+    "parameters": []
+  },
+  "review.report_note": {
+    "zh-CN": "诊断只覆盖报告列出的检查。未确认事实、语境或部分扫描需要作者人工核对。",
+    "en": "Diagnostics cover only the listed checks. Unconfirmed facts, context and partial scans require author review.",
+    "purpose": "Mac 审核工作台：review.report_note",
+    "parameters": []
+  },
+  "review.report": {
+    "zh-CN": "审核参考报告",
+    "en": "Review evidence",
+    "purpose": "Mac 原生界面：review.report",
+    "parameters": []
+  },
+  "review.old_report": {
+    "zh-CN": "报告已过期",
+    "en": "Stale report",
+    "purpose": "Mac 审核工作台：review.old_report",
+    "parameters": []
+  },
+  "review.view_report": {
+    "zh-CN": "查看检查提示与处理记录",
+    "en": "View findings and decisions",
+    "purpose": "Mac 原生界面：review.view_report",
+    "parameters": []
+  },
+  "review.history": {
+    "zh-CN": "审核决定历史",
+    "en": "Review decisions",
+    "purpose": "Mac 审核工作台：review.history",
+    "parameters": []
+  },
+  "review.private": {
+    "zh-CN": "作者私密批注（不向 Agent 展示）",
+    "en": "Private author notes (hidden from agents)",
+    "purpose": "Mac 审核工作台：review.private",
+    "parameters": []
+  },
+  "review.coverage": {
+    "zh-CN": "人工核对说明（覆盖不足或尚不能判断的部分）",
+    "en": "Manual review note for incomplete coverage or unknowns",
+    "purpose": "Mac 原生界面：review.coverage",
+    "parameters": []
+  },
+  "review.comments": {
+    "zh-CN": "审核说明与修改意见（AI 工具可读取）",
+    "en": "Review notes and feedback (visible to AI tools)",
+    "purpose": "Mac 原生界面：review.comments",
+    "parameters": []
+  },
+  "review.decision_note": {
+    "zh-CN": "通过只记录参考稿审核结果。采纳到写作稿、确认定稿须分别操作；撤回审核不会改动正文或已有定稿。",
+    "en": "Approval records a reference-draft review only. Adoption and finalization are separate actions. Withdrawing a review changes neither the manuscript nor its finalization.",
+    "purpose": "Mac 原生界面：review.decision_note",
+    "parameters": []
+  },
+  "review.unknown_count": {
+    "zh-CN": "未能自动判定的检查：{count}",
+    "en": "Checks with unknown prerequisites: {count}",
+    "purpose": "Mac 审核工作台：review.unknown_count",
+    "parameters": [
+      "count"
+    ]
+  },
+  "review.compare_note": {
+    "zh-CN": "以现有定稿为对照；无定稿时使用提交基线。只读对照不会改写正文。",
+    "en": "Compare with the approved text, or the submission baseline when there is no approval. This read-only view does not change the manuscript.",
+    "purpose": "Mac 审核工作台：review.compare_note",
+    "parameters": []
+  },
+  "review.baseline": {
+    "zh-CN": "现有定稿／提交基线",
+    "en": "Approved text / submission baseline",
+    "purpose": "Mac 审核工作台：review.baseline",
+    "parameters": []
+  },
+  "review.submit": {
+    "zh-CN": "提交审核",
+    "en": "Submit for review",
+    "purpose": "Mac 审核工作台：review.submit",
+    "parameters": []
+  },
+  "review.submit_note": {
+    "zh-CN": "将当前已保存的正文另存为待审参考稿。原正文继续保留，提交不等于定稿。",
+    "en": "Submit the saved text revision as a separate draft. The manuscript is preserved. Submission does not approve it.",
+    "purpose": "Mac 审核工作台：review.submit_note",
+    "parameters": []
+  },
+  "review.rewrite_note": {
+    "zh-CN": "新内容会另存为返工参考稿，与原稿关联。旧稿和审核意见继续保留，提交时重新核对原稿版本。",
+    "en": "Revised text becomes a new draft linked to the original. Earlier text and feedback are preserved, and submission baselines are checked again.",
+    "purpose": "Mac 审核工作台：review.rewrite_note",
+    "parameters": []
+  },
+  "review.rewrite_content": {
+    "zh-CN": "返工稿正文",
+    "en": "Revised draft text",
+    "purpose": "Mac 审核工作台：review.rewrite_content",
+    "parameters": []
+  },
+  "error.hetu.review_evidence_required": {
+    "zh-CN": "通过审核前，请先选择这份参考稿的有效检查报告。",
+    "en": "Select a valid diagnostic report for this draft before approval.",
+    "purpose": "Mac 审核工作台：error.hetu.review_evidence_required",
+    "parameters": []
+  },
+  "error.hetu.review_coverage_required": {
+    "zh-CN": "请记录部分覆盖或未知前提的人工核对理由。",
+    "en": "Record why you accept partial coverage or unknown prerequisites.",
+    "purpose": "Mac 审核工作台：error.hetu.review_coverage_required",
+    "parameters": []
+  },
+  "error.hetu.review_conflict": {
+    "zh-CN": "仍有未获允许例外的确定性错误，请先修复或处置具体问题。",
+    "en": "Certain errors still require correction or an allowed, recorded exception.",
+    "purpose": "Mac 审核工作台：error.hetu.review_conflict",
+    "parameters": []
+  },
+  "review.state.submitted": {
+    "zh-CN": "待审",
+    "en": "Submitted",
+    "purpose": "Mac 审核工作台：review.state.submitted",
+    "parameters": []
+  },
+  "review.state.in_review": {
+    "zh-CN": "审核中",
+    "en": "In review",
+    "purpose": "Mac 审核工作台：review.state.in_review",
+    "parameters": []
+  },
+  "review.state.approved": {
+    "zh-CN": "审核通过",
+    "en": "Review approved",
+    "purpose": "Mac 原生界面：review.state.approved",
+    "parameters": []
+  },
+  "review.state.changes_requested": {
+    "zh-CN": "要求修改",
+    "en": "Changes requested",
+    "purpose": "Mac 审核工作台：review.state.changes_requested",
+    "parameters": []
+  },
+  "review.state.rejected": {
+    "zh-CN": "已驳回",
+    "en": "Rejected",
+    "purpose": "Mac 审核工作台：review.state.rejected",
+    "parameters": []
+  },
+  "review.state.superseded": {
+    "zh-CN": "已有返工稿",
+    "en": "Superseded",
+    "purpose": "Mac 审核工作台：review.state.superseded",
+    "parameters": []
+  },
+  "review.decision.approved": {
+    "zh-CN": "通过审核",
+    "en": "Approve review",
+    "purpose": "Mac 原生界面：review.decision.approved",
+    "parameters": []
+  },
+  "review.decision.changes_requested": {
+    "zh-CN": "要求返工",
+    "en": "Request changes",
+    "purpose": "Mac 审核工作台：review.decision.changes_requested",
+    "parameters": []
+  },
+  "review.decision.rejected": {
+    "zh-CN": "驳回参考稿",
+    "en": "Reject reference draft",
+    "purpose": "Mac 原生界面：review.decision.rejected",
+    "parameters": []
+  },
+  "review.decision.withdrawn": {
+    "zh-CN": "撤回审核",
+    "en": "Withdraw review",
+    "purpose": "Mac 原生界面：review.decision.withdrawn",
+    "parameters": []
+  },
+  "review.line_changes": {
+    "zh-CN": "逐行差异",
+    "en": "Line changes",
+    "purpose": "审核差异对照：review.line_changes",
+    "parameters": []
+  },
+  "review.side_by_side": {
+    "zh-CN": "并排核对",
+    "en": "Side by side",
+    "purpose": "审核差异对照：review.side_by_side",
+    "parameters": []
+  },
+  "review.diff_budget": {
+    "zh-CN": "文本超过逐行差异预览预算，请切换并排核对。",
+    "en": "The text exceeds the line comparison budget. Use the side-by-side view.",
+    "purpose": "审核差异对照：review.diff_budget",
+    "parameters": []
+  },
+  "review.diff_count": {
+    "zh-CN": "共 {count} 处增删行",
+    "en": "{count} inserted or removed lines",
+    "purpose": "审核差异对照：review.diff_count",
+    "parameters": [
+      "count"
+    ]
+  },
+  "review.added_line": {
+    "zh-CN": "新增第 {line} 行",
+    "en": "Added line {line}",
+    "purpose": "审核差异对照：review.added_line",
+    "parameters": [
+      "line"
+    ]
+  },
+  "review.removed_line": {
+    "zh-CN": "移除第 {line} 行",
+    "en": "Removed line {line}",
+    "purpose": "审核差异对照：review.removed_line",
+    "parameters": [
+      "line"
+    ]
+  },
+  "review.diff_limit": {
+    "zh-CN": "显示前 400 处变化，完整正文可在并排核对中阅读。",
+    "en": "Showing the first 400 changes. Read the full text in the side-by-side view.",
+    "purpose": "审核差异对照：review.diff_limit",
+    "parameters": []
+  },
+  "review.plot_annotations": {
+    "zh-CN": "核对剧情标注",
+    "en": "Review plot annotations",
+    "purpose": "Mac 审核工作台：review.plot_annotations",
+    "parameters": []
+  },
+  "review.fixed_draft": {
+    "zh-CN": "正在核对这份参考稿的原文版本，标注不会改写正文。",
+    "en": "Reviewing the fixed draft. Annotations do not change its text.",
+    "purpose": "Mac 审核工作台：review.fixed_draft",
+    "parameters": []
+  },
+  "review.validate_annotations": {
+    "zh-CN": "检查当前标注",
+    "en": "Validate these annotations",
+    "purpose": "Mac 审核工作台：review.validate_annotations",
+    "parameters": []
+  },
+  "review.annotations_validated": {
+    "zh-CN": "新诊断已保存。关闭窗口后可在审核工作台选择新报告。",
+    "en": "A new report is saved. Close this window to select it in the review workbench.",
+    "purpose": "Mac 审核工作台：review.annotations_validated",
+    "parameters": []
+  },
+  "review.reload_context": {
+    "zh-CN": "重新读取审核基线",
+    "en": "Reload review context",
+    "purpose": "Mac 审核工作台：review.reload_context",
+    "parameters": []
+  },
+  "review.skeleton_revision": {
+    "zh-CN": "短剧骨架：修订 {revision}",
+    "en": "Drama outline: revision {revision}",
+    "purpose": "Mac 审核工作台：review.skeleton_revision",
+    "parameters": [
+      "revision"
+    ]
+  },
+  "git.title": {
+    "zh-CN": "版本管理",
+    "en": "Version history",
+    "purpose": "Mac 版本管理：title",
+    "parameters": []
+  },
+  "git.init_note": {
+    "zh-CN": "为当前作品建立独立的本地 Git 仓库。首次快照需要单独审阅和提交。",
+    "en": "Create a separate local Git repository for this workspace. Review and commit the first snapshot separately.",
+    "purpose": "Mac 版本管理：init_note",
+    "parameters": []
+  },
+  "git.branch": {
+    "zh-CN": "初始分支",
+    "en": "Initial branch",
+    "purpose": "Mac 版本管理：branch",
+    "parameters": []
+  },
+  "git.init": {
+    "zh-CN": "启用版本管理",
+    "en": "Enable version history",
+    "purpose": "Mac 版本管理：init",
+    "parameters": []
+  },
+  "git.init_confirm": {
+    "zh-CN": "为当前作品启用版本管理？",
+    "en": "Enable version history for this workspace?",
+    "purpose": "Mac 版本管理：init_confirm",
+    "parameters": []
+  },
+  "git.detached": {
+    "zh-CN": "未选择本地分支",
+    "en": "Detached HEAD",
+    "purpose": "Mac 版本管理：detached",
+    "parameters": []
+  },
+  "git.first_commit": {
+    "zh-CN": "首次提交，无父版本",
+    "en": "First commit, with no parent",
+    "purpose": "Mac 版本管理：first_commit",
+    "parameters": []
+  },
+  "git.index_note": {
+    "zh-CN": "快照比较已保存文件与上一版本；原有 Git 暂存区独立保留。",
+    "en": "Snapshots compare saved files with HEAD. Your existing Git staging area is preserved.",
+    "purpose": "Mac 版本管理：index_note",
+    "parameters": []
+  },
+  "git.section": {
+    "zh-CN": "版本视图",
+    "en": "Version view",
+    "purpose": "Mac 版本管理：section",
+    "parameters": []
+  },
+  "git.changes": {
+    "zh-CN": "待提交文件",
+    "en": "Changed files",
+    "purpose": "Mac 版本管理：changes",
+    "parameters": []
+  },
+  "git.previews": {
+    "zh-CN": "待审快照",
+    "en": "Snapshot previews",
+    "purpose": "Mac 版本管理：previews",
+    "parameters": []
+  },
+  "git.history": {
+    "zh-CN": "提交历史",
+    "en": "Commit history",
+    "purpose": "Mac 版本管理：history",
+    "parameters": []
+  },
+  "git.select_all": {
+    "zh-CN": "全选",
+    "en": "Select all",
+    "purpose": "Mac 版本管理：select_all",
+    "parameters": []
+  },
+  "git.select_none": {
+    "zh-CN": "取消全选",
+    "en": "Deselect all",
+    "purpose": "Mac 版本管理：select_none",
+    "parameters": []
+  },
+  "git.clean": {
+    "zh-CN": "已保存文件与当前版本一致。",
+    "en": "Saved files match the current version.",
+    "purpose": "Mac 版本管理：clean",
+    "parameters": []
+  },
+  "git.also_staged": {
+    "zh-CN": "另有暂存区变更",
+    "en": "Also changed in staging",
+    "purpose": "Mac 版本管理：also_staged",
+    "parameters": []
+  },
+  "git.diff": {
+    "zh-CN": "查看差异",
+    "en": "View differences",
+    "purpose": "Mac 版本管理：diff",
+    "parameters": []
+  },
+  "git.snapshot": {
+    "zh-CN": "新建快照",
+    "en": "New snapshot",
+    "purpose": "Mac 版本管理：snapshot",
+    "parameters": []
+  },
+  "git.author_name": {
+    "zh-CN": "提交者名称",
+    "en": "Author name",
+    "purpose": "Mac 版本管理：author_name",
+    "parameters": []
+  },
+  "git.author_email": {
+    "zh-CN": "提交者邮箱",
+    "en": "Author email",
+    "purpose": "Mac 版本管理：author_email",
+    "parameters": []
+  },
+  "git.identity_note": {
+    "zh-CN": "名称与邮箱会写入 Git 历史，并随仓库同步。",
+    "en": "Your name and email become part of Git history and travel with the repository.",
+    "purpose": "Mac 版本管理：identity_note",
+    "parameters": []
+  },
+  "git.message": {
+    "zh-CN": "本次变更说明",
+    "en": "Commit message",
+    "purpose": "Mac 版本管理：message",
+    "parameters": []
+  },
+  "git.selected_count": {
+    "zh-CN": "已选择 {count} 个文件",
+    "en": "{count} files selected",
+    "purpose": "Mac 版本管理：selected_count",
+    "parameters": [
+      "count"
+    ]
+  },
+  "git.prepare": {
+    "zh-CN": "准备快照",
+    "en": "Prepare snapshot",
+    "purpose": "Mac 版本管理：prepare",
+    "parameters": []
+  },
+  "git.prepare_note": {
+    "zh-CN": "先固定文件和提交身份，再核对范围并确认提交。",
+    "en": "Freeze the files and identity, then review the scope and confirm the commit.",
+    "purpose": "Mac 版本管理：prepare_note",
+    "parameters": []
+  },
+  "git.no_history": {
+    "zh-CN": "没有提交记录。",
+    "en": "No commits yet.",
+    "purpose": "Mac 版本管理：no_history",
+    "parameters": []
+  },
+  "git.no_previews": {
+    "zh-CN": "没有待审快照。",
+    "en": "No snapshot previews yet.",
+    "purpose": "Mac 版本管理：no_previews",
+    "parameters": []
+  },
+  "git.open_preview": {
+    "zh-CN": "打开快照",
+    "en": "Open snapshot",
+    "purpose": "Mac 版本管理：open_preview",
+    "parameters": []
+  },
+  "git.review": {
+    "zh-CN": "审阅版本快照",
+    "en": "Review snapshot",
+    "purpose": "Mac 版本管理：review",
+    "parameters": []
+  },
+  "git.committed": {
+    "zh-CN": "版本快照已提交",
+    "en": "Snapshot committed",
+    "purpose": "Mac 版本管理：committed",
+    "parameters": []
+  },
+  "git.digest": {
+    "zh-CN": "快照校验值",
+    "en": "Snapshot digest",
+    "purpose": "Mac 版本管理：digest",
+    "parameters": []
+  },
+  "git.stale": {
+    "zh-CN": "文件或目标版本已变化，请返回准备新快照。",
+    "en": "Files or the target revision changed. Prepare a new snapshot.",
+    "purpose": "Mac 版本管理：stale",
+    "parameters": []
+  },
+  "git.deleted": {
+    "zh-CN": "删除",
+    "en": "Deleted",
+    "purpose": "Mac 版本管理：deleted",
+    "parameters": []
+  },
+  "git.excluded_count": {
+    "zh-CN": "未纳入本次提交：{count} 项",
+    "en": "Excluded from this commit: {count} items",
+    "purpose": "Mac 版本管理：excluded_count",
+    "parameters": [
+      "count"
+    ]
+  },
+  "git.confirm_note": {
+    "zh-CN": "仅提交上列固定文件，不推送远端。批准有效期为 15 分钟；文件或分支变化后须重新审阅。",
+    "en": "Commit only the fixed files listed above, locally. Approval lasts 15 minutes; file or branch changes require a new review.",
+    "purpose": "Mac 版本管理：confirm_note",
+    "parameters": []
+  },
+  "git.approve_commit": {
+    "zh-CN": "确认并提交快照",
+    "en": "Confirm and commit",
+    "purpose": "Mac 版本管理：approve_commit",
+    "parameters": []
+  },
+  "git.commit_confirm": {
+    "zh-CN": "提交当前审阅的版本快照？",
+    "en": "Commit this reviewed snapshot?",
+    "purpose": "Mac 版本管理：commit_confirm",
+    "parameters": []
+  },
+  "git.before_size": {
+    "zh-CN": "上一版本：{size}",
+    "en": "HEAD: {size}",
+    "purpose": "Mac 版本管理：before_size",
+    "parameters": [
+      "size"
+    ]
+  },
+  "git.after_size": {
+    "zh-CN": "本次文件：{size}",
+    "en": "Working file: {size}",
+    "purpose": "Mac 版本管理：after_size",
+    "parameters": [
+      "size"
+    ]
+  },
+  "git.binary_note": {
+    "zh-CN": "该文件为二进制或超过文本预览上限，仅展示文件大小。",
+    "en": "This file is binary or exceeds the text preview limit. Only sizes are shown.",
+    "purpose": "Mac 版本管理：binary_note",
+    "parameters": []
+  },
+  "git.diff_budget": {
+    "zh-CN": "差异列表达到展示上限，可展开查看可用的全文。",
+    "en": "The difference summary reached its display limit. Expand the available full text.",
+    "purpose": "Mac 版本管理：diff_budget",
+    "parameters": []
+  },
+  "error.hetu.git_not_initialized": {
+    "zh-CN": "此作品尚未启用版本管理。",
+    "en": "Version history is not enabled for this workspace.",
+    "purpose": "Mac 版本管理错误：hetu.git_not_initialized",
+    "parameters": []
+  },
+  "error.hetu.git_failure": {
+    "zh-CN": "Git 操作失败，请检查仓库完整性与访问权限。",
+    "en": "Git failed. Check repository integrity and access permissions.",
+    "purpose": "Mac 版本管理错误：hetu.git_failure",
+    "parameters": []
+  },
+  "error.hetu.git_conflict": {
+    "zh-CN": "仓库存在合并或冲突状态，请先处理。",
+    "en": "Resolve the repository merge or conflict state first.",
+    "purpose": "Mac 版本管理错误：hetu.git_conflict",
+    "parameters": []
+  },
+  "error.hetu.nothing_to_commit": {
+    "zh-CN": "所选文件与当前版本一致，没有可提交变更。",
+    "en": "The selected files match HEAD; there is nothing to commit.",
+    "purpose": "Mac 版本管理错误：hetu.nothing_to_commit",
+    "parameters": []
+  },
+  "error.hetu.secret_detected": {
+    "zh-CN": "文件含已知凭据或密钥，已停止展示和提交。",
+    "en": "A known credential or key was detected. Preview and commit are blocked.",
+    "purpose": "Mac 版本管理错误：hetu.secret_detected",
+    "parameters": []
+  },
+  "error.hetu.author_confirmation_required": {
+    "zh-CN": "请由作者在本机审阅并批准当前快照。",
+    "en": "The author must review and approve this snapshot on this device.",
+    "purpose": "Mac 版本管理错误：hetu.author_confirmation_required",
+    "parameters": []
+  },
+  "error.result_unknown": {
+    "zh-CN": "结果尚未确认，请保留原操作并恢复查询。",
+    "en": "The outcome is unconfirmed. Keep and recover the original operation.",
+    "purpose": "Mac 版本管理错误：result_unknown",
+    "parameters": []
+  },
+  "git.diff_file": {
+    "zh-CN": "查看 {path} 的差异",
+    "en": "View differences for {path}",
+    "purpose": "差异按钮的辅助功能名称",
+    "parameters": [
+      "path"
+    ]
+  },
+  "media.title": {
+    "zh-CN": "线索与素材",
+    "en": "Cues & media",
+    "purpose": "Mac 原生线索与素材：media.title",
+    "parameters": []
+  },
+  "media.content": {
+    "zh-CN": "内容类别",
+    "en": "Content type",
+    "purpose": "Mac 原生线索与素材：media.content",
+    "parameters": []
+  },
+  "media.cues": {
+    "zh-CN": "创作线索",
+    "en": "Story cues",
+    "purpose": "Mac 原生线索与素材：media.cues",
+    "parameters": []
+  },
+  "media.assets": {
+    "zh-CN": "媒体素材",
+    "en": "Media assets",
+    "purpose": "Mac 原生线索与素材：media.assets",
+    "parameters": []
+  },
+  "media.kind": {
+    "zh-CN": "线索类别",
+    "en": "Cue kind",
+    "purpose": "Mac 原生线索与素材：media.kind",
+    "parameters": []
+  },
+  "media.all": {
+    "zh-CN": "全部类别",
+    "en": "All kinds",
+    "purpose": "Mac 原生线索与素材：media.all",
+    "parameters": []
+  },
+  "media.kind.music": {
+    "zh-CN": "乐律线索",
+    "en": "Music",
+    "purpose": "Mac 原生线索与素材：media.kind.music",
+    "parameters": []
+  },
+  "media.kind.visual": {
+    "zh-CN": "视觉线索",
+    "en": "Visual",
+    "purpose": "Mac 原生线索与素材：media.kind.visual",
+    "parameters": []
+  },
+  "media.import": {
+    "zh-CN": "导入素材…",
+    "en": "Import Media…",
+    "purpose": "Mac 原生线索与素材：media.import",
+    "parameters": []
+  },
+  "media.new_cue": {
+    "zh-CN": "新建线索…",
+    "en": "New Cue…",
+    "purpose": "Mac 原生线索与素材：media.new_cue",
+    "parameters": []
+  },
+  "media.include_archived": {
+    "zh-CN": "显示已归档线索",
+    "en": "Include archived cues",
+    "purpose": "Mac 原生线索与素材：media.include_archived",
+    "parameters": []
+  },
+  "media.empty": {
+    "zh-CN": "此列表没有线索或素材",
+    "en": "No cues or media in this list",
+    "purpose": "Mac 原生线索与素材：media.empty",
+    "parameters": []
+  },
+  "media.select": {
+    "zh-CN": "选择线索或素材查看详情",
+    "en": "Select a cue or asset",
+    "purpose": "Mac 原生线索与素材：media.select",
+    "parameters": []
+  },
+  "media.more": {
+    "zh-CN": "加载更多",
+    "en": "Load More",
+    "purpose": "Mac 原生线索与素材：media.more",
+    "parameters": []
+  },
+  "media.edit": {
+    "zh-CN": "编辑…",
+    "en": "Edit…",
+    "purpose": "Mac 原生线索与素材：media.edit",
+    "parameters": []
+  },
+  "media.previous": {
+    "zh-CN": "上一修订",
+    "en": "Previous Revision",
+    "purpose": "Mac 原生线索与素材：media.previous",
+    "parameters": []
+  },
+  "media.latest": {
+    "zh-CN": "返回当前修订",
+    "en": "View Current Revision",
+    "purpose": "Mac 原生线索与素材：media.latest",
+    "parameters": []
+  },
+  "media.historical": {
+    "zh-CN": "当前显示历史修订，仅供查看。",
+    "en": "Viewing a historical revision.",
+    "purpose": "Mac 原生线索与素材：media.historical",
+    "parameters": []
+  },
+  "media.rights.unknown": {
+    "zh-CN": "权利未确认",
+    "en": "Rights unconfirmed",
+    "purpose": "Mac 原生线索与素材：media.rights.unknown",
+    "parameters": []
+  },
+  "media.rights.reference_only": {
+    "zh-CN": "仅供参考",
+    "en": "Reference only",
+    "purpose": "Mac 原生线索与素材：media.rights.reference_only",
+    "parameters": []
+  },
+  "media.rights.author_owned": {
+    "zh-CN": "作者拥有",
+    "en": "Author owned",
+    "purpose": "Mac 原生线索与素材：media.rights.author_owned",
+    "parameters": []
+  },
+  "media.rights.licensed": {
+    "zh-CN": "已获得许可",
+    "en": "Licensed",
+    "purpose": "Mac 原生线索与素材：media.rights.licensed",
+    "parameters": []
+  },
+  "media.delivery_allowed": {
+    "zh-CN": "权利声明允许嵌入交付包；交付时仍需核验材料。",
+    "en": "The rights declaration permits embedding; the material must still be verified at export.",
+    "purpose": "Mac 原生线索与素材：media.delivery_allowed",
+    "parameters": []
+  },
+  "media.delivery_excluded": {
+    "zh-CN": "默认交付仅列元数据，不嵌入此素材。",
+    "en": "Default delivery includes metadata only; this asset is excluded.",
+    "purpose": "Mac 原生线索与素材：media.delivery_excluded",
+    "parameters": []
+  },
+  "media.current_rights": {
+    "zh-CN": "当前权利状态：{rights}",
+    "en": "Current rights status: {rights}",
+    "purpose": "Mac 原生线索与素材：media.current_rights",
+    "parameters": [
+      "rights"
+    ]
+  },
+  "media.original_filename": {
+    "zh-CN": "原文件名",
+    "en": "Original filename",
+    "purpose": "Mac 原生线索与素材：media.original_filename",
+    "parameters": []
+  },
+  "media.file_size": {
+    "zh-CN": "文件大小",
+    "en": "File size",
+    "purpose": "Mac 原生线索与素材：media.file_size",
+    "parameters": []
+  },
+  "media.file_type": {
+    "zh-CN": "媒体类型",
+    "en": "Media type",
+    "purpose": "Mac 原生线索与素材：media.file_type",
+    "parameters": []
+  },
+  "media.source_type": {
+    "zh-CN": "来源类别",
+    "en": "Source type",
+    "purpose": "Mac 原生线索与素材：media.source_type",
+    "parameters": []
+  },
+  "media.source_type.author_supplied": {
+    "zh-CN": "作者自行提供",
+    "en": "Supplied by the author",
+    "purpose": "Mac 原生线索与素材：media.source_type.author_supplied",
+    "parameters": []
+  },
+  "media.source_type.third_party": {
+    "zh-CN": "第三方材料",
+    "en": "Third-party material",
+    "purpose": "Mac 原生线索与素材：media.source_type.third_party",
+    "parameters": []
+  },
+  "media.source_type.external_agent": {
+    "zh-CN": "外部 Agent 提供",
+    "en": "Supplied by an external agent",
+    "purpose": "Mac 原生线索与素材：media.source_type.external_agent",
+    "parameters": []
+  },
+  "media.signature_note": {
+    "zh-CN": "已核对文件格式标识与校验值；这不代表完整解码、安全扫描或版权验证。",
+    "en": "File signature and digest checked; this is not full decoding, a security scan, or copyright verification.",
+    "purpose": "Mac 原生线索与素材：media.signature_note",
+    "parameters": []
+  },
+  "media.updated": {
+    "zh-CN": "修订时间：{date}",
+    "en": "Updated: {date}",
+    "purpose": "Mac 原生线索与素材：media.updated",
+    "parameters": [
+      "date"
+    ]
+  },
+  "media.narrative_refs": {
+    "zh-CN": "原文关联",
+    "en": "Source passages",
+    "purpose": "Mac 原生线索与素材：media.narrative_refs",
+    "parameters": []
+  },
+  "media.sources_stale": {
+    "zh-CN": "正文已有新修订；以下引文仍指向保存时的固定版本。",
+    "en": "The text has newer revisions; these quotes remain bound to their original revisions.",
+    "purpose": "Mac 原生线索与素材：media.sources_stale",
+    "parameters": []
+  },
+  "media.linked_assets": {
+    "zh-CN": "关联素材",
+    "en": "Linked assets",
+    "purpose": "Mac 原生线索与素材：media.linked_assets",
+    "parameters": []
+  },
+  "media.no_assets": {
+    "zh-CN": "没有关联素材。可先保存线索描述，再导入素材。",
+    "en": "No linked assets. You can save the description and add media later.",
+    "purpose": "Mac 原生线索与素材：media.no_assets",
+    "parameters": []
+  },
+  "media.asset_stale": {
+    "zh-CN": "素材说明或权利已变化，请核对当前修订。",
+    "en": "Asset metadata or rights have changed. Review the current revision.",
+    "purpose": "Mac 原生线索与素材：media.asset_stale",
+    "parameters": []
+  },
+  "media.archived": {
+    "zh-CN": "已归档",
+    "en": "Archived",
+    "purpose": "Mac 原生线索与素材：media.archived",
+    "parameters": []
+  },
+  "media.preview": {
+    "zh-CN": "素材预览",
+    "en": "Media preview",
+    "purpose": "Mac 原生线索与素材：media.preview",
+    "parameters": []
+  },
+  "media.preview_unavailable": {
+    "zh-CN": "此格式或大小不提供内嵌预览。原文件仍保存在作品目录中。",
+    "en": "An inline preview is unavailable for this format or size. The original file remains in the workspace.",
+    "purpose": "Mac 原生线索与素材：media.preview_unavailable",
+    "parameters": []
+  },
+  "media.edit_asset": {
+    "zh-CN": "编辑素材说明",
+    "en": "Edit Asset Metadata",
+    "purpose": "Mac 原生线索与素材：media.edit_asset",
+    "parameters": []
+  },
+  "media.choose_file": {
+    "zh-CN": "选择本地媒体文件…",
+    "en": "Choose Local Media…",
+    "purpose": "Mac 原生线索与素材：media.choose_file",
+    "parameters": []
+  },
+  "media.name": {
+    "zh-CN": "名称",
+    "en": "Name",
+    "purpose": "Mac 原生线索与素材：media.name",
+    "parameters": []
+  },
+  "media.creator_statement": {
+    "zh-CN": "创作者与来源说明",
+    "en": "Creator and provenance statement",
+    "purpose": "Mac 原生线索与素材：media.creator_statement",
+    "parameters": []
+  },
+  "media.source_uri": {
+    "zh-CN": "公开来源页面（可选）",
+    "en": "Public source page (optional)",
+    "purpose": "Mac 原生线索与素材：media.source_uri",
+    "parameters": []
+  },
+  "media.source_uri_note": {
+    "zh-CN": "只记录页面地址，不下载内容；请移除账号、密码、查询参数与片段。",
+    "en": "Records the page address without downloading it. Remove credentials, query parameters, and fragments.",
+    "purpose": "Mac 原生线索与素材：media.source_uri_note",
+    "parameters": []
+  },
+  "media.rights_status": {
+    "zh-CN": "权利状态",
+    "en": "Rights status",
+    "purpose": "Mac 原生线索与素材：media.rights_status",
+    "parameters": []
+  },
+  "media.redistribute": {
+    "zh-CN": "声明允许将文件嵌入交付包",
+    "en": "Declare permission to embed the file in delivery bundles",
+    "purpose": "Mac 原生线索与素材：media.redistribute",
+    "parameters": []
+  },
+  "media.rights_statement": {
+    "zh-CN": "权利与再分发依据",
+    "en": "Rights and redistribution basis",
+    "purpose": "Mac 原生线索与素材：media.rights_statement",
+    "parameters": []
+  },
+  "media.rights_note": {
+    "zh-CN": "权利信息由作者声明。未知或仅供参考的文件默认不嵌入交付包。",
+    "en": "Rights information is declared by the author. Unconfirmed and reference-only files are excluded from bundles by default.",
+    "purpose": "Mac 原生线索与素材：media.rights_note",
+    "parameters": []
+  },
+  "media.save": {
+    "zh-CN": "保存修订",
+    "en": "Save Revision",
+    "purpose": "Mac 原生线索与素材：media.save",
+    "parameters": []
+  },
+  "media.edit_cue": {
+    "zh-CN": "编辑创作线索",
+    "en": "Edit Story Cue",
+    "purpose": "Mac 原生线索与素材：media.edit_cue",
+    "parameters": []
+  },
+  "media.description": {
+    "zh-CN": "收藏故事的画面与声音，保留灵感的来源。",
+    "en": "Collect visual and musical references with their sources.",
+    "purpose": "Mac 原生界面：media.description",
+    "parameters": []
+  },
+  "media.add_source": {
+    "zh-CN": "关联原文选区…",
+    "en": "Link Selected Passage…",
+    "purpose": "Mac 原生线索与素材：media.add_source",
+    "parameters": []
+  },
+  "media.narrative_note": {
+    "zh-CN": "从已保存正文选择引文；此操作不改写正文。",
+    "en": "Select quotes from saved text. Linking a passage does not modify it.",
+    "purpose": "Mac 原生线索与素材：media.narrative_note",
+    "parameters": []
+  },
+  "media.remove": {
+    "zh-CN": "移除关联",
+    "en": "Remove Link",
+    "purpose": "Mac 原生线索与素材：media.remove",
+    "parameters": []
+  },
+  "media.use_current_asset": {
+    "zh-CN": "引用当前素材修订",
+    "en": "Use Current Asset Revision",
+    "purpose": "Mac 原生线索与素材：media.use_current_asset",
+    "parameters": []
+  },
+  "media.select_quote": {
+    "zh-CN": "在原文中选中要关联的段落。",
+    "en": "Select the passage to link in the text below.",
+    "purpose": "Mac 原生线索与素材：media.select_quote",
+    "parameters": []
+  },
+  "media.source_document": {
+    "zh-CN": "来源文档",
+    "en": "Source document",
+    "purpose": "Mac 原生线索与素材：media.source_document",
+    "parameters": []
+  },
+  "media.choose_document": {
+    "zh-CN": "请选择已保存的文档",
+    "en": "Choose a saved document",
+    "purpose": "Mac 原生线索与素材：media.choose_document",
+    "parameters": []
+  },
+  "media.selected_count": {
+    "zh-CN": "已选 {count} 字符",
+    "en": "{count} characters selected",
+    "purpose": "Mac 原生线索与素材：media.selected_count",
+    "parameters": [
+      "count"
+    ]
+  },
+  "error.hetu.unsupported_media": {
+    "zh-CN": "不支持此媒体签名或容器。请选择 PNG、JPEG、GIF、WebP、WAV、FLAC、MP3、Ogg 音频、M4A、MP4 或 MOV 文件。",
+    "en": "Unsupported media signature or container. Choose PNG, JPEG, GIF, WebP, WAV, FLAC, MP3, Ogg audio, M4A, MP4, or MOV.",
+    "purpose": "Mac 原生线索与素材：error.hetu.unsupported_media",
+    "parameters": []
+  },
+  "error.hetu.rights_confirmation_required": {
+    "zh-CN": "允许交付需要选择作者拥有或已许可，并填写再分发依据。",
+    "en": "Embedding requires author-owned or licensed rights and a redistribution statement.",
+    "purpose": "Mac 原生线索与素材：error.hetu.rights_confirmation_required",
+    "parameters": []
+  },
+  "shell.workspace": {
+    "zh-CN": "创作工作区",
+    "en": "Story workspace",
+    "purpose": "Mac 原生界面：shell.workspace",
+    "parameters": []
+  },
+  "shell.switch_workspace": {
+    "zh-CN": "切换作品",
+    "en": "Switch workspace",
+    "purpose": "Mac 原生界面：shell.switch_workspace",
+    "parameters": []
+  },
+  "shell.actions": {
+    "zh-CN": "工作区操作",
+    "en": "Workspace actions",
+    "purpose": "Mac 原生界面：shell.actions",
+    "parameters": []
+  },
+  "shell.review": {
+    "zh-CN": "参考稿审核",
+    "en": "Review",
+    "purpose": "Mac 原生界面：shell.review",
+    "parameters": []
+  },
+  "shell.versions": {
+    "zh-CN": "版本",
+    "en": "Versions",
+    "purpose": "Mac 原生界面：shell.versions",
+    "parameters": []
+  },
+  "shell.tools": {
+    "zh-CN": "创作工具",
+    "en": "Writing tools",
+    "purpose": "Mac 原生界面：shell.tools",
+    "parameters": []
+  },
+  "shell.motto": {
+    "zh-CN": "设定有据，\n创作有序。",
+    "en": "A clear foundation.\nRoom to create.",
+    "purpose": "Mac 原生界面：shell.motto",
+    "parameters": []
+  },
+  "shell.chapter_count": {
+    "zh-CN": "{count} 篇文档 · 点击切换",
+    "en": "{count} documents · Select to switch",
+    "purpose": "Mac 原生界面：shell.chapter_count",
+    "parameters": [
+      "count"
+    ]
+  },
+  "shell.manuscript": {
+    "zh-CN": "正文 · 自动换行",
+    "en": "Manuscript · Word wrap",
+    "purpose": "Mac 原生界面：shell.manuscript",
+    "parameters": []
+  },
+  "shell.word_count": {
+    "zh-CN": "汉字 {count}",
+    "en": "{count} Han characters",
+    "purpose": "Mac 原生界面：shell.word_count",
+    "parameters": [
+      "count"
+    ]
+  },
+  "shell.document_actions": {
+    "zh-CN": "当前文档操作",
+    "en": "Document actions",
+    "purpose": "Mac 原生界面：shell.document_actions",
+    "parameters": []
+  },
+  "shell.checks_title": {
+    "zh-CN": "设定与诊断",
+    "en": "Story Bible & Checks",
+    "purpose": "Mac 原生界面：shell.checks_title",
+    "parameters": []
+  },
+  "shell.canon_note": {
+    "zh-CN": "整个作品共用作者确认的设定。",
+    "en": "Author-defined canon shared across the workspace.",
+    "purpose": "Mac 原生界面：shell.canon_note",
+    "parameters": []
+  },
+  "shell.canon_revision": {
+    "zh-CN": "设定版本",
+    "en": "Story Bible revision",
+    "purpose": "Mac 原生界面：shell.canon_revision",
+    "parameters": []
+  },
+  "shell.characters": {
+    "zh-CN": "设定角色",
+    "en": "Characters in canon",
+    "purpose": "Mac 原生界面：shell.characters",
+    "parameters": []
+  },
+  "shell.not_checked": {
+    "zh-CN": "当前章节尚无诊断报告。",
+    "en": "No diagnostic report for this chapter yet.",
+    "purpose": "Mac 原生界面：shell.not_checked",
+    "parameters": []
+  },
+  "shell.open_checks": {
+    "zh-CN": "打开一致性诊断",
+    "en": "Open consistency checks",
+    "purpose": "Mac 原生界面：shell.open_checks",
+    "parameters": []
+  },
+  "shell.coverage.passed": {
+    "zh-CN": "规则通过",
+    "en": "Passed checks",
+    "purpose": "Mac 原生界面：shell.coverage.passed",
+    "parameters": []
+  },
+  "shell.coverage.finding": {
+    "zh-CN": "发现问题",
+    "en": "Findings",
+    "purpose": "Mac 原生界面：shell.coverage.finding",
+    "parameters": []
+  },
+  "shell.coverage.unknown": {
+    "zh-CN": "未覆盖或待确认",
+    "en": "Unknown or unverified",
+    "purpose": "Mac 原生界面：shell.coverage.unknown",
+    "parameters": []
+  },
+  "shell.reference": {
+    "zh-CN": "来源参考",
+    "en": "Source reference",
+    "purpose": "Mac 原生界面：shell.reference",
+    "parameters": []
+  },
+  "shell.reference_note": {
+    "zh-CN": "人物 / 世界观 / 时间线",
+    "en": "Characters / World / Timeline",
+    "purpose": "Mac 原生界面：shell.reference_note",
+    "parameters": []
+  },
+  "shell.checks_note": {
+    "zh-CN": "诊断附带来源与覆盖范围，不能代替作者的文学判断。",
+    "en": "Checks cite sources and coverage. They do not replace your literary judgment.",
+    "purpose": "Mac 原生界面：shell.checks_note",
+    "parameters": []
+  },
+  "shell.coverage.not_applicable": {
+    "zh-CN": "不适用",
+    "en": "Not applicable",
+    "purpose": "Mac 原生界面：诊断规则不适用计数",
+    "parameters": []
+  },
+  "library.title": {
+    "zh-CN": "我的书库",
+    "en": "My Library",
+    "purpose": "Mac 原生界面：library.title",
+    "parameters": []
+  },
+  "library.collection": {
+    "zh-CN": "作品",
+    "en": "Books",
+    "purpose": "Mac 原生界面：library.collection",
+    "parameters": []
+  },
+  "library.all": {
+    "zh-CN": "全部作品",
+    "en": "All Books",
+    "purpose": "Mac 原生界面：library.all",
+    "parameters": []
+  },
+  "library.add": {
+    "zh-CN": "加入已有作品…",
+    "en": "Add Existing Book…",
+    "purpose": "Mac 原生界面：library.add",
+    "parameters": []
+  },
+  "library.back": {
+    "zh-CN": "返回书库",
+    "en": "Back to Library",
+    "purpose": "Mac 原生界面：library.back",
+    "parameters": []
+  },
+  "library.search": {
+    "zh-CN": "搜索书名、笔名或类型",
+    "en": "Search title, pen name or genre",
+    "purpose": "Mac 原生界面：library.search",
+    "parameters": []
+  },
+  "library.layout": {
+    "zh-CN": "书库布局",
+    "en": "Library Layout",
+    "purpose": "Mac 原生界面：library.layout",
+    "parameters": []
+  },
+  "library.local": {
+    "zh-CN": "作品保存在各自的本地目录。\n书库记录你选择的作品。",
+    "en": "Each book has its own local folder.\nYour library lists the books you choose.",
+    "purpose": "Mac 原生界面：library.local",
+    "parameters": []
+  },
+  "library.empty": {
+    "zh-CN": "开始你的第一部作品",
+    "en": "Start Your First Book",
+    "purpose": "Mac 原生界面：library.empty",
+    "parameters": []
+  },
+  "library.empty_detail": {
+    "zh-CN": "新建小说，或将已有的河图作品加入书库。每部作品独立保存。",
+    "en": "Create a novel or add an existing Hetu book. Each book is stored independently.",
+    "purpose": "Mac 原生界面：library.empty_detail",
+    "parameters": []
+  },
+  "library.no_author": {
+    "zh-CN": "未填写笔名",
+    "en": "No pen name",
+    "purpose": "Mac 原生界面：library.no_author",
+    "parameters": []
+  },
+  "novel.details": {
+    "zh-CN": "作品资料",
+    "en": "Book Details",
+    "purpose": "Mac 原生界面：novel.details",
+    "parameters": []
+  },
+  "novel.author": {
+    "zh-CN": "作者／笔名",
+    "en": "Author / Pen Name",
+    "purpose": "Mac 原生界面：novel.author",
+    "parameters": []
+  },
+  "novel.genre": {
+    "zh-CN": "作品类型",
+    "en": "Genre",
+    "purpose": "Mac 原生界面：novel.genre",
+    "parameters": []
+  },
+  "novel.synopsis": {
+    "zh-CN": "作品简介",
+    "en": "Synopsis",
+    "purpose": "Mac 原生界面：novel.synopsis",
+    "parameters": []
+  },
+  "novel.no_synopsis": {
+    "zh-CN": "还没有填写作品简介。",
+    "en": "No synopsis yet.",
+    "purpose": "Mac 原生界面：novel.no_synopsis",
+    "parameters": []
+  },
+  "novel.language": {
+    "zh-CN": "正文语言标签",
+    "en": "Manuscript Language Tag",
+    "purpose": "Mac 原生界面：novel.language",
+    "parameters": []
+  },
+  "novel.status": {
+    "zh-CN": "创作状态",
+    "en": "Writing Status",
+    "purpose": "Mac 原生界面：novel.status",
+    "parameters": []
+  },
+  "novel.status.planning": {
+    "zh-CN": "构思中",
+    "en": "Planning",
+    "purpose": "Mac 原生界面：novel.status.planning",
+    "parameters": []
+  },
+  "novel.status.writing": {
+    "zh-CN": "连载中",
+    "en": "Writing",
+    "purpose": "Mac 原生界面：novel.status.writing",
+    "parameters": []
+  },
+  "novel.status.completed": {
+    "zh-CN": "已完结",
+    "en": "Completed",
+    "purpose": "Mac 原生界面：novel.status.completed",
+    "parameters": []
+  },
+  "novel.status.archived": {
+    "zh-CN": "已归档",
+    "en": "Archived",
+    "purpose": "Mac 原生界面：novel.status.archived",
+    "parameters": []
+  },
+  "novel.structure": {
+    "zh-CN": "卷章目录",
+    "en": "Volumes and Chapters",
+    "purpose": "Mac 原生界面：novel.structure",
+    "parameters": []
+  },
+  "novel.structure_count": {
+    "zh-CN": "{volumes} 卷，{chapters} 章",
+    "en": "{volumes} volumes, {chapters} chapters",
+    "purpose": "Mac 原生界面：novel.structure_count",
+    "parameters": [
+      "volumes",
+      "chapters"
+    ]
+  },
+  "novel.folder": {
+    "zh-CN": "作品文件夹",
+    "en": "Book Folder",
+    "purpose": "Mac 原生界面：novel.folder",
+    "parameters": []
+  },
+  "novel.save_details": {
+    "zh-CN": "保存资料",
+    "en": "Save Details",
+    "purpose": "Mac 原生界面：novel.save_details",
+    "parameters": []
+  },
+  "novel.initialize": {
+    "zh-CN": "初始化小说目录",
+    "en": "Initialize Novel Catalog",
+    "purpose": "Mac 原生界面：novel.initialize",
+    "parameters": []
+  },
+  "novel.initialize_detail": {
+    "zh-CN": "确认作品资料后，将已有小说章节按创建顺序收录到目录。正文、修订与设定集保持原样。",
+    "en": "Confirm the book details to catalog existing novel chapters in creation order. Manuscripts, revisions and the Story Bible are preserved.",
+    "purpose": "Mac 原生界面：novel.initialize_detail",
+    "parameters": []
+  },
+  "novel.manage_structure": {
+    "zh-CN": "管理卷章",
+    "en": "Manage Volumes and Chapters",
+    "purpose": "Mac 原生界面：novel.manage_structure",
+    "parameters": []
+  },
+  "novel.structure_detail": {
+    "zh-CN": "调整分卷与章节顺序。章节的正文和原文引用不随重排变化。",
+    "en": "Organize volumes and chapter order. Reordering preserves manuscript content and source references.",
+    "purpose": "Mac 原生界面：novel.structure_detail",
+    "parameters": []
+  },
+  "novel.volume_title": {
+    "zh-CN": "分卷名称",
+    "en": "Volume Title",
+    "purpose": "Mac 原生界面：novel.volume_title",
+    "parameters": []
+  },
+  "novel.volume": {
+    "zh-CN": "所属分卷",
+    "en": "Volume",
+    "purpose": "Mac 原生界面：novel.volume",
+    "parameters": []
+  },
+  "novel.add_volume": {
+    "zh-CN": "新增分卷",
+    "en": "Add Volume",
+    "purpose": "Mac 原生界面：novel.add_volume",
+    "parameters": []
+  },
+  "novel.unassigned": {
+    "zh-CN": "未分卷",
+    "en": "No Volume",
+    "purpose": "Mac 原生界面：novel.unassigned",
+    "parameters": []
+  },
+  "novel.volume_empty": {
+    "zh-CN": "此卷还没有章节",
+    "en": "No chapters in this volume",
+    "purpose": "Mac 原生界面：novel.volume_empty",
+    "parameters": []
+  },
+  "novel.move_up": {
+    "zh-CN": "上移",
+    "en": "Move Up",
+    "purpose": "Mac 原生界面：novel.move_up",
+    "parameters": []
+  },
+  "novel.move_down": {
+    "zh-CN": "下移",
+    "en": "Move Down",
+    "purpose": "Mac 原生界面：novel.move_down",
+    "parameters": []
+  },
+  "novel.save_structure": {
+    "zh-CN": "保存目录",
+    "en": "Save Catalog",
+    "purpose": "Mac 原生界面：novel.save_structure",
+    "parameters": []
+  },
+  "novel.notes": {
+    "zh-CN": "大纲与改编笔记",
+    "en": "Outlines and Adaptation Notes",
+    "purpose": "Mac 原生界面：novel.notes",
+    "parameters": []
+  },
+  "novel.discard": {
+    "zh-CN": "放弃未保存的修改？",
+    "en": "Discard unsaved changes?",
+    "purpose": "Mac 原生界面：novel.discard",
+    "parameters": []
+  },
+  "novel.discard_confirm": {
+    "zh-CN": "放弃修改",
+    "en": "Discard Changes",
+    "purpose": "Mac 原生界面：novel.discard_confirm",
+    "parameters": []
+  },
+  "error.library.invalidRecord": {
+    "zh-CN": "书库记录损坏或格式不受支持，请保留文件并检查。",
+    "en": "The library catalog is damaged or unsupported. Preserve the file and inspect it.",
+    "purpose": "Mac 原生界面：error.library.invalidRecord",
+    "parameters": []
+  },
+  "error.library.unavailable": {
+    "zh-CN": "无法访问书库或作品文件夹。请确认磁盘已连接、目录权限可用，再重试。",
+    "en": "The library or book folder is unavailable. Check the disk and folder access, then try again.",
+    "purpose": "Mac 原生界面：error.library.unavailable",
+    "parameters": []
+  },
+  "error.library.busy": {
+    "zh-CN": "另一窗口正在更新书库，请稍后刷新。",
+    "en": "Another window is updating the library. Refresh shortly.",
+    "purpose": "Mac 原生界面：error.library.busy",
+    "parameters": []
+  },
+  "error.library.duplicateWorkspace": {
+    "zh-CN": "相同作品身份已登记在另一可用目录。请使用书库中的原作品；独立副本需要新的作品身份。",
+    "en": "This book identity is already registered at another available folder. Open the registered book; an independent copy needs its own identity.",
+    "purpose": "Mac 原生界面：error.library.duplicateWorkspace",
+    "parameters": []
+  },
+  "error.library.wrongWorkspace": {
+    "zh-CN": "所选目录的作品身份与书库记录不符，请重新选择正确作品。",
+    "en": "The selected folder does not match the book identity in the library. Choose the correct book.",
+    "purpose": "Mac 原生界面：error.library.wrongWorkspace",
+    "parameters": []
+  },
+  "error.hetu.novel_initialization_required": {
+    "zh-CN": "请先在作品资料页确认初始化小说目录。",
+    "en": "Confirm and initialize the novel catalog in Book Details first.",
+    "purpose": "Mac 原生界面：error.hetu.novel_initialization_required",
+    "parameters": []
+  },
+  "novel.chapter_count": {
+    "zh-CN": "{count} 章",
+    "en": "{count} ch.",
+    "purpose": "小说章节数量",
+    "parameters": [
+      "count"
+    ]
+  },
+  "library.book_count": {
+    "zh-CN": "{count} 部独立作品",
+    "en": "Your local library · {count}",
+    "purpose": "书库作品数量与标题辅助说明",
+    "parameters": [
+      "count"
+    ]
+  },
+  "novel.details_description": {
+    "zh-CN": "每一部作品，都有自己的故事。",
+    "en": "A home for every story.",
+    "purpose": "Mac 原生界面：novel.details_description",
+    "parameters": []
+  },
+  "review.description": {
+    "zh-CN": "核对参考稿、原文差异与修改意见，决定保留、返工或采纳。",
+    "en": "Review references, changes and feedback; keep, request changes, or adopt selected text.",
+    "purpose": "Mac 原生界面：review.description",
+    "parameters": []
+  },
+  "review.empty_detail": {
+    "zh-CN": "选择一份参考稿，核对原文、检查提示和批注，再决定如何使用。",
+    "en": "Select a reference draft to review its text, findings and comments before deciding how to use it.",
+    "purpose": "Mac 原生界面：review.empty_detail",
+    "parameters": []
+  },
+  "media.empty_detail": {
+    "zh-CN": "添加视觉或配乐线索，也可以导入已有素材，为故事积累参考。",
+    "en": "Add visual or music cues, or import existing media to build your reference collection.",
+    "purpose": "Mac 原生界面：media.empty_detail",
+    "parameters": []
+  },
+  "git.description": {
+    "zh-CN": "留住创作的每一个重要时刻。",
+    "en": "Keep a record of the moments that shape your story.",
+    "purpose": "Mac 原生界面：git.description",
+    "parameters": []
+  },
+  "git.empty_detail": {
+    "zh-CN": "初始化本地版本库后，可以预览变更、比较差异并保存创作快照。",
+    "en": "Initialize a local repository to preview changes, compare differences, and save snapshots.",
+    "purpose": "Mac 原生界面：git.empty_detail",
+    "parameters": []
+  },
+  "novel.empty_detail": {
+    "zh-CN": "从左侧新建一个章节，或先整理分卷与大纲，开始你的故事。",
+    "en": "Create a chapter from the sidebar, or start by organizing volumes and outlines.",
+    "purpose": "Mac 原生界面：novel.empty_detail",
+    "parameters": []
+  },
+  "appearance.title": {
+    "zh-CN": "外观",
+    "en": "Appearance",
+    "purpose": "Mac 原生外观菜单：title",
+    "parameters": []
+  },
+  "appearance.system": {
+    "zh-CN": "跟随系统",
+    "en": "System",
+    "purpose": "Mac 原生外观菜单：system",
+    "parameters": []
+  },
+  "appearance.light": {
+    "zh-CN": "浅色",
+    "en": "Light",
+    "purpose": "Mac 原生外观菜单：light",
+    "parameters": []
+  },
+  "appearance.dark": {
+    "zh-CN": "深色",
+    "en": "Dark",
+    "purpose": "Mac 原生外观菜单：dark",
+    "parameters": []
+  },
+  "settings.title": {
+    "zh-CN": "设置",
+    "en": "Settings",
+    "purpose": "Mac 原生设置：settings.title",
+    "parameters": []
+  },
+  "settings.general": {
+    "zh-CN": "通用",
+    "en": "General",
+    "purpose": "Mac 原生设置：settings.general",
+    "parameters": []
+  },
+  "settings.writing": {
+    "zh-CN": "写作",
+    "en": "Writing",
+    "purpose": "Mac 原生设置：settings.writing",
+    "parameters": []
+  },
+  "settings.versions": {
+    "zh-CN": "版本",
+    "en": "Versions",
+    "purpose": "Mac 原生设置：settings.versions",
+    "parameters": []
+  },
+  "settings.about": {
+    "zh-CN": "关于",
+    "en": "About",
+    "purpose": "Mac 原生设置：settings.about",
+    "parameters": []
+  },
+  "settings.interface": {
+    "zh-CN": "界面",
+    "en": "Interface",
+    "purpose": "Mac 原生设置：settings.interface",
+    "parameters": []
+  },
+  "settings.grid": {
+    "zh-CN": "封面网格",
+    "en": "Cover grid",
+    "purpose": "Mac 原生设置：settings.grid",
+    "parameters": []
+  },
+  "settings.list": {
+    "zh-CN": "作品列表",
+    "en": "Book list",
+    "purpose": "Mac 原生设置：settings.list",
+    "parameters": []
+  },
+  "settings.applies_immediately": {
+    "zh-CN": "设置自动保存，并立即应用到所有河图窗口。",
+    "en": "Settings are saved automatically and apply to all Hetu windows.",
+    "purpose": "Mac 原生设置：settings.applies_immediately",
+    "parameters": []
+  },
+  "settings.body": {
+    "zh-CN": "正文排版",
+    "en": "Manuscript typography",
+    "purpose": "Mac 原生设置：settings.body",
+    "parameters": []
+  },
+  "settings.font": {
+    "zh-CN": "字体",
+    "en": "Font",
+    "purpose": "Mac 原生设置：settings.font",
+    "parameters": []
+  },
+  "settings.font_songti": {
+    "zh-CN": "宋体",
+    "en": "Songti",
+    "purpose": "Mac 原生设置：settings.font_songti",
+    "parameters": []
+  },
+  "settings.font_pingfang": {
+    "zh-CN": "苹方",
+    "en": "PingFang",
+    "purpose": "Mac 原生设置：settings.font_pingfang",
+    "parameters": []
+  },
+  "settings.font_system": {
+    "zh-CN": "系统字体",
+    "en": "System font",
+    "purpose": "Mac 原生设置：settings.font_system",
+    "parameters": []
+  },
+  "settings.font_size": {
+    "zh-CN": "字号",
+    "en": "Font size",
+    "purpose": "Mac 原生设置：settings.font_size",
+    "parameters": []
+  },
+  "settings.line_spacing": {
+    "zh-CN": "行间距",
+    "en": "Line spacing",
+    "purpose": "Mac 原生设置：settings.line_spacing",
+    "parameters": []
+  },
+  "settings.indent": {
+    "zh-CN": "小说段落首行缩进两字",
+    "en": "Indent novel paragraphs by two characters",
+    "purpose": "Mac 原生设置：settings.indent",
+    "parameters": []
+  },
+  "settings.preview": {
+    "zh-CN": "排版预览",
+    "en": "Typography preview",
+    "purpose": "Mac 原生设置：settings.preview",
+    "parameters": []
+  },
+  "settings.preview_text": {
+    "zh-CN": "雨落在窗边，故事从这一刻开始。\n远处的灯亮了，有人正踏着夜色归来。",
+    "en": "Rain brushes the window. A story begins here.\nA light shines in the distance as someone returns through the night.",
+    "purpose": "Mac 原生设置：settings.preview_text",
+    "parameters": []
+  },
+  "settings.display_only": {
+    "zh-CN": "排版只改变显示，不向正文添加空格。Fountain 剧本保持场次与对白的原有对齐。",
+    "en": "Typography changes the display without adding spaces to your text. Fountain scripts keep their scene and dialogue alignment.",
+    "purpose": "Mac 原生设置：settings.display_only",
+    "parameters": []
+  },
+  "settings.git_identity": {
+    "zh-CN": "快照作者信息",
+    "en": "Snapshot author identity",
+    "purpose": "Mac 原生设置：settings.git_identity",
+    "parameters": []
+  },
+  "settings.git_note": {
+    "zh-CN": "这里只保存本机的提交署名，不修改系统 Git 配置，也不执行提交或同步。",
+    "en": "This stores a local commit identity. It does not change system Git configuration, commit, or sync.",
+    "purpose": "Mac 原生设置：settings.git_note",
+    "parameters": []
+  },
+  "settings.local_note": {
+    "zh-CN": "作品保存在各自的本地目录。河图不内置内容生成模型或生成服务接口。",
+    "en": "Books remain in their own local folders. Hetu does not include content generation models or generation APIs.",
+    "purpose": "Mac 原生设置：settings.local_note",
+    "parameters": []
+  },
+  "adoption.title": {
+    "zh-CN": "采纳参考稿",
+    "en": "Use reference text",
+    "purpose": "Mac 原生界面：adoption.title",
+    "parameters": []
+  },
+  "adoption.note": {
+    "zh-CN": "先选择需要的段落，再查看采纳效果。采纳后仍是写作稿，定稿需要你另行确认。",
+    "en": "Choose the passages you want, then preview the result. Adoption updates the working draft; finalization is a separate author decision.",
+    "purpose": "Mac 原生界面：adoption.note",
+    "parameters": []
+  },
+  "adoption.reference": {
+    "zh-CN": "参考稿",
+    "en": "Reference draft",
+    "purpose": "Mac 原生界面：adoption.reference",
+    "parameters": []
+  },
+  "adoption.original": {
+    "zh-CN": "当前原稿",
+    "en": "Current manuscript",
+    "purpose": "Mac 原生界面：adoption.original",
+    "parameters": []
+  },
+  "adoption.destination": {
+    "zh-CN": "采纳到",
+    "en": "Destination",
+    "purpose": "Mac 原生界面：adoption.destination",
+    "parameters": []
+  },
+  "adoption.new_chapter": {
+    "zh-CN": "新建章节",
+    "en": "New chapter",
+    "purpose": "Mac 原生界面：adoption.new_chapter",
+    "parameters": []
+  },
+  "adoption.new_script": {
+    "zh-CN": "新建剧本",
+    "en": "New script",
+    "purpose": "Mac 原生界面：adoption.new_script",
+    "parameters": []
+  },
+  "adoption.chapter_title": {
+    "zh-CN": "章节标题",
+    "en": "Chapter title",
+    "purpose": "Mac 原生界面：adoption.chapter_title",
+    "parameters": []
+  },
+  "adoption.script_title": {
+    "zh-CN": "剧本标题",
+    "en": "Script title",
+    "purpose": "Mac 原生界面：adoption.script_title",
+    "parameters": []
+  },
+  "adoption.volume": {
+    "zh-CN": "所属分卷",
+    "en": "Volume",
+    "purpose": "Mac 原生界面：adoption.volume",
+    "parameters": []
+  },
+  "adoption.unassigned": {
+    "zh-CN": "不分卷",
+    "en": "No volume",
+    "purpose": "Mac 原生界面：adoption.unassigned",
+    "parameters": []
+  },
+  "adoption.selection_hint": {
+    "zh-CN": "在左侧选择参考段落，在右侧选择替换内容或放置插入位置。",
+    "en": "Select reference text on the left and a replacement range or insertion point on the right.",
+    "purpose": "Mac 原生界面：adoption.selection_hint",
+    "parameters": []
+  },
+  "adoption.edit_selected": {
+    "zh-CN": "由我改写所选内容",
+    "en": "Rewrite the selected text",
+    "purpose": "Mac 原生界面：adoption.edit_selected",
+    "parameters": []
+  },
+  "adoption.add_selection": {
+    "zh-CN": "加入所选段落",
+    "en": "Add selection",
+    "purpose": "Mac 原生界面：adoption.add_selection",
+    "parameters": []
+  },
+  "adoption.replacement": {
+    "zh-CN": "改写后的内容",
+    "en": "Your replacement text",
+    "purpose": "Mac 原生界面：adoption.replacement",
+    "parameters": []
+  },
+  "adoption.effect": {
+    "zh-CN": "采纳后的全文预览",
+    "en": "Preview the complete result",
+    "purpose": "Mac 原生界面：adoption.effect",
+    "parameters": []
+  },
+  "adoption.baseline_changed": {
+    "zh-CN": "原稿在参考稿提交后有过修改，请结合提交时的原稿核对。",
+    "en": "The manuscript changed after submission. Review the original submission context as well.",
+    "purpose": "Mac 原生界面：adoption.baseline_changed",
+    "parameters": []
+  },
+  "adoption.submission_baseline": {
+    "zh-CN": "提交时的原稿",
+    "en": "Manuscript at submission",
+    "purpose": "Mac 原生界面：adoption.submission_baseline",
+    "parameters": []
+  },
+  "adoption.replace_all_preview": {
+    "zh-CN": "整稿替换预览",
+    "en": "Preview full replacement",
+    "purpose": "Mac 原生界面：adoption.replace_all_preview",
+    "parameters": []
+  },
+  "adoption.preview": {
+    "zh-CN": "查看采纳效果",
+    "en": "Preview changes",
+    "purpose": "Mac 原生界面：adoption.preview",
+    "parameters": []
+  },
+  "adoption.confirm": {
+    "zh-CN": "采纳到写作稿",
+    "en": "Apply to working draft",
+    "purpose": "Mac 原生界面：adoption.confirm",
+    "parameters": []
+  },
+  "adoption.invalid_selection": {
+    "zh-CN": "请选择完整的参考段落，并核对原稿中的替换位置。",
+    "en": "Select valid reference text and check the target range in the manuscript.",
+    "purpose": "Mac 原生界面：adoption.invalid_selection",
+    "parameters": []
+  },
+  "adoption.title_required": {
+    "zh-CN": "请填写新章节或剧本的标题。",
+    "en": "Enter a title for the new chapter or script.",
+    "purpose": "Mac 原生界面：adoption.title_required",
+    "parameters": []
+  },
+  "adoption.initialize_novel": {
+    "zh-CN": "请先在作品资料中设置小说信息，再采纳为新章节。",
+    "en": "Set up the book details before adopting into a new chapter.",
+    "purpose": "Mac 原生界面：adoption.initialize_novel",
+    "parameters": []
+  },
+  "adoption.recorded": {
+    "zh-CN": "已采纳参考内容",
+    "en": "Reference text adopted",
+    "purpose": "Mac 原生界面：adoption.recorded",
+    "parameters": []
+  },
+  "adoption.change": {
+    "zh-CN": "第 {number} 处",
+    "en": "Change {number}",
+    "purpose": "Mac 原生界面：adoption.change",
+    "parameters": [
+      "number"
+    ]
+  },
+  "adoption.author_replacement": {
+    "zh-CN": "作者改写：",
+    "en": "Your replacement: ",
+    "purpose": "Mac 原生界面：adoption.author_replacement",
+    "parameters": []
+  },
+  "adoption.reload": {
+    "zh-CN": "重新读取原稿",
+    "en": "Reload manuscript",
+    "purpose": "Mac 原生界面：adoption.reload",
+    "parameters": []
+  },
+  "finalization.title": {
+    "zh-CN": "检查与确认定稿",
+    "en": "Check and finalize",
+    "purpose": "Mac 原生界面：finalization.title",
+    "parameters": []
+  },
+  "finalization.note": {
+    "zh-CN": "定稿保留你确认的这一版。以后继续写作不会覆盖它，也不会自动投稿。",
+    "en": "Finalization preserves the revision you confirm. Later editing keeps it intact and does not publish your work.",
+    "purpose": "Mac 原生界面：finalization.note",
+    "parameters": []
+  },
+  "finalization.coverage_counts": {
+    "zh-CN": "共 {findings} 项提示，另有 {unknown} 项需要人工核对。",
+    "en": "{findings} findings and {unknown} checks requiring manual review.",
+    "purpose": "Mac 原生界面：finalization.coverage_counts",
+    "parameters": [
+      "findings",
+      "unknown"
+    ]
+  },
+  "finalization.sources": {
+    "zh-CN": "参考内容采纳记录",
+    "en": "Adopted references",
+    "purpose": "Mac 原生界面：finalization.sources",
+    "parameters": []
+  },
+  "finalization.history": {
+    "zh-CN": "定稿记录",
+    "en": "Finalization history",
+    "purpose": "Mac 原生界面：finalization.history",
+    "parameters": []
+  },
+  "finalization.withdrawn": {
+    "zh-CN": "已撤回定稿",
+    "en": "Finalization withdrawn",
+    "purpose": "Mac 原生界面：finalization.withdrawn",
+    "parameters": []
+  },
+  "finalization.confirmed": {
+    "zh-CN": "已确认定稿",
+    "en": "Finalized",
+    "purpose": "Mac 原生界面：finalization.confirmed",
+    "parameters": []
+  },
+  "finalization.reason": {
+    "zh-CN": "定稿说明（必填）",
+    "en": "Finalization note (required)",
+    "purpose": "Mac 原生界面：finalization.reason",
+    "parameters": []
+  },
+  "finalization.ready": {
+    "zh-CN": "已具备定稿条件，请核对全文后确认。",
+    "en": "Ready for finalization. Review the full text before confirming.",
+    "purpose": "Mac 原生界面：finalization.ready",
+    "parameters": []
+  },
+  "finalization.check": {
+    "zh-CN": "检查当前稿",
+    "en": "Check current draft",
+    "purpose": "Mac 原生界面：finalization.check",
+    "parameters": []
+  },
+  "finalization.preview": {
+    "zh-CN": "核对定稿内容",
+    "en": "Preview finalization",
+    "purpose": "Mac 原生界面：finalization.preview",
+    "parameters": []
+  },
+  "finalization.withdraw": {
+    "zh-CN": "撤回定稿",
+    "en": "Withdraw finalization",
+    "purpose": "Mac 原生界面：finalization.withdraw",
+    "parameters": []
+  },
+  "finalization.confirm": {
+    "zh-CN": "确认定稿",
+    "en": "Confirm finalization",
+    "purpose": "Mac 原生界面：finalization.confirm",
+    "parameters": []
+  },
+  "finalization.withdraw_note": {
+    "zh-CN": "撤回后保留正文和历次定稿记录，只取消当前定稿。",
+    "en": "The manuscript and finalization history are preserved. Only the current finalization is withdrawn.",
+    "purpose": "Mac 原生界面：finalization.withdraw_note",
+    "parameters": []
+  },
+  "finalization.writing": {
+    "zh-CN": "写作稿 · 尚未定稿",
+    "en": "Working draft · not finalized",
+    "purpose": "Mac 原生界面：finalization.writing",
+    "parameters": []
+  },
+  "finalization.current": {
+    "zh-CN": "当前稿已定稿",
+    "en": "Current revision finalized",
+    "purpose": "Mac 原生界面：finalization.current",
+    "parameters": []
+  },
+  "finalization.new_writing": {
+    "zh-CN": "写作稿有新修改 · 旧定稿保留",
+    "en": "New working revision · earlier final preserved",
+    "purpose": "Mac 原生界面：finalization.new_writing",
+    "parameters": []
+  }
+}

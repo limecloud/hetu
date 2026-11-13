@@ -1,29 +1,25 @@
 # Your work, versions and backups
 
-Page demos, real manuscripts, revision history and independent backups serve different purposes. Know where your text is stored before relying on a tool for long-form writing.
+The author library registers multiple books, each with an independent workspace for text, canon and media. The software’s open-source license does not automatically apply to your writing.
 
-## The prototype does not store real work
+## Website demo
 
-The website prototype uses data in the current browser page. It does not read your disk, connect to cloud storage or create a Git repository. **Save revision** updates page state; refreshing or closing resets it.
+The [homepage demo](/en/#prototype) keeps state only in the current page. Saving, adoption, finals and snapshots never write to disk; refreshing resets everything. Switching books or tasks retains in-page buffers, and interface language never translates your text.
 
-To keep text from the demo, copy it to a local editor and save it yourself. Never use a web demo as the only copy of a manuscript.
+## Local saving and versions
 
-## Separate software from your story
+The local client saves text revisions and protects recovery buffers. Git snapshots follow preparation, inspection of fixed files and changes, then author-approved commit. They do not use the software repository or push automatically.
 
-The software's open-source license does not automatically open-source your novel, story bible or assets. Keep your creative work in a separately managed directory. Review scope and privacy before sharing it with an agent or remote repository.
+The website demonstrates preparation and confirmation without running Git. If a real result is unknown, retain the original task and inspect its receipt before retrying.
 
-## Version history is not an independent backup
+## Independent backups
 
-History helps compare and revisit edits. Backups help recover from a lost device or accidental deletion. A local Git repository on the same disk as your manuscript cannot by itself protect against disk failure.
+Text and Git on the same disk cannot protect against device loss. Arrange a trusted backup location or another device, and verify that images, audio and video are complete.
 
-Keep another copy on a separate device or trusted backup service. Check whether large images, audio and video are included. Before syncing to GitHub or Gitee, confirm repository visibility and authorize the intended sync.
+Before choosing a remote such as GitHub or Gitee, check visibility, rights and scope, then authorize synchronization. Local snapshot implementation does not prove full remote collaboration is verified.
 
-## Keep a fixed handoff copy
+## When something goes wrong
 
-Record the revision, included material, date and recipient requirements. Retain final files with their source list. Rebuild materials after edits rather than mixing manuscripts, scripts and reports from different revisions.
+Preserve files, unsaved text, the latest valid version and sanitized evidence before inspecting recovery or conflicts. Never overwrite your only copy. After a demo refresh there is no disk history to recover.
 
-## If something goes wrong
-
-Text disappearing from the prototype usually means the page was refreshed; there is no disk history to restore. For a real manuscript problem, preserve current files and backups before comparing the most recent valid copies. Avoid overwriting your only evidence.
-
-Return to [Quick start](getting-started.md) or read [Formats and delivery](formats-and-delivery.md).
+Continue with [Formats and delivery](formats-and-delivery.md).

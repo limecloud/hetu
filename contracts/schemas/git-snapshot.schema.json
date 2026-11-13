@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hetu.limeai.run/schemas/git-snapshot.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "snapshot_id", "workspace_id", "repository_instance", "head", "selection", "excluded_changes", "message", "author", "timestamp"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "snapshot_id": {"type": "string", "pattern": "^gitsnapshot_[0-9a-f-]{36}$"},
+    "workspace_id": {"type": "string", "pattern": "^workspace_[0-9a-f-]{36}$"},
+    "repository_instance": {"$ref": "#/$defs/digest"},
+    "head": {
+      "type": "object", "additionalProperties": false, "required": ["reference", "commit_id"],
+      "properties": {"reference": {"type": "string", "pattern": "^refs/heads/.+"}, "commit_id": {"$ref": "#/$defs/nullable_oid"}}
+    },
+    "selection": {
+      "type": "array", "minItems": 1, "maxItems": 10000,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["path", "before_oid", "after_sha256", "after_oid", "mode", "size_bytes"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1, "maxLength": 1024},
+          "before_oid": {"$ref": "#/$defs/nullable_oid"},
+          "after_sha256": {"anyOf": [{"$ref": "#/$defs/digest"}, {"type": "null"}]},
+          "after_oid": {"$ref": "#/$defs/nullable_oid"},
+          "mode": {"enum": [33188, 33261, null]},
+          "size_bytes": {"type": ["integer", "null"], "minimum": 0, "maximum": 16777216}
+        },
+        "allOf": [
+          {"if": {"properties": {"after_oid": {"type": "null"}}}, "then": {"properties": {"after_sha256": {"type": "null"}, "mode": {"type": "null"}, "size_bytes": {"type": "null"}, "before_oid": {"type": "string"}}}, "else": {"properties": {"after_sha256": {"type": "string"}, "mode": {"type": "integer"}, "size_bytes": {"type": "integer"}}}}
+        ]
+      }
+    },
+    "excluded_changes": {
+      "type": "array", "maxItems": 100000,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["path", "change_kind", "status_bits", "staged", "conflicted", "size_bytes"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1, "maxLength": 1024},
+          "change_kind": {"enum": ["added", "deleted", "modified", "typechange", "untracked", "conflicted", "unreadable"]},
+          "status_bits": {"type": "integer", "minimum": 0},
+          "staged": {"type": "boolean"},
+          "conflicted": {"type": "boolean"},
+          "size_bytes": {"type": ["integer", "null"], "minimum": 0}
+        }
+      }
+    },
+    "message": {"type": "string", "minLength": 1, "maxLength": 4000},
+    "author": {
+      "type": "object", "additionalProperties": false, "required": ["name", "email"],
+      "properties": {"name": {"type": "string", "minLength": 1, "maxLength": 200, "pattern": "^[^\\n\\r<>]+$"}, "email": {"type": "string", "minLength": 3, "maxLength": 254, "pattern": "^[^\\s<>@]+@[^\\s<>@]+$"}}
+    },
+    "timestamp": {"type": "integer", "minimum": 0, "maximum": 9007199254740991}
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullable_oid": {"type": ["string", "null"], "pattern": "^[0-9a-f]{40}$"}
+  }
+}

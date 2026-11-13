@@ -1,0 +1,770 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "plot_revision_id": {
+      "type": "string",
+      "pattern": "^plotrev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "parent_plot_revision_id": {
+      "type": "string",
+      "pattern": "^plotrev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "blueprint_revision": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "blueprint_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source_revisions": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/source_revision"
+      },
+      "minItems": 1,
+      "maxItems": 100
+    },
+    "engine_version": {
+      "const": "1.0.0"
+    },
+    "options": {
+      "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/options"
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/node"
+      },
+      "minItems": 0,
+      "maxItems": 10000
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/edge"
+      },
+      "minItems": 0,
+      "maxItems": 20000
+    },
+    "coverage": {
+      "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/coverage"
+    },
+    "created_at": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "actor_ref": {
+      "type": "string",
+      "pattern": "^actor_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    }
+  },
+  "required": [
+    "schema_version",
+    "plot_revision_id",
+    "blueprint_revision",
+    "blueprint_sha256",
+    "source_revisions",
+    "engine_version",
+    "options",
+    "nodes",
+    "edges",
+    "coverage",
+    "created_at",
+    "actor_ref"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:hetu:schema:plot:1.0.0",
+  "title": "HetuPlotRevision",
+  "$defs": {
+    "source_ref_resource": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "title": "HetuSourceRef",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "document_id",
+        "revision_id",
+        "byte_start",
+        "byte_end",
+        "quote"
+      ],
+      "properties": {
+        "document_id": {
+          "type": "string",
+          "pattern": "^doc_[0-9a-f-]{36}$"
+        },
+        "revision_id": {
+          "type": "string",
+          "pattern": "^rev_[0-9a-f-]{36}$"
+        },
+        "byte_start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "byte_end": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "quote": {
+          "type": "string"
+        }
+      },
+      "$id": "urn:hetu:schema:source-ref:1.0.0"
+    },
+    "options": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8388608
+        },
+        "max_nodes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "max_matches": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200000
+        },
+        "max_duration_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        }
+      },
+      "required": []
+    },
+    "source_revision": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "document_id": {
+          "type": "string",
+          "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "revision_id": {
+          "type": "string",
+          "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "source_format": {
+          "enum": [
+            "markdown",
+            "fountain"
+          ]
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1048576
+        }
+      },
+      "required": [
+        "document_id",
+        "revision_id",
+        "sha256",
+        "source_format",
+        "size_bytes"
+      ]
+    },
+    "source_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "document_id": {
+          "type": "string",
+          "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "revision_id": {
+          "type": "string",
+          "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "document_id",
+        "revision_id",
+        "sha256"
+      ]
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "node_id": {
+          "type": "string",
+          "pattern": "^node_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "kind": {
+          "enum": [
+            "scene",
+            "action",
+            "dialogue",
+            "conflict_candidate",
+            "foreshadow_candidate"
+          ]
+        },
+        "entity_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^(character|faction)_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "minItems": 0,
+          "maxItems": 200
+        },
+        "location_ref": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^location_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "time_ref": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^event_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "speaker_ref": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^character_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "time_of_day": {
+          "enum": [
+            "day",
+            "night",
+            "dawn",
+            "dusk",
+            "unknown"
+          ]
+        },
+        "verification": {
+          "enum": [
+            "needs_author_review",
+            "confirmed",
+            "dismissed"
+          ]
+        },
+        "source_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:hetu:schema:source-ref:1.0.0"
+          },
+          "minItems": 1,
+          "maxItems": 10
+        },
+        "entity_candidates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "entity_ref": {
+                "type": "string",
+                "pattern": "^(character|faction|location)_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "kind": {
+                "enum": [
+                  "character",
+                  "faction",
+                  "location"
+                ]
+              },
+              "matched_text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "source_ref": {
+                "$ref": "urn:hetu:schema:source-ref:1.0.0"
+              }
+            },
+            "required": [
+              "entity_ref",
+              "kind",
+              "matched_text",
+              "source_ref"
+            ]
+          },
+          "minItems": 0,
+          "maxItems": 1000
+        },
+        "location_candidates": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^location_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "minItems": 0,
+          "maxItems": 200
+        },
+        "speaker_candidates": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^character_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "minItems": 0,
+          "maxItems": 200
+        },
+        "unresolved_names": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "character",
+                  "location"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "source_ref": {
+                "$ref": "urn:hetu:schema:source-ref:1.0.0"
+              }
+            },
+            "required": [
+              "kind",
+              "name",
+              "source_ref"
+            ]
+          },
+          "minItems": 0,
+          "maxItems": 20
+        },
+        "extraction_method": {
+          "enum": [
+            "markdown_heading",
+            "fountain_scene",
+            "scene_marker",
+            "quoted_dialogue",
+            "speaker_label",
+            "fountain_dialogue",
+            "dash_dialogue",
+            "action_terms",
+            "conflict_marker",
+            "foreshadow_marker",
+            "author_annotation"
+          ]
+        },
+        "missing_prerequisites": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "classification_review",
+              "entity_review",
+              "location",
+              "story_time",
+              "speaker",
+              "ambiguous_name"
+            ]
+          },
+          "minItems": 0,
+          "maxItems": 6
+        },
+        "annotation": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "context": {
+                  "enum": [
+                    "actual",
+                    "dream",
+                    "hypothetical",
+                    "reported",
+                    "unknown"
+                  ]
+                },
+                "facts": {
+                  "type": "array",
+                  "maxItems": 100,
+                  "items": {
+                    "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/fact_assertion"
+                  }
+                },
+                "capabilities": {
+                  "type": "array",
+                  "maxItems": 100,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  }
+                }
+              },
+              "required": [
+                "context",
+                "facts",
+                "capabilities"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "node_id",
+        "kind",
+        "entity_refs",
+        "location_ref",
+        "time_ref",
+        "speaker_ref",
+        "time_of_day",
+        "verification",
+        "source_refs",
+        "entity_candidates",
+        "location_candidates",
+        "speaker_candidates",
+        "unresolved_names",
+        "extraction_method",
+        "missing_prerequisites"
+      ]
+    },
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "edge_id": {
+          "type": "string",
+          "pattern": "^edge_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "from_node_id": {
+          "type": "string",
+          "pattern": "^node_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "to_node_id": {
+          "type": "string",
+          "pattern": "^node_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "relation": {
+          "enum": [
+            "narrative_next",
+            "causes",
+            "story_before"
+          ]
+        },
+        "verification": {
+          "enum": [
+            "needs_author_review",
+            "confirmed",
+            "dismissed"
+          ]
+        },
+        "source_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:hetu:schema:source-ref:1.0.0"
+          },
+          "minItems": 1,
+          "maxItems": 10
+        }
+      },
+      "required": [
+        "edge_id",
+        "from_node_id",
+        "to_node_id",
+        "relation",
+        "verification",
+        "source_refs"
+      ]
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "complete",
+            "partial"
+          ]
+        },
+        "requested_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/source_revision"
+          },
+          "minItems": 1,
+          "maxItems": 100
+        },
+        "scanned_ranges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "document_id": {
+                "type": "string",
+                "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "revision_id": {
+                "type": "string",
+                "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "byte_start": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "byte_end": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "document_id",
+              "revision_id",
+              "byte_start",
+              "byte_end"
+            ]
+          },
+          "minItems": 0,
+          "maxItems": 100
+        },
+        "scanned_bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8388608
+        },
+        "unparsed_ranges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "document_id": {
+                "type": "string",
+                "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "revision_id": {
+                "type": "string",
+                "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "byte_start": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "byte_end": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "reason": {
+                "enum": [
+                  "code",
+                  "html",
+                  "escaped_text",
+                  "no_structural_signal",
+                  "unclosed_quote",
+                  "segment_too_large",
+                  "fountain_metadata"
+                ]
+              }
+            },
+            "required": [
+              "document_id",
+              "revision_id",
+              "byte_start",
+              "byte_end",
+              "reason"
+            ]
+          },
+          "minItems": 0,
+          "maxItems": 20000
+        },
+        "budget_stop": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "document_id": {
+                  "type": "string",
+                  "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "revision_id": {
+                  "type": "string",
+                  "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "byte_offset": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "reason": {
+                  "enum": [
+                    "max_bytes",
+                    "max_nodes",
+                    "max_matches",
+                    "max_duration",
+                    "max_output"
+                  ]
+                }
+              },
+              "required": [
+                "document_id",
+                "revision_id",
+                "byte_offset",
+                "reason"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "requested_refs",
+        "scanned_ranges",
+        "scanned_bytes",
+        "unparsed_ranges",
+        "budget_stop"
+      ]
+    },
+    "fact_assertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "subject_ref": {
+          "type": "string",
+          "pattern": "^character_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "predicate": {
+          "enum": [
+            "identity",
+            "primary_faction",
+            "life_state",
+            "age"
+          ]
+        },
+        "value": {}
+      },
+      "required": [
+        "subject_ref",
+        "predicate",
+        "value"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "predicate": {
+                "const": "identity"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "predicate": {
+                "const": "primary_faction"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "type": "string",
+                "pattern": "^faction_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "predicate": {
+                "const": "life_state"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "enum": [
+                  "alive",
+                  "dead"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "predicate": {
+                "const": "age"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000000
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

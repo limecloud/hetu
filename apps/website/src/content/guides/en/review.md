@@ -1,32 +1,32 @@
 # Checks and draft review
 
-A check points to something worth inspecting. A review records whether the author accepts a particular draft. Neither replaces the other.
+Reference drafts, working manuscripts and author finals are different objects. Review approval, content adoption and finalization are separate decisions.
 
-## Read the evidence first
+## Inspect sources first
 
-“Timeline needs review” indicates uncertainty, not a proven contradiction. Read the source passage and relevant story facts. If the evidence is incomplete, keep the question open rather than treating a suggestion as canon.
+Open the sample book in the [homepage demo](/en/#prototype). Plot beats, consistency checks and the drama outline show fixed sample results with original citations and navigation to working text.
 
-The prototype displays a fixed timeline advisory. It does not analyze changes to your manuscript in real time.
+A timeline advisory signals incomplete information, not a proven error. The demo does not analyze edited text. Changed excerpts require another source check.
 
-## Request changes
+## Record a review decision
 
-1. Open Review and read the draft and advisory.
-2. Add a specific comment, including the passage, concern and requested outcome. For example: “Clarify when the clasp first appeared; preserve the inn scene.”
-3. Select **Request changes**. The status updates to **Changes requested**.
+Enter a specific comment in **Draft review**, then select **Request changes**. A comment is required.
 
-The demo asks for a comment before recording this decision. It does not send a message to an agent.
+To approve, inspect the source, check the evidence box and select **Approve review**. This records a reference decision without overwriting text, finalizing a manuscript or sending an agent a message.
 
-## Approve a revision
+## Adopt an excerpt
 
-1. Inspect the source and decide how to handle the advisory.
-2. Check **I reviewed the source and confirmed how to resolve this timeline advisory**.
-3. Select **Approve revision**.
-4. Review the confirmation and select **Confirm approval**, or return to the review.
+1. Save any edits to Chapter 1.
+2. Select **Adopt an excerpt**.
+3. Compare the current passage with the reference excerpt.
+4. Confirm adoption and inspect the new working revision.
 
-Approval applies to a particular revision. It does not approve future edits. The demo's advisory checkbox is not a way to bypass real errors.
+The demo replaces only the clasp description. If the source changed, recheck the selection. The native client supports author-selected excerpts and replacement text.
 
-## Review again after changes
+## Finalize independently
 
-Changes to the draft, story bible or source require renewed checks and review. Prototype statuses demonstrate an interaction; they are not real approval records or proof of copyright.
+In the editor, select **Finalize revision**, inspect the saved revision and confirm the text, canon and evidence. A manually written manuscript can be finalized without a reference-review approval acting as an automatic gate.
+
+Later edits retain earlier finals. Changed text, canon or evidence requires renewed checks; new text does not inherit an old decision.
 
 Continue with [Formats and delivery](formats-and-delivery.md).

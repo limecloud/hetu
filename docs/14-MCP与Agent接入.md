@@ -1,45 +1,73 @@
 # MCP 与 Agent 接入
 
-基础工具对应 FR-13；MCP Apps 审核资源对应 FR-14／P1。外部 Agent 自行生成文本，河图不调用 Agent 或模型生成 API。
+基础工具对应 FR-13；创作任务和局部交互对应 FR-14／22～25。作者从河图选择客户端、安装扩展并复制 Prompt，在外部 Agent 对话和生成。河图不实现 Agent、不发送生成消息或调用模型 API。设计合同与当前可调用目录分别管理。
 
 ## 1. 传输、生命周期与授权
 
 首版为独立原生 stdio Server，由宿主显式启动 `hetu-mcp` 并绑定一个工作区。启动配置使用安装器生成的受管路径与参数。stdout 只承载 MCP 协议，脱敏日志写 stderr；不默认打开 TCP／HTTP 监听。
 
+该 Server 随桌面软件分发，直接复用本机 Rust Core；宿主持有进程，原生窗口不必常驻。MCP Apps 资源可由本机 Server 提供，不依赖官网或公共后端。未来远端 MCP 具有独立云端资源和授权范围，不将本机连接转为公网代理；分工见[03第8节](03-总体技术架构.md#8-桌面端与-web-服务端职责)。
+
+建书协作另支持作者明确授予的单个 creation_project scope；没有正式作品时不要求伪造 workspace，也不将作品工具开放给筹备会话。scope 的启动／授予通过对应版本的原生接入合同提供，不接受 Agent 自行指定任意目录或调用时切换范围。筹备创建作品后需另授该作品权限，旧会话不自动扩权。
+
 官方研究基线为 `2026-07-28`：使用 `server/discover` 声明版本／能力，并按该版要求在每请求 `_meta` 携带协议版本和客户端能力，不再进行旧 `initialize` 握手。旧宿主如仅支持 `2025-11-25`，需经 M0 明确决定是否增加独立 legacy 协议适配，不能混写两版消息或默认声称兼容。
 
-只声明真实实现的工具、资源及可选 UI 能力。C++ Server 依赖按协议版本、维护、许可和双端构建要求验收。SDK 支持范围与来源见[27](27-Agent与Codex插件集成设计.md)。
+Rust Server 使用官方 `rmcp =3.9.0`，关闭默认 feature，仅启用 Server 与 stdio 传输。协议版本列表固定为 `2026-07-28`。依赖由 `Cargo.lock` 固定；不启用 HTTP、OAuth、采样或模型请求。SDK 支持范围与来源见[27](27-Agent与Codex插件集成设计.md)。
 
-工作区授权由本地用户通过受管配置或可信交互授予，默认最小读取与草稿权限。可按文档集合限制正文读取；撤销后所有入口重新校验。自报 Agent 名称、MCP clientInfo 和 roots 声明均不是权限凭据。
+工作区授权来自启动参数 `--workspace <绝对路径>`；进程以 Agent 权限打开该单一工作区，不创建工作区、不接受作者模式参数。范围覆盖该作品中可由 Agent 读取的正文、草稿和公共审核投影。缩小范围需要独立授权合同，不能把工具 annotations 当成文档级权限。自报 Agent 名称、MCP clientInfo 和 roots 声明均不是权限凭据。
 
-## 2. 八个基础工具
+## 2. 工具目录与业务合同
 
-所有引用均为受授权工作区内的稳定 ID；不接受任意文件路径、脚本、URL 回调或凭据。预期版本对象遵循[05](05-领域模型与数据合同.md)。
+业务对象使用受授权工作区内的稳定 ID；Git 文件选择限定为版本管理范围内的相对路径，不接受任意磁盘路径、脚本、URL 回调或凭据。预期版本对象遵循[05](05-领域模型与数据合同.md)。
 
 | 工具 | 关键输入 | 输出与副作用 |
 | --- | --- | --- |
-| `hetu_read_blueprint` | 可选 `section, entity_ids, cursor, limit` | 返回设定集片段、修订、摘要、锁与分页信息；只读 |
-| `hetu_write_draft` | `package, source_format, content, title?, target_document_id?, base_revision_id?, blueprint_revision, operation_key` | 保存不可变草稿，返回 draft／operation ID 和诊断任务；不定稿 |
+| `hetu_read_blueprint` | 可选 `revision` | 返回完整设定集、固定修订、摘要与锁；只读 |
+| `hetu_write_draft` | `package, source_format, content, title?, target_document_id?, base_revision_id?, blueprint_revision, skeleton_ref?, supersedes_draft_id?, operation_key` | 保存不可变草稿，返回 draft／operation ID；诊断为 `not_requested`，不定稿 |
 | `hetu_extract_plot` | `document_revisions, blueprint_revision, options, save_result, operation_key?` | 已有原文的节点、覆盖、待审项；保存时仅写派生结果 |
 | `hetu_build_drama_skeleton` | `plot_revision_id, blueprint_revision, episode_options, operation_key` | 创建候选骨架修订、缺项及来源；不写台词 |
-| `hetu_validate_blueprint` | `target_refs, blueprint_revision, rule_set_version, save_report, operation_key?` | 执行设定集／内容一致性与影视化规则，返回报告及覆盖 |
-| `hetu_commit_snapshot` | `phase, message?, selected_refs?, expected_head?, operation_key?, operation_id?` | prepare 创建持久预览操作，需 operation_key；execute 仅消费作者已批准的确切操作 |
-| `hetu_export_bundle` | `selection, expected_inputs, profile, operation_key` | 先核对输入与导出权限，写 `exports/` 新包；待审内容需额外作者批准 |
-| `hetu_list_workspace` | 可选 `package, cursor, limit` | 返回工作区、包、可访问文档和实际能力，不泄露根目录外路径 |
+| `hetu_validate_blueprint` | `plot_revision_id, rule_set_version, options, save_report, operation_key?` | 检查固定剧情修订，返回报告、处置投影及覆盖 |
+| `hetu_list_workspace` | 空对象 | 返回启动绑定的工作区与内容包；正文目录通过资源分页读取 |
+| `hetu_commit_snapshot` | `phase, operation_key`；prepare 需 `expected_head, message, author`，可选 `selected_paths`；execute 需 `snapshot_id` | 固定预览返回 pending；只有本机作者已批准的快照可提交，无远端副作用 |
+| `hetu_validate_draft` | `draft_id, expected_draft_revision, plot_options, validation_options, operation_key` | 同事务保存草稿剧情与审核报告；不批准草稿 |
 
-`save_result=false`／`save_report=false` 不产生业务写入；保存派生结果也不得改变原著或设定集。限额、枚举、必填项及正式 outputSchema 在 `contracts/tools/` 实现，不以 Markdown 表格代替机器校验。
+`save_result=false`／`save_report=false` 不产生业务写入，且不接受 `operation_key`；保存派生结果也不得改变原著或设定集。草稿提交和诊断是独立动作。新草稿必须有标题，修改草稿必须指定目标与基线，返工用新稿接替明确的旧稿。
+
+`contracts/tools/catalog.json` 是工具名与内核动作映射的事实源。inputSchema 直接取自内核能力目录，outputSchema 采用 `contracts/schemas/result.schema.json` 并绑定准确 action；该 Schema 校验 AXI 封装，领域 `data` 按对应业务合同解释。Server 在返回前再次验证封装。工具目录只登记已实现能力。Git 快照通过独立作者批准后执行；Bundle 工具按交付完整性验收登记，不能返回模拟成功。
 
 ## 3. 资源与任务查询
 
-提供受授权资源：`hetu://workspace/{id}/documents/{id}/revisions/{id}`、`.../drafts/{id}`、`.../reviews/{id}`、`.../reports/{id}`、`.../operations/{id}` 和 `.../capabilities`。实际模板在资源发现中返回，ID 之外的路径不能拼接为本地文件读取。
+资源根为 `hetu://workspace/{workspace_id}/`。`resources/list` 返回固定集合入口，`resources/templates/list` 返回带当前工作区 ID 的白名单模板：
 
-通过资源读取原文、审核结果与原操作状态，避免只提供“写草稿”却无法读取驳回理由。宿主支持订阅时仅通知记录变化，不发送正文或暗示自动开始生成；不支持订阅则查询原资源。V1 不依赖未验证的协议扩展来完成核心任务。
+| 资源路径 | 行为 |
+| --- | --- |
+| `workspace`、`capabilities`、`blueprint` | 工作区、可访问动作与当前设定集；能力投影排除作者专用动作 |
+| `blueprint/revisions/{revision}` | 读取固定设定修订 |
+| `documents{?kind,limit,cursor}` | 分页正文摘要及固定正文资源引用 |
+| `documents/{id}/revisions/{revision_id}` | 固定原文；`documents/{id}` 明确返回当前修订 |
+| `documents/{id}/script-mapping` | 初稿结构来源与当前性 |
+| `drafts/{id}`、`reviews/{draft_id}{?report_limit,report_cursor}` | 草稿正文、来源、报告及公共决定；过滤作者私密批注 |
+| `reviews{?state,limit,cursor}` | 分页待审队列；决定 ID 可经 `reviews/by-decision/{review_id}` 查询 |
+| `plots{?document_id,limit,cursor}`、`plots/{id}` | 剧情目录及固定修订 |
+| `reports{?plot_revision_id,limit,cursor}`、`reports/{id}` | 报告目录及固定报告／当前处置 |
+| `skeletons{?plot_revision_id,limit,cursor}`、`skeletons/{id}/revisions/{revision}` | 骨架目录及固定修订 |
+| `skeletons/{id}/comparisons{?limit,cursor}`、`comparisons/{id}` | 原著结构差异目录及固定报告 |
+| `git/status`、`git/log{?limit,cursor}` | 工作树与 HEAD 状态、分页提交历史 |
+| `git/snapshots{?limit,cursor}`、`git/snapshots/{id}` | 固定快照目录、文件集合、当前性与批准状态 |
+| `git/diff{?path}`、`git/snapshots/{id}/diff{?path}` | 范围内文件差异；固定差异核验摘要，私密审核原记录拒绝 Agent 读取 |
+| `operations/{id}`、`operations/by-key{?action,key}` | Agent 原操作回执；键按 URL 查询参数编码，支持中文与特殊字符 |
 
-长任务先返回持久操作引用与状态，由原操作资源查询结果；协议版本支持的进度／取消可映射到内核任务，但不作为唯一查询方式。客户端超时后沿原操作恢复，不能创建重复草稿或重复 Git 提交。
+集合缺省每页 50 条，最多 200 条；Git 提交历史缺省 30 条、最多 100 条，待审快照缺省 50 条、最多 100 条；审核中的报告缺省 20 条、最多 50 条。列表游标绑定快照，列表变化后要求重读。资源结果在 `data.mcp_resources` 提供窄引用，在存在下一页时返回 `data.mcp_next_page_uri`。重复／未知查询参数、其他工作区 ID、任意文件路径、编码路径分隔符和路径穿越均拒绝。
+
+通过资源读取原文、审核结果与原操作状态，避免只提供“写草稿”却无法读取驳回理由。Server 只声明当前构建实际实现并验收的扩展；没有订阅时通过查询观察，不虚报通知或 Apps 能力。资源按 private／零缓存有效期返回。
+
+创作任务扩展采用 scope 区分的资源根：正式作品沿用 `hetu://workspace/{workspace_id}/`，筹备为 `hetu://creation-project/{project_id}/`；其下以白名单提供 `creative-tasks/{task_id}`、固定请求、候选和局部选择。工具投影及发布条件见[30第19节](30-应用API详细设计.md#19-mcp-工具投影与兼容)。不借资源 URI 扫描书库、不返回应用私有凭据，通用作品工具在筹备 scope 中不可用。
+
+内核任务在阻塞线程执行，每个 Server 同时接受一个领域任务，繁忙立即返回 `workspace_busy`。单行输入上限 16 MiB，领域结果上限 8 MiB；超限结果保留已有原操作引用。取消可阻止尚未开始的任务；已开始的原子事务完成后沿原键恢复。EOF 关闭连接，进程退出前收束已经开始的内核任务。传输取消不等于业务撤销。
 
 ## 4. 幂等与失败
 
-所有持久写入以提供方、工作区、授权主体、动作及 `operation_key` 标识一次请求，保存参数摘要与结果；同键同参数返回原结果，同键不同参数报冲突。重新授权后必须先查询原键；仅首次请求执行 CAS，避免把成功重放误判成过期写入。恢复日志与操作记录在内核事务内落盘。
+所有持久写入以提供方、明确 scope、授权主体、动作及 `operation_key` 标识一次请求，保存参数摘要与结果；同键同参数返回原结果，同键不同参数报冲突。重新授权后必须先查询原键；仅首次请求执行 CAS，避免把成功重放误判成过期写入。恢复日志与操作记录在内核事务内落盘。
 
 `operation.input_digest` 为去掉幂等键后的固定输入按RFC 8785 JCS 规范化规则计算的 `sha256:` 摘要，跨语言测试向量在正式合同中发布。元数据保留期目标至少自首次受理起 365 天；在途／unknown 及仍被审核或交付引用的记录继续保护，过期不能自动换键重发。
 
@@ -51,18 +79,18 @@
 
 不提供 `hetu_write_blueprint`、`hetu_unlock_blueprint`、`hetu_approve_draft` 或任意 Shell 工具。Agent 可以提交设定集建议草稿，由作者在可信入口采纳。
 
-快照 prepare 冻结工作树摘要、文件集合、HEAD 与备注，返回公开状态 `pending` 与 `data.approval_state=pending_approval`。作者在原生桌面或可信 CLI 审阅并批准；execute 重新核验后一次性执行。批准记录由可信入口写入受保护本机授权存储，不接受 Agent 传入的批准字段，不随 Git 同步。工作区内容变化使批准失效。
+快照 prepare 冻结工作树摘要、文件集合、HEAD、提交身份、备注与时间，返回公开状态 `pending` 与 `data.approval_state=pending_approval`。Mac 版本管理页提供作者审阅和明确批准；可信 CLI 的人工入口须遵守同一合同。execute 使用独立原操作键和 snapshot_id，重新核验后执行，原键重放返回同一 commit。批准记录由可信入口写入受保护本机授权存储，不接受 Agent 传入的批准字段，不随 Git 同步。所选文件或 HEAD 变化使批准失效。本机批准绑定仓库实例和快照摘要，15 分钟内有效；prepare 不授予提交权。
 
 V1 MCP 不暴露 push／pull／branch／merge。用户从桌面或 CLI 执行这些能力，避免将 Git 全权限变成 Agent 默认草稿权限。
 
-## 6. MCP Apps 审核面板
+## 6. MCP Apps 局部交互
 
-面板显示草稿、来源、diff、设定集版本、诊断覆盖、批注与审核结果，经支持的 MCP Apps 资源和桥接加载。UI 运行于宿主受限环境，无文件系统、凭据或直接供应商网络访问。
+面板覆盖建书方向与书名／简介选择、大纲比较、封面等比预览、参考稿 diff 与批注；经工具的 `_meta.ui.resourceUri`、`ui://` HTML 资源及宿主桥接加载。UI 运行于受限环境，无任意文件系统、凭据或供应商网络访问。普通网页与 App 桥接分别适配。
 
-审批必须有可验证的人类交互与可信作者会话，绑定确切草稿、报告和工作区。若宿主不能证明该信任边界，面板只能提交审核意图，并引导作者到原生端完成最终批准；模型调用同一桥接不能冒充人类点击。通过按钮的可用性取决于兼容性验收，不臆造统一的宿主确认 API。
+局部选择和意见通过受限动作记录 InteractionDecision；不能以页面保存直接创建作品、改正典、采纳正文、选用正式封面或定稿。作者在原生入口完成这些决定；模型调用或自动化点击不能冒充可信人类批准。动作可见性、只读 annotations 和宿主私有 UI 字段均不承担最终授权。
 
-不支持 Apps 时返回可读摘要、资源引用与桌面待审入口，人工审核仍可完整完成。默认不自动发起外部 Agent 重写或远端消息。
+不支持 Apps 时返回可读摘要、资源引用与原生任务入口。必要时作者启动单任务 Node.js 页面并在内置浏览器配合，配对及安全见[27](27-Agent与Codex插件集成设计.md)与[18](18-安全与隐私.md)。该页面服务不是 HTTP MCP。默认复制补充 Prompt，不自动发起 Agent 重写或远端消息。
 
 ## 7. 宿主兼容矩阵
 
-Codex、WorkBuddy 及其他宿主按具体版本分别验证：stdio 启动、版本协商、工具、分页、资源、取消、断线恢复与 Apps。兼容范围由版本化验收矩阵维护，仅公布通过验证的组合。Apps 不可用不能影响八个基础工具的语义和桌面审核。
+Codex、WorkBuddy、Claude Code 及其他宿主按具体版本及运行表面分别验证：扩展安装、Skills 发现、stdio、协议、工具、分页、资源、取消、原操作恢复、Apps、浏览器本机可达性和图像能力。仅公布通过验证的组合，不从 Claude Desktop 的 Apps 支持推导 Claude Code 支持。Apps 不可用不能影响已登记工具的语义和原生验收。

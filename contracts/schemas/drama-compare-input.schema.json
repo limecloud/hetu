@@ -1,0 +1,108 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "skeleton_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "skeleton_id": {
+          "type": "string",
+          "pattern": "^skeleton_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "skeleton_id",
+        "revision",
+        "sha256"
+      ]
+    },
+    "source_revisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "revision_id": {
+            "type": "string",
+            "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "source_format": {
+            "enum": [
+              "markdown",
+              "fountain"
+            ]
+          },
+          "size_bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1048576
+          }
+        },
+        "required": [
+          "document_id",
+          "revision_id",
+          "sha256",
+          "source_format",
+          "size_bytes"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 100,
+      "uniqueItems": true
+    },
+    "save_result": {
+      "type": "boolean"
+    },
+    "operation_key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    }
+  },
+  "required": [
+    "skeleton_ref",
+    "source_revisions",
+    "save_result"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "save_result": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "operation_key"
+        ]
+      },
+      "else": {
+        "not": {
+          "required": [
+            "operation_key"
+          ]
+        }
+      }
+    }
+  ]
+}

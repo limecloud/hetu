@@ -13,7 +13,7 @@ npm run build
 npm run preview --workspace @hetu/website
 ```
 
-开发地址为 `http://127.0.0.1:4350`，构建预览为 `http://127.0.0.1:4351`。使用指南位于 `src/content/guides/zh-CN/` 与 `src/content/guides/en/`。构建读取根 `assets/` 和 `design/`，不发布仓库 `docs/` 的工程文档；不编辑 `public/` 中生成的副本。
+开发地址为 `http://127.0.0.1:4350`，构建预览为 `http://127.0.0.1:4351`。使用指南位于 `src/content/guides/zh-CN/` 与 `src/content/guides/en/`。首页 `/#prototype` 与 `/en/#prototype` 内嵌当前 macOS 布局的交互演示，不发布独立原型页面。构建读取根 `assets/`，不发布仓库 `docs/` 的工程文档；不编辑 `public/` 中生成的副本。
 
 ## 浏览器验证
 

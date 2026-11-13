@@ -16,16 +16,16 @@
   },
   "meta": {
     "title": "Hetu — A local workspace for story worlds",
-    "description": "One story bible for characters, worlds and timelines. Connect novels and screen adaptations with traceable sources, review and revisions. Chinese first, with English support."
+    "description": "Manage multiple novels in a local author library, with independent covers, chapters and story bibles. Explore plot, adaptation, reference review, excerpt adoption and separate finalization. macOS first."
   },
   "hero": {
     "eyebrow": "For authors and independent IP studios",
     "line1": "Every story.",
     "line2": "A world of its own.",
-    "description": "Keep characters, worlds and timelines in one story bible.\nFrom your novel to its screen adaptation, keep every story connected.",
-    "primary": "Explore the prototype",
+    "description": "Give every book its own cover, chapters and story bible.\nWrite, trace the plot and shape adaptations on your terms.",
+    "primary": "Try the workspace here",
     "secondary": "Read the user guide",
-    "note": "In development · Native desktop design · Offline core",
+    "note": "v0.2.0 · Native macOS implementation · In-page demo data",
     "alt": "Hetu’s little dragon-horse beside a manuscript, story scroll and delivery box"
   },
   "promises": [
@@ -38,14 +38,14 @@
       "description": "Core tools work offline"
     },
     {
-      "title": "Drafts stay drafts",
-      "description": "Traceable reviews and delivery"
+      "title": "Adopt, then finalize",
+      "description": "Separate author decisions"
     }
   ],
   "features": {
     "eyebrow": "From worldbuilding to delivery",
     "title": "Big stories need a clear foundation.",
-    "intro": "You shape the characters and the story. Hetu organizes the canon, revisions and delivery. External agents can assist; you make the decisions.",
+    "intro": "Keep multiple books in one library, with distinct writing, source checks, reference drafts and versions. External agents are optional; authors make the decisions.",
     "items": [
       {
         "title": "One story bible. A connected world.",
@@ -60,41 +60,41 @@
         "alt": "A novel manuscript, scene cards and a clapperboard"
       },
       {
-        "title": "Review with care. Deliver with context.",
-        "body": "Keep drafts, comments, decisions and revisions distinct. Deliver scripts, reports and provenance in the recipient’s format.",
+        "title": "Adopt excerpts. Finalize separately.",
+        "body": "Review records a decision. Preview selected changes before adopting them into working text, then finalize an exact revision. Earlier finals remain available.",
         "image": "feature-review.webp",
         "alt": "Xiaotu organizing reviewed manuscripts and a delivery box"
       }
     ]
   },
   "workspace": {
-    "eyebrow": "Made for focused writing",
-    "title": "A familiar editor. A clearer story.",
-    "body": "Find chapters on the left, write in the center, and inspect canon and findings on the right. Built for Chinese input, source navigation and clear save states.",
-    "cta": "Open the workspace prototype",
+    "eyebrow": "GET TO KNOW HETU, HANDS ON",
+    "title": "Your library. Your story worlds.",
+    "body": "Open a cover to manage details and chapters, write, inspect canon and plot, then try reference review, excerpt adoption and separate finalization. Layout and artwork follow the current macOS implementation.",
+    "cta": "Try the homepage workspace",
     "alt": "Hetu native desktop design with chapters, a manuscript editor and a story inspector",
-    "caption": "Native client design preview. The interactive prototype uses in-page demo data, without accessing a real workspace."
+    "caption": "In-page demo. Refresh to reset."
   },
   "workflow": {
     "eyebrow": "Your creative workflow",
     "title": "From the first chapter to the next medium.",
-    "intro": "Share canon across the original and its adaptations. Keep drafts and approved work distinct. Work entirely by hand or connect an external agent when useful.",
+    "intro": "Move from a multi-book library to a focused workspace. Reviewing a reference, adopting it and finalizing text are separate decisions. Work manually or choose an external agent.",
     "steps": [
       {
-        "title": "Build your story bible",
-        "body": "Maintain characters, locations, factions and timelines. Discovered entities remain suggestions until you confirm them."
+        "title": "Create a book and its canon",
+        "body": "Keep each book’s details, cover, chapters and story bible independent. Begin planning without a title or an agent."
       },
       {
         "title": "Write and adapt",
         "body": "Write chapters, organize existing plot beats, then outline episodes and scenes. The core structures material; it does not invent dialogue."
       },
       {
-        "title": "Check and review",
-        "body": "Inspect source evidence. Handle deterministic conflicts and advisory findings separately, then decide what to approve."
+        "title": "Review, adopt, finalize",
+        "body": "Inspect sources and checks, then record a review. Adopt selected text into an editable manuscript and finalize a saved revision separately."
       },
       {
-        "title": "Version and deliver",
-        "body": "Create Git snapshots and optionally sync to GitHub or Gitee. Export fixed revisions in the recipient’s format."
+        "title": "Save and version",
+        "body": "Saving text and creating Git snapshots are separate. Prepare fixed files, identity and changes for author approval. Remote collaboration needs its own authorization."
       }
     ],
     "detail": "Clear boundaries at every step",
@@ -108,12 +108,12 @@
         "body": "Rules inspect explicit facts and structure, reporting coverage and uncertainty. Motivation and literary choices stay with the author."
       },
       {
-        "title": "Approval is not autosave",
-        "body": "Review binds an exact draft, canon and report revision. Changed inputs require new checks; previous decisions remain in history."
+        "title": "Review, adoption and finalization are separate",
+        "body": "Review approval does not overwrite text. Adoption saves a new working revision; finalization records an author decision on an exact revision. Later edits retain earlier finals."
       },
       {
-        "title": "Export is not publication",
-        "body": "Bundles are saved locally. You review content, rights statements and recipient requirements; files are not uploaded automatically."
+        "title": "Prepare delivery from actual capabilities",
+        "body": "Keep Markdown or Fountain sources, provenance and local versions. Check the recipient’s template. Complete bundles and format conversion depend on the specific release capabilities."
       }
     ]
   },
@@ -123,13 +123,13 @@
     "body": "No built-in models or generation-service lock-in. Readable files, Git history and open MCP let you choose your own creative process.",
     "cta": "Explore the open-source project",
     "local": "Local first",
-    "native": "Native macOS / Windows design",
+    "native": "macOS first; Windows implemented separately",
     "language": "Chinese first, with English support"
   },
   "integrations": {
     "eyebrow": "Open connections. Clear boundaries.",
     "title": "Agents assist. Authors decide.",
-    "intro": "External agents such as Codex and WorkBuddy use local MCP to read authorized canon and submit drafts. Hetu handles constraints and workflow, without built-in models or generation APIs.",
+    "intro": "The standalone stdio MCP server binds one author-selected local workspace. External agents can read canon, submit references and organize structure. Hetu includes no chat, models or generation API.",
     "layers": [
       {
         "title": "Story bible and rules",
@@ -137,21 +137,21 @@
       },
       {
         "title": "MCP tools and resources",
-        "body": "Canon reads, draft submission, plot extraction, scene outlines, validation and export share core authorization and transactions."
+        "body": "Canon reads, reference submission, plot, drama outlines, checks and author-approved snapshots use current core contracts. The list below comes directly from the machine tool catalog."
       },
       {
-        "title": "Codex plugins and AXI",
-        "body": "Plugins distribute workflows and connections. AXI shapes machine receipts and original-operation recovery. Neither keeps another source of story facts."
+        "title": "Task handoff and candidate return",
+        "body": "The integration design covers choosing a client, installing an extension, copying a task prompt and receiving candidates. Plugins, Apps and local browser interactions need separate host verification."
       }
     ],
-    "toolsTitle": "Eight foundational tools",
-    "status": "Integration claims depend on exact protocol and host versions, with verification evidence. Installing a plugin does not grant full file or Git access.",
+    "toolsTitle": "Currently implemented MCP tools",
+    "status": "Tools come from the current repository catalog. Installing an extension does not grant full file or Git permissions. Real host compatibility is verified separately from the application build.",
     "manual": "A complete workflow without an agent",
-    "manualBody": "Manual writing, story-bible maintenance, rule checks, review, local snapshots and export belong to the core. External agents are optional assistance."
+    "manualBody": "The local client supports manual book creation, editing, canon, structural checks, review, adoption, finalization and local snapshots. External collaboration is optional. This website establishes no real connection."
   },
   "formats": {
     "title": "Editable for authors. Readable for recipients.",
-    "body": "Novels use Markdown; scripts use Fountain. Export TXT, DOCX or PDF through recipient profiles, with conversion losses and provenance recorded. File standards, writing conventions and production templates remain distinct.",
+    "body": "Current manuscripts use Markdown and independent scripts use Fountain. DOCX, PDF and complete bundles are delivery designs whose availability depends on the release capabilities. Check recipient templates, Chinese typography and media rights.",
     "cta": "Prepare your handoff",
     "labels": [
       "Manuscript",
@@ -178,11 +178,11 @@
       },
       {
         "q": "Which platforms and languages are included?",
-        "a": "V1 is designed for native macOS on Apple Silicon and Windows 11 x64, with a shared Swift CLI. Simplified Chinese comes first, with full English support. This site offers both languages; mobile visuals are extensions only."
+        "a": "Development implementations include the native macOS client, Rust core, Swift CLI and standalone MCP server, with Chinese and English interfaces. Windows follows full Mac verification as a separate implementation. Mobile visuals are concepts only."
       },
       {
         "q": "Can I download an application?",
-        "a": "The application is in development. This site provides user guides and an interactive prototype, which does not access a real workspace. Follow the source repository for code and progress."
+        "a": "0.2.0 publishes source, the website and its homepage demo. Follow the repository instructions to build a local macOS development app. Its ad-hoc signature is not a notarized distribution package."
       },
       {
         "q": "Will my work be uploaded or become open source?",
@@ -190,7 +190,7 @@
       },
       {
         "q": "How do I deliver a novel or script?",
-        "a": "Keep Markdown or Fountain sources and fixed revisions, then export formats such as TXT, DOCX and PDF through recipient profiles. Bundles also record canon, diagnostics, versions and provenance."
+        "a": "Keep Markdown or Fountain text, revisions and provenance, and agree on the recipient’s template. DOCX, PDF conversion and complete bundles require release-specific verification. The homepage demo creates no delivery files."
       },
       {
         "q": "What are the license and costs?",
@@ -200,16 +200,16 @@
   },
   "docs": {
     "title": "User guide",
-    "intro": "Get to know your workspace, organize story facts and follow a draft through review and delivery.",
+    "intro": "Start in the library, organize books and chapters, inspect plot and reference drafts, and understand adoption, finalization and versions.",
     "note": "The interactive prototype uses sample data within this page. Refreshing resets it; it does not save or access your files.",
     "back": "All guides",
     "onPage": "On this page"
   },
   "footer": {
     "description": "A local creative workspace for authors and independent IP studios.",
-    "status": "An open-source project in development. Images and prototypes illustrate the product design.",
+    "status": "v0.2.0 · macOS source implementation; homepage prototype uses in-page demo data.",
     "license": "Core license: Apache-2.0",
-    "privacy": "No forms, cookies or analytics scripts. The hosting platform processes connection data under its network operating policies.",
+    "privacy": "No form data collection, cookies or analytics. Demo input stays in this page; the hosting platform processes connection data under its network operating policies.",
     "design": "Interactive prototype",
     "rights": "Hetu"
   }

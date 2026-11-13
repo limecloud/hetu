@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0.0",
+  "tools": [
+    {
+      "name": "hetu_read_blueprint",
+      "action": "hetu.blueprints.get",
+      "title": "读取设定集 / Read story bible",
+      "description": "读取当前或固定修订的作者设定集。Read the author's current or fixed story bible revision."
+    },
+    {
+      "name": "hetu_write_draft",
+      "action": "hetu.drafts.submit",
+      "title": "提交待审草稿 / Submit draft",
+      "description": "保存调用方提供的文本，等待作者审核；不覆盖正式正文，不自动生成或检查。Save supplied text for author review; no generation, automatic validation or direct publication."
+    },
+    {
+      "name": "hetu_extract_plot",
+      "action": "hetu.plot.extract",
+      "title": "整理剧情 / Extract plot",
+      "description": "从固定原文提取结构候选；覆盖不足保留 partial，需要作者确认。Extract structural candidates from fixed source revisions; partial coverage requires author review."
+    },
+    {
+      "name": "hetu_build_drama_skeleton",
+      "action": "hetu.drama.build_skeleton",
+      "title": "建立短剧骨架 / Build drama skeleton",
+      "description": "从固定剧情整理分集场次，不生成台词、动作或镜头描述。Organize episodes and scenes from fixed plot evidence; no dialogue, action or shot generation."
+    },
+    {
+      "name": "hetu_validate_blueprint",
+      "action": "hetu.validation.run",
+      "title": "执行一致性检查 / Validate consistency",
+      "description": "检查固定剧情修订；问题和未覆盖范围是报告结果，不是工具故障。Validate a fixed plot revision; findings and uncovered premises are report outcomes, not tool failures."
+    },
+    {
+      "name": "hetu_list_workspace",
+      "action": "hetu.workspaces.list",
+      "title": "查看授权工作区 / List workspace",
+      "description": "读取启动时绑定的单一工作区和内容包。Read the single workspace and packages authorized at server startup. Discover documents and review feedback through resources."
+    },
+    {
+      "name": "hetu_validate_draft",
+      "action": "hetu.reviews.validate",
+      "title": "检查待审草稿 / Validate draft",
+      "description": "检查固定草稿或其人工校正剧情并保存审核证据；不能批准草稿。Validate a fixed draft or its author-corrected plot and save review evidence; cannot approve drafts."
+    },
+    {
+      "name": "hetu_commit_snapshot",
+      "action": "hetu.git.snapshot",
+      "title": "准备或提交版本快照 / Prepare or commit snapshot",
+      "description": "准备固定文件、HEAD与提交身份，返回pending；仅可执行已经由作者在本机批准的同一快照。不能自行批准、初始化、切分支、推送或执行hooks。Prepare fixed files, HEAD and identity with pending status; execution requires the author’s matching local approval. Cannot approve, initialize, switch branches, push or execute hooks."
+    }
+  ]
+}

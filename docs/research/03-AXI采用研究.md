@@ -1,6 +1,6 @@
 # AXI 采用研究
 
-资料版本日期：2026-11-12。来源为 AXI 0.2.1 规范与 Schema，公开入口为 [AXI 文档](https://limecloud.github.io/axi/)。源码与 Schema 来源以仓库相对路径和摘要标识，不依赖本机 checkout。
+资料版本日期：2026-11-13。来源为 AXI 0.2.1 规范与 Schema，公开入口为 [AXI 文档](https://limecloud.github.io/axi/)。源码与 Schema 来源以仓库相对路径和摘要标识，不依赖本机 checkout。
 
 ## 规范与参考来源
 
@@ -13,6 +13,7 @@
 | `content/develop/mcp.md` | AXI structuredContent 与 MCP 包装的区别 |
 | `content/ecosystem/codex/plugins.md`、`interfaces.md` | 插件、桥接、原生扩展与宿主边界 |
 | `content/ecosystem/mcp-apps.md`、`content/reference/adoption.md` | UI 不等于事实、采用与证据台账 |
+| `content/ecosystem/claude-code/index.md`、`content/ecosystem/workbuddy/index.md` | 各宿主的 Skills、连接及浏览器边界，不从同名能力推导兼容 |
 
 ## 采用范围
 
@@ -21,6 +22,8 @@
 恢复必须先重新授权并查原键，再对首次执行做 CAS；否则成功写入后的同键重放会因版本已变化而被误判。固定输入摘要需发布规范化规则和跨语言向量，幂等记录与事务效果一起保存。
 
 错误优先复用 AXI 标准码；领域码命名空间为 `hetu.`。unknown 使用 result_unknown 与 recover 方向，不把没有查到记录自动解释为未发生外部副作用。
+
+交互设计采纳同任务、同事实源：Skills 负责方法，MCP 提供动态能力，Apps／本地网页记录局部选择，Core 保存唯一决定。河图的具体入口为软件准备任务、用户复制到所选客户端，生成只在客户端进行；按需 Node.js 页面是河图自己的适配实现，不能把 AXI 的设计说明当作现成网页服务。
 
 ## 事实与限制
 

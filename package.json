@@ -13,5 +13,5 @@
     "check": "npm run check --workspace @hetu/website",
     "deploy:website": "npm run deploy --workspace @hetu/website"
   },
-  "version": "0.1.0"
+  "version": "0.2.0"
 }

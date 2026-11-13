@@ -1,35 +1,29 @@
 # Quick start
 
-Explore Hetu with The Wuchuan Chronicles, a sample story. No model or agent connection is needed.
+Begin in your library and open a book’s workspace. The website demo and local application use separate data.
 
-## Open the workspace
+## Try the homepage workspace
 
-Open the [interactive prototype](/prototype/workbench.html). The left navigation contains Novel, Story Bible, Drama, Review and Delivery. The main area shows your current task; the top bar holds language and revision controls.
+Open the [homepage demo](/en/#prototype). Every action stays on the homepage. Select **Chronicles of Wuchuan**, or use **Back to library** to switch books.
 
-Saving in the prototype keeps data within the current page. Refreshing or closing the page resets it. Use the sample text rather than an unbacked-up manuscript.
-
-## Try a complete workflow
-
-1. In Novel, open Chapter 1, change a sentence and select **Save revision**. The revision number updates.
-2. Open Story Bible, inspect the characters and places, then unlock and lock it to see the status change.
-3. Open Drama, inspect the episode outline and select **View source mapping** to return to the manuscript.
-4. In Review, add a comment and select **Request changes**. Review the timeline advisory, check its confirmation box and select **Approve revision**.
-5. Confirm the approval. In Delivery, choose content groups and select **Preview bundle contents**.
+1. Search by title or author, filter by status, and switch between covers and a list.
+2. Select **New book**. Save a planning book even without a title.
+3. Open the sample book, edit Chapter 1 and select **Save text**. Switch chapters and return to see the in-page changes.
+4. In **Draft review**, request changes with a comment, or inspect evidence and approve the review. Approval does not change the manuscript.
+5. Preview and confirm **Adopt an excerpt**, then use **Finalize revision** in the editor for a separate author decision.
 
 ```mermaid
 flowchart LR
-    A[Read and write] --> B[Check story facts]
-    B --> C[Inspect adaptation]
-    C --> D[Review draft]
-    D --> E[Preview delivery]
+    A[Library and books] --> B[Text and canon]
+    B --> C[Review a reference]
+    C --> D[Adopt into working text]
+    D --> E[Finalize separately]
 ```
 
-## Keep three distinctions in mind
+## Demo and local software
 
-- **Facts and suggestions:** only author-confirmed information belongs in the shared story bible. Keep uncertain discoveries separate.
-- **Drafts and approved revisions:** saving text does not approve it. Approval records a decision about a particular revision.
-- **Checks and judgment:** an advisory helps locate evidence. Literary expression and character motivation remain the author's decisions.
+Refreshing resets all demo state. It accesses no files, models, MCP server or Git repository. Do not use it for the only copy of your writing.
 
-## Continue exploring
+The current macOS source implements a local library, chapters, editing, canon, plot, drama, review and versions. Build a development app using the repository instructions. Distribution signing, notarization and Windows verification are separate.
 
-Read [Chapters and writing](writing.md) or [Maintain your story bible](story-bible.md). See the [FAQ](/en/faq/) for desktop release availability.
+Continue with [Chapters and writing](writing.md), [Checks and draft review](review.md), or [External agents](agents.md).

@@ -1,31 +1,29 @@
 # Chapters and writing
 
-The Novel view keeps chapters, manuscript text and story checks close together.
+Each book has independent details, covers and chapters. Enter a book from the library and open **Manuscript**.
 
-## Find a chapter
+## Books and chapters
 
-Select Novel in the workspace navigation, then choose a chapter title. The active chapter is highlighted. Moving between chapters keeps edits within the current prototype page.
+The [homepage demo](/en/#prototype) supports search, filtering and book switching. **Book details** lets you change the title, author, synopsis, status and sample cover.
 
-On narrow phone screens, only the active chapter is shown. Use a desktop-width screen to explore the complete chapter list.
+Chapter navigation works on mobile too. Select a title or create an empty chapter with **New chapter**. The demo shows a volume; the native client also provides structure management and revision checks.
 
 ## Edit and save
 
-1. Type directly into the manuscript area.
-2. Select **Save revision** and check the updated revision number and message.
-3. Switch to another chapter and return to inspect the edited text.
+Edits show **Unsaved changes**. Select **Save text** to save an in-page revision. Switching chapters, tasks or books retains the demo buffer; refreshing resets it.
 
-This demo does not write files or create Git commits. Copy any text you want to keep into a trusted local editor and save it there.
+The local client saves to the book workspace with Chinese input, conflict handling and recovery buffers. Saving text does not create a Git commit.
 
-The Chinese sample counts Han characters; the English sample counts words. These counts are writing aids and may differ from a publisher's submission rules.
+The demo counts non-whitespace characters. This is a writing aid, not a publisher’s billing count.
 
-## Inspect a source passage
+## Finalize, then keep writing
 
-Chapter 1 includes a timeline advisory. Select **Locate source** to highlight “old jade clasp” in the English sample. If you removed the passage, inspect the current manuscript before acting on an old advisory.
+**Finalize revision** requires saved text. Inspect the chapter and revision, then confirm the evidence checkbox in the dialog.
 
-The inspector also shows the story bible's lock state. Writing a chapter does not require unlocking the story bible. Unlock it only when the author needs to revise a shared fact.
+Later edits show **Earlier final retained**. Save and confirm the new revision separately; edits never silently rewrite the earlier final.
 
-## Change the interface language
+## Language and theme
 
-The language control changes labels while leaving manuscript text untouched. The English entry opens a separate English sample; changing the interface never translates your story.
+The demo toolbar switches interface language and light or dark theme. Text, titles and author input stay unchanged. The English homepage initializes a separate English sample; switching language does not translate a book.
 
-Continue with [Maintain your story bible](story-bible.md) and [Checks and draft review](review.md).
+Continue with [Story bible](story-bible.md) and [Draft review](review.md).

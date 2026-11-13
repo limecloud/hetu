@@ -1,32 +1,24 @@
 # Formats and delivery
 
-Agree on templates, revisions, page requirements and file formats with the recipient before preparing a handoff. Common formats exist, but there is no single submission template for every publisher or production team.
+Agree on templates, scope and revisions with the recipient. File formats, industry conventions and production templates need separate checks.
 
-## Choose a suitable format
+## Current text and delivery design
 
-| Purpose | Common file | Check |
+| Purpose | Format | Current scope |
 | --- | --- | --- |
-| Editable novel | Markdown, UTF-8 TXT | Chapter titles, order and text encoding |
-| Editable screenplay | Fountain | Scene headings, action, characters and dialogue |
-| Editorial collaboration | DOCX | The recipient's styles and template |
-| Reading and approval | PDF | Fonts, line breaks, scene numbers and pagination |
+| Editable novel | Markdown | Local text editing and revisions |
+| Independent screenplay | Fountain | Created from an outline and edited separately |
+| Collaboration and reading | DOCX, PDF, TXT | Conversion and complete bundles require release-specific verification |
 
-Fountain is plain-text screenplay syntax; PDF is a reading format. If a recipient requires DOCX or a specific template, follow that agreement. Always inspect Chinese text after conversion.
+The homepage demo exports no ZIP, DOCX or PDF. Repository designs do not prove every converter is implemented, and the current MCP tools do not include bundle export.
 
-## Preview a delivery selection
+## Before a handoff
 
-In Delivery, choose from the complete story bible, selected novel chapters, episode outlines and approved scripts, and diagnostics with revision provenance. Select **Preview bundle contents** to see the number of selected groups.
+- Scope: agreed chapters, episodes and media; exclude private comments.
+- Version: fixed finals with matching evidence, reports and mappings.
+- Layout: inspect fonts, punctuation, wrapping, pagination and scene headings in an independent reader.
+- Rights: check media origins, permissions and attribution.
 
-Select at least one group. This demo does not create ZIP, DOCX or PDF files, and does not send anything to a producer.
+The local media workspace provides import, checksums and rights records. File signature recognition proves neither copyright nor complete media decoding. Unknown rights are not permission.
 
-## Check before a real handoff
-
-- **Scope:** include the agreed chapters, episodes and materials; decide whether internal comments belong in the package.
-- **Revision:** ensure manuscripts, scripts and reports refer to matching approved revisions.
-- **Format:** inspect fonts, punctuation, names, scene numbers and page breaks.
-- **Rights:** confirm material sources, permission scope and credits.
-- **Readability:** open the final files in an independent reader and inspect their pages, not just their extensions.
-
-A delivery bundle organizes material and provenance. It does not itself register copyright, grant rights or prove acceptance by a recipient.
-
-See [Your work, versions and backups](data-and-backup.md) for retaining your materials.
+A bundle is not copyright registration, a license agreement or recipient acceptance. Continue with [Versions and backups](data-and-backup.md).

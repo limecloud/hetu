@@ -1,0 +1,5 @@
+module CHetu [system] {
+    header "hetu.h"
+    link "hetu_core"
+    export *
+}

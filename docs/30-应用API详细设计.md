@@ -1,6 +1,8 @@
 # 应用 API 详细设计
 
-API 为本地 C ABI／应用用例合同，供 GUI、Swift CLI 与 MCP 适配；V1 不引入必装 HTTP 后端。领域见[28](28-领域设计与边界上下文.md)，字段语义见[29](29-数据字典与Schema设计.md)。
+API 为共享应用用例合同，供原生 GUI、Swift CLI、MCP 及按需局部页面适配；V1 不引入必装 HTTP 后端。Node.js 页面通过受限本机 IPC 消费白名单用例，不能绕过 Core 直接写文件。领域见[28](28-领域设计与边界上下文.md)，字段语义见[29](29-数据字典与Schema设计.md)。
+
+本章定义产品设计面；调用方仅使用当前构建能力发现实际发布的动作。专项设计或 Schema 文件的存在不表示动作已经实装。
 
 ## 1. 入口、权限与版本
 
@@ -9,7 +11,8 @@ API 为本地 C ABI／应用用例合同，供 GUI、Swift CLI 与 MCP 适配；
 | macOS／Windows GUI | 用户授权的完整人工任务 | 本机可信窗口、系统访问与作者会话 |
 | Swift CLI 人工模式 | 同一核心任务，支持交互确认 | 控制终端与本机作者会话 |
 | MCP Agent | 读设定集／获权原文、草稿、派生结构、报告、受限交付 | 已批准的 Server 上下文，非 clientInfo 自报 |
-| MCP Apps | 受允许的查询与审核意图 | 宿主桥接及可验证的人类授权，缺失时原生接管 |
+| MCP Apps | 当前任务查询、候选选择、批注和采纳意图 | 宿主桥接及范围授权；不授予定稿、正式封面选用或设定写权限 |
+| 本地 Node.js 页面 | 配对会话中的单任务查询、选择与意见 | 原生作者配对的短期会话；浏览器点击不充当作者批准 |
 
 业务请求不能指定用户角色、作者批准、任意根目录或系统凭据。上下文在入口组装时取得能力，Core 每次操作重新验证；同 OS 用户恶意程序绕过受管入口的限制按18如实说明。
 
@@ -51,9 +54,9 @@ API 动作使用 `hetu.<domain>.<verb>`，每个动作有独立 `contract_revisi
 | --- | --- | --- | --- |
 | `hetu.workspaces.create` | 作者选定路径、title、packages、operation_key | workspace_id、创建文件摘要 | 人工入口；非空目标不覆盖；创建不自动 Git init |
 | `hetu.workspaces.open` | 作者选定路径、requested_mode | 格式、权限、恢复状态、上下文句柄 | 路径本机可信入口输入，不经 MCP 暴露任意打开 |
-| `hetu.workspaces.get` | 当前 scope | 项目属性、包、覆盖与占用 | 无额外目录扫描 |
-| `hetu.workspaces.list` | package?、cursor?、limit? | 已授权范围的工作区／包列表 | 对应 MCP list_workspace，不泄漏全盘路径 |
-| `hetu.blueprints.get` | section?、entity_ids?、cursor? | 设定集数据、revision、sha256、lock | 分页保留总范围与继续入口 |
+| `hetu.workspaces.get` | 空对象 | 项目属性、包、覆盖与占用 | 使用入口已授权 scope，无额外目录扫描 |
+| `hetu.workspaces.list` | 空对象 | 当前授权工作区与包配置 | 对应 MCP list_workspace；不扫描其他作品，正文目录独立查询 |
+| `hetu.blueprints.get` | revision? | 完整设定集、revision、sha256、lock | 缺省读取当前；指定修订只读读取历史，核验原始字节摘要 |
 | `hetu.blueprints.preview_change` | expected、typed_changes[] | 引用影响、差异、阻断与警告 | 无写入；不接收任意脚本／路径 patch |
 | `hetu.blueprints.save` | expected、typed_changes[]、operation_key | 新 revision、摘要、影响引用 | 仅作者、必须未锁定；拒绝借 changes 改锁／身份 |
 | `hetu.blueprints.lock` | expected、reason?、operation_key | 新修订、锁状态 | 作者确认；检查当前内容完整性 |
@@ -62,58 +65,145 @@ API 动作使用 `hetu.<domain>.<verb>`，每个动作有独立 `contract_revisi
 
 typed_changes 是受限的实体新增、字段更新、归档、引用迁移和删除联合类型。删除有被引用项时阻止，迁移先预览。建议草稿不是待执行命令，作者选取后才形成合法变更。
 
+实体操作为 `upsert_character|upsert_faction|upsert_location|upsert_event|upsert_world|upsert_rule`，携带完整 `entity`；移除为 `remove_entity`，携带 `entity_ref`。归档使用有 archived 字段的实体 upsert；引用迁移与其他实体变更一并提交。批次内同一实体只允许一次操作，允许引用同批新建实体，整批完成结构、引用、来源、时间和事实校验后再写入。预览返回 impact.changes 与候选设定修订，无业务落盘。
+
 ## 5. 正文、草稿与导入
+
+### 小说作品与卷章
+
+以下动作为运行目录中的作品管理入口，输入以 [Novel Schema](../contracts/schemas/novel.schema.json) 为准。书库登记属于本机客户端，不通过 MCP 向 Agent 提供所有作品的位置。
+
+| 动作 | 输入 | 返回与约束 |
+| --- | --- | --- |
+| `hetu.novels.get` | 空对象 | `initialized, novel, revision, sha256`；未初始化返回空资料，不自动迁移 |
+| `hetu.novels.initialize` | metadata、operation_key | 作者显式初始化，只收录既有小说章节，保留正文修订 |
+| `hetu.novels.update` | expected、metadata、operation_key | 作者保存资料；expected 同时核对 revision 与 sha256 |
+| `hetu.novels.save_structure` | expected、volumes、chapters、operation_key | 作者保存目录；稳定章节身份与正文绑定不可改变；章节完整且分组连续 |
+
+`metadata` 包含 `title, author_name, synopsis, genre, language_tag, status`；状态为 `planning|writing|completed|archived`。目录数组定义顺序，分卷包含 `volume_id, title`，章节包含 `chapter_id, document_id, volume_id`，未分卷使用 `null`。作者创建 `novel_chapter` 或采纳候选建立新章时原子追加目录，参考稿接收或通过审核不自动创建章节，原操作重放不重复创建；大纲与剧本不进入小说章节目录。
+
+### 正文与草稿动作
 
 | 动作 | 输入 | 结果 | 限制与失败 |
 | --- | --- | --- | --- |
-| `hetu.documents.list` | kind?、query?、cursor?、limit? | 文档摘要与修订指针 | 搜索与分页绑定 scope 和查询快照 |
+| `hetu.documents.create` | kind、title、source_format、content、language_tag?、operation_key | 新文档与首个不可变修订 | 仅作者；普通新稿不自动批准 |
+| `hetu.documents.list` | kind? | 文档摘要与修订指针 | MCP 资源层分页绑定 scope、过滤条件和完整列表快照 |
 | `hetu.documents.get` | document_id、revision_id? | 元数据、格式、内容或有界范围 | 默认当前修订必须在结果明确，固定引用优先 |
 | `hetu.documents.save` | document_id、base_revision_id、source_format、content、operation_key | 新 revision_id、sha256、当前指针 | 作者编辑入口；不自动批准；基线冲突不覆盖 |
 | `hetu.documents.import` | 已选本机文件句柄、source_format、profile、preview_receipt、operation_key | ImportRecord、文档及修订 | 人工入口；先预览损失与编码；不执行宏 |
 | `hetu.documents.export` | revision_refs、profile、format、operation_key | 新文件、摘要、转换报告 | 受限导出根；格式和正文修订明确 |
-| `hetu.drafts.submit` | package、source_format、content、blueprint_revision、operation_key、目标或新稿信息 | draft_id、operation、诊断任务 | 新稿需title；修改需target_document_id＋base_revision_id |
+| `hetu.drafts.submit` | package、source_format、content、blueprint_revision、operation_key、目标或新稿信息 | draft_id、operation、diagnostic_state=not_requested | 新稿需title；修改需target_document_id＋base_revision_id |
 | `hetu.drafts.get` | draft_id | 正文引用、状态、来源、审核与诊断引用 | 不返回隐藏内部批注 |
-| `hetu.drafts.list` | state?、package?、cursor?、limit? | 获权草稿摘要 | 不宣称列表为空就是没有未授权草稿 |
+| `hetu.drafts.list` | state?、package? | 获权草稿摘要 | 不宣称列表为空就是没有未授权草稿；分页待审查询使用 reviews.list |
 | `hetu.annotations.add` | source_ref、body、visibility、operation_key | annotation_id | 绑定确切修订；外发范围显式 |
 
-Agent 通过 drafts.submit 创作，不通过 documents.save 直接覆盖正文。草稿接收后自动诊断属于独立任务；提交成功回执可显示诊断 pending，不能伪造报告通过。
+Agent 通过 drafts.submit 创作，不通过 documents.save 直接覆盖正文。草稿提交与诊断是独立动作；需要检查时调用 reviews.validate，不能把接收成功解释为诊断通过或已定稿。
 
 ## 6. 抽取、骨架、对比与校验
 
 | 动作 | 输入 | 结果 | 限制与失败 |
 | --- | --- | --- | --- |
 | `hetu.plot.extract` | document_revisions[]、blueprint_revision、options、save_result、operation_key? | 节点候选、来源、覆盖、可选保存 ID | 保存需原键；预算耗尽返回 partial |
-| `hetu.plot.get` | plot_revision_id、cursor? | 节点与边的固定修订 | 不能混入后来人工校正 |
-| `hetu.plot.correct` | plot_revision_id、corrections[]、operation_key | 新 plot_revision_id | 作者确认实体／时序；Agent补充仍为候选 |
+| `hetu.plot.list` | document_id?、limit?、cursor? | 剧情修订摘要与 next_cursor | 游标绑定工作区、筛选与索引快照；变化后重新查询 |
+| `hetu.plot.get` | plot_revision_id | 节点与边的固定修订、stale、stale_reasons | 不能混入后来人工校正；partial 修订仍返回 partial |
+| `hetu.plot.correct` | plot_revision_id、corrections[]、operation_key | 新 plot_revision_id、父修订与当前性 | 仅作者；确认实体／时序或补标节点、编辑连线 |
 | `hetu.drama.build_skeleton` | plot_revision_id、blueprint_revision、episode_options、operation_key | skeleton_id、revision、缺项、来源 | 新候选，不覆盖现有人工稿 |
-| `hetu.drama.get_skeleton` | skeleton_id、revision? | episodes、scenes、源映射 | 显示实际读取修订 |
+| `hetu.drama.get_skeleton` | skeleton_id、revision? | skeleton、sha256、is_head、stale、stale_reasons | 省略 revision 读 head；指定时核验历史原始证据 |
+| `hetu.drama.list_skeletons` | plot_revision_id?、limit?、cursor? | skeletons、next_cursor | 列出独立候选及其固定修订；快照游标 |
 | `hetu.drama.edit_skeleton` | skeleton_id、expected、typed_changes[]、operation_key | 新修订及影响 | 作者结构编辑；保留稳定场景 ID |
-| `hetu.drama.compare` | source_revisions、skeleton_ref、script_revision?、save_result、operation_key? | 新增／删减／重排／过期报告 | 不自动回写原著 |
-| `hetu.validation.run` | target_refs[]、blueprint_revision、rule_set_version、save_report、operation_key? | report或task、coverage、findings | 无生成模型；保存需原键 |
-| `hetu.reports.get` | report_id | 原报告及计算出的stale原因 | 固定结果与当前性分开 |
-| `hetu.findings.disposition` | finding_ref、expected_inputs、disposition、reason、operation_key | 问题处理记录 | 完整性错误不可豁免，例外限定证据 |
+| `hetu.drama.compare` | source_revisions、skeleton_ref、save_result、operation_key? | comparison、saved、stale、stale_reasons | 结构映射对比，不判断对白语义或自动回写原著 |
+| `hetu.drama.get_comparison` | comparison_id | 固定 comparison、saved、stale、stale_reasons | 核验来源、骨架、摘要及差异结果 |
+| `hetu.drama.list_comparisons` | skeleton_id、limit?、cursor? | comparisons、next_cursor | 同一骨架的固定报告；快照游标 |
+| `hetu.drama.create_script` | skeleton_ref、title、language_tag、operation_key | document、revision、mapping、stale、stale_reasons | 仅作者；独立 Fountain 结构正文和固定映射，同事务保存；不定稿 |
+| `hetu.drama.get_script_mapping` | document_id | mapping、current_revision_id、stale、stale_reasons | 读取初稿映射；核验固定正文、骨架、摘要和标题范围，不迁移到新正文 |
+| `hetu.validation.run` | plot_revision_id、rule_set_version、options、save_report、operation_key? | report、saved、stale、stale_reasons、dispositions | 固定剧情所引用的正文与设定修订；保存需原键 |
+| `hetu.documents.validate` | document_ref、plot_options、validation_options、operation_key | document_ref、document、report、reference、saved、stale、dispositions | 仅作者；直接检查当前已保存正文，同事务保存剧情与报告，不创建 Draft；保留 partial 覆盖 |
+| `hetu.reports.list` | plot_revision_id?、limit?、cursor? | reports、next_cursor | 默认 50、最多 200；游标绑定查询快照 |
+| `hetu.reports.get` | report_id | 原报告、reference、计算出的 stale 原因与处置历史 | 内核返回固定报告及当前处置摘要；部分报告返回 partial |
+| `hetu.findings.disposition` | report_id、finding_id、expected_inputs、expected_disposition_revision、disposition、reason、operation_key | disposition_record | 仅作者；CAS、原键恢复，完整性错误不可豁免 |
 
-episode_options 只包含分集锚点、目标集长估计或分组策略，不能传“请续写”等自然语言让 Core 生成内容。结构化明确断言才进入确定规则前提。
+`episode_options` 只接受 `episode_start_node_ids`，默认为空数组。锚点需属于未排除的固定输入节点，按原著顺序排列且不重复；不接受自然语言指令或隐式片长推断。`blueprint_revision` 必须等于输入剧情绑定的设定集修订，摘要由内核核验。
+
+骨架创建与编辑响应均为 `skeleton, sha256, stale, stale_reasons`。[创建输入](../contracts/schemas/drama-build-input.schema.json)、[编辑输入](../contracts/schemas/drama-edit-input.schema.json)与[骨架资源](../contracts/schemas/drama-skeleton.schema.json)是确切机器合同。`expected={revision, sha256}` 只接受客户端已经读取的 head；原键重放先于 CAS，不会因后续修订增加而丢失原回执。
+
+作者结构变更为闭合操作：`update_scene, move_scene, split_scene, merge_scene, set_scene_nodes, remove_scene, add_scene, split_episode, merge_episode, move_episode, update_episode, add_episode`。位置 `index` 为操作执行时目标数组的零基位置；移动场次先移出再插入，跨集同样适用。拆分锚点必须在本集／本场且不能是首项；合并只向后合并相邻集／场。一个请求中的操作依次执行，最终统一校验和事务保存，失败不发布部分修订。空集在整个操作序列完成后移除。
+
+[对比输入](../contracts/schemas/drama-compare-input.schema.json) 的 `skeleton_ref` 包含 ID、确切修订与摘要；`source_revisions` 每项包含 `document_id, revision_id, sha256, source_format, size_bytes`，需按骨架的输入文档顺序提供同一组文档。与基线不同的修订明确产生 `stale_source`，不会让旧节点悄悄关联新文本。`save_result=false` 禁止操作键且不落盘；`true` 必须提供原键。[报告](../contracts/schemas/drama-comparison.schema.json)与当前性分开，输入部分覆盖仍返回 `partial`。列表默认 50、最多 200，游标绑定工作区、筛选和索引快照。
+
+[建立剧本输入](../contracts/schemas/drama-script-input.schema.json) 必须明确骨架修订与摘要；标题由作者填写，`language_tag` 只接受 `zh-CN|en`。结构渲染保留未知字段，不能直接表示的标题／地点返回 `hetu.format_unrepresentable`，输出预算超限返回 `hetu.budget_exceeded`；写入受原键重放与作者权限保护。来源为部分剧情时，创建与映射读取继续返回 `partial`。历史基线允许建立独立文档并明确返回 stale；不更新或覆盖现有剧本。
+
+剧本映射当前性先继承固定骨架的来源原因，再检查 `skeleton_changed` 与 `script_changed`；后者携带当前正文修订。报告中的范围、quote 和 scene ID 始终属于固定初稿。界面切换语言不改变 `language_tag`、正文或映射；新文档的模板语言由作者明确选择。
+
+剧情输入的确切字段由[提取 Schema](../contracts/schemas/plot-extract-input.schema.json)与[校正 Schema](../contracts/schemas/plot-correct-input.schema.json)定义。`document_revisions` 每篇文档只接受一个固定修订，核验 `document_id, revision_id, sha256`；`options={}` 使用机器合同默认预算。`save_result=false` 禁止传操作键且不落盘；`true` 必须传原键。响应 data 为 `plot, saved, stale, stale_reasons`。
+
+`update_node` 改变分类、确认关联、日夜、核对状态及可选结构 `annotation`，不能改原始来源；`add_node` 必须提供固定输入原文的精确 SourceRef；`add_edge` 需给出端点、关系与原文证据；`remove_edge` 指定稳定边 ID。校正不切换输入设定或原文修订，过期结果可保留分支校正；重新提取创建独立结果。`partial` 可能已经持久化，自动化入口必须先读取覆盖与原操作回执。
+
+诊断机器输入见[执行 Schema](../contracts/schemas/validation-run-input.schema.json)；`save_report=false` 禁止操作键且不保存报告、索引或回执。`save_report=true` 必须提供原键，部分报告也保留同键回执；重复请求不重新分配报告。规则集版本、语境、证据前提和预算见[引擎规范](08-剧情抽取与一致性引擎.md)。处置的 `expected_inputs` 必须等于报告 `input_snapshot`，首次处置修订为 0；更新时使用最近返回的修订。报告读取不静默合并新校正或新设定。
 
 ## 7. 审核与素材
 
 | 动作 | 输入 | 结果 | 限制与失败 |
 | --- | --- | --- | --- |
-| `hetu.reviews.list` | state?、cursor?、limit? | 待审或既有决定摘要 | 按权限过滤 |
-| `hetu.reviews.get` | review_id或draft_id | 决定、当前证据、可见批注 | 模型仅可读获准投影 |
-| `hetu.reviews.decide` | draft_id、expected_draft_revision、input_snapshot、report_refs[]、decision、comments、exceptions[]、operation_key | review_id、可选approved_revision_id | 作者能力；事务更新草稿、定稿和审计 |
-| `hetu.cues.list` | kind?、narrative_ref?、cursor? | 乐律／视觉线索 | 原文权限过滤 |
-| `hetu.cues.save` | cue_id?、expected?、kind、narrative_refs[]、description、asset_refs[]、operation_key | cue及新revision | 已有cue需CAS；Agent改动先草稿审核 |
-| `hetu.assets.import` | 用户选定文件或受管插件结果句柄、source、rights_status、operation_key | asset_id、摘要、检测结果 | 无任意URL下载／可执行文件导入 |
+| `hetu.drafts.submit_current` | document_id、base_revision_id、blueprint_revision、skeleton_ref?、operation_key | 独立待审草稿 | 仅作者；当前已保存修订 CAS；结构剧本必须引用骨架 |
+| `hetu.reviews.begin` | draft_id、expected_draft_revision、operation_key | draft | 仅作者；既有无锚点草稿在此绑定固定证据 |
+| `hetu.reviews.list` | state?、cursor?、limit? | reviews[]、next_cursor | 固定列表快照游标，列表变化后重新查询 |
+| `hetu.reviews.get` | review_id或draft_id、report_limit?、report_cursor? | draft、content、input_snapshot、stale、stale_reasons、decisions、reports、reports_next_cursor、baseline、evidence_ready | ID 二选一；报告默认20条，最多50条；Agent投影移除私密批注 |
+| `hetu.reviews.validate` | draft_id、expected_draft_revision、plot_options、validation_options、operation_key | report、saved、stale、stale_reasons、dispositions | 固定草稿与设定；同事务保存剧情与报告；partial原键可查 |
+| `hetu.reviews.decide`，合同修订2 | draft_id、expected_draft_revision、input_snapshot、report_refs[]、decision、comments、private_comments?、coverage_acknowledgement?、operation_key | review、draft | 仅作者；只记录参考稿决定及审计，不设置正文定稿，不接受调用方例外列表 |
+| `hetu.drafts.preview_adoption` | draft_ref、target_ref、new_document、selected_ranges[] | preview、content、baseline | 仅作者；固定候选／提交基线／当前稿；不写正文，不自动合并过期 patch |
+| `hetu.drafts.adopt` | preview、operation_key | document、revision、adoption | 仅作者；重算完整预览，同事务保存来源和写作稿，定稿不变 |
+| `hetu.documents.preview_finalization` | document_ref、expected_finalization_ref、report_refs[]、comments、coverage_acknowledgement | preview、content | 仅作者；返回固定快照、eligible 与 blocker，对象是已保存正文，可无 Draft |
+| `hetu.documents.finalize` | preview、operation_key | document、finalization | 仅作者；重算完整预览，对固定修订独立确认，不创建不同正文或 Git 副作用 |
+| `hetu.documents.withdraw_finalization` | document_id、expected_finalization_ref、reason、operation_key | document、finalization | 仅作者；只能撤回当前持有者，历史与当前稿保留 |
+| `hetu.documents.lifecycle` | document_id | document、adoptions[]、finalizations[] | 仅作者；核验归属、摘要链与正文历史后返回，不能把缺失记录当空历史 |
+| `hetu.cues.list` | kind?、document_id?、include_archived?、cursor?、limit? | cues摘要、next_cursor | 默认排除归档；游标绑定筛选与列表快照 |
+| `hetu.cues.save` | cue_id?、expected?、kind、title、description、narrative_refs[]、asset_refs[]、archived、operation_key | cue、sha256、stale_sources、assets | 仅作者；已有cue需CAS；类别不变，引用核验 |
+| `hetu.cues.get` | cue_id、revision? | cue、sha256、is_head、current_revision、stale_sources、assets | 固定正文与素材修订；过期状态单独返回 |
+| `hetu.assets.inspect` | file_path | original_filename、sha256、size_bytes、kind、media_type、extension、validation | 仅作者选定本机文件；只识别签名，不落盘 |
+| `hetu.assets.import` | file_path、expected_file、title、source、rights_status、redistribution_allowed、rights_statement、operation_key | asset、sha256、delivery_eligible、media_verified | 仅作者；流式复制并核对固定摘要；无URL下载 |
+| `hetu.assets.update` | asset_id、expected、title、source、rights_status、redistribution_allowed、rights_statement、operation_key | asset新修订、sha256、delivery_eligible、media_verified | 仅作者；CAS；媒体原字节不变 |
+| `hetu.assets.get` | asset_id、revision? | asset、sha256、current_revision、current_rights_status、is_head、delivery_eligible、media_verified | 流式核对媒体；历史许可不能绕过当前撤回 |
+| `hetu.assets.list` | kind?、rights_status?、cursor?、limit? | assets摘要、next_cursor | 列表不加载媒体，media_verified=false |
 
-`decision=approved` 需完整性、当前证据和例外政策通过；接口存在不意味着模型可调用。Apps 仅有意图能力时返回 pending 与后续作者入口，不保存伪审核决定。
+参考稿 `decision=approved` 与正文定稿分开。采纳预览固定作者选区、目标及实际差异，adopt 在锁内重验；Apps／网页只能保存选择和意图，正式采纳在原生端确认。定稿接口存在不意味着模型可调用，不能用模型传入的批准布尔值或页面点击绕过作者权限。
+
+采纳、正文检查和独立定稿的精确输入统一见[文档生命周期 Schema](../contracts/schemas/document-lifecycle.schema.json) 的 `$defs`。`document_ref={document_id,revision_id,sha256}`；`draft_ref={draft_id,revision,sha256}` 中的 revision 固定参考稿状态修订，sha256 固定其内容。修改已有文档使用非空 target_ref 且 new_document=null；新建文档使用 target_ref=null，new_document 包含作者确认的 `title,volume_id,novel_expected`。新小说章节的 novel_expected 固定目录修订及摘要，volume_id=null 明确表示未分卷；剧本的 volume_id 和 novel_expected 均为 null。
+
+每个选区为 `{source,target,replacement?}`，source 与 target 各自是固定文本上的 UTF-8 半开范围及 quote。来源不得为空或重叠，目标不得重叠或重复使用同一插入点；空目标允许插入。未提供 replacement 时使用来源切片，提供时保存作者改写后的确切字符串。限制为1～100个选区；整稿采纳同样明确源范围和目标范围，不以空数组表示全选。被驳回、要求修改或已接替的参考稿不能直接采纳，应先回到相应审核／返工流程。
+
+预览是服务端产生的完整 envelope。采纳 preview 包含 `request,snapshot,result_sha256,sha256`；定稿 preview 包含 `request,snapshot,eligible,blocker,sha256`。preview.sha256 对去掉自身 sha256 字段的 envelope 按 JCS 规范化后计算；它区别于持久文件原始字节摘要，也不是作者授权凭据。调用方原样保存并提交 preview，不自行拼 snapshot、只传摘要或修改选区；改变任何选项先重新预览。写操作在重授权及原键查询后重算并比较完整预览，过期或不一致则整次拒绝。
+
+独立定稿的 `report_refs` 每项含 `report_id, sha256, dispositions_sha256`，报告必须覆盖所确认正文确切修订及固定设定，不能沿用采纳前候选的报告冒充当前检查。部分覆盖或未知前提要求非空 `coverage_acknowledgement`；`certain/error` 仅允许规则准许且已记录的具体 `accepted_exception`。私密批注只在作者投影返回，例外由已核实处置提取。
+
+已保存报告的查询与检查结果由内核返回 `reference={report_id,sha256,dispositions_sha256}`；预览中未保存的报告 reference 为 null。调用方使用读取时返回的完整引用，不对重新编码的 JSON 自算摘要。问题处置更新后重新读取报告引用，并重新预览定稿。
+
+定稿预览必须显式传入 comments 和 coverage_acknowledgement，不需要覆盖说明时后者可为空；确认定稿时 comments 不能仅含空白。首次定稿的 expected_finalization_ref=null，后续使用 `{finalization_id,sha256}` 固定当前持有者。report_refs 为1～50项，确认时重验报告和处置摘要。采纳及定稿写入的通用 operation 位于结果封装中；adoption／finalization 各返回 `{record,reference}`，reference 固定新记录 ID 和原始字节摘要。历史与指针字段见[29第5.1节](29-数据字典与Schema设计.md#51-采纳与独立定稿记录)。
+
+参考稿审核的 withdrawn 只撤回该次候选决定，不清除正文定稿。撤回定稿使用独立 withdraw_finalization，仅修改仍由该记录持有的指针。并发采纳及定稿各自检查目标 CAS。返工保留包、格式、目标和父稿，新候选不覆盖原内容。音乐／视觉候选不能通过文本采纳建立正式章节。
+
+参考稿决定采用 `contract_revision=2`，其记录采用 schema_version=2.0.0；生命周期动作的合同修订与记录版本分别声明。新请求使用能力目录公布的修订，不得通过指定旧修订请求已经废止的副作用。历史决定和原操作仍按自身版本读取；同键跨合同修订不转换为一次新执行。
+
+素材与线索输入由 [Media Schema](../contracts/schemas/media.schema.json) 对应 `$defs` 定义，能力发现返回完整可独立解析的输入合同。`expected_file={sha256,size_bytes}`，`expected={revision,sha256}`；所有媒体写动作保留原键，成功后重放不依赖外部原文件仍存在。单文件上限 2 GiB，禁止可执行文件、符号／硬链接、设备与空文件。来源 URL 不含凭据、查询或片段，界面不自动移除参数后冒充原地址。列表默认50项、最多100项，单次枚举最多10000条；历史链单次核验最多1000条。
+
+### 7.1 小说封面与外部 Skill
+
+封面动作 `hetu.covers.preview_prompt`、`hetu.covers.create_request`、`hetu.covers.list_candidates`、`hetu.covers.select` 的输入、输出、权限和恢复以[34](34-小说封面与Agent协作.md)为专项合同。Prompt 预览无落盘；请求创建有原键；候选查询只核验本作品；选用为作者 CAS 事务。
+
+外部 `hetu-cover` Skill 读取请求并写入固定 inbox，不需要为图像生成扩张八个基础 MCP 工具。核心不代理图像 API；候选回执不具有作者身份，也不能调用选用操作。
 
 ## 8. Git、Bundle 与恢复
 
 | 动作 | 输入 | 结果 | 限制与失败 |
 | --- | --- | --- | --- |
-| `hetu.git.status`／`diff`／`log` | 已授权仓库、范围／修订 | 工作树、差异、提交记录 | 只读、不执行hooks |
-| `hetu.git.snapshot` | phase、selected_refs?、message?、expected_head?、operation_key?、operation_id? | 持久预览／pending或实际commit | MCP仅暴露该受控Git动作；prepare需operation_key；execute需已批准原操作 |
+| `hetu.git.status` | 空对象 | initialized、head、changes、state、repository_instance | 仅当前工作区，不发现父仓库；HEAD→工作树，保留原 index |
+| `hetu.git.diff` | path | head、before／after、摘要、mode、大小、binary／truncated | 受管相对路径；私密审核原记录仅作者可读 |
+| `hetu.git.log` | limit?、cursor? | commits、head、next_cursor | 默认30，最多100；游标绑定HEAD |
+| `hetu.git.init` | branch、operation_key | 当前仓库状态 | 仅作者；不自动提交或联网 |
+| `hetu.git.snapshot` | phase、operation_key；prepare: expected_head、message、author、selected_paths?；execute: snapshot_id | 固定 snapshot／pending，或 commit_id 与排除项 | prepare 与 execute 分别幂等；执行需本机批准 |
+| `hetu.git.approve_snapshot` | snapshot_id、snapshot_sha256、operation_key | approval_state、expires_at | 仅作者；固定摘要、仓库实例、所选字节与HEAD |
+| `hetu.git.get_snapshot` | snapshot_id | 固定快照与摘要、当前性、批准状态及可空 execution | 核验快照与当前仓库实例；不接受分页字段 |
+| `hetu.git.list_snapshots` | limit?、cursor? | 分页快照摘要与 next_cursor | 默认50，最多100；固定列表游标 |
+| `hetu.git.snapshot_diff` | snapshot_id、path | 固定差异、snapshot_sha256 | 路径须属于该快照；HEAD或文件变化拒绝 |
 | `hetu.git.branch_create`／`switch` | 分支名、起点／目标、expected_head、operation_key | 实际分支／HEAD | 作者确认；保护脏工作树 |
 | `hetu.git.merge` | phase、source_ref、expected_head、resolution_ref?、operation_key | 冲突预览／已验证合并结果 | 三方人工解决，JSON引用再校验 |
 | `hetu.git.fetch`／`pull`／`push` | remote_ref、branch_ref、expected_refs、operation_key | 实际远端／本地证据或unknown | 明确单次授权，禁止强推；秘密不入参数 |
@@ -127,7 +217,7 @@ Git 的外部观察、确认范围与未知核对按16执行；没有手工批�
 
 ## 9. MCP 适配
 
-八个工具分别映射上述动作或其受控流程；MCP tools/call 外层与内层 AXI action 名分开。文档、审核、报告和 operations 以资源读取适配查询用例。CLI 命令、GUI ViewModel 与 MCP 不重新实现审核、CAS 或 Git 策略。
+`contracts/tools/catalog.json` 映射已开放工具与内核动作；MCP tools/call 外层工具名与内层 AXI action 名分开。inputSchema 复用内核展开后的机器合同，outputSchema 为绑定准确 action 的 `contracts/schemas/result.schema.json`。文档、审核、报告和 operations 以白名单资源读取适配查询用例，分页和恢复见[14](14-MCP与Agent接入.md)。CLI 命令、GUI ViewModel 与 MCP 不重新实现审核、CAS 或 Git 策略。
 
 MCP 的标准工具描述必须静态且如实反映其写入可能性；实际权限依请求上下文重验。长任务先返回持久原操作，再通过可用资源／窄查询继续。核心报告有错误发现时工具可以执行成功，不能将JSON-RPC成功误读为草稿定稿。
 
@@ -137,7 +227,7 @@ AXI 标准错误使用 invalid_input、missing_context、forbidden、not_found�
 
 分页 `limit` 默认50、最大200，游标为不透明值，绑定身份、范围、筛选与快照。字段选择不允许隐藏操作、版本、覆盖或错误所需元数据。
 
-任务排队／执行／终态与 AXI status 是不同层次；公开 pending 包含data.task_id和operation。取消通知仅停止当前RPC观察时不得改业务状态为cancelled，必须读真实任务状态。
+任务排队／执行／终态与 AXI status 是不同层次；异步执行的 pending 包含 data.task_id 和 operation；Git 待审 pending 包含固定 snapshot 与 operation，不虚构运行中的任务。取消通知仅停止当前RPC观察时不得改业务状态为cancelled，必须读真实任务状态。
 
 ## 11. C ABI 签名
 
@@ -234,6 +324,35 @@ void hetu_buffer_free(HetuBuffer *buffer);
     "parent_draft_id": {
       "type": "string",
       "pattern": "^draft_[0-9a-f-]{36}$"
+    },
+    "skeleton_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "skeleton_id": {
+          "type": "string",
+          "pattern": "^skeleton_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "skeleton_id",
+        "revision",
+        "sha256"
+      ]
+    },
+    "language_tag": {
+      "enum": [
+        "zh-CN",
+        "en"
+      ]
     }
   },
   "oneOf": [
@@ -295,7 +414,7 @@ void hetu_buffer_free(HetuBuffer *buffer);
 
 ## 14. 草稿成功回执
 
-本例对应第2节请求。提交已完成而诊断仍排队，因此顶层为 succeeded，诊断任务单独表示 queued；这不代表内容已经通过校验或定稿。
+本例对应第2节请求。提交已完成，因此顶层为 succeeded；`diagnostic_state=not_requested` 表示只保存参考稿，未执行诊断。调用方须另行发起检查，不能将保存成功显示为校验通过或定稿。
 
 ```json
 {
@@ -317,10 +436,7 @@ void hetu_buffer_free(HetuBuffer *buffer);
     "draft_id": "draft_55555555-5555-4555-8555-555555555555",
     "draft_revision": 1,
     "state": "submitted",
-    "validation": {
-      "task_id": "task_66666666-6666-4666-8666-666666666666",
-      "state": "queued"
-    }
+    "diagnostic_state": "not_requested"
   }
 }
 ```
@@ -331,10 +447,10 @@ void hetu_buffer_free(HetuBuffer *buffer);
 
 | phase | 必填输入 | 持久效果与返回 |
 | --- | --- | --- |
-| prepare | selected_refs、message、expected_head、operation_key | 冻结精确文件与 HEAD，保存预览操作；返回 pending、operation 与 approval_state |
-| execute | operation_id | 读取原操作及可信作者批准，复核输入后最多创建一次 commit；不接受新的文件集合、备注或批准布尔值 |
+| prepare | expected_head、message、author、operation_key；selected_paths 可省略 | 冻结精确文件、HEAD、身份与时间，保存快照；返回 pending、snapshot、snapshot_sha256、operation、approval_state |
+| execute | snapshot_id、operation_key | 读取固定快照及本机作者批准，复核后提交；不接受新文件集合、备注或批准布尔值 |
 
-execute 的幂等身份继承 prepare 的原操作，不另创业务键。重复 execute 回读原 commit；工作树、HEAD 或批准范围变化时阻断，调用方需审阅新预览。批准和执行是独立授权步骤，不允许 Agent 通过 prepare 自行取得提交权。
+机器输入见 [Git Snapshot Input](../contracts/schemas/git-snapshot-input.schema.json)，固定数据见 [Git Snapshot](../contracts/schemas/git-snapshot.schema.json)。prepare 与 execute 各有独立幂等键；prepare 原键重放保留原 pending 回执，快照当前性由 get_snapshot 单独查询。重复 execute 回读原 commit；所选工作树文件、HEAD 或批准范围变化时阻断，调用方需审阅新快照。批准和执行是独立授权步骤，不允许 Agent 通过 prepare 自行取得提交权。
 
 ## 16. 查询、分页与错误约定
 
@@ -342,8 +458,9 @@ execute 的幂等身份继承 prepare 的原操作，不另创业务键。重复
 
 | 场景 | AXI status／code | 下一步 |
 | --- | --- | --- |
-| 新稿保存成功，诊断未完成 | succeeded，data.validation 为 queued／running | 查询原草稿或任务 |
-| 存储任务已受理，业务未完成 | pending，含 operation 与 task_id | 查询原操作 |
+| 新稿仅保存成功，尚未请求诊断 | succeeded，data.diagnostic_state 为 not_requested | 按独立诊断动作检查原草稿 |
+| Git 快照待作者批准 | pending，含 operation、snapshot 与 approval_state | 在本机审阅固定快照 |
+| 异步存储任务已受理，业务未完成 | pending，含 operation 与 task_id | 查询原操作 |
 | 基线或正文摘要变化 | blocked／revision_conflict | 读取当前修订并比较 |
 | 同键不同固定输入 | blocked／idempotency_conflict | 保留原键，纠正错误关联 |
 | 校验完成且发现问题 | succeeded，data.report 含 findings | 作者处理问题，不当作RPC失败 |
@@ -351,3 +468,54 @@ execute 的幂等身份继承 prepare 的原操作，不另创业务键。重复
 | 外部副作用无法确认 | unknown／result_unknown | recover 原操作，禁止自动重发 |
 
 C ABI 整数码、MCP 协议错误、AXI 执行结果、诊断 findings 和作品审核状态分别表达各自层次，入口不得用一个布尔 success 合并这些状态。
+
+## 17. 建书筹备与外部创作任务
+
+以下为产品设计动作，不因本章存在而自动加入运行目录。动作发布时提供独立 inputSchema／outputSchema、权限及合同修订；客户端和 Skill 只调用实际发现的能力。通用幂等、CAS、事务与错误约定沿用第3节，scope 支持单一 creation_project 或 workspace，不开放整库扫描。
+
+| 动作 | 输入 | 输出 | 入口与边界 |
+| --- | --- | --- | --- |
+| `hetu.creation_projects.create` | brief、language_tag、operation_key | 独立 project 与修订摘要 | 仅作者；书名可未定，不创建正式作品 |
+| `hetu.creation_projects.get` | project_id、revision? | 已获权筹备及来源投影 | 不返回其他筹备或全部作品位置 |
+| `hetu.creation_projects.save` | project_id、expected、selected_fields、operation_key | 新筹备修订 | 仅作者；选中字段记录候选引用或手工来源 |
+| `hetu.creation_projects.create_novel` | project_ref、expected、作者确认的 metadata、目录句柄、selected_source_refs、operation_key | workspace、novel、创建回执和来源 | 仅作者；新作品身份固定，未知结果查原目标与原键，跨卷恢复按07 |
+| `hetu.creative_tasks.preview_prompt` | scope_ref、task_kind、brief、input_refs、client_adapter、skill_ref、output_options、language_tag | 外发资料、完整可编辑 Prompt、输出合同 | 仅作者；本地模板，无模型、无落盘 |
+| `hetu.creative_tasks.prepare` | 固定预览输入、作者编辑后的 Prompt、expected_scope、operation_key | 不可变 task_ref、请求摘要、可复制调用说明 | 仅作者；不启动客户端、不发送消息、不调用生成服务 |
+| `hetu.creative_tasks.get` | task_id、request_revision? | 固定请求、范围内候选摘要、交互决定及观察状态 | Agent 只读当前获权任务；Prompt 不含秘密 |
+| `hetu.creative_tasks.list` | 当前 scope、state?、cursor?、limit? | 任务摘要与 next_cursor | 游标绑定 scope／身份／筛选，默认20、最多100；不跨作品 |
+| `hetu.creative_tasks.submit_result` | task_ref、request_sha256、候选内容或固定 inbox 引用、provenance、operation_key | submission_ref、候选引用、核验结果及缺项 | Agent 可在精确任务提交；禁止任意路径和作者决定字段；不自动采纳 |
+| `hetu.creative_tasks.inspect_inbox` | task_ref、cursor?、limit? | 有界文件观察、已核验 submission 与具体错误 | 只能检查原请求输出根；半写入不标完成，重复检查不重复导入 |
+| `hetu.creative_tasks.close` | task_ref、expected、reason、operation_key | 本机跟踪关闭记录 | 仅作者；不取消外部 Agent、不声称退款或删除文件 |
+
+文本候选复用 Markdown／Fountain 与 UTF-8 1 MiB 单稿预算；图片复用34的类型、尺寸及单图32 MiB预算。数量与请求合同取交集；新任务默认候选不超过4项，扩展上限由明确动作 Schema 发布。内联文本和文件来源互斥，不能将 HTTP URL 解释为自动下载指令。
+
+submit_result 先检查原键；请求摘要不符、跨 scope、目录逃逸、超出预算或格式不符分别返回明确阻断。合法但不足请求数量可返回 partial 并列明缺项，不能隐式产生更多生成请求。provenance 为来源声明，不承担版权认证或宿主身份认证。
+
+建书前的封面探索使用 creation_project scope 的 cover 任务；正式作品的 CoverRequest 保持34定义的 workspace 合同。作者创建作品后显式导入选定筹备候选，不给旧筹备会话增授作品权限。
+
+## 18. 局部选择与页面会话
+
+| 动作 | 输入 | 输出 | 权限与效果 |
+| --- | --- | --- | --- |
+| `hetu.interactions.get` | task_ref、view_kind、candidate_refs? | 单任务投影、UI资源引用、允许的局部动作 | MCP Apps、原生端或已配对页面；不含凭据与其他作品 |
+| `hetu.interactions.save_selection` | task_ref、candidate_refs、expected、selected_items、comment、operation_key | 固定 InteractionDecision 和新修订 | 受限交互会话；选择偏好不等于采纳、定稿或正式封面选用 |
+| `hetu.interactions.start_local_view` | task_ref、view_kind、operation_key | 页面实例、待配对入口、生命周期引用 | 仅作者；按需启动Node.js，不把授权秘密放入URL |
+| `hetu.interactions.pair` | 本机配对请求引用、作者确认的单任务范围、operation_key | 会话状态与有效期 | 仅原生可信作者入口；会话材料不返回模型可见结果 |
+| `hetu.interactions.stop_local_view` | 页面实例引用、operation_key | 已撤销会话和端口释放结果 | 作者／持有页面会话的应用；不取消生成或删除任务 |
+
+同一内容视图有两种适配：MCP Apps 使用宿主工具桥接与 ui 资源；本地网页使用已配对的回环会话和 Node.js 白名单代理。普通网页不调用假定存在的 `window.openai`，MCP App 也不通过任意 fetch 绕过宿主权限。
+
+这些是领域动作名，不是可随意 POST 的通用 HTTP execute。局部 HTTP 路由仅投影允许的动作，检查 Host、Origin、CSRF、会话及预算，再以应用组装的 scope 调用本机 IPC；浏览器不得选择任意 actor、root、action 或命令。精确页面路由属于版本化实现合同，不能把开发用固定端口写入插件。
+
+## 19. MCP 工具投影与兼容
+
+八个基础工具保持原有业务范围；创作任务通过新增窄工具投影，不把 `hetu_list_workspace` 扩展成书库访问，也不把旧 `hetu_write_draft` 偷换为任意 JSON 或媒体写入入口。
+
+| 拟发布工具 | 应用动作 | 可见性与边界 |
+| --- | --- | --- |
+| `hetu_read_creative_task` | creative_tasks.get | 获权任务读取，返回结构化文本及候选引用 |
+| `hetu_submit_creative_result` | creative_tasks.submit_result | 固定任务的候选提交，无采纳或定稿能力 |
+| `hetu_open_task_view` | interactions.get | 适用时关联 Apps 资源；无 Apps 返回同一数据与原生入口，本地页面需先由作者启动 |
+| `hetu_save_task_selection` | interactions.save_selection | 按宿主支持限定 app／model 发现面，服务端仍核验受限会话；仅记录选择 |
+
+新增工具须同步 `contracts/tools/catalog.json`、Schema、宿主矩阵、Skill 方法及权限负例。用户复制 Prompt 是缺省交接方式；任何消息桥接都不能自动向另一会话发送内容、启动 Agent 循环或扩大授权。

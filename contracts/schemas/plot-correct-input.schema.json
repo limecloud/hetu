@@ -1,0 +1,273 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "plot_revision_id": {
+      "type": "string",
+      "pattern": "^plotrev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "corrections": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "update_node"
+              },
+              "node_id": {
+                "type": "string",
+                "pattern": "^node_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "kind": {
+                "enum": [
+                  "scene",
+                  "action",
+                  "dialogue",
+                  "conflict_candidate",
+                  "foreshadow_candidate"
+                ]
+              },
+              "entity_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^(character|faction)_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "minItems": 0,
+                "maxItems": 200
+              },
+              "location_ref": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^location_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "time_ref": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^event_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "speaker_ref": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^character_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "time_of_day": {
+                "enum": [
+                  "day",
+                  "night",
+                  "dawn",
+                  "dusk",
+                  "unknown"
+                ]
+              },
+              "verification": {
+                "enum": [
+                  "needs_author_review",
+                  "confirmed",
+                  "dismissed"
+                ]
+              },
+              "annotation": {
+                "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/node/properties/annotation"
+              }
+            },
+            "required": [
+              "type",
+              "node_id",
+              "kind",
+              "entity_refs",
+              "location_ref",
+              "time_ref",
+              "speaker_ref",
+              "time_of_day",
+              "verification"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "add_node"
+              },
+              "kind": {
+                "enum": [
+                  "scene",
+                  "action",
+                  "dialogue",
+                  "conflict_candidate",
+                  "foreshadow_candidate"
+                ]
+              },
+              "entity_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^(character|faction)_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "minItems": 0,
+                "maxItems": 200
+              },
+              "location_ref": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^location_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "time_ref": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^event_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "speaker_ref": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^character_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "time_of_day": {
+                "enum": [
+                  "day",
+                  "night",
+                  "dawn",
+                  "dusk",
+                  "unknown"
+                ]
+              },
+              "verification": {
+                "enum": [
+                  "needs_author_review",
+                  "confirmed",
+                  "dismissed"
+                ]
+              },
+              "source_ref": {
+                "$ref": "urn:hetu:schema:source-ref:1.0.0"
+              },
+              "annotation": {
+                "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/node/properties/annotation"
+              }
+            },
+            "required": [
+              "type",
+              "kind",
+              "entity_refs",
+              "location_ref",
+              "time_ref",
+              "speaker_ref",
+              "time_of_day",
+              "verification",
+              "source_ref"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "add_edge"
+              },
+              "from_node_id": {
+                "type": "string",
+                "pattern": "^node_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "to_node_id": {
+                "type": "string",
+                "pattern": "^node_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "relation": {
+                "enum": [
+                  "narrative_next",
+                  "causes",
+                  "story_before"
+                ]
+              },
+              "source_refs": {
+                "type": "array",
+                "items": {
+                  "$ref": "urn:hetu:schema:source-ref:1.0.0"
+                },
+                "minItems": 1,
+                "maxItems": 10
+              }
+            },
+            "required": [
+              "type",
+              "from_node_id",
+              "to_node_id",
+              "relation",
+              "source_refs"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "remove_edge"
+              },
+              "edge_id": {
+                "type": "string",
+                "pattern": "^edge_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              }
+            },
+            "required": [
+              "type",
+              "edge_id"
+            ]
+          }
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 200
+    },
+    "operation_key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    }
+  },
+  "required": [
+    "plot_revision_id",
+    "corrections",
+    "operation_key"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

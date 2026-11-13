@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "phase": {
+      "enum": [
+        "prepare",
+        "execute"
+      ]
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+    "author": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^[^\\n\\r<>]+$"
+        },
+        "email": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 254,
+          "pattern": "^[^\\s<>@]+@[^\\s<>@]+$"
+        }
+      },
+      "required": [
+        "name",
+        "email"
+      ]
+    },
+    "expected_head": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "reference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "commit_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "reference",
+        "commit_id"
+      ]
+    },
+    "selected_paths": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10000,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1024
+      }
+    },
+    "snapshot_id": {
+      "type": "string",
+      "pattern": "^gitsnapshot_[0-9a-f-]{36}$"
+    },
+    "operation_key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    }
+  },
+  "required": [
+    "phase",
+    "operation_key"
+  ],
+  "oneOf": [
+    {
+      "properties": {
+        "phase": {
+          "const": "prepare"
+        }
+      },
+      "required": [
+        "message",
+        "author",
+        "expected_head"
+      ],
+      "not": {
+        "required": [
+          "snapshot_id"
+        ]
+      }
+    },
+    {
+      "properties": {
+        "phase": {
+          "const": "execute"
+        }
+      },
+      "required": [
+        "snapshot_id"
+      ],
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "message"
+            ]
+          },
+          {
+            "required": [
+              "author"
+            ]
+          },
+          {
+            "required": [
+              "expected_head"
+            ]
+          },
+          {
+            "required": [
+              "selected_paths"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

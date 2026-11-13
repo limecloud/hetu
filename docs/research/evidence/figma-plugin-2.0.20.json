@@ -1,0 +1,182 @@
+{
+  "schema_version": "1.0.0",
+  "collected_on": "2026-11-13",
+  "artifact": {
+    "name": "figma",
+    "manifest_version": "2.0.20",
+    "lock_version": "2.0.7",
+    "package_cache_revision": "d420d130",
+    "license": "LicenseRef-Figma-Developer-Terms",
+    "files": [
+      {
+        "path": ".codex-plugin/plugin.json",
+        "sha256": "4a94826aedb047fed25d2a7b16a07aaf5bc4fb1238d47e51d71985fa3336010d"
+      },
+      {
+        "path": ".mcp.json",
+        "sha256": "5ad3583f97d28e3dd065c38e024cef9eaf78f2b191930ead29021666ccc14466"
+      },
+      {
+        "path": ".app.json",
+        "sha256": "f5c3537639811b981ac8e9880d4eb0a3d4c7ccc3eb757d2d06c4f42c57dbd6d2"
+      },
+      {
+        "path": "plugin.lock.json",
+        "sha256": "64df9bd5b30b813ebbf6f3a8c68885e873e690ad4833fdd790ac467c8a9aac83"
+      },
+      {
+        "path": "ui/figma-workbench.html",
+        "sha256": "dfdfc449dd3b9ad24a115af449e9a8422f5ac2fb605645df732ca65eb0700f3b"
+      },
+      {
+        "path": "scripts/post_write_figma_parity_check.sh",
+        "sha256": "713193326e45acf8092e0216a44f2ffa5ab258d2a90c18396a288b6745a27325"
+      },
+      {
+        "path": "commands/review-design-parity.md",
+        "sha256": "644ec692e6566793d5c13097058db1056f950d3141b2506e2c2f8785e6478898"
+      },
+      {
+        "path": "skills/figma-code-connect/SKILL.md",
+        "sha256": "87af3996edb167d6aa3c044cb1bbb6a0d8e2d631c731bb896b1e1e8669640415"
+      },
+      {
+        "path": "skills/figma-create-new-file/SKILL.md",
+        "sha256": "82e0a018692d3d009b5d2c83ecce9203a4ce7dfbdb98b7b13a4f7e5b11832bc2"
+      },
+      {
+        "path": "skills/figma-design-to-code/SKILL.md",
+        "sha256": "936bbe68b4731d4a8748db15f85247efde232c8ae0902857c2c79a9ed40649ea"
+      },
+      {
+        "path": "skills/figma-generate-design/SKILL.md",
+        "sha256": "4585464c09bed50215151e468ab8476848adcf56da017811ddcbfff199ee0b56"
+      },
+      {
+        "path": "skills/figma-generate-diagram/SKILL.md",
+        "sha256": "7297638dbf2130d1b37bfd85df65d290a4dd0b11a11b54abafcf7d07565922b5"
+      },
+      {
+        "path": "skills/figma-generate-library/SKILL.md",
+        "sha256": "3c995d483bbf4761392ba0c2e00df2b1b1c632cc05c6e7df57a2e89c311f53b7"
+      },
+      {
+        "path": "skills/figma-implement-motion/SKILL.md",
+        "sha256": "2e26e67284d47c6a74aedf9dca7543f4c8817dafc59a11abb156d4f7feedb2c2"
+      },
+      {
+        "path": "skills/figma-swiftui/SKILL.md",
+        "sha256": "868c4defe2c0854f5a3e27594d3fa0f20347c86a9b15d103483b7488bfa8affe"
+      },
+      {
+        "path": "skills/figma-use-figjam/SKILL.md",
+        "sha256": "16b15da304f777e6bdc79bf425da73fa1ce0ea41af726cab8ddd6f40180acd74"
+      },
+      {
+        "path": "skills/figma-use-motion/SKILL.md",
+        "sha256": "d74fa8c9435a5260f8a61e3a8fbf11c068f940ae3423e9be2efde8b5e785d78c"
+      },
+      {
+        "path": "skills/figma-use-slides/SKILL.md",
+        "sha256": "0a69a65e686dcc223581afb409a4d31cf318716e2c65cc9c926839a8737e71a4"
+      },
+      {
+        "path": "skills/figma-use/SKILL.md",
+        "sha256": "7de62bb574c7acf3241643e0aafcea13e48ff06a12ef5203447eda3584e6ff4f"
+      }
+    ]
+  },
+  "analysis": {
+    "tool": "REA",
+    "cli_version": "6.7.0",
+    "operation": "analyze_javascript_application",
+    "evidence_id": "ev_7395e5c2bbe77da41eeaa4e5998685f4d091281f36b92d58e4b9cdaa0f89eaf8",
+    "provider": {
+      "id": "rea-javascript-application",
+      "name": "REA JavaScript application analyzer",
+      "version": "1"
+    },
+    "authority": "shipped-artifact",
+    "confidence": "derived",
+    "root_artifact_sha256": "d2e6c18db0ee39d269ecd1eceee54344952f7c132899d30867f3b891dd4446ed",
+    "inventory_manifest_id": "agm_383d193f286989e22e2e5bef8bd4a7c4421f129c2f1fa553036dc36362c070a3",
+    "statistics": {
+      "relevant_files": 15,
+      "nested_asar_containers": 0,
+      "text_bytes_read": 491171,
+      "invalid_utf8_files": 0,
+      "parsed_javascript_files": 9,
+      "skipped_javascript_files": 0,
+      "visited_ast_nodes": 17353,
+      "findings": 328,
+      "modules": 0,
+      "parse_failures": 0
+    },
+    "integrity_contradictions": [],
+    "target_code_executed": false,
+    "remote_service_inspected": false,
+    "limitations": [
+      "CommonJS and ESM binding relationships were recovered from inert syntax and resolved only within the inventoried artifact container.",
+      "JavaScript and HTML were parsed as inert text; bundle bootstrap code was never executed.",
+      "Static imports, entrypoints, workers, endpoints, and storage relationships do not prove runtime execution.",
+      "Static paths and relationships may remain unresolved when expressions are dynamic or obfuscated.",
+      "Webpack/Rspack factories were recovered from AST literals; REA did not invoke push handlers or bundle bootstrap code."
+    ]
+  },
+  "observations": [
+    {
+      "basis": "artifact_file_read",
+      "file": ".mcp.json",
+      "fact": "HTTP connection to https://mcp.figma.com/mcp; this is not Hetu deployment configuration."
+    },
+    {
+      "basis": "artifact_file_read",
+      "file": ".app.json",
+      "fact": "Connected app dependency declaration; not evidence of MCP Apps resource negotiation."
+    },
+    {
+      "basis": "artifact_file_read",
+      "file": "ui/figma-workbench.html",
+      "fact": "Static illustrative HTML with no script; no interactive runtime verified."
+    },
+    {
+      "basis": "artifact_file_read",
+      "file": "scripts/post_write_figma_parity_check.sh",
+      "fact": "Prints a reminder; does not run screenshot comparison or behavior checks."
+    },
+    {
+      "basis": "artifact_file_read",
+      "file": "plugin.lock.json",
+      "fact": "Lock version differs from current manifest. Neither file proves current host compatibility."
+    }
+  ],
+  "tool_availability": {
+    "basis": "active_session_tool_metadata_only",
+    "account_access_verified": false,
+    "calls_executed": false,
+    "selected_tools": [
+      "get_design_context",
+      "get_screenshot",
+      "get_variable_defs",
+      "get_libraries",
+      "search_design_system",
+      "use_figma",
+      "get_context_for_code_connect",
+      "generate_diagram",
+      "download_assets",
+      "open_figma_mcp_app_in_thread"
+    ]
+  },
+  "reproduction": {
+    "target": "Operator-supplied extracted plugin directory",
+    "command": "rea analyze-javascript-application \"<FIGMA_PLUGIN_DIRECTORY>\" --artifact-format directory --analysis-timeout-ms 45000 --max-heap-mb 512 --format json",
+    "raw_output": "build/research/figma-plugin/rea-evidence.json",
+    "raw_output_distributed": false
+  },
+  "interpretation_limits": [
+    "The static relationship count is not a vulnerability count.",
+    "The curated summary is not a replacement for original REA Evidence.",
+    "Package workflows are research references, not Hetu runtime dependencies.",
+    "No plugin code, assets, credentials, private designs or remote implementation are redistributed."
+  ]
+}

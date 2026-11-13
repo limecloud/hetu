@@ -1,0 +1,937 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:hetu:schema:blueprint:1.0.0",
+  "title": "HetuBlueprint",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "blueprint_id": {
+      "type": "string",
+      "pattern": "^blueprint_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "lock": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "locked": {
+          "type": "boolean"
+        },
+        "changed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "actor_ref": {
+          "type": "string",
+          "pattern": "^actor_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      },
+      "required": [
+        "locked",
+        "changed_at",
+        "actor_ref"
+      ]
+    },
+    "characters": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:hetu:schema:blueprint:1.0.0#/$defs/character"
+      },
+      "maxItems": 5000
+    },
+    "factions": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:hetu:schema:blueprint:1.0.0#/$defs/faction"
+      },
+      "maxItems": 5000
+    },
+    "locations": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:hetu:schema:blueprint:1.0.0#/$defs/location"
+      },
+      "maxItems": 5000
+    },
+    "timeline": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:hetu:schema:blueprint:1.0.0#/$defs/event"
+      },
+      "maxItems": 5000
+    },
+    "world": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:hetu:schema:blueprint:1.0.0#/$defs/world"
+      },
+      "maxItems": 5000
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:hetu:schema:blueprint:1.0.0#/$defs/rule"
+      },
+      "maxItems": 5000
+    }
+  },
+  "required": [
+    "schema_version",
+    "blueprint_id",
+    "revision",
+    "lock",
+    "characters",
+    "factions",
+    "locations",
+    "timeline",
+    "world",
+    "rules"
+  ],
+  "$defs": {
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "revision",
+        "sha256"
+      ]
+    },
+    "fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fact_id": {
+          "type": "string",
+          "pattern": "^fact_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "subject_ref": {
+          "type": "string",
+          "pattern": "^character_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "predicate": {
+          "enum": [
+            "identity",
+            "primary_faction",
+            "life_state",
+            "age"
+          ]
+        },
+        "value": {},
+        "valid_from": {
+          "type": "string",
+          "pattern": "^event_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "valid_to": {
+          "type": "string",
+          "pattern": "^event_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "source_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:hetu:schema:source-ref:1.0.0"
+          },
+          "maxItems": 100
+        }
+      },
+      "required": [
+        "fact_id",
+        "subject_ref",
+        "predicate",
+        "value",
+        "valid_from",
+        "source_refs"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "predicate": {
+                "const": "identity"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "predicate": {
+                "const": "primary_faction"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "type": "string",
+                "pattern": "^faction_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "predicate": {
+                "const": "life_state"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "enum": [
+                  "alive",
+                  "dead"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "predicate": {
+                "const": "age"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000000
+              }
+            }
+          }
+        }
+      ]
+    },
+    "character": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "character_id": {
+          "type": "string",
+          "pattern": "^character_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "maxItems": 200,
+          "uniqueItems": true
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "traits": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "maxItems": 200,
+          "uniqueItems": true
+        },
+        "facts": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:hetu:schema:blueprint:1.0.0#/$defs/fact"
+          },
+          "maxItems": 100
+        },
+        "archived": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "character_id",
+        "name",
+        "aliases",
+        "description",
+        "traits",
+        "facts",
+        "archived"
+      ]
+    },
+    "faction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "faction_id": {
+          "type": "string",
+          "pattern": "^faction_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "relations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "target_ref": {
+                "type": "string",
+                "pattern": "^faction_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "type": {
+                "enum": [
+                  "ally",
+                  "enemy",
+                  "neutral",
+                  "subordinate"
+                ]
+              }
+            },
+            "required": [
+              "target_ref",
+              "type"
+            ]
+          },
+          "maxItems": 200,
+          "uniqueItems": true
+        },
+        "archived": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "faction_id",
+        "name",
+        "description",
+        "relations",
+        "archived"
+      ]
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "location_id": {
+          "type": "string",
+          "pattern": "^location_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "maxItems": 200,
+          "uniqueItems": true
+        },
+        "parent_ref": {
+          "type": "string",
+          "pattern": "^location_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "interior_exterior": {
+          "enum": [
+            "interior",
+            "exterior",
+            "mixed",
+            "unknown"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "archived": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "location_id",
+        "name",
+        "aliases",
+        "interior_exterior",
+        "description",
+        "archived"
+      ]
+    },
+    "time_anchor": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "calendar": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "tick": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "calendar",
+        "tick"
+      ]
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "type": "string",
+          "pattern": "^event_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "time_anchor": {
+          "$ref": "urn:hetu:schema:blueprint:1.0.0#/$defs/time_anchor"
+        },
+        "before_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^event_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "maxItems": 200,
+          "uniqueItems": true
+        },
+        "after_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^event_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "maxItems": 200,
+          "uniqueItems": true
+        },
+        "source_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:hetu:schema:source-ref:1.0.0"
+          },
+          "maxItems": 100
+        }
+      },
+      "required": [
+        "event_id",
+        "title",
+        "before_refs",
+        "after_refs",
+        "source_refs"
+      ]
+    },
+    "world": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "entry_id": {
+          "type": "string",
+          "pattern": "^entry_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "source_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:hetu:schema:source-ref:1.0.0"
+          },
+          "maxItems": 100
+        }
+      },
+      "required": [
+        "entry_id",
+        "title",
+        "description",
+        "source_refs"
+      ]
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "packages": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "novel",
+              "drama",
+              "music-cue",
+              "visual-prompt"
+            ]
+          },
+          "maxItems": 4,
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "document_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "maxItems": 1000,
+          "uniqueItems": true
+        },
+        "entity_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^(character|faction|location|event|entry|rule)_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "maxItems": 1000,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "packages",
+        "document_ids",
+        "entity_refs"
+      ]
+    },
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "rule_id": {
+          "type": "string",
+          "pattern": "^rule_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "type": {
+          "enum": [
+            "required_reference",
+            "fact_equals",
+            "event_precedes",
+            "forbidden_term",
+            "world_constraint",
+            "advisory"
+          ]
+        },
+        "scope": {
+          "$ref": "urn:hetu:schema:blueprint:1.0.0#/$defs/scope"
+        },
+        "severity": {
+          "enum": [
+            "error",
+            "warning",
+            "info"
+          ]
+        },
+        "parameters": {},
+        "rationale": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "exception_policy": {
+          "enum": [
+            "author_review",
+            "none"
+          ]
+        }
+      },
+      "required": [
+        "rule_id",
+        "revision",
+        "type",
+        "scope",
+        "severity",
+        "parameters",
+        "rationale",
+        "exception_policy"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "required_reference"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "parameters": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "entity_types": {
+                    "type": "array",
+                    "items": {
+                      "enum": [
+                        "character",
+                        "location",
+                        "faction"
+                      ]
+                    },
+                    "maxItems": 3,
+                    "uniqueItems": true,
+                    "minItems": 1
+                  }
+                },
+                "required": [
+                  "entity_types"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "fact_equals"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "parameters": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "predicates": {
+                    "type": "array",
+                    "items": {
+                      "enum": [
+                        "identity",
+                        "primary_faction",
+                        "life_state",
+                        "age"
+                      ]
+                    },
+                    "maxItems": 4,
+                    "uniqueItems": true,
+                    "minItems": 1
+                  }
+                },
+                "required": [
+                  "predicates"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "event_precedes"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "parameters": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "before_event_id": {
+                    "type": "string",
+                    "pattern": "^event_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                  },
+                  "after_event_id": {
+                    "type": "string",
+                    "pattern": "^event_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                  }
+                },
+                "required": [
+                  "before_event_id",
+                  "after_event_id"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "forbidden_term"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "parameters": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "terms": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    },
+                    "maxItems": 100,
+                    "uniqueItems": true,
+                    "minItems": 1
+                  },
+                  "case_sensitive": {
+                    "type": "boolean"
+                  },
+                  "exceptions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 1000
+                    },
+                    "maxItems": 100,
+                    "uniqueItems": true
+                  }
+                },
+                "required": [
+                  "terms",
+                  "case_sensitive",
+                  "exceptions"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "world_constraint"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "parameters": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "location_ref": {
+                    "type": "string",
+                    "pattern": "^location_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                  },
+                  "forbidden_capability": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  }
+                },
+                "required": [
+                  "location_ref",
+                  "forbidden_capability"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "advisory"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "parameters": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 10000
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "change": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "upsert_character"
+            },
+            "entity": {
+              "$ref": "urn:hetu:schema:blueprint:1.0.0#/$defs/character"
+            }
+          },
+          "required": [
+            "type",
+            "entity"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "upsert_faction"
+            },
+            "entity": {
+              "$ref": "urn:hetu:schema:blueprint:1.0.0#/$defs/faction"
+            }
+          },
+          "required": [
+            "type",
+            "entity"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "upsert_location"
+            },
+            "entity": {
+              "$ref": "urn:hetu:schema:blueprint:1.0.0#/$defs/location"
+            }
+          },
+          "required": [
+            "type",
+            "entity"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "upsert_event"
+            },
+            "entity": {
+              "$ref": "urn:hetu:schema:blueprint:1.0.0#/$defs/event"
+            }
+          },
+          "required": [
+            "type",
+            "entity"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "upsert_world"
+            },
+            "entity": {
+              "$ref": "urn:hetu:schema:blueprint:1.0.0#/$defs/world"
+            }
+          },
+          "required": [
+            "type",
+            "entity"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "upsert_rule"
+            },
+            "entity": {
+              "$ref": "urn:hetu:schema:blueprint:1.0.0#/$defs/rule"
+            }
+          },
+          "required": [
+            "type",
+            "entity"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "remove_entity"
+            },
+            "entity_ref": {
+              "type": "string",
+              "pattern": "^(character|faction|location|event|entry|rule)_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            }
+          },
+          "required": [
+            "type",
+            "entity_ref"
+          ]
+        }
+      ]
+    }
+  }
+}

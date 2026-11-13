@@ -16,3 +16,11 @@ apps/website/public/sources/
 *.log
 apps/website/test-results/
 apps/website/playwright-report/
+.build/
+build/
+dist/
+.swiftpm/
+target/
+__pycache__/
+apps/macos/Sources/HetuNative/Resources/NativeStrings.json
+apps/macos/Sources/HetuNative/Resources/Localizable.xcstrings

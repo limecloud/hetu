@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "as_of": "2026-11-12",
+  "as_of": "2026-11-13",
   "digest_policy": "SHA-256 identifies the recorded response representation or repository bytes; it is not a publisher signature.",
   "sources": [
     {
@@ -63,7 +63,7 @@
       "source_type": "official_web",
       "url": "https://modelcontextprotocol.io/docs/2026-07-28/sdk.md",
       "final_url": "https://modelcontextprotocol.io/docs/2026-07-28/sdk.md",
-      "retrieved_on": "2026-11-12",
+      "retrieved_on": "2026-11-13",
       "sha256": "4ef8c429437efcff2e948e868c53f2a0b129eb62850fda2389ef206e86aaaea9",
       "representation": "markdown_response",
       "content_status": "read",
@@ -74,22 +74,22 @@
       "source_type": "official_web",
       "url": "https://modelcontextprotocol.io/extensions/apps/overview.md",
       "final_url": "https://modelcontextprotocol.io/extensions/apps/overview.md",
-      "retrieved_on": "2026-11-12",
+      "retrieved_on": "2026-11-13",
       "sha256": "5c1d70733c9e1962ee45825aca76a89ff21b79ceec4260ccde3ce2c99d91743f",
       "representation": "markdown_response",
       "content_status": "read",
-      "scope": "MCP protocol and extensions"
+      "scope": "External client integration, Skills, MCP Apps and browser interaction; documentation evidence, not host interoperability verification"
     },
     {
       "id": "openai-plugin-build",
       "source_type": "official_web",
       "url": "https://developers.openai.com/plugins/build/plugins.md",
       "final_url": "https://developers.openai.com/plugins/build/plugins.md",
-      "retrieved_on": "2026-11-12",
+      "retrieved_on": "2026-11-13",
       "sha256": "b913de64a45a90f14fba0d4b0654444f1f60f4e2d4f79f3dd41332895f79721d",
       "representation": "markdown_response",
       "content_status": "read",
-      "scope": "OpenAI plugin packaging and host capabilities"
+      "scope": "External client integration, Skills, MCP Apps and browser interaction; documentation evidence, not host interoperability verification"
     },
     {
       "id": "openai-ui",
@@ -203,32 +203,35 @@
     {
       "id": "openai-plugins",
       "source_type": "official_web",
-      "url": "https://learn.chatgpt.com/docs/plugins",
-      "retrieved_on": "2026-11-12",
-      "sha256": "085c0df7642fd6df27a3e61cbc7ffc27f05a960bd841458d2c82a7c4bcaa52b2",
-      "representation": "text_response",
+      "url": "https://learn.chatgpt.com/docs/plugins.md",
+      "final_url": "https://learn.chatgpt.com/docs/plugins.md",
+      "retrieved_on": "2026-11-13",
+      "sha256": "e63d475f7ef48c63145f86889fb2c12db024edeafea876446bc333a0660e63b8",
+      "representation": "markdown_response",
       "content_status": "read",
-      "scope": "Official documentation index or product documentation"
+      "scope": "External client integration, Skills, MCP Apps and browser interaction; documentation evidence, not host interoperability verification"
     },
     {
       "id": "openai-mcp",
       "source_type": "official_web",
-      "url": "https://learn.chatgpt.com/docs/extend/mcp?surface=cli",
-      "retrieved_on": "2026-11-12",
-      "sha256": "df557aba6799129cd0b96e027c88f96ab64052c03de65449503702eadc83cb1b",
-      "representation": "text_response",
+      "url": "https://learn.chatgpt.com/docs/extend/mcp.md",
+      "final_url": "https://learn.chatgpt.com/docs/extend/mcp.md",
+      "retrieved_on": "2026-11-13",
+      "sha256": "faf9407740483f7ee27ac4d0db08a9d15510b3d241251edc9d00cf7b35c29e3b",
+      "representation": "markdown_response",
       "content_status": "read",
-      "scope": "Official documentation index or product documentation"
+      "scope": "External client integration, Skills, MCP Apps and browser interaction; documentation evidence, not host interoperability verification"
     },
     {
       "id": "openai-skills",
       "source_type": "official_web",
-      "url": "https://learn.chatgpt.com/docs/build-skills",
-      "retrieved_on": "2026-11-12",
-      "sha256": "3dbf73926592899f689786f05d5008f23777e91d8ceedd1b5d73adab6b983492",
-      "representation": "text_response",
+      "url": "https://learn.chatgpt.com/docs/build-skills.md",
+      "final_url": "https://learn.chatgpt.com/docs/build-skills.md",
+      "retrieved_on": "2026-11-13",
+      "sha256": "95b5ef4d0581d9eeeee342ef4718e77ed7574fe9c61ae28e1c2bffa4c6bdb411",
+      "representation": "markdown_response",
       "content_status": "read",
-      "scope": "Official documentation index or product documentation"
+      "scope": "External client integration, Skills, MCP Apps and browser interaction; documentation evidence, not host interoperability verification"
     },
     {
       "id": "axi:README.md",
@@ -305,30 +308,30 @@
       "source_type": "repository_file",
       "repository": "axi",
       "path": "content/ecosystem/codex/plugins.md",
-      "retrieved_on": "2026-11-12",
+      "retrieved_on": "2026-11-13",
       "sha256": "90b2a30af9167683833cdf30bb2fe60ebe0220d4677f7e7e2fe7840244e04778",
       "content_status": "read",
-      "scope": "Reference contract or architecture; no runtime dependency"
+      "scope": "AXI 0.2.1 design reference; no runtime implementation or repository dependency"
     },
     {
       "id": "axi:content/ecosystem/codex/interfaces.md",
       "source_type": "repository_file",
       "repository": "axi",
       "path": "content/ecosystem/codex/interfaces.md",
-      "retrieved_on": "2026-11-12",
+      "retrieved_on": "2026-11-13",
       "sha256": "9be8f8aa48ca131aee906f2883400cd549e548e0f88e778d9796acb4a41476ff",
       "content_status": "read",
-      "scope": "Reference contract or architecture; no runtime dependency"
+      "scope": "AXI 0.2.1 design reference; no runtime implementation or repository dependency"
     },
     {
       "id": "axi:content/ecosystem/mcp-apps.md",
       "source_type": "repository_file",
       "repository": "axi",
       "path": "content/ecosystem/mcp-apps.md",
-      "retrieved_on": "2026-11-12",
+      "retrieved_on": "2026-11-13",
       "sha256": "6177ea39baf27adf80f59320dad8cc2463c30800bc5381177418b18c6dedd43e",
       "content_status": "read",
-      "scope": "Reference contract or architecture; no runtime dependency"
+      "scope": "AXI 0.2.1 design reference; no runtime implementation or repository dependency"
     },
     {
       "id": "axi:content/reference/adoption.md",
@@ -467,6 +470,901 @@
       "retrieved_on": "2026-11-12",
       "content_status": "access_challenge",
       "scope": "Syntax entry only; grammar requires parser fixtures and authoritative specification"
+    },
+    {
+      "id": "mcp-rust-sdk-crate",
+      "source_type": "official_web",
+      "url": "https://static.crates.io/crates/rmcp/rmcp-3.9.0.crate",
+      "final_url": "https://static.crates.io/crates/rmcp/rmcp-3.9.0.crate",
+      "retrieved_on": "2026-11-13",
+      "sha256": "93b3a36d62507f952882210d62a31108fe2a42dae4fada7a8616afad295b8495",
+      "representation": "published_crate_manifest",
+      "content_status": "read",
+      "scope": "rmcp 3.9.0; Apache-2.0; MSRV 1.88; exact Cargo dependency"
+    },
+    {
+      "id": "mcp-discovery",
+      "source_type": "official_web",
+      "url": "https://modelcontextprotocol.io/specification/2026-07-28/server/discover.md",
+      "final_url": "https://modelcontextprotocol.io/specification/2026-07-28/server/discover.md",
+      "retrieved_on": "2026-11-13",
+      "sha256": "4fbffd86a2045f45086bab84adeebb2706d5ee48af4ff644c90facbff4bde5a1",
+      "representation": "markdown_response",
+      "content_status": "read",
+      "scope": "MCP discovery and per-request metadata"
+    },
+    {
+      "id": "mcp-schema-2026-07-28",
+      "source_type": "official_web",
+      "url": "https://raw.githubusercontent.com/modelcontextprotocol/specification/38353251fab3bdeead03dd8283b9e66076ce1a7f/schema/2026-07-28/schema.json",
+      "final_url": "https://raw.githubusercontent.com/modelcontextprotocol/specification/38353251fab3bdeead03dd8283b9e66076ce1a7f/schema/2026-07-28/schema.json",
+      "retrieved_on": "2026-11-13",
+      "sha256": "edbb197ed0f92e90d658866e23cf76f107df0caac5ce25c2b9e64e1ca9a6314a",
+      "representation": "repository_bytes",
+      "content_status": "read",
+      "scope": "Official MCP schema fixture; upstream LICENSE retained at tests/mcp/LICENSE",
+      "local_path": "tests/mcp/schema-2026-07-28.json"
+    },
+    {
+      "id": "github:201206030/novel",
+      "source_type": "repository_file",
+      "repository": "201206030/novel",
+      "path": "README.md",
+      "url": "https://github.com/201206030/novel/blob/119319c2101b6d157e39c0a13602a51356316145/README.md",
+      "commit_sha": "119319c2101b6d157e39c0a13602a51356316145",
+      "retrieved_on": "2026-11-13",
+      "sha256": "d2e2a2812d871dee013842e1bc5b1c45dfdb5b068a6a874d57ea8b4e250d5719",
+      "representation": "repository_bytes",
+      "content_status": "read",
+      "scope": "Novel and screenplay author tools research; feature descriptions are project claims, not runtime verification",
+      "github_snapshot": {
+        "metadata_url": "https://api.github.com/repos/201206030/novel",
+        "retrieved_at": "2026-11-12T23:33:32.806918+00:00",
+        "stargazers_count": 5851,
+        "default_branch": "master",
+        "default_branch_commit_at": "2026-11-01T01:14:26Z",
+        "pushed_at": "2026-11-01T01:14:26Z",
+        "archived": false,
+        "language": "Java",
+        "license_spdx_id": "Apache-2.0"
+      },
+      "license_file": {
+        "path": "LICENSE",
+        "url": "https://github.com/201206030/novel/blob/119319c2101b6d157e39c0a13602a51356316145/LICENSE",
+        "sha256": "1eb85fc97224598dad1852b5d6483bbcf0aa8608790dcc657a5a2a761ae9c8c6",
+        "bytes": 11558
+      }
+    },
+    {
+      "id": "github:201206030/novel-plus",
+      "source_type": "repository_file",
+      "repository": "201206030/novel-plus",
+      "path": "README.md",
+      "url": "https://github.com/201206030/novel-plus/blob/408d8b23995c544e5c2dc0a43c0da9df3222351d/README.md",
+      "commit_sha": "408d8b23995c544e5c2dc0a43c0da9df3222351d",
+      "retrieved_on": "2026-11-13",
+      "sha256": "3ff72c338e384e2b444393bccef1ad0f8c159c23ce63748041cd27e51884b0ec",
+      "representation": "repository_bytes",
+      "content_status": "read",
+      "scope": "Novel and screenplay author tools research; feature descriptions are project claims, not runtime verification",
+      "github_snapshot": {
+        "metadata_url": "https://api.github.com/repos/201206030/novel-plus",
+        "retrieved_at": "2026-11-12T23:33:33.500487+00:00",
+        "stargazers_count": 4808,
+        "default_branch": "master",
+        "default_branch_commit_at": "2026-11-12T07:00:14Z",
+        "pushed_at": "2026-11-12T07:01:11Z",
+        "archived": false,
+        "language": "Java",
+        "license_spdx_id": "Apache-2.0"
+      },
+      "license_file": {
+        "path": "LICENSE",
+        "url": "https://github.com/201206030/novel-plus/blob/408d8b23995c544e5c2dc0a43c0da9df3222351d/LICENSE",
+        "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+        "bytes": 11357
+      }
+    },
+    {
+      "id": "github:EthanYoQ/Pagekin",
+      "source_type": "repository_file",
+      "repository": "EthanYoQ/Pagekin",
+      "path": "README.md",
+      "url": "https://github.com/EthanYoQ/Pagekin/blob/5494761ad6e96abc0c06366b50662b1de50249f1/README.md",
+      "commit_sha": "5494761ad6e96abc0c06366b50662b1de50249f1",
+      "retrieved_on": "2026-11-13",
+      "sha256": "cd53937f609a82dd08a9ea6d00e89a44771f990c248af4e72d870cdc451a1146",
+      "representation": "repository_bytes",
+      "content_status": "read",
+      "scope": "Novel and screenplay author tools research; feature descriptions are project claims, not runtime verification",
+      "github_snapshot": {
+        "metadata_url": "https://api.github.com/repos/EthanYoQ/Pagekin",
+        "retrieved_at": "2026-11-12T23:33:29.575179+00:00",
+        "stargazers_count": 2600,
+        "default_branch": "master",
+        "default_branch_commit_at": "2026-11-11T19:06:00Z",
+        "pushed_at": "2026-11-11T19:06:00Z",
+        "archived": false,
+        "language": "TypeScript",
+        "license_spdx_id": "GPL-3.0"
+      },
+      "license_file": {
+        "path": "LICENSE",
+        "url": "https://github.com/EthanYoQ/Pagekin/blob/5494761ad6e96abc0c06366b50662b1de50249f1/LICENSE",
+        "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+        "bytes": 35149
+      },
+      "visual_evidence": [
+        {
+          "path": "docs/assets/readme/v130-zh-library.webp",
+          "url": "https://github.com/EthanYoQ/Pagekin/blob/5494761ad6e96abc0c06366b50662b1de50249f1/docs/assets/readme/v130-zh-library.webp",
+          "sha256": "df5973fbe8a391b26f9647f5b8efdd725098ec74e19def858e5c6fcd7541480b",
+          "representation": "repository_image_bytes",
+          "bytes": 42384,
+          "content_status": "visually_reviewed",
+          "scope": "Official repository screenshot; not a locally executed application"
+        }
+      ]
+    },
+    {
+      "id": "github:Narcooo/inkos",
+      "source_type": "repository_file",
+      "repository": "Narcooo/inkos",
+      "path": "README.md",
+      "url": "https://github.com/Narcooo/inkos/blob/53adac4e974b54dafda975edc4edd07cad364c18/README.md",
+      "commit_sha": "53adac4e974b54dafda975edc4edd07cad364c18",
+      "retrieved_on": "2026-11-13",
+      "sha256": "78d4f51e97db1895ff42ae756b0f69068d8c44e5690b399831122f8f943fb6d9",
+      "representation": "repository_bytes",
+      "content_status": "read",
+      "scope": "Novel and screenplay author tools research; feature descriptions are project claims, not runtime verification",
+      "github_snapshot": {
+        "metadata_url": "https://api.github.com/repos/Narcooo/inkos",
+        "retrieved_at": "2026-11-12T23:33:29.070821+00:00",
+        "stargazers_count": 11129,
+        "default_branch": "master",
+        "default_branch_commit_at": "2026-10-24T05:19:57Z",
+        "pushed_at": "2026-10-24T05:30:14Z",
+        "archived": false,
+        "language": "TypeScript",
+        "license_spdx_id": "AGPL-3.0"
+      },
+      "license_file": {
+        "path": "LICENSE",
+        "url": "https://github.com/Narcooo/inkos/blob/53adac4e974b54dafda975edc4edd07cad364c18/LICENSE",
+        "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+        "bytes": 34523
+      }
+    },
+    {
+      "id": "github:YILING0013/AI_NovelGenerator",
+      "source_type": "repository_file",
+      "repository": "YILING0013/AI_NovelGenerator",
+      "path": "README.md",
+      "url": "https://github.com/YILING0013/AI_NovelGenerator/blob/3f1ce0f0028f35b29dafbfac6c9ea0646c153f2d/README.md",
+      "commit_sha": "3f1ce0f0028f35b29dafbfac6c9ea0646c153f2d",
+      "retrieved_on": "2026-11-13",
+      "sha256": "df25e32f06afd79328c0b87700e9dae7570b5895cf5ed4811cdec45f1f092da1",
+      "representation": "repository_bytes",
+      "content_status": "read",
+      "scope": "Novel and screenplay author tools research; feature descriptions are project claims, not runtime verification",
+      "github_snapshot": {
+        "metadata_url": "https://api.github.com/repos/YILING0013/AI_NovelGenerator",
+        "retrieved_at": "2026-11-12T23:35:09.657941+00:00",
+        "stargazers_count": 6452,
+        "default_branch": "main",
+        "default_branch_commit_at": "2026-11-05T07:39:01Z",
+        "pushed_at": "2026-11-05T07:39:13Z",
+        "archived": false,
+        "language": "Python",
+        "license_spdx_id": "AGPL-3.0"
+      },
+      "license_file": {
+        "path": "LICENSE",
+        "url": "https://github.com/YILING0013/AI_NovelGenerator/blob/3f1ce0f0028f35b29dafbfac6c9ea0646c153f2d/LICENSE",
+        "sha256": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
+        "bytes": 34523
+      }
+    },
+    {
+      "id": "github:andreafeccomandi/bibisco",
+      "source_type": "repository_file",
+      "repository": "andreafeccomandi/bibisco",
+      "path": "README.md",
+      "url": "https://github.com/andreafeccomandi/bibisco/blob/14717969e301fc5a48cd2cda802075979a82ba2b/README.md",
+      "commit_sha": "14717969e301fc5a48cd2cda802075979a82ba2b",
+      "retrieved_on": "2026-11-13",
+      "sha256": "4fe39b80f7d4a46db5cac0653ea00e4f959d1f0894f656ea23d900b2f3c31796",
+      "representation": "repository_bytes",
+      "content_status": "read",
+      "scope": "Novel and screenplay author tools research; feature descriptions are project claims, not runtime verification",
+      "github_snapshot": {
+        "metadata_url": "https://api.github.com/repos/andreafeccomandi/bibisco",
+        "retrieved_at": "2026-11-12T23:33:29.616808+00:00",
+        "stargazers_count": 775,
+        "default_branch": "master",
+        "default_branch_commit_at": "2024-09-27T07:34:53Z",
+        "pushed_at": "2024-09-27T07:35:19Z",
+        "archived": false,
+        "language": "JavaScript",
+        "license_spdx_id": "GPL-3.0"
+      },
+      "license_file": {
+        "path": "LICENSE",
+        "url": "https://github.com/andreafeccomandi/bibisco/blob/14717969e301fc5a48cd2cda802075979a82ba2b/LICENSE",
+        "sha256": "c61f12da7cdad526bdcbed47a4c0a603e60dbbfdaf8b66933cd088e9132c303f",
+        "bytes": 32472
+      }
+    },
+    {
+      "id": "github:hughhowey/neo",
+      "source_type": "repository_file",
+      "repository": "hughhowey/neo",
+      "path": "README.md",
+      "url": "https://github.com/hughhowey/neo/blob/2d0162f02b0b341b461abe633f147c76303df651/README.md",
+      "commit_sha": "2d0162f02b0b341b461abe633f147c76303df651",
+      "retrieved_on": "2026-11-13",
+      "sha256": "8ddda43878fe2b5fdf2b2768eb433555308d12196f784666a31bf47f23c37efa",
+      "representation": "repository_bytes",
+      "content_status": "read",
+      "scope": "Novel and screenplay author tools research; feature descriptions are project claims, not runtime verification",
+      "github_snapshot": {
+        "metadata_url": "https://api.github.com/repos/hughhowey/neo",
+        "retrieved_at": "2026-11-12T23:35:09.507966+00:00",
+        "stargazers_count": 1679,
+        "default_branch": "main",
+        "default_branch_commit_at": "2026-11-11T21:57:27Z",
+        "pushed_at": "2026-11-11T21:57:31Z",
+        "archived": false,
+        "language": "JavaScript",
+        "license_spdx_id": "MIT"
+      },
+      "license_file": {
+        "path": "LICENSE",
+        "url": "https://github.com/hughhowey/neo/blob/2d0162f02b0b341b461abe633f147c76303df651/LICENSE",
+        "sha256": "2ca9751b685b12507fc5ce8e9cb172458d86c0e4db4baf95f950a911e29a975a",
+        "bytes": 1067
+      }
+    },
+    {
+      "id": "github:kevboh/longform",
+      "source_type": "repository_file",
+      "repository": "kevboh/longform",
+      "path": "README.md",
+      "url": "https://github.com/kevboh/longform/blob/b7f3985cb6cc5347660697236c3427f43a178d0c/README.md",
+      "commit_sha": "b7f3985cb6cc5347660697236c3427f43a178d0c",
+      "retrieved_on": "2026-11-13",
+      "sha256": "7134aef9eadecf1017c2607d87fba6dfc1a61ffbf2c6221dec383dcd3fb39875",
+      "representation": "repository_bytes",
+      "content_status": "read",
+      "scope": "Novel and screenplay author tools research; feature descriptions are project claims, not runtime verification",
+      "github_snapshot": {
+        "metadata_url": "https://api.github.com/repos/kevboh/longform",
+        "retrieved_at": "2026-11-12T23:33:33.438063+00:00",
+        "stargazers_count": 967,
+        "default_branch": "main",
+        "default_branch_commit_at": "2025-12-02T16:00:52Z",
+        "pushed_at": "2025-12-02T16:00:53Z",
+        "archived": false,
+        "language": "TypeScript",
+        "license_spdx_id": "NOASSERTION"
+      },
+      "license_file": {
+        "path": "LICENSE.md",
+        "url": "https://github.com/kevboh/longform/blob/b7f3985cb6cc5347660697236c3427f43a178d0c/LICENSE.md",
+        "sha256": "598e7177321d014645d83cd18f3005addac6faf1246ec492a68e52344ff5421a",
+        "bytes": 1509
+      },
+      "license_interpretation": "FAFO License v0.2; custom ethical-use restriction; not treated as a conventional open-source license"
+    },
+    {
+      "id": "github:koodo-reader/koodo-reader",
+      "source_type": "repository_file",
+      "repository": "koodo-reader/koodo-reader",
+      "path": "README.md",
+      "url": "https://github.com/koodo-reader/koodo-reader/blob/f5b4fc6741d54a7e6f5c92fe3c10534dc860f465/README.md",
+      "commit_sha": "f5b4fc6741d54a7e6f5c92fe3c10534dc860f465",
+      "retrieved_on": "2026-11-13",
+      "sha256": "69da7e6c505bf298898c64bd5c2ef2ee96e7c9e8151e6f3d00227bf2f846c785",
+      "representation": "repository_bytes",
+      "content_status": "read",
+      "scope": "Novel and screenplay author tools research; feature descriptions are project claims, not runtime verification",
+      "github_snapshot": {
+        "metadata_url": "https://api.github.com/repos/koodo-reader/koodo-reader",
+        "retrieved_at": "2026-11-12T23:33:37.124237+00:00",
+        "stargazers_count": 28823,
+        "default_branch": "dev",
+        "default_branch_commit_at": "2026-11-12T10:25:02Z",
+        "pushed_at": "2026-11-12T10:53:38Z",
+        "archived": false,
+        "language": "JavaScript",
+        "license_spdx_id": "AGPL-3.0"
+      },
+      "license_file": {
+        "path": "LICENSE",
+        "url": "https://github.com/koodo-reader/koodo-reader/blob/f5b4fc6741d54a7e6f5c92fe3c10534dc860f465/LICENSE",
+        "sha256": "5537d2d539c94627446bf7eb30d30fda28d1de8aa9a41c25b83012db52ff6f8b",
+        "bytes": 34499
+      }
+    },
+    {
+      "id": "github:lingfengQAQ/webnovel-writer",
+      "source_type": "repository_file",
+      "repository": "lingfengQAQ/webnovel-writer",
+      "path": "README.md",
+      "url": "https://github.com/lingfengQAQ/webnovel-writer/blob/e5b6a4b3798224dd2e78c806b6923abb3924dd56/README.md",
+      "commit_sha": "e5b6a4b3798224dd2e78c806b6923abb3924dd56",
+      "retrieved_on": "2026-11-13",
+      "sha256": "45665748328012ddfeff6143dea9d3a4e12a8b0e5b3953fff3fbbba3e3f0ed57",
+      "representation": "repository_bytes",
+      "content_status": "read",
+      "scope": "Novel and screenplay author tools research; feature descriptions are project claims, not runtime verification",
+      "github_snapshot": {
+        "metadata_url": "https://api.github.com/repos/lingfengQAQ/webnovel-writer",
+        "retrieved_at": "2026-11-12T23:33:32.634985+00:00",
+        "stargazers_count": 7940,
+        "default_branch": "master",
+        "default_branch_commit_at": "2026-11-07T06:08:03Z",
+        "pushed_at": "2026-11-12T08:22:16Z",
+        "archived": false,
+        "language": "Python",
+        "license_spdx_id": "GPL-3.0"
+      },
+      "license_file": {
+        "path": "LICENSE",
+        "url": "https://github.com/lingfengQAQ/webnovel-writer/blob/e5b6a4b3798224dd2e78c806b6923abb3924dd56/LICENSE",
+        "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+        "bytes": 35149
+      }
+    },
+    {
+      "id": "github:lmparppei/Beat",
+      "source_type": "repository_file",
+      "repository": "lmparppei/Beat",
+      "path": "README.md",
+      "url": "https://github.com/lmparppei/Beat/blob/ab2382184ca41e50440ff695373b17b4e57c915f/README.md",
+      "commit_sha": "ab2382184ca41e50440ff695373b17b4e57c915f",
+      "retrieved_on": "2026-11-13",
+      "sha256": "f8a2ad08ee9df7eff070ec8132e5251b3e0379912b0a2a2068c871179d080e7d",
+      "representation": "repository_bytes",
+      "content_status": "read",
+      "scope": "Novel and screenplay author tools research; feature descriptions are project claims, not runtime verification",
+      "github_snapshot": {
+        "metadata_url": "https://api.github.com/repos/lmparppei/Beat",
+        "retrieved_at": "2026-11-12T23:33:34.346442+00:00",
+        "stargazers_count": 368,
+        "default_branch": "main",
+        "default_branch_commit_at": "2026-11-02T15:15:08Z",
+        "pushed_at": "2026-11-02T20:47:40Z",
+        "archived": false,
+        "language": "Objective-C",
+        "license_spdx_id": "NOASSERTION"
+      },
+      "license_file": {
+        "path": "LICENSE.md",
+        "url": "https://github.com/lmparppei/Beat/blob/ab2382184ca41e50440ff695373b17b4e57c915f/LICENSE.md",
+        "sha256": "991140c6869e9639b3e2664e74ee9f95bce78725fe893533abd82bebcf78338b",
+        "bytes": 507
+      },
+      "license_interpretation": "GPL-3.0-or-later; determined from LICENSE.md, GitHub API reports NOASSERTION"
+    },
+    {
+      "id": "github:looplj/reveric",
+      "source_type": "repository_file",
+      "repository": "looplj/reveric",
+      "path": "README.md",
+      "url": "https://github.com/looplj/reveric/blob/fcd73dbd445ded749448fe00a453a56531dfef66/README.md",
+      "commit_sha": "fcd73dbd445ded749448fe00a453a56531dfef66",
+      "retrieved_on": "2026-11-13",
+      "sha256": "15e5a5c4646148d6cab1ff2a2400fa176dc1f19dff7ec63ed481b13d2759ec20",
+      "representation": "repository_bytes",
+      "content_status": "read",
+      "scope": "Novel and screenplay author tools research; feature descriptions are project claims, not runtime verification",
+      "github_snapshot": {
+        "metadata_url": "https://api.github.com/repos/looplj/reveric",
+        "retrieved_at": "2026-11-12T23:35:09.148595+00:00",
+        "stargazers_count": 833,
+        "default_branch": "unstable",
+        "default_branch_commit_at": "2026-11-12T11:44:11Z",
+        "pushed_at": "2026-11-12T11:46:43Z",
+        "archived": false,
+        "language": "Dart",
+        "license_spdx_id": "AGPL-3.0"
+      },
+      "license_file": {
+        "path": "LICENSE",
+        "url": "https://github.com/looplj/reveric/blob/fcd73dbd445ded749448fe00a453a56531dfef66/LICENSE",
+        "sha256": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
+        "bytes": 34523
+      }
+    },
+    {
+      "id": "github:olivierkes/manuskript",
+      "source_type": "repository_file",
+      "repository": "olivierkes/manuskript",
+      "path": "README.md",
+      "url": "https://github.com/olivierkes/manuskript/blob/5241f69ada7e06726f3c300b8851768380bf0900/README.md",
+      "commit_sha": "5241f69ada7e06726f3c300b8851768380bf0900",
+      "retrieved_on": "2026-11-13",
+      "sha256": "7e1f2bc056d5c779d0abcb1c6c67fc0aecd6e1bf481a348966db96cf411ee23a",
+      "representation": "repository_bytes",
+      "content_status": "read",
+      "scope": "Novel and screenplay author tools research; feature descriptions are project claims, not runtime verification",
+      "github_snapshot": {
+        "metadata_url": "https://api.github.com/repos/olivierkes/manuskript",
+        "retrieved_at": "2026-11-12T23:33:29.100971+00:00",
+        "stargazers_count": 2480,
+        "default_branch": "develop",
+        "default_branch_commit_at": "2026-11-10T00:31:02Z",
+        "pushed_at": "2026-11-10T00:31:02Z",
+        "archived": false,
+        "language": "Python",
+        "license_spdx_id": "GPL-3.0"
+      },
+      "license_file": {
+        "path": "COPYING",
+        "url": "https://github.com/olivierkes/manuskript/blob/5241f69ada7e06726f3c300b8851768380bf0900/COPYING",
+        "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903",
+        "bytes": 35147
+      },
+      "license_interpretation": "GPL-3.0-or-later, as stated in README"
+    },
+    {
+      "id": "github:readest/readest",
+      "source_type": "repository_file",
+      "repository": "readest/readest",
+      "path": "README.md",
+      "url": "https://github.com/readest/readest/blob/a60b7eee0892f5533edbaca7d6391cd3609e4173/README.md",
+      "commit_sha": "a60b7eee0892f5533edbaca7d6391cd3609e4173",
+      "retrieved_on": "2026-11-13",
+      "sha256": "fb350e8b297a831bd8ab8f0badd8eb641ef2e055c13385f74891acdf9a14faa9",
+      "representation": "repository_bytes",
+      "content_status": "read",
+      "scope": "Novel and screenplay author tools research; feature descriptions are project claims, not runtime verification",
+      "github_snapshot": {
+        "metadata_url": "https://api.github.com/repos/readest/readest",
+        "retrieved_at": "2026-11-12T23:33:37.993988+00:00",
+        "stargazers_count": 26226,
+        "default_branch": "main",
+        "default_branch_commit_at": "2026-11-12T17:22:12Z",
+        "pushed_at": "2026-11-12T17:22:12Z",
+        "archived": false,
+        "language": "TypeScript",
+        "license_spdx_id": "AGPL-3.0"
+      },
+      "license_file": {
+        "path": "LICENSE",
+        "url": "https://github.com/readest/readest/blob/a60b7eee0892f5533edbaca7d6391cd3609e4173/LICENSE",
+        "sha256": "57c8ff33c9c0cfc3ef00e650a1cc910d7ee479a8bc509f6c9209a7c2a11399d6",
+        "bytes": 34520
+      }
+    },
+    {
+      "id": "github:saga-soft/novelWriter",
+      "source_type": "repository_file",
+      "repository": "saga-soft/novelWriter",
+      "path": "README.md",
+      "url": "https://github.com/saga-soft/novelWriter/blob/6bd23160e6ea6be52d6906dc398c1740a822919d/README.md",
+      "commit_sha": "6bd23160e6ea6be52d6906dc398c1740a822919d",
+      "retrieved_on": "2026-11-13",
+      "sha256": "7b78833d2ea28a1a94eb490b8cfc94d5aa20df030ac17be110cceb2e9c500be9",
+      "representation": "repository_bytes",
+      "content_status": "read",
+      "scope": "Novel and screenplay author tools research; feature descriptions are project claims, not runtime verification",
+      "github_snapshot": {
+        "metadata_url": "https://api.github.com/repos/saga-soft/novelWriter",
+        "retrieved_at": "2026-11-12T23:33:29.729090+00:00",
+        "stargazers_count": 3230,
+        "default_branch": "main",
+        "default_branch_commit_at": "2026-11-08T16:56:37Z",
+        "pushed_at": "2026-11-08T16:56:38Z",
+        "archived": false,
+        "language": "Python",
+        "license_spdx_id": "GPL-3.0"
+      },
+      "license_file": {
+        "path": "LICENSE.md",
+        "url": "https://github.com/saga-soft/novelWriter/blob/6bd23160e6ea6be52d6906dc398c1740a822919d/LICENSE.md",
+        "sha256": "d868ab9242eb3df42ac7b7c008a4498ed28951e80a73cd3aedeac6bdc0d54073",
+        "bytes": 32197
+      },
+      "additional_documents": [
+        {
+          "path": "docs/source/usage/chapters_and_scenes.rst",
+          "url": "https://github.com/saga-soft/novelWriter/blob/6bd23160e6ea6be52d6906dc398c1740a822919d/docs/source/usage/chapters_and_scenes.rst",
+          "sha256": "d2b0f3a51c5b791165fb63132ad047c9beae312d5bf3d8ca10745e511da892c1",
+          "bytes": 5064
+        },
+        {
+          "path": "docs/source/usage/organising_project.rst",
+          "url": "https://github.com/saga-soft/novelWriter/blob/6bd23160e6ea6be52d6906dc398c1740a822919d/docs/source/usage/organising_project.rst",
+          "sha256": "5db1e8b463ff1172be6996fa27f5512b83a8aea47080d7ccde10d479cd94f352",
+          "bytes": 9338
+        },
+        {
+          "path": "docs/source/usage/alignment_and_indent.rst",
+          "url": "https://github.com/saga-soft/novelWriter/blob/6bd23160e6ea6be52d6906dc398c1740a822919d/docs/source/usage/alignment_and_indent.rst",
+          "sha256": "4d3f889f1a362f431f3bbb5e82d9fc6fc0844b2dbf56d79ceb0ca7cbcf445eca",
+          "bytes": 4926
+        }
+      ],
+      "visual_evidence": [
+        {
+          "path": "setup/screenshot.png",
+          "url": "https://github.com/saga-soft/novelWriter/blob/6bd23160e6ea6be52d6906dc398c1740a822919d/setup/screenshot.png",
+          "sha256": "f359ba23941cb2415293f3e7c2199efd93d35d597e6656afc2662926ab93ac2f",
+          "representation": "repository_image_bytes",
+          "bytes": 355213,
+          "content_status": "visually_reviewed",
+          "scope": "Official repository screenshot; not a locally executed application"
+        }
+      ]
+    },
+    {
+      "id": "github:steven-tey/novel",
+      "source_type": "repository_file",
+      "repository": "steven-tey/novel",
+      "path": "README.md",
+      "url": "https://github.com/steven-tey/novel/blob/fa95098e66476c466faebb8211baa5869c101a9c/README.md",
+      "commit_sha": "fa95098e66476c466faebb8211baa5869c101a9c",
+      "retrieved_on": "2026-11-13",
+      "sha256": "4d89d82cef517730e4673eb9cbf375b9a5318a5cf66c9723ef931fe43eb47a8f",
+      "representation": "repository_bytes",
+      "content_status": "read",
+      "scope": "Novel and screenplay author tools research; feature descriptions are project claims, not runtime verification",
+      "github_snapshot": {
+        "metadata_url": "https://api.github.com/repos/steven-tey/novel",
+        "retrieved_at": "2026-11-12T23:33:38.008504+00:00",
+        "stargazers_count": 16467,
+        "default_branch": "main",
+        "default_branch_commit_at": "2025-01-18T13:49:00Z",
+        "pushed_at": "2025-01-18T14:26:33Z",
+        "archived": false,
+        "language": "TypeScript",
+        "license_spdx_id": "Apache-2.0"
+      },
+      "license_file": {
+        "path": "LICENSE",
+        "url": "https://github.com/steven-tey/novel/blob/fa95098e66476c466faebb8211baa5869c101a9c/LICENSE",
+        "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+        "bytes": 11357
+      }
+    },
+    {
+      "id": "github:story-apps/starc",
+      "source_type": "repository_file",
+      "repository": "story-apps/starc",
+      "path": "README.md",
+      "url": "https://github.com/story-apps/starc/blob/780e41cc959ffe74658a9c0d39ee3c523d689e9b/README.md",
+      "commit_sha": "780e41cc959ffe74658a9c0d39ee3c523d689e9b",
+      "retrieved_on": "2026-11-13",
+      "sha256": "e6486f94782fd3f21bf603f219354dd0c5901efbbd9d1aa4199fd9b1e3b069b4",
+      "representation": "repository_bytes",
+      "content_status": "read",
+      "scope": "Novel and screenplay author tools research; feature descriptions are project claims, not runtime verification",
+      "github_snapshot": {
+        "metadata_url": "https://api.github.com/repos/story-apps/starc",
+        "retrieved_at": "2026-11-12T23:33:33.584460+00:00",
+        "stargazers_count": 427,
+        "default_branch": "master",
+        "default_branch_commit_at": "2026-11-10T17:46:03Z",
+        "pushed_at": "2026-11-12T10:26:30Z",
+        "archived": false,
+        "language": "C++",
+        "license_spdx_id": "GPL-3.0"
+      },
+      "license_file": {
+        "path": "LICENSE",
+        "url": "https://github.com/story-apps/starc/blob/780e41cc959ffe74658a9c0d39ee3c523d689e9b/LICENSE",
+        "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+        "bytes": 35149
+      }
+    },
+    {
+      "id": "github:syrizelink/OpenFic",
+      "source_type": "repository_file",
+      "repository": "syrizelink/OpenFic",
+      "path": "README.md",
+      "url": "https://github.com/syrizelink/OpenFic/blob/539335a851348fcd2a41a1cfdf73c09dac76fde4/README.md",
+      "commit_sha": "539335a851348fcd2a41a1cfdf73c09dac76fde4",
+      "retrieved_on": "2026-11-13",
+      "sha256": "4c9c3de25014f31aa9558ff63f0cb10b854f5bc10df0a87b3caf88eb3e600534",
+      "representation": "repository_bytes",
+      "content_status": "read",
+      "scope": "Novel and screenplay author tools research; feature descriptions are project claims, not runtime verification",
+      "github_snapshot": {
+        "metadata_url": "https://api.github.com/repos/syrizelink/OpenFic",
+        "retrieved_at": "2026-11-12T23:35:09.185434+00:00",
+        "stargazers_count": 1296,
+        "default_branch": "main",
+        "default_branch_commit_at": "2026-11-12T03:12:53Z",
+        "pushed_at": "2026-11-12T07:31:39Z",
+        "archived": false,
+        "language": "Python",
+        "license_spdx_id": "Apache-2.0"
+      },
+      "license_file": {
+        "path": "LICENSE",
+        "url": "https://github.com/syrizelink/OpenFic/blob/539335a851348fcd2a41a1cfdf73c09dac76fde4/LICENSE",
+        "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
+        "bytes": 11357
+      }
+    },
+    {
+      "id": "github:teriflix/scrite",
+      "source_type": "repository_file",
+      "repository": "teriflix/scrite",
+      "path": "README.md",
+      "url": "https://github.com/teriflix/scrite/blob/744e9ec408aca74c2c01f40b8c4b7e594717602a/README.md",
+      "commit_sha": "744e9ec408aca74c2c01f40b8c4b7e594717602a",
+      "retrieved_on": "2026-11-13",
+      "sha256": "1632322ca881ac6d0faeb3e1d09d1007228d8915b04c65739d52935a7dee1a9e",
+      "representation": "repository_bytes",
+      "content_status": "read",
+      "scope": "Novel and screenplay author tools research; feature descriptions are project claims, not runtime verification",
+      "github_snapshot": {
+        "metadata_url": "https://api.github.com/repos/teriflix/scrite",
+        "retrieved_at": "2026-11-12T23:33:36.440557+00:00",
+        "stargazers_count": 376,
+        "default_branch": "master",
+        "default_branch_commit_at": "2026-11-11T08:00:57Z",
+        "pushed_at": "2026-11-11T08:25:08Z",
+        "archived": false,
+        "language": "C++",
+        "license_spdx_id": "NOASSERTION"
+      },
+      "license_file": {
+        "path": "LICENSE.txt",
+        "url": "https://github.com/teriflix/scrite/blob/744e9ec408aca74c2c01f40b8c4b7e594717602a/LICENSE.txt",
+        "sha256": "57c9cc49b67e651252ab950ec0c58555101f6bff200bd1df3502df588b6aa24c",
+        "bytes": 47056
+      },
+      "license_interpretation": "Source code GPLv3; official precompiled releases have separate commercial terms"
+    },
+    {
+      "id": "github:xiaoshengxianjun/51mazi",
+      "source_type": "repository_file",
+      "repository": "xiaoshengxianjun/51mazi",
+      "path": "README.md",
+      "url": "https://github.com/xiaoshengxianjun/51mazi/blob/5a5f9d002cad1435e130de8bd1826d3cf46da592/README.md",
+      "commit_sha": "5a5f9d002cad1435e130de8bd1826d3cf46da592",
+      "retrieved_on": "2026-11-13",
+      "sha256": "949c3765ef5688b12db053bf7dd020e574764616c3c6c6a3b089fdc34959f887",
+      "representation": "repository_bytes",
+      "content_status": "read",
+      "scope": "Novel and screenplay author tools research; feature descriptions are project claims, not runtime verification",
+      "github_snapshot": {
+        "metadata_url": "https://api.github.com/repos/xiaoshengxianjun/51mazi",
+        "retrieved_at": "2026-11-12T23:33:29.125078+00:00",
+        "stargazers_count": 496,
+        "default_branch": "main",
+        "default_branch_commit_at": "2026-08-31T15:01:15Z",
+        "pushed_at": "2026-09-12T02:40:19Z",
+        "archived": false,
+        "language": "Vue",
+        "license_spdx_id": "MIT"
+      },
+      "license_file": {
+        "path": "LICENSE",
+        "url": "https://github.com/xiaoshengxianjun/51mazi/blob/5a5f9d002cad1435e130de8bd1826d3cf46da592/LICENSE",
+        "sha256": "e9303a7fe2b237392b89d5a441229b39c3b05233ee7900056d2710c3b59aa7c2",
+        "bytes": 1069
+      },
+      "visual_evidence": [
+        {
+          "path": "static/home.png",
+          "url": "https://github.com/xiaoshengxianjun/51mazi/blob/5a5f9d002cad1435e130de8bd1826d3cf46da592/static/home.png",
+          "sha256": "96a2a59a3b2fa20d40ffbecf0fd385d01ee0340c06964eeba0577689ed55f247",
+          "representation": "repository_image_bytes",
+          "bytes": 615099,
+          "content_status": "visually_reviewed",
+          "scope": "Official repository screenshot; not a locally executed application"
+        }
+      ]
+    },
+    {
+      "id": "github:zenstory-ai/oh-story-claudecode",
+      "source_type": "repository_file",
+      "repository": "zenstory-ai/oh-story-claudecode",
+      "path": "README.md",
+      "url": "https://github.com/zenstory-ai/oh-story-claudecode/blob/f5bc4b935b9c5a90f6193ffc2e194f6eb1a33288/README.md",
+      "commit_sha": "f5bc4b935b9c5a90f6193ffc2e194f6eb1a33288",
+      "retrieved_on": "2026-11-13",
+      "sha256": "e65c79b83302bed21b79178a469c36810397578690ec4829b71153f65a1af25d",
+      "representation": "repository_bytes",
+      "content_status": "read",
+      "scope": "Novel and screenplay author tools research; feature descriptions are project claims, not runtime verification",
+      "github_snapshot": {
+        "metadata_url": "https://api.github.com/repos/zenstory-ai/oh-story-claudecode",
+        "retrieved_at": "2026-11-12T23:35:09.258292+00:00",
+        "stargazers_count": 8556,
+        "default_branch": "main",
+        "default_branch_commit_at": "2026-11-12T17:08:50Z",
+        "pushed_at": "2026-11-12T17:15:54Z",
+        "archived": false,
+        "language": "Python",
+        "license_spdx_id": "MIT"
+      },
+      "license_file": {
+        "path": "LICENSE",
+        "url": "https://github.com/zenstory-ai/oh-story-claudecode/blob/f5bc4b935b9c5a90f6193ffc2e194f6eb1a33288/LICENSE",
+        "sha256": "52c71355258924a967927780245f70677b38ff7d073c03f9096df33888f34653",
+        "bytes": 1081
+      }
+    },
+    {
+      "id": "workbuddy-connectors",
+      "source_type": "official_web",
+      "url": "https://www.workbuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Connector",
+      "final_url": "https://www.workbuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Connector",
+      "retrieved_on": "2026-11-13",
+      "sha256": "0e4ebbe1e0d6bdfca4da5779f49e0a640e89fb71e7052dc6b7f67f4c98bc95e6",
+      "representation": "html_response",
+      "content_status": "read",
+      "scope": "External client integration, Skills, MCP Apps and browser interaction; documentation evidence, not host interoperability verification"
+    },
+    {
+      "id": "workbuddy-browser",
+      "source_type": "official_web",
+      "url": "https://www.workbuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/WorkBuddy-Zero-Cost-Skill-Top-10/Agent-Browser",
+      "final_url": "https://www.workbuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/WorkBuddy-Zero-Cost-Skill-Top-10/Agent-Browser",
+      "retrieved_on": "2026-11-13",
+      "sha256": "0c3802e07b12613bf9cd1615982fa0320abbba22aef51091b19c180214de3828",
+      "representation": "html_response",
+      "content_status": "read",
+      "scope": "External client integration, Skills, MCP Apps and browser interaction; documentation evidence, not host interoperability verification"
+    },
+    {
+      "id": "workbuddy-skills",
+      "source_type": "official_web",
+      "url": "https://www.workbuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Skills-Market",
+      "final_url": "https://www.workbuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Skills-Market",
+      "retrieved_on": "2026-11-13",
+      "sha256": "942046beb58d4dc4c50c0ee60abb07d8abba9acf1975b05b339094ccaca5e743",
+      "representation": "html_response",
+      "content_status": "read",
+      "scope": "External client integration, Skills, MCP Apps and browser interaction; documentation evidence, not host interoperability verification"
+    },
+    {
+      "id": "claude-code-skills",
+      "source_type": "official_web",
+      "url": "https://code.claude.com/docs/en/skills.md",
+      "final_url": "https://code.claude.com/docs/en/skills.md",
+      "retrieved_on": "2026-11-13",
+      "sha256": "ed902e28d24919949333416c7a9ef4bc2e4ab3a396b1e477a0808bbbaf7a3ff7",
+      "representation": "markdown_response",
+      "content_status": "read",
+      "scope": "External client integration, Skills, MCP Apps and browser interaction; documentation evidence, not host interoperability verification"
+    },
+    {
+      "id": "claude-code-mcp",
+      "source_type": "official_web",
+      "url": "https://code.claude.com/docs/en/mcp.md",
+      "final_url": "https://code.claude.com/docs/en/mcp.md",
+      "retrieved_on": "2026-11-13",
+      "sha256": "a8b8fc23a127eac879a736e635ea5ca533d437334e0201718a0870a24c0e8a39",
+      "representation": "markdown_response",
+      "content_status": "read",
+      "scope": "External client integration, Skills, MCP Apps and browser interaction; documentation evidence, not host interoperability verification"
+    },
+    {
+      "id": "mcp-apps-build",
+      "source_type": "official_web",
+      "url": "https://modelcontextprotocol.io/extensions/apps/build.md",
+      "final_url": "https://modelcontextprotocol.io/extensions/apps/build.md",
+      "retrieved_on": "2026-11-13",
+      "sha256": "a0b8665544cb6ca324af36d055ef1bed3d78b5ca2cba21ad88ece1252e768043",
+      "representation": "markdown_response",
+      "content_status": "read",
+      "scope": "External client integration, Skills, MCP Apps and browser interaction; documentation evidence, not host interoperability verification"
+    },
+    {
+      "id": "axi:content/ecosystem/claude-code/index.md",
+      "source_type": "repository_file",
+      "repository": "axi",
+      "path": "content/ecosystem/claude-code/index.md",
+      "retrieved_on": "2026-11-13",
+      "sha256": "202b13a13959ddf13fb386a2811cb8ec218ab11a4639303a71aec20eb0176705",
+      "content_status": "read",
+      "scope": "AXI 0.2.1 design reference; no runtime implementation or repository dependency"
+    },
+    {
+      "id": "axi:content/ecosystem/workbuddy/index.md",
+      "source_type": "repository_file",
+      "repository": "axi",
+      "path": "content/ecosystem/workbuddy/index.md",
+      "retrieved_on": "2026-11-13",
+      "sha256": "38d6ca285602adaa182ae50e85068f76feda782dd40deaec69dfa54345b1c929",
+      "content_status": "read",
+      "scope": "AXI 0.2.1 design reference; no runtime implementation or repository dependency"
+    },
+    {
+      "id": "figma-mcp-overview",
+      "source_type": "official_web",
+      "url": "https://developers.figma.com/docs/figma-mcp-server/",
+      "final_url": "https://developers.figma.com/docs/figma-mcp-server/",
+      "retrieved_on": "2026-11-13",
+      "sha256": "2ed76e72c5eb4a23ef0fcfc392eefa97940dbbfb0810c6bdbe34790a3482db2d",
+      "representation": "html_response",
+      "content_status": "read",
+      "scope": "Figma plugin research; publication contents do not establish account access or runtime compatibility"
+    },
+    {
+      "id": "figma-mcp-tools",
+      "source_type": "official_web",
+      "url": "https://developers.figma.com/docs/figma-mcp-server/tools-and-prompts/",
+      "final_url": "https://developers.figma.com/docs/figma-mcp-server/tools-and-prompts/",
+      "retrieved_on": "2026-11-13",
+      "sha256": "f19c812bb4a4e94d6e0addc597eea51eceec41dfd82212490e751e124804cff2",
+      "representation": "html_response",
+      "content_status": "read",
+      "scope": "Figma plugin research; publication contents do not establish account access or runtime compatibility"
+    },
+    {
+      "id": "figma-code-connect-swiftui",
+      "source_type": "official_web",
+      "url": "https://developers.figma.com/docs/code-connect/swiftui/",
+      "final_url": "https://developers.figma.com/docs/code-connect/swiftui/",
+      "retrieved_on": "2026-11-13",
+      "sha256": "4451fbe551c08db05d19faf642c8962b2dcbd86cf922b36e945af39377138c2a",
+      "representation": "html_response",
+      "content_status": "read",
+      "scope": "Figma plugin research; publication contents do not establish account access or runtime compatibility"
+    },
+    {
+      "id": "openai-codex-plugins",
+      "source_type": "official_web",
+      "url": "https://developers.openai.com/codex/plugins/",
+      "final_url": "https://learn.chatgpt.com/docs/plugins",
+      "retrieved_on": "2026-11-13",
+      "sha256": "b00837c1428b7a26bbb8ed436f0fe8a3da1c57508b337a80ea2417696a8b386b",
+      "representation": "html_response",
+      "content_status": "read",
+      "scope": "Figma plugin research; publication contents do not establish account access or runtime compatibility"
+    },
+    {
+      "id": "mcp-apps-overview-current",
+      "source_type": "official_web",
+      "url": "https://modelcontextprotocol.io/extensions/apps/overview.md",
+      "final_url": "https://modelcontextprotocol.io/extensions/apps/overview.md",
+      "retrieved_on": "2026-11-13",
+      "sha256": "5c1d70733c9e1962ee45825aca76a89ff21b79ceec4260ccde3ce2c99d91743f",
+      "representation": "markdown_response",
+      "content_status": "read",
+      "scope": "Figma plugin research; publication contents do not establish account access or runtime compatibility"
+    },
+    {
+      "id": "figma-code-connect-templates",
+      "source_type": "official_web",
+      "url": "https://developers.figma.com/docs/code-connect/template-files/",
+      "final_url": "https://developers.figma.com/docs/code-connect/template-files/",
+      "retrieved_on": "2026-11-13",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "representation": "html_response",
+      "content_status": "empty_response",
+      "scope": "Linked by the read SwiftUI page; empty body returned, no template API content inferred."
+    },
+    {
+      "id": "figma-code-connect-migration",
+      "source_type": "official_web",
+      "url": "https://developers.figma.com/docs/code-connect/templates-migration-guide/",
+      "final_url": "https://developers.figma.com/docs/code-connect/templates-migration-guide/",
+      "retrieved_on": "2026-11-13",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "representation": "html_response",
+      "content_status": "empty_response",
+      "scope": "Linked by the read SwiftUI page; empty body returned, no template API content inferred."
+    },
+    {
+      "id": "figma-plugin-2.0.20-artifact",
+      "source_type": "shipped_artifact",
+      "package": "figma",
+      "version": "2.0.20",
+      "retrieved_on": "2026-11-13",
+      "path": "docs/research/evidence/figma-plugin-2.0.20.json",
+      "sha256": "a567564d0f88897c4506bb985b43eec78b07f0daf3569cff744ea4d860c57a07",
+      "content_status": "static_analysis_and_file_read",
+      "scope": "REA Evidence summary and selected shipped artifact digests; no remote service or target execution verified"
     }
   ]
 }

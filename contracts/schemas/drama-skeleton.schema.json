@@ -1,0 +1,343 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "skeleton_id": {
+      "type": "string",
+      "pattern": "^skeleton_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "previous_sha256": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "plot_revision_id": {
+      "type": "string",
+      "pattern": "^plotrev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "plot_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "blueprint_revision": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "blueprint_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source_revisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "revision_id": {
+            "type": "string",
+            "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "source_format": {
+            "enum": [
+              "markdown",
+              "fountain"
+            ]
+          },
+          "size_bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1048576
+          }
+        },
+        "required": [
+          "document_id",
+          "revision_id",
+          "sha256",
+          "source_format",
+          "size_bytes"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 100,
+      "uniqueItems": true
+    },
+    "engine_version": {
+      "const": "1.0.0"
+    },
+    "build_options": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "episode_start_node_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^node_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "minItems": 0,
+          "maxItems": 500,
+          "uniqueItems": true
+        }
+      },
+      "required": []
+    },
+    "status": {
+      "enum": [
+        "complete",
+        "partial"
+      ]
+    },
+    "episodes": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:hetu:schema:drama-skeleton:1.0.0#/$defs/episode"
+      },
+      "minItems": 0,
+      "maxItems": 1000,
+      "uniqueItems": true
+    },
+    "created_at": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "actor_ref": {
+      "type": "string",
+      "pattern": "^actor_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    }
+  },
+  "required": [
+    "schema_version",
+    "skeleton_id",
+    "revision",
+    "previous_sha256",
+    "plot_revision_id",
+    "plot_sha256",
+    "blueprint_revision",
+    "blueprint_sha256",
+    "source_revisions",
+    "engine_version",
+    "build_options",
+    "status",
+    "episodes",
+    "created_at",
+    "actor_ref"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:hetu:schema:drama-skeleton:1.0.0",
+  "title": "HetuDramaSkeleton",
+  "$defs": {
+    "scene": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scene_id": {
+          "type": "string",
+          "pattern": "^scene_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "scene_number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "title": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 200
+        },
+        "location_ref": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^location_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "interior_exterior": {
+          "enum": [
+            "interior",
+            "exterior",
+            "mixed",
+            "unknown"
+          ]
+        },
+        "time_of_day": {
+          "enum": [
+            "day",
+            "night",
+            "dawn",
+            "dusk",
+            "unknown"
+          ]
+        },
+        "character_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^character_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "minItems": 0,
+          "maxItems": 200,
+          "uniqueItems": true
+        },
+        "adaptation_note": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 4000
+        },
+        "plot_node_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^node_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "minItems": 0,
+          "maxItems": 10000,
+          "uniqueItems": true
+        },
+        "source_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:hetu:schema:source-ref:1.0.0"
+          },
+          "minItems": 0,
+          "maxItems": 20000,
+          "uniqueItems": true
+        },
+        "missing_fields": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "location",
+              "interior_exterior",
+              "time_of_day",
+              "characters",
+              "source_mapping",
+              "author_review"
+            ]
+          },
+          "minItems": 0,
+          "maxItems": 6,
+          "uniqueItems": true
+        },
+        "dialogue": {
+          "const": ""
+        },
+        "shot_description": {
+          "const": ""
+        }
+      },
+      "required": [
+        "scene_id",
+        "scene_number",
+        "title",
+        "location_ref",
+        "interior_exterior",
+        "time_of_day",
+        "character_refs",
+        "adaptation_note",
+        "plot_node_refs",
+        "source_refs",
+        "missing_fields",
+        "dialogue",
+        "shot_description"
+      ]
+    },
+    "episode": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "episode_id": {
+          "type": "string",
+          "pattern": "^episode_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "episode_number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "title": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 200
+        },
+        "scenes": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:hetu:schema:drama-skeleton:1.0.0#/$defs/scene"
+          },
+          "minItems": 1,
+          "maxItems": 10000,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "episode_id",
+        "episode_number",
+        "title",
+        "scenes"
+      ]
+    },
+    "source_ref_resource": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "title": "HetuSourceRef",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "document_id",
+        "revision_id",
+        "byte_start",
+        "byte_end",
+        "quote"
+      ],
+      "properties": {
+        "document_id": {
+          "type": "string",
+          "pattern": "^doc_[0-9a-f-]{36}$"
+        },
+        "revision_id": {
+          "type": "string",
+          "pattern": "^rev_[0-9a-f-]{36}$"
+        },
+        "byte_start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "byte_end": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "quote": {
+          "type": "string"
+        }
+      },
+      "$id": "urn:hetu:schema:source-ref:1.0.0"
+    }
+  }
+}

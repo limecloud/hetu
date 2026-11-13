@@ -1,8 +1,8 @@
 # 河图 Hetu
 
-> Local IP creative workspace for authors and studios. Chinese first, English supported. In development.
+> Local IP creative workspace for authors and studios. Chinese first, English supported. Version 0.2.0. macOS source implementation; Windows follows separate implementation and verification.
 
-Hetu organizes an author-owned Story Bible, novels, drama outlines, review, Git history and delivery bundles. The core contains no models or generation APIs. External agents connect through local MCP; authors retain approval authority. Rule checks expose evidence, coverage and uncertainty.
+Hetu organizes a multi-book author library with independent covers, chapters, story bibles, plot, drama outlines, reference review, excerpt adoption, separate finalization and local Git snapshots. Format conversion and complete delivery bundles require release-specific verification. The core contains no models or generation APIs. External agents connect through local MCP; authors retain approval authority. Rule checks expose evidence, coverage and uncertainty.
 
 - [中文首页](https://hetu.limeai.run/)
 - [English](https://hetu.limeai.run/en/)
@@ -12,4 +12,4 @@ Hetu organizes an author-owned Story Bible, novels, drama outlines, review, Git 
 - [FAQ](https://hetu.limeai.run/en/faq/)
 - [Source](https://github.com/limecloud/hetu): Apache-2.0 core.
 
-Images depict product design; mobile visuals are extensions, not released mobile apps. The interactive prototype uses demo data and does not access a real workspace.
+Images depict product design; mobile visuals are extensions, not released mobile apps. The interactive prototype is embedded at /#prototype and /en/#prototype, uses demo data, resets on refresh, and does not access a real workspace. There are no standalone prototype pages.

@@ -1,0 +1,277 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "comparison_id": {
+      "type": "string",
+      "pattern": "^comparison_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "skeleton_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "skeleton_id": {
+          "type": "string",
+          "pattern": "^skeleton_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "skeleton_id",
+        "revision",
+        "sha256"
+      ]
+    },
+    "source_revisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "revision_id": {
+            "type": "string",
+            "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "source_format": {
+            "enum": [
+              "markdown",
+              "fountain"
+            ]
+          },
+          "size_bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1048576
+          }
+        },
+        "required": [
+          "document_id",
+          "revision_id",
+          "sha256",
+          "source_format",
+          "size_bytes"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 100,
+      "uniqueItems": true
+    },
+    "status": {
+      "enum": [
+        "complete",
+        "partial"
+      ]
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "enum": [
+              "added",
+              "omitted",
+              "reordered",
+              "modified",
+              "unmapped",
+              "stale_source"
+            ]
+          },
+          "scene_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^scene_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "plot_node_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^node_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "minItems": 0,
+            "maxItems": 10000,
+            "uniqueItems": true
+          },
+          "source_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "urn:hetu:schema:source-ref:1.0.0"
+            },
+            "minItems": 0,
+            "maxItems": 20000,
+            "uniqueItems": true
+          },
+          "details": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "reason": {
+                "enum": [
+                  "empty_scene",
+                  "unparsed_text"
+                ]
+              },
+              "fields": {
+                "type": "array",
+                "uniqueItems": true,
+                "maxItems": 4,
+                "items": {
+                  "enum": [
+                    "location_ref",
+                    "interior_exterior",
+                    "time_of_day",
+                    "character_refs"
+                  ]
+                }
+              },
+              "source_range": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "document_id": {
+                    "type": "string",
+                    "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                  },
+                  "revision_id": {
+                    "type": "string",
+                    "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                  },
+                  "byte_start": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "byte_end": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                },
+                "required": [
+                  "document_id",
+                  "revision_id",
+                  "byte_start",
+                  "byte_end"
+                ]
+              },
+              "document_id": {
+                "type": "string",
+                "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "original_revision_id": {
+                "type": "string",
+                "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "selected_revision_id": {
+                "type": "string",
+                "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "expected_position": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "actual_position": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "kind",
+          "scene_id",
+          "plot_node_refs",
+          "source_refs",
+          "details"
+        ]
+      },
+      "minItems": 0,
+      "maxItems": 60000,
+      "uniqueItems": true
+    },
+    "created_at": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "actor_ref": {
+      "type": "string",
+      "pattern": "^actor_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    }
+  },
+  "required": [
+    "schema_version",
+    "comparison_id",
+    "skeleton_ref",
+    "source_revisions",
+    "status",
+    "items",
+    "created_at",
+    "actor_ref"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:hetu:schema:drama-comparison:1.0.0",
+  "title": "HetuDramaComparison",
+  "$defs": {
+    "source_ref_resource": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "title": "HetuSourceRef",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "document_id",
+        "revision_id",
+        "byte_start",
+        "byte_end",
+        "quote"
+      ],
+      "properties": {
+        "document_id": {
+          "type": "string",
+          "pattern": "^doc_[0-9a-f-]{36}$"
+        },
+        "revision_id": {
+          "type": "string",
+          "pattern": "^rev_[0-9a-f-]{36}$"
+        },
+        "byte_start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "byte_end": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "quote": {
+          "type": "string"
+        }
+      },
+      "$id": "urn:hetu:schema:source-ref:1.0.0"
+    }
+  }
+}

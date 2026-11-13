@@ -1,0 +1,1222 @@
+{
+  "schema_version": "1.0.0",
+  "actions": [
+    {
+      "name": "hetu.capabilities.get",
+      "purpose": "查询当前构建实际实现的动作",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "hetu.workspaces.get",
+      "purpose": "读取当前工作区",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "hetu.workspaces.list",
+      "purpose": "列出当前授权工作区与内容包",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "hetu.blueprints.get",
+      "purpose": "读取设定集及确切修订",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "revision": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "hetu.blueprints.preview_change",
+      "purpose": "预览设定实体变更",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": true,
+      "input_schema_ref": "schemas/blueprint-preview-input.schema.json"
+    },
+    {
+      "name": "hetu.blueprints.save",
+      "purpose": "保存作者确认的设定实体变更",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/blueprint-save-input.schema.json"
+    },
+    {
+      "name": "hetu.blueprints.lock",
+      "purpose": "作者锁定或解锁设定集",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "expected": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "revision",
+              "sha256"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "expected",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.blueprints.unlock",
+      "purpose": "作者锁定或解锁设定集",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "expected": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "revision",
+              "sha256"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "expected",
+          "reason",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.documents.create",
+      "purpose": "作者新建正文文档",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "enum": [
+              "novel_chapter",
+              "novel_outline",
+              "drama_script",
+              "adaptation_note"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "source_format": {
+            "enum": [
+              "markdown",
+              "fountain"
+            ]
+          },
+          "content": {
+            "type": "string",
+            "maxLength": 4000000
+          },
+          "language_tag": {
+            "enum": [
+              "zh-CN",
+              "en"
+            ]
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "kind",
+          "title",
+          "source_format",
+          "content",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.documents.list",
+      "purpose": "列出文档",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "enum": [
+              "novel_chapter",
+              "novel_outline",
+              "drama_script",
+              "adaptation_note"
+            ]
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "hetu.documents.get",
+      "purpose": "读取不可变正文修订",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "revision_id": {
+            "type": "string",
+            "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          }
+        },
+        "required": [
+          "document_id"
+        ]
+      }
+    },
+    {
+      "name": "hetu.documents.save",
+      "purpose": "基于确切基线保存正文新修订",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "base_revision_id": {
+            "type": "string",
+            "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "source_format": {
+            "enum": [
+              "markdown",
+              "fountain"
+            ]
+          },
+          "content": {
+            "type": "string",
+            "maxLength": 4000000
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "document_id",
+          "base_revision_id",
+          "source_format",
+          "content",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.drafts.submit",
+      "purpose": "外部 Agent 或作者提交待审草稿",
+      "contract_revision": "1",
+      "effect": "draft",
+      "author_only": false,
+      "input_schema_ref": "schemas/draft-submit-input.schema.json"
+    },
+    {
+      "name": "hetu.drafts.list",
+      "purpose": "查询草稿审核状态",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "state": {
+            "enum": [
+              "submitted",
+              "in_review",
+              "approved",
+              "rejected",
+              "changes_requested",
+              "superseded"
+            ]
+          },
+          "package": {
+            "enum": [
+              "novel",
+              "drama",
+              "music-cue",
+              "visual-prompt"
+            ]
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "hetu.drafts.get",
+      "purpose": "读取确切草稿与审核状态",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "draft_id": {
+            "type": "string",
+            "pattern": "^draft_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          }
+        },
+        "required": [
+          "draft_id"
+        ]
+      }
+    },
+    {
+      "name": "hetu.operations.get",
+      "purpose": "查询原操作回执",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "operation_id": {
+            "type": "string",
+            "pattern": "^op_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "action": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "hetu.plot.extract",
+      "purpose": "从固定原文修订提取剧情候选",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "input_schema_ref": "schemas/plot-extract-input.schema.json"
+    },
+    {
+      "name": "hetu.plot.correct",
+      "purpose": "作者校正剧情节点并保存新修订",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/plot-correct-input.schema.json"
+    },
+    {
+      "name": "hetu.plot.get",
+      "purpose": "读取固定剧情修订与当前性",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "plot_revision_id": {
+            "type": "string",
+            "pattern": "^plotrev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          }
+        },
+        "required": [
+          "plot_revision_id"
+        ]
+      }
+    },
+    {
+      "name": "hetu.plot.list",
+      "purpose": "查询当前工作区内的剧情提取修订",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          },
+          "cursor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "hetu.validation.run",
+      "purpose": "对固定剧情与设定修订执行一致性诊断",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "input_schema_ref": "schemas/validation-run-input.schema.json"
+    },
+    {
+      "name": "hetu.findings.disposition",
+      "purpose": "作者记录问题处置与理由",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/finding-disposition-input.schema.json"
+    },
+    {
+      "name": "hetu.reports.get",
+      "purpose": "读取不可变诊断报告及当前处置",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "report_id": {
+            "type": "string",
+            "pattern": "^report_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          }
+        },
+        "required": [
+          "report_id"
+        ]
+      }
+    },
+    {
+      "name": "hetu.reports.list",
+      "purpose": "分页查询固定诊断报告",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "plot_revision_id": {
+            "type": "string",
+            "pattern": "^plotrev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "hetu.drama.build_skeleton",
+      "purpose": "将固定剧情修订转换为独立短剧结构候选",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "input_schema_ref": "schemas/drama-build-input.schema.json"
+    },
+    {
+      "name": "hetu.drama.get_skeleton",
+      "purpose": "读取固定短剧骨架修订与当前性",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "skeleton_id": {
+            "type": "string",
+            "pattern": "^skeleton_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "skeleton_id"
+        ]
+      }
+    },
+    {
+      "name": "hetu.drama.list_skeletons",
+      "purpose": "分页查询短剧骨架及修订",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          },
+          "cursor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "plot_revision_id": {
+            "type": "string",
+            "pattern": "^plotrev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "hetu.drama.edit_skeleton",
+      "purpose": "作者拆合重排短剧结构并保存不可变修订",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/drama-edit-input.schema.json"
+    },
+    {
+      "name": "hetu.drama.compare",
+      "purpose": "对比骨架映射与固定原著修订",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "input_schema_ref": "schemas/drama-compare-input.schema.json"
+    },
+    {
+      "name": "hetu.drama.get_comparison",
+      "purpose": "读取固定骨架原著结构差异报告",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "comparison_id": {
+            "type": "string",
+            "pattern": "^comparison_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          }
+        },
+        "required": [
+          "comparison_id"
+        ]
+      }
+    },
+    {
+      "name": "hetu.drama.list_comparisons",
+      "purpose": "分页查询骨架原著差异报告",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "skeleton_id": {
+            "type": "string",
+            "pattern": "^skeleton_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          },
+          "cursor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "skeleton_id"
+        ]
+      }
+    },
+    {
+      "name": "hetu.drama.create_script",
+      "purpose": "作者从固定骨架建立独立 Fountain 结构剧本与不可变来源映射",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/drama-script-input.schema.json"
+    },
+    {
+      "name": "hetu.drama.get_script_mapping",
+      "purpose": "读取剧本初始结构映射并核验固定证据及当前性",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          }
+        },
+        "required": [
+          "document_id"
+        ]
+      }
+    },
+    {
+      "name": "hetu.drafts.submit_current",
+      "purpose": "作者提交当前保存修订作为独立待审草稿",
+      "contract_revision": "1",
+      "effect": "draft",
+      "author_only": true,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "base_revision_id": {
+            "type": "string",
+            "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "blueprint_revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "skeleton_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "skeleton_id": {
+                "type": "string",
+                "pattern": "^skeleton_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "skeleton_id",
+              "revision",
+              "sha256"
+            ]
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "document_id",
+          "base_revision_id",
+          "blueprint_revision",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.reviews.begin",
+      "purpose": "作者开始审核并冻结既有草稿的证据",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/review-begin-input.schema.json"
+    },
+    {
+      "name": "hetu.reviews.validate",
+      "purpose": "检查不可变草稿并同事务保存剧情与诊断报告",
+      "contract_revision": "1",
+      "effect": "derive",
+      "author_only": false,
+      "input_schema_ref": "schemas/review-validate-input.schema.json"
+    },
+    {
+      "name": "hetu.reviews.decide",
+      "purpose": "记录参考稿审核决定，不修改正文或定稿",
+      "contract_revision": "2",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/review-decide-input.schema.json"
+    },
+    {
+      "name": "hetu.reviews.get",
+      "purpose": "查询草稿证据、诊断与不可变审核历史",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "draft_id": {
+            "type": "string",
+            "pattern": "^draft_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "review_id": {
+            "type": "string",
+            "pattern": "^review_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "report_limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "report_cursor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          }
+        },
+        "required": [],
+        "oneOf": [
+          {
+            "required": [
+              "draft_id"
+            ],
+            "not": {
+              "required": [
+                "review_id"
+              ]
+            }
+          },
+          {
+            "required": [
+              "review_id"
+            ],
+            "not": {
+              "required": [
+                "draft_id"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "hetu.reviews.list",
+      "purpose": "分页查询审核草稿状态",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "state": {
+            "enum": [
+              "submitted",
+              "in_review",
+              "approved",
+              "rejected",
+              "changes_requested",
+              "superseded"
+            ]
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "hetu.git.status",
+      "purpose": "读取当前内容仓库与工作树状态",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "hetu.git.diff",
+      "purpose": "读取文件的工作树与HEAD差异",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "hetu.git.log",
+      "purpose": "分页读取提交历史",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 100
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "hetu.git.init",
+      "purpose": "作者初始化独立内容仓库",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "branch": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "branch",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.git.snapshot",
+      "purpose": "准备或执行确切Git快照",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "input_schema_ref": "schemas/git-snapshot-input.schema.json"
+    },
+    {
+      "name": "hetu.git.approve_snapshot",
+      "purpose": "作者确认确切快照及提交身份",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "snapshot_id": {
+            "type": "string",
+            "pattern": "^gitsnapshot_[0-9a-f-]{36}$"
+          },
+          "snapshot_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "snapshot_id",
+          "snapshot_sha256",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.git.get_snapshot",
+      "purpose": "读取固定快照、当前性与本机批准状态",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "snapshot_id": {
+            "type": "string",
+            "pattern": "^gitsnapshot_[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "snapshot_id"
+        ]
+      }
+    },
+    {
+      "name": "hetu.git.list_snapshots",
+      "purpose": "分页读取本机准备的Git快照",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 100
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "hetu.git.snapshot_diff",
+      "purpose": "核对固定快照内文件的确切差异",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "snapshot_id": {
+            "type": "string",
+            "pattern": "^gitsnapshot_[0-9a-f-]{36}$"
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          }
+        },
+        "required": [
+          "snapshot_id",
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "hetu.assets.inspect",
+      "purpose": "检查作者选定的媒体签名与摘要",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": true,
+      "input_schema_ref": "schemas/media.schema.json#/$defs/inspect_input"
+    },
+    {
+      "name": "hetu.assets.import",
+      "purpose": "复制选定媒体并登记来源与权利声明",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/media.schema.json#/$defs/import_input"
+    },
+    {
+      "name": "hetu.assets.update",
+      "purpose": "作者修订素材元数据与权利声明",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/media.schema.json#/$defs/asset_update_input"
+    },
+    {
+      "name": "hetu.assets.get",
+      "purpose": "核验固定素材修订、媒体摘要与当前权利",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema_ref": "schemas/media.schema.json#/$defs/asset_get_input"
+    },
+    {
+      "name": "hetu.assets.list",
+      "purpose": "分页查询已登记媒体元数据",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema_ref": "schemas/media.schema.json#/$defs/asset_list_input"
+    },
+    {
+      "name": "hetu.cues.save",
+      "purpose": "作者保存乐律或视觉线索与固定来源引用",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/media.schema.json#/$defs/cue_save_input"
+    },
+    {
+      "name": "hetu.cues.get",
+      "purpose": "读取固定线索与来源过期状态",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema_ref": "schemas/media.schema.json#/$defs/cue_get_input"
+    },
+    {
+      "name": "hetu.cues.list",
+      "purpose": "分页查询乐律与视觉线索",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema_ref": "schemas/media.schema.json#/$defs/cue_list_input"
+    },
+    {
+      "name": "hetu.novels.get",
+      "purpose": "读取当前小说资料与有序卷章目录",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema_ref": "schemas/novel.schema.json#/$defs/get_input"
+    },
+    {
+      "name": "hetu.novels.initialize",
+      "purpose": "作者确认并初始化既有作品的小说目录",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/novel.schema.json#/$defs/initialize_input"
+    },
+    {
+      "name": "hetu.novels.update",
+      "purpose": "保存小说资料",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/novel.schema.json#/$defs/update_input"
+    },
+    {
+      "name": "hetu.novels.save_structure",
+      "purpose": "保存小说卷章顺序与分卷归属",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/novel.schema.json#/$defs/structure_input"
+    },
+    {
+      "name": "hetu.drafts.preview_adoption",
+      "purpose": "预览固定参考稿选区对写作稿的修改",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": true,
+      "input_schema_ref": "schemas/document-lifecycle.schema.json#/$defs/preview_adoption_input"
+    },
+    {
+      "name": "hetu.drafts.adopt",
+      "purpose": "作者采纳参考内容并保存来源，定稿保持不变",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/document-lifecycle.schema.json#/$defs/adopt_input"
+    },
+    {
+      "name": "hetu.documents.validate",
+      "purpose": "直接检查已保存正文，无需创建草稿",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/document-lifecycle.schema.json#/$defs/validate_input"
+    },
+    {
+      "name": "hetu.documents.preview_finalization",
+      "purpose": "预览确切正文修订的独立定稿资格",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": true,
+      "input_schema_ref": "schemas/document-lifecycle.schema.json#/$defs/preview_finalization_input"
+    },
+    {
+      "name": "hetu.documents.finalize",
+      "purpose": "作者独立确认确切正文修订",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/document-lifecycle.schema.json#/$defs/finalize_input"
+    },
+    {
+      "name": "hetu.documents.withdraw_finalization",
+      "purpose": "撤回当前定稿，保留正文及历史",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/document-lifecycle.schema.json#/$defs/withdraw_input"
+    },
+    {
+      "name": "hetu.documents.lifecycle",
+      "purpose": "读取采纳来源与独立定稿历史",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": true,
+      "input_schema_ref": "schemas/document-lifecycle.schema.json#/$defs/lifecycle_input"
+    }
+  ]
+}

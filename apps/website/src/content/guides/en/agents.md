@@ -1,29 +1,27 @@
 # Work with external agents
 
-You can create entirely by hand. If you want assistance, choose an external agent such as Codex or WorkBuddy and decide which material it can access and what it should do.
+Manual book creation and writing need no agent. Choose an external client and permissions only when assistance is useful.
 
-## Understand the roles
+## Current local connection
 
-Hetu organizes story facts, manuscripts, review and delivery. An external agent produces a requested draft or revision using the model or service you choose. Submitted text remains a draft until the author decides to accept it.
+The source includes a standalone stdio MCP server bound to one author-selected book workspace. The host starts it locally; this website never connects to your writing. Build and launch instructions live in the GitHub repository.
 
-The web prototype has no MCP connection and calls no model or generation service. This guide explains the workflow without inventing installation commands for unreleased integrations.
+Current tools read canon, submit reference drafts, organize plot and drama, validate evidence and handle fixed Git snapshots approved locally by the author. See [Integrations](/en/integrations/) for the current catalog. Installing an extension does not grant full disk or Git access.
 
-## Bound the task
+## Hand off a task
 
-For example:
+The integration design covers choosing a client, installing an extension, copying a prompt and receiving candidates. Skills, Apps and task-local browser views need separate host verification. Hetu provides no built-in chat or simulated generation progress.
 
-> Read the selected first chapter and confirmed character notes. Submit a screenplay draft for the inn scene. Preserve the characters and event order. List new details as suggestions; do not change the story bible or approve anything for me.
+Copy a bounded task to your selected client, such as:
 
-Specify chapters, allowed changes, output format and unresolved questions. Avoid granting whole-disk access or including private records or credentials in creative material.
+> Read the selected first chapter and confirmed canon. Submit a reference for the inn passage. Keep characters and time relationships intact, explain new details, and do not modify canon, overwrite text or finalize on my behalf.
 
-## Inspect a submitted draft
+External clients provide models and services. This demo calls none and transfers no private files or keys.
 
-Check sources and input revisions, then look for added or missing events, character choices and changed facts. When requesting changes, leave concrete comments rather than asking for vague improvements.
+## Results and recovery
 
-Story locks and review controls do not replace operating system permissions. Another program with equivalent file access can still modify files directly. Grant only the access needed for the task.
+Check input revisions, candidate content and citations. Even after review approval, the author chooses adoption scope and finalizes separately.
 
-## Check status after interruptions
+If a write receipt is missing, inspect the original operation before repeating it. Ending a local interaction does not delete books, erase history or undo completed author decisions.
 
-A missing response does not prove a submission failed. Inspect whether the workspace already received the draft or snapshot before retrying. Recover the original operation's status to avoid duplicates.
-
-Continue with [Checks and draft review](review.md) and [Your work, versions and backups](data-and-backup.md).
+Continue with [Checks and draft review](review.md).

@@ -1,0 +1,245 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "draft_id": {
+      "type": "string",
+      "pattern": "^draft_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "expected_draft_revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "operation_key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "input_snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "draft_id": {
+          "type": "string",
+          "pattern": "^draft_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "draft_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "content_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "submission_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "blueprint_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "blueprint_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "current_blueprint_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "target": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "document_id": {
+                  "type": "string",
+                  "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "base_revision_id": {
+                  "type": "string",
+                  "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "base_sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "current_revision_id": {
+                  "type": "string",
+                  "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "approved_revision_id": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "document_id",
+                "base_revision_id",
+                "base_sha256",
+                "current_revision_id",
+                "approved_revision_id"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "skeleton": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "skeleton_ref": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "skeleton_id": {
+                      "type": "string",
+                      "pattern": "^skeleton_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                    },
+                    "revision": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    }
+                  },
+                  "required": [
+                    "skeleton_id",
+                    "revision",
+                    "sha256"
+                  ]
+                },
+                "current_revision": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "source_state": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "stale": {
+                      "type": "boolean"
+                    },
+                    "stale_reasons": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  },
+                  "required": [
+                    "sha256",
+                    "stale",
+                    "stale_reasons"
+                  ]
+                }
+              },
+              "required": [
+                "skeleton_ref",
+                "current_revision",
+                "source_state"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "draft_id",
+        "draft_revision",
+        "content_sha256",
+        "submission_sha256",
+        "blueprint_revision",
+        "blueprint_sha256",
+        "current_blueprint_revision",
+        "target",
+        "skeleton"
+      ]
+    },
+    "report_refs": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "report_id": {
+            "type": "string",
+            "pattern": "^report_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "dispositions_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "report_id",
+          "sha256",
+          "dispositions_sha256"
+        ]
+      }
+    },
+    "decision": {
+      "enum": [
+        "approved",
+        "rejected",
+        "changes_requested",
+        "withdrawn"
+      ]
+    },
+    "comments": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 8000
+    },
+    "private_comments": {
+      "type": "string",
+      "maxLength": 8000
+    },
+    "coverage_acknowledgement": {
+      "type": "string",
+      "maxLength": 4000
+    }
+  },
+  "required": [
+    "draft_id",
+    "expected_draft_revision",
+    "operation_key",
+    "input_snapshot",
+    "report_refs",
+    "decision",
+    "comments"
+  ]
+}

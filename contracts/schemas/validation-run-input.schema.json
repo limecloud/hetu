@@ -1,0 +1,82 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "plot_revision_id": {
+      "type": "string",
+      "pattern": "^plotrev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "rule_set_version": {
+      "const": "1"
+    },
+    "options": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8388608
+        },
+        "max_evaluations": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50000
+        },
+        "max_findings": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5000
+        },
+        "max_matches": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200000
+        },
+        "max_duration_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        }
+      },
+      "required": []
+    },
+    "save_report": {
+      "type": "boolean"
+    },
+    "operation_key": {
+      "type": "string",
+      "maxLength": 128,
+      "minLength": 1
+    }
+  },
+  "required": [
+    "plot_revision_id",
+    "rule_set_version",
+    "options",
+    "save_report"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "save_report": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "operation_key"
+        ]
+      },
+      "else": {
+        "not": {
+          "required": [
+            "operation_key"
+          ]
+        }
+      }
+    }
+  ]
+}

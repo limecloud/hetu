@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "draft_id": {
+      "type": "string",
+      "pattern": "^draft_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "expected_draft_revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "operation_key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "plot_options": {
+      "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/options"
+    },
+    "validation_options": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8388608
+        },
+        "max_evaluations": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50000
+        },
+        "max_findings": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5000
+        },
+        "max_matches": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200000
+        },
+        "max_duration_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        }
+      },
+      "required": []
+    }
+  },
+  "required": [
+    "draft_id",
+    "expected_draft_revision",
+    "operation_key",
+    "plot_options",
+    "validation_options"
+  ]
+}

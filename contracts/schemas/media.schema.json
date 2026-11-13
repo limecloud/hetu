@@ -1,0 +1,643 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HetuMediaRecord",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/asset"
+    },
+    {
+      "$ref": "#/$defs/cue"
+    }
+  ],
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_type": {
+          "enum": [
+            "author_supplied",
+            "third_party",
+            "external_agent"
+          ]
+        },
+        "creator_statement": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "source_uri": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        }
+      },
+      "required": [
+        "source_type",
+        "creator_statement"
+      ]
+    },
+    "blob": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483648
+        },
+        "media_type": {
+          "enum": [
+            "image/png",
+            "image/jpeg",
+            "image/gif",
+            "image/webp",
+            "audio/wav",
+            "audio/flac",
+            "audio/mpeg",
+            "application/ogg",
+            "audio/mp4",
+            "video/mp4",
+            "video/quicktime"
+          ]
+        },
+        "validation": {
+          "const": "signature_only"
+        }
+      },
+      "required": [
+        "path",
+        "sha256",
+        "size_bytes",
+        "media_type",
+        "validation"
+      ]
+    },
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000
+        },
+        "previous_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "kind": {
+          "enum": [
+            "music",
+            "visual"
+          ]
+        },
+        "created_at": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "updated_at": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "actor_ref": {
+          "type": "string",
+          "pattern": "^actor_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "asset_id": {
+          "type": "string",
+          "pattern": "^asset_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "source": {
+          "$ref": "#/$defs/source"
+        },
+        "rights_status": {
+          "enum": [
+            "author_owned",
+            "licensed",
+            "reference_only",
+            "unknown"
+          ]
+        },
+        "redistribution_allowed": {
+          "type": "boolean"
+        },
+        "rights_statement": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "original_filename": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "blob": {
+          "$ref": "#/$defs/blob"
+        }
+      },
+      "required": [
+        "schema_version",
+        "revision",
+        "previous_sha256",
+        "kind",
+        "created_at",
+        "updated_at",
+        "actor_ref",
+        "asset_id",
+        "title",
+        "source",
+        "rights_status",
+        "redistribution_allowed",
+        "rights_statement",
+        "original_filename",
+        "blob"
+      ]
+    },
+    "cue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000
+        },
+        "previous_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "kind": {
+          "enum": [
+            "music",
+            "visual"
+          ]
+        },
+        "created_at": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "updated_at": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "actor_ref": {
+          "type": "string",
+          "pattern": "^actor_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "cue_id": {
+          "type": "string",
+          "pattern": "^cue_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 16000
+        },
+        "narrative_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/source_ref"
+          },
+          "maxItems": 200,
+          "uniqueItems": true
+        },
+        "asset_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/asset_ref"
+          },
+          "maxItems": 200,
+          "uniqueItems": true
+        },
+        "archived": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "schema_version",
+        "revision",
+        "previous_sha256",
+        "kind",
+        "created_at",
+        "updated_at",
+        "actor_ref",
+        "cue_id",
+        "title",
+        "description",
+        "narrative_refs",
+        "asset_refs",
+        "archived"
+      ]
+    },
+    "source_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "document_id",
+        "revision_id",
+        "byte_start",
+        "byte_end",
+        "quote"
+      ],
+      "properties": {
+        "document_id": {
+          "type": "string",
+          "pattern": "^doc_[0-9a-f-]{36}$"
+        },
+        "revision_id": {
+          "type": "string",
+          "pattern": "^rev_[0-9a-f-]{36}$"
+        },
+        "byte_start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "byte_end": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "quote": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16000
+        }
+      }
+    },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "revision",
+        "sha256"
+      ]
+    },
+    "asset_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "asset_id": {
+          "type": "string",
+          "pattern": "^asset_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "asset_id",
+        "revision",
+        "sha256"
+      ]
+    },
+    "inspect_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "file_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      },
+      "required": [
+        "file_path"
+      ]
+    },
+    "import_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "file_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "expected_file": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "size_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2147483648
+            }
+          },
+          "required": [
+            "sha256",
+            "size_bytes"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "source": {
+          "$ref": "#/$defs/source"
+        },
+        "rights_status": {
+          "enum": [
+            "author_owned",
+            "licensed",
+            "reference_only",
+            "unknown"
+          ]
+        },
+        "redistribution_allowed": {
+          "type": "boolean"
+        },
+        "rights_statement": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "file_path",
+        "expected_file",
+        "title",
+        "source",
+        "rights_status",
+        "redistribution_allowed",
+        "rights_statement",
+        "operation_key"
+      ]
+    },
+    "asset_update_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "asset_id": {
+          "type": "string",
+          "pattern": "^asset_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "expected": {
+          "$ref": "#/$defs/expected"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "source": {
+          "$ref": "#/$defs/source"
+        },
+        "rights_status": {
+          "enum": [
+            "author_owned",
+            "licensed",
+            "reference_only",
+            "unknown"
+          ]
+        },
+        "redistribution_allowed": {
+          "type": "boolean"
+        },
+        "rights_statement": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "asset_id",
+        "expected",
+        "title",
+        "source",
+        "rights_status",
+        "redistribution_allowed",
+        "rights_statement",
+        "operation_key"
+      ]
+    },
+    "asset_get_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "asset_id": {
+          "type": "string",
+          "pattern": "^asset_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000
+        }
+      },
+      "required": [
+        "asset_id"
+      ]
+    },
+    "cue_get_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cue_id": {
+          "type": "string",
+          "pattern": "^cue_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000
+        }
+      },
+      "required": [
+        "cue_id"
+      ]
+    },
+    "cue_save_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cue_id": {
+          "type": "string",
+          "pattern": "^cue_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "expected": {
+          "$ref": "#/$defs/expected"
+        },
+        "kind": {
+          "enum": [
+            "music",
+            "visual"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 16000
+        },
+        "narrative_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/source_ref"
+          },
+          "maxItems": 200,
+          "uniqueItems": true
+        },
+        "asset_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/asset_ref"
+          },
+          "maxItems": 200,
+          "uniqueItems": true
+        },
+        "archived": {
+          "type": "boolean"
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "kind",
+        "title",
+        "description",
+        "narrative_refs",
+        "asset_refs",
+        "archived",
+        "operation_key"
+      ],
+      "dependentRequired": {
+        "cue_id": [
+          "expected"
+        ],
+        "expected": [
+          "cue_id"
+        ]
+      }
+    },
+    "asset_list_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "music",
+            "visual"
+          ]
+        },
+        "cursor": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "rights_status": {
+          "enum": [
+            "author_owned",
+            "licensed",
+            "reference_only",
+            "unknown"
+          ]
+        }
+      },
+      "required": []
+    },
+    "cue_list_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "music",
+            "visual"
+          ]
+        },
+        "cursor": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "document_id": {
+          "type": "string",
+          "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "include_archived": {
+          "type": "boolean"
+        }
+      },
+      "required": []
+    }
+  }
+}

@@ -1,0 +1,1368 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "report_id": {
+      "type": "string",
+      "pattern": "^report_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "input_snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "plot_revision_id": {
+          "type": "string",
+          "pattern": "^plotrev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "plot_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "blueprint_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "blueprint_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "source_revisions": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/source_revision"
+          },
+          "maxItems": 32
+        }
+      },
+      "required": [
+        "plot_revision_id",
+        "plot_sha256",
+        "blueprint_revision",
+        "blueprint_sha256",
+        "source_revisions"
+      ]
+    },
+    "rule_set_version": {
+      "const": "1"
+    },
+    "engine_build": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1
+    },
+    "options": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8388608
+        },
+        "max_evaluations": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50000
+        },
+        "max_findings": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5000
+        },
+        "max_matches": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200000
+        },
+        "max_duration_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        }
+      },
+      "required": []
+    },
+    "status": {
+      "enum": [
+        "complete",
+        "partial"
+      ]
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requested_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/source_revision"
+          },
+          "maxItems": 32
+        },
+        "scanned_ranges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "document_id": {
+                "type": "string",
+                "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "revision_id": {
+                "type": "string",
+                "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "byte_start": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "byte_end": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "document_id",
+              "revision_id",
+              "byte_start",
+              "byte_end"
+            ]
+          },
+          "maxItems": 32
+        },
+        "scanned_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unparsed_ranges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "document_id": {
+                "type": "string",
+                "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "revision_id": {
+                "type": "string",
+                "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "byte_start": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "byte_end": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "reason": {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 1
+              }
+            },
+            "required": [
+              "document_id",
+              "revision_id",
+              "byte_start",
+              "byte_end",
+              "reason"
+            ]
+          },
+          "maxItems": 100000
+        },
+        "plot_coverage": {
+          "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/coverage"
+        },
+        "enabled_rules": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1
+          },
+          "maxItems": 100000
+        },
+        "executed_rules": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1
+          },
+          "maxItems": 100000
+        },
+        "evaluations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "rule_id": {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 1
+              },
+              "unit_ref": {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 1
+              },
+              "status": {
+                "enum": [
+                  "passed",
+                  "finding",
+                  "unknown",
+                  "not_applicable"
+                ]
+              },
+              "missing_prerequisites": {
+                "type": "array",
+                "items": {
+                  "enum": [
+                    "author_confirmation",
+                    "statement_context",
+                    "scope_entities",
+                    "required_references",
+                    "story_time",
+                    "fact_assertions",
+                    "applicable_facts",
+                    "location",
+                    "plot_nodes",
+                    "story_order_edges",
+                    "scope_text_coverage",
+                    "source_scan"
+                  ]
+                },
+                "maxItems": 100
+              }
+            },
+            "required": [
+              "rule_id",
+              "unit_ref",
+              "status",
+              "missing_prerequisites"
+            ]
+          },
+          "maxItems": 50000
+        },
+        "counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "passed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "finding": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "unknown": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "not_applicable": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "passed",
+            "finding",
+            "unknown",
+            "not_applicable"
+          ]
+        },
+        "budget_stop": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "enum": [
+                "max_bytes",
+                "max_duration",
+                "max_evaluations",
+                "max_findings",
+                "max_matches",
+                "max_output",
+                "chronology_budget",
+                "plot_partial"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "requested_refs",
+        "scanned_ranges",
+        "scanned_bytes",
+        "unparsed_ranges",
+        "plot_coverage",
+        "enabled_rules",
+        "executed_rules",
+        "evaluations",
+        "counts",
+        "budget_stop"
+      ]
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "finding_id": {
+            "type": "string",
+            "pattern": "^finding_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "rule_id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1
+          },
+          "rule_revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "severity": {
+            "enum": [
+              "error",
+              "warning",
+              "info"
+            ]
+          },
+          "certainty": {
+            "enum": [
+              "certain",
+              "heuristic",
+              "unknown",
+              "advisory"
+            ]
+          },
+          "message_key": {
+            "enum": [
+              "validation.prerequisites",
+              "validation.fact_conflict",
+              "validation.world_conflict",
+              "validation.advisory",
+              "validation.forbidden_term",
+              "validation.event_conflict",
+              "validation.mental_density",
+              "validation.scene_missing"
+            ]
+          },
+          "source_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/source_ref_resource"
+            },
+            "maxItems": 100
+          },
+          "blueprint_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 200,
+              "minLength": 1
+            },
+            "maxItems": 100
+          },
+          "evidence": {
+            "type": "object"
+          },
+          "missing_prerequisites": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "author_confirmation",
+                "statement_context",
+                "scope_entities",
+                "required_references",
+                "story_time",
+                "fact_assertions",
+                "applicable_facts",
+                "location",
+                "plot_nodes",
+                "story_order_edges",
+                "scope_text_coverage",
+                "source_scan"
+              ]
+            },
+            "maxItems": 100
+          },
+          "disposition": {
+            "const": "open"
+          },
+          "exception_policy": {
+            "enum": [
+              "none",
+              "author_review"
+            ]
+          }
+        },
+        "required": [
+          "finding_id",
+          "rule_id",
+          "rule_revision",
+          "severity",
+          "certainty",
+          "message_key",
+          "source_refs",
+          "blueprint_refs",
+          "evidence",
+          "missing_prerequisites",
+          "disposition",
+          "exception_policy"
+        ]
+      },
+      "maxItems": 5000
+    },
+    "created_at": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1
+    },
+    "actor_ref": {
+      "type": "string",
+      "pattern": "^actor_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    }
+  },
+  "required": [
+    "schema_version",
+    "report_id",
+    "input_snapshot",
+    "rule_set_version",
+    "engine_build",
+    "options",
+    "status",
+    "coverage",
+    "findings",
+    "created_at",
+    "actor_ref"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:hetu:schema:validation-report:1.0.0",
+  "$defs": {
+    "plot_resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "plot_revision_id": {
+          "type": "string",
+          "pattern": "^plotrev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "parent_plot_revision_id": {
+          "type": "string",
+          "pattern": "^plotrev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "blueprint_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "blueprint_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "source_revisions": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/source_revision"
+          },
+          "minItems": 1,
+          "maxItems": 100
+        },
+        "engine_version": {
+          "const": "1.0.0"
+        },
+        "options": {
+          "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/options"
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/node"
+          },
+          "minItems": 0,
+          "maxItems": 10000
+        },
+        "edges": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/edge"
+          },
+          "minItems": 0,
+          "maxItems": 20000
+        },
+        "coverage": {
+          "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/coverage"
+        },
+        "created_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "actor_ref": {
+          "type": "string",
+          "pattern": "^actor_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        }
+      },
+      "required": [
+        "schema_version",
+        "plot_revision_id",
+        "blueprint_revision",
+        "blueprint_sha256",
+        "source_revisions",
+        "engine_version",
+        "options",
+        "nodes",
+        "edges",
+        "coverage",
+        "created_at",
+        "actor_ref"
+      ],
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "urn:hetu:schema:plot:1.0.0",
+      "title": "HetuPlotRevision",
+      "$defs": {
+        "source_ref_resource": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "title": "HetuSourceRef",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "document_id",
+            "revision_id",
+            "byte_start",
+            "byte_end",
+            "quote"
+          ],
+          "properties": {
+            "document_id": {
+              "type": "string",
+              "pattern": "^doc_[0-9a-f-]{36}$"
+            },
+            "revision_id": {
+              "type": "string",
+              "pattern": "^rev_[0-9a-f-]{36}$"
+            },
+            "byte_start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "byte_end": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "quote": {
+              "type": "string"
+            }
+          },
+          "$id": "urn:hetu:schema:source-ref:1.0.0"
+        },
+        "options": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 8388608
+            },
+            "max_nodes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10000
+            },
+            "max_matches": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200000
+            },
+            "max_duration_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10000
+            }
+          },
+          "required": []
+        },
+        "source_revision": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "document_id": {
+              "type": "string",
+              "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "revision_id": {
+              "type": "string",
+              "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "source_format": {
+              "enum": [
+                "markdown",
+                "fountain"
+              ]
+            },
+            "size_bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1048576
+            }
+          },
+          "required": [
+            "document_id",
+            "revision_id",
+            "sha256",
+            "source_format",
+            "size_bytes"
+          ]
+        },
+        "source_input": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "document_id": {
+              "type": "string",
+              "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "revision_id": {
+              "type": "string",
+              "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "document_id",
+            "revision_id",
+            "sha256"
+          ]
+        },
+        "node": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "node_id": {
+              "type": "string",
+              "pattern": "^node_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "kind": {
+              "enum": [
+                "scene",
+                "action",
+                "dialogue",
+                "conflict_candidate",
+                "foreshadow_candidate"
+              ]
+            },
+            "entity_refs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^(character|faction)_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "minItems": 0,
+              "maxItems": 200
+            },
+            "location_ref": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^location_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "time_ref": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^event_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "speaker_ref": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^character_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "time_of_day": {
+              "enum": [
+                "day",
+                "night",
+                "dawn",
+                "dusk",
+                "unknown"
+              ]
+            },
+            "verification": {
+              "enum": [
+                "needs_author_review",
+                "confirmed",
+                "dismissed"
+              ]
+            },
+            "source_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "urn:hetu:schema:source-ref:1.0.0"
+              },
+              "minItems": 1,
+              "maxItems": 10
+            },
+            "entity_candidates": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "entity_ref": {
+                    "type": "string",
+                    "pattern": "^(character|faction|location)_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                  },
+                  "kind": {
+                    "enum": [
+                      "character",
+                      "faction",
+                      "location"
+                    ]
+                  },
+                  "matched_text": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "source_ref": {
+                    "$ref": "urn:hetu:schema:source-ref:1.0.0"
+                  }
+                },
+                "required": [
+                  "entity_ref",
+                  "kind",
+                  "matched_text",
+                  "source_ref"
+                ]
+              },
+              "minItems": 0,
+              "maxItems": 1000
+            },
+            "location_candidates": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^location_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "minItems": 0,
+              "maxItems": 200
+            },
+            "speaker_candidates": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^character_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "minItems": 0,
+              "maxItems": 200
+            },
+            "unresolved_names": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "character",
+                      "location"
+                    ]
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "source_ref": {
+                    "$ref": "urn:hetu:schema:source-ref:1.0.0"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "name",
+                  "source_ref"
+                ]
+              },
+              "minItems": 0,
+              "maxItems": 20
+            },
+            "extraction_method": {
+              "enum": [
+                "markdown_heading",
+                "fountain_scene",
+                "scene_marker",
+                "quoted_dialogue",
+                "speaker_label",
+                "fountain_dialogue",
+                "dash_dialogue",
+                "action_terms",
+                "conflict_marker",
+                "foreshadow_marker",
+                "author_annotation"
+              ]
+            },
+            "missing_prerequisites": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "classification_review",
+                  "entity_review",
+                  "location",
+                  "story_time",
+                  "speaker",
+                  "ambiguous_name"
+                ]
+              },
+              "minItems": 0,
+              "maxItems": 6
+            },
+            "annotation": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "context": {
+                      "enum": [
+                        "actual",
+                        "dream",
+                        "hypothetical",
+                        "reported",
+                        "unknown"
+                      ]
+                    },
+                    "facts": {
+                      "type": "array",
+                      "maxItems": 100,
+                      "items": {
+                        "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/fact_assertion"
+                      }
+                    },
+                    "capabilities": {
+                      "type": "array",
+                      "maxItems": 100,
+                      "uniqueItems": true,
+                      "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                      }
+                    }
+                  },
+                  "required": [
+                    "context",
+                    "facts",
+                    "capabilities"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "node_id",
+            "kind",
+            "entity_refs",
+            "location_ref",
+            "time_ref",
+            "speaker_ref",
+            "time_of_day",
+            "verification",
+            "source_refs",
+            "entity_candidates",
+            "location_candidates",
+            "speaker_candidates",
+            "unresolved_names",
+            "extraction_method",
+            "missing_prerequisites"
+          ]
+        },
+        "edge": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "edge_id": {
+              "type": "string",
+              "pattern": "^edge_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "from_node_id": {
+              "type": "string",
+              "pattern": "^node_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "to_node_id": {
+              "type": "string",
+              "pattern": "^node_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "relation": {
+              "enum": [
+                "narrative_next",
+                "causes",
+                "story_before"
+              ]
+            },
+            "verification": {
+              "enum": [
+                "needs_author_review",
+                "confirmed",
+                "dismissed"
+              ]
+            },
+            "source_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "urn:hetu:schema:source-ref:1.0.0"
+              },
+              "minItems": 1,
+              "maxItems": 10
+            }
+          },
+          "required": [
+            "edge_id",
+            "from_node_id",
+            "to_node_id",
+            "relation",
+            "verification",
+            "source_refs"
+          ]
+        },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "enum": [
+                "complete",
+                "partial"
+              ]
+            },
+            "requested_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/source_revision"
+              },
+              "minItems": 1,
+              "maxItems": 100
+            },
+            "scanned_ranges": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "document_id": {
+                    "type": "string",
+                    "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                  },
+                  "revision_id": {
+                    "type": "string",
+                    "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                  },
+                  "byte_start": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "byte_end": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "document_id",
+                  "revision_id",
+                  "byte_start",
+                  "byte_end"
+                ]
+              },
+              "minItems": 0,
+              "maxItems": 100
+            },
+            "scanned_bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 8388608
+            },
+            "unparsed_ranges": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "document_id": {
+                    "type": "string",
+                    "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                  },
+                  "revision_id": {
+                    "type": "string",
+                    "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                  },
+                  "byte_start": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "byte_end": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "reason": {
+                    "enum": [
+                      "code",
+                      "html",
+                      "escaped_text",
+                      "no_structural_signal",
+                      "unclosed_quote",
+                      "segment_too_large",
+                      "fountain_metadata"
+                    ]
+                  }
+                },
+                "required": [
+                  "document_id",
+                  "revision_id",
+                  "byte_start",
+                  "byte_end",
+                  "reason"
+                ]
+              },
+              "minItems": 0,
+              "maxItems": 20000
+            },
+            "budget_stop": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "document_id": {
+                      "type": "string",
+                      "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                    },
+                    "revision_id": {
+                      "type": "string",
+                      "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                    },
+                    "byte_offset": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "reason": {
+                      "enum": [
+                        "max_bytes",
+                        "max_nodes",
+                        "max_matches",
+                        "max_duration",
+                        "max_output"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "document_id",
+                    "revision_id",
+                    "byte_offset",
+                    "reason"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "requested_refs",
+            "scanned_ranges",
+            "scanned_bytes",
+            "unparsed_ranges",
+            "budget_stop"
+          ]
+        },
+        "fact_assertion": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "subject_ref": {
+              "type": "string",
+              "pattern": "^character_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "predicate": {
+              "enum": [
+                "identity",
+                "primary_faction",
+                "life_state",
+                "age"
+              ]
+            },
+            "value": {}
+          },
+          "required": [
+            "subject_ref",
+            "predicate",
+            "value"
+          ],
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "predicate": {
+                    "const": "identity"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 500
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "predicate": {
+                    "const": "primary_faction"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "pattern": "^faction_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "predicate": {
+                    "const": "life_state"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "value": {
+                    "enum": [
+                      "alive",
+                      "dead"
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "predicate": {
+                    "const": "age"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "value": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000000
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "finding_id": {
+          "type": "string",
+          "pattern": "^finding_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "rule_id": {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        "rule_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "severity": {
+          "enum": [
+            "error",
+            "warning",
+            "info"
+          ]
+        },
+        "certainty": {
+          "enum": [
+            "certain",
+            "heuristic",
+            "unknown",
+            "advisory"
+          ]
+        },
+        "message_key": {
+          "enum": [
+            "validation.prerequisites",
+            "validation.fact_conflict",
+            "validation.world_conflict",
+            "validation.advisory",
+            "validation.forbidden_term",
+            "validation.event_conflict",
+            "validation.mental_density",
+            "validation.scene_missing"
+          ]
+        },
+        "source_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/source_ref_resource"
+          },
+          "maxItems": 100
+        },
+        "blueprint_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1
+          },
+          "maxItems": 100
+        },
+        "evidence": {
+          "type": "object"
+        },
+        "missing_prerequisites": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "author_confirmation",
+              "statement_context",
+              "scope_entities",
+              "required_references",
+              "story_time",
+              "fact_assertions",
+              "applicable_facts",
+              "location",
+              "plot_nodes",
+              "story_order_edges",
+              "scope_text_coverage",
+              "source_scan"
+            ]
+          },
+          "maxItems": 100
+        },
+        "disposition": {
+          "const": "open"
+        },
+        "exception_policy": {
+          "enum": [
+            "none",
+            "author_review"
+          ]
+        }
+      },
+      "required": [
+        "finding_id",
+        "rule_id",
+        "rule_revision",
+        "severity",
+        "certainty",
+        "message_key",
+        "source_refs",
+        "blueprint_refs",
+        "evidence",
+        "missing_prerequisites",
+        "disposition",
+        "exception_policy"
+      ]
+    },
+    "input_snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "plot_revision_id": {
+          "type": "string",
+          "pattern": "^plotrev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "plot_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "blueprint_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "blueprint_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "source_revisions": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:hetu:schema:plot:1.0.0#/$defs/source_revision"
+          },
+          "maxItems": 32
+        }
+      },
+      "required": [
+        "plot_revision_id",
+        "plot_sha256",
+        "blueprint_revision",
+        "blueprint_sha256",
+        "source_revisions"
+      ]
+    }
+  }
+}

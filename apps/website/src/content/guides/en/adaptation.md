@@ -1,30 +1,23 @@
 # From novel to screenplay
 
-A novel and its screen adaptation can share the same story facts while using different forms of expression. Hetu organizes existing material; the author supplies new dialogue and makes adaptation decisions.
+Organize plot from saved text, then episodes and scenes from fixed plot evidence. The system offers structure; authors provide new dialogue, events and adaptation choices.
 
-## Read an episode outline
+## Plot and provenance
 
-Open Drama in the [prototype](/prototype/workbench.html). Scene cards show a scene number, interior or exterior, location, time of day, characters, a plot beat and a source reference.
+Open **Plot beats** for the sample book in the [homepage demo](/en/#prototype). Arrival, entering the inn and the clasp point to fixed source revisions.
 
-The sample includes gate and inn scenes. A **Proposed structure** needs comparison with the manuscript. Details beyond the source require author confirmation before they become part of the adaptation.
+Select **Inspect source**, then **Locate in working text**. Changed source text requires new extraction. Earlier results are not a live analysis.
 
-## Return to the manuscript
+## Drama outline
 
-Select **View source mapping**. The prototype opens Chapter 1 and highlights the jade clasp passage. Read the surrounding text before deciding what the scene preserves or omits.
+The sample outline contains the gate and inn scenes with location, time, beats and citations. A structural candidate is not a final and generates no dialogue.
 
-The demo displays a fixed proposal and source navigation. It does not extract real plot beats or write dialogue.
+The native client supports editing, splitting, adjacent merges, reordering, source mappings and structural comparison reports. Building new candidates preserves existing manual structure.
 
-## Ask four adaptation questions
+## Independent script
 
-1. Can the scene be staged? Are time, location and participating characters clear?
-2. Can its essential information be seen or heard? Does internal thought need another form of expression?
-3. Is the action motivated? Why does the character make this choice?
-4. Does the adaptation respect confirmed identities, timing and world rules?
+The local client can create an editable Fountain script from an outline. Scripts have independent text and revisions, retaining initial mappings and showing when those mappings become stale.
 
-These are review questions, not a rule to remove all internal thought or follow a single creative formula.
+The website demonstrates structure and source inspection only; it creates no script file. Explain time compression, scene merges and added details for author review.
 
-## Record the reason for changes
-
-When combining scenes, compressing time or changing entrances, keep the source reference and explain the decision. Ask the author to review the changes before approving the adapted draft.
-
-Continue with [Checks and draft review](review.md) and [Formats and delivery](formats-and-delivery.md).
+Continue with [Checks and draft review](review.md).

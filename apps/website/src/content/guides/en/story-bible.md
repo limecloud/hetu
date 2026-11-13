@@ -1,27 +1,23 @@
 # Maintain your story bible
 
-A story bible holds author-confirmed characters, places, world rules and event relationships. It provides shared facts for the novel and its adaptations without replacing the manuscript.
+A story bible records author-confirmed characters, places, rules and time relationships. Each book has its own canon; books do not automatically share it.
 
-## Choose what belongs in it
+## Record confirmed facts
 
-Record facts that matter to later work: names and aliases, identities, relationships, locations, event order and firm world rules. Keep a source passage for facts that could be confused.
+Keep sources for names, aliases, identities, relationships and timelines. The sample text supports “Lin Zhou carries an old jade clasp.” Its ownership history remains a question.
 
-“Lin Zhou carries an old jade clasp” has an identifiable source in the sample. “The clasp must belong to a particular sect” is an unanswered question unless the author confirms it.
+Discovered entities stay candidates. Resolve aliases, duplicate names and missing evidence before confirming facts.
 
-## Try locking and unlocking
+## Try locking
 
-In the [prototype](/prototype/workbench.html), open Story Bible and inspect the confirmed entries and revision. Select **Unlock Story Bible**, then **Lock Story Bible** to restore the locked state.
+Open the sample book in the [homepage demo](/en/#prototype), then **Story bible**. Inspect entries and switch between **Unlock story bible** and **Lock story bible**. The demo edits no real entries.
 
-This view demonstrates inspection and locking. It does not create, edit or delete real entries. Unlocking never grants an agent permission to change the story bible.
+The local client provides canon editing and revision history. Locks control author editing; managed interfaces never give agents canon-write or unlock permission.
 
-## Review suggested facts
+## Recheck after changes
 
-When inspecting a discovered name or place, ask whether it is an alias, duplicates an existing entry or has a clear source. Distinguish different people with the same name before confirming them.
+Changed identities, timelines or rules require checking affected text, plot, adaptations and review evidence. Old records describe their original revision, not approval of new content.
 
-Leave uncertainty unresolved rather than converting a guess into a fact merely to clear an advisory.
+Locks do not replace OS file permissions. Other programs with equal access may still change files. Grant only the access needed for collaboration.
 
-## Recheck affected work
-
-Changes to an identity, event date or world rule can affect chapters and screen adaptations. An earlier approval applies to its original inputs; it does not automatically approve the revised story.
-
-See [Checks and draft review](review.md) for handling individual findings.
+Continue with [Checks and draft review](review.md).

@@ -21,6 +21,7 @@ for (const file of files) {
   const relative = path.relative(root, file).replaceAll(path.sep, '/');
   assert.ok(!/^(?:sources|research|en\/research)\//.test(relative), `工程文档不能发布到官网：${relative}`);
   assert.ok(!/^(?:en\/)?docs\/\d{2}\//.test(relative), `编号工程规范不能发布到官网：${relative}`);
+  assert.ok(!/^prototype\//.test(relative), `原型只能嵌入首页：${relative}`);
 }
 for (const locale of ['zh-CN', 'en']) {
   const directory = new URL(`../src/content/guides/${locale}/`, import.meta.url);
@@ -55,8 +56,11 @@ function keys(value, prefix = '') {
   return Object.entries(value).flatMap(([key, item]) => typeof item === 'object' && item !== null ? keys(item, prefix + key + '.') : [prefix + key]).sort();
 }
 assert.deepEqual(keys(zh), keys(en), '中英文资源键不一致');
-for (const required of ['index.html','en/index.html','docs/getting-started/index.html','en/docs/getting-started/index.html','prototype/workbench.html','brand/favicon.ico','sitemap.xml','404.html']) {
+for (const required of ['index.html','en/index.html','docs/getting-started/index.html','en/docs/getting-started/index.html','brand/favicon.ico','sitemap.xml','404.html']) {
   assert.ok(paths.has(path.join(root, required)), `缺少产物：${required}`);
+}
+for (const home of ['index.html', 'en/index.html']) {
+  assert.ok((await readFile(path.join(root, home), 'utf8')).includes('data-hetu-demo'), `首页缺少交互原型：${home}`);
 }
 for (const file of files) assert.ok((await stat(file)).size < 25 * 1024 * 1024, `超过 Pages 单文件限制：${file}`);
 assert.deepEqual(errors, [], '静态产物链接或安全检查失败');

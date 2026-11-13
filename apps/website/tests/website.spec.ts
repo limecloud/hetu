@@ -16,7 +16,7 @@ for (const width of [375, 768, 1440]) {
         if (!(image instanceof HTMLImageElement)) return [];
         const rect = image.getBoundingClientRect();
         const difference = Math.abs((rect.width / rect.height) / (image.naturalWidth / image.naturalHeight) - 1);
-        return difference > .02 ? [{ source: image.getAttribute('src'), width: rect.width, height: rect.height }] : [];
+        return difference > .02 && getComputedStyle(image).objectFit === 'fill' ? [{ source: image.getAttribute('src'), width: rect.width, height: rect.height }] : [];
       }));
       expect(distorted).toEqual([]);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
@@ -45,19 +45,19 @@ test('移动菜单、语言切换与文档位置保留', async ({ page }) => {
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
 
-test('英文入口使用英文界面图、分享卡和英文原型样例', async ({ page }) => {
+test('英文首页原型使用英文演示内容，切换界面不翻译正文', async ({ page }) => {
   await page.goto('/en/');
-  await expect(page.locator('.product-shot')).toHaveAttribute('src','/images/prototype-desktop-en.webp');
-  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content',/social-og-en\.png$/);
-  await page.locator('.hero-actions').getByRole('link',{name:/Explore the prototype/}).click();
-  await expect(page.locator('html')).toHaveAttribute('lang','en');
-  const manuscript=await page.locator('#manuscript').inputValue();
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /social-og-en\.png$/);
+  await page.locator('.hero-actions a').first().click();
+  await expect(page).toHaveURL(/\/en\/#prototype$/);
+  await page.locator('[data-action="open-book"][data-book="0"]').click();
+  const manuscript = await page.locator('[name="manuscript"]').inputValue();
   expect(manuscript).toContain('Rain had been falling');
-  await page.locator('#language').click();
-  await expect(page.locator('#manuscript')).toHaveValue(manuscript);
+  await page.locator('[data-action="language"]').click();
+  await expect(page.locator('.demo')).toHaveAttribute('lang', 'zh-CN');
+  await expect(page.locator('[name="manuscript"]')).toHaveValue(manuscript);
   await page.goto('/en/brand/');
   await expect(page.locator('img[src="/images/prototype-mobile-en.webp"]')).toHaveCount(1);
-  await expect(page.locator('img[src="/images/prototype-website-en.webp"]')).toHaveCount(1);
 });
 
 test('使用指南完整双语，工程文档及源副本不对外发布', async ({ page, request }) => {
@@ -85,58 +85,129 @@ test('使用指南完整双语，工程文档及源副本不对外发布', async
   }
 });
 
-test('原型支持中文编辑、来源定位、返工、批准及交付预览', async ({ page }) => {
+test('首页原型区分保存、参考稿审核、局部采纳与作者独立定稿', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
-  await page.goto('/prototype/workbench.html');
-  const original = await page.locator('#manuscript').inputValue();
-  await page.locator('#manuscript').fill(original + '\n中文输入测试。');
-  await page.locator('#save').click();
-  await expect(page.locator('#saveState')).toContainText('13');
-  await page.locator('[data-chapter="2"]').click();
-  await page.locator('[data-chapter="1"]').click();
-  await expect(page.locator('#manuscript')).toHaveValue(original + '\n中文输入测试。');
-  await page.locator('#locate').click();
-  expect(await page.locator('#manuscript').evaluate((element: HTMLTextAreaElement) => element.value.slice(element.selectionStart, element.selectionEnd))).toBe('旧玉扣');
+  await page.goto('/#prototype');
+  await page.locator('[data-action="open-book"][data-book="0"]').click();
+  const text = page.locator('[name="manuscript"]');
+  const original = await text.inputValue();
+  await text.fill(original + '\n中文输入测试。');
+  await expect(page.locator('[data-save-state]')).toHaveText('未保存');
+  await page.locator('[data-action="finalize"]').click();
+  await expect(page.locator('dialog')).toHaveCount(0);
+  await expect(page.locator('.demo-feedback')).toContainText('请先保存');
+  await page.locator('[data-action="save"]').click();
+  await page.locator('[data-action="chapter"][data-chapter="1"]').click();
+  await page.locator('[data-action="chapter"][data-chapter="0"]').click();
+  await expect(text).toHaveValue(original + '\n中文输入测试。');
+  await page.locator('[data-view="validation"]').click();
+  await page.locator('[data-action="source"]').click();
+  await page.locator('[data-action="locate"]').click();
+  expect(await text.evaluate((element: HTMLTextAreaElement) => element.value.slice(element.selectionStart, element.selectionEnd))).toBe('旧玉扣');
   await page.locator('[data-view="bible"]').click();
-  await page.locator('#toggleLock').click();
-  await expect(page.locator('#bibleStatus')).toContainText('已解锁');
-  await page.locator('[data-view="review"]').click();
-  await page.locator('#changes').click();
-  await expect(page.locator('#reviewStatus')).toHaveText('待审核');
-  await page.locator('#comment').fill('补充玉扣出现的时间依据。');
-  await page.locator('#changes').click();
-  await expect(page.locator('#reviewStatus')).toHaveText('要求修改');
-  await page.locator('#approve').click();
-  await expect(page.locator('#approvalDialog')).not.toBeVisible();
-  await page.locator('#evidence').check();
-  await page.locator('#approve').click();
-  await expect(page.locator('#approvalDialog')).toBeVisible();
-  await page.locator('#confirmApproval').click();
-  await expect(page.locator('#reviewStatus')).toHaveText('已定稿');
-  await page.locator('#language').click();
-  await expect(page.locator('#reviewStatus')).toHaveText('Approved');
-  await page.locator('[data-view="delivery"]').click();
-  await page.locator('#export').click();
-  await expect(page.locator('#exportResult')).toContainText('4 content groups');
+  await page.locator('[data-action="lock"]').click();
+  await expect(page.locator('.demo-content .demo-badge').first()).toHaveText('已解锁');
+  await page.locator('[data-view="reviews"]').click();
+  await page.locator('[data-action="changes"]').click();
+  await expect(page.locator('#demo-review-state')).toHaveText('待审核');
+  await page.locator('[name="comment"]').fill('补充玉扣的细节，保留其余正文。');
+  await page.locator('[data-action="changes"]').click();
+  await expect(page.locator('#demo-review-state')).toHaveText('要求修改');
+  await page.locator('[data-action="approve"]').click();
+  await expect(page.locator('#demo-review-state')).toHaveText('要求修改');
+  await page.locator('[name="evidence"]').check();
+  await page.locator('[data-action="approve"]').click();
+  await expect(page.locator('#demo-review-state')).toHaveText('审核通过');
+  await page.locator('[data-view="novel"]').click();
+  await expect(text).toHaveValue(original + '\n中文输入测试。');
+  await expect(page.locator('[data-final-state]')).toHaveText('尚未定稿');
+  await page.locator('[data-view="reviews"]').click();
+  await page.locator('[data-action="adopt"]').click();
+  await expect(page.locator('dialog')).toBeVisible();
+  await page.locator('dialog button[type="submit"]').click();
+  await expect(text).toHaveValue((original + '\n中文输入测试。').replace('旧玉扣', '纹路斑驳的旧玉扣'));
+  await expect(page.locator('[data-final-state]')).toHaveText('尚未定稿');
+  await page.locator('[data-view="reviews"]').click();
+  await page.locator('[data-action="adopt"]').click();
+  await expect(page.locator('dialog')).toHaveCount(0);
+  await expect(page.locator('.demo-feedback')).toContainText('已采纳');
+  await page.locator('[data-view="novel"]').click();
+  await page.locator('[data-action="finalize"]').click();
+  await page.locator('[name="final-evidence"]').check();
+  await page.locator('dialog button[type="submit"]').click();
+  await expect(page.locator('[data-final-state]')).toHaveText('当前修订已定稿');
+  await text.fill((await text.inputValue()) + '\n继续修改。');
+  await expect(page.locator('[data-final-state]')).toHaveText('旧定稿仍保留');
+  await page.locator('[data-action="save"]').click();
+  await expect(page.locator('[data-final-state]')).toHaveText('旧定稿仍保留');
+  await page.locator('[data-view="git"]').click();
+  await page.locator('[data-action="snapshot"]').click();
+  await page.locator('dialog button[type="submit"]').click();
+  await expect(page.locator('.demo-history')).toContainText('作者确认的演示快照');
+  await expect(page).toHaveURL(/\/#prototype$/);
   expect(errors).toEqual([]);
 });
 
-test('品牌、原型手机布局、站点地图与真实 404', async ({ page, request }) => {
-  for (const target of ['/brand/favicon.ico', '/brand/manifest.webmanifest', '/images/social-og.png', '/docs/getting-started/', '/en/docs/writing/', '/sitemap.xml']) {
-    expect((await request.get(target)).status()).toBe(200);
-  }
-  // Astro 预览与 Pages 均应返回实际 404，而非首页兜底。
-  expect((await request.get('/this-page-does-not-exist/')).status()).toBe(404);
-  await page.setViewportSize({ width: 375, height: 812 });
-  await page.goto('/prototype/index.html');
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-  await page.goto('/prototype/workbench.html');
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-  await page.locator('[data-view="review"]').click();
-  await expect(page.locator('#comment')).toBeVisible();
+test('书库搜索筛选、作品隔离、未命名筹备和新建章节', async ({ page }) => {
+  await page.goto('/#prototype');
+  await page.locator('[name="search"]').fill('不存在的作品');
+  await expect(page.locator('.demo-book-card')).toHaveCount(0);
+  await expect(page.locator('.demo-empty')).toBeVisible();
+  await page.locator('[name="search"]').fill('');
+  await page.locator('[data-filter="planning"]').click();
+  await expect(page.locator('.demo-book-card')).toHaveCount(1);
+  await page.locator('[data-filter="all"]').click();
+  await page.locator('[data-action="layout"]').click();
+  await expect(page.locator('.demo-books')).toHaveClass(/demo-list/);
+  await page.locator('[data-action="open-book"][data-book="0"]').click();
+  const original = await page.locator('[name="manuscript"]').inputValue();
+  await page.locator('[name="manuscript"]').fill(original + '\n未保存的修改。');
+  await page.locator('[data-action="library"]').click();
+  await page.locator('[data-action="open-book"][data-book="1"]').click();
+  await expect(page.locator('[name="manuscript"]')).not.toHaveValue(original);
+  await page.locator('[data-view="bible"]').click();
+  await expect(page.locator('.demo-content')).toContainText('当前作品尚无相关记录');
+  await expect(page.locator('.demo-content')).not.toContainText('林舟');
+  await page.locator('[data-action="library"]').click();
+  await page.locator('[data-action="open-book"][data-book="0"]').click();
+  await expect(page.locator('[name="manuscript"]')).toHaveValue(original + '\n未保存的修改。');
+  await page.locator('[data-action="library"]').click();
+  await page.locator('[data-action="new-book"]').click();
+  await page.locator('dialog button[type="submit"]').click();
+  await expect(page.locator('[name="title"]')).toHaveValue('未命名作品');
+  await page.locator('[name="title"]').fill('新故事');
+  await page.locator('[data-form="details"] button[type="submit"]').click();
+  await expect(page.locator('.demo-context')).toHaveText('新故事');
+  await page.locator('[data-view="novel"]').click();
+  await page.locator('[data-action="new-chapter"]').click();
+  await page.locator('[name="new-title"]').fill('第一章 开始');
+  await page.locator('dialog button[type="submit"]').click();
+  await expect(page.locator('.demo-document-head h3')).toHaveText('第一章 开始');
+  await page.reload();
+  await expect(page.locator('.demo-book-card')).toHaveCount(3);
 });
 
+test('原型无独立页面，手机可切章节、审核和主题', async ({ page, request }) => {
+  for (const target of ['/brand/favicon.ico', '/brand/manifest.webmanifest', '/images/social-og.png', '/sitemap.xml']) {
+    expect((await request.get(target)).status()).toBe(200);
+  }
+  for (const target of ['/prototype/index.html', '/prototype/workbench.html', '/this-page-does-not-exist/']) {
+    expect((await request.get(target)).status()).toBe(404);
+  }
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto('/#prototype');
+  await page.locator('[data-action="open-book"][data-book="0"]').click();
+  await page.locator('[data-action="chapter"][data-chapter="1"]').click();
+  await expect(page.locator('.demo-document-head')).toContainText('第二章');
+  await page.locator('[data-action="theme"]').click();
+  await expect(page.locator('.demo')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.locator('[name="manuscript"]')).toBeVisible();
+  await page.locator('[data-view="reviews"]').click();
+  await expect(page.locator('[name="comment"]')).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await page.screenshot({ path: 'test-results/demo-mobile-dark.png', fullPage: true });
+});
 
 test('使用指南在桌面和手机布局可读', async ({ page }) => {
   for (const width of [375, 1440]) {
@@ -155,4 +226,23 @@ test('使用指南在桌面和手机布局可读', async ({ page }) => {
     }
     await page.screenshot({ path: `test-results/guide-article-${width}.png`, fullPage: true });
   }
+});
+
+
+test('固定引文在当前文字变化后保留，定位失败不选择替代位置', async ({ page }) => {
+  await page.goto('/#prototype');
+  await page.locator('[data-action="open-book"][data-book="0"]').click();
+  await page.locator('[name="manuscript"]').fill('当前写作稿已更换了道具。');
+  await page.locator('[data-action="save"]').click();
+  await page.locator('[data-view="validation"]').click();
+  await page.locator('[data-action="source"]').click();
+  await expect(page.locator('.demo-source')).toContainText('他摸了摸怀里的旧玉扣');
+  await page.locator('[data-action="locate"]').click();
+  await expect(page.locator('.demo-feedback')).toContainText('原文片段已变化');
+  await expect(page.locator('[name="manuscript"]')).toHaveValue('当前写作稿已更换了道具。');
+  await page.locator('[data-action="new-chapter"]').click();
+  await expect(page.locator('dialog')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('dialog')).toHaveCount(0);
+  await expect(page.locator('[data-action="new-chapter"]')).toBeFocused();
 });

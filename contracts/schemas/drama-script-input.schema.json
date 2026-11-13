@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HetuCreateScriptInput",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "skeleton_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "skeleton_id": {
+          "type": "string",
+          "pattern": "^skeleton_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "skeleton_id",
+        "revision",
+        "sha256"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "language_tag": {
+      "enum": [
+        "zh-CN",
+        "en"
+      ]
+    },
+    "operation_key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    }
+  },
+  "required": [
+    "skeleton_ref",
+    "title",
+    "language_tag",
+    "operation_key"
+  ]
+}

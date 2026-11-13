@@ -1,0 +1,463 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HetuDocumentLifecycle",
+  "$defs": {
+    "document_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "document_id": {
+          "type": "string",
+          "pattern": "^doc_[0-9a-f-]{36}$"
+        },
+        "revision_id": {
+          "type": "string",
+          "pattern": "^rev_[0-9a-f-]{36}$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "document_id",
+        "revision_id",
+        "sha256"
+      ]
+    },
+    "draft_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "draft_id": {
+          "type": "string",
+          "pattern": "^draft_[0-9a-f-]{36}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "draft_id",
+        "revision",
+        "sha256"
+      ]
+    },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "revision",
+        "sha256"
+      ]
+    },
+    "finalization_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "finalization_id": {
+          "type": "string",
+          "pattern": "^finalization_[0-9a-f-]{36}$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "finalization_id",
+        "sha256"
+      ]
+    },
+    "range": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "byte_start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "byte_end": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "quote": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 4000000
+        }
+      },
+      "required": [
+        "byte_start",
+        "byte_end",
+        "quote"
+      ]
+    },
+    "selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/range"
+        },
+        "target": {
+          "$ref": "#/$defs/range"
+        },
+        "replacement": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 4000000
+        }
+      },
+      "required": [
+        "source",
+        "target"
+      ]
+    },
+    "new_document": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "volume_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^volume_[0-9a-f-]{36}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "novel_expected": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/expected"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "title",
+        "volume_id",
+        "novel_expected"
+      ]
+    },
+    "preview_adoption_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "draft_ref": {
+          "$ref": "#/$defs/draft_ref"
+        },
+        "target_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/document_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "new_document": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/new_document"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "selected_ranges": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/$defs/selection"
+          }
+        }
+      },
+      "required": [
+        "draft_ref",
+        "target_ref",
+        "new_document",
+        "selected_ranges"
+      ]
+    },
+    "adoption_preview": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "request": {
+          "$ref": "#/$defs/preview_adoption_input"
+        },
+        "snapshot": {
+          "type": "object"
+        },
+        "result_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "request",
+        "snapshot",
+        "result_sha256",
+        "sha256"
+      ]
+    },
+    "adopt_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "preview": {
+          "$ref": "#/$defs/adoption_preview"
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "preview",
+        "operation_key"
+      ]
+    },
+    "validate_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "document_ref": {
+          "$ref": "#/$defs/document_ref"
+        },
+        "plot_options": {
+          "type": "object"
+        },
+        "validation_options": {
+          "type": "object"
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "document_ref",
+        "plot_options",
+        "validation_options",
+        "operation_key"
+      ]
+    },
+    "report_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "report_id": {
+          "type": "string",
+          "pattern": "^report_[0-9a-f-]{36}$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "dispositions_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "report_id",
+        "sha256",
+        "dispositions_sha256"
+      ]
+    },
+    "preview_finalization_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "document_ref": {
+          "$ref": "#/$defs/document_ref"
+        },
+        "expected_finalization_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/finalization_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "report_refs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "items": {
+            "$ref": "#/$defs/report_ref"
+          }
+        },
+        "comments": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 20000
+        },
+        "coverage_acknowledgement": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 20000
+        }
+      },
+      "required": [
+        "document_ref",
+        "expected_finalization_ref",
+        "report_refs",
+        "comments",
+        "coverage_acknowledgement"
+      ]
+    },
+    "finalization_preview": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "request": {
+          "$ref": "#/$defs/preview_finalization_input"
+        },
+        "snapshot": {
+          "type": "object"
+        },
+        "eligible": {
+          "type": "boolean"
+        },
+        "blocker": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 0,
+                  "maxLength": 20000
+                }
+              },
+              "required": [
+                "code",
+                "message"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "request",
+        "snapshot",
+        "eligible",
+        "blocker",
+        "sha256"
+      ]
+    },
+    "finalize_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "preview": {
+          "$ref": "#/$defs/finalization_preview"
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "preview",
+        "operation_key"
+      ]
+    },
+    "withdraw_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "document_id": {
+          "type": "string",
+          "pattern": "^doc_[0-9a-f-]{36}$"
+        },
+        "expected_finalization_ref": {
+          "$ref": "#/$defs/finalization_ref"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20000
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "document_id",
+        "expected_finalization_ref",
+        "reason",
+        "operation_key"
+      ]
+    },
+    "lifecycle_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "document_id": {
+          "type": "string",
+          "pattern": "^doc_[0-9a-f-]{36}$"
+        }
+      },
+      "required": [
+        "document_id"
+      ]
+    }
+  }
+}

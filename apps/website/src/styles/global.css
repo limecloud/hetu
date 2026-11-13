@@ -68,6 +68,7 @@ h1, h2, h3, p { margin-top: 0; }
 .section-head > div { max-width: 710px; }
 .section-head > p { max-width: 380px; margin: 0 0 4px; font-size: 13px; line-height: 1.95; color: var(--muted); }
 .section-head > .text-link { margin-bottom: 8px; }
+.demo-version { font-size:12px; color:var(--muted); white-space:nowrap; }
 .section-intro { color: var(--muted); max-width: 740px; font-size: 14px; line-height: 1.95; margin: -8px 0 32px; }
 .workspace-frame { display: block; padding: 30px; background: #eaf0e8; border: 1px solid #dfe7dc; border-radius: 20px; }
 .product-shot { width: 100%; height: auto; border-radius: 12px; box-shadow: 0 9px 30px #23382d0d; }

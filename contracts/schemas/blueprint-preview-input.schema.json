@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HetuBlueprintPreviewInput",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "expected": {
+      "$ref": "urn:hetu:schema:blueprint:1.0.0#/$defs/expected"
+    },
+    "typed_changes": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:hetu:schema:blueprint:1.0.0#/$defs/change"
+      },
+      "maxItems": 200,
+      "minItems": 1
+    }
+  },
+  "required": [
+    "expected",
+    "typed_changes"
+  ]
+}
