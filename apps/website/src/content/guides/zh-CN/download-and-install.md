@@ -2,14 +2,14 @@
 
 本页面向已经有 Mac 开发环境、能够使用构建工具的开发者，不是面向普通作者的安装教程。当前提供源码下载与开发启动，不提供正式安装包。作者可以先从[快速入门](getting-started.md)体验首页工作台。
 
-下面的步骤使用 `0.3.0` 版本源码；请使用同一份源码中的说明。
+下面的步骤使用 `0.4.0` 版本源码；请使用同一份源码中的说明。
 
 ## 1. 获取软件源码
 
-打开 [0.3.0 源码](https://github.com/limecloud/hetu/tree/0.3.0)，通过“Code → Download ZIP”下载并解压；也可以在终端执行：
+打开 [0.4.0 源码](https://github.com/limecloud/hetu/tree/v0.4.0)，通过“Code → Download ZIP”下载并解压；也可以在终端执行：
 
 ```bash
-git clone --branch 0.3.0 https://github.com/limecloud/hetu.git
+git clone --branch v0.4.0 https://github.com/limecloud/hetu.git
 cd "hetu"
 ```
 

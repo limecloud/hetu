@@ -7,10 +7,41 @@ const ROOT: &str = "packages/visual-prompt/covers";
 pub(super) fn definition(name: &str) -> Value {
     static SCHEMA: OnceLock<Value> = OnceLock::new();
     let source = SCHEMA.get_or_init(|| {
-        serde_json::from_str(include_str!(
+        let mut source: Value = serde_json::from_str(include_str!(
             "../../../contracts/schemas/book-cover.schema.json"
         ))
-        .expect("embedded cover schema")
+        .expect("embedded cover schema");
+        let creative: Value = serde_json::from_str(include_str!(
+            "../../../contracts/schemas/creative-task.schema.json"
+        ))
+        .expect("embedded creative task schema");
+        fn resolve(value: &mut Value, prefix: &str) {
+            match value {
+                Value::Object(object) => {
+                    if let Some(reference) = object.get_mut("$ref")
+                        && let Some(name) = reference.as_str().and_then(|r| r.strip_prefix(prefix))
+                    {
+                        *reference = json!(format!("#/$defs/creative_{name}"));
+                    }
+                    for child in object.values_mut() {
+                        resolve(child, prefix);
+                    }
+                }
+                Value::Array(array) => {
+                    for child in array {
+                        resolve(child, prefix);
+                    }
+                }
+                _ => {}
+            }
+        }
+        resolve(&mut source, "creative-task.schema.json#/$defs/");
+        for (name, definition) in creative["$defs"].as_object().unwrap() {
+            let mut definition = definition.clone();
+            resolve(&mut definition, "#/$defs/");
+            source["$defs"][format!("creative_{name}")] = definition;
+        }
+        source
     });
     domain::schema::definition(source, name)
 }
@@ -292,8 +323,13 @@ impl Kernel {
         unreachable!("checked cover revision")
     }
     pub(super) fn get_cover(&self, input: &Value) -> Result<Value> {
+        let project_id = self
+            .cover_creation_source()?
+            .map(|source| source["project_id"].clone());
         let Some(record) = self.cover_record(input["revision"].as_u64())? else {
-            return Ok(json!({"cover":null,"expected_cover":null,"preview":null}));
+            return Ok(
+                json!({"cover":null,"expected_cover":null,"preview":null,"preparation_project_id":project_id}),
+            );
         };
         let asset = self.get_asset(&json!({"asset_id":record["asset_ref"]["asset_id"],"revision":record["asset_ref"]["revision"]}))?;
         ensure(
@@ -310,11 +346,20 @@ impl Kernel {
             "hetu.integrity_failure",
             "封面原件尺寸与选用记录不一致。",
         )?;
+        if record["source_ref"]["kind"] == "creation_preparation" {
+            self.validate_preparation_source(&record["source_ref"])?;
+            ensure(
+                record["source_ref"]["candidate"]["sha256"] == image.scan["sha256"]
+                    && record["source_ref"]["candidate"]["size_bytes"] == image.scan["size_bytes"],
+                "hetu.integrity_failure",
+                "筹备封面的图片与选用来源不一致。",
+            )?;
+        }
         Ok(
-            json!({"cover":record,"expected_cover":expected(&record),"preview":cover_preview(&image.decoded,&record["presentation"])?,"asset":asset}),
+            json!({"cover":record,"expected_cover":expected(&record),"preview":cover_preview(&image.decoded,&record["presentation"])?,"asset":asset,"preparation_project_id":project_id}),
         )
     }
-    fn cover_source(&self, source: &Value) -> Result<(File, Value, Value)> {
+    fn cover_source(&self, source: &Value) -> Result<(File, Value, Value, Option<Value>)> {
         match text(source, "kind")? {
             "file" => {
                 let path = Path::new(text(source, "file_path")?);
@@ -327,6 +372,7 @@ impl Kernel {
                     file,
                     source["expected_file"].clone(),
                     json!({"kind":"author_supplied","original_filename":filename}),
+                    None,
                 ))
             }
             "candidate" => {
@@ -349,6 +395,7 @@ impl Kernel {
                     file,
                     selected["candidate"].clone(),
                     json!({"kind":"external_agent","reference":reference,"request":list["request"],"candidate":selected["candidate"]}),
+                    None,
                 ))
             }
             "asset" => {
@@ -366,8 +413,10 @@ impl Kernel {
                         .managed_media(text(&asset["asset"]["blob"], "path")?)?,
                     asset["asset"]["blob"].clone(),
                     json!({"kind":"existing_asset","asset_ref":reference}),
+                    Some(reference.clone()),
                 ))
             }
+            "preparation" => self.preparation_cover_source(&source["reference"]),
             _ => unreachable!("validated source kind"),
         }
     }
@@ -385,7 +434,8 @@ impl Kernel {
             "invalid_input",
             "裁切范围不能超出原图。",
         )?;
-        let (mut source, requested, provenance) = self.cover_source(&input["source"])?;
+        let (mut source, requested, provenance, existing_asset) =
+            self.cover_source(&input["source"])?;
         let image = files::decode_image(&mut source)?;
         let (width, height) = dimensions(&image);
         ensure(
@@ -394,8 +444,8 @@ impl Kernel {
             "revision_conflict",
             "选用图片已偏离预览。",
         )?;
-        let asset_ref = if input["source"]["kind"] == "asset" {
-            input["source"]["asset_ref"].clone()
+        let asset_ref = if let Some(reference) = existing_asset {
+            reference
         } else {
             let asset_id = id("asset");
             let extension = text(&image.scan, "extension")?;

@@ -24,6 +24,7 @@ struct CoverWorkbenchSheet: View {
     @State private var inspected: JSONValue = .null
     @State private var manualOverlay = false
     @State private var historyRevision = 1
+    @State private var preparationOverlay = false
     init(model: WorkspaceModel) {
         self.model = model
         _session = State(initialValue: CoverSession(model: model))
@@ -46,7 +47,7 @@ struct CoverWorkbenchSheet: View {
             if session.pending != nil { Button(model.t("drama.retry")) { Task { await session.retry() } } }
             HSplitView {
                 ScrollView { VStack(alignment: .leading, spacing: 16) { currentCover; coverHistory; Divider(); preparation }.padding(.trailing, 16) }.frame(minWidth: 300, idealWidth: 350, maxWidth: 420)
-                ScrollView { VStack(alignment: .leading, spacing: 16) { manualImport; Divider(); requestHistory; results }.padding(.leading, 16).frame(maxWidth: .infinity, alignment: .leading) }.frame(minWidth: 390)
+                ScrollView { VStack(alignment: .leading, spacing: 16) { preparationCovers; manualImport; Divider(); requestHistory; results }.padding(.leading, 16).frame(maxWidth: .infinity, alignment: .leading) }.frame(minWidth: 390)
             }
         }.padding(24).frame(minWidth: 900, idealWidth: 1100, minHeight: 680, idealHeight: 820)
             .interactiveDismissDisabled(session.pending != nil)
@@ -151,6 +152,69 @@ struct CoverWorkbenchSheet: View {
             }
         }
     }
+    @ViewBuilder private var preparationCovers: some View {
+        if session.preparationProjectID != nil {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack {
+                    Text(model.t("cover.preparation")).font(.headline)
+                    Spacer()
+                    Button(model.t("cover.choose_preparation")) { choosePreparation() }.disabled(session.held)
+                }
+                ForEach(Array(session.preparationTasks.enumerated()), id: \.offset) { _, task in
+                    Button(task["brief"].string ?? "") { Task { await session.inspectPreparationTask(task["task_ref"]) } }
+                        .lineLimit(2).disabled(session.held)
+                }
+                if session.preparationTask != .null {
+                    preparationResults
+                }
+                if !session.preparationImports.isEmpty {
+                    Toggle(model.t("cover.add_text"), isOn: $preparationOverlay)
+                    ForEach(Array(session.preparationImports.enumerated()), id: \.offset) { _, item in
+                        VStack(alignment: .leading, spacing: 8) {
+                            previewImage(item["preview"], title: item["record"]["source_ref"]["candidate"]["title"].string ?? "").frame(height: 210)
+                            if item["book_changed"].bool == true { Text(model.t("cover.book_changed")).font(.caption).foregroundStyle(WorkbenchPalette.warningInk) }
+                            DisclosureGroup(model.t("cover.source")) {
+                                Text(item["record"]["source_ref"]["request"]["brief"].string ?? "").textSelection(.enabled)
+                                Text(item["record"]["source_ref"]["candidate"]["title"].string ?? "").textSelection(.enabled)
+                                Text(item["record"]["source_ref"]["submission"]["provenance"]["client"].string ?? "").font(.caption).textSelection(.enabled)
+                            }
+                            Button(model.t("cover.use")) { Task { _ = await session.selectPreparation(item, overlay: preparationOverlay) } }.disabled(session.held)
+                        }
+                    }
+                    if session.preparationCursor != nil { Button(model.t("creative.more")) { Task { await session.loadPreparations(append: true) } }.disabled(session.held) }
+                }
+            }
+            Divider()
+        }
+    }
+    private var preparationResults: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            if session.preparationTask["observation"]["submission_refs"].array.count > 1 {
+                Menu(model.t("cover.preparation_batches")) {
+                    ForEach(Array(session.preparationTask["observation"]["submission_refs"].array.enumerated()), id: \.offset) { index, batch in
+                        Button(model.t("cover.preparation_batch", ["number": String(index + 1)])) { Task {
+                            let request = session.preparationTask["request"]
+                            let reference: JSONValue = .object(["scope_ref": request["scope_ref"], "task_id": request["task_id"], "request_revision": request["request_revision"]])
+                            await session.inspectPreparationTask(reference, submissionID: batch["submission_id"].string)
+                        } }
+                    }
+                }.disabled(session.held)
+            }
+            ForEach(Array(session.preparationTask["submission"]["candidates"].array.enumerated()), id: \.offset) { _, candidate in
+                if candidate["kind"].string == "image" {
+                    let imported = session.preparationImports.contains { $0["record"]["source_ref"]["reference"]["candidate_id"] == candidate["candidate_id"] }
+                    let preview = session.preparationTask["image_previews"].array.first { $0["candidate_id"] == candidate["candidate_id"] } ?? .null
+                    VStack(alignment: .leading, spacing: 8) {
+                        previewImage(preview, title: candidate["title"].string ?? "").frame(height: 180)
+                        Text(candidate["title"].string ?? "")
+                        Button(model.t(imported ? "cover.preparation_imported" : "cover.import_preparation")) { Task { _ = await session.importPreparation(candidate) } }
+                            .disabled(session.held || imported)
+                    }
+                }
+            }
+            if session.preparationTask["submission"] == .null { Text(model.t("cover.state.waiting_for_result")).foregroundStyle(.secondary) }
+        }
+    }
     private var requestHistory: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(model.t("cover.requests")).font(.headline)
@@ -208,6 +272,12 @@ struct CoverWorkbenchSheet: View {
             inspected = .null; importedFile = nil
             if let value = await session.read("hetu.covers.inspect_file", input: ["file_path": .string(file.path)]) { inspected = value; importedFile = file }
         }
+    }
+    private func choosePreparation() {
+        let panel = NSOpenPanel(); panel.canChooseFiles = false; panel.canChooseDirectories = true; panel.allowsMultipleSelection = false
+        panel.message = model.t("cover.choose_preparation")
+        guard panel.runModal() == .OK, let folder = panel.url else { return }
+        Task { await session.loadPreparationProject(folder) }
     }
     private func copyRequest() {
         guard let root = model.workspace?.url, let requestID = session.candidates["request"]["request_id"].string else { return }

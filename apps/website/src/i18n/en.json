@@ -25,7 +25,7 @@
     "description": "Give every book its own cover, chapters and story bible.\nWrite, trace the plot and shape adaptations on your terms.",
     "primary": "Try the workspace here",
     "secondary": "Read the user guide",
-    "note": "v0.3.0 / Native macOS implementation / In-page demo data",
+    "note": "v0.4.0 / Native macOS implementation / In-page demo data",
     "alt": "Hetu Luoshu’s little dragon-horse beside three independent books, an open manuscript and river-inspired scrolls"
   },
   "promises": [
@@ -181,7 +181,7 @@
       },
       {
         "q": "Can I download an application?",
-        "a": "Version 0.3.0 provides source code and the homepage demo, without a ready-to-install app package. Users with a development environment can build the Mac app. Authors can start directly in the homepage demo."
+        "a": "Version 0.4.0 provides source code and the homepage demo, without a ready-to-install app package. Users with a development environment can build the Mac app. Authors can start directly in the homepage demo."
       },
       {
         "q": "Will my work be uploaded or become open source?",
@@ -206,7 +206,7 @@
   },
   "footer": {
     "description": "A local creative workspace for authors and independent IP studios.",
-    "status": "v0.3.0 / macOS source implementation; homepage prototype uses in-page demo data.",
+    "status": "v0.4.0 / macOS source implementation; homepage prototype uses in-page demo data.",
     "license": "Core license: Apache-2.0",
     "privacy": "Demo input stays in this page. The site has no accounts and sets no cookies. Hosting may process connection and performance data under its privacy policies.",
     "design": "Interactive prototype",

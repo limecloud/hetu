@@ -58,9 +58,34 @@ def refresh_swift_resources():
     copy_tree_exact(ROOT / "assets/illustrations/library", debug / "Hetu_HetuArtwork.bundle/library")
     shutil.copy2(ROOT / "apps/macos/Sources/HetuNative/Resources/NativeStrings.json", debug / "Hetu_HetuNative.bundle/NativeStrings.json")
 
+def font_notice_hashes():
+    source = ROOT / "assets/fonts"
+    metadata = json.loads((source / "NotoSansSC-source.json").read_text())
+    for name, expected in [("HetuExportSansSC-Regular.ttf", metadata["derived_sha256"]),
+                           ("OFL-NotoSansSC.txt", metadata["license_sha256"])]:
+        if hashlib.sha256((source / name).read_bytes()).hexdigest() != expected:
+            raise SystemExit(f"导出字体或许可摘要不符：{name}")
+    return {name: hashlib.sha256((source / name).read_bytes()).hexdigest()
+            for name in ["OFL-NotoSansSC.txt", "NotoSansSC-source.json"]}
+
+def copy_font_notices(contents):
+    notices = contents / "Resources/ThirdParty"
+    notices.mkdir(parents=True, exist_ok=True)
+    for name in font_notice_hashes():
+        shutil.copy2(ROOT / "assets/fonts" / name, notices / name)
+
+def verify_font_notices(contents):
+    expected = font_notice_hashes()
+    for name, sha in expected.items():
+        path = contents / "Resources/ThirdParty" / name
+        if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != sha:
+            raise SystemExit(f"App 缺少同源字体许可或来源记录：{name}")
+    return expected
+
 def verify_packaged_resources(contents):
     debug = ROOT / ".build/debug"
     report = {"schema_version": "1.0.0", "skills": {}}
+    report["font_notices"] = verify_font_notices(contents)
     catalog = json.loads((ROOT / "integrations/catalog.json").read_text())
     for suite in catalog["suites"]:
         name = suite["pluginName"]
@@ -135,6 +160,7 @@ def package_app(channel, runtime, development=False):
     for name in ["HetuNative", "HetuArtwork", "HetuIntegrationAssets", "HetuTaskViewAssets"]:
         bundle = f"Hetu_{name}.bundle"
         copy_tree_exact(ROOT / ".build/debug" / bundle, contents / "Resources" / bundle)
+    copy_font_notices(contents)
     verify_packaged_resources(contents)
     shutil.copy2(ROOT / "assets/brand/icons/macos/Hetu.icns", contents / "Resources/Hetu.icns")
     mcp = contents / "Helpers/hetu-mcp"
@@ -153,7 +179,7 @@ def package_app(channel, runtime, development=False):
         "CFBundleDisplayName": "河图洛书 开发版" if development else "河图洛书",
         "CFBundleIdentifier": "run.limeai.hetu.dev" if development else "run.limeai.hetu",
         "CFBundleExecutable": "HetuMac", "CFBundlePackageType": "APPL", "CFBundleIconFile": "Hetu",
-        "CFBundleShortVersionString": "0.3.0", "CFBundleVersion": "3", "LSMinimumSystemVersion": "14.0",
+        "CFBundleShortVersionString": "0.4.0", "CFBundleVersion": "4", "LSMinimumSystemVersion": "14.0",
         "NSHighResolutionCapable": True, "NSPrincipalClass": "NSApplication",
         "CFBundleDevelopmentRegion": "zh_CN", "CFBundleLocalizations": ["zh_CN", "en"],
         "NSSupportsAutomaticTermination": False,

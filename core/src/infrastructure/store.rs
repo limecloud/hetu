@@ -79,7 +79,13 @@ impl Store {
         self.parent(&format!("{path}/.probe"), true).map(|_| ())
     }
     pub fn lock(&self) -> Result<Lock> {
-        let (parent, leaf) = self.parent(".hetu/workspace.lock", false)?;
+        self.file_lock(
+            ".hetu/workspace.lock",
+            FlockOperation::NonBlockingLockExclusive,
+        )
+    }
+    fn file_lock(&self, path: &str, operation: FlockOperation) -> Result<Lock> {
+        let (parent, leaf) = self.parent(path, false)?;
         let fd = fs::openat(
             &parent,
             leaf,
@@ -91,9 +97,55 @@ impl Store {
             "hetu.unsafe_path",
             "锁文件不能是硬链接。",
         )?;
-        fs::flock(&fd, FlockOperation::NonBlockingLockExclusive)
+        fs::flock(&fd, operation)
             .map_err(|_| Error::new("hetu.workspace_busy", "另一操作正在使用此工作区。"))?;
         Ok(Lock { fd })
+    }
+    pub fn write_available(&self) -> Result<bool> {
+        match self.lock() {
+            Ok(_) => Ok(true),
+            Err(error) if error.code == "hetu.workspace_busy" => Ok(false),
+            Err(error) => Err(error),
+        }
+    }
+    pub fn read_lock(&self) -> Result<Lock> {
+        // 长任务只占写入锁；读取仅在多文件发布的短事务期间等待。
+        let visible = self.file_lock(".hetu/visibility.lock", FlockOperation::LockShared)?;
+        if self.has_pending_transaction()? {
+            // 仅未完成事务需要写入恢复，普通浏览不能占写入锁。
+            drop(visible);
+            let _writer = self.lock().map_err(|error| {
+                if error.code == "hetu.workspace_busy" {
+                    Error::new(
+                        "hetu.recovery_required",
+                        "上次提交尚未完成，请等待恢复后查看。",
+                    )
+                } else {
+                    error
+                }
+            })?;
+            self.recover()?;
+            return self.file_lock(".hetu/visibility.lock", FlockOperation::LockShared);
+        }
+        Ok(visible)
+    }
+    fn has_pending_transaction(&self) -> Result<bool> {
+        for entry in self.entries(".hetu/transactions")? {
+            crate::domain::checked_id(&entry, "txn")?;
+            let journal = format!(".hetu/transactions/{entry}/journal.json");
+            if self.exists(&journal)? {
+                let tx: Transaction = serde_json::from_slice(&self.read(&journal)?)?;
+                ensure(
+                    tx.version == 1,
+                    "unsupported_version",
+                    "不支持此事务日志版本。",
+                )?;
+                if !tx.completed {
+                    return Ok(true);
+                }
+            }
+        }
+        Ok(false)
     }
     pub fn exists(&self, path: &str) -> Result<bool> {
         let (parent, leaf) = self.parent(path, false)?;
@@ -287,6 +339,10 @@ impl Store {
         Ok(())
     }
     pub fn recover(&self) -> Result<()> {
+        let _visible = self.file_lock(".hetu/visibility.lock", FlockOperation::LockExclusive)?;
+        self.recover_locked()
+    }
+    fn recover_locked(&self) -> Result<()> {
         for entry in self.entries(".hetu/transactions")? {
             crate::domain::checked_id(&entry, "txn")?;
             let journal = format!(".hetu/transactions/{entry}/journal.json");
@@ -334,7 +390,8 @@ impl Store {
         self.install(journal, &serde_json::to_vec(&tx)?, false)
     }
     pub fn transaction(&self, changes: &BTreeMap<String, Vec<u8>>) -> Result<()> {
-        self.recover()?;
+        let _visible = self.file_lock(".hetu/visibility.lock", FlockOperation::LockExclusive)?;
+        self.recover_locked()?;
         let root = format!(".hetu/transactions/{}", id("txn"));
         self.directory(&root)?;
         let mut tx = Transaction {
@@ -367,6 +424,62 @@ impl Store {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn readers_never_observe_half_of_a_multifile_publication() {
+        use std::sync::mpsc;
+        use std::time::Duration;
+        let root = tempfile::tempdir().unwrap();
+        let store = Store::open(root.path()).unwrap();
+        store.directory(".hetu/transactions").unwrap();
+        store.install("first.json", b"old", true).unwrap();
+        store.install("second.json", b"old", true).unwrap();
+        let read = store.read_lock().unwrap();
+        let path = root.path().to_owned();
+        let (started, waiting) = mpsc::channel();
+        let (published, result) = mpsc::channel();
+        let writer = std::thread::spawn(move || {
+            let store = Store::open(&path).unwrap();
+            let _write = store.lock().unwrap();
+            started.send(()).unwrap();
+            store
+                .transaction(&BTreeMap::from([
+                    ("first.json".into(), b"new".to_vec()),
+                    ("second.json".into(), b"new".to_vec()),
+                ]))
+                .unwrap();
+            published.send(()).unwrap();
+        });
+        waiting.recv_timeout(Duration::from_secs(5)).unwrap();
+        assert!(matches!(
+            result.recv_timeout(Duration::from_millis(100)),
+            Err(mpsc::RecvTimeoutError::Timeout)
+        ));
+        assert_eq!(store.read("first.json").unwrap(), b"old");
+        assert_eq!(store.read("second.json").unwrap(), b"old");
+        drop(read);
+        result.recv_timeout(Duration::from_secs(5)).unwrap();
+        writer.join().unwrap();
+        let _read = store.read_lock().unwrap();
+        assert_eq!(store.read("first.json").unwrap(), b"new");
+        assert_eq!(store.read("second.json").unwrap(), b"new");
+    }
+
+    #[test]
+    fn incomplete_publication_is_not_exposed_as_a_readable_snapshot() {
+        let root = tempfile::tempdir().unwrap();
+        let store = Store::open(root.path()).unwrap();
+        prepared(&store);
+        store.install("first.json", b"new-first", false).unwrap();
+        let writer = store.lock().unwrap();
+        assert_eq!(
+            store.read_lock().err().unwrap().code,
+            "hetu.recovery_required"
+        );
+        drop(writer);
+        let _read = store.read_lock().unwrap();
+        assert_eq!(store.read("first.json").unwrap(), b"new-first");
+        assert_eq!(store.read("second.json").unwrap(), b"new-second");
+    }
     fn prepared(store: &Store) -> String {
         store.directory(".hetu/transactions").unwrap();
         store.install("first.json", b"old-first", true).unwrap();

@@ -230,15 +230,21 @@ impl Kernel {
         )
     }
     pub(super) fn get_asset(&self, input: &Value) -> Result<Value> {
+        let mut result = self.asset_delivery_metadata(input)?;
+        self.verify_asset_blob(&result["asset"])?;
+        result["media_verified"] = json!(true);
+        Ok(result)
+    }
+    // 发布前只复核固定元数据与当前权利；媒体原字节由锁外的交付写入器核验。
+    pub(super) fn asset_delivery_metadata(&self, input: &Value) -> Result<Value> {
         let (asset, sha, current) = self.read_media_record(
             "asset",
             text(input, "asset_id")?,
             input["revision"].as_u64(),
         )?;
-        self.verify_asset_blob(&asset)?;
         Ok(
             json!({"asset":asset,"sha256":sha,"current_revision":current["revision"],"current_rights_status":current["rights_status"],
-            "is_head":asset["revision"] == current["revision"],"delivery_eligible":media::delivery_eligible(&asset) && media::delivery_eligible(&current),"media_verified":true}),
+            "is_head":asset["revision"] == current["revision"],"delivery_eligible":media::delivery_eligible(&asset) && media::delivery_eligible(&current),"media_verified":false}),
         )
     }
     fn cue_sources(&self, cue: &Value) -> Result<Vec<Value>> {

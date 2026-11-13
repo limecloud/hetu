@@ -47,7 +47,7 @@ struct ManuscriptView: View {
                     notice("conflict.available", action: "conflict.compare", perform: onConflict)
                 }
                 NativeTextEditor(text: model.text, documentID: model.documentID, replacementVersion: model.replacementVersion,
-                    accessibleName: model.t("editor.body"), editable: !model.editorSuspended, readingMode: true,
+                    accessibleName: model.t("editor.body"), editable: !model.editorSuspended && !model.writeLocked, readingMode: true,
                     presentation: writing.presentation(forScript: model.loaded["document"]["source_format"].string == "fountain"),
                     onChange: { [id = model.documentID] value in model.edit(value, documentID: id) }, onComposition: model.setComposition, onSelection: { editSelection = $0 }, undoBaseline: model.adoptionUndoBaseline)
                 HStack {

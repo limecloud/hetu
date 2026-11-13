@@ -22,11 +22,13 @@ public final class WorkspaceModel {
     public private(set) var documents: [DocumentItem] = []
     public private(set) var drafts: [JSONValue] = []
     public private(set) var pendingStructureOperations: [PendingStructureOperation] = []
+    public private(set) var activeDeliveryOperations: Set<String> = []
     public private(set) var loaded: JSONValue = .null
     public private(set) var text = ""
     public private(set) var savedText = ""
     public private(set) var baseRevisionID = ""
     public private(set) var busy = false
+    public private(set) var writeLocked = false
     public private(set) var isComposing = false
     public var editorSuspended = false
     public var message: String?
@@ -66,7 +68,10 @@ public final class WorkspaceModel {
     public var needsProtection: Bool { dirty || pendingSave != nil }
     public var locked: Bool { bible["blueprint"]["lock"]["locked"].bool ?? false }
     public func t(_ key: String, _ parameters: [String: String] = [:]) -> String { localizer.text(key, parameters) }
-    public func report(_ error: any Error) { message = localizer.error(error) }
+    public func report(_ error: any Error) {
+        if case CoreError.business(let result) = error, result["error"]["code"].string == "hetu.workspace_busy" { writeLocked = true }
+        message = localizer.error(error)
+    }
 
     // 调用方先完成未保存内容决策；只有成功打开新上下文后才替换当前项目。
     @discardableResult public func open(_ url: URL, title: String? = nil, expectedWorkspaceID: String? = nil) async -> Bool {
@@ -86,6 +91,7 @@ public final class WorkspaceModel {
             let entries = try await library.register(url: url, workspaceID: info["workspace"]["workspace_id"].string ?? "", metadata: metadata, chapterCount: novel["novel"]["chapters"].array.count, cover: cover)
             recoveryTask?.cancel(); statisticsTask?.cancel()
             self.workspace = next; self.info = info; self.bible = bible; self.novel = novel; self.libraryEntries = entries
+            writeLocked = info["access"]["write_available"].bool == false
             self.cover = cover
             self.documents = documents["documents"].array.map(DocumentItem.init)
             self.drafts = drafts["drafts"].array
@@ -99,6 +105,8 @@ public final class WorkspaceModel {
         guard !busy, let workspace else { return }
         busy = true; defer { busy = false }
         do {
+            info = try await workspace.data("hetu.workspaces.get")
+            writeLocked = info["access"]["write_available"].bool == false
             bible = try await workspace.data("hetu.blueprints.get")
             novel = try await workspace.data("hetu.novels.get")
             cover = await readCover(workspace)
@@ -106,6 +114,26 @@ public final class WorkspaceModel {
             drafts = try await workspace.data("hetu.drafts.list")["drafts"].array
             try await updateLibraryProjection()
         } catch { report(error) }
+    }
+    public func refreshWriteAccess() async {
+        guard !busy, let workspace else { return }
+        let scope = workspaceID
+        guard let status = try? await workspace.data("hetu.workspaces.get"), scope == workspaceID else { return }
+        let wasLocked = writeLocked
+        writeLocked = status["access"]["write_available"].bool == false
+        if wasLocked && !writeLocked {
+            let selected = documentID
+            await refresh()
+            // 作者已有输入仍留在缓冲，后续保存继续经过修订比较。
+            if !selected.isEmpty, !needsProtection, !isComposing { _ = await selectDocument(selected) }
+        }
+    }
+    public func monitorWriteAccess() async {
+        let scope = workspaceID
+        while !Task.isCancelled, scope == workspaceID {
+            await refreshWriteAccess()
+            do { try await Task.sleep(for: .seconds(2)) } catch { return }
+        }
     }
     @discardableResult public func selectDocument(_ id: String, adoptionUndoBaseline: String? = nil) async -> Bool {
         guard !busy, let workspace else { return false }
@@ -130,7 +158,7 @@ public final class WorkspaceModel {
     }
     public func edit(_ value: String, documentID expectedID: String? = nil) {
         if let expectedID, expectedID != documentID { return }
-        guard !documentID.isEmpty else { return }
+        guard !documentID.isEmpty, !writeLocked else { return }
         text = value; scheduleStatistics()
         recoveryTask?.cancel()
         guard !isComposing else { return }
@@ -185,7 +213,7 @@ public final class WorkspaceModel {
     public func hideRecoveryCandidates() { recoveryCandidates = [] }
 
     @discardableResult public func save() async -> Bool {
-        guard !busy, !isComposing, let workspace, !documentID.isEmpty else { return false }
+        guard !busy, !writeLocked, !isComposing, let workspace, !documentID.isEmpty else { return false }
         guard needsProtection else { return true }
         busy = true; defer { busy = false }
         recoveryTask?.cancel()
@@ -236,7 +264,7 @@ public final class WorkspaceModel {
         return await saveBibleChanges([.object(["type": .string("upsert_character"), "entity": character])])
     }
     @discardableResult public func saveBibleChanges(_ changes: [JSONValue], onFailure: ((String) -> Void)? = nil) async -> Bool {
-        guard !busy, let workspace else { return false }
+        guard !busy, !writeLocked, let workspace else { return false }
         busy = true; defer { busy = false }
         do {
             bible = try await workspace.data("hetu.blueprints.save", input: ["expected": expectedBible, "typed_changes": .array(changes), "operation_key": .string(UUID().uuidString)])
@@ -263,7 +291,7 @@ public final class WorkspaceModel {
     }
     private var expectedBible: JSONValue { .object(["revision": bible["revision"], "sha256": bible["sha256"]]) }
     @discardableResult public func setLocked(_ value: Bool, reason: String, onFailure: ((String) -> Void)? = nil) async -> Bool {
-        guard !busy, let workspace else { return false }
+        guard !busy, !writeLocked, let workspace else { return false }
         busy = true; defer { busy = false }
         do {
             bible = try await workspace.data(value ? "hetu.blueprints.lock" : "hetu.blueprints.unlock", input: ["expected": expectedBible, "reason": .string(reason), "operation_key": .string(UUID().uuidString)])
@@ -325,13 +353,27 @@ public final class WorkspaceModel {
     }
     public func workspaceAction(_ action: String, input: [String: JSONValue], onFailure: (String, Bool) -> Void) async -> JSONValue? {
         guard !busy, let workspace else { return nil }
-        busy = true; defer { busy = false }
-        let operation = input["operation_key"] == nil ? nil : PendingStructureOperation(workspaceID: workspaceID, action: action, input: input)
+        if writeLocked && input["operation_key"] != nil { onFailure(t("workspace.read_only"), true); return nil }
+        let scopeID = workspaceID
+        let export = ["hetu.documents.export", "hetu.bundles.export"].contains(action)
+        var ownsBusy = true
+        busy = true; defer { if ownsBusy { busy = false } }
+        let operation = input["operation_key"] == nil ? nil : PendingStructureOperation(workspaceID: scopeID, action: action, input: input)
+        let activeKey = export ? operation.map { $0.workspaceID + ":" + $0.action + ":" + $0.id } : nil
+        if let activeKey, activeDeliveryOperations.contains(activeKey) { return nil }
+        if let activeKey { activeDeliveryOperations.insert(activeKey) }
+        defer { if let activeKey { activeDeliveryOperations.remove(activeKey) } }
         if let operation, pendingStructureOperations.contains(where: { $0 != operation }) { onFailure(t("review.pending"), true); return nil }
         do {
-            if let operation { try await recovery.writeOperation(operation); pendingStructureOperations = try await recovery.structureOperations(workspaceID: workspaceID) }
-            let value = try await workspace.data(action, input: input, allowPartial: true)
-            if action == "hetu.drama.create_script" || action.hasPrefix("hetu.documents.") {
+            if let operation { try await recovery.writeOperation(operation); pendingStructureOperations = try await recovery.structureOperations(workspaceID: scopeID) }
+            let worker: Workspace
+            if export {
+                // 独立句柄避免压缩占住编辑器的 Workspace actor；恢复记录先于长任务持久化。
+                worker = try await Workspace.open(at: workspace.url, mode: .author, authorizationURL: authorizationURL)
+                busy = false; ownsBusy = false
+            } else { worker = workspace }
+            let value = try await worker.data(action, input: input, allowPartial: true)
+            if !export, (action == "hetu.drama.create_script" || action.hasPrefix("hetu.documents.")) {
                 documents = try await workspace.data("hetu.documents.list")["documents"].array.map(DocumentItem.init)
             }
             if ["hetu.documents.finalize", "hetu.documents.withdraw_finalization"].contains(action), value["document"]["document_id"].string == documentID {
@@ -341,7 +383,7 @@ public final class WorkspaceModel {
                 documents = try await workspace.data("hetu.documents.list")["documents"].array.map(DocumentItem.init)
                 drafts = try await workspace.data("hetu.drafts.list")["drafts"].array
             }
-            if action.hasPrefix("hetu.novels.") || action == "hetu.documents.create" || action == "hetu.drafts.adopt" {
+            if action.hasPrefix("hetu.novels.") || action == "hetu.documents.create" || action == "hetu.documents.import" || action == "hetu.drafts.adopt" {
                 novel = try await workspace.data("hetu.novels.get")
                 try await updateLibraryProjection()
             }
@@ -349,7 +391,10 @@ public final class WorkspaceModel {
                 cover = try await workspace.data("hetu.covers.get")
                 try await updateLibraryProjection()
             }
-            if let operation { try await recovery.removeOperation(operation); pendingStructureOperations = try await recovery.structureOperations(workspaceID: workspaceID) }
+            if let operation {
+                try await recovery.removeOperation(operation)
+                if workspaceID == scopeID { pendingStructureOperations = try await recovery.structureOperations(workspaceID: scopeID) }
+            }
             return value
         }
         catch {
@@ -357,11 +402,21 @@ public final class WorkspaceModel {
             if case CoreError.business(let result) = error { terminal = result["status"].string == "blocked" }
             else { terminal = false }
             if terminal, let operation {
-                do { try await recovery.removeOperation(operation); pendingStructureOperations = try await recovery.structureOperations(workspaceID: workspaceID) }
+                do {
+                    try await recovery.removeOperation(operation)
+                    if workspaceID == scopeID { pendingStructureOperations = try await recovery.structureOperations(workspaceID: scopeID) }
+                }
                 catch { onFailure(t("error.recovery"), false); return nil }
             }
-            onFailure(localizer.error(error), terminal); return nil
+            if DeliverySession.isDeliveryAction(action), case CoreError.business(let result) = error,
+               ["revision_conflict", "hetu.stale_evidence"].contains(result["error"]["code"].string ?? "") {
+                onFailure(t("delivery.inputs_changed"), terminal)
+            } else { onFailure(localizer.error(error), terminal) }
+            return nil
         }
+    }
+    public func isDeliveryRunning(_ operation: PendingStructureOperation) -> Bool {
+        activeDeliveryOperations.contains(operation.workspaceID + ":" + operation.action + ":" + operation.id)
     }
     private func plotData(_ action: String, input: [String: JSONValue], onFailure: (String) -> Void) async -> JSONValue? {
         guard !busy, let workspace else { return nil }

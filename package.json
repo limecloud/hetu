@@ -16,5 +16,5 @@
     "build:task-view": "npm run build --workspace @hetu/task-view",
     "test:task-view": "npm run test --workspace @hetu/task-view"
   },
-  "version": "0.3.0"
+  "version": "0.4.0"
 }

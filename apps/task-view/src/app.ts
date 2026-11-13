@@ -43,7 +43,7 @@ const messages = {
   },
 };
 
-const app = new App({ name: "Hetu Luoshu task view", version: "0.3.0" }, {});
+const app = new App({ name: "Hetu Luoshu task view", version: "0.4.0" }, {});
 const root = document.getElementById("app")!;
 let locale: keyof typeof messages = "zh-CN";
 let data: TaskData | undefined;

@@ -12,6 +12,7 @@ struct HetuCLI {
 
                 hetu --workspace <目录> capabilities
                 hetu --workspace <目录> call <hetu.action> --input <JSON 文件或 ->
+                hetu --workspace <目录> bundle verify <bundle_id>
 
                 call 从文件或 stdin 读取输入，stdout 输出一个 AXI JSON 对象。
                 此自动化入口固定为 Agent 权限；作者操作使用原生工作台确认。
@@ -23,6 +24,8 @@ struct HetuCLI {
             let result: JSONValue
             if args.count == 3, args[2] == "capabilities" {
                 result = try await workspace.request("hetu.capabilities.get")
+            } else if args.count == 5, args[2] == "bundle", args[3] == "verify" {
+                result = try await workspace.request("hetu.bundles.verify", input: ["bundle_id": .string(args[4])])
             } else {
                 guard args.count == 6, args[2] == "call", args[4] == "--input" else { throw CLIError.input }
                 let bytes = try readInput(args[5])

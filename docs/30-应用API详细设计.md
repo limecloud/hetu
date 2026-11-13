@@ -54,7 +54,7 @@ API 动作使用 `hetu.<domain>.<verb>`，每个动作有独立 `contract_revisi
 | --- | --- | --- | --- |
 | `hetu.workspaces.create` | 作者选定路径、title、packages、operation_key | workspace_id、创建文件摘要 | 人工入口；非空目标不覆盖；创建不自动 Git init |
 | `hetu.workspaces.open` | 作者选定路径、requested_mode | 格式、权限、恢复状态、上下文句柄 | 路径本机可信入口输入，不经 MCP 暴露任意打开 |
-| `hetu.workspaces.get` | 空对象 | 项目属性、包、覆盖与占用 | 使用入口已授权 scope，无额外目录扫描 |
+| `hetu.workspaces.get` | 空对象 | 项目属性、包、覆盖与 `access.write_available` | 使用入口已授权 scope；写入者存在时仍可查询，是否可写仅为即时状态，保存仍检查锁与修订 |
 | `hetu.workspaces.list` | 空对象 | 当前授权工作区与包配置 | 对应 MCP list_workspace；不扫描其他作品，正文目录独立查询 |
 | `hetu.blueprints.get` | revision? | 完整设定集、revision、sha256、lock | 缺省读取当前；指定修订只读读取历史，核验原始字节摘要 |
 | `hetu.blueprints.preview_change` | expected、typed_changes[] | 引用影响、差异、阻断与警告 | 无写入；不接收任意脚本／路径 patch |
@@ -90,8 +90,10 @@ typed_changes 是受限的实体新增、字段更新、归档、引用迁移和
 | `hetu.documents.list` | kind? | 文档摘要与修订指针 | MCP 资源层分页绑定 scope、过滤条件和完整列表快照 |
 | `hetu.documents.get` | document_id、revision_id? | 元数据、格式、内容或有界范围 | 默认当前修订必须在结果明确，固定引用优先 |
 | `hetu.documents.save` | document_id、base_revision_id、source_format、content、operation_key | 新 revision_id、sha256、当前指针 | 作者编辑入口；不自动批准；基线冲突不覆盖 |
-| `hetu.documents.import` | 已选本机文件句柄、source_format、profile、preview_receipt、operation_key | ImportRecord、文档及修订 | 人工入口；先预览损失与编码；不执行宏 |
-| `hetu.documents.export` | revision_refs、profile、format、operation_key | 新文件、摘要、转换报告 | 受限导出根；格式和正文修订明确 |
+| `hetu.documents.preview_import` | file_path、format、profile | 固定文件摘要、转换预览与损失报告 | 仅作者选择的本机文件；不修改作品、不执行宏 |
+| `hetu.documents.import` | preview、kind、title、language_tag、volume_id?、acknowledgement、operation_key | ImportRecord、文档及修订 | 仅作者；确认预览与损失后重验原文件；原键恢复 |
+| `hetu.documents.preview_export` | revision_refs、profile、format | 固定正文修订、格式转换预览与损失报告 | 仅作者；不创建最终文件 |
+| `hetu.documents.export` | preview、acknowledgement、operation_key | 新文件、摘要、转换报告 | 仅作者确认固定预览；受限导出根；原键恢复 |
 | `hetu.drafts.submit` | package、source_format、content、blueprint_revision、operation_key、目标或新稿信息 | draft_id、operation、diagnostic_state=not_requested | 新稿需title；修改需target_document_id＋base_revision_id |
 | `hetu.drafts.get` | draft_id | 正文引用、状态、来源、审核与诊断引用 | 不返回隐藏内部批注 |
 | `hetu.drafts.list` | state?、package? | 获权草稿摘要 | 不宣称列表为空就是没有未授权草稿；分页待审查询使用 reviews.list |
@@ -187,7 +189,7 @@ Agent 通过 drafts.submit 创作，不通过 documents.save 直接覆盖正文�
 
 ### 7.1 小说封面与外部 Skill
 
-封面动作 `hetu.covers.get`、`hetu.covers.inspect_file`、`hetu.covers.preview_prompt`、`hetu.covers.create_request`、`hetu.covers.list_requests`、`hetu.covers.list_candidates`、`hetu.covers.select` 的输入、输出、权限和恢复以[34](34-小说封面与Agent协作.md)为专项合同，机器输入见 [BookCover Schema](../contracts/schemas/book-cover.schema.json)。预览和文件检查无导入副作用；请求创建保留原键；候选只核验本请求最多4张图片；请求列表独立分页；选用为作者 CAS 事务。
+封面动作 `hetu.covers.get`、`hetu.covers.inspect_file`、`hetu.covers.preview_prompt`、`hetu.covers.create_request`、`hetu.covers.list_requests`、`hetu.covers.list_candidates`、`hetu.covers.import_preparation`、`hetu.covers.list_preparations`、`hetu.covers.select` 的输入、输出、权限和恢复以[34](34-小说封面与Agent协作.md)为专项合同，机器输入见 [BookCover Schema](../contracts/schemas/book-cover.schema.json)。预览和文件检查无导入副作用；请求创建保留原键；候选只核验本请求最多4张图片；请求和筹备导入列表独立分页；筹备转入与正式选用分开；选用为作者 CAS 事务。
 
 外部 `hetu-cover` Skill 读取请求并写入固定 inbox，不需要为图像生成扩张八个基础 MCP 工具。核心不代理图像 API；候选回执不具有作者身份，也不能调用选用操作。
 
@@ -207,9 +209,9 @@ Agent 通过 drafts.submit 创作，不通过 documents.save 直接覆盖正文�
 | `hetu.git.branch_create`／`switch` | 分支名、起点／目标、expected_head、operation_key | 实际分支／HEAD | 作者确认；保护脏工作树 |
 | `hetu.git.merge` | phase、source_ref、expected_head、resolution_ref?、operation_key | 冲突预览／已验证合并结果 | 三方人工解决，JSON引用再校验 |
 | `hetu.git.fetch`／`pull`／`push` | remote_ref、branch_ref、expected_refs、operation_key | 实际远端／本地证据或unknown | 明确单次授权，禁止强推；秘密不入参数 |
-| `hetu.bundles.preview` | selection、profile、expected_inputs | 确切输入、字节估计、缺口与排除 | 不创建最终包 |
-| `hetu.bundles.export` | selection、profile、expected_inputs、operation_key | bundle_id、路径、ZIP摘要、manifest | 默认exports新目标；待审／权利例外另审 |
-| `hetu.bundles.verify` | 已选包的受管句柄 | 文件与引用核验结果 | 有大小、条目和解压预算，不执行内容 |
+| `hetu.bundles.preview` | selection、profile、reading_formats? | 固定修订、文件清单、缺口、排除与摘要 | 仅作者；不创建最终包 |
+| `hetu.bundles.export` | preview、acknowledgement、operation_key | bundle_id、路径、ZIP摘要、manifest | 仅作者确认固定预览；发布前重验定稿与许可；原键恢复 |
+| `hetu.bundles.verify` | bundle_id | 文件与引用核验结果 | 已获当前作品访问权限的连接可只读核验本书受管导出包；有大小、条目和解压预算，不执行内容，不接受任意本机路径 |
 | `hetu.operations.get` | operation_id或原key＋action | 原回执、当前状态与恢复缺口 | 重新授权，不因找不到记录就重执行 |
 | `hetu.tasks.get`／`cancel` | task_id、operation_key? | 当前任务／取消范围 | cancel若改变持久状态需幂等记录 |
 

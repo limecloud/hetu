@@ -51,5 +51,6 @@ enum CoverTests {
         try coverCheck(recovered.pending == nil && recovered.current["cover"] == committed["cover"], "未知选用未沿原键恢复或重复增版")
         try coverCheck(try await recovery.structureOperations(workspaceID: model.workspaceID).isEmpty, "封面恢复未清理原操作")
         print("封面：原图核验、作者选用、历史恢复、书库显示、重启、双窗口CAS与原键恢复通过")
+        try await CoverPreparationTests.run(root: root)
     }
 }

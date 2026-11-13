@@ -1428,12 +1428,84 @@
       "input_schema_ref": "schemas/book-cover.schema.json#/$defs/select_input"
     },
     {
+      "name": "hetu.covers.import_preparation",
+      "purpose": "将本书建书筹备中的封面候选复制为受管素材并保留来源",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/import_preparation_input"
+    },
+    {
+      "name": "hetu.covers.list_preparations",
+      "purpose": "核验并预览已转入本书的筹备封面",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": true,
+      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/list_preparations_input"
+    },
+    {
       "name": "hetu.covers.inspect_file",
       "purpose": "完整解码作者选择的封面并生成等比预览",
       "contract_revision": "1",
       "effect": "read",
       "author_only": true,
       "input_schema_ref": "schemas/book-cover.schema.json#/$defs/inspect_input"
+    },
+    {
+      "name": "hetu.bundles.preview",
+      "purpose": "预览固定修订的交付内容、缺口与素材排除",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": true,
+      "input_schema_ref": "schemas/delivery.schema.json#/$defs/bundle_preview_input"
+    },
+    {
+      "name": "hetu.bundles.export",
+      "purpose": "由作者确认导出固定版本交付包",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/delivery.schema.json#/$defs/export_input"
+    },
+    {
+      "name": "hetu.bundles.verify",
+      "purpose": "核验本作品已导出交付包的清单与摘要",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema_ref": "schemas/delivery.schema.json#/$defs/verify_input"
+    },
+    {
+      "name": "hetu.documents.preview_export",
+      "purpose": "预览固定正文的格式转换与损失",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": true,
+      "input_schema_ref": "schemas/delivery.schema.json#/$defs/document_preview_input"
+    },
+    {
+      "name": "hetu.documents.export",
+      "purpose": "由作者确认导出固定正文与转换报告",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/delivery.schema.json#/$defs/export_input"
+    },
+    {
+      "name": "hetu.documents.preview_import",
+      "purpose": "检查作者选择的文本文件与导入损失",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": true,
+      "input_schema_ref": "schemas/delivery.schema.json#/$defs/import_preview_input"
+    },
+    {
+      "name": "hetu.documents.import",
+      "purpose": "由作者确认导入新文档修订并保存转换报告",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/delivery.schema.json#/$defs/import_input"
     }
   ]
 }

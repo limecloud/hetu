@@ -2,14 +2,14 @@
 
 This page is for developers who already have a Mac development environment and can use build tools. It is not an installer tutorial for authors. The current path provides source and a development launcher, without a production installer. Authors can start with the homepage workspace in [Quick start](getting-started.md).
 
-These steps use the `0.3.0` source release. Follow the instructions in the same source revision.
+These steps use the `0.4.0` source release. Follow the instructions in the same source revision.
 
 ## 1. Get the source
 
-Open the [0.3.0 source](https://github.com/limecloud/hetu/tree/0.3.0), choose “Code → Download ZIP” and extract it. Or use Terminal:
+Open the [0.4.0 source](https://github.com/limecloud/hetu/tree/v0.4.0), choose “Code → Download ZIP” and extract it. Or use Terminal:
 
 ```bash
-git clone --branch 0.3.0 https://github.com/limecloud/hetu.git
+git clone --branch v0.4.0 https://github.com/limecloud/hetu.git
 cd "hetu"
 ```
 

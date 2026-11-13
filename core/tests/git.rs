@@ -409,6 +409,67 @@ fn fixed_previews_survive_reopen_and_detect_changed_bytes_and_page_membership() 
 }
 
 #[test]
+fn delivery_runtime_records_never_enter_snapshots_even_if_externally_staged() {
+    let (_root, k, path) = setup();
+    assert!(
+        fs::read_to_string(path.join(".gitignore"))
+            .unwrap()
+            .contains(".hetu/deliveries/")
+    );
+    // 模拟旧作品未更新忽略规则，以及外部工具把本机控制记录加入暂存区。
+    fs::write(path.join(".gitignore"), "exports/\n").unwrap();
+    init(&k);
+    let delivery = ".hetu/deliveries/delivery_11111111-1111-4111-8111-111111111111";
+    fs::create_dir_all(path.join(delivery)).unwrap();
+    let repo = git2::Repository::open(&path).unwrap();
+    let mut index = repo.index().unwrap();
+    for name in [
+        "intent.json",
+        "ready.json",
+        "receipt.json",
+        "artifact.tmp",
+        "export.lock",
+    ] {
+        let relative = format!("{delivery}/{name}");
+        fs::write(path.join(&relative), "本机交付运行记录").unwrap();
+        index.add_path(Path::new(&relative)).unwrap();
+        assert_eq!(
+            call(&k, "diff", json!({"path":relative}))["error"]["code"],
+            "hetu.unsafe_path"
+        );
+    }
+    index.write().unwrap();
+    let index_bytes = fs::read(path.join(".git/index")).unwrap();
+    fs::create_dir_all(path.join(".hetu/imports/source")).unwrap();
+    fs::write(
+        path.join(".hetu/imports/source/original"),
+        "可追溯的导入原稿",
+    )
+    .unwrap();
+    let status = success(call(&k, "status", json!({})));
+    let paths: Vec<_> = status["changes"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|v| v["path"].as_str().unwrap())
+        .collect();
+    assert!(paths.iter().all(|p| !p.starts_with(".hetu/deliveries/")));
+    assert!(paths.contains(&".hetu/imports/source/original"));
+    let result = commit(&k, "without-delivery-runtime");
+    let tree = repo
+        .find_commit(git2::Oid::from_str(result["data"]["commit_id"].as_str().unwrap()).unwrap())
+        .unwrap()
+        .tree()
+        .unwrap();
+    assert!(tree.get_path(Path::new(".hetu/deliveries")).is_err());
+    assert!(
+        tree.get_path(Path::new(".hetu/imports/source/original"))
+            .is_ok()
+    );
+    assert_eq!(fs::read(path.join(".git/index")).unwrap(), index_bytes);
+}
+
+#[test]
 fn ignored_files_are_not_selected_and_binary_deletion_and_modes_preserve_raw_content() {
     use std::os::unix::fs::PermissionsExt;
     let (_root, k, path) = setup();

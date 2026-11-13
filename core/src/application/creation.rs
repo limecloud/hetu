@@ -64,8 +64,14 @@ impl Kernel {
         ] {
             store.directory(directory)?;
         }
-        let _lock = store.lock()?;
-        store.recover()?;
+        let _lock = if options.create_project.is_some() {
+            Some(store.lock()?)
+        } else {
+            None
+        };
+        if _lock.is_some() {
+            store.recover()?;
+        }
         if !store.exists(".hetu-project.json")? {
             let create = options.create_project.as_ref().unwrap();
             let marker =
@@ -84,6 +90,7 @@ impl Kernel {
             changes.insert(operation_path("hetu.creation_projects.create", &create.operation_key, true), bytes(&json!({"action":"hetu.creation_projects.create","actor_scope":"author","operation_id":result["operation"]["id"],"key":create.operation_key,"input_digest":input_digest,"result":result}))?);
             store.transaction(&changes)?;
         }
+        let _read = store.read_lock()?;
         let marker_bytes = store.read(".hetu-project.json")?;
         let marker: Value = serde_json::from_slice(&marker_bytes)?;
         ensure(

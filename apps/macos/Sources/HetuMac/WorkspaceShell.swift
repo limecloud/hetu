@@ -60,6 +60,7 @@ struct WorkspaceShell<Content: View>: View {
         .font(.system(size: 13)).foregroundStyle(WorkbenchPalette.ink)
         .background { WorkbenchBackdrop().ignoresSafeArea() }.tint(WorkbenchPalette.jade)
         .buttonStyle(WorkbenchButtonStyle())
+        .task(id: model.workspaceID) { await model.monitorWriteAccess() }
     }
     private var topbar: some View {
         HStack(spacing: 20) {
@@ -81,6 +82,10 @@ struct WorkspaceShell<Content: View>: View {
                 }.font(.system(size: 13))
             }.menuStyle(.borderlessButton).fixedSize().accessibilityLabel(model.t("shell.switch_workspace"))
             Spacer(minLength: 12)
+            if model.writeLocked {
+                Label(model.t("workspace.read_only"), systemImage: "lock")
+                    .font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
+            }
             if !model.documentID.isEmpty {
                 Label(model.t(model.pendingSave != nil ? "document.pending" : model.dirty ? "document.modified" : "document.saved"), systemImage: model.dirty ? "pencil.line" : "checkmark.circle")
                     .font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted).lineLimit(1)
@@ -92,7 +97,7 @@ struct WorkspaceShell<Content: View>: View {
             WorkspaceZoomButton(localizer: model.localizer)
             Button(model.t("document.save")) { Task { _ = await model.save() } }
                 .buttonStyle(WorkbenchButtonStyle(primary: true))
-                .disabled(!model.needsProtection || model.documentID.isEmpty || model.isComposing)
+                .disabled(model.writeLocked || !model.needsProtection || model.documentID.isEmpty || model.isComposing)
             Button(action: onInspector) { Image(systemName: "sidebar.right") }
                 .buttonStyle(.plain).help(model.t("inspector.title")).accessibilityLabel(model.t("inspector.title"))
             Menu {
@@ -114,6 +119,7 @@ struct WorkspaceShell<Content: View>: View {
                     nav("reviews", "shell.review", "checkmark.shield")
                     nav("git", "shell.versions", "arrow.triangle.branch")
                     nav("media", "media.title", "photo.on.rectangle.angled")
+                    nav("delivery", "delivery.title", "square.and.arrow.up")
                     Rectangle().fill(WorkbenchPalette.line).frame(height: 1).padding(.vertical, 12)
                     Text(model.t("shell.tools")).font(.system(size: 11)).foregroundStyle(WorkbenchPalette.muted).padding(.horizontal, 14)
                     nav("plot", "plot.title", "list.bullet.rectangle")

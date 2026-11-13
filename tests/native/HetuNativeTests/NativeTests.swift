@@ -1,4 +1,5 @@
 import AppKit
+import Darwin
 import Foundation
 import HetuCore
 import HetuNative
@@ -20,8 +21,13 @@ private func check(_ value: Bool, _ message: String) throws { if !value { throw 
         defer { preferences.removePersistentDomain(forName: preferencesName) }
         if CommandLine.arguments.contains("--creation-projects") { try await CreationProjectTests.run(root: root); return }
         if CommandLine.arguments.contains("--covers") { try await CoverTests.run(root: root); return }
+        if CommandLine.arguments.contains("--delivery") { try await DeliveryTests.run(root: root); return }
         if CommandLine.arguments.contains("--window-layout") { try WindowLayoutTests.run(); return }
-        if CommandLine.arguments.contains("--local-task-view") { try await LocalTaskViewTests.run(root: root); return }
+        if CommandLine.arguments.contains("--local-task-view") {
+            try WindowLayoutTests.run()
+            try await LocalTaskViewTests.run(root: root)
+            return
+        }
         if CommandLine.arguments.contains("--media") { try await mediaTests(root, recovery: recovery, preferences: preferences); return }
         if CommandLine.arguments.contains("--agent-integration") {
             try agentIntegrationTests(root, preferences: preferences)
@@ -33,6 +39,7 @@ private func check(_ value: Bool, _ message: String) throws { if !value { throw 
         try await CreativeTaskTests.run(root: root)
         try await CreationProjectTests.run(root: root)
         try await CoverTests.run(root: root)
+        try await DeliveryTests.run(root: root)
         try WindowLayoutTests.run()
         try await LocalTaskViewTests.run(root: root)
         let model = WorkspaceModel(locale: "zh-CN", recovery: recovery, preferences: preferences, library: LibraryStore(directory: await recovery.directory.appendingPathComponent("Library")))
@@ -106,6 +113,7 @@ private func check(_ value: Bool, _ message: String) throws { if !value { throw 
         try await lifecycleTests(root.appendingPathComponent("定稿与采纳"), recovery: recovery, preferences: preferences)
         try await mediaTests(root, recovery: recovery, preferences: preferences)
         try await gitTests(root, recovery: recovery, preferences: preferences)
+        try await workspaceAccessTests(root, recovery: recovery, preferences: preferences)
         try await libraryTests(root, recovery: recovery, preferences: preferences)
 
         let stats = TextStatistics.count("汉字🌿👨‍👩‍👧‍👦 don't cafe\u{301} café")
@@ -117,6 +125,31 @@ private func check(_ value: Bool, _ message: String) throws { if !value { throw 
         // 测试目录只含本程序创建的数据。
         try FileManager.default.removeItem(at: root)
         print("Mac 原生：多作品书库、作品资料与卷章、编辑恢复、跨窗口 CAS、设定集、素材与线索修订／原键恢复、双语与 TextKit 检查通过")
+    }
+    @MainActor static func workspaceAccessTests(_ root: URL, recovery: RecoveryStore, preferences: UserDefaults) async throws {
+        let url = root.appendingPathComponent("写入期间浏览")
+        let library = LibraryStore(directory: root.appendingPathComponent("并发浏览测试书库"))
+        let author = WorkspaceModel(recovery: recovery, preferences: preferences, library: library)
+        try check(await author.open(url, title: "写入期间浏览"), "并发浏览测试未建书")
+        guard let id = await author.createDocument(title: "第一章", kind: "novel_chapter") else { throw CheckFailure(message: "并发浏览未建章") }
+        try check(await author.selectDocument(id), "未打开测试章")
+        author.edit("作者保存的正文。")
+        try check(await author.save(), "未保存测试正文")
+        let fd = Darwin.open(url.appendingPathComponent(".hetu/workspace.lock").path, O_RDWR)
+        try check(fd >= 0 && flock(fd, LOCK_EX | LOCK_NB) == 0, "未取得隔离测试写入锁")
+        defer { Darwin.close(fd) }
+        let reader = WorkspaceModel(recovery: recovery, preferences: preferences, library: library)
+        try check(await reader.open(url) && reader.writeLocked, "写入期间应打开只读作品")
+        try check(await reader.selectDocument(id) && reader.text == "作者保存的正文。", "写入期间不能浏览正文")
+        reader.edit("不应进入只读缓冲")
+        try check(reader.text == "作者保存的正文。" && !reader.dirty, "只读状态仍能修改正文")
+        try check(!(await reader.save()), "只读状态不应提交保存")
+        try check(flock(fd, LOCK_UN) == 0, "未释放测试写入锁")
+        await reader.refreshWriteAccess()
+        try check(!reader.writeLocked && reader.text == "作者保存的正文。", "写入结束后未恢复编辑")
+        reader.edit("写入结束后继续写作。")
+        try check(await reader.save(), "恢复后无法正常保存")
+        print("并发浏览：写入期间可打开与阅读、编辑受限、写入结束后恢复保存通过")
     }
     @MainActor static func libraryTests(_ root: URL, recovery: RecoveryStore, preferences: UserDefaults) async throws {
         let library = LibraryStore(directory: root.appendingPathComponent("多作品书库"))

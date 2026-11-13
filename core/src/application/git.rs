@@ -40,10 +40,11 @@ fn eligible(path: &str) -> bool {
         ".hetu/git",
         ".hetu/operations",
         ".hetu/audit",
+        ".hetu/deliveries",
     ]
     .iter()
     .any(|root| path == *root || path.starts_with(&format!("{root}/")))
-        || path == ".hetu/workspace.lock"
+        || matches!(path, ".hetu/workspace.lock" | ".hetu/visibility.lock")
     {
         return false;
     }

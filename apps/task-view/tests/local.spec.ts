@@ -128,6 +128,22 @@ test("paired local AppBridge saves into the real task and clears the frame on st
   const cookies = await context.cookies(); expect(cookies.every(cookie => cookie.httpOnly)).toBe(true);
 });
 
+test("local page clears visible content when the revocation stream cannot connect", async ({ page, context }) => {
+  fixture = new LocalFixture(); await fixture.start({ locale: "en" }); await fixture.pair(context);
+  let releaseEvents!: () => void;
+  const eventGate = new Promise<void>(resolve => { releaseEvents = resolve; });
+  await page.route("**/api/events", async route => { await eventGate; await route.abort(); });
+  try {
+    await page.goto(fixture.origin);
+    await expect(page.frameLocator("iframe").getByRole("checkbox").first()).toBeEnabled({ timeout: 20_000 });
+    // 内容已可见，但撤权流尚未建立；停止后也必须清除留在页面中的内容。
+    fixture.send({ type: "stop" });
+    releaseEvents();
+    await expect(page.locator("iframe")).toHaveCount(0);
+    await expect(page.getByRole("status").first()).toContainText("Access has ended");
+  } finally { releaseEvents(); }
+});
+
 test("local view recovers an unconfirmed save by its original key", async ({ page, context }) => {
   test.setTimeout(75_000);
   fixture = new LocalFixture(); await fixture.start(); await fixture.pair(context);

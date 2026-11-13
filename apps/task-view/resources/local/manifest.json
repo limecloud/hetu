@@ -2,20 +2,20 @@
   "schema_version": "1.0.0",
   "ipc_revision": "1",
   "source_sha256": {
-    "src/app.ts": "6c3dc8f16306a69038c095ee441a953b75510f4de9bf56c511c28333537b1335",
+    "src/app.ts": "63f1b20ad26a12eae0bfa243a567226e7b7604a628e26df01089f0a195f5fbc3",
     "src/app.css": "4c809bfe20b33a245fe87043df8aedd6447dea5cef4b2df8280e6bd3854fb09c",
     "scripts/build.mjs": "cf32cf56121ee0a0ab08889cf92e7e208afe6ab4264b6eeb742dddeb46f7f7c5",
-    "package.json": "34f5e6b5cecff2fe40f37f8b19dceb2dbf2ae8f83d39b220890be72b299d508a",
+    "package.json": "7bdb6b2df306be97933e3d8c99e677b9c550631a8d4de1319138a18d864eb546",
     "THIRD-PARTY-NOTICES.txt": "36e9fae898f6fb55b3130f3380a36f2e26875934b50c98499635faf84c3afbf0",
-    "src/local/host.ts": "8686e0aabaeb6d81c315bc358824533087044c0d5f675ee06b62898c4d135df3",
+    "src/local/host.ts": "4c93cd931461eb2ded7d54a528652b84b60036268fe45376ff87859d7f66392e",
     "src/local/server.ts": "7e6e87fd51caf850aefe3cd800f7c163c18280e549eea3a73a0d18af5eb89d2c",
     "src/local/index.html": "c516783b30b803d4963c9310d24055872e1844059d532ef66a18bcd4e8c1405a"
   },
   "files": {
-    "host.js": "c72816717851cfbea947727105d4215eb779e1011a64dc6b36f1947dd0625aab",
+    "host.js": "d0b61231b561c1e55de594c75aaad81d61607bb225a4596e2a893ac9ed79936a",
     "server.mjs": "210ba4d7622c3aa43292cf0255d24647d2f64e1a2a689af665159f5c984cd5e6",
     "index.html": "c516783b30b803d4963c9310d24055872e1844059d532ef66a18bcd4e8c1405a",
-    "task-view.html": "b1370cd579233c92553d2af72d34670580f272c499fb59b4d417a7645f2191a5",
+    "task-view.html": "1f6f2e1fe406a3876e611e95ced5d03b7ed26660f271640cda48752dc33db0ad",
     "THIRD-PARTY-NOTICES.txt": "36e9fae898f6fb55b3130f3380a36f2e26875934b50c98499635faf84c3afbf0"
   }
 }

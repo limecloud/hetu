@@ -6,7 +6,7 @@ Rust 内核通过固定版本的 `git2`／libgit2 管理独立的 IP 内容工�
 
 用户可将一个 IP 工作区初始化为独立仓库，绑定自己的 GitHub／Gitee 远端。新建项目默认不自动 init、commit 或联网。已有仓库需检查真实根和嵌套关系，不能将上级软件仓库误认成当前 IP 仓库。
 
-快照范围包括根目录 `.heturc.json`、`.gitignore`、`.gitattributes`、`README.md`、`LICENSE`，以及 `shared/`、`packages/` 和持久 `.hetu/` 业务元数据。排除 `.hetu/transactions/`、`.hetu/cache/`、`.hetu/git/`、`.hetu/operations/`、`.hetu/audit/`、工作区锁、`exports/`、`.git/` 和 `.DS_Store`；新作品的 `.gitignore` 同步排除本机控制记录。未跟踪且被 Git 忽略的文件不纳入快照。原操作回执及本机恢复日志不进入 Git，以免自提交回执持续制造新变更。媒体大文件显示大小并允许用户配置外部存储／Git LFS；V1 不宣称内置 LFS 上传完整支持。
+快照范围包括根目录 `.heturc.json`、`.gitignore`、`.gitattributes`、`README.md`、`LICENSE`，以及 `shared/`、`packages/` 和持久 `.hetu/` 业务元数据。排除 `.hetu/transactions/`、`.hetu/cache/`、`.hetu/git/`、`.hetu/operations/`、`.hetu/audit/`、`.hetu/deliveries/`、工作区锁、`exports/`、`.git/` 和 `.DS_Store`；新作品的 `.gitignore` 同步排除本机控制记录。交付暂存、意图与恢复回执即使被外部工具暂存，也不进入河图快照；导入原件和来源报告仍属于可版本化资料。未跟踪且被 Git 忽略的文件不纳入快照。原操作回执及本机恢复日志不进入 Git，以免自提交回执持续制造新变更。媒体大文件显示大小并允许用户配置外部存储／Git LFS；V1 不宣称内置 LFS 上传完整支持。
 
 ## 2. 本地快照
 

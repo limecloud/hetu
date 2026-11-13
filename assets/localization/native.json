@@ -11,6 +11,12 @@
     "purpose": "Mac 原生界面：welcome.subtitle",
     "parameters": []
   },
+  "workspace.read_only": {
+    "zh-CN": "正在写入，可浏览",
+    "en": "Writing in progress, viewing available",
+    "purpose": "作品被其他进程写入时的只读状态",
+    "parameters": []
+  },
   "workspace.new": {
     "zh-CN": "新建作品",
     "en": "New Book",
@@ -2910,9 +2916,9 @@
     "parameters": []
   },
   "error.hetu.format_unrepresentable": {
-    "zh-CN": "标题或地点含有不能直接表示为 Fountain 结构的空白或控制标记，请修改对应字段。",
-    "en": "A title or location contains whitespace or control markers that cannot be represented directly in Fountain. Edit the relevant field.",
-    "purpose": "Mac 剧本结构来源：error.hetu.format_unrepresentable",
+    "zh-CN": "所选格式无法完整表示这份稿件的文字或结构。PDF 不支持的字形不会被替换成空白，请改用 Word 或检查原文。",
+    "en": "The selected format cannot represent all text or structure in this manuscript. Unsupported PDF glyphs will not be replaced with blanks. Use Word or review the source text.",
+    "purpose": "Mac 导入导出：error.hetu.format_unrepresentable",
     "parameters": []
   },
   "script.source_fixed": {
@@ -6519,6 +6525,761 @@
     "zh-CN": "用作当前封面",
     "en": "Use as current cover",
     "purpose": "Mac 封面历史操作",
+    "parameters": []
+  },
+  "cover.preparation": {
+    "zh-CN": "建书时的封面",
+    "en": "Covers from Book Preparation",
+    "purpose": "Mac 原生界面：cover.preparation",
+    "parameters": []
+  },
+  "cover.choose_preparation": {
+    "zh-CN": "选择筹备文件夹",
+    "en": "Choose Preparation Folder",
+    "purpose": "Mac 原生界面：cover.choose_preparation",
+    "parameters": []
+  },
+  "cover.import_preparation": {
+    "zh-CN": "转入本书",
+    "en": "Import into This Book",
+    "purpose": "Mac 原生界面：cover.import_preparation",
+    "parameters": []
+  },
+  "cover.preparation_imported": {
+    "zh-CN": "已转入",
+    "en": "Imported",
+    "purpose": "Mac 原生界面：cover.preparation_imported",
+    "parameters": []
+  },
+  "cover.preparation_batches": {
+    "zh-CN": "查看其他批次",
+    "en": "Other Batches",
+    "purpose": "Mac 原生界面：cover.preparation_batches",
+    "parameters": []
+  },
+  "cover.preparation_batch": {
+    "zh-CN": "第 {number} 批",
+    "en": "Batch {number}",
+    "purpose": "Mac 原生界面：cover.preparation_batch",
+    "parameters": [
+      "number"
+    ]
+  },
+  "delivery.title": {
+    "zh-CN": "导入导出",
+    "en": "Import and Export",
+    "purpose": "Mac 原生界面：delivery.title",
+    "parameters": []
+  },
+  "delivery.operation": {
+    "zh-CN": "操作",
+    "en": "Operation",
+    "purpose": "Mac 原生界面：delivery.operation",
+    "parameters": []
+  },
+  "delivery.import": {
+    "zh-CN": "导入",
+    "en": "Import",
+    "purpose": "Mac 原生界面：delivery.import",
+    "parameters": []
+  },
+  "delivery.export": {
+    "zh-CN": "导出正文",
+    "en": "Export Documents",
+    "purpose": "Mac 原生界面：delivery.export",
+    "parameters": []
+  },
+  "delivery.bundle": {
+    "zh-CN": "交付包",
+    "en": "Delivery Bundle",
+    "purpose": "Mac 原生界面：delivery.bundle",
+    "parameters": []
+  },
+  "delivery.running": {
+    "zh-CN": "正在导出",
+    "en": "Exporting",
+    "purpose": "Mac 原生界面：delivery.running",
+    "parameters": []
+  },
+  "delivery.resume": {
+    "zh-CN": "恢复原操作",
+    "en": "Resume Original Operation",
+    "purpose": "Mac 原生界面：delivery.resume",
+    "parameters": []
+  },
+  "delivery.preview": {
+    "zh-CN": "查看预览",
+    "en": "Preview",
+    "purpose": "Mac 原生界面：delivery.preview",
+    "parameters": []
+  },
+  "delivery.preview_title": {
+    "zh-CN": "预览",
+    "en": "Preview",
+    "purpose": "Mac 原生界面：delivery.preview_title",
+    "parameters": []
+  },
+  "delivery.choose_file": {
+    "zh-CN": "选择文件",
+    "en": "Choose File",
+    "purpose": "Mac 原生界面：delivery.choose_file",
+    "parameters": []
+  },
+  "delivery.novel": {
+    "zh-CN": "小说章节",
+    "en": "Novel Chapter",
+    "purpose": "Mac 原生界面：delivery.novel",
+    "parameters": []
+  },
+  "delivery.drama": {
+    "zh-CN": "短剧剧本",
+    "en": "Screenplay",
+    "purpose": "Mac 原生界面：delivery.drama",
+    "parameters": []
+  },
+  "delivery.language": {
+    "zh-CN": "正文语言",
+    "en": "Document Language",
+    "purpose": "Mac 原生界面：delivery.language",
+    "parameters": []
+  },
+  "delivery.volume": {
+    "zh-CN": "分卷",
+    "en": "Volume",
+    "purpose": "Mac 原生界面：delivery.volume",
+    "parameters": []
+  },
+  "delivery.no_volume": {
+    "zh-CN": "不分卷",
+    "en": "No Volume",
+    "purpose": "Mac 原生界面：delivery.no_volume",
+    "parameters": []
+  },
+  "delivery.use_finalized": {
+    "zh-CN": "使用已定稿版本",
+    "en": "Use Finalized Revisions",
+    "purpose": "Mac 原生界面：delivery.use_finalized",
+    "parameters": []
+  },
+  "delivery.bundle_profile": {
+    "zh-CN": "交付用途",
+    "en": "Delivery Purpose",
+    "purpose": "Mac 原生界面：delivery.bundle_profile",
+    "parameters": []
+  },
+  "delivery.production": {
+    "zh-CN": "正式交付",
+    "en": "Production Delivery",
+    "purpose": "Mac 原生界面：delivery.production",
+    "parameters": []
+  },
+  "delivery.review": {
+    "zh-CN": "供审阅",
+    "en": "For Review",
+    "purpose": "Mac 原生界面：delivery.review",
+    "parameters": []
+  },
+  "delivery.reading_formats": {
+    "zh-CN": "阅读稿格式",
+    "en": "Reading Formats",
+    "purpose": "Mac 原生界面：delivery.reading_formats",
+    "parameters": []
+  },
+  "delivery.documents": {
+    "zh-CN": "正文选集",
+    "en": "Documents",
+    "purpose": "Mac 原生界面：delivery.documents",
+    "parameters": []
+  },
+  "delivery.no_documents": {
+    "zh-CN": "还没有可导出的正文",
+    "en": "No documents to export",
+    "purpose": "Mac 原生界面：delivery.no_documents",
+    "parameters": []
+  },
+  "delivery.working": {
+    "zh-CN": "写作稿",
+    "en": "Working Revision",
+    "purpose": "Mac 原生界面：delivery.working",
+    "parameters": []
+  },
+  "delivery.finalized": {
+    "zh-CN": "定稿",
+    "en": "Finalized",
+    "purpose": "Mac 原生界面：delivery.finalized",
+    "parameters": []
+  },
+  "delivery.finalized_available": {
+    "zh-CN": "已有定稿版本",
+    "en": "Finalized Revision Available",
+    "purpose": "Mac 原生界面：delivery.finalized_available",
+    "parameters": []
+  },
+  "delivery.selected_count": {
+    "zh-CN": "已选 {count} 篇",
+    "en": "{count} selected",
+    "purpose": "Mac 原生界面：delivery.selected_count",
+    "parameters": [
+      "count"
+    ]
+  },
+  "delivery.format": {
+    "zh-CN": "文件格式",
+    "en": "File Format",
+    "purpose": "Mac 原生界面：delivery.format",
+    "parameters": []
+  },
+  "delivery.layout": {
+    "zh-CN": "排版",
+    "en": "Layout",
+    "purpose": "Mac 原生界面：delivery.layout",
+    "parameters": []
+  },
+  "delivery.layout.screenplay": {
+    "zh-CN": "中文剧本排版",
+    "en": "Chinese Screenplay",
+    "purpose": "Mac 原生界面：delivery.layout.screenplay",
+    "parameters": []
+  },
+  "delivery.layout.novel": {
+    "zh-CN": "中文小说排版",
+    "en": "Chinese Novel",
+    "purpose": "Mac 原生界面：delivery.layout.novel",
+    "parameters": []
+  },
+  "delivery.attachments": {
+    "zh-CN": "附带内容",
+    "en": "Attachments",
+    "purpose": "Mac 原生界面：delivery.attachments",
+    "parameters": []
+  },
+  "delivery.attachment_type": {
+    "zh-CN": "内容类型",
+    "en": "Attachment Type",
+    "purpose": "Mac 原生界面：delivery.attachment_type",
+    "parameters": []
+  },
+  "delivery.attachment.skeletons": {
+    "zh-CN": "分集骨架",
+    "en": "Episode Outlines",
+    "purpose": "Mac 原生界面：delivery.attachment.skeletons",
+    "parameters": []
+  },
+  "delivery.attachment.reports": {
+    "zh-CN": "诊断报告",
+    "en": "Diagnostic Reports",
+    "purpose": "Mac 原生界面：delivery.attachment.reports",
+    "parameters": []
+  },
+  "delivery.attachment.cues": {
+    "zh-CN": "乐律与视觉线索",
+    "en": "Music and Visual Cues",
+    "purpose": "Mac 原生界面：delivery.attachment.cues",
+    "parameters": []
+  },
+  "delivery.attachment.assets": {
+    "zh-CN": "素材",
+    "en": "Assets",
+    "purpose": "Mac 原生界面：delivery.attachment.assets",
+    "parameters": []
+  },
+  "delivery.item_number": {
+    "zh-CN": "{type} {number}",
+    "en": "{type} {number}",
+    "purpose": "Mac 原生界面：delivery.item_number",
+    "parameters": [
+      "type",
+      "number"
+    ]
+  },
+  "delivery.asset_metadata_only": {
+    "zh-CN": "素材分发许可不足，仅附带资料，不包含原文件。",
+    "en": "The asset is not cleared for distribution. Only its metadata will be included.",
+    "purpose": "Mac 原生界面：delivery.asset_metadata_only",
+    "parameters": []
+  },
+  "delivery.preview_truncated": {
+    "zh-CN": "这里显示前 16000 字符，导入会保留完整正文。",
+    "en": "Showing the first 16,000 characters. The full document will be imported.",
+    "purpose": "Mac 原生界面：delivery.preview_truncated",
+    "parameters": []
+  },
+  "delivery.notices": {
+    "zh-CN": "注意事项",
+    "en": "Notes",
+    "purpose": "Mac 原生界面：delivery.notices",
+    "parameters": []
+  },
+  "delivery.losses": {
+    "zh-CN": "格式变化",
+    "en": "Formatting Changes",
+    "purpose": "Mac 原生界面：delivery.losses",
+    "parameters": []
+  },
+  "delivery.exclusions": {
+    "zh-CN": "未包含的内容",
+    "en": "Excluded Content",
+    "purpose": "Mac 原生界面：delivery.exclusions",
+    "parameters": []
+  },
+  "delivery.blockers": {
+    "zh-CN": "需要处理的问题",
+    "en": "Issues to Resolve",
+    "purpose": "Mac 原生界面：delivery.blockers",
+    "parameters": []
+  },
+  "delivery.confirm_import": {
+    "zh-CN": "确认导入",
+    "en": "Confirm Import",
+    "purpose": "Mac 原生界面：delivery.confirm_import",
+    "parameters": []
+  },
+  "delivery.confirm_export": {
+    "zh-CN": "确认导出",
+    "en": "Confirm Export",
+    "purpose": "Mac 原生界面：delivery.confirm_export",
+    "parameters": []
+  },
+  "delivery.author_ack": {
+    "zh-CN": "作者已核对本次固定预览及格式变化，确认执行。",
+    "en": "The author has reviewed this fixed preview and its formatting changes and confirms this operation.",
+    "purpose": "Mac 原生界面：delivery.author_ack",
+    "parameters": []
+  },
+  "delivery.completed": {
+    "zh-CN": "已完成",
+    "en": "Completed",
+    "purpose": "Mac 原生界面：delivery.completed",
+    "parameters": []
+  },
+  "delivery.reveal": {
+    "zh-CN": "在访达中显示",
+    "en": "Show in Finder",
+    "purpose": "Mac 原生界面：delivery.reveal",
+    "parameters": []
+  },
+  "delivery.verify": {
+    "zh-CN": "核验交付包",
+    "en": "Verify Bundle",
+    "purpose": "Mac 原生界面：delivery.verify",
+    "parameters": []
+  },
+  "delivery.verified": {
+    "zh-CN": "交付包核验通过",
+    "en": "Bundle Verified",
+    "purpose": "Mac 原生界面：delivery.verified",
+    "parameters": []
+  },
+  "delivery.excluded_private": {
+    "zh-CN": "不包含私有批注、未采纳参考稿、提示词、凭据和恢复记录。",
+    "en": "Private annotations, unadopted references, prompts, credentials and recovery records are excluded.",
+    "purpose": "Mac 原生界面：delivery.excluded_private",
+    "parameters": []
+  },
+  "delivery.unsaved": {
+    "zh-CN": "所选正文有未保存的修改，请先保存，或明确选择已定稿版本。",
+    "en": "A selected document has unsaved edits. Save it first, or explicitly use its finalized revision.",
+    "purpose": "Mac 原生界面：delivery.unsaved",
+    "parameters": []
+  },
+  "delivery.notice.other": {
+    "zh-CN": "部分格式发生变化，请核对转换报告。",
+    "en": "Some formatting changed. Review the conversion report.",
+    "purpose": "Mac 原生界面：delivery.notice.other",
+    "parameters": []
+  },
+  "delivery.files": {
+    "zh-CN": "文件清单（{count}）",
+    "en": "Files ({count})",
+    "purpose": "Mac 原生界面：delivery.files",
+    "parameters": [
+      "count"
+    ]
+  },
+  "delivery.format.txt": {
+    "zh-CN": "纯文本 TXT",
+    "en": "Plain Text TXT",
+    "purpose": "Mac 原生界面：delivery.format.txt",
+    "parameters": []
+  },
+  "delivery.format.markdown": {
+    "zh-CN": "Markdown",
+    "en": "Markdown",
+    "purpose": "Mac 原生界面：delivery.format.markdown",
+    "parameters": []
+  },
+  "delivery.format.fountain": {
+    "zh-CN": "Fountain 剧本",
+    "en": "Fountain Screenplay",
+    "purpose": "Mac 原生界面：delivery.format.fountain",
+    "parameters": []
+  },
+  "delivery.format.docx": {
+    "zh-CN": "Word 文档",
+    "en": "Word Document",
+    "purpose": "Mac 原生界面：delivery.format.docx",
+    "parameters": []
+  },
+  "delivery.format.pdf": {
+    "zh-CN": "PDF",
+    "en": "PDF",
+    "purpose": "Mac 原生界面：delivery.format.pdf",
+    "parameters": []
+  },
+  "delivery.notice.markdown_hidden_notes_removed": {
+    "zh-CN": "Markdown 隐藏注释未进入交稿正文。",
+    "en": "Hidden Markdown comments are excluded from the delivered text.",
+    "purpose": "Mac 原生界面：delivery.notice.markdown_hidden_notes_removed",
+    "parameters": []
+  },
+  "delivery.notice.fountain_nonprinting_removed": {
+    "zh-CN": "Fountain 注释、便笺与非打印材料未进入交稿正文。",
+    "en": "Fountain comments, notes and other nonprinting content are excluded.",
+    "purpose": "Mac 原生界面：delivery.notice.fountain_nonprinting_removed",
+    "parameters": []
+  },
+  "delivery.notice.heading_depth_flattened": {
+    "zh-CN": "三级及更深标题映射为二级交稿标题。",
+    "en": "Headings deeper than level two are converted to level two.",
+    "purpose": "Mac 原生界面：delivery.notice.heading_depth_flattened",
+    "parameters": []
+  },
+  "delivery.notice.markdown_image_omitted": {
+    "zh-CN": "正文中的图片未嵌入交稿文件；素材须从交付选择中明确加入。",
+    "en": "Inline images are excluded. Select assets separately for the delivery bundle.",
+    "purpose": "Mac 原生界面：delivery.notice.markdown_image_omitted",
+    "parameters": []
+  },
+  "delivery.notice.markdown_code_plaintext": {
+    "zh-CN": "行内代码按文字交付，不保留代码字体。",
+    "en": "Inline code is preserved as text without code styling.",
+    "purpose": "Mac 原生界面：delivery.notice.markdown_code_plaintext",
+    "parameters": []
+  },
+  "delivery.notice.markdown_table_flattened": {
+    "zh-CN": "表格按单元格文字投影，表格结构不保留。",
+    "en": "Table text is preserved, but the table structure is lost.",
+    "purpose": "Mac 原生界面：delivery.notice.markdown_table_flattened",
+    "parameters": []
+  },
+  "delivery.notice.markdown_codeblock_plaintext": {
+    "zh-CN": "代码块按普通文字交付，不保留代码版式。",
+    "en": "Code blocks are converted to plain paragraphs.",
+    "purpose": "Mac 原生界面：delivery.notice.markdown_codeblock_plaintext",
+    "parameters": []
+  },
+  "delivery.notice.markdown_list_plaintext": {
+    "zh-CN": "列表按带标记的正文交付，编号及层级不保留。",
+    "en": "List text and markers are preserved, but numbering and nesting are lost.",
+    "purpose": "Mac 原生界面：delivery.notice.markdown_list_plaintext",
+    "parameters": []
+  },
+  "delivery.notice.markdown_footnotes_unlinked": {
+    "zh-CN": "脚注与正文关联不保留，请在预览中核对脚注文字。",
+    "en": "Footnote links are lost. Check the footnote text.",
+    "purpose": "Mac 原生界面：delivery.notice.markdown_footnotes_unlinked",
+    "parameters": []
+  },
+  "delivery.notice.markdown_blockquote_plaintext": {
+    "zh-CN": "引用块按普通正文交付，不保留引用块版式。",
+    "en": "Block quotes are converted to plain paragraphs.",
+    "purpose": "Mac 原生界面：delivery.notice.markdown_blockquote_plaintext",
+    "parameters": []
+  },
+  "delivery.notice.markdown_strikethrough_plaintext": {
+    "zh-CN": "删除线按可见文字交付，不据此删除内容。",
+    "en": "Struck-through text remains visible without strikethrough styling.",
+    "purpose": "Mac 原生界面：delivery.notice.markdown_strikethrough_plaintext",
+    "parameters": []
+  },
+  "delivery.notice.fountain_title_metadata_omitted": {
+    "zh-CN": "除作品标题与作者署名外的 Fountain 标题页字段未进入阅读稿。",
+    "en": "Fountain title-page fields other than the title and author are excluded from the reading copy.",
+    "purpose": "Mac 原生界面：delivery.notice.fountain_title_metadata_omitted",
+    "parameters": []
+  },
+  "delivery.notice.fountain_synopsis_omitted": {
+    "zh-CN": "Fountain 非打印梗概未进入交稿正文。",
+    "en": "Nonprinting Fountain synopses are excluded.",
+    "purpose": "Mac 原生界面：delivery.notice.fountain_synopsis_omitted",
+    "parameters": []
+  },
+  "delivery.notice.fountain_scene_requires_review": {
+    "zh-CN": "强制场景标题可能缺少内外景或日夜，正式制片交付前需要作者核对。",
+    "en": "Check scene headings for location, interior or exterior, and time of day before production delivery.",
+    "purpose": "Mac 原生界面：delivery.notice.fountain_scene_requires_review",
+    "parameters": []
+  },
+  "delivery.notice.fountain_dual_dialogue_sequential": {
+    "zh-CN": "双栏对白按先后顺序显示，双栏版式不保留。",
+    "en": "Dual dialogue is shown sequentially instead of in two columns.",
+    "purpose": "Mac 原生界面：delivery.notice.fountain_dual_dialogue_sequential",
+    "parameters": []
+  },
+  "delivery.notice.plaintext_inline_formatting": {
+    "zh-CN": "TXT 保留可读文字、标题与段落，不保留强调及字体版式；普通链接展开为文字地址。",
+    "en": "TXT preserves readable text and paragraphs but loses emphasis and font styling. Links are expanded to visible URLs.",
+    "purpose": "Mac 原生界面：delivery.notice.plaintext_inline_formatting",
+    "parameters": []
+  },
+  "delivery.notice.fonts_not_embedded": {
+    "zh-CN": "DOCX 记录中文及西文字体名称，不附带字体文件；接收方应核对实际字体、替代字体与分页。",
+    "en": "DOCX names its fonts but does not embed them. Recipients should check font substitution and pagination.",
+    "purpose": "Mac 原生界面：delivery.notice.fonts_not_embedded",
+    "parameters": []
+  },
+  "delivery.notice.docx_media_omitted": {
+    "zh-CN": "DOCX 内嵌图片未作为小说正文导入，请另行选择素材。",
+    "en": "Embedded DOCX images are excluded from the document. Import assets separately.",
+    "purpose": "Mac 原生界面：delivery.notice.docx_media_omitted",
+    "parameters": []
+  },
+  "delivery.notice.docx_comments_omitted": {
+    "zh-CN": "DOCX 批注未导入正文，原文件仍须保留供作者核对。",
+    "en": "DOCX comments are excluded. Keep the original file for comparison.",
+    "purpose": "Mac 原生界面：delivery.notice.docx_comments_omitted",
+    "parameters": []
+  },
+  "delivery.notice.docx_notes_omitted": {
+    "zh-CN": "脚注与尾注未导入正文，请核对原文件。",
+    "en": "DOCX footnotes and endnotes are excluded. Check the original file.",
+    "purpose": "Mac 原生界面：delivery.notice.docx_notes_omitted",
+    "parameters": []
+  },
+  "delivery.notice.docx_unknown_style_plaintext": {
+    "zh-CN": "未识别的 DOCX 段落样式按普通正文导入，请核对章节与对白。",
+    "en": "Unrecognized DOCX styles become plain paragraphs. Check chapters and dialogue.",
+    "purpose": "Mac 原生界面：delivery.notice.docx_unknown_style_plaintext",
+    "parameters": []
+  },
+  "delivery.notice.docx_table_flattened": {
+    "zh-CN": "DOCX 表格按段落文字导入，行列关系不保留。",
+    "en": "DOCX tables become paragraph text without row or column structure.",
+    "purpose": "Mac 原生界面：delivery.notice.docx_table_flattened",
+    "parameters": []
+  },
+  "delivery.notice.docx_drawing_omitted": {
+    "zh-CN": "DOCX 图形及文本框不作为正文导入，请核对原文件。",
+    "en": "DOCX drawings and text boxes are excluded. Check the original file.",
+    "purpose": "Mac 原生界面：delivery.notice.docx_drawing_omitted",
+    "parameters": []
+  },
+  "delivery.notice.docx_fields_frozen": {
+    "zh-CN": "DOCX 域不执行，正文仅保留已缓存的可见文字。",
+    "en": "DOCX fields are not executed. Only cached visible text is preserved.",
+    "purpose": "Mac 原生界面：delivery.notice.docx_fields_frozen",
+    "parameters": []
+  },
+  "delivery.notice.docx_symbol_omitted": {
+    "zh-CN": "依赖特殊字体的 DOCX 符号无法可靠转换为 Unicode，请核对原文件。",
+    "en": "Some font-dependent DOCX symbols could not be converted to Unicode. Check the original file.",
+    "purpose": "Mac 原生界面：delivery.notice.docx_symbol_omitted",
+    "parameters": []
+  },
+  "delivery.notice.docx_numbering_omitted": {
+    "zh-CN": "DOCX 自动列表编号不作为正文文字导入，请核对原文件。",
+    "en": "Automatic DOCX numbering is excluded from the text. Check the original file.",
+    "purpose": "Mac 原生界面：delivery.notice.docx_numbering_omitted",
+    "parameters": []
+  },
+  "delivery.notice.docx_hyperlink_plaintext": {
+    "zh-CN": "DOCX 内部链接按可见文字导入，不保留链接跳转。",
+    "en": "DOCX links retain visible text without link targets.",
+    "purpose": "Mac 原生界面：delivery.notice.docx_hyperlink_plaintext",
+    "parameters": []
+  },
+  "delivery.notice.docx_extensions_omitted": {
+    "zh-CN": "DOCX 扩展命名空间内容不属于当前正文子集，未导入部分须对照原文核对。",
+    "en": "Unsupported DOCX extensions are excluded. Compare the result with the original file.",
+    "purpose": "Mac 原生界面：delivery.notice.docx_extensions_omitted",
+    "parameters": []
+  },
+  "delivery.notice.docx_fountain_emphasis_plaintext": {
+    "zh-CN": "DOCX 强调按可见文字导入 Fountain，不生成推测的语法。",
+    "en": "DOCX emphasis is imported as visible Fountain text without inferred markup.",
+    "purpose": "Mac 原生界面：delivery.notice.docx_fountain_emphasis_plaintext",
+    "parameters": []
+  },
+  "delivery.notice.utf8_bom_removed": {
+    "zh-CN": "已识别 UTF-8 BOM，正文候选不包含 BOM。",
+    "en": "The UTF-8 byte-order mark is removed from the imported text.",
+    "purpose": "Mac 原生界面：delivery.notice.utf8_bom_removed",
+    "parameters": []
+  },
+  "delivery.notice.replacement_character_present": {
+    "zh-CN": "原文件含替换字符，请核对原始编码与文字。",
+    "en": "The source contains replacement characters. Check its encoding and text.",
+    "purpose": "Mac 原生界面：delivery.notice.replacement_character_present",
+    "parameters": []
+  },
+  "delivery.notice.txt_chapters_require_confirmation": {
+    "zh-CN": "章节候选只供预览，不按“第×章”字样自动拆分或创建章节。",
+    "en": "Chapter headings are suggestions only. Import creates one document without automatically splitting chapters.",
+    "purpose": "Mac 原生界面：delivery.notice.txt_chapters_require_confirmation",
+    "parameters": []
+  },
+  "delivery.notice.docx_layout_not_preserved": {
+    "zh-CN": "DOCX 只导入声明的正文语义子集；页眉页脚、纸张、分页及直接版式不是第二份权威正文。",
+    "en": "Only supported DOCX text structure is imported. Headers, footers, page settings and direct layout are not preserved.",
+    "purpose": "Mac 原生界面：delivery.notice.docx_layout_not_preserved",
+    "parameters": []
+  },
+  "delivery.notice.pdf_tab_expanded": {
+    "zh-CN": "PDF 中的制表符展开为四个空格。",
+    "en": "Tabs are expanded to four spaces in the PDF.",
+    "purpose": "Mac 原生界面：delivery.notice.pdf_tab_expanded",
+    "parameters": []
+  },
+  "delivery.notice.pdf_inline_emphasis_flattened": {
+    "zh-CN": "PDF 使用单一字重，粗体和斜体按普通文字显示；需要保留强调样式可选 Word。",
+    "en": "The PDF template uses one font weight. Bold and italic text remains readable without emphasis; choose DOCX to preserve it.",
+    "purpose": "Mac 原生界面：delivery.notice.pdf_inline_emphasis_flattened",
+    "parameters": []
+  },
+  "delivery.notice.pdf_long_token_wrapped": {
+    "zh-CN": "过长的连续词按字形换行，原文保持不变。",
+    "en": "Long words or identifiers are wrapped between glyphs without changing their text.",
+    "purpose": "Mac 原生界面：delivery.notice.pdf_long_token_wrapped",
+    "parameters": []
+  },
+  "delivery.notice.review_delivery": {
+    "zh-CN": "本包供审阅使用，不能作为正式定稿交付。",
+    "en": "This bundle is for review and does not represent a finalized production delivery.",
+    "purpose": "Mac 原生界面：delivery.notice.review_delivery",
+    "parameters": []
+  },
+  "delivery.notice.reports_not_selected": {
+    "zh-CN": "未附带诊断报告，不代表作品已通过完整检查。",
+    "en": "No diagnostic reports are included. This does not mean the work passed a complete check.",
+    "purpose": "Mac 原生界面：delivery.notice.reports_not_selected",
+    "parameters": []
+  },
+  "delivery.notice.hetu.finalization_required": {
+    "zh-CN": "正式交付需要有效的作者定稿，请先定稿，或选择供审阅的交付包。",
+    "en": "Production delivery requires a valid author finalization. Finalize this document or choose a review bundle.",
+    "purpose": "Mac 原生界面：delivery.notice.hetu.finalization_required",
+    "parameters": []
+  },
+  "delivery.notice.hetu.incomplete_screenplay": {
+    "zh-CN": "正式交付的剧本需补齐场景、内外景和日夜。",
+    "en": "Production delivery requires complete scene headings, interior or exterior, and time of day.",
+    "purpose": "Mac 原生界面：delivery.notice.hetu.incomplete_screenplay",
+    "parameters": []
+  },
+  "delivery.no_finalization": {
+    "zh-CN": "所选正文尚未定稿，请先定稿，或取消使用已定稿版本。",
+    "en": "A selected document has no finalized revision. Finalize it first, or turn off Use Finalized Revisions.",
+    "purpose": "Mac 导入导出：delivery.no_finalization",
+    "parameters": []
+  },
+  "error.hetu.unsupported_document_format": {
+    "zh-CN": "不支持此文件格式，请选择 TXT、Markdown、Fountain 或 DOCX 文件。",
+    "en": "This document format is not supported. Choose TXT, Markdown, Fountain or DOCX.",
+    "purpose": "Mac 导入导出：error.hetu.unsupported_document_format",
+    "parameters": []
+  },
+  "error.hetu.invalid_document_package": {
+    "zh-CN": "文档结构不完整或已经损坏，请用原编辑器另存为新文件后重试。",
+    "en": "The document is incomplete or damaged. Save a new copy in its original editor and try again.",
+    "purpose": "Mac 导入导出：error.hetu.invalid_document_package",
+    "parameters": []
+  },
+  "error.hetu.unsupported_delivery_profile": {
+    "zh-CN": "所选排版与文件格式不匹配，请重新选择后预览。",
+    "en": "The layout does not match the file format. Choose again and preview.",
+    "purpose": "Mac 导入导出：error.hetu.unsupported_delivery_profile",
+    "parameters": []
+  },
+  "error.hetu.unsafe_document": {
+    "zh-CN": "文件包含不安全的链接、脚本或对象，已停止导入。请先在原编辑器中清理。",
+    "en": "Import stopped because the document contains unsafe links, scripts or objects. Remove them in its original editor first.",
+    "purpose": "Mac 导入导出：error.hetu.unsafe_document",
+    "parameters": []
+  },
+  "error.hetu.document_revisions_require_review": {
+    "zh-CN": "Word 文档含有未处理的修订，请先在 Word 中逐项接受或拒绝，再导入。",
+    "en": "The Word document contains unresolved tracked changes. Accept or reject them in Word before importing.",
+    "purpose": "Mac 导入导出：error.hetu.document_revisions_require_review",
+    "parameters": []
+  },
+  "error.hetu.document_hidden_content_requires_review": {
+    "zh-CN": "Word 文档含有隐藏内容，请先在 Word 中检查和处理，再导入。",
+    "en": "The Word document contains hidden content. Review and resolve it in Word before importing.",
+    "purpose": "Mac 导入导出：error.hetu.document_hidden_content_requires_review",
+    "parameters": []
+  },
+  "error.hetu.encoding_confirmation_required": {
+    "zh-CN": "无法按 UTF-8 读取此文件，请确认编码并另存为 UTF-8 后导入。",
+    "en": "This file is not valid UTF-8. Confirm its encoding and save a UTF-8 copy before importing.",
+    "purpose": "Mac 导入导出：error.hetu.encoding_confirmation_required",
+    "parameters": []
+  },
+  "delivery.attachment.comparisons": {
+    "zh-CN": "改编差异报告",
+    "en": "Adaptation Comparisons",
+    "purpose": "Mac 导入导出：delivery.attachment.comparisons",
+    "parameters": []
+  },
+  "delivery.comparison_skeleton": {
+    "zh-CN": "对应骨架",
+    "en": "Source Outline",
+    "purpose": "Mac 导入导出：delivery.comparison_skeleton",
+    "parameters": []
+  },
+  "delivery.choose_skeleton": {
+    "zh-CN": "选择骨架方案",
+    "en": "Choose an outline",
+    "purpose": "Mac 导入导出：delivery.choose_skeleton",
+    "parameters": []
+  },
+  "delivery.skeleton_number": {
+    "zh-CN": "骨架方案 {number}",
+    "en": "Outline {number}",
+    "purpose": "Mac 导入导出：delivery.skeleton_number",
+    "parameters": [
+      "number"
+    ]
+  },
+  "error.hetu.finalization_required": {
+    "zh-CN": "正式交付需要有效定稿，请先处理预览中的问题。",
+    "en": "Production delivery requires valid finalized revisions. Resolve the issues in the preview first.",
+    "purpose": "Mac 导入导出：error.hetu.finalization_required",
+    "parameters": []
+  },
+  "error.hetu.incomplete_screenplay": {
+    "zh-CN": "剧本尚缺场景、内外景或日夜信息，请补齐后交付，或选择审阅包。",
+    "en": "The screenplay is missing scene, interior/exterior or time information. Complete it or use a review bundle.",
+    "purpose": "Mac 导入导出：error.hetu.incomplete_screenplay",
+    "parameters": []
+  },
+  "delivery.notice.partial_skeleton": {
+    "zh-CN": "所选骨架仍有未补齐的信息，请核对缺项。",
+    "en": "A selected outline still has missing information. Review its incomplete fields.",
+    "purpose": "Mac 导入导出：delivery.notice.partial_skeleton",
+    "parameters": []
+  },
+  "delivery.notice.report_coverage": {
+    "zh-CN": "报告未完整覆盖本次正文与设定，请核对报告范围。",
+    "en": "A report does not fully cover the selected revisions and story bible. Review its coverage.",
+    "purpose": "Mac 导入导出：delivery.notice.report_coverage",
+    "parameters": []
+  },
+  "delivery.notice.cue_source_not_selected": {
+    "zh-CN": "部分线索引用的正文未选入本包，仅保留来源引用。",
+    "en": "Some cue source revisions are not selected. Only their references will be included.",
+    "purpose": "Mac 导入导出：delivery.notice.cue_source_not_selected",
+    "parameters": []
+  },
+  "delivery.notice.cue_asset_not_selected": {
+    "zh-CN": "部分线索关联的素材未选入本包，不会自动附带。",
+    "en": "Some assets linked to cues are not selected and will not be included automatically.",
+    "purpose": "Mac 导入导出：delivery.notice.cue_asset_not_selected",
+    "parameters": []
+  },
+  "delivery.inputs_changed": {
+    "zh-CN": "所选文件、正文或交付依据已经变化，请重新预览。",
+    "en": "A selected file, revision or delivery requirement has changed. Preview again.",
+    "purpose": "Mac 导入导出：delivery.inputs_changed",
     "parameters": []
   }
 }

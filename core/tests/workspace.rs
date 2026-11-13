@@ -27,6 +27,49 @@ fn expected(kernel: &Kernel) -> Value {
 }
 
 #[test]
+fn writer_does_not_block_opening_or_reading_and_editing_recovers_after_release() {
+    use rustix::fs::{FlockOperation, flock};
+    use std::os::fd::AsFd;
+    let root = tempfile::tempdir().unwrap();
+    let author = open(root.path(), "author", true);
+    let document = created(&author);
+    let file = std::fs::OpenOptions::new()
+        .read(true)
+        .write(true)
+        .open(root.path().join(".hetu/workspace.lock"))
+        .unwrap();
+    flock(file.as_fd(), FlockOperation::LockExclusive).unwrap();
+    let reader = open(root.path(), "author", false);
+    let info = call(&reader, "workspaces.get", json!({}));
+    assert_eq!(info["data"]["access"]["write_available"], false);
+    let id = &document["document"]["document_id"];
+    assert_eq!(
+        call(&reader, "documents.get", json!({"document_id":id}))["data"]["content"],
+        "林舟说：你好，世界。🌧️\n"
+    );
+    assert_eq!(
+        call(&reader, "documents.list", json!({}))["status"],
+        "succeeded"
+    );
+    assert_eq!(
+        call(&reader, "blueprints.get", json!({}))["status"],
+        "succeeded"
+    );
+    let save = json!({"document_id":id,"base_revision_id":document["revision"]["revision_id"],
+        "source_format":"markdown","content":"作者恢复编辑。","operation_key":"after-writer"});
+    assert_eq!(
+        call(&reader, "documents.save", save.clone())["error"]["code"],
+        "hetu.workspace_busy"
+    );
+    drop(file);
+    assert_eq!(
+        call(&reader, "workspaces.get", json!({}))["data"]["access"]["write_available"],
+        true
+    );
+    assert_eq!(call(&reader, "documents.save", save)["status"], "succeeded");
+}
+
+#[test]
 fn chinese_workspace_and_immutable_revision_survive_reopen() {
     let root = tempfile::tempdir().unwrap();
     let path = root.path().join("我的 IP 测试");

@@ -1,0 +1,461 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HetuDelivery",
+  "$defs": {
+    "finalization_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "finalization_id": {
+          "type": "string",
+          "pattern": "^finalization_[0-9a-f-]{36}$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "finalization_id",
+        "sha256"
+      ]
+    },
+    "document_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "document_id": {
+          "type": "string",
+          "pattern": "^doc_[0-9a-f-]{36}$"
+        },
+        "revision_id": {
+          "type": "string",
+          "pattern": "^rev_[0-9a-f-]{36}$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "finalization_ref": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/finalization_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "document_id",
+        "revision_id",
+        "sha256"
+      ]
+    },
+    "blueprint_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "revision",
+        "sha256"
+      ]
+    },
+    "skeleton_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "skeleton_id": {
+          "type": "string",
+          "pattern": "^skeleton_[0-9a-f-]{36}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "skeleton_id",
+        "revision",
+        "sha256"
+      ]
+    },
+    "cue_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cue_id": {
+          "type": "string",
+          "pattern": "^cue_[0-9a-f-]{36}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "cue_id",
+        "revision",
+        "sha256"
+      ]
+    },
+    "asset_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "asset_id": {
+          "type": "string",
+          "pattern": "^asset_[0-9a-f-]{36}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "asset_id",
+        "revision",
+        "sha256"
+      ]
+    },
+    "report_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "report_id": {
+          "type": "string",
+          "pattern": "^report_[0-9a-f-]{36}$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "dispositions_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "report_id",
+        "sha256",
+        "dispositions_sha256"
+      ]
+    },
+    "comparison_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "comparison_id": {
+          "type": "string",
+          "pattern": "^comparison_[0-9a-f-]{36}$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "comparison_id",
+        "sha256"
+      ]
+    },
+    "selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "blueprint_ref": {
+          "$ref": "#/$defs/blueprint_ref"
+        },
+        "document_refs": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "$ref": "#/$defs/document_ref"
+          },
+          "uniqueItems": true
+        },
+        "skeleton_refs": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "$ref": "#/$defs/skeleton_ref"
+          },
+          "uniqueItems": true
+        },
+        "report_refs": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "$ref": "#/$defs/report_ref"
+          },
+          "uniqueItems": true
+        },
+        "comparison_refs": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "$ref": "#/$defs/comparison_ref"
+          },
+          "uniqueItems": true
+        },
+        "cue_refs": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "$ref": "#/$defs/cue_ref"
+          },
+          "uniqueItems": true
+        },
+        "asset_refs": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "$ref": "#/$defs/asset_ref"
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "blueprint_ref",
+        "document_refs"
+      ]
+    },
+    "bundle_preview_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "selection": {
+          "$ref": "#/$defs/selection"
+        },
+        "profile": {
+          "enum": [
+            "production_delivery",
+            "review_delivery"
+          ]
+        },
+        "reading_formats": {
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "enum": [
+              "txt",
+              "docx",
+              "pdf"
+            ]
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "selection",
+        "profile"
+      ]
+    },
+    "preview": {
+      "type": "object",
+      "maxProperties": 16,
+      "required": [
+        "workspace_id",
+        "request",
+        "inputs",
+        "files",
+        "warnings",
+        "exclusions",
+        "blockers",
+        "eligible",
+        "sha256"
+      ],
+      "properties": {
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "export_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "preview": {
+          "$ref": "#/$defs/preview"
+        },
+        "acknowledgement": {
+          "type": "string",
+          "maxLength": 8000
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "preview",
+        "acknowledgement",
+        "operation_key"
+      ]
+    },
+    "verify_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "bundle_id": {
+          "type": "string",
+          "pattern": "^bundle_[0-9a-f-]{36}$"
+        }
+      },
+      "required": [
+        "bundle_id"
+      ]
+    },
+    "document_preview_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "revision_refs": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "$ref": "#/$defs/document_ref"
+          },
+          "uniqueItems": true
+        },
+        "profile": {
+          "enum": [
+            "source/1",
+            "hetu-novel-zh/1",
+            "hetu-screenplay-zh/1"
+          ]
+        },
+        "format": {
+          "enum": [
+            "markdown",
+            "txt",
+            "fountain",
+            "docx",
+            "pdf"
+          ]
+        }
+      },
+      "required": [
+        "revision_refs",
+        "profile",
+        "format"
+      ]
+    },
+    "import_preview_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "file_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "format": {
+          "enum": [
+            "markdown",
+            "txt",
+            "fountain",
+            "docx"
+          ]
+        },
+        "profile": {
+          "enum": [
+            "source/1",
+            "hetu-novel-zh/1",
+            "hetu-screenplay-zh/1"
+          ]
+        }
+      },
+      "required": [
+        "file_path",
+        "format",
+        "profile"
+      ]
+    },
+    "import_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "preview": {
+          "type": "object",
+          "required": [
+            "request",
+            "sha256",
+            "source_sha256",
+            "source_size_bytes",
+            "converted"
+          ]
+        },
+        "kind": {
+          "enum": [
+            "novel_chapter",
+            "drama_script"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "language_tag": {
+          "enum": [
+            "zh-CN",
+            "en"
+          ]
+        },
+        "volume_id": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^volume_[0-9a-f-]{36}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "acknowledgement": {
+          "type": "string",
+          "maxLength": 8000
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "preview",
+        "kind",
+        "title",
+        "language_tag",
+        "acknowledgement",
+        "operation_key"
+      ]
+    }
+  }
+}

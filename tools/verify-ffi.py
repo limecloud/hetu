@@ -74,13 +74,19 @@ def main():
             denied_process = subprocess.run([*command, "hetu.documents.create", "--input", "-"], input=json.dumps({"kind":"novel_chapter", "title":"越权新建", "source_format":"markdown", "content":"不能绕过权限", "operation_key":"denied-cli"}), text=True, capture_output=True, cwd=folder, timeout=30)
             assert denied_process.returncode == 3, denied_process.stdout
             assert json.loads(denied_process.stdout)["error"]["code"] == "forbidden"
+            draft_input = json.dumps({"package":"novel", "source_format":"markdown", "title":"跨进程草稿", "content":"同一原操作只接收一次。", "blueprint_revision":1, "operation_key":"cli-replay"})
             with (path / ".hetu/workspace.lock").open("r+b") as lease:
                 fcntl.flock(lease, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                busy_process = subprocess.run([*command, "hetu.workspaces.get", "--input", "-"], input="{}", text=True, capture_output=True, cwd=folder, timeout=30)
-                assert busy_process.returncode != 0
+                info_process = subprocess.run([*command, "hetu.workspaces.get", "--input", "-"], input="{}", text=True, capture_output=True, cwd=folder, timeout=30)
+                assert info_process.returncode == 0 and not info_process.stderr, info_process.stdout
+                assert json.loads(info_process.stdout)["data"]["access"]["write_available"] is False
+                reading_process = subprocess.run([*command, "hetu.documents.get", "--input", "-"], input=json.dumps({"document_id":created["data"]["document"]["document_id"]}), text=True, capture_output=True, cwd=folder, timeout=30)
+                assert reading_process.returncode == 0 and not reading_process.stderr, reading_process.stdout
+                assert json.loads(reading_process.stdout)["data"]["content"] == "你好，雨夜。🌧️"
+                busy_process = subprocess.run([*command, "hetu.drafts.submit", "--input", "-"], input=draft_input, text=True, capture_output=True, cwd=folder, timeout=30)
+                assert busy_process.returncode == 5 and not busy_process.stderr, busy_process.stdout
                 assert json.loads(busy_process.stdout)["error"]["code"] == "hetu.workspace_busy"
                 fcntl.flock(lease, fcntl.LOCK_UN)
-            draft_input = json.dumps({"package":"novel", "source_format":"markdown", "title":"跨进程草稿", "content":"同一原操作只接收一次。", "blueprint_revision":1, "operation_key":"cli-replay"})
             receipts = []
             for _ in range(2):
                 draft_process = subprocess.run([*command, "hetu.drafts.submit", "--input", "-"], input=draft_input, text=True, capture_output=True, cwd=folder, timeout=30)
@@ -118,7 +124,7 @@ def main():
         lib.hetu_context_close(None); lib.hetu_task_release(None); lib.hetu_buffer_free(None)
     print("C ABI：动态库、中文、缓冲释放、权限、异步任务与 close 生命周期通过")
     if args.cli:
-        print("Swift CLI：仓库外启动、中文 JSON 管道、权限、跨进程锁及原键重放通过")
+        print("Swift CLI：仓库外启动、中文 JSON 管道、权限、写入期间可读、写入锁与释放恢复及原键重放通过")
 
 if __name__ == "__main__":
     main()

@@ -110,6 +110,17 @@ struct DramaWorkbenchView: View {
                     }.buttonStyle(.plain).disabled(pending != nil)
                 }
                 if cursor != nil { Button(model.t("plot.more")) { Task { await loadHistory(more: true) } } }
+                let scripts = model.documents.filter { $0.kind == "drama_script" }
+                if !scripts.isEmpty {
+                    Divider().padding(.vertical, 8)
+                    Text(model.t("drama.script")).font(.headline)
+                    ForEach(scripts) { script in
+                        Button { onOpenScript(script.id) } label: {
+                            Label(script.title, systemImage: "doc.text")
+                                .frame(maxWidth: .infinity, alignment: .leading).padding(8)
+                        }.buttonStyle(.plain)
+                    }
+                }
             }.padding(.trailing, 10)
         }
     }

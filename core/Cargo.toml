@@ -23,6 +23,11 @@ url = "2.5"
 base64 = "=0.22.1"
 image = { version = "=0.25.9", default-features = false, features = ["png", "jpeg", "webp"] }
 git2 = { version = "=0.20.4", default-features = false, features = ["vendored-libgit2"] }
+zip = { version = "=9.4.1", default-features = false, features = ["deflate-flate2-zlib-rs"] }
+quick-xml = "=0.39.2"
+pdf-writer = "=0.14.0"
+ttf-parser = { version = "=0.25.1", default-features = false, features = ["std"] }
+subsetter = { version = "=0.2.3", default-features = false }
 
 [dev-dependencies]
 tempfile = "3.25"

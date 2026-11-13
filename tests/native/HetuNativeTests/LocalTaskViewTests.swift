@@ -24,7 +24,7 @@ enum LocalTaskViewTests {
         let manager = LocalTaskViewSession()
         defer { manager.stop() }
         await manager.start(root: directory, scope: .workspace, taskRef: ref, locale: "en", theme: "dark", runtime: runtime)
-        try await wait { manager.url != nil || manager.errorKey != nil }
+        try await wait("启动任务页面") { manager.url != nil || manager.errorKey != nil }
         guard let origin = manager.url else { throw LocalViewTestFailure(message: "原生管理器未启动任务页面：\(manager.errorKey ?? "unknown")") }
         let browser = URLSession(configuration: .ephemeral)
         defer { browser.invalidateAndCancel() }
@@ -45,12 +45,13 @@ enum LocalTaskViewTests {
         let (_, invalidCSRF) = try await request("api/pair", body: .object([:]))
         try localCheck(invalidCSRF == 403 && manager.pairing.isEmpty, "浏览器绕过CSRF发起配对")
         _ = try await request("api/pair", body: .object([:]), csrf: csrf)
-        try await wait { !manager.pairing.isEmpty }
+        try await wait("收到浏览器配对请求") { !manager.pairing.isEmpty }
         let pairing = manager.pairing[0]
         let (pending, _) = try await request("api/session")
         try localCheck(pending["code"].string == pairing.code && pending["state"].string == "pending", "原生配对码与浏览器不符")
         manager.approve(pairing)
-        let (paired, _) = try await request("api/session")
+        // 批准通过进程管道发送，等待 Node 实际完成授权后再验证任务范围。
+        let paired = try await waitForPairing { try await request("api/session") }
         try localCheck(paired["state"].string == "paired" && paired["task_ref"] == ref, "原生作者确认未限定当前任务")
         func tool(_ name: String, input: [String: JSONValue]) -> JSONValue {
             .object(["method": .string("tools/call"), "params": .object(["name": .string(name), "arguments": .object(input)])])
@@ -81,32 +82,48 @@ enum LocalTaskViewTests {
         let web = WKWebView(frame: NSRect(x: 0, y: 0, width: 1000, height: 720), configuration: webConfiguration)
         defer { web.stopLoading(); webConfiguration.userContentController.removeScriptMessageHandler(forName: "hetuLocalViewTest") }
         web.load(URLRequest(url: origin))
-        try await waitJavaScript(web, script: "!!document.querySelector('#pair') && !document.querySelector('#pair').disabled")
+        try await waitJavaScript(web, phase: "显示 WebKit 配对入口", script: "!!document.querySelector('#pair') && !document.querySelector('#pair').disabled")
         _ = try await web.evaluateJavaScript("document.querySelector('#pair').click()")
-        try await wait { !manager.pairing.isEmpty }
+        try await wait("收到 WebKit 配对请求") { !manager.pairing.isEmpty }
         manager.approve(manager.pairing[0])
-        try await wait { probe.title == "Compare references" }
+        try await wait("加载 WebKit 参考方案") { probe.title == "Compare references" }
         let (_, forbidden) = try await request("api/rpc", body: tool("hetu_finalize_document", input: ["task_ref": ref]), csrf: csrf)
         try localCheck(forbidden == 400, "本地页面取得作者定稿能力")
         _ = try await author.data("hetu.creative_tasks.close", input: ["task_ref": ref, "expected": latest["expected"], "reason": .string("原生关闭任务"), "operation_key": .string("local-view-close")])
-        try await wait { !manager.running }
-        try await waitJavaScript(web, script: "document.querySelectorAll('iframe').length === 0 && document.querySelector('#status').textContent.includes('Access has ended')")
+        try await wait("关闭任务后撤销页面") { !manager.running }
+        try await waitJavaScript(web, phase: "任务关闭后清除 WebKit 内容", script: "document.querySelectorAll('iframe').length === 0 && document.querySelector('#status').textContent.includes('Access has ended')")
         try localCheck(manager.url == nil && manager.pairing.isEmpty, "任务关闭未撤销页面生命周期")
         await manager.start(root: directory, scope: .workspace, taskRef: ref, locale: "zh-CN", theme: "light", runtime: runtime)
         try localCheck(!manager.running && manager.errorKey != nil, "已关闭任务重新获得页面访问")
         print("本地任务页面：原生子进程、配对、CSRF、真实Core保存、WebKit沙箱视图及关闭撤权通过")
     }
-    @MainActor private static func wait(_ condition: () -> Bool) async throws {
+    @MainActor private static func waitForPairing(_ request: () async throws -> (JSONValue, Int)) async throws -> JSONValue {
         let deadline = Date().addingTimeInterval(20)
-        while !condition() {
-            guard Date() < deadline else { throw LocalViewTestFailure(message: "本地任务页面等待超时") }
+        while true {
+            let (session, status) = try await request()
+            try localCheck(status == 200, "配对会话在批准后不可访问")
+            if session["state"].string == "paired" { return session }
+            try localCheck(session["state"].string == "pending" && session["task_ref"] == .null, "待批准会话泄露任务范围或状态错误")
+            guard Date() < deadline else { throw LocalViewTestFailure(message: "本地任务页面配对等待超时") }
             try await Task.sleep(for: .milliseconds(30))
         }
     }
-    @MainActor private static func waitJavaScript(_ web: WKWebView, script: String) async throws {
+    @MainActor private static func wait(_ phase: String, _ condition: () -> Bool) async throws {
+        let deadline = Date().addingTimeInterval(20)
+        while !condition() {
+            guard Date() < deadline else { throw LocalViewTestFailure(message: "本地任务页面等待超时：\(phase)") }
+            try await Task.sleep(for: .milliseconds(30))
+        }
+    }
+    @MainActor private static func waitJavaScript(_ web: WKWebView, phase: String, script: String) async throws {
         let deadline = Date().addingTimeInterval(20)
         while (try? await web.evaluateJavaScript(script) as? Bool) != true {
-            guard Date() < deadline else { throw LocalViewTestFailure(message: "WebKit任务页面等待超时") }
+            guard Date() < deadline else {
+                let state: String
+                do { state = String(describing: try await web.evaluateJavaScript("JSON.stringify({ready:document.readyState,status:document.querySelector('#status')?.textContent,frames:document.querySelectorAll('iframe').length})")) }
+                catch { state = String(describing: error) }
+                throw LocalViewTestFailure(message: "WebKit任务页面等待超时：\(phase)，\(state)")
+            }
             try await Task.sleep(for: .milliseconds(50))
         }
     }

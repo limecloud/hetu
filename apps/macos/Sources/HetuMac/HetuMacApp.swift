@@ -238,10 +238,11 @@ private struct WorkbenchView: View {
         .safeAreaInset(edge: .top) {
             if !model.pendingStructureOperations.isEmpty {
                 HStack {
-                    Text(model.t("review.pending")).font(.caption)
+                    Text(model.t(model.pendingStructureOperations.contains(where: model.isDeliveryRunning) ? "delivery.running" : "review.pending")).font(.caption)
                     ForEach(Array(model.pendingStructureOperations.enumerated()), id: \.offset) { index, operation in
                         Button(model.t("drama.resume_pending", ["number": String(index + 1)])) {
                             Task {
+                                if DeliverySession.isDeliveryAction(operation.action) { await select("delivery"); return }
                                 if let result = await model.workspaceAction(operation.action, input: operation.input, onFailure: { model.message = $0; _ = $1 }) {
                                     if let id = result["draft"]["draft_id"].string ?? operation.input["draft_id"]?.string { await select(id) }
                                     else if let doc = result["document"]["document_id"].string { await select(doc) }
@@ -249,7 +250,7 @@ private struct WorkbenchView: View {
                                     else if operation.action.hasPrefix("hetu.assets.") || operation.action.hasPrefix("hetu.cues.") { await select("media") }
                                 }
                             }
-                        }.disabled(model.busy)
+                        }.disabled(model.busy || model.isDeliveryRunning(operation))
                     }
                 }.padding(8)
             }
@@ -269,6 +270,7 @@ private struct WorkbenchView: View {
         else if selection == "drama" { DramaWorkbenchView(model: model) { id in Task { await select(id) } } }
         else if selection == "git" { GitWorkbenchView(model: model).id(model.workspaceID) }
         else if selection == "media" { MediaWorkbenchView(model: model).id(model.workspaceID) }
+        else if selection == "delivery" { DeliveryWorkbenchView(model: model).id(model.workspaceID) }
         else if selection == "reviews" || selection.hasPrefix("draft_") { ReviewWorkbenchView(model: model, initialDraftID: selection.hasPrefix("draft_") ? selection : "") { id, before in Task { await select(id, adoptionUndoBaseline: before) } }.id(selection) }
         else if !model.documentID.isEmpty {
             ManuscriptView(model: model, inspector: inspector,
@@ -300,7 +302,7 @@ private struct WorkbenchView: View {
             else { model.clearDocument(); selection = "novel" }
             draft = .null
         }
-        else if ["book", "bible", "plot", "validation", "drama", "reviews", "git", "media"].contains(id) { model.clearDocument(); draft = .null; selection = id }
+        else if ["book", "bible", "plot", "validation", "drama", "reviews", "git", "media", "delivery"].contains(id) { model.clearDocument(); draft = .null; selection = id }
         else if id.hasPrefix("draft_") {
             model.clearDocument(); draft = .null; selection = id
         } else if await model.selectDocument(id, adoptionUndoBaseline: adoptionUndoBaseline) {

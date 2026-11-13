@@ -17,6 +17,7 @@ public struct Localizer: Sendable {
         return entries
     }()
     public init(locale: String) { self.locale = locale == "en" ? "en" : "zh-CN" }
+    public func hasTranslation(for key: String) -> Bool { Self.entries[key] != nil }
     public func text(_ key: String, _ values: [String: String] = [:]) -> String {
         guard let entry = Self.entries[key] else {
             return locale == "en" ? "Unable to display this message." : "无法显示此消息。"

@@ -4,6 +4,8 @@ use std::fmt;
 pub mod blueprint;
 pub mod drama;
 pub mod drama_comparison;
+pub mod delivery_formats;
+pub mod delivery_pdf;
 pub mod media;
 pub mod novel;
 pub mod plot;

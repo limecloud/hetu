@@ -479,6 +479,15 @@
         {
           "type": "object",
           "additionalProperties": false,
+          "required": ["kind", "reference"],
+          "properties": {
+            "kind": {"const": "preparation"},
+            "reference": {"$ref": "#/$defs/preparation_ref"}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
           "properties": {
             "kind": {
               "const": "file"
@@ -617,6 +626,7 @@
     },
     "source_ref": {
       "oneOf": [
+        {"$ref": "#/$defs/preparation_source"},
         {
           "type": "object",
           "additionalProperties": false,
@@ -783,6 +793,66 @@
         "partial_result",
         "candidates_ready"
       ]
+    },
+    "preparation_source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "reference", "creation_source", "completed_project", "completed_project_sha256", "request", "request_sha256", "submission", "submission_sha256", "candidate"],
+      "properties": {
+        "kind": {"const": "creation_preparation"},
+        "reference": {"$ref": "creative-task.schema.json#/$defs/candidate_ref"},
+        "creation_source": {"$ref": "creative-task.schema.json#/$defs/creation_source"},
+        "completed_project": {"$ref": "creative-task.schema.json#/$defs/project_record"},
+        "completed_project_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "request": {"$ref": "creative-task.schema.json#/$defs/request_record"},
+        "request_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "submission": {"$ref": "creative-task.schema.json#/$defs/submission_record"},
+        "submission_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "candidate": {"$ref": "creative-task.schema.json#/$defs/candidate_record"}
+      }
+    },
+    "preparation_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["import_id", "sha256"],
+      "properties": {
+        "import_id": {"type": "string", "pattern": "^cover_preparation_[0-9a-f]{64}$"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "preparation_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "workspace_id", "import_id", "asset_ref", "source_ref", "width", "height", "actor_ref", "created_at"],
+      "properties": {
+        "schema_version": {"const": "1.0.0"},
+        "workspace_id": {"$ref": "#/$defs/request/properties/workspace_id"},
+        "import_id": {"$ref": "#/$defs/preparation_ref/properties/import_id"},
+        "asset_ref": {"$ref": "#/$defs/asset_ref"},
+        "source_ref": {"$ref": "#/$defs/preparation_source"},
+        "width": {"type": "integer", "minimum": 64, "maximum": 8192},
+        "height": {"type": "integer", "minimum": 64, "maximum": 8192},
+        "actor_ref": {"type": "string"},
+        "created_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "import_preparation_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["project_path", "candidate_ref", "operation_key"],
+      "properties": {
+        "project_path": {"type": "string", "minLength": 1, "maxLength": 4096},
+        "candidate_ref": {"$ref": "creative-task.schema.json#/$defs/candidate_ref"},
+        "operation_key": {"type": "string", "minLength": 1, "maxLength": 128}
+      }
+    },
+    "list_preparations_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cursor": {"$ref": "#/$defs/preparation_ref/properties/import_id"},
+        "limit": {"type": "integer", "minimum": 1, "maximum": 100}
+      }
     }
   }
 }

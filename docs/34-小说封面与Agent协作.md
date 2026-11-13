@@ -60,7 +60,7 @@ my-novel/
 | CoverResult | `workspace_id, request_id, request_sha256, completed_at, candidates[]` | Agent 完成声明；摘要指向请求文件原始字节，需内核重新核验 |
 | Candidate | `filename, sha256, size_bytes, width, height, media_type, used_prompt, generator` | 实际图片字节、尺寸、Prompt 与生成来源声明；generator 只在确知时记录 model |
 | BookCover | `workspace_id, revision, asset_ref, source_ref, presentation, width, height, previous_sha256, actor_ref, created_at` | 作者选用后的版本记录；`asset_ref={asset_id,revision,sha256}` 固定素材修订；宽高为原件实际尺寸 |
-| source_ref | `kind` 及对应来源字段 | `author_supplied` 保存原始文件名；`external_agent` 保存固定 candidate_ref、请求与候选快照；`existing_asset` 保存原素材引用；均不保存外部文件绝对路径 |
+| source_ref | `kind` 及对应来源字段 | `author_supplied` 保存原始文件名；`external_agent` 保存固定 candidate_ref、请求与候选快照；`creation_preparation` 保存建书筹备、完成修订、任务与图片候选快照；`existing_asset` 保存原素材引用；均不保存外部文件绝对路径 |
 | candidate_ref | `request_id, request_sha256, result_sha256, filename, sha256` | 同时固定请求、回执和图片字节；回执改变后先重新检查，不能沿用旧候选引用 |
 | presentation | `crop_rect, title_overlay, author_overlay` | 原图坐标系内的归一化裁切范围与可编辑真实文字；修改展示不改原图 |
 
@@ -98,9 +98,11 @@ Skill 不假定某个图像工具始终存在，不内置供应商或密钥，�
 | `hetu.covers.create_request` | 最终 `request, operation_key` | 不可变请求、摘要、相对路径及等待状态 | 保留原键；不调用或自动启动 Agent |
 | `hetu.covers.list_requests` | `cursor?, limit?` | 固定请求及摘要、`next_cursor` | 默认20，最多100；按请求ID排序，单次枚举不超过1000条 |
 | `hetu.covers.list_candidates` | `request_id` | 请求、回执摘要、核验状态、候选及预览 | 一次核验本请求最多4张图片，不接受任意输出路径 |
+| `hetu.covers.import_preparation` | `project_path, candidate_ref, operation_key` | 受管素材、不可变导入记录、引用及预览 | 只接受创建本书的筹备及其封面任务；转入不改变当前封面 |
+| `hetu.covers.list_preparations` | `cursor?, limit?` | 已转入图片、来源、预览和下一页 | 默认20，最多100；无需原筹备目录，读取时重验来源和原件 |
 | `hetu.covers.select` | `source, expected_cover, presentation, operation_key` | 素材引用、封面新修订及预览 | `expected_cover=null` 仅允许首次选用，后续需 `{revision,sha256}` CAS |
 
-选用来源 `source` 三选一：`file` 包含 `file_path,expected_file={sha256,size_bytes}`；`candidate` 包含查询返回的完整 `reference`；`asset` 包含固定 `asset_ref`。裁切范围为 `x,y,width,height`，各值位于原图归一化坐标内且不能越界；首次不裁切使用 `{x:0,y:0,width:1,height:1}`。选择无文字底图时，作者可叠加当前真实书名和笔名；选择已有文字图片时默认不重复叠字。
+选用来源 `source` 四选一：`file` 包含 `file_path,expected_file={sha256,size_bytes}`；`candidate` 包含查询返回的完整 `reference`；`asset` 包含固定 `asset_ref`；`preparation` 包含转入查询返回的 `{import_id,sha256}` 引用，并沿用原筹备来源。裁切范围为 `x,y,width,height`，各值位于原图归一化坐标内且不能越界；首次不裁切使用 `{x:0,y:0,width:1,height:1}`。选择无文字底图时，作者可叠加当前真实书名和笔名；选择已有文字图片时默认不重复叠字。
 
 选用事务协调素材导入、BookCover 新版本、原操作与审计；缩略图是可重建投影。Agent 对候选的提交不能改变作者封面选择，不扩张为对 `assets.import` 或作品元数据的任意写权限。
 
@@ -117,5 +119,26 @@ Skill 不假定某个图像工具始终存在，不内置供应商或密钥，�
 第一本书尚未创建时，可以通过 creation_project scope 的通用 cover 创作任务探索视觉方向；它使用29定义的 CreativeTaskRequest／TaskSubmission，不把缺少 workspace_id 的数据塞入正式 CoverRequest。作者在筹备中提供暂定书名或无文字设计要求，结果只作为筹备候选。
 
 创建作品后，作者选择导入哪些筹备图片，内核复制受管原件并保存原请求、候选及摘要的来源快照；书名、笔名或尺寸与最终资料不同要显式提示。然后由作者在作品封面页确认正式选用，或以正式 CoverRequest 请求新的设计。导入已有候选不再次发起生成或收取算力费。
+
+Mac 封面管理显示“建书时的封面”。应用在本机筹备目录中按项目身份寻找来源；目录已移动时，作者可用“选择筹备文件夹”重新定位。任务按批次预览，“转入本书”复制图片并保留来源，“选用封面”另行建立正式封面版本。转入后原筹备目录不可用，不影响本书中的预览与选用。
+
+导入记录位于 `packages/visual-prompt/covers/preparations/<import_id>.json`，图片保存为本书受管素材。记录绑定建书来源摘要、创建完成修订及目标作品身份、固定封面任务、批次与候选、实际图像摘要和素材修订。导入身份按完整候选引用计算，同一候选重复转入复用素材；原操作键在目录移动后仍可恢复。来源属于其他作品、候选不是图片、来源链或原件被改写时拒绝导入，保留当前封面。素材权利默认未知，不自动允许对外交付。
+
+```mermaid
+sequenceDiagram
+    actor A as 作者
+    participant P as 建书筹备
+    participant W as 正式作品
+    A->>W: 打开封面管理
+    W->>P: 核对创建关联，读取封面任务与批次
+    P-->>A: 图片候选及来源
+    A->>W: 转入本书
+    W->>P: 固定任务、批次、候选与原件核验
+    W->>W: 复制原图，保存素材、来源和原操作回执
+    W-->>A: 已转入图片，当前封面保持原选用
+    A->>W: 选用封面
+    W->>W: 核验当前版本并建立新封面修订
+    W-->>A: 更新封面与书库预览
+```
 
 支持的 MCP Apps 可以等比比较候选、放大核对文字和保存偏好；必要时按需启动 Node.js 页面供内置浏览器使用。它们记录原任务的 InteractionDecision，正式 BookCover 选用仍在原生端确认。网页保存、候选通过核验和正式封面选用是不同结果，无 Apps 或浏览器时使用原生预览。

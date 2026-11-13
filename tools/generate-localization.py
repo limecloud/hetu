@@ -82,6 +82,13 @@ def generate():
     if creative.exists():
         families["creative.state."] = json.loads(creative.read_text())["$defs"]["state_record"]["properties"]["state"]["enum"]
     families["cover.state."] = json.loads((ROOT / "contracts/schemas/book-cover.schema.json").read_text())["$defs"]["candidate_state"]["enum"]
+    delivery = json.loads((ROOT / "contracts/schemas/delivery.schema.json").read_text())["$defs"]
+    families["delivery.format."] = sorted(set(delivery["document_preview_input"]["properties"]["format"]["enum"] + delivery["import_preview_input"]["properties"]["format"]["enum"]))
+    delivery_source = (ROOT / "apps/macos/Sources/HetuNative/DeliverySession.swift").read_text()
+    attachment_cases = re.search(r"public enum DeliveryAttachmentKind:[^{]+\{\s*case\s+([A-Za-z, ]+)", delivery_source)
+    if not attachment_cases:
+        raise ValueError("无法读取原生交付附件类型")
+    families["delivery.attachment."] = [value.strip() for value in attachment_cases[1].split(",")]
     referenced.update(finding["message_key"]["enum"])
     for prefix in prefixes:
         if prefix not in families:

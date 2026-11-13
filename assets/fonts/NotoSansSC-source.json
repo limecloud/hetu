@@ -1,0 +1,27 @@
+{
+  "source_commit": "f8d157532fbfaeda587e826d4cd5b21a49186f7c",
+  "source_url": "https://raw.githubusercontent.com/notofonts/noto-cjk/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Sans/Variable/TTF/Subset/NotoSansSC-VF.ttf",
+  "source_sha256": "d68bafcb48a2707749396aa12bbbd833cb70401f3a9a689fd2902c7e0d295964",
+  "derived_file": "HetuExportSansSC-Regular.ttf",
+  "derived_sha256": "b2385eca61a1c4d7cff5781caf2a8899415664f4ccf1c142fc37a42739d78b37",
+  "license": "OFL-1.1",
+  "license_file": "OFL-NotoSansSC.txt",
+  "license_sha256": "6a73f9541c2de74158c0e7cf6b0a58ef774f5a780bf191f2d7ec9cc53efe2bf2",
+  "fonttools_version": "4.68.0",
+  "variation_coordinates": {
+    "wght": 400
+  },
+  "modifications": [
+    "固定 wght=400，生成静态 TrueType 字体；保留原有字形覆盖与版权、许可证字段。",
+    "将家族及 PostScript 名称改为 Hetu Export Sans SC / HetuExportSansSC-Regular，明确衍生版本。",
+    "将 head.modified 固定为原始 head.created，避免构建时间影响摘要。"
+  ],
+  "source_license_url": "https://raw.githubusercontent.com/notofonts/noto-cjk/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Sans/LICENSE",
+  "copyright": [
+    "© 2014-2021 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'."
+  ],
+  "font_version": [
+    "Version 2.004;hotconv 1.0.118;makeotfexe 2.5.65603"
+  ],
+  "coverage": "继承上游 Noto Sans SC Subset 的字符覆盖；不承诺完整 Unicode/CJK，导出时逐字检查并拒绝缺字。"
+}

@@ -9,6 +9,8 @@ use std::path::Path;
 use std::sync::OnceLock;
 mod creation;
 mod covers;
+mod cover_preparations;
+mod delivery;
 mod creative_tasks;
 mod document_lifecycle;
 mod drafts;
@@ -73,6 +75,11 @@ fn catalog() -> &'static Value {
                 .expect("embedded action catalog");
         for action in catalog["actions"].as_array_mut().unwrap() {
             if let Some(reference) = action["input_schema_ref"].as_str() {
+                if let Some(definition) = reference.strip_prefix("schemas/delivery.schema.json#/$defs/") {
+                    action["input_schema"] = delivery::definition(definition);
+                    action.as_object_mut().unwrap().remove("input_schema_ref");
+                    continue;
+                }
                 if let Some(definition) = reference.strip_prefix("schemas/book-cover.schema.json#/$defs/") {
                     action["input_schema"] = covers::definition(definition);
                     action.as_object_mut().unwrap().remove("input_schema_ref");
@@ -351,8 +358,14 @@ impl Kernel {
                 }
             }
         }
-        let _lock = store.lock()?;
-        store.recover()?;
+        let _lock = if empty || options.create.is_some() {
+            Some(store.lock()?)
+        } else {
+            None
+        };
+        if _lock.is_some() {
+            store.recover()?;
+        }
         if empty {
             let create = options.create.as_ref().unwrap();
             let config = json!({"schema_version":"1.0.0","workspace_id":id("workspace"),"title":create.title,"locale":create.locale,"blueprint_path":"shared/blueprint.json","novel_path":"packages/novel/novel.json","packages":PACKAGES});
@@ -410,12 +423,13 @@ impl Kernel {
             );
             changes.insert(
                 ".gitignore".into(),
-                b".hetu/transactions/\n.hetu/cache/\n.hetu/git/\n.hetu/operations/\n.hetu/audit/\n.hetu/workspace.lock\nexports/\n.DS_Store\n"
+                b".hetu/transactions/\n.hetu/cache/\n.hetu/git/\n.hetu/operations/\n.hetu/audit/\n.hetu/deliveries/\n.hetu/workspace.lock\n.hetu/visibility.lock\nexports/\n.DS_Store\n"
                     .to_vec(),
             );
             changes.insert(operation_path(action, &create.operation_key, true), bytes(&json!({"operation_id":op["id"],"action":action,"actor_scope":"author","key":create.operation_key,"input_digest":input_digest,"result":receipt}))?);
             store.transaction(&changes)?;
         }
+        let _read = store.read_lock()?;
         let config_bytes = store.read(".heturc.json")?;
         let config: Value = serde_json::from_slice(&config_bytes)?;
         ensure(
@@ -570,18 +584,27 @@ impl Kernel {
             "forbidden",
             "此动作仅允许作者在可信本机入口操作。",
         )?;
-        let _lock = self.store.lock()?;
-        self.store.recover()?;
+        if matches!(action, "hetu.bundles.export" | "hetu.documents.export") {
+            return self.execute_delivery(action, input, metadata);
+        }
+        let write = metadata["effect"] != "read"
+            && !(action == "hetu.plot.extract" && input["save_result"] == false)
+            && !(action == "hetu.drama.compare" && input["save_result"] == false)
+            && !(action == "hetu.validation.run" && input["save_report"] == false);
+        let _lock = if write {
+            self.store.lock()?
+        } else {
+            self.store.read_lock()?
+        };
+        if write {
+            self.store.recover()?;
+        }
         ensure(
             digest(self.store.read(self.config_path())?) == self.config_sha,
             "revision_conflict",
             "工作区配置被外部修改，请重新打开并审阅。",
         )?;
         self.check_task_session()?;
-        let write = metadata["effect"] != "read"
-            && !(action == "hetu.plot.extract" && input["save_result"] == false)
-            && !(action == "hetu.drama.compare" && input["save_result"] == false)
-            && !(action == "hetu.validation.run" && input["save_report"] == false);
         let key = if write {
             text(input, "operation_key")?
         } else {
@@ -799,8 +822,13 @@ impl Kernel {
             "hetu.creative_tasks.mark_copied" => self.mark_task_copied(input, changes),
             "hetu.interactions.get" => self.get_task_interaction(input),
             "hetu.interactions.save_selection" => self.save_task_selection(input, changes),
-            "hetu.workspaces.get" | "hetu.workspaces.list" => Ok(json!({"workspace":self.config})),
+            "hetu.workspaces.get" | "hetu.workspaces.list" => Ok(json!({"workspace":self.config,"access":{"write_available":self.store.write_available()?}})),
             "hetu.novels.get" => self.get_novel(),
+            "hetu.bundles.preview" => self.preview_bundle(input),
+            "hetu.bundles.verify" => self.verify_delivery_bundle(input),
+            "hetu.documents.preview_export" => self.preview_document_export(input),
+            "hetu.documents.preview_import" => self.preview_document_import(input),
+            "hetu.documents.import" => self.import_document(input, changes),
             "hetu.covers.get" => self.get_cover(input),
             "hetu.covers.inspect_file" => self.inspect_cover_file(input),
             "hetu.covers.preview_prompt" => self.preview_cover_prompt(input),
@@ -808,6 +836,8 @@ impl Kernel {
             "hetu.covers.list_requests" => self.list_cover_requests(input),
             "hetu.covers.list_candidates" => self.list_cover_candidates(input),
             "hetu.covers.select" => self.select_cover(input, changes),
+            "hetu.covers.import_preparation" => self.import_cover_preparation(input, changes),
+            "hetu.covers.list_preparations" => self.list_cover_preparations(input),
             "hetu.novels.initialize" => self.initialize_novel(input, changes),
             "hetu.novels.update" => self.update_novel(input, changes, false),
             "hetu.novels.save_structure" => self.update_novel(input, changes, true),
