@@ -1,4 +1,4 @@
-河图洛书 v0.4.1 提供通过 Developer ID 签名和 Apple 公证的 Mac 安装包。
+河图洛书 v0.4.2 提供通过 Developer ID 签名和 Apple 公证的 Mac 安装包。
 
 - 支持 macOS 14 及以上的 Apple Silicon Mac；下载 DMG 后将 `Hetu.app` 拖入“应用程序”。也可下载 ZIP 解压使用。
 - 应用、独立助手和随包 Node.js 使用同一开发者团队签名；App 与 DMG 分别通过 Apple 公证、票据装订和 Gatekeeper 检查。

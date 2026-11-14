@@ -1,5 +1,11 @@
 # 版本记录
 
+## v0.4.2 — 2026-11-14
+
+- 同步版本更新后的任务页面产物与源码摘要，通过资源一致性门禁后构建签名安装包。
+- 提供经过 Developer ID 签名、Apple 公证和票据装订的 Mac DMG 与 ZIP。
+
+
 ## v0.4.1 — 2026-11-14
 
 - 提供 macOS 14 及以上、Apple Silicon 的 Developer ID 签名安装包，App 和 DMG 分别通过 Apple 公证与票据装订。

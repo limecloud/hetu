@@ -6,7 +6,7 @@
 
 河图洛书以作者书库管理多部独立小说，每部作品分别保存资料、封面、卷章、设定集及关联短剧。工作台提供一致性检查、剧情抽取、Git、MCP 与交付流程的规范和原生实现。核心不内置模型或生成 API，作者负责最终审核。
 
-`0.4.1` 交付 Rust 内核、macOS 原生客户端、Swift CLI、独立 MCP Server、双语官网与首页交互演示的源码。原生源码采用 Rust 内核与 C ABI，Swift Bridge 供 Mac 客户端和 Swift CLI 共用；范围与发布门禁见专项设计和验收矩阵。
+`0.4.2` 交付 Rust 内核、macOS 原生客户端、Swift CLI、独立 MCP Server、双语官网与首页交互演示的源码。原生源码采用 Rust 内核与 C ABI，Swift Bridge 供 Mac 客户端和 Swift CLI 共用；范围与发布门禁见专项设计和验收矩阵。
 
 本仓库是软件源码 Monorepo，用户创作的 IP 内容工作区独立存放。宣传网站位于 `apps/website/`，产品与工程规范位于 `docs/`，品牌资产位于 `assets/`。交互原型不连接真实工作区，应用安装包独立于设计材料交付。
 
@@ -24,7 +24,7 @@
 
 ### 下载与安装
 
-下载 [河图洛书 v0.4.1 · Mac DMG](https://github.com/limecloud/hetu/releases/download/v0.4.1/Hetu-0.4.1-macos-arm64.dmg) 或 [ZIP](https://github.com/limecloud/hetu/releases/download/v0.4.1/Hetu-0.4.1-macos-arm64.zip)。支持 macOS 14 及以上的 Apple Silicon Mac；打开 DMG，将 `Hetu.app` 拖入“应用程序”。安装包经过 Developer ID 签名及 Apple 公证，校验和与版本清单见 [GitHub Release](https://github.com/limecloud/hetu/releases/tag/v0.4.1)。
+下载 [河图洛书 v0.4.2 · Mac DMG](https://github.com/limecloud/hetu/releases/download/v0.4.2/Hetu-0.4.2-macos-arm64.dmg) 或 [ZIP](https://github.com/limecloud/hetu/releases/download/v0.4.2/Hetu-0.4.2-macos-arm64.zip)。支持 macOS 14 及以上的 Apple Silicon Mac；打开 DMG，将 `Hetu.app` 拖入“应用程序”。安装包经过 Developer ID 签名及 Apple 公证，校验和与版本清单见 [GitHub Release](https://github.com/limecloud/hetu/releases/tag/v0.4.2)。
 
 ### 网站
 
