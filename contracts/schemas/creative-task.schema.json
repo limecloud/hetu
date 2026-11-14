@@ -2972,7 +2972,8 @@
             ]
           }
         }
-      ]
+      ],
+      "type": "object"
     },
     "image_prepare_input": {
       "allOf": [
@@ -3010,7 +3011,8 @@
             ]
           }
         }
-      ]
+      ],
+      "type": "object"
     }
   }
 }

@@ -670,7 +670,9 @@ async fn discovery_and_metadata_are_checked_on_every_request() {
     assert_eq!(client.response(id).await["error"]["code"], -32602);
     let tools = client.rpc("tools/list", json!({})).await;
     let tools = tools["result"]["tools"].as_array().unwrap();
-    assert_eq!(tools.len(), 13);
+    assert_eq!(tools.len(), 15);
+    assert!(tools.iter().any(|tool| tool["name"] == "hetu_preview_image_task"));
+    assert!(tools.iter().any(|tool| tool["name"] == "hetu_prepare_image_task"));
     assert!(tools.iter().any(|t| t["name"] == "hetu_read_resource"));
     assert!(tools.iter().any(|t| t["name"] == "hetu_read_drama_project"));
     assert!(!tools.iter().any(|t| t["name"] == "hetu_create_resource"));
@@ -1019,7 +1021,7 @@ async fn official_sdk_client_discovers_calls_and_reads_the_native_process() {
     .await
     .unwrap()
     .unwrap();
-    assert_eq!(client.list_tools(None).await.unwrap().tools.len(), 13);
+    assert_eq!(client.list_tools(None).await.unwrap().tools.len(), 15);
     let result = client
         .call_tool(CallToolRequestParams::new("hetu_read_blueprint"))
         .await

@@ -38,7 +38,11 @@
 
 ## 快速上手
 
-### 前置条件
+### 下载与安装
+
+从 [GitHub Release](https://github.com/limecloud/hetu/releases/latest) 下载 Mac DMG 或 ZIP。支持 macOS 14 及以上的 Apple Silicon Mac；打开 DMG，将 `Hetu.app` 拖入“应用程序”。正式安装包经过 Developer ID 签名与 Apple 公证，随包提供 `SHA256SUMS` 和 `release-manifest.json`。
+
+### 源码构建前置条件
 
 - Mac 客户端：macOS 14+、Swift 6.2+、macOS SDK、Rust 1.93.1。
 - 网站及本地任务页面：Node.js `>=24.21.0 <26` 与 npm。
@@ -76,7 +80,7 @@ python3 "tools/build-native.py" --test
 
 网站测试所需浏览器见[网站说明](apps/website/README.md)，原生构建与分发见[构建规范](docs/21-构建分发与运维.md)。
 
-GitHub Actions 的 `CI` 执行原生与网页测试；`macOS signed package` 从 `main` 手动构建签名、公证的 Mac 下载包。所需 Secrets 与制品下载方式见[构建规范](docs/21-构建分发与运维.md#61-github-actions)。
+GitHub Actions 的 `CI` 执行原生与网页测试；`macOS signed package` 从 `main` 手动构建签名、公证的 Mac 下载包，推送匹配版本的 `v*.*.*` 标签时构建并发布 GitHub Release。所需 Secrets 与制品下载方式见[构建规范](docs/21-构建分发与运维.md#61-github-actions)。
 
 ## 配置与接入
 
