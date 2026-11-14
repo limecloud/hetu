@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  macos:
+    name: macOS arm64 native tests
+    runs-on: macos-15
+    timeout-minutes: 45
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+      MACOSX_DEPLOYMENT_TARGET: "14.0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.21.0"
+          cache: npm
+      - name: Install locked Rust toolchain
+        run: rustup toolchain install 1.93.1 --profile minimal
+      - name: Check build and release tooling
+        run: python3 -m unittest discover -s tests/tooling -v
+      - name: Prepare task view
+        run: |
+          npm ci --workspace @hetu/task-view --include-workspace-root=false
+          npm run check --workspace @hetu/task-view
+      - name: Build and test native clients
+        run: python3 "tools/build-native.py" --test --swift-scratch-path "build/ci-swift" --node-runtime "$(command -v node)"
+
+  web:
+    name: Website and task view tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.21.0"
+          cache: npm
+      - name: Install locked Rust toolchain
+        run: rustup toolchain install 1.93.1 --profile minimal
+      - name: Install dependencies and browser
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Build website
+        run: npm run build
+      - name: Test website and task view
+        run: |
+          npm run test --workspace @hetu/website
+          npm run test:task-view
+      - name: Retain failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-test-results
+          path: |
+            apps/website/test-results/
+            apps/website/playwright-report/
+            build/task-view/test-results/
+          retention-days: 7

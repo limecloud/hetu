@@ -43,6 +43,8 @@ npm run dev
 
 也可在 Finder 中双击根目录的 `dev-mac.command`。脚本检查本机工具链，按需安装任务页面的项目依赖，构建并打开 `build/native/HetuDev.app`，不启动官网或 Windows。开发版使用独立应用身份；已经运行时只激活当前窗口，重新编译前先正常退出开发版。`./dev-mac.command --check` 只检查环境，`--build-only` 只构建；完整原生检查使用 `python3 "tools/build-native.py" --test`。
 
+GitHub Actions 的 `CI` 执行原生与网页测试；`macOS signed package` 从 `main` 手动构建签名、公证的 Mac 下载包。所需 Secrets 与制品下载方式见[构建规范](docs/21-构建分发与运维.md#61-github-actions)。
+
 Rust 内核位于 `core/`，Swift 桥接位于 `bindings/swift/`，CLI 位于 `apps/cli/`。动作及输入合同由 `contracts/actions.json` 与引用的 Schema 定义，`hetu capabilities` 按当前工作区返回实际实现的能力。
 
 Mac 客户端位于 `apps/macos/`，提供多作品书库、作品资料、分卷与章节顺序管理、Markdown／Fountain 正文编辑、设定集编辑与历史修订查看、草稿审核。书库可搜索、按创作状态筛选，切换封面和列表布局；小说资料与目录采用修订校验，章节重排保留正文及原文引用。编辑缓冲保存在本机恢复目录，正文保存处理多窗口冲突。构建输出的 `.app` 采用本机 ad-hoc 签名，用于开发验证；正式分发按[构建分发规范](docs/21-构建分发与运维.md)验收。

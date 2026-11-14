@@ -1,0 +1,72 @@
+name: macOS signed package
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: macos-signed-package
+  cancel-in-progress: false
+
+jobs:
+  package:
+    name: Sign and notarize macOS arm64
+    if: github.ref == 'refs/heads/main'
+    runs-on: macos-15
+    timeout-minutes: 120
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+      MACOSX_DEPLOYMENT_TARGET: "14.0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.21.0"
+          cache: npm
+      - name: Install locked Rust toolchain
+        run: rustup toolchain install 1.93.1 --profile minimal
+      - name: Check release tooling
+        run: python3 -m unittest discover -s tests/tooling -v
+      - name: Verify release configuration
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+        run: python3 "tools/release-macos.py" --check
+      - name: Verify task view resources
+        run: |
+          npm ci --workspace @hetu/task-view --include-workspace-root=false
+          npm run check --workspace @hetu/task-view
+      - name: Build and test optimized clients
+        run: python3 "tools/build-native.py" --configuration release --test --swift-scratch-path "build/release-swift" --node-runtime "$(command -v node)"
+      - name: Sign, notarize and package
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+        run: python3 "tools/release-macos.py"
+      - name: Retain notarization receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-notarization-receipt
+          path: build/release-evidence/
+          if-no-files-found: ignore
+          retention-days: 30
+      - name: Upload verified packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: hetu-macos-arm64
+          path: dist/macos/
+          if-no-files-found: error
+          retention-days: 30

@@ -48,9 +48,9 @@ def copy_tree_exact(source, destination):
     if tree_hashes(destination) != expected:
         raise SystemExit(f"资源装配摘要不符：{destination}")
 
-def refresh_swift_resources():
+def refresh_swift_resources(debug=None):
     # SwiftPM 的目录资源缓存不能作为发行事实源；从已校验的受管源精确装配。
-    debug = ROOT / ".build/debug"
+    debug = debug or ROOT / ".build/debug"
     integration = debug / "Hetu_HetuIntegrationAssets.bundle"
     shutil.copy2(ROOT / "integrations/catalog.json", integration / "catalog.json")
     copy_tree_exact(ROOT / "integrations/codex", integration / "codex")
@@ -82,8 +82,8 @@ def verify_font_notices(contents):
             raise SystemExit(f"App 缺少同源字体许可或来源记录：{name}")
     return expected
 
-def verify_packaged_resources(contents):
-    debug = ROOT / ".build/debug"
+def verify_packaged_resources(contents, debug=None):
+    debug = debug or ROOT / ".build/debug"
     report = {"schema_version": "1.0.0", "skills": {}}
     report["font_notices"] = verify_font_notices(contents)
     catalog = json.loads((ROOT / "integrations/catalog.json").read_text())
@@ -146,8 +146,9 @@ def rust_channel():
             return "stable"
     raise SystemExit(f"需要已安装的 Rust {version}；本脚本不会安装或更新系统工具链。")
 
-def package_app(channel, runtime, development=False):
-    binary = ROOT / ".build/debug/HetuMac"
+def package_app(channel, runtime, development=False, swift_debug=None, configuration="debug"):
+    debug = swift_debug or ROOT / ".build" / configuration
+    binary = debug / "HetuMac"
     app = ROOT / "build/native" / ("HetuDev.app" if development else "Hetu.app")
     contents = app / "Contents"
     for name in ["MacOS", "Frameworks", "Resources", "Helpers"]:
@@ -156,15 +157,15 @@ def package_app(channel, runtime, development=False):
     library = contents / "Frameworks/libhetu_core.dylib"
     shutil.copy2(binary, executable)
     shutil.copy2(ROOT / "build/native/lib/libhetu_core.dylib", library)
-    refresh_swift_resources()
+    refresh_swift_resources(debug)
     for name in ["HetuNative", "HetuArtwork", "HetuIntegrationAssets", "HetuTaskViewAssets"]:
         bundle = f"Hetu_{name}.bundle"
-        copy_tree_exact(ROOT / ".build/debug" / bundle, contents / "Resources" / bundle)
+        copy_tree_exact(debug / bundle, contents / "Resources" / bundle)
     copy_font_notices(contents)
-    verify_packaged_resources(contents)
+    verify_packaged_resources(contents, debug)
     shutil.copy2(ROOT / "assets/brand/icons/macos/Hetu.icns", contents / "Resources/Hetu.icns")
     mcp = contents / "Helpers/hetu-mcp"
-    shutil.copy2(ROOT / "target/debug/hetu-mcp", mcp)
+    shutil.copy2(ROOT / "target" / configuration / "hetu-mcp", mcp)
     standalone = ROOT / "build/native/bin/hetu-mcp"
     standalone.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(mcp, standalone)
@@ -174,12 +175,13 @@ def package_app(channel, runtime, development=False):
     notices = contents / "Resources/ThirdParty"
     notices.mkdir(parents=True, exist_ok=True)
     shutil.copy2(node_license, notices / "Node.js-LICENSE.txt")
+    version = json.loads((ROOT / "package.json").read_text())["version"]
     info = {
         "CFBundleName": "Hetu Luoshu Dev" if development else "Hetu Luoshu",
         "CFBundleDisplayName": "河图洛书 开发版" if development else "河图洛书",
         "CFBundleIdentifier": "run.limeai.hetu.dev" if development else "run.limeai.hetu",
         "CFBundleExecutable": "HetuMac", "CFBundlePackageType": "APPL", "CFBundleIconFile": "Hetu",
-        "CFBundleShortVersionString": "0.4.0", "CFBundleVersion": "4", "LSMinimumSystemVersion": "14.0",
+        "CFBundleShortVersionString": version, "CFBundleVersion": version, "LSMinimumSystemVersion": "14.0",
         "NSHighResolutionCapable": True, "NSPrincipalClass": "NSApplication",
         "CFBundleDevelopmentRegion": "zh_CN", "CFBundleLocalizations": ["zh_CN", "en"],
         "NSSupportsAutomaticTermination": False,
@@ -211,6 +213,8 @@ def main():
     parser.add_argument("--mac-only", action="store_true", help="只构建 Mac 应用及所需内核、MCP 和资源")
     parser.add_argument("--development", action="store_true", help="装配独立的 HetuDev.app，不覆盖普通开发包")
     parser.add_argument("--node-runtime", help="随开发包装配的本机 Node.js 路径；不修改系统 Node")
+    parser.add_argument("--swift-scratch-path", type=Path, help="使用独立 Swift 构建目录，并从同一目录装配与测试")
+    parser.add_argument("--configuration", choices=["debug", "release"], default="debug", help="Rust 与 Swift 使用同一构建配置；签名仍为 ad-hoc")
     args = parser.parse_args()
     if args.mac_only and args.test:
         parser.error("--mac-only 不执行全量测试，请单独使用 --test。")
@@ -220,27 +224,31 @@ def main():
     runtime = node_runtime(args.node_runtime)
     verify_task_view()
     run([sys.executable, str(ROOT / "tools/verify-skills.py")], channel)
-    run(["cargo", "build", "--locked"], channel)
+    cargo_profile = ["--release"] if args.configuration == "release" else []
+    run(["cargo", "build", "--locked", *cargo_profile], channel)
     stage = ROOT / "build/native/lib"
     stage.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(ROOT / "target/debug/libhetu_core.dylib", stage)
+    shutil.copy2(ROOT / "target" / args.configuration / "libhetu_core.dylib", stage)
     run(["install_name_tool", "-id", "@rpath/libhetu_core.dylib", str(stage / "libhetu_core.dylib")], channel)
     run(["codesign", "--force", "--sign", "-", str(stage / "libhetu_core.dylib")], channel)
     run([sys.executable, str(ROOT / "tools/generate-localization.py")], channel)
-    swift_args = ["swift", "build", "--jobs", "2", "-Xswiftc", "-disable-batch-mode"]
+    scratch_args = ["--scratch-path", str(args.swift_scratch_path.resolve())] if args.swift_scratch_path else []
+    configuration_args = ["--configuration", args.configuration]
+    swift_args = ["swift", "build", *scratch_args, *configuration_args, "--jobs", "2", "--disable-index-store", "-Xswiftc", "-disable-batch-mode"]
     if args.mac_only:
         swift_args += ["--product", "HetuMac"]
     run(swift_args, channel)
-    package_app(channel, runtime, args.development)
+    debug = (args.swift_scratch_path.resolve() if args.swift_scratch_path else ROOT / ".build") / args.configuration
+    package_app(channel, runtime, args.development, debug, args.configuration)
     if args.test:
-        run(["cargo", "test", "--locked", "-p", "hetu-core"], channel)
+        run(["cargo", "test", "--locked", *cargo_profile, "-p", "hetu-core"], channel)
         # 每个 stdio 用例启动真实服务进程，限制并发以保留握手超时的诊断意义。
-        run(["cargo", "test", "--locked", "-p", "hetu-mcp", "--", "--test-threads=2"], channel,
+        run(["cargo", "test", "--locked", *cargo_profile, "-p", "hetu-mcp", "--", "--test-threads=2"], channel,
             {"HETU_MCP_TEST_BINARY": str(ROOT / "build/native/bin/hetu-mcp")})
-        run(["swift", "run", "--skip-build", "hetu-bridge-tests"], channel)
-        run(["swift", "run", "--skip-build", "hetu-native-tests"], channel,
+        run(["swift", "run", *scratch_args, *configuration_args, "--skip-build", "hetu-bridge-tests"], channel)
+        run(["swift", "run", *scratch_args, *configuration_args, "--skip-build", "hetu-native-tests"], channel,
             {"HETU_TEST_NODE": str(ROOT / "build/native" / ("HetuDev.app" if args.development else "Hetu.app") / "Contents/Helpers/node")})
-        run([sys.executable, str(ROOT / "tools/verify-ffi.py"), "--cli"], channel)
+        run([sys.executable, str(ROOT / "tools/verify-ffi.py"), "--cli", "--cli-binary", str((debug or ROOT / ".build/debug") / "hetu")], channel)
 
 if __name__ == "__main__":
     main()

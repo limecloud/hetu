@@ -16,7 +16,9 @@ class Buffer(c.Structure):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cli", action="store_true", help="同时验证已构建 Swift CLI 的 JSON 管道与退出码")
+    parser.add_argument("--cli-binary", type=Path, default=ROOT / ".build/debug/hetu", help="待验证的 Swift CLI 路径；与 --cli 一起使用")
     args = parser.parse_args()
+    cli_binary = args.cli_binary.resolve()
     lib = c.CDLL(str(ROOT / "build/native/lib/libhetu_core.dylib"))
     byte_pointer = c.POINTER(c.c_uint8)
     lib.hetu_context_open.argtypes = [byte_pointer, c.c_uint64, c.POINTER(c.c_void_p), c.POINTER(Buffer)]
@@ -66,7 +68,7 @@ def main():
         denied = request(agent, "hetu.documents.save", {"document_id":created["data"]["document"]["document_id"], "base_revision_id":created["data"]["revision"]["revision_id"], "source_format":"markdown", "content":"不应写入", "operation_key":"deny"})
         assert denied["error"]["code"] == "forbidden"
         if args.cli:
-            command = [str(ROOT / ".build/debug/hetu"), "--workspace", str(path), "call"]
+            command = [str(cli_binary), "--workspace", str(path), "call"]
             read_process = subprocess.run([*command, "hetu.documents.get", "--input", "-"], input=json.dumps({"document_id":created["data"]["document"]["document_id"]}), text=True, capture_output=True, cwd=folder, timeout=30)
             assert read_process.returncode == 0, read_process.stderr
             assert not read_process.stderr
