@@ -6,7 +6,7 @@
 
 河图洛书以作者书库管理多部独立小说，每部作品分别保存资料、封面、卷章、设定集及关联短剧。工作台提供一致性检查、剧情抽取、Git、MCP 与交付流程的规范和原生实现。核心不内置模型或生成 API，作者负责最终审核。
 
-`0.4.0` 交付 Rust 内核、macOS 原生客户端、Swift CLI、独立 MCP Server、双语官网与首页交互演示的源码。原生源码采用 Rust 内核与 C ABI，Swift Bridge 供 Mac 客户端和 Swift CLI 共用；范围与发布门禁见专项设计和验收矩阵。
+`0.4.1` 交付 Rust 内核、macOS 原生客户端、Swift CLI、独立 MCP Server、双语官网与首页交互演示的源码。原生源码采用 Rust 内核与 C ABI，Swift Bridge 供 Mac 客户端和 Swift CLI 共用；范围与发布门禁见专项设计和验收矩阵。
 
 本仓库是软件源码 Monorepo，用户创作的 IP 内容工作区独立存放。宣传网站位于 `apps/website/`，产品与工程规范位于 `docs/`，品牌资产位于 `assets/`。交互原型不连接真实工作区，应用安装包独立于设计材料交付。
 
@@ -21,6 +21,10 @@
 - 官网开发与发布 → [宣传网站](apps/website/README.md)、[部署规范](docs/33-宣传网站与部署.md)。
 
 ## 快速上手
+
+### 下载与安装
+
+下载 [河图洛书 v0.4.1 · Mac DMG](https://github.com/limecloud/hetu/releases/download/v0.4.1/Hetu-0.4.1-macos-arm64.dmg) 或 [ZIP](https://github.com/limecloud/hetu/releases/download/v0.4.1/Hetu-0.4.1-macos-arm64.zip)。支持 macOS 14 及以上的 Apple Silicon Mac；打开 DMG，将 `Hetu.app` 拖入“应用程序”。安装包经过 Developer ID 签名及 Apple 公证，校验和与版本清单见 [GitHub Release](https://github.com/limecloud/hetu/releases/tag/v0.4.1)。
 
 ### 网站
 
@@ -43,7 +47,7 @@ npm run dev
 
 也可在 Finder 中双击根目录的 `dev-mac.command`。脚本检查本机工具链，按需安装任务页面的项目依赖，构建并打开 `build/native/HetuDev.app`，不启动官网或 Windows。开发版使用独立应用身份；已经运行时只激活当前窗口，重新编译前先正常退出开发版。`./dev-mac.command --check` 只检查环境，`--build-only` 只构建；完整原生检查使用 `python3 "tools/build-native.py" --test`。
 
-GitHub Actions 的 `CI` 执行原生与网页测试；`macOS signed package` 从 `main` 手动构建签名、公证的 Mac 下载包。所需 Secrets 与制品下载方式见[构建规范](docs/21-构建分发与运维.md#61-github-actions)。
+GitHub Actions 的 `CI` 执行原生与网页测试；`macOS signed package` 从 `main` 手动构建签名、公证的 Mac 下载包；推送匹配版本的 `v*.*.*` 标签时完成构建并发布 GitHub Release。所需 Secrets 与制品下载方式见[构建规范](docs/21-构建分发与运维.md#61-github-actions)。
 
 Rust 内核位于 `core/`，Swift 桥接位于 `bindings/swift/`，CLI 位于 `apps/cli/`。动作及输入合同由 `contracts/actions.json` 与引用的 Schema 定义，`hetu capabilities` 按当前工作区返回实际实现的能力。
 
