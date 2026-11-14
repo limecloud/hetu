@@ -4,7 +4,7 @@ use crate::domain::{drama, script};
 impl Kernel {
     pub(super) fn create_script(&self, input: &Value, changes: &mut Changes) -> Result<Value> {
         let reference = &input["skeleton_ref"];
-        let (skeleton, sha) = self.read_skeleton(
+        let (mut skeleton, sha) = self.read_skeleton(
             text(reference, "skeleton_id")?,
             Some(integer(reference, "revision")?),
         )?;
@@ -13,6 +13,10 @@ impl Kernel {
             "hetu.stale_evidence",
             "骨架固定修订摘要不一致。",
         )?;
+        if let Some(episode_id) = input["episode_id"].as_str() {
+            skeleton.episodes.retain(|episode| episode.episode_id == episode_id);
+            ensure(!skeleton.episodes.is_empty(), "invalid_input", "分集不在固定骨架中。")?;
+        }
         let (bp, _) = self.blueprint_revision(Some(skeleton.blueprint_revision))?;
         let rendered = script::render(
             &skeleton,
@@ -22,7 +26,8 @@ impl Kernel {
         )?;
         let mut result = self.create_document(&json!({"kind":"drama_script","title":input["title"],"source_format":"fountain","language_tag":input["language_tag"],"content":rendered.content}), changes)?;
         let doc_id = text(&result["document"], "document_id")?.to_string();
-        let mapping = json!({"schema_version":"1.0.0","renderer_version":script::RENDERER_VERSION,"document_id":doc_id,"revision_id":result["revision"]["revision_id"],"content_sha256":result["revision"]["sha256"],"skeleton_ref":reference,"language_tag":input["language_tag"],"title":input["title"],"coverage_status":skeleton.status,"scenes":rendered.scenes});
+        let mut mapping = json!({"schema_version":"1.0.0","renderer_version":script::RENDERER_VERSION,"document_id":doc_id,"revision_id":result["revision"]["revision_id"],"content_sha256":result["revision"]["sha256"],"skeleton_ref":reference,"language_tag":input["language_tag"],"title":input["title"],"coverage_status":skeleton.status,"scenes":rendered.scenes});
+        if let Some(episode) = input.get("episode_id") { mapping["episode_id"] = episode.clone(); }
         let path = format!("packages/drama/mappings/{doc_id}.json");
         self.store.directory("packages/drama/mappings")?;
         self.store.directory(".hetu/script-mappings")?;
@@ -86,7 +91,7 @@ impl Kernel {
             "剧本结构映射身份或版本不一致。",
         )?;
         let reference = &mapping["skeleton_ref"];
-        let (skeleton, sha) = self.read_skeleton(
+        let (mut skeleton, sha) = self.read_skeleton(
             text(reference, "skeleton_id")?,
             Some(integer(reference, "revision")?),
         )?;
@@ -96,6 +101,10 @@ impl Kernel {
             "映射固定骨架摘要不一致。",
         )?;
         let fixed = self.document_content(&doc_id, Some(text(&mapping, "revision_id")?))?;
+        if let Some(episode_id) = mapping["episode_id"].as_str() {
+            skeleton.episodes.retain(|episode| episode.episode_id == episode_id);
+            ensure(!skeleton.episodes.is_empty(), "invalid_input", "分集不在固定骨架中。")?;
+        }
         let (bp, _) = self.blueprint_revision(Some(skeleton.blueprint_revision))?;
         let rendered = script::render(
             &skeleton,

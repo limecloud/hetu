@@ -19,6 +19,7 @@ struct CoverWorkbenchSheet: View {
     @State private var count = 1
     @State private var textMode = "background_only"
     @State private var installation = false
+    @State private var modelTask = false
     @State private var copied = false
     @State private var importedFile: URL?
     @State private var inspected: JSONValue = .null
@@ -38,13 +39,14 @@ struct CoverWorkbenchSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
-                Text(model.t("cover.manage")).font(.title2)
-                Text(model.title).foregroundStyle(.secondary)
+                Text(model.t("cover.manage")).font(.system(size: 20, weight: .semibold))
+                Text(model.title).foregroundStyle(WorkbenchPalette.muted)
                 Spacer()
                 Button(model.t("common.close")) { dismiss() }.keyboardShortcut(.cancelAction).disabled(session.pending != nil)
             }
-            if let error = session.error { Text(error).foregroundStyle(.red).textSelection(.enabled) }
+            if let error = session.error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             if session.pending != nil { Button(model.t("drama.retry")) { Task { await session.retry() } } }
+            Button(model.t("models.cover_task")) { modelTask = true }.disabled(session.held)
             HSplitView {
                 ScrollView { VStack(alignment: .leading, spacing: 16) { currentCover; coverHistory; Divider(); preparation }.padding(.trailing, 16) }.frame(minWidth: 300, idealWidth: 350, maxWidth: 420)
                 ScrollView { VStack(alignment: .leading, spacing: 16) { preparationCovers; manualImport; Divider(); requestHistory; results }.padding(.leading, 16).frame(maxWidth: .infinity, alignment: .leading) }.frame(minWidth: 390)
@@ -60,6 +62,9 @@ struct CoverWorkbenchSheet: View {
                     association: AgentAssociation(client: client, suiteID: model.agentIntegration.association(for: model.workspaceID).suiteID),
                     localizer: model.localizer, onSelection: { client = $0.client })
             }
+            .sheet(isPresented: $modelTask, onDismiss: { Task { await session.refresh(); await model.refresh() } }) {
+                CreativeTaskView(model: model, kind: .cover)
+            }
     }
     @ViewBuilder private var coverHistory: some View {
         if let revision = session.current["cover"]["revision"].integer, revision > 1 {
@@ -73,7 +78,7 @@ struct CoverWorkbenchSheet: View {
                             titleOverlay: session.history["cover"]["presentation"]["title_overlay"].string,
                             authorOverlay: session.history["cover"]["presentation"]["author_overlay"].string)
                             .frame(maxWidth: .infinity).frame(height: 210)
-                        Text(model.t("cover.revision", ["revision": String(session.history["cover"]["revision"].integer ?? 1)])).font(.caption).foregroundStyle(.secondary)
+                        Text(model.t("cover.revision", ["revision": String(session.history["cover"]["revision"].integer ?? 1)])).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                         Button(model.t("cover.restore")) { Task { _ = await session.restoreInspectedRevision() } }.disabled(session.held)
                     }
                 }.padding(.top, 8)
@@ -82,23 +87,23 @@ struct CoverWorkbenchSheet: View {
     }
     private var currentCover: some View {
         VStack(alignment: .leading, spacing: 10) {
-            HStack { Text(model.t("cover.current")).font(.headline); Spacer(); Button(model.t("common.refresh")) { Task { await session.refresh(); await model.refresh() } }.disabled(session.held) }
+            HStack { Text(model.t("cover.current")).font(.system(size: 14, weight: .semibold)); Spacer(); Button(model.t("common.refresh")) { Task { await session.refresh(); await model.refresh() } }.disabled(session.held) }
             if session.current["cover"] != .null {
                 BookCoverView(title: model.title, author: model.novelMetadata["author_name"].string ?? "", identity: model.workspaceID,
                     imageData: session.current["preview"]["base64"].string.flatMap { Data(base64Encoded: $0) },
                     titleOverlay: session.current["cover"]["presentation"]["title_overlay"].string,
                     authorOverlay: session.current["cover"]["presentation"]["author_overlay"].string)
                     .frame(maxWidth: .infinity).frame(height: 210)
-                Text(model.t("cover.revision", ["revision": String(session.current["cover"]["revision"].integer ?? 1)])).font(.caption).foregroundStyle(.secondary)
-            } else { Text(model.t("cover.placeholder")).foregroundStyle(.secondary) }
+                Text(model.t("cover.revision", ["revision": String(session.current["cover"]["revision"].integer ?? 1)])).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
+            } else { Text(model.t("cover.placeholder")).foregroundStyle(WorkbenchPalette.muted) }
         }
     }
     private var preparation: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(model.t("cover.external")).font(.headline)
+            Text(model.t("cover.external")).font(.system(size: 14, weight: .semibold))
             Picker(model.t("agent.client"), selection: $client) { ForEach(AgentClient.allCases, id: \.self) { Text(model.t($0.titleKey)).tag($0) } }
             Button(model.t("agent.install_title")) { installation = true }.controlSize(.small)
-            Text(model.t("cover.direction")).font(.headline)
+            Text(model.t("cover.direction")).font(.system(size: 14, weight: .semibold))
             TextEditor(text: $direction).frame(height: 80).border(WorkbenchPalette.line, width: 0.5).accessibilityLabel(model.t("cover.direction"))
             outgoingBook
             designFields
@@ -133,7 +138,7 @@ struct CoverWorkbenchSheet: View {
     }
     @ViewBuilder private var promptPreview: some View {
         if session.preview != .null {
-            Text(model.t("creative.prompt")).font(.headline)
+            Text(model.t("creative.prompt")).font(.system(size: 14, weight: .semibold))
             TextEditor(text: $prompt).frame(height: 180).border(WorkbenchPalette.line, width: 0.5).accessibilityLabel(model.t("creative.prompt"))
             Button(model.t("cover.create_request")) { Task { await session.createRequest(prompt: prompt) } }
                 .buttonStyle(WorkbenchButtonStyle(primary: true))
@@ -142,11 +147,11 @@ struct CoverWorkbenchSheet: View {
     }
     private var manualImport: some View {
         VStack(alignment: .leading, spacing: 10) {
-            HStack { Text(model.t("cover.import")).font(.headline); Spacer(); Button(model.t("cover.choose_file")) { chooseFile() }.disabled(session.held) }
+            HStack { Text(model.t("cover.import")).font(.system(size: 14, weight: .semibold)); Spacer(); Button(model.t("cover.choose_file")) { chooseFile() }.disabled(session.held) }
             if let importedFile, inspected != .null {
                 Text(importedFile.lastPathComponent).textSelection(.enabled)
                 previewImage(inspected["preview"], title: importedFile.lastPathComponent).frame(height: 230)
-                Text("\(inspected["width"].integer ?? 0) × \(inspected["height"].integer ?? 0) px").font(.caption).foregroundStyle(.secondary)
+                Text("\(inspected["width"].integer ?? 0) × \(inspected["height"].integer ?? 0) px").font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                 Toggle(model.t("cover.add_text"), isOn: $manualOverlay)
                 Button(model.t("cover.use")) { Task { if await session.selectFile(importedFile, inspection: inspected, overlay: manualOverlay) { self.importedFile = nil; inspected = .null } } }.disabled(session.held)
             }
@@ -156,7 +161,7 @@ struct CoverWorkbenchSheet: View {
         if session.preparationProjectID != nil {
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
-                    Text(model.t("cover.preparation")).font(.headline)
+                    Text(model.t("cover.preparation")).font(.system(size: 14, weight: .semibold))
                     Spacer()
                     Button(model.t("cover.choose_preparation")) { choosePreparation() }.disabled(session.held)
                 }
@@ -172,11 +177,11 @@ struct CoverWorkbenchSheet: View {
                     ForEach(Array(session.preparationImports.enumerated()), id: \.offset) { _, item in
                         VStack(alignment: .leading, spacing: 8) {
                             previewImage(item["preview"], title: item["record"]["source_ref"]["candidate"]["title"].string ?? "").frame(height: 210)
-                            if item["book_changed"].bool == true { Text(model.t("cover.book_changed")).font(.caption).foregroundStyle(WorkbenchPalette.warningInk) }
+                            if item["book_changed"].bool == true { Text(model.t("cover.book_changed")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.warningInk) }
                             DisclosureGroup(model.t("cover.source")) {
                                 Text(item["record"]["source_ref"]["request"]["brief"].string ?? "").textSelection(.enabled)
                                 Text(item["record"]["source_ref"]["candidate"]["title"].string ?? "").textSelection(.enabled)
-                                Text(item["record"]["source_ref"]["submission"]["provenance"]["client"].string ?? "").font(.caption).textSelection(.enabled)
+                                Text(item["record"]["source_ref"]["submission"]["provenance"]["client"].string ?? "").font(.system(size: 12)).textSelection(.enabled)
                             }
                             Button(model.t("cover.use")) { Task { _ = await session.selectPreparation(item, overlay: preparationOverlay) } }.disabled(session.held)
                         }
@@ -212,17 +217,17 @@ struct CoverWorkbenchSheet: View {
                     }
                 }
             }
-            if session.preparationTask["submission"] == .null { Text(model.t("cover.state.waiting_for_result")).foregroundStyle(.secondary) }
+            if session.preparationTask["submission"] == .null { Text(model.t("cover.state.waiting_for_result")).foregroundStyle(WorkbenchPalette.muted) }
         }
     }
     private var requestHistory: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(model.t("cover.requests")).font(.headline)
+            Text(model.t("cover.requests")).font(.system(size: 14, weight: .semibold))
             ForEach(Array(session.requests.enumerated()), id: \.offset) { _, item in
                 Button { Task { copied = false; await session.inspect(item["request"]["request_id"].string ?? "") } } label: {
                     VStack(alignment: .leading, spacing: 3) {
                         Text(item["request"]["design"]["art_direction"].string ?? "").lineLimit(2)
-                        Text(item["request"]["created_at"].string ?? "").font(.caption).foregroundStyle(.secondary)
+                        Text(item["request"]["created_at"].string ?? "").font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                     }.frame(maxWidth: .infinity, alignment: .leading)
                 }.disabled(session.held)
             }
@@ -232,13 +237,13 @@ struct CoverWorkbenchSheet: View {
     @ViewBuilder private var results: some View {
         if let requestID = session.candidates["request"]["request_id"].string {
             Divider()
-            Text(model.t("cover.state." + (session.candidates["state"].string ?? "waiting_for_result"))).font(.headline)
+            Text(model.t("cover.state." + (session.candidates["state"].string ?? "waiting_for_result"))).font(.system(size: 14, weight: .semibold))
             HStack {
                 Button(model.t("creative.copy_prompt")) { copyRequest() }.disabled(session.held || client == .none)
                 Button(model.t("cover.recheck")) { Task { await session.inspect(requestID) } }.disabled(session.held)
             }
-            Text(model.t(copied ? "creative.copied" : "cover.handoff")).font(.caption).foregroundStyle(.secondary)
-            if session.candidates["book_changed"].bool == true { Text(model.t("cover.book_changed")).foregroundStyle(.orange) }
+            Text(model.t(copied ? "creative.copied" : "cover.handoff")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
+            if session.candidates["book_changed"].bool == true { Text(model.t("cover.book_changed")).foregroundStyle(WorkbenchPalette.warningInk) }
             ForEach(Array(session.candidates["candidates"].array.enumerated()), id: \.offset) { _, item in
                 candidateView(item)
             }
@@ -250,11 +255,11 @@ struct CoverWorkbenchSheet: View {
         let source = [generator["agent"].string, generator["tool"].string, generator["model"].string].compactMap { $0 }.joined(separator: " / ")
         return VStack(alignment: .leading, spacing: 10) {
             previewImage(item["preview"], title: candidate["filename"].string ?? "").frame(height: 300)
-            Text("\(candidate["width"].integer ?? 0) × \(candidate["height"].integer ?? 0) px").font(.caption).foregroundStyle(.secondary)
-            if item["target_size_matches"].bool == false { Text(model.t("cover.size_changed")).font(.caption).foregroundStyle(.orange) }
+            Text("\(candidate["width"].integer ?? 0) × \(candidate["height"].integer ?? 0) px").font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
+            if item["target_size_matches"].bool == false { Text(model.t("cover.size_changed")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.warningInk) }
             DisclosureGroup(model.t("cover.source")) {
                 Text(candidate["used_prompt"].string ?? "").textSelection(.enabled)
-                Text(source).font(.caption).textSelection(.enabled)
+                Text(source).font(.system(size: 12)).textSelection(.enabled)
             }
             Button(model.t("cover.use")) { Task { _ = await session.selectCandidate(item) } }.disabled(session.held)
         }

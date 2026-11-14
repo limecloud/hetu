@@ -1,0 +1,27 @@
+---
+import { route, type Locale } from '../lib/site';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const en = locale === 'en';
+const items = en ? [
+  ['Write a new story', 'Start with a premise, a character or a chapter. Develop your own manuscript before deciding whether to adapt it.', 'writing', 'Explore manuscript writing'],
+  ['Develop an original script', 'A screenplay can begin with an original idea. A novel and a source-extraction step are not creative prerequisites.', 'creative-paths', 'Plan a script project'],
+  ['Adapt your own book', 'Choose a source revision, identify a dramatic question and try one scene. Keep the adaptation separate from the manuscript.', 'adaptation', 'Try a source-based adaptation'],
+  ['Work with licensed material', 'Record the edition and your rights to adapt, share source material and distribute references. Those permissions may differ.', 'creative-paths', 'Understand sources and permissions'],
+  ['Reimagine a public-domain work', 'Check the original and the specific translation or edition. Public-domain stories may contain separately protected material.', 'creative-paths', 'Choose the right source'],
+  ['Continue a draft you already have', 'Bring a manuscript or screenplay through the supported import path. Inspect structure and conversion losses before confirming.', 'formats-and-delivery', 'See supported formats'],
+] : [
+  ['从零写小说', '从一个人物、一段构思或第一章开始。先把故事写出来，再决定是否改编。', 'writing', '了解章节写作'],
+  ['从零写剧本', '直接构思人物、冲突和场次。原创剧本无需先写一本小说，也无需先接入 AI。', 'creative-paths', '了解剧本创作路径'],
+  ['改编自己的小说', '固定原著版本，从一场戏尝试改编。保留原文，独立推敲分集节奏与对白。', 'adaptation', '从一章开始改编'],
+  ['改编获授权作品', '记录原著来源与授权范围，分别确认改编、向 Agent 提供材料及对外交付的权限。', 'creative-paths', '了解来源与授权'],
+  ['改编公版原著', '从经典故事重新出发，核对原作版本。现代译文、插画和校注可能有各自的权利。', 'creative-paths', '选择适用的原著版本'],
+  ['继续已有稿件', '按支持格式导入小说或剧本，先预览目录、正文和转换损失，再确认进入创作。', 'formats-and-delivery', '查看导入与交稿'],
+];
+---
+<section class="section creative-routes" id="creative-routes">
+  <div class="section-head"><div><h2>{en ? 'Start with the work you actually have.' : '你从哪里开始，河图就从哪里连接。'}</h2></div></div>
+  <p class="section-intro">{en ? 'A new book, an original screenplay and a licensed adaptation need different starting points. Choose the guide that matches your work.' : '写小说、写剧本、改编原著，各有起点。先找到适合自己的路径，再按需使用外部 Agent。'}</p>
+  <div class="creative-route-grid">{items.map(([title, body, target, label]) => <article><h3>{title}</h3><p>{body}</p><a class="text-link" href={route(locale, 'docs/' + target)}>{label}<span aria-hidden="true">→</span></a></article>)}</div>
+  <p class="sample-note">{en ? 'These guides distinguish project workflows from the current demo and native controls. The homepage demo focuses on novel writing and source-based adaptation.' : '各指南分别说明创作路径、当前客户端入口与演示范围。首页演示重点展示小说写作及原著改编，不代表所有创建流程均已实现。'}</p>
+</section>

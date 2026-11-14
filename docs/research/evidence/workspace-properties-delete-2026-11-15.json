@@ -1,0 +1,106 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-11-14T17:03:34.152042+00:00",
+  "scope": "作品时间属性与本机书库右键输入确认删除",
+  "tests": [
+    {
+      "suite": "Core properties/workspace/git",
+      "result": "passed",
+      "count": 26,
+      "log": "build/current-codex-acceptance-20261114/properties-core-final.log"
+    },
+    {
+      "suite": "Native --library-properties",
+      "result": "passed",
+      "log": "build/current-codex-acceptance-20261114/properties-native-final.log",
+      "coverage": [
+        "真实创建更新时间与最近打开时间独立",
+        "正文与外部保存后刷新缓存",
+        "旧书库无时间字段兼容",
+        "完整书名确认与打开弹窗后改名拒绝",
+        "写入锁拒绝",
+        "同路径替换作品拒绝",
+        "真实系统废纸篓与立即放回",
+        "移动成功后中断登记恢复",
+        "旧窗口写入拒绝"
+      ]
+    },
+    {
+      "suite": "Mac build",
+      "result": "passed",
+      "log": "build/current-codex-acceptance-20261114/properties-mac-final-build.log"
+    },
+    {
+      "suite": "Native build",
+      "result": "passed",
+      "log": "build/current-codex-acceptance-20261114/properties-native-final-build.log"
+    },
+    {
+      "suite": "文档校验",
+      "result": "passed",
+      "log": "build/current-codex-acceptance-20261114/properties-docs-final.log"
+    },
+    {
+      "suite": "本地化",
+      "result": "passed",
+      "keys": 1417
+    }
+  ],
+  "gui": {
+    "app": "build/current-codex-acceptance-20261114/PropertiesQA.app",
+    "bundle_id": "run.limeai.hetu.properties-qa",
+    "observations": [
+      "卡片右键菜单显示删除作品",
+      "弹窗显示完整书名、目录、整目录范围与废纸篓恢复说明",
+      "不完整书名输入后确认按钮禁用，完整书名后启用",
+      "点击取消后保留全部8个登记作品",
+      "列表显示真实创建及更新时间，列表右键也有删除入口",
+      "正文显示创建、正文保存、内容格式、语言、保存大小、来源、定稿时间",
+      "作品资料显示创建、更新、资料更新与资料版本",
+      "中英文切换正确，恢复中文界面"
+    ],
+    "did_delete_existing_work": false,
+    "gui_final_delete_clicked": false,
+    "real_trash_validation": "隔离Native专项真实执行并立即放回，未删除用户已有作品"
+  },
+  "artifacts": {
+    "/tmp/hetu-impact-core-build/debug/libhetu_core.dylib": "255702e5f09295266ffb2e9cd84018a467fe36f8e7d639b814d33e641bf8d22d",
+    "/tmp/hetu-impact-core-build/debug/deps/libhetu_core.dylib": "255702e5f09295266ffb2e9cd84018a467fe36f8e7d639b814d33e641bf8d22d",
+    "/tmp/hetu-impact-review-build/debug/HetuMac": "b0eabded5632605b1b5faa7d9d89081c2689ccc636794f5814087934f1df068e",
+    "/Users/coso/Documents/dev/ai/limecloud/hetu/build/current-codex-acceptance-20261114/PropertiesQA.app/Contents/MacOS/HetuMac": "b0eabded5632605b1b5faa7d9d89081c2689ccc636794f5814087934f1df068e",
+    "/tmp/hetu-impact-review-build/debug/hetu-native-tests": "00d7c1e8a3fff6c5ddd96d3d46392294ec0f294dcfb1faea5abe7170171e70b9"
+  },
+  "source_fingerprints_at_report": {
+    "Cargo.toml": "e0570d5a6b68145a293637fee8cc422dd76c49f5ad70fe5be1cf0e3aea7f16ec",
+    "Cargo.lock": "9baf7473e44c193fbe3909ddf725c73da27e846dd87bd13867f92468c4caf735",
+    "core/src/application/properties.rs": "f840c59af33de6bda130a1c1ed91ac0bf721fe03cda0838c3eeaf78cc7ee8e37",
+    "core/src/application/mod.rs": "8360b5da8ea67e069772f3f4547554038b37622ba9e6fa42b021f6d2656c116e",
+    "core/src/application/git.rs": "4d169f2809e30caee94de18627b1411b87c815554453f862c4a661da5e26e0ac",
+    "core/src/application/delivery.rs": "3a500f9bb9df184623e68e5c9de3368d1d0912b561a9cec3484030724d19e3a0",
+    "core/src/application/model_tasks.rs": "e521a0ef3c8c2e80c07c6d49456d8cff7f845adf3f440f447d5e2972d0ffc4ce",
+    "core/src/infrastructure/store.rs": "2015ac3c46b877d01e32d03f26d4846ceb172fdd28618fe07b4088a0da26a118",
+    "core/tests/properties.rs": "67b643c99d5ed6c3216ce561f56c79d2907207ec53949e207e518e91ffad3457",
+    "apps/macos/Sources/HetuNative/LibraryStore.swift": "0b50e8753bb4557e0fe6184699c2181ccd1bce938095d05a896a45424b923fc4",
+    "apps/macos/Sources/HetuNative/LibraryDeletion.swift": "09acfb4b5286bea295e975f1745bc0cd257a555b50a3c76f171f723bd15e563a",
+    "apps/macos/Sources/HetuNative/WorkspaceModel.swift": "89d87655a7833b023ba39e8163b74da26164d8686e51d2901e1fa7f5ed0de397",
+    "apps/macos/Sources/HetuNative/Localization.swift": "478f83cdde7b1d52a6ba35cfa5edac0c1cb930fe35674fb0f4ed0bc2b48fe05b",
+    "apps/macos/Sources/HetuMac/AuthorLibraryView.swift": "07fde0080f30d3a8ce46ac576748579d0de34e9a157c50ab5898f24496f85e3c",
+    "apps/macos/Sources/HetuMac/DeleteWorkSheet.swift": "cd07fdc051c438f3f48327460217a4c21eb090f66eb574d4b862b01644f8643b",
+    "apps/macos/Sources/HetuMac/ObjectPropertiesView.swift": "f7ce790d288606f2f6905a9f20ffeeee2aafbb8e05abe32b9df044b7e99cbe12",
+    "apps/macos/Sources/HetuMac/NovelDetailsView.swift": "48d01fb184bee82942da055cbec0e52ee74bcb25acafbd7c1431e8636be482fa",
+    "apps/macos/Sources/HetuMac/ManuscriptView.swift": "f2f63d6f9431a5306b0e0db733276b0cc3eb02816f2a20654c2f7c864032171e",
+    "apps/macos/Sources/HetuMac/DramaProjectsView.swift": "8bd5034f8fb740e4471301efdfc0c904ad2817ba3734b0176cb9573ab78fe8cf",
+    "apps/macos/Sources/HetuMac/ResourceWorkbenchView.swift": "01cf46197ec6f10e35782dab16e5845d2fb4e6c2bd7ed77a0d10717439af2fdd",
+    "apps/macos/Sources/HetuMac/MediaWorkbenchView.swift": "5a81de4bc44ed7435b89d64f5410d65ea0cb959ed156855490fd978164c55075",
+    "assets/localization/native.json": "398ab6bab0d6cfb3afc4f35d241a57a2bcbce90357daf8f3e160da3a19e39f13",
+    "apps/macos/Sources/HetuNative/Resources/NativeStrings.json": "398ab6bab0d6cfb3afc4f35d241a57a2bcbce90357daf8f3e160da3a19e39f13",
+    "tests/native/HetuNativeTests/LibraryPropertiesTests.swift": "beecb44c19547ae87cf04b54108c199cec30fa8749d288ac4b59519e12f4efb2",
+    "tests/native/HetuNativeTests/NativeTests.swift": "7eed0f8cf1f0c862eb490994e993d5a9f0dc8f374253d69fc7c1ec48090d8121"
+  },
+  "boundaries": [
+    "仅证明本轮时间属性和书库删除范围；不将上轮全旅程证据当作本轮源码全量验收",
+    "并行进程在Core构建后继续修改model_service.rs/custom.rs/model_tasks.rs，Mac构建后继续修改ModelServiceSettings.swift；这些模型功能的新变更不在本轮验收范围",
+    "GUI未对已有作品执行最终删除；真实删除与恢复在隔离Native专项验证",
+    "本轮没有Git提交、推送、安装覆盖正式客户端或部署"
+  ]
+}

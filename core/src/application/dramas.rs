@@ -19,6 +19,9 @@ impl Kernel {
             self.actor(),
         )?;
         let sha = self.stage_skeleton(&skeleton, changes)?;
+        if let Some(project_ref) = input.get("project_ref") {
+            self.attach_project_skeleton(project_ref, &skeleton.skeleton_id, changes)?;
+        }
         self.skeleton_result(&skeleton, &sha)
     }
     fn stage_skeleton(&self, skeleton: &drama::Skeleton, changes: &mut Changes) -> Result<String> {

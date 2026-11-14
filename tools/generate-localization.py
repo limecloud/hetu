@@ -28,6 +28,7 @@ def generate():
     fact = definitions["fact"]
     life = next(item["then"]["properties"]["value"]["enum"] for item in fact["allOf"] if item["if"]["properties"]["predicate"]["const"] == "life_state")
     families = {
+        "notes.": ["book", "volume", "chapter"],
         "appearance.": ["system", "light", "dark"],
         "entity.kind.": [item["properties"]["type"]["const"].removeprefix("upsert_") for item in definitions["change"]["oneOf"] if item["properties"]["type"]["const"].startswith("upsert_")],
         "fact.predicate.": fact["properties"]["predicate"]["enum"], "fact.life.": life,
@@ -64,6 +65,9 @@ def generate():
     families["novel.status."] = json.loads((ROOT / "contracts/schemas/novel.schema.json").read_text())["$defs"]["metadata"]["properties"]["status"]["enum"]
     families["review.state."] = ["submitted", "in_review", "approved", "changes_requested", "rejected", "superseded"]
     families["review.decision."] = ["approved", "changes_requested", "rejected", "withdrawn"]
+    families["resources.category."] = ["character", "location", "prop", "research", "artwork", "media"]
+    families["resources.state."] = ["draft", "adopted", "archived"]
+    families["drama.mode."] = ["original", "adaptation"]
     media = json.loads((ROOT / "contracts/schemas/media.schema.json").read_text())["$defs"]
     families["media.kind."] = media["cue"]["properties"]["kind"]["enum"]
     families["media.rights."] = media["asset"]["properties"]["rights_status"]["enum"]

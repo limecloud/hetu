@@ -1,0 +1,134 @@
+{
+  "as_of": "2026-11-14",
+  "sources": {
+    "cnnic57": {
+      "publisher": "CNNIC",
+      "title": "第57次中国互联网络发展状况统计报告",
+      "url": "https://www.cnnic.net.cn/n4/2026/0304/c88-11549.html",
+      "document": "https://www.cnnic.net.cn/NMediaFile/2026/0304/MAIN1772588317069TUXN3827X8.pdf",
+      "period": "2025-12",
+      "pages": [
+        23,
+        32,
+        35
+      ]
+    },
+    "quest2026": {
+      "publisher": "QuestMobile",
+      "title": "2026短剧行业洞察报告",
+      "url": "https://www.questmobile.com.cn/research/report/2041710682848727041/",
+      "published": "2026-04-08",
+      "period": "2026-02"
+    },
+    "sensor2025": {
+      "publisher": "Sensor Tower",
+      "title": "State of Short Drama Apps 2025",
+      "url": "https://sensortower.com/blog/state-of-short-drama-apps-2025",
+      "published": "2025-07",
+      "period": "2025-Q1"
+    },
+    "writers2024": {
+      "publisher": "中国作家协会网络文学中心",
+      "title": "2024中国网络文学蓝皮书",
+      "url": "https://image.chinawriter.com.cn/n1/2025/0630/c404023-40511500.html",
+      "published": "2025-06-30",
+      "period": "2024",
+      "scope": "全国50家重点网络文学网站数据统计"
+    }
+  },
+  "china": {
+    "literature_users": {
+      "value": 525950000,
+      "display": "5.26亿",
+      "source": "cnnic57",
+      "definition": "网络文学用户，表5精确值52595万人，正文四舍五入为5.26亿"
+    },
+    "drama_users": {
+      "value": 664000000,
+      "display": "6.64亿",
+      "source": "cnnic57",
+      "definition": "微短剧用户，包含于网络视频用户，不等于独立短剧App月活"
+    },
+    "hongguo_mau": {
+      "value": 304000000,
+      "display": "3.04亿",
+      "source": "quest2026",
+      "definition": "红果免费短剧App月活跃用户"
+    },
+    "drama_apps_mau": {
+      "value": 335000000,
+      "display": "3.35亿",
+      "source": "quest2026",
+      "definition": "短剧独立App整体月活跃用户"
+    },
+    "drama_miniprograms_mau": {
+      "value": 427000000,
+      "display": "4.27亿",
+      "source": "quest2026",
+      "definition": "短剧微信小程序渠道用户规模，与App用户重叠，不相加"
+    },
+    "literature_works": {
+      "value": 33000000,
+      "display": "3300万",
+      "source": "writers2024",
+      "definition": "截至2024年底网络文学作品总量超过3300万部，非完成作品总量或去重作者人数"
+    },
+    "new_registered_authors": {
+      "value": 2800000,
+      "display": "约280万",
+      "source": "writers2024",
+      "definition": "2024年新增注册作者约280万人，非专职从业者人数"
+    },
+    "new_drama_licenses": {
+      "value": 1600,
+      "display": "1600",
+      "source": "writers2024",
+      "definition": "2024年新增微短剧改编授权超过1600部，非已拍成片或全部改编数"
+    }
+  },
+  "global": {
+    "iap_q1_2024": {
+      "value": 178000000,
+      "display": "$178M",
+      "source": "sensor2025",
+      "definition": "Estimated global short-drama app in-app purchase revenue, Q1 2024"
+    },
+    "iap_q1_2025": {
+      "value": 700000000,
+      "display": "~$700M",
+      "source": "sensor2025",
+      "definition": "Estimated global short-drama app in-app purchase revenue, Q1 2025, nearly $700 million"
+    },
+    "downloads_q1_2025": {
+      "value": 370000000,
+      "display": "370M+",
+      "source": "sensor2025",
+      "definition": "Global short-drama app downloads in Q1 2025, over 370 million; not unique users"
+    },
+    "us_iap_share": {
+      "value": 49,
+      "display": "49%",
+      "source": "sensor2025",
+      "definition": "US share of estimated global short-drama app in-app purchases, Q1 2025"
+    },
+    "latam_downloads": {
+      "value": 100000000,
+      "display": "~100M",
+      "source": "sensor2025",
+      "definition": "Latin America short-drama app downloads, Q1 2025, nearly 100 million"
+    },
+    "sea_downloads": {
+      "value": 87000000,
+      "display": "~87M",
+      "source": "sensor2025",
+      "definition": "Southeast Asia short-drama app downloads, Q1 2025, nearly 87 million"
+    }
+  },
+  "limits": [
+    "Users of literature and drama can overlap. Do not add the groups or interpret their difference as new reachable viewers.",
+    "Survey user counts and app monthly active users have different periods and methodologies.",
+    "Downloads are not deduplicated people. Store IAP estimates exclude advertising, third-party Android stores and direct web payments.",
+    "Market totals do not predict the audience, earnings or production cost of any individual project.",
+    "No verified evidence supports ten times as many drama viewers as novel readers, ten million professional novel workers, or the share who can write scripts."
+  ]
+}

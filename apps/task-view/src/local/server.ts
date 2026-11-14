@@ -50,6 +50,8 @@ export async function serveLocalView(config: Start, send: (message: ObjectValue)
       requireRef(input.task_ref);
       if (params.name === "hetu_open_task_view" && exact(input, ["task_ref"])) return { action: "hetu.interactions.get", input };
       if (params.name === "hetu_save_task_selection" && exact(input, ["task_ref", "expected", "candidate_refs", "comment", "operation_key"])) return { action: "hetu.interactions.save_selection", input };
+      if (params.name === "hetu_save_task_feedback" && exact(input, ["task_ref", "target_refs", "expected_feedback_head", "intent", "public_comment", "selected_refs", "operation_key"])) return { action: "hetu.task_feedback.save", input };
+      if (params.name === "hetu_read_task_context" && exact(input, ["task_ref", "context_ref", "range", "section", "entity_id", "cursor", "limit", "max_bytes"])) return { action: "hetu.task_context.read", input };
       throw new Error("Tool unavailable");
     }
     if (body.method === "resources/read" && exact(params, ["uri", "_meta"]) && typeof params.uri === "string") {
@@ -61,8 +63,8 @@ export async function serveLocalView(config: Start, send: (message: ObjectValue)
       const search = new URLSearchParams(query);
       const keys = [...search.keys()];
       const key = search.get("key");
-      if (keys.length !== 2 || !keys.includes("action") || !keys.includes("key") || search.get("action") !== "hetu.interactions.save_selection" || !key || key.length > 128 || /[\x00-\x1f]/.test(key)) throw new Error("Resource unavailable");
-      return { action: "hetu.operations.get", input: { action: "hetu.interactions.save_selection", key }, uri: params.uri };
+      if (keys.length !== 2 || !keys.includes("action") || !keys.includes("key") || !["hetu.interactions.save_selection", "hetu.task_feedback.save"].includes(search.get("action") ?? "") || !key || key.length > 128 || /[\x00-\x1f]/.test(key)) throw new Error("Resource unavailable");
+      return { action: "hetu.operations.get", input: { action: search.get("action"), key }, uri: params.uri };
     }
     throw new Error("Method unavailable");
   };

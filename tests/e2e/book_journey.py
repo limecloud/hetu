@@ -19,6 +19,8 @@ from xml.etree import ElementTree as ET
 ROOT = Path(__file__).resolve().parents[2]
 FIXTURE = ROOT / "tests/fixtures/book-journey"
 APP = ROOT / "build/native/HetuDev.app/Contents"
+CORE_LIBRARY = APP / "Frameworks/libhetu_core.dylib"
+MCP_BINARY = APP / "Helpers/hetu-mcp"
 
 
 def sha(data: bytes) -> str:
@@ -59,8 +61,8 @@ class Buffer(ctypes.Structure):
 class Core:
     """与原生客户端相同的公开 C ABI，仅供独立测试驱动。"""
 
-    def __init__(self, path: Path, mode="author", *, project=False, task=None):
-        self.lib = ctypes.CDLL(str(APP / "Frameworks/libhetu_core.dylib"))
+    def __init__(self, path: Path, mode="author", *, project=False, task=None, create=None):
+        self.lib = ctypes.CDLL(str(CORE_LIBRARY))
         self.lib.hetu_context_open.argtypes = [ctypes.c_void_p, ctypes.c_uint64,
                                              ctypes.POINTER(ctypes.c_void_p), ctypes.POINTER(Buffer)]
         self.lib.hetu_request.argtypes = [ctypes.c_void_p, ctypes.c_void_p,
@@ -71,10 +73,13 @@ class Core:
         config = {"creation_project_path" if project else "workspace_path": str(path), "mode": mode}
         if task:
             config["task_id"] = task
+        if create:
+            config["create"] = create
         raw = json.dumps(config).encode()
         buf = Buffer()
         code = self.lib.hetu_context_open(raw, len(raw), ctypes.byref(self.handle), ctypes.byref(buf))
-        self._consume(code, buf)
+        opened = self._consume(code, buf)
+        assert opened["status"] == "succeeded" and self.handle, f"Core open: {opened}"
         catalog = self.call("capabilities.get")
         self.revisions = {a["name"]: a["contract_revision"] for a in catalog["actions"]}
 
@@ -124,7 +129,7 @@ class MCP:
         self.task = task
         self.counter = 0
         self.stderr = (out / f"mcp-{task}.stderr.log").open("w")
-        self.process = subprocess.Popen([str(APP / "Helpers/hetu-mcp"),
+        self.process = subprocess.Popen([str(MCP_BINARY),
             "--creation-project" if project else "--workspace", str(path), "--task", task],
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=self.stderr, bufsize=0)
         self.pending_bytes = b""
@@ -246,8 +251,8 @@ class Journey:
         self.source_sha = sha((FIXTURE / "manuscript.md").read_bytes())
         assert self.state.get("source_sha", self.source_sha) == self.source_sha, "测试途中夹具变化"
         self.state["source_sha"] = self.source_sha
-        self.state["core_sha256"] = sha((APP / "Frameworks/libhetu_core.dylib").read_bytes())
-        self.state["mcp_sha256"] = sha((APP / "Helpers/hetu-mcp").read_bytes())
+        self.state["core_sha256"] = sha(CORE_LIBRARY.read_bytes())
+        self.state["mcp_sha256"] = sha(MCP_BINARY.read_bytes())
 
     def persist(self):
         write_json(self.state_path, self.state)
@@ -343,11 +348,11 @@ class Journey:
         if self.state.get("book_written"):
             return
         novel = self.core.call("novels.get")
-        self.check(novel["novel"]["metadata"]["title"] == self.book["title"], "作品资料为界面确认的书名")
+        self.check(novel["novel"]["metadata"]["title"] == self.book["title"], "作品资料与测试作品书名一致")
         docs = self.core.call("documents.list")["documents"]
         first_id = next(d["document_id"] for d in docs if d["title"] == self.chapters[0]["title"])
         first = self.core.call("documents.get", document_id=first_id)
-        self.check(first["content"] == self.chapters[0]["content"], "界面粘贴、撤销、保存的首章与全文逐字一致")
+        self.check(first["content"] == self.chapters[0]["content"], "首章与固定测试原文逐字一致")
         self.state["chapter_ids"] = [first_id]
         self.persist()
         metadata = dict(novel["novel"]["metadata"], status="writing")
@@ -791,9 +796,35 @@ class Journey:
         self.persist()
 
 
+def initialize_fixture(workspace):
+    path = workspace.resolve()
+    assert path.is_relative_to(ROOT / "build/book-journey"), "只允许独立测试作品"
+    assert not (path / ".heturc.json").exists(), "初始化不覆盖已有作品，继续测试请使用 run"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    book, chapters = manuscript()
+    with Core(path, create={"title": book["title"], "locale": "zh-CN", "operation_key": "fixture-create"}) as core:
+        novel = core.call("novels.get")
+        metadata = dict(novel["novel"]["metadata"])
+        for field in ["title", "author_name", "genre", "language_tag", "synopsis"]:
+            metadata[field] = book[field]
+        core.call("novels.update", expected=expected(novel), metadata=metadata, operation_key="fixture-metadata")
+        core.call("documents.create", kind="novel_chapter", title=chapters[0]["title"], source_format="markdown",
+                  content=chapters[0]["content"], language_tag="zh-CN", operation_key="fixture-first-chapter")
+    write_json(path.parent / (path.name + "-验收") / "setup.json", {
+        "method": "public_c_abi", "workspace": str(path), "ui_test": False,
+        "manuscript_sha256": sha((FIXTURE / "manuscript.md").read_bytes()),
+        "core_sha256": sha(CORE_LIBRARY.read_bytes())})
+    print("已通过公开 C ABI 初始化独立测试作品，不作为界面验收证据。")
+
+
 def main():
+    global CORE_LIBRARY, MCP_BINARY
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--core-library", type=Path, default=CORE_LIBRARY)
+    parser.add_argument("--mcp-binary", type=Path, default=MCP_BINARY)
     sub = parser.add_subparsers(dest="command", required=True)
+    initialize = sub.add_parser("initialize-fixture")
+    initialize.add_argument("--workspace", type=Path, required=True)
     concept = sub.add_parser("submit-concept")
     concept.add_argument("--project", type=Path, required=True)
     concept.add_argument("--project-id", required=True)
@@ -803,7 +834,11 @@ def main():
     verify = sub.add_parser("verify-final")
     verify.add_argument("--workspace", type=Path, required=True)
     args = parser.parse_args()
-    if args.command == "submit-concept":
+    CORE_LIBRARY = args.core_library.resolve(strict=True)
+    MCP_BINARY = args.mcp_binary.resolve(strict=True)
+    if args.command == "initialize-fixture":
+        initialize_fixture(args.workspace)
+    elif args.command == "submit-concept":
         submit_concept(args)
     elif args.command == "run":
         Journey(args.workspace).run()

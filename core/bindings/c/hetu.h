@@ -30,6 +30,12 @@ typedef struct { uint8_t *data; uint64_t size; } HetuBuffer;
  * 调用方持有的结果缓冲不依赖上下文寿命，用 buffer_free 释放并清零。
  */
 HETU_API uint32_t HETU_CALL hetu_abi_version(void);
+/* 无状态的 Agent 接入入口。客户端与私有目录由本机调用方固定；
+ * 业务请求不接受作者身份，授权与撤权仍经作者 Workspace 执行。
+ * 缓冲与线程规则同 request，无需持有上下文句柄。 */
+HETU_API int32_t HETU_CALL hetu_collaboration_request(const uint8_t *, uint64_t, HetuBuffer *);
+/* 可信本机设置入口；不向 MCP 或 Agent CLI 开放连接凭据或作者批准。 */
+HETU_API int32_t HETU_CALL hetu_model_service_request(const uint8_t *, uint64_t, HetuBuffer *);
 HETU_API int32_t HETU_CALL hetu_context_open(const uint8_t *, uint64_t, HetuContext **, HetuBuffer *);
 HETU_API int32_t HETU_CALL hetu_request(HetuContext *, const uint8_t *, uint64_t, HetuBuffer *);
 HETU_API int32_t HETU_CALL hetu_task_start(HetuContext *, const uint8_t *, uint64_t, HetuTask **, HetuBuffer *);

@@ -64,6 +64,33 @@ fn get(k: &Kernel, task: &Value) -> Value {
 }
 
 #[test]
+fn cli_contract_and_persisted_legacy_request_are_both_readable() {
+    let (folder, author) = workspace();
+    let task = prepare(&author, "chapter_draft", json!([]), None);
+    assert_eq!(task["request"]["output_contract"]["submission_mode"], json!(["mcp", "cli", "inbox"]));
+    // 模拟上一合同版本已经发布的固定请求；读取不能重写其字节或摘要。
+    let task_id = task["task_ref"]["task_id"].as_str().unwrap();
+    let request_path = folder.path().join(format!(".hetu/tasks/{task_id}/request.json"));
+    let mut legacy = task["request"].clone();
+    legacy["schema_version"] = json!("1.0.0");
+    legacy.as_object_mut().unwrap().remove("context_manifest_ref");
+    legacy["output_contract"]["submission_mode"] = json!(["mcp", "inbox"]);
+    let raw = serde_json::to_vec(&legacy).unwrap();
+    let sha = digest(&raw);
+    fs::write(&request_path, &raw).unwrap();
+    fs::write(folder.path().join(format!(".hetu/tasks/{task_id}/request-head.json")),
+        serde_json::to_vec(&json!({"task_id":task_id,"request_revision":1,"sha256":sha})).unwrap()).unwrap();
+    let reader = agent(folder.path(), false, &task);
+    let loaded = get(&reader, &task);
+    assert_eq!(loaded["request_sha256"], sha);
+    assert_eq!(loaded["request"]["output_contract"]["submission_mode"], json!(["mcp", "inbox"]));
+    assert_eq!(fs::read(request_path).unwrap(), raw);
+    let mut input = submit_input(&task, json!([text_candidate("text", "旧任务也能继续提交参考稿。")]), "legacy-submit");
+    input["request_sha256"] = json!(sha);
+    ok(call(&reader, "creative_tasks.submit_result", input));
+}
+
+#[test]
 fn nameless_preparation_is_separate_and_creation_preserves_sources_and_original_receipt() {
     let (folder, k) = project();
     assert!(!folder.path().join(".heturc.json").exists());
@@ -255,7 +282,10 @@ fn task_sessions_do_not_read_other_tasks_or_sources_and_close_revokes_existing_p
         "forbidden"
     );
     let catalog = ok(call(&a, "capabilities.get", json!({})));
-    assert_eq!(catalog["actions"].as_array().unwrap().len(), 6);
+    let names: Vec<_> = catalog["actions"].as_array().unwrap().iter().map(|a| a["name"].as_str().unwrap()).collect();
+    assert!(names.contains(&"hetu.working_copies.save"));
+    assert!(names.contains(&"hetu.task_feedback.list"));
+    assert!(!names.contains(&"hetu.documents.save") && !names.contains(&"hetu.drafts.adopt"));
     let submit = ok(call(
         &a,
         "creative_tasks.submit_result",
@@ -457,6 +487,63 @@ fn image_candidates_are_decoded_and_preserve_aspect_ratio_without_selecting_a_co
         )["status"],
         "succeeded"
     );
+}
+
+#[test]
+fn artwork_images_have_a_separate_contract_and_cannot_replace_a_cover() {
+    let (folder, author) = workspace();
+    let task = prepare(&author, "artwork", json!([]), None);
+    assert_eq!(task["request"]["skill_ref"]["name"], "hetu-artwork");
+    assert_eq!(task["request"]["output_contract"]["artifact_types"], json!(["image"]));
+    let reader = agent(folder.path(), false, &task);
+    let inbox = folder.path().join(task["request"]["output_contract"]["relative_inbox"].as_str().unwrap());
+    let mut bytes = std::io::Cursor::new(Vec::new());
+    image::DynamicImage::new_rgb8(240, 160).write_to(&mut bytes, image::ImageFormat::Png).unwrap();
+    fs::write(inbox.join("location.png"), bytes.get_ref()).unwrap();
+    let result = ok(call(&reader, "creative_tasks.submit_result", submit_input(&task,
+        json!([{"kind":"image","title":"青石渡","source_format":"image","source_ref_indices":[],"file_name":"location.png","sha256":digest(bytes.get_ref())}]), "artwork")));
+    let candidate = &result["submission"]["candidates"][0];
+    let view = ok(call(&reader, "interactions.get", json!({"task_ref":task["task_ref"]})));
+    assert_eq!(view["image_previews"][0]["width"], 240);
+    assert_eq!(view["image_previews"][0]["height"], 160);
+    assert_eq!(candidate["validation"], "decoded");
+    // 图片候选不能借用封面选用动作，正文与已选封面都保持原样。
+    let selected = call(&author, "covers.select", json!({"source":{"kind":"creative_task","reference":{"task_ref":task["task_ref"],"submission_id":result["submission"]["submission_id"],"candidate_id":candidate["candidate_id"]}},"expected_cover":null,"presentation":{"crop_rect":{"x":0,"y":0,"width":1,"height":1},"title_overlay":"","author_overlay":""},"operation_key":"reject-artwork-cover"}));
+    assert_eq!(selected["error"]["code"], "forbidden");
+    assert!(!folder.path().join("packages/visual-prompt/covers/cover.json").exists());
+    assert!(ok(call(&author, "documents.list", json!({})))["documents"].as_array().unwrap().is_empty());
+    let (_, project) = project();
+    assert_ne!(call(&project, "creative_tasks.preview_prompt", json!({"scope_ref":{"kind":project.scope_kind(),"id":project.scope()},"task_kind":"artwork","brief":"仅正式作品可创建素材图任务","input_refs":[],"client_adapter":"codex","language_tag":"zh-CN","candidate_limit":1}))["status"], "succeeded");
+}
+
+#[test]
+fn workspace_agent_can_prepare_only_image_reference_tasks_without_author_powers() {
+    let (folder, author) = workspace();
+    let entry = Kernel::open(json!({"workspace_path":folder.path(),"mode":"agent"})).unwrap();
+    for kind in ["cover", "artwork"] {
+        let input = json!({"scope_ref":{"kind":"workspace","id":author.scope()},"task_kind":kind,"brief":"仅准备图片参考，不外发或更改作品。","input_refs":[],"client_adapter":"codex","language_tag":"zh-CN","candidate_limit":1});
+        let preview = ok(call(&entry, "image_tasks.preview_prompt", input.clone()));
+        let mut prepare = preview["prepare_input"].clone();
+        prepare["operation_key"] = json!(format!("machine-{kind}"));
+        let saved = ok(call(&entry, "image_tasks.prepare", prepare.clone()));
+        assert_eq!(ok(call(&entry, "image_tasks.prepare", prepare.clone())), saved);
+        assert_eq!(saved["request"]["task_kind"], kind);
+        assert_eq!(saved["request"]["output_contract"]["artifact_types"], json!(["image"]));
+        let task = agent(folder.path(), false, &saved);
+        assert_eq!(get(&task, &saved)["request_sha256"], saved["request_sha256"]);
+        assert_eq!(call(&entry, "creative_tasks.prepare", prepare)["error"]["code"], "forbidden");
+        assert_eq!(call(&task, "model_tasks.approve", json!({"task_ref":saved["task_ref"],"plan_id":"model_11111111-1111-4111-8111-111111111111","plan_sha256":"0".repeat(64),"provider_billing_accepted":true,"operation_key":"no-approval"}))["error"]["code"], "forbidden");
+        let mut text_task = input.clone();
+        text_task["task_kind"] = json!("chapter_draft");
+        assert_eq!(call(&entry, "image_tasks.preview_prompt", text_task)["error"]["code"], "invalid_input");
+        let mut edit = input.clone();
+        edit["edit_scope"] = json!({});
+        assert_eq!(call(&entry, "image_tasks.preview_prompt", edit)["error"]["code"], "invalid_input");
+        let mut other = input;
+        other["scope_ref"]["id"] = json!("workspace_11111111-1111-4111-8111-111111111111");
+        assert_ne!(call(&entry, "image_tasks.preview_prompt", other)["status"], "succeeded");
+    }
+    assert!(ok(call(&author, "documents.list", json!({})))["documents"].as_array().unwrap().is_empty());
 }
 
 #[test]

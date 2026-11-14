@@ -1,0 +1,4 @@
+Use case: lighting-weather
+Asset type: integrated website hero illustration
+Input image: Image 1 is the edit target. Preserve the complete manuscript, sculptural lighthouse room, adult keeper, radio, folded pages and lamp exactly as composed.
+Change only the studio backdrop and its reflected light. Replace the olive-gray backdrop and floor with an almost white, very pale neutral sage background matching hex #f7f9f8. Keep the ivory paper, wooden details and warm lamp. Only a light natural contact shadow remains beneath the book. Do not add objects. No vignette, visible horizon, dramatic shading or dark green fill. The four edges must be near #f7f9f8 for blending into a light website canvas. Preserve the entire lighthouse and both book ends with comfortable margins. No text, lettering, watermark, mascot or UI.

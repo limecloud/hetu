@@ -1,0 +1,4 @@
+Use case: lighting-weather
+Asset type: integrated website hero illustration
+Input image: Image 1 is the edit target. Preserve the complete book, paper stage, Chinese doorway, adult silhouettes, pendant and lantern exactly as composed.
+Change only the studio backdrop and its reflected light. Replace the olive-gray backdrop and floor with an almost white, very pale neutral sage background, visually matching hex #f7f9f8. Keep the paper ivory and the lantern's warm glow. Retain only a light natural contact shadow beneath the book. Do not add anything. Do not introduce a vignette, a visible horizon, dramatic shading or dark green fill. The four image edges must be near #f7f9f8 so this illustration blends into a light website canvas. Preserve all objects with comfortable margins, especially both ends of the open book. No text, lettering, watermark, mascot or UI.

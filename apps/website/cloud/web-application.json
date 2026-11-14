@@ -1,0 +1,7 @@
+{
+  "web_application": {
+    "enabled": true,
+    "desktop_url": "https://hetu.limeai.run/console/",
+    "mobile_url": "https://hetu.limeai.run/console/"
+  }
+}

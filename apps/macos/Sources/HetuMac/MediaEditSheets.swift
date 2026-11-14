@@ -23,7 +23,7 @@ struct AssetEditorSheet: View {
     private var editing: Bool { initial["asset"] != .null }
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text(model.t(editing ? "media.edit_asset" : "media.import")).font(.title2)
+            Text(model.t(editing ? "media.edit_asset" : "media.import")).font(.system(size: 20, weight: .semibold))
             ScrollView {
                 Form {
                     if !editing {
@@ -32,7 +32,7 @@ struct AssetEditorSheet: View {
                             LabeledContent(model.t("media.original_filename"), value: inspection["original_filename"].string ?? "")
                             LabeledContent(model.t("media.file_size"), value: model.localizer.byteCount(inspection["size_bytes"].integer ?? 0))
                             LabeledContent(model.t("media.file_type"), value: inspection["media_type"].string ?? "")
-                            Text(model.t("media.signature_note")).font(.caption).foregroundStyle(.secondary)
+                            Text(model.t("media.signature_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                         }
                     }
                     TextField(model.t("media.name"), text: $title)
@@ -41,17 +41,17 @@ struct AssetEditorSheet: View {
                     }
                     TextField(model.t("media.creator_statement"), text: $creator, axis: .vertical).lineLimit(2...5)
                     TextField(model.t("media.source_uri"), text: $uri)
-                    Text(model.t("media.source_uri_note")).font(.caption).foregroundStyle(.secondary)
+                    Text(model.t("media.source_uri_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                     Picker(model.t("media.rights_status"), selection: $rights) {
                         ForEach(["unknown", "reference_only", "author_owned", "licensed"], id: \.self) { item in Text(model.t("media.rights." + item)).tag(item) }
                     }
                     Toggle(model.t("media.redistribute"), isOn: $redistribute).disabled(!["author_owned", "licensed"].contains(rights))
                     TextField(model.t("media.rights_statement"), text: $statement, axis: .vertical).lineLimit(2...5)
-                    Text(model.t("media.rights_note")).font(.caption).foregroundStyle(.secondary)
+                    Text(model.t("media.rights_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                 }.formStyle(.grouped).disabled(pending != nil)
             }
-            if let error { Text(error).foregroundStyle(.red).textSelection(.enabled) }
-            if pending != nil { Text(model.t("drama.pending_note")).font(.caption).foregroundStyle(.orange) }
+            if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
+            if pending != nil { Text(model.t("drama.pending_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.warningInk) }
             HStack {
                 Button(model.t("common.cancel")) { dismiss() }.keyboardShortcut(.cancelAction)
                 Spacer()
@@ -126,17 +126,17 @@ struct CueEditorSheet: View {
     }
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text(model.t(editing ? "media.edit_cue" : "media.new_cue")).font(.title2)
+            Text(model.t(editing ? "media.edit_cue" : "media.new_cue")).font(.system(size: 20, weight: .semibold))
             ScrollView {
                 VStack(alignment: .leading, spacing: 14) {
                     TextField(model.t("media.name"), text: $title).textFieldStyle(.roundedBorder)
                     Picker(model.t("media.kind"), selection: $kind) {
                         Text(model.t("media.kind.music")).tag("music"); Text(model.t("media.kind.visual")).tag("visual")
                     }.disabled(editing)
-                    Text(model.t("media.description")).font(.headline)
+                    Text(model.t("media.description")).font(.system(size: 14, weight: .semibold))
                     TextEditor(text: $description).frame(minHeight: 90).border(.quaternary).accessibilityLabel(model.t("media.description"))
-                    HStack { Text(model.t("media.narrative_refs")).font(.headline); Spacer(); Button(model.t("media.add_source")) { addSource = true } }
-                    Text(model.t("media.narrative_note")).font(.caption).foregroundStyle(.secondary)
+                    HStack { Text(model.t("media.narrative_refs")).font(.system(size: 14, weight: .semibold)); Spacer(); Button(model.t("media.add_source")) { addSource = true } }
+                    Text(model.t("media.narrative_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                     ForEach(Array(sources.enumerated()), id: \.offset) { index, source in
                         HStack(alignment: .top) {
                             Text(source["quote"].string ?? "").lineLimit(4).textSelection(.enabled)
@@ -145,14 +145,14 @@ struct CueEditorSheet: View {
                         }
                     }
                     Divider()
-                    Text(model.t("media.linked_assets")).font(.headline)
-                    if assets.isEmpty { Text(model.t("media.no_assets")).foregroundStyle(.secondary) }
+                    Text(model.t("media.linked_assets")).font(.system(size: 14, weight: .semibold))
+                    if assets.isEmpty { Text(model.t("media.no_assets")).foregroundStyle(WorkbenchPalette.muted) }
                     ForEach(Array(assets.enumerated()), id: \.offset) { _, asset in assetChoice(asset) }
                     Toggle(model.t("media.archived"), isOn: $archived)
                 }.padding(4).disabled(pending != nil)
             }
-            if let error { Text(error).foregroundStyle(.red).textSelection(.enabled) }
-            if pending != nil { Text(model.t("drama.pending_note")).font(.caption).foregroundStyle(.orange) }
+            if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
+            if pending != nil { Text(model.t("drama.pending_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.warningInk) }
             HStack {
                 Button(model.t("common.cancel")) { dismiss() }.keyboardShortcut(.cancelAction)
                 Spacer()
@@ -178,10 +178,10 @@ struct CueEditorSheet: View {
             Toggle(asset["title"].string ?? "", isOn: Binding(get: { selected != nil }, set: { on in
                 references.removeAll { $0["asset_id"] == asset["asset_id"] }; if on { references.append(current) }
             }))
-            Text(model.t("media.rights." + (asset["rights_status"].string ?? "unknown"))).font(.caption).foregroundStyle(.secondary)
+            Text(model.t("media.rights." + (asset["rights_status"].string ?? "unknown"))).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
             if let selected, selected != current {
                 HStack {
-                    Text(model.t("media.asset_stale")).font(.caption).foregroundStyle(.orange)
+                    Text(model.t("media.asset_stale")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.warningInk)
                     Button(model.t("media.use_current_asset")) { references.removeAll { $0["asset_id"] == asset["asset_id"] }; references.append(current) }
                 }
             }
@@ -224,13 +224,13 @@ private struct CueSourceSheet: View {
     @State private var error: String?
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(model.t("media.add_source")).font(.title2)
-            Text(model.t("media.select_quote")).foregroundStyle(.secondary)
+            Text(model.t("media.add_source")).font(.system(size: 20, weight: .semibold))
+            Text(model.t("media.select_quote")).foregroundStyle(WorkbenchPalette.muted)
             Picker(model.t("media.source_document"), selection: $documentID) {
                 Text(model.t("media.choose_document")).tag("")
                 ForEach(model.documents) { document in Text(document.title).tag(document.id) }
             }
-            if let error { Text(error).foregroundStyle(.red) }
+            if let error { Text(error).foregroundStyle(WorkbenchPalette.danger) }
             if result != .null {
                 NativeTextEditor(text: result["content"].string ?? "", documentID: result["revision"]["revision_id"].string ?? "", replacementVersion: 0, accessibleName: model.t("media.select_quote"), editable: false, onChange: { _ in }, onComposition: { _ in }, onSelection: { selection in
                     span = SourceSpan(content: result["content"].string ?? "", selection: selection)
@@ -239,7 +239,7 @@ private struct CueSourceSheet: View {
             HStack {
                 Button(model.t("common.cancel")) { dismiss() }.keyboardShortcut(.cancelAction)
                 Spacer()
-                if let span { Text(model.t("media.selected_count", ["count": String(span.quote.count)])).font(.caption) }
+                if let span { Text(model.t("media.selected_count", ["count": String(span.quote.count)])).font(.system(size: 12)) }
                 Button(model.t("media.add_source")) {
                     guard let span else { return }
                     onAdd(.object(["document_id": result["document"]["document_id"], "revision_id": result["revision"]["revision_id"], "byte_start": .integer(Int64(span.byteStart)), "byte_end": .integer(Int64(span.byteEnd)), "quote": .string(span.quote)])); dismiss()

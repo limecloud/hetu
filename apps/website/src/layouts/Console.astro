@@ -1,0 +1,15 @@
+---
+import { messages, origin, route, type Locale } from '../lib/site';
+import { assetURL } from '../lib/assets';
+import '../styles/console.css';
+const { locale } = Astro.props as { locale: Locale };
+const m = messages(locale).cloud;
+---
+<!doctype html>
+<html lang={locale}><head>
+  <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>{m.title} — Hetu Luoshu</title><meta name="robots" content="noindex,nofollow"/>
+  <meta name="theme-color" content="#fafbfa"/>
+  <link rel="canonical" href={new URL(route(locale,'console'),origin).href}/>
+  <link rel="icon" href={assetURL('/brand/favicon.ico')}/>
+</head><body><slot/></body></html>

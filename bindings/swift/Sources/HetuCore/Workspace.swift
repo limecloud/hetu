@@ -32,13 +32,14 @@ public actor Workspace {
     public nonisolated let taskID: String?
     public let mode: EntryMode
 
-    public static func open(at url: URL, mode: EntryMode, title: String? = nil, locale: String = "zh-CN", operationKey: String? = nil, authorizationURL: URL? = nil, taskID: String? = nil) async throws -> Workspace {
+    public static func open(at url: URL, mode: EntryMode, title: String? = nil, locale: String = "zh-CN", operationKey: String? = nil, authorizationURL: URL? = nil, taskID: String? = nil, workType: String? = nil) async throws -> Workspace {
         var config: [String: JSONValue] = ["workspace_path": .string(url.path), "mode": .string(mode.rawValue)]
         if let authorizationURL { config["authorization_path"] = .string(authorizationURL.path) }
         if let taskID { config["task_id"] = .string(taskID) }
         if let title {
             guard let operationKey, !operationKey.isEmpty else { throw CoreError.invalidResponse }
             config["create"] = .object(["title": .string(title), "locale": .string(locale), "operation_key": .string(operationKey)])
+            if let workType { var create = config["create"]!.object; create["work_type"] = .string(workType); config["create"] = .object(create) }
         }
         let prepared = config
         return try await Task.detached { try Workspace(at: url, scopeKind: .workspace, taskID: taskID, mode: mode, config: prepared) }.value

@@ -27,7 +27,7 @@ struct AgentIntegrationView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
-                Label(t("agent.title"), systemImage: "puzzlepiece.extension").font(.headline)
+                Label(t("agent.title"), systemImage: "puzzlepiece.extension").font(.system(size: 14, weight: .semibold))
                 Spacer()
                 Button { refreshID = UUID() } label: { Label(t("agent.refresh"), systemImage: "arrow.clockwise") }
                     .disabled(association.client == .none)
@@ -39,7 +39,7 @@ struct AgentIntegrationView: View {
                 AgentSuitePicker(catalog: catalog, suiteID: Binding(get: { association.suiteID }, set: { change(AgentAssociation(client: association.client, suiteID: $0)) }), localizer: localizer)
             } else { Label(t("agent.catalog_error"), systemImage: "exclamationmark.triangle").foregroundStyle(WorkbenchPalette.muted) }
             if association.client == .none {
-                Text(t("agent.manual_note")).font(.callout).foregroundStyle(WorkbenchPalette.muted)
+                Text(t("agent.manual_note")).font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted)
             } else if let inspection {
                 inspectionDetails(inspection)
             } else { ProgressView(t("agent.checking")).controlSize(.small) }
@@ -52,8 +52,8 @@ struct AgentIntegrationView: View {
                                     .foregroundStyle(inspection?.foundSkills.contains(skill) == true ? WorkbenchPalette.jade : WorkbenchPalette.muted)
                                     .accessibilityHidden(true)
                                 VStack(alignment: .leading, spacing: 2) {
-                                    Text(t("agent.skill." + skill)).font(.callout)
-                                    Text(skill).font(.caption).foregroundStyle(WorkbenchPalette.muted)
+                                    Text(t("agent.skill." + skill)).font(.system(size: 14))
+                                    Text(skill).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                                 }
                                 Spacer()
                                 VStack(alignment: .trailing, spacing: 2) {
@@ -61,7 +61,7 @@ struct AgentIntegrationView: View {
                                     if inspection?.foundSkills.contains(skill) == true, let version = inspection?.version {
                                         Text(localizer.text("agent.skill_version", ["version": version]))
                                     }
-                                }.font(.caption).foregroundStyle(WorkbenchPalette.muted)
+                                }.font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                             }.padding(.vertical, 7)
                             if skill != catalog.skills.last { Divider() }
                         }
@@ -72,15 +72,15 @@ struct AgentIntegrationView: View {
                     VStack(alignment: .leading, spacing: 8) { packageActions(catalog: catalog, suite: suite) }
                 }.controlSize(.small)
             }
-            Text(t(workspaceID == nil ? "agent.default_note" : "agent.work_note")).font(.caption).foregroundStyle(WorkbenchPalette.muted)
+            Text(t(workspaceID == nil ? "agent.default_note" : "agent.work_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
         }
         .task(id: probeID) { await inspect() }
         .sheet(isPresented: $showGuide) {
             VStack(alignment: .leading, spacing: 18) {
-                Text(t("agent.package_guide")).font(.title2)
+                Text(t("agent.package_guide")).font(.system(size: 20, weight: .semibold))
                 Text(t(association.client == .codex ? "agent.guide.codex" : "agent.guide.other")).lineSpacing(5)
-                Text(t("agent.guide.scope")).font(.callout).foregroundStyle(WorkbenchPalette.muted)
-                if let catalog, let suite { Text(catalog.directory(for: suite).path).font(.caption).textSelection(.enabled) }
+                Text(t("agent.guide.scope")).font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted)
+                if let catalog, let suite { Text(catalog.directory(for: suite).path).font(.system(size: 12)).textSelection(.enabled) }
                 Link(t("agent.official_guide"), destination: URL(string: "https://developers.openai.com/plugins/build/plugins")!)
                 HStack { Spacer(); Button(t("common.ok")) { showGuide = false }.keyboardShortcut(.defaultAction) }
             }.padding(24).frame(width: 540)
@@ -106,25 +106,25 @@ struct AgentIntegrationView: View {
             LabeledContent(t("agent.version"), value: value.version ?? t("agent.unknown"))
             if let lockVersion = value.lockVersion {
                 LabeledContent(t("agent.lock_version"), value: lockVersion)
-                if lockVersion != value.version { Label(t("agent.lock_differs"), systemImage: "exclamationmark.triangle").font(.callout).foregroundStyle(WorkbenchPalette.muted) }
+                if lockVersion != value.version { Label(t("agent.lock_differs"), systemImage: "exclamationmark.triangle").font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted) }
             }
             if let expected = value.expectedVersion {
                 LabeledContent(t("agent.bundled_version"), value: expected)
-                if value.versionDiffers { Label(t("agent.version_differs"), systemImage: "info.circle").font(.callout).foregroundStyle(WorkbenchPalette.muted) }
+                if value.versionDiffers { Label(t("agent.version_differs"), systemImage: "info.circle").font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted) }
             }
             if association.client == .codex { LabeledContent(t("agent.registration"), value: t("agent.registration." + value.registration.rawValue)) }
             if let directory = value.directory {
                 LabeledContent(t("agent.source")) {
                     Button { NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: directory.path) } label: {
-                        Text(directory.path).lineLimit(2).truncationMode(.middle).font(.caption)
+                        Text(directory.path).lineLimit(2).truncationMode(.middle).font(.system(size: 12))
                     }.buttonStyle(.link).help(directory.path)
                 }
             }
             LabeledContent(t("agent.checked_at"), value: value.checkedAt.formatted(date: .omitted, time: .shortened))
             LabeledContent(t("agent.session"), value: t("agent.unverified"))
             LabeledContent(t("agent.mcp"), value: t("agent.unverified"))
-            Text(t("agent.evidence_note")).font(.caption).foregroundStyle(WorkbenchPalette.muted)
-        }.font(.callout).frame(maxWidth: 640)
+            Text(t("agent.evidence_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
+        }.font(.system(size: 14)).frame(maxWidth: 640)
     }
     private func choosePackage() {
         let panel = NSOpenPanel(); panel.canChooseDirectories = true; panel.canChooseFiles = false; panel.allowsMultipleSelection = false

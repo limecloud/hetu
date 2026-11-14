@@ -6,4 +6,4 @@ export const source='https://github.com/limecloud/hetu';
 export const prototype=(locale:Locale)=>(locale==='en'?'/en/':'/')+'#prototype';
 export const messages=(locale:Locale)=>locale==='en'?en:zh;
 export const route=(locale:Locale,page='')=>`${locale==='en'?'/en':'/'}${locale==='en'?'/':''}${page?`${page}/`:''}`;
-export const pages=['','workflow','integrations','faq','docs','brand'] as const;
+export const pages=['','workflow','integrations','faq','docs','brand','blog'] as const;

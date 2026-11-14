@@ -4,6 +4,7 @@ import argparse
 import ctypes as c
 import fcntl
 import json
+import os
 from pathlib import Path
 import tempfile
 import subprocess
@@ -68,6 +69,14 @@ def main():
         denied = request(agent, "hetu.documents.save", {"document_id":created["data"]["document"]["document_id"], "base_revision_id":created["data"]["revision"]["revision_id"], "source_format":"markdown", "content":"不应写入", "operation_key":"deny"})
         assert denied["error"]["code"] == "forbidden"
         if args.cli:
+            version = subprocess.run([str(cli_binary), "--version"], text=True, capture_output=True, cwd=folder, timeout=30,
+                                     env={**os.environ, "PATH":"/usr/bin:/bin"})
+            expected_version = json.loads((ROOT / "package.json").read_text())["version"]
+            assert version.returncode == 0 and version.stdout.strip() == "hetu " + expected_version, (version.stdout, version.stderr)
+            # 本机用户上下文缺失时必须返回真实失败，不能打印 unknown 并以成功退出。
+            no_user = subprocess.run([str(cli_binary), "--version"], text=True, capture_output=True, cwd=folder, timeout=30,
+                                     env={key:value for key,value in os.environ.items() if key != "HOME"})
+            assert no_user.returncode != 0 and json.loads(no_user.stdout)["error"]["code"] == "missing_context", (no_user.stdout, no_user.stderr)
             command = [str(cli_binary), "--workspace", str(path), "call"]
             read_process = subprocess.run([*command, "hetu.documents.get", "--input", "-"], input=json.dumps({"document_id":created["data"]["document"]["document_id"]}), text=True, capture_output=True, cwd=folder, timeout=30)
             assert read_process.returncode == 0, read_process.stderr
@@ -106,6 +115,46 @@ def main():
                 assert result["data"]["plot"]["coverage"]["budget_stop"]["reason"] == "max_nodes"
                 partial_receipts.append(result)
             assert partial_receipts[0] == partial_receipts[1], "partial 已保存结果必须沿原键恢复"
+            # 稳定入口从仓库外和干净 PATH 启动，不依赖桌面进程或全局当前作品。
+            collaboration = Path(folder) / "本机授权"
+            def stable(command, fields=None, client="codex", expected_code=0):
+                process = subprocess.run([str(cli_binary), "--client", client,
+                    "--collaboration-dir", str(collaboration), *command,
+                    *(["--input", "-"] if fields is not None else [])],
+                    input=json.dumps(fields, ensure_ascii=False) if fields is not None else None,
+                    text=True, capture_output=True, cwd=folder, timeout=60,
+                    env={**os.environ, "PATH":"/usr/bin:/bin"})
+                assert process.returncode == expected_code and not process.stderr, (process.returncode, process.stdout, process.stderr)
+                return json.loads(process.stdout)
+            discovered = stable(["collaboration", "inspect"])
+            assert discovered["context"]["scope_id"] == "collaboration" and not collaboration.exists()
+            scope = request(author, "hetu.capabilities.get", {})["data"]["scope_ref"]
+            preview = request(author, "hetu.creative_tasks.preview_prompt", {
+                "scope_ref":scope, "task_kind":"book_profile", "brief":"为已有作品提供简介参考，不改正文。",
+                "input_refs":[], "client_adapter":"codex", "language_tag":"zh-CN"})["data"]
+            fixed = request(author, "hetu.creative_tasks.prepare", {**preview["prepare_input"], "operation_key":"cli-task"})["data"]
+            grant_input = {"task_ref":fixed["task_ref"], "client_adapter":"codex", "collaboration_path":str(collaboration), "operation_key":"cli-grant"}
+            granted = request(author, "hetu.collaboration.authorize", grant_input)
+            assert granted["status"] == "succeeded", granted
+            locator = {key:fixed["task_ref"][key] for key in ["scope_ref", "task_id"]}
+            opened_task = stable(["collaboration", "open"], {"task_locator":locator})
+            reference = opened_task["data"]["task_ref"]
+            assert reference["sha256"] == fixed["request_sha256"]
+            written = {"task_ref":reference, "request_sha256":fixed["request_sha256"],
+                "candidates":[{"kind":"synopsis", "title":"CLI 简介参考", "source_format":"plain", "source_ref_indices":[], "content":"雨夜的河港，未寄出的信。🌿"}],
+                "complete":True, "missing_items":[], "provenance":{"client":"cli-test", "skill_version":"1"}, "operation_key":"stable-cli-result"}
+            original = stable(["call", "hetu.creative_tasks.submit_result"], written)
+            assert original == stable(["call", "hetu.creative_tasks.submit_result"], written)
+            recovered = stable(["call", "hetu.operations.get"], {"task_ref":reference, "action":"hetu.creative_tasks.submit_result", "key":written["operation_key"]})
+            assert recovered["data"]["original_result"]["operation"] == original["operation"]
+            assert recovered["data"]["original_result"]["data"]["submission_ref"] == original["data"]["submission_ref"]
+            stale = {**reference, "sha256":"0"*64}
+            assert stable(["call", "hetu.creative_tasks.get"], {"task_ref":stale}, expected_code=4)["error"]["code"] == "hetu.stale_request"
+            assert stable(["collaboration", "open"], {"task_locator":locator}, client="workbuddy", expected_code=3)["error"]["code"] == "forbidden"
+            revoked = request(author, "hetu.collaboration.revoke", {**grant_input,"operation_key":"cli-revoke"})
+            assert revoked["status"] == "succeeded", revoked
+            assert stable(["call", "hetu.operations.get"], {"task_ref":reference,"action":"hetu.creative_tasks.submit_result","key":written["operation_key"]}, expected_code=3)["error"]["code"] == "forbidden"
+            assert request(author,"hetu.documents.get",{"document_id":created["data"]["document"]["document_id"]})["data"]["content"] == "你好，雨夜。🌧️"
         malformed = (c.c_uint8 * 2)(0xFF, 0x00); out = Buffer()
         assert lib.hetu_request(agent, malformed, 2, c.byref(out)) == 0
         assert take(out)["error"]["code"] == "invalid_input"
@@ -127,6 +176,7 @@ def main():
     print("C ABI：动态库、中文、缓冲释放、权限、异步任务与 close 生命周期通过")
     if args.cli:
         print("Swift CLI：仓库外启动、中文 JSON 管道、权限、写入期间可读、写入锁与释放恢复及原键重放通过")
+        print("Swift 稳定 CLI：无桌面接入、确切任务、保存回读、原键恢复、摘要拒绝、客户端隔离及撤权通过")
 
 if __name__ == "__main__":
     main()

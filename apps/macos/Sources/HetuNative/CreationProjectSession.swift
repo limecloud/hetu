@@ -16,6 +16,9 @@ public struct CreationProjectEntry: Identifiable, Sendable {
     public private(set) var workspace: Workspace?
     public private(set) var record: JSONValue = .null
     public private(set) var fields: [String: JSONValue] = [:]
+    public private(set) var workType = "novel"
+    public private(set) var dramaMode = "original"
+    public private(set) var languageTag: String
     public var brief = "" { didSet { if brief != oldValue { preview = .null } } }
     public private(set) var projects: [CreationProjectEntry] = []
     public private(set) var preview: JSONValue = .null
@@ -35,6 +38,7 @@ public struct CreationProjectEntry: Identifiable, Sendable {
 
     public init(locale: String, directory: URL? = nil, recovery: RecoveryStore = RecoveryStore()) {
         self.localizer = Localizer(locale: locale)
+        self.languageTag = locale == "en" ? "en" : "zh-CN"
         self.directory = directory ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("Hetu/CreationProjects", isDirectory: true)
         self.creationDirectory = self.directory.appendingPathComponent(UUID().uuidString.lowercased(), isDirectory: true)
         self.recovery = recovery
@@ -43,7 +47,24 @@ public struct CreationProjectEntry: Identifiable, Sendable {
     public var expected: JSONValue { .object(["revision": record["revision"], "sha256": record["sha256"]]) }
     public var completed: Bool { record["project"]["created_workspace_ref"] != .null }
     public var held: Bool { pending != nil || record["pending_creation"] != .null }
-    public var dirty: Bool { brief != (record["project"]["brief"].string ?? "") || JSONValue.object(fields) != (record == .null ? .object([:]) : record["project"]["selected_fields"]) }
+    public var dirty: Bool { brief != (record["project"]["brief"].string ?? "") || JSONValue.object(fields) != (record == .null ? .object([:]) : record["project"]["selected_fields"]) || workProfile != savedWorkProfile(record) }
+    private var workProfile: JSONValue { .object(["work_type": .string(workType), "drama_mode": workType == "drama" ? .string(dramaMode) : .null, "language_tag": .string(languageTag)]) }
+    private func savedWorkProfile(_ value: JSONValue) -> JSONValue {
+        value["project"]["work_profile"] == .null ? .object(["work_type": .string("novel"), "drama_mode": .null, "language_tag": .string(localizer.locale == "en" ? "en" : "zh-CN")]) : value["project"]["work_profile"]
+    }
+    private func loadWorkProfile(_ value: JSONValue) {
+        let profile = savedWorkProfile(value)
+        workType = profile["work_type"].string ?? "novel"
+        dramaMode = profile["drama_mode"].string ?? "original"
+        languageTag = profile["language_tag"].string ?? "zh-CN"
+    }
+    public func setWorkProfile(workType: String? = nil, dramaMode: String? = nil, languageTag: String? = nil) {
+        guard !busy, !held, !completed else { return }
+        if let workType, ["novel", "drama"].contains(workType) { self.workType = workType }
+        if let dramaMode, ["original", "adaptation"].contains(dramaMode) { self.dramaMode = dramaMode }
+        if let languageTag, ["zh-CN", "en"].contains(languageTag) { self.languageTag = languageTag }
+        preview = .null
+    }
     public var taskReference: JSONValue {
         .object(["scope_ref": task["request"]["scope_ref"], "task_id": task["request"]["task_id"], "request_revision": task["request"]["request_revision"]])
     }
@@ -94,6 +115,7 @@ public struct CreationProjectEntry: Identifiable, Sendable {
             let operations = try await recovery.structureOperations(workspaceID: scope.string ?? "")
             guard operations.count <= 1 else { throw CreativeTaskError.invalidResult }
             workspace = source; record = data; brief = data["project"]["brief"].string ?? ""; fields = data["project"]["selected_fields"].object
+            loadWorkProfile(data)
             pending = operations.first; task = .null; preview = .null; created = .null; conflict = .null
             try await fetchTasks()
         } catch { showError(error) }
@@ -108,9 +130,9 @@ public struct CreationProjectEntry: Identifiable, Sendable {
                 let scope = try await workspace!.data("hetu.capabilities.get")["scope_ref"]["id"]
                 record = try await workspace!.data("hetu.creation_projects.get", input: ["project_id": scope])
             }
-            if dirty {
+            if dirty || record["project"]["work_profile"] == .null {
                 guard let data = await mutate("hetu.creation_projects.save", input: ["project_id": .string(projectID), "expected": expected,
-                    "brief": .string(brief), "selected_fields": .object(fields), "operation_key": .string(UUID().uuidString)]) else { return false }
+                    "brief": .string(brief), "selected_fields": .object(fields), "work_profile": workProfile, "operation_key": .string(UUID().uuidString)]) else { return false }
                 record = data
             }
             return true
@@ -121,10 +143,10 @@ public struct CreationProjectEntry: Identifiable, Sendable {
         busy = true; defer { busy = false }; error = nil
         do {
             let value = try await workspace.data("hetu.creation_projects.get", input: ["project_id": .string(projectID)])
-            let changed = value["project"]["selected_fields"] != record["project"]["selected_fields"] || value["project"]["brief"] != record["project"]["brief"]
+            let changed = value["project"]["selected_fields"] != record["project"]["selected_fields"] || value["project"]["brief"] != record["project"]["brief"] || savedWorkProfile(value) != savedWorkProfile(record)
             if dirty && changed { conflict = value }
             else {
-                if !dirty { fields = value["project"]["selected_fields"].object; brief = value["project"]["brief"].string ?? "" }
+                if !dirty { fields = value["project"]["selected_fields"].object; brief = value["project"]["brief"].string ?? ""; loadWorkProfile(value) }
                 record = value
             }
             try await fetchTasks()
@@ -170,6 +192,12 @@ public struct CreationProjectEntry: Identifiable, Sendable {
             task = try await workspace.data("hetu.interactions.get", input: input)
         } catch { showError(error) }
     }
+    @discardableResult public func authorizeAccess() async -> Bool {
+        guard let client = task["request"]["client_adapter"].string,
+              task["request"]["task_id"].string != nil else { return false }
+        return await mutate("hetu.collaboration.authorize", input: ["task_ref": taskReference,
+            "client_adapter": .string(TaskConnection.adapter(client)), "operation_key": .string(UUID().uuidString)]) != nil
+    }
     public func taskAction(_ action: String) async {
         guard !busy, !held, let workspace else { return }
         busy = true; defer { busy = false }
@@ -188,29 +216,60 @@ public struct CreationProjectEntry: Identifiable, Sendable {
             }
         } catch { showError(error) }
     }
-    public func createNovel(at url: URL, language: String) async -> JSONValue? {
+    public func collaborationRead(_ action: String, input: [String: JSONValue]) async -> JSONValue? {
+        guard !busy, let workspace, ["hetu.working_copies.get", "hetu.working_copies.list", "hetu.task_feedback.list", "hetu.model_tasks.list"].contains(action), input["task_ref"] == taskReference else { return nil }
+        busy = true; defer { busy = false }; error = nil
+        do { return try await workspace.data(action, input: input) }
+        catch { showError(error); return nil }
+    }
+    public func saveFeedback(_ input: [String: JSONValue]) async -> JSONValue? {
+        guard !busy, !held, let workspace, input["task_ref"] == taskReference else { return nil }
+        busy = true; defer { busy = false }
+        guard let result = await mutate("hetu.task_feedback.save", input: input) else { return nil }
+        do { task = try await workspace.data("hetu.interactions.get", input: ["task_ref": taskReference]) }
+        catch { showError(error) }
+        return result
+    }
+    public func approveModelPlan(_ input: [String: JSONValue]) async -> JSONValue? {
+        guard !busy, !held, input["task_ref"] == taskReference else { return nil }
+        busy = true; defer { busy = false }
+        return await mutate("hetu.model_tasks.approve", input: input)
+    }
+    public func createNovel(at url: URL, language: String, workType: String? = nil, dramaMode: String? = nil) async -> JSONValue? {
+        setWorkProfile(workType: workType, dramaMode: dramaMode, languageTag: language)
         guard !value("title").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, await save() else { return nil }
         busy = true; defer { busy = false }
         let metadata: JSONValue = .object(["title": .string(value("title").trimmingCharacters(in: .whitespacesAndNewlines)), "author_name": .string(value("author_name")),
             "genre": .string(value("genre")), "synopsis": .string(value("synopsis")), "language_tag": .string(language), "status": .string("planning")])
-        let result = await mutate("hetu.creation_projects.create_novel", input: ["project_id": .string(projectID), "expected": expected, "metadata": metadata,
-            "target_path": .string(url.path), "operation_key": .string(UUID().uuidString)], keepReceipt: true)
+        var input: [String: JSONValue] = ["project_id": .string(projectID), "expected": expected,
+            "target_path": .string(url.path), "operation_key": .string(UUID().uuidString)]
+        let action: String
+        if self.workType == "drama" {
+            action = "hetu.creation_projects.create_drama"
+            input["profile"] = .object(["title": metadata["title"], "description": metadata["synopsis"], "language_tag": .string(language), "mode": .string(self.dramaMode)])
+        } else { action = "hetu.creation_projects.create_novel"; input["metadata"] = metadata }
+        let result = await mutate(action, input: input, keepReceipt: true)
         if let result { created = result; await refreshRecord() }
         return result
     }
     public func recover() async {
         guard !busy, let pending else { return }
         busy = true; defer { busy = false }
-        let result = await mutate(pending.action, input: pending.input, keepReceipt: pending.action == "hetu.creation_projects.create_novel")
+        let creating = ["hetu.creation_projects.create_novel", "hetu.creation_projects.create_drama"].contains(pending.action)
+        let result = await mutate(pending.action, input: pending.input, keepReceipt: creating)
         if let result {
-            if pending.action == "hetu.creation_projects.create_novel" { created = result }
-            else if pending.action == "hetu.creation_projects.save" { record = result }
+            if creating { created = result }
+            else if pending.action == "hetu.creation_projects.save" { record = result; fields = result["project"]["selected_fields"].object; brief = result["project"]["brief"].string ?? ""; loadWorkProfile(result) }
             else if pending.action == "hetu.creative_tasks.prepare" { task = result; preview = .null }
+            else if let reference = pending.input["task_ref"], let workspace {
+                do { task = try await workspace.data("hetu.interactions.get", input: ["task_ref": reference]) }
+                catch { showError(error) }
+            }
             await refreshRecord()
         }
     }
     public func acknowledgeCreatedWorkspace() async {
-        guard created != .null, let pending, pending.action == "hetu.creation_projects.create_novel" else { return }
+        guard created != .null, let pending, ["hetu.creation_projects.create_novel", "hetu.creation_projects.create_drama"].contains(pending.action) else { return }
         do { try await recovery.removeOperation(pending); self.pending = nil } catch { showError(error) }
     }
     private func fetchTasks() async throws {
@@ -244,7 +303,7 @@ public struct CreationProjectEntry: Identifiable, Sendable {
         } catch {
             if case CoreError.business(let value) = error, value["status"].string == "blocked" {
                 do { try await recovery.removeOperation(operation); pending = nil } catch { showError(error); return nil }
-                if value["error"]["code"].string == "revision_conflict" {
+                if action == "hetu.creation_projects.save" && value["error"]["code"].string == "revision_conflict" {
                     conflict = (try? await workspace.data("hetu.creation_projects.get", input: ["project_id": .string(projectID)])) ?? .null
                 }
             }

@@ -213,6 +213,136 @@
       "sha256": "a30ff37ca030cdee23e93b78a21c6bca9228493998f16de4decfa4e214c658c7",
       "prompt_source": "output/imagegen/prompts/hetu-luoshu-merch.txt",
       "reference_image": "output/imagegen/brand-merch.png"
+    },
+    {
+      "path": "output/imagegen/story-to-screen-hero.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "4d5524ef61fad549921ae0ecdabe6cf9d75ebcbd51f1385a1eec4d43c883f816",
+      "width": 1536,
+      "height": 1024,
+      "prompt": "assets/marketing/prompts/story-to-screen-hero.txt"
+    },
+    {
+      "path": "output/imagegen/story-to-screen-hero-en.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "e8fd1a056ad009d6dfdb1de3cccecd3bf289abb416436a6a77bc0513d1d0e888",
+      "width": 1536,
+      "height": 1024,
+      "prompt_source": "assets/marketing/prompts/story-to-screen-hero-en.txt"
+    },
+    {
+      "path": "output/imagegen/story-panorama.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "9d4a33cdada17e6dbdc12f8b5e0fff33877473f215397cad7f4f2aaf9bb8f737",
+      "width": 1672,
+      "height": 941,
+      "prompt_source": "assets/marketing/prompts/story-panorama.txt"
+    },
+    {
+      "path": "output/imagegen/story-panorama-en.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "d1d45d3e3054c40db4d7822bf898bef8ae787ac772943685cb69d48e2e3fa20b",
+      "width": 2172,
+      "height": 724,
+      "prompt_source": "assets/marketing/prompts/story-panorama-en.txt"
+    },
+    {
+      "path": "output/imagegen/home-visuals/story-actions.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "3d07dfeac9077e5b135e30a2be9b0a79922077bc4962dd50522821c40f90c39c",
+      "width": 1672,
+      "height": 941,
+      "prompt_source": "assets/marketing/prompts/home-visuals.jsonl",
+      "prompt_job": "story-actions"
+    },
+    {
+      "path": "output/imagegen/home-visuals/story-actions-en.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "7a77bab50c1a731ecbf16802572df0a2ec1ecef5caaf83c92aea519370423820",
+      "width": 1672,
+      "height": 941,
+      "prompt_source": "assets/marketing/prompts/home-visuals.jsonl",
+      "prompt_job": "story-actions-en"
+    },
+    {
+      "path": "output/imagegen/home-visuals/author-decisions.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "49d26414f2207367113f0fd5f9544de15bdfb8baf447d9e04711e9b6624a6b34",
+      "width": 1254,
+      "height": 1254,
+      "prompt_source": "assets/marketing/prompts/home-visuals.jsonl",
+      "prompt_job": "author-decisions"
+    },
+    {
+      "path": "output/imagegen/home-visuals/journal-authors.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "e6ac03945ed8f9b22daceb69d86e360ae0a5c687965078fb46040513ec60fb54",
+      "width": 1672,
+      "height": 941,
+      "prompt_source": "assets/marketing/prompts/home-visuals.jsonl",
+      "prompt_job": "journal-authors"
+    },
+    {
+      "path": "output/imagegen/home-visuals/journal-adaptation.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "cf5f6368f16ebd868e70b50f398985632b81458a7f6dafe1950fde2ec634bf28",
+      "width": 1672,
+      "height": 941,
+      "prompt_source": "assets/marketing/prompts/home-visuals.jsonl",
+      "prompt_job": "journal-adaptation"
+    },
+    {
+      "path": "output/imagegen/home-visuals/journal-adaptation-en.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "a51e149e37946a251362a487d822c0c9a7cf6df4d9dbec7e11f7658c4e13c4d9",
+      "width": 1536,
+      "height": 1024,
+      "prompt_source": "assets/marketing/prompts/home-visuals.jsonl",
+      "prompt_job": "journal-adaptation-en"
+    },
+    {
+      "path": "output/imagegen/home-visuals/journal-workspace.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "5937e50e2cd140603fcf089d7e446aa5ea95c61d6aeae5fe337679374ad3f9ef",
+      "width": 1536,
+      "height": 1024,
+      "prompt_source": "assets/marketing/prompts/home-visuals.jsonl",
+      "prompt_job": "journal-workspace"
+    },
+    {
+      "path": "output/imagegen/home-visuals/hero-balanced-light.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "a8352034b8a3cd74daac6033d2dbb75b5566ffa285a6323758dbf770980956a5",
+      "width": 1536,
+      "height": 1024,
+      "prompt_source": "assets/marketing/prompts/hero-balanced-light.txt",
+      "reference_image": "output/imagegen/home-visuals/hero-balanced.png"
+    },
+    {
+      "path": "output/imagegen/home-visuals/hero-balanced-en-light.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "d7ad6f130e65a8a9fd291d490f8288dc39dcd884b3a527b0a8d3e4ba0306dff7",
+      "width": 1536,
+      "height": 1024,
+      "prompt_source": "assets/marketing/prompts/hero-balanced-en-light.txt",
+      "reference_image": "output/imagegen/home-visuals/hero-balanced-en.png"
+    },
+    {
+      "path": "output/imagegen/home-visuals/hetu-river-background-alt.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "86a8e4c2e08017ccb0a77f35fa049bb2e6919c20a9af974adb5ab78406662bd5",
+      "width": 1672,
+      "height": 941,
+      "prompt_source": "assets/marketing/prompts/hetu-river-background-alt.txt"
+    },
+    {
+      "path": "output/imagegen/home-visuals/hetu-river-background-mobile.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "7b05189223784e037c3fa9e205d0b196ed2ac494ba26a41f65ace5e89f4ecf9e",
+      "width": 1024,
+      "height": 1536,
+      "prompt_source": "assets/marketing/prompts/hetu-river-background-mobile.txt",
+      "reference_image": "output/imagegen/home-visuals/hetu-river-background-alt.png"
     }
   ],
   "assets": [
@@ -1118,6 +1248,190 @@
         1536,
         1024
       ],
+      "resize": "proportional"
+    },
+    {
+      "path": "assets/marketing/story-to-screen-hero.webp",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "1d679b0c68990e95609692d8698ebfd0c22b864710fa486af897181fa3532ec3",
+      "derived_from": "output/imagegen/story-to-screen-hero.png",
+      "text_in_image": false,
+      "resize": "proportional"
+    },
+    {
+      "path": "assets/marketing/story-to-screen-hero-en.webp",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "0afdeb5154f21378931eac095c960ef3128019655d5dfa93498a3c7499619385",
+      "derived_from": "output/imagegen/story-to-screen-hero-en.png",
+      "text_in_image": false,
+      "resize": "proportional"
+    },
+    {
+      "path": "assets/marketing/story-panorama.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "ea697979b6d4feeb2158867b3df483d63ad5bdbb9be942ad5e40ba70b502c37a",
+      "derived_from": "output/imagegen/story-panorama.png",
+      "text_in_image": false,
+      "resize": "proportional"
+    },
+    {
+      "path": "assets/marketing/story-panorama-en.webp",
+      "width": 1920,
+      "height": 640,
+      "sha256": "fe39fd61bd0459d9e851ad570c60592a2aceb3c4c800117b0aaf1a3d4db1d560",
+      "derived_from": "output/imagegen/story-panorama-en.png",
+      "text_in_image": false,
+      "resize": "proportional"
+    },
+    {
+      "path": "assets/marketing/story-actions.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "2605790ddf45e97a08f2dcfddaf35c650aff07f15d1bec5f4664c09df57cbb16",
+      "derived_from": "output/imagegen/home-visuals/story-actions.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/story-actions-en.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "10d6be9bfc0ee035e39a5d94e0f4e59e6a0aadead5a821ff2715ca8e37ed6760",
+      "derived_from": "output/imagegen/home-visuals/story-actions-en.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/author-decisions.webp",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "64e9fafd393905fde29ee72f5feb1f0411272cb39f23e2cff4284132e91b358c",
+      "derived_from": "output/imagegen/home-visuals/author-decisions.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1024,
+          1024
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/journal-authors.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "de372e3e97bbbecb71308e709a6e2b7df46c0e6531bc20f23a91b8b48c9b97c1",
+      "derived_from": "output/imagegen/home-visuals/journal-authors.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/journal-adaptation.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "04e04f5d207d3249f04f0c67e6d3789697cac99c58aab5404edfbc7550529b47",
+      "derived_from": "output/imagegen/home-visuals/journal-adaptation.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/journal-adaptation-en.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "927ea1a59658119e4225c6f738c2768c6aea0864e6f6adcab83fb534a7958d43",
+      "derived_from": "output/imagegen/home-visuals/journal-adaptation-en.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/journal-workspace.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "6498db190dc22c1562716e9da546259a6c30710b5b3cb2ea3274fe0005891fd3",
+      "derived_from": "output/imagegen/home-visuals/journal-workspace.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/hero-balanced.webp",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "9ef8c369639630bdcd81867a10b542f954fbb61ad6896a5937b8b17c85647db0",
+      "derived_from": "output/imagegen/home-visuals/hero-balanced-light.png",
+      "text_in_image": false,
+      "resize": "proportional"
+    },
+    {
+      "path": "assets/marketing/hero-balanced-en.webp",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "fee93630db11bcf106fc6efe912c448616d3c4aa9834231dde69890536a31df8",
+      "derived_from": "output/imagegen/home-visuals/hero-balanced-en-light.png",
+      "text_in_image": false,
+      "resize": "proportional"
+    },
+    {
+      "path": "assets/marketing/hetu-river-background.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "89f19f942e5a75fc9fc4b77b2f45b13143082fef75724ab833a55a7db8c0b613",
+      "derived_from": "output/imagegen/home-visuals/hetu-river-background-alt.png",
+      "text_in_image": false,
+      "resize": "proportional"
+    },
+    {
+      "path": "assets/marketing/hetu-river-background-mobile.webp",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "4d9597770339d260e9ec75083545981d22425a6ca865c46c4e770e3ef67ffe3f",
+      "derived_from": "output/imagegen/home-visuals/hetu-river-background-mobile.png",
+      "text_in_image": false,
       "resize": "proportional"
     }
   ]

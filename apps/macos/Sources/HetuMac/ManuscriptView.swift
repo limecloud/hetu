@@ -15,6 +15,7 @@ struct ManuscriptView: View {
     var writing = WritingPreferences()
     @State private var editSelection = NSRange(location: 0, length: 0)
     @State private var creativeTask = false
+    @State private var authorNotes = false
     var body: some View {
         GeometryReader { geometry in
         HStack(spacing: 0) {
@@ -23,6 +24,8 @@ struct ManuscriptView: View {
                     Text(model.t("shell.manuscript")).lineLimit(1)
                     Spacer(minLength: 10)
                     Text(model.t("shell.word_count", ["count": String(model.statistics.han)])).lineLimit(1)
+                    Button { model.showSearch = true } label: { Image(systemName: "magnifyingglass") }.buttonStyle(.plain).help(model.t("search.title")).accessibilityLabel(model.t("search.title"))
+                    Button { authorNotes = true } label: { Image(systemName: "text.bubble") }.buttonStyle(.plain).help(model.t("notes.title")).accessibilityLabel(model.t("notes.title"))
                     Menu {
                         Button(model.t("creative.title")) { creativeTask = true }.disabled(model.busy || model.isComposing || model.documentID.isEmpty)
                         Button(model.t("finalization.title"), action: onFinalization).disabled(model.needsProtection || model.isComposing || !model.pendingStructureOperations.isEmpty)
@@ -30,10 +33,10 @@ struct ManuscriptView: View {
                         if model.loaded["document"]["structure_origin"] != .null { Button(model.t("script.mapping"), action: onMapping) }
                     } label: { Image(systemName: "ellipsis") }.menuStyle(.borderlessButton).fixedSize().accessibilityLabel(model.t("shell.document_actions"))
                 }.font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted).padding(.bottom, 14)
-                Rectangle().fill(WorkbenchPalette.line.opacity(0.6)).frame(height: 1)
+                Rectangle().fill(WorkbenchPalette.line.opacity(0.6)).frame(height: 0.5)
                 HStack(alignment: .top) {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(model.documentTitle).font(.custom("Songti SC", size: 28).weight(.semibold)).textSelection(.enabled)
+                        Text(model.documentTitle).font(.custom("Songti SC", size: 20).weight(.semibold)).textSelection(.enabled)
                         Text(model.t(model.loaded["document"]["approved_revision_id"].string == nil ? "finalization.writing" :
                             (!model.dirty && model.loaded["document"]["approved_revision_id"].string == model.baseRevisionID ? "finalization.current" : "finalization.new_writing")))
                             .font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
@@ -47,7 +50,7 @@ struct ManuscriptView: View {
                     notice("conflict.available", action: "conflict.compare", perform: onConflict)
                 }
                 NativeTextEditor(text: model.text, documentID: model.documentID, replacementVersion: model.replacementVersion,
-                    accessibleName: model.t("editor.body"), editable: !model.editorSuspended && !model.writeLocked, readingMode: true,
+                    accessibleName: model.t("editor.body"), editable: !model.editorSuspended && !model.writeLocked, selection: model.requestedSelection, readingMode: true,
                     presentation: writing.presentation(forScript: model.loaded["document"]["source_format"].string == "fountain"),
                     onChange: { [id = model.documentID] value in model.edit(value, documentID: id) }, onComposition: model.setComposition, onSelection: { editSelection = $0 }, undoBaseline: model.adoptionUndoBaseline)
                 HStack {
@@ -55,17 +58,18 @@ struct ManuscriptView: View {
                     Spacer()
                     Text(model.t("statistics.count", ["han": String(model.statistics.han), "words": String(model.statistics.latinWords), "characters": String(model.statistics.graphemes)]))
                         .lineLimit(1).minimumScaleFactor(0.8)
-                }.font(.system(size: 11)).foregroundStyle(WorkbenchPalette.muted).padding(.top, 12)
-            }.padding(.horizontal, 30).padding(.top, 26).padding(.bottom, 18).frame(maxWidth: .infinity, maxHeight: .infinity)
+                }.font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted).padding(.top, 12)
+            }.padding(.horizontal, 30).padding(.top, 26).padding(.bottom, 18).frame(maxWidth: 880, maxHeight: .infinity)
                 .background(WorkbenchPalette.page, in: RoundedRectangle(cornerRadius: 12))
                 .overlay { RoundedRectangle(cornerRadius: 12).strokeBorder(WorkbenchPalette.line.opacity(0.7), lineWidth: 0.5).allowsHitTesting(false) }
-                .shadow(color: .black.opacity(0.035), radius: 12, x: 0, y: 4).padding(18)
+                .padding(18).frame(maxWidth: .infinity)
             if inspector && geometry.size.width >= 720 {
                 ManuscriptInspectorView(model: model, onBible: onBible, onValidation: onValidation).frame(width: 280)
             }
         }
         }
         .sheet(isPresented: $creativeTask) { CreativeTaskView(model: model, selection: editSelection) }
+        .sheet(isPresented: $authorNotes) { AuthorNotesView(model: model, initialSelection: editSelection) }
         .onChange(of: model.documentID) { _, _ in editSelection = NSRange(location: 0, length: 0) }
     }
     private func notice(_ key: String, action: String, perform: @escaping () -> Void) -> some View {
@@ -92,13 +96,15 @@ private struct ManuscriptInspectorView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
+                DocumentPropertiesView(model: model)
+                Divider()
                 Text(model.t("shell.checks_title")).font(.system(size: 14, weight: .semibold))
                 Button(action: onBible) {
                     HStack(alignment: .top, spacing: 11) {
-                        Image(systemName: model.locked ? "lock" : "lock.open").font(.system(size: 21))
+                        Image(systemName: model.locked ? "lock" : "lock.open").font(.system(size: 20))
                         VStack(alignment: .leading, spacing: 6) {
-                            Text(model.t(model.locked ? "bible.locked" : "bible.editable")).font(.system(size: 13, weight: .semibold))
-                            Text(model.t("shell.canon_note")).font(.system(size: 11)).lineSpacing(3)
+                            Text(model.t(model.locked ? "bible.locked" : "bible.editable")).font(.system(size: 14, weight: .semibold))
+                            Text(model.t("shell.canon_note")).font(.system(size: 12)).lineSpacing(3)
                         }
                     }.foregroundStyle(WorkbenchPalette.jade).frame(maxWidth: .infinity, alignment: .leading).padding(15)
                         .background(WorkbenchPalette.jadeSoft, in: RoundedRectangle(cornerRadius: 8))
@@ -109,12 +115,12 @@ private struct ManuscriptInspectorView: View {
                 }
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
-                        Label(model.t("validation.title"), systemImage: "checkmark.circle").font(.system(size: 13, weight: .semibold))
+                        Label(model.t("validation.title"), systemImage: "checkmark.circle").font(.system(size: 14, weight: .semibold))
                         Spacer()
                         if loading { ProgressView().controlSize(.mini) }
                     }
                     if let error {
-                        Text(error).foregroundStyle(.red).font(.system(size: 12))
+                        Text(error).foregroundStyle(WorkbenchPalette.danger).font(.system(size: 12))
                     } else if report == .null {
                         Text(model.t("shell.not_checked")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                     } else {
@@ -134,25 +140,25 @@ private struct ManuscriptInspectorView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Label(model.t(finding["message_key"].string ?? "validation.prerequisites"), systemImage: "exclamationmark.triangle")
                             .font(.system(size: 12, weight: .semibold))
-                        Text(model.t("validation.certainty." + (finding["certainty"].string ?? "unknown"))).font(.system(size: 11))
+                        Text(model.t("validation.certainty." + (finding["certainty"].string ?? "unknown"))).font(.system(size: 12))
                         if let first = finding["source_refs"].array.first {
                             Text(first["quote"].string ?? "").font(.system(size: 12)).lineLimit(4)
                             Button(model.t("plot.source")) { source = DramaSheet(value: first) }.font(.system(size: 12))
                         }
                     }.foregroundStyle(WorkbenchPalette.warningInk).frame(maxWidth: .infinity, alignment: .leading).padding(14)
                         .background(WorkbenchPalette.warning, in: RoundedRectangle(cornerRadius: 8))
-                        .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(WorkbenchPalette.warningLine, lineWidth: 1))
+                        .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(WorkbenchPalette.warningLine, lineWidth: 0.5))
                 }
                 VStack(alignment: .leading, spacing: 12) {
-                    Label(model.t("shell.reference"), systemImage: "book").font(.system(size: 13, weight: .semibold))
+                    Label(model.t("shell.reference"), systemImage: "book").font(.system(size: 14, weight: .semibold))
                     Button(action: onBible) {
                         VStack(alignment: .leading, spacing: 6) {
                             Text(model.title + "  " + model.t("bible.title")).font(.system(size: 12, weight: .medium))
-                            Text(model.t("shell.reference_note")).font(.system(size: 11)).foregroundStyle(WorkbenchPalette.muted)
+                            Text(model.t("shell.reference_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                         }.frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
-                Text(model.t("shell.checks_note")).font(.system(size: 11)).foregroundStyle(WorkbenchPalette.muted).lineSpacing(4)
+                Text(model.t("shell.checks_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted).lineSpacing(4)
             }.padding(.horizontal, 20).padding(.vertical, 25)
         }.background(WorkbenchPalette.surface.opacity(0.30))
         .task(id: taskID) { await load() }
@@ -162,9 +168,9 @@ private struct ManuscriptInspectorView: View {
         Button(action: onBible) {
             HStack {
                 Text(model.t(key)); Spacer(); Text(value).monospacedDigit()
-                Image(systemName: "chevron.right").font(.system(size: 10)).foregroundStyle(WorkbenchPalette.muted)
+                Image(systemName: "chevron.right").font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
             }.font(.system(size: 12)).padding(.vertical, 14)
-        }.buttonStyle(.plain).overlay(alignment: .bottom) { Rectangle().fill(WorkbenchPalette.line.opacity(0.5)).frame(height: 1) }
+        }.buttonStyle(.plain).overlay(alignment: .bottom) { Rectangle().fill(WorkbenchPalette.line.opacity(0.5)).frame(height: 0.5) }
     }
     private func load() async {
         let identity = taskID

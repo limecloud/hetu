@@ -18,15 +18,15 @@ struct LocalTaskViewControls: View {
     private func t(_ key: String) -> String { localizer.text(key) }
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(t("local_view.title")).font(.headline)
-            Text(t("local_view.note")).font(.caption).foregroundStyle(.secondary)
+            Text(t("local_view.title")).font(.system(size: 14, weight: .semibold))
+            Text(t("local_view.note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
             HStack {
                 if session.running {
                     if let url = session.url {
                         Button(t("local_view.open_embedded")) { embedded = true }
                         Button(t("local_view.copy_url")) { NSPasteboard.general.clearContents(); NSPasteboard.general.setString(url.absoluteString, forType: .string) }
                         Button(t("local_view.open_browser")) { NSWorkspace.shared.open(url) }
-                    } else { ProgressView().controlSize(.small); Text(t("local_view.starting")).font(.caption) }
+                    } else { ProgressView().controlSize(.small); Text(t("local_view.starting")).font(.system(size: 12)) }
                     Button(t("local_view.stop")) { session.stop(); embedded = false }
                 } else {
                     Button(t("local_view.start")) { Task {
@@ -34,7 +34,7 @@ struct LocalTaskViewControls: View {
                     } }.disabled(closed)
                 }
             }
-            if let error = session.errorKey { Text(t(error)).font(.caption).foregroundStyle(.red) }
+            if let error = session.errorKey { Text(t(error)).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.danger) }
             LocalPairRequests(session: session, brief: brief, localizer: localizer)
         }
         .onDisappear { session.stop() }
@@ -44,7 +44,7 @@ struct LocalTaskViewControls: View {
         .sheet(isPresented: $embedded) {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
-                    Text(t("local_view.title")).font(.headline); Spacer()
+                    Text(t("local_view.title")).font(.system(size: 14, weight: .semibold)); Spacer()
                     Button(t("common.close")) { embedded = false }
                 }
                 LocalPairRequests(session: session, brief: brief, localizer: localizer)
@@ -62,10 +62,10 @@ private struct LocalPairRequests: View {
     var body: some View {
         ForEach(session.pairing) { request in
             VStack(alignment: .leading, spacing: 6) {
-                Text(localizer.text("local_view.pair_title")).font(.headline)
+                Text(localizer.text("local_view.pair_title")).font(.system(size: 14, weight: .semibold))
                 Text(brief).lineLimit(3)
                 Text(request.code).font(.system(.title2, design: .monospaced)).textSelection(.enabled)
-                Text(localizer.text("local_view.pair_note")).font(.caption).foregroundStyle(.secondary)
+                Text(localizer.text("local_view.pair_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                 HStack {
                     Button(localizer.text("local_view.approve")) { session.approve(request) }
                     Button(localizer.text("local_view.deny")) { session.deny(request) }

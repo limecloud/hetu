@@ -1,7 +1,57 @@
 ---
-import {messages,route,prototype,type Locale} from '../lib/site';
+import { messages, route, prototype, type Locale } from '../lib/site';
 import { assetURL } from '../lib/assets';
 import SkillsCatalog from './SkillsCatalog.astro';
-interface Props{locale:Locale;page:string;}const {locale,page}=Astro.props;const m=messages(locale);
+import AgentEntrypoints from './AgentEntrypoints.astro';
+interface Props { locale: Locale; page: string; }
+const { locale, page } = Astro.props;
+const m = messages(locale);
+const en = locale === 'en';
+const guideIDs = ['creative-paths', 'adaptation', 'review', 'formats-and-delivery'];
+const stepLinks = en ? ['Choose your starting point', 'Try one scene', 'Review a reference draft', 'Prepare a handoff'] : ['找到你的起点', '先试一场戏', '比较和采纳参考稿', '准备交稿'];
+const faqGroups = [
+  { title: en ? 'Writing and AI' : '创作与 AI', indexes: [0, 1, 2, 3] },
+  { title: en ? 'Availability and costs' : '获取与费用', indexes: [4, 5, 8] },
+  { title: en ? 'Your work and delivery' : '作品与交稿', indexes: [6, 7] },
+];
 ---
-<div class="container subpage">{page==='workflow'?<><header class="page-hero"><span class="eyebrow">{m.workflow.eyebrow}</span><h1>{m.workflow.title}</h1><p>{m.workflow.intro}</p></header><img class="subpage-illustration" src={assetURL("/images/hetu-luoshu-library-scene.webp")} width="1536" height="1024" alt={m.hero.alt}/><div class="steps">{m.workflow.steps.map((s,i)=><article class="step"><span>0{i+1}</span><h2>{s.title}</h2><p>{s.body}</p></article>)}</div><section class="section"><h2>{m.workflow.detail}</h2><div class="principle-grid">{m.workflow.details.map(item=><article><h3>{item.title}</h3><p>{item.body}</p></article>)}</div></section><div class="page-cta"><a class="button primary" href={prototype(locale)}>{m.workspace.cta} ↗</a><a class="button" href={route(locale,'docs')}>{m.nav.docs} →</a></div></>:page==='integrations'?<><header class="page-hero"><span class="eyebrow">{m.integrations.eyebrow}</span><h1>{m.integrations.title}</h1><p>{m.integrations.intro}</p></header><SkillsCatalog locale={locale}/><div class="integration-layers">{m.integrations.layers.map((item,i)=><article><span>0{i+1}</span><div><h2>{item.title}</h2><p>{item.body}</p></div></article>)}</div><p class="image-caption">{m.integrations.status}</p><section class="manual-panel"><h2>{m.integrations.manual}</h2><p>{m.integrations.manualBody}</p><a class="text-link" href={route(locale,'docs/agents')}>{m.nav.docs} →</a></section></>:<><header class="page-hero"><span class="eyebrow">{m.faq.eyebrow}</span><h1>{m.faq.title}</h1></header><div class="faq-list">{m.faq.items.map((item,i)=><details open={i===0}><summary>{item.q}<span aria-hidden="true">+</span></summary><p>{item.a}</p></details>)}</div><div class="page-cta"><a class="button primary" href={route(locale,'docs')}>{m.hero.secondary} →</a></div></>}</div>
+<div class:list={['container', 'subpage', `${page}-page`]}>
+  {page === 'workflow' ? <>
+    <header class="page-hero page-hero-split workflow-intro">
+      <div><h1>{m.workflow.title}</h1><p>{m.workflow.intro}</p><a class="button primary" href={route(locale, 'docs/creative-paths')}>{en ? 'Find your starting point' : '找到我的创作起点'} <span aria-hidden="true">→</span></a></div>
+      <figure class="workflow-art"><img src={assetURL('/images/hero-workspace.webp')} width="1536" height="1024" alt={en ? 'Xiaotu with a manuscript, story references and a prepared handoff.' : '小图身旁的稿本、设定关系与交付资料的概念插画。'}/></figure>
+    </header>
+    <ol class="workflow-path" aria-label={en ? 'Four stages of creative work' : '从想法到交稿的四个步骤'}>
+      {m.workflow.steps.map((step, index) => <li><span class="path-number" aria-hidden="true">0{index + 1}</span><h2>{step.title}</h2><p>{step.body}</p><a class="text-link" href={route(locale, `docs/${guideIDs[index]}`)}>{stepLinks[index]} <span aria-hidden="true">→</span></a></li>)}
+    </ol>
+    <section class="workflow-in-practice" aria-labelledby="practice-title">
+      <div><h2 id="practice-title">{en ? 'See the passage. Keep what works.' : '看着原文改，留下你认可的那一段。'}</h2><p>{en ? 'A useful suggestion may be a single line. Compare it with the manuscript, adopt the part you want and keep editing. Finalization is a separate decision.' : '一份参考稿，不必整段接受。对照原文，选中合适的部分，采纳后继续修改。写到满意，再独立确认定稿。'}</p><a class="text-link" href={prototype(locale)}>{en ? 'Try the review demo' : '进入首页演示，试着审一稿'} <span aria-hidden="true">→</span></a></div>
+      <figure class="product-figure"><a href={assetURL(`/images/guides/quickstart-review-${locale}.webp`)} target="_blank" rel="noreferrer" aria-label={en ? 'Enlarge the review demo screenshot' : '放大查看首页审核演示截图'}><img src={assetURL(`/images/guides/quickstart-review-${locale}.webp`)} width="2368" height={en ? 1402 : 1398} alt={en ? 'Homepage demo showing the manuscript and reference draft for review.' : '首页演示中对照原文与参考稿的审核界面。'} loading="lazy"/></a><figcaption>{en ? 'Homepage demo / Draft review' : '首页演示 / 参考稿审核'}</figcaption></figure>
+    </section>
+    <section class="section workflow-principles"><h2>{m.workflow.detail}</h2><div class="principle-grid">{m.workflow.details.map(item => <article><h3>{item.title}</h3><p>{item.body}</p></article>)}</div></section>
+    <div class="page-cta"><a class="button primary" href={prototype(locale)}>{m.workspace.cta} <span aria-hidden="true">↗</span></a><a class="text-link" href={route(locale, 'docs')}>{m.nav.docs} <span aria-hidden="true">→</span></a></div>
+  </> : page === 'integrations' ? <>
+    <header class="page-hero page-hero-split">
+      <div><h1>{m.integrations.title}</h1><p>{m.integrations.intro}</p><a class="button primary" href="#skills-catalog">{en ? 'Find your Skills' : '为这本书选 Skills'} <span aria-hidden="true">↓</span></a></div>
+      <figure class="collaboration-map" aria-label={en ? 'How your Agent, Hetu Luoshu and you work together' : '外部 Agent、河图洛书与作者的协作关系'}>
+        <div class="collaboration-party"><span>{en ? 'Your external Agent' : '你选用的外部 Agent'}</span><strong>{en ? 'Understand. Plan. Generate.' : '理解、规划、生成'}</strong><p>Codex / Claude Code / WorkBuddy / Cursor</p></div>
+        <div class="collaboration-exchange"><span>{en ? 'Query and submit' : '查询与操作'}</span><span aria-hidden="true">↓ ↑</span><span>{en ? 'Results and feedback' : '结果与反馈'}</span></div>
+        <div class="collaboration-core"><img src={assetURL('/brand/icon-64.png')} width="48" height="48" alt=""/><div><strong>{en ? 'Hetu Luoshu' : '河图洛书'}</strong><span>{en ? 'Work, sources, tasks and revisions' : '作品、依据、任务、版本'}</span></div></div>
+        <div class="collaboration-exchange"><span>{en ? 'Compare and edit' : '查看与编辑'}</span><span aria-hidden="true">↓ ↑</span><span>{en ? 'Approve and finalize' : '验收与定稿'}</span></div>
+        <div class="collaboration-party collaboration-human"><span>{en ? 'You, in the native app' : '原生客户端里的你'}</span><strong>{en ? 'Taste. Judgment. Creative intent.' : '品味、判断、创意'}</strong></div>
+        <figcaption>{en ? 'You choose what becomes part of the work.' : '哪些内容进入作品，由作者决定。'}</figcaption>
+      </figure>
+    </header>
+    <AgentEntrypoints locale={locale}/>
+    <section class="integration-journey" aria-label={en ? 'A collaboration in three steps' : '一次协作的三个步骤'}>{m.integrations.layers.map((item, index) => <article><span class="path-number" aria-hidden="true">0{index + 1}</span><h2>{item.title}</h2><p>{item.body}</p></article>)}</section>
+    <p class="image-caption integration-status">{m.integrations.status}</p>
+    <SkillsCatalog locale={locale}/>
+    <section class="manual-panel"><h2>{m.integrations.manual}</h2><p>{m.integrations.manualBody}</p><a class="text-link" href={route(locale, 'docs/agents')}>{m.nav.docs} <span aria-hidden="true">→</span></a></section>
+  </> : <>
+    <div class="faq-layout">
+      <header class="page-hero faq-intro"><h1>{m.faq.title}</h1><p>{en ? 'What you can do, what stays yours, and how to get started.' : '能做什么、作品归谁、怎样开始。在这里先弄明白。'}</p><nav class="faq-nav" aria-label={en ? 'Question categories' : '问题分类'}>{faqGroups.map((group, index) => <a href={`#questions-${index}`}>{group.title} <span aria-hidden="true">↘</span></a>)}</nav><a class="text-link" href={route(locale, 'docs/getting-started')}>{en ? 'Follow the quick start' : '跟着指南，先试一次'} <span aria-hidden="true">→</span></a></header>
+      <div class="faq-groups">{faqGroups.map((group, groupIndex) => <section id={`questions-${groupIndex}`} aria-labelledby={`questions-title-${groupIndex}`}><h2 id={`questions-title-${groupIndex}`}>{group.title}</h2><div class="faq-list">{group.indexes.map((index, itemIndex) => <details open={groupIndex === 0 && itemIndex === 0}><summary>{m.faq.items[index].q}<span aria-hidden="true">+</span></summary><p>{m.faq.items[index].a}</p></details>)}</div></section>)}</div>
+    </div>
+    <div class="page-cta"><a class="button primary" href={prototype(locale)}>{m.workspace.cta} <span aria-hidden="true">↗</span></a><a class="text-link" href={route(locale, 'docs')}>{m.nav.docs} <span aria-hidden="true">→</span></a></div>
+  </>}
+</div>

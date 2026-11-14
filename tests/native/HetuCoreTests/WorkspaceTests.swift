@@ -22,9 +22,26 @@ static func main() async throws {
     catch CoreError.business { }
     let accepted = try await agent.data("hetu.plot.extract", input: plotInput, allowPartial: true)
     try check(accepted["plot"]["coverage"]["status"].string == "partial" && accepted["saved"].bool == false, "显式部分结果缺少覆盖或改变工作区")
+    let capabilities = try await author.data("hetu.capabilities.get")
+    let taskPreview = try await author.data("hetu.creative_tasks.preview_prompt", input: ["scope_ref": capabilities["scope_ref"], "task_kind": .string("book_profile"), "brief": .string("拟一个简介候选"), "input_refs": .array([]), "client_adapter": .string("codex"), "language_tag": .string("zh-CN")])
+    var preparedInput = taskPreview["prepare_input"].object; preparedInput["operation_key"] = .string("prepare-stable")
+    let task = try await author.data("hetu.creative_tasks.prepare", input: preparedInput)
+    let directory = root.appendingPathExtension("collaboration")
+    let access: [String: JSONValue] = ["task_ref": task["task_ref"], "client_adapter": .string("codex"), "collaboration_path": .string(directory.path), "operation_key": .string("grant-stable")]
+    _ = try await author.data("hetu.collaboration.authorize", input: access)
+    let connection = CollaborationClient(clientAdapter: "codex", directory: directory)
+    let opened = try await connection.request("hetu.collaboration.open", input: ["task_locator": .object(["scope_ref": task["task_ref"]["scope_ref"], "task_id": task["task_ref"]["task_id"]])]).requiringSuccess()
+    try check(opened["task_ref"]["sha256"] == task["request_sha256"], "Swift 稳定入口未绑定请求摘要")
+    let stableRead = try await connection.request("hetu.creative_tasks.get", input: ["task_ref": opened["task_ref"]]).requiringSuccess()
+    try check(stableRead["request"] == task["request"], "Swift 稳定入口未读取原任务")
+    var revoke = access; revoke["operation_key"] = .string("revoke-stable")
+    _ = try await author.data("hetu.collaboration.revoke", input: revoke)
+    let revoked = try await connection.request("hetu.creative_tasks.get", input: ["task_ref": opened["task_ref"]])
+    try check(revoked["error"]["code"].string == "forbidden", "Swift 稳定入口撤权未生效")
+    try FileManager.default.removeItem(at: directory)
     // 此目录由测试独占创建，删除只回收测试作品，不触碰用户工作区。
     try FileManager.default.removeItem(at: root)
-    print("Swift Bridge：中文、Emoji、原键重放与作者权限检查通过")
+    print("Swift Bridge：中文、Emoji、原键重放、作者权限、稳定接入与撤权检查通过")
 }
 static func check(_ value: Bool, _ message: String) throws {
     guard value else { throw CheckFailure(message: message) }

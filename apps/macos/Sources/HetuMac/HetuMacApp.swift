@@ -21,6 +21,7 @@ struct HetuMacApp: App {
                     WindowActionButton(key: "workspace.open", command: .openWorkspace).keyboardShortcut("o")
                 }
                 CommandGroup(replacing: .saveItem) { WindowActionButton(key: "document.save", command: .save).keyboardShortcut("s") }
+                CommandGroup(after: .textEditing) { WindowActionButton(key: "search.title", command: .find).keyboardShortcut("f") }
                 CommandGroup(after: .toolbar) { WorkbenchAppearanceMenu() }
             }
         Settings { HetuSettingsView() }.windowResizability(.contentSize)
@@ -46,7 +47,7 @@ private struct NewWindowButton: View {
     }
 }
 
-private enum WindowCommand { case newWorkspace, openWorkspace, save, library }
+private enum WindowCommand { case newWorkspace, openWorkspace, save, library, find }
 private struct WindowCoordinatorKey: FocusedValueKey { typealias Value = WindowCoordinator }
 extension FocusedValues {
     fileprivate var hetuWindow: WindowCoordinator? {
@@ -140,6 +141,7 @@ private struct WindowActionButton: View {
         return super.forwardingTarget(for: selector)
     }
     func perform(_ command: WindowCommand) async {
+        if command == .find { if model.workspace != nil { model.showSearch = true }; return }
         if command == .save { _ = await model.save(); return }
         model.editorSuspended = true; defer { model.editorSuspended = false }
         guard await protect() else { return }
@@ -151,7 +153,7 @@ private struct WindowActionButton: View {
             if panel.runModal() == .OK, let url = panel.url { _ = await model.open(url) }
         case .newWorkspace:
             presentCreation?()
-        case .save: break
+        case .save, .find: break
         }
     }
 }
@@ -215,7 +217,7 @@ private struct WorkbenchView: View {
                     onLibrary: { Task { await coordinator.perform(.library) } },
                     onManageStructure: { manageStructure = true },
                     onInspector: { inspector.toggle() }) { detail }
-                    .disabled(model.busy)
+                    .disabled(model.busy && !model.saving)
             }
         }
         .frame(minWidth: 960, minHeight: 620)
@@ -232,13 +234,16 @@ private struct WorkbenchView: View {
         .sheet(isPresented: $manageStructure) { NovelStructureSheet(model: model) }
         .sheet(isPresented: $showRecovery) { recoverySheet }
         .sheet(isPresented: $showConflict) { conflictSheet }
+        .sheet(isPresented: Binding(get: { model.showSearch }, set: { model.showSearch = $0 })) {
+            BookSearchView(model: model) { id in await select(id) }
+        }
         .sheet(item: $scriptMapping) { request in ScriptMappingView(model: model, documentID: request.value.string ?? "") }
         .sheet(item: $submitReview) { request in ReviewSubmitSheet(model: model, document: request.value) { id in Task { await select(id) } } }
         .sheet(item: $finalization) { request in DocumentFinalizationSheet(model: model, documentID: request.value.string ?? "") }
         .safeAreaInset(edge: .top) {
             if !model.pendingStructureOperations.isEmpty {
                 HStack {
-                    Text(model.t(model.pendingStructureOperations.contains(where: model.isDeliveryRunning) ? "delivery.running" : "review.pending")).font(.caption)
+                    Text(model.t(model.pendingStructureOperations.contains(where: model.isDeliveryRunning) ? "delivery.running" : "review.pending")).font(.system(size: 12))
                     ForEach(Array(model.pendingStructureOperations.enumerated()), id: \.offset) { index, operation in
                         Button(model.t("drama.resume_pending", ["number": String(index + 1)])) {
                             Task {
@@ -247,7 +252,8 @@ private struct WorkbenchView: View {
                                     if let id = result["draft"]["draft_id"].string ?? operation.input["draft_id"]?.string { await select(id) }
                                     else if let doc = result["document"]["document_id"].string { await select(doc) }
                                     else if operation.action.hasPrefix("hetu.git.") { await select("git") }
-                                    else if operation.action.hasPrefix("hetu.assets.") || operation.action.hasPrefix("hetu.cues.") { await select("media") }
+                                    else if operation.action.hasPrefix("hetu.assets.") || operation.action.hasPrefix("hetu.cues.") || operation.action.hasPrefix("hetu.resources.") || operation.action.hasPrefix("hetu.resource_usages.") { await select("media") }
+                                    else if operation.action.hasPrefix("hetu.drama.") { await select("drama") }
                                 }
                             }
                         }.disabled(model.busy || model.isDeliveryRunning(operation))
@@ -257,7 +263,7 @@ private struct WorkbenchView: View {
         }
         .onChange(of: model.workspaceID) { _, value in
             selection = ""; lastNovelID = ""; validationDocumentID = ""; draft = .null
-            if !value.isEmpty { Task { await select(model.novel["initialized"].bool == true ? "novel" : "book") } }
+            if !value.isEmpty { Task { await select(model.workType == "drama" ? "drama" : model.novel["initialized"].bool == true ? "novel" : "book") } }
         }
         .onAppear { model.locale = selectedLocale; coordinator.presentCreation = { newWorkspace = true } }
         .onChange(of: selectedLocale) { _, locale in model.locale = locale }
@@ -282,9 +288,9 @@ private struct WorkbenchView: View {
                 onValidation: { Task { await select("validation") } })
         } else if draft != .null {
             VStack(alignment: .leading, spacing: 12) {
-                Text(draft["draft"]["title"].string ?? model.t("draft.untitled")).font(.title2)
-                Label(model.t("draft.submitted"), systemImage: "tray").foregroundStyle(.secondary)
-                Text(model.t("draft.readonly")).font(.callout).foregroundStyle(.secondary)
+                Text(draft["draft"]["title"].string ?? model.t("draft.untitled")).font(.system(size: 20, weight: .semibold))
+                Label(model.t("draft.submitted"), systemImage: "tray").foregroundStyle(WorkbenchPalette.muted)
+                Text(model.t("draft.readonly")).font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted)
                 Divider()
                 ScrollView { Text(draft["content"].string ?? "").textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading) }
             }.padding(24)
@@ -312,12 +318,12 @@ private struct WorkbenchView: View {
     }
     private var recoverySheet: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(model.t("recovery.title")).font(.title2)
-            Text(model.t("recovery.detail")).foregroundStyle(.secondary)
+            Text(model.t("recovery.title")).font(.system(size: 20, weight: .semibold))
+            Text(model.t("recovery.detail")).foregroundStyle(WorkbenchPalette.muted)
             ScrollView {
                 ForEach(model.recoveryCandidates) { entry in
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(entry.updatedAt, format: .dateTime).font(.headline)
+                        Text(entry.updatedAt, format: .dateTime).font(.system(size: 14, weight: .semibold))
                         Text(entry.content).textSelection(.enabled).lineLimit(12).frame(maxWidth: .infinity, alignment: .leading)
                         Button(model.t("recovery.restore")) { Task { if await model.restore(entry) { showRecovery = false } } }
                         Divider()
@@ -329,12 +335,12 @@ private struct WorkbenchView: View {
     }
     private var conflictSheet: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(model.t("conflict.title")).font(.title2)
-            Text(model.t("conflict.detail")).foregroundStyle(.secondary)
+            Text(model.t("conflict.title")).font(.system(size: 20, weight: .semibold))
+            Text(model.t("conflict.detail")).foregroundStyle(WorkbenchPalette.muted)
             HStack(alignment: .top) {
-                VStack(alignment: .leading) { Text(model.t("conflict.disk")).font(.headline); ScrollView { Text(model.conflict["content"].string ?? "").textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading) } }
+                VStack(alignment: .leading) { Text(model.t("conflict.disk")).font(.system(size: 14, weight: .semibold)); ScrollView { Text(model.conflict["content"].string ?? "").textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading) } }
                 Divider()
-                VStack(alignment: .leading) { Text(model.t("conflict.editor")).font(.headline); ScrollView { Text(model.text).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading) } }
+                VStack(alignment: .leading) { Text(model.t("conflict.editor")).font(.system(size: 14, weight: .semibold)); ScrollView { Text(model.text).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading) } }
             }
             HStack {
                 Button(model.t("common.cancel")) { showConflict = false }
@@ -353,7 +359,7 @@ private struct NewDocumentSheet: View {
     @State private var kind = "novel_chapter"
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text(model.t("document.new")).font(.title2)
+            Text(model.t("document.new")).font(.system(size: 20, weight: .semibold))
             Form {
                 TextField(model.t("document.title"), text: $title)
                 Picker(model.t("document.kind"), selection: $kind) {

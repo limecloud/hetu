@@ -1,0 +1,60 @@
+---
+import { positioning } from '../lib/positioning';
+import type { Locale } from '../lib/site';
+import { assetURL } from '../lib/assets';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const p = positioning(locale);
+const en = locale === 'en';
+---
+<section class="section story-gap" id="story-bridge">
+  <div class="section-head"><div><h2>{p.title}</h2></div></div>
+  <p class="section-intro">{p.intro}</p>
+  <div class="story-gap-grid">{p.gaps.map(gap => <article>
+    <div class="gap-transition"><span>{gap.from}</span><span aria-hidden="true">→</span><strong>{gap.to}</strong></div>
+    <h3>{gap.question}</h3><p>{gap.answer}</p>
+  </article>)}</div>
+  <figure class="story-sequence">
+    <img src={assetURL(`/images/story-actions${en?'-en':''}.webp`)} width="1536" height="864" loading="lazy" alt={en?'Original visual concept in three shots: Mara reaches for the radio, freezes at the familiar voice, then turns toward the dark lighthouse beam.':'原创场景视觉示意，三个镜头依次呈现林舟伸手触玉扣、收回手，以及两人听见叩门后转头。'}/>
+    <figcaption>{(en?['Reach','Hesitate','Reveal']:['伸手','掩饰','悬念']).map((label,i)=><div><span>0{i+1}</span><strong>{label}</strong><p>{en?['A hand moves toward the dial.','A familiar voice stops her.','Outside, the beam goes dark.'][i]:['手停在那枚旧玉扣前。','认出了，却收回袖中。','三声叩门，两人同时转头。'][i]}</p></div>)}</figcaption>
+  </figure>
+  <div class="adaptation-example" data-adaptation-example>
+    <h3>{p.exampleTitle}</h3>
+    <div class="adaptation-tabs" role="tablist" aria-label={p.exampleTitle}>
+      {p.tabs.map((label, i) => <button type="button" role="tab" id={`adapt-tab-${i}`} aria-controls={`adapt-panel-${i}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>{label}</button>)}
+    </div>
+    <div class="adaptation-panels">
+      <div id="adapt-panel-0" role="tabpanel" aria-labelledby="adapt-tab-0" tabindex="0"><p class="sample-manuscript">{p.novel}</p></div>
+      <div id="adapt-panel-1" role="tabpanel" aria-labelledby="adapt-tab-1" tabindex="0" hidden><strong>{p.scene}</strong><p>{p.action}</p><div class="sample-dialogue"><b>{p.speaker}</b><p>{p.dialogue}</p></div></div>
+      <div id="adapt-panel-2" role="tabpanel" aria-labelledby="adapt-tab-2" tabindex="0" hidden><dl>{p.assets.map(([name, value]) => <div><dt>{name}</dt><dd>{value}</dd></div>)}</dl></div>
+    </div>
+    <p class="sample-note">{p.exampleNote}</p>
+  </div>
+</section>
+<section class="section story-engineering" id="story-engineering">
+  <div class="section-head"><div><h2>{p.engineeringTitle}</h2></div></div>
+  <p class="section-intro">{p.engineeringBody}</p>
+  <ol class="engineering-path" aria-label={p.engineeringTitle}>{p.stages.map((stage, i) => <li>
+    <span class="engineering-node" aria-hidden="true">{i + 1}</span><h3>{stage}</h3><p>{p.stageDetails[i]}</p>
+  </li>)}</ol>
+  <p class="sample-note">{p.outside}</p>
+  <h3 class="collaboration-title">{p.rolesTitle}</h3>
+  <div class="collaboration-roles">{p.roleBodies.map(([name, title, body]) => <article><span>{name}</span><h3>{title}</h3><p>{body}</p></article>)}</div>
+</section>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-adaptation-example]').forEach(example => {
+    const tabs = [...example.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const panels = [...example.querySelectorAll<HTMLElement>('[role="tabpanel"]')];
+    const activate = (index: number, focus = false) => {
+      tabs.forEach((tab, i) => { tab.setAttribute('aria-selected', String(i === index)); tab.tabIndex = i === index ? 0 : -1; panels[i].hidden = i !== index; });
+      if (focus) tabs[index].focus();
+    };
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => activate(index));
+      tab.addEventListener('keydown', event => {
+        const next = event.key === 'ArrowRight' ? (index + 1) % tabs.length : event.key === 'ArrowLeft' ? (index + tabs.length - 1) % tabs.length : event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : undefined;
+        if (next !== undefined) { event.preventDefault(); activate(next, true); }
+      });
+    });
+  });
+</script>

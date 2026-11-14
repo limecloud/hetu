@@ -10,7 +10,7 @@ struct DramaOperation {
     let action: String
     let input: [String: JSONValue]
 }
-struct DramaWorkbenchView: View {
+struct DramaSkeletonWorkbenchView: View {
     let model: WorkspaceModel
     let onOpenScript: (String) -> Void
     @State private var documentID = ""
@@ -37,10 +37,10 @@ struct DramaWorkbenchView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             header
-            if let error { Text(error).foregroundStyle(.red).textSelection(.enabled) }
+            if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             if pending != nil { Button(model.t("drama.retry")) { Task { await performPending() } } }
             if pending == nil, model.pendingStructureOperations.contains(where: { $0.action.hasPrefix("hetu.drama.") }) {
-                Text(model.t("drama.pending_note")).foregroundStyle(.orange)
+                Text(model.t("drama.pending_note")).foregroundStyle(WorkbenchPalette.warningInk)
                 ForEach(Array(model.pendingStructureOperations.filter { $0.action.hasPrefix("hetu.drama.") }.enumerated()), id: \.offset) { index, operation in
                     Button(model.t("drama.resume_pending", ["number": String(index + 1)])) {
                         pending = DramaOperation(action: operation.action, input: operation.input)
@@ -97,23 +97,23 @@ struct DramaWorkbenchView: View {
     private var history: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 10) {
-                Text(model.t("drama.history")).font(.headline)
-                if summaries.isEmpty { Text(model.t("drama.no_history")).foregroundStyle(.secondary) }
+                Text(model.t("drama.history")).font(.system(size: 14, weight: .semibold))
+                if summaries.isEmpty { Text(model.t("drama.no_history")).foregroundStyle(WorkbenchPalette.muted) }
                 ForEach(Array(summaries.enumerated()), id: \.offset) { _, item in
                     Button { Task { await read(item) } } label: {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(model.localizer.date(item["created_at"].string ?? ""))
                             Text(model.t("drama.revision", ["revision": String(item["revision"].integer ?? 0)]))
-                            Text(model.t("drama.summary", ["episodes": String(item["episode_count"].integer ?? 0), "scenes": String(item["scene_count"].integer ?? 0)])).font(.caption)
+                            Text(model.t("drama.summary", ["episodes": String(item["episode_count"].integer ?? 0), "scenes": String(item["scene_count"].integer ?? 0)])).font(.system(size: 12))
                         }.frame(maxWidth: .infinity, alignment: .leading).padding(8)
-                            .background(skeleton["skeleton_id"] == item["skeleton_id"] && skeleton["revision"] == item["revision"] ? Color.accentColor.opacity(0.12) : .clear, in: RoundedRectangle(cornerRadius: 6))
+                            .background(skeleton["skeleton_id"] == item["skeleton_id"] && skeleton["revision"] == item["revision"] ? WorkbenchPalette.jade.opacity(0.12) : .clear, in: RoundedRectangle(cornerRadius: 6))
                     }.buttonStyle(.plain).disabled(pending != nil)
                 }
                 if cursor != nil { Button(model.t("plot.more")) { Task { await loadHistory(more: true) } } }
                 let scripts = model.documents.filter { $0.kind == "drama_script" }
                 if !scripts.isEmpty {
                     Divider().padding(.vertical, 8)
-                    Text(model.t("drama.script")).font(.headline)
+                    Text(model.t("drama.script")).font(.system(size: 14, weight: .semibold))
                     ForEach(scripts) { script in
                         Button { onOpenScript(script.id) } label: {
                             Label(script.title, systemImage: "doc.text")
@@ -128,15 +128,15 @@ struct DramaWorkbenchView: View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 14) {
                 HStack {
-                    Text(model.t("drama.revision", ["revision": String(skeleton["revision"].integer ?? 0)])).font(.headline)
-                    Text(model.t("plot.coverage." + (skeleton["status"].string ?? "partial"))).font(.caption)
+                    Text(model.t("drama.revision", ["revision": String(skeleton["revision"].integer ?? 0)])).font(.system(size: 14, weight: .semibold))
+                    Text(model.t("plot.coverage." + (skeleton["status"].string ?? "partial"))).font(.system(size: 12))
                     Spacer()
                     Button(model.t("script.create")) { scriptSheet = DramaSheet(value: result) }.disabled(hasPending)
                     Button(model.t("drama.add_episode")) { Task { await edit([.object(["type": .string("add_episode"), "index": .integer(Int64(skeleton["episodes"].array.count))])]) } }.disabled(hasPending)
                     Button(model.t("drama.compare")) { Task { await compare() } }.disabled(hasPending)
                 }
-                Text(model.t("drama.source_note", ["revision": String(skeleton["blueprint_revision"].integer ?? 0)])).font(.caption).foregroundStyle(.secondary)
-                if result["stale"].bool == true { Label(model.t("drama.stale"), systemImage: "clock.badge.exclamationmark").foregroundStyle(.orange) }
+                Text(model.t("drama.source_note", ["revision": String(skeleton["blueprint_revision"].integer ?? 0)])).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
+                if result["stale"].bool == true { Label(model.t("drama.stale"), systemImage: "clock.badge.exclamationmark").foregroundStyle(WorkbenchPalette.warningInk) }
                 ForEach(Array(skeleton["episodes"].array.enumerated()), id: \.offset) { e, episode in
                     episodeView(episode, index: e)
                     Divider()
@@ -148,7 +148,7 @@ struct DramaWorkbenchView: View {
     private func episodeView(_ episode: JSONValue, index: Int) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Text(model.t("drama.episode", ["number": String(index + 1)]) + " " + (episode["title"].string ?? "")).font(.headline)
+                Text(model.t("drama.episode", ["number": String(index + 1)]) + " " + (episode["title"].string ?? "")).font(.system(size: 14, weight: .semibold))
                 Spacer()
                 Button(model.t("common.edit")) { editSheet = DramaSheet(value: .object(["episode": episode])) }
                 Button(model.t("drama.add_scene")) { Task { await edit([.object(["type": .string("add_scene"), "episode_id": episode["episode_id"], "index": .integer(Int64(episode["scenes"].array.count)), "plot_node_refs": .array([])])]) } }
@@ -159,7 +159,7 @@ struct DramaWorkbenchView: View {
     private func sceneView(_ scene: JSONValue, episode: JSONValue, episodeIndex: Int, index: Int) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
-                Text(model.t("drama.scene", ["episode": String(episodeIndex + 1), "scene": String(index + 1)])).font(.headline)
+                Text(model.t("drama.scene", ["episode": String(episodeIndex + 1), "scene": String(index + 1)])).font(.system(size: 14, weight: .semibold))
                 Text(scene["title"].string ?? "")
                 Spacer()
                 Button(model.t("common.edit")) { editSheet = DramaSheet(value: .object(["scene": scene, "episode": episode])) }
@@ -167,29 +167,28 @@ struct DramaWorkbenchView: View {
                 Button { Task { await move(scene, episode: episode, index: index + 1) } } label: { Image(systemName: "arrow.down") }.help(model.t("drama.move_down")).accessibilityLabel(model.t("drama.move_down")).disabled(index + 1 == episode["scenes"].array.count)
             }.disabled(hasPending)
             Text((scene["location_ref"].string.map { displayName(model, reference: $0, blueprint: blueprint) } ?? model.t("plot.unspecified")) + "  " + model.t("location." + (scene["interior_exterior"].string ?? "unknown")) + "  " + model.t("plot.time_of_day." + (scene["time_of_day"].string ?? "unknown")))
-            Text(scene["character_refs"].array.compactMap(\.string).map { displayName(model, reference: $0, blueprint: blueprint) }.joined(separator: model.locale == "en" ? ", " : "、")).foregroundStyle(.secondary)
+            Text(scene["character_refs"].array.compactMap(\.string).map { displayName(model, reference: $0, blueprint: blueprint) }.joined(separator: model.locale == "en" ? ", " : "、")).foregroundStyle(WorkbenchPalette.muted)
             if !scene["missing_fields"].array.isEmpty {
-                Text(model.t("plot.missing_fields", ["fields": scene["missing_fields"].array.compactMap(\.string).map { model.t("drama.missing." + $0) }.joined(separator: model.locale == "en" ? ", " : "、")])).font(.caption).foregroundStyle(.orange)
+                Text(model.t("plot.missing_fields", ["fields": scene["missing_fields"].array.compactMap(\.string).map { model.t("drama.missing." + $0) }.joined(separator: model.locale == "en" ? ", " : "、")])).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.warningInk)
             }
-            if let note = scene["adaptation_note"].string, !note.isEmpty { Text(note).font(.caption).textSelection(.enabled) }
+            if let note = scene["adaptation_note"].string, !note.isEmpty { Text(note).font(.system(size: 12)).textSelection(.enabled) }
             DisclosureGroup(model.t("drama.sources", ["count": String(scene["source_refs"].array.count)])) {
                 ForEach(Array(scene["source_refs"].array.enumerated()), id: \.offset) { _, source in
                     HStack(alignment: .top) {
                         Text(source["quote"].string ?? "").lineLimit(3).textSelection(.enabled)
                         Spacer()
                         Button(model.t("plot.source")) { sourceSheet = DramaSheet(value: source) }
-                    }.font(.caption)
+                    }.font(.system(size: 12))
                 }
             }
-            Text(model.t("drama.no_generated_text")).font(.caption).foregroundStyle(.secondary)
         }.padding(22).background(WorkbenchPalette.page, in: RoundedRectangle(cornerRadius: 8))
-            .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(WorkbenchPalette.line, lineWidth: 1))
+            .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(WorkbenchPalette.line, lineWidth: 0.5))
             .accessibilityElement(children: .contain)
     }
     private var comparisonView: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(model.t("drama.comparisons")).font(.headline)
-            Text(model.t("drama.comparison_note")).font(.caption).foregroundStyle(.secondary)
+            Text(model.t("drama.comparisons")).font(.system(size: 14, weight: .semibold))
+            Text(model.t("drama.comparison_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
             ForEach(Array(comparisons.enumerated()), id: \.offset) { _, item in
                 Button(model.localizer.date(item["created_at"].string ?? "") + "  " + model.t("drama.revision", ["revision": String(item["skeleton_ref"]["revision"].integer ?? 0)])) {
                     Task { if let next = await call("hetu.drama.get_comparison", ["comparison_id": item["comparison_id"]]) { await installComparison(next) } }
@@ -197,25 +196,25 @@ struct DramaWorkbenchView: View {
             }
             if comparisonCursor != nil { Button(model.t("plot.more")) { Task { await loadComparisons(more: true) } } }
             if comparison != .null {
-                if comparison["stale"].bool == true { Text(model.t("drama.comparison_stale")).foregroundStyle(.orange) }
+                if comparison["stale"].bool == true { Text(model.t("drama.comparison_stale")).foregroundStyle(WorkbenchPalette.warningInk) }
                 Text(model.t("drama.comparison_count", ["count": String(comparison["comparison"]["items"].array.count)]))
                 ForEach(Array(comparison["comparison"]["items"].array.prefix(200).enumerated()), id: \.offset) { _, item in
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(model.t("drama.diff." + (item["kind"].string ?? "unmapped"))).font(.headline)
-                        if let label = comparisonSceneLabel(item) { Text(label).font(.caption) }
+                        Text(model.t("drama.diff." + (item["kind"].string ?? "unmapped"))).font(.system(size: 14, weight: .semibold))
+                        if let label = comparisonSceneLabel(item) { Text(label).font(.system(size: 12)) }
                         ForEach(Array(item["source_refs"].array.enumerated()), id: \.offset) { _, source in
                             Button(source["quote"].string ?? model.t("plot.source")) { sourceSheet = DramaSheet(value: source) }.buttonStyle(.link).lineLimit(2)
                         }
                         if !item["details"]["fields"].array.isEmpty {
-                            Text(item["details"]["fields"].array.compactMap(\.string).map { model.t("drama.field." + $0) }.joined(separator: model.locale == "en" ? ", " : "、")).font(.caption)
+                            Text(item["details"]["fields"].array.compactMap(\.string).map { model.t("drama.field." + $0) }.joined(separator: model.locale == "en" ? ", " : "、")).font(.system(size: 12))
                         }
                         if item["details"]["source_range"] != .null {
-                            Text(model.t("drama.unmapped_note")).font(.caption).foregroundStyle(.secondary)
+                            Text(model.t("drama.unmapped_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                             Button(model.t("plot.source")) { Task { await showRange(item["details"]["source_range"]) } }
                         }
                     }
                 }
-                if comparison["comparison"]["items"].array.count > 200 { Text(model.t("drama.comparison_limit")).font(.caption) }
+                if comparison["comparison"]["items"].array.count > 200 { Text(model.t("drama.comparison_limit")).font(.system(size: 12)) }
             }
         }
     }

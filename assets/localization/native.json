@@ -19,13 +19,13 @@
   },
   "workspace.new": {
     "zh-CN": "新建作品",
-    "en": "New Book",
+    "en": "New Work",
     "purpose": "Mac 原生界面：workspace.new",
     "parameters": []
   },
   "workspace.open": {
     "zh-CN": "打开作品…",
-    "en": "Open Book…",
+    "en": "Open Work…",
     "purpose": "Mac 原生界面：workspace.open",
     "parameters": []
   },
@@ -3588,8 +3588,8 @@
     ]
   },
   "media.title": {
-    "zh-CN": "线索与素材",
-    "en": "Cues & media",
+    "zh-CN": "资料与素材",
+    "en": "References and assets",
     "purpose": "Mac 原生线索与素材：media.title",
     "parameters": []
   },
@@ -5206,8 +5206,8 @@
     "parameters": []
   },
   "agent.guide.scope": {
-    "zh-CN": "河图洛书不会自动修改全局客户端配置。包内方法与任务 MCP 分开接入：先在河图洛书准备明确任务，再按该任务提供的连接范围使用；文件检测不代表已连接或已生成。",
-    "en": "Hetu Luoshu does not change global client settings automatically. Prepare a specific task, then use its scoped MCP connection. File detection does not mean a connection or generation has completed.",
+    "zh-CN": "河图洛书不自动修改客户端全局配置。配置稳定 MCP 后，逐个授权具体任务；检测到扩展文件不表示已连接或已生成。",
+    "en": "Hetu Luoshu does not change global client settings automatically. Configure the stable MCP connection, then authorize each task. Detected package files do not prove a connection or generation.",
     "purpose": "Mac 原生界面：agent.guide.scope",
     "parameters": []
   },
@@ -5286,8 +5286,8 @@
     ]
   },
   "creative.title": {
-    "zh-CN": "请外部 AI 改稿",
-    "en": "Ask external AI to revise",
+    "zh-CN": "外部 AI 协作",
+    "en": "External AI collaboration",
     "parameters": [],
     "purpose": "Mac 原生界面：creative.title"
   },
@@ -5298,8 +5298,8 @@
     "purpose": "Mac 原生界面：creative.allowed"
   },
   "creative.save_first": {
-    "zh-CN": "请先保存修订，再确认本次可改范围；未保存内容不会自动外发。",
-    "en": "Save a revision before choosing the edit scope. Unsaved text is not shared automatically.",
+    "zh-CN": "请先保存当前稿件。未保存的内容不会自动外发。",
+    "en": "Save the current manuscript first. Unsaved text is not shared automatically.",
     "parameters": [],
     "purpose": "Mac 原生界面：creative.save_first"
   },
@@ -5334,8 +5334,8 @@
     "purpose": "Mac 原生界面：creative.reference_only"
   },
   "creative.context_note": {
-    "zh-CN": "本章已保存原文、作品资料和勾选内容会作为参考；只有上方明确列出的范围允许改动。",
-    "en": "The saved chapter, book profile and checked sources are shared as context. Only the explicitly listed ranges may be changed.",
+    "zh-CN": "仅供参考，不授予修改权限。Agent 按需读取创建任务时固定的版本。",
+    "en": "Reference access does not grant editing permission. The Agent reads fixed revisions as needed.",
     "parameters": [],
     "purpose": "Mac 原生界面：creative.context_note"
   },
@@ -5352,8 +5352,8 @@
     "purpose": "Mac 原生界面：creative.preview_prompt"
   },
   "creative.handoff_note": {
-    "zh-CN": "河图洛书准备任务，完整对话与生成在你选择的外部客户端进行。先配置本任务 MCP 连接；不使用 MCP 时按提示词写回固定结果目录。",
-    "en": "Hetu Luoshu prepares the task. Conversation and generation happen in your chosen external client. Configure the task MCP connection, or return files to the fixed inbox.",
+    "zh-CN": "复制提示词，到所选客户端继续。首次使用需配置稳定连接；后续任务沿用连接。",
+    "en": "Copy the prompt and continue in your chosen client. Configure the stable connection once and reuse it for later tasks.",
     "parameters": [],
     "purpose": "Mac 原生界面：creative.handoff_note"
   },
@@ -5400,8 +5400,8 @@
     "purpose": "Mac 原生界面：creative.copy_prompt"
   },
   "creative.connection": {
-    "zh-CN": "复制本任务连接配置",
-    "en": "Copy task connection config",
+    "zh-CN": "复制 MCP 配置",
+    "en": "Copy MCP configuration",
     "parameters": [],
     "purpose": "Mac 原生界面：creative.connection"
   },
@@ -5412,8 +5412,8 @@
     "purpose": "Mac 原生界面：creative.copied"
   },
   "creative.connection_copied": {
-    "zh-CN": "连接配置已复制，请按客户端的 MCP 配置格式添加；软件不会修改全局配置。",
-    "en": "Connection JSON copied. Add it using your client’s MCP configuration format. Global settings are not changed by the app.",
+    "zh-CN": "配置已复制，在客户端接入一次即可。",
+    "en": "Configuration copied. Connect once in your client.",
     "parameters": [],
     "purpose": "Mac 原生界面：creative.connection_copied"
   },
@@ -5833,6 +5833,12 @@
     "purpose": "Mac 新书筹备界面：creation.details",
     "parameters": []
   },
+  "creation.more_details": {
+    "zh-CN": "补充资料",
+    "en": "Additional details",
+    "purpose": "新建作品的可选资料折叠入口",
+    "parameters": []
+  },
   "creation.optional_title": {
     "zh-CN": "书名，可以稍后填写",
     "en": "Book title, optional while planning",
@@ -5852,8 +5858,8 @@
     "parameters": []
   },
   "creation.title_note": {
-    "zh-CN": "书名未定也能保存筹备；确认书名后再创建小说。",
-    "en": "Save your plan before choosing a title. Create the book when the title is ready.",
+    "zh-CN": "名称未定时，可先保存筹备。",
+    "en": "Save a plan before choosing a title.",
     "purpose": "Mac 新书筹备界面：creation.title_note",
     "parameters": []
   },
@@ -7281,5 +7287,1529 @@
     "en": "A selected file, revision or delivery requirement has changed. Preview again.",
     "purpose": "Mac 导入导出：delivery.inputs_changed",
     "parameters": []
+  },
+  "search.title": {
+    "zh-CN": "查找与替换",
+    "en": "Find and Replace",
+    "purpose": "作者编辑工作台：search.title",
+    "parameters": []
+  },
+  "search.query": {
+    "zh-CN": "查找内容",
+    "en": "Find text",
+    "purpose": "作者编辑工作台：search.query",
+    "parameters": []
+  },
+  "search.scope": {
+    "zh-CN": "查找范围",
+    "en": "Search scope",
+    "purpose": "作者编辑工作台：search.scope",
+    "parameters": []
+  },
+  "search.current": {
+    "zh-CN": "当前文档",
+    "en": "Current document",
+    "purpose": "作者编辑工作台：search.current",
+    "parameters": []
+  },
+  "search.book": {
+    "zh-CN": "整部作品",
+    "en": "Entire book",
+    "purpose": "作者编辑工作台：search.book",
+    "parameters": []
+  },
+  "search.words": {
+    "zh-CN": "中文分词",
+    "en": "Word search",
+    "purpose": "作者编辑工作台：search.words",
+    "parameters": []
+  },
+  "search.case": {
+    "zh-CN": "区分大小写",
+    "en": "Match case",
+    "purpose": "作者编辑工作台：search.case",
+    "parameters": []
+  },
+  "search.count": {
+    "zh-CN": "{count} 处，已查 {scanned}/{total} 篇",
+    "en": "{count} matches, {scanned}/{total} documents",
+    "purpose": "作者编辑工作台：search.count",
+    "parameters": [
+      "count",
+      "scanned",
+      "total"
+    ]
+  },
+  "search.partial": {
+    "zh-CN": "结果较多，仅显示前 5000 处，请缩小查找范围。",
+    "en": "Showing the first 5,000 matches. Refine your search.",
+    "purpose": "作者编辑工作台：search.partial",
+    "parameters": []
+  },
+  "search.locate": {
+    "zh-CN": "定位",
+    "en": "Go to",
+    "purpose": "作者编辑工作台：search.locate",
+    "parameters": []
+  },
+  "search.replacement": {
+    "zh-CN": "替换为",
+    "en": "Replace with",
+    "purpose": "作者编辑工作台：search.replacement",
+    "parameters": []
+  },
+  "search.preview_one": {
+    "zh-CN": "预览替换此处",
+    "en": "Preview selected",
+    "purpose": "作者编辑工作台：search.preview_one",
+    "parameters": []
+  },
+  "search.preview_all": {
+    "zh-CN": "预览本章全部替换",
+    "en": "Preview all in document",
+    "purpose": "作者编辑工作台：search.preview_all",
+    "parameters": []
+  },
+  "search.preview_count": {
+    "zh-CN": "将替换 {count} 处",
+    "en": "Replace {count} matches",
+    "purpose": "作者编辑工作台：search.preview_count",
+    "parameters": [
+      "count"
+    ]
+  },
+  "search.apply": {
+    "zh-CN": "确认替换",
+    "en": "Apply replacement",
+    "purpose": "作者编辑工作台：search.apply",
+    "parameters": []
+  },
+  "search.stale": {
+    "zh-CN": "原文已有变化，请重新查找。",
+    "en": "The text has changed. Search again.",
+    "purpose": "作者编辑工作台：search.stale",
+    "parameters": []
+  },
+  "search.current_only": {
+    "zh-CN": "请先定位到要替换的文档。",
+    "en": "Open the matching document before replacing.",
+    "purpose": "作者编辑工作台：search.current_only",
+    "parameters": []
+  },
+  "search.no_replacement": {
+    "zh-CN": "没有可替换的内容，请重新查找。",
+    "en": "No valid matches to replace. Search again.",
+    "purpose": "作者编辑工作台：search.no_replacement",
+    "parameters": []
+  },
+  "notes.title": {
+    "zh-CN": "批注、大纲与历史",
+    "en": "Notes, Outline and History",
+    "purpose": "作者编辑工作台：notes.title",
+    "parameters": []
+  },
+  "notes.annotations": {
+    "zh-CN": "正文批注",
+    "en": "Annotations",
+    "purpose": "作者编辑工作台：notes.annotations",
+    "parameters": []
+  },
+  "notes.outlines": {
+    "zh-CN": "创作大纲",
+    "en": "Outline",
+    "purpose": "作者编辑工作台：notes.outlines",
+    "parameters": []
+  },
+  "notes.history": {
+    "zh-CN": "正文历史",
+    "en": "History",
+    "purpose": "作者编辑工作台：notes.history",
+    "parameters": []
+  },
+  "notes.resolved": {
+    "zh-CN": "已处理",
+    "en": "Resolved",
+    "purpose": "作者编辑工作台：notes.resolved",
+    "parameters": []
+  },
+  "notes.old_source": {
+    "zh-CN": "历史引文",
+    "en": "Earlier version",
+    "purpose": "作者编辑工作台：notes.old_source",
+    "parameters": []
+  },
+  "notes.save_first": {
+    "zh-CN": "保存正文后添加批注",
+    "en": "Save text to add an annotation",
+    "purpose": "作者编辑工作台：notes.save_first",
+    "parameters": []
+  },
+  "notes.select_quote": {
+    "zh-CN": "选择批注原文",
+    "en": "Select text to annotate",
+    "purpose": "作者编辑工作台：notes.select_quote",
+    "parameters": []
+  },
+  "notes.level": {
+    "zh-CN": "大纲类型",
+    "en": "Outline level",
+    "purpose": "作者编辑工作台：notes.level",
+    "parameters": []
+  },
+  "notes.target": {
+    "zh-CN": "关联卷章",
+    "en": "Linked volume or chapter",
+    "purpose": "作者编辑工作台：notes.target",
+    "parameters": []
+  },
+  "notes.book": {
+    "zh-CN": "总纲",
+    "en": "Book outline",
+    "purpose": "作者编辑工作台：notes.book",
+    "parameters": []
+  },
+  "notes.volume": {
+    "zh-CN": "卷纲",
+    "en": "Volume outline",
+    "purpose": "作者编辑工作台：notes.volume",
+    "parameters": []
+  },
+  "notes.chapter": {
+    "zh-CN": "章纲",
+    "en": "Chapter outline",
+    "purpose": "作者编辑工作台：notes.chapter",
+    "parameters": []
+  },
+  "notes.content": {
+    "zh-CN": "笔记内容",
+    "en": "Note",
+    "purpose": "作者编辑工作台：notes.content",
+    "parameters": []
+  },
+  "notes.add": {
+    "zh-CN": "添加",
+    "en": "Add",
+    "purpose": "作者编辑工作台：notes.add",
+    "parameters": []
+  },
+  "notes.unsaved": {
+    "zh-CN": "笔记修改尚未保存",
+    "en": "Unsaved note changes",
+    "purpose": "作者编辑工作台：notes.unsaved",
+    "parameters": []
+  },
+  "notes.discard": {
+    "zh-CN": "放弃本次修改",
+    "en": "Discard changes",
+    "purpose": "作者编辑工作台：notes.discard",
+    "parameters": []
+  },
+  "notes.difference": {
+    "zh-CN": "与当前稿比较",
+    "en": "Compare with current text",
+    "purpose": "作者编辑工作台：notes.difference",
+    "parameters": []
+  },
+  "notes.restore": {
+    "zh-CN": "将此版本恢复为写作稿",
+    "en": "Restore as working text",
+    "purpose": "作者编辑工作台：notes.restore",
+    "parameters": []
+  },
+  "notes.select_revision": {
+    "zh-CN": "选择历史版本查看",
+    "en": "Select a version",
+    "purpose": "作者编辑工作台：notes.select_revision",
+    "parameters": []
+  },
+  "settings.autosave": {
+    "zh-CN": "自动保存正文",
+    "en": "Automatically save text",
+    "purpose": "作者编辑工作台：settings.autosave",
+    "parameters": []
+  },
+  "agent.access.headline": {
+    "zh-CN": "你的创意，值得被认真对待。",
+    "en": "Your creative voice belongs at the center.",
+    "purpose": "作者书库的 Agent 一等入口：headline",
+    "parameters": []
+  },
+  "agent.access.roles": {
+    "zh-CN": "小说与剧本工程化，让创作更系统、更可视。外部 Agent 提供方案，你掌握品味、判断与定稿。",
+    "en": "Organize manuscripts, scripts and references. Your Agent offers alternatives; your taste and judgment shape the work.",
+    "purpose": "作者书库的 Agent 一等入口：roles",
+    "parameters": []
+  },
+  "agent.access.title": {
+    "zh-CN": "Agent 接入",
+    "en": "Agent access",
+    "purpose": "作者书库的 Agent 一等入口：title",
+    "parameters": []
+  },
+  "agent.access.mcp_summary": {
+    "zh-CN": "连接作品与任务",
+    "en": "Connect books and tasks",
+    "purpose": "作者书库的 Agent 一等入口：mcp_summary",
+    "parameters": []
+  },
+  "agent.access.cli_summary": {
+    "zh-CN": "发现与调用能力",
+    "en": "Discover and call tools",
+    "purpose": "作者书库的 Agent 一等入口：cli_summary",
+    "parameters": []
+  },
+  "agent.access.skills_summary": {
+    "zh-CN": "安装创作方法",
+    "en": "Install creative methods",
+    "purpose": "作者书库的 Agent 一等入口：skills_summary",
+    "parameters": []
+  },
+  "agent.access.mcp_detail": {
+    "zh-CN": "MCP 让外部 Agent 查询获权作品、读取任务、提交候选并回读反馈。连接由所选 Agent 管理，原生客户端无需常驻。",
+    "en": "MCP lets external agents query authorized books, read tasks, submit candidates and retrieve feedback. Your Agent manages the connection; the native app need not stay open.",
+    "purpose": "作者书库的 Agent 一等入口：mcp_detail",
+    "parameters": []
+  },
+  "agent.access.cli_detail": {
+    "zh-CN": "CLI 是可独立运行的创作入口。外部 Agent 可发现当前作品的实际能力，调用受限操作，并在中断后查询原操作结果。",
+    "en": "The CLI is an independent entry point. External agents can discover the current book’s capabilities, run scoped actions and recover the original operation result after an interruption.",
+    "purpose": "作者书库的 Agent 一等入口：cli_detail",
+    "parameters": []
+  },
+  "agent.access.skills_detail": {
+    "zh-CN": "Skills 把题材方法、任务步骤和结果要求交给你选择的 Agent。按作品选择套件，再通过下方共用入口安装；方法不会扩大作品授权。",
+    "en": "Skills give your chosen Agent genre methods, task steps and output requirements. Choose a suite for the book and install below. Methods do not expand workspace permissions.",
+    "purpose": "作者书库的 Agent 一等入口：skills_detail",
+    "parameters": []
+  },
+  "agent.access.scope": {
+    "zh-CN": "接入、任务授权和作者确认分别处理。设定变更、正文采纳、正式素材选用与定稿由作者决定。",
+    "en": "Connection, task authorization and author approval are separate. Authors decide story changes, manuscript adoption, official asset selection and finalization.",
+    "purpose": "作者书库的 Agent 一等入口：scope",
+    "parameters": []
+  },
+  "agent.access.guide": {
+    "zh-CN": "查看接入指南",
+    "en": "Read the connection guide",
+    "purpose": "作者书库的 Agent 一等入口：guide",
+    "parameters": []
+  },
+  "agent.access.why_title": {
+    "zh-CN": "为什么专注创作底座？",
+    "en": "Why focus on the creative foundation?",
+    "purpose": "作者书库的 Agent 一等入口：why_title",
+    "parameters": []
+  },
+  "agent.access.why_body": {
+    "zh-CN": "通用 Agent 的推理、上下文管理、工具调度和执行恢复需要持续打磨。Codex、Claude Code、WorkBuddy 等产品已在专注这些能力。河图洛书专注作品、设定、资料和版本，通过 MCP、CLI、Skills 提供可靠的创作入口。",
+    "en": "General agents require sustained work on reasoning, context, tools and execution recovery. Codex, Claude Code and WorkBuddy focus on those capabilities. Hetu Luoshu focuses on works, story facts, resources and versions, exposed through MCP, CLI and Skills.",
+    "purpose": "作者书库的 Agent 一等入口：why_body",
+    "parameters": []
+  },
+  "creation.work_type": {
+    "zh-CN": "作品类型",
+    "en": "Work type",
+    "purpose": "Mac 原生界面：creation.work_type",
+    "parameters": []
+  },
+  "creation.type.novel": {
+    "zh-CN": "小说",
+    "en": "Novel",
+    "purpose": "Mac 原生界面：creation.type.novel",
+    "parameters": []
+  },
+  "creation.type.drama": {
+    "zh-CN": "剧本",
+    "en": "Screenplay",
+    "purpose": "Mac 原生界面：creation.type.drama",
+    "parameters": []
+  },
+  "drama.skeletons": {
+    "zh-CN": "改编骨架",
+    "en": "Adaptation skeletons",
+    "purpose": "Mac 原生界面：drama.skeletons",
+    "parameters": []
+  },
+  "drama.project_new": {
+    "zh-CN": "新建短剧项目",
+    "en": "New drama project",
+    "purpose": "Mac 原生界面：drama.project_new",
+    "parameters": []
+  },
+  "drama.project_select": {
+    "zh-CN": "选择或新建短剧项目",
+    "en": "Select or create a drama project",
+    "purpose": "Mac 原生界面：drama.project_select",
+    "parameters": []
+  },
+  "drama.show_archived": {
+    "zh-CN": "显示已归档项目",
+    "en": "Show archived projects",
+    "purpose": "Mac 原生界面：drama.show_archived",
+    "parameters": []
+  },
+  "drama.project_mode": {
+    "zh-CN": "创作方式",
+    "en": "Creation mode",
+    "purpose": "Mac 原生界面：drama.project_mode",
+    "parameters": []
+  },
+  "drama.mode.original": {
+    "zh-CN": "原创剧本",
+    "en": "Original screenplay",
+    "purpose": "Mac 原生界面：drama.mode.original",
+    "parameters": []
+  },
+  "drama.mode.adaptation": {
+    "zh-CN": "小说改编",
+    "en": "Novel adaptation",
+    "purpose": "Mac 原生界面：drama.mode.adaptation",
+    "parameters": []
+  },
+  "drama.source_pending": {
+    "zh-CN": "尚未关联原著，可先写分集计划",
+    "en": "Source not linked. Episode planning is available.",
+    "purpose": "Mac 原生界面：drama.source_pending",
+    "parameters": []
+  },
+  "drama.episode_new": {
+    "zh-CN": "新建分集",
+    "en": "New episode",
+    "purpose": "Mac 原生界面：drama.episode_new",
+    "parameters": []
+  },
+  "drama.episode_select": {
+    "zh-CN": "选择分集查看计划和剧本",
+    "en": "Select an episode to view its plan and script",
+    "purpose": "Mac 原生界面：drama.episode_select",
+    "parameters": []
+  },
+  "drama.episode_edit": {
+    "zh-CN": "编辑分集资料",
+    "en": "Edit episode details",
+    "purpose": "Mac 原生界面：drama.episode_edit",
+    "parameters": []
+  },
+  "drama.open_script": {
+    "zh-CN": "打开剧本",
+    "en": "Open script",
+    "purpose": "Mac 原生界面：drama.open_script",
+    "parameters": []
+  },
+  "drama.episode_plan": {
+    "zh-CN": "分集计划",
+    "en": "Episode plan",
+    "purpose": "Mac 原生界面：drama.episode_plan",
+    "parameters": []
+  },
+  "drama.plan_empty": {
+    "zh-CN": "尚未填写分集计划",
+    "en": "No episode plan yet",
+    "purpose": "Mac 原生界面：drama.plan_empty",
+    "parameters": []
+  },
+  "drama.unassigned": {
+    "zh-CN": "未归入项目的剧本",
+    "en": "Unassigned scripts",
+    "purpose": "Mac 原生界面：drama.unassigned",
+    "parameters": []
+  },
+  "drama.attach": {
+    "zh-CN": "编入此项目",
+    "en": "Add to this project",
+    "purpose": "Mac 原生界面：drama.attach",
+    "parameters": []
+  },
+  "drama.project_name": {
+    "zh-CN": "项目名称",
+    "en": "Project name",
+    "purpose": "Mac 原生界面：drama.project_name",
+    "parameters": []
+  },
+  "drama.archive_project": {
+    "zh-CN": "归档项目",
+    "en": "Archive project",
+    "purpose": "Mac 原生界面：drama.archive_project",
+    "parameters": []
+  },
+  "drama.episode_name": {
+    "zh-CN": "分集标题",
+    "en": "Episode title",
+    "purpose": "Mac 原生界面：drama.episode_name",
+    "parameters": []
+  },
+  "drama.archive_episode": {
+    "zh-CN": "归档分集",
+    "en": "Archive episode",
+    "purpose": "Mac 原生界面：drama.archive_episode",
+    "parameters": []
+  },
+  "media.files": {
+    "zh-CN": "文件素材",
+    "en": "Media files",
+    "purpose": "Mac 原生界面：media.files",
+    "parameters": []
+  },
+  "resources.title": {
+    "zh-CN": "文字资料",
+    "en": "Written references",
+    "purpose": "Mac 原生界面：resources.title",
+    "parameters": []
+  },
+  "resources.organize": {
+    "zh-CN": "让 AI 整理资料",
+    "en": "Organize with AI",
+    "purpose": "Mac 原生界面：resources.organize",
+    "parameters": []
+  },
+  "resources.new": {
+    "zh-CN": "新增资料",
+    "en": "New reference",
+    "purpose": "Mac 原生界面：resources.new",
+    "parameters": []
+  },
+  "resources.all": {
+    "zh-CN": "全部资料",
+    "en": "All references",
+    "purpose": "Mac 原生界面：resources.all",
+    "parameters": []
+  },
+  "resources.status": {
+    "zh-CN": "资料状态",
+    "en": "Reference status",
+    "purpose": "Mac 原生界面：resources.status",
+    "parameters": []
+  },
+  "resources.active": {
+    "zh-CN": "未归档",
+    "en": "Active",
+    "purpose": "Mac 原生界面：resources.active",
+    "parameters": []
+  },
+  "resources.state.draft": {
+    "zh-CN": "未采用",
+    "en": "Draft",
+    "purpose": "Mac 原生界面：resources.state.draft",
+    "parameters": []
+  },
+  "resources.state.adopted": {
+    "zh-CN": "已采用",
+    "en": "Adopted",
+    "purpose": "Mac 原生界面：resources.state.adopted",
+    "parameters": []
+  },
+  "resources.state.archived": {
+    "zh-CN": "已归档",
+    "en": "Archived",
+    "purpose": "Mac 原生界面：resources.state.archived",
+    "parameters": []
+  },
+  "resources.category": {
+    "zh-CN": "分类",
+    "en": "Category",
+    "purpose": "Mac 原生界面：resources.category",
+    "parameters": []
+  },
+  "resources.category.character": {
+    "zh-CN": "人物资料",
+    "en": "Characters",
+    "purpose": "Mac 原生界面：resources.category.character",
+    "parameters": []
+  },
+  "resources.category.location": {
+    "zh-CN": "场景参考",
+    "en": "Locations",
+    "purpose": "Mac 原生界面：resources.category.location",
+    "parameters": []
+  },
+  "resources.category.prop": {
+    "zh-CN": "道具资料",
+    "en": "Props",
+    "purpose": "Mac 原生界面：resources.category.prop",
+    "parameters": []
+  },
+  "resources.category.research": {
+    "zh-CN": "考据笔记",
+    "en": "Research",
+    "purpose": "Mac 原生界面：resources.category.research",
+    "parameters": []
+  },
+  "resources.category.artwork": {
+    "zh-CN": "美术参考",
+    "en": "Art references",
+    "purpose": "Mac 原生界面：resources.category.artwork",
+    "parameters": []
+  },
+  "resources.category.media": {
+    "zh-CN": "音画资料",
+    "en": "Audiovisual references",
+    "purpose": "Mac 原生界面：resources.category.media",
+    "parameters": []
+  },
+  "resources.empty": {
+    "zh-CN": "此分类暂无资料",
+    "en": "No references in this category",
+    "purpose": "Mac 原生界面：resources.empty",
+    "parameters": []
+  },
+  "resources.select": {
+    "zh-CN": "选择资料查看内容",
+    "en": "Select a reference",
+    "purpose": "Mac 原生界面：resources.select",
+    "parameters": []
+  },
+  "resources.adopt": {
+    "zh-CN": "采用资料",
+    "en": "Adopt reference",
+    "purpose": "Mac 原生界面：resources.adopt",
+    "parameters": []
+  },
+  "resources.archive": {
+    "zh-CN": "归档",
+    "en": "Archive",
+    "purpose": "Mac 原生界面：resources.archive",
+    "parameters": []
+  },
+  "resources.source_notes": {
+    "zh-CN": "来源说明",
+    "en": "Source notes",
+    "purpose": "Mac 原生界面：resources.source_notes",
+    "parameters": []
+  },
+  "resources.usages": {
+    "zh-CN": "使用位置",
+    "en": "Used in",
+    "purpose": "Mac 原生界面：resources.usages",
+    "parameters": []
+  },
+  "resources.link_usage": {
+    "zh-CN": "关联原文",
+    "en": "Link to text",
+    "purpose": "Mac 原生界面：resources.link_usage",
+    "parameters": []
+  },
+  "resources.usage_stale": {
+    "zh-CN": "资料或原文已有新版，此处保留原引用",
+    "en": "A newer reference or source revision exists. This link preserves its original revision.",
+    "purpose": "Mac 原生界面：resources.usage_stale",
+    "parameters": []
+  },
+  "resources.name": {
+    "zh-CN": "资料名称",
+    "en": "Reference name",
+    "purpose": "Mac 原生界面：resources.name",
+    "parameters": []
+  },
+  "resources.body": {
+    "zh-CN": "资料内容",
+    "en": "Content",
+    "purpose": "Mac 原生界面：resources.body",
+    "parameters": []
+  },
+  "resources.tags": {
+    "zh-CN": "标签，以顿号分隔",
+    "en": "Tags, separated by commas",
+    "purpose": "Mac 原生界面：resources.tags",
+    "parameters": []
+  },
+  "resources.select_range": {
+    "zh-CN": "选择要关联的原文",
+    "en": "Select text to link",
+    "purpose": "Mac 原生界面：resources.select_range",
+    "parameters": []
+  },
+  "resources.usage_role": {
+    "zh-CN": "用途说明",
+    "en": "Purpose",
+    "purpose": "Mac 原生界面：resources.usage_role",
+    "parameters": []
+  },
+  "resources.task_scope": {
+    "zh-CN": "本次可用资料",
+    "en": "References for this task",
+    "purpose": "Mac 原生界面：resources.task_scope",
+    "parameters": []
+  },
+  "resources.allow_create": {
+    "zh-CN": "允许新增未采用资料",
+    "en": "Allow new draft references",
+    "purpose": "Mac 原生界面：resources.allow_create",
+    "parameters": []
+  },
+  "resources.allow_edit": {
+    "zh-CN": "允许修改",
+    "en": "Allow edits",
+    "purpose": "Mac 原生界面：resources.allow_edit",
+    "parameters": []
+  },
+  "resources.scope_note": {
+    "zh-CN": "勾选资料供 AI 参考；仅未采用资料可开放修改。",
+    "en": "Selected references are readable. Only drafts can be made editable.",
+    "purpose": "Mac 原生界面：resources.scope_note",
+    "parameters": []
+  },
+  "resources.task_result_note": {
+    "zh-CN": "整理后的资料在资料列表中查看，由你决定是否采用。",
+    "en": "Review organized references in the list and choose whether to adopt them.",
+    "purpose": "Mac 原生界面：resources.task_result_note",
+    "parameters": []
+  },
+  "agent.skill.hetu-resources": {
+    "zh-CN": "资料整理",
+    "en": "Reference organization",
+    "purpose": "Mac 原生界面：agent.skill.hetu-resources",
+    "parameters": []
+  },
+  "records.compare_latest": {
+    "zh-CN": "比较最新版本",
+    "en": "Compare latest version",
+    "purpose": "原生表单与冲突处理：records.compare_latest",
+    "parameters": []
+  },
+  "records.disk_version": {
+    "zh-CN": "磁盘上的最新内容",
+    "en": "Latest saved content",
+    "purpose": "原生表单与冲突处理：records.disk_version",
+    "parameters": []
+  },
+  "records.accept_baseline": {
+    "zh-CN": "以此版本继续保存",
+    "en": "Use this baseline",
+    "purpose": "原生表单与冲突处理：records.accept_baseline",
+    "parameters": []
+  },
+  "records.keep_input": {
+    "zh-CN": "保留表单中的修改，保存时仍会检查版本。",
+    "en": "Your form edits are kept. Saving still checks the revision.",
+    "purpose": "原生表单与冲突处理：records.keep_input",
+    "parameters": []
+  },
+  "records.discard_question": {
+    "zh-CN": "放弃尚未保存的修改？",
+    "en": "Discard unsaved changes?",
+    "purpose": "原生表单与冲突处理：records.discard_question",
+    "parameters": []
+  },
+  "records.discard": {
+    "zh-CN": "放弃修改",
+    "en": "Discard changes",
+    "purpose": "原生表单与冲突处理：records.discard",
+    "parameters": []
+  },
+  "creation.create_drama": {
+    "zh-CN": "创建剧本",
+    "en": "Create screenplay",
+    "purpose": "Mac 原生剧本创建：creation.create_drama",
+    "parameters": []
+  },
+  "creation.drama_details": {
+    "zh-CN": "剧本资料",
+    "en": "Screenplay details",
+    "purpose": "Mac 原生剧本创建：creation.drama_details",
+    "parameters": []
+  },
+  "creation.optional_drama_title": {
+    "zh-CN": "剧名（可稍后填写）",
+    "en": "Screenplay title (optional)",
+    "purpose": "Mac 原生剧本创建：creation.optional_drama_title",
+    "parameters": []
+  },
+  "resources.project": {
+    "zh-CN": "所属项目",
+    "en": "Project",
+    "purpose": "资料关联界面：resources.project",
+    "parameters": []
+  },
+  "resources.project_all": {
+    "zh-CN": "全部项目",
+    "en": "All projects",
+    "purpose": "资料关联界面：resources.project_all",
+    "parameters": []
+  },
+  "resources.project_shared": {
+    "zh-CN": "作品通用",
+    "en": "Shared within this work",
+    "purpose": "资料关联界面：resources.project_shared",
+    "parameters": []
+  },
+  "resources.project_unavailable": {
+    "zh-CN": "项目未载入",
+    "en": "Project not loaded",
+    "purpose": "资料关联界面：resources.project_unavailable",
+    "parameters": []
+  },
+  "resources.more_projects": {
+    "zh-CN": "更多项目",
+    "en": "More projects",
+    "purpose": "资料关联界面：resources.more_projects",
+    "parameters": []
+  },
+  "resources.entities": {
+    "zh-CN": "关联设定",
+    "en": "Linked story facts",
+    "purpose": "资料关联界面：resources.entities",
+    "parameters": []
+  },
+  "resources.link_entity": {
+    "zh-CN": "关联设定",
+    "en": "Link story fact",
+    "purpose": "资料关联界面：resources.link_entity",
+    "parameters": []
+  },
+  "resources.unlink": {
+    "zh-CN": "取消关联",
+    "en": "Unlink",
+    "purpose": "资料关联界面：resources.unlink",
+    "parameters": []
+  },
+  "resources.entity_unavailable": {
+    "zh-CN": "设定未载入",
+    "en": "Story fact not loaded",
+    "purpose": "资料关联界面：resources.entity_unavailable",
+    "parameters": []
+  },
+  "creative.continue.working": {
+    "zh-CN": "参考稿",
+    "en": "Working references",
+    "purpose": "任务参考稿和公开意见：working",
+    "parameters": []
+  },
+  "creative.continue.reference_only": {
+    "zh-CN": "未提交的参考稿，尚未进入待选方案。",
+    "en": "Working references have not been submitted as candidates.",
+    "purpose": "任务参考稿和公开意见：reference_only",
+    "parameters": []
+  },
+  "creative.continue.title": {
+    "zh-CN": "修改意见",
+    "en": "Revision feedback",
+    "purpose": "任务参考稿和公开意见：title",
+    "parameters": []
+  },
+  "creative.continue.target": {
+    "zh-CN": "针对方案",
+    "en": "For result",
+    "purpose": "任务参考稿和公开意见：target",
+    "parameters": []
+  },
+  "creative.continue.save": {
+    "zh-CN": "保存修改意见",
+    "en": "Save revision feedback",
+    "purpose": "任务参考稿和公开意见：save",
+    "parameters": []
+  },
+  "creative.continue.copy": {
+    "zh-CN": "复制继续提示词",
+    "en": "Copy continuation prompt",
+    "purpose": "任务参考稿和公开意见：copy",
+    "parameters": []
+  },
+  "creative.continue.saved": {
+    "zh-CN": "意见已保存，请复制提示词到外部 AI 客户端继续。",
+    "en": "Feedback saved. Copy the prompt to continue in your external AI client.",
+    "purpose": "任务参考稿和公开意见：saved",
+    "parameters": []
+  },
+  "creative.continue.copied": {
+    "zh-CN": "提示词已复制，尚未确认 Agent 接收。",
+    "en": "Prompt copied. Agent receipt has not been confirmed.",
+    "purpose": "任务参考稿和公开意见：copied",
+    "parameters": []
+  },
+  "creative.continue.history": {
+    "zh-CN": "意见记录",
+    "en": "Feedback history",
+    "purpose": "任务参考稿和公开意见：history",
+    "parameters": []
+  },
+  "creative.continue.waiting": {
+    "zh-CN": "等待后续稿",
+    "en": "Awaiting follow-up work",
+    "purpose": "任务参考稿和公开意见：waiting",
+    "parameters": []
+  },
+  "creative.continue.received": {
+    "zh-CN": "已收到后续稿，请核对修改",
+    "en": "Follow-up work received for review",
+    "purpose": "任务参考稿和公开意见：received",
+    "parameters": []
+  },
+  "creative.continue.more": {
+    "zh-CN": "查看更多意见",
+    "en": "More feedback",
+    "purpose": "任务参考稿和公开意见：more",
+    "parameters": []
+  },
+  "creative.context.title": {
+    "zh-CN": "查看固定参考资料",
+    "en": "View fixed reference material",
+    "purpose": "外部协作任务的固定资料读取与范围选择",
+    "parameters": []
+  },
+  "creative.context.next": {
+    "zh-CN": "下一段",
+    "en": "Next passage",
+    "purpose": "外部协作任务的固定资料读取与范围选择",
+    "parameters": []
+  },
+  "creative.context.select_all": {
+    "zh-CN": "全选参考",
+    "en": "Select all references",
+    "purpose": "外部协作任务的固定资料读取与范围选择",
+    "parameters": []
+  },
+  "creative.context.clear": {
+    "zh-CN": "清空参考",
+    "en": "Clear references",
+    "purpose": "外部协作任务的固定资料读取与范围选择",
+    "parameters": []
+  },
+  "creative.kind": {
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.kind",
+    "zh-CN": "协作内容",
+    "en": "Task"
+  },
+  "creative.kind.revision": {
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.kind.revision",
+    "zh-CN": "改稿建议",
+    "en": "Revision suggestions"
+  },
+  "creative.kind.chapter_draft": {
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.kind.chapter_draft",
+    "zh-CN": "起草章节参考稿",
+    "en": "Chapter reference draft"
+  },
+  "creative.kind.drama_draft": {
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.kind.drama_draft",
+    "zh-CN": "起草剧本参考稿",
+    "en": "Script reference draft"
+  },
+  "creative.kind.outline": {
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.kind.outline",
+    "zh-CN": "大纲参考",
+    "en": "Outline reference"
+  },
+  "creative.kind.book_profile": {
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.kind.book_profile",
+    "zh-CN": "书名与简介参考",
+    "en": "Title and synopsis references"
+  },
+  "creative.writing_request": {
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.writing_request",
+    "zh-CN": "创作要求",
+    "en": "Writing request"
+  },
+  "resources.impact.summary": {
+    "zh-CN": "{count} 处使用，{review} 处待核对",
+    "en": "{count} linked passages, {review} to review",
+    "purpose": "资料使用位置的版本核对：summary",
+    "parameters": [
+      "count",
+      "review"
+    ]
+  },
+  "resources.impact.partial_summary": {
+    "zh-CN": "已载入 {count} 处使用，{review} 处待核对；下方可继续载入",
+    "en": "Loaded {count} linked passages, {review} to review; more available below",
+    "purpose": "资料使用位置的版本核对：partial_summary",
+    "parameters": [
+      "count",
+      "review"
+    ]
+  },
+  "resources.impact.filter": {
+    "zh-CN": "筛选使用位置",
+    "en": "Filter linked passages",
+    "purpose": "资料使用位置的版本核对：filter",
+    "parameters": []
+  },
+  "resources.impact.all": {
+    "zh-CN": "全部使用位置",
+    "en": "All passages",
+    "purpose": "资料使用位置的版本核对：all",
+    "parameters": []
+  },
+  "resources.impact.review": {
+    "zh-CN": "待核对",
+    "en": "Needs review",
+    "purpose": "资料使用位置的版本核对：review",
+    "parameters": []
+  },
+  "resources.impact.no_review": {
+    "zh-CN": "已载入的使用位置中，没有版本变化。",
+    "en": "No version changes in the loaded links.",
+    "purpose": "资料使用位置的版本核对：no_review",
+    "parameters": []
+  },
+  "resources.impact.empty": {
+    "zh-CN": "已载入的记录中，没有有效使用位置。",
+    "en": "No active links in the loaded records.",
+    "purpose": "资料使用位置的版本核对：empty",
+    "parameters": []
+  },
+  "resources.impact.compare": {
+    "zh-CN": "核对变化",
+    "en": "Compare versions",
+    "purpose": "资料使用位置的版本核对：compare",
+    "parameters": []
+  },
+  "resources.impact.refresh": {
+    "zh-CN": "刷新版本",
+    "en": "Refresh versions",
+    "purpose": "资料核对：重新读取已保存版本",
+    "parameters": []
+  },
+  "resources.impact.resource_changed": {
+    "zh-CN": "资料已有新版",
+    "en": "Reference has a newer version",
+    "purpose": "资料使用位置的版本核对：resource_changed",
+    "parameters": []
+  },
+  "resources.impact.source_changed": {
+    "zh-CN": "正文已有新版",
+    "en": "Manuscript has a newer revision",
+    "purpose": "资料使用位置的版本核对：source_changed",
+    "parameters": []
+  },
+  "resources.impact.document": {
+    "zh-CN": "关联文档",
+    "en": "Linked document",
+    "purpose": "资料使用位置的版本核对：document",
+    "parameters": []
+  },
+  "resources.impact.compare_note": {
+    "zh-CN": "比较关联时的版本与本次读取的已保存版本。核对不会改写正文或历史关联。",
+    "en": "Compare the linked versions with saved versions read now. This view leaves manuscripts and recorded links unchanged.",
+    "purpose": "资料使用位置的版本核对：compare_note",
+    "parameters": []
+  },
+  "resources.impact.comparison": {
+    "zh-CN": "比较内容",
+    "en": "Comparison",
+    "purpose": "资料使用位置的版本核对：comparison",
+    "parameters": []
+  },
+  "resources.impact.reference_versions": {
+    "zh-CN": "资料版本",
+    "en": "Reference versions",
+    "purpose": "资料使用位置的版本核对：reference_versions",
+    "parameters": []
+  },
+  "resources.impact.source_versions": {
+    "zh-CN": "正文版本",
+    "en": "Manuscript revisions",
+    "purpose": "资料使用位置的版本核对：source_versions",
+    "parameters": []
+  },
+  "resources.impact.unsaved_note": {
+    "zh-CN": "你尚未保存的编辑不在本次比较中。",
+    "en": "Your unsaved edits are outside this comparison.",
+    "purpose": "资料使用位置的版本核对：unsaved_note",
+    "parameters": []
+  },
+  "resources.impact.fixed": {
+    "zh-CN": "关联时的版本",
+    "en": "Version used in the link",
+    "purpose": "资料使用位置的版本核对：fixed",
+    "parameters": []
+  },
+  "resources.impact.current": {
+    "zh-CN": "本次读取的已保存版本",
+    "en": "Saved version read now",
+    "purpose": "资料使用位置的版本核对：current",
+    "parameters": []
+  },
+  "resources.impact.invalid_reference": {
+    "zh-CN": "关联资料的固定版本校验未通过，请刷新使用位置后重试。",
+    "en": "The linked reference version failed verification. Refresh the links and try again.",
+    "purpose": "资料核对：固定版本摘要与关联不一致",
+    "parameters": []
+  },
+  "models.service": {
+    "zh-CN": "模型服务",
+    "en": "Model services",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "models.note": {
+    "zh-CN": "配置河图平台或自定义渠道，供外部 Agent 通过 CLI／MCP 调用。这里不直接生成内容。",
+    "en": "Configure the Hetu platform or a custom channel for external Agents using CLI/MCP.",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "models.account": {
+    "zh-CN": "账号与费用",
+    "en": "Account and billing",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "models.refresh": {
+    "zh-CN": "刷新状态",
+    "en": "Refresh",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "models.connect": {
+    "zh-CN": "连接账号",
+    "en": "Connect account",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "models.reconnect": {
+    "zh-CN": "重新连接",
+    "en": "Reconnect",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "models.disconnect": {
+    "zh-CN": "断开本机连接",
+    "en": "Disconnect locally",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "models.code": {
+    "zh-CN": "连接验证码",
+    "en": "Verification code",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "models.open_browser": {
+    "zh-CN": "打开确认页面",
+    "en": "Open confirmation page",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "models.completed": {
+    "zh-CN": "已在网页确认",
+    "en": "Confirmed in browser",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "models.text": {
+    "zh-CN": "文字模型",
+    "en": "Text models",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "models.image": {
+    "zh-CN": "图片模型",
+    "en": "Image models",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "models.default": {
+    "zh-CN": "默认模型",
+    "en": "Default model",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "models.choose": {
+    "zh-CN": "请选择",
+    "en": "Choose a model",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "models.unavailable": {
+    "zh-CN": "当前不可用",
+    "en": "Currently unavailable",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "models.empty": {
+    "zh-CN": "当前没有可用模型，或连接需要更新。",
+    "en": "No models available, or the connection needs renewal.",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "models.failed": {
+    "zh-CN": "连接未完成，请重试。",
+    "en": "Connection incomplete. Please retry.",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "models.pending": {
+    "zh-CN": "请先在网页核对验证码并确认连接。",
+    "en": "Check the code and confirm in your browser first.",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "models.plans": {
+    "zh-CN": "模型调用与费用确认",
+    "en": "Model requests and cost approval",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "models.no_plans": {
+    "zh-CN": "Agent 准备模型计划后，可在这里审阅固定输入和本次费用。",
+    "en": "Review the fixed input and cost here after your Agent prepares a model plan.",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "models.outgoing": {
+    "zh-CN": "查看将发送的完整输入",
+    "en": "Review all outgoing input",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "models.approval_note": {
+    "zh-CN": "确认后允许向河图网站及 Cloud 模型服务发送以上内容；本计划最多执行一次，费用上限为所示 Credits。",
+    "en": "Approval permits sending this content to the Hetu website and Cloud model service. This plan runs at most once, with the shown Credits as its cost limit.",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "models.approve": {
+    "zh-CN": "批准以上内容与费用上限",
+    "en": "Approve this content and cost limit",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "models.approved": {
+    "zh-CN": "已批准，等待 Agent 提交原计划。",
+    "en": "Approved. Waiting for the Agent to submit this plan.",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "models.submitted": {
+    "zh-CN": "已提交。结果未知时沿原计划查询，不能重新生成。",
+    "en": "Submitted. Recover this plan if the result is unknown; do not generate again.",
+    "purpose": "模型服务与固定任务授权",
+    "parameters": []
+  },
+  "error.hetu.model_connection_required": {
+    "zh-CN": "请在设置的模型服务中连接或重新连接账号。",
+    "en": "Connect or reconnect your account in Model services settings.",
+    "purpose": "模型服务错误",
+    "parameters": []
+  },
+  "error.hetu.model_service_unavailable": {
+    "zh-CN": "模型服务未返回确定结果。已提交计划请沿原计划查询，不要重新生成。",
+    "en": "The model service did not return a definite result. Recover the submitted plan; do not generate again.",
+    "purpose": "模型服务错误",
+    "parameters": []
+  },
+  "error.hetu.model_policy_changed": {
+    "zh-CN": "模型价格、政策或余额已变化，请核对原计划与账号费用。",
+    "en": "Model policy, price, or balance has changed. Review the original plan and account billing.",
+    "purpose": "模型服务错误",
+    "parameters": []
+  },
+  "error.hetu.model_service_unconfigured": {
+    "zh-CN": "河图网站的模型服务尚未配置完成，本地写作可继续。",
+    "en": "The Hetu website model service has not been configured. Local writing remains available.",
+    "purpose": "模型服务错误",
+    "parameters": []
+  },
+  "error.hetu.model_catalog_mismatch": {
+    "zh-CN": "模型目录与正式合同不一致，请联系维护者。",
+    "en": "The model catalog does not match its published contract. Contact the maintainer.",
+    "purpose": "模型服务错误",
+    "parameters": []
+  },
+  "error.hetu.model_result_pending": {
+    "zh-CN": "原模型操作尚未成功，请保留计划继续查询。",
+    "en": "The original model operation has not succeeded. Keep the plan and query it again.",
+    "purpose": "模型服务错误",
+    "parameters": []
+  },
+  "creative.kind.cover": {
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.kind.cover",
+    "zh-CN": "封面设计",
+    "en": "Cover design"
+  },
+  "models.cover_task": {
+    "parameters": [],
+    "purpose": "Mac 原生界面：models.cover_task",
+    "zh-CN": "让 AI 准备封面候选",
+    "en": "Ask AI to prepare cover candidates"
+  },
+  "properties.created": {
+    "zh-CN": "创建时间",
+    "en": "Created",
+    "purpose": "对象创建时间",
+    "parameters": []
+  },
+  "properties.updated": {
+    "zh-CN": "更新时间",
+    "en": "Updated",
+    "purpose": "作品或对象最近持久化变更时间",
+    "parameters": []
+  },
+  "properties.metadata_updated": {
+    "zh-CN": "资料更新",
+    "en": "Details updated",
+    "purpose": "区分资料修订和正文保存",
+    "parameters": []
+  },
+  "properties.metadata_revision": {
+    "zh-CN": "资料版本",
+    "en": "Details version",
+    "purpose": "小说资料的版本序号",
+    "parameters": []
+  },
+  "properties.last_opened": {
+    "zh-CN": "最近打开",
+    "en": "Last opened",
+    "purpose": "本机书库的最近打开时间",
+    "parameters": []
+  },
+  "properties.not_recorded": {
+    "zh-CN": "未记录",
+    "en": "Not recorded",
+    "purpose": "无法从原始记录确定的属性",
+    "parameters": []
+  },
+  "properties.document": {
+    "zh-CN": "文档属性",
+    "en": "Document properties",
+    "purpose": "章节及剧本的只读属性区",
+    "parameters": []
+  },
+  "properties.project": {
+    "zh-CN": "项目属性",
+    "en": "Project properties",
+    "purpose": "短剧项目的只读属性区",
+    "parameters": []
+  },
+  "properties.saved": {
+    "zh-CN": "正文保存",
+    "en": "Content saved",
+    "purpose": "当前正文修订的保存时间",
+    "parameters": []
+  },
+  "properties.finalized": {
+    "zh-CN": "定稿时间",
+    "en": "Finalized",
+    "purpose": "当前生效定稿的确认时间",
+    "parameters": []
+  },
+  "properties.unsaved": {
+    "zh-CN": "当前有未保存的修改",
+    "en": "Unsaved changes",
+    "purpose": "属性仍对应已保存修订",
+    "parameters": []
+  },
+  "properties.format": {
+    "zh-CN": "内容格式",
+    "en": "Format",
+    "purpose": "正文文件格式",
+    "parameters": []
+  },
+  "properties.size": {
+    "zh-CN": "保存大小",
+    "en": "Saved size",
+    "purpose": "已保存正文的字节数",
+    "parameters": []
+  },
+  "properties.source": {
+    "zh-CN": "修订来源",
+    "en": "Revision source",
+    "purpose": "当前正文修订的来源",
+    "parameters": []
+  },
+  "properties.adopted": {
+    "zh-CN": "作者采纳参考稿",
+    "en": "Draft adopted by author",
+    "purpose": "作者选用候选形成的修订，避免误标为作者原创",
+    "parameters": []
+  },
+  "library.delete.menu": {
+    "zh-CN": "删除作品…",
+    "en": "Delete work…",
+    "purpose": "作品属性与删除确认",
+    "parameters": []
+  },
+  "library.delete.title": {
+    "zh-CN": "删除作品",
+    "en": "Delete work",
+    "purpose": "作品属性与删除确认",
+    "parameters": []
+  },
+  "library.delete.scope": {
+    "zh-CN": "整个作品文件夹及其中的正文、设定、参考稿和素材将移入系统废纸篓，同时从书库移除。需要时可从废纸篓放回，再重新打开。",
+    "en": "The entire work folder, including manuscripts, story bible, drafts and assets, will move to Trash and leave your library. You can restore it from Trash and open it again.",
+    "purpose": "作品属性与删除确认",
+    "parameters": []
+  },
+  "library.delete.confirm": {
+    "zh-CN": "输入完整作品名以确认删除",
+    "en": "Enter the full work title to confirm",
+    "purpose": "作品属性与删除确认",
+    "parameters": []
+  },
+  "library.delete.action": {
+    "zh-CN": "移入废纸篓",
+    "en": "Move to Trash",
+    "purpose": "作品属性与删除确认",
+    "parameters": []
+  },
+  "error.library.confirmationMismatch": {
+    "zh-CN": "输入的作品名不一致，未删除作品。",
+    "en": "The title does not match. The work has not been deleted.",
+    "purpose": "作品属性与删除确认",
+    "parameters": []
+  },
+  "error.library.changedWork": {
+    "zh-CN": "作品名称或目录已变更。请取消并重新打开作品，核对后再删除。",
+    "en": "The work title or location has changed. Cancel and reopen the work to check it before deleting.",
+    "purpose": "作品属性与删除确认",
+    "parameters": []
+  },
+  "error.library.deletionPending": {
+    "zh-CN": "删除记录尚未完成核对。请刷新书库；若仍提示此信息，请在访达核对原目录和废纸篓，作品登记会保留。",
+    "en": "The deletion record needs verification. Refresh the library. If this continues, check the original folder and Trash in Finder. The library entry is retained.",
+    "purpose": "作品属性与删除确认",
+    "parameters": []
+  },
+  "error.hetu.workspace_moved": {
+    "zh-CN": "作品目录已移动或已移入废纸篓。请重新打开作品，未保存的内容仍保留在当前窗口。",
+    "en": "The work folder has moved or is in Trash. Reopen the work. Unsaved text remains in this window.",
+    "purpose": "作品属性与删除确认",
+    "parameters": []
+  },
+  "models.custom_channels": {
+    "zh-CN": "自定义渠道",
+    "en": "Custom channels",
+    "purpose": "模型渠道设置和计费确认",
+    "parameters": []
+  },
+  "models.channel": {
+    "zh-CN": "模型渠道",
+    "en": "Model channel",
+    "purpose": "模型渠道设置和计费确认",
+    "parameters": []
+  },
+  "models.cloud_channel": {
+    "zh-CN": "河图平台",
+    "en": "Hetu platform",
+    "purpose": "模型渠道设置和计费确认",
+    "parameters": []
+  },
+  "models.add_channel": {
+    "zh-CN": "添加渠道",
+    "en": "Add channel",
+    "purpose": "模型渠道设置和计费确认",
+    "parameters": []
+  },
+  "models.edit_channel": {
+    "zh-CN": "编辑",
+    "en": "Edit",
+    "purpose": "模型渠道设置和计费确认",
+    "parameters": []
+  },
+  "models.channel_name": {
+    "zh-CN": "渠道名称",
+    "en": "Channel name",
+    "purpose": "模型渠道设置和计费确认",
+    "parameters": []
+  },
+  "models.base_url": {
+    "zh-CN": "渠道 URL",
+    "en": "Channel URL",
+    "purpose": "模型渠道设置和计费确认",
+    "parameters": []
+  },
+  "models.api_key": {
+    "zh-CN": "API Key",
+    "en": "API Key",
+    "purpose": "模型渠道设置和计费确认",
+    "parameters": []
+  },
+  "models.text_codes": {
+    "zh-CN": "文字模型代码",
+    "en": "Text model codes",
+    "purpose": "模型渠道设置和计费确认",
+    "parameters": []
+  },
+  "models.image_codes": {
+    "zh-CN": "图片模型代码",
+    "en": "Image model codes",
+    "purpose": "模型渠道设置和计费确认",
+    "parameters": []
+  },
+  "models.codes_note": {
+    "zh-CN": "每行一个模型代码，也可用逗号分隔；至少填写一个。",
+    "en": "Enter one model code per line or separate with commas. Add at least one model.",
+    "purpose": "模型渠道设置和计费确认",
+    "parameters": []
+  },
+  "models.key_private": {
+    "zh-CN": "密钥保存在本机私密目录，不进入作品或 Agent 回读。",
+    "en": "The key stays in private local storage, outside your work and Agent responses.",
+    "purpose": "模型渠道设置和计费确认",
+    "parameters": []
+  },
+  "models.key_keep": {
+    "zh-CN": "留空保留原密钥；修改 URL 时必须重新填写。",
+    "en": "Leave blank to keep the key. Enter it again when changing the URL.",
+    "purpose": "模型渠道设置和计费确认",
+    "parameters": []
+  },
+  "models.provider_billing": {
+    "zh-CN": "由供应商按一次请求计费，河图无法核定金额。批准后才外发内容；结果未知不会自动重发。",
+    "en": "The provider bills one request; Hetu cannot quote the amount. Content is sent only after approval. An unknown result is never resent automatically.",
+    "purpose": "模型渠道设置和计费确认",
+    "parameters": []
+  },
+  "models.cancel": {
+    "zh-CN": "取消",
+    "en": "Cancel",
+    "purpose": "模型渠道设置和计费确认",
+    "parameters": []
+  },
+  "models.save_channel": {
+    "zh-CN": "保存渠道",
+    "en": "Save channel",
+    "purpose": "模型渠道设置和计费确认",
+    "parameters": []
+  },
+  "models.channel_invalid": {
+    "zh-CN": "请检查渠道名称、HTTPS URL、密钥和模型代码。新渠道或 URL 变更需要填写密钥。",
+    "en": "Check the name, HTTPS URL, key and model codes. A new channel or changed URL requires a key.",
+    "purpose": "模型渠道设置和计费确认",
+    "parameters": []
+  },
+  "error.hetu.model_outcome_unknown": {
+    "zh-CN": "供应商结果未知，请保留原计划并核对原请求，不要重复生成。",
+    "en": "The provider result is unknown. Keep the original plan and check the original request; do not generate again.",
+    "purpose": "自定义模型渠道错误",
+    "parameters": []
+  },
+  "error.hetu.model_provider_rejected": {
+    "zh-CN": "供应商未返回成功结果，请检查模型、密钥和余额；此计划不会自动重发。",
+    "en": "The provider did not return success. Check the model, key and balance. This plan will not be resent automatically.",
+    "purpose": "自定义模型渠道错误",
+    "parameters": []
+  },
+  "models.provider_approval_note": {
+    "zh-CN": "确认后允许向以上自定义渠道发送完整输入，并接受供应商对此单次请求计费。河图无法核定金额，请先在供应商处核对价格。",
+    "en": "Approval permits sending the complete input to the custom channel shown above and accepts provider billing for one request. Hetu cannot quote the amount; check pricing with your provider first.",
+    "purpose": "自定义模型计划批准",
+    "parameters": []
+  },
+  "models.provider_approve": {
+    "zh-CN": "批准外发与供应商单次计费",
+    "en": "Approve content and provider billing for one request",
+    "purpose": "自定义模型计划批准",
+    "parameters": []
+  },
+  "agent.skill.hetu-artwork": {
+    "parameters": [],
+    "purpose": "Mac 原生界面：agent.skill.hetu-artwork",
+    "zh-CN": "素材图设计",
+    "en": "Artwork design"
+  },
+  "creative.kind.artwork": {
+    "parameters": [],
+    "purpose": "Mac 原生界面：creative.kind.artwork",
+    "zh-CN": "素材图",
+    "en": "Artwork"
   }
 }

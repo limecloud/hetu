@@ -34,6 +34,9 @@ public struct Localizer: Sendable {
             case .busy: "error.library.busy"
             case .duplicateWorkspace: "error.library.duplicateWorkspace"
             case .wrongWorkspace: "error.library.wrongWorkspace"
+            case .confirmationMismatch: "error.library.confirmationMismatch"
+            case .changedWork: "error.library.changedWork"
+            case .deletionPending: "error.library.deletionPending"
             }
             return text(key)
         }

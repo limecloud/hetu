@@ -1,5 +1,7 @@
 mod resources;
 mod ui;
+mod stable;
+pub use stable::StableServer;
 
 use hetu_core::Kernel;
 use rmcp::{
@@ -113,6 +115,18 @@ impl HetuServer {
             .ok_or("无法读取内核能力 / Cannot read kernel capabilities")?;
         let mappings: ToolCatalog =
             serde_json::from_str(include_str!("../../../contracts/tools/catalog.json"))?;
+        let registry: Value = serde_json::from_str(include_str!("../../../contracts/actions.json"))?;
+        // 受管新建动作只在稳定入口经 management_ref 路由，不能进入旧作品／任务连接。
+        let stable_actions = hetu_core::collaboration::CollaborationHub::open(root, "generic")?.catalog();
+        let mut names = std::collections::BTreeSet::new();
+        for mapping in &mappings.tools {
+            if !names.insert(&mapping.name) || mapping.profiles.is_empty()
+                || !mapping.profiles.iter().all(|profile| matches!(profile.as_str(), "workspace" | "task" | "stable"))
+                || !registry["actions"].as_array().unwrap().iter().any(|action| action["name"] == mapping.action && (action["author_only"] == false
+                    || mapping.profiles.iter().all(|profile| profile == "stable") && stable_actions.as_array().unwrap().iter().any(|available| available["name"] == mapping.action && available["authorization"] == "new_managed_scope"))) {
+                return Err("MCP 工具目录包含重复名称、无效范围或不可暴露的动作".into());
+            }
+        }
         let output: Value = serde_json::from_str(include_str!(
             "../../../contracts/schemas/result.schema.json"
         ))?;
@@ -128,12 +142,10 @@ impl HetuServer {
             }) {
                 continue;
             }
-            let action = actions
+            let Some(action) = actions
                 .iter()
                 .find(|a| a["name"] == mapping.action && a["author_only"] == false)
-                .ok_or(
-                    "MCP 目录与内核能力不一致 / MCP catalog does not match kernel capabilities",
-                )?;
+            else { continue; };
             let mut schema = output.clone();
             schema.as_object_mut().unwrap().remove("$id");
             schema["properties"]["action"] = json!({"const":mapping.action});
@@ -153,7 +165,7 @@ impl HetuServer {
                 Some(action["effect"] == "read"),
                 Some(false),
                 Some(true),
-                Some(false),
+                Some(matches!(mapping.action.as_str(), "hetu.models.list" | "hetu.model_tasks.get" | "hetu.model_tasks.submit" | "hetu.model_tasks.collect")),
             ));
             tools.push((tool, mapping.action));
         }

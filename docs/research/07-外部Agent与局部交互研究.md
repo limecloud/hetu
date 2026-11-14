@@ -1,6 +1,6 @@
 # 外部 Agent 与局部交互研究
 
-资料日期：2026-11-13。资料依据为官方正文与 AXI 0.2.1 的分层设计；来源、表示方式及摘要见[sources.json](sources.json)。本章说明可据以设计的能力及边界，不构成特定宿主运行验收。
+资料日期：2026-11-14。资料依据为官方正文与 AXI 0.2.1 的分层设计；来源、表示方式及摘要见[sources.json](sources.json)。本章说明可据以设计的能力及边界，不构成特定宿主运行验收。
 
 ## 1. 官方资料与采用
 
@@ -23,6 +23,8 @@
 
 官方明确 Apps 是 MCP 扩展、客户端支持不同。河图洛书据此把 Apps 用于当前任务的书名选择、大纲比较、封面预览及批注，并为不支持的宿主保留结构化结果和原生入口。页面保存不等于作者定稿；模型或自动化都可能调用同一工具，服务端仍须控制最终权限。
 
+官方概览另明确 App 可发送消息及更新模型上下文，并由宿主控制能力和用户同意。河图的采用是：先保存确切成果的公开反馈，再由用户“按此修改”请求当前对话继续；不支持消息、拒绝或失败时复制同一反馈的继续提示词。上下文更新仅提供精简任务引用，不能代替消息或保证模型执行；工具保存回执、消息响应和返工成果分别取证。普通本地网页没有宿主能力，不伪造 Apps 桥接。
+
 补充核对[官方扩展规范](https://github.com/modelcontextprotocol/ext-apps/blob/main/specification/2026-01-26/apps.mdx)与[发布包2.0.4](https://www.npmjs.com/package/@modelcontextprotocol/ext-apps/v/2.0.4)：工具使用嵌套 `_meta.ui.resourceUri`，资源为 `ui://` 和 `text/html;profile=mcp-app`；旧的扁平 `ui/resourceUri` 已标为弃用。宿主按声明构造 CSP，App 与宿主通过 `ui/initialize` 和工具结果通知交互。SDK 提供可离线打包的 `app-with-deps` 入口与宿主侧 AppBridge；不要求把原生 Server 改为网页服务。
 
 本机实现采用固定版本 SDK、源码与产物摘要、无外部域名的资源和服务端重新授权；实现入口及自动化验收见[14](../14-MCP与Agent接入.md)。规范中的 legacy MCP 初始化示例不替代本项目 `2026-07-28` 的 Server 发现流程，UI 桥接版本独立协商。官方桥接测试与真实 stdio 回读不构成第三方客户端实机兼容声明。
@@ -34,6 +36,8 @@ TypeScript Client `2.4.0` 的 `ClientOptions.versionNegotiation` 声明默认 `l
 阅读的 AXI 资料包括 `content/ecosystem/codex/plugins.md`、`interfaces.md`、`mcp-apps.md`，以及 Claude Code、WorkBuddy 适配章节。采纳其方法／连接／交互分层、同任务持久化、原对象回读、CAS、未知结果恢复及按宿主验证的要求。
 
 AXI 是设计草案，未提供可直接复用的河图洛书 Apps 或 Node.js 页面运行时。河图洛书按业务需要设计“用户复制提示词”和按需本地页面：Node.js 只服务局部 UI，经受限 IPC 消费 Rust 用例，回环绑定、原生配对、Origin／CSRF 与单任务会话属于河图洛书自身的安全合同。
+
+另参考 AXI 的 discovery、handoff 与 recovery 方法：方法说明、目录索引、实时 Schema、对象状态分别负责“如何做、去哪里、能调用什么、实际完成什么”；已知对象直接续接，结果未知查原键。河图将这些原则用于稳定入口、任务精确引用、按需资料和参考稿持续保存，不将 AXI 变为运行时依赖，也不要求把完整聊天存进作品。反馈接续属于当前任务合同；下文独立 Codex App Server 会话观察研究不作为其前置。
 
 ## 4. 证据边界
 

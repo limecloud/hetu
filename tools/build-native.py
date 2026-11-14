@@ -169,6 +169,13 @@ def package_app(channel, runtime, development=False, swift_debug=None, configura
     standalone = ROOT / "build/native/bin/hetu-mcp"
     standalone.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(mcp, standalone)
+    cli = contents / "Helpers/hetu"
+    shutil.copy2(debug / "hetu", cli)
+    # CLI 与 App 共用 Frameworks，移除构建目录的绝对 rpath。
+    cli_commands = subprocess.check_output(["otool", "-l", str(cli)], text=True)
+    for path in re.findall(r"cmd LC_RPATH\n.*?path (.*?) \(offset", cli_commands, re.S):
+        if path.startswith("/") and path != "/usr/lib/swift":
+            run(["install_name_tool", "-delete_rpath", path, str(cli)], channel)
     node_source, node_license, node_version = runtime
     node = contents / "Helpers/node"
     shutil.copy2(node_source, node)
@@ -195,6 +202,7 @@ def package_app(channel, runtime, development=False, swift_debug=None, configura
     # 开发包只做 ad-hoc 签名，不是 Developer ID 签名或公证发行包。
     run(["codesign", "--force", "--sign", "-", str(library)], channel)
     run(["codesign", "--force", "--sign", "-", str(mcp)], channel)
+    run(["codesign", "--force", "--sign", "-", str(cli)], channel)
     run(["codesign", "--force", "--sign", "-", str(standalone)], channel)
     run(["codesign", "--force", "--sign", "-", str(node)], channel)
     (notices / "node-runtime.json").write_text(json.dumps({
@@ -204,6 +212,7 @@ def package_app(channel, runtime, development=False, swift_debug=None, configura
     run(["codesign", "--force", "--sign", "-", str(app)], channel)
     run(["codesign", "--verify", "--deep", "--strict", str(app)], channel)
     run([str(mcp), "--help"], channel)
+    run([str(cli), "--version"], channel)
     run([str(node), "--version"], channel)
     print(f"Mac 开发包：{app}")
 
@@ -238,6 +247,9 @@ def main():
     if args.mac_only:
         swift_args += ["--product", "HetuMac"]
     run(swift_args, channel)
+    if args.mac_only:
+        # Mac-only 仍装配可独立运行的 CLI，不能只编 App 却复制旧 CLI。
+        run(["swift", "build", *scratch_args, *configuration_args, "--jobs", "2", "--disable-index-store", "--product", "hetu"], channel)
     debug = (args.swift_scratch_path.resolve() if args.swift_scratch_path else ROOT / ".build") / args.configuration
     package_app(channel, runtime, args.development, debug, args.configuration)
     if args.test:

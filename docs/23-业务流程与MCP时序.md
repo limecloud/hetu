@@ -20,14 +20,16 @@
 | 中文检索、历史定位与当前章替换 | 31 | UC-28 |
 | 桌面、官网与本机 MCP 生命周期 | 32～33 | 本机部署及局部交互边界，服务端业务单独立项 |
 | 已有正文的选区改稿与权限 | 34 | UC-05／17／27 |
+| 稳定接入、持续参考稿与反馈接续 | 40～44 | UC-38～43 |
+| Agent 联动全软件、操作准备与作者审阅 | 45～47 | UC-44～46 |
 
 ## 1. 系统上下文
 
 ```mermaid
 flowchart TB
-    author["作者或编剧"] <-->|"编辑、验收与复制 Prompt"| hetu["河图洛书本地工作台"]
-    author <-->|"粘贴 Prompt、对话与生成"| host["外部 Agent 与专用 Skills"]
-    host <-->|"受限 MCP 或固定文件交接"| hetu
+    author["作者或编剧"] <-->|"主要：审阅、比较与决定；其次：编辑"| hetu["河图洛书本地工作台"]
+    author <-->|"表达目标、对话与反馈"| host["外部 Agent 与专用 Skills"]
+    host <-->|"CLI 或 MCP：获权操作、回读与恢复"| hetu
     hetu -->|"本机登记"| library["作者书库：多部独立小说"]
     hetu -->|"限定本次范围"| content["单筹备或单作品目录"]
     hetu -->|"另行确认同步"| remote["GitHub 或 Gitee"]
@@ -81,13 +83,13 @@ flowchart TD
     plugin --> install["用户在外部客户端安装和连接"]
     skills --> install
     install --> newSession["按宿主要求开始新会话"]
-    newSession --> check["只读检查 Skills、MCP 和当前范围"]
+    newSession --> check["检查实际 Skills、稳定 MCP 及任务能力"]
     check --> usable{"所需基础能力可用"}
-    usable -->|"是"| task["回河图洛书准备并复制业务 Prompt"]
+    usable -->|"是"| task["Agent 发起筹备或恢复已知任务"]
     usable -->|"否"| resolve["显示具体缺口或改用文件交接"]
     resolve --> task
     manual --> book["作者创建自己的独立作品"]
-    task --> concept["在外部 Agent 对话构思"]
+    task --> concept["在外部 Agent 对话，机器准备完整方案"]
     concept --> book
 ```
 
@@ -97,22 +99,25 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    newBook["新建小说表单"] --> known{"资料是否确定"}
-    known -->|"确定"| form["填写书名、简介和作者资料"]
-    known -->|"还没想好"| idea["输入想法，创建建书筹备"]
-    idea --> prompt["选择专用 Skill，预览并复制 Prompt"]
-    prompt --> external["用户在外部 Agent 对话和生成"]
-    external --> result["候选经 MCP 或固定 inbox 返回"]
+    newBook["作者向外部 Agent 表达建书目标"] --> known{"资料是否确定"}
+    known -->|"确定"| form["Agent 填好作品资料及保存方案"]
+    known -->|"还没想好"| idea["Agent 经机器入口开始独立筹备"]
+    idea --> external["专用 Skill 帮助构思与比较"]
+    external --> result["候选经 CLI 或 MCP 保存并回读"]
     result --> verify["河图洛书核验并展示候选"]
-    verify --> choose["作者逐字段选择和编辑"]
+    verify --> choose["作者审阅方向及必要取舍"]
     choose --> satisfied{"是否继续构思"}
-    satisfied -->|"是"| prompt
+    satisfied -->|"是"| feedback["保存意见，沿同任务继续修改"]
+    feedback --> external
     satisfied -->|"否"| form
-    form --> create["作者确认目录和资料，创建独立作品"]
+    form --> previewCreate["Core 预览明确新目录及操作影响"]
+    previewCreate --> decide{"已有确切执行授权"}
+    decide -->|"有"| create["Agent 经 Core 创建并回读独立作品"]
+    decide -->|"需要决定"| approval["作者审阅完整提案，无需填表"]
+    approval --> create
     create --> cover{"如何设置封面"}
-    cover -->|"本地导入或占位图"| write["开始写作"]
-    cover -->|"外部设计"| coverPrompt["复制封面 Skill Prompt"]
-    coverPrompt --> coverAgent["外部 Agent 生成并提交候选"]
+    cover -->|"本地导入或占位图"| write["Agent 准备首任务，作者审阅或自行编辑"]
+    cover -->|"外部设计"| coverAgent["Agent 使用封面 Skill 生成并提交候选"]
     coverAgent --> preview["河图洛书等比预览，作者选用"]
     preview --> write
 ```
@@ -134,8 +139,13 @@ sequenceDiagram
     host->>package: 读取明确来源的扩展
     host-->>author: 安装及连接结果
     author->>host: 按宿主要求打开新会话并检查接入
-    host->>server: 版本及能力发现、只读范围检查
-    server-->>host: 实际工具、资源与当前范围
+    host->>server: 发现稳定入口与实际协议能力
+    server-->>host: 助手版本及无内容的接入结果
+    author->>desktop: 保存筹备或作品任务并确认范围
+    desktop-->>author: 精确任务引用与 Prompt
+    author->>host: 复制任务引用
+    host->>server: 打开已获权任务并核对请求
+    server-->>host: 当前请求、窄工具和获权资料入口
     host-->>author: 接入结果及缺失能力
     author->>desktop: 回到当前创作任务
     desktop-->>author: 按所选客户端显示可复制 Prompt
@@ -153,7 +163,7 @@ sequenceDiagram
     participant host as 外部 Agent 与建书 Skill
     participant server as MCP 或文件交接入口
     author->>desktop: 输入题材或一个想法
-    desktop->>core: 保存筹备与不可变任务
+    desktop->>core: 保存筹备与不可变请求
     core-->>desktop: project_id、task_id、输出约定
     desktop-->>author: 预览并复制所选客户端 Prompt
     author->>host: 粘贴 Prompt，在客户端讨论和生成
@@ -188,13 +198,18 @@ sequenceDiagram
     desktop->>core: 冻结任务与正文、设定基线
     desktop-->>author: 可编辑的任务 Prompt
     author->>host: 复制粘贴并在此对话生成
-    host->>server: hetu_read_blueprint 与获权原文读取
-    server->>core: 重验 scope，读取固定修订
-    core-->>server: 设定、原文及摘要
-    server-->>host: 固定上下文
-    host->>host: 生成参考稿
-    host->>server: hetu_write_draft 与原操作键
-    server->>core: 保存不可变参考稿
+    host->>server: 按精确引用打开原任务
+    server->>core: 重验授权，读取请求及已有成果摘要
+    core-->>server: 目标、固定引用、允许动作与公开反馈
+    server-->>host: 按需上下文入口
+    host->>server: 获权目录、检索及原文片段读取
+    host->>host: 在外部对话中创作参考稿
+    host->>server: 保存本任务工作副本，携带 CAS 与原键
+    server->>core: 保存参考修订，不改作者正文
+    core-->>server: 已保存修订与摘要
+    server-->>host: 返回保存回执
+    host->>server: 固定工作修订，提交候选批次与原键
+    server->>core: 核验并保存不可变候选
     core-->>server: 候选、原操作及读取引用
     server-->>host: 持久化回执，诊断另行查询
     desktop->>core: 查询候选与可用诊断
@@ -208,7 +223,7 @@ sequenceDiagram
     author->>desktop: 按自己的风格继续编辑并保存
 ```
 
-本流程由作者按需进入，不是编辑或定稿的前置。接收候选只更新参考列表，不改作者正文、未保存缓冲或编辑焦点；作者可参照后自行改写，无需采纳。源文变化时进入三方比较，不自动把旧候选覆盖到新正文。要求 Agent 重写时由河图洛书提供补充 Prompt，作者复制到客户端继续；资源通知不自动运行模型。
+本流程由作者按需进入，不是编辑或定稿的前置。接收候选只更新参考列表，不改作者正文、未保存缓冲或编辑焦点；作者可参照后自行改写，无需采纳。源文变化时进入三方比较，不自动把旧候选覆盖到新正文。要求 Agent 重写时先保存公开反馈，再由作者明确请求继续；有宿主消息能力才桥接，无能力复制继续提示词。Agent 回读原任务、成果和反馈后返工；资源通知不自动运行模型。
 
 ## 8. MCP Apps 局部交互时序
 
@@ -231,13 +246,22 @@ sequenceDiagram
     core-->>server: 已保存选择或冲突
     server-->>host: 固定结果
     host-->>app: 工具结果与当前修订
-    opt 作者要求回到对话且宿主支持
-        author->>app: 预览补充内容并选择继续
-        app->>host: 请求后续消息或提供可复制 Prompt
+    author->>app: 选择按此修改，核对公开意见
+    app->>server: 保存绑定成果的 TaskFeedback 与原键
+    server->>core: 重验任务和固定成果，保存反馈
+    core-->>server: 反馈引用与真实回执
+    server-->>host: 返回反馈回执
+    host-->>app: 反馈引用与保存结果
+    alt 宿主实际支持消息且用户确认
+        app->>host: 请求继续当前对话，携带任务及反馈引用
+        host-->>app: 消息受理、拒绝或未知
+    else 无能力或消息失败
+        app-->>author: 复制同一反馈的继续提示词
+        author->>host: 粘贴到当前对话
     end
     host->>server: 回读原任务与选择记录
     server-->>host: 实际保存状态
-    author->>desktop: 回河图洛书确认正式采纳或选用
+    author->>desktop: 在可信审阅通道确认确切采纳或选用提案
     desktop->>core: 重新核对权限、候选和当前基线
 ```
 
@@ -442,7 +466,7 @@ flowchart TD
 ```mermaid
 flowchart TD
     tree["本作品卷章目录"] --> action{"选择操作"}
-    action -->|"新增章节"| new["作者填写标题、选择卷组"]
+    action -->|"新增章节"| new["Agent 准备标题、卷组与新增预览"]
     new --> cas
     action -->|"改名、排序或移动"| preview["预览目录变化，保持稳定章节身份"]
     preview --> cas["重验目录版本与正文归属"]
@@ -463,10 +487,10 @@ flowchart TD
 ```mermaid
 flowchart TD
     projects["当前作品的短剧项目列表"] --> select{"新建或打开"}
-    select -->|"新建"| source["填写项目资料，明确原著固定来源"]
+    select -->|"新建"| source["选择原创或改编，改编固定原著来源"]
     source --> project["独立项目身份与分集目录"]
     select -->|"打开"| project
-    project --> structure["维护分集、场次与来源映射"]
+    project --> structure["维护分集目录，可选建立骨架规划与来源映射"]
     structure --> script["建立或编辑 Fountain 剧本"]
     script --> compare["比较原著、骨架与当前剧本"]
     compare --> next{"作者决定"}
@@ -669,7 +693,9 @@ flowchart TD
     type -->|"需要外部生成"| prompt["准备专用 Skill Prompt，在外部 Agent 生成"]
     prompt --> candidate["固定 inbox 收到候选及回执"]
     candidate --> verify["核验任务、摘要、格式和范围"]
-    verify --> inspect
+    verify --> register["从任务 inbox 登记候选文件组"]
+    register --> selectAsset["作者比较并选用具体版本"]
+    selectAsset --> link
     inspect --> importAsset["导入受管素材，记录来源与权利声明"]
     importAsset --> link["作者把素材与线索关联"]
     cue --> link
@@ -736,9 +762,9 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    library["书库：选定或创建独立作品"] --> organize["资料、封面、卷章与设定"]
-    organize -->|"默认自主写作或导入"| writing["按自己的风格编辑<br/>保存写作修订"]
-    organize -->|"可选：构思与起草参考"| handoff["外部 Agent 协作<br/>复制提示词，在客户端对话"]
+    library["书库或外部 Agent：明确本次作品"] --> organize["Agent 经 CLI/MCP 准备资料、结构和任务"]
+    organize -->|"作者选择手动编辑"| writing["按自己的风格编辑<br/>保存写作修订"]
+    organize -->|"默认 Agent 协作"| handoff["外部 Agent 规划、起草与整理<br/>软件展示成果和待审操作"]
     writing -->|"可选：请求改稿建议"| handoff
     handoff --> receive["独立参考稿，核验与比较<br/>可保留、忽略或放弃"]
     receive -->|"自行改写或选择采纳"| writing
@@ -753,7 +779,7 @@ flowchart TD
     final -->|"另行选择"| bundle["固定版本交付<br/>选择标准格式并核验产物"]
 ```
 
-默认路线由作者自主写作、修改和定稿；AI 构思或改稿按需使用，同一章节可以交替参考和自行撰写。图中不规定作者必须先建完设定，也不要求每章都改编短剧。两种创作方式共用同一编辑和定稿合同；书库切换见第16节，参考稿审核与采纳分别见第10／26节。日常保存、Git 快照、定稿和交付各自有独立结果，Git 快照可包含作者明确选定的未定稿修订。
+默认路线由 Agent 处理业务、作者可视化 review 和作出必要决定；作者手动撰写与优化随时可用。图中不规定作者必须先建完设定，也不要求每章都改编短剧。两种创作方式共用同一编辑和定稿合同；书库切换见第16节，参考稿审核与采纳分别见第10／26节。日常保存、Git 快照、定稿和交付各自有独立结果，Git 快照可包含作者明确选定的未定稿修订。
 
 ## 29. 小说与剧本导入时序
 
@@ -877,9 +903,13 @@ sequenceDiagram
     participant C as Rust Core 与本机作品
     U->>D: 选择作品、任务及外部客户端
     D-->>U: 授权范围、提示词与接入引导
-    U->>A: 安装扩展，粘贴任务提示词
-    A->>M: 按实际连接配置启动进程并发现能力
-    M->>C: 核验获权任务及范围
+    opt 首次接入或扩展更新
+        U->>A: 安装扩展并配置稳定本机入口
+        A->>M: 宿主启动 stdio 并发现实际能力
+    end
+    U->>A: 粘贴当前任务提示词及精确引用
+    A->>M: 打开已批准任务，不更改连接配置
+    M->>C: 按本机私有授权核验显式任务及请求版本
     C-->>M: 固定输入及可用范围
     M-->>A: 当前能力与获权输入
     A->>M: 提交参考候选，携带基线与原操作键
@@ -917,7 +947,7 @@ flowchart TD
     saved -->|"是"| scope["确认允许改动：选区、整章或插入点"]
     scope --> context["另选仅供参考的章节和设定<br/>上下文不扩大可改范围"]
     context --> task["固定任务、版本及回传位置<br/>复制提示词到外部客户端"]
-    task --> agent["外部 Agent 提交范围内改稿补丁"]
+    task --> agent["外部 Agent 维护范围内补丁工作副本并提交"]
     task -.-> writing["作者可继续编辑<br/>结果到达不替换缓冲"]
     agent --> check{"Core 核验任务、原文、字符边界及范围"}
     check -->|"非法"| blocked["整批拒绝，说明具体原因<br/>作者正文和定稿不变"]
@@ -971,3 +1001,382 @@ sequenceDiagram
 ```
 
 “允许改动”约束候选补丁，不授予正文保存权。任务访问、候选接收、采纳和定稿是不同边界；指定任务不能读取其他任务或隐式遍历全书。点击 Apps 的局部选择不取得作者身份。具体矩阵见[10第10节](10-原生客户端与交互设计.md#10-已有正文的外部改稿)，调用与数据见[30第17节](30-应用API详细设计.md#17-建书筹备与外部创作任务)及[29第16节](29-数据字典与Schema设计.md#16-建书筹备外部任务与候选)。
+
+
+## 35. 资料与制作资产关系
+
+```mermaid
+flowchart LR
+    canon["设定集：作者确认的故事事实"] -->|"关联身份与固定依据"| resource["资料条目：说明、来源、标签"]
+    resource --> design["设计版本：人物造型、场景、道具状态"]
+    design --> candidate["候选：固定文件组与来源"]
+    candidate --> files["成图、底图、图层、文字、源工程"]
+    candidate --> selection["作者对具体用途选用"]
+    selection --> usage["使用记录：章节、场次、分镜"]
+    resource -->|"纯文字也可关联"| usage
+    canon -.->|"素材不能反向覆盖"| design
+```
+
+ASCII 作品树、领域关系和原生三栏布局见[35](35-资料素材与短剧制作资产.md)。这里的“场景资产”是可复用空间设计，“场次”是一场戏，两者通过使用记录关联。
+
+## 36. 外部图片任务与成组候选时序
+
+```mermaid
+sequenceDiagram
+    actor author as 作者
+    participant ui as 原生工作台
+    participant core as 共享 Core
+    participant agent as 外部 Agent 与 Skill
+    participant provider as 外部生图工具或官方产品
+    author->>ui: 选择资料、设计需求、参考用途与客户端
+    ui->>core: 固定输入、任务范围、文件合同与模型档案
+    core-->>ui: 任务提示词与固定 inbox
+    author->>agent: 复制提示词，在所选客户端交互
+    agent->>core: 查询能力和获权固定资料
+    core-->>agent: 当前任务数据，不含任意作品或模型密钥
+    agent->>provider: 按实际工具能力设计或生成
+    provider-->>agent: 图片、可选图层和实际生成记录
+    agent->>core: 提交文件清单、请求摘要与原键
+    core->>core: 核验归属、路径、字节、解码、文件组和预算
+    alt 整批合法
+        core-->>ui: 固定候选及具体缺项
+        author->>ui: 比较并选用某用途版本
+        ui->>core: 作者选用 CAS 与原键
+        core-->>ui: 选用记录及受影响使用位置
+    else 文件非法或任务已关闭
+        core-->>agent: 拒绝及具体原因，保留原操作状态
+    end
+```
+
+没有可用生图工具时，返回设计说明与提示词，图片缺项明确保留。Apps 可收集偏好和返工意见，不能替作者正式选用；重新生成先查询原供应商任务，结果未知不换键重复下单。
+
+## 37. 候选、采用与选用状态
+
+```mermaid
+stateDiagram-v2
+    state "资料或设计草稿" as draft
+    state "作者已采用的修订" as adopted
+    state "已归档，历史可读" as archived
+    [*] --> draft
+    draft --> draft: 获权 Agent 或作者 CAS 更新
+    draft --> adopted: 作者采用
+    adopted --> draft: 新建后继修改提案，旧修订保持
+    adopted --> archived: 作者归档
+```
+
+候选文件组不可变，返工产生新候选；选用另有 selected／withdrawn 决定链。任务完成、作者采用设计、选择生成模型、局部偏好与正式素材选用不是同一个状态。资料锁定或其他进程写入时仍能阅读历史，编辑能力单独判断。
+
+## 38. 固定依赖与更新影响
+
+```mermaid
+flowchart TD
+    changed["原文、设定、设计或参考有新修订"] --> diff["按固定引用计算实际依赖"]
+    diff --> history["保留旧候选、使用记录及交付历史"]
+    diff --> affected["列出受影响章节、场次、分镜与片段"]
+    affected --> choice{"作者决定"}
+    choice -->|"沿用旧版"| keep["保留引用，记录处理意见"]
+    choice -->|"更新或重做"| task["基于新修订建立候选任务"]
+    task --> preview["比较候选与当前选用"]
+    preview --> select["作者确认新选用或使用修订"]
+```
+
+权利撤回独立于内容当前性，旧素材引用不能绕过当前导出限制。相同文件被多个角色使用时，只沿实际业务引用传播，不能按摘要推断是同一人物。
+
+## 39. 分集、场次、分镜与生成片段
+
+```mermaid
+flowchart LR
+    project["原创或改编短剧项目"] --> episode["有序分集目录：唯一集序"]
+    episode --> doc["每集独立 Fountain 剧本"]
+    doc --> scene["固定修订的语义场次"]
+    skeleton["可选分集骨架规划"] -->|"显式固定映射"| scene
+    scene --> board["分镜及稳定镜头"]
+    board --> segment["面向具体模型的生成片段"]
+    assets["固定人物造型、场景与道具"] --> board
+    assets --> segment
+    segment --> returned["外部制作候选"]
+    returned --> author["作者验收与选用"]
+```
+
+镜头与片段允许多对多引用。模型时长和参考限制约束制作单元，不改变作者的集、场和镜头身份；模型不可用时保留项目与既有成果，不要求换模型后重写故事结构。
+
+## 40. 持续协作架构与职责
+
+```text
+河图洛书（作者侧）                         Codex 等外部 Agent（创作侧）
++---------------------------+             +---------------------------+
+| 创建小说 / 原创剧本 / 改编 | 复制任务引用| 用户与 Agent 讨论         |
+| 确认目标、资料和允许范围  | ----------> | 场景 Skill 读取任务       |
+| 比较参考稿、填写修改意见  |             | 按需取资料、写参考稿      |
+| 自己编辑、采纳、独立定稿  |             | 按反馈返工、提交候选      |
++-------------+-------------+             +-------------+-------------+
+              |                                         |
+              |          稳定本机 MCP / CLI               |
+              +--------------------+--------------------+
+                                   |
+                       Core 核验任务、授权和版本
+                                   |
+         +-------------------------+-----------------------+
+         |                         |                       |
+   固定上下文清单             参考稿工作副本           公开反馈与缺项
+   目录、摘要、窄检索         CAS 保存工作修订         同任务接续
+   局部原文、精确来源         提交为固定候选           不复制整段聊天
+         |                         |                       |
+         +-------------------------+-----------------------+
+                                   |
+                    单筹备 / 单作品的受管文件与回执
+
+Apps：局部比较、保存意见，按能力请求继续当前对话
+本地网页：按需配对和展示，无宿主桥接时复制继续提示词
+本机私有存储：授权与连接映射，不随作品、Prompt 或 Git 外发
+```
+
+```mermaid
+flowchart TB
+    author["作者"] --> desktop["河图洛书原生工作台"]
+    author --> host["外部 Agent 会话与场景 Skills"]
+    desktop -->|"可复制任务引用"| host
+    host --> entry["稳定本机 MCP 或 CLI"]
+    entry --> access["Core 授权及请求版本核验"]
+    desktop --> access
+    access --> context["固定目录、摘要、检索及原文片段"]
+    access --> working["任务参考稿工作副本与修订"]
+    access --> feedback["公开反馈、具体缺项与原操作"]
+    working -->|"显式提交固定修订"| submission["不可变候选"]
+    submission --> compare["作者比较与局部采纳"]
+    compare --> manuscript["作者写作稿"]
+    manuscript -->|"独立作者确认"| final["固定定稿"]
+    host --> apps["宿主内 MCP Apps"]
+    apps -->|"受限工具保存意见"| access
+    apps -.->|"用户要求且宿主有消息能力"| host
+    desktop -.-> node["按需配对本地页面"]
+    node -->|"受限 IPC"| access
+```
+
+稳定入口不存全局当前任务；每次调用显式携带任务及请求修订。工作副本持续保存、候选固定提交、正文采纳及独立定稿是不同事实；不会通过一条箭头自动升级。对应 UC-38／39／41，合同见[30第23节](30-应用API详细设计.md#23-持续协作与任务接续合同)。
+
+## 41. 参考稿连续保存与正式提交时序
+
+```mermaid
+sequenceDiagram
+    actor U as 作者
+    participant D as 河图洛书
+    participant A as 外部 Agent 与场景 Skill
+    participant M as 稳定本机入口
+    participant C as Core 与受管存储
+    U->>D: 确认本次目标、资料及允许范围
+    D->>C: 准备请求与私有授权
+    C-->>D: TaskLocator、固定请求及输出合同
+    U->>A: 复制任务引用，在 Agent 中讨论
+    A->>M: 打开原任务
+    M->>C: 核验授权并读当前请求、成果及反馈摘要
+    C-->>A: 固定引用及窄能力入口
+    A->>M: 读取获权目录、检索和相关原文片段
+    M-->>A: 固定来源、覆盖与继续入口
+    A->>M: 创建参考稿工作副本，携带原键
+    M->>C: 保存身份、首修订与回执
+    C-->>A: 工作副本及预期修订
+    loop 在同一任务内创作与修改
+        A->>M: 保存工作副本，携带 expected 和原键
+        M->>C: 重验请求、授权、CAS 与内容范围
+        alt 修订一致
+            C-->>A: 新工作修订和保存回执
+            D->>C: 读取已保存参考稿
+            C-->>D: 工作修订，不是作者正文
+        else 作者或其他进程已保存
+            C-->>A: 冲突及当前修订，不覆盖
+            A->>A: 比较后再决定修改
+        end
+    end
+    A->>M: 固定工作修订，提交候选与原键
+    M->>C: 核验并保存不可变候选及来源
+    C-->>A: submission、Draft 及原回执
+    D->>C: 读取已提交批次
+    U->>D: 比较、只作参考或选择性采纳
+    Note over D,C: 采纳与独立定稿另行执行，不由提交触发
+```
+
+图示省略相同入口的逐层返回，所有保存均以 Core 回执为准。检出文件需核验导入后才进入工作修订；不因文件存在或模型完成声明算已保存。对应 UC-39，正文选区改稿仍受第34节限制。
+
+## 42. 作者意见与反馈接续时序
+
+```mermaid
+sequenceDiagram
+    actor U as 作者
+    participant V as Apps 或原生任务页
+    participant C as Core
+    participant H as 当前 Agent 宿主
+    participant A as Agent 与专用 Skill
+    U->>V: 对确切参考稿填写公开意见
+    U->>V: 按此修改
+    V->>C: 保存反馈、成果引用、expected 和原键
+    C-->>V: 已保存 feedback_ref
+    V-->>U: 预览本次继续内容
+    alt Apps 宿主支持消息且用户确认
+        V->>H: 请求在当前对话继续，附任务和反馈引用
+        H-->>V: 受理、拒绝或未知
+        Note over V,H: 受理不证明 Agent 已生成，未知不自动重发
+    else 原生页、普通网页或宿主无消息能力
+        V-->>U: 复制继续提示词
+        U->>H: 粘贴到原对话或明确选择的新会话
+    end
+    H->>A: 用户要求继续
+    A->>C: 经获权入口回读任务、成果及公开反馈
+    C-->>A: 当前请求和确切稿件，不含私密批注
+    A->>A: 按反馈修改已有参考稿
+    A->>C: 经获权入口保存并提交新批次，关联 feedback_ref
+    C-->>V: 可查询的新成果及保存回执
+    V-->>U: 收到后续成果，比较是否满足要求
+    Note over U,C: Agent 声明已处理不等于作者已验收
+```
+
+保存偏好可独立结束；只有明确“按此修改”才产生返工意图。消息失败重用原反馈复制提示词，不重复写意见或重复付费生成。对应 UC-18／19／41。
+
+## 43. 按需上下文与补充资料流程
+
+```mermaid
+flowchart TD
+    open["打开获权任务，读目标和已有成果"] --> index["读固定资料目录及摘要来源"]
+    index --> enough{"资料是否足够"}
+    enough -->|"是"| work["继续维护任务参考稿"]
+    enough -->|"需要查阅"| search["在获权固定集合内检索"]
+    search --> read["读取相关原文片段，保留 SourceRef"]
+    read --> enough
+    search --> missing["缺项或尚未获权，提出具体材料与用途"]
+    missing --> decision{"作者选择"}
+    decision -->|"提供或缩小范围"| preview["预览拟外发差异及当前权利"]
+    preview --> revision["同任务发布新请求及授权版本"]
+    revision --> stopOld["旧请求停止新写入，历史保留"]
+    stopOld --> open
+    decision -->|"拒绝或稍后"| partial["记录缺项，继续其他工作或提交部分成果"]
+    partial --> work
+```
+
+目录、命中数量和原文均不越过授权集合；新增参考读取不扩大可改正文范围。上下文清单冻结具体修订，不能依赖“最新章节”默默改变基线。对应 UC-40。
+
+## 44. 中断恢复与请求版本状态
+
+```mermaid
+stateDiagram-v2
+    state "可接续的当前请求" as current
+    state "旧请求，只读历史" as historical
+    state "新请求，可接续" as revised
+    state "外部断开，成果已保留" as disconnected
+    state "任务关闭或已撤权" as revoked
+    [*] --> current: 作者准备并授权
+    current --> current: 工作保存、提交或公开反馈
+    current --> disconnected: 会话关闭或连接中断
+    disconnected --> current: 核验授权并回读原任务
+    current --> historical: 作者发布新请求
+    historical --> revised: 明确创建后继工作副本
+    revised --> revised: 按新版本保存和提交
+    current --> revoked: 关闭或撤权
+    revised --> revoked: 关闭或撤权
+    disconnected --> revoked: 关闭或撤权
+    revoked --> [*]: 拒绝旧连接，保留作者可见历史
+```
+
+此图表达同任务内请求及访问的关系，历史请求本身不变为新请求。新版本发布即失去旧版新写入资格；旧成果仍由持权作者查看。重新授权恢复访问由作者决定，不由状态图自动发生。
+
+```mermaid
+flowchart TD
+    resume["复制原任务引用到现有或新客户端"] --> auth{"当前授权有效"}
+    auth -->|"否"| deny["明确失权，作者重新授权或结束"]
+    auth -->|"是"| task["读当前请求及允许动作"]
+    task --> operation{"有结果未知的原操作"}
+    operation -->|"有"| receipt["按原键查询，核对实际成果"]
+    operation -->|"无"| saved["读取最近工作修订及候选"]
+    receipt --> saved
+    saved --> feedback["读尚未处理的公开反馈和具体缺项"]
+    feedback --> next["接续原工作，不重建任务或复制整个聊天"]
+    next --> changed{"作者正文或请求已变化"}
+    changed -->|"是"| compare["保持旧候选，明确新请求或三方比较"]
+    changed -->|"否"| continueTask["在当前获权工作副本继续"]
+```
+
+对应 UC-42。真实 Codex 旅程还包含无原著的原创剧本及素材交接分支（UC-43），验收见[19第3.3节](19-测试策略与验收矩阵.md#33-真实-agent-协作验收)。
+
+## 45. 全软件 Agent 联动架构
+
+```text
+作者在外部 Agent 表达目标、偏好和意见
+                    |
+           专用 Skills 组织创作方法
+                    |
+          CLI / MCP 发现、准备、执行、回读
+                    |
+       +------------v------------------+
+       | 共享 Core                     |
+       | 对象与范围 / 草稿 / 操作提案    |
+       | 授权与作者决定 / CAS / 原键恢复 |
+       +---------+--------------+------+
+                 |              |
+     作品、资料、版本与交付事实   待审成果、差异与影响
+                 |              |
+       +---------v--------------v------+
+       | 原生端 / MCP Apps / 局部页面   |
+       | 第一：阅读、比较、审核与决定    |
+       | 第二：作者手动编辑优化         |
+       +-------------------------------+
+
+各页面“让 AI 处理” -> 精确上下文与继续引用 -> 同一 Agent
+机器执行结果 -> 同一作品事实 -> 页面更新 -> 作者意见 -> 原任务
+```
+
+Agent 的操作覆盖全部用例，执行仍取当前授权与用例规则的交集；页面上下文不授予整库权限。数据、正文和领域规则由 Core 持有，软件不运行第二个 Agent。页面入口覆盖见[10第2.1节](10-原生客户端与交互设计.md#21-每页的-ai-操作入口)，合同见[30第25节](30-应用API详细设计.md#25-全软件联动与操作提案合同)。
+
+## 46. 目标、机器操作与作者审阅流程
+
+```mermaid
+flowchart TD
+    goal["作者向外部 Agent 表达目标"] --> discover["Skill 经 CLI/MCP 发现能力和获权范围"]
+    discover --> context["恢复已知任务或开始独立筹备，按需读取"]
+    context --> prepare["Agent 填充结构化输入，Core 校验并预览影响"]
+    prepare --> allowed{"现有授权允许直接执行"}
+    allowed -->|"是"| execute["Core 执行确定性事务"]
+    allowed -->|"需要作者决定"| proposal["保存完整操作提案，展示成果、差异和依据"]
+    proposal --> review{"作者审阅"}
+    review -->|"提出修改"| feedback["保存针对确切结果的意见"]
+    feedback --> context
+    review -->|"拒绝"| keep["保留原内容与提案，不执行"]
+    review -->|"确认"| grant["Core 记录确切决定与窄执行授权"]
+    grant --> execute
+    execute --> receipt["返回确切对象、修订与原操作回执"]
+    receipt --> view["页面展示已保存结果，保留未保存编辑"]
+    view --> next{"下一步"}
+    next -->|"继续交给 AI"| context
+    next -->|"作者编辑优化"| edit["原生编辑与独立保存"]
+    next -->|"验收完成"| done["保留来源、决定与恢复记录"]
+```
+
+Computer Use 不在正常执行链路中。界面验收单独检查可读性、比较、确认及编辑；真实 Agent 的业务验收必须通过机器入口，不用作者夹具提前创建筹备掩盖从零入口的缺口。
+
+## 47. 操作提案与获权执行时序
+
+```mermaid
+sequenceDiagram
+    actor author as 作者
+    participant agent as 外部 Agent 与 Skill
+    participant api as CLI 或 MCP
+    participant core as 共享 Core
+    participant view as 可信审阅通道
+    author->>agent: 给出本次目标和已知资料
+    agent->>api: 发现能力，恢复范围，准备完整操作
+    api->>core: 校验字段、对象、版本与当前授权
+    alt 已有授权允许本次操作
+        core->>core: 执行确定性事务，记录发起与执行来源
+    else 需要作者决定
+        core-->>api: 固定提案、影响、摘要与待审引用
+        core-->>view: 展示成果、差异、依据及必要决定
+        author->>view: 审阅后确认确切提案
+        view->>core: 记录绑定提案摘要的作者决定
+        agent->>api: 读取公开状态，执行同一提案与原键
+        api->>core: 重验批准、撤权、版本和目标后执行
+    end
+    core-->>api: 实际结果、确切修订及原操作回执
+    api-->>agent: 回读完成，或明确冲突与未知状态
+    core-->>view: 更新已保存投影及操作结果
+    author->>view: review 审核，按需自行编辑优化
+```
+
+可信审阅通道只指实际通过身份与批准合同验收的原生或宿主通道；普通 Apps 选择、对话文字及模型模拟点击不承担批准。执行中结果未知先查原键，批准与输入变化后不自动重试。作者不需要把 Agent 已准备的字段重新输入界面。

@@ -1,0 +1,22 @@
+---
+import { route, type Locale } from '../lib/site';
+import { assetURL } from '../lib/assets';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const en = locale === 'en';
+---
+<section class="author-principle" id="author-values" aria-labelledby="author-principle-title">
+  <div>
+    <h2 id="author-principle-title">{en ? 'Your taste. Your judgment. Your creative voice.' : '你的品味、判断与创意，始终是作品的中心。'}</h2>
+    <p>{en ? 'Every author and screenwriter brings a perspective worth respecting. We do not advocate replacing human taste, judgment or creativity with AI. Story engineering makes the work visible, organized and easier to revise.' : '每位小说作者与编剧，都有独一无二的表达，值得尊重。我们不提倡 AI 代替人的品味、判断与创意。小说与剧本工程化，让创作更系统、更可视，让创意更好管理。'}</p>
+    <a class="text-link" href={route(locale, 'blog/authors-at-the-center')}>{en ? 'Read our approach to creative ownership' : '为什么我们把作者放在中心'} <span aria-hidden="true">→</span></a>
+  </div>
+  <div class="author-choice">
+    <img src={assetURL('/images/author-decisions.webp')} width="1024" height="1024" alt={en?'A writer selects one of several manuscript slips by hand.':'作者用手从几份文字方案中作出选择。'} loading="lazy"/>
+    <ol class="author-decision-path" aria-label={en ? 'Author-led creative decisions' : '由作者掌握的创作决定'}>
+    <li><strong>{en ? 'You set the intent' : '你提出创意'}</strong><span>{en ? 'Taste, purpose and constraints' : '品味、方向与表达意图'}</span></li>
+    <li><strong>{en ? 'Tools make choices visible' : '工具展开可能'}</strong><span>{en ? 'References, alternatives and comparisons' : '资料、候选与差异对照'}</span></li>
+    <li><strong>{en ? 'You shape the work' : '你作出判断'}</strong><span>{en ? 'Review, choose and finalize' : '审阅、取舍与定稿'}</span></li>
+  </ol>
+  </div>
+</section>

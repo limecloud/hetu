@@ -1,0 +1,10 @@
+Use case: ads-marketing
+Asset type: full-width website hero BACKGROUND, landscape 1536x1024
+Primary request: Recompose the reference narrative illustration as an expansive, sophisticated story-to-screen world for a Chinese novelist. This is a background with HTML headline laid over its LEFT half, not a standalone card.
+Input images: Image 1 is a reference for the story objects, jade-and-paper materials and brand character, not the composition to preserve.
+Scene/backdrop: Very pale Radix sage studio backdrop, continuous floor, soft daylight. The LEFT 45 percent must remain calm, empty, pale sage with no objects, no framing, no pattern. Main composition occupies the RIGHT 55 percent, and can run off the right edge.
+Subject: On the RIGHT, an open manuscript becomes a flowing paper bridge of scene sheets leading into a beautiful miniature Chinese courtyard in night rain. A warm hanging lantern, two understated ivory adult silhouettes at the door, a pale jade pendant on a damp stone step. Foreground scene-reference sheets show the doorway and pendant. The small jade brand mascot sits beside the book, secondary to the story.
+Style/medium: Premium editorial 3D paper-and-ceramic diorama, meticulous crafted tactile surfaces, restrained and mature, spatial depth. Match the reference's soft materials, sage green, ivory paper, muted wood, warm lantern light. Do not render a software interface.
+Composition/framing: Wide panoramic background. All principal objects must fit between x=46% and x=98%. Empty left half is mandatory for readable dark headline and buttons. Keep the visual story large, not a tiny object cluster. Camera slightly elevated, strong readable silhouettes. The book and courtyard together fill the right height without clipping.
+Text: none
+Avoid: letters, labels, logos, watermark, fake UI, terminal windows, robot, neon glow, saturated gradients, scattered decorative floating icons, thick outlines, multiple mascots, title typography.

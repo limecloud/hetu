@@ -33,10 +33,10 @@ struct AgentSuitePicker: View {
                 ForEach(options) { Text(t($0.titleKey)).tag($0.id) }
             }
             if let suite = catalog.suites.first(where: { $0.id == suiteID }) {
-                Text(t("agent.suite_scope") + " " + t(suite.titleKey)).font(.caption).foregroundStyle(.secondary)
+                Text(t("agent.suite_scope") + " " + t(suite.titleKey)).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
             }
             if !contextual.isEmpty {
-                Text(t("agent.directory_matches")).font(.caption).foregroundStyle(.secondary)
+                Text(t("agent.directory_matches")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                 ForEach(contextual) { suite in
                     Button(t(suite.titleKey)) { suiteID = suite.id }.controlSize(.small)
                 }
@@ -55,18 +55,18 @@ struct AgentSuitePicker: View {
                             Text(t("agent.channel.female")).tag("female")
                         }
                     }
-                    if matching.isEmpty { Text(t("agent.no_suite_match")).font(.caption).foregroundStyle(.secondary) }
+                    if matching.isEmpty { Text(t("agent.no_suite_match")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted) }
                     if !query.isEmpty {
                         ForEach(Array((catalog.categories ?? []).filter {
                             $0.name.localizedCaseInsensitiveContains(query) && (platform.isEmpty || $0.platform == platform)
                                 && (channel.isEmpty || $0.channel == channel || $0.channel == "shared")
                         }.prefix(3))) { category in
-                            Text(category.path).font(.caption).foregroundStyle(.secondary)
+                            Text(category.path).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                         }
                     }
                     Divider()
-                    Text(t("agent.external_selection")).font(.callout)
-                    Text(t("agent.external_selection_note")).font(.caption).foregroundStyle(.secondary)
+                    Text(t("agent.external_selection")).font(.system(size: 14))
+                    Text(t("agent.external_selection_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                     TextField(t("agent.selection_brief"), text: $authorInput, axis: .vertical).lineLimit(2...4)
                     Button(t("agent.copy_selection_request")) {
                         let text = authorInput.isEmpty ? recommendationText : authorInput
@@ -74,19 +74,19 @@ struct AgentSuitePicker: View {
                         NSPasteboard.general.setString(catalog.selectionPrompt(authorInput: text), forType: .string)
                         feedback = t("agent.selection_copied")
                     }.controlSize(.small)
-                    TextEditor(text: $reply).font(.system(.caption, design: .monospaced)).frame(height: 70)
+                    TextEditor(text: $reply).font(.system(size: 12, design: .monospaced)).frame(height: 70)
                         .accessibilityLabel(t("agent.agent_advice"))
                         .onChange(of: reply) { _, _ in advice = nil; feedback = nil }
                     Button(t("agent.read_advice")) {
                         do { advice = try AgentSuiteAdvice.parse(reply, catalog: catalog); feedback = nil }
                         catch { advice = nil; feedback = t("agent.invalid_advice") }
                     }.controlSize(.small).disabled(reply.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                    if let feedback { Text(feedback).font(.caption).foregroundStyle(.secondary) }
+                    if let feedback { Text(feedback).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted) }
                     ForEach(advice?.recommendations ?? []) { item in
                         if let suite = catalog.suites.first(where: { $0.id == item.suiteID }) {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text(t(suite.titleKey)).font(.callout)
-                                Text(item.reason).font(.caption).textSelection(.enabled)
+                                Text(t(suite.titleKey)).font(.system(size: 14))
+                                Text(item.reason).font(.system(size: 12)).textSelection(.enabled)
                                 Button(t("agent.use_advice")) { suiteID = item.suiteID }.controlSize(.small)
                             }
                         }

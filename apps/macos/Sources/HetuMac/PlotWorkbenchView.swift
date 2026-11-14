@@ -35,8 +35,8 @@ struct PlotWorkbenchView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             header
-            if let error { Text(error).foregroundStyle(.red).textSelection(.enabled) }
-            if let validationMessage { Text(validationMessage).foregroundStyle(.secondary) }
+            if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
+            if let validationMessage { Text(validationMessage).foregroundStyle(WorkbenchPalette.muted) }
             Divider()
             HSplitView {
                 revisionList.frame(minWidth: 180, idealWidth: 220, maxWidth: 280)
@@ -83,22 +83,22 @@ struct PlotWorkbenchView: View {
                 }.disabled(documentID.isEmpty || model.busy)
                 }
             }
-            if fixedSource == .null { Text(model.t("plot.saved_source")).font(.caption).foregroundStyle(.secondary) }
+            if fixedSource == .null { Text(model.t("plot.saved_source")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted) }
         }
     }
     private var revisionList: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 10) {
-                Text(model.t("plot.revisions")).font(.headline)
-                if summaries.isEmpty { Text(model.t("plot.no_revisions")).foregroundStyle(.secondary) }
+                Text(model.t("plot.revisions")).font(.system(size: 14, weight: .semibold))
+                if summaries.isEmpty { Text(model.t("plot.no_revisions")).foregroundStyle(WorkbenchPalette.muted) }
                 ForEach(Array(summaries.enumerated()), id: \.offset) { _, item in
                     Button { Task { await read(item["plot_revision_id"].string ?? "") } } label: {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(dateLabel(item["created_at"].string ?? ""))
-                            Text(model.t("plot.summary", ["nodes": String(item["node_count"].integer ?? 0), "confirmed": String(item["confirmed_count"].integer ?? 0)])).font(.caption)
-                            Text(model.t("plot.coverage." + (item["coverage_status"].string ?? "partial"))).font(.caption)
+                            Text(model.t("plot.summary", ["nodes": String(item["node_count"].integer ?? 0), "confirmed": String(item["confirmed_count"].integer ?? 0)])).font(.system(size: 12))
+                            Text(model.t("plot.coverage." + (item["coverage_status"].string ?? "partial"))).font(.system(size: 12))
                         }.frame(maxWidth: .infinity, alignment: .leading).padding(8)
-                            .background(revisionID == item["plot_revision_id"].string ? Color.accentColor.opacity(0.12) : Color.clear, in: RoundedRectangle(cornerRadius: 6))
+                            .background(revisionID == item["plot_revision_id"].string ? WorkbenchPalette.jade.opacity(0.12) : Color.clear, in: RoundedRectangle(cornerRadius: 6))
                     }.buttonStyle(.plain)
                 }
                 if cursor != nil { Button(model.t("plot.more")) { Task { await reload(more: true) } } }
@@ -111,12 +111,12 @@ struct PlotWorkbenchView: View {
                 LazyVStack(alignment: .leading, spacing: 12) {
                     coverage
                     HStack {
-                        Text(model.t("plot.nodes")).font(.headline)
+                        Text(model.t("plot.nodes")).font(.system(size: 14, weight: .semibold))
                         Spacer()
                         Button(model.t("plot.add_node")) { nodeRequest = PlotSheetValue(value: .null) }
                         Button(model.t("plot.add_edge")) { edgeSheet = true }.disabled(nodes.count < 2)
                     }
-                    if nodes.isEmpty { Text(model.t("plot.no_nodes")).foregroundStyle(.secondary) }
+                    if nodes.isEmpty { Text(model.t("plot.no_nodes")).foregroundStyle(WorkbenchPalette.muted) }
                     ForEach(Array(nodes.enumerated()), id: \.offset) { index, node in
                         nodeRow(node, index: index).id(node["node_id"].string ?? "")
                         Divider()
@@ -129,45 +129,45 @@ struct PlotWorkbenchView: View {
     }
     private var coverage: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(model.t("plot.coverage." + (plot["coverage"]["status"].string ?? "partial"))).font(.headline)
-            Text(model.t("plot.coverage_detail", ["bytes": String(plot["coverage"]["scanned_bytes"].integer ?? 0), "revision": String(plot["blueprint_revision"].integer ?? 0)])).font(.caption).foregroundStyle(.secondary)
+            Text(model.t("plot.coverage." + (plot["coverage"]["status"].string ?? "partial"))).font(.system(size: 14, weight: .semibold))
+            Text(model.t("plot.coverage_detail", ["bytes": String(plot["coverage"]["scanned_bytes"].integer ?? 0), "revision": String(plot["blueprint_revision"].integer ?? 0)])).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
             if plot["coverage"]["budget_stop"] != .null {
-                Text(model.t("plot.budget." + (plot["coverage"]["budget_stop"]["reason"].string ?? "max_output"))).foregroundStyle(.orange)
+                Text(model.t("plot.budget." + (plot["coverage"]["budget_stop"]["reason"].string ?? "max_output"))).foregroundStyle(WorkbenchPalette.warningInk)
             }
             if result["stale"].bool == true {
-                Label(model.t("plot.stale"), systemImage: "clock.badge.exclamationmark").foregroundStyle(.orange)
+                Label(model.t("plot.stale"), systemImage: "clock.badge.exclamationmark").foregroundStyle(WorkbenchPalette.warningInk)
             }
-            Text(model.t("plot.candidates_note")).font(.caption).foregroundStyle(.secondary)
+            Text(model.t("plot.candidates_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
         }.textSelection(.enabled)
     }
     private func nodeRow(_ node: JSONValue, index: Int) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text("\(index + 1). " + model.t("plot.kind." + (node["kind"].string ?? "action"))).font(.headline)
-                Text(model.t("plot.verification." + (node["verification"].string ?? "needs_author_review"))).foregroundStyle(.secondary)
+                Text("\(index + 1). " + model.t("plot.kind." + (node["kind"].string ?? "action"))).font(.system(size: 14, weight: .semibold))
+                Text(model.t("plot.verification." + (node["verification"].string ?? "needs_author_review"))).foregroundStyle(WorkbenchPalette.muted)
                 Spacer()
                 Button(model.t("plot.source")) { sourceRequest = PlotSheetValue(value: node["source_refs"].array.first ?? .null) }.buttonStyle(.borderless)
                 Button(model.t("common.edit")) { highlightedNode = node["node_id"].string ?? ""; nodeRequest = PlotSheetValue(value: node) }.buttonStyle(.borderless)
             }
             Text(node["source_refs"].array.compactMap { $0["quote"].string }.joined(separator: "\n")).lineLimit(4).textSelection(.enabled)
             let names = node["entity_candidates"].array.map { displayName(model, reference: $0["entity_ref"].string ?? "", blueprint: blueprint) }
-            if !names.isEmpty { Text(model.t("plot.candidate_names", ["names": Array(Set(names)).sorted().joined(separator: model.locale == "en" ? ", " : "、")])).font(.caption).foregroundStyle(.secondary) }
+            if !names.isEmpty { Text(model.t("plot.candidate_names", ["names": Array(Set(names)).sorted().joined(separator: model.locale == "en" ? ", " : "、")])).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted) }
             let unknown = node["unresolved_names"].array.compactMap { $0["name"].string }.joined(separator: model.locale == "en" ? ", " : "、")
-            if !unknown.isEmpty { Text(model.t("plot.unknown_names", ["names": unknown])).font(.caption).foregroundStyle(.secondary) }
+            if !unknown.isEmpty { Text(model.t("plot.unknown_names", ["names": unknown])).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted) }
             if !node["entity_refs"].array.isEmpty {
-                Text(model.t("plot.confirmed_names", ["names": node["entity_refs"].array.compactMap(\.string).map { displayName(model, reference: $0, blueprint: blueprint) }.joined(separator: model.locale == "en" ? ", " : "、")])).font(.caption)
+                Text(model.t("plot.confirmed_names", ["names": node["entity_refs"].array.compactMap(\.string).map { displayName(model, reference: $0, blueprint: blueprint) }.joined(separator: model.locale == "en" ? ", " : "、")])).font(.system(size: 12))
             }
             let missing = node["missing_prerequisites"].array.compactMap(\.string).map { model.t("plot.missing." + $0) }
-            if !missing.isEmpty { Text(model.t("plot.missing_fields", ["fields": missing.joined(separator: model.locale == "en" ? ", " : "、")])).font(.caption).foregroundStyle(.secondary) }
+            if !missing.isEmpty { Text(model.t("plot.missing_fields", ["fields": missing.joined(separator: model.locale == "en" ? ", " : "、")])).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted) }
         }.padding(.vertical, 4).accessibilityElement(children: .contain)
     }
     private var edges: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(model.t("plot.edges")).font(.headline)
-            Text(model.t("plot.edges_note")).font(.caption).foregroundStyle(.secondary)
+            Text(model.t("plot.edges")).font(.system(size: 14, weight: .semibold))
+            Text(model.t("plot.edges_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
             ForEach(Array(plot["edges"].array.enumerated()), id: \.offset) { _, edge in
                 HStack {
-                    Text(edgeLabel(edge)).font(.callout)
+                    Text(edgeLabel(edge)).font(.system(size: 14))
                     Spacer()
                     Button(model.t("plot.remove_edge"), role: .destructive) {
                         Task {
@@ -182,7 +182,7 @@ struct PlotWorkbenchView: View {
     private var skipped: some View {
         DisclosureGroup(model.t("plot.skipped", ["count": String(plot["coverage"]["unparsed_ranges"].array.count)])) {
             ForEach(Array(plot["coverage"]["unparsed_ranges"].array.prefix(skippedLimit).enumerated()), id: \.offset) { _, item in
-                Text(model.t("plot.skip." + (item["reason"].string ?? "no_structural_signal")) + "  \(item["byte_start"].integer ?? 0)…\(item["byte_end"].integer ?? 0)").font(.caption).frame(maxWidth: .infinity, alignment: .leading)
+                Text(model.t("plot.skip." + (item["reason"].string ?? "no_structural_signal")) + "  \(item["byte_start"].integer ?? 0)…\(item["byte_end"].integer ?? 0)").font(.system(size: 12)).frame(maxWidth: .infinity, alignment: .leading)
             }
             if skippedLimit < plot["coverage"]["unparsed_ranges"].array.count { Button(model.t("plot.more")) { skippedLimit += 100 } }
         }
@@ -236,12 +236,12 @@ struct PlotSourceView: View {
     @State private var error: String?
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(model.t("plot.source")).font(.title2)
-            Text(model.t(noteKey)).foregroundStyle(.secondary)
-            if let error { Text(error).foregroundStyle(.red) }
+            Text(model.t("plot.source")).font(.system(size: 20, weight: .semibold))
+            Text(model.t(noteKey)).foregroundStyle(WorkbenchPalette.muted)
+            if let error { Text(error).foregroundStyle(WorkbenchPalette.danger) }
             if document != .null {
-                Text(document["document"]["title"].string ?? "").font(.headline)
-                Text(document["revision"]["revision_id"].string ?? "").font(.caption).textSelection(.enabled)
+                Text(document["document"]["title"].string ?? "").font(.system(size: 14, weight: .semibold))
+                Text(document["revision"]["revision_id"].string ?? "").font(.system(size: 12)).textSelection(.enabled)
                 NativeTextEditor(text: document["content"].string ?? "", documentID: document["revision"]["revision_id"].string ?? "", replacementVersion: 0, accessibleName: model.t("plot.source_body"), editable: false, selection: selection, onChange: { _ in }, onComposition: { _ in })
             }
             HStack {

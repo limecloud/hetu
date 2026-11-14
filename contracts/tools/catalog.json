@@ -108,6 +108,380 @@
       "profiles": [
         "task"
       ]
+    },
+    {
+      "name": "hetu_list_resources",
+      "action": "hetu.resources.list",
+      "title": "查询资料 / List references",
+      "description": "查询获权文字资料摘要，按分类、标签与状态分页。List authorized reference summaries with filters and pagination.",
+      "profiles": [
+        "workspace",
+        "task"
+      ]
+    },
+    {
+      "name": "hetu_read_resource",
+      "action": "hetu.resources.get",
+      "title": "读取资料 / Read reference",
+      "description": "读取当前获权或固定修订资料；不自动使用最新版本替换任务基线。Read an authorized fixed or current reference without silently replacing task baselines.",
+      "profiles": [
+        "workspace",
+        "task"
+      ]
+    },
+    {
+      "name": "hetu_create_resource",
+      "action": "hetu.resources.create",
+      "title": "新增资料候选 / Create reference candidate",
+      "description": "仅资料任务可新增草稿，不写设定集或自动采用。Create a draft only within an authorized reference task; never changes canon or adopts it.",
+      "profiles": [
+        "task"
+      ]
+    },
+    {
+      "name": "hetu_update_resource",
+      "action": "hetu.resources.update",
+      "title": "维护资料候选 / Update reference candidate",
+      "description": "在明确任务内以 CAS 维护未采用资料，拒绝更新正式记录。Update authorized unadopted references using CAS; cannot alter adopted records.",
+      "profiles": [
+        "task"
+      ]
+    },
+    {
+      "name": "hetu_list_drama_projects",
+      "action": "hetu.drama.projects.list",
+      "title": "查询短剧项目 / List drama projects",
+      "description": "分页查询本作品的原创与改编项目。List original and adaptation projects within this work.",
+      "profiles": [
+        "workspace",
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_read_drama_project",
+      "action": "hetu.drama.projects.get",
+      "title": "读取短剧项目 / Read drama project",
+      "description": "读取项目及有序写作分集，骨架规划单独保存。Read a project and its ordered writing episodes; planning skeletons remain separate.",
+      "profiles": [
+        "workspace",
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_read_drama_episode",
+      "action": "hetu.drama.episodes.get",
+      "title": "读取分集 / Read episode",
+      "description": "读取稳定写作分集及文档引用，集号由项目目录计算。Read a stable writing episode and its document reference; episode order comes from the project.",
+      "profiles": [
+        "workspace",
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_inspect_collaboration",
+      "action": "hetu.collaboration.inspect",
+      "title": "检查河图洛书接入 / Inspect connection",
+      "description": "检查实际工具与合同，不读取作品；先检查，再用作者提供的任务引用打开。Inspect actual tools and contracts without reading books; open the author-provided task locator next.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_open_collaboration_task",
+      "action": "hetu.collaboration.open",
+      "title": "打开创作任务 / Open creative task",
+      "description": "只打开作者已授权的确切任务，返回当前固定引用和任务能力；不扫描书库、不扩大授权。Open the exact author-authorized task and return its fixed reference and capabilities; no library scan or permission expansion.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_read_task_operation",
+      "action": "hetu.operations.get",
+      "title": "查询任务原操作 / Recover task operation",
+      "description": "沿当前获权任务的原键查询保存结果，不重复执行写入。Read the original operation in the exact authorized task without repeating a write.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_create_working_copy",
+      "action": "hetu.working_copies.create",
+      "title": "新建参考稿 / Create working copy",
+      "description": "保存本任务可持续修改的参考稿，不创建正式章节或分集。Create an editable task reference, never an author document.",
+      "profiles": [
+        "task"
+      ]
+    },
+    {
+      "name": "hetu_read_working_copy",
+      "action": "hetu.working_copies.get",
+      "title": "读取参考稿 / Read working revision",
+      "description": "读取指定的不可变修订及当前头，不自动切到最新稿。Read the exact saved revision and current head.",
+      "profiles": [
+        "task"
+      ]
+    },
+    {
+      "name": "hetu_list_working_copies",
+      "action": "hetu.working_copies.list",
+      "title": "查看任务参考稿 / List working copies",
+      "description": "只列出本任务参考稿及当前修订。List only this task’s working references.",
+      "profiles": [
+        "task"
+      ]
+    },
+    {
+      "name": "hetu_save_working_copy",
+      "action": "hetu.working_copies.save",
+      "title": "保存参考稿 / Save working revision",
+      "description": "按完整 expected 保存新修订；改稿只接受获准选区补丁。Save with CAS; revision tasks accept only authorized patches.",
+      "profiles": [
+        "task"
+      ]
+    },
+    {
+      "name": "hetu_save_task_feedback",
+      "action": "hetu.task_feedback.save",
+      "title": "保存修改意见 / Save task feedback",
+      "description": "保存固定成果的公开意见，不采纳、不扩权、不启动 Agent。Save public feedback without adoption, authorization or agent execution.",
+      "profiles": [
+        "task"
+      ]
+    },
+    {
+      "name": "hetu_list_task_feedback",
+      "action": "hetu.task_feedback.list",
+      "title": "读取修改意见 / Read task feedback",
+      "description": "读取作者公开意见与成果引用，成果自报已处理不代表作者验收。Read public feedback and resulting references; reported handling is not author acceptance.",
+      "profiles": [
+        "task"
+      ]
+    },
+    {
+      "name": "hetu_list_task_context",
+      "action": "hetu.task_context.list",
+      "title": "查看任务资料目录 / List task context",
+      "description": "列出已授权的固定修订，不内联原文。List authorized fixed sources without full text.",
+      "profiles": [
+        "task"
+      ]
+    },
+    {
+      "name": "hetu_read_task_context",
+      "action": "hetu.task_context.read",
+      "title": "读取固定资料片段 / Read fixed context",
+      "description": "按 UTF-8 字节范围读取已授权原文，不跟随当前版本。Read bounded UTF-8 ranges from authorized fixed revisions.",
+      "profiles": [
+        "task"
+      ]
+    },
+    {
+      "name": "hetu_search_task_context",
+      "action": "hetu.task_context.search",
+      "title": "检索固定资料 / Search fixed context",
+      "description": "仅在本任务固定资料中检索原文，返回位置及覆盖情况。Search only this task’s fixed sources with locations and coverage.",
+      "profiles": [
+        "task"
+      ]
+    },
+    {
+      "name": "hetu_list_models",
+      "action": "hetu.models.list",
+      "title": "读取当前账号的文字或图片模型目录",
+      "description": "读取当前账号的文字或图片模型目录。每次携带固定 task_ref；作者批准内容和费用前不得执行，未知结果沿原 plan_id 查询。",
+      "profiles": [
+        "task"
+      ]
+    },
+    {
+      "name": "hetu_list_model_plans",
+      "action": "hetu.model_tasks.list",
+      "title": "读取本任务的模型计划及作者批准状态",
+      "description": "读取本任务的模型计划及作者批准状态。每次携带固定 task_ref；作者批准内容和费用前不得执行，未知结果沿原 plan_id 查询。",
+      "profiles": [
+        "task"
+      ]
+    },
+    {
+      "name": "hetu_prepare_model_task",
+      "action": "hetu.model_tasks.prepare",
+      "title": "固定模型输入、报价和内容外发预览，不执行生成",
+      "description": "固定模型输入、报价和内容外发预览，不执行生成。每次携带固定 task_ref；作者批准内容和费用前不得执行，未知结果沿原 plan_id 查询。",
+      "profiles": [
+        "task"
+      ]
+    },
+    {
+      "name": "hetu_get_model_task",
+      "action": "hetu.model_tasks.get",
+      "title": "沿原模型计划查询结果，不重新生成",
+      "description": "沿原模型计划查询结果，不重新生成。每次携带固定 task_ref；作者批准内容和费用前不得执行，未知结果沿原 plan_id 查询。",
+      "profiles": [
+        "task"
+      ]
+    },
+    {
+      "name": "hetu_submit_model_task",
+      "action": "hetu.model_tasks.submit",
+      "title": "执行作者已批准的原模型计划",
+      "description": "执行作者已批准的原模型计划。每次携带固定 task_ref；作者批准内容和费用前不得执行，未知结果沿原 plan_id 查询。",
+      "profiles": [
+        "task"
+      ]
+    },
+    {
+      "name": "hetu_collect_model_task",
+      "action": "hetu.model_tasks.collect",
+      "title": "核验并取得原模型结果，保存为任务候选文件",
+      "description": "核验并取得原模型结果，保存为任务候选文件。每次携带固定 task_ref；作者批准内容和费用前不得执行，未知结果沿原 plan_id 查询。",
+      "profiles": [
+        "task"
+      ]
+    },
+    {
+      "name": "hetu_begin_creation",
+      "action": "hetu.creation_projects.create",
+      "title": "开始独立筹备，预留全新受管作品目录，不获得既有作品权限",
+      "description": "开始独立筹备，预留全新受管作品目录，不获得既有作品权限。仅限返回的受管新建范围，不能采纳或定稿。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_get_creation_project",
+      "action": "hetu.creation_projects.get",
+      "title": "读取单项建书筹备",
+      "description": "读取单项建书筹备。仅限返回的受管新建范围，不能采纳或定稿。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_save_creation_project",
+      "action": "hetu.creation_projects.save",
+      "title": "保存作者的筹备想法和所选资料",
+      "description": "保存作者的筹备想法和所选资料。仅限返回的受管新建范围，不能采纳或定稿。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_create_novel_from_project",
+      "action": "hetu.creation_projects.create_novel",
+      "title": "从筹备创建独立小说并保存来源",
+      "description": "从筹备创建独立小说并保存来源。仅限返回的受管新建范围，不能采纳或定稿。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_create_drama_from_project",
+      "action": "hetu.creation_projects.create_drama",
+      "title": "将筹备资料创建为独立剧本作品",
+      "description": "将筹备资料创建为独立剧本作品。仅限返回的受管新建范围，不能采纳或定稿。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_get_workspace",
+      "action": "hetu.workspaces.get",
+      "title": "读取当前工作区",
+      "description": "读取当前工作区。仅限返回的受管新建范围，不能采纳或定稿。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_get_novel",
+      "action": "hetu.novels.get",
+      "title": "读取当前小说资料与有序卷章目录",
+      "description": "读取当前小说资料与有序卷章目录。仅限返回的受管新建范围，不能采纳或定稿。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_list_documents",
+      "action": "hetu.documents.list",
+      "title": "列出文档",
+      "description": "列出文档。仅限返回的受管新建范围，不能采纳或定稿。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_get_document",
+      "action": "hetu.documents.get",
+      "title": "读取不可变正文修订",
+      "description": "读取不可变正文修订。仅限返回的受管新建范围，不能采纳或定稿。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_create_empty_document",
+      "action": "hetu.documents.create",
+      "title": "作者新建正文文档",
+      "description": "作者新建正文文档。仅限返回的受管新建范围，不能采纳或定稿。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_create_drama_project",
+      "action": "hetu.drama.projects.create",
+      "title": "新建独立短剧短剧项目",
+      "description": "新建独立短剧短剧项目。仅限返回的受管新建范围，不能采纳或定稿。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_create_drama_episode",
+      "action": "hetu.drama.episodes.create",
+      "title": "在短剧项目中建立独立分集剧本",
+      "description": "在短剧项目中建立独立分集剧本。仅限返回的受管新建范围，不能采纳或定稿。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_preview_creative_task",
+      "action": "hetu.creative_tasks.preview_prompt",
+      "title": "预览固定范围的外部协作提示词",
+      "description": "预览固定范围的外部协作提示词。仅限返回的受管新建范围，不能采纳或定稿。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_prepare_creative_task",
+      "action": "hetu.creative_tasks.prepare",
+      "title": "准备外部任务，不发送生成请求",
+      "description": "准备外部任务，不发送生成请求。仅限返回的受管新建范围，不能采纳或定稿。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_preview_image_task",
+      "action": "hetu.image_tasks.preview_prompt",
+      "title": "预览图片参考任务 / Preview image task",
+      "description": "为明确作品预览封面或素材图任务；不生成、不修改正文。Preview an image reference task for this workspace without generation or manuscript edits.",
+      "profiles": [
+        "workspace"
+      ]
+    },
+    {
+      "name": "hetu_prepare_image_task",
+      "action": "hetu.image_tasks.prepare",
+      "title": "准备图片参考任务 / Prepare image task",
+      "description": "固定已预览的图片参考任务；不外发内容或批准费用。Prepare the fixed image task without outbound requests or fee approval.",
+      "profiles": [
+        "workspace"
+      ]
     }
   ]
 }

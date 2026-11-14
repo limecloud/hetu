@@ -1,6 +1,6 @@
 {
   "name": "@hetu/website",
-  "version": "0.4.0",
+  "version": "0.6.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,11 +10,14 @@
     "build": "npm run check && astro build && node scripts/verify-build.mjs",
     "preview": "astro preview --host 127.0.0.1 --port 4351",
     "deploy": "npm run build && wrangler pages deploy dist --project-name hetu-website --branch main",
-    "test": "playwright test"
+    "test": "playwright test",
+    "test:server": "node --test server/*.test.mjs",
+    "check:functions": "wrangler pages functions build --outdir ../../output/website-functions"
   },
   "dependencies": {
     "astro": "7.4.2",
-    "marked": "17.0.1"
+    "marked": "17.0.1",
+    "oauth4webapi": "3.8.8"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.12",

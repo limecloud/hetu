@@ -12,6 +12,8 @@ enum DeliveryTests {
         print("导入导出夹具：\(root.path)")
         let preferencesName = "run.limeai.hetu.delivery.\(UUID().uuidString)"
         let preferences = UserDefaults(suiteName: preferencesName)!
+        // 本场景刻意保留未保存缓冲；自动保存由 AuthoringTests 单独验证。
+        preferences.set(false, forKey: "Hetu.editor.autosave")
         defer { preferences.removePersistentDomain(forName: preferencesName) }
         let recovery = RecoveryStore(directory: root.appendingPathComponent("交付操作恢复"))
         let library = LibraryStore(directory: root.appendingPathComponent("交付书库"))
@@ -97,7 +99,9 @@ enum DeliveryTests {
         bundle.selectedAttachments[.comparisons] = [DeliveryAttachmentKind.comparisons.identity(savedComparison)]
         await bundle.prepare()
         let formalRef = bundle.preview["inputs"]["document_refs"].array.first ?? .null
-        try checkDelivery(bundle.canCommit && formalRef["revision_id"] == approvedID && formalRef["revision_id"] != currentID && formalRef["finalization_ref"] != .null, bundle.error ?? "正式包没有固定旧定稿")
+        let eligible = bundle.preview["eligible"]
+        try checkDelivery(bundle.canCommit && formalRef["revision_id"] == approvedID && formalRef["revision_id"] != currentID && formalRef["finalization_ref"] != .null,
+            bundle.error ?? "正式包没有固定旧定稿：canCommit=\(bundle.canCommit), busy=\(model.busy), saving=\(model.saving), dirty=\(model.dirty), eligible=\(eligible), ref=\(formalRef), approved=\(approvedID), current=\(currentID)")
         try checkDelivery(bundle.preview["inputs"]["comparison_refs"].array.first?["sha256"] == savedComparison["sha256"] && bundle.preview["inputs"]["skeleton_refs"].array.count == 1 && bundle.preview["inputs"]["report_refs"].array.count == 1, "交付预览丢失固定附件")
         let buffer = model.text
         try checkDelivery(await bundle.commit(acknowledgement: "已确认正式交付。"), bundle.error ?? "正式交付失败")

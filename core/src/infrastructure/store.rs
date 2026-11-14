@@ -10,6 +10,7 @@ use std::path::Path;
 const READ_LIMIT: u64 = 16 * 1024 * 1024;
 pub struct Store {
     root: OwnedFd,
+    root_path: std::path::PathBuf,
 }
 pub struct Lock {
     fd: OwnedFd,
@@ -45,9 +46,12 @@ impl Store {
             OFlags::RDONLY | OFlags::DIRECTORY | OFlags::CLOEXEC | OFlags::NOFOLLOW,
             Mode::empty(),
         )?;
-        Ok(Self { root })
+        Ok(Self { root, root_path: path })
     }
     pub(super) fn parent(&self, path: &str, create: bool) -> Result<(OwnedFd, String)> {
+        self.find_parent(path, create)?.ok_or_else(|| Error::new("not_found", "受管记录目录不存在。"))
+    }
+    fn find_parent(&self, path: &str, create: bool) -> Result<Option<(OwnedFd, String)>> {
         let parts: Vec<_> = path.split('/').collect();
         ensure(
             !parts.is_empty()
@@ -66,23 +70,32 @@ impl Store {
                     Err(e) => return Err(e.into()),
                 }
             }
-            parent = fs::openat(
+            parent = match fs::openat(
                 &parent,
                 *part,
                 OFlags::RDONLY | OFlags::DIRECTORY | OFlags::CLOEXEC | OFlags::NOFOLLOW,
                 Mode::empty(),
-            )?;
+            ) {
+                Ok(directory) => directory,
+                Err(rustix::io::Errno::NOENT) if !create => return Ok(None),
+                Err(error) => return Err(error.into()),
+            };
         }
-        Ok((parent, parts.last().unwrap().to_string()))
+        Ok(Some((parent, parts.last().unwrap().to_string())))
     }
     pub fn directory(&self, path: &str) -> Result<()> {
         self.parent(&format!("{path}/.probe"), true).map(|_| ())
     }
     pub fn lock(&self) -> Result<Lock> {
-        self.file_lock(
-            ".hetu/workspace.lock",
-            FlockOperation::NonBlockingLockExclusive,
-        )
+        let lease = self.file_lock(".hetu/workspace.lock", FlockOperation::NonBlockingLockExclusive)?;
+        // 目录移动或移入废纸篓后，旧句柄不能继续写入原描述符指向的作品。
+        let current = fs::open(&self.root_path, OFlags::RDONLY | OFlags::DIRECTORY | OFlags::CLOEXEC | OFlags::NOFOLLOW, Mode::empty())
+            .map_err(|_| Error::new("hetu.workspace_moved", "作品目录已移动，请重新打开作品。"))?;
+        let original = fs::fstat(&self.root)?;
+        let current = fs::fstat(&current)?;
+        ensure(original.st_dev == current.st_dev && original.st_ino == current.st_ino,
+            "hetu.workspace_moved", "作品目录已变更，请重新打开作品。")?;
+        Ok(lease)
     }
     fn file_lock(&self, path: &str, operation: FlockOperation) -> Result<Lock> {
         let (parent, leaf) = self.parent(path, false)?;
@@ -148,7 +161,7 @@ impl Store {
         Ok(false)
     }
     pub fn exists(&self, path: &str) -> Result<bool> {
-        let (parent, leaf) = self.parent(path, false)?;
+        let Some((parent, leaf)) = self.find_parent(path, false)? else { return Ok(false); };
         match fs::statat(&parent, leaf, fs::AtFlags::SYMLINK_NOFOLLOW) {
             Ok(meta) => {
                 ensure(

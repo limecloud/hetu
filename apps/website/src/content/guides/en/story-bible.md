@@ -21,3 +21,5 @@ Changed identities, timelines or rules require checking affected text, plot, ada
 Locks do not replace OS file permissions. Other programs with equal access may still change files. Grant only the access needed for collaboration.
 
 Continue with [Checks and draft review](review.md).
+
+For wardrobe, props or research notes linked to particular passages, see [Review reference changes](references.md).

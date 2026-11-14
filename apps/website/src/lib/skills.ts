@@ -73,6 +73,7 @@ const taskDescriptions: Record<string, Record<Locale, string>> = {
   'hetu-draft': { 'zh-CN': '你提出写作请求后，按设定和章纲准备章节参考稿。', en: 'Ask for a chapter reference draft that follows your story bible and outline.' },
   'hetu-revise': { 'zh-CN': '只改你选中的文字，或按你的批注返工，并说明改了哪里、为什么改。', en: 'Revise the text you select or respond to your comments, explaining what changed and why.' },
   'hetu-drama': { 'zh-CN': '将你有权使用的小说内容改成短剧参考稿，保留与原文的对应。', en: 'Adapt a novel you have the right to use into a short drama reference draft, keeping its links to the source.' },
+  'hetu-resources': { 'zh-CN': '按任务整理人物资料、场景参考、道具说明与考据笔记；正式采用由你确认。', en: 'Organize character notes, location references, prop descriptions and research within the task scope. You decide what to adopt.' },
 };
 
 export const familyLabel = (family: string, locale: Locale) => locale === 'en' ? familyNames[family] ?? family : family;

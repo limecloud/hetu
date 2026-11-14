@@ -477,6 +477,14 @@
     "source": {
       "oneOf": [
         {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "reference"],
+          "properties": {
+            "kind": {"const": "creative_task"},
+            "reference": {"$ref": "creative-task.schema.json#/$defs/candidate_ref"}
+          }
+        },
+        {
           "type": "object",
           "additionalProperties": false,
           "required": ["kind", "reference"],
@@ -626,6 +634,19 @@
     },
     "source_ref": {
       "oneOf": [
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "reference", "request", "request_sha256", "submission", "submission_sha256", "candidate"],
+          "properties": {
+            "kind": {"const": "creative_task"},
+            "reference": {"$ref": "creative-task.schema.json#/$defs/candidate_ref"},
+            "request": {"$ref": "creative-task.schema.json#/$defs/request_record"},
+            "request_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+            "submission": {"$ref": "creative-task.schema.json#/$defs/submission_record"},
+            "submission_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+            "candidate": {"$ref": "creative-task.schema.json#/$defs/candidate_record"}
+          }
+        },
         {"$ref": "#/$defs/preparation_source"},
         {
           "type": "object",

@@ -17,6 +17,13 @@ async function walk(directory) {
 const files = await walk(root);
 const paths = new Set(files);
 const errors = [];
+const registration = JSON.parse(await readFile(new URL('../cloud/web-application.json', import.meta.url), 'utf8'));
+assert.equal(registration.web_application.enabled, true);
+for (const field of ['desktop_url','mobile_url']) {
+  const url = new URL(registration.web_application[field]);
+  assert.equal(url.origin, 'https://hetu.limeai.run');
+  assert.ok(paths.has(path.join(root, url.pathname, 'index.html')), `Cloud 登记的河图控制台入口缺少产物：${field}`);
+}
 const versions = JSON.parse(await readFile(new URL('../../../build/website/asset-versions.json', import.meta.url), 'utf8'));
 for (const [pathname, version] of Object.entries(versions)) {
   const bytes = await readFile(path.join(root, pathname));
@@ -52,6 +59,11 @@ for (const file of files.filter(name => name.endsWith('.html'))) {
     if (/^(https?:|mailto:|data:|javascript:)/.test(href)) continue;
     const pagePath = '/' + path.relative(root, file).replaceAll(path.sep, '/');
     const url = new URL(href, 'https://hetu.limeai.run' + pagePath);
+    if (url.pathname === '/api/hetu/auth/login') {
+      assert.ok((await stat(path.join(root, '../functions/api/hetu/[[path]].js'))).isFile(), '登录链接缺少 Pages Function');
+      links++;
+      continue;
+    }
     let target = path.join(root, decodeURIComponent(url.pathname));
     if (url.pathname.endsWith('/')) target = path.join(target, 'index.html');
     if (!paths.has(target)) {

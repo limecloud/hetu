@@ -12,10 +12,7 @@ hetu/
     windows/                  # WinUI 3、Presentation、C# 桥接与平台组装
     cli/                      # 跨平台 Swift 独立命令入口
     mcp/                      # Rust stdio MCP Server
-    review-app/               # 建书、候选比较与批注的 MCP Apps 资源
-    interaction-web/          # 按需 Node.js 本地页面与受限动作代理
-  packages/
-    interaction-ui/           # Apps 与本地页面共享的局部交互组件
+    task-view/                # Apps 与本地页面共享的视图、双语文案和本地代理
   core/                       # Rust library，输出 rlib 与 cdylib
     src/domain/               # 设定集、节点、草稿、审核
     src/application/          # 用例与任务
@@ -30,15 +27,14 @@ hetu/
     tools/                    # MCP 工具合同
     fixtures/                 # 跨入口正负样本
   integrations/
-    skills/                   # 宿主无关的专用 Skill 方法源，按需打包
     codex/hetu/               # Codex Plugin、连接定义及生成的 Skills
-    workbuddy/                # WorkBuddy Skills 与 MCP 适配
-    claude-code/              # Claude Code Skills 与 MCP 适配
+    catalog.json              # 宿主／套件目录和分发身份
   assets/
     design/                   # 共享语义 token
     localization/             # 文案唯一来源
     brand/                    # 品牌与授权来源
   tools/                      # 合同、绑定、资源生成与验证
+    hetu-skills/              # 宿主无关的中文方法唯一源、题材增量及来源
   tests/                      # 内核、集成、跨端、宿主、恢复
   docs/                       # 本系列
   Cargo.toml                  # Rust workspace 构建入口
@@ -47,7 +43,7 @@ hetu/
   Package.swift               # Swift CLI 与桥接的跨平台构建入口
 ```
 
-上述为软件工程的模块归属规范，构建只声明实际存在的 target。内容工作区的 `packages/novel`、`packages/drama` 属于作者作品，软件仓库的 `packages/interaction-ui` 属于产品代码；它们具有不同根和生命周期。作者小说不能写入软件仓库或成为编译依赖。
+上述为软件工程的模块归属规范，构建只声明实际存在的 target。内容工作区的 `packages/novel`、`packages/drama` 属于作者作品，`apps/task-view/` 属于软件代码；它们具有不同根和生命周期。作者小说不能写入软件仓库或成为编译依赖。局部视图共用一份组件，不为 Apps、浏览器或不同宿主复制第二套业务实现。
 
 ## 2. 依赖规则
 
@@ -58,6 +54,8 @@ Swift 与 C# 绑定消费 C ABI；C ABI 只暴露句柄、定长标量与明确�
 Swift CLI target 不引用 SwiftUI、AppKit、Keychain 专属应用代码或 C# 工程；平台终端与凭据经必要适配处理，文件、Git 和业务仍由共享内核执行。Cargo 先构建并 staging C ABI 库与模块头，再由 SwiftPM 消费，不维护两份 Rust 构建参数。
 
 Node.js 页面仅作为按需 UI 适配器，通过明确白名单的本机 IPC 消费同一应用用例；不直接改 JSON、正文或审核文件，不引入模型 SDK。Apps 与普通网页分别实现宿主桥接和本机 HTTP 桥接，共享候选组件、任务类型和双语文案。专用 Skills 从共同方法源打包，宿主差异只在安装、元数据、调用语法及工具映射中维护，生成目录不反向覆盖源文件。
+
+稳定接入、按需上下文、工作副本、固定候选及公开反馈复用同一 Core 合同，CLI、MCP 和局部页面不各自维护一套任务状态。Skills 唯一源为 `tools/hetu-skills/`，按原创小说、原创剧本、改编及资料素材任务组织；分发包由脚本生成，模型与题材差异按需读取，不手工批量改生成副本。文档阶段不提前向 `contracts/` 登记尚无实现和权限测试的动作。
 
 ## 3. 共享来源
 

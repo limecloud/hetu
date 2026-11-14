@@ -1,0 +1,57 @@
+---
+import { evidence as e } from '../lib/market';
+import { route, type Locale } from '../lib/site';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const en = locale === 'en';
+const cn = e.china, global = e.global;
+const source = en ? e.sources.sensor2025 : e.sources.cnnic57;
+const bars = en ? [
+  ['Q1 2024', global.iap_q1_2024.display, global.iap_q1_2024.value / 8000000],
+  ['Q1 2025', global.iap_q1_2025.display, global.iap_q1_2025.value / 8000000],
+] : [
+  ['网络文学用户', cn.literature_users.display, cn.literature_users.value / 8000000],
+  ['微短剧用户', cn.drama_users.display, cn.drama_users.value / 8000000],
+];
+---
+<section class="section market-section" id="market-evidence" data-market={en ? 'global' : 'china'}>
+  <div class="section-head"><div><h2>{en ? 'Stories are finding new audiences on mobile.' : '好故事，正在进入更多人的日常。'}</h2></div><a class="text-link" href={route(locale, 'blog/story-to-screen')}>{en ? 'Explore the opportunity' : '看见改编的机会'} →</a></div>
+  <p class="section-intro">{en ? 'A historical market snapshot shows the momentum of mobile drama. For independent authors and small studios, the next challenge is turning story material into a workable production handoff.' : '文字让读者进入故事，短剧用表演与声音拓展观看场景。阅读与观看习惯不同，同一个故事可以有不同的抵达方式。'}</p>
+  <div class="market-layout">
+    <figure class="market-chart">
+      <figcaption>{en ? 'Global short-drama app in-app purchases' : '中国网络文学与微短剧用户规模'}</figcaption>
+      <p class="chart-period">{en ? 'USD millions / Q1 2024 and Q1 2025' : '2025年12月 / 单位：亿人'}</p>
+      <div class="bar-chart" role="img" aria-label={bars.map(([label, value]) => `${label}: ${value}`).join('; ')}>
+        {bars.map(([label, value, width], i) => <div class="chart-row"><div><span>{label}</span><strong>{value}</strong></div><div class="chart-track" aria-hidden="true"><span class:list={['chart-bar', { accent: i === 1 }]} style={`width:${width}%`}></span></div></div>)}
+        <div class="chart-axis" aria-hidden="true">{(en ? ['0', '200', '400', '600', '800'] : ['0', '2', '4', '6', '8']).map(tick => <span>{tick}</span>)}</div>
+      </div>
+      <p class="chart-source"><a href={source.url} rel="noreferrer">{source.publisher} / {source.title} ↗</a>{!en && ' / 正文第32、35页'}</p>
+      <p class="chart-note">{en ? 'Estimates for App Store and Google Play. Excludes ads, third-party Android stores and direct web payments. Market revenue is not creator earnings.' : '两类用户存在重叠，不可相加；规模差异不代表某部作品可新增的观众，也不支持“十倍受众”的说法。'}</p>
+    </figure>
+    <aside class="market-context">
+      <h3>{en ? 'More than one regional market' : '红果，让短剧成为日常选择'}</h3>
+      <strong class="market-large">{en ? global.downloads_q1_2025.display : cn.hongguo_mau.display}</strong>
+      <p>{en ? 'Global short-drama app downloads / Q1 2025' : '红果免费短剧 App 月活 / 2026年2月'}</p>
+      <dl>{en ? <>
+        <div><dt>Latin America downloads</dt><dd>{global.latam_downloads.display}</dd></div>
+        <div><dt>Southeast Asia downloads</dt><dd>{global.sea_downloads.display}</dd></div>
+        <div><dt>US share of global store IAP</dt><dd>{global.us_iap_share.display}</dd></div>
+      </> : <>
+        <div><dt>独立短剧 App 整体月活</dt><dd>{cn.drama_apps_mau.display}</dd></div>
+        <div><dt>短剧微信小程序渠道用户</dt><dd>{cn.drama_miniprograms_mau.display}</dd></div>
+      </>}</dl>
+      <p class="chart-source"><a href={en ? source.url : e.sources.quest2026.url} rel="noreferrer">{en ? 'Sensor Tower / Q1 2025' : 'QuestMobile / 2026短剧行业洞察报告'} ↗</a></p>
+      <p class="chart-note">{en ? 'Downloads are not unique viewers. Regional results call for local creative and distribution decisions. This is a dated snapshot, not a current total.' : 'App 与小程序用户有重叠，不能直接相加。月活与左侧调查用户数的时间、方法不同，不作同口径比较。'}</p>
+    </aside>
+  </div>
+  {!en && <div class="market-supply">
+    <h3>创作积累已经很厚，改编需要可以接续的材料。</h3>
+    <dl>
+      <div><dd>{cn.literature_works.display}+</dd><dt>网文作品总量 / 截至2024年底</dt></div>
+      <div><dd>{cn.new_registered_authors.display}</dd><dt>新增注册作者 / 2024年</dt></div>
+      <div><dd>{cn.new_drama_licenses.display}+</dd><dt>新增微短剧改编授权 / 2024年</dt></div>
+    </dl>
+    <p class="chart-source"><a href={e.sources.writers2024.url} rel="noreferrer">中国作家协会网络文学中心 / 2024中国网络文学蓝皮书 ↗</a></p>
+    <p class="chart-note">全国50家重点网站统计。作品存量、年度新增作者与改编授权口径不同，不构成转化漏斗；注册作者不等于专职从业者，授权不等于已拍成片。</p>
+  </div>}
+</section>

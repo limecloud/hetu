@@ -1,0 +1,799 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HetuResources",
+  "$defs": {
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "workspace_id": {
+          "type": "string",
+          "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "resource_id": {
+          "type": "string",
+          "pattern": "^resource_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "previous_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        "category": {
+          "enum": [
+            "character",
+            "location",
+            "prop",
+            "research",
+            "artwork",
+            "media"
+          ]
+        },
+        "body": {
+          "type": "string",
+          "maxLength": 1000000,
+          "minLength": 0
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1
+          },
+          "maxItems": 50,
+          "uniqueItems": true
+        },
+        "project_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^drama_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "entity_refs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "character",
+                  "location",
+                  "faction",
+                  "event",
+                  "world"
+                ]
+              },
+              "entity_id": {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 1
+              },
+              "blueprint_revision": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "blueprint_sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "kind",
+              "entity_id",
+              "blueprint_revision",
+              "blueprint_sha256"
+            ]
+          },
+          "maxItems": 50,
+          "uniqueItems": true
+        },
+        "source_notes": {
+          "type": "string",
+          "maxLength": 20000,
+          "minLength": 0
+        },
+        "state": {
+          "enum": [
+            "draft",
+            "adopted",
+            "archived"
+          ]
+        },
+        "owner_task_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^task_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "created_at": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        "updated_at": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        "actor_ref": {
+          "type": "string",
+          "pattern": "^actor_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        }
+      },
+      "required": [
+        "schema_version",
+        "workspace_id",
+        "resource_id",
+        "revision",
+        "previous_sha256",
+        "title",
+        "category",
+        "body",
+        "tags",
+        "project_id",
+        "entity_refs",
+        "source_notes",
+        "state",
+        "owner_task_id",
+        "created_at",
+        "updated_at",
+        "actor_ref"
+      ]
+    },
+    "usage_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "workspace_id": {
+          "type": "string",
+          "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "usage_id": {
+          "type": "string",
+          "pattern": "^usage_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "previous_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "resource_ref": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "resource_id": {
+              "type": "string",
+              "pattern": "^resource_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "resource_id",
+            "revision",
+            "sha256"
+          ]
+        },
+        "target_ref": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "document_id",
+            "revision_id",
+            "byte_start",
+            "byte_end",
+            "quote"
+          ],
+          "properties": {
+            "document_id": {
+              "type": "string",
+              "pattern": "^doc_[0-9a-f-]{36}$"
+            },
+            "revision_id": {
+              "type": "string",
+              "pattern": "^rev_[0-9a-f-]{36}$"
+            },
+            "byte_start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "byte_end": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "quote": {
+              "type": "string"
+            }
+          }
+        },
+        "role": {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        "archived": {
+          "type": "boolean"
+        },
+        "created_at": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        "updated_at": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        "actor_ref": {
+          "type": "string",
+          "pattern": "^actor_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        }
+      },
+      "required": [
+        "schema_version",
+        "workspace_id",
+        "usage_id",
+        "revision",
+        "previous_sha256",
+        "resource_ref",
+        "target_ref",
+        "role",
+        "archived",
+        "created_at",
+        "updated_at",
+        "actor_ref"
+      ]
+    },
+    "resource_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resource_id": {
+          "type": "string",
+          "pattern": "^resource_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "resource_id",
+        "revision",
+        "sha256"
+      ]
+    },
+    "create_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        "category": {
+          "enum": [
+            "character",
+            "location",
+            "prop",
+            "research",
+            "artwork",
+            "media"
+          ]
+        },
+        "body": {
+          "type": "string",
+          "maxLength": 1000000,
+          "minLength": 0
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1
+          },
+          "maxItems": 50,
+          "uniqueItems": true
+        },
+        "project_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^drama_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "entity_refs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "character",
+                  "location",
+                  "faction",
+                  "event",
+                  "world"
+                ]
+              },
+              "entity_id": {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 1
+              },
+              "blueprint_revision": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "blueprint_sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "kind",
+              "entity_id",
+              "blueprint_revision",
+              "blueprint_sha256"
+            ]
+          },
+          "maxItems": 50,
+          "uniqueItems": true
+        },
+        "source_notes": {
+          "type": "string",
+          "maxLength": 20000,
+          "minLength": 0
+        },
+        "operation_key": {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1
+        }
+      },
+      "required": [
+        "title",
+        "category",
+        "body",
+        "tags",
+        "project_id",
+        "entity_refs",
+        "source_notes",
+        "operation_key"
+      ]
+    },
+    "update_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resource_id": {
+          "type": "string",
+          "pattern": "^resource_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "expected": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "revision": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "revision",
+            "sha256"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        "category": {
+          "enum": [
+            "character",
+            "location",
+            "prop",
+            "research",
+            "artwork",
+            "media"
+          ]
+        },
+        "body": {
+          "type": "string",
+          "maxLength": 1000000,
+          "minLength": 0
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1
+          },
+          "maxItems": 50,
+          "uniqueItems": true
+        },
+        "project_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^drama_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "entity_refs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "character",
+                  "location",
+                  "faction",
+                  "event",
+                  "world"
+                ]
+              },
+              "entity_id": {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 1
+              },
+              "blueprint_revision": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "blueprint_sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "kind",
+              "entity_id",
+              "blueprint_revision",
+              "blueprint_sha256"
+            ]
+          },
+          "maxItems": 50,
+          "uniqueItems": true
+        },
+        "source_notes": {
+          "type": "string",
+          "maxLength": 20000,
+          "minLength": 0
+        },
+        "operation_key": {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1
+        }
+      },
+      "required": [
+        "resource_id",
+        "expected",
+        "title",
+        "category",
+        "body",
+        "tags",
+        "project_id",
+        "entity_refs",
+        "source_notes",
+        "operation_key"
+      ]
+    },
+    "get_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resource_id": {
+          "type": "string",
+          "pattern": "^resource_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "resource_id"
+      ]
+    },
+    "list_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200
+        },
+        "cursor": {
+          "type": "string",
+          "maxLength": 1000,
+          "minLength": 1
+        },
+        "category": {
+          "enum": [
+            "character",
+            "location",
+            "prop",
+            "research",
+            "artwork",
+            "media"
+          ]
+        },
+        "state": {
+          "enum": [
+            "draft",
+            "adopted",
+            "archived"
+          ]
+        },
+        "project_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^drama_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tag": {
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 1
+        }
+      },
+      "required": []
+    },
+    "state_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resource_id": {
+          "type": "string",
+          "pattern": "^resource_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "expected": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "revision": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "revision",
+            "sha256"
+          ]
+        },
+        "operation_key": {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1
+        }
+      },
+      "required": [
+        "resource_id",
+        "expected",
+        "operation_key"
+      ]
+    },
+    "usage_save_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "usage_id": {
+          "type": "string",
+          "pattern": "^usage_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "expected": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "revision": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "revision",
+            "sha256"
+          ]
+        },
+        "resource_ref": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "resource_id": {
+              "type": "string",
+              "pattern": "^resource_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "resource_id",
+            "revision",
+            "sha256"
+          ]
+        },
+        "target_ref": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "document_id",
+            "revision_id",
+            "byte_start",
+            "byte_end",
+            "quote"
+          ],
+          "properties": {
+            "document_id": {
+              "type": "string",
+              "pattern": "^doc_[0-9a-f-]{36}$"
+            },
+            "revision_id": {
+              "type": "string",
+              "pattern": "^rev_[0-9a-f-]{36}$"
+            },
+            "byte_start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "byte_end": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "quote": {
+              "type": "string"
+            }
+          }
+        },
+        "role": {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        "archived": {
+          "type": "boolean"
+        },
+        "operation_key": {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1
+        }
+      },
+      "required": [
+        "resource_ref",
+        "target_ref",
+        "role",
+        "archived",
+        "operation_key"
+      ]
+    },
+    "usage_list_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resource_id": {
+          "type": "string",
+          "pattern": "^resource_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200
+        },
+        "cursor": {
+          "type": "string",
+          "maxLength": 1000,
+          "minLength": 1
+        }
+      },
+      "required": [
+        "resource_id"
+      ]
+    }
+  }
+}

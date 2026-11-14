@@ -1,6 +1,10 @@
 use super::*;
 use std::collections::BTreeSet;
 
+mod feedback;
+mod working;
+mod context;
+
 pub(super) const TASK_ACTIONS: &[&str] = &[
     "hetu.capabilities.get",
     "hetu.operations.get",
@@ -8,6 +12,25 @@ pub(super) const TASK_ACTIONS: &[&str] = &[
     "hetu.creative_tasks.submit_result",
     "hetu.interactions.get",
     "hetu.interactions.save_selection",
+    "hetu.working_copies.create",
+    "hetu.working_copies.get",
+    "hetu.working_copies.list",
+    "hetu.working_copies.save",
+    "hetu.task_feedback.save",
+    "hetu.task_feedback.list",
+    "hetu.task_context.list",
+    "hetu.task_context.read",
+    "hetu.task_context.search",
+    "hetu.resources.list",
+    "hetu.resources.get",
+    "hetu.resources.create",
+    "hetu.resources.update",
+    "hetu.models.list",
+    "hetu.model_tasks.list",
+    "hetu.model_tasks.prepare",
+    "hetu.model_tasks.get",
+    "hetu.model_tasks.submit",
+    "hetu.model_tasks.collect",
 ];
 const TEXT_LIMIT: usize = 1024 * 1024;
 const IMAGE_LIMIT: u64 = 32 * 1024 * 1024;
@@ -31,6 +54,10 @@ pub(super) fn record_schema(record: &Value, name: &str) -> Result<()> {
             "state_record",
             "submission_record",
             "decision_record",
+            "working_record",
+            "working_revision_record",
+            "feedback_record",
+            "context_manifest_record",
         ]
         .into_iter()
         .map(|name| (name, OnceLock::new()))
@@ -87,6 +114,10 @@ fn nonoverlapping(ranges: &[Value]) -> Result<Vec<Value>> {
 }
 
 impl Kernel {
+    pub(crate) fn requested_task_for_grant(&self, reference: &Value) -> Result<Value> {
+        let (request, sha, _, _) = self.task_for_reference(reference)?;
+        Ok(json!({"request":request,"request_sha256":sha}))
+    }
     fn scope_ref(&self) -> Value {
         json!({"kind":self.scope_kind(),"id":self.scope()})
     }
@@ -103,10 +134,15 @@ impl Kernel {
                 "revision_conflict",
                 "此筹备已创建作品，请在新作品中准备任务。",
             )?;
-            Ok(
-                json!({"expected":{"revision":project["revision"],"sha256":sha},"context":{"brief":project["brief"],"selected_fields":project["selected_fields"]}}),
-            )
+            let mut snapshot = json!({"expected":{"revision":project["revision"],"sha256":sha},"context":{"brief":project["brief"],"selected_fields":project["selected_fields"]}});
+            if let Some(profile) = project.get("work_profile") { snapshot["context"]["work_profile"] = profile.clone(); }
+            Ok(snapshot)
         } else {
+            if self.config["work_type"] == "drama" {
+                let (bp, sha) = self.blueprint_revision(None)?;
+                let context = json!({"work_type":"drama","title":self.config["title"],"blueprint_revision":bp["revision"],"blueprint_sha256":sha});
+                return Ok(json!({"expected":{"revision":bp["revision"],"sha256":digest(bytes(&context)?)},"context":context}));
+            }
             let novel = self.get_novel()?;
             ensure(
                 novel["initialized"] == true,
@@ -164,10 +200,10 @@ impl Kernel {
                     "hetu.budget_exceeded",
                     "单篇上下文超过 1 MiB，请缩小范围。",
                 )?;
-                sources.push(json!({"reference":reference,"title":doc["document"]["title"],"source_format":doc["document"]["source_format"],"sha256":doc["revision"]["sha256"],"content":doc["content"]}));
+                sources.push(json!({"reference":reference,"title":doc["document"]["title"],"source_format":doc["document"]["source_format"],"sha256":doc["revision"]["sha256"],"size_bytes":text(&doc,"content")?.len()}));
             } else {
                 let (bp, sha) = self.blueprint_revision(Some(integer(reference, "revision")?))?;
-                sources.push(json!({"reference":reference,"sha256":sha,"blueprint":bp}));
+                sources.push(json!({"reference":reference,"sha256":sha,"size_bytes":bytes(&bp)?.len()}));
             }
         }
         if input["task_kind"] == "revision" {
@@ -187,7 +223,8 @@ impl Kernel {
                 .ok_or_else(|| {
                     Error::new("missing_context", "可改文档必须包含在明确的任务输入中。")
                 })?;
-            let content = text(source, "content")?;
+            let fixed_source = self.fixed_context_source(source)?;
+            let content = text(&fixed_source, "content")?;
             ensure(
                 content.len() <= TEXT_LIMIT,
                 "hetu.budget_exceeded",
@@ -210,7 +247,13 @@ impl Kernel {
                 "只有改稿任务可声明正文可改选区。",
             )?;
         }
-        let fixed = json!({"scope_context":snapshot["context"],"sources":sources});
+        let mut fixed = json!({"scope_context":snapshot["context"],"sources":sources});
+        if input["task_kind"] == "resource_organize" {
+            ensure(!self.is_creation_project() && input["resource_scope"].is_object(), "missing_context", "资料任务需要明确读取与修改范围。")?;
+            fixed["resources"] = json!(self.validate_resource_scope(&input["resource_scope"])?);
+        } else {
+            ensure(input.get("resource_scope").is_none(), "invalid_input", "只有资料整理任务可声明资料修改授权。")?;
+        }
         ensure(
             bytes(&fixed)?.len() <= 2 * TEXT_LIMIT,
             "hetu.budget_exceeded",
@@ -226,7 +269,7 @@ impl Kernel {
         record_schema(&record, "request_record")?;
         let head = self.store.json(&format!("{folder}/request-head.json"))?;
         ensure(
-            record["schema_version"] == "1.0.0"
+            matches!(record["schema_version"].as_str(), Some("1.0.0" | "1.1.0"))
                 && record["task_id"] == task_id
                 && record["scope_ref"] == self.scope_ref()
                 && record["request_revision"] == 1
@@ -234,9 +277,15 @@ impl Kernel {
             "hetu.integrity_failure",
             "任务请求身份、范围或摘要不一致。",
         )?;
+        self.verify_context_manifest(&record)?;
         let contract_input = json!({"task_kind":record["task_kind"],"candidate_limit":record["output_contract"]["candidate_limit"]});
+        let mut expected_contract = self.task_output_contract(&contract_input, task_id)?;
+        // 已发布请求保留原合同字节；旧文本任务没有随包 CLI 声明。
+        if record["output_contract"]["submission_mode"] == json!(["mcp", "inbox"]) {
+            expected_contract["submission_mode"] = json!(["mcp", "inbox"]);
+        }
         ensure(
-            record["output_contract"] == self.task_output_contract(&contract_input, task_id)?,
+            record["output_contract"] == expected_contract,
             "hetu.integrity_failure",
             "任务输出合同与固定身份不一致。",
         )?;
@@ -333,7 +382,7 @@ impl Kernel {
         );
         Ok(sha)
     }
-    fn task_for_reference(&self, reference: &Value) -> Result<(Value, String, Value, String)> {
+    pub(in crate::application) fn task_for_reference(&self, reference: &Value) -> Result<(Value, String, Value, String)> {
         ensure(
             reference["scope_ref"] == self.scope_ref() && reference["request_revision"] == 1,
             "forbidden",
@@ -341,7 +390,7 @@ impl Kernel {
         )?;
         let task_id = checked_id(text(reference, "task_id")?, "task")?;
         ensure(
-            self.author || self.task_id.as_deref() == Some(&task_id),
+            self.author || self.management_grant.is_some() || self.task_id.as_deref() == Some(&task_id),
             "forbidden",
             "此连接未获权访问该任务。",
         )?;
@@ -357,6 +406,12 @@ impl Kernel {
         Ok((request, sha, state, state_sha))
     }
     pub(super) fn check_task_session(&self) -> Result<()> {
+        if let Some(binding) = &self.management_grant {
+            crate::collaboration::authoring::check_management(binding, &self.workspace_path, None)?;
+        }
+        if let Some(grant) = &self.collaboration_grant {
+            crate::collaboration::check_grant(grant, self.scope(), self.task_id.as_deref())?;
+        }
         if let Some(task) = &self.task_id {
             checked_id(task, "task")?;
             ensure(
@@ -370,13 +425,19 @@ impl Kernel {
                 "forbidden",
                 "任务已关闭，不能继续访问。",
             )?;
-        } else if !self.author && self.is_creation_project() {
+        } else if !self.author && self.management_grant.is_none() && self.is_creation_project() {
             return Err(Error::new(
                 "forbidden",
                 "Agent 访问建书筹备必须绑定明确任务。",
             ));
         }
         Ok(())
+    }
+    pub(super) fn resource_task_access(&self) -> Result<Value> {
+        let task_id = self.task_id.as_deref().ok_or_else(|| Error::new("forbidden", "资料协作须使用作者明确授权的任务连接。"))?;
+        let (request, _) = self.task_request(task_id)?;
+        ensure(request["task_kind"] == "resource_organize" && request["resource_scope"].is_object(), "forbidden", "此任务未获权整理资料。")?;
+        Ok(request["resource_scope"].clone())
     }
     pub(super) fn check_operation_task(&self, record: &Value) -> Result<()> {
         if let Some(task) = &self.task_id {
@@ -393,7 +454,13 @@ impl Kernel {
         let task_id = id("task");
         let task_ref = json!({"scope_ref":self.scope_ref(),"task_id":task_id,"request_revision":1});
         let english = input["language_tag"] == "en";
-        let prompt = if english {
+        let prompt = if input["task_kind"] == "resource_organize" {
+            if english {
+                format!("Use hetu-resources for task {task_id}. Read the fixed task with hetu_read_creative_task. Respect resource_scope: fixed read references, editable draft IDs and allow_create are separate permissions. Use the discovered resource tools or authorized CLI actions to create and update reference drafts with CAS, then read back the actual revisions. Do not alter adopted references, author text, canon, selected assets or finalizations. This task records resource revisions directly and does not require a separate text candidate or inbox manifest. If no authorized MCP or CLI is available, report the missing capability without editing managed files. Recover unknown writes using the original key and input.\nTask reference: {task_ref}\nAuthor request:\n{}", text(input,"brief")?)
+            } else {
+                format!("使用 hetu-resources 处理河图洛书资料任务 {task_id}。先用 hetu_read_creative_task 读取固定任务。resource_scope 分别约定固定参考、可改草稿和是否允许新增；只用实际发现的资料工具或获权 CLI 连续整理，每次更新比较 revision 与 sha256，写入后回读真实修订。不要修改已采用资料、作者正文、设定、素材选用或定稿。本任务以资料修订为结果，不要求另交文字稿或 inbox 清单。没有获权 MCP 或 CLI 时说明缺少的入口，不直接改受管文件。结果未知沿原键和原输入恢复。\n任务引用：{task_ref}\n作者要求：\n{}",text(input,"brief")?)
+            }
+        } else if english {
             format!(
                 "Use the Hetu Luoshu {} skill for task {}. Read the fixed task with hetu_read_creative_task; submit independent reference candidates with hetu_submit_creative_result.\nTask reference: {}\nAuthor request:\n{}\nRead access and edit scope are separate. For a revision task, submit UTF-8 patches only inside edit_scope.ranges; preserve all other bytes. Do not overwrite author documents, canon, finalizations, selected covers or Git state. If MCP is unavailable, write complete candidate files then a result manifest into the task inbox. Report missing capabilities honestly. After an unknown write, recover the original operation key before resending.",
                 Self::task_skill(text(input, "task_kind")?),
@@ -410,6 +477,25 @@ impl Kernel {
                 text(input, "brief")?
             )
         };
+        let task_locator = json!({"scope_ref":self.scope_ref(),"task_id":task_id});
+        let prefix = if english {
+            format!("With the stable local connection, first call hetu_open_collaboration_task with task_locator: {task_locator}. Use the exact task_ref returned by that call in every subsequent task operation. The locator is not an authorization token. Discover actual tools before calling them.")
+        } else {
+            format!("使用本机稳定连接时，先调用 hetu_open_collaboration_task，传入 task_locator：{task_locator}。后续每次操作携带打开任务返回的完整 task_ref。任务引用不是授权令牌；先发现实际工具，再按能力调用。")
+        };
+        let continuation = if matches!(input["task_kind"].as_str(), Some("resource_organize" | "cover" | "artwork")) {
+            ""
+        } else if english {
+            "Read existing working copies and public feedback first. When authorized working-copy tools are available, continue the same copy and save revisions; submit a fixed revision at the delivery point. Otherwise use independent candidates. Feedback references report handling, never author acceptance."
+        } else {
+            "先读取已有参考稿和公开意见。有获权参考稿工具时，沿同一参考稿连续保存，在交付点提交固定修订；没有该能力时使用独立候选。引用反馈只表示已处理，不代表作者验收。"
+        };
+        let context_instruction = if english {
+            "Task inputs are fixed references. When context tools are available, use hetu_list_task_context, hetu_search_task_context and hetu_read_task_context to find and read bounded passages. A source absent from the directory is not authorized. Report specific missing material instead of reading workspace files."
+        } else {
+            "任务输入是固定资料引用。有上下文工具时，先用 hetu_list_task_context 查看目录，再用 hetu_search_task_context 检索、hetu_read_task_context 分段读取。不在目录中的资料不属于本次授权；缺材料时说明具体需要，不直接读作品文件。"
+        };
+        let prompt = format!("{prefix}\n{context_instruction}\n{continuation}\n\n{prompt}");
         let mut prepare = input.clone();
         prepare["task_id"] = json!(task_id);
         prepare["expected_scope"] = expected.clone();
@@ -424,21 +510,26 @@ impl Kernel {
             "book_profile" => "hetu-book-profile",
             "outline" => "hetu-outline",
             "cover" => "hetu-cover",
+            "artwork" => "hetu-artwork",
             "revision" => "hetu-revise",
             "drama_draft" => "hetu-drama",
+            "resource_organize" => "hetu-resources",
             _ => "hetu-draft",
         }
     }
     fn task_output_contract(&self, input: &Value, task_id: &str) -> Result<Value> {
+        if input["task_kind"] == "resource_organize" {
+            return Ok(json!({"artifact_types":[],"candidate_limit":4,"text_byte_limit":TEXT_LIMIT,"image_byte_limit":IMAGE_LIMIT,"submission_mode":["mcp","cli"],"relative_inbox":null,"revision_requires_patches":false}));
+        }
         let kinds: &[&str] = match text(input, "task_kind")? {
             "book_concept" => &["concept", "title", "synopsis", "outline"],
             "book_profile" => &["title", "synopsis"],
             "outline" => &["outline"],
-            "cover" => &["image"],
+            "cover" | "artwork" => &["image"],
             _ => &["text"],
         };
         Ok(
-            json!({"artifact_types":kinds,"candidate_limit":input["candidate_limit"].as_u64().unwrap_or(4),"text_byte_limit":TEXT_LIMIT,"image_byte_limit":IMAGE_LIMIT,"submission_mode":["mcp","inbox"],"relative_inbox":format!("{}/inbox",root(task_id)?),"revision_requires_patches":input["task_kind"] == "revision"}),
+            json!({"artifact_types":kinds,"candidate_limit":input["candidate_limit"].as_u64().unwrap_or(4),"text_byte_limit":TEXT_LIMIT,"image_byte_limit":IMAGE_LIMIT,"submission_mode":["mcp","cli","inbox"],"relative_inbox":format!("{}/inbox",root(task_id)?),"revision_requires_patches":input["task_kind"] == "revision"}),
         )
     }
     pub(super) fn prepare_creative_task(
@@ -464,7 +555,9 @@ impl Kernel {
             "idempotency_conflict",
             "任务身份已有请求，不能覆盖。",
         )?;
-        let request = json!({"schema_version":"1.0.0","task_id":task_id,"scope_ref":self.scope_ref(),"request_revision":1,"previous_sha256":null,"task_kind":input["task_kind"],"brief":input["brief"],"input_refs":input["input_refs"],"input_snapshot":fixed,"client_adapter":input["client_adapter"],"skill_ref":{"name":Self::task_skill(text(input,"task_kind")?),"contract_revision":"1"},"prompt":input["prompt"],"prompt_language":input["language_tag"],"output_contract":self.task_output_contract(input,task_id)?,"edit_scope":input["edit_scope"],"created_at":now()});
+        let mut request = json!({"schema_version":"1.1.0","task_id":task_id,"scope_ref":self.scope_ref(),"request_revision":1,"previous_sha256":null,"task_kind":input["task_kind"],"brief":input["brief"],"input_refs":input["input_refs"],"input_snapshot":fixed,"client_adapter":input["client_adapter"],"skill_ref":{"name":Self::task_skill(text(input,"task_kind")?),"contract_revision":"1"},"prompt":input["prompt"],"prompt_language":input["language_tag"],"output_contract":self.task_output_contract(input,task_id)?,"edit_scope":input["edit_scope"],"created_at":now()});
+        self.stage_context_manifest(&mut request, changes)?;
+        if let Some(scope) = input.get("resource_scope") { request["resource_scope"] = scope.clone(); }
         record_schema(&request, "request_record")?;
         let raw = bytes(&request)?;
         let sha = digest(&raw);
@@ -627,9 +720,10 @@ impl Kernel {
             )?;
             decision
         };
-        Ok(
-            json!({"request":request,"request_sha256":sha,"observation":state,"expected":{"revision":state["revision"],"sha256":state_sha},"submission":submission,"decision":decision}),
-        )
+        let working = self.list_working_copies(&json!({"task_ref":input["task_ref"],"limit":20}))?;
+        let feedback_head = state["feedback_refs"].as_array().and_then(|refs| refs.last()).cloned().unwrap_or(Value::Null);
+        let last_feedback = if feedback_head.is_null() { Value::Null } else { self.read_task_feedback(&input["task_ref"], &feedback_head)? };
+        Ok(json!({"request":request,"request_sha256":sha,"observation":state,"expected":{"revision":state["revision"],"sha256":state_sha},"submission":submission,"decision":decision,"working_copies":working["working_copies"],"working_copies_next_cursor":working["next_cursor"],"feedback_head":feedback_head,"last_feedback":last_feedback,"working_limits":{"copies_per_task":100,"revisions_per_copy":100,"feedback_per_task":100,"text_bytes":TEXT_LIMIT}}))
     }
     pub(super) fn list_creative_tasks(&self, input: &Value) -> Result<Value> {
         let mut records = Vec::new();
@@ -674,7 +768,8 @@ impl Kernel {
             "invalid_input",
             "改稿格式必须与原文一致。",
         )?;
-        let original = text(source, "content")?;
+        let fixed_source = self.fixed_context_source(source)?;
+        let original = text(&fixed_source, "content")?;
         let patches = nonoverlapping(candidate["patches"].as_array().unwrap())?;
         let mut replacement_bytes = 0usize;
         for patch in &patches {
@@ -856,7 +951,14 @@ impl Kernel {
             "forbidden",
             "已关闭任务不能接收新候选。",
         )?;
-        let candidates = input["candidates"].as_array().unwrap();
+        let working_refs = input.get("working_copy_refs").cloned().unwrap_or(json!([]));
+        let candidates = if input.get("working_copy_refs").is_some() {
+            working_refs.as_array().unwrap().iter().map(|r| self.candidate_from_working(&input["task_ref"], r)).collect::<Result<Vec<_>>>()?
+        } else {
+            input["candidates"].as_array().unwrap().clone()
+        };
+        let feedback_refs = input.get("feedback_refs").cloned().unwrap_or(json!([]));
+        self.check_feedback_refs(&input["task_ref"], &feedback_refs)?;
         ensure(
             candidates.len() as u64 <= integer(&task["output_contract"], "candidate_limit")?
                 && state["submission_refs"].as_array().unwrap().len() < 100,
@@ -871,7 +973,7 @@ impl Kernel {
         let folder = root(text(&task, "task_id")?)?;
         let submission_id = id("submission");
         let mut saved = Vec::new();
-        for candidate in candidates {
+        for (index, candidate) in candidates.iter().enumerate() {
             ensure(
                 task["output_contract"]["artifact_types"]
                     .as_array()
@@ -898,6 +1000,9 @@ impl Kernel {
             }
             let candidate_id = id("candidate");
             let mut record = json!({"candidate_id":candidate_id,"kind":candidate["kind"],"title":candidate["title"],"source_format":candidate["source_format"],"language_tag":task["prompt_language"],"source_refs":sources});
+            if let Some(reference) = working_refs.as_array().unwrap().get(index) {
+                record["working_copy_ref"] = reference.clone();
+            }
             if candidate["kind"] == "image" {
                 let media = self.image_candidate(&task, candidate)?;
                 for (key, value) in media.as_object().unwrap() {
@@ -922,7 +1027,9 @@ impl Kernel {
             }
             saved.push(record);
         }
-        let submission = json!({"schema_version":"1.0.0","submission_id":submission_id,"task_ref":input["task_ref"],"request_sha256":request_sha,"candidates":saved,"complete":input["complete"],"missing_items":input["missing_items"],"provenance":input["provenance"],"received_at":now()});
+        let mut submission = json!({"schema_version":"1.0.0","submission_id":submission_id,"task_ref":input["task_ref"],"request_sha256":request_sha,"candidates":saved,"complete":input["complete"],"missing_items":input["missing_items"],"provenance":input["provenance"],"received_at":now()});
+        if !working_refs.as_array().unwrap().is_empty() { submission["working_copy_refs"] = working_refs; }
+        if !feedback_refs.as_array().unwrap().is_empty() { submission["feedback_refs"] = feedback_refs; }
         record_schema(&submission, "submission_record")?;
         let raw = bytes(&submission)?;
         let reference = json!({"submission_id":submission_id,"sha256":digest(&raw)});
@@ -1000,7 +1107,7 @@ impl Kernel {
     }
     pub(super) fn get_task_interaction(&self, input: &Value) -> Result<Value> {
         let mut result = self.get_creative_task(input)?;
-        result["allowed_actions"] = json!(["hetu.interactions.save_selection"]);
+        result["allowed_actions"] = json!(["hetu.interactions.save_selection", "hetu.task_feedback.save", "hetu.task_feedback.list", "hetu.task_context.read"]);
         result["effect"] = json!("preference_only");
         let mut previews = Vec::new();
         if let Some(candidates) = result["submission"]["candidates"].as_array() {

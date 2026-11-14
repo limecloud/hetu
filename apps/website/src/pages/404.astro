@@ -1,4 +1,5 @@
 ---
 import Site from '../layouts/Site.astro';
+import { assetURL } from '../lib/assets';
 ---
-<Site locale="zh-CN" title="页面未找到" noindex><div class="container notfound"><h1>404</h1><p>这页还没有写进故事里。<br/>This page is not part of the story.</p><a class="button primary" href="/">返回河图洛书首页 / Home →</a></div></Site>
+<Site locale="zh-CN" page="404" title="页面未找到 / Page not found" noindex><div class="container notfound"><div><span class="notfound-code">404 / Page not found</span><h1>这一页，暂时迷路了。</h1><p>链接可能已改变。回到首页，或从使用指南继续。<br/><span lang="en">This page could not be found. Return home or explore the guides.</span></p><div class="page-cta"><a class="button primary" href="/">返回首页 <span aria-hidden="true">→</span></a><a class="text-link" href="/en/" lang="en">English home <span aria-hidden="true">→</span></a><a class="text-link" href="/docs/">使用指南 <span aria-hidden="true">→</span></a></div></div><img src={assetURL('/brand/mascot-master.png')} width="1024" height="1024" alt=""/></div></Site>

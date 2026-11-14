@@ -1,6 +1,6 @@
 # Quick start
 
-Try the sample book on the homepage first: open it, write a few lines, read a reference passage and decide whether to use it. No installation or Codex setup is needed.
+Try the sample book on the homepage: open it, compare a reference passage and decide what to use. Then edit directly if you want to. No installation or Codex setup is needed.
 
 ## 1. Open a book from the library
 
@@ -12,18 +12,7 @@ The book workspace opens. Use the left side to switch between chapters, the stor
 
 *Homepage demo screenshot. These are sample books; the demo does not read your local writing.*
 
-## 2. Write a few lines and save
-
-1. Choose a chapter on the left to open its text.
-2. Add a sentence at the end, such as “She stood at the door but could not bring herself to knock.” Keep the sample passage intact for the review exercise below.
-3. Choose “Save text” at the top right.
-4. Switch to another chapter and back. Your change is still there.
-
-![Homepage demo writing workspace with chapters, text and the save button](/images/guides/quickstart-writing-en.webp)
-
-*Homepage demo screenshot. Saving keeps this change within the page; reloading resets the demo.*
-
-## 3. Read a reference and decide what to use
+## 2. Read a reference and decide what to use
 
 1. Choose “Draft review” on the left and read the suggested replacement.
 2. Try writing a suggestion under “Review comment” and choose “Request changes” to see the status change. The demo only records it; it does not send a message or generate a new draft.
@@ -34,20 +23,25 @@ The book workspace opens. Use the left side to switch between chapters, the stor
 
 *Homepage demo screenshot. Approving a reference, adopting text and finalizing a revision are separate author decisions.*
 
-To keep a final version, return to the chapter, choose “Finalize revision,” review it and confirm. Later changes preserve that earlier final.
+## 3. Edit directly when you want to
+
+Return to the chapter and read the adopted passage in context. Keep it, adjust a line or write your own ending. Try adding “She stood at the door but could not bring herself to knock,” then choose “Save text.” Switch chapters and return to check the saved text.
+
+![Homepage demo writing workspace with chapters, text and the save button](/images/guides/quickstart-writing-en.webp)
+
+*Homepage demo screenshot. Saving keeps this change within the page; reloading resets the demo.*
+
+To keep a final version, choose “Finalize revision,” review it and confirm. Later changes preserve that earlier final.
 
 ## 4. Start your own book in the Mac app
 
-Once the Mac app is open:
+Give your idea to a connected Codex or another external Agent. It prepares titles, a synopsis, an outline and a proposed folder. Review the proposal, confirm the creation scope and let the Agent create the book. Open the Mac library to see the result.
 
-![Mac library with New Book and Add Existing Book controls at the top right](/images/guides/mac-library-en.webp)
+![Mac library showing separate creative works](/images/guides/mac-library-en.webp)
 
-*Actual Mac development build with sample books. Open the image to see “New Book” at the top right.*
+*Actual Mac app with sample works. Open the image to see the library in detail.*
 
-1. Choose “New Book” in the library.
-2. Fill in your pen name, genre and synopsis. If the title is undecided, record your idea under “Ideas and requirements,” then choose “Save plan.”
-3. When the title is ready, choose “Create book” and select a folder for your writing.
-4. Open a chapter, start writing and choose “Save Revision.”
+You can discuss an undecided title or direction before creating the book. The Agent prepares and saves the details; you do not enter them again in a form. Undecided ideas remain in the plan. Manual creation and editing are also available if you prefer to write entirely on your own.
 
 For example: “An apocalypse survival story about a woman rebuilding a community, focused on supplies and trust.” For help with titles and a synopsis, read [Plan a book with Codex](codex-first-task.md).
 

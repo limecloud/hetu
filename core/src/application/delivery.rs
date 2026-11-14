@@ -975,6 +975,7 @@ impl Kernel {
             changes.insert(format!(".hetu/bundles/{}.json",text(intent,"artifact_id")?),bytes(&json!({"delivery_id":intent["delivery_id"],"path":intent["destination"],"sha256":ready["artifact"]["sha256"]}))?);
         }
         changes.insert(format!(".hetu/audit/{}.json",text(operation,"id")?),bytes(&json!({"schema_version":"1.0.0","operation_id":operation["id"],"action":action,"actor_ref":self.actor(),"input_digest":input_digest,"created_at":now(),"status":"succeeded"}))?);
+        self.stage_workspace_properties(&mut changes)?;
         match self.store.transaction(&changes) {
             Ok(()) => Ok(output),
             Err(_) => Ok(self.delivery_unknown(

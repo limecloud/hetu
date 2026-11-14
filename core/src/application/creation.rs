@@ -9,7 +9,11 @@ pub(super) struct CreateProjectConfig {
 }
 
 impl Kernel {
-    pub(super) fn open_creation_project(options: OpenConfig) -> Result<Self> {
+    pub(crate) fn creation_start_receipt(&self, key: &str) -> Result<Value> {
+        let record = self.store.json(&operation_path("hetu.creation_projects.create", key, self.author))?;
+        Ok(record["result"].clone())
+    }
+    pub(super) fn open_creation_project(options: OpenConfig, management_grant: Option<Value>) -> Result<Self> {
         let path = Path::new(options.creation_project_path.as_deref().unwrap());
         ensure(
             path.is_absolute(),
@@ -19,7 +23,7 @@ impl Kernel {
         let author = options.mode == Mode::Author;
         if let Some(create) = &options.create_project {
             ensure(
-                author && options.task_id.is_none(),
+                (author || management_grant.is_some()) && options.task_id.is_none(),
                 "forbidden",
                 "只有作者可以创建建书筹备。",
             )?;
@@ -87,7 +91,7 @@ impl Kernel {
                 json!({"project":project,"revision":1,"sha256":digest(bytes(&project)?)}),
             );
             result["operation"] = Self::operation(&create.operation_key, &input_digest);
-            changes.insert(operation_path("hetu.creation_projects.create", &create.operation_key, true), bytes(&json!({"action":"hetu.creation_projects.create","actor_scope":"author","operation_id":result["operation"]["id"],"key":create.operation_key,"input_digest":input_digest,"result":result}))?);
+            changes.insert(operation_path("hetu.creation_projects.create", &create.operation_key, author), bytes(&json!({"action":"hetu.creation_projects.create","actor_scope":if author {"author"} else {"agent"},"operation_id":result["operation"]["id"],"key":create.operation_key,"input_digest":input_digest,"result":result}))?);
             store.transaction(&changes)?;
         }
         let _read = store.read_lock()?;
@@ -104,7 +108,7 @@ impl Kernel {
             let original = store.json(&operation_path(
                 "hetu.creation_projects.create",
                 &create.operation_key,
-                true,
+                author,
             ))?;
             ensure(
                 original["input_digest"] == Self::input_digest(&serde_json::to_value(create)?)?,
@@ -113,13 +117,17 @@ impl Kernel {
             )?;
         }
         let kernel = Self {
+            #[cfg(test)]
+            model_service_directory: None,
             store,
             config: marker,
             config_sha: digest(marker_bytes),
             author,
             workspace_path: path.canonicalize()?,
             authorization_path: options.authorization_path,
+            collaboration_grant: options.collaboration_grant,
             task_id: options.task_id,
+            management_grant,
         };
         kernel.creation_project(None)?;
         kernel.check_task_session()?;
@@ -231,7 +239,7 @@ impl Kernel {
             && project["created_workspace_ref"].is_null()
         {
             let intent = self.store.json(".hetu/creation/active-intent.json")?;
-            json!({"action":"hetu.creation_projects.create_novel","key":intent["key"]})
+            json!({"action":intent["action"].as_str().unwrap_or("hetu.creation_projects.create_novel"),"key":intent["key"]})
         } else {
             Value::Null
         };
@@ -280,6 +288,9 @@ impl Kernel {
         project["previous_sha256"] = json!(previous);
         project["brief"] = input["brief"].clone();
         project["selected_fields"] = input["selected_fields"].clone();
+        if let Some(profile) = input.get("work_profile") {
+            project["work_profile"] = profile.clone();
+        }
         project["updated_at"] = json!(now());
         let sha = Self::stage_project_record(&self.store, &project, changes)?;
         Ok(json!({"project":project,"revision":project["revision"],"sha256":sha}))
@@ -310,30 +321,46 @@ impl Kernel {
 
     // 创建意图先落盘；新作品的内容、身份和来源在目标目录的首次事务中一并创建。
     // 两个独立目录不假装有跨卷原子事务；中断后只能沿同一意图、目标和原键恢复。
-    pub(super) fn execute_create_novel(
+    pub(super) fn execute_create_work(
         &self,
+        action: &str,
         input: &Value,
         op_path: &str,
         input_digest: &str,
     ) -> Result<Value> {
         let key = text(input, "operation_key")?;
+        let drama = action == "hetu.creation_projects.create_drama";
         let intent_path = ".hetu/creation/active-intent.json";
         let intent = if self.store.exists(intent_path)? {
             let intent = self.store.json(intent_path)?;
             ensure(
-                intent["input_digest"] == input_digest && intent["key"] == key,
+                intent["input_digest"] == input_digest
+                    && intent["key"] == key
+                    && intent["action"]
+                        .as_str()
+                        .unwrap_or("hetu.creation_projects.create_novel")
+                        == action,
                 "idempotency_conflict",
                 "已有创建意图，请恢复同一目标和原操作。",
             )?;
             intent
         } else {
             let (project, sha) = self.expected_project(input)?;
-            domain::novel::validate_metadata(&input["metadata"])?;
+            let profile = if drama {
+                &input["profile"]
+            } else {
+                &input["metadata"]
+            };
             ensure(
-                matches!(
-                    input["metadata"]["language_tag"].as_str(),
-                    Some("zh-CN" | "en")
-                ),
+                !text(profile, "title")?.trim().is_empty(),
+                "invalid_input",
+                "请填写作品名称。",
+            )?;
+            if !drama {
+                domain::novel::validate_metadata(profile)?;
+            }
+            ensure(
+                matches!(profile["language_tag"].as_str(), Some("zh-CN" | "en")),
                 "invalid_input",
                 "当前建书支持中文或英文作品。",
             )?;
@@ -341,7 +368,7 @@ impl Kernel {
             ensure(
                 path.is_absolute() && path.file_name().is_some(),
                 "hetu.unsafe_path",
-                "请为新小说选择独立的绝对目录。",
+                "请为新作品选择独立的绝对目录。",
             )?;
             let parent = path
                 .parent()
@@ -362,16 +389,41 @@ impl Kernel {
                     "新作品目录必须为空，不能覆盖已有目录。",
                 )?;
             }
-            let source = json!({"project_id":self.scope(),"project_revision":project["revision"],"project_sha256":sha,"selected_fields":project["selected_fields"],"candidate_snapshots":self.selected_creation_sources(&project["selected_fields"])?});
-            let intent = json!({"schema_version":"1.0.0","input_digest":input_digest,"key":key,"expected":input["expected"],"target_path":target,"create_key":id("creation"),"metadata":input["metadata"],"source":source});
+            if let Some(selection) = project.get("work_profile") {
+                let work_type = if drama { "drama" } else { "novel" };
+                ensure(
+                    selection["work_type"] == work_type
+                        && selection["language_tag"] == profile["language_tag"]
+                        && (!drama || selection["drama_mode"] == profile["mode"]),
+                    "revision_conflict",
+                    "创建类型、语言或改编方式与已保存筹备不一致，请先确认筹备资料。",
+                )?;
+            }
+            let mut source = json!({"project_id":self.scope(),"project_revision":project["revision"],"project_sha256":sha,"selected_fields":project["selected_fields"],"candidate_snapshots":self.selected_creation_sources(&project["selected_fields"])?});
+            if let Some(profile) = project.get("work_profile") {
+                source["work_profile"] = profile.clone();
+            }
+            let mut intent = json!({"schema_version":"1.0.0","input_digest":input_digest,"key":key,"expected":input["expected"],"target_path":target,"create_key":id("creation"),"metadata":profile,"source":source});
+            if drama {
+                intent["action"] = json!(action);
+            }
             self.store
                 .transaction(&Changes::from([(intent_path.into(), bytes(&intent)?)]))?;
             intent
         };
         let metadata = &intent["metadata"];
-        let target = Kernel::open(
-            json!({"workspace_path":intent["target_path"],"mode":"author","create":{"title":metadata["title"],"locale":metadata["language_tag"],"operation_key":intent["create_key"],"metadata":metadata,"creation_source":intent["source"]}}),
-        )?;
+        let mut create = json!({"title":metadata["title"],"locale":metadata["language_tag"],"operation_key":intent["create_key"],"creation_source":intent["source"]});
+        if drama {
+            create["work_type"] = json!("drama");
+        } else {
+            create["metadata"] = metadata.clone();
+        }
+        let target = if let Some(binding) = &self.management_grant {
+            let target_binding = crate::collaboration::authoring::workspace_binding(binding, Path::new(text(&intent, "target_path")?))?;
+            Kernel::open_managed(json!({"workspace_path":intent["target_path"],"mode":"agent","create":create}), target_binding)?
+        } else {
+            Kernel::open(json!({"workspace_path":intent["target_path"],"mode":"author","create":create}))?
+        };
         let (mut project, previous) = self.creation_project(None)?;
         ensure(
             project["created_workspace_ref"].is_null()
@@ -379,7 +431,20 @@ impl Kernel {
             "revision_conflict",
             "创建意图与筹备修订不一致，请保留目标作品并核对。",
         )?;
-        let created = json!({"workspace_id":target.scope(),"novel_id":target.get_novel()?["novel"]["novel_id"]});
+        let mut data = json!({"workspace":target.config,"target_path":intent["target_path"]});
+        let created = if drama {
+            let result = target.request(json!({"action":"hetu.drama.projects.create","contract_revision":"1","input":{"title":metadata["title"],"description":metadata["description"],"mode":metadata["mode"],"operation_key":format!("initial-project-{}",text(&intent,"create_key")?)}}));
+            ensure(
+                result["status"] == "succeeded",
+                "hetu.io_failure",
+                "剧本作品已创建，请沿原操作恢复短剧项目。",
+            )?;
+            data["drama_project"] = result["data"].clone();
+            json!({"workspace_id":target.scope(),"drama_project_id":result["data"]["project"]["project_id"]})
+        } else {
+            data["novel"] = target.get_novel()?["novel"].clone();
+            json!({"workspace_id":target.scope(),"novel_id":data["novel"]["novel_id"]})
+        };
         project["created_workspace_ref"] = created.clone();
         project["revision"] = json!(
             integer(&project, "revision")?
@@ -390,14 +455,18 @@ impl Kernel {
         project["updated_at"] = json!(now());
         let mut changes = Changes::new();
         let sha = Self::stage_project_record(&self.store, &project, &mut changes)?;
-        let mut output = domain::success(
-            "hetu.creation_projects.create_novel",
-            self.scope(),
-            json!({"workspace":target.config,"novel":target.get_novel()?["novel"],"target_path":intent["target_path"],"project":project,"revision":project["revision"],"sha256":sha,"created_workspace_ref":created}),
-        );
+        for (field, value) in [
+            ("project", project.clone()),
+            ("revision", project["revision"].clone()),
+            ("sha256", json!(sha)),
+            ("created_workspace_ref", created.clone()),
+        ] {
+            data[field] = value;
+        }
+        let mut output = domain::success(action, self.scope(), data);
         output["operation"] = Self::operation(key, input_digest);
-        changes.insert(op_path.into(), bytes(&json!({"operation_id":output["operation"]["id"],"action":"hetu.creation_projects.create_novel","key":key,"input_digest":input_digest,"actor_scope":"author","result":output}))?);
-        changes.insert(format!(".hetu/audit/{}.json",text(&output["operation"],"id")?),bytes(&json!({"action":"hetu.creation_projects.create_novel","operation_id":output["operation"]["id"],"actor_ref":self.actor(),"created_workspace_ref":created,"created_at":now()}))?);
+        changes.insert(op_path.into(), bytes(&json!({"operation_id":output["operation"]["id"],"action":action,"key":key,"input_digest":input_digest,"actor_scope":if self.author {"author"} else {"agent"},"result":output}))?);
+        changes.insert(format!(".hetu/audit/{}.json",text(&output["operation"],"id")?),bytes(&json!({"action":action,"operation_id":output["operation"]["id"],"actor_ref":self.actor(),"created_workspace_ref":created,"created_at":now()}))?);
         self.store.transaction(&changes)?;
         Ok(output)
     }

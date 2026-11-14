@@ -4,18 +4,31 @@ import { assetURL } from '../lib/assets';
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const en = locale === 'en';
-const entries = [
-  { title: en?'Hetu Luoshu wordmark':'河图洛书字标', body: en?'Transparent artwork for light and dark backgrounds, with English typography.':'中文优先与全英文两套字标，提供浅底、深底透明 PNG。', image:'/resources/brand/wordmark'+(en?'-en':'')+'.png' },
-  { title: en?'A place for every book':'每一本书，都有自己的位置', body: en?'Our dragon-horse beside three independent books, a manuscript and river-inspired scrolls.':'小图、多部作品与河洛意象卷轴，共用无文字场景图。', image:'/images/hetu-luoshu-library-scene.webp' },
-  { title: en?'Meet Xiaotu':'认识河图洛书小图', body: en?'Our little dragon-horse, in jade, warm ivory and cinnabar.':'玉青色小龙马，卷轴鬃毛与朱砂印章。', image:'/brand/mascot-master.png', href:'/brand/mascot-master.png', square:true },
-  { title: en?'One identity, every platform':'同一个小图，陪伴不同平台', body: en?'macOS, Windows, iOS, Android and Web icons.':'macOS、Windows、iOS、Android 与 Web 图标资源。', image:'/resources/brand/icon-overview'+(en?'-en':'')+'.png', href:'/resources/manifest.json' },
-  { title: en?'A workspace for your story':'为你的故事准备的工作台', body: en?'The current homepage library demo, using the native client’s layout and artwork.':'当前首页书库演示，复用原生布局与插画，点击即可在首页操作。', image:'/images/prototype-desktop'+(en?'-en':'')+'.webp', href:prototype(locale) },
-  { title: en?'A mobile companion':'移动端的陪伴式体验', body: en?'iOS and Android visual concepts. Mobile apps are outside the V1 desktop scope.':'iOS／Android 查看与审核的视觉延展，不代表 V1 移动应用。', image:'/images/prototype-mobile'+(en?'-en':'')+'.webp' },
-  { title: en?'A website in your language':'使用熟悉的语言认识河图洛书', body: en?'English copy, interface previews and sharing artwork.':'中文优先的页面、界面示意与分享图。', image:'/images/prototype-website'+(en?'-en':'')+'.webp' },
-  { title: en?'A little company for your desk':'让小图陪你写下去', body: en?'Collectibles, notebooks, mugs and stickers with the Hetu Luoshu wordmark. Manufacturing artwork is separate.':'手办、笔记本、杯具与贴纸的品牌延展。量产需另行制作工艺文件。', image:'/images/brand-merch'+(en?'-en':'')+'.webp' },
-  { title: en?'Share your story workspace':'分享你的故事工作台', body: en?'Localized social artwork at 1200 × 630 pixels.':'1200 × 630 分享图，中英文分别排版。', image:'/images/social-og'+(en?'-en':'')+'.png' },
+const groups = [
+  { id: 'identity', title: en ? 'A consistent identity' : '同一个名字，同一个小图', body: en ? 'Use the supplied wordmarks and icons to keep the identity intact.' : '使用原始字标与图标资源，保持名称、比例和角色形象一致。', entries: [
+    { title: en ? 'Wordmarks' : '中英文字标', body: en ? 'Transparent PNG artwork for light and dark backgrounds.' : '中英文分别排版，提供浅底、深底透明 PNG。', image: '/resources/brand/wordmark' + (en ? '-en' : '') + '.png' },
+    { title: en ? 'Platform icons' : '跨平台图标', body: en ? 'macOS, Windows, iOS, Android and Web artwork. Icon files do not indicate app availability.' : 'macOS、Windows、iOS、Android 与 Web 图标资源。图标资源不代表相应平台已有应用。', image: '/resources/brand/icon-overview' + (en ? '-en' : '') + '.png', href: '/resources/manifest.json' },
+  ] },
+  { id: 'workspace', title: en ? 'A place for story worlds' : '让故事世界，有处安放', body: en ? 'Illustration, an interactive demo and a clearly marked mobile concept serve different purposes.' : '品牌插画、首页演示与移动概念分别展示，不用效果图代替实际软件。', entries: [
+    { title: en ? 'The story library' : '每一本书，都有自己的位置', body: en ? 'Xiaotu beside books, a manuscript and river-inspired scrolls. A brand illustration.' : '小图、书架、稿本与河洛意象卷轴，表达多作品各自独立的创作空间。品牌概念插画。', image: '/images/hetu-luoshu-library-scene.webp' },
+    { title: en ? 'Try the workspace' : '可以亲手操作的工作台', body: en ? 'A screenshot of the current homepage demo. Open it to explore the sample library.' : '取自首页演示的真实截图。点击进入示例书库，体验写作、审核与采纳。', image: `/images/guides/quickstart-library-${locale}.webp`, href: prototype(locale) },
+    { title: en ? 'A mobile concept' : '查看与审核的移动概念', body: en ? 'An interface concept for viewing and review. It is not a released mobile app.' : '面向查看与审核的界面概念，不代表已发布的移动应用。', image: '/images/prototype-mobile' + (en ? '-en' : '') + '.webp' },
+  ] },
+  { id: 'everyday', title: en ? 'Beyond the screen' : '也陪伴屏幕之外的创作', body: en ? 'Brand applications and artwork for sharing.' : '桌边的陪伴，与分享时的第一眼。', entries: [
+    { title: en ? 'A little company for your desk' : '让小图陪你写下去', body: en ? 'Collectibles, notebooks, mugs and stickers. Manufacturing artwork is separate.' : '手办、笔记本、杯具与贴纸的品牌延展。量产需另行制作工艺文件。', image: '/images/brand-merch' + (en ? '-en' : '') + '.webp' },
+    { title: en ? 'Sharing artwork' : '分享你的故事工作台', body: en ? 'Localized social artwork at 1200 × 630 pixels.' : '1200 × 630 分享图，中英文分别排版。', image: '/images/social-og' + (en ? '-en' : '') + '.png' },
+  ] },
+];
+const downloads = [
+  { label: en ? 'Wordmark, light' : '浅底字标', format: 'PNG', path: '/resources/brand/wordmark' + (en ? '-en' : '') + '.png' },
+  { label: en ? 'Wordmark, dark' : '深底字标', format: 'PNG', path: '/resources/brand/wordmark' + (en ? '-en' : '') + '-dark.png' },
+  { label: 'macOS', format: 'ICNS', path: '/resources/brand/Hetu.icns' },
+  { label: 'Windows', format: 'ICO', path: '/resources/brand/hetu.ico' },
+  { label: 'Web favicon', format: 'ICO', path: '/brand/favicon.ico' },
 ];
 ---
-<div class="container subpage"><header class="page-hero"><span class="eyebrow">HETU LUOSHU</span><h1>{en?'A companion for your story world.':'让故事世界，有一个可爱的模样。'}</h1><p>{en?'Brand artwork, platform icons and localized interface concepts. Artwork illustrates the product design; it does not represent released applications.':'品牌形象、跨平台图标与界面设计。图片展示产品设计，交互原型使用演示数据。'}</p></header>
-<div class="brand-downloads"><a class="button secondary" href={assetURL('/resources/brand/wordmark'+(en?'-en':'')+'.png')} download>{en?'Wordmark, light':'浅底字标'} ↓</a><a class="button secondary" href={assetURL('/resources/brand/wordmark'+(en?'-en':'')+'-dark.png')} download>{en?'Wordmark, dark':'深底字标'} ↓</a><a class="button secondary" href={assetURL("/resources/brand/Hetu.icns")} download>macOS .icns ↓</a><a class="button secondary" href={assetURL("/resources/brand/hetu.ico")} download>Windows .ico ↓</a><a class="button secondary" href={assetURL("/brand/favicon.ico")} download>Web favicon ↓</a></div>
-<div class="brand-gallery">{entries.map(entry=><article><a href={entry.href?.includes('#') ? entry.href : assetURL(entry.href || entry.image)}><div class:list={['brand-image',{'square':entry.square}]}><img src={assetURL(entry.image)} alt={entry.title} loading="lazy"/></div></a><h2>{entry.title}</h2><p>{entry.body}</p></article>)}</div></div>
+<div class="container subpage brand-page">
+  <header class="page-hero page-hero-split brand-intro"><div><h1>{en ? 'A companion for your story world.' : <>让故事世界，<br/>有一个可爱的模样。</>}</h1><p>{en ? 'Meet Xiaotu, the little dragon-horse of Hetu Luoshu. A scroll for the stories you build. A seal for the decisions you make.' : '认识小图，河图洛书的玉青色小龙马。卷轴连接设定与故事，印章代表作者的确认。安静地陪伴，把决定留给你。'}</p><a class="button primary" href="#brand-resources">{en ? 'Get brand resources' : '获取品牌资源'} <span aria-hidden="true">↓</span></a></div><img class="brand-mascot" src={assetURL('/brand/mascot-master.png')} width="1024" height="1024" alt={en ? 'Xiaotu, the jade dragon-horse with an ivory scroll mane and a cinnabar seal.' : '小图：玉青色小龙马，暖玉白卷轴鬃毛，佩戴朱砂印章。'}/></header>
+  <section class="brand-resources" id="brand-resources" aria-labelledby="brand-resources-title"><h2 id="brand-resources-title">{en ? 'Brand resources' : '品牌资源'}</h2><div class="brand-downloads">{downloads.map(item => <a href={assetURL(item.path)} download><strong>{item.label}</strong><span>{item.format} <span aria-hidden="true">↓</span></span></a>)}</div></section>
+  {groups.map(group => <section class="brand-collection" aria-labelledby={`brand-${group.id}`}><header><h2 id={`brand-${group.id}`}>{group.title}</h2><p>{group.body}</p></header><div class="brand-gallery">{group.entries.map(entry => <article><a href={'href' in entry && entry.href?.includes('#') ? entry.href : assetURL(('href' in entry ? entry.href : undefined) || entry.image)}><div class="brand-image"><img src={assetURL(entry.image)} alt={entry.title} loading="lazy"/></div></a><h3>{entry.title}</h3><p>{entry.body}</p></article>)}</div></section>)}
+</div>

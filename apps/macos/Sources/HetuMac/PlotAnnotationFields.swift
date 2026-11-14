@@ -44,12 +44,12 @@ struct PlotAnnotationFields: View {
         VStack(alignment: .leading, spacing: 10) {
             Divider()
             Toggle(model.t("annotation.enabled"), isOn: $form.enabled)
-            Text(model.t("annotation.note")).font(.caption).foregroundStyle(.secondary)
+            Text(model.t("annotation.note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
             if form.enabled {
                 Picker(model.t("annotation.context"), selection: $form.context) {
                     ForEach(["unknown", "actual", "dream", "hypothetical", "reported"], id: \.self) { Text(model.t("annotation.context." + $0)).tag($0) }
                 }
-                Text(model.t("annotation.facts")).font(.headline)
+                Text(model.t("annotation.facts")).font(.system(size: 14, weight: .semibold))
                 ForEach($form.facts) { $fact in
                     VStack(alignment: .leading, spacing: 8) {
                         HStack {
@@ -76,9 +76,9 @@ struct PlotAnnotationFields: View {
                     }.padding(10).background(.quaternary.opacity(0.3), in: RoundedRectangle(cornerRadius: 6))
                 }
                 Button(model.t("annotation.add_fact")) { var fact = PlotAssertionForm(); fact.subject = characters.first?.id ?? ""; form.facts.append(fact) }
-                Text(model.t("annotation.capabilities")).font(.headline)
-                TextEditor(text: $form.capabilities).frame(height: 70).border(Color.secondary.opacity(0.2)).accessibilityLabel(model.t("annotation.capabilities"))
-                Text(model.t("annotation.capabilities_note")).font(.caption).foregroundStyle(.secondary)
+                Text(model.t("annotation.capabilities")).font(.system(size: 14, weight: .semibold))
+                TextEditor(text: $form.capabilities).frame(height: 70).border(WorkbenchPalette.muted.opacity(0.2)).accessibilityLabel(model.t("annotation.capabilities"))
+                Text(model.t("annotation.capabilities_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
             }
         }
     }

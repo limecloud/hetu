@@ -1,0 +1,168 @@
+{
+  "schema_version": "1.0.0",
+  "verified_at": "2026-11-14T16:15:28.821976+00:00",
+  "executor": "当前 Codex 对话，通过公开 CLI 实际创建并创作；stdio 另以协议驱动验证",
+  "overall_result": "partial",
+  "machine_creation_result": "pass",
+  "scope": "E2E-22 / UC-44 / AC-49 的机器筹备、有限创建和首任务切片",
+  "starting_state": {
+    "at": "2026-11-14T15:49:14.983813+00:00",
+    "workspace": null,
+    "creation_project": null,
+    "precreated_task": null,
+    "directory_exists": false
+  },
+  "gui_business_operations": false,
+  "author_driver_business_seeding": false,
+  "desktop_process_absence": "not_recorded",
+  "journeys": [
+    {
+      "kind": "novel",
+      "workspace_ref": {
+        "id": "workspace_f62150bc-90c6-41d8-8821-4e27c485ff2e",
+        "kind": "workspace"
+      },
+      "task_locator": {
+        "scope_ref": {
+          "id": "workspace_f62150bc-90c6-41d8-8821-4e27c485ff2e",
+          "kind": "workspace"
+        },
+        "task_id": "task_678109c3-775d-425d-8012-c8f6d0f64b4f"
+      },
+      "result": "pass",
+      "initial_create": "novel-05-create.stdout.json",
+      "repeated_create": "novel-06-create-replay.stdout.json",
+      "submitted_result": "novel-14-submit.stdout.json",
+      "fixed_result_after_restart": "final-novel-03-restore.stdout.json"
+    },
+    {
+      "kind": "original_drama",
+      "workspace_ref": {
+        "id": "workspace_c3c14e57-97ca-440e-9e72-a03f4f248ebb",
+        "kind": "workspace"
+      },
+      "task_locator": {
+        "scope_ref": {
+          "id": "workspace_c3c14e57-97ca-440e-9e72-a03f4f248ebb",
+          "kind": "workspace"
+        },
+        "task_id": "task_020ba01d-051a-4d32-816e-76466b709f77"
+      },
+      "result": "pass",
+      "initial_create": "drama-05-create.stdout.json",
+      "repeated_create": "drama-06-create-replay.stdout.json",
+      "submitted_result": "drama-14-submit.stdout.json",
+      "fixed_result_after_restart": "final-drama-03-restore.stdout.json"
+    }
+  ],
+  "actual_content": {
+    "novel": {
+      "characters": 737,
+      "first_revision_bytes": 2125,
+      "saved_revisions": 2,
+      "fixed_submissions": 2,
+      "revision_reason": "当前 Agent 自查改善表达；未冒充作者反馈返工"
+    },
+    "drama": {
+      "characters": 521,
+      "format": "fountain",
+      "original_without_source_or_skeleton": true,
+      "fixed_submissions": 1
+    }
+  },
+  "checks": {
+    "core_bootstrap": "3 passed, 0 failed",
+    "packaged_mcp_stdio": "1 passed, 0 failed",
+    "original_body_unchanged": true,
+    "fixed_old_working_revision_readable": true,
+    "empty_episode_creation_and_original_key_replay": true,
+    "negative_cases": [
+      {
+        "receipt": "build/requirements-audit/machine-entry-20261114/negative-01-other-client.stdout.json",
+        "code": "forbidden",
+        "result": "pass"
+      },
+      {
+        "receipt": "build/requirements-audit/machine-entry-20261114/negative-02-other-work.stdout.json",
+        "code": "forbidden",
+        "result": "pass"
+      },
+      {
+        "receipt": "build/requirements-audit/machine-entry-20261114/negative-03-direct-body.stdout.json",
+        "code": "forbidden",
+        "result": "pass"
+      },
+      {
+        "receipt": "build/requirements-audit/machine-entry-20261114/negative-04-self-approve.stdout.json",
+        "code": "invalid_input",
+        "result": "pass"
+      },
+      {
+        "receipt": "build/requirements-audit/machine-entry-20261114/negative-05-adopt.stdout.json",
+        "code": "hetu.capability_unavailable",
+        "result": "pass"
+      },
+      {
+        "receipt": "build/requirements-audit/machine-entry-20261114/negative-06-arbitrary-target.stdout.json",
+        "code": "forbidden",
+        "result": "pass"
+      },
+      {
+        "receipt": "build/requirements-audit/machine-entry-20261114/negative-07-different-input.stdout.json",
+        "code": "idempotency_conflict",
+        "result": "pass"
+      }
+    ]
+  },
+  "fix": {
+    "problem": "Agent 创建空章节时 actor_ref 为 Agent，但 origin_kind 错标为 author",
+    "change": "共享修订发布按可信执行身份写入 author 或 agent；不改写历史修订",
+    "verified_receipts": [
+      "final-novel-02-empty-document.stdout.json",
+      "final-drama-02-empty-document.stdout.json",
+      "final-drama-04-create-episode.stdout.json"
+    ]
+  },
+  "artifacts": {
+    "cli": {
+      "path": "build/requirements-audit/machine-entry-20261114/runtime/Contents/Helpers/hetu",
+      "sha256": "b24aad875114601d61931dfd63e3a05f7e7780d334d090b9e1716bbc3c6e281d"
+    },
+    "mcp": {
+      "path": "build/requirements-audit/machine-entry-20261114/runtime/Contents/Helpers/hetu-mcp",
+      "sha256": "a512a9e376ec4899a80384a8a8cd802ed8364e36364e917784705d6c067a321d"
+    },
+    "core": {
+      "path": "build/requirements-audit/machine-entry-20261114/runtime/Contents/Frameworks/libhetu_core.dylib",
+      "sha256": "408350a45526b2ebec2ff82fb1193532bbddbdd6561fe35cff3b150508eb38fb"
+    }
+  },
+  "source_and_build_manifest": "build/requirements-audit/machine-entry-20261114/final-build-fingerprints.json",
+  "raw_evidence_directory": "build/requirements-audit/machine-entry-20261114",
+  "not_run": [
+    "同一新建作品在原生书库的发现、精确打开及作者可视化 review",
+    "本轮新建作品的作者公开意见、实际返工、局部采纳及独立定稿",
+    "没有桌面进程的起始状态专门核验",
+    "新安装 App、Skills 发现及真实宿主 MCP 连接",
+    "真实 MCP Apps 宿主交互",
+    "全软件操作提案、既有目录授权、设置等其余机器用例"
+  ],
+  "boundaries": [
+    "首次失败请求与回执保留在相关验收记录的 initial_attempt 及其原始材料中；后续通过范围另列，不追改失败回执",
+    "当前安装缓存的 Skill 0.1.0 不冒充源码分发套件 0.2.4 已启用",
+    "首轮 CLI 使用此前编译的通用 Swift 入口及新增 Core；最终 CLI 已由当前源码独立构建，修复后的 Core 已复验来源及恢复",
+    "协议驱动通过不等于真实宿主安装或 Apps 通过",
+    "未调用收费模型、未覆盖安装 App、未提交或推送"
+  ],
+  "related_acceptance_evidence": {
+    "path": "current-codex-acceptance-2026-11-14.json",
+    "initial_failure_location": "initial_attempt",
+    "relationship": "该记录另行覆盖作者反馈、返工、采纳定稿与原生只读观察；本记录只陈述自身实际执行范围，不替代或撤销该记录。"
+  },
+  "source_freshness": {
+    "artifact_kind": "fixed_acceptance_snapshot",
+    "latest_worktree_integrated": false,
+    "later_worktree_changes": "build/requirements-audit/machine-entry-20261114/later-worktree-changes.json",
+    "reason": "制品构建之后，共享工作树另有 Core 修改；本轮通过仅绑定记录的制品及源码指纹，统一装配另行验证。"
+  }
+}

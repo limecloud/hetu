@@ -57,10 +57,10 @@ struct StoryBibleView: View {
             }
             HStack {
                 Label(model.t(model.locked ? "bible.locked" : "bible.editable"), systemImage: model.locked ? "lock" : "lock.open")
-                    .font(.system(size: 11)).foregroundStyle(WorkbenchPalette.jade).padding(.horizontal, 10).padding(.vertical, 5)
+                    .font(.system(size: 12)).foregroundStyle(WorkbenchPalette.jade).padding(.horizontal, 10).padding(.vertical, 5)
                     .background(WorkbenchPalette.jadeSoft, in: RoundedRectangle(cornerRadius: 4))
                 Spacer()
-                if kind.hasArchive { Toggle(model.t("entity.show_archived"), isOn: $showArchived).toggleStyle(.checkbox).font(.caption) }
+                if kind.hasArchive { Toggle(model.t("entity.show_archived"), isOn: $showArchived).toggleStyle(.checkbox).font(.system(size: 12)) }
             }
             Picker(model.t("entity.category"), selection: $kind) {
                 ForEach(BibleKind.allCases) { kind in Text(model.t("entity.kind." + kind.rawValue)).tag(kind) }
@@ -95,12 +95,12 @@ struct StoryBibleView: View {
                 .font(.custom("Songti SC", size: 21)).foregroundStyle(WorkbenchPalette.jade)
                 .frame(width: 42, height: 42).background(WorkbenchPalette.jadeSoft, in: Circle()).accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 6) {
-                Text(entityTitle(model, kind, item)).font(.system(size: 15, weight: .semibold))
+                Text(entityTitle(model, kind, item)).font(.system(size: 14, weight: .semibold))
                 Text(model.t("entity.kind." + kind.rawValue)).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
-                if kind == .event, item["time_anchor"] != .null { Text(model.t("timeline.anchor_summary", ["calendar": item["time_anchor"]["calendar"].string ?? "", "tick": String(item["time_anchor"]["tick"].integer ?? 0)])).font(.caption).foregroundStyle(.secondary) }
-                if kind == .rule, !(item["rationale"].string ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { Text(model.t("rule.type." + (item["type"].string ?? "advisory"))).font(.caption).foregroundStyle(.secondary) }
-                if kind == .character { Text(model.t("fact.count", ["count": String(item["facts"].array.count)])).font(.caption).foregroundStyle(.secondary) }
-                if item["archived"].bool == true { Text(model.t("entity.archived")).font(.caption).foregroundStyle(.secondary) }
+                if kind == .event, item["time_anchor"] != .null { Text(model.t("timeline.anchor_summary", ["calendar": item["time_anchor"]["calendar"].string ?? "", "tick": String(item["time_anchor"]["tick"].integer ?? 0)])).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted) }
+                if kind == .rule, !(item["rationale"].string ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { Text(model.t("rule.type." + (item["type"].string ?? "advisory"))).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted) }
+                if kind == .character { Text(model.t("fact.count", ["count": String(item["facts"].array.count)])).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted) }
+                if item["archived"].bool == true { Text(model.t("entity.archived")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted) }
             }.frame(minWidth: 140, idealWidth: 180, maxWidth: 240, alignment: .leading)
             if let description = item["description"].string, !description.isEmpty {
                 Text(description).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted).lineLimit(3).frame(maxWidth: .infinity, alignment: .leading)
@@ -124,10 +124,10 @@ struct StoryBibleView: View {
     }
     private var lockSheet: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text(model.t(model.locked ? "bible.unlock" : "bible.lock")).font(.title2)
-            Text(model.t("bible.lock_detail")).foregroundStyle(.secondary)
+            Text(model.t(model.locked ? "bible.unlock" : "bible.lock")).font(.system(size: 20, weight: .semibold))
+            Text(model.t("bible.lock_detail")).foregroundStyle(WorkbenchPalette.muted)
             TextField(model.t("bible.reason"), text: $reason)
-            if let lockError { Text(lockError).foregroundStyle(.red).textSelection(.enabled) }
+            if let lockError { Text(lockError).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             HStack {
                 Button(model.t("common.cancel")) { confirmLock = false }.keyboardShortcut(.cancelAction)
                 Spacer()
@@ -152,7 +152,7 @@ struct MultipleReferences: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(title)
-            if choices.isEmpty { Text(model.t("reference.none")).foregroundStyle(.secondary) }
+            if choices.isEmpty { Text(model.t("reference.none")).foregroundStyle(WorkbenchPalette.muted) }
             else {
                 if choices.count > 8 { TextField(model.t("reference.filter"), text: $query) }
                 ScrollView {
@@ -163,7 +163,7 @@ struct MultipleReferences: View {
                     }.frame(maxWidth: .infinity, alignment: .leading)
                 }.frame(height: CGFloat(min(max(visible.count, 1), 5) * 25))
             }
-            Text(choices.filter { selected.contains($0.id) }.map(\.name).joined(separator: model.locale == "en" ? ", " : "、")).foregroundStyle(.secondary).font(.callout)
+            Text(choices.filter { selected.contains($0.id) }.map(\.name).joined(separator: model.locale == "en" ? ", " : "、")).foregroundStyle(WorkbenchPalette.muted).font(.system(size: 14))
         }
     }
 }
@@ -215,7 +215,7 @@ struct EntityEditor: View {
     }
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(model.t(entity == .null ? "entity.new_title" : "entity.edit_title", ["kind": model.t("entity.kind." + kind.rawValue)])).font(.title2)
+            Text(model.t(entity == .null ? "entity.new_title" : "entity.edit_title", ["kind": model.t("entity.kind." + kind.rawValue)])).font(.system(size: 20, weight: .semibold))
             ScrollView {
                 Form {
                     if kind != .rule { TextField(model.t("entity.name"), text: $name) }
@@ -230,7 +230,7 @@ struct EntityEditor: View {
                     SourceEvidenceView(model: model, sources: entity["source_refs"].array)
                 }.formStyle(.grouped)
             }
-            if let saveError { Text(saveError).foregroundStyle(.red).textSelection(.enabled) }
+            if let saveError { Text(saveError).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             HStack {
                 Button(model.t("common.cancel")) { dismiss() }.keyboardShortcut(.cancelAction)
                 Spacer()
@@ -257,8 +257,8 @@ struct EntityEditor: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(factDescription(model, fact))
-                        Text(model.t("fact.valid_from") + ": " + displayName(model, reference: fact["valid_from"].string ?? "")).font(.caption).foregroundStyle(.secondary)
-                        Text(model.t("fact.valid_to") + ": " + (fact["valid_to"].string.map { displayName(model, reference: $0) } ?? model.t("fact.open_end"))).font(.caption).foregroundStyle(.secondary)
+                        Text(model.t("fact.valid_from") + ": " + displayName(model, reference: fact["valid_from"].string ?? "")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
+                        Text(model.t("fact.valid_to") + ": " + (fact["valid_to"].string.map { displayName(model, reference: $0) } ?? model.t("fact.open_end"))).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                     }
                     Spacer()
                     Button(model.t("common.edit")) { selectedFact = fact; editingFact = true }
@@ -266,7 +266,7 @@ struct EntityEditor: View {
                 }
             }
             Button(model.t("fact.add")) { selectedFact = .null; editingFact = true }.disabled(entityChoices(model, .event).isEmpty)
-            if entityChoices(model, .event).isEmpty { Text(model.t("fact.needs_event")).font(.callout).foregroundStyle(.secondary) }
+            if entityChoices(model, .event).isEmpty { Text(model.t("fact.needs_event")).font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted) }
         }
     }
     private var factionFields: some View {
@@ -293,14 +293,14 @@ struct EntityEditor: View {
     }
     private var timelineFields: some View {
         Section(model.t("timeline.order")) {
-            Text(model.t("timeline.order_detail")).font(.callout).foregroundStyle(.secondary)
+            Text(model.t("timeline.order_detail")).font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted)
             MultipleReferences(title: model.t("timeline.before"), choices: entityChoices(model, .event, excluding: reference), selected: $before, model: model)
             MultipleReferences(title: model.t("timeline.after"), choices: entityChoices(model, .event, excluding: reference), selected: $after, model: model)
             Toggle(model.t("timeline.has_anchor"), isOn: $hasAnchor)
             if hasAnchor {
                 TextField(model.t("timeline.calendar"), text: $calendar)
                 TextField(model.t("timeline.tick"), text: $tick)
-                Text(model.t("timeline.tick_detail")).font(.caption).foregroundStyle(.secondary)
+                Text(model.t("timeline.tick_detail")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
             }
         }
     }
@@ -313,7 +313,7 @@ struct EntityEditor: View {
             ruleParameterFields
         }
         Section(model.t("rule.scope")) {
-            Text(model.t("rule.scope_detail")).font(.caption).foregroundStyle(.secondary)
+            Text(model.t("rule.scope_detail")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
             HStack {
                 ForEach(["novel", "drama", "music-cue", "visual-prompt"], id: \.self) { package in Toggle(model.t("package." + package), isOn: membership(package, in: $packages)) }
             }
@@ -339,7 +339,7 @@ struct EntityEditor: View {
             TextField(model.t("rule.capability"), text: $capability)
         default:
             TextField(model.t("rule.advisory"), text: $advisory, axis: .vertical).lineLimit(4...10)
-            Text(model.t("rule.advisory_detail")).font(.callout).foregroundStyle(.secondary)
+            Text(model.t("rule.advisory_detail")).font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted)
         }
     }
     private func referencePicker(_ title: String, selection: Binding<String>, kind: BibleKind, optional: Bool = false) -> some View {
@@ -444,7 +444,7 @@ struct FactEditor: View {
     @State private var didLoad = false
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text(model.t("fact.edit")).font(.title2)
+            Text(model.t("fact.edit")).font(.system(size: 20, weight: .semibold))
             Form {
                 Picker(model.t("fact.predicate"), selection: $predicate) { ForEach(["identity", "primary_faction", "life_state", "age"], id: \.self) { Text(model.t("fact.predicate." + $0)).tag($0) } }
                 if predicate == "primary_faction" { Picker(model.t("entity.kind.faction"), selection: $faction) { Text(model.t("reference.select")).tag(""); ForEach(entityChoices(model, .faction)) { Text($0.name).tag($0.id) } } }
@@ -452,7 +452,7 @@ struct FactEditor: View {
                 else { TextField(model.t(predicate == "age" ? "fact.age_value" : "fact.value"), text: $text) }
                 Picker(model.t("fact.valid_from"), selection: $start) { Text(model.t("reference.select")).tag(""); ForEach(entityChoices(model, .event)) { Text($0.name).tag($0.id) } }
                 Picker(model.t("fact.valid_to"), selection: $end) { Text(model.t("fact.open_end")).tag(""); ForEach(entityChoices(model, .event, excluding: start)) { Text($0.name).tag($0.id) } }
-                Text(model.t("fact.interval_detail")).font(.caption).foregroundStyle(.secondary)
+                Text(model.t("fact.interval_detail")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                 SourceEvidenceView(model: model, sources: fact["source_refs"].array)
             }
             HStack {
@@ -490,7 +490,7 @@ struct SourceEvidenceView: View {
     let sources: [JSONValue]
     var body: some View {
         if !sources.isEmpty {
-            Section(model.t("source.evidence")) { ForEach(Array(sources.enumerated()), id: \.offset) { _, source in Text(source["quote"].string ?? "").textSelection(.enabled).font(.callout).foregroundStyle(.secondary) } }
+            Section(model.t("source.evidence")) { ForEach(Array(sources.enumerated()), id: \.offset) { _, source in Text(source["quote"].string ?? "").textSelection(.enabled).font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted) } }
         }
     }
 }
@@ -503,8 +503,8 @@ struct BibleHistoryView: View {
     @State private var loadError: String?
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(model.t("bible.history")).font(.title2)
-            Text(model.t("bible.history_detail")).foregroundStyle(.secondary)
+            Text(model.t("bible.history")).font(.system(size: 20, weight: .semibold))
+            Text(model.t("bible.history_detail")).foregroundStyle(WorkbenchPalette.muted)
             HStack {
                 Stepper(model.t("bible.revision", ["revision": String(revision)]), value: $revision, in: 1...max(1, model.bible["revision"].integer ?? 1))
                 Button(model.t("bible.load_revision")) {
@@ -514,17 +514,17 @@ struct BibleHistoryView: View {
                     }
                 }.disabled(model.busy)
             }
-            if let loadError { Text(loadError).foregroundStyle(.red).textSelection(.enabled) }
+            if let loadError { Text(loadError).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 16) {
                     if snapshot != .null {
-                        Text(model.t("bible.revision", ["revision": String(snapshot["revision"].integer ?? 0)])).font(.headline)
-                        Label(model.t(snapshot["blueprint"]["lock"]["locked"].bool == true ? "bible.locked" : "bible.editable"), systemImage: "book.closed").foregroundStyle(.secondary)
+                        Text(model.t("bible.revision", ["revision": String(snapshot["revision"].integer ?? 0)])).font(.system(size: 14, weight: .semibold))
+                        Label(model.t(snapshot["blueprint"]["lock"]["locked"].bool == true ? "bible.locked" : "bible.editable"), systemImage: "book.closed").foregroundStyle(WorkbenchPalette.muted)
                         ForEach(BibleKind.allCases) { kind in
                             VStack(alignment: .leading, spacing: 6) {
-                                Text(model.t("entity.kind." + kind.rawValue)).font(.headline)
+                                Text(model.t("entity.kind." + kind.rawValue)).font(.system(size: 14, weight: .semibold))
                                 ForEach(Array(snapshot["blueprint"][kind.section].array.enumerated()), id: \.offset) { _, entity in
-                                    Text(entityTitle(model, kind, entity)).font(.headline)
+                                    Text(entityTitle(model, kind, entity)).font(.system(size: 14, weight: .semibold))
                                     HistoricalEntityDetails(model: model, kind: kind, entity: entity, blueprint: snapshot["blueprint"])
                                     Divider()
                                 }
@@ -548,7 +548,7 @@ struct HistoricalEntityDetails: View {
         VStack(alignment: .leading, spacing: 8) {
             if let description = entity["description"].string, !description.isEmpty { Text(description) }
             if !entity["aliases"].array.isEmpty { field("character.aliases", entity["aliases"].array.compactMap(\.string).joined(separator: ", ")) }
-            if kind.hasArchive { Text(model.t(entity["archived"].bool == true ? "entity.archived" : "entity.active")).foregroundStyle(.secondary) }
+            if kind.hasArchive { Text(model.t(entity["archived"].bool == true ? "entity.archived" : "entity.active")).foregroundStyle(WorkbenchPalette.muted) }
             switch kind {
             case .character:
                 if !entity["traits"].array.isEmpty { field("character.traits", entity["traits"].array.compactMap(\.string).joined(separator: ", ")) }
@@ -578,7 +578,7 @@ struct HistoricalEntityDetails: View {
             case .rule: ruleDetails
             }
             SourceEvidenceView(model: model, sources: entity["source_refs"].array)
-        }.font(.callout).textSelection(.enabled).padding(.vertical, 8)
+        }.font(.system(size: 14)).textSelection(.enabled).padding(.vertical, 8)
     }
     private func field(_ key: String, _ text: String) -> some View { LabeledContent(model.t(key), value: text).frame(maxWidth: .infinity, alignment: .leading) }
     private func name(_ reference: JSONValue) -> String { displayName(model, reference: reference.string ?? "", blueprint: blueprint) }

@@ -15,6 +15,8 @@ description: "作者选择河图洛书悬疑灵异套件时，为河图洛书 He
 
 ## 确定作品和任务
 
+作者明确指定现有作品且没有任务时，可通过实际发现的作品范围 `hetu_preview_image_task` / `hetu_prepare_image_task`（CLI：`hetu.image_tasks.preview_prompt` / `hetu.image_tasks.prepare`），以 `task_kind: cover` 准备固定图片参考任务，再在同作品的精确任务连接中继续。不修改当前封面，不批准费用；仅当稳定连接已有对应授权时才用 TaskLocator 打开。
+
 从作者提供的绝对路径或已知作品目录读取 `packages/visual-prompt/covers/requests/<request_id>.json`，再核对作品根的 `.heturc.json`：
 
 - `schema_version` 为 `1.0.0`，`workspace_id` 与当前作品一致。
@@ -33,6 +35,8 @@ description: "作者选择河图洛书悬疑灵异套件时，为河图洛书 He
 读取 `book.title`、`book.author_name`、`book.synopsis`、`book.language_tag`，以及 `design.art_direction`、`width`、`height`、`text_mode`、`cover_language`、`candidate_count` 和完整 `prompt`。
 
 使用宿主图像工具或作者已配置的图像 Skill。遵循该能力自身的调用要求，尊重作者指定的工具、模型和预算；本 Skill 不包含供应商地址、API Key 或固定模型。没有可用图像能力时明确说明缺口，不用 SVG、占位图片或绘图代码冒充生成结果。
+
+作者选择河图模型服务时，按[模型服务](../../references/model-service.md)使用任务内图片目录、固定计划、作者费用批准和原操作恢复。当前仅接受文字提示，完整解码并收集原结果后再提交候选。
 
 - 按 `candidate_count` 生成，范围为 1～4 张；没有追加授权不扩大数量或重复付费生成。
 - `background_only`：生成封面底图，为后续真实文字排版留出空间，不画书名、笔名、伪文字或水印。

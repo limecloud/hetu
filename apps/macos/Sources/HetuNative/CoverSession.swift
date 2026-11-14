@@ -77,6 +77,9 @@ import HetuCore
     public func selectFile(_ file: URL, inspection: JSONValue, overlay: Bool) async -> Bool {
         await select(source: .object(["kind": .string("file"), "file_path": .string(file.path), "expected_file": .object(["sha256": inspection["sha256"], "size_bytes": inspection["size_bytes"]])]), overlay: overlay)
     }
+    public func selectTaskCandidate(_ reference: JSONValue, overlay: Bool) async -> Bool {
+        await select(source: .object(["kind": .string("creative_task"), "reference": reference]), overlay: overlay)
+    }
     public func loadPreparationProject(_ url: URL) async {
         guard !held, let preparationProjectID else { return }
         preparationBusy = true; error = nil

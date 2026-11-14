@@ -1,50 +1,43 @@
 # Plan a book with Codex
 
-Start with one small task: ask Codex for a title and synopsis, then enter your choices in Hetu Luoshu. This walkthrough uses copy and paste, with no terminal commands.
+Start with one small task: ask Codex to prepare titles, a synopsis and an opening conflict, then save the alternatives in Hetu Luoshu. You review the direction without entering the same details again.
 
-Have an external Codex conversation ready to use and the Hetu Luoshu Mac app open. Codex is your separate assistant; Hetu Luoshu does not send messages for you.
+Connect your external Codex using the [Agent guide](agents.md) and choose an appropriate [Skills suite](skills.md). Reuse that connection for later tasks. Hetu Luoshu does not send chat messages for you.
 
-## 1. Record your idea in Hetu Luoshu
+## 1. Give Codex the idea
 
-1. Choose “New Book” in the library. The title can stay empty.
-2. Write your story idea under “Ideas and requirements.”
-3. Choose “Save plan” to keep it.
+A title or an empty book is not a prerequisite. Start in your Codex conversation:
 
-![Mac New Book form with an empty title and a story idea under Ideas and requirements](/images/guides/mac-new-book-en.webp)
+> Use Hetu Luoshu's book-planning methods to prepare an apocalypse survival novel. An adult woman leads a community's rebuilding. Focus on supplies, trust and public rules, without a romance plot. Prepare two titles, a synopsis and two possible opening conflicts. Save them as alternatives I can compare. Do not write the manuscript or adopt a proposal for me.
 
-*Actual Mac development build. Start with an idea and use “Save plan” at the bottom right to keep it.*
+## 2. Let Codex organize and save the options
 
-Try this example:
+Codex works within the authorized planning scope, prepares the alternatives and saves them through the available tools. Open the planning results in Hetu Luoshu to compare them and their sources.
 
-> I want to write a long apocalypse survival novel. An adult woman leads a community's rebuilding. Focus on supplies, trust and public rules, without a romance plot. Give me two titles, a synopsis and an engaging opening conflict. Do not write the manuscript yet.
+A conversational reply and a saved result are separate things. If the outcome is unclear, ask Codex to recover the original task before creating another plan.
 
-## 2. Prepare the brief for Codex
+## 3. Say what should change
 
-Select and copy the story ideas you wrote in the planning form. You can also copy the example above and change it to fit your own story.
+Be specific about your preference:
 
-This exercise uses an ordinary conversation and does not require saving or configuring an external task. If you have installed a genre suite, ask Codex to use its methods for this book. See the [Skills guide](skills.md) when you want to install one.
+> The second direction is closer, but the protagonist should not win everyone's trust in the opening. Give her a reasonable but unpopular decision, with consequences that carry into the next chapter.
 
-## 3. Paste into your own Codex conversation
+Codex continues the same task and saves another version. Compare it with the earlier proposal in Hetu Luoshu. You can keep one part, ask for another pass or reject the direction.
 
-Switch to your ready-to-use Codex, start a new conversation and paste the copied content. Add:
+## 4. Review the creation proposal
 
-> We are using a manual handoff this time. Reply here with clearly separated titles, a synopsis and an opening conflict. Discuss only the ideas I supplied. Do not read local files or change details in the app; I will read your suggestions and enter my choices in Hetu Luoshu myself.
+Ask Codex to assemble the complete proposal:
 
-Read the suggestions and continue the conversation if needed. For example: “The second direction is closer, but I do not want the protagonist to have special powers. Please rethink the opening conflict.”
+> Use the second title, the revised synopsis and the first opening conflict. Prepare the book details and proposed folder for my review. After I confirm this proposal, create the novel and preserve the other options. Do not write Chapter 1 yet.
 
-The result appears in the Codex conversation. It does not return to Hetu Luoshu automatically.
+Review the direction, details and location. Codex executes the scoped creation after your confirmation, then reads back the result. There is no need to copy the fields into another form. Undecided ideas stay in the plan.
 
-## 4. Choose, edit and fill in the details
+![Mac library showing separate works](/images/guides/mac-library-en.webp)
 
-1. Copy your preferred title into the title field in Hetu Luoshu.
-2. Copy the synopsis into its field and revise anything that does not fit your idea.
-3. Put the direction you want to keep into the outline. Leave undecided facts in your plan.
-4. Choose “Save plan” to continue later. When ready, choose “Create book” and select a book folder.
+*Actual Mac app with sample works. Created books appear in the library.*
 
 The new book workspace opens, completing this exercise. You choose the title and direction; Codex provides suggestions to consider.
 
 ## What comes next
 
-Read [Chapters and writing](writing.md) and begin Chapter 1. To give your assistant genre-specific methods, follow [Choose and install Skills](skills.md).
-
-Developers who need advanced handoff setup can start from [Mac source build for developers](download-and-install.md). This walkthrough uses manual copying and entry.
+Ask Codex for a first reference chapter, or write it yourself using [Chapters and writing](writing.md). Read [Checks and draft review](review.md) to learn how to adopt just the passage you want.

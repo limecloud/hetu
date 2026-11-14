@@ -13,17 +13,17 @@ struct DramaScriptSheet: View {
     @State private var error: String?
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(model.t("script.create")).font(.title2)
-            Text(model.t("script.create_note")).foregroundStyle(.secondary)
-            Text(model.t("drama.revision", ["revision": String(snapshot["skeleton"]["revision"].integer ?? 0)])).font(.caption)
-            if snapshot["stale"].bool == true || snapshot["is_head"].bool == false { Text(model.t("script.old_structure")).foregroundStyle(.orange) }
+            Text(model.t("script.create")).font(.system(size: 20, weight: .semibold))
+            Text(model.t("script.create_note")).foregroundStyle(WorkbenchPalette.muted)
+            Text(model.t("drama.revision", ["revision": String(snapshot["skeleton"]["revision"].integer ?? 0)])).font(.system(size: 12))
+            if snapshot["stale"].bool == true || snapshot["is_head"].bool == false { Text(model.t("script.old_structure")).foregroundStyle(WorkbenchPalette.warningInk) }
             TextField(model.t("document.title"), text: $title).textFieldStyle(.roundedBorder).disabled(pending != nil)
             Picker(model.t("document.language"), selection: $language) {
                 Text(model.t("language.chinese")).tag("zh-CN")
                 Text(model.t("language.english")).tag("en")
             }.disabled(pending != nil)
-            if let error { Text(error).foregroundStyle(.red).textSelection(.enabled) }
-            if pending != nil { Text(model.t("drama.pending_note")).font(.caption).foregroundStyle(.orange) }
+            if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
+            if pending != nil { Text(model.t("drama.pending_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.warningInk) }
             HStack {
                 Button(model.t("common.cancel")) { dismiss() }.keyboardShortcut(.cancelAction)
                 Spacer()
@@ -55,18 +55,18 @@ struct ScriptMappingView: View {
     @State private var sourceSheet: DramaSheet?
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(model.t("script.mapping")).font(.title2)
-            Text(model.t("script.mapping_note")).foregroundStyle(.secondary)
-            if let error { Text(error).foregroundStyle(.red).textSelection(.enabled) }
-            if result["stale"].bool == true { Text(model.t("script.mapping_stale")).foregroundStyle(.orange) }
+            Text(model.t("script.mapping")).font(.system(size: 20, weight: .semibold))
+            Text(model.t("script.mapping_note")).foregroundStyle(WorkbenchPalette.muted)
+            if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
+            if result["stale"].bool == true { Text(model.t("script.mapping_stale")).foregroundStyle(WorkbenchPalette.warningInk) }
             if result["mapping"] != .null {
-                Text(model.t("drama.revision", ["revision": String(result["mapping"]["skeleton_ref"]["revision"].integer ?? 0)])).font(.caption)
-                if result["mapping"]["coverage_status"].string == "partial" { Text(model.t("plot.coverage.partial")).foregroundStyle(.orange) }
+                Text(model.t("drama.revision", ["revision": String(result["mapping"]["skeleton_ref"]["revision"].integer ?? 0)])).font(.system(size: 12))
+                if result["mapping"]["coverage_status"].string == "partial" { Text(model.t("plot.coverage.partial")).foregroundStyle(WorkbenchPalette.warningInk) }
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 12) {
                         ForEach(Array(result["mapping"]["scenes"].array.enumerated()), id: \.offset) { _, scene in
                             VStack(alignment: .leading, spacing: 6) {
-                                Text(model.t("drama.scene", ["episode": String(scene["episode_number"].integer ?? 0), "scene": String(scene["scene_number"].integer ?? 0)])).font(.headline)
+                                Text(model.t("drama.scene", ["episode": String(scene["episode_number"].integer ?? 0), "scene": String(scene["scene_number"].integer ?? 0)])).font(.system(size: 14, weight: .semibold))
                                 Text(scene["quote"].string ?? "").textSelection(.enabled)
                                 Button(model.t("script.initial_heading")) {
                                     sourceSheet = DramaSheet(value: .object(["document_id": result["mapping"]["document_id"], "revision_id": result["mapping"]["revision_id"], "byte_start": scene["byte_start"], "byte_end": scene["byte_end"], "quote": scene["quote"], "initial_script_heading": .bool(true)]))
@@ -74,7 +74,7 @@ struct ScriptMappingView: View {
                                 let original = skeleton["episodes"].array.flatMap { $0["scenes"].array }.first { $0["scene_id"] == scene["scene_id"] }
                                 if let original {
                                     if !original["missing_fields"].array.isEmpty {
-                                        Text(model.t("plot.missing_fields", ["fields": original["missing_fields"].array.compactMap(\.string).map { model.t("drama.missing." + $0) }.joined(separator: model.locale == "en" ? ", " : "、")])).font(.caption).foregroundStyle(.orange)
+                                        Text(model.t("plot.missing_fields", ["fields": original["missing_fields"].array.compactMap(\.string).map { model.t("drama.missing." + $0) }.joined(separator: model.locale == "en" ? ", " : "、")])).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.warningInk)
                                     }
                                     ForEach(Array(original["source_refs"].array.enumerated()), id: \.offset) { _, source in
                                         Button(source["quote"].string ?? model.t("plot.source")) { sourceSheet = DramaSheet(value: source) }.buttonStyle(.link).lineLimit(2)

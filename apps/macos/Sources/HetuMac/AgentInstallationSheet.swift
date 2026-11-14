@@ -24,7 +24,7 @@ struct AgentInstallationSheet: View {
     private func t(_ key: String) -> String { localizer.text(key) }
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
-            Text(t("agent.install_title")).font(.title2)
+            Text(t("agent.install_title")).font(.system(size: 20, weight: .semibold))
             ScrollView {
                 installationForm.frame(maxWidth: .infinity, alignment: .leading).padding(.trailing, 4)
             }
@@ -44,16 +44,16 @@ struct AgentInstallationSheet: View {
                 AgentSuitePicker(catalog: catalog, suiteID: $suiteID, localizer: localizer).disabled(installing)
             }
             Text(t(client == .codex ? "agent.install_scope.codex" : client == .workbuddy ? "agent.install_scope.workbuddy" : "agent.install_scope.other"))
-                .font(.callout).foregroundStyle(WorkbenchPalette.muted).lineSpacing(4)
+                .font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted).lineSpacing(4)
             if client == .codex {
-                if let executable { LabeledContent(t("agent.codex_cli")) { Text(executable.path).font(.caption).textSelection(.enabled) } }
-                else { Label(t("agent.install_error.clientUnavailable"), systemImage: "exclamationmark.triangle").font(.callout) }
+                if let executable { LabeledContent(t("agent.codex_cli")) { Text(executable.path).font(.system(size: 12)).textSelection(.enabled) } }
+                else { Label(t("agent.install_error.clientUnavailable"), systemImage: "exclamationmark.triangle").font(.system(size: 14)) }
                 Button(t("agent.choose_cli")) {
                     let panel = NSOpenPanel(); panel.canChooseFiles = true; panel.canChooseDirectories = false
                     if panel.runModal() == .OK { executable = panel.url }
                 }.disabled(installing)
             } else if client == .workbuddy {
-                LabeledContent(t("agent.install_directory")) { Text(workbuddyDirectory.appendingPathComponent("skills").path).font(.caption).textSelection(.enabled) }
+                LabeledContent(t("agent.install_directory")) { Text(workbuddyDirectory.appendingPathComponent("skills").path).font(.system(size: 12)).textSelection(.enabled) }
                 Button(t("agent.choose_workbuddy")) {
                     let panel = NSOpenPanel(); panel.canChooseFiles = false; panel.canChooseDirectories = true
                     panel.message = t("agent.choose_workbuddy_note")
@@ -63,7 +63,7 @@ struct AgentInstallationSheet: View {
             if installing { ProgressView(t("agent.installing")).controlSize(.small) }
             if let feedback {
                 Label(feedback, systemImage: succeeded ? "checkmark.circle" : "exclamationmark.triangle")
-                    .font(.callout).foregroundStyle(succeeded ? WorkbenchPalette.jade : WorkbenchPalette.muted)
+                    .font(.system(size: 14)).foregroundStyle(succeeded ? WorkbenchPalette.jade : WorkbenchPalette.muted)
             }
         }
     }

@@ -44,7 +44,7 @@ fn eligible(path: &str) -> bool {
     ]
     .iter()
     .any(|root| path == *root || path.starts_with(&format!("{root}/")))
-        || matches!(path, ".hetu/workspace.lock" | ".hetu/visibility.lock")
+        || matches!(path, ".hetu/workspace.lock" | ".hetu/visibility.lock" | ".hetu/workspace-properties.json")
     {
         return false;
     }
@@ -939,6 +939,7 @@ impl Kernel {
         let mut changes = Changes::new();
         changes.insert(op_path.into(),bytes(&json!({"operation_id":operation["id"],"action":action,"key":input["operation_key"],"input_digest":input_digest,"actor_scope":if self.author{"author"}else{"agent"},"result":result}))?);
         changes.insert(format!(".hetu/audit/{}.json",text(operation,"id")?),bytes(&json!({"schema_version":"1.0.0","operation_id":operation["id"],"action":action,"actor_ref":self.actor(),"input_digest":input_digest,"created_at":now(),"status":"succeeded"}))?);
+        self.stage_workspace_properties(&mut changes)?;
         self.store
             .transaction(&changes)
             .map_err(|_| Error::new("result_unknown", "Git 已写入，回执未确认，请沿原键恢复。"))?;

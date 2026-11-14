@@ -21,6 +21,8 @@ build/
 dist/
 .swiftpm/
 target/
+/output/model-service-swift*/
+/output/website-functions/
 __pycache__/
 apps/macos/Sources/HetuNative/Resources/NativeStrings.json
 apps/macos/Sources/HetuNative/Resources/Localizable.xcstrings

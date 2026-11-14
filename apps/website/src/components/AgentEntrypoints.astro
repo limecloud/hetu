@@ -1,0 +1,23 @@
+---
+import { messages, route, type Locale } from '../lib/site';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const m = messages(locale).foundation;
+const destinations = [
+  { page: 'docs/agents', anchor: 'mcp' },
+  { page: 'docs/agents', anchor: 'cli' },
+  { page: 'integrations', anchor: 'skills-catalog' },
+];
+---
+<section class="agent-entrypoints" aria-label={m.entryTitle}>
+  <div class="entrypoint-grid">
+    {m.entries.map((entry, index) => <a href={route(locale, destinations[index].page) + '#' + destinations[index].anchor}>
+      <span class="entrypoint-name">{entry.name}<span aria-hidden="true">↗</span></span>
+      <h2>{entry.title}</h2><p>{entry.body}</p>
+    </a>)}
+  </div>
+  <div class="foundation-reason">
+    <h2>{m.whyTitle}</h2>
+    <div><p>{m.whyBody}</p><a class="text-link" href={route(locale, 'docs/agents')}>{m.more}<span aria-hidden="true">→</span></a></div>
+  </div>
+</section>

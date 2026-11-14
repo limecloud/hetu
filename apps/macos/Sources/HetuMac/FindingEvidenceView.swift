@@ -22,12 +22,12 @@ struct FindingEvidenceView: View {
             if let text = evidence["text"].string { Text(text) }
             if let markers = evidence["marker_count"].integer {
                 Text(model.t("validation.mental_evidence", ["markers": String(markers), "characters": String(evidence["non_whitespace_characters"].integer ?? 0)]))
-                Text(model.t("validation.mental_note")).foregroundStyle(.secondary).font(.caption)
+                Text(model.t("validation.mental_note")).foregroundStyle(WorkbenchPalette.muted).font(.system(size: 12))
             }
             if !evidence["missing_entity_types"].array.isEmpty {
                 Text(model.t("validation.reference_evidence", ["types": evidence["missing_entity_types"].array.compactMap(\.string).map { model.t("entity.kind." + $0) }.joined(separator: ", ")]))
             }
-        }.font(.callout).textSelection(.enabled)
+        }.font(.system(size: 14)).textSelection(.enabled)
     }
     private func name(_ value: JSONValue) -> String { displayName(model, reference: value.string ?? "", blueprint: blueprint) }
     private func factValue(_ value: JSONValue, predicate: String) -> String {
@@ -50,16 +50,16 @@ struct FindingDispositionSheet: View {
     @State private var operationKey = UUID().uuidString
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text(model.t("validation.review")).font(.title2)
-            Text(model.t(finding["message_key"].string ?? "validation.prerequisites")).font(.headline)
-            Text(model.t("validation.disposition_note")).foregroundStyle(.secondary)
+            Text(model.t("validation.review")).font(.system(size: 20, weight: .semibold))
+            Text(model.t(finding["message_key"].string ?? "validation.prerequisites")).font(.system(size: 14, weight: .semibold))
+            Text(model.t("validation.disposition_note")).foregroundStyle(WorkbenchPalette.muted)
             if !history.isEmpty {
                 DisclosureGroup(model.t("validation.history")) {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 8) {
                             ForEach(Array(history.enumerated()), id: \.offset) { _, item in
-                                Text(model.t("validation.disposition." + (item["disposition"].string ?? "open"))).font(.headline)
-                                Text(model.t("validation.history_author") + "  " + model.localizer.date(item["created_at"].string ?? "")).font(.caption).foregroundStyle(.secondary)
+                                Text(model.t("validation.disposition." + (item["disposition"].string ?? "open"))).font(.system(size: 14, weight: .semibold))
+                                Text(model.t("validation.history_author") + "  " + model.localizer.date(item["created_at"].string ?? "")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                                 Text(item["reason"].string ?? "").textSelection(.enabled)
                                 Divider()
                             }
@@ -71,8 +71,8 @@ struct FindingDispositionSheet: View {
                 ForEach(["open", "acknowledged", "false_positive", "accepted_exception"].filter { $0 != "accepted_exception" || finding["exception_policy"].string == "author_review" }, id: \.self) { Text(model.t("validation.disposition." + $0)).tag($0) }
             }
             Text(model.t("validation.reason"))
-            TextEditor(text: $reason).frame(height: 100).border(Color.secondary.opacity(0.2)).accessibilityLabel(model.t("validation.reason"))
-            if let error { Text(error).foregroundStyle(.red).textSelection(.enabled) }
+            TextEditor(text: $reason).frame(height: 100).border(WorkbenchPalette.muted.opacity(0.2)).accessibilityLabel(model.t("validation.reason"))
+            if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             HStack {
                 Button(model.t("common.cancel")) { dismiss() }.keyboardShortcut(.cancelAction)
                 Spacer()

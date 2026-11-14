@@ -1,4 +1,5 @@
 import Foundation
+import HetuCore
 import HetuNative
 
 private struct AgentCheckFailure: Error { let message: String }
@@ -15,6 +16,14 @@ extension NativeTests {
         try Data("#!/不存在的河图测试解释器/node\n".utf8).write(to: broken)
         try Data("#!/bin/sh\nexit 0\n".utf8).write(to: valid)
         for file in [broken, valid] { try FileManager.default.setAttributes([.posixPermissions: 0o700], ofItemAtPath: file.path) }
+        let codexConfiguration = try TaskConnection.configuration(executable: valid, clientAdapter: "codex")
+        try agentCheck(codexConfiguration.hasPrefix("[mcp_servers.hetu]\n") && codexConfiguration.contains("args = [\"--client\", \"codex\"]") && !codexConfiguration.contains("\\/"), "Codex 连接未使用有效的 TOML 稳定入口")
+        for adapter in ["claude-code", "workbuddy", "other"] {
+            let configuration = try TaskConnection.configuration(executable: valid, clientAdapter: adapter)
+            let json = try JSONDecoder().decode(HetuCore.JSONValue.self, from: Data(configuration.utf8))
+            try agentCheck(json["mcpServers"]["hetu"]["args"] == .array([.string("--client"), .string(TaskConnection.adapter(adapter))]), "其他客户端未使用对应稳定入口")
+            try agentCheck(json["mcpServers"]["hetu"]["command"].string == valid.path, "连接配置未保留含中文和空格的原始路径")
+        }
         let searchPath = brokenCLI.path + ":" + validCLI.path
         try agentCheck(AgentSuiteInstaller.findCodex(searchPath: searchPath) == valid, "旧 CLI 的解释器已丢失，仍遮蔽后续有效入口")
         try Data("#!/usr/bin/env missing-hetu-test-runtime\n".utf8).write(to: broken)
@@ -53,7 +62,7 @@ extension NativeTests {
         let inspector = AgentPackageInspector(codexDirectory: codex, workbuddyDirectory: root.appendingPathComponent("测试 WorkBuddy"))
         for suite in catalog.suites {
             let actual = inspector.inspect(suite: suite, catalog: catalog, client: .codex, selectedDirectory: catalog.directory(for: suite))
-            try agentCheck(actual.state == .filesFound && actual.missingSkills.isEmpty && actual.version == "0.2.1", "分发套件不完整或被误报已安装：\(suite.id)")
+            try agentCheck(actual.state == .filesFound && actual.missingSkills.isEmpty && actual.version == actual.expectedVersion && actual.version != nil, "分发套件不完整或被误报已安装：\(suite.id)")
         }
         try agentCheck(inspector.inspect(suite: military, catalog: catalog, client: .codex).state == .notFound, "没有客户端目录却报告安装")
         let cache = codex.appendingPathComponent("plugins/cache/test-market/hetu-military/revision-a")
@@ -63,7 +72,7 @@ extension NativeTests {
         try agentCheck(cached.state == .filesFound && cached.registration == .unknown, "缓存目录被当作启用或安装证据")
         try Data("[plugins.\"hetu-military@test-market\"]\nenabled = true\n".utf8).write(to: codex.appendingPathComponent("config.toml"))
         let enabled = inspector.inspect(suite: military, catalog: catalog, client: .codex)
-        try agentCheck(enabled.state == .registered && enabled.registration == .enabled && enabled.foundSkills.count == 8, "未发现已登记的完整题材套件")
+        try agentCheck(enabled.state == .registered && enabled.registration == .enabled && enabled.foundSkills.count == catalog.skills.count, "未发现已登记的完整题材套件")
         try agentCheck(inspector.inspect(suite: general, catalog: catalog, client: .codex).state == .notFound, "军事套件被误认成通用套件")
         try Data("[plugins.\"hetu-military@test-market\"]\nenabled = false\n".utf8).write(to: codex.appendingPathComponent("config.toml"))
         try agentCheck(inspector.inspect(suite: military, catalog: catalog, client: .codex).registration == .disabled, "禁用包被误报启用")

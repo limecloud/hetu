@@ -77,3 +77,29 @@ test("native stdio → SDK resource → sandboxed Apps → persisted preference 
   const forbidden = await client.callTool({ name: "hetu_save_task_selection", arguments: { task_ref: taskRef, expected: { revision: 1, sha256: "a".repeat(64) }, candidate_refs: [], comment: "旧修订不能覆盖", operation_key: "stale-bridge-save" } });
   expect((forbidden.structuredContent as { error: { code: string } }).error.code).toBe("revision_conflict");
 });
+
+test("real Apps feedback continues the original working reference and remains separate from adoption", async ({ page }) => {
+  const current = await client.callTool({ name: "hetu_open_task_view", arguments: { task_ref: taskRef } });
+  await page.addInitScript(value => { Object.assign(window, value); }, { initialTask: current, viewHtml: html, realTask: true });
+  await page.goto(origin);
+  const view = page.frameLocator("iframe");
+  await view.getByRole("checkbox").first().check();
+  await view.getByLabel("补充要求或意见").fill("保留河港意象，缩短书名。");
+  await view.getByRole("button", { name: "按此修改", exact: true }).click();
+  await expect(view.getByRole("status")).toContainText("修改意见已保存");
+  await expect(view.getByRole("button", { name: "发送给当前 Agent", exact: true })).toHaveCount(0);
+  const feedback = await client.callTool({ name: "hetu_list_task_feedback", arguments: { task_ref: taskRef } });
+  const items = (feedback.structuredContent as { data: { feedback: { feedback_ref: unknown; feedback: { public_comment: string } }[] } }).data.feedback;
+  expect(items.at(-1)?.feedback.public_comment).toBe("保留河港意象，缩短书名。");
+  const refs = [items.at(-1)!.feedback_ref];
+  const created = await client.callTool({ name: "hetu_create_working_copy", arguments: { task_ref: taskRef, artifact_kind: "title", source_format: "plain", title: "书名返工", base_refs: [], content: "雾港", feedback_refs: refs, operation_key: "real-apps-followup" } });
+  const copy = (created.structuredContent as { data: { working_copy_ref: unknown } }).data.working_copy_ref;
+  expect(copy).toBeTruthy();
+  const task = await client.callTool({ name: "hetu_read_creative_task", arguments: { task_ref: taskRef } });
+  const requestSHA = (task.structuredContent as { data: { request_sha256: string } }).data.request_sha256;
+  const submitted = await client.callTool({ name: "hetu_submit_creative_result", arguments: { task_ref: taskRef, request_sha256: requestSHA, working_copy_refs: [copy], feedback_refs: refs, complete: true, missing_items: [], provenance: { client: "real-apps-test", skill_version: "1" }, operation_key: "real-apps-submit" } });
+  expect((submitted.structuredContent as { status: string }).status).toBe("succeeded");
+  await view.getByRole("button", { name: "读取最新结果", exact: true }).click();
+  await expect(view.getByText("雾港", { exact: true })).toBeVisible();
+  await expect(view.getByText("已收到针对这条意见的新方案，请核对修改。", { exact: true })).toBeVisible();
+});

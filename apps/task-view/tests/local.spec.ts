@@ -42,10 +42,11 @@ class LocalFixture {
   async respond(message: Message) {
     const input = message.input as Record<string, unknown>;
     let result;
-    if (message.action === "hetu.interactions.get" || message.action === "hetu.interactions.save_selection") {
-      const called = await this.client.callTool({ name: message.action === "hetu.interactions.get" ? "hetu_open_task_view" : "hetu_save_task_selection", arguments: input });
+    if (["hetu.interactions.get", "hetu.interactions.save_selection", "hetu.task_feedback.save", "hetu.task_context.read"].includes(String(message.action))) {
+      const names: Record<string, string> = { "hetu.interactions.get": "hetu_open_task_view", "hetu.task_feedback.save": "hetu_save_task_feedback", "hetu.interactions.save_selection": "hetu_save_task_selection", "hetu.task_context.read": "hetu_read_task_context" };
+      const called = await this.client.callTool({ name: names[String(message.action)], arguments: input });
       result = called.structuredContent;
-      if (message.action === "hetu.interactions.save_selection" && this.loseSave) return;
+      if (message.action !== "hetu.interactions.get" && this.loseSave) return;
     } else if (message.action === "hetu.operations.get") {
       const scope = this.ref.scope_ref as { kind: string; id: string };
       const uri = `hetu://task/${scope.kind}/${scope.id}/${this.ref.task_id}/operations/by-key?action=${input.action}&key=${encodeURIComponent(String(input.key))}`;
@@ -116,6 +117,15 @@ test("paired local AppBridge saves into the real task and clears the frame on st
   await expect(view.getByRole("checkbox").first()).toBeEnabled({ timeout: 20_000 });
   // Agent 的任务语言为中文；宿主仍应将首屏 UI 语言设置为英文。
   await expect(view.getByRole("button", { name: "Save preferences", exact: true })).toBeVisible();
+  await view.getByText("View fixed reference material (read-only)", { exact: true }).click();
+  await view.getByRole("button", { name: "Read source", exact: true }).first().click();
+  await expect(view.getByText("雾港的灯塔在潮水中沉默。🌿", { exact: true })).toBeVisible();
+  await view.getByRole("button", { name: "Read source", exact: true }).click();
+  await view.getByRole("button", { name: "Characters", exact: true }).click();
+  await view.getByRole("button", { name: "雾港人物0", exact: true }).click();
+  await expect(view.getByText("守护旧灯塔的人。".repeat(100), { exact: true })).toBeVisible();
+  await view.getByRole("button", { name: "Back to story bible index", exact: true }).click();
+  await expect(view.getByRole("button", { name: "Characters", exact: true })).toBeVisible();
   await view.getByRole("checkbox").first().check();
   await view.getByLabel("Requirements or feedback").fill("保留中文正文，只保存参考选择。🌿");
   await view.getByRole("button", { name: "Save preferences", exact: true }).click();
@@ -144,6 +154,20 @@ test("local page clears visible content when the revocation stream cannot connec
   } finally { releaseEvents(); }
 });
 
+test("an unresponsive sandbox offers an explicit reload without repeating pairing or writes", async ({ page, context }) => {
+  fixture = new LocalFixture(); await fixture.start({ locale: "en" }); await fixture.pair(context);
+  await page.route("**/view.html", route => route.fulfill({ contentType: "text/html", body: "<!doctype html><title>Unavailable sandbox</title>" }));
+  await page.goto(fixture.origin);
+  await expect(page.locator("iframe")).toHaveCount(1);
+  await expect(page.getByRole("button", { name: "Reload task", exact: true })).toBeEnabled({ timeout: 15_000 });
+  await expect(page.locator("iframe")).toHaveCount(0);
+  expect(fixture.calls.every(call => call.action === "hetu.interactions.get")).toBe(true);
+  await page.unroute("**/view.html");
+  await page.getByRole("button", { name: "Reload task", exact: true }).click();
+  await expect(page.frameLocator("iframe").getByRole("checkbox").first()).toBeEnabled();
+  expect(fixture.messages.filter(message => message.type === "pair_request")).toHaveLength(1);
+});
+
 test("local view recovers an unconfirmed save by its original key", async ({ page, context }) => {
   test.setTimeout(75_000);
   fixture = new LocalFixture(); await fixture.start(); await fixture.pair(context);
@@ -165,4 +189,19 @@ test("expired view and parent EOF release the local port", async ({ context }) =
   await expect.poll(() => fixture.messages.some(message => message.type === "stopped"), { timeout: 5000 }).toBe(true);
   await expect.poll(async () => { try { await context.request.get(fixture.origin, { timeout: 500 }); return false; } catch { return true; } }).toBe(true);
   await fixture.close();
+});
+
+test("paired local page saves fixed revision feedback and exposes a copy fallback without a host message", async ({ page, context }) => {
+  fixture = new LocalFixture(); await fixture.start(); await fixture.pair(context);
+  await page.goto(fixture.origin);
+  const view = page.frameLocator("iframe");
+  await view.getByRole("checkbox").first().check();
+  await view.getByLabel("补充要求或意见").fill("保留结尾，再改一次。");
+  await view.getByRole("button", { name: "按此修改", exact: true }).click();
+  await expect(view.getByRole("status")).toContainText("修改意见已保存");
+  await expect(view.getByLabel("继续提示词")).toHaveValue(/feedback_/);
+  await expect(view.getByRole("button", { name: "发送给当前 Agent", exact: true })).toHaveCount(0);
+  const task = await fixture.client.callTool({ name: "hetu_read_creative_task", arguments: { task_ref: fixture.ref } });
+  expect((task.structuredContent as { data: { last_feedback: { public_comment: string; origin: string } } }).data.last_feedback).toMatchObject({ public_comment: "保留结尾，再改一次。", origin: "task_interaction" });
+  expect(fixture.calls.filter(call => call.action === "hetu.task_feedback.save")).toHaveLength(1);
 });

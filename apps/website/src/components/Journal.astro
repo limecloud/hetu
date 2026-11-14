@@ -1,0 +1,33 @@
+---
+import Site from '../layouts/Site.astro';
+import { articles, articleImage, renderArticle, type Article } from '../lib/journal';
+import { assetURL } from '../lib/assets';
+import { route, prototype, type Locale } from '../lib/site';
+import MarketEvidence from './MarketEvidence.astro';
+interface Props { locale: Locale; article?: Article; }
+const { locale, article } = Astro.props;
+const en = locale === 'en';
+const title = article ? article.titles[locale] : en ? 'The adaptation journal' : '创作与改编';
+const description = article ? article.descriptions[locale] : en ? 'Practical thinking for independent authors, screenwriters and small studios working across formats.' : '从作者的真实困惑出发，讨论故事、改编与 AI 协作。';
+const content = article ? await renderArticle(article, locale) : undefined;
+const featured = articles[0];
+const remaining = articles.filter(item => item.id !== (article ?? featured).id);
+---
+<Site locale={locale} page={'blog' + (article ? '/' + article.id : '')} title={title} description={description}>
+  <div class:list={['container', 'journal-page', { 'journal-detail': article }]}>
+    {article && content ? <>
+      <header class="page-hero journal-article-header"><div><a class="text-link" href={route(locale, 'blog')}>← {en ? 'All articles' : '全部文章'}</a><h1>{title}</h1><p>{description}</p></div><img class="article-cover" src={assetURL(articleImage(article, locale))} width="768" height="432" alt=""/></header>
+      <div class="journal-reading-layout">
+        <aside class="journal-toc"><nav aria-label={en ? 'In this article' : '这篇文章聊什么'}><strong>{en ? 'In this article' : '这篇文章聊什么'}</strong>{content.headings.map(heading => <a href={'#' + heading.id}>{heading.text}</a>)}</nav><details class="journal-toc-mobile"><summary>{en ? 'In this article' : '这篇文章聊什么'}</summary><nav aria-label={en ? 'In this article' : '这篇文章聊什么'}>{content.headings.map(heading => <a href={'#' + heading.id}>{heading.text}</a>)}</nav></details></aside>
+        <article class="journal-article" lang={locale} set:html={content.html}/>
+      </div>
+      {article.id === 'story-to-screen' && <MarketEvidence locale={locale}/>}
+      <section class="journal-related"><h2>{en ? 'Keep exploring' : '继续阅读'}</h2><div>{remaining.map(item => <a href={route(locale, 'blog/' + item.id)}><h3>{item.titles[locale]}</h3><p>{item.descriptions[locale]}</p><span class="text-link">{en ? 'Read article' : '阅读全文'} <span aria-hidden="true">→</span></span></a>)}</div></section>
+    </> : <>
+      <header class="page-hero"><h1>{title}</h1><p>{description}</p></header>
+      <a class="journal-featured" href={route(locale, 'blog/' + featured.id)}><img src={assetURL(articleImage(featured, locale))} width="768" height="432" alt=""/><div><h2>{featured.titles[locale]}</h2><p>{featured.descriptions[locale]}</p><span class="text-link">{en ? 'Read our perspective' : '读读我们的创作主张'} <span aria-hidden="true">→</span></span></div></a>
+      <div class="journal-list journal-secondary">{remaining.map(item => <a href={route(locale, 'blog/' + item.id)}><img class="journal-cover" src={assetURL(articleImage(item,locale))} width="768" height="432" alt="" loading="lazy"/><h2>{item.titles[locale]}</h2><p>{item.descriptions[locale]}</p><span class="text-link">{en ? 'Read article' : '阅读全文'} <span aria-hidden="true">→</span></span></a>)}</div>
+    </>}
+    <div class="journal-invitation"><div><h2>{en ? 'Try it with a story in mind.' : '带着你的故事，试一次。'}</h2><p>{en ? 'Compare a reference draft in the demo, then choose your next step.' : '先在示例作品里比较一稿、采用一段，再找到适合自己的创作方式。'}</p></div><div class="page-cta"><a class="button primary" href={prototype(locale)}>{en ? 'Try the workspace' : '体验创作工作台'} <span aria-hidden="true">→</span></a><a class="text-link" href={route(locale, 'docs/getting-started')}>{en ? 'Quick start' : '作者快速上手'} <span aria-hidden="true">→</span></a></div></div>
+  </div>
+</Site>

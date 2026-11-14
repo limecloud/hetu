@@ -26,10 +26,17 @@
 | `title` | string，必需 | 工作区创建时的名称；小说当前书名由 Novel.metadata.title 维护 |
 | `locale` | string，必需 | 作品默认语言，默认 zh-CN，可为 en；与应用界面偏好独立 |
 | `blueprint_path` | RelativePath，必需 | V1固定 shared/blueprint.json |
-| `novel_path` | RelativePath，新作品必需 | 固定 packages/novel/novel.json；旧作品由作者显式初始化小说目录 |
+| `work_type` | enum，新作品必需 | novel／drama；决定首要创作入口，不改变目录权限 |
+| `novel_path` | RelativePath，可选 | 小说作品固定 packages/novel/novel.json；原创短剧不创建空小说记录；旧作品由作者显式初始化 |
 | `packages` | enum[]，必需 | novel、drama、music-cue、visual-prompt，唯一 |
 
 凭据、系统授权、最近路径和作者批准秘密不属于此配置。
+
+### 作品时间 WorkspaceProperties
+
+`.hetu/workspace-properties.json` 保存 `schema_version=1.0.0, workspace_id, created_at, updated_at`，由 `workspaces.get/list` 的 `data.properties` 返回，不增加 WorkspaceConfig 字段或改变配置摘要。两个时间为 UTC RFC 3339 或 `null`；已知时更新时间不得早于创建时间。创建时间固定；更新时间表示成功持久化的作品业务变更，包括正文、任务、审核及交付等，不等同于正文编辑时间。旧作品只恢复可核对的原始记录，未知不使用打开时间或文件系统时间代填。
+
+文档属性分别读取 Document.created_at、当前 Revision.created_at 和当前定稿引用对应记录的 created_at。作品资料、剧本项目、分集、资料及素材使用自身记录的 created_at／updated_at；分集和素材的资料更新不冒充正文保存或素材原始拍摄时间。本机书库缓存作品时间，lastOpenedAt 独立维护；旧书库缺缓存字段仍可读取。
 
 ### 小说 Novel 与卷章目录
 
@@ -116,8 +123,8 @@ ReviewSnapshot 包含 `draft_id, draft_revision, content_sha256, submission_sha2
 | PlotAnnotation | `context, facts[], capabilities[]`；事实为 `subject_ref, predicate, value`，绑定节点原文；语境未知不能当事实 |
 | PlotEdge | `edge_id, from_node_id, to_node_id, relation, verification, source_refs[]` |
 | Skeleton | `schema_version, skeleton_id, revision, previous_sha256, plot_revision_id, plot_sha256, blueprint_revision, blueprint_sha256, source_revisions[], engine_version, build_options, status, episodes[], created_at, actor_ref` |
-| Episode | `episode_id, episode_number, title, scenes[]`；空标题为 `""` |
-| Scene | `scene_id, scene_number, title, location_ref, interior_exterior, time_of_day, character_refs[], adaptation_note, plot_node_refs[], source_refs[], missing_fields[], dialogue, shot_description` |
+| SkeletonEpisode | `episode_id, episode_number, title, scenes[]`；骨架规划身份；空标题为 `""` |
+| SkeletonScene | `scene_id, scene_number, title, location_ref, interior_exterior, time_of_day, character_refs[], adaptation_note, plot_node_refs[], source_refs[], missing_fields[], dialogue, shot_description`；仅骨架规划 |
 | AdaptationComparison | `schema_version, comparison_id, skeleton_ref, source_revisions[], status, items[], created_at, actor_ref` |
 
 对话／镜头占位在新骨架为空；剧本内容保存在 Fountain 修订，不将两份可独立编辑的对白同时存入骨架和正文。对比记录中的变化引用精确源、目标对象和范围。
@@ -192,10 +199,11 @@ erDiagram
     WORKSPACE ||--|| BLUEPRINT : owns
     WORKSPACE ||--o{ DOCUMENT : contains
     WORKSPACE ||--o{ DRAMA_PROJECT : organizes
-    DRAMA_PROJECT |o--o{ DOCUMENT : links_scripts
+    DRAMA_PROJECT ||--o{ DRAMA_EPISODE : orders
+    DRAMA_EPISODE ||--|| DOCUMENT : links_script
     DRAMA_PROJECT |o--o{ SKELETON : selects
-    SKELETON ||--|{ EPISODE : contains
-    EPISODE ||--|{ SCENE : contains
+    SKELETON ||--|{ SKELETON_EPISODE : contains
+    SKELETON_EPISODE ||--|{ SKELETON_SCENE : contains
     WORKSPACE ||--o{ ASSET : owns
     WORKSPACE ||--o| BOOK_COVER : selects
     ASSET ||--o{ BOOK_COVER : supplies
@@ -204,7 +212,7 @@ erDiagram
 
 书库登记与作品内容是两种持久范围，关联只提供目录定位，不授予内容权限。未初始化小说资料的既有工作区可暂缺 Novel；已初始化的小说目录覆盖本作品全部小说章节。未分卷章节的 `volume_id=null`，正文保存在 Document／Revision，Chapter 和 Volume 不再保存一份文本。
 
-DramaProject 选择具体骨架和剧本形成改编方案；单独的骨架／剧本可以在尚未组织进项目时存在。分集和场次属于所选骨架修订，不以集号、场号或名称识别。BookCover 关系指当前选用投影，历史选用和候选仍单独保留。对外部作品的原著引用必须按显式导入及映射规则处理，不能从关系图推导跨工作区读取权限。
+DramaProject 组织写作分集，骨架是可选规划；独立剧本可由作者显式编入分集。写作分集与骨架规划分别拥有身份，通过固定修订映射关联，不以集号、场号或名称识别。BookCover 关系指当前选用投影，历史选用和候选仍单独保留。对外部作品的原著引用必须按显式导入及映射规则处理，不能从关系图推导跨工作区读取权限。
 
 ### 12.2 候选、来源、审核与定稿
 
@@ -213,6 +221,13 @@ erDiagram
     CREATION_PROJECT |o--o{ CREATIVE_TASK : prepares
     WORKSPACE |o--o{ CREATIVE_TASK : prepares
     CREATIVE_TASK ||--o{ TASK_SUBMISSION : receives
+    CREATIVE_TASK ||--|{ REQUEST_REVISION : retains
+    REQUEST_REVISION ||--o{ WORKING_COPY : scopes
+    WORKING_COPY ||--|{ WORKING_REVISION : retains
+    WORKING_REVISION }o..o{ TASK_SUBMISSION : freezes
+    CREATIVE_TASK ||--o{ TASK_FEEDBACK : records
+    TASK_FEEDBACK }o..o{ WORKING_REVISION : addressed_by
+    REQUEST_REVISION ||--o{ MATERIAL_REQUEST : bounds
     TASK_SUBMISSION ||--o{ CANDIDATE : contains
     CREATIVE_TASK ||--o{ INTERACTION_DECISION : records
     CANDIDATE }o--o{ INTERACTION_DECISION : selects
@@ -239,7 +254,7 @@ erDiagram
     REVISION ||--o{ SOURCE_REF : anchors
     PLOT_REVISION ||--o{ PLOT_NODE : contains
     PLOT_NODE }o--|{ SOURCE_REF : cites
-    SCENE }o--o{ PLOT_NODE : maps
+    SKELETON_SCENE }o--o{ PLOT_NODE : maps
     REPORT ||--o{ FINDING : contains
     FINDING }o--o{ SOURCE_REF : cites
     REPORT }o--|| INPUT_SNAPSHOT : fixes
@@ -302,9 +317,10 @@ BookCover 以 `revision,previous_sha256` 形成不可变历史，选用以当前
 | --- | --- | --- |
 | ScopeRef | `kind, id` | kind 为 creation_project 或 workspace，二选一；ID 和会话实际授权一致 |
 | CreationProject | `schema_version, project_id, revision, previous_sha256, brief, selected_fields, task_refs, created_workspace_ref, created_at, updated_at` | brief 可从一句话开始；选中字段可为空；created_workspace_ref 初始 null，只有作者创建回执可绑定 |
-| CreativeTaskRequest | `schema_version, task_id, scope_ref, request_revision, previous_sha256, task_kind, brief, input_refs, input_snapshot, client_adapter, skill_ref, prompt, prompt_language, output_contract, edit_scope, created_at` | 请求不可变，scope 和来源固定；不得从当前最新正文静默补上下文；非改稿任务的 edit_scope 为 null |
+| CreationProject.work_profile | `work_type, drama_mode, language_tag` | 筹备表单保存的创作选择；novel 的 drama_mode 为 null，drama 为 original／adaptation；正文语言为 zh-CN／en，与界面语言独立；缺省历史记录不改写历史摘要 |
+| CreativeTaskRequest | `schema_version, task_id, scope_ref, request_revision, previous_sha256, task_kind, brief, input_refs, input_snapshot, context_manifest_ref?, client_adapter, skill_ref, prompt, prompt_language, output_contract, edit_scope, created_at` | 1.1.0必含 context_manifest_ref，input_snapshot.sources 保存固定修订目录；1.0.0保留原内联字节；非改稿任务的 edit_scope 为 null |
 | EditScope | `document_id, revision_id, ranges` | 单文档；1～16个 UTF-8 半开范围及 quote，不重叠；空范围为指定插入点，整章也显式列范围 |
-| OutputContract | `artifact_types, candidate_limit, text_byte_limit, image_byte_limit, submission_mode, relative_inbox, revision_requires_patches` | 提交方式为 MCP 或固定 inbox；路径由任务身份推导，数量和预算在复制前可见 |
+| OutputContract | `artifact_types, candidate_limit, text_byte_limit, image_byte_limit, submission_mode, relative_inbox, revision_requires_patches` | 文本／图片可用 MCP、CLI 或固定 inbox，资料任务使用 MCP／CLI；旧请求保留原方式；路径由任务身份推导，数量和预算在复制前可见 |
 | TaskObservation | `schema_version, task_id, scope_ref, revision, previous_sha256, state, copied_at, submission_refs, last_decision_ref, closed_reason, created_at, updated_at` | 持久修订及摘要链；复制不证明已发送，状态不代表 Agent 正在运行 |
 | TaskSubmission | `schema_version, submission_id, task_ref, request_sha256, candidates, complete, missing_items, provenance, received_at` | 一批已核验的外部结果；不足为 partial_result，不能伪造成功；同键同输入返回同批 |
 | Candidate | `candidate_id, kind, relative_path, sha256, size_bytes, language_tag, source_refs` | kind 区分 concept、title、synopsis、outline、text、image；改稿保留 patches；可带 draft_ref，图片带实际宽高、类型与解码证据 |
@@ -313,13 +329,17 @@ BookCover 以 `revision,previous_sha256` 形成不可变历史，选用以当前
 局部视图的 `image_previews[]` 是临时读取投影，不持久化为新的候选或封面：每项包含 `candidate_id,media_type,base64,width,height`，只关联当前批次中已核验的图片，使用最长边512像素以内的等比 JPEG，不放大小图，透明部分以白底预览。原始候选、来源摘要和正式封面选择保持独立。
 | ClientAdapterPreference | `adapter_id, user_confirmed_setup, last_capability_check` | 仅本机偏好；用户确认与技术检测分别保存，检查带时间、版本和范围 |
 
-`task_kind` 为 book_concept、book_profile、outline、cover、chapter_draft、revision 或 drama_draft。内部“任务已关闭”只结束河图洛书跟踪，不声明外部取消或退款。`client_adapter` 与 Skill／插件版本是本次交接记录，不授予工具权限或保证模型身份。
+`task_kind` 为 book_concept、book_profile、outline、cover、chapter_draft、revision、drama_draft 或 resource_organize。资料整理任务的固定范围与直接维护修订合同见[35](35-资料素材与短剧制作资产.md)。内部“任务已关闭”只结束河图洛书跟踪，不声明外部取消或退款。`client_adapter` 与 Skill／插件版本是本次交接记录，不授予工具权限或保证模型身份。
 
 TaskSubmission 的文件清单由 Agent 最后原子提交，内核核验实际字节、固定请求、范围和路径后登记。任一候选非法则该批不登记，不静默裁剪；合法但明确缺项的批次可按 partial_result 保存。一个任务允许多个明确批次，候选 ID 不由标题、数组位置或文件修改时间生成。
+
+工作副本允许任务内连续编辑，与提交后不可改的 Candidate／Draft 分开。旧提交的 request_sha256 固定原请求，不因任务 head 更新而重写。字段扩展及请求版本链见第22节；已发布 Schema 按其自身版本解释，不能向旧输入偷偷附加设计字段。
 
 改稿 Candidate 的 `patches` 每项为 `byte_start, byte_end, quote, replacement`，范围相对于任务固定原文。内核合成独立参考版本，范围外字节保持，不写作者 Document。任务持久化及输入的机器合同见[creative-task.schema.json](../contracts/schemas/creative-task.schema.json)；参考读取、修改范围与采纳权限分别核验，不能从文件路径或候选来源推导授权。
 
 建书候选的 `selected_fields` 每字段记录作者最终值及可空 candidate_ref，手工值无需伪造 AI 来源。创建后的作品保存选定来源快照，不能永久依赖用户应用数据目录的绝对路径。筹备转作品不会改变旧请求 scope。
+
+`work_profile` 随筹备 CAS 保存，并在任务 `input_snapshot.scope_context` 中固定；修改创作选择需重新预览任务。创建作品的类型、改编方式及正文语言必须与已保存选择一致，创建来源快照保留该选择；切换界面语言不改变它。
 
 ## 17. 采纳、来源与独立定稿
 
@@ -334,3 +354,108 @@ TaskSubmission 的文件清单由 Agent 最后原子提交，内核核验实际�
 BrowserSession 在本机授权存储或内存保存 `session_id, task_ref, scope_ref, allowed_actions, issued_at, expires_at, revoked_at` 及受保护会话材料。配对状态为 pending／paired／expired／revoked。UI 可见的 session_id 和配对请求 ID 不是访问凭据。
 
 会话只允许任务投影、候选预览、选择和意见，不能扩展为所有作品访问或定稿能力。Cookie／IPC 凭据不进入任务 JSON、普通结果、URL、Prompt、Git 或 Bundle。资源及页面版本独立记录；切换任务清空旧数据，迟到结果按任务与修订校验。
+
+
+## 19. 短剧项目、写作分集与制作结构
+
+以下结构属于独立领域记录，发布时须提供精确机器 Schema，不能把骨架 Schema 的 Episode 重命名后直接充当写作分集。
+
+| 对象 | 字段 | 不变量 |
+| --- | --- | --- |
+| DramaProject | `schema_version, project_id, revision, previous_sha256, title, mode, source_refs, episode_refs, skeleton_refs, production_brief, archived, created_at, updated_at` | mode=original／adaptation；原创允许空来源；episode_refs 有序且唯一，拥有项目内唯一集序 |
+| DramaEpisode | `schema_version, episode_id, project_id, revision, previous_sha256, title, plan, document_id, archived, created_at, updated_at` | document_id 唯一绑定本工作区 Fountain 剧本；plan 为作者计划文字，不复制剧本内容或集号 |
+| ScriptSemanticIndex | `document_ref, parser_version, elements, scenes, diagnostics` | document_ref 固定正文修订和摘要；每元素为 type、UTF-8 半开范围；缓存可重建 |
+| ScriptScene | `scene_id, episode_id, document_ref, source_range, marker, mapping_refs` | scene_id 与兼容源文标记一致；缺标记的候选不按序号取得旧身份 |
+| PlanMapping | `mapping_id, revision, skeleton_ref, episode_ref, scene_mappings, previous_sha256` | 同时固定规划与写作来源；失效映射保留历史，不自动迁移旧字节范围 |
+| Storyboard | `storyboard_id, revision, scene_ref, shots, previous_sha256` | 镜头有稳定 shot_id；引用剧本及固定资产，不保存第二份可编辑对白 |
+| GenerationSegment | `segment_id, revision, shot_refs, model_profile_ref, input_refs, prompt, output_refs, previous_sha256` | 片段与镜头多对多；输出为外部候选，不自动进入选用或定稿 |
+
+跨项目编入剧本必须显式复制独立分集及来源映射，不让一个文档同时由两个项目拥有。既有独立剧本通过作者编入动作取得分集身份，保留原文及历史。重排和归档检查目录 CAS，操作回执与项目、分集、文档更新共同提交。关联字段 `drama_project_id` 如作投影只能由所属分集推导，不作为第二个可写事实。
+
+## 20. 资料、设计、候选与使用
+
+共同可变头记录包含 `schema_version, workspace_id, revision, previous_sha256, created_at, updated_at, actor_ref`。首次 previous_sha256=null，后继固定前次原始字节；固定引用均带对象 ID、revision 和 sha256。归属、文件、来源、事实与授权按类型校验，不能只靠通用 JSON 结构接受任意关联。
+
+| 对象 | 字段 | 语义 |
+| --- | --- | --- |
+| ResourceItem | 共同字段、`resource_id, project_id, category, title, body, entity_refs, tags, state, provenance` | project_id=null 为作品共用资料；分类为 character／location／prop／research／artwork／media；state=draft／adopted／archived；正文笔记可为空但名称非空 |
+| AssetDesign | 共同字段、`design_id, resource_ref, label, description, invariants, changes, scope_refs, reference_inputs, state` | invariants 为带事实依据的固定项，changes 为作者设计选择或待确认提案；采用修订不能被 Agent 原地改写 |
+| MediaAsset | 既有 Asset 字段及可扩展文件类型合同 | 拥有字节、解码状态与权利；封面仍引用同一媒体实现，不重复保存“当前封面” |
+| AssetCandidate | `schema_version, candidate_id, design_ref, task_ref, file_refs, provenance, created_at, actor_ref` | 不可变文件组；内容变化产生新候选并关联返工来源，旧候选不覆盖 |
+| AssetFileRef | `asset_ref, role, view_label, group_order, layer_info` | role=render／base／layer／mask／markup／text／source／audio／video；layer_info 仅在图层任务有值，保存位置、尺寸、顺序与可选混合信息，不承诺无损复原 |
+| AssetSelection | `schema_version, selection_id, purpose, target_ref, candidate_ref, decision, previous, actor_ref, created_at` | decision=selected／withdrawn；只由作者写入；previous 固定前次决定及摘要，选用槽按用途与目标唯一 |
+| ResourceUsage | 共同字段、`usage_id, resource_ref, design_ref, candidate_ref, target_ref, role, archived` | target_ref 为固定章节／场次／分镜等类型引用；可只关联文字资料，design_ref 与 candidate_ref 可空 |
+| ReferenceInput | `asset_ref, role, region, transform, source_ref` | role 区分 identity／costume／style／composition／pose／palette／edit_base／mask／markup；原图像素坐标和模型归一化坐标分开 |
+| ModelProfile | `profile_id, revision, provider, model_id, channel, capabilities, limits, official_sources, verified_on` | 模型、产品通道和提供方分别保存；不含 Key 或可执行请求模板；未知能力不得默认支持 |
+
+实际生成来源保存在候选 provenance，包含调用方声明的供应商、精确模型、通道、任务引用、安全参数及输入摘要；作者之后切换模型不改历史来源。字节校验、解码、能力资料核验与生成模型身份各是不同证据。
+
+资料当前性按依赖图计算：分别返回源文、设定、设计、参考和选用变化；归档或权利撤回不删除旧引用。跨作品导入生成新 ID、独立字节或已核验本地副本及固定原始来源映射；不得保留必须访问另一个本机目录的外键。封面选用沿用 BookCover，通用选用不产生第二个封面头。
+
+Agent 的可修改范围由服务器发出的任务授权决定：明确对象集合、字段、输入引用、预算与有效期。它可建立或维护获权的资料草稿、设计草稿及候选，不能更新已采用资料、作者选用、设定或正式正文。超出范围通过提案提交；请求中的 actor_ref、state 或 task_id 不构成权限。文件提交采用任务受管 inbox 与最后提交的文件清单，不接受任意本机路径。
+
+## 21. 创作场景与原著材料
+
+作品类型 `work_type=novel|drama` 只决定创作内容与入口，既有缺省作品由既有小说资料识别，不从题名猜类型。项目 `mode=original|adaptation` 表达故事来源方式；稿件贡献来源与著作权声明继续独立。导入意图为 `novel_manuscript|drama_script|adaptation_source|reference`，不持久化成新的作品类型。
+
+| 对象 | 字段与含义 | 不变量 |
+| --- | --- | --- |
+| SourceMaterial | `source_id, workspace_id, revision, previous_sha256, title, author_statement, source_kind, source_version, file_refs, text_document_ref, original_work_ref, rights_ref, created_at, updated_at, actor_ref` | 固定原文件与只读原文；source_kind 区分自有作品、授权作品、公版依据及待确认；普通参考资料不自动成为原著 |
+| SourceRights | `rights_id, source_id, revision, previous_sha256, basis, statement, evidence_refs, adaptation_scope, agent_disclosure_scope, redistribution_scope, valid_from, valid_until, territories, actor_ref, created_at` | 三种用途分别为 allowed／denied／unconfirmed 及具体范围；附件为证明声明，不当作软件验证法律事实 |
+| ProjectSourceRef | `source_id, revision, sha256, role, selected_ranges` | role=original／continuation_basis／reference；固定原文范围及来源版本，不消费动态“最新原著” |
+| ImportIntent | `purpose, destination_ref, source_file_refs, structure_choices, rights_draft` | 提交前固定用途、目标、原文件摘要与结构；来源待确认允许保存，不自动扩大外发权限 |
+| CreationFormDraft | `form_id, scenario, fields, source_choices, last_preview_ref, pending_operation_ref` | 本机表单缓冲，不授予 Agent 权限，不作为作品已创建的证据 |
+
+同工作区自有小说改编可引用固定 DocumentRef，无需复制正文；独立剧本显式导入来源快照并保存原始来源声明，不依赖外部作品路径。SourceMaterial 不能以小说 Chapter 伪装创建；其原始内容只读，纠错或新版本通过新修订与映射提案管理。
+
+改编项目可先保存无来源分集计划，来源缺项由依赖计算；有来源引用时必须可解析并核对摘要。授权当前性与内容当前性分别计算，旧 SourceRights 不能绕过当前撤回。期限缺省为未声明，不推断永久授权；`unconfirmed` 不是 denied，也不能被当作 allowed。具体外发与交付动作在执行前重新检查所选材料及当前声明。
+
+## 22. 持续协作、上下文与反馈
+
+本节拥有新增字段语义，动作与预算由[30第23节](30-应用API详细设计.md#23-持续协作与任务接续合同)维护；目录和导入事务由[07](07-工作区与持久化设计.md)维护。机器 Schema 以明确合同修订发布，旧记录按原版本读取，不把设计字段注入旧文件后重算摘要。
+
+| 对象 | 字段 | 不变量 |
+| --- | --- | --- |
+| TaskLocator | `scope_ref,task_id` | 稳定定位，无目录或秘密；不构成授权 |
+| RequestRef | `task_id,request_revision,sha256` | 确切不可变请求；TaskRef 组合 scope_ref 与 RequestRef |
+| CreativeTaskHead | `task_id,scope_ref,revision,current_request_ref,observation_ref,previous_sha256` | 由 Core 分配，指向同一任务的请求；更新使用 CAS，不维护全局 activeTask |
+| ContextManifest | `schema_version,manifest_id,scope_ref,task_id,request_revision,entries` | 请求通过 `{manifest_id,sha256}` 引用固定清单；清单不反向包含请求摘要，避免循环摘要；条目仅含作者批准的具体对象／集合快照 |
+| ContextEntry | `context_id,kind,fixed_ref,sha256,allowed_ranges,title,size_bytes,summary_ref,source_kind` | 固定原文修订；allowed_ranges=null 表示该明确对象的全文只读；summary_ref 可空，非空必须注明作者、规则或 Agent 来源和覆盖；摘要不代替原文 |
+| MaterialRequest | `material_request_id,task_ref,revision,requested_material,purpose,requested_ranges,state,resolution_ref,previous_sha256` | state 为 pending／provided／declined；provided 引用新请求及实际材料，不由 Agent 自授权限 |
+| WorkingCopy | `working_copy_id,task_ref,request_sha256,artifact_kind,source_format,title,current_revision_ref,current_revision_sha256,base_refs,parent_ref,created_at` | 本任务参考内容；parent_ref 可空，非空为固定来源；不拥有正式 Document、定稿或已采用 Resource 的头 |
+| WorkingRevision | `working_revision_id,working_copy_id,parent_revision_ref,previous_sha256,content_ref,sha256,size_bytes,feedback_refs,actor_ref,created_at,patches?` | 内容不可变，head 可推进；revision 类型保存合法 patches，普通稿保存 Markdown／Fountain；固定请求不得偷换 |
+| WorkingCopyRef | `working_copy_id,working_revision_id,sha256` | 绑定确切工作修订及内容摘要；保存的 expected 使用该完整引用，不能仅传副本 ID 或“最新” |
+| TaskSubmission 扩展 | `working_copy_refs,feedback_refs` | 可空；非空引用确切已保存修订，提交后原字节和来源不随工作副本变化 |
+| TaskFeedback | `feedback_id,task_ref,request_sha256,sequence,previous_ref,target_refs,intent,public_comment,selected_refs,interaction_decision_ref,origin,created_at` | sequence 递增；目标是确切成果；intent 为 preference／request_changes；只表达意见，不产生采纳或授权；私密批注不进入投影 |
+| FeedbackHandling | `feedback_ref,result_refs,reported_at,reporter_ref` | 由实际保存成果引用推导或记录 Agent 声明；不等于作者认可，未满足可继续返工 |
+| TaskGrant | `grant_id,grant_revision,principal_ref,task_ref,allowed_actions,object_refs,editable_fields,context_manifest_ref,limits,expires_at,revoked_at` | 本机私有授权；可信作者入口创建，不进 Prompt／Git／Bundle；已知 ID 不能换取权限 |
+| CheckoutRecord | `checkout_id,task_ref,working_copy_ref,base_sha256,relative_path,state,expires_at` | 本机临时检出记录，不是作品事实；导入后才能得到受管新修订，过期后不能写回 |
+| ContinuationReceipt | `feedback_ref,session_ref,delivery_state,observed_at,result_ref` | 本机消息尝试记录，delivery_state 为 not_requested／requested／accepted／rejected／unknown；无聊天或凭据，不代表 Agent running |
+
+TaskGrant、CheckoutRecord 和 ContinuationReceipt 留在本机私有存储或会话中；作品可持有请求、公开反馈、工作修订及候选来源。不同主体的私密注释不因反馈共享而变为公开；origin 区分可信原生操作、局部交互会话及调用方声明，不能把自动化点击升级为作者批准。
+
+请求版本链追加而不改旧记录。普通返工追加 TaskFeedback 与 WorkingRevision；补充上下文／变更基线由作者生成新请求及授权版本。新请求发布后旧工作副本只读；显式创建后继副本保留 parent_ref。旧提交、历史反馈与原操作仍引用原请求，持有当前权限的作者始终能查看；失权 Agent 不凭旧引用读取。
+
+`creative-task.schema.json` 的1.0.0记录以 task_ref 加 request_sha256 共同固定请求；稳定 MCP／CLI 业务输入携带合并后的完整 task_ref。两种表示必须核验一致，不能省略请求摘要。工作副本头的记录摘要由任务状态锚定，current_revision_sha256 固定当前修订记录，previous_sha256 串联不可变历史；WorkingCopyRef 的 sha256 固定内容字节。
+
+请求记录1.1.0通过 context_manifest_ref 固定目录摘要；ContextRef 为 `{context_id,sha256}`，必须在该请求已授权清单中解析。原文从固定 DocumentRef／设定集修订回读并重验摘要，不在任务中复制整书。目录、范围和请求的字节身份相互核验；读取不会改旧任务或跟随正文当前头。文本片段的 SourceRef 保持既有字段，内容摘要单列为 sha256，不往 SourceRef 偷加字段。
+
+工作副本、正式候选和作者正文具有不同身份。一个工作修订可用于多个明确批次，但每批 submission_id 与原键独立；采纳仍经 Draft／AdoptionRecord 形成正文新修订。缓存、检出文件、外部完成声明及对话文本均不能成为另一份正文或设定真值。
+
+## 23. 页面交接与操作提案
+
+本节定义[30第25节](30-应用API详细设计.md#25-全软件联动与操作提案合同)的数据语义。实际发布时为对应记录分配 Schema 版本并登记动作合同；未进入能力目录的设计字段不得由 Skill 直接写入受管文件。
+
+| 记录 | 必需语义字段 | 不变量 |
+| --- | --- | --- |
+| PageContext | `view_kind,scope_ref?,object_refs,fixed_refs,task_refs,proposal_refs,operation_refs,capability_revision` | 明确对象及当前已保存版本；无作品可为空范围；不包含整书、私密批注或凭据；不构成授权 |
+| AgentHandoff | `context_ref,client_adapter,intent,allowed_capabilities,missing_requirements,resume_refs,prompt_language` | 由实际用例和授权投影，完整提示词按需生成；复制记录不代表已发送或执行 |
+| WorkspaceGrant／CreationGrant | `grant_id,revision,principal_ref,scope_ref,allowed_use_cases,object_constraints,limits,expires_at,revoked_at` | 本机私有；分别限定已选作品或明确新建范围；不能因知道目录取得权限，不替代单任务授权 |
+| OperationProposal | `proposal_id,scope_ref,action,contract_revision,input,input_sha256,expected_refs,effects,source_refs,initiator_ref,required_decisions,created_at` | 内容不可变；输入由对应领域 Schema 校验；影响由 Core 计算，不能信任 Agent 自报；秘密字段不进入普通提案 |
+| ProposalState | `proposal_ref,revision,decision_ref?,operation_ref?,result_ref?,previous_sha256` | 状态引用已准备、待审、拒绝、获权、执行结果或过期原因；由实际决定与操作推导，不另造正文状态 |
+| AuthorDecisionRef | `decision_id,proposal_ref,proposal_sha256,decision,actor_ref,recorded_at` | 决定由可信确认通道记录；对话、模型声明和模拟点击不能生成合法批准 |
+| ExecutionGrant | `grant_id,proposal_ref,proposal_sha256,action,principal_ref,scope_ref,limits,expires_at,revoked_at` | 本机窄授权；固定单次操作，输入、目标或基线改变使其失效；不暴露通用作者身份 |
+
+提案所需的大文本、图片和来源以确切引用表示，避免复制整本书；机器读取这些引用仍受原授权和预算限制。OperationProposal 的创建、作者决定和执行分别有原键及摘要，执行只推进对应领域事实；重放不重复执行，未知状态先查询原操作。
+
+公开投影只含作者允许公开的提案内容、决定状态与领域结果。凭据、批准材料和执行能力留在本机私有存储；审计分别记录发起者、确认者和执行者。页面更新只采用已提交结果，未保存编辑缓冲有独立本机身份，不被自动覆盖或误作固定原文。

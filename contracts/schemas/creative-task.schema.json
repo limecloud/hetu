@@ -171,6 +171,9 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 128
+        },
+        "work_profile": {
+          "$ref": "#/$defs/work_profile"
         }
       },
       "required": [
@@ -233,6 +236,9 @@
           },
           "minItems": 0,
           "maxItems": 16
+        },
+        "work_profile": {
+          "$ref": "#/$defs/work_profile"
         }
       },
       "required": [
@@ -457,9 +463,11 @@
             "book_profile",
             "outline",
             "cover",
+            "artwork",
             "chapter_draft",
             "revision",
-            "drama_draft"
+            "drama_draft",
+            "resource_organize"
           ]
         },
         "brief": {
@@ -473,7 +481,7 @@
             "$ref": "#/$defs/source_ref"
           },
           "minItems": 0,
-          "maxItems": 8
+          "maxItems": 100
         },
         "client_adapter": {
           "enum": [
@@ -496,6 +504,9 @@
         },
         "edit_scope": {
           "$ref": "#/$defs/edit_scope"
+        },
+        "resource_scope": {
+          "$ref": "#/$defs/resource_scope"
         }
       },
       "required": [
@@ -520,9 +531,11 @@
             "book_profile",
             "outline",
             "cover",
+            "artwork",
             "chapter_draft",
             "revision",
-            "drama_draft"
+            "drama_draft",
+            "resource_organize"
           ]
         },
         "brief": {
@@ -536,7 +549,7 @@
             "$ref": "#/$defs/source_ref"
           },
           "minItems": 0,
-          "maxItems": 8
+          "maxItems": 100
         },
         "client_adapter": {
           "enum": [
@@ -576,6 +589,9 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 128
+        },
+        "resource_scope": {
+          "$ref": "#/$defs/resource_scope"
         }
       },
       "required": [
@@ -666,9 +682,9 @@
           "items": {
             "type": "integer",
             "minimum": 0,
-            "maximum": 7
+            "maximum": 99
           },
-          "maxItems": 8
+          "maxItems": 100
         },
         "content": {
           "type": "string",
@@ -830,16 +846,55 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 128
+        },
+        "working_copy_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/working_ref"
+          },
+          "minItems": 1,
+          "maxItems": 4,
+          "uniqueItems": true
+        },
+        "feedback_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/feedback_ref"
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true
         }
       },
       "required": [
         "task_ref",
         "request_sha256",
-        "candidates",
         "complete",
         "missing_items",
         "provenance",
         "operation_key"
+      ],
+      "oneOf": [
+        {
+          "required": [
+            "candidates"
+          ],
+          "not": {
+            "required": [
+              "working_copy_refs"
+            ]
+          }
+        },
+        {
+          "required": [
+            "working_copy_refs"
+          ],
+          "not": {
+            "required": [
+              "candidates"
+            ]
+          }
+        }
       ]
     },
     "inspect_input": {
@@ -1069,6 +1124,24 @@
               ]
             },
             {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "drama_project_id": {
+                  "type": "string",
+                  "pattern": "^drama_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                }
+              },
+              "required": [
+                "workspace_id",
+                "drama_project_id"
+              ]
+            },
+            {
               "type": "null"
             }
           ]
@@ -1080,6 +1153,9 @@
         "updated_at": {
           "type": "string",
           "maxLength": 100
+        },
+        "work_profile": {
+          "$ref": "#/$defs/work_profile"
         }
       },
       "required": [
@@ -1124,6 +1200,11 @@
         },
         "blueprint": {
           "type": "object"
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1048576
         }
       },
       "additionalProperties": false
@@ -1133,7 +1214,10 @@
       "additionalProperties": false,
       "properties": {
         "schema_version": {
-          "const": "1.0.0"
+          "enum": [
+            "1.0.0",
+            "1.1.0"
+          ]
         },
         "task_id": {
           "type": "string",
@@ -1154,9 +1238,11 @@
             "book_profile",
             "outline",
             "cover",
+            "artwork",
             "chapter_draft",
             "revision",
-            "drama_draft"
+            "drama_draft",
+            "resource_organize"
           ]
         },
         "brief": {
@@ -1168,7 +1254,7 @@
           "items": {
             "$ref": "#/$defs/source_ref"
           },
-          "maxItems": 8
+          "maxItems": 100
         },
         "input_snapshot": {
           "type": "object",
@@ -1182,7 +1268,28 @@
               "items": {
                 "$ref": "#/$defs/source_snapshot"
               },
-              "maxItems": 8
+              "maxItems": 100
+            },
+            "resources": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "resource": {
+                    "type": "object"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "required": [
+                  "resource",
+                  "sha256"
+                ]
+              },
+              "maxItems": 50
             }
           },
           "required": [
@@ -1255,13 +1362,27 @@
               "const": 33554432
             },
             "submission_mode": {
-              "const": [
-                "mcp",
-                "inbox"
+              "enum": [
+                [
+                  "mcp",
+                  "inbox"
+                ],
+                [
+                  "mcp",
+                  "cli",
+                  "inbox"
+                ],
+                [
+                  "mcp",
+                  "cli"
+                ]
               ]
             },
             "relative_inbox": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "maxLength": 200
             },
             "revision_requires_patches": {
@@ -1291,6 +1412,27 @@
         "created_at": {
           "type": "string",
           "maxLength": 100
+        },
+        "resource_scope": {
+          "$ref": "#/$defs/resource_scope"
+        },
+        "context_manifest_ref": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "manifest_id",
+            "sha256"
+          ],
+          "properties": {
+            "manifest_id": {
+              "type": "string",
+              "pattern": "^manifest_[0-9a-f-]{36}$"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
         }
       },
       "required": [
@@ -1310,6 +1452,29 @@
         "output_contract",
         "edit_scope",
         "created_at"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "schema_version": {
+                "const": "1.1.0"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "context_manifest_ref"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "context_manifest_ref"
+              ]
+            }
+          }
+        }
       ]
     },
     "state_record": {
@@ -1396,6 +1561,24 @@
         "updated_at": {
           "type": "string",
           "maxLength": 100
+        },
+        "working_copy_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/working_head_ref"
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true
+        },
+        "feedback_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/feedback_ref"
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true
         }
       },
       "required": [
@@ -1519,6 +1702,9 @@
         },
         "validation": {
           "const": "decoded"
+        },
+        "working_copy_ref": {
+          "$ref": "#/$defs/working_ref"
         }
       },
       "required": [
@@ -1575,6 +1761,24 @@
         "received_at": {
           "type": "string",
           "maxLength": 100
+        },
+        "working_copy_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/working_ref"
+          },
+          "minItems": 1,
+          "maxItems": 4,
+          "uniqueItems": true
+        },
+        "feedback_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/feedback_ref"
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true
         }
       },
       "required": [
@@ -1646,6 +1850,1166 @@
         "effect",
         "previous_decision_ref",
         "created_at"
+      ]
+    },
+    "resource_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resource_refs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "resource_id": {
+                "type": "string",
+                "pattern": "^resource_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "revision": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "resource_id",
+              "revision",
+              "sha256"
+            ]
+          },
+          "maxItems": 50,
+          "uniqueItems": true
+        },
+        "editable_resource_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^resource_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "maxItems": 50,
+          "uniqueItems": true
+        },
+        "allow_create": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "resource_refs",
+        "editable_resource_ids",
+        "allow_create"
+      ]
+    },
+    "create_drama_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "project_id": {
+          "type": "string",
+          "pattern": "^project_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "expected": {
+          "$ref": "#/$defs/expected"
+        },
+        "target_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "profile": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "description": {
+              "type": "string",
+              "maxLength": 20000
+            },
+            "mode": {
+              "enum": [
+                "original",
+                "adaptation"
+              ]
+            },
+            "language_tag": {
+              "enum": [
+                "zh-CN",
+                "en"
+              ]
+            }
+          },
+          "required": [
+            "title",
+            "description",
+            "mode",
+            "language_tag"
+          ]
+        }
+      },
+      "required": [
+        "project_id",
+        "expected",
+        "profile",
+        "target_path",
+        "operation_key"
+      ]
+    },
+    "work_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "work_type": {
+          "enum": [
+            "novel",
+            "drama"
+          ]
+        },
+        "drama_mode": {
+          "enum": [
+            null,
+            "original",
+            "adaptation"
+          ]
+        },
+        "language_tag": {
+          "enum": [
+            "zh-CN",
+            "en"
+          ]
+        }
+      },
+      "required": [
+        "work_type",
+        "drama_mode",
+        "language_tag"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "work_type": {
+                "const": "novel"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "drama_mode": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "drama_mode": {
+                "enum": [
+                  "original",
+                  "adaptation"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "working_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "working_copy_id": {
+          "type": "string",
+          "pattern": "^working_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "working_revision_id": {
+          "type": "string",
+          "pattern": "^wrev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "working_copy_id",
+        "working_revision_id",
+        "sha256"
+      ]
+    },
+    "working_head_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "working_copy_id": {
+          "type": "string",
+          "pattern": "^working_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "working_copy_id",
+        "sha256"
+      ]
+    },
+    "feedback_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "feedback_id": {
+          "type": "string",
+          "pattern": "^feedback_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "feedback_id",
+        "sha256"
+      ]
+    },
+    "feedback_target": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "working_copy"
+            },
+            "working_copy_ref": {
+              "$ref": "#/$defs/working_ref"
+            }
+          },
+          "required": [
+            "kind",
+            "working_copy_ref"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "candidate"
+            },
+            "candidate_ref": {
+              "$ref": "#/$defs/candidate_ref"
+            }
+          },
+          "required": [
+            "kind",
+            "candidate_ref"
+          ]
+        }
+      ]
+    },
+    "working_create_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        },
+        "artifact_kind": {
+          "enum": [
+            "concept",
+            "title",
+            "synopsis",
+            "outline",
+            "text"
+          ]
+        },
+        "source_format": {
+          "enum": [
+            "plain",
+            "markdown",
+            "fountain"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "base_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/source_ref"
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true
+        },
+        "parent_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/working_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "feedback_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/feedback_ref"
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "content": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 1048576
+        },
+        "patches": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/patch"
+          },
+          "minItems": 1,
+          "maxItems": 64,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "task_ref",
+        "artifact_kind",
+        "source_format",
+        "title",
+        "base_refs",
+        "operation_key"
+      ],
+      "oneOf": [
+        {
+          "required": [
+            "content"
+          ],
+          "not": {
+            "required": [
+              "patches"
+            ]
+          }
+        },
+        {
+          "required": [
+            "patches"
+          ],
+          "not": {
+            "required": [
+              "content"
+            ]
+          }
+        }
+      ]
+    },
+    "working_save_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        },
+        "working_copy_id": {
+          "type": "string",
+          "pattern": "^working_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "expected": {
+          "$ref": "#/$defs/working_ref"
+        },
+        "feedback_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/feedback_ref"
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "content": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 1048576
+        },
+        "patches": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/patch"
+          },
+          "minItems": 1,
+          "maxItems": 64,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "task_ref",
+        "working_copy_id",
+        "expected",
+        "feedback_refs",
+        "operation_key"
+      ],
+      "oneOf": [
+        {
+          "required": [
+            "content"
+          ],
+          "not": {
+            "required": [
+              "patches"
+            ]
+          }
+        },
+        {
+          "required": [
+            "patches"
+          ],
+          "not": {
+            "required": [
+              "content"
+            ]
+          }
+        }
+      ]
+    },
+    "working_get_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        },
+        "working_copy_ref": {
+          "$ref": "#/$defs/working_ref"
+        }
+      },
+      "required": [
+        "task_ref",
+        "working_copy_ref"
+      ]
+    },
+    "working_list_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "cursor": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        }
+      },
+      "required": [
+        "task_ref"
+      ]
+    },
+    "working_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "working_copy_id": {
+          "type": "string",
+          "pattern": "^working_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        },
+        "request_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "artifact_kind": {
+          "enum": [
+            "concept",
+            "title",
+            "synopsis",
+            "outline",
+            "text"
+          ]
+        },
+        "source_format": {
+          "enum": [
+            "plain",
+            "markdown",
+            "fountain"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "current_revision_ref": {
+          "$ref": "#/$defs/working_ref"
+        },
+        "current_revision_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "base_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/source_ref"
+          },
+          "minItems": 0,
+          "maxItems": 8,
+          "uniqueItems": true
+        },
+        "parent_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/working_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "created_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      },
+      "required": [
+        "schema_version",
+        "working_copy_id",
+        "task_ref",
+        "request_sha256",
+        "artifact_kind",
+        "source_format",
+        "title",
+        "current_revision_ref",
+        "current_revision_sha256",
+        "base_refs",
+        "parent_ref",
+        "created_at"
+      ]
+    },
+    "working_revision_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "working_revision_id": {
+          "type": "string",
+          "pattern": "^wrev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "working_copy_id": {
+          "type": "string",
+          "pattern": "^working_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "parent_revision_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/working_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "previous_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "content_ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1048576
+        },
+        "feedback_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/feedback_ref"
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true
+        },
+        "actor_ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "created_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "patches": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/patch"
+          },
+          "minItems": 1,
+          "maxItems": 64,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "schema_version",
+        "working_revision_id",
+        "working_copy_id",
+        "parent_revision_ref",
+        "previous_sha256",
+        "content_ref",
+        "sha256",
+        "size_bytes",
+        "feedback_refs",
+        "actor_ref",
+        "created_at"
+      ]
+    },
+    "feedback_save_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        },
+        "target_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/feedback_target"
+          },
+          "minItems": 1,
+          "maxItems": 16,
+          "uniqueItems": true
+        },
+        "expected_feedback_head": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/feedback_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "intent": {
+          "enum": [
+            "preference",
+            "request_changes"
+          ]
+        },
+        "public_comment": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "selected_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/feedback_target"
+          },
+          "minItems": 0,
+          "maxItems": 16,
+          "uniqueItems": true
+        },
+        "interaction_decision_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/decision_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "task_ref",
+        "target_refs",
+        "expected_feedback_head",
+        "intent",
+        "public_comment",
+        "selected_refs",
+        "operation_key"
+      ]
+    },
+    "feedback_list_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        },
+        "after_cursor": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "task_ref"
+      ]
+    },
+    "feedback_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "feedback_id": {
+          "type": "string",
+          "pattern": "^feedback_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        },
+        "request_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "previous_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/feedback_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "target_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/feedback_target"
+          },
+          "minItems": 1,
+          "maxItems": 16,
+          "uniqueItems": true
+        },
+        "intent": {
+          "enum": [
+            "preference",
+            "request_changes"
+          ]
+        },
+        "public_comment": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "selected_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/feedback_target"
+          },
+          "minItems": 0,
+          "maxItems": 16,
+          "uniqueItems": true
+        },
+        "interaction_decision_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/decision_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "origin": {
+          "enum": [
+            "native_author",
+            "task_interaction"
+          ]
+        },
+        "created_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      },
+      "required": [
+        "schema_version",
+        "feedback_id",
+        "task_ref",
+        "request_sha256",
+        "sequence",
+        "previous_ref",
+        "target_refs",
+        "intent",
+        "public_comment",
+        "selected_refs",
+        "interaction_decision_ref",
+        "origin",
+        "created_at"
+      ]
+    },
+    "context_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "context_id",
+        "sha256"
+      ],
+      "properties": {
+        "context_id": {
+          "type": "string",
+          "pattern": "^context_[0-9]{1,3}$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "context_list_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        },
+        "cursor": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "kind": {
+          "enum": [
+            "document",
+            "blueprint"
+          ]
+        }
+      },
+      "required": [
+        "task_ref"
+      ]
+    },
+    "context_read_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        },
+        "context_ref": {
+          "$ref": "#/$defs/context_ref"
+        },
+        "section": {
+          "enum": [
+            "characters",
+            "factions",
+            "locations",
+            "timeline",
+            "world",
+            "rules"
+          ]
+        },
+        "entity_id": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "cursor": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "range": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "byte_start"
+          ],
+          "properties": {
+            "byte_start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "byte_end": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "max_bytes": {
+          "type": "integer",
+          "minimum": 4,
+          "maximum": 65536
+        }
+      },
+      "required": [
+        "task_ref",
+        "context_ref"
+      ]
+    },
+    "context_search_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        },
+        "cursor": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "kind": {
+          "enum": [
+            "document",
+            "blueprint"
+          ]
+        },
+        "query": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": [
+        "task_ref",
+        "query"
+      ]
+    },
+    "context_manifest_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "manifest_id",
+        "scope_ref",
+        "task_id",
+        "request_revision",
+        "entries"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "manifest_id": {
+          "type": "string",
+          "pattern": "^manifest_[0-9a-f-]{36}$"
+        },
+        "scope_ref": {
+          "$ref": "#/$defs/scope_ref"
+        },
+        "task_id": {
+          "type": "string",
+          "pattern": "^task_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "request_revision": {
+          "const": 1
+        },
+        "entries": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "context_id": {
+                "type": "string",
+                "pattern": "^context_[0-9]{1,3}$"
+              },
+              "kind": {
+                "enum": [
+                  "document",
+                  "blueprint"
+                ]
+              },
+              "fixed_ref": {
+                "$ref": "#/$defs/source_ref"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "allowed_ranges": {
+                "type": "null"
+              },
+              "title": {
+                "type": "string",
+                "maxLength": 200
+              },
+              "size_bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "summary_ref": {
+                "type": "null"
+              },
+              "source_kind": {
+                "const": "author"
+              }
+            },
+            "required": [
+              "context_id",
+              "kind",
+              "fixed_ref",
+              "sha256",
+              "allowed_ranges",
+              "title",
+              "size_bytes",
+              "summary_ref",
+              "source_kind"
+            ]
+          }
+        }
+      }
+    },
+    "image_preview_input": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/preview_input"
+        },
+        {
+          "properties": {
+            "task_kind": {
+              "enum": [
+                "cover",
+                "artwork"
+              ]
+            },
+            "scope_ref": {
+              "properties": {
+                "kind": {
+                  "const": "workspace"
+                }
+              }
+            }
+          },
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "edit_scope"
+                ]
+              },
+              {
+                "required": [
+                  "resource_scope"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "image_prepare_input": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/prepare_input"
+        },
+        {
+          "properties": {
+            "task_kind": {
+              "enum": [
+                "cover",
+                "artwork"
+              ]
+            },
+            "scope_ref": {
+              "properties": {
+                "kind": {
+                  "const": "workspace"
+                }
+              }
+            }
+          },
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "edit_scope"
+                ]
+              },
+              {
+                "required": [
+                  "resource_scope"
+                ]
+              }
+            ]
+          }
+        }
       ]
     }
   }

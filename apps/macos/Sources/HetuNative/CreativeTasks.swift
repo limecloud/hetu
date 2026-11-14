@@ -8,6 +8,23 @@ public enum CreativeTaskError: Error {
     public var key: String { "creative.error." + String(describing: self) }
 }
 
+public enum CreativeTaskKind: String, CaseIterable, Identifiable {
+    case revision, chapterDraft = "chapter_draft", dramaDraft = "drama_draft", outline, bookProfile = "book_profile", cover, artwork
+    public var id: String { rawValue }
+    public var titleKey: String { "creative.kind." + rawValue }
+    public var skillName: String {
+        switch self {
+        case .revision: "hetu-revise"
+        case .chapterDraft: "hetu-draft"
+        case .dramaDraft: "hetu-drama"
+        case .outline: "hetu-outline"
+        case .bookProfile: "hetu-book-profile"
+        case .cover: "hetu-cover"
+        case .artwork: "hetu-artwork"
+        }
+    }
+}
+
 public enum CreativeTaskInput {
     public static func range(_ span: SourceSpan) -> JSONValue {
         .object(["byte_start": .integer(Int64(span.byteStart)), "byte_end": .integer(Int64(span.byteEnd)), "quote": .string(span.quote)])
@@ -73,24 +90,37 @@ public enum CreativeTaskInput {
     public func showError(_ error: any Error) { self.error = (error as? CreativeTaskError).map { model.t($0.key) } ?? model.localizer.error(error) }
 
     public func previewRevision(ranges: [JSONValue], contextIDs: Set<String>, includeBible: Bool, client: AgentClient, brief: String) async {
+        await previewWriting(kind: .revision, ranges: ranges, contextIDs: contextIDs, includeBible: includeBible, includeCurrent: true, client: client, brief: brief)
+    }
+    public func previewWriting(kind: CreativeTaskKind, ranges: [JSONValue] = [], contextIDs: Set<String>, includeBible: Bool, includeCurrent: Bool, client: AgentClient, brief: String) async {
         error = nil; preview = .null
         do {
             guard model.workspaceID == scopeID else { throw CreativeTaskError.scopeChanged }
+            guard client != .none else { throw CreativeTaskError.missingClient }
             guard !model.needsProtection, !model.isComposing else { throw CreativeTaskError.saveRequired }
             let document = model.loaded
             var context: [JSONValue] = []
-            for item in model.documents where contextIDs.contains(item.id) && item.id != model.documentID {
+            for item in model.documents where contextIDs.contains(item.id) && (kind != .revision || item.id != model.documentID) {
                 guard let value = await read("hetu.documents.get", input: ["document_id": .string(item.id)]) else { return }
                 context.append(.object(["kind": .string("document"), "document_id": .string(item.id), "revision_id": value["revision"]["revision_id"]]))
             }
             if includeBible { context.append(.object(["kind": .string("blueprint"), "revision": model.bible["blueprint"]["revision"]])) }
+            if kind != .revision && includeCurrent && !model.documentID.isEmpty && !contextIDs.contains(model.documentID) {
+                context.insert(.object(["kind": .string("document"), "document_id": .string(model.documentID), "revision_id": document["revision"]["revision_id"]]), at: 0)
+            }
             guard model.loaded == document, !model.needsProtection, !model.isComposing else { throw CreativeTaskError.saveRequired }
-            let input = try CreativeTaskInput.revision(scopeID: scopeID, document: document, ranges: ranges, context: context, client: client, brief: brief, locale: model.locale)
+            let input: [String: JSONValue]
+            if kind == .revision {
+                input = try CreativeTaskInput.revision(scopeID: scopeID, document: document, ranges: ranges, context: context, client: client, brief: brief, locale: model.locale)
+            } else {
+                input = ["scope_ref": .object(["kind": .string("workspace"), "id": .string(scopeID)]), "task_kind": .string(kind.rawValue),
+                    "brief": .string(brief), "input_refs": .array(context), "client_adapter": .string(client == .claudeCode ? "claude-code" : client.rawValue), "language_tag": .string(model.locale == "en" ? "en" : "zh-CN")]
+            }
             if let value = await read("hetu.creative_tasks.preview_prompt", input: input) {
                 var fields = value.object
                 let association = model.agentIntegration.association(for: scopeID)
                 if let suite = try AgentSuiteCatalog.bundled().suites.first(where: { $0.id == association.suiteID }) {
-                    let skillName = suite.skillName("hetu-revise", client: client)
+                    let skillName = suite.skillName(kind.skillName, client: client)
                     let instruction = model.locale == "en"
                         ? "Use the \(skillName) workflow from the author-selected package \(suite.pluginName) (\(model.t(suite.titleKey))). This records the selection, not a verified installed version."
                         : "请使用作者所选扩展包 \(suite.pluginName)（\(model.t(suite.titleKey))）内的 \(skillName) 工作流。此处记录所选套件，不表示已验证安装版本。"
@@ -107,6 +137,28 @@ public enum CreativeTaskInput {
         input["prompt"] = .string(prompt); input["operation_key"] = .string(UUID().uuidString)
         _ = await mutate("hetu.creative_tasks.prepare", input: input)
     }
+    @discardableResult public func authorizeAccess() async -> Bool {
+        guard let client = task["request"]["client_adapter"].string,
+              task["request"]["task_id"].string != nil else { return false }
+        return await mutate("hetu.collaboration.authorize", input: ["task_ref": taskReference,
+            "client_adapter": .string(TaskConnection.adapter(client)), "operation_key": .string(UUID().uuidString)]) != nil
+    }
+    public func previewResources(references: [JSONValue], editableIDs: [String], allowCreate: Bool, client: AgentClient, brief: String) async {
+        guard !held, client != .none else { return }
+        error = nil; preview = .null
+        let adapter = client == .claudeCode ? "claude-code" : client.rawValue
+        let input: [String: JSONValue] = ["scope_ref": .object(["kind": .string("workspace"), "id": .string(scopeID)]),
+            "task_kind": .string("resource_organize"), "brief": .string(brief), "input_refs": .array([]),
+            "client_adapter": .string(adapter), "language_tag": .string(model.locale == "en" ? "en" : "zh-CN"),
+            "resource_scope": .object(["resource_refs": .array(references), "editable_resource_ids": .array(editableIDs.map(JSONValue.string)), "allow_create": .bool(allowCreate)])]
+        guard var value = await read("hetu.creative_tasks.preview_prompt", input: input) else { return }
+        if let suite = try? AgentSuiteCatalog.bundled().suites.first(where: { $0.id == model.agentIntegration.association(for: scopeID).suiteID }) {
+            let name = suite.skillName("hetu-resources", client: client)
+            let instruction = model.locale == "en" ? "Use \(name) from the author-selected package \(suite.pluginName)." : "请使用作者所选扩展包 \(suite.pluginName) 内的 \(name) 工作流。"
+            var fields = value.object; fields["prompt"] = .string(instruction + "\n\n" + (value["prompt"].string ?? "")); value = .object(fields)
+        }
+        preview = value
+    }
     public func retry() async {
         guard let pending else { return }
         _ = await mutate(pending.action, input: pending.input)
@@ -121,7 +173,7 @@ public enum CreativeTaskInput {
     public func loadTask(_ reference: JSONValue, submissionID: String? = nil) async {
         var input = ["task_ref": reference]
         if let submissionID { input["submission_id"] = .string(submissionID) }
-        if let value = await read("hetu.creative_tasks.get", input: input) { task = value }
+        if let value = await read("hetu.interactions.get", input: input) { task = value }
     }
     public var taskReference: JSONValue {
         .object(["scope_ref": task["request"]["scope_ref"], "task_id": task["request"]["task_id"], "request_revision": task["request"]["request_revision"]])
@@ -167,12 +219,18 @@ public enum CreativeTaskInput {
 }
 
 public enum TaskConnection {
-    public static func configuration(executable: URL, root: URL, scope: ContentScope, taskID: String) throws -> String {
-        guard executable.isFileURL, root.isFileURL, executable.path.hasPrefix("/"), root.path.hasPrefix("/"),
-              FileManager.default.isExecutableFile(atPath: executable.path), taskID.hasPrefix("task_"),
-              UUID(uuidString: String(taskID.dropFirst(5))) != nil else { throw CreativeTaskError.invalidResult }
-        let value: JSONValue = .object(["mcpServers": .object(["hetu-task": .object(["command": .string(executable.path),
-            "args": .array([.string(scope == .workspace ? "--workspace" : "--creation-project"), .string(root.path), .string("--task"), .string(taskID)])])])])
+    public static func adapter(_ client: String) -> String { client == "other" ? "generic" : client }
+    public static func configuration(executable: URL, clientAdapter: String) throws -> String {
+        let clientAdapter = adapter(clientAdapter)
+        guard executable.isFileURL, executable.path.hasPrefix("/"), FileManager.default.isExecutableFile(atPath: executable.path),
+              ["codex", "claude-code", "workbuddy", "generic"].contains(clientAdapter) else { throw CreativeTaskError.invalidResult }
+        if clientAdapter == "codex" {
+            // JSON 字符串的转义也是 TOML basic string 的合法子集；路径不能用 Shell 插值。
+            let quoted = String(decoding: try JSONValue.string(executable.path).encoded(), as: UTF8.self)
+            return "[mcp_servers.hetu]\ncommand = \(quoted)\nargs = [\"--client\", \"codex\"]\n"
+        }
+        let value: JSONValue = .object(["mcpServers": .object(["hetu": .object(["command": .string(executable.path),
+            "args": .array([.string("--client"), .string(clientAdapter)])])])])
         return String(decoding: try value.encoded(pretty: true), as: UTF8.self)
     }
 }

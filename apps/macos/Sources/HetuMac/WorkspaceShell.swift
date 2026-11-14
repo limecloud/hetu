@@ -7,15 +7,15 @@ struct WorkbenchButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var enabled
     @State private var hovered = false
     func makeBody(configuration: Configuration) -> some View {
-        configuration.label.font(.system(size: 13, weight: primary ? .semibold : .regular))
+        configuration.label.font(.system(size: 14, weight: primary ? .semibold : .regular))
             .padding(.horizontal, 14).padding(.vertical, 8)
-            .foregroundStyle(primary ? Color.white : WorkbenchPalette.ink)
+            .foregroundStyle(primary ? WorkbenchPalette.actionInk : WorkbenchPalette.ink)
             .background {
                 RoundedRectangle(cornerRadius: 8).fill(primary
                     ? LinearGradient(colors: [WorkbenchPalette.actionStart, WorkbenchPalette.actionEnd], startPoint: .topLeading, endPoint: .bottomTrailing)
                     : LinearGradient(colors: [WorkbenchPalette.surface.opacity(hovered || configuration.isPressed ? 1 : 0.6)], startPoint: .top, endPoint: .bottom))
             }
-            .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(primary ? Color.white.opacity(0.15) : WorkbenchPalette.line, lineWidth: 0.5))
+            .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(primary ? WorkbenchPalette.actionInk.opacity(0.15) : WorkbenchPalette.line, lineWidth: 0.5))
             .brightness(configuration.isPressed ? -0.04 : 0)
             .opacity(enabled ? 1 : 0.45)
             .onHover { hovered = $0 }
@@ -46,7 +46,7 @@ struct WorkspaceShell<Content: View>: View {
     var body: some View {
         VStack(spacing: 0) {
             topbar
-            Rectangle().fill(WorkbenchPalette.line).frame(height: 1)
+            Rectangle().fill(WorkbenchPalette.line).frame(height: 0.5)
             HStack(spacing: 0) {
                 navigation
                 Rectangle().fill(WorkbenchPalette.line).frame(width: 1)
@@ -57,7 +57,7 @@ struct WorkspaceShell<Content: View>: View {
                 content().frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .font(.system(size: 13)).foregroundStyle(WorkbenchPalette.ink)
+        .font(.system(size: 14)).foregroundStyle(WorkbenchPalette.ink)
         .background { WorkbenchBackdrop().ignoresSafeArea() }.tint(WorkbenchPalette.jade)
         .buttonStyle(WorkbenchButtonStyle())
         .task(id: model.workspaceID) { await model.monitorWriteAccess() }
@@ -66,8 +66,8 @@ struct WorkspaceShell<Content: View>: View {
         HStack(spacing: 20) {
             HStack(spacing: 9) {
                 Image(nsImage: NSApp.applicationIconImage).resizable().scaledToFit().frame(width: 34, height: 34).accessibilityHidden(true)
-                Text(model.t("brand.name")).font(.system(size: 18, weight: .semibold))
-                if locale != "en" { Text("Hetu Luoshu").font(.system(size: 15)).foregroundStyle(WorkbenchPalette.muted) }
+                Text(model.t("brand.name")).font(.system(size: 20, weight: .semibold))
+                if locale != "en" { Text("Hetu Luoshu").font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted) }
             }
             Rectangle().fill(WorkbenchPalette.line).frame(width: 1, height: 24)
             Menu {
@@ -79,7 +79,7 @@ struct WorkspaceShell<Content: View>: View {
                 HStack(spacing: 7) {
                     Text(model.title).lineLimit(1)
                     Text(model.t("shell.workspace")).foregroundStyle(WorkbenchPalette.muted)
-                }.font(.system(size: 13))
+                }.font(.system(size: 14))
             }.menuStyle(.borderlessButton).fixedSize().accessibilityLabel(model.t("shell.switch_workspace"))
             Spacer(minLength: 12)
             if model.writeLocked {
@@ -112,16 +112,18 @@ struct WorkspaceShell<Content: View>: View {
                 .buttonStyle(.plain).foregroundStyle(WorkbenchPalette.muted).padding(.horizontal, 12).padding(.bottom, 16)
             ScrollView {
                 VStack(alignment: .leading, spacing: 7) {
-                    nav("book", "novel.details", "book.closed")
-                    nav("novel", "novel.title", "book")
+                    if model.workType != "drama" {
+                        nav("book", "novel.details", "book.closed")
+                        nav("novel", "novel.title", "book")
+                    }
                     nav("bible", "bible.title", "square.3.layers.3d")
                     nav("drama", "drama.title", "movieclapper")
                     nav("reviews", "shell.review", "checkmark.shield")
                     nav("git", "shell.versions", "arrow.triangle.branch")
                     nav("media", "media.title", "photo.on.rectangle.angled")
                     nav("delivery", "delivery.title", "square.and.arrow.up")
-                    Rectangle().fill(WorkbenchPalette.line).frame(height: 1).padding(.vertical, 12)
-                    Text(model.t("shell.tools")).font(.system(size: 11)).foregroundStyle(WorkbenchPalette.muted).padding(.horizontal, 14)
+                    Rectangle().fill(WorkbenchPalette.line).frame(height: 0.5).padding(.vertical, 12)
+                    Text(model.t("shell.tools")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted).padding(.horizontal, 14)
                     nav("plot", "plot.title", "list.bullet.rectangle")
                     nav("validation", "validation.title", "waveform.path.ecg")
                 }
@@ -130,7 +132,7 @@ struct WorkspaceShell<Content: View>: View {
                 BookCoverView(title: model.title, author: "", identity: model.workspaceID, compact: true).frame(width: 32, height: 48)
                 VStack(alignment: .leading, spacing: 5) {
                     Text(model.title).font(.system(size: 12, weight: .medium)).lineLimit(2)
-                    Text(model.t("shell.motto")).font(.system(size: 10)).foregroundStyle(WorkbenchPalette.muted).lineSpacing(3)
+                    Text(model.t("shell.motto")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted).lineSpacing(3)
                 }
             }.padding(10)
         }.padding(.horizontal, 10).padding(.top, 20).padding(.bottom, 12).frame(width: locale == "en" ? 190 : 170).background(WorkbenchPalette.surface.opacity(0.22))
@@ -138,7 +140,7 @@ struct WorkspaceShell<Content: View>: View {
     private func nav(_ id: String, _ key: String, _ symbol: String) -> some View {
         Button { onSelect(id) } label: {
             HStack(spacing: 10) {
-                Image(systemName: symbol).font(.system(size: 17, weight: .regular)).frame(width: 20)
+                Image(systemName: symbol).font(.system(size: 14, weight: .regular)).frame(width: 20)
                 Text(model.t(key)).font(.system(size: 14, weight: group == id ? .semibold : .regular)).lineLimit(2).fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)
             }.foregroundStyle(group == id ? WorkbenchPalette.jade : WorkbenchPalette.ink)
@@ -148,13 +150,13 @@ struct WorkspaceShell<Content: View>: View {
     private var chapters: some View {
         VStack(alignment: .leading, spacing: 18) {
             HStack {
-                Text(model.title).font(.system(size: 17, weight: .semibold)).lineLimit(1)
+                Text(model.title).font(.system(size: 14, weight: .semibold)).lineLimit(1)
                 Spacer()
                 Button(action: onNewDocument) { Image(systemName: "plus") }.buttonStyle(.plain).accessibilityLabel(model.t("document.new"))
             }.padding(.horizontal, 10)
             Button(action: onNewDocument) { Label(model.t("document.new"), systemImage: "plus").frame(maxWidth: .infinity) }
                 .disabled(model.novel["initialized"].bool != true)
-            Button(model.t("novel.manage_structure"), action: onManageStructure).buttonStyle(.plain).font(.caption).foregroundStyle(WorkbenchPalette.muted)
+            Button(model.t("novel.manage_structure"), action: onManageStructure).buttonStyle(.plain).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                 .disabled(model.novel["initialized"].bool != true)
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 4) {
@@ -167,12 +169,12 @@ struct WorkspaceShell<Content: View>: View {
                     let other = model.documents.filter { $0.kind == "novel_outline" || $0.kind == "adaptation_note" }
                     if !other.isEmpty {
                         Divider().padding(.vertical, 10)
-                        Text(model.t("novel.notes")).font(.caption).foregroundStyle(WorkbenchPalette.muted)
+                        Text(model.t("novel.notes")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                         ForEach(other) { chapterRow($0) }
                     }
                 }
             }
-            Text(model.t("novel.chapter_count", ["count": String(chapterItems.count)])).font(.system(size: 11)).foregroundStyle(WorkbenchPalette.muted).padding(.horizontal, 10)
+            Text(model.t("novel.chapter_count", ["count": String(chapterItems.count)])).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted).padding(.horizontal, 10)
         }.padding(.horizontal, 15).padding(.top, 25).padding(.bottom, 24).frame(width: 210).background(WorkbenchPalette.surface.opacity(0.42))
     }
     @ViewBuilder private func chapterGroup(_ volume: String?) -> some View {

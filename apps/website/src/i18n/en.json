@@ -15,18 +15,18 @@
     "tagline": "A clear foundation. Room to create."
   },
   "meta": {
-    "title": "Hetu Luoshu — A local workspace for story worlds",
-    "description": "Manage multiple novels in a local author library, with independent covers, chapters and story bibles. Explore plot, adaptation, reference review, excerpt adoption and separate finalization. macOS first."
+    "title": "Hetu Luoshu — Give your story a life on screen",
+    "description": "A local workspace for novelists and screenwriters. Your external Agent organizes references, drafts and handoffs through MCP, CLI and Skills. Review, compare and finalize in Hetu, with direct editing whenever you choose."
   },
   "hero": {
     "eyebrow": "For authors and independent IP studios",
-    "line1": "Every story.",
-    "line2": "A world of its own.",
-    "description": "Give every book its own cover, chapters and story bible.\nWrite, trace the plot and shape adaptations on your terms.",
+    "line1": "Your story deserves",
+    "line2": "a life on screen.",
+    "description": "Turn a manuscript into playable scenes and consistent production references.\nA free, open-source workspace for independent authors and small studios.\nBring your Agent. Keep your voice, your files and the final say.",
     "primary": "Try the workspace here",
     "secondary": "Read the user guide",
-    "note": "v0.4.0 / Native macOS implementation / In-page demo data",
-    "alt": "Hetu Luoshu’s little dragon-horse beside three independent books, an open manuscript and river-inspired scrolls"
+    "note": "macOS source build / Apache-2.0 / Try the demo without installing",
+    "alt": "Original Hetu landscape: a manuscript-paper bridge crosses a pale jade river between distant mountains, connecting story and screen."
   },
   "promises": [
     {
@@ -44,24 +44,24 @@
   ],
   "features": {
     "eyebrow": "From worldbuilding to delivery",
-    "title": "Big stories need a clear foundation.",
-    "intro": "Keep multiple books in one library, with distinct writing, source checks, reference drafts and versions. External agents are optional; authors make the decisions.",
+    "title": "From novels to dramas, keep the sources.",
+    "intro": "Manage novels, drama projects, resources and versions together. External agents use the same creative material; authors approve what becomes official.",
     "items": [
       {
-        "title": "One story bible. A connected world.",
-        "body": "Keep characters, factions, places and timelines together. Checks cite sources and make uncertainty visible.",
+        "title": "Story facts and resources, clearly owned",
+        "body": "Authors maintain characters, places and world rules. Research, designs and reference files retain their own sources and usage records.",
         "image": "feature-blueprint.webp",
         "alt": "Xiaotu holding a story scroll linked to character cards and an author lock"
       },
       {
-        "title": "Structure the adaptation from your novel.",
-        "body": "Organize plot beats and scenes from existing text, with source mappings. You or an external agent provide new dialogue.",
+        "title": "A workspace for drama projects",
+        "body": "Maintain episodes, scenes and scripts with fixed novel references for adaptations. Link production assets to scripts and choose returned candidates.",
         "image": "feature-drama.webp",
         "alt": "A novel manuscript, scene cards and a clapperboard"
       },
       {
-        "title": "Adopt excerpts. Finalize separately.",
-        "body": "Review records a decision. Preview selected changes before adopting them into working text, then finalize an exact revision. Earlier finals remain available.",
+        "title": "Trace decisions from candidate to final",
+        "body": "Compare reference drafts and asset candidates, request revisions or adopt them explicitly. Manuscript adoption and finalization stay separate, with history preserved.",
         "image": "feature-review.webp",
         "alt": "Xiaotu organizing reviewed manuscripts and a delivery box"
       }
@@ -69,32 +69,32 @@
   },
   "workspace": {
     "eyebrow": "GET TO KNOW HETU LUOSHU, HANDS ON",
-    "title": "Your library. Your story worlds.",
-    "body": "Open a cover to manage details and chapters, write, inspect canon and plot, then try reference review, excerpt adoption and separate finalization. Layout and artwork follow the current macOS implementation.",
+    "title": "Try a small creative decision before a big project.",
+    "body": "Open the sample manuscript, edit a passage and trace an adaptation to its source. Review and adopt a reference separately. This interactive page demo resets on reload.",
     "cta": "Try the homepage workspace",
     "alt": "Hetu Luoshu native desktop design with chapters, a manuscript editor and a story inspector",
     "caption": "In-page demo. Refresh to reset."
   },
   "workflow": {
     "eyebrow": "Your creative workflow",
-    "title": "From the first chapter to the next medium.",
-    "intro": "Move from a multi-book library to a focused workspace. Reviewing a reference, adopting it and finalizing text are separate decisions. Work manually or choose an external agent.",
+    "title": "Your Agent moves the work forward. You shape the story.",
+    "intro": "Start with an idea or an existing manuscript. Give your familiar Agent the goal, let it prepare the material, then open Hetu to compare results, give feedback and choose what belongs.",
     "steps": [
       {
-        "title": "Create a book and its canon",
-        "body": "Keep each book’s details, cover, chapters and story bible independent. Begin planning without a title or an agent."
+        "title": "Start from your own material",
+        "body": "A first idea, an existing manuscript or a script in progress: choose a starting point and keep its characters, references and revisions together."
       },
       {
-        "title": "Write and adapt",
-        "body": "Write chapters, organize existing plot beats, then outline episodes and scenes. The core structures material; it does not invent dialogue."
+        "title": "Make the scene playable",
+        "body": "A missing brother is back on the radio. Who hears him? What do they do next? Work from the story’s meaning toward actions and dialogue someone can perform."
       },
       {
         "title": "Review, adopt, finalize",
-        "body": "Inspect sources and checks, then record a review. Adopt selected text into an editable manuscript and finalize a saved revision separately."
+        "body": "A suggestion may contain one line worth keeping. Compare it with the source, adopt only what fits and keep editing. Finalize a saved revision when you are ready."
       },
       {
-        "title": "Save and version",
-        "body": "Saving text and creating Git snapshots are separate. Prepare fixed files, identity and changes for author approval. Remote collaboration needs its own authorization."
+        "title": "Hand off the right version",
+        "body": "Agree on the recipient’s format, then choose the script and references you mean to share. Keep the source and revision clear so collaborators can pick up the work."
       }
     ],
     "detail": "Clear boundaries at every step",
@@ -119,8 +119,8 @@
   },
   "open": {
     "eyebrow": "Your work. Your choices.",
-    "title": "The tools keep it together. The story is yours.",
-    "body": "No built-in models or generation-service lock-in. Readable files, Git history and open MCP let you choose your own creative process.",
+    "title": "Your next creative collaboration starts here.",
+    "body": "Free and open source, with your work in your own folders. Explore the browser demo or get the macOS source build. External agents and production services have their own pricing.",
     "cta": "Explore the open-source project",
     "local": "Local first",
     "native": "macOS first; Windows implemented separately",
@@ -128,20 +128,20 @@
   },
   "integrations": {
     "eyebrow": "Help your assistant understand your story",
-    "title": "Agents assist. Authors decide.",
-    "intro": "A survival story and an urban slice of life need different writing methods. Choose a suite for this book and use it with your own Codex, Claude Code or WorkBuddy, or write entirely on your own.",
+    "title": "MCP, CLI and Skills. Direct access to your work.",
+    "intro": "Use Codex, Claude Code or your preferred Agent to prepare project details, organize chapters, develop drafts and assemble handoffs. Hetu brings the results, differences and sources together for your review and decisions.",
     "layers": [
       {
-        "title": "Say what you want to work on",
-        "body": "A title, an outline, a passage of dialogue or a cover: ask for one thing at a time and include the story details you have already decided."
+        "title": "Give your Agent the goal",
+        "body": "From a new story idea to an existing manuscript, your Agent prepares the necessary details and operations. You do not have to retype the conversation into project forms."
       },
       {
-        "title": "Choose methods for this book",
-        "body": "Find one Skills suite that fits your genre. If you are unsure, discuss the direction with your assistant before making the choice yourself."
+        "title": "Continue with the work you already have",
+        "body": "Read scoped references, prepare inputs and drafts, and retrieve the actual result. Chapters, scripts, assets and handoffs share project records, so an interrupted task can resume."
       },
       {
-        "title": "Read the suggestion and decide",
-        "body": "An assistant offers suggestions. Check the characters and plot, keep the parts you want, and make the final decision about your manuscript."
+        "title": "Review the result and make your choice",
+        "body": "Compare manuscripts and candidates, inspect proposed changes and give feedback. Adopt selected passages, finalize separately, and edit directly whenever you choose."
       }
     ],
     "status": "Writing methods are installed in the external assistant you choose. The homepage is a demo and does not install or connect an assistant.",
@@ -150,7 +150,7 @@
   },
   "formats": {
     "title": "Editable for authors. Readable for recipients.",
-    "body": "Current manuscripts use Markdown and independent scripts use Fountain. DOCX, PDF and complete bundles are delivery designs whose availability depends on the release capabilities. Check recipient templates, Chinese typography and media rights.",
+    "body": "Use familiar Markdown, Fountain, DOCX and PDF formats for novels and scripts. Preview conversions before importing or exporting. Delivery bundles fix selected versions and retain provenance and media rights records.",
     "cta": "Prepare your handoff",
     "labels": [
       "Manuscript",
@@ -168,6 +168,10 @@
         "a": "No. Write yourself or ask your own Codex, Claude Code or WorkBuddy to discuss ideas and prepare reference drafts. Hetu Luoshu organizes your books, story details and revisions. You decide what to use."
       },
       {
+        "q": "Why not build another AI Agent inside Hetu Luoshu?",
+        "a": "General agents require sustained work on reasoning, context, tools and execution recovery. We work with mature external agents and focus on creative content, story facts, resources, permissions and versions, with first-class MCP, CLI and Skills entry points."
+      },
+      {
         "q": "Can an agent change my story bible?",
         "a": "An assistant working through a Hetu Luoshu task cannot unlock your story bible or approve final text for you. When using other tools, also check which files you have allowed them to access."
       },
@@ -181,7 +185,7 @@
       },
       {
         "q": "Can I download an application?",
-        "a": "Version 0.4.0 provides source code and the homepage demo, without a ready-to-install app package. Users with a development environment can build the Mac app. Authors can start directly in the homepage demo."
+        "a": "Version 0.5.0 provides source code and the homepage demo, without a ready-to-install app package. Users with a development environment can build the Mac app. Authors can start directly in the homepage demo."
       },
       {
         "q": "Will my work be uploaded or become open source?",
@@ -205,11 +209,138 @@
     "onPage": "On this page"
   },
   "footer": {
-    "description": "A local creative workspace for authors and independent IP studios.",
-    "status": "v0.4.0 / macOS source implementation; homepage prototype uses in-page demo data.",
+    "description": "A local workspace for stories that move between manuscripts, scripts and production.",
+    "status": "v0.5.0 / macOS source implementation; homepage prototype uses in-page demo data.",
     "license": "Core license: Apache-2.0",
-    "privacy": "Demo input stays in this page. The site has no accounts and sets no cookies. Hosting may process connection and performance data under its privacy policies.",
+    "privacy": "Demo input stays in this page. The console uses essential sign-in cookies. Model input is sent only for tasks you approve. Hosting may process connection and performance data under its privacy policies.",
     "design": "Interactive prototype",
     "rights": "Hetu Luoshu"
+  },
+  "foundation": {
+    "entryTitle": "MCP, CLI and Skills are first-class entry points",
+    "rolesTitle": "Roles of external agents, the workspace and the author",
+    "agentTitle": "Your chosen external Agent",
+    "agentBody": "Understands goals, organizes material and prepares work",
+    "workspaceTitle": "Hetu Luoshu",
+    "workspaceBody": "A queryable, actionable, recoverable creative foundation",
+    "authorTitle": "You decide",
+    "authorBody": "Review, choose and finalize; edit directly when you want",
+    "entries": [
+      {
+        "name": "MCP",
+        "title": "Connect your Agent",
+        "body": "Query books and tasks, submit candidates and read your feedback."
+      },
+      {
+        "name": "CLI",
+        "title": "Call creative tools directly",
+        "body": "Discover capabilities, run scoped actions and recover operation results."
+      },
+      {
+        "name": "Skills",
+        "title": "Give your Agent the methods",
+        "body": "Choose methods for the genre and task, then install in your Agent."
+      }
+    ],
+    "whyTitle": "Why focus on the foundation?",
+    "whyBody": "Your Agent works with the same project through MCP, CLI and Skills. Hetu preserves references, sources, revisions and your decisions. Spend your attention reading, comparing and judging while your assistant handles project details and supporting operations.",
+    "more": "Explore roles and connections"
+  },
+  "cloud": {
+    "nav": "Hetu Console",
+    "title": "Hetu Console",
+    "intro": "Manage model services, connected clients and model operations for Hetu. Your work stays on your computer. Review content and cost in Hetu before each generation.",
+    "login": "Connect Lime Cloud",
+    "logout": "Sign out and disconnect clients",
+    "loading": "Checking connection…",
+    "signedOut": "Connect to view models and authorize Hetu on your computer. Local writing works without a connection.",
+    "name": "Account",
+    "environment": "Environment",
+    "console": "Account & billing",
+    "open": "Open platform",
+    "text": "Text models",
+    "image": "Image models",
+    "price": "Credits / invocation",
+    "empty": "No models are currently available.",
+    "pairTitle": "Connect Hetu on your computer",
+    "pairNote": "Confirm only if Hetu on your computer shows the same code. This connection lets authorized creative tasks use models. Signing in does not generate content or incur charges.",
+    "pairConfirm": "Connect this client",
+    "paired": "Client connected. Return to Hetu to continue.",
+    "code": "Verification code",
+    "unavailable": "Model services have not been configured yet. Please try later. Local writing remains available.",
+    "failed": "Unable to load. Please try again.",
+    "retry": "Reload",
+    "expired": "Connection expired. Please reconnect.",
+    "denied": "This account does not have the required access.",
+    "contract": "The model catalog does not match the published contract. Please contact the maintainer.",
+    "models": "Model services",
+    "history": "Model operations",
+    "historyNote": "View operations submitted through Hetu. Checking an operation does not generate content or incur a new charge. Review candidates in your local task.",
+    "noHistory": "No model operations have been submitted through Hetu.",
+    "maximum": "Approved maximum",
+    "checkOperation": "Check original operation",
+    "more": "Load more",
+    "operationStates": {
+      "pending": "Pending",
+      "executing": "Executing",
+      "reconciling": "Result under review. Keep the original task and check again.",
+      "produced": "Result produced; confirming billing",
+      "succeeded": "Completed. Return to your local task to collect the candidate.",
+      "failed": "Failed. Check the original local task."
+    },
+    "workspace": "WORKSPACE",
+    "connections": "Connections",
+    "guide": "User guide",
+    "localNote": "Your work stays local. The creative decisions stay yours.",
+    "disconnected": "Not connected",
+    "modelsDescription": "Explore text and image models for your creative work.",
+    "historyDescription": "Review model calls from Hetu and check their original results.",
+    "connectionsDescription": "Connect your Mac and approve each task before content is shared.",
+    "connectTitle": "Connect your Hetu account",
+    "modelNote": "Choose default models in Settings → Model services on your Mac. Signing in does not generate content or incur charges.",
+    "historyScope": "Your account · Operations submitted by Hetu",
+    "refresh": "Refresh",
+    "connectDesktop": "Connect model services to your Mac",
+    "desktopDescription": "Start the connection on your Mac, then verify it here. Your work and candidates stay on your computer.",
+    "connectStepOne": "Open Settings → Model services in Hetu on your Mac",
+    "connectStepTwo": "Connect your account and view the verification code",
+    "connectStepThree": "Compare the two codes and confirm the connection",
+    "disconnectNote": "Signing out disconnects clients using this session. Local work and saved candidates are preserved.",
+    "sandbox": "Sandbox",
+    "production": "Production",
+    "modelColumn": "Model",
+    "priceColumn": "Price per call",
+    "limitColumn": "Input limit",
+    "statusColumn": "Status",
+    "operationColumn": "Original operation",
+    "available": "Available",
+    "textModelHint": "Structured text",
+    "imageModelHint": "Text to image",
+    "billing": "Subscription",
+    "billingDescription": "View your Hetu platform membership, credits and subscription.",
+    "billingNote": "Lime Cloud provides membership and credits.",
+    "membershipConnect": "Connect membership",
+    "membershipRequired": "Connect membership for your current account to view credits.",
+    "subscription": "Manage subscription and payment",
+    "paymentNote": "Choose an offer and confirm the amount and payment mode in Lime Cloud. Return and refresh after payment; a redirect does not confirm payment.",
+    "plan": "Current plan",
+    "memberState": "Membership",
+    "remaining": "Available this period",
+    "packRemaining": "Credit pack balance",
+    "periodEnd": "Period ends",
+    "paymentMode": "Payment mode",
+    "testPayment": "Test payment",
+    "freePayment": "Free",
+    "livePayment": "Live payment",
+    "unknownPayment": "Confirm on payment page",
+    "noPlanName": "Unnamed plan",
+    "memberUnknown": "Check subscription page",
+    "noMembership": "No membership plan is available. Check the subscription page.",
+    "membershipStates": {
+      "active": "Active",
+      "expired": "Expired",
+      "cancelled": "Cancelled",
+      "pending": "Pending"
+    }
   }
 }

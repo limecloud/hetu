@@ -14,10 +14,17 @@ fn main() {
         .nth(1)
         .expect("isolated fixture directory"));
     let kernel = Kernel::open(json!({"workspace_path":path,"mode":"author","create":{"title":"测试书库中的独立小说","locale":"zh-CN","operation_key":"fixture-book"}})).unwrap();
+    let source = call(&kernel, "documents.create", json!({"kind":"novel_chapter","title":"书名参考原文","source_format":"markdown","content":"雾港的灯塔在潮水中沉默。🌿","operation_key":"fixture-source"}));
+    let initial = call(&kernel, "blueprints.get", json!({}));
+    let characters = (0..12).map(|index| json!({"type":"upsert_character","entity":{
+        "character_id":format!("character_{index:08x}-1111-4111-8111-111111111111"),"name":format!("雾港人物{index}"),
+        "aliases":[],"description":"守护旧灯塔的人。".repeat(100),"traits":[],"facts":[],"archived":false
+    }})).collect::<Vec<_>>();
+    let bible = call(&kernel, "blueprints.save", json!({"expected":{"revision":initial["revision"],"sha256":initial["sha256"]},"typed_changes":characters,"operation_key":"fixture-bible"}));
     let preview = call(
         &kernel,
         "creative_tasks.preview_prompt",
-        json!({"scope_ref":{"kind":kernel.scope_kind(),"id":kernel.scope()},"task_kind":"book_concept","brief":"为一部河港悬疑故事提供两个书名参考。","input_refs":[],"client_adapter":"codex","language_tag":"zh-CN"}),
+        json!({"scope_ref":{"kind":kernel.scope_kind(),"id":kernel.scope()},"task_kind":"book_concept","brief":"为一部河港悬疑故事提供两个书名参考。","input_refs":[{"kind":"document","document_id":source["document"]["document_id"],"revision_id":source["revision"]["revision_id"]},{"kind":"blueprint","revision":bible["revision"]}],"client_adapter":"codex","language_tag":"zh-CN"}),
     );
     let mut prepared = preview["prepare_input"].clone();
     prepared["operation_key"] = json!("fixture-prepare");

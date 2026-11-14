@@ -1,0 +1,221 @@
+---
+import { messages, route, type Locale } from '../lib/site';
+import { assetURL } from '../lib/assets';
+import Icon from './ConsoleIcon.astro';
+const { locale } = Astro.props as { locale: Locale };
+const m = messages(locale).cloud;
+---
+<div class="hetu-console" data-cloud-account data-locale={locale}>
+  <aside class="console-sidebar">
+    <a class="console-brand" href={route(locale)}><img src={assetURL('/brand/icon-64.png')} width="35" height="35" alt=""/><span><strong>{locale==='en'?'Hetu Luoshu':'河图洛书'}</strong><small>HETU LUOSHU</small></span></a>
+    <p class="nav-label">{m.workspace}</p>
+    <nav class="console-nav" aria-label={m.nav}>
+      <button type="button" data-view="models" aria-current="page"><Icon name="models"/>{m.models}</button>
+      <button type="button" data-view="history"><Icon name="history"/>{m.history}</button>
+      <button type="button" data-view="billing"><Icon name="history"/>{m.billing}</button>
+      <button type="button" data-view="connections"><Icon name="connect"/>{m.connections}</button>
+    </nav>
+    <div class="sidebar-bottom"><a href={route(locale,'docs/agents')}><Icon name="help"/>{m.guide}</a><p class="sidebar-note">{m.localNote}</p></div>
+  </aside>
+  <div class="console-workspace">
+    <header class="console-topbar">
+      <div class="console-breadcrumb"><span>{m.title}</span><span>/</span><strong data-breadcrumb>{m.models}</strong></div>
+      <div class="console-top-actions"><a href={route(locale,'docs/agents')}>{m.guide}</a><a data-language href={route(locale==='en'?'zh-CN':'en','console')} lang={locale==='en'?'zh-CN':'en'}>{locale==='en'?'中文':'EN'}</a><span class="console-user"><span class="console-avatar" data-avatar>H</span><span class="console-user-name" data-name>{m.disconnected}</span></span></div>
+    </header>
+    <main class="console-main">
+      <header class="console-heading"><div><h1 data-page-title>{m.models}</h1><p data-page-description>{m.modelsDescription}</p></div><div class="console-heading-actions"><span class="console-environment" data-environment hidden></span></div></header>
+      <div class="connection-notice"><span class="connection-notice-icon"><Icon name="connect"/></span><div><h2>{m.connectTitle}</h2><p data-status role="status" aria-live="polite">{m.loading}</p><div class="notice-actions"><a data-login class="console-button primary" href={`/api/hetu/auth/login?lang=${locale}`} hidden>{m.login}</a><button data-retry class="console-button" type="button" hidden>{m.retry}</button></div></div></div>
+      <div data-session hidden>
+        <section data-panel="models">
+          <div class="model-toolbar"><div class="model-tabs" role="tablist" aria-label={m.models}><button type="button" role="tab" id="text-tab" aria-controls="text-models" aria-selected="true" data-model-tab="text">{m.text}</button><button type="button" role="tab" id="image-tab" aria-controls="image-models" aria-selected="false" data-model-tab="image" tabindex="-1">{m.image}</button></div><div class="model-actions"><button type="button" data-model-refresh class="console-button" aria-label={m.refresh} title={m.refresh}><Icon name="refresh"/></button><a data-console class="console-button" rel="noreferrer" target="_blank">{m.console}<Icon name="external"/></a></div></div>
+          <div id="text-models" class="console-table-wrap" data-models="text" role="tabpanel" aria-labelledby="text-tab"></div>
+          <div id="image-models" class="console-table-wrap" data-models="image" role="tabpanel" aria-labelledby="image-tab" hidden></div>
+          <p class="console-footnote"><Icon name="info"/><span>{m.modelNote}</span></p>
+        </section>
+        <section data-panel="history" hidden>
+          <div class="console-section-title"><p>{m.historyScope}</p><button data-history-refresh class="console-button" type="button"><Icon name="refresh"/>{m.refresh}</button></div>
+          <div data-history class="console-table-wrap"></div><button data-history-more class="console-button history-more" type="button" hidden>{m.more}</button>
+          <p class="console-footnote"><Icon name="info"/><span>{m.historyNote}</span></p>
+        </section>
+        <section data-panel="connections" hidden>
+          <div data-pair class="connection-panel" hidden><h2>{m.pairTitle}</h2><p>{m.pairNote}</p><div class="connection-device"><Icon name="connect"/><strong data-device></strong></div><div class="connection-code"><span>{m.code}</span><strong data-code></strong></div><button data-confirm class="console-button primary" type="button">{m.pairConfirm}</button></div>
+          <div data-pair-empty class="connection-panel"><h2>{m.connectDesktop}</h2><p>{m.desktopDescription}</p><ol class="connection-steps"><li>{m.connectStepOne}</li><li>{m.connectStepTwo}</li><li>{m.connectStepThree}</li></ol></div>
+          <div class="account-actions"><p>{m.disconnectNote}</p><button data-logout class="console-button danger" type="button">{m.logout}</button></div>
+        </section>
+        <section data-panel="billing" hidden>
+          <div class="console-section-title"><p>{m.billingNote}</p><button data-membership-refresh class="console-button" type="button"><Icon name="refresh"/>{m.refresh}</button></div>
+          <p data-membership-status role="status" aria-live="polite"></p>
+          <a data-membership-connect class="console-button" href={`/api/hetu/auth/login?resource=membership&lang=${locale}`} hidden>{m.membershipConnect}</a>
+          <dl data-membership class="membership-details" hidden></dl>
+          <a data-subscription class="console-button primary" rel="noreferrer" target="_blank" hidden>{m.subscription}<Icon name="external"/></a>
+          <p class="console-footnote"><Icon name="info"/><span>{m.paymentNote}</span></p>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+  import { messages } from '../lib/site';
+  const root = document.querySelector<HTMLElement>('[data-cloud-account]');
+  if (root) {
+    const locale = root.dataset.locale === 'en' ? 'en' : 'zh-CN', m = messages(locale).cloud;
+    const el = <T extends HTMLElement>(selector:string) => root.querySelector<T>(selector)!;
+    const status = el('[data-status]'), login = el<HTMLAnchorElement>('[data-login]'), retry = el<HTMLButtonElement>('[data-retry]');
+    const pageURL = new URL(location.href), pairing = pageURL.searchParams.get('connect'), connectionError = pageURL.searchParams.get('connection_error');
+    const pairID = pairing && /^[a-f0-9]{64}$/.test(pairing) ? pairing : null;
+    login.href = '/api/hetu/auth/login?' + new URLSearchParams({lang:locale,...(pairID?{connect:pairID}:{})});
+    const languageURL=new URL(el<HTMLAnchorElement>('[data-language]').href);languageURL.search=pageURL.search;
+    function showView(view:string) {
+      const names={models:m.models,history:m.history,connections:m.connections,billing:m.billing};
+      const selected=Object.hasOwn(names,view)?view as keyof typeof names:'models';
+      root!.querySelectorAll<HTMLButtonElement>('[data-view]').forEach(button=>{if(button.dataset.view===selected)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');});
+      root!.querySelectorAll<HTMLElement>('[data-panel]').forEach(panel=>{panel.hidden=panel.dataset.panel!==selected;});
+      el('[data-page-title]').textContent=names[selected];el('[data-breadcrumb]').textContent=names[selected];
+      el('[data-page-description]').textContent=selected==='models'?m.modelsDescription:selected==='history'?m.historyDescription:selected==='billing'?m.billingDescription:m.connectionsDescription;
+      languageURL.hash=selected;el<HTMLAnchorElement>('[data-language]').href=languageURL.href;
+    }
+    root.querySelectorAll<HTMLButtonElement>('[data-view]').forEach(button=>button.addEventListener('click',()=>{
+      const view=button.dataset.view!;showView(view);history.replaceState(history.state,'',location.pathname+location.search+'#'+view);
+    }));
+    showView(pairID?'connections':pageURL.hash.slice(1));
+    function modelTab(kind:string) {
+      root!.querySelectorAll<HTMLButtonElement>('[data-model-tab]').forEach(button=>{const active=button.dataset.modelTab===kind;button.setAttribute('aria-selected',String(active));button.tabIndex=active?0:-1;});
+      for(const type of ['text','image'])el(`[data-models="${type}"]`).hidden=type!==kind;
+    }
+    root.querySelectorAll<HTMLButtonElement>('[data-model-tab]').forEach(button=>{
+      button.addEventListener('click',()=>modelTab(button.dataset.modelTab!));
+      button.addEventListener('keydown',event=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){event.preventDefault();const kind=event.key==='Home'?'text':event.key==='End'?'image':button.dataset.modelTab==='text'?'image':'text';modelTab(kind);el<HTMLButtonElement>(`[data-model-tab="${kind}"]`).focus();}});
+    });
+    let csrf = '', generation = 0, historyCursor:string|null = null, historyBusy=false;
+    const failure = (code:string) => code === 'service_unconfigured' ? m.unavailable : code === 'login_required' || code === 'connection_expired' ? m.expired : code === 'permission_denied' || code === 'authorization_context_mismatch' ? m.denied : code === 'catalog_contract_mismatch' ? m.contract : m.failed;
+    const accessFailure = (code:string) => ['login_required','permission_denied','authorization_context_mismatch'].includes(code);
+    function resetIdentity(){el('[data-name]').textContent=m.disconnected;el('[data-avatar]').textContent='H';el('[data-environment]').hidden=true;}
+    function empty(target:HTMLElement,message:string){const content=document.createElement('p');content.className='table-empty';content.textContent=message;target.replaceChildren(content);}
+    function clearSession(code:string) {
+      generation++;csrf='';historyCursor=null;el('[data-session]').hidden=true;
+      resetIdentity();
+      for(const kind of ['text','image'])el(`[data-models="${kind}"]`).replaceChildren();
+      el('[data-history]').replaceChildren();el('[data-history-more]').hidden=true;
+      clearMembership();
+      status.textContent=failure(code);login.hidden=code==='service_unconfigured';retry.hidden=false;
+    }
+    async function api(path:string, method='GET') {
+      const response = await fetch('/api/hetu'+path,{method,credentials:'same-origin',cache:'no-store',headers:{'accept-language':locale,...(method==='POST'?{'x-hetu-csrf':csrf}:{})}});
+      const result = await response.json();
+      if(!response.ok) throw new Error(result.error?.code || 'service_unavailable');
+      return result;
+    }
+    async function load() {
+      const current = ++generation; csrf=''; status.textContent=m.loading; login.hidden=true; retry.hidden=true; el('[data-session]').hidden=true; el('[data-pair]').hidden=true;el('[data-pair-empty]').hidden=false;resetIdentity();
+      for (const kind of ['text','image']) el(`[data-models="${kind}"]`).replaceChildren();
+      historyCursor=null;el('[data-history]').replaceChildren();el('[data-history-more]').hidden=true;
+      clearMembership();
+      try {
+        const session = await api('/session'); if(current!==generation)return;
+        csrf=session.csrf;el('[data-name]').textContent=session.name||m.name;el('[data-avatar]').textContent=(session.name||'H').slice(0,1);el('[data-environment]').textContent=session.environment==='sandbox'?m.sandbox:m.production;el('[data-environment]').hidden=false;
+        el<HTMLAnchorElement>('[data-console]').href=session.console_url;
+        if(session.subscription_url){el<HTMLAnchorElement>('[data-subscription]').href=session.subscription_url;el('[data-subscription]').hidden=false;}
+        el('[data-session]').hidden=false;status.textContent='';
+        if(pairID){
+          const pair=await api('/connections/'+pairID);if(current!==generation)return;
+          el('[data-pair]').hidden=false;el('[data-pair-empty]').hidden=true;el('[data-device]').textContent=pair.label;el('[data-code]').textContent=pair.verification_code;
+          el<HTMLButtonElement>('[data-confirm]').disabled=pair.connected;
+          if(pair.connected) status.textContent=m.paired;
+        }
+        await Promise.all(['text','image'].map(async kind=>{
+          const target=el(`[data-models="${kind}"]`);
+          try{
+            const catalog=await api('/models/'+kind);if(current!==generation)return;
+            if(!catalog.items.length){empty(target,m.empty);return;}
+            const table=document.createElement('table');table.className='console-table';table.setAttribute('aria-label',kind==='text'?m.text:m.image);
+            const heading=table.createTHead().insertRow();
+            for(const [index,label] of [m.modelColumn,m.priceColumn,m.limitColumn,m.statusColumn].entries()){const th=document.createElement('th');th.scope='col';th.textContent=label;if(index===2)th.className='model-limit';heading.append(th);}
+            const tbody=document.createElement('tbody');table.append(tbody);
+            for(const model of catalog.items){
+              const row=tbody.insertRow(),identity=document.createElement('div');identity.className='model-identity';
+              const glyph=document.createElement('span');glyph.className='model-glyph';glyph.textContent=kind==='text'?'Aa':locale==='en'?'Im':'图';glyph.setAttribute('aria-hidden','true');
+              const info=document.createElement('div'),name=document.createElement('p'),description=document.createElement('p');name.className='model-title';name.textContent=model.name||model.id;description.className='model-subtitle';
+              const max=kind==='text'?model.limits?.max_input_bytes:model.limits?.max_prompt_bytes;
+              const limit=typeof max==='number'?new Intl.NumberFormat(locale).format(max/1024)+' KiB':'—';
+              description.textContent=kind==='text'?m.textModelHint:m.imageModelHint;if(max){const mobileLimit=document.createElement('span');mobileLimit.className='mobile-model-limit';mobileLimit.textContent=' · '+limit;description.append(mobileLimit);}
+              info.append(name,description);identity.append(glyph,info);row.insertCell().append(identity);
+              const price=document.createElement('span');price.className='model-price';price.textContent=model.billing.credits_per_unit;const unit=document.createElement('small');unit.textContent=m.price;price.append(unit);row.insertCell().append(price);
+              const limits=row.insertCell();limits.className='model-limit';limits.textContent=limit;
+              const available=document.createElement('span');available.className='availability';available.textContent=m.available;row.insertCell().append(available);
+            }
+            target.append(table);
+          }catch(error){
+            const code=(error as Error).message;
+            if(['login_required','permission_denied','authorization_context_mismatch'].includes(code))throw error;
+            if(current===generation)empty(target,failure(code));
+          }
+        }));
+        if(current===generation)await Promise.all([loadHistory(false,current),loadMembership(current)]);
+      } catch(error) {
+        if(current!==generation)return;
+        generation++;csrf='';el('[data-session]').hidden=true;
+        resetIdentity();
+        for(const kind of ['text','image'])el(`[data-models="${kind}"]`).replaceChildren();
+        el('[data-history]').replaceChildren();historyCursor=null;el('[data-history-more]').hidden=true;
+        clearMembership();
+        const code=(error as Error).message;status.textContent=connectionError?failure(connectionError):code==='login_required'?m.signedOut:failure(code);login.hidden=code==='service_unconfigured';retry.hidden=false;
+      }
+    }
+    function clearMembership(){el('[data-membership]').replaceChildren();el('[data-membership]').hidden=true;el('[data-membership-status]').textContent='';el('[data-membership-connect]').hidden=true;el('[data-subscription]').hidden=true;el<HTMLAnchorElement>('[data-subscription]').removeAttribute('href');}
+    async function loadMembership(current=generation){
+      const button=el<HTMLButtonElement>('[data-membership-refresh]'),target=el('[data-membership]'),state=el('[data-membership-status]');button.disabled=true;
+      target.replaceChildren();target.hidden=true;state.textContent=m.loading;el('[data-membership-connect]').hidden=true;
+      try{
+        const value=await api('/membership');if(current!==generation)return;
+        const end=new Intl.DateTimeFormat(locale,{dateStyle:'medium'}).format(new Date(value.period_end));
+        for(const [label,text] of [[m.plan,value.name||m.noPlanName],[m.memberState,m.membershipStates[value.status as keyof typeof m.membershipStates]||m.memberUnknown],[m.remaining,value.period_remaining+' Credits'],[m.packRemaining,value.pack_remaining+' Credits'],[m.periodEnd,end],[m.paymentMode,value.payment_mode==='test'?m.testPayment:value.payment_mode==='free'?m.freePayment:value.payment_mode==='live'?m.livePayment:m.unknownPayment]]){
+          const term=document.createElement('dt'),detail=document.createElement('dd');term.textContent=label;detail.textContent=text;target.append(term,detail);
+        }
+        target.hidden=false;state.textContent='';
+      }catch(error){if(current===generation){const code=(error as Error).message;if(code==='membership_connection_required'){state.textContent=m.membershipRequired;el('[data-membership-connect]').hidden=false;}else if(code==='membership_unavailable'){state.textContent=m.noMembership;}else if(accessFailure(code))clearSession(code);else state.textContent=failure(code);}}
+      finally{button.disabled=false;}
+    }
+    el('[data-membership-refresh]').addEventListener('click',()=>void loadMembership());
+    async function loadHistory(append=false,current=generation) {
+      if(historyBusy)return;historyBusy=true;
+      const target=el('[data-history]');el<HTMLButtonElement>('[data-history-refresh]').disabled=true;
+      el<HTMLButtonElement>('[data-history-more]').disabled=true;
+      try {
+        const result=await api('/console/operations'+(append&&historyCursor?'?cursor='+encodeURIComponent(historyCursor):''));
+        if(current!==generation)return;
+        if(!append)target.replaceChildren();
+        if(!result.items.length&&!append)empty(target,m.noHistory);
+        let tbody=target.querySelector('tbody');
+        if(result.items.length&&!tbody){const table=document.createElement('table');table.className='console-table history-table';table.setAttribute('aria-label',m.history);const head=table.createTHead().insertRow();for(const label of [m.modelColumn,m.maximum,m.operationColumn]){const th=document.createElement('th');th.scope='col';th.textContent=label;head.append(th);}tbody=table.createTBody();target.replaceChildren(table);}
+        for(const item of result.items){
+          const row=tbody!.insertRow(),identity=row.insertCell(),title=document.createElement('p');title.className='model-title';title.textContent=item.model_id;
+          const date=document.createElement('p');date.className='history-date';date.textContent=new Intl.DateTimeFormat(locale,{dateStyle:'medium',timeStyle:'short'}).format(item.created_at);identity.append(title,date);
+          row.insertCell().textContent=`${item.max_credits} Credits`;
+          const detail=document.createElement('p');detail.className='history-status';detail.setAttribute('role','status');
+          const button=document.createElement('button');button.type='button';button.className='console-button';button.textContent=m.checkOperation;
+          button.addEventListener('click',async()=>{
+            button.disabled=true;
+            try{const value=await api('/console/operations/'+encodeURIComponent(item.operation_key));if(current===generation)detail.textContent=m.operationStates[value.status as keyof typeof m.operationStates]||m.failed;}
+            catch(error){if(current===generation){const code=(error as Error).message;if(accessFailure(code))clearSession(code);else detail.textContent=failure(code);}}
+            finally{button.disabled=false;}
+          });
+          row.insertCell().append(button,detail);
+        }
+        historyCursor=result.next_cursor;el('[data-history-more]').hidden=!historyCursor;
+      } catch(error){if(current===generation){const code=(error as Error).message;if(accessFailure(code))clearSession(code);else empty(target,failure(code));}}
+      finally{historyBusy=false;el<HTMLButtonElement>('[data-history-refresh]').disabled=false;el<HTMLButtonElement>('[data-history-more]').disabled=false;}
+    }
+    el('[data-history-refresh]').addEventListener('click',()=>void loadHistory());
+    el('[data-history-more]').addEventListener('click',()=>void loadHistory(true));
+    retry.addEventListener('click',()=>void load());
+    el('[data-model-refresh]').addEventListener('click',()=>void load());
+    el<HTMLButtonElement>('[data-confirm]').addEventListener('click',async event=>{
+      const button=event.currentTarget as HTMLButtonElement;button.disabled=true;
+      try{await api('/connections/'+pairID,'POST');status.textContent=m.paired;}catch(error){status.textContent=failure((error as Error).message);button.disabled=false;}
+    });
+    el<HTMLButtonElement>('[data-logout]').addEventListener('click',async()=>{
+      try{await api('/auth/logout','POST');await load();}catch(error){status.textContent=failure((error as Error).message);}
+    });
+    void load();
+  }
+</script>

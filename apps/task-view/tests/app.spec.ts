@@ -31,11 +31,11 @@ test.beforeAll(async () => {
 });
 test.afterAll(async () => { await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve())); });
 
-async function open(page: Page, value = fixture(), theme: "light" | "dark" = "light") {
+async function open(page: Page, value = fixture(), theme: "light" | "dark" = "light", messages = false) {
   const errors: string[] = [];
   page.on("pageerror", error => errors.push(error.message));
   const testLocale = (value.structuredContent as { data: { request: { prompt_language: string } } }).data.request.prompt_language;
-  await page.addInitScript(payload => { Object.assign(window, payload); }, { initialTask: value, viewHtml: html, testTheme: theme, testLocale });
+  await page.addInitScript(payload => { Object.assign(window, payload); }, { initialTask: value, viewHtml: html, testTheme: theme, testLocale, testMessages: messages });
   await page.goto(origin);
   const view = page.frameLocator("iframe");
   await expect(view.getByRole("heading", { level: 1 })).toBeVisible();
@@ -72,6 +72,29 @@ test("lost save receipts are queried by their original key, not resubmitted", as
   expect(result.calls.filter(item => item.name === "hetu_save_task_selection")).toHaveLength(1);
   expect(result.reads).toHaveLength(1);
   expect(result.reads[0]).toContain(encodeURIComponent(String(result.calls[0].arguments?.operation_key)));
+});
+
+test("stable task references retain their digest through nested choices and receipt recovery", async ({ page }) => {
+  const value = fixture();
+  const reference = { ...taskRef, sha256: "d".repeat(64) };
+  (value.structuredContent as { data: Record<string, unknown> }).data.task_ref = reference;
+  const { view, errors } = await open(page, value);
+  await page.evaluate(() => { window.harness.saveMode = "lost"; });
+  await view.getByRole("checkbox").first().check();
+  await view.getByLabel("补充要求或意见").fill("保留原任务与这一版候选。");
+  await view.getByRole("button", { name: "保存选择与意见", exact: true }).click();
+  await expect(view.getByRole("status")).toContainText("保存结果尚未确认");
+  await view.getByRole("button", { name: "查询原保存结果", exact: true }).click();
+  await expect(view.getByRole("status")).toContainText("已记录偏好");
+  const result = await page.evaluate(() => ({ calls: window.harness.calls, reads: window.harness.reads }));
+  const writes = result.calls.filter(item => item.name === "hetu_save_task_selection");
+  expect(writes).toHaveLength(1);
+  expect(writes[0].arguments?.task_ref).toEqual(reference);
+  expect(writes[0].arguments?.candidate_refs).toEqual([{ task_ref: reference, submission_id: "submission_test", candidate_id: "candidate_one" }]);
+  expect(result.calls.find(item => item.name === "hetu_read_task_operation")?.arguments).toEqual({ task_ref: reference, action: "hetu.interactions.save_selection", key: writes[0].arguments?.operation_key });
+  expect(result.reads).toEqual([]);
+  await expect(view.getByRole("checkbox").first()).toBeChecked();
+  expect(errors).toEqual([]);
 });
 
 test("unsaved choices survive new results and cannot be applied against a stale revision", async ({ page }) => {
@@ -119,7 +142,9 @@ test("cover previews decode locally and preserve the original aspect ratio", asy
   await expect(view.getByText("部分结果", { exact: true })).toBeVisible();
   await expect(view.getByText("缺少的结果: 第二张参考封面")).toBeVisible();
   await page.evaluate(async () => { await window.harness.teardown(); });
-  await expect(view.getByRole("button", { name: "保存选择与意见", exact: true })).toBeDisabled();
+  await expect(view.getByRole("status")).toContainText("面板连接已结束");
+  await expect(view.getByRole("button", { name: "保存选择与意见", exact: true })).toHaveCount(0);
+  await expect(view.locator("img")).toHaveCount(0);
 });
 
 test("task changes and untrusted candidate markup cannot escape the bound view", async ({ page }) => {
@@ -147,5 +172,63 @@ for (const locale of ["zh-CN", "en"]) for (const width of [375, 1180]) {
     expect(errors).toEqual([]);
     await mkdir("../../build/task-view/screenshots", { recursive: true });
     await page.screenshot({ path: `../../build/task-view/screenshots/${locale}-${width}.png`, fullPage: true });
+  });
+}
+
+test("revision feedback is fixed before sending and host acceptance is not author approval", async ({ page }) => {
+  const value = fixture();
+  const content = value.structuredContent as { data: Record<string, unknown> };
+  content.data.allowed_actions = ["hetu.task_feedback.save"];
+  const reference = { ...taskRef, sha256: "d".repeat(64) }; content.data.task_ref = reference;
+  const { view, errors } = await open(page, value, "light", true);
+  await view.getByRole("checkbox").first().check();
+  await view.getByLabel("补充要求或意见").fill("保留结尾，重写争执。");
+  await view.getByRole("button", { name: "按此修改", exact: true }).click();
+  await expect(view.getByRole("status")).toContainText("修改意见已保存，尚未发送给 Agent");
+  expect(await page.evaluate(() => window.harness.messages)).toEqual([]);
+  const calls = await page.evaluate(() => window.harness.calls);
+  const feedback = calls.find(item => item.name === "hetu_save_task_feedback")!;
+  expect(feedback.arguments?.task_ref).toEqual(reference);
+  expect(feedback.arguments?.selected_refs).toEqual([{ kind: "candidate", candidate_ref: { task_ref: reference, submission_id: "submission_test", candidate_id: "candidate_one" } }]);
+  await expect(view.getByLabel("继续提示词")).toHaveValue(/feedback_test/);
+  await view.getByRole("button", { name: "发送给当前 Agent", exact: true }).click();
+  await expect(view.getByText("宿主已接收继续请求，等待后续稿。", { exact: true })).toBeVisible();
+  await expect(view.getByRole("button", { name: "发送给当前 Agent", exact: true })).toBeDisabled();
+  const messages = await page.evaluate(() => window.harness.messages);
+  expect(messages).toHaveLength(1);
+  expect(JSON.stringify(messages)).toContain("feedback_test");
+  expect(JSON.stringify(messages)).not.toContain("雾港听潮");
+  expect((await page.evaluate(() => window.harness.calls)).filter(item => item.name === "hetu_save_task_feedback")).toHaveLength(1);
+  expect(errors).toEqual([]);
+});
+
+test("lost feedback receipt recovers the same feedback and a host without messages offers a copy prompt", async ({ page }) => {
+  const value = fixture();
+  (value.structuredContent as { data: Record<string, unknown> }).data.allowed_actions = ["hetu.task_feedback.save"];
+  const { view } = await open(page, value);
+  await page.evaluate(() => { window.harness.saveMode = "lost"; });
+  await view.getByLabel("补充要求或意见").fill("只重写争执。");
+  await view.getByRole("button", { name: "按此修改", exact: true }).click();
+  await expect(view.getByRole("status")).toContainText("保存结果尚未确认");
+  await view.getByRole("button", { name: "查询原保存结果", exact: true }).click();
+  await expect(view.getByLabel("继续提示词")).toHaveValue(/feedback_test/);
+  await expect(view.getByRole("button", { name: "发送给当前 Agent", exact: true })).toHaveCount(0);
+  expect((await page.evaluate(() => window.harness.reads))[0]).toContain("action=hetu.task_feedback.save");
+  expect((await page.evaluate(() => window.harness.calls)).filter(item => item.name === "hetu_save_task_feedback")).toHaveLength(1);
+});
+
+for (const mode of ["rejected", "lost"] as const) {
+  test(`host message ${mode} preserves the saved feedback without automatic resend`, async ({ page }) => {
+    const value = fixture("en");
+    (value.structuredContent as { data: Record<string, unknown> }).data.allowed_actions = ["hetu.task_feedback.save"];
+    const { view } = await open(page, value, "light", true);
+    await page.evaluate(value => { window.harness.messageMode = value; }, mode);
+    await view.getByLabel("Requirements or feedback").fill("Keep the ending; rewrite the argument.");
+    await view.getByRole("button", { name: "Request changes", exact: true }).click();
+    await view.getByRole("button", { name: "Send to current agent", exact: true }).click();
+    await expect(view.getByText(mode === "rejected" ? "The host did not accept the request. Copy the prompt below." : "Message delivery is unconfirmed. Check this conversation before resending.", { exact: true })).toBeVisible();
+    await expect(view.getByLabel("Continuation prompt")).toHaveValue(/feedback_test/);
+    expect(await page.evaluate(() => window.harness.messages.length)).toBe(1);
+    await expect(view.getByRole("button", { name: "Send to current agent", exact: true })).toBeDisabled();
   });
 }

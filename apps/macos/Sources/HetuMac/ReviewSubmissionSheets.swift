@@ -13,18 +13,18 @@ struct ReviewSubmitSheet: View {
     @State private var source: JSONValue = .null
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text(model.t("review.submit")).font(.title2)
-            Text(document["document"]["title"].string ?? "").font(.headline)
-            Text(model.t("review.submit_note")).foregroundStyle(.secondary)
+            Text(model.t("review.submit")).font(.system(size: 20, weight: .semibold))
+            Text(document["document"]["title"].string ?? "").font(.system(size: 14, weight: .semibold))
+            Text(model.t("review.submit_note")).foregroundStyle(WorkbenchPalette.muted)
             if source != .null {
-                Text(source["revision"]["revision_id"].string ?? "").font(.caption).textSelection(.enabled)
+                Text(source["revision"]["revision_id"].string ?? "").font(.system(size: 12)).textSelection(.enabled)
                 DisclosureGroup(model.t("review.content")) {
                     ScrollView { Text(source["content"].string ?? "").textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading) }.frame(maxHeight: 200)
                 }
             }
-            if let input { Text(model.t("drama.source_note", ["revision": String(input["blueprint_revision"]?.integer ?? 0)])).font(.caption) }
-            if let revision = input?["skeleton_ref"]?["revision"].integer { Text(model.t("review.skeleton_revision", ["revision": String(revision)])).font(.caption) }
-            if let error { Text(error).foregroundStyle(.red) }
+            if let input { Text(model.t("drama.source_note", ["revision": String(input["blueprint_revision"]?.integer ?? 0)])).font(.system(size: 12)) }
+            if let revision = input?["skeleton_ref"]?["revision"].integer { Text(model.t("review.skeleton_revision", ["revision": String(revision)])).font(.system(size: 12)) }
+            if let error { Text(error).foregroundStyle(WorkbenchPalette.danger) }
             HStack {
                 Button(model.t("common.cancel")) { dismiss() }.keyboardShortcut(.cancelAction)
                 if input == nil { Button(model.t("review.reload_context")) { Task { await prepare(reload: true) } } }
@@ -66,15 +66,15 @@ struct ReviewRewriteSheet: View {
     @State private var error: String?
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(model.t("review.rewrite")).font(.title2)
-            Text(model.t("review.rewrite_note")).foregroundStyle(.secondary)
+            Text(model.t("review.rewrite")).font(.system(size: 20, weight: .semibold))
+            Text(model.t("review.rewrite_note")).foregroundStyle(WorkbenchPalette.muted)
             TextField(model.t("document.title"), text: $title).textFieldStyle(.roundedBorder).disabled(pending != nil)
-            TextEditor(text: $content).frame(minHeight: 260).border(Color.secondary.opacity(0.2)).accessibilityLabel(model.t("review.rewrite_content")).disabled(pending != nil)
+            TextEditor(text: $content).frame(minHeight: 260).border(WorkbenchPalette.muted.opacity(0.2)).accessibilityLabel(model.t("review.rewrite_content")).disabled(pending != nil)
             if let baseline {
-                Text(model.t("drama.source_note", ["revision": String(baseline["blueprint_revision"]?.integer ?? 0)])).font(.caption)
-                if let revision = baseline["skeleton_ref"]?["revision"].integer { Text(model.t("review.skeleton_revision", ["revision": String(revision)])).font(.caption) }
+                Text(model.t("drama.source_note", ["revision": String(baseline["blueprint_revision"]?.integer ?? 0)])).font(.system(size: 12))
+                if let revision = baseline["skeleton_ref"]?["revision"].integer { Text(model.t("review.skeleton_revision", ["revision": String(revision)])).font(.system(size: 12)) }
             }
-            if let error { Text(error).foregroundStyle(.red) }
+            if let error { Text(error).foregroundStyle(WorkbenchPalette.danger) }
             HStack {
                 Button(model.t("common.cancel")) { dismiss() }.keyboardShortcut(.cancelAction)
                 Button(model.t("review.reload_context")) { Task { await prepare() } }.disabled(pending != nil)

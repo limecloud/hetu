@@ -1,12 +1,17 @@
 ---
 import { docs, groups } from '../lib/docs';
 import { messages, route, prototype, type Locale } from '../lib/site';
+import { assetURL } from '../lib/assets';
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const m = messages(locale);
+const en = locale === 'en';
+const groupDescriptions = en
+  ? ['Open a book and find your own way into the work.', 'Turn material into scenes, then review and prepare it for others.', 'Choose how to collaborate and look after your work.', 'Build the Mac app from source.']
+  : ['从一个点子、一本旧稿，或第一句正文开始。', '从一场戏到一份交稿，逐步核对和确认。', '用顺手的助手协作，把作品和版本留在自己手里。', '已有开发环境？从源码构建 Mac 版。'];
 ---
 <div class="container subpage help-index">
-  <header class="page-hero"><span class="eyebrow">{locale === 'en' ? 'HETU LUOSHU HELP' : '河图洛书使用指南'}</span><h1>{m.docs.title}</h1><p>{m.docs.intro}</p><a class="button primary" href={route(locale, 'docs/getting-started')}>{locale === 'en' ? 'Start writing, step by step' : '作者快速上手'} <span aria-hidden="true">→</span></a><a class="text-link guide-demo" href={prototype(locale)}>{m.workspace.cta} ↗</a></header>
+  <header class="page-hero page-hero-split"><div><h1>{m.docs.title}</h1><p>{m.docs.intro}</p><a class="button primary" href={route(locale, 'docs/getting-started')}>{en ? 'Start writing, step by step' : '作者快速上手'} <span aria-hidden="true">→</span></a><a class="text-link guide-demo" href={prototype(locale)}>{m.workspace.cta} ↗</a></div><figure class="product-figure"><a href={route(locale, 'docs/writing')} aria-label={en ? 'Read the writing guide' : '查看章节与写作指南'}><img src={assetURL(`/images/guides/quickstart-writing-${locale}.webp`)} width="2368" height={en ? 1402 : 1398} alt={en ? 'Homepage demo with the chapter list and manuscript editor.' : '首页演示中的章节列表与正文编辑区。'}/></a><figcaption>{en ? 'Homepage demo / Chapters and writing' : '首页演示 / 章节与写作'}</figcaption></figure></header>
   <p class="guide-notice">{m.docs.note}</p>
-  {groups.map(group => <section class="guide-group"><h2>{group.title[locale]}</h2><div class="doc-index">{docs.filter(doc => doc.group === group.id).map(doc => <a href={route(locale, `docs/${doc.id}`)}><div><b>{doc.title[locale]}</b><small>{doc.description[locale]}</small></div><span aria-hidden="true">→</span></a>)}</div></section>)}
+  {groups.map((group, index) => <section class="guide-group" aria-labelledby={`guide-group-${group.id}`}><div class="guide-group-heading"><h2 id={`guide-group-${group.id}`}>{group.title[locale]}</h2><p>{groupDescriptions[index]}</p></div><div class="doc-index">{docs.filter(doc => doc.group === group.id).map(doc => <a href={route(locale, `docs/${doc.id}`)}><div><b>{doc.title[locale]}</b><small>{doc.description[locale]}</small></div><span aria-hidden="true">→</span></a>)}</div></section>)}
 </div>

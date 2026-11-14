@@ -1,0 +1,6 @@
+Use case: ads-marketing
+Asset type: portrait mobile website background, vertical composition
+Input image: Image 1 is the landscape reference for the environment, materials and colors. Recompose it for a tall mobile viewport rather than cropping.
+Primary request: Preserve the original paper-bridge-across-a-jade-river metaphor as a vertical atmospheric background. No central object behind the text.
+Composition: Portrait 2:3. Upper 65 percent is luminous pale neutral sage and ivory mist with subtle paper grain, extremely low contrast and almost empty for centered dark page title, description and buttons. Very faint distant mountains sit only at the outer edges. In the lower 30 percent the ivory manuscript-paper bridge crosses the jade river horizontally between small mountain banks; keep the full arch visible. Water reflections and tiny amber lights are subtle. Bottom 8 percent dissolves into near-white fog. Left and right visual weights balanced.
+Style: Refined Chinese-ink-wash-inspired cinematic landscape, premium literary identity, quiet scale and depth, desaturated jade, sage, ivory paper and a few warm lights. Preserve natural paper bridge layers. No moon, sun disk, planet, bird, bamboo, foreground branch, large book, mascot, people, screen, floating icon, text, writing, watermark, border or neon glow.

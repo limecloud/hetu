@@ -1,4 +1,6 @@
 pub mod application;
+pub mod collaboration;
+pub mod model_service;
 mod domain;
 mod ffi;
 mod infrastructure;

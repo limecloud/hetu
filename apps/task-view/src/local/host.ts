@@ -11,11 +11,13 @@ let events: EventSource | undefined;
 let ended = false;
 let starting = false;
 let loadFailed = false;
+let viewReady = false;
+let handshakeTimer: ReturnType<typeof setTimeout> | undefined;
 const node = (id: string) => document.getElementById(id)!;
 const t = (key: keyof typeof strings.en) => strings[state?.locale ?? "zh-CN"][key];
 async function end() {
   if (ended) return;
-  ended = true; events?.close();
+  ended = true; events?.close(); clearTimeout(handshakeTimer);
   document.body.classList.remove("paired"); node("view").replaceChildren(); node("code").textContent = "";
   (node("pair") as HTMLButtonElement).disabled = true; node("status").textContent = t("ended"); node("connection").textContent = "";
   try { await bridge?.close(); } catch { /* 撤权先清理页面；断开的宿主无需再次请求。 */ }
@@ -37,14 +39,25 @@ async function open() {
     if (result.isError) { await end(); return; }
     const iframe = document.createElement("iframe"); iframe.title = t("title"); iframe.setAttribute("sandbox", "allow-scripts");
     node("view").replaceChildren(iframe);
-    const current = bridge = new AppBridge(null, { name: "Hetu Luoshu local task host", version: "0.4.0" }, { serverTools: {}, serverResources: {} }, { hostContext: { theme: state.theme, locale: state.locale } });
+    const current = bridge = new AppBridge(null, { name: "Hetu Luoshu local task host", version: "0.5.0" }, { serverTools: {}, serverResources: {} }, { hostContext: { theme: state.theme, locale: state.locale } });
     current.oncalltool = params => rpc("tools/call", params);
     current.onreadresource = params => rpc("resources/read", params);
-    current.oninitialized = () => { current.sendToolInput({ arguments: { task_ref: state.task_ref } }); current.sendToolResult(result); };
+    current.oninitialized = () => {
+      if (ended || bridge !== current) return;
+      viewReady = true; clearTimeout(handshakeTimer); node("status").textContent = "";
+      current.sendToolInput({ arguments: { task_ref: state.task_ref } }); current.sendToolResult(result);
+    };
     current.onsizechange = size => { iframe.style.height = `${Math.max(600, Math.min(size.height ?? 800, 20000))}px`; };
     await current.connect(new PostMessageTransport(iframe.contentWindow!, iframe.contentWindow!));
     if (ended) { iframe.remove(); await current.close(); return; }
     iframe.src = "/view.html"; document.body.classList.add("paired");
+    handshakeTimer = setTimeout(() => {
+      if (ended || bridge !== current || viewReady) return;
+      loadFailed = true; bridge = undefined; node("view").replaceChildren();
+      document.body.classList.remove("paired"); events?.close(); events = undefined;
+      node("status").textContent = t("failed");
+      void current.close().catch(() => {});
+    }, 10_000);
     events = new EventSource("/api/events");
     events.addEventListener("revoked", () => { void end(); });
     events.onerror = () => { void end(); };
@@ -52,6 +65,7 @@ async function open() {
   } catch {
     if (ended) return;
     loadFailed = true;
+    clearTimeout(handshakeTimer);
     try { await bridge?.close(); } catch { /* 连接失败时清理本次宿主。 */ }
     bridge = undefined; node("view").replaceChildren(); node("status").textContent = t("failed");
   }
@@ -70,7 +84,7 @@ async function refresh() {
     for (const id of ["title", "description", "pair", "boundary"] as const) node(id).textContent = t(id);
     (node("pair") as HTMLButtonElement).disabled = state.state !== "unpaired" && !(state.state === "paired" && loadFailed);
     node("pair").textContent = t(loadFailed && state.state === "paired" ? "retry" : "pair");
-    node("status").textContent = t(state.state === "pending" ? "pending" : state.state === "paired" ? loadFailed ? "failed" : "loading" : "ready");
+    node("status").textContent = state.state === "paired" && viewReady && !loadFailed ? "" : t(state.state === "pending" ? "pending" : state.state === "paired" ? loadFailed ? "failed" : "loading" : "ready");
     node("code").replaceChildren();
     if (state.code) { const code = document.createElement("code"); code.textContent = state.code; node("code").append(code); }
     if (state.state === "paired" && !loadFailed) await open();
@@ -82,7 +96,7 @@ async function refresh() {
 }
 node("pair").addEventListener("click", () => { void (async () => {
   (node("pair") as HTMLButtonElement).disabled = true;
-  if (state.state === "paired") { loadFailed = false; await open(); return; }
+  if (state.state === "paired") { loadFailed = false; viewReady = false; await open(); return; }
   try {
     const response = await fetch("/api/pair", { method: "POST", headers: { "Content-Type": "application/json", "X-Hetu-CSRF": state.csrf }, body: "{}" });
     if (!response.ok) throw new Error("Pairing failed");
@@ -91,4 +105,4 @@ node("pair").addEventListener("click", () => { void (async () => {
 })(); });
 await refresh();
 const poll = setInterval(() => { void refresh(); }, 1000);
-window.addEventListener("pagehide", () => { clearInterval(poll); events?.close(); void bridge?.close(); });
+window.addEventListener("pagehide", () => { clearInterval(poll); clearTimeout(handshakeTimer); events?.close(); void bridge?.close(); });

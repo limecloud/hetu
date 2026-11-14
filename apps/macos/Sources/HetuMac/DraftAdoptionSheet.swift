@@ -40,9 +40,9 @@ struct DraftAdoptionSheet: View {
     }
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(model.t("adoption.title")).font(.title2)
-            Text(model.t("adoption.note")).foregroundStyle(.secondary)
-            if let error { Text(error).foregroundStyle(.red).textSelection(.enabled) }
+            Text(model.t("adoption.title")).font(.system(size: 20, weight: .semibold))
+            Text(model.t("adoption.note")).foregroundStyle(WorkbenchPalette.muted)
+            if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             if pending != nil { Button(model.t("drama.retry")) { Task { await perform() } } }
             targetControls.disabled(held)
             HSplitView {
@@ -66,10 +66,10 @@ struct DraftAdoptionSheet: View {
                 ForEach(selections.indices, id: \.self) { index in
                     HStack(alignment: .top) {
                         VStack(alignment: .leading, spacing: 3) {
-                            Text(model.t("adoption.change", ["number": String(index + 1)])).font(.caption).foregroundStyle(.secondary)
+                            Text(model.t("adoption.change", ["number": String(index + 1)])).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                             Text(selections[index]["source"]["quote"].string ?? "").lineLimit(2)
                             if let changed = selections[index]["replacement"].string {
-                                Text(model.t("adoption.author_replacement") + changed).lineLimit(2).foregroundStyle(.secondary)
+                                Text(model.t("adoption.author_replacement") + changed).lineLimit(2).foregroundStyle(WorkbenchPalette.muted)
                             }
                         }
                         Spacer()
@@ -110,23 +110,23 @@ struct DraftAdoptionSheet: View {
     private var selectionControls: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text(model.t("adoption.selection_hint")).font(.caption).foregroundStyle(.secondary)
+                Text(model.t("adoption.selection_hint")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                 Spacer()
                 Toggle(model.t("adoption.edit_selected"), isOn: $useReplacement).toggleStyle(.checkbox)
                 Button(model.t("adoption.add_selection")) { addSelection() }.disabled(sourceRange.length == 0 || selections.count >= 100)
             }
             if useReplacement {
-                TextEditor(text: $replacement).frame(height: 65).border(Color.secondary.opacity(0.2)).accessibilityLabel(model.t("adoption.replacement"))
+                TextEditor(text: $replacement).frame(height: 65).border(WorkbenchPalette.muted.opacity(0.2)).accessibilityLabel(model.t("adoption.replacement"))
             }
         }
     }
     private var previewContent: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(model.t("adoption.effect")).font(.headline)
+            Text(model.t("adoption.effect")).font(.system(size: 14, weight: .semibold))
             ScrollView {
                 VStack(alignment: .leading, spacing: 12) {
                     if let baseline = result["baseline"]["content"].string, baseline != original {
-                        Text(model.t("adoption.baseline_changed")).foregroundStyle(.orange)
+                        Text(model.t("adoption.baseline_changed")).foregroundStyle(WorkbenchPalette.warningInk)
                         DisclosureGroup(model.t("adoption.submission_baseline")) { Text(baseline).textSelection(.enabled) }
                     }
                     Text(result["content"].string ?? "").textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading)
@@ -136,7 +136,7 @@ struct DraftAdoptionSheet: View {
     }
     private func textPane(_ content: String, id: String, label: String, selection: Binding<NSRange>) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(model.t(label)).font(.headline)
+            Text(model.t(label)).font(.system(size: 14, weight: .semibold))
             NativeTextEditor(text: content, documentID: id, replacementVersion: 0, accessibleName: model.t(label), editable: false,
                              onChange: { _ in }, onComposition: { _ in }, onSelection: { selection.wrappedValue = $0 })
         }.frame(minWidth: 300)

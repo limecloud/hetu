@@ -1,0 +1,10 @@
+Use case: ads-marketing
+Asset type: full-width website hero BACKGROUND, landscape 1536x1024
+Primary request: Recompose the reference illustration into an expansive story-to-screen world for independent authors and screenwriters. HTML headline will sit over the LEFT half. This must be a genuine panoramic background rather than a square graphic.
+Input images: Image 1 is a reference for lighthouse story objects, jade-and-paper materials and brand mascot, not a fixed composition.
+Scene/backdrop: Very pale Radix sage continuous studio backdrop. The LEFT 45 percent is empty, calm and pale with no foreground objects. Main composition fills the RIGHT 55 percent.
+Subject: On the RIGHT an open manuscript transforms into a bridge of scene sheets leading into a miniature lighthouse keeper's room, moonlit coast and lighthouse. A vintage radio on the desk, an understated adult figure in a dark green night-shift coat, a warm desk lamp, sea rocks. A few physical reference sheets depict the lighthouse and radio. A small jade mascot beside the book is a secondary brand detail.
+Style/medium: Premium editorial 3D paper-and-ceramic diorama, beautifully crafted tactile matte surfaces, mature and restrained. Sage green, ivory paper, muted timber, warm lantern glow. Render the narrative world, never a software interface.
+Composition/framing: Panoramic. All objects sit within x=46% to x=98%, with sufficient scale and depth to fill the right side. Mandatory empty left half for dark headline and controls. Slightly elevated camera, uncluttered silhouettes, complete lighthouse top.
+Text: none
+Avoid: letters, labels, logos, watermark, fake UI, terminal windows, robot, neon glow, saturated gradients, floating icons, thick outlines, multiple mascots, title typography.

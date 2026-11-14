@@ -1,0 +1,8 @@
+---
+import Journal from '../../components/Journal.astro';
+import { articles, type Article } from '../../lib/journal';
+export function getStaticPaths() { return articles.map(article => ({ params: { id: article.id }, props: { article } })); }
+interface Props { article: Article; }
+const { article } = Astro.props;
+---
+<Journal locale="zh-CN" article={article}/>

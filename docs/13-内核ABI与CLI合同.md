@@ -13,6 +13,7 @@ Rust 内核通过 `extern "C"` 与 `#[repr(C)]` 提供不透明上下文／任�
 | `hetu_abi_version` | 查询 ABI 与兼容范围，不打开项目 |
 | `hetu_context_open / close` | 绑定工作区、入口身份与授权上下文 |
 | `hetu_request` | 执行有界同步查询，返回结果缓冲 |
+| `hetu_model_service_request` | 可信原生设置读取或连接河图网站服务；不绑定作品，不返回连接凭据 |
 | `hetu_task_start / poll / cancel / release` | 长任务、进度、取消及生命周期 |
 | `hetu_buffer_free` | 释放 Core 分配的输出缓冲 |
 
@@ -50,6 +51,12 @@ ABI 任务启动、查询与取消的回执只说明句柄生命周期，`data.t
 
 内核错误短名按下表管理；公开 AXI 错误优先复用其标准码，其余使用 `hetu.` 命名空间，例如 `hetu.blueprint_locked`。`operation_unknown` 对外映射 `result_unknown` 并提供原操作恢复动作。AXI 为本团队草案，不是 MCP 官方标准，采用映射和证据见[27](27-Agent与Codex插件集成设计.md)。
 
+稳定接入尚未绑定作品时，结果的 `context.scope_id` 为 `collaboration`；任务调用成功后使用实际作品或筹备范围。无权任务的错误不回显其名称、目录或内容。无状态 ABI `hetu_collaboration_request` 接受固定客户端、可选本机接入目录和业务请求，使用相同缓冲释放约定；登记及撤权仍由作者 Workspace 动作执行。
+
+无作品时，稳定入口的 `hetu.creation_projects.create` 接受 `brief, locale, operation_key`，分配独立筹备和全新受管作品目录，返回 `management_ref, project_path, target_path`。后续筹备维护、创建、空章节／分集及首任务准备携带确切 `management_ref`，领域输入仍使用各动作的原 Schema。创建成功返回新的 `workspace_management_ref`；准备首任务后，以返回的 `task_locator` 打开固定任务。该有限新建规则不接管任意用户目录，也不授予正文写入、采纳、定稿或其他客户端权限；业务 JSON 和公开 CLI 均不能组装内部管理连接。可信作者通过 `hetu.collaboration.revoke_management` 可撤销本作品的管理授权及派生任务。
+
+`hetu_model_service_request` 接收 `{action,input}`，支持 `inspect|connect|poll|catalog|select|disconnect|custom_save|channel_select`，使用相同 UTF-8 缓冲及释放约定。网络设置调用由原生后台任务执行。它不向 CLI/MCP 开放，不能批准创作计划；模型业务仍通过固定任务动作执行，批准仅限作者入口。
+
 ## 3. 错误分类
 
 | 错误码 | 含义与处理 |
@@ -77,17 +84,36 @@ Mac 阶段验证 SwiftPM → C ABI → Rust 工作区读写、中文／空格路
 
 ## 5. CLI 命令面
 
+稳定入口无需预有作品或任务，先检查实际能力，再开始筹备：
+
+```bash
+hetu --client codex collaboration inspect
+printf '%s\n' '{"brief":"筹备一本港口悬疑小说","locale":"zh-CN","operation_key":"first-book-preparation"}' \
+  | hetu --client codex call hetu.creation_projects.create --input -
+```
+
+隔离验收时在 `--client codex` 后增加 `--collaboration-dir` 和独立绝对目录。后续调用保留回执中的管理引用、修订摘要与预留目录，按发现的 Schema 保存资料、创建作品和准备任务；不把创建回执当成采纳或定稿。正式任务以 `collaboration open --input -` 打开返回的 `task_locator`，每次任务调用显式携带完整 `task_ref`。
+
 | 命令组 | 目标能力 | 副作用 |
 | --- | --- | --- |
 | `hetu capabilities` | 平台、合同、参数和可用性发现 | 只读 |
+| `hetu collaboration inspect/open` | 检查稳定本机接入，按精确任务引用打开 | 只读；不扫描书库或切换全局当前任务 |
 | `hetu library list/register` | 本机书库查询与显式登记 | register 仅修改本机登记，不复制作品或授予 Agent 权限 |
 | `hetu creation prepare/show/create-workspace` | 建书筹备、候选选择与作者确认创建 | 创建须固定资料、明确目录与原键，不自动生成 |
 | `hetu creative-task prepare/show/prompt/submissions` | 固定任务、复制内容与外部结果查询 | prepare 保存请求，其余按能力合同读取；不调用 Agent |
+| `hetu task-context list/read/search/request-material` | 获权固定资料的按需读取和缺项 | request-material 记录请求，不授予更多原文权限 |
+| `hetu working-copy create/show/save/checkout/import` | 同任务持续编辑参考稿、可选文件交接 | 保存与导入形成参考修订；不覆盖作者正文或旧候选 |
+| `hetu task-feedback list/save` | 公开意见与确切成果引用 | 保存不采纳、不扩权；继续消息由当前宿主按能力处理 |
 | `hetu workspace init/open/inspect` | 创建、检查与打开 | init 写入新目录 |
 | `hetu blueprint show/edit/lock/unlock` | 作者设定集维护 | edit／lock／unlock 需可信作者入口 |
 | `hetu document list/show/save` | 修订与正文管理 | save 创建修订并 CAS 更新 |
 | `hetu draft submit/list/show` | 提交、查询草稿 | submit 仅写草稿 |
 | `hetu plot extract` | 对已有修订提取节点 | 可选保存派生结果 |
+| `hetu resource list/show/create/update/adopt/usages` | 资料草稿、作者采用和固定使用 | 按任务与作者权限分别执行；Agent 不得写已采用资料 |
+| `hetu design list/show/create/update` | 造型、场景和道具设计 | CAS 保存草稿；正式采用仅作者 |
+| `hetu asset-candidate submit/list/show` | 成组素材回传与查询 | 提交只读取任务 inbox，不接受任意路径 |
+| `hetu asset-selection preview/select/withdraw` | 按用途选用或撤回 | preview 只读，其余可信作者确认 |
+| `hetu drama project/episode/script/storyboard/segment` | 项目、分集、语义读取与候选协作 | 正式编辑与候选授权分开，动作和 Schema 共同发布 |
 | `hetu drama skeleton/compare` | 骨架与原著比较 | 保存候选，不覆盖定稿 |
 | `hetu validate` | 校验与覆盖报告 | 可选保存报告 |
 | `hetu review list/show/decide` | 人工审核与批注 | decide 需作者确认 |
@@ -97,11 +123,13 @@ Mac 阶段验证 SwiftPM → C ABI → Rust 工作区读写、中文／空格路
 | `hetu bundle preview/export/verify` | 交付选集、导出与摘要检查 | export 创建新包 |
 | `hetu operation show` | 原操作状态和恢复证据 | 只读 |
 
-参数、帮助与能力发现由同一正式合同生成。CLI 支持无桌面进程的核心人工闭环，Agent 会话不得借 CLI 获取作者权限。
+参数、帮助与能力发现由同一正式合同生成。CLI 是外部 Agent 的主要业务入口，支持无桌面进程的完整获权闭环；作者可以手动使用相同命令。Agent 不获取通用作者身份，所需作者决定通过确切操作提案与独立确认承接。
 
 表中命令组定义设计面；正式子命令与动作合同一同发布，安装版本通过 `hetu capabilities` 和自身帮助声明实际入口，不把文档中的拟发布命令当成已安装能力。
 
-当前 Swift CLI 提供 `hetu --workspace <目录> capabilities`、`call <hetu.action> --input <JSON 文件或 ->`，以及 `bundle verify <bundle_id>`。该入口固定使用 Agent 身份，包核验只读取当前作品已登记的受管产物；正文导入、格式导出和交付确认仍由可信作者入口执行，不通过命令行参数、TTY 或通用批准开关提权。
+Agent 入口覆盖无作品筹备、明确新建、已授权作品管理和单任务接续，无需先创建作品、填写 GUI 表单或启动桌面窗口。稳定任务定位复用 MCP 的 TaskLocator／RequestRef 和私有授权，不接受任意目录冒充授权；调用参数、JSON 输入与环境不得含秘密。正文导入、正式保存和交付需要的操作输入由 Agent 准备，Core 按对象、影响及现有授权判断能否直接执行或需要作者决定；获得独立的确切批准后可以由机器继续执行，不把批准等同于必须由人点击执行按钮。当前实现、打包差距及实施准入集中见[20第6节](20-实施路线与里程碑.md#6-持续协作的实施准入)。
+
+任务命令先 open 并核对请求版本，再按需读资料、保存参考稿或提交；结果未知查原键，恢复先回读现有成果及公开反馈。文件编辑只使用 Core 签发的任务临时检出，不把作者 packages 目录作为工作树交给 Agent。精确动作、输入输出及错误由[30第23节](30-应用API详细设计.md#23-持续协作与任务接续合同)维护，CLI 不重写业务校验。
 
 ## 6. CLI 输出与交互
 
@@ -114,3 +142,11 @@ Mac 阶段验证 SwiftPM → C ABI → Rust 工作区读写、中文／空格路
 无交互终端且没有可信作者确认的高风险操作返回 `author_confirmation_required`。不存在模型可传入的通用 `--yes`、假审核人或万能批准布尔值。操作确认与工作区授权、系统文件权限分别管理。
 
 检测到 TTY 只说明可以交互，不证明操作者是人；Agent 也可能持有伪终端。作者动作须获得独立本机作者会话对确切操作的授权，不能仅靠输入 `y` 提升 Agent 权限。Apps、网页与 MCP 的授权不能转换为 CLI 作者模式。
+
+## 7. 机器执行与作者决定
+
+CLI/MCP 对同一用例提供发现、预览、准备、获权执行、回读及恢复能力。无书名时可开始筹备，Agent 负责填充结构化字段；新建作品只影响明确的新目录，不能因此得到既有作品、整座书库或作者角色。作者已经提供的字段、选择和批准引用在后续步骤复用，不要求手工转录。
+
+需要作者判断的操作由机器生成完整提案，固定 action、输入摘要、目标对象及版本、预期影响和所需决定；确认只授权该确切操作。Core 在执行时重新验证授权、CAS、输入及外部目标，不把提案文本里的“已批准”解释成权限。具体行为与数据见[30第25节](30-应用API详细设计.md#25-全软件联动与操作提案合同)。
+
+CLI/MCP 缺业务入口属于未完成用例，不能要求 Skill 通过 Computer Use 操作 GUI 补齐。GUI 验收可以调用 Computer Use；真正没有机器入口的外部系统才按实际限制使用兜底，并记录范围。

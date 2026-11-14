@@ -38,7 +38,7 @@ struct ValidationWorkbenchView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             header
-            if let error { Text(error).foregroundStyle(.red).textSelection(.enabled) }
+            if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             Divider()
             HSplitView {
                 reportList.frame(minWidth: 180, idealWidth: 220, maxWidth: 280)
@@ -84,22 +84,22 @@ struct ValidationWorkbenchView: View {
                 }.disabled(plotRevision.isEmpty || model.busy)
             }
             if plotCursor != nil { Button(model.t("validation.more_plots")) { Task { await loadPlots(more: true) } } }
-            if plots.isEmpty { Text(model.t("validation.needs_plot")).font(.caption).foregroundStyle(.secondary) }
+            if plots.isEmpty { Text(model.t("validation.needs_plot")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted) }
         }
     }
     private var reportList: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 10) {
-                Text(model.t("validation.reports")).font(.headline)
-                if summaries.isEmpty { Text(model.t("validation.no_reports")).foregroundStyle(.secondary) }
+                Text(model.t("validation.reports")).font(.system(size: 14, weight: .semibold))
+                if summaries.isEmpty { Text(model.t("validation.no_reports")).foregroundStyle(WorkbenchPalette.muted) }
                 ForEach(Array(summaries.enumerated()), id: \.offset) { _, item in
                     Button { Task { await read(item["report_id"].string ?? "") } } label: {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(dateLabel(item["created_at"].string ?? ""))
-                            Text(model.t("validation.summary", ["count": String(item["finding_count"].integer ?? 0)] )).font(.caption)
-                            Text(model.t("validation.status." + (item["status"].string ?? "partial"))).font(.caption)
+                            Text(model.t("validation.summary", ["count": String(item["finding_count"].integer ?? 0)] )).font(.system(size: 12))
+                            Text(model.t("validation.status." + (item["status"].string ?? "partial"))).font(.system(size: 12))
                         }.frame(maxWidth: .infinity, alignment: .leading).padding(8)
-                            .background(report["report_id"] == item["report_id"] ? Color.accentColor.opacity(0.12) : Color.clear, in: RoundedRectangle(cornerRadius: 6))
+                            .background(report["report_id"] == item["report_id"] ? WorkbenchPalette.jade.opacity(0.12) : Color.clear, in: RoundedRectangle(cornerRadius: 6))
                     }.buttonStyle(.plain).disabled(model.busy)
                 }
                 if reportCursor != nil { Button(model.t("plot.more")) { Task { await loadReports(more: true) } } }
@@ -111,7 +111,7 @@ struct ValidationWorkbenchView: View {
             LazyVStack(alignment: .leading, spacing: 12) {
                 coverage
                 filters
-                if filtered.isEmpty { Text(model.t("validation.no_findings")).foregroundStyle(.secondary) }
+                if filtered.isEmpty { Text(model.t("validation.no_findings")).foregroundStyle(WorkbenchPalette.muted) }
                 ForEach(Array(filtered.enumerated()), id: \.offset) { _, finding in
                     findingRow(finding)
                     Divider()
@@ -144,13 +144,13 @@ struct ValidationWorkbenchView: View {
     private func findingRow(_ finding: JSONValue) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .top) {
-                Text(model.t(finding["message_key"].string ?? "validation.prerequisites")).font(.headline)
+                Text(model.t(finding["message_key"].string ?? "validation.prerequisites")).font(.system(size: 14, weight: .semibold))
                 Spacer()
                 Button(model.t("validation.review")) { dispositionSheet = ValidationSheet(value: finding) }.buttonStyle(.borderless).disabled(model.busy)
             }
-            Text(model.t("rule.severity." + (finding["severity"].string ?? "info")) + "  " + model.t("validation.certainty." + (finding["certainty"].string ?? "unknown")) + "  " + ruleName(finding["rule_id"].string ?? "")).font(.caption).foregroundStyle(.secondary)
+            Text(model.t("rule.severity." + (finding["severity"].string ?? "info")) + "  " + model.t("validation.certainty." + (finding["certainty"].string ?? "unknown")) + "  " + ruleName(finding["rule_id"].string ?? "")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
             FindingEvidenceView(model: model, finding: finding, blueprint: blueprint)
-            ForEach(Array(finding["missing_prerequisites"].array.enumerated()), id: \.offset) { _, value in Text(model.t("validation.missing." + (value.string ?? "plot_nodes"))).foregroundStyle(.orange).font(.caption) }
+            ForEach(Array(finding["missing_prerequisites"].array.enumerated()), id: \.offset) { _, value in Text(model.t("validation.missing." + (value.string ?? "plot_nodes"))).foregroundStyle(WorkbenchPalette.warningInk).font(.system(size: 12)) }
             ForEach(Array(finding["source_refs"].array.enumerated()), id: \.offset) { _, source in
                 HStack(alignment: .top) {
                     Text(source["quote"].string ?? "").lineLimit(4).textSelection(.enabled)
@@ -159,8 +159,8 @@ struct ValidationWorkbenchView: View {
                 }
             }
             let current = currentDisposition(finding)
-            Text(model.t("validation.disposition." + (current["disposition"].string ?? "open"))).font(.caption)
-            if let reason = current["reason"].string { Text(reason).font(.caption).foregroundStyle(.secondary).textSelection(.enabled) }
+            Text(model.t("validation.disposition." + (current["disposition"].string ?? "open"))).font(.system(size: 12))
+            if let reason = current["reason"].string { Text(reason).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted).textSelection(.enabled) }
         }
     }
     private func currentDisposition(_ finding: JSONValue) -> JSONValue {
@@ -212,12 +212,12 @@ struct ValidationCoverageView: View {
     private var report: JSONValue { result["report"] }
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(model.t("validation.status." + (report["status"].string ?? "partial"))).font(.headline)
-            Text(model.t("validation.coverage", ["bytes": String(report["coverage"]["scanned_bytes"].integer ?? 0), "revision": String(report["input_snapshot"]["blueprint_revision"].integer ?? 0), "version": report["rule_set_version"].string ?? ""])).font(.caption).foregroundStyle(.secondary)
-            Text(model.t("validation.counts", Dictionary(uniqueKeysWithValues: ["passed", "finding", "unknown", "not_applicable"].map { ($0, String(report["coverage"]["counts"][$0].integer ?? 0)) }))).font(.caption)
-            if result["stale"].bool == true { Label(model.t("validation.stale"), systemImage: "clock.badge.exclamationmark").foregroundStyle(.orange) }
-            if let stop = report["coverage"]["budget_stop"].string { Text(model.t("validation.budget." + stop)).foregroundStyle(.orange) }
-            Text(model.t("validation.coverage_note")).font(.caption).foregroundStyle(.secondary)
+            Text(model.t("validation.status." + (report["status"].string ?? "partial"))).font(.system(size: 14, weight: .semibold))
+            Text(model.t("validation.coverage", ["bytes": String(report["coverage"]["scanned_bytes"].integer ?? 0), "revision": String(report["input_snapshot"]["blueprint_revision"].integer ?? 0), "version": report["rule_set_version"].string ?? ""])).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
+            Text(model.t("validation.counts", Dictionary(uniqueKeysWithValues: ["passed", "finding", "unknown", "not_applicable"].map { ($0, String(report["coverage"]["counts"][$0].integer ?? 0)) }))).font(.system(size: 12))
+            if result["stale"].bool == true { Label(model.t("validation.stale"), systemImage: "clock.badge.exclamationmark").foregroundStyle(WorkbenchPalette.warningInk) }
+            if let stop = report["coverage"]["budget_stop"].string { Text(model.t("validation.budget." + stop)).foregroundStyle(WorkbenchPalette.warningInk) }
+            Text(model.t("validation.coverage_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
             DisclosureGroup(model.t("validation.coverage_details")) {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(model.t("validation.rule_coverage", ["enabled": String(report["coverage"]["enabled_rules"].array.count), "executed": String(report["coverage"]["executed_rules"].array.count)]))
@@ -225,7 +225,7 @@ struct ValidationCoverageView: View {
                     ForEach(Array(report["coverage"]["scanned_ranges"].array.enumerated()), id: \.offset) { _, range in
                         Text((sourceTitle ?? model.documents.first { $0.id == range["document_id"].string }?.title ?? model.t("entity.unavailable")) + ": \(range["byte_start"].integer ?? 0)…\(range["byte_end"].integer ?? 0) UTF-8")
                     }
-                }.font(.caption).frame(maxWidth: .infinity, alignment: .leading)
+                }.font(.system(size: 12)).frame(maxWidth: .infinity, alignment: .leading)
             }
         }.textSelection(.enabled)
     }

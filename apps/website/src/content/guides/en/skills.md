@@ -48,7 +48,7 @@ For Codex, choose “Install in Codex.” For WorkBuddy, check the destination a
 
 After success, return to the external client. Open a new conversation or refresh as that client directs, then confirm that the selected Hetu Luoshu genre methods are available. If installation reports a conflict, read the message first; existing files are preserved.
 
-If the installer cannot find your client, prepare the client you normally use first. You can also exchange ideas manually using [Plan a book with Codex](codex-first-task.md) and finish installing the suite later.
+If the installer cannot find your client, prepare the client you normally use first. You can discuss the story in that conversation, then follow [Plan a book with Codex](codex-first-task.md) after connecting it. Let the Agent save the proposal without entering the details again.
 
 ## 5. Understand version notices
 

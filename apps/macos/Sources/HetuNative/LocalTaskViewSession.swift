@@ -151,8 +151,12 @@ public struct LocalViewPairRequest: Identifiable, Equatable {
         case "hetu.interactions.get": allowed = Set(fields.keys) == ["task_ref"] && fields["task_ref"] == taskReference
         case "hetu.interactions.save_selection":
             allowed = Set(fields.keys).isSubset(of: ["task_ref", "expected", "candidate_refs", "comment", "operation_key"]) && fields["task_ref"] == taskReference
+        case "hetu.task_feedback.save":
+            allowed = Set(fields.keys).isSubset(of: ["task_ref", "target_refs", "expected_feedback_head", "intent", "public_comment", "selected_refs", "operation_key"]) && fields["task_ref"] == taskReference
+        case "hetu.task_context.read":
+            allowed = Set(fields.keys).isSubset(of: ["task_ref", "context_ref", "range", "section", "entity_id", "cursor", "limit", "max_bytes"]) && fields["task_ref"] == taskReference
         case "hetu.operations.get":
-            allowed = Set(fields.keys) == ["action", "key"] && fields["action"]?.string == "hetu.interactions.save_selection" && fields["key"]?.string != nil
+            allowed = Set(fields.keys) == ["action", "key"] && ["hetu.interactions.save_selection", "hetu.task_feedback.save"].contains(fields["action"]?.string ?? "") && fields["key"]?.string != nil
         default: allowed = false
         }
         guard allowed else { errorKey = "local_view.start_failed"; stop(); return }

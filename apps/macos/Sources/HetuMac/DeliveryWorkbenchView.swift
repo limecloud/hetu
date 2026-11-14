@@ -88,7 +88,7 @@ struct DeliveryWorkbenchView: View {
                     Text(model.t("delivery.production")).tag("production_delivery")
                     Text(model.t("delivery.review")).tag("review_delivery")
                 }
-                Text(model.t("delivery.reading_formats")).font(.system(size: 16, weight: .semibold))
+                Text(model.t("delivery.reading_formats")).font(.system(size: 14, weight: .semibold))
                 HStack {
                     ForEach(["docx", "pdf", "txt"], id: \.self) { format in
                         Toggle(model.t("delivery.format." + format), isOn: Binding(get: { session.readingFormats.contains(format) }, set: { if $0 { session.readingFormats.insert(format) } else { session.readingFormats.remove(format) } }))
@@ -96,7 +96,7 @@ struct DeliveryWorkbenchView: View {
                 }
             }
             HStack {
-                Text(model.t("delivery.documents")).font(.system(size: 16, weight: .semibold))
+                Text(model.t("delivery.documents")).font(.system(size: 14, weight: .semibold))
                 Spacer()
                 if !session.isSingleDocumentExport {
                     Button(model.t("git.select_all")) { session.selectedDocuments = Set(availableDocuments.map(\.id)) }.controlSize(.small)
@@ -140,7 +140,7 @@ struct DeliveryWorkbenchView: View {
     private var attachmentForm: some View {
         VStack(alignment: .leading, spacing: 10) {
             Divider()
-            Text(model.t("delivery.attachments")).font(.system(size: 16, weight: .semibold))
+            Text(model.t("delivery.attachments")).font(.system(size: 14, weight: .semibold))
             Label(model.t("bible.title"), systemImage: "checkmark").foregroundStyle(WorkbenchPalette.muted)
             Picker(model.t("delivery.attachment_type"), selection: $attachmentKind) {
                 ForEach(DeliveryAttachmentKind.allCases, id: \.self) { kind in Text(model.t("delivery.attachment." + kind.rawValue)).tag(kind) }
@@ -189,7 +189,7 @@ struct DeliveryWorkbenchView: View {
     @ViewBuilder private var preview: some View {
         if session.busy, session.pending == nil { ProgressView().controlSize(.small) }
         if session.preview != .null {
-            Text(model.t("delivery.preview_title")).font(.system(size: 16, weight: .semibold))
+            Text(model.t("delivery.preview_title")).font(.system(size: 14, weight: .semibold))
             if session.mode == .importDocument {
                 let content = session.preview["converted"]["content"].string ?? ""
                 Text(String(content.prefix(16_000))).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading)
@@ -230,7 +230,7 @@ struct DeliveryWorkbenchView: View {
     }
     @ViewBuilder private var result: some View {
         if session.result != .null {
-            Text(model.t("delivery.completed")).font(.system(size: 16, weight: .semibold))
+            Text(model.t("delivery.completed")).font(.system(size: 14, weight: .semibold))
             if let url = session.resultURL {
                 Button(model.t("delivery.reveal")) { NSWorkspace.shared.activateFileViewerSelecting([url]) }
             } else if let title = session.result["document"]["title"].string { Text(title) }
@@ -243,7 +243,7 @@ struct DeliveryWorkbenchView: View {
     @ViewBuilder private func notices(_ value: JSONValue, title: String) -> some View {
         let messages = noticeMessages(value)
         if !messages.isEmpty {
-            Text(model.t(title)).font(.system(size: 16, weight: .semibold))
+            Text(model.t(title)).font(.system(size: 14, weight: .semibold))
             ForEach(Array(messages.enumerated()), id: \.offset) { _, message in Text(message).foregroundStyle(WorkbenchPalette.warningInk).textSelection(.enabled) }
         }
     }

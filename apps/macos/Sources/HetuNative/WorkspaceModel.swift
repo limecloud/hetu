@@ -30,6 +30,7 @@ public final class WorkspaceModel {
     public private(set) var busy = false
     public private(set) var writeLocked = false
     public private(set) var isComposing = false
+    public private(set) var saving = false
     public var editorSuspended = false
     public var message: String?
     public private(set) var conflict: JSONValue = .null
@@ -38,6 +39,8 @@ public final class WorkspaceModel {
     public private(set) var statistics = TextStatistics.count("")
     public private(set) var replacementVersion = 0
     public private(set) var adoptionUndoBaseline: String?
+    public private(set) var requestedSelection: SourceSelection?
+    public var showSearch = false
     public let windowID = UUID()
     public let agentIntegration: AgentIntegrationSettings
     @ObservationIgnored private let recovery: RecoveryStore
@@ -47,6 +50,7 @@ public final class WorkspaceModel {
     @ObservationIgnored private var recoveryTask: Task<Void, Never>?
     @ObservationIgnored private var statisticsTask: Task<Void, Never>?
     @ObservationIgnored private var generation = UUID()
+    @ObservationIgnored private var loadingLibrary = false
 
     public init(locale: String? = nil, recovery: RecoveryStore = RecoveryStore(), preferences: UserDefaults = .standard, authorizationURL: URL? = nil, library: LibraryStore = LibraryStore()) {
         self.preferences = preferences
@@ -62,6 +66,7 @@ public final class WorkspaceModel {
     public var chapters: [JSONValue] { novel["novel"]["chapters"].array }
     public var orderedChapters: [DocumentItem] { chapters.compactMap { c in documents.first { $0.id == c["document_id"].string } } }
     public var workspaceID: String { info["workspace"]["workspace_id"].string ?? "" }
+    public var workType: String { info["workspace"]["work_type"].string ?? "novel" }
     public var documentID: String { loaded["document"]["document_id"].string ?? "" }
     public var documentTitle: String { loaded["document"]["title"].string ?? "" }
     public var dirty: Bool { text != savedText }
@@ -88,7 +93,7 @@ public final class WorkspaceModel {
             let drafts = try await next.data("hetu.drafts.list")
             let pendingOperations = try await recovery.structureOperations(workspaceID: info["workspace"]["workspace_id"].string ?? "")
             let metadata = novel["initialized"].bool == true ? novel["novel"]["metadata"] : .object(["title": info["workspace"]["title"]])
-            let entries = try await library.register(url: url, workspaceID: info["workspace"]["workspace_id"].string ?? "", metadata: metadata, chapterCount: novel["novel"]["chapters"].array.count, cover: cover)
+            let entries = try await library.register(url: url, workspaceID: info["workspace"]["workspace_id"].string ?? "", metadata: metadata, chapterCount: novel["novel"]["chapters"].array.count, cover: cover, workType: info["workspace"]["work_type"].string ?? "novel", properties: info["properties"])
             recoveryTask?.cancel(); statisticsTask?.cancel()
             self.workspace = next; self.info = info; self.bible = bible; self.novel = novel; self.libraryEntries = entries
             writeLocked = info["access"]["write_available"].bool == false
@@ -152,6 +157,7 @@ public final class WorkspaceModel {
     }
     public func clearDocument() { recoveryTask?.cancel(); resetDocument() }
     private func resetDocument() {
+        requestedSelection = nil
         adoptionUndoBaseline = nil
         loaded = .null; text = ""; savedText = ""; baseRevisionID = ""; conflict = .null
         pendingSave = nil; recoveryCandidates = []; statistics = TextStatistics.count(""); replacementVersion += 1
@@ -167,7 +173,28 @@ public final class WorkspaceModel {
             do { try await Task.sleep(for: .milliseconds(400)) } catch { return }
             guard let self, token == self.generation else { return }
             _ = await self.persistRecovery()
+            guard self.preferences.object(forKey: "Hetu.editor.autosave") as? Bool != false else { return }
+            do { try await Task.sleep(for: .milliseconds(1200)) } catch { return }
+            guard token == self.generation, !self.isComposing, !self.busy, !self.writeLocked,
+                  self.conflict == .null, self.recoveryCandidates.isEmpty, self.dirty else { return }
+            self.recoveryTask = nil
+            _ = await self.save()
         }
+    }
+    public func selectText(_ range: NSRange, in snapshot: String) -> Bool {
+        guard text == snapshot, let span = SourceSpan(content: text, selection: range),
+              let selection = SourceSelection(content: text, byteStart: span.byteStart, byteEnd: span.byteEnd, quote: span.quote) else { return false }
+        requestedSelection = selection; return true
+    }
+    @discardableResult public func replaceText(snapshot: String, matches: [TextMatch], replacement: String) -> Bool {
+        guard !busy, !isComposing, !writeLocked, text == snapshot,
+              let result = TextSearch.replacing(text, matches: matches, with: replacement) else { return false }
+        return replaceBuffer(snapshot: snapshot, with: result)
+    }
+    @discardableResult public func replaceBuffer(snapshot: String, with result: String) -> Bool {
+        guard !busy, !isComposing, !writeLocked, text == snapshot, !result.contains("\0") else { return false }
+        adoptionUndoBaseline = text; edit(result); replacementVersion += 1
+        return true
     }
     public func setComposition(_ value: Bool) {
         guard value != isComposing else { return }
@@ -215,7 +242,12 @@ public final class WorkspaceModel {
     @discardableResult public func save() async -> Bool {
         guard !busy, !writeLocked, !isComposing, let workspace, !documentID.isEmpty else { return false }
         guard needsProtection else { return true }
-        busy = true; defer { busy = false }
+        busy = true; saving = true
+        var saved = false
+        defer {
+            busy = false; saving = false
+            if saved && dirty { edit(text) }
+        }
         recoveryTask?.cancel()
         let pending = pendingSave ?? PendingSave(operationKey: UUID().uuidString, baseRevisionID: baseRevisionID, content: text)
         pendingSave = pending
@@ -228,6 +260,8 @@ public final class WorkspaceModel {
             ])
             loaded = result; savedText = pending.content; baseRevisionID = result["revision"]["revision_id"].string ?? ""
             pendingSave = nil; conflict = .null
+            saved = true
+            do { try await updateLibraryProjection() } catch { report(error) }
             // 保存期间的新输入仍在编辑缓冲，不被旧保存回调覆盖。
             return await persistRecovery()
         } catch {
@@ -373,8 +407,15 @@ public final class WorkspaceModel {
                 busy = false; ownsBusy = false
             } else { worker = workspace }
             let value = try await worker.data(action, input: input, allowPartial: true)
-            if !export, (action == "hetu.drama.create_script" || action.hasPrefix("hetu.documents.")) {
+            if !export, (["hetu.drama.create_script", "hetu.drama.episodes.create", "hetu.drama.episodes.update", "hetu.drama.projects.attach"].contains(action) || action.hasPrefix("hetu.documents.")) {
                 documents = try await workspace.data("hetu.documents.list")["documents"].array.map(DocumentItem.init)
+                if ["hetu.drama.episodes.update", "hetu.drama.projects.attach"].contains(action), let current = documents.first(where: { $0.id == documentID }) {
+                    // 分集资料更新只刷新展示归属，不替换正文缓冲或保存基线。
+                    var document = loaded["document"].object
+                    document["title"] = current.value["title"]
+                    document["drama_episode_id"] = current.value["drama_episode_id"]
+                    var fields = loaded.object; fields["document"] = .object(document); loaded = .object(fields)
+                }
             }
             if ["hetu.documents.finalize", "hetu.documents.withdraw_finalization"].contains(action), value["document"]["document_id"].string == documentID {
                 var fields = loaded.object; fields["document"] = value["document"]; loaded = .object(fields)
@@ -385,15 +426,16 @@ public final class WorkspaceModel {
             }
             if action.hasPrefix("hetu.novels.") || action == "hetu.documents.create" || action == "hetu.documents.import" || action == "hetu.drafts.adopt" {
                 novel = try await workspace.data("hetu.novels.get")
-                try await updateLibraryProjection()
             }
             if action == "hetu.covers.select" {
                 cover = try await workspace.data("hetu.covers.get")
-                try await updateLibraryProjection()
             }
             if let operation {
                 try await recovery.removeOperation(operation)
                 if workspaceID == scopeID { pendingStructureOperations = try await recovery.structureOperations(workspaceID: scopeID) }
+                if workspaceID == scopeID {
+                    do { try await updateLibraryProjection() } catch { report(error) }
+                }
             }
             return value
         }
@@ -426,11 +468,23 @@ public final class WorkspaceModel {
     }
     // 只记录作者通过系统选择器打开的路径；不扫描用户文件系统。
     public func loadLibrary() async {
-        do { libraryEntries = try await library.entries() } catch { report(error) }
+        guard !loadingLibrary else { return }
+        loadingLibrary = true; defer { loadingLibrary = false }
+        do {
+            libraryEntries = try await library.entries()
+            libraryEntries = try await library.refreshProperties()
+        } catch { report(error) }
     }
     @discardableResult public func openLibraryEntry(_ entry: LibraryEntry) async -> Bool {
         do { return await open(try await library.resolve(entry), expectedWorkspaceID: entry.workspaceID) }
         catch { report(error); return false }
+    }
+    public func trashLibraryEntry(_ entry: LibraryEntry, confirmingTitle: String) async throws {
+        guard !busy, workspace == nil else { throw LibraryStore.LibraryError.busy }
+        busy = true; defer { busy = false }
+        libraryEntries = try await library.trash(entry, confirmingTitle: confirmingTitle)
+        let recent = recentURLs.filter { $0.standardizedFileURL.path != entry.path }.map(\.path)
+        preferences.set(recent, forKey: "Hetu.recent")
     }
     // 调用方先完成关闭/切换作品共用的未保存内容保护。
     public func returnToLibrary() async {
@@ -442,8 +496,9 @@ public final class WorkspaceModel {
     }
     private func updateLibraryProjection() async throws {
         guard let workspace else { return }
+        info = try await workspace.data("hetu.workspaces.get")
         let metadata = novel["initialized"].bool == true ? novelMetadata : .object(["title": info["workspace"]["title"]])
-        libraryEntries = try await library.register(url: workspace.url, workspaceID: workspaceID, metadata: metadata, chapterCount: chapters.count, opened: false, cover: cover)
+        libraryEntries = try await library.register(url: workspace.url, workspaceID: workspaceID, metadata: metadata, chapterCount: chapters.count, opened: false, cover: cover, workType: workType, properties: info["properties"])
     }
     private func readCover(_ workspace: Workspace) async -> JSONValue {
         do { return try await workspace.data("hetu.covers.get") }

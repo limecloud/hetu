@@ -24,15 +24,15 @@ struct DocumentFinalizationSheet: View {
     private var held: Bool { pending != nil || !model.pendingStructureOperations.isEmpty }
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text(model.t("finalization.title")).font(.title2)
-            Text(model.t("finalization.note")).foregroundStyle(.secondary)
-            if let error { Text(error).foregroundStyle(.red).textSelection(.enabled) }
+            Text(model.t("finalization.title")).font(.system(size: 20, weight: .semibold))
+            Text(model.t("finalization.note")).foregroundStyle(WorkbenchPalette.muted)
+            if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             if pending != nil { Button(model.t("drama.retry")) { Task { await perform() } } }
             if current != .null {
                 HStack {
-                    Text(current["document"]["title"].string ?? "").font(.headline)
+                    Text(current["document"]["title"].string ?? "").font(.system(size: 14, weight: .semibold))
                     Spacer()
-                    Text(model.t(stateKey)).foregroundStyle(.secondary)
+                    Text(model.t(stateKey)).foregroundStyle(WorkbenchPalette.muted)
                 }
                 evidence
                 Group {
@@ -40,8 +40,8 @@ struct DocumentFinalizationSheet: View {
                     TextField(model.t("review.coverage"), text: $coverage).textFieldStyle(.roundedBorder)
                 }.disabled(held)
                 if preview != .null {
-                    if preview["eligible"].bool == true { Label(model.t("finalization.ready"), systemImage: "checkmark.circle").foregroundStyle(.green) }
-                    else { Text(model.localizer.error(CoreError.business(.object(["error": preview["blocker"]])))).foregroundStyle(.orange) }
+                    if preview["eligible"].bool == true { Label(model.t("finalization.ready"), systemImage: "checkmark.circle").foregroundStyle(WorkbenchPalette.jade) }
+                    else { Text(model.localizer.error(CoreError.business(.object(["error": preview["blocker"]])))).foregroundStyle(WorkbenchPalette.warningInk) }
                 }
                 actions
             }
@@ -63,9 +63,9 @@ struct DocumentFinalizationSheet: View {
                 Divider()
                 if report != .null { reportSummary }
                 if !history["adoptions"].array.isEmpty {
-                    Text(model.t("finalization.sources")).font(.headline)
+                    Text(model.t("finalization.sources")).font(.system(size: 14, weight: .semibold))
                     ForEach(history["adoptions"].array.indices, id: \.self) { index in
-                        Text(model.localizer.date(history["adoptions"].array[index]["created_at"].string ?? "") + "  " + model.t("adoption.recorded")).font(.caption)
+                        Text(model.localizer.date(history["adoptions"].array[index]["created_at"].string ?? "") + "  " + model.t("adoption.recorded")).font(.system(size: 12))
                     }
                 }
                 if !history["finalizations"].array.isEmpty { finalizationHistory }
@@ -74,17 +74,17 @@ struct DocumentFinalizationSheet: View {
     }
     private var reportSummary: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(model.t("validation.status." + (report["status"].string ?? "partial"))).font(.headline)
+            Text(model.t("validation.status." + (report["status"].string ?? "partial"))).font(.system(size: 14, weight: .semibold))
             Text(model.t("finalization.coverage_counts", ["findings": String(report["findings"].array.count), "unknown": String(report["coverage"]["counts"]["unknown"].integer ?? 0)]))
             Button(model.t("review.view_report")) { reportSheet = DramaSheet(value: report["report_id"]) }
         }
     }
     private var finalizationHistory: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(model.t("finalization.history")).font(.headline)
+            Text(model.t("finalization.history")).font(.system(size: 14, weight: .semibold))
             ForEach(history["finalizations"].array.indices.reversed(), id: \.self) { index in
                 let item = history["finalizations"].array[index]
-                Text(model.t(item["decision"].string == "withdrawn" ? "finalization.withdrawn" : "finalization.confirmed") + "  " + model.localizer.date(item["created_at"].string ?? "")).font(.caption)
+                Text(model.t(item["decision"].string == "withdrawn" ? "finalization.withdrawn" : "finalization.confirmed") + "  " + model.localizer.date(item["created_at"].string ?? "")).font(.system(size: 12))
                 Text(item["comments"].string ?? "").textSelection(.enabled)
             }
         }

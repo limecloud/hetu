@@ -1,0 +1,283 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hetu.limeai.run/schemas/model-service.schema.json",
+  "$defs": {
+    "task_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scope_ref": {
+          "$ref": "#/$defs/scope_ref"
+        },
+        "task_id": {
+          "type": "string",
+          "pattern": "^task_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "request_revision": {
+          "const": 1
+        }
+      },
+      "required": [
+        "scope_ref",
+        "task_id",
+        "request_revision"
+      ]
+    },
+    "scope_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "creation_project",
+            "workspace"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        }
+      },
+      "required": [
+        "kind",
+        "id"
+      ]
+    },
+    "list_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        },
+        "kind": {
+          "enum": [
+            "text",
+            "image"
+          ]
+        }
+      },
+      "required": [
+        "task_ref",
+        "kind"
+      ]
+    },
+    "plans_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        }
+      },
+      "required": [
+        "task_ref"
+      ]
+    },
+    "prepare_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        },
+        "kind": {
+          "enum": [
+            "text",
+            "image"
+          ]
+        },
+        "artifact_kind": {
+          "enum": [
+            "concept",
+            "title",
+            "synopsis",
+            "outline",
+            "text",
+            "image"
+          ]
+        },
+        "model_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]{0,63}$"
+        },
+        "prompt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32768
+        },
+        "instructions": {
+          "type": "string",
+          "maxLength": 8192
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "billing_policy_version": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+        },
+        "estimated_credits": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})$"
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "billing_mode": {
+          "enum": [
+            "credits",
+            "provider"
+          ]
+        }
+      },
+      "required": [
+        "task_ref",
+        "kind",
+        "artifact_kind",
+        "model_id",
+        "prompt",
+        "title",
+        "operation_key"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "billing_mode": {
+                "const": "provider"
+              }
+            },
+            "required": [
+              "billing_mode"
+            ]
+          },
+          "then": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "estimated_credits"
+                  ]
+                },
+                {
+                  "required": [
+                    "billing_policy_version"
+                  ]
+                }
+              ]
+            }
+          },
+          "else": {
+            "required": [
+              "billing_policy_version",
+              "estimated_credits"
+            ]
+          }
+        }
+      ]
+    },
+    "approve_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        },
+        "plan_id": {
+          "type": "string",
+          "pattern": "^model_[0-9a-f-]{36}$"
+        },
+        "plan_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "max_credits": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})$"
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "provider_billing_accepted": {
+          "const": true
+        }
+      },
+      "required": [
+        "task_ref",
+        "plan_id",
+        "plan_sha256",
+        "operation_key"
+      ],
+      "oneOf": [
+        {
+          "required": [
+            "max_credits"
+          ],
+          "not": {
+            "required": [
+              "provider_billing_accepted"
+            ]
+          }
+        },
+        {
+          "required": [
+            "provider_billing_accepted"
+          ],
+          "not": {
+            "required": [
+              "max_credits"
+            ]
+          }
+        }
+      ]
+    },
+    "get_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        },
+        "plan_id": {
+          "type": "string",
+          "pattern": "^model_[0-9a-f-]{36}$"
+        }
+      },
+      "required": [
+        "task_ref",
+        "plan_id"
+      ]
+    },
+    "execute_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        },
+        "plan_id": {
+          "type": "string",
+          "pattern": "^model_[0-9a-f-]{36}$"
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "task_ref",
+        "plan_id",
+        "operation_key"
+      ]
+    }
+  }
+}

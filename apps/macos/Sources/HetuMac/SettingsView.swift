@@ -15,12 +15,13 @@ struct WritingPreferences: DynamicProperty {
 struct WorkbenchSettingsButton: View {
     let locale: String
     var body: some View {
-        SettingsLink { Image(systemName: "gearshape").font(.system(size: 15)).frame(width: 28, height: 28) }
+        SettingsLink { Image(systemName: "gearshape").font(.system(size: 14)).frame(width: 28, height: 28) }
             .buttonStyle(.plain).help(Localizer(locale: locale).text("settings.title")).accessibilityLabel(Localizer(locale: locale).text("settings.title"))
     }
 }
 
 struct HetuSettingsView: View {
+    @AppStorage("Hetu.editor.autosave") private var autosave = true
     @AppStorage("Hetu.locale") private var locale = "zh-CN"
     @AppStorage("Hetu.appearance") private var appearance = "system"
     @AppStorage("Hetu.library.list") private var listMode = false
@@ -34,6 +35,7 @@ struct HetuSettingsView: View {
         TabView {
             general.tabItem { Label(t("settings.general"), systemImage: "slider.horizontal.3") }
             editor.tabItem { Label(t("settings.writing"), systemImage: "textformat") }
+            ModelServiceSettings(locale: locale).tabItem { Label(t("models.service"), systemImage: "network") }
             ScrollView {
                 AgentIntegrationView(settings: agentIntegration, workspaceID: nil, localizer: localizer).padding(20)
             }.tabItem { Label(t("agent.title"), systemImage: "puzzlepiece.extension") }
@@ -59,12 +61,13 @@ struct HetuSettingsView: View {
                     Text(t("settings.grid")).tag(false); Text(t("settings.list")).tag(true)
                 }
             }
-            Text(t("settings.applies_immediately")).font(.callout).foregroundStyle(WorkbenchPalette.muted)
+            Text(t("settings.applies_immediately")).font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted)
         }.formStyle(.grouped).scrollContentBackground(.hidden)
     }
     private var editor: some View {
         Form {
             Section(t("settings.body")) {
+                Toggle(t("settings.autosave"), isOn: $autosave)
                 Picker(t("settings.font"), selection: writing.$fontFamily) {
                     Text(t("settings.font_songti")).tag("songti")
                     Text(t("settings.font_pingfang")).tag("pingfang")
@@ -79,7 +82,7 @@ struct HetuSettingsView: View {
                     accessibleName: t("settings.preview"), editable: false, readingMode: true, presentation: writing.presentation(), onChange: { _ in }, onComposition: { _ in })
                     .frame(height: 110).padding(10).background(WorkbenchPalette.page, in: RoundedRectangle(cornerRadius: 8))
             }
-            Text(t("settings.display_only")).font(.caption).foregroundStyle(WorkbenchPalette.muted)
+            Text(t("settings.display_only")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
         }.formStyle(.grouped).scrollContentBackground(.hidden)
     }
     private var versions: some View {
@@ -87,18 +90,18 @@ struct HetuSettingsView: View {
             Section(t("settings.git_identity")) {
                 TextField(t("git.author_name"), text: $authorName)
                 TextField(t("git.author_email"), text: $authorEmail)
-                Text(t("git.identity_note")).font(.callout).foregroundStyle(WorkbenchPalette.muted)
+                Text(t("git.identity_note")).font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted)
             }
-            Text(t("settings.git_note")).font(.callout).foregroundStyle(WorkbenchPalette.muted)
+            Text(t("settings.git_note")).font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted)
         }.formStyle(.grouped).scrollContentBackground(.hidden)
     }
     private var about: some View {
         VStack(spacing: 18) {
             Image(nsImage: NSApp.applicationIconImage).resizable().scaledToFit().frame(width: 80, height: 80).accessibilityHidden(true)
-            Text(t("welcome.title")).font(.system(size: 25, weight: .medium, design: .serif))
-            Text(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "").font(.callout).foregroundStyle(WorkbenchPalette.muted)
-            Text(t("welcome.subtitle")).font(.callout)
-            Text(t("settings.local_note")).font(.callout).foregroundStyle(WorkbenchPalette.muted).multilineTextAlignment(.center).frame(maxWidth: 390)
+            Text(t("welcome.title")).font(.system(size: 20, weight: .medium, design: .serif))
+            Text(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "").font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted)
+            Text(t("welcome.subtitle")).font(.system(size: 14))
+            Text(t("settings.local_note")).font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted).multilineTextAlignment(.center).frame(maxWidth: 390)
             Spacer(minLength: 0)
         }.padding(32).frame(maxWidth: .infinity, maxHeight: .infinity)
     }

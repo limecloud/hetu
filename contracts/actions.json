@@ -1260,6 +1260,17 @@
       "input_schema_ref": "schemas/creative-task.schema.json#/$defs/create_novel_input"
     },
     {
+      "name": "hetu.creation_projects.create_drama",
+      "purpose": "将筹备资料创建为独立剧本作品",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "scopes": [
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/create_drama_input"
+    },
+    {
       "name": "hetu.creative_tasks.preview_prompt",
       "purpose": "预览固定范围的外部协作提示词",
       "contract_revision": "1",
@@ -1506,6 +1517,1442 @@
       "effect": "submit",
       "author_only": true,
       "input_schema_ref": "schemas/delivery.schema.json#/$defs/import_input"
+    },
+    {
+      "name": "hetu.documents.history",
+      "purpose": "分页读取本作品正文修订历史",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "pattern": "^doc_[0-9a-f-]{36}$"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          },
+          "cursor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "document_id"
+        ]
+      }
+    },
+    {
+      "name": "hetu.annotations.list",
+      "purpose": "读取作者批注",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": true,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "pattern": "^doc_[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "document_id"
+        ]
+      }
+    },
+    {
+      "name": "hetu.annotations.save",
+      "purpose": "保存作者批注，原文引用保持不变",
+      "contract_revision": "1",
+      "effect": "write",
+      "author_only": true,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "pattern": "^doc_[0-9a-f-]{36}$"
+          },
+          "expected": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "sha256": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "revision",
+              "sha256"
+            ]
+          },
+          "items": {
+            "type": "array",
+            "maxItems": 2000,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^note_[0-9a-f-]{36}$"
+                },
+                "text": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100000
+                },
+                "source_ref": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "document_id": {
+                      "type": "string",
+                      "pattern": "^doc_[0-9a-f-]{36}$"
+                    },
+                    "revision_id": {
+                      "type": "string",
+                      "pattern": "^rev_[0-9a-f-]{36}$"
+                    },
+                    "byte_start": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "byte_end": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "quote": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 100000
+                    }
+                  },
+                  "required": [
+                    "document_id",
+                    "revision_id",
+                    "byte_start",
+                    "byte_end",
+                    "quote"
+                  ]
+                },
+                "resolved": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "text",
+                "source_ref",
+                "resolved"
+              ]
+            }
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "document_id",
+          "expected",
+          "items",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.outlines.get",
+      "purpose": "读取总纲、卷纲与章纲",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": true,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "hetu.outlines.save",
+      "purpose": "保存关联卷章的大纲",
+      "contract_revision": "1",
+      "effect": "write",
+      "author_only": true,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "expected": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "sha256": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "revision",
+              "sha256"
+            ]
+          },
+          "items": {
+            "type": "array",
+            "maxItems": 2000,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^outline_[0-9a-f-]{36}$"
+                },
+                "title": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                "text": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100000
+                },
+                "level": {
+                  "enum": [
+                    "book",
+                    "volume",
+                    "chapter"
+                  ]
+                },
+                "target_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "title",
+                "text",
+                "level",
+                "target_id"
+              ]
+            }
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "expected",
+          "items",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.drama.projects.create",
+      "purpose": "新建独立短剧短剧项目",
+      "contract_revision": "1",
+      "effect": "write",
+      "author_only": true,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 20000,
+            "minLength": 0
+          },
+          "mode": {
+            "enum": [
+              "original",
+              "adaptation"
+            ]
+          },
+          "source_refs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "document_id": {
+                  "type": "string",
+                  "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "revision_id": {
+                  "type": "string",
+                  "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              },
+              "required": [
+                "document_id",
+                "revision_id",
+                "sha256"
+              ]
+            },
+            "maxItems": 1000,
+            "uniqueItems": true
+          },
+          "operation_key": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1
+          }
+        },
+        "required": [
+          "title",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.drama.projects.get",
+      "purpose": "读取短剧项目",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "pattern": "^drama_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          }
+        },
+        "required": [
+          "project_id"
+        ]
+      }
+    },
+    {
+      "name": "hetu.drama.projects.list",
+      "purpose": "列出当前作品的短剧项目",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "include_archived": {
+            "type": "boolean"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          },
+          "cursor": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "hetu.drama.projects.update",
+      "purpose": "修改名称、说明或归档状态",
+      "contract_revision": "1",
+      "effect": "write",
+      "author_only": true,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "project_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "project_id": {
+                "type": "string",
+                "pattern": "^drama_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "revision": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "project_id",
+              "revision",
+              "sha256"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 20000,
+            "minLength": 0
+          },
+          "archived": {
+            "type": "boolean"
+          },
+          "operation_key": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1
+          },
+          "source_refs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "document_id": {
+                  "type": "string",
+                  "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "revision_id": {
+                  "type": "string",
+                  "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              },
+              "required": [
+                "document_id",
+                "revision_id",
+                "sha256"
+              ]
+            },
+            "maxItems": 1000,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "project_ref",
+          "title",
+          "description",
+          "archived",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.drama.projects.attach",
+      "purpose": "将未归属的骨架或剧本归入短剧项目",
+      "contract_revision": "1",
+      "effect": "write",
+      "author_only": true,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "project_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "project_id": {
+                "type": "string",
+                "pattern": "^drama_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "revision": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "project_id",
+              "revision",
+              "sha256"
+            ]
+          },
+          "skeleton_id": {
+            "type": "string",
+            "pattern": "^skeleton_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "document_id": {
+            "type": "string",
+            "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1
+          },
+          "plan": {
+            "type": "string",
+            "maxLength": 20000,
+            "minLength": 0
+          },
+          "operation_key": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1
+          }
+        },
+        "required": [
+          "project_ref",
+          "operation_key"
+        ],
+        "oneOf": [
+          {
+            "required": [
+              "skeleton_id"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "document_id"
+                  ]
+                },
+                {
+                  "required": [
+                    "title"
+                  ]
+                },
+                {
+                  "required": [
+                    "plan"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "required": [
+              "document_id",
+              "title"
+            ],
+            "not": {
+              "required": [
+                "skeleton_id"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "hetu.drama.episodes.create",
+      "purpose": "在短剧项目中建立独立分集剧本",
+      "contract_revision": "1",
+      "effect": "write",
+      "author_only": true,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "project_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "project_id": {
+                "type": "string",
+                "pattern": "^drama_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "revision": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "project_id",
+              "revision",
+              "sha256"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1
+          },
+          "plan": {
+            "type": "string",
+            "maxLength": 20000,
+            "minLength": 0
+          },
+          "language_tag": {
+            "enum": [
+              "zh-CN",
+              "en"
+            ]
+          },
+          "skeleton_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "skeleton_id": {
+                "type": "string",
+                "pattern": "^skeleton_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "revision": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "skeleton_id",
+              "revision",
+              "sha256"
+            ]
+          },
+          "skeleton_episode_id": {
+            "type": "string",
+            "pattern": "^episode_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "operation_key": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1
+          }
+        },
+        "required": [
+          "project_ref",
+          "title",
+          "language_tag",
+          "operation_key"
+        ],
+        "dependentRequired": {
+          "skeleton_ref": [
+            "skeleton_episode_id"
+          ],
+          "skeleton_episode_id": [
+            "skeleton_ref"
+          ]
+        }
+      }
+    },
+    {
+      "name": "hetu.drama.episodes.get",
+      "purpose": "读取写作分集与当前集序",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "episode_id": {
+            "type": "string",
+            "pattern": "^depisode_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "episode_id"
+        ]
+      }
+    },
+    {
+      "name": "hetu.drama.episodes.update",
+      "purpose": "维护分集计划或归档",
+      "contract_revision": "1",
+      "effect": "write",
+      "author_only": true,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "episode_id": {
+            "type": "string",
+            "pattern": "^depisode_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "project_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "project_id": {
+                "type": "string",
+                "pattern": "^drama_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "revision": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "project_id",
+              "revision",
+              "sha256"
+            ]
+          },
+          "expected": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "revision",
+              "sha256"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1
+          },
+          "plan": {
+            "type": "string",
+            "maxLength": 20000,
+            "minLength": 0
+          },
+          "archived": {
+            "type": "boolean"
+          },
+          "operation_key": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1
+          }
+        },
+        "required": [
+          "episode_id",
+          "project_ref",
+          "expected",
+          "title",
+          "plan",
+          "archived",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.drama.episodes.reorder",
+      "purpose": "重排项目完整分集目录",
+      "contract_revision": "1",
+      "effect": "write",
+      "author_only": true,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "project_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "project_id": {
+                "type": "string",
+                "pattern": "^drama_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "revision": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "project_id",
+              "revision",
+              "sha256"
+            ]
+          },
+          "episode_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^depisode_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "maxItems": 10000,
+            "uniqueItems": true
+          },
+          "operation_key": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1
+          }
+        },
+        "required": [
+          "project_ref",
+          "episode_refs",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.resources.create",
+      "purpose": "新建资料草稿",
+      "contract_revision": "1",
+      "effect": "write",
+      "author_only": false,
+      "input_schema_ref": "schemas/resources.schema.json#/$defs/create_input"
+    },
+    {
+      "name": "hetu.resources.update",
+      "purpose": "维护获权资料",
+      "contract_revision": "1",
+      "effect": "write",
+      "author_only": false,
+      "input_schema_ref": "schemas/resources.schema.json#/$defs/update_input"
+    },
+    {
+      "name": "hetu.resources.get",
+      "purpose": "读取固定资料修订",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema_ref": "schemas/resources.schema.json#/$defs/get_input"
+    },
+    {
+      "name": "hetu.resources.list",
+      "purpose": "查询资料摘要",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema_ref": "schemas/resources.schema.json#/$defs/list_input"
+    },
+    {
+      "name": "hetu.resources.adopt",
+      "purpose": "作者采用资料",
+      "contract_revision": "1",
+      "effect": "write",
+      "author_only": true,
+      "input_schema_ref": "schemas/resources.schema.json#/$defs/state_input"
+    },
+    {
+      "name": "hetu.resources.archive",
+      "purpose": "作者归档资料",
+      "contract_revision": "1",
+      "effect": "write",
+      "author_only": true,
+      "input_schema_ref": "schemas/resources.schema.json#/$defs/state_input"
+    },
+    {
+      "name": "hetu.resource_usages.save",
+      "purpose": "关联固定资料与正文位置",
+      "contract_revision": "1",
+      "effect": "write",
+      "author_only": true,
+      "input_schema_ref": "schemas/resources.schema.json#/$defs/usage_save_input"
+    },
+    {
+      "name": "hetu.resource_usages.list",
+      "purpose": "查询资料使用位置",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema_ref": "schemas/resources.schema.json#/$defs/usage_list_input"
+    },
+    {
+      "name": "hetu.collaboration.authorize",
+      "purpose": "授权所选客户端访问本任务",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "task_ref",
+          "client_adapter",
+          "operation_key"
+        ],
+        "properties": {
+          "task_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "scope_ref",
+              "task_id",
+              "request_revision"
+            ],
+            "properties": {
+              "scope_ref": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "kind",
+                  "id"
+                ],
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "workspace",
+                      "creation_project"
+                    ]
+                  },
+                  "id": {
+                    "type": "string",
+                    "maxLength": 64
+                  }
+                }
+              },
+              "task_id": {
+                "type": "string",
+                "pattern": "^task_[0-9a-f-]{36}$"
+              },
+              "request_revision": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          },
+          "client_adapter": {
+            "enum": [
+              "codex",
+              "claude-code",
+              "workbuddy",
+              "generic"
+            ]
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "collaboration_path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "expires_at": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "hetu.collaboration.revoke",
+      "purpose": "撤销所选客户端的本机任务授权",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "task_ref",
+          "client_adapter",
+          "operation_key"
+        ],
+        "properties": {
+          "task_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "scope_ref",
+              "task_id",
+              "request_revision"
+            ],
+            "properties": {
+              "scope_ref": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "kind",
+                  "id"
+                ],
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "workspace",
+                      "creation_project"
+                    ]
+                  },
+                  "id": {
+                    "type": "string",
+                    "maxLength": 64
+                  }
+                }
+              },
+              "task_id": {
+                "type": "string",
+                "pattern": "^task_[0-9a-f-]{36}$"
+              },
+              "request_revision": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          },
+          "client_adapter": {
+            "enum": [
+              "codex",
+              "claude-code",
+              "workbuddy",
+              "generic"
+            ]
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "collaboration_path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "expires_at": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "hetu.collaboration.inspect",
+      "purpose": "检查本机接入与实际任务能力",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "hetu.collaboration.open",
+      "purpose": "打开作者已授权的确切任务",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "task_locator": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "scope_ref",
+              "task_id"
+            ],
+            "properties": {
+              "scope_ref": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "kind",
+                  "id"
+                ],
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "workspace",
+                      "creation_project"
+                    ]
+                  },
+                  "id": {
+                    "type": "string",
+                    "maxLength": 64
+                  }
+                }
+              },
+              "task_id": {
+                "type": "string",
+                "pattern": "^task_[0-9a-f-]{36}$"
+              }
+            }
+          }
+        },
+        "required": [
+          "task_locator"
+        ]
+      }
+    },
+    {
+      "name": "hetu.working_copies.create",
+      "purpose": "创建任务参考稿",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/working_create_input"
+    },
+    {
+      "name": "hetu.working_copies.get",
+      "purpose": "读取固定参考稿修订",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/working_get_input"
+    },
+    {
+      "name": "hetu.working_copies.list",
+      "purpose": "列出任务参考稿",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/working_list_input"
+    },
+    {
+      "name": "hetu.working_copies.save",
+      "purpose": "保存参考稿新修订",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/working_save_input"
+    },
+    {
+      "name": "hetu.task_feedback.save",
+      "purpose": "保存针对固定成果的公开意见",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/feedback_save_input"
+    },
+    {
+      "name": "hetu.task_feedback.list",
+      "purpose": "读取任务公开意见与后续成果",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/feedback_list_input"
+    },
+    {
+      "name": "hetu.task_context.list",
+      "purpose": "查看任务固定资料目录",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/context_list_input"
+    },
+    {
+      "name": "hetu.task_context.read",
+      "purpose": "按需读取任务固定资料",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/context_read_input"
+    },
+    {
+      "name": "hetu.task_context.search",
+      "purpose": "检索任务已授权固定资料",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/context_search_input"
+    },
+    {
+      "name": "hetu.models.list",
+      "purpose": "读取当前账号的文字或图片模型目录",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/model-service.schema.json#/$defs/list_input"
+    },
+    {
+      "name": "hetu.model_tasks.list",
+      "purpose": "读取本任务的模型计划及作者批准状态",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/model-service.schema.json#/$defs/plans_input"
+    },
+    {
+      "name": "hetu.model_tasks.prepare",
+      "purpose": "固定模型输入、报价和内容外发预览，不执行生成",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/model-service.schema.json#/$defs/prepare_input"
+    },
+    {
+      "name": "hetu.model_tasks.approve",
+      "purpose": "作者确认固定模型输入外发和本次费用上限",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/model-service.schema.json#/$defs/approve_input"
+    },
+    {
+      "name": "hetu.model_tasks.get",
+      "purpose": "沿原模型计划查询结果，不重新生成",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/model-service.schema.json#/$defs/get_input"
+    },
+    {
+      "name": "hetu.model_tasks.submit",
+      "purpose": "执行作者已批准的原模型计划",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/model-service.schema.json#/$defs/execute_input"
+    },
+    {
+      "name": "hetu.model_tasks.collect",
+      "purpose": "核验并取得原模型结果，保存为任务候选文件",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/model-service.schema.json#/$defs/execute_input"
+    },
+    {
+      "name": "hetu.creation_projects.create",
+      "purpose": "开始独立筹备，预留全新受管作品目录，不获得既有作品权限",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "brief",
+          "locale",
+          "operation_key"
+        ],
+        "properties": {
+          "brief": {
+            "type": "string",
+            "maxLength": 20000
+          },
+          "locale": {
+            "enum": [
+              "zh-CN",
+              "en"
+            ]
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    {
+      "name": "hetu.collaboration.revoke_management",
+      "purpose": "作者撤销本作品的有限管理授权及其派生任务",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "grant_id",
+          "client_adapter",
+          "operation_key"
+        ],
+        "properties": {
+          "grant_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "client_adapter": {
+            "enum": [
+              "codex",
+              "claude-code",
+              "workbuddy",
+              "generic"
+            ]
+          },
+          "collaboration_path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    {
+      "name": "hetu.image_tasks.preview_prompt",
+      "purpose": "预览当前作品的图片参考任务，不外发内容",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/image_preview_input"
+    },
+    {
+      "name": "hetu.image_tasks.prepare",
+      "purpose": "准备当前作品的图片参考任务，不调用模型或批准费用",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/image_prepare_input"
     }
   ]
 }

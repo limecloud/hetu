@@ -9,7 +9,7 @@ const visibleCards = '[data-skills-catalog] [data-suite-id]:not([hidden])';
 for (const prefix of ['', '/en']) {
   const locale = prefix ? 'en' : 'zh-CN';
 
-  test(`${locale} 首页提供源码试用、快速起步和首页原型入口`, async ({ page }) => {
+  test(`${locale} 首页提供 Agent 接入、快速起步和首页原型入口`, async ({ page }) => {
     await page.goto(`${prefix}/`);
     await expect(page.locator('.hero-actions a.primary')).toHaveAttribute('href', `${prefix}/#prototype`);
     await expect(page.locator('.hero-quick-start a')).toHaveAttribute('href', `${prefix}/docs/getting-started/`);
@@ -17,7 +17,14 @@ for (const prefix of ['', '/en']) {
     await expect(page.locator('#skills [data-suite-id]')).toHaveCount(6);
     await page.locator('#skills [data-suite-id="apocalypse"] a').click();
     await expect(page).toHaveURL(new RegExp(`${prefix}/integrations/#suite-apocalypse$`));
-    await expect(page.locator('#suite-apocalypse')).toBeInViewport();
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toBeVisible();
+    await expect(dialog.locator('#skills-dialog-title')).toContainText(prefix ? 'Apocalypse' : '末世');
+    await page.reload();
+    await expect(dialog).toBeVisible();
+    await dialog.locator('[data-dialog-close]').click();
+    await expect(dialog).toBeHidden();
+    await expect(page.locator('[data-open-suite="apocalypse"]')).toBeFocused();
     await expect(page.locator('[data-hetu-demo]')).toHaveCount(0);
   });
 
@@ -65,14 +72,20 @@ for (const prefix of ['', '/en']) {
     await expect(page.locator('[data-suite-id="apocalypse"]')).toBeVisible();
     await expect(page.locator('[data-suite-id="military"]')).toBeHidden();
     const apocalypse = page.locator('[data-suite-id="apocalypse"]');
-    await apocalypse.locator('.skills-methods > summary').focus();
+    const openButton = apocalypse.locator('[data-open-suite]');
+    await openButton.focus();
     await page.keyboard.press('Enter');
-    await expect(apocalypse.locator('.skills-methods')).toHaveAttribute('open', '');
-    await expect(apocalypse.locator('dd[lang="zh-CN"]')).toHaveCount(7);
-    await expect(apocalypse.locator('.skills-example')).toHaveText(genres.find(genre => genre.id === 'apocalypse')!.example);
-    await apocalypse.locator('.skills-category-paths > summary').click();
-    await expect(apocalypse.locator('.skills-category-paths ul')).toContainText('番茄');
-    if (prefix) await expect(apocalypse.locator('.skills-method-note')).toContainText('written in Chinese');
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toBeVisible();
+    await expect(dialog.locator('dd[lang="zh-CN"]')).toHaveCount(7);
+    await expect(dialog.locator('.skills-example')).toHaveText(genres.find(genre => genre.id === 'apocalypse')!.example);
+    await dialog.locator('.skills-category-paths > summary').click();
+    await expect(dialog.locator('.skills-category-paths ul')).toContainText('番茄');
+    if (prefix) await expect(dialog.locator('.skills-method-note')).toContainText('written in Chinese');
+    await page.keyboard.press('Escape');
+    await expect(dialog).toBeHidden();
+    await expect(openButton).toBeFocused();
+    await expect(search).toHaveValue('末世');
 
     await page.locator('[data-skills-reset]').click();
     await page.locator('[data-skills-family]').selectOption('历史军事');
@@ -84,19 +97,32 @@ for (const prefix of ['', '/en']) {
   });
 
   for (const width of [375, 1440]) {
-    test(`${locale} 目录在 ${width}px 展开方法后可阅读`, async ({ page }) => {
+    test(`${locale} 目录在 ${width}px 使用可滚动弹窗查看方法`, async ({ page }) => {
       const errors: string[] = [];
       page.on('pageerror', error => errors.push(error.message));
       await page.setViewportSize({ width, height: 960 });
       await page.goto(`${prefix}/integrations/`);
       await page.locator('[data-skills-search]').fill(prefix ? 'military' : '军事');
       const military = page.locator('[data-suite-id="military"]');
-      await military.locator('.skills-methods > summary').click();
-      await military.locator('.skills-category-paths > summary').click();
-      await expect(military.locator('dd').first()).toBeVisible();
+      await military.locator('[data-open-suite]').click();
+      const dialog = page.getByRole('dialog');
+      await expect(dialog).toBeVisible();
+      await expect(dialog.locator('dd').first()).toBeVisible();
+      await expect(dialog.locator('[data-dialog-close]')).toBeFocused();
+      await page.keyboard.press('Tab');
+      expect(await dialog.evaluate(element => element.contains(document.activeElement))).toBe(true);
+      await dialog.locator('.skills-category-paths > summary').click();
+      await expect(dialog.locator('.skills-category-paths ul')).toBeVisible();
+      const bounds = await dialog.boundingBox();
+      expect(bounds!.x).toBeGreaterThanOrEqual(0);
+      expect(bounds!.width).toBeLessThanOrEqual(width);
+      expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(960);
+      expect(await dialog.locator('.skills-dialog-body').evaluate(element => element.scrollHeight > element.clientHeight)).toBe(true);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
       expect(errors).toEqual([]);
-      await page.locator('[data-skills-catalog]').screenshot({ path: `test-results/skills-${locale}-${width}.png` });
+      await page.screenshot({ path: `test-results/skills-${locale}-${width}.png` });
+      await page.goBack();
+      await expect(dialog).toBeHidden();
     });
   }
 
@@ -110,7 +136,7 @@ for (const prefix of ['', '/en']) {
       await page.goto(`${prefix}/docs/${slug}/`);
       const article = page.locator('.doc-article');
       await expect(article.locator('pre, .mermaid')).toHaveCount(0);
-      expect(await article.innerText()).not.toMatch(/\b(?:MCP|JSON|CLI|stdio|API)\b/);
+      expect(await article.innerText()).not.toMatch(slug === 'agents' ? /\b(?:JSON|stdio|API)\b/ : /\b(?:MCP|JSON|CLI|stdio|API)\b/);
       const expectedImages = { 'getting-started': 4, skills: 1, 'codex-first-task': 1, agents: 0 };
       await expect(article.locator('img')).toHaveCount(expectedImages[slug as keyof typeof expectedImages]);
       for (const image of await article.locator('img').all()) {

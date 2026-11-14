@@ -15,7 +15,9 @@ enum LocalTaskViewTests {
         let directory = root.appendingPathComponent("本地页面任务")
         let author = try await Workspace.open(at: directory, mode: .author, title: "雾港", operationKey: "local-view-book")
         let capabilities = try await author.data("hetu.capabilities.get")
-        let preview = try await author.data("hetu.creative_tasks.preview_prompt", input: ["scope_ref": capabilities["scope_ref"], "task_kind": .string("book_concept"), "brief": .string("准备两个中文书名参考"), "input_refs": .array([]), "client_adapter": .string("codex"), "language_tag": .string("zh-CN")])
+        let source = try await author.data("hetu.documents.create", input: ["kind": .string("novel_chapter"), "title": .string("书名参考原文"), "source_format": .string("markdown"), "content": .string("雾港的灯塔在潮水中沉默。🌿"), "operation_key": .string("local-view-source")])
+        let sourceRef: JSONValue = .object(["kind": .string("document"), "document_id": source["document"]["document_id"], "revision_id": source["revision"]["revision_id"]])
+        let preview = try await author.data("hetu.creative_tasks.preview_prompt", input: ["scope_ref": capabilities["scope_ref"], "task_kind": .string("book_concept"), "brief": .string("准备两个中文书名参考"), "input_refs": .array([sourceRef]), "client_adapter": .string("codex"), "language_tag": .string("zh-CN")])
         var prepared = preview["prepare_input"].object; prepared["operation_key"] = .string("local-view-prepare")
         let task = try await author.data("hetu.creative_tasks.prepare", input: prepared)
         let ref = task["task_ref"]
@@ -59,11 +61,20 @@ enum LocalTaskViewTests {
         let (opened, _) = try await request("api/rpc", body: tool("hetu_open_task_view", input: ["task_ref": ref]), csrf: csrf)
         let projection = opened["structuredContent"]["data"]
         try localCheck(projection["request"]["task_id"] == ref["task_id"], "页面未经过绑定任务Core句柄读取")
+        let context = try await author.data("hetu.task_context.list", input: ["task_ref": ref])
+        let (readSource, _) = try await request("api/rpc", body: tool("hetu_read_task_context", input: ["task_ref": ref, "context_ref": context["entries"].array[0]["context_ref"]]), csrf: csrf)
+        try localCheck(readSource["structuredContent"]["data"]["content"].string == "雾港的灯塔在潮水中沉默。🌿", "Node经原生父进程未按需读取固定原文")
         let selected: JSONValue = .object(["task_ref": ref, "submission_id": projection["submission"]["submission_id"], "candidate_id": projection["submission"]["candidates"].array[0]["candidate_id"]])
         let (saved, _) = try await request("api/rpc", body: tool("hetu_save_task_selection", input: ["task_ref": ref, "expected": projection["expected"], "candidate_refs": .array([selected]), "comment": .string("原生子进程配对验收 🌿"), "operation_key": .string("local-view-native-save")]), csrf: csrf)
         try localCheck(saved["structuredContent"]["status"].string == "succeeded", "Node经原生父进程保存未成功")
-        let latest = try await author.data("hetu.creative_tasks.get", input: ["task_ref": ref])
+        var latest = try await author.data("hetu.creative_tasks.get", input: ["task_ref": ref])
         try localCheck(latest["decision"]["comment"].string == "原生子进程配对验收 🌿" && latest["decision"]["effect"].string == "preference_only", "本地页面写入未落到原任务或变为正式决定")
+        let (feedback, _) = try await request("api/rpc", body: tool("hetu_save_task_feedback", input: ["task_ref": ref,
+            "target_refs": .array([.object(["kind": .string("candidate"), "candidate_ref": selected])]), "expected_feedback_head": .null,
+            "intent": .string("request_changes"), "public_comment": .string("保留河港意象，缩短书名。"), "selected_refs": .array([]), "operation_key": .string("local-view-native-feedback")]), csrf: csrf)
+        try localCheck(feedback["structuredContent"]["status"].string == "succeeded" && feedback["structuredContent"]["data"]["delivery_state"].string == "not_requested", "本地页面没有保存意见或错误声明已发送")
+        latest = try await author.data("hetu.creative_tasks.get", input: ["task_ref": ref])
+        try localCheck(latest["last_feedback"]["public_comment"].string == "保留河港意象，缩短书名。" && latest["last_feedback"]["origin"].string == "task_interaction", "局部页面意见来源错误或升级为作者授权")
         // 单独的测试 WebView，不打开或重启作者正在使用的软件窗口。
         _ = NSApplication.shared
         let probe = WebViewProbe()
@@ -71,6 +82,9 @@ enum LocalTaskViewTests {
         webConfiguration.websiteDataStore = .nonPersistent()
         webConfiguration.userContentController.add(probe, name: "hetuLocalViewTest")
         webConfiguration.userContentController.addUserScript(WKUserScript(source: """
+            window.addEventListener('error', event => window.webkit.messageHandlers.hetuLocalViewTest.postMessage({error: String(event.message)}));
+            window.addEventListener('unhandledrejection', event => window.webkit.messageHandlers.hetuLocalViewTest.postMessage({error: String(event.reason)}));
+            setTimeout(() => window.webkit.messageHandlers.hetuLocalViewTest.postMessage({diagnostic: JSON.stringify({frame:window.top !== window, url:location.href, title:document.querySelector('h1')?.textContent, status:document.querySelector('#status')?.textContent})}), 3000);
             if (window.top !== window) {
               const inspect = () => {
                 const title = document.querySelector('h1');
@@ -86,7 +100,11 @@ enum LocalTaskViewTests {
         _ = try await web.evaluateJavaScript("document.querySelector('#pair').click()")
         try await wait("收到 WebKit 配对请求") { !manager.pairing.isEmpty }
         manager.approve(manager.pairing[0])
-        try await wait("加载 WebKit 参考方案") { probe.title == "Compare references" }
+        do { try await wait("加载 WebKit 参考方案") { probe.title == "Compare references" } }
+        catch {
+            let state = try? await web.evaluateJavaScript("JSON.stringify({ready:document.readyState,status:document.querySelector('#status')?.textContent,frames:document.querySelectorAll('iframe').length})")
+            throw LocalViewTestFailure(message: "WebKit 参考方案未加载：\(String(describing: state)), title=\(probe.title), running=\(manager.running), error=\(manager.errorKey ?? "none"), scriptErrors=\(probe.errors), frames=\(probe.diagnostics)")
+        }
         let (_, forbidden) = try await request("api/rpc", body: tool("hetu_finalize_document", input: ["task_ref": ref]), csrf: csrf)
         try localCheck(forbidden == 400, "本地页面取得作者定稿能力")
         _ = try await author.data("hetu.creative_tasks.close", input: ["task_ref": ref, "expected": latest["expected"], "reason": .string("原生关闭任务"), "operation_key": .string("local-view-close")])
@@ -131,7 +149,11 @@ enum LocalTaskViewTests {
 
 @MainActor private final class WebViewProbe: NSObject, WKScriptMessageHandler {
     var title = ""
+    var errors: [String] = []
+    var diagnostics: [String] = []
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if let value = message.body as? String { title = value }
+        if let value = message.body as? [String: String], let error = value["error"] { errors.append(error) }
+        if let value = message.body as? [String: String], let diagnostic = value["diagnostic"] { diagnostics.append(diagnostic) }
     }
 }

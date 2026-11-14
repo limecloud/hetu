@@ -1,15 +1,17 @@
 # Mac 源码版（开发者）
 
-本页面向已经有 Mac 开发环境、能够使用构建工具的开发者，不是面向普通作者的安装教程。当前提供源码下载与开发启动，不提供正式安装包。作者可以先从[快速入门](getting-started.md)体验首页工作台。
+想先看看写作和改编是什么感觉，直接从[网页演示](getting-started.md)开始。如果你已经有Mac开发环境，希望把真实作品留在本机，可以按本篇获取源码并构建开发版。
 
-下面的步骤使用 `0.4.0` 版本源码；请使用同一份源码中的说明。
+当前提供源码与演示，没有可直接安装的正式软件包。下载ZIP以后，还需要完成下面的构建步骤。
+
+从源码仓库获取代码后，请先阅读该修订自带的 README；工具要求和功能范围以所选源码为准。软件免费开源，外部Agent及生成服务的费用另行计算。
 
 ## 1. 获取软件源码
 
-打开 [0.4.0 源码](https://github.com/limecloud/hetu/tree/v0.4.0)，通过“Code → Download ZIP”下载并解压；也可以在终端执行：
+打开 [GitHub 源码仓库](https://github.com/limecloud/hetu)，通过“Code → Download ZIP”下载并解压；也可以在终端执行：
 
 ```bash
-git clone --branch v0.4.0 https://github.com/limecloud/hetu.git
+git clone https://github.com/limecloud/hetu.git
 cd "hetu"
 ```
 
@@ -48,7 +50,7 @@ Node.js 在这里用于构建和装配按需任务页面，不是河图洛书连
 
 也可在 Finder 双击项目根目录的 `dev-mac.command`。只构建而不打开应用时使用 `./dev-mac.command --build-only`。
 
-成功后应看到河图洛书书库。源码目录与作者作品目录分别管理；创建小说时再选择自己的作品保存位置。
+成功后会打开河图书库。现在可以新建作品，或者先保存一个故事点子。源码目录放软件，作品目录放你的小说、剧本与资料，两者分别选择。
 
 ## 4. 再次打开与更新
 

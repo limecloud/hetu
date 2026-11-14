@@ -1,0 +1,56 @@
+{
+  "as_of": "2026-11-14",
+  "source_definitions": "../../../assets/research/story-market.json",
+  "responses": [
+    {
+      "id": "story-market-cnnic57",
+      "retrieved_on": "2026-11-14",
+      "sha256": "4006a6785ba3958d1d9b6ddf0b79bca8e77104002281aa68279811d8ec78bad8",
+      "representation": "pdf_response"
+    },
+    {
+      "id": "story-market-quest2026",
+      "retrieved_on": "2026-11-14",
+      "sha256": "ad94bb40dd627ec28fefb743cd64ffb4fd25fe2892e83fbbdd499a81fd55bab7",
+      "representation": "html_response"
+    },
+    {
+      "id": "story-market-sensor2025",
+      "retrieved_on": "2026-11-14",
+      "sha256": "4ec26b8414fc91b2c4d50347d11fb9d6283465d04c336226b2a04c07c92993c9",
+      "representation": "html_response"
+    },
+    {
+      "id": "story-market-writers2024",
+      "retrieved_on": "2026-11-14",
+      "sha256": "7ac927c3c7e36d6ffa054f5f7966e19a3b13ba40a703510c1c3f810a6bfeec82",
+      "representation": "html_response"
+    }
+  ],
+  "excerpts": {
+    "cnnic57": {
+      "printed_page_23": "网络文学 2025.12 用户规模（万人）52,595；网民使用率（%）46.7",
+      "printed_page_32": "微短剧用户规模达6.64亿人，占网民整体的59.0%。",
+      "printed_page_35": "截至2025年12月，我国网络文学用户规模达5.26亿人。"
+    },
+    "quest2026": {
+      "section_2_6": "2026年2月，红果免费短剧APP月活跃用户规模突破3亿大关，达到3.04亿。",
+      "section_1_4": "短剧独立APP整体月活用户已达3.35亿；微信小程序渠道用户规模达到4.27亿。"
+    },
+    "sensor2025": {
+      "revenue": "USD $178 million in Q1 2024 to nearly USD $700 million in Q1 2025",
+      "downloads": "global downloads exceeding 370 million in Q1 2025",
+      "regions": "US share 49%; Latin America nearly 100 million downloads; Southeast Asia nearly 87 million downloads."
+    },
+    "writers2024": {
+      "works": "据全国50家重点网络文学平台数据统计，截至2024年底，网络文学作品总量超过3300万部。",
+      "authors": "2024年新增注册作者约280万人。",
+      "adaptations": "年新增影视长剧改编授权近300部、微短剧超1600部。"
+    }
+  },
+  "interpretation_limits": [
+    "记录为人工核对摘录，规范化空白，不替代完整原文。",
+    "SHA-256标识采集响应，不是发布方签名。",
+    "没有将搜索摘要作为最终统计来源。"
+  ]
+}

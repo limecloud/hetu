@@ -51,7 +51,7 @@ struct WorkbenchHeading<Actions: View>: View {
         HStack(spacing: 20) {
             VStack(alignment: .leading, spacing: 10) {
                 HStack(alignment: .firstTextBaseline, spacing: 16) {
-                    Text(title).font(.system(size: 25, weight: .medium, design: .serif)).foregroundStyle(WorkbenchPalette.ink)
+                    Text(title).font(.system(size: 20, weight: .medium, design: .serif)).foregroundStyle(WorkbenchPalette.ink)
                     Spacer(minLength: 8)
                     actions()
                 }
@@ -69,7 +69,7 @@ struct WorkbenchEmptyState: View {
     var body: some View {
         VStack(spacing: 14) {
             WorkbenchSpotArtwork(name: artwork).frame(width: 220, height: 152)
-            Text(title).font(.system(size: 18, weight: .semibold)).multilineTextAlignment(.center)
+            Text(title).font(.system(size: 20, weight: .semibold)).multilineTextAlignment(.center)
             if !detail.isEmpty { Text(detail).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted).lineSpacing(4).multilineTextAlignment(.center).frame(maxWidth: 360) }
         }.padding(24).frame(maxWidth: .infinity, maxHeight: .infinity)
     }

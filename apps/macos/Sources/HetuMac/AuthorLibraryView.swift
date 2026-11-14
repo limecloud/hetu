@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import HetuCore
 import HetuNative
 
 struct AuthorLibraryView: View {
@@ -8,7 +9,8 @@ struct AuthorLibraryView: View {
     let onOpen: (LibraryEntry) -> Void
     let onNew: () -> Void
     let onAdd: () -> Void
-    @Environment(\.colorScheme) private var colorScheme
+    @State private var agentEntry: AgentEntryPoint?
+    @State private var deletionEntry: LibraryEntry?
     @State private var search = ""
     @State private var status = "all"
     @AppStorage("Hetu.library.list") private var listMode = false
@@ -31,11 +33,17 @@ struct AuthorLibraryView: View {
             .buttonStyle(WorkbenchButtonStyle()).disabled(model.busy)
             .task { await model.loadLibrary() }
             .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in Task { await model.loadLibrary() } }
+            .sheet(item: $agentEntry) { entry in
+                AgentAccessSheet(initialEntry: entry, localizer: model.localizer)
+            }
+            .sheet(item: $deletionEntry) { entry in
+                DeleteWorkSheet(model: model, entry: entry)
+            }
     }
     private var topbar: some View {
         HStack(spacing: 12) {
             Image(nsImage: NSApp.applicationIconImage).resizable().scaledToFit().frame(width: 34, height: 34).accessibilityHidden(true)
-            Text(model.t("brand.name")).font(.system(size: 18, weight: .semibold))
+            Text(model.t("brand.name")).font(.system(size: 20, weight: .semibold))
             Spacer()
             Button(locale == "en" ? "中文" : "EN") { locale = locale == "en" ? "zh-CN" : "en" }.buttonStyle(.plain)
             WorkbenchSettingsButton(locale: locale)
@@ -46,11 +54,11 @@ struct AuthorLibraryView: View {
     }
     private var sidebar: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(model.t("library.collection")).font(.caption).foregroundStyle(WorkbenchPalette.muted).padding(.horizontal, 12).padding(.bottom, 8)
+            Text(model.t("library.collection")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted).padding(.horizontal, 12).padding(.bottom, 8)
             filter("all", "library.all")
             ForEach(statuses, id: \.self) { value in filter(value, "novel.status." + value) }
             Spacer()
-            Text(model.t("library.local")).font(.caption).foregroundStyle(WorkbenchPalette.muted).lineSpacing(4).padding(12)
+            Text(model.t("library.local")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted).lineSpacing(4).padding(12)
         }.padding(16).frame(width: 190).frame(maxHeight: .infinity).background(WorkbenchPalette.surface.opacity(0.22))
     }
     private var libraryContent: some View {
@@ -60,8 +68,8 @@ struct AuthorLibraryView: View {
             if model.libraryEntries.isEmpty {
                 VStack(spacing: 16) {
                     LibraryArtwork(name: "library-empty").frame(width: 240, height: 200).clipped()
-                    Text(model.t("library.empty")).font(.title3.weight(.semibold))
-                    Text(model.t("library.empty_detail")).font(.callout).foregroundStyle(WorkbenchPalette.muted).multilineTextAlignment(.center).frame(maxWidth: 420)
+                    Text(model.t("library.empty")).font(.system(size: 20, weight: .semibold))
+                    Text(model.t("library.empty_detail")).font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted).multilineTextAlignment(.center).frame(maxWidth: 420)
                 }.frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if entries.isEmpty {
                 ContentUnavailableView.search(text: search)
@@ -70,7 +78,7 @@ struct AuthorLibraryView: View {
     }
     private var controls: some View {
         HStack {
-            Text(model.t(status == "all" ? "library.all" : "novel.status." + status)).font(.system(size: 15, weight: .semibold))
+            Text(model.t(status == "all" ? "library.all" : "novel.status." + status)).font(.system(size: 14, weight: .semibold))
             Text("\(entries.count)").foregroundStyle(WorkbenchPalette.muted)
             Spacer()
             HStack(spacing: 7) {
@@ -105,45 +113,86 @@ struct AuthorLibraryView: View {
             HStack(spacing: 18) {
                 BookCoverView(title: entry.title, author: entry.authorName, identity: entry.workspaceID, compact: true, imageData: entry.coverPreview, titleOverlay: entry.coverTitle, authorOverlay: entry.coverAuthor).frame(width: 42, height: 63)
                 VStack(alignment: .leading, spacing: 6) {
-                    Text(entry.title).font(.headline)
-                    Text(entry.authorName.isEmpty ? model.t("library.no_author") : entry.authorName).font(.caption).foregroundStyle(WorkbenchPalette.muted)
+                    Text(entry.title).font(.system(size: 14, weight: .semibold))
+                    workSubtitle(entry)
                 }
                 Spacer()
                 statusBadge(entry.status)
-                Text(model.t("novel.chapter_count", ["count": String(entry.chapterCount)])).font(.caption).foregroundStyle(WorkbenchPalette.muted).frame(width: 100, alignment: .trailing)
+                if entry.contentType == "novel" {
+                    Text(model.t("novel.chapter_count", ["count": String(entry.chapterCount)])).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted).frame(width: 100, alignment: .trailing)
+                }
+                ObjectTimestampsView(localizer: model.localizer, record: .object([
+                    "created_at": entry.createdAt.map(JSONValue.string) ?? .null,
+                    "updated_at": entry.updatedAt.map(JSONValue.string) ?? .null
+                ])).frame(width: 210)
             }.padding(.horizontal, 16).padding(.vertical, 14).contentShape(Rectangle())
-        }.buttonStyle(WorkbenchNavigationStyle()).help(entry.path).accessibilityLabel(entry.title).accessibilityValue(accessibleStatus(entry))
+        }.buttonStyle(WorkbenchNavigationStyle()).help(propertySummary(entry)).accessibilityLabel(entry.title).accessibilityValue(accessibleStatus(entry))
+            .contextMenu { deletionMenu(entry) }
     }
     private func bookCard(_ entry: LibraryEntry) -> some View {
         Button { onOpen(entry) } label: {
             VStack(alignment: .leading, spacing: 10) {
                 BookCoverView(title: entry.title, author: entry.authorName, identity: entry.workspaceID, imageData: entry.coverPreview, titleOverlay: entry.coverTitle, authorOverlay: entry.coverAuthor).aspectRatio(2.0 / 3.0, contentMode: .fit)
-                Text(entry.title).font(.system(size: 15, weight: .semibold)).lineLimit(1)
-                Text(entry.authorName.isEmpty ? model.t("library.no_author") : entry.authorName).font(.caption).foregroundStyle(WorkbenchPalette.muted).lineLimit(1)
+                Text(entry.title).font(.system(size: 14, weight: .semibold)).lineLimit(1)
+                workSubtitle(entry)
                 HStack {
                     statusBadge(entry.status)
                     Spacer(minLength: 4)
-                    Text(model.t("novel.chapter_count", ["count": String(entry.chapterCount)]))
-                }.font(.system(size: 11)).foregroundStyle(WorkbenchPalette.muted)
+                    if entry.contentType == "novel" {
+                        Text(model.t("novel.chapter_count", ["count": String(entry.chapterCount)]))
+                    }
+                }.font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
+                Text(model.t("properties.updated") + " " + (entry.updatedAt.map(model.localizer.date) ?? model.t("properties.not_recorded")))
+                    .font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted).lineLimit(1)
             }.padding(12).workbenchSurface().contentShape(Rectangle())
-        }.buttonStyle(WorkbenchNavigationStyle()).help(entry.path).accessibilityLabel(entry.title).accessibilityValue(accessibleStatus(entry))
+        }.buttonStyle(WorkbenchNavigationStyle()).help(propertySummary(entry)).accessibilityLabel(entry.title).accessibilityValue(accessibleStatus(entry))
+            .contextMenu { deletionMenu(entry) }
+    }
+    private func deletionMenu(_ entry: LibraryEntry) -> some View {
+        Button(role: .destructive) { deletionEntry = entry } label: {
+            Label(model.t("library.delete.menu"), systemImage: "trash")
+        }
+    }
+    private func workSubtitle(_ entry: LibraryEntry) -> some View {
+        HStack(spacing: 8) {
+            Text(model.t(entry.contentType == "drama" ? "creation.type.drama" : "creation.type.novel"))
+            if !entry.authorName.isEmpty { Text(entry.authorName) }
+        }.font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted).lineLimit(1)
     }
     private func accessibleStatus(_ entry: LibraryEntry) -> String {
-        model.t("novel.status." + entry.status) + ", " + model.t("novel.chapter_count", ["count": String(entry.chapterCount)])
+        let type = model.t(entry.contentType == "drama" ? "creation.type.drama" : "creation.type.novel")
+        let count = entry.contentType == "novel" ? ", " + model.t("novel.chapter_count", ["count": String(entry.chapterCount)]) : ""
+        return type + ", " + model.t("novel.status." + entry.status) + count + ", " + propertySummary(entry)
+    }
+    private func propertySummary(_ entry: LibraryEntry) -> String {
+        [model.t("properties.created") + " " + (entry.createdAt.map(model.localizer.date) ?? model.t("properties.not_recorded")),
+         model.t("properties.updated") + " " + (entry.updatedAt.map(model.localizer.date) ?? model.t("properties.not_recorded")),
+         model.t("properties.last_opened") + " " + entry.lastOpenedAt.formatted(date: .numeric, time: .standard), entry.path].joined(separator: "\n")
     }
     private var libraryBanner: some View {
-        GeometryReader { geometry in
-            ZStack(alignment: .leading) {
-                LibraryArtwork(name: colorScheme == .dark ? "library-garden-dark" : "library-garden-light")
-                    .frame(width: geometry.size.width, height: 142).clipped()
-                VStack(alignment: .leading, spacing: 12) {
-                    Text(model.t("library.title")).font(.system(size: 25, weight: .medium, design: .serif))
-                    Text(model.t("library.book_count", ["count": String(model.libraryEntries.count)]))
-                        .font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
-                }.padding(.leading, 28)
-            }.background(WorkbenchPalette.sidebar).clipShape(RoundedRectangle(cornerRadius: 12))
-                .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(WorkbenchPalette.line.opacity(0.5), lineWidth: 0.5))
-        }.frame(height: 142)
+        VStack(alignment: .leading, spacing: 16) {
+            Text(model.t("agent.access.headline")).font(.system(size: 20, weight: .semibold))
+            Text(model.t("agent.access.roles")).font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted)
+                .fixedSize(horizontal: false, vertical: true)
+            HStack(spacing: 0) {
+                ForEach(AgentEntryPoint.allCases) { entry in
+                    Button { agentEntry = entry } label: {
+                        HStack(alignment: .firstTextBaseline, spacing: 8) {
+                            Text(entry.rawValue).font(.system(size: 14, weight: .semibold)).foregroundStyle(WorkbenchPalette.jade)
+                            Text(model.t(entry.summaryKey)).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
+                            Spacer(minLength: 4)
+                            Image(systemName: "arrow.up.right").font(.system(size: 12)).accessibilityHidden(true)
+                        }.padding(.vertical, 10).padding(.horizontal, 12).contentShape(Rectangle())
+                    }.buttonStyle(.plain).help(model.t(entry.detailKey))
+                        .accessibilityLabel(entry.rawValue + ", " + model.t(entry.summaryKey))
+                    if entry != AgentEntryPoint.allCases.last {
+                        Rectangle().fill(WorkbenchPalette.line).frame(width: 0.5, height: 24).accessibilityHidden(true)
+                    }
+                }
+            }.background(WorkbenchPalette.surface, in: RoundedRectangle(cornerRadius: 4))
+                .overlay(RoundedRectangle(cornerRadius: 4).strokeBorder(WorkbenchPalette.line, lineWidth: 0.5))
+        }.padding(20).background(WorkbenchPalette.sidebar, in: RoundedRectangle(cornerRadius: 8))
+            .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(WorkbenchPalette.line, lineWidth: 0.5))
     }
     private func filter(_ value: String, _ key: String) -> some View {
         Button { status = value } label: {
@@ -152,12 +201,12 @@ struct AuthorLibraryView: View {
                     .frame(width: 18).accessibilityHidden(true)
                 Text(model.t(key))
                 Spacer()
-                Text("\(model.libraryEntries.filter { value == "all" || $0.status == value }.count)").font(.caption)
+                Text("\(model.libraryEntries.filter { value == "all" || $0.status == value }.count)").font(.system(size: 12))
             }.padding(12).foregroundStyle(status == value ? WorkbenchPalette.jade : WorkbenchPalette.ink)
         }.buttonStyle(WorkbenchNavigationStyle(selected: status == value)).accessibilityAddTraits(status == value ? .isSelected : [])
     }
     private func statusBadge(_ value: String) -> some View {
-        Text(model.t("novel.status." + value)).font(.system(size: 10, weight: .medium)).foregroundStyle(WorkbenchPalette.jade)
+        Text(model.t("novel.status." + value)).font(.system(size: 12, weight: .medium)).foregroundStyle(WorkbenchPalette.jade)
             .padding(.horizontal, 7).padding(.vertical, 4).background(WorkbenchPalette.jadeSoft, in: Capsule())
     }
 }

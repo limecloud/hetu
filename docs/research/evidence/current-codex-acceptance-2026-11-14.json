@@ -1,0 +1,1813 @@
+{
+  "schema_version": "1.1.0",
+  "verified_at": "2026-11-14T16:08:45.675492+00:00",
+  "executor": "本对话 Codex，经公开 CLI 实际完成创作与返工；未另启模型或子代理",
+  "overall_result": "accepted_for_source_cli_novel_and_original_drama_journeys",
+  "status": "pass",
+  "requirement_ids": [
+    "E2E-22",
+    "UC-44",
+    "AC-49"
+  ],
+  "case_id": "current-codex-zero-to-author-review-2026-11-14",
+  "expected": "无预建作品、筹备、任务或桌面窗口，Agent 通过机器入口建立新作品并完成候选与意见返工；作者采纳和定稿独立。",
+  "actual": "两条旅程均完成；筹备、资料、建书与首任务未使用作者驱动或 GUI，反馈、局部采纳、定稿和撤权由隔离测试作者通道核验。",
+  "starting_state": {
+    "workspace": null,
+    "creation_project": null,
+    "precreated_task": null,
+    "desktop_window_required": false
+  },
+  "author_channel": {
+    "actor": "isolated_test_author",
+    "not_a_real_user_decision": true,
+    "transport": "trusted_author_c_abi",
+    "used_for_business_bootstrap": false,
+    "scope": "仅演示作品的公开反馈、局部采纳、独立定稿及撤权合同"
+  },
+  "os": "macOS-15.8.3-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "source_revision": "c2345d61a440b0db901dd1f3ae316efb6b5ff935",
+  "dirty_worktree": true,
+  "source_fingerprints": {
+    "AGENTS.md": "2053058188115640dd4b26b119cec60a67e917314dd62fd2fccb71373ded381b",
+    "contracts/actions.json": "8ced907a48997dd79cfa9144a211b9003f9c10e20be939793fb4d5f7dc2a1691",
+    "contracts/tools/catalog.json": "0c42274d596b46aec17cd2ba10f998f8d023ec01755053963ed2d463eb578ddd",
+    "core/src/collaboration.rs": "8819f814b47b9db9ff424c3d8d55a90a3bee414af2000c2834037dfdac7c38a5",
+    "core/src/collaboration/authoring.rs": "ba70957beb73fcd64a3a5a3f40eb6d0dc15f8a52bf2c476939026025a785fe81",
+    "core/src/application/mod.rs": "29077c71800a1bb005556bc3de02492174658b928fd1ce88623195111c0c2e18",
+    "core/src/application/creation.rs": "541850f0ba19aa1619c7575fbe7de5be3ebfa8a3a070c7e52688ea5917e98037",
+    "core/src/application/creative_tasks.rs": "3666bd0687e097e8d549aa94bc0975e96f83b63b21beda90e662c3bababd75d3",
+    "core/tests/bootstrap.rs": "b40861afe8f25de5036fd50f3d040097f861f8ce9d31e6c6192e6b340ba50b72",
+    "core/tests/collaboration.rs": "834d14eda82006ca4fb9ac18636f587c717938cb65066e82c422bbef9700bb61",
+    "apps/mcp/src/lib.rs": "707b0cbe7c550105916b6aabfa101f9d5afd138a11cf15f2697982549a8b22fe",
+    "apps/mcp/src/stable.rs": "c96518c03439b47e18c434970e5035027ed6e8762623121344f1e7d5b28ac938",
+    "apps/mcp/tests/stdio.rs": "7bb540aa39197a470917dd0e996020ba9bc8c6b46d7d024c00e60825d460ee59",
+    "apps/cli/Sources/HetuCLI.swift": "91b7c9690a3de0139e66862db640c840c17760a64439d80202309a39d5ca99de",
+    "docs/13-内核ABI与CLI合同.md": "1b2884ae113c6fa9c8e822cb474aede39745c75fecdc46ec556be9fdfb881adf",
+    "docs/14-MCP与Agent接入.md": "a245ca20c304c04d7089c1e0571b3fda1cb211ddc0518ac34c880c51a8a64ff9",
+    "docs/19-测试策略与验收矩阵.md": "847a47da448bfce9ce2eca618074480961f93a02f3f8e3727253da1f9667198a",
+    "docs/20-实施路线与里程碑.md": "28e94fbf7aa501dba88efd6941ef88b184f03bfd525d09c6c78e46685946f397",
+    "docs/30-应用API详细设计.md": "e56f26d8151a6ae0ff4de1ab513a4b072bd18ac8360d225d1a16c83010c7db99",
+    "tools/hetu-skills/base/skills/hetu-setup/SKILL.md": "75a0fe7b35347bea832a8c8523fb965a2a160eaabdc9012ddda6ed2966707ae8",
+    "tools/hetu-skills/base/skills/hetu-book-create/SKILL.md": "cbe98f524986e18c38d816a49c7c3f9813520ca68d6beeaf29cb5902fd29b808",
+    "tools/hetu-skills/base/references/task-contract.md": "7039953dd6a734f6509672c5e9da5cb0415c50235eabcde86bfb2714d5f8270a",
+    "source_cli_artifact": "38aeae325e9608b0fcec4fdcf0a6e060f3aef2d78a4bf78bb161cc0d8502bbb9",
+    "final_core_artifact": "dac72cf107c23d1badff004aac2bedc349285b02a7e587e954585e1cb6054b01"
+  },
+  "build_digest": "dac72cf107c23d1badff004aac2bedc349285b02a7e587e954585e1cb6054b01",
+  "toolchains": {
+    "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+    "cargo": "cargo 1.93.1 (083ac5135 2025-12-15)",
+    "swift": "Apple Swift version 6.2.3 (swiftlang-6.2.3.3.21 clang-1700.6.3.2)\nTarget: arm64-apple-macosx15.0"
+  },
+  "fixture_digest": "2522674945a669efb184d5e9495c9101869b854e273856b1ce5b2d53b066ae7d",
+  "works": [
+    {
+      "work_type": "novel",
+      "title": "末班车之后",
+      "scope_ref": {
+        "id": "workspace_d925e25f-6980-461f-a5ca-b565cbb09d20",
+        "kind": "workspace"
+      },
+      "management_grant_id": "3f9001ad96352ccbe086876e30a288ad91416bb14ff082a24d72513e605e925b",
+      "task_ref": {
+        "request_revision": 1,
+        "scope_ref": {
+          "id": "workspace_d925e25f-6980-461f-a5ca-b565cbb09d20",
+          "kind": "workspace"
+        },
+        "sha256": "a3b425e2dcdd88bc7349e86fde685986cbd10167030f9ba097ce9b34491b2ea6",
+        "task_id": "task_7652357e-b461-46f4-a768-e8c6602f4b00"
+      },
+      "document_id": "doc_ab4edf52-f5ea-48ce-8e2e-f1d5456c865d",
+      "working_revisions": [
+        {
+          "sha256": "ea4a72838cee6191022c4a19b0eadc1b689280b98ca9222e6c2bec322b8053e5",
+          "working_copy_id": "working_83152a89-6f54-4b4a-a7ca-fb3cda4468d7",
+          "working_revision_id": "wrev_b398aa01-1ae4-4702-9f8e-7565bef44a6f"
+        },
+        {
+          "sha256": "e6ecbfb1127e770415f13fdbbca349cfcc948cab16af75e5d681244cbca7623f",
+          "working_copy_id": "working_83152a89-6f54-4b4a-a7ca-fb3cda4468d7",
+          "working_revision_id": "wrev_6188c75d-1556-4b70-aa52-1c6349e98fc8"
+        },
+        {
+          "sha256": "df8ad15b86deed38a80624236483d9e4afd8801e0f786616f5567e0ce43a5c63",
+          "working_copy_id": "working_83152a89-6f54-4b4a-a7ca-fb3cda4468d7",
+          "working_revision_id": "wrev_6cc3972d-e0b0-4bcc-99c3-df5730e452e8"
+        }
+      ],
+      "submissions": [
+        {
+          "sha256": "9cf009b9c1f0b0d90639c40c64808d48b38c710075e2e131926aa3a3cdc57e34",
+          "submission_id": "submission_2769f43e-449a-4a9d-8c2e-7d582c4e2886"
+        },
+        {
+          "sha256": "b21375436b6cb1ccac8657357945e4423fe54a56dad05697b1e7c43eb87e93c0",
+          "submission_id": "submission_cd0099f4-3265-4cbe-9e50-dea7083800f0"
+        }
+      ],
+      "public_feedback_ref": {
+        "feedback_id": "feedback_19313b73-0718-4dfe-8d0a-e168a6f3603c",
+        "sha256": "65eefb0fa196bcc5df03c3dbc89363696919f01b9d6a4299f7026a4cfd4cb9d0"
+      },
+      "adoption_ref": {
+        "adoption_id": "adoption_a7260cd5-66ae-45ce-b52e-3e3ab854ea93",
+        "sha256": "8cdb5b135de80425dd4d079e75a0e381f334bc3ae5b7bbcadb1635f974c0c331"
+      },
+      "adopted_document_ref": {
+        "document_id": "doc_ab4edf52-f5ea-48ce-8e2e-f1d5456c865d",
+        "revision_id": "rev_b8c735cf-f939-45f9-b408-55a5a4a77acc",
+        "sha256": "747ce5291848ed311517b22c15a77a21d0b179a3269f662a2b105435c416c35a"
+      },
+      "finalization_ref": {
+        "finalization_id": "finalization_90758ad1-5c4c-432e-8a54-732577f5c092",
+        "sha256": "f114dfe11a7549c0f44491c82ae333ff8476f6d7d8b0e7ab9feb010b9de1cf63"
+      },
+      "adopted_bytes": 1255,
+      "candidate_bytes": 1466,
+      "adoption_count": 1,
+      "finalization_count": 1,
+      "first_submission_unchanged_after_revision": true,
+      "author_document_empty_before_adoption": true,
+      "adoption_did_not_finalize": true,
+      "management_and_derived_tasks_revoked": true,
+      "body_evidence": [
+        {
+          "path": "build/current-codex-acceptance-20261114/journey-v2/novel-first.md",
+          "sha256": "ea4a72838cee6191022c4a19b0eadc1b689280b98ca9222e6c2bec322b8053e5"
+        },
+        {
+          "path": "build/current-codex-acceptance-20261114/journey-v2/novel-saved.md",
+          "sha256": "e6ecbfb1127e770415f13fdbbca349cfcc948cab16af75e5d681244cbca7623f"
+        },
+        {
+          "path": "build/current-codex-acceptance-20261114/journey-v2/novel-revised.md",
+          "sha256": "df8ad15b86deed38a80624236483d9e4afd8801e0f786616f5567e0ce43a5c63"
+        }
+      ]
+    },
+    {
+      "work_type": "original_drama",
+      "title": "末班车之后",
+      "scope_ref": {
+        "id": "workspace_48eb57b5-1348-4358-8c57-5e1d9b850e3a",
+        "kind": "workspace"
+      },
+      "management_grant_id": "201ec5bb023457edfee4ca22f1ced0c22a6197bde017cc5572d49e6c88038857",
+      "task_ref": {
+        "request_revision": 1,
+        "scope_ref": {
+          "id": "workspace_48eb57b5-1348-4358-8c57-5e1d9b850e3a",
+          "kind": "workspace"
+        },
+        "sha256": "0327213d2c5f45c30f22fd7136ae3231f4567e3e118b7129606af33855e27125",
+        "task_id": "task_d4c2e413-757f-4fbd-9ab4-91ff623b5b29"
+      },
+      "document_id": "doc_8bf574d2-0c7a-4704-ab7f-d7f2e3117513",
+      "working_revisions": [
+        {
+          "sha256": "fdb30e0b8f6c2906894ca9e176bb8274e9a7495cd673fc6b99096945f015df7b",
+          "working_copy_id": "working_2d98cedb-01e0-4553-b20e-ab9a00a9f74f",
+          "working_revision_id": "wrev_3cc7544f-71c3-4f63-8ee6-93f5426e3878"
+        },
+        {
+          "sha256": "a43b9598b85e56c8405c1fedf925224f4362e4837a469a6d4e086185d59f1c0b",
+          "working_copy_id": "working_2d98cedb-01e0-4553-b20e-ab9a00a9f74f",
+          "working_revision_id": "wrev_f007563b-a95a-47a2-8e64-f27a67c229bc"
+        },
+        {
+          "sha256": "0028552bd41b480e1b6aedf220bf896534e929805bcf5d9d08ed162d76216536",
+          "working_copy_id": "working_2d98cedb-01e0-4553-b20e-ab9a00a9f74f",
+          "working_revision_id": "wrev_a72ec7be-3a63-42dd-8352-3991928f6b6b"
+        }
+      ],
+      "submissions": [
+        {
+          "sha256": "2d46462f11e0eef7916c3fc46bec7fd6398905235dd2827f61e83651ce190349",
+          "submission_id": "submission_62b08ee4-20f4-4fb1-a834-23483962cf3d"
+        },
+        {
+          "sha256": "5c0d861a8dfc2f7b318fa2168305a2c8f3f156c0fc855a3f2424648681036f1a",
+          "submission_id": "submission_1435066c-0127-4007-9beb-04cf4f80b7fc"
+        }
+      ],
+      "public_feedback_ref": {
+        "feedback_id": "feedback_890daa34-4460-44eb-ad04-21c2b5d5c4a1",
+        "sha256": "9dfd1ca38710d0c9660c9bbf1ac68fdaf6176cffe8069d030e31e1b4852b1241"
+      },
+      "adoption_ref": {
+        "adoption_id": "adoption_d2aa6abd-6782-4b82-a2be-703223d228c3",
+        "sha256": "db4c29418eac23605aa4d7e29eca2b145ef200146c9ca67e89a3b063d3e4bf3f"
+      },
+      "adopted_document_ref": {
+        "document_id": "doc_8bf574d2-0c7a-4704-ab7f-d7f2e3117513",
+        "revision_id": "rev_d092e1ce-7703-4739-8f2d-8fe4c3b06af4",
+        "sha256": "9caa9f92ca69ec0e67288849b3fd88db3a070004d88edd2b83fc8f7264dc7dfb"
+      },
+      "finalization_ref": {
+        "finalization_id": "finalization_23290bf8-c220-4020-bd61-901db40df7c0",
+        "sha256": "edb0bb6cacf21ebffc9d8d43bfe3b9c2f190025e46ac4e7936bc6544e6e0a250"
+      },
+      "adopted_bytes": 869,
+      "candidate_bytes": 1023,
+      "adoption_count": 1,
+      "finalization_count": 1,
+      "first_submission_unchanged_after_revision": true,
+      "author_document_empty_before_adoption": true,
+      "adoption_did_not_finalize": true,
+      "management_and_derived_tasks_revoked": true,
+      "body_evidence": [
+        {
+          "path": "build/current-codex-acceptance-20261114/journey-v2/drama-first.fountain",
+          "sha256": "fdb30e0b8f6c2906894ca9e176bb8274e9a7495cd673fc6b99096945f015df7b"
+        },
+        {
+          "path": "build/current-codex-acceptance-20261114/journey-v2/drama-saved.fountain",
+          "sha256": "a43b9598b85e56c8405c1fedf925224f4362e4837a469a6d4e086185d59f1c0b"
+        },
+        {
+          "path": "build/current-codex-acceptance-20261114/journey-v2/drama-revised.fountain",
+          "sha256": "0028552bd41b480e1b6aedf220bf896534e929805bcf5d9d08ed162d76216536"
+        }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "label": "00-discover",
+      "action": "hetu.collaboration.inspect",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/00-discover/request.json",
+        "sha256": "094d0783d9387566504e7fdcf56ad95a627c64e799f1a311eeb94cd66d90291d"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/00-discover/stdout.json",
+        "sha256": "616ec0b9268ced71634b7e5706c4b9f40406e9de7001c7601ed0b7882970f521"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "01-begin",
+      "action": "hetu.creation_projects.create",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/01-begin/request.json",
+        "sha256": "6b405d8c3e12f666726b4fab8aa88ae40dc2f2cf0270fd05ae58eeb45ec153bc"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/01-begin/stdout.json",
+        "sha256": "5362726fd4491bb16a718cf3562102de2c1f807a6f7203c090dad5eb499f254e"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "01-create-work",
+      "action": "hetu.creation_projects.create_novel",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/01-create-work/request.json",
+        "sha256": "34ca344b86655fe13e9cf4765900591eccefa3b7b0fbd89aa2687ef5010c01ff"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/01-create-work/stdout.json",
+        "sha256": "9afd6cf552b88b7e4a1be400138167f0c45eabb063fb82c19d79d6ecbacbaab0"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "01-empty-chapter",
+      "action": "hetu.documents.create",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/01-empty-chapter/request.json",
+        "sha256": "793ca93e8f95d0239f787b11eb78844554690dc2d4aee3f6d1d35c714eebd95e"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/01-empty-chapter/stdout.json",
+        "sha256": "0fa92f7677cb8316bc9094d18e6b81ed6df6be8af0a4aeaf9b9218cdb36f3e99"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "01-open-first-task",
+      "action": "hetu.collaboration.open",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/01-open-first-task/request.json",
+        "sha256": "5112aff723eba7d82d7f2457bd41206fcd39a5335ecb6f0093c4474a98f44530"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/01-open-first-task/stdout.json",
+        "sha256": "10ca03107f626314ce6781e5f2083f7edb9011d2b93a9046fef3a2e7ca79522b"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "01-prepare-first-task",
+      "action": "hetu.creative_tasks.prepare",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/01-prepare-first-task/request.json",
+        "sha256": "b9de52920133eee525d5241818afa3a350c5514fed97dbbf556563ee2473f830"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/01-prepare-first-task/stdout.json",
+        "sha256": "f84988535b8d95d56677060b098c669bf2d276072a9ea697cbe366c55b535f8a"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "01-preview-first-task",
+      "action": "hetu.creative_tasks.preview_prompt",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/01-preview-first-task/request.json",
+        "sha256": "5caed0bf953abe9b1d171326b1394e735a9f2f89440e4102fe559fd4ff732404"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/01-preview-first-task/stdout.json",
+        "sha256": "b1007a85033c057c6f9a215370d8d6a74878481a5827267f74ef2a830c3d1cf4"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "01-read-work",
+      "action": "hetu.workspaces.get",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/01-read-work/request.json",
+        "sha256": "2ed7c45cfa86e7029d196cb27d5800d449d07e1ae6b7399b20a34f2c3ae600f4"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/01-read-work/stdout.json",
+        "sha256": "1124a9cdd564e3eb0f377ae2f0e5c794fb8e07da47e2b7ec1ea6b0643fc1410e"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "01-save",
+      "action": "hetu.creation_projects.save",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/01-save/request.json",
+        "sha256": "00ddf0ce3396ea6cd52ec05af29cccb66e90c82bb51f5f1349197f2bd94c0610"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/01-save/stdout.json",
+        "sha256": "7c8ebb19dd6f4710770e95521c5be902eb86d391fabe27ab8137177e0dcc9fbc"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "02-begin",
+      "action": "hetu.creation_projects.create",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/02-begin/request.json",
+        "sha256": "5e8c6c65b6bcfd20e7876085693bf8fd43018db2ae46df3eef843ad0b3d869bd"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/02-begin/stdout.json",
+        "sha256": "b34f37e96b396c25db079a13d521802d97adeb9f522cca5d9e242ee4f3903414"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "02-create-work",
+      "action": "hetu.creation_projects.create_drama",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/02-create-work/request.json",
+        "sha256": "d845861a10b68d71c450fd3a221bd0c30fe60149eb3207ec0ab353679abfe96e"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/02-create-work/stdout.json",
+        "sha256": "14fa46377be90c4760beb06009d6249aee7fa6fbf56b10064db3bc23f4956f9a"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "02-empty-episode",
+      "action": "hetu.drama.episodes.create",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/02-empty-episode/request.json",
+        "sha256": "8fc8cf9f3764a6aed266948b763871b2ee21c7ff87db9512be6e1109d306c3d1"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/02-empty-episode/stdout.json",
+        "sha256": "15c9e71ae37c45ec29ac7fffecda4a5445bfffa3e02373c62581adfebde6189e"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "02-open-first-task",
+      "action": "hetu.collaboration.open",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/02-open-first-task/request.json",
+        "sha256": "29ec8c0f5242128236b684a33a67aa21e0cb7fcdf0e5833d6ea1ab23065a25fd"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/02-open-first-task/stdout.json",
+        "sha256": "7e0b368c6ed3b54e6d1d9b1948050208efe415d3c161d6b469bb80fc8e55cf1b"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "02-prepare-first-task",
+      "action": "hetu.creative_tasks.prepare",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/02-prepare-first-task/request.json",
+        "sha256": "7f9c3322ab23ceff0f16007b1b5e761ddc16b44ab39ad545cc74469a3ba1845a"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/02-prepare-first-task/stdout.json",
+        "sha256": "998af5c03d259da77374255372d36bd93ce36f1b52fee252f6be3fbebf7080c2"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "02-preview-first-task",
+      "action": "hetu.creative_tasks.preview_prompt",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/02-preview-first-task/request.json",
+        "sha256": "c2a6ab5694f26fc3214f8409b163cf285a3a39e500f9f02228392f04186bae3c"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/02-preview-first-task/stdout.json",
+        "sha256": "7d66850dd99838c26479d790920939848bddee02b4921c54d1156fb94a14c24d"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "02-read-empty-episode",
+      "action": "hetu.documents.get",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/02-read-empty-episode/request.json",
+        "sha256": "4e20d6e4d88d5f9d9603740cdb687284d50e42eadbd83c8af9abcbc1e17df9ca"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/02-read-empty-episode/stdout.json",
+        "sha256": "43651d9630ddd5f22d61e09ecd81cd68d79a59bc6cbea6c6f5565c0e5f8ece62"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "02-read-work",
+      "action": "hetu.workspaces.get",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/02-read-work/request.json",
+        "sha256": "b3e2f4f1702d964a812f82ad24f679676777a743ff0f6d2cd99593986239b55d"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/02-read-work/stdout.json",
+        "sha256": "264767f036fb33f30bfd3d87b390639b8393b6c2908910a34015a58c23614564"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "02-save",
+      "action": "hetu.creation_projects.save",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/02-save/request.json",
+        "sha256": "a646d0c30b716d719863433e856c4032128c87c379332620f9fb23a05a5da090"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/02-save/stdout.json",
+        "sha256": "37605e3d3a25efd19c3561ea5ae964084b1ad02003bb35dd5a52d3cb9f73f623"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "drama-author-before-adoption",
+      "action": "hetu.documents.get",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-author-before-adoption/request.json",
+        "sha256": "e9eb419b1842b8168433cdad17da90518417b59ff8de88824f991a6d2499a7ba"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-author-before-adoption/stdout.json",
+        "sha256": "6c212f171932dc5e4811712ba5ef1398d44136f9ae17ff10cdb702ef4ddbeebc"
+      },
+      "channel": "isolated_test_author",
+      "not_a_real_user_decision": true,
+      "transport_status": "trusted_author_c_abi_returned_success"
+    },
+    {
+      "label": "drama-author-feedback",
+      "action": "hetu.task_feedback.save",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-author-feedback/request.json",
+        "sha256": "2ffed43f252f9f7e83656abd7e086a110334469db5a17099d6e5bf98f4e870e4"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-author-feedback/stdout.json",
+        "sha256": "a68b20bbf1d5d7a3b026551f015701002102d1476cf4a46b0317c09324d931ff"
+      },
+      "channel": "isolated_test_author",
+      "not_a_real_user_decision": true,
+      "transport_status": "trusted_author_c_abi_returned_success"
+    },
+    {
+      "label": "drama-author-independent-finalization",
+      "action": "hetu.documents.finalize",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-author-independent-finalization/request.json",
+        "sha256": "2fbefbac1fd2ae4f573f0ae2068d11aa31d587785e04cd023c28c77b22da2338"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-author-independent-finalization/stdout.json",
+        "sha256": "4432619003e539162513a3514b7ae43357eb48519140139893b37d73857ca32c"
+      },
+      "channel": "isolated_test_author",
+      "not_a_real_user_decision": true,
+      "transport_status": "trusted_author_c_abi_returned_success"
+    },
+    {
+      "label": "drama-author-lifecycle",
+      "action": "hetu.documents.lifecycle",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-author-lifecycle/request.json",
+        "sha256": "e15c661c458d4fd66e113d2d43990fc111844a3a6ba994fbb5ebe85cd58806e5"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-author-lifecycle/stdout.json",
+        "sha256": "aa6113be318258b3b7b1bd415e5f4a69e59a51d3a782cd3b46cc731095ae4e05"
+      },
+      "channel": "isolated_test_author",
+      "not_a_real_user_decision": true,
+      "transport_status": "trusted_author_c_abi_returned_success"
+    },
+    {
+      "label": "drama-author-partial-adoption",
+      "action": "hetu.drafts.adopt",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-author-partial-adoption/request.json",
+        "sha256": "7d32102ff0afd65e290e00d2bd89410fa7a0cf9dc3d31ee6f62046ced5229d87"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-author-partial-adoption/stdout.json",
+        "sha256": "0cd3e8f512a7d2d773865d6c018d06c1c1f45bec754d26c9ecd168fcb6f88e07"
+      },
+      "channel": "isolated_test_author",
+      "not_a_real_user_decision": true,
+      "transport_status": "trusted_author_c_abi_returned_success"
+    },
+    {
+      "label": "drama-author-preview-independent-finalization",
+      "action": "hetu.documents.preview_finalization",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-author-preview-independent-finalization/request.json",
+        "sha256": "292e063abc9bae519330f042fba0cc751e61941ce07445ed7cd578f0db8313cc"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-author-preview-independent-finalization/stdout.json",
+        "sha256": "b387f0ad90866ff5c289b41b883fb6d1f14c75d9057c123c18f650445ea256f9"
+      },
+      "channel": "isolated_test_author",
+      "not_a_real_user_decision": true,
+      "transport_status": "trusted_author_c_abi_returned_success"
+    },
+    {
+      "label": "drama-author-preview-partial-adoption",
+      "action": "hetu.drafts.preview_adoption",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-author-preview-partial-adoption/request.json",
+        "sha256": "98b717639f830768a011bc625e9e25eabc58740ae4f4a227b00e019d2a6272be"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-author-preview-partial-adoption/stdout.json",
+        "sha256": "b1817e2713afa97743595243e638341c1eb525ba96d20210c1f8a030f96386d9"
+      },
+      "channel": "isolated_test_author",
+      "not_a_real_user_decision": true,
+      "transport_status": "trusted_author_c_abi_returned_success"
+    },
+    {
+      "label": "drama-author-read-adopted",
+      "action": "hetu.documents.get",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-author-read-adopted/request.json",
+        "sha256": "e9eb419b1842b8168433cdad17da90518417b59ff8de88824f991a6d2499a7ba"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-author-read-adopted/stdout.json",
+        "sha256": "c0161bbad3d8cb5e699d6156b9e55d081dfbc5055e3443b2ef692228750d13a6"
+      },
+      "channel": "isolated_test_author",
+      "not_a_real_user_decision": true,
+      "transport_status": "trusted_author_c_abi_returned_success"
+    },
+    {
+      "label": "drama-author-revoke-management-and-tasks",
+      "action": "hetu.collaboration.revoke_management",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-author-revoke-management-and-tasks/request.json",
+        "sha256": "e2da9f92048769719e25694613aab2869c6bb59b13162669100a92757c7aaf73"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-author-revoke-management-and-tasks/stdout.json",
+        "sha256": "ce94ea8828bf0589192023883f21fb6c6ab335e529147eec4f1042429cef97b9"
+      },
+      "channel": "isolated_test_author",
+      "not_a_real_user_decision": true,
+      "transport_status": "trusted_author_c_abi_returned_success"
+    },
+    {
+      "label": "drama-author-validate-before-final",
+      "action": "hetu.documents.validate",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-author-validate-before-final/request.json",
+        "sha256": "410ddb3e3f49f33fecc8aa6d54013625bb44984ecb24af9d6827f2ba1260df42"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-author-validate-before-final/stdout.json",
+        "sha256": "4a07874599812bf1bdd7ae824d90c254a08b37f09c530932c44ed15a1bfd8459"
+      },
+      "channel": "isolated_test_author",
+      "not_a_real_user_decision": true,
+      "transport_status": "trusted_author_c_abi_returned_success"
+    },
+    {
+      "label": "drama-context-directory",
+      "action": "hetu.task_context.list",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-context-directory/request.json",
+        "sha256": "f5e526f5465a360237554cac4681dddde84ffd145b8030a58fb639d9624b5585"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-context-directory/stdout.json",
+        "sha256": "bc34c248646d1317720c2cc406b376d328d157023390d3aa5d2cb1542275eccb"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "drama-fixed-submit",
+      "action": "hetu.creative_tasks.submit_result",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-fixed-submit/request.json",
+        "sha256": "ad9b64145250bec043b311dcc7fe00ff49628ee54403ad0487a46341512a2ab6"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-fixed-submit/stdout.json",
+        "sha256": "b7544614c84d62df72b9996bf64b8fd2392923f73cb64424db59c90f84980e30"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "drama-read-first-submission",
+      "action": "hetu.creative_tasks.get",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-read-first-submission/request.json",
+        "sha256": "8ac75bd5af29b3de815366401457b5ad5ad017374343f3b79997866d52df46e7"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-read-first-submission/stdout.json",
+        "sha256": "7582355aa5d61475ee526b75c57f268b50df583a9a743c03668e4ecc4d42fe24"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "drama-read-public-feedback",
+      "action": "hetu.task_feedback.list",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-read-public-feedback/request.json",
+        "sha256": "1711b879bc5a88415a5657f0e11861f0c14afd5a889beed6f17ccf7bb8f6bcf1"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-read-public-feedback/stdout.json",
+        "sha256": "947953545ccc78dbaf25938863c1c66e6b618b565eeaaeb5d71fc561ed402ee0"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "drama-read-revised-submitted",
+      "action": "hetu.creative_tasks.get",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-read-revised-submitted/request.json",
+        "sha256": "ef37a6488cbd1d6150605e203b65721822c28fc001194b302d87c9c9f043cdef"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-read-revised-submitted/stdout.json",
+        "sha256": "dcc9e4ebd4dbe3f56594fcede6f3eb46f70a2459d441fdc0b79ff32f186360ae"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "drama-read-submitted",
+      "action": "hetu.creative_tasks.get",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-read-submitted/request.json",
+        "sha256": "296c6b78c19949c99bf3dca7e1dbbe851a023f2a335068af09610486a54d8add"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-read-submitted/stdout.json",
+        "sha256": "89b4c19875ffd691e1cb3cf139f00b4cce45e6839777dcbeb55d0e5fed64f819"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "drama-read-task",
+      "action": "hetu.creative_tasks.get",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-read-task/request.json",
+        "sha256": "296c6b78c19949c99bf3dca7e1dbbe851a023f2a335068af09610486a54d8add"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-read-task/stdout.json",
+        "sha256": "efe1bb074453fe67e64de057e7cd5b188255997e5d3c1833f493b6996bb3fbc6"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "drama-replay-fixed-revision",
+      "action": "hetu.creative_tasks.submit_result",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-replay-fixed-revision/request.json",
+        "sha256": "aa5e5fc315440429a98d84fa46746053ee69633b637638dc0ef0cd83c07ba785"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-replay-fixed-revision/stdout.json",
+        "sha256": "87c8bb34f4795d7fb4f468f5d3f2d3259c70013de09458b8d5bcf8038be8d776"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "drama-resume-feedback",
+      "action": "hetu.task_feedback.list",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-resume-feedback/request.json",
+        "sha256": "1711b879bc5a88415a5657f0e11861f0c14afd5a889beed6f17ccf7bb8f6bcf1"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-resume-feedback/stdout.json",
+        "sha256": "947953545ccc78dbaf25938863c1c66e6b618b565eeaaeb5d71fc561ed402ee0"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "drama-resume-working",
+      "action": "hetu.working_copies.get",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-resume-working/request.json",
+        "sha256": "5395d28e57805ac227f103226316d94d7630d925ee81b5aaea79e4a89b1db7ae"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-resume-working/stdout.json",
+        "sha256": "5373cee37d3db322f6e403806a9997bc04d6c1046de14721ae8d13ff4bbbb695"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "drama-revise-same-copy",
+      "action": "hetu.working_copies.save",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-revise-same-copy/request.json",
+        "sha256": "ebc9d141f16d550a6750991dc5267e1a15424a3aaf22dada96b9e773b7228360"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-revise-same-copy/stdout.json",
+        "sha256": "890d9985d0f2c2b23a34c60f759e3eb4a44dcdc0ac81ebc65281d0d5bcc38178"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "drama-revoked-management",
+      "action": "hetu.workspaces.get",
+      "status": "blocked",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-revoked-management/request.json",
+        "sha256": "b3e2f4f1702d964a812f82ad24f679676777a743ff0f6d2cd99593986239b55d"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-revoked-management/stdout.json",
+        "sha256": "415c03c8820beaf5c5270615af4a8bc59e346632d8e2e5e0c1003a41339e725a"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 3,
+      "error_code": "forbidden"
+    },
+    {
+      "label": "drama-revoked-read",
+      "action": "hetu.creative_tasks.get",
+      "status": "blocked",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-revoked-read/request.json",
+        "sha256": "296c6b78c19949c99bf3dca7e1dbbe851a023f2a335068af09610486a54d8add"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-revoked-read/stdout.json",
+        "sha256": "35c05f54fb42405197a53f0494f42e125dde1eb227b42fbee6a1c44791738209"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 3,
+      "error_code": "forbidden"
+    },
+    {
+      "label": "drama-revoked-replay",
+      "action": "hetu.creative_tasks.submit_result",
+      "status": "blocked",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-revoked-replay/request.json",
+        "sha256": "aa5e5fc315440429a98d84fa46746053ee69633b637638dc0ef0cd83c07ba785"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-revoked-replay/stdout.json",
+        "sha256": "f894e1178062e771fb44fbf9879fe2482734e3b5d6e966d8dbf52f226a9b2ff6"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 3,
+      "error_code": "forbidden"
+    },
+    {
+      "label": "drama-submit-revision",
+      "action": "hetu.creative_tasks.submit_result",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-submit-revision/request.json",
+        "sha256": "aa5e5fc315440429a98d84fa46746053ee69633b637638dc0ef0cd83c07ba785"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-submit-revision/stdout.json",
+        "sha256": "87c8bb34f4795d7fb4f468f5d3f2d3259c70013de09458b8d5bcf8038be8d776"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "drama-verify-unadopted-document",
+      "action": "hetu.documents.get",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-verify-unadopted-document/request.json",
+        "sha256": "4e20d6e4d88d5f9d9603740cdb687284d50e42eadbd83c8af9abcbc1e17df9ca"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-verify-unadopted-document/stdout.json",
+        "sha256": "43651d9630ddd5f22d61e09ecd81cd68d79a59bc6cbea6c6f5565c0e5f8ece62"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "drama-working-create",
+      "action": "hetu.working_copies.create",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-working-create/request.json",
+        "sha256": "0c8986d64c18ea53ae2e894087e4ad622d5e31f2ebc2caabb66a9f4d3bd30d42"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-working-create/stdout.json",
+        "sha256": "3ed5b66b8de0a9c05355061188cf16e8da73a5f05e6a2506fd90fccf5409d276"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "drama-working-save",
+      "action": "hetu.working_copies.save",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-working-save/request.json",
+        "sha256": "fa72e3adafa0ec4cca6515f5e3303ed61e107c6abdba3c92d217c7ae0f2f245e"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/drama-working-save/stdout.json",
+        "sha256": "ba9d5cb7d3b2ba923c0ab37492da221d680593374536d3503fb67084610281b7"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "novel-author-before-adoption",
+      "action": "hetu.documents.get",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-author-before-adoption/request.json",
+        "sha256": "b8ad37078f0cbe58573713fd354ae0e71386ee45162e550cb9e9bd3ed1c860d6"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-author-before-adoption/stdout.json",
+        "sha256": "c9613f80a9271d9ffc69f2b6f87dbac801c5cd59193d7771494257104944ce87"
+      },
+      "channel": "isolated_test_author",
+      "not_a_real_user_decision": true,
+      "transport_status": "trusted_author_c_abi_returned_success"
+    },
+    {
+      "label": "novel-author-feedback",
+      "action": "hetu.task_feedback.save",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-author-feedback/request.json",
+        "sha256": "4db842aa9d8483f02c31df44d0f14e7bdfacb05174e4bdba1c063d9f5c31847c"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-author-feedback/stdout.json",
+        "sha256": "be8e263424c5a9616f4d9792b99d086287cb9e4d94e4cdcdc6001583dc218ff0"
+      },
+      "channel": "isolated_test_author",
+      "not_a_real_user_decision": true,
+      "transport_status": "trusted_author_c_abi_returned_success"
+    },
+    {
+      "label": "novel-author-independent-finalization",
+      "action": "hetu.documents.finalize",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-author-independent-finalization/request.json",
+        "sha256": "84cabe03d6963a377e282848876231197116edb7965a19f2a7d465258f6a05f8"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-author-independent-finalization/stdout.json",
+        "sha256": "0bc747235acc014b12d2b6be155ca1d456fe1ba3b25d3af2b347c2367bc50f50"
+      },
+      "channel": "isolated_test_author",
+      "not_a_real_user_decision": true,
+      "transport_status": "trusted_author_c_abi_returned_success"
+    },
+    {
+      "label": "novel-author-lifecycle",
+      "action": "hetu.documents.lifecycle",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-author-lifecycle/request.json",
+        "sha256": "fc8ee00523d9fa2b56a273549cc3d5f89158e426d7eb81581cb7b295c3ac18fd"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-author-lifecycle/stdout.json",
+        "sha256": "011178a84222554504429a80d4dcedac99f6eb65173af1d211b372102690cbbb"
+      },
+      "channel": "isolated_test_author",
+      "not_a_real_user_decision": true,
+      "transport_status": "trusted_author_c_abi_returned_success"
+    },
+    {
+      "label": "novel-author-partial-adoption",
+      "action": "hetu.drafts.adopt",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-author-partial-adoption/request.json",
+        "sha256": "5eafbe3bf1e72155b5f18906fd31d59df8b7c3fa7ecd221ce94b5f8db7fcedf9"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-author-partial-adoption/stdout.json",
+        "sha256": "9021e980a67468212200d93a57a1d7ffb020d2d181c9285edf5c630517e269a2"
+      },
+      "channel": "isolated_test_author",
+      "not_a_real_user_decision": true,
+      "transport_status": "trusted_author_c_abi_returned_success"
+    },
+    {
+      "label": "novel-author-preview-independent-finalization",
+      "action": "hetu.documents.preview_finalization",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-author-preview-independent-finalization/request.json",
+        "sha256": "36d0476752aca1f75ec836e81a966af52a14aaf7ea47d02b7a29a87e239564b5"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-author-preview-independent-finalization/stdout.json",
+        "sha256": "c6a83515c29fe0eeaf4d5cf094c862f8f40daeb13b9c0983cce75db0acb6d14a"
+      },
+      "channel": "isolated_test_author",
+      "not_a_real_user_decision": true,
+      "transport_status": "trusted_author_c_abi_returned_success"
+    },
+    {
+      "label": "novel-author-preview-partial-adoption",
+      "action": "hetu.drafts.preview_adoption",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-author-preview-partial-adoption/request.json",
+        "sha256": "98504803ac7ddaf0ae743cef3028fdcb3d2118783fe6738989fb5c3d85e873b8"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-author-preview-partial-adoption/stdout.json",
+        "sha256": "f88f9fc19c2d5452e079c897c0d774e35c30c6095dde716713379d663fb7b5b3"
+      },
+      "channel": "isolated_test_author",
+      "not_a_real_user_decision": true,
+      "transport_status": "trusted_author_c_abi_returned_success"
+    },
+    {
+      "label": "novel-author-read-adopted",
+      "action": "hetu.documents.get",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-author-read-adopted/request.json",
+        "sha256": "b8ad37078f0cbe58573713fd354ae0e71386ee45162e550cb9e9bd3ed1c860d6"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-author-read-adopted/stdout.json",
+        "sha256": "9f403ac37d45da5bde1d5b02c6d236986cc7164262caea17d1e1b4224b7730eb"
+      },
+      "channel": "isolated_test_author",
+      "not_a_real_user_decision": true,
+      "transport_status": "trusted_author_c_abi_returned_success"
+    },
+    {
+      "label": "novel-author-revoke-management-and-tasks",
+      "action": "hetu.collaboration.revoke_management",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-author-revoke-management-and-tasks/request.json",
+        "sha256": "67e3d55291aa9b9ed7dd3925ad9bce6be8767432d98f7a86ea0a19169c858106"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-author-revoke-management-and-tasks/stdout.json",
+        "sha256": "cf22af4316c9bdecc573c86798c4edbcc8fbca30a88048c2e07cd3ba2af35817"
+      },
+      "channel": "isolated_test_author",
+      "not_a_real_user_decision": true,
+      "transport_status": "trusted_author_c_abi_returned_success"
+    },
+    {
+      "label": "novel-author-validate-before-final",
+      "action": "hetu.documents.validate",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-author-validate-before-final/request.json",
+        "sha256": "5c681d011f2d4dbc8cb7468a6664d01279b539864889930ed0b85e02bdb057ce"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-author-validate-before-final/stdout.json",
+        "sha256": "7f3dfdac759e7c411db2bdef28bc48a276b116bb9a08f782d97a280d6aa68ea1"
+      },
+      "channel": "isolated_test_author",
+      "not_a_real_user_decision": true,
+      "transport_status": "trusted_author_c_abi_returned_success"
+    },
+    {
+      "label": "novel-context-directory",
+      "action": "hetu.task_context.list",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-context-directory/request.json",
+        "sha256": "c34bd3b836ee0f474bc1520df780bdebadba0e2e8a74f7f8a9cdd898a73c7781"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-context-directory/stdout.json",
+        "sha256": "322fd6362489b104cc7fc2ecdc952efd2e7f15482aa61c9c22638f9ec07219c5"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "novel-fixed-submit",
+      "action": "hetu.creative_tasks.submit_result",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-fixed-submit/request.json",
+        "sha256": "9ce883ac9ba3c14afedb294fd9d85eb773f1a37be05edb243ee7c3d077eef956"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-fixed-submit/stdout.json",
+        "sha256": "28b24d90334a6a441128355eb85a252de8967dc3db23e50c2c6b85c254ba2b8a"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "novel-read-first-submission",
+      "action": "hetu.creative_tasks.get",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-read-first-submission/request.json",
+        "sha256": "6dcc7e683f79c77d3a81ba6bb9e3a1b37d519de35dde3d105abc57cb0c4dcea1"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-read-first-submission/stdout.json",
+        "sha256": "217246406b576015550d64a7d13bf9f743ad161f85dfb600071b01ca86668c16"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "novel-read-public-feedback",
+      "action": "hetu.task_feedback.list",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-read-public-feedback/request.json",
+        "sha256": "55b9c5a5c1163ae33ef67f5d56d801fa03e80682af4c106d660ee1717c1bf46d"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-read-public-feedback/stdout.json",
+        "sha256": "61673c79eab2113214136c745f85cea4987688d611bda1108b55e81818ba14d5"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "novel-read-revised-submitted",
+      "action": "hetu.creative_tasks.get",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-read-revised-submitted/request.json",
+        "sha256": "21aa5092afb05210b42d350909adb6ff4fb10006b4d2e0050c258bc9a6d8c2fc"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-read-revised-submitted/stdout.json",
+        "sha256": "6b974832dfc053e0a9659d776a85299f7d84be57db84152d7ef728d9cf02df65"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "novel-read-submitted",
+      "action": "hetu.creative_tasks.get",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-read-submitted/request.json",
+        "sha256": "5494f6c5f82d4e759ced0ef9929f8879176ba3a7e56bb075351d0e26ab355f6b"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-read-submitted/stdout.json",
+        "sha256": "695e068419b659a2dceb87c5ee626acce859692d10d4d209f0dd16338dbca46a"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "novel-read-task",
+      "action": "hetu.creative_tasks.get",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-read-task/request.json",
+        "sha256": "5494f6c5f82d4e759ced0ef9929f8879176ba3a7e56bb075351d0e26ab355f6b"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-read-task/stdout.json",
+        "sha256": "dbe7bd86fc51a58c2ecbaf5001a421e2d61797b1c8011abd08ba6cc979b4d0e6"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "novel-replay-fixed-revision",
+      "action": "hetu.creative_tasks.submit_result",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-replay-fixed-revision/request.json",
+        "sha256": "7d4c74950620439fb37ed639a6b7459d731ed81de1c36d3a700941aa9077e650"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-replay-fixed-revision/stdout.json",
+        "sha256": "7a6e82f2566fe9805e94b569ffa6553b5bee90a8e10a149a14a9ac3690141d4e"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "novel-resume-feedback",
+      "action": "hetu.task_feedback.list",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-resume-feedback/request.json",
+        "sha256": "55b9c5a5c1163ae33ef67f5d56d801fa03e80682af4c106d660ee1717c1bf46d"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-resume-feedback/stdout.json",
+        "sha256": "61673c79eab2113214136c745f85cea4987688d611bda1108b55e81818ba14d5"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "novel-resume-working",
+      "action": "hetu.working_copies.get",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-resume-working/request.json",
+        "sha256": "8e7460ef1667a9e2bb38200429b46c9bacc01c7d99b6202f9f361a7f10212f12"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-resume-working/stdout.json",
+        "sha256": "6040597e1850bf7830758973438e20105264e8c27006b1a15313a3d81b14a6eb"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "novel-revise-same-copy",
+      "action": "hetu.working_copies.save",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-revise-same-copy/request.json",
+        "sha256": "f995d5ea9719cc00426defc02fd3aea1d913a179b9a0ff6561c7c0ab808573f6"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-revise-same-copy/stdout.json",
+        "sha256": "23c1974ad1c84ef9b194ff907148769c383fc2e492c638b629d0105b9087cd83"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "novel-revoked-management",
+      "action": "hetu.workspaces.get",
+      "status": "blocked",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-revoked-management/request.json",
+        "sha256": "2ed7c45cfa86e7029d196cb27d5800d449d07e1ae6b7399b20a34f2c3ae600f4"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-revoked-management/stdout.json",
+        "sha256": "415c03c8820beaf5c5270615af4a8bc59e346632d8e2e5e0c1003a41339e725a"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 3,
+      "error_code": "forbidden"
+    },
+    {
+      "label": "novel-revoked-read",
+      "action": "hetu.creative_tasks.get",
+      "status": "blocked",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-revoked-read/request.json",
+        "sha256": "5494f6c5f82d4e759ced0ef9929f8879176ba3a7e56bb075351d0e26ab355f6b"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-revoked-read/stdout.json",
+        "sha256": "35c05f54fb42405197a53f0494f42e125dde1eb227b42fbee6a1c44791738209"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 3,
+      "error_code": "forbidden"
+    },
+    {
+      "label": "novel-revoked-replay",
+      "action": "hetu.creative_tasks.submit_result",
+      "status": "blocked",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-revoked-replay/request.json",
+        "sha256": "7d4c74950620439fb37ed639a6b7459d731ed81de1c36d3a700941aa9077e650"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-revoked-replay/stdout.json",
+        "sha256": "f894e1178062e771fb44fbf9879fe2482734e3b5d6e966d8dbf52f226a9b2ff6"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 3,
+      "error_code": "forbidden"
+    },
+    {
+      "label": "novel-submit-revision",
+      "action": "hetu.creative_tasks.submit_result",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-submit-revision/request.json",
+        "sha256": "7d4c74950620439fb37ed639a6b7459d731ed81de1c36d3a700941aa9077e650"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-submit-revision/stdout.json",
+        "sha256": "7a6e82f2566fe9805e94b569ffa6553b5bee90a8e10a149a14a9ac3690141d4e"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "novel-verify-unadopted-document",
+      "action": "hetu.documents.get",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-verify-unadopted-document/request.json",
+        "sha256": "aa2a6e8847936b4dffdcda25e69b5a66e037271ffde143f3bd2e51d4802865ce"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-verify-unadopted-document/stdout.json",
+        "sha256": "9ea363b9b37d618207df3e4f71bd37e3abe37fd4cd00ad73a434ea80758e91e8"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "novel-working-create",
+      "action": "hetu.working_copies.create",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-working-create/request.json",
+        "sha256": "61d55e34bd2222ef5623c78b9442f19b90780093b391788c4a76b61706102de5"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-working-create/stdout.json",
+        "sha256": "b254e70a7c5616461afc400d4b85c76bf189732cd80fd657aebf1f57dac7d401"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "novel-working-save",
+      "action": "hetu.working_copies.save",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-working-save/request.json",
+        "sha256": "345fa2d3d64b10a70b6d941d7fcbb06490f5dece50b5020a7a775341ba852223"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/journey-v2/novel-working-save/stdout.json",
+        "sha256": "0a085d8fb7351232c0ce901ad9c808de00b61b9f7416104e99b5ef8cc875efd4"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "01-begin",
+      "action": "hetu.creation_projects.create",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/recovery-smoke/01-begin/request.json",
+        "sha256": "9d65e8883318032fb3dce47b32e5f80151b263c145b0915420fa63b7ddd4fa3f"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/recovery-smoke/01-begin/stdout.json",
+        "sha256": "ec041a64697bb58e68f98bd297fbc3ac4e6cd2e90e8780ce3d5f6645bea6262a"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "02-scoped-capabilities",
+      "action": "hetu.capabilities.get",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/recovery-smoke/02-scoped-capabilities/request.json",
+        "sha256": "a3c4e19de99607ca86ae37fb3aa6974cb3e2cb27b1a44369dd7f561691969eb0"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/recovery-smoke/02-scoped-capabilities/stdout.json",
+        "sha256": "e44e2ed46c8c32049a91c35df4248ffa6dd08661f41426bd502e4fe716176e5c"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "03-recover-begin",
+      "action": "hetu.operations.get",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/recovery-smoke/03-recover-begin/request.json",
+        "sha256": "2959f7e40080eb283750a43b15ccc12f1d6cea9d01b084361859cc884562f780"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/recovery-smoke/03-recover-begin/stdout.json",
+        "sha256": "074828965b6a582002aaf70cdab68290cea0bb9de1e206e63a0d081722f30cf5"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "04-save-direction",
+      "action": "hetu.creation_projects.save",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/recovery-smoke/04-save-direction/request.json",
+        "sha256": "a46e62a50fa879cd002e5a55a7af5a9ffdccb6fd818cf8314edce6e2d27af5e2"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/recovery-smoke/04-save-direction/stdout.json",
+        "sha256": "8bed448bb39d823c3c2feee1b212e5bd9a2abdf05eb4b9b27e29b76a263f714c"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "05-recover-save",
+      "action": "hetu.operations.get",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/recovery-smoke/05-recover-save/request.json",
+        "sha256": "2c115a1062ae56a192c74e9790bacbbe5c251b21e1ab71fa7c3c5369619f75ea"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/recovery-smoke/05-recover-save/stdout.json",
+        "sha256": "29cb45a39a8c196362868dc5abac6e4a0c4df2ce1b67a3486d4355bed73de068"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "06-replay-begin",
+      "action": "hetu.creation_projects.create",
+      "status": "succeeded",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/recovery-smoke/06-replay-begin/request.json",
+        "sha256": "9d65e8883318032fb3dce47b32e5f80151b263c145b0915420fa63b7ddd4fa3f"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/recovery-smoke/06-replay-begin/stdout.json",
+        "sha256": "ec041a64697bb58e68f98bd297fbc3ac4e6cd2e90e8780ce3d5f6645bea6262a"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 0
+    },
+    {
+      "label": "drama-final-revoked-management",
+      "action": "hetu.workspaces.get",
+      "status": "blocked",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/recovery-smoke/drama-final-revoked-management/request.json",
+        "sha256": "b3e2f4f1702d964a812f82ad24f679676777a743ff0f6d2cd99593986239b55d"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/recovery-smoke/drama-final-revoked-management/stdout.json",
+        "sha256": "415c03c8820beaf5c5270615af4a8bc59e346632d8e2e5e0c1003a41339e725a"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 3,
+      "error_code": "forbidden"
+    },
+    {
+      "label": "drama-final-revoked-read",
+      "action": "hetu.creative_tasks.get",
+      "status": "blocked",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/recovery-smoke/drama-final-revoked-read/request.json",
+        "sha256": "296c6b78c19949c99bf3dca7e1dbbe851a023f2a335068af09610486a54d8add"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/recovery-smoke/drama-final-revoked-read/stdout.json",
+        "sha256": "35c05f54fb42405197a53f0494f42e125dde1eb227b42fbee6a1c44791738209"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 3,
+      "error_code": "forbidden"
+    },
+    {
+      "label": "novel-final-revoked-management",
+      "action": "hetu.workspaces.get",
+      "status": "blocked",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/recovery-smoke/novel-final-revoked-management/request.json",
+        "sha256": "2ed7c45cfa86e7029d196cb27d5800d449d07e1ae6b7399b20a34f2c3ae600f4"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/recovery-smoke/novel-final-revoked-management/stdout.json",
+        "sha256": "415c03c8820beaf5c5270615af4a8bc59e346632d8e2e5e0c1003a41339e725a"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 3,
+      "error_code": "forbidden"
+    },
+    {
+      "label": "novel-final-revoked-read",
+      "action": "hetu.creative_tasks.get",
+      "status": "blocked",
+      "request": {
+        "path": "build/current-codex-acceptance-20261114/recovery-smoke/novel-final-revoked-read/request.json",
+        "sha256": "5494f6c5f82d4e759ced0ef9929f8879176ba3a7e56bb075351d0e26ab355f6b"
+      },
+      "response": {
+        "path": "build/current-codex-acceptance-20261114/recovery-smoke/novel-final-revoked-read/stdout.json",
+        "sha256": "35c05f54fb42405197a53f0494f42e125dde1eb227b42fbee6a1c44791738209"
+      },
+      "channel": "current_conversation_codex_public_cli",
+      "exit_code": 3,
+      "error_code": "forbidden"
+    }
+  ],
+  "validation": {
+    "verified_at": "2026-11-14T16:06:23.004929+00:00",
+    "core_tests": {
+      "status": "pass",
+      "bootstrap": 3,
+      "collaboration": 3,
+      "log": "build/current-codex-acceptance-20261114/final-targeted-tests.log",
+      "note": "该次命令后续 MCP 超时退出101；Core 两组已全部通过。"
+    },
+    "stdio_confirmation": {
+      "status": "pass",
+      "exit_code": 0,
+      "passed": 17,
+      "failed": 0,
+      "test_threads": 1,
+      "request_timeout_seconds_unchanged": 10,
+      "log": "build/current-codex-acceptance-20261114/final-stdio-confirmation-tests.log",
+      "command": "cargo test --locked -p hetu-mcp --test stdio --target-dir <isolated-target> --jobs 2 -- --test-threads=1"
+    },
+    "stdio_previous_attempts": [
+      {
+        "exit_code": 101,
+        "passed": 8,
+        "failed": 9,
+        "log": "build/current-codex-acceptance-20261114/final-targeted-tests.log"
+      },
+      {
+        "exit_code": 101,
+        "passed": 9,
+        "failed": 8,
+        "log": "build/current-codex-acceptance-20261114/final-stdio-serial-tests.log"
+      }
+    ],
+    "resource_pressure_observation": {
+      "local_time": "2026-11-14 23:56 Asia/Shanghai",
+      "load_averages": [
+        75.01,
+        102.64,
+        98.32
+      ],
+      "free_memory_pages": 4148,
+      "page_size_bytes": 16384,
+      "note": "同机有其他构建，发生大量内存交换；未停止其他进程，未调整测试超时。"
+    },
+    "protocol_probe": {
+      "status": "pass",
+      "artifact": "build/current-codex-acceptance-20261114/protocol-latency.json",
+      "response_seconds": 0.7842552500078455
+    },
+    "core_build": {
+      "status": "pass",
+      "exit_code": 0,
+      "log": "build/current-codex-acceptance-20261114/final-core-build.log",
+      "command": "cargo build --locked -p hetu-core --lib --target-dir <isolated-target> --jobs 2"
+    },
+    "linkage": {
+      "status": "pass",
+      "artifact": "build/current-codex-acceptance-20261114/final-linkage.json",
+      "same_sha256_for_actual_cli_library_and_final_core": true
+    },
+    "recovery_smoke": {
+      "status": "pass",
+      "exit_code": 0,
+      "calls": 10,
+      "log": "build/current-codex-acceptance-20261114/final-recovery-smoke.log"
+    },
+    "documentation": {
+      "status": "pass",
+      "exit_code": 0,
+      "log": "build/current-codex-acceptance-20261114/final-docs-verification.log",
+      "result": {
+        "documents": 52,
+        "local_links": 479,
+        "fragment_links": 159,
+        "traceability": {
+          "FR": 35,
+          "US": 53,
+          "UC": 46,
+          "E2E": 24,
+          "AC": 54
+        },
+        "id_references": 1091,
+        "json_examples": 8,
+        "schemas": 2,
+        "mermaid": 55,
+        "errors": []
+      }
+    },
+    "skills_prior_validation": {
+      "status": "pass",
+      "commands": [
+        "python3 tools/sync-writing-methods.py --check",
+        "uv run tools/verify-skills.py"
+      ],
+      "suites": 45,
+      "categories": 908,
+      "file_references": 1755,
+      "stage": "Skills 修改并同步后执行；后续未再改 Skills"
+    },
+    "toolchains": {
+      "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+      "cargo": "cargo 1.93.1 (083ac5135 2025-12-15)",
+      "swift": "Apple Swift version 6.2.3 (swiftlang-6.2.3.3.21 clang-1700.6.3.2)\nTarget: arm64-apple-macosx15.0"
+    }
+  },
+  "native_ui_observation": {
+    "observed_at": "2026-11-14T15:53:29.341382+00:00",
+    "method": "本对话 Codex 通过 Computer Use 只读观察",
+    "novel": {
+      "document_title": "第一章 明天的车票",
+      "status": "当前稿已定稿",
+      "hanzi": 357,
+      "characters": 439,
+      "body": "局部采用返工候选，含检票钳试压动作"
+    },
+    "original_drama": {
+      "project_mode": "原创剧本",
+      "episode_title": "第一集 明天的车票",
+      "status": "当前稿已定稿",
+      "format": "Fountain",
+      "hanzi": 231,
+      "english_words": 3,
+      "characters": 335,
+      "body": "局部采用返工候选，含旧票试压与两个印记缺角比较"
+    },
+    "business_operations_via_gui": false,
+    "artifacts": {
+      "qa_app_executable": {
+        "sha256": "042b740e61c490a8a46054b88ff561ee67bf7aecfd63bb9cd6d9df84be5958c8",
+        "size_bytes": 27698744
+      },
+      "source_cli": {
+        "sha256": "38aeae325e9608b0fcec4fdcf0a6e060f3aef2d78a4bf78bb161cc0d8502bbb9",
+        "size_bytes": 270168
+      },
+      "core_before_final_recovery_build": {
+        "sha256": "623ce1e49427d1a41cfc19e6546fb50970bae9e9ac3fa71a82b392be3c6580f9",
+        "size_bytes": 48859856
+      }
+    }
+  },
+  "initial_attempt": {
+    "schema_version": "1.0.0",
+    "verified_at": "2026-11-14T14:59:18.948735+00:00",
+    "executor": "本对话 Codex；通过公开 CLI 实际执行",
+    "overall_result": "not_accepted",
+    "journey": "E2E-22 / UC-44 / AC-49 从零建书",
+    "starting_state": {
+      "workspace": null,
+      "creation_project": null,
+      "precreated_task": null,
+      "authorization_directory_created": false
+    },
+    "checks": [
+      {
+        "artifact": "installed",
+        "capability_discovery": "pass",
+        "bootstrap_creation": "blocked",
+        "missing_task_reference_rejected": "pass",
+        "ungranted_task_rejected": "pass",
+        "advertised_actions": [
+          "hetu.capabilities.get",
+          "hetu.operations.get",
+          "hetu.creative_tasks.get",
+          "hetu.creative_tasks.submit_result",
+          "hetu.interactions.get",
+          "hetu.interactions.save_selection",
+          "hetu.resources.create",
+          "hetu.resources.update",
+          "hetu.resources.get",
+          "hetu.resources.list",
+          "hetu.working_copies.create",
+          "hetu.working_copies.get",
+          "hetu.working_copies.list",
+          "hetu.working_copies.save",
+          "hetu.task_feedback.save",
+          "hetu.task_feedback.list",
+          "hetu.task_context.list",
+          "hetu.task_context.read",
+          "hetu.task_context.search",
+          "hetu.collaboration.inspect",
+          "hetu.collaboration.open"
+        ]
+      },
+      {
+        "artifact": "source",
+        "capability_discovery": "pass",
+        "bootstrap_creation": "blocked",
+        "missing_task_reference_rejected": "pass",
+        "ungranted_task_rejected": "pass",
+        "advertised_actions": [
+          "hetu.capabilities.get",
+          "hetu.operations.get",
+          "hetu.creative_tasks.get",
+          "hetu.creative_tasks.submit_result",
+          "hetu.interactions.get",
+          "hetu.interactions.save_selection",
+          "hetu.resources.create",
+          "hetu.resources.update",
+          "hetu.resources.get",
+          "hetu.resources.list",
+          "hetu.working_copies.create",
+          "hetu.working_copies.get",
+          "hetu.working_copies.list",
+          "hetu.working_copies.save",
+          "hetu.task_feedback.save",
+          "hetu.task_feedback.list",
+          "hetu.task_context.list",
+          "hetu.task_context.read",
+          "hetu.task_context.search",
+          "hetu.models.list",
+          "hetu.model_tasks.list",
+          "hetu.model_tasks.prepare",
+          "hetu.model_tasks.get",
+          "hetu.model_tasks.submit",
+          "hetu.model_tasks.collect",
+          "hetu.collaboration.inspect",
+          "hetu.collaboration.open"
+        ]
+      }
+    ],
+    "blocker": {
+      "code": "hetu.capability_unavailable",
+      "message": "稳定入口未开放筹备创建、创建操作准备或获权执行。",
+      "evidence": [
+        "build/current-codex-acceptance-20261114/installed-create-unavailable.json",
+        "build/current-codex-acceptance-20261114/source-create-unavailable.json"
+      ],
+      "required_change": "在稳定机器入口发布从无作品筹备、Agent 填字段、完整创建方案、作者必要决定、确切获权执行、作品定位与新任务授权的合同和实现。"
+    },
+    "not_run": [
+      "当前会话从零建书后首次参考稿保存及提交",
+      "当前会话从零旅程的公开意见返工",
+      "当前会话从零旅程的局部采纳及独立定稿",
+      "从零原创剧本分支",
+      "真实 MCP 连接及 MCP Apps 宿主",
+      "收费文字及图片模型请求"
+    ],
+    "boundaries": [
+      "本次未预建任务或使用作者测试驱动补齐 E2E-22",
+      "未用 GUI 自动化代替缺失机器入口",
+      "未直接修改受管作品与授权文件",
+      "此前资料核对集成测试与界面检查不代替此次真实 Agent 端到端旅程"
+    ],
+    "fingerprints": {
+      "AGENTS.md": "6d75c53096a685a7cc44884c6e668b3048225b64bfc44710c7b033f980f78e37",
+      "docs/14-MCP与Agent接入.md": "3701a2ae1b99d3fcb74e584a111e297301a4abec2b0b3dd45c1049e34830a209",
+      "docs/19-测试策略与验收矩阵.md": "e17f717d658c00d1186288233d633a591b299cc3ae3c9c91e854da9cba3951b9",
+      "docs/20-实施路线与里程碑.md": "c9f5746b4f748dfe4151f18cb893ced8c1ced0ae3734de57f2f64ee1c6b6b9e7",
+      "tools/hetu-skills/base/skills/hetu-setup/SKILL.md": "b961a3e6ab457373c47e4ab97a681ee48ca3afa93cc6de985158bfd828f3cbd4",
+      "tools/hetu-skills/base/references/task-contract.md": "7d76d4b530ecf879861227f7425604540675ca2a36099fb411cc90a6966dd145",
+      "apps/cli/Sources/HetuCLI.swift": "1a20d842bec801711cf0ceb1beace16a033d67694d682e6882fa887c4a284139",
+      "core/src/collaboration.rs": "a748442d10d82a1b7dcfb081f07fa510b6481bc2dd116e0374fedc02c23f4eca",
+      "/tmp/hetu-impact-core-build/debug/libhetu_core.dylib": "cf850aa4d77828ded14e17a2fd35fac87052b48393f36750a0b3d082da021347"
+    },
+    "raw_evidence_directory": "build/current-codex-acceptance-20261114"
+  },
+  "fixes": [
+    "稳定入口的独立筹备及有限新目录创建",
+    "管理引用、任务授权及作者决定分离",
+    "原键创建恢复、管理范围能力发现与原操作查询",
+    "新建作品首任务派生及管理撤权联动",
+    "旧 MCP profile 不暴露仅稳定入口的管理工具",
+    "generic 客户端与任务 other 适配器对齐"
+  ],
+  "not_run": [
+    "真实 MCP 宿主的安装、自动发现及 MCP Apps 交互",
+    "收费文字或图片模型请求",
+    "签名安装包与干净电脑安装",
+    "正式发布、推送或生产部署",
+    "任意已有作品目录授权、完整操作提案和全页交接等其他独立切片"
+  ],
+  "limitations": [
+    "本轮结论限定于源码 CLI 两条创作旅程和隔离作者合同，不代表全软件或安装版验收通过。",
+    "stdio 测试使用官方协议与本机进程，不冒称本对话已挂载 Hetu MCP 工具。",
+    "原生观察使用源码 QA App；观察时 Core 摘要与最终恢复接口补丁后的 Core 摘要分别记录。",
+    "MCP 并发和首次串行测试发生 10 秒超时，失败日志保留；最终确认结果另列。"
+  ],
+  "raw_evidence_directory": "build/current-codex-acceptance-20261114",
+  "raw_artifact_manifest": {
+    "path": "build/current-codex-acceptance-20261114/artifact-manifest.json",
+    "sha256": "cdde81cacd33ceebc8a41e1712daff5a096cc0ff0cf2f9f4c52f0e681bf665d4",
+    "files": 921
+  }
+}

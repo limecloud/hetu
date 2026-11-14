@@ -26,11 +26,11 @@ struct DramaBuildSheet: View {
     private var nodes: [JSONValue] { dramaOrderedNodes(plot) }
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(model.t("drama.build")).font(.title2)
-            Text(model.t("drama.build_note")).foregroundStyle(.secondary)
-            Text(model.t("drama.anchors_note")).font(.callout)
-            Text(model.t("plot.coverage." + (plot["coverage"]["status"].string ?? "partial"))).font(.caption)
-            if let error { Text(error).foregroundStyle(.red).textSelection(.enabled) }
+            Text(model.t("drama.build")).font(.system(size: 20, weight: .semibold))
+            Text(model.t("drama.build_note")).foregroundStyle(WorkbenchPalette.muted)
+            Text(model.t("drama.anchors_note")).font(.system(size: 14))
+            Text(model.t("plot.coverage." + (plot["coverage"]["status"].string ?? "partial"))).font(.system(size: 12))
+            if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 10) {
                     ForEach(Array(nodes.enumerated()), id: \.offset) { index, node in
@@ -96,8 +96,8 @@ struct DramaEditorSheet: View {
     }
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(model.t(editingScene ? "drama.edit_scene" : "drama.edit_episode")).font(.title2)
-            if let error { Text(error).foregroundStyle(.red).textSelection(.enabled) }
+            Text(model.t(editingScene ? "drama.edit_scene" : "drama.edit_episode")).font(.system(size: 20, weight: .semibold))
+            if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     TextField(model.t("drama.field.title"), text: $title)
@@ -138,7 +138,7 @@ struct DramaEditorSheet: View {
             Stepper(model.t("drama.target_position", ["number": String(targetIndex + 1)]), value: $targetIndex, in: 0...targetMaximum)
             mapping
             Divider()
-            Text(model.t("drama.structure_note")).font(.caption).foregroundStyle(.secondary)
+            Text(model.t("drama.structure_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
             Picker(model.t("drama.split_at"), selection: $splitAnchor) {
                 Text(model.t("plot.unspecified")).tag("")
                 ForEach(scene["plot_node_refs"].array.dropFirst().compactMap(\.string), id: \.self) { id in
@@ -157,7 +157,7 @@ struct DramaEditorSheet: View {
     private var mapping: some View {
         DisclosureGroup(model.t("drama.mapping")) {
             VStack(alignment: .leading, spacing: 8) {
-                Text(model.t("drama.mapping_note")).font(.caption).foregroundStyle(.secondary)
+                Text(model.t("drama.mapping_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                 ForEach(Array(refs.enumerated()), id: \.offset) { index, id in
                     HStack {
                         if let node = plot["nodes"].array.first(where: { $0["node_id"].string == id }) { Text(dramaNodeLabel(node, model: model)).lineLimit(2) }
@@ -177,7 +177,7 @@ struct DramaEditorSheet: View {
         VStack(alignment: .leading, spacing: 14) {
             Stepper(model.t("drama.target_position", ["number": String(targetIndex + 1)]), value: $targetIndex, in: 0...max(0, episodes.count - 1))
             Divider()
-            Text(model.t("drama.structure_note")).font(.caption).foregroundStyle(.secondary)
+            Text(model.t("drama.structure_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
             Picker(model.t("drama.split_at"), selection: $splitAnchor) {
                 Text(model.t("plot.unspecified")).tag("")
                 ForEach(Array(episode["scenes"].array.dropFirst().enumerated()), id: \.offset) { index, s in

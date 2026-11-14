@@ -182,6 +182,7 @@ impl Kernel {
     }
 
     pub(super) fn initialize_novel(&self, input: &Value, changes: &mut Changes) -> Result<Value> {
+        ensure(self.config["work_type"] != "drama", "invalid_input", "剧本作品不初始化小说目录。")?;
         ensure(
             self.novel()?.is_none(),
             "revision_conflict",

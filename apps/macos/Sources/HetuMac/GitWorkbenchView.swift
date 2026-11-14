@@ -28,18 +28,18 @@ struct GitWorkbenchView: View {
             WorkbenchHeading(title: model.t("git.title"), subtitle: model.t("git.description"), artwork: status["initialized"].bool == true ? "review-desk" : "") {
                 Button(model.t("common.refresh")) { Task { await load() } }.disabled(pending != nil)
             }
-            if let error { Text(error).foregroundStyle(.red).textSelection(.enabled) }
+            if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             if pending != nil { Button(model.t("drama.retry")) { Task { await perform() } } }
             if status["initialized"].bool == false {
-                Text(model.t("git.init_note")).foregroundStyle(.secondary)
+                Text(model.t("git.init_note")).foregroundStyle(WorkbenchPalette.muted)
                 TextField(model.t("git.branch"), text: $branch).textFieldStyle(.roundedBorder).frame(maxWidth: 320)
                 Button(model.t("git.init")) { confirmInit = true }.disabled(held || branch.isEmpty)
                     .buttonStyle(WorkbenchButtonStyle(primary: true))
                 WorkbenchEmptyState(title: model.t("git.no_history"), detail: model.t("git.empty_detail"), artwork: "review-desk")
             } else if status["initialized"].bool == true {
-                Text(status["head"]["reference"].string?.replacingOccurrences(of: "refs/heads/", with: "") ?? model.t("git.detached")).font(.headline)
-                Text(status["head"]["commit_id"].string ?? model.t("git.first_commit")).font(.caption.monospaced()).textSelection(.enabled)
-                Text(model.t("git.index_note")).font(.caption).foregroundStyle(.secondary)
+                Text(status["head"]["reference"].string?.replacingOccurrences(of: "refs/heads/", with: "") ?? model.t("git.detached")).font(.system(size: 14, weight: .semibold))
+                Text(status["head"]["commit_id"].string ?? model.t("git.first_commit")).font(.system(size: 12, design: .monospaced)).textSelection(.enabled)
+                Text(model.t("git.index_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                 Picker(model.t("git.section"), selection: $tab) {
                     Text(model.t("git.changes")).tag("changes")
                     Text(model.t("git.previews")).tag("previews")
@@ -70,7 +70,7 @@ struct GitWorkbenchView: View {
                     Button(model.t("git.select_none")) { selected = [] }.disabled(held)
                     Spacer()
                 }
-                if paths.isEmpty { Text(model.t("git.clean")).foregroundStyle(.secondary) }
+                if paths.isEmpty { Text(model.t("git.clean")).foregroundStyle(WorkbenchPalette.muted) }
                 ScrollView {
                   LazyVStack(alignment: .leading, spacing: 8) {
                     ForEach(Array(status["changes"].array.enumerated()), id: \.offset) { _, item in
@@ -79,11 +79,11 @@ struct GitWorkbenchView: View {
                             Toggle(isOn: Binding(get: { selected.contains(path) }, set: { if $0 { selected.insert(path) } else { selected.remove(path) } })) {
                                 VStack(alignment: .leading, spacing: 3) {
                                     Text(path).lineLimit(2)
-                                    if item["staged"].bool == true { Text(model.t("git.also_staged")).font(.caption).foregroundStyle(.secondary) }
+                                    if item["staged"].bool == true { Text(model.t("git.also_staged")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted) }
                                 }
                             }.disabled(held)
                             Spacer()
-                            if let size = item["size_bytes"].integer { Text(model.localizer.byteCount(size)).font(.caption).foregroundStyle(.secondary) }
+                            if let size = item["size_bytes"].integer { Text(model.localizer.byteCount(size)).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted) }
                             Button(model.t("git.diff")) { difference = DramaSheet(value: .string(path)) }.buttonStyle(.borderless).accessibilityLabel(model.t("git.diff_file", ["path": path]))
                         }
                         Divider()
@@ -92,34 +92,34 @@ struct GitWorkbenchView: View {
                 }
             }.frame(minWidth: 280)
             VStack(alignment: .leading, spacing: 12) {
-                Text(model.t("git.snapshot")).font(.headline)
+                Text(model.t("git.snapshot")).font(.system(size: 14, weight: .semibold))
                 TextField(model.t("git.author_name"), text: $authorName).textFieldStyle(.roundedBorder)
                 TextField(model.t("git.author_email"), text: $authorEmail).textFieldStyle(.roundedBorder)
-                Text(model.t("git.identity_note")).font(.caption).foregroundStyle(.secondary)
+                Text(model.t("git.identity_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                 TextField(model.t("git.message"), text: $message, axis: .vertical).lineLimit(3...6).textFieldStyle(.roundedBorder)
-                Text(model.t("git.selected_count", ["count": String(selected.count)])).font(.caption)
+                Text(model.t("git.selected_count", ["count": String(selected.count)])).font(.system(size: 12))
                 Button(model.t("git.prepare")) {
                     pending = DramaOperation(action: "hetu.git.snapshot", input: ["phase": .string("prepare"), "expected_head": status["head"], "message": .string(message), "author": .object(["name": .string(authorName), "email": .string(authorEmail)]), "selected_paths": .array(selected.sorted().map(JSONValue.string)), "operation_key": .string(UUID().uuidString)])
                     Task { await perform() }
                 }.disabled(held || selected.isEmpty || message.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || authorName.isEmpty || authorEmail.isEmpty)
-                Text(model.t("git.prepare_note")).font(.caption).foregroundStyle(.secondary)
+                Text(model.t("git.prepare_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                 Spacer()
             }.disabled(held).padding(.leading, 16).frame(minWidth: 240, idealWidth: 300, maxWidth: 360)
         }
     }
     private var history: some View {
         VStack(alignment: .leading) {
-            if records.isEmpty { Text(model.t(tab == "history" ? "git.no_history" : "git.no_previews")).foregroundStyle(.secondary) }
+            if records.isEmpty { Text(model.t(tab == "history" ? "git.no_history" : "git.no_previews")).foregroundStyle(WorkbenchPalette.muted) }
             ScrollView {
               LazyVStack(alignment: .leading, spacing: 8) {
                 ForEach(Array(records.enumerated()), id: \.offset) { _, record in
                     VStack(alignment: .leading, spacing: 6) {
                         Text(record["message"].string ?? "").lineLimit(3).textSelection(.enabled)
-                        Text((record["author"]["name"].string ?? "") + " <" + (record["author"]["email"].string ?? "") + ">").font(.caption).foregroundStyle(.secondary)
-                        if let timestamp = record["timestamp"].integer { Text(Date(timeIntervalSince1970: Double(timestamp)), style: .date).font(.caption).foregroundStyle(.secondary) }
+                        Text((record["author"]["name"].string ?? "") + " <" + (record["author"]["email"].string ?? "") + ">").font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
+                        if let timestamp = record["timestamp"].integer { Text(Date(timeIntervalSince1970: Double(timestamp)), style: .date).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted) }
                         if tab == "previews" {
                             Button(model.t("git.open_preview")) { preview = DramaSheet(value: record["snapshot_id"]) }.buttonStyle(.borderless)
-                        } else { Text(record["commit_id"].string ?? "").font(.caption.monospaced()).textSelection(.enabled) }
+                        } else { Text(record["commit_id"].string ?? "").font(.system(size: 12, design: .monospaced)).textSelection(.enabled) }
                     }.padding(.vertical, 4).accessibilityElement(children: .contain)
                     Divider()
                 }
@@ -168,26 +168,26 @@ struct GitSnapshotReviewSheet: View {
     private var snapshot: JSONValue { context["snapshot"] }
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(model.t("git.review")).font(.title2)
-            if let error { Text(error).foregroundStyle(.red).textSelection(.enabled) }
+            Text(model.t("git.review")).font(.system(size: 20, weight: .semibold))
+            if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             if completed != .null {
                 Label(model.t("git.committed"), systemImage: "checkmark.circle")
-                Text(completed["commit_id"].string ?? "").font(.caption.monospaced()).textSelection(.enabled)
+                Text(completed["commit_id"].string ?? "").font(.system(size: 12, design: .monospaced)).textSelection(.enabled)
             } else if snapshot != .null {
-                Text(snapshot["message"].string ?? "").font(.headline).textSelection(.enabled)
+                Text(snapshot["message"].string ?? "").font(.system(size: 14, weight: .semibold)).textSelection(.enabled)
                 Text((snapshot["author"]["name"].string ?? "") + " <" + (snapshot["author"]["email"].string ?? "") + ">").textSelection(.enabled)
-                Text(snapshot["head"]["reference"].string ?? model.t("git.detached")).font(.caption)
-                Text(snapshot["head"]["commit_id"].string ?? model.t("git.first_commit")).font(.caption.monospaced()).textSelection(.enabled)
-                Text(model.t("git.digest") + ": " + (context["snapshot_sha256"].string ?? "")).font(.caption.monospaced()).textSelection(.enabled)
-                if context["is_current"].bool == false { Text(model.t("git.stale")).foregroundStyle(.orange) }
-                Text(model.t("git.selected_count", ["count": String(snapshot["selection"].array.count)])).font(.headline)
+                Text(snapshot["head"]["reference"].string ?? model.t("git.detached")).font(.system(size: 12))
+                Text(snapshot["head"]["commit_id"].string ?? model.t("git.first_commit")).font(.system(size: 12, design: .monospaced)).textSelection(.enabled)
+                Text(model.t("git.digest") + ": " + (context["snapshot_sha256"].string ?? "")).font(.system(size: 12, design: .monospaced)).textSelection(.enabled)
+                if context["is_current"].bool == false { Text(model.t("git.stale")).foregroundStyle(WorkbenchPalette.warningInk) }
+                Text(model.t("git.selected_count", ["count": String(snapshot["selection"].array.count)])).font(.system(size: 14, weight: .semibold))
                 ScrollView {
                   LazyVStack(alignment: .leading, spacing: 8) {
                     ForEach(Array(snapshot["selection"].array.enumerated()), id: \.offset) { _, item in
                         HStack {
                             Text(item["path"].string ?? "").textSelection(.enabled)
                             Spacer()
-                            if item["after_oid"] == .null { Text(model.t("git.deleted")).font(.caption) }
+                            if item["after_oid"] == .null { Text(model.t("git.deleted")).font(.system(size: 12)) }
                             Button(model.t("git.diff")) { difference = DramaSheet(value: item["path"]) }.buttonStyle(.borderless).accessibilityLabel(model.t("git.diff_file", ["path": item["path"].string ?? ""]))
                         }.accessibilityElement(children: .contain)
                         Divider()
@@ -195,9 +195,9 @@ struct GitSnapshotReviewSheet: View {
                   }
                 }.frame(minHeight: 130)
                 DisclosureGroup(model.t("git.excluded_count", ["count": String(snapshot["excluded_changes"].array.count)])) {
-                    ScrollView { Text(snapshot["excluded_changes"].array.compactMap { $0["path"].string }.joined(separator: "\n")).font(.caption).frame(maxWidth: .infinity, alignment: .leading).textSelection(.enabled) }.frame(maxHeight: 90)
+                    ScrollView { Text(snapshot["excluded_changes"].array.compactMap { $0["path"].string }.joined(separator: "\n")).font(.system(size: 12)).frame(maxWidth: .infinity, alignment: .leading).textSelection(.enabled) }.frame(maxHeight: 90)
                 }
-                Text(model.t("git.confirm_note")).font(.caption).foregroundStyle(.secondary)
+                Text(model.t("git.confirm_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
             }
             HStack {
                 Button(model.t("common.close")) { dismiss() }.keyboardShortcut(.cancelAction)
@@ -243,21 +243,21 @@ struct GitDifferenceSheet: View {
     @State private var error: String?
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(model.t("git.diff")).font(.title2)
-            Text(path).font(.headline).textSelection(.enabled)
-            if let error { Text(error).foregroundStyle(.red) }
+            Text(model.t("git.diff")).font(.system(size: 20, weight: .semibold))
+            Text(path).font(.system(size: 14, weight: .semibold)).textSelection(.enabled)
+            if let error { Text(error).foregroundStyle(WorkbenchPalette.danger) }
             if result != .null {
                 HStack {
                     Text(model.t("git.before_size", ["size": model.localizer.byteCount(result["before_size"].integer ?? 0)]))
                     Text(model.t("git.after_size", ["size": model.localizer.byteCount(result["after_size"].integer ?? 0)]))
-                }.font(.caption).foregroundStyle(.secondary)
-                if result["binary"].bool == true || result["truncated"].bool == true { Text(model.t("git.binary_note")).foregroundStyle(.secondary) }
+                }.font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
+                if result["binary"].bool == true || result["truncated"].bool == true { Text(model.t("git.binary_note")).foregroundStyle(WorkbenchPalette.muted) }
                 else if let difference {
-                    if !difference.withinBudget || difference.totalChanges > difference.changes.count { Text(model.t("git.diff_budget")).font(.caption).foregroundStyle(.orange) }
+                    if !difference.withinBudget || difference.totalChanges > difference.changes.count { Text(model.t("git.diff_budget")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.warningInk) }
                     ScrollView {
                         LazyVStack(alignment: .leading, spacing: 4) {
                             ForEach(difference.changes) { item in
-                                Text((item.added ? "+ " : "− ") + String(item.line) + "  " + item.text).font(.system(.caption, design: .monospaced)).foregroundStyle(item.added ? .green : .red).textSelection(.enabled)
+                                Text((item.added ? "+ " : "− ") + String(item.line) + "  " + item.text).font(.system(size: 12, design: .monospaced)).foregroundStyle(item.added ? .green : .red).textSelection(.enabled)
                             }
                         }.frame(maxWidth: .infinity, alignment: .leading)
                     }

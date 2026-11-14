@@ -30,7 +30,7 @@ struct ReviewWorkbenchView: View {
             WorkbenchHeading(title: model.t("review.title"), subtitle: model.t("review.description"), artwork: context == .null ? "" : "review-desk") {
                 Button(model.t("common.refresh")) { Task { await loadRows(); await load() } }.disabled(pending != nil)
             }
-            if let error { Text(error).foregroundStyle(.red).textSelection(.enabled) }
+            if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             if pending != nil { Button(model.t("drama.retry")) { Task { await perform() } } }
             HSplitView {
                 VStack(alignment: .leading) {
@@ -42,7 +42,7 @@ struct ReviewWorkbenchView: View {
                         ForEach(Array(rows.enumerated()), id: \.offset) { _, item in
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(item["title"].string ?? model.t("draft.untitled"))
-                                Text(model.t("review.state." + (item["state"].string ?? "submitted"))).font(.caption).foregroundStyle(.secondary)
+                                Text(model.t("review.state." + (item["state"].string ?? "submitted"))).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                             }.tag(item["draft_id"].string ?? "")
                         }
                     }
@@ -69,12 +69,12 @@ struct ReviewWorkbenchView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
-                    Text(draft["title"].string ?? context["baseline"]["document"]["title"].string ?? model.t("draft.untitled")).font(.headline)
+                    Text(draft["title"].string ?? context["baseline"]["document"]["title"].string ?? model.t("draft.untitled")).font(.system(size: 14, weight: .semibold))
                     Spacer()
-                    Text(model.t("review.state." + state)).foregroundStyle(.secondary)
+                    Text(model.t("review.state." + state)).foregroundStyle(WorkbenchPalette.muted)
                 }
-                Text(model.t("review.provenance", ["source": model.t(draft["actor_ref"].string?.hasSuffix("000000000002") == true ? "review.agent" : "review.author"), "date": model.localizer.date(draft["created_at"].string ?? ""), "revision": String(draft["revision"].integer ?? 0)])).font(.caption).foregroundStyle(.secondary)
-                if context["stale"].bool == true { Text(model.t("review.stale")).foregroundStyle(.orange) }
+                Text(model.t("review.provenance", ["source": model.t(draft["actor_ref"].string?.hasSuffix("000000000002") == true ? "review.agent" : "review.author"), "date": model.localizer.date(draft["created_at"].string ?? ""), "revision": String(draft["revision"].integer ?? 0)])).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
+                if context["stale"].bool == true { Text(model.t("review.stale")).foregroundStyle(WorkbenchPalette.warningInk) }
                 HStack {
                     if state == "submitted" { Button(model.t("review.begin")) { start("hetu.reviews.begin", ["draft_id": draft["draft_id"], "expected_draft_revision": draft["revision"]]) } }
                     if context["evidence_ready"].bool == true && ["submitted", "in_review"].contains(state) {
@@ -92,7 +92,7 @@ struct ReviewWorkbenchView: View {
                         .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(WorkbenchPalette.line, lineWidth: 0.5))
                     if ["in_review", "approved"].contains(state) { decisionForm.frame(width: 260) }
                 }
-                Text(model.t("review.report_note")).font(.caption).foregroundStyle(.secondary)
+                Text(model.t("review.report_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                 Picker(model.t("review.report"), selection: $reportID) {
                     Text(model.t("plot.unspecified")).tag("")
                     ForEach(Array(context["reports"].array.enumerated()), id: \.offset) { _, item in
@@ -102,12 +102,12 @@ struct ReviewWorkbenchView: View {
                 if !reportID.isEmpty { Button(model.t("review.view_report")) { reportSheet = DramaSheet(value: .string(reportID)) } }
                 if context["reports_next_cursor"].string != nil { Button(model.t("plot.more")) { Task { await load(moreReports: true) } }.disabled(held) }
                 if !context["decisions"].array.isEmpty {
-                    Divider(); Text(model.t("review.history")).font(.headline)
+                    Divider(); Text(model.t("review.history")).font(.system(size: 14, weight: .semibold))
                     ForEach(Array(context["decisions"].array.reversed().enumerated()), id: \.offset) { _, item in
-                        Text(model.t("review.decision." + (item["decision"].string ?? "rejected")) + "  " + model.localizer.date(item["decided_at"].string ?? "")).font(.headline)
+                        Text(model.t("review.decision." + (item["decision"].string ?? "rejected")) + "  " + model.localizer.date(item["decided_at"].string ?? "")).font(.system(size: 14, weight: .semibold))
                         Text(item["comments"].string ?? "").textSelection(.enabled)
-                        if let note = item["private_comments"].string, !note.isEmpty { Text(model.t("review.private") + (model.locale == "en" ? ": " : "：") + note).foregroundStyle(.secondary).textSelection(.enabled) }
-                        if let reason = item["coverage_acknowledgement"].string, !reason.isEmpty { Text(model.t("review.coverage") + (model.locale == "en" ? ": " : "：") + reason).font(.caption).textSelection(.enabled) }
+                        if let note = item["private_comments"].string, !note.isEmpty { Text(model.t("review.private") + (model.locale == "en" ? ": " : "：") + note).foregroundStyle(WorkbenchPalette.muted).textSelection(.enabled) }
+                        if let reason = item["coverage_acknowledgement"].string, !reason.isEmpty { Text(model.t("review.coverage") + (model.locale == "en" ? ": " : "：") + reason).font(.system(size: 12)).textSelection(.enabled) }
                         Divider()
                     }
                 }
@@ -117,10 +117,10 @@ struct ReviewWorkbenchView: View {
     private var decisionForm: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(model.t("review.comments"))
-            TextEditor(text: $comments).frame(height: 80).border(Color.secondary.opacity(0.2)).accessibilityLabel(model.t("review.comments"))
+            TextEditor(text: $comments).frame(height: 80).border(WorkbenchPalette.muted.opacity(0.2)).accessibilityLabel(model.t("review.comments"))
             TextField(model.t("review.private"), text: $privateComments).textFieldStyle(.roundedBorder)
             TextField(model.t("review.coverage"), text: $coverage).textFieldStyle(.roundedBorder)
-            Text(model.t("review.decision_note")).font(.caption).foregroundStyle(.secondary)
+            Text(model.t("review.decision_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
             HStack {
                 if state == "in_review" {
                     Button(model.t("review.decision.approved")) { decide("approved") }.buttonStyle(WorkbenchButtonStyle(primary: true)).disabled(selectedReport == nil || selectedReport?["stale"].bool != false || context["stale"].bool == true)
@@ -178,9 +178,9 @@ struct ReviewReportSheet: View {
     @State private var plotSheet: DramaSheet?
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(model.t("review.view_report")).font(.title2)
-            if let error { Text(error).foregroundStyle(.red) }
-            if result["stale"].bool == true { Text(model.t("review.old_report")).foregroundStyle(.orange) }
+            Text(model.t("review.view_report")).font(.system(size: 20, weight: .semibold))
+            if let error { Text(error).foregroundStyle(WorkbenchPalette.danger) }
+            if result["stale"].bool == true { Text(model.t("review.old_report")).foregroundStyle(WorkbenchPalette.warningInk) }
             Button(model.t("review.plot_annotations")) {
                 plotSheet = DramaSheet(value: result["report"]["input_snapshot"]["source_revisions"].array.first ?? .null)
             }.disabled(result == .null)
@@ -188,10 +188,10 @@ struct ReviewReportSheet: View {
                 LazyVStack(alignment: .leading, spacing: 10) {
                     ValidationCoverageView(model: model, result: result, sourceTitle: model.t("review.content"))
                     ForEach(Array(result["report"]["findings"].array.enumerated()), id: \.offset) { _, finding in
-                        Text(model.t(finding["message_key"].string ?? "validation.prerequisites")).font(.headline)
-                        Text(model.t("rule.severity." + (finding["severity"].string ?? "info")) + "  " + model.t("validation.certainty." + (finding["certainty"].string ?? "unknown"))).font(.caption).foregroundStyle(.secondary)
+                        Text(model.t(finding["message_key"].string ?? "validation.prerequisites")).font(.system(size: 14, weight: .semibold))
+                        Text(model.t("rule.severity." + (finding["severity"].string ?? "info")) + "  " + model.t("validation.certainty." + (finding["certainty"].string ?? "unknown"))).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                         if !finding["missing_prerequisites"].array.isEmpty {
-                            Text(finding["missing_prerequisites"].array.compactMap(\.string).map { model.t("validation.missing." + $0) }.joined(separator: "\n")).font(.caption)
+                            Text(finding["missing_prerequisites"].array.compactMap(\.string).map { model.t("validation.missing." + $0) }.joined(separator: "\n")).font(.system(size: 12))
                         }
                         FindingEvidenceView(model: model, finding: finding, blueprint: blueprint)
                         ForEach(Array(finding["source_refs"].array.enumerated()), id: \.offset) { _, ref in
@@ -200,7 +200,7 @@ struct ReviewReportSheet: View {
                         Button(model.t("validation.review")) { disposition = DramaSheet(value: finding) }
                         Divider()
                     }
-                    Text(model.t("review.unknown_count", ["count": String(result["report"]["coverage"]["counts"]["unknown"].integer ?? 0)])).foregroundStyle(.secondary)
+                    Text(model.t("review.unknown_count", ["count": String(result["report"]["coverage"]["counts"]["unknown"].integer ?? 0)])).foregroundStyle(WorkbenchPalette.muted)
                 }.frame(maxWidth: .infinity, alignment: .leading)
             }
             Button(model.t("common.close")) { dismiss() }.keyboardShortcut(.cancelAction)
@@ -233,8 +233,8 @@ struct ReviewComparisonSheet: View {
     @State private var difference: RevisionDifference?
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(model.t("review.compare")).font(.title2)
-            Text(model.t("review.compare_note")).foregroundStyle(.secondary)
+            Text(model.t("review.compare")).font(.system(size: 20, weight: .semibold))
+            Text(model.t("review.compare_note")).foregroundStyle(WorkbenchPalette.muted)
             Picker(model.t("review.compare"), selection: $mode) {
                 Text(model.t("review.line_changes")).tag("changes")
                 Text(model.t("review.side_by_side")).tag("side_by_side")
@@ -243,23 +243,23 @@ struct ReviewComparisonSheet: View {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 8) {
                         if let difference {
-                            if !difference.withinBudget { Text(model.t("review.diff_budget")).foregroundStyle(.orange) }
+                            if !difference.withinBudget { Text(model.t("review.diff_budget")).foregroundStyle(WorkbenchPalette.warningInk) }
                             else {
                                 Text(model.t("review.diff_count", ["count": String(difference.totalChanges)]))
                                 ForEach(difference.changes) { change in
                                     HStack(alignment: .top) {
-                                        Text(model.t(change.added ? "review.added_line" : "review.removed_line", ["line": String(change.line)])).font(.caption).foregroundStyle(change.added ? .green : .red)
+                                        Text(model.t(change.added ? "review.added_line" : "review.removed_line", ["line": String(change.line)])).font(.system(size: 12)).foregroundStyle(change.added ? .green : .red)
                                         Text(change.text).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading)
                                     }
                                 }
-                                if difference.totalChanges > difference.changes.count { Text(model.t("review.diff_limit")).font(.caption) }
+                                if difference.totalChanges > difference.changes.count { Text(model.t("review.diff_limit")).font(.system(size: 12)) }
                             }
                         } else { ProgressView() }
                     }.frame(maxWidth: .infinity, alignment: .leading)
                 }
             } else { HSplitView {
                 sourcePane(context["baseline"], label: "review.baseline")
-                VStack(alignment: .leading) { Text(model.t("review.content")).font(.headline); ScrollView { Text(context["content"].string ?? "").textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading) } }.frame(minWidth: 300)
+                VStack(alignment: .leading) { Text(model.t("review.content")).font(.system(size: 14, weight: .semibold)); ScrollView { Text(context["content"].string ?? "").textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading) } }.frame(minWidth: 300)
             } }
             Button(model.t("common.close")) { dismiss() }.keyboardShortcut(.cancelAction)
         }.padding(24).frame(width: 920, height: 600)
@@ -269,6 +269,6 @@ struct ReviewComparisonSheet: View {
         }
     }
     private func sourcePane(_ value: JSONValue, label: String) -> some View {
-        VStack(alignment: .leading) { Text(model.t(label)).font(.headline); ScrollView { Text(value["content"].string ?? "").textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading) } }.frame(minWidth: 300)
+        VStack(alignment: .leading) { Text(model.t(label)).font(.system(size: 14, weight: .semibold)); ScrollView { Text(value["content"].string ?? "").textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading) } }.frame(minWidth: 300)
     }
 }

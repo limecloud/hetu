@@ -22,16 +22,16 @@ struct PlotNodeEditor: View {
     }
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(model.t(adding ? "plot.add_node" : "plot.correct_node")).font(.title2)
-            Text(model.t("plot.correction_note")).font(.callout).foregroundStyle(.secondary)
-            if let error { Text(error).foregroundStyle(.red).textSelection(.enabled) }
+            Text(model.t(adding ? "plot.add_node" : "plot.correct_node")).font(.system(size: 20, weight: .semibold))
+            Text(model.t("plot.correction_note")).font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted)
+            if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     if adding { sourcePicker }
                     else { SourceEvidenceView(model: model, sources: node["source_refs"].array) }
                     PlotNodeFieldsView(model: model, blueprint: blueprint, fields: $fields)
                     if !adding {
-                        Text(model.t("plot.method." + (node["extraction_method"].string ?? "author_annotation"))).font(.caption).foregroundStyle(.secondary)
+                        Text(model.t("plot.method." + (node["extraction_method"].string ?? "author_annotation"))).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                     }
                 }
             }
@@ -52,15 +52,15 @@ struct PlotNodeEditor: View {
                     Text(model.documents.first { $0.id == source["document_id"].string }?.title ?? model.t("entity.unavailable")).tag(index)
                 }
             }
-            Text(model.t("plot.select_excerpt")).font(.caption).foregroundStyle(.secondary)
+            Text(model.t("plot.select_excerpt")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
             if sourceDocument != .null {
                 NativeTextEditor(text: sourceDocument["content"].string ?? "", documentID: sourceDocument["revision"]["revision_id"].string ?? "", replacementVersion: 0, accessibleName: model.t("plot.source_body"), editable: false, onChange: { _ in }, onComposition: { _ in }, onSelection: { range in
                     selectedSpan = SourceSpan(content: sourceDocument["content"].string ?? "", selection: range)
-                }).frame(height: 180).border(Color.secondary.opacity(0.2))
+                }).frame(height: 180).border(WorkbenchPalette.muted.opacity(0.2))
             }
             if let selectedSpan {
-                Text(selectedSpan.quote).font(.callout).lineLimit(3).textSelection(.enabled)
-                if selectedSpan.quote.utf8.count > 16384 { Text(model.t("plot.excerpt_too_large")).foregroundStyle(.red) }
+                Text(selectedSpan.quote).font(.system(size: 14)).lineLimit(3).textSelection(.enabled)
+                if selectedSpan.quote.utf8.count > 16384 { Text(model.t("plot.excerpt_too_large")).foregroundStyle(WorkbenchPalette.danger) }
             }
         }
     }
@@ -117,7 +117,7 @@ struct PlotNodeFieldsView: View {
             referencePicker("plot.story_time", selection: $fields.time, choices: entityChoices(model, .event, blueprint: blueprint))
             if fields.kind == "dialogue" {
                 referencePicker("plot.speaker", selection: $fields.speaker, choices: entityChoices(model, .character, blueprint: blueprint))
-                Text(model.t("plot.speaker_note")).font(.caption).foregroundStyle(.secondary)
+                Text(model.t("plot.speaker_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
             }
             Picker(model.t("plot.time_of_day"), selection: $fields.timeOfDay) {
                 ForEach(PlotFields.times, id: \.self) { Text(model.t("plot.time_of_day." + $0)).tag($0) }
@@ -151,15 +151,15 @@ struct PlotEdgeEditor: View {
     private var evidence: [JSONValue] { nodes.first { $0["node_id"].string == from }?["source_refs"].array ?? [] }
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(model.t("plot.add_edge")).font(.title2)
-            Text(model.t("plot.edge_evidence_note")).foregroundStyle(.secondary)
+            Text(model.t("plot.add_edge")).font(.system(size: 20, weight: .semibold))
+            Text(model.t("plot.edge_evidence_note")).foregroundStyle(WorkbenchPalette.muted)
             nodePicker("plot.edge_from", selection: $from)
             nodePicker("plot.edge_to", selection: $to)
             Picker(model.t("plot.edge_relation"), selection: $relation) {
                 ForEach(["causes", "narrative_next", "story_before"], id: \.self) { Text(model.t("plot.relation." + $0)).tag($0) }
             }
             SourceEvidenceView(model: model, sources: evidence)
-            if let error { Text(error).foregroundStyle(.red).textSelection(.enabled) }
+            if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             HStack {
                 Button(model.t("common.cancel")) { dismiss() }.keyboardShortcut(.cancelAction)
                 Spacer()

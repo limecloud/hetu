@@ -15,6 +15,7 @@ mod creative_tasks;
 mod document_lifecycle;
 mod drafts;
 mod dramas;
+mod drama_projects;
 mod git;
 mod media;
 mod novels;
@@ -22,6 +23,11 @@ mod plots;
 mod reports;
 mod reviews;
 mod scripts;
+mod authoring;
+mod records;
+mod resources;
+mod model_tasks;
+mod properties;
 
 type Changes = BTreeMap<String, Vec<u8>>;
 const PACKAGES: [&str; 4] = ["novel", "drama", "music-cue", "visual-prompt"];
@@ -38,6 +44,7 @@ struct OpenConfig {
     create_project: Option<creation::CreateProjectConfig>,
     task_id: Option<String>,
     authorization_path: Option<std::path::PathBuf>,
+    collaboration_grant: Option<Value>,
 }
 #[derive(Deserialize, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -52,6 +59,8 @@ struct CreateConfig {
     locale: String,
     operation_key: String,
     #[serde(skip_serializing_if = "Option::is_none")]
+    work_type: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     creation_source: Option<Value>,
@@ -64,7 +73,11 @@ pub struct Kernel {
     author: bool,
     workspace_path: std::path::PathBuf,
     authorization_path: Option<std::path::PathBuf>,
+    collaboration_grant: Option<Value>,
     task_id: Option<String>,
+    management_grant: Option<Value>,
+    #[cfg(test)]
+    model_service_directory: Option<std::path::PathBuf>,
 }
 
 fn catalog() -> &'static Value {
@@ -75,6 +88,16 @@ fn catalog() -> &'static Value {
                 .expect("embedded action catalog");
         for action in catalog["actions"].as_array_mut().unwrap() {
             if let Some(reference) = action["input_schema_ref"].as_str() {
+                if let Some(definition) = reference.strip_prefix("schemas/model-service.schema.json#/$defs/") {
+                    action["input_schema"] = model_tasks::definition(definition);
+                    action.as_object_mut().unwrap().remove("input_schema_ref");
+                    continue;
+                }
+                if let Some(definition) = reference.strip_prefix("schemas/resources.schema.json#/$defs/") {
+                    action["input_schema"] = resources::definition(definition);
+                    action.as_object_mut().unwrap().remove("input_schema_ref");
+                    continue;
+                }
                 if let Some(definition) = reference.strip_prefix("schemas/delivery.schema.json#/$defs/") {
                     action["input_schema"] = delivery::definition(definition);
                     action.as_object_mut().unwrap().remove("input_schema_ref");
@@ -180,7 +203,7 @@ fn catalog() -> &'static Value {
 fn bytes(value: &Value) -> Result<Vec<u8>> {
     Ok(serde_json::to_vec_pretty(value)?)
 }
-fn text<'a>(value: &'a Value, field: &str) -> Result<&'a str> {
+pub(crate) fn text<'a>(value: &'a Value, field: &str) -> Result<&'a str> {
     value
         .get(field)
         .and_then(Value::as_str)
@@ -272,13 +295,24 @@ impl Kernel {
     /// 只供可信入口组装；业务请求中不能提供 mode、actor 或作者批准。
     pub fn open(config: Value) -> Result<Self> {
         let options: OpenConfig = serde_json::from_value(config)?;
+        Self::open_options(options, None)
+    }
+    // 仅稳定入口可组装窄管理授权；公开 OpenConfig 不接受作者或权限提升字段。
+    pub(crate) fn open_managed(config: Value, binding: Value) -> Result<Self> {
+        let options: OpenConfig = serde_json::from_value(config)?;
+        ensure(options.mode == Mode::Agent && options.task_id.is_none(), "forbidden", "管理连接必须保持 Agent 身份。")?;
+        let path = options.creation_project_path.as_deref().or(options.workspace_path.as_deref()).unwrap_or("");
+        crate::collaboration::authoring::check_management(&binding, Path::new(path), None)?;
+        Self::open_options(options, Some(binding))
+    }
+    fn open_options(options: OpenConfig, management_grant: Option<Value>) -> Result<Self> {
         if options.creation_project_path.is_some() {
             ensure(
                 options.workspace_path.is_none() && options.create.is_none(),
                 "invalid_input",
                 "筹备与作品范围必须二选一。",
             )?;
-            return Self::open_creation_project(options);
+            return Self::open_creation_project(options, management_grant);
         }
         ensure(
             options.create_project.is_none(),
@@ -294,7 +328,9 @@ impl Kernel {
         let path = Path::new(workspace_path);
         let author = options.mode == Mode::Author;
         if let Some(create) = &options.create {
-            ensure(author, "forbidden", "Agent 不能创建或任意选择工作区。")?;
+            ensure(author || management_grant.is_some(), "forbidden", "Agent 不能创建或任意选择工作区。")?;
+            ensure(matches!(create.work_type.as_deref().unwrap_or("novel"), "novel" | "drama"), "invalid_input", "作品类型无效。")?;
+            ensure(create.work_type.as_deref() != Some("drama") || create.metadata.is_none(), "invalid_input", "原创短剧不使用小说资料合同。")?;
             ensure(
                 !create.title.trim().is_empty() && create.title.chars().count() <= 200,
                 "invalid_input",
@@ -368,7 +404,9 @@ impl Kernel {
         }
         if empty {
             let create = options.create.as_ref().unwrap();
-            let config = json!({"schema_version":"1.0.0","workspace_id":id("workspace"),"title":create.title,"locale":create.locale,"blueprint_path":"shared/blueprint.json","novel_path":"packages/novel/novel.json","packages":PACKAGES});
+            let work_type = create.work_type.as_deref().unwrap_or("novel");
+            let mut config = json!({"schema_version":"1.0.0","workspace_id":id("workspace"),"title":create.title,"work_type":work_type,"locale":create.locale,"blueprint_path":"shared/blueprint.json","packages":PACKAGES});
+            if work_type == "novel" { config["novel_path"] = json!("packages/novel/novel.json"); }
             for directory in ["shared", "exports", ".hetu/audit", ".hetu/cache"] {
                 store.directory(directory)?;
             }
@@ -391,7 +429,8 @@ impl Kernel {
             ] {
                 store.directory(&format!("packages/{path}"))?;
             }
-            let blueprint = json!({"schema_version":"1.0.0","blueprint_id":id("blueprint"),"revision":1,"lock":{"locked":false,"changed_at":now(),"actor_ref":AUTHOR},"characters":[],"factions":[],"locations":[],"timeline":[],"world":[],"rules":[]});
+            let created_at = now();
+            let blueprint = json!({"schema_version":"1.0.0","blueprint_id":id("blueprint"),"revision":1,"lock":{"locked":false,"changed_at":created_at,"actor_ref":AUTHOR},"characters":[],"factions":[],"locations":[],"timeline":[],"world":[],"rules":[]});
             let bp_bytes = bytes(&blueprint)?;
             let action = "hetu.workspaces.create";
             let input = serde_json::to_value(create)?;
@@ -404,15 +443,16 @@ impl Kernel {
             let op = Self::operation(&create.operation_key, &input_digest);
             receipt["operation"] = op.clone();
             let mut changes = Changes::new();
-            novels::stage_initial_novel(
+            if work_type == "novel" { novels::stage_initial_novel(
                 &store,
                 &config["workspace_id"],
                 create.metadata.clone().unwrap_or_else(|| json!({"title":create.title,"author_name":"","synopsis":"","genre":"","language_tag":create.locale,"status":"planning"})),
                 Vec::new(),
                 &mut changes,
-            )?;
+            )?; }
             stage_blueprint_snapshot(&store, &blueprint, &mut changes)?;
             changes.insert(".heturc.json".into(), bytes(&config)?);
+            changes.insert(".hetu/workspace-properties.json".into(), bytes(&json!({"schema_version":"1.0.0","workspace_id":config["workspace_id"],"created_at":created_at,"updated_at":created_at}))?);
             if let Some(source) = &create.creation_source {
                 changes.insert(".hetu/creation-source.json".into(), bytes(source)?);
             }
@@ -423,10 +463,10 @@ impl Kernel {
             );
             changes.insert(
                 ".gitignore".into(),
-                b".hetu/transactions/\n.hetu/cache/\n.hetu/git/\n.hetu/operations/\n.hetu/audit/\n.hetu/deliveries/\n.hetu/workspace.lock\n.hetu/visibility.lock\nexports/\n.DS_Store\n"
+                b".hetu/transactions/\n.hetu/cache/\n.hetu/git/\n.hetu/operations/\n.hetu/audit/\n.hetu/deliveries/\n.hetu/workspace.lock\n.hetu/visibility.lock\n.hetu/workspace-properties.json\nexports/\n.DS_Store\n"
                     .to_vec(),
             );
-            changes.insert(operation_path(action, &create.operation_key, true), bytes(&json!({"operation_id":op["id"],"action":action,"actor_scope":"author","key":create.operation_key,"input_digest":input_digest,"result":receipt}))?);
+            changes.insert(operation_path(action, &create.operation_key, author), bytes(&json!({"operation_id":op["id"],"action":action,"actor_scope":if author {"author"} else {"agent"},"key":create.operation_key,"input_digest":input_digest,"result":receipt}))?);
             store.transaction(&changes)?;
         }
         let _read = store.read_lock()?;
@@ -450,7 +490,7 @@ impl Kernel {
             let original = store.json(&operation_path(
                 "hetu.workspaces.create",
                 &create.operation_key,
-                true,
+                author,
             ))?;
             ensure(
                 original["input_digest"] == Self::input_digest(&serde_json::to_value(&create)?)?,
@@ -459,13 +499,17 @@ impl Kernel {
             )?;
         }
         let kernel = Self {
+            #[cfg(test)]
+            model_service_directory: None,
             store,
             config,
             config_sha: digest(config_bytes),
             author,
             workspace_path: path.canonicalize()?,
             authorization_path: options.authorization_path,
+            collaboration_grant: options.collaboration_grant,
             task_id: options.task_id,
+            management_grant,
         };
         kernel.blueprint()?;
         kernel.check_task_session()?;
@@ -490,6 +534,21 @@ impl Kernel {
     pub fn bound_task(&self) -> Option<&str> {
         self.task_id.as_deref()
     }
+    pub(crate) fn is_author(&self) -> bool { self.author }
+    pub(crate) fn root_path(&self) -> &Path { &self.workspace_path }
+    pub fn task_action_catalog() -> Value {
+        json!(catalog()["actions"].as_array().unwrap().iter().filter(|action| creative_tasks::TASK_ACTIONS.contains(&action["name"].as_str().unwrap_or("")) && action["author_only"] == false).cloned().collect::<Vec<_>>())
+    }
+    pub fn collaboration_action_catalog() -> Value {
+        json!(catalog()["actions"].as_array().unwrap().iter().filter(|action| action["scopes"].as_array().is_some_and(|scopes| scopes.iter().any(|scope| scope == "collaboration"))).cloned().collect::<Vec<_>>())
+    }
+    pub(crate) fn management_action_catalog() -> Value {
+        json!(catalog()["actions"].as_array().unwrap().iter().filter(|action| crate::collaboration::authoring::management_action(action["name"].as_str().unwrap_or(""))).cloned().collect::<Vec<_>>())
+    }
+    pub(crate) fn management_binding(&self) -> Option<&Value> { self.management_grant.as_ref() }
+    fn management_allows(&self, action: &str) -> bool {
+        self.management_grant.as_ref().is_some_and(|binding| crate::collaboration::authoring::check_management(binding, &self.workspace_path, Some(action)).is_ok())
+    }
     fn is_creation_project(&self) -> bool {
         self.config.get("project_id").is_some()
     }
@@ -501,19 +560,28 @@ impl Kernel {
         }
     }
     fn action_available(&self, action: &Value) -> bool {
+        if action["name"] == "hetu.creative_tasks.submit_result" && self.task_id.is_some() && self.resource_task_access().is_ok() { return false; }
         let name = action["name"].as_str().unwrap_or("");
         let in_scope = action["scopes"]
             .as_array()
             .map_or(!self.is_creation_project(), |scopes| {
                 scopes.iter().any(|s| s == self.scope_kind())
             });
+        if self.management_grant.is_some() { return in_scope && self.management_allows(name); }
         in_scope
             && if self.task_id.is_some() {
                 creative_tasks::TASK_ACTIONS.contains(&name)
+                    && (!name.starts_with("hetu.resources.") || self.resource_task_access().is_ok())
             } else {
                 self.author
                     || !name.starts_with("hetu.creative_tasks.")
                         && !name.starts_with("hetu.interactions.")
+                        && !name.starts_with("hetu.working_copies.")
+                        && !name.starts_with("hetu.task_feedback.")
+                        && !name.starts_with("hetu.task_context.")
+                        && !name.starts_with("hetu.models.")
+                        && !name.starts_with("hetu.model_tasks.")
+                        && !matches!(name, "hetu.resources.create" | "hetu.resources.update")
             }
     }
     fn operation_record_path(&self, action: &str, key: &str) -> String {
@@ -580,12 +648,22 @@ impl Kernel {
         let input = &request["input"];
         validate_action_input(action, input)?;
         ensure(
-            !metadata["author_only"].as_bool().unwrap() || self.author,
+            !metadata["author_only"].as_bool().unwrap() || self.author || self.management_allows(action),
             "forbidden",
             "此动作仅允许作者在可信本机入口操作。",
         )?;
+        if self.management_grant.is_some() {
+            ensure(action != "hetu.documents.create" || input["content"] == "", "forbidden", "管理授权只能创建空章节，正文须经过参考稿与作者采纳。")?;
+            if matches!(action, "hetu.creative_tasks.preview_prompt" | "hetu.creative_tasks.prepare") {
+                let client = self.management_grant.as_ref().unwrap()["client_adapter"].as_str().unwrap_or("");
+                ensure(input["client_adapter"] == if client == "generic" { "other" } else { client }, "forbidden", "管理授权不能替其他 Agent 准备任务。")?;
+            }
+        }
         if matches!(action, "hetu.bundles.export" | "hetu.documents.export") {
             return self.execute_delivery(action, input, metadata);
+        }
+        if matches!(action, "hetu.models.list" | "hetu.model_tasks.submit" | "hetu.model_tasks.get" | "hetu.model_tasks.collect") {
+            return self.execute_model_network(action, input);
         }
         let write = metadata["effect"] != "read"
             && !(action == "hetu.plot.extract" && input["save_result"] == false)
@@ -631,8 +709,8 @@ impl Kernel {
         if action == "hetu.git.snapshot" && input["phase"] == "execute" {
             return self.execute_git_snapshot(input, &op_path, &input_digest);
         }
-        if action == "hetu.creation_projects.create_novel" {
-            return self.execute_create_novel(input, &op_path, &input_digest);
+        if matches!(action, "hetu.creation_projects.create_novel" | "hetu.creation_projects.create_drama") {
+            return self.execute_create_work(action, input, &op_path, &input_digest);
         }
         let mut changes = Changes::new();
         let data = self.dispatch(action, input, &mut changes)?;
@@ -679,6 +757,7 @@ impl Kernel {
             }
             changes.insert(op_path, bytes(&record)?);
             changes.insert(format!(".hetu/audit/{}.json", operation["id"].as_str().unwrap()), bytes(&json!({"schema_version":"1.0.0","operation_id":operation["id"],"action":action,"actor_ref":self.actor(),"input_digest":input_digest,"created_at":now(),"status":output["status"]}))?);
+            self.stage_workspace_properties(&mut changes)?;
             self.store.transaction(&changes)?;
         }
         Ok(output)
@@ -796,6 +875,9 @@ impl Kernel {
         Ok(())
     }
     fn dispatch(&self, action: &str, input: &Value, changes: &mut Changes) -> Result<Value> {
+        if matches!(action, "hetu.model_tasks.list" | "hetu.model_tasks.prepare" | "hetu.model_tasks.approve") {
+            return self.dispatch_model_local(action, input, changes);
+        }
         match action {
             "hetu.capabilities.get" => {
                 let mut result = json!({"abi_version":1,"schema_version":"1.0.0","scope_ref":{"kind":self.scope_kind(),"id":self.scope()},"task_id":self.task_id,"entry_mode":if self.author { "author" } else { "agent" }});
@@ -812,18 +894,35 @@ impl Kernel {
             }
             "hetu.creation_projects.get" => self.get_creation_project(input),
             "hetu.creation_projects.save" => self.save_creation_project(input, changes),
-            "hetu.creative_tasks.preview_prompt" => self.preview_creative_task(input),
-            "hetu.creative_tasks.prepare" => self.prepare_creative_task(input, changes),
+            "hetu.creative_tasks.preview_prompt" | "hetu.image_tasks.preview_prompt" => self.preview_creative_task(input),
+            "hetu.collaboration.authorize" => self.authorize_collaboration(input, false),
+            "hetu.collaboration.revoke" => self.authorize_collaboration(input, true),
+            "hetu.collaboration.revoke_management" => self.revoke_management(input),
+            "hetu.creative_tasks.prepare" | "hetu.image_tasks.prepare" => self.prepare_creative_task(input, changes),
             "hetu.creative_tasks.get" => self.get_creative_task(input),
             "hetu.creative_tasks.list" => self.list_creative_tasks(input),
             "hetu.creative_tasks.submit_result" => self.submit_creative_result(input, changes),
+            "hetu.working_copies.create" => self.create_working_copy(input, changes),
+            "hetu.working_copies.get" => self.get_working_copy(input),
+            "hetu.working_copies.list" => self.list_working_copies(input),
+            "hetu.working_copies.save" => self.save_working_copy(input, changes),
+            "hetu.task_context.list" => self.list_task_context(input),
+            "hetu.task_context.read" => self.read_task_context(input),
+            "hetu.task_context.search" => self.search_task_context(input),
+            "hetu.task_feedback.save" => self.save_task_feedback(input, changes),
+            "hetu.task_feedback.list" => self.list_task_feedback(input),
             "hetu.creative_tasks.inspect_inbox" => self.inspect_task_inbox(input, changes),
             "hetu.creative_tasks.close" => self.close_creative_task(input, changes),
             "hetu.creative_tasks.mark_copied" => self.mark_task_copied(input, changes),
             "hetu.interactions.get" => self.get_task_interaction(input),
             "hetu.interactions.save_selection" => self.save_task_selection(input, changes),
-            "hetu.workspaces.get" | "hetu.workspaces.list" => Ok(json!({"workspace":self.config,"access":{"write_available":self.store.write_available()?}})),
+            "hetu.workspaces.get" | "hetu.workspaces.list" => Ok(json!({"workspace":self.config,"properties":self.workspace_properties()?,"access":{"write_available":self.store.write_available()?}})),
             "hetu.novels.get" => self.get_novel(),
+            "hetu.documents.history" => self.document_history(input),
+            "hetu.annotations.list" => self.authoring_get("annotations", input),
+            "hetu.annotations.save" => self.authoring_save("annotations", input, changes),
+            "hetu.outlines.get" => self.authoring_get("outlines", input),
+            "hetu.outlines.save" => self.authoring_save("outlines", input, changes),
             "hetu.bundles.preview" => self.preview_bundle(input),
             "hetu.bundles.verify" => self.verify_delivery_bundle(input),
             "hetu.documents.preview_export" => self.preview_document_export(input),
@@ -851,6 +950,14 @@ impl Kernel {
             "hetu.git.snapshot" => self.prepare_git_snapshot(input, changes),
             "hetu.git.approve_snapshot" => self.approve_git_snapshot(input),
             "hetu.assets.inspect" => self.inspect_asset(input),
+            "hetu.resources.create" => self.create_resource(input, changes),
+            "hetu.resources.update" => self.update_resource(input, changes),
+            "hetu.resources.get" => self.get_resource(input),
+            "hetu.resources.list" => self.list_resources(input),
+            "hetu.resources.adopt" => self.change_resource_state(input, "adopted", changes),
+            "hetu.resources.archive" => self.change_resource_state(input, "archived", changes),
+            "hetu.resource_usages.save" => self.save_resource_usage(input, changes),
+            "hetu.resource_usages.list" => self.list_resource_usages(input),
             "hetu.assets.import" => self.import_asset(input, changes),
             "hetu.assets.update" => self.update_asset(input, changes),
             "hetu.assets.get" => self.get_asset(input),
@@ -898,9 +1005,7 @@ impl Kernel {
                         .entries(&format!("packages/{package}/documents"))?
                     {
                         checked_id(&name, "doc")?;
-                        let doc = self.store.json(&format!(
-                            "packages/{package}/documents/{name}/document.json"
-                        ))?;
+                        let doc = self.document(&name)?;
                         if input.get("kind").is_none_or(|kind| *kind == doc["kind"]) {
                             documents.push(doc);
                         }
@@ -956,6 +1061,15 @@ impl Kernel {
             }
             "hetu.plot.list" => self.list_plots(input),
             "hetu.drama.build_skeleton" => self.build_skeleton(input, changes),
+            "hetu.drama.projects.create" => self.create_drama_project(input, changes),
+            "hetu.drama.projects.get" => self.get_drama_project(input),
+            "hetu.drama.projects.list" => self.list_drama_projects(input),
+            "hetu.drama.projects.update" => self.update_drama_project(input, changes),
+            "hetu.drama.projects.attach" => self.attach_drama_project(input, changes),
+            "hetu.drama.episodes.create" => self.create_project_episode(input, changes),
+            "hetu.drama.episodes.get" => self.get_drama_episode(input),
+            "hetu.drama.episodes.update" => self.update_drama_episode(input, changes),
+            "hetu.drama.episodes.reorder" => self.reorder_drama_episodes(input, changes),
             "hetu.drama.get_skeleton" => self.get_skeleton(input),
             "hetu.drama.list_skeletons" => self.list_skeletons(input),
             "hetu.drama.edit_skeleton" => self.edit_skeleton(input, changes),
@@ -1000,12 +1114,7 @@ impl Kernel {
     fn document_root(&self, document_id: &str) -> Result<String> {
         checked_id(document_id, "doc")?;
         for package in ["novel", "drama"] {
-            if self
-                .store
-                .entries(&format!("packages/{package}/documents"))?
-                .iter()
-                .any(|name| name == document_id)
-            {
+            if self.store.exists(&format!("packages/{package}/documents/{document_id}/document.json"))? {
                 return Ok(format!("packages/{package}/documents/{document_id}"));
             }
         }
@@ -1015,10 +1124,16 @@ impl Kernel {
         if let Some(source) = self.draft_source(document_id)? {
             return Ok(source["document"].clone());
         }
-        self.store.json(&format!(
+        let mut document = self.store.json(&format!(
             "{}/document.json",
             self.document_root(document_id)?
-        ))
+        ))?;
+        if let Some(episode_id) = document["drama_episode_id"].as_str() {
+            let (episode, _, _) = self.read_drama_episode(episode_id, None)?;
+            ensure(episode["document_id"] == document_id, "hetu.integrity_failure", "剧本文档与分集归属不一致。")?;
+            document["title"] = episode["title"].clone();
+        }
+        Ok(document)
     }
     fn document_content(&self, document_id: &str, revision_id: Option<&str>) -> Result<Value> {
         if let Some(source) = self.draft_source(document_id)? {
@@ -1085,17 +1200,15 @@ impl Kernel {
         };
         let path = format!("{root}/revisions/{rev_id}.{ext}");
         let mut revision = json!({"schema_version":"1.0.0","revision_id":rev_id,"document_id":doc_id,"source_format":document["source_format"],"content_path":path,"sha256":digest(content),"size_bytes":content.len(),"created_at":now(),"actor_ref":self.actor()});
+        revision["origin_kind"] = json!(if self.author { "author" } else { "agent" });
         if let Some(parent) = parent {
             revision["parent_revision_id"] = json!(parent);
             let previous = self
                 .store
                 .json(&format!("{root}/revisions/{parent}.json"))?;
-            revision["origin_kind"] = json!("author");
             if let Some(contributions) = previous.get("contribution_refs") {
                 revision["contribution_refs"] = contributions.clone();
             }
-        } else {
-            revision["origin_kind"] = json!("author");
         }
         changes.insert(path, content.as_bytes().to_vec());
         changes.insert(format!("{root}/revisions/{rev_id}.json"), bytes(&revision)?);
@@ -1104,6 +1217,7 @@ impl Kernel {
         Ok(revision)
     }
     fn create_document(&self, input: &Value, changes: &mut Changes) -> Result<Value> {
+        ensure(self.config["work_type"] != "drama" || !text(input, "kind")?.starts_with("novel_"), "invalid_input", "剧本作品不创建小说章节；原著请作为来源材料导入。")?;
         let drama = input["kind"] == "drama_script";
         ensure(
             input["source_format"] == if drama { "fountain" } else { "markdown" },
@@ -1155,11 +1269,14 @@ impl Kernel {
                 .cmp(&a["created_at"].as_str())
                 .then_with(|| b.to_string().cmp(&a.to_string()))
         });
+        self.ordered_record_page(input, records, field)
+    }
+    fn ordered_record_page(&self, input: &Value, records: Vec<Value>, field: &str) -> Result<Value> {
         let mut query = input.clone();
         query.as_object_mut().unwrap().remove("cursor");
         query.as_object_mut().unwrap().remove("limit");
         let fingerprint = digest(serde_json::to_vec(
-            &json!({"scope":self.scope(),"field":field,"query":query,"records":records}),
+            &json!({"scope":self.scope(),"actor":self.actor(),"task_id":self.task_id,"field":field,"query":query,"records":records}),
         )?);
         let start = if let Some(cursor) = input["cursor"].as_str() {
             let (hash, offset) = cursor

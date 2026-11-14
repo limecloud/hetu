@@ -20,7 +20,7 @@ public struct EditorPresentation: Equatable, Sendable {
         let font = readingMode && fontFamily != "system" ? NSFont(name: family, size: size) ?? .systemFont(ofSize: size) : .systemFont(ofSize: size)
         let paragraph = NSMutableParagraphStyle()
         if readingMode {
-            paragraph.minimumLineHeight = size * 34 / 18
+            paragraph.minimumLineHeight = size * 1.35
             paragraph.lineSpacing = lineSpacing
             paragraph.firstLineHeadIndent = firstLineIndent ? size * 2 : 0
         }

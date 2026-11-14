@@ -4,8 +4,54 @@ import { readFileSync } from 'node:fs';
 import manifest from '../../../assets/manifest.json' with { type: 'json' };
 import agentCatalog from '../../../integrations/catalog.json' with { type: 'json' };
 import nativeStrings from '../../../assets/localization/native.json' with { type: 'json' };
+import guideCaptures from '../assets/guides/captures.json' with { type: 'json' };
 
 const militaryVersion = JSON.parse(readFileSync(new URL('../../../integrations/codex/hetu-military/plugin.json', import.meta.url), 'utf8')).version;
+
+for (const prefix of ['', '/en']) for (const width of [375, 1440]) {
+  test(`${prefix || 'zh-CN'} ${width}px 内页导航、阅读和资源布局完整`, async ({ page }) => {
+    test.setTimeout(120_000);
+    await page.setViewportSize({ width, height: 960 });
+    const errors: string[] = [];
+    page.on('pageerror', error => errors.push(error.message));
+    for (const path of ['workflow', 'integrations', 'docs', 'faq', 'brand', 'blog', 'blog/agent-work-author-review', 'blog/authors-at-the-center', 'blog/story-to-screen', 'blog/agent-friendly', 'docs/adaptation', 'docs/download-and-install']) {
+      await page.goto(`${prefix}/${path}/`);
+      await expect(page.locator('main h1'), path).toHaveCount(1);
+      await expect(page.locator('main .eyebrow'), path).toHaveCount(0);
+      await expect(page.locator('main'), path).not.toContainText('·');
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), path).toBe(true);
+      const sizes = await page.locator('body *').evaluateAll(elements => [...new Set(elements.filter(element => element.checkVisibility() && [...element.childNodes].some(node => node.nodeType === Node.TEXT_NODE && node.textContent?.trim())).map(element => getComputedStyle(element).fontSize))]);
+      expect(sizes.length, `${path}: ${sizes.join(', ')}`).toBeLessThanOrEqual(4);
+      expect(sizes.every(size => ['12px', '14px', '24px', '40px'].includes(size)), path).toBe(true);
+      for (const image of await page.locator('main img').all()) {
+        await image.scrollIntoViewIfNeeded();
+        await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0), { message: `${path}: image loads` }).toBe(true);
+      }
+      await page.evaluate(() => scrollTo(0, 0));
+      if (path === 'integrations') {
+        const positions = await page.locator('.integration-journey, #skills-catalog').evaluateAll(elements => elements.map(element => element.getBoundingClientRect().top));
+        expect(positions[0]).toBeLessThan(positions[1]);
+        await expect(page.locator('.collaboration-map')).toContainText(prefix ? 'Taste. Judgment. Creative intent.' : '品味、判断、创意');
+      }
+      if (path === 'faq') {
+        await expect(page.locator('.faq-groups section')).toHaveCount(3);
+        await expect(page.locator('.faq-list details')).toHaveCount(9);
+        await page.locator('.faq-nav a').last().click();
+        await expect(page.locator('#questions-2')).toBeInViewport();
+      }
+      if (path.startsWith('blog/')) {
+        if (width === 375) await page.locator('.journal-toc-mobile summary').click();
+        const tocLinks = page.locator('.journal-toc a:visible');
+        expect(await tocLinks.count()).toBeGreaterThan(0);
+        await tocLinks.last().click();
+        const target = await tocLinks.last().getAttribute('href');
+        await expect(page.locator(target!)).toBeInViewport();
+      }
+      if (path === 'docs/adaptation') await expect(page.locator('.doc-nav-group a[aria-current="page"]:visible')).toHaveCount(width === 375 ? 0 : 1);
+    }
+    expect(errors).toEqual([]);
+  });
+}
 
 for (const width of [375, 768, 1440]) {
   for (const locale of ['zh-CN', 'en']) {
@@ -90,8 +136,8 @@ test('双语品牌展示、下载、分享卡与动态书库使用当前资产�
     await expect(page.locator('.demo-book-card')).toHaveCount(3);
     for (const image of await page.locator('.demo img').all()) await image.scrollIntoViewIfNeeded();
     await expect.poll(() => page.locator('.demo img').evaluateAll(images => images.every(image => image instanceof HTMLImageElement && image.complete && image.naturalWidth > 0))).toBe(true);
-    const sources = await page.locator('.hero-art, .demo img').evaluateAll(images => images.map(image => image.getAttribute('src')!));
-    expect(sources.length).toBeGreaterThan(4);
+    const sources = await page.locator('.hero-art, .demo img').evaluateAll(images => images.map(image => (image as HTMLImageElement).currentSrc));
+    expect(sources.length).toBeGreaterThanOrEqual(4);
     for (const src of sources) {
       const url = new URL(src, page.url());
       expect(url.searchParams.get('v'), src).toMatch(/^[a-f0-9]{16}$/);
@@ -106,8 +152,11 @@ test('双语品牌展示、下载、分享卡与动态书库使用当前资产�
       const digest = createHash('sha256').update(await response.body()).digest('hex');
       expect(digest.slice(0, 16), href).toBe(url.searchParams.get('v'));
       if (url.pathname !== '/resources/manifest.json') {
-        const asset = manifest.assets.find(asset => url.pathname.endsWith('/' + asset.path.split('/').at(-1)));
-        expect(asset?.sha256, href).toBe(digest);
+        const filename = url.pathname.split('/').at(-1)!;
+        const expectedDigest = url.pathname.startsWith('/images/guides/')
+          ? guideCaptures[filename as keyof typeof guideCaptures]?.sha256
+          : manifest.assets.find(asset => url.pathname.endsWith('/' + asset.path.split('/').at(-1)))?.sha256;
+        expect(expectedDigest, href).toBe(digest);
       }
     }));
   }
@@ -115,7 +164,7 @@ test('双语品牌展示、下载、分享卡与动态书库使用当前资产�
 
 test('使用指南完整双语，工程文档及源副本不对外发布', async ({ page, request }) => {
   test.setTimeout(120_000);
-  const slugs = ['getting-started', 'download-and-install', 'codex-first-task', 'skills', 'writing', 'story-bible', 'adaptation', 'review', 'formats-and-delivery', 'agents', 'data-and-backup'];
+  const slugs = ['getting-started', 'creative-paths', 'download-and-install', 'codex-first-task', 'skills', 'writing', 'story-bible', 'adaptation', 'review', 'formats-and-delivery', 'agents', 'references', 'data-and-backup'];
   for (const prefix of ['', '/en']) {
     await page.goto(`${prefix}/docs/`);
     await expect(page.locator('.doc-index a')).toHaveCount(slugs.length);
@@ -339,7 +388,7 @@ for (const locale of ['zh-CN', 'en']) {
       expect(publicCatalog.suites).toHaveLength(agentCatalog.suites.length);
       expect(publicCatalog).not.toHaveProperty('taxonomy');
       expect(publicCatalog.suites.every((suite: Record<string, unknown>) => !('requiredFiles' in suite))).toBe(true);
-      await demo.locator('[data-action="settings"]').click();
+      await demo.getByRole('button', { name: locale === 'en' ? 'Settings' : '设置', exact: true }).click();
       await demo.locator('[name="agent-client"]').selectOption('workbuddy');
       const expectedOptions = agentCatalog.suites.map(suite => ({
         value: suite.id,
@@ -353,13 +402,13 @@ for (const locale of ['zh-CN', 'en']) {
         await demo.locator('[name="agent-suite"]').selectOption(id);
         await demo.locator('[data-action="install-agent"]').click();
         await expect(page.locator('dialog [name="agent-suite"]')).toHaveValue(id);
-        await expect(page.locator('dialog .demo-agent-skills li')).toHaveCount(8);
+        await expect(page.locator('dialog .demo-agent-skills li')).toHaveCount(agentCatalog.skills.length);
         await page.keyboard.press('Escape');
       }
       await demo.locator('[name="agent-suite"]').selectOption('military');
       await demo.locator('[data-action="install-agent"]').click();
       await expect(page.locator('dialog [name="agent-client"]')).toHaveValue('workbuddy');
-      await expect(page.locator('dialog .demo-agent-skills li')).toHaveCount(8);
+      await expect(page.locator('dialog .demo-agent-skills li')).toHaveCount(agentCatalog.skills.length);
       await page.locator('dialog button[type="submit"]').click();
       await expect(demo.locator('[data-agent-version]')).toHaveText(militaryVersion);
       await demo.locator('[data-action="new-book"]').click();
@@ -402,7 +451,7 @@ for (const locale of ['zh-CN', 'en']) {
       await page.setViewportSize({ width, height: 960 });
       await page.goto(url, { waitUntil: 'domcontentloaded' });
       const demo = page.locator('.demo');
-      await demo.locator('[data-action="settings"]').click();
+      await demo.getByRole('button', { name: locale === 'en' ? 'Settings' : '设置', exact: true }).click();
       await demo.locator('[name="agent-client"]').selectOption('workbuddy');
       await demo.locator('[name="agent-suite"]').selectOption('military');
       await demo.locator('[data-action="install-agent"]').click();

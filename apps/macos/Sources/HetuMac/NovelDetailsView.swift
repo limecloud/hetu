@@ -6,10 +6,12 @@ struct NovelDetailsView: View {
     let model: WorkspaceModel
     @State private var editing = false
     @State private var managingCover = false
+    @State private var creativeTask = false
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 28) {
                 WorkbenchHeading(title: model.t("novel.details"), subtitle: model.t("novel.details_description"), artwork: "") {
+                    Button(model.t("creative.title")) { creativeTask = true }.disabled(model.busy || model.novel["initialized"].bool != true)
                     Button(model.t(model.novel["initialized"].bool == true ? "common.edit" : "novel.initialize")) { editing = true }
                         .buttonStyle(WorkbenchButtonStyle(primary: true))
                 }
@@ -23,31 +25,40 @@ struct NovelDetailsView: View {
                             titleOverlay: model.cover["cover"]["presentation"]["title_overlay"].string,
                             authorOverlay: model.cover["cover"]["presentation"]["author_overlay"].string).frame(width: 168, height: 252)
                         Button(model.t("cover.manage")) { managingCover = true }.controlSize(.small).disabled(model.novel["initialized"].bool != true)
-                        if let error = model.cover["error"].string { Text(error).font(.caption).foregroundStyle(.red) }
+                        if let error = model.cover["error"].string { Text(error).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.danger) }
                     }
                     VStack(alignment: .leading, spacing: 18) {
-                        Text(model.title).font(.system(size: 28, weight: .medium, design: .serif)).textSelection(.enabled)
+                        Text(model.title).font(.system(size: 20, weight: .medium, design: .serif)).textSelection(.enabled)
                         LabeledContent(model.t("novel.author"), value: model.novelMetadata["author_name"].string.flatMap { $0.isEmpty ? nil : $0 } ?? model.t("library.no_author"))
                         LabeledContent(model.t("novel.genre"), value: model.novelMetadata["genre"].string ?? "")
                         LabeledContent(model.t("novel.status"), value: model.t("novel.status." + (model.novelMetadata["status"].string ?? "planning")))
                         LabeledContent(model.t("novel.language"), value: model.novelMetadata["language_tag"].string ?? model.locale)
                         LabeledContent(model.t("novel.structure"), value: model.t("novel.structure_count", ["volumes": String(model.volumes.count), "chapters": String(model.chapters.count)]))
+                        Divider()
+                        ObjectTimestampsView(localizer: model.localizer, record: model.info["properties"])
+                        if let date = model.novel["novel"]["updated_at"].string {
+                            ObjectPropertyRow(title: model.t("properties.metadata_updated"), value: model.localizer.date(date))
+                        }
+                        if let revision = model.novel["revision"].integer {
+                            ObjectPropertyRow(title: model.t("properties.metadata_revision"), value: String(revision))
+                        }
                     }.frame(maxWidth: 500, alignment: .leading)
                 }
                 Divider()
-                Text(model.t("novel.synopsis")).font(.headline)
+                Text(model.t("novel.synopsis")).font(.system(size: 14, weight: .semibold))
                 Text(model.novelMetadata["synopsis"].string.flatMap { $0.isEmpty ? nil : $0 } ?? model.t("novel.no_synopsis"))
                     .foregroundStyle(WorkbenchPalette.muted).lineSpacing(7).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading)
                 Divider()
                 AgentIntegrationView(settings: model.agentIntegration, workspaceID: model.workspaceID, localizer: model.localizer)
                 if let url = model.workspace?.url {
                     Divider()
-                    LabeledContent(model.t("novel.folder")) { Text(url.path).textSelection(.enabled).font(.callout).foregroundStyle(WorkbenchPalette.muted) }
+                    LabeledContent(model.t("novel.folder")) { Text(url.path).textSelection(.enabled).font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted) }
                 }
             }.padding(36).frame(maxWidth: 980, alignment: .leading).frame(maxWidth: .infinity, alignment: .leading)
         }.workbenchPage()
             .sheet(isPresented: $editing) { NovelMetadataSheet(model: model) }
             .sheet(isPresented: $managingCover) { CoverWorkbenchSheet(model: model) }
+            .sheet(isPresented: $creativeTask) { CreativeTaskView(model: model, kind: .chapterDraft) }
     }
 }
 
@@ -78,7 +89,7 @@ private struct NovelMetadataSheet: View {
     private var metadata: JSONValue { .object(["title": .string(title), "author_name": .string(author), "genre": .string(genre), "synopsis": .string(synopsis), "language_tag": .string(language), "status": .string(status)]) }
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text(model.t(model.novel["initialized"].bool == true ? "novel.details" : "novel.initialize")).font(.title2)
+            Text(model.t(model.novel["initialized"].bool == true ? "novel.details" : "novel.initialize")).font(.system(size: 20, weight: .semibold))
             Form {
                 TextField(model.t("workspace.title"), text: $title)
                 TextField(model.t("novel.author"), text: $author)
@@ -88,9 +99,9 @@ private struct NovelMetadataSheet: View {
                 }
                 TextField(model.t("novel.language"), text: $language)
             }
-            Text(model.t("novel.synopsis")).font(.headline)
-            TextEditor(text: $synopsis).font(.body).frame(height: 160).border(WorkbenchPalette.line)
-            if model.novel["initialized"].bool != true { Text(model.t("novel.initialize_detail")).font(.callout).foregroundStyle(.secondary) }
+            Text(model.t("novel.synopsis")).font(.system(size: 14, weight: .semibold))
+            TextEditor(text: $synopsis).font(.system(size: 14)).frame(height: 160).border(WorkbenchPalette.line)
+            if model.novel["initialized"].bool != true { Text(model.t("novel.initialize_detail")).font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted) }
             HStack {
                 Button(model.t("common.cancel")) { if metadata != initial { discarding = true } else { dismiss() } }.keyboardShortcut(.cancelAction)
                 Spacer()
@@ -125,8 +136,8 @@ struct NovelStructureSheet: View {
     }
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
-            Text(model.t("novel.manage_structure")).font(.title2)
-            Text(model.t("novel.structure_detail")).foregroundStyle(.secondary).font(.callout)
+            Text(model.t("novel.manage_structure")).font(.system(size: 20, weight: .semibold))
+            Text(model.t("novel.structure_detail")).foregroundStyle(WorkbenchPalette.muted).font(.system(size: 14))
             HStack {
                 TextField(model.t("novel.volume_title"), text: $volumeTitle)
                 Button(model.t("novel.add_volume")) {
@@ -160,7 +171,7 @@ struct NovelStructureSheet: View {
     private func group(_ volumeID: JSONValue) -> some View {
         let rows = chapters.indices.filter { chapters[$0]["volume_id"] == volumeID }
         return VStack(alignment: .leading, spacing: 8) {
-            if volumeID == .null { Text(model.t("novel.unassigned")).font(.headline) }
+            if volumeID == .null { Text(model.t("novel.unassigned")).font(.system(size: 14, weight: .semibold)) }
             ForEach(Array(rows.enumerated()), id: \.element) { position, index in
                 HStack(spacing: 10) {
                     Text(model.documents.first { $0.id == chapters[index]["document_id"].string }?.title ?? model.t("draft.untitled")).lineLimit(1).frame(maxWidth: .infinity, alignment: .leading)
@@ -174,7 +185,7 @@ struct NovelStructureSheet: View {
                     Button { chapters.swapAt(index, rows[position + 1]) } label: { Image(systemName: "arrow.down") }.disabled(position == rows.count - 1).help(model.t("novel.move_down"))
                 }.padding(.vertical, 4)
             }
-            if rows.isEmpty { Text(model.t("novel.volume_empty")).font(.caption).foregroundStyle(.secondary) }
+            if rows.isEmpty { Text(model.t("novel.volume_empty")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted) }
         }
     }
 }

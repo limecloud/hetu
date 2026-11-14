@@ -18,8 +18,14 @@ private func check(_ value: Bool, _ message: String) throws { if !value { throw 
         let recovery = RecoveryStore(directory: root.appendingPathComponent("Recovery"))
         let preferencesName = "run.limeai.hetu.tests.\(UUID().uuidString)"
         let preferences = UserDefaults(suiteName: preferencesName)!
+        preferences.set(false, forKey: "Hetu.editor.autosave")
         defer { preferences.removePersistentDomain(forName: preferencesName) }
+        if CommandLine.arguments.contains("--library-properties") { try await LibraryPropertiesTests.run(root: root, preferences: preferences); return }
+        if CommandLine.arguments.contains("--authoring") { try await AuthoringTests.run(root: root); return }
+        if CommandLine.arguments.contains("--resource-impact") { try await ResourceImpactTests.run(root: root); return }
+        if CommandLine.arguments.contains("--creative-workspace") { try await CreativeWorkspaceTests.run(root: root); return }
         if CommandLine.arguments.contains("--creation-projects") { try await CreationProjectTests.run(root: root); return }
+        if CommandLine.arguments.contains("--creative-tasks") { try await CreativeTaskTests.run(root: root); return }
         if CommandLine.arguments.contains("--covers") { try await CoverTests.run(root: root); return }
         if CommandLine.arguments.contains("--delivery") { try await DeliveryTests.run(root: root); return }
         if CommandLine.arguments.contains("--window-layout") { try WindowLayoutTests.run(); return }
@@ -35,6 +41,10 @@ private func check(_ value: Bool, _ message: String) throws { if !value { throw 
             return
         }
         try agentIntegrationTests(root, preferences: preferences)
+        try await LibraryPropertiesTests.run(root: root, preferences: preferences)
+        try await AuthoringTests.run(root: root)
+        try await CreativeWorkspaceTests.run(root: root)
+        try await ResourceImpactTests.run(root: root)
         try await AgentInstallerTests.run(root: root)
         try await CreativeTaskTests.run(root: root)
         try await CreationProjectTests.run(root: root)
@@ -234,7 +244,7 @@ private func check(_ value: Bool, _ message: String) throws { if !value { throw 
         let english = restarted.t("media.title")
         restarted.locale = "zh-CN"
         let fetched = await restarted.workspaceAction("hetu.cues.get", input: ["cue_id": cue["cue"]["cue_id"]], onFailure: { error = $0; _ = $1 })
-        try check(fetched?["cue"] == cue["cue"] && english == "Cues & media" && restarted.t("media.title") == "线索与素材", "语言切换改变线索或缺少翻译")
+        try check(fetched?["cue"] == cue["cue"] && english == "References and assets" && restarted.t("media.title") == "资料与素材", "语言切换改变线索或缺少翻译")
         try check(fetched?["cue"]["narrative_refs"].array.first?["quote"].string == span.quote && error == nil, "原文选区映射错误")
     }
     @MainActor static func gitTests(_ root: URL, recovery: RecoveryStore, preferences: UserDefaults) async throws {
