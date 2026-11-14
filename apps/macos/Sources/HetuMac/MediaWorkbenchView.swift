@@ -6,14 +6,16 @@ import HetuNative
 
 struct MediaWorkbenchView: View {
     let model: WorkspaceModel
-    @State private var section = "resources"
+    @State private var section = "images"
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Picker(model.t("media.content"), selection: $section) {
+                Text(model.t("artwork.library")).tag("images")
                 Text(model.t("resources.title")).tag("resources")
                 Text(model.t("media.files")).tag("files")
-            }.pickerStyle(.segmented).frame(maxWidth: 320).padding(.horizontal, 24).padding(.top, 16)
-            if section == "resources" { ResourceWorkbenchView(model: model) }
+            }.pickerStyle(.segmented).frame(maxWidth: 460).padding(.horizontal, 24).padding(.top, 16)
+            if section == "images" { ArtworkLibraryView(model: model) }
+            else if section == "resources" { ResourceWorkbenchView(model: model) }
             else { MediaFilesWorkbenchView(model: model) }
         }
     }

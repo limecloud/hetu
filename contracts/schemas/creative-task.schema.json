@@ -708,6 +708,24 @@
           },
           "minItems": 1,
           "maxItems": 64
+        },
+        "image_category": {
+          "enum": [
+            "character",
+            "scene",
+            "prop",
+            "illustration",
+            "costume",
+            "other"
+          ]
+        },
+        "subject_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/image_subject_ref"
+          },
+          "uniqueItems": true,
+          "maxItems": 16
         }
       },
       "required": [
@@ -984,6 +1002,10 @@
       "properties": {
         "task_ref": {
           "$ref": "#/$defs/task_ref"
+        },
+        "submission_id": {
+          "type": "string",
+          "pattern": "^submission_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
         }
       },
       "required": [
@@ -1705,6 +1727,24 @@
         },
         "working_copy_ref": {
           "$ref": "#/$defs/working_ref"
+        },
+        "image_category": {
+          "enum": [
+            "character",
+            "scene",
+            "prop",
+            "illustration",
+            "costume",
+            "other"
+          ]
+        },
+        "subject_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/image_subject_ref"
+          },
+          "uniqueItems": true,
+          "maxItems": 16
         }
       },
       "required": [
@@ -3013,6 +3053,55 @@
         }
       ],
       "type": "object"
+    },
+    "image_subject_ref": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "entity"
+            },
+            "entity_ref": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "blueprint_revision": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "kind",
+            "entity_ref",
+            "blueprint_revision"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "document"
+            },
+            "document_id": {
+              "type": "string",
+              "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "revision_id": {
+              "type": "string",
+              "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            }
+          },
+          "required": [
+            "kind",
+            "document_id",
+            "revision_id"
+          ]
+        }
+      ]
     }
   }
 }

@@ -16,7 +16,7 @@ hetu --client codex call hetu.models.list --input <任务输入文件>
 
 1. 只用获权任务组织固定输入；文字 32 KiB、附加 instructions 8 KiB、图片提示 16 KiB，并遵守目录更小的限制。不扫描书库，不读取未保存内容。首版图片为文字生成图片，不提交参考图、视频或任意 URL。
 2. 调用 `hetu.model_tasks.prepare` / `hetu_prepare_model_task`，提供 `kind`、`artifact_kind`、`model_id`、`prompt`、`title` 与原 `operation_key`。平台渠道另传当前目录的 `billing_policy_version`、`estimated_credits`；自定义渠道须传 `billing_mode: provider`，禁止填写虚构的政策或零 Credits。文字类型须属于任务输出合同，图片为 `artifact_kind: image`。
-3. prepare 只在本机保存计划，不外发正文或扣费。把原 `plan_id` 告诉作者，请在原任务的“模型调用与费用确认”审阅完整输入及费用上限。Agent 不能调用作者批准动作、模拟点击或扩大预算。
+3. prepare 只在本机保存计划，不外发正文或扣费。在当前 Agent 对话呈现原 `plan_id` 对应的完整输入、模型、次数和实际计费方式，引导作者明确批准。可信本机确认通道只记录这次实际作者决定，并绑定 plan_sha256；普通业务请求不能用 approved=true 自批。软件展示结果和来源，不要求作者再填生成表单或操作费用工作流。没有可用可信确认通道时如实报告缺口，不模拟点击或扩大预算。
 4. 通过 `hetu.model_tasks.get` / `hetu_get_model_task` 查看批准状态，批准后再以 `hetu.model_tasks.submit` / `hetu_submit_model_task` 提交原计划。登录或默认模型选择不能代替本次内容与费用批准。
 
 文字输出为闭合 `{text: string}`，不提供任意聊天、流式或工具调用。长输入由 Agent 在作者授权内拆分，每项计划分别批准；不要在工具内构造自动生成循环。默认模型变化不修改原计划。

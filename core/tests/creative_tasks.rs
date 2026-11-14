@@ -621,3 +621,37 @@ fn insertion_permissions_reject_overlaps_and_context_does_not_grant_edit_rights(
         "仅供参考。"
     );
 }
+
+#[test]
+fn image_subjects_are_fixed_sources_not_title_guesses_or_edit_permissions() {
+    let (folder, author) = workspace();
+    let character = "character_11111111-1111-4111-8111-111111111111";
+    let bible = ok(call(&author, "blueprints.get", json!({})));
+    let saved = ok(call(&author, "blueprints.save", json!({"expected":expected(&bible),"typed_changes":[{"type":"upsert_character","entity":{"character_id":character,"name":"林舟","aliases":[],"description":"渡口船工","traits":[],"facts":[],"archived":false}}],"operation_key":"image-character"})));
+    let revision = saved["revision"].clone();
+    let task = prepare(&author, "artwork", json!([{"kind":"blueprint","revision":revision}]), None);
+    let reader = agent(folder.path(), false, &task);
+    let inbox = folder.path().join(task["request"]["output_contract"]["relative_inbox"].as_str().unwrap());
+    let mut bytes = std::io::Cursor::new(Vec::new());
+    image::DynamicImage::new_rgb8(120, 180).write_to(&mut bytes, image::ImageFormat::Png).unwrap();
+    fs::write(inbox.join("portrait.png"), bytes.get_ref()).unwrap();
+    let candidate = json!({"kind":"image","title":"不是用来匹配姓名的标题","source_format":"image","source_ref_indices":[0],"file_name":"portrait.png","sha256":digest(bytes.get_ref()),"image_category":"character","subject_refs":[{"kind":"entity","entity_ref":character,"blueprint_revision":revision}]});
+    let result = ok(call(&reader, "creative_tasks.submit_result", submit_input(&task, json!([candidate]), "linked-image")));
+    assert_eq!(result["submission"]["candidates"][0]["image_category"], "character");
+    assert_eq!(result["submission"]["candidates"][0]["subject_refs"], candidate["subject_refs"]);
+    for (field, value) in [("image_category", json!("imaginary")), ("subject_refs", json!([{"kind":"entity","entity_ref":"character_22222222-2222-4222-8222-222222222222","blueprint_revision":revision}]))] {
+        let mut invalid = candidate.clone(); invalid[field] = value;
+        assert_ne!(call(&reader, "creative_tasks.submit_result", submit_input(&task, json!([invalid]), &format!("invalid-{field}")))["status"], "succeeded");
+    }
+    let mut outside = candidate.clone(); outside["source_ref_indices"] = json!([]);
+    assert_eq!(call(&reader, "creative_tasks.submit_result", submit_input(&task, json!([outside]), "unbound-subject"))["error"]["code"], "hetu.invalid_source_ref");
+    // 下一批可复用旧图而不改旧批次，未带新字段的历史候选继续有效。
+    let mut old = candidate.clone(); old.as_object_mut().unwrap().remove("image_category"); old.as_object_mut().unwrap().remove("subject_refs");
+    ok(call(&reader, "creative_tasks.submit_result", submit_input(&task, json!([old]), "legacy-image")));
+    let historical = ok(call(&reader, "interactions.get", json!({"task_ref":task["task_ref"],"submission_id":result["submission"]["submission_id"]})));
+    assert_eq!(historical["submission"]["candidates"][0]["subject_refs"], candidate["subject_refs"]);
+    let text_task = prepare(&author, "chapter_draft", json!([]), None);
+    let mut text = text_candidate("text", "一段原文"); text["image_category"] = json!("illustration");
+    assert_eq!(call(&author, "creative_tasks.submit_result", submit_input(&text_task, json!([text]), "text-not-image"))["error"]["code"], "invalid_input");
+    assert!(ok(call(&author, "documents.list", json!({})))["documents"].as_array().unwrap().is_empty());
+}

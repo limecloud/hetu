@@ -49,6 +49,8 @@ struct NovelDetailsView: View {
                 Text(model.novelMetadata["synopsis"].string.flatMap { $0.isEmpty ? nil : $0 } ?? model.t("novel.no_synopsis"))
                     .foregroundStyle(WorkbenchPalette.muted).lineSpacing(7).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading)
                 Divider()
+                ArtworkLibraryView(model: model, filterCategory: "cover").frame(height: 460)
+                Divider()
                 AgentIntegrationView(settings: model.agentIntegration, workspaceID: model.workspaceID, localizer: model.localizer)
                 if let url = model.workspace?.url {
                     Divider()

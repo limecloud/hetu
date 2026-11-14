@@ -115,7 +115,7 @@ def package(app, certificate, version):
         raise SystemExit("App 身份或版本与当前源码不符，请重新构建 release。")
     contents = app / "Contents"
     binaries = [contents / name for name in [
-        "Frameworks/libhetu_core.dylib", "Helpers/hetu-mcp", "Helpers/node", "MacOS/HetuMac",
+        "Frameworks/libhetu_core.dylib", "Helpers/hetu", "Helpers/hetu-mcp", "Helpers/node", "MacOS/HetuMac",
     ]]
     for binary in binaries:
         if run(["lipo", "-archs", str(binary)]).strip() != "arm64":
@@ -150,7 +150,7 @@ def package(app, certificate, version):
                     "--keychain", str(keychain), "--timestamp", "--options", "runtime"]
             entitlements = temporary / "node-entitlements.plist"
             entitlements.write_bytes(plistlib.dumps({"com.apple.security.cs.allow-jit": True}))
-            print("签名内核、MCP、Node.js 和 Mac 应用。", flush=True)
+            print("签名内核、CLI、MCP、Node.js 和 Mac 应用。", flush=True)
             for binary in binaries:
                 options = ["--entitlements", str(entitlements)] if binary.name == "node" else []
                 run([*sign, *options, str(binary)])
@@ -162,6 +162,8 @@ def package(app, certificate, version):
             run([*sign, str(app)])
             verify_signature(app, team)
             run([str(contents / "Helpers/node"), "-e", "for(let i=0;i<100000;i++)Math.sqrt(i);console.log(process.arch)"])
+            if run([str(contents / "Helpers/hetu"), "--version"]).strip() != f"hetu {version}":
+                raise SystemExit("签名后的 CLI 版本与发行版本不一致。")
             run([str(contents / "Helpers/hetu-mcp"), "--help"])
             run(["xcrun", "notarytool", "store-credentials", "hetu-notary", "--keychain", str(keychain),
                  "--apple-id", env["APPLE_ID"], "--team-id", team, "--password", env["APPLE_PASSWORD"]])

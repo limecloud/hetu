@@ -1003,7 +1003,30 @@ impl Kernel {
             if let Some(reference) = working_refs.as_array().unwrap().get(index) {
                 record["working_copy_ref"] = reference.clone();
             }
+            if candidate["kind"] != "image" {
+                ensure(candidate.get("image_category").is_none() && candidate.get("subject_refs").is_none(),
+                    "invalid_input", "图片分类和关联仅适用于图片候选。")?;
+            }
             if candidate["kind"] == "image" {
+                // 关联只能指向本候选已声明的固定来源，不扩大任务读取或编辑权限。
+                for subject in candidate["subject_refs"].as_array().into_iter().flatten() {
+                    if subject["kind"] == "document" {
+                        ensure(sources.contains(subject), "hetu.invalid_source_ref", "图片关联的文档不在固定来源中。")?;
+                    } else {
+                        let revision = integer(subject, "blueprint_revision")?;
+                        ensure(sources.iter().any(|s| s["kind"] == "blueprint" && s["revision"] == revision),
+                            "hetu.invalid_source_ref", "图片关联的设定修订不在固定来源中。")?;
+                        let (bp, _) = self.blueprint_revision(Some(revision))?;
+                        let reference = text(subject, "entity_ref")?;
+                        ensure([("characters", "character_id"), ("locations", "location_id"), ("factions", "faction_id"),
+                            ("timeline", "event_id"), ("world", "entry_id"), ("rules", "rule_id")].iter().any(|(section, key)|
+                            bp[section].as_array().is_some_and(|a| a.iter().any(|e| e[key] == reference))),
+                            "hetu.invalid_source_ref", "图片关联的对象不在固定设定中。")?;
+                    }
+                }
+                for key in ["image_category", "subject_refs"] {
+                    if let Some(value) = candidate.get(key) { record[key] = value.clone(); }
+                }
                 let media = self.image_candidate(&task, candidate)?;
                 for (key, value) in media.as_object().unwrap() {
                     record[key] = value.clone();
@@ -1120,7 +1143,7 @@ impl Kernel {
                 ensure(
                     image.scan["sha256"] == candidate["sha256"],
                     "revision_conflict",
-                    "封面候选读取期间发生变化。",
+                    "图片候选读取期间发生变化。",
                 )?;
                 let mut preview = crate::infrastructure::media::image_preview(&image.decoded)?;
                 preview["candidate_id"] = candidate["candidate_id"].clone();

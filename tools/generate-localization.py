@@ -84,6 +84,7 @@ def generate():
     referenced.update(suite["titleKey"] for suite in suites["suites"])
     creative = ROOT / "contracts/schemas/creative-task.schema.json"
     if creative.exists():
+        families["artwork.category."] = ["all", "cover"] + json.loads(creative.read_text())["$defs"]["candidate_input"]["properties"]["image_category"]["enum"]
         families["creative.state."] = json.loads(creative.read_text())["$defs"]["state_record"]["properties"]["state"]["enum"]
     families["cover.state."] = json.loads((ROOT / "contracts/schemas/book-cover.schema.json").read_text())["$defs"]["candidate_state"]["enum"]
     delivery = json.loads((ROOT / "contracts/schemas/delivery.schema.json").read_text())["$defs"]

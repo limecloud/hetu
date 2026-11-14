@@ -15,6 +15,8 @@ description: "作者选择河图洛书通用创作套件时，为河图洛书角
 
 作者选择河图图片服务时，读取[模型服务合同](../../references/model-service.md)。通过实际发现的 MCP／CLI 读取模型目录、准备单次固定计划、等待作者批准、提交并收集原结果。不得自批、换键重发或扩大数量；结果未知先查原计划。凭据由本机设置管理，不向任务传入密钥。
 
+收集成功后，按用途填写 `image_category`（character、scene、prop、illustration、costume、other）。用 `subject_refs` 明确关联：设定对象为 `{kind: entity, entity_ref, blueprint_revision}`，章节或剧本为 `{kind: document, document_id, revision_id}`。关联须包含在本候选的 source_ref_indices 所指固定资料中；人物同名、标题包含名字或整份设定作为参考，都不能替代明确关联。软件据此在对应角色、地点、章节及统一图片资产库展示同一候选。道具没有独立设定身份时关联其来源章节，并归入道具分类，不伪造对象 ID。
+
 收集成功后，以工具返回的实际文件名、摘要及 `source_format: image` 调用 `hetu.creative_tasks.submit_result` 提交固定候选。沿用原 task_ref、请求摘要和操作键，记录真实模型与计划 ID。回读候选及图片预览，检查主体、比例、可解码性和明显缺陷；报告实际保存位置。参考图不等于已采用素材、人物设定或封面。
 
 返工沿原任务读取公开意见，保留旧候选；下一次付费生成须单独批准，不把保存意见当成已开始生图。软件用于预览、比较及作者取舍，正常业务不靠 Computer Use 操作。

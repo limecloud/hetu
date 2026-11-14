@@ -37,6 +37,7 @@ struct EntityChoice: Identifiable {
 
 struct StoryBibleView: View {
     let model: WorkspaceModel
+    @Environment(\.scenePhase) private var phase
     @State private var kind = BibleKind.character
     @State private var editing = false
     @State private var selected: JSONValue = .null
@@ -46,10 +47,14 @@ struct StoryBibleView: View {
     @State private var lockError: String?
     @State private var removal: JSONValue = .null
     @State private var history = false
+    @State private var artwork = ArtworkLibrarySession()
+    @State private var viewingEntity: JSONValue = .null
     private var items: [JSONValue] { model.bible["blueprint"][kind.section].array.filter { showArchived || $0["archived"].bool != true } }
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             WorkbenchHeading(title: model.t("bible.title"), subtitle: model.t("bible.description"), artwork: items.isEmpty ? "" : "story-world") {
+                Button { Task { await artwork.load(model: model) } } label: { Image(systemName: "arrow.clockwise") }.accessibilityLabel(model.t("common.refresh")).disabled(artwork.loading)
+                ArtworkAgentButton(model: model)
                 Button(model.t("bible.history")) { history = true }
                 Button(model.t(model.locked ? "bible.unlock" : "bible.lock")) { lockError = nil; confirmLock = true }
                 Button { selected = .null; editing = true } label: { Label(model.t("entity.add"), systemImage: "plus") }
@@ -69,15 +74,26 @@ struct StoryBibleView: View {
                 WorkbenchEmptyState(title: model.t("entity.empty"), detail: model.t("entity.empty_detail"), artwork: "story-world")
             } else {
                 ScrollView {
-                    LazyVStack(alignment: .leading, spacing: 0) {
-                        ForEach(Array(items.enumerated()), id: \.offset) { _, item in
-                            entityRow(item)
-                            Divider()
+                    if kind == .character || kind == .location {
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 230, maximum: 310), spacing: 24)], alignment: .leading, spacing: 28) {
+                            ForEach(Array(items.enumerated()), id: \.offset) { _, item in entityCard(item) }
+                        }.padding(.vertical, 4)
+                    } else {
+                        LazyVStack(alignment: .leading, spacing: 0) {
+                            ForEach(Array(items.enumerated()), id: \.offset) { _, item in entityRow(item); Divider() }
                         }
                     }
+                    if let error = artwork.error { Text(error).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.danger) }
+                    if artwork.nextCursor != nil { Button(model.t("creative.more")) { Task { await artwork.load(model: model, more: true) } }.padding(.top, 16) }
                 }
+
             }
         }.padding(28).workbenchPage()
+        .task(id: model.workspaceID) { await artwork.load(model: model) }
+        .onChange(of: phase) { _, phase in if phase == .active && !artwork.loading { Task { await artwork.load(model: model) } } }
+        .sheet(isPresented: Binding(get: { viewingEntity != .null }, set: { if !$0 { viewingEntity = .null } })) {
+            EntityArtworkSheet(model: model, kind: kind, entity: viewingEntity)
+        }
         .sheet(isPresented: $editing) { EntityEditor(model: model, kind: kind, entity: selected) }
         .sheet(isPresented: $history) { BibleHistoryView(model: model) }
         .sheet(isPresented: $confirmLock) { lockSheet }
@@ -88,6 +104,43 @@ struct StoryBibleView: View {
                 Task { _ = await model.saveBibleChanges([.object(["type": .string("remove_entity"), "entity_ref": reference])]) }
             }
         } message: { Text(model.t("entity.remove_detail", ["name": entityTitle(model, kind, removal)])) }
+    }
+    private func entityCard(_ item: JSONValue) -> some View {
+        let preferred = kind == .character ? "character" : "scene"
+        let images = artwork.items.filter { $0.matches(entity: item[kind.idKey].string) }.sorted { ($0.category == preferred ? 0 : 1) < ($1.category == preferred ? 0 : 1) }
+        return VStack(alignment: .leading, spacing: 12) {
+            Button { viewingEntity = item } label: {
+                VStack(alignment: .leading, spacing: 12) {
+                    if let image = images.first { ArtworkThumbnail(item: image).frame(height: kind == .character ? 240 : 175) }
+                    else {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 6).fill(WorkbenchPalette.page)
+                            Image(systemName: kind == .character ? "person.crop.rectangle" : "mountain.2").font(.system(size: 20)).foregroundStyle(WorkbenchPalette.muted)
+                        }.frame(height: kind == .character ? 240 : 175)
+                            .overlay(RoundedRectangle(cornerRadius: 6).strokeBorder(WorkbenchPalette.line, lineWidth: 0.5))
+                    }
+                    HStack {
+                        Text(entityTitle(model, kind, item)).font(.system(size: 14, weight: .semibold))
+                        Spacer()
+                        if let image = images.first { Text(image.category == preferred ? model.t("artwork.image_count", ["count": String(images.count)]) : model.t("artwork.category." + image.category)).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted) }
+                    }
+                    Text(item["description"].string ?? "").font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted).lineLimit(3).frame(height: 48, alignment: .topLeading)
+                }.frame(maxWidth: .infinity, alignment: .leading).contentShape(Rectangle())
+            }.buttonStyle(.plain)
+            HStack {
+                ArtworkAgentButton(model: model, entityRef: item[kind.idKey].string).labelStyle(.iconOnly)
+                Spacer()
+                Button(model.t("common.edit")) { selected = item; editing = true }.disabled(model.locked)
+                Menu {
+                    Button(model.t(item["archived"].bool == true ? "entity.unarchive" : "entity.archive")) {
+                        var value = item.object; value["archived"] = .bool(item["archived"].bool != true)
+                        Task { _ = await model.saveBibleChanges([.object(["type": .string("upsert_" + kind.rawValue), "entity": .object(value)])]) }
+                    }
+                    Button(model.t("entity.remove"), role: .destructive) { removal = item }
+                } label: { Image(systemName: "ellipsis") }.menuStyle(.borderlessButton).fixedSize().accessibilityLabel(model.t("entity.actions")).disabled(model.locked)
+
+            }
+        }
     }
     private func entityRow(_ item: JSONValue) -> some View {
         HStack(alignment: .center, spacing: 22) {

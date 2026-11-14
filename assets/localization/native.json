@@ -5528,8 +5528,8 @@
     "purpose": "Mac 原生界面：creative.error.budgetExceeded"
   },
   "creative.state.ready": {
-    "zh-CN": "任务已准备，尚未复制",
-    "en": "Task ready; prompt not copied",
+    "zh-CN": "任务已准备",
+    "en": "Task ready",
     "parameters": [],
     "purpose": "Mac 原生界面：creative.state.ready"
   },
@@ -8811,5 +8811,153 @@
     "purpose": "Mac 原生界面：creative.kind.artwork",
     "zh-CN": "素材图",
     "en": "Artwork"
+  },
+  "artwork.library": {
+    "zh-CN": "图片资产",
+    "en": "Image assets",
+    "purpose": "图片资产展示与 Agent 交接",
+    "parameters": []
+  },
+  "artwork.search": {
+    "zh-CN": "搜索图片",
+    "en": "Search images",
+    "purpose": "图片资产展示与 Agent 交接",
+    "parameters": []
+  },
+  "artwork.empty": {
+    "zh-CN": "还没有符合条件的图片",
+    "en": "No matching images",
+    "purpose": "图片资产展示与 Agent 交接",
+    "parameters": []
+  },
+  "artwork.load_failed": {
+    "zh-CN": "图片读取失败，请刷新重试",
+    "en": "Images could not be loaded. Refresh to try again.",
+    "purpose": "图片资产展示与 Agent 交接",
+    "parameters": []
+  },
+  "artwork.reference": {
+    "zh-CN": "参考图片",
+    "en": "Reference image",
+    "purpose": "图片资产展示与 Agent 交接",
+    "parameters": []
+  },
+  "artwork.related": {
+    "zh-CN": "关联图片",
+    "en": "Related images",
+    "purpose": "图片资产展示与 Agent 交接",
+    "parameters": []
+  },
+  "artwork.no_related": {
+    "zh-CN": "本篇暂无关联图片",
+    "en": "No images linked to this document",
+    "purpose": "图片资产展示与 Agent 交接",
+    "parameters": []
+  },
+  "artwork.agent": {
+    "zh-CN": "让 AI 绘图",
+    "en": "Ask AI to create images",
+    "purpose": "图片资产展示与 Agent 交接",
+    "parameters": []
+  },
+  "artwork.version": {
+    "zh-CN": "第 {number} 版",
+    "en": "Version {number}",
+    "purpose": "图片资产展示与 Agent 交接",
+    "parameters": [
+      "number"
+    ]
+  },
+  "artwork.image_count": {
+    "zh-CN": "{count} 张图片",
+    "en": "{count} images",
+    "purpose": "图片资产展示与 Agent 交接",
+    "parameters": [
+      "count"
+    ]
+  },
+  "creative.manual_setup": {
+    "zh-CN": "手动准备任务",
+    "en": "Prepare a task manually",
+    "purpose": "图片资产展示与 Agent 交接",
+    "parameters": []
+  },
+  "creative.connection_details": {
+    "zh-CN": "接入与任务信息",
+    "en": "Connection and task details",
+    "purpose": "图片资产展示与 Agent 交接",
+    "parameters": []
+  },
+  "artwork.agent_prompt": {
+    "zh-CN": "请使用河图洛书 hetu-artwork（封面使用 hetu-cover）Skill，为以下作品或对象设计图片。先发现 CLI/MCP 能力，读取明确的固定资料；已有任务继续原任务，否则用 image_tasks.preview_prompt/prepare 准备图片任务。请在当前对话中引导我确认创意、模型、次数及费用，取得明确批准后生成；不要让我在软件里填写生图表单。以真实文件和摘要提交候选，填写 image_category 与 subject_refs，确保图片显示在所属角色、地点或章节，以及统一图片资产库。不要改正文、设定或已选封面。",
+    "en": "Use Hetu Luoshu hetu-artwork (hetu-cover for covers) for the following work or subject. Discover CLI/MCP capabilities and read the explicit fixed sources. Continue an existing task, or prepare one using image_tasks.preview_prompt/prepare. Guide the creative choices, model, request count and billing in this conversation; obtain explicit approval before generation. Do not ask me to fill in generation forms in the app. Submit actual files and hashes with image_category and subject_refs so images appear with their character, location or document and in Image assets. Preserve manuscripts, story bible and the selected cover.",
+    "purpose": "图片资产展示与 Agent 交接",
+    "parameters": []
+  },
+  "artwork.category.all": {
+    "zh-CN": "全部",
+    "en": "All",
+    "purpose": "图片资产展示与 Agent 交接",
+    "parameters": []
+  },
+  "artwork.category.cover": {
+    "zh-CN": "封面",
+    "en": "Covers",
+    "purpose": "图片资产展示与 Agent 交接",
+    "parameters": []
+  },
+  "artwork.category.character": {
+    "zh-CN": "人物",
+    "en": "Characters",
+    "purpose": "图片资产展示与 Agent 交接",
+    "parameters": []
+  },
+  "artwork.category.scene": {
+    "zh-CN": "场景",
+    "en": "Locations",
+    "purpose": "图片资产展示与 Agent 交接",
+    "parameters": []
+  },
+  "artwork.category.prop": {
+    "zh-CN": "道具",
+    "en": "Props",
+    "purpose": "图片资产展示与 Agent 交接",
+    "parameters": []
+  },
+  "artwork.category.illustration": {
+    "zh-CN": "插图",
+    "en": "Illustrations",
+    "purpose": "图片资产展示与 Agent 交接",
+    "parameters": []
+  },
+  "artwork.category.costume": {
+    "zh-CN": "服饰",
+    "en": "Costumes",
+    "purpose": "图片资产展示与 Agent 交接",
+    "parameters": []
+  },
+  "artwork.category.other": {
+    "zh-CN": "其他",
+    "en": "Other",
+    "purpose": "图片资产展示与 Agent 交接",
+    "parameters": []
+  },
+  "artwork.copied": {
+    "zh-CN": "提示词已复制",
+    "en": "Prompt copied",
+    "parameters": [],
+    "purpose": "图片交接复制反馈"
+  },
+  "artwork.subject_details": {
+    "zh-CN": "设定详情",
+    "en": "Story details",
+    "parameters": [],
+    "purpose": "图片对象的只读设定详情"
+  },
+  "artwork.covers": {
+    "zh-CN": "封面候选",
+    "en": "Cover candidates",
+    "purpose": "作品资料中的封面候选区标题",
+    "parameters": []
   }
 }

@@ -3,7 +3,8 @@
   "private": true,
   "workspaces": [
     "apps/website",
-    "apps/task-view"
+    "apps/task-view",
+    "packages/npm-cli"
   ],
   "engines": {
     "node": ">=24.21.0 <26"
@@ -14,7 +15,8 @@
     "check": "npm run check --workspace @hetu/website",
     "deploy:website": "npm run deploy --workspace @hetu/website",
     "build:task-view": "npm run build --workspace @hetu/task-view",
-    "test:task-view": "npm run test --workspace @hetu/task-view"
+    "test:task-view": "npm run test --workspace @hetu/task-view",
+    "test:cli": "npm run test --workspace @limecloud/hetu"
   },
   "version": "0.6.0"
 }

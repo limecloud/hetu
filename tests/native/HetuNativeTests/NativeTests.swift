@@ -22,6 +22,7 @@ private func check(_ value: Bool, _ message: String) throws { if !value { throw 
         defer { preferences.removePersistentDomain(forName: preferencesName) }
         if CommandLine.arguments.contains("--library-properties") { try await LibraryPropertiesTests.run(root: root, preferences: preferences); return }
         if CommandLine.arguments.contains("--authoring") { try await AuthoringTests.run(root: root); return }
+        if CommandLine.arguments.contains("--artwork-library") { try await ArtworkLibraryTests.run(root: root); return }
         if CommandLine.arguments.contains("--resource-impact") { try await ResourceImpactTests.run(root: root); return }
         if CommandLine.arguments.contains("--creative-workspace") { try await CreativeWorkspaceTests.run(root: root); return }
         if CommandLine.arguments.contains("--creation-projects") { try await CreationProjectTests.run(root: root); return }
@@ -44,6 +45,7 @@ private func check(_ value: Bool, _ message: String) throws { if !value { throw 
         try await LibraryPropertiesTests.run(root: root, preferences: preferences)
         try await AuthoringTests.run(root: root)
         try await CreativeWorkspaceTests.run(root: root)
+        try await ArtworkLibraryTests.run(root: root)
         try await ResourceImpactTests.run(root: root)
         try await AgentInstallerTests.run(root: root)
         try await CreativeTaskTests.run(root: root)

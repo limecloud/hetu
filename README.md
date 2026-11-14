@@ -89,8 +89,12 @@ GitHub Actions 的 `CI` 执行原生与网页测试；`macOS signed package` 从
 独立 MCP Server 为所选客户端提供稳定入口，每次业务调用使用作者给出的任务引用：
 
 ```bash
-"build/native/bin/hetu-mcp" --client codex
+npm install -g @limecloud/hetu
+hetu --version
+hetu-mcp --client codex
 ```
+
+npm 启动器需要 Node.js 22.12+，支持 macOS 14+ Apple Silicon。首次运行获取对应版本的官方运行时并验证摘要、签名和公证，无需打开桌面窗口。免安装调用和 MCP 配置见[启动器说明](packages/npm-cli/README.md)。源码构建入口为 `build/native/bin/hetu` 和 `build/native/bin/hetu-mcp`。
 
 MCP Server 的构建、权限与宿主配置见[MCP 接入规范](docs/14-MCP与Agent接入.md)；CLI 参数见[CLI 合同](docs/13-内核ABI与CLI合同.md)；插件、Skills 与 MCP Apps 见[Agent 集成说明](docs/27-Agent与Codex插件集成设计.md)。外部 Agent 自身的模型账号由其客户端管理。河图可选模型服务在“设置 → 模型服务”连接网站账号，或添加 HTTPS 自定义渠道、密钥和文字／图片模型代码；设置页面只配置服务。河图作为应用在 Cloud 登记，Cloud Console 的应用入口打开河图网站自有 `/console/`；页面及河图功能由本项目提供，服务端消费 Cloud 开放平台，账号与费用复用平台能力。接入配置见[网站说明](apps/website/README.md)；自定义渠道凭据不进入作品或 Agent 返回。
 

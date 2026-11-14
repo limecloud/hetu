@@ -96,6 +96,8 @@ private struct ManuscriptInspectorView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
+                RelatedArtworkStrip(model: model, documentID: model.documentID)
+                Divider()
                 DocumentPropertiesView(model: model)
                 Divider()
                 Text(model.t("shell.checks_title")).font(.system(size: 14, weight: .semibold))

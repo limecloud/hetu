@@ -50,12 +50,15 @@ struct CreativeTaskView: View {
             if let error = session.error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             if session.pending != nil { Button(model.t("drama.retry")) { Task { await session.retry() } } }
             HSplitView {
-                ScrollView { VStack(alignment: .leading, spacing: 14) { preparation; history }.padding(.trailing, 12) }.frame(minWidth: 320, idealWidth: 360, maxWidth: 440)
+                ScrollView { VStack(alignment: .leading, spacing: 14) { history; DisclosureGroup(model.t("creative.manual_setup")) { preparation } }.padding(.trailing, 12) }.frame(minWidth: 320, idealWidth: 360, maxWidth: 440)
                 ScrollView { VStack(alignment: .leading, spacing: 14) { if task == .null { promptPreview } else { taskResult } }.frame(maxWidth: .infinity, alignment: .leading).padding(.leading, 12) }.frame(minWidth: 380)
             }
         }.padding(24).frame(minWidth: 900, idealWidth: 1120, minHeight: 650, idealHeight: 800)
         .interactiveDismissDisabled(session.pending != nil)
-        .task { await session.loadTasks() }
+        .task {
+            await session.loadTasks()
+            if let latest = session.tasks.first(where: { $0["task_kind"].string == kind.rawValue }) { await session.loadTask(latest["task_ref"]) }
+        }
         .sheet(item: $adoption) { value in
             DraftAdoptionSheet(model: model, context: value.value) { id, before in
                 Task { _ = await model.selectDocument(id, adoptionUndoBaseline: before) }
@@ -165,26 +168,6 @@ struct CreativeTaskView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text(model.t("creative.state." + (task["observation"]["state"].string ?? "ready"))).font(.system(size: 14, weight: .semibold))
             Text(task["request"]["brief"].string ?? "").textSelection(.enabled)
-            Text(model.t("creative.handoff_note")).font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted)
-            HStack {
-                Button(model.t("creative.copy_prompt")) { copyPrompt() }.disabled(task["observation"]["state"].string == "closed" || held)
-                Button(model.t("creative.connection")) { copyConnection() }.disabled(held || task["observation"]["state"].string == "closed")
-                Button(model.t("creative.refresh")) { Task { await session.loadTask(session.taskReference); await model.refresh() } }.disabled(held)
-            }
-            if copied { Text(model.t("creative.copied")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted) }
-            if !connection.isEmpty { Text(model.t("creative.connection_copied")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted) }
-            DisclosureGroup(model.t("creative.prompt")) { Text(task["request"]["prompt"].string ?? "").textSelection(.enabled) }
-            ModelPlanReview(taskRef: session.taskReference, locale: model.locale, held: held,
-                read: { await session.read($0, input: $1) }, save: { await session.mutate($0, input: $1) })
-                .id(task["request"]["task_id"].string)
-            if let root = model.workspace?.url {
-                LocalTaskViewControls(root: root, scope: .workspace, taskRef: session.taskReference,
-                    brief: task["request"]["brief"].string ?? "", locale: model.locale, closed: task["observation"]["state"].string == "closed")
-            }
-            HStack {
-                Text(task["request"]["output_contract"]["relative_inbox"].string ?? "").font(.system(size: 12, design: .monospaced)).textSelection(.enabled)
-                Button(model.t("creative.import_result")) { Task { await session.inspectInbox() } }.disabled(held || task["observation"]["state"].string == "closed")
-            }
             if task["observation"]["submission_refs"].array.count > 1 {
                 Menu(model.t("creative.batches")) {
                     ForEach(Array(task["observation"]["submission_refs"].array.enumerated()), id: \.offset) { index, item in
@@ -199,6 +182,25 @@ struct CreativeTaskView: View {
                 } else {
                 CreativeCandidateView(model: model, session: session, candidate: candidate) { adoption = DramaSheet(value: $0) }
                     .id(candidate["candidate_id"].string ?? "")
+                }
+            }
+            DisclosureGroup(model.t("creative.connection_details")) {
+                Text(model.t("creative.handoff_note")).font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted)
+                HStack {
+                    Button(model.t("creative.copy_prompt")) { copyPrompt() }.disabled(task["observation"]["state"].string == "closed" || held)
+                    Button(model.t("creative.connection")) { copyConnection() }.disabled(held || task["observation"]["state"].string == "closed")
+                    Button(model.t("creative.refresh")) { Task { await session.loadTask(session.taskReference); await model.refresh() } }.disabled(held)
+                }
+                if copied { Text(model.t("creative.copied")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted) }
+                if !connection.isEmpty { Text(model.t("creative.connection_copied")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted) }
+                DisclosureGroup(model.t("creative.prompt")) { Text(task["request"]["prompt"].string ?? "").textSelection(.enabled) }
+                if let root = model.workspace?.url {
+                    LocalTaskViewControls(root: root, scope: .workspace, taskRef: session.taskReference,
+                        brief: task["request"]["brief"].string ?? "", locale: model.locale, closed: task["observation"]["state"].string == "closed")
+                }
+                HStack {
+                    Text(task["request"]["output_contract"]["relative_inbox"].string ?? "").font(.system(size: 12, design: .monospaced)).textSelection(.enabled)
+                    Button(model.t("creative.import_result")) { Task { await session.inspectInbox() } }.disabled(held || task["observation"]["state"].string == "closed")
                 }
             }
             TaskContinuationView(task: task, locale: model.locale, held: held,
@@ -238,15 +240,16 @@ struct CreativeTaskView: View {
     }
 }
 
-private struct CreativeImageCandidate: View {
+struct CreativeImageCandidate: View {
     let model: WorkspaceModel
     let session: CreativeTaskSession
     let candidate: JSONValue
+    let maxHeight: CGFloat
     @State private var covers: CoverSession
     @State private var overlay = false
     private var isCover: Bool { session.task["request"]["task_kind"].string == "cover" }
-    init(model: WorkspaceModel, session: CreativeTaskSession, candidate: JSONValue) {
-        self.model = model; self.session = session; self.candidate = candidate
+    init(model: WorkspaceModel, session: CreativeTaskSession, candidate: JSONValue, maxHeight: CGFloat = 320) {
+        self.model = model; self.session = session; self.candidate = candidate; self.maxHeight = maxHeight
         _covers = State(initialValue: CoverSession(model: model))
     }
     var body: some View {
@@ -255,7 +258,7 @@ private struct CreativeImageCandidate: View {
             Text(candidate["title"].string ?? "").font(.system(size: 14, weight: .semibold))
             if let value = session.task["image_previews"].array.first(where: { $0["candidate_id"] == candidate["candidate_id"] }),
                let raw = value["base64"].string, let data = Data(base64Encoded: raw), let image = NSImage(data: data) {
-                Image(nsImage: image).resizable().scaledToFit().frame(maxHeight: 320).accessibilityLabel(candidate["title"].string ?? "")
+                Image(nsImage: image).resizable().scaledToFit().frame(maxHeight: maxHeight).frame(maxWidth: .infinity).accessibilityLabel(candidate["title"].string ?? "")
             }
             if isCover {
                 Toggle(model.t("cover.add_text"), isOn: $overlay)

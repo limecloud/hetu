@@ -4,7 +4,8 @@
 - 新增文字与图片模型设置，支持本机自定义兼容渠道，以及经河图网站服务端接入的 Lime Cloud 渠道。外部 Agent 通过 CLI／MCP 发起生成，作者批准内容外发和本次费用。
 - 新增河图自有控制台、客户端配对、调用记录、会员额度查询及 Cloud 托管订阅入口。
 - 更新原生工作台、双语官网、使用指南与题材 Skills。
+- npm 包 `@limecloud/hetu` 提供 `hetu` 和 `hetu-mcp` 命令，首次运行验证并获取对应版本的官方签名运行时，无需打开桌面窗口。
 
 支持 macOS 14 及以上的 Apple Silicon Mac。下载 DMG 后将 `Hetu.app` 拖入“应用程序”，也可下载 ZIP 解压使用。正式附件经 Developer ID 签名、Apple 公证、票据装订和 Gatekeeper 检查；`SHA256SUMS` 与 `release-manifest.json` 记录版本、源码及最终文件摘要。升级前请备份重要作品。
 
-模型渠道、会员订阅及支付的真实业务接入仍需分别联调。视频生成列入待办。Intel Mac、Windows 安装包及各外部 Agent 的宿主兼容分别验收。
+模型渠道、会员订阅及支付的真实业务接入仍需分别联调；付费计划的通用 Agent 宿主可信确认入口尚未交付。视频生成列入待办。Intel Mac、Windows 安装包及各外部 Agent 的宿主兼容分别验收。

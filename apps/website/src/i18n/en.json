@@ -25,7 +25,7 @@
     "description": "Turn a manuscript into playable scenes and consistent production references.\nA free, open-source workspace for independent authors and small studios.\nBring your Agent. Keep your voice, your files and the final say.",
     "primary": "Try the workspace here",
     "secondary": "Read the user guide",
-    "note": "macOS source build / Apache-2.0 / Try the demo without installing",
+    "note": "macOS / Apache-2.0 / Try the demo without installing",
     "alt": "Original Hetu landscape: a manuscript-paper bridge crosses a pale jade river between distant mountains, connecting story and screen."
   },
   "promises": [
@@ -120,7 +120,7 @@
   "open": {
     "eyebrow": "Your work. Your choices.",
     "title": "Your next creative collaboration starts here.",
-    "body": "Free and open source, with your work in your own folders. Explore the browser demo or get the macOS source build. External agents and production services have their own pricing.",
+    "body": "Free and open source, with your work in your own folders. Explore the browser demo or download the Mac app. External agents and production services have their own pricing.",
     "cta": "Explore the open-source project",
     "local": "Local first",
     "native": "macOS first; Windows implemented separately",

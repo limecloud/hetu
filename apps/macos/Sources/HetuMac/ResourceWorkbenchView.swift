@@ -34,7 +34,7 @@ struct ResourceWorkbenchView: View {
         VStack(alignment: .leading, spacing: 12) {
             WorkbenchHeading(title: model.t("resources.title"), artwork: "") {
                 Button(model.t("resources.organize")) { agent = true }.disabled(!canWrite)
-                Button(model.t("creative.kind.artwork")) { artworkTask = true }.disabled(!canWrite)
+                Button(model.t("artwork.library")) { artworkTask = true }.disabled(!canWrite)
                 Button(model.t("common.refresh")) { Task { await associations.load(model: model); await load(); if !selected.isEmpty { await choose(selected) } } }
                 Button(model.t("resources.new")) { editor = DramaSheet(value: .null) }
                     .buttonStyle(WorkbenchButtonStyle(primary: true)).disabled(!canWrite)
@@ -92,7 +92,7 @@ struct ResourceWorkbenchView: View {
         .sheet(item: $source) { value in PlotSourceView(model: model, source: value.value) }
         .sheet(item: $impact, onDismiss: { Task { await loadUsages() } }) { value in ResourceImpactReviewSheet(model: model, impact: value) }
         .sheet(isPresented: $agent, onDismiss: { Task { await load(); if !selected.isEmpty { await choose(selected) } } }) { ResourceTaskSheet(model: model) }
-        .sheet(isPresented: $artworkTask) { CreativeTaskView(model: model, kind: .artwork) }
+        .sheet(isPresented: $artworkTask) { ArtworkLibrarySheet(model: model) }
     }
     private func categoryButton(_ value: String, key: String) -> some View {
         Button { category = value } label: {

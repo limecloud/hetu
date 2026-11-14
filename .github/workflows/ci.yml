@@ -62,6 +62,7 @@ jobs:
         run: npm run build
       - name: Test website and task view
         run: |
+          npm run test:cli
           npm run test --workspace @hetu/website
           npm run test:task-view
       - name: Retain failure evidence

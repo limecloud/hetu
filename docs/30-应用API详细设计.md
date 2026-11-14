@@ -714,6 +714,8 @@ MCP Apps 仅在真实宿主能力、用户同意和当前会话范围内使用�
 
 ## 24. 可选模型服务与固定计划
 
+图片候选可携带 `image_category` 及 `subject_refs`。分类限 character、scene、prop、illustration、costume、other；封面身份只由 cover 任务确定。对象引用为固定设定修订中的 entity_ref，或固定文档的 document_id + revision_id，且必须属于该候选声明的来源。Core 验证存在性与范围后写入不可变批次，拒绝文字候选附带图片字段。关联只控制展示，不授予编辑、素材采用或封面选用权。`hetu.interactions.get` 可携带 submission_id 回读指定批次及核验后的等比预览；省略时读取最新批次。
+
 文字与图片模型使用作者本机配置的 HTTPS OpenAI 兼容渠道，或经 `hetu website` 同源服务端消费 Cloud 开放平台。动作输入唯一源为 `contracts/schemas/model-service.schema.json`，动作与 MCP 映射分别由 `contracts/actions.json`、`contracts/tools/catalog.json` 管理；CLI 使用相同 `call` 合同。
 
 已有作品的图片参考任务可由 Agent 使用作品范围的 `hetu.image_tasks.preview_prompt`、`hetu.image_tasks.prepare` 准备，分别映射 `hetu_preview_image_task`、`hetu_prepare_image_task`。调用方明确提供作品目录和 scope_ref，保留预览返回的固定输入、expected_scope 与原操作键；仅接受 `cover`、`artwork`，拒绝正文 edit_scope 与资料修改 resource_scope。此入口只保存本地参考任务，不外发、不付费、不选用封面或素材。任务返回后，使用同作品的精确任务连接继续；不因此取得稳定连接登记、其他作品或作者决定权限。
@@ -734,7 +736,7 @@ MCP Apps 仅在真实宿主能力、用户同意和当前会话范围内使用�
 
 平台计划携带 `billing_policy_version` 与 `estimated_credits`，作者批准 `max_credits`。自定义计划须声明 `billing_mode: provider`，禁止填写两项 Cloud 报价字段；作者以 `provider_billing_accepted: true` 批准供应商单次请求，不提供虚构的金额上限。自定义渠道的地址、模型配置和密钥引用摘要固定在计划中，凭据不进入作品；返回仅接受完整可解码的 Base64 图片或闭合文字 JSON。发送标记持久化在本机私密 journal，未知结果不自动重发，也不伪造供应商查询能力。
 
-作品内封面任务的图片候选由作者通过 `hetu.covers.select` 的 `source.kind: creative_task` 选用，携带原 `candidate_ref`；Core 核对作品、任务、批次及图片，保留固定请求、提交及候选来源，不将模型候选改记为作者导入。原生封面入口复用同一任务、计划批准与选用动作。
+作品内封面任务的图片候选由作者通过 `hetu.covers.select` 的 `source.kind: creative_task` 选用，携带原 `candidate_ref`；Core 核对作品、任务、批次及图片，保留固定请求、提交及候选来源，不将模型候选改记为作者导入。原生封面入口读取同一任务成果并执行作者选用；生成计划与费用在外部 Agent 对话引导确认，经可信本机确认通道绑定实际决定，不把模型计划表单作为作者必经界面。
 
 ## 25. 全软件联动与操作提案合同
 
