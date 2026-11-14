@@ -3,7 +3,7 @@ import { assetURL } from '../lib/assets';
 type AgentClient = 'none' | 'codex' | 'workbuddy' | 'claudeCode' | 'other';
 type AgentAssociation = { client: AgentClient; suiteID: string };
 type AgentContext = 'settings' | 'book' | 'new-book';
-type DemoAgentCatalog = { skills: string[]; suites: { id: string; title: { 'zh-CN': string; en: string }; version: string }[] };
+type DemoAgentCatalog = { skills: string[]; skillTitles: Record<string, [string, string]>; suites: { id: string; title: { 'zh-CN': string; en: string }; version: string }[] };
 type Chapter = { title: string; body: string; saved: string; revision: number; finalRevision?: number };
 type Book = {
   title: string; author: string; status: string; cover: string; synopsis: string; chapters: Chapter[];
@@ -84,13 +84,7 @@ export function initializeWorkbench(root: HTMLElement) {
     return suite ? t(suite.title['zh-CN'], suite.title.en) : t('未选择套件', 'No suite selected');
   };
   const suiteVersion = (id: string) => agentCatalog.suites.find(suite => suite.id === id)?.version ?? t('未知版本', 'Unknown version');
-  const skillTitles: Record<string, [string, string]> = {
-    'hetu-setup': ['接入与授权', 'Setup and permissions'], 'hetu-book-create': ['创建作品', 'Book creation'],
-    'hetu-book-profile': ['作品资料', 'Book profile'], 'hetu-outline': ['故事大纲', 'Story outline'],
-    'hetu-cover': ['作品封面', 'Book cover'], 'hetu-draft': ['起草正文', 'Draft writing'],
-    'hetu-revise': ['正文改稿', 'Manuscript revision'], 'hetu-drama': ['短剧改编', 'Drama adaptation'],
-    'hetu-resources': ['资料整理', 'Resource organization'],
-  };
+  const skillTitles = agentCatalog.skillTitles;
   const association = (context: AgentContext): AgentAssociation => context === 'settings' ? { client: defaultClient, suiteID: settingsSuite } : context === 'new-book' ? newBookDraft : book().agent;
   const installationKey = (value: AgentAssociation) => `${value.client}/${value.suiteID}`;
   function associate(context: AgentContext, value: AgentAssociation) {

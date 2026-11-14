@@ -9,6 +9,11 @@ const plugins = import.meta.glob<{ version: string }>('../../../../integrations/
 const strings = nativeStrings as Record<string, { 'zh-CN': string; en: string }>;
 const demoCatalog = {
   skills: catalog.skills,
+  skillTitles: Object.fromEntries(catalog.skills.map(id => {
+    const title = strings[`agent.skill.${id}`];
+    if (!title?.['zh-CN'] || !title.en) throw new Error(`缺少任务双语名称：${id}`);
+    return [id, [title['zh-CN'], title.en]];
+  })),
   suites: catalog.suites.map(suite => {
     const plugin = plugins[`../../../../integrations/codex/${suite.pluginName}/plugin.json`];
     const title = strings[suite.titleKey];

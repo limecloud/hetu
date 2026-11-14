@@ -70,6 +70,7 @@ const taskDescriptions: Record<string, Record<Locale, string>> = {
   'hetu-book-profile': { 'zh-CN': '根据故事内容拟书名、写简介、提炼看点，由你选用。', en: 'Explore titles, synopses, and highlights that fit your story, then choose what to use.' },
   'hetu-outline': { 'zh-CN': '从全书到每卷、每章安排情节，想清人物为什么这样选、伏笔何时回应。', en: 'Plan your story from the whole book down to each chapter, with clear choices and payoffs.' },
   'hetu-cover': { 'zh-CN': '根据书名、题材和你的想法准备封面，你看过后再选。', en: 'Explore covers based on the title, genre, and your ideas, then pick the one you like.' },
+  'hetu-artwork': { 'zh-CN': '按作品需要准备人物、场景与道具参考图，保留来源，由你审阅选用。', en: 'Prepare character, scene and prop reference images for your work, keeping their sources for your review.' },
   'hetu-draft': { 'zh-CN': '你提出写作请求后，按设定和章纲准备章节参考稿。', en: 'Ask for a chapter reference draft that follows your story bible and outline.' },
   'hetu-revise': { 'zh-CN': '只改你选中的文字，或按你的批注返工，并说明改了哪里、为什么改。', en: 'Revise the text you select or respond to your comments, explaining what changed and why.' },
   'hetu-drama': { 'zh-CN': '将你有权使用的小说内容改成短剧参考稿，保留与原文的对应。', en: 'Adapt a novel you have the right to use into a short drama reference draft, keeping its links to the source.' },

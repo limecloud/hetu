@@ -185,7 +185,7 @@
       },
       {
         "q": "Can I download an application?",
-        "a": "Version 0.5.0 provides source code and the homepage demo, without a ready-to-install app package. Users with a development environment can build the Mac app. Authors can start directly in the homepage demo."
+        "a": "Download a Developer ID signed and Apple notarized Mac DMG or ZIP from GitHub Releases for Apple Silicon Macs running macOS 14 or newer. You can also try the homepage workspace or build from source using the developer guide."
       },
       {
         "q": "Will my work be uploaded or become open source?",
@@ -210,7 +210,7 @@
   },
   "footer": {
     "description": "A local workspace for stories that move between manuscripts, scripts and production.",
-    "status": "v0.5.0 / macOS source implementation; homepage prototype uses in-page demo data.",
+    "status": "macOS / Homepage prototype uses in-page demo data.",
     "license": "Core license: Apache-2.0",
     "privacy": "Demo input stays in this page. The console uses essential sign-in cookies. Model input is sent only for tasks you approve. Hosting may process connection and performance data under its privacy policies.",
     "design": "Interactive prototype",

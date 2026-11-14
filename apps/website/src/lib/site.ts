@@ -1,6 +1,8 @@
+import packageInfo from '../../package.json';
 import zh from '../i18n/zh-CN.json';
 import en from '../i18n/en.json';
 export type Locale='zh-CN'|'en';
+export const version=packageInfo.version;
 export const origin='https://hetu.limeai.run';
 export const source='https://github.com/limecloud/hetu';
 export const prototype=(locale:Locale)=>(locale==='en'?'/en/':'/')+'#prototype';

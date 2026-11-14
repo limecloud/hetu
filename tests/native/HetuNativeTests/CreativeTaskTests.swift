@@ -13,6 +13,8 @@ enum CreativeTaskTests {
         let recovery = RecoveryStore(directory: root.appendingPathComponent("改稿恢复"))
         let name = "run.limeai.hetu.creative-tests.\(UUID().uuidString)"
         let preferences = UserDefaults(suiteName: name)!
+        // 本用例明确控制保存与外部写入，不让自动保存竞争同一作品锁。
+        preferences.set(false, forKey: "Hetu.editor.autosave")
         defer { preferences.removePersistentDomain(forName: name) }
         let model = WorkspaceModel(locale: "zh-CN", recovery: recovery, preferences: preferences, library: LibraryStore(directory: root.appendingPathComponent("改稿书库")))
         try creativeCheck(await model.open(directory, title: "雾港"), "未打开改稿作品")
@@ -88,8 +90,9 @@ enum CreativeTaskTests {
         catch { }
         await session.loadTask(ref)
         await session.close(reason: "作者结束本次任务")
+        try creativeCheck(session.error == nil && session.task["observation"]["state"].string == "closed", "任务关闭失败：\(session.error ?? String(describing: session.task))")
         let rejected = try await agent.request("hetu.creative_tasks.get", input: ["task_ref": ref])
-        try creativeCheck(rejected["error"]["code"].string == "forbidden", "旧任务进程未随关闭失权")
+        try creativeCheck(rejected["error"]["code"].string == "forbidden", "旧任务进程未随关闭失权：\(rejected)")
         print("创作任务：空白作品首章参考、固定改稿、公开反馈、同稿返工、局部采纳及关闭撤权通过")
 
         let creationURL = root.appendingPathComponent("无书名筹备")
