@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { createWriteStream, existsSync, readFileSync } from 'node:fs';
-import { mkdir, mkdtemp, rename, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { homedir, release } from 'node:os';
 import { join } from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
@@ -41,7 +41,7 @@ export async function downloadArchive(response, destination, expectedDigest) {
 }
 
 function command(binary, args) {
-  const result = spawnSync(binary, args, { encoding: 'utf8', maxBuffer: 8 * 1024 * 1024 });
+  const result = spawnSync(binary, args, { encoding: 'utf8', maxBuffer: 8 * 1024 * 1024, timeout: 120_000 });
   if (result.error) throw result.error;
   if (result.status !== 0) throw new Error(`河图运行时校验失败：${binary}（${result.status}）。`);
   return result.stdout + result.stderr;
@@ -67,39 +67,75 @@ function verifyApp(app) {
   return app;
 }
 
+async function recordInstallation(directory) {
+  const temporary = await mkdtemp(join(directory, '.verify-'));
+  try {
+    const marker = join(temporary, 'installation.json');
+    await writeFile(marker, JSON.stringify({ schema_version: 1, version, team_id: team }), { mode: 0o600 });
+    await rename(marker, join(directory, 'installation.json'));
+  } finally {
+    await rm(temporary, { recursive: true, force: true });
+  }
+}
+
+export async function cachedRuntime(directory, validate = verifyApp) {
+  const app = join(directory, 'Hetu.app');
+  let record;
+  try {
+    record = JSON.parse(await readFile(join(directory, 'installation.json'), 'utf8'));
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+    // 没有安装回执的已有缓存仍须完成全部检查，失败时不能写入信任记录。
+    validate(app);
+    await recordInstallation(directory);
+    return app;
+  }
+  if (record.schema_version !== 1 || record.version !== version || record.team_id !== team
+      || !['hetu', 'hetu-mcp'].every(name => existsSync(join(app, 'Contents/Helpers', name)))) {
+    throw new Error('河图缓存不完整或版本不匹配，请重新安装对应版本的运行时。');
+  }
+  // 私有安装目录与普通 npm 安装目录一样受本机账号保护；完整验证在原子安装前执行一次。
+  return app;
+}
+
 async function runtime() {
   requirePlatform();
   if (process.env.HETU_APP_PATH) return verifyApp(process.env.HETU_APP_PATH);
-  for (const app of ['/Applications/Hetu.app', join(homedir(), 'Applications/Hetu.app')]) {
-    if (existsSync(app) && appVersion(app) === version) return verifyApp(app);
-  }
   const parent = join(homedir(), 'Library/Caches/Hetu/npm');
   const target = join(parent, version);
   const app = join(target, 'Hetu.app');
-  if (existsSync(target)) return verifyApp(app);
+  if (existsSync(target)) return cachedRuntime(target);
   await mkdir(parent, { recursive: true, mode: 0o700 });
   const temporary = await mkdtemp(join(parent, '.install-'));
   try {
-    process.stderr.write(`正在获取河图 v${version} 官方原生运行时；首次运行需要下载。\n`);
-    const response = await fetch(origin + 'release-manifest.json', { signal: AbortSignal.timeout(60_000) });
-    if (!response.ok) throw new Error(`河图 v${version} 发行清单尚不可用（HTTP ${response.status}）。`);
-    const digest = releaseDigest(await response.json());
-    const archive = join(temporary, 'runtime.zip');
-    await downloadArchive(await fetch(origin + asset, { signal: AbortSignal.timeout(300_000) }), archive, digest);
-    // 只接受发行包内的相对路径，再由系统工具解压与验证官方签名。
-    const entries = command('/usr/bin/unzip', ['-Z1', archive]).split('\n').filter(Boolean);
-    if (entries.some(path => path.startsWith('/') || path.includes('\\') || path.split('/').includes('..'))) {
-      throw new Error('河图发行包包含非法路径。');
-    }
     const extracted = join(temporary, 'extracted');
-    command('/usr/bin/ditto', ['-x', '-k', archive, extracted]);
+    const installed = ['/Applications/Hetu.app', join(homedir(), 'Applications/Hetu.app')]
+      .find(path => existsSync(path) && appVersion(path) === version);
+    if (installed) {
+      process.stderr.write(`正在准备河图 v${version} 官方原生运行时；首次运行需要验证。\n`);
+      command('/usr/bin/ditto', [installed, join(extracted, 'Hetu.app')]);
+    } else {
+      process.stderr.write(`正在获取河图 v${version} 官方原生运行时；首次运行需要下载。\n`);
+      const response = await fetch(origin + 'release-manifest.json', { signal: AbortSignal.timeout(60_000) });
+      if (!response.ok) throw new Error(`河图 v${version} 发行清单尚不可用（HTTP ${response.status}）。`);
+      const digest = releaseDigest(await response.json());
+      const archive = join(temporary, 'runtime.zip');
+      await downloadArchive(await fetch(origin + asset, { signal: AbortSignal.timeout(300_000) }), archive, digest);
+      // 只接受发行包内的相对路径，再由系统工具解压与验证官方签名。
+      const entries = command('/usr/bin/unzip', ['-Z1', archive]).split('\n').filter(Boolean);
+      if (entries.some(path => path.startsWith('/') || path.includes('\\') || path.split('/').includes('..'))) {
+        throw new Error('河图发行包包含非法路径。');
+      }
+      command('/usr/bin/ditto', ['-x', '-k', archive, extracted]);
+    }
     verifyApp(join(extracted, 'Hetu.app'));
+    await recordInstallation(extracted);
     try { await rename(extracted, target); }
     catch (error) {
       if (!['EEXIST', 'ENOTEMPTY'].includes(error.code)) throw error;
       // 另一进程先完成安装时，只使用同样通过验证的精确版本。
     }
-    return verifyApp(app);
+    return cachedRuntime(target);
   } finally {
     await rm(temporary, { recursive: true, force: true });
   }

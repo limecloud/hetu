@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import { test } from 'node:test';
-import { downloadArchive, releaseDigest, requirePlatform, version } from '../src/runtime.mjs';
+import { cachedRuntime, downloadArchive, releaseDigest, requirePlatform, version } from '../src/runtime.mjs';
 
 test('unsupported machines fail before acquiring a runtime', () => {
   requirePlatform('darwin', 'arm64', '23.0.0');
@@ -44,6 +44,29 @@ test('downloads accept exact bytes and reject tampering or HTTP errors', async (
 });
 
 const runtimeURL = new URL('../src/runtime.mjs', import.meta.url).href;
+
+test('private installation verifies once, rejects incomplete receipts and never trusts a failed verification', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'hetu-npm-cache-'));
+  try {
+    const helpers = join(directory, 'Hetu.app/Contents/Helpers');
+    await mkdir(helpers, { recursive: true });
+    for (const name of ['hetu', 'hetu-mcp']) await writeFile(join(helpers, name), 'fixture');
+    await assert.rejects(cachedRuntime(directory, () => { throw new Error('signature rejected'); }), /signature rejected/);
+    await assert.rejects(readFile(join(directory, 'installation.json')), { code: 'ENOENT' });
+    let validations = 0;
+    assert.equal(await cachedRuntime(directory, () => { validations++; }), join(directory, 'Hetu.app'));
+    assert.equal(validations, 1);
+    await cachedRuntime(directory, () => assert.fail('warm launch repeated system verification'));
+    await rm(join(helpers, 'hetu-mcp'));
+    await assert.rejects(cachedRuntime(directory), /缓存不完整/);
+    await writeFile(join(helpers, 'hetu-mcp'), 'fixture');
+    await writeFile(join(directory, 'installation.json'), JSON.stringify({ schema_version: 1, version: '0.0.0', team_id: '93RF7VQ26C' }));
+    await assert.rejects(cachedRuntime(directory), /版本不匹配/);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
 function relay(source, args = []) {
   return spawn(process.execPath, ['--input-type=module', '-e', `
     import { forward } from ${JSON.stringify(runtimeURL)};
