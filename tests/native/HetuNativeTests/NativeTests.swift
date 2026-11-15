@@ -26,6 +26,7 @@ private func check(_ value: Bool, _ message: String) throws { if !value { throw 
         }
         if CommandLine.arguments.contains("--library-properties") { try await LibraryPropertiesTests.run(root: root, preferences: preferences); return }
         if CommandLine.arguments.contains("--work-catalog") { try await WorkCatalogTests.run(root: root, preferences: preferences); return }
+        if CommandLine.arguments.contains("--related-works") { try await RelatedWorksTests.run(root: root); return }
         if CommandLine.arguments.contains("--official-installer") { try await LocalAutomationTests.officialInstaller(root: root); return }
         if CommandLine.arguments.contains("--library-admission") { try await LibraryAdmissionTests.run(root: root); return }
         if CommandLine.arguments.contains("--authoring") { try await AuthoringTests.run(root: root); return }
@@ -63,6 +64,7 @@ private func check(_ value: Bool, _ message: String) throws { if !value { throw 
         try await LibraryAdmissionTests.run(root: root)
         try await LibraryPropertiesTests.run(root: root, preferences: preferences)
         try await WorkCatalogTests.run(root: root, preferences: preferences)
+        try await RelatedWorksTests.run(root: root)
         try await AuthoringTests.run(root: root)
         try await CreativeWorkspaceTests.run(root: root)
         try await ArtworkLibraryTests.run(root: root)
@@ -409,7 +411,9 @@ private func check(_ value: Bool, _ message: String) throws { if !value { throw 
         try check(await model.saveBibleChanges(changes), "六类设定或同批向前引用保存失败")
         let saved = model.bible
         try check(saved["blueprint"]["factions"].array.count == 1 && saved["blueprint"]["timeline"].array.count == 1 && saved["revision"].integer == initial["revision"].integer! + 1, "设定保存未更新原生状态")
-        try check(await model.readBibleRevision(initial["revision"].integer!) == initial && model.bible == saved, "历史查看改变了当前设定")
+        let historical = await model.readBibleRevision(initial["revision"].integer!)
+        try check(historical?["blueprint"] == initial["blueprint"] && historical?["sha256"] == initial["sha256"]
+            && historical?["binding"] == initial["binding"] && model.bible == saved, "历史查看改变了当前设定或读取其他作品")
 
         var localError: String?
         let removal: JSONValue = .object(["type": .string("remove_entity"), "entity_ref": .string("faction_22222222-2222-4222-8222-222222222222")])

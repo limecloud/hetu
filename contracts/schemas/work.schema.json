@@ -223,6 +223,16 @@
             "reference",
             "continuation"
           ]
+        },
+        "source_title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "target_title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
         }
       },
       "required": [
@@ -644,6 +654,108 @@
       "required": [
         "work_ref",
         "operation_key"
+      ]
+    },
+    "link_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "link_id": {
+          "type": "string",
+          "pattern": "^worklink_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "link_id",
+        "revision",
+        "sha256"
+      ]
+    },
+    "link_get_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "work_ref": {
+          "$ref": "#/$defs/work_ref"
+        },
+        "link_id": {
+          "type": "string",
+          "pattern": "^worklink_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "work_ref",
+        "link_id"
+      ]
+    },
+    "link_update_source_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "work_ref": {
+          "$ref": "#/$defs/work_ref"
+        },
+        "link_ref": {
+          "$ref": "#/$defs/link_ref"
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "source_ref": {
+          "$ref": "#/$defs/work_revision_ref"
+        },
+        "target_ref": {
+          "$ref": "#/$defs/work_revision_ref"
+        }
+      },
+      "required": [
+        "work_ref",
+        "link_ref",
+        "operation_key",
+        "source_ref",
+        "target_ref"
+      ]
+    },
+    "link_set_archived_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "work_ref": {
+          "$ref": "#/$defs/work_ref"
+        },
+        "link_ref": {
+          "$ref": "#/$defs/link_ref"
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "archived": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "work_ref",
+        "link_ref",
+        "operation_key",
+        "archived"
       ]
     }
   }

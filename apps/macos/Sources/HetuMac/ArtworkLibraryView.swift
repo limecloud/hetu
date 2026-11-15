@@ -203,6 +203,7 @@ struct ArtworkAgentButton: View {
     }
     private func copy() async {
         var target: [String: JSONValue] = [:]
+        if let reference = model.workReference { target["work_ref"] = reference.value }
         if let entityRef { target["entity_ref"] = .string(entityRef); target["blueprint_revision"] = model.bible["blueprint"]["revision"] }
         if let documentID { target["document_id"] = .string(documentID); if model.documentID == documentID { target["revision_id"] = .string(model.baseRevisionID) } }
         guard let workspace = model.workspace?.url,
@@ -212,7 +213,9 @@ struct ArtworkAgentButton: View {
             guard FileManager.default.isExecutableFile(atPath: helper.path) else { model.message = model.t("handoff.cli_missing"); return }
             let selected = model.agentIntegration.association(for: model.workspaceID).client
             let adapter = selected == .claudeCode ? "claude-code" : selected == .other || selected == .none ? "generic" : selected.rawValue
-            guard let grant = await model.workspaceAction("hetu.collaboration.authorize_workspace", input: ["client_adapter": .string(adapter), "operation_key": .string(UUID().uuidString)], onFailure: { model.message = $0; _ = $1 }) else { return }
+            var authorization: [String: JSONValue] = ["client_adapter": .string(adapter), "operation_key": .string(UUID().uuidString)]
+            if let reference = model.workReference { authorization["work_ref"] = reference.value }
+            guard let grant = await model.workspaceAction("hetu.collaboration.authorize_workspace", input: authorization, onFailure: { model.message = $0; _ = $1 }) else { return }
             let text = model.t("artwork.agent_prompt") + "\n" + (try PageHandoff.prompt(context: context, workspace: workspace, executable: helper, locale: model.locale, suite: model.agentIntegration.association(for: model.workspaceID).suiteID, clientAdapter: adapter, managementRef: grant["management_ref"]))
             NSPasteboard.general.clearContents(); copied = NSPasteboard.general.setString(text, forType: .string)
         } catch { model.message = model.localizer.error(error) }

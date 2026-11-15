@@ -63,6 +63,23 @@ async fn stable_bootstrap_creates_new_work_and_first_task_without_gui_or_author_
     let work = client.tool("hetu_create_novel_from_project", json!({"management_ref":start["management_ref"],"project_id":start["project"]["project_id"],"expected":{"revision":start["revision"],"sha256":start["sha256"]},"target_path":start["target_path"],"metadata":{"title":"末班车之后","author_name":"测试作者","synopsis":"未来的车票。","genre":"悬疑","language_tag":"zh-CN","status":"planning"},"operation_key":"create-novel"})).await;
     assert_eq!(work["status"], "succeeded", "{work}");
     let reference = &work["data"]["workspace_management_ref"];
+    let works = client.tool("hetu_list_works", json!({"management_ref":reference})).await;
+    assert_eq!(works["status"], "succeeded", "{works}");
+    let novel_ref = &works["data"]["works"][0]["work_ref"];
+    let novel_canon = client.tool("hetu_read_blueprint", json!({"management_ref":reference,"work_ref":novel_ref})).await;
+    assert_eq!(novel_canon["status"], "succeeded", "{novel_canon}");
+    let drama = client.tool("hetu_create_drama_project", json!({"management_ref":reference,"title":"末班车剧本","operation_key":"same-root-drama"})).await;
+    assert_eq!(drama["status"], "succeeded", "{drama}");
+    let drama_ref = json!({"workspace_id":novel_ref["workspace_id"],"kind":"drama","object_id":drama["data"]["project"]["project_id"]});
+    let drama_canon = client.tool("hetu_read_blueprint", json!({"management_ref":reference,"work_ref":drama_ref})).await;
+    assert_eq!(drama_canon["status"], "succeeded", "{drama_canon}");
+    assert_ne!(novel_canon["data"]["blueprint"]["blueprint_id"], drama_canon["data"]["blueprint"]["blueprint_id"]);
+    let fixed = client.tool("hetu_read_blueprint", json!({"management_ref":reference,"revision":1,"sha256":drama_canon["data"]["sha256"]})).await;
+    assert_eq!(fixed["status"], "succeeded", "{fixed}");
+    assert_eq!(fixed["data"]["blueprint"],drama_canon["data"]["blueprint"]);
+    let wrong_owner = client.tool("hetu_read_blueprint", json!({"management_ref":reference,"work_ref":novel_ref,"revision":1,"sha256":drama_canon["data"]["sha256"]})).await;
+    assert_eq!(wrong_owner["error"]["code"],"hetu.integrity_failure");
+    assert_eq!(novel_canon, client.tool("hetu_read_blueprint", json!({"management_ref":reference,"work_ref":novel_ref})).await);
     let preview = client.tool("hetu_preview_creative_task", json!({"management_ref":reference,"scope_ref":reference["scope_ref"],"task_kind":"chapter_draft","brief":"写车站开场。","input_refs":[],"client_adapter":"codex","language_tag":"zh-CN"})).await;
     assert_eq!(preview["status"], "succeeded", "{preview}");
     let mut prepared = preview["data"]["prepare_input"].clone();
@@ -137,6 +154,42 @@ fn binary() -> std::ffi::OsString {
 fn meta() -> Value {
     json!({"io.modelcontextprotocol/protocolVersion":"2026-07-28","io.modelcontextprotocol/clientCapabilities":{},"io.modelcontextprotocol/clientInfo":{"name":"hetu-stdio-contract-test","version":"1"}})
 }
+
+#[tokio::test]
+async fn stable_link_details_keep_scope_and_prepare_archive_without_gui() {
+    let root = tempfile::tempdir().unwrap();
+    let workspace = root.path().join("关联作品");
+    let kernel = Kernel::open(json!({"workspace_path":workspace,"mode":"author","create":{"title":"原著固定名","locale":"zh-CN","operation_key":"init"}})).unwrap();
+    let author = |name: &str, input: Value| {
+        let result = kernel.request(json!({"action":format!("hetu.{name}"),"contract_revision":"1","input":input}));
+        assert_eq!(result["status"], "succeeded", "{result}"); result["data"].clone()
+    };
+    let source = author("works.list",json!({}))["works"][0]["fixed_ref"].clone();
+    let drama = author("drama.projects.create",json!({"title":"改编剧本","operation_key":"drama"}));
+    let reference = json!({"workspace_id":kernel.scope(),"kind":"drama","object_id":drama["project"]["project_id"]});
+    let target = author("works.get",json!({"work_ref":reference}))["summary"]["fixed_ref"].clone();
+    let link = author("work_links.create",json!({"source_ref":source,"target_ref":target,"relation":"adaptation","operation_key":"link"}));
+    let directory = root.path().join("隔离授权");
+    let grant = author("collaboration.authorize_workspace",json!({"work_ref":reference,"client_adapter":"codex","collaboration_path":directory,"operation_key":"grant"}))["management_ref"].clone();
+    let mut client = Client::start_stable(&directory);
+    client.rpc("server/discover",json!({})).await;
+    let read = client.tool("hetu_read_work_link",json!({"management_ref":grant,"work_ref":reference,"link_id":link["link"]["link_id"],"revision":1})).await;
+    assert_eq!(read["status"],"succeeded","{read}");
+    assert_eq!(read["data"]["related_status"],"requires_authorization");
+    assert_eq!(read["data"]["related_title"],"原著固定名");
+    assert!(read["data"]["related_work"].is_null());
+    let proposal = client.tool("hetu_prepare_management_operation",json!({"management_ref":grant,"action":"hetu.work_links.set_archived", "input":{
+        "work_ref":reference,"link_ref":{"link_id":link["link"]["link_id"],"revision":1,"sha256":link["sha256"]},"archived":true,"operation_key":"archive"},
+        "summary":"解除当前关联并保留历史","operation_key":"prepare"})).await;
+    assert_eq!(proposal["status"],"succeeded","{proposal}");
+    assert_eq!(proposal["data"]["preview"]["link"]["archived"],true);
+    let denied = client.tool("hetu_execute_management_operation",json!({"management_ref":grant,"proposal_id":proposal["data"]["proposal_id"],"proposal_sha256":proposal["data"]["proposal_sha256"],"operation_key":"unapproved"})).await;
+    assert_eq!(denied["error"]["code"],"hetu.author_confirmation_required");
+    let forged = client.tool("hetu_read_work_link",json!({"management_ref":grant,"work_ref":source["work_ref"],"link_id":link["link"]["link_id"]})).await;
+    assert_eq!(forged["error"]["code"],"forbidden");
+    client.close().await;
+}
+
 impl Client {
     fn start(path: &Path) -> Self {
         Self::start_with_home(path, None)

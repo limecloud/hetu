@@ -17,6 +17,7 @@ const WORKSPACE_ACTIONS: &[&str] = &[
     "hetu.operations.get",
     "hetu.workspaces.get",
     "hetu.novels.get",
+    "hetu.blueprints.get",
     "hetu.documents.list",
     "hetu.documents.get",
     "hetu.documents.create",
@@ -25,7 +26,7 @@ const WORKSPACE_ACTIONS: &[&str] = &[
     "hetu.drama.projects.list",
     "hetu.drama.episodes.create",
     "hetu.drama.episodes.get",
-    "hetu.works.list", "hetu.works.get", "hetu.work_links.list",
+    "hetu.works.list", "hetu.works.get", "hetu.work_links.list", "hetu.work_links.get",
     "hetu.video.projects.create", "hetu.video.projects.get",
     "hetu.video.episodes.create", "hetu.video.episodes.get",
     "hetu.creative_tasks.preview_prompt",
@@ -33,7 +34,7 @@ const WORKSPACE_ACTIONS: &[&str] = &[
 ];
 // 已有作品授权只开放读取、方案和有界检查；具体变更仍须作者批准固定方案。
 const REVIEW_ACTIONS: &[&str] = &[
-    "hetu.works.list", "hetu.works.get", "hetu.work_links.list",
+    "hetu.works.list", "hetu.works.get", "hetu.work_links.list", "hetu.work_links.get",
     "hetu.video.projects.get", "hetu.video.episodes.get",
     "hetu.capabilities.get", "hetu.operations.get", "hetu.workspaces.get",
     "hetu.novels.get", "hetu.documents.list", "hetu.documents.get", "hetu.documents.history",
@@ -126,7 +127,7 @@ pub(crate) fn granted_work(binding: &Value) -> Result<Option<Value>> {
 }
 fn work_action_allowed(name: &str) -> bool {
     matches!(name, "hetu.capabilities.get" | "hetu.operations.get" | "hetu.workspaces.get" |
-        "hetu.works.list" | "hetu.works.get" | "hetu.work_links.list" | "hetu.handoffs.get" |
+        "hetu.works.list" | "hetu.works.get" | "hetu.work_links.list" | "hetu.work_links.get" | "hetu.handoffs.get" |
         "hetu.novels.get" | "hetu.drama.projects.get" | "hetu.drama.projects.list" | "hetu.drama.episodes.get" |
         "hetu.video.projects.get" | "hetu.video.episodes.get" |
         "hetu.blueprints.get" | "hetu.blueprints.preview_change" |

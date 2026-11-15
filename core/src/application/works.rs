@@ -1,8 +1,6 @@
 //! 创作对象复用原身份；创作库和来源关系不持有另一份可写正文。
 use super::*;
 
-const LINKS: &str = "shared/work-links";
-
 pub(super) fn bundle_reference(mut input: Value) -> Value {
     if input.to_string().contains("https://hetu.limeai.run/schemas/work.schema.json") {
         input["$defs"]["work_resource"] = json!({"$id":"https://hetu.limeai.run/schemas/work.schema.json",
@@ -145,56 +143,4 @@ impl Kernel {
         self.record_page(input, results, "works")
     }
 
-    pub(super) fn create_work_link(&self, input: &Value, changes: &mut Changes) -> Result<Value> {
-        let source = &input["source_ref"];
-        let target = &input["target_ref"];
-        self.fixed_work_record(source)?;
-        let target_record = self.fixed_work_record(target)?;
-        let target_current = self.work_record(&target["work_ref"], None)?;
-        ensure(target_record["revision"] == target_current["revision"], "revision_conflict", "目标已有新修订，请重新准备关联。")?;
-        ensure(source["work_ref"] != target["work_ref"], "invalid_input", "创作对象不能关联自身。")?;
-        let relation = text(input, "relation")?;
-        ensure(match relation {
-            "adaptation" => source["work_ref"]["kind"] == "novel" && target["work_ref"]["kind"] == "drama",
-            "production" => source["work_ref"]["kind"] == "drama" && target["work_ref"]["kind"] == "video",
-            "reference" | "continuation" => true,
-            _ => false,
-        }, "invalid_input", "关联类型与两端对象不匹配。")?;
-        for link_id in self.record_ids(LINKS, "worklink")? {
-            let link = self.versioned_record(LINKS, &link_id, "link_id", None)?.0;
-            ensure(!(link["source_ref"] == *source && link["target_ref"] == *target && link["relation"] == relation
-                && link["archived"] == false), "invalid_input", "相同固定来源已经关联。")?;
-        }
-        let record = json!({"schema_version":"1.0.0","workspace_id":self.scope(),"link_id":id("worklink"),
-            "revision":1,"previous_sha256":null,"source_ref":source,"target_ref":target,"relation":relation,
-            "archived":false,"created_at":now(),"updated_at":now(),"actor_ref":self.actor()});
-        schema(&record, &definition("work_link"))?;
-        let sha = self.stage_versioned_record(LINKS, "link_id", &record, changes)?;
-        Ok(json!({"link":record,"sha256":sha}))
-    }
-
-    pub(super) fn list_work_links(&self, input: &Value) -> Result<Value> {
-        self.work_record(&input["work_ref"], None)?;
-        let mut results = Vec::new();
-        for link_id in self.record_ids(LINKS, "worklink")? {
-            let (link, sha, _) = self.versioned_record(LINKS, &link_id, "link_id", None)?;
-            schema(&link, &definition("work_link"))?;
-            let related = if link["target_ref"]["work_ref"] == input["work_ref"] {
-                Some((&link["source_ref"], "incoming"))
-            } else if link["source_ref"]["work_ref"] == input["work_ref"] {
-                Some((&link["target_ref"], "outgoing"))
-            } else { None };
-            if let Some((other, direction)) = related {
-                if input["include_archived"] == true || link["archived"] != true {
-                    let scoped = self.granted_work()?.is_some();
-                    let newer = if scoped { Value::Null } else {
-                        json!(self.work_record(&other["work_ref"], None)?["revision"] != other["revision_ref"]["revision"])
-                    };
-                    results.push(json!({"link":link,"sha256":sha,"direction":direction,
-                        "related_has_newer_revision":newer,"related_read_requires_authorization":scoped}));
-                }
-            }
-        }
-        self.record_page(input, results, "links")
-    }
 }

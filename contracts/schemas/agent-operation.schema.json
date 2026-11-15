@@ -117,6 +117,65 @@
                   "type": "null"
                 }
               ]
+            },
+            "work": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "work_ref": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "workspace_id": {
+                      "type": "string",
+                      "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                    },
+                    "kind": {
+                      "enum": [
+                        "novel",
+                        "drama",
+                        "video"
+                      ]
+                    },
+                    "object_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 80
+                    }
+                  },
+                  "required": [
+                    "workspace_id",
+                    "kind",
+                    "object_id"
+                  ]
+                },
+                "revision_ref": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "revision": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "revision"
+                  ]
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              },
+              "required": [
+                "work_ref",
+                "revision_ref",
+                "sha256"
+              ]
+            },
+            "work_links": {
+              "$ref": "#/$defs/digest"
             }
           },
           "required": [

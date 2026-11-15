@@ -60,14 +60,17 @@ API 动作使用 `hetu.<domain>.<verb>`，每个动作有独立 `contract_revisi
 | `hetu.workspaces.open` | 作者选定路径、requested_mode | 格式、权限、恢复状态、上下文句柄 | 路径本机可信入口输入，不经 MCP 暴露任意打开 |
 | `hetu.workspaces.get` | 空对象 | 工作区配置、`properties={schema_version,workspace_id,created_at,updated_at}`、包、覆盖与 `access.write_available` | 时间未知为 null，读取不更新时间；使用入口已授权 scope；写入者存在时仍可查询，是否可写仅为即时状态，保存仍检查锁与修订 |
 | `hetu.workspaces.list` | 空对象 | 当前授权工作区、同一 properties 与包配置 | 对应 MCP list_workspace；不扫描其他作品，正文目录独立查询 |
-| `hetu.blueprints.get` | revision? | 完整设定集、revision、sha256、lock | 缺省读取当前；指定修订只读读取历史，核验原始字节摘要 |
-| `hetu.blueprints.preview_change` | expected、typed_changes[] | 引用影响、差异、阻断与警告 | 无写入；不接收任意脚本／路径 patch |
-| `hetu.blueprints.save` | expected、typed_changes[]、operation_key | 新 revision、摘要、影响引用 | 仅作者、必须未锁定；拒绝借 changes 改锁／身份 |
+| `hetu.blueprints.get` | work_ref?、revision?、sha256? | initialized、binding、完整设定集及摘要 | 对象模式读取自身设定；尚未建立返回 initialized=false；sha256 必须同时给 revision，固定读取时核对两者；有 work_ref 时摘要不得跨对象；无 work_ref 且无 sha256 的旧根模式保留原义 |
+| `hetu.blueprints.initialize` | work_ref、operation_key | 独立空设定、归属及固定摘要 | 仅缺自身设定的旧剧本／视频；可信作者或获批固定方案执行，不复制原著 |
+| `hetu.blueprints.preview_change` | work_ref?、expected、typed_changes[] | 引用影响、差异、阻断与警告 | 无写入；不接收任意脚本／路径 patch |
+| `hetu.blueprints.save` | work_ref?、expected、typed_changes[]、operation_key | 新 revision、摘要、影响引用 | 可信作者或获批固定方案，必须未锁定；拒绝借 changes 改锁／身份 |
 | `hetu.blueprints.lock` | expected、reason?、operation_key | 新修订、锁状态 | 作者确认；检查当前内容完整性 |
 | `hetu.blueprints.unlock` | expected、reason、operation_key | 新修订、解锁审计 | 作者明确操作；不改变 Agent 能力 |
 | `hetu.blueprints.apply_suggestion` | suggestion_ref、expected、author_changes、operation_key | 采纳记录、新设定集修订 | 仅作者；源证据过期／歧义先处理 |
 
 typed_changes 是受限的实体新增、字段更新、归档、引用迁移和删除联合类型。删除有被引用项时阻止，迁移先预览。建议草稿不是待执行命令，作者选取后才形成合法变更。
+
+对象模式 `expected` 同时携带 `blueprint_id,revision,sha256`，锁定和解锁也携带相同 `work_ref`。任务设定来源使用 `kind=blueprint,work_ref,blueprint_id,revision`，可固定 sha256；由 Core 核验并保存完整摘要。图片实体引用同时固定 `work_ref,blueprint_id,blueprint_revision,entity_ref`，必须属于候选声明的输入来源。文档、参考稿和任务列表接受可选 `work_ref` 筛选，旧任务按明确目标或固定小说资料识别归属，不按题名猜测。筛选字段不是授权；精确对象管理范围仍由 Core 独立校验。
 
 实体操作为 `upsert_character|upsert_faction|upsert_location|upsert_event|upsert_world|upsert_rule`，携带完整 `entity`；移除为 `remove_entity`，携带 `entity_ref`。归档使用有 archived 字段的实体 upsert；引用迁移与其他实体变更一并提交。批次内同一实体只允许一次操作，允许引用同批新建实体，整批完成结构、引用、来源、时间和事实校验后再写入。预览返回 impact.changes 与候选设定修订，无业务落盘。
 
@@ -851,6 +854,16 @@ Git 读取动作 references、read_version、merge_preview 提供版本线、固
 | 归档／删除／移除登记 | 精确对象、固定影响清单、expected、所需作者决定 | 只影响本次明确范围；同根其他对象和共享媒体保留，整根删除另一个动作 |
 
 对象授权与文件系统授权分开，WorkRef不等于权限。同根WorkspaceGrant如具有较大范围须明确显示，不能冒充已经实现单对象隔离；新的窄授权必须在Core落地并经负例测试。任务和生成计划均固定具体对象，请求不得借来源链接读取其他对象。跨对象写入需要精确提案与相应授权，不提供全局activeWork或整库执行。
+
+关联动作以 `work.schema.json` 定义的输入为准：
+
+| 动作 | 必要输入 | 回读与限制 |
+| --- | --- | --- |
+| `hetu.work_links.get` | work_ref、link_id，可选 revision | link、sha256、current_link_ref、另一端可读性与固定资料；精确授权只返回关系元数据，不读另一端 |
+| `hetu.work_links.update_source` | 目标 work_ref、当前 link_ref、同一来源的 source_ref、目标当前 target_ref、operation_key | 追加关系修订；不更换两端作品、不改旧任务或正文，实际变更走固定方案 |
+| `hetu.work_links.set_archived` | 目标 work_ref、当前 link_ref、archived、operation_key | true 解除、false 恢复；目标单对象授权可准备方案，来源授权不能替下游管理；恢复拒绝重复有效关系 |
+
+详情交接使用 `view_kind=related_works`，object_ref 包含 work_ref、link_id 和可选 link_revision，fixed_refs 返回对应历史的摘要及固定两端。旧版交接仍指旧版，不把更新依据当作替换历史。另一端读取失败返回 unavailable 与错误，当前性为 null；缺权限返回 requires_authorization，不探测另一端当前状态。固定作品资料不等于章节、设定或媒体快照；跨根来源继续遵循必要快照与分别获权合同。
 
 ### 26.2 制作与媒体用例
 

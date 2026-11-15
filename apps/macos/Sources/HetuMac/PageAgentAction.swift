@@ -225,7 +225,19 @@ private struct AgentOperationReviewSheet: View {
         }
     }
     @ViewBuilder private func humanReadable(_ value: JSONValue) -> some View {
-        if value["metadata"].object.isEmpty == false {
+        if value["link_id"].string != nil {
+            Text(model.t("works.relation." + (value["relation"].string ?? "reference"))).font(.system(size: 14, weight: .semibold))
+            ForEach([("source", "works.source"), ("target", "works.target")], id: \.0) { field, label in
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(model.t(label)).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
+                    Text(value[field + "_title"].string ?? model.t("creation.type." + (value[field + "_ref"]["work_ref"]["kind"].string ?? "novel")))
+                        .font(.system(size: 14)).textSelection(.enabled)
+                    Text(model.t("works.fixed_version", ["revision": String(value[field + "_ref"]["revision_ref"]["revision"].integer ?? 0)]))
+                        .font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
+                }
+            }
+            Text(model.t(value["archived"].bool == true ? "works.archived_link" : "works.active_link")).font(.system(size: 14))
+        } else if value["metadata"].object.isEmpty == false {
             let labels = [("title", "workspace.title"), ("author_name", "novel.author"), ("genre", "novel.genre"), ("synopsis", "novel.synopsis"), ("status", "novel.status")]
             ForEach(labels, id: \.0) { field, key in
                 VStack(alignment: .leading, spacing: 4) {

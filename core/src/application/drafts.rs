@@ -72,13 +72,18 @@ impl Kernel {
             "正文已变化，请重新读取后提交审核。",
         )?;
         let mut draft_input = json!({"package":if current["document"]["kind"]=="drama_script" {"drama"} else {"novel"},"title":current["document"]["title"],"source_format":current["document"]["source_format"],"target_document_id":input["document_id"],"base_revision_id":input["base_revision_id"],"content":current["content"],"blueprint_revision":input["blueprint_revision"],"language_tag":current["document"]["language_tag"]});
+        if let Some(reference) = self.document_work_ref(&current["document"])? {
+            if let Some((bp, sha)) = self.work_blueprint_revision(&reference, None)? {
+                draft_input["blueprint_ref"] = json!({"kind":"blueprint","work_ref":reference,"blueprint_id":bp["blueprint_id"],"revision":bp["revision"],"sha256":sha});
+            }
+        }
         if let Some(reference) = input.get("skeleton_ref") {
             draft_input["skeleton_ref"] = reference.clone();
         }
         self.submit_draft(&draft_input, changes)
     }
     pub(super) fn submit_draft(&self, input: &Value, changes: &mut Changes) -> Result<Value> {
-        let bp = self.blueprint()?;
+        let bp = if input["blueprint_ref"].is_object() { self.source_blueprint(&input["blueprint_ref"])?.0 } else { self.blueprint()? };
         ensure(
             bp["revision"] == input["blueprint_revision"],
             "revision_conflict",
@@ -181,6 +186,7 @@ impl Kernel {
             "parent_draft_id",
             "skeleton_ref",
             "language_tag",
+            "blueprint_ref",
         ] {
             if let Some(value) = input.get(field) {
                 draft[field] = value.clone();

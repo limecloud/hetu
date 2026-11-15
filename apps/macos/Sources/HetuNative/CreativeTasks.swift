@@ -182,6 +182,7 @@ public enum CreativeTaskInput {
     }
     public func loadTasks(append: Bool = false) async {
         var input: [String: JSONValue] = ["limit": .integer(20)]
+        if let reference = model.workReference { input["work_ref"] = reference.value }
         if let targetDocumentID { input["target_document_id"] = .string(targetDocumentID) }
         if append, let nextCursor { input["cursor"] = .string(nextCursor) }
         guard let value = await read("hetu.creative_tasks.list", input: input) else { return }

@@ -78,7 +78,7 @@ public final class WorkspaceModel {
     public var needsProtection: Bool { dirty || pendingSave != nil }
     public var locked: Bool { bible["blueprint"]["lock"]["locked"].bool ?? false }
     public var bibleInitialized: Bool { bible["blueprint"]["blueprint_id"].string != nil }
-    private func bibleInput(_ input: [String: JSONValue] = [:]) -> [String: JSONValue] {
+    func bibleInput(_ input: [String: JSONValue] = [:]) -> [String: JSONValue] {
         var fields = input
         if let reference = workReference { fields["work_ref"] = reference.value }
         return fields
@@ -111,8 +111,9 @@ public final class WorkspaceModel {
             let novel = try await next.data("hetu.novels.get")
             let cover = novel["initialized"].bool == true ? await readCover(next) : .null
             let bible = try await next.data("hetu.blueprints.get", input: selected.map { ["work_ref": $0["work_ref"]] } ?? [:])
-            let documents = try await next.data("hetu.documents.list")
-            let drafts = try await next.data("hetu.drafts.list")
+            let objectScope = selected.map { ["work_ref": $0["work_ref"]] } ?? [:]
+            let documents = try await next.data("hetu.documents.list", input: objectScope)
+            let drafts = try await next.data("hetu.drafts.list", input: objectScope)
             let pendingOperations = try await recovery.structureOperations(workspaceID: info["workspace"]["workspace_id"].string ?? "")
             let entries = try await registerProjections(workspace: next, info: info, works: works, novel: novel, cover: cover, selected: selected?["work_ref"], opened: true)
             recoveryTask?.cancel(); statisticsTask?.cancel()
@@ -138,8 +139,8 @@ public final class WorkspaceModel {
             bible = try await workspace.data("hetu.blueprints.get", input: bibleInput())
             novel = try await workspace.data("hetu.novels.get")
             cover = novel["initialized"].bool == true ? await readCover(workspace) : .null
-            documents = try await workspace.data("hetu.documents.list")["documents"].array.map(DocumentItem.init)
-            drafts = try await workspace.data("hetu.drafts.list")["drafts"].array
+            documents = try await workspace.data("hetu.documents.list", input: bibleInput())["documents"].array.map(DocumentItem.init)
+            drafts = try await workspace.data("hetu.drafts.list", input: bibleInput())["drafts"].array
             try await updateLibraryProjection()
         } catch { report(error) }
     }
@@ -376,10 +377,10 @@ public final class WorkspaceModel {
             let document = try await workspace.data("hetu.documents.get", input: ["document_id": .string(documentID)])
             let bp = try await workspace.data("hetu.blueprints.get", input: bibleInput())
             bible = bp
-            return try await workspace.data("hetu.plot.extract", input: [
+            return try await workspace.data("hetu.plot.extract", input: bibleInput([
                 "document_revisions": .array([.object(["document_id": .string(documentID), "revision_id": document["revision"]["revision_id"], "sha256": document["revision"]["sha256"]])]),
                 "blueprint_revision": bp["revision"], "options": .object([:]), "save_result": .bool(true), "operation_key": .string(UUID().uuidString)
-            ], allowPartial: true)
+            ]), allowPartial: true)
         } catch { onFailure(localizer.error(error)); return nil }
     }
     public func correctPlot(_ revision: String, corrections: [JSONValue], operationKey: String, onFailure: (String) -> Void) async -> JSONValue? {

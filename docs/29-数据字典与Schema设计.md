@@ -88,6 +88,8 @@ Blueprint 必需字段：`schema_version, blueprint_id, revision, lock, characte
 
 Draft 的 `revision` 仅用于状态／元数据 CAS，正文提交后不可变；内容变更产生新 draft ID。参考稿 `decision` 为 approved／rejected／changes_requested／withdrawn；approved 表示通过参考稿审核，withdrawn 撤回这次参考稿决定，均不自动更新正文定稿。兼容读取历史决定时按记录的原合同解释，不改写历史语义。
 
+对象任务及作者稿提交新增可选 `blueprint_ref={kind,work_ref,blueprint_id,revision,sha256}`，固定所属作品的设定，且与 `blueprint_revision,blueprint_sha256` 一致。旧稿缺少该引用时按原根设定解释；读取、诊断和过期计算不能将它改绑到新设定。人物图的关联也核对作品和设定身份，不以同名实体或相同数字修订推定归属。
+
 审核报告引用必须可解析，InputSnapshot 的当前性由策略计算，不把一个可编辑的 `is_fresh=true` 持久字段当事实。
 
 ReviewSnapshot 包含 `draft_id, draft_revision, content_sha256, submission_sha256, blueprint_revision, blueprint_sha256, current_blueprint_revision, target, skeleton`。`target` 为 null 或固定目标／基线摘要、当前修订及当前定稿指针；`skeleton` 为 null 或固定骨架引用、当前骨架修订与来源状态。决定时完整值相等校验，通过参考稿审核额外要求输入未过期；决定不产生正文修订。之后采纳或手工编辑使目标变化时，保留原决定及其证据，重新计算它对当前稿的适用性，不把历史决定移植为新正文的定稿授权。
@@ -402,6 +404,8 @@ BrowserSession 在本机授权存储或内存保存 `session_id, task_ref, scope
 
 资料当前性按依赖图计算：分别返回源文、设定、设计、参考和选用变化；归档或权利撤回不删除旧引用。跨作品导入生成新 ID、独立字节或已核验本地副本及固定原始来源映射；不得保留必须访问另一个本机目录的外键。封面选用沿用 BookCover，通用选用不产生第二个封面头。
 
+既有 `entity_refs` 以 `blueprint_revision,blueprint_sha256` 固定设定历史，再以 `kind,entity_id` 定位实体。资料显示和缓存必须核对摘要及修订，不能按数字修订缓存不同作品的设定。跨修订判断同一实体还须核对解析后的 blueprint_id；改名不丢失身份，同根其他作品的同号实体也不被合并。旧关联不随当前作品或最新名称重新解释。
+
 Agent 的可修改范围由服务器发出的任务授权决定：明确对象集合、字段、输入引用、预算与有效期。它可建立或维护获权的资料草稿、设计草稿及候选，不能更新已采用资料、作者选用、设定或正式正文。超出范围通过提案提交；请求中的 actor_ref、state 或 task_id 不构成权限。文件提交采用任务受管 inbox 与最后提交的文件清单，不接受任意本机路径。
 
 ## 21. 创作场景与原著材料
@@ -478,10 +482,11 @@ TaskGrant、CheckoutRecord 和 ContinuationReceipt 留在本机私有存储或�
 | --- | --- | --- |
 | WorkRef | `workspace_id,kind,object_id` | kind为novel／drama／video；指向明确类型，名称和目录不作身份；不构成授权 |
 | CanonBinding | `work_ref,blueprint_ref,source_ref?,role` | 明确对象自身设定或固定参考；同根不推定共享，改编例外由目标拥有；旧单设定工作区保留原文件及ID |
+| WorkCanon | `schema_version,workspace_id,owner_id,work_ref,revision,previous_sha256,blueprint,created_at,updated_at,actor_ref` | 剧本／视频自身设定的唯一可变头与不可变修订；内部 Blueprint 保持原 Schema，修订与外层一致，身份不可更换 |
 | WorkRevisionRef | `work_ref,revision_ref,sha256` | 固定所属对象的资料／计划修订；正文和媒体另用各自精确引用，不能只用“最新” |
 | LibraryEntry扩展 | `work_ref,location_ref,metadata_projection,last_opened_at` | 本机投影，旧workspace登记解析原对象并去重；不复制正文或权限 |
 | WorkActivity | `work_ref,updated_at` | 从实际事务更新对象的活动时间；不使用打开时间或文件系统时间，排除Git内容快照；正文或分集更新不改变同根其他对象及历史修订时间 |
-| WorkLink | `link_id,revision,source_ref,target_ref,relation,source_snapshot_ref?,previous_sha256` | relation区分改编原著／制作依据／参考／续作；来源固定修订和摘要；反向关联由同一关系派生 |
+| WorkLink | `link_id,revision,source_ref,target_ref,relation,source_title?,target_title?,archived,source_snapshot_ref?,previous_sha256` | relation区分改编原著／制作依据／参考／续作；两端固定修订和摘要，身份不替换；标题取自对应固定资料；反向关联由同一关系派生，解除和恢复保留旧修订 |
 | SourceSnapshot | `snapshot_id,origin_ref,files,rights_ref,sha256` | 跨根保存获权必要内容，可离线读；不是可写同步副本，不包含本机秘密或任意绝对路径 |
 | VideoProject | `video_project_id,workspace_id,revision,title,brief_ref,source_links,episode_refs,language_tag,previous_sha256` | 独立项目；source_links可空，直接从简述／分镜／素材开始；不要求空小说或剧本 |
 | VideoEpisode | `video_episode_id,video_project_id,revision,title,source_refs,storyboard_refs,previs_refs,edit_refs` | 顺序由项目唯一持有；剧本集和视频集分别拥有身份，映射显式且可非一对一 |
@@ -498,5 +503,7 @@ TaskGrant、CheckoutRecord 和 ContinuationReceipt 留在本机私有存储或�
 | InspectionCoverage | `inspection_id,target_refs,method,checked_ranges,excluded_ranges,findings,observer_ref` | 记录实际全文／全片／区间／抽帧覆盖；解码通过不等于内容看过，未检查处不得标无问题 |
 
 AssetDesign与AssetSelection继续拥有资料设计和用途选用，MediaArtifact只拥有原字节与流信息，不创建第二个当前人物图或封面头。MediaDecision用于制作成果；同一用途不同时由两套选用头维护。TaskFeedback沿用原身份，只按新版本扩展媒体锚点，不复制一套视频意见库。
+
+关联读取投影的 `related_status` 为 available／requires_authorization／unavailable；后两者的 `related_has_newer_revision` 为 null，不能伪报 false。固定标题属于关系元数据，旧记录缺标题时只在获权后读取确切历史，不拿当前名称冒充固定资料。`link_ref={link_id,revision,sha256}` 用于 CAS；get 的 current_link_ref 与所查看历史分别返回。`source_snapshot_ref` 属于跨根来源合同，不能仅凭 WorkRevisionRef 推定正文或媒体快照已经存在。
 
 同根多个对象共享工作区锁与事务机制，但必须核验具体目标和对象访问范围。跨根关系及快照按原操作可恢复，不宣称跨文件系统原子。删除或迁移列出所拥有内容、其他引用、在途及unknown调用；单项目删除不删除共享媒体或同根其他对象。历史定稿、成片确认和Bundle始终指向原输入，不因上游更新改写。

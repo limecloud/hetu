@@ -26,7 +26,7 @@ struct ResourceLinksEditor: View {
                 Menu(model.t("resources.link_entity")) {
                     ForEach(catalog.options) { option in
                         Button(option.title + " (" + model.t("entity.kind." + option.kind) + ")") { references.append(option.reference) }
-                            .disabled(references.contains { ResourceEntityOption.sameEntity($0, option.reference) } || references.count >= 50)
+                            .disabled(references.contains { catalog.sameEntity($0, option.reference) } || references.count >= 50)
                     }
                 }.disabled(catalog.options.isEmpty)
             }

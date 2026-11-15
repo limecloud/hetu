@@ -75,6 +75,17 @@ impl Kernel {
         Ok(None)
     }
 
+    /// 调用方已核验作品身份；目录筛选不为每一章重新读取和验证整部小说目录。
+    pub(super) fn document_in_work(&self, document: &Value, reference: &Value) -> Result<bool> {
+        Ok(match reference["kind"].as_str() {
+            Some("novel") => matches!(document["kind"].as_str(), Some("novel_chapter" | "novel_outline" | "adaptation_note")),
+            Some("drama") => if let Some(episode) = document["drama_episode_id"].as_str() {
+                self.read_drama_episode(episode, None)?.0["project_id"] == reference["object_id"]
+            } else { false },
+            _ => false,
+        })
+    }
+
     pub(super) fn document_blueprint(&self, document: &Value) -> Result<(Value, String)> {
         if let Some(reference) = self.document_work_ref(document)? {
             if let Some(value) = self.work_blueprint_revision(&reference, None)? { return Ok(value); }
@@ -111,6 +122,18 @@ impl Kernel {
         }
         self.blueprint_revision(if current { None } else { Some(integer(draft, "blueprint_revision")?) })
     }
+
+    pub(super) fn draft_work_owner(&self, draft: &Value) -> Result<Option<Value>> {
+        if draft["blueprint_ref"]["work_ref"].is_object() { return Ok(Some(draft["blueprint_ref"]["work_ref"].clone())); }
+        if let Some(target) = draft["target_document_id"].as_str() { return self.document_work_ref(&self.document(target)?); }
+        if let Some(task) = draft["creative_task_ref"]["task_id"].as_str() {
+            return self.task_work_owner(&self.task_request(task)?.0);
+        }
+        if draft["package"] == "novel" {
+            return Ok(self.novel()?.map(|novel| self.work_ref("novel", &novel["novel_id"])));
+        }
+        Ok(None)
+    }
     fn work_canon_record(&self, reference: &Value, revision: Option<u64>) -> Result<Option<Value>> {
         self.work_record(reference, None)?;
         if reference["kind"] == "novel" { return Ok(None); }
@@ -146,7 +169,12 @@ impl Kernel {
     pub(super) fn get_work_blueprint(&self, input: &Value) -> Result<Value> {
         let reference = &input["work_ref"];
         match self.work_blueprint_revision(reference, input["revision"].as_u64())? {
-            Some((bp, sha)) => Ok(self.work_blueprint_result(reference, &bp, &sha)),
+            Some((bp, sha)) => {
+                if let Some(expected) = input["sha256"].as_str() {
+                    ensure(expected == sha, "hetu.integrity_failure", "固定设定摘要不属于此作品的指定修订。")?;
+                }
+                Ok(self.work_blueprint_result(reference, &bp, &sha))
+            }
             None => {
                 ensure(input["revision"].is_null(), "not_found", "此作品尚未建立自身设定，不能读取指定修订。")?;
                 Ok(json!({"initialized":false,"work_ref":reference,"binding":null,"blueprint":null}))
@@ -182,13 +210,7 @@ impl Kernel {
         }
         for id in document_ids {
             let document = self.document(id)?;
-            let belongs = match reference["kind"].as_str() {
-                Some("novel") => matches!(document["kind"].as_str(), Some("novel_chapter" | "novel_outline" | "adaptation_note")),
-                Some("drama") => if let Some(episode) = document["drama_episode_id"].as_str() {
-                    self.read_drama_episode(episode, None)?.0["project_id"] == reference["object_id"]
-                } else { false },
-                _ => false,
-            };
+            let belongs = self.document_in_work(&document, reference)?;
             ensure(belongs, "forbidden", "设定变更包含未获授权的其他作品原文；请先准备固定来源交接。")?;
         }
         Ok(())
@@ -198,7 +220,8 @@ impl Kernel {
         let reference = &input["work_ref"];
         self.work_record(reference, None)?;
         if action == "hetu.blueprints.get" { return self.get_work_blueprint(input); }
-        ensure(self.work_record(reference, None)?["archived"] != true, "forbidden", "请先恢复已归档作品。")?;
+        let owner = self.work_record(reference, None)?;
+        ensure(owner["archived"] != true && owner["metadata"]["status"] != "archived", "forbidden", "请先恢复已归档作品。")?;
         if action == "hetu.blueprints.initialize" {
             ensure(reference["kind"] != "novel", "revision_conflict", "小说已有自身设定。")?;
             return self.stage_new_work_canon(reference, changes);

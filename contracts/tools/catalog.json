@@ -980,6 +980,15 @@
       ]
     },
     {
+      "name": "hetu_read_work_link",
+      "action": "hetu.work_links.get",
+      "title": "查看固定关联 / Read fixed work link",
+      "description": "读取确切关联与历史版本；另一端读取另行获权。Read an exact link revision; accessing the related work requires its own authorization.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
       "name": "hetu_create_video_from_project",
       "action": "hetu.creation_projects.create_video",
       "title": "创建独立视频作品 / Create independent video work",

@@ -18,11 +18,11 @@ impl Kernel {
 
     pub(super) fn stage_work_activity(&self, changes: &mut Changes) -> Result<()> {
         let mut affected: BTreeSet<(String, String)> = BTreeSet::new();
-        let mut novel = self.novel_record()?.map(|v| v["novel_id"].as_str().unwrap().to_owned());
+        let mut novel = None;
         let records = changes.iter().filter(|(path,_)| {
             path.as_str() == "packages/novel/novel.json" || path.starts_with(".hetu/novels/")
                 || (path.ends_with("/document.json") && (path.starts_with("packages/novel/documents/") || path.starts_with("packages/drama/documents/")))
-                || (["packages/drama/projects/", "packages/drama/episodes/", "packages/video/projects/", "packages/video/episodes/", "resources/items/"]
+                || (["packages/drama/projects/", "packages/drama/episodes/", "packages/video/projects/", "packages/video/episodes/", "resources/items/", "shared/work-links/"]
                     .iter().any(|prefix| path.starts_with(prefix)) && path.contains("/revisions/") && path.ends_with(".json"))
                 || (path.starts_with("shared/work-canons/") && path.contains("/revisions/") && path.ends_with(".json"))
         }).filter_map(|(_,bytes)| serde_json::from_slice::<Value>(bytes).ok()).collect::<Vec<_>>();
@@ -31,6 +31,11 @@ impl Kernel {
             if record["work_ref"].is_object() {
                 self.check_work_ref(&record["work_ref"])?;
                 affected.insert((text(&record["work_ref"], "kind")?.into(), text(&record["work_ref"], "object_id")?.into()));
+            }
+            if record["link_id"].is_string() {
+                let target = &record["target_ref"]["work_ref"];
+                self.check_work_ref(target)?;
+                affected.insert((text(target,"kind")?.into(), text(target,"object_id")?.into()));
             }
             for (key, kind) in [("novel_id","novel"),("project_id","drama"),("video_project_id","video")] {
                 if let Some(object_id) = record[key].as_str().filter(|value| value.starts_with(&format!("{kind}_"))) {
@@ -44,6 +49,7 @@ impl Kernel {
             if !record["document_id"].is_string() { continue; }
             match record["kind"].as_str() {
                 Some("novel_chapter" | "novel_outline" | "adaptation_note") => {
+                    if novel.is_none() { novel = self.novel_record()?.map(|v| v["novel_id"].as_str().unwrap().to_owned()); }
                     if let Some(novel) = &novel { affected.insert(("novel".into(),novel.clone())); }
                 },
                 Some("drama_script") => {
@@ -61,6 +67,7 @@ impl Kernel {
         // 旧单对象目录中的无归属资料仍属于该对象；多对象目录不能据此猜归属。
         if affected.is_empty() {
             let mut owners = Vec::new();
+            if novel.is_none() { novel = self.novel_record()?.map(|v| v["novel_id"].as_str().unwrap().to_owned()); }
             if let Some(novel) = novel { owners.push(("novel".to_owned(),novel)); }
             owners.extend(self.record_ids("packages/drama/projects","drama")?.into_iter().map(|id| ("drama".to_owned(),id)));
             owners.extend(self.record_ids("packages/video/projects","video")?.into_iter().map(|id| ("video".to_owned(),id)));

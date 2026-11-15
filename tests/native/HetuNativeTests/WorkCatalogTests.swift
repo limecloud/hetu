@@ -22,7 +22,40 @@ enum WorkCatalogTests {
         for entry in entries {
             try check(await model.openLibraryEntry(entry), "不能打开精确创作对象")
             try check(model.workReference == entry.workReference && model.workType == entry.contentType, "同根切换未切换工作面身份")
+            try check(model.bible["binding"]["work_ref"] == entry.workReference?.value, "切换作品后设定归属仍指向其他对象")
         }
+        let dramaEntry = entries.first { $0.contentType == "drama" }!
+        try check(await model.openLibraryEntry(dramaEntry), "不能打开剧本设定")
+        let dramaCanon = model.bible["blueprint"]["blueprint_id"]
+        let character: JSONValue = .object(["character_id": .string("character_11111111-1111-4111-8111-111111111111"), "name": .string("剧本中的守站人"), "aliases": .array([]), "description": .string("守着旧站"), "traits": .array([]), "facts": .array([]), "archived": .bool(false)])
+        try check(await model.saveBibleChanges([.object(["type": .string("upsert_character"), "entity": character])]), "不能保存剧本自身设定")
+        try check(model.bible["revision"].integer == 2, "剧本设定没有新修订")
+        let associations = ResourceAssociations()
+        await associations.load(model: model)
+        guard let dramaCharacter = associations.options.first else { throw Failure(message: "剧本人物未进入资料关联目录") }
+        try check(await model.openLibraryEntry(entries.first { $0.contentType == "novel" }!), "不能切回小说")
+        try check(model.bible["blueprint"]["blueprint_id"] != dramaCanon && model.bible["blueprint"]["characters"].array.isEmpty, "剧本人物污染小说设定")
+        var novelCharacter = character.object; novelCharacter["name"] = .string("原著中的守站人")
+        try check(await model.saveBibleChanges([.object(["type": .string("upsert_character"), "entity": .object(novelCharacter)])]), "不能保存原著独立人物")
+        await associations.load(model: model, references: [dramaCharacter.reference])
+        guard let originalCharacter = associations.options.first else { throw Failure(message: "小说人物未进入资料关联目录") }
+        try check(associations.error == nil && associations.title(for: dramaCharacter.reference) == "剧本中的守站人"
+            && associations.title(for: originalCharacter.reference) == "原著中的守站人"
+            && !associations.sameEntity(dramaCharacter.reference, originalCharacter.reference), "同号设定修订或同号人物在资料中混用")
+        novelCharacter["name"] = .string("原著中改名的守站人")
+        try check(await model.saveBibleChanges([.object(["type": .string("upsert_character"), "entity": .object(novelCharacter)])]), "不能修订原著人物")
+        await associations.load(model: model, references: [originalCharacter.reference, dramaCharacter.reference])
+        try check(associations.title(for: originalCharacter.reference) == "原著中的守站人"
+            && associations.options.contains { $0.title == "原著中改名的守站人" && associations.sameEntity($0.reference, originalCharacter.reference) }, "人物改名后固定旧标题或连续身份丢失")
+        try check(await model.openLibraryEntry(dramaEntry), "不能重新打开剧本")
+        try check(model.bible["blueprint"]["characters"].array == [character], "重新进入剧本丢失自身设定")
+        await associations.load(model: model, references: [originalCharacter.reference, dramaCharacter.reference])
+        try check(associations.options.map(\.title) == ["剧本中的守站人"] && associations.title(for: originalCharacter.reference) == "原著中的守站人", "同根切换作品没有清理当前关联目录或破坏固定引用")
+        var invalid = dramaCharacter.reference.object; invalid["blueprint_sha256"] = .string(String(repeating: "0", count: 64))
+        await associations.load(model: model, references: [.object(invalid)])
+        try check(associations.error != nil && associations.title(for: .object(invalid)) == nil, "无效固定摘要被当作当前人物")
+        let previous = await model.readBibleRevision(1)
+        try check(previous?["blueprint"]["blueprint_id"] == dramaCanon && previous?["blueprint"]["characters"].array.isEmpty == true, "设定历史读到了其他作品的同号修订")
         let original = model.currentWork
         let wrong = try WorkReference(.object(["workspace_id": .string(model.workspaceID), "kind": .string("video"), "object_id": .string("video_00000000-0000-4000-8000-000000000000")]))
         try check(!(await model.open(url, workReference: wrong)) && model.currentWork == original, "无效对象破坏了当前工作面")

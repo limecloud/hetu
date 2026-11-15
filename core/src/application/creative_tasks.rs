@@ -276,7 +276,7 @@ impl Kernel {
         )?;
         Ok((snapshot["expected"].clone(), fixed))
     }
-    fn task_request(&self, task_id: &str) -> Result<(Value, String)> {
+    pub(in crate::application) fn task_request(&self, task_id: &str) -> Result<(Value, String)> {
         let folder = root(task_id)?;
         let bytes = self.store.read(&format!("{folder}/request.json"))?;
         let sha = digest(&bytes);
@@ -747,6 +747,7 @@ impl Kernel {
         Ok(json!({"request":request,"request_sha256":sha,"observation":state,"expected":{"revision":state["revision"],"sha256":state_sha},"submission":submission,"decision":decision,"working_copies":working["working_copies"],"working_copies_next_cursor":working["next_cursor"],"feedback_head":feedback_head,"last_feedback":last_feedback,"working_limits":{"copies_per_task":100,"revisions_per_copy":100,"feedback_per_task":100,"text_bytes":TEXT_LIMIT}}))
     }
     pub(super) fn list_creative_tasks(&self, input: &Value) -> Result<Value> {
+        if input["work_ref"].is_object() { self.work_record(&input["work_ref"], None)?; }
         let mut records = Vec::new();
         if self
             .store
@@ -756,13 +757,15 @@ impl Kernel {
         {
             for task_id in self.store.entries(".hetu/tasks")? {
                 let (request, sha) = self.task_request(&task_id)?;
+                let owner = self.task_work_owner(&request)?;
+                if input["work_ref"].is_object() && owner.as_ref() != Some(&input["work_ref"]) { continue; }
                 let target = self.task_target_document(&request)?;
                 if let Some(required) = input["target_document_id"].as_str() {
                     if target.as_deref() != Some(required) { continue; }
                 }
                 let (state, _) = self.task_state(&task_id)?;
                 if input.get("state").is_none_or(|v| *v == state["state"]) {
-                    records.push(json!({"task_ref":{"scope_ref":self.scope_ref(),"task_id":task_id,"request_revision":1},"task_kind":request["task_kind"],"brief":request["brief"],"request_sha256":sha,"state":state["state"],"submission_count":state["submission_refs"].as_array().unwrap().len(),"created_at":request["created_at"],"target_document_id":target}));
+                    records.push(json!({"task_ref":{"scope_ref":self.scope_ref(),"task_id":task_id,"request_revision":1},"work_ref":owner,"task_kind":request["task_kind"],"brief":request["brief"],"request_sha256":sha,"state":state["state"],"submission_count":state["submission_refs"].as_array().unwrap().len(),"created_at":request["created_at"],"target_document_id":target}));
                 }
             }
         }

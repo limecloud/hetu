@@ -191,7 +191,7 @@ impl Kernel {
         let selection = &request["selection"];
         let production = request["profile"] == "production_delivery";
         let bp_ref = &selection["blueprint_ref"];
-        let (bp, bp_sha) = self.blueprint_revision(Some(integer(bp_ref, "revision")?))?;
+        let (bp, bp_sha) = self.blueprint_for_snapshot(integer(bp_ref, "revision")?, text(bp_ref, "sha256")?)?;
         ensure(
             bp_ref["sha256"] == bp_sha,
             "hetu.integrity_failure",

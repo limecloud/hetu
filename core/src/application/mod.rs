@@ -33,6 +33,7 @@ mod agent_effects;
 mod handoffs;
 mod import_sources;
 mod works;
+mod work_links;
 mod work_scope;
 mod work_canons;
 mod work_activity;
@@ -918,6 +919,9 @@ impl Kernel {
             "hetu.works.get" => return self.get_work(input),
             "hetu.work_links.create" => return self.create_work_link(input, changes),
             "hetu.work_links.list" => return self.list_work_links(input),
+            "hetu.work_links.get" => return self.get_work_link(input),
+            "hetu.work_links.update_source" => return self.update_work_link_source(input, changes),
+            "hetu.work_links.set_archived" => return self.set_work_link_archived(input, changes),
             "hetu.video.projects.create" => return self.create_video_project(input, changes),
             "hetu.video.projects.get" => return self.get_video_project(input),
             "hetu.video.projects.update" => return self.update_video_project(input, changes),
@@ -1025,8 +1029,11 @@ impl Kernel {
             "hetu.cues.get" => self.get_cue(input),
             "hetu.cues.list" => self.list_media(input, "cue"),
             "hetu.blueprints.get" => {
-                let (bp, sha) =
-                    self.blueprint_revision(input.get("revision").and_then(Value::as_u64))?;
+                let (bp, sha) = if let Some(sha) = input["sha256"].as_str() {
+                    self.blueprint_for_snapshot(integer(input, "revision")?, sha)?
+                } else {
+                    self.blueprint_revision(input.get("revision").and_then(Value::as_u64))?
+                };
                 Ok(json!({"blueprint":bp,"revision":bp["revision"],"sha256":sha}))
             }
             "hetu.blueprints.preview_change" | "hetu.blueprints.save" => {
@@ -1057,6 +1064,7 @@ impl Kernel {
             }
             "hetu.documents.create" => self.create_document(input, changes),
             "hetu.documents.list" => {
+                if input["work_ref"].is_object() { self.work_record(&input["work_ref"], None)?; }
                 let mut documents = Vec::new();
                 for package in ["novel", "drama"] {
                     for name in self
@@ -1065,6 +1073,7 @@ impl Kernel {
                     {
                         checked_id(&name, "doc")?;
                         let doc = self.document(&name)?;
+                        if input["work_ref"].is_object() && !self.document_in_work(&doc, &input["work_ref"])? { continue; }
                         if input.get("kind").is_none_or(|kind| *kind == doc["kind"]) {
                             documents.push(doc);
                         }
@@ -1093,6 +1102,7 @@ impl Kernel {
             "hetu.reviews.decide" => self.decide_review(input, changes),
             "hetu.reviews.validate" => self.validate_review(input, changes),
             "hetu.drafts.list" => {
+                if input["work_ref"].is_object() { self.work_record(&input["work_ref"], None)?; }
                 let mut drafts = Vec::new();
                 for package in PACKAGES {
                     if input.get("package").is_some_and(|p| p != package) {
@@ -1101,6 +1111,7 @@ impl Kernel {
                     for name in self.store.entries(&format!("packages/{package}/drafts"))? {
                         checked_id(&name, "draft")?;
                         let draft = self.draft_content(&name)?["draft"].clone();
+                        if input["work_ref"].is_object() && self.draft_work_owner(&draft)?.as_ref() != Some(&input["work_ref"]) { continue; }
                         if input
                             .get("state")
                             .is_none_or(|state| *state == draft["state"])

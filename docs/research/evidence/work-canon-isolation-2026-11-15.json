@@ -1,0 +1,228 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-11-15T15:17:44.727683+00:00",
+  "version": "0.7.0",
+  "scope": "同根作品设定、固定历史、任务和图片隔离；分层入口收敛；目录读取性能及本地安装",
+  "status": "machine_passed_gui_partial_installed",
+  "all_refactoring_complete": false,
+  "source": {
+    "base_commit": "1384801a5bd976e881e02feeced93993c3e12469",
+    "dirty_worktree": true,
+    "manifest": "output/work-canon-isolation-20261115/source-manifest-final.json",
+    "manifest_sha256": "0231b0878551757aa295d488a7c2fd85f3ef14094cb90d1713344a3f3757217a",
+    "runtime_delta_after_full_tests": "仅StoryBibleView两个可访问名称与帮助文本由工作区操作改为设定操作；随后重新构建、安装并复验公开CLI及随包MCP。"
+  },
+  "navigation": {
+    "levels": [
+      "创作库及类型",
+      "当前作品和项目功能组",
+      "卷章或集场目录",
+      "阅读、比较与意见",
+      "按需检查器"
+    ],
+    "secondary_groups": [
+      "创作资料",
+      "版本与交付",
+      "检查工具"
+    ],
+    "page_actions": "历史、锁定与新增放入设定页菜单；未建立设定时不显示无效菜单；刷新及当前对象AI交接保留。",
+    "narrow_layout": "960pt窗口目录转为浮层，选择后收起；已选第六集保持。"
+  },
+  "contracts": {
+    "work_canons": "根旧设定仍归原小说；新剧本和视频有各自设定，旧项目缺自身设定返回initialized=false，显式固定方案建立。",
+    "history": "revision-only旧读保持根语义；有摘要时固定读取确切历史；WorkRef已指定时摘要不能跨对象。",
+    "resource_entity_identity": "按blueprint_id和实体ID比较同一性，历史缓存按sha256并核验revision；不合并不同作品同号实体。",
+    "authorization": "精确对象授权仍须显式WorkRef，不扩展为整根权限；Agent不能自行解锁、采用或定稿。",
+    "canon_index": "摘要索引指向固定历史，不保存第二份可写设定。"
+  },
+  "checks": {
+    "core": {
+      "status": "passed",
+      "group_count": 29,
+      "passed": 224,
+      "failed": 0,
+      "coverage": "早期全量基线与修复后相关专项的组合覆盖；并非最新源码的一次全量命令。",
+      "summary": "output/work-canon-isolation-20261115/core-summary.json",
+      "latest_directory_regression": {
+        "passed": 33,
+        "log": "core-directory-performance-tests.log"
+      }
+    },
+    "mcp_stdio": {
+      "status": "passed",
+      "passed": 23,
+      "failed": 0,
+      "log": "mcp-performance-final.log"
+    },
+    "native_all": {
+      "status": "passed",
+      "log": "native-tests-performance-final.log",
+      "boundary": "在最后两处菜单可访问名称调整前通过；业务和Native模型之后未改动。"
+    },
+    "swift_bridge": {
+      "status": "passed",
+      "log": "bridge-tests-performance-final.log"
+    },
+    "imported_work": {
+      "status": "passed",
+      "documents": 511,
+      "groups": 5,
+      "episodes": 6,
+      "read_only": true,
+      "open_seconds": 1.554732166,
+      "log": "imported-work-review-performance-final.log",
+      "boundary": "首中尾正文、目录、双语不改原文、固定参考稿及未采用资料；不等于全书改编完成。"
+    },
+    "performance": {
+      "before_seconds": 30.640637292,
+      "after_seconds": 1.554732166,
+      "before": "performance-before.json",
+      "after_log": "imported-work-review-performance-final.log",
+      "fix": "作品身份核验后按文档过滤，避免逐章重复读取完整目录；保留身份和摘要校验。",
+      "boundary": "同机同样本的两次实际测量，不是跨设备或持续负载性能保证。"
+    },
+    "current_codex_cli": {
+      "status": "passed",
+      "steps": 29,
+      "installed_replay_steps": 29,
+      "log": "installed-cli-menu-final.log",
+      "computer_use_business_steps": 0,
+      "author_mode_business_steps": 0,
+      "model_generation_requests": 0,
+      "scope": [
+        "独立筹备和小说创建",
+        "同根剧本与视频创建",
+        "三份独立设定",
+        "空分集、精确任务和固定上下文",
+        "本对话原创Fountain提交回读",
+        "原键重放",
+        "确切历史摘要和跨作品拒绝"
+      ],
+      "business_records": "本机持久验收记录/设定归属隔离-20261115/公开CLI回执；不将授权引用或正文复制到仓库证据。"
+    },
+    "packaged_mcp": {
+      "status": "passed",
+      "checks": 7,
+      "tool_count": 105,
+      "protocol": "2025-06-18",
+      "normal_eof": true,
+      "stderr_empty": true,
+      "log": "installed-mcp-menu-final.log",
+      "evidence": "installed-menu-final-mcp-check.json",
+      "boundary": "实际新启动的安装版stdio进程，与本对话常驻旧MCP分开。"
+    },
+    "skills": {
+      "source": [
+        "tools/hetu-skills/base/skills/hetu-manage/SKILL.md",
+        "tools/hetu-skills/base/references/workflows/management.md"
+      ],
+      "distribution_status": "生成及构建校验通过",
+      "suites": 45,
+      "files": 2205,
+      "current_host_reload": "not_run"
+    },
+    "localization": {
+      "status": "passed",
+      "bilingual_keys": 1603
+    },
+    "build": {
+      "status": "passed",
+      "command": "python3 tools/build-native.py --swift-scratch-path output/work-canon-isolation-20261115/swift",
+      "log": "native-build-menu-final.log",
+      "same_source_core_cli_mcp_resources": true
+    },
+    "installed_app": {
+      "installed_app": "/Applications/Hetu.app",
+      "file_count": 2239,
+      "all_file_hashes_match": true,
+      "retained_backup": false,
+      "normal_quit": true,
+      "signature_verification": "passed",
+      "sha256": {
+        "Contents/MacOS/HetuMac": "e028bae0298bd24d52ffed799f8581b9b404cafb656de53eee1bc479530202bb",
+        "Contents/Helpers/hetu": "12773c30cee86edd424d9e32bb4a6541061c8287037be5e255396c5814aed6c2",
+        "Contents/Helpers/hetu-mcp": "ac4ee0ec6d0e334bf161c7d924f4cb17fbcbf862f89412745298bff244134040",
+        "Contents/Frameworks/libhetu_core.dylib": "58dcd0ed1edfa37ef327688d815ebb11a7025e324e490c7d5e0f3bd38a50cba2"
+      },
+      "final_file_hashes_match": true,
+      "recorded_at": "2026-11-15T15:17:44.589699+00:00"
+    },
+    "gui": {
+      "status": "partial",
+      "method": "macOS辅助功能和真实窗口截图，仅用于渲染及交互验收。",
+      "passed": [
+        "中文1440×875创作库类型及小说剧本独立条目",
+        "中文1440×875第一和第六集真实Fountain参考稿",
+        "项目功能组折叠与展开",
+        "旧剧本待建立设定，不借用原著设定且没有无效操作菜单",
+        "中文960×720设定页及分集阅读",
+        "960pt目录浮层和选择后收起，第六集保持",
+        "小说已有空设定与剧本未建立状态区分，未采用资料未变成人物",
+        "最终安装版设定操作可访问名称与全局工作区操作区分"
+      ],
+      "images": [
+        "installed-library-1440.png",
+        "installed-drama-ready.png",
+        "installed-drama-six-ready.png",
+        "installed-drama-canon-ready.png",
+        "installed-drama-canon-narrow.png",
+        "installed-drama-narrow-ready.png",
+        "installed-drama-narrow-outline.png",
+        "final-novel-canon.png"
+      ],
+      "not_run": [
+        "最终弹出菜单内容的交互确认",
+        "本轮额外英文视图复验",
+        "中英浅暗最小常规宽屏的完整显示矩阵",
+        "实际保存作者意见、采用与定稿",
+        "独立视频的真实媒体呈现"
+      ],
+      "retained_failures": "菜单点击尝试未观察到弹出结果，不计通过；随后共享桌面出现外部窗口移动和页面切换，停止操作共享窗口。初始加载截图与ready状态分别保存。CUA初始化失败记录沿用分层导航证据。",
+      "author_content_modified": false,
+      "author_decisions_fabricated": false
+    },
+    "documents": {
+      "status": "passed",
+      "documents": 55,
+      "local_links": 565,
+      "fragment_links": 185,
+      "traceability": {
+        "FR": 40,
+        "US": 61,
+        "UC": 54,
+        "E2E": 30,
+        "AC": 65
+      },
+      "id_references": 1260,
+      "json_examples": 8,
+      "schemas": 2,
+      "mermaid": 61,
+      "errors": [],
+      "log": "docs-final.log",
+      "git_diff_check": "passed"
+    }
+  },
+  "fixed_regressions": [
+    "资料关联读取根设定并仅按数字修订缓存，可能混淆同根不同作品。",
+    "作品过滤逐篇重新读取完整小说目录，511篇打开耗时升至30.6秒。",
+    "原生历史测试混比操作与读取wrapper，改为核对固定内容和binding。",
+    "真实分集测试在小说WorkRef下读取剧本，改为先选定确切对象；未保存缓冲固定本集作者稿。"
+  ],
+  "evidence_directory": "output/work-canon-isolation-20261115/",
+  "open_items": [
+    "跨根来源快照与完整WorkLink生命周期",
+    "其余资料对象的窄授权与改编交接",
+    "完整阅读和播放位置恢复",
+    "动态分镜、白模及实际视频音画字幕",
+    "局部返工、成片确认和工程交付",
+    "整书改编覆盖",
+    "当前宿主新版MCP及Skills重载与Apps",
+    "完整显示矩阵"
+  ],
+  "boundaries": [
+    "本次未提交、推送或部署，未修改网站源码。",
+    "开发制品覆盖安装，不是签名公证Release。",
+    "511篇原稿及六集开篇不表示全书改编完成。",
+    "未自动建立真实改编设定，未替作者采用或定稿。"
+  ]
+}

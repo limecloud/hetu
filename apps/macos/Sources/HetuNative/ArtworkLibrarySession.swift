@@ -62,13 +62,14 @@ public struct ArtworkItem: Identifiable, Sendable {
     }
     public func load(model: WorkspaceModel, more: Bool = false) async {
         guard let workspace = model.workspace else { reset(); return }
-        let scope = model.workspaceID + "\n" + workspace.url.standardizedFileURL.path
+        let scope = model.currentWorkID + "\n" + workspace.url.standardizedFileURL.path
         // 多个对象页共用一份读取，切换角色和关闭详情不清空已有缩略图。
         if scopeID == scope && loading { return }
         if scopeID != scope { reset(); scopeID = scope }
         if more && nextCursor == nil { return }
         let token = UUID(); generation = token
         let workspaceID = model.workspaceID
+        let workID = model.currentWorkID
         loading = true; error = nil
         defer { if generation == token { loading = false } }
         var pageCursor = more ? nextCursor : nil
@@ -77,23 +78,24 @@ public struct ArtworkItem: Identifiable, Sendable {
             // 跳过文字任务页，最多取得一页图片；其余通过“加载更多”继续。
             repeat {
                 var input: [String: JSONValue] = ["limit": .integer(20)]
+                if let reference = model.workReference { input["work_ref"] = reference.value }
                 if let pageCursor { input["cursor"] = .string(pageCursor) }
                 let page = try await workspace.data("hetu.creative_tasks.list", input: input)
-                guard generation == token, model.workspaceID == workspaceID else { return }
+                guard generation == token, model.workspaceID == workspaceID, model.currentWorkID == workID else { return }
                 for row in page["tasks"].array where ["cover", "artwork"].contains(row["task_kind"].string ?? "") && (row["submission_count"].integer ?? 0) > 0 {
                     let view = try await workspace.data("hetu.interactions.get", input: ["task_ref": row["task_ref"]])
-                    guard generation == token, model.workspaceID == workspaceID else { return }
+                    guard generation == token, model.workspaceID == workspaceID, model.currentWorkID == workID else { return }
                     found += ArtworkItem.latest(view)
                 }
                 pageCursor = page["next_cursor"].string
             } while found.isEmpty && pageCursor != nil
-            guard generation == token, model.workspaceID == workspaceID else { return }
+            guard generation == token, model.workspaceID == workspaceID, model.currentWorkID == workID else { return }
             if !more { items = [] }
             items += found.filter { item in !items.contains { $0.id == item.id } }
             items.sort { $0.receivedAt > $1.receivedAt }
             nextCursor = pageCursor
         } catch {
-            guard generation == token, model.workspaceID == workspaceID else { return }
+            guard generation == token, model.workspaceID == workspaceID, model.currentWorkID == workID else { return }
             items = []; nextCursor = nil
             self.error = model.localizer.error(error)
         }

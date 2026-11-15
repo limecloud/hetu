@@ -42,7 +42,11 @@ impl Kernel {
         Ok(documents)
     }
     pub(super) fn extract_plot(&self, input: &Value, changes: &mut Changes) -> Result<Value> {
-        let (bp, sha) = self.blueprint_revision(Some(integer(input, "blueprint_revision")?))?;
+        let number = integer(input, "blueprint_revision")?;
+        let (bp, sha) = if input["work_ref"].is_object() {
+            self.work_blueprint_revision(&input["work_ref"], Some(number))?
+                .ok_or_else(|| Error::new("hetu.canon_initialization_required", "作品自身设定尚未建立。"))?
+        } else { self.blueprint_revision(Some(number))? };
         let documents = self.plot_documents(input["document_revisions"].as_array().unwrap())?;
         let options = serde_json::from_value(input["options"].clone())?;
         let plot = plot::extract(&documents, &bp, &sha, options, self.actor())?;

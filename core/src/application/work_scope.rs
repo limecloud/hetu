@@ -24,7 +24,8 @@ impl Kernel {
         let allowed = match action {
             "hetu.capabilities.get" | "hetu.operations.get" | "hetu.workspaces.get" |
             "hetu.works.list" | "hetu.agent_operations.list" => true,
-            "hetu.works.get" | "hetu.work_links.list" => input["work_ref"] == reference,
+            "hetu.works.get" | "hetu.work_links.list" | "hetu.work_links.get" |
+            "hetu.work_links.set_archived" => input["work_ref"] == reference,
             "hetu.blueprints.get" | "hetu.blueprints.preview_change" |
             "hetu.blueprints.save" | "hetu.blueprints.initialize" => input["work_ref"] == reference,
             "hetu.creative_tasks.preview_prompt" | "hetu.creative_tasks.prepare" |
@@ -36,7 +37,7 @@ impl Kernel {
                     Some("drama" | "episode") => kind == "drama",
                     Some("book" | "novel" | "structure") => kind == "novel",
                     Some("related_works") => true,
-                    Some("bible" | "entity") => true,
+                    Some("bible" | "entity" | "artwork") => true,
                     _ => false,
                 },
             "hetu.novels.get" | "hetu.novels.update" | "hetu.novels.save_structure" => kind == "novel",
@@ -59,7 +60,7 @@ impl Kernel {
     fn handoff_objects_in_work(&self, reference: &Value, object: &Value) -> Result<bool> {
         // 页面名称不能为嵌套的他对象引用开后门；尚未建立归属的引用失败关闭。
         if object.as_object().is_none_or(|fields| fields.keys().any(|key| !matches!(key.as_str(),
-            "work_ref" | "project_id" | "episode_id" | "video_episode_id" | "revision" | "entity_ref" | "blueprint_revision"))) {
+            "work_ref" | "project_id" | "episode_id" | "video_episode_id" | "revision" | "entity_ref" | "blueprint_revision" | "document_id" | "revision_id" | "link_id" | "link_revision"))) {
             return Ok(false);
         }
         if let Some(project) = object["project_id"].as_str() {
@@ -70,6 +71,12 @@ impl Kernel {
         }
         if let Some(episode) = object["video_episode_id"].as_str() {
             if reference["kind"] != "video" || self.versioned_record("packages/video/episodes", episode, "video_episode_id", None)?.0["video_project_id"] != reference["object_id"] { return Ok(false); }
+        }
+        if let Some(document) = object["document_id"].as_str() {
+            if self.document_work_ref(&self.document(document)?)?.as_ref() != Some(reference) { return Ok(false); }
+        }
+        if object["link_id"].is_string() {
+            self.get_work_link(&json!({"work_ref":reference,"link_id":object["link_id"],"revision":object["link_revision"]}))?;
         }
         Ok(true)
     }

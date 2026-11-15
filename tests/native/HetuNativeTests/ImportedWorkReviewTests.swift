@@ -41,10 +41,15 @@ import HetuNative
             guard let workspace = model.workspace else { throw Failure(message: "原生上下文丢失") }
             let project = try await workspace.data("hetu.drama.projects.get", input: ["project_id": result["project_id"]])
             try check(project["project"]["mode"].string == "adaptation", "改编项目类型不符")
+            let novelCanon = model.bible["blueprint"]["blueprint_id"]
+            let dramaRef = try WorkReference(.object(["workspace_id": .string(model.workspaceID), "kind": .string("drama"), "object_id": result["project_id"]]))
+            try check(await model.open(URL(fileURLWithPath: path), workReference: dramaRef), "无法切到原著关联的剧本工作面")
+            try check(model.workReference == dramaRef && (!model.bibleInitialized || model.bible["blueprint"]["blueprint_id"] != novelCanon), "旧改编项目被静默借用原著设定")
             for item in result["reference_episodes"].array {
                 let episode = try await workspace.data("hetu.drama.episodes.get", input: ["episode_id": item["episode_id"]])
                 let document = try await workspace.data("hetu.documents.get", input: ["document_id": episode["episode"]["document_id"]])
                 try check(document["content"].string == "", "参考稿被提前写成作者正文")
+                try check(await model.selectDocument(episode["episode"]["document_id"].string!), "无法打开本集的作者稿缓冲")
                 let reader = EpisodeReadingSession(model: model)
                 await reader.load(item["episode_id"].string!)
                 try check(reader.error == nil && !reader.isAuthor && !reader.content.isEmpty, "分集入口未展示已有参考稿：\(reader.error ?? "")")
@@ -57,6 +62,7 @@ import HetuNative
                 model.edit(buffer)
                 await reader.load(item["episode_id"].string!)
                 try check(model.text == buffer && model.needsProtection, "分集阅读覆盖了作者未保存内容")
+                model.edit(model.savedText)
                 reader.clear()
                 try check(reader.episode == .null && reader.content.isEmpty && reader.isAuthor, "空项目仍显示前一分集")
                 let taskReference: JSONValue = .object(["scope_ref": item["task_ref"]["scope_ref"], "task_id": item["task_ref"]["task_id"], "request_revision": item["task_ref"]["request_revision"]])

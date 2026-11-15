@@ -1,6 +1,21 @@
 use super::*;
 
 impl Kernel {
+    pub(in crate::application) fn task_work_owner(&self, request: &Value) -> Result<Option<Value>> {
+        let context = &request["input_snapshot"]["scope_context"];
+        if context["work_ref"].is_object() {
+            self.work_record(&context["work_ref"], None)?;
+            return Ok(Some(context["work_ref"].clone()));
+        }
+        if let Some(target) = self.task_target_document(request)? {
+            return self.document_work_ref(&self.document(&target)?);
+        }
+        // 旧小说任务固定了该根唯一小说的 metadata；旧剧本不能按标题猜项目。
+        if context["metadata"].is_object() {
+            return Ok(self.novel()?.map(|novel| self.work_ref("novel", &novel["novel_id"])));
+        }
+        Ok(None)
+    }
     pub(in crate::application) fn task_work_reference(&self, input: &Value) -> Result<Option<Value>> {
         let requested = input.get("work_ref").filter(|value| value.is_object());
         if let Some(reference) = requested { self.work_record(reference, None)?; }

@@ -16,6 +16,15 @@ impl Kernel {
         let page = text(input, "view_kind")?;
         let mut fixed = Vec::new();
         let object = &input["object_ref"];
+        ensure(object["link_revision"].is_null() || object["link_id"].is_string(), "invalid_input", "关联版本须指定关联身份。")?;
+        if object["link_id"].is_string() {
+            ensure(page == "related_works" && object["work_ref"].is_object(), "invalid_input", "关联交接须定位当前作品。")?;
+            let mut request = json!({"work_ref":object["work_ref"],"link_id":object["link_id"]});
+            if object["link_revision"].is_number() { request["revision"] = object["link_revision"].clone(); }
+            let view = self.get_work_link(&request)?;
+            fixed.push(json!({"kind":"work_link","link_id":view["link"]["link_id"],"revision":view["link"]["revision"],"sha256":view["sha256"],
+                "source_ref":view["link"]["source_ref"],"target_ref":view["link"]["target_ref"],"archived":view["link"]["archived"]}));
+        }
         if object["work_ref"].is_object() {
             let record = self.work_record(&object["work_ref"], None)?;
             fixed.push(json!({"kind":"work","fixed_ref":self.work_revision_ref(&object["work_ref"], &record)?}));
@@ -128,7 +137,8 @@ impl Kernel {
         }
         let (wanted, missing): (&[&str], &[&str]) = match page {
             "related_works" => (
-                &["hetu.works.list", "hetu.works.get", "hetu.work_links.list", "hetu.work_links.create"], &[],
+                &["hetu.works.list", "hetu.works.get", "hetu.work_links.list", "hetu.work_links.get",
+                    "hetu.work_links.create", "hetu.work_links.update_source", "hetu.work_links.set_archived"], &[],
             ),
             "video" => (
                 &["hetu.works.get", "hetu.work_links.list", "hetu.video.projects.get", "hetu.video.projects.update", "hetu.video.episodes.create", "hetu.video.episodes.get"],

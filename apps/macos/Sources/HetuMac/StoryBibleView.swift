@@ -55,10 +55,18 @@ struct StoryBibleView: View {
             WorkbenchHeading(title: model.t("bible.title"), subtitle: model.t("bible.description"), artwork: items.isEmpty ? "" : "story-world") {
                 Button { Task { await artwork.load(model: model) } } label: { Image(systemName: "arrow.clockwise") }.accessibilityLabel(model.t("common.refresh")).disabled(artwork.loading)
                 PageAgentButton(model: model, page: "bible")
-                Button(model.t("bible.history")) { history = true }.disabled(!model.bibleInitialized)
-                Button(model.t(model.locked ? "bible.unlock" : "bible.lock")) { lockError = nil; confirmLock = true }.disabled(!model.bibleInitialized)
-                Button { selected = .null; editing = true } label: { Label(model.t("entity.add"), systemImage: "plus") }
-                    .buttonStyle(WorkbenchButtonStyle(primary: true)).disabled(model.locked || !model.bibleInitialized)
+                if model.bibleInitialized {
+                    Menu {
+                        Button(model.t("bible.history")) { history = true }
+                        Button(model.t(model.locked ? "bible.unlock" : "bible.lock")) { lockError = nil; confirmLock = true }
+                        Divider()
+                        Button { selected = .null; editing = true } label: { Label(model.t("entity.add"), systemImage: "plus") }
+                            .disabled(model.locked)
+                    } label: { Image(systemName: "ellipsis") }
+                        .menuStyle(.borderlessButton).fixedSize()
+                        .accessibilityLabel(model.t("entity.actions"))
+                        .help(model.t("entity.actions"))
+                }
             }
             if model.bibleInitialized { HStack {
                 Label(model.t(model.locked ? "bible.locked" : "bible.editable"), systemImage: model.locked ? "lock" : "lock.open")

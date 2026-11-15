@@ -91,7 +91,9 @@ enum CreativeWorkspaceTests {
         try require(await model.saveCharacter(id: nil, name: "林舟", aliases: [], description: "渡口故人", traits: []), "资料关联测试无法建人物")
         let catalog = ResourceAssociations()
         await catalog.load(model: model)
+        try require(catalog.error == nil, "资料关联目录读取失败：\(catalog.error ?? "")")
         guard let character = catalog.options.first(where: { $0.kind == "character" && $0.title == "林舟" }) else { throw Failure(message: "关联选择器没有读取当前人物") }
+        try require(character.reference["blueprint_revision"] == model.bible["revision"] && character.reference["blueprint_sha256"] == model.bible["sha256"], "关联选择器没有固定当前作品的设定修订")
         var linkedInput = fields
         linkedInput["title"] = .string("林舟衣着")
         linkedInput["category"] = .string("character")
@@ -102,8 +104,13 @@ enum CreativeWorkspaceTests {
         try require(await model.saveCharacter(id: character.reference["entity_id"].string, name: "林川", aliases: [], description: "作者修订姓名", traits: []), "人物改名失败")
         await catalog.load(model: model, projectID: project["project"]["project_id"].string, references: linked["resource"]["entity_refs"].array)
         try require(catalog.error == nil && catalog.title(for: character.reference) == "林舟", "资料关联被最新设定名覆盖或固定摘要不符")
-        try require(catalog.options.contains { $0.title == "林川" && ResourceEntityOption.sameEntity($0.reference, character.reference) }, "同一人物改名后关联身份丢失")
+        try require(catalog.options.contains { $0.title == "林川" && catalog.sameEntity($0.reference, character.reference) }, "同一人物改名后关联身份丢失")
         try require(catalog.projects.contains { $0["project"]["project_id"] == project["project"]["project_id"] }, "关联目录未载入所选项目")
+        // 新实例没有旧缓存，固定历史引用仍须能从内核重新读取。
+        let reopenedCatalog = ResourceAssociations()
+        await reopenedCatalog.load(model: model, references: linked["resource"]["entity_refs"].array)
+        try require(reopenedCatalog.error == nil && reopenedCatalog.title(for: character.reference) == "林舟"
+            && reopenedCatalog.options.contains { $0.title == "林川" && reopenedCatalog.sameEntity($0.reference, character.reference) }, "重开关联目录没有读取固定历史设定或当前作品人物")
         let projectResources = try await action("hetu.resources.list", ["project_id": project["project"]["project_id"]])
         let sharedResources = try await action("hetu.resources.list", ["project_id": .null])
         try require(projectResources["resources"].array.map { $0["resource_id"] } == [linked["resource"]["resource_id"]] && sharedResources["resources"].array.map { $0["resource_id"] } == [reference["resource"]["resource_id"]], "项目资料与作品通用资料筛选串位")

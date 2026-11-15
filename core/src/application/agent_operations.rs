@@ -4,6 +4,7 @@ use base64::{Engine, engine::general_purpose::STANDARD};
 
 pub(super) const PROPOSABLE: &[&str] = &[
     "hetu.work_links.create",
+    "hetu.work_links.update_source", "hetu.work_links.set_archived",
     "hetu.video.projects.create", "hetu.video.projects.update", "hetu.video.episodes.create",
     "hetu.novels.initialize",
     "hetu.novels.update",
@@ -51,11 +52,25 @@ fn stamp(store: &Store, path: &str) -> Result<Value> {
 }
 
 impl Kernel {
-    fn proposal_baseline(&self) -> Result<Value> {
-        Ok(
-            json!({"config":self.config_sha,"blueprint":stamp(&self.store,"shared/blueprint.json")?,
-            "novel":stamp(&self.store,".hetu/novel-head.json")?}),
-        )
+    fn proposal_baseline(&self, action: &str, input: &Value) -> Result<Value> {
+        let mut baseline = json!({"config":self.config_sha,"blueprint":stamp(&self.store,"shared/blueprint.json")?,
+            "novel":stamp(&self.store,".hetu/novel-head.json")?});
+        let reference = if input["work_ref"].is_object() { &input["work_ref"] }
+            else if action.starts_with("hetu.work_links.") { &input["target_ref"]["work_ref"] }
+            else { &Value::Null };
+        if reference.is_object() {
+            let record = self.work_record(reference, None)?;
+            baseline["work"] = self.work_revision_ref(reference, &record)?;
+            if reference["kind"] != "novel" {
+                // 对象自身设定不依赖同根小说；实际读写的来源另由固定文件基线核验。
+                baseline["blueprint"] = Value::Null;
+                baseline["novel"] = Value::Null;
+            }
+            if action.starts_with("hetu.work_links.") {
+                baseline["work_links"] = json!(self.work_link_set_digest(reference)?);
+            }
+        }
+        Ok(baseline)
     }
     pub(super) fn read_proposal(&self, input: &Value) -> Result<(Value, Value)> {
         let path = proposal_path(input)?;
@@ -124,7 +139,7 @@ impl Kernel {
     }
     pub(super) fn proposal_view(&self, proposal: &Value, state: &Value) -> Result<Value> {
         let fixed = &proposal["fixed"];
-        let mut current = fixed["baseline"] == self.proposal_baseline()?;
+        let mut current = fixed["baseline"] == self.proposal_baseline(text(fixed, "action")?, &fixed["input"])?;
         for (path, expected) in fixed["before_files"].as_object().unwrap() {
             current &= *expected == stamp(&self.store, path)?;
         }
@@ -222,7 +237,7 @@ impl Kernel {
                 let proposal_id = id("proposal");
                 let mut fixed = json!({"action":target,"input":arguments,"summary":input["summary"],"created_at":now(),
                     "expires_at":time::OffsetDateTime::now_utc().unix_timestamp()+86400,
-                    "baseline":self.proposal_baseline()?,"before_files":before,"writes":writes,"binary_writes":binary,"preview":preview,"review_changes":review});
+                    "baseline":self.proposal_baseline(target, arguments)?,"before_files":before,"writes":writes,"binary_writes":binary,"preview":preview,"review_changes":review});
                 if deferred { fixed["effect"] = json!("deferred"); }
                 let sha = digest(serde_json_canonicalizer::to_vec(&fixed)?);
                 let proposal = json!({"schema_version":"1.0.0","scope_id":self.scope(),"proposal_id":proposal_id,"sha256":sha,"fixed":fixed,"prepared_by":self.actor()});

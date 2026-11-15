@@ -62,11 +62,20 @@
             "type": "integer",
             "minimum": 1
           },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
           "work_ref": {
             "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
           }
         },
-        "required": []
+        "required": [],
+        "dependentRequired": {
+          "sha256": [
+            "revision"
+          ]
+        }
       }
     },
     {
@@ -265,6 +274,9 @@
               "drama_script",
               "adaptation_note"
             ]
+          },
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
           }
         },
         "required": []
@@ -375,6 +387,9 @@
               "music-cue",
               "visual-prompt"
             ]
+          },
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
           }
         },
         "required": []
@@ -3312,6 +3327,15 @@
               "video_episode_id": {
                 "type": "string",
                 "pattern": "^vepisode_[0-9a-f-]{36}$"
+              },
+              "link_id": {
+                "type": "string",
+                "pattern": "^worklink_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "link_revision": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
               }
             }
           }
@@ -4246,6 +4270,39 @@
         "workspace"
       ],
       "input_schema_ref": "schemas/work.schema.json#/$defs/links_list_input"
+    },
+    {
+      "name": "hetu.work_links.get",
+      "purpose": "读取关联的固定依据与确切历史",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/work.schema.json#/$defs/link_get_input"
+    },
+    {
+      "name": "hetu.work_links.update_source",
+      "purpose": "显式更新同一关联的固定依据，保留历史",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/work.schema.json#/$defs/link_update_source_input"
+    },
+    {
+      "name": "hetu.work_links.set_archived",
+      "purpose": "解除或恢复来源关联，保留依据与历史",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/work.schema.json#/$defs/link_set_archived_input"
     },
     {
       "name": "hetu.video.projects.create",

@@ -9784,14 +9784,124 @@
   },
   "bible.not_initialized": {
     "zh-CN": "尚无本作品设定",
-    "en": "No settings for this work",
+    "en": "No story bible for this work",
     "purpose": "作品自身设定空状态",
     "parameters": []
   },
   "bible.not_initialized_detail": {
     "zh-CN": "让 AI 整理本作品设定，审核后建立。",
-    "en": "Ask your agent to prepare this work’s settings for review.",
+    "en": "Ask your agent to prepare this work’s story bible for review.",
     "purpose": "作品自身设定空状态",
     "parameters": []
+  },
+  "error.hetu.canon_initialization_required": {
+    "zh-CN": "请让 AI 为本作品准备设定方案，审核后建立。",
+    "en": "Ask your agent to prepare this work’s story bible, then review the proposal.",
+    "purpose": "作品自身设定尚未建立时的恢复提示",
+    "parameters": []
+  },
+  "works.actions": {
+    "purpose": "关联作品列表与固定版本详情",
+    "parameters": [],
+    "zh-CN": "关联操作",
+    "en": "Link actions"
+  },
+  "works.show_archived": {
+    "purpose": "关联作品列表与固定版本详情",
+    "parameters": [],
+    "zh-CN": "显示已解除的关联",
+    "en": "Show removed links"
+  },
+  "works.back_to_links": {
+    "purpose": "关联作品列表与固定版本详情",
+    "parameters": [],
+    "zh-CN": "返回关联作品",
+    "en": "Back to related works"
+  },
+  "works.earlier_link": {
+    "purpose": "关联作品列表与固定版本详情",
+    "parameters": [],
+    "zh-CN": "上一版关联",
+    "en": "Previous link revision"
+  },
+  "works.later_link": {
+    "purpose": "关联作品列表与固定版本详情",
+    "parameters": [],
+    "zh-CN": "下一版关联",
+    "en": "Next link revision"
+  },
+  "works.current_link": {
+    "purpose": "关联作品列表与固定版本详情",
+    "parameters": [],
+    "zh-CN": "查看当前关联",
+    "en": "Show current link"
+  },
+  "works.link_revision": {
+    "purpose": "关联作品列表与固定版本详情",
+    "parameters": [
+      "revision"
+    ],
+    "zh-CN": "关联第 {revision} 版",
+    "en": "Link revision {revision}"
+  },
+  "works.source": {
+    "purpose": "关联作品列表与固定版本详情",
+    "parameters": [],
+    "zh-CN": "来源作品",
+    "en": "Source work"
+  },
+  "works.target": {
+    "purpose": "关联作品列表与固定版本详情",
+    "parameters": [],
+    "zh-CN": "使用作品",
+    "en": "Using work"
+  },
+  "works.fixed_profile": {
+    "purpose": "关联作品列表与固定版本详情",
+    "parameters": [],
+    "zh-CN": "固定版本资料",
+    "en": "Fixed work profile"
+  },
+  "works.archived_link": {
+    "purpose": "关联作品列表与固定版本详情",
+    "parameters": [],
+    "zh-CN": "已解除关联",
+    "en": "Link removed"
+  },
+  "works.active_link": {
+    "purpose": "关联作品列表与固定版本详情",
+    "parameters": [],
+    "zh-CN": "正在使用此依据",
+    "en": "Basis in use"
+  },
+  "works.requires_authorization": {
+    "purpose": "关联作品列表与固定版本详情",
+    "parameters": [],
+    "zh-CN": "查看依据需要另行授权",
+    "en": "Separate access is required to read this basis"
+  },
+  "works.basis_unavailable": {
+    "purpose": "关联作品列表与固定版本详情",
+    "parameters": [],
+    "zh-CN": "依据暂不可读，版本状态未知",
+    "en": "Basis unavailable; revision status is unknown"
+  },
+  "works.related_archived": {
+    "purpose": "关联作品列表与固定版本详情",
+    "parameters": [],
+    "zh-CN": "关联作品已归档",
+    "en": "Related work archived"
+  },
+  "works.link_properties": {
+    "purpose": "关联作品列表与固定版本详情",
+    "parameters": [],
+    "zh-CN": "关联属性",
+    "en": "Link properties"
+  },
+  "works.link_intent": {
+    "purpose": "关联作品列表与固定版本详情",
+    "parameters": [],
+    "zh-CN": "请核对这条关联的固定依据和历史。需要更新依据、解除或恢复时，先准备确切变更供我审阅；保留旧任务和已交付版本。",
+    "en": "Review this link’s fixed basis and history. Prepare an exact proposal before updating, removing, or restoring it. Preserve previous tasks and delivered revisions."
   }
 }
