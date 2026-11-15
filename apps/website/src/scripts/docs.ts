@@ -7,6 +7,13 @@ const status = document.querySelector<HTMLElement>('[data-docs-search-status]');
 const index: SearchDocument[] = JSON.parse(document.querySelector('#docs-search-index')?.textContent || '[]');
 const en = document.documentElement.lang === 'en';
 let returnFocus: HTMLElement | null = null;
+const sectionNav = document.querySelector<HTMLElement>('.docs-sections');
+const currentSection = sectionNav?.querySelector<HTMLElement>('[aria-current]');
+if (sectionNav && currentSection) {
+  const navBounds = sectionNav.getBoundingClientRect(), currentBounds = currentSection.getBoundingClientRect();
+  if (currentBounds.right > navBounds.right) sectionNav.scrollLeft += currentBounds.right - navBounds.right;
+  else if (currentBounds.left < navBounds.left) sectionNav.scrollLeft += currentBounds.left - navBounds.left;
+}
 
 function search() {
   if (!input || !results || !status || !dialog) return;

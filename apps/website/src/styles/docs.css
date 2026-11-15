@@ -84,6 +84,26 @@
 .docs-page .guide-group .doc-index { gap: 0 40px; }
 .docs-page .guide-group .doc-index a { padding: 0 0 24px; }
 .docs-page .guide-group .doc-index small { margin-top: 7px; }
+.guide-group-heading h2 a:hover { color: var(--jade); }
+.guide-group-heading h2 a > span { font-size: 14px; }
+.docs-page .doc-section-shell { grid-template-columns: 220px minmax(0, 1fr); gap: 80px; }
+.doc-section-main { min-width: 0; max-width: 960px; }
+.doc-section-main .doc-context a { color: var(--muted); }
+.doc-section-header { padding-block: 24px 40px; }
+.doc-section-header h1 { font-size: 40px; line-height: 1.4; letter-spacing: -.025em; margin: 0 0 20px; }
+.doc-section-header p { max-width: 740px; font-size: 16px; line-height: 1.9; color: var(--muted); margin: 0 0 24px; }
+.doc-section-workflow { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding-block: 28px; border-block: .5px solid var(--line); }
+.doc-section-workflow h2 { font-size: 16px; line-height: 1.6; margin: 0 0 12px; }
+.doc-section-workflow p { font-size: 14px; line-height: 1.9; margin: 0; color: var(--muted); }
+.doc-section-guides { padding-block: 40px 16px; }
+.doc-section-guides > h2, .doc-section-related > h2 { font-size: 24px; margin: 0 0 24px; }
+.doc-section-guides .doc-index { gap: 0 40px; }
+.doc-section-guides .doc-index a { align-items: start; padding-block: 20px; }
+.doc-section-guides .doc-index small { margin-top: 8px; }
+.doc-section-related { border-top: .5px solid var(--line); margin-top: 24px; padding-top: 32px; }
+.doc-section-related nav { display: flex; flex-wrap: wrap; gap: 16px 32px; }
+.doc-section-related a { color: var(--jade); font-size: 14px; }
+.doc-section-related a:hover { text-decoration: underline; text-underline-offset: 4px; }
 .docs-search-dialog { position: fixed; inset: 0; margin: min(16vh, 140px) auto auto; width: min(640px, calc(100% - 32px)); max-height: calc(100dvh - 80px); padding: 0; border: .5px solid var(--line); border-radius: 10px; background: var(--white); color: var(--ink); box-shadow: 0 12px 48px rgba(0,0,0,.1); overflow: hidden; }
 .docs-search-dialog[open] { display: flex; flex-direction: column; }
 .docs-search-dialog::backdrop { background: rgba(26,33,30,.28); }
@@ -99,6 +119,7 @@
 .docs-search-results span { display: block; color: var(--muted); font-size: 12px; margin-top: 4px; line-height: 1.8; }
 @media (max-width: 1200px) {
   .docs-page .doc-shell { grid-template-columns: 200px minmax(0, 740px); gap: 40px; }
+  .doc-section-workflow { grid-template-columns: 1fr; gap: 24px; }
   .docs-page .doc-toc { display: none; }
   .doc-mobile-toc { display: block; margin: 0 0 24px; border-block: .5px solid var(--line); padding: 12px 0; font-size: 12px; }
   .doc-mobile-toc summary { color: var(--muted); }
@@ -121,6 +142,8 @@
   .docs-page .doc-mobile-nav[open] > summary { margin-bottom: 20px; }
   .docs-page .doc-mobile-nav nav { max-height: 60dvh; overflow-y: auto; overscroll-behavior: contain; }
   .docs-page .doc-shell { display: block; padding-block: 28px 56px; }
+  .doc-section-header h1 { font-size: 24px; }
+  .doc-section-guides .doc-index { grid-template-columns: 1fr; }
   .docs-page .doc-sidebar { display: none; }
   .docs-page .doc-article h1 { font-size: 24px; }
   .docs-page .doc-article h1 + p { font-size: 16px; }

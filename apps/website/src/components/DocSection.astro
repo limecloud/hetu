@@ -1,0 +1,30 @@
+---
+import Site from '../layouts/Site.astro';
+import DocsNavigation from './DocsNavigation.astro';
+import { orderedDocs, sectionContent, sectionPath, type DocGroup } from '../lib/docs';
+import { route, type Locale } from '../lib/site';
+interface Props { locale: Locale; group: DocGroup; }
+const { locale, group } = Astro.props;
+const en = locale === 'en', content = sectionContent[group.id];
+const guides = orderedDocs.filter(doc => doc.group === group.id);
+const related = content.related.map(id => orderedDocs.find(doc => doc.id === id)!);
+---
+<Site locale={locale} page={sectionPath(group.id)} title={group.title[locale]} description={content.description[locale]}>
+  <DocsNavigation locale={locale} group={group}/>
+  <div class="docs-container">
+    <details class="doc-mobile-nav"><summary>{group.title[locale]}<span aria-hidden="true">⌄</span></summary><nav aria-label={group.title[locale]}><DocsNavigation locale={locale} group={group} sidebar/></nav></details>
+    <div class="doc-shell doc-section-shell">
+      <aside class="doc-sidebar"><nav aria-label={group.title[locale]}><DocsNavigation locale={locale} group={group} sidebar/></nav></aside>
+      <div class="doc-section-main">
+        <div class="doc-context"><a href={route(locale, 'docs')}>{en ? 'User guide' : '使用指南'}</a><span aria-hidden="true">/</span><span>{group.title[locale]}</span></div>
+        <header class="doc-section-header"><h1>{group.title[locale]}</h1><p>{content.description[locale]}</p><a class="button primary" href={route(locale, `docs/${guides[0].id}`)}>{en ? 'Start here' : '从这里开始'} <span aria-hidden="true">→</span></a></header>
+        <div class="doc-section-workflow">
+          <section><h2>{group.id === 'developer' ? (en ? 'Before building' : '构建前准备') : (en ? 'What to ask your Agent' : '向 Agent 说什么')}</h2><p>{content.request[locale]}</p></section>
+          <section><h2>{group.id === 'developer' ? (en ? 'Verify the result' : '核对构建结果') : (en ? 'What to review' : '回来核对什么')}</h2><p>{content.outcome[locale]}</p></section>
+        </div>
+        <section class="doc-section-guides" aria-labelledby="section-guides"><h2 id="section-guides">{en ? 'Guides in this section' : '本板块指南'}</h2><div class="doc-index">{guides.map(doc => <a href={route(locale, `docs/${doc.id}`)}><div><b>{doc.title[locale]}</b><small>{doc.description[locale]}</small></div><span aria-hidden="true">→</span></a>)}</div></section>
+        <section class="doc-section-related" aria-labelledby="section-related"><h2 id="section-related">{en ? 'Related guides' : '相关指南'}</h2><nav aria-label={en ? 'Related guides' : '相关指南'}>{related.map(doc => <a href={route(locale, `docs/${doc.id}`)}>{doc.title[locale]} <span aria-hidden="true">→</span></a>)}</nav></section>
+      </div>
+    </div>
+  </div>
+</Site>

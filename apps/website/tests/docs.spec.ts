@@ -1,7 +1,58 @@
 import { test, expect } from '@playwright/test';
 
+const sections = [
+  { id: 'start', guides: ['getting-started', 'install', 'creative-library', 'creative-paths', 'skills'], title: ['开始使用', 'Getting started'] },
+  { id: 'novel', guides: ['codex-first-task', 'import-manuscript', 'outlining', 'writing'], title: ['小说创作', 'Writing novels'] },
+  { id: 'screen', guides: ['screenplays', 'adaptation', 'video'], title: ['剧本与视频', 'Scripts and video'] },
+  { id: 'assets', guides: ['story-bible', 'characters-and-scenes', 'cover-art', 'illustrations', 'references'], title: ['设定与素材', 'Story and assets'] },
+  { id: 'review', guides: ['review', 'feedback', 'formats-and-delivery'], title: ['审阅与交付', 'Review and delivery'] },
+  { id: 'manage', guides: ['agents', 'model-services', 'privacy-and-permissions', 'data-and-backup', 'troubleshooting'], title: ['协作与管理', 'Collaboration'] },
+  { id: 'developer', guides: ['download-and-install'], title: ['开发者', 'For developers'] },
+];
+
 for (const prefix of ['', '/en']) {
   const en = !!prefix, locale = en ? 'en' : 'zh-CN';
+  for (const width of [375, 1440]) {
+    test(`${locale} ${width}px 各板块进入独立页面与专属目录`, async ({ page, request }) => {
+      test.setTimeout(60_000);
+      await page.setViewportSize({ width, height: 960 });
+      await page.goto(prefix + '/docs/');
+      const sitemap = await (await request.get('/sitemap.xml')).text();
+      const examples: string[] = [];
+      for (const section of sections) {
+        const path = `${prefix}/docs/sections/${section.id}/`;
+        await page.locator(`.docs-sections a[href="${path}"]`).click();
+        await expect(page).toHaveURL(path);
+        await expect(page.locator('main h1')).toHaveText(section.title[en ? 1 : 0]);
+        await expect(page.locator('.docs-sections [aria-current]')).toHaveAttribute('href', path);
+        await expect.poll(() => page.locator('.docs-sections').evaluate(nav => {
+          const active = nav.querySelector('[aria-current]')!.getBoundingClientRect(), bounds = nav.getBoundingClientRect();
+          return active.left >= bounds.left - 1 && active.right <= bounds.right + 1;
+        })).toBe(true);
+        await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://hetu.limeai.run' + path);
+        expect(await page.locator('.doc-section-guides .doc-index > a').evaluateAll(links => links.map(link => link.getAttribute('href')))).toEqual(section.guides.map(id => `${prefix}/docs/${id}/`));
+        await expect(page.locator('.doc-section-guides .doc-index > a')).toHaveCount(section.guides.length);
+        examples.push(await page.locator('.doc-section-workflow').innerText());
+        expect(sitemap).toContain(`<loc>https://hetu.limeai.run${path}</loc>`);
+        expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+        if (section.id === 'novel') await page.screenshot({ path: `test-results/docs-section-${locale}-${width}.png`, fullPage: true });
+        await page.locator('.doc-section-header .primary').click();
+        await expect(page).toHaveURL(`${prefix}/docs/${section.guides[0]}/`);
+        await expect(page.locator('.doc-context a').last()).toHaveAttribute('href', path);
+        if (width <= 760) await page.locator('.doc-mobile-nav summary').click();
+        const sidebar = page.locator(width <= 760 ? '.doc-mobile-nav' : '.doc-sidebar');
+        await expect(sidebar.locator('.doc-nav-group')).toHaveCount(1);
+        expect(await sidebar.locator('.doc-nav-group a').evaluateAll(links => links.map(link => link.getAttribute('href')))).toEqual([path, ...section.guides.map(id => `${prefix}/docs/${id}/`)]);
+        await expect(page.locator('.guide-pagination a[rel="prev"]')).toHaveCount(0);
+        await expect(page.locator('.guide-pagination a[rel="next"]')).toHaveCount(section.guides.length > 1 ? 1 : 0);
+        await page.locator('.doc-context a').last().click();
+        await expect(page).toHaveURL(path);
+      }
+      expect(new Set(examples).size).toBe(sections.length);
+      await page.locator('.header-actions .lang').click();
+      await expect(page).toHaveURL((en ? '' : '/en') + '/docs/sections/developer/');
+    });
+  }
   test(`${locale} 文档检索覆盖正文、空结果与键盘导航`, async ({ page }) => {
     await page.goto(prefix + '/docs/');
     await expect(page.locator('.guide-group')).toHaveCount(7);

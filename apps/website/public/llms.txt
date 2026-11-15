@@ -9,6 +9,13 @@ Script finalization, preview approval, asset selection, final-cut confirmation a
 - [中文首页](https://hetu.limeai.run/)
 - [English](https://hetu.limeai.run/en/)
 - [Documentation](https://hetu.limeai.run/en/docs/): Practical user guides in Simplified Chinese and English.
+- [Getting started](https://hetu.limeai.run/en/docs/sections/start/): Installation, creative library and first tasks.
+- [Writing novels](https://hetu.limeai.run/en/docs/sections/novel/): Book planning, manuscript import, outlining and chapters.
+- [Scripts and video](https://hetu.limeai.run/en/docs/sections/screen/): Screenplays, adaptation, previews and final video.
+- [Story and assets](https://hetu.limeai.run/en/docs/sections/assets/): Story bible, characters, locations, covers and illustrations.
+- [Review and delivery](https://hetu.limeai.run/en/docs/sections/review/): Review, feedback, adoption and file delivery.
+- [Collaboration](https://hetu.limeai.run/en/docs/sections/manage/): Agents, model costs, permissions, backups and recovery.
+- [For developers](https://hetu.limeai.run/en/docs/sections/developer/): Source builds for maintainers.
 - [Quick start](https://hetu.limeai.run/en/docs/getting-started/): What to ask an Agent, what to review and how to continue.
 - [Screenplays](https://hetu.limeai.run/en/docs/screenplays/): Original and adapted scripts, complete episodes and versioned feedback.
 - [Video](https://hetu.limeai.run/en/docs/video/): Previews, actual picture and sound, revisions and editable delivery.

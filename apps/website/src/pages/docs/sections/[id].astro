@@ -1,0 +1,8 @@
+---
+import DocSection from '../../../components/DocSection.astro';
+import { groups, type DocGroup } from '../../../lib/docs';
+export function getStaticPaths() { return groups.map(group => ({ params: { id: group.id }, props: { group } })); }
+interface Props { group: DocGroup; }
+const { group } = Astro.props;
+---
+<DocSection locale="zh-CN" group={group}/>

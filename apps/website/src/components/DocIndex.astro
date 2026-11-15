@@ -1,5 +1,5 @@
 ---
-import { orderedDocs, groups } from '../lib/docs';
+import { orderedDocs, groups, sectionPath, sectionContent } from '../lib/docs';
 import { messages, route, prototype, type Locale } from '../lib/site';
 import DocsNavigation from './DocsNavigation.astro';
 interface Props { locale: Locale; }
@@ -14,11 +14,6 @@ const paths = en ? [
   { title: '开发一部剧本', text: '原创或改编都从故事开始，读完整场次、行动与对白，沿同一集继续推敲。', href: 'screenplays', links: [['从小说到短剧', 'adaptation'], ['提出修改意见', 'feedback']], icon: 'screenplay' },
   { title: '制作一段视频', text: '先用预演判断节奏，再核对真实画面、声音与字幕，交出能继续编辑的工程。', href: 'video', links: [['准备人物与场景', 'characters-and-scenes'], ['交付成片与工程', 'formats-and-delivery']], icon: 'video' },
 ];
-const descriptions: Record<string, string> = en ? {
-  start: 'Install Hetu, choose a starting point and meet your creative library.', novel: 'Bring your story into Hetu and move from an idea to the next chapter.', screen: 'Read complete scripts and watch the story take shape on screen.', assets: 'Give people, places and images a clear source and a place in your work.', review: 'Compare results, express your intent and choose a version to deliver.', manage: 'Work with your Agent and keep control of permissions, costs and files.', developer: 'Source builds and technical setup for maintainers.',
-} : {
-  start: '安装河图，选择创作起点，认识自己的创作库。', novel: '带着新想法或旧稿，从故事方向走到下一章。', screen: '阅读完整剧本，看故事怎样成为可观看的成果。', assets: '让人物、地点和每一张图片，都有依据与用途。', review: '比较成果、表达意图，选出要留下与交付的版本。', manage: '使用顺手的助手，掌握权限、费用与作品文件。', developer: '面向维护者的源码构建与技术接入。',
-};
 ---
 <DocsNavigation locale={locale}/>
 <div class="container subpage help-index">
@@ -28,5 +23,5 @@ const descriptions: Record<string, string> = en ? {
     <a class="docs-path-title" href={route(locale, 'docs/' + path.href)}><h2>{path.title}</h2><span aria-hidden="true">↗</span></a><p>{path.text}</p><nav aria-label={path.title}>{path.links.map(([title, id]) => <a href={route(locale, 'docs/' + id)}>{title}<span aria-hidden="true">→</span></a>)}</nav>
   </section>)}</div>
   <div class="docs-reading-note"><p>{en ? 'New to working with an Agent?' : '第一次和 Agent 一起创作？'} <a href={route(locale, 'docs/agents')}>{en ? 'See how the collaboration works' : '先了解怎样协作'} →</a></p><span>{m.docs.note}</span></div>
-  {groups.map(group => <section class="guide-group" aria-labelledby={`guide-group-${group.id}`}><div class="guide-group-heading"><h2 id={`guide-group-${group.id}`}>{group.title[locale]}</h2><p>{descriptions[group.id]}</p></div><div class="doc-index">{orderedDocs.filter(doc => doc.group === group.id).map(doc => <a href={route(locale, `docs/${doc.id}`)}><div><b>{doc.title[locale]}</b><small>{doc.description[locale]}</small></div><span aria-hidden="true">→</span></a>)}</div></section>)}
+  {groups.map(group => <section class="guide-group" aria-labelledby={`guide-group-${group.id}`}><div class="guide-group-heading"><h2 id={`guide-group-${group.id}`}><a href={route(locale, sectionPath(group.id))}>{group.title[locale]} <span aria-hidden="true">→</span></a></h2><p>{sectionContent[group.id].description[locale]}</p></div><div class="doc-index">{orderedDocs.filter(doc => doc.group === group.id).map(doc => <a href={route(locale, `docs/${doc.id}`)}><div><b>{doc.title[locale]}</b><small>{doc.description[locale]}</small></div><span aria-hidden="true">→</span></a>)}</div></section>)}
 </div>

@@ -44,6 +44,57 @@ export const docs = [
   { id: 'download-and-install', group: 'developer', title: { 'zh-CN': 'Mac 源码版（开发者）', en: 'Mac source build for developers' }, description: { 'zh-CN': '面向已有开发环境的维护者，获取源码并构建 Mac 开发版。', en: 'Get the source and build the Mac development app using an existing development environment.' } },
 ] as const;
 export type Doc = (typeof docs)[number];
+export type DocGroup = (typeof groups)[number];
+export const sectionPath = (group: DocGroup['id']) => `docs/sections/${group}`;
+export const sectionContent: Record<DocGroup['id'], {
+  description: Record<Locale, string>;
+  request: Record<Locale, string>;
+  outcome: Record<Locale, string>;
+  related: Doc['id'][];
+}> = {
+  start: {
+    description: { 'zh-CN': '安装河图，认识创作库，选择适合自己的第一项创作任务。', en: 'Get Hetu, explore your creative library and choose your first task.' },
+    request: { 'zh-CN': '我第一次使用河图。想写一部小镇悬疑小说，先帮我讨论方向、选择合适的创作方法，准备可审阅的建书方案。', en: 'I am new to Hetu. I want to write a small-town mystery. Help me explore directions, choose suitable methods and prepare a book proposal I can review.' },
+    outcome: { 'zh-CN': '核对作品类型、保存位置和本次允许范围。先读方案，再决定创建；已有作品就沿原作品继续。', en: 'Check the work type, save location and permission scope. Read the proposal before creating a work; continue an existing work in place.' },
+    related: ['codex-first-task', 'screenplays', 'video'],
+  },
+  novel: {
+    description: { 'zh-CN': '从新想法或已有小说出发，讨论故事方向、整理卷章，再读完整参考稿。', en: 'Start with an idea or an existing manuscript, plan the story and read complete chapter drafts.' },
+    request: { 'zh-CN': '接着写修表师回乡这一章。先读已确认的大纲与人物设定，保留父亲失踪的悬念，给参考稿，不替换我的正文。', en: 'Continue the chapter where the watchmaker returns home. Read the confirmed outline and character notes first. Keep the father’s disappearance unresolved and return a reference draft without replacing my text.' },
+    outcome: { 'zh-CN': '连贯阅读章节，核对人物、伏笔和上下文。需要返工时指明原版本与段落；参考稿、正文采纳和作者定稿分别决定。', en: 'Read the whole chapter and check character, foreshadowing and context. Tie feedback to the original revision and passage. Review, adoption and finalization are separate decisions.' },
+    related: ['story-bible', 'feedback', 'formats-and-delivery'],
+  },
+  screen: {
+    description: { 'zh-CN': '原创或改编都从故事开始。阅读分集剧本，观看预演，再核对真实音画与工程交付。', en: 'Develop original or adapted stories, read episode scripts, review previews and check final picture, sound and project files.' },
+    request: { 'zh-CN': '开发一个原创短剧：女主从旧钟里听见明天的求救声。先给第一集完整行动与对白；我确认方向后，再讨论预演，不先付费生成。', en: 'Develop an original short drama: a woman hears tomorrow’s cry for help through an old clock. Start with complete action and dialogue for episode one. Discuss a preview after I review it; do not start paid generation yet.' },
+    outcome: { 'zh-CN': '先读完整场次，再带声音连续看片。分别判断剧本、预演、实际片段和成片；交付时核对可播放文件与可编辑工程。', en: 'Read complete scenes, then watch continuously with sound. Review scripts, previews, actual clips and the final cut separately. Check playable files and editable project dependencies at delivery.' },
+    related: ['characters-and-scenes', 'feedback', 'formats-and-delivery'],
+  },
+  assets: {
+    description: { 'zh-CN': '整理人物、地点与道具的依据，比较封面和图片候选，保留每份素材的用途与来源。', en: 'Ground characters, locations and props, compare covers and image candidates, and keep sources and uses clear.' },
+    request: { 'zh-CN': '整理女主的身份、冬季服装和修表铺资料。先复用已经确认的素材，列出缺口；人物形象与剧情插图分开准备，生成前说明参考与费用。', en: 'Organize the protagonist’s identity, winter outfit and watch shop references. Reuse confirmed assets and list gaps first. Prepare character portraits separately from story illustrations, explaining references and costs before generation.' },
+    outcome: { 'zh-CN': '放大核对身份、服装、构图与细节，查看图片关联的具体人物或场景。收到候选后再决定选用；资料变化时核对已关联的使用位置。', en: 'Enlarge images to check identity, clothing, composition and details, and inspect their linked character or location. Choose candidates explicitly and review linked uses when references change.' },
+    related: ['model-services', 'feedback', 'privacy-and-permissions'],
+  },
+  review: {
+    description: { 'zh-CN': '从完整成果中表达判断，比较返工版本，选择采用内容，再准备明确的交付版本。', en: 'Review complete results, compare revisions, choose what to adopt and prepare a specific version for delivery.' },
+    request: { 'zh-CN': '第一集门口这场戏，只改解释能力的两句对白。保留她伸手又收回的动作和后续场次，给我能与当前版比较的候选。', en: 'In the doorway scene of episode one, change only the two lines explaining her ability. Keep the gesture where she reaches out and withdraws her hand, preserve later scenes and return a candidate I can compare with the current revision.' },
+    outcome: { 'zh-CN': '确认问题是否解决、保留部分是否被改动。采纳与定稿分别确认；交稿前看清所选修订、附件与文件实际内容。', en: 'Check that the concern is resolved and protected content is intact. Confirm adoption and finalization separately, then inspect the chosen revision, attachments and actual delivered files.' },
+    related: ['writing', 'video', 'data-and-backup'],
+  },
+  manage: {
+    description: { 'zh-CN': '安排 Agent 协作、模型费用、权限和备份；遇到冲突或未知结果，沿原操作恢复。', en: 'Manage Agent collaboration, model costs, permissions and backups, and recover conflicts or unknown outcomes through the original operation.' },
+    request: { 'zh-CN': '只处理这部作品的封面。先说明会发送的材料、模型、候选数量与费用上限；结果未知时查原计划，不重新付费生成。', en: 'Work only on this book’s cover. Explain the material to send, model, candidate count and spending limit first. If the outcome is unknown, query the original plan instead of paying for another generation.' },
+    outcome: { 'zh-CN': '核对本次授权范围与实际账户状态。密钥留在私密存储，作品保留独立备份；恢复后读回原任务结果，不以重建作品解决连接问题。', en: 'Check the permission scope and actual account state. Keep keys in private storage and maintain independent backups. Read back the original task after recovery instead of recreating a work to resolve a connection issue.' },
+    related: ['skills', 'creative-library', 'formats-and-delivery'],
+  },
+  developer: {
+    description: { 'zh-CN': '面向维护者的 Mac 源码构建说明。普通作者从“开始使用”获取安装包。', en: 'Mac source-build instructions for maintainers. Authors can get an installer under Getting started.' },
+    request: { 'zh-CN': '先阅读源码构建指南，核对当前仓库的前置条件、构建命令和产物位置，再执行对应步骤。源码压缩包需要构建，不能当作安装包。', en: 'Read the source-build guide, check the repository’s prerequisites, build commands and output locations, then follow the relevant steps. A source archive requires a build and is not an installer.' },
+    outcome: { 'zh-CN': '分别验证构建产物与实际运行结果。接入问题保留具体错误和版本，不在日志或问题反馈中附带密钥、作者正文或私密数据。', en: 'Verify both the build artifact and actual runtime behavior. Keep exact errors and versions when diagnosing integration issues; exclude keys, private manuscripts and personal data from logs and reports.' },
+    related: ['install', 'agents', 'troubleshooting'],
+  },
+};
 export const orderedDocs = groups.flatMap(group => docs.filter(doc => doc.group === group.id));
 export function docText(doc: Doc, locale: Locale) {
   return fs.readFileSync(path.join(root, locale, doc.id + '.md'), 'utf8');

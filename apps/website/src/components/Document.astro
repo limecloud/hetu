@@ -1,13 +1,13 @@
 ---
 import Site from '../layouts/Site.astro';
 import DocsNavigation from './DocsNavigation.astro';
-import { orderedDocs, groups, renderDoc, type Doc } from '../lib/docs';
+import { orderedDocs, groups, renderDoc, sectionPath, type Doc } from '../lib/docs';
 import { messages, route, type Locale } from '../lib/site';
 interface Props { doc: Doc; locale: Locale; }
 const { doc, locale } = Astro.props;
 const m = messages(locale), en = locale === 'en';
 const { html, headings, hasMermaid } = await renderDoc(doc, locale);
-const readingDocs = orderedDocs.filter(item => (item.group === 'developer') === (doc.group === 'developer'));
+const readingDocs = orderedDocs.filter(item => item.group === doc.group);
 const position = readingDocs.findIndex(item => item.id === doc.id);
 const previous = readingDocs[position - 1], next = readingDocs[position + 1];
 const group = groups.find(group => group.id === doc.group)!;
@@ -15,11 +15,11 @@ const group = groups.find(group => group.id === doc.group)!;
 <Site locale={locale} page={`docs/${doc.id}`} title={doc.title[locale]} description={doc.description[locale]}>
   <DocsNavigation locale={locale} doc={doc}/>
   <div class="docs-container">
-    <details class="doc-mobile-nav"><summary>{m.docs.title}<span aria-hidden="true">⌄</span></summary><nav aria-label={en ? 'All guides' : '全部指南'}><DocsNavigation locale={locale} doc={doc} sidebar/></nav></details>
+    <details class="doc-mobile-nav"><summary>{group.title[locale]}<span aria-hidden="true">⌄</span></summary><nav aria-label={group.title[locale]}><DocsNavigation locale={locale} doc={doc} sidebar/></nav></details>
     <div class="doc-shell">
       <aside class="doc-sidebar"><nav aria-label={m.docs.title}><DocsNavigation locale={locale} doc={doc} sidebar/></nav></aside>
       <article class="doc-article" lang={locale}>
-        <div class="doc-meta"><div class="doc-context"><a href={route(locale, 'docs')}>{m.docs.title}</a><span aria-hidden="true">/</span><span>{group.title[locale]}</span></div>
+        <div class="doc-meta"><div class="doc-context"><a href={route(locale, 'docs')}>{m.docs.title}</a><span aria-hidden="true">/</span><a href={route(locale, sectionPath(group.id))}>{group.title[locale]}</a></div>
         <div class="doc-actions"><button type="button" data-copy-doc><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>{en ? 'Copy page' : '复制正文'}</button><span id="doc-copy-status" role="status" data-copy-status></span></div></div>
         <details class="doc-mobile-toc"><summary>{m.docs.onPage}</summary><nav aria-label={en ? 'On this page' : '本页目录'}>{headings.map(heading => <a href={'#' + heading.id}>{heading.text}</a>)}</nav></details>
         <div data-doc-body><Fragment set:html={html}/></div>

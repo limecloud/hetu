@@ -329,7 +329,11 @@ test('使用指南在桌面和手机布局可读', async ({ page }) => {
     if (width === 375) {
       await page.locator('.doc-mobile-nav summary').click();
       await expect(page.locator('.doc-mobile-nav nav')).toBeVisible();
-      await page.locator('.doc-mobile-nav').getByRole('link', { name: '维护设定集', exact: true }).click();
+      await expect(page.locator('.doc-mobile-nav').getByRole('link', { name: '维护设定集', exact: true })).toHaveCount(0);
+      await page.keyboard.press('Escape');
+      await page.locator('.docs-sections').getByRole('link', { name: '设定与素材', exact: true }).click();
+      await expect(page).toHaveURL('/docs/sections/assets/');
+      await page.locator('.doc-section-guides').getByRole('link', { name: /维护设定集/ }).click();
       await expect(page.locator('.doc-article h1')).toHaveText('维护设定集');
     }
     await page.screenshot({ path: `test-results/guide-article-${width}.png`, fullPage: true });
