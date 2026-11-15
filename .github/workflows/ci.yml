@@ -36,15 +36,16 @@ jobs:
       - name: Test optimized collaboration
         env:
           RUST_BACKTRACE: "1"
+          RUSTC_BOOTSTRAP: "1"
+          RUSTFLAGS: "-Zsanitizer=address"
         run: |
-          rustup toolchain install 1.95.0 --profile minimal
-          if cargo +1.95.0 test --locked --release -p hetu-core --test collaboration; then
+          if cargo test --locked --release --target aarch64-apple-darwin -p hetu-core --test collaboration; then
             exit 0
           fi
           python3 - <<'PY'
           from pathlib import Path
           import subprocess
-          binaries = [path for path in Path('target/release/deps').glob('collaboration-*')
+          binaries = [path for path in Path('target/aarch64-apple-darwin/release/deps').glob('collaboration-*')
                       if path.is_file() and not path.suffix]
           if len(binaries) == 1:
               subprocess.run(['lldb', '--batch', '-o', 'run', '-o', 'thread backtrace all',
