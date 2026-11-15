@@ -1,0 +1,242 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fixed management proposals and page handoff vocabulary",
+  "$defs": {
+    "state": {
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "executed",
+        "executing"
+      ]
+    },
+    "limitation": {
+      "enum": [
+        "unsaved_buffer_and_private_notes",
+        "author_unlock_required",
+        "resource_task_required",
+        "asset_import_and_rights_require_author",
+        "plot_correction_requires_author",
+        "finding_disposition_requires_author",
+        "task_required_for_feedback_and_revisions",
+        "author_adoption_and_finalization",
+        "author_snapshot_approval",
+        "branch_and_remote_sync",
+        "import_export_preparation_and_execution"
+      ]
+    },
+    "proposal": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "scope_id": {
+          "type": "string"
+        },
+        "proposal_id": {
+          "type": "string",
+          "pattern": "^proposal_[0-9a-f-]{36}$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "prepared_by": {
+          "type": "string"
+        },
+        "fixed": {
+          "$ref": "#/$defs/fixed"
+        }
+      },
+      "required": [
+        "schema_version",
+        "scope_id",
+        "proposal_id",
+        "sha256",
+        "prepared_by",
+        "fixed"
+      ]
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "fixed": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "type": "string"
+        },
+        "input": {
+          "type": "object"
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "created_at": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expires_at": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "baseline": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "config": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "blueprint": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "novel": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "config",
+            "blueprint",
+            "novel"
+          ]
+        },
+        "before_files": {
+          "type": "object",
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "writes": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "preview": {
+          "type": "object"
+        },
+        "review_changes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "before": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "after": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "path",
+              "before",
+              "after"
+            ]
+          }
+        },
+        "binary_writes": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "effect": {
+          "const": "deferred"
+        }
+      },
+      "required": [
+        "action",
+        "input",
+        "summary",
+        "created_at",
+        "expires_at",
+        "baseline",
+        "before_files",
+        "writes",
+        "preview",
+        "review_changes"
+      ]
+    },
+    "decision_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "proposal_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "state": {
+          "$ref": "#/$defs/state"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "decided_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decided_at": {
+          "type": "string",
+          "minLength": 1
+        },
+        "executed_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "executed_at": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "proposal_sha256",
+        "state",
+        "revision"
+      ]
+    }
+  }
+}

@@ -35,6 +35,7 @@ struct AuthorNotesView: View {
             HStack {
                 Text(model.t("notes.title")).font(.system(size: 20, weight: .semibold))
                 Spacer()
+                PageAgentButton(model: model, page: "notes")
                 Button(model.t("common.close")) { if dirty { confirmClose = true } else { dismiss() } }.keyboardShortcut(.cancelAction).disabled(held)
             }
             Picker(model.t("notes.title"), selection: $tab) {
@@ -53,6 +54,7 @@ struct AuthorNotesView: View {
                             VStack(alignment: .leading, spacing: 6) {
                                 if tab == "annotations" {
                                     Text(items[index]["source_ref"]["quote"].string ?? "").foregroundStyle(WorkbenchPalette.muted).lineLimit(3)
+                                    PageAgentButton(model: model, page: "notes", object: PageHandoff.sourceObject(items[index]["source_ref"]), intent: items[index]["text"].string)
                                     HStack {
                                         Toggle(model.t("notes.resolved"), isOn: Binding(get: { items[index]["resolved"].bool == true }, set: { value in update(index, "resolved", .bool(value)) }))
                                         if items[index]["source_ref"]["revision_id"].string != model.baseRevisionID { Text(model.t("notes.old_source")).foregroundStyle(WorkbenchPalette.warningInk) }
@@ -118,6 +120,7 @@ struct AuthorNotesView: View {
             }.frame(minWidth: 180, maxWidth: 220)
             VStack(alignment: .leading, spacing: 10) {
                 if historical != .null {
+                    PageAgentButton(model: model, page: "document", object: .object(["document_id": historical["document"]["document_id"], "revision_id": historical["revision"]["revision_id"]]))
                     NativeTextEditor(text: historical["content"].string ?? "", documentID: historical["revision"]["revision_id"].string ?? "", replacementVersion: 0, accessibleName: model.t("notes.history"), editable: false, onChange: { _ in }, onComposition: { _ in })
                     DisclosureGroup(model.t("notes.difference")) {
                         let difference = RevisionDifference.compare(before: historical["content"].string ?? "", after: model.text)

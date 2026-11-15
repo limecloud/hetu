@@ -8959,5 +8959,533 @@
     "en": "Cover candidates",
     "purpose": "作品资料中的封面候选区标题",
     "parameters": []
+  },
+  "artwork.character_sections": {
+    "zh-CN": "角色图片分类",
+    "en": "Character image categories",
+    "purpose": "角色详情分类的可访问名称",
+    "parameters": []
+  },
+  "artwork.character_images": {
+    "zh-CN": "人物形象",
+    "en": "Character references",
+    "purpose": "单个角色的形象图组",
+    "parameters": []
+  },
+  "artwork.costume_images": {
+    "zh-CN": "服装造型",
+    "en": "Costume references",
+    "purpose": "角色服装图组",
+    "parameters": []
+  },
+  "artwork.related_illustrations": {
+    "zh-CN": "相关插图",
+    "en": "Story illustrations",
+    "purpose": "角色参与的情节画面",
+    "parameters": []
+  },
+  "artwork.view.portrait": {
+    "zh-CN": "单人形象",
+    "en": "Portrait",
+    "purpose": "角色图片用途",
+    "parameters": []
+  },
+  "artwork.view.front": {
+    "zh-CN": "正面",
+    "en": "Front view",
+    "purpose": "角色图片用途",
+    "parameters": []
+  },
+  "artwork.view.side": {
+    "zh-CN": "侧面",
+    "en": "Side view",
+    "purpose": "角色图片用途",
+    "parameters": []
+  },
+  "artwork.view.back": {
+    "zh-CN": "背面",
+    "en": "Back view",
+    "purpose": "角色图片用途",
+    "parameters": []
+  },
+  "artwork.view.three_view": {
+    "zh-CN": "三视图",
+    "en": "Three-view sheet",
+    "purpose": "角色图片用途",
+    "parameters": []
+  },
+  "artwork.view.expression": {
+    "zh-CN": "表情",
+    "en": "Expressions",
+    "purpose": "角色图片用途",
+    "parameters": []
+  },
+  "artwork.view.detail": {
+    "zh-CN": "细节",
+    "en": "Details",
+    "purpose": "角色图片用途",
+    "parameters": []
+  },
+  "cover.replace": {
+    "zh-CN": "更换封面",
+    "en": "Change Cover",
+    "purpose": "Mac 封面选用：cover.replace",
+    "parameters": []
+  },
+  "cover.local": {
+    "zh-CN": "从本地导入",
+    "en": "Import Image",
+    "purpose": "Mac 封面选用：cover.local",
+    "parameters": []
+  },
+  "cover.selected": {
+    "zh-CN": "当前使用",
+    "en": "Current Cover",
+    "purpose": "Mac 封面选用：cover.selected",
+    "parameters": []
+  },
+  "cover.request_options": {
+    "zh-CN": "高级封面请求选项",
+    "en": "Advanced Cover Request",
+    "purpose": "Mac 封面选用：cover.request_options",
+    "parameters": []
+  },
+  "cover.local_formats": {
+    "zh-CN": "PNG、JPEG 或 WebP，最大 32 MB",
+    "en": "PNG, JPEG or WebP, up to 32 MB",
+    "purpose": "Mac 封面选用：cover.local_formats",
+    "parameters": []
+  },
+  "cover.more": {
+    "zh-CN": "封面更多操作",
+    "en": "More Cover Options",
+    "purpose": "Mac 封面选用：cover.more",
+    "parameters": []
+  },
+  "cover.back_candidates": {
+    "zh-CN": "返回封面候选",
+    "en": "Back to Cover Candidates",
+    "purpose": "Mac 封面选用：cover.back_candidates",
+    "parameters": []
+  },
+  "handoff.action": {
+    "zh-CN": "让 AI 处理",
+    "en": "Ask AI",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.title": {
+    "zh-CN": "交给 AI 处理",
+    "en": "Work with AI",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.instruction": {
+    "zh-CN": "授权 AI 读取本作品已保存资料、准备方案。具体变更由你审阅后批准。",
+    "en": "Allow AI to read this saved work and prepare proposals. Review and approve each change.",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.copy": {
+    "zh-CN": "复制到 AI",
+    "en": "Copy to AI",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.unsaved": {
+    "zh-CN": "当前未保存的文字不会交给 AI。",
+    "en": "Unsaved text is excluded.",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.limits": {
+    "zh-CN": "当前操作边界",
+    "en": "Current boundaries",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.proposals": {
+    "zh-CN": "管理方案",
+    "en": "Management proposals",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.no_proposals": {
+    "zh-CN": "还没有待审方案。",
+    "en": "No proposals yet.",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.cli_missing": {
+    "zh-CN": "未找到随软件安装的 CLI，请使用完整应用包。",
+    "en": "The bundled CLI is missing. Use the complete app bundle.",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.review": {
+    "zh-CN": "核对管理方案",
+    "en": "Review management proposal",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.stale": {
+    "zh-CN": "作品已有更新，请让 AI 重新准备方案。",
+    "en": "The work has changed. Ask AI to prepare a new proposal.",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.before": {
+    "zh-CN": "变更前",
+    "en": "Before",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.after": {
+    "zh-CN": "变更后",
+    "en": "After",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.reject": {
+    "zh-CN": "拒绝方案",
+    "en": "Reject",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.approve": {
+    "zh-CN": "批准本次变更",
+    "en": "Approve this change",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.return_agent": {
+    "zh-CN": "已批准。回到 AI 对话，让它继续执行本次方案。",
+    "en": "Approved. Return to your AI conversation to continue this proposal.",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.new_object": {
+    "zh-CN": "新增内容",
+    "en": "New content",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.task_review": {
+    "zh-CN": "本次方案将准备独立协作任务，不修改正文或定稿。",
+    "en": "This proposal prepares an independent creative task without changing manuscript or finalization.",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.state.pending": {
+    "zh-CN": "待审阅",
+    "en": "Pending review",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.state.approved": {
+    "zh-CN": "已批准，待执行",
+    "en": "Approved, awaiting execution",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.state.rejected": {
+    "zh-CN": "已拒绝",
+    "en": "Rejected",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.state.executed": {
+    "zh-CN": "已执行",
+    "en": "Executed",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.limit.unsaved_buffer_and_private_notes": {
+    "zh-CN": "只交接已保存稿，不包含未保存文字或私密批注。",
+    "en": "Only saved text is handed off; unsaved text and private notes are excluded.",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.limit.author_unlock_required": {
+    "zh-CN": "设定已锁定时，需要你先决定是否解锁。",
+    "en": "Locked story settings require your decision to unlock.",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.limit.resource_task_required": {
+    "zh-CN": "整理资料需要独立的资料协作任务，可由 AI 准备后提交你审阅。",
+    "en": "Organizing references needs a resource task, which AI can prepare for your review.",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.limit.asset_import_and_rights_require_author": {
+    "zh-CN": "本地素材导入与权利声明仍需手动处理。",
+    "en": "Local media imports and rights declarations still require manual handling.",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.limit.plot_correction_requires_author": {
+    "zh-CN": "剧情节点的直接校正仍由作者完成。",
+    "en": "Direct plot-node corrections remain author actions.",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.limit.finding_disposition_requires_author": {
+    "zh-CN": "问题的接受或豁免由作者决定。",
+    "en": "Accepting or waiving a finding is an author decision.",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.limit.task_required_for_feedback_and_revisions": {
+    "zh-CN": "返工与公开意见沿原协作任务继续，不新建平行任务。",
+    "en": "Continue revisions and public feedback in the original creative task.",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.limit.author_adoption_and_finalization": {
+    "zh-CN": "采用和定稿由你独立确认。",
+    "en": "Adoption and finalization require your own decisions.",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.limit.author_snapshot_approval": {
+    "zh-CN": "AI 可以准备快照，固定文件与提交身份由你确认。",
+    "en": "AI can prepare a snapshot; you approve the fixed files and commit identity.",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.limit.branch_and_remote_sync": {
+    "zh-CN": "分支合并和远端同步尚未提供完整机器链路。",
+    "en": "Branch merging and remote sync do not yet have a complete machine workflow.",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.limit.import_export_preparation_and_execution": {
+    "zh-CN": "导入和交付的机器准备、授权与执行链路尚未完整开放。",
+    "en": "Machine preparation, authorization, and execution for imports and delivery are not fully exposed.",
+    "purpose": "页面AI交接与管理方案审阅",
+    "parameters": []
+  },
+  "handoff.copy_start": {
+    "zh-CN": "复制建书提示词",
+    "en": "Copy creation prompt",
+    "purpose": "无作品时的机器建书交接",
+    "parameters": []
+  },
+  "handoff.technical": {
+    "zh-CN": "技术详情",
+    "en": "Technical details",
+    "purpose": "管理方案可读预览",
+    "parameters": []
+  },
+  "handoff.context_count": {
+    "zh-CN": "已选参考资料",
+    "en": "Selected references",
+    "purpose": "管理方案可读预览",
+    "parameters": []
+  },
+  "handoff.expired": {
+    "zh-CN": "方案已过期，请让 AI 重新准备。",
+    "en": "This proposal has expired. Ask your AI to prepare it again.",
+    "purpose": "固定管理方案过期提示",
+    "parameters": []
+  },
+  "handoff.authorize_copy": {
+    "zh-CN": "授权本作品并复制",
+    "en": "Authorize this work and copy",
+    "purpose": "精确作品读取与管理方案准备授权",
+    "parameters": []
+  },
+  "handoff.state.executing": {
+    "zh-CN": "执行中",
+    "en": "In progress",
+    "purpose": "AI-first本机设置审阅",
+    "parameters": []
+  },
+  "local.title": {
+    "zh-CN": "本机操作审阅",
+    "en": "Review local changes",
+    "purpose": "AI-first本机设置审阅",
+    "parameters": []
+  },
+  "local.review": {
+    "zh-CN": "让 AI 处理与审阅",
+    "en": "AI help and review",
+    "purpose": "AI-first本机设置审阅",
+    "parameters": []
+  },
+  "local.install": {
+    "zh-CN": "安装所选套件并保存选择",
+    "en": "Install the selected suite and save the choice",
+    "purpose": "AI-first本机设置审阅",
+    "parameters": []
+  },
+  "local.choose": {
+    "zh-CN": "保存客户端与套件选择",
+    "en": "Save the client and suite choice",
+    "purpose": "AI-first本机设置审阅",
+    "parameters": []
+  },
+  "local.on": {
+    "zh-CN": "开启",
+    "en": "On",
+    "purpose": "AI-first本机设置审阅",
+    "parameters": []
+  },
+  "local.off": {
+    "zh-CN": "关闭",
+    "en": "Off",
+    "purpose": "AI-first本机设置审阅",
+    "parameters": []
+  },
+  "local.field.language": {
+    "zh-CN": "界面语言",
+    "en": "Language",
+    "purpose": "AI-first本机设置审阅",
+    "parameters": []
+  },
+  "local.field.appearance": {
+    "zh-CN": "外观",
+    "en": "Appearance",
+    "purpose": "AI-first本机设置审阅",
+    "parameters": []
+  },
+  "local.field.library_list": {
+    "zh-CN": "列表书库",
+    "en": "List layout",
+    "purpose": "AI-first本机设置审阅",
+    "parameters": []
+  },
+  "local.field.autosave": {
+    "zh-CN": "自动保存",
+    "en": "Autosave",
+    "purpose": "AI-first本机设置审阅",
+    "parameters": []
+  },
+  "local.field.font_family": {
+    "zh-CN": "正文字体",
+    "en": "Manuscript font",
+    "purpose": "AI-first本机设置审阅",
+    "parameters": []
+  },
+  "local.field.font_size": {
+    "zh-CN": "正文字号",
+    "en": "Font size",
+    "purpose": "AI-first本机设置审阅",
+    "parameters": []
+  },
+  "local.field.line_spacing": {
+    "zh-CN": "段落间距",
+    "en": "Line spacing",
+    "purpose": "AI-first本机设置审阅",
+    "parameters": []
+  },
+  "local.field.first_line_indent": {
+    "zh-CN": "首行缩进",
+    "en": "First-line indent",
+    "purpose": "AI-first本机设置审阅",
+    "parameters": []
+  },
+  "local.field.git_author_name": {
+    "zh-CN": "版本署名",
+    "en": "Commit author",
+    "purpose": "AI-first本机设置审阅",
+    "parameters": []
+  },
+  "local.field.git_author_email": {
+    "zh-CN": "版本邮箱",
+    "en": "Commit email",
+    "purpose": "AI-first本机设置审阅",
+    "parameters": []
+  },
+  "local.field.agent_client": {
+    "zh-CN": "默认 AI 客户端",
+    "en": "Default AI client",
+    "purpose": "AI-first本机设置审阅",
+    "parameters": []
+  },
+  "handoff.revoke": {
+    "zh-CN": "撤销本作品授权",
+    "en": "Revoke access to this work",
+    "purpose": "AI 协作审核：handoff.revoke",
+    "parameters": []
+  },
+  "local.action": {
+    "zh-CN": "让 AI 调整",
+    "en": "Ask AI to adjust",
+    "purpose": "AI 协作审核：local.action",
+    "parameters": []
+  },
+  "validation.use_suggestion": {
+    "zh-CN": "使用这条建议",
+    "en": "Use this suggestion",
+    "purpose": "AI 协作审核：validation.use_suggestion",
+    "parameters": []
+  },
+  "validation.refresh_suggestions": {
+    "zh-CN": "刷新建议",
+    "en": "Refresh suggestions",
+    "purpose": "AI 协作审核：validation.refresh_suggestions",
+    "parameters": []
+  },
+  "git.references": {
+    "zh-CN": "版本线与远端",
+    "en": "Branches and remotes",
+    "purpose": "AI 协作审核：git.references",
+    "parameters": []
+  },
+  "git.preserve_content": {
+    "zh-CN": "仅整理版本记录，保留当前正文与未保存内容。",
+    "en": "Organizes Git history while preserving current text and unsaved edits.",
+    "purpose": "AI 协作审核：git.preserve_content",
+    "parameters": []
+  },
+  "git.remote": {
+    "zh-CN": "远端",
+    "en": "Remote",
+    "purpose": "AI 协作审核：git.remote",
+    "parameters": []
+  },
+  "git.secure_address_required": {
+    "zh-CN": "请使用不含凭据的远端地址",
+    "en": "Use a remote address without embedded credentials",
+    "purpose": "AI 协作审核：git.secure_address_required",
+    "parameters": []
+  },
+  "git.use_ours": {
+    "zh-CN": "保留本地版本记录",
+    "en": "Keep our recorded version",
+    "purpose": "AI 协作审核：git.use_ours",
+    "parameters": []
+  },
+  "git.use_theirs": {
+    "zh-CN": "采用对方版本记录",
+    "en": "Use their recorded version",
+    "purpose": "AI 协作审核：git.use_theirs",
+    "parameters": []
+  },
+  "delivery.document": {
+    "zh-CN": "文稿交付",
+    "en": "Document delivery",
+    "purpose": "AI 协作审核：delivery.document",
+    "parameters": []
+  },
+  "handoff.redistribution_allowed": {
+    "zh-CN": "允许随交付包分发",
+    "en": "May be included in delivery bundles",
+    "purpose": "AI 协作审核：handoff.redistribution_allowed",
+    "parameters": []
+  },
+  "handoff.redistribution_excluded": {
+    "zh-CN": "不随交付包分发",
+    "en": "Excluded from delivery bundles",
+    "purpose": "AI 协作审核：handoff.redistribution_excluded",
+    "parameters": []
+  },
+  "agent.skill.hetu-manage": {
+    "zh-CN": "作品与设置管理",
+    "en": "Work and settings management",
+    "purpose": "AI 协作审核：agent.skill.hetu-manage",
+    "parameters": []
   }
 }

@@ -28,6 +28,7 @@ struct ReviewWorkbenchView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             WorkbenchHeading(title: model.t("review.title"), subtitle: model.t("review.description"), artwork: context == .null ? "" : "review-desk") {
+                PageAgentButton(model: model, page: "reviews", object: selection.isEmpty ? .object([:]) : .object(["draft_id": .string(selection)]))
                 Button(model.t("common.refresh")) { Task { await loadRows(); await load() } }.disabled(pending != nil)
             }
             if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
@@ -179,6 +180,7 @@ struct ReviewReportSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(model.t("review.view_report")).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "validation", object: .object(["report_id": .string(reportID)]))
             if let error { Text(error).foregroundStyle(WorkbenchPalette.danger) }
             if result["stale"].bool == true { Text(model.t("review.old_report")).foregroundStyle(WorkbenchPalette.warningInk) }
             Button(model.t("review.plot_annotations")) {
@@ -234,6 +236,7 @@ struct ReviewComparisonSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(model.t("review.compare")).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "reviews", object: .object(["draft_id": context["draft"]["draft_id"]]))
             Text(model.t("review.compare_note")).foregroundStyle(WorkbenchPalette.muted)
             Picker(model.t("review.compare"), selection: $mode) {
                 Text(model.t("review.line_changes")).tag("changes")

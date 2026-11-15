@@ -6,29 +6,30 @@ struct AgentIntegrationView: View {
     let settings: AgentIntegrationSettings
     let workspaceID: String?
     let localizer: Localizer
-    @State private var previewSuite = "general"
     @State private var inspection: AgentPackageInspection?
     @State private var refreshID = UUID()
     @State private var showSkills = true
     @State private var showGuide = false
     @State private var showInstallation = false
+    @State private var showLocalAgent = false
     private let catalog = try? AgentSuiteCatalog.bundled()
     private func t(_ key: String) -> String { localizer.text(key) }
     private var association: AgentAssociation {
-        workspaceID.map { settings.association(for: $0) } ?? AgentAssociation(client: settings.defaultClient, suiteID: previewSuite)
+        workspaceID.map { settings.association(for: $0) } ?? AgentAssociation(client: settings.defaultClient, suiteID: settings.defaultSuiteID)
     }
     private var suite: AgentSuite? { catalog?.suites.first { $0.id == association.suiteID } }
     private var selectedDirectory: URL? { settings.packageDirectory(client: association.client, suiteID: association.suiteID) }
     private var probeID: String { "\(workspaceID ?? "settings")/\(association.client.rawValue)/\(association.suiteID)/\(selectedDirectory?.path ?? "")/\(refreshID)" }
     private func change(_ value: AgentAssociation) {
         if let workspaceID { settings.associate(value, with: workspaceID) }
-        else { settings.defaultClient = value.client; previewSuite = value.suiteID }
+        else { settings.defaultClient = value.client; settings.defaultSuiteID = value.suiteID }
     }
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
                 Label(t("agent.title"), systemImage: "puzzlepiece.extension").font(.system(size: 14, weight: .semibold))
                 Spacer()
+                Button(t("local.action")) { showLocalAgent = true }
                 Button { refreshID = UUID() } label: { Label(t("agent.refresh"), systemImage: "arrow.clockwise") }
                     .disabled(association.client == .none)
             }
@@ -75,6 +76,7 @@ struct AgentIntegrationView: View {
             Text(t(workspaceID == nil ? "agent.default_note" : "agent.work_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
         }
         .task(id: probeID) { await inspect() }
+        .sheet(isPresented: $showLocalAgent) { LocalAgentSheet(localizer: localizer, section: "agents", workspaceID: workspaceID) }
         .sheet(isPresented: $showGuide) {
             VStack(alignment: .leading, spacing: 18) {
                 Text(t("agent.package_guide")).font(.system(size: 20, weight: .semibold))

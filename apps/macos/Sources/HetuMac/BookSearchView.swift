@@ -23,6 +23,7 @@ struct BookSearchView: View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
                 Text(model.t("search.title")).font(.system(size: 20, weight: .semibold))
+                PageAgentButton(model: model, page: "search", object: handoffObject)
                 Spacer()
                 Button(model.t("common.close")) { dismiss() }.keyboardShortcut(.cancelAction)
             }
@@ -75,6 +76,16 @@ struct BookSearchView: View {
             .onChange(of: replacement) { _, _ in preview = nil }
     }
     private var selectedHit: BookSearchHit? { session.hits.first { $0.id == selected } }
+    private var handoffObject: JSONValue {
+        guard let hit = selectedHit else { return .object([:]) }
+        var object: [String: JSONValue] = ["document_id": .string(hit.documentID), "revision_id": .string(hit.revisionID)]
+        if !(hit.documentID == model.documentID && model.needsProtection), let range = Range(hit.match.range, in: hit.content) {
+            object["byte_start"] = .integer(Int64(hit.content[..<range.lowerBound].utf8.count))
+            object["byte_end"] = .integer(Int64(hit.content[..<range.upperBound].utf8.count))
+            object["quote"] = .string(hit.match.quote)
+        }
+        return .object(object)
+    }
     private func search() { preview = nil; error = nil; session.search(model: model, query: query, allDocuments: allDocuments, words: words, caseSensitive: caseSensitive) }
     private func locate(_ hit: BookSearchHit) async {
         await onOpen(hit.documentID)

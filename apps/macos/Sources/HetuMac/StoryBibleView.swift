@@ -47,7 +47,7 @@ struct StoryBibleView: View {
     @State private var lockError: String?
     @State private var removal: JSONValue = .null
     @State private var history = false
-    @State private var artwork = ArtworkLibrarySession()
+    private var artwork: ArtworkLibrarySession { model.artworkLibrary }
     @State private var viewingEntity: JSONValue = .null
     private var items: [JSONValue] { model.bible["blueprint"][kind.section].array.filter { showArchived || $0["archived"].bool != true } }
     var body: some View {
@@ -107,11 +107,13 @@ struct StoryBibleView: View {
     }
     private func entityCard(_ item: JSONValue) -> some View {
         let preferred = kind == .character ? "character" : "scene"
-        let images = artwork.items.filter { $0.matches(entity: item[kind.idKey].string) }.sorted { ($0.category == preferred ? 0 : 1) < ($1.category == preferred ? 0 : 1) }
+        let reference = item[kind.idKey].string ?? ""
+        let images = artwork.items.filter { $0.matches(entity: reference) && $0.category == preferred }
+        let primary = ArtworkItem.primaryImage(in: images, entity: reference, category: preferred)
         return VStack(alignment: .leading, spacing: 12) {
             Button { viewingEntity = item } label: {
                 VStack(alignment: .leading, spacing: 12) {
-                    if let image = images.first { ArtworkThumbnail(item: image).frame(height: kind == .character ? 240 : 175) }
+                    if let image = primary { ArtworkThumbnail(item: image).frame(height: kind == .character ? 240 : 175) }
                     else {
                         ZStack {
                             RoundedRectangle(cornerRadius: 6).fill(WorkbenchPalette.page)
@@ -122,7 +124,7 @@ struct StoryBibleView: View {
                     HStack {
                         Text(entityTitle(model, kind, item)).font(.system(size: 14, weight: .semibold))
                         Spacer()
-                        if let image = images.first { Text(image.category == preferred ? model.t("artwork.image_count", ["count": String(images.count)]) : model.t("artwork.category." + image.category)).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted) }
+                        if !images.isEmpty { Text(model.t("artwork.image_count", ["count": String(images.count)])).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted) }
                     }
                     Text(item["description"].string ?? "").font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted).lineLimit(3).frame(height: 48, alignment: .topLeading)
                 }.frame(maxWidth: .infinity, alignment: .leading).contentShape(Rectangle())
@@ -269,6 +271,7 @@ struct EntityEditor: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text(model.t(entity == .null ? "entity.new_title" : "entity.edit_title", ["kind": model.t("entity.kind." + kind.rawValue)])).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "entity", object: entity == .null ? .object(["blueprint_revision": model.bible["revision"]]) : .object(["entity_ref": entity[kind.idKey], "blueprint_revision": model.bible["revision"]]))
             ScrollView {
                 Form {
                     if kind != .rule { TextField(model.t("entity.name"), text: $name) }
@@ -498,6 +501,7 @@ struct FactEditor: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             Text(model.t("fact.edit")).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "bible", object: .object(["blueprint_revision": model.bible["revision"]]))
             Form {
                 Picker(model.t("fact.predicate"), selection: $predicate) { ForEach(["identity", "primary_faction", "life_state", "age"], id: \.self) { Text(model.t("fact.predicate." + $0)).tag($0) } }
                 if predicate == "primary_faction" { Picker(model.t("entity.kind.faction"), selection: $faction) { Text(model.t("reference.select")).tag(""); ForEach(entityChoices(model, .faction)) { Text($0.name).tag($0.id) } } }
@@ -557,6 +561,7 @@ struct BibleHistoryView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text(model.t("bible.history")).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "bible", object: .object(["blueprint_revision": snapshot["revision"].integer.map(JSONValue.integer) ?? model.bible["revision"]]))
             Text(model.t("bible.history_detail")).foregroundStyle(WorkbenchPalette.muted)
             HStack {
                 Stepper(model.t("bible.revision", ["revision": String(revision)]), value: $revision, in: 1...max(1, model.bible["revision"].integer ?? 1))

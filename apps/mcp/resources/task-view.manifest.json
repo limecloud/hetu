@@ -3,13 +3,13 @@
   "resource_uri": "ui://hetu/task-view/1",
   "mime_type": "text/html;profile=mcp-app",
   "sdk": "@modelcontextprotocol/ext-apps@2.0.4",
-  "sha256": "de434722ea3fe95038113817eb9cc1d6ba9550eb875d8356362e2cf690c67cfa",
+  "sha256": "bb34b29c062f2a64c2f2222553f29ddc575da149413e916340251015b617d143",
   "size_bytes": 638868,
   "source_sha256": {
-    "src/app.ts": "b845bca675b84e349808a8dffc8e7375e96161d551865fb55b8a58d88e98e005",
+    "src/app.ts": "297319358c448f647b5df634807e8d1e99d3742eb5ef90f9469cfe575ccdcbaa",
     "src/app.css": "4c809bfe20b33a245fe87043df8aedd6447dea5cef4b2df8280e6bd3854fb09c",
-    "scripts/build.mjs": "cf32cf56121ee0a0ab08889cf92e7e208afe6ab4264b6eeb742dddeb46f7f7c5",
-    "package.json": "83f7eaa29ecdbd6c3f0cb3860719e8de3c34f9fc2c235b78105748f525dad308",
+    "scripts/build.mjs": "fe82c26b173214ad6c7c0217123512249587479401c020913bca57cbaaf05e02",
+    "package.json": "c3c97bb8fd4b8f6445c473f72b9e9ff9b0baaac4da9b53b8b6be6ed06cb10efe",
     "THIRD-PARTY-NOTICES.txt": "36e9fae898f6fb55b3130f3380a36f2e26875934b50c98499635faf84c3afbf0"
   },
   "inputs": [

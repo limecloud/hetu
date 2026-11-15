@@ -74,6 +74,7 @@ struct DramaSkeletonWorkbenchView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 8) {
             WorkbenchHeading(title: model.t("drama.workbench_title"), subtitle: model.t("drama.description"), artwork: skeleton == .null ? "" : "drama-stage") {
+                PageAgentButton(model: model, page: "drama", object: handoffObject)
                 Button(model.t("common.refresh")) { Task { await loadHistory(); await loadPlots(); if !identity.isEmpty { await read(skeleton) } } }.disabled(pending != nil)
             }
             HStack {
@@ -93,6 +94,12 @@ struct DramaSkeletonWorkbenchView: View {
             }.disabled(hasPending)
             if plotCursor != nil { Button(model.t("validation.more_plots")) { Task { await loadPlots(more: true) } } }
         }
+    }
+    private var handoffObject: JSONValue {
+        if !identity.isEmpty { return .object(["skeleton_id": .string(identity), "skeleton_revision": skeleton["revision"]]) }
+        if !plotRevision.isEmpty { return .object(["plot_revision_id": .string(plotRevision)]) }
+        if !documentID.isEmpty { return .object(["document_id": .string(documentID)]) }
+        return .object([:])
     }
     private var history: some View {
         ScrollView {

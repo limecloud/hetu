@@ -8,6 +8,19 @@ use tokio::{
     process::{Child, ChildStdin, ChildStdout, Command},
 };
 
+#[test]
+fn tool_catalog_has_unique_names_across_connection_profiles() {
+    let catalog:Value=serde_json::from_str(include_str!("../../../contracts/tools/catalog.json")).unwrap();
+    let mut names=std::collections::BTreeSet::new();
+    for tool in catalog["tools"].as_array().unwrap() {
+        assert!(names.insert(tool["name"].as_str().unwrap()),"duplicate MCP tool: {}",tool["name"]);
+    }
+    let preview=catalog["tools"].as_array().unwrap().iter().find(|t|t["name"]=="hetu_preview_creative_task").unwrap();
+    for profile in ["workspace","stable"] {
+        assert!(preview["profiles"].as_array().unwrap().contains(&json!(profile)));
+    }
+}
+
 struct Client {
     child: Child,
     input: ChildStdin,
@@ -238,6 +251,14 @@ async fn stable_connection_discovers_without_workspace_and_routes_explicit_autho
         jsonschema::validator_for(&tool["inputSchema"]).unwrap();
     }
     assert!(!tools.iter().any(|t| t["name"].as_str().unwrap().contains("approve")));
+    client.apps=true;
+    let apps=client.rpc("tools/list",json!({})).await;
+    let operation=apps["result"]["tools"].as_array().unwrap().iter().find(|t|t["name"]=="hetu_get_management_operation").unwrap();
+    assert_eq!(operation["_meta"]["ui"]["resourceUri"],"ui://hetu/operation-view/1");
+    let resource=client.rpc("resources/read",json!({"uri":"ui://hetu/operation-view/1"})).await;
+    assert_eq!(resource["result"]["contents"][0]["mimeType"],"text/html;profile=mcp-app");
+    assert_eq!(resource["result"]["contents"][0]["_meta"]["ui"]["csp"]["connectDomains"],json!([]));
+    client.apps=false;
     assert_eq!(client.tool("hetu_inspect_collaboration",json!({})).await["status"],"succeeded");
     assert!(!directory.exists());
     for (author,task) in [&first,&second].into_iter().zip(tasks.iter()) {
@@ -653,6 +674,27 @@ fn uri(k: &Kernel, path: &str) -> String {
 }
 
 #[tokio::test]
+async fn workspace_management_proposal_requires_exact_author_decision_over_real_stdio() {
+    let (root,author)=setup();
+    let mut client=Client::start(&root.path().join("河图 离线测试 🌿"));
+    client.rpc("server/discover",json!({})).await;
+    let handoff=client.tool("hetu_get_page_handoff",json!({"view_kind":"novel"})).await;
+    assert_eq!(handoff["status"],"succeeded","{handoff}");
+    let prepared=client.tool("hetu_prepare_management_operation",json!({"action":"hetu.documents.create","input":{"kind":"novel_chapter","title":"第二章 渡口","source_format":"markdown","content":"","operation_key":"new-chapter"},"summary":"建立第二章空稿","operation_key":"prepare"})).await;
+    assert_eq!(prepared["status"],"succeeded","{prepared}");
+    let p=&prepared["data"];
+    let args=json!({"proposal_id":p["proposal_id"],"proposal_sha256":p["proposal_sha256"],"operation_key":"execute"});
+    assert_eq!(client.tool("hetu_execute_management_operation",args.clone()).await["error"]["code"],"hetu.author_confirmation_required");
+    assert_eq!(call(&author,"agent_operations.decide",json!({"proposal_id":p["proposal_id"],"proposal_sha256":p["proposal_sha256"],"expected_state_revision":1,"decision":"approve","operation_key":"author-decision"}))["status"],"succeeded");
+    let result=client.tool("hetu_execute_management_operation",args.clone()).await;
+    assert_eq!(result["data"]["state"],"executed","{result}");
+    assert_eq!(result["data"]["result"]["document"]["document_id"],p["preview"]["document"]["document_id"]);
+    assert_eq!(client.tool("hetu_execute_management_operation",args).await["data"]["result"],result["data"]["result"]);
+    assert_eq!(call(&author,"documents.list",json!({}))["data"]["documents"].as_array().unwrap().len(),1);
+    client.close().await;
+}
+
+#[tokio::test]
 async fn discovery_and_metadata_are_checked_on_every_request() {
     let (root, k) = setup();
     let mut client = Client::start(&root.path().join("河图 离线测试 🌿"));
@@ -670,7 +712,10 @@ async fn discovery_and_metadata_are_checked_on_every_request() {
     assert_eq!(client.response(id).await["error"]["code"], -32602);
     let tools = client.rpc("tools/list", json!({})).await;
     let tools = tools["result"]["tools"].as_array().unwrap();
-    assert_eq!(tools.len(), 15);
+    assert_eq!(tools.len(), 27);
+    assert!(tools.iter().any(|tool| tool["name"] == "hetu_prepare_management_operation"));
+    assert!(tools.iter().any(|tool| tool["name"] == "hetu_get_page_handoff"));
+    assert!(!tools.iter().any(|tool| tool["name"] == "hetu_approve_management_operation"));
     assert!(tools.iter().any(|tool| tool["name"] == "hetu_preview_image_task"));
     assert!(tools.iter().any(|tool| tool["name"] == "hetu_prepare_image_task"));
     assert!(tools.iter().any(|t| t["name"] == "hetu_read_resource"));
@@ -684,7 +729,7 @@ async fn discovery_and_metadata_are_checked_on_every_request() {
     for tool in tools {
         jsonschema::validator_for(&tool["inputSchema"]).unwrap();
         jsonschema::validator_for(&tool["outputSchema"]).unwrap();
-        assert_eq!(tool["annotations"]["openWorldHint"], false);
+        assert_eq!(tool["annotations"]["openWorldHint"], matches!(tool["name"].as_str(), Some("hetu_prepare_management_operation" | "hetu_execute_management_operation")));
     }
     let bad=client.send("tools/list",json!({"_meta":{"io.modelcontextprotocol/protocolVersion":"2025-11-25","io.modelcontextprotocol/clientCapabilities":{}}}),false).await;
     assert_eq!(client.response(bad).await["error"]["code"], -32022);
@@ -1021,7 +1066,7 @@ async fn official_sdk_client_discovers_calls_and_reads_the_native_process() {
     .await
     .unwrap()
     .unwrap();
-    assert_eq!(client.list_tools(None).await.unwrap().tools.len(), 15);
+    assert_eq!(client.list_tools(None).await.unwrap().tools.len(), 27);
     let result = client
         .call_tool(CallToolRequestParams::new("hetu_read_blueprint"))
         .await

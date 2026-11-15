@@ -1,5 +1,6 @@
 import SwiftUI
 import HetuNative
+import AppKit
 
 enum AgentEntryPoint: String, CaseIterable, Identifiable {
     case mcp = "MCP", cli = "CLI", skills = "Skills"
@@ -25,6 +26,7 @@ struct AgentAccessSheet: View {
     @Environment(\.dismiss) private var dismiss
     @State private var entry: AgentEntryPoint
     @State private var settings = AgentIntegrationSettings()
+    @State private var copied = false
 
     init(initialEntry: AgentEntryPoint, localizer: Localizer) {
         self.localizer = localizer
@@ -51,6 +53,15 @@ struct AgentAccessSheet: View {
                 VStack(alignment: .leading, spacing: 20) {
                     Text(t(entry.detailKey)).font(.system(size: 14)).fixedSize(horizontal: false, vertical: true)
                     Text(t("agent.access.scope")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
+                    Button(t(copied ? "creative.copied" : "handoff.copy_start")) {
+                        let helper = Bundle.main.bundleURL.appendingPathComponent("Contents/Helpers/hetu")
+                        guard FileManager.default.isExecutableFile(atPath: helper.path) else { return }
+                        let command = "'" + helper.path.replacingOccurrences(of: "'", with: "'\\''") + "' --client " + (settings.defaultClient == .claudeCode ? "claude-code" : settings.defaultClient == .none || settings.defaultClient == .other ? "generic" : settings.defaultClient.rawValue)
+                        let prompt = localizer.locale == "en"
+                            ? "Use hetu-setup and the appropriate book-creation skill to help me start a novel or an original screenplay in Hetu Luoshu. Discover the actual actions with \(command) collaboration inspect. Start with the discovered creation_projects.create, preserve management_ref and the reserved target_path, fill the preparation data in this conversation, then create the work and its first task through CLI/MCP. Do not ask me to fill the GUI form, operate the GUI, scan other works, or adopt/finalize text. If I have not provided a goal, ask what I want to write. Report the exact created location and capability gaps."
+                            : "请使用 hetu-setup 和对应建书 Skill，协助我在河图洛书筹备小说或原创剧本。先用 \(command) collaboration inspect 发现真实动作，从已发现的 creation_projects.create 开始，保留 management_ref 和预留 target_path，在当前对话填好筹备资料，再通过 CLI/MCP 创建作品与首任务。不要求我回 GUI 填表，不操作 GUI，不扫描其他作品，不采纳或定稿正文。我还没说目标时，先问这次想写什么。返回确切保存位置，并说明当前机器能力的缺口。"
+                        NSPasteboard.general.clearContents(); copied = NSPasteboard.general.setString(prompt, forType: .string)
+                    }.buttonStyle(WorkbenchButtonStyle(primary: true))
                     Link(t("agent.access.guide"), destination: guideURL).font(.system(size: 14))
                     Rectangle().fill(WorkbenchPalette.line).frame(height: 0.5).accessibilityHidden(true)
                     AgentIntegrationView(settings: settings, workspaceID: nil, localizer: localizer)

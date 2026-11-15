@@ -18,5 +18,5 @@
     "test:task-view": "npm run test --workspace @hetu/task-view",
     "test:cli": "npm run test --workspace @limecloud/hetu"
   },
-  "version": "0.6.0"
+  "version": "0.7.0"
 }

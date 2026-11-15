@@ -28,23 +28,30 @@ struct HetuSettingsView: View {
     @AppStorage("Hetu.git.authorName") private var authorName = ""
     @AppStorage("Hetu.git.authorEmail") private var authorEmail = ""
     @State private var agentIntegration = AgentIntegrationSettings()
+    @State private var showAgent = false
+    @State private var section = "general"
     private var writing = WritingPreferences()
     private var localizer: Localizer { Localizer(locale: locale) }
     private func t(_ key: String) -> String { localizer.text(key) }
     var body: some View {
-        TabView {
-            general.tabItem { Label(t("settings.general"), systemImage: "slider.horizontal.3") }
-            editor.tabItem { Label(t("settings.writing"), systemImage: "textformat") }
-            ModelServiceSettings(locale: locale).tabItem { Label(t("models.service"), systemImage: "network") }
+        VStack(alignment: .trailing, spacing: 12) {
+        Button { showAgent = true } label: { Label(t("local.review"), systemImage: "sparkles") }.buttonStyle(WorkbenchButtonStyle())
+        TabView(selection: $section) {
+            general.tabItem { Label(t("settings.general"), systemImage: "slider.horizontal.3") }.tag("general")
+            editor.tabItem { Label(t("settings.writing"), systemImage: "textformat") }.tag("writing")
+            ModelServiceSettings(locale: locale).tabItem { Label(t("models.service"), systemImage: "network") }.tag("models")
             ScrollView {
                 AgentIntegrationView(settings: agentIntegration, workspaceID: nil, localizer: localizer).padding(20)
-            }.tabItem { Label(t("agent.title"), systemImage: "puzzlepiece.extension") }
-            versions.tabItem { Label(t("settings.versions"), systemImage: "arrow.triangle.branch") }
-            about.tabItem { Label(t("settings.about"), systemImage: "info.circle") }
-        }.padding(20).frame(width: 640, height: 490)
+            }.tabItem { Label(t("agent.title"), systemImage: "puzzlepiece.extension") }.tag("agents")
+            versions.tabItem { Label(t("settings.versions"), systemImage: "arrow.triangle.branch") }.tag("versions")
+            about.tabItem { Label(t("settings.about"), systemImage: "info.circle") }.tag("about")
+        }
+        }.padding(20).frame(width: 660, height: 530)
             .background { WorkbenchBackdrop().ignoresSafeArea() }.tint(WorkbenchPalette.jade)
             .preferredColorScheme(appearance == "dark" ? .dark : appearance == "light" ? .light : nil)
             .environment(\.locale, Locale(identifier: locale == "en" ? "en" : "zh-Hans"))
+            .sheet(isPresented: $showAgent) { LocalAgentSheet(localizer: localizer, section: section) }
+            .onReceive(DistributedNotificationCenter.default().publisher(for: LocalAutomation.changed)) { _ in UserDefaults.standard.synchronize(); agentIntegration.reload() }
     }
     private var general: some View {
         Form {

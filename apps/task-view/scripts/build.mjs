@@ -35,6 +35,14 @@ const manifest = JSON.stringify({
   source_sha256: sourceHashes,
   inputs: Object.keys(bundle.metafile.inputs).sort(),
 }, null, 2) + "\n";
+const operationBundle = await build({ entryPoints: [fileURLToPath(new URL("src/operation.ts", root))], bundle: true, write: false, minify: true, legalComments: "inline", format: "iife", target: "es2022" });
+const operationCSS = await readFile(new URL("src/operation.css", root), "utf8");
+const operationHTML = `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="${csp}"><title>河图洛书 操作方案 / Hetu Luoshu Operation</title><style>${operationCSS}</style></head><body><main id="app"></main><script>${operationBundle.outputFiles[0].text.replaceAll("</script", "<\\/script")}</script></body></html>\n`;
+const operationPath = new URL("../mcp/resources/operation-view.html", root);
+const operationManifestPath = new URL("../mcp/resources/operation-view.manifest.json", root);
+const operationHashes = {};
+for (const source of ["src/operation.ts", "src/operation.css", "scripts/build.mjs", "package.json", "THIRD-PARTY-NOTICES.txt"]) operationHashes[source] = createHash("sha256").update(await readFile(new URL(source, root))).digest("hex");
+const operationManifest = JSON.stringify({ schema_version: "1.0.0", resource_uri: "ui://hetu/operation-view/1", mime_type: "text/html;profile=mcp-app", sdk: "@modelcontextprotocol/ext-apps@2.0.4", sha256: createHash("sha256").update(operationHTML).digest("hex"), size_bytes: Buffer.byteLength(operationHTML), source_sha256: operationHashes }, null, 2) + "\n";
 const localOutputs = new Map();
 for (const [source, name, platform] of [["src/local/host.ts", "host.js", "browser"], ["src/local/server.ts", "server.mjs", "node"]]) {
   const output = await build({ entryPoints: [fileURLToPath(new URL(source, root))], bundle: true, write: false, minify: true, legalComments: "inline", format: "esm", platform, target: platform === "node" ? "node24" : "es2022" });
@@ -47,6 +55,7 @@ const localSources = {};
 for (const source of ["src/local/host.ts", "src/local/server.ts", "src/local/index.html"]) localSources[source] = createHash("sha256").update(await readFile(new URL(source, root))).digest("hex");
 localOutputs.set("manifest.json", JSON.stringify({ schema_version: "1.0.0", ipc_revision: "1", source_sha256: { ...sourceHashes, ...localSources }, files: Object.fromEntries([...localOutputs].map(([name, text]) => [name, createHash("sha256").update(text).digest("hex")])) }, null, 2) + "\n");
 if (process.argv.includes("--check")) {
+  if (await readFile(operationPath, "utf8") !== operationHTML || await readFile(operationManifestPath, "utf8") !== operationManifest) throw new Error("操作面板产物与源码不一致。");
   if (await readFile(destination, "utf8") !== html || await readFile(manifestPath, "utf8") !== manifest) {
     throw new Error("任务面板产物与源码不一致，请执行 npm run build:task-view。");
   }
@@ -55,6 +64,8 @@ if (process.argv.includes("--check")) {
   await mkdir(new URL("../mcp/resources/", root), { recursive: true });
   await writeFile(destination, html);
   await writeFile(manifestPath, manifest);
+  await writeFile(operationPath, operationHTML);
+  await writeFile(operationManifestPath, operationManifest);
   await mkdir(new URL("resources/local/", root), { recursive: true });
   for (const [name, text] of localOutputs) await writeFile(new URL(`resources/local/${name}`, root), text);
 }

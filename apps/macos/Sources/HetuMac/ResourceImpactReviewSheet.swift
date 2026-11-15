@@ -17,6 +17,7 @@ struct ResourceImpactReviewSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text(model.t("resources.impact.compare")).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "document", object: .object(["document_id": source["document_id"], "revision_id": source["revision_id"]]))
             Text(model.t("resources.impact.compare_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
             if let error = session.error {
                 Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled)

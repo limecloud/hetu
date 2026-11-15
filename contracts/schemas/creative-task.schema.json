@@ -719,6 +719,9 @@
             "other"
           ]
         },
+        "image_view": {
+          "$ref": "#/$defs/image_view"
+        },
         "subject_refs": {
           "type": "array",
           "items": {
@@ -1737,6 +1740,9 @@
             "costume",
             "other"
           ]
+        },
+        "image_view": {
+          "$ref": "#/$defs/image_view"
         },
         "subject_refs": {
           "type": "array",
@@ -3053,6 +3059,9 @@
         }
       ],
       "type": "object"
+    },
+    "image_view": {
+      "enum": ["portrait", "front", "side", "back", "three_view", "expression", "detail"]
     },
     "image_subject_ref": {
       "oneOf": [

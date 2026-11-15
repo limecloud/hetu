@@ -27,6 +27,7 @@ struct DramaBuildSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(model.t("drama.build")).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "drama", object: .object(["plot_revision_id": plot["plot_revision_id"]]))
             Text(model.t("drama.build_note")).foregroundStyle(WorkbenchPalette.muted)
             Text(model.t("drama.anchors_note")).font(.system(size: 14))
             Text(model.t("plot.coverage." + (plot["coverage"]["status"].string ?? "partial"))).font(.system(size: 12))
@@ -97,6 +98,7 @@ struct DramaEditorSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(model.t(editingScene ? "drama.edit_scene" : "drama.edit_episode")).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "drama", object: .object(["skeleton_id": skeleton["skeleton_id"], "skeleton_revision": skeleton["revision"]].merging(editingScene ? ["scene_id": scene["scene_id"]] : [:]) { current, _ in current }))
             if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {

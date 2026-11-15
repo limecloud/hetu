@@ -7,7 +7,8 @@
       "title": "读取设定集 / Read story bible",
       "description": "读取当前或固定修订的作者设定集。Read the author's current or fixed story bible revision.",
       "profiles": [
-        "workspace"
+        "workspace",
+        "stable"
       ]
     },
     {
@@ -25,7 +26,8 @@
       "title": "整理剧情 / Extract plot",
       "description": "从固定原文提取结构候选；覆盖不足保留 partial，需要作者确认。Extract structural candidates from fixed source revisions; partial coverage requires author review.",
       "profiles": [
-        "workspace"
+        "workspace",
+        "stable"
       ]
     },
     {
@@ -34,7 +36,8 @@
       "title": "建立短剧骨架 / Build drama skeleton",
       "description": "从固定剧情整理分集场次，不生成台词、动作或镜头描述。Organize episodes and scenes from fixed plot evidence; no dialogue, action or shot generation.",
       "profiles": [
-        "workspace"
+        "workspace",
+        "stable"
       ]
     },
     {
@@ -43,7 +46,8 @@
       "title": "执行一致性检查 / Validate consistency",
       "description": "检查固定剧情修订；问题和未覆盖范围是报告结果，不是工具故障。Validate a fixed plot revision; findings and uncovered premises are report outcomes, not tool failures.",
       "profiles": [
-        "workspace"
+        "workspace",
+        "stable"
       ]
     },
     {
@@ -61,7 +65,8 @@
       "title": "检查待审草稿 / Validate draft",
       "description": "检查固定草稿或其人工校正剧情并保存审核证据；不能批准草稿。Validate a fixed draft or its author-corrected plot and save review evidence; cannot approve drafts.",
       "profiles": [
-        "workspace"
+        "workspace",
+        "stable"
       ]
     },
     {
@@ -116,7 +121,8 @@
       "description": "查询获权文字资料摘要，按分类、标签与状态分页。List authorized reference summaries with filters and pagination.",
       "profiles": [
         "workspace",
-        "task"
+        "task",
+        "stable"
       ]
     },
     {
@@ -126,7 +132,8 @@
       "description": "读取当前获权或固定修订资料；不自动使用最新版本替换任务基线。Read an authorized fixed or current reference without silently replacing task baselines.",
       "profiles": [
         "workspace",
-        "task"
+        "task",
+        "stable"
       ]
     },
     {
@@ -450,10 +457,11 @@
     {
       "name": "hetu_preview_creative_task",
       "action": "hetu.creative_tasks.preview_prompt",
-      "title": "预览固定范围的外部协作提示词",
-      "description": "预览固定范围的外部协作提示词。仅限返回的受管新建范围，不能采纳或定稿。",
+      "title": "预览协作请求 / Preview creative request",
+      "description": "预览固定任务输入，不创建任务或发送生成请求。稳定入口需要受管范围引用；作品入口仅使用启动时明确绑定的目录。Preview fixed task inputs without creation or generation; use a managed reference on a stable connection or the explicitly bound workspace.",
       "profiles": [
-        "stable"
+        "stable",
+        "workspace"
       ]
     },
     {
@@ -481,6 +489,449 @@
       "description": "固定已预览的图片参考任务；不外发内容或批准费用。Prepare the fixed image task without outbound requests or fee approval.",
       "profiles": [
         "workspace"
+      ]
+    },
+    {
+      "name": "hetu_prepare_management_operation",
+      "action": "hetu.agent_operations.prepare",
+      "title": "准备管理方案 / Prepare management proposal",
+      "description": "仅限启动时明确绑定的作品。先发现Schema；执行方案需要作者对确切摘要的批准，不取得采纳或定稿权。Limited to the explicitly bound workspace; inspect schemas and obtain the author decision for the exact proposal digest.",
+      "profiles": [
+        "workspace",
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_get_management_operation",
+      "action": "hetu.agent_operations.get",
+      "title": "读取管理方案 / Read management proposal",
+      "description": "仅限启动时明确绑定的作品。先发现Schema；执行方案需要作者对确切摘要的批准，不取得采纳或定稿权。Limited to the explicitly bound workspace; inspect schemas and obtain the author decision for the exact proposal digest.",
+      "profiles": [
+        "workspace",
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_list_management_operations",
+      "action": "hetu.agent_operations.list",
+      "title": "列出管理方案 / List management proposals",
+      "description": "仅限启动时明确绑定的作品。先发现Schema；执行方案需要作者对确切摘要的批准，不取得采纳或定稿权。Limited to the explicitly bound workspace; inspect schemas and obtain the author decision for the exact proposal digest.",
+      "profiles": [
+        "workspace",
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_execute_management_operation",
+      "action": "hetu.agent_operations.execute",
+      "title": "执行已批准方案 / Execute approved proposal",
+      "description": "仅限启动时明确绑定的作品。先发现Schema；执行方案需要作者对确切摘要的批准，不取得采纳或定稿权。Limited to the explicitly bound workspace; inspect schemas and obtain the author decision for the exact proposal digest.",
+      "profiles": [
+        "workspace",
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_get_page_handoff",
+      "action": "hetu.handoffs.get",
+      "title": "读取页面交接 / Read page handoff",
+      "description": "仅限启动时明确绑定的作品。先发现Schema；执行方案需要作者对确切摘要的批准，不取得采纳或定稿权。Limited to the explicitly bound workspace; inspect schemas and obtain the author decision for the exact proposal digest.",
+      "profiles": [
+        "workspace",
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_read_outline",
+      "action": "hetu.outlines.get",
+      "title": "读取作品大纲 / Read outline",
+      "description": "仅限启动时明确绑定的作品。先发现Schema；执行方案需要作者对确切摘要的批准，不取得采纳或定稿权。Limited to the explicitly bound workspace; inspect schemas and obtain the author decision for the exact proposal digest.",
+      "profiles": [
+        "workspace",
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_list_created_works",
+      "action": "hetu.collaboration.created_works",
+      "title": "接续新建作品 / Resume created works",
+      "description": "只返回当前客户端新建且仍获权的作品引用，不枚举书库。Only works created by this client with active authorization.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_assets_get",
+      "action": "hetu.assets.get",
+      "title": "核验固定素材修订、媒体摘要与当前权利 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_assets_inspect",
+      "action": "hetu.assets.inspect",
+      "title": "检查作者选定的媒体签名与摘要 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_assets_list",
+      "action": "hetu.assets.list",
+      "title": "分页查询已登记媒体元数据 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_blueprints_preview_change",
+      "action": "hetu.blueprints.preview_change",
+      "title": "预览设定实体变更 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_bundles_preview",
+      "action": "hetu.bundles.preview",
+      "title": "预览固定修订的交付内容、缺口与素材排除 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_bundles_verify",
+      "action": "hetu.bundles.verify",
+      "title": "核验本作品已导出交付包的清单与摘要 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_capabilities_get",
+      "action": "hetu.capabilities.get",
+      "title": "查询当前构建实际实现的动作 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_cues_get",
+      "action": "hetu.cues.get",
+      "title": "读取固定线索与来源过期状态 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_cues_list",
+      "action": "hetu.cues.list",
+      "title": "分页查询乐律与视觉线索 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_documents_history",
+      "action": "hetu.documents.history",
+      "title": "分页读取本作品正文修订历史 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_documents_preview_export",
+      "action": "hetu.documents.preview_export",
+      "title": "预览固定正文的格式转换与损失 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_documents_preview_import",
+      "action": "hetu.documents.preview_import",
+      "title": "检查作者选择的文本文件与导入损失 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_drafts_get",
+      "action": "hetu.drafts.get",
+      "title": "读取确切草稿与审核状态 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_drama_compare",
+      "action": "hetu.drama.compare",
+      "title": "对比骨架映射与固定原著修订 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_drama_get_comparison",
+      "action": "hetu.drama.get_comparison",
+      "title": "读取固定骨架原著结构差异报告 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_drama_get_script_mapping",
+      "action": "hetu.drama.get_script_mapping",
+      "title": "读取剧本初始结构映射并核验固定证据及当前性 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_drama_get_skeleton",
+      "action": "hetu.drama.get_skeleton",
+      "title": "读取固定短剧骨架修订与当前性 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_drama_list_comparisons",
+      "action": "hetu.drama.list_comparisons",
+      "title": "分页查询骨架原著差异报告 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_drama_list_skeletons",
+      "action": "hetu.drama.list_skeletons",
+      "title": "分页查询短剧骨架及修订 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_git_diff",
+      "action": "hetu.git.diff",
+      "title": "读取文件的工作树与HEAD差异 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_git_get_snapshot",
+      "action": "hetu.git.get_snapshot",
+      "title": "读取固定快照、当前性与本机批准状态 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_git_list_snapshots",
+      "action": "hetu.git.list_snapshots",
+      "title": "分页读取本机准备的Git快照 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_git_log",
+      "action": "hetu.git.log",
+      "title": "分页读取提交历史 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_git_snapshot_diff",
+      "action": "hetu.git.snapshot_diff",
+      "title": "核对固定快照内文件的确切差异 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_git_status",
+      "action": "hetu.git.status",
+      "title": "读取当前内容仓库与工作树状态 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_plot_get",
+      "action": "hetu.plot.get",
+      "title": "读取固定剧情修订与当前性 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_plot_list",
+      "action": "hetu.plot.list",
+      "title": "查询当前工作区内的剧情提取修订 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_reports_get",
+      "action": "hetu.reports.get",
+      "title": "读取不可变诊断报告及当前处置 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_reports_list",
+      "action": "hetu.reports.list",
+      "title": "分页查询固定诊断报告 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_resource_usages_list",
+      "action": "hetu.resource_usages.list",
+      "title": "查询资料使用位置 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_reviews_get",
+      "action": "hetu.reviews.get",
+      "title": "查询草稿证据、诊断与不可变审核历史 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_managed_reviews_list",
+      "action": "hetu.reviews.list",
+      "title": "分页查询审核草稿状态 / Managed work action",
+      "description": "仅在 management_ref 绑定作品内执行。先查询实际 Schema，变更使用作者批准的固定方案。Use the exact managed work reference and discovered schema.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_local_settings_get",
+      "action": "hetu.local_settings.get",
+      "title": "读取本机设置 / Local settings",
+      "description": "使用原生设置与套件安装Owner；只可执行作者批准的固定方案。密钥不进入此接口。Native settings owner; exact author approval required. Credentials are excluded.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_local_settings_prepare",
+      "action": "hetu.local_settings.prepare",
+      "title": "准备本机方案 / Local settings",
+      "description": "使用原生设置与套件安装Owner；只可执行作者批准的固定方案。密钥不进入此接口。Native settings owner; exact author approval required. Credentials are excluded.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_local_settings_get_operation",
+      "action": "hetu.local_settings.get_operation",
+      "title": "回读本机方案 / Local settings",
+      "description": "使用原生设置与套件安装Owner；只可执行作者批准的固定方案。密钥不进入此接口。Native settings owner; exact author approval required. Credentials are excluded.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_local_settings_execute",
+      "action": "hetu.local_settings.execute",
+      "title": "执行本机方案 / Local settings",
+      "description": "使用原生设置与套件安装Owner；只可执行作者批准的固定方案。密钥不进入此接口。Native settings owner; exact author approval required. Credentials are excluded.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_git_references",
+      "action": "hetu.git.references",
+      "title": "读取版本线和无凭据远端 / Git references",
+      "description": "读取固定版本记录；版本线操作保留作者当前正文与未保存稿。Read version history without overwriting author content.",
+      "profiles": [
+        "workspace",
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_git_merge_preview",
+      "action": "hetu.git.merge_preview",
+      "title": "预览固定版本合并和冲突 / Git merge_preview",
+      "description": "读取固定版本记录；版本线操作保留作者当前正文与未保存稿。Read version history without overwriting author content.",
+      "profiles": [
+        "workspace",
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_findings_suggest",
+      "action": "hetu.findings.suggest",
+      "title": "提交问题处置建议，不改变作者决定 / Finding suggestion",
+      "description": "问题处置建议仅供作者审阅，不接受例外、不修改正式处置。Suggestions do not change an author decision.",
+      "profiles": [
+        "workspace",
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_findings_suggestions",
+      "action": "hetu.findings.suggestions",
+      "title": "读取固定问题的处置建议 / Finding suggestion",
+      "description": "问题处置建议仅供作者审阅，不接受例外、不修改正式处置。Suggestions do not change an author decision.",
+      "profiles": [
+        "workspace",
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_git_read_version",
+      "action": "hetu.git.read_version",
+      "title": "读取确切历史版本和有界文件，不覆盖当前正文 / Read fixed Git version",
+      "description": "仅回读已授权作品的固定版本；不回读凭据及私密审核。Read authorized fixed history without secrets or private reviews.",
+      "profiles": [
+        "workspace",
+        "stable"
       ]
     }
   ]

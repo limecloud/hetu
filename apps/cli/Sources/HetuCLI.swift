@@ -1,11 +1,24 @@
 import Foundation
 import HetuCore
+#if os(macOS)
+import HetuNative
+#endif
 
 @main
 struct HetuCLI {
     static func main() async {
         do {
             let args = Array(CommandLine.arguments.dropFirst())
+            #if os(macOS)
+            if args.first == "--local" {
+                guard args.count == 8, args[1] == "--client", args[3] == "call", args[5] == "--input", args[6] == "-", args[7] == "--json" else { throw CLIError.input }
+                let input = try JSONDecoder().decode(JSONValue.self, from: readInput("-"))
+                guard case .object(let fields) = input else { throw CLIError.input }
+                let result = await LocalAutomation().request(args[4], input: fields, client: args[2])
+                FileHandle.standardOutput.write(try result.encoded() + Data([10]))
+                if result["status"].string != "succeeded" { exit(exitCode(result)) }; return
+            }
+            #endif
             if args.isEmpty || args == ["--help"] {
                 print("""
                 河图洛书 Hetu Luoshu 本地创作工作台

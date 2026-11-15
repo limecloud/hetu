@@ -43,6 +43,7 @@ public final class WorkspaceModel {
     public var showSearch = false
     public let windowID = UUID()
     public let agentIntegration: AgentIntegrationSettings
+    public let artworkLibrary = ArtworkLibrarySession()
     @ObservationIgnored private let recovery: RecoveryStore
     @ObservationIgnored private let preferences: UserDefaults
     @ObservationIgnored private let authorizationURL: URL?
@@ -96,6 +97,7 @@ public final class WorkspaceModel {
             let entries = try await library.register(url: url, workspaceID: info["workspace"]["workspace_id"].string ?? "", metadata: metadata, chapterCount: novel["novel"]["chapters"].array.count, cover: cover, workType: info["workspace"]["work_type"].string ?? "novel", properties: info["properties"])
             recoveryTask?.cancel(); statisticsTask?.cancel()
             self.workspace = next; self.info = info; self.bible = bible; self.novel = novel; self.libraryEntries = entries
+            artworkLibrary.reset()
             writeLocked = info["access"]["write_available"].bool == false
             self.cover = cover
             self.documents = documents["documents"].array.map(DocumentItem.init)
@@ -466,12 +468,13 @@ public final class WorkspaceModel {
         do { return try await workspace.data(action, input: input, allowPartial: true) }
         catch { onFailure(localizer.error(error)); return nil }
     }
-    // 只记录作者通过系统选择器打开的路径；不扫描用户文件系统。
+    // 接纳有限机器新建的作品与作者选择的路径，不扫描用户文件系统。
     public func loadLibrary() async {
         guard !loadingLibrary else { return }
         loadingLibrary = true; defer { loadingLibrary = false }
         do {
             libraryEntries = try await library.entries()
+            try await library.receiveCreatedWorks()
             libraryEntries = try await library.refreshProperties()
         } catch { report(error) }
     }

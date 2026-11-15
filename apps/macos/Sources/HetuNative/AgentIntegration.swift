@@ -18,9 +18,14 @@ public struct AgentAssociation: Equatable, Sendable {
     @ObservationIgnored private let preferences: UserDefaults
     private var revision = 0
     public init(preferences: UserDefaults = .standard) { self.preferences = preferences }
+    public func reload() { preferences.synchronize(); revision += 1 }
     public var defaultClient: AgentClient {
         get { _ = revision; return AgentClient(rawValue: preferences.string(forKey: "Hetu.ai.defaultClient") ?? "") ?? .none }
         set { preferences.set(newValue.rawValue, forKey: "Hetu.ai.defaultClient"); revision += 1 }
+    }
+    public var defaultSuiteID: String {
+        get { _ = revision; return preferences.string(forKey: "Hetu.ai.defaultSuite") ?? "general" }
+        set { preferences.set(newValue, forKey: "Hetu.ai.defaultSuite"); revision += 1 }
     }
     public func association(for workspaceID: String) -> AgentAssociation {
         _ = revision

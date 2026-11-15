@@ -25,6 +25,7 @@ struct DocumentFinalizationSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text(model.t("finalization.title")).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "document", object: .object(["document_id": .string(documentID)]))
             Text(model.t("finalization.note")).foregroundStyle(WorkbenchPalette.muted)
             if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             if pending != nil { Button(model.t("drama.retry")) { Task { await perform() } } }

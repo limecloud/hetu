@@ -50,6 +50,33 @@ enum CoverTests {
         await recovered.retry()
         try coverCheck(recovered.pending == nil && recovered.current["cover"] == committed["cover"], "未知选用未沿原键恢复或重复增版")
         try coverCheck(try await recovery.structureOperations(workspaceID: model.workspaceID).isEmpty, "封面恢复未清理原操作")
+        let beforePreview = restarted.cover["cover"]
+        _ = await recovered.read("hetu.covers.inspect_file", input: ["file_path": .string(path.path)])
+        try coverCheck(restarted.cover["cover"] == beforePreview, "本地图片预览意外替换当前封面")
+        // 候选固定到任务和批次；读取、取消与外部返稿都不代表作者已经选用。
+        let taskPreview = try await direct.data("hetu.image_tasks.preview_prompt", input: ["scope_ref": .object(["kind": .string("workspace"), "id": .string(model.workspaceID)]),
+            "task_kind": .string("cover"), "brief": .string("雾港小说封面"), "input_refs": .array([]), "client_adapter": .string("codex"), "language_tag": .string("zh-CN"), "candidate_limit": .integer(1)])
+        var prepare = taskPreview["prepare_input"].object; prepare["operation_key"] = .string("cover-picker-task")
+        let task = try await direct.data("hetu.image_tasks.prepare", input: prepare)
+        let inbox = workspace.appendingPathComponent(task["request"]["output_contract"]["relative_inbox"].string!)
+        try FileManager.default.copyItem(at: path, to: inbox.appendingPathComponent("cover.png"))
+        let result = try await direct.data("hetu.creative_tasks.submit_result", input: ["task_ref": task["task_ref"], "request_sha256": task["request_sha256"],
+            "candidates": .array([.object(["kind": .string("image"), "title": .string("雾港封面候选"), "source_format": .string("image"), "source_ref_indices": .array([]), "file_name": .string("cover.png"), "sha256": inspected["sha256"]])]),
+            "complete": .bool(true), "missing_items": .array([]), "provenance": .object(["client": .string("cover-picker-test"), "skill_version": .string("1")]), "operation_key": .string("cover-picker-submit")])
+        let view = try await direct.data("hetu.interactions.get", input: ["task_ref": task["task_ref"], "submission_id": result["submission"]["submission_id"]])
+        guard let item = ArtworkItem.latest(view).first else { throw CoverTestFailure(message: "封面候选未出现在图片库") }
+        try coverCheck(!item.isCurrentCover(restarted.cover) && restarted.cover["cover"] == beforePreview, "候选回传或预览自动选用了封面")
+        await recovered.refresh()
+        try coverCheck(await recovered.selectTaskCandidate(item.coverReference, overlay: false), recovered.error ?? "未选用固定封面候选")
+        try coverCheck(item.isCurrentCover(restarted.cover), "选用后没有识别当前候选")
+        var anotherBatch = restarted.cover.object
+        var cover = restarted.cover["cover"].object
+        var source = restarted.cover["cover"]["source_ref"].object
+        var reference = restarted.cover["cover"]["source_ref"]["reference"].object; reference["submission_id"] = .string("another-batch")
+        source["reference"] = .object(reference); cover["source_ref"] = .object(source); anotherBatch["cover"] = .object(cover)
+        try coverCheck(!item.isCurrentCover(.object(anotherBatch)), "其他批次被误标为当前封面")
+        await recovered.inspectRevision(Int(beforePreview["revision"].integer!))
+        try coverCheck(await recovered.restoreInspectedRevision() && !item.isCurrentCover(restarted.cover), "恢复历史后候选仍误标为当前封面")
         print("封面：原图核验、作者选用、历史恢复、书库显示、重启、双窗口CAS与原键恢复通过")
         try await CoverPreparationTests.run(root: root)
     }

@@ -44,6 +44,38 @@ public actor LibraryStore {
         try locked { try read().entries.sorted { $0.lastOpenedAt > $1.lastOpenedAt } }
     }
 
+    /// 只接纳当前客户端在有限新建范围创建的作品；不扫描目录，也不改最近打开记录。
+    public func receiveCreatedWorks(collaborationDirectory: URL? = nil) async throws {
+        var known = Set(try entries().map(\.workspaceID))
+        for client in ["codex", "claude-code", "workbuddy", "generic"] {
+            let bridge = CollaborationClient(clientAdapter: client, directory: collaborationDirectory)
+            var cursor: String?
+            repeat {
+                var input: [String: JSONValue] = ["limit": .integer(100)]
+                if let cursor { input["cursor"] = .string(cursor) }
+                let page = try await bridge.request("hetu.collaboration.created_works", input: input)
+                guard page["status"].string == "succeeded" else { throw CoreError.business(page) }
+                for work in page["data"]["works"].array {
+                    guard let id = work["workspace_id"].string, !known.contains(id), let path = work["path"].string,
+                          FileManager.default.fileExists(atPath: path) else { continue }
+                    let scope = ["management_ref": work["management_ref"]]
+                    let response = try await bridge.request("hetu.workspaces.get", input: scope)
+                    // 撤权或目录已移走的历史接纳记录不能重新加入书库。
+                    guard response["status"].string == "succeeded", response["data"]["workspace"]["workspace_id"].string == id else { continue }
+                    let info = response["data"]
+                    let novel = try await bridge.request("hetu.novels.get", input: scope)
+                    guard novel["status"].string == "succeeded" else { throw CoreError.business(novel) }
+                    let metadata = novel["data"]["initialized"].bool == true ? novel["data"]["novel"]["metadata"] : .object(["title": info["workspace"]["title"]])
+                    _ = try register(url: URL(fileURLWithPath: path), workspaceID: id, metadata: metadata,
+                        chapterCount: novel["data"]["novel"]["chapters"].array.count, opened: false,
+                        workType: info["workspace"]["work_type"].string ?? "novel", properties: info["properties"])
+                    known.insert(id)
+                }
+                cursor = page["data"]["next_cursor"].string
+            } while cursor != nil
+        }
+    }
+
     /// 仅刷新已登记作品的时间投影；最近打开时间不随后台读取变化。
     public func refreshProperties() async throws -> [LibraryEntry] {
         for entry in try entries() {

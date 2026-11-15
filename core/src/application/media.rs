@@ -31,6 +31,13 @@ fn validate_record(record: &Value, object: &str) -> Result<()> {
 
 impl Kernel {
     pub(super) fn inspect_asset(&self, input: &Value) -> Result<Value> {
+        if let Some((filename, content)) = self.inline_import_source(input)? {
+            let mut result = media::signature(&content[..content.len().min(64)])?;
+            result["original_filename"] = json!(filename);
+            result["sha256"] = json!(digest(&content));
+            result["size_bytes"] = json!(content.len());
+            return Ok(result);
+        }
         let path = Path::new(text(input, "file_path")?);
         let mut file = files::selected_file(path)?;
         let mut result = files::scan(&mut file, None)?;
@@ -181,10 +188,13 @@ impl Kernel {
             "created_at":now(),"updated_at":now(),"actor_ref":self.actor()});
         Self::asset_metadata(input, &mut record);
         validate_record(&record, "asset")?;
-        let mut source = files::selected_file(Path::new(text(input, "file_path")?))?;
         // 原字节先流式持久化，再通过共同事务公开元数据与回执；未登记对象不出现在列表。
-        self.store
-            .import_media(&path, &mut source, &input["expected_file"])?;
+        if let Some((_, content)) = self.inline_import_source(input)? {
+            self.store.import_media_bytes(&path, &content, &input["expected_file"])?;
+        } else {
+            let mut source = files::selected_file(Path::new(text(input, "file_path")?))?;
+            self.store.import_media(&path, &mut source, &input["expected_file"])?;
+        }
         let sha = self.stage_media_record("asset", &record, changes)?;
         Ok(
             json!({"asset":record,"sha256":sha,"delivery_eligible":media::delivery_eligible(&record),"media_verified":true}),

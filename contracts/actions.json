@@ -1076,7 +1076,7 @@
     },
     {
       "name": "hetu.assets.inspect",
-      "purpose": "检查作者选定的媒体签名与摘要",
+      "purpose": "检查作者选定或 Agent 明确提交的媒体签名与摘要",
       "contract_revision": "1",
       "effect": "read",
       "author_only": true,
@@ -1275,7 +1275,7 @@
       "purpose": "预览固定范围的外部协作提示词",
       "contract_revision": "1",
       "effect": "read",
-      "author_only": true,
+      "author_only": false,
       "scopes": [
         "workspace",
         "creation_project"
@@ -1519,6 +1519,14 @@
       "input_schema_ref": "schemas/delivery.schema.json#/$defs/import_input"
     },
     {
+      "name": "hetu.documents.import_batch",
+      "purpose": "固定一批小说原稿及目录基线，原子导入章节并保留逐章来源",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/delivery.schema.json#/$defs/import_batch_input"
+    },
+    {
       "name": "hetu.documents.history",
       "purpose": "分页读取本作品正文修订历史",
       "contract_revision": "1",
@@ -1683,7 +1691,7 @@
       "purpose": "读取总纲、卷纲与章纲",
       "contract_revision": "1",
       "effect": "read",
-      "author_only": true,
+      "author_only": false,
       "input_schema": {
         "type": "object",
         "additionalProperties": false,
@@ -2953,6 +2961,1131 @@
         "workspace"
       ],
       "input_schema_ref": "schemas/creative-task.schema.json#/$defs/image_prepare_input"
+    },
+    {
+      "name": "hetu.agent_operations.prepare",
+      "purpose": "准备固定作品管理方案，不改变正式内容",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "input": {
+            "type": "object"
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "action",
+          "input",
+          "summary",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.agent_operations.get",
+      "purpose": "读取固定管理方案、决定和执行结果",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "proposal_id": {
+            "type": "string",
+            "pattern": "^proposal_[0-9a-f-]{36}$"
+          },
+          "proposal_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "proposal_id"
+        ]
+      }
+    },
+    {
+      "name": "hetu.agent_operations.list",
+      "purpose": "查询本作品待审管理方案",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 200
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "hetu.agent_operations.decide",
+      "purpose": "作者确认或撤销固定管理方案",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "proposal_id": {
+            "type": "string",
+            "pattern": "^proposal_[0-9a-f-]{36}$"
+          },
+          "proposal_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "expected_state_revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "decision": {
+            "enum": [
+              "approve",
+              "reject"
+            ]
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "proposal_id",
+          "proposal_sha256",
+          "expected_state_revision",
+          "decision",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.agent_operations.execute",
+      "purpose": "执行作者已批准的确切管理方案",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "proposal_id": {
+            "type": "string",
+            "pattern": "^proposal_[0-9a-f-]{36}$"
+          },
+          "proposal_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "proposal_id",
+          "proposal_sha256",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.handoffs.get",
+      "purpose": "从当前对象和实际能力生成页面交接",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "view_kind": {
+            "enum": [
+              "book",
+              "novel",
+              "structure",
+              "document",
+              "search",
+              "notes",
+              "bible",
+              "entity",
+              "drama",
+              "episode",
+              "resources",
+              "resource",
+              "media",
+              "artwork",
+              "cover",
+              "plot",
+              "validation",
+              "reviews",
+              "git",
+              "delivery",
+              "import"
+            ]
+          },
+          "object_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "document_id": {
+                "type": "string",
+                "pattern": "^doc_[0-9a-f-]{36}$"
+              },
+              "revision_id": {
+                "type": "string",
+                "pattern": "^rev_[0-9a-f-]{36}$"
+              },
+              "entity_ref": {
+                "type": "string",
+                "maxLength": 100
+              },
+              "blueprint_revision": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "project_id": {
+                "type": "string",
+                "pattern": "^drama_[0-9a-f-]{36}$"
+              },
+              "episode_id": {
+                "type": "string",
+                "pattern": "^depisode_[0-9a-f-]{36}$"
+              },
+              "resource_id": {
+                "type": "string",
+                "pattern": "^resource_[0-9a-f-]{36}$"
+              },
+              "draft_id": {
+                "type": "string",
+                "pattern": "^draft_[0-9a-f-]{36}$"
+              },
+              "report_id": {
+                "type": "string",
+                "pattern": "^report_[0-9a-f-]{36}$"
+              },
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "plot_revision_id": {
+                "type": "string",
+                "pattern": "^plotrev_[0-9a-f-]{36}$"
+              },
+              "skeleton_id": {
+                "type": "string",
+                "pattern": "^skeleton_[0-9a-f-]{36}$"
+              },
+              "asset_id": {
+                "type": "string",
+                "pattern": "^asset_[0-9a-f-]{36}$"
+              },
+              "cue_id": {
+                "type": "string",
+                "pattern": "^cue_[0-9a-f-]{36}$"
+              },
+              "finding_id": {
+                "type": "string",
+                "pattern": "^finding_[0-9a-f-]{36}$"
+              },
+              "skeleton_revision": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "byte_start": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "byte_end": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "quote": {
+                "type": "string",
+                "maxLength": 2000000
+              },
+              "snapshot_id": {
+                "type": "string",
+                "pattern": "^gitsnapshot_[0-9a-f-]{36}$"
+              },
+              "git_path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024
+              },
+              "scene_id": {
+                "type": "string",
+                "pattern": "^scene_[0-9a-f-]{36}$"
+              },
+              "git_commit_id": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              }
+            }
+          }
+        },
+        "required": [
+          "view_kind"
+        ]
+      }
+    },
+    {
+      "name": "hetu.collaboration.authorize_workspace",
+      "purpose": "授权所选客户端读取当前作品并准备固定管理方案",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "client_adapter",
+          "operation_key"
+        ],
+        "properties": {
+          "client_adapter": {
+            "enum": [
+              "codex",
+              "claude-code",
+              "workbuddy",
+              "generic"
+            ]
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "collaboration_path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "expires_at": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "hetu.collaboration.created_works",
+      "purpose": "读取当前客户端新建的受管作品交接",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [],
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "cursor": {
+            "type": "string",
+            "pattern": "^[0-9]{1,12}$"
+          }
+        }
+      }
+    },
+    {
+      "name": "hetu.local_settings.get",
+      "purpose": "读取可交接的本机偏好与套件目录",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "workspace_id": {
+            "type": "string",
+            "pattern": "^workspace_[0-9a-f-]{36}$"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "hetu.local_settings.prepare",
+      "purpose": "准备本机设置或套件选择安装方案",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "enum": [
+              "preferences",
+              "agent_suite"
+            ]
+          },
+          "patch": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "language": {
+                "enum": [
+                  "zh-CN",
+                  "en"
+                ]
+              },
+              "appearance": {
+                "enum": [
+                  "system",
+                  "light",
+                  "dark"
+                ]
+              },
+              "library_list": {
+                "type": "boolean"
+              },
+              "autosave": {
+                "type": "boolean"
+              },
+              "font_family": {
+                "enum": [
+                  "songti",
+                  "pingfang",
+                  "system"
+                ]
+              },
+              "font_size": {
+                "type": "number",
+                "minimum": 14,
+                "maximum": 30
+              },
+              "line_spacing": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 16
+              },
+              "first_line_indent": {
+                "type": "boolean"
+              },
+              "git_author_name": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "git_author_email": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "agent_client": {
+                "enum": [
+                  "none",
+                  "codex",
+                  "workbuddy",
+                  "claudeCode",
+                  "other"
+                ]
+              }
+            },
+            "required": [],
+            "minProperties": 1
+          },
+          "agent_client": {
+            "enum": [
+              "codex",
+              "workbuddy",
+              "claudeCode",
+              "other"
+            ]
+          },
+          "suite_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "workspace_id": {
+            "type": "string",
+            "pattern": "^workspace_[0-9a-f-]{36}$"
+          },
+          "install": {
+            "type": "boolean"
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "kind",
+          "summary",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.local_settings.get_operation",
+      "purpose": "读取当前客户端本机方案与执行结果",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "operation_id": {
+            "type": "string",
+            "pattern": "^localop_[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "operation_id"
+        ]
+      }
+    },
+    {
+      "name": "hetu.local_settings.execute",
+      "purpose": "执行作者批准的确切本机方案",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "operation_id": {
+            "type": "string",
+            "pattern": "^localop_[0-9a-f-]{36}$"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "operation_id",
+          "sha256",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.collaboration.workspace_access",
+      "purpose": "读取所选客户端当前作品的授权状态",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": true,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "client_adapter"
+        ],
+        "properties": {
+          "client_adapter": {
+            "enum": [
+              "codex",
+              "claude-code",
+              "workbuddy",
+              "generic"
+            ]
+          },
+          "collaboration_path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          }
+        }
+      }
+    },
+    {
+      "name": "hetu.git.references",
+      "purpose": "读取版本线和无凭据远端",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "hetu.git.merge_preview",
+      "purpose": "预览固定版本合并和冲突",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "target_commit": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "resolutions": {
+            "type": "array",
+            "maxItems": 1000,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1024
+                },
+                "choice": {
+                  "enum": [
+                    "ours",
+                    "theirs"
+                  ]
+                }
+              },
+              "required": [
+                "path",
+                "choice"
+              ]
+            }
+          }
+        },
+        "required": [
+          "target_commit"
+        ]
+      }
+    },
+    {
+      "name": "hetu.git.branch_create",
+      "purpose": "准备新版本线",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "expected_head": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "reference": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "commit_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "reference",
+              "commit_id"
+            ]
+          },
+          "branch": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "start_commit": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "expected_head",
+          "branch",
+          "start_commit",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.git.branch_switch",
+      "purpose": "准备切换版本记录并保留当前正文",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "expected_head": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "reference": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "commit_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "reference",
+              "commit_id"
+            ]
+          },
+          "branch": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "expected_head",
+          "branch",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.git.merge",
+      "purpose": "准备合并固定版本记录",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "expected_head": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "reference": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "commit_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "reference",
+              "commit_id"
+            ]
+          },
+          "target_commit": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "resolutions": {
+            "type": "array",
+            "maxItems": 1000,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1024
+                },
+                "choice": {
+                  "enum": [
+                    "ours",
+                    "theirs"
+                  ]
+                }
+              },
+              "required": [
+                "path",
+                "choice"
+              ]
+            }
+          },
+          "author": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "email": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              }
+            },
+            "required": [
+              "name",
+              "email"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "expected_head",
+          "target_commit",
+          "author",
+          "message",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.git.remote_save",
+      "purpose": "准备绑定不含凭据的远端",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "remote": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "remote",
+          "url",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.git.fetch",
+      "purpose": "准备拉取远端固定版本",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "remote": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "branch": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "remote",
+          "branch",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.git.push",
+      "purpose": "准备推送确切版本",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "remote": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "branch": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "target_commit": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "remote",
+          "branch",
+          "target_commit",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.git.pull",
+      "purpose": "准备合并已拉取的固定远端版本",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "expected_head": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "reference": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "commit_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "reference",
+              "commit_id"
+            ]
+          },
+          "target_commit": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "resolutions": {
+            "type": "array",
+            "maxItems": 1000,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1024
+                },
+                "choice": {
+                  "enum": [
+                    "ours",
+                    "theirs"
+                  ]
+                }
+              },
+              "required": [
+                "path",
+                "choice"
+              ]
+            }
+          },
+          "author": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "email": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              }
+            },
+            "required": [
+              "name",
+              "email"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "expected_head",
+          "target_commit",
+          "author",
+          "message",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.findings.suggest",
+      "purpose": "提交问题处置建议，不改变作者决定",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "input_schema_ref": "schemas/finding-disposition-input.schema.json"
+    },
+    {
+      "name": "hetu.findings.suggestions",
+      "purpose": "读取固定问题的处置建议",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "report_id": {
+            "type": "string",
+            "pattern": "^report_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "finding_id": {
+            "type": "string",
+            "pattern": "^finding_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          }
+        },
+        "required": [
+          "report_id",
+          "finding_id"
+        ]
+      }
+    },
+    {
+      "name": "hetu.git.read_version",
+      "purpose": "读取确切历史版本和有界文件，不覆盖当前正文",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "commit_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          }
+        },
+        "required": [
+          "commit_id"
+        ]
+      }
     }
   ]
 }

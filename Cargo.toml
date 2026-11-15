@@ -6,7 +6,7 @@ resolver = "3"
 edition = "2024"
 rust-version = "1.93"
 license = "Apache-2.0"
-version = "0.6.0"
+version = "0.7.0"
 
 [workspace.dependencies]
 serde = { version = "1.0", features = ["derive"] }
@@ -36,6 +36,22 @@ opt-level = 2
 opt-level = 2
 
 [profile.dev.package.regex-syntax]
+opt-level = 2
+
+# 本地图片的解码、缩图和完整摘要属于交互路径，开发包也保留必要优化。
+[profile.dev.package.hetu-core]
+opt-level = 1
+
+[profile.dev.package.image]
+opt-level = 2
+
+[profile.dev.package.png]
+opt-level = 2
+
+[profile.dev.package.zune-jpeg]
+opt-level = 2
+
+[profile.dev.package.sha2]
 opt-level = 2
 
 [workspace.lints.rust]

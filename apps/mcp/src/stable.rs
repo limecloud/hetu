@@ -49,7 +49,7 @@ impl StableServer {
                 Some(action["effect"] == "read"),
                 Some(false),
                 Some(true),
-                Some(matches!(mapping.action.as_str(), "hetu.models.list" | "hetu.model_tasks.get" | "hetu.model_tasks.submit" | "hetu.model_tasks.collect")),
+                Some(open_world(&mapping.action)),
             ));
             tools.push((tool, mapping.action));
         }
@@ -150,7 +150,7 @@ impl ServerHandler for StableServer {
         resources::no_cursor(request)?;
         Ok(ListResourcesResult::with_all_items(
             if ui::supported(&context) {
-                vec![ui::resource()]
+                vec![ui::resource(), ui::operation_resource()]
             } else {
                 vec![]
             },
@@ -169,6 +169,9 @@ impl ServerHandler for StableServer {
         request: ReadResourceRequestParams,
         context: RequestContext<RoleServer>,
     ) -> Result<ReadResourceResponse, ErrorData> {
+        if request.uri == ui::OPERATION_URI && ui::supported(&context) {
+            return Ok(ui::read_operation().into());
+        }
         if request.uri == ui::URI && ui::supported(&context) {
             return Ok(ui::read()?.into());
         }

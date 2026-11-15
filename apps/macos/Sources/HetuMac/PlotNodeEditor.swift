@@ -22,6 +22,7 @@ struct PlotNodeEditor: View {
     }
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
+            PageAgentButton(model: model, page: "plot", object: .object(["plot_revision_id": plot["plot_revision_id"]]))
             Text(model.t(adding ? "plot.add_node" : "plot.correct_node")).font(.system(size: 20, weight: .semibold))
             Text(model.t("plot.correction_note")).font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted)
             if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }

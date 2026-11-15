@@ -27,7 +27,11 @@ struct DeliveryWorkbenchView: View {
     }
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(model.t("delivery.title")).font(.system(size: 20, weight: .semibold))
+            HStack {
+                Text(model.t("delivery.title")).font(.system(size: 20, weight: .semibold))
+                Spacer()
+                PageAgentButton(model: model, page: session.mode == .importDocument ? "import" : "delivery")
+            }
             Picker(model.t("delivery.operation"), selection: $session.mode) {
                 Text(model.t("delivery.import")).tag(DeliveryMode.importDocument)
                 Text(model.t("delivery.export")).tag(DeliveryMode.exportDocuments)

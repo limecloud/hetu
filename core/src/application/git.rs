@@ -4,6 +4,7 @@ use git2::{
     Signature,
 };
 use std::{collections::BTreeSet, path::PathBuf};
+mod collaboration;
 
 const SNAPSHOT_LIMIT: usize = 128 * 1024 * 1024;
 const DIFF_LIMIT: usize = 1024 * 1024;
@@ -41,6 +42,7 @@ fn eligible(path: &str) -> bool {
         ".hetu/operations",
         ".hetu/audit",
         ".hetu/deliveries",
+        ".hetu/agent-proposals",
     ]
     .iter()
     .any(|root| path == *root || path.starts_with(&format!("{root}/")))

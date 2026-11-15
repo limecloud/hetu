@@ -10,6 +10,7 @@ struct TaskContinuationView: View {
     let held: Bool
     let read: (String, [String: JSONValue]) async -> JSONValue?
     let save: ([String: JSONValue]) async -> JSONValue?
+    var preferredCandidateID: String? = nil
     @State private var selectedTarget: JSONValue = .null
     @State private var selectedTitle = ""
     @State private var comment = ""
@@ -94,11 +95,20 @@ struct TaskContinuationView: View {
         }
         .task(id: task["observation"]["revision"]) {
             workingPage = .null
-            if selectedTarget == .null, let first = targets.first { selectedTarget = first.1; selectedTitle = first.0 }
+            if selectedTarget == .null { selectPreferredTarget() }
             await loadFeedback()
         }
         .onChange(of: comment) { _, _ in saved = .null; copied = false }
         .onChange(of: selectedTarget) { _, _ in saved = .null; copied = false }
+        .onChange(of: preferredCandidateID) { _, _ in
+            // 未填写意见时跟随当前图片；已有输入保留其确切目标，不静默挪到另一张图。
+            if comment.isEmpty { selectPreferredTarget() }
+        }
+    }
+    private func selectPreferredTarget() {
+        if let target = targets.first(where: { targetID($0.1) == preferredCandidateID }) ?? targets.first {
+            selectedTarget = target.1; selectedTitle = target.0
+        }
     }
     private func loadMoreWorkingCopies() async {
         guard !busy, workingCursor.string != nil else { return }

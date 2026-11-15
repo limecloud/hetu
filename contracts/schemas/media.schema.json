@@ -350,10 +350,23 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 4096
+        },
+        "inline_source": {
+          "$ref": "#/$defs/inline_source"
         }
       },
-      "required": [
-        "file_path"
+      "required": [],
+      "oneOf": [
+        {
+          "required": [
+            "file_path"
+          ]
+        },
+        {
+          "required": [
+            "inline_source"
+          ]
+        }
       ]
     },
     "import_input": {
@@ -411,10 +424,12 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 128
+        },
+        "inline_source": {
+          "$ref": "#/$defs/inline_source"
         }
       },
       "required": [
-        "file_path",
         "expected_file",
         "title",
         "source",
@@ -422,6 +437,18 @@
         "redistribution_allowed",
         "rights_statement",
         "operation_key"
+      ],
+      "oneOf": [
+        {
+          "required": [
+            "file_path"
+          ]
+        },
+        {
+          "required": [
+            "inline_source"
+          ]
+        }
       ]
     },
     "asset_update_input": {
@@ -638,6 +665,31 @@
         }
       },
       "required": []
+    },
+    "inline_source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "filename": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "base64": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 11184812
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "filename",
+        "base64",
+        "sha256"
+      ]
     }
   }
 }

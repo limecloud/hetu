@@ -103,6 +103,7 @@ private struct MediaFilesWorkbenchView: View {
                 HStack {
                     Text(record["title"].string ?? "").font(.system(size: 20, weight: .semibold))
                     Spacer()
+                    PageAgentButton(model: model, page: "media", object: .object([object + "_id": record[object + "_id"], "revision": record["revision"]]))
                     Button(model.t("media.edit")) { editor = DramaSheet(value: result) }
                         .disabled(result["is_head"].bool == false || !model.pendingStructureOperations.isEmpty)
                 }
@@ -125,7 +126,7 @@ private struct MediaFilesWorkbenchView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text(model.t("media.rights." + (record["rights_status"].string ?? "unknown"))).font(.system(size: 14, weight: .semibold))
             Text(model.t(result["delivery_eligible"].bool == true ? "media.delivery_allowed" : "media.delivery_excluded"))
-                .foregroundStyle(result["delivery_eligible"].bool == true ? WorkbenchPalette.muted : .orange)
+                .foregroundStyle(result["delivery_eligible"].bool == true ? WorkbenchPalette.muted : WorkbenchPalette.warningInk)
             if result["is_head"].bool == false {
                 Text(model.t("media.current_rights", ["rights": model.t("media.rights." + (result["current_rights_status"].string ?? "unknown"))])).foregroundStyle(WorkbenchPalette.warningInk)
             }

@@ -627,6 +627,10 @@ impl Kernel {
 }
 
 impl Kernel {
+    pub(super) fn validate_delivery_proposal(&self, action: &str, input: &Value) -> Result<Value> {
+        self.prepare_delivery(action, &input["preview"])?;
+        Ok(json!({"preview":input["preview"]}))
+    }
     fn delivery_context(&self) -> Result<()> {
         self.store.recover()?;
         ensure(
@@ -1015,6 +1019,9 @@ impl Kernel {
 
     fn prepare_document_import(&self, request: &Value) -> Result<(Value, Vec<u8>)> {
         schema(request, &definition("import_preview_input"))?;
+        let original = if let Some((_, content)) = self.inline_import_source(request)? {
+            content
+        } else {
         let mut file =
             crate::infrastructure::media::selected_file(Path::new(text(request, "file_path")?))?;
         let before = file.metadata()?;
@@ -1037,6 +1044,8 @@ impl Kernel {
             "revision_conflict",
             "导入文件在读取期间发生变化，请重新选择。",
         )?;
+        original
+        };
         let converted = delivery_formats::import(
             &original,
             text(request, "format")?,
@@ -1061,10 +1070,33 @@ impl Kernel {
     }
 
     pub(super) fn preview_document_import(&self, input: &Value) -> Result<Value> {
-        Ok(json!({"preview":self.prepare_document_import(input)?.0}))
+        let output = json!({"preview":self.prepare_document_import(input)?.0});
+        ensure(self.author || bytes(&output)?.len() <= 7 * 1024 * 1024,
+            "hetu.budget_exceeded", "导入预览超过机器传输预算，请拆分原稿。")?;
+        Ok(output)
     }
 
     pub(super) fn import_document(&self, input: &Value, changes: &mut Changes) -> Result<Value> {
+        self.import_document_record(input, changes, true)
+    }
+
+    pub(super) fn import_document_batch(&self, input: &Value, changes: &mut Changes) -> Result<Value> {
+        let before = self.get_novel()?;
+        ensure(before["initialized"] == true && before["revision"] == input["expected"]["revision"]
+            && before["sha256"] == input["expected"]["sha256"], "revision_conflict", "小说目录已变化，请沿原导入记录核对。")?;
+        let mut imported = Vec::new();
+        for item in input["items"].as_array().unwrap() {
+            let mut chapter = item.clone();
+            chapter["kind"] = json!("novel_chapter");
+            chapter["acknowledgement"] = input["acknowledgement"].clone();
+            imported.push(self.import_document_record(&chapter, changes, false)?);
+        }
+        let documents = imported.iter().map(|item| item["document"].clone()).collect::<Vec<_>>();
+        let novel = self.append_imported_chapters(input, &documents, changes)?;
+        Ok(json!({"documents":imported,"novel":novel["novel"],"revision":novel["revision"],"sha256":novel["sha256"]}))
+    }
+
+    fn import_document_record(&self, input: &Value, changes: &mut Changes, append_to_novel: bool) -> Result<Value> {
         ensure(
             !text(input, "acknowledgement")?.trim().is_empty(),
             "hetu.author_confirmation_required",
@@ -1076,7 +1108,7 @@ impl Kernel {
             "revision_conflict",
             "导入文件或预览已变化，请重新选择并确认。",
         )?;
-        let mut created = self.create_document(&json!({"kind":input["kind"],"title":input["title"],"language_tag":input["language_tag"],"volume_id":input["volume_id"],"source_format":preview["converted"]["source_format"],"content":preview["converted"]["content"]}),changes)?;
+        let mut created = self.create_document_record(&json!({"kind":input["kind"],"title":input["title"],"language_tag":input["language_tag"],"volume_id":input["volume_id"],"source_format":preview["converted"]["source_format"],"content":preview["converted"]["content"]}),changes,append_to_novel)?;
         let document_id = text(&created["document"], "document_id")?.to_owned();
         let root = format!(".hetu/imports/{document_id}");
         let report = json!({"schema_version":"1.0.0","document_ref":{"document_id":document_id,"revision_id":created["revision"]["revision_id"],"sha256":created["revision"]["sha256"]},"source_sha256":preview["source_sha256"],"source_size_bytes":preview["source_size_bytes"],"format":preview["request"]["format"],"profile":preview["request"]["profile"],"converter":preview["converted"]["converter"],"coverage":preview["converted"]["coverage"],"warnings":preview["converted"]["warnings"],"losses":preview["converted"]["losses"],"created_at":now()});

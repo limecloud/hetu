@@ -9,6 +9,7 @@ declare global {
     testLocale?: string;
     testMessages?: boolean;
     realTask?: boolean;
+    operationInput?: Record<string, unknown>;
     harness: {
       calls: { name: string; arguments?: Record<string, unknown> }[];
       reads: string[];
@@ -43,6 +44,7 @@ bridge.oncalltool = async params => {
     return await response.json();
   }
   if (params.name === "hetu_open_task_view") return current;
+  if (["hetu_get_management_operation", "hetu_local_settings_get_operation"].includes(params.name)) return current;
   if (params.name === "hetu_read_task_operation") {
     return { content: [], structuredContent: original
       ? { status: "succeeded", data: { original_result: original.structuredContent } }
@@ -83,6 +85,9 @@ bridge.onreadresource = async params => {
   return { contents: [{ uri: params.uri, mimeType: "application/json", text: JSON.stringify(result) }] };
 };
 bridge.oninitialized = () => {
+  if (window.operationInput) {
+    bridge.sendToolInput({ arguments: window.operationInput }); bridge.sendToolResult(current); return;
+  }
   const data = (current.structuredContent as { data: { request: Record<string, unknown>; task_ref?: Record<string, unknown> } }).data;
   const task = data.request;
   bridge.sendToolInput({ arguments: { task_ref: data.task_ref ?? { task_id: task.task_id, scope_ref: task.scope_ref, request_revision: task.request_revision } } });

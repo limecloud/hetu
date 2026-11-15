@@ -18,6 +18,7 @@ struct GitWorkbenchView: View {
     @State private var preview: DramaSheet?
     @State private var difference: DramaSheet?
     @State private var confirmInit = false
+    @State private var references: JSONValue = .null
     private var held: Bool { pending != nil || !model.pendingStructureOperations.isEmpty }
     init(model: WorkspaceModel) {
         self.model = model
@@ -44,8 +45,9 @@ struct GitWorkbenchView: View {
                     Text(model.t("git.changes")).tag("changes")
                     Text(model.t("git.previews")).tag("previews")
                     Text(model.t("git.history")).tag("history")
+                    Text(model.t("git.references")).tag("references")
                 }.pickerStyle(.segmented)
-                if tab == "changes" { changes } else { history }
+                if tab == "changes" { changes } else if tab == "references" { versionLines } else { history }
             } else { ProgressView() }
         }.padding(28).workbenchPage().disabled(model.busy)
         .task { await load(resetSelection: true) }
@@ -61,6 +63,28 @@ struct GitWorkbenchView: View {
             GitSnapshotReviewSheet(model: model, snapshotID: request.value.string ?? "")
         }
         .sheet(item: $difference) { request in GitDifferenceSheet(model: model, path: request.value.string ?? "") }
+    }
+    private var versionLines: some View {
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: 12) {
+                Text(model.t("git.preserve_content")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
+                ForEach(Array(references["branches"].array.enumerated()), id: \.offset) { _, item in
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(item["name"].string ?? "").font(.system(size: 14, weight: .semibold))
+                            Text(item["commit_id"].string ?? "").font(.system(size: 12, design: .monospaced)).foregroundStyle(WorkbenchPalette.muted).textSelection(.enabled)
+                        }
+                        Spacer()
+                        PageAgentButton(model: model, page: "git", object: .object(["git_commit_id": item["commit_id"]]))
+                    }
+                    Divider()
+                }
+                ForEach(Array(references["remotes"].array.enumerated()), id: \.offset) { _, item in
+                    Text(item["name"].string ?? "").font(.system(size: 14, weight: .semibold))
+                    Text(item["url"].string ?? model.t("git.secure_address_required")).font(.system(size: 14)).textSelection(.enabled)
+                }
+            }.frame(maxWidth: .infinity, alignment: .leading)
+        }
     }
     private var changes: some View {
         HSplitView {
@@ -133,11 +157,14 @@ struct GitWorkbenchView: View {
         error = nil
         guard let next = await model.workspaceAction("hetu.git.status", input: [:], onFailure: { error = $0; _ = $1 }) else { return }
         status = next
+        if status["initialized"].bool == true {
+            references = await model.workspaceAction("hetu.git.references", input: [:], onFailure: { error = $0; _ = $1 }) ?? .null
+        }
         selected = resetSelection ? Set(paths) : selected.intersection(paths)
         if tab != "changes", status["initialized"].bool == true { await loadRecords() }
     }
     private func loadRecords(more: Bool = false) async {
-        guard tab != "changes", status["initialized"].bool == true else { return }
+        guard tab != "changes", tab != "references", status["initialized"].bool == true else { return }
         var input: [String: JSONValue] = ["limit": .integer(30)]
         if more, let cursor { input["cursor"] = .string(cursor) }
         let action = tab == "history" ? "hetu.git.log" : "hetu.git.list_snapshots"
@@ -169,6 +196,7 @@ struct GitSnapshotReviewSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(model.t("git.review")).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "git", object: .object(["snapshot_id": .string(snapshotID)]))
             if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             if completed != .null {
                 Label(model.t("git.committed"), systemImage: "checkmark.circle")
@@ -244,6 +272,7 @@ struct GitDifferenceSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(model.t("git.diff")).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "git", object: .object(["git_path": .string(path)].merging(snapshotID.map { ["snapshot_id": .string($0)] } ?? [:]) { current, _ in current }))
             Text(path).font(.system(size: 14, weight: .semibold)).textSelection(.enabled)
             if let error { Text(error).foregroundStyle(WorkbenchPalette.danger) }
             if result != .null {

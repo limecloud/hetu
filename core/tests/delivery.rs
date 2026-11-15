@@ -282,6 +282,19 @@ fn document_import_previews_loss_preserves_original_and_rejects_changed_file() {
             .unwrap()
             .contains("保留原有缩进")
     );
+    let agent = Kernel::open(json!({"workspace_path":root.path(),"mode":"agent"})).unwrap();
+    let original_docx = fs::read(root.path().join(exported["path"].as_str().unwrap())).unwrap();
+    use base64::{Engine, engine::general_purpose::STANDARD};
+    use sha2::{Digest, Sha256};
+    let imported = data(call(&k,"documents.preview_import",json!({"inline_source":{"filename":"原稿.docx","base64":STANDARD.encode(&original_docx),"sha256":format!("{:x}",Sha256::digest(&original_docx))},"format":"docx","profile":"hetu-novel-zh/1"})));
+    let proposal = data(call(&agent,"agent_operations.prepare",json!({"action":"hetu.documents.import","input":{"preview":imported["preview"],"kind":"novel_chapter","title":"固定 DOCX 导入","language_tag":"zh-CN","acknowledgement":"核对格式转换预览","operation_key":"docx-import"},"summary":"导入已核对原稿","operation_key":"prepare-docx"})));
+    // 准备时已固定原文件字节；后续外部文件改变不替换作者审阅的输入。
+    fs::write(root.path().join(exported["path"].as_str().unwrap()),"外部已变动").unwrap();
+    data(call(&k,"agent_operations.decide",json!({"proposal_id":proposal["proposal_id"],"proposal_sha256":proposal["proposal_sha256"],"expected_state_revision":proposal["state_revision"],"decision":"approve","operation_key":"approve-docx"})));
+    let execution = data(call(&agent,"agent_operations.execute",json!({"proposal_id":proposal["proposal_id"],"proposal_sha256":proposal["proposal_sha256"],"operation_key":"execute-docx"})));
+    let document_id = execution["result"]["document"]["document_id"].as_str().unwrap();
+    assert_eq!(fs::read(root.path().join(format!(".hetu/imports/{document_id}/original"))).unwrap(),original_docx);
+    assert!(data(call(&agent,"documents.get",json!({"document_id":document_id})))["content"].as_str().unwrap().contains("保留原有缩进"));
 }
 
 #[test]
@@ -497,4 +510,27 @@ fn document_recovery_checks_confirmed_output_even_if_ready_record_is_changed() {
         "hetu.integrity_failure"
     );
     assert_eq!(fs::read(path).unwrap(), altered);
+}
+
+#[test]
+fn agent_delivery_proposal_requires_author_review_and_recovers_original_export() {
+    let (root, author) = setup();
+    let doc = document(&author);
+    let selected = finalized(&author,&doc);
+    let agent = Kernel::open(json!({"workspace_path":root.path(),"mode":"agent"})).unwrap();
+    let preview = data(call(&author,"bundles.preview",bundle_request(&author,selected,"production_delivery")))["preview"].clone();
+    let proposal = data(call(&agent,"agent_operations.prepare",json!({"action":"hetu.bundles.export","input":export(preview,"fixed-delivery"),"summary":"交付第一章","operation_key":"propose-delivery"})));
+    assert!(fs::read_dir(root.path().join("exports")).unwrap().next().is_none());
+    let input = json!({"proposal_id":proposal["proposal_id"],"proposal_sha256":proposal["proposal_sha256"],"operation_key":"execute-delivery"});
+    assert_eq!(call(&agent,"agent_operations.execute",input.clone())["error"]["code"],"hetu.author_confirmation_required");
+    data(call(&author,"agent_operations.decide",json!({"proposal_id":proposal["proposal_id"],"proposal_sha256":proposal["proposal_sha256"],"expected_state_revision":1,"decision":"approve","operation_key":"approve-delivery"})));
+    let receipt = call(&agent,"agent_operations.execute",input.clone());
+    let output = data(receipt.clone());
+    assert_eq!(output["state"],"executed");
+    assert!(root.path().join(output["result"]["path"].as_str().unwrap()).is_file());
+    assert_eq!(call(&agent,"agent_operations.execute",input),receipt);
+    assert_eq!(data(call(&agent,"bundles.verify",json!({"bundle_id":output["result"]["bundle_id"]})))["verified"],true);
+    let recovered = data(call(&agent,"operations.get",json!({"action":"hetu.agent_operations.execute","key":"execute-delivery"})));
+    assert_eq!(recovered["original_result"],receipt);
+    assert_eq!(fs::read_dir(root.path().join("exports")).unwrap().count(),1);
 }

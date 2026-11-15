@@ -16,6 +16,10 @@ use tokio::sync::Semaphore;
 
 pub const MAX_MESSAGE_BYTES: usize = 16 * 1024 * 1024;
 const MAX_RESULT_BYTES: usize = 8 * 1024 * 1024;
+fn open_world(action: &str) -> bool {
+    matches!(action, "hetu.models.list" | "hetu.model_tasks.get" | "hetu.model_tasks.submit" | "hetu.model_tasks.collect"
+        | "hetu.agent_operations.prepare" | "hetu.agent_operations.execute" | "hetu.local_settings.execute")
+}
 const RESOURCE_ACTIONS: &[&str] = &[
     "hetu.capabilities.get",
     "hetu.workspaces.get",
@@ -165,7 +169,7 @@ impl HetuServer {
                 Some(action["effect"] == "read"),
                 Some(false),
                 Some(true),
-                Some(matches!(mapping.action.as_str(), "hetu.models.list" | "hetu.model_tasks.get" | "hetu.model_tasks.submit" | "hetu.model_tasks.collect")),
+                Some(open_world(&mapping.action)),
             ));
             tools.push((tool, mapping.action));
         }

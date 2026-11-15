@@ -108,25 +108,44 @@ class NativeConfigurationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory).resolve()
             scratch = root / "swift-cache"
+            rust_target = root / "rust-cache"
             with patch.object(native, "ROOT", root), patch.object(native.sys, "platform", "darwin"), \
-                    patch.object(native.sys, "argv", ["build-native.py", "--configuration", "release", "--test", "--swift-scratch-path", str(scratch)]), \
+                    patch.object(native.sys, "argv", ["build-native.py", "--configuration", "release", "--test", "--swift-scratch-path", str(scratch), "--rust-target-dir", str(rust_target)]), \
                     patch.object(native, "rust_channel", return_value="1.93.1"), \
                     patch.object(native, "node_runtime", return_value=()), patch.object(native, "verify_task_view"), \
                     patch.object(native.shutil, "copy2") as copy, patch.object(native, "run") as run, \
                     patch.object(native, "package_app") as package:
                 native.main()
-            self.assertEqual(copy.call_args.args[0], root / "target/release/libhetu_core.dylib")
-            self.assertEqual(package.call_args.args[-2:], (scratch / "release", "release"))
+            self.assertEqual(copy.call_args.args[0], rust_target / "release/libhetu_core.dylib")
+            self.assertEqual(package.call_args.args[-3:], (scratch / "release", "release", rust_target))
             commands = [call.args[0] for call in run.call_args_list]
-            self.assertIn(["cargo", "build", "--locked", "--release"], commands)
+            self.assertIn(["cargo", "build", "--locked", "--target-dir", str(rust_target), "--release"], commands)
             for command in commands:
                 if command[:2] == ["cargo", "test"]:
                     self.assertIn("--release", command)
+                    self.assertEqual(command[command.index("--target-dir") + 1], str(rust_target))
                 if command[0] == "swift":
                     self.assertEqual(command[command.index("--configuration") + 1], "release")
                     self.assertEqual(command[command.index("--scratch-path") + 1], str(scratch))
             ffi = next(command for command in commands if any("verify-ffi.py" in arg for arg in command))
             self.assertEqual(ffi[-1], str(scratch / "release/hetu"))
+
+    def test_default_and_environment_target_are_used_for_both_build_and_library_copy(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            for configured in [None, str(root / "environment-rust")]:
+                with self.subTest(configured=configured), patch.dict(native.os.environ, {} if configured is None else {"CARGO_TARGET_DIR": configured}, clear=True), \
+                        patch.object(native, "ROOT", root), patch.object(native.sys,"platform","darwin"), \
+                        patch.object(native.sys,"argv",["build-native.py","--mac-only"]), \
+                        patch.object(native,"rust_channel",return_value="1.93.1"), patch.object(native,"node_runtime",return_value=()), \
+                        patch.object(native,"verify_task_view"), patch.object(native.shutil,"copy2") as copy, \
+                        patch.object(native,"run") as run, patch.object(native,"package_app") as package:
+                    native.main()
+                    target = Path(configured) if configured else root / "target"
+                    build = next(call.args[0] for call in run.call_args_list if call.args[0][:2] == ["cargo","build"])
+                    self.assertEqual(build[build.index("--target-dir")+1],str(target))
+                    self.assertEqual(copy.call_args.args[0],target / "debug/libhetu_core.dylib")
+                    self.assertEqual(package.call_args.args[-1],target)
 
 
 if __name__ == "__main__":

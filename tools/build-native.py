@@ -104,12 +104,13 @@ def verify_packaged_resources(contents, debug=None):
 
 def verify_task_view():
     resources = ROOT / "apps/mcp/resources"
-    manifest = json.loads((resources / "task-view.manifest.json").read_text())
-    files = {resources / "task-view.html": manifest["sha256"]}
-    for relative, expected in manifest["source_sha256"].items():
-        files[ROOT / "apps/task-view" / relative] = expected
-    if any(hashlib.sha256(path.read_bytes()).hexdigest() != expected for path, expected in files.items()):
-        raise SystemExit("MCP Apps 资源与源码摘要不一致，请先执行 npm run build:task-view。")
+    for view in ["task-view", "operation-view"]:
+        manifest = json.loads((resources / (view + ".manifest.json")).read_text())
+        files = {resources / (view + ".html"): manifest["sha256"]}
+        for relative, expected in manifest["source_sha256"].items():
+            files[ROOT / "apps/task-view" / relative] = expected
+        if any(hashlib.sha256(path.read_bytes()).hexdigest() != expected for path, expected in files.items()):
+            raise SystemExit("MCP Apps 资源与源码摘要不一致，请先执行 npm run build:task-view。")
     local = ROOT / "apps/task-view/resources/local"
     manifest = json.loads((local / "manifest.json").read_text())
     files = {local / name: sha for name, sha in manifest["files"].items()}
@@ -146,8 +147,9 @@ def rust_channel():
             return "stable"
     raise SystemExit(f"需要已安装的 Rust {version}；本脚本不会安装或更新系统工具链。")
 
-def package_app(channel, runtime, development=False, swift_debug=None, configuration="debug"):
+def package_app(channel, runtime, development=False, swift_debug=None, configuration="debug", rust_target=None):
     debug = swift_debug or ROOT / ".build" / configuration
+    rust_target = rust_target or ROOT / "target"
     binary = debug / "HetuMac"
     app = ROOT / "build/native" / ("HetuDev.app" if development else "Hetu.app")
     contents = app / "Contents"
@@ -165,7 +167,7 @@ def package_app(channel, runtime, development=False, swift_debug=None, configura
     verify_packaged_resources(contents, debug)
     shutil.copy2(ROOT / "assets/brand/icons/macos/Hetu.icns", contents / "Resources/Hetu.icns")
     mcp = contents / "Helpers/hetu-mcp"
-    shutil.copy2(ROOT / "target" / configuration / "hetu-mcp", mcp)
+    shutil.copy2(rust_target / configuration / "hetu-mcp", mcp)
     standalone = ROOT / "build/native/bin/hetu-mcp"
     standalone.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(mcp, standalone)
@@ -223,6 +225,7 @@ def main():
     parser.add_argument("--development", action="store_true", help="装配独立的 HetuDev.app，不覆盖普通开发包")
     parser.add_argument("--node-runtime", help="随开发包装配的本机 Node.js 路径；不修改系统 Node")
     parser.add_argument("--swift-scratch-path", type=Path, help="使用独立 Swift 构建目录，并从同一目录装配与测试")
+    parser.add_argument("--rust-target-dir", type=Path, help="隔离 Cargo 产物目录，构建、装配和测试使用同一路径")
     parser.add_argument("--configuration", choices=["debug", "release"], default="debug", help="Rust 与 Swift 使用同一构建配置；签名仍为 ad-hoc")
     args = parser.parse_args()
     if args.mac_only and args.test:
@@ -234,10 +237,12 @@ def main():
     verify_task_view()
     run([sys.executable, str(ROOT / "tools/verify-skills.py")], channel)
     cargo_profile = ["--release"] if args.configuration == "release" else []
-    run(["cargo", "build", "--locked", *cargo_profile], channel)
+    rust_target = (args.rust_target_dir or Path(os.environ.get("CARGO_TARGET_DIR", str(ROOT / "target")))).resolve()
+    cargo_target = ["--target-dir", str(rust_target)]
+    run(["cargo", "build", "--locked", *cargo_target, *cargo_profile], channel)
     stage = ROOT / "build/native/lib"
     stage.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(ROOT / "target" / args.configuration / "libhetu_core.dylib", stage)
+    shutil.copy2(rust_target / args.configuration / "libhetu_core.dylib", stage)
     run(["install_name_tool", "-id", "@rpath/libhetu_core.dylib", str(stage / "libhetu_core.dylib")], channel)
     run(["codesign", "--force", "--sign", "-", str(stage / "libhetu_core.dylib")], channel)
     run([sys.executable, str(ROOT / "tools/generate-localization.py")], channel)
@@ -251,11 +256,11 @@ def main():
         # Mac-only 仍装配可独立运行的 CLI，不能只编 App 却复制旧 CLI。
         run(["swift", "build", *scratch_args, *configuration_args, "--jobs", "2", "--disable-index-store", "--product", "hetu"], channel)
     debug = (args.swift_scratch_path.resolve() if args.swift_scratch_path else ROOT / ".build") / args.configuration
-    package_app(channel, runtime, args.development, debug, args.configuration)
+    package_app(channel, runtime, args.development, debug, args.configuration, rust_target)
     if args.test:
-        run(["cargo", "test", "--locked", *cargo_profile, "-p", "hetu-core"], channel)
+        run(["cargo", "test", "--locked", *cargo_target, *cargo_profile, "-p", "hetu-core"], channel)
         # 每个 stdio 用例启动真实服务进程，限制并发以保留握手超时的诊断意义。
-        run(["cargo", "test", "--locked", *cargo_profile, "-p", "hetu-mcp", "--", "--test-threads=2"], channel,
+        run(["cargo", "test", "--locked", *cargo_target, *cargo_profile, "-p", "hetu-mcp", "--", "--test-threads=2"], channel,
             {"HETU_MCP_TEST_BINARY": str(ROOT / "build/native/bin/hetu-mcp")})
         run(["swift", "run", *scratch_args, *configuration_args, "--skip-build", "hetu-bridge-tests"], channel)
         run(["swift", "run", *scratch_args, *configuration_args, "--skip-build", "hetu-native-tests"], channel,

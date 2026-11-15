@@ -449,6 +449,18 @@ fn image_candidates_are_decoded_and_preserve_aspect_ratio_without_selecting_a_co
     let decoded = image::load_from_memory(&jpeg).unwrap();
     assert_eq!((decoded.width(), decoded.height()), (128, 192));
     assert!(decoded.to_rgb8().get_pixel(0, 0).0.iter().all(|channel| *channel >= 250));
+    let cached = ok(call(&agent, "interactions.get", json!({"task_ref":task["task_ref"]})));
+    assert_eq!(cached["image_previews"], view["image_previews"]);
+    // 命中缩略图后，原图即使大小、格式头和修改时间不变，也必须核验实际字节。
+    let image_path = folder.path().join(saved["relative_path"].as_str().unwrap());
+    let modified = fs::metadata(&image_path).unwrap().modified().unwrap();
+    let mut changed = buffer.get_ref().clone();
+    let last = changed.len() - 1;
+    changed[last] ^= 1;
+    fs::write(&image_path, changed).unwrap();
+    fs::File::options().write(true).open(&image_path).unwrap().set_modified(modified).unwrap();
+    assert_eq!(call(&agent, "interactions.get", json!({"task_ref":task["task_ref"]}))["error"]["code"], "hetu.integrity_failure");
+    fs::write(&image_path, buffer.get_ref()).unwrap();
     assert_eq!(
         fs::read(folder.path().join(saved["relative_path"].as_str().unwrap())).unwrap(),
         *buffer.get_ref()
@@ -635,21 +647,30 @@ fn image_subjects_are_fixed_sources_not_title_guesses_or_edit_permissions() {
     let mut bytes = std::io::Cursor::new(Vec::new());
     image::DynamicImage::new_rgb8(120, 180).write_to(&mut bytes, image::ImageFormat::Png).unwrap();
     fs::write(inbox.join("portrait.png"), bytes.get_ref()).unwrap();
-    let candidate = json!({"kind":"image","title":"不是用来匹配姓名的标题","source_format":"image","source_ref_indices":[0],"file_name":"portrait.png","sha256":digest(bytes.get_ref()),"image_category":"character","subject_refs":[{"kind":"entity","entity_ref":character,"blueprint_revision":revision}]});
+    let candidate = json!({"kind":"image","title":"不是用来匹配姓名的标题","source_format":"image","source_ref_indices":[0],"file_name":"portrait.png","sha256":digest(bytes.get_ref()),"image_category":"character","image_view":"front","subject_refs":[{"kind":"entity","entity_ref":character,"blueprint_revision":revision}]});
     let result = ok(call(&reader, "creative_tasks.submit_result", submit_input(&task, json!([candidate]), "linked-image")));
     assert_eq!(result["submission"]["candidates"][0]["image_category"], "character");
     assert_eq!(result["submission"]["candidates"][0]["subject_refs"], candidate["subject_refs"]);
-    for (field, value) in [("image_category", json!("imaginary")), ("subject_refs", json!([{"kind":"entity","entity_ref":"character_22222222-2222-4222-8222-222222222222","blueprint_revision":revision}]))] {
+    assert_eq!(result["submission"]["candidates"][0]["image_view"], "front");
+    for (field, value) in [("image_category", json!("imaginary")), ("image_view", json!("imaginary")), ("subject_refs", json!([{"kind":"entity","entity_ref":"character_22222222-2222-4222-8222-222222222222","blueprint_revision":revision}]))] {
         let mut invalid = candidate.clone(); invalid[field] = value;
         assert_ne!(call(&reader, "creative_tasks.submit_result", submit_input(&task, json!([invalid]), &format!("invalid-{field}")))["status"], "succeeded");
     }
+    let mut group = candidate.clone();
+    group["subject_refs"].as_array_mut().unwrap().push(json!({"kind":"entity","entity_ref":"character_22222222-2222-4222-8222-222222222222","blueprint_revision":revision}));
+    assert_eq!(call(&reader, "creative_tasks.submit_result", submit_input(&task, json!([group]), "multiple-people"))["error"]["code"], "invalid_input");
+    let mut missing = candidate.clone(); missing["subject_refs"] = json!([]);
+    assert_eq!(call(&reader, "creative_tasks.submit_result", submit_input(&task, json!([missing]), "missing-person"))["error"]["code"], "invalid_input");
+    let mut illustration = candidate.clone(); illustration["image_category"] = json!("illustration");
+    assert_eq!(call(&reader, "creative_tasks.submit_result", submit_input(&task, json!([illustration]), "illustration-not-portrait"))["error"]["code"], "invalid_input");
     let mut outside = candidate.clone(); outside["source_ref_indices"] = json!([]);
     assert_eq!(call(&reader, "creative_tasks.submit_result", submit_input(&task, json!([outside]), "unbound-subject"))["error"]["code"], "hetu.invalid_source_ref");
     // 下一批可复用旧图而不改旧批次，未带新字段的历史候选继续有效。
-    let mut old = candidate.clone(); old.as_object_mut().unwrap().remove("image_category"); old.as_object_mut().unwrap().remove("subject_refs");
+    let mut old = candidate.clone(); old.as_object_mut().unwrap().remove("image_category"); old.as_object_mut().unwrap().remove("subject_refs"); old.as_object_mut().unwrap().remove("image_view");
     ok(call(&reader, "creative_tasks.submit_result", submit_input(&task, json!([old]), "legacy-image")));
     let historical = ok(call(&reader, "interactions.get", json!({"task_ref":task["task_ref"],"submission_id":result["submission"]["submission_id"]})));
     assert_eq!(historical["submission"]["candidates"][0]["subject_refs"], candidate["subject_refs"]);
+    assert_eq!(historical["submission"]["candidates"][0]["image_view"], "front");
     let text_task = prepare(&author, "chapter_draft", json!([]), None);
     let mut text = text_candidate("text", "一段原文"); text["image_category"] = json!("illustration");
     assert_eq!(call(&author, "creative_tasks.submit_result", submit_input(&text_task, json!([text]), "text-not-image"))["error"]["code"], "invalid_input");

@@ -85,7 +85,15 @@ def generate():
     creative = ROOT / "contracts/schemas/creative-task.schema.json"
     if creative.exists():
         families["artwork.category."] = ["all", "cover"] + json.loads(creative.read_text())["$defs"]["candidate_input"]["properties"]["image_category"]["enum"]
+        families["artwork.view."] = json.loads(creative.read_text())["$defs"]["image_view"]["enum"]
         families["creative.state."] = json.loads(creative.read_text())["$defs"]["state_record"]["properties"]["state"]["enum"]
+    local_actions = json.loads((ROOT / "contracts/actions.json").read_text())["actions"]
+    local_prepare = next(item for item in local_actions if item["name"] == "hetu.local_settings.prepare")
+    families["local.field."] = list(local_prepare["input_schema"]["properties"]["patch"]["properties"])
+    families["agent.suite."] = [suite["id"] for suite in suites["suites"]]
+    management = json.loads((ROOT / "contracts/schemas/agent-operation.schema.json").read_text())["$defs"]
+    families["handoff.state."] = management["state"]["enum"]
+    families["handoff.limit."] = management["limitation"]["enum"]
     families["cover.state."] = json.loads((ROOT / "contracts/schemas/book-cover.schema.json").read_text())["$defs"]["candidate_state"]["enum"]
     delivery = json.loads((ROOT / "contracts/schemas/delivery.schema.json").read_text())["$defs"]
     families["delivery.format."] = sorted(set(delivery["document_preview_input"]["properties"]["format"]["enum"] + delivery["import_preview_input"]["properties"]["format"]["enum"]))

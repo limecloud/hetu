@@ -21,7 +21,11 @@ build/
 dist/
 .swiftpm/
 target/
+/output/
 /output/model-service-swift*/
+/output/ai-first-complete-swift/
+/output/ai-first-rust-artifacts/
+/output/ai-first-acceptance-20261115/
 /output/website-functions/
 __pycache__/
 apps/macos/Sources/HetuNative/Resources/NativeStrings.json

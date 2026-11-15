@@ -72,7 +72,7 @@ impl Kernel {
             "hetu.integrity_failure",
             "小说资料与不可变历史修订不一致。",
         )?;
-        self.validate_novel_structure(&novel, None)?;
+        self.validate_novel_structure(&novel, &[])?;
         Ok(Some(novel))
     }
 
@@ -103,7 +103,7 @@ impl Kernel {
     }
 
     // 卷与章节的显示顺序由数组表达；正文身份和来源范围不随重排改变。
-    fn validate_novel_structure(&self, novel: &Value, staged_doc: Option<&Value>) -> Result<()> {
+    fn validate_novel_structure(&self, novel: &Value, staged_documents: &[Value]) -> Result<()> {
         let mut volumes = BTreeSet::new();
         for volume in novel["volumes"].as_array().unwrap() {
             ensure(
@@ -157,8 +157,8 @@ impl Kernel {
                 "章节必须按分卷顺序连续排列。",
             )?;
             last_group = group;
-            let document = if staged_doc.is_some_and(|d| d["document_id"] == document_id) {
-                staged_doc.unwrap().clone()
+            let document = if let Some(staged) = staged_documents.iter().find(|d| d["document_id"] == document_id) {
+                staged.clone()
             } else {
                 stored_documents
                     .get(document_id)
@@ -264,7 +264,7 @@ impl Kernel {
             )?;
             novel["volumes"] = input["volumes"].clone();
             novel["chapters"] = input["chapters"].clone();
-            self.validate_novel_structure(&novel, None)?;
+            self.validate_novel_structure(&novel, &[])?;
         } else {
             novel::validate_metadata(&input["metadata"])?;
             novel["metadata"] = input["metadata"].clone();
@@ -299,8 +299,17 @@ impl Kernel {
                 if c["volume_id"].is_null() { 0 } else { volumes.iter().position(|v| v["volume_id"] == c["volume_id"]).unwrap_or(volumes.len()) + 1 }
             });
         }
-        self.validate_novel_structure(&novel, Some(document))?;
+        self.validate_novel_structure(&novel, std::slice::from_ref(document))?;
         self.save_novel(novel, changes)?;
         Ok(())
+    }
+
+    pub(super) fn append_imported_chapters(&self, input: &Value, documents: &[Value], changes: &mut Changes) -> Result<Value> {
+        let mut novel = self.expected_novel(&input["expected"])?;
+        for (document, item) in documents.iter().zip(input["items"].as_array().unwrap()) {
+            novel["chapters"].as_array_mut().unwrap().push(json!({"chapter_id":id("chapter"),"document_id":document["document_id"],"volume_id":item["volume_id"]}));
+        }
+        self.validate_novel_structure(&novel, documents)?;
+        self.save_novel(novel, changes)
     }
 }

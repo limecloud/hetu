@@ -14,6 +14,7 @@ struct ReviewSubmitSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text(model.t("review.submit")).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "document", object: .object(["document_id": document["document"]["document_id"], "revision_id": document["revision"]["revision_id"]]))
             Text(document["document"]["title"].string ?? "").font(.system(size: 14, weight: .semibold))
             Text(model.t("review.submit_note")).foregroundStyle(WorkbenchPalette.muted)
             if source != .null {
@@ -67,6 +68,7 @@ struct ReviewRewriteSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(model.t("review.rewrite")).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "reviews", object: .object(["draft_id": original["draft"]["draft_id"]]))
             Text(model.t("review.rewrite_note")).foregroundStyle(WorkbenchPalette.muted)
             TextField(model.t("document.title"), text: $title).textFieldStyle(.roundedBorder).disabled(pending != nil)
             TextEditor(text: $content).frame(minHeight: 260).border(WorkbenchPalette.muted.opacity(0.2)).accessibilityLabel(model.t("review.rewrite_content")).disabled(pending != nil)

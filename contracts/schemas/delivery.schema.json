@@ -388,12 +388,26 @@
             "hetu-novel-zh/1",
             "hetu-screenplay-zh/1"
           ]
+        },
+        "inline_source": {
+          "$ref": "#/$defs/inline_source"
         }
       },
       "required": [
-        "file_path",
         "format",
         "profile"
+      ],
+      "oneOf": [
+        {
+          "required": [
+            "file_path"
+          ]
+        },
+        {
+          "required": [
+            "inline_source"
+          ]
+        }
       ]
     },
     "import_input": {
@@ -453,6 +467,120 @@
         "kind",
         "title",
         "language_tag",
+        "acknowledgement",
+        "operation_key"
+      ]
+    },
+    "inline_source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "filename": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "base64": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 11184812
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "filename",
+        "base64",
+        "sha256"
+      ]
+    },
+    "import_batch_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "expected": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "revision": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "revision",
+            "sha256"
+          ]
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "preview": {
+                "type": "object",
+                "required": [
+                  "request",
+                  "sha256",
+                  "source_sha256",
+                  "source_size_bytes",
+                  "converted"
+                ]
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "language_tag": {
+                "enum": [
+                  "zh-CN",
+                  "en"
+                ]
+              },
+              "volume_id": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^volume_[0-9a-f-]{36}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "preview",
+              "title",
+              "language_tag",
+              "volume_id"
+            ]
+          }
+        },
+        "acknowledgement": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8000
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "expected",
+        "items",
         "acknowledgement",
         "operation_key"
       ]

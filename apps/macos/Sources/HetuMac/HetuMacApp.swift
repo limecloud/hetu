@@ -267,6 +267,9 @@ private struct WorkbenchView: View {
         }
         .onAppear { model.locale = selectedLocale; coordinator.presentCreation = { newWorkspace = true } }
         .onChange(of: selectedLocale) { _, locale in model.locale = locale }
+        .onReceive(DistributedNotificationCenter.default().publisher(for: LocalAutomation.changed)) { _ in
+            UserDefaults.standard.synchronize(); model.agentIntegration.reload()
+        }
     }
     @ViewBuilder private var detail: some View {
         if selection == "book" { NovelDetailsView(model: model).id(model.workspaceID) }
@@ -359,7 +362,11 @@ private struct NewDocumentSheet: View {
     @State private var kind = "novel_chapter"
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text(model.t("document.new")).font(.system(size: 20, weight: .semibold))
+            HStack {
+                Text(model.t("document.new")).font(.system(size: 20, weight: .semibold))
+                Spacer()
+                PageAgentButton(model: model, page: "structure")
+            }
             Form {
                 TextField(model.t("document.title"), text: $title)
                 Picker(model.t("document.kind"), selection: $kind) {

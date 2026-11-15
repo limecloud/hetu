@@ -4,9 +4,11 @@ use rustix::fs::{self, AtFlags, Mode, OFlags};
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use std::{
+    collections::VecDeque,
     fs::File,
     io::{Read, Seek, SeekFrom, Write},
     path::Path,
+    sync::{Mutex, OnceLock},
 };
 
 fn checked_file(file: &File) -> Result<std::fs::Metadata> {
@@ -123,6 +125,36 @@ pub fn image_preview(source: &image::DynamicImage) -> Result<Value> {
     Ok(
         json!({"media_type":"image/jpeg","base64":STANDARD.encode(bytes),"width":image.width(),"height":image.height()}),
     )
+}
+
+/// 缓存只保存已解码的缩略图；每次命中前仍读取当前受管文件并核验完整摘要。
+/// 授权和任务归属由调用方先检查，缓存不能赋予图片访问权。
+pub fn verified_image_preview(file: &mut File, expected: &Value) -> Result<Value> {
+    static PREVIEWS: OnceLock<Mutex<VecDeque<(String, Value)>>> = OnceLock::new();
+    let scan = scan(file, None)?;
+    ensure(
+        scan["sha256"] == expected["sha256"]
+            && scan["size_bytes"] == expected["size_bytes"]
+            && scan["media_type"] == expected["media_type"],
+        "hetu.integrity_failure",
+        "候选图片字节已变化。",
+    )?;
+    let key = scan["sha256"].as_str().unwrap().to_owned();
+    let cache = PREVIEWS.get_or_init(|| Mutex::new(VecDeque::new()));
+    if let Some(preview) = cache.lock().unwrap().iter().find(|(sha, _)| sha == &key).map(|(_, preview)| preview.clone()) {
+        return Ok(preview);
+    }
+    // 解码和缩放不持有全局锁，不阻塞其他作品已缓存图片的读取。
+    let image = decode_image(file)?;
+    ensure(image.scan == scan, "revision_conflict", "图片候选读取期间发生变化。")?;
+    let preview = image_preview(&image.decoded)?;
+    let mut cache = cache.lock().unwrap();
+    if !cache.iter().any(|(sha, _)| sha == &key) {
+        // 每张预览至多 256 KiB，32 项限制了常驻内存，原图不进入缓存。
+        if cache.len() == 32 { cache.pop_front(); }
+        cache.push_back((key, preview.clone()));
+    }
+    Ok(preview)
 }
 
 pub fn selected_file(path: &Path) -> Result<File> {

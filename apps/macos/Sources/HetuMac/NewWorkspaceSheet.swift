@@ -17,6 +17,7 @@ struct NewWorkspaceSheet: View {
     @State private var copied = false
     @State private var openingBook = false
     @State private var showDetails = false
+    @State private var machineCreation = false
     private let catalog = try? AgentSuiteCatalog.bundled()
 
     init(model: WorkspaceModel) {
@@ -31,6 +32,7 @@ struct NewWorkspaceSheet: View {
             HStack {
                 Text(model.t("workspace.new")).font(.system(size: 20, weight: .semibold))
                 Spacer()
+                Button(model.t("handoff.action")) { machineCreation = true }
                 if session.busy || openingBook { ProgressView().controlSize(.small) }
             }
             Picker(model.t("creation.work_type"), selection: Binding(get: { session.workType }, set: { session.setWorkProfile(workType: $0); prompt = "" })) {
@@ -101,6 +103,7 @@ struct NewWorkspaceSheet: View {
                 AgentInstallationSheet(settings: model.agentIntegration, association: AgentAssociation(client: client, suiteID: suiteID), localizer: model.localizer,
                     onSelection: { client = $0.client; suiteID = $0.suiteID })
             }
+            .sheet(isPresented: $machineCreation) { AgentAccessSheet(initialEntry: .skills, localizer: model.localizer) }
     }
     private var creationFields: some View {
         VStack(alignment: .leading, spacing: 20) {

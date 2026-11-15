@@ -14,17 +14,19 @@ struct AgentInstallationSheet: View {
     @State private var installing = false
     @State private var feedback: String?
     @State private var succeeded = false
+    @State private var showAgent = false
     @State private var workbuddyDirectory = AgentPackageInspector.defaultWorkbuddyDirectory
     private let catalog = try? AgentSuiteCatalog.bundled()
     init(settings: AgentIntegrationSettings, workspaceID: String? = nil, association: AgentAssociation? = nil, localizer: Localizer, onSelection: ((AgentAssociation) -> Void)? = nil) {
         self.settings = settings; self.workspaceID = workspaceID; self.localizer = localizer; self.onSelection = onSelection
-        let value = association ?? workspaceID.map { settings.association(for: $0) } ?? AgentAssociation(client: settings.defaultClient, suiteID: "general")
+        let value = association ?? workspaceID.map { settings.association(for: $0) } ?? AgentAssociation(client: settings.defaultClient, suiteID: settings.defaultSuiteID)
         _client = State(initialValue: value.client); _suiteID = State(initialValue: value.suiteID)
     }
     private func t(_ key: String) -> String { localizer.text(key) }
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
             Text(t("agent.install_title")).font(.system(size: 20, weight: .semibold))
+            Button(t("local.action")) { showAgent = true }
             ScrollView {
                 installationForm.frame(maxWidth: .infinity, alignment: .leading).padding(.trailing, 4)
             }
@@ -34,6 +36,7 @@ struct AgentInstallationSheet: View {
             .interactiveDismissDisabled(installing)
             .onChange(of: client) { _, _ in feedback = nil; succeeded = false }
             .onChange(of: suiteID) { _, _ in feedback = nil; succeeded = false }
+            .sheet(isPresented: $showAgent) { LocalAgentSheet(localizer: localizer, section: "agents", workspaceID: workspaceID) }
     }
     private var installationForm: some View {
         VStack(alignment: .leading, spacing: 18) {
@@ -89,6 +92,7 @@ struct AgentInstallationSheet: View {
             settings.selectPackageDirectory(receipt.directory, client: client, suiteID: suiteID)
             let association = AgentAssociation(client: client, suiteID: suiteID)
             if let workspaceID { settings.associate(association, with: workspaceID) }
+            else { settings.defaultClient = client; settings.defaultSuiteID = suiteID }
             onSelection?(association)
             succeeded = true; feedback = t(client == .codex ? "agent.install_success" : "agent.install_files_success")
         } catch { feedback = (error as? AgentInstallError).map { t($0.key) } ?? t("agent.install_error.commandFailed") }

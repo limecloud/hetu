@@ -27,6 +27,7 @@ struct ResourceTaskSheet: View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
                 Text(model.t("resources.organize")).font(.system(size: 20, weight: .semibold)); Spacer()
+            PageAgentButton(model: model, page: "resources")
                 Button(model.t("common.close")) { dismiss() }.disabled(session.pending != nil).keyboardShortcut(.cancelAction)
             }
             if let error = session.error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }

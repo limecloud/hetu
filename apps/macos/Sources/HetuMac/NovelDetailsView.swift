@@ -6,6 +6,7 @@ struct NovelDetailsView: View {
     let model: WorkspaceModel
     @State private var editing = false
     @State private var managingCover = false
+    @State private var coverSection = CoverWorkbenchSheet.Section.candidates
     @State private var creativeTask = false
     var body: some View {
         ScrollView {
@@ -24,7 +25,14 @@ struct NovelDetailsView: View {
                             imageData: model.cover["preview"]["base64"].string.flatMap { Data(base64Encoded: $0) },
                             titleOverlay: model.cover["cover"]["presentation"]["title_overlay"].string,
                             authorOverlay: model.cover["cover"]["presentation"]["author_overlay"].string).frame(width: 168, height: 252)
-                        Button(model.t("cover.manage")) { managingCover = true }.controlSize(.small).disabled(model.novel["initialized"].bool != true)
+                        HStack {
+                            Button(model.t("cover.replace")) { coverSection = .candidates; managingCover = true }
+                            Menu {
+                                Button(model.t("cover.local")) { coverSection = .local; managingCover = true }
+                                Button(model.t("cover.history")) { coverSection = .history; managingCover = true }
+                            } label: { Image(systemName: "ellipsis") }
+                                .menuStyle(.borderlessButton).frame(width: 24).accessibilityLabel(model.t("cover.more"))
+                        }.disabled(model.novel["initialized"].bool != true)
                         if let error = model.cover["error"].string { Text(error).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.danger) }
                     }
                     VStack(alignment: .leading, spacing: 18) {
@@ -59,8 +67,8 @@ struct NovelDetailsView: View {
             }.padding(36).frame(maxWidth: 980, alignment: .leading).frame(maxWidth: .infinity, alignment: .leading)
         }.workbenchPage()
             .sheet(isPresented: $editing) { NovelMetadataSheet(model: model) }
-            .sheet(isPresented: $managingCover) { CoverWorkbenchSheet(model: model) }
-            .sheet(isPresented: $creativeTask) { CreativeTaskView(model: model, kind: .chapterDraft) }
+            .sheet(isPresented: $managingCover) { CoverWorkbenchSheet(model: model, section: coverSection) }
+            .sheet(isPresented: $creativeTask) { CreativeTaskView(model: model, kind: .bookProfile) }
     }
 }
 
@@ -139,6 +147,7 @@ struct NovelStructureSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
             Text(model.t("novel.manage_structure")).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "structure")
             Text(model.t("novel.structure_detail")).foregroundStyle(WorkbenchPalette.muted).font(.system(size: 14))
             HStack {
                 TextField(model.t("novel.volume_title"), text: $volumeTitle)

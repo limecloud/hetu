@@ -13,6 +13,24 @@ public struct ArtworkItem: Identifiable, Sendable {
     public let receivedAt: String
     public var id: String { candidate["candidate_id"].string ?? "" }
     public var category: String { taskKind == "cover" ? "cover" : candidate["image_category"].string ?? "other" }
+    public var imageView: String? { candidate["image_view"].string }
+    public var coverReference: JSONValue {
+        .object(["task_ref": taskRef, "submission_id": .string(submissionID), "candidate_id": candidate["candidate_id"]])
+    }
+    public func isCurrentCover(_ cover: JSONValue) -> Bool {
+        taskKind == "cover" && cover["cover"]["source_ref"]["kind"].string == "creative_task"
+            && cover["cover"]["source_ref"]["reference"] == coverReference
+    }
+    /// 角色封面只用单人形象，三视图和情节插图留在各自图组中。
+    public static func primaryImage(in items: [ArtworkItem], entity: String, category: String) -> ArtworkItem? {
+        items.filter { item in
+            item.category == category && item.matches(entity: entity)
+                && (category != "character" || item.imageView == nil || ["portrait", "front"].contains(item.imageView ?? ""))
+        }.sorted { a, b in
+            func rank(_ item: ArtworkItem) -> Int { item.imageView == "portrait" ? 0 : item.imageView == "front" ? 1 : 2 }
+            return rank(a) == rank(b) ? a.receivedAt > b.receivedAt : rank(a) < rank(b)
+        }.first
+    }
     public func matches(entity: String? = nil, document: String? = nil) -> Bool {
         candidate["subject_refs"].array.contains { ref in
             (entity != nil && ref["kind"].string == "entity" && ref["entity_ref"].string == entity)
@@ -39,14 +57,21 @@ public struct ArtworkItem: Identifiable, Sendable {
     private var generation = UUID()
     private var scopeID = ""
     public init() {}
+    public func reset() {
+        generation = UUID(); scopeID = ""; items = []; nextCursor = nil; error = nil; loading = false
+    }
     public func load(model: WorkspaceModel, more: Bool = false) async {
+        guard let workspace = model.workspace else { reset(); return }
+        let scope = model.workspaceID + "\n" + workspace.url.standardizedFileURL.path
+        // 多个对象页共用一份读取，切换角色和关闭详情不清空已有缩略图。
+        if scopeID == scope && loading { return }
+        if scopeID != scope { reset(); scopeID = scope }
+        if more && nextCursor == nil { return }
         let token = UUID(); generation = token
-        let scope = model.workspaceID
-        if scopeID != scope || !more { items = []; nextCursor = nil }; scopeID = scope
-        guard let workspace = model.workspace else { return }
+        let workspaceID = model.workspaceID
         loading = true; error = nil
         defer { if generation == token { loading = false } }
-        var pageCursor = nextCursor
+        var pageCursor = more ? nextCursor : nil
         var found: [ArtworkItem] = []
         do {
             // 跳过文字任务页，最多取得一页图片；其余通过“加载更多”继续。
@@ -54,20 +79,22 @@ public struct ArtworkItem: Identifiable, Sendable {
                 var input: [String: JSONValue] = ["limit": .integer(20)]
                 if let pageCursor { input["cursor"] = .string(pageCursor) }
                 let page = try await workspace.data("hetu.creative_tasks.list", input: input)
-                guard generation == token, model.workspaceID == scope else { return }
+                guard generation == token, model.workspaceID == workspaceID else { return }
                 for row in page["tasks"].array where ["cover", "artwork"].contains(row["task_kind"].string ?? "") && (row["submission_count"].integer ?? 0) > 0 {
                     let view = try await workspace.data("hetu.interactions.get", input: ["task_ref": row["task_ref"]])
-                    guard generation == token, model.workspaceID == scope else { return }
+                    guard generation == token, model.workspaceID == workspaceID else { return }
                     found += ArtworkItem.latest(view)
                 }
                 pageCursor = page["next_cursor"].string
             } while found.isEmpty && pageCursor != nil
-            guard generation == token, model.workspaceID == scope else { return }
+            guard generation == token, model.workspaceID == workspaceID else { return }
+            if !more { items = [] }
             items += found.filter { item in !items.contains { $0.id == item.id } }
             items.sort { $0.receivedAt > $1.receivedAt }
             nextCursor = pageCursor
         } catch {
-            guard generation == token, model.workspaceID == scope else { return }
+            guard generation == token, model.workspaceID == workspaceID else { return }
+            items = []; nextCursor = nil
             self.error = model.localizer.error(error)
         }
     }

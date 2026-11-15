@@ -41,6 +41,7 @@ struct DraftAdoptionSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(model.t("adoption.title")).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "reviews", object: .object(["draft_id": draft["draft_id"]]))
             Text(model.t("adoption.note")).foregroundStyle(WorkbenchPalette.muted)
             if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             if pending != nil { Button(model.t("drama.retry")) { Task { await perform() } } }

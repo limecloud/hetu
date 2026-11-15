@@ -12,6 +12,7 @@ struct RecordConflictView: View {
     @State private var error: String?
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
+            PageAgentButton(model: model, page: object == "resource" ? "resource" : object == "episode" ? "episode" : "drama", object: .object(input))
             Button(model.t("records.compare_latest")) { Task {
                 current = await model.workspaceAction(action, input: input, onFailure: { error = $0; _ = $1 }) ?? .null
             } }.disabled(model.busy)

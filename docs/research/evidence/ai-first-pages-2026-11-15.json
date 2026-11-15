@@ -1,0 +1,279 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-11-15T03:13:43.171447+00:00",
+  "version": "0.6.0",
+  "scope": "全原生页面入口与机器合同审查、有限管理方案实现、真实 CLI 和原生审阅、本地更新",
+  "overall_status": "partial",
+  "all_software_ai_first_passed": false,
+  "inventory": {
+    "source_files": 49,
+    "view_declarations": 102,
+    "classification_counts": {
+      "partial": 30,
+      "gap": 11,
+      "component": 7,
+      "author_decision": 1
+    },
+    "note": "源码入口分类，不是 GUI 通过率；显示组件不计作独立业务完成。",
+    "path": "build/requirements-audit/ai-first-pages-20261115/page-inventory.json"
+  },
+  "implementation": {
+    "management_actions": [
+      "hetu.novels.initialize",
+      "hetu.novels.update",
+      "hetu.novels.save_structure",
+      "hetu.documents.create (empty content only)",
+      "hetu.outlines.save",
+      "hetu.blueprints.save",
+      "hetu.drama.projects.create",
+      "hetu.drama.projects.update",
+      "hetu.drama.projects.attach",
+      "hetu.drama.episodes.create",
+      "hetu.drama.episodes.update",
+      "hetu.drama.episodes.reorder",
+      "hetu.creative_tasks.prepare"
+    ],
+    "flow": "Agent 准备固定写集与基线 → 原生作者前后比较并批准摘要 → Agent 执行原方案 → 回读同一修订与原键结果",
+    "boundary": "仅明确作品连接，维持 Agent 身份。单任务和有限新建管理引用不扩权；不开放正文覆盖、采纳、定稿、解锁、费用批准、网络或任意文件事务。",
+    "fixes": [
+      "作品资料 AI 入口改为 bookProfile",
+      "页面绑定真实对象与已保存版本，排除未保存缓冲和私密批注",
+      "固定方案完整性、期限、CAS、撤销、损坏记录与修订溢出保护",
+      "MCP 重复工具名导致连接失败",
+      "原创剧本不带不存在的小说修订",
+      "原生批准动作接入恢复记录白名单，专项经过真实 workspaceAction"
+    ],
+    "source_sha256": {
+      "AGENTS.md": "6fad0920eb8212db7794d93120d2fa60ef4694ad30cae409c93d1362e853dc78",
+      "core/src/application/agent_operations.rs": "911d7f857141d56c22a3cb276ef17533d8e2fac83c370e8bc2dd048a8dbe3f7d",
+      "core/src/application/handoffs.rs": "fb40a19afe26f6c3f1ff9fc50be9baf359b8fbb2911026038dad3d70bec3b83e",
+      "core/src/application/mod.rs": "56e040f2c6ec2e82c14008e4b4e5f22c125ce20386676a6c1aa91286eb379110",
+      "core/src/application/git.rs": "bb1ae6f517b289afa4e958e622281f45ada58514fdb567b68e92a7cb89ec987d",
+      "core/tests/agent_operations.rs": "f9b43adf4ac270bc720d79b5b8f360415c8cbd0474b699fe52abec8178fbd593",
+      "contracts/actions.json": "6db65a78436b715347fdb048f0bc825e59fbec7c879713631e3483bce369f10c",
+      "contracts/tools/catalog.json": "87f2057d682383727898f75a1cbac96acf4496dd903eb49afd2b23122de6c448",
+      "contracts/schemas/agent-operation.schema.json": "ae2b0db4a88658441d0c1caf660495b42ee03425c7565ec87c3bfa93cbfc6964",
+      "apps/macos/Sources/HetuMac/PageAgentAction.swift": "f2e9a804cdb62d1b5aa75088a346bb637dd4ac58c066206ed0ccd2db8b20649f",
+      "apps/macos/Sources/HetuNative/PageHandoff.swift": "1acc66cc6ceae64815c4a7e919316a29756260901ecf7f7a3d75d9e36cd088b6",
+      "apps/macos/Sources/HetuNative/RecoveryStore.swift": "2b51e505ae3d24855268dee5e3fb5d8f889436a7838aefcc7e543aa9c75eb1ef",
+      "tests/native/HetuNativeTests/PageHandoffTests.swift": "42d1d4172244ae705113ff6d5d7918d2733e7e369ed2f75b16910ae173680b7e",
+      "apps/mcp/tests/stdio.rs": "b1c7c7cb32afb768ac627db1ee079d47baa4d6f077930797aceba4843052d9d5",
+      "tools/hetu-skills/base/skills/hetu-setup/SKILL.md": "5f6c3e600b222c98757cb79820086fa95215a712dcd9671870282b2aafb64557",
+      "assets/localization/native.json": "8650882857dbede7b937f0374fd11bdd80885a860a04e9b49f7614cd9acc5b23"
+    }
+  },
+  "checks": {
+    "core_management": {
+      "status": "passed",
+      "tests": 8,
+      "test_target": "cargo test -p hetu-core --test agent_operations"
+    },
+    "mcp_stdio": {
+      "status": "passed",
+      "tests": 19,
+      "log": "build/requirements-audit/ai-first-pages-20261115/mcp-stdio.log",
+      "boundary": "真实 stdio 协议与隔离作者合同，不是新宿主安装或 Apps 验收"
+    },
+    "native_page_handoff": {
+      "status": "passed",
+      "log": "build/requirements-audit/ai-first-pages-20261115/native-page-handoff-final.log",
+      "checks": [
+        "中文与英文精确修订",
+        "Shell 路径安全引用",
+        "未保存正文不外发",
+        "原生作者批准持久化与原键接续",
+        "完成后移除恢复记录",
+        "机器结果刷新不覆盖编辑缓冲"
+      ]
+    },
+    "public_cli": {
+      "status": "passed",
+      "bootstrap_steps": 3,
+      "handoff_and_management_steps": 26,
+      "gui_review_execution_steps": 6,
+      "proposal_id": "proposal_6e7a1146-58a3-4c39-ac89-e0ecd95333fb",
+      "proposal_sha256": "21af0fdc9e69e049e7d9ab1bcee5c71ec17481c349736d7cc2d2392319a2d183",
+      "confirmed_result": "资料修订2，固定简介一致；原键重放和操作回读通过；批准前资料保持原值"
+    },
+    "native_gui": {
+      "status": "passed_for_declared_slice",
+      "artifact": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/requirements-audit/ai-first-pages-20261115/AIPageQAFinal.app",
+      "isolated_home": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/requirements-audit/ai-first-pages-20261115/qa-home",
+      "workspace_title": "页面联动验收",
+      "chinese_main_pages": [
+        "作品资料",
+        "小说",
+        "设定集",
+        "短剧",
+        "参考稿审核",
+        "版本",
+        "资料与素材",
+        "导入导出",
+        "剧情整理",
+        "一致性诊断"
+      ],
+      "english_main_pages": [
+        "Book Details",
+        "Novel",
+        "Story Bible",
+        "Drama",
+        "Review",
+        "Versions",
+        "References and assets",
+        "Import and Export",
+        "Plot workbench",
+        "Consistency checks"
+      ],
+      "settings_observed": [
+        "General",
+        "Writing",
+        "AI Collaboration",
+        "Versions",
+        "About"
+      ],
+      "settings_result": "机器偏好与安装事务缺失，不登记为通过；未打开密钥配置",
+      "review_actions": [
+        "前后简介可读比较",
+        "作者批准后显示待执行，未自动修改资料",
+        "随包 CLI Agent 执行后刷新为已执行",
+        "资料页面显示修订2和同一简介",
+        "英文比较显示独立英文标签，作品内容保留中文"
+      ],
+      "limitations": [
+        "主要工作页的空态和入口已观察，不代表所有详情、历史和异常状态已操作",
+        "多处空态仍以手动操作文案引导，应继续改为 Agent 主路径",
+        "共享入口不等于对应业务事务贯通",
+        "机器创建作品本轮仍需作者加入书库，此步骤仅作导航，不算机器自动接纳"
+      ]
+    },
+    "local_install_gui": {
+      "status": "passed",
+      "path": "/Applications/Hetu.app",
+      "observed": "正常书库保持8部作品；归宋守渡10章及原定稿状态可读，当前文档显示让 AI 处理入口"
+    },
+    "installed_mcp_stdio": {
+      "status": "passed",
+      "tests": 19,
+      "artifact": "/Applications/Hetu.app/Contents/Helpers/hetu-mcp",
+      "log": "build/requirements-audit/ai-first-pages-20261115/installed-mcp-stdio-final.log",
+      "elapsed_seconds": 27.54
+    },
+    "localization": {
+      "status": "passed",
+      "bilingual_keys": 1519
+    },
+    "git_diff_check": {
+      "status": "passed"
+    },
+    "docs": {
+      "status": "passed",
+      "documents": 52,
+      "local_links": 488,
+      "fragment_links": 159,
+      "errors": []
+    },
+    "skills": {
+      "status": "passed",
+      "suites": 45,
+      "files": 1800,
+      "classification_nodes": 908
+    }
+  },
+  "first_failures_retained": [
+    {
+      "layer": "MCP stdio",
+      "result": "重复工具名导致连接启动失败，首次3项通过15项失败；修复后19项通过",
+      "evidence": "mcp-startup-failure.json"
+    },
+    {
+      "layer": "原生批准",
+      "result": "RecoveryStore 未登记决定动作，首次批准失败且方案保持pending；修复后原生批准和CLI执行通过",
+      "evidence": "gui-approve-probe.json"
+    }
+  ],
+  "open_gaps": [
+    {
+      "priority": "P0",
+      "scope": "稳定接入与书库",
+      "missing": "已有作品的稳定 MCP 管理授权、机器创建结果自动进入书库、新任务自动登记稳定授权"
+    },
+    {
+      "priority": "P0",
+      "scope": "导入与交付",
+      "missing": "Agent 准备完整格式映射、选集与交付方案，作者审阅后获权执行及原操作恢复"
+    },
+    {
+      "priority": "P1",
+      "scope": "设置与扩展安装",
+      "missing": "偏好和客户端套件选择的机器方案与确定性事务；凭据继续使用可信私密渠道"
+    },
+    {
+      "priority": "P1",
+      "scope": "版本与冲突",
+      "missing": "初始化、分支、合并、远端同步和具体冲突的机器方案与精确页面交接"
+    },
+    {
+      "priority": "P1",
+      "scope": "领域子窗",
+      "missing": "骨架场次编辑、改编映射、剧情校正、资料关联、文件导入和权利记录"
+    },
+    {
+      "priority": "P1",
+      "scope": "详情及异常",
+      "missing": "逐条搜索命中、批注和问题的精确交接，全部子窗的空态、只读、无权、冲突和未知状态验收"
+    },
+    {
+      "priority": "P1",
+      "scope": "真实宿主",
+      "missing": "新安装宿主发现和 MCP Apps 交接；stdio 不替代宿主通过"
+    }
+  ],
+  "not_claimed": [
+    "全软件AI-first完成",
+    "全部子窗及异常状态GUI验收",
+    "真实新宿主MCP和MCP Apps",
+    "Windows",
+    "收费模型或视频生成",
+    "生产部署或签名公证安装包"
+  ],
+  "installation": {
+    "installed_at": "2026-11-15T03:11:26.867748+00:00",
+    "source": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/native/Hetu.app",
+    "installed": "/Applications/Hetu.app",
+    "backup": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/requirements-audit/ai-first-pages-20261115/Hetu-installed-before-ai-first.app",
+    "version": "hetu 0.6.0",
+    "file_count": 1834,
+    "all_file_hashes_match": true,
+    "codesign_deep_strict": true,
+    "artifact_sha256": {
+      "Contents/MacOS/HetuMac": "e443868dd681884771bfc5b9d865115f164d943ca1663a2bdec603195ae788a2",
+      "Contents/Helpers/hetu": "3ddc8760f7f943c97e34af1fbb5ec0e75b55bc59789a7015e834b8bfc37d59df",
+      "Contents/Helpers/hetu-mcp": "35637645eb853dc55deaee30c04a48e4107aac81993719ab73fb37ddc0209fc1",
+      "Contents/Frameworks/libhetu_core.dylib": "b52515a81eec0271ce2ee9faaf886cb80c2132c647f951efdffcf1b11c2259fc"
+    }
+  },
+  "preserved_work": {
+    "title": "归宋守渡",
+    "existing_files": 2973,
+    "unchanged_files": 2973,
+    "changed": [],
+    "missing": [],
+    "added": []
+  },
+  "raw_evidence": {
+    "build/requirements-audit/ai-first-pages-20261115/page-inventory.json": "7d1a2138246ebd050cd9b95e56942980703f597bf690febf6fc4ee4f0a79e8c5",
+    "build/requirements-audit/ai-first-pages-20261115/cli-bootstrap.json": "f0db789d907619b929fa9b285741ef1cb444cbc9404bfd572e62491b6d7aacfe",
+    "build/requirements-audit/ai-first-pages-20261115/cli-management.json": "03a2e2e55b5d612a0cb2b98c1d61699ca24d49f29ceffe3a9e2d334ff77317ad",
+    "build/requirements-audit/ai-first-pages-20261115/gui-approve-probe.json": "a80f2fa202a64a47a105708cbb0f804bc2bdbffb05013122b36ea9b2022f954a",
+    "build/requirements-audit/ai-first-pages-20261115/cli-gui-review-execute.json": "03b518bb49b7052b827b28314b0e1d4666915df92250593a872cf52c84d9f348",
+    "build/requirements-audit/ai-first-pages-20261115/native-package.log": "7cc7e499e0e13832ac984eb9f905a0fbebd20afe764244f86a96f6be35eea982",
+    "build/requirements-audit/ai-first-pages-20261115/native-recovery-fix-build.log": "ca720840df6c20ad3d1b907720c98bc7074e1efe2c67e3a42832b039453ed0f8",
+    "build/requirements-audit/ai-first-pages-20261115/native-page-handoff-final.log": "e0d91d4ceccc61bf4ec6efe1310ce91542a96cc70fe231bca9f3138f5a563824",
+    "build/requirements-audit/ai-first-pages-20261115/mcp-stdio.log": "95551aa14af0f8c2231f4672e005a9eb85e1f09eea20ed9b518f9dc75b46b33c",
+    "build/requirements-audit/ai-first-pages-20261115/source-freeze.json": "40a829f0086abf955a807412dedb9d79aecaf1caedc95e0d110118296c46b209",
+    "build/requirements-audit/ai-first-pages-20261115/installation.json": "b3611cd1e6f885a755c87edf00bf398368feb782ff494b8956dc6f62fc9f8552",
+    "build/requirements-audit/ai-first-pages-20261115/preserved-work-after.json": "e103fe2e31bc6f4535c3c0dc0e6f53860a5236bc822d5bc108eeec478398123c",
+    "build/requirements-audit/ai-first-pages-20261115/installed-mcp-stdio-final.log": "1e8f4421303debe0e15df02fbbb2fde102e5bf8e5dc9cbb2538334f7a31ffd7a"
+  },
+  "source_freeze_drift": []
+}

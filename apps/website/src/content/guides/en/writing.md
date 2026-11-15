@@ -6,6 +6,14 @@ Each book has independent details, covers and chapters. Enter a book from the li
 
 The [homepage demo](/en/#prototype) supports search, filtering and book switching. **Book details** lets you change the title, author, synopsis, status and sample cover.
 
+## Change a book cover
+
+In the Mac client, open **Book details** and click **Use as Cover** on a candidate to apply it immediately. The library updates with it, and the candidate is marked **Current Cover**. Click an image to preview it, or choose **Change Cover** to browse the candidates.
+
+For artwork outside the book, choose **Import Image** from the cover’s more menu, select a PNG, JPEG or WebP, review the preview and optional title overlay, then confirm **Use as Cover**. Cancelling keeps the existing cover; earlier covers remain in cover history. Candidates returned by your agent need no extra import.
+
+To design a new cover, use the page’s AI handoff to work with your chosen agent, then return to review the candidates. Importing an image requires no AI setup.
+
 Chapter navigation works on mobile too. Select a title or create an empty chapter with **New chapter**. The demo shows a volume; the native client also provides structure management and revision checks.
 
 ## Edit and save

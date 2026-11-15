@@ -34,5 +34,16 @@ fn main() {
         "creative_tasks.submit_result",
         json!({"task_ref":task["task_ref"],"request_sha256":task["request_sha256"],"candidates":[{"kind":"title","title":"方案一","source_format":"plain","source_ref_indices":[],"content":"雾港听潮"},{"kind":"title","title":"方案二","source_format":"plain","source_ref_indices":[],"content":"灯塔旧事"}],"complete":true,"missing_items":[],"provenance":{"client":"browser-contract-fixture","skill_version":"1"},"operation_key":"fixture-result"}),
     );
-    println!("{}", json!({"task_ref":task["task_ref"]}));
+    let mut output = json!({"task_ref":task["task_ref"]});
+    if let Some(directory) = std::env::args_os().nth(2) {
+        let directory = std::path::PathBuf::from(directory);
+        let grant = call(&kernel, "collaboration.authorize_workspace", json!({"client_adapter":"codex","collaboration_path":directory,"operation_key":"fixture-management"}));
+        let hub = hetu_core::collaboration::CollaborationHub::open(&directory, "codex").unwrap();
+        let novel = call(&kernel,"novels.get",json!({}));
+        let proposal = hub.request(json!({"action":"hetu.agent_operations.prepare","contract_revision":"1","input":{"management_ref":grant["management_ref"],"action":"hetu.novels.update","input":{"expected":{"revision":novel["revision"],"sha256":novel["sha256"]},"metadata":{"title":"雾港听潮","author_name":"测试作者","synopsis":"待作者审核的作品资料。","genre":"悬疑","language_tag":"zh-CN","status":"planning"},"operation_key":"fixture-profile"},"summary":"整理作品资料，等待作者确认","operation_key":"fixture-proposal"}}));
+        assert_eq!(proposal["status"], "succeeded", "{proposal}");
+        output["management_ref"] = grant["management_ref"].clone();
+        output["proposal_id"] = proposal["data"]["proposal_id"].clone();
+    }
+    println!("{output}");
 }

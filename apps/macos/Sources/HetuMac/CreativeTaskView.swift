@@ -44,6 +44,7 @@ struct CreativeTaskView: View {
             HStack {
                 Text(model.t("creative.title")).font(.system(size: 20, weight: .semibold))
                 Spacer()
+                PageAgentButton(model: model, page: model.documentID.isEmpty ? "book" : "document", object: model.documentID.isEmpty ? .object([:]) : .object(["document_id": .string(model.documentID), "revision_id": .string(model.baseRevisionID)]))
                 Button(model.t("common.close")) { dismiss() }.keyboardShortcut(.cancelAction).disabled(session.pending != nil)
             }
             Text(model.documentID.isEmpty ? model.title : model.title + " / " + model.documentTitle).foregroundStyle(WorkbenchPalette.muted)
@@ -248,6 +249,8 @@ struct CreativeImageCandidate: View {
     @State private var covers: CoverSession
     @State private var overlay = false
     private var isCover: Bool { session.task["request"]["task_kind"].string == "cover" }
+    private var reference: JSONValue { .object(["task_ref": session.taskReference, "submission_id": session.task["submission"]["submission_id"], "candidate_id": candidate["candidate_id"]]) }
+    private var selectedCover: Bool { model.cover["cover"]["source_ref"]["kind"].string == "creative_task" && model.cover["cover"]["source_ref"]["reference"] == reference }
     init(model: WorkspaceModel, session: CreativeTaskSession, candidate: JSONValue, maxHeight: CGFloat = 320) {
         self.model = model; self.session = session; self.candidate = candidate; self.maxHeight = maxHeight
         _covers = State(initialValue: CoverSession(model: model))
@@ -258,18 +261,31 @@ struct CreativeImageCandidate: View {
             Text(candidate["title"].string ?? "").font(.system(size: 14, weight: .semibold))
             if let value = session.task["image_previews"].array.first(where: { $0["candidate_id"] == candidate["candidate_id"] }),
                let raw = value["base64"].string, let data = Data(base64Encoded: raw), let image = NSImage(data: data) {
-                Image(nsImage: image).resizable().scaledToFit().frame(maxHeight: maxHeight).frame(maxWidth: .infinity).accessibilityLabel(candidate["title"].string ?? "")
+                if isCover {
+                    BookCoverView(title: model.title, author: model.novelMetadata["author_name"].string ?? "", identity: model.workspaceID,
+                        imageData: data, titleOverlay: overlay ? model.title : "", authorOverlay: overlay ? model.novelMetadata["author_name"].string ?? "" : "")
+                        .frame(height: maxHeight).accessibilityElement().accessibilityLabel(candidate["title"].string ?? "")
+                } else {
+                    Image(nsImage: image).resizable().scaledToFit().frame(maxHeight: maxHeight).frame(maxWidth: .infinity).accessibilityLabel(candidate["title"].string ?? "")
+                }
             }
             if isCover {
+                if selectedCover {
+                    Label(model.t("cover.selected"), systemImage: "checkmark.circle.fill").font(.system(size: 12)).foregroundStyle(WorkbenchPalette.jade)
+                }
                 Toggle(model.t("cover.add_text"), isOn: $overlay)
                 Button(model.t("cover.use")) { Task {
-                    let reference: JSONValue = .object(["task_ref": session.taskReference, "submission_id": session.task["submission"]["submission_id"], "candidate_id": candidate["candidate_id"]])
                     if await covers.selectTaskCandidate(reference, overlay: overlay) { await model.refresh() }
-                } }.disabled(session.held || covers.held || model.busy)
+                } }.buttonStyle(WorkbenchButtonStyle(primary: true)).disabled(session.held || covers.held || model.busy || (selectedCover && overlay == !(model.cover["cover"]["presentation"]["title_overlay"].string ?? "").isEmpty))
                 if let error = covers.error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
                 if covers.pending != nil { Button(model.t("drama.retry")) { Task { await covers.retry(); await model.refresh() } } }
             }
-        }.task { if isCover { await covers.refresh() } }
+        }.task(id: candidate["candidate_id"].string) {
+            if isCover {
+                await covers.refresh()
+                overlay = selectedCover && !(model.cover["cover"]["presentation"]["title_overlay"].string ?? "").isEmpty
+            }
+        }
     }
 }
 

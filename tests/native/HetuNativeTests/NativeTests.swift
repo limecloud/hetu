@@ -21,8 +21,18 @@ private func check(_ value: Bool, _ message: String) throws { if !value { throw 
         preferences.set(false, forKey: "Hetu.editor.autosave")
         defer { preferences.removePersistentDomain(forName: preferencesName) }
         if CommandLine.arguments.contains("--library-properties") { try await LibraryPropertiesTests.run(root: root, preferences: preferences); return }
+        if CommandLine.arguments.contains("--official-installer") { try await LocalAutomationTests.officialInstaller(root: root); return }
+        if CommandLine.arguments.contains("--library-admission") { try await LibraryAdmissionTests.run(root: root); return }
         if CommandLine.arguments.contains("--authoring") { try await AuthoringTests.run(root: root); return }
+        if CommandLine.arguments.contains("--local-settings") {
+            try await LocalAutomationTests.run(root: root)
+            return
+        }
+        if CommandLine.arguments.contains("--page-handoff") { try await PageHandoffTests.run(root: root); return }
         if CommandLine.arguments.contains("--artwork-library") { try await ArtworkLibraryTests.run(root: root); return }
+        if let index = CommandLine.arguments.firstIndex(of: "--artwork-performance"), CommandLine.arguments.count > index + 1 {
+            try await ArtworkLibraryTests.performance(root: root, workspaceURL: URL(fileURLWithPath: CommandLine.arguments[index + 1])); return
+        }
         if CommandLine.arguments.contains("--resource-impact") { try await ResourceImpactTests.run(root: root); return }
         if CommandLine.arguments.contains("--creative-workspace") { try await CreativeWorkspaceTests.run(root: root); return }
         if CommandLine.arguments.contains("--creation-projects") { try await CreationProjectTests.run(root: root); return }
@@ -42,6 +52,9 @@ private func check(_ value: Bool, _ message: String) throws { if !value { throw 
             return
         }
         try agentIntegrationTests(root, preferences: preferences)
+        try await PageHandoffTests.run(root: root)
+        try await LocalAutomationTests.run(root: root)
+        try await LibraryAdmissionTests.run(root: root)
         try await LibraryPropertiesTests.run(root: root, preferences: preferences)
         try await AuthoringTests.run(root: root)
         try await CreativeWorkspaceTests.run(root: root)

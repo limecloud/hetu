@@ -1,0 +1,345 @@
+{
+  "schema_version": "1.0.0",
+  "verified_at": "2026-11-15T03:51:11.410927+08:00",
+  "executor": "当前 Codex 对话；业务经 Skills、CLI/MCP，Computer Use 仅作原生界面验收",
+  "overall_result": "partial",
+  "workspace": {
+    "title": "归宋守渡",
+    "id": "workspace_76964fb2-702f-4483-a4f7-e38c0f1d8a8d",
+    "relative_path": "build/book-journey/归宋守渡",
+    "blueprint_revision": 3
+  },
+  "generation": {
+    "model": "gpt-image-2.5-flare",
+    "connection_kind": "custom_openai_compatible",
+    "credentials_in_evidence": false,
+    "accepted": [
+      {
+        "category": "cover",
+        "task_id": "task_1ff12797-c8da-4067-9665-4e8264ab06f8",
+        "submission_id": "submission_c1a6b9dc-b4f7-4b6e-bbc6-44f2daab0c9a",
+        "candidates": [
+          {
+            "candidate_id": "candidate_be31a334-81dd-4704-bea8-042c8c6b17c4",
+            "title": "归宋守渡 封面底图",
+            "sha256": "358f83e2c9008fcef03c42a3666cbcda81ee7ca5a869510d1aebac87cc1906b6",
+            "width": 1024,
+            "height": 1536
+          }
+        ],
+        "receipt": "build/requirements-audit/image-generation-20261115/cover-submission.json"
+      },
+      {
+        "category": "scene",
+        "task_id": "task_b4579756-ebdf-43dd-a3f9-bf3d81028c0b",
+        "submission_id": "submission_145345ac-e4a2-4ea9-84f5-874cafb3f364",
+        "candidates": [
+          {
+            "candidate_id": "candidate_1b9a1c2b-e82a-4d0f-bfbe-bcc21bd43342",
+            "title": "青石渡 场景参考",
+            "sha256": "1571a92fd89ad63bf817d01c9f63796a6bc320c3a359d34f38c6982aadbfb7f3",
+            "width": 1536,
+            "height": 1024
+          }
+        ],
+        "receipt": "build/requirements-audit/image-generation-20261115/scene-submission.json"
+      },
+      {
+        "category": "illustration",
+        "task_id": "task_3faf76b2-bca4-493e-87af-c5cdc0c1949c",
+        "submission_id": "submission_a3a024fc-e6ce-40e9-8ebc-11e3bc990fd5",
+        "candidates": [
+          {
+            "candidate_id": "candidate_0edd68fe-c97a-41ea-92d1-5dc3f30d76a5",
+            "title": "没有灯的夜船 情节插图",
+            "sha256": "efe48cba5a3f285c18ab17f7aad85377fa88d16748a0fd81055de9a37b732bfc",
+            "width": 1536,
+            "height": 1024
+          }
+        ],
+        "receipt": "build/requirements-audit/image-generation-20261115/illustration-submission.json"
+      },
+      {
+        "category": "character",
+        "task_id": "task_5f04e654-ffa1-47f9-8126-b6e37e781824",
+        "submission_id": "submission_825eeb96-6b61-48ad-94a8-979ed84ee4bd",
+        "candidates": [
+          {
+            "candidate_id": "candidate_4be99539-0048-44de-8c5e-52adc8ee9c00",
+            "title": "沈砚 正面",
+            "sha256": "78db51efdfbc26c2f704de7ec86ab520c205d3db19fe599eee3c8e3261df8f72",
+            "width": 591,
+            "height": 887,
+            "image_category": "character",
+            "image_view": "front",
+            "subject_refs": [
+              {
+                "blueprint_revision": 3,
+                "entity_ref": "character_00000001-1111-4111-8111-111111111111",
+                "kind": "entity"
+              }
+            ]
+          },
+          {
+            "candidate_id": "candidate_55058752-a68b-4fe0-8c31-94d7ca6c6899",
+            "title": "沈砚 侧面",
+            "sha256": "0622ea725630a9cf6739761138e68472660ca2a2e417a7ff683d88c685fd9d7a",
+            "width": 591,
+            "height": 887,
+            "image_category": "character",
+            "image_view": "side",
+            "subject_refs": [
+              {
+                "blueprint_revision": 3,
+                "entity_ref": "character_00000001-1111-4111-8111-111111111111",
+                "kind": "entity"
+              }
+            ]
+          },
+          {
+            "candidate_id": "candidate_e363a976-2b9f-4f93-bc39-3b7e7c45b57d",
+            "title": "沈砚 背面",
+            "sha256": "37ea20f0ab4a128d92f1c5cf67eb25abab2ccdff2679f6a2a7bb3efed3461268",
+            "width": 592,
+            "height": 887,
+            "image_category": "character",
+            "image_view": "back",
+            "subject_refs": [
+              {
+                "blueprint_revision": 3,
+                "entity_ref": "character_00000001-1111-4111-8111-111111111111",
+                "kind": "entity"
+              }
+            ]
+          },
+          {
+            "candidate_id": "candidate_363b67dd-b27c-4819-bf3f-b0ca391004c9",
+            "title": "沈砚 三视图",
+            "sha256": "cb2ede12e202b3a1cbae05c4a3d0c70eb803633c8fea2c2d6afe4c0d16218299",
+            "width": 1774,
+            "height": 887,
+            "image_category": "character",
+            "image_view": "three_view",
+            "subject_refs": [
+              {
+                "blueprint_revision": 3,
+                "entity_ref": "character_00000001-1111-4111-8111-111111111111",
+                "kind": "entity"
+              }
+            ]
+          }
+        ],
+        "receipt": "build/requirements-audit/image-generation-20261115/character-views-submission.json"
+      }
+    ],
+    "original_unresolved_plans": [
+      {
+        "category": "character",
+        "plan_id": "model_33fc44ff-7eb3-4151-b881-6ef8f2030f81",
+        "last_recorded_status": "reconciling",
+        "fresh_query_in_performance_review": false,
+        "resent": false
+      },
+      {
+        "category": "prop",
+        "plan_id": "model_26b85008-697d-4003-9e27-6a227546f629",
+        "last_recorded_status": "reconciling",
+        "fresh_query_in_performance_review": false,
+        "resent": false
+      }
+    ],
+    "character_derivation": {
+      "provider_requests": 1,
+      "method": "完整三视图一次生成；无缩放裁出正面、侧面、背面，并保留原图",
+      "record": "build/requirements-audit/image-generation-20261115/character-views-crops.json",
+      "check": "build/requirements-audit/image-generation-20261115/character-views-codex-check.json"
+    },
+    "visible_candidates": 7,
+    "adopted_or_finalized_by_this_review": false
+  },
+  "native_ui": {
+    "artifact": "build/native/HetuDev.app",
+    "fresh_final_process_verified": true,
+    "checks": [
+      "锁定设定仍可打开角色，只读展示；沈砚卡片使用单人正面",
+      "人物形象、服装造型、相关插图分类；服装空态有精确 Agent 交接入口",
+      "正面、侧面、背面和完整三视图等比展示；放大与切图一致",
+      "修改意见默认当前图片；空意见随切图变化；未提交意见及原对象保留",
+      "临时意见已清空，未保存任何验收意见",
+      "中英文角色图组和封面详情实际查看；内容标题保留作品原文",
+      "封面候选有预览及选用入口，本次未选用；界面已恢复中文"
+    ],
+    "previous_ui_checks": [
+      "地点场景图与统一图片资产库的中文和英文展示"
+    ],
+    "document_link_note": "当前插图关联人物及地点，未登记具体正文。文档关联由真实 Core/SDK 集成测试验证，不宣称第五章已显示该插图。"
+  },
+  "performance": {
+    "result": "partial_not_accepted_as_startup_target",
+    "change": [
+      "进程内最多32张缩略图缓存，命中前仍核验当前原图完整摘要、大小、媒体类型及上游权限",
+      "同作品对象页与统一库共用图片状态；并发刷新合并，刷新开始保留现有图片；切书立即清理",
+      "开发构建保留调试信息，对 Core 及图片/摘要依赖启用优化"
+    ],
+    "resident_core_abi": {
+      "before": {
+        "context_open": 1.4991,
+        "capabilities": 0.35,
+        "workspaces.get": 0.0467,
+        "novels.get": 0.3575,
+        "covers.get": 4.2268,
+        "blueprints.get": 0.1686,
+        "documents.list": 0.1404,
+        "drafts.list": 0.2374,
+        "artwork_task_list": 0.3656,
+        "pass1/task_5f04e654-ffa1-47f9-8126-b6e37e781824": 7.0997,
+        "pass1/task_3faf76b2-bca4-493e-87af-c5cdc0c1949c": 2.666,
+        "pass1/task_b4579756-ebdf-43dd-a3f9-bf3d81028c0b": 5.2647,
+        "pass1/task_1ff12797-c8da-4067-9665-4e8264ab06f8": 9.6008,
+        "library_pass1": 24.6356,
+        "pass2/task_5f04e654-ffa1-47f9-8126-b6e37e781824": 9.5469,
+        "pass2/task_3faf76b2-bca4-493e-87af-c5cdc0c1949c": 3.8803,
+        "pass2/task_b4579756-ebdf-43dd-a3f9-bf3d81028c0b": 3.7231,
+        "pass2/task_1ff12797-c8da-4067-9665-4e8264ab06f8": 8.7659,
+        "library_pass2": 25.924
+      },
+      "final": {
+        "context_open": 1.8964,
+        "capabilities": 0.7941,
+        "workspaces.get": 0.4406,
+        "novels.get": 0.5627,
+        "covers.get": 1.6704,
+        "blueprints.get": 0.1026,
+        "documents.list": 0.0431,
+        "drafts.list": 0.4832,
+        "artwork_task_list": 0.7726,
+        "pass1/task_5f04e654-ffa1-47f9-8126-b6e37e781824": 3.0783,
+        "pass1/task_3faf76b2-bca4-493e-87af-c5cdc0c1949c": 1.1012,
+        "pass1/task_b4579756-ebdf-43dd-a3f9-bf3d81028c0b": 1.9473,
+        "pass1/task_1ff12797-c8da-4067-9665-4e8264ab06f8": 1.6759,
+        "library_pass1": 7.8059,
+        "pass2/task_5f04e654-ffa1-47f9-8126-b6e37e781824": 0.4999,
+        "pass2/task_3faf76b2-bca4-493e-87af-c5cdc0c1949c": 0.1987,
+        "pass2/task_b4579756-ebdf-43dd-a3f9-bf3d81028c0b": 0.6154,
+        "pass2/task_1ff12797-c8da-4067-9665-4e8264ab06f8": 0.5605,
+        "library_pass2": 1.8884
+      },
+      "scope": "常驻 Core 上下文读取4个任务的7张图片；不等同应用启动、SDK完整链路或屏幕绘制时间"
+    },
+    "native_sdk_during_build": [
+      {
+        "images": 0,
+        "seconds": 16.677253833,
+        "step": "workspace_open"
+      },
+      {
+        "images": 7,
+        "seconds": 22.921915375,
+        "step": "first_library"
+      },
+      {
+        "images": 7,
+        "seconds": 3.45858875,
+        "step": "refresh_library"
+      },
+      {
+        "images": 7,
+        "seconds": 5.269534458,
+        "step": "entity_library"
+      }
+    ],
+    "native_sdk_after_own_builds": [
+      {
+        "images": 0,
+        "seconds": 11.886637833,
+        "step": "workspace_open"
+      },
+      {
+        "images": 7,
+        "seconds": 26.686240458,
+        "step": "first_library"
+      },
+      {
+        "images": 7,
+        "seconds": 11.632683,
+        "step": "refresh_library"
+      },
+      {
+        "images": 7,
+        "seconds": 8.895294792,
+        "step": "entity_library"
+      }
+    ],
+    "host": {
+      "os": "15.8.3",
+      "cpus": 8,
+      "memory_bytes": 17179869184
+    },
+    "final_load": "3:50  up 2 days, 18:19, 3 users, load averages: 112.75 111.04 84.11",
+    "observed_one_minute_load_peak": 142.43,
+    "swap_used_mib": 18424.69,
+    "measurement_limit": "当前机器严重高负载与交换，保留全部测量，不取最快样本冒充普遍保证；首次完整打开仍未达到性能验收目标。",
+    "remaining_cost": "现有 Store 读锁仍检查历史事务，首次缩图仍需完整解码；此次未更改事务与完整性边界。"
+  },
+  "checks": [
+    {
+      "check": "Core creative_tasks/covers/media",
+      "result": "pass",
+      "test_count": 20,
+      "log": "build/requirements-audit/image-generation-20261115/performance-final-core-tests.log",
+      "sha256": "3f2d529fd0f8f3259ed34b48bbc436b56af8cb610b64d7eee48e4b733db76cb8"
+    },
+    {
+      "check": "MCP stdio",
+      "result": "pass",
+      "test_count": 17,
+      "log": "build/requirements-audit/image-generation-20261115/performance-final-mcp-tests.log",
+      "sha256": "88481ab874343cd047e7f94ee2448f4fa191e18de6b003d3f1589922414b6226"
+    },
+    {
+      "check": "Native artwork library",
+      "result": "pass",
+      "test_count": null,
+      "log": "build/requirements-audit/image-generation-20261115/performance-final-native-tests.log",
+      "sha256": "dd238ba535d415a565a767bf04687c7dc585db085d2e30328e3460f37d537b9e"
+    },
+    {
+      "check": "Native covers",
+      "result": "pass",
+      "test_count": null,
+      "log": "build/requirements-audit/image-generation-20261115/performance-final-cover-tests.log",
+      "sha256": "f5fd1eb37cb758d6f29d8bd49ba45c5c893e34a6f34d3769980923b8023ee83b"
+    }
+  ],
+  "integrity": {
+    "recorded_at": "2026-11-15T03:50:06.268659+08:00",
+    "original_files": 214,
+    "changed": [],
+    "final_artifact_mismatches": [],
+    "load": "3:50  up 2 days, 18:19, 3 users, load averages: 112.75 111.04 84.11",
+    "host": {
+      "os": "15.8.3",
+      "cpus": 8,
+      "memory_bytes": 17179869184
+    }
+  },
+  "artifacts": {
+    "recorded_at": "2026-11-15T03:34:10.681912",
+    "artifacts": {
+      "MacOS/HetuMac": "9bf0258026fa92c3e52d641835d94d88f7dda5cc10301019325f32907ba906c0",
+      "Frameworks/libhetu_core.dylib": "e966ff377abd07a1b191ab1da6887e4e45de33188df196b02b17573fa32105b9",
+      "Helpers/hetu": "3ddc8760f7f943c97e34af1fbb5ec0e75b55bc59789a7015e834b8bfc37d59df",
+      "Helpers/hetu-mcp": "12cb2d14ebfb45e63a985f7c41e122961e2c1001686949d28310cfb93cb0fe9a"
+    },
+    "source_revision": "9db5c08a79753afa8b3fe225a2806ad8ec944f19",
+    "dirty_worktree": true
+  },
+  "boundaries": [
+    "原人物和道具两项计划仍按最后回执标未知，未重发",
+    "候选接收不等于采用、设定变更或定稿",
+    "未调用新生成请求来测性能",
+    "未执行commit/push/部署/签名安装包验收",
+    "此次标准stdio测试不证明所有真实宿主的Apps能力"
+  ],
+  "raw_evidence_directory": "build/requirements-audit/image-generation-20261115"
+}

@@ -63,6 +63,7 @@ struct PlotWorkbenchView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 8) {
             WorkbenchHeading(title: model.t("plot.title"), subtitle: model.t("plot.description"), artwork: result == .null ? "" : "story-world") {
+                PageAgentButton(model: model, page: "plot", object: pageObject)
                 Button(model.t("common.refresh")) { Task { await reload(); if !revisionID.isEmpty { await read(revisionID) } } }
             }
             HStack {
@@ -85,6 +86,12 @@ struct PlotWorkbenchView: View {
             }
             if fixedSource == .null { Text(model.t("plot.saved_source")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted) }
         }
+    }
+    private var pageObject: JSONValue {
+        if let source = plot["source_revisions"].array.first {
+            return .object(["document_id": source["document_id"], "revision_id": source["revision_id"]])
+        }
+        return documentID.isEmpty ? .object([:]) : .object(["document_id": .string(documentID)])
     }
     private var revisionList: some View {
         ScrollView {
@@ -237,6 +244,7 @@ struct PlotSourceView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(model.t("plot.source")).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "document", object: PageHandoff.sourceObject(source))
             Text(model.t(noteKey)).foregroundStyle(WorkbenchPalette.muted)
             if let error { Text(error).foregroundStyle(WorkbenchPalette.danger) }
             if document != .null {

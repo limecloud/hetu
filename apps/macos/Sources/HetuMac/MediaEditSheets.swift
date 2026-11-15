@@ -24,6 +24,7 @@ struct AssetEditorSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text(model.t(editing ? "media.edit_asset" : "media.import")).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "media", object: editing ? .object(["asset_id": initial["asset"]["asset_id"], "revision": initial["asset"]["revision"]]) : .object([:]))
             ScrollView {
                 Form {
                     if !editing {
@@ -127,6 +128,7 @@ struct CueEditorSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text(model.t(editing ? "media.edit_cue" : "media.new_cue")).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "media", object: editing ? .object(["cue_id": initial["cue"]["cue_id"], "revision": initial["cue"]["revision"]]) : .object([:]))
             ScrollView {
                 VStack(alignment: .leading, spacing: 14) {
                     TextField(model.t("media.name"), text: $title).textFieldStyle(.roundedBorder)

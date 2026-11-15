@@ -48,11 +48,25 @@ struct FindingDispositionSheet: View {
     @State private var reason = ""
     @State private var error: String?
     @State private var operationKey = UUID().uuidString
+    @State private var suggestions: [JSONValue] = []
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text(model.t("validation.review")).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "validation", object: .object(["report_id": report["report_id"], "finding_id": finding["finding_id"]]))
             Text(model.t(finding["message_key"].string ?? "validation.prerequisites")).font(.system(size: 14, weight: .semibold))
             Text(model.t("validation.disposition_note")).foregroundStyle(WorkbenchPalette.muted)
+            if !suggestions.isEmpty {
+                ForEach(Array(suggestions.enumerated()), id: \.offset) { _, value in
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(value["suggestion"]["reason"].string ?? "").textSelection(.enabled)
+                        Button(model.t("validation.use_suggestion")) {
+                            disposition = value["suggestion"]["disposition"].string ?? "acknowledged"
+                            reason = value["suggestion"]["reason"].string ?? ""
+                        }.disabled(value["is_current"].bool != true)
+                    }
+                }
+            }
+            Button(model.t("validation.refresh_suggestions")) { Task { await loadSuggestions() } }
             if !history.isEmpty {
                 DisclosureGroup(model.t("validation.history")) {
                     ScrollView {
@@ -85,5 +99,9 @@ struct FindingDispositionSheet: View {
             }
         }.padding(24).frame(width: 640).disabled(model.busy)
         .onAppear { disposition = current["disposition"].string == "open" ? "acknowledged" : current["disposition"].string ?? "acknowledged"; reason = current["reason"].string ?? "" }
+        .task { await loadSuggestions() }
+    }
+    private func loadSuggestions() async {
+        if let value = await model.workspaceAction("hetu.findings.suggestions", input: ["report_id": report["report_id"], "finding_id": finding["finding_id"]], onFailure: { error = $0; _ = $1 }) { suggestions = value["suggestions"].array }
     }
 }

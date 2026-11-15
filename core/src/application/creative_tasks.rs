@@ -1004,10 +1004,19 @@ impl Kernel {
                 record["working_copy_ref"] = reference.clone();
             }
             if candidate["kind"] != "image" {
-                ensure(candidate.get("image_category").is_none() && candidate.get("subject_refs").is_none(),
+                ensure(candidate.get("image_category").is_none() && candidate.get("subject_refs").is_none() && candidate.get("image_view").is_none(),
                     "invalid_input", "图片分类和关联仅适用于图片候选。")?;
             }
             if candidate["kind"] == "image" {
+                if candidate.get("image_view").is_some() {
+                    ensure(candidate["image_category"] == "character" || candidate["image_category"] == "costume",
+                        "invalid_input", "人物视图仅适用于人物形象或服装造型。")?;
+                }
+                if candidate["image_category"] == "character" || candidate["image_category"] == "costume" {
+                    let people: Vec<_> = candidate["subject_refs"].as_array().into_iter().flatten()
+                        .filter(|s| s["kind"] == "entity" && s["entity_ref"].as_str().is_some_and(|v| v.starts_with("character_"))).collect();
+                    ensure(people.len() == 1, "invalid_input", "人物形象和服装造型须明确关联一个角色；多人情节画面请归入插图。")?;
+                }
                 // 关联只能指向本候选已声明的固定来源，不扩大任务读取或编辑权限。
                 for subject in candidate["subject_refs"].as_array().into_iter().flatten() {
                     if subject["kind"] == "document" {
@@ -1024,7 +1033,7 @@ impl Kernel {
                             "hetu.invalid_source_ref", "图片关联的对象不在固定设定中。")?;
                     }
                 }
-                for key in ["image_category", "subject_refs"] {
+                for key in ["image_category", "image_view", "subject_refs"] {
                     if let Some(value) = candidate.get(key) { record[key] = value.clone(); }
                 }
                 let media = self.image_candidate(&task, candidate)?;
@@ -1139,13 +1148,7 @@ impl Kernel {
                 let mut file = self
                     .store
                     .managed_media(text(candidate, "relative_path")?)?;
-                let image = crate::infrastructure::media::decode_image(&mut file)?;
-                ensure(
-                    image.scan["sha256"] == candidate["sha256"],
-                    "revision_conflict",
-                    "图片候选读取期间发生变化。",
-                )?;
-                let mut preview = crate::infrastructure::media::image_preview(&image.decoded)?;
+                let mut preview = crate::infrastructure::media::verified_image_preview(&mut file, candidate)?;
                 preview["candidate_id"] = candidate["candidate_id"].clone();
                 previews.push(preview);
             }

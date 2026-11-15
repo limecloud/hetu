@@ -1,4 +1,4 @@
-//! 从零筹备的有限授权。只分配全新受管目录，不接管已有作品，也不授予采纳与定稿权。
+//! 精确作品授权与独立建书筹备；所有范围均不授予采纳与定稿权。
 use super::*;
 
 const PROJECT_ACTIONS: &[&str] = &[
@@ -27,11 +27,33 @@ const WORKSPACE_ACTIONS: &[&str] = &[
     "hetu.creative_tasks.preview_prompt",
     "hetu.creative_tasks.prepare",
 ];
+// 已有作品授权只开放读取、方案和有界检查；具体变更仍须作者批准固定方案。
+const REVIEW_ACTIONS: &[&str] = &[
+    "hetu.capabilities.get", "hetu.operations.get", "hetu.workspaces.get",
+    "hetu.novels.get", "hetu.documents.list", "hetu.documents.get", "hetu.documents.history",
+    "hetu.outlines.get", "hetu.blueprints.get", "hetu.blueprints.preview_change",
+    "hetu.drama.projects.list", "hetu.drama.projects.get", "hetu.drama.episodes.get",
+    "hetu.drama.build_skeleton", "hetu.drama.compare",
+    "hetu.resources.list", "hetu.resources.get", "hetu.resource_usages.list",
+    "hetu.assets.list", "hetu.assets.get", "hetu.assets.inspect", "hetu.cues.list", "hetu.cues.get",
+    "hetu.plot.extract", "hetu.plot.list", "hetu.plot.get", "hetu.validation.run",
+    "hetu.reports.list", "hetu.reports.get", "hetu.reviews.list", "hetu.reviews.get",
+    "hetu.reviews.validate", "hetu.drafts.get", "hetu.creative_tasks.preview_prompt",
+    "hetu.git.status", "hetu.git.diff", "hetu.git.log", "hetu.git.list_snapshots",
+    "hetu.git.get_snapshot", "hetu.git.snapshot_diff", "hetu.bundles.verify",
+    "hetu.git.snapshot", "hetu.image_tasks.preview_prompt",
+    "hetu.git.references", "hetu.git.read_version", "hetu.git.merge_preview",
+    "hetu.findings.suggest", "hetu.findings.suggestions",
+    "hetu.documents.preview_import", "hetu.documents.preview_export", "hetu.bundles.preview",
+    "hetu.drama.get_skeleton", "hetu.drama.list_skeletons", "hetu.drama.get_comparison", "hetu.drama.list_comparisons", "hetu.drama.get_script_mapping",
+    "hetu.handoffs.get", "hetu.agent_operations.prepare", "hetu.agent_operations.list",
+    "hetu.agent_operations.get", "hetu.agent_operations.execute",
+];
 pub(crate) fn management_action(action: &str) -> bool {
-    PROJECT_ACTIONS.contains(&action) || WORKSPACE_ACTIONS.contains(&action)
+    PROJECT_ACTIONS.contains(&action) || WORKSPACE_ACTIONS.contains(&action) || REVIEW_ACTIONS.contains(&action)
 }
 fn reference_schema() -> Value {
-    json!({"type":"object","additionalProperties":false,"required":["grant_id","scope_ref"],"properties":{"grant_id":{"type":"string","pattern":"^[0-9a-f]{64}$"},"scope_ref":{"type":"object","additionalProperties":false,"required":["kind","id"],"properties":{"kind":{"enum":["workspace","creation_project"]},"id":{"type":"string","maxLength":64}}}}})
+    json!({"type":"object","additionalProperties":false,"required":["grant_id","scope_ref"],"properties":{"grant_id":{"type":"string","pattern":"^[0-9a-f]{64}$"},"grant_revision":{"type":"integer","minimum":1},"scope_ref":{"type":"object","additionalProperties":false,"required":["kind","id"],"properties":{"kind":{"enum":["workspace","creation_project"]},"id":{"type":"string","maxLength":64}}}}})
 }
 pub(super) fn extend_catalog(actions: &mut Vec<Value>) {
     for mut action in Kernel::management_action_catalog()
@@ -41,7 +63,7 @@ pub(super) fn extend_catalog(actions: &mut Vec<Value>) {
         .cloned()
     {
         action["input_schema"]["properties"]["management_ref"] = reference_schema();
-        action["input_schema"]["required"]
+        action["input_schema"].as_object_mut().unwrap().entry("required").or_insert_with(|| json!([]))
             .as_array_mut()
             .unwrap()
             .push(json!("management_ref"));
@@ -84,6 +106,12 @@ fn record(binding: &Value) -> Result<Value> {
         "forbidden",
         "新建授权不可用或已撤销。",
     )?;
+    if let Some(expires) = value["expires_at"].as_i64() {
+        ensure(time::OffsetDateTime::now_utc().unix_timestamp() < expires, "forbidden", "作品授权已过期。")?;
+    }
+    if value["authorized_workspace"] == true {
+        ensure(value["grant_revision"] == binding["grant_revision"], "forbidden", "作品授权已变化，请重新交接。")?;
+    }
     Ok(value)
 }
 pub(crate) fn check_management(binding: &Value, root: &Path, action: Option<&str>) -> Result<()> {
@@ -116,15 +144,23 @@ pub(crate) fn check_management(binding: &Value, root: &Path, action: Option<&str
             "hetu.unsafe_path",
             "管理目录不能是链接或文件。",
         )?;
+        #[cfg(unix)]
+        if grant["root_identity"].is_object() {
+            use std::os::unix::fs::MetadataExt;
+            ensure(grant["root_identity"]["device"] == metadata.dev() && grant["root_identity"]["inode"] == metadata.ino(),
+                "forbidden", "作品目录身份已变化，请重新授权。")?;
+        }
     }
     if let Some(name) = action {
         ensure(
             if project {
                 PROJECT_ACTIONS
+            } else if grant["authorized_workspace"] == true {
+                REVIEW_ACTIONS
             } else {
                 WORKSPACE_ACTIONS
             }
-            .contains(&name),
+            .contains(&name) || !project && grant["authorized_workspace"] != true && REVIEW_ACTIONS.contains(&name),
             "forbidden",
             "该授权不允许此动作。",
         )?;
@@ -232,7 +268,7 @@ impl CollaborationHub {
             return self.begin_creation(&request["input"]);
         }
         let reference = &request["input"]["management_ref"];
-        let binding = json!({"directory":self.directory.canonicalize()?,"client_adapter":self.client,"grant_id":reference["grant_id"],"kind":reference["scope_ref"]["kind"]});
+        let binding = json!({"directory":self.directory.canonicalize()?,"client_adapter":self.client,"grant_id":reference["grant_id"],"grant_revision":reference["grant_revision"],"kind":reference["scope_ref"]["kind"]});
         let grant = record(&binding)?;
         let root = &grant[if binding["kind"] == "creation_project" {
             "project_path"
@@ -251,6 +287,7 @@ impl CollaborationHub {
             "forbidden",
             "管理引用与作品身份不一致。",
         )?;
+        ensure(grant["workspace_id"].is_null() || grant["workspace_id"] == kernel.scope(), "forbidden", "作品身份与原授权不一致。")?;
         let mut routed = request.clone();
         routed["input"]
             .as_object_mut()
@@ -301,17 +338,112 @@ impl CollaborationHub {
                 target_binding.clone(),
             )?;
             result["data"]["workspace_management_ref"] = management_ref(&target_binding, &target);
+            let store = Store::open(&self.directory)?;
+            let _guard = store.lock()?;
+            store.recover()?;
+            let path = record_path(&self.client, text(&binding, "grant_id")?)?;
+            let mut latest = store.json(&path)?;
+            ensure(latest["revoked"] == false, "forbidden", "新建授权已撤销。")?;
+            latest["created_workspace"] = json!({"workspace_id":target.scope(),"path":grant["target_path"],
+                "management_ref":result["data"]["workspace_management_ref"]});
+            store.transaction(&BTreeMap::from([(path, encoded(&latest)?)]))?;
         }
         if action == "hetu.creative_tasks.prepare" {
             let fixed = &result["data"]["task_ref"];
             kernel.authorize_collaboration(&json!({"task_ref":fixed,"client_adapter":self.client,"collaboration_path":self.directory,"operation_key":format!("managed-task-{}", text(fixed,"task_id")?)}), false)?;
             result["data"]["task_locator"] = locator(fixed)?;
         }
+        if action == "hetu.agent_operations.execute" && result["data"]["result"]["task_ref"].is_object() {
+            let fixed = &result["data"]["result"]["task_ref"];
+            kernel.authorize_collaboration(&json!({"task_ref":fixed,"client_adapter":self.client,"collaboration_path":self.directory,
+                "operation_key":format!("managed-task-{}", text(fixed,"task_id")?)}), false)?;
+            result["data"]["task_locator"] = locator(fixed)?;
+        }
         Ok(result)
+    }
+
+    pub(super) fn created_works(&self, input: &Value) -> Result<Value> {
+        let mut works = Vec::new();
+        if !self.directory.try_exists()? { return Ok(json!({"works":[],"next_cursor":null})); }
+        let store = Store::open(&self.directory)?;
+        let _guard = store.read_lock()?;
+        let folder = format!("management/{}", self.client);
+        if !store.entries("")?.iter().any(|name| name == "management") || !store.entries("management")?.iter().any(|name| name == &self.client) {
+            return Ok(json!({"works":[],"next_cursor":null}));
+        }
+        for name in store.entries(&folder)? {
+            let grant = store.json(&format!("{folder}/{name}"))?;
+            if grant["revoked"] == false && grant["client_adapter"] == self.client && grant["created_workspace"].is_object() {
+                works.push(grant["created_workspace"].clone());
+            }
+        }
+        works.sort_by(|a,b| a["workspace_id"].as_str().cmp(&b["workspace_id"].as_str()));
+        let offset = input["cursor"].as_str().map(str::parse::<usize>).transpose().map_err(|_| Error::new("invalid_input", "分页引用无效。"))?.unwrap_or(0);
+        let limit = input["limit"].as_u64().unwrap_or(50) as usize;
+        let end = offset.saturating_add(limit).min(works.len());
+        let next = if end < works.len() { json!(end.to_string()) } else { Value::Null };
+        Ok(json!({"works":works.into_iter().skip(offset).take(limit).collect::<Vec<_>>(),"next_cursor":next}))
     }
 }
 
 impl Kernel {
+    pub(crate) fn workspace_access(&self, input: &Value) -> Result<Value> {
+        ensure(self.is_author(), "forbidden", "作品授权状态仅供可信作者入口读取。")?;
+        let client = text(input,"client_adapter")?;
+        client_valid(client)?;
+        let directory = input["collaboration_path"].as_str().map(PathBuf::from).map(Ok).unwrap_or_else(default_directory)?;
+        let grant_id = digest(format!("workspace\0{}\0{client}",self.scope()));
+        let reference = json!({"grant_id":grant_id,"scope_ref":{"kind":"workspace","id":self.scope()}});
+        if !directory.try_exists()? { return Ok(json!({"authorized":false,"client_adapter":client})); }
+        let store = Store::open(&directory)?;
+        let _guard = store.read_lock()?;
+        let path = record_path(client,&grant_id)?;
+        if !store.exists(&path)? { return Ok(json!({"authorized":false,"client_adapter":client})); }
+        let grant = store.json(&path)?;
+        let mut reference = reference;
+        reference["grant_revision"] = grant["grant_revision"].clone();
+        let current = grant["revoked"] == false && grant["target_path"] == json!(self.root_path()) && grant["workspace_id"] == self.scope()
+            && grant["expires_at"].as_i64().is_none_or(|at| at > time::OffsetDateTime::now_utc().unix_timestamp());
+        Ok(json!({"authorized":current,"management_ref":reference,"client_adapter":client,"expires_at":grant["expires_at"]}))
+    }
+    pub(crate) fn authorize_workspace(&self, input: &Value) -> Result<Value> {
+        ensure(self.is_author() && self.scope_kind() == "workspace", "forbidden", "只有可信作者入口可以授权当前作品。")?;
+        let client = text(input, "client_adapter")?;
+        client_valid(client)?;
+        let directory = input["collaboration_path"].as_str().map(PathBuf::from).map(Ok).unwrap_or_else(default_directory)?;
+        ensure(directory.is_absolute() && !directory.starts_with(self.root_path()), "hetu.unsafe_path", "授权目录必须位于作品之外。")?;
+        std::fs::create_dir_all(&directory)?;
+        let directory = directory.canonicalize()?;
+        ensure(!directory.starts_with(self.root_path()), "hetu.unsafe_path", "授权目录不能链接到作品内部。")?;
+        let store = Store::open(&directory)?;
+        store.directory(".hetu/transactions")?;
+        let _guard = store.lock()?;
+        store.recover()?;
+        let grant_id = digest(format!("workspace\0{}\0{client}", self.scope()));
+        let path = record_path(client, &grant_id)?;
+        let expires = input.get("expires_at").cloned().unwrap_or(Value::Null);
+        if let Some(value) = expires.as_i64() {
+            ensure(value > time::OffsetDateTime::now_utc().unix_timestamp(), "invalid_input", "授权到期时间必须晚于现在。")?;
+        }
+        let previous = if store.exists(&path)? { store.json(&path)? } else { Value::Null };
+        #[cfg(unix)]
+        let identity = {
+            use std::os::unix::fs::MetadataExt;
+            let meta = std::fs::metadata(self.root_path())?;
+            json!({"device":meta.dev(),"inode":meta.ino()})
+        };
+        #[cfg(not(unix))]
+        let identity = Value::Null;
+        let revision = if previous["revoked"] == false && previous["expires_at"] == expires && previous["target_path"] == json!(self.root_path()) && previous["root_identity"] == identity {
+            previous["grant_revision"].as_u64().unwrap_or(0).max(1)
+        } else { previous["grant_revision"].as_u64().unwrap_or(0).checked_add(1).ok_or_else(|| Error::new("hetu.budget_exceeded", "授权修订超过支持上限。"))? };
+        let mut grant = json!({"schema_version":"1.0.0","client_adapter":client,"target_path":self.root_path(),
+            "workspace_id":self.scope(),"authorized_workspace":true,"grant_revision":revision,"expires_at":expires,"revoked":false});
+        grant["root_identity"] = identity;
+        store.transaction(&BTreeMap::from([(path, encoded(&grant)?)]))?;
+        Ok(json!({"management_ref":{"grant_id":grant_id,"grant_revision":revision,"scope_ref":{"kind":"workspace","id":self.scope()}},
+            "client_adapter":client,"revoked":false,"allowed_actions":REVIEW_ACTIONS}))
+    }
     pub(crate) fn revoke_management(&self, input: &Value) -> Result<Value> {
         ensure(
             self.is_author(),

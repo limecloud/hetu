@@ -1,6 +1,7 @@
 import AppKit
 import SwiftUI
 import HetuNative
+import HetuCore
 
 struct WorkbenchButtonStyle: ButtonStyle {
     var primary = false
@@ -82,6 +83,7 @@ struct WorkspaceShell<Content: View>: View {
                 }.font(.system(size: 14))
             }.menuStyle(.borderlessButton).fixedSize().accessibilityLabel(model.t("shell.switch_workspace"))
             Spacer(minLength: 12)
+            PageAgentButton(model: model, page: handoffPage, object: handoffObject)
             if model.writeLocked {
                 Label(model.t("workspace.read_only"), systemImage: "lock")
                     .font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
@@ -105,6 +107,14 @@ struct WorkspaceShell<Content: View>: View {
                 Button(model.t("workspace.open"), action: onOpenWorkspace)
             } label: { Image(systemName: "ellipsis") }.menuStyle(.borderlessButton).fixedSize().accessibilityLabel(model.t("shell.actions"))
         }.padding(.horizontal, 24).frame(height: 70).background(WorkbenchPalette.surface.opacity(0.32))
+    }
+    private var handoffPage: String {
+        if selection == model.documentID && !model.documentID.isEmpty { return "document" }
+        return ["book", "novel", "bible", "drama", "reviews", "git", "media", "delivery", "plot", "validation"].contains(group) ? group : "book"
+    }
+    private var handoffObject: JSONValue {
+        guard selection == model.documentID, !model.documentID.isEmpty else { return .object([:]) }
+        return .object(["document_id": .string(model.documentID), "revision_id": .string(model.baseRevisionID)])
     }
     private var navigation: some View {
         VStack(alignment: .leading, spacing: 7) {

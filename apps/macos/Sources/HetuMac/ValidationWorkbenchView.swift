@@ -63,6 +63,7 @@ struct ValidationWorkbenchView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 8) {
             WorkbenchHeading(title: model.t("validation.title"), subtitle: model.t("validation.description"), artwork: report == .null ? "" : "review-desk") {
+                PageAgentButton(model: model, page: "validation", object: report["report_id"].string.map { .object(["report_id": .string($0)]) } ?? (documentID.isEmpty ? .object([:]) : .object(["document_id": .string(documentID)])))
                 Button(model.t("common.refresh")) { Task { await loadPlots(); await loadReports(); if report != .null { await read(report["report_id"].string ?? "") } } }
             }
             HStack {

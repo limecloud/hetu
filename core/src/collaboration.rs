@@ -11,6 +11,7 @@ use std::{
     path::{Path, PathBuf},
 };
 pub(crate) mod authoring;
+mod local;
 
 pub struct CollaborationHub {
     directory: PathBuf,
@@ -149,6 +150,12 @@ impl CollaborationHub {
                 "collaboration",
                 json!({"version":env!("CARGO_PKG_VERSION"),"client_adapter":self.client,"actions":catalog,"task_selection":"explicit_reference"}),
             ));
+        }
+        if action == "hetu.collaboration.created_works" {
+            return Ok(domain::success(action, "collaboration", self.created_works(&request["input"])?));
+        }
+        if action.starts_with("hetu.local_settings.") {
+            return self.execute_local(request);
         }
         if action == "hetu.creation_projects.create" || request["input"].get("management_ref").is_some() {
             return self.execute_authoring(request);
@@ -395,7 +402,8 @@ impl Kernel {
         }
         let path = grant_path(client, reference)?;
         let revision = if store.exists(&path)? {
-            store.json(&path)?["grant_revision"].as_u64().unwrap_or(0) + 1
+            store.json(&path)?["grant_revision"].as_u64().unwrap_or(0).checked_add(1)
+                .ok_or_else(|| Error::new("hetu.budget_exceeded", "授权修订超过支持上限。"))?
         } else {
             1
         };

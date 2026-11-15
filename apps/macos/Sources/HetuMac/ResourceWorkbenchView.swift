@@ -29,10 +29,17 @@ struct ResourceWorkbenchView: View {
     private let categories = ["character", "location", "prop", "research", "artwork", "media"]
     private var canWrite: Bool { !model.busy && !model.writeLocked && model.pendingStructureOperations.isEmpty }
     private var record: JSONValue { result["resource"] }
+    private var handoffObject: JSONValue {
+        guard !selected.isEmpty else { return .object([:]) }
+        var fields: [String: JSONValue] = ["resource_id": .string(selected)]
+        if record["revision"].integer != nil { fields["revision"] = record["revision"] }
+        return .object(fields)
+    }
     private var impacts: ResourceImpactSummary { ResourceImpactSummary(entries: usages, hasMore: usageCursor != nil) }
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             WorkbenchHeading(title: model.t("resources.title"), artwork: "") {
+                PageAgentButton(model: model, page: "resource", object: handoffObject)
                 Button(model.t("resources.organize")) { agent = true }.disabled(!canWrite)
                 Button(model.t("artwork.library")) { artworkTask = true }.disabled(!canWrite)
                 Button(model.t("common.refresh")) { Task { await associations.load(model: model); await load(); if !selected.isEmpty { await choose(selected) } } }
@@ -265,6 +272,7 @@ private struct ResourceEditorSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text(model.t(initial == .null ? "resources.new" : "common.edit")).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "resource", object: initial == .null ? .object([:]) : .object(["resource_id": initial["resource"]["resource_id"], "revision": initial["resource"]["revision"]]))
             if let error = session.error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             if session.error != nil, initial != .null, session.pending == nil {
                 RecordConflictView(model: model, action: "hetu.resources.get", input: ["resource_id": initial["resource"]["resource_id"]], object: "resource", baseline: $baseline)
@@ -327,6 +335,7 @@ private struct ResourceUsageSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text(model.t("resources.link_usage")).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "resource", object: .object(["resource_id": resource["resource_id"], "revision": resource["revision"]]))
             if let error = session.error { Text(error).foregroundStyle(WorkbenchPalette.danger) }
             Picker(model.t("plot.document"), selection: $documentID) {
                 Text(model.t("document.select")).tag("")

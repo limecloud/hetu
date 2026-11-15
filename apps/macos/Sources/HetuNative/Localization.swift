@@ -27,6 +27,17 @@ public struct Localizer: Sendable {
         return text
     }
     public func error(_ error: any Error) -> String {
+        if let local = error as? LocalAutomation.Fault {
+            let key: String = switch local {
+            case .invalid: "error.invalid_input"
+            case .conflict: "error.revision_conflict"
+            case .confirmation: "error.hetu.author_confirmation_required"
+            case .integrity: "error.hetu.integrity_failure"
+            case .unavailable: "error.hetu.capability_unavailable"
+            case .unknown: "error.result_unknown"
+            }
+            return text(key)
+        }
         if let libraryError = error as? LibraryStore.LibraryError {
             let key: String = switch libraryError {
             case .invalidRecord: "error.library.invalidRecord"

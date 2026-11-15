@@ -14,6 +14,7 @@ struct DramaScriptSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text(model.t("script.create")).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "drama", object: .object(["skeleton_id": snapshot["skeleton"]["skeleton_id"], "skeleton_revision": snapshot["skeleton"]["revision"]]))
             Text(model.t("script.create_note")).foregroundStyle(WorkbenchPalette.muted)
             Text(model.t("drama.revision", ["revision": String(snapshot["skeleton"]["revision"].integer ?? 0)])).font(.system(size: 12))
             if snapshot["stale"].bool == true || snapshot["is_head"].bool == false { Text(model.t("script.old_structure")).foregroundStyle(WorkbenchPalette.warningInk) }
@@ -56,6 +57,7 @@ struct ScriptMappingView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(model.t("script.mapping")).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "drama", object: .object(["document_id": .string(documentID)]))
             Text(model.t("script.mapping_note")).foregroundStyle(WorkbenchPalette.muted)
             if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             if result["stale"].bool == true { Text(model.t("script.mapping_stale")).foregroundStyle(WorkbenchPalette.warningInk) }

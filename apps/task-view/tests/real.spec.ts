@@ -14,15 +14,24 @@ let origin: string;
 let html: string;
 let initialTask: CallToolResult;
 let taskRef: Record<string, unknown>;
+let managementClient: Client;
+let managementRef: Record<string, unknown>;
+let proposalID: string;
 
 test.beforeAll(async () => {
   test.setTimeout(60_000);
+  const cargoTarget = resolve(process.env.HETU_CARGO_TARGET_DIR ?? "../../target");
   const folder = await mkdtemp(join(tmpdir(), "hetu-apps-integration-"));
-  const fixture = spawnSync(resolve("../../target/debug/examples/task_view_fixture"), [folder], { encoding: "utf8" });
+  const collaboration = join(folder, "test-collaboration");
+  const fixture = spawnSync(resolve(cargoTarget, "debug/examples/task_view_fixture"), [folder, collaboration], { encoding: "utf8" });
   if (fixture.status !== 0) throw new Error(fixture.stderr || "Fixture failed");
   taskRef = JSON.parse(fixture.stdout).task_ref;
+  managementRef = JSON.parse(fixture.stdout).management_ref;
+  proposalID = JSON.parse(fixture.stdout).proposal_id;
+  managementClient = new Client({ name: "hetu-operation-integration-test", version: "1" }, { versionNegotiation: { mode: { pin: "2026-07-28" } }, capabilities: { extensions: { "io.modelcontextprotocol/ui": { mimeTypes: ["text/html;profile=mcp-app"] } } } });
+  await managementClient.connect(new StdioClientTransport({ command: resolve(cargoTarget, "debug/hetu-mcp"), args: ["--client", "codex", "--collaboration-dir", collaboration], stderr: "pipe" }));
   client = new Client({ name: "hetu-browser-integration-test", version: "1" }, { versionNegotiation: { mode: { pin: "2026-07-28" } }, capabilities: { extensions: { "io.modelcontextprotocol/ui": { mimeTypes: ["text/html;profile=mcp-app"] } } } });
-  await client.connect(new StdioClientTransport({ command: resolve("../../target/debug/hetu-mcp"), args: ["--workspace", folder, "--task", String(taskRef.task_id)], stderr: "pipe" }));
+  await client.connect(new StdioClientTransport({ command: resolve(cargoTarget, "debug/hetu-mcp"), args: ["--workspace", folder, "--task", String(taskRef.task_id)], stderr: "pipe" }));
   const tools = await client.listTools();
   const uri = (tools.tools.find(tool => tool.name === "hetu_open_task_view")?._meta?.ui as { resourceUri?: string })?.resourceUri;
   if (!uri) throw new Error("Native server did not advertise an Apps resource");
@@ -37,7 +46,8 @@ test.beforeAll(async () => {
         const chunks: Buffer[] = [];
         for await (const chunk of request) chunks.push(Buffer.from(chunk));
         const { method, params } = JSON.parse(Buffer.concat(chunks).toString());
-        const result = method === "tools/call" ? await client.callTool(params) : method === "resources/read" ? await client.readResource(params) : null;
+        const active = params?.name === "hetu_get_management_operation" ? managementClient : client;
+        const result = method === "tools/call" ? await active.callTool(params) : method === "resources/read" ? await active.readResource(params) : null;
         if (!result) throw new Error("Unexpected bridge method");
         response.setHeader("Content-Type", "application/json"); response.end(JSON.stringify(result));
       } else if (request.url === "/host.js") {
@@ -56,6 +66,24 @@ test.beforeAll(async () => {
 test.afterAll(async () => {
   if (server) await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
   if (client) await client.close();
+  if (managementClient) await managementClient.close();
+});
+
+test("stable management → real operation resource → sandboxed review keeps the author decision separate", async ({ page }) => {
+  const initial = await managementClient.callTool({ name: "hetu_get_management_operation", arguments: { management_ref: managementRef, proposal_id: proposalID } });
+  const resource = await managementClient.readResource({ uri: "ui://hetu/operation-view/1" });
+  if (!("text" in resource.contents[0])) throw new Error("Missing operation view");
+  await page.addInitScript(value => Object.assign(window, value), { initialTask: initial, viewHtml: resource.contents[0].text, realTask: true, operationInput: { management_ref: managementRef } });
+  await page.goto(origin);
+  const view = page.frameLocator("iframe");
+  await expect(view.getByRole("heading", { name: "查看操作方案", exact: true })).toBeVisible();
+  await expect(view.getByText("整理作品资料，等待作者确认", { exact: true })).toBeVisible();
+  await expect(view.getByRole("button", { name: /批准|执行/ })).toHaveCount(0);
+  await view.getByRole("button", { name: "刷新状态", exact: true }).click();
+  await expect(view.getByText("整理作品资料，等待作者确认", { exact: true })).toBeVisible();
+  const loaded = await managementClient.callTool({ name: "hetu_get_management_operation", arguments: { management_ref: managementRef, proposal_id: proposalID } });
+  expect((loaded.structuredContent as { data: { state: string } }).data.state).toBe("pending");
+  await page.screenshot({ path: resolve("../../output/ai-first-acceptance-20261115/mcp-operation-review.png"), fullPage: true });
 });
 
 test("native stdio → SDK resource → sandboxed Apps → persisted preference → native readback", async ({ page }) => {

@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0.0",
+  "resource_uri": "ui://hetu/operation-view/1",
+  "mime_type": "text/html;profile=mcp-app",
+  "sdk": "@modelcontextprotocol/ext-apps@2.0.4",
+  "sha256": "b8a7b7f125e814e10138f80aa74d1227dce8a27ddae76fdc73421bbe6dff9d2e",
+  "size_bytes": 605698,
+  "source_sha256": {
+    "src/operation.ts": "b7240f2116b44eb42c1b74a93e76e530fe684ca4a2e3254367c152832eaaba16",
+    "src/operation.css": "1675f19f916e0f736fcae4c4a37bb517a83052ee197dafc650ca333415121e4d",
+    "scripts/build.mjs": "fe82c26b173214ad6c7c0217123512249587479401c020913bca57cbaaf05e02",
+    "package.json": "c3c97bb8fd4b8f6445c473f72b9e9ff9b0baaac4da9b53b8b6be6ed06cb10efe",
+    "THIRD-PARTY-NOTICES.txt": "36e9fae898f6fb55b3130f3380a36f2e26875934b50c98499635faf84c3afbf0"
+  }
+}

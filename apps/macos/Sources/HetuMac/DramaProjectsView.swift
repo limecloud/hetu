@@ -22,6 +22,7 @@ struct DramaWorkbenchView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             WorkbenchHeading(title: model.t("drama.workbench_title"), artwork: "") {
+                PageAgentButton(model: model, page: "episode", object: handoffObject)
                 Button(model.t("creative.title")) { creativeTask = true }.disabled(model.busy)
                 Button(model.t("drama.skeletons")) { skeletons = true }
                 Button(model.t("common.refresh")) { Task { await load(); if !selected.isEmpty { await choose(selected) } } }
@@ -150,6 +151,12 @@ struct DramaWorkbenchView: View {
         }
     }
     private var projectRef: JSONValue { .object(["project_id": project["project_id"], "revision": project["revision"], "sha256": result["sha256"]]) }
+    private var handoffObject: JSONValue {
+        var fields: [String: JSONValue] = [:]
+        if !selected.isEmpty { fields["project_id"] = .string(selected) }
+        if !selectedEpisode.isEmpty { fields["episode_id"] = .string(selectedEpisode); if episode["episode"]["revision"].integer != nil { fields["revision"] = episode["episode"]["revision"] } }
+        return .object(fields)
+    }
     private func call(_ action: String, _ input: [String: JSONValue]) async -> JSONValue? {
         await model.workspaceAction(action, input: input, onFailure: { error = $0; _ = $1 })
     }
@@ -213,6 +220,7 @@ private struct DramaProjectEditor: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text(model.t(initial == .null ? "drama.project_new" : "common.edit")).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "drama", object: initial == .null ? .object([:]) : .object(["project_id": initial["project"]["project_id"]]))
             if let error = session.error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             if session.error != nil, initial != .null, session.pending == nil {
                 RecordConflictView(model: model, action: "hetu.drama.projects.get", input: ["project_id": initial["project"]["project_id"]], object: "project", baseline: $baseline)
@@ -279,6 +287,7 @@ private struct DramaEpisodeEditor: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text(model.t(initial == .null ? "drama.episode_new" : "drama.episode_edit")).font(.system(size: 20, weight: .semibold))
+            PageAgentButton(model: model, page: "episode", object: initial == .null ? .object(["project_id": projectResult["project"]["project_id"]]) : .object(["project_id": projectResult["project"]["project_id"], "episode_id": initial["episode"]["episode_id"], "revision": initial["episode"]["revision"]]))
             if let error = session.error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             if session.error != nil, initial != .null, session.pending == nil {
                 RecordConflictView(model: model, action: "hetu.drama.episodes.get", input: ["episode_id": initial["episode"]["episode_id"]], object: "episode", baseline: $baseline)

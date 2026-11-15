@@ -7,8 +7,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE = ROOT / 'tools/hetu-skills'
-VERSION = '0.2.4'
-SKILLS = ['hetu-setup', 'hetu-book-create', 'hetu-book-profile', 'hetu-outline', 'hetu-cover', 'hetu-draft', 'hetu-revise', 'hetu-drama', 'hetu-resources', 'hetu-artwork']
+VERSION = '0.2.6'
+SKILLS = ['hetu-setup', 'hetu-book-create', 'hetu-book-profile', 'hetu-outline', 'hetu-cover', 'hetu-draft', 'hetu-revise', 'hetu-drama', 'hetu-resources', 'hetu-artwork', 'hetu-manage']
 
 
 def encoded(value):
@@ -104,6 +104,7 @@ def render():
 | 封面候选 | [封面](workflows/cover.md) |
 | 文字资料整理 | [资料任务](../skills/hetu-resources/SKILL.md) |
 | 角色、场景、道具与插图 | [素材图任务](../skills/hetu-artwork/SKILL.md) |
+| 作品整理、导入交付、版本和设置 | [作品管理](../skills/hetu-manage/SKILL.md) |
 
 卡点涉及人物、关系或知情边界时读[人物与视角](craft/characters.md)；长线、单元与伏笔读[结构与回收](craft/structure.md)；场景、对白与文风读[场景语言](craft/scenes.md)；资源、地理、时间与资料核验读[世界规则](craft/worldbuilding.md)。这些是跨题材的必要工艺，不是额外安装的题材库。
 

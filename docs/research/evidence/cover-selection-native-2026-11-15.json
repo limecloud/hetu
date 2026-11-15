@@ -1,0 +1,102 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-11-15T01:45:07.802319+00:00",
+  "version": "0.6.0",
+  "scope": "封面候选一键选用、可选预览、人工导入及本地安装",
+  "implementation": {
+    "candidate_selection": "点击候选卡的用作封面直接执行固定引用的作者选用事务；不弹确认，不要求导入",
+    "preview": "点击候选图片放大查看，详情可调整书名笔名叠字",
+    "local_import": "封面更多菜单中的次级入口；只适用于作品外图片",
+    "source_sha256": {
+      "apps/macos/Sources/HetuMac/NovelDetailsView.swift": "74db20f4e59853e4b34cdcceffb17e5d1d9e1f6d4e736435ccfee05042c58f25",
+      "apps/macos/Sources/HetuMac/CoverWorkbenchSheet.swift": "15cb08816244c7debf42fad32935d2b6cb6b4bd1a8d39364e9a0d7cc150649ba",
+      "apps/macos/Sources/HetuMac/ArtworkLibraryView.swift": "e534159f3bf99d89a1ac6a0768e37ef930479c158facf5d23eebe8ed41f0b831",
+      "apps/macos/Sources/HetuMac/CreativeTaskView.swift": "007ca0de3023865abb931e4a67ad62321aa53eb33ceabf924a8bdb6ea7edd152",
+      "apps/macos/Sources/HetuNative/ArtworkLibrarySession.swift": "1606c4c4446f7ec7596a91c1f136313f15b2416aed08085ed4a0820f065ffc38",
+      "tests/native/HetuNativeTests/CoverTests.swift": "2e7dc1d5752fc31679d13ff7a0c421deeae24fad6428c9ddafb0455c6d5fd224",
+      "assets/localization/native.json": "b38e656bc02bc1b15f8d91aa8a010e18f6e8fe4729904c1263fcab39b7aa7b64"
+    }
+  },
+  "tests": {
+    "native_covers": {
+      "status": "passed",
+      "log": "build/requirements-audit/image-generation-20261115/cover-tests-final.log",
+      "checks": [
+        "本地文件真实尺寸与摘要核验",
+        "预览不改变当前封面",
+        "固定候选回传不自动选用",
+        "作者选用与当前候选识别",
+        "不同批次不会误标为当前",
+        "历史恢复形成新版本",
+        "书库封面缓存持久化",
+        "双窗口CAS",
+        "未知操作原键恢复",
+        "筹备封面来源与目录移动"
+      ]
+    },
+    "native_gui": {
+      "status": "passed",
+      "artifact": "/Applications/Hetu.app",
+      "fixture_scope": "CFFIXED_USER_HOME=/tmp/hetu-cover-qa-home；仅隔离测试作品，正常书库恢复为原8部作品",
+      "actions": [
+        "安装版作品资料显示封面更多菜单，导入不占主操作",
+        "一次点击用作封面，直接显示当前使用，未出现确认或导入弹窗",
+        "返回书库，封面预览及更新时间同步",
+        "正常环境重新打开归宋守渡，展示新候选操作入口"
+      ],
+      "selected_cover_revision": 7,
+      "selected_source_kind": "creative_task",
+      "selected_reference": {
+        "candidate_id": "candidate_3afaa301-3b33-4732-80e5-ddcda991e507",
+        "submission_id": "submission_ee908ddd-1c8b-42f1-9cfa-db0e92ddd20e",
+        "task_ref": {
+          "request_revision": 1,
+          "scope_ref": {
+            "id": "workspace_5f3b633f-cc80-4f36-a74d-63b96ac09966",
+            "kind": "workspace"
+          },
+          "task_id": "task_8b2731cc-01a3-4153-b988-395a12cc3752"
+        }
+      },
+      "library_cover_preview_present": true
+    },
+    "local_import_preview": {
+      "status": "passed",
+      "checks": [
+        "系统图片面板",
+        "中文与emoji路径",
+        "真实64×96尺寸与等比预览",
+        "取消保持当前封面",
+        "中英导入界面核对"
+      ],
+      "note": "本地导入和取消在本轮前一装配执行；最终装配只把该入口移入更多菜单，最终一键选用另行实测。"
+    },
+    "website": {
+      "status": "passed",
+      "pages": 51,
+      "local_links": 3059,
+      "log": "build/requirements-audit/image-generation-20261115/cover-guide-build-final.log"
+    }
+  },
+  "installation": {
+    "path": "/Applications/Hetu.app",
+    "files_verified": 1834,
+    "adhoc_signature_verified": true,
+    "manifest": "build/requirements-audit/image-generation-20261115/cover-local-install.json",
+    "build_log": "build/requirements-audit/image-generation-20261115/cover-one-click-package.log",
+    "executable_sha256": "562aa74ac604b25347863504a3d429bb1f92b7960c268fb9b78e2446c8013abf"
+  },
+  "preserved_work": {
+    "title": "归宋守渡",
+    "unchanged_files": 2390,
+    "sha256_unchanged": true,
+    "cover_revision": 1,
+    "selected_generated_cover": false
+  },
+  "boundaries": [
+    "一键选用的GUI写入只在隔离测试作品执行；没有替作者决定归宋守渡的正式封面",
+    "本轮没有新增生图请求、调用收费模型或更改密钥",
+    "不将本轮封面验收扩大为全软件验收、真实外部MCP宿主验收或公证发行",
+    "未提交、推送或部署"
+  ]
+}

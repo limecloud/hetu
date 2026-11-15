@@ -56,6 +56,8 @@ public struct AgentSuiteInstaller: Sendable {
         let source = catalog.directory(for: suite)
         let inspected = AgentPackageInspector(codexDirectory: codexDirectory).inspect(suite: suite, catalog: catalog, client: .codex, selectedDirectory: source)
         guard inspected.state == .filesFound, let version = inspected.version else { throw AgentInstallError.invalidPackage }
+        // 首次安装时官方 CLI 也需要已存在的用户目录；只在明确安装时创建。
+        try FileManager.default.createDirectory(at: codexDirectory, withIntermediateDirectories: true)
         // 市场来源保持稳定；历史按版本登记的来源继续作为受管根，不移除或重建作者登记。
         let marketName = "hetu-luoshu-" + suite.id
         let market = try codexMarket(suite: suite, executable: codexExecutable)
@@ -91,6 +93,17 @@ public struct AgentSuiteInstaller: Sendable {
         guard destination.resolvingSymlinksInPath().path.hasPrefix(codexDirectory.resolvingSymlinksInPath().path + "/plugins/cache/") else { throw AgentInstallError.verificationFailed }
         guard try fingerprint(source) == fingerprint(destination) else { throw AgentInstallError.verificationFailed }
         return AgentInstallReceipt(directory: destination, version: version)
+    }
+    /// 未知结果只读核对官方登记与实际文件，不再次执行安装命令。
+    public func recoverCodex(suite: AgentSuite, catalog: AgentSuiteCatalog) throws -> AgentInstallReceipt? {
+        guard let codexExecutable else { throw AgentInstallError.clientUnavailable }
+        let listed = try command(codexExecutable, ["plugin", "list", "--marketplace", "hetu-luoshu-" + suite.id, "--json"])
+        let actual = AgentPackageInspector(codexDirectory: codexDirectory).inspect(suite: suite, catalog: catalog, client: .codex)
+        guard let version = actual.version, version == actual.expectedVersion, let directory = actual.directory,
+              let records = listed["installed"] as? [[String: Any]], records.contains(where: {
+                  $0["pluginId"] as? String == suite.pluginName + "@hetu-luoshu-" + suite.id && $0["installed"] as? Bool == true && $0["enabled"] as? Bool == true && $0["version"] as? String == version
+              }), try fingerprint(catalog.directory(for: suite)) == fingerprint(directory) else { return nil }
+        return AgentInstallReceipt(directory: directory, version: version)
     }
     private func codexMarket(suite: AgentSuite, executable: URL) throws -> URL {
         let root = supportDirectory.appendingPathComponent("codex/" + suite.id).resolvingSymlinksInPath().standardizedFileURL

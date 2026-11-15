@@ -12,7 +12,6 @@ enum AgentInstallerTests {
             let catalog = try AgentSuiteCatalog.bundled()
             guard let military = catalog.suites.first(where: { $0.id == "military" }) else { throw InstallationCheckError(message: "缺少军事包") }
             let codex = root.appendingPathComponent("安装测试 Codex"), workbuddy = root.appendingPathComponent("安装测试 WorkBuddy")
-            try FileManager.default.createDirectory(at: codex, withIntermediateDirectories: true)
             try FileManager.default.createDirectory(at: workbuddy, withIntermediateDirectories: true)
             let sentinel = workbuddy.appendingPathComponent("settings.json")
             let original = Data("{\"existing\":\"保留作者配置\"}".utf8)

@@ -28,6 +28,10 @@ mod records;
 mod resources;
 mod model_tasks;
 mod properties;
+mod agent_operations;
+mod agent_effects;
+mod handoffs;
+mod import_sources;
 
 type Changes = BTreeMap<String, Vec<u8>>;
 const PACKAGES: [&str; 4] = ["novel", "drama", "music-cue", "visual-prompt"];
@@ -463,7 +467,7 @@ impl Kernel {
             );
             changes.insert(
                 ".gitignore".into(),
-                b".hetu/transactions/\n.hetu/cache/\n.hetu/git/\n.hetu/operations/\n.hetu/audit/\n.hetu/deliveries/\n.hetu/workspace.lock\n.hetu/visibility.lock\n.hetu/workspace-properties.json\nexports/\n.DS_Store\n"
+                b".hetu/transactions/\n.hetu/cache/\n.hetu/git/\n.hetu/operations/\n.hetu/audit/\n.hetu/deliveries/\n.hetu/agent-proposals/\n.hetu/workspace.lock\n.hetu/visibility.lock\n.hetu/workspace-properties.json\nexports/\n.DS_Store\n"
                     .to_vec(),
             );
             changes.insert(operation_path(action, &create.operation_key, author), bytes(&json!({"operation_id":op["id"],"action":action,"actor_scope":if author {"author"} else {"agent"},"key":create.operation_key,"input_digest":input_digest,"result":receipt}))?);
@@ -543,7 +547,11 @@ impl Kernel {
         json!(catalog()["actions"].as_array().unwrap().iter().filter(|action| action["scopes"].as_array().is_some_and(|scopes| scopes.iter().any(|scope| scope == "collaboration"))).cloned().collect::<Vec<_>>())
     }
     pub(crate) fn management_action_catalog() -> Value {
-        json!(catalog()["actions"].as_array().unwrap().iter().filter(|action| crate::collaboration::authoring::management_action(action["name"].as_str().unwrap_or(""))).cloned().collect::<Vec<_>>())
+        json!(catalog()["actions"].as_array().unwrap().iter().filter(|action| crate::collaboration::authoring::management_action(action["name"].as_str().unwrap_or(""))).cloned().map(|mut action| {
+            // 此目录描述精确授权下的 Agent 变体，不沿用作者入口的身份标记。
+            action["author_only"] = json!(false);
+            action
+        }).collect::<Vec<_>>())
     }
     pub(crate) fn management_binding(&self) -> Option<&Value> { self.management_grant.as_ref() }
     fn management_allows(&self, action: &str) -> bool {
@@ -574,7 +582,7 @@ impl Kernel {
                     && (!name.starts_with("hetu.resources.") || self.resource_task_access().is_ok())
             } else {
                 self.author
-                    || !name.starts_with("hetu.creative_tasks.")
+                    || (name == "hetu.creative_tasks.preview_prompt" || !name.starts_with("hetu.creative_tasks."))
                         && !name.starts_with("hetu.interactions.")
                         && !name.starts_with("hetu.working_copies.")
                         && !name.starts_with("hetu.task_feedback.")
@@ -658,6 +666,9 @@ impl Kernel {
                 let client = self.management_grant.as_ref().unwrap()["client_adapter"].as_str().unwrap_or("");
                 ensure(input["client_adapter"] == if client == "generic" { "other" } else { client }, "forbidden", "管理授权不能替其他 Agent 准备任务。")?;
             }
+        }
+        if action == "hetu.agent_operations.execute" {
+            if let Some(result) = self.execute_proposal_effect(input, metadata)? { return Ok(result); }
         }
         if matches!(action, "hetu.bundles.export" | "hetu.documents.export") {
             return self.execute_delivery(action, input, metadata);
@@ -875,6 +886,8 @@ impl Kernel {
         Ok(())
     }
     fn dispatch(&self, action: &str, input: &Value, changes: &mut Changes) -> Result<Value> {
+        if action == "hetu.handoffs.get" { return self.page_handoff(input); }
+        if action.starts_with("hetu.agent_operations.") { return self.dispatch_agent_operations(action, input, changes); }
         if matches!(action, "hetu.model_tasks.list" | "hetu.model_tasks.prepare" | "hetu.model_tasks.approve") {
             return self.dispatch_model_local(action, input, changes);
         }
@@ -896,6 +909,8 @@ impl Kernel {
             "hetu.creation_projects.save" => self.save_creation_project(input, changes),
             "hetu.creative_tasks.preview_prompt" | "hetu.image_tasks.preview_prompt" => self.preview_creative_task(input),
             "hetu.collaboration.authorize" => self.authorize_collaboration(input, false),
+            "hetu.collaboration.authorize_workspace" => self.authorize_workspace(input),
+            "hetu.collaboration.workspace_access" => self.workspace_access(input),
             "hetu.collaboration.revoke" => self.authorize_collaboration(input, true),
             "hetu.collaboration.revoke_management" => self.revoke_management(input),
             "hetu.creative_tasks.prepare" | "hetu.image_tasks.prepare" => self.prepare_creative_task(input, changes),
@@ -928,6 +943,7 @@ impl Kernel {
             "hetu.documents.preview_export" => self.preview_document_export(input),
             "hetu.documents.preview_import" => self.preview_document_import(input),
             "hetu.documents.import" => self.import_document(input, changes),
+            "hetu.documents.import_batch" => self.import_document_batch(input, changes),
             "hetu.covers.get" => self.get_cover(input),
             "hetu.covers.inspect_file" => self.inspect_cover_file(input),
             "hetu.covers.preview_prompt" => self.preview_cover_prompt(input),
@@ -941,6 +957,10 @@ impl Kernel {
             "hetu.novels.update" => self.update_novel(input, changes, false),
             "hetu.novels.save_structure" => self.update_novel(input, changes, true),
             "hetu.git.status" => self.git_status(),
+            "hetu.git.references" => self.git_references(),
+            "hetu.git.read_version" => self.git_version(input),
+            "hetu.git.merge_preview" => self.preview_git_collaboration(action,input),
+            "hetu.git.branch_create" | "hetu.git.branch_switch" | "hetu.git.merge" | "hetu.git.remote_save" | "hetu.git.fetch" | "hetu.git.push" | "hetu.git.pull" => Err(Error::new("hetu.author_confirmation_required", "请通过固定管理方案准备、审阅并执行此版本操作。")),
             "hetu.git.diff" => self.git_diff(input),
             "hetu.git.snapshot_diff" => self.git_snapshot_diff(input),
             "hetu.git.log" => self.git_log(input),
@@ -1085,6 +1105,7 @@ impl Kernel {
             }
             "hetu.reports.list" => self.list_reports(input),
             "hetu.findings.disposition" => self.disposition(input, changes),
+            "hetu.findings.suggest" | "hetu.findings.suggestions" => self.finding_suggestions(action,input,changes),
             "hetu.operations.get" => {
                 let record = if let Some(op_id) = input.get("operation_id").and_then(Value::as_str)
                 {
@@ -1217,6 +1238,9 @@ impl Kernel {
         Ok(revision)
     }
     fn create_document(&self, input: &Value, changes: &mut Changes) -> Result<Value> {
+        self.create_document_record(input, changes, true)
+    }
+    fn create_document_record(&self, input: &Value, changes: &mut Changes, append_to_novel: bool) -> Result<Value> {
         ensure(self.config["work_type"] != "drama" || !text(input, "kind")?.starts_with("novel_"), "invalid_input", "剧本作品不创建小说章节；原著请作为来源材料导入。")?;
         let drama = input["kind"] == "drama_script";
         ensure(
@@ -1227,7 +1251,7 @@ impl Kernel {
         let mut document = json!({"schema_version":"1.0.0","document_id":id("doc"),"kind":input["kind"],"title":input["title"],"source_format":input["source_format"],"language_tag":input.get("language_tag").unwrap_or(&self.config["locale"]),"created_at":now()});
         let revision =
             self.stage_revision(&mut document, text(input, "content")?, None, changes)?;
-        if document["kind"] == "novel_chapter" {
+        if append_to_novel && document["kind"] == "novel_chapter" {
             self.append_novel_chapter(&document, input.get("volume_id"), changes)?;
         }
         Ok(json!({"document":document,"revision":revision}))
