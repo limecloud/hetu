@@ -4,7 +4,7 @@ impl Kernel {
     pub(super) fn run_validation(&self, input: &Value, changes: &mut Changes) -> Result<Value> {
         let plot = self.read_plot(text(input, "plot_revision_id")?)?;
         let descriptor = self.plot_descriptor(&plot.plot_revision_id)?;
-        let (bp, _) = self.blueprint_revision(Some(plot.blueprint_revision))?;
+        let (bp, _) = self.blueprint_for_snapshot(plot.blueprint_revision, &plot.blueprint_sha256)?;
         let sources = serde_json::to_value(&plot.source_revisions)?;
         let documents = self.plot_documents(sources.as_array().unwrap())?;
         let report = validation::run(
@@ -38,7 +38,7 @@ impl Kernel {
         )?;
         let content = serde_json::to_vec(&report)?;
         let descriptor = Self::report_summary(report, &path, &digest(&content));
-        stage_blueprint_snapshot(&self.store, bp, changes)?;
+        self.stage_resolved_blueprint_snapshot(bp, changes)?;
         changes.insert(path, content);
         changes.insert(record_path, bytes(&descriptor)?);
         Ok(())

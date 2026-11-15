@@ -59,13 +59,13 @@ struct ArtworkLibraryView: View {
                 }.frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 ScrollView {
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 190, maximum: 250), spacing: 20)], alignment: .leading, spacing: 24) {
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 190, maximum: 250), spacing: 20, alignment: .top)], alignment: .leading, spacing: 24) {
                         ForEach(visible) { item in
                             VStack(alignment: .leading, spacing: 10) {
                             Button { selected = item } label: {
                                 VStack(alignment: .leading, spacing: 9) {
                                     ArtworkThumbnail(item: item).frame(height: 218)
-                                    Text(item.candidate["title"].string ?? "").font(.system(size: 14, weight: .semibold)).lineLimit(2)
+                                    Text(item.candidate["title"].string ?? "").font(.system(size: 14, weight: .semibold)).lineLimit(2, reservesSpace: true)
                                     HStack {
                                         Text(model.t(item.imageView.map { "artwork.view." + $0 } ?? "artwork.category." + item.category))
                                         Spacer()

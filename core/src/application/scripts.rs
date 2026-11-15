@@ -17,7 +17,7 @@ impl Kernel {
             skeleton.episodes.retain(|episode| episode.episode_id == episode_id);
             ensure(!skeleton.episodes.is_empty(), "invalid_input", "分集不在固定骨架中。")?;
         }
-        let (bp, _) = self.blueprint_revision(Some(skeleton.blueprint_revision))?;
+        let (bp, _) = self.blueprint_for_snapshot(skeleton.blueprint_revision, &skeleton.blueprint_sha256)?;
         let rendered = script::render(
             &skeleton,
             &bp,
@@ -105,7 +105,7 @@ impl Kernel {
             skeleton.episodes.retain(|episode| episode.episode_id == episode_id);
             ensure(!skeleton.episodes.is_empty(), "invalid_input", "分集不在固定骨架中。")?;
         }
-        let (bp, _) = self.blueprint_revision(Some(skeleton.blueprint_revision))?;
+        let (bp, _) = self.blueprint_for_snapshot(skeleton.blueprint_revision, &skeleton.blueprint_sha256)?;
         let rendered = script::render(
             &skeleton,
             &bp,

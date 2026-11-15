@@ -28,6 +28,7 @@ enum LibraryAdmissionTests {
         try await library.receiveCreatedWorks(collaborationDirectory: directory)
         let entries = try await library.entries()
         try check(entries.count == 2 && Set(entries.map(\.contentType)) == ["novel", "drama"], "机器创建的小说或剧本未进入书库")
+        try check(entries.allSatisfy { $0.lastOpenedAt == nil }, "后台接纳伪造了作者打开时间")
         for work in created {
             guard let entry = entries.first(where: { $0.workspaceID == work["workspace"]["workspace_id"].string }) else { throw Failure(message: "书库作品身份不匹配") }
             try check(try await library.resolve(entry).path == work["target_path"].string, "书库没有指向同一作品目录")

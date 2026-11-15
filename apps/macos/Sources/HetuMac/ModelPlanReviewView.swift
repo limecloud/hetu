@@ -18,19 +18,20 @@ struct ModelPlanReviewView: View {
     }
     private var closed: Bool { task["observation"]["state"].string == "closed" }
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                Text(localizer.text("models.plans")).font(.system(size: 14, weight: .semibold))
-                Spacer()
-                Button(localizer.text("models.refresh")) { Task { await refresh() } }.disabled(held || busy)
-            }
-            if busy { ProgressView().controlSize(.small) }
-            if failed { Text(localizer.text("drama.retry")).foregroundStyle(WorkbenchPalette.danger) }
-            if plans.isEmpty && !busy && !failed {
-                Text(localizer.text("models.no_plans")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
-            }
-            ForEach(Array(plans.enumerated()), id: \.offset) { _, record in
-                planRow(record)
+        Group {
+            if !plans.isEmpty || busy || failed {
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack {
+                        Text(localizer.text("models.plans")).font(.system(size: 14, weight: .semibold))
+                        Spacer()
+                        Button(localizer.text("models.refresh")) { Task { await refresh() } }.disabled(held || busy)
+                    }
+                    if busy { ProgressView().controlSize(.small) }
+                    if failed { Text(localizer.text("models.plans_failed")).foregroundStyle(WorkbenchPalette.danger) }
+                    ForEach(Array(plans.enumerated()), id: \.offset) { _, record in
+                        planRow(record)
+                    }
+                }
             }
         }
         .task(id: task["request"]["task_id"]) { plans = []; await refresh() }
@@ -82,6 +83,6 @@ struct ModelPlanReviewView: View {
         else { input["max_credits"] = record["plan"]["estimated_credits"] }
         let result = await approve(input)
         busy = false
-        if result != nil { await refresh() } else { failed = true }
+        if result != nil { await refresh() }
     }
 }

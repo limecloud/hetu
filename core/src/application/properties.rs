@@ -48,6 +48,7 @@ impl Kernel {
             value["updated_at"] = current;
         }
         changes.insert(PATH.into(), bytes(&value)?);
+        self.stage_work_activity(changes)?;
         Ok(())
     }
 }

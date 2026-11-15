@@ -27,6 +27,7 @@ private func consume(_ buffer: inout HetuBuffer, code: Int32) throws -> JSONValu
 public actor Workspace {
     private let handle: CoreHandle
     private let contractRevisions: [String: String]
+    private let readActions: Set<String>
     public nonisolated let url: URL
     public nonisolated let scopeKind: ContentScope
     public nonisolated let taskID: String?
@@ -80,6 +81,7 @@ public actor Workspace {
             guard let name = item["name"].string, let revision = item["contract_revision"].string else { return nil }
             return (name, revision)
         })
+        self.readActions = Set(catalog["actions"].array.filter { $0["effect"].string == "read" }.compactMap { $0["name"].string })
     }
     public func request(_ action: String, input: [String: JSONValue] = [:]) throws -> JSONValue {
         let bytes = try JSONValue.object(["action": .string(action), "contract_revision": .string(contractRevisions[action] ?? "1"), "input": .object(input)]).encoded()
@@ -91,5 +93,10 @@ public actor Workspace {
         // 准备快照只返回待作者审阅的数据；其他 pending 结果不能当作成功。
         if action == "hetu.git.snapshot", input["phase"]?.string == "prepare", result["status"].string == "pending" { return result["data"] }
         return try result.requiringSuccess()
+    }
+    /// 只读面板共用句柄串行读取，不占用界面事务的忙碌状态。
+    public func read(_ action: String, input: [String: JSONValue] = [:]) throws -> JSONValue {
+        guard readActions.contains(action), input["operation_key"] == nil else { throw CoreError.invalidResponse }
+        return try data(action, input: input)
     }
 }

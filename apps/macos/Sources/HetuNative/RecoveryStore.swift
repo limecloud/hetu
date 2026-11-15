@@ -67,7 +67,8 @@ public actor RecoveryStore {
     }
     private func writeData(_ data: Data, to url: URL) throws {
         guard data.count <= 32 * 1024 * 1024 else { throw RecoveryError.invalidRecord }
-        try data.write(to: url, options: [.atomic, .completeFileProtectionUnlessOpen])
+        // 首次登录后仍需在锁屏期间回读恢复意图；unlessOpen会使新文件关闭后立即不可读。
+        try data.write(to: url, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
         try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: url.path)
         let handle = try FileHandle(forWritingTo: url)
         defer { try? handle.close() }

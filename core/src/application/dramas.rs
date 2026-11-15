@@ -9,7 +9,7 @@ impl Kernel {
             "hetu.stale_evidence",
             "骨架必须使用固定剧情对应的设定集修订。",
         )?;
-        let (bp, _) = self.blueprint_revision(Some(plot.blueprint_revision))?;
+        let (bp, _) = self.blueprint_for_snapshot(plot.blueprint_revision, &plot.blueprint_sha256)?;
         let record = self.plot_descriptor(&plot.plot_revision_id)?;
         let skeleton = drama::build(
             &plot,
@@ -136,7 +136,7 @@ impl Kernel {
             "hetu.integrity_failure",
             "骨架固定剧情摘要不一致。",
         )?;
-        let (bp, _) = self.blueprint_revision(Some(skeleton.blueprint_revision))?;
+        let (bp, _) = self.blueprint_for_snapshot(skeleton.blueprint_revision, &skeleton.blueprint_sha256)?;
         drama::validate(&skeleton, &plot, &bp)?;
         Ok((skeleton, sha))
     }
@@ -157,7 +157,7 @@ impl Kernel {
             "骨架已被其他窗口修改，请先重新读取并比较。",
         )?;
         let plot = self.read_plot(&current.plot_revision_id)?;
-        let (bp, _) = self.blueprint_revision(Some(current.blueprint_revision))?;
+        let (bp, _) = self.blueprint_for_snapshot(current.blueprint_revision, &current.blueprint_sha256)?;
         let next = drama::edit(
             &current,
             &sha,
@@ -245,7 +245,7 @@ impl Kernel {
             "对比原著修订的格式或大小不一致。",
         )?;
         let plot = self.read_plot(&skeleton.plot_revision_id)?;
-        let (bp, _) = self.blueprint_revision(Some(skeleton.blueprint_revision))?;
+        let (bp, _) = self.blueprint_for_snapshot(skeleton.blueprint_revision, &skeleton.blueprint_sha256)?;
         let report =
             drama_comparison::compare(&skeleton, &sha, &plot, &bp, &sources, self.actor())?;
         let saved = input["save_result"] == true;
@@ -331,7 +331,7 @@ impl Kernel {
             "差异报告的原著修订不一致。",
         )?;
         let plot = self.read_plot(&skeleton.plot_revision_id)?;
-        let (bp, _) = self.blueprint_revision(Some(skeleton.blueprint_revision))?;
+        let (bp, _) = self.blueprint_for_snapshot(skeleton.blueprint_revision, &skeleton.blueprint_sha256)?;
         let expected = drama_comparison::compare(
             &skeleton,
             &sha,

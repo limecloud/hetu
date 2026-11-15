@@ -330,6 +330,7 @@ impl Kernel {
     ) -> Result<Value> {
         let key = text(input, "operation_key")?;
         let drama = action == "hetu.creation_projects.create_drama";
+        let video = action == "hetu.creation_projects.create_video";
         let intent_path = ".hetu/creation/active-intent.json";
         let intent = if self.store.exists(intent_path)? {
             let intent = self.store.json(intent_path)?;
@@ -346,7 +347,7 @@ impl Kernel {
             intent
         } else {
             let (project, sha) = self.expected_project(input)?;
-            let profile = if drama {
+            let profile = if drama || video {
                 &input["profile"]
             } else {
                 &input["metadata"]
@@ -356,7 +357,7 @@ impl Kernel {
                 "invalid_input",
                 "请填写作品名称。",
             )?;
-            if !drama {
+            if !drama && !video {
                 domain::novel::validate_metadata(profile)?;
             }
             ensure(
@@ -390,7 +391,7 @@ impl Kernel {
                 )?;
             }
             if let Some(selection) = project.get("work_profile") {
-                let work_type = if drama { "drama" } else { "novel" };
+                let work_type = if drama { "drama" } else if video { "video" } else { "novel" };
                 ensure(
                     selection["work_type"] == work_type
                         && selection["language_tag"] == profile["language_tag"]
@@ -404,7 +405,7 @@ impl Kernel {
                 source["work_profile"] = profile.clone();
             }
             let mut intent = json!({"schema_version":"1.0.0","input_digest":input_digest,"key":key,"expected":input["expected"],"target_path":target,"create_key":id("creation"),"metadata":profile,"source":source});
-            if drama {
+            if drama || video {
                 intent["action"] = json!(action);
             }
             self.store
@@ -413,8 +414,8 @@ impl Kernel {
         };
         let metadata = &intent["metadata"];
         let mut create = json!({"title":metadata["title"],"locale":metadata["language_tag"],"operation_key":intent["create_key"],"creation_source":intent["source"]});
-        if drama {
-            create["work_type"] = json!("drama");
+        if drama || video {
+            create["work_type"] = json!(if drama { "drama" } else { "video" });
         } else {
             create["metadata"] = metadata.clone();
         }
@@ -441,6 +442,13 @@ impl Kernel {
             )?;
             data["drama_project"] = result["data"].clone();
             json!({"workspace_id":target.scope(),"drama_project_id":result["data"]["project"]["project_id"]})
+        } else if video {
+            let result = target.request(json!({"action":"hetu.video.projects.create","contract_revision":"1","input":{
+                "title":metadata["title"],"brief":metadata["brief"],"language_tag":metadata["language_tag"],
+                "operation_key":format!("initial-project-{}",text(&intent,"create_key")?)}}));
+            ensure(result["status"] == "succeeded", "hetu.io_failure", "视频工作区已创建，请沿原操作恢复项目。")?;
+            data["video_project"] = result["data"].clone();
+            json!({"workspace_id":target.scope(),"video_project_id":result["data"]["project"]["video_project_id"]})
         } else {
             data["novel"] = target.get_novel()?["novel"].clone();
             json!({"workspace_id":target.scope(),"novel_id":data["novel"]["novel_id"]})

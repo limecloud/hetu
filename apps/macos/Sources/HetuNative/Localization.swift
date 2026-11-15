@@ -48,6 +48,7 @@ public struct Localizer: Sendable {
             case .confirmationMismatch: "error.library.confirmationMismatch"
             case .changedWork: "error.library.changedWork"
             case .deletionPending: "error.library.deletionPending"
+            case .multipleWorks: "error.library.multipleWorks"
             }
             return text(key)
         }

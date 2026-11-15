@@ -54,7 +54,7 @@ impl Kernel {
     }
     pub(super) fn correct_plot(&self, input: &Value, changes: &mut Changes) -> Result<Value> {
         let current = self.read_plot(text(input, "plot_revision_id")?)?;
-        let (bp, _) = self.blueprint_revision(Some(current.blueprint_revision))?;
+        let (bp, _) = self.blueprint_for_snapshot(current.blueprint_revision, &current.blueprint_sha256)?;
         let sources = serde_json::to_value(&current.source_revisions)?;
         let documents = self.plot_documents(sources.as_array().unwrap())?;
         let next = plot::correct(
@@ -86,7 +86,7 @@ impl Kernel {
         let mut descriptor = plot::summary(plot, &digest(&content));
         descriptor["schema_version"] = json!("1.0.0");
         descriptor["path"] = json!(path);
-        stage_blueprint_snapshot(&self.store, bp, changes)?;
+        self.stage_resolved_blueprint_snapshot(bp, changes)?;
         changes.insert(path, content);
         changes.insert(record, bytes(&descriptor)?);
         Ok(())
@@ -128,7 +128,7 @@ impl Kernel {
             "hetu.integrity_failure",
             "剧情索引与内容不一致。",
         )?;
-        let (bp, sha) = self.blueprint_revision(Some(plot.blueprint_revision))?;
+        let (bp, sha) = self.blueprint_for_snapshot(plot.blueprint_revision, &plot.blueprint_sha256)?;
         ensure(
             sha == plot.blueprint_sha256,
             "hetu.integrity_failure",
@@ -140,7 +140,7 @@ impl Kernel {
         Ok(plot)
     }
     pub(super) fn plot_result(&self, plot: &plot::Plot, saved: bool) -> Result<Value> {
-        let current_bp = self.blueprint()?;
+        let current_bp = self.current_blueprint_for_snapshot(plot.blueprint_revision, &plot.blueprint_sha256)?;
         let mut stale_reasons = Vec::new();
         if current_bp["revision"] != plot.blueprint_revision {
             stale_reasons.push(json!({"code":"blueprint_changed","expected_revision":plot.blueprint_revision,"current_revision":current_bp["revision"]}));

@@ -80,8 +80,10 @@ public enum CreativeTaskInput {
     public var error: String?
     private let model: WorkspaceModel
     private let scopeID: String
-    public init(model: WorkspaceModel) {
-        self.model = model; scopeID = model.workspaceID
+    private let workID: String
+    private let targetDocumentID: String?
+    public init(model: WorkspaceModel, targetDocumentID: String? = nil) {
+        self.model = model; scopeID = model.workspaceID; workID = model.currentWorkID; self.targetDocumentID = targetDocumentID
         pending = model.pendingStructureOperations.first { $0.action.hasPrefix("hetu.creative_tasks.") }
     }
     public var held: Bool { pending != nil || !model.pendingStructureOperations.isEmpty }
@@ -104,17 +106,32 @@ public enum CreativeTaskInput {
                 guard let value = await read("hetu.documents.get", input: ["document_id": .string(item.id)]) else { return }
                 context.append(.object(["kind": .string("document"), "document_id": .string(item.id), "revision_id": value["revision"]["revision_id"]]))
             }
-            if includeBible { context.append(.object(["kind": .string("blueprint"), "revision": model.bible["blueprint"]["revision"]])) }
+            if includeBible && model.bibleInitialized {
+                var source: [String: JSONValue] = ["kind": .string("blueprint"), "revision": model.bible["blueprint"]["revision"]]
+                if let reference = model.workReference {
+                    source["work_ref"] = reference.value; source["blueprint_id"] = model.bible["blueprint"]["blueprint_id"]
+                    source["sha256"] = model.bible["sha256"]
+                }
+                context.append(.object(source))
+            }
             if kind != .revision && includeCurrent && !model.documentID.isEmpty && !contextIDs.contains(model.documentID) {
                 context.insert(.object(["kind": .string("document"), "document_id": .string(model.documentID), "revision_id": document["revision"]["revision_id"]]), at: 0)
             }
             guard model.loaded == document, !model.needsProtection, !model.isComposing else { throw CreativeTaskError.saveRequired }
-            let input: [String: JSONValue]
+            var input: [String: JSONValue]
             if kind == .revision {
                 input = try CreativeTaskInput.revision(scopeID: scopeID, document: document, ranges: ranges, context: context, client: client, brief: brief, locale: model.locale)
             } else {
                 input = ["scope_ref": .object(["kind": .string("workspace"), "id": .string(scopeID)]), "task_kind": .string(kind.rawValue),
                     "brief": .string(brief), "input_refs": .array(context), "client_adapter": .string(client == .claudeCode ? "claude-code" : client.rawValue), "language_tag": .string(model.locale == "en" ? "en" : "zh-CN")]
+            }
+            if let reference = model.workReference { input["work_ref"] = reference.value }
+            if kind == .dramaDraft || kind == .chapterDraft {
+                let targetID = targetDocumentID ?? (includeCurrent ? model.documentID : "")
+                if !targetID.isEmpty {
+                    guard let target = await read("hetu.documents.get", input: ["document_id": .string(targetID)]) else { return }
+                    input["target_ref"] = .object(["document_id": target["document"]["document_id"], "revision_id": target["revision"]["revision_id"], "sha256": target["revision"]["sha256"]])
+                }
             }
             if let value = await read("hetu.creative_tasks.preview_prompt", input: input) {
                 var fields = value.object
@@ -165,6 +182,7 @@ public enum CreativeTaskInput {
     }
     public func loadTasks(append: Bool = false) async {
         var input: [String: JSONValue] = ["limit": .integer(20)]
+        if let targetDocumentID { input["target_document_id"] = .string(targetDocumentID) }
         if append, let nextCursor { input["cursor"] = .string(nextCursor) }
         guard let value = await read("hetu.creative_tasks.list", input: input) else { return }
         tasks = (append ? tasks : []) + value["tasks"].array
@@ -198,12 +216,18 @@ public enum CreativeTaskInput {
         } catch { showError(error) }
     }
     public func read(_ action: String, input: [String: JSONValue]) async -> JSONValue? {
-        guard model.workspaceID == scopeID else { showError(CreativeTaskError.scopeChanged); return nil }
+        guard model.workspaceID == scopeID, model.currentWorkID == workID, let workspace = model.workspace else { showError(CreativeTaskError.scopeChanged); return nil }
         error = nil
-        return await model.workspaceAction(action, input: input) { message, _ in self.error = message }
+        do {
+            let result = try await workspace.read(action, input: input)
+            guard model.workspace === workspace, model.workspaceID == scopeID, model.currentWorkID == workID else {
+                throw CreativeTaskError.scopeChanged
+            }
+            return result
+        } catch { showError(error); return nil }
     }
     public func mutate(_ action: String, input: [String: JSONValue]) async -> JSONValue? {
-        guard model.workspaceID == scopeID else { showError(CreativeTaskError.scopeChanged); return nil }
+        guard model.workspaceID == scopeID, model.currentWorkID == workID else { showError(CreativeTaskError.scopeChanged); return nil }
         let operation = PendingStructureOperation(workspaceID: scopeID, action: action, input: input)
         guard pending == nil || pending == operation else { return nil }
         pending = operation; error = nil

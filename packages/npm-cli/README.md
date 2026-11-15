@@ -16,3 +16,5 @@ hetu-mcp --client codex
 MCP 客户端可将命令配置为 `npx`，参数为 `--yes --package @limecloud/hetu hetu-mcp --client codex`。其他客户端使用其实际适配器名称，见[接入合同](../../docs/14-MCP与Agent接入.md)。启动诊断写入 stderr，stdout 保留给原生 CLI／MCP；原生参数、stdin、退出码与取消信号直接转发。
 
 可选环境变量 `HETU_APP_PATH` 指向精确版本的官方 `Hetu.app`；指定路径同样必须通过身份、版本、签名及公证检查。模型渠道配置、任务授权和作者确认沿用河图原生合同。
+
+平台模型连接使用 `hetu model-service login` 取得验证链接和验证码，作者在浏览器核验并连接后，用 `hetu model-service poll` 查询原连接；`hetu model-service status` 查看本机状态。登录无需作品，不返回凭据，也不代表批准生成费用。

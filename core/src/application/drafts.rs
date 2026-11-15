@@ -42,8 +42,8 @@ impl Kernel {
         let doc = domain::id("doc");
         draft["evidence_document_id"] = json!(doc);
         draft["evidence_revision_id"] = json!(domain::id("rev"));
-        let (bp, sha) = self.blueprint_revision(Some(integer(draft, "blueprint_revision")?))?;
-        stage_blueprint_snapshot(&self.store, &bp, changes)?;
+        let (bp, sha) = self.draft_blueprint(draft, false)?;
+        self.stage_resolved_blueprint_snapshot(&bp, changes)?;
         draft["blueprint_sha256"] = json!(sha);
         if draft.get("language_tag").is_none() {
             draft["language_tag"] = self.config["locale"].clone();
@@ -284,7 +284,7 @@ impl Kernel {
             }
             let content = String::from_utf8(content)
                 .map_err(|_| Error::new("hetu.integrity_failure", "草稿不是 UTF-8。"))?;
-            return Ok(json!({"draft":draft,"content":content}));
+            return Ok(json!({"draft":draft,"content":content,"suggested_target_ref":self.draft_delivery_target(&draft)?}));
         }
         Err(Error::new("not_found", "草稿不存在。"))
     }

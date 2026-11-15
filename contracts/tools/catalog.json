@@ -329,6 +329,24 @@
       ]
     },
     {
+      "name": "hetu_authorize_model_usage",
+      "action": "hetu.model_tasks.authorize_usage",
+      "title": "登记对话已授权的生成额度",
+      "description": "仅依据作者在当前Agent对话中的真实授权登记本任务额度。已充分授权时说明范围并登记后连续生成，不要求回河图客户端或逐图再次批准。不得自行扩大预算；达到上限在当前对话请求追加确认，余额不足提示充值。完整task_ref、原plan_id、固定授权键与authorization_note须保留，unrestricted仅用于作者明确完全授权。此工具本身不生成图片。",
+      "profiles": [
+        "task"
+      ]
+    },
+    {
+      "name": "hetu_request_model_confirmation",
+      "action": "hetu.model_tasks.get",
+      "title": "请求本次模型确认 / Request model confirmation",
+      "description": "通过宿主向作者展示原计划的完整输入、渠道、一次请求及计费范围，记录真实用户确认。只在宿主支持交互确认时可用；参数不能自报批准，不执行生成，确认后提交同一 plan_id。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
       "name": "hetu_submit_model_task",
       "action": "hetu.model_tasks.submit",
       "title": "执行作者已批准的原模型计划",
@@ -931,6 +949,78 @@
       "description": "仅回读已授权作品的固定版本；不回读凭据及私密审核。Read authorized fixed history without secrets or private reviews.",
       "profiles": [
         "workspace",
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_list_works",
+      "action": "hetu.works.list",
+      "title": "列出创作对象 / List creative works",
+      "description": "只列出当前获权范围的小说、剧本和视频，不遍历整库。List novels, scripts and videos within the authorized scope.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_read_work",
+      "action": "hetu.works.get",
+      "title": "读取创作对象 / Read creative work",
+      "description": "按精确WorkRef读取资料和固定修订，不从标题猜身份。Read an exact WorkRef and revision.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_read_work_links",
+      "action": "hetu.work_links.list",
+      "title": "读取关联作品 / Read work links",
+      "description": "回读固定来源和双向关联，关联本身不扩权。Read fixed source links; links do not grant access.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_create_video_from_project",
+      "action": "hetu.creation_projects.create_video",
+      "title": "创建独立视频作品 / Create independent video work",
+      "description": "将筹备写入本次预留新目录，无小说或剧本前置，不授予作者决定权。Create in the reserved new directory without an upstream novel or script.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_create_video_project",
+      "action": "hetu.video.projects.create",
+      "title": "新建视频项目 / Create video project",
+      "description": "仅在已获权的新建范围建立视频项目。Create a video project within the authorized creation scope.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_read_video_project",
+      "action": "hetu.video.projects.get",
+      "title": "读取视频项目 / Read video project",
+      "description": "读取精确视频项目与有序分集。Read the exact video project and ordered episodes.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_create_video_episode",
+      "action": "hetu.video.episodes.create",
+      "title": "新建视频分集 / Create video episode",
+      "description": "在获权视频项目创建分集，不生成媒体。Create an episode without generating media.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_read_video_episode",
+      "action": "hetu.video.episodes.get",
+      "title": "读取视频分集 / Read video episode",
+      "description": "读取固定视频分集与归属。Read the exact video episode and owner.",
+      "profiles": [
         "stable"
       ]
     }

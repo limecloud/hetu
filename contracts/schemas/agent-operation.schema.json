@@ -23,7 +23,8 @@
         "author_adoption_and_finalization",
         "author_snapshot_approval",
         "branch_and_remote_sync",
-        "import_export_preparation_and_execution"
+        "import_export_preparation_and_execution",
+        "video_media_task_required"
       ]
     },
     "proposal": {

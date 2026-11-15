@@ -119,7 +119,7 @@ class NativeConfigurationTests(unittest.TestCase):
             self.assertEqual(copy.call_args.args[0], rust_target / "release/libhetu_core.dylib")
             self.assertEqual(package.call_args.args[-3:], (scratch / "release", "release", rust_target))
             commands = [call.args[0] for call in run.call_args_list]
-            self.assertIn(["cargo", "build", "--locked", "--target-dir", str(rust_target), "--release"], commands)
+            self.assertIn(["cargo", "build", "--locked", "--jobs", "2", "--target-dir", str(rust_target), "--release"], commands)
             for command in commands:
                 if command[:2] == ["cargo", "test"]:
                     self.assertIn("--release", command)

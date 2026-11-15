@@ -1,0 +1,361 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-11-15T07:15:48.028459+00:00",
+  "version": "0.7.0",
+  "status": "passed_for_declared_scope",
+  "title": "持械入宋",
+  "author": "茶根儿",
+  "source": {
+    "file_name": "持械入宋.txt",
+    "sha256": "4be14f1ee804b2dee9370fe528ce1d93504a9a539793fe8d2276361a52f29c10",
+    "bytes": 5316669,
+    "reading_characters": 1822101,
+    "encoding": "UTF-8",
+    "unchanged": true
+  },
+  "import": {
+    "workspace_id": "workspace_84b51724-df4c-4e3f-9268-96fab12eda03",
+    "workspace_path": "/Users/coso/Library/Application Support/Hetu/Collaboration/managed/works/32f16e3dbb1a93fd98384e02c06d69c9a5ef52148075f3463d11187c49e24061",
+    "record_directory": "/Users/coso/Documents/河图洛书/导入记录/持械入宋-4be14f1ee804",
+    "chapter_documents": 510,
+    "front_matter_documents": 1,
+    "directory_entries": 511,
+    "groups": 5,
+    "all_units_read_back": true,
+    "order_volume_and_titles_verified": true,
+    "source_bytes_and_canonical_revisions_checked_separately": true,
+    "chapter_number_resets_retained": 3,
+    "duplicate_chapter_53_retained": true,
+    "source_snapshot_persistent": true,
+    "rights_not_inferred": true
+  },
+  "adaptation": {
+    "project_id": "drama_509eea60-8e49-4f4a-8d45-85ec2a1c69e8",
+    "source_chapters": 6,
+    "reference_episodes": [
+      {
+        "number": 1,
+        "episode_id": "depisode_c31929be-49a0-46f0-831d-49d0857a0fb8",
+        "task_ref": {
+          "request_revision": 1,
+          "scope_ref": {
+            "id": "workspace_84b51724-df4c-4e3f-9268-96fab12eda03",
+            "kind": "workspace"
+          },
+          "sha256": "eae1a485ab4944461203aae19b34f6c3cb9b798dcfc536f1221a0c20daf7335d",
+          "task_id": "task_14d0e31a-042e-4cdf-9609-397344c072f0"
+        },
+        "working_copy_ref": {
+          "sha256": "78b557aec92dbe3afa9a20eb41d6208ba31af0d6803ce92159b2e53abf0c9f9f",
+          "working_copy_id": "working_8d306437-9c67-412f-8b35-2ebd385d9108",
+          "working_revision_id": "wrev_411f2499-17b4-4d13-9c16-1fd8ce486fb7"
+        },
+        "submission_ref": {
+          "sha256": "5a577012ff4badc41bf155ada8be424de8171b109db64bb80db4aed68d3bebd8",
+          "submission_id": "submission_75f7f562-6340-40f0-83ac-e0c9a991fee4"
+        },
+        "size_bytes": 2568,
+        "channel": "current_codex_mcp",
+        "author_document_still_empty": true
+      },
+      {
+        "number": 2,
+        "episode_id": "depisode_e8fcfe59-0b29-4dd4-b665-0536500648d8",
+        "task_ref": {
+          "request_revision": 1,
+          "scope_ref": {
+            "id": "workspace_84b51724-df4c-4e3f-9268-96fab12eda03",
+            "kind": "workspace"
+          },
+          "sha256": "3a3441a2b93766dfc6528ea2395ed5187ca93bae6790db75248a13c278face2d",
+          "task_id": "task_d6dad37a-0efd-4d7c-9583-ada2e06f0b9c"
+        },
+        "working_copy_ref": {
+          "sha256": "0cd38316932aa1c83234409f356011338001ce6b25f0fce31fc9dea6e647afa5",
+          "working_copy_id": "working_79c90c7e-2ed1-43c8-b322-7095bea9a006",
+          "working_revision_id": "wrev_6ae3e843-e2b2-42cc-9a1f-b1bf204283e0"
+        },
+        "submission_ref": {
+          "sha256": "c979ff5e25a40328c6eaabc331fb2f743059739762eab7383ff448829a6086a3",
+          "submission_id": "submission_121fce64-99a0-443f-8b9a-79343851c46e"
+        },
+        "size_bytes": 1826,
+        "channel": "current_codex_public_cli",
+        "author_document_still_empty": true
+      },
+      {
+        "number": 3,
+        "episode_id": "depisode_d84fe595-ac75-4175-bb78-c1bf364fed04",
+        "task_ref": {
+          "request_revision": 1,
+          "scope_ref": {
+            "id": "workspace_84b51724-df4c-4e3f-9268-96fab12eda03",
+            "kind": "workspace"
+          },
+          "sha256": "caf852d2ee5ac313d4a38feee3940dfd30e19761aa7001ad7e49f84a9626509b",
+          "task_id": "task_dd4c440a-9d10-4063-900f-19fe9dd10aac"
+        },
+        "working_copy_ref": {
+          "sha256": "264e943f6b374a5d4cdabe98fd3c64edb74952873b01889e16f97143209ac97f",
+          "working_copy_id": "working_53f56712-0297-40f9-be7b-f766e75b6b78",
+          "working_revision_id": "wrev_88d61bfd-0409-4276-aa33-097e6d498222"
+        },
+        "submission_ref": {
+          "sha256": "8f039fa942b6b229ee66c8bc8888dc5ce92e9e56dd836bbe6a563322d4dc555f",
+          "submission_id": "submission_d0d05bf8-d12c-49ea-a978-467b361fc078"
+        },
+        "size_bytes": 2394,
+        "channel": "current_codex_public_cli",
+        "author_document_still_empty": true
+      },
+      {
+        "number": 4,
+        "episode_id": "depisode_894839ee-f31a-424c-8ce9-0e4cea62bcf7",
+        "task_ref": {
+          "request_revision": 1,
+          "scope_ref": {
+            "id": "workspace_84b51724-df4c-4e3f-9268-96fab12eda03",
+            "kind": "workspace"
+          },
+          "sha256": "9f0907d3213d9850add5e851b64136836fcbb82aa4aa900f209c500a1f969bf2",
+          "task_id": "task_e4b56c0c-54d3-47ad-af4a-7f3eb81b9638"
+        },
+        "working_copy_ref": {
+          "sha256": "b3f9b3a142eb34a849e50aece1eb65e1277b554accf3664a0a672788f31bef6b",
+          "working_copy_id": "working_eb425ee0-b7d6-4830-b68d-26ea651c04c7",
+          "working_revision_id": "wrev_d6937e05-cfee-44ec-972b-334661b60d3b"
+        },
+        "submission_ref": {
+          "sha256": "abedbdce0fd85cfde9390fcee594ff150b406a94504960f979b017a55f8b6a5e",
+          "submission_id": "submission_8ea2ecb5-c05b-4ae6-bbca-bf607b547abc"
+        },
+        "size_bytes": 1731,
+        "channel": "current_codex_public_cli",
+        "author_document_still_empty": true
+      },
+      {
+        "number": 5,
+        "episode_id": "depisode_42c7cac9-b93e-43ec-8c07-f4f38466a30b",
+        "task_ref": {
+          "request_revision": 1,
+          "scope_ref": {
+            "id": "workspace_84b51724-df4c-4e3f-9268-96fab12eda03",
+            "kind": "workspace"
+          },
+          "sha256": "17e5d30dbd04908c44084c6b06b33a09199b8e57549157aafe7d84f35132eb0f",
+          "task_id": "task_f03aa60b-2212-421d-abf5-0336f185901a"
+        },
+        "working_copy_ref": {
+          "sha256": "bb5213136b71dc9140f888cddfb262f4d37d15a221e10eab349aff9f531e3a50",
+          "working_copy_id": "working_9fe4dd40-e0a4-48a5-a06f-d0bb09784de4",
+          "working_revision_id": "wrev_944b16f3-c01f-433a-a1cc-a5ab0868dc1a"
+        },
+        "submission_ref": {
+          "sha256": "64ac11aad78cb0c72613ea94698a55d2b749be8f21cbf66baa924bdf1a6d5abb",
+          "submission_id": "submission_cd4af951-d5a2-4f3c-bd44-1dd1bd59d29a"
+        },
+        "size_bytes": 1853,
+        "channel": "current_codex_public_cli",
+        "author_document_still_empty": true
+      },
+      {
+        "number": 6,
+        "episode_id": "depisode_2d90990b-fa5f-4137-bedb-574b16f6dc1c",
+        "task_ref": {
+          "request_revision": 1,
+          "scope_ref": {
+            "id": "workspace_84b51724-df4c-4e3f-9268-96fab12eda03",
+            "kind": "workspace"
+          },
+          "sha256": "883d1d73b0238c1b6f7da1c87dda5a2b6f7b213d07a1a47d6cfd1c3760be9769",
+          "task_id": "task_ea890bfc-3337-4677-9b4b-6fd9c8a232d5"
+        },
+        "working_copy_ref": {
+          "sha256": "e9297665c1c407d2836c991abd2235587e10de64c36963f2da3bf6c0b19f23bc",
+          "working_copy_id": "working_95ab286b-07cf-4c07-bcde-641efc5b2c36",
+          "working_revision_id": "wrev_df27ac87-6686-4fb9-9a71-79671fdc7562"
+        },
+        "submission_ref": {
+          "sha256": "53e90ca34e25e5b5be951b31a84170d8e6d09f2eb6dede4c863cfa8dec01be62",
+          "submission_id": "submission_4d00cf13-a414-42cb-bbf9-2623fd25d6a1"
+        },
+        "size_bytes": 2157,
+        "channel": "current_codex_public_cli",
+        "author_document_still_empty": true
+      }
+    ],
+    "draft_resources": [
+      {
+        "resource_id": "resource_f74da91e-004c-492b-9b03-bd44640ce1c8",
+        "revision": 1,
+        "sha256": "57eb9f6b42a144b952c12f00d22526c08b16e3b1fcb9aa55c5f1581c85ccd15c",
+        "title": "林昭",
+        "category": "character",
+        "state": "draft"
+      },
+      {
+        "resource_id": "resource_32028728-1c1f-4a3c-817f-e529e38c0ecf",
+        "revision": 1,
+        "sha256": "3c4b31a4220f800d71b9f0420ab5e0edb2b2e0ce51378292bc64d4c9d798365a",
+        "title": "谢长风",
+        "category": "character",
+        "state": "draft"
+      },
+      {
+        "resource_id": "resource_7859e178-a1b0-476e-bd39-b2a47c2ab4e7",
+        "revision": 1,
+        "sha256": "6298fb28524348a63b6ea1175a395e6620ceef587b364050c017a3a61bf7e158",
+        "title": "马振邦",
+        "category": "character",
+        "state": "draft"
+      },
+      {
+        "resource_id": "resource_768c7102-81b8-4b52-b0c5-f87a2840f362",
+        "revision": 1,
+        "sha256": "04b8a2fa2f40ce0d16251a18c2e1279ace918f3aabb870313664b9cc87a758ce",
+        "title": "王浩川",
+        "category": "character",
+        "state": "draft"
+      },
+      {
+        "resource_id": "resource_2d571970-2fce-4cd9-aea7-3377632f18ff",
+        "revision": 1,
+        "sha256": "dbc6a337c7e6ff01c6a6cceb2fa71fe0f48d7dbc65781ff1aff02194dcfffc2e",
+        "title": "陈素",
+        "category": "character",
+        "state": "draft"
+      },
+      {
+        "resource_id": "resource_3596b9d5-f567-4a62-8ee2-03e263fce1b2",
+        "revision": 1,
+        "sha256": "7fb97155e664cb82c4ce6176b30532005d1a162f10f61ca073b8a1446e32dfbd",
+        "title": "许青禾",
+        "category": "character",
+        "state": "draft"
+      },
+      {
+        "resource_id": "resource_e749cd6e-bc88-476c-89d0-f6e6113023e7",
+        "revision": 2,
+        "title": "许三槐",
+        "category": "character",
+        "state": "draft",
+        "sha256": "376e06729a2df612e78c3883e385401c3798ffc6f79c7d41c52a2b77a440c6da"
+      },
+      {
+        "resource_id": "resource_ba7edbfb-0538-4dbf-9a3a-3f9ddc6b909c",
+        "revision": 1,
+        "sha256": "5189b53015c4fe42ab732c159b1a6872731d1bee22c5cf3294bc2a26afb5b319",
+        "title": "雾谷翻车处",
+        "category": "location",
+        "state": "draft"
+      },
+      {
+        "resource_id": "resource_7a8f2aea-1422-4d55-9f31-80a37e52f177",
+        "revision": 1,
+        "sha256": "7e1f1660dc945b095291cb78bdfaeeacdbc651a3485ad5c4c152025476879629",
+        "title": "陇山林间与下山路",
+        "category": "location",
+        "state": "draft"
+      },
+      {
+        "resource_id": "resource_65c99080-c712-467a-9381-ecf575f9e0b9",
+        "revision": 1,
+        "sha256": "2a15f75f91b43587a1411c6293d80157ba7e790fa7feafdd9b21607ca861d761",
+        "title": "清河村与祠堂",
+        "category": "location",
+        "state": "draft"
+      },
+      {
+        "resource_id": "resource_9a182028-42c8-41bf-b80f-e4217af9ad47",
+        "revision": 1,
+        "sha256": "aecc1b16f4938e15609e92d67b488f1c18f82fb40de26d8779fafd3a29b8b928",
+        "title": "随行装备连续性",
+        "category": "prop",
+        "state": "draft"
+      },
+      {
+        "resource_id": "resource_19f8925b-745f-4c6d-a446-c9ab6d3afa73",
+        "revision": 1,
+        "sha256": "f66ae60eb374f161d348bf0ffc9308d11a04154700e42badd8f4e45dad9c8994",
+        "title": "开篇六集改编说明",
+        "category": "research",
+        "state": "draft"
+      },
+      {
+        "resource_id": "resource_ee582579-f5b8-4d51-aa12-043bf11c6256",
+        "revision": 1,
+        "title": "里尔",
+        "category": "character",
+        "state": "draft",
+        "sha256": "d8be18083f10e194a9a157b9fffc4644b31446cf72be6669cf836964c733c873"
+      }
+    ],
+    "original_documents_unchanged": true,
+    "empty_author_scripts_preserved": true,
+    "adoption_performed": false,
+    "finalization_performed": false,
+    "paid_generation_performed": false,
+    "notes": "来源仅覆盖开篇六章。人物、地点、道具与改编说明保留为未采用资料；许三槐和里尔分别登记。"
+  },
+  "execution": {
+    "agent": "本对话 Codex",
+    "method": "仓库 hetu-import / hetu-drama Skills + 公开 CLI + 当前会话实际 MCP",
+    "gui_used_for_business": false,
+    "author_sdk_use": "仅对逐项核对的固定导入/结构/任务方案记录用户已有明确授权；未通过作者身份填业务资料或写正文。",
+    "mcp_verified": [
+      "能力发现",
+      "打开精确任务",
+      "读取固定请求与目录",
+      "读取第一章原著",
+      "保存Fountain参考稿",
+      "固定提交",
+      "工作修订回读"
+    ],
+    "recovery": "沿原作品、原计划、原方案及原键恢复；未重复建书或重复导入已执行章节。"
+  },
+  "native": {
+    "status": "passed_read_only_integration",
+    "directory_and_titles": "全部511条与计划一致；5组目录完整",
+    "content": "首、中、尾固定修订与正文摘要一致，中英切换不改正文",
+    "review": "六集候选与固定提交、13份未采用资料均可经同一原生SDK回读；作者分集仍为空稿",
+    "open_seconds_samples": [
+      0.624830458,
+      5.558727125
+    ],
+    "measurement_limit": "不同同机负载下的真实样本；不作为稳定启动时延或GUI验收结论。"
+  },
+  "installed": {
+    "path": "/Applications/Hetu.app",
+    "version": "0.7.0",
+    "book_received_by_native_library": true,
+    "book_directory_last_chapter_and_project_readback": true
+  },
+  "gui": {
+    "status": "blocked",
+    "reason": "CUA初始化失败：failed to write kernel assets: No such file or directory (os error 2)",
+    "not_claimed": "未将状态集成、截图夹具或启动进程视为本书排版验收通过。"
+  },
+  "raw_private_records": {
+    "plan.json": "d82897787016b50878ac5ff142569beb6ad4a87b8171eb85fac52a77ba908bf1",
+    "journal.json": "60cb699c9fb4ca31456935a3e2713e116401d773a579534379d4425346d8f80a",
+    "acceptance.json": "a318ba31c724f2e6698bbbfd33e9b265713f00c8707f01aa96e93e0b6292f1ee",
+    "改编参考/acceptance.json": "6b1ed45623820539295ad2e12f90bf9fb7f966314ed8bcd01c464855d17f3fbf",
+    "改编参考/tasks.json": "254bc29e7c4fd7319b079e53c74637f26ca91f3037959ef149dcfd80342a44fc",
+    "改编参考/current-codex-mcp.json": "2f6859e4c341267ddac3c285e1d614c859aa3805aaca18b004e1ef5025b2962a",
+    "改编参考/receipts.jsonl": "243687a45c92553f88174ff2b0823ea81ca5b000e324a17a4caa037ad45e7714"
+  },
+  "not_claimed": [
+    "全书短剧改编完成",
+    "作者已采纳或定稿",
+    "模型生图或视频生成",
+    "本书GUI排版全部通过",
+    "公开传播权"
+  ],
+  "product_acceptance": {
+    "status": "failed",
+    "trigger": "作者反馈前六集从分集页面不能打开阅读，复核发现页面只打开空作者稿，遗漏独立参考稿。",
+    "previous_test_gap": "此前只读 SDK 检查任务候选，不证明分集页面能直接阅读、审核与返工。",
+    "remediation": "固定目标关联、分集 manuscript 读投影、只读正文与原任务入口、Skills 从分集回读、同名隔离与稿件保护测试。",
+    "full_book_adaptation": "in_progress"
+  }
+}

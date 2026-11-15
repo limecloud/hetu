@@ -4138,32 +4138,32 @@
     "parameters": []
   },
   "library.collection": {
-    "zh-CN": "作品",
-    "en": "Books",
+    "zh-CN": "创作库",
+    "en": "Creative library",
     "purpose": "Mac 原生界面：library.collection",
     "parameters": []
   },
   "library.all": {
-    "zh-CN": "全部作品",
-    "en": "All Books",
+    "zh-CN": "全部创作",
+    "en": "All works",
     "purpose": "Mac 原生界面：library.all",
     "parameters": []
   },
   "library.add": {
-    "zh-CN": "加入已有作品…",
-    "en": "Add Existing Book…",
+    "zh-CN": "打开已有项目",
+    "en": "Open existing project",
     "purpose": "Mac 原生界面：library.add",
     "parameters": []
   },
   "library.back": {
-    "zh-CN": "返回书库",
-    "en": "Back to Library",
+    "zh-CN": "返回创作库",
+    "en": "Back to library",
     "purpose": "Mac 原生界面：library.back",
     "parameters": []
   },
   "library.search": {
-    "zh-CN": "搜索书名、笔名或类型",
-    "en": "Search title, pen name or genre",
+    "zh-CN": "搜索创作",
+    "en": "Search works",
     "purpose": "Mac 原生界面：library.search",
     "parameters": []
   },
@@ -4180,8 +4180,8 @@
     "parameters": []
   },
   "library.empty": {
-    "zh-CN": "开始你的第一部作品",
-    "en": "Start Your First Book",
+    "zh-CN": "开始第一部创作",
+    "en": "Start your first work",
     "purpose": "Mac 原生界面：library.empty",
     "parameters": []
   },
@@ -8452,6 +8452,12 @@
     "purpose": "模型服务与固定任务授权",
     "parameters": []
   },
+  "models.plans_failed": {
+    "zh-CN": "模型请求读取失败，请刷新。",
+    "en": "Couldn’t load model requests. Refresh to try again.",
+    "purpose": "协作任务中固定模型计划的读取失败状态",
+    "parameters": []
+  },
   "models.outgoing": {
     "zh-CN": "查看将发送的完整输入",
     "en": "Review all outgoing input",
@@ -9501,5 +9507,291 @@
     "en": "Novel import",
     "parameters": [],
     "purpose": "小说导入Skill名称"
+  },
+  "agent.skill.hetu-video": {
+    "zh-CN": "视频制作与审片",
+    "en": "Video production and review",
+    "parameters": [],
+    "purpose": "视频制作Skill名称"
+  },
+  "drama.reading_integrity": {
+    "zh-CN": "剧本修订或摘要不一致，请刷新后重试。",
+    "en": "The script revision or digest does not match. Refresh and try again.",
+    "purpose": "分集阅读与参考稿审阅",
+    "parameters": []
+  },
+  "drama.script_metadata": {
+    "zh-CN": "稿件信息",
+    "en": "Script information",
+    "purpose": "分集阅读与参考稿审阅",
+    "parameters": []
+  },
+  "drama.author_edit": {
+    "zh-CN": "编辑作者稿",
+    "en": "Edit author draft",
+    "purpose": "分集阅读与参考稿审阅",
+    "parameters": []
+  },
+  "drama.reading_version": {
+    "zh-CN": "阅读版本",
+    "en": "Reading version",
+    "purpose": "分集阅读与参考稿审阅",
+    "parameters": []
+  },
+  "drama.author_final": {
+    "zh-CN": "作者定稿",
+    "en": "Author final",
+    "purpose": "分集阅读与参考稿审阅",
+    "parameters": []
+  },
+  "drama.author_draft": {
+    "zh-CN": "作者稿",
+    "en": "Author draft",
+    "purpose": "分集阅读与参考稿审阅",
+    "parameters": []
+  },
+  "drama.reference_submitted": {
+    "zh-CN": "已提交参考稿",
+    "en": "Submitted reference",
+    "purpose": "分集阅读与参考稿审阅",
+    "parameters": []
+  },
+  "drama.reference_working": {
+    "zh-CN": "参考稿（尚未提交）",
+    "en": "Reference (not submitted)",
+    "purpose": "分集阅读与参考稿审阅",
+    "parameters": []
+  },
+  "drama.review_reference": {
+    "zh-CN": "审核参考稿",
+    "en": "Review reference",
+    "purpose": "分集阅读与参考稿审阅",
+    "parameters": []
+  },
+  "drama.continue_reference": {
+    "zh-CN": "继续协作",
+    "en": "Continue collaboration",
+    "purpose": "分集阅读与参考稿审阅",
+    "parameters": []
+  },
+  "drama.script_empty": {
+    "zh-CN": "这份稿件还没有正文。",
+    "en": "This version has no script yet.",
+    "purpose": "分集阅读与参考稿审阅",
+    "parameters": []
+  },
+  "drama.plan_and_properties": {
+    "zh-CN": "分集计划与属性",
+    "en": "Episode plan and properties",
+    "purpose": "分集阅读与参考稿审阅",
+    "parameters": []
+  },
+  "library.status": {
+    "purpose": "创作库与独立项目工作界面",
+    "parameters": [],
+    "zh-CN": "创作状态",
+    "en": "Work status"
+  },
+  "library.all_statuses": {
+    "purpose": "创作库与独立项目工作界面",
+    "parameters": [],
+    "zh-CN": "全部状态",
+    "en": "All statuses"
+  },
+  "library.remove_registration": {
+    "purpose": "创作库与独立项目工作界面",
+    "parameters": [],
+    "zh-CN": "从创作库移除",
+    "en": "Remove from library"
+  },
+  "library.archive_title": {
+    "purpose": "创作库与独立项目工作界面",
+    "parameters": [],
+    "zh-CN": "归档项目",
+    "en": "Archive project"
+  },
+  "library.archive_action": {
+    "purpose": "创作库与独立项目工作界面",
+    "parameters": [],
+    "zh-CN": "归档此项目",
+    "en": "Archive this project"
+  },
+  "library.archive_scope": {
+    "purpose": "创作库与独立项目工作界面",
+    "parameters": [],
+    "zh-CN": "此目录还有其他项目。仅归档当前项目，正文、素材与关联保持完整。",
+    "en": "This directory also contains other projects. Archive only this project, keeping its text, assets and links intact."
+  },
+  "error.library.multipleWorks": {
+    "purpose": "创作库与独立项目工作界面",
+    "parameters": [],
+    "zh-CN": "此目录包含多个项目，不能随单个项目移入废纸篓。请归档项目或移除创作库登记。",
+    "en": "This directory contains multiple projects. Archive this project or remove its library entry instead of moving the shared directory to Trash."
+  },
+  "creation.type.video": {
+    "purpose": "创作库与独立项目工作界面",
+    "parameters": [],
+    "zh-CN": "视频",
+    "en": "Video"
+  },
+  "video.title": {
+    "purpose": "创作库与独立项目工作界面",
+    "parameters": [],
+    "zh-CN": "视频",
+    "en": "Video"
+  },
+  "video.no_episodes": {
+    "purpose": "创作库与独立项目工作界面",
+    "parameters": [],
+    "zh-CN": "还没有分集",
+    "en": "No episodes yet"
+  },
+  "video.no_media": {
+    "purpose": "创作库与独立项目工作界面",
+    "parameters": [],
+    "zh-CN": "本集尚无可播放成果",
+    "en": "This episode has no playable result yet"
+  },
+  "video.start_intent": {
+    "purpose": "创作库与独立项目工作界面",
+    "parameters": [],
+    "zh-CN": "请根据本视频项目的资料整理分集与制作方案。先读取当前能力，沿原项目继续，不创建空小说或空剧本。",
+    "en": "Organize episodes and a production plan from this video project. Discover current capabilities and continue this project without creating an empty novel or screenplay."
+  },
+  "video.continue_intent": {
+    "purpose": "创作库与独立项目工作界面",
+    "parameters": [
+      "title"
+    ],
+    "zh-CN": "请继续制作《{title}》，读取固定分集和现有成果，再提出下一步方案。",
+    "en": "Continue producing “{title}”. Read its fixed episode and existing results before proposing the next step."
+  },
+  "works.related": {
+    "purpose": "创作库与独立项目工作界面",
+    "parameters": [],
+    "zh-CN": "关联作品",
+    "en": "Related works"
+  },
+  "works.no_links": {
+    "purpose": "创作库与独立项目工作界面",
+    "parameters": [],
+    "zh-CN": "还没有关联作品",
+    "en": "No related works yet"
+  },
+  "works.fixed_version": {
+    "purpose": "创作库与独立项目工作界面",
+    "parameters": [
+      "revision"
+    ],
+    "zh-CN": "依据第 {revision} 版",
+    "en": "Based on revision {revision}"
+  },
+  "works.newer_source": {
+    "purpose": "创作库与独立项目工作界面",
+    "parameters": [],
+    "zh-CN": "关联对象已有新版，当前依据保持原版",
+    "en": "A newer revision exists; the linked basis stays fixed"
+  },
+  "works.open_current": {
+    "purpose": "创作库与独立项目工作界面",
+    "parameters": [],
+    "zh-CN": "打开当前版本",
+    "en": "Open current version"
+  },
+  "works.relation.adaptation": {
+    "purpose": "创作库与独立项目工作界面",
+    "parameters": [],
+    "zh-CN": "改编依据",
+    "en": "Adaptation source"
+  },
+  "works.relation.production": {
+    "purpose": "创作库与独立项目工作界面",
+    "parameters": [],
+    "zh-CN": "制作依据",
+    "en": "Production source"
+  },
+  "works.relation.reference": {
+    "purpose": "创作库与独立项目工作界面",
+    "parameters": [],
+    "zh-CN": "创作参考",
+    "en": "Reference"
+  },
+  "works.relation.continuation": {
+    "purpose": "创作库与独立项目工作界面",
+    "parameters": [],
+    "zh-CN": "续作依据",
+    "en": "Continuation source"
+  },
+  "handoff.limit.video_media_task_required": {
+    "purpose": "创作库与独立项目工作界面",
+    "parameters": [],
+    "zh-CN": "此入口可整理视频项目与分集；媒体制作须使用已发现并获权的工具，缺少能力时先说明。",
+    "en": "This entry organizes video projects and episodes. Media production requires discovered, authorized tools; report missing capabilities first."
+  },
+  "shell.group.resources": {
+    "zh-CN": "创作资料",
+    "en": "Creative references",
+    "purpose": "项目次级导航分组",
+    "parameters": []
+  },
+  "shell.group.management": {
+    "zh-CN": "版本与交付",
+    "en": "Versions and delivery",
+    "purpose": "项目次级导航分组",
+    "parameters": []
+  },
+  "shell.group.checks": {
+    "zh-CN": "检查工具",
+    "en": "Checks",
+    "purpose": "项目次级导航分组",
+    "parameters": []
+  },
+  "shell.project_navigation": {
+    "zh-CN": "项目导航",
+    "en": "Project navigation",
+    "purpose": "显示或收起当前项目功能导航",
+    "parameters": []
+  },
+  "shell.contents": {
+    "zh-CN": "卷章目录",
+    "en": "Chapter contents",
+    "purpose": "展开当前小说内容目录",
+    "parameters": []
+  },
+  "shell.navigation.shown": {
+    "zh-CN": "已展开",
+    "en": "Expanded",
+    "purpose": "导航可访问状态",
+    "parameters": []
+  },
+  "library.no_matches": {
+    "zh-CN": "没有符合条件的创作",
+    "en": "No matching works",
+    "purpose": "创作库筛选空状态",
+    "parameters": []
+  },
+  "library.clear_filters": {
+    "zh-CN": "清除筛选",
+    "en": "Clear filters",
+    "purpose": "恢复完整创作库列表",
+    "parameters": []
+  },
+  "shell.navigation.hidden": {
+    "zh-CN": "已收起",
+    "en": "Collapsed",
+    "purpose": "导航可访问状态",
+    "parameters": []
+  },
+  "bible.not_initialized": {
+    "zh-CN": "尚无本作品设定",
+    "en": "No settings for this work",
+    "purpose": "作品自身设定空状态",
+    "parameters": []
+  },
+  "bible.not_initialized_detail": {
+    "zh-CN": "让 AI 整理本作品设定，审核后建立。",
+    "en": "Ask your agent to prepare this work’s settings for review.",
+    "purpose": "作品自身设定空状态",
+    "parameters": []
   }
 }

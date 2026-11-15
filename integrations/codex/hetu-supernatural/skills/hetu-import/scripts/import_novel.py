@@ -304,8 +304,16 @@ def command(args):
             for index, document in zip(pending["indices"], documents):
                 unit = manifest["units"][index]
                 actual = invoke("documents.get", {"document_id": document["document"]["document_id"], "revision_id": document["revision"]["revision_id"]})
-                if sha(actual["content"].encode()) != unit["content_sha256"] or actual["revision"]["origin_kind"] != "import": raise ValueError("实际章节内容或导入来源不符。")
-                journal["imported"].append({"index": index, "document_id": actual["document"]["document_id"], "revision_id": actual["revision"]["revision_id"], "sha256": actual["revision"]["sha256"]})
+                revision, report = actual["revision"], document["import_report"]
+                # TXT进入Markdown编辑表示时会转义标点；原字节与内部修订分别核验。
+                if (sha(actual["content"].encode()) != document["revision"]["sha256"]
+                    or revision["sha256"] != document["revision"]["sha256"]
+                    or revision["origin_kind"] != "import"
+                    or revision["import_ref"]["source_sha256"] != unit["content_sha256"]
+                    or report["source_sha256"] != unit["content_sha256"]
+                    or report["document_ref"]["sha256"] != revision["sha256"]):
+                    raise ValueError("实际章节内容或导入来源不符。")
+                journal["imported"].append({"index": index, "document_id": actual["document"]["document_id"], "revision_id": revision["revision_id"], "sha256": revision["sha256"], "source_sha256": unit["content_sha256"]})
             journal["next_index"] = pending["indices"][-1] + 1
         else: journal["volumes_ready"] = True
         journal.pop("pending"); save(journal_path, journal)

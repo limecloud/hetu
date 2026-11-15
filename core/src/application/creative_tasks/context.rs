@@ -189,8 +189,7 @@ impl Kernel {
             }
             Ok(json!({"content":document["content"]}))
         } else {
-            let (blueprint, sha) =
-                self.blueprint_revision(Some(integer(reference, "revision")?))?;
+            let (blueprint, sha) = self.source_blueprint(reference)?;
             ensure(
                 source["sha256"] == sha,
                 "hetu.integrity_failure",

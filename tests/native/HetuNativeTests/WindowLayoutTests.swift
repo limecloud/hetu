@@ -6,6 +6,33 @@ private struct WindowLayoutFailure: Error { let message: String }
 enum WindowLayoutTests {
     @MainActor static func run() throws {
         _ = NSApplication.shared
+        for locale in ["zh-CN", "en"] {
+            for width in [960.0, 1024, 1180, 1440, 1920] {
+                for projectNavigation in [false, true] {
+                    if WorkspaceNavigation.canPinContents(width: width, locale: locale, projectNavigation: projectNavigation) {
+                        let navigationWidth = projectNavigation ? (locale == "en" ? 190.5 : 170.5) : 0
+                        guard width - navigationWidth - 210.5 >= 680 else {
+                            throw WindowLayoutFailure(message: "目录挤占主要阅读空间：\(locale) \(width)")
+                        }
+                    }
+                }
+            }
+        }
+        guard !WorkspaceNavigation.canPinContents(width: 1024, locale: "en", projectNavigation: true),
+              WorkspaceNavigation.canPinContents(width: 1440, locale: "en", projectNavigation: true),
+              WorkspaceNavigation.group(for: "bible") == .resources,
+              WorkspaceNavigation.group(for: "delivery") == .management,
+              WorkspaceNavigation.group(for: "validation") == .checks,
+              WorkspaceNavigation.group(for: "drama") == nil else {
+            throw WindowLayoutFailure(message: "层级导航未按工作面和可用宽度展开")
+        }
+        for (directoryWidth, occupiedWidth) in [(280.5, 64.0), (260.5, 88.0), (280.0, 0.0)] {
+            let threshold = 680 + directoryWidth + occupiedWidth
+            guard !WorkspaceNavigation.canPinDirectory(width: threshold - 1, directoryWidth: directoryWidth, occupiedWidth: occupiedWidth),
+                  WorkspaceNavigation.canPinDirectory(width: threshold, directoryWidth: directoryWidth, occupiedWidth: occupiedWidth) else {
+                throw WindowLayoutFailure(message: "内容目录或检查器挤占主要阅读空间")
+            }
+        }
         for size in [NSSize(width: 1280, height: 720), NSSize(width: 1440, height: 860), NSSize(width: 2560, height: 1380)] {
             let screen = NSRect(origin: NSPoint(x: -200, y: 40), size: size)
             let preferred = WorkspaceWindowLayout.preferredContentSize(in: screen)

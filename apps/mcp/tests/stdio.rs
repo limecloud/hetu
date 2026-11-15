@@ -21,6 +21,23 @@ fn tool_catalog_has_unique_names_across_connection_profiles() {
     }
 }
 
+#[test]
+fn result_envelope_accepts_registered_action_names_and_rejects_invalid_names() {
+    let schema: Value = serde_json::from_str(include_str!("../../../contracts/schemas/result.schema.json")).unwrap();
+    let validator = jsonschema::validator_for(&schema).unwrap();
+    let catalog: Value = serde_json::from_str(include_str!("../../../contracts/actions.json")).unwrap();
+    let mut result = json!({"spec_version":"0.2.1","kind":"result","contract_revision":"1",
+        "status":"succeeded","context":{"scope_id":"collaboration"},"data":{}});
+    for action in catalog["actions"].as_array().unwrap() {
+        result["action"] = action["name"].clone();
+        validator.validate(&result).unwrap_or_else(|error| panic!("{}: {error}", action["name"]));
+    }
+    for name in ["hetu.read", "hetu.video..create", "other.video.create", "hetu.video.Create", "hetu.video.projects.create-extra"] {
+        result["action"] = json!(name);
+        assert!(validator.validate(&result).is_err(), "invalid action name: {name}");
+    }
+}
+
 struct Client {
     child: Child,
     input: ChildStdin,
@@ -61,6 +78,58 @@ async fn stable_bootstrap_creates_new_work_and_first_task_without_gui_or_author_
     client.close().await;
 }
 
+#[tokio::test]
+async fn stable_video_bootstrap_and_episode_resume_without_upstream_or_gui() {
+    let root = tempfile::tempdir().unwrap();
+    let directory = root.path().join("独立视频接入");
+    let mut client = Client::start_stable(&directory);
+    client.rpc("server/discover", json!({})).await;
+    let tools = client.rpc("tools/list", json!({})).await;
+    for name in ["hetu_create_video_from_project", "hetu_list_works", "hetu_create_video_episode", "hetu_read_video_episode"] {
+        assert!(tools["result"]["tools"].as_array().unwrap().iter().any(|tool| tool["name"] == name));
+    }
+    let start = client.tool("hetu_begin_creation", json!({"brief":"旧站视频，不创建小说或剧本。","locale":"zh-CN","operation_key":"start-video"})).await;
+    assert_eq!(start["status"], "succeeded", "{start}");
+    let start = &start["data"];
+    let saved = client.tool("hetu_save_creation_project", json!({"management_ref":start["management_ref"],"project_id":start["project"]["project_id"],
+        "expected":{"revision":start["revision"],"sha256":start["sha256"]},"brief":"独立视频。","selected_fields":{},
+        "work_profile":{"work_type":"video","language_tag":"zh-CN","drama_mode":null},"operation_key":"video-profile"})).await;
+    assert_eq!(saved["status"], "succeeded", "{saved}");
+    let create = json!({"management_ref":start["management_ref"],"project_id":start["project"]["project_id"],
+        "expected":{"revision":saved["data"]["revision"],"sha256":saved["data"]["sha256"]},
+        "profile":{"title":"旧站","brief":"先听见车轮声。","language_tag":"zh-CN"},"target_path":start["target_path"],"operation_key":"create-video"});
+    let created = client.tool("hetu_create_video_from_project", create.clone()).await;
+    assert_eq!(created["status"], "succeeded", "{created}");
+    let data = &created["data"];
+    let reference = data["workspace_management_ref"].clone();
+    let video = &data["video_project"];
+    let list = client.tool("hetu_list_works", json!({"management_ref":reference})).await;
+    assert_eq!(list["status"], "succeeded", "{list}");
+    assert_eq!(list["data"]["works"].as_array().unwrap().len(), 1);
+    assert_eq!(list["data"]["works"][0]["work_ref"], video["work_ref"]);
+    let episode_input = json!({"management_ref":reference,"project_ref":{"video_project_id":video["project"]["video_project_id"],
+        "revision":video["project"]["revision"],"sha256":video["sha256"]},"title":"第一集","brief":"末班车经过旧站。","operation_key":"episode"});
+    let episode = client.tool("hetu_create_video_episode", episode_input.clone()).await;
+    assert_eq!(episode["status"], "succeeded", "{episode}");
+    let read = client.tool("hetu_read_video_episode", json!({"management_ref":reference,"video_episode_id":episode["data"]["episode"]["video_episode_id"]})).await;
+    assert_eq!(read["status"], "succeeded", "{read}");
+    assert_eq!(read["data"]["episode"], episode["data"]["episode"]);
+    let novel = client.tool("hetu_get_novel", json!({"management_ref":reference})).await;
+    assert_eq!(novel["status"], "succeeded", "{novel}");
+    assert_eq!(novel["data"]["initialized"], false);
+    let drama = client.tool("hetu_list_drama_projects", json!({"management_ref":reference})).await;
+    assert_eq!(drama["status"], "succeeded", "{drama}");
+    assert_eq!(drama["data"]["projects"], json!([]));
+    client.close().await;
+
+    // 新服务进程保持同一范围与原键，不重复建立项目或分集。
+    let mut resumed = Client::start_stable(&directory);
+    resumed.rpc("server/discover", json!({})).await;
+    assert_eq!(resumed.tool("hetu_create_video_from_project", create).await, created);
+    assert_eq!(resumed.tool("hetu_create_video_episode", episode_input).await, episode);
+    resumed.close().await;
+}
+
 fn binary() -> std::ffi::OsString {
     std::env::var_os("HETU_MCP_TEST_BINARY")
         .unwrap_or_else(|| env!("CARGO_BIN_EXE_hetu-mcp").into())
@@ -88,7 +157,11 @@ impl Client {
         )
     }
     fn start_stable(directory: &Path) -> Self {
+        Self::start_stable_with_home(directory, None)
+    }
+    fn start_stable_with_home(directory: &Path, home: Option<&Path>) -> Self {
         let mut command = Command::new(binary());
+        if let Some(home) = home { command.env("HOME", home); }
         command.arg("--client").arg("codex").arg("--collaboration-dir").arg(directory);
         Self::spawn(command)
     }
@@ -173,9 +246,9 @@ impl Client {
         }
     }
     async fn rpc(&mut self, method: &str, params: Value) -> Value {
-        let id = self.send(method, params, true).await;
+        let id = self.send(method, params, !self.legacy).await;
         let response = self.response(id).await;
-        if response.get("result").is_some() {
+        if !self.legacy && response.get("result").is_some() {
             let name = match method {
                 "server/discover" => "DiscoverResult",
                 "tools/list" => "ListToolsResult",
@@ -474,6 +547,7 @@ async fn task_connection_exposes_only_fixed_task_and_rejects_overwrite_and_revok
             "hetu_list_model_plans",
             "hetu_prepare_model_task",
             "hetu_get_model_task",
+            "hetu_authorize_model_usage",
             "hetu_submit_model_task",
             "hetu_collect_model_task"
         ]
@@ -699,6 +773,127 @@ async fn workspace_management_proposal_requires_exact_author_decision_over_real_
     client.close().await;
 }
 
+#[tokio::test]
+async fn model_confirmation_uses_real_host_response_and_never_submits_generation() {
+    let root = tempfile::tempdir().unwrap();
+    let directory = root.path().join(if cfg!(target_os = "macos") {
+        "Library/Application Support/Hetu/Collaboration"
+    } else {
+        ".local/share/hetu/collaboration"
+    });
+    let service = hetu_core::model_service::ModelService::open(
+        &directory.parent().unwrap().join("ModelService"),
+    )
+    .unwrap();
+    let channel = service.author_request("custom_save", &json!({"name":"本机测试","base_url":"https://provider.test","api_key":"fixture-key","models":{"text":[],"image":["image-one"]}})).unwrap();
+    service
+        .author_request(
+            "channel_select",
+            &json!({"kind":"image","channel_id":channel["channel_id"]}),
+        )
+        .unwrap();
+    let mut client = Client::start_stable_with_home(&directory, Some(root.path()));
+    client.legacy = true;
+    client.rpc("initialize", json!({"protocolVersion":"2025-06-18","capabilities":{"elicitation":{}},"clientInfo":{"name":"host-confirmation-test","version":"1"}})).await;
+    client
+        .raw(&json!({"jsonrpc":"2.0","method":"notifications/initialized"}).to_string())
+        .await;
+    let tools = client.rpc("tools/list", json!({})).await;
+    let tool = tools["result"]["tools"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|t| t["name"] == "hetu_request_model_confirmation")
+        .unwrap();
+    assert_eq!(tool["annotations"]["readOnlyHint"], false);
+    let created = client
+        .tool(
+            "hetu_begin_creation",
+            json!({"brief":"宿主图片确认测试。","locale":"zh-CN","operation_key":"begin"}),
+        )
+        .await;
+    let start = &created["data"];
+    let work = client.tool("hetu_create_novel_from_project", json!({"management_ref":start["management_ref"],"project_id":start["project"]["project_id"],"expected":{"revision":start["revision"],"sha256":start["sha256"]},"target_path":start["target_path"],"metadata":{"title":"宿主确认","author_name":"测试作者","synopsis":"仅测试。","genre":"测试","language_tag":"zh-CN","status":"planning"},"operation_key":"create"})).await;
+    let management = &work["data"]["workspace_management_ref"];
+    let preview = client.tool("hetu_preview_creative_task", json!({"management_ref":management,"scope_ref":management["scope_ref"],"task_kind":"artwork","brief":"渡口灯笼。","input_refs":[],"client_adapter":"codex","language_tag":"zh-CN"})).await;
+    let mut input = preview["data"]["prepare_input"].clone();
+    input["management_ref"] = management.clone();
+    input["operation_key"] = json!("task");
+    let prepared = client.tool("hetu_prepare_creative_task", input).await;
+    let opened = client
+        .tool(
+            "hetu_open_collaboration_task",
+            json!({"task_locator":prepared["data"]["task_locator"]}),
+        )
+        .await;
+    let task_ref = opened["data"]["task_ref"].clone();
+    let plan = client.tool("hetu_prepare_model_task", json!({"task_ref":task_ref,"kind":"image","artifact_kind":"image","model_id":"image-one","prompt":"完整固定输入：雨夜渡口灯笼。","title":"测试图","billing_mode":"provider","operation_key":"model"})).await;
+    assert_eq!(plan["status"], "succeeded", "{plan}");
+    let args = json!({"task_ref":task_ref,"plan_id":plan["data"]["plan"]["plan_id"]});
+    let mut forged = args.clone();
+    forged["approved"] = json!(true);
+    assert_eq!(
+        client.tool("hetu_request_model_confirmation", forged).await["error"]["code"],
+        "invalid_input"
+    );
+    for answer in [
+        json!({"action":"decline"}),
+        json!({"action":"cancel"}),
+        json!({"action":"accept","content":{"confirm":false}}),
+        json!({"action":"accept","content":{"confirm":true}}),
+    ] {
+        let id = client
+            .send(
+                "tools/call",
+                json!({"name":"hetu_request_model_confirmation","arguments":args}),
+                false,
+            )
+            .await;
+        let question = client.receive().await;
+        assert_eq!(question["method"], "elicitation/create", "{question}");
+        let message = question["params"]["message"].as_str().unwrap();
+        assert!(
+            message.contains("完整固定输入：雨夜渡口灯笼。")
+                && message.contains("https://provider.test")
+                && message.contains("次数：1")
+                && message.contains(plan["data"]["plan_sha256"].as_str().unwrap())
+        );
+        assert!(!message.contains("fixture-key"));
+        client
+            .raw(&json!({"jsonrpc":"2.0","id":question["id"],"result":answer}).to_string())
+            .await;
+        let result = client.response(id).await;
+        assert!(result.get("error").is_none(), "{result}");
+        let record = &result["result"]["structuredContent"]["data"];
+        assert_eq!(
+            !record["approval"].is_null(),
+            answer["content"]["confirm"] == true,
+            "{result}"
+        );
+        assert_eq!(record["submitted"], false);
+    }
+    let replay = client
+        .tool("hetu_request_model_confirmation", args.clone())
+        .await;
+    assert_eq!(
+        replay["data"]["approval"]["confirmation_channel"],
+        "mcp_elicitation"
+    );
+    assert_eq!(replay["data"]["approval"]["host"], "codex");
+    assert_eq!(
+        replay,
+        client.tool("hetu_request_model_confirmation", args).await
+    );
+    let registered = client.tool("hetu_authorize_model_usage", json!({"task_ref":task_ref,"plan_id":plan["data"]["plan"]["plan_id"],"authorization":{"operation_key":"budget-v1","channels":"current","max_requests":2},"authorization_note":"作者在当前测试对话授权两次请求。","operation_key":"register-budget"})).await;
+    assert_eq!(registered["status"], "succeeded", "{registered}");
+    assert_eq!(
+        registered["data"]["authorization"]["confirmation_channel"],
+        "agent_conversation"
+    );
+    assert_eq!(registered["data"]["authorization"]["requests_reserved"], 0);
+
+    client.close().await;
+}
 #[tokio::test]
 async fn codex_legacy_initialize_lists_and_calls_both_connection_profiles() {
     let (root, _) = setup();

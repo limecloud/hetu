@@ -9,39 +9,70 @@ struct DramaWorkbenchView: View {
     @State private var cursor: String?
     @State private var selected = ""
     @State private var result: JSONValue = .null
-    @State private var selectedEpisode = ""
-    @State private var episode: JSONValue = .null
+    @Binding private var selectedEpisode: String
+    @State private var reading: EpisodeReadingSession
+    private var episode: JSONValue { reading.episode }
+    init(model: WorkspaceModel, selectedEpisode: Binding<String>, onOpenScript: @escaping (String) -> Void) {
+        self.model = model; self.onOpenScript = onOpenScript
+        _selectedEpisode = selectedEpisode
+        _reading = State(initialValue: EpisodeReadingSession(model: model))
+    }
     @State private var error: String?
     @State private var includeArchived = false
     @State private var projectEditor: DramaSheet?
     @State private var episodeEditor: DramaSheet?
     @State private var skeletons = false
     @State private var creativeTask = false
+    @State private var projectGeneration = 0
+    @State private var showEpisodeDirectory = true
+    @State private var episodeDirectoryPopover = false
+    @State private var sceneTarget: SceneTarget?
+    private struct SceneTarget: Equatable { let paragraph: Int; let request = UUID() }
     private var project: JSONValue { result["project"] }
     private var canWrite: Bool { !model.busy && !model.writeLocked && model.pendingStructureOperations.isEmpty }
     var body: some View {
+        GeometryReader { geometry in
+        let pinDirectory = WorkspaceNavigation.canPinDirectory(width: geometry.size.width, directoryWidth: 280.5, occupiedWidth: 64)
         VStack(alignment: .leading, spacing: 14) {
-            WorkbenchHeading(title: model.t("drama.workbench_title"), artwork: "") {
+            WorkbenchHeading(title: model.workReference?.kind == "drama" ? model.title : model.t("drama.workbench_title"), artwork: "") {
+                Button {
+                    if pinDirectory { showEpisodeDirectory.toggle() } else { episodeDirectoryPopover.toggle() }
+                } label: { Image(systemName: "list.bullet.indent") }
+                    .help(model.t("drama.episode_select")).accessibilityLabel(model.t("drama.episode_select"))
+                    .accessibilityValue(model.t((pinDirectory ? showEpisodeDirectory : episodeDirectoryPopover) ? "shell.navigation.shown" : "shell.navigation.hidden"))
+                    .popover(isPresented: $episodeDirectoryPopover) { episodeList.frame(width: 260, height: 520).padding(16) }
                 PageAgentButton(model: model, page: "episode", object: handoffObject)
-                Button(model.t("creative.title")) { creativeTask = true }.disabled(model.busy)
                 Button(model.t("drama.skeletons")) { skeletons = true }
                 Button(model.t("common.refresh")) { Task { await load(); if !selected.isEmpty { await choose(selected) } } }
-                Button(model.t("drama.project_new")) { projectEditor = DramaSheet(value: .null) }
+                if model.workReference?.kind != "drama" { Button(model.t("drama.project_new")) { projectEditor = DramaSheet(value: .null) }
                     .buttonStyle(WorkbenchButtonStyle(primary: true)).disabled(!canWrite)
+                }
             }
             if let error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
+            if model.workReference?.kind != "drama" { HStack {
+                Picker(model.t("drama.project_select"), selection: Binding(get: { selected }, set: { id in Task { await choose(id) } })) {
+                    ForEach(Array(projects.enumerated()), id: \.offset) { _, entry in
+                        Text(entry["project"]["title"].string ?? "").tag(entry["project"]["project_id"].string ?? "")
+                    }
+                }.frame(maxWidth: 420)
+                if let cursor, !cursor.isEmpty { Button(model.t("plot.more")) { Task { await load(more: true) } } }
+                Spacer()
+                Toggle(model.t("drama.show_archived"), isOn: $includeArchived).toggleStyle(.checkbox)
+            } }
             HSplitView {
-                projectList.frame(minWidth: 180, idealWidth: 220, maxWidth: 280)
                 if result == .null {
                     WorkbenchEmptyState(title: model.t("drama.project_select"), detail: "", artwork: "drama-stage")
                 } else {
-                    episodeList.frame(minWidth: 210, idealWidth: 250, maxWidth: 340)
-                    episodeDetail.frame(minWidth: 330, maxWidth: .infinity)
+                    if pinDirectory && showEpisodeDirectory { episodeList.frame(minWidth: 180, idealWidth: 220, maxWidth: 280) }
+                    episodeDetail.frame(minWidth: pinDirectory && showEpisodeDirectory ? 696 : 330, maxWidth: .infinity)
                 }
             }
         }.padding(24).workbenchPage()
+        }
         .task(id: includeArchived) { await load() }
-        .sheet(isPresented: $creativeTask) { CreativeTaskView(model: model, kind: .dramaDraft) }
+        .sheet(isPresented: $creativeTask, onDismiss: { Task { if !selectedEpisode.isEmpty { await chooseEpisode(selectedEpisode) } } }) {
+            CreativeTaskView(model: model, kind: .dramaDraft, initialTaskRef: reading.selectedReference["task_ref"], targetDocumentID: episode["episode"]["document_id"].string)
+        }
         .sheet(item: $projectEditor) { value in
             DramaProjectEditor(model: model, initial: value.value) { saved in Task { await load(); await choose(saved["project"]["project_id"].string ?? "") } }
         }
@@ -56,23 +87,6 @@ struct DramaWorkbenchView: View {
                 DramaSkeletonWorkbenchView(model: model) { id in skeletons = false; onOpenScript(id) }
             }.frame(minWidth: 1060, idealWidth: 1200, minHeight: 700, idealHeight: 820)
         }
-    }
-    private var projectList: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Toggle(model.t("drama.show_archived"), isOn: $includeArchived).toggleStyle(.checkbox)
-            List {
-                ForEach(Array(projects.enumerated()), id: \.offset) { _, entry in
-                    let record = entry["project"]
-                    Button { Task { await choose(record["project_id"].string ?? "") } } label: {
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text(record["title"].string ?? "").fontWeight(selected == record["project_id"].string ? .semibold : .regular)
-                            Text(model.t("drama.mode." + (record["mode"].string ?? "original"))).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
-                        }.frame(maxWidth: .infinity, alignment: .leading).padding(.vertical, 5).contentShape(Rectangle())
-                    }.buttonStyle(.plain).accessibilityAddTraits(selected == record["project_id"].string ? [.isSelected] : [])
-                }
-            }.scrollContentBackground(.hidden)
-            if let cursor, !cursor.isEmpty { Button(model.t("plot.more")) { Task { await load(more: true) } } }
-        }.padding(.trailing, 10)
     }
     private var episodeList: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -99,46 +113,92 @@ struct DramaWorkbenchView: View {
                             if record["archived"].bool == true { Text(model.t("media.archived")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted) }
                         }.frame(maxWidth: .infinity, alignment: .leading).padding(.vertical, 4).contentShape(Rectangle())
                     }.buttonStyle(.plain).accessibilityAddTraits(selectedEpisode == record["episode_id"].string ? [.isSelected] : [])
+                    if selectedEpisode == record["episode_id"].string {
+                        ForEach(Array(ScreenplayReading.paragraphs(reading.content).enumerated()).filter { $0.element.kind == .scene }, id: \.offset) { index, scene in
+                            Button {
+                                sceneTarget = SceneTarget(paragraph: index)
+                                episodeDirectoryPopover = false
+                            } label: {
+                                Text(scene.text).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
+                                    .lineLimit(2).frame(maxWidth: .infinity, alignment: .leading).padding(.leading, 14).padding(.vertical, 4)
+                            }.buttonStyle(.plain)
+                        }
+                    }
                 }
             }.scrollContentBackground(.hidden)
         }.padding(.horizontal, 12)
     }
     private var episodeDetail: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                if episode == .null {
-                    Text(model.t("drama.episode_select")).foregroundStyle(WorkbenchPalette.muted)
-                    Text(project["description"].string ?? "").textSelection(.enabled)
-                } else {
-                    let record = episode["episode"]
-                    HStack {
-                        Text(record["title"].string ?? "").font(.system(size: 20, weight: .semibold))
-                        Spacer()
-                        Button(model.t("drama.episode_edit")) { episodeEditor = DramaSheet(value: episode) }.disabled(!canWrite || episode["is_head"].bool == false || project["archived"].bool == true)
-                        Button(model.t("drama.open_script")) { if let id = record["document_id"].string { onOpenScript(id) } }
+        VStack(alignment: .leading, spacing: 14) {
+            if let error = reading.error {
+                Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled)
+                Button(model.t("common.refresh")) { Task { await chooseEpisode(selectedEpisode) } }
+            }
+            if episode != .null {
+                let record = episode["episode"]
+                HStack(alignment: .firstTextBaseline) {
+                    Text(record["title"].string ?? "").font(.system(size: 20, weight: .semibold))
+                    Spacer()
+                    Button(model.t("drama.author_edit")) { if let id = record["document_id"].string { onOpenScript(id) } }
+                }
+                HStack {
+                    Picker(model.t("drama.reading_version"), selection: Binding(get: { reading.selection }, set: { index in Task { await reading.select(index) } })) {
+                        Text(model.t(episode["manuscript"]["author_state"].string == "finalized" ? "drama.author_final" : "drama.author_draft")).tag(-1)
+                        ForEach(Array(reading.references.enumerated()), id: \.offset) { index, ref in
+                            Text(model.t(ref["kind"].string == "submitted" ? "drama.reference_submitted" : "drama.reference_working") + " / " + (ref["title"].string ?? "")).tag(index)
+                        }
+                    }.labelsHidden().accessibilityLabel(model.t("drama.reading_version")).frame(maxWidth: 420)
+                    Spacer(minLength: 8)
+                    if let id = reading.selectedReference["draft_ref"]["draft_id"].string {
+                        Button(model.t("drama.review_reference")) { onOpenScript(id) }.buttonStyle(WorkbenchButtonStyle(primary: true))
                     }
-                    ObjectTimestampsView(localizer: model.localizer, record: record, updatedLabel: "properties.metadata_updated")
-                    Text(model.t("drama.episode_plan")).font(.system(size: 14, weight: .semibold))
-                    Text(record["plan"].string.flatMap { $0.isEmpty ? nil : $0 } ?? model.t("drama.plan_empty")).textSelection(.enabled)
-                    Divider()
-                    HStack {
-                        Button(model.t("drama.move_up")) { Task { await move(-1) } }.disabled(!canMove(-1))
-                        Button(model.t("drama.move_down")) { Task { await move(1) } }.disabled(!canMove(1))
-                        Spacer()
-                        Text(model.t("drama.revision", ["revision": String(record["revision"].integer ?? 1)])).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
-                    }
-                    HStack {
-                        Button(model.t("media.previous")) { Task { await chooseEpisode(selectedEpisode, revision: (record["revision"].integer ?? 1) - 1) } }.disabled((record["revision"].integer ?? 1) <= 1)
-                        if episode["is_head"].bool == false {
-                            Text(model.t("media.historical")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
-                            Button(model.t("media.latest")) { Task { await chooseEpisode(selectedEpisode) } }
+                    Button(model.t("drama.continue_reference")) { creativeTask = true }
+                }.disabled(reading.loading)
+                Divider()
+                if reading.loading { ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity) }
+                else if reading.error == nil {
+                    ScrollViewReader { proxy in ScrollView {
+                        if reading.content.isEmpty {
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text(model.t("drama.script_empty")).foregroundStyle(WorkbenchPalette.muted)
+                                PageAgentButton(model: model, page: "episode", object: handoffObject)
+                            }.padding(28).frame(maxWidth: .infinity, alignment: .leading)
+                        } else {
+                            ScreenplayReadingView(content: reading.content, localizer: model.localizer)
+                        }
+                    }.id(selectedEpisode + String(reading.selection))
+                        .onChange(of: sceneTarget) { _, target in
+                            if let target { proxy.scrollTo(target.paragraph, anchor: .top) }
                         }
                     }
                 }
-                let loose = model.documents.filter { $0.kind == "drama_script" && $0.value["drama_episode_id"] == .null && $0.value["draft_source_id"] == .null }
-                if !loose.isEmpty {
-                    Divider()
-                    Text(model.t("drama.unassigned")).font(.system(size: 14, weight: .semibold))
+                DisclosureGroup(model.t("drama.plan_and_properties")) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text(record["plan"].string.flatMap { $0.isEmpty ? nil : $0 } ?? model.t("drama.plan_empty")).textSelection(.enabled)
+                        ObjectTimestampsView(localizer: model.localizer, record: record, updatedLabel: "properties.metadata_updated")
+                        HStack {
+                            Button(model.t("drama.episode_edit")) { episodeEditor = DramaSheet(value: episode) }.disabled(!canWrite || episode["is_head"].bool == false || project["archived"].bool == true)
+                            Button(model.t("drama.move_up")) { Task { await move(-1) } }.disabled(!canMove(-1))
+                            Button(model.t("drama.move_down")) { Task { await move(1) } }.disabled(!canMove(1))
+                            Spacer()
+                            Button(model.t("media.previous")) { Task { await chooseEpisode(selectedEpisode, revision: (record["revision"].integer ?? 1) - 1) } }.disabled((record["revision"].integer ?? 1) <= 1)
+                            if episode["is_head"].bool == false {
+                                Text(model.t("media.historical")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
+                                Button(model.t("media.latest")) { Task { await chooseEpisode(selectedEpisode) } }
+                            }
+                        }
+                    }.padding(.top, 12)
+                }.font(.system(size: 12))
+            } else if reading.loading {
+                ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if reading.error == nil {
+                Text(model.t("drama.episode_select")).foregroundStyle(WorkbenchPalette.muted)
+                Text(project["description"].string ?? "").textSelection(.enabled)
+                Spacer()
+            }
+            let loose = model.documents.filter { $0.kind == "drama_script" && $0.value["drama_episode_id"] == .null && $0.value["draft_source_id"] == .null }
+            if !loose.isEmpty && model.workReference?.kind != "drama" {
+                DisclosureGroup(model.t("drama.unassigned")) {
                     ForEach(loose) { item in
                         HStack {
                             Button(item.title) { onOpenScript(item.id) }.buttonStyle(.link)
@@ -146,9 +206,9 @@ struct DramaWorkbenchView: View {
                             Button(model.t("drama.attach")) { Task { await attach(item) } }.disabled(!canWrite || project["archived"].bool == true)
                         }
                     }
-                }
-            }.frame(maxWidth: .infinity, alignment: .leading).padding(.leading, 16)
-        }
+                }.font(.system(size: 12))
+            }
+        }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading).padding(.leading, 16)
     }
     private var projectRef: JSONValue { .object(["project_id": project["project_id"], "revision": project["revision"], "sha256": result["sha256"]]) }
     private var handoffObject: JSONValue {
@@ -162,23 +222,38 @@ struct DramaWorkbenchView: View {
     }
     private func load(more: Bool = false) async {
         error = nil
+        if let reference = model.workReference, reference.kind == "drama" {
+            if let next = await call("hetu.drama.projects.get", ["project_id": .string(reference.objectID)]) {
+                projects = [.object(["project": next["project"]])]; cursor = nil
+                if selected != reference.objectID { await choose(reference.objectID) }
+            }
+            return
+        }
         var input: [String: JSONValue] = ["include_archived": .bool(includeArchived), "limit": .integer(50)]
         if more, let cursor { input["cursor"] = .string(cursor) }
         if let next = await call("hetu.drama.projects.list", input) { projects = more ? projects + next["projects"].array : next["projects"].array; cursor = next["next_cursor"].string }
-        if selected.isEmpty, let first = projects.first { await choose(first["project"]["project_id"].string ?? "") }
+        if !projects.contains(where: { $0["project"]["project_id"].string == selected }) {
+            await choose(projects.first?["project"]["project_id"].string ?? "")
+        }
     }
     private func choose(_ id: String) async {
+        projectGeneration += 1; let request = projectGeneration
+        let previousEpisode = selectedEpisode
+        selected = id; selectedEpisode = ""; result = .null; reading.clear()
+        guard !id.isEmpty else { return }
         guard let next = await call("hetu.drama.projects.get", ["project_id": .string(id)]) else { return }
+        guard request == projectGeneration else { return }
         result = next; selected = id
         let ids = next["episodes"].array.compactMap { $0["episode"]["episode_id"].string }
-        let target = ids.contains(selectedEpisode) ? selectedEpisode : ids.first ?? ""
-        episode = .null; selectedEpisode = target
+        let target = ids.contains(previousEpisode) ? previousEpisode : ids.first ?? ""
+        selectedEpisode = target
         if !target.isEmpty { await chooseEpisode(target) }
     }
     private func chooseEpisode(_ id: String, revision: Int64? = nil) async {
-        var input: [String: JSONValue] = ["episode_id": .string(id)]
-        if let revision { input["revision"] = .integer(revision) }
-        if let next = await call("hetu.drama.episodes.get", input) { episode = next; selectedEpisode = id }
+        episodeDirectoryPopover = false
+        sceneTarget = nil
+        selectedEpisode = id
+        await reading.load(id, revision: revision)
     }
     private func canMove(_ delta: Int) -> Bool {
         guard canWrite, project["archived"].bool != true, episode["is_head"].bool != false,

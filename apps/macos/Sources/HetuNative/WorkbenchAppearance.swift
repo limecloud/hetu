@@ -11,6 +11,7 @@ import SwiftUI
         }
     }
     public static let inkColor = adaptive(0x1A211E, 0xECEEED) // sage 12
+    public static let artworkInk = Color(nsColor: adaptive(0x1A211E, 0x1A211E)) // 固定浅色封面上的 sage 12，不随界面主题反转。
     public static let pageColor = adaptive(0xFBFDFC, 0x101211) // sage 1
     public static let paper = Color(nsColor: adaptive(0xF7F9F8, 0x171918)) // sage 2
     public static let sidebar = Color(nsColor: adaptive(0xF7F9F8, 0x171918)) // sage 2

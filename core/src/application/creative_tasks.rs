@@ -4,6 +4,7 @@ use std::collections::BTreeSet;
 mod feedback;
 mod working;
 mod context;
+mod targets;
 
 pub(super) const TASK_ACTIONS: &[&str] = &[
     "hetu.capabilities.get",
@@ -28,6 +29,7 @@ pub(super) const TASK_ACTIONS: &[&str] = &[
     "hetu.models.list",
     "hetu.model_tasks.list",
     "hetu.model_tasks.prepare",
+    "hetu.model_tasks.authorize_usage",
     "hetu.model_tasks.get",
     "hetu.model_tasks.submit",
     "hetu.model_tasks.collect",
@@ -43,7 +45,10 @@ pub(super) fn definition(name: &str) -> Value {
         ))
         .expect("embedded creative task schema")
     });
-    domain::schema::definition(schema, name)
+    let mut result = domain::schema::definition(schema, name);
+    result["$defs"]["work_resource"] = json!({"$id":"https://hetu.limeai.run/schemas/work.schema.json",
+        "$defs":{"work_ref":works::definition("work_ref")}});
+    result
 }
 pub(super) fn record_schema(record: &Value, name: &str) -> Result<()> {
     static VALIDATORS: OnceLock<BTreeMap<&str, OnceLock<jsonschema::Validator>>> = OnceLock::new();
@@ -121,7 +126,7 @@ impl Kernel {
     fn scope_ref(&self) -> Value {
         json!({"kind":self.scope_kind(),"id":self.scope()})
     }
-    fn scope_snapshot(&self) -> Result<Value> {
+    fn scope_snapshot(&self, input: &Value) -> Result<Value> {
         if self.is_creation_project() {
             let (project, sha) = self.creation_project(None)?;
             ensure(
@@ -138,6 +143,17 @@ impl Kernel {
             if let Some(profile) = project.get("work_profile") { snapshot["context"]["work_profile"] = profile.clone(); }
             Ok(snapshot)
         } else {
+            if let Some(reference) = self.task_work_reference(input)? {
+                let record = self.work_record(&reference, None)?;
+                if let Some((bp, sha)) = self.work_blueprint_revision(&reference, None)? {
+                    let fixed = json!({"kind":"blueprint","work_ref":reference,"blueprint_id":bp["blueprint_id"],"revision":bp["revision"],"sha256":sha});
+                    let context = json!({"work_ref":reference,"work_type":reference["kind"],
+                        "title":if reference["kind"]=="novel" {&record["metadata"]["title"]} else {&record["title"]},
+                        "metadata":record["metadata"],"blueprint_ref":fixed,"blueprint_revision":bp["revision"],"blueprint_sha256":sha});
+                    return Ok(json!({"expected":{"revision":record["revision"],"sha256":digest(bytes(&json!({"work":record,"context":context}))?)},"context":context}));
+                }
+                ensure(input["work_ref"].is_null(), "hetu.canon_initialization_required", "请先准备此作品的独立设定方案。")?;
+            }
             if self.config["work_type"] == "drama" {
                 let (bp, sha) = self.blueprint_revision(None)?;
                 let context = json!({"work_type":"drama","title":self.config["title"],"blueprint_revision":bp["revision"],"blueprint_sha256":sha});
@@ -171,7 +187,8 @@ impl Kernel {
             "forbidden",
             "建书筹备只支持构思、资料、大纲和封面任务。",
         )?;
-        let snapshot = self.scope_snapshot()?;
+        let snapshot = self.scope_snapshot(input)?;
+        self.validate_task_target(input)?;
         let mut sources = Vec::new();
         let mut seen = BTreeSet::new();
         for reference in input["input_refs"].as_array().unwrap() {
@@ -202,7 +219,8 @@ impl Kernel {
                 )?;
                 sources.push(json!({"reference":reference,"title":doc["document"]["title"],"source_format":doc["document"]["source_format"],"sha256":doc["revision"]["sha256"],"size_bytes":text(&doc,"content")?.len()}));
             } else {
-                let (bp, sha) = self.blueprint_revision(Some(integer(reference, "revision")?))?;
+                let (bp, sha) = self.source_blueprint(reference)?;
+                ensure(reference["sha256"].is_null() || reference["sha256"] == sha, "hetu.stale_evidence", "任务设定摘要不一致。")?;
                 sources.push(json!({"reference":reference,"sha256":sha,"size_bytes":bytes(&bp)?.len()}));
             }
         }
@@ -440,6 +458,11 @@ impl Kernel {
         Ok(request["resource_scope"].clone())
     }
     pub(super) fn check_operation_task(&self, record: &Value) -> Result<()> {
+        if let Some(binding) = &self.management_grant {
+            if binding["work_ref"].is_object() {
+                ensure(record["management_grant_id"] == binding["grant_id"], "forbidden", "原操作不属于当前创作对象授权。")?;
+            }
+        }
         if let Some(task) = &self.task_id {
             ensure(
                 record["task_id"] == *task,
@@ -556,6 +579,7 @@ impl Kernel {
             "任务身份已有请求，不能覆盖。",
         )?;
         let mut request = json!({"schema_version":"1.1.0","task_id":task_id,"scope_ref":self.scope_ref(),"request_revision":1,"previous_sha256":null,"task_kind":input["task_kind"],"brief":input["brief"],"input_refs":input["input_refs"],"input_snapshot":fixed,"client_adapter":input["client_adapter"],"skill_ref":{"name":Self::task_skill(text(input,"task_kind")?),"contract_revision":"1"},"prompt":input["prompt"],"prompt_language":input["language_tag"],"output_contract":self.task_output_contract(input,task_id)?,"edit_scope":input["edit_scope"],"created_at":now()});
+        if let Some(target) = input.get("target_ref") { request["target_ref"] = target.clone(); }
         self.stage_context_manifest(&mut request, changes)?;
         if let Some(scope) = input.get("resource_scope") { request["resource_scope"] = scope.clone(); }
         record_schema(&request, "request_record")?;
@@ -735,9 +759,13 @@ impl Kernel {
         {
             for task_id in self.store.entries(".hetu/tasks")? {
                 let (request, sha) = self.task_request(&task_id)?;
+                let target = self.task_target_document(&request)?;
+                if let Some(required) = input["target_document_id"].as_str() {
+                    if target.as_deref() != Some(required) { continue; }
+                }
                 let (state, _) = self.task_state(&task_id)?;
                 if input.get("state").is_none_or(|v| *v == state["state"]) {
-                    records.push(json!({"task_ref":{"scope_ref":self.scope_ref(),"task_id":task_id,"request_revision":1},"task_kind":request["task_kind"],"brief":request["brief"],"request_sha256":sha,"state":state["state"],"submission_count":state["submission_refs"].as_array().unwrap().len(),"created_at":request["created_at"]}));
+                    records.push(json!({"task_ref":{"scope_ref":self.scope_ref(),"task_id":task_id,"request_revision":1},"task_kind":request["task_kind"],"brief":request["brief"],"request_sha256":sha,"state":state["state"],"submission_count":state["submission_refs"].as_array().unwrap().len(),"created_at":request["created_at"],"target_document_id":target}));
                 }
             }
         }
@@ -925,9 +953,15 @@ impl Kernel {
             .directory(&format!("packages/{package}/drafts/{draft_id}"))?;
         let bp = &task["input_snapshot"]["scope_context"]["blueprint_revision"];
         let mut draft = json!({"schema_version":"1.0.0","draft_id":draft_id,"revision":1,"package":package,"source_format":candidate["source_format"],"content_path":path,"content_sha256":digest(content),"size_bytes":content.len(),"state":"submitted","actor_ref":self.actor(),"created_at":now(),"blueprint_revision":bp,"diagnostic_state":"not_requested","title":candidate["title"],"language_tag":task["prompt_language"],"creative_task_ref":{"scope_ref":self.scope_ref(),"task_id":task["task_id"],"request_revision":1}});
+        if task["input_snapshot"]["scope_context"]["blueprint_ref"].is_object() {
+            draft["blueprint_ref"] = task["input_snapshot"]["scope_context"]["blueprint_ref"].clone();
+        }
         if !task["edit_scope"].is_null() {
             draft["target_document_id"] = task["edit_scope"]["document_id"].clone();
             draft["base_revision_id"] = task["edit_scope"]["revision_id"].clone();
+        } else if let Some(target) = task.get("target_ref") {
+            draft["target_document_id"] = target["document_id"].clone();
+            draft["base_revision_id"] = target["revision_id"].clone();
         }
         self.anchor_draft(&mut draft, changes)?;
         self.stage_draft(&draft, changes)?;
@@ -1023,9 +1057,10 @@ impl Kernel {
                         ensure(sources.contains(subject), "hetu.invalid_source_ref", "图片关联的文档不在固定来源中。")?;
                     } else {
                         let revision = integer(subject, "blueprint_revision")?;
-                        ensure(sources.iter().any(|s| s["kind"] == "blueprint" && s["revision"] == revision),
-                            "hetu.invalid_source_ref", "图片关联的设定修订不在固定来源中。")?;
-                        let (bp, _) = self.blueprint_revision(Some(revision))?;
+                        let source = sources.iter().find(|s| s["kind"] == "blueprint" && s["revision"] == revision
+                            && s["work_ref"] == subject["work_ref"] && s["blueprint_id"] == subject["blueprint_id"])
+                            .ok_or_else(|| Error::new("hetu.invalid_source_ref", "图片关联的作品及设定修订不在固定来源中。"))?;
+                        let (bp, _) = self.source_blueprint(source)?;
                         let reference = text(subject, "entity_ref")?;
                         ensure([("characters", "character_id"), ("locations", "location_id"), ("factions", "faction_id"),
                             ("timeline", "event_id"), ("world", "entry_id"), ("rules", "rule_id")].iter().any(|(section, key)|

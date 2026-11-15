@@ -23,11 +23,12 @@ class LocalFixture {
   loseSave = false;
   async start(options: { locale?: string; lifetime?: number } = {}) {
     const folder = await mkdtemp(join(tmpdir(), "hetu-local-view-"));
-    const fixture = spawnSync(resolve("../../target/debug/examples/task_view_fixture"), [folder], { encoding: "utf8" });
+    const cargoTarget = resolve(process.env.HETU_CARGO_TARGET_DIR ?? "../../target");
+    const fixture = spawnSync(resolve(cargoTarget, "debug/examples/task_view_fixture"), [folder], { encoding: "utf8" });
     if (fixture.status !== 0) throw new Error(fixture.stderr);
     this.ref = JSON.parse(fixture.stdout).task_ref;
     this.client = new Client({ name: "local-page-native-adapter-test", version: "1" }, { versionNegotiation: { mode: { pin: "2026-07-28" } } });
-    await this.client.connect(new StdioClientTransport({ command: resolve("../../target/debug/hetu-mcp"), args: ["--workspace", folder, "--task", String(this.ref.task_id)], stderr: "pipe" }));
+    await this.client.connect(new StdioClientTransport({ command: resolve(cargoTarget, "debug/hetu-mcp"), args: ["--workspace", folder, "--task", String(this.ref.task_id)], stderr: "pipe" }));
     this.child = spawn(process.execPath, [resolve("resources/local/server.mjs")], { stdio: "pipe", env: { PATH: "/usr/bin:/bin", LANG: "en_US.UTF-8" } });
     createInterface({ input: this.child.stdout }).on("line", line => {
       const message = JSON.parse(line) as Message;

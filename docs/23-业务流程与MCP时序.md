@@ -2,7 +2,7 @@
 
 本章集中维护架构、业务流程、交互时序及状态图。产品边界见[01](01-产品需求PRD.md)，外部协作见[27](27-Agent与Codex插件集成设计.md)，动作及数据以[30](30-应用API详细设计.md)、[29](29-数据字典与Schema设计.md)为准。图示定义产品合同，实际可调用能力由构建的能力目录发布。
 
-图中的系统箭头表示调用或交接，组件箭头表示源码依赖，时序箭头表示请求及回执；实体关系由29中的 ERD 表达。流程图虚线表示辅助通道或生命周期控制，时序图虚线表示返回；不能从连线推导自动授权、自动生成或事务已提交。各图的工作区均指本次明确选定的单部作品。
+图中的系统箭头表示调用或交接，组件箭头表示源码依赖，时序箭头表示请求及回执；实体关系由29中的 ERD 表达。流程图虚线表示辅助通道或生命周期控制，时序图虚线表示返回；不能从连线推导自动授权、自动生成或事务已提交。各图的工作区是文件与事务范围，业务请求另固定小说／剧本／视频对象；同根不等于共享授权。
 
 | 阅读目标 | 图示章节 | 对应用例 |
 | --- | --- | --- |
@@ -22,6 +22,7 @@
 | 已有正文的选区改稿与权限 | 34 | UC-05／17／27 |
 | 稳定接入、持续参考稿与反馈接续 | 40～44 | UC-38～43 |
 | Agent 联动全软件、操作准备与作者审阅 | 45～47 | UC-44～46 |
+| 三类入口、固定来源、预演视频、位置意见与交付 | 48～53 | UC-47～54 |
 
 ## 1. 系统上下文
 
@@ -30,8 +31,8 @@ flowchart TB
     author["作者或编剧"] <-->|"主要：审阅、比较与决定；其次：编辑"| hetu["河图洛书本地工作台"]
     author <-->|"表达目标、对话与反馈"| host["外部 Agent 与专用 Skills"]
     host <-->|"CLI 或 MCP：获权操作、回读与恢复"| hetu
-    hetu -->|"本机登记"| library["作者书库：多部独立小说"]
-    hetu -->|"限定本次范围"| content["单筹备或单作品目录"]
+    hetu -->|"本机登记"| library["创作库：小说、剧本、视频"]
+    hetu -->|"限定本次范围"| content["明确筹备或对象及工作区"]
     hetu -->|"另行确认同步"| remote["GitHub 或 Gitee"]
     hetu -->|"固定修订导出"| bundle["标准格式交付包"]
     bundle -->|"作者自行交付"| recipient["接收方离线阅读与核验"]
@@ -74,7 +75,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    start(["打开河图洛书书库"]) --> mode{"是否使用 AI 协作"}
+    start(["打开创作库或外部Agent开始"]) --> mode{"是否使用 AI 协作"}
     mode -->|"暂不需要"| manual["直接建书或导入手稿"]
     mode -->|"需要"| choose["选择客户端及使用表面"]
     choose --> type{"当前客户端"}
@@ -441,16 +442,16 @@ flowchart TD
     query -->|"仍未知"| unknown["保留 unknown 与人工核对入口"]
 ```
 
-## 16. 作者书库与多作品切换
+## 16. 创作库与多作品切换
 
 ```mermaid
 flowchart TD
-    library["作者书库：登记与检索"] --> choose{"本次任务"}
-    choose -->|"新建或导入"| create["确认资料与独立作品目录"]
+    library["创作库：按类型登记与检索"] --> choose{"本次任务"}
+    choose -->|"新建或导入"| create["Agent准备类型、资料与保存方案"]
     create --> open["打开选定作品，核验身份与目录权限"]
     choose -->|"继续创作"| open
     open --> work["在本作品编辑、检查和验收"]
-    work --> switch["切换作品或返回书库"]
+    work --> switch["切换对象或返回创作库"]
     switch --> buffer{"存在未保存内容"}
     buffer -->|"有"| resolve["保存、保留恢复副本或取消切换"]
     resolve -->|"取消"| work
@@ -459,7 +460,7 @@ flowchart TD
     clear --> library
 ```
 
-书库仅持有本机登记与可重建摘要，不合并作品正文或设定。打开另一部作品须独立核验权限；旧 Agent 会话不自动获得新作品范围，旧任务和候选仍留在原作品。
+创作库仅持有本机登记与可重建摘要，不合并作品正文或设定。打开另一部作品须独立核验权限；旧 Agent 会话不自动获得新作品范围，旧任务和候选仍留在原作品。
 
 ## 17. 分卷与章节管理
 
@@ -762,7 +763,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    library["书库或外部 Agent：明确本次作品"] --> organize["Agent 经 CLI/MCP 准备资料、结构和任务"]
+    library["创作库或外部 Agent：明确小说、剧本或视频"] --> organize["Agent 经 CLI/MCP 准备资料、结构和任务"]
     organize -->|"作者选择手动编辑"| writing["按自己的风格编辑<br/>保存写作修订"]
     organize -->|"默认 Agent 协作"| handoff["外部 Agent 规划、起草与整理<br/>软件展示成果和待审操作"]
     writing -->|"可选：请求改稿建议"| handoff
@@ -776,7 +777,15 @@ flowchart TD
     check -->|"需要修改"| writing
     check -->|"资格满足并明确确认"| final["作者独立定稿"]
     final -->|"继续写作"| writing
-    final -->|"另行选择"| bundle["固定版本交付<br/>选择标准格式并核验产物"]
+    final -->|"另行选择"| bundle["固定版本文稿交付"]
+    final -->|"制作视频"| video["独立视频项目：固定来源与资产"]
+    organize -->|"直接开始视频"| video
+    video --> previs["镜头与按需预演，作者观看反馈"]
+    previs --> clips["获权真实生成与原任务恢复"]
+    clips --> edit["剪辑、声音、字幕及实际渲染"]
+    edit --> review["连续审片、细节核对与局部返工"]
+    review -->|"返工"| video
+    review -->|"作者确认确切成片"| delivery["成片与完整工程交付"]
 ```
 
 默认路线由 Agent 处理业务、作者可视化 review 和作出必要决定；作者手动撰写与优化随时可用。图中不规定作者必须先建完设定，也不要求每章都改编短剧。两种创作方式共用同一编辑和定稿合同；书库切换见第16节，参考稿审核与采纳分别见第10／26节。日常保存、Git 快照、定稿和交付各自有独立结果，Git 快照可包含作者明确选定的未定稿修订。
@@ -1085,17 +1094,23 @@ flowchart TD
 ## 39. 分集、场次、分镜与生成片段
 
 ```mermaid
-flowchart LR
+flowchart TB
     project["原创或改编短剧项目"] --> episode["有序分集目录：唯一集序"]
     episode --> doc["每集独立 Fountain 剧本"]
     doc --> scene["固定修订的语义场次"]
     skeleton["可选分集骨架规划"] -->|"显式固定映射"| scene
-    scene --> board["分镜及稳定镜头"]
-    board --> segment["面向具体模型的生成片段"]
+    scene -->|"固定制作依据"| video["独立视频项目"]
+    brief["创意简述或已有素材"] --> video
+    video --> board["分镜及稳定镜头"]
+    board --> previs["动态分镜或按需白模"]
+    previs -->|"作者意见与认可"| segment["固定生成计划<br/>具体型号与模式"]
     assets["固定人物造型、场景与道具"] --> board
     assets --> segment
-    segment --> returned["外部制作候选"]
-    returned --> author["作者验收与选用"]
+    segment --> returned["实际生成片段及技术核验"]
+    returned --> author["作者观看与选用"]
+    author --> edit["Agent剪辑音画字幕并渲染"]
+    edit --> final["作者连续审片与成片确认"]
+    final --> bundle["成片及工程交付"]
 ```
 
 镜头与片段允许多对多引用。模型时长和参考限制约束制作单元，不改变作者的集、场和镜头身份；模型不可用时保留项目与既有成果，不要求换模型后重写故事结构。
@@ -1380,3 +1395,170 @@ sequenceDiagram
 ```
 
 可信审阅通道只指实际通过身份与批准合同验收的原生或宿主通道；普通 Apps 选择、对话文字及模型模拟点击不承担批准。执行中结果未知先查原键，批准与输入变化后不自动重试。作者不需要把 Agent 已准备的字段重新输入界面。
+
+## 48. 创作库与三类对象架构
+
+```text
+作者向Codex表达目标                      作者在河图阅读、观看、判断
+         │                                          │
+  Skills + CLI/MCP                         创作库与对应工作界面
+         └──────────────────┬───────────────────────┘
+                            ▼
+       Core：授权 / 固定输入 / 事务 / 作者决定 / 原操作恢复
+                            │
+        ┌───────────────────┼───────────────────┐
+        ▼                   ▼                   ▼
+      小说                剧本                 视频
+   卷章与正文          分集与场次          镜头与预演、实际片段
+   大纲与设定          行动与对白          剪辑音画字幕与成片
+        └──固定来源关联─────┴──固定制作依据──────┘
+                            │
+        资料设计 / 固定素材 / 公开意见 / 版本 / 完整交付
+
+可同根或跨根；独立对象不强制父子关系、空上游或三个仓库。
+外部生成与剪辑工具由Codex调用，河图不运行自主生成循环。
+```
+
+```mermaid
+flowchart LR
+    library["创作库"] --> novel["小说：卷章与正文"]
+    library --> drama["剧本：分集与场次"]
+    library --> video["视频：分镜、预演、片段、成片"]
+    novel -->|"可选：固定原著"| drama
+    drama -->|"可选：固定制作依据"| video
+    idea["简述、分镜或素材"] --> video
+    refs["固定资料及素材"] --> novel
+    refs --> drama
+    refs --> video
+```
+
+关系是来源引用，不能推导权限。现有嵌套短剧保留ID、路径和任务，通过登记独立打开；来源变化只提示实际依赖。
+
+## 49. 固定来源与修改影响流程
+
+```mermaid
+flowchart TD
+    start["Agent定位两端明确对象与版本"] --> auth["分别核对来源读取与目标写入权限"]
+    auth --> root{"同一受管根？"}
+    root -->|"同根"| fixed["固定已有修订和摘要"]
+    root -->|"跨根"| snapshot["保存获权必要来源快照与原始身份"]
+    fixed --> link["原键提交WorkLink，回读实际关系"]
+    snapshot --> link
+    link --> view["源与目标视图派生双向关联"]
+    view --> changed["来源出现新版"]
+    changed --> impact["列出实际引用变化与受影响位置"]
+    impact --> decide{"作者是否更新依据？"}
+    decide -->|"保留"| old["旧修订和既有成果继续可读"]
+    decide -->|"更新"| proposal["Agent准备新依据及局部返工方案"]
+    proposal --> grant["精确授权后执行，旧版保留"]
+```
+
+## 50. 预演到成片的流程
+
+```mermaid
+flowchart TD
+    input["剧本或制作简述、固定资产"] --> shots["Agent组织镜头及参考职责"]
+    shots --> question{"本次要验证什么？"}
+    question -->|"节奏与揭示"| animatic["动态分镜与临时声音"]
+    question -->|"空间、遮挡、调度"| whitebox["外部工具白模预演"]
+    question -->|"已有明确依据"| test["代表性真实生成"]
+    animatic --> review["作者连续观看与位置意见"]
+    whitebox --> review
+    review -->|"需调整"| shots
+    review -->|"本次预演认可"| test
+    test --> inspect["实际表演、身份、动作及声音核对"]
+    inspect -->|"不合格"| shots
+    inspect -->|"可继续"| groups["在授权和费用内分组制作"]
+    groups --> edit["Agent剪辑、音画、字幕及实际渲染"]
+    edit --> screening["连续审片、沿人物和改动核对"]
+    screening -->|"具体意见"| revise["回正确层次局部返工，旧版保留"]
+    revise --> edit
+    screening -->|"作者确认确切成片"| delivery["成片及完整工程交付"]
+```
+
+预演认可不自动授权新的费用或确认成片；返工可能回到剧本、资产、预演、生成或剪辑，图中回路不表示河图自动运行Agent。发布及运营不在此流程。
+
+## 51. 视频生成与未知恢复时序
+
+```mermaid
+sequenceDiagram
+    actor U as 作者
+    participant A as 当前Codex与Skills
+    participant C as 河图CLI/MCP与Core
+    participant G as 已选生成工具或适配器
+    participant V as 河图视频工作面
+    A->>C: 发现型号模式、固定素材及实际用例
+    C-->>A: 获权版本、限制、原任务和已有成果
+    A->>C: 固定Prompt、参考职责、音画输出和费用范围
+    C-->>A: plan_ref、摘要及必要决定
+    U->>A: 在可信通道明确本次范围和费用
+    Note over A,C: Core核验实际授权，不接受Agent自报批准
+    A->>C: 执行固定计划和原键
+    C->>G: 提交明确输入，记录提供方任务
+    alt 收到确定结果
+        G-->>C: 实际媒体、任务和费用回执
+    else 超时或结果未知
+        C-->>A: unknown及原计划、原调用引用
+        A->>C: 查询原调用，不创建新计划重发
+        C->>G: 查询原任务
+        G-->>C: 运行中、结果或仍未知
+    end
+    opt 已取得实际媒体
+        C->>C: 核验实际文件、解码、流信息和来源
+        C-->>A: 固定成果与技术核验，内容观看另记
+        C-->>V: 呈现相同固定媒体
+        U->>V: 观看、写位置意见或选用
+    end
+    Note over C,V: 未知或运行中只呈现真实状态，不伪造媒体结果
+```
+
+无法查询时保持unknown，不以循环重试或本机事务回滚宣称没有费用。不同外部工具的实际调用路径以已发布适配合同为准。
+
+## 52. 人工细节发现与对话接续时序
+
+```mermaid
+sequenceDiagram
+    actor U as 作者
+    participant V as 河图或已支持的Apps
+    participant C as 共享Core
+    participant H as 当前外部宿主
+    participant A as 当前Codex与Skills
+    U->>V: 连续阅读观看，沿人物或改动核对
+    U->>V: 在任意位置表达具体意见
+    V->>C: 保存固定成果、版本、位置及作者原话
+    C-->>V: TaskFeedback及精确继续引用
+    U->>V: 明确按此修改
+    alt 宿主支持并接受消息
+        V->>H: 请求同一对话继续
+        H-->>V: 消息受理回执
+        H->>A: 交接原任务与意见引用
+    else 无消息能力或发送失败
+        V-->>U: 复制同一任务与意见引用
+        U->>A: 在当前对话继续
+    end
+    A->>C: 回读原成果、意见、依据及允许范围
+    C-->>A: 固定版本，不外发未保存稿或私密意见
+    A->>C: 保存后继成果并固定提交
+    C-->>V: 新版与原意见对应，旧版保留
+    U->>V: 比较、取舍或继续反馈
+```
+
+消息受理不表示生成完成；旧版时间坐标只用于旧版，新版定位须有明确映射。作者可反馈Agent未标记内容，不受摘要限制。
+
+## 53. 文稿、成片与工程交付流程
+
+```mermaid
+flowchart TD
+    target["Agent准备本次交付目标"] --> profile{"所需内容，可组合"}
+    profile --> text["固定小说或剧本文稿定稿"]
+    profile --> cut["作者确认的实际成片与声音字幕"]
+    profile --> project["制作工程、固定素材、预演及依赖"]
+    text --> preview["冻结版本、权利、文件及排除清单"]
+    cut --> preview
+    project --> preview
+    preview --> check{"文件与依赖齐备？"}
+    check -->|"否"| missing["缺项明确返回，不以URL或LFS指针代替"]
+    check -->|"是"| export["原键导出并核验实际摘要"]
+    export --> recipient["接收方离线解包、播放与工程核验"]
+    recipient --> result["记录本次结果与覆盖，止于交付"]
+```

@@ -66,7 +66,7 @@ struct BookCoverView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         Text(titleOverlay ?? title).font(.system(size: max(12, min(25, size.width * 0.14)), weight: .medium, design: .serif)).lineSpacing(4).lineLimit(4)
                         if !(authorOverlay ?? author).isEmpty { Text(authorOverlay ?? author).font(.system(size: 12, weight: .medium)).lineLimit(1) }
-                    }.foregroundStyle(image != nil ? WorkbenchPalette.ink : variant == 2 ? .white : WorkbenchPalette.ink)
+                    }.foregroundStyle(image != nil ? WorkbenchPalette.ink : variant == 2 ? .white : WorkbenchPalette.artworkInk)
                         .padding(image != nil ? 8 : 0)
                         .background { if image != nil { WorkbenchPalette.surface.opacity(0.94) } }
                         .padding(.horizontal, size.width * 0.12).padding(.top, size.height * 0.09)

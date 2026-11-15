@@ -1,0 +1,292 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-11-15T13:37:06.224838+00:00",
+  "version": "0.7.0",
+  "scope": "创作库分层导航、独立视频机器入口、分集保持、协作读取及同版安装验收",
+  "status": "machine_passed_gui_partial_installed",
+  "all_refactoring_complete": false,
+  "source": {
+    "base_commit": "9f7c8ea6da556675cba9f62472670a28bee8d028",
+    "dirty_worktree": true,
+    "sha256": {
+      "AGENTS.md": "68d4bca24c40843e65a8f04ef44912f4d1b42cbae66cdfa7e5497aab24d0f934",
+      "apps/macos/Sources/HetuNative/WorkspaceNavigation.swift": "fc3fb2d1718932b2f30ad2a618f72721516832cc75e6021620c4d6a5e17ba712",
+      "apps/macos/Sources/HetuMac/WorkspaceShell.swift": "07db30d2d3834aadf792ac8c3bd48b41a47117c4713a37f5a28c936cd0d16e67",
+      "apps/macos/Sources/HetuMac/AuthorLibraryView.swift": "017fe97d0c55c53138bdd509a54af0f3feb4a92501f2688a07bf5139192f964c",
+      "apps/macos/Sources/HetuMac/DramaProjectsView.swift": "95fcbb53f2cb74e1e441c4c2aede3bf65d830b588142ec6d50411ac1b7db7be7",
+      "apps/macos/Sources/HetuMac/ManuscriptView.swift": "811c26efb3bda3d74e2168bf21c6b93016b06014fdfccd60dd7a3a505a2d9b6e",
+      "apps/macos/Sources/HetuMac/VideoWorkbenchView.swift": "afbab1bf4f8954eda95c2ab9f4e94b8f3c72bbd6744c05a83b0bcd1cc772beb0",
+      "apps/macos/Sources/HetuMac/HetuMacApp.swift": "04a65d127877c3c9337006d0869aa58c7031f0bf7fdb63528fb08089cb1950d0",
+      "contracts/schemas/result.schema.json": "5cd3fae3f08de29fc458400b926e669d5d138898239ba2d2b752a5d01fc2bc08",
+      "apps/mcp/tests/stdio.rs": "41ea2c05db60a2b92952b85fac5b8894b08dad13366bfd2dbd1a0279e9cdfd56",
+      "assets/localization/native.json": "6e72699851324925e4058d239893d623ddcf1f92e3a72601c1bc22710848da4a",
+      "apps/macos/Sources/HetuMac/AgentAccessSheet.swift": "81aaa3ccaeffd68d34dc9875479ec86d05200fccb2ebb0310b8f8b9debd606e3",
+      "apps/macos/Sources/HetuMac/CreativeTaskView.swift": "ffcf492a8d88fb9d16be4e29aa6c70cd76724e376776773a10315046432be437",
+      "apps/macos/Sources/HetuMac/LibraryArtwork.swift": "fd970c11c2f09e75f19f04ea75b82887d6df4858cf4c02648724a0f7489ca365",
+      "apps/macos/Sources/HetuMac/ModelPlanReviewView.swift": "c44806ab4e6418efda478e98b783fbab6d4ab1c1aacc733d4a431a8902f36117",
+      "apps/macos/Sources/HetuNative/CreativeTasks.swift": "98b664ee741d7b64913b1073da93ab62a046d184120c629514942c7e86fbb57b",
+      "apps/macos/Sources/HetuNative/WorkbenchAppearance.swift": "2cca9b4618e15f37feb47eb7ccb29626b230cfa251b93048fd4a82d9eb0c07f1",
+      "bindings/swift/Sources/HetuCore/Workspace.swift": "cc37fed11494ac9110eee167752928942356264eebd2030184abfc07eb895d9a",
+      "tests/native/HetuNativeTests/CreativeTaskTests.swift": "cb2b0e21fe9db4e38af5172ddbbedaf0420aa3c26520664217a702a28c82dabb",
+      "tests/native/HetuNativeTests/LocalTaskViewTests.swift": "011f60643a0101e9690685e565aa14326f27c1565767c6e3b59ca231bf39b44f",
+      "tests/native/HetuNativeTests/WindowLayoutTests.swift": "6cc88443f273c21c20e8a96a443e9e2ad4e11535dab8920a1274caa6d33f579e",
+      "tools/build-native.py": "6eb50ddf8d01a2764c133ad83110394149302c281f1a33e4a5cd555a11f52d8d"
+    }
+  },
+  "navigation": {
+    "levels": [
+      "创作库与类型",
+      "当前小说／剧本／视频与项目功能组",
+      "卷章或集场目录",
+      "阅读与比较及就近意见",
+      "按需检查器"
+    ],
+    "secondary_groups": [
+      "创作资料",
+      "版本与交付",
+      "检查工具"
+    ],
+    "layout": "按实际剩余空间保留至少680pt主内容区，目录收起或转浮层；检查器按需展开。",
+    "episode_restore": "按当前对象在窗口内保留所选分集；未声明跨重启、完整滚动或播放位置恢复。"
+  },
+  "checks": {
+    "core": {
+      "groups": 28,
+      "passed": 217,
+      "failed": 0,
+      "log": "output/workbench-navigation-20261115/rust-regression.log",
+      "whole_command_exit_zero": false,
+      "reason": "命令末尾MCP首次结果Schema失败另行修复；Core各组通过。"
+    },
+    "core_doctests": {
+      "status": "passed",
+      "cases": 0,
+      "log": "output/workbench-navigation-20261115/core-doctests.log"
+    },
+    "mcp_stdio": {
+      "passed": 23,
+      "failed": 0,
+      "initial_failure": "四段动作名hetu.video.episodes.create被结果Schema的三段正则拒绝。",
+      "fix": "支持实际分段动作名，补固定输出合同和独立视频stdio旅程。",
+      "log": "output/workbench-navigation-20261115/mcp-regression.log"
+    },
+    "native_all": {
+      "status": "passed",
+      "exit_code": 0,
+      "log": "output/workbench-navigation-20261115/navigation-closeout-native-window.log",
+      "initial_run": {
+        "status": "failed",
+        "log": "output/workbench-navigation-20261115/navigation-closeout-native.log",
+        "reproduced_log": "output/workbench-navigation-20261115/navigation-closeout-local-view-direct.log",
+        "failure": "WebKit任务iframe在离屏测试中未完成加载。"
+      },
+      "fix": "将测试WebView挂入独立NSWindow，与实际内置浏览器一致；增加CSP诊断，不修改握手或验收超时。",
+      "targeted_recheck": "output/workbench-navigation-20261115/navigation-closeout-local-view-window.log",
+      "build_log": "output/workbench-navigation-20261115/navigation-closeout-test-window-build.log"
+    },
+    "imported_work": {
+      "status": "passed",
+      "documents": 511,
+      "groups": 5,
+      "open_seconds": 2.2272145,
+      "read_only": true,
+      "log": "output/workbench-navigation-20261115/imported-work-review.log"
+    },
+    "current_codex_cli": {
+      "status": "passed",
+      "steps": 12,
+      "packaged_replay_steps": 7,
+      "no_gui_business_steps": true,
+      "evidence": "output/workbench-navigation-20261115/navigation-closeout-installed-cli-replay.json",
+      "boundary": "独立视频的筹备、资料、创建、分集和恢复；未生成视频媒体。"
+    },
+    "packaged_mcp": {
+      "status": "passed",
+      "evidence": "output/workbench-navigation-20261115/navigation-closeout-installed-mcp-check.json",
+      "boundary": "实际随包stdio进程，不代表当前会话重载新版MCP或Skills。",
+      "tool_count": 105
+    },
+    "localization": {
+      "status": "passed",
+      "bilingual_keys": 1600
+    },
+    "gui": {
+      "status": "partial",
+      "passed": [
+        "中文创作库三类导航及小说与剧本独立条目",
+        "真实原稿第一章阅读",
+        "目录收起后正文不变",
+        "创作资料分组展开",
+        "1440pt内联检查器",
+        "1180pt检查器转详情弹窗且可关闭",
+        "第一集真实Fountain参考稿显示",
+        "安装版前六集逐一打开，真实Fountain场次及正文显示",
+        "英文960pt目录浮层、关闭后内容保持、暗色阅读",
+        "长查询无结果与清除筛选",
+        "窗口内返回创作库再开项目仍为第六集",
+        "协作页第六集修改意见目标正确，长要求和接入详情折叠",
+        "最终安装制品第六集正文、原任务意见及空模型计划无误报",
+        "最终安装制品暗色创作库默认封面深字可读"
+      ],
+      "not_run": [
+        "中英／浅暗／最小常规宽屏的完整交叉矩阵",
+        "独立视频工作面实机",
+        "本轮GUI保存真实作者意见及实际返工／采纳决定",
+        "完整滚动位置和视频播放位置恢复"
+      ],
+      "images": [
+        "chapter-zh-1440.png",
+        "novel-inspector-1440.png",
+        "novel-narrow-inspector.png",
+        "novel-resources-expanded.png",
+        "drama-zh-1180.png",
+        "installed-drama-episode-1.png",
+        "installed-drama-episode-2.png",
+        "installed-drama-episode-3.png",
+        "installed-drama-episode-4.png",
+        "installed-drama-episode-5.png",
+        "installed-drama-episode-6.png",
+        "final-library-en-960-dark.png",
+        "final-library-long-query.png",
+        "final-task-en-loaded.png",
+        "navigation-closeout-six-selected.png",
+        "navigation-closeout-task-loaded.png",
+        "navigation-closeout-library-return-dark.png",
+        "navigation-closeout-reopened-loaded.png"
+      ],
+      "image_directory": "output/workbench-navigation-20261115/",
+      "automation_failure": "CUA初始化失败：failed to write kernel assets: No such file or directory (os error 2)。后续使用macOS辅助功能操作与真实CG窗口截图完成所列交互；辅助工具未定位到菜单或窗口的尝试不作为通过。",
+      "artifact": {
+        "recorded_at": "2026-11-15T13:23:45.624694+00:00",
+        "app": "/Applications/Hetu.app",
+        "version": "0.7.0",
+        "codesign_deep_strict": true,
+        "identical_files": 2239,
+        "all_file_digests_match": true,
+        "hashes": {
+          "MacOS/HetuMac": "8f87d5c215394339d70395a52c85f76c67fb20f323c663c281d34c01cf870708",
+          "Frameworks/libhetu_core.dylib": "dc0500ad517ea8101ab56ee6fa98da2301602f6cd606e53bebe949e0a57c677d",
+          "Helpers/hetu": "b6e4298ca6f9627e6e28cc4ea0a75070a6850705b7202ded63f0b68ee6991339",
+          "Helpers/hetu-mcp": "cd83391fa5389b774b82f7788e6a7074d274ed52e941dd8fc3f013912c3f3e90",
+          "Resources/Hetu_HetuNative.bundle/NativeStrings.json": "6e72699851324925e4058d239893d623ddcf1f92e3a72601c1bc22710848da4a"
+        },
+        "skills_version": "0.3.0"
+      },
+      "previous_development_artifact": {
+        "app": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/native/HetuDev.app",
+        "codesign_deep_strict": true,
+        "hashes": {
+          "MacOS/HetuMac": "5bc8d38eee0cbeb30aaee1957573a0be76216dacc3e695ff74000e8fbe3d9e09",
+          "Frameworks/libhetu_core.dylib": "dc0500ad517ea8101ab56ee6fa98da2301602f6cd606e53bebe949e0a57c677d",
+          "Helpers/hetu": "cd0d8f740a07e8cf11c79f02d92668b4d7142655b30929e6430e580bf838d9b8",
+          "Helpers/hetu-mcp": "cd83391fa5389b774b82f7788e6a7074d274ed52e941dd8fc3f013912c3f3e90",
+          "Resources/Hetu_HetuNative.bundle/NativeStrings.json": "c5766c90667b2b7f1a5f47936463e13216ec6f68ae9e0febb72ebff5fdf48a0e"
+        },
+        "skills_version": "0.3.0"
+      },
+      "navigation_checks_artifact": {
+        "app": "/Applications/Hetu.app",
+        "version": "0.7.0",
+        "codesign_deep_strict": true,
+        "identical_files": 2239,
+        "all_file_digests_match": true,
+        "hashes": {
+          "MacOS/HetuMac": "ae1b7b64e20d8e96f8f266a2eb0c796e3bdf1ca8f9f8ca49a772d4598d21b6b9",
+          "Frameworks/libhetu_core.dylib": "dc0500ad517ea8101ab56ee6fa98da2301602f6cd606e53bebe949e0a57c677d",
+          "Helpers/hetu": "cd0d8f740a07e8cf11c79f02d92668b4d7142655b30929e6430e580bf838d9b8",
+          "Helpers/hetu-mcp": "cd83391fa5389b774b82f7788e6a7074d274ed52e941dd8fc3f013912c3f3e90",
+          "Resources/Hetu_HetuNative.bundle/NativeStrings.json": "190e4aeac2e65490cb97c81af99939bb8ee80ecc411af172686a3d83eeeabbdb"
+        },
+        "skills_version": "0.3.0"
+      },
+      "six_episodes": "output/workbench-navigation-20261115/installed-six-episodes.json",
+      "author_content_modified": false,
+      "author_decisions_fabricated": false,
+      "final_checks": {
+        "sixth_episode_restored": true,
+        "feedback_target_correct": true,
+        "no_false_model_error": true,
+        "author_feedback_saved": false,
+        "logs": [
+          "output/workbench-navigation-20261115/navigation-closeout-reopened-loaded.ax.txt",
+          "output/workbench-navigation-20261115/navigation-closeout-task-loaded.ax.txt"
+        ]
+      }
+    },
+    "final_build": {
+      "status": "passed",
+      "exit_code": 0,
+      "command": "CARGO_INCREMENTAL=0 python3 tools/build-native.py --mac-only",
+      "log": "output/workbench-navigation-20261115/navigation-closeout-build.log",
+      "earlier_passed_logs": [
+        "output/workbench-navigation-20261115/navigation-final-build.log",
+        "output/workbench-navigation-20261115/navigation-followup-build.log"
+      ],
+      "same_swift_arguments_for_mac_and_cli": true
+    },
+    "installed_app": {
+      "status": "updated_and_verified",
+      "recorded_at": "2026-11-15T13:23:45.624694+00:00",
+      "app": "/Applications/Hetu.app",
+      "version": "0.7.0",
+      "codesign_deep_strict": true,
+      "identical_files": 2239,
+      "all_file_digests_match": true,
+      "hashes": {
+        "MacOS/HetuMac": "8f87d5c215394339d70395a52c85f76c67fb20f323c663c281d34c01cf870708",
+        "Frameworks/libhetu_core.dylib": "dc0500ad517ea8101ab56ee6fa98da2301602f6cd606e53bebe949e0a57c677d",
+        "Helpers/hetu": "b6e4298ca6f9627e6e28cc4ea0a75070a6850705b7202ded63f0b68ee6991339",
+        "Helpers/hetu-mcp": "cd83391fa5389b774b82f7788e6a7074d274ed52e941dd8fc3f013912c3f3e90",
+        "Resources/Hetu_HetuNative.bundle/NativeStrings.json": "6e72699851324925e4058d239893d623ddcf1f92e3a72601c1bc22710848da4a"
+      },
+      "skills_version": "0.3.0",
+      "evidence": "output/workbench-navigation-20261115/navigation-closeout-installed-artifacts.json",
+      "post_install_checks": "output/workbench-navigation-20261115/navigation-closeout-packaged.log"
+    },
+    "documents": {
+      "documents": 55,
+      "local_links": 562,
+      "fragment_links": 185,
+      "traceability": {
+        "FR": 40,
+        "US": 61,
+        "UC": 54,
+        "E2E": 30,
+        "AC": 65
+      },
+      "id_references": 1260,
+      "json_examples": 8,
+      "schemas": 2,
+      "mermaid": 61,
+      "errors": []
+    },
+    "concurrent_task_reads": {
+      "status": "passed",
+      "initial_status": "failed",
+      "before_log": "output/workbench-navigation-20261115/task-concurrent-before.log",
+      "after_log": "output/workbench-navigation-20261115/task-concurrent-after.log",
+      "included_in_native_all": true,
+      "assertions": [
+        "模型计划／意见／上下文并发回读不被UI事务busy丢弃",
+        "作者未保存缓冲和忙碌状态保持",
+        "只读入口拒绝写事务",
+        "读取前后核对工作区句柄和对象身份"
+      ],
+      "fix": "从实际能力目录effect=read派生只读入口，经Workspace actor串行Core调用；写事务保持原恢复与授权入口。"
+    }
+  },
+  "open_items": [
+    "完整阅读或播放位置恢复",
+    "明确对象设定归属与改编例外",
+    "跨根固定来源快照",
+    "其余正文、设定、资料及任务的对象窄授权",
+    "视频分镜、预演、真实媒体、反馈返工及工程交付",
+    "当前Codex宿主工具98项与随包105项分开，未重载新版宿主／Skills",
+    "完整真实作者意见返工及双语主题尺寸矩阵"
+  ],
+  "boundaries": [
+    "未将本轮导航切片登记为完整创作工作台重构完成",
+    "未修改网站源码、提交、推送或部署",
+    "未把511篇导入及开篇六集登记为全书改编完成"
+  ]
+}

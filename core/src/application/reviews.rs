@@ -27,8 +27,8 @@ impl Kernel {
         Ok(json!({"draft":draft}))
     }
     fn review_snapshot(&self, draft: &Value) -> Result<Value> {
-        let bp = self.blueprint()?;
-        let (_, sha) = self.blueprint_revision(Some(integer(draft, "blueprint_revision")?))?;
+        let bp = self.draft_blueprint(draft, true)?.0;
+        let (_, sha) = self.draft_blueprint(draft, false)?;
         let mut target = Value::Null;
         if let Some(doc) = draft
             .get("target_document_id")
@@ -268,7 +268,7 @@ impl Kernel {
             Value::Null
         };
         Ok(
-            json!({"draft":draft,"content":value["content"],"input_snapshot":snapshot,"stale":!stale.is_empty(),"stale_reasons":stale,"decisions":history,"reports":reports,"reports_next_cursor":(end<records.len()).then(||format!("{fingerprint}:{end}")),"baseline":baseline,"evidence_ready":draft.get("evidence_document_id").is_some()}),
+            json!({"draft":draft,"content":value["content"],"suggested_target_ref":value["suggested_target_ref"],"input_snapshot":snapshot,"stale":!stale.is_empty(),"stale_reasons":stale,"decisions":history,"reports":reports,"reports_next_cursor":(end<records.len()).then(||format!("{fingerprint}:{end}")),"baseline":baseline,"evidence_ready":draft.get("evidence_document_id").is_some()}),
         )
     }
     pub(super) fn list_reviews(&self, input: &Value) -> Result<Value> {
@@ -328,7 +328,7 @@ impl Kernel {
             "请先由作者开始审核以绑定草稿证据。",
         )?;
         let snapshot = self.review_snapshot(draft)?;
-        let (bp, sha) = self.blueprint_revision(Some(integer(draft, "blueprint_revision")?))?;
+        let (bp, sha) = self.draft_blueprint(draft, false)?;
         let documents=self.plot_documents(&[json!({"document_id":draft["evidence_document_id"],"revision_id":draft["evidence_revision_id"],"sha256":draft["content_sha256"]})])?;
         let plot = plot::extract(
             &documents,

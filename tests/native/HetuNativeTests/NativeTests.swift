@@ -20,7 +20,12 @@ private func check(_ value: Bool, _ message: String) throws { if !value { throw 
         let preferences = UserDefaults(suiteName: preferencesName)!
         preferences.set(false, forKey: "Hetu.editor.autosave")
         defer { preferences.removePersistentDomain(forName: preferencesName) }
+        if CommandLine.arguments.contains("--screenplay-reading") { try ScreenplayReadingTests.run(); return }
+        if let index = CommandLine.arguments.firstIndex(of: "--imported-work-review"), CommandLine.arguments.count > index + 1 {
+            try await ImportedWorkReviewTests.run(root: root, recordDirectory: URL(fileURLWithPath: CommandLine.arguments[index + 1]), preferences: preferences); return
+        }
         if CommandLine.arguments.contains("--library-properties") { try await LibraryPropertiesTests.run(root: root, preferences: preferences); return }
+        if CommandLine.arguments.contains("--work-catalog") { try await WorkCatalogTests.run(root: root, preferences: preferences); return }
         if CommandLine.arguments.contains("--official-installer") { try await LocalAutomationTests.officialInstaller(root: root); return }
         if CommandLine.arguments.contains("--library-admission") { try await LibraryAdmissionTests.run(root: root); return }
         if CommandLine.arguments.contains("--authoring") { try await AuthoringTests.run(root: root); return }
@@ -51,11 +56,13 @@ private func check(_ value: Bool, _ message: String) throws { if !value { throw 
             try await AgentInstallerTests.run(root: root)
             return
         }
+        try ScreenplayReadingTests.run()
         try agentIntegrationTests(root, preferences: preferences)
         try await PageHandoffTests.run(root: root)
         try await LocalAutomationTests.run(root: root)
         try await LibraryAdmissionTests.run(root: root)
         try await LibraryPropertiesTests.run(root: root, preferences: preferences)
+        try await WorkCatalogTests.run(root: root, preferences: preferences)
         try await AuthoringTests.run(root: root)
         try await CreativeWorkspaceTests.run(root: root)
         try await ArtworkLibraryTests.run(root: root)
@@ -177,7 +184,7 @@ private func check(_ value: Bool, _ message: String) throws { if !value { throw 
         print("并发浏览：写入期间可打开与阅读、编辑受限、写入结束后恢复保存通过")
     }
     @MainActor static func libraryTests(_ root: URL, recovery: RecoveryStore, preferences: UserDefaults) async throws {
-        let library = LibraryStore(directory: root.appendingPathComponent("多作品书库"))
+        let library = LibraryStore(directory: root.appendingPathComponent("多作品书库"), collaborationDirectory: root.appendingPathComponent("多作品验收协作"))
         let first = WorkspaceModel(locale: "zh-CN", recovery: recovery, preferences: preferences, library: library)
         let firstURL = root.appendingPathComponent("长篇小说 一")
         let secondURL = root.appendingPathComponent("独立小说 二")

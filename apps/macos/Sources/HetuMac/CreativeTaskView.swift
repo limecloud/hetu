@@ -5,6 +5,8 @@ import HetuNative
 
 struct CreativeTaskView: View {
     let model: WorkspaceModel
+    let initialTaskRef: JSONValue
+    let targetDocumentID: String?
     @Environment(\.dismiss) private var dismiss
     @State private var session: CreativeTaskSession
     @State private var snapshot: JSONValue
@@ -21,10 +23,11 @@ struct CreativeTaskView: View {
     @State private var installation = false
     @State private var kind: CreativeTaskKind
     @State private var includeCurrent = false
-    init(model: WorkspaceModel, selection: NSRange = NSRange(location: 0, length: 0), kind: CreativeTaskKind = .revision) {
+    init(model: WorkspaceModel, selection: NSRange = NSRange(location: 0, length: 0), kind: CreativeTaskKind = .revision, initialTaskRef: JSONValue = .null, targetDocumentID: String? = nil) {
         self.model = model
+        self.initialTaskRef = initialTaskRef; self.targetDocumentID = targetDocumentID
         _kind = State(initialValue: kind)
-        _session = State(initialValue: CreativeTaskSession(model: model))
+        _session = State(initialValue: CreativeTaskSession(model: model, targetDocumentID: targetDocumentID))
         var document = model.loaded.object; document["content"] = .string(model.savedText)
         _snapshot = State(initialValue: .object(document))
         _selection = State(initialValue: selection)
@@ -35,7 +38,14 @@ struct CreativeTaskView: View {
     private var source: String { snapshot["content"].string ?? "" }
     private var task: JSONValue { session.task }
     private var held: Bool { session.held || model.busy }
+    private var contextTitle: String {
+        if let targetDocumentID, let document = model.documents.first(where: { $0.id == targetDocumentID }) {
+            return model.title + " / " + document.title
+        }
+        return model.documentID.isEmpty ? model.title : model.title + " / " + model.documentTitle
+    }
     private var availableKinds: [CreativeTaskKind] {
+        if targetDocumentID != nil { return [.dramaDraft] }
         let draft: CreativeTaskKind = model.workType == "drama" || model.loaded["document"]["source_format"].string == "fountain" ? .dramaDraft : .chapterDraft
         return (model.documentID.isEmpty ? [] : [.revision]) + [draft, .outline, .bookProfile, .cover, .artwork]
     }
@@ -47,7 +57,7 @@ struct CreativeTaskView: View {
                 PageAgentButton(model: model, page: model.documentID.isEmpty ? "book" : "document", object: model.documentID.isEmpty ? .object([:]) : .object(["document_id": .string(model.documentID), "revision_id": .string(model.baseRevisionID)]))
                 Button(model.t("common.close")) { dismiss() }.keyboardShortcut(.cancelAction).disabled(session.pending != nil)
             }
-            Text(model.documentID.isEmpty ? model.title : model.title + " / " + model.documentTitle).foregroundStyle(WorkbenchPalette.muted)
+            Text(contextTitle).foregroundStyle(WorkbenchPalette.muted)
             if let error = session.error { Text(error).foregroundStyle(WorkbenchPalette.danger).textSelection(.enabled) }
             if session.pending != nil { Button(model.t("drama.retry")) { Task { await session.retry() } } }
             HSplitView {
@@ -58,7 +68,8 @@ struct CreativeTaskView: View {
         .interactiveDismissDisabled(session.pending != nil)
         .task {
             await session.loadTasks()
-            if let latest = session.tasks.first(where: { $0["task_kind"].string == kind.rawValue }) { await session.loadTask(latest["task_ref"]) }
+            if initialTaskRef != .null { await session.loadTask(initialTaskRef) }
+            else if let latest = session.tasks.first(where: { $0["task_kind"].string == kind.rawValue }) { await session.loadTask(latest["task_ref"]) }
         }
         .sheet(item: $adoption) { value in
             DraftAdoptionSheet(model: model, context: value.value) { id, before in
@@ -168,7 +179,6 @@ struct CreativeTaskView: View {
     private var taskResult: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(model.t("creative.state." + (task["observation"]["state"].string ?? "ready"))).font(.system(size: 14, weight: .semibold))
-            Text(task["request"]["brief"].string ?? "").textSelection(.enabled)
             ModelPlanReviewView(task: task, locale: model.locale, held: held,
                 read: { await session.read($0, input: $1) }, approve: { await session.mutate("hetu.model_tasks.approve", input: $0) })
             if task["observation"]["submission_refs"].array.count > 1 {
@@ -187,7 +197,11 @@ struct CreativeTaskView: View {
                     .id(candidate["candidate_id"].string ?? "")
                 }
             }
+            TaskContinuationView(task: task, locale: model.locale, held: held,
+                read: { await session.read($0, input: $1) }, save: { await session.mutate("hetu.task_feedback.save", input: $0) })
+                .id(task["request"]["task_id"].string)
             DisclosureGroup(model.t("creative.connection_details")) {
+                Text(task["request"]["brief"].string ?? "").textSelection(.enabled)
                 Text(model.t("creative.handoff_note")).font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted)
                 HStack {
                     Button(model.t("creative.copy_prompt")) { copyPrompt() }.disabled(task["observation"]["state"].string == "closed" || held)
@@ -205,13 +219,11 @@ struct CreativeTaskView: View {
                     Text(task["request"]["output_contract"]["relative_inbox"].string ?? "").font(.system(size: 12, design: .monospaced)).textSelection(.enabled)
                     Button(model.t("creative.import_result")) { Task { await session.inspectInbox() } }.disabled(held || task["observation"]["state"].string == "closed")
                 }
-            }
-            TaskContinuationView(task: task, locale: model.locale, held: held,
-                read: { await session.read($0, input: $1) }, save: { await session.mutate("hetu.task_feedback.save", input: $0) })
-                .id(task["request"]["task_id"].string)
-            if task["observation"]["state"].string != "closed" {
-                Button(model.t("creative.close_task"), role: .destructive) { Task { await session.close(reason: model.t("creative.closed_by_author")) } }.disabled(held)
-                Text(model.t("creative.close_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
+                if task["observation"]["state"].string != "closed" {
+                    Divider()
+                    Button(model.t("creative.close_task"), role: .destructive) { Task { await session.close(reason: model.t("creative.closed_by_author")) } }.disabled(held)
+                    Text(model.t("creative.close_note")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
+                }
             }
         }
     }

@@ -7,8 +7,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE = ROOT / 'tools/hetu-skills'
-VERSION = '0.2.7'
-SKILLS = ['hetu-setup', 'hetu-book-create', 'hetu-book-profile', 'hetu-outline', 'hetu-cover', 'hetu-draft', 'hetu-revise', 'hetu-drama', 'hetu-resources', 'hetu-artwork', 'hetu-manage', 'hetu-import']
+VERSION = '0.3.0'
+SKILLS = ['hetu-setup', 'hetu-book-create', 'hetu-book-profile', 'hetu-outline', 'hetu-cover', 'hetu-draft', 'hetu-revise', 'hetu-drama', 'hetu-resources', 'hetu-artwork', 'hetu-manage', 'hetu-import', 'hetu-video']
 
 
 def encoded(value):
@@ -102,6 +102,7 @@ def render():
 | 起草、续写 | [章节写作](workflows/draft.md) |
 | 选区改稿、公开意见返工 | [诊断与改稿](workflows/revision.md) |
 | 原创或改编短剧 Fountain | [剧本创作](../skills/hetu-drama/SKILL.md)与[短剧及 Fountain 工作法](workflows/adaptation.md) |
+| 分镜、预演、视频音画、审片及工程交付 | [视频制作](../skills/hetu-video/SKILL.md)与[视频工作法](workflows/video.md) |
 | 封面候选 | [封面](workflows/cover.md) |
 | 文字资料整理 | [资料任务](../skills/hetu-resources/SKILL.md) |
 | 角色、场景、道具与插图 | [素材图任务](../skills/hetu-artwork/SKILL.md) |

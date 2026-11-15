@@ -46,6 +46,7 @@ fn eligible(path: &str) -> bool {
     ]
     .iter()
     .any(|root| path == *root || path.starts_with(&format!("{root}/")))
+        || path.starts_with(".hetu/work-activity/")
         || matches!(path, ".hetu/workspace.lock" | ".hetu/visibility.lock" | ".hetu/workspace-properties.json")
     {
         return false;

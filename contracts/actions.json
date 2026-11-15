@@ -61,6 +61,9 @@
           "revision": {
             "type": "integer",
             "minimum": 1
+          },
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
           }
         },
         "required": []
@@ -104,6 +107,10 @@
               "sha256": {
                 "type": "string",
                 "pattern": "^[0-9a-f]{64}$"
+              },
+              "blueprint_id": {
+                "type": "string",
+                "pattern": "^blueprint_[0-9a-f-]{36}$"
               }
             },
             "required": [
@@ -120,6 +127,9 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 128
+          },
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
           }
         },
         "required": [
@@ -150,6 +160,10 @@
               "sha256": {
                 "type": "string",
                 "pattern": "^[0-9a-f]{64}$"
+              },
+              "blueprint_id": {
+                "type": "string",
+                "pattern": "^blueprint_[0-9a-f-]{36}$"
               }
             },
             "required": [
@@ -166,6 +180,9 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 128
+          },
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
           }
         },
         "required": [
@@ -2813,6 +2830,18 @@
       "input_schema_ref": "schemas/model-service.schema.json#/$defs/prepare_input"
     },
     {
+      "name": "hetu.model_tasks.authorize_usage",
+      "purpose": "按当前Agent对话中的真实授权登记任务额度，额度内连续生成",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/model-service.schema.json#/$defs/authorization_input"
+    },
+    {
       "name": "hetu.model_tasks.approve",
       "purpose": "作者确认固定模型输入外发和本次费用上限",
       "contract_revision": "1",
@@ -3151,7 +3180,9 @@
               "reviews",
               "git",
               "delivery",
-              "import"
+              "import",
+              "video",
+              "related_works"
             ]
           },
           "object_ref": {
@@ -3250,6 +3281,37 @@
               "git_commit_id": {
                 "type": "string",
                 "pattern": "^[0-9a-f]{40}$"
+              },
+              "work_ref": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "workspace_id": {
+                    "type": "string",
+                    "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                  },
+                  "kind": {
+                    "enum": [
+                      "novel",
+                      "drama",
+                      "video"
+                    ]
+                  },
+                  "object_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  }
+                },
+                "required": [
+                  "workspace_id",
+                  "kind",
+                  "object_id"
+                ]
+              },
+              "video_episode_id": {
+                "type": "string",
+                "pattern": "^vepisode_[0-9a-f-]{36}$"
               }
             }
           }
@@ -3298,6 +3360,33 @@
             "type": [
               "integer",
               "null"
+            ]
+          },
+          "work_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "workspace_id": {
+                "type": "string",
+                "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "kind": {
+                "enum": [
+                  "novel",
+                  "drama",
+                  "video"
+                ]
+              },
+              "object_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              }
+            },
+            "required": [
+              "workspace_id",
+              "kind",
+              "object_id"
             ]
           }
         }
@@ -3556,6 +3645,33 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 4096
+          },
+          "work_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "workspace_id": {
+                "type": "string",
+                "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "kind": {
+                "enum": [
+                  "novel",
+                  "drama",
+                  "video"
+                ]
+              },
+              "object_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              }
+            },
+            "required": [
+              "workspace_id",
+              "kind",
+              "object_id"
+            ]
           }
         }
       }
@@ -4086,6 +4202,124 @@
           "commit_id"
         ]
       }
+    },
+    {
+      "name": "hetu.works.list",
+      "purpose": "列出当前获权工作区的创作对象",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/work.schema.json#/$defs/list_input"
+    },
+    {
+      "name": "hetu.works.get",
+      "purpose": "读取精确创作对象与固定资料修订",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/work.schema.json#/$defs/get_input"
+    },
+    {
+      "name": "hetu.work_links.create",
+      "purpose": "建立两个固定创作修订的来源关联",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/work.schema.json#/$defs/link_create_input"
+    },
+    {
+      "name": "hetu.work_links.list",
+      "purpose": "读取创作对象的双向固定关联",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/work.schema.json#/$defs/links_list_input"
+    },
+    {
+      "name": "hetu.video.projects.create",
+      "purpose": "建立独立视频项目",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/work.schema.json#/$defs/video_create_input"
+    },
+    {
+      "name": "hetu.video.projects.get",
+      "purpose": "读取视频项目与分集目录",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/work.schema.json#/$defs/video_get_input"
+    },
+    {
+      "name": "hetu.video.projects.update",
+      "purpose": "更新视频项目资料或归档",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/work.schema.json#/$defs/video_update_input"
+    },
+    {
+      "name": "hetu.video.episodes.create",
+      "purpose": "建立视频分集",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/work.schema.json#/$defs/video_episode_create_input"
+    },
+    {
+      "name": "hetu.video.episodes.get",
+      "purpose": "读取固定视频分集",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/work.schema.json#/$defs/video_episode_get_input"
+    },
+    {
+      "name": "hetu.creation_projects.create_video",
+      "purpose": "将筹备创建为独立视频项目，无小说或剧本前置",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "scopes": [
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/create_video_input"
+    },
+    {
+      "name": "hetu.blueprints.initialize",
+      "purpose": "为既有剧本或视频建立独立空设定；保留旧根设定及任务",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema_ref": "schemas/work.schema.json#/$defs/canon_initialize_input"
     }
   ]
 }

@@ -6,6 +6,10 @@ import tempfile
 import unittest
 import zipfile
 from unittest.mock import patch
+import argparse
+import contextlib
+import json
+import subprocess
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "tools/hetu-skills/base/skills/hetu-import/scripts/import_novel.py"
@@ -88,6 +92,48 @@ class NovelImportTests(unittest.TestCase):
                 z.writestr("content.opf", '<package xmlns="http://www.idpf.org/2007/opf"><manifest><item id="a" href="a.xhtml"/></manifest><spine><itemref idref="a"/></spine></package>')
                 z.writestr("a.xhtml", '<?xml version="1.0" encoding="gb18030"?><p>第1章 渡口原文</p>'.encode("gb18030"))
             self.assertIn("第1章 渡口原文", m.read_source(path)[1])
+
+    def test_execute_verifies_source_and_converted_revision_then_resumes_without_duplicates(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "novel.txt"
+            source.write_text("第1章 (渡口)\r\n*原文*\r\n第2章 接续\r\n原文\r\n", newline="")
+            folder = root / "record"
+            with contextlib.redirect_stdout(io.StringIO()):
+                m.plan(argparse.Namespace(source=source, output=folder, encoding=None, layout=None, chapter_pattern=None))
+            plan_path = folder / "plan.json"
+            manifest = json.loads(plan_path.read_text())
+            scope = {"kind": "workspace", "id": "workspace-test"}
+            reference = root / "management.json"
+            m.save(reference, {"scope_ref": scope})
+            m.save(folder / "journal.json", {"source_sha256": manifest["source_sha256"], "plan_sha256": m.sha(plan_path.read_bytes()), "scope_ref": scope, "next_index": 0, "imported": [], "volumes_ready": True, "pending": {"indices": [0, 1], "proposal_id": "fixed-proposal", "proposal_sha256": "fixed-sha", "execute_key": "original-key"}})
+            records = []
+            for index, unit in enumerate(manifest["units"]):
+                content = "第1章 \\(渡口\\)\r\n\\*原文\\*\r\n" if index == 0 else "第2章 接续\r\n原文\r\n"
+                digest = m.sha(content.encode())
+                records.append({"document": {"document_id": str(index)}, "revision": {"revision_id": "revision-" + str(index), "sha256": digest, "origin_kind": "import", "import_ref": {"source_sha256": unit["content_sha256"]}}, "content": content, "import_report": {"source_sha256": unit["content_sha256"], "document_ref": {"sha256": digest}}})
+            corrupt = True
+            execute_keys = []
+            def rpc(command, *, input, **kwargs):
+                args = json.loads(input)
+                if "hetu.agent_operations.execute" in command:
+                    execute_keys.append(args["operation_key"])
+                    data = {"result": {"documents": records}}
+                else:
+                    data = json.loads(json.dumps(records[int(args["document_id"])]))
+                    if corrupt and args["document_id"] == "1": data["revision"]["import_ref"]["source_sha256"] = "tampered"
+                return subprocess.CompletedProcess(command, 0, json.dumps({"status": "succeeded", "data": data}), "")
+            args = argparse.Namespace(command="execute", plan=plan_path, management_ref=reference, cli=root / "hetu", collaboration_dir=None, client="codex", locale="zh-CN")
+            with patch.object(m.subprocess, "run", side_effect=rpc), contextlib.redirect_stdout(io.StringIO()):
+                with self.assertRaises(ValueError): m.command(args)
+                self.assertEqual(json.loads((folder / "journal.json").read_text())["imported"], [])
+                corrupt = False
+                m.command(args)
+            journal = json.loads((folder / "journal.json").read_text())
+            self.assertEqual(execute_keys, ["original-key", "original-key"])
+            self.assertEqual([x["index"] for x in journal["imported"]], [0, 1])
+            self.assertEqual(journal["next_index"], 2)
+            self.assertNotIn("pending", journal)
 
 
 if __name__ == "__main__":

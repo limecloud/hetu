@@ -19,6 +19,8 @@ public final class WorkspaceModel {
     public private(set) var novel: JSONValue = .null
     public private(set) var cover: JSONValue = .null
     public private(set) var libraryEntries: [LibraryEntry] = []
+    public private(set) var currentWork: JSONValue = .null
+    public private(set) var availableWorks: [JSONValue] = []
     public private(set) var documents: [DocumentItem] = []
     public private(set) var drafts: [JSONValue] = []
     public private(set) var pendingStructureOperations: [PendingStructureOperation] = []
@@ -61,18 +63,26 @@ public final class WorkspaceModel {
         self.authorizationURL = authorizationURL
         self.library = library
     }
-    public var title: String { novel["novel"]["metadata"]["title"].string ?? info["workspace"]["title"].string ?? t("brand.name") }
+    public var title: String { currentWork["summary"]["title"].string ?? novel["novel"]["metadata"]["title"].string ?? info["workspace"]["title"].string ?? t("brand.name") }
     public var novelMetadata: JSONValue { novel["novel"]["metadata"] }
     public var volumes: [JSONValue] { novel["novel"]["volumes"].array }
     public var chapters: [JSONValue] { novel["novel"]["chapters"].array }
     public var orderedChapters: [DocumentItem] { chapters.compactMap { c in documents.first { $0.id == c["document_id"].string } } }
     public var workspaceID: String { info["workspace"]["workspace_id"].string ?? "" }
-    public var workType: String { info["workspace"]["work_type"].string ?? "novel" }
+    public var workReference: WorkReference? { try? WorkReference(currentWork["summary"]["work_ref"]) }
+    public var currentWorkID: String { workReference?.id ?? workspaceID }
+    public var workType: String { workReference?.kind ?? info["workspace"]["work_type"].string ?? "novel" }
     public var documentID: String { loaded["document"]["document_id"].string ?? "" }
     public var documentTitle: String { loaded["document"]["title"].string ?? "" }
     public var dirty: Bool { text != savedText }
     public var needsProtection: Bool { dirty || pendingSave != nil }
     public var locked: Bool { bible["blueprint"]["lock"]["locked"].bool ?? false }
+    public var bibleInitialized: Bool { bible["blueprint"]["blueprint_id"].string != nil }
+    private func bibleInput(_ input: [String: JSONValue] = [:]) -> [String: JSONValue] {
+        var fields = input
+        if let reference = workReference { fields["work_ref"] = reference.value }
+        return fields
+    }
     public func t(_ key: String, _ parameters: [String: String] = [:]) -> String { localizer.text(key, parameters) }
     public func report(_ error: any Error) {
         if case CoreError.business(let result) = error, result["error"]["code"].string == "hetu.workspace_busy" { writeLocked = true }
@@ -80,26 +90,37 @@ public final class WorkspaceModel {
     }
 
     // 调用方先完成未保存内容决策；只有成功打开新上下文后才替换当前项目。
-    @discardableResult public func open(_ url: URL, title: String? = nil, expectedWorkspaceID: String? = nil) async -> Bool {
+    @discardableResult public func open(_ url: URL, title: String? = nil, expectedWorkspaceID: String? = nil, workReference: WorkReference? = nil) async -> Bool {
         guard !busy else { return false }
         busy = true; defer { busy = false }
         do {
             let next = try await Workspace.open(at: url, mode: .author, title: title, locale: locale, operationKey: title == nil ? nil : UUID().uuidString, authorizationURL: authorizationURL)
             let info = try await next.data("hetu.workspaces.get")
             if let expectedWorkspaceID, info["workspace"]["workspace_id"].string != expectedWorkspaceID { throw LibraryStore.LibraryError.wrongWorkspace }
+            let works = try await WorkCatalog.list(in: next, includeArchived: true)
+            let selected: JSONValue?
+            if let workReference {
+                guard let exact = works.first(where: { $0["work_ref"] == workReference.value }) else { throw LibraryStore.LibraryError.changedWork }
+                selected = exact
+            } else {
+                selected = works.first { $0["work_ref"]["kind"] == info["workspace"]["work_type"] } ?? works.first
+            }
+            let current: JSONValue
+            if let selected { current = try await next.data("hetu.works.get", input: ["work_ref": selected["work_ref"]]) }
+            else { current = .null }
             let novel = try await next.data("hetu.novels.get")
-            let cover = await readCover(next)
-            let bible = try await next.data("hetu.blueprints.get")
+            let cover = novel["initialized"].bool == true ? await readCover(next) : .null
+            let bible = try await next.data("hetu.blueprints.get", input: selected.map { ["work_ref": $0["work_ref"]] } ?? [:])
             let documents = try await next.data("hetu.documents.list")
             let drafts = try await next.data("hetu.drafts.list")
             let pendingOperations = try await recovery.structureOperations(workspaceID: info["workspace"]["workspace_id"].string ?? "")
-            let metadata = novel["initialized"].bool == true ? novel["novel"]["metadata"] : .object(["title": info["workspace"]["title"]])
-            let entries = try await library.register(url: url, workspaceID: info["workspace"]["workspace_id"].string ?? "", metadata: metadata, chapterCount: novel["novel"]["chapters"].array.count, cover: cover, workType: info["workspace"]["work_type"].string ?? "novel", properties: info["properties"])
+            let entries = try await registerProjections(workspace: next, info: info, works: works, novel: novel, cover: cover, selected: selected?["work_ref"], opened: true)
             recoveryTask?.cancel(); statisticsTask?.cancel()
             self.workspace = next; self.info = info; self.bible = bible; self.novel = novel; self.libraryEntries = entries
+            self.currentWork = current; self.availableWorks = works
             artworkLibrary.reset()
             writeLocked = info["access"]["write_available"].bool == false
-            self.cover = cover
+            self.cover = workType == "novel" ? cover : .null
             self.documents = documents["documents"].array.map(DocumentItem.init)
             self.drafts = drafts["drafts"].array
             pendingStructureOperations = pendingOperations
@@ -114,9 +135,9 @@ public final class WorkspaceModel {
         do {
             info = try await workspace.data("hetu.workspaces.get")
             writeLocked = info["access"]["write_available"].bool == false
-            bible = try await workspace.data("hetu.blueprints.get")
+            bible = try await workspace.data("hetu.blueprints.get", input: bibleInput())
             novel = try await workspace.data("hetu.novels.get")
-            cover = await readCover(workspace)
+            cover = novel["initialized"].bool == true ? await readCover(workspace) : .null
             documents = try await workspace.data("hetu.documents.list")["documents"].array.map(DocumentItem.init)
             drafts = try await workspace.data("hetu.drafts.list")["drafts"].array
             try await updateLibraryProjection()
@@ -303,20 +324,20 @@ public final class WorkspaceModel {
         guard !busy, !writeLocked, let workspace else { return false }
         busy = true; defer { busy = false }
         do {
-            bible = try await workspace.data("hetu.blueprints.save", input: ["expected": expectedBible, "typed_changes": .array(changes), "operation_key": .string(UUID().uuidString)])
+            bible = try await workspace.data("hetu.blueprints.save", input: bibleInput(["expected": expectedBible, "typed_changes": .array(changes), "operation_key": .string(UUID().uuidString)]))
             return true
         } catch { reportBible(error, onFailure: onFailure); return false }
     }
     public func previewBibleChanges(_ changes: [JSONValue]) async -> JSONValue? {
         guard !busy, let workspace else { return nil }
         busy = true; defer { busy = false }
-        do { return try await workspace.data("hetu.blueprints.preview_change", input: ["expected": expectedBible, "typed_changes": .array(changes)]) }
+        do { return try await workspace.data("hetu.blueprints.preview_change", input: bibleInput(["expected": expectedBible, "typed_changes": .array(changes)])) }
         catch { reportBible(error); return nil }
     }
     public func readBibleRevision(_ revision: Int64, onFailure: ((String) -> Void)? = nil) async -> JSONValue? {
         guard !busy, let workspace else { return nil }
         busy = true; defer { busy = false }
-        do { return try await workspace.data("hetu.blueprints.get", input: ["revision": .integer(revision)]) }
+        do { return try await workspace.data("hetu.blueprints.get", input: bibleInput(["revision": .integer(revision)])) }
         catch { reportBible(error, onFailure: onFailure); return nil }
     }
     private func reportBible(_ error: any Error, onFailure: ((String) -> Void)? = nil) {
@@ -325,12 +346,12 @@ public final class WorkspaceModel {
         else { text = localizer.error(error) }
         if let onFailure { onFailure(text) } else { message = text }
     }
-    private var expectedBible: JSONValue { .object(["revision": bible["revision"], "sha256": bible["sha256"]]) }
+    private var expectedBible: JSONValue { .object(["blueprint_id": bible["blueprint"]["blueprint_id"], "revision": bible["revision"], "sha256": bible["sha256"]]) }
     @discardableResult public func setLocked(_ value: Bool, reason: String, onFailure: ((String) -> Void)? = nil) async -> Bool {
         guard !busy, !writeLocked, let workspace else { return false }
         busy = true; defer { busy = false }
         do {
-            bible = try await workspace.data(value ? "hetu.blueprints.lock" : "hetu.blueprints.unlock", input: ["expected": expectedBible, "reason": .string(reason), "operation_key": .string(UUID().uuidString)])
+            bible = try await workspace.data(value ? "hetu.blueprints.lock" : "hetu.blueprints.unlock", input: bibleInput(["expected": expectedBible, "reason": .string(reason), "operation_key": .string(UUID().uuidString)]))
             return true
         } catch { reportBible(error, onFailure: onFailure); return false }
     }
@@ -353,7 +374,7 @@ public final class WorkspaceModel {
         busy = true; defer { busy = false }
         do {
             let document = try await workspace.data("hetu.documents.get", input: ["document_id": .string(documentID)])
-            let bp = try await workspace.data("hetu.blueprints.get")
+            let bp = try await workspace.data("hetu.blueprints.get", input: bibleInput())
             bible = bp
             return try await workspace.data("hetu.plot.extract", input: [
                 "document_revisions": .array([.object(["document_id": .string(documentID), "revision_id": document["revision"]["revision_id"], "sha256": document["revision"]["sha256"]])]),
@@ -479,7 +500,7 @@ public final class WorkspaceModel {
         } catch { report(error) }
     }
     @discardableResult public func openLibraryEntry(_ entry: LibraryEntry) async -> Bool {
-        do { return await open(try await library.resolve(entry), expectedWorkspaceID: entry.workspaceID) }
+        do { return await open(try await library.resolve(entry), expectedWorkspaceID: entry.workspaceID, workReference: entry.workReference) }
         catch { report(error); return false }
     }
     public func trashLibraryEntry(_ entry: LibraryEntry, confirmingTitle: String) async throws {
@@ -489,19 +510,89 @@ public final class WorkspaceModel {
         let recent = recentURLs.filter { $0.standardizedFileURL.path != entry.path }.map(\.path)
         preferences.set(recent, forKey: "Hetu.recent")
     }
+    public func removeLibraryEntry(_ entry: LibraryEntry) async {
+        guard !busy, workspace == nil else { return }
+        do { libraryEntries = try await library.removeRegistration(entry) }
+        catch { report(error) }
+    }
+    public func libraryDeletionScope(_ entry: LibraryEntry) async throws -> [JSONValue] {
+        let url = try await library.resolve(entry)
+        let target = try await Workspace.open(at: url, mode: .author)
+        let identity = try await target.data("hetu.workspaces.get")
+        guard identity["workspace"]["workspace_id"].string == entry.workspaceID else { throw LibraryStore.LibraryError.wrongWorkspace }
+        return try await WorkCatalog.list(in: target, includeArchived: true)
+    }
+    /// 共用目录只归档所选项目，正文、关系和其他项目均保留。
+    public func archiveLibraryEntry(_ entry: LibraryEntry, confirmingTitle: String) async throws {
+        guard !busy, workspace == nil else { throw LibraryStore.LibraryError.busy }
+        guard !entry.title.isEmpty, confirmingTitle == entry.title else { throw LibraryStore.LibraryError.confirmationMismatch }
+        busy = true; defer { busy = false }
+        let url = try await library.resolve(entry)
+        let target = try await Workspace.open(at: url, mode: .author)
+        let works = try await WorkCatalog.list(in: target, includeArchived: true)
+        let matches = works.filter { summary in
+            if let reference = entry.workReference { return summary["work_ref"] == reference.value }
+            return summary["work_ref"]["kind"].string == entry.contentType
+        }
+        guard matches.count == 1, let summary = matches.first, summary["title"].string == entry.title,
+              summary["work_ref"]["workspace_id"].string == entry.workspaceID else { throw LibraryStore.LibraryError.changedWork }
+        let reference = try WorkReference(summary["work_ref"])
+        let read = try await target.data("hetu.works.get", input: ["work_ref": reference.value])
+        guard read["summary"]["fixed_ref"] == summary["fixed_ref"] else { throw LibraryStore.LibraryError.changedWork }
+        let record = read["record"]
+        let expected: JSONValue = .object(["revision": record["revision"], "sha256": summary["fixed_ref"]["sha256"]])
+        var metadata: JSONValue = .object(["title": summary["title"], "status": .string("archived")])
+        if reference.kind == "novel" {
+            var profile = record["metadata"].object; profile["status"] = .string("archived"); metadata = .object(profile)
+            _ = try await target.data("hetu.novels.update", input: ["expected": expected, "metadata": metadata, "operation_key": .string(UUID().uuidString)])
+        } else {
+            let idKey = reference.kind == "drama" ? "project_id" : "video_project_id"
+            var fixed = expected.object; fixed[idKey] = .string(reference.objectID)
+            var input: [String: JSONValue] = ["project_ref": .object(fixed), "title": record["title"], "archived": .bool(true), "operation_key": .string(UUID().uuidString)]
+            input[reference.kind == "drama" ? "description" : "brief"] = record[reference.kind == "drama" ? "description" : "brief"]
+            _ = try await target.data(reference.kind == "drama" ? "hetu.drama.projects.update" : "hetu.video.projects.update", input: input)
+        }
+        let updated = try await target.data("hetu.works.get", input: ["work_ref": reference.value])
+        libraryEntries = try await library.register(url: target.url, workspaceID: entry.workspaceID, metadata: metadata,
+            chapterCount: entry.chapterCount, opened: false, workType: reference.kind, properties: updated["summary"], workReference: reference)
+    }
     // 调用方先完成关闭/切换作品共用的未保存内容保护。
     public func returnToLibrary() async {
         guard !busy else { return }
         recoveryTask?.cancel(); statisticsTask?.cancel(); generation = UUID(); resetDocument()
         workspace = nil; info = .null; bible = .null; novel = .null; cover = .null
+        currentWork = .null; availableWorks = []
         documents = []; drafts = []; pendingStructureOperations = []
         await loadLibrary()
     }
     private func updateLibraryProjection() async throws {
         guard let workspace else { return }
         info = try await workspace.data("hetu.workspaces.get")
-        let metadata = novel["initialized"].bool == true ? novelMetadata : .object(["title": info["workspace"]["title"]])
-        libraryEntries = try await library.register(url: workspace.url, workspaceID: workspaceID, metadata: metadata, chapterCount: chapters.count, opened: false, cover: cover, workType: workType, properties: info["properties"])
+        let works = try await WorkCatalog.list(in: workspace, includeArchived: true)
+        let reference = workReference?.value
+        if let reference { currentWork = try await workspace.data("hetu.works.get", input: ["work_ref": reference]) }
+        availableWorks = works
+        libraryEntries = try await registerProjections(workspace: workspace, info: info, works: works, novel: novel, cover: cover, selected: reference, opened: false)
+    }
+    private func registerProjections(workspace: Workspace, info: JSONValue, works: [JSONValue], novel: JSONValue, cover: JSONValue, selected: JSONValue?, opened: Bool) async throws -> [LibraryEntry] {
+        var entries = try await library.entries()
+        for summary in works {
+            let reference = try WorkReference(summary["work_ref"])
+            let isNovel = reference.kind == "novel"
+            let metadata: JSONValue = isNovel ? novel["novel"]["metadata"] : .object(["title": summary["title"], "status": .string(summary["archived"].bool == true ? "archived" : "planning")])
+            entries = try await library.register(url: workspace.url, workspaceID: reference.workspaceID, metadata: metadata,
+                chapterCount: isNovel ? novel["novel"]["chapters"].array.count : 0, opened: opened && selected == reference.value,
+                cover: isNovel ? cover : .null, workType: reference.kind, properties: summary, workReference: reference)
+        }
+        // 空的旧工作区保持可打开；不为了登记而创建空小说或剧本。
+        if works.isEmpty {
+            entries = try await library.register(url: workspace.url, workspaceID: info["workspace"]["workspace_id"].string ?? "",
+                metadata: .object(["title": info["workspace"]["title"]]), chapterCount: 0, opened: opened,
+                workType: info["workspace"]["work_type"].string ?? "novel", properties: info["properties"])
+        } else {
+            entries = try await library.finishObjectAdmission(workspaceID: info["workspace"]["workspace_id"].string ?? "")
+        }
+        return entries
     }
     private func readCover(_ workspace: Workspace) async -> JSONValue {
         do { return try await workspace.data("hetu.covers.get") }

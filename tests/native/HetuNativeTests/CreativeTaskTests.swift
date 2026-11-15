@@ -69,6 +69,19 @@ enum CreativeTaskTests {
         await session.loadTask(ref)
         let opinions = await session.read("hetu.task_feedback.list", input: ["task_ref": ref])
         try creativeCheck(opinions?["feedback"].array.first?["reported_result_refs"].array.count == 2 && model.text.hasSuffix("先不保存。"), "返工记录缺失或作者缓冲被覆盖")
+        async let planRead = session.read("hetu.model_tasks.list", input: ["task_ref": ref])
+        async let feedbackRead = session.read("hetu.task_feedback.list", input: ["task_ref": ref])
+        async let contextRead = session.read("hetu.task_context.list", input: ["task_ref": ref])
+        let concurrent = await (planRead, feedbackRead, contextRead)
+        try creativeCheck(concurrent.0 != nil && concurrent.1?["feedback"].array.count == 1 && concurrent.2 != nil,
+            "协作面板并发只读被全局忙碌状态丢弃")
+        try creativeCheck(!model.busy && model.text.hasSuffix("先不保存。") && model.needsProtection,
+            "并发回读改变作者缓冲或遗留忙碌状态")
+        let forbiddenWrite = await session.read("hetu.creative_tasks.close", input: ["task_ref": ref,
+            "expected": session.task["expected"], "reason": .string("不能从只读入口执行"), "operation_key": .string("read-must-not-write")])
+        try creativeCheck(forbiddenWrite == nil && session.pending == nil, "只读面板可绕过事务恢复执行写入")
+        await session.loadTask(ref)
+        try creativeCheck(session.task["observation"]["state"].string != "closed", "只读入口意外关闭任务")
         let prompt = try TaskContinuation.prompt(task: session.task, feedbackRef: feedback!["feedback_ref"], locale: "zh-CN")
         try creativeCheck(prompt.contains("hetu_list_task_feedback") && !prompt.contains(original), "继续提示词缺少恢复入口或携带作者正文")
         let english = try TaskContinuation.prompt(task: session.task, feedbackRef: feedback!["feedback_ref"], locale: "en")

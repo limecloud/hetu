@@ -14,6 +14,9 @@
       },
       "maxItems": 200,
       "minItems": 1
+    },
+    "work_ref": {
+      "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
     }
   },
   "required": [

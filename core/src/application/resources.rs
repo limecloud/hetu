@@ -38,7 +38,7 @@ impl Kernel {
         }
         for reference in input["entity_refs"].as_array().unwrap() {
             let (bp, sha) =
-                self.blueprint_revision(Some(integer(reference, "blueprint_revision")?))?;
+                self.blueprint_for_snapshot(integer(reference, "blueprint_revision")?, text(reference, "blueprint_sha256")?)?;
             ensure(
                 reference["blueprint_sha256"] == sha,
                 "hetu.stale_evidence",

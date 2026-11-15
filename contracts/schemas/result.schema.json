@@ -7,7 +7,7 @@
   "properties": {
     "spec_version": {"const":"0.2.1"},
     "kind": {"const":"result"},
-    "action": {"type":"string","pattern":"^hetu\\.[a-z_]+\\.[a-z_]+$"},
+    "action": {"type":"string","pattern":"^hetu\\.[a-z_]+(?:\\.[a-z_]+)+$"},
     "contract_revision": {"const":"1"},
     "status": {"enum":["succeeded","partial","pending","blocked","failed","unknown"]},
     "context": {"type":"object","additionalProperties":false,"properties":{"scope_id":{"type":"string","pattern":"^(collaboration|(workspace|project)_[0-9a-f-]{36})$"}},"required":["scope_id"]},

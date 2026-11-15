@@ -12,7 +12,8 @@
     "hetu-resources",
     "hetu-artwork",
     "hetu-manage",
-    "hetu-import"
+    "hetu-import",
+    "hetu-video"
   ],
   "suites": [
     {
@@ -43,6 +44,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -54,6 +56,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -92,6 +95,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -103,6 +107,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -137,6 +142,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -148,6 +154,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -189,6 +196,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -200,6 +208,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -238,6 +247,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -249,6 +259,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -284,6 +295,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -295,6 +307,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -329,6 +342,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -340,6 +354,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -378,6 +393,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -389,6 +405,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -426,6 +443,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -437,6 +455,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -476,6 +495,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -487,6 +507,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -525,6 +546,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -536,6 +558,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -574,6 +597,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -585,6 +609,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -618,6 +643,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -629,6 +655,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -662,6 +689,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -673,6 +701,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -708,6 +737,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -719,6 +749,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -754,6 +785,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -765,6 +797,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -805,6 +838,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -816,6 +850,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -857,6 +892,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -868,6 +904,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -914,6 +951,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -925,6 +963,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -967,6 +1006,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -978,6 +1018,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -1011,6 +1052,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -1022,6 +1064,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -1061,6 +1104,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -1072,6 +1116,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -1111,6 +1156,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -1122,6 +1168,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -1156,6 +1203,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -1167,6 +1215,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -1206,6 +1255,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -1217,6 +1267,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -1250,6 +1301,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -1261,6 +1313,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -1295,6 +1348,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -1306,6 +1360,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -1342,6 +1397,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -1353,6 +1409,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -1412,6 +1469,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -1423,6 +1481,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -1460,6 +1519,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -1471,6 +1531,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -1508,6 +1569,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -1519,6 +1581,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -1559,6 +1622,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -1570,6 +1634,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -1608,6 +1673,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -1619,6 +1685,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -1655,6 +1722,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -1666,6 +1734,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -1700,6 +1769,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -1711,6 +1781,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -1748,6 +1819,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -1759,6 +1831,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -1797,6 +1870,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -1808,6 +1882,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -1846,6 +1921,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -1857,6 +1933,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -1897,6 +1974,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -1908,6 +1986,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -1943,6 +2022,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -1954,6 +2034,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -1987,6 +2068,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -1998,6 +2080,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -2032,6 +2115,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -2043,6 +2127,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -2078,6 +2163,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -2089,6 +2175,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -2127,6 +2214,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -2138,6 +2226,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]
@@ -2170,6 +2259,7 @@
         "references/genre.md",
         "references/method-manifest.json",
         "references/model-service.md",
+        "references/models/seedance-2-5.md",
         "references/sources.json",
         "references/task-contract.md",
         "references/workflows/adaptation.md",
@@ -2181,6 +2271,7 @@
         "references/workflows/outline.md",
         "references/workflows/profile.md",
         "references/workflows/revision.md",
+        "references/workflows/video.md",
         "references/writing-methods.md",
         "THIRD_PARTY_NOTICES.md"
       ]

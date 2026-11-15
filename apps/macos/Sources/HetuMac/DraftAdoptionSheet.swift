@@ -22,7 +22,7 @@ struct DraftAdoptionSheet: View {
     @State private var pending: DramaOperation?
     init(model: WorkspaceModel, context: JSONValue, onAdopted: @escaping (String, String?) -> Void) {
         self.model = model; self.context = context; self.onAdopted = onAdopted
-        _targetID = State(initialValue: context["draft"]["target_document_id"].string ?? "")
+        _targetID = State(initialValue: context["draft"]["target_document_id"].string ?? context["suggested_target_ref"]["document_id"].string ?? "")
         _title = State(initialValue: context["draft"]["title"].string ?? "")
     }
     private var draft: JSONValue { context["draft"] }

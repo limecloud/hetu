@@ -26,7 +26,7 @@
 | `title` | string，必需 | 工作区创建时的名称；小说当前书名由 Novel.metadata.title 维护 |
 | `locale` | string，必需 | 作品默认语言，默认 zh-CN，可为 en；与应用界面偏好独立 |
 | `blueprint_path` | RelativePath，必需 | V1固定 shared/blueprint.json |
-| `work_type` | enum，新作品必需 | novel／drama；决定首要创作入口，不改变目录权限 |
+| `work_type` | 已发布工作区入口类型 | 旧合同novel／drama按原版本读取；三类独立入口使用24节WorkRef，不用此单值表示根内全部对象 |
 | `novel_path` | RelativePath，可选 | 小说作品固定 packages/novel/novel.json；原创短剧不创建空小说记录；旧作品由作者显式初始化 |
 | `packages` | enum[]，必需 | novel、drama、music-cue、visual-prompt，唯一 |
 
@@ -191,12 +191,22 @@ Audit 保存操作与目标引用、前后摘要、允许参数、时间、结�
 erDiagram
     LIBRARY ||--o{ LIBRARY_ENTRY : registers
     LIBRARY_ENTRY }o..|| WORKSPACE : locates
+    LIBRARY_ENTRY }o..|| WORK_REF : identifies
+    WORK_REF ||--o{ WORK_LINK : source
+    WORK_REF ||--o{ WORK_LINK : target
+    WORKSPACE ||--o{ VIDEO_PROJECT : contains
+    VIDEO_PROJECT ||--o{ VIDEO_EPISODE : orders
+    VIDEO_EPISODE ||--o{ STORYBOARD : develops
+    VIDEO_EPISODE ||--o{ EDIT_REVISION : retains
     WORKSPACE ||--o| NOVEL : describes
     NOVEL ||--o{ VOLUME : groups
     NOVEL ||--o{ CHAPTER : orders
     VOLUME |o--o{ CHAPTER : optionally_groups
     CHAPTER |o--|| DOCUMENT : links
-    WORKSPACE ||--|| BLUEPRINT : owns
+    WORKSPACE ||--o{ BLUEPRINT : contains
+    BLUEPRINT ||--|{ BLUEPRINT_REVISION : retains
+    WORK_REF ||--o{ CANON_BINDING : declares
+    BLUEPRINT_REVISION ||--o{ CANON_BINDING : fixes
     WORKSPACE ||--o{ DOCUMENT : contains
     WORKSPACE ||--o{ DRAMA_PROJECT : organizes
     DRAMA_PROJECT ||--o{ DRAMA_EPISODE : orders
@@ -205,12 +215,12 @@ erDiagram
     SKELETON ||--|{ SKELETON_EPISODE : contains
     SKELETON_EPISODE ||--|{ SKELETON_SCENE : contains
     WORKSPACE ||--o{ ASSET : owns
-    WORKSPACE ||--o| BOOK_COVER : selects
+    NOVEL ||--o| BOOK_COVER : selects
     ASSET ||--o{ BOOK_COVER : supplies
     CUE }o--o{ ASSET : references
 ```
 
-书库登记与作品内容是两种持久范围，关联只提供目录定位，不授予内容权限。未初始化小说资料的既有工作区可暂缺 Novel；已初始化的小说目录覆盖本作品全部小说章节。未分卷章节的 `volume_id=null`，正文保存在 Document／Revision，Chapter 和 Volume 不再保存一份文本。
+创作库登记与作品内容是两种持久范围，一条登记准确定位一个WorkRef，多个登记可以指向同一根。WorkLink的两端具有固定版本，图中的引用不授予读取或修改权限。CanonBinding 明确对象使用的设定及固定修订，不因同根而共享正典；原著事实与目标的改编例外分别拥有，见第24节。既有单设定工作区保持原文件和身份，不从图中的目标基数推定已发布多设定存储。未初始化小说资料的既有工作区可暂缺 Novel；已初始化的小说目录覆盖本作品全部小说章节。未分卷章节的 `volume_id=null`，正文保存在 Document／Revision，Chapter 和 Volume 不再保存一份文本。
 
 DramaProject 组织写作分集，骨架是可选规划；独立剧本可由作者显式编入分集。写作分集与骨架规划分别拥有身份，通过固定修订映射关联，不以集号、场号或名称识别。BookCover 关系指当前选用投影，历史选用和候选仍单独保留。对外部作品的原著引用必须按显式导入及映射规则处理，不能从关系图推导跨工作区读取权限。
 
@@ -367,8 +377,8 @@ BrowserSession 在本机授权存储或内存保存 `session_id, task_ref, scope
 | ScriptSemanticIndex | `document_ref, parser_version, elements, scenes, diagnostics` | document_ref 固定正文修订和摘要；每元素为 type、UTF-8 半开范围；缓存可重建 |
 | ScriptScene | `scene_id, episode_id, document_ref, source_range, marker, mapping_refs` | scene_id 与兼容源文标记一致；缺标记的候选不按序号取得旧身份 |
 | PlanMapping | `mapping_id, revision, skeleton_ref, episode_ref, scene_mappings, previous_sha256` | 同时固定规划与写作来源；失效映射保留历史，不自动迁移旧字节范围 |
-| Storyboard | `storyboard_id, revision, scene_ref, shots, previous_sha256` | 镜头有稳定 shot_id；引用剧本及固定资产，不保存第二份可编辑对白 |
-| GenerationSegment | `segment_id, revision, shot_refs, model_profile_ref, input_refs, prompt, output_refs, previous_sha256` | 片段与镜头多对多；输出为外部候选，不自动进入选用或定稿 |
+| Storyboard | `storyboard_id, revision, scene_ref, shots, previous_sha256` | 既有记录保留；新制作分镜由Video持有，固定剧本／简述与资产，不保存第二份可编辑对白，见24节 |
+| GenerationSegment | `segment_id, revision, shot_refs, model_profile_ref, input_refs, prompt, output_refs, previous_sha256` | 既有记录保留；新制作计划及实际结果归Video，片段与镜头多对多，不自动选用或确认成片，见24节 |
 
 跨项目编入剧本必须显式复制独立分集及来源映射，不让一个文档同时由两个项目拥有。既有独立剧本通过作者编入动作取得分集身份，保留原文及历史。重排和归档检查目录 CAS，操作回执与项目、分集、文档更新共同提交。关联字段 `drama_project_id` 如作投影只能由所属分集推导，不作为第二个可写事实。
 
@@ -396,7 +406,7 @@ Agent 的可修改范围由服务器发出的任务授权决定：明确对象�
 
 ## 21. 创作场景与原著材料
 
-作品类型 `work_type=novel|drama` 只决定创作内容与入口，既有缺省作品由既有小说资料识别，不从题名猜类型。项目 `mode=original|adaptation` 表达故事来源方式；稿件贡献来源与著作权声明继续独立。导入意图为 `novel_manuscript|drama_script|adaptation_source|reference`，不持久化成新的作品类型。
+已发布工作区的`work_type=novel|drama`按原合同解释；新设计的对象类型`WorkRef.kind=novel|drama|video`决定独立创作入口，同根可登记多个对象。既有缺省作品由实际小说资料和项目记录识别，不从题名猜类型，不修改旧配置和历史摘要。项目 `mode=original|adaptation` 表达故事来源方式；稿件贡献来源与著作权声明继续独立。导入意图为 `novel_manuscript|drama_script|adaptation_source|reference`，不持久化成新的作品类型。
 
 | 对象 | 字段与含义 | 不变量 |
 | --- | --- | --- |
@@ -459,3 +469,34 @@ TaskGrant、CheckoutRecord 和 ContinuationReceipt 留在本机私有存储或�
 提案所需的大文本、图片和来源以确切引用表示，避免复制整本书；机器读取这些引用仍受原授权和预算限制。OperationProposal 的创建、作者决定和执行分别有原键及摘要，执行只推进对应领域事实；重放不重复执行，未知状态先查询原操作。
 
 公开投影只含作者允许公开的提案内容、决定状态与领域结果。凭据、批准材料和执行能力留在本机私有存储；审计分别记录发起者、确认者和执行者。页面更新只采用已提交结果，未保存编辑缓冲有独立本机身份，不被自动覆盖或误作固定原文。
+
+## 24. 独立创作对象与视频数据
+
+本节定义目标语义，不宣称这些字段已经进入现有Schema。实现须发布各自机器合同、版本及兼容策略；不将新字段写入旧记录后重算摘要。已有Novel、DramaProject、Document、CreativeTask及路径保持，新增登记投影复用原身份，授权另行核验。
+
+| 对象 | 必需语义字段 | 不变量 |
+| --- | --- | --- |
+| WorkRef | `workspace_id,kind,object_id` | kind为novel／drama／video；指向明确类型，名称和目录不作身份；不构成授权 |
+| CanonBinding | `work_ref,blueprint_ref,source_ref?,role` | 明确对象自身设定或固定参考；同根不推定共享，改编例外由目标拥有；旧单设定工作区保留原文件及ID |
+| WorkRevisionRef | `work_ref,revision_ref,sha256` | 固定所属对象的资料／计划修订；正文和媒体另用各自精确引用，不能只用“最新” |
+| LibraryEntry扩展 | `work_ref,location_ref,metadata_projection,last_opened_at` | 本机投影，旧workspace登记解析原对象并去重；不复制正文或权限 |
+| WorkActivity | `work_ref,updated_at` | 从实际事务更新对象的活动时间；不使用打开时间或文件系统时间，排除Git内容快照；正文或分集更新不改变同根其他对象及历史修订时间 |
+| WorkLink | `link_id,revision,source_ref,target_ref,relation,source_snapshot_ref?,previous_sha256` | relation区分改编原著／制作依据／参考／续作；来源固定修订和摘要；反向关联由同一关系派生 |
+| SourceSnapshot | `snapshot_id,origin_ref,files,rights_ref,sha256` | 跨根保存获权必要内容，可离线读；不是可写同步副本，不包含本机秘密或任意绝对路径 |
+| VideoProject | `video_project_id,workspace_id,revision,title,brief_ref,source_links,episode_refs,language_tag,previous_sha256` | 独立项目；source_links可空，直接从简述／分镜／素材开始；不要求空小说或剧本 |
+| VideoEpisode | `video_episode_id,video_project_id,revision,title,source_refs,storyboard_refs,previs_refs,edit_refs` | 顺序由项目唯一持有；剧本集和视频集分别拥有身份，映射显式且可非一对一 |
+| Shot／Storyboard | `shot_id,storyboard_id,revision,source_refs,action_ref,asset_usages,timing_intent` | 镜头按叙事组织；时间为估计或实际分别标记，不以模型请求限制决定戏剧结构 |
+| Previsualization | `previs_id,revision,kind,input_snapshot,artifact_refs,project_files,tool_version` | kind为animatic／whitebox；实际可播视频及可接续工程，明确临时声音和代理；不当作真实生成 |
+| GenerationSegment | `segment_id,revision,video_episode_ref,shot_refs,input_snapshot,model_profile_ref,mode,prompt_ref,reference_roles,output_spec,budget_ref` | 固定输入、素材顺序与职责、画幅／时长／声音；与镜头多对多；不保存凭据 |
+| GenerationInvocation | `invocation_id,plan_ref,operation_ref,provider_task_ref,state,result_refs,cost_receipt_ref?` | pending_decision／submitting／running／succeeded／failed／cancelled／unknown；状态由实际回执驱动，未知先查询原调用 |
+| MediaArtifact | `artifact_id,sha256,size_bytes,media_type,relative_path,streams,provenance,rights_ref` | 实际不可变文件，流信息含真实时长／时基／画幅／音轨；技术检查与内容观看结果分开 |
+| EditRevision | `edit_id,edit_revision_id,parent_ref,video_episode_ref,source_ranges,tracks,project_files,render_refs,time_mappings,sha256` | 固定剪辑工程、视频／声音／字幕依赖与实际渲染；旧版不可变，不成为桌面多轨制作台 |
+| MediaTimeRange | `artifact_ref,stream_id,time_base,start,end` | 时间基准为有理数，半开区间；校验真实流与范围，不以浮点秒或假设帧率代替 |
+| EditTimeMapping | `source_range,output_range,transform_ref` | 固定片段到具体成片版本；明确裁切、变速及重复使用，不承诺任意特效可逆定位 |
+| MediaDecision | `decision_id,target_ref,purpose,decision,actor_ref,previous_ref,created_at` | purpose区分预演认可、媒体用途选用、成片确认；明确确认／撤回，不更新文稿定稿 |
+| FeedbackAnchor | `target_ref,kind,range_or_region?,related_refs` | 文字为UTF-8范围；图片区域按原图像素坐标；媒体为实际流时间范围；整体意见可无局部范围 |
+| InspectionCoverage | `inspection_id,target_refs,method,checked_ranges,excluded_ranges,findings,observer_ref` | 记录实际全文／全片／区间／抽帧覆盖；解码通过不等于内容看过，未检查处不得标无问题 |
+
+AssetDesign与AssetSelection继续拥有资料设计和用途选用，MediaArtifact只拥有原字节与流信息，不创建第二个当前人物图或封面头。MediaDecision用于制作成果；同一用途不同时由两套选用头维护。TaskFeedback沿用原身份，只按新版本扩展媒体锚点，不复制一套视频意见库。
+
+同根多个对象共享工作区锁与事务机制，但必须核验具体目标和对象访问范围。跨根关系及快照按原操作可恢复，不宣称跨文件系统原子。删除或迁移列出所拥有内容、其他引用、在途及unknown调用；单项目删除不删除共享媒体或同根其他对象。历史定稿、成片确认和Bundle始终指向原输入，不因上游更新改写。

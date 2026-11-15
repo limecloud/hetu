@@ -38,6 +38,9 @@ impl StableServer {
                     .ok_or("invalid task schema")?
                     .clone(),
             );
+            if tool.name == model_confirmation::TOOL {
+                tool.input_schema = Arc::new(model_confirmation::input_schema(&tool.input_schema));
+            }
             let mut output: Value = serde_json::from_str(include_str!(
                 "../../../contracts/schemas/result.schema.json"
             ))?;
@@ -46,7 +49,7 @@ impl StableServer {
             tool.output_schema = Some(Arc::new(output.as_object().unwrap().clone()));
             tool.annotations = Some(ToolAnnotations::from_raw(
                 None,
-                Some(action["effect"] == "read"),
+                Some(action["effect"] == "read" && tool.name != model_confirmation::TOOL),
                 Some(false),
                 Some(true),
                 Some(open_world(&mapping.action)),
@@ -79,6 +82,7 @@ impl ServerHandler for StableServer {
         Ok(ListToolsResult::with_all_items(
             self.tools
                 .iter()
+                .filter(|(tool, _)| tool.name != model_confirmation::TOOL || model_confirmation::available(&context))
                 .map(|(tool, _)| {
                     if ui::supported(&context) {
                         ui::tool(tool.clone())
@@ -111,6 +115,9 @@ impl ServerHandler for StableServer {
                 None,
             )
         })?;
+        if request.name == model_confirmation::TOOL {
+            return model_confirmation::request(self.hub.clone(), request.arguments.unwrap_or_default(), context, permit).await;
+        }
         let hub = self.hub.clone();
         let input = json!({"action":action,"contract_revision":"1","input":request.arguments.unwrap_or_default()});
         let cancellation = context.ct.clone();

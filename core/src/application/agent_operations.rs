@@ -3,12 +3,15 @@ use super::*;
 use base64::{Engine, engine::general_purpose::STANDARD};
 
 pub(super) const PROPOSABLE: &[&str] = &[
+    "hetu.work_links.create",
+    "hetu.video.projects.create", "hetu.video.projects.update", "hetu.video.episodes.create",
     "hetu.novels.initialize",
     "hetu.novels.update",
     "hetu.novels.save_structure",
     "hetu.documents.create",
     "hetu.outlines.save",
     "hetu.blueprints.save",
+    "hetu.blueprints.initialize",
     "hetu.drama.projects.create",
     "hetu.drama.projects.update",
     "hetu.drama.projects.attach",
@@ -73,6 +76,7 @@ impl Kernel {
             "方案中的动作不属于可执行管理范围。",
         )?;
         let fixed = &proposal["fixed"];
+        self.check_work_access(text(fixed, "action")?, &fixed["input"])?;
         ensure(fixed["effect"] == "deferred" || fixed["writes"].as_object().is_some_and(|items| !items.is_empty()), "hetu.integrity_failure", "方案缺少固定变更。")?;
         if fixed["action"] == "hetu.creative_tasks.prepare" || fixed["action"] == "hetu.image_tasks.prepare" {
             if let Some(binding) = &self.management_grant {
@@ -154,6 +158,7 @@ impl Kernel {
                 )?;
                 let arguments = &input["input"];
                 validate_action_input(target, arguments)?;
+                self.check_work_access(target, arguments)?;
                 if target == "hetu.documents.import_batch" {
                     for item in arguments["items"].as_array().unwrap() {
                         let source = &item["source"];
@@ -243,7 +248,10 @@ impl Kernel {
                 for name in self.store.entries(".hetu/agent-proposals")? {
                     if !name.ends_with(".state.json") && name.ends_with(".json") {
                         let key = name.trim_end_matches(".json");
-                        let (proposal, state) = self.read_proposal(&json!({"proposal_id":key}))?;
+                        let (proposal, state) = match self.read_proposal(&json!({"proposal_id":key})) {
+                            Err(error) if self.granted_work()?.is_some() && error.code == "forbidden" => continue,
+                            result => result?,
+                        };
                         let mut value = self.proposal_view(&proposal, &state)?;
                         // 列表不重复传输全文；详情按确切方案读取。
                         value.as_object_mut().unwrap().remove("changes");

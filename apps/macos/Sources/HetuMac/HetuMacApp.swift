@@ -186,7 +186,9 @@ private struct WorkbenchView: View {
     @State private var selection = "novel"
     @State private var lastNovelID = ""
     @State private var validationDocumentID = ""
-    @State private var inspector = true
+    @State private var inspector = false
+    @State private var locations: [String: WorkLocation] = [:]
+    @State private var episodeLocations: [String: String] = [:]
     @State private var draft: JSONValue = .null
     @State private var newDocument = false
     @State private var newWorkspace = false
@@ -196,6 +198,11 @@ private struct WorkbenchView: View {
     @State private var scriptMapping: DramaSheet?
     @State private var submitReview: DramaSheet?
     @State private var finalization: DramaSheet?
+    private struct WorkLocation {
+        let selection: String
+        let lastNovelID: String
+        let validationDocumentID: String
+    }
     init() {
         let model = WorkspaceModel()
         _model = State(initialValue: model); _coordinator = State(initialValue: WindowCoordinator(model))
@@ -261,9 +268,23 @@ private struct WorkbenchView: View {
                 }.padding(8)
             }
         }
-        .onChange(of: model.workspaceID) { _, value in
+        .onChange(of: model.currentWorkID) { previous, value in
+            if !previous.isEmpty {
+                locations[previous] = WorkLocation(selection: selection, lastNovelID: lastNovelID, validationDocumentID: validationDocumentID)
+            }
             selection = ""; lastNovelID = ""; validationDocumentID = ""; draft = .null
-            if !value.isEmpty { Task { await select(model.workType == "drama" ? "drama" : model.novel["initialized"].bool == true ? "novel" : "book") } }
+            if !value.isEmpty {
+                let location = locations[value]
+                let primary = model.workType == "video" ? "video" : model.workType == "drama" ? "drama" : model.novel["initialized"].bool == true ? "novel" : "book"
+                Task {
+                    guard model.currentWorkID == value else { return }
+                    if let location {
+                        lastNovelID = location.lastNovelID; validationDocumentID = location.validationDocumentID
+                        await select(location.selection)
+                    }
+                    if selection.isEmpty { await select(primary) }
+                }
+            }
         }
         .onAppear { model.locale = selectedLocale; coordinator.presentCreation = { newWorkspace = true } }
         .onChange(of: selectedLocale) { _, locale in model.locale = locale }
@@ -276,13 +297,19 @@ private struct WorkbenchView: View {
         else if selection == "bible" { StoryBibleView(model: model) }
         else if selection == "plot" { PlotWorkbenchView(model: model) }
         else if selection == "validation" { ValidationWorkbenchView(model: model, initialDocumentID: validationDocumentID) }
-        else if selection == "drama" { DramaWorkbenchView(model: model) { id in Task { await select(id) } } }
+        else if selection == "drama" {
+            DramaWorkbenchView(model: model, selectedEpisode: episodeLocation(for: model.currentWorkID)) { id in Task { await select(id) } }.id(model.currentWorkID)
+        }
+        else if selection == "video" { VideoWorkbenchView(model: model, selected: episodeLocation(for: model.currentWorkID)).id(model.currentWorkID) }
+        else if selection == "related_works" { RelatedWorksView(model: model) { reference in
+            Task { if await coordinator.protect(), let url = model.workspace?.url { _ = await model.open(url, expectedWorkspaceID: reference.workspaceID, workReference: reference) } }
+        }.id(model.currentWorkID) }
         else if selection == "git" { GitWorkbenchView(model: model).id(model.workspaceID) }
         else if selection == "media" { MediaWorkbenchView(model: model).id(model.workspaceID) }
         else if selection == "delivery" { DeliveryWorkbenchView(model: model).id(model.workspaceID) }
         else if selection == "reviews" || selection.hasPrefix("draft_") { ReviewWorkbenchView(model: model, initialDraftID: selection.hasPrefix("draft_") ? selection : "") { id, before in Task { await select(id, adoptionUndoBaseline: before) } }.id(selection) }
         else if !model.documentID.isEmpty {
-            ManuscriptView(model: model, inspector: inspector,
+            ManuscriptView(model: model, inspector: $inspector,
                 onReview: { submitReview = DramaSheet(value: model.loaded) },
                 onFinalization: { finalization = DramaSheet(value: .string(model.documentID)) },
                 onMapping: { scriptMapping = DramaSheet(value: .string(model.documentID)) },
@@ -299,6 +326,9 @@ private struct WorkbenchView: View {
             }.padding(24)
         } else { WorkbenchEmptyState(title: model.t("document.select"), detail: model.t("novel.empty_detail"), artwork: "story-world").workbenchPage() }
     }
+    private func episodeLocation(for workID: String) -> Binding<String> {
+        Binding(get: { episodeLocations[workID] ?? "" }, set: { episodeLocations[workID] = $0 })
+    }
     private func select(_ id: String, adoptionUndoBaseline: String? = nil) async {
         guard id != selection || adoptionUndoBaseline != nil else { return }
         if id == "novel", model.documents.contains(where: { $0.id == selection && $0.kind != "drama_script" }) { return }
@@ -311,7 +341,7 @@ private struct WorkbenchView: View {
             else { model.clearDocument(); selection = "novel" }
             draft = .null
         }
-        else if ["book", "bible", "plot", "validation", "drama", "reviews", "git", "media", "delivery"].contains(id) { model.clearDocument(); draft = .null; selection = id }
+        else if ["book", "bible", "plot", "validation", "drama", "video", "related_works", "reviews", "git", "media", "delivery"].contains(id) { model.clearDocument(); draft = .null; selection = id }
         else if id.hasPrefix("draft_") {
             model.clearDocument(); draft = .null; selection = id
         } else if await model.selectDocument(id, adoptionUndoBaseline: adoptionUndoBaseline) {

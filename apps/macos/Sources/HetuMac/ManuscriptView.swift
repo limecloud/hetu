@@ -4,7 +4,7 @@ import HetuNative
 
 struct ManuscriptView: View {
     let model: WorkspaceModel
-    let inspector: Bool
+    @Binding var inspector: Bool
     let onReview: () -> Void
     let onFinalization: () -> Void
     let onMapping: () -> Void
@@ -18,6 +18,7 @@ struct ManuscriptView: View {
     @State private var authorNotes = false
     var body: some View {
         GeometryReader { geometry in
+        let pinInspector = WorkspaceNavigation.canPinDirectory(width: geometry.size.width, directoryWidth: 280, occupiedWidth: 0)
         HStack(spacing: 0) {
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
@@ -63,9 +64,20 @@ struct ManuscriptView: View {
                 .background(WorkbenchPalette.page, in: RoundedRectangle(cornerRadius: 12))
                 .overlay { RoundedRectangle(cornerRadius: 12).strokeBorder(WorkbenchPalette.line.opacity(0.7), lineWidth: 0.5).allowsHitTesting(false) }
                 .padding(18).frame(maxWidth: .infinity)
-            if inspector && geometry.size.width >= 720 {
+            if inspector && pinInspector {
                 ManuscriptInspectorView(model: model, onBible: onBible, onValidation: onValidation).frame(width: 280)
             }
+        }
+        .sheet(isPresented: Binding(get: { inspector && !pinInspector }, set: { inspector = $0 })) {
+            VStack(spacing: 0) {
+                HStack {
+                    Text(model.t("inspector.title")).font(.system(size: 20, weight: .semibold))
+                    Spacer()
+                    Button(model.t("common.close")) { inspector = false }
+                }.padding(20)
+                Rectangle().fill(WorkbenchPalette.line).frame(height: 0.5)
+                ManuscriptInspectorView(model: model, onBible: { inspector = false; onBible() }, onValidation: { inspector = false; onValidation() })
+            }.frame(width: 420, height: 580).foregroundStyle(WorkbenchPalette.ink).background(WorkbenchPalette.page)
         }
         }
         .sheet(isPresented: $creativeTask) { CreativeTaskView(model: model, selection: editSelection) }

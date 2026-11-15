@@ -8,6 +8,7 @@ const PROJECT_ACTIONS: &[&str] = &[
     "hetu.creation_projects.save",
     "hetu.creation_projects.create_novel",
     "hetu.creation_projects.create_drama",
+    "hetu.creation_projects.create_video",
     "hetu.creative_tasks.preview_prompt",
     "hetu.creative_tasks.prepare",
 ];
@@ -24,11 +25,16 @@ const WORKSPACE_ACTIONS: &[&str] = &[
     "hetu.drama.projects.list",
     "hetu.drama.episodes.create",
     "hetu.drama.episodes.get",
+    "hetu.works.list", "hetu.works.get", "hetu.work_links.list",
+    "hetu.video.projects.create", "hetu.video.projects.get",
+    "hetu.video.episodes.create", "hetu.video.episodes.get",
     "hetu.creative_tasks.preview_prompt",
     "hetu.creative_tasks.prepare",
 ];
 // 已有作品授权只开放读取、方案和有界检查；具体变更仍须作者批准固定方案。
 const REVIEW_ACTIONS: &[&str] = &[
+    "hetu.works.list", "hetu.works.get", "hetu.work_links.list",
+    "hetu.video.projects.get", "hetu.video.episodes.get",
     "hetu.capabilities.get", "hetu.operations.get", "hetu.workspaces.get",
     "hetu.novels.get", "hetu.documents.list", "hetu.documents.get", "hetu.documents.history",
     "hetu.outlines.get", "hetu.blueprints.get", "hetu.blueprints.preview_change",
@@ -114,6 +120,19 @@ fn record(binding: &Value) -> Result<Value> {
     }
     Ok(value)
 }
+pub(crate) fn granted_work(binding: &Value) -> Result<Option<Value>> {
+    let grant = record(binding)?;
+    Ok(grant.get("work_ref").filter(|value| value.is_object()).cloned())
+}
+fn work_action_allowed(name: &str) -> bool {
+    matches!(name, "hetu.capabilities.get" | "hetu.operations.get" | "hetu.workspaces.get" |
+        "hetu.works.list" | "hetu.works.get" | "hetu.work_links.list" | "hetu.handoffs.get" |
+        "hetu.novels.get" | "hetu.drama.projects.get" | "hetu.drama.projects.list" | "hetu.drama.episodes.get" |
+        "hetu.video.projects.get" | "hetu.video.episodes.get" |
+        "hetu.blueprints.get" | "hetu.blueprints.preview_change" |
+        "hetu.creative_tasks.preview_prompt" | "hetu.image_tasks.preview_prompt" |
+        "hetu.agent_operations.prepare" | "hetu.agent_operations.list" | "hetu.agent_operations.get" | "hetu.agent_operations.execute")
+}
 pub(crate) fn check_management(binding: &Value, root: &Path, action: Option<&str>) -> Result<()> {
     let grant = record(binding)?;
     let project = binding["kind"] == "creation_project";
@@ -152,6 +171,7 @@ pub(crate) fn check_management(binding: &Value, root: &Path, action: Option<&str
         }
     }
     if let Some(name) = action {
+        ensure(!grant["work_ref"].is_object() || work_action_allowed(name), "forbidden", "此对象授权不包含工作区级能力。")?;
         ensure(
             if project {
                 PROJECT_ACTIONS
@@ -268,8 +288,9 @@ impl CollaborationHub {
             return self.begin_creation(&request["input"]);
         }
         let reference = &request["input"]["management_ref"];
-        let binding = json!({"directory":self.directory.canonicalize()?,"client_adapter":self.client,"grant_id":reference["grant_id"],"grant_revision":reference["grant_revision"],"kind":reference["scope_ref"]["kind"]});
+        let mut binding = json!({"directory":self.directory.canonicalize()?,"client_adapter":self.client,"grant_id":reference["grant_id"],"grant_revision":reference["grant_revision"],"kind":reference["scope_ref"]["kind"]});
         let grant = record(&binding)?;
+        if grant["work_ref"].is_object() { binding["work_ref"] = grant["work_ref"].clone(); }
         let root = &grant[if binding["kind"] == "creation_project" {
             "project_path"
         } else {
@@ -295,7 +316,7 @@ impl CollaborationHub {
             .remove("management_ref");
         if matches!(
             action,
-            "hetu.creation_projects.create_novel" | "hetu.creation_projects.create_drama"
+            "hetu.creation_projects.create_novel" | "hetu.creation_projects.create_drama" | "hetu.creation_projects.create_video"
         ) {
             workspace_binding(&binding, Path::new(text(&routed["input"], "target_path")?))?;
         }
@@ -329,7 +350,7 @@ impl CollaborationHub {
         result["data"]["management_ref"] = reference.clone();
         if matches!(
             action,
-            "hetu.creation_projects.create_novel" | "hetu.creation_projects.create_drama"
+            "hetu.creation_projects.create_novel" | "hetu.creation_projects.create_drama" | "hetu.creation_projects.create_video"
         ) {
             let target_binding =
                 workspace_binding(&binding, Path::new(text(&grant, "target_path")?))?;
@@ -392,7 +413,7 @@ impl Kernel {
         let client = text(input,"client_adapter")?;
         client_valid(client)?;
         let directory = input["collaboration_path"].as_str().map(PathBuf::from).map(Ok).unwrap_or_else(default_directory)?;
-        let grant_id = digest(format!("workspace\0{}\0{client}",self.scope()));
+        let grant_id = self.work_grant_id(client, input.get("work_ref"))?;
         let reference = json!({"grant_id":grant_id,"scope_ref":{"kind":"workspace","id":self.scope()}});
         if !directory.try_exists()? { return Ok(json!({"authorized":false,"client_adapter":client})); }
         let store = Store::open(&directory)?;
@@ -419,7 +440,7 @@ impl Kernel {
         store.directory(".hetu/transactions")?;
         let _guard = store.lock()?;
         store.recover()?;
-        let grant_id = digest(format!("workspace\0{}\0{client}", self.scope()));
+        let grant_id = self.work_grant_id(client, input.get("work_ref"))?;
         let path = record_path(client, &grant_id)?;
         let expires = input.get("expires_at").cloned().unwrap_or(Value::Null);
         if let Some(value) = expires.as_i64() {
@@ -440,9 +461,16 @@ impl Kernel {
         let mut grant = json!({"schema_version":"1.0.0","client_adapter":client,"target_path":self.root_path(),
             "workspace_id":self.scope(),"authorized_workspace":true,"grant_revision":revision,"expires_at":expires,"revoked":false});
         grant["root_identity"] = identity;
+        if let Some(reference) = input.get("work_ref") { grant["work_ref"] = reference.clone(); }
         store.transaction(&BTreeMap::from([(path, encoded(&grant)?)]))?;
         Ok(json!({"management_ref":{"grant_id":grant_id,"grant_revision":revision,"scope_ref":{"kind":"workspace","id":self.scope()}},
-            "client_adapter":client,"revoked":false,"allowed_actions":REVIEW_ACTIONS}))
+            "client_adapter":client,"revoked":false,"allowed_actions":REVIEW_ACTIONS.iter().filter(|name| !input["work_ref"].is_object() || work_action_allowed(name)).collect::<Vec<_>>()}))
+    }
+    fn work_grant_id(&self, client: &str, reference: Option<&Value>) -> Result<String> {
+        if let Some(reference) = reference {
+            self.work_record(reference, None)?;
+            Ok(digest(format!("work\0{}\0{}\0{}\0{client}",self.scope(),text(reference,"kind")?,text(reference,"object_id")?)))
+        } else { Ok(digest(format!("workspace\0{}\0{client}",self.scope()))) }
     }
     pub(crate) fn revoke_management(&self, input: &Value) -> Result<Value> {
         ensure(

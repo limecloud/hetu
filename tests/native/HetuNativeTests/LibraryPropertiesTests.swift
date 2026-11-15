@@ -9,7 +9,7 @@ enum LibraryPropertiesTests {
 
     @MainActor static func run(root: URL, preferences: UserDefaults) async throws {
         let libraryURL = root.appendingPathComponent("属性书库")
-        let library = LibraryStore(directory: libraryURL)
+        let library = LibraryStore(directory: libraryURL, collaborationDirectory: root.appendingPathComponent("属性验收协作"))
         let model = WorkspaceModel(recovery: RecoveryStore(directory: root.appendingPathComponent("属性恢复")), preferences: preferences, library: library)
         let url = root.appendingPathComponent("删除验收作品 " + UUID().uuidString)
         try require(await model.open(url, title: "雾港来信 删除验收"), "未建立隔离作品")

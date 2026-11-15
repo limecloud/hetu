@@ -239,7 +239,7 @@ def main():
     cargo_profile = ["--release"] if args.configuration == "release" else []
     rust_target = (args.rust_target_dir or Path(os.environ.get("CARGO_TARGET_DIR", str(ROOT / "target")))).resolve()
     cargo_target = ["--target-dir", str(rust_target)]
-    run(["cargo", "build", "--locked", *cargo_target, *cargo_profile], channel)
+    run(["cargo", "build", "--locked", "--jobs", "2", *cargo_target, *cargo_profile], channel)
     stage = ROOT / "build/native/lib"
     stage.mkdir(parents=True, exist_ok=True)
     shutil.copy2(rust_target / args.configuration / "libhetu_core.dylib", stage)
@@ -249,18 +249,16 @@ def main():
     scratch_args = ["--scratch-path", str(args.swift_scratch_path.resolve())] if args.swift_scratch_path else []
     configuration_args = ["--configuration", args.configuration]
     swift_args = ["swift", "build", *scratch_args, *configuration_args, "--jobs", "2", "--disable-index-store", "-Xswiftc", "-disable-batch-mode"]
-    if args.mac_only:
-        swift_args += ["--product", "HetuMac"]
-    run(swift_args, channel)
+    run([*swift_args, *(["--product", "HetuMac"] if args.mac_only else [])], channel)
     if args.mac_only:
         # Mac-only 仍装配可独立运行的 CLI，不能只编 App 却复制旧 CLI。
-        run(["swift", "build", *scratch_args, *configuration_args, "--jobs", "2", "--disable-index-store", "--product", "hetu"], channel)
+        run([*swift_args, "--product", "hetu"], channel)
     debug = (args.swift_scratch_path.resolve() if args.swift_scratch_path else ROOT / ".build") / args.configuration
     package_app(channel, runtime, args.development, debug, args.configuration, rust_target)
     if args.test:
-        run(["cargo", "test", "--locked", *cargo_target, *cargo_profile, "-p", "hetu-core"], channel)
+        run(["cargo", "test", "--locked", "--jobs", "2", *cargo_target, *cargo_profile, "-p", "hetu-core"], channel)
         # 每个 stdio 用例启动真实服务进程，限制并发以保留握手超时的诊断意义。
-        run(["cargo", "test", "--locked", *cargo_target, *cargo_profile, "-p", "hetu-mcp", "--", "--test-threads=2"], channel,
+        run(["cargo", "test", "--locked", "--jobs", "2", *cargo_target, *cargo_profile, "-p", "hetu-mcp", "--", "--test-threads=2"], channel,
             {"HETU_MCP_TEST_BINARY": str(ROOT / "build/native/bin/hetu-mcp")})
         run(["swift", "run", *scratch_args, *configuration_args, "--skip-build", "hetu-bridge-tests"], channel)
         run(["swift", "run", *scratch_args, *configuration_args, "--skip-build", "hetu-native-tests"], channel,

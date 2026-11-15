@@ -1,7 +1,7 @@
 import CHetu
 import Foundation
 
-/// 仅供可信本机设置界面；网络和凭据存储由共享 Core 处理。
+/// 供可信本机设置入口使用；CLI 只开放状态和登录交接，网络和凭据存储由共享 Core 处理。
 public struct ModelServiceClient: Sendable {
     public init() {}
     public func request(_ action: String, input: [String: JSONValue] = [:]) async throws -> JSONValue {

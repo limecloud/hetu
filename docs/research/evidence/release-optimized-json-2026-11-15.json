@@ -1,0 +1,82 @@
+{
+  "date": "2026-11-15",
+  "scope": "v0.7.0 优化构建阻塞定位；测试辅助函数，不修改业务授权或 JSON 库",
+  "platform": "macOS Apple Silicon",
+  "original_ci": "https://github.com/limecloud/hetu/actions/runs/43719179896",
+  "observed": "捕获 reference 的闭包反复接收、修改并移动 Value 时，第二次调用读取上次调用已释放的 BTreeMap；独立示例不依赖 hetu-core。",
+  "limit": "独立复现证明问题与该闭包代码形态相关；尚未定位到编译器或依赖的具体上游缺陷，不推断所有 JSON 或闭包使用均受影响。",
+  "minimal_reproduction": "use serde_json::{json, Value};\n#[inline(never)]\nfn consume(name: &str, input: Value) -> Value {\n    std::hint::black_box(json!({\"action\": name,\"input\": input}))\n}\nfn main() {\n    let reference = json!({\"grant_id\": \"grant-123\", \"grant_revision\": 1, \"scope_ref\": {\"kind\":\"workspace\", \"id\":\"workspace-123\"}});\n    let bound = |name: &str, mut input: Value| {\n        input[\"management_ref\"] = reference.clone();\n        consume(name, input)\n    };\n    let first = bound(\"novels.get\", json!({}));\n    assert_eq!(first[\"input\"][\"management_ref\"], reference);\n    drop(first);\n    let second = bound(\"novels.get\", json!({}));\n    assert_eq!(second[\"input\"][\"management_ref\"], reference);\n    for _ in 0..10000 {\n        assert_eq!(bound(\"novels.get\", json!({}))[\"input\"][\"management_ref\"], reference);\n    }\n    println!(\"repro passed\");\n}\n",
+  "explicit_function_control": "use serde_json::{json, Value};\n#[inline(never)]\nfn consume(name: &str, input: Value) -> Value {\n    std::hint::black_box(json!({\"action\": name,\"input\": input}))\n}\nfn main() {\n    let reference = json!({\"grant_id\": \"grant-123\", \"grant_revision\": 1, \"scope_ref\": {\"kind\":\"workspace\", \"id\":\"workspace-123\"}});\n    fn bound(reference: &Value, name: &str, mut input: Value) -> Value {\n        input[\"management_ref\"] = reference.clone();\n        consume(name, input)\n    }\n    let first = bound(&reference, \"novels.get\", json!({}));\n    assert_eq!(first[\"input\"][\"management_ref\"], reference);\n    drop(first);\n    let second = bound(&reference, \"novels.get\", json!({}));\n    assert_eq!(second[\"input\"][\"management_ref\"], reference);\n    for _ in 0..10000 {\n        assert_eq!(bound(&reference, \"novels.get\", json!({}))[\"input\"][\"management_ref\"], reference);\n    }\n    println!(\"repro passed\");\n}\n",
+  "comparisons": [
+    {
+      "rust": "1.93.1",
+      "serde_json": "1.0.154",
+      "configuration": "release, thin LTO, codegen-units=1",
+      "result": "BTreeMap iteration panic"
+    },
+    {
+      "rust": "1.95.0",
+      "serde_json": "1.0.154",
+      "configuration": "release, thin LTO, codegen-units=1",
+      "result": "same panic"
+    },
+    {
+      "rust": "1.92.0",
+      "serde_json": "1.0.154",
+      "configuration": "release, thin LTO, codegen-units=1",
+      "result": "same panic"
+    },
+    {
+      "rust": "1.93.1",
+      "serde_json": "1.0.149 / 1.0.145",
+      "configuration": "release, thin LTO",
+      "result": "same panic"
+    },
+    {
+      "rust": "1.93.1",
+      "serde_json": "1.0.154",
+      "configuration": "release, LTO disabled",
+      "result": "same panic"
+    },
+    {
+      "rust": "1.93.1",
+      "serde_json": "1.0.154",
+      "configuration": "release, AddressSanitizer",
+      "result": "heap-use-after-free on second closure invocation"
+    },
+    {
+      "rust": "1.93.1",
+      "serde_json": "1.0.154",
+      "configuration": "explicit function, release, thin LTO",
+      "result": "10002 calls passed"
+    },
+    {
+      "rust": "1.93.1",
+      "serde_json": "1.0.154",
+      "configuration": "explicit function, release, AddressSanitizer",
+      "result": "10002 calls passed"
+    }
+  ],
+  "change": "core/tests/collaboration.rs 使用显式传入 hub 与 management_ref 的普通函数，保留完整授权、作者决定、幂等和撤权断言；不降低优化、不跳过测试。",
+  "local_log_sha256": {
+    "hetu-v070-json-old.log": "a3c22ee70dd38c0e0a3d026eef0cbb5b39920aab12aba2d8105ab583b1f51ed9",
+    "hetu-v070-json-null.log": "9b7c51b8c3b2f5ce064c4b80efa0c1be6fb99ca267aeb48c66174ffb4dda96c3",
+    "hetu-v070-json-function.log": "0ee76c3e9e0a70416a68764fbd3c8473b6ea715b6d17225309bf3a223457ce1b",
+    "hetu-v070-json-repro.log": "fe11dccae418ebd14139f6e98932171d74478e675688483a2ad53be3a9616260",
+    "hetu-v070-json-function-asan.log": "c9fa603cb87773e71253a179ff3c74d33746b52a90825368657992f428b3cb79",
+    "hetu-v070-json-192.log": "c4ab4f2c4b5c3643f336aa50798b119c7d9d22d9bf94410ccaa4f23cea62f6b5",
+    "hetu-v070-json-145.log": "494f830929bab6d6cf34d343f23fe9f54210d2f25acd3d3822e66279a724e4f2",
+    "hetu-v070-json-no-lto.log": "05e8260c8e2e6ca3d722e0c59584678aaf390f6d7165eb066fe613d3cd900ce6",
+    "hetu-v070-json-backtrace.log": "8f39fc50cd0b0d650fbd446b252cf5f2bb5c042cbf10c79cf2ca547b12f7c2be",
+    "hetu-v070-json-asan.log": "c258f3591f2c4cc2971f3d7ea79a6b582662950680e81770ecd1f6c4142487fe",
+    "hetu-v070-json-new.log": "0c483d5fc72ded75c21823699660be4679155c4c67ec5f3fa8b4c6fea75e0b04",
+    "hetu-v070-json-insert.log": "e1928fb786f433701c3b839f56ebae549b0b27045a8a4d7c6e446571c896ed7a"
+  },
+  "hetu_regression": {
+    "command": "cargo test --locked --release --jobs 2 --target-dir output/release-v070-20261115/rust -p hetu-core --test collaboration",
+    "passed": 4,
+    "failed": 0,
+    "ignored": 0,
+    "log_sha256": "62cbc2be91a156971cb9da0a3ec119b5dbe2d3ca41ab5300daceafa4c7018d06"
+  }
+}

@@ -2,6 +2,11 @@
 use super::*;
 
 impl Kernel {
+    fn handoff_blueprint(&self, object: &Value) -> Result<Option<(Value, String)>> {
+        if object["work_ref"].is_object() {
+            self.work_blueprint_revision(&object["work_ref"], object["blueprint_revision"].as_u64())
+        } else { self.blueprint_revision(object["blueprint_revision"].as_u64()).map(Some) }
+    }
     pub(super) fn page_handoff(&self, input: &Value) -> Result<Value> {
         ensure(
             self.task_id.is_none() && (self.management_grant.is_none() || self.management_grant.as_ref().is_some_and(|v| v["kind"] == "workspace")),
@@ -11,6 +16,16 @@ impl Kernel {
         let page = text(input, "view_kind")?;
         let mut fixed = Vec::new();
         let object = &input["object_ref"];
+        if object["work_ref"].is_object() {
+            let record = self.work_record(&object["work_ref"], None)?;
+            fixed.push(json!({"kind":"work","fixed_ref":self.work_revision_ref(&object["work_ref"], &record)?}));
+            ensure(page != "video" || object["work_ref"]["kind"] == "video", "invalid_input", "视频页面须定位视频项目。")?;
+        }
+        if let Some(episode) = object["video_episode_id"].as_str() {
+            let value = self.get_video_episode(&json!({"video_episode_id":episode,"revision":object["revision"]}))?;
+            ensure(object["work_ref"] == value["work_ref"], "invalid_input", "视频分集不属于当前项目。")?;
+            fixed.push(json!({"kind":"video_episode","video_episode_id":episode,"revision":value["episode"]["revision"],"sha256":value["sha256"]}));
+        }
         if let Some(document) = object["document_id"].as_str() {
             let value = self.document_content(document, object["revision_id"].as_str())?;
             fixed.push(json!({"kind":"document","document_id":document,"revision_id":value["revision"]["revision_id"],"sha256":value["revision"]["sha256"]}));
@@ -60,8 +75,8 @@ impl Kernel {
             fixed.push(json!({"kind":"cue","cue_id":cue,"revision":value["cue"]["revision"],"sha256":value["sha256"]}));
         }
         if let Some(entity) = object["entity_ref"].as_str() {
-            let (blueprint, sha) =
-                self.blueprint_revision(object["blueprint_revision"].as_u64())?;
+            let (blueprint, sha) = self.handoff_blueprint(object)?
+                .ok_or_else(|| Error::new("hetu.canon_initialization_required", "此作品尚未建立自身设定。"))?;
             ensure(
                 [
                     "characters",
@@ -83,7 +98,7 @@ impl Kernel {
                 "not_found",
                 "设定对象不属于该固定版本。",
             )?;
-            fixed.push(json!({"kind":"blueprint","revision":blueprint["revision"],"sha256":sha,"entity_ref":entity}));
+            fixed.push(json!({"kind":"blueprint","work_ref":object["work_ref"],"blueprint_id":blueprint["blueprint_id"],"revision":blueprint["revision"],"sha256":sha,"entity_ref":entity}));
         }
         if let Some(project) = object["project_id"].as_str() {
             let value = self.drama_project(project)?;
@@ -112,6 +127,13 @@ impl Kernel {
             fixed.push(json!({"kind":"report","report_id":report,"sha256":digest(bytes(&value)?)}));
         }
         let (wanted, missing): (&[&str], &[&str]) = match page {
+            "related_works" => (
+                &["hetu.works.list", "hetu.works.get", "hetu.work_links.list", "hetu.work_links.create"], &[],
+            ),
+            "video" => (
+                &["hetu.works.get", "hetu.work_links.list", "hetu.video.projects.get", "hetu.video.projects.update", "hetu.video.episodes.create", "hetu.video.episodes.get"],
+                &["video_media_task_required"],
+            ),
             "book" => (
                 &[
                     "hetu.novels.get",
@@ -142,7 +164,7 @@ impl Kernel {
                 &["unsaved_buffer_and_private_notes"],
             ),
             "bible" | "entity" => (
-                &["hetu.blueprints.get", "hetu.blueprints.save"],
+                &["hetu.blueprints.get", "hetu.blueprints.initialize", "hetu.blueprints.save"],
                 &["author_unlock_required"],
             ),
             "drama" | "episode" => (
@@ -278,8 +300,11 @@ impl Kernel {
             }
         }
         if matches!(page, "bible" | "entity") && object["entity_ref"].is_null() {
-            let (blueprint, sha) = self.blueprint_revision(object["blueprint_revision"].as_u64())?;
-            fixed.push(json!({"kind":"blueprint","revision":blueprint["revision"],"sha256":sha,"locked":blueprint["lock"]["locked"]}));
+            if let Some((blueprint, sha)) = self.handoff_blueprint(object)? {
+                fixed.push(json!({"kind":"blueprint","work_ref":object["work_ref"],"blueprint_id":blueprint["blueprint_id"],"revision":blueprint["revision"],"sha256":sha,"locked":blueprint["lock"]["locked"]}));
+            } else {
+                fixed.push(json!({"kind":"canon_binding","work_ref":object["work_ref"],"initialized":false}));
+            }
         }
         Ok(
             json!({"scope_ref":{"kind":self.scope_kind(),"id":self.scope()},"view_kind":page,"object_ref":object,

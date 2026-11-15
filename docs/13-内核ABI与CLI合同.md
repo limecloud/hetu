@@ -55,7 +55,7 @@ ABI 任务启动、查询与取消的回执只说明句柄生命周期，`data.t
 
 无作品时，稳定入口的 `hetu.creation_projects.create` 接受 `brief, locale, operation_key`，分配独立筹备和全新受管作品目录，返回 `management_ref, project_path, target_path`。后续筹备维护、创建、空章节／分集及首任务准备携带确切 `management_ref`，领域输入仍使用各动作的原 Schema。创建成功返回新的 `workspace_management_ref`；准备首任务后，以返回的 `task_locator` 打开固定任务。该有限新建规则不接管任意用户目录，也不授予正文写入、采纳、定稿或其他客户端权限；业务 JSON 和公开 CLI 均不能组装内部管理连接。可信作者通过 `hetu.collaboration.revoke_management` 可撤销本作品的管理授权及派生任务。
 
-`hetu_model_service_request` 接收 `{action,input}`，支持 `inspect|connect|poll|catalog|select|disconnect|custom_save|channel_select`，使用相同 UTF-8 缓冲及释放约定。网络设置调用由原生后台任务执行。它不向 CLI/MCP 开放，不能批准创作计划；模型业务仍通过固定任务动作执行，批准仅限作者入口。
+`hetu_model_service_request` 接收 `{action,input}`，支持 `inspect|connect|poll|catalog|select|disconnect|custom_save|channel_select`，使用相同 UTF-8 缓冲及释放约定。网络设置调用由原生后台任务执行。CLI 仅通过 `model-service status|login|poll` 开放连接状态与浏览器登录交接，输出连接状态、账号引用、到期时间及待验证链接和验证码；不返回凭据，不开放渠道配置、断开连接或创作计划批准。模型业务仍通过固定任务动作执行，费用授权在作者当前 Agent 对话登记。
 
 ## 3. 错误分类
 
@@ -97,6 +97,7 @@ printf '%s\n' '{"brief":"筹备一本港口悬疑小说","locale":"zh-CN","opera
 | 命令组 | 目标能力 | 副作用 |
 | --- | --- | --- |
 | `hetu capabilities` | 平台、合同、参数和可用性发现 | 只读 |
+| `hetu model-service status/login/poll` | 无作品连接状态、浏览器登录交接与原连接查询 | login 创建待验证连接；poll 沿原连接查询，已完成时本地回读；不返回凭据或批准生成 |
 | `hetu collaboration inspect/open` | 检查稳定本机接入，按精确任务引用打开 | 只读；不扫描书库或切换全局当前任务 |
 | `hetu library list/register` | 本机书库查询与显式登记 | register 仅修改本机登记，不复制作品或授予 Agent 权限 |
 | `hetu creation prepare/show/create-workspace` | 建书筹备、候选选择与作者确认创建 | 创建须固定资料、明确目录与原键，不自动生成 |
@@ -150,3 +151,9 @@ CLI/MCP 对同一用例提供发现、预览、准备、获权执行、回读及
 需要作者判断的操作由机器生成完整提案，固定 action、输入摘要、目标对象及版本、预期影响和所需决定；确认只授权该确切操作。Core 在执行时重新验证授权、CAS、输入及外部目标，不把提案文本里的“已批准”解释成权限。具体行为与数据见[30第25节](30-应用API详细设计.md#25-全软件联动与操作提案合同)。
 
 CLI/MCP 缺业务入口属于未完成用例，不能要求 Skill 通过 Computer Use 操作 GUI 补齐。GUI 验收可以调用 Computer Use；真正没有机器入口的外部系统才按实际限制使用兜底，并记录范围。
+
+## 独立创作对象与视频入口
+
+CLI能力发现须覆盖独立小说／剧本／视频、固定来源关联、分镜、预演、媒体接收、视频计划、剪辑音画、位置意见和交付。具体动作名、Schema及限制从当前能力目录获取，不将[30第26节](30-应用API详细设计.md#26-独立创作对象与视频用例合同)的设计名称直接写成已发布命令。C ABI复用相同用例，保持薄封装，不在Swift入口另做授权或业务状态。
+
+每次调用携带明确对象／任务及固定版本，不使用全局当前项目。大媒体和工程使用有界文件流或任务inbox，JSON只回必要元数据与受管引用；原操作、授权、分页、CAS与退出码保持一致。机器新建和制作不依赖桌面窗口；收到媒体、技术校验、内容观看和作者确认分别回执，unknown先查询原计划，不能因进程重启重复付费。

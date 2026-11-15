@@ -48,6 +48,7 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "channel_id": {"type":"string","pattern":"^(cloud|channel_[0-9a-f-]{36})$"},
         "task_ref": {
           "$ref": "#/$defs/task_ref"
         },
@@ -79,6 +80,8 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "channel_id": {"type":"string","pattern":"^(cloud|channel_[0-9a-f-]{36})$"},
+        "resume_from_plan_id": {"type": "string", "pattern": "^model_[0-9a-f-]{36}$"},
         "task_ref": {
           "$ref": "#/$defs/task_ref"
         },
@@ -238,6 +241,30 @@
           }
         }
       ]
+    },
+    "authorization_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_ref", "plan_id", "authorization", "authorization_note", "operation_key"],
+      "properties": {
+        "task_ref": {"$ref": "#/$defs/task_ref"},
+        "plan_id": {"type": "string", "pattern": "^model_[0-9a-f-]{36}$"},
+        "authorization_note": {"type": "string", "minLength": 1, "maxLength": 2000},
+        "operation_key": {"type": "string", "minLength": 1, "maxLength": 128},
+        "authorization": {"$ref": "#/$defs/usage_authorization"}
+      }
+    },
+    "usage_authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["channels", "operation_key"],
+      "properties": {
+        "operation_key": {"type": "string", "minLength": 1, "maxLength": 128},
+        "channels": {"enum": ["current", "configured"]},
+        "max_requests": {"type": "integer", "minimum": 1, "maximum": 9007199254740991},
+        "max_credits": {"type": "string", "pattern": "^[1-9][0-9]{0,19}$"},
+        "unrestricted": {"type": "boolean"}
+      }
     },
     "get_input": {
       "type": "object",

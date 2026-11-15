@@ -1,0 +1,197 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-11-15T07:15:48.049278+00:00",
+  "version": "0.7.0",
+  "scope": "页面机器交接、固定管理方案、通用小说导入、改编参考与本机安装",
+  "status": "passed_for_machine_and_native_integration_scope",
+  "all_software_gui_acceptance_passed": false,
+  "inventory": {
+    "source_files": 51,
+    "view_declarations": 102,
+    "meaning": "逐文件入口及父子页面责任复核，不是GUI通过率。"
+  },
+  "checks": {
+    "core": {
+      "passed": 194,
+      "groups": 27,
+      "failed": 0
+    },
+    "mcp_stdio": {
+      "passed": 20,
+      "failed": 0
+    },
+    "installed_mcp_stdio": {
+      "passed": 20,
+      "failed": 0
+    },
+    "native_all": {
+      "status": "passed",
+      "coverage": [
+        "页面交接",
+        "设置方案",
+        "书库自动接纳",
+        "属性及隔离删除恢复",
+        "作者编辑与IME",
+        "图片与封面",
+        "资料影响",
+        "套件安装",
+        "持续参考稿与反馈",
+        "导入导出",
+        "本地任务页面",
+        "并发浏览"
+      ]
+    },
+    "apps_browser": {
+      "passed": 29,
+      "initial_passed": 22,
+      "recovered_local_passed": 7,
+      "boundary": "真实SDK/stdio及浏览器集成，不冒充当前Codex宿主Apps展示。"
+    },
+    "tooling": {
+      "passed": 17,
+      "import_script_tests": 8
+    },
+    "skills": {
+      "suites": 45,
+      "files": 2025,
+      "bytes": 5933269,
+      "classification_nodes": 908,
+      "version": "0.2.7"
+    },
+    "official_codex_installation": {
+      "status": "passed",
+      "isolation": "独立CODEX_HOME",
+      "checks": [
+        "仅所选套件安装",
+        "版本和摘要",
+        "启用状态",
+        "原键零重装",
+        "只读恢复"
+      ],
+      "current_host_loaded_new_plugin_not_claimed": true
+    },
+    "bridge_and_ffi": {
+      "status": "passed",
+      "coverage": [
+        "中文Emoji",
+        "内存所有权",
+        "异步生命周期",
+        "权限",
+        "真实CLI管道",
+        "原键恢复",
+        "任务撤权"
+      ]
+    },
+    "localization": {
+      "bilingual_keys": 1554,
+      "status": "passed"
+    },
+    "public_cli": {
+      "raw_receipts": 111,
+      "domain_combination_receipts": 51,
+      "current_book_page_handoffs": 6,
+      "status": "passed_for_declared_actions"
+    },
+    "current_codex_mcp": {
+      "status": "passed",
+      "actual_host_calls": true,
+      "book_evidence": "novel-import-adaptation-2026-11-15.json"
+    }
+  },
+  "fixes": [
+    "TXT原字节与Markdown编辑修订分别核验，避免把正常转义误判为导入损坏。",
+    "恢复记录改用首次登录后可回读的文件保护，保持原子写、0600及fsync，修复锁屏期间EPERM。",
+    "书库协作目录可注入，隔离测试不接纳真实用户机器新书。",
+    "Apps本地页面测试读取明确Cargo目标目录。"
+  ],
+  "installation": {
+    "installed_at": "2026-11-15T07:12:14.609058+00:00",
+    "version": "0.7.0",
+    "cli_version": "hetu 0.7.0",
+    "installed": "/Applications/Hetu.app",
+    "source": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/native/Hetu.app",
+    "backup": "/Users/coso/Library/Application Support/Hetu/App Backups/Hetu-before-0.7.0-20261115-151200.app",
+    "all_file_hashes_match": true,
+    "files": 2059,
+    "codesign_deep_strict": true,
+    "signing": "ad-hoc local development; no notarization claimed",
+    "backup_removed_at": "2026-11-15T07:14:01.702398+00:00",
+    "backup_removed_by_user_request": true
+  },
+  "source_sha256": {
+    "apps/macos/Sources/HetuNative/LibraryStore.swift": "9a913915e8ab9c9f36ab4a88c57f86a978a752ef14ee10b3942311f274eab555",
+    "apps/macos/Sources/HetuNative/RecoveryStore.swift": "a014b40c1435f4c054b239bb2ce666c7547a3a4b6c144939a4285630c60f6d74",
+    "apps/task-view/tests/local.spec.ts": "1602bcc1fd89d3ec82ba9d57caa324893e3163ed321f611271d18d3b22ec06b8",
+    "tests/native/HetuNativeTests/ImportedWorkReviewTests.swift": "4efbde7cd0f55dc69909fd58a3b1e9d09832f6af3217fc1a7fa24a0794273787",
+    "tests/native/HetuNativeTests/NativeTests.swift": "0752df9bfb72fe8601132e9aeff71b216028cfaa5265dfbe7f1ceade8d46bfc5",
+    "tests/tooling/test_novel_import.py": "cfe22fe75ccdec83ab98c85eb34850359823c8b6f5c8fcd262115e3540b7ca7c",
+    "tools/hetu-skills/base/skills/hetu-import/scripts/import_novel.py": "58da6c4af40a6e042d231f1ec523a00b16cd2f4c4d04ee4033f9f14df1a6188d",
+    "tools/hetu-skills/base/references/workflows/import.md": "696180596af3bcd6835309d34da14984c3adb8da633ab3721a0bb885550187af"
+  },
+  "source_drift_during_unified_build": [],
+  "first_failures_retained": [
+    {
+      "layer": "导入",
+      "issue": "旧装配缺batch、转义摘要混淆，以及尾部验收误用目录title字段",
+      "resolution": "新同版包、分别核对两种摘要，逐章读真实文档；沿原journal恢复。"
+    },
+    {
+      "layer": "Native",
+      "issue": "锁屏恢复记录EPERM、隔离书库读入真实作品",
+      "resolution": "文件保护修复与协作目录注入，原生全量复验通过。"
+    },
+    {
+      "layer": "Apps",
+      "issue": "7项local测试硬编码target",
+      "resolution": "按HETU_CARGO_TARGET_DIR读取，7项复验全部通过。"
+    },
+    {
+      "layer": "当前MCP",
+      "issue": "并行读取收到busy",
+      "resolution": "串行原请求恢复，不重复写入。"
+    },
+    {
+      "layer": "GUI",
+      "issue": "CUA内核运行资源缺失",
+      "resolution": "保留blocked，不冒称通过。"
+    }
+  ],
+  "remaining_acceptance": [
+    "完整原生GUI排版及全部详情/异常交互",
+    "真实Codex宿主MCP Apps展示与可信确认桥接",
+    "首次安装的新会话插件加载",
+    "真实Gitee/GitHub鉴权同步",
+    "正式签名公证发行包"
+  ],
+  "not_run": [
+    "Windows",
+    "新增收费模型请求",
+    "生产部署"
+  ],
+  "raw_evidence": {
+    "output/ai-first-acceptance-20261115/core-all-current.log": "0a723d7426ccc6406a9e6c40edcc748e9419e2675f8c73711e6e9823cb911893",
+    "output/ai-first-acceptance-20261115/mcp-all-current.log": "46bf5a207b1f2d1c86117dfa3d95ada67cc7cd23968f7f8d766348cc6d220241",
+    "output/ai-first-acceptance-20261115/installed-mcp-final.log": "b422f16fdfa82d6979dcbb7b4830e654c24a992da8cc2f163abb8e4a3e36ef5d",
+    "output/ai-first-acceptance-20261115/native-all-final.log": "22f6716e51de5251bc2e80d0f3c2d82bf49dd6c2b5a02068b5da545e14b25013",
+    "output/ai-first-acceptance-20261115/chixie-native-review-final.log": "dc4ee4a76c9a7732b8b6faeaaf4338460792c67cc261593f3aadf9a6b0709f76",
+    "output/ai-first-acceptance-20261115/chixie-native-review-final-13.log": "0b8c256c2b0cf7da4666478241eb94d51cba7cd0fe15567243ce85cead39d099",
+    "output/ai-first-acceptance-20261115/apps-browser-current.log": "bdc85d8c2a772d422a689e0508c32b463b727c7942169705be2bbb5d5cd7417f",
+    "output/ai-first-acceptance-20261115/apps-local-final.log": "2133f5710846ea1b270608853f6af4b24132034238d0df76d6651725f86506b2",
+    "output/ai-first-acceptance-20261115/tooling-final.log": "f2eb9a11f2da52f2057ab641a77c71e53e93a13fc9d32dc6bf9e9181103ea5dd",
+    "output/ai-first-acceptance-20261115/skills-verify-final.log": "31c02c4d66a7fb5e3565e445998959073866fbf4d410af4739e8d7abedd5e04e",
+    "output/ai-first-acceptance-20261115/official-installer-final.log": "93352fc433adba6762945f4ba12978889ecd8b33c7ccbc3c02bde3497202cc56",
+    "output/ai-first-acceptance-20261115/bridge-final.log": "b21cc8e39b5afacfebb4775c3a5677d9cac9f72ddf5fe8961badc94494efc364",
+    "output/ai-first-acceptance-20261115/ffi-final.log": "b31bc066f8036c99e43c90fbfcd8f7ced152a2c441bc35145225a7dc68196004",
+    "output/ai-first-acceptance-20261115/localization-verified-final.log": "0b309e37ed3a0b330e0021a32decea3f7813be65560fb56e3c6a11b963e51ee7",
+    "output/ai-first-acceptance-20261115/package-unified-final.log": "7006dc04ab32621ab5c487f3dd8ade31c1eb293c08db699b46bc17d66c057667",
+    "output/ai-first-acceptance-20261115/public-cli-receipts.json": "71861c451ae91500ceea086f0962c66de3e2737c6a889792fb690a3019b27834",
+    "output/ai-first-acceptance-20261115/page-domain-receipts.json": "36fabd08e294f82b70efaff622d4af0add88ca84168e8134e1e00d29aba0d67f",
+    "output/ai-first-acceptance-20261115/page-inventory-complete.json": "8865121de0b853c109f093d9cf2246cb8a09098f45e1734130f1d52940b54b07",
+    "output/ai-first-acceptance-20261115/chixie-page-handoffs.json": "bfed8534078be9f7d044c12ee1bcc4e06edc98e5d398cc0c4f7030d050305c03",
+    "output/ai-first-acceptance-20261115/installed-book-readback.json": "c55a2fcbc7973b85bc21b830caca14e1d748a6eda061f8d57cdab06c94fe343b",
+    "output/ai-first-acceptance-20261115/installed-library-admission.json": "a019507590dd14f4fa6d4653a2f0ddfebf0df047ee9976516f0d037783f8c953",
+    "output/ai-first-acceptance-20261115/installation-final.json": "f63427c1cf84dbc3ceb505e3a1cdbc08223ecd8c69fe2b099954d540682e71d1",
+    "output/ai-first-acceptance-20261115/unified-source-before.json": "1a5abea4a86b0223d2f1088deec2647c23bbd43d9dedd3792d67d71bd502b9ae",
+    "output/ai-first-acceptance-20261115/unified-source-drift.json": "a344b81ddcd45bb29b2c5ed37771d663056ccfb0ec62caaf4e3b51471d4d7acc"
+  }
+}

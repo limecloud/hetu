@@ -53,9 +53,37 @@ impl ModelService {
         )]))
     }
     pub(crate) fn identity_for(&self, kind: &str) -> Result<Value> {
+        self.identity_for_channel(kind, None)
+    }
+    pub(crate) fn identity_for_channel(&self, kind: &str, channel: Option<&str>) -> Result<Value> {
         let _lock = self.store.read_lock()?;
         let settings = self.settings()?;
-        self.selected_identity(&settings, kind)
+        ensure(matches!(kind, "text" | "image"), "invalid_input", "模型种类无效。")?;
+        match channel {
+            None => self.selected_identity(&settings, kind),
+            Some("cloud") => Self::settings_identity(&settings),
+            Some(channel) => custom::identity(&settings, channel),
+        }
+    }
+    pub(crate) fn authorization_connections(&self, kind: &str, configured: bool) -> Result<Vec<Value>> {
+        let _lock = self.store.read_lock()?;
+        let settings = self.settings()?;
+        if !configured {
+            return Ok(vec![self.selected_identity(&settings, kind)?]);
+        }
+        let mut connections = Vec::new();
+        if settings["token"].is_string() {
+            connections.push(Self::settings_identity(&settings)?);
+        }
+        if let Some(channels) = settings["custom_channels"].as_object() {
+            for (channel, profile) in channels {
+                if profile["models"][kind].as_array().is_some_and(|models| !models.is_empty()) {
+                    connections.push(custom::identity(&settings, channel)?);
+                }
+            }
+        }
+        ensure(!connections.is_empty(), "hetu.model_connection_required", "请先连接模型渠道。")?;
+        Ok(connections)
     }
     fn selected_identity(&self, settings: &Value, kind: &str) -> Result<Value> {
         ensure(
@@ -147,13 +175,18 @@ impl ModelService {
                 match code {
                     "login_required" => "hetu.model_connection_required",
                     "budget_exceeded" => "hetu.budget_exceeded",
+                    "credits_insufficient" => "hetu.credits_insufficient",
                     "policy_or_balance_changed" => "hetu.model_policy_changed",
                     "service_unconfigured" => "hetu.model_service_unconfigured",
                     "catalog_contract_mismatch" => "hetu.model_catalog_mismatch",
                     _ if status == 403 => "forbidden",
                     _ => "hetu.model_service_unavailable",
                 },
-                "模型服务请求未完成；请检查连接、权限和额度，已提交计划只沿原操作恢复。",
+                if code == "credits_insufficient" {
+                    "河图平台余额不足，请在当前Agent对话提示充值，并提供河图账户入口 https://hetu.limeai.run/console/ 。充值后先查询原计划，确认终态后再决定新请求。"
+                } else {
+                    "模型服务请求未完成；请检查连接、权限和额度，已提交计划只沿原操作恢复。"
+                },
             ));
         }
         Ok(response)

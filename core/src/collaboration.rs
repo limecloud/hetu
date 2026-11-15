@@ -18,6 +18,39 @@ pub struct CollaborationHub {
     client: String,
 }
 
+/// 本机适配器持有的固定确认上下文，不进入工具参数或通用业务路由。
+pub struct ModelPlanConfirmation {
+    kernel: Kernel,
+    record: Value,
+    task_ref: Value,
+    host: String,
+    authorization: Option<Value>,
+}
+impl ModelPlanConfirmation {
+    pub fn record(&self) -> &Value {
+        &self.record
+    }
+    pub fn with_task_authorization(mut self, policy: Value) -> Result<Self> {
+        let proposal = self.kernel.prepare_task_model_authorization(&self.record, policy)?;
+        self.record["requested_authorization"] = proposal.clone();
+        self.authorization = Some(proposal);
+        Ok(self)
+    }
+    /// 适配器只能在宿主返回真实用户接受决定后调用；拒绝、取消和超时不得调用。
+    pub fn confirm(self) -> Result<Value> {
+        let mut record = if let Some(proposal) = self.authorization {
+            self.kernel.confirm_task_model_authorization(&self.record, &proposal, &self.host)?
+        } else {
+            self.kernel.confirm_model_plan_from_host(&self.record, &self.host)?
+        };
+        record["task_ref"] = self.task_ref;
+        Ok(domain::success(
+            "hetu.model_tasks.get",
+            self.kernel.scope(),
+            record,
+        ))
+    }
+}
 #[derive(serde::Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct ClientRequest {
@@ -78,6 +111,51 @@ fn encoded(value: &Value) -> Result<Vec<u8>> {
 }
 
 impl CollaborationHub {
+    pub fn prepare_model_confirmation(
+        &self,
+        reference: &Value,
+        plan_id: &str,
+    ) -> Result<ModelPlanConfirmation> {
+        let store = Store::open(&self.directory)?;
+        let grant = {
+            let _guard = store.read_lock()?;
+            store.json(&grant_path(&self.client, reference)?)?
+        };
+        let binding = json!({"directory":self.directory,"client_adapter":self.client,"task_locator":locator(reference)?,"grant_revision":grant["grant_revision"]});
+        check_grant(
+            &binding,
+            text(&reference["scope_ref"], "id")?,
+            reference["task_id"].as_str(),
+        )?;
+        let result = self.request(json!({"action":"hetu.model_tasks.get","contract_revision":"1","input":{"task_ref":reference,"plan_id":plan_id}}));
+        ensure(
+            result["status"] == "succeeded",
+            "forbidden",
+            result["error"]["message"]
+                .as_str()
+                .unwrap_or("无法读取固定模型计划。"),
+        )?;
+        let mut config =
+            json!({"mode":"agent","task_id":reference["task_id"],"collaboration_grant":binding});
+        config[if reference["scope_ref"]["kind"] == "workspace" {
+            "workspace_path"
+        } else {
+            "creation_project_path"
+        }] = grant["root"].clone();
+        let kernel = Kernel::open(config)?;
+        ensure(
+            kernel.scope() == reference["scope_ref"]["id"].as_str().unwrap_or(""),
+            "forbidden",
+            "确认上下文不属于此作品。",
+        )?;
+        Ok(ModelPlanConfirmation {
+            kernel,
+            record: result["data"].clone(),
+            task_ref: reference.clone(),
+            host: self.client.clone(),
+            authorization: None,
+        })
+    }
     pub fn open(directory: &Path, client: &str) -> Result<Self> {
         client_valid(client)?;
         ensure(

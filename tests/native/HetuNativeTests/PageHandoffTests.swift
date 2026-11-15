@@ -14,7 +14,7 @@ enum PageHandoffTests {
         let recovery = RecoveryStore(directory: root.appendingPathComponent("交接恢复"))
         let model = WorkspaceModel(locale: "zh-CN", recovery: recovery, preferences: preferences, library: LibraryStore(directory: root.appendingPathComponent("交接书库")))
         try check(await model.open(work, title: "渡口"), "未创建隔离作品")
-        guard let id = await model.createDocument(title: "第一章", kind: "novel_chapter"), await model.selectDocument(id) else { throw Failure(message: "未打开章节") }
+        guard let id = await model.createDocument(title: "第一章", kind: "novel_chapter"), await model.selectDocument(id) else { throw Failure(message: "未打开章节：\(model.message ?? "无业务错误")；busy=\(model.busy)，writeLocked=\(model.writeLocked)") }
         model.edit("已保存的中文稿🌧️")
         try check(await model.save(), "未保存原稿")
         let saved = model.baseRevisionID

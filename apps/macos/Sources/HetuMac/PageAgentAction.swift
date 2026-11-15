@@ -13,8 +13,13 @@ struct PageAgentButton: View {
         Button { showing = true } label: { Label(model.t("handoff.action"), systemImage: "sparkles") }
             .accessibilityIdentifier("hetu.ai." + page)
             .sheet(isPresented: $showing, onDismiss: { Task { await model.refresh() } }) {
-                PageAgentSheet(model: model, page: page, object: object, intent: intent)
+                PageAgentSheet(model: model, page: page, object: scopedObject, intent: intent)
             }
+    }
+    private var scopedObject: JSONValue {
+        var fields = object.object
+        if let reference = model.workReference { fields["work_ref"] = reference.value }
+        return .object(fields)
     }
 }
 
@@ -92,7 +97,9 @@ private struct PageAgentSheet: View {
         error = nil
         if !more {
             context = await model.workspaceAction("hetu.handoffs.get", input: ["view_kind": .string(page), "object_ref": object]) { error = $0; _ = $1 } ?? .null
-            access = await model.workspaceAction("hetu.collaboration.workspace_access", input: ["client_adapter": .string(adapter)]) { error = $0; _ = $1 } ?? .null
+            var input: [String: JSONValue] = ["client_adapter": .string(adapter)]
+            if let reference = model.workReference { input["work_ref"] = reference.value }
+            access = await model.workspaceAction("hetu.collaboration.workspace_access", input: input) { error = $0; _ = $1 } ?? .null
         }
         var input: [String: JSONValue] = ["limit": .integer(20)]
         if more, let cursor { input["cursor"] = .string(cursor) }
@@ -115,7 +122,9 @@ private struct PageAgentSheet: View {
             guard let workspace = model.workspace?.url else { throw CoreError.invalidResponse }
             let helper = Bundle.main.bundleURL.appendingPathComponent("Contents/Helpers/hetu")
             guard FileManager.default.isExecutableFile(atPath: helper.path) else { error = model.t("handoff.cli_missing"); return }
-            guard let grant = await model.workspaceAction("hetu.collaboration.authorize_workspace", input: ["client_adapter": .string(adapter), "operation_key": .string(UUID().uuidString)], onFailure: { error = $0; _ = $1 }) else { return }
+            var input: [String: JSONValue] = ["client_adapter": .string(adapter), "operation_key": .string(UUID().uuidString)]
+            if let reference = model.workReference { input["work_ref"] = reference.value }
+            guard let grant = await model.workspaceAction("hetu.collaboration.authorize_workspace", input: input, onFailure: { error = $0; _ = $1 }) else { return }
             access = .object(["authorized": .bool(true), "management_ref": grant["management_ref"]])
             let prompt = try PageHandoff.prompt(context: context, workspace: workspace, executable: helper, locale: model.locale,
                 suite: model.agentIntegration.association(for: model.workspaceID).suiteID, clientAdapter: adapter, managementRef: grant["management_ref"], authorInstruction: intent)

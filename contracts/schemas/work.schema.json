@@ -1,0 +1,650 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hetu.limeai.run/schemas/work.schema.json",
+  "title": "HetuWork",
+  "$defs": {
+    "work_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "workspace_id": {
+          "type": "string",
+          "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "kind": {
+          "enum": [
+            "novel",
+            "drama",
+            "video"
+          ]
+        },
+        "object_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        }
+      },
+      "required": [
+        "workspace_id",
+        "kind",
+        "object_id"
+      ]
+    },
+    "work_revision_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "work_ref": {
+          "$ref": "#/$defs/work_ref"
+        },
+        "revision_ref": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "revision": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "revision"
+          ]
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "work_ref",
+        "revision_ref",
+        "sha256"
+      ]
+    },
+    "list_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200
+        },
+        "cursor": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "include_archived": {
+          "type": "boolean"
+        },
+        "kind": {
+          "enum": [
+            "novel",
+            "drama",
+            "video"
+          ]
+        }
+      },
+      "required": []
+    },
+    "get_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "work_ref": {
+          "$ref": "#/$defs/work_ref"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "work_ref"
+      ]
+    },
+    "link_create_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_ref": {
+          "$ref": "#/$defs/work_revision_ref"
+        },
+        "target_ref": {
+          "$ref": "#/$defs/work_revision_ref"
+        },
+        "relation": {
+          "enum": [
+            "adaptation",
+            "production",
+            "reference",
+            "continuation"
+          ]
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "source_ref",
+        "target_ref",
+        "relation",
+        "operation_key"
+      ]
+    },
+    "links_list_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "work_ref": {
+          "$ref": "#/$defs/work_ref"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200
+        },
+        "cursor": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "include_archived": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "work_ref"
+      ]
+    },
+    "work_link": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "workspace_id": {
+          "type": "string",
+          "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "previous_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "archived": {
+          "type": "boolean"
+        },
+        "created_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "updated_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "actor_ref": {
+          "type": "string",
+          "pattern": "^actor_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "link_id": {
+          "type": "string",
+          "pattern": "^worklink_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/work_revision_ref"
+        },
+        "target_ref": {
+          "$ref": "#/$defs/work_revision_ref"
+        },
+        "relation": {
+          "enum": [
+            "adaptation",
+            "production",
+            "reference",
+            "continuation"
+          ]
+        }
+      },
+      "required": [
+        "schema_version",
+        "workspace_id",
+        "revision",
+        "previous_sha256",
+        "archived",
+        "created_at",
+        "updated_at",
+        "actor_ref",
+        "link_id",
+        "source_ref",
+        "target_ref",
+        "relation"
+      ]
+    },
+    "video_project_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "video_project_id": {
+          "type": "string",
+          "pattern": "^video_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "video_project_id",
+        "revision",
+        "sha256"
+      ]
+    },
+    "video_project": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "workspace_id": {
+          "type": "string",
+          "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "previous_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "archived": {
+          "type": "boolean"
+        },
+        "created_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "updated_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "actor_ref": {
+          "type": "string",
+          "pattern": "^actor_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "video_project_id": {
+          "type": "string",
+          "pattern": "^video_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "brief": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 100000
+        },
+        "language_tag": {
+          "enum": [
+            "zh-CN",
+            "en"
+          ]
+        },
+        "episode_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^vepisode_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "maxItems": 10000,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "schema_version",
+        "workspace_id",
+        "revision",
+        "previous_sha256",
+        "archived",
+        "created_at",
+        "updated_at",
+        "actor_ref",
+        "video_project_id",
+        "title",
+        "brief",
+        "language_tag",
+        "episode_refs"
+      ]
+    },
+    "video_create_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "brief": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 100000
+        },
+        "language_tag": {
+          "enum": [
+            "zh-CN",
+            "en"
+          ]
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "title",
+        "brief",
+        "language_tag",
+        "operation_key"
+      ]
+    },
+    "video_get_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "video_project_id": {
+          "type": "string",
+          "pattern": "^video_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "video_project_id"
+      ]
+    },
+    "video_update_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "project_ref": {
+          "$ref": "#/$defs/video_project_ref"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "brief": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 100000
+        },
+        "archived": {
+          "type": "boolean"
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "project_ref",
+        "title",
+        "brief",
+        "archived",
+        "operation_key"
+      ]
+    },
+    "video_episode": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "workspace_id": {
+          "type": "string",
+          "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "previous_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "archived": {
+          "type": "boolean"
+        },
+        "created_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "updated_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "actor_ref": {
+          "type": "string",
+          "pattern": "^actor_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "video_project_id": {
+          "type": "string",
+          "pattern": "^video_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "video_episode_id": {
+          "type": "string",
+          "pattern": "^vepisode_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "brief": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 100000
+        }
+      },
+      "required": [
+        "schema_version",
+        "workspace_id",
+        "revision",
+        "previous_sha256",
+        "archived",
+        "created_at",
+        "updated_at",
+        "actor_ref",
+        "video_project_id",
+        "video_episode_id",
+        "title",
+        "brief"
+      ]
+    },
+    "video_episode_create_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "project_ref": {
+          "$ref": "#/$defs/video_project_ref"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "brief": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 100000
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "project_ref",
+        "title",
+        "brief",
+        "operation_key"
+      ]
+    },
+    "video_episode_get_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "video_episode_id": {
+          "type": "string",
+          "pattern": "^vepisode_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "video_episode_id"
+      ]
+    },
+    "work_canon": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "workspace_id": {
+          "type": "string",
+          "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "owner_id": {
+          "type": "string",
+          "pattern": "^(drama|video)_[0-9a-f-]{36}$"
+        },
+        "work_ref": {
+          "$ref": "#/$defs/work_ref"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "previous_sha256": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          ]
+        },
+        "blueprint": {
+          "$ref": "urn:hetu:schema:blueprint:1.0.0"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "actor_ref": {
+          "type": "string",
+          "pattern": "^actor_[0-9a-f-]{36}$"
+        }
+      },
+      "required": [
+        "schema_version",
+        "workspace_id",
+        "owner_id",
+        "work_ref",
+        "revision",
+        "previous_sha256",
+        "blueprint",
+        "created_at",
+        "updated_at",
+        "actor_ref"
+      ]
+    },
+    "canon_initialize_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "work_ref": {
+          "$ref": "#/$defs/work_ref"
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "work_ref",
+        "operation_key"
+      ]
+    }
+  }
+}

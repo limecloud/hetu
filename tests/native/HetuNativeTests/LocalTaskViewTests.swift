@@ -84,6 +84,7 @@ enum LocalTaskViewTests {
         webConfiguration.userContentController.addUserScript(WKUserScript(source: """
             window.addEventListener('error', event => window.webkit.messageHandlers.hetuLocalViewTest.postMessage({error: String(event.message)}));
             window.addEventListener('unhandledrejection', event => window.webkit.messageHandlers.hetuLocalViewTest.postMessage({error: String(event.reason)}));
+            window.addEventListener('securitypolicyviolation', event => window.webkit.messageHandlers.hetuLocalViewTest.postMessage({error: 'CSP ' + event.effectiveDirective + ': ' + event.blockedURI}));
             setTimeout(() => window.webkit.messageHandlers.hetuLocalViewTest.postMessage({diagnostic: JSON.stringify({frame:window.top !== window, url:location.href, title:document.querySelector('h1')?.textContent, status:document.querySelector('#status')?.textContent})}), 3000);
             if (window.top !== window) {
               const inspect = () => {
@@ -94,7 +95,13 @@ enum LocalTaskViewTests {
             }
             """, injectionTime: .atDocumentEnd, forMainFrameOnly: false))
         let web = WKWebView(frame: NSRect(x: 0, y: 0, width: 1000, height: 720), configuration: webConfiguration)
-        defer { web.stopLoading(); webConfiguration.userContentController.removeScriptMessageHandler(forName: "hetuLocalViewTest") }
+        // 与实际内置浏览器一致地挂入窗口，避免离屏 WebView 的加载／计时器节流干扰握手验收。
+        let browserWindow = NSWindow(contentRect: web.frame, styleMask: [.titled, .closable], backing: .buffered, defer: false)
+        browserWindow.isReleasedWhenClosed = false
+        browserWindow.title = "Hetu local task view test"
+        browserWindow.contentView = web
+        browserWindow.orderBack(nil)
+        defer { web.stopLoading(); browserWindow.close(); webConfiguration.userContentController.removeScriptMessageHandler(forName: "hetuLocalViewTest") }
         web.load(URLRequest(url: origin))
         try await waitJavaScript(web, phase: "显示 WebKit 配对入口", script: "!!document.querySelector('#pair') && !document.querySelector('#pair').disabled")
         _ = try await web.evaluateJavaScript("document.querySelector('#pair').click()")
@@ -102,7 +109,7 @@ enum LocalTaskViewTests {
         manager.approve(manager.pairing[0])
         do { try await wait("加载 WebKit 参考方案") { probe.title == "Compare references" } }
         catch {
-            let state = try? await web.evaluateJavaScript("JSON.stringify({ready:document.readyState,status:document.querySelector('#status')?.textContent,frames:document.querySelectorAll('iframe').length})")
+            let state = try? await web.evaluateJavaScript("JSON.stringify({ready:document.readyState,visible:document.visibilityState,status:document.querySelector('#status')?.textContent,frames:document.querySelectorAll('iframe').length,src:document.querySelector('iframe')?.getAttribute('src')})")
             throw LocalViewTestFailure(message: "WebKit 参考方案未加载：\(String(describing: state)), title=\(probe.title), running=\(manager.running), error=\(manager.errorKey ?? "none"), scriptErrors=\(probe.errors), frames=\(probe.diagnostics)")
         }
         let (_, forbidden) = try await request("api/rpc", body: tool("hetu_finalize_document", input: ["task_ref": ref]), csrf: csrf)

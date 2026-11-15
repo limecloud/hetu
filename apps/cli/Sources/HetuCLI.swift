@@ -28,6 +28,9 @@ struct HetuCLI {
                 hetu --client <客户端> call <hetu.action> --input <JSON 文件或 ->
                 hetu --client <客户端> --collaboration-dir <绝对目录> collaboration inspect
                 hetu --client <客户端> --collaboration-dir <绝对目录> call <hetu.action> --input <JSON 文件或 ->
+                hetu model-service status
+                hetu model-service login
+                hetu model-service poll
                 hetu --workspace <目录> capabilities
                 hetu --workspace <目录> --task <任务 ID> call <hetu.action> --input <JSON 文件或 ->
                 hetu --creation-project <目录> --task <任务 ID> call <hetu.action> --input <JSON 文件或 ->
@@ -47,6 +50,11 @@ struct HetuCLI {
                 guard catalog["status"].string == "succeeded" else { throw CoreError.business(catalog) }
                 guard let version = catalog["data"]["version"].string else { throw CoreError.invalidResponse }
                 print("hetu \(version)")
+                return
+            }
+            if args.first == "model-service" {
+                let result = try await ModelServiceCommand.run(Array(args.dropFirst()))
+                FileHandle.standardOutput.write(try result.encoded() + Data([10]))
                 return
             }
             if args.first == "--client" {

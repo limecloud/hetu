@@ -1,6 +1,7 @@
 mod resources;
 mod ui;
 mod stable;
+mod model_confirmation;
 pub use stable::StableServer;
 
 use hetu_core::Kernel;

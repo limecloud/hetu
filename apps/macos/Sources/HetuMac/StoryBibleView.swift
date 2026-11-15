@@ -54,23 +54,25 @@ struct StoryBibleView: View {
         VStack(alignment: .leading, spacing: 16) {
             WorkbenchHeading(title: model.t("bible.title"), subtitle: model.t("bible.description"), artwork: items.isEmpty ? "" : "story-world") {
                 Button { Task { await artwork.load(model: model) } } label: { Image(systemName: "arrow.clockwise") }.accessibilityLabel(model.t("common.refresh")).disabled(artwork.loading)
-                ArtworkAgentButton(model: model)
-                Button(model.t("bible.history")) { history = true }
-                Button(model.t(model.locked ? "bible.unlock" : "bible.lock")) { lockError = nil; confirmLock = true }
+                PageAgentButton(model: model, page: "bible")
+                Button(model.t("bible.history")) { history = true }.disabled(!model.bibleInitialized)
+                Button(model.t(model.locked ? "bible.unlock" : "bible.lock")) { lockError = nil; confirmLock = true }.disabled(!model.bibleInitialized)
                 Button { selected = .null; editing = true } label: { Label(model.t("entity.add"), systemImage: "plus") }
-                    .buttonStyle(WorkbenchButtonStyle(primary: true)).disabled(model.locked)
+                    .buttonStyle(WorkbenchButtonStyle(primary: true)).disabled(model.locked || !model.bibleInitialized)
             }
-            HStack {
+            if model.bibleInitialized { HStack {
                 Label(model.t(model.locked ? "bible.locked" : "bible.editable"), systemImage: model.locked ? "lock" : "lock.open")
                     .font(.system(size: 12)).foregroundStyle(WorkbenchPalette.jade).padding(.horizontal, 10).padding(.vertical, 5)
                     .background(WorkbenchPalette.jadeSoft, in: RoundedRectangle(cornerRadius: 4))
                 Spacer()
                 if kind.hasArchive { Toggle(model.t("entity.show_archived"), isOn: $showArchived).toggleStyle(.checkbox).font(.system(size: 12)) }
-            }
+            } }
             Picker(model.t("entity.category"), selection: $kind) {
                 ForEach(BibleKind.allCases) { kind in Text(model.t("entity.kind." + kind.rawValue)).tag(kind) }
             }.pickerStyle(.segmented).labelsHidden()
-            if items.isEmpty {
+            if !model.bibleInitialized {
+                WorkbenchEmptyState(title: model.t("bible.not_initialized"), detail: model.t("bible.not_initialized_detail"), artwork: "story-world")
+            } else if items.isEmpty {
                 WorkbenchEmptyState(title: model.t("entity.empty"), detail: model.t("entity.empty_detail"), artwork: "story-world")
             } else {
                 ScrollView {
@@ -89,7 +91,7 @@ struct StoryBibleView: View {
 
             }
         }.padding(28).workbenchPage()
-        .task(id: model.workspaceID) { await artwork.load(model: model) }
+        .task(id: model.currentWorkID) { await artwork.load(model: model) }
         .onChange(of: phase) { _, phase in if phase == .active && !artwork.loading { Task { await artwork.load(model: model) } } }
         .sheet(isPresented: Binding(get: { viewingEntity != .null }, set: { if !$0 { viewingEntity = .null } })) {
             EntityArtworkSheet(model: model, kind: kind, entity: viewingEntity)

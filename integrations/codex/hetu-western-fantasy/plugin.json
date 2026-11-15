@@ -1,6 +1,6 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "hetu-western-fantasy",
-  "version": "0.2.7",
+  "version": "0.3.0",
   "description": "河图洛书西方奇幻创作套件：任务流程与本题材方法，按作品选择安装"
 }

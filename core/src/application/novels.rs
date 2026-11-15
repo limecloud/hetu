@@ -12,7 +12,8 @@ pub(super) fn stage_initial_novel(
     chapters: Vec<Value>,
     changes: &mut Changes,
 ) -> Result<Value> {
-    let novel = json!({"schema_version":"1.0.0","workspace_id":workspace_id,"novel_id":id("novel"),"revision":1,"previous_sha256":null,"metadata":metadata,"volumes":[],"chapters":chapters,"created_at":now(),"updated_at":now()});
+    let created_at = now();
+    let novel = json!({"schema_version":"1.0.0","workspace_id":workspace_id,"novel_id":id("novel"),"revision":1,"previous_sha256":null,"metadata":metadata,"volumes":[],"chapters":chapters,"created_at":created_at,"updated_at":created_at});
     stage_novel(store, &novel, changes)?;
     Ok(novel)
 }
@@ -44,6 +45,13 @@ fn stage_novel(store: &Store, novel: &Value, changes: &mut Changes) -> Result<()
 
 impl Kernel {
     pub(super) fn novel(&self) -> Result<Option<Value>> {
+        let record = self.novel_record()?;
+        if let Some(novel) = &record { self.validate_novel_structure(novel, &[])?; }
+        Ok(record)
+    }
+
+    /// 已校验的目录记录身份；事务投影不再次遍历尚未发布的新正文目录。
+    pub(super) fn novel_record(&self) -> Result<Option<Value>> {
         let exists = self.store.exists(NOVEL_PATH)?;
         ensure(
             exists == self.store.exists(HEAD_PATH)?
@@ -72,7 +80,6 @@ impl Kernel {
             "hetu.integrity_failure",
             "小说资料与不可变历史修订不一致。",
         )?;
-        self.validate_novel_structure(&novel, &[])?;
         Ok(Some(novel))
     }
 

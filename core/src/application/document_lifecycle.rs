@@ -148,7 +148,7 @@ impl Kernel {
             content.replace_range(integer(&selected["target"], "byte_start")? as usize..integer(&selected["target"], "byte_end")? as usize, replacement);
         }
         ensure(content.len() <= 4_000_000, "hetu.budget_exceeded", "采纳后的正文超过大小限制。")?;
-        let bp = self.blueprint()?;
+        let bp = self.draft_blueprint(draft, true)?.0;
         let snapshot = json!({"workspace_id":self.scope(),"draft":draft,"target_document":target["document"],"target_revision":target["revision"],"blueprint_revision":bp["revision"],"blueprint_sha256":digest(bytes(&bp)?)});
         Ok((seal(json!({"request":input,"snapshot":snapshot,"result_sha256":digest(&content)}))?, content))
     }
@@ -184,7 +184,7 @@ impl Kernel {
 
     pub(super) fn validate_document(&self, input: &Value, changes: &mut Changes) -> Result<Value> {
         let value = self.lifecycle_document(&input["document_ref"])?;
-        let (bp, sha) = self.blueprint_revision(None)?;
+        let (bp, sha) = self.document_blueprint(&value["document"])?;
         let sources = vec![input["document_ref"].clone()];
         let documents = self.plot_documents(&sources)?;
         let plot = plot::extract(&documents, &bp, &sha, serde_json::from_value(input["plot_options"].clone())?, self.actor())?;
@@ -199,7 +199,7 @@ impl Kernel {
         let value = self.lifecycle_document(&input["document_ref"])?;
         let document = &value["document"];
         ensure(document["finalization_ref"] == input["expected_finalization_ref"], "revision_conflict", "当前定稿指针已变化。")?;
-        let bp = self.blueprint()?;
+        let bp = self.document_blueprint(document)?.0;
         let evidence = json!({"evidence_document_id":input["document_ref"]["document_id"],"evidence_revision_id":input["document_ref"]["revision_id"],"content_sha256":input["document_ref"]["sha256"],"blueprint_revision":bp["revision"],"blueprint_sha256":digest(bytes(&bp)?)});
         let blocker = match self.approval_evidence(&evidence, input) {
             Ok(_) => Value::Null,

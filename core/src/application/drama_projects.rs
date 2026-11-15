@@ -80,6 +80,7 @@ impl Kernel {
         let project = json!({"schema_version":"2.0.0","project_id":id("drama"),"workspace_id":self.scope(),"revision":1,"previous_sha256":null,
             "title":input["title"],"description":input["description"].as_str().unwrap_or(""),"mode":mode,"source_refs":source_refs,"archived":false,"skeleton_ids":[],"episode_refs":[],"created_at":now(),"updated_at":now(),"actor_ref":self.actor()});
         let sha = self.stage_drama_project(&project, changes)?;
+        self.stage_new_work_canon(&self.work_ref("drama", &project["project_id"]), changes)?;
         Ok(json!({"project":project,"sha256":sha,"episodes":[]}))
     }
     pub(super) fn get_drama_project(&self, input: &Value) -> Result<Value> {
@@ -87,7 +88,9 @@ impl Kernel {
     }
     pub(super) fn list_drama_projects(&self, input: &Value) -> Result<Value> {
         let mut projects = Vec::new();
+        let scope = self.granted_work()?;
         for name in self.record_ids(PROJECTS, "drama")? {
+            if scope.as_ref().is_some_and(|reference| reference["object_id"] != name) { continue; }
             let project = self.drama_project(&name)?;
             if input["include_archived"] == true || project["archived"] != true {
                 projects.push(json!({"project":project,"sha256":digest(bytes(&project)?)}));
@@ -187,8 +190,9 @@ impl Kernel {
             .iter()
             .position(|e| *e == episode["episode_id"])
             .map(|i| i + 1);
+        let manuscript = self.document_manuscript(text(&episode, "document_id")?)?;
         Ok(
-            json!({"episode":episode,"sha256":sha,"is_head":episode["revision"]==current["revision"],"episode_number":number,
+            json!({"episode":episode,"sha256":sha,"is_head":episode["revision"]==current["revision"],"episode_number":number,"manuscript":manuscript,
             "project_ref":{"project_id":project["project_id"],"revision":project["revision"],"sha256":digest(bytes(&project)?)}}),
         )
     }

@@ -11,13 +11,14 @@ struct AuthorLibraryView: View {
     let onAdd: () -> Void
     @State private var agentEntry: AgentEntryPoint?
     @State private var deletionEntry: LibraryEntry?
-    @State private var search = ""
-    @State private var status = "all"
-    @AppStorage("Hetu.library.list") private var listMode = false
+    @SceneStorage("Hetu.library.search") private var search = ""
+    @SceneStorage("Hetu.library.status") private var status = "all"
+    @SceneStorage("Hetu.library.kind") private var kind = "all"
+    @AppStorage("Hetu.library.list") private var listMode = true
     private let statuses = ["planning", "writing", "completed", "archived"]
     private var entries: [LibraryEntry] {
         model.libraryEntries.filter {
-            (status == "all" || $0.status == status) && (search.isEmpty || [$0.title, $0.authorName, $0.genre].contains { $0.localizedStandardContains(search) })
+            (kind == "all" || $0.contentType == kind) && (status == "all" || $0.status == status) && (search.isEmpty || [$0.title, $0.authorName, $0.genre].contains { $0.localizedStandardContains(search) })
         }
     }
     var body: some View {
@@ -56,14 +57,16 @@ struct AuthorLibraryView: View {
         VStack(alignment: .leading, spacing: 6) {
             Text(model.t("library.collection")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted).padding(.horizontal, 12).padding(.bottom, 8)
             filter("all", "library.all")
-            ForEach(statuses, id: \.self) { value in filter(value, "novel.status." + value) }
+            ForEach(["novel", "drama", "video"], id: \.self) { value in filter(value, "creation.type." + value) }
             Spacer()
-            Text(model.t("library.local")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted).lineSpacing(4).padding(12)
+            Button { agentEntry = .mcp } label: {
+                Label(model.t("agent.access.title"), systemImage: "sparkles").font(.system(size: 14))
+            }.buttonStyle(.plain).padding(12)
         }.padding(16).frame(width: 190).frame(maxHeight: .infinity).background(WorkbenchPalette.surface.opacity(0.22))
     }
     private var libraryContent: some View {
         VStack(alignment: .leading, spacing: 22) {
-            libraryBanner
+            if model.libraryEntries.isEmpty { libraryBanner }
             controls
             if model.libraryEntries.isEmpty {
                 VStack(spacing: 16) {
@@ -72,18 +75,31 @@ struct AuthorLibraryView: View {
                     Text(model.t("library.empty_detail")).font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted).multilineTextAlignment(.center).frame(maxWidth: 420)
                 }.frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if entries.isEmpty {
-                ContentUnavailableView.search(text: search)
+                ContentUnavailableView {
+                    Label(model.t("library.no_matches"), systemImage: "magnifyingglass")
+                        .font(.system(size: 20, weight: .semibold))
+                } description: {
+                    if !search.isEmpty {
+                        Text(search).font(.system(size: 14)).lineLimit(2).frame(maxWidth: 420)
+                    }
+                } actions: {
+                    Button(model.t("library.clear_filters")) { search = ""; status = "all"; kind = "all" }
+                }
             } else { collection }
         }
     }
     private var controls: some View {
         HStack {
-            Text(model.t(status == "all" ? "library.all" : "novel.status." + status)).font(.system(size: 14, weight: .semibold))
+            Text(model.t(kind == "all" ? "library.all" : "creation.type." + kind)).font(.system(size: 14, weight: .semibold))
             Text("\(entries.count)").foregroundStyle(WorkbenchPalette.muted)
             Spacer()
+            Picker(model.t("library.status"), selection: $status) {
+                Text(model.t("library.all_statuses")).tag("all")
+                ForEach(statuses, id: \.self) { Text(model.t("novel.status." + $0)).tag($0) }
+            }.labelsHidden().accessibilityLabel(model.t("library.status")).frame(maxWidth: 140)
             HStack(spacing: 7) {
                 Image(systemName: "magnifyingglass").foregroundStyle(WorkbenchPalette.muted).accessibilityHidden(true)
-                TextField(model.t("library.search"), text: $search).textFieldStyle(.plain)
+                TextField(model.t("library.search"), text: $search).textFieldStyle(.plain).accessibilityLabel(model.t("library.search"))
             }.padding(.horizontal, 10).padding(.vertical, 8).frame(width: 240).workbenchSurface(radius: 8)
             Picker(model.t("library.layout"), selection: $listMode) {
                 Image(systemName: "square.grid.2x2").tag(false)
@@ -111,7 +127,7 @@ struct AuthorLibraryView: View {
     private func libraryRow(_ entry: LibraryEntry) -> some View {
         Button { onOpen(entry) } label: {
             HStack(spacing: 18) {
-                BookCoverView(title: entry.title, author: entry.authorName, identity: entry.workspaceID, compact: true, imageData: entry.coverPreview, titleOverlay: entry.coverTitle, authorOverlay: entry.coverAuthor).frame(width: 42, height: 63)
+                WorkLibraryThumbnail(entry: entry, compact: true).frame(width: 48, height: 64)
                 VStack(alignment: .leading, spacing: 6) {
                     Text(entry.title).font(.system(size: 14, weight: .semibold))
                     workSubtitle(entry)
@@ -132,7 +148,7 @@ struct AuthorLibraryView: View {
     private func bookCard(_ entry: LibraryEntry) -> some View {
         Button { onOpen(entry) } label: {
             VStack(alignment: .leading, spacing: 10) {
-                BookCoverView(title: entry.title, author: entry.authorName, identity: entry.workspaceID, imageData: entry.coverPreview, titleOverlay: entry.coverTitle, authorOverlay: entry.coverAuthor).aspectRatio(2.0 / 3.0, contentMode: .fit)
+                WorkLibraryThumbnail(entry: entry).frame(height: 220)
                 Text(entry.title).font(.system(size: 14, weight: .semibold)).lineLimit(1)
                 workSubtitle(entry)
                 HStack {
@@ -148,26 +164,29 @@ struct AuthorLibraryView: View {
         }.buttonStyle(WorkbenchNavigationStyle()).help(propertySummary(entry)).accessibilityLabel(entry.title).accessibilityValue(accessibleStatus(entry))
             .contextMenu { deletionMenu(entry) }
     }
-    private func deletionMenu(_ entry: LibraryEntry) -> some View {
+    @ViewBuilder private func deletionMenu(_ entry: LibraryEntry) -> some View {
+        Button { Task { await model.removeLibraryEntry(entry) } } label: {
+            Label(model.t("library.remove_registration"), systemImage: "minus.circle")
+        }
         Button(role: .destructive) { deletionEntry = entry } label: {
             Label(model.t("library.delete.menu"), systemImage: "trash")
         }
     }
     private func workSubtitle(_ entry: LibraryEntry) -> some View {
         HStack(spacing: 8) {
-            Text(model.t(entry.contentType == "drama" ? "creation.type.drama" : "creation.type.novel"))
+            Text(model.t("creation.type." + entry.contentType))
             if !entry.authorName.isEmpty { Text(entry.authorName) }
         }.font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted).lineLimit(1)
     }
     private func accessibleStatus(_ entry: LibraryEntry) -> String {
-        let type = model.t(entry.contentType == "drama" ? "creation.type.drama" : "creation.type.novel")
+        let type = model.t("creation.type." + entry.contentType)
         let count = entry.contentType == "novel" ? ", " + model.t("novel.chapter_count", ["count": String(entry.chapterCount)]) : ""
         return type + ", " + model.t("novel.status." + entry.status) + count + ", " + propertySummary(entry)
     }
     private func propertySummary(_ entry: LibraryEntry) -> String {
         [model.t("properties.created") + " " + (entry.createdAt.map(model.localizer.date) ?? model.t("properties.not_recorded")),
          model.t("properties.updated") + " " + (entry.updatedAt.map(model.localizer.date) ?? model.t("properties.not_recorded")),
-         model.t("properties.last_opened") + " " + entry.lastOpenedAt.formatted(date: .numeric, time: .standard), entry.path].joined(separator: "\n")
+         model.t("properties.last_opened") + " " + (entry.lastOpenedAt.map { $0.formatted(date: .numeric, time: .standard) } ?? model.t("properties.not_recorded")), entry.path].joined(separator: "\n")
     }
     private var libraryBanner: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -195,15 +214,15 @@ struct AuthorLibraryView: View {
             .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(WorkbenchPalette.line, lineWidth: 0.5))
     }
     private func filter(_ value: String, _ key: String) -> some View {
-        Button { status = value } label: {
+        Button { kind = value } label: {
             HStack {
-                Image(systemName: ["all": "books.vertical", "planning": "lightbulb", "writing": "pencil.line", "completed": "checkmark.seal", "archived": "archivebox"][value] ?? "book")
+                Image(systemName: ["all": "square.grid.2x2", "novel": "book", "drama": "doc.text", "video": "film"][value] ?? "book")
                     .frame(width: 18).accessibilityHidden(true)
                 Text(model.t(key))
                 Spacer()
-                Text("\(model.libraryEntries.filter { value == "all" || $0.status == value }.count)").font(.system(size: 12))
-            }.padding(12).foregroundStyle(status == value ? WorkbenchPalette.jade : WorkbenchPalette.ink)
-        }.buttonStyle(WorkbenchNavigationStyle(selected: status == value)).accessibilityAddTraits(status == value ? .isSelected : [])
+                Text("\(model.libraryEntries.filter { value == "all" || $0.contentType == value }.count)").font(.system(size: 12))
+            }.padding(12).foregroundStyle(kind == value ? WorkbenchPalette.jade : WorkbenchPalette.ink)
+        }.buttonStyle(WorkbenchNavigationStyle(selected: kind == value)).accessibilityAddTraits(kind == value ? .isSelected : [])
     }
     private func statusBadge(_ value: String) -> some View {
         Text(model.t("novel.status." + value)).font(.system(size: 12, weight: .medium)).foregroundStyle(WorkbenchPalette.jade)

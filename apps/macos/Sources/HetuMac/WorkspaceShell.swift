@@ -37,6 +37,12 @@ struct WorkspaceShell<Content: View>: View {
     @ViewBuilder let content: () -> Content
 
     @State private var collapsedVolumes: Set<String> = []
+    @State private var showResources = false
+    @State private var showManagement = false
+    @State private var showChecks = false
+    @State private var showProjectNavigation = true
+    @State private var showContents = true
+    @State private var contentsPopover = false
 
     private var group: String {
         if selection.hasPrefix("draft_") { return "reviews" }
@@ -45,15 +51,19 @@ struct WorkspaceShell<Content: View>: View {
     }
     private var chapterItems: [DocumentItem] { model.orderedChapters }
     var body: some View {
+        GeometryReader { geometry in
+        let canPinContents = WorkspaceNavigation.canPinContents(width: geometry.size.width, locale: locale, projectNavigation: showProjectNavigation)
         VStack(spacing: 0) {
-            topbar
+            topbar(canPinContents: canPinContents)
             Rectangle().fill(WorkbenchPalette.line).frame(height: 0.5)
             HStack(spacing: 0) {
-                navigation
-                Rectangle().fill(WorkbenchPalette.line).frame(width: 1)
-                if group == "novel" {
+                if showProjectNavigation {
+                    navigation
+                    Rectangle().fill(WorkbenchPalette.line).frame(width: 0.5)
+                }
+                if group == "novel" && canPinContents && showContents {
                     chapters
-                    Rectangle().fill(WorkbenchPalette.line).frame(width: 1)
+                    Rectangle().fill(WorkbenchPalette.line).frame(width: 0.5)
                 }
                 content().frame(maxWidth: .infinity, maxHeight: .infinity)
             }
@@ -62,15 +72,27 @@ struct WorkspaceShell<Content: View>: View {
         .background { WorkbenchBackdrop().ignoresSafeArea() }.tint(WorkbenchPalette.jade)
         .buttonStyle(WorkbenchButtonStyle())
         .task(id: model.workspaceID) { await model.monitorWriteAccess() }
-    }
-    private var topbar: some View {
-        HStack(spacing: 20) {
-            HStack(spacing: 9) {
-                Image(nsImage: NSApp.applicationIconImage).resizable().scaledToFit().frame(width: 34, height: 34).accessibilityHidden(true)
-                Text(model.t("brand.name")).font(.system(size: 20, weight: .semibold))
-                if locale != "en" { Text("Hetu Luoshu").font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted) }
+        .onChange(of: group, initial: true) { _, page in
+            switch WorkspaceNavigation.group(for: page) {
+            case .resources: showResources = true
+            case .management: showManagement = true
+            case .checks: showChecks = true
+            case nil: break
             }
-            Rectangle().fill(WorkbenchPalette.line).frame(width: 1, height: 24)
+        }
+        .onChange(of: selection) { _, id in
+            contentsPopover = false
+            if let chapter = model.chapters.first(where: { $0["document_id"].string == id }), let volume = chapter["volume_id"].string {
+                collapsedVolumes.remove(volume)
+            }
+        }
+        }
+    }
+    private func topbar(canPinContents: Bool) -> some View {
+        HStack(spacing: 14) {
+            Button { showProjectNavigation.toggle() } label: { Image(systemName: "sidebar.left") }
+                .buttonStyle(.plain).help(model.t("shell.project_navigation")).accessibilityLabel(model.t("shell.project_navigation"))
+                .accessibilityValue(model.t(showProjectNavigation ? "shell.navigation.shown" : "shell.navigation.hidden"))
             Menu {
                 Button(model.t("library.back"), action: onLibrary)
                 Divider()
@@ -79,11 +101,21 @@ struct WorkspaceShell<Content: View>: View {
             } label: {
                 HStack(spacing: 7) {
                     Text(model.title).lineLimit(1)
-                    Text(model.t("shell.workspace")).foregroundStyle(WorkbenchPalette.muted)
+                    Text(model.t("creation.type." + model.workType)).foregroundStyle(WorkbenchPalette.muted)
                 }.font(.system(size: 14))
-            }.menuStyle(.borderlessButton).fixedSize().accessibilityLabel(model.t("shell.switch_workspace"))
+            }.menuStyle(.borderlessButton).frame(maxWidth: 340, alignment: .leading).accessibilityLabel(model.t("shell.switch_workspace"))
+            if group == "novel" {
+                Button {
+                    if canPinContents { showContents.toggle() } else { contentsPopover.toggle() }
+                } label: { Image(systemName: "list.bullet.indent") }
+                    .buttonStyle(.plain).help(model.t("shell.contents")).accessibilityLabel(model.t("shell.contents"))
+                    .accessibilityValue(model.t((canPinContents ? showContents : contentsPopover) ? "shell.navigation.shown" : "shell.navigation.hidden"))
+                    .popover(isPresented: $contentsPopover, arrowEdge: .bottom) { chapters.frame(height: 520) }
+            }
             Spacer(minLength: 12)
-            PageAgentButton(model: model, page: handoffPage, object: handoffObject)
+            if !model.documentID.isEmpty || selection == "novel" {
+                PageAgentButton(model: model, page: handoffPage, object: handoffObject)
+            }
             if model.writeLocked {
                 Label(model.t("workspace.read_only"), systemImage: "lock")
                     .font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
@@ -93,24 +125,25 @@ struct WorkspaceShell<Content: View>: View {
                     .font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted).lineLimit(1)
             }
             if model.busy { ProgressView().controlSize(.small).accessibilityLabel(model.t("common.working")) }
-            Button(locale == "en" ? "中文" : "EN") { locale = locale == "en" ? "zh-CN" : "en" }
-                .buttonStyle(.plain).font(.system(size: 12)).help(model.t("language.title"))
             WorkbenchSettingsButton(locale: locale)
             WorkspaceZoomButton(localizer: model.localizer)
-            Button(model.t("document.save")) { Task { _ = await model.save() } }
-                .buttonStyle(WorkbenchButtonStyle(primary: true))
-                .disabled(model.writeLocked || !model.needsProtection || model.documentID.isEmpty || model.isComposing)
-            Button(action: onInspector) { Image(systemName: "sidebar.right") }
-                .buttonStyle(.plain).help(model.t("inspector.title")).accessibilityLabel(model.t("inspector.title"))
+            if !model.documentID.isEmpty {
+                Button(model.t("document.save")) { Task { _ = await model.save() } }
+                    .buttonStyle(WorkbenchButtonStyle(primary: true))
+                    .disabled(model.writeLocked || !model.needsProtection || model.isComposing)
+                Button(action: onInspector) { Image(systemName: "sidebar.right") }
+                    .buttonStyle(.plain).help(model.t("inspector.title")).accessibilityLabel(model.t("inspector.title"))
+            }
             Menu {
+                Button(locale == "en" ? "中文" : "English") { locale = locale == "en" ? "zh-CN" : "en" }
                 Button(model.t("common.refresh")) { Task { await model.refresh() } }
                 Button(model.t("workspace.open"), action: onOpenWorkspace)
             } label: { Image(systemName: "ellipsis") }.menuStyle(.borderlessButton).fixedSize().accessibilityLabel(model.t("shell.actions"))
-        }.padding(.horizontal, 24).frame(height: 70).background(WorkbenchPalette.surface.opacity(0.32))
+        }.padding(.horizontal, 20).frame(height: 56).background(WorkbenchPalette.surface.opacity(0.32))
     }
     private var handoffPage: String {
         if selection == model.documentID && !model.documentID.isEmpty { return "document" }
-        return ["book", "novel", "bible", "drama", "reviews", "git", "media", "delivery", "plot", "validation"].contains(group) ? group : "book"
+        return ["book", "novel", "bible", "drama", "video", "related_works", "reviews", "git", "media", "delivery", "plot", "validation"].contains(group) ? group : "book"
     }
     private var handoffObject: JSONValue {
         guard selection == model.documentID, !model.documentID.isEmpty else { return .object([:]) }
@@ -122,27 +155,38 @@ struct WorkspaceShell<Content: View>: View {
                 .buttonStyle(.plain).foregroundStyle(WorkbenchPalette.muted).padding(.horizontal, 12).padding(.bottom, 16)
             ScrollView {
                 VStack(alignment: .leading, spacing: 7) {
-                    if model.workType != "drama" {
+                    if model.workType == "novel" {
                         nav("book", "novel.details", "book.closed")
                         nav("novel", "novel.title", "book")
                     }
-                    nav("bible", "bible.title", "square.3.layers.3d")
-                    nav("drama", "drama.title", "movieclapper")
+                    if model.workType == "drama" { nav("drama", "drama.title", "doc.text") }
+                    if model.workType == "video" { nav("video", "video.title", "film") }
                     nav("reviews", "shell.review", "checkmark.shield")
-                    nav("git", "shell.versions", "arrow.triangle.branch")
-                    nav("media", "media.title", "photo.on.rectangle.angled")
-                    nav("delivery", "delivery.title", "square.and.arrow.up")
+                    nav("related_works", "works.related", "link")
                     Rectangle().fill(WorkbenchPalette.line).frame(height: 0.5).padding(.vertical, 12)
-                    Text(model.t("shell.tools")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted).padding(.horizontal, 14)
-                    nav("plot", "plot.title", "list.bullet.rectangle")
-                    nav("validation", "validation.title", "waveform.path.ecg")
+                    DisclosureGroup(model.t("shell.group.resources"), isExpanded: $showResources) {
+                        nav("bible", "bible.title", "square.3.layers.3d")
+                        nav("media", "media.title", "photo.on.rectangle.angled")
+                    }.font(.system(size: 12)).padding(.horizontal, 8)
+                    DisclosureGroup(model.t("shell.group.management"), isExpanded: $showManagement) {
+                        nav("git", "shell.versions", "arrow.triangle.branch")
+                        nav("delivery", "delivery.title", "square.and.arrow.up")
+                    }.font(.system(size: 12)).padding(.horizontal, 8)
+                    DisclosureGroup(model.t("shell.group.checks"), isExpanded: $showChecks) {
+                        nav("plot", "plot.title", "list.bullet.rectangle")
+                        nav("validation", "validation.title", "waveform.path.ecg")
+                    }.font(.system(size: 12)).padding(.horizontal, 8)
                 }
             }.scrollIndicators(.hidden)
             HStack(spacing: 10) {
-                BookCoverView(title: model.title, author: "", identity: model.workspaceID, compact: true).frame(width: 32, height: 48)
+                if model.workType == "novel" {
+                    BookCoverView(title: model.title, author: "", identity: model.currentWorkID, compact: true).frame(width: 32, height: 48)
+                } else {
+                    Image(systemName: model.workType == "video" ? "film" : "doc.text").font(.system(size: 20)).foregroundStyle(WorkbenchPalette.muted).frame(width: 32, height: 48)
+                }
                 VStack(alignment: .leading, spacing: 5) {
                     Text(model.title).font(.system(size: 12, weight: .medium)).lineLimit(2)
-                    Text(model.t("shell.motto")).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted).lineSpacing(3)
+                    Text(model.t("creation.type." + model.workType)).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
                 }
             }.padding(10)
         }.padding(.horizontal, 10).padding(.top, 20).padding(.bottom, 12).frame(width: locale == "en" ? 190 : 170).background(WorkbenchPalette.surface.opacity(0.22))
@@ -160,14 +204,15 @@ struct WorkspaceShell<Content: View>: View {
     private var chapters: some View {
         VStack(alignment: .leading, spacing: 18) {
             HStack {
-                Text(model.title).font(.system(size: 14, weight: .semibold)).lineLimit(1)
+                Text(model.t("shell.contents")).font(.system(size: 14, weight: .semibold)).lineLimit(1)
                 Spacer()
-                Button(action: onNewDocument) { Image(systemName: "plus") }.buttonStyle(.plain).accessibilityLabel(model.t("document.new"))
+                Menu {
+                    Button(model.t("document.new"), action: onNewDocument)
+                    Button(model.t("novel.manage_structure"), action: onManageStructure)
+                } label: { Image(systemName: "ellipsis") }
+                    .menuStyle(.borderlessButton).fixedSize().accessibilityLabel(model.t("shell.actions"))
+                    .disabled(model.novel["initialized"].bool != true)
             }.padding(.horizontal, 10)
-            Button(action: onNewDocument) { Label(model.t("document.new"), systemImage: "plus").frame(maxWidth: .infinity) }
-                .disabled(model.novel["initialized"].bool != true)
-            Button(model.t("novel.manage_structure"), action: onManageStructure).buttonStyle(.plain).font(.system(size: 12)).foregroundStyle(WorkbenchPalette.muted)
-                .disabled(model.novel["initialized"].bool != true)
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 4) {
                     chapterGroup(nil)

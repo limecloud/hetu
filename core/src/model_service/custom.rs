@@ -166,6 +166,9 @@ impl ModelService {
                             "提供方结果未知；保留原计划，不要重复生成。",
                         )
                     })?;
+                if response.status().as_u16() == 402 {
+                    return Err(Error::new("hetu.credits_insufficient", "自定义渠道余额不足，请在当前Agent对话提示充值；充值后先核对原计划，不自动重发。"));
+                }
                 ensure(
                     response.status().is_success(),
                     "hetu.model_provider_rejected",
@@ -253,11 +256,6 @@ impl ModelService {
             let input = input.ok_or_else(|| Error::new("invalid_input", "缺少固定生成输入。"))?;
             let kind = text(input, "kind")?.to_owned();
             ensure(
-                self.selected_identity(&self.settings()?, &kind)? == *expected,
-                "forbidden",
-                "当前模型渠道已切换，请核对原计划。",
-            )?;
-            ensure(
                 matches!(kind.as_str(), "text" | "image")
                     && input["provider_billing_accepted"] == true,
                 "hetu.author_confirmation_required",
@@ -293,7 +291,20 @@ impl ModelService {
             (profile, secret, kind, wire, input_sha)
         };
         // 不持有作品或连接锁；发送标记已落盘，重启及并发调用仅回读本机原结果。
-        let response = send(&profile, &secret, &wire, &kind)?;
+        let response = match send(&profile, &secret, &wire, &kind) {
+            Ok(value) => value,
+            Err(error) => {
+                if error.code == "hetu.credits_insufficient" {
+                    let _guard = self.store.lock()?;
+                    let mut saved = self.store.json(&journal)?;
+                    saved["result"]["operation"]["status"] = json!("failed");
+                    saved["result"]["operation"]["error_code"] = json!("HETU_PROVIDER_BALANCE_INSUFFICIENT");
+                    saved["result"]["operation"]["billing"]["state"] = json!("not_reserved");
+                    self.store.transaction(&BTreeMap::from([(journal, encoded(&saved)?)]))?;
+                }
+                return Err(error);
+            }
+        };
         let mut media = None;
         let output = if kind == "image" {
             ensure(
@@ -466,6 +477,21 @@ mod tests {
                 .code,
             "forbidden"
         );
+    }
+    #[test]
+    fn insufficient_provider_balance_is_terminal_and_recovers_without_resending() {
+        let (_root, service, identity, key) = service();
+        let path = format!("/operations/{key}");
+        assert_eq!(service.custom_api_with("POST", &path, Some(&input()), &identity,
+            |_, _, _, _| Err(Error::new("hetu.credits_insufficient", "402"))).unwrap_err().code, "hetu.credits_insufficient");
+        let body = input();
+        for method in ["GET", "POST"] {
+            let original = service.custom_api_with(method, &path, if method == "POST" {Some(&body)} else {None}, &identity,
+                |_, _, _, _| panic!("余额不足后的原键只能回读")).unwrap();
+            assert_eq!(original["operation"]["status"], "failed");
+            assert_eq!(original["operation"]["error_code"], "HETU_PROVIDER_BALANCE_INSUFFICIENT");
+            assert_eq!(original["operation"]["billing"]["state"], "not_reserved");
+        }
     }
     #[test]
     fn unknown_provider_request_is_sent_once_and_only_original_journal_can_be_read() {

@@ -360,12 +360,31 @@
             "revision": {
               "type": "integer",
               "minimum": 1
+            },
+            "work_ref": {
+              "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+            },
+            "blueprint_id": {
+              "type": "string",
+              "pattern": "^blueprint_[0-9a-f-]{36}$"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
             }
           },
           "required": [
             "kind",
             "revision"
-          ]
+          ],
+          "dependentRequired": {
+            "work_ref": [
+              "blueprint_id"
+            ],
+            "blueprint_id": [
+              "work_ref"
+            ]
+          }
         }
       ]
     },
@@ -507,6 +526,12 @@
         },
         "resource_scope": {
           "$ref": "#/$defs/resource_scope"
+        },
+        "target_ref": {
+          "$ref": "#/$defs/target_ref"
+        },
+        "work_ref": {
+          "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
         }
       },
       "required": [
@@ -592,6 +617,12 @@
         },
         "resource_scope": {
           "$ref": "#/$defs/resource_scope"
+        },
+        "target_ref": {
+          "$ref": "#/$defs/target_ref"
+        },
+        "work_ref": {
+          "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
         }
       },
       "required": [
@@ -645,6 +676,10 @@
           "type": "integer",
           "minimum": 1,
           "maximum": 100
+        },
+        "target_document_id": {
+          "type": "string",
+          "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
         }
       },
       "required": []
@@ -1167,6 +1202,24 @@
               ]
             },
             {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "video_project_id": {
+                  "type": "string",
+                  "pattern": "^video_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                }
+              },
+              "required": [
+                "workspace_id",
+                "video_project_id"
+              ]
+            },
+            {
               "type": "null"
             }
           ]
@@ -1458,6 +1511,9 @@
               "pattern": "^[0-9a-f]{64}$"
             }
           }
+        },
+        "target_ref": {
+          "$ref": "#/$defs/target_ref"
         }
       },
       "required": [
@@ -2020,7 +2076,8 @@
         "work_type": {
           "enum": [
             "novel",
-            "drama"
+            "drama",
+            "video"
           ]
         },
         "drama_mode": {
@@ -2047,7 +2104,10 @@
           "if": {
             "properties": {
               "work_type": {
-                "const": "novel"
+                "enum": [
+                  "novel",
+                  "video"
+                ]
               }
             }
           },
@@ -3061,7 +3121,15 @@
       "type": "object"
     },
     "image_view": {
-      "enum": ["portrait", "front", "side", "back", "three_view", "expression", "detail"]
+      "enum": [
+        "portrait",
+        "front",
+        "side",
+        "back",
+        "three_view",
+        "expression",
+        "detail"
+      ]
     },
     "image_subject_ref": {
       "oneOf": [
@@ -3080,13 +3148,28 @@
             "blueprint_revision": {
               "type": "integer",
               "minimum": 1
+            },
+            "work_ref": {
+              "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+            },
+            "blueprint_id": {
+              "type": "string",
+              "pattern": "^blueprint_[0-9a-f-]{36}$"
             }
           },
           "required": [
             "kind",
             "entity_ref",
             "blueprint_revision"
-          ]
+          ],
+          "dependentRequired": {
+            "work_ref": [
+              "blueprint_id"
+            ],
+            "blueprint_id": [
+              "work_ref"
+            ]
+          }
         },
         {
           "type": "object",
@@ -3110,6 +3193,85 @@
             "revision_id"
           ]
         }
+      ]
+    },
+    "target_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "document_id": {
+          "type": "string",
+          "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "revision_id": {
+          "type": "string",
+          "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "document_id",
+        "revision_id",
+        "sha256"
+      ]
+    },
+    "create_video_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "project_id": {
+          "type": "string",
+          "pattern": "^project_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "expected": {
+          "$ref": "#/$defs/expected"
+        },
+        "target_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "profile": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "brief": {
+              "type": "string",
+              "maxLength": 100000
+            },
+            "language_tag": {
+              "enum": [
+                "zh-CN",
+                "en"
+              ]
+            }
+          },
+          "required": [
+            "title",
+            "brief",
+            "language_tag"
+          ]
+        }
+      },
+      "required": [
+        "project_id",
+        "expected",
+        "profile",
+        "target_path",
+        "operation_key"
       ]
     }
   }
