@@ -35,7 +35,7 @@ async fn main() -> ExitCode {
     ) && args.next().is_none()
     {
         println!(
-            "河图洛书 MCP Server / Hetu Luoshu MCP Server\n\nhetu-mcp --client <codex|claude-code|workbuddy|generic> [--collaboration-dir <absolute path>]\nhetu-mcp --workspace <absolute path> [--task <task_id>]\nhetu-mcp --creation-project <absolute path> --task <task_id>\n\nstdio / MCP 2026-07-28 / Agent 权限"
+            "河图洛书 MCP Server / Hetu Luoshu MCP Server\n\nhetu-mcp --client <codex|claude-code|workbuddy|generic> [--collaboration-dir <absolute path>]\nhetu-mcp --workspace <absolute path> [--task <task_id>]\nhetu-mcp --creation-project <absolute path> --task <task_id>\n\nstdio / MCP 2026-07-28, 2025-06-18 / Agent 权限"
         );
         return ExitCode::SUCCESS;
     }

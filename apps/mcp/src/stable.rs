@@ -62,7 +62,7 @@ impl StableServer {
 }
 impl ServerHandler for StableServer {
     fn supported_protocol_versions(&self) -> Cow<'static, [ProtocolVersion]> {
-        Cow::Borrowed(&[ProtocolVersion::V_2026_07_28])
+        Cow::Borrowed(SUPPORTED_PROTOCOL_VERSIONS)
     }
     fn get_info(&self) -> ServerConfig {
         ServerConfig::new(ServerCapabilities::builder().enable_tools().enable_resources().build())

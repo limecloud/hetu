@@ -169,6 +169,8 @@ struct CreativeTaskView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text(model.t("creative.state." + (task["observation"]["state"].string ?? "ready"))).font(.system(size: 14, weight: .semibold))
             Text(task["request"]["brief"].string ?? "").textSelection(.enabled)
+            ModelPlanReviewView(task: task, locale: model.locale, held: held,
+                read: { await session.read($0, input: $1) }, approve: { await session.mutate("hetu.model_tasks.approve", input: $0) })
             if task["observation"]["submission_refs"].array.count > 1 {
                 Menu(model.t("creative.batches")) {
                     ForEach(Array(task["observation"]["submission_refs"].array.enumerated()), id: \.offset) { index, item in

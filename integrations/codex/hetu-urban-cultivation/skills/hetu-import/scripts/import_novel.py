@@ -81,6 +81,9 @@ def archive(raw_path):
         if p.is_absolute() or ".." in p.parts or "\\" in x.filename or x.flag_bits & 1:
             z.close()
             raise ValueError("文档包含越界路径或加密条目。")
+    if len({x.filename for x in entries}) != len(entries):
+        z.close()
+        raise ValueError("文档包含重名条目，无法确定原稿。")
     return z
 
 
@@ -117,7 +120,11 @@ def read_source(path, encoding=None):
                 if not x.tag.endswith("}itemref"): continue
                 name = posixpath.normpath(posixpath.join(posixpath.dirname(opf), unquote(items[x.attrib["idref"]]).split("#")[0]))
                 if name.startswith("../") or name.startswith("/"): raise ValueError("EPUB阅读顺序指向文档外。")
-                parser = ReadingHTML(); parser.feed(z.read(name).decode("utf-8-sig")); text_parts.append("".join(parser.parts))
+                data = z.read(name)
+                declaration = re.match(br'\s*<\?xml[^>]*encoding=[\"\x27]([^\"\x27]+)', data[:256])
+                codec = declaration.group(1).decode("ascii") if declaration else None
+                html, _ = decode(data, codec)
+                parser = ReadingHTML(); parser.feed(html); text_parts.append("".join(parser.parts))
         text, codec = "\n\n".join(text_parts), "epub-spine"
         warnings.append("EPUB按spine提取正文；未列入阅读顺序的封面、附件和版式保留在原始快照。")
     elif suffix in (".html", ".htm", ".xhtml"):

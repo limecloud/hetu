@@ -7,6 +7,7 @@
 - 本机偏好、所选 Skills 安装、Git 提交与合并使用各自固定方案，保留当前正文、未保存稿和原操作恢复。
 - 人物形象、服装造型、三视图与情节插图分别展示；封面候选支持一键选用，书库同步更新。
 - 更新管理方案只读 MCP Apps 视图、双语作者指南、题材 Skills 和随包资源核验。npm 包 `@limecloud/hetu` 提供同版本的 `hetu` 与 `hetu-mcp` 启动器。
+- MCP 补充 `2025-06-18` 握手支持，兼容使用该协议的客户端，并保留 `2026-07-28` 协议入口。
 
 支持 macOS 14 及以上的 Apple Silicon Mac。下载 DMG 后将 `Hetu.app` 拖入“应用程序”，也可下载 ZIP 解压使用。正式附件经 Developer ID 签名、Apple 公证、票据装订和 Gatekeeper 检查；`SHA256SUMS` 与 `release-manifest.json` 记录版本、源码及最终文件摘要。升级前请备份重要作品。
 

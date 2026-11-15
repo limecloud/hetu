@@ -244,6 +244,8 @@ struct NewWorkspaceSheet: View {
                 Text(session.task["submission"]["missing_items"].array.compactMap(\.string).joined(separator: "\n")).font(.system(size: 14)).foregroundStyle(WorkbenchPalette.muted)
             }
             ForEach(Array(session.task["submission"]["candidates"].array.enumerated()), id: \.offset) { _, candidate in candidateView(candidate) }
+            ModelPlanReviewView(task: session.task, locale: model.locale, held: held,
+                read: { await session.collaborationRead($0, input: $1) }, approve: { await session.approveModelPlan($0) })
             TaskContinuationView(task: session.task, locale: model.locale, held: held,
                 read: { await session.collaborationRead($0, input: $1) }, save: { await session.saveFeedback($0) })
                 .id(session.task["request"]["task_id"].string)

@@ -5,6 +5,7 @@ from pathlib import Path
 import tempfile
 import unittest
 import zipfile
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "tools/hetu-skills/base/skills/hetu-import/scripts/import_novel.py"
@@ -73,6 +74,20 @@ class NovelImportTests(unittest.TestCase):
         with zipfile.ZipFile(buffer, "w") as z: z.writestr("../outside", "bad")
         buffer.seek(0)
         with self.assertRaises(ValueError): m.archive(buffer)
+        buffer = io.BytesIO()
+        with zipfile.ZipFile(buffer, "w") as z: z.writestr("body.txt", "文字内容")
+        buffer.seek(0)
+        with patch.object(m, "MAX_EXPANDED", 1):
+            with self.assertRaises(ValueError): m.archive(buffer)
+
+    def test_epub_declared_encoding(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "original.epub"
+            with zipfile.ZipFile(path, "w") as z:
+                z.writestr("META-INF/container.xml", '<container xmlns="urn:oasis:names:tc:opendocument:xmlns:container"><rootfiles><rootfile full-path="content.opf"/></rootfiles></container>')
+                z.writestr("content.opf", '<package xmlns="http://www.idpf.org/2007/opf"><manifest><item id="a" href="a.xhtml"/></manifest><spine><itemref idref="a"/></spine></package>')
+                z.writestr("a.xhtml", '<?xml version="1.0" encoding="gb18030"?><p>第1章 渡口原文</p>'.encode("gb18030"))
+            self.assertIn("第1章 渡口原文", m.read_source(path)[1])
 
 
 if __name__ == "__main__":

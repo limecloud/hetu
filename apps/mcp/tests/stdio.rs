@@ -28,6 +28,7 @@ struct Client {
     next_id: u64,
     deferred: BTreeMap<u64, Value>,
     apps: bool,
+    legacy: bool,
     last_request: String,
 }
 
@@ -117,6 +118,7 @@ impl Client {
             next_id: 1,
             deferred: BTreeMap::new(),
             apps: false,
+            legacy: false,
             last_request: String::new(),
         }
     }
@@ -151,7 +153,10 @@ impl Client {
             serde_json::from_str(&line).expect("stdout must contain only JSON-RPC");
         serde_json::from_value::<ServerJsonRpcMessage>(response.clone())
             .expect("official SDK must deserialize server response");
-        validate_protocol(&response);
+        // legacy 报文由官方 SDK 反序列化；新版 Schema 不包含 initialize 响应。
+        if !self.legacy {
+            validate_protocol(&response);
+        }
         response
     }
     async fn response(&mut self, id: u64) -> Value {
@@ -695,13 +700,49 @@ async fn workspace_management_proposal_requires_exact_author_decision_over_real_
 }
 
 #[tokio::test]
+async fn codex_legacy_initialize_lists_and_calls_both_connection_profiles() {
+    let (root, _) = setup();
+    let workspace = root.path().join("河图 离线测试 🌿");
+    let directory = root.path().join("legacy-collaboration");
+    for stable in [false, true] {
+        let mut client = if stable {
+            Client::start_stable(&directory)
+        } else {
+            Client::start(&workspace)
+        };
+        client.legacy = true;
+        // 与 Codex 的真实 stdio 客户端一致，不附加新版请求元数据。
+        let id = client.send("initialize", json!({
+            "protocolVersion":"2025-06-18",
+            "capabilities":{},
+            "clientInfo":{"name":"codex-legacy-contract-test","version":"1"}
+        }), false).await;
+        let initialized = client.response(id).await;
+        assert_eq!(initialized["result"]["protocolVersion"], "2025-06-18", "{initialized}");
+        client.raw(&json!({"jsonrpc":"2.0","method":"notifications/initialized"}).to_string()).await;
+        let id = client.send("tools/list", json!({}), false).await;
+        let listed = client.response(id).await;
+        assert!(listed["result"].get("resultType").is_none(), "{listed}");
+        let tool = if stable { "hetu_inspect_collaboration" } else { "hetu_read_blueprint" };
+        assert!(listed["result"]["tools"].as_array().unwrap().iter().any(|t| t["name"] == tool));
+        let id = client.send("tools/call", json!({"name":tool,"arguments":{}}), false).await;
+        let called = client.response(id).await;
+        assert!(called.get("error").is_none(), "{called}");
+        assert_eq!(called["result"]["isError"], false, "{called}");
+        assert_eq!(called["result"]["structuredContent"]["status"], "succeeded", "{called}");
+        assert!(called["result"].get("resultType").is_none(), "{called}");
+        client.close().await;
+    }
+}
+
+#[tokio::test]
 async fn discovery_and_metadata_are_checked_on_every_request() {
     let (root, k) = setup();
     let mut client = Client::start(&root.path().join("河图 离线测试 🌿"));
     let discovery = client.rpc("server/discover", json!({})).await;
     assert_eq!(
         discovery["result"]["supportedVersions"],
-        json!(["2026-07-28"])
+        json!(["2026-07-28", "2025-06-18"])
     );
     assert_eq!(discovery["result"]["resultType"], "complete");
     assert_eq!(

@@ -16,6 +16,11 @@ use tokio::sync::Semaphore;
 
 pub const MAX_MESSAGE_BYTES: usize = 16 * 1024 * 1024;
 const MAX_RESULT_BYTES: usize = 8 * 1024 * 1024;
+// 两种生命周期及报文差异交由官方 SDK 处理，兼容当前 Codex 的 stdio 握手。
+const SUPPORTED_PROTOCOL_VERSIONS: &[ProtocolVersion] = &[
+    ProtocolVersion::V_2026_07_28,
+    ProtocolVersion::V_2025_06_18,
+];
 fn open_world(action: &str) -> bool {
     matches!(action, "hetu.models.list" | "hetu.model_tasks.get" | "hetu.model_tasks.submit" | "hetu.model_tasks.collect"
         | "hetu.agent_operations.prepare" | "hetu.agent_operations.execute" | "hetu.local_settings.execute")
@@ -261,7 +266,7 @@ impl HetuServer {
 
 impl ServerHandler for HetuServer {
     fn supported_protocol_versions(&self) -> Cow<'static, [ProtocolVersion]> {
-        Cow::Borrowed(&[ProtocolVersion::V_2026_07_28])
+        Cow::Borrowed(SUPPORTED_PROTOCOL_VERSIONS)
     }
 
     fn get_info(&self) -> ServerConfig {
