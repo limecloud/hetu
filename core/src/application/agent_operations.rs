@@ -156,7 +156,7 @@ impl Kernel {
                 validate_action_input(target, arguments)?;
                 if target == "hetu.documents.import_batch" {
                     for item in arguments["items"].as_array().unwrap() {
-                        let source = &item["preview"]["request"];
+                        let source = &item["source"];
                         ensure(source.get("inline_source").is_some() && source.get("file_path").is_none(),
                             "forbidden", "批量导入须固定每份 inline_source 内容，不能读取本机路径。")?;
                     }

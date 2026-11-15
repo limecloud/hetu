@@ -526,16 +526,6 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "preview": {
-                "type": "object",
-                "required": [
-                  "request",
-                  "sha256",
-                  "source_sha256",
-                  "source_size_bytes",
-                  "converted"
-                ]
-              },
               "title": {
                 "type": "string",
                 "minLength": 1,
@@ -557,10 +547,13 @@
                     "type": "null"
                   }
                 ]
+              },
+              "source": {
+                "$ref": "#/$defs/import_preview_input"
               }
             },
             "required": [
-              "preview",
+              "source",
               "title",
               "language_tag",
               "volume_id"

@@ -95,7 +95,7 @@ fn batch_import_commits_every_chapter_and_one_directory_revision_with_fixed_prov
     let originals = ["第1章 渡口\r\n\r\n船未离岸。🌧️\r\n", "第1章 重号应保留\n\n次卷原稿，不按标题合并。\n"];
     let items = originals.iter().enumerate().map(|(n, text)| {
         let preview = ok(bound(&hub,&reference,"documents.preview_import",json!({"inline_source":source(&format!("{n}.txt"),text.as_bytes()),"format":"txt","profile":"source/1"})))["preview"].clone();
-        json!({"preview":preview,"title":format!("第1章 片段{n}"),"language_tag":"zh-CN","volume_id":null})
+        json!({"source":preview["request"],"title":format!("第1章 片段{n}"),"language_tag":"zh-CN","volume_id":null})
     }).collect::<Vec<_>>();
     let request = json!({"action":"hetu.documents.import_batch","input":{"expected":{"revision":before["revision"],"sha256":before["sha256"]},"items":items,"acknowledgement":"保留原稿和重复章号，不作为定稿","operation_key":"batch"},"summary":"导入两章固定原稿","operation_key":"prepare-batch"});
     let proposal = ok(bound(&hub,&reference,"agent_operations.prepare",request.clone()));
@@ -124,12 +124,12 @@ fn batch_import_rejects_bad_member_paths_and_stale_directory_without_partial_cha
     let (_root, author, hub, reference)=setup();
     let before=ok(bound(&hub,&reference,"novels.get",json!({})));
     let preview=ok(bound(&hub,&reference,"documents.preview_import",json!({"inline_source":source("原稿.txt",b"chapter"),"format":"txt","profile":"source/1"})))["preview"].clone();
-    let item=json!({"preview":preview,"title":"第一章","language_tag":"zh-CN","volume_id":null});
+    let item=json!({"source":preview["request"],"title":"第一章","language_tag":"zh-CN","volume_id":null});
     let input=json!({"expected":{"revision":before["revision"],"sha256":before["sha256"]},"items":[item.clone(),item.clone()],"acknowledgement":"固定章节","operation_key":"batch"});
     let prepare=|input:Value,key:&str|bound(&hub,&reference,"agent_operations.prepare",json!({"action":"hetu.documents.import_batch","input":input,"summary":"批量导入","operation_key":key}));
-    let mut bad=input.clone();bad["items"][1]["preview"]["converted"]["content"]=json!("篡改原稿");
-    assert_eq!(prepare(bad,"bad-preview")["error"]["code"],"revision_conflict");
-    let mut bad=input.clone();bad["items"][1]["preview"]["request"]=json!({"file_path":"/private/file.txt","format":"txt","profile":"source/1"});
+    let mut bad=input.clone();bad["items"][1]["source"]["inline_source"]["sha256"]=json!("0".repeat(64));
+    assert_eq!(prepare(bad,"bad-preview")["error"]["code"],"hetu.integrity_failure");
+    let mut bad=input.clone();bad["items"][1]["source"]=json!({"file_path":"/private/file.txt","format":"txt","profile":"source/1"});
     assert_eq!(prepare(bad,"bad-path")["error"]["code"],"forbidden");
     let mut bad=input.clone();bad["items"]=json!(vec![item;33]);
     assert_eq!(prepare(bad,"over-count")["error"]["code"],"invalid_input");
