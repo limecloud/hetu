@@ -31,8 +31,8 @@ for (const locale of ["zh-CN", "en"]) for (const kind of ["work", "local"]) {
     await expect(view.getByRole("button", { name: locale === "en" ? "Refresh status" : "刷新状态" })).toBeEnabled();
     await expect(view.getByRole("button", { name: /approve|批准|执行/i })).toHaveCount(0);
     await view.getByRole("button", { name: locale === "en" ? "Refresh status" : "刷新状态" }).click();
+    await expect.poll(() => page.evaluate(() => window.harness.calls)).toHaveLength(1);
     const calls = await page.evaluate(() => window.harness.calls);
-    expect(calls).toHaveLength(1);
     expect({ name: calls[0].name, arguments: calls[0].arguments }).toEqual(kind === "work"
       ? { name: "hetu_get_management_operation", arguments: { management_ref: management, proposal_id: "proposal_test" } }
       : { name: "hetu_local_settings_get_operation", arguments: { operation_id: "localop_test" } });

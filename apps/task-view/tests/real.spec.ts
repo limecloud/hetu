@@ -22,7 +22,7 @@ test.beforeAll(async () => {
   test.setTimeout(60_000);
   const cargoTarget = resolve(process.env.HETU_CARGO_TARGET_DIR ?? "../../target");
   const folder = await mkdtemp(join(tmpdir(), "hetu-apps-integration-"));
-  const collaboration = join(folder, "test-collaboration");
+  const collaboration = await mkdtemp(join(tmpdir(), "hetu-apps-collaboration-"));
   const fixture = spawnSync(resolve(cargoTarget, "debug/examples/task_view_fixture"), [folder, collaboration], { encoding: "utf8" });
   if (fixture.status !== 0) throw new Error(fixture.stderr || "Fixture failed");
   taskRef = JSON.parse(fixture.stdout).task_ref;
