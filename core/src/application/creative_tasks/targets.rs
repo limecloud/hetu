@@ -1,7 +1,7 @@
 use super::*;
 
 impl Kernel {
-    pub(super) fn task_work_reference(&self, input: &Value) -> Result<Option<Value>> {
+    pub(in crate::application) fn task_work_reference(&self, input: &Value) -> Result<Option<Value>> {
         let requested = input.get("work_ref").filter(|value| value.is_object());
         if let Some(reference) = requested { self.work_record(reference, None)?; }
         let target_id = input["target_ref"]["document_id"].as_str()
