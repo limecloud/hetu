@@ -5,6 +5,8 @@ import type { Locale } from './site';
 import { evidence } from './market';
 
 export const articles = [
+  { id: 'creative-library', titles: { 'zh-CN': '写剧本，不必先建一本不存在的小说', en: 'A screenplay should not need a placeholder novel' }, descriptions: { 'zh-CN': '小说、剧本与视频各有起点。让作品独立，让关联记住来源，把每次修改的决定留给作者。', en: 'Novels, scripts and videos begin in different places. Keep each work independent and its source connections explicit.' } },
+  { id: 'preview-before-production', titles: { 'zh-CN': '先看这一场怎样发生，再决定怎样生成', en: 'See how the scene works before generating it' }, descriptions: { 'zh-CN': '剧本、动态分镜、白模和真实片段回答不同问题。先用合适的材料判断，再把预算用在需要验证的画面上。', en: 'Scripts, animatics, simple 3D previews and real clips answer different questions. Choose what you need to inspect before spending on production.' } },
   { id: 'agent-work-author-review', titles: { 'zh-CN': '把时间留给审稿与创作', en: 'More time for the decisions that shape your story' }, descriptions: { 'zh-CN': '向 Agent 说出目标，让它整理资料、准备稿件和交付。打开河图洛书，读成果、比差异、提意见，再决定留下什么。', en: 'Let your Agent organize the project and prepare the work. Read, compare and make the creative decisions in Hetu Luoshu.' } },
   { id: 'authors-at-the-center', titles: { 'zh-CN': 'AI 可以多给一稿，但不能替你说那句话', en: 'The line an Agent cannot choose for you' }, descriptions: { 'zh-CN': '同一场告别，为什么有人写对白，有人只写关门声？谈谈作者的品味、判断，以及工具该站在哪里。', en: 'A key on a table, a final accusation or a quiet gesture: the choices that make a story yours deserve room to breathe.' } },
   { id: 'story-to-screen', titles: { 'zh-CN': '小说写了十万字，短剧第一集却卡住了', en: 'Your novel is ready. What happens in the first scene?' }, descriptions: { 'zh-CN': '从一枚玉扣、三声敲门，到数亿人的观看市场：好故事离短剧，还差哪几步？', en: 'A broken radio, a growing mobile market and the practical work between a manuscript and a scene someone can perform.' } },
@@ -13,8 +15,8 @@ export const articles = [
 export type Article = typeof articles[number];
 
 export function articleImage(article: Article, locale: Locale): string {
-  if (article.id === 'story-to-screen') return `/images/journal-adaptation${locale === 'en' ? '-en' : ''}.webp`;
-  return `/images/${article.id === 'authors-at-the-center' ? 'journal-authors' : 'journal-workspace'}.webp`;
+  if (article.id === 'story-to-screen' || article.id === 'preview-before-production') return `/images/journal-adaptation${locale === 'en' ? '-en' : ''}.webp`;
+  return `/images/${article.id === 'authors-at-the-center' || article.id === 'creative-library' ? 'journal-authors' : 'journal-workspace'}.webp`;
 }
 
 export async function renderArticle(article: Article, locale: Locale) {

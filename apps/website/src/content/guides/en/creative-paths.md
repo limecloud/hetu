@@ -4,7 +4,7 @@ An independent author, a screenwriter and a small production team may arrive wit
 
 ## A new manuscript
 
-In the Mac library, choose **New Book**. Enter a title when ready, or capture the premise under **Ideas and requirements** and choose **Save plan**. An external Agent is optional.
+Tell your external Agent the idea. Let it discuss directions, organize details and save a proposal. Review its scope and proposed folder, then return to Hetu to read the result. Manual creation and editing remain available.
 
 Try a small premise: “A lighthouse keeper hears her missing brother’s voice on a radio that has not worked in years.” Decide which emotional question interests you before asking for alternatives. Follow the [Quick start](getting-started.md) for the actual controls.
 
@@ -12,7 +12,7 @@ Try a small premise: “A lighthouse keeper hears her missing brother’s voice 
 
 An original screenplay can begin with a scene and a character goal. You do not need to invent a source novel or extract plot evidence from a manuscript that does not exist.
 
-Scripts are independent works, with their own projects and episodes. In Mac versions with direct script creation, choose **Script** in **New Work**, then **Original screenplay**. You do not need a book with the same IP or an empty placeholder novel. Check your version’s guide for available controls; the homepage demo does not create script projects.
+Scripts are independent works with their own episodes and revisions. Tell your Agent the characters, conflict and what you want to read first. Let it return a complete script, then read the action and dialogue and give feedback on a specific passage. No placeholder novel or shared IP is required. See [Develop and review a screenplay](screenplays.md).
 
 For an existing Fountain or DOCX screenplay, inspect the available import path and supported formats in [Formats and delivery](formats-and-delivery.md).
 
@@ -40,10 +40,18 @@ Opening a Hetu workspace continues that workspace. Importing a manuscript or scr
 
 Inspect structure, order and conversion losses before confirming an import. A file extension alone does not establish its format. See [Formats and delivery](formats-and-delivery.md) for the current scope.
 
+## Existing boards or footage
+
+Give your Agent the material and goal: “Use these three clips to explore a confrontation. Do not generate new picture yet.” Video has its own place in the creative library. Connect a fixed script or source when useful without creating empty novels or scripts.
+
+Return to watch an animatic, a simple 3D preview when needed, or an actual edit. Point to pacing, picture, sound, subtitles or continuity. See [From preview to finished video](video.md).
+
 ## What you can test here
 
 The homepage demo covers a sample novel, editing, story facts, plot evidence, an adaptation outline, review and adoption. It resets on reload and creates no local project. It is a focused demonstration rather than proof of every project-creation flow.
 
-The homepage demo does not provide complete source-rights workflows, asset design or generated clips. Use the controls and guide for your Mac version when working with your own material. Your creative intent can remain the same across these routes; the starting material and handoff requirements differ.
+Your Agent handles your own novels, scripts and videos within the scope you authorize; return to review the same results. Keep the sample demo separate from your local work and actual video. The starting material and handoff requirements differ across these routes.
 
 [Read our approach to creative ownership](/en/blog/authors-at-the-center/) or continue with [external agents](agents.md).
+
+For an existing long manuscript, follow [Import an existing manuscript](import-manuscript.md) to check chapters and source text. For the three work types, see [Your creative library](creative-library.md).

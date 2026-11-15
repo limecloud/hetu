@@ -1,12 +1,22 @@
 # 河图洛书 Hetu Luoshu
 
-> Local IP creative workspace for authors and studios. Chinese first, English supported. Version 0.2.0. macOS source implementation; Windows follows separate implementation and verification.
+> Local creative workspace for novelists, screenwriters and video creators. Simplified Chinese and English. macOS.
 
-Hetu Luoshu organizes a multi-book author library with independent covers, chapters, story bibles, plot, drama outlines, reference review, excerpt adoption, separate finalization and local Git snapshots. Format conversion and complete delivery bundles require release-specific verification. The core contains no models or generation APIs. External agents connect through local MCP; authors retain approval authority. Rule checks expose evidence, coverage and uncertainty.
+Hetu Luoshu organizes novels, screenplays and videos as independent works in a creative library. Begin with any type and connect fixed source revisions when needed; no placeholder novel or screenplay is required. External agents use scoped MCP and CLI actions with Skills to prepare drafts, assets, previews, video, sound, revisions and delivery. Authors return to read, watch, compare and give feedback. Sources, revisions and author decisions remain connected. Optional text and image model plans require explicit content and spending authorization; video and sound use selected external tools.
+
+Script finalization, preview approval, asset selection, final-cut confirmation and project delivery are separate decisions. Delivery includes checking actual files and editable project dependencies. Publishing, promotion and post-release operations are separate activities.
 
 - [中文首页](https://hetu.limeai.run/)
 - [English](https://hetu.limeai.run/en/)
 - [Documentation](https://hetu.limeai.run/en/docs/): Practical user guides in Simplified Chinese and English.
+- [Quick start](https://hetu.limeai.run/en/docs/getting-started/): What to ask an Agent, what to review and how to continue.
+- [Screenplays](https://hetu.limeai.run/en/docs/screenplays/): Original and adapted scripts, complete episodes and versioned feedback.
+- [Video](https://hetu.limeai.run/en/docs/video/): Previews, actual picture and sound, revisions and editable delivery.
+- [Creative library](https://hetu.limeai.run/en/docs/creative-library/): Independent works and fixed source links.
+- [Import a manuscript](https://hetu.limeai.run/en/docs/import-manuscript/): Preview structure, preserve source text and resume the original batch.
+- [Feedback](https://hetu.limeai.run/en/docs/feedback/): Versioned text, image and video revision requests.
+- [Model services and costs](https://hetu.limeai.run/en/docs/model-services/): Fixed inputs, scoped authorization and spending limits.
+- [Troubleshooting](https://hetu.limeai.run/en/docs/troubleshooting/): Recover original operations without duplicate work.
 - [Workflow](https://hetu.limeai.run/en/workflow/)
 - [Integrations](https://hetu.limeai.run/en/integrations/)
 - [FAQ](https://hetu.limeai.run/en/faq/)

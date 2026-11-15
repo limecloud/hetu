@@ -23,7 +23,9 @@ async function upstream(c, session, path, options = {}) {
     response = await fetch(base(c) + path, { method: options.body ? 'POST' : 'GET', redirect: 'manual', signal: AbortSignal.timeout(options.body ? 90000 : 20000), headers: { authorization: `Bearer ${session.access_token}`, accept: 'application/json', ...(options.body ? { 'content-type': 'application/json', 'idempotency-key': options.key } : {}) }, ...(options.body ? { body: JSON.stringify(options.body) } : {}) });
   } catch { throw new ServiceError('upstream_unavailable', 503); }
   if (!response.ok) {
-    await response.body?.cancel();
+    let code;
+    try { code = JSON.parse(new TextDecoder().decode(await readLimited(response, 16384))).error?.code; } catch { /* 错误正文不透传给调用方。 */ }
+    if (code === 'MODELS_CREDITS_INSUFFICIENT' || code === 'CREDITS_INSUFFICIENT') throw new ServiceError('credits_insufficient', 402);
     throw new ServiceError(response.status === 401 ? 'login_required' : response.status === 403 ? 'permission_denied' : response.status === 404 ? 'operation_unresolved' : response.status === 409 ? 'policy_or_balance_changed' : 'upstream_unavailable', [401,403,409].includes(response.status) ? response.status : 503);
   }
   try {

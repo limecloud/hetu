@@ -1,0 +1,30 @@
+---
+import { groups, orderedDocs, searchDocuments, type Doc } from '../lib/docs';
+import { route, type Locale } from '../lib/site';
+interface Props { locale: Locale; doc?: Doc; sidebar?: boolean; }
+const { locale, doc, sidebar = false } = Astro.props;
+const en = locale === 'en';
+---
+{sidebar ? <>
+  <a class="docs-overview-link" href={route(locale, 'docs')}>{en ? 'Overview' : '文档概览'}</a>
+  {groups.map(group => <section class="doc-nav-group">
+    <h2>{group.title[locale]}</h2>
+    {orderedDocs.filter(item => item.group === group.id).map(item => <a href={route(locale, `docs/${item.id}`)} aria-current={doc?.id === item.id ? 'page' : undefined}>{item.title[locale]}</a>)}
+  </section>)}
+</> : <>
+  <div class="docs-toolbar"><div class="docs-toolbar-inner">
+    <nav class="docs-sections" aria-label={en ? 'Documentation sections' : '文档分类'}>
+      <a href={route(locale, 'docs')} aria-current={!doc ? 'page' : undefined}>{en ? 'Overview' : '概览'}</a>
+      {groups.map(group => <a href={route(locale, 'docs') + '#guide-group-' + group.id} aria-current={doc?.group === group.id ? 'true' : undefined}>{group.title[locale]}</a>)}
+    </nav>
+    <button class="docs-search-trigger" type="button" data-docs-search-open aria-label={en ? 'Search documentation' : '搜索使用文档'} aria-haspopup="dialog"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><span>{en ? 'Search docs' : '搜索文档'}</span><kbd>⌘ K</kbd></button>
+  </div></div>
+  <dialog class="docs-search-dialog" data-docs-search aria-labelledby="docs-search-title" data-empty={en ? 'No guides found. Try a different word.' : '没有找到指南，试试其他关键词。'} data-hint={en ? 'Search by title, task or a phrase in a guide.' : '输入标题、创作任务或正文中的关键词。'}>
+    <div class="docs-search-header"><label id="docs-search-title" for="docs-search-input">{en ? 'Search documentation' : '搜索使用文档'}</label><button type="button" data-docs-search-close aria-label={en ? 'Close search' : '关闭搜索'}>Esc</button></div>
+    <input id="docs-search-input" type="search" autocomplete="off" placeholder={en ? 'Search novels, feedback, covers…' : '搜索小说、返工、封面…'} aria-controls="docs-search-results"/>
+    <p class="docs-search-status" data-docs-search-status role="status"></p>
+    <div id="docs-search-results" class="docs-search-results"></div>
+  </dialog>
+  <script type="application/json" id="docs-search-index" set:html={JSON.stringify(searchDocuments(locale)).replaceAll('<', '\\u003c')}/>
+  <script src="../scripts/docs.ts"></script>
+</>}

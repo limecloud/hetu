@@ -1,6 +1,18 @@
 # From novel to screenplay
 
-Organize plot from saved text, then episodes and scenes from fixed plot evidence. The system offers structure; authors provide new dialogue, events and adaptation choices.
+Keep the source novel and script separate, connected to the source revision you chose. Develop episodes and scenes around that material; new dialogue, events and adaptation choices stay visible for author review.
+
+## Ask your Agent for an episode, then read the scene
+
+Try: “Continue this imported novel. Read the existing episodes and tasks first. Develop one complete episode from chapter one, preserve the secret and keep the novel unchanged. Explain compressed, reordered and added material.”
+
+Your Agent reads earlier drafts and decisions before preparing action and dialogue. Read the complete result, then compare it with the source. An outline describes structure; a screenplay needs readable scenes. One completed episode does not establish a whole-book adaptation.
+
+Give a specific comment, such as “This explanation is too early; revise only this scene.” Continue the same task, compare the revision and decide adoption and finalization separately. See [Develop and review a screenplay](screenplays.md).
+
+## Practice source comparison in the homepage demo
+
+The following plot and outline controls belong to the sample novel demo. They help you inspect structure and evidence without creating a local screenplay file.
 
 ## Plot and provenance
 
@@ -16,8 +28,8 @@ The native client supports editing, splitting, adjacent merges, reordering, sour
 
 ## Independent script
 
-The local client can create an editable Fountain script from an outline. Scripts have independent text and revisions, retaining initial mappings and showing when those mappings become stale.
+Let your Agent prepare an independent Fountain script with fixed source references, using details already discussed. Manual creation from an outline is also available. Scripts retain their own text and revisions, with initial mappings and notices when those mappings become stale.
 
 The website demonstrates structure and source inspection only; it creates no script file. Explain time compression, scene merges and added details for author review.
 
-Continue with [Checks and draft review](review.md).
+Let your Agent organize character, location and prop references and fix the versions used. Continue with [Checks and draft review](review.md), [Reference changes](references.md) and [From preview to finished video](video.md).

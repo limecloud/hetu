@@ -56,6 +56,6 @@ Choose a passage you have the rights to adapt. Give the character an immediate g
 
 You now have something specific to discuss. One strong scene can be a better starting point than a folder full of unreviewed episodes.
 
-Hetu is free and open source. Bring an external Agent for understanding, planning and generation; use the workspace to inspect, edit and finalize. Filming, external generation, editing and distribution happen with your chosen tools and team.
+Hetu is free and open source. Bring an external Agent to prepare previews, actual clips and an edit using your chosen tools. Return to watch, give feedback and continue revisions; see [From preview to finished video](/en/docs/video/). Publishing and promotion are separate activities.
 
 [Try the workspace](/en/#prototype), [explore adaptation](/en/docs/adaptation/) or [choose a project starting point](/en/docs/creative-paths/).

@@ -21,8 +21,11 @@ for (const prefix of ['', '/en']) for (const width of [375, 1440]) {
       await expect(page.locator('main'), path).not.toContainText('·');
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), path).toBe(true);
       const sizes = await page.locator('body *').evaluateAll(elements => [...new Set(elements.filter(element => element.checkVisibility() && [...element.childNodes].some(node => node.nodeType === Node.TEXT_NODE && node.textContent?.trim())).map(element => getComputedStyle(element).fontSize))]);
-      expect(sizes.length, `${path}: ${sizes.join(', ')}`).toBeLessThanOrEqual(4);
-      expect(sizes.every(size => ['12px', '14px', '24px', '40px'].includes(size)), path).toBe(true);
+      // 长文阅读采用16px正文，其余导航和标题沿用整站字号。
+      const documentation = path === 'docs' || path.startsWith('docs/');
+      const scale = documentation ? ['12px', '14px', '16px', '24px', '40px'] : ['12px', '14px', '24px', '40px'];
+      expect(sizes.length, `${path}: ${sizes.join(', ')}`).toBeLessThanOrEqual(scale.length);
+      expect(sizes.every(size => scale.includes(size)), path).toBe(true);
       for (const image of await page.locator('main img').all()) {
         await image.scrollIntoViewIfNeeded();
         await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0), { message: `${path}: image loads` }).toBe(true);
@@ -164,7 +167,7 @@ test('双语品牌展示、下载、分享卡与动态书库使用当前资产�
 
 test('使用指南完整双语，工程文档及源副本不对外发布', async ({ page, request }) => {
   test.setTimeout(120_000);
-  const slugs = ['getting-started', 'creative-paths', 'download-and-install', 'codex-first-task', 'skills', 'writing', 'story-bible', 'adaptation', 'review', 'formats-and-delivery', 'agents', 'references', 'data-and-backup'];
+  const slugs = ['getting-started', 'install', 'creative-paths', 'download-and-install', 'codex-first-task', 'skills', 'writing', 'story-bible', 'adaptation', 'screenplays', 'video', 'review', 'formats-and-delivery', 'agents', 'references', 'data-and-backup', 'creative-library', 'import-manuscript', 'outlining', 'characters-and-scenes', 'cover-art', 'illustrations', 'feedback', 'model-services', 'privacy-and-permissions', 'troubleshooting'];
   for (const prefix of ['', '/en']) {
     await page.goto(`${prefix}/docs/`);
     await expect(page.locator('.doc-index a')).toHaveCount(slugs.length);
@@ -318,7 +321,7 @@ test('使用指南在桌面和手机布局可读', async ({ page }) => {
   for (const width of [375, 1440]) {
     await page.setViewportSize({ width, height: 960 });
     await page.goto('/docs/');
-    await expect(page.locator('h1')).toHaveText('使用指南');
+    await expect(page.locator('h1')).toHaveText('河图洛书使用文档');
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     await page.screenshot({ path: `test-results/guides-${width}.png`, fullPage: true });
     await page.goto('/docs/writing/');

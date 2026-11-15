@@ -18,7 +18,7 @@ A novel, an original screenplay and an adaptation have different starting points
 
 ## Open the app to make creative decisions
 
-The desktop app puts visual review first: read a draft, compare openings, inspect an adaptation against its source, or examine references and cover candidates.
+The desktop app puts visual review first: read a draft, compare openings, inspect an adaptation against its source, examine references and cover candidates, or watch previews and edits with their sound and subtitles.
 
 Receiving a candidate gives you an option. Adopting one passage changes the working manuscript through your decision. Finalizing confirms a particular saved revision separately.
 
@@ -26,7 +26,7 @@ You can keep an ending, reject a new character, adopt a paragraph or write your 
 
 ## Continue from the page you are on
 
-A chapter directory, a character reference and a delivery package are connected parts of your work. Each deserves a clear way to involve your Agent.
+Novels, scripts and videos are independent works in the creative library. Chapters, references, assets and delivery follow the current work, with fixed source links where needed. Each deserves a clear way to involve your Agent within its own work and task scope.
 
 | What needs attention | A goal to give your Agent | What you review |
 | --- | --- | --- |

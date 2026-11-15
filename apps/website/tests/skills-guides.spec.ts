@@ -13,7 +13,7 @@ for (const prefix of ['', '/en']) {
     await page.goto(`${prefix}/`);
     await expect(page.locator('.hero-actions a.primary')).toHaveAttribute('href', `${prefix}/#prototype`);
     await expect(page.locator('.hero-quick-start a')).toHaveAttribute('href', `${prefix}/docs/getting-started/`);
-    await expect(page.locator('.hero-actions a.secondary')).toHaveAttribute('href', `${prefix}/docs/download-and-install/`);
+    await expect(page.locator('.hero-actions a.secondary')).toHaveAttribute('href', `${prefix}/docs/install/`);
     await expect(page.locator('#skills [data-suite-id]')).toHaveCount(6);
     await page.locator('#skills [data-suite-id="apocalypse"] a').click();
     await expect(page).toHaveURL(new RegExp(`${prefix}/integrations/#suite-apocalypse$`));

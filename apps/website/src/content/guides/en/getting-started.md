@@ -1,6 +1,20 @@
 # Quick start
 
-Try the sample book on the homepage: open it, compare a reference passage and decide what to use. Then edit directly if you want to. No installation or Codex setup is needed.
+Start with a novel, screenplay or video. Give your familiar external Agent a goal, let it prepare the work, then return to read or watch, give feedback and continue the same task.
+
+## What to ask your Agent
+
+- **Novel:** “Continue the lighthouse chapter. Keep the brother’s disappearance unresolved. Prepare a reference draft without replacing my text.” Read the chapter and compare changes; see [Chapters and writing](writing.md).
+- **Screenplay:** “Develop an original short drama about tomorrow’s distress call on a broken radio. Write a complete first episode without creating a novel.” Read action and dialogue; see [Develop and review a screenplay](screenplays.md).
+- **Video:** “Edit my doorway clips into a preview with temporary sound. Hear footsteps before the cut. Do not pay for new generation yet.” Watch continuously and give feedback; see [From preview to finished video](video.md).
+
+Your Agent organizes details and saves the proposal. Confirm the necessary scope and creative choices without retyping forms. Continue existing works in place; a new script or video needs no placeholder novel.
+
+Say “Change only the last line” or “Hold this moment longer.” Keep the version and task with the feedback, then compare the revision. Adopting text, approving a preview and confirming a final cut are separate decisions.
+
+## Practice a review without installing
+
+The following steps use the homepage’s novel demo to read a reference, give feedback and adopt an excerpt. It does not connect an Agent or generate video, and resets on reload. Screenshots show the demo’s actual controls.
 
 ## 1. Open a book from the library
 
@@ -39,7 +53,7 @@ Give your idea to a connected Codex or another external Agent. It prepares title
 
 ![Mac library showing separate creative works](/images/guides/mac-library-en.webp)
 
-*Actual Mac app with sample works. Open the image to see the library in detail.*
+*Actual Mac app novel list with sample works. Open to enlarge; this image does not show the script or video workspace.*
 
 You can discuss an undecided title or direction before creating the book. The Agent prepares and saves the details; you do not enter them again in a form. Undecided ideas remain in the plan. Manual creation and editing are also available if you prefer to write entirely on your own.
 
@@ -52,5 +66,6 @@ The Mac app saves your real work. The homepage demo resets when reloaded, so do 
 - Organize characters and world rules: [Maintain your story bible](story-bible.md).
 - Add genre methods to your Agent: [Choose and install Skills](skills.md).
 - Develop a story with Codex: [Plan a book with Codex](codex-first-task.md).
+- Begin an original script or video: [Screenplay review](screenplays.md) and [From preview to finished video](video.md).
 
-If you have a development environment and want to run the source, see [Mac source build for developers](download-and-install.md).
+For your own work, [install Hetu for Mac](install.md). If you have a development environment and need to run source code, see [Mac source build for developers](download-and-install.md).

@@ -1,17 +1,32 @@
 ---
-import { docs, groups } from '../lib/docs';
+import { orderedDocs, groups } from '../lib/docs';
 import { messages, route, prototype, type Locale } from '../lib/site';
-import { assetURL } from '../lib/assets';
+import DocsNavigation from './DocsNavigation.astro';
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
-const m = messages(locale);
-const en = locale === 'en';
-const groupDescriptions = en
-  ? ['Open a book and find your own way into the work.', 'Turn material into scenes, then review and prepare it for others.', 'Choose how to collaborate and look after your work.', 'Build the Mac app from source.']
-  : ['从一个点子、一本旧稿，或第一句正文开始。', '从一场戏到一份交稿，逐步核对和确认。', '用顺手的助手协作，把作品和版本留在自己手里。', '已有开发环境？从源码构建 Mac 版。'];
+const m = messages(locale), en = locale === 'en';
+const paths = en ? [
+  { title: 'Write a novel', text: 'Start with an idea or a draft. Develop an outline, write a chapter and decide what to keep.', href: 'writing', links: [['Plan a book', 'codex-first-task'], ['Import a manuscript', 'import-manuscript']], icon: 'novel' },
+  { title: 'Develop a screenplay', text: 'Create an original story or adapt a source. Read full scenes, action and dialogue.', href: 'screenplays', links: [['Adapt a novel', 'adaptation'], ['Give feedback', 'feedback']], icon: 'screenplay' },
+  { title: 'Make a video', text: 'Try the rhythm in a preview. Review real picture and sound, then deliver an editable project.', href: 'video', links: [['Prepare assets', 'characters-and-scenes'], ['Deliver your work', 'formats-and-delivery']], icon: 'video' },
+] : [
+  { title: '写一本小说', text: '从一个点子或一份旧稿出发，讨论大纲，写出下一章，再决定留下哪些文字。', href: 'writing', links: [['构思一本新书', 'codex-first-task'], ['导入已有小说', 'import-manuscript']], icon: 'novel' },
+  { title: '开发一部剧本', text: '原创或改编都从故事开始，读完整场次、行动与对白，沿同一集继续推敲。', href: 'screenplays', links: [['从小说到短剧', 'adaptation'], ['提出修改意见', 'feedback']], icon: 'screenplay' },
+  { title: '制作一段视频', text: '先用预演判断节奏，再核对真实画面、声音与字幕，交出能继续编辑的工程。', href: 'video', links: [['准备人物与场景', 'characters-and-scenes'], ['交付成片与工程', 'formats-and-delivery']], icon: 'video' },
+];
+const descriptions: Record<string, string> = en ? {
+  start: 'Install Hetu, choose a starting point and meet your creative library.', novel: 'Bring your story into Hetu and move from an idea to the next chapter.', screen: 'Read complete scripts and watch the story take shape on screen.', assets: 'Give people, places and images a clear source and a place in your work.', review: 'Compare results, express your intent and choose a version to deliver.', manage: 'Work with your Agent and keep control of permissions, costs and files.', developer: 'Source builds and technical setup for maintainers.',
+} : {
+  start: '安装河图，选择创作起点，认识自己的创作库。', novel: '带着新想法或旧稿，从故事方向走到下一章。', screen: '阅读完整剧本，看故事怎样成为可观看的成果。', assets: '让人物、地点和每一张图片，都有依据与用途。', review: '比较成果、表达意图，选出要留下与交付的版本。', manage: '使用顺手的助手，掌握权限、费用与作品文件。', developer: '面向维护者的源码构建与技术接入。',
+};
 ---
+<DocsNavigation locale={locale}/>
 <div class="container subpage help-index">
-  <header class="page-hero page-hero-split"><div><h1>{m.docs.title}</h1><p>{m.docs.intro}</p><a class="button primary" href={route(locale, 'docs/getting-started')}>{en ? 'Start writing, step by step' : '作者快速上手'} <span aria-hidden="true">→</span></a><a class="text-link guide-demo" href={prototype(locale)}>{m.workspace.cta} ↗</a></div><figure class="product-figure"><a href={route(locale, 'docs/writing')} aria-label={en ? 'Read the writing guide' : '查看章节与写作指南'}><img src={assetURL(`/images/guides/quickstart-writing-${locale}.webp`)} width="2368" height={en ? 1402 : 1398} alt={en ? 'Homepage demo with the chapter list and manuscript editor.' : '首页演示中的章节列表与正文编辑区。'}/></a><figcaption>{en ? 'Homepage demo / Chapters and writing' : '首页演示 / 章节与写作'}</figcaption></figure></header>
-  <p class="guide-notice">{m.docs.note}</p>
-  {groups.map((group, index) => <section class="guide-group" aria-labelledby={`guide-group-${group.id}`}><div class="guide-group-heading"><h2 id={`guide-group-${group.id}`}>{group.title[locale]}</h2><p>{groupDescriptions[index]}</p></div><div class="doc-index">{docs.filter(doc => doc.group === group.id).map(doc => <a href={route(locale, `docs/${doc.id}`)}><div><b>{doc.title[locale]}</b><small>{doc.description[locale]}</small></div><span aria-hidden="true">→</span></a>)}</div></section>)}
+  <header class="page-hero docs-index-hero"><h1>{en ? 'Create with Hetu' : '河图洛书使用文档'}</h1><p>{en ? 'From a story idea to a manuscript, a screenplay or a finished video. Give your Agent a goal. Come back to read, watch and make it yours.' : '从一个故事念头，到小说、剧本与成片。向 Agent 说出目标，回来阅读与观看，把成果改成你想要的样子。'}</p><div class="docs-index-actions"><a class="button primary" href={route(locale, 'docs/getting-started')}>{en ? 'Quick start' : '快速入门'} <span aria-hidden="true">→</span></a><a class="text-link" href={prototype(locale)}>{en ? 'Try the homepage demo' : '先体验首页工作台'} ↗</a></div></header>
+  <div class="docs-paths">{paths.map(path => <section>
+    <svg class="docs-path-icon" width="28" height="28" viewBox="0 0 24 24" aria-hidden="true">{path.icon === 'novel' ? <><path d="M12 5c-3-2-7-2-10-1v15c3-1 7-1 10 1 3-2 7-2 10-1V4c-3-1-7-1-10 1Z"/><path d="M12 5v15"/></> : path.icon === 'screenplay' ? <><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6M9 15h3"/></> : <><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m10 8 6 4-6 4Z"/></>}</svg>
+    <a class="docs-path-title" href={route(locale, 'docs/' + path.href)}><h2>{path.title}</h2><span aria-hidden="true">↗</span></a><p>{path.text}</p><nav aria-label={path.title}>{path.links.map(([title, id]) => <a href={route(locale, 'docs/' + id)}>{title}<span aria-hidden="true">→</span></a>)}</nav>
+  </section>)}</div>
+  <div class="docs-reading-note"><p>{en ? 'New to working with an Agent?' : '第一次和 Agent 一起创作？'} <a href={route(locale, 'docs/agents')}>{en ? 'See how the collaboration works' : '先了解怎样协作'} →</a></p><span>{m.docs.note}</span></div>
+  {groups.map(group => <section class="guide-group" aria-labelledby={`guide-group-${group.id}`}><div class="guide-group-heading"><h2 id={`guide-group-${group.id}`}>{group.title[locale]}</h2><p>{descriptions[group.id]}</p></div><div class="doc-index">{orderedDocs.filter(doc => doc.group === group.id).map(doc => <a href={route(locale, `docs/${doc.id}`)}><div><b>{doc.title[locale]}</b><small>{doc.description[locale]}</small></div><span aria-hidden="true">→</span></a>)}</div></section>)}
 </div>

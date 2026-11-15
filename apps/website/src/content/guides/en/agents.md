@@ -14,7 +14,7 @@ Cursor, Grok Build, DeepSeek Harness and Doubao are also developing their own Ag
 
 <span id="mcp"></span>
 
-External agents use MCP to discover capabilities, create authorized projects, organize chapters and references, submit candidates, prepare delivery and retrieve feedback. Your chosen client manages the connection, so the native window need not stay open. Configure the stable connection once; each explicit task identifies its authorized work or planning project. Connectivity alone does not grant access to your entire library.
+External agents use MCP to discover capabilities, create authorized projects, organize chapters and references, submit candidates, prepare delivery and retrieve feedback. Your chosen client manages the connection, so the native window need not stay open. Configure the stable connection once; each explicit work and task identifies its authorized material. Novels, related scripts and videos keep separate access scopes, even in the same folder. A connection does not grant library-wide access, and reauthorization does not revive revoked tasks.
 
 Choose MCP on the library home to read the guide and configure your client. Hosts that support MCP Apps can also show comparison and annotation panels. Other hosts continue with tool results and the native app.
 
@@ -84,4 +84,8 @@ Continue with [Checks and draft review](review.md). Developers can find advanced
 
 Open **Settings → Model services** in Hetu to connect your account. Check that the website and Hetu display the same verification code before confirming. Return to Hetu and select your text and image defaults. The website links to account and billing management.
 
-Ask your Agent to use Hetu model services. It prepares a plan first. In the original task, open **Model requests and cost approval**, review all outgoing content and the Credits limit, then approve. Your Agent can submit after approval and returns reference candidates for your decision. If a request times out, ask the Agent to recover the original plan. Local writing works without a connection.
+Ask your Agent to use Hetu model services. It prepares a plan and explains the outgoing content, purpose and spending limit in your current conversation. After your explicit approval, tools record that scope and work can continue within it. Decide again when the limit is reached or the scope changes, without returning to the app to approve every image. Results remain reference candidates for your review.
+
+If credits run out, follow the top-up guidance in the current conversation and check the amount before paying. If a request times out, ask the Agent to recover the original plan. Local writing works without a connection. Video and sound use your selected external tools; see [From preview to finished video](video.md).
+
+For generation plans and accounts, read [Model services and costs](model-services.md). For access boundaries, see [Privacy and permissions](privacy-and-permissions.md). Use [Troubleshooting and recovery](troubleshooting.md) to inspect the original task when something goes wrong.

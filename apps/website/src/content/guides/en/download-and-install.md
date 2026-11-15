@@ -1,12 +1,6 @@
-# Mac downloads and source builds
+# Mac source build for developers
 
-## Install the Mac app
-
-Download the DMG or ZIP from [GitHub Releases](https://github.com/limecloud/hetu/releases/latest) for Apple Silicon Macs running macOS 14 or newer. Open the DMG and drag `Hetu.app` into Applications, or extract the ZIP and open the app.
-
-Production packages are Developer ID signed and Apple notarized. The release includes `SHA256SUMS` and `release-manifest.json`. Your work stays in the local folder you choose; back up important work before upgrading. Installing a release package requires no development tools.
-
-The source-build steps below are for developers with a Mac development environment. GitHub’s “Code → Download ZIP” provides source code that must be built first. Authors can also start with the homepage workspace in [Quick start](getting-started.md).
+This guide is for maintainers with a Mac development environment. Authors can [install a release package](install.md) or try the homepage workspace in [Quick start](getting-started.md). GitHub’s “Code → Download ZIP” provides source code that must be built first.
 
 Read the README included with the source revision you choose. Its tool requirements and capabilities apply to that revision.
 

@@ -73,10 +73,11 @@ const taskDescriptions: Record<string, Record<Locale, string>> = {
   'hetu-artwork': { 'zh-CN': '按作品需要准备人物、场景与道具参考图，保留来源，由你审阅选用。', en: 'Prepare character, scene and prop reference images for your work, keeping their sources for your review.' },
   'hetu-draft': { 'zh-CN': '你提出写作请求后，按设定和章纲准备章节参考稿。', en: 'Ask for a chapter reference draft that follows your story bible and outline.' },
   'hetu-revise': { 'zh-CN': '只改你选中的文字，或按你的批注返工，并说明改了哪里、为什么改。', en: 'Revise the text you select or respond to your comments, explaining what changed and why.' },
-  'hetu-drama': { 'zh-CN': '将你有权使用的小说内容改成短剧参考稿，保留与原文的对应。', en: 'Adapt a novel you have the right to use into a short drama reference draft, keeping its links to the source.' },
+  'hetu-drama': { 'zh-CN': '从原创冲突或获权原著开发分集剧本，保留改编依据，按意见继续返工。', en: 'Develop episode scripts from an original conflict or an authorized source, retaining adaptation references and continuing revisions.' },
   'hetu-resources': { 'zh-CN': '按任务整理人物资料、场景参考、道具说明与考据笔记；正式采用由你确认。', en: 'Organize character notes, location references, prop descriptions and research within the task scope. You decide what to adopt.' },
   'hetu-manage': { 'zh-CN': '准备作品整理、导入交付、版本和设置的完整方案，你审阅批准后再执行。', en: 'Prepare complete plans for organizing works, importing and delivering files, versions and settings. Review and approve each plan before it runs.' },
   'hetu-import': { 'zh-CN': '把已有小说整理成卷章，核对原稿和格式转换结果，审阅批准后再导入。', en: 'Organize an existing novel into volumes and chapters, review the source and format conversion, then approve the import.' },
+  'hetu-video': { 'zh-CN': '组织分镜、预演、真实片段与音画剪辑，按具体位置返工，准备成片和可编辑工程。', en: 'Organize storyboards, previews, actual clips, picture and sound, then revise specific moments and prepare the video and editable project.' },
 };
 
 export const familyLabel = (family: string, locale: Locale) => locale === 'en' ? familyNames[family] ?? family : family;

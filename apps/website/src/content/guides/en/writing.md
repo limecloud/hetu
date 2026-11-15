@@ -1,6 +1,14 @@
 # Chapters and writing
 
-Each book has independent details, covers and chapters. Enter a book from the library and open **Manuscript**.
+Each novel has its own details, covers and chapters. Write directly or ask your external Agent for a reference draft, then read it in context and decide what to keep.
+
+## Continue the novel you already have
+
+Try: “Continue chapter twelve of this book. Preserve what the character does not yet know. Return a complete reference draft without replacing my text.” Your Agent reads the authorized chapters and story facts, saves a draft and returns it for review. Give a precise comment and continue the same task.
+
+For an external manuscript, ask the Agent to inspect encoding, chapter order, repeated titles and content coverage before fixing the import. Importing a whole book and adapting the whole book are separate outcomes. Open an existing Hetu work in place rather than importing it again.
+
+A related script or video remains an independent work. When the novel changes, inspect the affected material before choosing updates; later works do not silently change with it.
 
 ## Books and chapters
 
@@ -35,3 +43,5 @@ Later edits show **Earlier final retained**. Save and confirm the new revision s
 The demo toolbar switches interface language and light or dark theme. Text, titles and author input stay unchanged. The English homepage initializes a separate English sample; switching language does not translate a book.
 
 Continue with [Story bible](story-bible.md) and [Draft review](review.md).
+
+To discuss what happens next, read [Plan an outline and chapters](outlining.md). For precise revision requests, see [Give feedback and revise](feedback.md).

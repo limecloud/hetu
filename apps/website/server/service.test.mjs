@@ -55,6 +55,10 @@ async function fixture() {
     if(options.method==='POST'){
       state.posts++;const body=JSON.parse(options.body),key=headers.get('idempotency-key');
       const image=url.pathname.includes('/images/');
+      if(state.insufficient){
+        state.operations.set(key,{id:'balance-rejected',model_id:body.model_id,status:'failed',error_code:'MODELS_CREDITS_INSUFFICIENT',billing:{...billing(image?'image':'text'),state:'released'}});
+        return response({error:{code:'MODELS_CREDITS_INSUFFICIENT',message:'upstream-private-message'}},409);
+      }
       const value={id:'generation-1',model_id:body.model_id,status:'succeeded',output:image?{asset_id:'asset-1',sha256:await sha(mediaBytes),mime_type:'image/png',size:mediaBytes.length,width:64,height:64}:{text:'生成的参考文字'},billing:billing(image?'image':'text')};
       state.operations.set(key,value);if(state.unknown)throw new Error('response lost');
       return response({data:value});
@@ -87,6 +91,20 @@ async function fixture() {
   return{env,sqlite,state,req,signIn,connect};
 }
 const plan=(extra={})=>({kind:'text',task_sha256:'a'.repeat(64),max_credits:'12',payload:{model_id:'text-one',input:'仅授权的固定输入',output_schema:textSchema,billing_policy_version:'p1'},...extra});
+
+test('余额不足返回充值状态；充值后先恢复原操作，再执行唯一新请求',async()=>{
+  const f=await fixture(),auth=await f.connect();f.state.insufficient=true;
+  const failed=await f.req('/operations/recharge-original',{method:'POST',token:auth.token,body:plan()});
+  assert.equal(failed.status,402);
+  const failure=await failed.text();assert.equal(JSON.parse(failure).error.code,'credits_insufficient');assert.ok(!failure.includes('upstream-private-message'));
+  f.state.insufficient=false;
+  const recovered=await(await f.req('/operations/recharge-original',{token:auth.token})).json();
+  assert.equal(recovered.operation.status,'failed');assert.equal(recovered.operation.billing.state,'released');assert.equal(f.state.posts,1);
+  const resumed=await(await f.req('/operations/recharge-replacement',{method:'POST',token:auth.token,body:plan()})).json();
+  assert.equal(resumed.operation.status,'succeeded');assert.equal(f.state.posts,2);
+  await f.req('/operations/recharge-replacement',{method:'POST',token:auth.token,body:plan()});
+  assert.equal(f.state.posts,2,'重复恢复不重复发送');
+});
 
 test('未配置时失败关闭，不访问 Cloud',async()=>{
   const result=await handle(new Request(c.site_origin+'/api/hetu/session'),{});

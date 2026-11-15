@@ -1,25 +1,37 @@
 ---
 import Site from '../layouts/Site.astro';
-import { docs, groups, renderDoc, type Doc } from '../lib/docs';
+import DocsNavigation from './DocsNavigation.astro';
+import { orderedDocs, groups, renderDoc, type Doc } from '../lib/docs';
 import { messages, route, type Locale } from '../lib/site';
 interface Props { doc: Doc; locale: Locale; }
 const { doc, locale } = Astro.props;
-const m = messages(locale);
+const m = messages(locale), en = locale === 'en';
 const { html, headings, hasMermaid } = await renderDoc(doc, locale);
-const readingDocs = docs.filter(item => (item.group === 'developer') === (doc.group === 'developer'));
+const readingDocs = orderedDocs.filter(item => (item.group === 'developer') === (doc.group === 'developer'));
 const position = readingDocs.findIndex(item => item.id === doc.id);
 const previous = readingDocs[position - 1], next = readingDocs[position + 1];
+const group = groups.find(group => group.id === doc.group)!;
 ---
 <Site locale={locale} page={`docs/${doc.id}`} title={doc.title[locale]} description={doc.description[locale]}>
-  <div class="container"><details class="doc-mobile-nav"><summary>{m.docs.title} / {doc.title[locale]}</summary><nav>{groups.map(group => <div class="doc-nav-group"><strong>{group.title[locale]}</strong>{docs.filter(item => item.group === group.id).map(item => <a href={route(locale, `docs/${item.id}`)} aria-current={item.id === doc.id ? 'page' : undefined}>{item.title[locale]}</a>)}</div>)}</nav></details><div class="doc-shell">
-    <nav class="doc-sidebar" aria-label={m.docs.title}><div><a class="doc-back" href={route(locale, 'docs')}>← {m.docs.back}</a>{groups.map(group => <div class="doc-nav-group"><strong>{group.title[locale]}</strong>{docs.filter(item => item.group === group.id).map(item => <a href={route(locale, `docs/${item.id}`)} aria-current={item.id === doc.id ? 'page' : undefined}>{item.title[locale]}</a>)}</div>)}</div></nav>
-    <article class="doc-article" lang={locale}>
-      <Fragment set:html={html}/>
-      <p class="guide-notice">{m.docs.note}</p>
-      <nav class="guide-pagination" aria-label={locale === 'en' ? 'More guides' : '继续阅读'}>{previous && <a href={route(locale, `docs/${previous.id}`)}>← {previous.title[locale]}</a>}{next && <a href={route(locale, `docs/${next.id}`)}>{next.title[locale]} →</a>}</nav>
-    </article>
-    <aside class="doc-toc"><div><strong>{m.docs.onPage}</strong>{headings.map(heading => <a href={'#' + heading.id}>{heading.text}</a>)}</div></aside>
-  </div></div>
+  <DocsNavigation locale={locale} doc={doc}/>
+  <div class="docs-container">
+    <details class="doc-mobile-nav"><summary>{m.docs.title}<span aria-hidden="true">⌄</span></summary><nav aria-label={en ? 'All guides' : '全部指南'}><DocsNavigation locale={locale} doc={doc} sidebar/></nav></details>
+    <div class="doc-shell">
+      <aside class="doc-sidebar"><nav aria-label={m.docs.title}><DocsNavigation locale={locale} doc={doc} sidebar/></nav></aside>
+      <article class="doc-article" lang={locale}>
+        <div class="doc-meta"><div class="doc-context"><a href={route(locale, 'docs')}>{m.docs.title}</a><span aria-hidden="true">/</span><span>{group.title[locale]}</span></div>
+        <div class="doc-actions"><button type="button" data-copy-doc><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>{en ? 'Copy page' : '复制正文'}</button><span id="doc-copy-status" role="status" data-copy-status></span></div></div>
+        <details class="doc-mobile-toc"><summary>{m.docs.onPage}</summary><nav aria-label={en ? 'On this page' : '本页目录'}>{headings.map(heading => <a href={'#' + heading.id}>{heading.text}</a>)}</nav></details>
+        <div data-doc-body><Fragment set:html={html}/></div>
+        <p class="guide-notice">{m.docs.note}</p>
+        <nav class="guide-pagination" aria-label={en ? 'More guides' : '继续阅读'}>
+          {previous ? <a href={route(locale, `docs/${previous.id}`)} rel="prev"><small>{en ? 'Previous' : '上一篇'}</small><span>← {previous.title[locale]}</span></a> : <span/>}
+          {next && <a href={route(locale, `docs/${next.id}`)} rel="next"><small>{en ? 'Next' : '下一篇'}</small><span>{next.title[locale]} →</span></a>}
+        </nav>
+      </article>
+      <aside class="doc-toc"><nav aria-label={m.docs.onPage}><strong>{m.docs.onPage}</strong>{headings.map(heading => <a href={'#' + heading.id}>{heading.text}</a>)}</nav></aside>
+    </div>
+  </div>
   {hasMermaid && <script src="/vendor/mermaid.min.js" is:inline></script>}
   {hasMermaid && <script is:inline>mermaid.initialize({startOnLoad:true,securityLevel:'strict',theme:'neutral',fontFamily:'system-ui,sans-serif'});</script>}
 </Site>

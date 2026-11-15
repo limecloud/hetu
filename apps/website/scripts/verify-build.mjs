@@ -36,18 +36,22 @@ for (const file of files) {
   assert.ok(!/^(?:en\/)?docs\/\d{2}\//.test(relative), `编号工程规范不能发布到官网：${relative}`);
   assert.ok(!/^prototype\//.test(relative), `原型只能嵌入首页：${relative}`);
 }
-const localizedGuides = [];
-for (const locale of ['zh-CN', 'en']) {
-  const directory = new URL(`../src/content/guides/${locale}/`, import.meta.url);
-  const guides = (await readdir(directory)).filter(file => file.endsWith('.md')).sort();
-  assert.ok(guides.length > 0, '缺少使用指南');
-  localizedGuides.push(guides);
-  for (const guide of guides) {
-    const target = path.join(root, locale === 'en' ? 'en' : '', 'docs', guide.slice(0, -3), 'index.html');
-    assert.ok(paths.has(target), `使用指南未发布：${locale}/${guide}`);
+const sitemap = await readFile(path.join(root, 'sitemap.xml'), 'utf8');
+for (const [collection, route] of [['guides', 'docs'], ['blog', 'blog']]) {
+  const localizedFiles = [];
+  for (const locale of ['zh-CN', 'en']) {
+    const directory = new URL(`../src/content/${collection}/${locale}/`, import.meta.url);
+    const entries = (await readdir(directory)).filter(file => file.endsWith('.md')).sort();
+    assert.ok(entries.length > 0, `缺少内容：${collection}/${locale}`);
+    localizedFiles.push(entries);
+    for (const entry of entries) {
+      const pathname = `/${locale === 'en' ? 'en/' : ''}${route}/${entry.slice(0, -3)}/`;
+      assert.ok(paths.has(path.join(root, pathname, 'index.html')), `内容未发布：${collection}/${locale}/${entry}`);
+      assert.ok(sitemap.includes(`<loc>https://hetu.limeai.run${pathname}</loc>`), `站点地图缺少内容：${pathname}`);
+    }
   }
+  assert.deepEqual(localizedFiles[0], localizedFiles[1], `中英文内容不对应：${collection}`);
 }
-assert.deepEqual(localizedGuides[0], localizedGuides[1], '中英文使用指南不对应');
 for (const file of files.filter(name => name.endsWith('.html'))) {
   const html = await readFile(file, 'utf8');
   for (const match of html.matchAll(/(?:https:\/\/hetu\.limeai\.run)?\/(?:images|brand|resources)\/[^"'<>\s]+/g)) {

@@ -4,7 +4,15 @@ A character's jacket is part of your continuity notes. During a script revision,
 
 In the Mac app, a reference can be linked to the passage that uses it. That link records both versions, so a later revision gives you something concrete to compare.
 
-## Link a reference to a passage
+## Let your Agent organize references and their uses
+
+Try: “Organize the characters, locations and props this episode actually needs. Reuse existing versions first. Link the jacket to the bandaging scene and record the tear’s position. Prepare missing images as candidates without adopting them.” Return to inspect the content, sources and uses, then edit directly when needed.
+
+Use a single-character portrait on a character card. Inspect costumes, side and back views, expressions and related illustrations separately in the detail view. Location images belong to locations; story illustrations point to the relevant text. The shared image library shows the same results. Prepare extra views when useful without asking you to label every image manually.
+
+Receiving an image does not select it for use. A design change first identifies affected scenes and shots, preserving earlier assets. Give feedback on a region or the whole image and continue the original task with its fixed version.
+
+## Link a reference manually when you choose
 
 1. Open the project, choose **References and assets**, then **Written references**.
 2. Select **New reference**. Save the jacket's details, including the position of the tear.

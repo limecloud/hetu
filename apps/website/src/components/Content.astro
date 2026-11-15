@@ -7,8 +7,8 @@ interface Props { locale: Locale; page: string; }
 const { locale, page } = Astro.props;
 const m = messages(locale);
 const en = locale === 'en';
-const guideIDs = ['creative-paths', 'adaptation', 'review', 'formats-and-delivery'];
-const stepLinks = en ? ['Choose your starting point', 'Try one scene', 'Review a reference draft', 'Prepare a handoff'] : ['找到你的起点', '先试一场戏', '比较和采纳参考稿', '准备交稿'];
+const guideIDs = ['creative-paths', 'review', 'video', 'formats-and-delivery'];
+const stepLinks = en ? ['Choose your starting point', 'Review a reference draft', 'Review a video', 'Prepare a handoff'] : ['找到你的起点', '比较和采纳参考稿', '观看预演与成片', '准备交付'];
 const faqGroups = [
   { title: en ? 'Writing and AI' : '创作与 AI', indexes: [0, 1, 2, 3] },
   { title: en ? 'Availability and costs' : '获取与费用', indexes: [4, 5, 8] },

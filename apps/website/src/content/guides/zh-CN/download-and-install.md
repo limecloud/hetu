@@ -1,14 +1,6 @@
-# Mac 下载与源码构建
+# Mac 源码版（开发者）
 
-想先看看写作和改编是什么感觉，直接从[网页演示](getting-started.md)开始。如果你已经有Mac开发环境，希望把真实作品留在本机，可以按本篇获取源码并构建开发版。
-
-## 安装 Mac 客户端
-
-在 [GitHub Release](https://github.com/limecloud/hetu/releases/latest) 下载 DMG 或 ZIP。支持 macOS 14 及以上的 Apple Silicon Mac；打开 DMG，将 `Hetu.app` 拖入“应用程序”，或解压 ZIP 后打开应用。
-
-正式安装包经过 Developer ID 签名与 Apple 公证，发布页附有 `SHA256SUMS` 和 `release-manifest.json`。作品保存在你选择的本机目录；升级前请备份重要作品。安装正式包不需要开发工具。
-
-下面的源码构建步骤供开发者使用。GitHub 的“Code → Download ZIP”下载的是源码，需要构建后运行。
+本篇供已有 Mac 开发环境的维护者获取源码并构建开发版。普通作者按[获取与安装 Mac 版](install.md)安装正式制品，或先从[网页演示](getting-started.md)体验审阅。
 
 从源码仓库获取代码后，请先阅读该修订自带的 README；工具要求和功能范围以所选源码为准。软件免费开源，外部Agent及生成服务的费用另行计算。
 

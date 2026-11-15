@@ -15,14 +15,14 @@
     "tagline": "A clear foundation. Room to create."
   },
   "meta": {
-    "title": "Hetu Luoshu — Give your story a life on screen",
-    "description": "A local workspace for novelists and screenwriters. Your external Agent organizes references, drafts and handoffs through MCP, CLI and Skills. Review, compare and finalize in Hetu, with direct editing whenever you choose."
+    "title": "Hetu Luoshu — A local creative workspace for novels, scripts and video",
+    "description": "Begin with a novel, an original screenplay or existing footage. Your external Agent develops the work; read, watch, compare and give feedback in Hetu. Keep sources, revisions and creative decisions together."
   },
   "hero": {
-    "eyebrow": "For authors and independent IP studios",
-    "line1": "Your story deserves",
-    "line2": "a life on screen.",
-    "description": "Turn a manuscript into playable scenes and consistent production references.\nA free, open-source workspace for independent authors and small studios.\nBring your Agent. Keep your voice, your files and the final say.",
+    "eyebrow": "For novelists, screenwriters and video creators",
+    "line1": "Your story.",
+    "line2": "Room for its next form.",
+    "description": "Novels, screenplays and videos, each with a place in your creative library.\nLet your Agent develop the work. Return to read, watch and choose.\nKeep the sources and decisions that make the next revision possible.",
     "primary": "Try the workspace here",
     "secondary": "Read the user guide",
     "note": "macOS / Apache-2.0 / Try the demo without installing",
@@ -44,8 +44,8 @@
   ],
   "features": {
     "eyebrow": "From worldbuilding to delivery",
-    "title": "From novels to dramas, keep the sources.",
-    "intro": "Manage novels, drama projects, resources and versions together. External agents use the same creative material; authors approve what becomes official.",
+    "title": "Keep the work moving, with its sources intact.",
+    "intro": "Novels, scripts and videos keep their own content and revisions. Connect them when needed. When a source changes, inspect the affected scenes and shots before deciding what to remake.",
     "items": [
       {
         "title": "Story facts and resources, clearly owned",
@@ -55,7 +55,7 @@
       },
       {
         "title": "A workspace for drama projects",
-        "body": "Maintain episodes, scenes and scripts with fixed novel references for adaptations. Link production assets to scripts and choose returned candidates.",
+        "body": "Develop an original script from character and conflict, or compare an adaptation with its source. Continue through storyboards, previews and actual video while preserving versions and feedback.",
         "image": "feature-drama.webp",
         "alt": "A novel manuscript, scene cards and a clapperboard"
       },
@@ -78,23 +78,23 @@
   "workflow": {
     "eyebrow": "Your creative workflow",
     "title": "Your Agent moves the work forward. You shape the story.",
-    "intro": "Start with an idea or an existing manuscript. Give your familiar Agent the goal, let it prepare the material, then open Hetu to compare results, give feedback and choose what belongs.",
+    "intro": "Start with an idea, a draft or existing footage. Give your familiar Agent a goal, return to read or watch the result, then point to what needs changing and continue the same task.",
     "steps": [
       {
-        "title": "Start from your own material",
-        "body": "A first idea, an existing manuscript or a script in progress: choose a starting point and keep its characters, references and revisions together."
+        "title": "Give your Agent the goal and material",
+        "body": "Write a chapter, develop an episode or continue existing footage. Let your Agent prepare the work without retyping your conversation into forms."
       },
       {
-        "title": "Make the scene playable",
-        "body": "A missing brother is back on the radio. Who hears him? What do they do next? Work from the story’s meaning toward actions and dialogue someone can perform."
+        "title": "Read the result and choose what fits",
+        "body": "Read complete chapters or follow a script’s action and dialogue. Compare drafts and sources, give feedback and edit directly whenever you choose."
       },
       {
-        "title": "Review, adopt, finalize",
-        "body": "A suggestion may contain one line worth keeping. Compare it with the source, adopt only what fits and keep editing. Finalize a saved revision when you are ready."
+        "title": "Preview, then inspect real picture and sound",
+        "body": "Use an animatic for pacing and a simple 3D preview when staging needs it. Review representative generation before continuing to clips and an actual edit."
       },
       {
-        "title": "Hand off the right version",
-        "body": "Agree on the recipient’s format, then choose the script and references you mean to share. Keep the source and revision clear so collaborators can pick up the work."
+        "title": "Confirm a version and deliver usable work",
+        "body": "Script finalization, preview approval and final-cut confirmation are separate. Deliver the selected text, media and editable project with verified dependencies."
       }
     ],
     "detail": "Clear boundaries at every step",
@@ -112,15 +112,15 @@
         "body": "Review approval does not overwrite text. Adoption saves a new working revision; finalization records an author decision on an exact revision. Later edits retain earlier finals."
       },
       {
-        "title": "Prepare delivery from actual capabilities",
-        "body": "Keep Markdown or Fountain sources, provenance and local versions. Check the recipient’s template. Complete bundles and format conversion depend on the specific release capabilities."
+        "title": "Deliver what the recipient can continue",
+        "body": "Choose the exact text, video, audio, subtitles and project dependencies. Open the files in an independent reader or player, and verify the editing project separately."
       }
     ]
   },
   "open": {
     "eyebrow": "Your work. Your choices.",
     "title": "Your next creative collaboration starts here.",
-    "body": "Free and open source, with your work in your own folders. Explore the browser demo or download the Mac app. External agents and production services have their own pricing.",
+    "body": "Start with a novel, script or video. Keep the results, sources and choices in your own folders. Hetu is free and open source; external agents and generation services have their own accounts, pricing and terms.",
     "cta": "Explore the open-source project",
     "local": "Local first",
     "native": "macOS first; Windows implemented separately",
@@ -129,7 +129,7 @@
   "integrations": {
     "eyebrow": "Help your assistant understand your story",
     "title": "MCP, CLI and Skills. Direct access to your work.",
-    "intro": "Use Codex, Claude Code or your preferred Agent to prepare project details, organize chapters, develop drafts and assemble handoffs. Hetu brings the results, differences and sources together for your review and decisions.",
+    "intro": "Let Codex, Claude Code or your preferred Agent organize a novel, develop a script or use your chosen tools to make previews, video and sound. Return to Hetu to read, watch, compare and give feedback.",
     "layers": [
       {
         "title": "Give your Agent the goal",
@@ -150,7 +150,7 @@
   },
   "formats": {
     "title": "Editable for authors. Readable for recipients.",
-    "body": "Use familiar Markdown, Fountain, DOCX and PDF formats for novels and scripts. Preview conversions before importing or exporting. Delivery bundles fix selected versions and retain provenance and media rights records.",
+    "body": "Deliver chapters and story facts for a novel, episodes and references for a script, or a finished video with subtitles, audio and an editable project. Fix the versions, choose the sources and assets to include, then verify that recipients can open, play and continue the work.",
     "cta": "Prepare your handoff",
     "labels": [
       "Manuscript",
@@ -164,8 +164,8 @@
     "title": "Know the boundaries before you begin.",
     "items": [
       {
-        "q": "Will Hetu Luoshu write my novel for me?",
-        "a": "No. Write yourself or ask your own Codex, Claude Code or WorkBuddy to discuss ideas and prepare reference drafts. Hetu Luoshu organizes your books, story details and revisions. You decide what to use."
+        "q": "Do I need a novel to begin?",
+        "a": "Start with a novel, an original script or a video. A script needs no placeholder novel; video can start from a brief, storyboards or existing clips. Link an authorized source revision when adapting, while each work keeps its own content, revisions and access scope."
       },
       {
         "q": "Why not build another AI Agent inside Hetu Luoshu?",
@@ -192,24 +192,24 @@
         "a": "Your own books stay in the local folder you choose. Open-source software does not make your novel open source. You choose whether to share material with an external assistant or sync it elsewhere."
       },
       {
-        "q": "How do I deliver a novel or script?",
-        "a": "Check the editor or recipient's required format, then use the export options available in your client. The homepage demo lets you try the workflow and does not create submission files."
+        "q": "Can the work continue to a finished video and editable project?",
+        "a": "Your external Agent uses selected tools for storyboards, previews, clips, sound and editing. Hetu retains the results for review. Preview approval and final-cut confirmation are separate; delivery includes checking subtitles, audio, assets and editable dependencies. Publishing and promotion are separate activities."
       },
       {
         "q": "What are the license and costs?",
-        "a": "The source code uses the Apache-2.0 open-source license. Accounts and service fees for external assistants are handled by those clients. Hetu Luoshu does not sell model services."
+        "a": "Hetu is free and open source under Apache-2.0. Your work retains its own rights. External agents and generation services have their own accounts, pricing and terms. Optional Hetu model services use Lime Cloud accounts and credits; generation requires your approved content and spending scope."
       }
     ]
   },
   "docs": {
     "title": "User guide",
-    "intro": "Follow the screenshots to open a book, write a passage, and ask your own creative assistant for help when you need it.",
+    "intro": "Start with a novel, screenplay or video. Find what to ask your Agent, what to read or watch when it returns, and how to give feedback and continue.",
     "note": "The homepage uses sample books and resets on refresh. The Mac app saves your own work on your computer.",
     "back": "All guides",
     "onPage": "On this page"
   },
   "footer": {
-    "description": "A local workspace for stories that move between manuscripts, scripts and production.",
+    "description": "Keep the results, sources and creative decisions behind your novels, scripts and videos.",
     "status": "macOS / Homepage prototype uses in-page demo data.",
     "license": "Core license: Apache-2.0",
     "privacy": "Demo input stays in this page. The console uses essential sign-in cookies. Model input is sent only for tasks you approve. Hosting may process connection and performance data under its privacy policies.",
@@ -243,13 +243,13 @@
       }
     ],
     "whyTitle": "Why focus on the foundation?",
-    "whyBody": "Your Agent works with the same project through MCP, CLI and Skills. Hetu preserves references, sources, revisions and your decisions. Spend your attention reading, comparing and judging while your assistant handles project details and supporting operations.",
+    "whyBody": "Your Agent works with the novel, script or video you authorize. Hetu preserves results, sources, revisions and your decisions. Spend your attention reading, watching and judging while your assistant handles supporting operations.",
     "more": "Explore roles and connections"
   },
   "cloud": {
     "nav": "Hetu Console",
     "title": "Hetu Console",
-    "intro": "Manage model services, connected clients and model operations for Hetu. Your work stays on your computer. Review content and cost in Hetu before each generation.",
+    "intro": "Manage model services, connected clients and model operations for Hetu. Your work stays local. Approve content sharing and a spending scope in your external Agent conversation, then return to review results.",
     "login": "Connect Lime Cloud",
     "logout": "Sign out and disconnect clients",
     "loading": "Checking connection…",
@@ -295,7 +295,7 @@
     "disconnected": "Not connected",
     "modelsDescription": "Explore text and image models for your creative work.",
     "historyDescription": "Review model calls from Hetu and check their original results.",
-    "connectionsDescription": "Connect your Mac and approve each task before content is shared.",
+    "connectionsDescription": "Connect your Mac so authorized creative tasks can use model services.",
     "connectTitle": "Connect your Hetu account",
     "modelNote": "Choose default models in Settings → Model services on your Mac. Signing in does not generate content or incur charges.",
     "historyScope": "Your account · Operations submitted by Hetu",
