@@ -129,6 +129,9 @@ class NativeConfigurationTests(unittest.TestCase):
                     self.assertEqual(command[command.index("--scratch-path") + 1], str(scratch))
             ffi = next(command for command in commands if any("verify-ffi.py" in arg for arg in command))
             self.assertEqual(ffi[-1], str(scratch / "release/hetu"))
+            integration = next(call for call in run.call_args_list if "unittest" in call.args[0])
+            self.assertEqual(integration.args[2]["HETU_TEST_CLI"], str(scratch / "release/hetu"))
+            self.assertEqual(integration.args[0][-2], str(root / "tests/cli"))
 
     def test_default_and_environment_target_are_used_for_both_build_and_library_copy(self):
         with tempfile.TemporaryDirectory() as directory:

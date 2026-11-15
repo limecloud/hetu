@@ -1,4 +1,4 @@
-"""用隔离用户目录核验模型服务 CLI 的连接恢复与凭据边界，不访问线上服务。"""
+"""构建后用隔离用户目录核验 CLI 的连接恢复与凭据边界，不访问线上服务。"""
 import json
 import os
 from pathlib import Path

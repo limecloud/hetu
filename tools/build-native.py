@@ -264,6 +264,8 @@ def main():
         run(["swift", "run", *scratch_args, *configuration_args, "--skip-build", "hetu-native-tests"], channel,
             {"HETU_TEST_NODE": str(ROOT / "build/native" / ("HetuDev.app" if args.development else "Hetu.app") / "Contents/Helpers/node")})
         run([sys.executable, str(ROOT / "tools/verify-ffi.py"), "--cli", "--cli-binary", str((debug or ROOT / ".build/debug") / "hetu")], channel)
+        run([sys.executable, "-m", "unittest", "discover", "-s", str(ROOT / "tests/cli"), "-v"], channel,
+            {"HETU_TEST_CLI": str(debug / "hetu")})
 
 if __name__ == "__main__":
     main()
