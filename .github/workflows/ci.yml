@@ -33,6 +33,23 @@ jobs:
         run: rustup toolchain install 1.93.1 --profile minimal
       - name: Check build and release tooling
         run: python3 -m unittest discover -s tests/tooling -v
+      - name: Test optimized collaboration
+        env:
+          RUST_BACKTRACE: "1"
+        run: |
+          if cargo test --locked --release -p hetu-core --test collaboration; then
+            exit 0
+          fi
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+          binaries = [path for path in Path('target/release/deps').glob('collaboration-*')
+                      if path.is_file() and not path.suffix]
+          if len(binaries) == 1:
+              subprocess.run(['lldb', '--batch', '-o', 'run', '-o', 'thread backtrace all',
+                              '--', str(binaries[0]), '--nocapture'], check=False)
+          PY
+          exit 1
       - name: Prepare task view
         run: |
           npm ci --workspace @hetu/task-view --include-workspace-root=false
