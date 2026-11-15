@@ -1,0 +1,26 @@
+---
+import Site from '../layouts/Site.astro';
+import { route, source, type Locale } from '../lib/site';
+import { policies } from '../lib/legal';
+interface Props { locale: Locale; policy: 'privacy' | 'terms'; }
+const { locale, policy } = Astro.props;
+const content = policies[locale][policy];
+---
+<Site locale={locale} page={policy} title={content.title} description={content.description}>
+  <article class="doc-article policy" lang={locale}>
+    <h1>{content.title}</h1>
+    <p>{content.description}</p>
+    <p>{locale === 'en' ? 'Updated: November 15, 2026' : '更新日期：2026年11月15日'}</p>
+    {content.sections.map(section => <section><h2>{section.title}</h2>{section.paragraphs.map(paragraph => <p>{paragraph}</p>)}</section>)}
+    <nav aria-label={locale === 'en' ? 'Policies and contact' : '政策与联系'}>
+      <a href={route(locale, 'privacy')}>{policies[locale].privacy.title}</a>
+      <a href={route(locale, 'terms')}>{policies[locale].terms.title}</a>
+      <a href={source + '/blob/main/LICENSE'}>Apache-2.0</a>
+      <a href={source + '/issues'}>{locale === 'en' ? 'Project feedback' : '项目反馈'}</a>
+    </nav>
+  </article>
+</Site>
+<style>
+  .policy { max-width: 52rem; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+  .policy nav { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; }
+</style>

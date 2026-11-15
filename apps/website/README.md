@@ -34,9 +34,11 @@ npm run test --workspace @hetu/website
 node --test apps/website/server/service.test.mjs
 ```
 
-河图在 Cloud 中作为应用登记和上架。河图的 Console 页面、客户端连接、模型目录与本人调用记录由本仓库提供；Cloud Console 负责应用发现与打开入口，账号、费用和平台授权继续消费 Cloud 正式能力。按 Cloud 现有网页应用合同，在 `https://open.limeai.run` 为河图配置 `cloud/web-application.json` 中的 `web_application` 字段。合并到应用当前配置，不用该片段覆盖完整配置；应用资料、版本发布、上架审核及客户安装按该应用实际类型完成。
+河图在 Cloud 中作为应用登记和上架。河图的 Console 页面、客户端连接、模型目录与本人调用记录由本仓库提供；Cloud Console 负责应用发现与打开入口，账号、费用和平台授权继续消费 Cloud 正式能力。按 Cloud 现有网页应用合同，在 `https://open.limeai.run` 合并 `cloud/web-application.json` 中的网页入口、管理入口及隐私／条款链接，不用该片段覆盖完整配置；应用资料、版本发布、上架审核及客户安装按该应用实际类型完成。
 
 桌面与移动入口均为 `https://hetu.limeai.run/console/`，页面内可切换中文或英文。Cloud 的“打开应用”进入河图自己托管的控制台，不加载河图脚本到 Cloud 会话页面。该 JSON 是待登记的配置片段，不表示已经上架、安装或部署。
+
+隐私政策位于 `/privacy/`，服务条款位于 `/terms/`，英文版本使用 `/en/` 前缀；内容由 `src/lib/legal.ts` 维护。
 
 Pages 服务端须配置以下项目。缺项时模型 API 返回 `service_unconfigured`；本地创作与静态内容独立运行。
 

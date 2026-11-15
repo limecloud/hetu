@@ -9,7 +9,7 @@ export async function membership(request, c, session) {
   let response;
   try {
     response = await fetch(`${c.api_origin}/api/v1/business/commerce/applications/${c.application_id}/environments/${c.environment}/self/membership`, {
-      headers: { authorization: `Bearer ${token}`, accept: 'application/json' }, redirect: 'error', signal: AbortSignal.timeout(20000),
+      headers: { authorization: `Bearer ${token}`, accept: 'application/json' }, redirect: 'manual', signal: AbortSignal.timeout(20000),
     });
   } catch { throw new ServiceError('upstream_unavailable', 503); }
   if (!response.ok) {

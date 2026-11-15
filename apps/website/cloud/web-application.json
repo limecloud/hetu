@@ -1,4 +1,7 @@
 {
+  "privacy_url": "https://hetu.limeai.run/privacy/",
+  "terms_url": "https://hetu.limeai.run/terms/",
+  "management_url": "https://hetu.limeai.run/console/",
   "web_application": {
     "enabled": true,
     "desktop_url": "https://hetu.limeai.run/console/",

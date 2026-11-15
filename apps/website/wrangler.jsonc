@@ -2,5 +2,12 @@
   "$schema": "../../node_modules/wrangler/config-schema.json",
   "name": "hetu-website",
   "pages_build_output_dir": "./dist",
-  "compatibility_date": "2026-11-12"
+  "compatibility_date": "2026-11-12",
+  "d1_databases": [
+    {
+      "binding": "HETU_CLOUD_DB",
+      "database_name": "hetu-website-sandbox",
+      "database_id": "337b630a-7653-457f-81ec-46de21e47398"
+    }
+  ]
 }

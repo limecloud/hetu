@@ -4,7 +4,8 @@ import { first, run, random, sha, seal, unseal } from './storage.mjs';
 
 const timestamp = () => Math.floor(Date.now() / 1000);
 const flowCookie = '__Host-hetu_login';
-const timeoutFetch = (input, init) => fetch(input, { ...init, signal: AbortSignal.timeout(15000), redirect: 'error' });
+// Worker 支持 manual；OAuth 响应校验继续拒绝重定向状态，凭据不跟随到其他地址。
+const timeoutFetch = (input, init) => fetch(input, { ...init, signal: AbortSignal.timeout(15000), redirect: 'manual' });
 async function server(c) {
   const response = await oauth.discoveryRequest(new URL(c.issuer), { [oauth.customFetch]: timeoutFetch });
   const as = await oauth.processDiscoveryResponse(new URL(c.issuer), response);

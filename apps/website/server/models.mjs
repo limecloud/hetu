@@ -20,7 +20,7 @@ function base(c) { return `${c.api_origin}/api/v1/business/models/applications/$
 async function upstream(c, session, path, options = {}) {
   let response;
   try {
-    response = await fetch(base(c) + path, { method: options.body ? 'POST' : 'GET', redirect: 'error', signal: AbortSignal.timeout(options.body ? 90000 : 20000), headers: { authorization: `Bearer ${session.access_token}`, accept: 'application/json', ...(options.body ? { 'content-type': 'application/json', 'idempotency-key': options.key } : {}) }, ...(options.body ? { body: JSON.stringify(options.body) } : {}) });
+    response = await fetch(base(c) + path, { method: options.body ? 'POST' : 'GET', redirect: 'manual', signal: AbortSignal.timeout(options.body ? 90000 : 20000), headers: { authorization: `Bearer ${session.access_token}`, accept: 'application/json', ...(options.body ? { 'content-type': 'application/json', 'idempotency-key': options.key } : {}) }, ...(options.body ? { body: JSON.stringify(options.body) } : {}) });
   } catch { throw new ServiceError('upstream_unavailable', 503); }
   if (!response.ok) {
     await response.body?.cancel();
@@ -132,7 +132,7 @@ export async function image(env, c, session, key) {
   const url = new URL(access.url);
   check(c.media_origins.includes(url.origin) && url.protocol === 'https:' && !url.username && !url.password && access.method === 'GET' && Date.parse(access.expires_at) > Date.now(), 'invalid_media_access', 502);
   check(access.headers && Object.entries(access.headers).every(([k,v]) => ['authorization', 'accept'].includes(k.toLowerCase()) && typeof v === 'string' && !/[\r\n]/.test(v)), 'invalid_media_access', 502);
-  const response = await fetch(url, { headers: access.headers, redirect: 'error', signal: AbortSignal.timeout(30000) });
+  const response = await fetch(url, { headers: access.headers, redirect: 'manual', signal: AbortSignal.timeout(30000) });
   check(response.ok && response.headers.get('content-type')?.split(';')[0] === value.output.mime_type, 'invalid_media', 502);
   const bytes = await readLimited(response, limit);
   check(bytes.length === value.output.size && await sha(bytes) === value.output.sha256, 'invalid_media', 502);

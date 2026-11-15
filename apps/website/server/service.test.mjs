@@ -26,6 +26,7 @@ async function fixture() {
   const billing=kind=>({unit:kind==='image'?'image':'invocation',policy_version:'p1',credits_per_unit:state.price,state:'settled',quantity:1});
   globalThis.fetch=async (input,options={})=>{
     const url=new URL(input instanceof Request?input.url:input),headers=new Headers(options.headers);
+    if(state.redirectPath===url.pathname)return new Response(null,{status:302,headers:{location:'https://untrusted.test/redirected'}});
     if(url.pathname==='/.well-known/openid-configuration')return response({issuer:c.issuer,authorization_endpoint:c.issuer+'/authorize',token_endpoint:c.issuer+'/token',userinfo_endpoint:c.issuer+'/userinfo',jwks_uri:c.issuer+'/jwks',response_types_supported:['code'],id_token_signing_alg_values_supported:['RS256'],code_challenge_methods_supported:['S256']});
     if(url.pathname==='/jwks')return response({keys:[jwk]});
     if(url.pathname==='/token'){
@@ -106,6 +107,19 @@ test('拒绝 nonce、签名和业务上下文不匹配',async()=>{
   for(const field of ['badNonce','badSignature','badContext']){
     const f=await fixture();f.state[field]=true;const login=await f.signIn();assert.equal(login.response.status,303);assert.ok(login.response.headers.get('location').includes('connection_error='));assert.equal(f.sqlite.prepare('SELECT count(*) AS n FROM sessions').get().n,0);f.sqlite.close();
   }
+});
+test('身份及模型上游重定向被拒绝，不创建会话或生成请求',async()=>{
+  const discovery=await fixture();discovery.state.redirectPath='/.well-known/openid-configuration';
+  const start=await discovery.req('/auth/login');
+  assert.equal(new URL(start.headers.get('location')).origin,c.site_origin);
+  assert.equal(discovery.state.tokenPosts,0);assert.equal(discovery.sqlite.prepare('SELECT count(*) AS n FROM sessions').get().n,0);discovery.sqlite.close();
+  const token=await fixture();token.state.redirectPath='/token';
+  const login=await token.signIn();assert.ok(login.response.headers.get('location').includes('connection_error='));
+  assert.equal(token.sqlite.prepare('SELECT count(*) AS n FROM sessions').get().n,0);token.sqlite.close();
+  const model=await fixture(),auth=await model.connect();
+  model.state.redirectPath='/api/v1/business/models/applications/'+c.application_id+'/environments/'+c.environment+'/self/catalog';
+  assert.equal((await model.req('/models/text',{token:auth.token})).status,503);
+  assert.equal(model.state.posts,0);model.sqlite.close();
 });
 test('预算、政策和输入外发范围检查先于收费请求',async()=>{
   const f=await fixture(),auth=await f.connect();

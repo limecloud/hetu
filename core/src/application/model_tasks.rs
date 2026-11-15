@@ -305,6 +305,17 @@ mod tests {
             )
             .unwrap();
         let mut prepare_input = json!({"task_ref":f.task["task_ref"],"kind":"image","artifact_kind":"image","model_id":"image-one","prompt":"获权封面提示","title":"自定义渠道候选","billing_mode":"provider","operation_key":"custom-plan"});
+        let mut unavailable = prepare_input.clone();
+        unavailable["model_id"] = json!("image-unconfigured");
+        unavailable["operation_key"] = json!("unconfigured-custom-model");
+        assert_eq!(
+            call(&f.agent, "model_tasks.prepare", unavailable)["error"]["code"],
+            "invalid_input"
+        );
+        assert_eq!(
+            ok(call(&f.agent, "model_tasks.list", json!({"task_ref":f.task["task_ref"]})))["plans"],
+            json!([])
+        );
         let r = ok(call(&f.agent, "model_tasks.prepare", prepare_input.clone()));
         assert!(r["plan"]["estimated_credits"].is_null());
         assert!(!r.to_string().contains("private-provider-key"));
@@ -551,6 +562,19 @@ impl Kernel {
                             && input.get("billing_policy_version").is_none(),
                         "invalid_input",
                         "供应商计费不能冒充Cloud报价或零Credits。",
+                    )?;
+                    let catalog = service.api(
+                        "GET",
+                        &format!("/models/{kind}"),
+                        None,
+                        &connection,
+                    )?;
+                    ensure(
+                        catalog["items"].as_array().is_some_and(|items| {
+                            items.iter().any(|model| model["id"] == input["model_id"])
+                        }),
+                        "invalid_input",
+                        "模型不属于此渠道。",
                     )?;
                 }
                 let plan_id = id("model");

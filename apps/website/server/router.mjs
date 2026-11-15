@@ -80,8 +80,13 @@ export async function handle(request, env) {
     throw new ServiceError('route_not_found', 404);
   } catch (error) {
     const known = error instanceof ServiceError;
+    const failureCode = typeof error?.code === 'string' && /^[A-Z_]{1,80}$/.test(error.code) ? error.code : error instanceof TypeError ? 'TYPE_ERROR' : 'UNEXPECTED_ERROR';
+    if (!known) {
+      // 只记录稳定错误类型和阶段；不记录 URL 参数、OAuth 响应或凭据。
+      console.error(JSON.stringify({ event: 'hetu_service_failure', stage: ['/api/hetu/auth/login', '/api/hetu/auth/callback'].includes(new URL(request.url).pathname) ? new URL(request.url).pathname.split('/').at(-1) : 'request', name: error instanceof TypeError ? 'TypeError' : error instanceof SyntaxError ? 'SyntaxError' : 'Error', code: failureCode }));
+    }
     if (c && request.method === 'GET' && ['/api/hetu/auth/login','/api/hetu/auth/callback'].includes(new URL(request.url).pathname)) {
-      return new Response(null, { status: 303, headers: { location: c.site_origin + '/console/?connection_error=' + (known ? error.code : 'login_failed'), 'set-cookie': cookie('__Host-hetu_login','',0), 'cache-control':'no-store', 'referrer-policy':'no-referrer' } });
+      return new Response(null, { status: 303, headers: { location: c.site_origin + '/console/?connection_error=' + (known ? error.code : 'login_failed'), 'set-cookie': cookie('__Host-hetu_login','',0), 'cache-control':'no-store', 'referrer-policy':'no-referrer', ...(!known ? { 'x-hetu-failure': failureCode } : {}) } });
     }
     // 不将 OAuth 响应、用户输入或远端异常原文放入日志和响应。
     return json({ error: { code: known ? error.code : 'service_unavailable' } }, known ? error.status : 503);
