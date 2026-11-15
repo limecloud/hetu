@@ -37,7 +37,8 @@ jobs:
         env:
           RUST_BACKTRACE: "1"
         run: |
-          if cargo test --locked --release -p hetu-core --test collaboration; then
+          rustup toolchain install 1.95.0 --profile minimal
+          if cargo +1.95.0 test --locked --release -p hetu-core --test collaboration; then
             exit 0
           fi
           python3 - <<'PY'
