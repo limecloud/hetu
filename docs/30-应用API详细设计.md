@@ -90,8 +90,9 @@ typed_changes 是受限的实体新增、字段更新、归档、引用迁移和
 | `hetu.documents.list` | kind? | 文档摘要与修订指针 | MCP 资源层分页绑定 scope、过滤条件和完整列表快照 |
 | `hetu.documents.get` | document_id、revision_id? | 元数据、格式、内容或有界范围 | 默认当前修订必须在结果明确，固定引用优先 |
 | `hetu.documents.save` | document_id、base_revision_id、source_format、content、operation_key | 新 revision_id、sha256、当前指针 | 作者编辑入口；不自动批准；基线冲突不覆盖 |
-| `hetu.documents.preview_import` | file_path、format、profile | 固定文件摘要、转换预览与损失报告 | 仅作者选择的本机文件；不修改作品、不执行宏 |
-| `hetu.documents.import` | preview、kind、title、language_tag、volume_id?、acknowledgement、operation_key | ImportRecord、文档及修订 | 仅作者；确认预览与损失后重验原文件；原键恢复 |
+| `hetu.documents.preview_import` | inline_source 或作者选择的 file_path、format、profile | 固定文件摘要、转换预览与损失报告 | 机器提交文件字节，作品授权不能读取任意本机路径；不执行宏 |
+| `hetu.documents.import` | preview、kind、title、language_tag、volume_id?、acknowledgement、operation_key | ImportRecord、文档及修订 | 作者确认或获批固定管理方案；核验原字节，保留非定稿状态与原键恢复 |
+| `hetu.documents.import_batch` | expected、items[1..32]、acknowledgement、operation_key | documents、novel、revision、sha256 | 每项含 source、title、language_tag、volume_id；同批原子导入全部原稿和目录，一项失败不公开部分章节 |
 | `hetu.documents.preview_export` | revision_refs、profile、format | 固定正文修订、格式转换预览与损失报告 | 仅作者；不创建最终文件 |
 | `hetu.documents.export` | preview、acknowledgement、operation_key | 新文件、摘要、转换报告 | 仅作者确认固定预览；受限导出根；原键恢复 |
 | `hetu.drafts.submit` | package、source_format、content、blueprint_revision、operation_key、目标或新稿信息 | draft_id、operation、diagnostic_state=not_requested | 新稿需title；修改需target_document_id＋base_revision_id |

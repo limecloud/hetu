@@ -4,6 +4,7 @@
 
 | 任务 | 工作法 |
 | --- | --- |
+| 已有小说导入 | [原稿导入](workflows/import.md) |
 | 建书方向与初步定位 | [建书构思](workflows/creation.md) |
 | 书名、简介与卖点 | [作品资料](workflows/profile.md) |
 | 总纲、卷纲、章纲 | [大纲规划](workflows/outline.md) |

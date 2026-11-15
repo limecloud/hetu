@@ -10,11 +10,17 @@ struct AgentOperationPreview: View {
     private var input: JSONValue { proposal["input"] }
     private var preview: JSONValue { proposal["preview"] }
     static func supports(_ action: String) -> Bool {
-        action.hasPrefix("hetu.git.") || ["hetu.documents.export", "hetu.bundles.export", "hetu.assets.import", "hetu.assets.update", "hetu.cues.save", "hetu.resource_usages.save", "hetu.plot.correct", "hetu.drama.edit_skeleton", "hetu.image_tasks.prepare", "hetu.creative_tasks.prepare"].contains(action)
+        action.hasPrefix("hetu.git.") || ["hetu.documents.import_batch", "hetu.documents.export", "hetu.bundles.export", "hetu.assets.import", "hetu.assets.update", "hetu.cues.save", "hetu.resource_usages.save", "hetu.plot.correct", "hetu.drama.edit_skeleton", "hetu.image_tasks.prepare", "hetu.creative_tasks.prepare"].contains(action)
     }
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             if action.hasPrefix("hetu.git.") { git }
+            else if action == "hetu.documents.import_batch" {
+                Text(model.t("handoff.import_batch", ["count": String(input["items"].array.count)])).fontWeight(.semibold)
+                ForEach(Array(input["items"].array.enumerated()), id: \.offset) { _, item in
+                    Text(item["title"].string ?? "").textSelection(.enabled)
+                }
+            }
             else if action == "hetu.documents.export" || action == "hetu.bundles.export" { delivery }
             else if action == "hetu.assets.import" || action == "hetu.assets.update" { asset }
             else if action == "hetu.creative_tasks.prepare" || action == "hetu.image_tasks.prepare" {
@@ -26,7 +32,7 @@ struct AgentOperationPreview: View {
                 Text(preview["cue"]["description"].string ?? "").textSelection(.enabled)
             } else if action == "hetu.resource_usages.save" {
                 Text(input["role"].string ?? "").fontWeight(.semibold)
-                Text(input["source_ref"]["quote"].string ?? "").textSelection(.enabled)
+                Text(input["target_ref"]["quote"].string ?? "").textSelection(.enabled)
             } else if action == "hetu.plot.correct" {
                 ForEach(Array(preview["plot"]["nodes"].array.enumerated()), id: \.offset) { _, node in
                     VStack(alignment: .leading, spacing: 4) {

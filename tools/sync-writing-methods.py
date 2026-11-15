@@ -7,8 +7,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE = ROOT / 'tools/hetu-skills'
-VERSION = '0.2.6'
-SKILLS = ['hetu-setup', 'hetu-book-create', 'hetu-book-profile', 'hetu-outline', 'hetu-cover', 'hetu-draft', 'hetu-revise', 'hetu-drama', 'hetu-resources', 'hetu-artwork', 'hetu-manage']
+VERSION = '0.2.7'
+SKILLS = ['hetu-setup', 'hetu-book-create', 'hetu-book-profile', 'hetu-outline', 'hetu-cover', 'hetu-draft', 'hetu-revise', 'hetu-drama', 'hetu-resources', 'hetu-artwork', 'hetu-manage', 'hetu-import']
 
 
 def encoded(value):
@@ -85,7 +85,7 @@ def render():
     genres = json.loads((SOURCE / 'genres.json').read_text())
     assert len({g['id'] for g in genres}) == len(genres)
     provenance = json.loads((SOURCE / 'sources.json').read_text())
-    shared = {p.relative_to(SOURCE / 'base').as_posix(): p.read_bytes() for p in sorted((SOURCE / 'base').rglob('*')) if p.is_file()}
+    shared = {p.relative_to(SOURCE / 'base').as_posix(): p.read_bytes() for p in sorted((SOURCE / 'base').rglob('*')) if p.is_file() and '__pycache__' not in p.parts and p.suffix != '.pyc'}
     for path in (SOURCE / 'licenses').glob('*.txt'):
         shared['licenses/' + path.name] = path.read_bytes()
     shared['references/sources.json'] = encoded({k: v for k, v in provenance.items() if k != 'classificationEvidence'})
@@ -95,6 +95,7 @@ def render():
 
 | 任务 | 工作法 |
 | --- | --- |
+| 已有小说导入 | [原稿导入](workflows/import.md) |
 | 建书方向与初步定位 | [建书构思](workflows/creation.md) |
 | 书名、简介与卖点 | [作品资料](workflows/profile.md) |
 | 总纲、卷纲、章纲 | [大纲规划](workflows/outline.md) |

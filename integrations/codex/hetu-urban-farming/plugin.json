@@ -1,6 +1,6 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "hetu-urban-farming",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "河图洛书都市种田创作套件：任务流程与本题材方法，按作品选择安装"
 }

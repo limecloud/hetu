@@ -1087,7 +1087,7 @@ impl Kernel {
         let mut imported = Vec::new();
         for item in input["items"].as_array().unwrap() {
             let mut chapter = item.clone();
-            chapter["preview"] = self.prepare_document_import(&item["source"] )?.0;
+            chapter["preview"] = self.prepare_document_import(&item["source"])?.0;
             chapter["kind"] = json!("novel_chapter");
             chapter["acknowledgement"] = input["acknowledgement"].clone();
             imported.push(self.import_document_record(&chapter, changes, false)?);

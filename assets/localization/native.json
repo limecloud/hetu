@@ -9487,5 +9487,19 @@
     "en": "Work and settings management",
     "purpose": "AI 协作审核：agent.skill.hetu-manage",
     "parameters": []
+  },
+  "handoff.import_batch": {
+    "zh-CN": "导入 {count} 篇原稿",
+    "en": "Import {count} source documents",
+    "parameters": [
+      "count"
+    ],
+    "purpose": "批量导入方案的原稿数量"
+  },
+  "agent.skill.hetu-import": {
+    "zh-CN": "小说导入",
+    "en": "Novel import",
+    "parameters": [],
+    "purpose": "小说导入Skill名称"
   }
 }
