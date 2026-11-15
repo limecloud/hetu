@@ -43,7 +43,7 @@ pub(super) fn definition(name: &str) -> Value {
         }
         source
     });
-    domain::schema::definition(source, name)
+    works::bundle_reference(domain::schema::definition(source, name))
 }
 fn request_path(request: &str) -> Result<String> {
     checked_id(request, "cover_request")?;

@@ -45,10 +45,7 @@ pub(super) fn definition(name: &str) -> Value {
         ))
         .expect("embedded creative task schema")
     });
-    let mut result = domain::schema::definition(schema, name);
-    result["$defs"]["work_resource"] = json!({"$id":"https://hetu.limeai.run/schemas/work.schema.json",
-        "$defs":{"work_ref":works::definition("work_ref")}});
-    result
+    works::bundle_reference(domain::schema::definition(schema, name))
 }
 pub(super) fn record_schema(record: &Value, name: &str) -> Result<()> {
     static VALIDATORS: OnceLock<BTreeMap<&str, OnceLock<jsonschema::Validator>>> = OnceLock::new();

@@ -97,13 +97,6 @@ fn catalog() -> &'static Value {
             serde_json::from_str(include_str!("../../../contracts/actions.json"))
                 .expect("embedded action catalog");
         for action in catalog["actions"].as_array_mut().unwrap() {
-            // 可选 WorkRef 的设定入口与 Work 合同共用同一身份定义。
-            if action["name"].as_str().is_some_and(|name| name.starts_with("hetu.blueprints."))
-                && action["input_schema"].is_object() {
-                action["input_schema"]["$defs"]["work_resource"] = json!({
-                    "$id":"https://hetu.limeai.run/schemas/work.schema.json",
-                    "$defs":{"work_ref":works::definition("work_ref")}});
-            }
             if let Some(reference) = action["input_schema_ref"].as_str() {
                 if let Some(definition) = reference.strip_prefix("schemas/work.schema.json#/$defs/") {
                     action["input_schema"] = works::definition(definition);
@@ -209,9 +202,6 @@ fn catalog() -> &'static Value {
                 let mut input = serde_json::from_str(source).expect("embedded input schema");
                 if reference.starts_with("schemas/blueprint-") {
                     input = blueprint::bundle(input);
-                    input["$defs"]["work_resource"] = json!({
-                        "$id":"https://hetu.limeai.run/schemas/work.schema.json",
-                        "$defs":{"work_ref":works::definition("work_ref")}});
                 } else if reference.starts_with("schemas/plot-")
                     || reference == "schemas/review-validate-input.schema.json"
                 {
@@ -220,6 +210,9 @@ fn catalog() -> &'static Value {
                 action["input_schema"] = input;
                 action.as_object_mut().unwrap().remove("input_schema_ref");
             }
+        }
+        for action in catalog["actions"].as_array_mut().unwrap() {
+            action["input_schema"] = works::bundle_reference(action["input_schema"].take());
         }
         catalog
     })
@@ -1376,6 +1369,30 @@ impl Kernel {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn all_registered_action_schemas_compile_without_network() {
+        for action in catalog()["actions"].as_array().unwrap() {
+            if let Err(error) = jsonschema::validator_for(&action["input_schema"]) {
+                panic!("{}: {error}", action["name"]);
+            }
+        }
+    }
+
+    #[test]
+    fn creative_and_cover_record_schemas_resolve_shared_work_references() {
+        for (source, definition) in [
+            (include_str!("../../../contracts/schemas/creative-task.schema.json"), creative_tasks::definition as fn(&str) -> Value),
+            (include_str!("../../../contracts/schemas/book-cover.schema.json"), covers::definition as fn(&str) -> Value),
+        ] {
+            let source: Value = serde_json::from_str(source).unwrap();
+            for name in source["$defs"].as_object().unwrap().keys() {
+                if let Err(error) = jsonschema::validator_for(&definition(name)) {
+                    panic!("{name}: {error}");
+                }
+            }
+        }
+    }
+
     #[test]
     fn fixed_input_uses_rfc8785_utf16_order_and_ecmascript_numbers() {
         let input = json!({"\u{e000}":2,"😀":1,"operation_key":"ignored"});

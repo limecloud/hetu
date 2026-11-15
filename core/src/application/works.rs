@@ -3,6 +3,14 @@ use super::*;
 
 const LINKS: &str = "shared/work-links";
 
+pub(super) fn bundle_reference(mut input: Value) -> Value {
+    if input.to_string().contains("https://hetu.limeai.run/schemas/work.schema.json") {
+        input["$defs"]["work_resource"] = json!({"$id":"https://hetu.limeai.run/schemas/work.schema.json",
+            "$defs":{"work_ref":definition("work_ref")}});
+    }
+    input
+}
+
 pub(super) fn definition(name: &str) -> Value {
     static SCHEMA: OnceLock<Value> = OnceLock::new();
     let source = SCHEMA.get_or_init(|| serde_json::from_str(include_str!(
