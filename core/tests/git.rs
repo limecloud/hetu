@@ -51,6 +51,16 @@ fn approve(k: &Kernel, prepared: &Value, key: &str) -> Value {
         json!({"snapshot_id":prepared["snapshot"]["snapshot_id"],"snapshot_sha256":prepared["snapshot_sha256"],"operation_key":key}),
     )
 }
+fn expire_approval(root: &Path, prepared: &Value) {
+    let snapshot = &prepared["snapshot"];
+    let path = root
+        .join("authorizations")
+        .join(snapshot["repository_instance"].as_str().unwrap())
+        .join(format!("{}.json", snapshot["snapshot_id"].as_str().unwrap()));
+    let mut approval: Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+    approval["expires_at"] = json!(0);
+    fs::write(path, serde_json::to_vec(&approval).unwrap()).unwrap();
+}
 fn execute(k: &Kernel, prepared: &Value, key: &str) -> Value {
     call(
         k,
@@ -243,14 +253,7 @@ fn recovery_reuses_exact_commit_and_receipt_after_publication_even_after_approva
             fs::remove_file(path).unwrap();
         }
     }
-    for folder in fs::read_dir(root.path().join("authorizations")).unwrap() {
-        for entry in fs::read_dir(folder.unwrap().path()).unwrap() {
-            let path = entry.unwrap().path();
-            let mut v: Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
-            v["expires_at"] = json!(0);
-            fs::write(path, serde_json::to_vec(&v).unwrap()).unwrap();
-        }
-    }
+    expire_approval(root.path(), &prepared);
     drop(k);
     let reopened = open(root.path(), "author", false);
     assert_eq!(execute(&reopened, &prepared, "execute"), result);
@@ -541,14 +544,7 @@ fn expired_approval_cannot_publish_a_new_commit() {
     init(&k);
     let p = prepare(&k, "prepare", None);
     success(approve(&k, &p, "approve"));
-    for folder in fs::read_dir(root.path().join("authorizations")).unwrap() {
-        for entry in fs::read_dir(folder.unwrap().path()).unwrap() {
-            let file = entry.unwrap().path();
-            let mut approval: Value = serde_json::from_slice(&fs::read(&file).unwrap()).unwrap();
-            approval["expires_at"] = json!(0);
-            fs::write(file, serde_json::to_vec(&approval).unwrap()).unwrap();
-        }
-    }
+    expire_approval(root.path(), &p);
     assert_eq!(
         execute(&k, &p, "expired")["error"]["code"],
         "hetu.author_confirmation_required"
