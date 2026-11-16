@@ -612,8 +612,9 @@ test(
       const c = await (window as any).hetu.context();
       return (window as any).hetu.request("hetu.documents.save", { work_ref: c.work_ref });
     });
-    expect(invalidSave.status).toBe("failed");
+    expect(invalidSave.status).toBe("blocked");
     expect(invalidSave.error.code).toBe("invalid_input");
+    expect(invalidSave.error.resolution.kind).toBe("correct_input");
     await pluginPage.getByRole("button", { name: "自动排列" }).click();
     await expect(pluginPage.getByRole("status")).toContainText("已重新排列");
     await page.screenshot({
