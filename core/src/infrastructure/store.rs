@@ -10,6 +10,8 @@ use std::io::{Read, Write};
 use std::path::Path;
 
 const READ_LIMIT: u64 = 16 * 1024 * 1024;
+#[cfg(test)]
+mod tests_platform;
 pub struct Store {
     root: OwnedFd,
     root_path: std::path::PathBuf,

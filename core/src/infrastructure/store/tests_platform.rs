@@ -1,4 +1,4 @@
-use hetu_core::infrastructure::store::Store;
+use super::Store;
 use std::collections::BTreeMap;
 
 fn store(root: &std::path::Path) -> Store {

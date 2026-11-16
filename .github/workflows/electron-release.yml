@@ -145,7 +145,6 @@ jobs:
       - name: Test Core, transactional storage and build fixtures
         run: |
           cargo test --locked --workspace --lib --jobs 2 -- --test-threads=2
-          cargo test --locked -p hetu-core --test platform_store --jobs 2
           cargo build --locked -p hetu-app-server --example plugin_fixture --jobs 2
       - name: Build portable release
         id: package
