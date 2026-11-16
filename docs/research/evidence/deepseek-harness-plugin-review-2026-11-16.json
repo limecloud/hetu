@@ -110,7 +110,8 @@
       "mechanism": "生命周期串行化",
       "source": "packages/extensions/cordis-client-runner/src/client/runtime.ts",
       "observation": "按插件串行load/unload，固定package及run身份，卸载释放loader项、factory与样式。",
-      "hetu_gap": "宿主enable遇到异步依赖时可与disable/replace交错；补齐依赖图过渡队列。"
+      "closed_gap": "宿主enable遇到异步依赖时可与disable/replace交错；补齐依赖图过渡队列。",
+      "resolution": "依赖图共享过渡队列；并发启用、停用、替换及卸载的回归检查通过。"
     },
     {
       "mechanism": "Host与Client分工",
@@ -127,6 +128,40 @@
   ],
   "verification_scope": "公开源码静态核对；未运行Harness，也不声明河图兼容DSH包。河图变更验证另记checks。",
   "checks": {
-    "status": "in_progress"
-  }
+    "status": "passed_scoped",
+    "plugin_host": {
+      "status": "passed",
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "log": "output/deepseek-harness-20261116/hetu-plugin-tests.log",
+      "scope": [
+        "独立包和创建工具",
+        "受限Node后端与无窗口CLI/MCP",
+        "依赖图并发过渡",
+        "重复清理与晚注册拒绝",
+        "后端清理聚合错误",
+        "索引、迁移与精确成果交接"
+      ]
+    },
+    "desktop_plugin_lifecycle": {
+      "status": "passed",
+      "passed": 1,
+      "log": "output/settings-native-20261116/round-4.log",
+      "scope": "独立插件安装、授权、保存、机器回读、重开和停用后导出；其余设置用例当轮失败，分别保留。"
+    },
+    "files": {
+      "packages/plugin-host/src/registry.ts": "1ce4684d036c1e0f251d7db16b47a036136b20fe3fa2302bed04a73678a84162",
+      "packages/plugin-host/src/backend.ts": "588d4be4029e0eb381156b492be8312ec4812cde79c68630c8e139e2a653ccac",
+      "packages/plugin-host/src/worker.mjs": "dcebbdebf575d6054e6d6bdb778e6cc8af27d40dcfe9fc6989a5fc4182216a39",
+      "packages/plugin-host/tests/host.test.ts": "7d2b87fbe5468db38cab88e68b0573d16be765e4f6d9e367ccc2f5d9bb8feea4",
+      "packages/plugin-host/tests/backend.test.ts": "7250f19996f0fd00e16f9fe88b0fac5267181da22efa022129925ee2ed7997d0"
+    }
+  },
+  "limitations": [
+    "仅静态核对Harness公开源码，未执行Harness。",
+    "不声明兼容DSH插件包。",
+    "macOS开发环境验证不替代Windows、正式签名分发、市场审核或第三方人类开发者试用。"
+  ]
 }

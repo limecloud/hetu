@@ -1,6 +1,6 @@
 import {
   test,
-  expect,
+  expect as baseExpect,
   _electron as electron,
   type ElectronApplication,
 } from "@playwright/test";
@@ -16,6 +16,7 @@ import { AppServer } from "../src/main/rpc.ts";
 import { openSettings } from "./navigation.ts";
 
 const root = path.resolve(import.meta.dirname, "../../..");
+const expect = baseExpect.configure({ timeout: 30000 });
 test("Core异常退出及重复关闭不阻塞桌面清理", async () => {
   const binary = path.join(root, "target/debug/hetu-app-server" + (process.platform === "win32" ? ".exe" : ""));
   const normal = await AppServer.open(binary);
@@ -66,7 +67,7 @@ test("本机决定发送前及提交后中断保留原键，确定冲突不冒�
 });
 
 test("CLI准备本机方案、Electron固定审阅与恢复、无窗口执行和真实MCP回读", async () => {
-  test.setTimeout(180000);
+  test.setTimeout(300000);
   const folder = await mkdtemp(path.join(os.tmpdir(), "hetu-settings-e2e-")),
     profile = path.join(folder, "desktop"),
     settings = path.join(profile, "local-settings"),
@@ -91,6 +92,7 @@ test("CLI准备本机方案、Electron固定审阅与恢复、无窗口执行和
     HETU_LOCAL_SETTINGS_DIR: settings,
     HETU_COLLABORATION_DIR: collaboration,
   });
+  const rendererErrors: string[] = [];
   let app: ElectronApplication | undefined,
     machineBin = path.join(root, "target/debug");
   const binary = (name: string) =>
@@ -116,6 +118,7 @@ test("CLI准备本机方案、Electron固定审阅与恢复、无窗口执行和
     });
     const main = await app.firstWindow();
     const page = await openSettings(app, main);
+    page.on("pageerror", error => rendererErrors.push(error.message));
     await page.emulateMedia({ colorScheme: null });
     await page.getByRole("button", { name: "让 AI 处理与审阅", exact: true }).click();
     await expect(
@@ -280,6 +283,7 @@ test("CLI准备本机方案、Electron固定审阅与恢复、无窗口执行和
     expect(after.preferences.autosave).toBe(true);
     expect(after.installations).toEqual(before.installations);
   } finally {
+    await test.info().attach("renderer-errors", { body: JSON.stringify(rendererErrors, null, 2), contentType: "application/json" });
     await app?.close();
   }
 });

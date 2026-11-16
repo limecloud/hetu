@@ -128,5 +128,9 @@ test("独立设置六分类截图、即时保存、浮层和窗口权限", async
     expect((await reopened.evaluate(() => window.hetuDesktop.settings("get"))).preferences.font_size).toBe(19);
     expect((await reopened.evaluate(() => window.hetuDesktop.settings("get"))).preferences.git_author_name).toBe("关闭前的署名");
     await writeFile(path.join(output, "metrics.json"), JSON.stringify(metrics, null, 2));
-  } finally { await app.close(); }
+  } finally {
+    await writeFile(path.join(output, "metrics.json"), JSON.stringify(metrics, null, 2));
+    await writeFile(path.join(output, "renderer-errors.json"), JSON.stringify(errors, null, 2));
+    await app.close();
+  }
 });
