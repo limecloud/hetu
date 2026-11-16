@@ -355,6 +355,7 @@ const paths = await packager({
   executableName: installedIdentity ? "Hetu" : "HetuElectronDev",
   appBundleId: installedIdentity ? "run.limeai.hetu" : "run.limeai.hetu.dev",
   appCategoryType: "public.app-category.productivity",
+  ...(process.platform === "win32" ? { win32metadata: { CompanyName: "limecloud" } } : {}),
   ...(process.platform === "darwin" ? { extendInfo: { LSMinimumSystemVersion: "14.0" } } : {}),
   appVersion: manifest.version,
   electronVersion: manifest.devDependencies.electron,
