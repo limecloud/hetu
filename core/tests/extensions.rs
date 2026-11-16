@@ -1,5 +1,5 @@
-use hetu_core::{Kernel, application::extensions::PluginSession};
-use serde_json::{Value, json};
+use hetu_core::{application::extensions::PluginSession, Kernel};
+use serde_json::{json, Value};
 fn fixture(path: &std::path::Path) -> (Kernel, Value) {
     let kernel=Kernel::open(json!({"workspace_path":path,"mode":"author","create":{"title":"插件闭环","locale":"zh-CN","operation_key":"fixture"}})).unwrap();
     let works =
@@ -196,15 +196,13 @@ fn isolated_plugin_data_survives_reopen_revocation_and_missing_code() {
         session.request(req("objects.get", read))["error"]["code"],
         "forbidden"
     );
-    assert!(
-        PluginSession::open(
-            &path,
-            &dir,
-            grant["grant_id"].as_str().unwrap(),
-            &"b".repeat(64)
-        )
-        .is_err()
-    );
+    assert!(PluginSession::open(
+        &path,
+        &dir,
+        grant["grant_id"].as_str().unwrap(),
+        &"b".repeat(64)
+    )
+    .is_err());
     let revoked = kernel.extension_host_request_in(
         &dir,
         json!({"method":"revoke","params":{"grant_id":grant["grant_id"]}}),
@@ -216,18 +214,14 @@ fn isolated_plugin_data_survives_reopen_revocation_and_missing_code() {
     );
     let exported=kernel.extension_host_request_in(&dir,json!({"method":"read","params":{"work_ref":work,"plugin_id":"org.hetu.relationships","request":req("objects.export",json!({"work_ref":work,"object_id":first["data"]["object"]["object_id"],"format":"markdown"}))}}));
     assert_eq!(exported["status"], "succeeded", "{exported}");
-    assert!(
-        exported["data"]["content"]
-            .as_str()
-            .unwrap()
-            .contains("叶渡")
-    );
-    assert!(
-        std::fs::read_to_string(path.join(".heturc.json"))
-            .unwrap()
-            .find("grant_")
-            .is_none()
-    );
+    assert!(exported["data"]["content"]
+        .as_str()
+        .unwrap()
+        .contains("叶渡"));
+    assert!(std::fs::read_to_string(path.join(".heturc.json"))
+        .unwrap()
+        .find("grant_")
+        .is_none());
 }
 #[test]
 fn schema_readonly_and_foreign_workspace_fail_closed() {
@@ -268,15 +262,13 @@ fn schema_readonly_and_foreign_workspace_fail_closed() {
     );
     let foreign = root.path().join("foreign");
     fixture(&foreign);
-    assert!(
-        PluginSession::open(
-            &foreign,
-            &dir,
-            grant["grant_id"].as_str().unwrap(),
-            &"a".repeat(64)
-        )
-        .is_err()
-    );
+    assert!(PluginSession::open(
+        &foreign,
+        &dir,
+        grant["grant_id"].as_str().unwrap(),
+        &"a".repeat(64)
+    )
+    .is_err());
 }
 
 #[test]

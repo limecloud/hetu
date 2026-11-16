@@ -20,6 +20,8 @@ test("发行拒绝标签、子包、内部依赖及锁文件版本漂移", async
     await writeFile(path.join(root, "Cargo.toml"), `[workspace.package]\nversion = "${version}"\n`);
     await writeFile(path.join(root, "Cargo.lock"), cargoLock);
     assert.equal(await verifyRelease(root, "v0.8.0"), version);
+    await writeFile(path.join(root, "Cargo.lock"), cargoLock.replace(/\n/g, "\r\n"));
+    assert.equal(await verifyRelease(root, "v0.8.0"), version);
     await assert.rejects(verifyRelease(root, "v0.7.0"), /标签/);
     await json("desktop/package.json", { version: "0.7.0" });
     await assert.rejects(verifyRelease(root), /Workspace/);

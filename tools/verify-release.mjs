@@ -21,7 +21,7 @@ export async function verifyRelease(root, tag) {
   const cargo = await readFile(path.join(root, "Cargo.toml"), "utf8");
   if (cargo.match(/\[workspace\.package\][\s\S]*?^version\s*=\s*"([^"]+)"/m)?.[1] !== version)
     throw new Error("Cargo workspace 版本不一致。");
-  const cargoLock = await readFile(path.join(root, "Cargo.lock"), "utf8");
+  const cargoLock = (await readFile(path.join(root, "Cargo.lock"), "utf8")).replace(/\r\n/g, "\n");
   for (const name of ["hetu-core", "hetu-cli", "hetu-mcp", "hetu-app-server", "hetu-plugin-cli"])
     if (!cargoLock.includes(`name = "${name}"\nversion = "${version}"`))
       throw new Error("Cargo 锁文件版本不一致：" + name);
