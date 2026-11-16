@@ -30,7 +30,7 @@ export async function navigate(page: Page, label: string) {
   const navigation = page.getByRole("complementary", { name: "项目导航", exact: true });
   const button = navigation.getByRole("button", { name: label, exact: true });
   await expect(button).toBeAttached();
-  const group = navigation.locator("details.navigation-group").filter({ has: button });
+  const group = navigation.locator("details.navigation-group").filter({ has: page.getByRole("button", { name: label, exact: true }) });
   if (await group.count() && !(await group.evaluate((element) => (element as HTMLDetailsElement).open)))
     await group.locator(":scope > summary").click();
   await button.click();
