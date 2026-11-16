@@ -182,11 +182,11 @@
       },
       {
         "q": "支持哪些平台和语言？",
-        "a": "目前优先提供 Mac 版，支持简体中文和英文界面。Windows 和手机不作为本次可用客户端发布。"
+        "a": "桌面版提供 macOS Apple Silicon、Windows x64 和 Linux x64 安装包，支持简体中文和英文界面。"
       },
       {
         "q": "有安装包可以下载吗？",
-        "a": "可以从 GitHub Release 下载经过 Developer ID 签名与 Apple 公证的 Mac DMG 或 ZIP，支持 macOS 14 及以上的 Apple Silicon Mac。也可以先体验首页工作台，或按开发者说明从源码构建。"
+        "a": "可以从 GitHub Releases 获取 Mac DMG 或 ZIP、Windows ZIP 和 Linux TAR.GZ。Mac 包经过 Developer ID 签名与 Apple 公证，Windows 和 Linux 包未签名。具体系统要求见下载与安装指南。"
       },
       {
         "q": "作品会被上传或自动开源吗？",
@@ -205,7 +205,7 @@
   "docs": {
     "title": "使用指南",
     "intro": "从小说、剧本或视频开始：向 Agent 说什么，回来阅读或观看什么，怎样提出意见并继续。跟着短例子，先完成眼前的一件事。",
-    "note": "首页体验使用示例作品，刷新后重置。自己的作品由 Mac 客户端保存在本机。",
+    "note": "首页体验使用示例作品，刷新后重置。自己的作品由桌面客户端保存在本机。",
     "back": "全部指南",
     "onPage": "本文目录"
   },

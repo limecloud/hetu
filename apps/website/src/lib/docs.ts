@@ -17,7 +17,7 @@ export const groups = [
 ] as const;
 export const docs = [
   { id: 'getting-started', group: 'start', title: { 'zh-CN': '快速入门', en: 'Quick start' }, description: { 'zh-CN': '向 Agent 说出目标，回来读稿或看片，提意见并继续。', en: 'Give your Agent a goal, read or watch the result, then give feedback and continue.' } },
-  { id: 'install', group: 'start', title: { 'zh-CN': '获取与安装 Mac 版', en: 'Get Hetu for Mac' }, description: { 'zh-CN': '从正式发布页获取安装包，保留已有作品与任务继续。', en: 'Get a release installer and continue your existing works and tasks.' } },
+  { id: 'install', group: 'start', title: { 'zh-CN': '下载与安装', en: 'Download and install' }, description: { 'zh-CN': '获取 Mac、Windows 或 Linux 版，保留已有作品与任务继续。', en: 'Get Hetu for Mac, Windows or Linux and continue your existing works and tasks.' } },
   { id: 'creative-library', group: 'start', title: { 'zh-CN': "认识创作库", en: "Your creative library" }, description: { 'zh-CN': "分别组织小说、剧本与视频，保留各自版本和来源关联。", en: "Organize novels, scripts and videos with their own revisions and source links." } },
   { id: 'creative-paths', group: 'start', title: { 'zh-CN': '选择你的创作路径', en: 'Choose a project starting point' }, description: { 'zh-CN': '只有一个点子、已经写了十万字，或拿到了改编授权，该从哪里开始？', en: 'Find the right starting point for an original script, your own book, a licensed adaptation or an existing draft.' } },
   { id: 'skills', group: 'start', title: { 'zh-CN': '选择与安装 Skills', en: 'Choose and install Skills' }, description: { 'zh-CN': '给自己的写作助手选一套适合这本书的题材方法。', en: 'Choose genre methods that fit this book for your writing assistant.' } },

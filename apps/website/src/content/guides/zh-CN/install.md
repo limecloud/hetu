@@ -1,14 +1,18 @@
-# 获取与安装 Mac 版
+# 下载与安装
 
-想先了解审阅方式，可以直接[体验首页工作台](/#prototype)。自己的小说、剧本与视频由 Mac 客户端保存在本机。
+想先了解审阅方式，可以直接[体验首页工作台](/#prototype)。自己的小说、剧本与视频由桌面客户端保存在本机。
 
 ## 从正式发布页获取安装包
 
-前往 [GitHub Releases](https://github.com/limecloud/hetu/releases/latest)，核对所选版本的说明和实际附件。安装包面向 macOS 14 及以上的 Apple Silicon Mac。
+前往 [GitHub Releases](https://github.com/limecloud/hetu/releases/latest)，核对所选版本的说明，下载对应系统的安装包。正式安装不需要开发工具。
 
-下载该版本的 DMG 或 ZIP。打开 DMG，把 `Hetu.app` 拖入“应用程序”；使用 ZIP 时先解压，再打开应用。正式安装不需要开发工具。
+- **macOS 14 及以上，Apple Silicon**：下载文件名含 `macos-arm64` 的 DMG 或 ZIP。打开 DMG，将 `Hetu.app` 拖入“应用程序”；ZIP 先解压再打开。
+- **Windows 11，x64**：下载文件名含 `windows-x64` 的 ZIP。解压完整目录，运行 `Hetu.exe`。
+- **Linux，x64**：下载文件名含 `linux-x64` 的 TAR.GZ。解压完整目录，运行其中的 `./Hetu`。
 
-发布附件同时提供摘要清单与制品说明，用于核对下载。源码仓库里的“Code → Download ZIP”是源码，需要构建，不能当作安装包。所选安装版本的功能与入口以其发布说明为准。
+Mac 包经过 Developer ID 签名与 Apple 公证。Windows 和 Linux 包未签名。Linux 构建基线为 Ubuntu 22.04，需要桌面图形环境与 Electron 运行库。
+
+发布附件同时提供摘要清单与制品说明，用于核对下载。解压时保留完整目录，不要只移动可执行文件。源码仓库里的“Code → Download ZIP”是源码，需要构建，不能当作安装包。所选安装版本的功能与入口以其发布说明为准。
 
 ## 带着已有作品继续
 
@@ -18,6 +22,6 @@
 
 ## 安装遇到问题
 
-核对系统、芯片类型、下载来源和所选发布版本。系统提示无法打开时，保留提示并核对签名、公证与制品状态，不要关闭系统防护来绕过。
+核对系统、处理器、下载来源和所选发布版本。系统提示无法打开时，保留提示并核对摘要与签名状态；Mac 还需核对公证结果。不要关闭系统防护来绕过。
 
 需要反馈时，在 [GitHub Issues](https://github.com/limecloud/hetu/issues)提供系统版本、应用版本和具体提示，不附作品正文或凭据。

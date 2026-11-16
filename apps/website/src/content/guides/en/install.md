@@ -1,14 +1,18 @@
-# Get and install Hetu for Mac
+# Download and install
 
-Try a review in the [homepage workspace](/en/#prototype) first if you prefer. The Mac client keeps your own novels, scripts and videos on your computer.
+Try a review in the [homepage workspace](/en/#prototype) first if you prefer. The desktop client keeps your own novels, scripts and videos on your computer.
 
 ## Get an installer from the release page
 
-Open [GitHub Releases](https://github.com/limecloud/hetu/releases/latest) and inspect the selected version’s notes and actual attachments. Packages target Apple Silicon Macs running macOS 14 or newer.
+Open [GitHub Releases](https://github.com/limecloud/hetu/releases/latest), read the selected version’s notes and download the package for your system. Installing a release package requires no development tools.
 
-Download that version’s DMG or ZIP. Open the DMG and drag `Hetu.app` into Applications, or extract the ZIP and open the app. Installing a release package requires no development tools.
+- **macOS 14 or newer, Apple Silicon**: download the DMG or ZIP with `macos-arm64` in its name. Open the DMG and drag `Hetu.app` into Applications, or extract the ZIP and open the app.
+- **Windows 11, x64**: download the ZIP with `windows-x64` in its name. Extract the complete folder and run `Hetu.exe`.
+- **Linux, x64**: download the TAR.GZ with `linux-x64` in its name. Extract the complete folder and run `./Hetu` inside it.
 
-Release attachments include checksums and a package manifest for verification. The repository’s “Code → Download ZIP” is source code and needs to be built. Use the release notes for the features and controls in the version you install.
+Mac packages are Developer ID signed and Apple notarized. Windows and Linux packages are unsigned. The Linux build baseline is Ubuntu 22.04 and requires a desktop environment and Electron runtime libraries.
+
+Release attachments include checksums and a package manifest for verification. Keep the complete extracted folder; do not move only the executable. The repository’s “Code → Download ZIP” is source code and needs to be built. Use the release notes for the features and controls in the version you install.
 
 ## Continue existing work
 
@@ -18,6 +22,6 @@ For a first task, give a connected Agent a small goal. Let it organize the propo
 
 ## If installation fails
 
-Check the system version, processor, download source and selected release. If macOS blocks the app, retain the message and verify signing, notarization and the package status. Do not disable system protections to bypass it.
+Check the system version, processor, download source and selected release. If the system blocks the app, retain the message and verify its checksum and signing status; on Mac, check notarization too. Do not disable system protections to bypass it.
 
 For a [GitHub issue](https://github.com/limecloud/hetu/issues), include the system version, app version and exact message. Exclude manuscripts and credentials.

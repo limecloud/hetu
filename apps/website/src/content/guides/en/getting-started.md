@@ -47,7 +47,7 @@ Return to the chapter and read the adopted passage in context. Keep it, adjust a
 
 To keep a final version, choose “Finalize revision,” review it and confirm. Later changes preserve that earlier final.
 
-## 4. Start your own book in the Mac app
+## 4. Start your own book in the desktop app
 
 Give your idea to a connected Codex or another external Agent. It prepares titles, a synopsis, an outline and a proposed folder. Review the proposal, confirm the creation scope and let the Agent create the book. Open the Mac library to see the result.
 
@@ -59,7 +59,7 @@ You can discuss an undecided title or direction before creating the book. The Ag
 
 For example: “An apocalypse survival story about a woman rebuilding a community, focused on supplies and trust.” For help with titles and a synopsis, read [Plan a book with Codex](codex-first-task.md).
 
-The Mac app saves your real work. The homepage demo resets when reloaded, so do not leave the only copy of your writing there.
+The desktop app saves your real work. The homepage demo resets when reloaded, so do not leave the only copy of your writing there.
 
 ## What to try next
 
@@ -68,4 +68,4 @@ The Mac app saves your real work. The homepage demo resets when reloaded, so do 
 - Develop a story with Codex: [Plan a book with Codex](codex-first-task.md).
 - Begin an original script or video: [Screenplay review](screenplays.md) and [From preview to finished video](video.md).
 
-For your own work, [install Hetu for Mac](install.md).
+For your own work, [download and install Hetu](install.md).

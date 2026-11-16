@@ -56,7 +56,7 @@ If the model service needs another sign-in, begin in Hetu, verify the website co
 
 ## Installation issues and support
 
-Check the Mac system, chip, app version and official release attachment. Do not disable system protection to bypass an installation warning. See [Get Hetu for Mac](install.md).
+Check the system, processor, app version and official release attachment. Do not disable system protection to bypass an installation warning. See [Download and install](install.md).
 
 When opening a [GitHub Issue](https://github.com/limecloud/hetu/issues), include versions, reproduction steps, expected and actual results, and a redacted error. Check screenshots for private text, keys, account details and personal paths.
 

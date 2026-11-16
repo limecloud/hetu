@@ -182,11 +182,11 @@
       },
       {
         "q": "Which platforms and languages are included?",
-        "a": "The current focus is Mac, with Simplified Chinese and English interfaces. Windows and mobile clients are not part of this release."
+        "a": "Desktop packages are available for macOS on Apple Silicon, Windows x64 and Linux x64, with Simplified Chinese and English interfaces."
       },
       {
         "q": "Can I download an application?",
-        "a": "Download a Developer ID signed and Apple notarized Mac DMG or ZIP from GitHub Releases for Apple Silicon Macs running macOS 14 or newer. You can also try the homepage workspace or build from source using the developer guide."
+        "a": "Get a Mac DMG or ZIP, Windows ZIP or Linux TAR.GZ from GitHub Releases. Mac packages are Developer ID signed and Apple notarized; Windows and Linux packages are unsigned. See the download and installation guide for system requirements."
       },
       {
         "q": "Will my work be uploaded or become open source?",
@@ -205,7 +205,7 @@
   "docs": {
     "title": "User guide",
     "intro": "Start with a novel, screenplay or video. Find what to ask your Agent, what to read or watch when it returns, and how to give feedback and continue.",
-    "note": "The homepage uses sample books and resets on refresh. The Mac app saves your own work on your computer.",
+    "note": "The homepage uses sample books and resets on refresh. The desktop app saves your own work on your computer.",
     "back": "All guides",
     "onPage": "On this page"
   },
