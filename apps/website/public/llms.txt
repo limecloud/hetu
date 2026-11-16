@@ -15,7 +15,7 @@ Script finalization, preview approval, asset selection, final-cut confirmation a
 - [Story and assets](https://hetu.limeai.run/en/docs/sections/assets/): Story bible, characters, locations, covers and illustrations.
 - [Review and delivery](https://hetu.limeai.run/en/docs/sections/review/): Review, feedback, adoption and file delivery.
 - [Collaboration](https://hetu.limeai.run/en/docs/sections/manage/): Agents, model costs, permissions, backups and recovery.
-- [For developers](https://hetu.limeai.run/en/docs/sections/developer/): Source builds for maintainers.
+- [For developers](https://hetu.limeai.run/en/docs/sections/developer/): Creative plugin development, validation, publishing and listing.
 - [Quick start](https://hetu.limeai.run/en/docs/getting-started/): What to ask an Agent, what to review and how to continue.
 - [Screenplays](https://hetu.limeai.run/en/docs/screenplays/): Original and adapted scripts, complete episodes and versioned feedback.
 - [Video](https://hetu.limeai.run/en/docs/video/): Previews, actual picture and sound, revisions and editable delivery.
@@ -25,6 +25,10 @@ Script finalization, preview approval, asset selection, final-cut confirmation a
 - [Model services and costs](https://hetu.limeai.run/en/docs/model-services/): Fixed inputs, scoped authorization and spending limits.
 - [Troubleshooting](https://hetu.limeai.run/en/docs/troubleshooting/): Recover original operations without duplicate work.
 - [Workflow](https://hetu.limeai.run/en/workflow/)
+- [Creative plugins](https://hetu.limeai.run/en/plugins/): Curated Hetu tools, distinct from Agent-client integration packages. Package metadata comes from each manifest.
+- [Use plugins](https://hetu.limeai.run/en/docs/plugins/): Installation, per-work permissions, Agent discovery and data retention.
+- [Develop plugins](https://hetu.limeai.run/en/docs/plugin-development/): Independent JS/TS/React packages and validation.
+- [Publish plugins](https://hetu.limeai.run/en/docs/plugin-publishing/): GitHub sources, fixed releases, listing review and maintenance.
 - [Integrations](https://hetu.limeai.run/en/integrations/)
 - [FAQ](https://hetu.limeai.run/en/faq/)
 - [Source](https://github.com/limecloud/hetu): Apache-2.0 core.

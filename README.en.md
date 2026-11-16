@@ -65,7 +65,7 @@ For the Electron macOS development app, use Rust `1.93.1`, Xcode Command Line To
 ./dev-mac.command
 ```
 
-You can also double-click `dev-mac.command` in Finder. The launcher installs locked dependencies when needed, builds the shared task pages and packages an Electron development app under `output/electron-packages/`, then opens the generated `.app`. Its exact path appears in Terminal. The one-click launcher supports Electron only. `--check` checks prerequisites; `--build-only` builds without opening; `--node-runtime` selects an existing Node executable. Running it again activates the running Electron development app; quit normally before rebuilding. The app uses ad-hoc signing. See the [developer guide](https://hetu.limeai.run/en/docs/download-and-install/) for details.
+You can also double-click `dev-mac.command` in Finder. The launcher installs locked dependencies when needed, builds the shared task pages and packages an Electron development app under `output/electron-packages/`, then opens the generated `.app`. Its exact path appears in Terminal. The one-click launcher supports Electron only. `--check` checks prerequisites; `--build-only` builds without opening; `--node-runtime` selects an existing Node executable. Running it again activates the running Electron development app; quit normally before rebuilding. The app uses ad-hoc signing.
 
 The standalone Rust CLI and MCP server use the same Core without starting the desktop app:
 

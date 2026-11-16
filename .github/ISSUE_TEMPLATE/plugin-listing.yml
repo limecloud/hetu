@@ -1,0 +1,51 @@
+name: 创作插件收录 / Creative plugin listing
+description: 提交可核验的河图插件版本，申请官网目录收录或更新。
+title: "[Plugin listing] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        请先阅读官网「插件发布与上架」。此表单提交收录申请，不执行安装或授权。
+        Read the publishing guide first. A listing request does not install code or grant work access.
+        不要提交密钥、授权记录、私密路径或真实作者正文。
+  - type: input
+    id: identity
+    attributes:
+      label: 插件 ID 与精确版本 / ID and exact version
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: 来源与维护 / Source and maintenance
+      description: 源码 URL、确切提交、许可证、发布者及问题反馈渠道。
+    validations:
+      required: true
+  - type: textarea
+    id: distribution
+    attributes:
+      label: 分发制品 / Distribution
+      description: 固定制品 URL、下载文件 SHA-256、解压后包校验摘要；说明可复现构建步骤。
+    validations:
+      required: true
+  - type: textarea
+    id: purpose
+    attributes:
+      label: 创作场景 / Creative use
+      description: 中英文名称和简介、目标作者、实际解决的问题、截图或演示版本及与已有工具的区别。
+    validations:
+      required: true
+  - type: textarea
+    id: access
+    attributes:
+      label: 权限与数据 / Permissions and data
+      description: 声明权限、数据类型、外部服务与费用、迁移与卸载后读取导出路径。
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 兼容与验证 / Compatibility and verification
+      description: 宿主版本、Host API、系统与架构、包校验、安装运行、机器调用与创作场景证据；保留失败与未验证项。
+    validations:
+      required: true

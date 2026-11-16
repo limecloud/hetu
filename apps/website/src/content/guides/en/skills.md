@@ -56,4 +56,8 @@ If the installer cannot find your client, prepare the client you normally use fi
 
 “Installed” means the method pack is in place. Check in your Agent that the current conversation can use it. Books can use different clients and suites. Changing the default client in Settings affects new books only.
 
-Continue with [Plan a book with Codex](codex-first-task.md). For advanced developer setup, see [Mac source build for developers](download-and-install.md).
+Continue with [Plan a book with Codex](codex-first-task.md).
+
+## How this differs from creative plugins
+
+Skills packages live in your external Agent client and provide methods and a connection. [Hetu creative plugins](plugins.md), such as graphs and timelines, live in Hetu and provide professional views and data actions. These are separate installations; genre package counts are not Hetu plugin counts.

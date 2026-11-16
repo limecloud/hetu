@@ -1,0 +1,24 @@
+{
+  "purpose": "创作库浅暗主题插画，非作品成果或选用封面",
+  "generated_on": "2026-11-16",
+  "assets": [
+    {
+      "file": "river-dawn-v1.webp",
+      "width": 1600,
+      "height": 800,
+      "sha256": "7b5e293a2274923fba4ad2c3f659fde19b606b5726cc14d8b93710bcd1c8bfbc",
+      "model": "gpt-image-2.5-flare",
+      "prompt": "prompts/river-dawn-v1.txt",
+      "prompt_sha256": "b644bb4723a4d1eca01ea0c05922737d9eebe45bb897b75800edc6806663726e"
+    },
+    {
+      "file": "river-night-v1.webp",
+      "width": 1600,
+      "height": 900,
+      "sha256": "caf43639396d8086868aff8274453b6955ff122f6dc15e064309dacee327be78",
+      "model": "gpt-image-2.5-sunburst",
+      "prompt": "prompts/river-night-v1.txt",
+      "prompt_sha256": "542d63375da1b6958aacc215ef4d8faf7724ea1599d1c486cee03d69060c037e"
+    }
+  ]
+}

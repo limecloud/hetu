@@ -609,6 +609,106 @@
       "sha256": "d402c598d8026691060347a5a96833c62e81745dfa47a82b693644cce40f0d7c",
       "verification": "public_source_retrieved",
       "verification_scope": "仅核对官方公开文本，不代表河图实现或目标平台通过"
+    },
+    {
+      "id": "SRC-031",
+      "name": "DSH官方插件索引指南",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/docs/user/guide/plugin-market.zh.md",
+      "git_revision": "39163dd30f703a79079e2d2446545cff3c453738",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "sha256": "5c0a045ab365b6bbc1e02027ba2d426296d3d00ee4600c70c15081b7de6c4cfc",
+      "verification": "public_source_retrieved",
+      "verification_scope": "仅核对固定源码和官方文档；未执行DSH安装或发布",
+      "excerpts": [
+        {
+          "term": "DSH 不内置任何索引源",
+          "context": "tor 模式也会获得只读的 `plugin_market` 工具。关闭该组合包会再次移除这两者。  DSH 不内置任何索引源。选择**发现**，点击**添加索引源**，输入一个索引文件的 URL。URL 必须使用 `http:` 或 `https:`，并且不能包含用户名、密码或 `#` 片段。网络路径上的任何人都能修改 `http:` 索引，包括其中列出的安装 spec，因此经由不受你控制的网络访问的索引应使用 `https:`。每个索引源属于当前 profile。  <a id=\"browse-and-install\"></a> ## 浏览和安装  工具栏左侧的索引菜单用"
+        },
+        {
+          "term": "npm",
+          "context": "件没有列出任何非预发布版本时，则是兼容的最高预发布版本。**安装**会打开确认框，显示该版本的来源：npm 包和注册表，或 Git 仓库、提交和目录。确认后开始常规的插件安装，包括其中的兼容性检查和注册表检查；未经确认不会安装任何内容。  选择卡片会打开插件页面。**版本**列表显示列出的每个版本及其兼容性，并为 DSH 接受的任何版本提供**安装**，包括旧版本和预发布版本。显示**已安装**、**有新版本**或**随 DSH 提供**的卡片会改为打开已安装的组合包。  索引是第三方内容。每个插件的标题、描述、图标、作者和来源都由索引决定；DSH 检查文件格式，但不验证这"
+        },
+        {
+          "term": "第三方内容",
+          "context": "**已安装**、**有新版本**或**随 DSH 提供**的卡片会改为打开已安装的组合包。  索引是第三方内容。每个插件的标题、描述、图标、作者和来源都由索引决定；DSH 检查文件格式，但不验证这些声明。只添加你信任的索引源，并在安装前核对确认框中的来源。  <a id=\"publish-an-index\"></a> ## 发布索引  索引是 UTF-8 编码的 JSON 文件，默认不超过 128 MiB，以 2xx 状态码返回且不经过重定向。把它放到任意静态主机上即可，例如 GitLab Pages、GitHub Pages，或通过 https 访问的对象存储。  图标可"
+        }
+      ]
+    },
+    {
+      "id": "SRC-032",
+      "name": "DSH静态索引生成器",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/apps/plugin-market-generator/README.zh.md",
+      "git_revision": "39163dd30f703a79079e2d2446545cff3c453738",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "sha256": "6aef75216c07a11cc6ec010369477eef8f3a784c1291eb03df599f299853ae4a",
+      "verification": "public_source_retrieved",
+      "verification_scope": "仅核对固定源码和官方文档；未执行DSH安装或发布",
+      "excerpts": [
+        {
+          "term": "不",
+          "context": ".json`，DSH 的 **发现** 页面无需额外请求即可展示该文件。它是独立的 Node 程序，不是 Cordis 应用，也从不安装或运行其所描述包的代码。  ## 用法  编写来源列表，每行一个条目。生成器忽略空行和以 `#` 开头的行。  ```text # npm packages: every bundle version that is neither deprecated nor private is listed @scope/dsh-example dsh-another-plugin # Git repositories: release tags a"
+        },
+        {
+          "term": "Git",
+          "context": "market-index-format.zh.md)文件的参考生成器。它读取一份由 npm 包名和 Git 仓库 URL 组成的纯文本列表，写出一个 `index.json`，DSH 的 **发现** 页面无需额外请求即可展示该文件。它是独立的 Node 程序，不是 Cordis 应用，也从不安装或运行其所描述包的代码。  ## 用法  编写来源列表，每行一个条目。生成器忽略空行和以 `#` 开头的行。  ```text # npm packages: every bundle version that is neither deprecated nor private i"
+        },
+        {
+          "term": "npm",
+          "context": "-plugin-market-index-format.zh.md)文件的参考生成器。它读取一份由 npm 包名和 Git 仓库 URL 组成的纯文本列表，写出一个 `index.json`，DSH 的 **发现** 页面无需额外请求即可展示该文件。它是独立的 Node 程序，不是 Cordis 应用，也从不安装或运行其所描述包的代码。  ## 用法  编写来源列表，每行一个条目。生成器忽略空行和以 `#` 开头的行。  ```text # npm packages: every bundle version that is neither deprecated nor p"
+        }
+      ]
+    },
+    {
+      "id": "SRC-033",
+      "name": "DSH固定安装来源解析",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/packages/boot/plugin-manager/src/install-spec.ts",
+      "git_revision": "39163dd30f703a79079e2d2446545cff3c453738",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "sha256": "20754f87be65a0af2c5cfbd758e8deb9220a57994d0c496e1469ad869e4ef3a2",
+      "verification": "public_source_retrieved",
+      "verification_scope": "仅核对固定源码和官方文档；未执行DSH安装或发布",
+      "excerpts": [
+        {
+          "term": "commit",
+          "context": "try can accept, and  * for a Git spec pinned to a commit the repository directory it installs from.  * @module @deepseek-ai/dsh-plugin-manager/install-spec  */  import { homedir } from 'node:os' import { isAbsolute, resolve } from 'node:path'  /**  * One spec read into its form and the par"
+        },
+        {
+          "term": "npm",
+          "context": "/**  * Reading an install spec before pnpm sees it: which of pnpm's spec forms it  * takes, for a registry name whether it is one the registry can accept, and  * for a Git spec pinned to a commit the repository directory it installs from.  * @module @deepseek-ai/dsh-plugin-manag"
+        },
+        {
+          "term": "git",
+          "context": "nto its form and the parts an inspection needs. A git spec  * and a tarball URL carry the `host` pnpm fetches them from, which no registry  * stands in for; only their dependencies come from the registry.  */ export type ParsedInstallSpec =   | { readonly kind: 'registry'; readonly spec: s"
+        }
+      ]
+    },
+    {
+      "id": "SRC-034",
+      "name": "DSH索引校验实现",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/packages/util/plugin-market-index/src/index.ts",
+      "git_revision": "39163dd30f703a79079e2d2446545cff3c453738",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "sha256": "68da2fbd1945c1ba09c8b479004199b5488cf259630002cdc42800859d33e011",
+      "verification": "public_source_retrieved",
+      "verification_scope": "仅核对固定源码和官方文档；未执行DSH安装或发布",
+      "excerpts": [
+        {
+          "term": "version",
+          "context": "ath of the offending value, such as `$.plugins[0].versions[1].version`. */ export class MarketIndexError extends Error {   /**    * @param path - JSON path of the offending value.    * @param reason - the violated rule.    */   constructor(readonly path: string, readonly reason: string) { "
+        },
+        {
+          "term": "source",
+          "context": " === undefined ? {} : { directory } } }  function source(value: unknown, path: string): MarketSource {   const object = objectAt(value, path)   switch (object.type) {     case 'npm': {       const registry = optional(object, 'registry', path, (member, at) => httpUrl(member, at, ['https:', "
+        },
+        {
+          "term": "commit",
+          "context": " registry } }     }     case 'git': {       const commit = stringAt(object.commit, `${path}.commit`)       if (!COMMIT.test(commit)) fail(`${path}.commit`, 'must be a lowercase 40-hex-digit commit SHA')       const packageDir = optional(object, 'path', path, packagePath)       return { typ"
+        }
+      ]
     }
   ],
   "user_supplied_article": {

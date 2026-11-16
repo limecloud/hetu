@@ -1,6 +1,6 @@
 # Work with external agents
 
-Hetu Luoshu is an agent-friendly local creative workspace. External agents understand your goal, organize material, create and operate through MCP, CLI and Skills. The native app puts review first: compare results, give feedback and decide what to adopt or finalize. Direct editing is available whenever you want it.
+Hetu Luoshu is an agent-friendly local creative workspace. External agents understand your goal, organize material, create and operate through MCP, CLI and Skills. The desktop workspace puts review first: compare results, give feedback and decide what to adopt or finalize. Direct editing is available whenever you want it.
 
 For a first try, read [Plan a book with Codex](codex-first-task.md). You can also create books, write and maintain story facts entirely on your own.
 
@@ -16,7 +16,7 @@ Cursor, Grok Build, DeepSeek Harness and Doubao are also developing their own Ag
 
 External agents use MCP to discover capabilities, create authorized projects, organize chapters and references, submit candidates, prepare delivery and retrieve feedback. Your chosen client manages the connection, so the native window need not stay open. Configure the stable connection once; each explicit work and task identifies its authorized material. Novels, related scripts and videos keep separate access scopes, even in the same folder. A connection does not grant library-wide access, and reauthorization does not revive revoked tasks.
 
-Choose MCP on the library home to read the guide and configure your client. Hosts that support MCP Apps can also show comparison and annotation panels. Other hosts continue with tool results and the native app.
+Choose MCP on the library home to read the guide and configure your client. Hosts that support MCP Apps can also show comparison and annotation panels. Other hosts continue with tool results and the desktop workspace.
 
 ## CLI: discover and call creative tools
 
@@ -24,7 +24,7 @@ Choose MCP on the library home to read the guide and configure your client. Host
 
 The CLI is an independent entry point for agents and automation. Query the current work’s actual capabilities, then call scoped actions. After an interruption or unknown result, query the original operation to avoid repeating the work.
 
-CLI and MCP share the same core, permissions and revision rules. Commands and source build steps are in [Mac source build for developers](download-and-install.md). Authors can continue using the native app.
+CLI and MCP share the same core, permissions and revision rules. Advanced setup is documented in the [GitHub repository](https://github.com/limecloud/hetu#配置与接入). Authors can continue using the desktop workspace.
 
 ## Skills: methods for the genre and task
 
@@ -77,7 +77,7 @@ If you have continued writing since receiving a suggestion, compare it with the 
 
 For another revision, select the result in the original task, save specific feedback and copy the continuation prompt. Compatible candidate panels may request continuation after your explicit action. Saved feedback, message acceptance and a returned draft are separate states; inspect the actual next result before treating the work as complete.
 
-Continue with [Checks and draft review](review.md). Developers can find advanced setup and source instructions in [Mac source build for developers](download-and-install.md).
+Continue with [Checks and draft review](review.md).
 
 
 ## Optional text and image models
@@ -89,3 +89,7 @@ Ask your Agent to use Hetu model services. It prepares a plan and explains the o
 If credits run out, follow the top-up guidance in the current conversation and check the amount before paying. If a request times out, ask the Agent to recover the original plan. Local writing works without a connection. Video and sound use your selected external tools; see [From preview to finished video](video.md).
 
 For generation plans and accounts, read [Model services and costs](model-services.md). For access boundaries, see [Privacy and permissions](privacy-and-permissions.md). Use [Troubleshooting and recovery](troubleshooting.md) to inspect the original task when something goes wrong.
+
+## Working with creative plugins
+
+Graphs and timelines are installed in Hetu, separately from the Agent client’s Skills and integration package. A connected Agent queries installed, enabled and permitted capabilities again through the existing machine interface. Installation does not grant work access or manuscript adoption rights. See [Use creative plugins](plugins.md).

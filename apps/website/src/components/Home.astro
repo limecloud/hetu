@@ -1,6 +1,7 @@
 ---
 import { messages, route, source, prototype, version, type Locale } from '../lib/site';
 import Workbench from './Workbench.astro';
+import PluginVisual from './PluginVisual.astro';
 import SkillsCatalog from './SkillsCatalog.astro';
 import AgentEntrypoints from './AgentEntrypoints.astro';
 import AuthorPrinciple from './AuthorPrinciple.astro';
@@ -76,6 +77,9 @@ const icons = [
         <h3>{item.title}</h3><p>{item.body}</p>
       </article>)}
     </div>
+  </section>
+  <section class="section plugin-home">
+    <div class="plugin-home-grid"><div><h2>{en ? 'A workspace that grows with your story.' : '作品越深入，工具越贴合。'}</h2><p>{en ? 'Explore a growing cast as a relationship graph. Trace events on a story timeline. Add the tools you need, let your Agent organize the structure and keep your attention on the creative choices.' : '人物多了，用关系图看清彼此牵连；时间复杂了，用时间线核对事件顺序。按需添加工具，让 Agent 整理结构，把注意力留给创作判断。'}</p><div class="plugin-home-links"><a class="text-link" href={route(locale, 'plugins')}>{en ? 'Explore creative plugins' : '探索创作插件'} →</a><a class="text-link" href={route(locale, 'docs/plugin-development')}>{en ? 'Build a plugin' : '开发你的插件'} →</a></div></div><PluginVisual locale={locale}/></div>
   </section>
   <SkillsCatalog locale={locale} compact/>
   <section class="section workflow-section">

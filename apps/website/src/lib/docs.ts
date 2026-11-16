@@ -41,7 +41,9 @@ export const docs = [
   { id: 'privacy-and-permissions', group: 'manage', title: { 'zh-CN': "隐私与授权范围", en: "Privacy and permissions" }, description: { 'zh-CN': "看清本机保存、外部处理和关联作品之间的授权边界。", en: "Understand local storage, external processing and permissions across linked works." } },
   { id: 'data-and-backup', group: 'manage', title: { 'zh-CN': '作品、版本与备份', en: 'Your work, versions and backups' }, description: { 'zh-CN': '区分页面演示与真实作品，安排版本和独立备份。', en: 'Understand demo data, revision history and independent backups.' } },
   { id: 'troubleshooting', group: 'manage', title: { 'zh-CN': "常见问题与恢复", en: "Troubleshooting and recovery" }, description: { 'zh-CN': "遇到连接、候选、冲突或未知结果，保留原任务继续处理。", en: "Recover from connection issues, conflicts and unknown results using the original task." } },
-  { id: 'download-and-install', group: 'developer', title: { 'zh-CN': 'Mac 源码版（开发者）', en: 'Mac source build for developers' }, description: { 'zh-CN': '面向已有开发环境的维护者，获取源码并构建 Mac 开发版。', en: 'Get the source and build the Mac development app using an existing development environment.' } },
+  { id: 'plugins', group: 'manage', title: { 'zh-CN': '使用创作插件', en: 'Use creative plugins' }, description: { 'zh-CN': '按需添加关系图与时间线，让 Agent 整理结构，在作品中审阅与接续。', en: 'Add graphs and timelines, let your Agent organize them and review the saved structures.' } },
+  { id: 'plugin-development', group: 'developer', title: { 'zh-CN': '开发创作插件', en: 'Develop a creative plugin' }, description: { 'zh-CN': '从独立 JS/TS/React 工程开始，构建、校验并验证插件。', en: 'Scaffold an independent JS/TS/React project, build a fixed package and validate it.' } },
+  { id: 'plugin-publishing', group: 'developer', title: { 'zh-CN': '插件发布与上架', en: 'Publish and list a plugin' }, description: { 'zh-CN': '准备版本与验证证据，通过 GitHub 申请官网目录收录，维护更新与退出。', en: 'Prepare a version and evidence, request a catalog listing through GitHub and maintain updates.' } },
 ] as const;
 export type Doc = (typeof docs)[number];
 export type DocGroup = (typeof groups)[number];
@@ -89,9 +91,9 @@ export const sectionContent: Record<DocGroup['id'], {
     related: ['skills', 'creative-library', 'formats-and-delivery'],
   },
   developer: {
-    description: { 'zh-CN': '面向维护者的 Mac 源码构建说明。普通作者从“开始使用”获取安装包。', en: 'Mac source-build instructions for maintainers. Authors can get an installer under Getting started.' },
-    request: { 'zh-CN': '先阅读源码构建指南，核对当前仓库的前置条件、构建命令和产物位置，再执行对应步骤。源码压缩包需要构建，不能当作安装包。', en: 'Read the source-build guide, check the repository’s prerequisites, build commands and output locations, then follow the relevant steps. A source archive requires a build and is not an installer.' },
-    outcome: { 'zh-CN': '分别验证构建产物与实际运行结果。接入问题保留具体错误和版本，不在日志或问题反馈中附带密钥、作者正文或私密数据。', en: 'Verify both the build artifact and actual runtime behavior. Keep exact errors and versions when diagnosing integration issues; exclude keys, private manuscripts and personal data from logs and reports.' },
+    description: { 'zh-CN': '从独立插件开发到发布上架，面向创作工具开发者。普通作者从“开始使用”获取安装包。', en: 'Build independent creative plugins and prepare them for publishing and listing. Authors can get an installer under Getting started.' },
+    request: { 'zh-CN': '我想做一个整理人物笔记的河图插件。先阅读开发指南，创建独立工程，声明最小权限并构建校验；用演示资料验证后，整理发布与收录材料。需要构建宿主时再查GitHub仓库说明。', en: 'I want to build a Hetu plugin for character notes. Read the development guide, scaffold an independent project, declare minimal permissions and validate the build. Test with demo material before preparing release and listing evidence. Consult the GitHub repository instructions if a host build is needed.' },
+    outcome: { 'zh-CN': '核对包版本与摘要、权限、机器调用和实际界面成果。发布前区分下载制品与源码，保留失败和未验证项，不在日志或申请中附带密钥、作者正文或私密数据。', en: 'Check package version and digest, permissions, machine calls and actual UI results. Distinguish distributions from source before publishing, preserve failed or unverified cases and exclude credentials and private manuscripts from reports.' },
     related: ['install', 'agents', 'troubleshooting'],
   },
 };

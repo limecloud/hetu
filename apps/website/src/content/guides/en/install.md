@@ -21,5 +21,3 @@ For a first task, give a connected Agent a small goal. Let it organize the propo
 Check the system version, processor, download source and selected release. If macOS blocks the app, retain the message and verify signing, notarization and the package status. Do not disable system protections to bypass it.
 
 For a [GitHub issue](https://github.com/limecloud/hetu/issues), include the system version, app version and exact message. Exclude manuscripts and credentials.
-
-If you have a development environment and need to run source code, see [Mac source build for developers](download-and-install.md). Building source and installing a release are separate paths.

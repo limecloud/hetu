@@ -1,0 +1,43 @@
+---
+import { categories, plugins } from '../lib/plugins';
+import { route, type Locale } from '../lib/site';
+import PluginVisual from './PluginVisual.astro';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const en = locale === 'en';
+---
+<section class="plugin-catalog" id="catalog" data-plugin-catalog>
+  <div class="plugin-catalog-head"><h2>{en ? 'Find a tool for your story' : '找到适合故事的工具'}</h2><p role="status" data-plugin-count data-label={en ? 'plugins' : '个插件'}>{plugins.length} {en ? 'plugins' : '个插件'}</p></div>
+  <div class="plugin-filters" hidden data-plugin-filters>
+    <label class="plugin-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><span class="sr-only">{en ? 'Search plugins' : '搜索插件'}</span><input type="search" placeholder={en ? 'Search by tool, use or name' : '搜索工具、用途或名称'} data-plugin-search/></label>
+    <div class="plugin-categories" role="group" aria-label={en ? 'Filter by creative task' : '按创作任务筛选'}>
+      {[{ id: 'all', title: { 'zh-CN': '全部', en: 'All' } }, ...categories].map(c => <button type="button" data-plugin-category={c.id} aria-pressed={c.id === 'all' ? 'true' : 'false'}>{c.title[locale]}</button>)}
+    </div>
+  </div>
+  <div class="plugin-grid">{plugins.map(plugin => <article class="plugin-card" data-plugin-card data-category={plugin.category} data-search={`${plugin.display[locale]} ${plugin.id} ${plugin.summary[locale]} ${plugin.use[locale]}`.toLocaleLowerCase()}>
+    <a href={route(locale, `plugins/${plugin.slug}`)}><PluginVisual locale={locale} kind={plugin.slug}/><div class="plugin-card-body"><div class="plugin-card-heading"><h3>{plugin.display[locale]}</h3><span>v{plugin.version}</span></div><p>{plugin.summary[locale]}</p><div class="plugin-card-meta"><span>{en ? 'By Hetu Luoshu' : '河图洛书出品'}</span><span>{plugin.license}</span></div><span class="text-link">{en ? 'Explore plugin' : '了解插件'} <span aria-hidden="true">→</span></span></div></a>
+  </article>)}</div>
+  <div class="plugin-empty" hidden data-plugin-empty><h3>{en ? 'No matching plugins' : '没有找到匹配的插件'}</h3><p>{en ? 'Try another term or clear the filters.' : '试试其他关键词，或清除筛选后查看全部。'}</p><button class="button secondary" type="button" data-plugin-reset>{en ? 'Clear filters' : '清除筛选'}</button></div>
+</section>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-plugin-catalog]').forEach(catalog => {
+    const search = catalog.querySelector<HTMLInputElement>('[data-plugin-search]')!;
+    const filters = catalog.querySelector<HTMLElement>('[data-plugin-filters]')!;
+    const buttons = [...catalog.querySelectorAll<HTMLButtonElement>('[data-plugin-category]')];
+    const cards = [...catalog.querySelectorAll<HTMLElement>('[data-plugin-card]')];
+    const count = catalog.querySelector<HTMLElement>('[data-plugin-count]')!;
+    let category = 'all';
+    filters.hidden = false;
+    const update = () => {
+      const query = search.value.trim().toLocaleLowerCase();
+      cards.forEach(card => card.hidden = !((category === 'all' || card.dataset.category === category) && card.dataset.search!.includes(query)));
+      const total = cards.filter(card => !card.hidden).length;
+      count.textContent = `${total} ${count.dataset.label}`;
+      catalog.querySelector<HTMLElement>('[data-plugin-empty]')!.hidden = total > 0;
+      buttons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.pluginCategory === category)));
+    };
+    search.addEventListener('input', update);
+    buttons.forEach(button => button.addEventListener('click', () => { category = button.dataset.pluginCategory!; update(); }));
+    catalog.querySelector('[data-plugin-reset]')!.addEventListener('click', () => { search.value = ''; category = 'all'; update(); search.focus(); });
+  });
+</script>

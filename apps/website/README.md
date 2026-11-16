@@ -17,6 +17,8 @@ npm run preview --workspace @hetu/website
 
 展示图片、图标、下载及分享卡使用根 `assets/manifest.json` 核验摘要；作者指南的实际截图由本目录 `assets/guides/captures.json` 登记来源、尺寸与摘要。图片内容变化时，URL 的 `v` 参数随之更新；构建检查发布副本与摘要，防止旧 CDN 缓存继续显示旧图。
 
+插件中心位于 `/plugins/` 与 `/en/plugins/`，精选场景由 `src/lib/plugins.ts` 维护，身份、名称、版本、许可和权限读取根 `plugins/*/plugin.json`。专业功能清单归各包的 `CAPABILITIES.md`，与 `integrations/catalog.json` 的客户端 Skills 套件分开。开发与发布指南在 `src/content/guides/{locale}/plugin-development.md` 和 `plugin-publishing.md`，收录表单归根 `.github/ISSUE_TEMPLATE/plugin-listing.yml`；目录不自动安装或授权。
+
 ## 浏览器验证
 
 ```bash

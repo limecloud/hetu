@@ -155,6 +155,7 @@ const mime = (name: string) =>
     ".svg": "image/svg+xml",
     ".png": "image/png",
     ".jpg": "image/jpeg",
+    ".webp": "image/webp",
     ".woff2": "font/woff2",
   })[path.extname(name)] ?? "application/octet-stream";
 const policy = (text: string) =>

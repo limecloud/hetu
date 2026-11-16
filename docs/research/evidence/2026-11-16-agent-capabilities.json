@@ -271,36 +271,67 @@
     "app": "/Applications/Hetu.app",
     "version": "0.9.0",
     "kind": "macOS arm64 local development package, ad-hoc signed",
-    "verification": "output/installed-package-final-verification.json",
-    "previous_bundle": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/hetu-before-deferred-quit-20261116.app",
-    "installed": "/Applications/Hetu.app",
+    "verification": "output/client-suite-installed-verification.json",
+    "manifest": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/electron-packages/hetu-dev-PhXuzo/manifest.json",
+    "source_sha256": "6e9cdc51fb4cd56c76355f2f625e2ff813e1852b5a3e18acad29e6c3bc77f5d9",
     "app_artifacts_verified": 2615,
-    "source_sha256": "2d35ebd01d4ab38ac3e42df25bc8873d07a20ea5899ba3734cf80e4193a0ec62",
-    "manifest": "output/electron-packages/hetu-dev-SWEh0a/manifest.json",
     "signature": "passed",
-    "assembly_verification": "output/all-agent-package-final-verification.json",
-    "cli_version_output": "hetu 0.9.0"
+    "assembly_verification": "output/client-suite-package-verification.json",
+    "retained_backup": false,
+    "backup_cleanup": "output/client-suite-backup-cleanup.json",
+    "previous_verification": {
+      "app": "/Applications/Hetu.app",
+      "version": "0.9.0",
+      "kind": "macOS arm64 local development package, ad-hoc signed",
+      "verification": "output/installed-package-final-verification.json",
+      "previous_bundle": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/hetu-before-deferred-quit-20261116.app",
+      "installed": "/Applications/Hetu.app",
+      "app_artifacts_verified": 2615,
+      "source_sha256": "2d35ebd01d4ab38ac3e42df25bc8873d07a20ea5899ba3734cf80e4193a0ec62",
+      "manifest": "output/electron-packages/hetu-dev-SWEh0a/manifest.json",
+      "signature": "passed",
+      "assembly_verification": "output/all-agent-package-final-verification.json",
+      "cli_version_output": "hetu 0.9.0",
+      "previous_bundle_removed_by_author_request": true
+    }
   },
   "client_adapter_update": {
     "suite": "general",
     "client": "codex",
-    "bundled_version": "0.3.6",
-    "registered_version": "0.3.5",
-    "state": "unknown",
-    "operation_id": "localop_16b6f335-2eba-4d8b-9e4f-be24068bfa58",
-    "execute_key": "upgrade-general-codex-20261116-036-execute",
-    "reason": "Codex plugin marketplace list fails while loading unrelated limecloud-zhituan marketplace with unsupported manifest; exact general plugin list remains readable. Original operation retained; no unrelated configuration changed.",
-    "logs": [
-      "output/upgrade-general-suite-execute.json",
-      "output/upgrade-general-suite-recovery.json",
-      "output/codex-marketplace-registration.stderr",
-      "output/codex-general-target-registration.json"
-    ],
+    "bundled_version": "0.3.7",
+    "registered_version": "0.3.7",
+    "state": "registered",
+    "operation_id": "localop_d900644a-8633-4a40-8193-56168cc3ea0f",
+    "execute_key": "upgrade-general-codex-20261116-037-execute",
+    "package_sha256": "96e44b00ca4c7eaf95ecdb392a7f8ff5898722757371c84610a59727ccccc64d",
+    "current_bundle_sha256": "96e44b00ca4c7eaf95ecdb392a7f8ff5898722757371c84610a59727ccccc64d",
     "session_reloaded": false,
-    "final_inspection": "output/installed-general-suite-final.json",
-    "current_bundle_sha256": "3c960099120f79aefce6e4498d7a631418081e4f2d8f1de3e54e41befc48ca65",
-    "original_fixed_package_sha256": "3c960099120f79aefce6e4498d7a631418081e4f2d8f1de3e54e41befc48ca65",
-    "original_bundle_manifest": "output/electron-packages/hetu-dev-Dn7MsJ/manifest.json"
+    "previous_unknown_attempt": {
+      "suite": "general",
+      "client": "codex",
+      "bundled_version": "0.3.6",
+      "registered_version": "0.3.5",
+      "state": "unknown_retained",
+      "operation_id": "localop_16b6f335-2eba-4d8b-9e4f-be24068bfa58",
+      "execute_key": "upgrade-general-codex-20261116-036-execute",
+      "reason": "Codex plugin marketplace list fails while loading unrelated limecloud-zhituan marketplace with unsupported manifest; exact general plugin list remains readable. Original operation retained; no unrelated configuration changed.",
+      "logs": [
+        "output/upgrade-general-suite-execute.json",
+        "output/upgrade-general-suite-recovery.json",
+        "output/codex-marketplace-registration.stderr",
+        "output/codex-general-target-registration.json"
+      ],
+      "session_reloaded": false,
+      "final_inspection": "output/installed-general-suite-final.json",
+      "current_bundle_sha256": "3c960099120f79aefce6e4498d7a631418081e4f2d8f1de3e54e41befc48ca65",
+      "original_fixed_package_sha256": "3c960099120f79aefce6e4498d7a631418081e4f2d8f1de3e54e41befc48ca65",
+      "original_bundle_manifest": "output/electron-packages/hetu-dev-Dn7MsJ/manifest.json"
+    },
+    "live_mcp_log": "output/client-suite-037-live-mcp.log",
+    "final_verification": "output/client-suite-037-final-verification.json",
+    "official_registry": "output/client-suite-037-official-registry.json",
+    "final_inspection": "output/client-suite-037-after.json",
+    "unrelated_marketplaces_changed": false
   },
   "novel_import": {
     "status": "passed",
@@ -359,7 +390,7 @@
   "installed_ui_review": "已查看启用、停用和卸载三态；此切片不扩为全App浅暗／窄窗矩阵通过。",
   "suite_upgrade_repair": {
     "scope": "客户端接入包安装器；与河图专业插件热插拔独立。",
-    "status": "source_tests_passed",
+    "status": "passed",
     "core_tests": 8,
     "cli_tests": 1,
     "scenarios": [
@@ -392,6 +423,84 @@
     },
     "mcp_tests": 1,
     "mcp_log": "output/client-suite-mcp-tests.log",
-    "documentation_check": "output/client-suite-docs.log"
+    "documentation_check": "output/client-suite-docs-final.log",
+    "live_upgrade": {
+      "status": "passed",
+      "operation_id": "localop_d900644a-8633-4a40-8193-56168cc3ea0f",
+      "execute_key": "upgrade-general-codex-20261116-037-execute",
+      "version": "0.3.7",
+      "package_sha256": "96e44b00ca4c7eaf95ecdb392a7f8ff5898722757371c84610a59727ccccc64d",
+      "files_verified": 51,
+      "official_registration": "enabled",
+      "session_loaded": false,
+      "mcp_exit": {
+        "exit_code": 0,
+        "stderr": ""
+      }
+    },
+    "package_verification": {
+      "status": "passed",
+      "manifest": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/electron-packages/hetu-dev-PhXuzo/manifest.json",
+      "source_directory": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/client-suite-fixed-21l_5rai",
+      "source_sha256": "6e9cdc51fb4cd56c76355f2f625e2ff813e1852b5a3e18acad29e6c3bc77f5d9",
+      "source_files_verified": 2571,
+      "artifacts_verified": 2618,
+      "app": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/electron-packages/hetu-dev-PhXuzo/package/Hetu-darwin-arm64/Hetu.app",
+      "signature": "passed",
+      "workspace_differences": [
+        "apps/desktop/src/renderer/index.tsx"
+      ],
+      "errors": []
+    },
+    "installed_verification": {
+      "status": "passed",
+      "manifest": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/electron-packages/hetu-dev-PhXuzo/manifest.json",
+      "source_directory": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/client-suite-fixed-21l_5rai",
+      "source_sha256": "6e9cdc51fb4cd56c76355f2f625e2ff813e1852b5a3e18acad29e6c3bc77f5d9",
+      "source_files_verified": 2571,
+      "artifacts_verified": 2615,
+      "app": "/Applications/Hetu.app",
+      "signature": "passed",
+      "workspace_differences": [
+        "apps/desktop/src/renderer/index.tsx"
+      ],
+      "errors": []
+    },
+    "fixed_source_record": "output/client-suite-fixed-source.json",
+    "ui_scope": "沿用上一份已验安装包的index.tsx和style.css源码摘要；工作区并行UI修改保持，本轮不扩记新的视觉验收。",
+    "packaging_attempts": [
+      {
+        "log": "output/client-suite-package.log",
+        "status": "rejected",
+        "reason": "构建期间工作区style.css变化"
+      },
+      {
+        "log": "output/client-suite-package-retry.log",
+        "status": "rejected",
+        "reason": "构建期间工作区index.tsx变化"
+      },
+      {
+        "log": "output/client-suite-package-fixed.log",
+        "status": "failed",
+        "reason": "隔离副本缺plugins目录，补齐后重新装配；未接受该产物"
+      },
+      {
+        "log": "output/client-suite-package-fixed-final.log",
+        "status": "passed",
+        "source_sha256": "6e9cdc51fb4cd56c76355f2f625e2ff813e1852b5a3e18acad29e6c3bc77f5d9"
+      }
+    ],
+    "backup_cleanup": {
+      "authorization": "作者明确要求不用备份、清理掉",
+      "removed": [
+        "/Users/coso/Documents/dev/ai/limecloud/hetu/output/hetu-before-agent-install-20261116.app",
+        "/Users/coso/Documents/dev/ai/limecloud/hetu/output/hetu-before-deferred-quit-20261116.app",
+        "/Users/coso/Documents/dev/ai/limecloud/hetu/output/hetu-before-suite-repair-le1kdncd"
+      ]
+    },
+    "format_check": "rustfmt --check --config skip_children=true passed for the three changed Rust files",
+    "capability_map_check": "passed; 15 verified actions; source and installed discovery remain separate",
+    "skills_reproduction": "45 suites passed; output/client-suite-skills.log",
+    "remaining_installation_backups": []
   }
 }

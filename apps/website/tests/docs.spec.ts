@@ -6,9 +6,10 @@ const sections = [
   { id: 'screen', guides: ['screenplays', 'adaptation', 'video'], title: ['剧本与视频', 'Scripts and video'] },
   { id: 'assets', guides: ['story-bible', 'characters-and-scenes', 'cover-art', 'illustrations', 'references'], title: ['设定与素材', 'Story and assets'] },
   { id: 'review', guides: ['review', 'feedback', 'formats-and-delivery'], title: ['审阅与交付', 'Review and delivery'] },
-  { id: 'manage', guides: ['agents', 'model-services', 'privacy-and-permissions', 'data-and-backup', 'troubleshooting'], title: ['协作与管理', 'Collaboration'] },
-  { id: 'developer', guides: ['download-and-install'], title: ['开发者', 'For developers'] },
+  { id: 'manage', guides: ['agents', 'model-services', 'privacy-and-permissions', 'data-and-backup', 'troubleshooting', 'plugins'], title: ['协作与管理', 'Collaboration'] },
+  { id: 'developer', guides: ['plugin-development', 'plugin-publishing'], title: ['开发者', 'For developers'] },
 ];
+const guideCount = sections.reduce((count, section) => count + section.guides.length, 0);
 
 for (const prefix of ['', '/en']) {
   const en = !!prefix, locale = en ? 'en' : 'zh-CN';
@@ -56,7 +57,7 @@ for (const prefix of ['', '/en']) {
   test(`${locale} 文档检索覆盖正文、空结果与键盘导航`, async ({ page }) => {
     await page.goto(prefix + '/docs/');
     await expect(page.locator('.guide-group')).toHaveCount(7);
-    await expect(page.locator('.doc-index > a')).toHaveCount(26);
+    await expect(page.locator('.doc-index > a')).toHaveCount(guideCount);
     await page.locator('[data-docs-search-open]').focus();
     await page.keyboard.press('Control+k');
     const dialog = page.getByRole('dialog');
@@ -74,7 +75,7 @@ for (const prefix of ['', '/en']) {
     await expect(dialog.locator('.docs-search-results a')).toHaveCount(0);
     await expect(dialog.getByRole('status')).toContainText(en ? 'No guides' : '没有找到');
     await input.fill('');
-    await expect(dialog.locator('.docs-search-results a')).toHaveCount(26);
+    await expect(dialog.locator('.docs-search-results a')).toHaveCount(guideCount);
     await page.keyboard.press('Escape');
     await expect(dialog).toBeHidden();
     await expect(page.locator('[data-docs-search-open]')).toBeFocused();

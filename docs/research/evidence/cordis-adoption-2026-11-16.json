@@ -1,0 +1,350 @@
+{
+  "evidence_version": 1,
+  "retrieved_on": "2026-11-16",
+  "captured_at": "2026-11-16T15:08:04.488468+00:00",
+  "scope": "公开源码与许可证读取；未安装依赖、未运行插件，不证明兼容、性能或跨平台通过。",
+  "host_baseline": {
+    "git_revision": "0c9883f9b9fc53ab2cf082019ea4b46fd9b5962b",
+    "worktree": "dirty；包含本地文档及其他未提交改动，提交不是本轮完整文档快照"
+  },
+  "sources": [
+    {
+      "id": "cordis-license",
+      "repository": "https://github.com/cordiverse/cordis",
+      "git_revision": "c9fe179ce5ac484620a387a1697409cb007d4178",
+      "path": "LICENSE",
+      "url": "https://raw.githubusercontent.com/cordiverse/cordis/c9fe179ce5ac484620a387a1697409cb007d4178/LICENSE",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "sha256": "034fb52b1d57360ecbae6cb1632a88f86fd7c3d3f5631a5f082710203dda0be7",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "MIT",
+          "context": "MIT License  Copyright (c) 2021-present Shigma  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software w"
+        },
+        {
+          "term": "permission",
+          "context": "MIT License  Copyright (c) 2021-present Shigma  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "dsh-vendor",
+      "repository": "https://github.com/deepseek-ai/deepseek-harness",
+      "git_revision": "39163dd30f703a79079e2d2446545cff3c453738",
+      "path": "vendor/README.md",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/vendor/README.md",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "sha256": "ccc15df6f5b6040c22e5f4f280e07f2a5dbfd84b8dd25cc403ab362dc5d2f1ac",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "cordis",
+          "context": "# Vendored Packages  This directory contains source-vendored copies of the Cordis framework and its foundation libraries. They are copied into this monorepo instead of being depended on via npm, so that the harness fully owns its framework layer (auditable, patchable, pinned).  All vendored pac"
+        },
+        {
+          "term": "modifications",
+          "context": "ils`, `@cordisjs/element`, `@cordisjs/unyaml` (dev-time YAML import hook only).  ## Local modifications  Keep this log exhaustive — every divergence from upstream must be listed. Each entry has a stable ID: remove an entry when its divergence no longer exists, and never renumber or reuse IDs. The next new ent"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "dsh-cordis-package",
+      "repository": "https://github.com/deepseek-ai/deepseek-harness",
+      "git_revision": "39163dd30f703a79079e2d2446545cff3c453738",
+      "path": "vendor/cordis/package.json",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/vendor/cordis/package.json",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "sha256": "f2f434042ae760e4a19a792873a174c9c69b5a984d0a3a196a0b5cfc42e1f2f1",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "@deepseek-ai/cordis",
+          "context": "{   \"name\": \"@deepseek-ai/cordis\",   \"description\": \"Meta-Framework for Modern JavaScript Applications\",   \"version\": \"4.1.0\",   \"publishConfig\": {     \"access\": \"public\"   },   \"repository\": {     \"type\": \"git\",     \"url\": \"git+http"
+        },
+        {
+          "term": "version",
+          "context": "seek-ai/cordis\",   \"description\": \"Meta-Framework for Modern JavaScript Applications\",   \"version\": \"4.1.0\",   \"publishConfig\": {     \"access\": \"public\"   },   \"repository\": {     \"type\": \"git\",     \"url\": \"git+https://github.com/deepseek-ai/deepseek-harness.git\",     \"directory\": \"vendor/cordis\"   },   \"side"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "dsh-cordis-license",
+      "repository": "https://github.com/deepseek-ai/deepseek-harness",
+      "git_revision": "39163dd30f703a79079e2d2446545cff3c453738",
+      "path": "vendor/cordis/LICENSE",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/vendor/cordis/LICENSE",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "sha256": "034fb52b1d57360ecbae6cb1632a88f86fd7c3d3f5631a5f082710203dda0be7",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "MIT",
+          "context": "MIT License  Copyright (c) 2021-present Shigma  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software w"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "dsh-notices",
+      "repository": "https://github.com/deepseek-ai/deepseek-harness",
+      "git_revision": "39163dd30f703a79079e2d2446545cff3c453738",
+      "path": "THIRD_PARTY_NOTICES.md",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/THIRD_PARTY_NOTICES.md",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "sha256": "f2d50810380d1855ee83b9b46514033f2ac8c406d49bc8ecab711406a2acd061",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "Cordis",
+          "context": "ately in [`python/sdk/uv.lock`](python/sdk/uv.lock).  ## Vendored source (`vendor/`)  The Cordis framework and its foundation libraries are source-vendored into this repository rather than consumed from npm, and republished under the `@deepseek-ai` scope. All are MIT-licensed; each directory preserves its ups"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "dsh-first-plugin",
+      "repository": "https://github.com/deepseek-ai/deepseek-harness",
+      "git_revision": "39163dd30f703a79079e2d2446545cff3c453738",
+      "path": "docs/cordis-tutorial/01-first-plugin.zh.md",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/docs/cordis-tutorial/01-first-plugin.zh.md",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "sha256": "d83e9f2c2fdb025d0ce959de6d51f8b61752be23a1d328b1c7308fa18b81e5a8",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "apply",
+          "context": "# 1. 编写第一个插件  [English](01-first-plugin.md) | 中文  在本教程使用的 loader 配置中，Cordis 插件模块通过命名导出提供 `apply` 函数。Cordis 加载模块时，会用一个 **上下文** 调用 `apply`；该上下文就是 `ctx` 对象，插件通过它注册自己贡献的所有内容。  ## 编写插件  在 `tmp/cordis-tutorial` 目录中（参见[环境设置](index.zh.md#setup)）创建 `hello.ts`：  ```ts import type { Context } from '@deepseek-ai/cordis' "
+        },
+        {
+          "term": "inject",
+          "context": "项的列表。`name` 是模块指定符，可以是相对路径或 NPM 包名；loader 会挂载每个配置项。各项会并发启动，因此它们在列表中的位置不保证插件的加载先后；顺序由服务依赖（`inject`，参见[第 3 章](03-services.zh.md)）决定，而非文件中的位置。  ## 运行  ```sh node --import tsx ../../vendor/cordis/bin.js ```  预期输出：  ``` hello from my first plugin ```  当没有任何内容继续运行时，进程会自行退出。具体过程如下：  1. 启动器创建根 `Context`，并挂载 **Loader*"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "dsh-lifecycle",
+      "repository": "https://github.com/deepseek-ai/deepseek-harness",
+      "git_revision": "39163dd30f703a79079e2d2446545cff3c453738",
+      "path": "docs/cordis-tutorial/02-lifecycle-and-effects.zh.md",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/docs/cordis-tutorial/02-lifecycle-and-effects.zh.md",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "sha256": "568d7abd06db7f054c73348fe6c5decd57c1ca69f996dfcb8ab30ea3cdbc816c",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "effect",
+          "context": "# 2. 生命周期与 effect  [English](02-lifecycle-and-effects.md) | 中文  Cordis 插件可能因修改配置、热重载、显式资源释放或所需服务消失而卸载。通过 Cordis API 建立的注册属于 effect，会在所属插件卸载时撤销；在这些 API 之外管理的资源必须包装在 `ctx.effect()` 中。  ## Effect  对于 Cordis 尚未管理的资源，例如定时器、连接或 watcher，应"
+        },
+        {
+          "term": "dispose",
+          "context": "x.effect()` 中。  ## Effect  对于 Cordis 尚未管理的资源，例如定时器、连接或 watcher，应将其包装在 `ctx.effect()` 中并返回 disposer（资源释放函数）：  创建 `lifecycle.ts`，将它放在 `tmp/cordis-tutorial` 中：  ```ts import type { Context } from '@deepseek-ai/cordis'  export const name = 'lifecycle-demo'  function heartbeat(ctx: Context) {   console.log('heartb"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "dsh-tools",
+      "repository": "https://github.com/deepseek-ai/deepseek-harness",
+      "git_revision": "39163dd30f703a79079e2d2446545cff3c453738",
+      "path": "docs/cookbook/adding-a-tool.zh.md",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/docs/cookbook/adding-a-tool.zh.md",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "sha256": "9391cf48d777a595b82184b265fa8d8a5018a3113528a75a7f625d492789358a",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "schema",
+          "context": "{ type: 'number' },                     // optional by default     },     output: {       schema: { type: 'string' },       render: (_args, value) => [{ type: 'text', text: value }],     },     async execute(args, exec) {       // args is TYPED from the schema: { path: string; limit?: number }       // exec c"
+        },
+        {
+          "term": "execute",
+          "context": "ing' },       render: (_args, value) => [{ type: 'text', text: value }],     },     async execute(args, exec) {       // args is TYPED from the schema: { path: string; limit?: number }       // exec carries immutable identity + token; signal is the operational field       // A production tool converts errno f"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "dsh-client",
+      "repository": "https://github.com/deepseek-ai/deepseek-harness",
+      "git_revision": "39163dd30f703a79079e2d2446545cff3c453738",
+      "path": "docs/subsystems/client-modules.zh.md",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/docs/subsystems/client-modules.zh.md",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "sha256": "a57da34cf400f9df9e773be23087da059b393414a2ff45294d72e85d6231ee56",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "dsh.client",
+          "context": "块系统的 Node 半，以 `ctx.clientModules`（`ClientModuleRegistry`）形式提供。它扫描宿主 Loader 的 entry，找出声明了 `dsh.client` 的包，组合出 `window.__DSH_BOOT__` entry 图，在 `/plugins` 下提供带版本的单资源或多资源 combo 脚本，并以启动协议行回应每次 index 注入收集——这是同一个服务的四个面。它是 Web GUI 栈的一项可选能力，不属于 agent loop（智能体循环）主干，并且是 [dsh-host-webserver](../../packages/host/webserver"
+        },
+        {
+          "term": "exports",
+          "context": "自己的 package.json 中声明 `dsh.client`（`platform: 'web'`、可选的 `inject` 边、可选的 `immediately`），并在 `exports[\"./client\"]` 导出构建好的 bundle。每个 live row 都从自己的 Loader specifier 与所属 tree `baseUrl` 解析；若 `loader.internal.resolveSync` 可用，则使用 Host face import 所用的同一个实现。最近归属的 package manifest 提供浏览器模块 id，因此相对 source 与 built overlay 仍"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "dsh-ui-package",
+      "repository": "https://github.com/deepseek-ai/deepseek-harness",
+      "git_revision": "39163dd30f703a79079e2d2446545cff3c453738",
+      "path": "packages/client/ui-plugin-manager/package.json",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/packages/client/ui-plugin-manager/package.json",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "sha256": "ecf319924b42ee5d61a5f4618546e3a50682ab939b51970f3e287e4826c7aa67",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "react",
+          "context": "rkspace:*\",     \"@deepseek-ai/dsh-package-manifest\": \"workspace:*\",     \"@testing-library/react\": \"^16.3.3\",     \"clsx\": \"^2.1.1\",     \"react\": \"^18.2.0\",     \"react-dom\": \"^18.2.0\",     \"@deepseek-ai/dsh-util-crypto\": \"workspace:*\",     \"@deepseek-ai/dsh-client-ui-settings\": \"workspace:*\",     \"@deepseek-ai/"
+        },
+        {
+          "term": "tsdown",
+          "context": "ent-ui-sidebar\"       ],       \"platform\": \"web\"     }   },   \"scripts\": {     \"bundle\": \"tsdown\",     \"watch\": \"tsdown --watch\"   },   \"license\": \"MIT\",   \"peerDependencies\": {     \"@deepseek-ai/cordis\": \"workspace:~\"   },   \"devDependencies\": {     \"@deepseek-ai/cordis\": \"workspace:~\",     \"@deepseek-ai/dsh"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "dsh-market",
+      "repository": "https://github.com/deepseek-ai/deepseek-harness",
+      "git_revision": "39163dd30f703a79079e2d2446545cff3c453738",
+      "path": "docs/user/guide/plugin-market.zh.md",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/docs/user/guide/plugin-market.zh.md",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "sha256": "5c0a045ab365b6bbc1e02027ba2d426296d3d00ee4600c70c15081b7de6c4cfc",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "npm",
+          "context": "片显示插件的推荐版本：与当前运行的 DSH 兼容、且不是预发布版本的最高版本；插件没有列出任何非预发布版本时，则是兼容的最高预发布版本。**安装**会打开确认框，显示该版本的来源：npm 包和注册表，或 Git 仓库、提交和目录。确认后开始常规的插件安装，包括其中的兼容性检查和注册表检查；未经确认不会安装任何内容。  选择卡片会打开插件页面。**版本**列表显示列出的每个版本及其兼容性，并为 DSH 接受的任何版本提供**安装**，包括旧版本和预发布版本。显示**已安装**、**有新版本**或**随 DSH 提供**的卡片会改为打开已安装的组合包。  索引是第三方内容。每个插件的标题、描述、图标、作者和来源都由索"
+        },
+        {
+          "term": "git",
+          "context": "当前运行的 DSH 兼容、且不是预发布版本的最高版本；插件没有列出任何非预发布版本时，则是兼容的最高预发布版本。**安装**会打开确认框，显示该版本的来源：npm 包和注册表，或 Git 仓库、提交和目录。确认后开始常规的插件安装，包括其中的兼容性检查和注册表检查；未经确认不会安装任何内容。  选择卡片会打开插件页面。**版本**列表显示列出的每个版本及其兼容性，并为 DSH 接受的任何版本提供**安装**，包括旧版本和预发布版本。显示**已安装**、**有新版本**或**随 DSH 提供**的卡片会改为打开已安装的组合包。  索引是第三方内容。每个插件的标题、描述、图标、作者和来源都由索引决定；DSH 检查文件"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "openwrite-readme",
+      "repository": "https://github.com/LiPu-jpg/Openwrite",
+      "git_revision": "3635a1e5ca5ab9398e8adb7c3a91526826184a30",
+      "path": "README.md",
+      "url": "https://raw.githubusercontent.com/LiPu-jpg/Openwrite/3635a1e5ca5ab9398e8adb7c3a91526826184a30/README.md",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "sha256": "ada5da0d2ef50424ffd29db74764335ada3f756992087e257599ffa1551017ed",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "Python",
+          "context": "表） · Node.js ≥ 22.19 · macOS arm64/x64、Linux x64、Windows x64。   > 首次启动写入环境会自动下载固定版本的 `uv`、Python 3.12 与锁定依赖至当前 dsh 专属目录，无需本机预装 Python，也无需克隆仓库。写作与审稿需配置自己的模型 API Key（或安装免密钥联动插件）。  ### 方式一：终端安装（推荐）  安装前建议先运行 `dsh --version` 核对宿主版本（安装不会自动升级 dsh）：  ```sh dsh plugin --profile web add -w dsh-openwrite@latest dsh web"
+        },
+        {
+          "term": "Agent",
+          "context": " |  ---  ## 工作台一览  [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 提供 Agent 会话与宿主界面，[OpenWrite Core](https://github.com/LiPu-jpg/Openwrite/tree/native-core) 提供长篇小说领域引擎。写作、审稿与设定维护全部在 dsh 里的三个原生页签完成——**创作**（正文、批注与版本锁）、**资料**（角色、世界观、分卷大纲、研究与图谱）、**任务**（模型档案、横向评测、导入与成书导出）。  <p align=\"center\">  "
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "openwrite-ui",
+      "repository": "https://github.com/LiPu-jpg/Openwrite",
+      "git_revision": "3635a1e5ca5ab9398e8adb7c3a91526826184a30",
+      "path": "packages/studio-panel/package.json",
+      "url": "https://raw.githubusercontent.com/LiPu-jpg/Openwrite/3635a1e5ca5ab9398e8adb7c3a91526826184a30/packages/studio-panel/package.json",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "sha256": "f267106c5111ca2e56d25bc97725df0ffe7697cdf112a01b71616a209949f774",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "react",
+          "context": "cense\": \"MIT\",   \"dependencies\": {     \"@deepseek-ai/schemastery\": \"3.18.2\",     \"@xyflow/react\": \"^12.11.3\",     \"d3\": \"^7.9.0\",     \"elkjs\": \"^0.12.0\",     \"lucide-react\": \"^0.468.0\"   },   \"peerDependencies\": {     \"@deepseek-ai/cordis\": \"4.0.2 || ~4.0.4 || ~4.1.0\",     \"@deepseek-ai/dsh-host-webserver\": \""
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "openwrite-bridge",
+      "repository": "https://github.com/LiPu-jpg/Openwrite",
+      "git_revision": "3635a1e5ca5ab9398e8adb7c3a91526826184a30",
+      "path": "packages/openwrite-bridge/src/index.ts",
+      "url": "https://raw.githubusercontent.com/LiPu-jpg/Openwrite/3635a1e5ca5ab9398e8adb7c3a91526826184a30/packages/openwrite-bridge/src/index.ts",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "sha256": "5113e8003780d6ec82791be96720ace4f90b7b90529049b134ec0849d8be3dd0",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "apply",
+          "context": "ths entries must be absolute, got ${JSON.stringify(value)}`)     }   } }  export function apply(ctx: Context, config: Config) {   validateConfig(config)   // The web host process mounts ctx.workspaceRegistry. Resolve it lazily on   // every call: plugin start order must not strand the lookup, an absent   // r"
+        },
+        {
+          "term": "python",
+          "context": " 'external'   runtimeRoot?: string   artifacts?: string   /** Absolute path to a prepared Python >=3.10; skips uv and interpreter downloads. */   pythonPath?: string   /** Optional absolute directories containing dependencies for the supplied interpreter. */   pythonModulePaths?: string[]   /** Base URL of th"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "oil-package",
+      "repository": "https://github.com/oil-oil/dsh-oil-creator",
+      "git_revision": "58bd30d0d05b04e149552e8bdb4ff0becae614f0",
+      "path": "package.json",
+      "url": "https://raw.githubusercontent.com/oil-oil/dsh-oil-creator/58bd30d0d05b04e149552e8bdb4ff0becae614f0/package.json",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "sha256": "c9ae754902958d2ea648f6a26ddeaa718c018e2f851cc76d985c315e656d28b1",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "react",
+          "context": "2.0-rc.2 <0.3.0-0\",     \"@deepseek-ai/dsh-typert-protocol\": \">=0.2.0-rc.2 <0.3.0-0\",     \"react\": \"^18.2.0\",     \"@deepseek-ai/dsh-client-ui-workspace\": \">=0.2.0-rc.2 <0.3.0-0\"   },   \"devDependencies\": {     \"@deepseek-ai/cordis\": \"^4.0.4\",     \"@deepseek-ai/dsh-tools\": \"0.2.0-rc.2\",     \"@deepseek-ai/dsh-ap"
+        },
+        {
+          "term": "tsdown",
+          "context": "@deepseek-ai/dsh-api-settings-controller\"       ]     }   },   \"scripts\": {     \"build\": \"tsdown && node scripts/copy-inplace.mjs scripts/collect-publish.mjs lib/collect-publish.mjs\",     \"prepare\": \"npm run build\",     \"typecheck\": \"tsc --noEmit\",     \"test\": \"vitest run\",     \"release:check\": \"node scripts/"
+        }
+      ],
+      "error": null
+    }
+  ],
+  "npm_snapshot": {
+    "verification": "registry_metadata_only_not_installed_or_locked",
+    "packages": [
+      {
+        "name": "cordis",
+        "version": "4.0.0-rc.13",
+        "integrity": "sha512-rYsquBfrd1U8HuaDr/1TYpdnHiuy5X2oEWJbfEveIZwysfjg3vTXJWKvTPlaPtt2VeFsAJIrzHZnymONyOr3PA=="
+      },
+      {
+        "name": "@deepseek-ai/cordis",
+        "version": "4.1.0",
+        "integrity": "sha512-CJrjNyBkKn1SfvBQUcgFYKFnLjS+uKrhdMsbHU60xabvi12d+xQ+IQSNlME5Z+B+4Zi6n4BDknKY94tEPeo47w=="
+      }
+    ]
+  },
+  "limitations": [
+    "此前commits/master请求返回422；Cordis使用commits/HEAD确认引用。",
+    "上游包与DSH分支不是同一源码；版本号不是互换性证明。",
+    "制品依赖、动态网页与第三方服务可能变化；本证据仅覆盖固定字节。"
+  ]
+}

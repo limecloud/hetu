@@ -70,4 +70,4 @@ Agent 整理资料和保存方案，你确认必要范围与创作取舍，无�
 - 想直接写剧本或做视频：看[剧本与分集审阅](screenplays.md)和[从预演到成片](video.md)。
 - 已经在用外部助手：看[选择与安装Skills](skills.md)。
 
-自己的作品使用 Mac 客户端，见[获取与安装 Mac 版](install.md)。源码构建另见[Mac源码版（开发者）](download-and-install.md)，源码压缩包不是安装包。
+自己的作品使用 Mac 客户端，见[获取与安装 Mac 版](install.md)。

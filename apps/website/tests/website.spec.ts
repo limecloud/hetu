@@ -14,7 +14,7 @@ for (const prefix of ['', '/en']) for (const width of [375, 1440]) {
     await page.setViewportSize({ width, height: 960 });
     const errors: string[] = [];
     page.on('pageerror', error => errors.push(error.message));
-    for (const path of ['workflow', 'integrations', 'docs', 'faq', 'brand', 'blog', 'blog/agent-work-author-review', 'blog/authors-at-the-center', 'blog/story-to-screen', 'blog/agent-friendly', 'docs/adaptation', 'docs/download-and-install']) {
+    for (const path of ['workflow', 'integrations', 'docs', 'faq', 'brand', 'blog', 'blog/agent-work-author-review', 'blog/authors-at-the-center', 'blog/story-to-screen', 'blog/agent-friendly', 'docs/adaptation', 'docs/plugin-development']) {
       await page.goto(`${prefix}/${path}/`);
       await expect(page.locator('main h1'), path).toHaveCount(1);
       await expect(page.locator('main .eyebrow'), path).toHaveCount(0);
@@ -167,7 +167,7 @@ test('双语品牌展示、下载、分享卡与动态书库使用当前资产�
 
 test('使用指南完整双语，工程文档及源副本不对外发布', async ({ page, request }) => {
   test.setTimeout(120_000);
-  const slugs = ['getting-started', 'install', 'creative-paths', 'download-and-install', 'codex-first-task', 'skills', 'writing', 'story-bible', 'adaptation', 'screenplays', 'video', 'review', 'formats-and-delivery', 'agents', 'references', 'data-and-backup', 'creative-library', 'import-manuscript', 'outlining', 'characters-and-scenes', 'cover-art', 'illustrations', 'feedback', 'model-services', 'privacy-and-permissions', 'troubleshooting'];
+  const slugs = ['getting-started', 'install', 'creative-paths', 'codex-first-task', 'skills', 'writing', 'story-bible', 'adaptation', 'screenplays', 'video', 'review', 'formats-and-delivery', 'agents', 'references', 'data-and-backup', 'creative-library', 'import-manuscript', 'outlining', 'characters-and-scenes', 'cover-art', 'illustrations', 'feedback', 'model-services', 'privacy-and-permissions', 'troubleshooting', 'plugins', 'plugin-development', 'plugin-publishing'];
   for (const prefix of ['', '/en']) {
     await page.goto(`${prefix}/docs/`);
     await expect(page.locator('.doc-index a')).toHaveCount(slugs.length);
@@ -178,14 +178,17 @@ test('使用指南完整双语，工程文档及源副本不对外发布', async
       await expect(page.locator('.doc-article')).toHaveAttribute('lang', prefix ? 'en' : 'zh-CN');
       if (prefix) expect(await page.locator('.doc-article').innerText()).not.toMatch(/\p{Script=Han}/u);
       if (slug === 'getting-started') await expect(page.locator('.doc-article img')).toHaveCount(4);
-      if (slug !== 'download-and-install') {
+      if (slug !== 'plugin-development') {
         await expect(page.locator('.doc-article pre, .doc-article .mermaid')).toHaveCount(0);
+      } else {
+        await expect(page.locator('.doc-article pre')).not.toHaveCount(0);
+        await expect(page.locator('.doc-article a[href="https://github.com/limecloud/hetu#快速上手"]')).toHaveCount(1);
       }
     }
   }
   const sitemap = await (await request.get('/sitemap.xml')).text();
-  expect(sitemap).not.toMatch(/\/research\/|\/docs\/\d{2}\//);
-  for (const path of ['/docs/01/', '/en/docs/30/', '/research/01/', '/en/research/01/', '/sources/docs/README.md', '/sources/docs/01-%E4%BA%A7%E5%93%81%E9%9C%80%E6%B1%82PRD.md']) {
+  expect(sitemap).not.toMatch(/\/research\/|\/docs\/\d{2}\/|\/docs\/download-and-install\//);
+  for (const path of ['/docs/download-and-install/', '/en/docs/download-and-install/', '/docs/01/', '/en/docs/30/', '/research/01/', '/en/research/01/', '/sources/docs/README.md', '/sources/docs/01-%E4%BA%A7%E5%93%81%E9%9C%80%E6%B1%82PRD.md']) {
     expect((await request.get(path)).status(), path).toBe(404);
   }
 });

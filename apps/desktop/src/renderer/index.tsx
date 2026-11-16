@@ -20,9 +20,12 @@ function App() {
     [works, setWorks] = useState<any[]>([]),
     [active, setActive] = useState("library"),
     [notice, setNotice] = useState(""),
-    [busy, setBusy] = useState(false),
+    [operationBusy, setBusy] = useState(false),
     [agentStatus, setAgentStatus] = useState<AgentStatus>({ state: "idle" }),
     [address, setAddress] = useState("");
+  const [initializing, setInitializing] = useState(true);
+  const busy = initializing || operationBusy;
+  const appearance = state.preferences?.appearance ?? "system";
   const [kind, setKind] = useState("all");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -80,7 +83,7 @@ function App() {
       } catch (error) {
         setNotice((error as Error).message);
       }
-    })();
+    })().catch(error => setNotice(error.message)).finally(() => setInitializing(false));
   }, []);
   useEffect(
     () =>
@@ -268,19 +271,26 @@ function App() {
           </>}
         </aside>
         <main className={readerActive ? "reader-main" : "page-main"}>
-          {!readerActive && !Component && !active.startsWith("fallback:") && <div className="toolbar"><div><h1>{title}</h1></div>{active === "plugins" && <button disabled={busy} onClick={() => void run(async () => setState(await desktop.install()))}>安装插件包</button>}</div>}
+          {active !== "library" && !readerActive && !Component && !active.startsWith("fallback:") && <div className="toolbar"><div><h1>{title}</h1></div>{active === "plugins" && <button disabled={busy} onClick={() => void run(async () => setState(await desktop.install()))}>安装插件包</button>}</div>}
           {notice && (
             <div className="notice" role="status">
               {notice}
             </div>
           )}
-          <AuditStatus
+          {active !== "work.tasks" && <AuditStatus
             state={agentStatus.state}
             message={agentStatus.message}
             onReview={() => void run(() => navigate("work.tasks"))}
-          />
+          />}
           {active === "library" ? (
             <div className="content library-content">
+              <section className="library-intro" aria-labelledby="library-title">
+                <picture className="library-intro-art" aria-hidden="true">
+                  <source media={appearance === "dark" ? "all" : appearance === "light" ? "not all" : "(prefers-color-scheme: dark)"} srcSet="river-night-v1.webp"/>
+                  <img src="river-dawn-v1.webp" alt="" draggable={false}/>
+                </picture>
+                <div className="library-intro-copy"><h1 id="library-title">创作库</h1></div>
+              </section>
               <div className="library-search-row">
                 <strong>{({ all:"全部作品",novel:"小说",drama:"剧本",video:"视频" } as Record<string,string>)[kind]}<span className="muted"> {visibleWorks.length}</span></strong><IconButton icon="refresh" label="刷新创作库" disabled={busy} onClick={() => void run(async () => { const next = await desktop.library("refresh"); setState(next); setWorks(next.works ?? []); })}/>
                 <select aria-label="创作状态筛选" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>{[["all","全部状态"],["planning","筹备中"],["writing","创作中"],["completed","已完成"],["archived","已归档"]].map(([value,label]) => <option key={value} value={value}>{label}</option>)}</select>
@@ -335,22 +345,14 @@ function App() {
                     ))}
                 </div>
               ) : (
-                <div className="empty">
-                  <h1>还没有作品</h1>
-                  <p>新建作品，或打开已有作品。</p>
-                  <button
-                    onClick={() =>
-                      void run(async () => {
-                        const next = await desktop.open();
-                        if (next) {
-                          setState(next);
-                          setWorks(next.works);
-                        }
-                      })
-                    }
-                  >
-                    打开作品
-                  </button>
+                <div className="library-empty">
+                  <h2>还没有作品</h2>
+                  <div className="library-start-options">
+                    {([["novel", "小说", "book"], ["drama", "剧本", "file"], ["video", "视频", "film"]] as const).map(([type, name, icon]) =>
+                      <button key={type} disabled={busy} onClick={() => void createWork(type, name)}><Icon name={icon} size={24}/><span>新建{name}</span><Icon name="chevron" size={14}/></button>,
+                    )}
+                  </div>
+                  <button className="library-open-existing" disabled={busy} onClick={() => void openWorkspace()}><Icon name="file"/>打开已有作品</button>
                 </div>
               )}
               {!!works.length && !visibleWorks.length && <div className="empty"><Icon name="search" size={28}/><h2>没有匹配的作品</h2><button onClick={() => { setKind("all"); setSearch(""); setStatusFilter("all"); }}>清除筛选</button></div>}

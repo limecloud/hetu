@@ -1,0 +1,191 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-11-16T14:30:54.965104+00:00",
+  "status": "local_scope_passed",
+  "all_refactoring_complete": false,
+  "scope": [
+    "双语官网插件中心及真实包详情",
+    "插件使用、开发、发布指南与博客",
+    "GitHub收录表单与目录治理",
+    "移除双语Mac源码版指南，构建说明归GitHub仓库",
+    "小说规划插件立项分析，未实现或上架该插件"
+  ],
+  "source": {
+    "recorded_head": "0c9883f9b9fc53ab2cf082019ea4b46fd9b5962b",
+    "dirty_worktree": true,
+    "website_files": {
+      "apps/website/README.md": "fe6c819ae7ac3e1dda12e7285d6fd6c9deceaecc04cfca6727496dbf36e15e36",
+      "apps/website/public/llms.txt": "acbe55b2c89cac192d0d0e6ed1ba51ed663dc069749813135ca370e407c0f027",
+      "apps/website/scripts/verify-build.mjs": "f237996da6667d2f8814d00a6ecebbd9827f089fff83b172c095d1ba8a94d307",
+      "apps/website/src/components/Content.astro": "3aca4b6bbf60b46f10182ca3f1ffefe21828841ee4eb4da895271a7409195ba5",
+      "apps/website/src/components/Home.astro": "089610349391d826bd8ad9b41d056827df39cfc758ebd593fd67ec067e443d36",
+      "apps/website/src/components/PluginCatalog.astro": "546ee3aabc3109c675db9c2907e5664a65fa396239dd8e9ce123a66a4eeb960a",
+      "apps/website/src/components/PluginVisual.astro": "8ba53e98f26b107c9f125abdcdae6c27772082da27c0b2fabded1e2790dde2f9",
+      "apps/website/src/components/Plugins.astro": "238d2ef3546e47f2700d679fa35a6ea8928fa7e62268781d3ad20ec03b5d03f5",
+      "apps/website/src/content/blog/en/creative-plugins.md": "018dc6e7c9fe0d114e076519e99264d7337ab0895213fd378aeb978413206459",
+      "apps/website/src/content/blog/zh-CN/creative-plugins.md": "a13de0197231bee6d2bcfc666c353f521916928414e31e24a0dbe09092a6ed16",
+      "apps/website/src/content/guides/en/agents.md": "04e1c3ef5ca663970b14f3dbf7c6e41adbdca235df8bbc68325a6cc0ba054bfd",
+      "apps/website/src/content/guides/en/getting-started.md": "cf062b52039ffaca54590f9a6d936bf1ab6a1f9c3667c123205116bbcff8f639",
+      "apps/website/src/content/guides/en/install.md": "d2c1584eb6969efcef6b8f5e78833086486e79ddd378f0ce6a9789d360a148b6",
+      "apps/website/src/content/guides/en/plugin-development.md": "3d99c46c9e8d2e7b2ff69d7f1b1198bea425bfe97a92c9d1a1159f2ffcfdb15c",
+      "apps/website/src/content/guides/en/plugin-publishing.md": "72c2b4c9562bba0fe4d552910dadf82c6dc689f9b26843ff6bfaed0adf766131",
+      "apps/website/src/content/guides/en/plugins.md": "5b7d4d03762ab5eaa95591bc5218ad58c7874033eb3484d56253b813e36924c1",
+      "apps/website/src/content/guides/en/skills.md": "32bc498086d8bfb45756403f251031fda021258c949daa1d9165a240244159bf",
+      "apps/website/src/content/guides/zh-CN/agents.md": "7fe5b7e3080eb08e06e2388924c241bd7cf1a4891a7352405a5f95fe90ab54b6",
+      "apps/website/src/content/guides/zh-CN/getting-started.md": "2d99c256094467fd41dd7fc792677c7800ca747581506dea71853fdcd5e07540",
+      "apps/website/src/content/guides/zh-CN/install.md": "eed6f337bae49ecae05a0ca7d57e8f31e5926efe81775756402b99f81d125b4d",
+      "apps/website/src/content/guides/zh-CN/plugin-development.md": "7ab0d77962a1a3a1560b526c3ada3048ca6f660743fa343ebc2d556227d32368",
+      "apps/website/src/content/guides/zh-CN/plugin-publishing.md": "35488cac45c08e49d1aa570ecd38a96004ad052b2fb92b51e37a4174a0326643",
+      "apps/website/src/content/guides/zh-CN/plugins.md": "6ea72eb019e67dbed861bfb6ba5dd12e79c2ac86d2bc942b36ce692c7caa8d3f",
+      "apps/website/src/content/guides/zh-CN/skills.md": "5b655d87f5cbdee2265d66ed6bd2258c8ce8484d48103f45aba359a806147806",
+      "apps/website/src/i18n/en.json": "834fdffb3b5c538c5146b32d755c14e24d15aa57b488d38f170584904b2bbf75",
+      "apps/website/src/i18n/zh-CN.json": "07a8f5bf862bfcada546b5a0a1bcce70a91ad513685488b7189e498ab03fb7e5",
+      "apps/website/src/layouts/Site.astro": "4edb0a69466445e63e85aee5e18edaab38836d1fa0f92aa5a3081edc4f0ace28",
+      "apps/website/src/lib/docs.ts": "b57e0b767ec25b5d9ef521ae11b0ed3395d36db227ba8472b1d9691e57a1ed51",
+      "apps/website/src/lib/journal.ts": "c18f06bc4fc9d0399711684132db47e9c442bf9bd75f290e48b1a0c83dbfe730",
+      "apps/website/src/lib/plugins.ts": "df1c5f252d08d40acf008216aa96573490cef1bf2311d5804a2683282c4dfc57",
+      "apps/website/src/lib/site.ts": "04ed9fa220b2564c45a0c138101c8330d1e66c21ecb8b9dc4ca2ac7828186cf8",
+      "apps/website/src/pages/en/plugins/[...path].astro": "b1650955b77e88f3a9cd74aca38c301f80ba41c3acd1514abfbf2747dca68f81",
+      "apps/website/src/pages/plugins/[...path].astro": "891294cfe4574206c59e19d608f9775d934cc37c8a1487bd148b318dcb23bc45",
+      "apps/website/src/pages/sitemap.xml.ts": "a88f85646be17692dbfea8e6e9da5b9b82b6956e499c5a43635d2c9956bd968b",
+      "apps/website/src/styles/global.css": "d4a479f5ba6c2a6acd7cb41b5b24e6ca065c2afca9f7579eebbe572c5216bd64",
+      "apps/website/src/styles/plugins.css": "252ad0cb47325aa3e0b4ffcf739f08b5f6b545df878ccf91477a5f7eaa67ad4d",
+      "apps/website/tests/docs.spec.ts": "b4841c4e5449be35dc524c90b173ad972a1d96873d42ffc22c50022d714dc151",
+      "apps/website/tests/plugins.spec.ts": "eb4c1e58c7ded287ff061dd7f7e4d0c5cb065cf44f5cb4adeb87a91fc5afba31",
+      "apps/website/tests/skills-guides.spec.ts": "5ecb12cf5055de27846bfc170d9aed0670c7cf536145a8dfb82cbb3ad056dd2e",
+      "apps/website/tests/website.spec.ts": "d9d2053977e01fd241540dea93b0d8d253e76ccce8b2fd622e45ee72b9575c81"
+    }
+  },
+  "checks": {
+    "build": {
+      "passed": true,
+      "pages": 111,
+      "local_links": 7385,
+      "log": "output/website-plugins-20261116/build-release-review.log"
+    },
+    "browser": {
+      "passed": 77,
+      "failed": 0,
+      "skipped": 0,
+      "flaky": 0,
+      "duration_ms": 245822.054,
+      "report": "output/website-plugins-20261116/tests-review.json",
+      "scope": [
+        "plugins.spec.ts",
+        "docs.spec.ts",
+        "agent-entrypoints.spec.ts",
+        "website.spec.ts",
+        "skills-guides.spec.ts"
+      ]
+    },
+    "screenshots": {
+      "count": 36,
+      "locales": [
+        "zh-CN",
+        "en"
+      ],
+      "widths": [
+        375,
+        768,
+        1440
+      ],
+      "overflows": 0,
+      "wrong_h1": 0,
+      "measurements": "output/website-plugins-20261116/measurements-review.json"
+    },
+    "developer_scaffold": {
+      "status": "valid",
+      "plugin_id": "dev.local.website-guide",
+      "version": "0.1.0",
+      "package_sha256": "7d960986ea8d39d0759ce549b9f39de2192ec0901db80336066704bd3177f21a",
+      "permissions": [],
+      "files": 6,
+      "contributions": {
+        "views": [
+          "main"
+        ],
+        "data": [],
+        "actions": [
+          "count"
+        ]
+      }
+    },
+    "diagrams": {
+      "rendered": 3,
+      "failed": 0,
+      "report": "output/website-plugins-20261116/diagrams/results.json"
+    },
+    "documents": {
+      "documents": 83,
+      "local_links": 1055,
+      "fragment_links": 220,
+      "traceability": {
+        "FR": 40,
+        "US": 61,
+        "UC": 54,
+        "E2E": 30,
+        "AC": 65
+      },
+      "id_references": 1261,
+      "json_examples": 10,
+      "schemas": 2,
+      "mermaid": 90,
+      "errors": []
+    }
+  },
+  "visual_review": {
+    "method": "截图与渲染尺寸复核，评分为本轮人工设计判断",
+    "scores": {
+      "信息层级": 9,
+      "中英排版与可读性": 9,
+      "尺寸间距与对齐": 9,
+      "品牌与组件一致性": 9,
+      "响应式": 9,
+      "状态与键盘反馈": 9
+    },
+    "fixes": [
+      "移动关系图文字放大并调整构图",
+      "关系图与时间线示意高度一致",
+      "博客移除重复主标题",
+      "新增导航采用1100px折叠菜单",
+      "源码指南移除后开发者导航与前后篇同步"
+    ]
+  },
+  "research": {
+    "repository": "https://github.com/deepseek-ai/deepseek-harness",
+    "revision": "39163dd30f703a79079e2d2446545cff3c453738",
+    "source_registry": "docs/plugin/research-sources.json",
+    "runtime_executed": false
+  },
+  "initial_failures": [
+    {
+      "finding": "指南增加后旧目录计数仍为26",
+      "resolution": "同步实际指南注册与分类，分类计数由用例目录求和；后续按用户要求移除源码指南，最终28篇双语指南通过"
+    },
+    {
+      "finding": "第二轮浏览器67项中3项超时，其余64项通过",
+      "log": "output/website-plugins-20261116/tests-final.log",
+      "resolution": "保存失败记录；当前指南变更后77项以单worker完整复验通过，未增加测试超时"
+    },
+    {
+      "finding": "独立截图两次出现字体等待超时",
+      "resolution": "保留已有截图与失败日志，滚动后等待字体并在新浏览器接续剩余页面，最终36张及测量齐全"
+    }
+  ],
+  "not_verified": [
+    "GitHub文档和收录表单公开可达",
+    "生产网站发布及正式域名验收",
+    "陌生第三方插件实际收录、远程下载及索引订阅",
+    "Windows/Linux插件运行",
+    "宿主与创作工程全部工作包"
+  ],
+  "paid_model_calls": 0,
+  "committed_by_this_task": false,
+  "pushed_by_this_task": false,
+  "production_deployed": false,
+  "publication_order": [
+    "按独立授权公开GitHub源码、包功能清单及收录表单",
+    "发布引用这些公开来源的官网",
+    "核对正式域名双语页面、来源与资产摘要"
+  ]
+}

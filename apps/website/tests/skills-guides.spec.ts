@@ -153,9 +153,10 @@ for (const prefix of ['', '/en']) {
     await expect(catalogLink).toHaveAttribute('href', `${prefix}/integrations/#skills-catalog`);
     await catalogLink.click();
     await expect(page.locator('#skills-catalog')).toBeInViewport();
-    await page.goto(`${prefix}/docs/download-and-install/`);
-    await expect(page.locator('.doc-article')).toContainText('./dev-mac.command --check');
-    await expect(page.locator('.doc-article')).toContainText('./dev-mac.command');
+    await page.goto(`${prefix}/docs/install/`);
+    await expect(page.locator('.doc-article a[href="https://github.com/limecloud/hetu/releases/latest"]')).toHaveCount(1);
+    await expect(page.locator('.doc-article pre')).toHaveCount(0);
+    expect((await request.get(`${prefix}/docs/download-and-install/`)).status()).toBe(404);
     for (const href of await page.locator('.doc-article a').evaluateAll(links => links.map(link => link.getAttribute('href')!))) {
       if (href.startsWith('/')) expect((await request.get(href)).status(), href).toBe(200);
     }

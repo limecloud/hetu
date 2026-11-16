@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: a quiet panoramic illustration for Hetu Luoshu, a desktop creative writing library; this is artwork only, not a screenshot or UI mockup.
+Primary request: an elegant contemporary Chinese landscape made from the flowing pages of an open book. A warm ivory paper ribbon flows from the lower right into a calm jade-gray river, with a few soft layered mountains and distant amber lights. Convey a story becoming a world. It should feel refined, calm and tactile, like the Hetu website's misty river and paper bridge.
+Style/medium: sophisticated editorial 3D paper sculpture blended with soft watercolor atmosphere, delicate natural paper grain, broad quiet shapes, restrained details.
+Composition/framing: wide landscape composition, artwork concentrated in the right half and lower third. Upper left and center left are clean warm ivory negative space for real interface text. Keep every object comfortably inside the frame, no cropped foreground book edges.
+Lighting/mood: diffused warm morning light, soft ambient illumination, peaceful and inviting.
+Color palette: warm ivory paper, muted jade green, sage gray, faint warm gold; low saturation. No mint cyan, no bright blue or purple.
+Text: none.
+Constraints: no letters, no writing, no words, no logo, no watermark, no UI controls, no frames, no people, no mascot, no clutter. No large hard shadows or neon glow. The book and landscape remain readable at a small banner size.

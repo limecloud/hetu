@@ -68,4 +68,4 @@ The Mac app saves your real work. The homepage demo resets when reloaded, so do 
 - Develop a story with Codex: [Plan a book with Codex](codex-first-task.md).
 - Begin an original script or video: [Screenplay review](screenplays.md) and [From preview to finished video](video.md).
 
-For your own work, [install Hetu for Mac](install.md). If you have a development environment and need to run source code, see [Mac source build for developers](download-and-install.md).
+For your own work, [install Hetu for Mac](install.md).

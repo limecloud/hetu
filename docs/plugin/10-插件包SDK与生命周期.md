@@ -4,6 +4,8 @@
 
 本章的包运行在河图宿主中；Codex等外部Agent经稳定CLI／MCP使用它们。河图包的安装、热插拔与客户端接入包分开管理，核心格式与实时发现合同见[21](21-核心格式与动态能力发现.md)。
 
+Cordis已采纳为宿主内部依赖与生命周期基础，普通插件继续消费河图SDK；本章不把Cordis Context作为新的公共包字段。迁移前源码、DSH兼容子集及框架退出条件见[26](26-Cordis采用与DSH兼容边界.md)，实际可执行合同仍以20为准。
+
 插件标准栈为JavaScript/TypeScript＋React，借鉴DSH注册、依赖、插槽与effect清理。SDK不导出Rust内部类型、FFI或动态库ABI，不要求插件编译进Core。纯视图在隔离Chromium执行，后端使用受管Node插件进程；同一TS运行时由桌面、CLI/MCP按需调用。Python/Blender等是明确外部工具适配。
 
 ## 1. 包格式

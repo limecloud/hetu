@@ -12,8 +12,8 @@ import { PluginPackage } from "../../../packages/plugin-host/src/package.ts";
 const root = path.resolve(import.meta.dirname, "../../..");
 
 test(
-  "空创作库交接真实Agent新建、自动接纳、重开与路径身份替换拒绝", async () => {
-    test.setTimeout(120000);
+  "空创作库交接真实Agent新建、自动接纳、重开与路径身份替换拒绝", async ({}, testInfo) => {
+    test.setTimeout(240000);
     const folder = await mkdtemp(path.join(os.tmpdir(), "hetu-library-")),
       profile = path.join(folder, "desktop"),
       collaboration = path.join(folder, "collaboration"),
@@ -53,10 +53,15 @@ test(
     };
     try {
       let page = await launch();
-      await page.getByText("新建作品", { exact: true }).click();
-      await page
-        .getByRole("button", { name: "让 AI 新建小说", exact: true })
-        .click();
+      for (const [kind, label] of [["drama", "剧本"], ["video", "视频"], ["novel", "小说"]]) {
+        await page.getByRole("button", { name: `新建${label}`, exact: true }).click();
+        await expect(page.getByRole("status")).toContainText("作品尚未创建");
+        const request = await application!.evaluate(({ clipboard }) =>
+          JSON.parse(clipboard.readText().split("\n").slice(1).join("\n")),
+        );
+        expect(request.work_type).toBe(kind);
+        await expect(page.getByRole("heading", { name: "还没有作品", exact: true })).toBeVisible();
+      }
       await expect(page.getByRole("status")).toContainText("作品尚未创建");
       const handoff = await application!.evaluate(({ clipboard }) =>
         JSON.parse(clipboard.readText().split("\n").slice(1).join("\n")),
@@ -92,7 +97,8 @@ test(
         .click();
       await expect(
         page.getByRole("button", { name: /雾港末班船/ }),
-      ).toBeVisible();
+      ).toBeVisible({ timeout: 30000 });
+      await page.screenshot({ path: testInfo.outputPath("library-with-work.png") });
       await page.getByRole("button", { name: /雾港末班船/ }).click();
       await expect(
         page.getByRole("complementary", { name: "项目导航", exact: true }),

@@ -34,9 +34,21 @@ for (const file of files) {
   const relative = path.relative(root, file).replaceAll(path.sep, '/');
   assert.ok(!/^(?:sources|research|en\/research)\//.test(relative), `工程文档不能发布到官网：${relative}`);
   assert.ok(!/^(?:en\/)?docs\/\d{2}\//.test(relative), `编号工程规范不能发布到官网：${relative}`);
+  assert.ok(!/^(?:en\/)?docs\/download-and-install\//.test(relative), `源码构建说明只归GitHub仓库：${relative}`);
   assert.ok(!/^prototype\//.test(relative), `原型只能嵌入首页：${relative}`);
 }
 const sitemap = await readFile(path.join(root, 'sitemap.xml'), 'utf8');
+// 目录展示事实必须对应真实包，不以手写官网版本替代包清单。
+for (const slug of ['relationships', 'timeline']) {
+  const manifest = JSON.parse(await readFile(new URL(`../../../plugins/${slug}/plugin.json`, import.meta.url), 'utf8'));
+  for (const prefix of ['', 'en/']) {
+    const pathname = `/${prefix}plugins/${slug}/`;
+    const html = await readFile(path.join(root, pathname, 'index.html'), 'utf8');
+    assert.ok(html.includes(manifest.id) && html.includes(manifest.version), `插件身份或版本不符：${pathname}`);
+    for (const permission of manifest.permissions) assert.ok(html.includes(permission), `插件权限未展示：${pathname}/${permission}`);
+    assert.ok(sitemap.includes(`<loc>https://hetu.limeai.run${pathname}</loc>`), `站点地图缺少插件：${pathname}`);
+  }
+}
 for (const [collection, route] of [['guides', 'docs'], ['blog', 'blog']]) {
   const localizedFiles = [];
   for (const locale of ['zh-CN', 'en']) {

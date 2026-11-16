@@ -122,6 +122,11 @@ async function sourceSnapshot() {
     "assets/illustrations/library/cover-river-jade.jpg",
     "assets/illustrations/library/cover-cloud-rose.jpg",
     "assets/illustrations/library/cover-stars-ink.jpg",
+    "assets/illustrations/workbench/river-dawn-v1.webp",
+    "assets/illustrations/workbench/river-night-v1.webp",
+    "assets/illustrations/workbench/manifest.json",
+    "assets/illustrations/workbench/prompts/river-dawn-v1.txt",
+    "assets/illustrations/workbench/prompts/river-night-v1.txt",
     "integrations/catalog.json",
     process.platform === "darwin" ? "assets/brand/icons/macos/Hetu.icns"
       : process.platform === "win32" ? "assets/brand/icons/windows/hetu.ico" : "assets/brand/app-icon-1024.png",

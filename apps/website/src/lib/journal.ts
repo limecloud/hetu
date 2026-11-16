@@ -5,6 +5,7 @@ import type { Locale } from './site';
 import { evidence } from './market';
 
 export const articles = [
+  { id: 'creative-plugins', titles: { 'zh-CN': '工具可以生长，作品始终在你手中', en: 'Let the tools grow around your story' }, descriptions: { 'zh-CN': '从一张人物关系图开始，谈稳定的作品底座、按需扩展的工具，以及作者不必承担的操作复杂度。', en: 'Why a durable creative workspace, optional tools and Agent-driven operations belong together.' } },
   { id: 'creative-library', titles: { 'zh-CN': '写剧本，不必先建一本不存在的小说', en: 'A screenplay should not need a placeholder novel' }, descriptions: { 'zh-CN': '小说、剧本与视频各有起点。让作品独立，让关联记住来源，把每次修改的决定留给作者。', en: 'Novels, scripts and videos begin in different places. Keep each work independent and its source connections explicit.' } },
   { id: 'preview-before-production', titles: { 'zh-CN': '先看这一场怎样发生，再决定怎样生成', en: 'See how the scene works before generating it' }, descriptions: { 'zh-CN': '剧本、动态分镜、白模和真实片段回答不同问题。先用合适的材料判断，再把预算用在需要验证的画面上。', en: 'Scripts, animatics, simple 3D previews and real clips answer different questions. Choose what you need to inspect before spending on production.' } },
   { id: 'agent-work-author-review', titles: { 'zh-CN': '把时间留给审稿与创作', en: 'More time for the decisions that shape your story' }, descriptions: { 'zh-CN': '向 Agent 说出目标，让它整理资料、准备稿件和交付。打开河图洛书，读成果、比差异、提意见，再决定留下什么。', en: 'Let your Agent organize the project and prepare the work. Read, compare and make the creative decisions in Hetu Luoshu.' } },
@@ -20,7 +21,7 @@ export function articleImage(article: Article, locale: Locale): string {
 }
 
 export async function renderArticle(article: Article, locale: Locale) {
-  const raw = fs.readFileSync(path.resolve(process.cwd(), 'src/content/blog', locale, article.id + '.md'), 'utf8').replace(/\{\{(china|global)\.([a-z0-9_]+)\}\}/g, (_, region: 'china' | 'global', key: string) => {
+  const raw = fs.readFileSync(path.resolve(process.cwd(), 'src/content/blog', locale, article.id + '.md'), 'utf8').replace(/^# [^\r\n]*(?:\r?\n|$)/, '').replace(/\{\{(china|global)\.([a-z0-9_]+)\}\}/g, (_, region: 'china' | 'global', key: string) => {
     const fact = (evidence[region] as Record<string, { display: string }>)[key];
     if (!fact) throw new Error(`未知市场数据：${region}.${key}`);
     return fact.display;

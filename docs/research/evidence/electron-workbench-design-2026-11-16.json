@@ -1,0 +1,1401 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-11-16",
+  "scope": "下一版本 Electron 工作台设计；与已发布 v0.9.0 分开验收",
+  "reference": {
+    "url": "https://hetu.limeai.run/",
+    "captured_on": "2026-11-16",
+    "screenshot": "output/next-gradient-website-reference.png",
+    "style_source": "apps/website/src/styles/global.css",
+    "art_source": "assets/marketing/hetu-river-background.webp"
+  },
+  "implementation": {
+    "branch": "main",
+    "committed": false,
+    "source_sha256": "35af5f6ccc2e9705ecaba4760bd6b6478f91b489ac673eceb4880217e7f6921f",
+    "source_files_verified": 2576,
+    "artifacts_verified": 2620,
+    "bundle_id": "run.limeai.hetu.dev",
+    "platform": "darwin-arm64",
+    "manifest": "output/next-redesign-final-package/hetu-dev-xaJQJI/manifest.json",
+    "running_preview": "output/next-redesign-opened-preview.json"
+  },
+  "image_generation": {
+    "manifest": "assets/illustrations/workbench/manifest.json",
+    "models": [
+      "gpt-image-2.5-flare",
+      "gpt-image-2.5-sunburst"
+    ],
+    "assets_are_work_results": false
+  },
+  "changes": [
+    "连续静态 Radix 纸色、玉色与山水灰渐变，半透明表面，阅读与决定区域实色",
+    "应用手动外观优先于系统，浅暗插画同步切换",
+    "减少透明度与增强对比度实色降级",
+    "作品首页保留核心资料与简介，封面候选回到独立封面窗口",
+    "协作设置、卷章目录、版本信息默认收起，协作表单按需读取",
+    "移除未填写的作者和题材占位行、装饰标语与当前审核页重复提醒"
+  ],
+  "verification": {
+    "final_packaged_tests": {
+      "passed": 3,
+      "log": "output/next-redesign-final-packaged-tests.log",
+      "specs": [
+        "native-workbench.spec.ts",
+        "startup-layout.spec.ts"
+      ],
+      "covered": [
+        "原生布局尺寸",
+        "保存与机器回读",
+        "未保存保护",
+        "阅读位置",
+        "封面历史入口",
+        "作品协作设置展开",
+        "浅暗与手动外观",
+        "1360/960窗口",
+        "渐变、透明表面及无障碍降级"
+      ]
+    },
+    "earlier_regression": {
+      "passed": 6,
+      "logs": [
+        "output/next-redesign-e2e-round3.log",
+        "output/next-redesign-library-round4.log"
+      ],
+      "note": "早轮结果保留原制品范围；最终作品首页清理由三项实际包体回归覆盖"
+    },
+    "global_capture": {
+      "surfaces": 17,
+      "screenshots": 68,
+      "page_errors": [],
+      "horizontal_overflow": false,
+      "font_sizes": [
+        12,
+        14,
+        20
+      ],
+      "index": "output/next-redesign-global-captures/round-5/captures.json"
+    },
+    "docs": {
+      "log": "output/next-redesign-docs-final.log",
+      "changed_documents": [
+        "docs/10-原生客户端与交互设计.md",
+        "docs/20-实施路线与里程碑.md",
+        "docs/38-创作工作台重构执行计划.md"
+      ],
+      "changed_document_errors": [],
+      "global_status": "failed_due_to_concurrent_document",
+      "global_errors": [
+        "docs/plugin/26-Cordis采用与DSH兼容边界.md: 无效引用 ../research/evidence/cordis-adoption-2026-11-16.json"
+      ],
+      "note": "前一轮83份文档通过；并行进程新增第26号插件文档后，最终全局检查发现该文档引用的证据尚未落盘，保留其修改。"
+    },
+    "skill": "output/next-redesign-skill-validation.log",
+    "native_window_recheck": {
+      "passed": 2,
+      "log": "output/next-redesign-native-window-recheck.log",
+      "screenshots": "output/next-redesign-native-window-recheck",
+      "note": "实际调用BrowserWindow.setContentSize后重拍，排除网页视口模拟造成的原生窗口白边；系统外观保持不变"
+    }
+  },
+  "design_review": {
+    "method": "实际截图对照官网风格及当前11条约束，发现冗余后修正并重新装配复拍；评分仅是所列夹具状态的设计判断，不是自动化像素认证",
+    "iterations": [
+      {
+        "captures": "output/next-redesign-global-captures/round-4/captures.json",
+        "issues": [
+          "审核页重复提示无布局",
+          "作品首页空候选及安装信息冗长"
+        ]
+      },
+      {
+        "captures": "output/next-redesign-global-captures/round-5/captures.json",
+        "resolution": "收起次要配置与版本信息；候选移入既有封面窗口；审核页移除重复提示"
+      }
+    ],
+    "scores": {
+      "布局": 9,
+      "间距与对齐": 9,
+      "排版": 9,
+      "颜色": 9,
+      "控件状态": 9,
+      "交互": 9
+    },
+    "limits": [
+      "新设计实际验证平台为macOS arm64，Windows/Linux本轮新UI运行未验证",
+      "辅助工作面的多项截图使用空状态，不覆盖全部真实内容、权限和故障组合",
+      "本次不改写作者正文，不代替作者采纳或定稿"
+    ]
+  },
+  "screenshots": [
+    {
+      "name": "library",
+      "width": 1360,
+      "theme": "light",
+      "file": "light-1360-library.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-1360-library.png",
+      "sha256": "9471b16d8c95f6984a7067c0ed655ad77ddc7ae40fab6ac644983f4778bb84e2"
+    },
+    {
+      "name": "作品资料",
+      "width": 1360,
+      "theme": "light",
+      "file": "light-1360-作品资料.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-1360-作品资料.png",
+      "sha256": "707018866fc91fb3535f57e5fa0fecd75d3eeeacd04bcacf3a07206f489b4a74"
+    },
+    {
+      "name": "参考稿审核",
+      "width": 1360,
+      "theme": "light",
+      "file": "light-1360-参考稿审核.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-1360-参考稿审核.png",
+      "sha256": "b98ba2c4f4dbc897faad449139825a944d0c73b4cb7cd9b1cb191290ba3e1b32"
+    },
+    {
+      "name": "关联作品",
+      "width": 1360,
+      "theme": "light",
+      "file": "light-1360-关联作品.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-1360-关联作品.png",
+      "sha256": "c632442ef99116a2c9e707b3c4693ea929a60bf9b258e87f56ccb32b69c75ae5"
+    },
+    {
+      "name": "作品设定",
+      "width": 1360,
+      "theme": "light",
+      "file": "light-1360-作品设定.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-1360-作品设定.png",
+      "sha256": "b78cda73d07fc06a23de9a0e1c852f8bc1b3330237feb1850392812ae0257e2a"
+    },
+    {
+      "name": "图片成果",
+      "width": 1360,
+      "theme": "light",
+      "file": "light-1360-图片成果.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-1360-图片成果.png",
+      "sha256": "8386fc8e7508de1bf9893494850f5f2fadade4b62c56355e68c5697c451a7104"
+    },
+    {
+      "name": "资料与素材",
+      "width": 1360,
+      "theme": "light",
+      "file": "light-1360-资料与素材.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-1360-资料与素材.png",
+      "sha256": "bfa06c7404194161dff754841646530bf650e20b6a338747dbafa396cf27825a"
+    },
+    {
+      "name": "素材与线索",
+      "width": 1360,
+      "theme": "light",
+      "file": "light-1360-素材与线索.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-1360-素材与线索.png",
+      "sha256": "d35457c6091ffca041da0a3d55c4f5dd8deea1db4ad1a20e342b432af4afd897"
+    },
+    {
+      "name": "文稿版本",
+      "width": 1360,
+      "theme": "light",
+      "file": "light-1360-文稿版本.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-1360-文稿版本.png",
+      "sha256": "34c2d2ae6781340295399a602e970dec18a8bb373057884bb3c8deb2668414c5"
+    },
+    {
+      "name": "原稿导入",
+      "width": 1360,
+      "theme": "light",
+      "file": "light-1360-原稿导入.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-1360-原稿导入.png",
+      "sha256": "ca805d1392084a2452dbc2a15329a67a2c24aabf6c4c4e5a95d85e3dc7512b76"
+    },
+    {
+      "name": "作品交付",
+      "width": 1360,
+      "theme": "light",
+      "file": "light-1360-作品交付.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-1360-作品交付.png",
+      "sha256": "cb5def6f55c1d91594f1fe542075ef39d15bcbed23dd4057eec2cc6553a217cb"
+    },
+    {
+      "name": "管理方案",
+      "width": 1360,
+      "theme": "light",
+      "file": "light-1360-管理方案.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-1360-管理方案.png",
+      "sha256": "55256fd0bbf549b6adf3f6bb91fc47d0d3149bf08c6fff903557bbe3f120978b"
+    },
+    {
+      "name": "Agent 协作",
+      "width": 1360,
+      "theme": "light",
+      "file": "light-1360-Agent 协作.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-1360-Agent 协作.png",
+      "sha256": "49c35c283e364dd6a4fc057befeb7418928351069eb18df8f2e4081d7e786e6b"
+    },
+    {
+      "name": "drama-reader",
+      "width": 1360,
+      "theme": "light",
+      "file": "light-1360-drama-reader.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-1360-drama-reader.png",
+      "sha256": "498698263e2a8f0e42c706ce8f2baf7c681b4e50894809a9d017c17e8b8ad1b4"
+    },
+    {
+      "name": "drama-profile",
+      "width": 1360,
+      "theme": "light",
+      "file": "light-1360-drama-profile.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-1360-drama-profile.png",
+      "sha256": "8470fcbe2014f2ac507ff04ceab34598969a9bd9da2f312cdba154cb155fbd2c"
+    },
+    {
+      "name": "plugins",
+      "width": 1360,
+      "theme": "light",
+      "file": "light-1360-plugins.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-1360-plugins.png",
+      "sha256": "1541eeab67d6c0d084308b79ea5167ee127a7c07df81eb904e4012f0e1cd7d19"
+    },
+    {
+      "name": "reference-browser",
+      "width": 1360,
+      "theme": "light",
+      "file": "light-1360-reference-browser.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-1360-reference-browser.png",
+      "sha256": "6724a77ec4c8e0fe42f66e593e856e8e27ed5ad67df9891966995a8ba55538a7"
+    },
+    {
+      "name": "library",
+      "width": 1360,
+      "theme": "dark",
+      "file": "dark-1360-library.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-1360-library.png",
+      "sha256": "dc8736813211ac843fbafc79dccd38be3f7b3d4b513f45f101ad8f35e33a3295"
+    },
+    {
+      "name": "作品资料",
+      "width": 1360,
+      "theme": "dark",
+      "file": "dark-1360-作品资料.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-1360-作品资料.png",
+      "sha256": "c52094f4c219fd391c5206ee1c78019bcea55ac1cb4f4c835ed16fb965c7c6a5"
+    },
+    {
+      "name": "参考稿审核",
+      "width": 1360,
+      "theme": "dark",
+      "file": "dark-1360-参考稿审核.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-1360-参考稿审核.png",
+      "sha256": "ad99d02cfcaeaea278deb886c6c2489e875acd770d4f0bdf8e55421fea12c738"
+    },
+    {
+      "name": "关联作品",
+      "width": 1360,
+      "theme": "dark",
+      "file": "dark-1360-关联作品.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-1360-关联作品.png",
+      "sha256": "ed0c1ba83471d2693422548e501db9dcf672fd0eb492152a6eb960dcccbadb2b"
+    },
+    {
+      "name": "作品设定",
+      "width": 1360,
+      "theme": "dark",
+      "file": "dark-1360-作品设定.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-1360-作品设定.png",
+      "sha256": "1ceef386b4af00b6771792a6ed8c1f2b6fe7b706eaa70b783a633df0023b9938"
+    },
+    {
+      "name": "图片成果",
+      "width": 1360,
+      "theme": "dark",
+      "file": "dark-1360-图片成果.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-1360-图片成果.png",
+      "sha256": "1e0c4f8fe9f499325e8d89c2a2258367c6ccb4345af511634b95499377c73343"
+    },
+    {
+      "name": "资料与素材",
+      "width": 1360,
+      "theme": "dark",
+      "file": "dark-1360-资料与素材.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-1360-资料与素材.png",
+      "sha256": "43cf8b1f796b691541a476c57d5567632cd87bb58bf1dc7383d73f9ecf5e36b2"
+    },
+    {
+      "name": "素材与线索",
+      "width": 1360,
+      "theme": "dark",
+      "file": "dark-1360-素材与线索.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-1360-素材与线索.png",
+      "sha256": "ae6ecab41088b3f0980a909a693698a5915e0e4aaeebc9328a66dd8d5628490f"
+    },
+    {
+      "name": "文稿版本",
+      "width": 1360,
+      "theme": "dark",
+      "file": "dark-1360-文稿版本.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-1360-文稿版本.png",
+      "sha256": "a310364c29d6d87290590b30499c974bc127fd595be73a7d282288eb615433bd"
+    },
+    {
+      "name": "原稿导入",
+      "width": 1360,
+      "theme": "dark",
+      "file": "dark-1360-原稿导入.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-1360-原稿导入.png",
+      "sha256": "e6d097831c5d458062d0568af003494b09143f3382d74a82db5635310c36d8cb"
+    },
+    {
+      "name": "作品交付",
+      "width": 1360,
+      "theme": "dark",
+      "file": "dark-1360-作品交付.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-1360-作品交付.png",
+      "sha256": "1b2e6982730653b732e452f2889684f8ea287ae7d277d2db780102431b0df740"
+    },
+    {
+      "name": "管理方案",
+      "width": 1360,
+      "theme": "dark",
+      "file": "dark-1360-管理方案.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-1360-管理方案.png",
+      "sha256": "0ba1f1c5e7ac71e60baaba0d78f3757d9fde86536c01bf9cd174d19a832b3645"
+    },
+    {
+      "name": "Agent 协作",
+      "width": 1360,
+      "theme": "dark",
+      "file": "dark-1360-Agent 协作.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-1360-Agent 协作.png",
+      "sha256": "cd176159a98976f8aa8e711212650abccfcddf1c811914f22de0aa14888f12ff"
+    },
+    {
+      "name": "drama-reader",
+      "width": 1360,
+      "theme": "dark",
+      "file": "dark-1360-drama-reader.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-1360-drama-reader.png",
+      "sha256": "c302daf71fc1c5ceaa3ad7553efd123a3fae5fa96f51bb3d1bcd9c42cbec1901"
+    },
+    {
+      "name": "drama-profile",
+      "width": 1360,
+      "theme": "dark",
+      "file": "dark-1360-drama-profile.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-1360-drama-profile.png",
+      "sha256": "499805c921dafc1366ddc377ab24a12cf7bc48f62e148a29ec4945f3de8fe509"
+    },
+    {
+      "name": "plugins",
+      "width": 1360,
+      "theme": "dark",
+      "file": "dark-1360-plugins.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-1360-plugins.png",
+      "sha256": "f4d2c230bc60445ba2e764713845d93573263e151099ece8cf6a00d29b4ff992"
+    },
+    {
+      "name": "reference-browser",
+      "width": 1360,
+      "theme": "dark",
+      "file": "dark-1360-reference-browser.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-1360-reference-browser.png",
+      "sha256": "56530e74255141a692eb30e96151c30a5b79533043fa83c6c28c64a776ace05f"
+    },
+    {
+      "name": "library",
+      "width": 960,
+      "theme": "light",
+      "file": "light-960-library.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-960-library.png",
+      "sha256": "dd68632c0e6fce15275caff58f169bf825d9cb9fd1941bbda197d01f8006d890"
+    },
+    {
+      "name": "作品资料",
+      "width": 960,
+      "theme": "light",
+      "file": "light-960-作品资料.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-960-作品资料.png",
+      "sha256": "f81c8e84441d7dc69efe084505810b8cd2c2141b7725f2d2628dab25f588cef7"
+    },
+    {
+      "name": "参考稿审核",
+      "width": 960,
+      "theme": "light",
+      "file": "light-960-参考稿审核.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-960-参考稿审核.png",
+      "sha256": "1fc7a0b50cad53b25121dbf123b7e337bd53f411b511757b544fe6850e166957"
+    },
+    {
+      "name": "关联作品",
+      "width": 960,
+      "theme": "light",
+      "file": "light-960-关联作品.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-960-关联作品.png",
+      "sha256": "4f10ee69b868c9b56f6b6b177ccd30a4fa07febfc2e1bba516c700e253571de3"
+    },
+    {
+      "name": "作品设定",
+      "width": 960,
+      "theme": "light",
+      "file": "light-960-作品设定.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-960-作品设定.png",
+      "sha256": "129aa9f4726c0919c873830b109a51c4dc5d9858f39c80213858fb76609cae0b"
+    },
+    {
+      "name": "图片成果",
+      "width": 960,
+      "theme": "light",
+      "file": "light-960-图片成果.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-960-图片成果.png",
+      "sha256": "b6f0c6d60d026ea7aef8bd9a95ddd01e5df57b3f482a1c953767e6a00f17a4e6"
+    },
+    {
+      "name": "资料与素材",
+      "width": 960,
+      "theme": "light",
+      "file": "light-960-资料与素材.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-960-资料与素材.png",
+      "sha256": "c54974c76122f76481262c0c6560027949b33238d3cf1e9c38731c8a3771d7b0"
+    },
+    {
+      "name": "素材与线索",
+      "width": 960,
+      "theme": "light",
+      "file": "light-960-素材与线索.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-960-素材与线索.png",
+      "sha256": "b270caa58e22741da1dc21f6b7f9fe235a8af8e0dfdab4ed5765e5edca0be210"
+    },
+    {
+      "name": "文稿版本",
+      "width": 960,
+      "theme": "light",
+      "file": "light-960-文稿版本.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-960-文稿版本.png",
+      "sha256": "0e56c94d8c58b1c90ddd7fa76f85585443475eb4d78e520b97d61a8db571bb60"
+    },
+    {
+      "name": "原稿导入",
+      "width": 960,
+      "theme": "light",
+      "file": "light-960-原稿导入.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-960-原稿导入.png",
+      "sha256": "02b7c7009948ca33cc773f6c98012e1548d3143201aed7d614446a72234bdd62"
+    },
+    {
+      "name": "作品交付",
+      "width": 960,
+      "theme": "light",
+      "file": "light-960-作品交付.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-960-作品交付.png",
+      "sha256": "bf01ca03ee49b5dd8a57abffda0131241bcae3988e669a8db9e3e9ba0fca2a82"
+    },
+    {
+      "name": "管理方案",
+      "width": 960,
+      "theme": "light",
+      "file": "light-960-管理方案.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-960-管理方案.png",
+      "sha256": "30f3ed2e78c1a9a47f20cd714f2b639f51b8b1659484e556f93745d88c044d65"
+    },
+    {
+      "name": "Agent 协作",
+      "width": 960,
+      "theme": "light",
+      "file": "light-960-Agent 协作.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-960-Agent 协作.png",
+      "sha256": "db05eae4e59dfeed5ea908dbedbf1fe7aadcdaf04fed51b1d13d3cb5b08c64d9"
+    },
+    {
+      "name": "drama-reader",
+      "width": 960,
+      "theme": "light",
+      "file": "light-960-drama-reader.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-960-drama-reader.png",
+      "sha256": "a0c9a51ca589347fab040542d96d39912cfaafe7daf9c4308937627fcb59ec77"
+    },
+    {
+      "name": "drama-profile",
+      "width": 960,
+      "theme": "light",
+      "file": "light-960-drama-profile.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-960-drama-profile.png",
+      "sha256": "a8eafd6e682ddac96ebb41cf2c7e5d576592c22dd84c21b041d4fd43dee5ab57"
+    },
+    {
+      "name": "plugins",
+      "width": 960,
+      "theme": "light",
+      "file": "light-960-plugins.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-960-plugins.png",
+      "sha256": "083e73c16da39087c9347cf6ef162787f941176428e31b6aceeebe503da60aa4"
+    },
+    {
+      "name": "reference-browser",
+      "width": 960,
+      "theme": "light",
+      "file": "light-960-reference-browser.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "light",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.862157 0.906863 0.882549), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.978039 0.974118 0.90902), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.980157 0.979765 0.947843) 10%, rgb(251, 253, 252) 52%, rgb(230, 233, 232) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/light-960-reference-browser.png",
+      "sha256": "a8f1f9dd597446093e3c2c11edb0a295fe4f31fd671aa264363751a7f8a9e1eb"
+    },
+    {
+      "name": "library",
+      "width": 960,
+      "theme": "dark",
+      "file": "dark-960-library.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-960-library.png",
+      "sha256": "6303aa63ec6da5f2891d620d02cd7021c2329c5e1f44a90440e5d41e36c78145"
+    },
+    {
+      "name": "作品资料",
+      "width": 960,
+      "theme": "dark",
+      "file": "dark-960-作品资料.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-960-作品资料.png",
+      "sha256": "074278915967083bba3c4c5033dbf3eb926f912979278233f3be9c51f8b2edc5"
+    },
+    {
+      "name": "参考稿审核",
+      "width": 960,
+      "theme": "dark",
+      "file": "dark-960-参考稿审核.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-960-参考稿审核.png",
+      "sha256": "abf5e23c32ed302b356a5bcd193055ac63e970fce8cf400e41923241bb74dcdc"
+    },
+    {
+      "name": "关联作品",
+      "width": 960,
+      "theme": "dark",
+      "file": "dark-960-关联作品.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-960-关联作品.png",
+      "sha256": "0a6e2feed2b904b2037e9e8270f383b7d90841f88246777aeba67f7e772b1583"
+    },
+    {
+      "name": "作品设定",
+      "width": 960,
+      "theme": "dark",
+      "file": "dark-960-作品设定.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-960-作品设定.png",
+      "sha256": "530b2a729a51f48ed91ce100a19087bd8d49f56377c1b53d3191540d97325938"
+    },
+    {
+      "name": "图片成果",
+      "width": 960,
+      "theme": "dark",
+      "file": "dark-960-图片成果.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-960-图片成果.png",
+      "sha256": "8f88749484b6e646928a9ef461de04fa87fb94cac393d9179ceb4dca9c61fe48"
+    },
+    {
+      "name": "资料与素材",
+      "width": 960,
+      "theme": "dark",
+      "file": "dark-960-资料与素材.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-960-资料与素材.png",
+      "sha256": "7043b6798e3e31631a873d66090f8d202fd692dac39aa15b3f33ac09d73b9e63"
+    },
+    {
+      "name": "素材与线索",
+      "width": 960,
+      "theme": "dark",
+      "file": "dark-960-素材与线索.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-960-素材与线索.png",
+      "sha256": "3473907ad4485ade555dbc751a96dbd07ea71b24efc7191ba3fb2f77b3708afb"
+    },
+    {
+      "name": "文稿版本",
+      "width": 960,
+      "theme": "dark",
+      "file": "dark-960-文稿版本.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-960-文稿版本.png",
+      "sha256": "160373d898001922d9fdb854e555ab2d34ce636407d4d4776840a5c418f1c589"
+    },
+    {
+      "name": "原稿导入",
+      "width": 960,
+      "theme": "dark",
+      "file": "dark-960-原稿导入.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-960-原稿导入.png",
+      "sha256": "8351d4e108dce2efb82072965d90d2ee1499740cc43d44344f6400079bfc62c8"
+    },
+    {
+      "name": "作品交付",
+      "width": 960,
+      "theme": "dark",
+      "file": "dark-960-作品交付.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-960-作品交付.png",
+      "sha256": "ff3f8e681d812a0abfee036ddc6fddd84483efc13551d53887c229edba390bc5"
+    },
+    {
+      "name": "管理方案",
+      "width": 960,
+      "theme": "dark",
+      "file": "dark-960-管理方案.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-960-管理方案.png",
+      "sha256": "7bfe68f986b750055a51c3db36d3af86d4c0ca26a6720a27c7a596162439e606"
+    },
+    {
+      "name": "Agent 协作",
+      "width": 960,
+      "theme": "dark",
+      "file": "dark-960-Agent 协作.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-960-Agent 协作.png",
+      "sha256": "d890b1391dee4518e13a8b5b778037eefb438d4ed21b923136bd3c9ce833baff"
+    },
+    {
+      "name": "drama-reader",
+      "width": 960,
+      "theme": "dark",
+      "file": "dark-960-drama-reader.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-960-drama-reader.png",
+      "sha256": "604e169b0d03db8182db5bfb33e7c383ddda6061cfca1b1967e4815bdf093d14"
+    },
+    {
+      "name": "drama-profile",
+      "width": 960,
+      "theme": "dark",
+      "file": "dark-960-drama-profile.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-960-drama-profile.png",
+      "sha256": "1573044fe88f01bcbc2a3092f0e22c261c91112c1fdcd177a40d61b862031ede"
+    },
+    {
+      "name": "plugins",
+      "width": 960,
+      "theme": "dark",
+      "file": "dark-960-plugins.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-960-plugins.png",
+      "sha256": "e2735d3279a2a8df0e3ff83668247c574f0da128debe1f36d271084aac4d46c8"
+    },
+    {
+      "name": "reference-browser",
+      "width": 960,
+      "theme": "dark",
+      "file": "dark-960-reference-browser.png",
+      "metrics": {
+        "fonts": [
+          12,
+          14,
+          20
+        ],
+        "overflow": false,
+        "theme": "dark",
+        "background": "radial-gradient(at 0% 100%, color(srgb 0.132353 0.205882 0.182745), rgba(0, 0, 0, 0) 65%), radial-gradient(at 100% 0%, color(srgb 0.119608 0.106275 0.0752941), rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, color(srgb 0.100078 0.0963922 0.0792941) 10%, rgb(16, 18, 17) 52%, rgb(39, 42, 41) 100%)"
+      },
+      "path": "output/next-redesign-global-captures/round-5/dark-960-reference-browser.png",
+      "sha256": "42d496c3e93b7106cbed9580b4bd7814979d2150faf927e90d9d1123057af886"
+    }
+  ],
+  "release_v0_9_0": {
+    "git_sha": "0c9883f9b9fc53ab2cf082019ea4b46fd9b5962b",
+    "tag": "v0.9.0",
+    "workflow": "https://github.com/limecloud/hetu/actions/runs/43875115545",
+    "attempt": 3,
+    "jobs": [
+      {
+        "name": "Electron macOS arm64",
+        "conclusion": "success"
+      },
+      {
+        "name": "Electron windows-x64",
+        "conclusion": "success"
+      },
+      {
+        "name": "Electron linux-x64",
+        "conclusion": "success"
+      },
+      {
+        "name": "publish",
+        "conclusion": "success"
+      }
+    ],
+    "release_url": "https://github.com/limecloud/hetu/releases/tag/v0.9.0",
+    "published_at": "2026-11-16T14:26:21Z",
+    "assets": [
+      "Hetu-0.9.0-linux-x64.tar.gz",
+      "Hetu-0.9.0-macos-arm64.dmg",
+      "Hetu-0.9.0-macos-arm64.zip",
+      "Hetu-0.9.0-windows-x64.zip",
+      "release-manifest-linux-x64.json",
+      "release-manifest-windows-x64.json",
+      "release-manifest.json",
+      "SHA256SUMS",
+      "SHA256SUMS-linux-x64",
+      "SHA256SUMS-windows-x64"
+    ],
+    "mac_signing": "Notarized Developer ID",
+    "windows_linux_signing": "unsigned",
+    "installed_app": "/Applications/Hetu.app",
+    "installation_verification": "output/v0.9.0-install/official-installed-smoke.json",
+    "user_data": "untouched",
+    "contains_next_design": false,
+    "local_download_verification": "output/v0.9.0-release-download-verification.log"
+  }
+}

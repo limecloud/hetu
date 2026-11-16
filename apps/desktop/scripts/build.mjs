@@ -37,6 +37,9 @@ await copyFile("../../assets/brand/app-icon-1024.png", "dist/renderer/app-icon.p
 for (const name of ["cover-river-jade", "cover-cloud-rose", "cover-stars-ink"]) {
   await copyFile(`../../assets/illustrations/library/${name}.jpg`, `dist/renderer/${name}.jpg`);
 }
+for (const name of ["river-dawn-v1", "river-night-v1"]) {
+  await copyFile(`../../assets/illustrations/workbench/${name}.webp`, `dist/renderer/${name}.webp`);
+}
 const taskView = await readFile("../mcp/resources/task-view.html");
 const taskManifest = JSON.parse(
   await readFile("../mcp/resources/task-view.manifest.json", "utf8"),
