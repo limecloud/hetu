@@ -30,7 +30,34 @@ fn validate_record(record: &Value, object: &str) -> Result<()> {
 }
 
 impl Kernel {
+    fn media_owner(&self, input: &Value, prior: Option<&Value>) -> Result<Option<Value>> {
+        if let Some(prior) = prior {
+            if let Some(owner) = input.get("work_ref") {
+                ensure(
+                    prior.get("work_ref") == Some(owner),
+                    "forbidden",
+                    "素材或线索不能变更作品归属。",
+                )?;
+            }
+            return Ok(prior.get("work_ref").cloned());
+        }
+        if let Some(owner) = input.get("work_ref") {
+            self.work_record(owner, None)?;
+            return Ok(Some(owner.clone()));
+        }
+        Ok(None)
+    }
+    pub(super) fn media_in_work(
+        &self,
+        object: &str,
+        id: &str,
+        revision: Option<u64>,
+        work: &Value,
+    ) -> Result<bool> {
+        Ok(self.read_media_record(object, id, revision)?.0["work_ref"] == *work)
+    }
     pub(super) fn inspect_asset(&self, input: &Value) -> Result<Value> {
+        self.media_owner(input, None)?;
         if let Some((filename, content)) = self.inline_import_source(input)? {
             let mut result = media::signature(&content[..content.len().min(64)])?;
             result["original_filename"] = json!(filename);
@@ -58,7 +85,7 @@ impl Kernel {
         }
         Err(Error::new("not_found", "没有找到此素材或线索。"))
     }
-    fn read_media_record(
+    pub(super) fn read_media_record(
         &self,
         object: &str,
         id: &str,
@@ -113,6 +140,8 @@ impl Kernel {
             ensure(
                 record["created_at"] == current["created_at"]
                     && record["kind"] == current["kind"]
+                    && record["schema_version"] == current["schema_version"]
+                    && record.get("work_ref") == current.get("work_ref")
                     && (object != "asset"
                         || record["blob"] == current["blob"]
                             && record["original_filename"] == current["original_filename"]),
@@ -168,6 +197,7 @@ impl Kernel {
         }
     }
     pub(super) fn import_asset(&self, input: &Value, changes: &mut Changes) -> Result<Value> {
+        let owner = self.media_owner(input, None)?;
         media::validate_metadata(input)?;
         let inspection = self.inspect_asset(input)?;
         ensure(
@@ -186,14 +216,20 @@ impl Kernel {
         let mut record = json!({"schema_version":"1.0.0","asset_id":asset_id,"revision":1,"previous_sha256":null,"kind":kind,
             "original_filename":inspection["original_filename"],"blob":{"path":path,"sha256":inspection["sha256"],"size_bytes":inspection["size_bytes"],"media_type":inspection["media_type"],"validation":"signature_only"},
             "created_at":now(),"updated_at":now(),"actor_ref":self.actor()});
+        if let Some(owner) = owner {
+            record["schema_version"] = json!("2.0.0");
+            record["work_ref"] = owner;
+        }
         Self::asset_metadata(input, &mut record);
         validate_record(&record, "asset")?;
         // 原字节先流式持久化，再通过共同事务公开元数据与回执；未登记对象不出现在列表。
         if let Some((_, content)) = self.inline_import_source(input)? {
-            self.store.import_media_bytes(&path, &content, &input["expected_file"])?;
+            self.store
+                .import_media_bytes(&path, &content, &input["expected_file"])?;
         } else {
             let mut source = files::selected_file(Path::new(text(input, "file_path")?))?;
-            self.store.import_media(&path, &mut source, &input["expected_file"])?;
+            self.store
+                .import_media(&path, &mut source, &input["expected_file"])?;
         }
         let sha = self.stage_media_record("asset", &record, changes)?;
         Ok(
@@ -204,6 +240,7 @@ impl Kernel {
         media::validate_metadata(input)?;
         let (mut record, sha, _) =
             self.read_media_record("asset", text(input, "asset_id")?, None)?;
+        self.media_owner(input, Some(&record))?;
         ensure(
             input["expected"] == json!({"revision":record["revision"],"sha256":sha}),
             "revision_conflict",
@@ -262,6 +299,15 @@ impl Kernel {
         for source in cue["narrative_refs"].as_array().unwrap() {
             let document_id = text(source, "document_id")?;
             self.document_root(document_id)?; // 线索只关联正式内容文档，不提升待审草稿状态。
+            if let Some(owner) = cue.get("work_ref") {
+                ensure(
+                    self.document_work_ref(&self.document(document_id)?)?
+                        .as_ref()
+                        == Some(owner),
+                    "forbidden",
+                    "线索正文引用不属于同一作品。",
+                )?;
+            }
             let revision_id = text(source, "revision_id")?;
             let fixed = self.document_content(document_id, Some(revision_id))?;
             let content = text(&fixed, "content")?;
@@ -291,6 +337,11 @@ impl Kernel {
             let (asset, sha, current) =
                 self.read_media_record("asset", id, Some(integer(reference, "revision")?))?;
             ensure(
+                asset.get("work_ref") == cue.get("work_ref"),
+                "forbidden",
+                "线索与所用素材必须具有同一作品归属。",
+            )?;
+            ensure(
                 reference["sha256"] == sha && asset["kind"] == cue["kind"],
                 "hetu.invalid_source_ref",
                 "素材摘要或乐律／视觉分类与线索不一致。",
@@ -304,6 +355,7 @@ impl Kernel {
         media::validate_metadata(input)?;
         let mut cue = if let Some(id) = input["cue_id"].as_str() {
             let (record, sha, _) = self.read_media_record("cue", id, None)?;
+            self.media_owner(input, Some(&record))?;
             ensure(
                 input["expected"] == json!({"revision":record["revision"],"sha256":sha}),
                 "revision_conflict",
@@ -319,7 +371,12 @@ impl Kernel {
             next["previous_sha256"] = json!(sha);
             next
         } else {
-            json!({"schema_version":"1.0.0","cue_id":id("cue"),"revision":1,"previous_sha256":null,"created_at":now()})
+            let mut record = json!({"schema_version":"1.0.0","cue_id":id("cue"),"revision":1,"previous_sha256":null,"created_at":now()});
+            if let Some(owner) = self.media_owner(input, None)? {
+                record["schema_version"] = json!("2.0.0");
+                record["work_ref"] = owner;
+            }
+            record
         };
         for field in [
             "kind",
@@ -348,6 +405,9 @@ impl Kernel {
         )
     }
     pub(super) fn list_media(&self, input: &Value, object: &str) -> Result<Value> {
+        if let Some(owner) = input.get("work_ref") {
+            self.work_record(owner, None)?;
+        }
         let mut records = Vec::new();
         for package in ["music-cue", "visual-prompt"] {
             if input["kind"]
@@ -372,6 +432,12 @@ impl Kernel {
                     continue;
                 }
                 let (record, sha, _) = self.read_media_record(object, &id, None)?;
+                if input
+                    .get("work_ref")
+                    .is_some_and(|owner| record.get("work_ref") != Some(owner))
+                {
+                    continue;
+                }
                 ensure(
                     media::package(text(&record, "kind")?) == package,
                     "hetu.integrity_failure",
@@ -397,6 +463,9 @@ impl Kernel {
                     continue;
                 }
                 let mut summary = json!({format!("{object}_id"):id,"title":record["title"],"kind":record["kind"],"revision":record["revision"],"sha256":sha,"updated_at":record["updated_at"]});
+                if let Some(owner) = record.get("work_ref") {
+                    summary["work_ref"] = owner.clone();
+                }
                 if object == "asset" {
                     summary["rights_status"] = record["rights_status"].clone();
                     summary["size_bytes"] = record["blob"]["size_bytes"].clone();
@@ -428,7 +497,7 @@ impl Kernel {
                 })
         });
         let fingerprint = digest(bytes(
-            &json!({"workspace":self.scope(),"actor":self.actor(),"object":object,"kind":input["kind"],"document_id":input["document_id"],"rights_status":input["rights_status"],"archived":input["include_archived"],"records":records}),
+            &json!({"workspace":self.scope(),"actor":self.actor(),"work_ref":input["work_ref"],"object":object,"kind":input["kind"],"document_id":input["document_id"],"rights_status":input["rights_status"],"archived":input["include_archived"],"records":records}),
         )?);
         let start = if let Some(cursor) = input["cursor"].as_str() {
             let (hash, offset) = cursor

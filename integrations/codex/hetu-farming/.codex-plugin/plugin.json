@@ -1,0 +1,10 @@
+{
+  "name": "hetu-farming",
+  "version": "0.3.5",
+  "description": "河图洛书种田经营创作套件：任务流程与本题材方法，按作品选择安装",
+  "skills": "./skills/",
+  "category": "Productivity",
+  "interface": {
+    "category": "Productivity"
+  }
+}

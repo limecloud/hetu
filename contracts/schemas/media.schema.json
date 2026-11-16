@@ -85,7 +85,10 @@
       "additionalProperties": false,
       "properties": {
         "schema_version": {
-          "const": "1.0.0"
+          "enum": [
+            "1.0.0",
+            "2.0.0"
+          ]
         },
         "revision": {
           "type": "integer",
@@ -155,6 +158,9 @@
         },
         "blob": {
           "$ref": "#/$defs/blob"
+        },
+        "work_ref": {
+          "$ref": "#/$defs/work_ref"
         }
       },
       "required": [
@@ -173,6 +179,29 @@
         "rights_statement",
         "original_filename",
         "blob"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "schema_version": {
+                "const": "2.0.0"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "work_ref"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "work_ref"
+              ]
+            }
+          }
+        }
       ]
     },
     "cue": {
@@ -180,7 +209,10 @@
       "additionalProperties": false,
       "properties": {
         "schema_version": {
-          "const": "1.0.0"
+          "enum": [
+            "1.0.0",
+            "2.0.0"
+          ]
         },
         "revision": {
           "type": "integer",
@@ -247,6 +279,9 @@
         },
         "archived": {
           "type": "boolean"
+        },
+        "work_ref": {
+          "$ref": "#/$defs/work_ref"
         }
       },
       "required": [
@@ -263,6 +298,29 @@
         "narrative_refs",
         "asset_refs",
         "archived"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "schema_version": {
+                "const": "2.0.0"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "work_ref"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "work_ref"
+              ]
+            }
+          }
+        }
       ]
     },
     "source_ref": {
@@ -353,6 +411,9 @@
         },
         "inline_source": {
           "$ref": "#/$defs/inline_source"
+        },
+        "work_ref": {
+          "$ref": "#/$defs/work_ref"
         }
       },
       "required": [],
@@ -427,6 +488,9 @@
         },
         "inline_source": {
           "$ref": "#/$defs/inline_source"
+        },
+        "work_ref": {
+          "$ref": "#/$defs/work_ref"
         }
       },
       "required": [
@@ -489,6 +553,9 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 128
+        },
+        "work_ref": {
+          "$ref": "#/$defs/work_ref"
         }
       },
       "required": [
@@ -587,6 +654,9 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 128
+        },
+        "work_ref": {
+          "$ref": "#/$defs/work_ref"
         }
       },
       "required": [
@@ -633,6 +703,9 @@
             "reference_only",
             "unknown"
           ]
+        },
+        "work_ref": {
+          "$ref": "#/$defs/work_ref"
         }
       },
       "required": []
@@ -662,6 +735,9 @@
         },
         "include_archived": {
           "type": "boolean"
+        },
+        "work_ref": {
+          "$ref": "#/$defs/work_ref"
         }
       },
       "required": []
@@ -689,6 +765,33 @@
         "filename",
         "base64",
         "sha256"
+      ]
+    },
+    "work_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "workspace_id": {
+          "type": "string",
+          "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "kind": {
+          "enum": [
+            "novel",
+            "drama",
+            "video"
+          ]
+        },
+        "object_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        }
+      },
+      "required": [
+        "workspace_id",
+        "kind",
+        "object_id"
       ]
     }
   }

@@ -45,8 +45,15 @@ impl Kernel {
         let number = integer(input, "blueprint_revision")?;
         let (bp, sha) = if input["work_ref"].is_object() {
             self.work_blueprint_revision(&input["work_ref"], Some(number))?
-                .ok_or_else(|| Error::new("hetu.canon_initialization_required", "作品自身设定尚未建立。"))?
-        } else { self.blueprint_revision(Some(number))? };
+                .ok_or_else(|| {
+                    Error::new(
+                        "hetu.canon_initialization_required",
+                        "作品自身设定尚未建立。",
+                    )
+                })?
+        } else {
+            self.blueprint_revision(Some(number))?
+        };
         let documents = self.plot_documents(input["document_revisions"].as_array().unwrap())?;
         let options = serde_json::from_value(input["options"].clone())?;
         let plot = plot::extract(&documents, &bp, &sha, options, self.actor())?;
@@ -58,7 +65,8 @@ impl Kernel {
     }
     pub(super) fn correct_plot(&self, input: &Value, changes: &mut Changes) -> Result<Value> {
         let current = self.read_plot(text(input, "plot_revision_id")?)?;
-        let (bp, _) = self.blueprint_for_snapshot(current.blueprint_revision, &current.blueprint_sha256)?;
+        let (bp, _) =
+            self.blueprint_for_snapshot(current.blueprint_revision, &current.blueprint_sha256)?;
         let sources = serde_json::to_value(&current.source_revisions)?;
         let documents = self.plot_documents(sources.as_array().unwrap())?;
         let next = plot::correct(
@@ -132,7 +140,8 @@ impl Kernel {
             "hetu.integrity_failure",
             "剧情索引与内容不一致。",
         )?;
-        let (bp, sha) = self.blueprint_for_snapshot(plot.blueprint_revision, &plot.blueprint_sha256)?;
+        let (bp, sha) =
+            self.blueprint_for_snapshot(plot.blueprint_revision, &plot.blueprint_sha256)?;
         ensure(
             sha == plot.blueprint_sha256,
             "hetu.integrity_failure",
@@ -144,7 +153,8 @@ impl Kernel {
         Ok(plot)
     }
     pub(super) fn plot_result(&self, plot: &plot::Plot, saved: bool) -> Result<Value> {
-        let current_bp = self.current_blueprint_for_snapshot(plot.blueprint_revision, &plot.blueprint_sha256)?;
+        let current_bp =
+            self.current_blueprint_for_snapshot(plot.blueprint_revision, &plot.blueprint_sha256)?;
         let mut stale_reasons = Vec::new();
         if current_bp["revision"] != plot.blueprint_revision {
             stale_reasons.push(json!({"code":"blueprint_changed","expected_revision":plot.blueprint_revision,"current_revision":current_bp["revision"]}));

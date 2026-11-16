@@ -1,0 +1,45 @@
+.work-agent { border-top: 0.5px solid var(--line); margin-top: 28px; padding-top: 28px; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.work-agent > header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.work-agent h3 { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 14px; font-weight: 600; }
+.work-agent h4 { margin: 0; font-size: 14px; font-weight: 500; }
+.work-agent p { margin: 0; }
+.work-agent-options { display: flex; flex-direction: column; gap: 8px; }
+.work-agent-options > label { display: grid; grid-template-columns: 120px minmax(0, 1fr); align-items: center; gap: 10px; }
+.work-agent-options select { min-width: 0; flex: 1; padding: 2px 8px; min-height: 24px; }
+.work-agent-client { max-width: 440px; }
+.work-agent-scope { font-size: 12px; line-height: 1.6; color: var(--muted); }
+.work-agent-finder > div { display: flex; flex-direction: column; gap: 12px; padding: 12px 0 0 16px; }
+.work-agent-filters { display: flex; gap: 16px; }
+.work-agent-filters label { display: flex; align-items: center; gap: 8px; flex: 1; }
+.work-agent-advice { display: flex; align-items: flex-start; flex-direction: column; gap: 10px; border-top: 0.5px solid var(--line); padding-top: 16px; }
+.work-agent-advice textarea { width: 100%; min-height: 70px; resize: vertical; }
+.work-agent-advice article { width: 100%; padding: 12px 0; border-top: 0.5px solid var(--line); }
+.work-agent-advice article p { margin: 8px 0; white-space: pre-wrap; }
+.work-agent-inspection { max-width: 640px; padding: 4px 0 4px 96px; }
+.work-agent-inspection dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px; margin: 0 0 8px; }
+.work-agent-inspection dt { text-align: right; }
+.work-agent-inspection dd { margin: 0; overflow-wrap: anywhere; }
+.work-agent-path { font-size: 12px; color: var(--muted); }
+.work-agent-skills ul { list-style: none; padding: 8px 0 0; margin: 0; }
+.work-agent-skills li { display: flex; align-items: center; gap: 10px; min-height: 49px; padding: 8px 0; border-bottom: 0.5px solid var(--line); box-sizing: border-box; }
+.work-agent-skills li:last-child { border-bottom: 0; }
+.work-agent-skills li > div { display: flex; flex-direction: column; gap: 2px; }
+.work-agent-skills small { font-size: 12px; color: var(--muted); }
+.work-agent-skill-check { width: 16px; height: 16px; color: var(--muted); flex: none; }
+.work-agent-skill-check.found { color: var(--jade); }
+.work-agent-skills .work-agent-skill-state { margin-left: auto; align-items: flex-end; font-size: 12px; color: var(--muted); }
+.work-agent-package-actions { flex-wrap: wrap; }
+.work-agent-folder { display: flex; gap: 20px; padding: 28px 0 0; margin-top: 12px; border-top: 0.5px solid var(--line); }
+.work-agent-folder > span:first-child { flex: none; }
+.work-agent-folder > span:last-child { color: var(--muted); overflow-wrap: anywhere; min-width: 0; }
+.work-agent-recovery { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.work-agent-dialog { width: min(540px, calc(100vw - 40px)); padding: 24px; max-height: calc(100vh - 40px); overflow: auto; border: 0.5px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); box-shadow: none; }
+.work-agent-dialog::backdrop { background: var(--black-a5); }
+.work-agent-dialog[open] { display: flex; flex-direction: column; gap: 18px; }
+.work-agent-dialog > header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.work-agent-dialog h2 { font-size: 20px; font-weight: 600; margin: 0; }
+.work-agent-dialog p { line-height: 1.8; }
+.work-agent-dialog dl { display: grid; grid-template-columns: 100px minmax(0,1fr); gap: 12px; margin: 0; }
+.work-agent-dialog dd { margin: 0; overflow-wrap: anywhere; }
+.work-agent-dialog > button { align-self: flex-start; }
+@media (max-width: 760px) { .work-agent > header { align-items: flex-start; flex-wrap: wrap; } .work-agent-inspection { padding-left: 0; } .work-agent-filters { flex-wrap: wrap; } .work-agent-folder { flex-direction: column; gap: 8px; } }

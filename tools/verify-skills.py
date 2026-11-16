@@ -48,6 +48,10 @@ def inspect(package, suite, skills):
     manifest = json.loads((package / 'plugin.json').read_text())
     require(manifest['name'] == suite['pluginName'], f'{package}: 插件身份不符')
     require(re.fullmatch(r'\d+\.\d+\.\d+', manifest['version']), f'{package}: 版本无效')
+    codex_manifest = json.loads((package / '.codex-plugin/plugin.json').read_text())
+    require(all(codex_manifest.get(key) == manifest[key] for key in ['name', 'version', 'description'])
+        and codex_manifest.get('skills') == './skills/' and codex_manifest.get('category') == 'Productivity'
+        and codex_manifest.get('interface') == {'category': 'Productivity'}, f'{package}: Codex兼容清单与唯一源不符')
     inventory = json.loads((package / 'references/method-manifest.json').read_text())
     require(inventory['suite_id'] == suite['id'] and inventory['version'] == manifest['version'] and inventory['language'] == 'zh-CN', f'{package}: 方法清单不符')
     listed = inventory['files']

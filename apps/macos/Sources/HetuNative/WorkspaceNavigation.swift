@@ -3,6 +3,14 @@ import Foundation
 /// 项目导航和内容目录各占一层，窄窗口将目录改为按需浮层。
 public enum WorkspaceNavigation {
     public enum Group: Equatable, Sendable { case resources, management, checks }
+    public struct ReturnDestination: Sendable {
+        public let url: URL
+        public let reference: WorkReference
+        public let title: String
+        public init(url: URL, reference: WorkReference, title: String) {
+            self.url = url; self.reference = reference; self.title = title
+        }
+    }
 
     public static func group(for page: String) -> Group? {
         switch page {

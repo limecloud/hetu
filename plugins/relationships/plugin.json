@@ -1,0 +1,138 @@
+{
+  "manifest_version": 1,
+  "host_api": "1",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "dependencies": [],
+  "permissions": [
+    "objects.read",
+    "objects.write"
+  ],
+  "id": "org.hetu.relationships",
+  "display": {
+    "zh-CN": "人物关系图",
+    "en": "Relationships"
+  },
+  "description": {
+    "zh-CN": "围绕当前作品组织、审阅和保存人物关系图，支持Agent接续。",
+    "en": "Review persistent creative structures with scoped Agent access."
+  },
+  "contributions": {
+    "views": [
+      {
+        "id": "main",
+        "title": "人物关系图",
+        "entry": "index.html",
+        "object_kinds": [
+          "relationships"
+        ]
+      }
+    ],
+    "data": [
+      {
+        "kind": "relationships",
+        "schema_version": "1",
+        "schema": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "nodes",
+            "edges"
+          ],
+          "properties": {
+            "nodes": {
+              "type": "array",
+              "maxItems": 1000,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "label",
+                  "x",
+                  "y"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "maxLength": 100
+                  },
+                  "label": {
+                    "type": "string",
+                    "maxLength": 100
+                  },
+                  "x": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 10000
+                  },
+                  "y": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 10000
+                  }
+                }
+              }
+            },
+            "edges": {
+              "type": "array",
+              "maxItems": 3000,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "source",
+                  "target",
+                  "label"
+                ],
+                "properties": {
+                  "source": {
+                    "type": "string",
+                    "maxLength": 100
+                  },
+                  "target": {
+                    "type": "string",
+                    "maxLength": 100
+                  },
+                  "label": {
+                    "type": "string",
+                    "maxLength": 100
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ],
+    "actions": [
+      {
+        "id": "arrange",
+        "title": "自动排列人物",
+        "effect": "managed_write",
+        "input_schema": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "object_id",
+            "operation_key"
+          ],
+          "properties": {
+            "object_id": {
+              "type": "string",
+              "pattern": "^ext_"
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          }
+        }
+      }
+    ]
+  },
+  "runtime": {
+    "entry": "backend.mjs"
+  }
+}

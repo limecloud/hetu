@@ -1,0 +1,220 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-11-15T17:29:32.087416+00:00",
+  "version": "0.7.0",
+  "scope": "多层导航中的关联往返与固定历史恢复、Codex套件兼容安装",
+  "status": "navigation_verified_installed",
+  "all_refactoring_complete": false,
+  "source": {
+    "base_commit": "900f8b0645479ba65f437d62fadbb7c7f09e7b38",
+    "dirty_worktree": true,
+    "manifest": "/Users/coso/Documents/河图洛书/验收记录/导航往返-20261116/source-manifest-final.json",
+    "manifest_sha256": "3b4838670e0f9e6bd6ab33622c868d832d2a56d7883b48f7060eb0ad8bbbaaee",
+    "files": 2600
+  },
+  "navigation": {
+    "levels": [
+      "创作库与类型",
+      "当前作品及功能分组",
+      "内容目录或关联列表",
+      "阅读及固定详情",
+      "按需历史与属性"
+    ],
+    "return": "窗口内沿确切WorkRef逐次返回；失败保留原对象与路径，普通另开清理返回栈。",
+    "history": "按作品保留关联阅读会话及已解除筛选；返回后维持第1版书名、简介与依据，不跳当前版本。",
+    "authority": "导航不改变关系、正文、作者决定或Agent授权。"
+  },
+  "plugin_compatibility": {
+    "source": {
+      "url": "https://developers.openai.com/plugins/build/plugins.md",
+      "final_url": "https://developers.openai.com/plugins/build/plugins.md",
+      "retrieved_at": "2026-11-15T17:08:02.813660+00:00",
+      "sha256": "b913de64a45a90f14fba0d4b0654444f1f60f4e2d4f79f3dd41332895f79721d",
+      "bytes": 36989
+    },
+    "portable_identity": "根plugin.json",
+    "compatibility_manifest": ".codex-plugin/plugin.json",
+    "rule": "由同一生成源派生身份及版本，严格回读官方安装版本和整包摘要；不将local当作确切版本。"
+  },
+  "checks": {
+    "native_all": {
+      "status": "passed",
+      "local_record": "/Users/coso/Documents/河图洛书/验收记录/导航往返-20261116/native-all-final.log",
+      "sha256": "7c1820874e0c5de8a70737375cd4be373502bf543de1e37ec8b889fa9f6345e5",
+      "boundary": "全量通过；其后仅调整顶栏点击范围、空状态标题和双语文案，已做专项及四组界面复验。"
+    },
+    "native_related_final": {
+      "status": "passed",
+      "local_record": "/Users/coso/Documents/河图洛书/验收记录/导航往返-20261116/native-related-polish.log",
+      "sha256": "29bfbcc21b847dda343ac0be47de34dc041af7dbf4731fcf09b735eb1715ffb5"
+    },
+    "native_window_final": {
+      "status": "passed",
+      "local_record": "/Users/coso/Documents/河图洛书/验收记录/导航往返-20261116/native-layout-polish.log",
+      "sha256": "384e3e7b2eedae93d33355b8ed307570df7b9a75140cb20bba9fbda670d670e7"
+    },
+    "bridge": {
+      "status": "passed",
+      "local_record": "/Users/coso/Documents/河图洛书/验收记录/导航往返-20261116/bridge-final.log",
+      "sha256": "b21cc8e39b5afacfebb4775c3a5677d9cac9f72ddf5fe8961badc94494efc364"
+    },
+    "existing_work": {
+      "status": "passed",
+      "local_record": "/Users/coso/Documents/河图洛书/验收记录/导航往返-20261116/imported-review-final.log",
+      "sha256": "705d26e01be845a3ee293850f9812347988986d04cc7ea96c19a37c4e8eefa85",
+      "read_only": true,
+      "documents": 511,
+      "groups": 5,
+      "fixed_episodes": 6
+    },
+    "skills": {
+      "status": "passed",
+      "local_record": "/Users/coso/Documents/河图洛书/验收记录/导航往返-20261116/skills-final.log",
+      "sha256": "3e9f2dac6288116baeed33820f0f87bc047e4b80e5d8ef5387b3efbb659859b3",
+      "suites": 45,
+      "files": 2250,
+      "package_version": "0.3.1",
+      "official_cli": "codex-cli 0.142.4",
+      "isolated_install_and_upgrade": true,
+      "current_host_reload": "not_run"
+    },
+    "reproducible_skills": {
+      "status": "passed",
+      "local_record": "/Users/coso/Documents/河图洛书/验收记录/导航往返-20261116/skills-reproducible.log",
+      "sha256": "42eb2486f223188d7d09cc7ee354ab642cd34bd81657ced128b00a3af4825c86"
+    },
+    "localization": {
+      "status": "passed",
+      "local_record": "/Users/coso/Documents/河图洛书/验收记录/导航往返-20261116/localization-polish-check.log",
+      "sha256": "4cc29fa430b37a87f1e12156b43cbe6bcbb834b2a99dd88417e1daa6c2336f28",
+      "keys": 1622
+    },
+    "package": {
+      "status": "passed",
+      "local_record": "/Users/coso/Documents/河图洛书/验收记录/导航往返-20261116/native-package-polish.log",
+      "sha256": "9d9444d145dbf793867e4f977e079a64b08af533e9ca940e867109e83f6940fa",
+      "command": "python3 tools/build-native.py --swift-scratch-path .build/navigation-return-20261116 --rust-target-dir target"
+    },
+    "installed_runtime": {
+      "status": "passed",
+      "local_record": "/Users/coso/Documents/河图洛书/验收记录/导航往返-20261116/installed-runtime.json",
+      "sha256": "4c74d71380d7849565b8843a3183f18b80435fcc9d039fdaa5fc271e2ab37768",
+      "cli_requests": 2,
+      "stdio_requests": 4,
+      "protocol": "2026-07-28",
+      "same_cli_mcp_results": true,
+      "revoked_reference_rejected": true,
+      "new_host_process": true,
+      "current_conversation_host_reloaded": false,
+      "business_writes": 0
+    },
+    "installation": {
+      "installed_app": "/Applications/Hetu.app",
+      "file_count": 2284,
+      "all_file_hashes_match": true,
+      "retained_backup": false,
+      "normal_quit": "正常退出已核对：1 个实例",
+      "signature_verification": "passed",
+      "version": "0.7.0",
+      "sha256": {
+        "Contents/MacOS/HetuMac": "ac8cbc097e8379a90ef0cf4a31033ee6a657c375fc142894fdc679bcba658ebf",
+        "Contents/Helpers/hetu": "f8530b3ef1a4040f62d9b66091ea3acdb8e4e5ac9402452bf769e2170dbd48d6",
+        "Contents/Helpers/hetu-mcp": "34940c810c3f294545767c841d4d12f12695372ac023949dc1f9df878e69ac99",
+        "Contents/Frameworks/libhetu_core.dylib": "b42c250ddbdc4f8bbe4ba084b6b01755205137b49d7450f9144366e0f48573a3"
+      }
+    },
+    "gui": {
+      "status": "passed",
+      "local_record": "/Users/coso/Documents/河图洛书/验收记录/导航往返-20261116/gui-journey.json",
+      "sha256": "898f202c24e74bdae462f3f96e99bc990e5944b547fffe77f60a4846e5e81dec",
+      "samples": [
+        {
+          "sample": "zh-CN-light-1280",
+          "status": "passed",
+          "window": [
+            1280,
+            760
+          ],
+          "return_hit_area": [
+            24,
+            28
+          ],
+          "fixed_revision": 1,
+          "business_writes": 0
+        },
+        {
+          "sample": "en-light-960",
+          "status": "passed",
+          "window": [
+            960,
+            760
+          ],
+          "return_hit_area": [
+            24,
+            28
+          ],
+          "fixed_revision": 1,
+          "business_writes": 0
+        },
+        {
+          "sample": "zh-CN-dark-960",
+          "status": "passed",
+          "window": [
+            960,
+            760
+          ],
+          "return_hit_area": [
+            24,
+            28
+          ],
+          "fixed_revision": 1,
+          "business_writes": 0
+        },
+        {
+          "sample": "en-dark-1280",
+          "status": "passed",
+          "window": [
+            1280,
+            760
+          ],
+          "return_hit_area": [
+            24,
+            28
+          ],
+          "fixed_revision": 1,
+          "business_writes": 0
+        }
+      ],
+      "steps": 36,
+      "renderer": "完整生产WorkbenchView(model:)；隔离本机偏好和书库，真实关联打开及返回回调",
+      "evidence": "系统辅助功能状态、确切QA窗口截图与实际查看；不以空onOpen回调的局部视图代替。"
+    },
+    "documents": {
+      "status": "blocked_by_untracked_plugin_documents",
+      "local_record": "/Users/coso/Documents/河图洛书/验收记录/导航往返-20261116/docs-recheck.log",
+      "sha256": "f3199559457e1477ef120b110fc87fd9c05a06a8854f4de481c1a76a3e00fe31",
+      "related_errors": [],
+      "unrelated_errors": [
+        "docs/plugin/08-领域模型与数据设计.md: 无效引用 examples/plugin-index.sql",
+        "docs/plugin/09-应用API与机器协作合同.md: 无效引用 examples/action-request.json",
+        "docs/plugin/09-应用API与机器协作合同.md: 无效引用 examples/action-result.json",
+        "docs/plugin/10-插件包SDK与生命周期.md: 无效引用 examples/plugin-manifest.json",
+        "docs/plugin/17-原生宿主与插件渲染技术方案.md: 私密路径或凭据"
+      ]
+    },
+    "regressions_and_tools": {
+      "status": "passed",
+      "local_record": "/Users/coso/Documents/河图洛书/验收记录/导航往返-20261116/回归发现.json",
+      "sha256": "fefc92c66dcb1dcb25c9d2a84009ff44edfa3e9434ebfc2f0d4b340cd68f5105"
+    }
+  },
+  "remaining": [
+    "双端精确授权写关联与跨根正文媒体快照",
+    "其余资料对象窄授权",
+    "正文滚动、光标及视频播放位置；有内容对象的完整往返矩阵",
+    "分镜、白模、实际视频、音画字幕、返工及工程交付",
+    "整书改编及全剧覆盖",
+    "当前常驻宿主真实Apps与完整显示矩阵"
+  ],
+  "delivery_boundary": "仅覆盖本地开发版安装；无提交、推送、公开发布、生产部署或付费模型调用。"
+}

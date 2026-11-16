@@ -78,11 +78,12 @@ impl Kernel {
         if snapshot["blueprint_revision"] != snapshot["current_blueprint_revision"] {
             reasons.push(json!({"code":"blueprint_changed"}));
         }
-        let expected_target = if draft["state"] == "approved" && draft.get("approved_revision_id").is_some() {
-            &draft["approved_revision_id"]
-        } else {
-            &snapshot["target"]["base_revision_id"]
-        };
+        let expected_target =
+            if draft["state"] == "approved" && draft.get("approved_revision_id").is_some() {
+                &draft["approved_revision_id"]
+            } else {
+                &snapshot["target"]["base_revision_id"]
+            };
         if snapshot["target"] != Value::Null
             && *expected_target != snapshot["target"]["current_revision_id"]
         {

@@ -14,8 +14,45 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  electron:
+    name: Electron macOS arm64 tests
+    runs-on: macos-15
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "25.0.0"
+          cache: npm
+      - name: Install locked Rust toolchain
+        run: rustup toolchain install 1.93.1 --profile minimal
+      - uses: Swatinem/rust-cache@v2
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Verify release versions and shared resources
+        run: |
+          node "tools/verify-release.mjs"
+          node --test tests/release/*.test.mjs
+          npm run check --workspace @hetu/task-view
+      - name: Test Rust workspace
+        run: cargo test --locked --workspace --jobs 2 -- --test-threads=2
+      - name: Test plugins and Electron workbench
+        run: |
+          npm run test:plugins
+          npm run test:e2e --workspace @hetu/desktop -- --grep-invert '独立开发应用'
+      - name: Retain failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: electron-test-results
+          path: apps/desktop/test-results/
+          if-no-files-found: ignore
+          retention-days: 7
+
   macos:
-    name: macOS arm64 native tests
+    name: macOS arm64 native comparison tests
     runs-on: macos-15
     timeout-minutes: 45
     env:

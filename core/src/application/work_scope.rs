@@ -11,72 +11,359 @@ impl Kernel {
             config["work_type"] = reference["kind"].clone();
             properties = json!({"created_at":work["summary"]["created_at"],"updated_at":work["summary"]["updated_at"]});
         }
-        Ok(json!({"workspace":config,"properties":properties,"access":{"write_available":self.store.write_available()?}}))
+        Ok(
+            json!({"workspace":config,"properties":properties,"access":{"write_available":self.store.write_available()?}}),
+        )
     }
     pub(super) fn granted_work(&self) -> Result<Option<Value>> {
-        self.management_grant.as_ref().map(crate::collaboration::authoring::granted_work).transpose().map(Option::flatten)
+        self.management_grant
+            .as_ref()
+            .map(crate::collaboration::authoring::granted_work)
+            .transpose()
+            .map(Option::flatten)
     }
 
     pub(super) fn check_work_access(&self, action: &str, input: &Value) -> Result<()> {
-        let Some(reference) = self.granted_work()? else { return Ok(()); };
+        let Some(reference) = self.granted_work()? else {
+            return Ok(());
+        };
         let object_id = &reference["object_id"];
         let kind = &reference["kind"];
         let allowed = match action {
-            "hetu.capabilities.get" | "hetu.operations.get" | "hetu.workspaces.get" |
-            "hetu.works.list" | "hetu.agent_operations.list" => true,
-            "hetu.works.get" | "hetu.work_links.list" | "hetu.work_links.get" |
-            "hetu.work_links.set_archived" => input["work_ref"] == reference,
-            "hetu.blueprints.get" | "hetu.blueprints.preview_change" |
-            "hetu.blueprints.save" | "hetu.blueprints.initialize" => input["work_ref"] == reference,
-            "hetu.creative_tasks.preview_prompt" | "hetu.creative_tasks.prepare" |
-            "hetu.image_tasks.preview_prompt" | "hetu.image_tasks.prepare" => self.task_sources_in_work(&reference, input)?,
-            "hetu.handoffs.get" => input["object_ref"]["work_ref"] == reference
-                && self.handoff_objects_in_work(&reference, &input["object_ref"])?
-                && match input["view_kind"].as_str() {
-                    Some("video") => kind == "video",
-                    Some("drama" | "episode") => kind == "drama",
-                    Some("book" | "novel" | "structure") => kind == "novel",
-                    Some("related_works") => true,
-                    Some("bible" | "entity" | "artwork") => true,
-                    _ => false,
-                },
-            "hetu.novels.get" | "hetu.novels.update" | "hetu.novels.save_structure" => kind == "novel",
+            "hetu.capabilities.get"
+            | "hetu.operations.get"
+            | "hetu.workspaces.get"
+            | "hetu.works.list"
+            | "hetu.agent_operations.list" => true,
+            "hetu.works.get"
+            | "hetu.work_links.list"
+            | "hetu.work_links.get"
+            | "hetu.work_links.set_archived" => input["work_ref"] == reference,
+            "hetu.documents.list" => {
+                input["work_ref"] == reference && matches!(kind.as_str(), Some("novel" | "drama"))
+            }
+            "hetu.documents.get" | "hetu.documents.history" => {
+                self.work_record(&reference, None)?;
+                self.document_in_work(&self.document(text(input, "document_id")?)?, &reference)?
+            }
+            "hetu.documents.preview_import" => {
+                input["work_ref"] == reference
+                    && matches!(kind.as_str(), Some("novel" | "drama"))
+                    && input.get("inline_source").is_some()
+                    && input.get("file_path").is_none()
+            }
+            "hetu.documents.import" => {
+                input["work_ref"] == reference
+                    && input["preview"]["request"]["work_ref"] == reference
+                    && input["preview"]["request"].get("inline_source").is_some()
+                    && input["preview"]["request"].get("file_path").is_none()
+                    && match kind.as_str() {
+                        Some("novel") => {
+                            input["kind"] == "novel_chapter"
+                                && input["novel_expected"].is_object()
+                                && input.get("drama_project_ref").is_none()
+                        }
+                        Some("drama") => {
+                            input["kind"] == "drama_script"
+                                && input["drama_project_ref"]["project_id"] == *object_id
+                                && input.get("novel_expected").is_none()
+                                && input["volume_id"].is_null()
+                        }
+                        _ => false,
+                    }
+            }
+            "hetu.documents.import_batch" => {
+                input["work_ref"] == reference
+                    && kind == "novel"
+                    && input["items"].as_array().is_some_and(|items| {
+                        items.iter().all(|item| {
+                            let source = &item["source"];
+                            source.get("inline_source").is_some()
+                                && source.get("file_path").is_none()
+                                && source.get("work_ref").is_none_or(|work| *work == reference)
+                        })
+                    })
+            }
+            "hetu.documents.preview_export" | "hetu.bundles.preview" => {
+                if input["work_ref"] != reference {
+                    false
+                } else {
+                    self.check_delivery_work(input, action == "hetu.bundles.preview")?;
+                    true
+                }
+            }
+            "hetu.documents.export" | "hetu.bundles.export" => {
+                let request = &input["preview"]["request"];
+                if request["work_ref"] != reference {
+                    false
+                } else {
+                    self.check_delivery_work(request, action == "hetu.bundles.export")?;
+                    true
+                }
+            }
+            "hetu.bundles.verify" => input["work_ref"] == reference,
+            "hetu.git.status"
+            | "hetu.git.diff"
+            | "hetu.git.log"
+            | "hetu.git.read_version"
+            | "hetu.git.list_snapshots"
+            | "hetu.git.init" => {
+                input["work_ref"] == reference && matches!(kind.as_str(), Some("novel" | "drama"))
+            }
+            "hetu.git.snapshot" | "hetu.git.get_snapshot" | "hetu.git.snapshot_diff" => {
+                if input["work_ref"] != reference
+                    || !matches!(kind.as_str(), Some("novel" | "drama"))
+                {
+                    false
+                } else if input["snapshot_id"].is_string() {
+                    self.check_git_snapshot_work(input)?;
+                    true
+                } else {
+                    true
+                }
+            }
+
+            "hetu.creative_tasks.list" => {
+                input["work_ref"] == reference
+                    && match input["target_document_id"].as_str() {
+                        Some(document_id) => {
+                            self.document_in_work(&self.document(document_id)?, &reference)?
+                        }
+                        None => true,
+                    }
+            }
+            "hetu.resources.list" => input["work_ref"] == reference,
+            "hetu.assets.list" => input["work_ref"] == reference,
+            "hetu.cues.list" => {
+                input["work_ref"] == reference
+                    && match input["document_id"].as_str() {
+                        Some(id) => {
+                            self.document_work_ref(&self.document(id)?)?.as_ref()
+                                == Some(&reference)
+                        }
+                        None => true,
+                    }
+            }
+            "hetu.assets.get" | "hetu.assets.update" => {
+                self.media_in_work(
+                    "asset",
+                    text(input, "asset_id")?,
+                    input["revision"].as_u64(),
+                    &reference,
+                )? && input
+                    .get("work_ref")
+                    .is_none_or(|owner| *owner == reference)
+            }
+            "hetu.cues.get" => self.media_in_work(
+                "cue",
+                text(input, "cue_id")?,
+                input["revision"].as_u64(),
+                &reference,
+            )?,
+            "hetu.assets.inspect" | "hetu.assets.import" => {
+                input["work_ref"] == reference
+                    && input.get("inline_source").is_some()
+                    && input.get("file_path").is_none()
+            }
+            "hetu.cues.save" => {
+                let owned = if let Some(id) = input["cue_id"].as_str() {
+                    self.media_in_work("cue", id, None, &reference)?
+                        && input
+                            .get("work_ref")
+                            .is_none_or(|owner| *owner == reference)
+                } else {
+                    input["work_ref"] == reference
+                };
+                let mut valid = owned;
+                for source in input["narrative_refs"].as_array().into_iter().flatten() {
+                    valid &= self
+                        .document_work_ref(&self.document(text(source, "document_id")?)?)?
+                        .as_ref()
+                        == Some(&reference);
+                }
+                for source in input["asset_refs"].as_array().into_iter().flatten() {
+                    valid &= self.media_in_work(
+                        "asset",
+                        text(source, "asset_id")?,
+                        Some(integer(source, "revision")?),
+                        &reference,
+                    )?;
+                }
+                valid
+            }
+            "hetu.resources.get"
+            | "hetu.resources.adopt"
+            | "hetu.resources.archive"
+            | "hetu.resource_usages.list" => self.resource_in_work(
+                text(input, "resource_id")?,
+                input["revision"].as_u64(),
+                &reference,
+            )?,
+            "hetu.resource_usages.save" => {
+                let source = &input["resource_ref"];
+                let mut valid = self.resource_in_work(
+                    text(source, "resource_id")?,
+                    Some(integer(source, "revision")?),
+                    &reference,
+                )?;
+                if let Some(id) = input["usage_id"].as_str() {
+                    let old = self
+                        .versioned_record("resources/usages", id, "usage_id", None)?
+                        .0;
+                    valid &= self.resource_in_work(
+                        text(&old["resource_ref"], "resource_id")?,
+                        Some(integer(&old["resource_ref"], "revision")?),
+                        &reference,
+                    )?;
+                }
+                valid
+                    && self
+                        .document_work_ref(
+                            &self.document(text(&input["target_ref"], "document_id")?)?,
+                        )?
+                        .as_ref()
+                        == Some(&reference)
+            }
+            "hetu.blueprints.get"
+            | "hetu.blueprints.preview_change"
+            | "hetu.blueprints.save"
+            | "hetu.blueprints.initialize" => input["work_ref"] == reference,
+            "hetu.creative_tasks.preview_prompt"
+            | "hetu.creative_tasks.prepare"
+            | "hetu.image_tasks.preview_prompt"
+            | "hetu.image_tasks.prepare" => self.task_sources_in_work(&reference, input)?,
+            "hetu.handoffs.get" => {
+                input["object_ref"]["work_ref"] == reference
+                    && self.handoff_objects_in_work(&reference, &input["object_ref"])?
+                    && match input["view_kind"].as_str() {
+                        Some("video") => kind == "video",
+                        Some("drama" | "episode") => kind == "drama",
+                        Some("book" | "novel" | "structure") => kind == "novel",
+                        Some("related_works") => true,
+                        Some(
+                            "bible" | "entity" | "artwork" | "resources" | "resource" | "media",
+                        ) => true,
+                        Some("import" | "delivery" | "git") => {
+                            matches!(kind.as_str(), Some("novel" | "drama"))
+                        }
+                        _ => false,
+                    }
+            }
+            "hetu.novels.get" | "hetu.novels.update" | "hetu.novels.save_structure" => {
+                kind == "novel"
+            }
             "hetu.drama.projects.list" => kind == "drama",
             "hetu.drama.projects.get" => kind == "drama" && input["project_id"] == *object_id,
-            "hetu.drama.projects.update" | "hetu.drama.episodes.create" | "hetu.drama.episodes.update" |
-            "hetu.drama.episodes.reorder" => kind == "drama" && input["project_ref"]["project_id"] == *object_id,
-            "hetu.drama.episodes.get" => kind == "drama" && self.read_drama_episode(text(input, "episode_id")?, None)?.0["project_id"] == *object_id,
+            "hetu.drama.projects.update"
+            | "hetu.drama.episodes.create"
+            | "hetu.drama.episodes.update"
+            | "hetu.drama.episodes.reorder" => {
+                kind == "drama" && input["project_ref"]["project_id"] == *object_id
+            }
+            "hetu.drama.episodes.get" => {
+                kind == "drama"
+                    && self.read_drama_episode(text(input, "episode_id")?, None)?.0["project_id"]
+                        == *object_id
+            }
             "hetu.video.projects.get" => kind == "video" && input["video_project_id"] == *object_id,
-            "hetu.video.projects.update" | "hetu.video.episodes.create" => kind == "video" && input["project_ref"]["video_project_id"] == *object_id,
-            "hetu.video.episodes.get" => kind == "video" && self.versioned_record("packages/video/episodes", text(input,"video_episode_id")?, "video_episode_id", None)?.0["video_project_id"] == *object_id,
-            "hetu.agent_operations.prepare" => return self.check_work_access(text(input,"action")?, &input["input"]),
+            "hetu.video.projects.update" | "hetu.video.episodes.create" => {
+                kind == "video" && input["project_ref"]["video_project_id"] == *object_id
+            }
+            "hetu.video.episodes.get" => {
+                kind == "video"
+                    && self
+                        .versioned_record(
+                            "packages/video/episodes",
+                            text(input, "video_episode_id")?,
+                            "video_episode_id",
+                            None,
+                        )?
+                        .0["video_project_id"]
+                        == *object_id
+            }
+            "hetu.agent_operations.prepare" => {
+                return self.check_work_access(text(input, "action")?, &input["input"]);
+            }
             // 方案读取和执行另外核验固定动作，不能借 proposal_id 读取其他对象。
             "hetu.agent_operations.get" | "hetu.agent_operations.execute" => true,
             _ => false,
         };
-        ensure(allowed, "forbidden", "此授权仅覆盖所选创作对象；其他对象及资料须另行授权。")
+        ensure(
+            allowed,
+            "forbidden",
+            "此授权仅覆盖所选创作对象；其他对象及资料须另行授权。",
+        )
     }
 
     fn handoff_objects_in_work(&self, reference: &Value, object: &Value) -> Result<bool> {
         // 页面名称不能为嵌套的他对象引用开后门；尚未建立归属的引用失败关闭。
-        if object.as_object().is_none_or(|fields| fields.keys().any(|key| !matches!(key.as_str(),
-            "work_ref" | "project_id" | "episode_id" | "video_episode_id" | "revision" | "entity_ref" | "blueprint_revision" | "document_id" | "revision_id" | "link_id" | "link_revision"))) {
+        if object.as_object().is_none_or(|fields| {
+            fields.keys().any(|key| {
+                !matches!(
+                    key.as_str(),
+                    "work_ref"
+                        | "snapshot_id"
+                        | "git_path"
+                        | "git_commit_id"
+                        | "project_id"
+                        | "episode_id"
+                        | "video_episode_id"
+                        | "revision"
+                        | "entity_ref"
+                        | "blueprint_revision"
+                        | "document_id"
+                        | "revision_id"
+                        | "link_id"
+                        | "link_revision"
+                        | "resource_id"
+                        | "asset_id"
+                        | "cue_id"
+                )
+            })
+        }) {
             return Ok(false);
         }
         if let Some(project) = object["project_id"].as_str() {
-            if reference["kind"] != "drama" || reference["object_id"] != project { return Ok(false); }
+            if reference["kind"] != "drama" || reference["object_id"] != project {
+                return Ok(false);
+            }
         }
         if let Some(episode) = object["episode_id"].as_str() {
-            if reference["kind"] != "drama" || self.read_drama_episode(episode, None)?.0["project_id"] != reference["object_id"] { return Ok(false); }
+            if reference["kind"] != "drama"
+                || self.read_drama_episode(episode, None)?.0["project_id"] != reference["object_id"]
+            {
+                return Ok(false);
+            }
         }
         if let Some(episode) = object["video_episode_id"].as_str() {
-            if reference["kind"] != "video" || self.versioned_record("packages/video/episodes", episode, "video_episode_id", None)?.0["video_project_id"] != reference["object_id"] { return Ok(false); }
+            if reference["kind"] != "video"
+                || self
+                    .versioned_record("packages/video/episodes", episode, "video_episode_id", None)?
+                    .0["video_project_id"]
+                    != reference["object_id"]
+            {
+                return Ok(false);
+            }
         }
         if let Some(document) = object["document_id"].as_str() {
-            if self.document_work_ref(&self.document(document)?)?.as_ref() != Some(reference) { return Ok(false); }
+            if self.document_work_ref(&self.document(document)?)?.as_ref() != Some(reference) {
+                return Ok(false);
+            }
         }
         if object["link_id"].is_string() {
             self.get_work_link(&json!({"work_ref":reference,"link_id":object["link_id"],"revision":object["link_revision"]}))?;
+        }
+        if let Some(id) = object["resource_id"].as_str() {
+            if !self.resource_in_work(id, object["revision"].as_u64(), reference)? {
+                return Ok(false);
+            }
+        }
+        for kind in ["asset", "cue"] {
+            if let Some(id) = object[format!("{kind}_id")].as_str() {
+                if !self.media_in_work(kind, id, object["revision"].as_u64(), reference)? {
+                    return Ok(false);
+                }
+            }
         }
         Ok(true)
     }

@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-11-15T22:12:13.291497+00:00",
+  "version": "0.7.0",
+  "scope": "作品归属通用素材、固定线索及插件来源的机器协作与Electron审阅",
+  "status": "slice_passed",
+  "all_refactoring_complete": false,
+  "source": {
+    "dirty_worktree": true,
+    "base_commit": "900f8b0645479ba65f437d62fadbb7c7f09e7b38",
+    "snapshot_sha256": "b8d8a7deb98afcdf2f73ac69d0d7022fd51c70ee118476ffe27ca50e775d5162",
+    "file_count": 204,
+    "current_source_matches_package": true
+  },
+  "package": {
+    "manifest_path": "output/electron-packages/hetu-dev-3VzOdN/manifest.json",
+    "manifest_sha256": "efbe93aee50ac0b65f75192b5a7681773f87508fdcc8486c9a69e435457533b5",
+    "artifact_count": 310,
+    "platform": "darwin",
+    "arch": "arm64",
+    "electron": "42.11.18",
+    "node": {
+      "version": "v25.0.0",
+      "platform": "darwin",
+      "arch": "arm64"
+    },
+    "signing": "ad-hoc-development",
+    "production_verified": false
+  },
+  "checks": {
+    "core_cli_mcp_app_server": {
+      "status": "passed",
+      "passed": 71
+    },
+    "plugin_node_cli_mcp": {
+      "status": "passed",
+      "passed": 7
+    },
+    "desktop": {
+      "status": "passed_after_serial_rerun",
+      "development_passed": 17,
+      "packaged_passed": 1,
+      "skipped": 0,
+      "initial_run": {
+        "passed": 16,
+        "failed": 1,
+        "failure": "management.spec.ts的CLI子进程stdout未返回字符串，JSON.parse失败；首次helper未记录spawnSync.error，无法确认errno",
+        "context": "开发包装配与测试并行使用target/debug/hetu",
+        "rerun": "装配结束后串行复验management.spec.ts通过；helper补充进程启动错误断言，不增加重试"
+      }
+    },
+    "skills": {
+      "status": "passed",
+      "bundles": 45,
+      "source": "tools/hetu-skills/base",
+      "host_cache_reloaded": false
+    },
+    "visual": {
+      "status": "inspected",
+      "screenshot_sha256": "73657110bb1c08fa6a7f40fcb398600b22848dc137086373d571bb9231dbfaf5",
+      "scope": "固定历史素材元数据、权利和线索来源，不含实际媒体播放",
+      "original_screenshot_path": "output/plugin-doc-qa/media-review.png",
+      "artifact_retention": "原图已由后续媒体预览回归覆盖；保留初次人工查看记录与原始摘要，后续截图在预览专项另归档"
+    },
+    "strict_clippy": {
+      "status": "not_run",
+      "previous_baseline": "27项既有Core风格告警，不转记通过"
+    }
+  },
+  "logs": {
+    "core": "output/plugin-doc-qa/media-core-final.log",
+    "plugin": "output/plugin-doc-qa/media-plugins-final.log",
+    "desktop_initial": "output/plugin-doc-qa/media-desktop-final.log",
+    "management_rerun": "output/plugin-doc-qa/media-management-rerun.log",
+    "packaged": "output/plugin-doc-qa/media-packaged-final.log",
+    "skills": "output/plugin-doc-qa/media-skills.log"
+  },
+  "log_sha256": {
+    "core": "dfdaf5943aa74622acdea5d3fba21211f508f9fb22bc3d763ed26161a67cde78",
+    "plugin": "2b29225960ce17479eb93e9b484c8cebcd2e7390e6b3218fae645fdbbd72de1a",
+    "desktop_initial": "1980468a395456649171d288b4d2e0ca4cfe9bc0ee1eb092f042697ec9379274",
+    "management_rerun": "9aec003d89b6469856c60d15e9e6f3ebc5c8d5796b04cbf6294db61b774157a8",
+    "packaged": "b8c2eeb185165add0e8497037dbfe55680310b32b0763f8d3303f843ebd2676d",
+    "skills": "c8b1a878aa323355f35c4420132efadf78a98878bf7cfc0d74207f46534de07f"
+  },
+  "test_sha256": {
+    "core/tests/media_works.rs": "6c37938205c74e8a027d6b4b3cf4a3544a9995137ab432c6995529b387d36a10",
+    "apps/desktop/tests/media.spec.ts": "f540a0fee97387bb30eab22908e7cfbe0662f1943fcb6d11a7ec786877ed0c7b",
+    "apps/desktop/tests/management.spec.ts": "548c07439983ec3c19afd5e4c46edbf57ee9105ac83d2c76bb98ccf5481cf6e3",
+    "apps/desktop/tests/packaged.spec.ts": "9e379ec8c5567fafc42b9635654cba2bf8be6750cdb051c003049261abf70406"
+  },
+  "verified": [
+    "新素材与线索schema2固定不可变WorkRef，旧schema1记录和历史不重写",
+    "精确管理读取、作品及游标隔离、撤权、inline导入Schema和固定方案",
+    "真实CLI准备导入／更新／线索方案，作者在GUI审核后由原Agent执行，原键重开不重复",
+    "官方MCP Client连接真实Rust MCP并读取同一固定记录",
+    "线索正文与素材同作品，固定旧素材历史和当前权利，刷新不漂移",
+    "插件source_refs核验真实素材／线索owner、修订、摘要和原字节，旧来源保留，不授予assets.get或原文件下载",
+    "Electron素材筛选、来源／权利／历史、固定线索、精确交接及作品切换隔离",
+    "实际开发包摘要、开发签名、随包Rust／Node／CLI／MCP及素材工作面验收"
+  ],
+  "computer_use_business_steps": 0,
+  "paid_model_calls": 0,
+  "not_verified": [
+    "通用图片完整解码、音频／视频预览和播放",
+    "视频区间意见、制作与工程交付，版本交付、本机设置等其余P0",
+    "跨作品插件来源、Schema迁移、规模化索引和生态分发",
+    "真实OS输入法、双语和完整无障碍",
+    "Windows、正式签名公证、干净系统安装升级和默认入口切换"
+  ],
+  "delivery_boundary": "原生版本保留；未覆盖安装、提交、推送或发布。R6整体继续推进。"
+}

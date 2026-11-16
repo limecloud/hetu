@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE = ROOT / 'tools/hetu-skills'
-VERSION = '0.3.0'
+VERSION = '0.3.5'
 SKILLS = ['hetu-setup', 'hetu-book-create', 'hetu-book-profile', 'hetu-outline', 'hetu-cover', 'hetu-draft', 'hetu-revise', 'hetu-drama', 'hetu-resources', 'hetu-artwork', 'hetu-manage', 'hetu-import', 'hetu-video']
 
 
@@ -127,7 +127,11 @@ def render():
             key = f'skills/{method}/SKILL.md'
             # 发现描述限定作者所选题材，避免多个套件在同一宿主中误路由。
             output[key] = output[key].decode().replace('description: "', f'description: "作者选择河图洛书{genre["name"]}套件时，', 1).encode()
-        output['plugin.json'] = encoded({'$schema': 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json', 'name': name, 'version': VERSION, 'description': '河图洛书'+genre['name']+'创作套件：任务流程与本题材方法，按作品选择安装'})
+        description = '河图洛书'+genre['name']+'创作套件：任务流程与本题材方法，按作品选择安装'
+        output['plugin.json'] = encoded({'$schema': 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json', 'name': name, 'version': VERSION, 'description': description})
+        # 本机 Codex CLI 仍读取兼容清单；身份与版本从同一来源派生，安装后核对整包摘要。
+        output['.codex-plugin/plugin.json'] = encoded({'name': name, 'version': VERSION, 'description': description,
+            'skills': './skills/', 'category': 'Productivity', 'interface': {'category': 'Productivity'}})
         output['hetu-suite.json'] = encoded({'schema_version': '1.0.0', 'suite_id': genre['id']})
         output['references/genre.md'] = genre_document(genre)
         output['references/method-manifest.json'] = encoded({'schema_version': '1.0.0', 'suite_id': genre['id'], 'version': VERSION, 'language': 'zh-CN', 'files': {p: sha(b) for p, b in sorted(output.items())}})

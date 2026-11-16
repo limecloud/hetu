@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-11-16T01:06:57.419096+00:00",
+  "version": "0.7.0",
+  "status": "slices_passed",
+  "all_refactoring_complete": false,
+  "source": {
+    "base_commit": "900f8b0645479ba65f437d62fadbb7c7f09e7b38",
+    "dirty_worktree": true,
+    "relevant_files": {
+      "core/src/application/extensions.rs": "b2a435548a53bdbe602796c50f94c1f706a3716f51ae959a0aed86dd47fa6dbc",
+      "core/src/application/git.rs": "4dd846fb0d2a426263ced689331c82663f69086ec00740351a4a8af839f6cfa0",
+      "core/src/application/git/work_versions.rs": "7c3277733cf70d5a58575b0f04f7f0d107df1e9d12c60a9538d9545b3721ec95",
+      "core/src/application/git/collaboration.rs": "49ae6e70fd0c789f05c72de226bace0e59a0dfed7f2fc0fd478e132cf8accdda",
+      "core/src/application/handoffs.rs": "6d147b39684afac713eac39638e452a44d41872e2ee1c2939e209b97f4cf3b7b",
+      "apps/app-server/src/main.rs": "c9796f120b9913ce8b9d9bc53c16eed44e647eafd05491fba84faa54d6900102",
+      "apps/desktop/src/main/main.ts": "d2e9ebe3d1f77b7e7ba62b3914366287f60bb4aa018e07db83941f25dda0286b",
+      "apps/desktop/src/main/versions.ts": "d8169f122e23d52176927e9c13a95cc21e408a3cf245900433912b8ee0ee11b1",
+      "apps/desktop/src/renderer/versions.tsx": "dabdc0a43f734f436299a2593137c3645dd9d23f1747dc23440703e2e779e3ad",
+      "packages/plugin-host/src/dev-cli.ts": "2cb5eab4782026f98b89dcb52fc557ac31ee84341f69cf73948e521a3e44513d",
+      "packages/plugin-host/src/scaffold.ts": "f5f7d7eaa101c0db4e06c8ba8e707af234cffe047020e6fbc6863003364297cf",
+      "packages/plugin-sdk/src/index.ts": "3ea057ec18c4a37823e6a5efb7675da6110a2cc8e6d480e04f8b82f4bf68ab54",
+      "contracts/actions.json": "38c7f82757835c91ebc24cc305c370886df7e9aef2b3f7ffb2d01f0efba181a9"
+    }
+  },
+  "checks": {
+    "core_cli_mcp_app_server": {
+      "status": "passed",
+      "groups": 10,
+      "passed": 77
+    },
+    "plugin_host": {
+      "status": "passed",
+      "passed": 9,
+      "skipped": 0
+    },
+    "electron_scoped": {
+      "status": "passed",
+      "passed": 4,
+      "skipped": 0,
+      "includes_long_chapter": true
+    },
+    "current_workbench_sample": {
+      "status": "passed",
+      "passed": 1,
+      "covers_all_ui": false
+    },
+    "typescript": {
+      "status": "passed"
+    },
+    "skills": {
+      "status": "passed",
+      "version": "0.3.5",
+      "suites": 45,
+      "files": 2250
+    }
+  },
+  "versions": {
+    "scope": "novel_and_drama_author_documents",
+    "first_commit_empty_tree": true,
+    "preserve_head_index_and_author_content": true,
+    "approval_does_not_execute": true,
+    "execution_without_window": true,
+    "history_real_mcp": true,
+    "utf8_pagination": true,
+    "page_max_bytes": 262144,
+    "desktop_full_review_text_limit_bytes": 8388608,
+    "approval_storage": "per-profile private git-authorizations",
+    "covers_entire_production_project": false
+  },
+  "zero_data_plugins": {
+    "permissions": [],
+    "types": [],
+    "work_and_package_binding": true,
+    "data_tools_discovered": false,
+    "revocation_blocks_computation": true,
+    "reopen_uses_live_binding": true
+  },
+  "developer_kit": {
+    "commands": [
+      "create",
+      "validate"
+    ],
+    "standalone_typescript_react": true,
+    "outside_repository_build": true,
+    "local_dependency_install": true,
+    "type_check": true,
+    "package_validation": {
+      "status": "valid",
+      "plugin_id": "org.author.independent-counter",
+      "version": "0.1.0",
+      "package_sha256": "6717c594b6547d692302283f2de06ec57487dc2b28238d0741713fa814d37411",
+      "permissions": [],
+      "files": 5,
+      "contributions": {
+        "views": [
+          "main"
+        ],
+        "data": [],
+        "actions": [
+          "count"
+        ]
+      }
+    },
+    "actual_electron_cli_mcp": true,
+    "independent_human_developer": "not_run",
+    "no_automatic_dependency_install": true
+  },
+  "initial_failures": [
+    {
+      "finding": "headless computation test used the old fixture while binaries were rebuilding",
+      "resolution": "after the build completed, all 8 plugin tests passed; the later developer test made the suite 9 tests"
+    },
+    {
+      "finding": "full desktop test selected the library navigation before work transition completed",
+      "resolution": "navigation helper waits for project navigation; full regression still tracked separately"
+    },
+    {
+      "finding": "standalone dependency installation offline lacked TypeScript tarball",
+      "resolution": "downloaded public dependencies into isolated local project, then verified another project outside the repository using the completed cache"
+    }
+  ],
+  "not_verified": [
+    "all desktop regression on current shared UI",
+    "plugin Schema migration, index rebuilding and ecosystem distribution",
+    "video production, interval feedback, final-film decision and engineering delivery",
+    "real OS IME, full bilingual and accessibility matrix",
+    "Windows target build and actual runtime",
+    "production signing, notarization, clean-system installation and upgrade",
+    "default entry switch and native retirement"
+  ],
+  "paid_model_calls": 0,
+  "installed_over_native": false,
+  "committed_or_published": false,
+  "logs": {
+    "integration": "output/plugin-doc-qa/transfer/version-computation-integration.log",
+    "plugins": "output/plugin-doc-qa/transfer/developer-plugins.log",
+    "electron": "output/plugin-doc-qa/transfer/version-pagination-electron.log",
+    "developer_build": "output/plugin-doc-qa/transfer/developer-isolated-build.log",
+    "developer_qa": "output/plugin-doc-qa/transfer/developer-independent-qa.log",
+    "skills": "output/plugin-doc-qa/transfer/version-skills-final.log"
+  },
+  "artifacts": [
+    "output/plugin-doc-qa/developer-independent-qa.json",
+    "output/plugin-doc-qa/developer-independent-plugin.png",
+    "output/plugin-doc-qa/electron-versions.png"
+  ]
+}

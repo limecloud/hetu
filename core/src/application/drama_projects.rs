@@ -90,7 +90,12 @@ impl Kernel {
         let mut projects = Vec::new();
         let scope = self.granted_work()?;
         for name in self.record_ids(PROJECTS, "drama")? {
-            if scope.as_ref().is_some_and(|reference| reference["object_id"] != name) { continue; }
+            if scope
+                .as_ref()
+                .is_some_and(|reference| reference["object_id"] != name)
+            {
+                continue;
+            }
             let project = self.drama_project(&name)?;
             if input["include_archived"] == true || project["archived"] != true {
                 projects.push(json!({"project":project,"sha256":digest(bytes(&project)?)}));
@@ -196,7 +201,7 @@ impl Kernel {
             "project_ref":{"project_id":project["project_id"],"revision":project["revision"],"sha256":digest(bytes(&project)?)}}),
         )
     }
-    fn add_episode_document(
+    pub(super) fn add_episode_document(
         &self,
         mut project: Value,
         mut doc: Value,

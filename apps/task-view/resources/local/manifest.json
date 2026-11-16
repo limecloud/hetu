@@ -2,20 +2,21 @@
   "schema_version": "1.0.0",
   "ipc_revision": "1",
   "source_sha256": {
-    "src/app.ts": "297319358c448f647b5df634807e8d1e99d3742eb5ef90f9469cfe575ccdcbaa",
-    "src/app.css": "4c809bfe20b33a245fe87043df8aedd6447dea5cef4b2df8280e6bd3854fb09c",
-    "scripts/build.mjs": "fe82c26b173214ad6c7c0217123512249587479401c020913bca57cbaaf05e02",
-    "package.json": "c3c97bb8fd4b8f6445c473f72b9e9ff9b0baaac4da9b53b8b6be6ed06cb10efe",
-    "THIRD-PARTY-NOTICES.txt": "36e9fae898f6fb55b3130f3380a36f2e26875934b50c98499635faf84c3afbf0",
+    "src/app.ts": "e435859ad612e841f76ce4519a69697a21f9b42194ce80f36c5129ed9595b7ba",
+    "src/app.css": "c6bb7d456f8420d3278423fb2225782aa6349a05146169ac94ea09dc1a208625",
+    "../../assets/styles/radix-workbench.css": "e73cbb2aff33f4ecf4b5e1daa61b03bb65f8cd17df0273379992271c4fbd97cc",
+    "scripts/build.mjs": "35c3c54a54aa45e9b3cfb1f02d85d52ae3aeb6d68f65124bc3b5e33760a0cab5",
+    "package.json": "d40d4e202823a804030d16fcd72d77493a8277f061185d9576408c2f56fb09d6",
+    "THIRD-PARTY-NOTICES.txt": "64e64f33d6dd0f206ffa47b474d43ffd8df1fd295bc87ccf59428003892ac78b",
     "src/local/host.ts": "97844772ecf15c8b00d49361b430a6b58ca2e3afd7f1cff0cd10dface1203fbc",
     "src/local/server.ts": "489c5d11be4e38980cf3ab6b00d04d32c8ab753c72a040fbb648fa4698faa4c7",
-    "src/local/index.html": "c516783b30b803d4963c9310d24055872e1844059d532ef66a18bcd4e8c1405a"
+    "src/local/index.html": "cf3b26ccee1cb4ab97070cdc31462a783a45a5501c9bde76caffb6a1715cb44f"
   },
   "files": {
     "host.js": "2172d6a93a1c54e5247e5e0909487ea463b325cecf3b2d5a61ae7946ca0078b1",
     "server.mjs": "3f01a663aa4b04b45f17e5103af9874ad947beb41d2982a2a339dc711fb0ad47",
-    "index.html": "c516783b30b803d4963c9310d24055872e1844059d532ef66a18bcd4e8c1405a",
-    "task-view.html": "bb34b29c062f2a64c2f2222553f29ddc575da149413e916340251015b617d143",
-    "THIRD-PARTY-NOTICES.txt": "36e9fae898f6fb55b3130f3380a36f2e26875934b50c98499635faf84c3afbf0"
+    "index.html": "a038decd61ac373a1c1751f9470d60f6238b2ee802cc338f2ca59484de2fb8f5",
+    "task-view.html": "b0c08baf20dd0aed15b13690be336872c35113a2dfaea4f8e2d39223ced36848",
+    "THIRD-PARTY-NOTICES.txt": "64e64f33d6dd0f206ffa47b474d43ffd8df1fd295bc87ccf59428003892ac78b"
   }
 }

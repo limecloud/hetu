@@ -69,7 +69,12 @@ fn approval_is_atomic_and_replays_before_state_cas_with_immutable_history() {
     assert_eq!(approved["draft"]["state"], "approved");
     assert_eq!(call(&k, "reviews.decide", input.clone()), result);
     assert!(approved.get("approval_target").is_none());
-    assert!(data(call(&k, "documents.list", json!({})))["documents"].as_array().unwrap().is_empty());
+    assert!(
+        data(call(&k, "documents.list", json!({})))["documents"]
+            .as_array()
+            .unwrap()
+            .is_empty()
+    );
     let after = get(&k, &d);
     assert_eq!(after["decisions"].as_array().unwrap().len(), 1);
     assert_eq!(after["stale"], false);
@@ -90,9 +95,13 @@ fn approval_is_atomic_and_replays_before_state_cas_with_immutable_history() {
     let withdrawal = decision(&get(&k, &d), "withdrawn", "withdraw");
     let withdrawn = data(call(&k, "reviews.decide", withdrawal));
     assert_eq!(withdrawn["draft"]["state"], "in_review");
-    assert!(data(call(&k, "documents.list", json!({})))["documents"].as_array().unwrap().is_empty());
+    assert!(
+        data(call(&k, "documents.list", json!({})))["documents"]
+            .as_array()
+            .unwrap()
+            .is_empty()
+    );
     assert_eq!(get(&k, &d)["decisions"].as_array().unwrap().len(), 2);
-
 }
 
 #[test]
@@ -171,7 +180,11 @@ fn reference_decisions_are_independent_and_target_changes_still_invalidate_evide
     validate(&k, &first, "check-first");
     let screen = get(&k, &first);
     let other = Kernel::open(json!({"workspace_path":root.path(),"mode":"author"})).unwrap();
-    data(call(&k, "reviews.decide", decision(&screen, "approved", "approve-first")));
+    data(call(
+        &k,
+        "reviews.decide",
+        decision(&screen, "approved", "approve-first"),
+    ));
     assert_eq!(get(&k, &first)["stale"], false);
     assert_eq!(
         call(
@@ -192,7 +205,14 @@ fn reference_decisions_are_independent_and_target_changes_still_invalidate_evide
         "reviews.decide",
         decision(&get(&k, &second), "approved", "approve-second"),
     ));
-    assert_eq!(data(call(&k, "reviews.decide", decision(&get(&k, &first), "withdrawn", "old-withdrawal")))["draft"]["state"], "in_review");
+    assert_eq!(
+        data(call(
+            &k,
+            "reviews.decide",
+            decision(&get(&k, &first), "withdrawn", "old-withdrawal")
+        ))["draft"]["state"],
+        "in_review"
+    );
     let current = data(call(
         &k,
         "documents.get",

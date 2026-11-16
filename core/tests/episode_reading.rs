@@ -165,7 +165,11 @@ fn legacy_unique_identity_is_readable_but_ambiguous_inputs_never_guess() {
         "creative_tasks.submit_result",
         json!({"task_ref":t["task_ref"],"request_sha256":t["request_sha256"],"working_copy_refs":[w["working_copy_ref"]],"feedback_refs":[],"complete":true,"missing_items":[],"provenance":{"client":"codex","skill_version":"test"},"operation_key":"legacy-submit"}),
     ));
-    let legacy = ok(call(&k, "drafts.get", json!({"draft_id":submitted["submission"]["candidates"][0]["draft_ref"]["draft_id"]})));
+    let legacy = ok(call(
+        &k,
+        "drafts.get",
+        json!({"draft_id":submitted["submission"]["candidates"][0]["draft_ref"]["draft_id"]}),
+    ));
     assert!(legacy["draft"]["target_document_id"].is_null());
     assert_eq!(legacy["suggested_target_ref"], a_ref);
     let ambiguous = prepare(&k, json!([source(&a_ref), source(&b_ref)]), None);

@@ -1,6 +1,6 @@
 # Mac source build for developers
 
-This guide is for maintainers with a Mac development environment. Authors can [install a release package](install.md) or try the homepage workspace in [Quick start](getting-started.md). GitHub’s “Code → Download ZIP” provides source code that must be built first.
+This guide is for maintainers building the Electron development app on a Mac. Authors can [install a release package](install.md) or try the homepage workspace in [Quick start](getting-started.md). GitHub’s “Code → Download ZIP” provides source code that must be built first.
 
 Read the README included with the source revision you choose. Its tool requirements and capabilities apply to that revision.
 
@@ -23,14 +23,14 @@ The current Mac path targets macOS 14 or newer, with Apple silicon first. Buildi
 
 | Tool | Project requirement | Get it |
 | --- | --- | --- |
-| Xcode and macOS SDK | Swift 6.2 or newer, with native linker and signing tools | [Apple developer tools](https://developer.apple.com/xcode/) |
+| Xcode Command Line Tools | macOS SDK, native linker and signing tools | [Apple developer tools](https://developer.apple.com/xcode/) |
 | Rust and Cargo | Rust 1.93.1, managed by an installed rustup | [Rust installation](https://www.rust-lang.org/tools/install) |
-| Node.js and npm | Node.js `>=24.21.0 <26`, with `LICENSE` from the same installation | [Node.js downloads](https://nodejs.org/en/download) |
+| Node.js and npm | Node.js `>=25 <26`, with `LICENSE` from the same installation | [Node.js downloads](https://nodejs.org/en/download) |
 | Python | An available `python3` command | [Python for macOS](https://www.python.org/downloads/macos/) |
 
-Node.js builds and packages on-demand task pages here. It is not a model service used by Hetu Luoshu. The launcher does not install or update system toolchains.
+Node.js builds the Electron workbench and shared task pages, and runs independent plugin backends. The launcher does not install or update system toolchains.
 
-## 3. Check and launch the Mac app
+## 3. Check and launch the Electron app
 
 Check the environment first:
 
@@ -44,15 +44,15 @@ Once the tool check passes, run:
 ./dev-mac.command
 ```
 
-The launcher installs locked project dependencies for task pages when needed, builds the pages, Rust core, MCP and Mac client, then opens `build/native/HetuDev.app`. The first build downloads dependencies; follow the actual output in Terminal.
+The launcher installs locked project dependencies when needed, builds the shared task pages, Rust App Server, CLI/MCP, plugin host and Electron workbench, then packages and opens the generated `.app` under `output/electron-packages/`. Its exact path appears in Terminal. The one-click launcher supports Electron only. The first build downloads dependencies; follow the actual output in Terminal.
 
 You can also double-click `dev-mac.command` in Finder. To build without launching, use `./dev-mac.command --build-only`.
 
-On success, you should see the Hetu Luoshu library. The source folder and your book folders are separate. Choose a location for your writing when you create a book.
+On success, you should see the creative library. Open an existing work or use its handoff to ask an external Agent to create a novel, screenplay or video. Keep the source folder separate from your work folders.
 
 ## 4. Reopen and rebuild
 
-Running `./dev-mac.command` again activates an already running development app and preserves its session. To rebuild, save your work, quit the development app normally, then run the launcher.
+Running `./dev-mac.command` again activates an already running Electron development app and preserves its session. To rebuild, save your work, quit the development app normally, then run the launcher.
 
 The development app uses local ad-hoc signing. Production signing, notarization and clean-system installation require separate verification. If macOS blocks an app, verify its source and release status; do not disable system protection or strip quarantine attributes.
 

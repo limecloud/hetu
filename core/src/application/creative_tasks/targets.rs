@@ -12,21 +12,39 @@ impl Kernel {
         }
         // 旧小说任务固定了该根唯一小说的 metadata；旧剧本不能按标题猜项目。
         if context["metadata"].is_object() {
-            return Ok(self.novel()?.map(|novel| self.work_ref("novel", &novel["novel_id"])));
+            return Ok(self
+                .novel()?
+                .map(|novel| self.work_ref("novel", &novel["novel_id"])));
         }
         Ok(None)
     }
-    pub(in crate::application) fn task_work_reference(&self, input: &Value) -> Result<Option<Value>> {
+    pub(in crate::application) fn task_work_reference(
+        &self,
+        input: &Value,
+    ) -> Result<Option<Value>> {
         let requested = input.get("work_ref").filter(|value| value.is_object());
-        if let Some(reference) = requested { self.work_record(reference, None)?; }
-        let target_id = input["target_ref"]["document_id"].as_str()
+        if let Some(reference) = requested {
+            self.work_record(reference, None)?;
+        }
+        let target_id = input["target_ref"]["document_id"]
+            .as_str()
             .or_else(|| input["edit_scope"]["document_id"].as_str());
         let target = target_id.map(|id| self.document(id)).transpose()?;
-        let owner = target.as_ref().map(|document| self.document_work_ref(document)).transpose()?.flatten();
+        let owner = target
+            .as_ref()
+            .map(|document| self.document_work_ref(document))
+            .transpose()?
+            .flatten();
         if let Some(requested) = requested {
-            ensure(target_id.is_none() || owner.as_ref() == Some(requested), "forbidden", "创作任务目标不属于所选作品。")?;
+            ensure(
+                target_id.is_none() || owner.as_ref() == Some(requested),
+                "forbidden",
+                "创作任务目标不属于所选作品。",
+            )?;
             Ok(Some(requested.clone()))
-        } else { Ok(owner) }
+        } else {
+            Ok(owner)
+        }
     }
     pub(super) fn validate_task_target(&self, input: &Value) -> Result<()> {
         let Some(target) = input.get("target_ref") else {

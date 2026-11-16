@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-11-15T21:44:53.550987+00:00",
+  "version": "0.7.0",
+  "scope": "作品归属文字资料、精确授权整理与Electron审阅恢复",
+  "status": "slice_passed",
+  "all_refactoring_complete": false,
+  "source": {
+    "dirty_worktree": true,
+    "base_commit": "900f8b0645479ba65f437d62fadbb7c7f09e7b38",
+    "snapshot_sha256": "baa0652ceb5990b7f5e966a56ee8f24f97167b151140d56ce912a5e8b3f3cf26",
+    "file_count": 203,
+    "current_source_matches_package": true
+  },
+  "package": {
+    "manifest_path": "output/electron-packages/hetu-dev-IqZoCD/manifest.json",
+    "manifest_sha256": "3ff33d976bb0c1c01b2ff2eda7a55dcddccc5af583a70682cde9a285e2b2f1ae",
+    "artifact_count": 310,
+    "platform": "darwin",
+    "arch": "arm64",
+    "electron": "42.11.18",
+    "node": {
+      "version": "v25.0.0",
+      "platform": "darwin",
+      "arch": "arm64"
+    },
+    "signing": "ad-hoc-development",
+    "production_verified": false
+  },
+  "checks": {
+    "core_cli_mcp_app_server": {
+      "status": "passed",
+      "passed": 87
+    },
+    "plugin_node_cli_mcp": {
+      "status": "passed",
+      "passed": 7
+    },
+    "desktop": {
+      "status": "passed",
+      "development_passed": 16,
+      "packaged_passed": 1,
+      "skipped": 0
+    },
+    "skills": {
+      "status": "passed",
+      "bundles": 45,
+      "source": "tools/hetu-skills/base",
+      "host_cache_reloaded": false
+    },
+    "visual": {
+      "status": "inspected",
+      "screenshot_path": "output/plugin-doc-qa/resource-review.png",
+      "screenshot_sha256": "eb237b21c6549d8feb6940d7fe104b9462e2c12a38733d2b1f0e96cf6e2d8ace",
+      "scope": "中文资料正文、实体名称、来源与独立保留操作入口；不代替完整无障碍或双语验收"
+    },
+    "strict_clippy": {
+      "status": "not_run",
+      "previous_baseline": "27项既有Core风格告警，不转记通过"
+    }
+  },
+  "log_sha256": {
+    "core": "062a3355bfeb92fe657abf76c84468d73eadbdd2b2dc617a5ab0945a441268b2",
+    "plugin": "07534cd202f5f6c148bd77a74b3e509f06c10c98d7da0e8c86df3fbe2b4f3fce",
+    "desktop": "152e7f13fa23ca99888068127263d7f4f009ec23329acd4f0e92a3870ef578d0",
+    "packaged": "c84890f94a3ded60e45b21c3b489fb22a19689fbed72769ec808b2826d61774b",
+    "skills": "a5cf3b6ead39b2bc8a194cf52a138b8d33f72dd92273e12280324ee00e5fceca"
+  },
+  "test_sha256": {
+    "core/tests/resource_works.rs": "1abdaf60b47da6b8ad522f3b0bbe2d2a9b1a4ef898c6fae1682cbb14a6178dfc",
+    "apps/desktop/tests/resources.spec.ts": "6916eb23214ff73746fe0096a044752589ea2a3562aed8f95c4234405bb2dfdb",
+    "apps/desktop/tests/packaged.spec.ts": "e11b439cbd1b59c6cd23170490ed7303e6038228fe92013a70cdf20d3ed4da34"
+  },
+  "verified": [
+    "资料schema2固定不可变WorkRef，同根各作品隔离；schema1旧历史不重写",
+    "固定资料整理任务自动绑定owner，实体引用核验确切作品设定和摘要",
+    "CLI准备固定管理方案，GUI仅执行作者审核决定，原Agent执行方案",
+    "官方MCP SDK与真实Rust MCP进程打开TaskLocator，创建更新及原键重放回读",
+    "动态任务与管理Schema分支有独立资源ID，避免局部defs在组合Schema中错位",
+    "采用、归档及人工编辑提交前固定版本、CAS、完整输入与原键",
+    "发送前中断补执行与提交后回执丢失分别恢复，不重复修订",
+    "人工稿离页保留；冲突拒绝覆盖；归档与筛选不隐藏独立恢复入口",
+    "同作品章节使用位置与固定历史可读，跨作品引用拒绝",
+    "实际开发包摘要、开发签名、随包Rust/Node/CLI/MCP及插件重开验收"
+  ],
+  "computer_use_business_steps": 0,
+  "paid_model_calls": 0,
+  "not_verified": [
+    "通用二进制素材的作品归属及媒体预览",
+    "Electron人工新建资料与原生2.0实体关联编辑完整体验",
+    "视频、版本交付、本机设置和全部P0旅程",
+    "真实OS输入法、双语与完整无障碍",
+    "Windows、正式签名公证、干净系统安装升级及默认入口切换"
+  ],
+  "delivery_boundary": "原生版本保留；未覆盖安装、提交、推送或发布。R6整体继续推进。"
+}

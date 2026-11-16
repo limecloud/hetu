@@ -14,10 +14,17 @@ impl Kernel {
             "骨架固定修订摘要不一致。",
         )?;
         if let Some(episode_id) = input["episode_id"].as_str() {
-            skeleton.episodes.retain(|episode| episode.episode_id == episode_id);
-            ensure(!skeleton.episodes.is_empty(), "invalid_input", "分集不在固定骨架中。")?;
+            skeleton
+                .episodes
+                .retain(|episode| episode.episode_id == episode_id);
+            ensure(
+                !skeleton.episodes.is_empty(),
+                "invalid_input",
+                "分集不在固定骨架中。",
+            )?;
         }
-        let (bp, _) = self.blueprint_for_snapshot(skeleton.blueprint_revision, &skeleton.blueprint_sha256)?;
+        let (bp, _) =
+            self.blueprint_for_snapshot(skeleton.blueprint_revision, &skeleton.blueprint_sha256)?;
         let rendered = script::render(
             &skeleton,
             &bp,
@@ -27,7 +34,9 @@ impl Kernel {
         let mut result = self.create_document(&json!({"kind":"drama_script","title":input["title"],"source_format":"fountain","language_tag":input["language_tag"],"content":rendered.content}), changes)?;
         let doc_id = text(&result["document"], "document_id")?.to_string();
         let mut mapping = json!({"schema_version":"1.0.0","renderer_version":script::RENDERER_VERSION,"document_id":doc_id,"revision_id":result["revision"]["revision_id"],"content_sha256":result["revision"]["sha256"],"skeleton_ref":reference,"language_tag":input["language_tag"],"title":input["title"],"coverage_status":skeleton.status,"scenes":rendered.scenes});
-        if let Some(episode) = input.get("episode_id") { mapping["episode_id"] = episode.clone(); }
+        if let Some(episode) = input.get("episode_id") {
+            mapping["episode_id"] = episode.clone();
+        }
         let path = format!("packages/drama/mappings/{doc_id}.json");
         self.store.directory("packages/drama/mappings")?;
         self.store.directory(".hetu/script-mappings")?;
@@ -102,10 +111,17 @@ impl Kernel {
         )?;
         let fixed = self.document_content(&doc_id, Some(text(&mapping, "revision_id")?))?;
         if let Some(episode_id) = mapping["episode_id"].as_str() {
-            skeleton.episodes.retain(|episode| episode.episode_id == episode_id);
-            ensure(!skeleton.episodes.is_empty(), "invalid_input", "分集不在固定骨架中。")?;
+            skeleton
+                .episodes
+                .retain(|episode| episode.episode_id == episode_id);
+            ensure(
+                !skeleton.episodes.is_empty(),
+                "invalid_input",
+                "分集不在固定骨架中。",
+            )?;
         }
-        let (bp, _) = self.blueprint_for_snapshot(skeleton.blueprint_revision, &skeleton.blueprint_sha256)?;
+        let (bp, _) =
+            self.blueprint_for_snapshot(skeleton.blueprint_revision, &skeleton.blueprint_sha256)?;
         let rendered = script::render(
             &skeleton,
             &bp,

@@ -5,9 +5,34 @@ use git2::{
 };
 use std::{collections::BTreeSet, path::PathBuf};
 mod collaboration;
+mod work_versions;
 
 const SNAPSHOT_LIMIT: usize = 128 * 1024 * 1024;
 const DIFF_LIMIT: usize = 1024 * 1024;
+
+/// 按UTF-8字节边界读取固定文本；下一偏移由本次实际末尾决定。
+fn text_page(bytes: &[u8], offset: usize, limit: usize) -> Result<Value> {
+    ensure(
+        (4..=262_144).contains(&limit),
+        "invalid_input",
+        "文本分页预算须为4至262144字节。",
+    )?;
+    let content = std::str::from_utf8(bytes)
+        .map_err(|_| Error::new("invalid_input", "二进制文件不能按文本分页。"))?;
+    ensure(
+        offset <= bytes.len() && content.is_char_boundary(offset),
+        "invalid_input",
+        "分页偏移须为文件内的UTF-8字符边界。",
+    )?;
+    let mut end = offset.saturating_add(limit).min(bytes.len());
+    while !content.is_char_boundary(end) {
+        end -= 1;
+    }
+    Ok(
+        json!({"content":&content[offset..end],"offset_bytes":offset,"end_offset_bytes":end,
+        "next_offset_bytes":(end < bytes.len()).then_some(end)}),
+    )
+}
 
 impl From<git2::Error> for Error {
     fn from(error: git2::Error) -> Self {
@@ -47,7 +72,10 @@ fn eligible(path: &str) -> bool {
     .iter()
     .any(|root| path == *root || path.starts_with(&format!("{root}/")))
         || path.starts_with(".hetu/work-activity/")
-        || matches!(path, ".hetu/workspace.lock" | ".hetu/visibility.lock" | ".hetu/workspace-properties.json")
+        || matches!(
+            path,
+            ".hetu/workspace.lock" | ".hetu/visibility.lock" | ".hetu/workspace-properties.json"
+        )
     {
         return false;
     }
@@ -77,6 +105,24 @@ fn checked_path(path: &str) -> Result<()> {
 fn oid(value: &Value) -> Result<Oid> {
     Oid::from_str(value.as_str().unwrap_or(""))
         .map_err(|_| Error::new("invalid_input", "Git 对象 ID 无效。"))
+}
+fn tree_blob(tree: Option<&git2::Tree<'_>>, path: &str) -> Result<Option<(Oid, u32)>> {
+    let Some(tree) = tree else {
+        return Ok(None);
+    };
+    match tree.get_path(Path::new(path)) {
+        Ok(entry) => {
+            ensure(
+                entry.kind() == Some(ObjectType::Blob)
+                    && matches!(entry.filemode(), 0o100644 | 0o100755),
+                "hetu.unsafe_path",
+                "拒绝符号链接、子模块或非正文 Git 项。",
+            )?;
+            Ok(Some((entry.id(), entry.filemode() as u32)))
+        }
+        Err(error) if error.code() == git2::ErrorCode::NotFound => Ok(None),
+        Err(error) => Err(error.into()),
+    }
 }
 fn secret(path: &str, content: &[u8]) -> bool {
     let lower = path.to_ascii_lowercase();
@@ -251,9 +297,9 @@ impl Kernel {
             git.ino()
         )))
     }
-    fn git_changes(&self, repo: &Repository) -> Result<Vec<Value>> {
+    fn git_changes(&self, repo: &Repository, work: Option<&Value>) -> Result<Vec<Value>> {
         // 独立快照不改用户 index；内容状态必须直接比较 HEAD 与工作树。
-        let tree = head(repo)?["commit_id"]
+        let tree = self.git_version_head(repo, work)?["commit_id"]
             .as_str()
             .map(Oid::from_str)
             .transpose()?
@@ -284,6 +330,11 @@ impl Kernel {
             if !eligible(path) {
                 continue;
             }
+            if let Some(work) = work {
+                if !self.git_document_path(work, path)? {
+                    continue;
+                }
+            }
             checked_path(path)?;
             let status = repo.status_file(Path::new(path))?;
             let size = std::fs::symlink_metadata(self.workspace_path.join(path))
@@ -294,14 +345,15 @@ impl Kernel {
         records.sort_by(|a, b| a["path"].as_str().cmp(&b["path"].as_str()));
         Ok(records)
     }
-    pub(super) fn git_status(&self) -> Result<Value> {
+    pub(super) fn git_status(&self, input: &Value) -> Result<Value> {
+        let work = self.git_requested_work(input)?;
         if std::fs::symlink_metadata(self.workspace_path.join(".git")).is_err() {
             self.store.matches_root(&self.workspace_path)?;
             return Ok(json!({"initialized":false,"head":null,"changes":[]}));
         }
         let repo = self.git_repository()?;
         Ok(
-            json!({"initialized":true,"head":head(&repo)?,"changes":self.git_changes(&repo)?,"state":format!("{:?}",repo.state()),"repository_instance":self.git_instance()?}),
+            json!({"initialized":true,"head":self.git_version_head(&repo, work.as_ref())?,"changes":self.git_changes(&repo, work.as_ref())?,"state":format!("{:?}",repo.state()),"repository_instance":self.git_instance()?}),
         )
     }
     pub(super) fn git_init(&self, input: &Value) -> Result<Value> {
@@ -322,7 +374,7 @@ impl Kernel {
             repo.config()?.set_bool("core.fsyncObjectFiles", true)?;
             self.store.sync_tree(".git")?;
         }
-        self.git_status()
+        self.git_status(input)
     }
     fn git_work_blob(&self, path: &str) -> Result<Option<(Vec<u8>, u32)>> {
         checked_path(path)?;
@@ -354,28 +406,33 @@ impl Kernel {
             },
         )))
     }
-    fn git_head_blob(&self, repo: &Repository, path: &str) -> Result<Option<(Oid, u32)>> {
-        let Some(commit) = head(repo)?["commit_id"].as_str().map(str::to_owned) else {
+    fn git_head_blob(
+        &self,
+        repo: &Repository,
+        path: &str,
+        work: Option<&Value>,
+    ) -> Result<Option<(Oid, u32)>> {
+        let Some(commit) = self.git_version_head(repo, work)?["commit_id"]
+            .as_str()
+            .map(str::to_owned)
+        else {
             return Ok(None);
         };
         let tree = repo.find_commit(Oid::from_str(&commit)?)?.tree()?;
-        match tree.get_path(Path::new(path)) {
-            Ok(entry) => {
-                ensure(
-                    entry.kind() == Some(ObjectType::Blob)
-                        && matches!(entry.filemode(), 0o100644 | 0o100755),
-                    "hetu.unsafe_path",
-                    "拒绝符号链接、子模块或非正文 Git 项。",
-                )?;
-                Ok(Some((entry.id(), entry.filemode() as u32)))
-            }
-            Err(error) if error.code() == git2::ErrorCode::NotFound => Ok(None),
-            Err(error) => Err(error.into()),
-        }
+        tree_blob(Some(&tree), path)
     }
     pub(super) fn git_diff(&self, input: &Value) -> Result<Value> {
         let repo = self.git_repository()?;
+        let work = self.git_requested_work(input)?;
         let path = text(input, "path")?;
+        if let Some(work) = &work {
+            ensure(
+                self.git_document_path(work, path)?,
+                "forbidden",
+                "版本文件不属于当前作品文稿。",
+            )?;
+        }
+
         checked_path(path)?;
         ensure(
             self.author || !path.starts_with(".hetu/reviews/"),
@@ -383,7 +440,7 @@ impl Kernel {
             "私密审核记录只能由作者查看；Agent 请读取公共审核投影。",
         )?;
         let before = self
-            .git_head_blob(&repo, path)?
+            .git_head_blob(&repo, path, work.as_ref())?
             .map(|(id, _)| repo.find_blob(id).map(|b| b.content().to_vec()))
             .transpose()?;
         let working = self.git_work_blob(path)?;
@@ -413,11 +470,28 @@ impl Kernel {
                     .map(|b| String::from_utf8_lossy(b).into_owned())
             }
         };
-        Ok(
-            json!({"path":path,"head":head(&repo)?,"binary":binary,"truncated":too_large,"before":render(&before),"after":render(&after),"before_size":before.as_ref().map(Vec::len),"after_size":after.as_ref().map(Vec::len),"before_oid":before.as_ref().map(|b|Oid::hash_object(ObjectType::Blob,b).map(|id|id.to_string())).transpose()?,"after_sha256":after.as_ref().map(digest),"after_mode":after_mode}),
-        )
+        let mut result = json!({"path":path,"head":self.git_version_head(&repo, work.as_ref())?,"binary":binary,"truncated":too_large,"before":render(&before),"after":render(&after),"before_size":before.as_ref().map(Vec::len),"after_size":after.as_ref().map(Vec::len),"before_oid":before.as_ref().map(|b|Oid::hash_object(ObjectType::Blob,b).map(|id|id.to_string())).transpose()?,"after_sha256":after.as_ref().map(digest),"after_mode":after_mode});
+        if let Some(limit) = input["max_bytes"].as_u64() {
+            ensure(!binary, "invalid_input", "二进制文件不能按文本分页。")?;
+            for (side, bytes) in [("before", &before), ("after", &after)] {
+                let offset = input[format!("{side}_offset_bytes")].as_u64().unwrap_or(0) as usize;
+                let page = text_page(bytes.as_deref().unwrap_or_default(), offset, limit as usize)?;
+                result[side] = if bytes.is_some() {
+                    page["content"].clone()
+                } else {
+                    Value::Null
+                };
+                result[format!("{side}_offset_bytes")] = page["offset_bytes"].clone();
+                result[format!("{side}_end_offset_bytes")] = page["end_offset_bytes"].clone();
+                result[format!("{side}_next_offset_bytes")] = page["next_offset_bytes"].clone();
+            }
+            result["paged"] = json!(true);
+            result["truncated"] = json!(false);
+        }
+        Ok(result)
     }
     pub(super) fn git_snapshot_diff(&self, input: &Value) -> Result<Value> {
+        self.check_git_snapshot_work(input)?;
         let (snapshot, sha) = self.git_snapshot(text(input, "snapshot_id")?)?;
         let path = text(input, "path")?;
         let item = snapshot["selection"]
@@ -439,7 +513,8 @@ impl Kernel {
     }
     pub(super) fn git_log(&self, input: &Value) -> Result<Value> {
         let repo = self.git_repository()?;
-        let current = head(&repo)?;
+        let work = self.git_requested_work(input)?;
+        let current = self.git_version_head(&repo, work.as_ref())?;
         let Some(commit) = current["commit_id"].as_str() else {
             return Ok(json!({"head":current,"commits":[],"next_cursor":null}));
         };
@@ -479,6 +554,7 @@ impl Kernel {
         )
     }
     pub(super) fn get_git_snapshot(&self, input: &Value) -> Result<Value> {
+        self.check_git_snapshot_work(input)?;
         let repo = self.git_repository()?;
         let (snapshot, sha) = self.git_snapshot(text(input, "snapshot_id")?)?;
         let current = match self.verify_git_snapshot(&repo, &snapshot) {
@@ -548,7 +624,10 @@ impl Kernel {
         let result = &record["result"];
         let operation = &result["operation"];
         checked_id(text(operation, "id")?, "op")?;
-        let input = json!({"phase":"execute","snapshot_id":snapshot["snapshot_id"],"operation_key":operation["key"]});
+        let mut input = json!({"phase":"execute","snapshot_id":snapshot["snapshot_id"],"operation_key":operation["key"]});
+        if let Some(work) = snapshot.get("work_ref") {
+            input["work_ref"] = work.clone();
+        }
         ensure(
             record["schema_version"] == "1.0.0"
                 && record["snapshot_id"] == snapshot["snapshot_id"]
@@ -564,6 +643,7 @@ impl Kernel {
     }
     pub(super) fn list_git_snapshots(&self, input: &Value) -> Result<Value> {
         self.git_repository()?;
+        let work = self.git_requested_work(input)?;
         if !self
             .store
             .entries(".hetu")?
@@ -583,16 +663,41 @@ impl Kernel {
                 .strip_suffix(".json")
                 .ok_or_else(|| Error::new("hetu.integrity_failure", "快照目录包含非法记录。"))?;
             let (snapshot, sha) = self.git_snapshot(id)?;
+            if work
+                .as_ref()
+                .is_some_and(|w| snapshot.get("work_ref") != Some(w))
+            {
+                continue;
+            }
             rows.push(json!({"snapshot_id":id,"snapshot_sha256":sha,"message":snapshot["message"],"head":snapshot["head"],"author":snapshot["author"],"timestamp":snapshot["timestamp"],"created_at":format!("{:020}",snapshot["timestamp"].as_i64().unwrap_or(0)),"file_count":snapshot["selection"].as_array().map(Vec::len)}));
         }
         self.record_page(input, rows, "snapshots")
     }
-    fn git_selection(&self, repo: &Repository, paths: &[String]) -> Result<Vec<Value>> {
+    fn git_selection(
+        &self,
+        repo: &Repository,
+        paths: &[String],
+        work: Option<&Value>,
+    ) -> Result<Vec<Value>> {
+        let current = self.git_version_head(repo, work)?;
+        let tree = current["commit_id"]
+            .as_str()
+            .map(Oid::from_str)
+            .transpose()?
+            .map(|id| repo.find_commit(id).and_then(|c| c.tree()))
+            .transpose()?;
         let mut total = 0usize;
         let mut selected = Vec::new();
         for path in paths {
             checked_path(path)?;
-            let before = self.git_head_blob(repo, path)?;
+            if let Some(work) = work {
+                ensure(
+                    self.git_document_path(work, path)?,
+                    "forbidden",
+                    "快照包含当前作品文稿以外的路径。",
+                )?;
+            }
+            let before = tree_blob(tree.as_ref(), path)?;
             ensure(
                 before.is_some() || !repo.status_should_ignore(Path::new(path))?,
                 "hetu.unsafe_path",
@@ -636,7 +741,8 @@ impl Kernel {
             "hetu.git_conflict",
             "请先处理现有合并或冲突状态。",
         )?;
-        let current = head(&repo)?;
+        let work = self.git_requested_work(input)?;
+        let current = self.git_version_head(&repo, work.as_ref())?;
         ensure(
             current == input["expected_head"],
             "revision_conflict",
@@ -649,7 +755,7 @@ impl Kernel {
             "hetu.git_conflict",
             "请先选择本地分支，不能在 detached HEAD 上提交。",
         )?;
-        let dirty = self.git_changes(&repo)?;
+        let dirty = self.git_changes(&repo, work.as_ref())?;
         ensure(
             dirty.iter().all(|p| p["conflicted"] == false),
             "hetu.git_conflict",
@@ -668,7 +774,7 @@ impl Kernel {
         };
         let mut paths = paths;
         paths.sort();
-        let selected = self.git_selection(&repo, &paths)?;
+        let selected = self.git_selection(&repo, &paths, work.as_ref())?;
         ensure(
             !selected.is_empty(),
             "hetu.nothing_to_commit",
@@ -682,7 +788,14 @@ impl Kernel {
             .into_iter()
             .filter(|v| !selected_paths.contains(v["path"].as_str().unwrap()))
             .collect();
-        let snapshot = json!({"schema_version":"1.0.0","snapshot_id":id("gitsnapshot"),"workspace_id":self.scope(),"repository_instance":self.git_instance()?,"head":current,"selection":selected,"excluded_changes":excluded,"message":input["message"],"author":input["author"],"timestamp":time::OffsetDateTime::now_utc().unix_timestamp()});
+        let mut snapshot = json!({"schema_version":"1.0.0","snapshot_id":id("gitsnapshot"),"workspace_id":self.scope(),"repository_instance":self.git_instance()?,"head":current,"selection":selected,"excluded_changes":excluded,"message":input["message"],"author":input["author"],"timestamp":time::OffsetDateTime::now_utc().unix_timestamp()});
+        if let Some(work) = work {
+            snapshot["schema_version"] = json!("1.1.0");
+            snapshot["work_ref"] = work;
+            if let Some(binding) = &self.management_grant {
+                snapshot["prepared_by"] = json!({"client_adapter":binding["client_adapter"],"grant_id":binding["grant_id"],"grant_revision":binding["grant_revision"]});
+            }
+        }
         validate_snapshot(&snapshot)?;
         self.store.directory(".hetu/git/snapshots")?;
         let content = bytes(&snapshot)?;
@@ -695,7 +808,7 @@ impl Kernel {
         let snapshot: Value = serde_json::from_slice(&bytes)?;
         validate_snapshot(&snapshot)?;
         ensure(
-            snapshot["schema_version"] == "1.0.0"
+            matches!(snapshot["schema_version"].as_str(), Some("1.0.0" | "1.1.0"))
                 && snapshot["snapshot_id"] == id
                 && snapshot["workspace_id"] == self.scope()
                 && snapshot["repository_instance"] == self.git_instance()?,
@@ -750,6 +863,7 @@ impl Kernel {
         Ok(format!("{}/{id}.json", self.git_instance()?))
     }
     pub(super) fn approve_git_snapshot(&self, input: &Value) -> Result<Value> {
+        self.check_git_snapshot_work(input)?;
         let repo = self.git_repository()?;
         let snapshot_id = text(input, "snapshot_id")?;
         let (snapshot, sha) = self.git_snapshot(snapshot_id)?;
@@ -768,7 +882,8 @@ impl Kernel {
     }
     fn verify_git_snapshot(&self, repo: &Repository, snapshot: &Value) -> Result<()> {
         ensure(
-            repo.state() == git2::RepositoryState::Clean && head(repo)? == snapshot["head"],
+            repo.state() == git2::RepositoryState::Clean
+                && self.git_version_head(repo, snapshot.get("work_ref"))? == snapshot["head"],
             "revision_conflict",
             "分支、HEAD 或仓库状态已变化，请重新准备快照。",
         )?;
@@ -779,7 +894,8 @@ impl Kernel {
             .map(|v| text(v, "path").map(str::to_owned))
             .collect::<Result<_>>()?;
         ensure(
-            json!(self.git_selection(repo, &paths)?) == snapshot["selection"],
+            json!(self.git_selection(repo, &paths, snapshot.get("work_ref"))?)
+                == snapshot["selection"],
             "revision_conflict",
             "所选文件已变化，请重新准备和批准快照。",
         )
@@ -816,6 +932,7 @@ impl Kernel {
         op_path: &str,
         input_digest: &str,
     ) -> Result<Value> {
+        self.check_git_snapshot_work(input)?;
         let action = "hetu.git.snapshot";
         let repo = self.git_repository()?;
         let snapshot_id = text(input, "snapshot_id")?;
@@ -940,7 +1057,9 @@ impl Kernel {
             })?;
         let operation = &result["operation"];
         let mut changes = Changes::new();
-        changes.insert(op_path.into(),bytes(&json!({"operation_id":operation["id"],"action":action,"key":input["operation_key"],"input_digest":input_digest,"actor_scope":if self.author{"author"}else{"agent"},"result":result}))?);
+        let mut record = json!({"operation_id":operation["id"],"action":action,"key":input["operation_key"],"input_digest":input_digest,"actor_scope":if self.author{"author"}else{"agent"},"result":result});
+        self.bind_operation_scope(&mut record);
+        changes.insert(op_path.into(), bytes(&record)?);
         changes.insert(format!(".hetu/audit/{}.json",text(operation,"id")?),bytes(&json!({"schema_version":"1.0.0","operation_id":operation["id"],"action":action,"actor_ref":self.actor(),"input_digest":input_digest,"created_at":now(),"status":"succeeded"}))?);
         self.stage_workspace_properties(&mut changes)?;
         self.store

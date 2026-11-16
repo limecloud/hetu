@@ -1,6 +1,6 @@
 # Mac 源码版（开发者）
 
-本篇供已有 Mac 开发环境的维护者获取源码并构建开发版。普通作者按[获取与安装 Mac 版](install.md)安装正式制品，或先从[网页演示](getting-started.md)体验审阅。
+本篇供已有 Mac 开发环境的维护者获取源码并构建 Electron 开发版。普通作者按[获取与安装 Mac 版](install.md)安装正式制品，或先从[网页演示](getting-started.md)体验审阅。
 
 从源码仓库获取代码后，请先阅读该修订自带的 README；工具要求和功能范围以所选源码为准。软件免费开源，外部Agent及生成服务的费用另行计算。
 
@@ -23,14 +23,14 @@ cd "hetu"
 
 | 工具 | 项目要求 | 获取入口 |
 | --- | --- | --- |
-| Xcode 与 macOS SDK | Swift 6.2 或更新版本，包含本机链接与签名工具 | [Apple 开发工具](https://developer.apple.com/xcode/) |
+| Xcode Command Line Tools | 包含 macOS SDK、本机链接与签名工具 | [Apple 开发工具](https://developer.apple.com/xcode/) |
 | Rust 与 Cargo | Rust 1.93.1，通过已安装的 rustup 管理 | [Rust 安装说明](https://www.rust-lang.org/tools/install) |
-| Node.js 与 npm | Node.js `>=24.21.0 <26`，同一安装中含 `LICENSE` | [Node.js 下载](https://nodejs.org/en/download) |
+| Node.js 与 npm | Node.js `>=25 <26`，同一安装中含 `LICENSE` | [Node.js 下载](https://nodejs.org/en/download) |
 | Python | 可用的 `python3` | [Python 下载](https://www.python.org/downloads/macos/) |
 
-Node.js 在这里用于构建和装配按需任务页面，不是河图洛书连接大模型的服务。启动脚本不会安装或更新系统工具链。
+Node.js 在这里用于构建 Electron 工作台、共享任务页面及运行独立插件后端。启动脚本不会安装或更新系统工具链。
 
-## 3. 检查并启动 Mac 端
+## 3. 检查并启动 Electron 端
 
 先检查环境：
 
@@ -44,15 +44,15 @@ Node.js 在这里用于构建和装配按需任务页面，不是河图洛书连
 ./dev-mac.command
 ```
 
-脚本会按需安装项目内锁定的任务页面依赖，构建页面、Rust 内核、MCP 与 Mac 客户端，然后打开 `build/native/HetuDev.app`。首次构建需要下载依赖，请在终端观察具体结果。
+脚本会按需安装项目内锁定依赖，构建共享任务页面、Rust App Server、CLI／MCP、插件宿主与 Electron 工作台，装配并打开 `output/electron-packages/` 下本次生成的独立 `.app`，具体路径见终端输出。一键入口仅支持 Electron。首次构建需要下载依赖，请在终端观察具体结果。
 
 也可在 Finder 双击项目根目录的 `dev-mac.command`。只构建而不打开应用时使用 `./dev-mac.command --build-only`。
 
-成功后会打开河图书库。现在可以新建作品，或者先保存一个故事点子。源码目录放软件，作品目录放你的小说、剧本与资料，两者分别选择。
+成功后会打开创作库。可以打开已有作品，或从对应入口向外部 Agent 交接新小说、剧本或视频的创作目标。源码目录放软件，作品目录放你的小说、剧本与资料，两者分别选择。
 
 ## 4. 再次打开与更新
 
-再次运行 `./dev-mac.command` 会激活已运行的开发版并保留当前会话。需要重新构建时，先保存作品并正常退出开发版，再运行脚本。
+再次运行 `./dev-mac.command` 会激活已运行的 Electron 开发版并保留当前会话。需要重新构建时，先保存作品并正常退出开发版，再运行脚本。
 
 开发包使用本机 ad-hoc 签名，正式分发的签名、公证与干净系统安装单独验收。遇到系统安全提示时先核对来源和制品状态，不要通过关闭系统防护或删除隔离属性绕过。
 

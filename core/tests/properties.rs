@@ -7,7 +7,9 @@ fn call(kernel: &Kernel, action: &str, input: Value) -> Value {
 }
 fn open(path: &Path, create: bool) -> Kernel {
     let mut input = json!({"workspace_path":path,"mode":"author"});
-    if create { input["create"] = json!({"title":"时间记录验收","locale":"zh-CN","operation_key":"create"}); }
+    if create {
+        input["create"] = json!({"title":"时间记录验收","locale":"zh-CN","operation_key":"create"});
+    }
     Kernel::open(input).unwrap()
 }
 fn properties(kernel: &Kernel) -> Value {
@@ -32,13 +34,27 @@ fn timestamps_survive_reopen_and_only_successful_new_writes_advance_update_time(
     assert_ne!(changed["updated_at"], initial["updated_at"]);
     assert_eq!(created, call(&kernel, "documents.create", input));
     assert_eq!(changed, properties(&kernel));
-    let failed = call(&kernel, "documents.save", json!({"document_id":created["data"]["document"]["document_id"],"base_revision_id":"rev_00000000-0000-4000-8000-000000000000","source_format":"markdown","content":"过期修改","operation_key":"stale"}));
+    let failed = call(
+        &kernel,
+        "documents.save",
+        json!({"document_id":created["data"]["document"]["document_id"],"base_revision_id":"rev_00000000-0000-4000-8000-000000000000","source_format":"markdown","content":"过期修改","operation_key":"stale"}),
+    );
     assert_ne!(failed["status"], "succeeded");
     assert_eq!(changed, properties(&kernel));
-    let saved = call(&kernel, "documents.save", json!({"document_id":created["data"]["document"]["document_id"],"base_revision_id":created["data"]["revision"]["revision_id"],"source_format":"markdown","content":"修改后的旧站。","operation_key":"save"}));
+    let saved = call(
+        &kernel,
+        "documents.save",
+        json!({"document_id":created["data"]["document"]["document_id"],"base_revision_id":created["data"]["revision"]["revision_id"],"source_format":"markdown","content":"修改后的旧站。","operation_key":"save"}),
+    );
     assert_eq!(saved["status"], "succeeded");
-    assert_eq!(saved["data"]["document"]["created_at"], created["data"]["document"]["created_at"]);
-    assert_ne!(saved["data"]["revision"]["created_at"], created["data"]["revision"]["created_at"]);
+    assert_eq!(
+        saved["data"]["document"]["created_at"],
+        created["data"]["document"]["created_at"]
+    );
+    assert_ne!(
+        saved["data"]["revision"]["created_at"],
+        created["data"]["revision"]["created_at"]
+    );
     assert_ne!(properties(&kernel)["updated_at"], changed["updated_at"]);
     assert_eq!(properties(&kernel), properties(&open(root.path(), false)));
 }
@@ -55,7 +71,11 @@ fn legacy_times_come_from_records_and_reading_does_not_create_or_rewrite_propert
     assert_eq!(legacy["created_at"], initial["created_at"]);
     assert!(legacy["updated_at"].is_null());
     assert!(!path.exists());
-    let result = call(&kernel, "documents.create", json!({"kind":"novel_chapter","title":"旧作品首章","source_format":"markdown","content":"","operation_key":"legacy-chapter"}));
+    let result = call(
+        &kernel,
+        "documents.create",
+        json!({"kind":"novel_chapter","title":"旧作品首章","source_format":"markdown","content":"","operation_key":"legacy-chapter"}),
+    );
     assert_eq!(result["status"], "succeeded");
     let stored = std::fs::read(&path).unwrap();
     assert_eq!(properties(&kernel)["created_at"], initial["created_at"]);
@@ -70,11 +90,34 @@ fn moved_workspace_rejects_writes_from_old_handles_even_if_original_path_is_reus
     let stale = open(&original, true);
     let input = json!({"kind":"novel_chapter","title":"旧窗口写入","source_format":"markdown","content":"不能进入已移走作品","operation_key":"stale-write"});
     std::fs::rename(&original, &moved).unwrap();
-    assert_eq!(call(&stale, "documents.create", input.clone())["error"]["code"], "hetu.workspace_moved");
+    assert_eq!(
+        call(&stale, "documents.create", input.clone())["error"]["code"],
+        "hetu.workspace_moved"
+    );
     let replacement = open(&original, true);
-    assert_eq!(call(&stale, "documents.create", input)["error"]["code"], "hetu.workspace_moved");
-    assert!(call(&replacement, "documents.list", json!({}))["data"]["documents"].as_array().unwrap().is_empty());
+    assert_eq!(
+        call(&stale, "documents.create", input)["error"]["code"],
+        "hetu.workspace_moved"
+    );
+    assert!(
+        call(&replacement, "documents.list", json!({}))["data"]["documents"]
+            .as_array()
+            .unwrap()
+            .is_empty()
+    );
     let restored = open(&moved, false);
-    assert!(call(&restored, "documents.list", json!({}))["data"]["documents"].as_array().unwrap().is_empty());
-    assert_eq!(call(&restored, "documents.create", json!({"kind":"novel_chapter","title":"重新打开后可写","source_format":"markdown","content":"恢复后的作品","operation_key":"reopened"}))["status"], "succeeded");
+    assert!(
+        call(&restored, "documents.list", json!({}))["data"]["documents"]
+            .as_array()
+            .unwrap()
+            .is_empty()
+    );
+    assert_eq!(
+        call(
+            &restored,
+            "documents.create",
+            json!({"kind":"novel_chapter","title":"重新打开后可写","source_format":"markdown","content":"恢复后的作品","operation_key":"reopened"})
+        )["status"],
+        "succeeded"
+    );
 }

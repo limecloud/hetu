@@ -1,0 +1,35 @@
+{
+  "name": "@hetu/desktop",
+  "version": "0.8.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/main.cjs",
+  "scripts": {
+    "build": "tsc --noEmit && node scripts/build.mjs",
+    "start": "electron .",
+    "package:dev": "node scripts/package.mjs",
+    "test": "npm run build && cargo build --locked --manifest-path ../../Cargo.toml -p hetu-plugin-cli -p hetu-app-server --bins --example plugin_fixture && node --experimental-strip-types --test ../../packages/plugin-host/tests/*.test.ts",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@codemirror/commands": "6.11.1",
+    "@codemirror/state": "6.7.6",
+    "@codemirror/view": "6.43.15",
+    "@hetu/plugin-host": "0.8.0",
+    "@hetu/plugin-sdk": "0.8.0",
+    "@modelcontextprotocol/ext-apps": "2.0.4",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@electron/packager": "20.3.0",
+    "@modelcontextprotocol/client": "2.4.0",
+    "@playwright/test": "1.64.1",
+    "@types/node": "24.19.2",
+    "@types/react": "18.3.28",
+    "@types/react-dom": "18.3.7",
+    "electron": "42.11.18",
+    "esbuild": "0.28.2",
+    "typescript": "6.0.3"
+  }
+}

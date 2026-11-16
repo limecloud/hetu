@@ -1,10 +1,10 @@
 use super::*;
 use std::collections::BTreeSet;
 
-mod feedback;
-mod working;
 mod context;
+mod feedback;
 mod targets;
+mod working;
 
 pub(super) const TASK_ACTIONS: &[&str] = &[
     "hetu.capabilities.get",
@@ -137,7 +137,9 @@ impl Kernel {
                 "此筹备已创建作品，请在新作品中准备任务。",
             )?;
             let mut snapshot = json!({"expected":{"revision":project["revision"],"sha256":sha},"context":{"brief":project["brief"],"selected_fields":project["selected_fields"]}});
-            if let Some(profile) = project.get("work_profile") { snapshot["context"]["work_profile"] = profile.clone(); }
+            if let Some(profile) = project.get("work_profile") {
+                snapshot["context"]["work_profile"] = profile.clone();
+            }
             Ok(snapshot)
         } else {
             if let Some(reference) = self.task_work_reference(input)? {
@@ -147,14 +149,22 @@ impl Kernel {
                     let context = json!({"work_ref":reference,"work_type":reference["kind"],
                         "title":if reference["kind"]=="novel" {&record["metadata"]["title"]} else {&record["title"]},
                         "metadata":record["metadata"],"blueprint_ref":fixed,"blueprint_revision":bp["revision"],"blueprint_sha256":sha});
-                    return Ok(json!({"expected":{"revision":record["revision"],"sha256":digest(bytes(&json!({"work":record,"context":context}))?)},"context":context}));
+                    return Ok(
+                        json!({"expected":{"revision":record["revision"],"sha256":digest(bytes(&json!({"work":record,"context":context}))?)},"context":context}),
+                    );
                 }
-                ensure(input["work_ref"].is_null(), "hetu.canon_initialization_required", "请先准备此作品的独立设定方案。")?;
+                ensure(
+                    input["work_ref"].is_null(),
+                    "hetu.canon_initialization_required",
+                    "请先准备此作品的独立设定方案。",
+                )?;
             }
             if self.config["work_type"] == "drama" {
                 let (bp, sha) = self.blueprint_revision(None)?;
                 let context = json!({"work_type":"drama","title":self.config["title"],"blueprint_revision":bp["revision"],"blueprint_sha256":sha});
-                return Ok(json!({"expected":{"revision":bp["revision"],"sha256":digest(bytes(&context)?)},"context":context}));
+                return Ok(
+                    json!({"expected":{"revision":bp["revision"],"sha256":digest(bytes(&context)?)},"context":context}),
+                );
             }
             let novel = self.get_novel()?;
             ensure(
@@ -217,8 +227,14 @@ impl Kernel {
                 sources.push(json!({"reference":reference,"title":doc["document"]["title"],"source_format":doc["document"]["source_format"],"sha256":doc["revision"]["sha256"],"size_bytes":text(&doc,"content")?.len()}));
             } else {
                 let (bp, sha) = self.source_blueprint(reference)?;
-                ensure(reference["sha256"].is_null() || reference["sha256"] == sha, "hetu.stale_evidence", "任务设定摘要不一致。")?;
-                sources.push(json!({"reference":reference,"sha256":sha,"size_bytes":bytes(&bp)?.len()}));
+                ensure(
+                    reference["sha256"].is_null() || reference["sha256"] == sha,
+                    "hetu.stale_evidence",
+                    "任务设定摘要不一致。",
+                )?;
+                sources.push(
+                    json!({"reference":reference,"sha256":sha,"size_bytes":bytes(&bp)?.len()}),
+                );
             }
         }
         if input["task_kind"] == "revision" {
@@ -264,10 +280,21 @@ impl Kernel {
         }
         let mut fixed = json!({"scope_context":snapshot["context"],"sources":sources});
         if input["task_kind"] == "resource_organize" {
-            ensure(!self.is_creation_project() && input["resource_scope"].is_object(), "missing_context", "资料任务需要明确读取与修改范围。")?;
-            fixed["resources"] = json!(self.validate_resource_scope(&input["resource_scope"])?);
+            ensure(
+                !self.is_creation_project() && input["resource_scope"].is_object(),
+                "missing_context",
+                "资料任务需要明确读取与修改范围。",
+            )?;
+            fixed["resources"] = json!(self.validate_resource_scope(
+                &input["resource_scope"],
+                self.task_work_reference(input)?.as_ref()
+            )?);
         } else {
-            ensure(input.get("resource_scope").is_none(), "invalid_input", "只有资料整理任务可声明资料修改授权。")?;
+            ensure(
+                input.get("resource_scope").is_none(),
+                "invalid_input",
+                "只有资料整理任务可声明资料修改授权。",
+            )?;
         }
         ensure(
             bytes(&fixed)?.len() <= 2 * TEXT_LIMIT,
@@ -397,7 +424,10 @@ impl Kernel {
         );
         Ok(sha)
     }
-    pub(in crate::application) fn task_for_reference(&self, reference: &Value) -> Result<(Value, String, Value, String)> {
+    pub(in crate::application) fn task_for_reference(
+        &self,
+        reference: &Value,
+    ) -> Result<(Value, String, Value, String)> {
         ensure(
             reference["scope_ref"] == self.scope_ref() && reference["request_revision"] == 1,
             "forbidden",
@@ -405,7 +435,9 @@ impl Kernel {
         )?;
         let task_id = checked_id(text(reference, "task_id")?, "task")?;
         ensure(
-            self.author || self.management_grant.is_some() || self.task_id.as_deref() == Some(&task_id),
+            self.author
+                || self.management_grant.is_some()
+                || self.task_id.as_deref() == Some(&task_id),
             "forbidden",
             "此连接未获权访问该任务。",
         )?;
@@ -449,15 +481,26 @@ impl Kernel {
         Ok(())
     }
     pub(super) fn resource_task_access(&self) -> Result<Value> {
-        let task_id = self.task_id.as_deref().ok_or_else(|| Error::new("forbidden", "资料协作须使用作者明确授权的任务连接。"))?;
+        let task_id = self
+            .task_id
+            .as_deref()
+            .ok_or_else(|| Error::new("forbidden", "资料协作须使用作者明确授权的任务连接。"))?;
         let (request, _) = self.task_request(task_id)?;
-        ensure(request["task_kind"] == "resource_organize" && request["resource_scope"].is_object(), "forbidden", "此任务未获权整理资料。")?;
+        ensure(
+            request["task_kind"] == "resource_organize" && request["resource_scope"].is_object(),
+            "forbidden",
+            "此任务未获权整理资料。",
+        )?;
         Ok(request["resource_scope"].clone())
     }
     pub(super) fn check_operation_task(&self, record: &Value) -> Result<()> {
         if let Some(binding) = &self.management_grant {
             if binding["work_ref"].is_object() {
-                ensure(record["management_grant_id"] == binding["grant_id"], "forbidden", "原操作不属于当前创作对象授权。")?;
+                ensure(
+                    record["management_grant_id"] == binding["grant_id"],
+                    "forbidden",
+                    "原操作不属于当前创作对象授权。",
+                )?;
             }
         }
         if let Some(task) = &self.task_id {
@@ -476,9 +519,15 @@ impl Kernel {
         let english = input["language_tag"] == "en";
         let prompt = if input["task_kind"] == "resource_organize" {
             if english {
-                format!("Use hetu-resources for task {task_id}. Read the fixed task with hetu_read_creative_task. Respect resource_scope: fixed read references, editable draft IDs and allow_create are separate permissions. Use the discovered resource tools or authorized CLI actions to create and update reference drafts with CAS, then read back the actual revisions. Do not alter adopted references, author text, canon, selected assets or finalizations. This task records resource revisions directly and does not require a separate text candidate or inbox manifest. If no authorized MCP or CLI is available, report the missing capability without editing managed files. Recover unknown writes using the original key and input.\nTask reference: {task_ref}\nAuthor request:\n{}", text(input,"brief")?)
+                format!(
+                    "Use hetu-resources for task {task_id}. Read the fixed task with hetu_read_creative_task. Respect resource_scope: fixed read references, editable draft IDs and allow_create are separate permissions. Use the discovered resource tools or authorized CLI actions to create and update reference drafts with CAS, then read back the actual revisions. Do not alter adopted references, author text, canon, selected assets or finalizations. This task records resource revisions directly and does not require a separate text candidate or inbox manifest. If no authorized MCP or CLI is available, report the missing capability without editing managed files. Recover unknown writes using the original key and input.\nTask reference: {task_ref}\nAuthor request:\n{}",
+                    text(input, "brief")?
+                )
             } else {
-                format!("使用 hetu-resources 处理河图洛书资料任务 {task_id}。先用 hetu_read_creative_task 读取固定任务。resource_scope 分别约定固定参考、可改草稿和是否允许新增；只用实际发现的资料工具或获权 CLI 连续整理，每次更新比较 revision 与 sha256，写入后回读真实修订。不要修改已采用资料、作者正文、设定、素材选用或定稿。本任务以资料修订为结果，不要求另交文字稿或 inbox 清单。没有获权 MCP 或 CLI 时说明缺少的入口，不直接改受管文件。结果未知沿原键和原输入恢复。\n任务引用：{task_ref}\n作者要求：\n{}",text(input,"brief")?)
+                format!(
+                    "使用 hetu-resources 处理河图洛书资料任务 {task_id}。先用 hetu_read_creative_task 读取固定任务。resource_scope 分别约定固定参考、可改草稿和是否允许新增；只用实际发现的资料工具或获权 CLI 连续整理，每次更新比较 revision 与 sha256，写入后回读真实修订。不要修改已采用资料、作者正文、设定、素材选用或定稿。本任务以资料修订为结果，不要求另交文字稿或 inbox 清单。没有获权 MCP 或 CLI 时说明缺少的入口，不直接改受管文件。结果未知沿原键和原输入恢复。\n任务引用：{task_ref}\n作者要求：\n{}",
+                    text(input, "brief")?
+                )
             }
         } else if english {
             format!(
@@ -499,11 +548,18 @@ impl Kernel {
         };
         let task_locator = json!({"scope_ref":self.scope_ref(),"task_id":task_id});
         let prefix = if english {
-            format!("With the stable local connection, first call hetu_open_collaboration_task with task_locator: {task_locator}. Use the exact task_ref returned by that call in every subsequent task operation. The locator is not an authorization token. Discover actual tools before calling them.")
+            format!(
+                "With the stable local connection, first call hetu_open_collaboration_task with task_locator: {task_locator}. Use the exact task_ref returned by that call in every subsequent task operation. The locator is not an authorization token. Discover actual tools before calling them."
+            )
         } else {
-            format!("使用本机稳定连接时，先调用 hetu_open_collaboration_task，传入 task_locator：{task_locator}。后续每次操作携带打开任务返回的完整 task_ref。任务引用不是授权令牌；先发现实际工具，再按能力调用。")
+            format!(
+                "使用本机稳定连接时，先调用 hetu_open_collaboration_task，传入 task_locator：{task_locator}。后续每次操作携带打开任务返回的完整 task_ref。任务引用不是授权令牌；先发现实际工具，再按能力调用。"
+            )
         };
-        let continuation = if matches!(input["task_kind"].as_str(), Some("resource_organize" | "cover" | "artwork")) {
+        let continuation = if matches!(
+            input["task_kind"].as_str(),
+            Some("resource_organize" | "cover" | "artwork")
+        ) {
             ""
         } else if english {
             "Read existing working copies and public feedback first. When authorized working-copy tools are available, continue the same copy and save revisions; submit a fixed revision at the delivery point. Otherwise use independent candidates. Feedback references report handling, never author acceptance."
@@ -539,7 +595,9 @@ impl Kernel {
     }
     fn task_output_contract(&self, input: &Value, task_id: &str) -> Result<Value> {
         if input["task_kind"] == "resource_organize" {
-            return Ok(json!({"artifact_types":[],"candidate_limit":4,"text_byte_limit":TEXT_LIMIT,"image_byte_limit":IMAGE_LIMIT,"submission_mode":["mcp","cli"],"relative_inbox":null,"revision_requires_patches":false}));
+            return Ok(
+                json!({"artifact_types":[],"candidate_limit":4,"text_byte_limit":TEXT_LIMIT,"image_byte_limit":IMAGE_LIMIT,"submission_mode":["mcp","cli"],"relative_inbox":null,"revision_requires_patches":false}),
+            );
         }
         let kinds: &[&str] = match text(input, "task_kind")? {
             "book_concept" => &["concept", "title", "synopsis", "outline"],
@@ -576,9 +634,13 @@ impl Kernel {
             "任务身份已有请求，不能覆盖。",
         )?;
         let mut request = json!({"schema_version":"1.1.0","task_id":task_id,"scope_ref":self.scope_ref(),"request_revision":1,"previous_sha256":null,"task_kind":input["task_kind"],"brief":input["brief"],"input_refs":input["input_refs"],"input_snapshot":fixed,"client_adapter":input["client_adapter"],"skill_ref":{"name":Self::task_skill(text(input,"task_kind")?),"contract_revision":"1"},"prompt":input["prompt"],"prompt_language":input["language_tag"],"output_contract":self.task_output_contract(input,task_id)?,"edit_scope":input["edit_scope"],"created_at":now()});
-        if let Some(target) = input.get("target_ref") { request["target_ref"] = target.clone(); }
+        if let Some(target) = input.get("target_ref") {
+            request["target_ref"] = target.clone();
+        }
         self.stage_context_manifest(&mut request, changes)?;
-        if let Some(scope) = input.get("resource_scope") { request["resource_scope"] = scope.clone(); }
+        if let Some(scope) = input.get("resource_scope") {
+            request["resource_scope"] = scope.clone();
+        }
         record_schema(&request, "request_record")?;
         let raw = bytes(&request)?;
         let sha = digest(&raw);
@@ -741,13 +803,26 @@ impl Kernel {
             )?;
             decision
         };
-        let working = self.list_working_copies(&json!({"task_ref":input["task_ref"],"limit":20}))?;
-        let feedback_head = state["feedback_refs"].as_array().and_then(|refs| refs.last()).cloned().unwrap_or(Value::Null);
-        let last_feedback = if feedback_head.is_null() { Value::Null } else { self.read_task_feedback(&input["task_ref"], &feedback_head)? };
-        Ok(json!({"request":request,"request_sha256":sha,"observation":state,"expected":{"revision":state["revision"],"sha256":state_sha},"submission":submission,"decision":decision,"working_copies":working["working_copies"],"working_copies_next_cursor":working["next_cursor"],"feedback_head":feedback_head,"last_feedback":last_feedback,"working_limits":{"copies_per_task":100,"revisions_per_copy":100,"feedback_per_task":100,"text_bytes":TEXT_LIMIT}}))
+        let working =
+            self.list_working_copies(&json!({"task_ref":input["task_ref"],"limit":20}))?;
+        let feedback_head = state["feedback_refs"]
+            .as_array()
+            .and_then(|refs| refs.last())
+            .cloned()
+            .unwrap_or(Value::Null);
+        let last_feedback = if feedback_head.is_null() {
+            Value::Null
+        } else {
+            self.read_task_feedback(&input["task_ref"], &feedback_head)?
+        };
+        Ok(
+            json!({"request":request,"request_sha256":sha,"observation":state,"expected":{"revision":state["revision"],"sha256":state_sha},"submission":submission,"decision":decision,"working_copies":working["working_copies"],"working_copies_next_cursor":working["next_cursor"],"feedback_head":feedback_head,"last_feedback":last_feedback,"working_limits":{"copies_per_task":100,"revisions_per_copy":100,"feedback_per_task":100,"text_bytes":TEXT_LIMIT}}),
+        )
     }
     pub(super) fn list_creative_tasks(&self, input: &Value) -> Result<Value> {
-        if input["work_ref"].is_object() { self.work_record(&input["work_ref"], None)?; }
+        if input["work_ref"].is_object() {
+            self.work_record(&input["work_ref"], None)?;
+        }
         let mut records = Vec::new();
         if self
             .store
@@ -757,15 +832,27 @@ impl Kernel {
         {
             for task_id in self.store.entries(".hetu/tasks")? {
                 let (request, sha) = self.task_request(&task_id)?;
+                let declared = &request["input_snapshot"]["scope_context"]["work_ref"];
+                if input["work_ref"].is_object()
+                    && declared.is_object()
+                    && *declared != input["work_ref"]
+                {
+                    continue;
+                }
                 let owner = self.task_work_owner(&request)?;
-                if input["work_ref"].is_object() && owner.as_ref() != Some(&input["work_ref"]) { continue; }
+                if input["work_ref"].is_object() && owner.as_ref() != Some(&input["work_ref"]) {
+                    continue;
+                }
                 let target = self.task_target_document(&request)?;
                 if let Some(required) = input["target_document_id"].as_str() {
-                    if target.as_deref() != Some(required) { continue; }
+                    if target.as_deref() != Some(required) {
+                        continue;
+                    }
                 }
                 let (state, _) = self.task_state(&task_id)?;
                 if input.get("state").is_none_or(|v| *v == state["state"]) {
-                    records.push(json!({"task_ref":{"scope_ref":self.scope_ref(),"task_id":task_id,"request_revision":1},"work_ref":owner,"task_kind":request["task_kind"],"brief":request["brief"],"request_sha256":sha,"state":state["state"],"submission_count":state["submission_refs"].as_array().unwrap().len(),"created_at":request["created_at"],"target_document_id":target}));
+                    let locator = json!({"scope_ref":self.scope_ref(),"task_id":task_id});
+                    records.push(json!({"task_ref":{"scope_ref":self.scope_ref(),"task_id":task_id,"request_revision":1},"task_locator":locator,"work_ref":owner,"task_kind":request["task_kind"],"brief":request["brief"],"request_sha256":sha,"state":state["state"],"submission_count":state["submission_refs"].as_array().unwrap().len(),"created_at":request["created_at"],"target_document_id":target}));
                 }
             }
         }
@@ -954,7 +1041,8 @@ impl Kernel {
         let bp = &task["input_snapshot"]["scope_context"]["blueprint_revision"];
         let mut draft = json!({"schema_version":"1.0.0","draft_id":draft_id,"revision":1,"package":package,"source_format":candidate["source_format"],"content_path":path,"content_sha256":digest(content),"size_bytes":content.len(),"state":"submitted","actor_ref":self.actor(),"created_at":now(),"blueprint_revision":bp,"diagnostic_state":"not_requested","title":candidate["title"],"language_tag":task["prompt_language"],"creative_task_ref":{"scope_ref":self.scope_ref(),"task_id":task["task_id"],"request_revision":1}});
         if task["input_snapshot"]["scope_context"]["blueprint_ref"].is_object() {
-            draft["blueprint_ref"] = task["input_snapshot"]["scope_context"]["blueprint_ref"].clone();
+            draft["blueprint_ref"] =
+                task["input_snapshot"]["scope_context"]["blueprint_ref"].clone();
         }
         if !task["edit_scope"].is_null() {
             draft["target_document_id"] = task["edit_scope"]["document_id"].clone();
@@ -987,7 +1075,12 @@ impl Kernel {
         )?;
         let working_refs = input.get("working_copy_refs").cloned().unwrap_or(json!([]));
         let candidates = if input.get("working_copy_refs").is_some() {
-            working_refs.as_array().unwrap().iter().map(|r| self.candidate_from_working(&input["task_ref"], r)).collect::<Result<Vec<_>>>()?
+            working_refs
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|r| self.candidate_from_working(&input["task_ref"], r))
+                .collect::<Result<Vec<_>>>()?
         } else {
             input["candidates"].as_array().unwrap().clone()
         };
@@ -1038,38 +1131,93 @@ impl Kernel {
                 record["working_copy_ref"] = reference.clone();
             }
             if candidate["kind"] != "image" {
-                ensure(candidate.get("image_category").is_none() && candidate.get("subject_refs").is_none() && candidate.get("image_view").is_none(),
-                    "invalid_input", "图片分类和关联仅适用于图片候选。")?;
+                ensure(
+                    candidate.get("image_category").is_none()
+                        && candidate.get("subject_refs").is_none()
+                        && candidate.get("image_view").is_none(),
+                    "invalid_input",
+                    "图片分类和关联仅适用于图片候选。",
+                )?;
             }
             if candidate["kind"] == "image" {
                 if candidate.get("image_view").is_some() {
-                    ensure(candidate["image_category"] == "character" || candidate["image_category"] == "costume",
-                        "invalid_input", "人物视图仅适用于人物形象或服装造型。")?;
+                    ensure(
+                        candidate["image_category"] == "character"
+                            || candidate["image_category"] == "costume",
+                        "invalid_input",
+                        "人物视图仅适用于人物形象或服装造型。",
+                    )?;
                 }
-                if candidate["image_category"] == "character" || candidate["image_category"] == "costume" {
-                    let people: Vec<_> = candidate["subject_refs"].as_array().into_iter().flatten()
-                        .filter(|s| s["kind"] == "entity" && s["entity_ref"].as_str().is_some_and(|v| v.starts_with("character_"))).collect();
-                    ensure(people.len() == 1, "invalid_input", "人物形象和服装造型须明确关联一个角色；多人情节画面请归入插图。")?;
+                if candidate["image_category"] == "character"
+                    || candidate["image_category"] == "costume"
+                {
+                    let people: Vec<_> = candidate["subject_refs"]
+                        .as_array()
+                        .into_iter()
+                        .flatten()
+                        .filter(|s| {
+                            s["kind"] == "entity"
+                                && s["entity_ref"]
+                                    .as_str()
+                                    .is_some_and(|v| v.starts_with("character_"))
+                        })
+                        .collect();
+                    ensure(
+                        people.len() == 1,
+                        "invalid_input",
+                        "人物形象和服装造型须明确关联一个角色；多人情节画面请归入插图。",
+                    )?;
                 }
                 // 关联只能指向本候选已声明的固定来源，不扩大任务读取或编辑权限。
                 for subject in candidate["subject_refs"].as_array().into_iter().flatten() {
                     if subject["kind"] == "document" {
-                        ensure(sources.contains(subject), "hetu.invalid_source_ref", "图片关联的文档不在固定来源中。")?;
+                        ensure(
+                            sources.contains(subject),
+                            "hetu.invalid_source_ref",
+                            "图片关联的文档不在固定来源中。",
+                        )?;
                     } else {
                         let revision = integer(subject, "blueprint_revision")?;
-                        let source = sources.iter().find(|s| s["kind"] == "blueprint" && s["revision"] == revision
-                            && s["work_ref"] == subject["work_ref"] && s["blueprint_id"] == subject["blueprint_id"])
-                            .ok_or_else(|| Error::new("hetu.invalid_source_ref", "图片关联的作品及设定修订不在固定来源中。"))?;
+                        let source = sources
+                            .iter()
+                            .find(|s| {
+                                s["kind"] == "blueprint"
+                                    && s["revision"] == revision
+                                    && s["work_ref"] == subject["work_ref"]
+                                    && s["blueprint_id"] == subject["blueprint_id"]
+                            })
+                            .ok_or_else(|| {
+                                Error::new(
+                                    "hetu.invalid_source_ref",
+                                    "图片关联的作品及设定修订不在固定来源中。",
+                                )
+                            })?;
                         let (bp, _) = self.source_blueprint(source)?;
                         let reference = text(subject, "entity_ref")?;
-                        ensure([("characters", "character_id"), ("locations", "location_id"), ("factions", "faction_id"),
-                            ("timeline", "event_id"), ("world", "entry_id"), ("rules", "rule_id")].iter().any(|(section, key)|
-                            bp[section].as_array().is_some_and(|a| a.iter().any(|e| e[key] == reference))),
-                            "hetu.invalid_source_ref", "图片关联的对象不在固定设定中。")?;
+                        ensure(
+                            [
+                                ("characters", "character_id"),
+                                ("locations", "location_id"),
+                                ("factions", "faction_id"),
+                                ("timeline", "event_id"),
+                                ("world", "entry_id"),
+                                ("rules", "rule_id"),
+                            ]
+                            .iter()
+                            .any(|(section, key)| {
+                                bp[section]
+                                    .as_array()
+                                    .is_some_and(|a| a.iter().any(|e| e[key] == reference))
+                            }),
+                            "hetu.invalid_source_ref",
+                            "图片关联的对象不在固定设定中。",
+                        )?;
                     }
                 }
                 for key in ["image_category", "image_view", "subject_refs"] {
-                    if let Some(value) = candidate.get(key) { record[key] = value.clone(); }
+                    if let Some(value) = candidate.get(key) {
+                        record[key] = value.clone();
+                    }
                 }
                 let media = self.image_candidate(&task, candidate)?;
                 for (key, value) in media.as_object().unwrap() {
@@ -1095,8 +1243,12 @@ impl Kernel {
             saved.push(record);
         }
         let mut submission = json!({"schema_version":"1.0.0","submission_id":submission_id,"task_ref":input["task_ref"],"request_sha256":request_sha,"candidates":saved,"complete":input["complete"],"missing_items":input["missing_items"],"provenance":input["provenance"],"received_at":now()});
-        if !working_refs.as_array().unwrap().is_empty() { submission["working_copy_refs"] = working_refs; }
-        if !feedback_refs.as_array().unwrap().is_empty() { submission["feedback_refs"] = feedback_refs; }
+        if !working_refs.as_array().unwrap().is_empty() {
+            submission["working_copy_refs"] = working_refs;
+        }
+        if !feedback_refs.as_array().unwrap().is_empty() {
+            submission["feedback_refs"] = feedback_refs;
+        }
         record_schema(&submission, "submission_record")?;
         let raw = bytes(&submission)?;
         let reference = json!({"submission_id":submission_id,"sha256":digest(&raw)});
@@ -1174,7 +1326,12 @@ impl Kernel {
     }
     pub(super) fn get_task_interaction(&self, input: &Value) -> Result<Value> {
         let mut result = self.get_creative_task(input)?;
-        result["allowed_actions"] = json!(["hetu.interactions.save_selection", "hetu.task_feedback.save", "hetu.task_feedback.list", "hetu.task_context.read"]);
+        result["allowed_actions"] = json!([
+            "hetu.interactions.save_selection",
+            "hetu.task_feedback.save",
+            "hetu.task_feedback.list",
+            "hetu.task_context.read"
+        ]);
         result["effect"] = json!("preference_only");
         let mut previews = Vec::new();
         if let Some(candidates) = result["submission"]["candidates"].as_array() {
@@ -1183,7 +1340,8 @@ impl Kernel {
                 let mut file = self
                     .store
                     .managed_media(text(candidate, "relative_path")?)?;
-                let mut preview = crate::infrastructure::media::verified_image_preview(&mut file, candidate)?;
+                let mut preview =
+                    crate::infrastructure::media::verified_image_preview(&mut file, candidate)?;
                 preview["candidate_id"] = candidate["candidate_id"].clone();
                 previews.push(preview);
             }

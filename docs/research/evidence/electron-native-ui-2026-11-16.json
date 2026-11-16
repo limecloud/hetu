@@ -1,0 +1,348 @@
+{
+  "date": "2026-11-16",
+  "scope": "Electron共享工作台、图片、封面、小说资料与卷章、六类设定及模型设置的Mac UI与交互对照",
+  "status": "verified_slice",
+  "evidence_directory": "output/rea-mac-ui-20261116/",
+  "rea_evidence": [
+    {
+      "kind": "REA artifact identity",
+      "evidence_id": "ev_b27466ae419af3e90cab645c401fdc31971836e5cfb88c4cc888338c7385d285",
+      "record": "native-macho.json",
+      "claim": "实际参考制品为 arm64 Mach-O，最低 macOS 14；不将制品元数据视为 UI 行为证据"
+    },
+    {
+      "kind": "REA static baseline",
+      "evidence_id": "ev_da13d592730d2a82244e2ef8da4df4687e10243149fd02e862fe0f65032075d2",
+      "record": "electron-static.json",
+      "claim": "旧开发包指定 renderer/app.js 的静态语法分析；没有执行应用，不代表新实现或运行结果"
+    },
+    {
+      "kind": "native runtime observation",
+      "evidence_id": null,
+      "record": null,
+      "claim": "原生正文与导航的实际截图和 AX 读取；native-artwork.png 仍为正文，不能作为原生图片页截图"
+    },
+    {
+      "kind": "REA previous packaged renderer",
+      "evidence_id": "ev_3a0dc5838ff17aeaf3c6b92f37e1addb02566d5db5aeb482fab938847e141969",
+      "record": "electron-new-static.json",
+      "claim": "前一开发包renderer静态证据，保留历史；最终包另见electron-final-static.json"
+    },
+    {
+      "kind": "REA native symbols",
+      "record": "native-detail-symbols-recheck.json",
+      "evidence_id": "ev_2cad1c39f682d645d603b37cff3e002c6199ffaf8259eb7a9b976a6b79b732d4",
+      "subject": {
+        "name": "HetuMac",
+        "digest": {
+          "sha256": "ac8cbc097e8379a90ef0cf4a31033ee6a657c375fc142894fdc679bcba658ebf"
+        },
+        "local_path": "/Applications/Hetu.app/Contents/MacOS/HetuMac",
+        "format": "mach-o",
+        "architecture": "arm64"
+      },
+      "claim": "已安装原生制品的细节功能符号，只证明符号存在，不证明布局或实际执行"
+    },
+    {
+      "kind": "REA native symbols",
+      "record": "native-cover-symbols.json",
+      "evidence_id": "ev_1a441362cc82ac2f3b55a4c372272ea09e135f943dcd12106d6950a8edf2e2b0",
+      "subject": {
+        "name": "HetuMac",
+        "digest": {
+          "sha256": "ac8cbc097e8379a90ef0cf4a31033ee6a657c375fc142894fdc679bcba658ebf"
+        },
+        "local_path": "/Applications/Hetu.app/Contents/MacOS/HetuMac",
+        "format": "mach-o",
+        "architecture": "arm64"
+      },
+      "claim": "已安装原生制品的封面选择与历史恢复符号，不据此推导交互完成"
+    },
+    {
+      "kind": "REA native symbols",
+      "record": "native-canon-symbols.json",
+      "evidence_id": "ev_ca25e0e1c27afd40d6e99ce8e3d9def407d0ed177cc1bfd25d53b6c034f1fb3e",
+      "subject": {
+        "name": "HetuMac",
+        "digest": {
+          "sha256": "ac8cbc097e8379a90ef0cf4a31033ee6a657c375fc142894fdc679bcba658ebf"
+        },
+        "local_path": "/Applications/Hetu.app/Contents/MacOS/HetuMac",
+        "format": "mach-o",
+        "architecture": "arm64"
+      },
+      "claim": "已安装原生制品的设定保存、锁定及编辑／历史窗口符号，不作为反编译布局证据"
+    },
+    {
+      "kind": "REA final renderer",
+      "record": "electron-final-static.json",
+      "evidence_id": "ev_04a7e3480a22505b1bcb2804cd9782fac217786d9f534b3912b23ccfe7201f1e",
+      "subject": {
+        "name": "app",
+        "digest": {
+          "sha256": "366a9becbd6d6791591d9effc12191ed25fa0a204c4dc380c0e9eccf864a420d"
+        },
+        "local_path": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/electron-packages/hetu-dev-kThHs1/package/Hetu Luoshu Electron Dev-darwin-arm64/Hetu Luoshu Electron Dev.app/Contents/Resources/app",
+        "format": "directory",
+        "architecture": null
+      },
+      "claim": "最终开发包指定renderer/app.js的静态分析；运行、保存和恢复另由Electron测试验证"
+    }
+  ],
+  "native_binary_sha256": "ac8cbc097e8379a90ef0cf4a31033ee6a657c375fc142894fdc679bcba658ebf",
+  "package": {
+    "manifest": "output/electron-packages/hetu-dev-kThHs1/manifest.json",
+    "source_sha256": "7339b30d1c2bc9ac97d80954c811ba4f3c869c5e20eef9a78615ef778ec0f121",
+    "source_files": 2498,
+    "artifacts": 2569,
+    "current_source_mismatches": [
+      "apps/app-server/examples/plugin_fixture.rs",
+      "apps/desktop/src/main/main.ts",
+      "apps/desktop/src/renderer/index.tsx"
+    ],
+    "signing": "ad-hoc-development",
+    "production_verified": false,
+    "initial_source_snapshot_matches": true,
+    "current_source_additions": [
+      "apps/desktop/src/main/plugin-results.ts",
+      "apps/desktop/src/renderer/plugin-results.css",
+      "apps/desktop/src/renderer/plugin-results.tsx"
+    ],
+    "current_source_snapshot_matches": false,
+    "parallel_change_scope": "另一个工作进程添加插件成果回退页与对应交接、测试fixture分支；未覆盖这些源码，也未将其混入已验证的固定开发包。"
+  },
+  "source_comparisons": [
+    {
+      "source": "apps/macos/Sources/HetuMac/ArtworkLibraryView.swift",
+      "implemented": [
+        "标题与220px搜索同排",
+        "8类分类",
+        "190至250px网格及218px原比例缩略图",
+        "全高空状态",
+        "1050x800分栏图片详情与88x100同批缩略图",
+        "历史批次意见及未保存保护"
+      ]
+    },
+    {
+      "source": "apps/macos/Sources/HetuMac/WorkspaceShell.swift",
+      "implemented": [
+        "全高工作面",
+        "14px导航及20px图标槽",
+        "作品类型标签",
+        "真实窗口缩放与独立专注阅读",
+        "各工作页统一页头动作"
+      ]
+    },
+    {
+      "source": "apps/macos/Sources/HetuMac/SettingsView.swift",
+      "implemented": [
+        "660x530分组设置",
+        "写作排版预览",
+        "应用菜单设置入口",
+        "固定设置方案及原操作恢复"
+      ]
+    },
+    {
+      "source": "apps/macos/Sources/HetuMac/StoryBibleView.swift",
+      "implemented": [
+        "六类设定",
+        "搜索与归档筛选",
+        "条目列表和可读详情",
+        "按精确实体关联图片",
+        "技术数据折叠展示",
+        "人物230至310px网格及240px形象、地点175px预览",
+        "六类条目编辑及人物事实子窗口",
+        "势力关系、地点父级、事件时序／时间锚点、规则参数／范围",
+        "归档与取消归档、引用核验后的移除确认",
+        "固定修订历史、锁定与解锁、CAS及原键恢复",
+        "嵌套Esc范围、取消及离页的未保存保护、分类方向键导航"
+      ]
+    },
+    {
+      "source": "apps/macos/Sources/HetuMac/ModelServiceSettings.swift",
+      "implemented": [
+        "自定义渠道添加与编辑、默认文字和图片模型选择",
+        "账号连接入口、密钥不回显",
+        "模型服务限制动作及独立测试目录；未增加生成按钮"
+      ]
+    },
+    {
+      "source": "apps/macos/Sources/HetuMac/CoverWorkbenchSheet.swift",
+      "implemented": [
+        "1100x820封面工作台、当前封面与候选／本地／历史分栏",
+        "图片详情选用封面、叠加书名作者及历史恢复",
+        "固定来源、文件变更拒绝、CAS及回执丢失先查原键"
+      ]
+    },
+    {
+      "source": "apps/macos/Sources/HetuMac/NovelDetailsView.swift",
+      "implemented": [
+        "作品资料编辑及封面工作台入口",
+        "卷章分组、分卷创建／改名、章节归卷与顺序整理",
+        "刷新保持编辑输入，并发冲突保留未保存稿"
+      ]
+    }
+  ],
+  "verification_history": [
+    {
+      "report": "desktop-regression.json",
+      "result": "31通过、3个旧文案/入口断言失败、1个实际包测试未提供环境而跳过"
+    },
+    {
+      "report": "desktop-recheck.json",
+      "result": "图片专项通过；素材和剧本导入审核状态断言需复核"
+    },
+    {
+      "report": "desktop-transfer-media-recheck.json",
+      "result": "小说和剧本导入交付通过；素材审核第三次确认点击未推进"
+    },
+    {
+      "report": "media-diagnostic.json",
+      "result": "素材审核完整独立复验通过，未重放或弱化业务/Core回读断言；间歇点击原因没有足够证据归因"
+    },
+    {
+      "report": "packaged-regression.json",
+      "result": "全量34通过；旧空文案断言修正后实际包专项复验1通过；35项最近结果全部通过，无跳过"
+    },
+    {
+      "report": "packaged-recheck.json",
+      "result": "独立包专项通过，含2569项制品摘要、开发签名、随包Core/Node/CLI/MCP、插件保存与关闭重开"
+    },
+    {
+      "report": "native-details-recheck.json",
+      "result": "初期模型测试发现未隔离本机设置及目录断言失败；原连接配置按测试前字节恢复，随后改为独立profile/model-service隔离"
+    },
+    {
+      "report": "native-details-final.json",
+      "result": "发现同作品刷新导致资料编辑窗口重建，已修正effect依赖并保持输入"
+    },
+    {
+      "report": "native-canon-recheck.json / native-canon-diagnostic.json",
+      "result": "textarea与select的隐式名称混入内容，补明确aria-label后复验通过；历史失败与当时截图保留"
+    },
+    {
+      "report": "native-canon-final.json",
+      "result": "图片与设定、三项细节／恢复专项合计4通过"
+    },
+    {
+      "report": "packaged-final-regression.json",
+      "result": "最终包对应全量37通过、0失败、0不稳定；装配专项因未传清单跳过，随后独立复验"
+    },
+    {
+      "report": "packaged-final-artifacts.json",
+      "result": "最终包专项1通过；2569项制品摘要、开发签名、随包Rust／Node／CLI／MCP、插件保存与重开核验通过"
+    }
+  ],
+  "limitations": [
+    "REA原生UI helper曾超过60秒，observe-native-ui没有返回成功窗口证据；未记为成功。",
+    "REA Electron发现只支持file页面，当前hetu-app协议未列出目标；新界面运行验证使用Playwright Electron。",
+    "本机没有可用反编译引擎，不宣称完成原生反编译。原生源码与真实截图为独立对照依据，不据此断言与已安装二进制完全同版。",
+    "最终REA只选择renderer/app.js分析，另15个库存文件未进入语义分析；静态关系不证明运行行为，完整Evidence保留未解析关系。",
+    "本轮Computer Use因native pipe及browser host不可用而未取得新证据，未绕过该故障。",
+    "模型账号连接及远程目录未真实联网验收；真实输入法、完整双语与无障碍、Windows、正式签名公证和干净系统未验。",
+    "视频制作／区间意见、工程交付、工作区合并／同步等P0仍按R6执行计划推进；本切片不代表全部Mac功能或全部细节已完成。",
+    "精确Codex管理授权可读指定作品及设定固定修订；已有图片任务get返回forbidden，未绕过任务权限，未通过该机器入口读取候选内容。GUI仅以独立profile打开本页作界面审阅，不代替Codex任务读取授权。",
+    "装配及初次核对时2498份输入一致，随后其他工作进程修改3份已登记源码并新增插件成果回退页文件；这些并行修改保留在工作树，未纳入本次已验证包，不把包测试结论推广到当前完整工作树。"
+  ],
+  "style": {
+    "skill": ".agents/skills/hetu-ui-style/SKILL.md",
+    "source_css_literal_colors": 0,
+    "source_css_container_borders": "0.5px",
+    "ui_type_sizes_px": [
+      12,
+      14,
+      20
+    ],
+    "reader_default_px": 18,
+    "real_viewports": [
+      [
+        1600,
+        1000
+      ],
+      [
+        1440,
+        960
+      ],
+      [
+        960,
+        800
+      ]
+    ],
+    "themes": [
+      "light",
+      "dark"
+    ]
+  },
+  "screenshots": [
+    "artwork-grid-light.png",
+    "artwork-detail-light.png",
+    "artwork-empty-light.png",
+    "artwork-empty-dark.png",
+    "artwork-empty-narrow.png",
+    "canon-light.png",
+    "settings-writing.png",
+    "canon-grid.png",
+    "canon-editor.png",
+    "canon-editor-dark.png",
+    "canon-history.png",
+    "settings-models.png",
+    "cover-history.png",
+    "cover-narrow-dark.png",
+    "novel-metadata.png",
+    "novel-structure.png",
+    "current-images-final.png"
+  ],
+  "safety": {
+    "actual_author_content_changed": false,
+    "candidate_adopted": false,
+    "finalized": false,
+    "installed_app_overwritten": false,
+    "committed_or_pushed": false,
+    "local_model_settings_incident": {
+      "description": "初期测试误写正式本机配置两个fixture渠道，随后恢复connection.json为测试前完全相同字节；原有密钥文件未读取或修改。",
+      "residuals": "两个无引用fixture凭据文件及完成事务保留，未擅自删除。",
+      "prevention": "后续测试使用独立HETU_MODEL_SERVICE_DIR或HETU_DESKTOP_PROFILE/model-service，并断言初始渠道为空。"
+    }
+  },
+  "final_verification": {
+    "passed": 38,
+    "failed": 0,
+    "skipped": 0,
+    "consolidated_report": "output/rea-mac-ui-20261116/verification.json",
+    "source_snapshot_matches": false,
+    "skill_validation": "passed",
+    "docs_validation": "passed: 77 documents, 84 Mermaid, no errors",
+    "additional_app_server_tests": 5,
+    "additional_model_service_tests": 5,
+    "source_snapshot_matches_at_initial_check": true
+  },
+  "review": {
+    "opened": true,
+    "page": "work.images",
+    "work_ref": {
+      "kind": "novel",
+      "object_id": "novel_4da83ba6-9cd2-4dd0-a183-1c1326b0936b",
+      "workspace_id": "workspace_91d2b074-ccef-46d9-acb4-f8f4c4a43077"
+    },
+    "pid": 79588,
+    "manifest": "output/electron-packages/hetu-dev-kThHs1/manifest.json",
+    "screenshot": "output/rea-mac-ui-20261116/current-images-final.png",
+    "profile_isolated": true,
+    "startup_activated_latest_package": true,
+    "startup_selection_record": "output/rea-mac-ui-20261116/startup-selected-final.json"
+  },
+  "machine_readback": {
+    "client_adapter": "codex",
+    "work_revision": 2,
+    "work_sha256": "5a6f159b74d28ef28d183307a044920dc78959ace195b05df22c06c11a118f32",
+    "blueprint_revision": 2,
+    "blueprint_sha256": "3d2812de3c2416c18bfede08c9ef5f6d2a9738c5ba54d71decdf9a8a902daf0f",
+    "fixed_refs_match": true,
+    "assets_count": 0,
+    "listed_creative_tasks": 2,
+    "existing_image_task_read": "forbidden",
+    "record": "machine-image-result-recheck.json",
+    "creative_content_changed": false,
+    "author_decision_executed": false
+  }
+}

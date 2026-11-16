@@ -38,6 +38,8 @@ The software is free under [Apache-2.0](LICENSE). Your creative content retains 
 - Agent users: [Integrations](https://hetu.limeai.run/en/integrations/) and [connection guide](https://hetu.limeai.run/en/docs/agents/).
 - Developers: [Engineering documentation](docs/README.md) in Chinese and the source-build steps below.
 
+Download the Electron Mac DMG or ZIP from [GitHub Releases](https://github.com/limecloud/hetu/releases/latest). Packages support macOS 14+ on Apple Silicon and include Developer ID signing, Apple notarization, a release manifest and SHA-256 checksums.
+
 ## Run the source
 
 The website demo uses sample data and resets on reload. Follow the steps below to run the website or build the local Mac app.
@@ -51,13 +53,37 @@ npm run dev
 
 Open `http://127.0.0.1:4350`. `npm run check` checks types; `npm run build` builds and validates static output. Browser checks are documented in [the website README](apps/website/README.md).
 
-For the macOS development app, use Rust `1.93.1`, Swift `6.2+`, a macOS SDK and the Node.js version above:
+For the Electron macOS development app, use Rust `1.93.1`, Xcode Command Line Tools, Python 3 and Node.js `>=25 <26` with npm and its installation's `LICENSE`:
 
 ```bash
 ./dev-mac.command
 ```
 
-The script checks local tools, builds and opens `build/native/HetuDev.app`. `--check` checks prerequisites; `--build-only` builds without opening the app. The development app uses ad-hoc signing. See the [developer guide](https://hetu.limeai.run/en/docs/download-and-install/) for the detailed source path.
+You can also double-click `dev-mac.command` in Finder. The launcher installs locked dependencies when needed, builds the shared task pages and packages an Electron development app under `output/electron-packages/`, then opens the generated `.app`. Its exact path appears in Terminal. The one-click launcher supports Electron only. `--check` checks prerequisites; `--build-only` builds without opening; `--node-runtime` selects an existing Node executable. Running it again activates the running Electron development app; quit normally before rebuilding. The app uses ad-hoc signing. See the [developer guide](https://hetu.limeai.run/en/docs/download-and-install/) for details.
+
+The standalone Rust CLI and MCP server use the same Core without starting the desktop app:
+
+```bash
+cargo build --locked --jobs 2 --package hetu-cli --package hetu-mcp
+"target/debug/hetu" --locale en --help
+"target/debug/hetu" --client codex collaboration inspect
+cargo test --locked --jobs 2 --package hetu-cli
+```
+
+See the [CLI contract](docs/13-内核ABI与CLI合同.md) for command parameters and the host-owned local settings boundary.
+
+The Electron plugin workbench uses the Rust toolchain and Node.js 25:
+
+```bash
+npm ci
+cargo build --locked -p hetu-app-server -p hetu-plugin-cli -p hetu-cli -p hetu-mcp
+npm run build:desktop
+npm run start:desktop
+```
+
+Register existing workspaces in the creative library, or refresh it to accept novels, screenplays and videos created by an external Agent. Install prebuilt packages through the plugin page and grant workspace access separately. Run `npm run package:desktop` to assemble a separate development application; its output manifest identifies the artifact. See the [plugin development contract](docs/plugin/20-首期可执行合同与开发入口.md) for the scoped CLI/MCP runtime and tests.
+
+Use an absolute `HETU_LOCAL_SETTINGS_DIR` for isolated preferences and `HETU_MODEL_SERVICE_DIR` for isolated model channels. A development instance launched with `HETU_DESKTOP_PROFILE` isolates both stores under that profile. API keys remain in local private storage.
 
 ## Boundaries
 

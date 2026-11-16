@@ -1,0 +1,39 @@
+.canon-sheet { width: min(660px, calc(100vw - 40px)); height: min(650px, calc(100vh - 40px)); max-width: none; max-height: none; padding: 24px; background: var(--surface); color: var(--ink); border: 0.5px solid var(--line); border-radius: 8px; box-shadow: none; }
+.canon-sheet::backdrop { background: var(--black-a5); }
+.canon-sheet[open] { display: flex; flex-direction: column; gap: 16px; }
+.canon-sheet > header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex: none; }
+.canon-sheet h2 { margin: 0; font-size: 20px; font-weight: 600; }
+.canon-sheet h3, .canon-sheet h4 { margin: 0 0 12px; font-size: 14px; font-weight: 600; }
+.canon-sheet > p { margin: 0; }
+.canon-sheet > footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex: none; }
+.canon-sheet > footer > .muted { font-size: 12px; }
+.canon-editor-content { border: 0; padding: 0 4px 0 0; margin: 0; min-width: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; flex: 1; }
+.canon-editor-content label, .canon-lock-sheet > label { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.canon-editor-content input, .canon-editor-content select, .canon-editor-content textarea, .canon-lock-sheet input { width: 100%; min-width: 0; box-sizing: border-box; }
+.canon-editor-content textarea { resize: vertical; min-height: 64px; }
+.canon-editor-section { margin: 4px 0 0; padding-top: 16px; border-top: 0.5px solid var(--line); }
+.canon-editor-section > label { margin-bottom: 12px; }
+.canon-editor-section > p { font-size: 12px; line-height: 1.6; }
+.canon-editor-section blockquote { margin: 0 0 12px; color: var(--muted); white-space: pre-wrap; overflow-wrap: anywhere; }
+.canon-edit-row { display: flex; align-items: flex-end; gap: 12px; margin-bottom: 12px; }
+.canon-edit-row > label, .canon-edit-row > span { flex: 1; min-width: 0; }
+.canon-edit-row > span { align-self: center; overflow-wrap: anywhere; }
+.canon-edit-row > button { flex: none; }
+.canon-choices { padding: 0; margin: 0; border: 0; min-width: 0; }
+.canon-choices legend { padding: 0 0 8px; }
+.canon-choices > input { margin-bottom: 8px; }
+.canon-choices > div { max-height: 130px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+.canon-choices label, .canon-editor-content .canon-checkbox { display: flex; flex-direction: row; align-items: center; gap: 8px; }
+.canon-choices input[type=checkbox], .canon-checkbox input { width: 16px; height: 16px; margin: 0; flex: none; accent-color: var(--jade); }
+.canon-lock-sheet { width: min(470px, calc(100vw - 40px)); height: auto; }
+.canon-fact-sheet { width: min(530px, calc(100vw - 40px)); height: auto; }
+.canon-fact-sheet .canon-editor-content { flex: 0 1 auto; }
+.canon-history-sheet { width: min(650px, calc(100vw - 40px)); height: min(580px, calc(100vh - 40px)); }
+.canon-history-controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; flex: none; }
+.canon-history-controls label { display: flex; align-items: center; gap: 8px; }
+.canon-history-controls input { width: 72px; }
+.canon-history-content { overflow-y: auto; flex: 1; min-height: 0; }
+.canon-history-content > section { margin-bottom: 24px; }
+.canon-history-content article { padding: 16px 0; border-top: 0.5px solid var(--line); }
+.canon-history-content article > p { margin: 8px 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (max-width: 600px) { .canon-sheet { padding: 16px; } .canon-edit-row { flex-wrap: wrap; } }

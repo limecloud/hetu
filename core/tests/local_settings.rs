@@ -1,0 +1,379 @@
+use hetu_core::local_settings::LocalSettings;
+use serde_json::{Value, json};
+
+fn call(service: &LocalSettings, client: &str, action: &str, input: Value) -> Value {
+    let result = service.request(client,json!({"action":format!("hetu.local_settings.{action}"),"contract_revision":"1","input":input}));
+    let schema: Value =
+        serde_json::from_str(include_str!("../../contracts/schemas/result.schema.json")).unwrap();
+    jsonschema::validator_for(&schema)
+        .unwrap()
+        .validate(&result)
+        .unwrap();
+    result
+}
+fn data(result: Value) -> Value {
+    assert_eq!(result["status"], "succeeded", "{result}");
+    result["data"].clone()
+}
+fn prepare(service: &LocalSettings, key: &str, patch: Value) -> Value {
+    data(call(
+        service,
+        "codex",
+        "prepare",
+        json!({"kind":"preferences","patch":patch,"summary":"阅读偏好","operation_key":key}),
+    ))
+}
+fn decide(_service: &LocalSettings, plan: &Value, key: &str) -> Value {
+    json!({"method":"decide","input":{"operation_id":plan["operation_id"],"sha256":plan["sha256"],"revision":plan["revision"],"approve":true,"operation_key":key}})
+}
+fn execute(service: &LocalSettings, plan: &Value, key: &str) -> Value {
+    call(
+        service,
+        "codex",
+        "execute",
+        json!({"operation_id":plan["operation_id"],"sha256":plan["sha256"],"operation_key":key}),
+    )
+}
+#[test]
+fn fixed_settings_require_author_decision_and_replay_the_original_transaction() {
+    let folder = tempfile::tempdir().unwrap();
+    let service = LocalSettings::open(folder.path()).unwrap();
+    assert_eq!(
+        data(call(&service, "codex", "get", json!({})))["preferences"]["font_size"],
+        18
+    );
+    let plan = prepare(
+        &service,
+        "first",
+        json!({"font_size":22,"appearance":"dark"}),
+    );
+    assert_eq!(
+        prepare(
+            &service,
+            "first",
+            json!({"appearance":"dark","font_size":22})
+        )["operation_id"],
+        plan["operation_id"]
+    );
+    assert_eq!(
+        call(
+            &service,
+            "codex",
+            "prepare",
+            json!({"kind":"preferences","patch":{"font_size":23},"summary":"阅读偏好","operation_key":"first"})
+        )["error"]["code"],
+        "idempotency_conflict"
+    );
+    assert_eq!(
+        execute(&service, &plan, "apply")["error"]["code"],
+        "hetu.author_confirmation_required"
+    );
+    assert_eq!(
+        call(&service, "codex", "decide", json!({}))["error"]["code"],
+        "hetu.capability_unavailable"
+    );
+    assert_eq!(
+        call(
+            &service,
+            "claude-code",
+            "get_operation",
+            json!({"operation_id":plan["operation_id"]})
+        )["error"]["code"],
+        "forbidden"
+    );
+    let decision = decide(&service, &plan, "author-decision");
+    let approved = service.host(decision.clone()).unwrap();
+    assert_eq!(approved["state"], "approved");
+    assert_eq!(
+        data(call(&service, "codex", "get", json!({})))["preferences"]["font_size"],
+        18
+    );
+    let applied = data(execute(&service, &plan, "apply"));
+    assert_eq!(applied["state"], "executed");
+    assert_eq!(applied["result"]["font_size"], 22);
+    drop(service);
+    let service = LocalSettings::open(folder.path()).unwrap();
+    assert_eq!(data(execute(&service, &plan, "apply")), applied);
+    assert_eq!(
+        execute(&service, &plan, "different-key")["error"]["code"],
+        "idempotency_conflict"
+    );
+    assert_eq!(service.host(decision).unwrap(), approved);
+    assert_eq!(
+        service.host(json!({"method":"get","input":{}})).unwrap()["revision"],
+        2
+    );
+    assert!(service.host(json!({"method":"decide","input":{"operation_id":plan["operation_id"],"sha256":plan["sha256"],"revision":2,"approve":false,"operation_key":"author-decision"}})).is_err());
+    for patch in [
+        json!({"api_key":"secret"}),
+        json!({"font_size":100}),
+        json!({"appearance":"blue"}),
+        json!({"git_author_name":"x\ny"}),
+    ] {
+        assert_eq!(
+            call(
+                &service,
+                "codex",
+                "prepare",
+                json!({"kind":"preferences","patch":patch,"summary":"不得写入","operation_key":"invalid"})
+            )["status"],
+            "blocked"
+        );
+    }
+    let mut forged = json!({"kind":"preferences","patch":{"font_size":19},"summary":"伪造","operation_key":"forged","approved":true});
+    assert_eq!(
+        call(&service, "codex", "prepare", forged.clone())["status"],
+        "blocked"
+    );
+    forged.as_object_mut().unwrap().remove("approved");
+    forged["workspace_id"] = json!("workspace_00000000-0000-4000-8000-000000000000");
+    assert_eq!(
+        call(&service, "codex", "prepare", forged)["status"],
+        "blocked"
+    );
+}
+
+#[test]
+fn concurrent_manual_changes_invalidate_old_plans_without_overwriting_preferences() {
+    let folder = tempfile::tempdir().unwrap();
+    let service = LocalSettings::open(folder.path()).unwrap();
+    let stale = prepare(&service, "stale", json!({"font_size":20}));
+    service
+        .host(decide(&service, &stale, "approve-stale"))
+        .unwrap();
+    let manual = json!({"method":"update","input":{"expected_revision":1,"patch":{"font_size":24},"operation_key":"manual"}});
+    let changed = service.host(manual.clone()).unwrap();
+    assert_eq!(service.host(manual).unwrap(), changed);
+    assert_eq!(
+        execute(&service, &stale, "stale-execute")["error"]["code"],
+        "revision_conflict"
+    );
+    assert!(
+        service
+            .host(decide(&service, &stale, "another-approval"))
+            .is_err()
+    );
+    assert_eq!(
+        data(call(
+            &service,
+            "codex",
+            "get_operation",
+            json!({"operation_id":stale["operation_id"]})
+        ))["is_current"],
+        false
+    );
+    let second = prepare(&service, "second", json!({"line_spacing":8}));
+    service
+        .host(decide(&service, &second, "second-approval"))
+        .unwrap();
+    data(execute(&service, &second, "second-execute"));
+    let state = service.host(json!({"method":"get","input":{}})).unwrap();
+    assert_eq!(state["preferences"]["font_size"], 24);
+    assert_eq!(state["preferences"]["line_spacing"], 8);
+    let first = service
+        .host(json!({"method":"list","input":{"limit":1}}))
+        .unwrap();
+    let next = service
+        .host(json!({"method":"list","input":{"limit":1,"cursor":first["next_cursor"]}}))
+        .unwrap();
+    assert_ne!(
+        first["operations"][0]["operation_id"],
+        next["operations"][0]["operation_id"]
+    );
+    assert!(next["next_cursor"].is_null());
+}
+
+#[test]
+fn work_associations_are_exact_replayable_and_do_not_change_defaults_or_siblings() {
+    let folder = tempfile::tempdir().unwrap();
+    let service = LocalSettings::open(folder.path()).unwrap();
+    let work = json!({"workspace_id":"workspace_11111111-1111-4111-8111-111111111111","kind":"novel","object_id":"novel_first"});
+    let sibling = json!({"workspace_id":work["workspace_id"],"kind":"novel","object_id":"novel_second"});
+    let original = data(call(&service, "codex", "get", json!({})));
+    let selection = json!({"method":"associate","input":{"expected_revision":1,"work_ref":work,"agent_client":"codex","suite_id":"historical-brainstorm","operation_key":"choose-work"}});
+    let changed = service.host(selection.clone()).unwrap();
+    assert_eq!(changed["revision"], 2);
+    assert_eq!(service.host(selection).unwrap(), changed);
+    assert_eq!(data(call(&service,"codex","get",json!({"work_ref":work})))["association"]["suite"],"historical-brainstorm");
+    assert!(data(call(&service,"codex","get",json!({"work_ref":sibling})))["association"]["suite"].is_null());
+    assert!(data(call(&service,"codex","get",json!({"workspace_id":work["workspace_id"]})))["association"]["suite"].is_null());
+    assert_eq!(data(call(&service,"codex","get",json!({})))["preferences"],original["preferences"]);
+    assert!(service.host(json!({"method":"associate","input":{"expected_revision":1,"work_ref":sibling,"agent_client":"workbuddy","suite_id":"general","operation_key":"stale"}})).is_err());
+    assert_eq!(call(&service,"codex","get",json!({"work_ref":work,"workspace_id":work["workspace_id"]}))["status"],"blocked");
+    assert_eq!(call(&service,"codex","inspect_suite",json!({"agent_client":"none","suite_id":"general","directory":"/arbitrary"}))["status"],"blocked");
+    let inspection = data(call(&service,"codex","inspect_suite",json!({"agent_client":"none","suite_id":"general"})));
+    assert_eq!(inspection["session"],"unverified");
+    assert_eq!(inspection["state"],"manual");
+    assert_eq!(data(call(&service,"codex","get",json!({})))["skills"].as_array().unwrap().len(),13);
+    let plan = data(call(&service,"codex","prepare",json!({"kind":"agent_suite","work_ref":sibling,"agent_client":"workbuddy","suite_id":"general","install":false,"summary":"为同根另一作品选择套件","operation_key":"sibling-plan"})));
+    service.host(decide(&service,&plan,"sibling-approve")).unwrap();
+    data(execute(&service,&plan,"sibling-execute"));
+    assert_eq!(data(call(&service,"codex","get",json!({"work_ref":sibling})))["association"]["client"],"workbuddy");
+    assert_eq!(data(call(&service,"codex","get",json!({"work_ref":work})))["association"]["client"],"codex");
+    assert_eq!(data(call(&service,"codex","get",json!({})))["preferences"],original["preferences"]);
+}
+
+#[cfg(unix)]
+#[test]
+fn suite_installation_recovers_registered_bytes_without_repeating_external_install() {
+    use std::{os::unix::fs::PermissionsExt, process::Command};
+    if std::env::var_os("HETU_SETTINGS_SUITE_CHILD").is_none() {
+        let folder = tempfile::tempdir().unwrap();
+        fn copy_directory(from: &std::path::Path, to: &std::path::Path) {
+            std::fs::create_dir_all(to).unwrap();
+            for entry in std::fs::read_dir(from).unwrap() {
+                let entry = entry.unwrap();
+                let target = to.join(entry.file_name());
+                if entry.file_type().unwrap().is_dir() {
+                    copy_directory(&entry.path(), &target);
+                } else {
+                    std::fs::copy(entry.path(), target).unwrap();
+                }
+            }
+        }
+        let integrations = folder.path().join("integrations");
+        for name in ["hetu", "hetu-military"] {
+            copy_directory(
+                &std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+                    .join("../integrations/codex")
+                    .join(name),
+                &integrations.join("codex").join(name),
+            );
+        }
+        let executable = folder.path().join("codex-test");
+        std::fs::write(&executable, include_str!("fixtures/codex-settings.py")).unwrap();
+        std::fs::set_permissions(&executable, std::fs::Permissions::from_mode(0o700)).unwrap();
+        let output = Command::new(std::env::current_exe().unwrap())
+            .args([
+                "--exact",
+                "suite_installation_recovers_registered_bytes_without_repeating_external_install",
+                "--nocapture",
+            ])
+            .env("HETU_SETTINGS_SUITE_CHILD", "1")
+            .env("HETU_INTEGRATIONS_DIR", &integrations)
+            .env("HETU_LOCAL_SETTINGS_DIR", folder.path().join("settings"))
+            .env("HETU_CODEX_BINARY", executable)
+            .env("CODEX_HOME", folder.path().join("codex"))
+            .env("WORKBUDDY_CONFIG_DIR", folder.path().join("workbuddy"))
+            .output()
+            .unwrap();
+        assert!(
+            output.status.success(),
+            "{}\n{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
+        return;
+    }
+    let service = LocalSettings::open_default().unwrap();
+    let catalog = data(call(&service, "codex", "get", json!({})));
+    assert!(catalog["suites"].as_array().unwrap().len() > 1);
+    let plan = data(call(
+        &service,
+        "codex",
+        "prepare",
+        json!({"kind":"agent_suite","agent_client":"codex","suite_id":"general","install":true,"summary":"安装单套件","operation_key":"suite"}),
+    ));
+    service
+        .host(decide(&service, &plan, "suite-approval"))
+        .unwrap();
+    // 夹具完成官方登记后故意丢失第一次安装回执。
+    assert_eq!(
+        execute(&service, &plan, "suite-execute")["status"],
+        "unknown"
+    );
+    let executing = data(call(
+        &service,
+        "codex",
+        "get_operation",
+        json!({"operation_id":plan["operation_id"]}),
+    ));
+    assert_eq!(executing["state"], "executing");
+    drop(service);
+    let service = LocalSettings::open_default().unwrap();
+    let recovered = data(execute(&service, &plan, "suite-execute"));
+    assert_eq!(recovered["installation"]["state"], "registered");
+    assert_eq!(recovered["installation"]["session_loaded"], false);
+    let log = std::fs::read_to_string(
+        std::path::PathBuf::from(std::env::var_os("CODEX_HOME").unwrap()).join("calls.log"),
+    )
+    .unwrap();
+    assert_eq!(
+        log.lines().filter(|l| l.starts_with("plugin add ")).count(),
+        1
+    );
+    let workbuddy = data(call(
+        &service,
+        "codex",
+        "prepare",
+        json!({"kind":"agent_suite","agent_client":"workbuddy","suite_id":"military","install":true,"summary":"安装WorkBuddy单套件","operation_key":"workbuddy"}),
+    ));
+    service
+        .host(decide(&service, &workbuddy, "workbuddy-approval"))
+        .unwrap();
+    let installed = data(execute(&service, &workbuddy, "workbuddy-execute"));
+    assert_eq!(installed["installation"]["state"], "files_installed");
+    let directory =
+        std::path::PathBuf::from(installed["installation"]["directory"].as_str().unwrap());
+    assert!(
+        std::fs::read_to_string(directory.join("skills/hetu-manage/SKILL.md"))
+            .unwrap()
+            .contains("\nname: hetu-military-manage\n")
+    );
+    assert_eq!(
+        std::fs::read_dir(directory.parent().unwrap())
+            .unwrap()
+            .count(),
+        1
+    );
+    let unsupported = call(
+        &service,
+        "codex",
+        "prepare",
+        json!({"kind":"agent_suite","agent_client":"claudeCode","suite_id":"general","install":true,"summary":"不支持的自动安装","operation_key":"unsupported"}),
+    );
+    assert_eq!(unsupported["error"]["code"], "hetu.capability_unavailable");
+    let selection = data(call(
+        &service,
+        "codex",
+        "prepare",
+        json!({"kind":"agent_suite","agent_client":"claudeCode","suite_id":"general","install":false,"summary":"仅选择套件","operation_key":"selection"}),
+    ));
+    service
+        .host(decide(&service, &selection, "selection-approval"))
+        .unwrap();
+    data(execute(&service, &selection, "selection-execute"));
+    assert_eq!(
+        data(call(&service, "codex", "get", json!({})))["association"]["client"],
+        "claudeCode"
+    );
+    let fixed = data(call(
+        &service,
+        "codex",
+        "prepare",
+        json!({"kind":"agent_suite","agent_client":"workbuddy","suite_id":"general","install":true,"summary":"核对固定资源","operation_key":"fixed-package"}),
+    ));
+    service
+        .host(decide(&service, &fixed, "approve-fixed"))
+        .unwrap();
+    let source = std::path::PathBuf::from(std::env::var_os("HETU_INTEGRATIONS_DIR").unwrap())
+        .join("codex/hetu");
+    let method = source.join("skills/hetu-manage/SKILL.md");
+    let original = std::fs::read(&method).unwrap();
+    std::fs::write(&method, b"changed after review").unwrap();
+    assert_eq!(
+        execute(&service, &fixed, "changed-package")["error"]["code"],
+        "hetu.integrity_failure"
+    );
+    std::fs::write(&method, original).unwrap();
+    std::os::unix::fs::symlink(&method, source.join("unexpected-link")).unwrap();
+    assert_eq!(
+        call(
+            &service,
+            "codex",
+            "prepare",
+            json!({"kind":"agent_suite","agent_client":"workbuddy","suite_id":"general","install":true,"summary":"拒绝链接资源","operation_key":"symlink-package"})
+        )["status"],
+        "blocked"
+    );
+}

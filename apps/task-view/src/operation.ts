@@ -2,7 +2,7 @@ import { App } from "@modelcontextprotocol/ext-apps/app-with-deps";
 
 type RecordValue = Record<string, unknown>;
 type ToolResult = { structuredContent?: unknown; content?: { type: string; text?: string }[] };
-const app = new App({ name: "Hetu Luoshu operation review", version: "0.7.0" }, {});
+const app = new App({ name: "Hetu Luoshu operation review", version: "0.8.0" }, {});
 const root = document.getElementById("app")!;
 let locale = "zh-CN";
 let data: RecordValue | undefined;

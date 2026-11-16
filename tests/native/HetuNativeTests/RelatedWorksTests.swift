@@ -50,6 +50,39 @@ enum RelatedWorksTests {
         try check(session.detailError != nil && session.detail == .null, "读取失败仍呈现上一条关联详情")
         session.reset()
         try check(session.error == nil && session.detailError == nil && session.items.isEmpty, "重置没有清理关联读取状态")
-        print("关联作品：固定资料、列表与详情分层、历史阅读保持、解除筛选、准确交接和跨对象清理通过")
+        try await navigation(root: root, workspace: workspace, source: novelReference, target: reference, linkID: id)
+        print("关联作品：固定资料、列表与详情分层、历史阅读保持、解除筛选、准确交接、窗口连续往返和跨对象清理通过")
+    }
+    @MainActor private static func navigation(root: URL, workspace: Workspace, source: WorkReference, target: WorkReference, linkID: String) async throws {
+        let domain = "run.limeai.hetu.related-navigation-tests.\(UUID().uuidString)"
+        let preferences = UserDefaults(suiteName: domain)!
+        defer { preferences.removePersistentDomain(forName: domain) }
+        let model = WorkspaceModel(recovery: RecoveryStore(directory: root.appendingPathComponent("导航恢复")), preferences: preferences,
+            library: LibraryStore(directory: root.appendingPathComponent("导航登记"), collaborationDirectory: root.appendingPathComponent("导航授权")))
+        try check(await model.open(workspace.url, workReference: target), "导航无法打开确切目标对象")
+        let targetSession = model.relatedWorksSession()
+        await targetSession.load(in: model.workspace!, reference: target, includeArchived: true)
+        await targetSession.select(linkID, revision: 1, in: model.workspace!, reference: target)
+        let oldDetail = targetSession.detail
+        try check(targetSession.selectedID == linkID && oldDetail["link"]["revision"].integer == 1, "未固定离开前的关联历史")
+        try check(await model.openRelatedWork(source), "无法打开关联来源")
+        try check(model.workReference == source && model.relatedReturnDestination?.reference == target, "返回入口丢失确切目标身份")
+        try check(model.relatedWorksSession() !== targetSession && model.relatedWorksSession().detail == .null, "另一作品看到了目标的关联阅读状态")
+        try check(await model.openRelatedWork(target), "连续查看关联失败")
+        try check(model.relatedReturnDestinations.count == 2, "连续关联没有分别保留返回路径")
+        try check(await model.returnFromRelatedWork() && model.workReference == source, "第一次返回跳过了上一作品")
+        try check(await model.returnFromRelatedWork() && model.workReference == target && model.relatedReturnDestination == nil, "第二次返回未恢复初始作品")
+        try check(model.relatedWorksSession() === targetSession && targetSession.includesArchived, "返回后丢失了历史会话或已解除筛选")
+        await targetSession.load(in: model.workspace!, reference: target, includeArchived: targetSession.includesArchived)
+        try check(targetSession.detail["link"] == oldDetail["link"] && targetSession.detail["sha256"] == oldDetail["sha256"], "返回刷新将固定旧关系跳到新版")
+        try check(await model.openRelatedWork(source), "负例前无法恢复关联来源")
+        var missing = target.value.object; missing["object_id"] = .string("drama_\(UUID().uuidString.lowercased())")
+        let absent = try WorkReference(.object(missing))
+        try check(!(await model.openRelatedWork(absent)), "不存在的关联对象被打开")
+        try check(model.workReference == source && model.relatedReturnDestinations.count == 1 && model.relatedReturnDestination?.reference == target,
+            "失败的打开破坏了当前对象或返回路径")
+        try check(await model.open(workspace.url, workReference: target) && model.relatedReturnDestination == nil, "从外部另开作品仍沿用旧返回路径")
+        await model.returnToLibrary()
+        try check(model.relatedReturnDestination == nil && model.workspace == nil, "返回创作库没有清理窗口关联返回入口")
     }
 }

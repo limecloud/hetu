@@ -2,7 +2,7 @@
 
 独立小说、剧本、视频及全生命周期制作的新增合同见[第26节](#26-独立创作对象与视频用例合同)。已发布动作以实际能力目录及`contracts/`为准，设计用例名称不自动成为可调用工具。
 
-API 为共享应用用例合同，供原生 GUI、Swift CLI、MCP 及按需局部页面适配；V1 不引入必装 HTTP 后端。Node.js 页面通过受限本机 IPC 消费白名单用例，不能绕过 Core 直接写文件。领域见[28](28-领域设计与边界上下文.md)，字段语义见[29](29-数据字典与Schema设计.md)。
+API为共享应用用例合同，供Electron GUI、独立CLI、MCP、插件和局部页面适配；现有原生GUI／Swift CLI作为迁移对照。V1不引入必装HTTP后端，桌面使用JSON-RPC 2.0私有stdio，传输与信任边界见[39](39-Electron与插件优先重构架构.md)。Node.js 页面通过受限本机 IPC 消费白名单用例，不能绕过 Core 直接写文件。领域见[28](28-领域设计与边界上下文.md)，字段语义见[29](29-数据字典与Schema设计.md)。
 
 本章定义产品设计面；调用方仅使用当前构建能力发现实际发布的动作。专项设计或 Schema 文件的存在不表示动作已经实装。
 
@@ -13,7 +13,7 @@ API 为共享应用用例合同，供原生 GUI、Swift CLI、MCP 及按需局�
 | 入口 | 可调用范围 | 身份来源 |
 | --- | --- | --- |
 | macOS／Windows GUI | 用户授权的完整人工任务 | 本机可信窗口、系统访问与作者会话 |
-| Swift CLI 人工模式 | 同一核心任务，支持交互确认 | 控制终端与本机作者会话 |
+| 独立CLI人工交互 | 同一核心任务，支持交互确认 | 控制终端与本机作者会话 |
 | MCP Agent | 获权查询、协作候选维护、资料草稿、派生结构、报告、受限交付 | 已批准的 Server 上下文，非 clientInfo 自报 |
 | MCP Apps | 当前任务查询、候选选择、批注和采纳意图 | 宿主桥接及范围授权；不授予定稿、正式封面选用或设定写权限 |
 | 本地 Node.js 页面 | 配对会话中的单任务查询、选择与意见 | 原生作者配对的短期会话；浏览器点击不充当作者批准 |
@@ -24,7 +24,7 @@ API 动作使用 `hetu.<domain>.<verb>`，每个动作有独立 `contract_revisi
 
 ## 2. 调用封装
 
-以下是 C ABI 内部用例调用格式，不是新增的 AXI 交换文档类型；CLI／MCP 的公开结果为 AXI result。
+以下是共享应用层用例调用格式（C ABI直接承载，桌面RPC的params承载），不是新增的 AXI 交换文档类型；CLI／MCP 的公开结果为 AXI result。
 
 ```json
 {
@@ -94,7 +94,7 @@ typed_changes 是受限的实体新增、字段更新、归档、引用迁移和
 | 动作 | 输入 | 结果 | 限制与失败 |
 | --- | --- | --- | --- |
 | `hetu.documents.create` | kind、title、source_format、content、language_tag?、operation_key | 新文档与首个不可变修订 | 仅作者；普通新稿不自动批准 |
-| `hetu.documents.list` | kind? | 文档摘要与修订指针 | MCP 资源层分页绑定 scope、过滤条件和完整列表快照 |
+| `hetu.documents.list` | work_ref?、kind?、limit?、cursor? | 文档摘要与修订指针、next_cursor | 精确作品授权必须指定获权 work_ref，默认50条、最多200条；显式分页绑定授权、对象、过滤条件与目录快照。既有作者入口未传分页参数时保留完整目录 |
 | `hetu.documents.get` | document_id、revision_id? | 元数据、格式、内容或有界范围 | 默认当前修订必须在结果明确，固定引用优先 |
 | `hetu.documents.save` | document_id、base_revision_id、source_format、content、operation_key | 新 revision_id、sha256、当前指针 | 作者编辑入口；不自动批准；基线冲突不覆盖 |
 | `hetu.documents.preview_import` | inline_source 或作者选择的 file_path、format、profile | 固定文件摘要、转换预览与损失报告 | 机器提交文件字节，作品授权不能读取任意本机路径；不执行宏 |
@@ -166,18 +166,18 @@ Agent 通过 drafts.submit 创作，不通过 documents.save 直接覆盖正文�
 | `hetu.documents.finalize` | preview、operation_key | document、finalization | 仅作者；重算完整预览，对固定修订独立确认，不创建不同正文或 Git 副作用 |
 | `hetu.documents.withdraw_finalization` | document_id、expected_finalization_ref、reason、operation_key | document、finalization | 仅作者；只能撤回当前持有者，历史与当前稿保留 |
 | `hetu.documents.lifecycle` | document_id | document、adoptions[]、finalizations[] | 仅作者；核验归属、摘要链与正文历史后返回，不能把缺失记录当空历史 |
-| `hetu.cues.list` | kind?、document_id?、include_archived?、cursor?、limit? | cues摘要、next_cursor | 默认排除归档；游标绑定筛选与列表快照 |
-| `hetu.cues.save` | cue_id?、expected?、kind、title、description、narrative_refs[]、asset_refs[]、archived、operation_key | cue、sha256、stale_sources、assets | 仅作者；已有cue需CAS；类别不变，引用核验 |
+| `hetu.cues.list` | work_ref?、kind?、document_id?、include_archived?、cursor?、limit? | cues摘要、next_cursor | 精确作品连接必传同一work_ref；默认排除归档，游标绑定作品、身份、筛选与快照 |
+| `hetu.cues.save` | work_ref?、cue_id?、expected?、kind、title、description、narrative_refs[]、asset_refs[]、archived、operation_key | cue、sha256、stale_sources、assets | 作者或已批准的固定管理方案；已有cue需CAS，作品归属与类别不变，全部引用核验同作品 |
 | `hetu.cues.get` | cue_id、revision? | cue、sha256、is_head、current_revision、stale_sources、assets | 固定正文与素材修订；过期状态单独返回 |
-| `hetu.assets.inspect` | file_path | original_filename、sha256、size_bytes、kind、media_type、extension、validation | 仅作者选定本机文件；只识别签名，不落盘 |
-| `hetu.assets.import` | file_path、expected_file、title、source、rights_status、redistribution_allowed、rights_statement、operation_key | asset、sha256、delivery_eligible、media_verified | 仅作者；流式复制并核对固定摘要；无URL下载 |
-| `hetu.assets.update` | asset_id、expected、title、source、rights_status、redistribution_allowed、rights_statement、operation_key | asset新修订、sha256、delivery_eligible、media_verified | 仅作者；CAS；媒体原字节不变 |
+| `hetu.assets.inspect` | work_ref?、file_path或inline_source | original_filename、sha256、size_bytes、kind、media_type、extension、validation | 精确作品连接必传同一work_ref且只能inline_source；作者选定文件可走路径；只识别签名，不落盘 |
+| `hetu.assets.import` | work_ref?、file_path或inline_source、expected_file、title、source、rights_status、redistribution_allowed、rights_statement、operation_key | asset、sha256、delivery_eligible、media_verified | 作者或已批准的固定管理方案；精确连接必须固定work_ref及inline_source；流式复制并核对摘要，无URL下载 |
+| `hetu.assets.update` | work_ref?、asset_id、expected、title、source、rights_status、redistribution_allowed、rights_statement、operation_key | asset新修订、sha256、delivery_eligible、media_verified | 作者或已批准的固定管理方案；CAS，work_ref如提供须与不可变owner一致；媒体原字节不变 |
 | `hetu.assets.get` | asset_id、revision? | asset、sha256、current_revision、current_rights_status、is_head、delivery_eligible、media_verified | 流式核对媒体；历史许可不能绕过当前撤回 |
-| `hetu.assets.list` | kind?、rights_status?、cursor?、limit? | assets摘要、next_cursor | 列表不加载媒体，media_verified=false |
+| `hetu.assets.list` | work_ref?、kind?、rights_status?、cursor?、limit? | assets摘要、next_cursor | 精确作品连接必传同一work_ref；列表不加载媒体，media_verified=false |
 
-参考稿 `decision=approved` 与正文定稿分开。采纳预览固定作者选区、目标及实际差异，adopt 在锁内重验；Apps／网页只能保存选择和意图，正式采纳在原生端确认。定稿接口存在不意味着模型可调用，不能用模型传入的批准布尔值或页面点击绕过作者权限。
+参考稿 `decision=approved` 与正文定稿分开。采纳预览固定作者选区、目标及实际差异，adopt 在锁内重验；候选 Apps／网页只能保存选择和意图，正式采纳在可信客户端作者入口确认。定稿接口存在不意味着模型可调用，不能用模型传入的批准布尔值或候选页面点击绕过作者权限。
 
-采纳、正文检查和独立定稿的精确输入统一见[文档生命周期 Schema](../contracts/schemas/document-lifecycle.schema.json) 的 `$defs`。`document_ref={document_id,revision_id,sha256}`；`draft_ref={draft_id,revision,sha256}` 中的 revision 固定参考稿状态修订，sha256 固定其内容。修改已有文档使用非空 target_ref 且 new_document=null；新建文档使用 target_ref=null，new_document 包含作者确认的 `title,volume_id,novel_expected`。新小说章节的 novel_expected 固定目录修订及摘要，volume_id=null 明确表示未分卷；剧本的 volume_id 和 novel_expected 均为 null。
+采纳、正文检查和独立定稿的精确输入统一见[文档生命周期 Schema](../contracts/schemas/document-lifecycle.schema.json) 的 `$defs`。`document_ref={document_id,revision_id,sha256}`；`draft_ref={draft_id,revision,sha256}` 中的 revision 固定参考稿状态修订，sha256 固定其内容。修改已有文档使用非空 target_ref 且 new_document=null；新建文档使用 target_ref=null，new_document 包含作者确认的 `title,volume_id,novel_expected`。新小说章节的 novel_expected 固定目录修订及摘要，volume_id=null 明确表示未分卷，不使用 drama_project_ref。剧本的 volume_id 和 novel_expected 均为 null；具有明确作品归属的剧本参考稿必须提供同作品的 `drama_project_ref={project_id,revision,sha256}`，以项目 CAS 原子创建正文、分集和目录。未归属历史剧本保留省略该字段的旧合同；客户端新旅程必须明确项目，不按标题猜归属。已有或新建目标均核验参考稿已知的 WorkRef，跨作品采纳失败关闭。
 
 每个选区为 `{source,target,replacement?}`，source 与 target 各自是固定文本上的 UTF-8 半开范围及 quote。来源不得为空或重叠，目标不得重叠或重复使用同一插入点；空目标允许插入。未提供 replacement 时使用来源切片，提供时保存作者改写后的确切字符串。限制为1～100个选区；整稿采纳同样明确源范围和目标范围，不以空数组表示全选。被驳回、要求修改或已接替的参考稿不能直接采纳，应先回到相应审核／返工流程。
 
@@ -588,8 +588,8 @@ Agent 需要协作时，先发现当前能力与作品摘要，读取固定项�
 
 | 动作 | 输入与结果 | 边界 |
 | --- | --- | --- |
-| `hetu.resources.list/get` | 分类、project_id、标签、状态、字段投影、分页／固定资源引用 | 只返回获权范围；列表不读取全部二进制或整本正文 |
-| `hetu.resources.create/update` | title、category、body、tags、project_id、entity_refs、source_notes、原键；更新增加 resource_id 与 expected | 作者维护；绑定 resource_organize 的 Agent 只维护获权草稿或本任务创建的草稿；状态不接收外部赋值 |
+| `hetu.resources.list/get` | work_ref、分类、project_id、标签、状态、分页／固定资料修订 | 只返回获权范围；列表不读取全部二进制或整本正文 |
+| `hetu.resources.create/update` | work_ref?、title、category、body、tags、project_id、entity_refs、source_notes、原键；更新增加 resource_id 与 expected | 作者维护；绑定 resource_organize 的 Agent 只维护获权草稿或本任务创建的草稿；状态不接收外部赋值 |
 | `hetu.resources.adopt/archive` | resource_id、expected={revision,sha256}、operation_key | 仅作者；历史引用保留，更新资料不自动替换已有使用位置的固定修订 |
 | `hetu.designs.list/get/create/update` | 资料引用、设计字段、固定参考、expected?、task_ref?、原键 | 与资料相同的草稿边界；既有采用版本的 Agent 修改提交新提案 |
 | `hetu.designs.adopt/archive` | 固定设计引用、expected、原键 | 仅作者，不回写设定集 |
@@ -598,6 +598,10 @@ Agent 需要协作时，先发现当前能力与作品摘要，读取固定项�
 | `hetu.resource_usages.list/save` | 固定资料／设计／候选与目标位置、expected?、task_ref?、原键 | 作者正式保存；Agent 只维护本任务候选中的使用提案 |
 | `hetu.resources.preview_import/import` | 作者选定来源范围、固定清单、来源映射、原键 | 显式跨作品导入，生成本作品独立身份与受管字节；不接受 Agent 任意路径 |
 | `hetu.model_profiles.list/get` | 媒体类型、能力／固定档案引用 | 静态能力资料与来源，不含 Key、账号、在线可用性或模型调用入口 |
+
+精确管理连接的 `resources.list` 必须提供等于授权的 work_ref；get／使用位置／页面交接按记录真实归属核验。新资料由作者显式绑定作品或从 resource_organize 的固定任务推导，更新只继承原归属；1.0.0 未归属记录不通过精确连接读取。有归属实体引用含作品与设定身份，旧 project_id 只能为空或等于所属剧本。任务的固定资料及可改集合必须同作品，创建／更新／读取再次检查任务归属。
+
+`resource_usages.save` 固定资料与作者正文同作品；更新同时检查旧使用记录，禁止借 usage_id 迁移归属。采用、归档仍为作者决定，普通管理连接不能直接执行；Agent 经固定任务方案准备和执行维护草稿。Electron 的私有审阅用例固定预览、原生确认和持久恢复，不向第三方容器暴露作者方法。
 
 ### 21.1 任务授权与批量操作
 
@@ -739,7 +743,7 @@ MCP Apps 仅在真实宿主能力、用户同意和当前会话范围内使用�
 | `hetu.model_tasks.get` | 查询原计划及远端原操作；结果未知不重新生成 |
 | `hetu.model_tasks.collect` | 校验原结果，写本任务候选文件并返回提交入口 |
 
-所有动作携带 task_ref，稳定连接先核验完整 sha256 后归一到领域引用。单计划作者批准不向 Agent 开放；Agent 使用对话任务授权，并记录真实授权说明和来源，不伪装作者签名。model_service 设置的 C ABI 仅供可信原生界面，响应不包含连接凭据。网络执行不持有作品锁，成功与失败结果保存前均重验请求、任务关闭、账号及环境。
+所有动作携带 task_ref，稳定连接先核验完整 sha256 后归一到领域引用。单计划作者批准不向 Agent 开放；Agent 使用对话任务授权，并记录真实授权说明和来源，不伪装作者签名。model_service设置仅供可信作者入口；现有原生使用C ABI，Electron须经受限主进程用例，响应不包含连接凭据。网络执行不持有作品锁，成功与失败结果保存前均重验请求、任务关闭、账号及环境。
 
 目录和计划可显式指定 `channel_id`，不修改全局默认渠道。任务授权固定渠道身份集合、宿主与授权修订，提交时将额度预留和已提交意图放在同一事务。额度内连续执行，达到上限才在对话追加授权；换操作键、重复登记和充值均不能重置已用额度。明确余额不足且未扣费的失败释放原预留；充值后通过 `resume_from_plan_id` 关联唯一恢复计划。建单前的余额拒绝保存本地明确回执，查询不依赖远端存在操作；未知结果保留预留，仅沿原计划查询。
 
@@ -815,6 +819,10 @@ GUI 路由和定位引用帮助人审阅相同对象；CLI/MCP 不依赖页面�
 
 两动作可显式携带 `work_ref` 收窄到单个创作对象，授权标识按工作区、类型、对象和客户端分别生成。该范围的能力发现及列表只反映获权对象；同名、同根和关联不扩权。关联可回读固定关系元数据，另一端正文需独立授权；不能确认另一端当前修订时返回未知，不伪报没有新版。操作按授权隔离原键与回执，不能通过 `operation_id` 绕过范围读取。旧的工作区授权仍按其原明确范围解释，不能当作单对象隔离的证据。
 
+精确小说／剧本授权可读取本作品 `documents.list/get/history`。目录显式携带 work_ref；单篇与历史按真实文档归属核验，不按题名或目录推断。视频授权不提供小说／剧本正文动作。稳定入口的获权能力回读给出当前 work_ref，并将目录与任务列表 Schema 收窄到该引用；列表、正文与历史读取均不授予正文保存、采纳或定稿权。
+
+`creative_tasks.list` 在同一 work_ref 下按 target_document_id、状态及游标查询，只返回本作品任务摘要和可恢复的 task_locator；取得摘要不代表取得 TaskGrant。沿 locator 打开后使用返回的完整 task_ref；缺任务授权保持 forbidden，不自动派生、不重建。游标绑定当前管理授权修订、筛选和结果快照，撤权再授权后旧游标失效。
+
 普通方案固定 UTF-8 与必要原文件二进制写集，总量不超过8MiB，before_files 与写集一一对应。导入保留审阅时原字节，外部文件后来改变不替换固定输入。素材导入、交付和 Git 使用 deferred 执行：先落 executing 意图，按固定子操作键或确定性 Git 身份恢复，再提交结果。导出沿原交付事务恢复，不能换键重复产出；执行中不能改变批准决定。
 
 Git 读取动作 references、read_version、merge_preview 提供版本线、固定历史和冲突。方案可准备 init、branch_create、branch_switch、merge、remote_save、fetch、push、pull。版本线切换与合并只组织 Git 记录，保留当前工作文件、领域修订和真实 index；历史内容另供比较，不能 checkout 覆盖作品。合并固定父节点、冲突选择、身份与时间；fetch 固定提交并 CAS 更新追踪引用，push 固定提交并以远端原引用校验。仅接受不含凭据的 HTTPS、SSH 或本地绝对路径；禁用 hooks、自定义 helper、地址重写和交互输入。当前同步依赖系统 Git/SSH，实际服务商鉴权应分别验收。
@@ -835,9 +843,9 @@ Git 读取动作 references、read_version、merge_preview 提供版本线、固
 
 ### 25.7 本机设置与安装方案
 
-`hetu.local_settings.get/prepare/get_operation/execute` 由原生 LocalAutomation 持有；稳定 MCP 委托同包 CLI，不复制偏好存储。公开入口没有 decide，作者从设置页审阅固定差异。偏好白名单包括语言、主题、书库布局、自动保存、字体、字号、行距、缩进、Git 作者和默认客户端；密钥与私密模型配置不回读。
+`hetu.local_settings.get/prepare/get_operation/execute` 在 Electron 架构中由独立 Rust 本机服务持有，稳定 CLI/MCP 直接复用，无需窗口或子 CLI。旧原生 LocalAutomation 保留原偏好域与原方案，不和新宿主双写。公开入口没有 decide，作者通过可信 `local_settings/host` 审阅固定差异。偏好白名单包括语言、主题、书库布局、自动保存、字体、字号、行距、缩进、Git 作者和默认客户端；密钥与私密模型配置不回读。
 
-方案绑定偏好域、客户端、原值、套件及其指纹、可选作品身份和24小时期限。执行使用跨进程锁、CAS、原子落盘和同步，executing 只接续原键与已批准值，外部第三种值造成冲突。套件选择可独立保存，受管安装按实际客户端能力执行；Codex 安装未知先只读核实，不自动重复安装。MCP Apps 的 `ui://hetu/operation-view/1` 只读方案及状态；批准始终回原生端，任务面板的偏好和意见不构成批准。
+方案绑定 Owner、客户端、完整原值、套件指纹与安装目标、可选工作区身份和24小时期限。执行使用跨进程锁、CAS及可恢复事务；偏好和方案结果原子提交，executing 只接续原键与固定包。设置变化导致冲突，不能强行覆盖。套件选择可独立保存，受管安装按实际客户端能力执行；Codex 安装未知先只读核实官方登记及全部缓存字节，不自动重复安装。MCP Apps 的 `ui://hetu/operation-view/1` 只读方案及状态；批准来自可信作者工作面，任务面板的偏好和意见不构成批准。详细私有边界见插件20第21节。
 
 ## 26. 独立创作对象与视频用例合同
 
@@ -859,11 +867,13 @@ Git 读取动作 references、read_version、merge_preview 提供版本线、固
 
 | 动作 | 必要输入 | 回读与限制 |
 | --- | --- | --- |
-| `hetu.work_links.get` | work_ref、link_id，可选 revision | link、sha256、current_link_ref、另一端可读性与固定资料；精确授权只返回关系元数据，不读另一端 |
+| `hetu.work_links.get` | work_ref、link_id，可选 revision；稳定 CLI/MCP 可另传 related_management_ref | link、sha256、current_link_ref、另一端可读性与固定资料；单端精确授权只返回关系元数据，两端分别获权后才读取确切关联作品 |
 | `hetu.work_links.update_source` | 目标 work_ref、当前 link_ref、同一来源的 source_ref、目标当前 target_ref、operation_key | 追加关系修订；不更换两端作品、不改旧任务或正文，实际变更走固定方案 |
 | `hetu.work_links.set_archived` | 目标 work_ref、当前 link_ref、archived、operation_key | true 解除、false 恢复；目标单对象授权可准备方案，来源授权不能替下游管理；恢复拒绝重复有效关系 |
 
 详情交接使用 `view_kind=related_works`，object_ref 包含 work_ref、link_id 和可选 link_revision，fixed_refs 返回对应历史的摘要及固定两端。旧版交接仍指旧版，不把更新依据当作替换历史。另一端读取失败返回 unavailable 与错误，当前性为 null；缺权限返回 requires_authorization，不探测另一端当前状态。固定作品资料不等于章节、设定或媒体快照；跨根来源继续遵循必要快照与分别获权合同。
+
+稳定入口在同一客户端下分别核验 management_ref 与可选 related_management_ref，后者只用于本次确切关联的另一端资料读取，不进入 WorkLink、任务、操作方案或结果回读。两份授权不能互换端点，不能读取第三个对象；读取之后任一授权的范围保持原样。错误对象、撤权及再授权后的旧引用返回 forbidden；资料损坏保留关系元数据并返回 unavailable，不以当前资料替代旧版。此参数不授予新建关系、更新依据、正文读取或写入能力；直接工作区入口不接受它，机器调用先读稳定入口公布的 Schema。
 
 ### 26.2 制作与媒体用例
 
@@ -890,3 +900,13 @@ Git 读取动作 references、read_version、merge_preview 提供版本线、固
 意见锚定旧媒体与实际时间基准；新版按明确EditTimeMapping提供定位建议，无法确定则只看旧版，不迁移作者意思。按意见返工引用原任务、反馈、修改层次及新成果，保留未改片段和作者缓冲。扩大来源、替换正式素材或增加费用范围需新的明确决定。
 
 CLI、MCP、MCP Apps、本地页面和原生端共用上述用例；Apps只在已验证宿主中提供局部交互，不公开模型可调用的自批入口。宿主不支持继续消息时复制同一任务引用，不要求返回GUI填制作表单。错误映射沿已发布错误合同，新增错误随Schema一并发布并覆盖恢复负例。
+
+## 插件优先重构的接入边界
+
+`documents.preview_import/preview_export`、`bundles.preview/verify` 及其固定写方案支持精确作品范围，输入显式声明 `work_ref`，Core 逐项验证归属。导入小说章节固定 `novel_expected`，剧本分集固定 `drama_project_ref`；目录、正文和原稿来源同事务提交。旧调用不隐式推断新归属。字段唯一源为 `contracts/schemas/delivery.schema.json`，流程及渲染边界见[插件20第20节](plugin/20-首期可执行合同与开发入口.md#20-作品导入与固定交付)。
+
+桌面RPC传输由39第5节拥有；TS插件包管理、贡献发现、受限调用与数据事务的拟议目录由插件09拥有。基础CLI/MCP复用Core，动态TS插件用同一按需宿主；新增合同须实际登记、授权及机器用例通过后发布。 目标分工见[39](39-Electron与插件优先重构架构.md)，详细扩展合同见[插件系列](plugin/README.md)，实际进度归38。
+
+可信桌面的私有`media/open/read/close`只适配当前作品固定素材预览：Core核验作者内核、WorkRef、修订、摘要和受管原字节，打开只读句柄；App Server按最多512KiB分块提供数据，主进程以临时媒体协议呈现。参数、HTTP范围、句柄及作品切换边界由[插件20第19节](plugin/20-首期可执行合同与开发入口.md#19-可信媒体预览传输)统一定义。该传输不登记到公开领域动作目录，不给插件或管理连接增加原文件读取权；资产导入、来源、权利和线索仍走既有公开固定方案。
+
+文稿版本合同扩展见[插件20第22节](plugin/20-首期可执行合同与开发入口.md#22-精确作品的文稿版本)：既有 `hetu.git.*` 在显式 `work_ref` 下只操作本作品文稿引用。`snapshot` prepare固定头／路径／身份，作者审核完整差异后批准，Agent按原键execute；历史读取核验同作品固定快照与执行回执，不直接替换领域数据。工作区分支、合并、远端和网络同步不从单作品授权推导。

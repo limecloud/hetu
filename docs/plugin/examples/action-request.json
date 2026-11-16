@@ -1,0 +1,33 @@
+{
+  "action": "hetu.extensions.actions.prepare",
+  "contract_revision": "design-1",
+  "input": {
+    "plugin_id": "org.hetu.example.director",
+    "package_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "action_id": "director.camera.update",
+    "action_revision": "design-1",
+    "work_ref": {
+      "workspace_id": "example-workspace",
+      "kind": "video",
+      "object_id": "example-video"
+    },
+    "object_ref": {
+      "work_ref": {
+        "workspace_id": "example-workspace",
+        "kind": "video",
+        "object_id": "example-video"
+      },
+      "owner_plugin_id": "org.hetu.example.director",
+      "object_id": "example-scene",
+      "revision": 3,
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "parameters": {
+      "camera_id": "camera-a",
+      "change_scope": "shot_override",
+      "shot_id": "shot-02",
+      "position_metres": [2.0, 1.6, 4.0],
+      "target_metres": [0.0, 1.5, 0.0]
+    }
+  }
+}

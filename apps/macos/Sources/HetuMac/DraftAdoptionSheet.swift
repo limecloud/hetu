@@ -170,7 +170,12 @@ struct DraftAdoptionSheet: View {
     private func prepare() async {
         error = nil; result = .null
         guard !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || !targetID.isEmpty else { error = model.t("adoption.title_required"); return }
-        let newDocument: JSONValue = targetID.isEmpty ? .object(["title": .string(title), "volume_id": volumeID.isEmpty ? .null : .string(volumeID), "novel_expected": isScript ? .null : .object(["revision": novel["revision"], "sha256": novel["sha256"]])]) : .null
+        var fields: [String: JSONValue] = ["title": .string(title), "volume_id": volumeID.isEmpty ? .null : .string(volumeID), "novel_expected": isScript ? .null : .object(["revision": novel["revision"], "sha256": novel["sha256"]])]
+        if targetID.isEmpty, isScript, let projectID = draft["blueprint_ref"]["work_ref"]["object_id"].string {
+            guard let project = await model.workspaceAction("hetu.drama.projects.get", input: ["project_id": .string(projectID)], onFailure: failed) else { return }
+            fields["drama_project_ref"] = .object(["project_id": .string(projectID), "revision": project["project"]["revision"], "sha256": project["sha256"]])
+        }
+        let newDocument: JSONValue = targetID.isEmpty ? .object(fields) : .null
         let input: [String: JSONValue] = ["draft_ref": .object(["draft_id": draft["draft_id"], "revision": draft["revision"], "sha256": draft["content_sha256"]]),
             "target_ref": targetID.isEmpty ? .null : lifecycleDocumentRef(target), "new_document": newDocument, "selected_ranges": .array(selections)]
         if let value = await model.workspaceAction("hetu.drafts.preview_adoption", input: input, onFailure: failed) { result = value }

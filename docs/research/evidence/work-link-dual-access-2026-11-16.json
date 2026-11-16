@@ -1,0 +1,210 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-11-15T16:36:14.519129+00:00",
+  "version": "0.7.0",
+  "scope": "稳定 CLI/MCP 用两份独立精确授权读取关联另一端的固定作品资料",
+  "status": "machine_passed_installed",
+  "all_refactoring_complete": false,
+  "source": {
+    "base_commit": "900f8b0645479ba65f437d62fadbb7c7f09e7b38",
+    "dirty_worktree": true,
+    "manifest": "output/work-link-lifecycle-20261115/source-manifest-dual-access-final.json",
+    "manifest_sha256": "353d198b1e663eb74e6d2021efeb47368ee9b5c1554a7828372df534c0479bae",
+    "files": 2525
+  },
+  "contracts": {
+    "action": "hetu.work_links.get",
+    "stable_parameter": "related_management_ref",
+    "identity": "逐端打开受管 Kernel，维持 Agent 身份；读取确切关联另一端，拒绝错误对象与工作区。",
+    "authority": "不合并范围、不持久化或回显另一端授权；撤权和再授权后旧引用拒绝。",
+    "revision": "旧资料继续使用固定版本与摘要；读取失败时当前性为 null，不替换成新版。",
+    "boundary": "只涵盖作品资料读取，不包含双端关系写授权、跨根正文或媒体快照。"
+  },
+  "checks": {
+    "core": {
+      "status": "passed",
+      "path": "output/work-link-lifecycle-20261115/dual-access-core-final.log",
+      "sha256": "dde62b0ee95953f2d4d2f631676e72e56b36d196aae1a75a141c4a35feb5f0fe",
+      "groups": 3,
+      "passed": 15
+    },
+    "mcp_stdio": {
+      "status": "passed",
+      "path": "output/work-link-lifecycle-20261115/dual-access-mcp-tests.log",
+      "sha256": "475abfe442afadc839390ad589ec548c2efca1a709a6c4177054e8fa31d66981",
+      "passed": 24
+    },
+    "public_journey": {
+      "status": "passed",
+      "cli_steps": 10,
+      "mcp_steps": 3,
+      "isolated_author_fixture_steps": 6,
+      "steps": [
+        {
+          "label": "单端只读关系",
+          "action": "hetu.work_links.get",
+          "status": "succeeded"
+        },
+        {
+          "label": "双端固定旧版",
+          "action": "hetu.work_links.get",
+          "status": "succeeded"
+        },
+        {
+          "label": "不合并对象权限",
+          "action": "hetu.works.get",
+          "status": "blocked"
+        },
+        {
+          "label": "错误端点拒绝",
+          "action": "hetu.work_links.get",
+          "status": "blocked"
+        },
+        {
+          "label": "反向固定资料",
+          "action": "hetu.work_links.get",
+          "status": "succeeded"
+        },
+        {
+          "label": "来源撤权拒绝",
+          "action": "hetu.work_links.get",
+          "status": "blocked"
+        },
+        {
+          "label": "目标关系仍可读",
+          "action": "hetu.work_links.get",
+          "status": "succeeded"
+        },
+        {
+          "label": "再授权不复活旧引用",
+          "action": "hetu.work_links.get",
+          "status": "blocked"
+        },
+        {
+          "label": "新授权读取同一历史",
+          "action": "hetu.work_links.get",
+          "status": "succeeded"
+        },
+        {
+          "label": "目标撤权拒绝",
+          "action": "hetu.work_links.get",
+          "status": "blocked"
+        }
+      ],
+      "mcp": [
+        {
+          "label": "新双端授权",
+          "same_cli_result": true
+        },
+        {
+          "label": "旧授权仍拒绝",
+          "same_cli_result": true
+        },
+        {
+          "label": "单端不扩权",
+          "same_cli_result": true
+        }
+      ],
+      "author_fixture": [
+        {
+          "label": "目标授权",
+          "test_fixture_only": true,
+          "status": "succeeded"
+        },
+        {
+          "label": "来源授权",
+          "test_fixture_only": true,
+          "status": "succeeded"
+        },
+        {
+          "label": "撤销来源",
+          "test_fixture_only": true,
+          "status": "succeeded"
+        },
+        {
+          "label": "来源重新授权",
+          "test_fixture_only": true,
+          "status": "succeeded"
+        },
+        {
+          "label": "结束撤销来源",
+          "test_fixture_only": true,
+          "status": "succeeded"
+        },
+        {
+          "label": "结束撤销目标",
+          "test_fixture_only": true,
+          "status": "succeeded"
+        }
+      ],
+      "protocol": "2025-06-18",
+      "computer_use_business_steps": 0,
+      "model_requests": 0,
+      "persistent_records": "/Users/coso/Documents/河图洛书/验收记录/关联生命周期-20261115/双端授权回执",
+      "boundary": "本对话实际公开CLI及新stdio；限定隔离作品的授权夹具不是作者创作决定或当前宿主Apps。只证明两端固定资料读取。"
+    },
+    "native_official_core": {
+      "status": "passed",
+      "path": "output/work-link-lifecycle-20261115/dual-access-native-related.log",
+      "sha256": "37ad19ad34585cdd6d28c9c729254c90e12042f26a46db2687c097478a6ac502"
+    },
+    "existing_work": {
+      "status": "passed",
+      "path": "output/work-link-lifecycle-20261115/dual-access-imported-review.log",
+      "sha256": "e6607c53a1cc3b82cd1492f4c8d028e8cf56c949877a0937bb5b2d1dd2ff8680",
+      "read_only": true,
+      "documents": 511,
+      "groups": 5,
+      "fixed_episodes": 6
+    },
+    "skills": {
+      "status": "passed",
+      "path": "output/work-link-lifecycle-20261115/dual-access-skills-final.log",
+      "sha256": "e1789cbf22b37551b5f8058b4cadf616fc395d113358ed05b2469a9b2bf420c8",
+      "source": "tools/hetu-skills/base",
+      "current_host_reload": "not_run"
+    },
+    "docs": {
+      "status": "passed",
+      "path": "output/work-link-lifecycle-20261115/dual-access-docs-final.log",
+      "sha256": "a5b2b42fe65ce7c0e352746ec476a7218b831b36f7ee26a99198361e88f17e46"
+    },
+    "build": {
+      "status": "passed",
+      "path": "output/work-link-lifecycle-20261115/dual-access-native-package.log",
+      "sha256": "1011435aaa2b09ee7769cfc3af0a5c56b49518d8137309f582c21a3219a64b9d",
+      "same_source": true,
+      "command": "python3 tools/build-native.py --mac-only --swift-scratch-path output/work-link-lifecycle-20261115/swift --rust-target-dir output/work-link-lifecycle-20261115/rust"
+    },
+    "installation": {
+      "installed_app": "/Applications/Hetu.app",
+      "file_count": 2239,
+      "all_file_hashes_match": true,
+      "retained_backup": false,
+      "normal_quit": true,
+      "signature_verification": "passed",
+      "sha256": {
+        "Contents/MacOS/HetuMac": "d027b44ec3ddf95e4ce7875e5f7f0698475e2be3dc4e72efe755abc5d814d98f",
+        "Contents/Helpers/hetu": "ff30b2d82218377dde626c9481c7a38afdd1e63fa09fdf3919f50be40ca3ec9e",
+        "Contents/Helpers/hetu-mcp": "7c456f7bf98aa790e64e9e81c6925417ee54a016ed0e37d8d221890febf61861",
+        "Contents/Frameworks/libhetu_core.dylib": "f87d24f298aefebaa44c558da07dbd1666144019583fae7ae226f1fe9afd4af1"
+      }
+    },
+    "gui": {
+      "status": "not_repeated",
+      "reason": "本切片没有新增界面行为；旧关联视图的分层与历史样本见原证据，未冒充当前全App往返验收。",
+      "previous_evidence": "docs/research/evidence/work-link-lifecycle-2026-11-16.json"
+    }
+  },
+  "remaining": [
+    "双端精确授权新建或推进关联",
+    "跨根获权正文与媒体来源快照",
+    "其余资料对象窄授权",
+    "完整App关联往返与阅读播放位置",
+    "分镜白模与视频音画字幕返工交付",
+    "整书改编及全剧覆盖",
+    "当前常驻宿主和真实Apps",
+    "完整显示矩阵"
+  ],
+  "delivery_boundary": "本地开发版覆盖安装，无提交、推送、公共发布、生产部署或付费生成。"
+}

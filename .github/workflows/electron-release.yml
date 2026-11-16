@@ -1,0 +1,139 @@
+name: Electron release
+
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: electron-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  package:
+    name: Electron macOS arm64
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    runs-on: macos-15
+    timeout-minutes: 120
+    env:
+      MACOSX_DEPLOYMENT_TARGET: "14.0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "25.0.0"
+          cache: npm
+      - name: Install locked Rust toolchain
+        run: rustup toolchain install 1.93.1 --profile minimal
+      - uses: Swatinem/rust-cache@v2
+      - name: Verify source and release versions
+        run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          node "tools/verify-release.mjs"
+      - name: Verify signing configuration
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+        run: python3 "tools/release-electron.py" --check
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Verify tooling, Skills and shared resources
+        run: |
+          python3 -m unittest discover -s tests/tooling -v
+          node --test tests/release/*.test.mjs
+          python3 "tools/sync-writing-methods.py" --check
+          python3 "tools/verify-skills.py"
+          npm run check --workspace @hetu/task-view
+      - name: Test optimized Rust workspace
+        run: cargo test --locked --release --workspace --jobs 2 -- --test-threads=2
+      - name: Test CLI launcher, plugins and Electron workbench
+        run: |
+          npm run test:cli
+          npm run test:plugins
+          npm run test:e2e --workspace @hetu/desktop -- --grep-invert '独立开发应用'
+      - name: Sign, notarize and package Electron
+        id: package
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+        run: python3 "tools/release-electron.py"
+      - name: Verify packaged CLI, MCP, plugins and reopen
+        env:
+          HETU_PACKAGED_APP: ${{ steps.package.outputs.executable }}
+          HETU_PACKAGE_MANIFEST: ${{ steps.package.outputs.manifest }}
+        run: npm run test:e2e --workspace @hetu/desktop -- packaged.spec.ts
+      - name: Retain notarization receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: electron-notarization-receipt
+          path: build/electron-release-evidence/
+          if-no-files-found: ignore
+          retention-days: 30
+      - name: Retain failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: electron-release-test-results
+          path: apps/desktop/test-results/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Upload verified Electron downloads
+        uses: actions/upload-artifact@v4
+        with:
+          name: hetu-electron-macos-arm64
+          path: dist/electron/macos-arm64/
+          if-no-files-found: error
+          retention-days: 30
+
+  publish:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: package
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: hetu-electron-macos-arm64
+          path: release-assets
+      - name: Publish verified Electron downloads
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          test "$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_REF_NAME" --jq .sha)" = "$GITHUB_SHA" || { echo 'Release tag moved'; exit 1; }
+          (cd release-assets && sha256sum -c SHA256SUMS)
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          manifest = json.loads(Path('release-assets/release-manifest.json').read_text())
+          assert manifest['kind'] == 'electron-release-package'
+          assert manifest['git_sha'] == os.environ['GITHUB_SHA']
+          assert 'v' + manifest['version'] == os.environ['GITHUB_REF_NAME']
+          assert manifest['notarization_status'] == 'Accepted'
+          PY
+          if gh release view "$GITHUB_REF_NAME" --json isDraft --jq .isDraft > "$RUNNER_TEMP/release-state" 2>/dev/null; then
+            test "$(cat "$RUNNER_TEMP/release-state")" = true || { echo 'Published releases cannot be replaced'; exit 1; }
+          else
+            gh release create "$GITHUB_REF_NAME" --verify-tag --draft --title "河图洛书 $GITHUB_REF_NAME" --notes-file .github/release-notes.md
+          fi
+          gh release upload "$GITHUB_REF_NAME" release-assets/* --clobber
+          gh release edit "$GITHUB_REF_NAME" --draft=false --latest

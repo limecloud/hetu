@@ -256,7 +256,11 @@ fn workspace_management_is_explicit_fixed_and_revocation_does_not_revive_old_tas
     let author = Kernel::open(json!({"workspace_path":work,"mode":"author","create":{"title":"渡口","locale":"zh-CN","operation_key":"init"}})).unwrap();
     let directory = temp.path().join("接入");
     let hub = CollaborationHub::open(&directory, "codex").unwrap();
-    let grant = ok(call(&author, "collaboration.authorize_workspace", json!({"client_adapter":"codex","collaboration_path":directory,"operation_key":"grant"})));
+    let grant = ok(call(
+        &author,
+        "collaboration.authorize_workspace",
+        json!({"client_adapter":"codex","collaboration_path":directory,"operation_key":"grant"}),
+    ));
     let reference = grant["management_ref"].clone();
     // 显式传入引用，避开优化构建中闭包反复移动可变 Value 的内存错误。
     // 独立 serde_json 复现与工具链对照见 release-optimized-json-2026-11-15.json。
@@ -264,30 +268,126 @@ fn workspace_management_is_explicit_fixed_and_revocation_does_not_revive_old_tas
         input["management_ref"] = reference.clone();
         hub_call(hub, name, input)
     }
-    let before = ok(bound(&hub, &reference, "novels.get",json!({})));
-    let mut metadata = before["novel"]["metadata"].clone(); metadata["synopsis"] = json!("潮水退去后的一封信。");
-    assert_ne!(bound(&hub, &reference, "novels.update",json!({"expected":{"revision":before["revision"],"sha256":before["sha256"]},"metadata":metadata,"operation_key":"direct"}))["status"],"succeeded");
-    let prepared = ok(bound(&hub, &reference, "agent_operations.prepare",json!({"action":"hetu.novels.update","input":{"expected":{"revision":before["revision"],"sha256":before["sha256"]},"metadata":metadata,"operation_key":"change"},"summary":"整理简介","operation_key":"prepare"})));
-    assert_eq!(bound(&hub, &reference, "agent_operations.execute",json!({"proposal_id":prepared["proposal_id"],"proposal_sha256":prepared["proposal_sha256"],"operation_key":"early"}))["error"]["code"],"hetu.author_confirmation_required");
-    ok(call(&author,"agent_operations.decide",json!({"proposal_id":prepared["proposal_id"],"proposal_sha256":prepared["proposal_sha256"],"expected_state_revision":1,"decision":"approve","operation_key":"approve"})));
-    ok(bound(&hub, &reference, "agent_operations.execute",json!({"proposal_id":prepared["proposal_id"],"proposal_sha256":prepared["proposal_sha256"],"operation_key":"execute"})));
-    assert_eq!(ok(bound(&hub, &reference, "novels.get",json!({})))["novel"]["metadata"]["synopsis"],metadata["synopsis"]);
-    let preview = ok(bound(&hub, &reference, "creative_tasks.preview_prompt",json!({"scope_ref":reference["scope_ref"],"task_kind":"book_profile","brief":"整理书名与简介","input_refs":[],"client_adapter":"codex","language_tag":"zh-CN"})));
-    let mut input = preview["prepare_input"].clone();input["operation_key"]=json!("task");
-    let proposal = ok(bound(&hub, &reference, "agent_operations.prepare",json!({"action":"hetu.creative_tasks.prepare","input":input,"summary":"拟简介","operation_key":"prepare-task"})));
-    ok(call(&author,"agent_operations.decide",json!({"proposal_id":proposal["proposal_id"],"proposal_sha256":proposal["proposal_sha256"],"expected_state_revision":1,"decision":"approve","operation_key":"approve-task"})));
+    let before = ok(bound(&hub, &reference, "novels.get", json!({})));
+    let mut metadata = before["novel"]["metadata"].clone();
+    metadata["synopsis"] = json!("潮水退去后的一封信。");
+    assert_ne!(
+        bound(
+            &hub,
+            &reference,
+            "novels.update",
+            json!({"expected":{"revision":before["revision"],"sha256":before["sha256"]},"metadata":metadata,"operation_key":"direct"})
+        )["status"],
+        "succeeded"
+    );
+    let prepared = ok(bound(
+        &hub,
+        &reference,
+        "agent_operations.prepare",
+        json!({"action":"hetu.novels.update","input":{"expected":{"revision":before["revision"],"sha256":before["sha256"]},"metadata":metadata,"operation_key":"change"},"summary":"整理简介","operation_key":"prepare"}),
+    ));
+    assert_eq!(
+        bound(
+            &hub,
+            &reference,
+            "agent_operations.execute",
+            json!({"proposal_id":prepared["proposal_id"],"proposal_sha256":prepared["proposal_sha256"],"operation_key":"early"})
+        )["error"]["code"],
+        "hetu.author_confirmation_required"
+    );
+    ok(call(
+        &author,
+        "agent_operations.decide",
+        json!({"proposal_id":prepared["proposal_id"],"proposal_sha256":prepared["proposal_sha256"],"expected_state_revision":1,"decision":"approve","operation_key":"approve"}),
+    ));
+    ok(bound(
+        &hub,
+        &reference,
+        "agent_operations.execute",
+        json!({"proposal_id":prepared["proposal_id"],"proposal_sha256":prepared["proposal_sha256"],"operation_key":"execute"}),
+    ));
+    assert_eq!(
+        ok(bound(&hub, &reference, "novels.get", json!({})))["novel"]["metadata"]["synopsis"],
+        metadata["synopsis"]
+    );
+    let preview = ok(bound(
+        &hub,
+        &reference,
+        "creative_tasks.preview_prompt",
+        json!({"scope_ref":reference["scope_ref"],"task_kind":"book_profile","brief":"整理书名与简介","input_refs":[],"client_adapter":"codex","language_tag":"zh-CN"}),
+    ));
+    let mut input = preview["prepare_input"].clone();
+    input["operation_key"] = json!("task");
+    let proposal = ok(bound(
+        &hub,
+        &reference,
+        "agent_operations.prepare",
+        json!({"action":"hetu.creative_tasks.prepare","input":input,"summary":"拟简介","operation_key":"prepare-task"}),
+    ));
+    ok(call(
+        &author,
+        "agent_operations.decide",
+        json!({"proposal_id":proposal["proposal_id"],"proposal_sha256":proposal["proposal_sha256"],"expected_state_revision":1,"decision":"approve","operation_key":"approve-task"}),
+    ));
     let execute = json!({"proposal_id":proposal["proposal_id"],"proposal_sha256":proposal["proposal_sha256"],"operation_key":"execute-task"});
-    let task = ok(bound(&hub, &reference, "agent_operations.execute",execute.clone()));
+    let task = ok(bound(
+        &hub,
+        &reference,
+        "agent_operations.execute",
+        execute.clone(),
+    ));
     assert!(task["task_locator"].is_object());
-    assert_eq!(ok(bound(&hub, &reference, "agent_operations.execute",execute))["task_locator"],task["task_locator"]);
-    ok(hub_call(&hub,"collaboration.open",json!({"task_locator":task["task_locator"]})));
-    let other = CollaborationHub::open(&directory,"claude-code").unwrap();
-    assert_ne!(hub_call(&other,"workspaces.get",json!({"management_ref":reference}))["status"],"succeeded");
-    ok(call(&author,"collaboration.revoke_management",json!({"grant_id":reference["grant_id"],"client_adapter":"codex","collaboration_path":directory,"operation_key":"revoke-work"})));
-    assert_ne!(bound(&hub, &reference, "novels.get",json!({}))["status"],"succeeded");
-    let renewed = ok(call(&author,"collaboration.authorize_workspace",json!({"client_adapter":"codex","collaboration_path":directory,"operation_key":"regrant"})));
-    assert_ne!(renewed["management_ref"]["grant_revision"],reference["grant_revision"]);
-    assert_ne!(bound(&hub, &reference, "novels.get",json!({}))["status"],"succeeded");
-    assert_ne!(hub_call(&hub,"collaboration.open",json!({"task_locator":task["task_locator"]}))["status"],"succeeded");
-    ok(hub_call(&hub,"novels.get",json!({"management_ref":renewed["management_ref"]})));
+    assert_eq!(
+        ok(bound(&hub, &reference, "agent_operations.execute", execute))["task_locator"],
+        task["task_locator"]
+    );
+    ok(hub_call(
+        &hub,
+        "collaboration.open",
+        json!({"task_locator":task["task_locator"]}),
+    ));
+    let other = CollaborationHub::open(&directory, "claude-code").unwrap();
+    assert_ne!(
+        hub_call(
+            &other,
+            "workspaces.get",
+            json!({"management_ref":reference})
+        )["status"],
+        "succeeded"
+    );
+    ok(call(
+        &author,
+        "collaboration.revoke_management",
+        json!({"grant_id":reference["grant_id"],"client_adapter":"codex","collaboration_path":directory,"operation_key":"revoke-work"}),
+    ));
+    assert_ne!(
+        bound(&hub, &reference, "novels.get", json!({}))["status"],
+        "succeeded"
+    );
+    let renewed = ok(call(
+        &author,
+        "collaboration.authorize_workspace",
+        json!({"client_adapter":"codex","collaboration_path":directory,"operation_key":"regrant"}),
+    ));
+    assert_ne!(
+        renewed["management_ref"]["grant_revision"],
+        reference["grant_revision"]
+    );
+    assert_ne!(
+        bound(&hub, &reference, "novels.get", json!({}))["status"],
+        "succeeded"
+    );
+    assert_ne!(
+        hub_call(
+            &hub,
+            "collaboration.open",
+            json!({"task_locator":task["task_locator"]})
+        )["status"],
+        "succeeded"
+    );
+    ok(hub_call(
+        &hub,
+        "novels.get",
+        json!({"management_ref":renewed["management_ref"]}),
+    ));
 }

@@ -1,0 +1,547 @@
+{
+  "contract_revision": "1",
+  "context_binding": "work_ref injected by scoped host; explicit in standalone data CLI",
+  "actions": [
+    {
+      "name": "hetu.extensions.objects.list",
+      "tool_name": "plugin_objects_list",
+      "title": "读取当前作品的插件成果",
+      "effect": "read",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "cursor": {
+            "type": "string",
+            "pattern": "^ext_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          }
+        }
+      },
+      "required_permissions": [
+        "objects.read"
+      ]
+    },
+    {
+      "name": "hetu.extensions.objects.get",
+      "tool_name": "plugin_objects_get",
+      "title": "读取固定插件修订",
+      "effect": "read",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "object_id"
+        ],
+        "properties": {
+          "object_id": {
+            "type": "string",
+            "pattern": "^ext_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          }
+        }
+      },
+      "required_permissions": [
+        "objects.read"
+      ]
+    },
+    {
+      "name": "hetu.extensions.objects.export",
+      "tool_name": "plugin_objects_export",
+      "title": "导出通用JSON或Markdown",
+      "effect": "read",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "object_id",
+          "format"
+        ],
+        "properties": {
+          "object_id": {
+            "type": "string",
+            "pattern": "^ext_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "format": {
+            "enum": [
+              "json",
+              "markdown"
+            ]
+          }
+        }
+      },
+      "required_permissions": [
+        "objects.read"
+      ]
+    },
+    {
+      "name": "hetu.extensions.operations.get",
+      "tool_name": "plugin_operations_get",
+      "title": "查询原插件操作",
+      "effect": "read",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "operation_key"
+        ],
+        "properties": {
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        }
+      },
+      "required_permissions": [
+        "objects.read"
+      ]
+    },
+    {
+      "name": "hetu.extensions.objects.save",
+      "tool_name": "plugin_objects_save",
+      "title": "保存受管插件修订",
+      "effect": "managed_write",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "title",
+          "schema_version",
+          "content",
+          "expected_revision",
+          "expected_sha256",
+          "operation_key"
+        ],
+        "properties": {
+          "object_id": {
+            "type": "string",
+            "pattern": "^ext_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "kind": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "schema_version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "content": {},
+          "source_refs": {
+            "type": "array",
+            "description": "同一获权WorkRef的固定领域来源，仅核验引用，不授予来源读取或修改权限。",
+            "maxItems": 64,
+            "uniqueItems": true,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "work_ref",
+                "sha256"
+              ],
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "document",
+                    "blueprint",
+                    "work",
+                    "asset",
+                    "cue"
+                  ]
+                },
+                "work_ref": {
+                  "type": "object"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "document_id": {
+                  "type": "string",
+                  "pattern": "^doc_[0-9a-f-]{36}$"
+                },
+                "revision_id": {
+                  "type": "string",
+                  "pattern": "^rev_[0-9a-f-]{36}$"
+                },
+                "blueprint_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 120
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "revision_ref": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "revision"
+                  ],
+                  "properties": {
+                    "revision": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 9007199254740991
+                    }
+                  }
+                },
+                "asset_id": {
+                  "type": "string",
+                  "pattern": "^asset_[0-9a-f-]{36}$"
+                },
+                "cue_id": {
+                  "type": "string",
+                  "pattern": "^cue_[0-9a-f-]{36}$"
+                }
+              },
+              "oneOf": [
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "document"
+                    }
+                  },
+                  "required": [
+                    "document_id",
+                    "revision_id"
+                  ],
+                  "propertyNames": {
+                    "enum": [
+                      "kind",
+                      "work_ref",
+                      "sha256",
+                      "document_id",
+                      "revision_id"
+                    ]
+                  }
+                },
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "blueprint"
+                    }
+                  },
+                  "required": [
+                    "blueprint_id",
+                    "revision"
+                  ],
+                  "propertyNames": {
+                    "enum": [
+                      "kind",
+                      "work_ref",
+                      "sha256",
+                      "blueprint_id",
+                      "revision"
+                    ]
+                  }
+                },
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "work"
+                    }
+                  },
+                  "required": [
+                    "revision_ref"
+                  ],
+                  "propertyNames": {
+                    "enum": [
+                      "kind",
+                      "work_ref",
+                      "sha256",
+                      "revision_ref"
+                    ]
+                  }
+                },
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "asset"
+                    }
+                  },
+                  "required": [
+                    "asset_id",
+                    "revision"
+                  ],
+                  "propertyNames": {
+                    "enum": [
+                      "kind",
+                      "work_ref",
+                      "sha256",
+                      "asset_id",
+                      "revision"
+                    ]
+                  }
+                },
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "cue"
+                    }
+                  },
+                  "required": [
+                    "cue_id",
+                    "revision"
+                  ],
+                  "propertyNames": {
+                    "enum": [
+                      "kind",
+                      "work_ref",
+                      "sha256",
+                      "cue_id",
+                      "revision"
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "expected_revision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "expected_sha256": {
+            "type": "string",
+            "pattern": "^(|[0-9a-f]{64})$"
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        }
+      },
+      "required_permissions": [
+        "objects.write"
+      ]
+    },
+    {
+      "name": "hetu.extensions.migrations.prepare",
+      "tool_name": "plugin_migrations_prepare",
+      "title": "准备固定插件数据迁移",
+      "effect": "managed_write",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "object_id",
+          "expected_revision",
+          "expected_sha256",
+          "content",
+          "operation_key",
+          "target_schema_version"
+        ],
+        "properties": {
+          "object_id": {
+            "type": "string",
+            "pattern": "^ext_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "expected_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "content": {},
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "target_schema_version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        }
+      },
+      "required_permissions": [
+        "objects.read",
+        "objects.write"
+      ]
+    },
+    {
+      "name": "hetu.extensions.migrations.get",
+      "tool_name": "plugin_migrations_get",
+      "title": "回读固定插件迁移及原结果",
+      "effect": "read",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "migration_id"
+        ],
+        "properties": {
+          "migration_id": {
+            "type": "string",
+            "pattern": "^migration_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          }
+        }
+      },
+      "required_permissions": [
+        "objects.read"
+      ]
+    },
+    {
+      "name": "hetu.extensions.migrations.execute",
+      "tool_name": "plugin_migrations_execute",
+      "title": "执行作者批准的插件数据迁移",
+      "effect": "managed_write",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "migration_id",
+          "plan_sha256",
+          "operation_key"
+        ],
+        "properties": {
+          "migration_id": {
+            "type": "string",
+            "pattern": "^migration_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "plan_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        }
+      },
+      "required_permissions": [
+        "objects.write"
+      ]
+    },
+    {
+      "name": "hetu.extensions.migrations.list",
+      "tool_name": "plugin_migrations_list",
+      "title": "读取当前作品的插件数据升级方案",
+      "effect": "read",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [],
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "cursor": {
+            "type": "string",
+            "pattern": "^migration_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          }
+        }
+      },
+      "required_permissions": [
+        "objects.read"
+      ]
+    },
+    {
+      "name": "hetu.extensions.objects.search",
+      "tool_name": "plugin_objects_search",
+      "title": "检索当前作品的插件成果标题",
+      "effect": "read",
+      "required_permissions": [
+        "objects.read"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "kind": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "cursor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024,
+            "pattern": "^[A-Za-z0-9_-]+$"
+          }
+        }
+      }
+    },
+    {
+      "name": "hetu.extensions.index.status",
+      "tool_name": "plugin_index_status",
+      "title": "读取插件派生索引状态",
+      "effect": "read",
+      "required_permissions": [
+        "objects.read"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [],
+        "properties": {}
+      }
+    },
+    {
+      "name": "hetu.extensions.index.rebuild",
+      "tool_name": "plugin_index_rebuild",
+      "title": "重建当前作品的插件元数据索引",
+      "effect": "cache_write",
+      "required_permissions": [
+        "objects.read"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [],
+        "properties": {}
+      }
+    }
+  ]
+}

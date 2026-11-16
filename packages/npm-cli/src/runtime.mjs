@@ -20,7 +20,7 @@ export function requirePlatform(platform = process.platform, arch = process.arch
 
 export function releaseDigest(manifest) {
   const digest = manifest.files?.[asset];
-  if (manifest.version !== version || manifest.platform !== 'macos' || manifest.architecture !== 'arm64'
+  if (manifest.kind !== 'electron-release-package' || manifest.version !== version || manifest.platform !== 'macos' || manifest.architecture !== 'arm64'
       || manifest.team_id !== team || manifest.notarization_status !== 'Accepted' || !/^[a-f0-9]{64}$/.test(digest ?? '')) {
     throw new Error('河图发行清单的版本、平台、签名团队或公证状态不匹配。');
   }
@@ -53,11 +53,11 @@ function appVersion(app) {
 
 function verifyApp(app) {
   if (appVersion(app) !== version) throw new Error('河图原生运行时与 npm 包版本不一致。');
-  if (command('/usr/libexec/PlistBuddy', ['-c', 'Print :CFBundleIdentifier', join(app, 'Contents/Info.plist')]).trim() !== 'run.limeai.hetu') {
+  if (command('/usr/libexec/PlistBuddy', ['-c', 'Print :CFBundleIdentifier', join(app, 'Contents/Info.plist')]).trim() !== 'run.limeai.hetu.electron') {
     throw new Error('河图运行时应用身份不匹配。');
   }
   command('/usr/bin/codesign', ['--verify', '--deep', '--strict', app]);
-  for (const path of [app, ...['hetu', 'hetu-mcp'].map(name => join(app, 'Contents/Helpers', name))]) {
+  for (const path of [app, ...['hetu', 'hetu-mcp'].map(name => join(app, 'Contents/Resources/bin', name))]) {
     const signature = command('/usr/bin/codesign', ['--display', '--verbose=4', path]);
     if (!signature.includes(`TeamIdentifier=${team}\n`) || !signature.includes('Authority=Developer ID Application:')) {
       throw new Error('河图运行时没有使用官方 Developer ID 签名。');
@@ -91,7 +91,7 @@ export async function cachedRuntime(directory, validate = verifyApp) {
     return app;
   }
   if (record.schema_version !== 1 || record.version !== version || record.team_id !== team
-      || !['hetu', 'hetu-mcp'].every(name => existsSync(join(app, 'Contents/Helpers', name)))) {
+      || !['hetu', 'hetu-mcp'].every(name => existsSync(join(app, 'Contents/Resources/bin', name)))) {
     throw new Error('河图缓存不完整或版本不匹配，请重新安装对应版本的运行时。');
   }
   // 私有安装目录与普通 npm 安装目录一样受本机账号保护；完整验证在原子安装前执行一次。
@@ -159,7 +159,7 @@ export async function forward(binary, args) {
 export async function main(binary) {
   try {
     const app = await runtime();
-    const result = await forward(join(app, 'Contents/Helpers', binary), process.argv.slice(2));
+    const result = await forward(join(app, 'Contents/Resources/bin', binary), process.argv.slice(2));
     if (result.signal) process.kill(process.pid, result.signal);
     else process.exitCode = result.code;
   } catch (error) {

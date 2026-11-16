@@ -46,7 +46,9 @@ fn stage_novel(store: &Store, novel: &Value, changes: &mut Changes) -> Result<()
 impl Kernel {
     pub(super) fn novel(&self) -> Result<Option<Value>> {
         let record = self.novel_record()?;
-        if let Some(novel) = &record { self.validate_novel_structure(novel, &[])?; }
+        if let Some(novel) = &record {
+            self.validate_novel_structure(novel, &[])?;
+        }
         Ok(record)
     }
 
@@ -164,7 +166,10 @@ impl Kernel {
                 "章节必须按分卷顺序连续排列。",
             )?;
             last_group = group;
-            let document = if let Some(staged) = staged_documents.iter().find(|d| d["document_id"] == document_id) {
+            let document = if let Some(staged) = staged_documents
+                .iter()
+                .find(|d| d["document_id"] == document_id)
+            {
                 staged.clone()
             } else {
                 stored_documents
@@ -189,7 +194,11 @@ impl Kernel {
     }
 
     pub(super) fn initialize_novel(&self, input: &Value, changes: &mut Changes) -> Result<Value> {
-        ensure(self.config["work_type"] != "drama", "invalid_input", "剧本作品不初始化小说目录。")?;
+        ensure(
+            self.config["work_type"] != "drama",
+            "invalid_input",
+            "剧本作品不初始化小说目录。",
+        )?;
         ensure(
             self.novel()?.is_none(),
             "revision_conflict",
@@ -292,18 +301,32 @@ impl Kernel {
             )
         })?;
         // 新章追加到最后一个分组；作者可在目录管理中移动到其他卷。
-        let volume = selected_volume.cloned().unwrap_or_else(|| novel["chapters"]
-            .as_array()
-            .unwrap()
-            .last()
-            .map(|c| c["volume_id"].clone())
-            .unwrap_or(Value::Null));
+        let volume = selected_volume.cloned().unwrap_or_else(|| {
+            novel["chapters"]
+                .as_array()
+                .unwrap()
+                .last()
+                .map(|c| c["volume_id"].clone())
+                .unwrap_or(Value::Null)
+        });
         novel["chapters"].as_array_mut().unwrap().push(json!({"chapter_id":id("chapter"),"document_id":document["document_id"],"volume_id":volume}));
         if selected_volume.is_some() {
             let volumes = novel["volumes"].as_array().unwrap().clone();
-            ensure(volume.is_null() || volumes.iter().any(|v| v["volume_id"] == volume), "invalid_input", "目标分卷不存在。")?;
+            ensure(
+                volume.is_null() || volumes.iter().any(|v| v["volume_id"] == volume),
+                "invalid_input",
+                "目标分卷不存在。",
+            )?;
             novel["chapters"].as_array_mut().unwrap().sort_by_key(|c| {
-                if c["volume_id"].is_null() { 0 } else { volumes.iter().position(|v| v["volume_id"] == c["volume_id"]).unwrap_or(volumes.len()) + 1 }
+                if c["volume_id"].is_null() {
+                    0
+                } else {
+                    volumes
+                        .iter()
+                        .position(|v| v["volume_id"] == c["volume_id"])
+                        .unwrap_or(volumes.len())
+                        + 1
+                }
             });
         }
         self.validate_novel_structure(&novel, std::slice::from_ref(document))?;
@@ -311,7 +334,12 @@ impl Kernel {
         Ok(())
     }
 
-    pub(super) fn append_imported_chapters(&self, input: &Value, documents: &[Value], changes: &mut Changes) -> Result<Value> {
+    pub(super) fn append_imported_chapters(
+        &self,
+        input: &Value,
+        documents: &[Value],
+        changes: &mut Changes,
+    ) -> Result<Value> {
         let mut novel = self.expected_novel(&input["expected"])?;
         for (document, item) in documents.iter().zip(input["items"].as_array().unwrap()) {
             novel["chapters"].as_array_mut().unwrap().push(json!({"chapter_id":id("chapter"),"document_id":document["document_id"],"volume_id":item["volume_id"]}));

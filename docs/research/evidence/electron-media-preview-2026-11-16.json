@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-11-15T22:37:21.172920+00:00",
+  "version": "0.7.0",
+  "scope": "可信桌面固定素材的受管流式预览与音视频播放",
+  "status": "slice_passed",
+  "all_refactoring_complete": false,
+  "source": {
+    "dirty_worktree": true,
+    "base_commit": "900f8b0645479ba65f437d62fadbb7c7f09e7b38",
+    "snapshot_sha256": "d35bb658cb61a546e447e41c58946edc4c6ede439dfc77d026831a3e7d6329e1",
+    "file_count": 208,
+    "current_source_matches_package": true
+  },
+  "package": {
+    "manifest_path": "output/electron-packages/hetu-dev-nWj3Ee/manifest.json",
+    "manifest_sha256": "53865356fdcf2c96bc140621b85f28441b8bf549f54eb8c983149465ae94ebef",
+    "artifact_count": 310,
+    "platform": "darwin",
+    "arch": "arm64",
+    "electron": "42.11.18",
+    "node": {
+      "version": "v25.0.0",
+      "platform": "darwin",
+      "arch": "arm64"
+    },
+    "signing": "ad-hoc-development",
+    "production_verified": false
+  },
+  "checks": {
+    "core_media_private_stdio": {
+      "status": "passed",
+      "passed": 18,
+      "final_image_tests": 3,
+      "final_image_tests_overlap": true
+    },
+    "plugin_node_cli_mcp": {
+      "status": "passed",
+      "passed": 7
+    },
+    "desktop": {
+      "status": "passed_after_fixes",
+      "related_development_passed": 10,
+      "packaged_passed": 1,
+      "skipped": 0,
+      "initial_failures": [
+        {
+          "step": "损坏素材提示",
+          "finding": "内部IPC错误前缀出现在用户提示中",
+          "fix": "改为明确的无法预览提示和Core原因"
+        },
+        {
+          "step": "截断PNG",
+          "finding": "Chromium允许显示部分像素而不触发error",
+          "fix": "PNG/JPEG/WebP打开时增加有界Rust静态像素解码；持久validation仍不提升"
+        },
+        {
+          "step": "切换作品的测试",
+          "finding": "测试直接寻找当前工作面之外的作品按钮",
+          "fix": "测试先返回创作库再选剧本；产品导航不变"
+        }
+      ],
+      "rerun": "修正后的预览专项通过；其余相关9项通过，原失败日志保留"
+    },
+    "visual": {
+      "status": "inspected",
+      "screenshot_path": "output/plugin-doc-qa/electron-media-preview-2026-11-16/media-video-preview.png",
+      "screenshot_sha256": "24d2939f354e1594195924b2f39274f7894719752ef9a1efabbea8574f5d578b",
+      "scope": "合成MP4测试画面及素材详情；不代表成片音画审阅或作者认可"
+    },
+    "docs": {
+      "status": "passed",
+      "mermaid_total": 84,
+      "new_sequence_render": {
+        "status": "passed",
+        "version": "11.12.0",
+        "width": 907,
+        "height": 936,
+        "path": "output/plugin-doc-qa/electron-media-preview-2026-11-16/media-preview-sequence.svg",
+        "sha256": "7ccd14f55b6ee6fba479d0c8e8304783f0aa4b769185a349e78a04dcb4094c94"
+      }
+    },
+    "skills": {
+      "status": "not_repeated",
+      "reason": "未新增Agent公开动作或改变任务方法；此前素材方法45套件已验"
+    },
+    "strict_clippy": {
+      "status": "not_run",
+      "previous_baseline": "27项既有Core风格告警，不转记通过"
+    }
+  },
+  "logs": {
+    "core": "output/plugin-doc-qa/electron-media-preview-2026-11-16/media-preview-core-final.log",
+    "image_final": "output/plugin-doc-qa/electron-media-preview-2026-11-16/media-preview-core-image-final.log",
+    "plugin": "output/plugin-doc-qa/electron-media-preview-2026-11-16/media-preview-plugins-final.log",
+    "desktop_initial": "output/plugin-doc-qa/electron-media-preview-2026-11-16/media-preview-e2e.log",
+    "partial_png": "output/plugin-doc-qa/electron-media-preview-2026-11-16/media-preview-e2e-rerun.log",
+    "desktop_related": "output/plugin-doc-qa/electron-media-preview-2026-11-16/media-preview-desktop-final.log",
+    "preview_rerun": "output/plugin-doc-qa/electron-media-preview-2026-11-16/media-preview-navigation-rerun.log",
+    "packaged": "output/plugin-doc-qa/electron-media-preview-2026-11-16/media-preview-packaged-final.log",
+    "package": "output/plugin-doc-qa/electron-media-preview-2026-11-16/media-preview-package.log",
+    "docs": "output/plugin-doc-qa/electron-media-preview-2026-11-16/media-preview-docs-final.log"
+  },
+  "log_sha256": {
+    "core": "c19d25a04150a295d84f1594b09da3b57f9438d021556b137678f1e5b4f3d7df",
+    "image_final": "3f299d35837fbaac55af4fc8325e38540c25256738a52f64ab86cc111f02afea",
+    "plugin": "c99df791b5953c8b73c4d0b36c26c3a483a6b13059a837a44d51ab6723bffe95",
+    "desktop_initial": "8b13851dbc515f0c4e86ffda2f2cc005a7c0f222fd3f69de403b27305d04f136",
+    "partial_png": "0a4dd7948385ee8adfc77fad46071fb6028631fd3ef7ac11f9b7e760b00ef489",
+    "desktop_related": "fec4eda214bdd97f2aa2a4974dfb0eb53e7c0611f8e05939945e5b286b7224b0",
+    "preview_rerun": "f548098a513cb680a1c64d00588ba1ed35ffadcf903c975cde50e1879d0268a1",
+    "packaged": "9b97d05197f06b530599528649c2835105f11c708de91f542af592d04f49f1be",
+    "package": "a7f6a7cb70adfb3bd2616ee1c24b7fc5e48f35dc9a4480907f0155b5a0581db9",
+    "docs": "b54b937fa1ab60591e7b63eb52922d03f028c71a2a537bfd6a7842729661a75b"
+  },
+  "test_sha256": {
+    "core/tests/media_preview.rs": "977daeec30d1a5ae5d6f0e871cf7c05692d2de8e5ff52bcc90fcd0d40ca01535",
+    "apps/app-server/tests/stdio.rs": "faced7d6e859de02d09dc035f8fc1cfd94a050fef362d31830b55756fe93db7e",
+    "apps/desktop/tests/media-preview.spec.ts": "93a7de349164f736fbf6218c366135e9294148f2b2b6f370c386a1666ccd64ed",
+    "apps/desktop/tests/media-transport.spec.ts": "a7b2970dfea0a8b3b1b2ddd05179a9fcabd4c3eee65ad66b471e55910f78346a",
+    "apps/desktop/tests/packaged.spec.ts": "de46738b2671a1cb2e7342d67b01b482c515ad46a97bcbd5bf5742613dcc7b97",
+    "apps/desktop/tests/fixtures/preview.mp4": "cff378b4fed0c76fac11db26a1fcc02f533974be48bbe84d7d8a0e3f7ad711b4"
+  },
+  "verified": [
+    "私有media/open/read/close不登记公开领域动作，作者内核核验固定WorkRef、素材修订、真实摘要与完整原字节；Agent／他作品／旧未归属记录拒绝",
+    "同一只读文件句柄核对大小、修改状态与Unix身份；变动、链接、伪造摘要及非法范围拒绝",
+    "8句柄、512KiB分块、HTTP GET/HEAD和单字节范围、后压、取消和释放",
+    "图片32MiB／1～8192边长／6400万像素；PNG/JPEG/WebP静态像素解码限512MiB，小图可用，损坏像素拒绝",
+    "真实Electron等比图片、WAV播放时间推进、MP4解码尺寸与时间推进及seek后继续；默认不自动播放",
+    "临时媒体地址绑定当前作品epoch，离页及作品切换撤销，旧读取返回前再次核验",
+    "插件实际session、普通参考页session没有媒体处理器或可信作者桥；任意file_path拒绝",
+    "实际开发包的208份源码摘要一致、310项制品摘要、开发签名、随包Rust/Node/CLI/MCP及图片/WAV/MP4播放通过"
+  ],
+  "computer_use_business_steps": 0,
+  "paid_model_calls": 0,
+  "not_verified": [
+    "GIF或动画全部帧、音视频完整解码和人耳／全程音画内容审阅",
+    "大媒体性能、所有编码与Windows播放",
+    "视频区间意见、制作、选用和工程交付，版本交付与本机设置等其余P0",
+    "真实OS输入法、双语和完整无障碍",
+    "跨作品插件来源、Schema迁移、规模化索引和生态分发",
+    "正式签名公证、干净系统安装升级及默认入口切换"
+  ],
+  "delivery_boundary": "保留原生版本；未覆盖安装、提交、推送或发布，R6整体继续推进。"
+}

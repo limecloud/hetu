@@ -420,14 +420,32 @@ impl Kernel {
             "creative_task" => {
                 let reference = &source["reference"];
                 let result = self.get_creative_task(&json!({"task_ref":reference["task_ref"],"submission_id":reference["submission_id"]}))?;
-                ensure(result["request"]["task_kind"] == "cover", "forbidden", "仅可选用当前作品的封面任务候选。")?;
-                let raw = self.store.read(&format!(".hetu/tasks/{}/submissions/{}.json",text(&reference["task_ref"],"task_id")?,text(reference,"submission_id")?))?;
+                ensure(
+                    result["request"]["task_kind"] == "cover",
+                    "forbidden",
+                    "仅可选用当前作品的封面任务候选。",
+                )?;
+                let raw = self.store.read(&format!(
+                    ".hetu/tasks/{}/submissions/{}.json",
+                    text(&reference["task_ref"], "task_id")?,
+                    text(reference, "submission_id")?
+                ))?;
                 let submission: Value = serde_json::from_slice(&raw)?;
-                let candidate = result["submission"]["candidates"].as_array().unwrap().iter()
-                    .find(|item| item["candidate_id"] == reference["candidate_id"] && item["kind"] == "image")
+                let candidate = result["submission"]["candidates"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .find(|item| {
+                        item["candidate_id"] == reference["candidate_id"] && item["kind"] == "image"
+                    })
                     .ok_or_else(|| Error::new("not_found", "封面任务候选不存在。"))?;
-                Ok((self.store.managed_media(text(candidate,"relative_path")?)?,candidate.clone(),
-                    json!({"kind":"creative_task","reference":reference,"request":result["request"],"request_sha256":result["request_sha256"],"submission":submission,"submission_sha256":digest(&raw),"candidate":candidate}),None))
+                Ok((
+                    self.store
+                        .managed_media(text(candidate, "relative_path")?)?,
+                    candidate.clone(),
+                    json!({"kind":"creative_task","reference":reference,"request":result["request"],"request_sha256":result["request_sha256"],"submission":submission,"submission_sha256":digest(&raw),"candidate":candidate}),
+                    None,
+                ))
             }
             _ => unreachable!("validated source kind"),
         }
@@ -466,7 +484,12 @@ impl Kernel {
             let filename = if input["source"]["kind"] == "file" {
                 provenance["original_filename"].clone()
             } else if input["source"]["kind"] == "creative_task" {
-                json!(text(&provenance["candidate"],"relative_path")?.rsplit('/').next().unwrap())
+                json!(
+                    text(&provenance["candidate"], "relative_path")?
+                        .rsplit('/')
+                        .next()
+                        .unwrap()
+                )
             } else {
                 provenance["candidate"]["filename"].clone()
             };

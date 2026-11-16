@@ -83,7 +83,11 @@ impl Kernel {
         self.submit_draft(&draft_input, changes)
     }
     pub(super) fn submit_draft(&self, input: &Value, changes: &mut Changes) -> Result<Value> {
-        let bp = if input["blueprint_ref"].is_object() { self.source_blueprint(&input["blueprint_ref"])?.0 } else { self.blueprint()? };
+        let bp = if input["blueprint_ref"].is_object() {
+            self.source_blueprint(&input["blueprint_ref"])?.0
+        } else {
+            self.blueprint()?
+        };
         ensure(
             bp["revision"] == input["blueprint_revision"],
             "revision_conflict",
@@ -290,7 +294,9 @@ impl Kernel {
             }
             let content = String::from_utf8(content)
                 .map_err(|_| Error::new("hetu.integrity_failure", "草稿不是 UTF-8。"))?;
-            return Ok(json!({"draft":draft,"content":content,"suggested_target_ref":self.draft_delivery_target(&draft)?}));
+            return Ok(
+                json!({"draft":draft,"content":content,"suggested_target_ref":self.draft_delivery_target(&draft)?}),
+            );
         }
         Err(Error::new("not_found", "草稿不存在。"))
     }

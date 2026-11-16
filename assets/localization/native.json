@@ -1,4 +1,12 @@
 {
+  "shell.return_related": {
+    "zh-CN": "返回《{title}》",
+    "en": "Back to {title}",
+    "purpose": "窗口顶栏：返回打开关联作品前的位置",
+    "parameters": [
+      "title"
+    ]
+  },
   "welcome.title": {
     "zh-CN": "河图洛书 Hetu Luoshu",
     "en": "Hetu Luoshu",
@@ -4469,8 +4477,8 @@
     "parameters": []
   },
   "novel.empty_detail": {
-    "zh-CN": "从左侧新建一个章节，或先整理分卷与大纲，开始你的故事。",
-    "en": "Create a chapter from the sidebar, or start by organizing volumes and outlines.",
+    "zh-CN": "让 AI 整理卷章、准备参考稿，或新建章节自行撰写。",
+    "en": "Ask your AI agent to organize chapters and prepare a draft, or create a chapter to write yourself.",
     "purpose": "Mac 原生界面：novel.empty_detail",
     "parameters": []
   },
@@ -9903,5 +9911,11 @@
     "parameters": [],
     "zh-CN": "请核对这条关联的固定依据和历史。需要更新依据、解除或恢复时，先准备确切变更供我审阅；保留旧任务和已交付版本。",
     "en": "Review this link’s fixed basis and history. Prepare an exact proposal before updating, removing, or restoring it. Preserve previous tasks and delivered revisions."
+  },
+  "novel.empty_title": {
+    "purpose": "小说尚无章节时的开始入口",
+    "parameters": [],
+    "zh-CN": "开始创作",
+    "en": "Start writing"
   }
 }

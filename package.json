@@ -4,7 +4,10 @@
   "workspaces": [
     "apps/website",
     "apps/task-view",
-    "packages/npm-cli"
+    "packages/npm-cli",
+    "apps/desktop",
+    "packages/plugin-sdk",
+    "packages/plugin-host"
   ],
   "engines": {
     "node": ">=24.21.0 <26"
@@ -16,7 +19,11 @@
     "deploy:website": "npm run deploy --workspace @hetu/website",
     "build:task-view": "npm run build --workspace @hetu/task-view",
     "test:task-view": "npm run test --workspace @hetu/task-view",
-    "test:cli": "npm run test --workspace @limecloud/hetu"
+    "test:cli": "npm run test --workspace @limecloud/hetu",
+    "build:desktop": "npm run build --workspace @hetu/desktop",
+    "start:desktop": "npm run start --workspace @hetu/desktop",
+    "package:desktop": "npm run package:dev --workspace @hetu/desktop --",
+    "test:plugins": "npm run test --workspace @hetu/desktop"
   },
-  "version": "0.7.0"
+  "version": "0.8.0"
 }

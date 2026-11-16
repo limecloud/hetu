@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-11-15T23:54:47.157020+00:00",
+  "version": "0.7.0",
+  "status": "slice_passed",
+  "all_refactoring_complete": false,
+  "source": {
+    "dirty_worktree": true,
+    "base_commit": "900f8b0645479ba65f437d62fadbb7c7f09e7b38",
+    "snapshot_sha256": "e6aa0175287deffe1f0d88f13ae406aa9f576baa4d82cef74b40dfd0cdb3a885",
+    "file_count": 2465,
+    "current_source_matches_package": true
+  },
+  "package": {
+    "manifest_path": "output/electron-packages/hetu-dev-BPuOCg/manifest.json",
+    "manifest_sha256": "983042c066eeb0f4916581847fc091f5a167d8a9ffa786df3987604110472c09",
+    "artifact_count": 2561,
+    "platform": "darwin",
+    "arch": "arm64",
+    "electron": "42.11.18",
+    "node": {
+      "version": "v25.0.0",
+      "platform": "darwin",
+      "arch": "arm64"
+    },
+    "signing": "ad-hoc-development",
+    "production_verified": false,
+    "executable": "output/electron-packages/hetu-dev-BPuOCg/package/Hetu Luoshu Electron Dev-darwin-arm64/Hetu Luoshu Electron Dev.app/Contents/MacOS/HetuElectronDev"
+  },
+  "checks": {
+    "rust_cli_mcp_private_stdio": {
+      "status": "passed",
+      "passed": 52
+    },
+    "local_settings_final": {
+      "status": "passed",
+      "passed": 3,
+      "overlap": true
+    },
+    "plugins": {
+      "status": "passed",
+      "passed": 7,
+      "skipped": 0
+    },
+    "desktop": {
+      "status": "passed_after_fixes",
+      "passed": 26,
+      "skipped": 0,
+      "includes_actual_package": true
+    },
+    "typescript": {
+      "status": "passed"
+    },
+    "docs": {
+      "status": "passed",
+      "documents": 77,
+      "mermaid_total": 84,
+      "mermaid_rendered": 84
+    },
+    "skills": {
+      "status": "passed",
+      "suites": 45,
+      "files": 2250,
+      "bytes": 7243761
+    },
+    "strict_clippy": {
+      "status": "failed",
+      "deduplicated_existing_issues": 32,
+      "local_settings_issues": 0,
+      "details": "output/plugin-doc-qa/transfer/clippy-verified-issues.json"
+    }
+  },
+  "initial_failures": [
+    {
+      "step": "MCP本机设置结果",
+      "finding": "scope_id=local不符合公共AXI结果Schema",
+      "fix": "统一collaboration并对所有结果执行Schema验证"
+    },
+    {
+      "step": "独立应用启动",
+      "finding": "用显示名拼接二进制路径导致ENOENT",
+      "fix": "使用制品实际executableName HetuElectronDev"
+    },
+    {
+      "step": "桌面测试超时",
+      "finding": "测试details中的timeout未实际设置testInfo超时",
+      "fix": "相关用例callback内调用test.setTimeout"
+    },
+    {
+      "step": "开发装配",
+      "finding": "装配过程中源码发生变化",
+      "fix": "源码门禁拒绝该包；源码稳定后重装配并核验全部摘要"
+    },
+    {
+      "step": "深色样式测试",
+      "finding": "Playwright默认light模拟覆盖nativeTheme",
+      "fix": "移除模拟后核验真实nativeTheme和背景计算样式"
+    }
+  ],
+  "computer_use": {
+    "status": "unavailable",
+    "reason": "原生工具getApp截图失败failedToCreateImageDestination；功能与样式使用真实Electron Playwright、截图和Core回读核验"
+  },
+  "paid_model_calls": 0,
+  "computer_use_business_steps": 0,
+  "not_verified": [
+    "精确WorkRef Git版本线、合并与网络同步",
+    "视频制作、区间反馈、成片确认及完整工程交付",
+    "插件Schema迁移、规模化索引、生态分发及升级",
+    "真实OS输入法、完整双语及无障碍",
+    "Windows目标系统构建与运行",
+    "正式签名公证、干净系统安装升级、默认入口切换及原生退役"
+  ],
+  "delivery_boundary": "保留原生版本；未覆盖安装、提交、推送、发布或删除。",
+  "logs": {
+    "integration": "output/plugin-doc-qa/transfer/settings-integration.log",
+    "settings_final": "output/plugin-doc-qa/transfer/settings-core-final.log",
+    "plugins": "output/plugin-doc-qa/transfer/plugin-tests.log",
+    "desktop": "output/plugin-doc-qa/transfer/electron-final.log",
+    "focused_desktop": "output/plugin-doc-qa/transfer/focused-desktop.log",
+    "theme": "output/plugin-doc-qa/transfer/settings-theme.log",
+    "package": "output/plugin-doc-qa/transfer/package-verified.log",
+    "package_rejected": "output/plugin-doc-qa/transfer/package-final.log",
+    "initial_desktop": "output/plugin-doc-qa/transfer/electron-tests.log",
+    "docs": "output/plugin-doc-qa/transfer/docs-final.log",
+    "methods": "output/plugin-doc-qa/transfer/methods-final.log",
+    "skills": "output/plugin-doc-qa/transfer/skills-final.log",
+    "diagrams": "output/plugin-doc-qa/transfer/diagrams.log",
+    "clippy": "output/plugin-doc-qa/transfer/clippy-verified.log"
+  },
+  "log_sha256": {
+    "integration": "e3fd66f7683c65986e4f2d9cbe57928027f51ec2d265071100e653387725b4a0",
+    "settings_final": "24294be50213ec7d7012915ec5e3f5f3f8b77f7ef14270a1fe52c2b1a2f60a7c",
+    "plugins": "22a26d2647f17ba1f5552909d41abdaaf512083e6d91bf1ab6dcc9d2e92db41a",
+    "desktop": "52685ab5eecd3157ff12003fa8e64772f2ed2f557362ec5ccb2e06672fcb6230",
+    "focused_desktop": "7c2f259dd3d73da5f3864c9af6c5843a8d4cd56c806d3fac39175b3cea85d759",
+    "theme": "e5daa1f78ac31303103585e2ac552e66c8eec908d95f44a652e718d54bb1509a",
+    "package": "224059526af34926e1f4715b80217cf22b7314f732da4baaaf32efc23bcba126",
+    "package_rejected": "3564849351f335a57cd2e1ed1bc05125ca6a470d97d25b3b1fe73083f84b91cc",
+    "initial_desktop": "7d6f9ba91ea69890a9ab0711832434db497b9e9fadb13f4b7d77ccfe5a5fdcc9",
+    "docs": "709c43fe1140ceaef8826158f09c9ed8a7dc038c64c701aaff647a4ce2941be1",
+    "methods": "42eb2486f223188d7d09cc7ee354ab642cd34bd81657ced128b00a3af4825c86",
+    "skills": "fd8e9c7088e0627528260985953a11536b25ddcd3efce6efdfa0ab5ab87e3c83",
+    "diagrams": "4bf2d103f6e82912c53c9f52d53580d0a21212a7f2404bb6a21da64321f5032f",
+    "clippy": "534f80dab1a8e8333ad83453e1419bb9e5bab6de54345004a435872dbf0c7397"
+  },
+  "scope": "精确作品的原稿导入与固定交付",
+  "verified": [
+    "WorkRef固定inline原字节与转换报告，拒绝任意宿主file_path及跨作品正文／资料／素材",
+    "小说目录CAS与剧本分集原子导入；固定原文件审阅、作者批准、原Agent执行",
+    "固定选集及修订交付，包内归属核验、摘要及权利问题展示",
+    "真实Rust CLI→Electron批准→原键执行→真实MCP回读，小说和独立剧本分别验证"
+  ]
+}

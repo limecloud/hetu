@@ -1,4 +1,8 @@
-# macOS 原生实施方案
+# macOS桌面实施与原生对照
+
+新工作台采用Electron＋Rust App Server，目标和迁移门禁见[39](39-Electron与插件优先重构架构.md)。现有`apps/macos/`保留作可运行对照，仅维护必要兼容与缺陷；下文SwiftUI/AppKit章节描述该对照实现及需要迁移的业务要求，页面结构不要求复刻。新插件和专业工作面优先进入Electron。
+
+Electron负责窗口、系统文件选择、菜单、剪贴板和受管Chromium视图；Rust负责作品、锁、修订、授权和恢复。第三方插件不获得作者preload或Keychain句柄。中文编辑、VoiceOver、权限、凭据、GPU、媒体和签名公证分别在macOS验收。
 
 V1 支持 macOS 14+、Apple Silicon arm64。其他架构按独立的原生验证与分发要求扩展。
 

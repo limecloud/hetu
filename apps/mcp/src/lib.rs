@@ -1,7 +1,7 @@
-mod resources;
-mod ui;
-mod stable;
 mod model_confirmation;
+mod resources;
+mod stable;
+mod ui;
 pub use stable::StableServer;
 
 use hetu_core::Kernel;
@@ -18,13 +18,19 @@ use tokio::sync::Semaphore;
 pub const MAX_MESSAGE_BYTES: usize = 16 * 1024 * 1024;
 const MAX_RESULT_BYTES: usize = 8 * 1024 * 1024;
 // 两种生命周期及报文差异交由官方 SDK 处理，兼容当前 Codex 的 stdio 握手。
-const SUPPORTED_PROTOCOL_VERSIONS: &[ProtocolVersion] = &[
-    ProtocolVersion::V_2026_07_28,
-    ProtocolVersion::V_2025_06_18,
-];
+const SUPPORTED_PROTOCOL_VERSIONS: &[ProtocolVersion] =
+    &[ProtocolVersion::V_2026_07_28, ProtocolVersion::V_2025_06_18];
 fn open_world(action: &str) -> bool {
-    matches!(action, "hetu.models.list" | "hetu.model_tasks.get" | "hetu.model_tasks.submit" | "hetu.model_tasks.collect"
-        | "hetu.agent_operations.prepare" | "hetu.agent_operations.execute" | "hetu.local_settings.execute")
+    matches!(
+        action,
+        "hetu.models.list"
+            | "hetu.model_tasks.get"
+            | "hetu.model_tasks.submit"
+            | "hetu.model_tasks.collect"
+            | "hetu.agent_operations.prepare"
+            | "hetu.agent_operations.execute"
+            | "hetu.local_settings.execute"
+    )
 }
 const RESOURCE_ACTIONS: &[&str] = &[
     "hetu.capabilities.get",
@@ -125,15 +131,33 @@ impl HetuServer {
             .ok_or("无法读取内核能力 / Cannot read kernel capabilities")?;
         let mappings: ToolCatalog =
             serde_json::from_str(include_str!("../../../contracts/tools/catalog.json"))?;
-        let registry: Value = serde_json::from_str(include_str!("../../../contracts/actions.json"))?;
+        let registry: Value =
+            serde_json::from_str(include_str!("../../../contracts/actions.json"))?;
         // 受管新建动作只在稳定入口经 management_ref 路由，不能进入旧作品／任务连接。
-        let stable_actions = hetu_core::collaboration::CollaborationHub::open(root, "generic")?.catalog();
+        let stable_actions =
+            hetu_core::collaboration::CollaborationHub::open(root, "generic")?.catalog();
         let mut names = std::collections::BTreeSet::new();
         for mapping in &mappings.tools {
-            if !names.insert(&mapping.name) || mapping.profiles.is_empty()
-                || !mapping.profiles.iter().all(|profile| matches!(profile.as_str(), "workspace" | "task" | "stable"))
-                || !registry["actions"].as_array().unwrap().iter().any(|action| action["name"] == mapping.action && (action["author_only"] == false
-                    || mapping.profiles.iter().all(|profile| profile == "stable") && stable_actions.as_array().unwrap().iter().any(|available| available["name"] == mapping.action && available["authorization"] == "new_managed_scope"))) {
+            if !names.insert(&mapping.name)
+                || mapping.profiles.is_empty()
+                || !mapping
+                    .profiles
+                    .iter()
+                    .all(|profile| matches!(profile.as_str(), "workspace" | "task" | "stable"))
+                || !registry["actions"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .any(|action| {
+                        action["name"] == mapping.action
+                            && (action["author_only"] == false
+                                || mapping.profiles.iter().all(|profile| profile == "stable")
+                                    && stable_actions.as_array().unwrap().iter().any(|available| {
+                                        available["name"] == mapping.action
+                                            && available["authorization"] == "new_managed_scope"
+                                    }))
+                    })
+            {
                 return Err("MCP 工具目录包含重复名称、无效范围或不可暴露的动作".into());
             }
         }
@@ -155,7 +179,9 @@ impl HetuServer {
             let Some(action) = actions
                 .iter()
                 .find(|a| a["name"] == mapping.action && a["author_only"] == false)
-            else { continue; };
+            else {
+                continue;
+            };
             let mut schema = output.clone();
             schema.as_object_mut().unwrap().remove("$id");
             schema["properties"]["action"] = json!({"const":mapping.action});

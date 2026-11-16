@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "kind": "electron-plugin-results",
+  "recorded_at": "2026-11-16",
+  "scope": "插件成果检索、固定修订导出与精确插件交接，索引规模预算；仅隔离测试作品。",
+  "checks": {
+    "core": {"status": "passed", "passed": 11, "log": "output/plugin-doc-qa/transfer/index-results-core-rechecked.log"},
+    "plugin_host": {"status": "passed", "passed": 13, "skipped": 0, "log": "output/plugin-doc-qa/transfer/index-results-node-serial.log"},
+    "desktop_development": {"status": "passed", "passed": 2, "logs": ["output/plugin-doc-qa/transfer/index-results-electron.log", "output/plugin-doc-qa/transfer/index-results-electron-serial.log"], "scope": "首次迁移通过及成果工作面串行复验；顶栏收敛后的最终验证由制品专项记录。"},
+    "local_settings": {"status": "passed", "passed": 4, "log": "output/plugin-doc-qa/transfer/index-results-settings-regression.log"},
+    "package": {"status": "running", "log": "output/plugin-doc-qa/transfer/index-results-package-frozen.log"}
+  },
+  "resolved_failures": [
+    {"stage": "initial_scale_test_compile", "reason": "测试变量声明使用逗号而非分号。", "resolution": "修正并格式化测试代码，11项Core复验通过。", "log": "output/plugin-doc-qa/transfer/index-results-core.log"},
+    {"stage": "parallel_integration_run", "reason": "成果夹具30秒超时，未进入界面；无窗口旅程90秒取消。", "resolution": "新夹具单独使用120秒预算，集成测试串行执行，13项通过。", "logs": ["output/plugin-doc-qa/transfer/index-results-electron.log", "output/plugin-doc-qa/transfer/index-results-node.log"]},
+    {"stage": "shared_source_assembly", "reason": "签名期间及构建期间相关源码发生变化，两次被一致性门禁拒绝。", "resolution": "保留失败产物；捕获固定源码副本后独立装配，继续使用相同源码门禁。", "logs": ["output/plugin-doc-qa/transfer/index-results-package.log", "output/plugin-doc-qa/transfer/index-results-package-reassembled.log"]},
+    {"stage": "shared_source_compile", "reason": "本机设置作品范围代码调用不存在的domain::schema函数。", "resolution": "复用本模块已有jsonschema校验方式，保留新作品范围逻辑；本机设置4项通过。", "log": "output/plugin-doc-qa/transfer/index-results-package-final.log"},
+    {"stage": "source_capture_cache_copy", "reason": "复制编译缓存时，其他构建移除了临时release文件；最初来源比对还发现并行更新。", "resolution": "编译缓存与源码分开核验，补拷发生变化的源码；2726份输入与工作区一致后固定，独立Cargo重新核验缓存。", "logs": ["output/plugin-doc-qa/transfer/index-results-freeze.log", "output/plugin-doc-qa/transfer/index-results-freeze-verified.log", "output/plugin-doc-qa/transfer/index-results-freeze-final.log"]}
+  ],
+  "validation_boundaries": [
+    "一万对象、10001拒绝、32MiB逻辑记录预算附近及8MiB缓存溢出已经实测；不是所有预算的逐字节边界矩阵。",
+    "规模样本使用Core生成的完整修订格式和正确摘要；测试不执行一万次业务保存事务。",
+    "不声明跨设备性能SLA、SQLite、全文搜索、批量迁移或生态分发完成。",
+    "未修改真实作者作品，未执行正文采纳、定稿、模型付费调用、提交、推送、发布或安装替换。",
+    "未完成Windows、干净系统安装升级、正式签名公证、真实输入法、完整无障碍及整个R6验收。"
+  ]
+}

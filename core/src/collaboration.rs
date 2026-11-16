@@ -31,7 +31,9 @@ impl ModelPlanConfirmation {
         &self.record
     }
     pub fn with_task_authorization(mut self, policy: Value) -> Result<Self> {
-        let proposal = self.kernel.prepare_task_model_authorization(&self.record, policy)?;
+        let proposal = self
+            .kernel
+            .prepare_task_model_authorization(&self.record, policy)?;
         self.record["requested_authorization"] = proposal.clone();
         self.authorization = Some(proposal);
         Ok(self)
@@ -39,9 +41,11 @@ impl ModelPlanConfirmation {
     /// 适配器只能在宿主返回真实用户接受决定后调用；拒绝、取消和超时不得调用。
     pub fn confirm(self) -> Result<Value> {
         let mut record = if let Some(proposal) = self.authorization {
-            self.kernel.confirm_task_model_authorization(&self.record, &proposal, &self.host)?
+            self.kernel
+                .confirm_task_model_authorization(&self.record, &proposal, &self.host)?
         } else {
-            self.kernel.confirm_model_plan_from_host(&self.record, &self.host)?
+            self.kernel
+                .confirm_model_plan_from_host(&self.record, &self.host)?
         };
         record["task_ref"] = self.task_ref;
         Ok(domain::success(
@@ -220,7 +224,10 @@ impl CollaborationHub {
         let validator = jsonschema::validator_for(&metadata["input_schema"])
             .map_err(|_| Error::new("hetu.integrity_failure", "接入合同无效。"))?;
         if let Some(error) = validator.iter_errors(&request["input"]).next() {
-            return Err(Error::new("invalid_input", format!("接入参数不符合当前合同：{}", error.instance_path)));
+            return Err(Error::new(
+                "invalid_input",
+                format!("接入参数不符合当前合同：{}", error.instance_path),
+            ));
         }
         if action == "hetu.collaboration.inspect" {
             return Ok(domain::success(
@@ -230,12 +237,18 @@ impl CollaborationHub {
             ));
         }
         if action == "hetu.collaboration.created_works" {
-            return Ok(domain::success(action, "collaboration", self.created_works(&request["input"])?));
+            return Ok(domain::success(
+                action,
+                "collaboration",
+                self.created_works(&request["input"])?,
+            ));
         }
         if action.starts_with("hetu.local_settings.") {
             return self.execute_local(request);
         }
-        if action == "hetu.creation_projects.create" || request["input"].get("management_ref").is_some() {
+        if action == "hetu.creation_projects.create"
+            || request["input"].get("management_ref").is_some()
+        {
             return self.execute_authoring(request);
         }
         let reference = if action == "hetu.collaboration.open" {
@@ -343,7 +356,8 @@ impl CollaborationHub {
                             .iter()
                             .any(|available| available["name"] == action["name"]))
                 )
-                .cloned().map(|mut action| {
+                .cloned()
+                .map(|mut action| {
                     if action["authorization"] == "task_or_new_managed_scope" {
                         action["input_schema"] = action["input_schema"]["oneOf"][0].clone();
                         action["authorization"] = json!("task");
@@ -433,7 +447,11 @@ fn task_ref_schema() -> Value {
 impl Kernel {
     pub(crate) fn authorize_collaboration(&self, input: &Value, revoke: bool) -> Result<Value> {
         ensure(
-            self.is_author() || !revoke && self.management_binding().is_some_and(|binding| binding["client_adapter"] == input["client_adapter"]),
+            self.is_author()
+                || !revoke
+                    && self.management_binding().is_some_and(|binding| {
+                        binding["client_adapter"] == input["client_adapter"]
+                    }),
             "forbidden",
             "只有作者可以登记或撤销任务授权。",
         )?;
@@ -480,7 +498,10 @@ impl Kernel {
         }
         let path = grant_path(client, reference)?;
         let revision = if store.exists(&path)? {
-            store.json(&path)?["grant_revision"].as_u64().unwrap_or(0).checked_add(1)
+            store.json(&path)?["grant_revision"]
+                .as_u64()
+                .unwrap_or(0)
+                .checked_add(1)
                 .ok_or_else(|| Error::new("hetu.budget_exceeded", "授权修订超过支持上限。"))?
         } else {
             1
@@ -494,7 +515,9 @@ impl Kernel {
             )?;
         }
         let mut grant = json!({"schema_version":"1.0.0","client_adapter":client,"task_locator":locator(reference)?,"root":self.root_path(),"request_revision":reference["request_revision"],"request_sha256":task["request_sha256"],"grant_revision":revision,"expires_at":expires_at,"revoked":revoke});
-        if let Some(binding) = self.management_binding() { grant["management_binding"] = binding.clone(); }
+        if let Some(binding) = self.management_binding() {
+            grant["management_binding"] = binding.clone();
+        }
         let result = json!({"task_locator":locator(reference)?,"grant_revision":revision,"revoked":revoke,"request_sha256":task["request_sha256"]});
         store.transaction(&BTreeMap::from([
             (path, encoded(&grant)?),

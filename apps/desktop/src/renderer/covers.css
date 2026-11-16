@@ -1,0 +1,47 @@
+.cover-sheet { width: min(1100px, calc(100vw - 40px)); height: min(820px, calc(100vh - 40px)); max-width: none; max-height: none; padding: 24px; border: 0.5px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); box-shadow: none; }
+.cover-sheet::backdrop { background: var(--black-a5); }
+.cover-sheet[open] { display: flex; flex-direction: column; gap: 16px; }
+.cover-heading { display: flex; align-items: center; flex: none; gap: 14px; }
+.cover-heading h2 { margin: 0; font-size: 20px; }
+.cover-heading > span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); }
+.cover-sheet > p { margin: 0; font-size: 12px; }
+.cover-columns { display: grid; grid-template-columns: 220px minmax(0, 1fr); flex: 1; min-height: 0; }
+.cover-current { padding-right: 20px; min-width: 0; overflow-y: auto; }
+.cover-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.cover-section-heading h3 { margin: 0; font-size: 14px; font-weight: 600; }
+.cover-current > p, .cover-history > p { font-size: 12px; color: var(--muted); }
+.cover-current .cover-preview { width: 168px; height: 252px; max-width: 100%; }
+.cover-preview { position: relative; display: flex; align-items: center; justify-content: center; width: 100%; aspect-ratio: 2 / 3; max-height: 440px; background: var(--page); color: var(--muted); border: 0.5px solid var(--line); border-radius: 6px; overflow: hidden; }
+.cover-preview img { width: 100%; height: 100%; object-fit: contain; }
+.cover-preview-text { position: absolute; inset: 12% 8%; display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-align: center; color: var(--ink); }
+.cover-preview-text strong { font: 600 20px/1.6 "Songti SC", serif; }
+.cover-preview-text span { font-size: 12px; }
+.cover-content { display: flex; flex-direction: column; min-width: 0; min-height: 0; border-left: 0.5px solid var(--line); padding-left: 20px; }
+.cover-tabs { display: flex; gap: 8px; flex: none; padding-bottom: 16px; }
+.cover-tabs button { border: 0; color: var(--muted); background: transparent; }
+.cover-tabs button[aria-selected=true] { color: var(--jade); background: var(--jade-soft); font-weight: 600; }
+.cover-source-content { flex: 1; min-height: 0; overflow-y: auto; }
+.cover-source-content .artwork-embedded-heading h2 { font-size: 14px; }
+.cover-source-content .artwork-search { display: none; }
+.cover-source-content .embedded-artwork { min-height: 260px; }
+.cover-selection { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+.cover-selection > .cover-section-heading { width: 100%; margin: 0; }
+.cover-selection .cover-preview { width: min(100%, 300px); }
+.cover-overlay { display: flex; align-items: center; gap: 8px; margin: 0; }
+.cover-overlay input { width: 16px; height: 16px; margin: 0; }
+.cover-local { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 380px; gap: 16px; color: var(--muted); }
+.cover-local p { margin: 0; font-size: 12px; }
+.cover-history { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.cover-history > label { display: flex; align-items: center; gap: 10px; margin: 0; }
+.cover-history input { width: 80px; }
+.cover-history .cover-preview { width: 240px; height: 360px; max-width: 100%; flex: none; }
+.cover-requests { margin-top: 24px; font-size: 12px; }
+.cover-requests summary { cursor: pointer; color: var(--muted); margin-bottom: 12px; }
+.cover-requests > button { display: block; margin-bottom: 8px; text-align: left; }
+.cover-request-candidates { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; }
+.cover-request-candidates button { display: grid; gap: 8px; padding: 8px; }
+.cover-request-candidates img { width: 100%; height: 200px; object-fit: contain; }
+.artwork-cover-cell { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.artwork-cover-cell > button:last-child { align-self: flex-start; }
+@media (max-width: 800px) { .cover-columns { grid-template-columns: 170px minmax(0, 1fr); } .cover-heading > span { display: none; } .cover-heading h2 { flex: 1; } }
+@media (max-width: 600px) { .cover-sheet { padding: 16px; } .cover-columns { display: flex; flex-direction: column; overflow-y: auto; } .cover-current { flex: none; padding: 0 0 16px; } .cover-current .cover-preview { max-width: 130px; } .cover-content { border: 0; border-top: 0.5px solid var(--line); padding: 16px 0 0; flex: 1 0 400px; } }

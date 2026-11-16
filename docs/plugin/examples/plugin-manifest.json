@@ -1,0 +1,43 @@
+{
+  "manifest_version": "design-1",
+  "id": "org.hetu.example.relationships",
+  "version": "0.1.0",
+  "display": {
+    "zh-CN": "人物关系示例",
+    "en": "Relationship example"
+  },
+  "description": {
+    "zh-CN": "用于评审 Web 视图贡献合同的示例清单，不是可安装插件。",
+    "en": "A design example of a Web view contribution, not an installable package."
+  },
+  "categories": ["relationships"],
+  "host_api": "design-1",
+  "platforms": ["macos-arm64", "macos-x64", "windows-x64"],
+  "dependencies": [],
+  "contributions": {
+    "views": [
+      {
+        "id": "relationships.graph",
+        "renderer": "web-bundle",
+        "entry": "views/graph/index.html",
+        "bridge_revision": "design-1",
+        "object_kinds": ["story.relationships"],
+        "required_features": ["svg"],
+        "fallback": "relationship-list"
+      }
+    ],
+    "data": [],
+    "actions": [],
+    "methods": [],
+    "adapters": []
+  },
+  "permissions": [
+    {
+      "capability": "objects.read",
+      "purpose": "读取当前明确获权的人物与关系投影"
+    }
+  ],
+  "runtime": { "kind": "static" },
+  "license": "UNLICENSED",
+  "notices": []
+}

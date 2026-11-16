@@ -24,6 +24,15 @@ fn encoded(value: &Value) -> Result<Vec<u8>> {
     Ok(serde_json::to_vec(value)?)
 }
 pub(crate) fn default_directory() -> Result<PathBuf> {
+    if let Some(directory) = std::env::var_os("HETU_MODEL_SERVICE_DIR") {
+        let path = PathBuf::from(directory);
+        ensure(
+            path.is_absolute(),
+            "invalid_input",
+            "模型服务目录必须为绝对路径。",
+        )?;
+        return Ok(path);
+    }
     Ok(crate::collaboration::default_directory()?
         .parent()
         .ok_or_else(|| Error::new("missing_context", "缺少本机用户目录。"))?
@@ -58,14 +67,22 @@ impl ModelService {
     pub(crate) fn identity_for_channel(&self, kind: &str, channel: Option<&str>) -> Result<Value> {
         let _lock = self.store.read_lock()?;
         let settings = self.settings()?;
-        ensure(matches!(kind, "text" | "image"), "invalid_input", "模型种类无效。")?;
+        ensure(
+            matches!(kind, "text" | "image"),
+            "invalid_input",
+            "模型种类无效。",
+        )?;
         match channel {
             None => self.selected_identity(&settings, kind),
             Some("cloud") => Self::settings_identity(&settings),
             Some(channel) => custom::identity(&settings, channel),
         }
     }
-    pub(crate) fn authorization_connections(&self, kind: &str, configured: bool) -> Result<Vec<Value>> {
+    pub(crate) fn authorization_connections(
+        &self,
+        kind: &str,
+        configured: bool,
+    ) -> Result<Vec<Value>> {
         let _lock = self.store.read_lock()?;
         let settings = self.settings()?;
         if !configured {
@@ -77,12 +94,19 @@ impl ModelService {
         }
         if let Some(channels) = settings["custom_channels"].as_object() {
             for (channel, profile) in channels {
-                if profile["models"][kind].as_array().is_some_and(|models| !models.is_empty()) {
+                if profile["models"][kind]
+                    .as_array()
+                    .is_some_and(|models| !models.is_empty())
+                {
                     connections.push(custom::identity(&settings, channel)?);
                 }
             }
         }
-        ensure(!connections.is_empty(), "hetu.model_connection_required", "请先连接模型渠道。")?;
+        ensure(
+            !connections.is_empty(),
+            "hetu.model_connection_required",
+            "请先连接模型渠道。",
+        )?;
         Ok(connections)
     }
     fn selected_identity(&self, settings: &Value, kind: &str) -> Result<Value> {

@@ -1,6 +1,6 @@
 # Your work, versions and backups
 
-The author library registers multiple books, each with an independent workspace for text, canon and media. The software’s open-source license does not automatically apply to your writing.
+The creative library registers novels, scripts and videos. Their content and permissions remain separate even when they share a workspace directory. The software’s open-source license does not automatically apply to your writing.
 
 ## Website demo
 
@@ -8,7 +8,15 @@ The [homepage demo](/en/#prototype) keeps state only in the current page. Saving
 
 ## Local saving and versions
 
-The local client saves text revisions and protects recovery buffers. Git snapshots follow preparation, inspection of fixed files and changes, then author-approved commit. They do not use the software repository or push automatically.
+The local client saves text revisions and protects recovery buffers. In a novel or script, use the manuscript versions page to review a milestone:
+
+1. Ask your Agent to prepare a version of the saved manuscript, such as “Keep the current first-volume revision as a milestone.”
+2. Open its snapshot and review the complete changes and commit identity before approving.
+3. Copy the continuation request back to the original Agent conversation. The Agent executes the commit; approval alone does not save a version. Refresh to read the result.
+
+Each novel or script has its own manuscript history. Read an earlier version without replacing your current text, then ask the Agent to prepare a reference draft from that exact version if you want to continue it.
+
+Manuscript versions cover saved text and document metadata. Back up images, videos and production projects separately. These versions do not use the software repository or push automatically.
 
 The website demonstrates preparation and confirmation without running Git. If a real result is unknown, retain the original task and inspect its receipt before retrying.
 

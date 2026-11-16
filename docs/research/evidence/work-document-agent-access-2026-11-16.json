@@ -1,0 +1,109 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-11-15T17:57:02.757232+00:00",
+  "version": "0.7.0",
+  "scope": "精确单作品授权的正文分页、固定历史及已有任务接续，CLI/MCP/Skills 机器侧",
+  "status": "machine_passed",
+  "all_refactoring_complete": false,
+  "source": {
+    "base_commit": "900f8b0645479ba65f437d62fadbb7c7f09e7b38",
+    "dirty_worktree": true,
+    "manifest_sha256": "9f7e547fc18ed9d281914952bb4d2f3eab09e38c04a2cc798bd23c6adb03c717",
+    "files": {
+      "AGENTS.md": "ce0aa45f14fdd7aaf949634042b9c2bb192d0f951f396e4842ea18877f29808e",
+      "core/src/application/mod.rs": "5bb799bbd3111a85b14675d30fe135f2f75bb995d6f5e5c55fb4c677963bfd2b",
+      "core/src/application/creative_tasks.rs": "b651064cdfc15eeab940cfb7ea6e25d035f8b98f9c2f9b3ecfb3cabb979e041d",
+      "core/src/application/work_scope.rs": "70b3afadcdb40596b32abbcad70bf259bf5c089f0f146a4991122e50008c13e6",
+      "core/src/collaboration/authoring.rs": "a339b254b7a6fbbdb9a2fe52276ba71f4ad78f890827dedc45279983ec98108a",
+      "core/tests/work_documents.rs": "09fe1df59d1d26035f492dc627540b5a4ce5da6bcf90a5b054d13dccfe400b96",
+      "apps/mcp/tests/stdio.rs": "a51162d9d4fde473eaeb5125ad2b88677e01e25ca0ae463f2fbfd070c2380f04",
+      "contracts/actions.json": "7ceffe748d8539af6010f3fb72983f1f3099216c0173bd5bd695eaf24d035a82",
+      "contracts/tools/catalog.json": "71b2bb3928a80b8ddd250fb874c4a5b05b700ef77885a0576bf4c660a81dc804",
+      "tools/hetu-skills/base/skills/hetu-manage/SKILL.md": "42e53e5d2d9a6ca39009788daaa43931619f84215bfafe14f6bf2c28aa746584",
+      "tools/hetu-skills/base/references/workflows/management.md": "5d8ca18a75fc4888db61c212a4e3e192d2846d94f28b4fde972370ffc8d701be",
+      "tools/sync-writing-methods.py": "1766c826d84bcfade645350e4c2eff71024b47ee4d5cd2e58a5334ae2d616b51"
+    }
+  },
+  "checks": {
+    "core_mcp": {
+      "status": "passed",
+      "passed": 264,
+      "groups_with_tests": 32,
+      "mcp_stdio_passed": 25,
+      "new_work_document_tests": 5,
+      "new_stdio_tests": 1,
+      "log_sha256": "4b0ad825d6a8d8d851face02f7dc68590cf3d2de5b17ae09335f7020201266e4"
+    },
+    "build": {
+      "status": "passed",
+      "command": "cargo build --locked --jobs 2 -p hetu-core -p hetu-mcp",
+      "log_sha256": "f846dad67d93fa8c5b7f25fb69247ab89bf8020358ccc805d1a5689de8490e4a"
+    },
+    "public_journey": {
+      "status": "passed",
+      "steps": 41,
+      "channels": {
+        "public-cli": 28,
+        "isolated-author-authorization-only": 3,
+        "mcp-stdio": 10
+      },
+      "result_sha256": "44b70a1e33b3d5ba7f8781f80bd2c5b9a32380254ce96d3042af126385ad5334",
+      "starting_state": "空授权目录，无作品、无筹备、无预建任务，无 GUI 补业务。",
+      "verified": [
+        "本对话通过公开CLI建立原创小说、两空章和首任务",
+        "沿精确WorkRef分页正文、回读固定空作者稿及历史",
+        "按目标查回原TaskLocator，沿原TaskGrant打开，不创建同义任务",
+        "本对话实际撰写两版参考稿，原键重放、旧稿固定、固定提交",
+        "新MCP进程发现新增任务列表工具并读回CLI的同一目录、任务和两版工作稿",
+        "不带WorkRef、错对象、直接覆盖作者稿、撤权后读取以及再授权复用旧游标均拒绝",
+        "作者正文保持原空稿"
+      ],
+      "author_channel": "3次隔离测试作者C ABI，仅登记精确授权、撤权和再授权，不参与筹备、建书、章节或参考稿业务。",
+      "protocol": "2026-07-28",
+      "computer_use_business_steps": 0,
+      "paid_model_calls": 0,
+      "boundary": "新启动的真实MCP stdio子进程由本对话脚本驱动；不冒充当前Codex宿主已重载插件或真实Apps验收。"
+    },
+    "skills": {
+      "status": "passed",
+      "version": "0.3.2",
+      "source": "tools/hetu-skills/base",
+      "bundles": 45,
+      "files": 2250,
+      "validation": "唯一源同步、分发一致性、引用及Skill结构校验通过；本对话读取源管理与起草Skill继续。",
+      "host_plugin_reloaded": false,
+      "verify_sha256": "b6fcc1ca5280d46a790c6bb8c2eb8218ce25ccc8e599ac24e224b310c7f49769",
+      "sync_sha256": "42eb2486f223188d7d09cc7ee354ab642cd34bd81657ced128b00a3af4825c86"
+    },
+    "docs": {
+      "status": "blocked_by_separate_document",
+      "checker": "uv run tools/verify-docs.py",
+      "errors": [
+        "docs/plugin/17-原生宿主与插件渲染技术方案.md: 私密路径或凭据"
+      ],
+      "boundary": "并行插件文档中的本机参考路径触发全仓门禁；本次未改该文档，不登记全仓通过。"
+    },
+    "gui": {
+      "status": "paused_by_user",
+      "reason": "按用户决定暂停界面开发，等待Electron + Rust重构。"
+    },
+    "installation": {
+      "status": "not_run",
+      "reason": "只在隔离验收目录组合CLI与同版Core/MCP，未覆盖本地App。"
+    }
+  },
+  "record_directory": "Documents/河图洛书/验收记录/作品机器读取-20261116",
+  "artifacts": {
+    "Frameworks/libhetu_core.dylib": "35e92e6f8855e23159dbe221bfa5ada89157a2f28c4ceebe1916199e970dc08c",
+    "Helpers/hetu": "f8530b3ef1a4040f62d9b66091ea3acdb8e4e5ac9402452bf769e2170dbd48d6",
+    "Helpers/hetu-mcp": "bf11399b27d6cfee906ca2f954d6952577bbf231a2eee0f2e2d04780cec2001c"
+  },
+  "remaining": [
+    "跨根正文与媒体固定快照",
+    "双端关联写授权及其余资料对象窄授权",
+    "Electron宿主及可视化审阅渲染",
+    "分镜预演、实际视频及整剧交付验收",
+    "当前宿主插件重载与真实MCP Apps"
+  ],
+  "delivery_boundary": "本轮机器读取及任务接续完成；完整重构仍按docs/38跟进。无提交、推送、部署、付费生成或覆盖安装。"
+}

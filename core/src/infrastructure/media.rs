@@ -67,18 +67,36 @@ pub fn decode_image(file: &mut File) -> Result<VerifiedImage> {
 
 /// 网络取得的图片与本地文件共用完整解码和内存限额。
 pub fn decode_image_bytes(raw: &[u8]) -> Result<VerifiedImage> {
-    ensure(!raw.is_empty() && raw.len() <= 32 * 1024 * 1024, "hetu.budget_exceeded", "图片为空或超过 32 MiB。")?;
-    let format = image::guess_format(raw).map_err(|_| crate::domain::Error::new("hetu.unsupported_media", "无法识别图片类型。"))?;
-    let (media_type,extension) = match format {
-        image::ImageFormat::Png => ("image/png","png"),
-        image::ImageFormat::Jpeg => ("image/jpeg","jpg"),
-        image::ImageFormat::WebP => ("image/webp","webp"),
-        _ => return Err(crate::domain::Error::new("hetu.unsupported_media", "只支持 PNG、JPEG 和 WebP 图片。")),
+    ensure(
+        !raw.is_empty() && raw.len() <= 32 * 1024 * 1024,
+        "hetu.budget_exceeded",
+        "图片为空或超过 32 MiB。",
+    )?;
+    let format = image::guess_format(raw)
+        .map_err(|_| crate::domain::Error::new("hetu.unsupported_media", "无法识别图片类型。"))?;
+    let (media_type, extension) = match format {
+        image::ImageFormat::Png => ("image/png", "png"),
+        image::ImageFormat::Jpeg => ("image/jpeg", "jpg"),
+        image::ImageFormat::WebP => ("image/webp", "webp"),
+        _ => {
+            return Err(crate::domain::Error::new(
+                "hetu.unsupported_media",
+                "只支持 PNG、JPEG 和 WebP 图片。",
+            ));
+        }
     };
-    decode_image_content(raw,json!({"media_type":media_type,"extension":extension,"sha256":digest(raw),"size_bytes":raw.len()}),format)
+    decode_image_content(
+        raw,
+        json!({"media_type":media_type,"extension":extension,"sha256":digest(raw),"size_bytes":raw.len()}),
+        format,
+    )
 }
 
-fn decode_image_content(raw: &[u8], scan: Value, format: image::ImageFormat) -> Result<VerifiedImage> {
+fn decode_image_content(
+    raw: &[u8],
+    scan: Value,
+    format: image::ImageFormat,
+) -> Result<VerifiedImage> {
     let (width, height) = image::ImageReader::with_format(std::io::Cursor::new(&raw), format)
         .into_dimensions()
         .map_err(|_| crate::domain::Error::new("hetu.unsupported_media", "图片头部或尺寸无效。"))?;
@@ -141,17 +159,29 @@ pub fn verified_image_preview(file: &mut File, expected: &Value) -> Result<Value
     )?;
     let key = scan["sha256"].as_str().unwrap().to_owned();
     let cache = PREVIEWS.get_or_init(|| Mutex::new(VecDeque::new()));
-    if let Some(preview) = cache.lock().unwrap().iter().find(|(sha, _)| sha == &key).map(|(_, preview)| preview.clone()) {
+    if let Some(preview) = cache
+        .lock()
+        .unwrap()
+        .iter()
+        .find(|(sha, _)| sha == &key)
+        .map(|(_, preview)| preview.clone())
+    {
         return Ok(preview);
     }
     // 解码和缩放不持有全局锁，不阻塞其他作品已缓存图片的读取。
     let image = decode_image(file)?;
-    ensure(image.scan == scan, "revision_conflict", "图片候选读取期间发生变化。")?;
+    ensure(
+        image.scan == scan,
+        "revision_conflict",
+        "图片候选读取期间发生变化。",
+    )?;
     let preview = image_preview(&image.decoded)?;
     let mut cache = cache.lock().unwrap();
     if !cache.iter().any(|(sha, _)| sha == &key) {
         // 每张预览至多 256 KiB，32 项限制了常驻内存，原图不进入缓存。
-        if cache.len() == 32 { cache.pop_front(); }
+        if cache.len() == 32 {
+            cache.pop_front();
+        }
         cache.push_back((key, preview.clone()));
     }
     Ok(preview)
@@ -240,15 +270,20 @@ impl Store {
     }
 
     pub fn import_media(&self, path: &str, source: &mut File, expected: &Value) -> Result<()> {
-        self.import_media_with(path,expected,|target| scan(source,Some(target)))
+        self.import_media_with(path, expected, |target| scan(source, Some(target)))
     }
     pub fn import_media_bytes(&self, path: &str, content: &[u8], expected: &Value) -> Result<()> {
-        self.import_media_with(path,expected,|target| {
+        self.import_media_with(path, expected, |target| {
             target.write_all(content)?;
             Ok(json!({"sha256":digest(content),"size_bytes":content.len()}))
         })
     }
-    fn import_media_with(&self, path: &str, expected: &Value, write: impl FnOnce(&mut File) -> Result<Value>) -> Result<()> {
+    fn import_media_with(
+        &self,
+        path: &str,
+        expected: &Value,
+        write: impl FnOnce(&mut File) -> Result<Value>,
+    ) -> Result<()> {
         let (parent, leaf) = self.parent(path, true)?;
         ensure(
             !self.exists(path)?,

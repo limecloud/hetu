@@ -298,9 +298,11 @@ impl ModelService {
                     let _guard = self.store.lock()?;
                     let mut saved = self.store.json(&journal)?;
                     saved["result"]["operation"]["status"] = json!("failed");
-                    saved["result"]["operation"]["error_code"] = json!("HETU_PROVIDER_BALANCE_INSUFFICIENT");
+                    saved["result"]["operation"]["error_code"] =
+                        json!("HETU_PROVIDER_BALANCE_INSUFFICIENT");
                     saved["result"]["operation"]["billing"]["state"] = json!("not_reserved");
-                    self.store.transaction(&BTreeMap::from([(journal, encoded(&saved)?)]))?;
+                    self.store
+                        .transaction(&BTreeMap::from([(journal, encoded(&saved)?)]))?;
                 }
                 return Err(error);
             }
@@ -482,14 +484,31 @@ mod tests {
     fn insufficient_provider_balance_is_terminal_and_recovers_without_resending() {
         let (_root, service, identity, key) = service();
         let path = format!("/operations/{key}");
-        assert_eq!(service.custom_api_with("POST", &path, Some(&input()), &identity,
-            |_, _, _, _| Err(Error::new("hetu.credits_insufficient", "402"))).unwrap_err().code, "hetu.credits_insufficient");
+        assert_eq!(
+            service
+                .custom_api_with("POST", &path, Some(&input()), &identity, |_, _, _, _| Err(
+                    Error::new("hetu.credits_insufficient", "402")
+                ))
+                .unwrap_err()
+                .code,
+            "hetu.credits_insufficient"
+        );
         let body = input();
         for method in ["GET", "POST"] {
-            let original = service.custom_api_with(method, &path, if method == "POST" {Some(&body)} else {None}, &identity,
-                |_, _, _, _| panic!("余额不足后的原键只能回读")).unwrap();
+            let original = service
+                .custom_api_with(
+                    method,
+                    &path,
+                    if method == "POST" { Some(&body) } else { None },
+                    &identity,
+                    |_, _, _, _| panic!("余额不足后的原键只能回读"),
+                )
+                .unwrap();
             assert_eq!(original["operation"]["status"], "failed");
-            assert_eq!(original["operation"]["error_code"], "HETU_PROVIDER_BALANCE_INSUFFICIENT");
+            assert_eq!(
+                original["operation"]["error_code"],
+                "HETU_PROVIDER_BALANCE_INSUFFICIENT"
+            );
             assert_eq!(original["operation"]["billing"]["state"], "not_reserved");
         }
     }

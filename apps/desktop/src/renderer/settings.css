@@ -1,0 +1,320 @@
+.settings-dialog:has(.local-settings) {
+  width: min(660px, calc(100vw - 48px));
+  height: min(530px, calc(100vh - 48px));
+  max-height: calc(100vh - 48px);
+}
+.settings-dialog:has(.local-settings) .dialog-heading {
+  min-height: 48px;
+  padding: 9px 20px;
+}
+.settings-dialog:has(.local-settings) .dialog-heading h2 {
+  font-size: 14px;
+}
+.settings-dialog:has(.local-settings) .settings-dialog-content {
+  display: flex;
+  padding: 0;
+  height: calc(100% - 49px);
+  overflow: hidden;
+}
+.local-settings {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  font-size: 14px;
+}
+.local-settings .settings-tools {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px 8px;
+  flex: none;
+}
+.local-settings .settings-tabs {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 6px;
+  padding: 0 16px 12px;
+  border-bottom: 0.5px solid var(--line);
+  flex: none;
+}
+.local-settings .settings-tabs > button {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px 12px;
+  min-width: 64px;
+  min-height: 54px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+}
+.local-settings .settings-tabs > button:hover {
+  background: var(--hover);
+  color: var(--ink);
+}
+.local-settings .settings-tabs > button[aria-selected="true"] {
+  background: var(--jade-soft);
+  color: var(--jade);
+  font-weight: 600;
+}
+.local-settings .settings-pending {
+  position: absolute;
+  top: 7px;
+  right: 12px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--jade);
+}
+.local-settings .settings-panel {
+  flex: 1;
+  min-height: 0;
+  padding: 20px 28px;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+.local-settings h2.settings-section-heading {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 18px;
+}
+.local-settings .settings-group {
+  margin-bottom: 20px;
+}
+.local-settings .settings-group > h3 {
+  margin: 0 0 7px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.local-settings .settings-group > div:not(.settings-reading-preview) {
+  border: 0.5px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  padding: 0 14px;
+}
+.local-settings .settings-field {
+  display: grid;
+  grid-template-columns: minmax(130px, 1fr) minmax(110px, 1fr);
+  align-items: center;
+  gap: 18px;
+  min-height: 42px;
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: 6px 0;
+  border-bottom: 0.5px solid var(--line);
+}
+.local-settings .settings-field:last-child {
+  border-bottom: 0;
+}
+.local-settings .settings-field > output {
+  justify-self: end;
+  text-align: right;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.local-settings .settings-field > input:not([type="checkbox"]),
+.local-settings .settings-field > select {
+  width: 100%;
+  min-width: 0;
+  min-height: 30px;
+  padding: 3px 8px;
+}
+.local-settings .settings-field > input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  justify-self: end;
+  margin: 0;
+  accent-color: var(--action);
+}
+.local-settings .settings-note {
+  margin: 10px 0;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.local-settings .settings-reading-preview {
+  padding: 14px;
+  border: 0.5px solid var(--line);
+  border-radius: 6px;
+  background: var(--page);
+  font-size: 14px;
+}
+.local-settings .settings-edit-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 10px 20px;
+  border-top: 0.5px solid var(--line);
+  flex: none;
+}
+.local-settings .settings-feedback {
+  padding: 8px 20px;
+  margin: 0;
+  font-size: 12px;
+  flex: none;
+}
+.local-settings .settings-recovery {
+  display: block;
+  margin: 0;
+  padding: 8px 20px;
+  flex: none;
+  font-size: 12px;
+}
+.local-settings .settings-recovery > p {
+  margin: 0 0 7px;
+}
+.local-settings .settings-recovery .actions {
+  flex-wrap: wrap;
+}
+.local-settings .settings-suite {
+  margin: 20px 0;
+}
+.local-settings .settings-suite > summary {
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 0;
+}
+.local-settings .settings-suite[open] > summary {
+  margin-bottom: 12px;
+}
+.local-settings .settings-install {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0;
+}
+.local-settings .settings-install input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+.local-settings .settings-plan-picker {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.local-settings .settings-plan-picker select {
+  min-width: 0;
+  max-width: 100%;
+}
+.local-settings .settings-plan h3,
+.local-settings .author-preview h3 {
+  font-size: 14px;
+  margin: 0 0 12px;
+}
+.local-settings .settings-plan .actions {
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.local-settings .settings-plan-metadata {
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr);
+  gap: 8px 14px;
+  margin: 16px 0;
+}
+.local-settings .settings-plan-metadata dt {
+  color: var(--muted);
+}
+.local-settings .settings-plan-metadata dd {
+  margin: 0;
+}
+.local-settings .settings-changes {
+  table-layout: fixed;
+  margin: 16px 0;
+}
+.local-settings .settings-changes th,
+.local-settings .settings-changes td {
+  padding: 7px 6px;
+  overflow-wrap: anywhere;
+}
+.local-settings .settings-technical {
+  margin: 18px 0;
+  font-size: 12px;
+}
+.local-settings .settings-technical > summary {
+  color: var(--muted);
+  cursor: pointer;
+}
+.local-settings .author-preview {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.local-settings .author-preview > p {
+  font-size: 12px;
+  color: var(--muted);
+}
+.local-settings .settings-about {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  padding: 8px 0;
+}
+.local-settings .settings-about h2 {
+  margin: 0;
+  font:
+    500 20px/1.5 "Songti SC",
+    serif;
+}
+.local-settings .settings-about p {
+  margin: 0;
+}
+.local-settings .settings-about img {
+  display: block;
+  object-fit: contain;
+}
+.local-settings .settings-empty {
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--muted);
+}
+.local-settings .settings-empty p {
+  margin: 0;
+}
+.model-settings-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.model-settings-heading h2.settings-section-heading { margin: 0; }
+.model-settings .model-account > .actions, .model-settings .model-add { padding: 10px 0; flex-wrap: wrap; }
+.model-settings .model-channel { display: flex; align-items: center; gap: 14px; padding: 10px 0; border-bottom: 0.5px solid var(--line); }
+.model-channel > div { flex: 1; min-width: 0; }
+.model-channel strong { font-size: 14px; font-weight: 500; }
+.model-channel p { margin: 4px 0 0; font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+.model-settings fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.model-settings fieldset > label { display: grid; gap: 6px; margin: 0 0 14px; max-width: none; }
+.model-settings input, .model-settings textarea { width: 100%; min-width: 0; }
+@media (max-width: 620px) {
+  .local-settings .settings-tabs {
+    gap: 0;
+    padding-inline: 8px;
+  }
+  .local-settings .settings-tabs > button {
+    flex: 1;
+    min-width: 0;
+    padding-inline: 6px;
+  }
+  .local-settings .settings-panel {
+    padding: 18px 20px;
+  }
+  .local-settings .settings-field {
+    grid-template-columns: minmax(110px, 1fr) minmax(90px, 1fr);
+    gap: 12px;
+  }
+}

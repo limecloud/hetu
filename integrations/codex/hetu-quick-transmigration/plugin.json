@@ -1,6 +1,6 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "hetu-quick-transmigration",
-  "version": "0.3.0",
+  "version": "0.3.5",
   "description": "河图洛书快穿世界创作套件：任务流程与本题材方法，按作品选择安装"
 }

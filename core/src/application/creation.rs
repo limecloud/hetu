@@ -10,10 +10,17 @@ pub(super) struct CreateProjectConfig {
 
 impl Kernel {
     pub(crate) fn creation_start_receipt(&self, key: &str) -> Result<Value> {
-        let record = self.store.json(&operation_path("hetu.creation_projects.create", key, self.author))?;
+        let record = self.store.json(&operation_path(
+            "hetu.creation_projects.create",
+            key,
+            self.author,
+        ))?;
         Ok(record["result"].clone())
     }
-    pub(super) fn open_creation_project(options: OpenConfig, management_grant: Option<Value>) -> Result<Self> {
+    pub(super) fn open_creation_project(
+        options: OpenConfig,
+        management_grant: Option<Value>,
+    ) -> Result<Self> {
         let path = Path::new(options.creation_project_path.as_deref().unwrap());
         ensure(
             path.is_absolute(),
@@ -391,7 +398,13 @@ impl Kernel {
                 )?;
             }
             if let Some(selection) = project.get("work_profile") {
-                let work_type = if drama { "drama" } else if video { "video" } else { "novel" };
+                let work_type = if drama {
+                    "drama"
+                } else if video {
+                    "video"
+                } else {
+                    "novel"
+                };
                 ensure(
                     selection["work_type"] == work_type
                         && selection["language_tag"] == profile["language_tag"]
@@ -420,10 +433,18 @@ impl Kernel {
             create["metadata"] = metadata.clone();
         }
         let target = if let Some(binding) = &self.management_grant {
-            let target_binding = crate::collaboration::authoring::workspace_binding(binding, Path::new(text(&intent, "target_path")?))?;
-            Kernel::open_managed(json!({"workspace_path":intent["target_path"],"mode":"agent","create":create}), target_binding)?
+            let target_binding = crate::collaboration::authoring::workspace_binding(
+                binding,
+                Path::new(text(&intent, "target_path")?),
+            )?;
+            Kernel::open_managed(
+                json!({"workspace_path":intent["target_path"],"mode":"agent","create":create}),
+                target_binding,
+            )?
         } else {
-            Kernel::open(json!({"workspace_path":intent["target_path"],"mode":"author","create":create}))?
+            Kernel::open(
+                json!({"workspace_path":intent["target_path"],"mode":"author","create":create}),
+            )?
         };
         let (mut project, previous) = self.creation_project(None)?;
         ensure(
@@ -446,7 +467,11 @@ impl Kernel {
             let result = target.request(json!({"action":"hetu.video.projects.create","contract_revision":"1","input":{
                 "title":metadata["title"],"brief":metadata["brief"],"language_tag":metadata["language_tag"],
                 "operation_key":format!("initial-project-{}",text(&intent,"create_key")?)}}));
-            ensure(result["status"] == "succeeded", "hetu.io_failure", "视频工作区已创建，请沿原操作恢复项目。")?;
+            ensure(
+                result["status"] == "succeeded",
+                "hetu.io_failure",
+                "视频工作区已创建，请沿原操作恢复项目。",
+            )?;
             data["video_project"] = result["data"].clone();
             json!({"workspace_id":target.scope(),"video_project_id":result["data"]["project"]["video_project_id"]})
         } else {

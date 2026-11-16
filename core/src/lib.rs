@@ -1,9 +1,10 @@
 pub mod application;
 pub mod collaboration;
-pub mod model_service;
 mod domain;
 mod ffi;
 mod infrastructure;
+pub mod local_settings;
+pub mod model_service;
 
 pub use application::Kernel;
-pub use domain::{Error, Result};
+pub use domain::{Error, Result, failure as failure_result};

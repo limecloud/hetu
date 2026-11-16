@@ -32,6 +32,7 @@ public struct RelatedWork: Identifiable, Sendable {
     public private(set) var detailLoading = false
     public private(set) var error: (any Error)?
     public private(set) var detailError: (any Error)?
+    public private(set) var includesArchived = false
     private var scopeID = ""
     private var generation = UUID()
     private var detailGeneration = UUID()
@@ -41,6 +42,7 @@ public struct RelatedWork: Identifiable, Sendable {
         generation = UUID(); detailGeneration = UUID(); scopeID = ""; cursors = []
         items = []; detail = .null; selectedID = nil; nextCursor = nil
         loading = false; detailLoading = false; error = nil; detailError = nil
+        includesArchived = false
     }
     public func back() {
         detailGeneration = UUID(); selectedID = nil; detail = .null; detailError = nil; detailLoading = false
@@ -48,6 +50,7 @@ public struct RelatedWork: Identifiable, Sendable {
     public func load(in workspace: Workspace, reference: WorkReference, includeArchived: Bool = false, more: Bool = false) async {
         let scope = workspace.url.standardizedFileURL.path + "\n" + reference.id + "\n" + String(includeArchived)
         if scope != scopeID { reset(); scopeID = scope }
+        includesArchived = includeArchived
         guard !loading, !more || nextCursor != nil else { return }
         let token = UUID(); generation = token
         loading = true; error = nil

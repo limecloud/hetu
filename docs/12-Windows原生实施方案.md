@@ -1,59 +1,46 @@
-# Windows 原生实施方案
+# Windows Electron实施方案
 
-V1 支持 Windows 11 x64，与 macOS 具有相同的核心业务范围。ARM64 按独立的桥接、依赖和实机验收要求扩展。
+本文件路径保留以维持引用。新Windows桌面采用与macOS共同的Electron＋TypeScript/React工作台、Rust App Server及独立Rust CLI/MCP；目标为Windows 11 x64，支持声明以实机验收为准。总体决定见[39](39-Electron与插件优先重构架构.md)。旧WinUI／C#／WebView2方案保留在源码历史与[备选研究](plugin/17-原生宿主与插件渲染技术方案.md)，不与Electron并行建设第二套Windows产品。
 
 ## 1. 工程与职责
 
-采用 WinUI 3／Windows App SDK、C# MVVM Presentation 和共享 Rust 内核。.NET 采用 10 LTS；Windows App SDK、.NET SDK、最低系统 Build 与 MSVC 的精确组合记录在构建锁定清单。
+| 组件 | Windows职责 | 共享范围 |
+| --- | --- | --- |
+| Electron主进程 | 窗口、菜单、文件选择、剪贴板、通知、受管浏览器与进程 | 共同宿主与生命周期；系统行为窄适配 |
+| TypeScript/React | 工作面、布局、编辑与审阅 | 与Mac复用贡献合同、组件和状态语义 |
+| 插件容器 | 固定包、隔离session、来源验证和受限SDK | 同一Web包；声明平台与实际可用性分别核验 |
+| Rust App Server | JSON-RPC 2.0私有stdio、明确作品、Core调用和退出 | 同一业务与传输合同，按OS分别编译 |
+| Rust CLI/MCP | 独立机器入口、稳定管理与任务引用 | 无GUI、Swift或.NET运行前提 |
+| 平台适配 | 文件身份、锁、凭据、签名与启动行为 | 不复制领域规则 |
 
-```text
-apps/windows/
-  src/
-    Hetu.Windows.App/          # WinUI XAML、窗口与组装
-    Hetu.Windows.Presentation/ # 视图模型、状态与命令
-    Hetu.Windows.Bridge/       # P/Invoke、SafeHandle、UTF-8 转换
-    Hetu.Windows.Platform/     # 系统选择器、凭据与系统行为
-  tests/
-```
+## 2. IPC与进程
 
-领域逻辑只在 Rust Core，不再建平行 C# 规则引擎。Presentation 避免直接引用 WinUI，便于独立检查状态；依赖 Dispatcher 的处理留在 App 或小型调度接口。
+使用参数数组启动安装目录中的匹配架构助手，禁止Shell拼接、PATH搜索或从作品目录加载可执行文件。stdio显式UTF-8和有界NDJSON，诊断与协议输出分开；进程退出和EOF按39的unknown恢复处理，不能以强杀保证业务撤销。
 
-## 2. C ABI 互操作
+工作区路径由可信系统选择器取得；renderer、插件、网页不能提交mode、actor或任意打开目录。插件会话绑定包摘要、贡献、WorkRef与授权代次。Windows控制台、无控制台子进程、管道关闭、Ctrl+C和退出超时分别验证，不能套用POSIX信号结论。
 
-固定 `cdecl` 调用约定、显式结构尺寸与 ABI 版本；句柄由 `SafeHandle` 持有。文本显式 UTF-8 编码与长度，不默认使用 Windows ANSI 或把 `wchar_t` 当跨端类型。
+## 3. 编辑、渲染与无障碍
 
-所有 Core 返回缓冲由 Core 提供的释放函数释放；不能混用 CLR 和 Rust 分配器。回调 delegate 在任务完成前保持强引用，异常只在桥接层映射，不跨 native 边界传播；任务完成后取消注册再释放上下文。
+使用共同Web编辑器，实测微软拼音及目标第三方输入法的组合输入、撤销／重做、候选窗口、选区、粘贴和长文。JavaScript UTF-16偏移与固定修订UTF-8 SourceRef显式转换；输入法组合期间不替换全文。
 
-win-x64 与 win-arm64 使用匹配的内核 DLL 和依赖，启动检查架构、ABI、库签名及加载位置；只从安装目录加载，不搜索工作区 DLL。内核是普通用户权限运行，不以管理员身份启动整个编辑器。
-
-## 3. 编辑器与系统体验
-
-使用原生文本控件并验证 Markdown／Fountain 长文编辑、IME、撤销、查找和高亮。优先对 WinUI 文本控件做原型，必要时使用受支持的原生编辑组件；不得以嵌入浏览器代替 V1 核心编辑器而仍宣称完整原生。
-
-输入法组合期间不重设全文，选区与诊断定位在 UTF-16 和修订绑定的 UTF-8 SourceRef 间转换。支持系统文件选择、拖放文件、快捷键、焦点可视与 Narrator。拖入目录只显示导入预览，不自动扩大授权根。
+验证125%／150%／200%缩放、多屏混合DPI、系统主题、高对比、键盘焦点、Narrator和字体回退。WebContentsView按内容区域同步bounds、可见性和生命周期，避免遮盖菜单、对话框、未保存提示及无障碍焦点。画布、三维和播放器另验GPU、硬件解码与标准替代呈现。
 
 ## 4. 文件与凭据
 
-Platform 处理 Win32 文件身份、共享模式、原子替换和锁；Core 保持跨平台逻辑路径策略。必须核对实际卷的大小写行为，拒绝路径穿越、设备路径、盘符相对路径、备用数据流、未知 reparse point 以及 junction 逃逸。
+Core与窄平台适配处理Win32文件身份、共享模式、原子替换及锁。验证实际卷的大小写行为，拒绝设备路径、盘符相对路径、备用数据流、未知reparse point及junction逃逸。工作区字符串不是授权，检查后替换竞态仍须由安全打开处理。
 
-V1 默认不支持 UNC 写工作区或云盘未下载占位文件。保留中文、空格、长路径的输入；能否写入由实际系统 API 和支持矩阵判断，不能在 macOS 模拟路径测试后宣称 Windows 通过。
+V1默认不支持UNC写工作区或未下载的云盘占位文件；中文、空格、长路径和CRLF用真实系统及文件验收。已有源文件字节、换行和摘要不能因换壳自动规范化。
 
-Git Token 使用 Credential Manager 或当前用户保护的系统凭据接口；SSH 使用已授权系统 agent。换用户、凭据缺失、锁屏／退出及安装升级分别验证，不把密钥序列化到 `.heturc.json`。
+私密凭据使用当前用户受保护存储或明确的受限文件接口；Git Token与SSH agent按既有合同接入。插件拿到的是具体能力，不是Credential Manager、任意密钥或用户目录句柄；锁屏、换用户、退出和安装升级分别验证。
 
-## 5. 构建、打包与更新
+## 5. 构建与分发
 
-Cargo 产出各架构 native DLL 和 Rust MCP，SwiftPM 构建同一套 Swift CLI；Windows App 与 CLI 消费相同 ABI 版本的固定内核产物。CLI 不依赖 WinUI 或 .NET，打包所需 Swift runtime 与 native 依赖并在未安装 Swift 工具链的系统验收。开发可先提供未签名内部包，正式发行需 Authenticode、固定依赖、干净用户安装与卸载验证。MSIX／受控安装器方案在 M6-W 的 Windows 平台原型验证后冻结。
+按Windows x64构建Electron包、匹配的Rust App Server、CLI/MCP及native依赖，清单固定源、软件/协议/合同版本、OS、架构、许可及签名后摘要。Chromium随Electron分发，普通插件渲染不额外依赖系统WebView2。ARM64与其他平台只在各自依赖和实机验收后扩展。
 
-.NET 自包含不等于 Windows App SDK 已自包含，需分别验证。WinUI、COM、互操作和依赖加载通过前，不启用 Native AOT、激进裁剪或单文件发布。卸载默认保留作者工作区，删除个人数据必须独立确认。
+正式发行需要Authenticode、干净用户安装、升级、卸载、系统保护和进程加载验证。安装器方案在实际打包验证后冻结，不在文档虚构已存在MSIX或流水线。卸载不删除作者工作区，个人数据清理单独确认；独立CLI/MCP在无开发工具、Node、Swift、.NET或桌面运行进程时可用。
 
 ## 6. 验收与平台对齐
 
-Windows 原生验收覆盖中文输入法、125%／150%／200% 缩放、高对比、Narrator、文件占用、权限拒绝、junction、大小写、CRLF、凭据、Git 冲突、断网、崩溃恢复及安装升级。
+覆盖中文输入、DPI、Narrator、权限拒绝、文件占用、junction、大小写、CRLF、凭据、Git冲突、断网、崩溃、原键恢复、插件加载／撤权／停用／升级和签名安装。相同作品与插件得到相同领域结果，平台交互分别取证。
 
-跨端对齐按需求 ID 记录实现、未实现、刻意差异及证据：同一设定集、草稿和节点夹具应得到同一业务结果；系统授权 UI、路径身份和编辑器行为分别取证。macOS 上 C# 编译、Rust 交叉编译或窗口启动均不能代替 Windows 完整用户旅程。
-
-## 7. 外部协作入口
-
-Windows 在 macOS 完整后实施，复用建书筹备、专用 Skills、任务 Prompt、参考稿采纳及独立定稿合同。客户端安装、文件路径、剪贴板和连接检查按 Windows 原生环境验证，不把 Mac 的接入证据作为通过。
-
-局部网页使用受限 WebView2 或实际可达本机的 Agent 内置浏览器，按18和27建立单任务配对及回环边界；Node.js runtime 随对应功能制品分发。WebView2 只承载局部比较和选择，不取代原生长文编辑、不内置 AI 对话、不获得定稿或 Git 权限。
+Mac上的交叉编译、TypeScript检查、浏览器截图或共用Chromium不能代替Windows旅程。Windows实施不阻塞Mac纵向闭环，但在目标功能宣称跨系统完成前必须通过；具体状态归38，验收要求归19。

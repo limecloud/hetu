@@ -248,14 +248,33 @@ fn dispositions_use_fixed_evidence_cas_permissions_and_immutable_history() {
         call(&agent, "findings.disposition", request.clone())["error"]["code"],
         "forbidden"
     );
-    let suggestion = success(call(&agent,"findings.suggest",request.clone()));
-    assert_eq!(success(call(&agent,"findings.suggest",request.clone())),suggestion);
+    let suggestion = success(call(&agent, "findings.suggest", request.clone()));
+    assert_eq!(
+        success(call(&agent, "findings.suggest", request.clone())),
+        suggestion
+    );
     let read = json!({"report_id":report["report_id"],"finding_id":finding["finding_id"]});
-    assert_eq!(success(call(&agent,"findings.suggestions",read.clone()))["suggestions"][0]["is_current"],true);
-    assert!(success(call(&agent,"reports.get",json!({"report_id":report["report_id"]})))["dispositions"].as_array().unwrap().is_empty(),"提交建议不能改变正式处置");
+    assert_eq!(
+        success(call(&agent, "findings.suggestions", read.clone()))["suggestions"][0]["is_current"],
+        true
+    );
+    assert!(
+        success(call(
+            &agent,
+            "reports.get",
+            json!({"report_id":report["report_id"]})
+        ))["dispositions"]
+            .as_array()
+            .unwrap()
+            .is_empty(),
+        "提交建议不能改变正式处置"
+    );
     let first = call(&k, "findings.disposition", request.clone());
     success(first.clone());
-    assert_eq!(success(call(&agent,"findings.suggestions",read))["suggestions"][0]["is_current"],false);
+    assert_eq!(
+        success(call(&agent, "findings.suggestions", read))["suggestions"][0]["is_current"],
+        false
+    );
     assert_eq!(call(&k, "findings.disposition", request.clone()), first);
     let mut stale = request.clone();
     stale["operation_key"] = json!("other");

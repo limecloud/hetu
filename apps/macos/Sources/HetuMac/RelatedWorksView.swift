@@ -5,8 +5,14 @@ import HetuNative
 struct RelatedWorksView: View {
     let model: WorkspaceModel
     let onOpen: (WorkReference) -> Void
-    @State private var session = RelatedWorksSession()
-    @State private var includeArchived = false
+    @State private var session: RelatedWorksSession
+    @State private var includeArchived: Bool
+    init(model: WorkspaceModel, onOpen: @escaping (WorkReference) -> Void) {
+        self.model = model; self.onOpen = onOpen
+        let session = model.relatedWorksSession()
+        _session = State(initialValue: session)
+        _includeArchived = State(initialValue: session.includesArchived)
+    }
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             WorkbenchHeading(title: model.t("works.related"), artwork: "") {
@@ -114,7 +120,7 @@ struct RelatedWorksView: View {
                             VStack(alignment: .leading, spacing: 8) {
                                 property("properties.created", value: model.localizer.date(session.detail["link"]["created_at"].string ?? ""))
                                 property("properties.updated", value: model.localizer.date(session.detail["link"]["updated_at"].string ?? ""))
-                            }.padding(.top, 8)
+                            }.frame(maxWidth: .infinity, alignment: .leading).padding(.top, 8)
                         }.font(.system(size: 14))
                     }.frame(maxWidth: 800, alignment: .leading).frame(maxWidth: .infinity, alignment: .leading)
                 }
@@ -146,7 +152,10 @@ struct RelatedWorksView: View {
         }.font(.system(size: 14)).textSelection(.enabled)
     }
     private func property(_ key: String, value: String) -> some View {
-        LabeledContent(model.t(key), value: value).font(.system(size: 12))
+        HStack(alignment: .firstTextBaseline, spacing: 16) {
+            Text(model.t(key)).foregroundStyle(WorkbenchPalette.muted).frame(width: 104, alignment: .leading)
+            Text(value).textSelection(.enabled)
+        }.font(.system(size: 12)).frame(maxWidth: .infinity, alignment: .leading)
     }
     private func icon(_ reference: WorkReference) -> String { reference.kind == "novel" ? "book" : reference.kind == "drama" ? "doc.text" : "film" }
     private func errorText(_ error: any Error) -> some View {

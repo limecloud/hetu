@@ -10,17 +10,27 @@ fn call(kernel: &Kernel, action: &str, input: Value) -> Value {
 }
 
 fn main() {
-    let path = std::path::PathBuf::from(std::env::args_os()
-        .nth(1)
-        .expect("isolated fixture directory"));
+    let path = std::path::PathBuf::from(
+        std::env::args_os()
+            .nth(1)
+            .expect("isolated fixture directory"),
+    );
     let kernel = Kernel::open(json!({"workspace_path":path,"mode":"author","create":{"title":"测试书库中的独立小说","locale":"zh-CN","operation_key":"fixture-book"}})).unwrap();
-    let source = call(&kernel, "documents.create", json!({"kind":"novel_chapter","title":"书名参考原文","source_format":"markdown","content":"雾港的灯塔在潮水中沉默。🌿","operation_key":"fixture-source"}));
+    let source = call(
+        &kernel,
+        "documents.create",
+        json!({"kind":"novel_chapter","title":"书名参考原文","source_format":"markdown","content":"雾港的灯塔在潮水中沉默。🌿","operation_key":"fixture-source"}),
+    );
     let initial = call(&kernel, "blueprints.get", json!({}));
     let characters = (0..12).map(|index| json!({"type":"upsert_character","entity":{
         "character_id":format!("character_{index:08x}-1111-4111-8111-111111111111"),"name":format!("雾港人物{index}"),
         "aliases":[],"description":"守护旧灯塔的人。".repeat(100),"traits":[],"facts":[],"archived":false
     }})).collect::<Vec<_>>();
-    let bible = call(&kernel, "blueprints.save", json!({"expected":{"revision":initial["revision"],"sha256":initial["sha256"]},"typed_changes":characters,"operation_key":"fixture-bible"}));
+    let bible = call(
+        &kernel,
+        "blueprints.save",
+        json!({"expected":{"revision":initial["revision"],"sha256":initial["sha256"]},"typed_changes":characters,"operation_key":"fixture-bible"}),
+    );
     let preview = call(
         &kernel,
         "creative_tasks.preview_prompt",
@@ -37,9 +47,13 @@ fn main() {
     let mut output = json!({"task_ref":task["task_ref"]});
     if let Some(directory) = std::env::args_os().nth(2) {
         let directory = std::path::PathBuf::from(directory);
-        let grant = call(&kernel, "collaboration.authorize_workspace", json!({"client_adapter":"codex","collaboration_path":directory,"operation_key":"fixture-management"}));
+        let grant = call(
+            &kernel,
+            "collaboration.authorize_workspace",
+            json!({"client_adapter":"codex","collaboration_path":directory,"operation_key":"fixture-management"}),
+        );
         let hub = hetu_core::collaboration::CollaborationHub::open(&directory, "codex").unwrap();
-        let novel = call(&kernel,"novels.get",json!({}));
+        let novel = call(&kernel, "novels.get", json!({}));
         let proposal = hub.request(json!({"action":"hetu.agent_operations.prepare","contract_revision":"1","input":{"management_ref":grant["management_ref"],"action":"hetu.novels.update","input":{"expected":{"revision":novel["revision"],"sha256":novel["sha256"]},"metadata":{"title":"雾港听潮","author_name":"测试作者","synopsis":"待作者审核的作品资料。","genre":"悬疑","language_tag":"zh-CN","status":"planning"},"operation_key":"fixture-profile"},"summary":"整理作品资料，等待作者确认","operation_key":"fixture-proposal"}}));
         assert_eq!(proposal["status"], "succeeded", "{proposal}");
         output["management_ref"] = grant["management_ref"].clone();

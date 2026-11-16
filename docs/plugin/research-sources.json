@@ -1,0 +1,620 @@
+{
+  "index_version": "1",
+  "purpose": "产品研究来源索引，不是插件兼容或功能验收账本",
+  "retrieved_on": "2026-11-16",
+  "limitations": [
+    "网页主张不等于实际功能通过；包与宿主兼容须另行测试。",
+    "提交版本只对标记 git_revision 或固定 URL 的来源成立。",
+    "来源无法访问时保留失败，不用推测补齐。"
+  ],
+  "sources": [
+    {
+      "id": "SRC-001",
+      "name": "DeepSeek Harness",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/README.md",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/README.md",
+      "sha256": "0f5516be2acde776f05572cbc8c3093c90549afe04ce118e11157d073d5d15f4",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "plugin",
+          "context": "eveloped by [DeepSeek AI](https://deepseek.com). It is built on an **everything-is-a-plugin** architecture and powered by [Cordis](https://github.com/cordiverse/cordis), whose design is described in [_A Programming Paradigm for Spatiotemporal Composability_](https://arxi"
+        },
+        {
+          "term": "bundle",
+          "context": "ation](docs/architecture.md). `pnpm run dev:web` builds, serves, and rebuilds client bundles on source edits in one terminal, and `make help` lists the matching Make targets for Web and Desktop; the guide's application commands section owns the full table. For agents, fo"
+        }
+      ],
+      "verification_scope": "仅核对公开文本及摘录，不代表安装、性能或用户验证"
+    },
+    {
+      "id": "SRC-002",
+      "name": "DSH 独立社区索引",
+      "url": "https://www.dsh.so/zh/",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://www.dsh.so/zh/",
+      "sha256": "947357232ccc6f44b7550f8836f584550699bb0630a743900c13a02a79df3697",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "30,175",
+          "context": " 专题 安装验证 安全审计 安全审计 最新日报 2026-11-14 最新周报 2026-W46 生态 全景 安装生态 安全生态 数据接口 搜索插件、工具、集成… ⌘K 30,175 个插件 中文 English 中文 so it works without JS; the count badge is filled by the header script below. --> 提交 发现 插件 整合包 榜单 专题 安装验证 安全审计 生态 数据接口 提交 搜索 正在加载搜索索引… 未找到匹配的插件 常用使用场景 结对写代码 创意视觉"
+        },
+        {
+          "term": "独立",
+          "context": "remote-web-gateway ★ 170 通过扫码在手机上访问电脑上运行的 DeepSeek Harness，无需远程桌面、SSH 或公网 IP，支持一次性配对、独立设备授权与随时撤销。 09 @yan-mc/dsh-normify ★ 130 把项目架构归一化为分形模块树，提供三层校验、30 个 normify 工具与一键交互式架构图。 10 @Noob-stupid/dsh-plugin-gating-hub ★ 128 DeepSeek Harness 插件管理与市场：一键启用/停用插件、浏览插件市场并安装、升级门"
+        },
+        {
+          "term": "插件",
+          "context": " DSH 插件市场 — 安全扫描 + 沙盒安装实测 dsh .so 发现 插件 整合包 榜单 专题 安装验证 安全审计 安全审计 最新日报 2026-11-14 最新周报 2026-W46 生态 全景 安装生态 安全生态 数据接口 搜索插件、工具、集成… ⌘K 30,175 个插件 中文 English 中文 so it works without JS; the cou"
+        }
+      ],
+      "verification_scope": "仅核对公开文本及摘录，不代表安装、性能或用户验证"
+    },
+    {
+      "id": "SRC-003",
+      "name": "Pi",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/04fd0897e4df737cd8422bc99085d6953da804ec/packages/coding-agent/README.md",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://raw.githubusercontent.com/earendil-works/pi/04fd0897e4df737cd8422bc99085d6953da804ec/packages/coding-agent/README.md",
+      "sha256": "fbc7abec7d0829ac8bc4b217e950794e1ba4d8d1b3e0850f970da318ad72e863",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "extensions",
+          "context": "e your own. Adapt Pi to your workflows, not the other way around. Customize Pi with [extensions](docs/extensions.md), [skills](docs/skills.md), [prompt templates](docs/prompt-templates.md), and [themes](docs/themes.md). Bundle them as [Pi packages](docs/packages.md) and shar"
+        },
+        {
+          "term": "packages",
+          "context": "mplates](docs/prompt-templates.md), and [themes](docs/themes.md). Bundle them as [Pi packages](docs/packages.md) and share via npm or git. Pi ships with powerful defaults but skips features like sub-agents and plan mode. Ask Pi to build what you want, or install a package "
+        },
+        {
+          "term": "skills",
+          "context": "lows, not the other way around. Customize Pi with [extensions](docs/extensions.md), [skills](docs/skills.md), [prompt templates](docs/prompt-templates.md), and [themes](docs/themes.md). Bundle them as [Pi packages](docs/packages.md) and share via npm or git. Pi ships wit"
+        }
+      ],
+      "verification_scope": "仅核对公开文本及摘录，不代表安装、性能或用户验证"
+    },
+    {
+      "id": "SRC-004",
+      "name": "A2UI README",
+      "url": "https://raw.githubusercontent.com/a2ui-project/a2ui/3ed9601862ecc78027e20ac80ad8b1b98a5d9079/README.md",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://raw.githubusercontent.com/a2ui-project/a2ui/3ed9601862ecc78027e20ac80ad8b1b98a5d9079/README.md",
+      "sha256": "0a547974c64dcc9068b98b344a7399ff49e9080b49fc7463ed5a9f1ed23a4466",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "Inference",
+          "context": "adapt the UI based on where the user takes the conversation. A2UI supports swappable inference formats, so you can tailor inference to specific models and use cases. - **Native rendering and portability**: A2UI renders UI using the framework native to your app, with rendere"
+        },
+        {
+          "term": "Rendering",
+          "context": "of your application are agent- and/or server-driven. By design, A2UI supports remote rendering. - You want the UI to be composed dynamically, tailored to the user's immediate need. Instead of making your users navigate through multiple screens to solve their problems, have "
+        }
+      ],
+      "verification_scope": "仅核对公开文本及摘录，不代表安装、性能或用户验证",
+      "git_revision": "3ed9601862ecc78027e20ac80ad8b1b98a5d9079"
+    },
+    {
+      "id": "SRC-005",
+      "name": "Obsidian Bases",
+      "url": "https://raw.githubusercontent.com/obsidianmd/obsidian-help/master/en/Plugins/Bases/Introduction%20to%20Bases.md",
+      "retrieved_on": "2026-11-16",
+      "verification": "retrieval_failed",
+      "error": "HTTP Error 404: Not Found",
+      "verification_scope": "本轮未取得正文，不以此项证明产品能力"
+    },
+    {
+      "id": "SRC-006",
+      "name": "A2UI 1.0 协议",
+      "url": "https://raw.githubusercontent.com/a2ui-project/a2ui/3ed9601862ecc78027e20ac80ad8b1b98a5d9079/specification/v1_0/docs/a2ui_protocol.md",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://raw.githubusercontent.com/a2ui-project/a2ui/3ed9601862ecc78027e20ac80ad8b1b98a5d9079/specification/v1_0/docs/a2ui_protocol.md",
+      "sha256": "40c790dadefd8c43be778f7bd5486712ed6efae5eac789f2013bb1f600ecd8ff",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "callAgentFunction",
+          "context": "s**: Supports explicit, typed function invocation messages (`callRendererFunction`, `callAgentFunction`, `rendererFunctionResponse`, and `agentFunctionResponse`) verified against runtime catalog definitions. - **Single-Message UI Instantiation**: Allows initial component trees and "
+        },
+        {
+          "term": "updateDataModel",
+          "context": " a list of component definitions to be added to or updated in a specific surface. - `updateDataModel`: Provides new data to be inserted into or to replace a surface's data model. - `deleteSurface`: Explicitly removes a surface and its contents from the UI. End of agent turn is si"
+        },
+        {
+          "term": "sendDataModel",
+          "context": "metadata with messages. This is critical for: - **Data model synchronization**: The `sendDataModel` feature requires the renderer to send the current data model state as metadata alongside user actions. - **Capabilities exchange**: Renderer capabilities (supported catalogs, cus"
+        }
+      ],
+      "verification_scope": "仅核对公开文本及摘录，不代表安装、性能或用户验证",
+      "git_revision": "3ed9601862ecc78027e20ac80ad8b1b98a5d9079"
+    },
+    {
+      "id": "SRC-007",
+      "name": "A2UI SDK",
+      "url": "https://raw.githubusercontent.com/a2ui-project/a2ui/3ed9601862ecc78027e20ac80ad8b1b98a5d9079/docs/site/src/content/docs/concepts/sdks.mdx",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://raw.githubusercontent.com/a2ui-project/a2ui/3ed9601862ecc78027e20ac80ad8b1b98a5d9079/docs/site/src/content/docs/concepts/sdks.mdx",
+      "sha256": "5a25e4d077f4d8ebed008021264002934ea484324189bfc2ec35e10d76c7c5f6",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "SwiftUI",
+          "context": " each side of a network boundary, such as a Python agent server communicating with a SwiftUI or Jetpack Compose client. Codebases that handle both model inference and UI rendering in the same language, such as TypeScript web apps or Dart and Flutter apps, can use all thre"
+        },
+        {
+          "term": "Compose",
+          "context": "work boundary, such as a Python agent server communicating with a SwiftUI or Jetpack Compose client. Codebases that handle both model inference and UI rendering in the same language, such as TypeScript web apps or Dart and Flutter apps, can use all three layers together i"
+        },
+        {
+          "term": "compiles",
+          "context": "ions, replacing hand-written prompts that become outdated when components change. 3. Compiles streaming or batch model output from [inference formats](../inference-formats/) (such as compact Express syntax, which cuts output tokens without client changes, or chunk-healed D"
+        }
+      ],
+      "verification_scope": "仅核对公开文本及摘录，不代表安装、性能或用户验证",
+      "git_revision": "3ed9601862ecc78027e20ac80ad8b1b98a5d9079"
+    },
+    {
+      "id": "SRC-008",
+      "name": "A2UI 组件目录",
+      "url": "https://raw.githubusercontent.com/a2ui-project/a2ui/3ed9601862ecc78027e20ac80ad8b1b98a5d9079/docs/site/src/content/docs/concepts/catalogs.mdx",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://raw.githubusercontent.com/a2ui-project/a2ui/3ed9601862ecc78027e20ac80ad8b1b98a5d9079/docs/site/src/content/docs/concepts/catalogs.mdx",
+      "sha256": "062c2589b845e15c3bf06adcff9b7ef57fedea639b0a829fd62db70d97d8f1a2",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "catalog",
+          "context": "--- title: 'Catalogs' description: 'How component catalogs define the components, functions, and rules shared between agents and renderers.' --- import {Tabs, TabItem} from '@astrojs/starlight/compon"
+        },
+        {
+          "term": "function",
+          "context": "--- title: 'Catalogs' description: 'How component catalogs define the components, functions, and rules shared between agents and renderers.' --- import {Tabs, TabItem} from '@astrojs/starlight/components'; import CatalogAnatomy from '@components/docs/CatalogAnatomy.astr"
+        },
+        {
+          "term": "component",
+          "context": "--- title: 'Catalogs' description: 'How component catalogs define the components, functions, and rules shared between agents and renderers.' --- import {Tabs, TabItem} from '@astrojs/starlight/components'; import CatalogAnatomy f"
+        }
+      ],
+      "verification_scope": "仅核对公开文本及摘录，不代表安装、性能或用户验证",
+      "git_revision": "3ed9601862ecc78027e20ac80ad8b1b98a5d9079"
+    },
+    {
+      "id": "SRC-009",
+      "name": "A2UI ADK 变更说明",
+      "url": "https://raw.githubusercontent.com/a2ui-project/a2ui/3ed9601862ecc78027e20ac80ad8b1b98a5d9079/python/a2ui_adk/CHANGELOG.md",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://raw.githubusercontent.com/a2ui-project/a2ui/3ed9601862ecc78027e20ac80ad8b1b98a5d9079/python/a2ui_adk/CHANGELOG.md",
+      "sha256": "e67c2427f575d299fa05f4f0aef9c797b3b1e1afd96943b79efaf683b7d82da0",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "without running the agent",
+          "context": "derer_function_response` is `RendererFunctionCalls.resolve`, and answers the request without running the agent only when every message is handled. A response to a call the session didn't make, such as one the model wrote, is declined and goes to the agent. Responses that answer pending cal"
+        },
+        {
+          "term": "callAgentFunction",
+          "context": "aAgentExecutor` interceptor that ends a task `completed` when its request held only `callAgentFunction` and `rendererFunctionResponse` messages and ADK would end it `working` because there was nothing to send back. Other final states are left as they are. It needs the `a2a` extra. "
+        },
+        {
+          "term": "exclude_a2ui_rpc_from_prompt",
+          "context": "` messages from the contents sent to the model; the session's events keep them. Add `exclude_a2ui_rpc_from_prompt`, a `before_model_callback` that does the same for agents without the toolset. It needs the `a2a` extra. [#3795](https://github.com/a2ui-project/a2ui/pull/3795) - Package dependen"
+        }
+      ],
+      "verification_scope": "仅核对公开文本及摘录，不代表安装、性能或用户验证",
+      "git_revision": "3ed9601862ecc78027e20ac80ad8b1b98a5d9079"
+    },
+    {
+      "id": "SRC-010",
+      "name": "novelWriter",
+      "url": "https://api.github.com/repos/saga-soft/novelWriter",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://api.github.com/repos/saga-soft/novelWriter",
+      "sha256": "b9064cd7bbe547c981f6f2a02e59540be7d9b51486ca74b811b3bdf908eba7f8",
+      "verification": "public_source_retrieved",
+      "repository_metadata": {
+        "full_name": "saga-soft/novelWriter",
+        "description": "novelWriter is an open source plain text editor designed for writing novels",
+        "default_branch": "main",
+        "archived": false,
+        "license": {
+          "key": "gpl-3.0",
+          "name": "GNU General Public License v3.0",
+          "spdx_id": "GPL-3.0",
+          "url": "https://api.github.com/licenses/gpl-3.0",
+          "node_id": "MDc6TGljZW5zZTk="
+        }
+      },
+      "verification_scope": "仓库身份、公开说明与许可元数据；不证明功能已实测"
+    },
+    {
+      "id": "SRC-011",
+      "name": "Manuskript",
+      "url": "https://api.github.com/repos/olivierkes/manuskript",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://api.github.com/repos/olivierkes/manuskript",
+      "sha256": "fb84e095bfd8847fc8ea53fcf0fe5d977bdb155e5cead1c1721e9516f6a88ae8",
+      "verification": "public_source_retrieved",
+      "repository_metadata": {
+        "full_name": "olivierkes/manuskript",
+        "description": "A open-source tool for writers",
+        "default_branch": "develop",
+        "archived": false,
+        "license": {
+          "key": "gpl-3.0",
+          "name": "GNU General Public License v3.0",
+          "spdx_id": "GPL-3.0",
+          "url": "https://api.github.com/licenses/gpl-3.0",
+          "node_id": "MDc6TGljZW5zZTk="
+        }
+      },
+      "verification_scope": "仓库身份、公开说明与许可元数据；不证明功能已实测"
+    },
+    {
+      "id": "SRC-012",
+      "name": "Storyboarder",
+      "url": "https://api.github.com/repos/wonderunit/storyboarder",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://api.github.com/repos/wonderunit/storyboarder",
+      "sha256": "83b60d705f1cab90168ba1b853e6343d74ba95904c41f23e20060bf14c27a421",
+      "verification": "public_source_retrieved",
+      "repository_metadata": {
+        "full_name": "wonderunit/storyboarder",
+        "description": "✏️ Storyboarder makes it easy to visualize a story as fast you can draw stick figures.",
+        "default_branch": "master",
+        "archived": false,
+        "license": null
+      },
+      "verification_scope": "仓库身份、公开说明与许可元数据；不证明功能已实测"
+    },
+    {
+      "id": "SRC-013",
+      "name": "Twine",
+      "url": "https://api.github.com/repos/klembot/twinejs",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://api.github.com/repos/klembot/twinejs",
+      "sha256": "5bf11309a3688499d80e8446b17d970e8a2cb2c91feaa8b1f57ce6250947970c",
+      "verification": "public_source_retrieved",
+      "repository_metadata": {
+        "full_name": "klembot/twinejs",
+        "description": "Twine, a tool for telling interactive, nonlinear stories",
+        "default_branch": "develop",
+        "archived": false,
+        "license": {
+          "key": "gpl-3.0",
+          "name": "GNU General Public License v3.0",
+          "spdx_id": "GPL-3.0",
+          "url": "https://api.github.com/licenses/gpl-3.0",
+          "node_id": "MDc6TGljZW5zZTk="
+        }
+      },
+      "verification_scope": "仓库身份、公开说明与许可元数据；不证明功能已实测"
+    },
+    {
+      "id": "SRC-014",
+      "name": "Kitsu",
+      "url": "https://api.github.com/repos/cgwire/kitsu",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://api.github.com/repos/cgwire/kitsu",
+      "sha256": "eee83246e1cc949d0f9822ffe038aab8a73769a942bfb117170c242ea2cc729b",
+      "verification": "public_source_retrieved",
+      "repository_metadata": {
+        "full_name": "cgwire/kitsu",
+        "description": "Collaboration Platform for Animation and VFX Productions",
+        "default_branch": "main",
+        "archived": false,
+        "license": {
+          "key": "agpl-3.0",
+          "name": "GNU Affero General Public License v3.0",
+          "spdx_id": "AGPL-3.0",
+          "url": "https://api.github.com/licenses/agpl-3.0",
+          "node_id": "MDc6TGljZW5zZTE="
+        }
+      },
+      "verification_scope": "仓库身份、公开说明与许可元数据；不证明功能已实测"
+    },
+    {
+      "id": "SRC-015",
+      "name": "Excalidraw",
+      "url": "https://api.github.com/repos/excalidraw/excalidraw",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://api.github.com/repos/excalidraw/excalidraw",
+      "sha256": "7a84921421d24cdccefbc1ffdea6980629ca764a276bf63a42d5424242765a62",
+      "verification": "public_source_retrieved",
+      "repository_metadata": {
+        "full_name": "excalidraw/excalidraw",
+        "description": "Virtual whiteboard for sketching hand-drawn like diagrams",
+        "default_branch": "master",
+        "archived": false,
+        "license": {
+          "key": "mit",
+          "name": "MIT License",
+          "spdx_id": "MIT",
+          "url": "https://api.github.com/licenses/mit",
+          "node_id": "MDc6TGljZW5zZTEz"
+        }
+      },
+      "verification_scope": "仓库身份、公开说明与许可元数据；不证明功能已实测"
+    },
+    {
+      "id": "SRC-016",
+      "name": "tldraw",
+      "url": "https://api.github.com/repos/tldraw/tldraw",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://api.github.com/repos/tldraw/tldraw",
+      "sha256": "ffd51f6854b9b2e023481e6c5341a7438d68771ce29008fe052cb3b1bb6b5f6c",
+      "verification": "public_source_retrieved",
+      "repository_metadata": {
+        "full_name": "tldraw/tldraw",
+        "description": "Build infinite canvas apps in React with the tldraw SDK. World's best, top-most agent recommended #1 five star SDK.",
+        "default_branch": "main",
+        "archived": false,
+        "license": {
+          "key": "other",
+          "name": "Other",
+          "spdx_id": "NOASSERTION",
+          "url": null,
+          "node_id": "MDc6TGljZW5zZTA="
+        }
+      },
+      "verification_scope": "仓库身份、公开说明与许可元数据；不证明功能已实测"
+    },
+    {
+      "id": "SRC-020",
+      "name": "Novelcrafter",
+      "url": "https://www.novelcrafter.com/",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://www.novelcrafter.com/",
+      "sha256": "420cda28513514794cc9b3d6154b1648b90b3532ac5c06f0c9424715af279838",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "codex",
+          "context": "n Menu Features All Features Discover all the features Novelcrafter has to offer The Codex Story Bible & World Builder Organize characters, locations, and more with automatic tracking and progressions. Genre Guide Romance & NSFW Writing Track character chemistry, multi-"
+        },
+        {
+          "term": "writing",
+          "context": " Your Novel Writing Software - Novelcrafter Novelcrafter Open Menu Features All Features Discover all the features Novelcrafter has to offer The Codex Story Bible & World Builder Organize characters,"
+        },
+        {
+          "term": "story",
+          "context": " Features All Features Discover all the features Novelcrafter has to offer The Codex Story Bible & World Builder Organize characters, locations, and more with automatic tracking and progressions. Genre Guide Romance & NSFW Writing Track character chemistry, multi-POV ar"
+        }
+      ],
+      "verification_scope": "仅核对公开文本及摘录，不代表安装、性能或用户验证"
+    },
+    {
+      "id": "SRC-021",
+      "name": "Sudowrite",
+      "url": "https://sudowrite.com/",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://sudowrite.com/",
+      "sha256": "d8881b7d41ca60d6b680e3a46020d196526eff54353a0ade18c4478094900b11",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "Story Bible",
+          "context": "rite a novel from start to finish. FAST . Write a novel from start to finish. FAST . Story Bible takes you step-by-step from idea, to outline, to beating out chapters, to 1,000s of words, in your style . Story Bible takes you step-by-step from idea, to outline, to beating out"
+        },
+        {
+          "term": "novel",
+          "context": "stselling author I’m a huge Sudowrite fan. I’m a huge Sudowrite fan. Chat built with novelists in mind (sorry engineers) . Learn more about chat Ask me anything Allow edits SUDOWRITE Chat built with novelists in mind (sorry engineers) . Ask me anything Allow edits SUDOW"
+        },
+        {
+          "term": "write",
+          "context": " Sudowrite - Best AI Writing Partner for Fiction ')\"> Muse FAQ Pricing Log in ')\"> Muse FAQ Pricing New Muse 1.5, our AI model built just for fiction -> New Introducing Muse 1.5 -> Try the A"
+        }
+      ],
+      "verification_scope": "仅核对公开文本及摘录，不代表安装、性能或用户验证"
+    },
+    {
+      "id": "SRC-022",
+      "name": "Campfire",
+      "url": "https://www.campfirewriting.com/",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://www.campfirewriting.com/",
+      "sha256": "bc3306f62d278036455a942ba3f74d09a5d710704d9cb1b936b75e1058552706",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "worldbuilding",
+          "context": "s Select a Feature Stories Characters Maps & Locations Species Timelines & Calendars Worldbuilding Stories What Our Community is Saying A Campfire project is like an eBook that comes with a fully fleshed-out fandom website where all info is canon. There has never been a platfor"
+        },
+        {
+          "term": "character",
+          "context": "blish Campfire is a Place to Read, Write, and Publish Books Select a Feature Stories Characters Maps & Locations Species Timelines & Calendars Worldbuilding Stories What Our Community is Saying A Campfire project is like an eBook that comes with a fully fleshed-out fandom w"
+        },
+        {
+          "term": "timeline",
+          "context": "rite, and Publish Books Select a Feature Stories Characters Maps & Locations Species Timelines & Calendars Worldbuilding Stories What Our Community is Saying A Campfire project is like an eBook that comes with a fully fleshed-out fandom website where all info is canon. The"
+        }
+      ],
+      "verification_scope": "仅核对公开文本及摘录，不代表安装、性能或用户验证"
+    },
+    {
+      "id": "SRC-023",
+      "name": "StudioBinder",
+      "url": "https://www.studiobinder.com/",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://www.studiobinder.com/",
+      "sha256": "87b8cd158ae020e8484041a5841614d04b7883aabccd6b0caa9ad97be91d839e",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "screenwriting",
+          "context": "Software | StudioBinder Skip to content Search Features Open menu Call Sheet Builder Screenwriting AV Scripts Shot Lists Storyboards Mood Boards Script Breakdowns Shooting Schedules Script Sides Production Contacts Task Boards Production Calendar File Sharing Customers Open men"
+        },
+        {
+          "term": "storyboard",
+          "context": "ent Search Features Open menu Call Sheet Builder Screenwriting AV Scripts Shot Lists Storyboards Mood Boards Script Breakdowns Shooting Schedules Script Sides Production Contacts Task Boards Production Calendar File Sharing Customers Open menu Schools & Universities Enterpri"
+        },
+        {
+          "term": "shot list",
+          "context": "kip to content Search Features Open menu Call Sheet Builder Screenwriting AV Scripts Shot Lists Storyboards Mood Boards Script Breakdowns Shooting Schedules Script Sides Production Contacts Task Boards Production Calendar File Sharing Customers Open menu Schools & Universit"
+        }
+      ],
+      "verification_scope": "仅核对公开文本及摘录，不代表安装、性能或用户验证"
+    },
+    {
+      "id": "SRC-024",
+      "name": "Frame.io",
+      "url": "https://frame.io/",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://frame.io/",
+      "sha256": "0de2c463b2980c6a1ee0dcd7a1ea161a15ab1a3d6d980adde4c7aa19017e7a17",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "review",
+          "context": "atures Features Features Product Workflow Management File Management Share & Present Review & Approvals Camera to Cloud Integrations Mounted Storage Frame.io Drive Enterprise Enterprise Enterprise Industries Overview Media and Entertainment Agencies Brands Use Cases Vide"
+        },
+        {
+          "term": "feedback",
+          "context": "our creative work. Upload creative files, manage projects, assign tasks, get precise feedback, and share your work — all in one easy-to-use platform built for creatives. Start Free Trial Take a Product Tour The Frame.io platform Whatever you create,​ ​ Frame.io helps you d"
+        },
+        {
+          "term": "approval",
+          "context": "atures Features Product Workflow Management File Management Share & Present Review & Approvals Camera to Cloud Integrations Mounted Storage Frame.io Drive Enterprise Enterprise Enterprise Industries Overview Media and Entertainment Agencies Brands Use Cases Video Photo Mar"
+        }
+      ],
+      "verification_scope": "仅核对公开文本及摘录，不代表安装、性能或用户验证"
+    },
+    {
+      "id": "SRC-025",
+      "name": "Milanote",
+      "url": "https://milanote.com/",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://milanote.com/",
+      "sha256": "3f9431dd7714404f937ad116df0f0fd3ec065b23195abc4a84f6d16976bc12ea",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "creative",
+          "context": " Milanote - the tool for organizing creative projects Get organized. Stay creative. Milanote is an easy-to-use tool for organizing creative projects. Save ideas & inspiration Milanote lets you combine notes, images, videos, "
+        },
+        {
+          "term": "organize",
+          "context": " Milanote - the tool for organizing creative projects Get organized. Stay creative. Milanote is an easy-to-use tool for organizing creative projects. Save ideas & inspiration Milanote lets you combine notes, images, videos, sketches and more with"
+        },
+        {
+          "term": "collaborat",
+          "context": "nformation and tasks into one place, so you can see the big picture—and the details. Collaborate with clients & your team Milanote makes teamwork easy (and fun). Invite others to edit, comment or just view your boards and collaborate like you’re in the same room. Made for cr"
+        }
+      ],
+      "verification_scope": "仅核对公开文本及摘录，不代表安装、性能或用户验证"
+    },
+    {
+      "id": "SRC-026",
+      "name": "JSON-RPC 2.0",
+      "url": "https://www.jsonrpc.org/specification",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://www.jsonrpc.org/specification",
+      "sha256": "8fe1edfdca511d309e712e47447457ea5159b728ec02071a84593aed692aefeb",
+      "verification": "public_source_retrieved",
+      "verification_scope": "仅核对官方公开文本，不代表河图实现或目标平台通过",
+      "previous_attempts": [
+        {
+          "url": "https://developers.figma.com/docs/plugins/",
+          "http_status": 200,
+          "verification": "public_source_retrieved"
+        }
+      ]
+    },
+    {
+      "id": "SRC-027",
+      "name": "Electron security",
+      "url": "https://www.electronjs.org/docs/latest/tutorial/security",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://www.electronjs.org/docs/latest/tutorial/security",
+      "sha256": "f82499cb612afb67072af86859fe00132b1738682f8eb2ee9a6a721a0b181bea",
+      "verification": "public_source_retrieved",
+      "verification_scope": "仅核对官方公开文本，不代表河图实现或目标平台通过",
+      "previous_attempts": [
+        {
+          "url": "https://www.canva.dev/docs/apps/",
+          "http_status": 200,
+          "verification": "public_source_retrieved"
+        }
+      ]
+    },
+    {
+      "id": "SRC-030",
+      "name": "A2UI 与 MCP Apps",
+      "url": "https://raw.githubusercontent.com/a2ui-project/a2ui/3ed9601862ecc78027e20ac80ad8b1b98a5d9079/docs/site/src/content/docs/guides/a2ui-in-mcp-apps.mdx",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://raw.githubusercontent.com/a2ui-project/a2ui/3ed9601862ecc78027e20ac80ad8b1b98a5d9079/docs/site/src/content/docs/guides/a2ui-in-mcp-apps.mdx",
+      "sha256": "9e63fd1fed482e04fb55735d2fec7575588e9093a1a10b5e5dc821e44cb1adce",
+      "verification": "public_source_retrieved",
+      "excerpts": [
+        {
+          "term": "MCP Apps",
+          "context": "sageProcessor`](/concepts/sdks/#core-sdk) and forwards user actions back through the MCP Apps `tools/call` channel. See the [MCP Integration Overview](../mcp-overview/) to compare all four MCP patterns. Use this pattern when the outer host supports MCP Apps (`ui://` HTML i"
+        },
+        {
+          "term": "iframe",
+          "context": "server ships a self-contained HTML bundle that mounts ` ` inside the host's isolated iframe. When tools on the server return `application/a2ui+json` payloads, the embedded app feeds those messages into its own [`MessageProcessor`](/concepts/sdks/#core-sdk) and forwards u"
+        },
+        {
+          "term": "renderer",
+          "context": "--- title: 'Render A2UI Inside an MCP App' description: 'Bundle an A2UI renderer inside an MCP App ui:// resource so existing MCP hosts can display interactive A2UI surfaces without native host code.' --- import {Aside, Tabs, TabItem} from '@astrojs/starlight/"
+        }
+      ],
+      "verification_scope": "仅核对公开文本及摘录，不代表安装、性能或用户验证",
+      "git_revision": "3ed9601862ecc78027e20ac80ad8b1b98a5d9079"
+    },
+    {
+      "id": "SRC-028",
+      "name": "Electron WebContentsView",
+      "url": "https://www.electronjs.org/docs/latest/api/web-contents-view",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://www.electronjs.org/docs/latest/api/web-contents-view",
+      "sha256": "b294ac6ee573e2a304b8664b31094a12be99ee61835814aace6ecca69d48e51b",
+      "verification": "public_source_retrieved",
+      "verification_scope": "仅核对官方公开文本，不代表河图实现或目标平台通过"
+    },
+    {
+      "id": "SRC-029",
+      "name": "Electron contextBridge",
+      "url": "https://www.electronjs.org/docs/latest/api/context-bridge",
+      "retrieved_on": "2026-11-16",
+      "http_status": 200,
+      "resolved_url": "https://www.electronjs.org/docs/latest/api/context-bridge",
+      "sha256": "d402c598d8026691060347a5a96833c62e81745dfa47a82b693644cce40f0d7c",
+      "verification": "public_source_retrieved",
+      "verification_scope": "仅核对官方公开文本，不代表河图实现或目标平台通过"
+    }
+  ],
+  "user_supplied_article": {
+    "url": "https://mp.weixin.qq.com/s/oGqGmB-DKyQcUrwF40igRg",
+    "access": "user_pasted_text",
+    "computer_use": "窗口截图服务和浏览器连接失败，未读取页面",
+    "independently_checked": "SRC-004、SRC-006至SRC-009、SRC-030所列机制；公告日期及企业名单未逐项独立核实"
+  }
+}

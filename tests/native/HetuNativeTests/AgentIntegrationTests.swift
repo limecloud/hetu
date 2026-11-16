@@ -89,6 +89,11 @@ extension NativeTests {
         var manifest = try JSONSerialization.jsonObject(with: Data(contentsOf: cache.appendingPathComponent("plugin.json"))) as! [String: Any]
         manifest["version"] = "0.0.9"
         try JSONSerialization.data(withJSONObject: manifest).write(to: cache.appendingPathComponent("plugin.json"))
+        try agentCheck(inspector.inspect(suite: military, catalog: catalog, client: .codex).state == .invalid, "便携与Codex清单版本不同仍显示为有效套件")
+        let overlay = cache.appendingPathComponent(".codex-plugin/plugin.json")
+        var compatibility = try JSONSerialization.jsonObject(with: Data(contentsOf: overlay)) as! [String: Any]
+        compatibility["version"] = "0.0.9"
+        try JSONSerialization.data(withJSONObject: compatibility).write(to: overlay)
         let older = inspector.inspect(suite: military, catalog: catalog, client: .codex)
         try agentCheck(older.version == "0.0.9" && older.versionDiffers && older.lockVersion == "9.9.9", "混用了 manifest 与 lock 版本或没有发现版本差异")
         let duplicate = cache.deletingLastPathComponent().appendingPathComponent("revision-b")

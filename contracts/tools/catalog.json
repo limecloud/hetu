@@ -73,9 +73,10 @@
       "name": "hetu_commit_snapshot",
       "action": "hetu.git.snapshot",
       "title": "准备或提交版本快照 / Prepare or commit snapshot",
-      "description": "准备固定文件、HEAD与提交身份，返回pending；仅可执行已经由作者在本机批准的同一快照。不能自行批准、初始化、切分支、推送或执行hooks。Prepare fixed files, HEAD and identity with pending status; execution requires the author’s matching local approval. Cannot approve, initialize, switch branches, push or execute hooks.",
+      "description": "准备固定文件、作品版本头与提交身份；精确作品调用必须携带 work_ref，从空树建立独立文稿历史。仅执行作者在本机批准的同一快照，未知结果沿原键恢复。不提供作者批准或整仓同步。Prepare an exact work-scoped manuscript snapshot and execute only the locally author-approved snapshot. Keep work_ref and the original operation key; no author approval or repository sync.",
       "profiles": [
-        "workspace"
+        "workspace",
+        "stable"
       ]
     },
     {
@@ -431,7 +432,7 @@
       "name": "hetu_list_documents",
       "action": "hetu.documents.list",
       "title": "列出文档",
-      "description": "列出文档。仅限返回的受管新建范围，不能采纳或定稿。",
+      "description": "按获权作品列出正文目录；精确作品授权须携带 work_ref，使用 limit 和 cursor 分页。List documents in the exact authorized work; preserve the returned cursor.",
       "profiles": [
         "stable"
       ]
@@ -440,7 +441,16 @@
       "name": "hetu_get_document",
       "action": "hetu.documents.get",
       "title": "读取不可变正文修订",
-      "description": "读取不可变正文修订。仅限返回的受管新建范围，不能采纳或定稿。",
+      "description": "读取获权作品中的确切正文修订；文档 ID 和修订 ID 来自目录及历史，不能读取同根其他作品。Read the exact immutable revision within the authorized work.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_list_creative_tasks",
+      "action": "hetu.creative_tasks.list",
+      "title": "查找作品已有协作任务",
+      "description": "按完整 work_ref、目标文档和状态分页查找既有任务，沿返回的 task_locator 打开；列表不授予任务执行权。Find existing tasks within the authorized work; opening still requires that task's client grant.",
       "profiles": [
         "stable"
       ]
@@ -870,7 +880,16 @@
       "name": "hetu_local_settings_get",
       "action": "hetu.local_settings.get",
       "title": "读取本机设置 / Local settings",
-      "description": "使用原生设置与套件安装Owner；只可执行作者批准的固定方案。密钥不进入此接口。Native settings owner; exact author approval required. Credentials are excluded.",
+      "description": "使用独立本机设置与套件安装Owner；只可执行作者批准的固定方案。密钥不进入此接口。Shared local settings owner; exact author approval required. Credentials are excluded.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_local_settings_inspect_suite",
+      "action": "hetu.local_settings.inspect_suite",
+      "title": "检测创作套件 / Inspect creative suite",
+      "description": "使用独立本机设置与套件安装Owner；只可执行作者批准的固定方案。密钥不进入此接口。Shared local settings owner; exact author approval required. Credentials are excluded.",
       "profiles": [
         "stable"
       ]
@@ -879,7 +898,7 @@
       "name": "hetu_local_settings_prepare",
       "action": "hetu.local_settings.prepare",
       "title": "准备本机方案 / Local settings",
-      "description": "使用原生设置与套件安装Owner；只可执行作者批准的固定方案。密钥不进入此接口。Native settings owner; exact author approval required. Credentials are excluded.",
+      "description": "使用独立本机设置与套件安装Owner；只可执行作者批准的固定方案。密钥不进入此接口。Shared local settings owner; exact author approval required. Credentials are excluded.",
       "profiles": [
         "stable"
       ]
@@ -888,7 +907,7 @@
       "name": "hetu_local_settings_get_operation",
       "action": "hetu.local_settings.get_operation",
       "title": "回读本机方案 / Local settings",
-      "description": "使用原生设置与套件安装Owner；只可执行作者批准的固定方案。密钥不进入此接口。Native settings owner; exact author approval required. Credentials are excluded.",
+      "description": "使用独立本机设置与套件安装Owner；只可执行作者批准的固定方案。密钥不进入此接口。Shared local settings owner; exact author approval required. Credentials are excluded.",
       "profiles": [
         "stable"
       ]
@@ -897,7 +916,7 @@
       "name": "hetu_local_settings_execute",
       "action": "hetu.local_settings.execute",
       "title": "执行本机方案 / Local settings",
-      "description": "使用原生设置与套件安装Owner；只可执行作者批准的固定方案。密钥不进入此接口。Native settings owner; exact author approval required. Credentials are excluded.",
+      "description": "使用独立本机设置与套件安装Owner；只可执行作者批准的固定方案。密钥不进入此接口。Shared local settings owner; exact author approval required. Credentials are excluded.",
       "profiles": [
         "stable"
       ]
@@ -983,7 +1002,7 @@
       "name": "hetu_read_work_link",
       "action": "hetu.work_links.get",
       "title": "查看固定关联 / Read fixed work link",
-      "description": "读取确切关联与历史版本；另一端读取另行获权。Read an exact link revision; accessing the related work requires its own authorization.",
+      "description": "读取确切关联与历史版本；可用 related_management_ref 分别核验另一端授权，不扩大任何一端范围。Read an exact link revision with separately verified endpoint access through related_management_ref.",
       "profiles": [
         "stable"
       ]

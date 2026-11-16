@@ -1,0 +1,148 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-11-15T18:22:40.452020+00:00",
+  "version": "0.7.0",
+  "scope": "独立Rust CLI、同Core命令兼容与本对话CLI/MCP机器旅程",
+  "status": "machine_passed",
+  "all_refactoring_complete": false,
+  "source": {
+    "base_commit": "900f8b0645479ba65f437d62fadbb7c7f09e7b38",
+    "dirty_worktree": true,
+    "manifest_kind": "post_validation_shared_worktree_snapshot",
+    "manifest_sha256": "bb81158cd131ded65689a77f52281ed3bceed3f658e7f38fd01d16fd818e24bd",
+    "files": {
+      "Cargo.toml": "65ca46039df2d8b37a1a8826f5b3f4c7347bcf9162553b36f81847e60b767f8f",
+      "Cargo.lock": "c26a640923cbefd79e104123f32606453a0b621fd33c332edd4533e19fe56b32",
+      "core/src/lib.rs": "e1b1b1a4777022a431ff0e6d2484d64812f00d73712d705855577dde117c5069",
+      "apps/cli/Cargo.toml": "41ed0530ad9b1c2b45891e813b938a8edc6dea462ffd8b9b17af5ae9308cb701",
+      "apps/cli/src/main.rs": "b4aa75acf1d85fbce4102020348363b94a27116fc33f0eb856de05e4dac4d99b",
+      "apps/cli/tests/commands.rs": "9293d1013519512176b83a1f95551faba5e2b82e47df2f12aab8e7037119b530",
+      "README.md": "6eb38be7957d0abdf662ae88b6caa761af5070f70a24678c5e931381cc13baec",
+      "README.en.md": "e829cb05325d656f22a7fc60052dad4a6112f03ecc9cd95f6d14eb42578d4289",
+      "docs/04-Monorepo与开发规范.md": "03da67f716c5e1f16712be73837acda4f1929adcc701f893dccc0a4b177a8c22",
+      "docs/13-内核ABI与CLI合同.md": "a1e1e4a6f4f13df21403b280532bec056d6ca54cb2416f3543fba48ddbe937d8",
+      "docs/19-测试策略与验收矩阵.md": "63cf45175be596eb738545aa9e3f9daa15253ed1620079fc8f7b17528bfcf9c7",
+      "docs/21-构建分发与运维.md": "a887475aa4bd1bd310c959b167e19e1bd7debb45e20655077e7fa6df2cc05d1b",
+      "docs/38-创作工作台重构执行计划.md": "3404e0a59ead5fd26be990f3dc670151c6f7387e4af225c7fde40576b84630f7"
+    }
+  },
+  "checks": {
+    "build": {
+      "status": "passed",
+      "command": "cargo build --locked --jobs 2 -p hetu-cli -p hetu-mcp",
+      "log_sha256": "fd3772f15d9e0f5383a3b187157770e207eb8f57da90f9842251655a11123d53"
+    },
+    "cli_mcp_tests": {
+      "status": "passed",
+      "command": "cargo test --locked --jobs 2 -p hetu-cli -p hetu-mcp -- --test-threads=2",
+      "cli_passed": 7,
+      "mcp_stdio_passed": 25,
+      "total_passed": 32,
+      "failed": 0,
+      "log_sha256": "3541840ecc4ba2c9015ef96d10645832657797957532ebf1fa34db517dd4edd6",
+      "initial_run": {
+        "status": "failed_test_assertion",
+        "cli_passed": 6,
+        "cli_failed": 1,
+        "cause": "测试将稳定管理入口附带management_ref的data与旧作品入口data作全对象比较；修正为比较相同document、revision、content，保留差异字段和原始日志。",
+        "log_sha256": "dc63688124563f201f17964f06abf5603c8c56692657b49c868644c034afc87c"
+      }
+    },
+    "public_journey": {
+      "status": "passed",
+      "steps": 41,
+      "channels": {
+        "public-cli": 28,
+        "isolated-author-authorization-only": 3,
+        "mcp-stdio": 10
+      },
+      "result_sha256": "e00700b3e99a355a9f2f81a9f046f4228d9a1bd8cfdabad23d20edfbbf492045",
+      "start": "独立空授权目录，无作品、无筹备、无预建任务。",
+      "verified": [
+        "本对话Codex经公开Rust CLI建立小说、两空章及首任务",
+        "精确WorkRef分页正文、读取固定正文和历史、查回原TaskLocator",
+        "同一参考稿保存两版、原键重放、固定提交，旧版保持固定",
+        "新MCP stdio进程发现并回读同一目录、任务及两版稿件",
+        "缺WorkRef、错对象、作者正文直改、撤权读取与再授权旧游标均拒绝",
+        "作者正文保持空稿，参考稿提交不等于作者采纳或定稿"
+      ],
+      "author_channel": "3步隔离作者C ABI只登记精确授权、撤权与再授权；建书、章节、任务及参考稿均走公开机器入口。",
+      "computer_use_business_steps": 0,
+      "paid_model_calls": 0,
+      "host_boundary": "真实新启动MCP stdio由本对话脚本驱动，不冒充当前Codex宿主插件重载或MCP Apps验收。"
+    },
+    "compatibility": {
+      "status": "passed",
+      "cases": 6,
+      "calls": 12,
+      "input": "同一隔离作品、任务、授权及同版Core",
+      "cases_compared": [
+        "documents.list",
+        "documents.history",
+        "creative_tasks.list",
+        "working_copies.get第一版",
+        "working_copies.get第二版",
+        "operations.get原创建操作"
+      ],
+      "result": "新Rust入口与Swift对照的完整AXI结果一致。",
+      "evidence_sha256": "625a38dcb10f88898792cfe912043058f22099cbdadc9b71c48ba32b084e7486"
+    },
+    "standalone": {
+      "status": "passed",
+      "platform": "macOS-15.8.3-arm64-arm-64bit-Mach-O",
+      "single_executable": true,
+      "swift_dependency": false,
+      "dynamic_core_dependency": false,
+      "removed_environment": [
+        "HOME",
+        "DYLD_LIBRARY_PATH",
+        "DYLD_FALLBACK_LIBRARY_PATH"
+      ],
+      "path": "/usr/bin:/bin",
+      "verified": [
+        "--version",
+        "显式独立授权目录collaboration.inspect",
+        "只读发现不创建目录",
+        "otool依赖检查"
+      ],
+      "evidence_sha256": "323747c29af67eab262f08820d1b798239a2f7ec679f68a5246b6a9d7dc81e86",
+      "boundary": "本机单文件及链接依赖检查，不等于其他平台或无开发工具干净系统验收。"
+    },
+    "skills": {
+      "source_version": "0.3.2",
+      "source_read_by_this_conversation": true,
+      "host_plugin_reloaded": false,
+      "boundary": "复用上一专项已校验的源方法；本轮未更新安装或宣称当前宿主加载新版本。"
+    },
+    "docs": {
+      "status": "passed",
+      "command": "uv run tools/verify-docs.py",
+      "documents": 77,
+      "errors": [],
+      "log_sha256": "5d0ad11c3118ef8d24d13b6963dcfc6dd366847eb20caa772721fd7dc9575241"
+    },
+    "format": {
+      "status": "passed",
+      "command": "cargo fmt --package hetu-cli -- --check"
+    },
+    "diff_whitespace": {
+      "status": "passed",
+      "scope": "本轮Cargo、入口与文档变更"
+    }
+  },
+  "artifacts": {
+    "Frameworks/libhetu_core.dylib": "036403e38bf30bef5e77a4779c8d67fe578c250dc3a9d7847970f9e172db4b82",
+    "Helpers/hetu": "bf656661070af23e68845270d530ae919d9fb57ff0bd8c2ee4a41bdc4b33dfcf",
+    "Helpers/hetu-mcp": "bbe73a19db0a0b97953ce2ceb666a2d4e60c8152e65f3c8d441243f8847e0ee1"
+  },
+  "record_directory": "Documents/河图洛书/验收记录/独立RustCLI-20261116",
+  "remaining": [
+    "独立CLI的本机设置Owner委托",
+    "Rust App Server及TypeScript插件受管入口的完整验收",
+    "Electron界面与渲染",
+    "目标平台、签名分发和安装后回归",
+    "当前Codex宿主插件重载及真实MCP Apps",
+    "完整短剧视频生命周期和全剧交付"
+  ],
+  "delivery_boundary": "本轮独立机器入口切片收尾，不关闭全部重构；未修改安装、提交、推送、部署或调用收费模型。"
+}

@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "kind": "electron-plugin-title-index",
+  "recorded_at": "2026-11-16T04:04:37.229483+00:00",
+  "scope": "Plugin title metadata search, snapshot pagination and rebuildable JSON projection; no UI search control added.",
+  "source": {
+    "files": {
+      "core/src/application/extensions.rs": "1be259e983233fadee274066df062cdeeab6aaa82eed1cc64726cfbd2c24bbdf",
+      "core/src/application/extensions/index.rs": "c6203ca2d3ccd442c9303c4a6ef102a21c94c2050e524bbf3020ab0ea9e8c7d1",
+      "core/src/application/extensions/migrations.rs": "4d5e2435959a7cca8539c71b15930d2b932f9c92f3d13046c6c70329acbc1e46",
+      "core/tests/extension_index.rs": "407c3d69aff78ba0ea717bf0c95ce47485531adee7e9b1f1fe90ad694e1374c3",
+      "core/tests/extension_migrations.rs": "1b01611e85782fdb097f938563e66d5f30b377ab3d56c04bb159678abae83087",
+      "contracts/extensions/actions.json": "10058d9d93dcda896519dc40d8c53198a77cac2ba6b61f22524d43a15366f6c5",
+      "packages/plugin-sdk/src/index.ts": "7d7ef600f174297d5d43ae5fdac32f2101d64836ffd0de16c014045597fc4767",
+      "packages/plugin-host/src/backend.ts": "eaf45961ccdf5c33a00fd805e5421b9796cc605b34d6b02404cbe8bb47f8e3f0",
+      "packages/plugin-host/src/runtime-cli.ts": "9be29ca64e626638b2c097f4eadbcef2d39c567c787f5131409e1832d2deb018",
+      "packages/plugin-host/tests/index.test.ts": "c0387060329e4f11e5f420e121aed1344f7a731e3103257213071bdae06da819",
+      "packages/plugin-host/tests/migrations.test.ts": "bb70a812fe746d263a9289695426de771c95fb0b0f1d540080136fa73c499c7c"
+    },
+    "implementation_files_match_tested_source": true
+  },
+  "checks": {
+    "core": {
+      "status": "passed",
+      "passed": 9,
+      "logs": [
+        "output/plugin-doc-qa/transfer/index-core-tests-rechecked.log",
+        "output/plugin-doc-qa/transfer/index-core-final.log"
+      ],
+      "latest_index_assertions_passed": 2
+    },
+    "private_stdio": {
+      "status": "passed",
+      "passed": 5,
+      "log": "output/plugin-doc-qa/transfer/index-stdio-tests.log"
+    },
+    "plugin_host": {
+      "status": "passed",
+      "passed": 12,
+      "skipped": 0,
+      "log": "output/plugin-doc-qa/transfer/index-node-tests.log",
+      "real_cli_mcp": true
+    },
+    "machine_build": {
+      "status": "passed",
+      "log": "output/plugin-doc-qa/transfer/index-machine-build.log"
+    },
+    "desktop_build": {
+      "status": "passed",
+      "log": "output/plugin-doc-qa/transfer/index-desktop-build.log"
+    },
+    "package": {
+      "status": "not_accepted_source_changed",
+      "attempts": [
+        {
+          "log": "output/plugin-doc-qa/transfer/index-package-build.log",
+          "stage": "build",
+          "result": "rejected_by_source_consistency_gate"
+        },
+        {
+          "log": "output/plugin-doc-qa/transfer/index-package-reassembled.log",
+          "stage": "assembly_or_signing",
+          "result": "rejected_by_source_consistency_gate"
+        }
+      ],
+      "recent_parallel_ui_changes": [
+        "apps/desktop/src/renderer/canon-editors.tsx",
+        "apps/desktop/src/renderer/covers.tsx"
+      ],
+      "packaged_index_test": "not_run",
+      "packaged_desktop_test": "not_run",
+      "accepted_manifest": null
+    },
+    "documentation": {
+      "status": "passed",
+      "documents": 77,
+      "mermaid": 84,
+      "errors": [],
+      "log": "output/plugin-doc-qa/transfer/index-docs-final.log"
+    },
+    "typescript": {
+      "status": "passed",
+      "log": "output/plugin-doc-qa/transfer/index-typecheck-final.log"
+    },
+    "diff_check": {
+      "status": "passed",
+      "log": "output/plugin-doc-qa/transfer/index-diff-final.log"
+    }
+  },
+  "contract": {
+    "actions": [
+      "hetu.extensions.objects.search",
+      "hetu.extensions.index.status",
+      "hetu.extensions.index.rebuild"
+    ],
+    "storage": "discardable JSON title metadata projection",
+    "query": "case-insensitive title substring and optional kind filter",
+    "required_permission": "objects.read",
+    "cache_write_effect": "cache_write in Core catalog only; plugin manifest effects unchanged",
+    "cache_scope": [
+      "WorkRef",
+      "plugin_id",
+      "authorized kind set"
+    ],
+    "cursor_binding": [
+      "WorkRef",
+      "plugin_id",
+      "authorized kind set",
+      "grant_id",
+      "package_sha256",
+      "normalized query",
+      "kind",
+      "limit",
+      "source snapshot",
+      "after object_id"
+    ],
+    "index_states": [
+      "missing",
+      "invalid",
+      "stale",
+      "ready"
+    ],
+    "missing_invalid_stale_behavior": "scan authoritative current records for this request; do not write cache",
+    "returns_authority_checked_records": true,
+    "rebuild_advances_authority": false,
+    "rebuild_has_business_operation_receipt": false,
+    "rebuild_recovery": "status readback, then deterministic rebuild if needed",
+    "cache_contains_content_or_grants": false,
+    "checksum_boundary": "accidental corruption detection; does not authenticate a local actor who can recompute the checksum",
+    "limits": {
+      "source_objects": 10000,
+      "scan_bytes": 33554432,
+      "cache_bytes": 8388608,
+      "page_items": 100,
+      "query_unicode_characters": 120,
+      "scan_bytes_accounting": "Verified current records serialized with Core JSON serializer; not total disk I/O. Store and revision validation separately bound each raw record read."
+    }
+  },
+  "resolved_failures": [
+    {
+      "stage": "initial_core_check",
+      "reason": "Error.code is a string reference; calling as_str is unavailable",
+      "resolution": "match error.code directly",
+      "log": "output/plugin-doc-qa/transfer/index-core-check.log"
+    },
+    {
+      "stage": "initial_core_tests",
+      "reason": "test fixture read a nonexistent work_ref from drama creation response",
+      "resolution": "construct WorkRef from actual project_id and workspace_id; final cross-work cursor assertions passed",
+      "log": "output/plugin-doc-qa/transfer/index-core-tests.log"
+    }
+  ],
+  "validation_boundaries": [
+    "isolated synthetic works only; no real author manuscript modified",
+    "no author adoption or finalization; no external model or paid calls",
+    "no native installation replacement, commit, push or deployment",
+    "10000 objects, 32MiB scan and 8MiB cache boundaries are implemented but not stress-tested",
+    "no SQLite, full-text search, bulk migration, ecosystem distribution or new UI search-control claim",
+    "Windows, clean-system installation, production signing and notarization not run",
+    "no complete current desktop regression or whole R6 completion claim",
+    "Two package assemblies were rejected by source-consistency gates during concurrent UI edits; no accepted same-source package or packaged index verification in this slice."
+  ]
+}

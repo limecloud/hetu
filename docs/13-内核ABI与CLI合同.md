@@ -1,4 +1,6 @@
-# 内核 ABI 与 CLI 合同
+# 进程通信、内核ABI与CLI合同
+
+新桌面采用JSON-RPC 2.0私有stdio连接Rust App Server，初始化、消息预算、错误和退出合同由[39第5节](39-Electron与插件优先重构架构.md#5-json-rpc-的准确口径)拥有。现有C ABI服务原生对照与Swift CLI，不是Electron的必经桥接。目标Rust CLI独立复用Core，公开命令、JSON、退出码、权限与恢复语义保持兼容。
 
 ABI 主版本为 `1`，领域 Schema 为 `1.0.0`；CLI／MCP 公开结果采用 AXI `0.2.1` 及逐动作合同修订。应用动作与签名见[30](30-应用API详细设计.md)。
 
@@ -72,15 +74,21 @@ ABI 任务启动、查询与取消的回执只说明句柄生命周期，`data.t
 | `git_conflict, non_fast_forward, authentication_failed` | 回到 Git 审阅或凭据流程 |
 | `operation_unknown` | 查询原操作并核对副作用，不能自动重试 |
 
-## 4. Swift 跨平台 CLI
+## 4. 独立CLI与Swift迁移对照
 
-CLI 使用一套 Swift 源码，负责参数、帮助、能力发现、交互和 JSON 编解码，通过共享 Swift Bridge 调用 C ABI。领域规则、持久化、Git 与 Bundle 不在 Swift 重写。可优先评估 Swift ArgumentParser；Mac 依赖版本在 M0 冻结，Windows 构建与分发组合在 M6-W 独立验证。
+Rust薄入口与Swift对照源码同放 `apps/cli/`，分别构建。Rust制品使用 `cargo build --locked --package hetu-cli --bin hetu`，直接复用Core和CollaborationHub，不依赖Swift、桌面进程或动态Core库；不据此替换已安装应用的工具。
 
-使用 Foundation 的跨平台子集；POSIX `/dev/tty`、Darwin 信号与 `isatty` 不能直接当作 Windows 行为。终端适配分别处理 POSIX TTY／信号和 Windows Console／Ctrl+C、UTF-8、非交互 stdin 与重定向。命令表、Schema 和退出码保持一致。
+机器输入为文件或stdin中的完整UTF-8 JSON对象，上限16MiB，接受UTF-8 BOM并计入完整字节预算；默认输出单个AXI结果，也接受命令末尾的 `--json`。无效参数及输入不回显原文或路径。全局 `--locale zh-CN|en` 控制帮助，`--version` 读取制品版本，不要求作品或用户授权目录。稳定接入、旧任务入口、bundle验证及模型连接状态沿用现有公开参数和权限。
 
-Windows 原生编译产出 `hetu.exe`，macOS 产出 `hetu`，分别构建和签名；不是一个二进制通吃。Windows 必须打包所需 Swift runtime、C ABI DLL 及其依赖，在无 Swift／Xcode／.NET／GUI 的干净用户环境独立运行。Linux 作为后续 CLI 目标，不计 V1 桌面支持。
+本机偏好及所选方法安装由独立Rust本机Owner执行；稳定客户端调用及兼容`--local --client`入口复用同一私密存储，不递归调用自身。公开合同无作者批准，可信Electron App Server独立提供固定审核。旧Swift设置和历史方案保留原义；新服务不静默双写。模型服务命令仅开放 `status|login|poll` 和既有公开连接字段，不开放渠道配置或费用批准。目标平台与制品分发分别验收，不能由核心读写通过推导完成。
 
-Mac 阶段验证 SwiftPM → C ABI → Rust 工作区读写、中文／空格路径、JSON 管道、TTY 确认、取消、崩溃后原操作查询、凭据接口和无开发环境启动。Windows 阶段以同一合同单独验证原生构建与分发，Windows 结果不作为启动 Mac 实施的前置条件。平台通过自身验收后才声明支持。MCP 不嵌入 CLI 进程，使用独立 Rust Server。
+现有CLI使用Swift源码，通过Swift Bridge调用C ABI，作为迁移对照。目标Rust CLI负责参数、帮助、能力发现和JSON编解码，直接调用Core／CollaborationHub，不经过桌面作者RPC。领域规则、持久化、Git 与 Bundle 不在 Swift 重写。Swift ArgumentParser、Foundation 与终端桥接仅属于现有 Swift CLI 对照范围；新 Rust CLI 不继承其运行时依赖。
+
+Swift 对照入口使用 Foundation 的跨平台子集；POSIX `/dev/tty`、Darwin 信号与 `isatty` 不能直接当作 Windows 行为。终端适配分别处理 POSIX TTY／信号和 Windows Console／Ctrl+C、UTF-8、非交互 stdin 与重定向。命令表、Schema 和退出码保持一致。
+
+目标Rust CLI按Windows和macOS分别构建、签名并核验native依赖，在无Swift／Xcode／.NET／GUI的干净系统独立运行。保留的Swift CLI仍按其真实runtime和ABI依赖验收，不把原生对照的分发负担转成新Rust CLI前提。Linux 作为后续 CLI 目标，不计 V1 桌面支持。
+
+原生/Swift对照阶段验证SwiftPM → C ABI → Rust工作区读写、中文／空格路径、JSON 管道、TTY 确认、取消、崩溃后原操作查询、凭据接口和无开发环境启动。新 Rust CLI 的 Windows 阶段以同一业务合同单独验证构建与分发，Windows 结果不作为启动 Mac 实施的前置条件。平台通过自身验收后才声明支持。MCP 不嵌入 CLI 进程，使用独立 Rust Server。
 
 ## 5. CLI 命令面
 
@@ -157,3 +165,5 @@ CLI/MCP 缺业务入口属于未完成用例，不能要求 Skill 通过 Compute
 CLI能力发现须覆盖独立小说／剧本／视频、固定来源关联、分镜、预演、媒体接收、视频计划、剪辑音画、位置意见和交付。具体动作名、Schema及限制从当前能力目录获取，不将[30第26节](30-应用API详细设计.md#26-独立创作对象与视频用例合同)的设计名称直接写成已发布命令。C ABI复用相同用例，保持薄封装，不在Swift入口另做授权或业务状态。
 
 每次调用携带明确对象／任务及固定版本，不使用全局当前项目。大媒体和工程使用有界文件流或任务inbox，JSON只回必要元数据与受管引用；原操作、授权、分页、CAS与退出码保持一致。机器新建和制作不依赖桌面窗口；收到媒体、技术校验、内容观看和作者确认分别回执，unknown先查询原计划，不能因进程重启重复付费。
+
+精确作品的文稿版本在 `hetu.git.status/diff/log/snapshot/get_snapshot/list_snapshots/snapshot_diff/read_version` 显式携带 `work_ref`。新快照1.1.0固定作品，旧1.0.0保持工作区语义；不从当前页面补历史归属。稳定MCP的 `hetu_commit_snapshot` 提供同一准备／执行合同，作者批准只由可信宿主完成。独立作品引用从空树建立，整仓引用／合并／远端能力不向单作品连接开放。具体约束见[插件20第22节](plugin/20-首期可执行合同与开发入口.md#22-精确作品的文稿版本)。

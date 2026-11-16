@@ -149,8 +149,8 @@ DispositionRecord 包含 `schema_version, report_id, finding_id, revision, expec
 
 | 对象 | 字段／说明 |
 | --- | --- |
-| Cue | `schema_version, cue_id, revision, previous_sha256, kind, title, description, narrative_refs[], asset_refs[], archived, created_at, updated_at, actor_ref`；kind为music／visual |
-| Asset | `schema_version, asset_id, revision, previous_sha256, kind, title, original_filename, blob, source, rights_status, redistribution_allowed, rights_statement, created_at, updated_at, actor_ref` |
+| Cue | `schema_version, cue_id, revision, previous_sha256, kind, title, description, narrative_refs[], asset_refs[], archived, created_at, updated_at, actor_ref`；kind为music／visual；2.0记录另必需不可变`work_ref`，全部正文与素材引用核验同作品 |
+| Asset | `schema_version, asset_id, revision, previous_sha256, kind, title, original_filename, blob, source, rights_status, redistribution_allowed, rights_statement, created_at, updated_at, actor_ref`；2.0记录另必需不可变`work_ref`；未归属1.0记录保留历史语义 |
 | Provenance | `source_uri?, provider_task_ref?, creator_statement?, safe_parameters?`；均为声明，清理私密 URL |
 | DeliveryProfile | `profile_id, version, target_formats[], required_fields[], layout, font_policy, validator_refs[]` |
 | BundleManifest | `schema_version, bundle_id, profile, created_at, workspace_id, inputs, files, provenance, coverage, warnings, exclusions` |
@@ -390,7 +390,7 @@ BrowserSession 在本机授权存储或内存保存 `session_id, task_ref, scope
 
 | 对象 | 字段 | 语义 |
 | --- | --- | --- |
-| ResourceItem | 共同字段、`resource_id, project_id, category, title, body, entity_refs, tags, state, provenance` | project_id=null 为作品共用资料；分类为 character／location／prop／research／artwork／media；state=draft／adopted／archived；正文笔记可为空但名称非空 |
+| ResourceItem | 共同字段、`resource_id, work_ref?, project_id, category, title, body, entity_refs, tags, state, owner_task_id, source_notes` | 2.0.0 固定不可变 work_ref；1.0.0 保持未归属历史含义，project_id=null 不授予整根读取权；分类为 character／location／prop／research／artwork／media；state=draft／adopted／archived；正文笔记可为空但名称非空 |
 | AssetDesign | 共同字段、`design_id, resource_ref, label, description, invariants, changes, scope_refs, reference_inputs, state` | invariants 为带事实依据的固定项，changes 为作者设计选择或待确认提案；采用修订不能被 Agent 原地改写 |
 | MediaAsset | 既有 Asset 字段及可扩展文件类型合同 | 拥有字节、解码状态与权利；封面仍引用同一媒体实现，不重复保存“当前封面” |
 | AssetCandidate | `schema_version, candidate_id, design_ref, task_ref, file_refs, provenance, created_at, actor_ref` | 不可变文件组；内容变化产生新候选并关联返工来源，旧候选不覆盖 |
@@ -407,6 +407,8 @@ BrowserSession 在本机授权存储或内存保存 `session_id, task_ref, scope
 既有 `entity_refs` 以 `blueprint_revision,blueprint_sha256` 固定设定历史，再以 `kind,entity_id` 定位实体。资料显示和缓存必须核对摘要及修订，不能按数字修订缓存不同作品的设定。跨修订判断同一实体还须核对解析后的 blueprint_id；改名不丢失身份，同根其他作品的同号实体也不被合并。旧关联不随当前作品或最新名称重新解释。
 
 Agent 的可修改范围由服务器发出的任务授权决定：明确对象集合、字段、输入引用、预算与有效期。它可建立或维护获权的资料草稿、设计草稿及候选，不能更新已采用资料、作者选用、设定或正式正文。超出范围通过提案提交；请求中的 actor_ref、state 或 task_id 不构成权限。文件提交采用任务受管 inbox 与最后提交的文件清单，不接受任意本机路径。
+
+有归属资料的实体引用另带同作品 `work_ref,blueprint_id`，按确切设定解析，不回退根设定。创建由作者明确作品或从任务推导，更新不能改变或清除归属；旧记录不自动迁移。未提供作品身份的保留入口沿用1.0.0；旧任务不能自行增加作品范围，新作品旅程使用显式作品身份。使用记录的资料与正文必须同作品，旧使用记录不能借更新转移作品。
 
 ## 21. 创作场景与原著材料
 
@@ -506,4 +508,10 @@ AssetDesign与AssetSelection继续拥有资料设计和用途选用，MediaArtif
 
 关联读取投影的 `related_status` 为 available／requires_authorization／unavailable；后两者的 `related_has_newer_revision` 为 null，不能伪报 false。固定标题属于关系元数据，旧记录缺标题时只在获权后读取确切历史，不拿当前名称冒充固定资料。`link_ref={link_id,revision,sha256}` 用于 CAS；get 的 current_link_ref 与所查看历史分别返回。`source_snapshot_ref` 属于跨根来源合同，不能仅凭 WorkRevisionRef 推定正文或媒体快照已经存在。
 
+稳定入口的 related_management_ref 是本次请求的另一端授权，不属于 WorkLink 或来源快照。服务分别打开两个精确授权范围，核对固定版本与摘要后返回资料投影；不持久化或回显另一端授权，也不将两个范围合并为共享会话。
+
 同根多个对象共享工作区锁与事务机制，但必须核验具体目标和对象访问范围。跨根关系及快照按原操作可恢复，不宣称跨文件系统原子。删除或迁移列出所拥有内容、其他引用、在途及unknown调用；单项目删除不删除共享媒体或同根其他对象。历史定稿、成片确认和Bundle始终指向原输入，不因上游更新改写。
+
+## 插件优先重构的接入边界
+
+新增插件实体、复合身份、ERD、权威文件与派生索引的设计由插件08拥有；首期JSON标题投影合同归插件20第25节，SQLite DDL用于后续规模评估。现有WorkRef和SourceRef保持原义。新字段在实现并验证后进入contracts，不提前改变旧Schema语义。目标分工见[39](39-Electron与插件优先重构架构.md)，详细扩展合同见[插件系列](plugin/README.md)，实际进度归38。

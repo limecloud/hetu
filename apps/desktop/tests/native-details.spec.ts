@@ -1,0 +1,254 @@
+import { test, expect, _electron as electron } from "@playwright/test";
+import { mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
+import path from "node:path";
+import os from "node:os";
+import { PluginPackage } from "../../../packages/plugin-host/src/package.ts";
+import { RecoveryStore } from "../src/main/recovery.ts";
+import { CoverReview } from "../src/main/covers.ts";
+import { CanonReview } from "../src/main/canon.ts";
+import { sampleImage } from "./fixtures/media.ts";
+import { navigate } from "./navigation.ts";
+
+const root = path.resolve(import.meta.dirname, "../../..");
+test("设定保存丢回执只查询原操作，切作品后旧编辑失效", async () => {
+  const directory = await mkdtemp(path.join(os.tmpdir(), "hetu-canon-recovery-"));
+  const work = { kind: "novel" as const, workspace_id: "workspace_11111111-1111-4111-8111-111111111111", object_id: "novel_11111111-1111-4111-8111-111111111111" };
+  let active = true, writes = 0, saved: any;
+  const service = new CanonReview(work, directory, new RecoveryStore(), async (action, input) => {
+    if (action === "hetu.blueprints.save") { writes++; saved = input; expect(input.work_ref).toEqual(work); throw new Error("回执丢失"); }
+    if (action === "hetu.operations.get") { expect(input.key).toBe(saved.operation_key); return { status: "succeeded", data: { original_result: { status: "succeeded", data: { revision: 2 } } } }; }
+    throw new Error("未预期动作");
+  }, () => active);
+  await expect(service.save({ expected: { revision: 1, sha256: "a".repeat(64) }, typed_changes: [{ type: "remove_entity", entity_ref: "entry_11111111-1111-4111-8111-111111111111" }], work_ref: { object_id: "other" } })).rejects.toThrow("回执丢失");
+  expect((await service.journal())?.status).toBe("pending");
+  expect((await service.recover()).revision).toBe(2); expect(writes).toBe(1);
+  await service.acknowledge(); expect(await service.journal()).toBeNull();
+  active = false; await expect(service.get()).rejects.toThrow("作品上下文已变化");
+});
+test("封面提交丢回执先回读原键，切作品后旧预览失效", async () => {
+  const directory = await mkdtemp(path.join(os.tmpdir(), "hetu-cover-recovery-"));
+  const work = { kind: "novel" as const, workspace_id: "workspace_11111111-1111-4111-8111-111111111111", object_id: "novel_11111111-1111-4111-8111-111111111111" };
+  let active = true, writes = 0, receipt: any;
+  const inputs: any[] = [];
+  const service = new CoverReview(work, directory, new RecoveryStore(), async (action, input) => {
+    if (action === "hetu.covers.get") return { status: "succeeded", data: { cover: null, expected_cover: null, preview: null } };
+    if (action === "hetu.covers.inspect_file") return { status: "succeeded", data: { sha256: "a".repeat(64), size_bytes: 16 } };
+    if (action === "hetu.novels.get") return { status: "succeeded", data: { novel: { metadata: { title: "测试", author_name: "作者" } } } };
+    if (action === "hetu.covers.select") {
+      writes++; inputs.push(input);
+      receipt = { status: "succeeded", data: { cover: { revision: 1 } } };
+      throw new Error("提交后回执丢失");
+    }
+    if (action === "hetu.operations.get") {
+      expect(input.key).toBe(inputs[0].operation_key);
+      return { status: "succeeded", data: { original_result: receipt } };
+    }
+    throw new Error("未预期动作");
+  }, () => active);
+  const selected = await service.chooseFile(path.join(directory, "source.png"));
+  await expect(service.prepare({ source: { kind: "file", token: "arbitrary-path" }, expected_cover: null })).rejects.toThrow("失效");
+  const preview = await service.prepare({ source: { kind: "file", token: selected.token }, expected_cover: null, overlay: true });
+  await expect(service.commit(preview.token)).rejects.toThrow("丢失");
+  expect((await service.journal())?.status).toBe("pending");
+  expect((await service.recover()).cover.revision).toBe(1);
+  expect(writes).toBe(1);
+  await service.acknowledge();
+  active = false;
+  expect(() => service.commit(preview.token)).toThrow("重新打开");
+});
+
+test("原生模型渠道与封面本地导入、文件变更拒绝及历史恢复", async () => {
+  test.setTimeout(300000);
+  const directory = await mkdtemp(path.join(os.tmpdir(), "hetu-native-details-")), profile = path.join(directory, "profile"), workspace = path.join(directory, "作品"), access = path.join(directory, "access"), collaboration = path.join(directory, "collaboration"), file = path.join(directory, "cover.png");
+  const png = sampleImage(); await writeFile(file, png);
+  const pkg = await PluginPackage.inspect(path.join(root, "plugins/relationships/dist"));
+  const fixture = spawnSync(path.join(root, "target/debug/examples/plugin_fixture"), [workspace, access, path.join(pkg.source, "plugin.json"), pkg.sha256, "0"], { encoding: "utf8" });
+  expect(fixture.status, fixture.stderr).toBe(0);
+  const context = JSON.parse(fixture.stdout);
+  const executable = process.env.HETU_PACKAGED_APP;
+  const application = await electron.launch({ ...(executable ? { executablePath: executable, args: [] } : { args: [path.join(root, "apps/desktop")] }), env: {
+    ...process.env, HETU_DESKTOP_PROFILE: profile, HETU_COLLABORATION_DIR: collaboration, HETU_PLUGIN_ACCESS_DIR: access,
+    ...(!executable ? { HETU_PLUGIN_NODE: process.execPath, HETU_APP_SERVER: path.join(root, "target/debug/hetu-app-server") } : {}),
+  } });
+  try {
+    const page = await application.firstWindow(); await page.setViewportSize({ width: 1440, height: 960 });
+    await application.evaluate(({ dialog }, directory) => {
+      dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [directory] });
+      dialog.showMessageBox = async () => ({ response: 1, checkboxChecked: false }); dialog.showMessageBoxSync = () => 1;
+    }, workspace);
+    await page.getByRole("button", { name: "本机设置", exact: true }).click();
+    await page.getByRole("tab", { name: "模型服务", exact: true }).click();
+    const models = page.getByRole("region", { name: "模型服务", exact: true });
+    await expect(models).toContainText("未连接");
+    expect(Object.keys((await page.evaluate(() => window.hetuDesktop.models("inspect"))).custom_channels ?? {})).toHaveLength(0);
+    await models.getByRole("button", { name: "添加渠道", exact: true }).click();
+    const editor = page.getByRole("region", { name: "编辑模型渠道", exact: true });
+    await editor.getByLabel("渠道名称", { exact: true }).fill("本机测试渠道");
+    await editor.getByLabel("服务地址", { exact: true }).fill("https://provider.test/v1");
+    await editor.getByLabel("API Key", { exact: true }).fill("isolated-fixture-secret");
+    await editor.getByLabel("文字模型", { exact: true }).fill("text-one\ntext-two");
+    await editor.getByLabel("图片模型", { exact: true }).fill("image-one");
+    await editor.getByRole("button", { name: "保存渠道", exact: true }).click();
+    await expect(models.getByText("本机测试渠道", { exact: true }).first()).toBeVisible();
+    const inspected = await page.evaluate(() => window.hetuDesktop.models("inspect"));
+    expect(JSON.stringify(inspected)).not.toContain("isolated-fixture-secret");
+    const channel = Object.keys(inspected.custom_channels)[0];
+    await models.getByRole("combobox", { name: "文字模型渠道", exact: true }).selectOption(channel);
+    await expect.poll(async () => (await page.evaluate(() => window.hetuDesktop.models("inspect"))).channels?.text).toBe(channel);
+    expect((await page.evaluate(() => window.hetuDesktop.models("catalog", { kind: "text" }))).items.map((item: any) => item.id)).toEqual(["text-one", "text-two"]);
+    await models.getByRole("combobox", { name: "文字模型默认模型", exact: true }).selectOption("text-two");
+    await models.getByRole("combobox", { name: "图片模型渠道", exact: true }).selectOption(channel);
+    await models.getByRole("combobox", { name: "图片模型默认模型", exact: true }).selectOption("image-one");
+    await expect.poll(async () => (await page.evaluate(() => window.hetuDesktop.models("inspect"))).defaults.image).toBe("image-one");
+    await page.locator(".settings-panel").evaluate(el => { el.scrollTop = 0; });
+    await page.screenshot({ path: path.join(root, "output/rea-mac-ui-20261116/settings-models.png") });
+    await models.getByRole("button", { name: "编辑", exact: true }).click();
+    await expect(editor.getByLabel("API Key", { exact: true })).toHaveValue("");
+    await editor.getByLabel("渠道名称", { exact: true }).fill("本机渠道");
+    await editor.getByRole("button", { name: "保存渠道", exact: true }).click();
+    await expect(models.getByText("本机渠道", { exact: true }).first()).toBeVisible();
+    await expect(page.evaluate(() => window.hetuDesktop.models("generate" as any))).rejects.toThrow("未知模型设置");
+    await page.getByRole("button", { name: "关闭设置", exact: true }).click();
+    await page.getByRole("button", { name: "打开作品", exact: true }).first().click();
+    await page.getByRole("button", { name: /插件集成测试/ }).click();
+    await navigate(page, "作品资料");
+    await page.getByRole("button", { name: "更换封面", exact: true }).click();
+    const cover = page.getByRole("dialog", { name: "更换封面", exact: true });
+    await expect(cover).toBeVisible();
+    await cover.getByRole("tab", { name: "本地导入", exact: true }).click();
+    await application.evaluate(({ dialog }, file) => { dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [file] }); }, file);
+    await cover.getByRole("button", { name: "选择图片", exact: true }).click();
+    await expect(cover.getByRole("region", { name: "待选用封面", exact: true })).toBeVisible();
+    // 文件选择后原字节发生变化，作者确认不能采用另一张图片。
+    await writeFile(file, Buffer.from("changed-after-preview"));
+    await cover.getByRole("button", { name: "用作封面", exact: true }).click();
+    await expect(cover.getByRole("alert")).toBeVisible();
+    expect((await page.evaluate(() => window.hetuDesktop.covers("get"))).cover).toBeNull();
+    await writeFile(file, png);
+    await cover.getByRole("button", { name: "用作封面", exact: true }).click();
+    await expect(cover.getByRole("status")).toContainText("已用作封面");
+    expect((await page.evaluate(() => window.hetuDesktop.covers("get"))).cover.revision).toBe(1);
+    await cover.getByRole("tab", { name: "本地导入", exact: true }).click();
+    await cover.getByRole("button", { name: "选择图片", exact: true }).click();
+    await cover.getByRole("checkbox", { name: "叠加书名与作者", exact: true }).check();
+    await cover.getByRole("button", { name: "用作封面", exact: true }).click();
+    await expect.poll(async () => (await page.evaluate(() => window.hetuDesktop.covers("get"))).cover.revision).toBe(2);
+    await cover.getByRole("tab", { name: "历史", exact: true }).click();
+    await cover.getByRole("button", { name: "查看修订", exact: true }).click();
+    await expect(cover.getByRole("button", { name: "恢复此封面", exact: true })).toBeVisible();
+    await page.screenshot({ path: path.join(root, "output/rea-mac-ui-20261116/cover-history.png") });
+    await cover.getByRole("button", { name: "恢复此封面", exact: true }).click();
+    await expect(cover.getByRole("status")).toContainText("已恢复为新的封面修订");
+    const restored = await page.evaluate(() => window.hetuDesktop.covers("get"));
+    expect(restored.cover.revision).toBe(3); expect(restored.cover.presentation.title_overlay).toBe("");
+    expect(restored.cover.source_ref.kind).toBe("existing_asset");
+    expect(restored.cover.workspace_id).toBe(context.work_ref.workspace_id);
+    expect(restored.preview.media_type).toBe("image/jpeg");
+    expect(createHash("sha256").update(await readFile(file)).digest("hex")).toBe(createHash("sha256").update(png).digest("hex"));
+    await page.setViewportSize({ width: 960, height: 720 }); await page.emulateMedia({ colorScheme: "dark" });
+    await expect(cover).toBeInViewport();
+    const overflow = await cover.evaluate(el => el.scrollWidth > el.clientWidth); expect(overflow).toBe(false);
+    await page.screenshot({ path: path.join(root, "output/rea-mac-ui-20261116/cover-narrow-dark.png") });
+    await cover.getByRole("button", { name: "关闭封面窗口", exact: true }).click();
+    await page.setViewportSize({ width: 1440, height: 960 }); await page.emulateMedia({ colorScheme: "light" });
+    await page.getByRole("button", { name: "编辑资料", exact: true }).click();
+    const metadata = page.getByRole("dialog", { name: "编辑作品资料", exact: true });
+    await metadata.getByLabel("作者", { exact: true }).fill("测试作者");
+    await page.keyboard.press("Escape");
+    await expect(metadata).toContainText("修改尚未保存");
+    await metadata.getByRole("button", { name: "继续编辑", exact: true }).click();
+    await page.screenshot({ path: path.join(root, "output/rea-mac-ui-20261116/novel-metadata.png") });
+    await metadata.getByRole("button", { name: "保存资料", exact: true }).click();
+    await expect(metadata).not.toBeVisible();
+    expect((await page.evaluate(() => window.hetuDesktop.novel("get"))).novel.metadata.author_name).toBe("测试作者");
+    await page.getByText("查看卷章结构", { exact: true }).click();
+    await page.getByRole("button", { name: "人工整理卷章", exact: true }).click();
+    const structure = page.getByRole("dialog", { name: "整理卷章结构", exact: true });
+    await structure.getByRole("textbox", { name: "新卷标题", exact: true }).fill("第一卷 雾港");
+    await structure.getByRole("button", { name: "添加分卷", exact: true }).click();
+    const choice = structure.getByRole("combobox").first();
+    const volume = await choice.locator("option").last().getAttribute("value");
+    await choice.selectOption(volume!);
+    await page.screenshot({ path: path.join(root, "output/rea-mac-ui-20261116/novel-structure.png") });
+    await structure.getByRole("button", { name: "保存结构", exact: true }).click();
+    await expect(structure).not.toBeVisible();
+    const novel = (await page.evaluate(() => window.hetuDesktop.novel("get"))).novel;
+    expect(novel.volumes.at(-1).title).toBe("第一卷 雾港");
+    expect(novel.chapters.find((c: any) => c.document_id === context.document.document_id).volume_id).toBe(volume);
+    // 人工编辑固定打开时的基线；另一个窗口推进资料后不能覆盖。
+    await page.getByRole("button", { name: "编辑资料", exact: true }).click();
+    await metadata.getByLabel("作者", { exact: true }).fill("不应覆盖并发修改");
+    await expect(metadata.getByRole("button", { name: "保存资料", exact: true })).toBeEnabled();
+    const concurrent = await page.evaluate(() => window.hetuDesktop.novel("get"));
+    await page.evaluate(value => window.hetuDesktop.novel("save", { kind: "metadata", expected: { revision: value.revision, sha256: value.sha256 }, metadata: { ...value.novel.metadata, author_name: "并发窗口作者" } }), concurrent);
+    await expect(metadata.getByLabel("作者", { exact: true })).toHaveValue("不应覆盖并发修改");
+    await metadata.getByRole("button", { name: "保存资料", exact: true }).click();
+    await expect(metadata.getByRole("alert")).toBeVisible();
+    await expect(metadata.getByLabel("作者", { exact: true })).toHaveValue("不应覆盖并发修改");
+    expect((await page.evaluate(() => window.hetuDesktop.novel("get"))).novel.metadata.author_name).toBe("并发窗口作者");
+    await metadata.getByRole("button", { name: "关闭编辑窗口", exact: true }).click();
+    await metadata.getByRole("button", { name: "放弃修改并关闭", exact: true }).click();
+    await navigate(page, "作品设定");
+    const canon = page.getByRole("region", { name: "作品设定", exact: true });
+    async function add(label: string) {
+      await canon.getByRole("tab", { name: label, exact: true }).click();
+      await page.locator('summary[aria-label="更多设定操作"]').click();
+      await page.getByRole("button", { name: "新增" + label, exact: true }).click();
+      return page.getByRole("dialog", { name: "新增" + label + "设定", exact: true });
+    }
+    async function save(sheet: any) { await sheet.getByRole("button", { name: "保存设定", exact: true }).click(); await expect(sheet).not.toBeVisible(); }
+    const event = await add("事件");
+    await event.getByLabel("名称", { exact: true }).fill("抵达雾港");
+    await event.getByLabel("设置时间锚点", { exact: true }).check();
+    await event.getByLabel("历法", { exact: true }).fill("通用历");
+    await event.getByLabel("时间位置", { exact: true }).fill("100"); await save(event);
+    const faction = await add("势力"); await faction.getByLabel("名称", { exact: true }).fill("雾港会"); await save(faction);
+    const location = await add("地点"); await location.getByLabel("名称", { exact: true }).fill("旧灯塔");
+    await location.getByLabel("内外景", { exact: true }).selectOption("exterior"); await save(location);
+    const world = await add("世界"); await world.getByLabel("名称", { exact: true }).fill("雾海"); await world.getByLabel("描述", { exact: true }).fill("海雾中的群岛"); await save(world);
+    const rule = await add("规则"); await rule.getByLabel("规则说明", { exact: true }).fill("年代与器物保持一致");
+    await rule.getByLabel("创作建议", { exact: true }).fill("灯塔使用煤油灯"); await save(rule);
+    const person = await add("人物"); await person.getByLabel("名称", { exact: true }).fill("江岚");
+    await person.getByLabel("特征", { exact: true }).fill("寡言\n敏锐");
+    await person.getByRole("button", { name: "添加事实", exact: true }).click();
+    const fact = page.getByRole("dialog", { name: "编辑人物事实", exact: true });
+    await fact.getByLabel("事实类型", { exact: true }).selectOption("primary_faction");
+    await fact.getByLabel("所属势力", { exact: true }).selectOption({ label: "雾港会" });
+    await fact.getByLabel("生效事件", { exact: true }).selectOption({ label: "抵达雾港" });
+    await page.keyboard.press("Escape");
+    await expect(fact.locator(":scope > .recover")).toBeVisible();
+    await expect(person.locator(":scope > .recover")).toHaveCount(0);
+    await fact.getByRole("button", { name: "继续编辑", exact: true }).click();
+    await fact.getByRole("button", { name: "保存事实", exact: true }).click(); await save(person);
+    const allCanon = await page.evaluate(() => window.hetuDesktop.canon("get"));
+    expect(allCanon.blueprint.characters[0].facts[0].value).toBe(allCanon.blueprint.factions[0].faction_id);
+    expect(allCanon.blueprint.characters[0].facts[0].valid_from).toBe(allCanon.blueprint.timeline[0].event_id);
+    expect(allCanon.blueprint.characters[0].traits).toEqual(["寡言", "敏锐"]);
+    expect(allCanon.blueprint.locations[0].interior_exterior).toBe("exterior");
+    expect(allCanon.blueprint.timeline[0].time_anchor).toEqual({ calendar: "通用历", tick: 100 });
+    expect(allCanon.blueprint.rules[0].parameters).toEqual({ text: "灯塔使用煤油灯" });
+    await page.locator('summary[aria-label="江岚操作"]').click(); await page.getByRole("button", { name: "归档", exact: true }).click();
+    await expect(canon.getByRole("button", { name: "查看江岚", exact: true })).toHaveCount(0);
+    await canon.getByLabel("显示已归档", { exact: true }).check();
+    await page.locator('summary[aria-label="江岚操作"]').click(); await page.getByRole("button", { name: "取消归档", exact: true }).click();
+    await expect.poll(async () => (await page.evaluate(() => window.hetuDesktop.canon("get"))).blueprint.characters[0].archived).toBe(false);
+    await canon.getByRole("tab", { name: "事件", exact: true }).click();
+    await page.locator('summary[aria-label="抵达雾港操作"]').click(); await page.getByRole("button", { name: "移除", exact: true }).click();
+    await expect(canon.getByRole("alert")).toBeVisible();
+    expect((await page.evaluate(() => window.hetuDesktop.canon("get"))).blueprint.timeline).toHaveLength(1);
+    await canon.getByRole("tab", { name: "世界", exact: true }).click();
+    await page.locator('summary[aria-label="雾海操作"]').click(); await page.getByRole("button", { name: "移除", exact: true }).click();
+    const removal = page.getByRole("dialog", { name: "移除设定", exact: true });
+    await expect(removal).toContainText("雾海"); await removal.getByRole("button", { name: "确认移除", exact: true }).click();
+    await expect(removal).not.toBeVisible(); expect((await page.evaluate(() => window.hetuDesktop.canon("get"))).blueprint.world).toHaveLength(0);
+    await canon.getByRole("tab", { name: "地点", exact: true }).click();
+    await page.locator(".canon-entity.location").getByRole("button", { name: "编辑", exact: true }).click();
+    await page.setViewportSize({ width: 960, height: 720 }); await page.emulateMedia({ colorScheme: "dark" });
+    const narrow = page.getByRole("dialog", { name: "编辑地点设定", exact: true });
+    await expect(narrow).toBeInViewport(); expect(await narrow.evaluate(el => el.scrollWidth > el.clientWidth)).toBe(false);
+    await page.screenshot({ path: path.join(root, "output/rea-mac-ui-20261116/canon-editor-dark.png") });
+    await narrow.getByRole("button", { name: "关闭", exact: true }).click();
+  } finally { await application.close(); }
+});

@@ -80,6 +80,7 @@ test("stable management → real operation resource → sandboxed review keeps t
   await expect(view.getByText("整理作品资料，等待作者确认", { exact: true })).toBeVisible();
   await expect(view.getByRole("button", { name: /批准|执行/ })).toHaveCount(0);
   await view.getByRole("button", { name: "刷新状态", exact: true }).click();
+  await expect(view.getByRole("button", { name: "刷新状态", exact: true })).toBeEnabled();
   await expect(view.getByText("整理作品资料，等待作者确认", { exact: true })).toBeVisible();
   const loaded = await managementClient.callTool({ name: "hetu_get_management_operation", arguments: { management_ref: managementRef, proposal_id: proposalID } });
   expect((loaded.structuredContent as { data: { state: string } }).data.state).toBe("pending");

@@ -231,8 +231,14 @@ public struct AgentPackageInspector: Sendable {
     }
     private func manifest(at directory: URL) throws -> [String: Any] {
         let portable = directory.appendingPathComponent("plugin.json")
+        let overlay = directory.appendingPathComponent(".codex-plugin/plugin.json")
         let file = FileManager.default.fileExists(atPath: portable.path) ? portable : directory.appendingPathComponent(".codex-plugin/plugin.json")
         guard let result = try JSONSerialization.jsonObject(with: read(file, within: directory)) as? [String: Any] else { throw PackageError.invalid }
+        if file == portable, FileManager.default.fileExists(atPath: overlay.path) {
+            guard let compatibility = try JSONSerialization.jsonObject(with: read(overlay, within: directory)) as? [String: Any],
+                  compatibility["name"] as? String == result["name"] as? String,
+                  compatibility["version"] as? String == result["version"] as? String else { throw PackageError.invalid }
+        }
         return result
     }
     private func validVersion(_ version: String) -> Bool { version.range(of: "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][A-Za-z0-9.-]+)?$", options: .regularExpression) != nil }

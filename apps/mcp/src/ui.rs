@@ -24,7 +24,10 @@ pub fn supported(context: &RequestContext<RoleServer>) -> bool {
 pub fn tool(mut tool: Tool) -> Tool {
     let uri = match tool.name.as_ref() {
         "hetu_open_task_view" => Some(URI),
-        "hetu_prepare_management_operation" | "hetu_get_management_operation" | "hetu_local_settings_prepare" | "hetu_local_settings_get_operation" => Some(OPERATION_URI),
+        "hetu_prepare_management_operation"
+        | "hetu_get_management_operation"
+        | "hetu_local_settings_prepare"
+        | "hetu_local_settings_get_operation" => Some(OPERATION_URI),
         _ => None,
     };
     if let Some(uri) = uri {
@@ -40,8 +43,10 @@ pub fn tool(mut tool: Tool) -> Tool {
 }
 
 pub fn operation_resource() -> Resource {
-    Resource::new(OPERATION_URI, "hetu-operation-view").with_title("查看操作方案 / Inspect operation")
-        .with_mime_type(MIME).with_size(OPERATION_HTML.len() as u64)
+    Resource::new(OPERATION_URI, "hetu-operation-view")
+        .with_title("查看操作方案 / Inspect operation")
+        .with_mime_type(MIME)
+        .with_size(OPERATION_HTML.len() as u64)
 }
 pub fn read_operation() -> ReadResourceResult {
     ReadResourceResult::new(vec![ResourceContents::text(OPERATION_HTML, OPERATION_URI).with_mime_type(MIME)

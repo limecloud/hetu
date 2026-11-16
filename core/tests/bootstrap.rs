@@ -60,8 +60,18 @@ fn zero_to_novel_and_original_drama_without_author_driver() {
         let work = ok(result.clone());
         assert_eq!(result, bound(&hub, action, reference, input));
         let work_ref = &work["workspace_management_ref"];
-        let admissions = ok(call(&hub,"collaboration.created_works",json!({"limit":100})));
-        assert!(admissions["works"].as_array().unwrap().iter().any(|item| item["management_ref"] == *work_ref));
+        let admissions = ok(call(
+            &hub,
+            "collaboration.created_works",
+            json!({"limit":100}),
+        ));
+        assert!(
+            admissions["works"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|item| item["management_ref"] == *work_ref)
+        );
         let recovered = ok(bound(
             &hub,
             "operations.get",

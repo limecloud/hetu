@@ -1,12 +1,16 @@
 # Git 版本与协作
 
-Rust 内核通过固定版本的 `git2`／libgit2 管理独立的 IP 内容工作区。本地快照动作由 Mac 版本管理页、C ABI 与受控 MCP 工具共用。具体可调用动作以内核 `contracts/actions.json` 为准。
+Rust 内核通过固定版本的 `git2`／libgit2 管理独立的 IP 内容工作区。本地快照动作由版本工作面贡献、CLI/MCP与原生对照共用；Electron通过App Server接入，不在JavaScript重写Git事务。具体可调用动作以内核 `contracts/actions.json` 为准。
 
 ## 1. 仓库范围
 
 用户可将一个 IP 工作区初始化为独立仓库，绑定自己的 GitHub／Gitee 远端。新建项目默认不自动 init、commit 或联网。已有仓库需检查真实根和嵌套关系，不能将上级软件仓库误认成当前 IP 仓库。
 
 快照范围包括根目录 `.heturc.json`、`.gitignore`、`.gitattributes`、`README.md`、`LICENSE`，以及 `shared/`、`packages/` 和持久 `.hetu/` 业务元数据。排除 `.hetu/transactions/`、`.hetu/cache/`、`.hetu/git/`、`.hetu/operations/`、`.hetu/audit/`、`.hetu/deliveries/`、工作区锁、`exports/`、`.git/` 和 `.DS_Store`；新作品的 `.gitignore` 同步排除本机控制记录。交付暂存、意图与恢复回执即使被外部工具暂存，也不进入河图快照；导入原件和来源报告仍属于可版本化资料。未跟踪且被 Git 忽略的文件不纳入快照。原操作回执及本机恢复日志不进入 Git，以免自提交回执持续制造新变更。媒体大文件显示大小并允许用户配置外部存储／Git LFS；V1 不宣称内置 LFS 上传完整支持。
+
+### 1.1 精确作品版本
+
+同根多作品使用[插件20第22节](plugin/20-首期可执行合同与开发入口.md#22-精确作品的文稿版本)的独立文稿引用。显式 `work_ref` 从空树建立专用历史；仅核验作者文稿路径、固定执行记录与同作品父链。工作区级合并和网络同步仍须工作区范围授权，不经作品连接放开。旧快照不改归属，不把文稿快照冒充完整工程版本。
 
 ## 2. 本地快照
 

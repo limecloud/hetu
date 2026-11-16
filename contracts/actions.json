@@ -275,6 +275,16 @@
               "adaptation_note"
             ]
           },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          },
+          "cursor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
           "work_ref": {
             "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
           }
@@ -916,7 +926,11 @@
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "additionalProperties": false,
-        "properties": {},
+        "properties": {
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          }
+        },
         "required": []
       }
     },
@@ -935,11 +949,37 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 1024
+          },
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "max_bytes": {
+            "type": "integer",
+            "minimum": 4,
+            "maximum": 262144
+          },
+          "before_offset_bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 67108864
+          },
+          "after_offset_bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 67108864
           }
         },
         "required": [
           "path"
-        ]
+        ],
+        "dependentRequired": {
+          "before_offset_bytes": [
+            "max_bytes"
+          ],
+          "after_offset_bytes": [
+            "max_bytes"
+          ]
+        }
       }
     },
     {
@@ -961,6 +1001,9 @@
           "cursor": {
             "type": "string",
             "maxLength": 100
+          },
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
           }
         },
         "required": []
@@ -986,6 +1029,9 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 128
+          },
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
           }
         },
         "required": [
@@ -1025,6 +1071,9 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 128
+          },
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
           }
         },
         "required": [
@@ -1048,6 +1097,9 @@
           "snapshot_id": {
             "type": "string",
             "pattern": "^gitsnapshot_[0-9a-f-]{36}$"
+          },
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
           }
         },
         "required": [
@@ -1074,6 +1126,9 @@
           "cursor": {
             "type": "string",
             "maxLength": 100
+          },
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
           }
         },
         "required": []
@@ -1098,12 +1153,38 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 1024
+          },
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "max_bytes": {
+            "type": "integer",
+            "minimum": 4,
+            "maximum": 262144
+          },
+          "before_offset_bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 67108864
+          },
+          "after_offset_bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 67108864
           }
         },
         "required": [
           "snapshot_id",
           "path"
-        ]
+        ],
+        "dependentRequired": {
+          "before_offset_bytes": [
+            "max_bytes"
+          ],
+          "after_offset_bytes": [
+            "max_bytes"
+          ]
+        }
       }
     },
     {
@@ -3458,9 +3539,76 @@
           "workspace_id": {
             "type": "string",
             "pattern": "^workspace_[0-9a-f-]{36}$"
+          },
+          "work_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "workspace_id": {
+                "type": "string",
+                "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "kind": {
+                "enum": [
+                  "novel",
+                  "drama",
+                  "video"
+                ]
+              },
+              "object_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              }
+            },
+            "required": [
+              "workspace_id",
+              "kind",
+              "object_id"
+            ]
           }
         },
-        "required": []
+        "required": [],
+        "not": {
+          "required": [
+            "workspace_id",
+            "work_ref"
+          ]
+        }
+      }
+    },
+    {
+      "name": "hetu.local_settings.inspect_suite",
+      "purpose": "核对指定客户端的套件文件、版本及登记，不证明当前会话已加载",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "agent_client": {
+            "enum": [
+              "none",
+              "codex",
+              "workbuddy",
+              "claudeCode",
+              "other"
+            ]
+          },
+          "suite_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          }
+        },
+        "required": [
+          "agent_client",
+          "suite_id"
+        ]
       }
     },
     {
@@ -3575,13 +3723,46 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 128
+          },
+          "work_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "workspace_id": {
+                "type": "string",
+                "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "kind": {
+                "enum": [
+                  "novel",
+                  "drama",
+                  "video"
+                ]
+              },
+              "object_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              }
+            },
+            "required": [
+              "workspace_id",
+              "kind",
+              "object_id"
+            ]
           }
         },
         "required": [
           "kind",
           "summary",
           "operation_key"
-        ]
+        ],
+        "not": {
+          "required": [
+            "workspace_id",
+            "work_ref"
+          ]
+        }
       }
     },
     {
@@ -4220,11 +4401,32 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 1024
+          },
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "max_bytes": {
+            "type": "integer",
+            "minimum": 4,
+            "maximum": 262144
+          },
+          "offset_bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 67108864
           }
         },
         "required": [
           "commit_id"
-        ]
+        ],
+        "dependentRequired": {
+          "offset_bytes": [
+            "max_bytes"
+          ],
+          "max_bytes": [
+            "path"
+          ]
+        }
       }
     },
     {

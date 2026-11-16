@@ -553,8 +553,27 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ed5909b6e89a2db4456e54cd5f673791d7eca6732202bbf2a9cc504fe2f9b84a"
 
 [[package]]
+name = "hetu-app-server"
+version = "0.8.0"
+dependencies = [
+ "hetu-core",
+ "serde",
+ "serde_json",
+ "tempfile",
+]
+
+[[package]]
+name = "hetu-cli"
+version = "0.8.0"
+dependencies = [
+ "hetu-core",
+ "serde_json",
+ "tempfile",
+]
+
+[[package]]
 name = "hetu-core"
-version = "0.7.0"
+version = "0.8.0"
 dependencies = [
  "aho-corasick",
  "base64 0.22.1",
@@ -581,7 +600,7 @@ dependencies = [
 
 [[package]]
 name = "hetu-mcp"
-version = "0.7.0"
+version = "0.8.0"
 dependencies = [
  "form_urlencoded",
  "hetu-core",
@@ -592,6 +611,15 @@ dependencies = [
  "sha2 0.10.9",
  "tempfile",
  "tokio",
+]
+
+[[package]]
+name = "hetu-plugin-cli"
+version = "0.8.0"
+dependencies = [
+ "hetu-core",
+ "serde_json",
+ "tempfile",
 ]
 
 [[package]]

@@ -1,0 +1,154 @@
+import { test, expect, _electron as electron } from "@playwright/test";
+import { mkdtemp } from "node:fs/promises";
+import { spawnSync } from "node:child_process";
+import path from "node:path";
+import os from "node:os";
+import { PluginPackage } from "../../../packages/plugin-host/src/package.ts";
+
+const root = path.resolve(import.meta.dirname, "../../..");
+test("Mac工作台布局、正文操作与阅读位置在真实Core中贯通", async () => {
+  test.setTimeout(180000);
+  const folder = await mkdtemp(path.join(os.tmpdir(), "hetu-native-workbench-"));
+  const workspace = path.join(folder, "作品"), access = path.join(folder, "access");
+  const pkg = await PluginPackage.inspect(path.join(root, "plugins/relationships/dist"));
+  const fixture = spawnSync(path.join(root, "target/debug/examples/plugin_fixture"),
+    [workspace, access, path.join(pkg.source, "plugin.json"), pkg.sha256, "18"], { encoding: "utf8" });
+  expect(fixture.status, fixture.stderr).toBe(0);
+  const context = JSON.parse(fixture.stdout);
+  const executable = process.env.HETU_PACKAGED_APP;
+  const application = await electron.launch({ ...(executable ? { executablePath: executable, args: [] } : { args: [path.join(root, "apps/desktop")] }), env: {
+    ...process.env, HETU_DESKTOP_PROFILE: path.join(folder, "profile"),
+    HETU_COLLABORATION_DIR: path.join(folder, "collaboration"), HETU_PLUGIN_ACCESS_DIR: access,
+    ...(!executable ? { HETU_PLUGIN_NODE: process.execPath, HETU_APP_SERVER: path.join(root, "target/debug/hetu-app-server") } : {}),
+  }});
+  try {
+    const page = await application.firstWindow();
+    await page.setViewportSize({ width: 1600, height: 1000 });
+    const errors: string[] = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await application.evaluate(({ dialog }, directory) => {
+      dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [directory] });
+      dialog.showMessageBox = async () => ({ response: 1, checkboxChecked: false });
+    }, workspace);
+    await page.getByRole("button", { name: "打开作品", exact: true }).first().click();
+    await page.screenshot({ path: path.join(root, "output/desktop-native-qa/library.png") });
+    await page.getByRole("button", { name: /插件集成测试/ }).click();
+    await expect(page.getByRole("textbox", { name: "文稿编辑", exact: true })).toBeVisible({ timeout: 30000 });
+    const maximized = () => application.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0]!.isMaximized());
+    const initiallyMaximized = await maximized();
+    await page.getByRole("button", { name: "缩放窗口", exact: true }).click();
+    await expect.poll(maximized).toBe(!initiallyMaximized);
+    await page.getByRole("button", { name: "缩放窗口", exact: true }).click();
+    await expect.poll(maximized).toBe(initiallyMaximized);
+    await page.setViewportSize({ width: 1600, height: 1000 });
+    const read = (action: string, input: any) => page.evaluate(({ action, input }) => (window as any).hetuDesktop.read(action, input), { action, input });
+    const original = (await read("hetu.documents.get", { document_id: context.document.document_id })).data;
+    const content = Array.from({length: 90}, (_, i) => `第${i + 1}段：清晨的雾气沿着山谷缓缓流动。江岚把旧日记放回书袋，沿海岸寻找灯塔。每一封信，都有自己的来处。`).join("\n");
+    expect((await read("hetu.documents.save", { document_id: context.document.document_id,
+      base_revision_id: original.revision.revision_id, source_format: "markdown", content, operation_key: "native-workbench-sample" })).status).toBe("succeeded");
+    await page.getByRole("button", { name: "第一章 雾港", exact: true }).click();
+    const editor = page.getByRole("textbox", { name: "文稿编辑", exact: true });
+    await expect(editor).toBeVisible();
+    await expect(page.locator(".cm-line").first()).toContainText("第1段");
+    const size = async (selector: string) => page.locator(selector).evaluate((element) => ({ width: element.getBoundingClientRect().width, height: element.getBoundingClientRect().height }));
+    expect((await size(".workbench-topbar")).height).toBe(56);
+    expect((await size(".project-navigation")).width).toBe(170);
+    expect((await size(".manuscript-directory")).width).toBe(210);
+    expect((await size(".manuscript-paper")).width).toBe(880);
+    const typography = await page.evaluate(() => [...new Set([...document.querySelectorAll<HTMLElement>("body *")]
+      .filter(element => element.checkVisibility() && [...element.childNodes].some(node => node.nodeType === Node.TEXT_NODE && node.textContent?.trim()))
+      .map(element => parseFloat(getComputedStyle(element).fontSize)))].sort((a, b) => a - b));
+    expect(typography).toEqual([12, 14, 18, 20]);
+    expect(await page.locator(".project-navigation button.selected").evaluate(element => getComputedStyle(element, "::before").content)).toBe("none");
+    expect(await page.locator(".manuscript-paper").evaluate(element => getComputedStyle(element).boxShadow)).toBe("none");
+    expect(await page.locator(".workbench-topbar").innerText()).not.toContain("·");
+    await page.screenshot({ path: path.join(root, "output/desktop-native-qa/manuscript-light.png") });
+    // 显示偏好不能影响保存原文，也不能令搜索选区自动展开检查器。
+    await page.getByRole("button", { name: "搜索正文", exact: true }).click();
+    await page.getByRole("textbox", { name: "搜索正文内容" }).fill("第70段");
+    await expect(page.locator(".document-search")).toContainText("1 处");
+    await expect(page.getByRole("complementary", { name: "检查器", exact: true })).toHaveCount(0);
+    await page.getByRole("button", { name: "关闭正文搜索", exact: true }).click();
+    await page.locator(".cm-scroller").evaluate((element) => { element.scrollTop = 1000; });
+    await expect.poll(() => page.locator(".cm-scroller").evaluate((element) => element.scrollTop)).toBeGreaterThan(900);
+    await page.getByRole("button", { name: "作品资料", exact: true }).click();
+    await expect(page.getByRole("region", { name: "当前作品资料", exact: true }).getByRole("heading", { name: "插件集成测试", exact: true })).toBeVisible();
+    expect(await page.evaluate(async () => (await (window as any).hetuDesktop.read("hetu.covers.get", {})).data.cover)).toBeNull();
+    await page.screenshot({ path: path.join(root, "output/desktop-native-qa/work-profile.png") });
+    await page.getByRole("button", { name: "小说", exact: true }).click();
+    await expect(editor).toBeVisible();
+    await expect.poll(() => page.locator(".cm-scroller").evaluate((element) => element.scrollTop)).toBeGreaterThan(900);
+    await page.locator('summary[aria-label="更多操作"]').click();
+    await page.getByRole("button", { name: "专注阅读", exact: true }).click();
+    await expect(page.locator(".project-navigation")).toBeHidden();
+    await expect(page.locator(".manuscript-directory")).toBeHidden();
+    await page.locator('summary[aria-label="更多操作"]').click();
+    await page.getByRole("button", { name: "退出专注", exact: true }).click();
+    await page.getByRole("button", { name: "卷章目录", exact: true }).click();
+    await expect(page.locator(".manuscript-directory")).toBeHidden();
+    await page.getByRole("button", { name: "卷章目录", exact: true }).click();
+    await expect(page.locator(".manuscript-directory")).toBeVisible();
+    await page.getByRole("button", { name: "检查器", exact: true }).click();
+    expect((await size(".manuscript-inspector")).width).toBe(280);
+    await expect(page.getByRole("combobox", { name: "比较修订", exact: true })).toBeVisible();
+    await page.getByRole("combobox", { name: "比较修订", exact: true }).selectOption(original.revision.revision_id);
+    const comparison = page.getByRole("dialog");
+    await expect(comparison).toBeVisible();
+    await expect(comparison.getByRole("heading", { name: "历史修订", exact: true })).toBeVisible();
+    await page.getByRole("button", { name: "关闭修订比较", exact: true }).click();
+    await page.getByRole("combobox", { name: "比较修订", exact: true }).selectOption(original.revision.revision_id);
+    await expect(comparison).toBeVisible();
+    await page.keyboard.press("Escape");
+    await page.getByRole("button", { name: "关闭检查器", exact: true }).click();
+    await editor.focus();
+    await editor.press(process.platform === "darwin" ? "Meta+ArrowDown" : "Control+End");
+    await page.keyboard.insertText("\n作者继续保留的结尾。");
+    await expect(page.getByRole("button", { name: "保存修订", exact: true })).toBeEnabled();
+    await page.getByRole("button", { name: "作品资料", exact: true }).click();
+    await expect(editor).toBeVisible();
+    await expect(page.locator(".notice")).toContainText("请先保存");
+    await page.getByRole("button", { name: "保存修订", exact: true }).click();
+    await expect(page.locator(".save-state")).toContainText("修订已保存");
+    expect((await read("hetu.documents.get", { document_id: context.document.document_id })).data.content).toBe(content + "\n作者继续保留的结尾。");
+    await editor.focus();
+    await editor.press(process.platform === "darwin" ? "Meta+ArrowUp" : "Control+Home");
+    await editor.press("Shift+ArrowRight");
+    await editor.press("Shift+ArrowRight");
+    await page.getByRole("textbox", { name: "原文批注意见", exact: true }).fill("保留这个开头。");
+    await page.getByRole("button", { name: "保存批注", exact: true }).click();
+    await expect(page.locator(".notice")).toContainText("已记录固定原文批注");
+    const notes = (await read("hetu.annotations.list", { document_id: context.document.document_id })).data.items;
+    expect(notes[0].source_ref.quote).toBe("第1");
+    expect(notes[0].source_ref.byte_start).toBe(0);
+    expect(notes[0].source_ref.byte_end).toBe(4);
+    await page.getByRole("button", { name: "关闭检查器", exact: true }).click();
+    await page.getByRole("button", { name: "本机设置", exact: true }).first().click();
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByText("阅读与工作台偏好", { exact: true })).toBeVisible();
+    await page.screenshot({ path: path.join(root, "output/desktop-native-qa/settings.png") });
+    await page.getByRole("tab", { name: "写作", exact: true }).click();
+    await expect(page.locator(".settings-reading-preview")).toBeVisible();
+    await page.locator(".settings-reading-preview").scrollIntoViewIfNeeded();
+    await page.screenshot({ path: path.join(root, "output/rea-mac-ui-20261116/settings-writing.png") });
+    await page.keyboard.press("Escape");
+    await expect(dialog).toBeHidden();
+    await page.evaluate(() => { document.documentElement.dataset.appearance = "dark"; document.documentElement.style.colorScheme = "dark"; });
+    expect(await page.locator(".manuscript-paper").evaluate((element) => getComputedStyle(element).backgroundColor)).toBe("rgb(16, 18, 17)");
+    await page.screenshot({ path: path.join(root, "output/desktop-native-qa/manuscript-dark.png") });
+    await page.setViewportSize({ width: 960, height: 800 });
+    await expect(page.locator(".manuscript-directory")).toBeHidden();
+    await page.getByRole("button", { name: "卷章目录", exact: true }).click();
+    await expect(page.locator(".manuscript-directory")).toBeVisible();
+    await expect(page.getByRole("button", { name: "关闭目录浮层", exact: true })).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page.locator(".manuscript-directory")).toBeHidden();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.screenshot({ path: path.join(root, "output/desktop-native-qa/manuscript-narrow.png") });
+    await page.getByRole("button", { name: "返回创作库", exact: true }).click();
+    await page.getByRole("button", { name: /独立剧本/ }).click();
+    await expect(page.getByRole("textbox", { name: "文稿编辑", exact: true })).toBeVisible();
+    expect(await page.evaluate(async () => { try { await (window as any).hetuDesktop.read("hetu.covers.get", {}); return false; } catch { return true; } })).toBe(true);
+    expect(errors).toEqual([]);
+  } finally { await application.close(); }
+});

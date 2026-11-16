@@ -5,22 +5,40 @@ impl Kernel {
     fn handoff_blueprint(&self, object: &Value) -> Result<Option<(Value, String)>> {
         if object["work_ref"].is_object() {
             self.work_blueprint_revision(&object["work_ref"], object["blueprint_revision"].as_u64())
-        } else { self.blueprint_revision(object["blueprint_revision"].as_u64()).map(Some) }
+        } else {
+            self.blueprint_revision(object["blueprint_revision"].as_u64())
+                .map(Some)
+        }
     }
     pub(super) fn page_handoff(&self, input: &Value) -> Result<Value> {
         ensure(
-            self.task_id.is_none() && (self.management_grant.is_none() || self.management_grant.as_ref().is_some_and(|v| v["kind"] == "workspace")),
+            self.task_id.is_none()
+                && (self.management_grant.is_none()
+                    || self
+                        .management_grant
+                        .as_ref()
+                        .is_some_and(|v| v["kind"] == "workspace")),
             "forbidden",
             "页面交接需要明确作品入口，不能扩大单任务权限。",
         )?;
         let page = text(input, "view_kind")?;
         let mut fixed = Vec::new();
         let object = &input["object_ref"];
-        ensure(object["link_revision"].is_null() || object["link_id"].is_string(), "invalid_input", "关联版本须指定关联身份。")?;
+        ensure(
+            object["link_revision"].is_null() || object["link_id"].is_string(),
+            "invalid_input",
+            "关联版本须指定关联身份。",
+        )?;
         if object["link_id"].is_string() {
-            ensure(page == "related_works" && object["work_ref"].is_object(), "invalid_input", "关联交接须定位当前作品。")?;
+            ensure(
+                page == "related_works" && object["work_ref"].is_object(),
+                "invalid_input",
+                "关联交接须定位当前作品。",
+            )?;
             let mut request = json!({"work_ref":object["work_ref"],"link_id":object["link_id"]});
-            if object["link_revision"].is_number() { request["revision"] = object["link_revision"].clone(); }
+            if object["link_revision"].is_number() {
+                request["revision"] = object["link_revision"].clone();
+            }
             let view = self.get_work_link(&request)?;
             fixed.push(json!({"kind":"work_link","link_id":view["link"]["link_id"],"revision":view["link"]["revision"],"sha256":view["sha256"],
                 "source_ref":view["link"]["source_ref"],"target_ref":view["link"]["target_ref"],"archived":view["link"]["archived"]}));
@@ -28,27 +46,59 @@ impl Kernel {
         if object["work_ref"].is_object() {
             let record = self.work_record(&object["work_ref"], None)?;
             fixed.push(json!({"kind":"work","fixed_ref":self.work_revision_ref(&object["work_ref"], &record)?}));
-            ensure(page != "video" || object["work_ref"]["kind"] == "video", "invalid_input", "视频页面须定位视频项目。")?;
+            ensure(
+                page != "video" || object["work_ref"]["kind"] == "video",
+                "invalid_input",
+                "视频页面须定位视频项目。",
+            )?;
         }
         if let Some(episode) = object["video_episode_id"].as_str() {
-            let value = self.get_video_episode(&json!({"video_episode_id":episode,"revision":object["revision"]}))?;
-            ensure(object["work_ref"] == value["work_ref"], "invalid_input", "视频分集不属于当前项目。")?;
+            let value = self.get_video_episode(
+                &json!({"video_episode_id":episode,"revision":object["revision"]}),
+            )?;
+            ensure(
+                object["work_ref"] == value["work_ref"],
+                "invalid_input",
+                "视频分集不属于当前项目。",
+            )?;
             fixed.push(json!({"kind":"video_episode","video_episode_id":episode,"revision":value["episode"]["revision"],"sha256":value["sha256"]}));
         }
         if let Some(document) = object["document_id"].as_str() {
             let value = self.document_content(document, object["revision_id"].as_str())?;
             fixed.push(json!({"kind":"document","document_id":document,"revision_id":value["revision"]["revision_id"],"sha256":value["revision"]["sha256"]}));
-            if object.get("byte_start").is_some() || object.get("byte_end").is_some() || object.get("quote").is_some() {
-                let content = text(&value,"content")?;
-                let start = integer(object,"byte_start")? as usize;
-                let end = integer(object,"byte_end")? as usize;
-                ensure(start <= end && content.get(start..end) == object["quote"].as_str(), "hetu.stale_evidence", "交接选区与固定原文不一致。")?;
+            if object.get("byte_start").is_some()
+                || object.get("byte_end").is_some()
+                || object.get("quote").is_some()
+            {
+                let content = text(&value, "content")?;
+                let start = integer(object, "byte_start")? as usize;
+                let end = integer(object, "byte_end")? as usize;
+                ensure(
+                    start <= end && content.get(start..end) == object["quote"].as_str(),
+                    "hetu.stale_evidence",
+                    "交接选区与固定原文不一致。",
+                )?;
                 fixed.push(json!({"kind":"source_range","document_id":document,"revision_id":value["revision"]["revision_id"],"byte_start":start,"byte_end":end,"quote":object["quote"]}));
             }
         }
-        ensure(["byte_start", "byte_end", "quote"].iter().all(|key| object.get(key).is_none()) || object["document_id"].is_string(), "invalid_input", "选区需要明确的原文文档。")?;
-        ensure(object.get("skeleton_revision").is_none() || object["skeleton_id"].is_string(), "invalid_input", "骨架版本需要明确的骨架。")?;
-        ensure(object.get("finding_id").is_none() || object["report_id"].is_string(), "invalid_input", "问题需要明确的报告。")?;
+        ensure(
+            ["byte_start", "byte_end", "quote"]
+                .iter()
+                .all(|key| object.get(key).is_none())
+                || object["document_id"].is_string(),
+            "invalid_input",
+            "选区需要明确的原文文档。",
+        )?;
+        ensure(
+            object.get("skeleton_revision").is_none() || object["skeleton_id"].is_string(),
+            "invalid_input",
+            "骨架版本需要明确的骨架。",
+        )?;
+        ensure(
+            object.get("finding_id").is_none() || object["report_id"].is_string(),
+            "invalid_input",
+            "问题需要明确的报告。",
+        )?;
         if let Some(plot) = object["plot_revision_id"].as_str() {
             self.read_plot(plot)?;
             fixed.push(json!({"kind":"plot","plot_revision_id":plot,"sha256":self.plot_descriptor(plot)?["sha256"]}));
@@ -57,35 +107,78 @@ impl Kernel {
             let (skeleton, sha) = self.read_skeleton(id, object["skeleton_revision"].as_u64())?;
             if let Some(scene) = object["scene_id"].as_str() {
                 let value = serde_json::to_value(&skeleton)?;
-                ensure(value["episodes"].as_array().is_some_and(|items|items.iter().any(|ep|ep["scenes"].as_array().is_some_and(|scenes|scenes.iter().any(|item|item["scene_id"] == scene)))), "not_found", "场次不属于固定骨架。")?;
+                ensure(
+                    value["episodes"].as_array().is_some_and(|items| {
+                        items.iter().any(|ep| {
+                            ep["scenes"].as_array().is_some_and(|scenes| {
+                                scenes.iter().any(|item| item["scene_id"] == scene)
+                            })
+                        })
+                    }),
+                    "not_found",
+                    "场次不属于固定骨架。",
+                )?;
                 fixed.push(json!({"kind":"scene","skeleton_id":id,"skeleton_revision":skeleton.revision,"scene_id":scene}));
             }
             fixed.push(json!({"kind":"skeleton","skeleton_id":id,"revision":skeleton.revision,"sha256":sha}));
         }
-        ensure(object.get("scene_id").is_none() || object["skeleton_id"].is_string(), "invalid_input", "场次需要明确的骨架。")?;
+        ensure(
+            object.get("scene_id").is_none() || object["skeleton_id"].is_string(),
+            "invalid_input",
+            "场次需要明确的骨架。",
+        )?;
         if let Some(snapshot) = object["snapshot_id"].as_str() {
-            let value = self.get_git_snapshot(&json!({"snapshot_id":snapshot}))?;
+            let mut request = json!({"snapshot_id":snapshot});
+            if object["work_ref"].is_object() {
+                request["work_ref"] = object["work_ref"].clone();
+            }
+            let value = self.get_git_snapshot(&request)?;
             fixed.push(json!({"kind":"git_snapshot","snapshot_id":snapshot,"sha256":value["snapshot_sha256"]}));
         }
         if let Some(path) = object["git_path"].as_str() {
-            let value = self.git_diff(&json!({"path":path}))?;
-            fixed.push(json!({"kind":"git_difference","path":path,"head":value["head"],"before_oid":value["before_oid"],"after_sha256":value["after_sha256"]}));
+            if !object["git_commit_id"].is_string() {
+                let mut request = json!({"path":path});
+                if object["work_ref"].is_object() {
+                    request["work_ref"] = object["work_ref"].clone();
+                }
+                let value = self.git_diff(&request)?;
+                fixed.push(json!({"kind":"git_difference","path":path,"head":value["head"],"before_oid":value["before_oid"],"after_sha256":value["after_sha256"]}));
+            }
         }
         if let Some(commit) = object["git_commit_id"].as_str() {
-            let value = self.git_version(&json!({"commit_id":commit}))?;
-            fixed.push(json!({"kind":"git_commit","commit_id":commit,"timestamp":value["timestamp"]}));
+            let mut request = json!({"commit_id":commit});
+            if object["work_ref"].is_object() {
+                request["work_ref"] = object["work_ref"].clone();
+            }
+            if let Some(path) = object["git_path"].as_str() {
+                request["path"] = json!(path);
+                // 交接只固定完整文件摘要，不需要将整篇历史正文带入本次响应。
+                request["max_bytes"] = json!(4);
+            }
+            let value = self.git_version(&request)?;
+            let mut reference =
+                json!({"kind":"git_commit","commit_id":commit,"timestamp":value["timestamp"]});
+            if request["path"].is_string() {
+                reference["path"] = value["path"].clone();
+                reference["sha256"] = value["sha256"].clone();
+            }
+            fixed.push(reference);
         }
         if let Some(asset) = object["asset_id"].as_str() {
             let value = self.get_asset(&json!({"asset_id":asset,"revision":object["revision"]}))?;
-            fixed.push(json!({"kind":"asset","asset_id":asset,"revision":value["asset"]["revision"],"sha256":value["sha256"]}));
+            fixed.push(json!({"kind":"asset","work_ref":value["asset"]["work_ref"],"asset_id":asset,"revision":value["asset"]["revision"],"sha256":value["sha256"]}));
         }
         if let Some(cue) = object["cue_id"].as_str() {
             let value = self.get_cue(&json!({"cue_id":cue,"revision":object["revision"]}))?;
-            fixed.push(json!({"kind":"cue","cue_id":cue,"revision":value["cue"]["revision"],"sha256":value["sha256"]}));
+            fixed.push(json!({"kind":"cue","work_ref":value["cue"]["work_ref"],"cue_id":cue,"revision":value["cue"]["revision"],"sha256":value["sha256"]}));
         }
         if let Some(entity) = object["entity_ref"].as_str() {
-            let (blueprint, sha) = self.handoff_blueprint(object)?
-                .ok_or_else(|| Error::new("hetu.canon_initialization_required", "此作品尚未建立自身设定。"))?;
+            let (blueprint, sha) = self.handoff_blueprint(object)?.ok_or_else(|| {
+                Error::new(
+                    "hetu.canon_initialization_required",
+                    "此作品尚未建立自身设定。",
+                )
+            })?;
             ensure(
                 [
                     "characters",
@@ -121,7 +214,12 @@ impl Kernel {
         if let Some(resource) = object["resource_id"].as_str() {
             let value =
                 self.get_resource(&json!({"resource_id":resource,"revision":object["revision"]}))?;
-            fixed.push(json!({"kind":"resource","resource_id":resource,"revision":value["resource"]["revision"],"sha256":value["sha256"]}));
+            ensure(
+                object["work_ref"].is_null() || object["work_ref"] == value["resource"]["work_ref"],
+                "forbidden",
+                "交接资料不属于当前作品。",
+            )?;
+            fixed.push(json!({"kind":"resource","work_ref":value["resource"]["work_ref"],"resource_id":resource,"revision":value["resource"]["revision"],"sha256":value["sha256"]}));
         }
         if let Some(draft) = object["draft_id"].as_str() {
             let value = self.draft_content(draft)?;
@@ -130,18 +228,39 @@ impl Kernel {
         if let Some(report) = object["report_id"].as_str() {
             let value = self.read_report(report)?;
             if let Some(finding) = object["finding_id"].as_str() {
-                ensure(value["findings"].as_array().is_some_and(|items| items.iter().any(|item| item["finding_id"] == finding)), "not_found", "问题不属于固定报告。")?;
+                ensure(
+                    value["findings"].as_array().is_some_and(|items| {
+                        items.iter().any(|item| item["finding_id"] == finding)
+                    }),
+                    "not_found",
+                    "问题不属于固定报告。",
+                )?;
                 fixed.push(json!({"kind":"finding","report_id":report,"finding_id":finding}));
             }
             fixed.push(json!({"kind":"report","report_id":report,"sha256":digest(bytes(&value)?)}));
         }
         let (wanted, missing): (&[&str], &[&str]) = match page {
             "related_works" => (
-                &["hetu.works.list", "hetu.works.get", "hetu.work_links.list", "hetu.work_links.get",
-                    "hetu.work_links.create", "hetu.work_links.update_source", "hetu.work_links.set_archived"], &[],
+                &[
+                    "hetu.works.list",
+                    "hetu.works.get",
+                    "hetu.work_links.list",
+                    "hetu.work_links.get",
+                    "hetu.work_links.create",
+                    "hetu.work_links.update_source",
+                    "hetu.work_links.set_archived",
+                ],
+                &[],
             ),
             "video" => (
-                &["hetu.works.get", "hetu.work_links.list", "hetu.video.projects.get", "hetu.video.projects.update", "hetu.video.episodes.create", "hetu.video.episodes.get"],
+                &[
+                    "hetu.works.get",
+                    "hetu.work_links.list",
+                    "hetu.video.projects.get",
+                    "hetu.video.projects.update",
+                    "hetu.video.episodes.create",
+                    "hetu.video.episodes.get",
+                ],
                 &["video_media_task_required"],
             ),
             "book" => (
@@ -174,7 +293,11 @@ impl Kernel {
                 &["unsaved_buffer_and_private_notes"],
             ),
             "bible" | "entity" => (
-                &["hetu.blueprints.get", "hetu.blueprints.initialize", "hetu.blueprints.save"],
+                &[
+                    "hetu.blueprints.get",
+                    "hetu.blueprints.initialize",
+                    "hetu.blueprints.save",
+                ],
                 &["author_unlock_required"],
             ),
             "drama" | "episode" => (
@@ -189,8 +312,12 @@ impl Kernel {
                     "hetu.drama.episodes.reorder",
                     "hetu.drama.build_skeleton",
                     "hetu.drama.compare",
-                    "hetu.drama.get_skeleton", "hetu.drama.list_skeletons", "hetu.drama.edit_skeleton",
-                    "hetu.drama.create_script", "hetu.drama.get_script_mapping", "hetu.drama.projects.attach",
+                    "hetu.drama.get_skeleton",
+                    "hetu.drama.list_skeletons",
+                    "hetu.drama.edit_skeleton",
+                    "hetu.drama.create_script",
+                    "hetu.drama.get_script_mapping",
+                    "hetu.drama.projects.attach",
                 ],
                 &[],
             ),
@@ -199,17 +326,21 @@ impl Kernel {
                     "hetu.resources.list",
                     "hetu.resources.get",
                     "hetu.resource_usages.list",
+                    "hetu.creative_tasks.preview_prompt",
+                    "hetu.creative_tasks.prepare",
                     "hetu.assets.list",
                     "hetu.assets.get",
                     "hetu.cues.list",
                     "hetu.cues.get",
-                    "hetu.assets.inspect", "hetu.assets.import", "hetu.assets.update", "hetu.cues.save", "hetu.resource_usages.save",
+                    "hetu.assets.inspect",
+                    "hetu.assets.import",
+                    "hetu.assets.update",
+                    "hetu.cues.save",
+                    "hetu.resource_usages.save",
                     "hetu.image_tasks.preview_prompt",
                     "hetu.image_tasks.prepare",
                 ],
-                &[
-                    "resource_task_required",
-                ],
+                &["resource_task_required"],
             ),
             "plot" => (
                 &[
@@ -227,7 +358,8 @@ impl Kernel {
                     "hetu.reports.list",
                     "hetu.reports.get",
                     "hetu.validation.run",
-                    "hetu.findings.suggest", "hetu.findings.suggestions",
+                    "hetu.findings.suggest",
+                    "hetu.findings.suggestions",
                     "hetu.plot.list",
                     "hetu.plot.get",
                 ],
@@ -255,13 +387,30 @@ impl Kernel {
                     "hetu.git.list_snapshots",
                     "hetu.git.get_snapshot",
                     "hetu.git.snapshot_diff",
-                    "hetu.git.references", "hetu.git.read_version", "hetu.git.merge_preview", "hetu.git.branch_create", "hetu.git.branch_switch",
-                    "hetu.git.merge", "hetu.git.remote_save", "hetu.git.fetch", "hetu.git.push", "hetu.git.pull",
+                    "hetu.git.references",
+                    "hetu.git.read_version",
+                    "hetu.git.merge_preview",
+                    "hetu.git.branch_create",
+                    "hetu.git.branch_switch",
+                    "hetu.git.merge",
+                    "hetu.git.remote_save",
+                    "hetu.git.fetch",
+                    "hetu.git.push",
+                    "hetu.git.pull",
                 ],
                 &["author_snapshot_approval"],
             ),
             "delivery" | "import" => (
-                &["hetu.bundles.verify", "hetu.bundles.preview", "hetu.bundles.export", "hetu.documents.preview_import", "hetu.documents.import", "hetu.documents.import_batch", "hetu.documents.preview_export", "hetu.documents.export"],
+                &[
+                    "hetu.bundles.verify",
+                    "hetu.bundles.preview",
+                    "hetu.bundles.export",
+                    "hetu.documents.preview_import",
+                    "hetu.documents.import",
+                    "hetu.documents.import_batch",
+                    "hetu.documents.preview_export",
+                    "hetu.documents.export",
+                ],
                 &[],
             ),
             _ => return Err(Error::new("invalid_input", "未知页面交接类型。")),
@@ -269,6 +418,23 @@ impl Kernel {
         let mut available = Vec::new();
         let mut proposals = Vec::new();
         for name in wanted {
+            if page == "git"
+                && object["work_ref"].is_object()
+                && !matches!(
+                    *name,
+                    "hetu.git.status"
+                        | "hetu.git.diff"
+                        | "hetu.git.log"
+                        | "hetu.git.snapshot"
+                        | "hetu.git.list_snapshots"
+                        | "hetu.git.get_snapshot"
+                        | "hetu.git.snapshot_diff"
+                        | "hetu.git.read_version"
+                        | "hetu.git.init"
+                )
+            {
+                continue;
+            }
             let metadata = catalog()["actions"]
                 .as_array()
                 .unwrap()
@@ -277,7 +443,11 @@ impl Kernel {
                 .unwrap();
             if agent_operations::PROPOSABLE.contains(name) {
                 proposals.push(metadata.clone());
-            } else if self.action_available(metadata) && (metadata["author_only"] == false || metadata["effect"] == "read" && crate::collaboration::authoring::management_action(name)) {
+            } else if self.action_available(metadata)
+                && (metadata["author_only"] == false
+                    || metadata["effect"] == "read"
+                        && crate::collaboration::authoring::management_action(name))
+            {
                 let mut action = metadata.clone();
                 action["author_only"] = json!(false);
                 available.push(action);

@@ -1,0 +1,18 @@
+{
+  "plan_ref": {
+    "plan_id": "example-camera-plan",
+    "input_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "effect": "managed_write",
+  "state": "prepared",
+  "changes": [
+    {
+      "object_id": "example-scene",
+      "base_revision": 3,
+      "summary": "只修改 shot-02 的 camera-a 局部覆盖，保留场面基线。"
+    }
+  ],
+  "required_capabilities": ["production.scene.write"],
+  "execution_authority": "checked_from_trusted_context_at_execute",
+  "next_action": "hetu.extensions.actions.execute"
+}

@@ -45,7 +45,10 @@ flowchart TB
 ```mermaid
 flowchart TD
     subgraph entry["入口适配"]
-        native["原生 App 与 Swift CLI"] --> abi["C ABI"]
+        desktop["Electron / TypeScript插件宿主"] --> rpc["JSON-RPC 2.0私有stdio"]
+        rpc --> server["Rust App Server"]
+        cli["独立Rust CLI"]
+        native["保留的原生版与Swift CLI"] --> abi["C ABI"]
         mcp["Rust MCP Server"]
         web["Node.js 局部页面"] --> ipc["受限 IPC 适配"]
         appUi["MCP Apps 资源"] --> hostBridge["宿主桥接"]
@@ -63,13 +66,15 @@ flowchart TD
         engine --> domain
         infrastructure -->|"实现"| ports
     end
+    server --> application
+    cli --> application
     abi --> application
     mcp --> application
     ipc --> application
     infrastructure --> os["OS 平台适配<br/>文件、进程锁与凭据"]
 ```
 
-图中表示源码依赖，不表示领域对象直接读写磁盘。应用层在入口组合时获得基础设施实现，领域与规则运算只消费显式输入；只在实际外部边界使用窄接口。SwiftUI/AppKit、WinUI 3 和共享 CLI 的平台分工见03，运行进程与通道见第21节。
+图中表示源码依赖，不表示领域对象直接读写磁盘。应用层在入口组合时获得基础设施实现，领域与规则运算只消费显式输入；只在实际外部边界使用窄接口。Electron/TS插件宿主、Rust Core与原生对照的分工见39，CLI/MCP独立入口见03，运行进程与通道见第21节。
 
 ## 3. 首次使用与客户端接入流程
 
@@ -571,12 +576,14 @@ sequenceDiagram
 flowchart TB
     host["外部宿主：Agent、Skills 与隔离的 Apps"]
     browser["可达本机的浏览器或 WebView"]
-    subgraph nativeProcess["原生 App 进程：作者编辑与确认"]
-        nativeUi["SwiftUI 或 WinUI 3"] -->|"C ABI"| nativeCore["进程内 Rust Core"]
-        restrictedIpc["单任务 IPC 白名单入口"] --> nativeCore
+    subgraph nativeProcess["Electron主进程与TS插件宿主"]
+        nativeUi["可信React工作台"] -->|"受限preload"| main["主进程"]
+        main -->|"JSON-RPC 2.0私有stdio"| nativeCore["独立Rust App Server / Core"]
+        restrictedIpc["单任务及插件范围代理"] --> nativeCore
     end
     subgraph cliProcess["独立 CLI 进程"]
-        cliEntry["Swift 薄入口"] -->|"C ABI"| cliCore["进程内 Rust Core"]
+        cliEntry["Rust薄入口"] --> cliCore["进程内Rust Core"]
+        cliEntry -.-> pluginHost["按需Node / TypeScript插件宿主"]
     end
     subgraph mcpProcess["独立 MCP 进程"]
         mcpEntry["Rust stdio 适配"] --> mcpCore["进程内 Rust Core"]
@@ -600,7 +607,7 @@ CLI 与 MCP 可在桌面退出后独立执行已获权用例；局部页面随�
 ```mermaid
 sequenceDiagram
     actor author as 作者
-    participant editor as 原生中文编辑器
+    participant editor as 中文Web编辑器
     participant recovery as 本机缓冲恢复
     participant core as 保存用例
     participant store as 工作区事务存储
@@ -883,7 +890,7 @@ flowchart TD
 
 ```mermaid
 flowchart TB
-    author["作者"] --> desktop["河图洛书原生工作台"]
+    author["作者"] --> desktop["河图洛书插件工作台"]
     author --> agent["外部 Agent 与河图洛书 Skills"]
     agent -->|"获权 stdio"| localMcp["随软件提供的本机 MCP"]
     subgraph local["本机：当前产品主范围"]
@@ -1033,7 +1040,7 @@ ASCII 作品树、领域关系和原生三栏布局见[35](35-资料素材与短
 ```mermaid
 sequenceDiagram
     actor author as 作者
-    participant ui as 原生工作台
+    participant ui as 可信工作台
     participant core as 共享 Core
     participant agent as 外部 Agent 与 Skill
     participant provider as 外部生图工具或官方产品
@@ -1148,7 +1155,7 @@ Apps：局部比较、保存意见，按能力请求继续当前对话
 
 ```mermaid
 flowchart TB
-    author["作者"] --> desktop["河图洛书原生工作台"]
+    author["作者"] --> desktop["河图洛书插件工作台"]
     author --> host["外部 Agent 会话与场景 Skills"]
     desktop -->|"可复制任务引用"| host
     host --> entry["稳定本机 MCP 或 CLI"]

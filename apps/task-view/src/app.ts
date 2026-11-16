@@ -22,7 +22,7 @@ type ToolResult = { structuredContent?: unknown; content?: { type: string; text?
 
 const messages = {
   "zh-CN": {
-    title: "比较参考方案", boundary: "选择只记录你的偏好。采纳到正文、选用正式封面和定稿，请回到河图洛书确认。",
+    title: "比较参考方案", boundary: "此处保存偏好，采纳与定稿需在河图确认。",
     empty: "暂未收到参考方案。你可以回到外部 AI 客户端继续创作，再读取最新结果。",
     refresh: "读取最新结果", discard: "放弃未保存选择并读取最新结果", comment: "补充要求或意见", placeholder: "例如：保留第二个方案的节奏，结尾再收敛一些。",
     save: "保存选择与意见", saving: "正在保存…", saved: "已记录偏好，尚未采纳。外部 Agent 可回读本任务查看你的意见。",
@@ -36,7 +36,7 @@ const messages = {
     concept: "故事方向", titleKind: "书名", synopsis: "简介", outline: "大纲", text: "参考稿", image: "封面候选", before: "原文", after: "建议", change: "改动", bible: "设定集", noSources: "这个任务没有附加参考资料。", readonly: "宿主未提供工具交互能力，请回桌面端保存意见。",
   },
   en: {
-    title: "Compare references", boundary: "Selections record preferences only. Adopt text, choose an official cover and finalize in the Hetu Luoshu desktop app.",
+    title: "Compare references", boundary: "Preferences only. Adopt and finalize in Hetu Luoshu.",
     empty: "No references received yet. Continue in your external AI client, then load the latest results.",
     refresh: "Load latest results", discard: "Discard unsaved choices and load latest", comment: "Requirements or feedback", placeholder: "For example: keep the pacing of option two and simplify the ending.",
     save: "Save preferences", saving: "Saving…", saved: "Preferences saved; content has not been adopted. Your external agent can read this task for your feedback.",
@@ -51,7 +51,7 @@ const messages = {
   },
 };
 
-const app = new App({ name: "Hetu Luoshu task view", version: "0.7.0" }, {});
+const app = new App({ name: "Hetu Luoshu task view", version: "0.8.0" }, {});
 const root = document.getElementById("app")!;
 let locale: keyof typeof messages = "zh-CN";
 let data: TaskData | undefined;
@@ -137,7 +137,7 @@ function render() {
   top.append(element("h1", t("title")), button(locale === "en" ? "中文" : "English", () => {
     locale = locale === "en" ? "zh-CN" : "en"; document.documentElement.lang = locale; render();
   }));
-  root.append(top, element("p", t("boundary"), "boundary"));
+  root.append(top);
   if (data) {
     root.append(element("p", data.request.brief, "brief"));
     if (data.submission && !data.submission.complete) {
@@ -202,7 +202,7 @@ function render() {
     saveButton.disabled ||= !connected || !app.getHostCapabilities()?.serverTools || data.observation.state === "closed" || (stale && !pending);
     const refreshButton = button(dirty ? t("discard") : t("refresh"), refresh);
     refreshButton.disabled ||= !connected || !!pending;
-    actions.append(saveButton, refreshButton); root.append(actions);
+    actions.append(saveButton, refreshButton); root.append(actions, element("p", t("boundary"), "boundary"));
     if (data.allowed_actions?.includes("hetu.task_feedback.save") && data.submission?.candidates.length) {
       const revise = button(t("revise"), requestChanges);
       revise.id = "request-changes";

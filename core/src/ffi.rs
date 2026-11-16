@@ -100,7 +100,9 @@ pub unsafe extern "C" fn hetu_collaboration_request(
     out: *mut HetuBuffer,
 ) -> i32 {
     // SAFETY: 输出和输入遵循公开的有界 UTF-8 缓冲合同。
-    if !unsafe { clear_output(out) } { return -1; }
+    if !unsafe { clear_output(out) } {
+        return -1;
+    }
     guard(|| {
         // SAFETY: 输入有效性由调用方保证，read_json 检查空指针和长度。
         let result = match unsafe { read_json(data, size) } {
@@ -112,17 +114,23 @@ pub unsafe extern "C" fn hetu_collaboration_request(
     })
 }
 #[unsafe(no_mangle)]
-pub unsafe extern "C" fn hetu_model_service_request(data: *const u8, size: u64, out: *mut HetuBuffer) -> i32 {
+pub unsafe extern "C" fn hetu_model_service_request(
+    data: *const u8,
+    size: u64,
+    out: *mut HetuBuffer,
+) -> i32 {
     // SAFETY: 输入输出缓冲遵循共享 ABI 合同。
-    if !unsafe { clear_output(out) } { return -1; }
+    if !unsafe { clear_output(out) } {
+        return -1;
+    }
     guard(|| {
         // SAFETY: 调用方提供有效有界缓冲，read_json 校验空指针和大小。
-        let result = match unsafe { read_json(data,size) } {
+        let result = match unsafe { read_json(data, size) } {
             Ok(value) => crate::model_service::ModelService::request(value),
-            Err(error) => domain::failure("hetu.model_service.settings","local",&error),
+            Err(error) => domain::failure("hetu.model_service.settings", "local", &error),
         };
         // SAFETY: out 已校验并初始化，使用共享分配与释放合同。
-        unsafe { output(out,result) }
+        unsafe { output(out, result) }
     })
 }
 #[unsafe(no_mangle)]

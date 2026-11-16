@@ -46,6 +46,9 @@ public final class WorkspaceModel {
     public let windowID = UUID()
     public let agentIntegration: AgentIntegrationSettings
     public let artworkLibrary = ArtworkLibrarySession()
+    public private(set) var relatedReturnDestinations: [WorkspaceNavigation.ReturnDestination] = []
+    public var relatedReturnDestination: WorkspaceNavigation.ReturnDestination? { relatedReturnDestinations.last }
+    @ObservationIgnored private var relatedSessions: [String: RelatedWorksSession] = [:]
     @ObservationIgnored private let recovery: RecoveryStore
     @ObservationIgnored private let preferences: UserDefaults
     @ObservationIgnored private let authorizationURL: URL?
@@ -126,6 +129,7 @@ public final class WorkspaceModel {
             self.drafts = drafts["drafts"].array
             pendingStructureOperations = pendingOperations
             generation = UUID(); resetDocument()
+            relatedReturnDestinations = []
             remember(url)
             return true
         } catch { report(error); return false }
@@ -504,6 +508,35 @@ public final class WorkspaceModel {
         do { return await open(try await library.resolve(entry), expectedWorkspaceID: entry.workspaceID, workReference: entry.workReference) }
         catch { report(error); return false }
     }
+    /// 每个窗口分别保存关联阅读会话；同根作品的关系与历史选择也不混用。
+    public func relatedWorksSession() -> RelatedWorksSession {
+        guard let reference = workReference else { return RelatedWorksSession() }
+        if let session = relatedSessions[reference.id] { return session }
+        let session = RelatedWorksSession(); relatedSessions[reference.id] = session
+        return session
+    }
+    // 调用方仍使用统一的未保存内容保护，导航不产生创作决定或扩大 Agent 权限。
+    @discardableResult public func openRelatedWork(_ reference: WorkReference) async -> Bool {
+        guard !busy, let workspace, let previous = workReference, previous != reference else { return false }
+        let destination = WorkspaceNavigation.ReturnDestination(url: workspace.url, reference: previous, title: title)
+        let history = relatedReturnDestinations
+        do {
+            let url: URL
+            if reference.workspaceID == workspaceID { url = workspace.url }
+            else if let entry = libraryEntries.first(where: { $0.workReference == reference }) { url = try await library.resolve(entry) }
+            else { throw LibraryStore.LibraryError.unavailable }
+            guard await open(url, expectedWorkspaceID: reference.workspaceID, workReference: reference) else { return false }
+            relatedReturnDestinations = history + [destination]
+            return true
+        } catch { report(error); return false }
+    }
+    @discardableResult public func returnFromRelatedWork() async -> Bool {
+        guard !busy, let destination = relatedReturnDestination else { return false }
+        let history = relatedReturnDestinations
+        guard await open(destination.url, expectedWorkspaceID: destination.reference.workspaceID, workReference: destination.reference) else { return false }
+        relatedReturnDestinations = Array(history.dropLast())
+        return true
+    }
     public func trashLibraryEntry(_ entry: LibraryEntry, confirmingTitle: String) async throws {
         guard !busy, workspace == nil else { throw LibraryStore.LibraryError.busy }
         busy = true; defer { busy = false }
@@ -563,6 +596,7 @@ public final class WorkspaceModel {
         recoveryTask?.cancel(); statisticsTask?.cancel(); generation = UUID(); resetDocument()
         workspace = nil; info = .null; bible = .null; novel = .null; cover = .null
         currentWork = .null; availableWorks = []
+        relatedReturnDestinations = []
         documents = []; drafts = []; pendingStructureOperations = []
         await loadLibrary()
     }

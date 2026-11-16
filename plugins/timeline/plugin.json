@@ -1,0 +1,80 @@
+{
+  "manifest_version": 1,
+  "host_api": "1",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "dependencies": [],
+  "permissions": [
+    "objects.read",
+    "objects.write"
+  ],
+  "id": "org.hetu.timeline",
+  "display": {
+    "zh-CN": "故事时间线",
+    "en": "Story timeline"
+  },
+  "description": {
+    "zh-CN": "围绕当前作品组织、审阅和保存故事时间线，支持Agent接续。",
+    "en": "Review persistent creative structures with scoped Agent access."
+  },
+  "contributions": {
+    "views": [
+      {
+        "id": "main",
+        "title": "故事时间线",
+        "entry": "index.html",
+        "object_kinds": [
+          "timeline"
+        ]
+      }
+    ],
+    "data": [
+      {
+        "kind": "timeline",
+        "schema_version": "1",
+        "schema": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "events"
+          ],
+          "properties": {
+            "events": {
+              "type": "array",
+              "maxItems": 2000,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "title",
+                  "time",
+                  "description"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "maxLength": 200
+                  },
+                  "title": {
+                    "type": "string",
+                    "maxLength": 200
+                  },
+                  "time": {
+                    "type": "string",
+                    "maxLength": 200
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 10000
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ],
+    "actions": []
+  }
+}

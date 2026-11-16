@@ -246,10 +246,33 @@ fn page_handoff_resolves_fixed_chinese_document_and_does_not_advertise_author_ex
             assert_eq!(action["author_only"], false);
         }
         if page == "delivery" {
-            assert!(handoff["proposal_actions"].as_array().unwrap().iter().any(|a|a["name"] == "hetu.bundles.export"));
-            assert!(!handoff["direct_actions"].as_array().unwrap().iter().any(|a|a["name"] == "hetu.bundles.export"));
-            for name in ["hetu.documents.preview_import", "hetu.documents.preview_export", "hetu.bundles.preview"] {
-                assert!(handoff["direct_actions"].as_array().unwrap().iter().any(|a|a["name"] == name), "缺少可获权读取的预览：{name}");
+            assert!(
+                handoff["proposal_actions"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .any(|a| a["name"] == "hetu.bundles.export")
+            );
+            assert!(
+                !handoff["direct_actions"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .any(|a| a["name"] == "hetu.bundles.export")
+            );
+            for name in [
+                "hetu.documents.preview_import",
+                "hetu.documents.preview_export",
+                "hetu.bundles.preview",
+            ] {
+                assert!(
+                    handoff["direct_actions"]
+                        .as_array()
+                        .unwrap()
+                        .iter()
+                        .any(|a| a["name"] == name),
+                    "缺少可获权读取的预览：{name}"
+                );
             }
         }
     }
@@ -300,8 +323,12 @@ fn agent_prepares_task_from_page_and_continues_reference_work_without_gui_forms(
         "working_copies.create",
         json!({"task_ref":reference,"artifact_kind":"text","source_format":"markdown","title":"第一章 雨夜渡口","content":"雨落在渡口，沈砚收起湿透的过所。","base_refs":[],"operation_key":"working"}),
     ));
-    let recovered=ok(call(&task,"working_copies.get",json!({"task_ref":reference,"working_copy_ref":working["working_copy_ref"]})));
-    assert!(recovered.to_string().contains("雨落在渡口"),"{recovered}");
+    let recovered = ok(call(
+        &task,
+        "working_copies.get",
+        json!({"task_ref":reference,"working_copy_ref":working["working_copy_ref"]}),
+    ));
+    assert!(recovered.to_string().contains("雨落在渡口"), "{recovered}");
     assert!(
         ok(call(&agent, "documents.list", json!({})))["documents"]
             .as_array()
@@ -322,20 +349,40 @@ fn corrupted_proposal_and_decision_records_fail_closed_without_panicking() {
     let _author = open(root.path(), true, true);
     let agent = open(root.path(), false, false);
     let before = ok(call(&agent, "novels.get", json!({})));
-    let proposal = prepare(&agent, "novels.update", json!({"expected":{"revision":before["revision"],"sha256":before["sha256"]},"metadata":before["novel"]["metadata"],"operation_key":"metadata"}), "prepare");
-    let path = root.path().join(format!(".hetu/agent-proposals/{}.json", proposal["proposal_id"].as_str().unwrap()));
+    let proposal = prepare(
+        &agent,
+        "novels.update",
+        json!({"expected":{"revision":before["revision"],"sha256":before["sha256"]},"metadata":before["novel"]["metadata"],"operation_key":"metadata"}),
+        "prepare",
+    );
+    let path = root.path().join(format!(
+        ".hetu/agent-proposals/{}.json",
+        proposal["proposal_id"].as_str().unwrap()
+    ));
     let state_path = path.with_extension("state.json");
     let original: Value = serde_json::from_slice(&std::fs::read(&path).unwrap()).unwrap();
     for field in ["before_files", "writes", "baseline", "review_changes"] {
         let mut corrupted = original.clone();
         corrupted["fixed"][field] = json!("broken");
         std::fs::write(&path, serde_json::to_vec(&corrupted).unwrap()).unwrap();
-        assert_ne!(call(&agent, "agent_operations.get", json!({"proposal_id":proposal["proposal_id"]}))["status"], "succeeded");
+        assert_ne!(
+            call(
+                &agent,
+                "agent_operations.get",
+                json!({"proposal_id":proposal["proposal_id"]})
+            )["status"],
+            "succeeded"
+        );
     }
     std::fs::write(&path, serde_json::to_vec(&original).unwrap()).unwrap();
     let state: Value = serde_json::from_slice(&std::fs::read(&state_path).unwrap()).unwrap();
-    for (field, value) in [("revision", json!("broken")), ("state", json!("executed")), ("state", json!("unknown"))] {
-        let mut corrupted = state.clone(); corrupted[field] = value;
+    for (field, value) in [
+        ("revision", json!("broken")),
+        ("state", json!("executed")),
+        ("state", json!("unknown")),
+    ] {
+        let mut corrupted = state.clone();
+        corrupted[field] = value;
         std::fs::write(&state_path, serde_json::to_vec(&corrupted).unwrap()).unwrap();
         assert_ne!(execute(&agent, &proposal, field)["status"], "succeeded");
     }
@@ -348,29 +395,48 @@ fn maximum_length_summary_survives_readback_and_corrupt_counter_cannot_commit() 
     let author = open(root.path(), true, true);
     let agent = open(root.path(), false, false);
     let before = ok(call(&agent, "novels.get", json!({})));
-    let proposal = ok(call(&agent, "agent_operations.prepare", json!({"action":"hetu.novels.update","input":{"expected":{"revision":before["revision"],"sha256":before["sha256"]},"metadata":before["novel"]["metadata"],"operation_key":"metadata"},"summary":"中".repeat(2000),"operation_key":"prepare"})));
-    let read = ok(call(&agent, "agent_operations.get", json!({"proposal_id":proposal["proposal_id"]})));
+    let proposal = ok(call(
+        &agent,
+        "agent_operations.prepare",
+        json!({"action":"hetu.novels.update","input":{"expected":{"revision":before["revision"],"sha256":before["sha256"]},"metadata":before["novel"]["metadata"],"operation_key":"metadata"},"summary":"中".repeat(2000),"operation_key":"prepare"}),
+    ));
+    let read = ok(call(
+        &agent,
+        "agent_operations.get",
+        json!({"proposal_id":proposal["proposal_id"]}),
+    ));
     assert_eq!(read["summary"], "中".repeat(2000));
     ok(decide(&author, &proposal, "approve", "approve"));
-    let state_path = root.path().join(format!(".hetu/agent-proposals/{}.state.json",proposal["proposal_id"].as_str().unwrap()));
-    let mut state:Value=serde_json::from_slice(&std::fs::read(&state_path).unwrap()).unwrap();
-    state["revision"]=json!(u64::MAX);
-    std::fs::write(&state_path,serde_json::to_vec(&state).unwrap()).unwrap();
-    assert_ne!(execute(&agent,&proposal,"execute")["status"],"succeeded");
-    assert_eq!(ok(call(&agent,"novels.get",json!({}))),before);
+    let state_path = root.path().join(format!(
+        ".hetu/agent-proposals/{}.state.json",
+        proposal["proposal_id"].as_str().unwrap()
+    ));
+    let mut state: Value = serde_json::from_slice(&std::fs::read(&state_path).unwrap()).unwrap();
+    state["revision"] = json!(u64::MAX);
+    std::fs::write(&state_path, serde_json::to_vec(&state).unwrap()).unwrap();
+    assert_ne!(execute(&agent, &proposal, "execute")["status"], "succeeded");
+    assert_eq!(ok(call(&agent, "novels.get", json!({}))), before);
 }
 
 #[test]
 fn original_drama_handoff_does_not_invent_a_novel_revision() {
-    let root=tempfile::tempdir().unwrap();
+    let root = tempfile::tempdir().unwrap();
     let author=Kernel::open(json!({"workspace_path":root.path(),"mode":"author","create":{"title":"原创剧本","locale":"zh-CN","work_type":"drama","operation_key":"create"}})).unwrap();
-    let document=ok(call(&author,"documents.create",json!({"kind":"drama_script","title":"第一集","source_format":"fountain","content":"INT. 渡船 - NIGHT\n","operation_key":"script"})));
-    let agent=open(root.path(),false,false);
-    let context=ok(call(&agent,"handoffs.get",json!({"view_kind":"document","object_ref":{"document_id":document["document"]["document_id"],"revision_id":document["revision"]["revision_id"]}})));
-    let refs=context["fixed_refs"].as_array().unwrap();
-    assert_eq!(refs.len(),1);
-    assert_eq!(refs[0]["kind"],"document");
-    assert_eq!(refs[0]["sha256"],document["revision"]["sha256"]);
+    let document = ok(call(
+        &author,
+        "documents.create",
+        json!({"kind":"drama_script","title":"第一集","source_format":"fountain","content":"INT. 渡船 - NIGHT\n","operation_key":"script"}),
+    ));
+    let agent = open(root.path(), false, false);
+    let context = ok(call(
+        &agent,
+        "handoffs.get",
+        json!({"view_kind":"document","object_ref":{"document_id":document["document"]["document_id"],"revision_id":document["revision"]["revision_id"]}}),
+    ));
+    let refs = context["fixed_refs"].as_array().unwrap();
+    assert_eq!(refs.len(), 1);
+    assert_eq!(refs[0]["kind"], "document");
+    assert_eq!(refs[0]["sha256"], document["revision"]["sha256"]);
 }
 
 #[test]
@@ -379,22 +445,47 @@ fn import_is_fixed_before_review_and_git_initialization_has_no_prepare_side_effe
     let author = open(root.path(), true, true);
     let agent = open(root.path(), false, false);
     let file = root.path().join("原稿.txt");
-    std::fs::write(&file,"第一章 渡口\n\n潮声中有人敲门。🌧️").unwrap();
+    std::fs::write(&file, "第一章 渡口\n\n潮声中有人敲门。🌧️").unwrap();
     let preview = ok(call(&author,"documents.preview_import",json!({"inline_source":inline_source("原稿.txt", &std::fs::read(&file).unwrap()),"format":"txt","profile":"hetu-novel-zh/1"})))["preview"].clone();
-    let proposed = prepare(&agent,"documents.import",json!({"preview":preview,"kind":"novel_chapter","title":"渡口","language_tag":"zh-CN","acknowledgement":"核对原稿及格式","operation_key":"import"}),"prepare-import");
-    assert!(ok(call(&agent,"documents.list",json!({})))["documents"].as_array().unwrap().is_empty());
-    ok(decide(&author,&proposed,"approve","approve-import"));
-    let receipt = ok(execute(&agent,&proposed,"import-execute"));
+    let proposed = prepare(
+        &agent,
+        "documents.import",
+        json!({"preview":preview,"kind":"novel_chapter","title":"渡口","language_tag":"zh-CN","acknowledgement":"核对原稿及格式","operation_key":"import"}),
+        "prepare-import",
+    );
+    assert!(
+        ok(call(&agent, "documents.list", json!({})))["documents"]
+            .as_array()
+            .unwrap()
+            .is_empty()
+    );
+    ok(decide(&author, &proposed, "approve", "approve-import"));
+    let receipt = ok(execute(&agent, &proposed, "import-execute"));
     assert!(receipt["result"]["document"]["document_id"].is_string());
-    let imported = ok(call(&agent,"documents.get",json!({"document_id":receipt["result"]["document"]["document_id"]})));
+    let imported = ok(call(
+        &agent,
+        "documents.get",
+        json!({"document_id":receipt["result"]["document"]["document_id"]}),
+    ));
     assert!(imported["content"].as_str().unwrap().contains("潮声"));
-    let init = prepare(&agent,"git.init",json!({"branch":"main","operation_key":"git-init"}),"prepare-init");
+    let init = prepare(
+        &agent,
+        "git.init",
+        json!({"branch":"main","operation_key":"git-init"}),
+        "prepare-init",
+    );
     assert!(!root.path().join(".git").exists());
-    assert_ne!(execute(&agent,&init,"unapproved")["status"],"succeeded");
-    ok(decide(&author,&init,"approve","approve-init"));
-    let result = ok(execute(&agent,&init,"initialize"));
-    assert_eq!(result["result"]["initialized"],true);
-    assert_eq!(ok(execute(&agent,&init,"initialize")),result);
-    assert_eq!(ok(execute(&agent,&init,"initialize-again"))["result"],result["result"]);
-    assert_ne!(decide(&author,&init,"reject","late")["status"],"succeeded");
+    assert_ne!(execute(&agent, &init, "unapproved")["status"], "succeeded");
+    ok(decide(&author, &init, "approve", "approve-init"));
+    let result = ok(execute(&agent, &init, "initialize"));
+    assert_eq!(result["result"]["initialized"], true);
+    assert_eq!(ok(execute(&agent, &init, "initialize")), result);
+    assert_eq!(
+        ok(execute(&agent, &init, "initialize-again"))["result"],
+        result["result"]
+    );
+    assert_ne!(
+        decide(&author, &init, "reject", "late")["status"],
+        "succeeded"
+    );
 }

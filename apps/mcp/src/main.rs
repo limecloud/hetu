@@ -1,4 +1,4 @@
-use hetu_mcp::{HetuServer, StableServer, MAX_MESSAGE_BYTES, ScopeKind};
+use hetu_mcp::{HetuServer, MAX_MESSAGE_BYTES, ScopeKind, StableServer};
 use rmcp::{ServiceExt, service::ServerInitializeError, transport::async_rw::AsyncRwTransport};
 use std::{path::PathBuf, process::ExitCode};
 
@@ -7,26 +7,48 @@ async fn main() -> ExitCode {
     let mut args = std::env::args_os().skip(1);
     let first = args.next();
     if first.as_deref().and_then(|s| s.to_str()) == Some("--version") {
-        if args.next().is_some() { return ExitCode::from(2); }
+        if args.next().is_some() {
+            return ExitCode::from(2);
+        }
         println!("hetu-mcp {}", env!("CARGO_PKG_VERSION"));
         return ExitCode::SUCCESS;
     }
     if first.as_deref().and_then(|s| s.to_str()) == Some("--client") {
-        let Some(client) = args.next().and_then(|s| s.into_string().ok()) else { return ExitCode::from(2); };
+        let Some(client) = args.next().and_then(|s| s.into_string().ok()) else {
+            return ExitCode::from(2);
+        };
         let directory = match args.next() {
             None => hetu_core::collaboration::default_directory(),
-            Some(flag) if flag == "--collaboration-dir" => args.next().map(PathBuf::from).ok_or_else(|| hetu_core::Error::new("invalid_input", "需要本机接入目录。")),
+            Some(flag) if flag == "--collaboration-dir" => args
+                .next()
+                .map(PathBuf::from)
+                .ok_or_else(|| hetu_core::Error::new("invalid_input", "需要本机接入目录。")),
             _ => return ExitCode::from(2),
         };
-        if args.next().is_some() { return ExitCode::from(2); }
-        let opened = directory.and_then(|directory| StableServer::open(&directory,&client).map_err(|_| hetu_core::Error::new("invalid_input", "无法打开本机稳定入口。")));
-        let server = match opened { Ok(server)=>server, Err(error)=> {eprintln!("{error}"); return ExitCode::from(2);} };
-        let (reader,writer)=rmcp::transport::stdio_pipes();
-        let transport=AsyncRwTransport::new(reader,writer).with_max_line_length(MAX_MESSAGE_BYTES);
+        if args.next().is_some() {
+            return ExitCode::from(2);
+        }
+        let opened = directory.and_then(|directory| {
+            StableServer::open(&directory, &client)
+                .map_err(|_| hetu_core::Error::new("invalid_input", "无法打开本机稳定入口。"))
+        });
+        let server = match opened {
+            Ok(server) => server,
+            Err(error) => {
+                eprintln!("{error}");
+                return ExitCode::from(2);
+            }
+        };
+        let (reader, writer) = rmcp::transport::stdio_pipes();
+        let transport =
+            AsyncRwTransport::new(reader, writer).with_max_line_length(MAX_MESSAGE_BYTES);
         return match server.serve(transport).await {
-            Ok(service)=>match service.waiting().await {Ok(_)=>ExitCode::SUCCESS,Err(_)=>ExitCode::FAILURE},
-            Err(ServerInitializeError::ConnectionClosed(_))=>ExitCode::SUCCESS,
-            Err(_)=>ExitCode::FAILURE,
+            Ok(service) => match service.waiting().await {
+                Ok(_) => ExitCode::SUCCESS,
+                Err(_) => ExitCode::FAILURE,
+            },
+            Err(ServerInitializeError::ConnectionClosed(_)) => ExitCode::SUCCESS,
+            Err(_) => ExitCode::FAILURE,
         };
     }
     if matches!(

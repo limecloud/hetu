@@ -1,0 +1,515 @@
+//! 随包创作方法的核验及明确安装；不拥有外部 Agent 的配置与账号。
+use super::*;
+use std::{
+    io::Read,
+    process::{Command, Stdio},
+    time::{Duration, Instant},
+};
+
+pub(super) fn catalog() -> Value {
+    let catalog: Value = serde_json::from_str(include_str!("../../../integrations/catalog.json"))
+        .expect("embedded suite catalog");
+    let labels: Value = serde_json::from_str(include_str!("../../../assets/localization/native.json"))
+        .expect("embedded localization");
+    json!({"suites":catalog["suites"].as_array().unwrap().iter().map(|s|json!({
+        "suite_id":s["id"],"name":s["pluginName"],"title_key":s["titleKey"],"title":labels[s["titleKey"].as_str().unwrap()]["zh-CN"],
+        "family":s["family"],"summary":s["summary"],"aliases":s["aliases"]
+    })).collect::<Vec<_>>(),"categories":catalog["categories"],"skills":catalog["skills"].as_array().unwrap().iter().map(|id|json!({
+        "id":id,"title":labels[format!("agent.skill.{}",id.as_str().unwrap())]["zh-CN"]
+    })).collect::<Vec<_>>()})
+}
+pub(super) fn installable_clients() -> Value {
+    let mut clients = vec!["workbuddy"];
+    if codex_binary().is_ok() {
+        clients.insert(0, "codex");
+    }
+    json!(clients)
+}
+pub(super) fn integration_directory() -> Result<PathBuf> {
+    if let Some(path) = std::env::var_os("HETU_INTEGRATIONS_DIR") {
+        let path = PathBuf::from(path);
+        ensure(
+            path.is_absolute(),
+            "invalid_input",
+            "套件资源目录必须为绝对路径。",
+        )?;
+        return Ok(path);
+    }
+    let packaged = std::env::current_exe()?
+        .parent()
+        .unwrap()
+        .parent()
+        .unwrap()
+        .join("integrations");
+    if packaged.is_dir() {
+        return Ok(packaged);
+    }
+    #[cfg(debug_assertions)]
+    {
+        Ok(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../integrations"))
+    }
+    #[cfg(not(debug_assertions))]
+    {
+        Err(Error::new(
+            "hetu.capability_unavailable",
+            "随包创作方法不可用，请检查完整安装包。",
+        ))
+    }
+}
+fn suite(id: &str) -> Result<Value> {
+    let catalog: Value = serde_json::from_str(include_str!("../../../integrations/catalog.json"))?;
+    catalog["suites"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|s| s["id"] == id)
+        .cloned()
+        .ok_or_else(|| Error::new("invalid_input", "套件不在当前目录中。"))
+}
+pub(super) fn bytes(directory: &Path) -> Result<BTreeMap<String, Vec<u8>>> {
+    ensure(
+        std::fs::symlink_metadata(directory)?.is_dir(),
+        "hetu.unsafe_path",
+        "套件根目录必须为常规目录。",
+    )?;
+    let store = Store::open(directory)?;
+    let files = store.files("", |_| false)?;
+    ensure(
+        !files.is_empty() && files.len() <= 256,
+        "hetu.budget_exceeded",
+        "套件文件数量超限。",
+    )?;
+    let mut result = BTreeMap::new();
+    let mut size = 0;
+    for name in files {
+        let file = store.read(&name)?;
+        size += file.len();
+        ensure(
+            file.len() < 2 * 1024 * 1024 && size <= 16 * 1024 * 1024,
+            "hetu.budget_exceeded",
+            "套件字节超过上限。",
+        )?;
+        result.insert(name, file);
+    }
+    Ok(result)
+}
+fn fingerprint(files: &BTreeMap<String, Vec<u8>>) -> Result<String> {
+    hash(&json!(
+        files
+            .iter()
+            .map(|(path, data)| (path, domain::digest(data)))
+            .collect::<BTreeMap<_, _>>()
+    ))
+}
+fn valid_version(version: &str) -> bool {
+    let core = version.split(['-', '+']).next().unwrap_or("");
+    let parts: Vec<_> = core.split('.').collect();
+    parts.len() == 3
+        && parts
+            .iter()
+            .all(|p| !p.is_empty() && p.bytes().all(|b| b.is_ascii_digit()))
+        && version.len() <= 80
+        && version
+            .bytes()
+            .all(|b| b.is_ascii_alphanumeric() || b".-+".contains(&b))
+}
+pub(super) fn inspect(id: &str) -> Result<Value> {
+    let selected = suite(id)?;
+    let name = text(&selected, "pluginName")?;
+    let files = bytes(&integration_directory()?.join("codex").join(name))?;
+    let read = |path: &str| -> Result<Value> {
+        serde_json::from_slice(
+            files
+                .get(path)
+                .ok_or_else(|| Error::new("hetu.integrity_failure", "套件缺少必要文件。"))?,
+        )
+        .map_err(Into::into)
+    };
+    let plugin = read("plugin.json")?;
+    let codex = read(".codex-plugin/plugin.json")?;
+    let identity = read("hetu-suite.json")?;
+    let methods = read("references/method-manifest.json")?;
+    let hashes = methods["files"]
+        .as_object()
+        .ok_or_else(|| Error::new("hetu.integrity_failure", "套件方法清单无效。"))?;
+    ensure(
+        methods["suite_id"] == id
+            && hashes.len() + 1 == files.len()
+            && hashes.iter().all(|(path, expected)| {
+                files.get(path).is_some_and(|content| {
+                    expected.as_str() == Some(domain::digest(content).as_str())
+                })
+            }),
+        "hetu.integrity_failure",
+        "套件文件与方法清单不一致。",
+    )?;
+    ensure(
+        identity["suite_id"] == id
+            && identity["schema_version"] == "1.0.0"
+            && plugin["name"] == name
+            && codex["name"] == name
+            && codex["version"] == plugin["version"],
+        "hetu.integrity_failure",
+        "套件名称、版本或身份不一致。",
+    )?;
+    let version = text(&plugin, "version")?;
+    ensure(
+        valid_version(version),
+        "hetu.integrity_failure",
+        "套件版本格式无效。",
+    )?;
+    for path in selected["requiredFiles"].as_array().unwrap() {
+        ensure(
+            files.contains_key(path.as_str().unwrap()),
+            "hetu.integrity_failure",
+            "套件缺少声明的方法资料。",
+        )?;
+    }
+    let catalog: Value = serde_json::from_str(include_str!("../../../integrations/catalog.json"))?;
+    for method in catalog["skills"].as_array().unwrap() {
+        ensure(
+            files.contains_key(&format!("skills/{}/SKILL.md", method.as_str().unwrap())),
+            "hetu.integrity_failure",
+            "套件缺少任务方法。",
+        )?;
+    }
+    Ok(
+        json!({"suite_id":id,"name":name,"version":version,"package_sha256":fingerprint(&files)?,"file_count":files.len()}),
+    )
+}
+fn home() -> Result<PathBuf> {
+    std::env::var_os(if cfg!(windows) { "USERPROFILE" } else { "HOME" })
+        .map(PathBuf::from)
+        .filter(|p| p.is_absolute())
+        .ok_or_else(|| Error::new("missing_context", "无法确定用户目录。"))
+}
+pub(super) fn codex_home() -> Result<PathBuf> {
+    let path = std::env::var_os("CODEX_HOME")
+        .map(PathBuf::from)
+        .map(Ok)
+        .unwrap_or_else(|| Ok::<_, Error>(home()?.join(".codex")))?;
+    ensure(
+        path.is_absolute(),
+        "invalid_input",
+        "Codex 用户目录必须为绝对路径。",
+    )?;
+    Ok(path)
+}
+fn codex_binary() -> Result<PathBuf> {
+    if let Some(path) = std::env::var_os("HETU_CODEX_BINARY") {
+        let path = PathBuf::from(path);
+        ensure(
+            path.is_absolute() && path.is_file(),
+            "hetu.capability_unavailable",
+            "Codex 入口不可用。",
+        )?;
+        return Ok(path);
+    }
+    let candidates = std::env::var_os("PATH")
+        .map(|p| {
+            std::env::split_paths(&p)
+                .filter(|p| p.is_absolute())
+                .map(|p| p.join(if cfg!(windows) { "codex.exe" } else { "codex" }))
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+    candidates.into_iter().find(|p| p.is_file()).ok_or_else(|| {
+        Error::new(
+            "hetu.capability_unavailable",
+            "未找到 Codex 官方 CLI，请先安装或手动接入所选套件。",
+        )
+    })
+}
+pub(super) fn workbuddy_directory() -> Result<PathBuf> {
+    let config = std::env::var_os("WORKBUDDY_CONFIG_DIR")
+        .map(PathBuf::from)
+        .map(Ok)
+        .unwrap_or_else(|| {
+            let suffix = std::env::var("WORKBUDDY_INSTANCE_NUMBER")
+                .ok()
+                .map(|n| format!("-{n}"))
+                .unwrap_or_default();
+            ensure(
+                suffix.bytes().all(|b| b.is_ascii_digit() || b == b'-'),
+                "invalid_input",
+                "WorkBuddy 实例编号无效。",
+            )?;
+            Ok::<_, Error>(home()?.join(format!(".workbuddy{suffix}")))
+        })?;
+    ensure(
+        config.is_absolute(),
+        "invalid_input",
+        "WorkBuddy 目录必须为绝对路径。",
+    )?;
+    Ok(config)
+}
+pub(super) fn target(client: &str) -> Result<Value> {
+    if client == "codex" {
+        return Ok(
+            json!({"client_directory":codex_home()?,"executable":codex_binary()?,"package_directory":default_directory()?.parent().unwrap().join("AgentPackages")}),
+        );
+    }
+    ensure(
+        client == "workbuddy",
+        "hetu.capability_unavailable",
+        "当前客户端不支持自动安装。",
+    )?;
+    Ok(json!({"client_directory":workbuddy_directory()?}))
+}
+pub(super) fn command(args: &[&str]) -> Result<Value> {
+    let mut child = Command::new(codex_binary()?)
+        .args(args)
+        .env("CODEX_HOME", codex_home()?)
+        .stdin(Stdio::null())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null())
+        .spawn()?;
+    let stdout = child.stdout.take().unwrap();
+    let reader = std::thread::spawn(move || {
+        let mut data = Vec::new();
+        stdout
+            .take(2 * 1024 * 1024 + 1)
+            .read_to_end(&mut data)
+            .map(|_| data)
+    });
+    let started = Instant::now();
+    let status = loop {
+        if let Some(status) = child.try_wait()? {
+            break status;
+        }
+        if started.elapsed() > Duration::from_secs(45) {
+            let _ = child.kill();
+            let _ = child.wait();
+            return Err(Error::new(
+                "result_unknown",
+                "安装命令未返回，请沿原方案回读登记状态。",
+            ));
+        }
+        std::thread::sleep(Duration::from_millis(20));
+    };
+    let output = reader
+        .join()
+        .map_err(|_| Error::new("result_unknown", "安装回执读取中断。"))??;
+    ensure(
+        status.success() && output.len() <= 2 * 1024 * 1024,
+        "result_unknown",
+        "安装结果未能确认，请沿原方案核对。",
+    )?;
+    serde_json::from_slice(&output)
+        .map_err(|_| Error::new("result_unknown", "安装回执格式无法确认。"))
+}
+fn materialize(directory: &Path, files: &BTreeMap<String, Vec<u8>>) -> Result<()> {
+    if directory.exists() {
+        ensure(
+            fingerprint(&bytes(directory)?)? == fingerprint(files)?,
+            "revision_conflict",
+            "目标已存在不同内容；保留作者已有文件。",
+        )?;
+        return Ok(());
+    }
+    let parent = directory
+        .parent()
+        .ok_or_else(|| Error::new("hetu.unsafe_path", "安装目标目录无效。"))?;
+    std::fs::create_dir_all(parent)?;
+    let stage = parent.join(format!(".{}", id("hetu-install")));
+    std::fs::create_dir(&stage)?;
+    let store = Store::open(&stage)?;
+    for (name, file) in files {
+        store.install(name, file, true)?;
+    }
+    ensure(
+        fingerprint(&bytes(&stage)?)? == fingerprint(files)?,
+        "hetu.integrity_failure",
+        "安装暂存包校验失败。",
+    )?;
+    ensure(
+        !directory.exists(),
+        "revision_conflict",
+        "安装目标已由另一进程创建。",
+    )?;
+    std::fs::rename(&stage, directory)?;
+    ensure(
+        fingerprint(&bytes(directory)?)? == fingerprint(files)?,
+        "hetu.integrity_failure",
+        "实际安装文件与固定包不一致。",
+    )
+}
+fn installed_codex(fixed: &Value) -> Result<Value> {
+    let market = format!("hetu-luoshu-{}", text(fixed, "suite_id")?);
+    let plugin_id = format!("{}@{market}", text(fixed, "name")?);
+    let registered = command(&["plugin", "list", "--marketplace", &market, "--json"])?;
+    ensure(
+        registered["installed"].as_array().is_some_and(|records| {
+            records.iter().any(|r| {
+                r["pluginId"] == plugin_id
+                    && r["installed"] == true
+                    && r["enabled"] == true
+                    && r["version"] == fixed["version"]
+            })
+        }),
+        "result_unknown",
+        "官方登记尚不能确认所选插件版本。",
+    )?;
+    let path = codex_home()?
+        .join("plugins/cache")
+        .join(&market)
+        .join(text(fixed, "name")?)
+        .join(text(fixed, "version")?);
+    ensure(
+        fingerprint(
+            &bytes(&path).map_err(|_| Error::new("result_unknown", "登记包无法完整回读。"))?,
+        )? == fixed["package_sha256"],
+        "result_unknown",
+        "官方缓存与固定套件不一致，请保留现场核对。",
+    )?;
+    Ok(
+        json!({"client":"codex","suite_id":fixed["suite_id"],"version":fixed["version"],"package_sha256":fixed["package_sha256"],
+        "directory":path,"state":"registered","session_loaded":false,"verified_at":domain::now()}),
+    )
+}
+pub(super) fn install(fixed: &Value, client: &str, recovering: bool) -> Result<Value> {
+    let suite_id = text(fixed, "suite_id")?;
+    let name = text(fixed, "name")?;
+    if client == "codex" && recovering {
+        return installed_codex(fixed);
+    }
+    let mut files = bytes(&integration_directory()?.join("codex").join(name))?;
+    ensure(
+        fingerprint(&files)? == fixed["package_sha256"],
+        "revision_conflict",
+        "套件资源已变化。",
+    )?;
+    if client == "workbuddy" {
+        let catalog: Value =
+            serde_json::from_str(include_str!("../../../integrations/catalog.json"))?;
+        for method in catalog["skills"].as_array().unwrap() {
+            let method = method.as_str().unwrap();
+            let key = format!("skills/{method}/SKILL.md");
+            if suite_id != "general" {
+                let original = std::str::from_utf8(files.get(&key).unwrap())
+                    .map_err(|_| Error::new("hetu.integrity_failure", "方法不是UTF-8文本。"))?;
+                let adapted = original.replace(
+                    &format!("\nname: {method}\n"),
+                    &format!("\nname: {name}-{}\n", method.trim_start_matches("hetu-")),
+                );
+                files.insert(key, adapted.into_bytes());
+            }
+        }
+        files.insert(
+            "hetu-suite.json".into(),
+            serde_json::to_vec(
+                &json!({"schema_version":"1.0.0","suite_id":suite_id,"adapter":"workbuddy"}),
+            )?,
+        );
+        let config = workbuddy_directory()?;
+        let destination = config.join("skills").join(name);
+        materialize(&destination, &files)?;
+        return Ok(
+            json!({"client":client,"suite_id":suite_id,"version":fixed["version"],"package_sha256":fixed["package_sha256"],
+            "installed_sha256":fingerprint(&files)?,"directory":destination,"state":"files_installed","session_loaded":false,"verified_at":domain::now()}),
+        );
+    }
+    ensure(
+        client == "codex",
+        "hetu.capability_unavailable",
+        "当前客户端不支持自动安装。",
+    )?;
+    let market_name = format!("hetu-luoshu-{suite_id}");
+    let base = default_directory()?
+        .parent()
+        .unwrap()
+        .join("AgentPackages/codex")
+        .join(suite_id);
+    let existing = command(&["plugin", "marketplace", "list", "--json"])?;
+    let records = existing["marketplaces"]
+        .as_array()
+        .ok_or_else(|| Error::new("result_unknown", "无法核对官方市场登记。"))?;
+    let matches: Vec<_> = records
+        .iter()
+        .filter(|r| r["name"] == market_name)
+        .collect();
+    ensure(
+        matches.len() <= 1,
+        "revision_conflict",
+        "存在重复市场登记。",
+    )?;
+    let market = if let Some(record) = matches.first() {
+        let candidate = PathBuf::from(text(record, "root")?);
+        ensure(
+            candidate.is_absolute()
+                && (candidate == base || candidate.parent() == Some(base.as_path()))
+                && record["marketplaceSource"]["sourceType"] == "local"
+                && record["marketplaceSource"]["source"] == record["root"],
+            "revision_conflict",
+            "已有市场来源不属于本机受管套件。",
+        )?;
+        candidate
+    } else {
+        base
+    };
+    std::fs::create_dir_all(&market)?;
+    let market_store = Store::open(&market)?;
+    let manifest_path = ".agents/plugins/marketplace.json";
+    if market_store.exists(manifest_path)? {
+        let previous = market_store.json(manifest_path)?;
+        let old_path = text(&previous["plugins"][0]["source"], "path")?;
+        let parts: Vec<_> = old_path.split('/').collect();
+        ensure(
+            (parts.len() == 4
+                && parts[0] == "."
+                && parts[1] == "versions"
+                && valid_version(parts[2])
+                && parts[3] == name)
+                || (old_path == format!("./{name}") && matches.len() == 1),
+            "revision_conflict",
+            "市场清单包含非受管路径。",
+        )?;
+        let expected = market_manifest(&market_name, name, old_path);
+        ensure(
+            previous == expected,
+            "revision_conflict",
+            "市场清单包含作者改动，请手动核对。",
+        )?;
+        let previous_package = market.join(old_path);
+        let previous_files = bytes(&previous_package)?;
+        let manifest: Value = serde_json::from_slice(
+            previous_files
+                .get("plugin.json")
+                .ok_or_else(|| Error::new("hetu.integrity_failure", "旧市场包缺少身份。"))?,
+        )?;
+        ensure(
+            valid_version(text(&manifest, "version")?),
+            "hetu.integrity_failure",
+            "旧市场包版本无效。",
+        )?;
+        let cache = codex_home()?
+            .join("plugins/cache")
+            .join(&market_name)
+            .join(name)
+            .join(text(&manifest, "version")?);
+        if cache.exists() {
+            ensure(
+                fingerprint(&bytes(&cache)?)? == fingerprint(&previous_files)?,
+                "revision_conflict",
+                "已有缓存包含不同内容，不覆盖作者修改。",
+            )?;
+        }
+    }
+    let relative = format!("./versions/{}/{name}", text(fixed, "version")?);
+    materialize(&market.join(&relative), &files)?;
+    market_store.install(
+        manifest_path,
+        &serde_json::to_vec(&market_manifest(&market_name, name, &relative))?,
+        false,
+    )?;
+    let market_path = market
+        .to_str()
+        .ok_or_else(|| Error::new("invalid_input", "安装目录不是有效UTF-8。"))?;
+    command(&["plugin", "marketplace", "add", market_path, "--json"])?;
+    command(&["plugin", "add", &format!("{name}@{market_name}"), "--json"])?;
+    installed_codex(fixed)
+}
+fn market_manifest(market: &str, name: &str, path: &str) -> Value {
+    json!({"name":market,"plugins":[{"name":name,"source":{"source":"local","path":path},
+        "policy":{"installation":"AVAILABLE","authentication":"ON_INSTALL"},"category":"Productivity"}]})
+}

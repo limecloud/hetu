@@ -149,6 +149,16 @@
             }
           ]
         },
+        "drama_project_ref": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "project_id": { "type": "string", "pattern": "^drama_[0-9a-f-]{36}$" },
+            "revision": { "type": "integer", "minimum": 1 },
+            "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+          },
+          "required": ["project_id", "revision", "sha256"]
+        },
         "novel_expected": {
           "anyOf": [
             {

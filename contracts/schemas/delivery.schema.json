@@ -266,6 +266,9 @@
             ]
           },
           "uniqueItems": true
+        },
+        "work_ref": {
+          "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
         }
       },
       "required": [
@@ -324,6 +327,9 @@
         "bundle_id": {
           "type": "string",
           "pattern": "^bundle_[0-9a-f-]{36}$"
+        },
+        "work_ref": {
+          "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
         }
       },
       "required": [
@@ -357,6 +363,9 @@
             "docx",
             "pdf"
           ]
+        },
+        "work_ref": {
+          "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
         }
       },
       "required": [
@@ -391,6 +400,9 @@
         },
         "inline_source": {
           "$ref": "#/$defs/inline_source"
+        },
+        "work_ref": {
+          "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
         }
       },
       "required": [
@@ -460,6 +472,50 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 128
+        },
+        "work_ref": {
+          "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+        },
+        "novel_expected": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "revision": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "revision",
+            "sha256"
+          ]
+        },
+        "drama_project_ref": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "project_id": {
+              "type": "string",
+              "pattern": "^drama_[0-9a-f-]{36}$"
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "project_id",
+            "revision",
+            "sha256"
+          ]
         }
       },
       "required": [
@@ -469,7 +525,15 @@
         "language_tag",
         "acknowledgement",
         "operation_key"
-      ]
+      ],
+      "dependentRequired": {
+        "novel_expected": [
+          "work_ref"
+        ],
+        "drama_project_ref": [
+          "work_ref"
+        ]
+      }
     },
     "inline_source": {
       "type": "object",
@@ -569,6 +633,9 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 128
+        },
+        "work_ref": {
+          "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
         }
       },
       "required": [

@@ -17,11 +17,11 @@ test('unsupported machines fail before acquiring a runtime', () => {
 
 test('release metadata must identify the exact official notarized version', () => {
   const manifest = {
-    version, platform: 'macos', architecture: 'arm64', team_id: '93RF7VQ26C',
+    kind: 'electron-release-package', version, platform: 'macos', architecture: 'arm64', team_id: '93RF7VQ26C',
     notarization_status: 'Accepted', files: { [`Hetu-${version}-macos-arm64.zip`]: 'a'.repeat(64) },
   };
   assert.equal(releaseDigest(manifest), 'a'.repeat(64));
-  for (const change of [{ version: '0.0.0' }, { platform: 'linux' }, { architecture: 'x64' },
+  for (const change of [{ kind: 'electron-development-package' }, { version: '0.0.0' }, { platform: 'linux' }, { architecture: 'x64' },
     { team_id: 'ABCDEFGHIJ' }, { notarization_status: 'In Progress' }, { files: {} }]) {
     assert.throws(() => releaseDigest({ ...manifest, ...change }), /不匹配/);
   }
@@ -48,7 +48,7 @@ const runtimeURL = new URL('../src/runtime.mjs', import.meta.url).href;
 test('private installation verifies once, rejects incomplete receipts and never trusts a failed verification', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'hetu-npm-cache-'));
   try {
-    const helpers = join(directory, 'Hetu.app/Contents/Helpers');
+    const helpers = join(directory, 'Hetu.app/Contents/Resources/bin');
     await mkdir(helpers, { recursive: true });
     for (const name of ['hetu', 'hetu-mcp']) await writeFile(join(helpers, name), 'fixture');
     await assert.rejects(cachedRuntime(directory, () => { throw new Error('signature rejected'); }), /signature rejected/);

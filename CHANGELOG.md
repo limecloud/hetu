@@ -1,5 +1,16 @@
 # 版本记录
 
+## v0.8.0 — 2026-11-16
+
+- 桌面工作台采用 Electron、TypeScript 插件宿主与 Rust Core，保留创作库、独立小说／剧本／视频工作面、阅读编辑、审核与作者决定。
+- 增加独立 Rust CLI、App Server、插件 CLI 与插件 SDK，覆盖受限数据访问、无数据计算、显式 Schema 迁移和可重建标题索引。
+- 完善固定来源关联、作品范围资料、媒体预览、导入交付、本机设置与精确文稿版本，保留机器入口、权限核验和原键恢复。
+- 发布版本同步至 npm／Cargo workspace 及锁文件，GitHub Actions 改为 Electron macOS arm64 DMG／ZIP 发布，撤下 SwiftUI 原生包发布，保留对照测试。
+- Electron 发行装配独立 Node 25、CLI／MCP、方法资源与许可，执行 Developer ID 签名、App／DMG 公证、Gatekeeper、最终摘要和随包专项。
+- npm 启动器匹配 Electron 正式应用身份与 `Contents/Resources/bin/`，拒绝开发包和版本漂移。
+
+Windows 文件系统适配、干净系统安装与完整视频制作等验收独立跟进，范围见 `docs/19-测试策略与验收矩阵.md`、`docs/20-实施路线与里程碑.md` 和 `docs/38-创作工作台重构执行计划.md`。
+
 ## v0.7.0 — 2026-11-15
 
 - 创作库按小说、剧本和视频分别登记、筛选与打开；新增固定作品引用、关联和视频项目／分集基础合同，保留已有作品身份与目录。

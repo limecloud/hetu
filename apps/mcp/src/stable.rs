@@ -82,7 +82,9 @@ impl ServerHandler for StableServer {
         Ok(ListToolsResult::with_all_items(
             self.tools
                 .iter()
-                .filter(|(tool, _)| tool.name != model_confirmation::TOOL || model_confirmation::available(&context))
+                .filter(|(tool, _)| {
+                    tool.name != model_confirmation::TOOL || model_confirmation::available(&context)
+                })
                 .map(|(tool, _)| {
                     if ui::supported(&context) {
                         ui::tool(tool.clone())
@@ -116,7 +118,13 @@ impl ServerHandler for StableServer {
             )
         })?;
         if request.name == model_confirmation::TOOL {
-            return model_confirmation::request(self.hub.clone(), request.arguments.unwrap_or_default(), context, permit).await;
+            return model_confirmation::request(
+                self.hub.clone(),
+                request.arguments.unwrap_or_default(),
+                context,
+                permit,
+            )
+            .await;
         }
         let hub = self.hub.clone();
         let input = json!({"action":action,"contract_revision":"1","input":request.arguments.unwrap_or_default()});

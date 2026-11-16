@@ -1,0 +1,258 @@
+{
+  "schema_version": 1,
+  "kind": "electron-plugin-schema-migration",
+  "recorded_at": "2026-11-16T02:32:01.754895+00:00",
+  "scope": "single_object_explicit_schema_migration",
+  "overall_reconstruction_complete": false,
+  "source": {
+    "files": {
+      "core/src/application/extensions.rs": "0f8f899717ba437112a49520af71878967eb2d9069de3f9a5df3e074718352af",
+      "core/src/application/extensions/migrations.rs": "07cc1053cc4dcdec9c48c1cecb2e57acc7ad268ba0dff5fb7fc317ed200eef51",
+      "core/tests/extension_migrations.rs": "06032734aefa6173aaac6433c0eacf73bc4bb6582fb10e6ecd5cc3799af27b98",
+      "contracts/extensions/actions.json": "1fb05bf886ccd7c2e31a633f5869203b3339a51107e9fcdfe697d46e1a20e265",
+      "packages/plugin-sdk/src/index.ts": "f209c546415d235fac89f7efbc6d7aa0df61c6899e7d3967bb1770a5be375f2c",
+      "packages/plugin-host/src/backend.ts": "a1181c75a7468d56164c8996e71a344ebd3e1b606edc901174e7fea04b57b154",
+      "packages/plugin-host/tests/migrations.test.ts": "aa8a24dee4bf0f48f4a1edc6172ab545b95e636868c7965016c2afd938a85436",
+      "apps/desktop/src/main/plugin-migrations.ts": "cd8dcb39e03b3151d7b6b11004946f477a998adcb72b2cdf9da92abd5958dcd1",
+      "apps/desktop/src/main/main.ts": "273b3827877d4cd7da69912caeec982609cf96c8cd2397e582c40be96efd1f84",
+      "apps/desktop/src/main/shell-preload.ts": "808d097a50af8dcf530e9abb1edcd889d650251b0638f3892b17ab19adf64d74",
+      "apps/desktop/src/renderer/plugin-migrations.tsx": "2b1aab545a733a4a5df8cac1ef0f7f6e14b69d4ff31064770b35a23d1017cc09",
+      "apps/desktop/src/renderer/index.tsx": "af122b15d05fec72f1e1a7b2c3a58d0e2472909529193be5e03d30e56e9a8b46",
+      "apps/desktop/src/renderer/bridge.ts": "68e5900370ff37aa066e07ec857106d2b103f40e7503aedbb9c6c94235a08301",
+      "apps/desktop/tests/plugin-migrations.spec.ts": "de0e2381d6fcd28d68a9db436aa23ef59df30e1a2a030f1da9681149f6e5d149",
+      "apps/desktop/tests/packaged.spec.ts": "5f019c075787a3cad5c91419b8e40b8856253714e9894b9a39387859712bdf5d",
+      "apps/desktop/tests/native-workbench.spec.ts": "0749ca0918f4c9927e0d3acfcb6e4e26f572c2d952b60d978797b9804987a7ed"
+    },
+    "description": "Current source hashes at recording; packaged source identity is recorded separately in package.manifest."
+  },
+  "package": {
+    "manifest": "output/electron-packages/hetu-dev-glXt87/manifest.json",
+    "source_sha256": "23df735cbe38c4061e318039177a788dd107bb6407a63dc488f3071c51900114",
+    "source_files": 2484,
+    "artifact_files": 2569,
+    "matches_current_source": false,
+    "signing": "ad-hoc-development",
+    "production_verified": false,
+    "artifact_integrity": {
+      "status": "passed",
+      "files": 2569,
+      "signature_exit_code": 0,
+      "log": "output/plugin-doc-qa/transfer/migrations-package-integrity.log"
+    },
+    "current_source_differences": [
+      "apps/desktop/src/renderer/agent-connection.tsx",
+      "apps/desktop/src/renderer/artwork-detail.tsx",
+      "apps/desktop/src/renderer/artwork-model.ts",
+      "apps/desktop/src/renderer/artwork.css",
+      "apps/desktop/src/renderer/artwork.tsx",
+      "apps/desktop/src/renderer/contributions.tsx",
+      "apps/desktop/src/renderer/index.tsx",
+      "apps/desktop/src/renderer/management.tsx",
+      "apps/desktop/src/renderer/media.tsx",
+      "apps/desktop/src/renderer/resources.tsx",
+      "apps/desktop/src/renderer/style.css",
+      "apps/desktop/src/renderer/task-review.tsx",
+      "apps/desktop/src/renderer/versions.tsx",
+      "apps/desktop/src/renderer/work-links.tsx",
+      "apps/desktop/src/renderer/work-profile.tsx"
+    ],
+    "migration_implementation_matches_package": true
+  },
+  "checks": {
+    "core": {
+      "status": "passed",
+      "passed": 7,
+      "log": "output/plugin-doc-qa/transfer/migrations-core-rechecked.log"
+    },
+    "plugin_host": {
+      "status": "passed",
+      "passed": 11,
+      "skipped": 0,
+      "log": "output/plugin-doc-qa/transfer/migrations-node-final.log"
+    },
+    "electron_scoped_development": {
+      "status": "passed",
+      "passed": 3,
+      "log": "output/plugin-doc-qa/transfer/migrations-electron.log",
+      "covers": [
+        "no_data_plugin",
+        "long_chinese_text_save",
+        "migration_cli_author_review_headless_mcp"
+      ]
+    },
+    "electron_full_regression": {
+      "status": "passed_in_two_batches_before_final_narrow_changes",
+      "total_cases": 32,
+      "passed": 32,
+      "skipped": 0,
+      "batches": [
+        {
+          "passed": 13,
+          "failed": 1,
+          "not_run": 18,
+          "log": "output/plugin-doc-qa/transfer/migrations-full-desktop.log"
+        },
+        {
+          "passed": 19,
+          "failed": 0,
+          "log": "output/plugin-doc-qa/transfer/migrations-remaining-desktop.log"
+        }
+      ],
+      "first_failure": {
+        "case": "new-adoption.spec.ts",
+        "reason": "asserted former reader container while current UI displays manuscript editor",
+        "fix": "assert exact expected content in visible manuscript editor",
+        "retry_passed": true
+      },
+      "final_delta": "Final migration implementation passed real packaged CLI/author review/closed-window MCP/recovery/history test; packaged host journey and workbench each passed separately. These results do not assert all latest parallel UI changes passed."
+    },
+    "typescript": {
+      "status": "passed",
+      "log": "output/plugin-doc-qa/transfer/migrations-typecheck-rechecked.log"
+    },
+    "documentation": {
+      "status": "passed",
+      "documents": 77,
+      "mermaid": 84,
+      "new_diagrams": 0,
+      "log": "output/plugin-doc-qa/transfer/migrations-docs-rechecked.log"
+    },
+    "diff_check": {
+      "status": "passed",
+      "log": "output/plugin-doc-qa/transfer/migrations-diff-rechecked.log"
+    },
+    "electron_final_package": {
+      "status": "passed_scoped_on_fixed_package",
+      "passed": 3,
+      "skipped": 0,
+      "logs": [
+        "output/plugin-doc-qa/transfer/migrations-packaged-exact.log",
+        "output/plugin-doc-qa/transfer/migrations-bundle-recheck.log",
+        "output/plugin-doc-qa/transfer/migrations-workbench-recheck.log"
+      ],
+      "covers": [
+        "migration_cli_author_review_headless_mcp_and_exact_handoff",
+        "bundled_rust_node_cli_mcp_plugin_lifecycle_and_reopen",
+        "manuscript_edit_review_annotations_reading_position_and_narrow_window"
+      ],
+      "clipboard_boundary": "Integration tests capture the actual main-process clipboard adapter write to isolate concurrent desktop sessions; OS clipboard sharing is not part of this slice."
+    },
+    "latest_source_package": {
+      "status": "rejected_source_changed_during_signing",
+      "log": "output/plugin-doc-qa/transfer/migrations-current-package.log",
+      "reason": "Parallel UI changes continued during assembly; the source consistency gate rejected the result. No mixed-source package is accepted as evidence."
+    }
+  },
+  "contract": {
+    "actions": [
+      "hetu.extensions.migrations.prepare",
+      "hetu.extensions.migrations.list",
+      "hetu.extensions.migrations.get",
+      "hetu.extensions.migrations.execute"
+    ],
+    "conversion_owner": "plugin JavaScript/TypeScript",
+    "execution_owner": "Rust Core",
+    "author_decision": "private extensions/host approve_migration",
+    "author_decision_exposed_to_plugins": false,
+    "approval_does_not_execute": true,
+    "before_record_limit_bytes": 262144,
+    "after_content_limit_bytes": 262144,
+    "scope_binding": [
+      "WorkRef",
+      "plugin_id",
+      "package_sha256",
+      "target_schema_sha256",
+      "before_revision",
+      "before_sha256",
+      "plan_sha256",
+      "grant_id",
+      "operation_key"
+    ],
+    "old_revisions_and_source_refs_preserved": true,
+    "retry_does_not_add_revision": true,
+    "prepare_requires_read_and_write": true,
+    "exact_ai_handoff": true,
+    "recovery_action": "hetu.extensions.operations.get",
+    "migration_get_returns_plan_once": true
+  },
+  "validation_boundaries": [
+    "isolated synthetic works only",
+    "no author manuscript adoption or finalization",
+    "no external model calls or paid generation",
+    "no deployment or installed native application replacement",
+    "Windows and clean system not run",
+    "bulk migration, index rebuilding and distribution ecosystem remain outside this slice",
+    "Latest shared UI differs from fixed glXt87 package; no latest-source full-regression or package-completion claim."
+  ],
+  "resolved_failures": [
+    {
+      "stage": "initial_core_test",
+      "reason": "used operation input_digest with sha256 prefix for public plan_sha256",
+      "resolution": "canonical full-plan raw SHA-256 including operation key; current core and cross-entrypoint tests passed"
+    },
+    {
+      "stage": "final_package_attempt",
+      "reason": "source changed during build; package gate refused mixed artifacts",
+      "log": "output/plugin-doc-qa/transfer/migrations-package-final.log",
+      "resolution": "Fixed-source glXt87 package assembled; migration, bundled host journey and workbench passed independently. Later parallel UI changes are outside this snapshot."
+    },
+    {
+      "stage": "stable_package_attempt",
+      "reason": "parallel settings/UI sources changed during assembly; fixed-source gate rejected build",
+      "log": "output/plugin-doc-qa/transfer/migrations-package-stable.log",
+      "resolution": "Fixed-source glXt87 package assembled and scoped checks passed; latest shared UI assembly is tracked separately."
+    },
+    {
+      "stage": "parallel_ui_typecheck",
+      "reason": "CSS module declaration missing and artwork-detail module not yet written by parallel UI process",
+      "logs": [
+        "output/plugin-doc-qa/transfer/migrations-package-reassembled.log",
+        "output/plugin-doc-qa/transfer/migrations-package-ready.log"
+      ],
+      "resolution": "shared CSS declaration and artwork modules completed; final package assembled successfully"
+    }
+  ],
+  "prior_regression_notes": [
+    {
+      "case": "computation fourth character count",
+      "status": "scoped_recheck_passed",
+      "root_cause": "not_reproduced; preserve prior failure log; no expected-value change"
+    },
+    {
+      "case": "long-text save",
+      "status": "scoped_recheck_passed",
+      "resolution": "wait for actual document content before editing; existing correction retained"
+    }
+  ],
+  "verification_attempts": [
+    {
+      "log": "output/plugin-doc-qa/transfer/migrations-final-package.log",
+      "failed": 1,
+      "not_run": 6,
+      "reason": "Artwork test targeted prior combobox/inline-detail UI while parallel work introduced tabs and a dialog.",
+      "current_ui_result": "not_claimed"
+    },
+    {
+      "log": "output/plugin-doc-qa/transfer/migrations-final-six.log",
+      "failed": 1,
+      "not_run": 5,
+      "reason": "Editor assertion expired while work selection was still pending; same real workbench journey passed after waiting for actual editor availability.",
+      "retry_log": "output/plugin-doc-qa/transfer/migrations-workbench-recheck.log"
+    },
+    {
+      "log": "output/plugin-doc-qa/transfer/migrations-final-five.log",
+      "failed": 3,
+      "passed": 2,
+      "reasons": [
+        "Per-artifact Playwright assertions consumed most of the full bundle test budget; every artifact is now checked before one aggregated assertion.",
+        "Migration handoff was read before async copy completed and overlapped another session's system clipboard.",
+        "Settings status locator became ambiguous after field outputs were added; latest settings UI belongs to parallel work."
+      ],
+      "rechecks": [
+        "output/plugin-doc-qa/transfer/migrations-packaged-exact.log",
+        "output/plugin-doc-qa/transfer/migrations-bundle-recheck.log"
+      ],
+      "latest_settings_and_artwork": "not_claimed"
+    }
+  ]
+}

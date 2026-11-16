@@ -1,0 +1,275 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-11-15T16:12:51.717752+00:00",
+  "version": "0.7.0",
+  "scope": "同根作品资料关联的固定历史、显式推进、解除与恢复；关联列表和详情分层；本地同版装配安装",
+  "status": "machine_passed_gui_partial_installed",
+  "all_refactoring_complete": false,
+  "source": {
+    "base_commit": "900f8b0645479ba65f437d62fadbb7c7f09e7b38",
+    "dirty_worktree": true,
+    "runtime_manifest": "output/work-link-lifecycle-20261115/source-manifest-final.json",
+    "runtime_manifest_sha256": "9a6dc0b097245763a36ddaa64c1f97ef0e384df68102d4d7a75fceee43e928b8",
+    "delta_after_machine_tests": "最终两次Swift界面修改仅约束菜单宽度、统一关联属性左对齐；随后重新从正式入口装配及安装，Core、Native业务和协议未改。"
+  },
+  "contracts": {
+    "link_lifecycle": "固定两端作品身份；更新依据、解除和恢复追加修订，旧关联、任务和交付不被改写。",
+    "authorization": "关系管理属于使用依据的作品；来源授权不能改下游。另一端资料须另行获权，关联不扩权。",
+    "failure": "来源读取失败局限在该关系；是否有新版保持未知，损坏的旧资料不替换成当前资料。",
+    "fixed_scope": "本轮只固定作品资料修订；不等于章节、设定、媒体或整书快照。",
+    "concurrency": "关系CAS、两端身份、摘要、当前目标版本与目标关系集合均校验；获批后并发新增重复关系会拒绝旧恢复方案。"
+  },
+  "navigation": {
+    "levels": [
+      "创作库及类型",
+      "当前作品和功能组",
+      "内容目录或关联列表",
+      "阅读或固定版本详情",
+      "按需历史和属性"
+    ],
+    "page_actions": "列表不逐行堆管理按钮；更新、解除与恢复由准确AI交接继续。菜单固定尺寸，属性展开后与内容左对齐。"
+  },
+  "checks": {
+    "core": {
+      "status": "passed",
+      "groups": 6,
+      "unique_passed": 42,
+      "failed": 0,
+      "log": "core-tests-final.log",
+      "strengthened_link_tests": {
+        "status": "passed",
+        "log": "core-links-final.log",
+        "sha256": "9b856cdf1d22786181261b1d225980c66234bde983c33f89584b552f16e1d4e1"
+      }
+    },
+    "mcp_stdio": {
+      "status": "passed",
+      "log": "mcp-tests.log",
+      "sha256": "116750dfdc3a76583918189c06142be9dca2c37465597de748d432f0603a9aff",
+      "passed": 24
+    },
+    "native_all": {
+      "status": "passed",
+      "log": "native-all.log",
+      "sha256": "fb510b857f79f7454a3768b90fc13e72d60c3598b6e4b31571efeb436ce0b59d",
+      "boundary": "同版测试Core全量；正式构建配置另外重验关联专项和真实作品。"
+    },
+    "native_official_core": {
+      "status": "passed",
+      "log": "native-related-official-core.log",
+      "sha256": "37ad19ad34585cdd6d28c9c729254c90e12042f26a46db2687c097478a6ac502"
+    },
+    "original_work": {
+      "status": "passed",
+      "log": "imported-official-core.log",
+      "sha256": "67b75105d0497b324248707c448f68bb3ad880d0ae66399966787b4c21da181a",
+      "read_only": true,
+      "documents": 511,
+      "groups": 5,
+      "fixed_episodes": 6,
+      "boundary": "首中尾正文及固定参考稿回读；不是整书改编完成。"
+    },
+    "current_codex_cli": {
+      "status": "passed",
+      "steps": 29,
+      "isolated_author_fixture_steps": 7,
+      "persistent_records": "/Users/coso/Documents/河图洛书/验收记录/关联生命周期-20261115",
+      "log": "public-cli-resumed.log",
+      "computer_use_business_steps": 0,
+      "author_mode_business_steps": 0,
+      "model_generation_requests": 0,
+      "boundary": "本对话实际运行公开CLI；作者决定由限定动作的隔离QA夹具证明合同，不证明真实宿主Apps或人类取舍。"
+    },
+    "built_runtime": {
+      "status": "passed",
+      "app": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/native/Hetu.app",
+      "cli_requests": 5,
+      "mcp_requests": 5,
+      "checks": [
+        {
+          "name": "current",
+          "status": "succeeded",
+          "same_cli_mcp_result": true
+        },
+        {
+          "name": "fixed-original",
+          "status": "succeeded",
+          "same_cli_mcp_result": true
+        },
+        {
+          "name": "fixed-archived",
+          "status": "succeeded",
+          "same_cli_mcp_result": true
+        },
+        {
+          "name": "list",
+          "status": "succeeded",
+          "same_cli_mcp_result": true
+        },
+        {
+          "name": "revoked",
+          "status": "blocked",
+          "same_cli_mcp_result": true
+        }
+      ],
+      "protocol": "2025-06-18",
+      "tool_count": 106,
+      "normal_eof": true,
+      "stderr_empty": true,
+      "sha256": {
+        "Contents/Helpers/hetu": "ff30b2d82218377dde626c9481c7a38afdd1e63fa09fdf3919f50be40ca3ec9e",
+        "Contents/Helpers/hetu-mcp": "534cf14fb7a20612f1830a46969196aa87774d02e7462d636cca4d907e2f4def",
+        "Contents/Frameworks/libhetu_core.dylib": "f94641100e5441fc74f05fecdbf00caaed9a2afca0644796eec3cfbbb5f7b2f3"
+      },
+      "boundary": "真实新启动stdio进程；不是当前常驻宿主或Apps重载验收。"
+    },
+    "installed_runtime": {
+      "status": "passed",
+      "app": "/Applications/Hetu.app",
+      "cli_requests": 5,
+      "mcp_requests": 5,
+      "checks": [
+        {
+          "name": "current",
+          "status": "succeeded",
+          "same_cli_mcp_result": true
+        },
+        {
+          "name": "fixed-original",
+          "status": "succeeded",
+          "same_cli_mcp_result": true
+        },
+        {
+          "name": "fixed-archived",
+          "status": "succeeded",
+          "same_cli_mcp_result": true
+        },
+        {
+          "name": "list",
+          "status": "succeeded",
+          "same_cli_mcp_result": true
+        },
+        {
+          "name": "revoked",
+          "status": "blocked",
+          "same_cli_mcp_result": true
+        }
+      ],
+      "protocol": "2025-06-18",
+      "tool_count": 106,
+      "normal_eof": true,
+      "stderr_empty": true,
+      "sha256": {
+        "Contents/Helpers/hetu": "ff30b2d82218377dde626c9481c7a38afdd1e63fa09fdf3919f50be40ca3ec9e",
+        "Contents/Helpers/hetu-mcp": "534cf14fb7a20612f1830a46969196aa87774d02e7462d636cca4d907e2f4def",
+        "Contents/Frameworks/libhetu_core.dylib": "f94641100e5441fc74f05fecdbf00caaed9a2afca0644796eec3cfbbb5f7b2f3"
+      },
+      "boundary": "真实新启动stdio进程；不是当前常驻宿主或Apps重载验收。"
+    },
+    "skills": {
+      "status": "generated_and_verified",
+      "suites": 45,
+      "files": 2205,
+      "source": [
+        "tools/hetu-skills/base/skills/hetu-manage/SKILL.md",
+        "tools/hetu-skills/base/references/workflows/management.md"
+      ],
+      "current_host_reload": "not_run"
+    },
+    "localization": {
+      "status": "passed",
+      "bilingual_keys": 1620,
+      "log": "localization-check.log"
+    },
+    "docs": {
+      "status": "passed",
+      "log": "docs-final-uv-check.log"
+    },
+    "build": {
+      "status": "passed",
+      "log": "native-package-final.log",
+      "sha256": "9e63a4063048f6ca91ce6827640bc10f37648234c7a78105bc848e33ac272407",
+      "command": "python3 tools/build-native.py --mac-only --swift-scratch-path output/work-link-lifecycle-20261115/swift --rust-target-dir output/work-link-lifecycle-20261115/rust",
+      "same_source_core_cli_mcp_resources": true
+    },
+    "installation": {
+      "installed_app": "/Applications/Hetu.app",
+      "file_count": 2239,
+      "all_file_hashes_match": true,
+      "retained_backup": false,
+      "normal_quit": true,
+      "signature_verification": "passed",
+      "sha256": {
+        "Contents/MacOS/HetuMac": "cec35664a7372c70bba8d75eb7cc5f32ab1a57eb9185b914a41d618771bb7add",
+        "Contents/Helpers/hetu": "ff30b2d82218377dde626c9481c7a38afdd1e63fa09fdf3919f50be40ca3ec9e",
+        "Contents/Helpers/hetu-mcp": "534cf14fb7a20612f1830a46969196aa87774d02e7462d636cca4d907e2f4def",
+        "Contents/Frameworks/libhetu_core.dylib": "f94641100e5441fc74f05fecdbf00caaed9a2afca0644796eec3cfbbb5f7b2f3"
+      },
+      "final_file_hashes_match": true
+    },
+    "gui": {
+      "status": "partial",
+      "method": "macOS辅助功能及指定窗口真实截图，仅验收渲染和交互。",
+      "passed": [
+        "中文列表进入固定版本详情",
+        "英文1120pt详情与960pt窄窗口",
+        "关联第4版经历史菜单回读第3及第1版",
+        "已解除历史保留状态，旧书名及简介固定",
+        "刷新保留正在阅读的旧关系",
+        "返回当前关联及展开属性",
+        "最终中文960pt深色属性沿正文左边界排列",
+        "最终中文详情返回列表并保留条目",
+        "安装后真实创作库显示三类分组和既有作品"
+      ],
+      "screenshots": {
+        "ui-zh-list-fixed.png": "77f70da4f9a040d15fcd3fe9497bbc1f3f9185f43f7f648b07af3623d9e7ee9a",
+        "ui-zh-detail.png": "20d5ff0baf8e5dba64fda8360d0bb971e52e1ac0b05aad5baa7558816305291e",
+        "ui-en-history3.png": "cea169e1ee4a8c24767e9fea0de77eb31ad117554071d6d0d8cf64d663515f46",
+        "ui-en-history1-narrow.png": "8f502497c3efaeb1f269ed970636d778ad08fc7873349c43c5091b9f973f3402",
+        "ui-zh-dark-properties-aligned.png": "e3fafaae7dfc6b3b6595f82aef57c433897de9dc1e9f5304cc3d3a08814a7b25",
+        "ui-zh-dark-returned-list.png": "6bd203c4dc43d3e1b0ec3825f6ed0d1594499ee19b2116edfff406c48da27c49",
+        "installed-library-final.png": "c99ede88a8168bcca22939be066d27aa73f9f37eb5e3bbaeba8eabc6d534d6a8"
+      },
+      "boundary": "独立QA承载实际RelatedWorksView及CLI同一数据；onOpen回调为空，不证明完整App关联跳转及阅读位置恢复。中英文、浅暗和宽窄为列明样本，不是完整矩阵。"
+    }
+  },
+  "failures_and_recovery": [
+    {
+      "log": "public-cli.log",
+      "reason": "第25步验收脚本错误比较Hub包装字段",
+      "recovery": "修复比较，沿已保存真实回执接续后4步，不重建作品或重做作者决定。"
+    },
+    {
+      "log": "native-related-works.log",
+      "reason": "初次专项误加载旧共享Core",
+      "recovery": "显式同版Core复验通过；正式App从统一入口装配。"
+    },
+    {
+      "log": "qa-runtime-en.log",
+      "reason": "构建期间依赖目录动态库被替换，QA重启加载失败",
+      "recovery": "QA固定复制同版动态库并通过LaunchServices启动；正式制品另行统一构建。"
+    },
+    {
+      "log": "ui-zh-history3.ax.txt",
+      "reason": "辅助功能阶段性返回-25204",
+      "recovery": "保留失败记录；固定QA制品后实际完成英文历史切换及最终中文返回。"
+    },
+    {
+      "log": "docs-final-check.log",
+      "reason": "系统Python缺少markdown_it",
+      "recovery": "使用脚本声明依赖的uv环境校验通过。"
+    }
+  ],
+  "remaining": [
+    "跨根获权正文和媒体来源快照",
+    "两端精确授权下的新建及推进依据",
+    "完整App关联往返与阅读播放位置保持",
+    "其余资料对象窄授权",
+    "动态分镜和白模工程回传",
+    "视频音画字幕、局部返工及成片工程交付",
+    "整书改编及全剧覆盖",
+    "当前宿主扩展重载和真实Apps",
+    "完整显示矩阵"
+  ],
+  "delivery_boundary": "本机开发包覆盖安装，不包含提交、推送、公共发布、生产部署或付费生成。"
+}

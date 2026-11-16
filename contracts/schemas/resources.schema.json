@@ -7,7 +7,10 @@
       "additionalProperties": false,
       "properties": {
         "schema_version": {
-          "const": "1.0.0"
+          "enum": [
+            "1.0.0",
+            "2.0.0"
+          ]
         },
         "workspace_id": {
           "type": "string",
@@ -102,6 +105,13 @@
               "blueprint_sha256": {
                 "type": "string",
                 "pattern": "^[0-9a-f]{64}$"
+              },
+              "work_ref": {
+                "$ref": "#/$defs/work_ref"
+              },
+              "blueprint_id": {
+                "type": "string",
+                "pattern": "^blueprint_[0-9a-f-]{36}$"
               }
             },
             "required": [
@@ -150,6 +160,9 @@
         "actor_ref": {
           "type": "string",
           "pattern": "^actor_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "work_ref": {
+          "$ref": "#/$defs/work_ref"
         }
       },
       "required": [
@@ -170,6 +183,39 @@
         "created_at",
         "updated_at",
         "actor_ref"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "schema_version": {
+                "const": "2.0.0"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "work_ref"
+            ],
+            "properties": {
+              "entity_refs": {
+                "items": {
+                  "required": [
+                    "work_ref",
+                    "blueprint_id"
+                  ]
+                }
+              }
+            }
+          },
+          "else": {
+            "not": {
+              "required": [
+                "work_ref"
+              ]
+            }
+          }
+        }
       ]
     },
     "usage_record": {
@@ -394,6 +440,13 @@
               "blueprint_sha256": {
                 "type": "string",
                 "pattern": "^[0-9a-f]{64}$"
+              },
+              "work_ref": {
+                "$ref": "#/$defs/work_ref"
+              },
+              "blueprint_id": {
+                "type": "string",
+                "pattern": "^blueprint_[0-9a-f-]{36}$"
               }
             },
             "required": [
@@ -415,6 +468,9 @@
           "type": "string",
           "maxLength": 128,
           "minLength": 1
+        },
+        "work_ref": {
+          "$ref": "#/$defs/work_ref"
         }
       },
       "required": [
@@ -524,6 +580,13 @@
               "blueprint_sha256": {
                 "type": "string",
                 "pattern": "^[0-9a-f]{64}$"
+              },
+              "work_ref": {
+                "$ref": "#/$defs/work_ref"
+              },
+              "blueprint_id": {
+                "type": "string",
+                "pattern": "^blueprint_[0-9a-f-]{36}$"
               }
             },
             "required": [
@@ -545,6 +608,9 @@
           "type": "string",
           "maxLength": 128,
           "minLength": 1
+        },
+        "work_ref": {
+          "$ref": "#/$defs/work_ref"
         }
       },
       "required": [
@@ -624,6 +690,9 @@
           "type": "string",
           "maxLength": 100,
           "minLength": 1
+        },
+        "work_ref": {
+          "$ref": "#/$defs/work_ref"
         }
       },
       "required": []
@@ -793,6 +862,33 @@
       },
       "required": [
         "resource_id"
+      ]
+    },
+    "work_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "workspace_id": {
+          "type": "string",
+          "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "kind": {
+          "enum": [
+            "novel",
+            "drama",
+            "video"
+          ]
+        },
+        "object_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        }
+      },
+      "required": [
+        "workspace_id",
+        "kind",
+        "object_id"
       ]
     }
   }

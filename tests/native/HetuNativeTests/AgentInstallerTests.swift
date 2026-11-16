@@ -120,6 +120,10 @@ enum AgentInstallerTests {
         var object = try JSONSerialization.jsonObject(with: Data(contentsOf: plugin)) as! [String: Any]
         object["version"] = version
         try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys]).write(to: plugin)
+        let overlay = package.appendingPathComponent(".codex-plugin/plugin.json")
+        var compatibility = try JSONSerialization.jsonObject(with: Data(contentsOf: overlay)) as! [String: Any]
+        compatibility["version"] = version
+        try JSONSerialization.data(withJSONObject: compatibility, options: [.sortedKeys]).write(to: overlay)
         let manifest: [String: Any] = ["name": "hetu-luoshu-" + suite.id, "plugins": [["name": suite.pluginName,
             "source": ["source": "local", "path": "./" + suite.pluginName],
             "policy": ["installation": "AVAILABLE", "authentication": "ON_INSTALL"], "category": "Productivity"]]]

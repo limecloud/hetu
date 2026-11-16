@@ -7,37 +7,40 @@ use serde_json::{Value, json};
 use std::collections::BTreeMap;
 use std::path::Path;
 use std::sync::OnceLock;
-mod creation;
-mod covers;
 mod cover_preparations;
-mod delivery;
+mod covers;
+mod creation;
 mod creative_tasks;
+mod delivery;
 mod document_lifecycle;
 mod drafts;
-mod dramas;
 mod drama_projects;
+mod dramas;
 mod git;
 mod media;
-mod novels;
-mod plots;
-mod reports;
-mod reviews;
-mod scripts;
-mod authoring;
-mod records;
-mod resources;
-mod model_tasks;
-mod properties;
-mod agent_operations;
+mod media_preview;
+pub use crate::infrastructure::media_reader::AssetMedia;
 mod agent_effects;
+mod agent_operations;
+mod authoring;
+pub mod extensions;
 mod handoffs;
 mod import_sources;
-mod works;
+mod model_tasks;
+mod novels;
+mod plots;
+mod properties;
+mod records;
+mod reports;
+mod resources;
+mod reviews;
+mod scripts;
+mod videos;
+mod work_activity;
+mod work_canons;
 mod work_links;
 mod work_scope;
-mod work_canons;
-mod work_activity;
-mod videos;
+mod works;
 
 type Changes = BTreeMap<String, Vec<u8>>;
 const PACKAGES: [&str; 5] = ["novel", "drama", "music-cue", "visual-prompt", "video"];
@@ -99,27 +102,36 @@ fn catalog() -> &'static Value {
                 .expect("embedded action catalog");
         for action in catalog["actions"].as_array_mut().unwrap() {
             if let Some(reference) = action["input_schema_ref"].as_str() {
-                if let Some(definition) = reference.strip_prefix("schemas/work.schema.json#/$defs/") {
+                if let Some(definition) = reference.strip_prefix("schemas/work.schema.json#/$defs/")
+                {
                     action["input_schema"] = works::definition(definition);
                     action.as_object_mut().unwrap().remove("input_schema_ref");
                     continue;
                 }
-                if let Some(definition) = reference.strip_prefix("schemas/model-service.schema.json#/$defs/") {
+                if let Some(definition) =
+                    reference.strip_prefix("schemas/model-service.schema.json#/$defs/")
+                {
                     action["input_schema"] = model_tasks::definition(definition);
                     action.as_object_mut().unwrap().remove("input_schema_ref");
                     continue;
                 }
-                if let Some(definition) = reference.strip_prefix("schemas/resources.schema.json#/$defs/") {
+                if let Some(definition) =
+                    reference.strip_prefix("schemas/resources.schema.json#/$defs/")
+                {
                     action["input_schema"] = resources::definition(definition);
                     action.as_object_mut().unwrap().remove("input_schema_ref");
                     continue;
                 }
-                if let Some(definition) = reference.strip_prefix("schemas/delivery.schema.json#/$defs/") {
+                if let Some(definition) =
+                    reference.strip_prefix("schemas/delivery.schema.json#/$defs/")
+                {
                     action["input_schema"] = delivery::definition(definition);
                     action.as_object_mut().unwrap().remove("input_schema_ref");
                     continue;
                 }
-                if let Some(definition) = reference.strip_prefix("schemas/book-cover.schema.json#/$defs/") {
+                if let Some(definition) =
+                    reference.strip_prefix("schemas/book-cover.schema.json#/$defs/")
+                {
                     action["input_schema"] = covers::definition(definition);
                     action.as_object_mut().unwrap().remove("input_schema_ref");
                     continue;
@@ -273,7 +285,8 @@ fn schema(value: &Value, schema: &Value) -> Result<()> {
     Ok(())
 }
 fn validate_action_input(action: &str, input: &Value) -> Result<()> {
-    static VALIDATORS: OnceLock<BTreeMap<String, OnceLock<jsonschema::Validator>>> = OnceLock::new();
+    static VALIDATORS: OnceLock<BTreeMap<String, OnceLock<jsonschema::Validator>>> =
+        OnceLock::new();
     let validators = VALIDATORS.get_or_init(|| {
         catalog()["actions"]
             .as_array()
@@ -319,8 +332,16 @@ impl Kernel {
     // 仅稳定入口可组装窄管理授权；公开 OpenConfig 不接受作者或权限提升字段。
     pub(crate) fn open_managed(config: Value, binding: Value) -> Result<Self> {
         let options: OpenConfig = serde_json::from_value(config)?;
-        ensure(options.mode == Mode::Agent && options.task_id.is_none(), "forbidden", "管理连接必须保持 Agent 身份。")?;
-        let path = options.creation_project_path.as_deref().or(options.workspace_path.as_deref()).unwrap_or("");
+        ensure(
+            options.mode == Mode::Agent && options.task_id.is_none(),
+            "forbidden",
+            "管理连接必须保持 Agent 身份。",
+        )?;
+        let path = options
+            .creation_project_path
+            .as_deref()
+            .or(options.workspace_path.as_deref())
+            .unwrap_or("");
         crate::collaboration::authoring::check_management(&binding, Path::new(path), None)?;
         Self::open_options(options, Some(binding))
     }
@@ -347,9 +368,25 @@ impl Kernel {
         let path = Path::new(workspace_path);
         let author = options.mode == Mode::Author;
         if let Some(create) = &options.create {
-            ensure(author || management_grant.is_some(), "forbidden", "Agent 不能创建或任意选择工作区。")?;
-            ensure(matches!(create.work_type.as_deref().unwrap_or("novel"), "novel" | "drama" | "video"), "invalid_input", "作品类型无效。")?;
-            ensure(create.work_type.as_deref().unwrap_or("novel") == "novel" || create.metadata.is_none(), "invalid_input", "剧本和视频不使用小说资料合同。")?;
+            ensure(
+                author || management_grant.is_some(),
+                "forbidden",
+                "Agent 不能创建或任意选择工作区。",
+            )?;
+            ensure(
+                matches!(
+                    create.work_type.as_deref().unwrap_or("novel"),
+                    "novel" | "drama" | "video"
+                ),
+                "invalid_input",
+                "作品类型无效。",
+            )?;
+            ensure(
+                create.work_type.as_deref().unwrap_or("novel") == "novel"
+                    || create.metadata.is_none(),
+                "invalid_input",
+                "剧本和视频不使用小说资料合同。",
+            )?;
             ensure(
                 !create.title.trim().is_empty() && create.title.chars().count() <= 200,
                 "invalid_input",
@@ -425,7 +462,9 @@ impl Kernel {
             let create = options.create.as_ref().unwrap();
             let work_type = create.work_type.as_deref().unwrap_or("novel");
             let mut config = json!({"schema_version":"1.0.0","workspace_id":id("workspace"),"title":create.title,"work_type":work_type,"locale":create.locale,"blueprint_path":"shared/blueprint.json","packages":PACKAGES});
-            if work_type == "novel" { config["novel_path"] = json!("packages/novel/novel.json"); }
+            if work_type == "novel" {
+                config["novel_path"] = json!("packages/novel/novel.json");
+            }
             for directory in ["shared", "exports", ".hetu/audit", ".hetu/cache"] {
                 store.directory(directory)?;
             }
@@ -462,13 +501,15 @@ impl Kernel {
             let op = Self::operation(&create.operation_key, &input_digest);
             receipt["operation"] = op.clone();
             let mut changes = Changes::new();
-            if work_type == "novel" { novels::stage_initial_novel(
+            if work_type == "novel" {
+                novels::stage_initial_novel(
                 &store,
                 &config["workspace_id"],
                 create.metadata.clone().unwrap_or_else(|| json!({"title":create.title,"author_name":"","synopsis":"","genre":"","language_tag":create.locale,"status":"planning"})),
                 Vec::new(),
                 &mut changes,
-            )?; }
+            )?;
+            }
             stage_blueprint_snapshot(&store, &blueprint, &mut changes)?;
             changes.insert(".heturc.json".into(), bytes(&config)?);
             changes.insert(".hetu/workspace-properties.json".into(), bytes(&json!({"schema_version":"1.0.0","workspace_id":config["workspace_id"],"created_at":created_at,"updated_at":created_at}))?);
@@ -501,7 +542,8 @@ impl Kernel {
             config["blueprint_path"] == "shared/blueprint.json"
                 && (config["novel_path"].is_null()
                     || config["novel_path"] == "packages/novel/novel.json")
-                && (config["packages"] == json!(PACKAGES) || config["packages"] == json!(LEGACY_PACKAGES)),
+                && (config["packages"] == json!(PACKAGES)
+                    || config["packages"] == json!(LEGACY_PACKAGES)),
             "hetu.integrity_failure",
             "内容包与设定集路径不符合工作区合同。",
         )?;
@@ -553,24 +595,68 @@ impl Kernel {
     pub fn bound_task(&self) -> Option<&str> {
         self.task_id.as_deref()
     }
-    pub(crate) fn is_author(&self) -> bool { self.author }
-    pub(crate) fn root_path(&self) -> &Path { &self.workspace_path }
+    pub(crate) fn is_author(&self) -> bool {
+        self.author
+    }
+    pub(crate) fn root_path(&self) -> &Path {
+        &self.workspace_path
+    }
     pub fn task_action_catalog() -> Value {
-        json!(catalog()["actions"].as_array().unwrap().iter().filter(|action| creative_tasks::TASK_ACTIONS.contains(&action["name"].as_str().unwrap_or("")) && action["author_only"] == false).cloned().collect::<Vec<_>>())
+        json!(
+            catalog()["actions"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .filter(|action| creative_tasks::TASK_ACTIONS
+                    .contains(&action["name"].as_str().unwrap_or(""))
+                    && action["author_only"] == false)
+                .cloned()
+                .collect::<Vec<_>>()
+        )
     }
     pub fn collaboration_action_catalog() -> Value {
-        json!(catalog()["actions"].as_array().unwrap().iter().filter(|action| action["scopes"].as_array().is_some_and(|scopes| scopes.iter().any(|scope| scope == "collaboration"))).cloned().collect::<Vec<_>>())
+        json!(
+            catalog()["actions"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .filter(|action| action["scopes"]
+                    .as_array()
+                    .is_some_and(|scopes| scopes.iter().any(|scope| scope == "collaboration")))
+                .cloned()
+                .collect::<Vec<_>>()
+        )
     }
     pub(crate) fn management_action_catalog() -> Value {
-        json!(catalog()["actions"].as_array().unwrap().iter().filter(|action| crate::collaboration::authoring::management_action(action["name"].as_str().unwrap_or(""))).cloned().map(|mut action| {
-            // 此目录描述精确授权下的 Agent 变体，不沿用作者入口的身份标记。
-            action["author_only"] = json!(false);
-            action
-        }).collect::<Vec<_>>())
+        json!(
+            catalog()["actions"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .filter(|action| crate::collaboration::authoring::management_action(
+                    action["name"].as_str().unwrap_or("")
+                ))
+                .cloned()
+                .map(|mut action| {
+                    // 此目录描述精确授权下的 Agent 变体，不沿用作者入口的身份标记。
+                    action["author_only"] = json!(false);
+                    action
+                })
+                .collect::<Vec<_>>()
+        )
     }
-    pub(crate) fn management_binding(&self) -> Option<&Value> { self.management_grant.as_ref() }
+    pub(crate) fn management_binding(&self) -> Option<&Value> {
+        self.management_grant.as_ref()
+    }
     fn management_allows(&self, action: &str) -> bool {
-        self.management_grant.as_ref().is_some_and(|binding| crate::collaboration::authoring::check_management(binding, &self.workspace_path, Some(action)).is_ok())
+        self.management_grant.as_ref().is_some_and(|binding| {
+            crate::collaboration::authoring::check_management(
+                binding,
+                &self.workspace_path,
+                Some(action),
+            )
+            .is_ok()
+        })
     }
     fn is_creation_project(&self) -> bool {
         self.config.get("project_id").is_some()
@@ -583,21 +669,29 @@ impl Kernel {
         }
     }
     fn action_available(&self, action: &Value) -> bool {
-        if action["name"] == "hetu.creative_tasks.submit_result" && self.task_id.is_some() && self.resource_task_access().is_ok() { return false; }
+        if action["name"] == "hetu.creative_tasks.submit_result"
+            && self.task_id.is_some()
+            && self.resource_task_access().is_ok()
+        {
+            return false;
+        }
         let name = action["name"].as_str().unwrap_or("");
         let in_scope = action["scopes"]
             .as_array()
             .map_or(!self.is_creation_project(), |scopes| {
                 scopes.iter().any(|s| s == self.scope_kind())
             });
-        if self.management_grant.is_some() { return in_scope && self.management_allows(name); }
+        if self.management_grant.is_some() {
+            return in_scope && self.management_allows(name);
+        }
         in_scope
             && if self.task_id.is_some() {
                 creative_tasks::TASK_ACTIONS.contains(&name)
                     && (!name.starts_with("hetu.resources.") || self.resource_task_access().is_ok())
             } else {
                 self.author
-                    || (name == "hetu.creative_tasks.preview_prompt" || !name.starts_with("hetu.creative_tasks."))
+                    || (name == "hetu.creative_tasks.preview_prompt"
+                        || !name.starts_with("hetu.creative_tasks."))
                         && !name.starts_with("hetu.interactions.")
                         && !name.starts_with("hetu.working_copies.")
                         && !name.starts_with("hetu.task_feedback.")
@@ -610,7 +704,11 @@ impl Kernel {
     fn operation_record_path(&self, action: &str, key: &str) -> String {
         if let Some(binding) = &self.management_grant {
             if binding["work_ref"].is_object() {
-                return operation_path(action, &format!("{}\0{key}", binding["grant_id"].as_str().unwrap_or("")), self.author);
+                return operation_path(
+                    action,
+                    &format!("{}\0{key}", binding["grant_id"].as_str().unwrap_or("")),
+                    self.author,
+                );
             }
         }
         match &self.task_id {
@@ -677,24 +775,47 @@ impl Kernel {
         validate_action_input(action, input)?;
         self.check_work_access(action, input)?;
         ensure(
-            !metadata["author_only"].as_bool().unwrap() || self.author || self.management_allows(action),
+            !metadata["author_only"].as_bool().unwrap()
+                || self.author
+                || self.management_allows(action),
             "forbidden",
             "此动作仅允许作者在可信本机入口操作。",
         )?;
         if self.management_grant.is_some() {
-            ensure(action != "hetu.documents.create" || input["content"] == "", "forbidden", "管理授权只能创建空章节，正文须经过参考稿与作者采纳。")?;
-            if matches!(action, "hetu.creative_tasks.preview_prompt" | "hetu.creative_tasks.prepare") {
-                let client = self.management_grant.as_ref().unwrap()["client_adapter"].as_str().unwrap_or("");
-                ensure(input["client_adapter"] == if client == "generic" { "other" } else { client }, "forbidden", "管理授权不能替其他 Agent 准备任务。")?;
+            ensure(
+                action != "hetu.documents.create" || input["content"] == "",
+                "forbidden",
+                "管理授权只能创建空章节，正文须经过参考稿与作者采纳。",
+            )?;
+            if matches!(
+                action,
+                "hetu.creative_tasks.preview_prompt" | "hetu.creative_tasks.prepare"
+            ) {
+                let client = self.management_grant.as_ref().unwrap()["client_adapter"]
+                    .as_str()
+                    .unwrap_or("");
+                ensure(
+                    input["client_adapter"] == if client == "generic" { "other" } else { client },
+                    "forbidden",
+                    "管理授权不能替其他 Agent 准备任务。",
+                )?;
             }
         }
         if action == "hetu.agent_operations.execute" {
-            if let Some(result) = self.execute_proposal_effect(input, metadata)? { return Ok(result); }
+            if let Some(result) = self.execute_proposal_effect(input, metadata)? {
+                return Ok(result);
+            }
         }
         if matches!(action, "hetu.bundles.export" | "hetu.documents.export") {
             return self.execute_delivery(action, input, metadata);
         }
-        if matches!(action, "hetu.models.list" | "hetu.model_tasks.submit" | "hetu.model_tasks.get" | "hetu.model_tasks.collect") {
+        if matches!(
+            action,
+            "hetu.models.list"
+                | "hetu.model_tasks.submit"
+                | "hetu.model_tasks.get"
+                | "hetu.model_tasks.collect"
+        ) {
             return self.execute_model_network(action, input);
         }
         let write = metadata["effect"] != "read"
@@ -715,6 +836,8 @@ impl Kernel {
             "工作区配置被外部修改，请重新打开并审阅。",
         )?;
         self.check_task_session()?;
+        // 获得作品锁后再次核对对象归属，不能沿用等待锁之前的读取结果。
+        self.check_work_access(action, input)?;
         let key = if write {
             text(input, "operation_key")?
         } else {
@@ -741,7 +864,12 @@ impl Kernel {
         if action == "hetu.git.snapshot" && input["phase"] == "execute" {
             return self.execute_git_snapshot(input, &op_path, &input_digest);
         }
-        if matches!(action, "hetu.creation_projects.create_novel" | "hetu.creation_projects.create_drama" | "hetu.creation_projects.create_video") {
+        if matches!(
+            action,
+            "hetu.creation_projects.create_novel"
+                | "hetu.creation_projects.create_drama"
+                | "hetu.creation_projects.create_video"
+        ) {
             return self.execute_create_work(action, input, &op_path, &input_digest);
         }
         let mut changes = Changes::new();
@@ -784,18 +912,23 @@ impl Kernel {
             output["operation"] = operation.clone();
             let record = json!({"operation_id":operation["id"],"action":action,"key":key,"input_digest":input_digest,"actor_scope":if self.author { "author" } else { "agent" },"result":output});
             let mut record = record;
-            if let Some(task) = &self.task_id {
-                record["task_id"] = json!(task);
-            }
-            if let Some(binding) = &self.management_grant {
-                if binding["work_ref"].is_object() { record["management_grant_id"] = binding["grant_id"].clone(); }
-            }
+            self.bind_operation_scope(&mut record);
             changes.insert(op_path, bytes(&record)?);
             changes.insert(format!(".hetu/audit/{}.json", operation["id"].as_str().unwrap()), bytes(&json!({"schema_version":"1.0.0","operation_id":operation["id"],"action":action,"actor_ref":self.actor(),"input_digest":input_digest,"created_at":now(),"status":output["status"]}))?);
             self.stage_workspace_properties(&mut changes)?;
             self.store.transaction(&changes)?;
         }
         Ok(output)
+    }
+    fn bind_operation_scope(&self, record: &mut Value) {
+        if let Some(task) = &self.task_id {
+            record["task_id"] = json!(task);
+        }
+        if let Some(binding) = &self.management_grant {
+            if binding["work_ref"].is_object() {
+                record["management_grant_id"] = binding["grant_id"].clone();
+            }
+        }
     }
     fn actor(&self) -> &str {
         if self.author { AUTHOR } else { AGENT }
@@ -886,8 +1019,10 @@ impl Kernel {
         let bp = self.blueprint()?;
         let sha = digest(self.store.read("shared/blueprint.json")?);
         ensure(
-            expected["revision"] == bp["revision"] && expected["sha256"] == sha
-                && (expected["blueprint_id"].is_null() || expected["blueprint_id"] == bp["blueprint_id"]),
+            expected["revision"] == bp["revision"]
+                && expected["sha256"] == sha
+                && (expected["blueprint_id"].is_null()
+                    || expected["blueprint_id"] == bp["blueprint_id"]),
             "revision_conflict",
             "设定集版本已变化，请重新比较。",
         )?;
@@ -927,11 +1062,21 @@ impl Kernel {
             "hetu.video.projects.update" => return self.update_video_project(input, changes),
             "hetu.video.episodes.create" => return self.create_video_episode(input, changes),
             "hetu.video.episodes.get" => return self.get_video_episode(input),
-            _ => {},
+            _ => {}
         }
-        if action == "hetu.handoffs.get" { return self.page_handoff(input); }
-        if action.starts_with("hetu.agent_operations.") { return self.dispatch_agent_operations(action, input, changes); }
-        if matches!(action, "hetu.model_tasks.list" | "hetu.model_tasks.prepare" | "hetu.model_tasks.approve" | "hetu.model_tasks.authorize_usage") {
+        if action == "hetu.handoffs.get" {
+            return self.page_handoff(input);
+        }
+        if action.starts_with("hetu.agent_operations.") {
+            return self.dispatch_agent_operations(action, input, changes);
+        }
+        if matches!(
+            action,
+            "hetu.model_tasks.list"
+                | "hetu.model_tasks.prepare"
+                | "hetu.model_tasks.approve"
+                | "hetu.model_tasks.authorize_usage"
+        ) {
             return self.dispatch_model_local(action, input, changes);
         }
         match action {
@@ -950,13 +1095,17 @@ impl Kernel {
             }
             "hetu.creation_projects.get" => self.get_creation_project(input),
             "hetu.creation_projects.save" => self.save_creation_project(input, changes),
-            "hetu.creative_tasks.preview_prompt" | "hetu.image_tasks.preview_prompt" => self.preview_creative_task(input),
+            "hetu.creative_tasks.preview_prompt" | "hetu.image_tasks.preview_prompt" => {
+                self.preview_creative_task(input)
+            }
             "hetu.collaboration.authorize" => self.authorize_collaboration(input, false),
             "hetu.collaboration.authorize_workspace" => self.authorize_workspace(input),
             "hetu.collaboration.workspace_access" => self.workspace_access(input),
             "hetu.collaboration.revoke" => self.authorize_collaboration(input, true),
             "hetu.collaboration.revoke_management" => self.revoke_management(input),
-            "hetu.creative_tasks.prepare" | "hetu.image_tasks.prepare" => self.prepare_creative_task(input, changes),
+            "hetu.creative_tasks.prepare" | "hetu.image_tasks.prepare" => {
+                self.prepare_creative_task(input, changes)
+            }
             "hetu.creative_tasks.get" => self.get_creative_task(input),
             "hetu.creative_tasks.list" => self.list_creative_tasks(input),
             "hetu.creative_tasks.submit_result" => self.submit_creative_result(input, changes),
@@ -999,11 +1148,20 @@ impl Kernel {
             "hetu.novels.initialize" => self.initialize_novel(input, changes),
             "hetu.novels.update" => self.update_novel(input, changes, false),
             "hetu.novels.save_structure" => self.update_novel(input, changes, true),
-            "hetu.git.status" => self.git_status(),
+            "hetu.git.status" => self.git_status(input),
             "hetu.git.references" => self.git_references(),
             "hetu.git.read_version" => self.git_version(input),
-            "hetu.git.merge_preview" => self.preview_git_collaboration(action,input),
-            "hetu.git.branch_create" | "hetu.git.branch_switch" | "hetu.git.merge" | "hetu.git.remote_save" | "hetu.git.fetch" | "hetu.git.push" | "hetu.git.pull" => Err(Error::new("hetu.author_confirmation_required", "请通过固定管理方案准备、审阅并执行此版本操作。")),
+            "hetu.git.merge_preview" => self.preview_git_collaboration(action, input),
+            "hetu.git.branch_create"
+            | "hetu.git.branch_switch"
+            | "hetu.git.merge"
+            | "hetu.git.remote_save"
+            | "hetu.git.fetch"
+            | "hetu.git.push"
+            | "hetu.git.pull" => Err(Error::new(
+                "hetu.author_confirmation_required",
+                "请通过固定管理方案准备、审阅并执行此版本操作。",
+            )),
             "hetu.git.diff" => self.git_diff(input),
             "hetu.git.snapshot_diff" => self.git_snapshot_diff(input),
             "hetu.git.log" => self.git_log(input),
@@ -1064,7 +1222,9 @@ impl Kernel {
             }
             "hetu.documents.create" => self.create_document(input, changes),
             "hetu.documents.list" => {
-                if input["work_ref"].is_object() { self.work_record(&input["work_ref"], None)?; }
+                if input["work_ref"].is_object() {
+                    self.work_record(&input["work_ref"], None)?;
+                }
                 let mut documents = Vec::new();
                 for package in ["novel", "drama"] {
                     for name in self
@@ -1073,13 +1233,28 @@ impl Kernel {
                     {
                         checked_id(&name, "doc")?;
                         let doc = self.document(&name)?;
-                        if input["work_ref"].is_object() && !self.document_in_work(&doc, &input["work_ref"])? { continue; }
+                        if input["work_ref"].is_object()
+                            && !self.document_in_work(&doc, &input["work_ref"])?
+                        {
+                            continue;
+                        }
                         if input.get("kind").is_none_or(|kind| *kind == doc["kind"]) {
                             documents.push(doc);
                         }
                     }
                 }
-                documents.sort_by_key(|d| d["created_at"].as_str().unwrap_or("").to_string());
+                documents.sort_by(|a, b| {
+                    a["created_at"]
+                        .as_str()
+                        .cmp(&b["created_at"].as_str())
+                        .then_with(|| a["document_id"].as_str().cmp(&b["document_id"].as_str()))
+                });
+                if self.granted_work()?.is_some()
+                    || input["limit"].is_number()
+                    || input["cursor"].is_string()
+                {
+                    return self.ordered_record_page(input, documents, "documents");
+                }
                 Ok(json!({"documents":documents,"next_cursor":null}))
             }
             "hetu.documents.get" => self.document_content(
@@ -1102,7 +1277,9 @@ impl Kernel {
             "hetu.reviews.decide" => self.decide_review(input, changes),
             "hetu.reviews.validate" => self.validate_review(input, changes),
             "hetu.drafts.list" => {
-                if input["work_ref"].is_object() { self.work_record(&input["work_ref"], None)?; }
+                if input["work_ref"].is_object() {
+                    self.work_record(&input["work_ref"], None)?;
+                }
                 let mut drafts = Vec::new();
                 for package in PACKAGES {
                     if input.get("package").is_some_and(|p| p != package) {
@@ -1111,7 +1288,11 @@ impl Kernel {
                     for name in self.store.entries(&format!("packages/{package}/drafts"))? {
                         checked_id(&name, "draft")?;
                         let draft = self.draft_content(&name)?["draft"].clone();
-                        if input["work_ref"].is_object() && self.draft_work_owner(&draft)?.as_ref() != Some(&input["work_ref"]) { continue; }
+                        if input["work_ref"].is_object()
+                            && self.draft_work_owner(&draft)?.as_ref() != Some(&input["work_ref"])
+                        {
+                            continue;
+                        }
                         if input
                             .get("state")
                             .is_none_or(|state| *state == draft["state"])
@@ -1155,7 +1336,9 @@ impl Kernel {
             }
             "hetu.reports.list" => self.list_reports(input),
             "hetu.findings.disposition" => self.disposition(input, changes),
-            "hetu.findings.suggest" | "hetu.findings.suggestions" => self.finding_suggestions(action,input,changes),
+            "hetu.findings.suggest" | "hetu.findings.suggestions" => {
+                self.finding_suggestions(action, input, changes)
+            }
             "hetu.operations.get" => {
                 let record = if let Some(op_id) = input.get("operation_id").and_then(Value::as_str)
                 {
@@ -1185,7 +1368,9 @@ impl Kernel {
     fn document_root(&self, document_id: &str) -> Result<String> {
         checked_id(document_id, "doc")?;
         for package in ["novel", "drama"] {
-            if self.store.exists(&format!("packages/{package}/documents/{document_id}/document.json"))? {
+            if self.store.exists(&format!(
+                "packages/{package}/documents/{document_id}/document.json"
+            ))? {
                 return Ok(format!("packages/{package}/documents/{document_id}"));
             }
         }
@@ -1201,7 +1386,11 @@ impl Kernel {
         ))?;
         if let Some(episode_id) = document["drama_episode_id"].as_str() {
             let (episode, _, _) = self.read_drama_episode(episode_id, None)?;
-            ensure(episode["document_id"] == document_id, "hetu.integrity_failure", "剧本文档与分集归属不一致。")?;
+            ensure(
+                episode["document_id"] == document_id,
+                "hetu.integrity_failure",
+                "剧本文档与分集归属不一致。",
+            )?;
             document["title"] = episode["title"].clone();
         }
         Ok(document)
@@ -1290,8 +1479,18 @@ impl Kernel {
     fn create_document(&self, input: &Value, changes: &mut Changes) -> Result<Value> {
         self.create_document_record(input, changes, true)
     }
-    fn create_document_record(&self, input: &Value, changes: &mut Changes, append_to_novel: bool) -> Result<Value> {
-        ensure(!matches!(self.config["work_type"].as_str(), Some("drama" | "video")) || !text(input, "kind")?.starts_with("novel_"), "invalid_input", "剧本和视频不创建小说章节；原著请作为来源材料导入。")?;
+    fn create_document_record(
+        &self,
+        input: &Value,
+        changes: &mut Changes,
+        append_to_novel: bool,
+    ) -> Result<Value> {
+        ensure(
+            !matches!(self.config["work_type"].as_str(), Some("drama" | "video"))
+                || !text(input, "kind")?.starts_with("novel_"),
+            "invalid_input",
+            "剧本和视频不创建小说章节；原著请作为来源材料导入。",
+        )?;
         let drama = input["kind"] == "drama_script";
         ensure(
             input["source_format"] == if drama { "fountain" } else { "markdown" },
@@ -1345,12 +1544,17 @@ impl Kernel {
         });
         self.ordered_record_page(input, records, field)
     }
-    fn ordered_record_page(&self, input: &Value, records: Vec<Value>, field: &str) -> Result<Value> {
+    fn ordered_record_page(
+        &self,
+        input: &Value,
+        records: Vec<Value>,
+        field: &str,
+    ) -> Result<Value> {
         let mut query = input.clone();
         query.as_object_mut().unwrap().remove("cursor");
         query.as_object_mut().unwrap().remove("limit");
         let fingerprint = digest(serde_json::to_vec(
-            &json!({"scope":self.scope(),"actor":self.actor(),"task_id":self.task_id,"field":field,"query":query,"records":records}),
+            &json!({"scope":self.scope(),"actor":self.actor(),"task_id":self.task_id,"management_grant":self.management_grant,"field":field,"query":query,"records":records}),
         )?);
         let start = if let Some(cursor) = input["cursor"].as_str() {
             let (hash, offset) = cursor
@@ -1392,8 +1596,14 @@ mod tests {
     #[test]
     fn creative_and_cover_record_schemas_resolve_shared_work_references() {
         for (source, definition) in [
-            (include_str!("../../../contracts/schemas/creative-task.schema.json"), creative_tasks::definition as fn(&str) -> Value),
-            (include_str!("../../../contracts/schemas/book-cover.schema.json"), covers::definition as fn(&str) -> Value),
+            (
+                include_str!("../../../contracts/schemas/creative-task.schema.json"),
+                creative_tasks::definition as fn(&str) -> Value,
+            ),
+            (
+                include_str!("../../../contracts/schemas/book-cover.schema.json"),
+                covers::definition as fn(&str) -> Value,
+            ),
         ] {
             let source: Value = serde_json::from_str(source).unwrap();
             for name in source["$defs"].as_object().unwrap().keys() {

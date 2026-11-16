@@ -32,6 +32,7 @@ struct WorkspaceShell<Content: View>: View {
     let onNewWorkspace: () -> Void
     let onOpenWorkspace: () -> Void
     let onLibrary: () -> Void
+    let onReturnRelated: () -> Void
     let onManageStructure: () -> Void
     let onInspector: () -> Void
     @ViewBuilder let content: () -> Content
@@ -90,6 +91,15 @@ struct WorkspaceShell<Content: View>: View {
     }
     private func topbar(canPinContents: Bool) -> some View {
         HStack(spacing: 14) {
+            if let destination = model.relatedReturnDestination {
+                Button(action: onReturnRelated) {
+                    Image(systemName: "chevron.left").frame(width: 24, height: 28).contentShape(Rectangle())
+                }
+                    .buttonStyle(.plain)
+                    .help(model.t("shell.return_related", ["title": destination.title]))
+                    .accessibilityLabel(model.t("shell.return_related", ["title": destination.title]))
+                    .accessibilityIdentifier("hetu.return-related-work")
+            }
             Button { showProjectNavigation.toggle() } label: { Image(systemName: "sidebar.left") }
                 .buttonStyle(.plain).help(model.t("shell.project_navigation")).accessibilityLabel(model.t("shell.project_navigation"))
                 .accessibilityValue(model.t(showProjectNavigation ? "shell.navigation.shown" : "shell.navigation.hidden"))

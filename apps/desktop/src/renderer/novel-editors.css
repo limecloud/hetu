@@ -1,0 +1,26 @@
+.novel-editor { width: min(560px, calc(100vw - 40px)); max-width: none; max-height: calc(100vh - 40px); padding: 24px; border: 0.5px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); box-shadow: none; }
+.novel-editor::backdrop { background: var(--black-a5); }
+.novel-editor[open] { display: flex; flex-direction: column; gap: 18px; }
+.novel-editor > header, .novel-editor > footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex: none; }
+.novel-editor h2 { margin: 0; font-size: 20px; font-weight: 600; }
+.novel-editor h3 { margin: 0 0 12px; font-size: 14px; }
+.novel-editor p { margin: 0; font-size: 12px; }
+.novel-editor-content { min-height: 0; overflow-y: auto; }
+.novel-editor-content > label { display: grid; grid-template-columns: 85px minmax(0, 1fr); align-items: center; gap: 16px; margin: 0 0 12px; max-width: none; }
+.novel-editor input, .novel-editor select, .novel-editor textarea { width: 100%; min-width: 0; }
+.novel-editor-content > label.novel-synopsis-field { display: flex; align-items: stretch; flex-direction: column; gap: 10px; margin-top: 20px; }
+.novel-editor textarea { resize: vertical; line-height: 1.7; }
+.novel-structure-editor { width: min(680px, calc(100vw - 40px)); }
+.novel-structure-editor .novel-editor-content { min-height: 240px; max-height: 440px; }
+.novel-add-volume, .novel-volume-heading, .novel-chapter-row { display: flex; align-items: center; gap: 10px; }
+.novel-add-volume { margin-bottom: 24px; }
+.novel-add-volume input, .novel-volume-heading input { flex: 1; min-width: 0; }
+.novel-add-volume button { flex: none; }
+.novel-chapters { margin: 0 0 20px; }
+.novel-chapters > p { color: var(--muted); }
+.novel-chapter-row { padding: 6px 0; }
+.novel-chapter-row > span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.novel-chapter-row select { width: 160px; }
+.novel-chapter-row button, .novel-volume-heading button { width: 30px; flex: none; padding: 4px; }
+.novel-volume { padding-top: 16px; border-top: 0.5px solid var(--line); }
+.novel-volume-heading { margin-bottom: 12px; }

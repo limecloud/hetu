@@ -4,7 +4,8 @@ impl Kernel {
     pub(super) fn run_validation(&self, input: &Value, changes: &mut Changes) -> Result<Value> {
         let plot = self.read_plot(text(input, "plot_revision_id")?)?;
         let descriptor = self.plot_descriptor(&plot.plot_revision_id)?;
-        let (bp, _) = self.blueprint_for_snapshot(plot.blueprint_revision, &plot.blueprint_sha256)?;
+        let (bp, _) =
+            self.blueprint_for_snapshot(plot.blueprint_revision, &plot.blueprint_sha256)?;
         let sources = serde_json::to_value(&plot.source_revisions)?;
         let documents = self.plot_documents(sources.as_array().unwrap())?;
         let report = validation::run(
@@ -125,7 +126,9 @@ impl Kernel {
         } else {
             Value::Null
         };
-        Ok(json!({"report":report,"reference":reference,"saved":saved,"stale":!reasons.is_empty(),"stale_reasons":reasons,"dispositions":dispositions}))
+        Ok(
+            json!({"report":report,"reference":reference,"saved":saved,"stale":!reasons.is_empty(),"stale_reasons":reasons,"dispositions":dispositions}),
+        )
     }
     pub(super) fn list_reports(&self, input: &Value) -> Result<Value> {
         let filter = input.get("plot_revision_id").and_then(Value::as_str);
@@ -289,35 +292,83 @@ impl Kernel {
         );
         Ok(json!({"disposition_record":item}))
     }
-    pub(super) fn finding_suggestions(&self, action: &str, input: &Value, changes: &mut Changes) -> Result<Value> {
-        let report_id = text(input,"report_id")?;
-        let finding_id = checked_id(text(input,"finding_id")?,"finding")?;
+    pub(super) fn finding_suggestions(
+        &self,
+        action: &str,
+        input: &Value,
+        changes: &mut Changes,
+    ) -> Result<Value> {
+        let report_id = text(input, "report_id")?;
+        let finding_id = checked_id(text(input, "finding_id")?, "finding")?;
         let report = self.read_report(report_id)?;
-        let finding = report["findings"].as_array().unwrap().iter().find(|item|item["finding_id"] == finding_id)
-            .ok_or_else(||Error::new("not_found", "问题不属于固定报告。"))?;
-        let revision = self.disposition_history(report_id,&finding_id)?.len() as u64;
+        let finding = report["findings"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|item| item["finding_id"] == finding_id)
+            .ok_or_else(|| Error::new("not_found", "问题不属于固定报告。"))?;
+        let revision = self.disposition_history(report_id, &finding_id)?.len() as u64;
         let root = format!(".hetu/finding-suggestions/{finding_id}");
         if action.ends_with(".suggest") {
-            ensure(input["expected_inputs"] == report["input_snapshot"] && input["expected_disposition_revision"] == revision,
-                "revision_conflict", "处置建议的固定依据已变化。")?;
-            ensure(!text(input,"reason")?.trim().is_empty(), "invalid_input", "建议理由不能为空。")?;
-            ensure(input["disposition"] != "accepted_exception" || finding["exception_policy"] == "author_review", "forbidden", "该规则不允许接受例外。")?;
+            ensure(
+                input["expected_inputs"] == report["input_snapshot"]
+                    && input["expected_disposition_revision"] == revision,
+                "revision_conflict",
+                "处置建议的固定依据已变化。",
+            )?;
+            ensure(
+                !text(input, "reason")?.trim().is_empty(),
+                "invalid_input",
+                "建议理由不能为空。",
+            )?;
+            ensure(
+                input["disposition"] != "accepted_exception"
+                    || finding["exception_policy"] == "author_review",
+                "forbidden",
+                "该规则不允许接受例外。",
+            )?;
             let proposal = json!({"suggestion_id":id("suggestion"),"report_id":report_id,"finding_id":finding_id,"expected_inputs":report["input_snapshot"],
                 "expected_disposition_revision":revision,"disposition":input["disposition"],"reason":input["reason"],"created_at":now(),"prepared_by":self.actor(),"effect":"suggestion_only"});
             self.store.directory(&root)?;
-            changes.insert(format!("{root}/{}.json",text(&proposal,"suggestion_id")?),bytes(&proposal)?);
+            changes.insert(
+                format!("{root}/{}.json", text(&proposal, "suggestion_id")?),
+                bytes(&proposal)?,
+            );
             return Ok(json!({"suggestion":proposal,"author_decision_required":true}));
         }
         let mut records = Vec::new();
-        if self.store.entries(".hetu")?.iter().any(|name|name == "finding-suggestions") && self.store.entries(".hetu/finding-suggestions")?.contains(&finding_id) {
+        if self
+            .store
+            .entries(".hetu")?
+            .iter()
+            .any(|name| name == "finding-suggestions")
+            && self
+                .store
+                .entries(".hetu/finding-suggestions")?
+                .contains(&finding_id)
+        {
             for name in self.store.entries(&root)? {
                 let item = self.store.json(&format!("{root}/{name}"))?;
-                ensure(item["report_id"] == report_id && item["finding_id"] == finding_id && item["effect"] == "suggestion_only", "hetu.integrity_failure", "建议归属无效。")?;
+                ensure(
+                    item["report_id"] == report_id
+                        && item["finding_id"] == finding_id
+                        && item["effect"] == "suggestion_only",
+                    "hetu.integrity_failure",
+                    "建议归属无效。",
+                )?;
                 records.push(json!({"suggestion":item,"is_current":item["expected_disposition_revision"] == revision && item["expected_inputs"] == report["input_snapshot"]}));
-                ensure(records.len() <= 1000,"hetu.budget_exceeded","建议超过读取预算。")?;
+                ensure(
+                    records.len() <= 1000,
+                    "hetu.budget_exceeded",
+                    "建议超过读取预算。",
+                )?;
             }
         }
-        records.sort_by(|a,b|b["suggestion"]["created_at"].as_str().cmp(&a["suggestion"]["created_at"].as_str()));
+        records.sort_by(|a, b| {
+            b["suggestion"]["created_at"]
+                .as_str()
+                .cmp(&a["suggestion"]["created_at"].as_str())
+        });
         Ok(json!({"suggestions":records,"author_decision_required":true}))
     }
 }

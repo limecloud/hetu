@@ -14,7 +14,7 @@ pub(super) fn definition(name: &str) -> Value {
         ))
         .expect("embedded delivery schema")
     });
-    domain::schema::definition(source, name)
+    works::bundle_reference(domain::schema::definition(source, name))
 }
 
 fn seal(mut value: Value) -> Result<Value> {
@@ -84,13 +84,137 @@ struct Prepared {
     payloads: Vec<Payload>,
     document: Option<Converted>,
 }
+struct DeliverySources {
+    sources: Vec<Source>,
+    fixed_refs: Vec<Value>,
+    blockers: Vec<Value>,
+    provenance: Vec<Value>,
+}
 
 impl Kernel {
+    /// 预览、方案准备、执行和原包核验共用同一归属校验，不从目录推测作品。
+    pub(super) fn check_delivery_work(&self, request: &Value, bundle: bool) -> Result<()> {
+        let Some(work) = request.get("work_ref") else {
+            return Ok(());
+        };
+        self.work_record(work, None)?;
+        ensure(
+            matches!(work["kind"].as_str(), Some("novel" | "drama")),
+            "forbidden",
+            "文稿交付仅用于小说和剧本；视频工程使用独立制作合同。",
+        )?;
+        let selection = if bundle {
+            &request["selection"]
+        } else {
+            request
+        };
+        for reference in references(
+            selection,
+            if bundle {
+                "document_refs"
+            } else {
+                "revision_refs"
+            },
+        ) {
+            ensure(
+                self.document_work_ref(&self.document(text(reference, "document_id")?)?)?
+                    .as_ref()
+                    == Some(work),
+                "forbidden",
+                "交付正文不属于所选作品。",
+            )?;
+        }
+        if bundle {
+            let bp = &selection["blueprint_ref"];
+            let (_, sha) = self
+                .work_blueprint_revision(work, Some(integer(bp, "revision")?))?
+                .ok_or_else(|| {
+                    Error::new(
+                        "hetu.canon_initialization_required",
+                        "作品自身设定尚未建立。",
+                    )
+                })?;
+            ensure(
+                bp["sha256"] == sha,
+                "forbidden",
+                "交付设定不属于所选作品的固定版本。",
+            )?;
+            for kind in ["asset", "cue"] {
+                for reference in references(selection, &format!("{kind}_refs")) {
+                    ensure(
+                        self.media_in_work(
+                            kind,
+                            text(reference, &format!("{kind}_id"))?,
+                            Some(integer(reference, "revision")?),
+                            work,
+                        )?,
+                        "forbidden",
+                        "交付素材或线索不属于所选作品。",
+                    )?;
+                }
+            }
+            // 历史结构报告没有可靠的 WorkRef，不能借正文权限发布同根其他作品资料。
+            for field in ["skeleton_refs", "report_refs", "comparison_refs"] {
+                ensure(
+                    references(selection, field).is_empty(),
+                    "forbidden",
+                    "所选结构报告尚无可核验的作品归属，请从作品交付中排除。",
+                )?;
+            }
+        }
+        Ok(())
+    }
+
+    pub(super) fn check_import_work(&self, input: &Value, batch: bool) -> Result<()> {
+        let Some(work) = input.get("work_ref") else {
+            return Ok(());
+        };
+        self.work_record(work, None)?;
+        if work["kind"] == "novel" {
+            ensure(
+                batch || input["kind"] == "novel_chapter",
+                "forbidden",
+                "小说导入只能创建本作品章节。",
+            )?;
+            let expected = if batch {
+                &input["expected"]
+            } else {
+                &input["novel_expected"]
+            };
+            let current = self.get_novel()?;
+            ensure(
+                current["revision"] == expected["revision"]
+                    && current["sha256"] == expected["sha256"],
+                "revision_conflict",
+                "小说目录已变化，请重新核对导入目标。",
+            )?;
+            ensure(
+                input.get("drama_project_ref").is_none(),
+                "forbidden",
+                "小说导入不能附带其他剧本目标。",
+            )
+        } else {
+            ensure(
+                !batch
+                    && work["kind"] == "drama"
+                    && input["kind"] == "drama_script"
+                    && input["drama_project_ref"]["project_id"] == work["object_id"]
+                    && input.get("novel_expected").is_none()
+                    && input["volume_id"].is_null(),
+                "forbidden",
+                "剧本导入须固定本项目分集目标。",
+            )?;
+            self.expected_drama_project(&input["drama_project_ref"])?;
+            Ok(())
+        }
+    }
+
     fn delivery_sources(
         &self,
         refs: &[Value],
         production: bool,
-    ) -> Result<(Vec<Source>, Vec<Value>, Vec<Value>, Vec<Value>)> {
+        work: Option<&Value>,
+    ) -> Result<DeliverySources> {
         ensure(
             !refs.is_empty() && refs.len() <= 128,
             "invalid_input",
@@ -102,10 +226,13 @@ impl Kernel {
         let mut provenance = Vec::new();
         let mut source_bytes = 0usize;
         let mut seen = BTreeSet::new();
-        let author = self
-            .novel()?
-            .and_then(|novel| novel["metadata"]["author_name"].as_str().map(str::to_owned))
-            .unwrap_or_default();
+        let author = if work.is_some_and(|reference| reference["kind"] != "novel") {
+            String::new()
+        } else {
+            self.novel()?
+                .and_then(|novel| novel["metadata"]["author_name"].as_str().map(str::to_owned))
+                .unwrap_or_default()
+        };
         for reference in refs {
             let doc_id = text(reference, "document_id")?;
             ensure(
@@ -184,21 +311,36 @@ impl Kernel {
                 content: content.into(),
             });
         }
-        Ok((sources, inputs, blockers, provenance))
+        Ok(DeliverySources {
+            sources,
+            fixed_refs: inputs,
+            blockers,
+            provenance,
+        })
     }
 
     fn prepare_bundle(&self, request: &Value) -> Result<Prepared> {
+        self.check_delivery_work(request, true)?;
         let selection = &request["selection"];
         let production = request["profile"] == "production_delivery";
         let bp_ref = &selection["blueprint_ref"];
-        let (bp, bp_sha) = self.blueprint_for_snapshot(integer(bp_ref, "revision")?, text(bp_ref, "sha256")?)?;
+        let (bp, bp_sha) =
+            self.blueprint_for_snapshot(integer(bp_ref, "revision")?, text(bp_ref, "sha256")?)?;
         ensure(
             bp_ref["sha256"] == bp_sha,
             "hetu.integrity_failure",
             "设定集固定摘要不符。",
         )?;
-        let (sources, documents, mut blockers, provenance) =
-            self.delivery_sources(references(selection, "document_refs"), production)?;
+        let DeliverySources {
+            sources,
+            fixed_refs: documents,
+            mut blockers,
+            provenance,
+        } = self.delivery_sources(
+            references(selection, "document_refs"),
+            production,
+            request.get("work_ref"),
+        )?;
         for source in sources
             .iter()
             .filter(|source| source.kind == "drama_script")
@@ -375,7 +517,7 @@ impl Kernel {
                 .push(reference.clone());
         }
         let mut report_refs = references(selection, "report_refs").to_vec();
-        if report_refs.is_empty() {
+        if report_refs.is_empty() && request.get("work_ref").is_none() {
             for entry in &provenance {
                 for reference in references(&entry["finalization"], "report_refs") {
                     if !report_refs.contains(reference) {
@@ -588,9 +730,13 @@ impl Kernel {
             "hetu.budget_exceeded",
             "交付包展开总量超过 4 GiB。",
         )?;
-        let preview = seal(
-            json!({"workspace_id":self.scope(),"request":request,"inputs":inputs,"files":descriptors,"warnings":warnings,"exclusions":exclusions,"blockers":blockers,"eligible":blockers.is_empty(),"estimated_bytes":estimated,"coverage":{"kind":"fixed_inputs","semantic_completeness":"not_asserted"}}),
-        )?;
+        let mut preview = json!({"workspace_id":self.scope(),"request":request,"inputs":inputs,"files":descriptors,"warnings":warnings,"exclusions":exclusions,"blockers":blockers,"eligible":blockers.is_empty(),"estimated_bytes":estimated,"coverage":{"kind":"fixed_inputs","semantic_completeness":"not_asserted"}});
+        if request.get("work_ref").is_some() {
+            preview["selected_documents"] =
+                json!(sources.iter().zip(&documents).map(|(source, reference)|
+                json!({"title":source.title,"document_ref":reference})).collect::<Vec<_>>());
+        }
+        let preview = seal(preview)?;
         Ok(Prepared {
             preview,
             payloads,
@@ -599,8 +745,17 @@ impl Kernel {
     }
 
     fn prepare_document_export(&self, request: &Value) -> Result<Prepared> {
-        let (sources, inputs, _, provenance) =
-            self.delivery_sources(references(request, "revision_refs"), false)?;
+        self.check_delivery_work(request, false)?;
+        let DeliverySources {
+            sources,
+            fixed_refs: inputs,
+            provenance,
+            ..
+        } = self.delivery_sources(
+            references(request, "revision_refs"),
+            false,
+            request.get("work_ref"),
+        )?;
         let rendered = convert(
             &sources,
             text(request, "format")?,
@@ -731,11 +886,23 @@ impl Kernel {
                 "exports/hetu-{}-{artifact_id}.{extension}",
                 if bundle { "bundle" } else { "document" }
             );
-            let manifest = if bundle {
+            let work_ref = input["preview"]["request"].get("work_ref");
+            let title = if let Some(work) = work_ref {
+                self.get_work(&json!({"work_ref":work}))?["summary"]["title"].clone()
+            } else {
+                self.config["title"].clone()
+            };
+            let mut manifest = if bundle {
                 json!({"schema_version":"1.0.0","bundle_id":artifact_id,"workspace_id":self.scope(),"title":self.config["title"],"created_at":now(),"provenance":{"engine_build":env!("CARGO_PKG_VERSION"),"converter":delivery_formats::CONVERTER,"version_log":"provenance/version-log.json","reviews":"provenance/reviews.json"},"profile":input["preview"]["request"]["profile"],"preview_sha256":input["preview"]["sha256"],"inputs":input["preview"]["inputs"],"files":input["preview"]["files"],"warnings":input["preview"]["warnings"],"exclusions":input["preview"]["exclusions"],"coverage":input["preview"]["coverage"]})
             } else {
                 Value::Null
             };
+            if bundle {
+                manifest["title"] = title;
+                if let Some(work) = work_ref {
+                    manifest["work_ref"] = work.clone();
+                }
+            }
             let intent = json!({"schema_version":"1.0.0","delivery_id":delivery_id,"artifact_id":artifact_id,"action":action,"destination":destination,"preview":input["preview"],"manifest":manifest,"created_at":now()});
             let operation = Self::operation(key, &input_digest);
             let mut pending = domain::failure(
@@ -884,10 +1051,18 @@ impl Kernel {
     }
 
     fn recheck_delivery_authority(&self, preview: &Value, action: &str) -> Result<()> {
+        self.check_delivery_work(&preview["request"], action == "hetu.bundles.export")?;
         let production = action == "hetu.bundles.export"
             && preview["request"]["profile"] == "production_delivery";
-        let (_, refs, blockers, _) =
-            self.delivery_sources(references(&preview["inputs"], "document_refs"), production)?;
+        let DeliverySources {
+            fixed_refs: refs,
+            blockers,
+            ..
+        } = self.delivery_sources(
+            references(&preview["inputs"], "document_refs"),
+            production,
+            preview["request"].get("work_ref"),
+        )?;
         ensure(
             blockers.is_empty()
                 && refs.as_slice() == references(&preview["inputs"], "document_refs"),
@@ -1000,6 +1175,14 @@ impl Kernel {
         let intent = self
             .store
             .json(&format!(".hetu/deliveries/{delivery_id}/intent.json"))?;
+        if let Some(work) = input.get("work_ref") {
+            ensure(
+                intent["preview"]["request"]["work_ref"] == *work,
+                "forbidden",
+                "此交付包不属于所选作品，历史未归属包不能自动获得对象权限。",
+            )?;
+            self.check_delivery_work(&intent["preview"]["request"], true)?;
+        }
         ensure(
             intent["artifact_id"] == bundle_id && intent["destination"] == index["path"],
             "hetu.integrity_failure",
@@ -1019,32 +1202,42 @@ impl Kernel {
 
     fn prepare_document_import(&self, request: &Value) -> Result<(Value, Vec<u8>)> {
         schema(request, &definition("import_preview_input"))?;
+        if let Some(work) = request.get("work_ref") {
+            self.work_record(work, None)?;
+            ensure(
+                matches!(work["kind"].as_str(), Some("novel" | "drama")),
+                "forbidden",
+                "视频项目不导入文稿正文，请导入来源素材。",
+            )?;
+        }
         let original = if let Some((_, content)) = self.inline_import_source(request)? {
             content
         } else {
-        let mut file =
-            crate::infrastructure::media::selected_file(Path::new(text(request, "file_path")?))?;
-        let before = file.metadata()?;
-        ensure(
-            file.metadata()?.len() <= 8 * 1024 * 1024,
-            "hetu.budget_exceeded",
-            "导入源文件超过 8 MiB，请拆分后导入。",
-        )?;
-        let mut original = Vec::new();
-        Read::by_ref(&mut file)
-            .take(8 * 1024 * 1024 + 1)
-            .read_to_end(&mut original)?;
-        ensure(
-            original.len() <= 8 * 1024 * 1024,
-            "hetu.budget_exceeded",
-            "导入文件读取期间超过预算。",
-        )?;
-        ensure(
-            stable_file(&before, &file.metadata()?) && before.len() == original.len() as u64,
-            "revision_conflict",
-            "导入文件在读取期间发生变化，请重新选择。",
-        )?;
-        original
+            let mut file = crate::infrastructure::media::selected_file(Path::new(text(
+                request,
+                "file_path",
+            )?))?;
+            let before = file.metadata()?;
+            ensure(
+                file.metadata()?.len() <= 8 * 1024 * 1024,
+                "hetu.budget_exceeded",
+                "导入源文件超过 8 MiB，请拆分后导入。",
+            )?;
+            let mut original = Vec::new();
+            Read::by_ref(&mut file)
+                .take(8 * 1024 * 1024 + 1)
+                .read_to_end(&mut original)?;
+            ensure(
+                original.len() <= 8 * 1024 * 1024,
+                "hetu.budget_exceeded",
+                "导入文件读取期间超过预算。",
+            )?;
+            ensure(
+                stable_file(&before, &file.metadata()?) && before.len() == original.len() as u64,
+                "revision_conflict",
+                "导入文件在读取期间发生变化，请重新选择。",
+            )?;
+            original
         };
         let converted = delivery_formats::import(
             &original,
@@ -1071,33 +1264,72 @@ impl Kernel {
 
     pub(super) fn preview_document_import(&self, input: &Value) -> Result<Value> {
         let output = json!({"preview":self.prepare_document_import(input)?.0});
-        ensure(self.author || bytes(&output)?.len() <= 7 * 1024 * 1024,
-            "hetu.budget_exceeded", "导入预览超过机器传输预算，请拆分原稿。")?;
+        ensure(
+            self.author || bytes(&output)?.len() <= 7 * 1024 * 1024,
+            "hetu.budget_exceeded",
+            "导入预览超过机器传输预算，请拆分原稿。",
+        )?;
         Ok(output)
     }
 
     pub(super) fn import_document(&self, input: &Value, changes: &mut Changes) -> Result<Value> {
+        self.check_import_work(input, false)?;
         self.import_document_record(input, changes, true)
     }
 
-    pub(super) fn import_document_batch(&self, input: &Value, changes: &mut Changes) -> Result<Value> {
+    pub(super) fn import_document_batch(
+        &self,
+        input: &Value,
+        changes: &mut Changes,
+    ) -> Result<Value> {
+        self.check_import_work(input, true)?;
         let before = self.get_novel()?;
-        ensure(before["initialized"] == true && before["revision"] == input["expected"]["revision"]
-            && before["sha256"] == input["expected"]["sha256"], "revision_conflict", "小说目录已变化，请沿原导入记录核对。")?;
+        ensure(
+            before["initialized"] == true
+                && before["revision"] == input["expected"]["revision"]
+                && before["sha256"] == input["expected"]["sha256"],
+            "revision_conflict",
+            "小说目录已变化，请沿原导入记录核对。",
+        )?;
         let mut imported = Vec::new();
         for item in input["items"].as_array().unwrap() {
             let mut chapter = item.clone();
-            chapter["preview"] = self.prepare_document_import(&item["source"])?.0;
+            let mut source = item["source"].clone();
+            if let Some(work) = input.get("work_ref") {
+                ensure(
+                    source.get("work_ref").is_none_or(|value| value == work),
+                    "forbidden",
+                    "批量导入来源属于其他作品。",
+                )?;
+                source["work_ref"] = work.clone();
+                chapter["work_ref"] = work.clone();
+            }
+            chapter["preview"] = self.prepare_document_import(&source)?.0;
             chapter["kind"] = json!("novel_chapter");
             chapter["acknowledgement"] = input["acknowledgement"].clone();
             imported.push(self.import_document_record(&chapter, changes, false)?);
         }
-        let documents = imported.iter().map(|item| item["document"].clone()).collect::<Vec<_>>();
+        let documents = imported
+            .iter()
+            .map(|item| item["document"].clone())
+            .collect::<Vec<_>>();
         let novel = self.append_imported_chapters(input, &documents, changes)?;
-        Ok(json!({"documents":imported,"novel":novel["novel"],"revision":novel["revision"],"sha256":novel["sha256"]}))
+        Ok(
+            json!({"documents":imported,"novel":novel["novel"],"revision":novel["revision"],"sha256":novel["sha256"]}),
+        )
     }
 
-    fn import_document_record(&self, input: &Value, changes: &mut Changes, append_to_novel: bool) -> Result<Value> {
+    fn import_document_record(
+        &self,
+        input: &Value,
+        changes: &mut Changes,
+        append_to_novel: bool,
+    ) -> Result<Value> {
+        ensure(
+            input.get("work_ref") == input["preview"]["request"].get("work_ref"),
+            "forbidden",
+            "导入预览与目标作品不一致。",
+        )?;
         ensure(
             !text(input, "acknowledgement")?.trim().is_empty(),
             "hetu.author_confirmation_required",
@@ -1110,6 +1342,19 @@ impl Kernel {
             "导入文件或预览已变化，请重新选择并确认。",
         )?;
         let mut created = self.create_document_record(&json!({"kind":input["kind"],"title":input["title"],"language_tag":input["language_tag"],"volume_id":input["volume_id"],"source_format":preview["converted"]["source_format"],"content":preview["converted"]["content"]}),changes,append_to_novel)?;
+        if input["work_ref"]["kind"] == "drama" {
+            let project = self.expected_drama_project(&input["drama_project_ref"])?;
+            let attached = self.add_episode_document(
+                project,
+                created["document"].clone(),
+                text(input, "title")?,
+                "",
+                changes,
+            )?;
+            for field in ["document", "project", "sha256", "episode", "episode_sha256"] {
+                created[field] = attached[field].clone();
+            }
+        }
         let document_id = text(&created["document"], "document_id")?.to_owned();
         let root = format!(".hetu/imports/{document_id}");
         let report = json!({"schema_version":"1.0.0","document_ref":{"document_id":document_id,"revision_id":created["revision"]["revision_id"],"sha256":created["revision"]["sha256"]},"source_sha256":preview["source_sha256"],"source_size_bytes":preview["source_size_bytes"],"format":preview["request"]["format"],"profile":preview["request"]["profile"],"converter":preview["converted"]["converter"],"coverage":preview["converted"]["coverage"],"warnings":preview["converted"]["warnings"],"losses":preview["converted"]["losses"],"created_at":now()});

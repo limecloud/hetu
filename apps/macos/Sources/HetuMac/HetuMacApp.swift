@@ -179,7 +179,7 @@ private struct WindowAttachment: NSViewRepresentable {
     }
 }
 
-private struct WorkbenchView: View {
+struct WorkbenchView: View {
     @AppStorage("Hetu.locale") private var selectedLocale = "zh-CN"
     @State private var model: WorkspaceModel
     @State private var coordinator: WindowCoordinator
@@ -203,8 +203,7 @@ private struct WorkbenchView: View {
         let lastNovelID: String
         let validationDocumentID: String
     }
-    init() {
-        let model = WorkspaceModel()
+    init(model: WorkspaceModel = WorkspaceModel()) {
         _model = State(initialValue: model); _coordinator = State(initialValue: WindowCoordinator(model))
     }
     var body: some View {
@@ -222,6 +221,7 @@ private struct WorkbenchView: View {
                     onNewWorkspace: { Task { await coordinator.perform(.newWorkspace) } },
                     onOpenWorkspace: { Task { await coordinator.perform(.openWorkspace) } },
                     onLibrary: { Task { await coordinator.perform(.library) } },
+                    onReturnRelated: { Task { if await coordinator.protect() { _ = await model.returnFromRelatedWork() } } },
                     onManageStructure: { manageStructure = true },
                     onInspector: { inspector.toggle() }) { detail }
                     .disabled(model.busy && !model.saving)
@@ -302,7 +302,7 @@ private struct WorkbenchView: View {
         }
         else if selection == "video" { VideoWorkbenchView(model: model, selected: episodeLocation(for: model.currentWorkID)).id(model.currentWorkID) }
         else if selection == "related_works" { RelatedWorksView(model: model) { reference in
-            Task { if await coordinator.protect(), let url = model.workspace?.url { _ = await model.open(url, expectedWorkspaceID: reference.workspaceID, workReference: reference) } }
+            Task { if await coordinator.protect() { _ = await model.openRelatedWork(reference) } }
         }.id(model.currentWorkID) }
         else if selection == "git" { GitWorkbenchView(model: model).id(model.workspaceID) }
         else if selection == "media" { MediaWorkbenchView(model: model).id(model.workspaceID) }
@@ -324,7 +324,7 @@ private struct WorkbenchView: View {
                 Divider()
                 ScrollView { Text(draft["content"].string ?? "").textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading) }
             }.padding(24)
-        } else { WorkbenchEmptyState(title: model.t("document.select"), detail: model.t("novel.empty_detail"), artwork: "story-world").workbenchPage() }
+        } else { WorkbenchEmptyState(title: model.t(model.documents.isEmpty ? "novel.empty_title" : "document.select"), detail: model.t("novel.empty_detail"), artwork: "story-world").workbenchPage() }
     }
     private func episodeLocation(for workID: String) -> Binding<String> {
         Binding(get: { episodeLocations[workID] ?? "" }, set: { episodeLocations[workID] = $0 })

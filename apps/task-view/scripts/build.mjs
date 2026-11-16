@@ -14,7 +14,9 @@ const bundle = await build({
   target: "es2022",
   metafile: true,
 });
-const css = await readFile(new URL("src/app.css", root), "utf8");
+const radixSource = "../../assets/styles/radix-workbench.css";
+const radixCSS = await readFile(new URL(radixSource, root), "utf8");
+const css = radixCSS + await readFile(new URL("src/app.css", root), "utf8");
 const notices = await readFile(new URL("THIRD-PARTY-NOTICES.txt", root), "utf8");
 const script = bundle.outputFiles[0].text.replaceAll("</script", "<\\/script");
 const csp = "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'";
@@ -22,7 +24,7 @@ const html = `<!doctype html><!-- Third-party notices\n${notices.replaceAll("--"
 const destination = new URL("../mcp/resources/task-view.html", root);
 const manifestPath = new URL("../mcp/resources/task-view.manifest.json", root);
 const sourceHashes = {};
-for (const source of ["src/app.ts", "src/app.css", "scripts/build.mjs", "package.json", "THIRD-PARTY-NOTICES.txt"]) {
+for (const source of ["src/app.ts", "src/app.css", radixSource, "scripts/build.mjs", "package.json", "THIRD-PARTY-NOTICES.txt"]) {
   sourceHashes[source] = createHash("sha256").update(await readFile(new URL(source, root))).digest("hex");
 }
 const manifest = JSON.stringify({
@@ -36,19 +38,19 @@ const manifest = JSON.stringify({
   inputs: Object.keys(bundle.metafile.inputs).sort(),
 }, null, 2) + "\n";
 const operationBundle = await build({ entryPoints: [fileURLToPath(new URL("src/operation.ts", root))], bundle: true, write: false, minify: true, legalComments: "inline", format: "iife", target: "es2022" });
-const operationCSS = await readFile(new URL("src/operation.css", root), "utf8");
+const operationCSS = radixCSS + await readFile(new URL("src/operation.css", root), "utf8");
 const operationHTML = `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="${csp}"><title>河图洛书 操作方案 / Hetu Luoshu Operation</title><style>${operationCSS}</style></head><body><main id="app"></main><script>${operationBundle.outputFiles[0].text.replaceAll("</script", "<\\/script")}</script></body></html>\n`;
 const operationPath = new URL("../mcp/resources/operation-view.html", root);
 const operationManifestPath = new URL("../mcp/resources/operation-view.manifest.json", root);
 const operationHashes = {};
-for (const source of ["src/operation.ts", "src/operation.css", "scripts/build.mjs", "package.json", "THIRD-PARTY-NOTICES.txt"]) operationHashes[source] = createHash("sha256").update(await readFile(new URL(source, root))).digest("hex");
+for (const source of ["src/operation.ts", "src/operation.css", radixSource, "scripts/build.mjs", "package.json", "THIRD-PARTY-NOTICES.txt"]) operationHashes[source] = createHash("sha256").update(await readFile(new URL(source, root))).digest("hex");
 const operationManifest = JSON.stringify({ schema_version: "1.0.0", resource_uri: "ui://hetu/operation-view/1", mime_type: "text/html;profile=mcp-app", sdk: "@modelcontextprotocol/ext-apps@2.0.4", sha256: createHash("sha256").update(operationHTML).digest("hex"), size_bytes: Buffer.byteLength(operationHTML), source_sha256: operationHashes }, null, 2) + "\n";
 const localOutputs = new Map();
 for (const [source, name, platform] of [["src/local/host.ts", "host.js", "browser"], ["src/local/server.ts", "server.mjs", "node"]]) {
   const output = await build({ entryPoints: [fileURLToPath(new URL(source, root))], bundle: true, write: false, minify: true, legalComments: "inline", format: "esm", platform, target: platform === "node" ? "node24" : "es2022" });
   localOutputs.set(name, output.outputFiles[0].text);
 }
-localOutputs.set("index.html", await readFile(new URL("src/local/index.html", root), "utf8"));
+localOutputs.set("index.html", (await readFile(new URL("src/local/index.html", root), "utf8")).replace("/* shared-radix */", radixCSS));
 localOutputs.set("task-view.html", html);
 localOutputs.set("THIRD-PARTY-NOTICES.txt", notices);
 const localSources = {};
