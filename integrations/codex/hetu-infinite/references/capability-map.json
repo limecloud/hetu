@@ -93,7 +93,7 @@
       "skill": "hetu-manage",
       "entry": "hetu.plugin_access.authorize",
       "path": [
-        "固定作品、包摘要和类型Schema",
+        "固定作品、包摘要、类型Schema及独立work.read范围",
         "按真实选择授权",
         "发现插件专业数据动作",
         "迁移先准备并展示前后差异",
@@ -423,7 +423,7 @@
       "entry": "../skills/hetu-video/SKILL.md"
     }
   ],
-  "extension_runtime_discovery": "河图插件安装在河图；hetu.plugins.inspect → 精确作品授权 → hetu.plugin_access.capabilities → hetu.plugin_access.invoke；稳定入口实时发现，不为每包安装客户端插件。",
+  "extension_runtime_discovery": "河图插件安装在河图；hetu.plugins.inspect → 精确作品授权 → hetu.plugin_access.capabilities → hetu.plugin_access.invoke；稳定入口实时发现，专业对象读写与work.read分别核权，不为每包安装客户端插件。",
   "restricted_actions": [
     {
       "action": "hetu.git.approve_snapshot",

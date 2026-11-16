@@ -54,7 +54,7 @@ flowchart TD
     K --> F[作者持有的作品文件]
 ```
 
-该图是目标职责，不表示新类名或API已经存在。Cordis不提供安全沙箱，不使插件自动获得文件、网络、子进程、其他作品或作者权限。第三方代码继续在隔离视图或受管工作进程运行；现有Node限制、CSP及逐请求Core授权保持。
+Cordis 集成位于宿主 EffectScope 内部，PluginHost 继续拥有包依赖图、安装与启停状态；贡献使用单一有序 disposer 保留逆序异步清理及错误传播。Cordis不提供安全沙箱，不使插件自动获得文件、网络、子进程、其他作品或作者权限。第三方代码继续在隔离视图或受管工作进程运行；现有Node限制、CSP及逐请求Core授权保持。
 
 ## 5. 服务与生命周期集成
 
@@ -95,4 +95,4 @@ flowchart TD
 
 2026-11-16读取的来源与字节摘要见[来源证据](../research/evidence/cordis-adoption-2026-11-16.json)。主要依据：上游[MIT许可](https://github.com/cordiverse/cordis/blob/c9fe179ce5ac484620a387a1697409cb007d4178/LICENSE)、DSH固定提交的[vendor说明](https://github.com/deepseek-ai/deepseek-harness/blob/39163dd30f703a79079e2d2446545cff3c453738/vendor/README.md)、[工具合同](https://github.com/deepseek-ai/deepseek-harness/blob/39163dd30f703a79079e2d2446545cff3c453738/docs/cookbook/adding-a-tool.zh.md)及[客户端模块](https://github.com/deepseek-ai/deepseek-harness/blob/39163dd30f703a79079e2d2446545cff3c453738/docs/subsystems/client-modules.zh.md)。
 
-本轮只完成文档与公开源码核对；未安装Cordis、运行DSH插件、验证跨平台或修改公共机器Schema。文档检查和图示渲染不能作为上述运行验收。
+宿主以锁文件固定 `cordis@4.0.0-rc.13`，内部生命周期与独立小说规划包分别运行验证。公共合同增加独立 work.read、固定来源检查及受信宿主服务；运行记录与未验证平台只在主38维护。此变更不证明 DSH 插件兼容，也不把文档检查或图示渲染当作运行验收。

@@ -89,7 +89,7 @@ WORKFLOWS = [
     {"goal": "安装、启停或卸载插件", "skill": "hetu-manage", "entry": "hetu.plugins.inspect",
      "path": ["核对包内容及摘要", "核对依赖和状态基线", "提交真实安装选择", "回读原操作", "作品数据权限另行精确授权"]},
     {"goal": "授权插件数据或确认数据迁移", "skill": "hetu-manage", "entry": "hetu.plugin_access.authorize",
-     "path": ["固定作品、包摘要和类型Schema", "按真实选择授权", "发现插件专业数据动作", "迁移先准备并展示前后差异", "登记确切迁移决定后执行及回读"]},
+     "path": ["固定作品、包摘要、类型Schema及独立work.read范围", "按真实选择授权", "发现插件专业数据动作", "迁移先准备并展示前后差异", "登记确切迁移决定后执行及回读"]},
     {"goal": "保存文稿版本", "skill": "hetu-manage", "entry": "hetu.git.status",
      "path": ["读取本作品HEAD", "准备固定文稿快照", "审阅完整差异及提交身份", "记录确切snapshot决定", "执行并沿原snapshot和键回读"]},
     {"goal": "导出文稿或交付包", "skill": "hetu-manage", "entry": "hetu.documents.preview_export",
@@ -206,7 +206,7 @@ def build():
               "sources": sources, "verification_evidence": evidence_path if evidence else None,
               "skills": skills,
               "workflows": WORKFLOWS,
-              "extension_runtime_discovery": "河图插件安装在河图；hetu.plugins.inspect → 精确作品授权 → hetu.plugin_access.capabilities → hetu.plugin_access.invoke；稳定入口实时发现，不为每包安装客户端插件。",
+              "extension_runtime_discovery": "河图插件安装在河图；hetu.plugins.inspect → 精确作品授权 → hetu.plugin_access.capabilities → hetu.plugin_access.invoke；稳定入口实时发现，专业对象读写与work.read分别核权，不为每包安装客户端插件。",
               "actions": entries}
     lines = ["# 机器能力地图与 Review 清单", "",
              "这份地图供产品逐项审阅，也供 AI 按目标定位 Skills、CLI 和 MCP。它由同一组源码合同生成，不依赖打开桌面。", "",
@@ -250,7 +250,7 @@ def build():
             lines.append(f"| {item['purpose']}<br>`{item['action']}` | {mcp or '无直接工具映射'} | [{item['skill']}](../{item['skill_source']}) | {item['decision']} | {states[item['status']]}{installed_text} |")
         lines.append("")
     lines += ["## 插件发现入口", "",
-              "河图插件安装在河图，不为每包安装Codex插件或新增MCP连接。先用 `hetu.plugins.inspect` 定位固定包及其自有功能清单；按精确作品授权通过稳定 `hetu.plugin_access.capabilities/invoke` 发现和调用实时Schema。同一连接按需重新查询，停用或升级后旧引用拒绝。插件自行维护视图、数据类型、动作与验证信息，宿主不汇总其业务功能。核心格式和热插拔用例见[插件合同](plugin/21-核心格式与动态能力发现.md)。", ""]
+              "河图插件安装在河图，不为每包安装Codex插件或新增MCP连接。先用 `hetu.plugins.inspect` 定位固定包及其自有功能清单；按精确作品授权通过稳定 `hetu.plugin_access.capabilities/invoke` 发现和调用实时Schema。专业对象读写与 `work.read` 分别核权；目录、固定来源及宿主窄服务见插件合同，不授予任意正文或文件写入。同一连接按需重新查询，停用或升级后旧引用拒绝。插件自行维护视图、数据类型、动作与验证信息，宿主不汇总其业务功能。核心格式和热插拔用例见[插件合同](plugin/21-核心格式与动态能力发现.md)。", ""]
     lines += ["", "## 维护与检查", "", "```bash", "python3 tools/sync-capability-map.py", "python3 tools/sync-capability-map.py --check", "```", "",
               "新增或修改领域动作、MCP 映射、权限路由或 Skill 时重新生成。功能测试通过后将确切动作与测试证据写入地图引用的 evidence 文件，再生成；生成器不会把合同声明自动算作验收通过。", ""]
     return json.dumps(result, ensure_ascii=False, indent=2) + "\n", "\n".join(lines)

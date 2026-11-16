@@ -20,7 +20,7 @@
 | 设置偏好或安装所选Skills套件 | `hetu-manage` | `hetu.local_settings.get` | 读取本机基线 → 准备固定设置方案 → 记录真实选择 → 精确市场预检后执行；未知沿原键只读恢复 → 分别核对安装和本会话加载状态 |
 | 配置模型渠道 | `hetu-manage` | `hetu.model_settings.inspect` | 读取非敏感设置及摘要 → 按真实指令提交固定设置 → 凭据仅进入私密存储 → 回读非敏感结果；生成与费用另行授权 |
 | 安装、启停或卸载插件 | `hetu-manage` | `hetu.plugins.inspect` | 核对包内容及摘要 → 核对依赖和状态基线 → 提交真实安装选择 → 回读原操作 → 作品数据权限另行精确授权 |
-| 授权插件数据或确认数据迁移 | `hetu-manage` | `hetu.plugin_access.authorize` | 固定作品、包摘要和类型Schema → 按真实选择授权 → 发现插件专业数据动作 → 迁移先准备并展示前后差异 → 登记确切迁移决定后执行及回读 |
+| 授权插件数据或确认数据迁移 | `hetu-manage` | `hetu.plugin_access.authorize` | 固定作品、包摘要、类型Schema及独立work.read范围 → 按真实选择授权 → 发现插件专业数据动作 → 迁移先准备并展示前后差异 → 登记确切迁移决定后执行及回读 |
 | 保存文稿版本 | `hetu-manage` | `hetu.git.status` | 读取本作品HEAD → 准备固定文稿快照 → 审阅完整差异及提交身份 → 记录确切snapshot决定 → 执行并沿原snapshot和键回读 |
 | 导出文稿或交付包 | `hetu-manage` | `hetu.documents.preview_export` | 读取确切修订及交付目标 → 准备固定交付方案 → 记录真实决定 → 执行并核验文件和摘要 |
 
@@ -463,7 +463,7 @@ MCP 对应调用 `hetu_get_capability_map`，参数同上。具体动作查询�
 
 ## 插件发现入口
 
-河图插件安装在河图，不为每包安装Codex插件或新增MCP连接。先用 `hetu.plugins.inspect` 定位固定包及其自有功能清单；按精确作品授权通过稳定 `hetu.plugin_access.capabilities/invoke` 发现和调用实时Schema。同一连接按需重新查询，停用或升级后旧引用拒绝。插件自行维护视图、数据类型、动作与验证信息，宿主不汇总其业务功能。核心格式和热插拔用例见[插件合同](plugin/21-核心格式与动态能力发现.md)。
+河图插件安装在河图，不为每包安装Codex插件或新增MCP连接。先用 `hetu.plugins.inspect` 定位固定包及其自有功能清单；按精确作品授权通过稳定 `hetu.plugin_access.capabilities/invoke` 发现和调用实时Schema。专业对象读写与 `work.read` 分别核权；目录、固定来源及宿主窄服务见插件合同，不授予任意正文或文件写入。同一连接按需重新查询，停用或升级后旧引用拒绝。插件自行维护视图、数据类型、动作与验证信息，宿主不汇总其业务功能。核心格式和热插拔用例见[插件合同](plugin/21-核心格式与动态能力发现.md)。
 
 
 ## 维护与检查
