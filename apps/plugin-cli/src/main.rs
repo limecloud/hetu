@@ -1,5 +1,6 @@
 //! 专业插件数据的独立受限入口；基础业务仍使用 hetu CLI。
 use hetu_core::application::extensions::{PluginSession, access_directory};
+use hetu_core::Kernel;
 use serde_json::{Value, json};
 use std::{
     io::{self, Read},
@@ -43,7 +44,7 @@ fn run() -> Result<Value, String> {
         let name = &args[index];
         if !matches!(
             name.as_str(),
-            "--workspace" | "--grant" | "--package-sha256" | "--access-dir"
+            "--workspace" | "--grant" | "--package-sha256" | "--access-dir" | "--context-file"
         ) {
             return Err("不支持的连接参数。".into());
         }
@@ -68,6 +69,26 @@ fn run() -> Result<Value, String> {
     let path = PathBuf::from(required("--workspace")?);
     if !path.is_absolute() {
         return Err("作品目录必须为绝对路径。".into());
+    }
+    if let Some(file) = values.get("--context-file") {
+        let raw = std::fs::read(file).map_err(|_| "插件上下文无法读取。")?;
+        if raw.len() > 1024 * 1024 { return Err("插件上下文超过预算。".into()); }
+        let context: Value = serde_json::from_slice(&raw).map_err(|_| "插件上下文无效。")?;
+        if context["context"]["package_sha256"] != required("--package-sha256")? {
+            return Err("插件上下文与包摘要不一致。".into());
+        }
+        let kernel = Kernel::open_plugin_kernel(&path, context.get("management_binding").cloned())
+            .map_err(|e| e.to_string())?;
+        let request = if tail == ["inspect"] {
+            json!({"action":"hetu.plugins.catalog","contract_revision":"1","input":{}})
+        } else {
+            let mut bytes = Vec::new();
+            io::stdin().take(1024 * 1024 + 1).read_to_end(&mut bytes).map_err(|_| "输入无法读取。")?;
+            if bytes.len() > 1024 * 1024 { return Err("输入超过预算。".into()); }
+            let input: Value = serde_json::from_slice(&bytes).map_err(|_| "输入不是 JSON。")?;
+            json!({"action":tail[1],"contract_revision":"1","input":input})
+        };
+        return Ok(kernel.open_plugin_request(json!({"context":context["context"],"request":request})));
     }
     let directory = values
         .get("--access-dir")

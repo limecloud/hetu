@@ -19,6 +19,7 @@ pub(super) const PROPOSABLE: &[&str] = &[
     "hetu.blueprints.lock",
     "hetu.blueprints.unlock",
     "hetu.documents.save",
+    "hetu.documents.rename",
     "hetu.documents.validate",
     "hetu.documents.finalize",
     "hetu.documents.withdraw_finalization",

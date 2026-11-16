@@ -2,6 +2,8 @@
 
 决策日期：2026-11-16。本文拥有桌面重构目标、进程通信、插件宿主边界与原生退役条件；产品、领域和应用动作分别由01、28、30拥有，插件包与生态详细合同由[插件系列](plugin/README.md)拥有。实际进度归38，测试结果归20；本文中的目标接口不代表已发布能力。
 
+公开插件接入遵循[开放宿主SDK](plugin/27-开放宿主SDK与核心能力审计.md)：安装启用后直接使用核心服务，业务规则与原操作恢复继续生效。历史插件授权字段不作为新插件接入前置。
+
 ## 1. 已采纳的决定
 
 采用Electron＋TypeScript/React工作台、TypeScript插件宿主、Rust App Server、JSON-RPC 2.0私有stdio、独立CLI/MCP和受管Chromium内置浏览器。插件采用DSH风格JavaScript/TypeScript＋React，不使用Rust插件ABI。河图保持创作工作台定位，不引入 Agent Runtime、聊天或自主生成循环。

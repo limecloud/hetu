@@ -102,8 +102,8 @@ def package(node, certificate, version):
             archive = temporary / "Hetu-notarization.zip"
             macos.run(["ditto", "-c", "-k", "--keepParent", "--sequesterRsrc", str(app), str(archive)])
             submission = macos.notarize(archive, keychain, evidence / "app")
-            macos.run(["xcrun", "stapler", "staple", str(app)])
-            macos.run(["xcrun", "stapler", "validate", str(app)])
+            macos.stapler("staple", app)
+            macos.stapler("validate", app)
             macos.run(["spctl", "--assess", "--type", "execute", "--verbose=2", str(app)])
             verify_package(app, version, team)
             output.mkdir(parents=True)
@@ -119,8 +119,8 @@ def package(node, certificate, version):
             macos.run(["codesign", "--force", "--sign", identity, "--keychain", str(keychain), "--timestamp", str(dmg)])
             macos.run(["codesign", "--verify", "--strict", str(dmg)])
             dmg_submission = macos.notarize(dmg, keychain, evidence / "dmg")
-            macos.run(["xcrun", "stapler", "staple", str(dmg)])
-            macos.run(["xcrun", "stapler", "validate", str(dmg)])
+            macos.stapler("staple", dmg)
+            macos.stapler("validate", dmg)
             macos.run(["spctl", "--assess", "--type", "open", "--context", "context:primary-signature", str(dmg)])
             manifest = json.loads(Path(assembled["manifest"]).read_text())
             manifest.update({

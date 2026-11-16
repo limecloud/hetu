@@ -9,6 +9,35 @@ import { exportPluginFile } from "../../../apps/desktop/src/main/plugin-export.t
 
 const work = { workspace_id: "workspace_00000000-0000-4000-8000-000000000000", kind: "novel" as const, object_id: "novel_00000000-0000-4000-8000-000000000000" };
 
+test("插件返回只请求关闭当前视图，拒绝导航参数及失效上下文", async () => {
+  let requests = 0, stale = false;
+  const context = {
+    work, check() { if (stale) throw new Error("上下文变化"); },
+    preferences: () => ({ theme: "system", language: "zh-CN" }),
+    async request() { throw new Error("不能读取作品"); },
+    async handoff() {}, async openDocument() {}, closeView() { requests++; },
+  };
+  assert.deepEqual(await pluginService("close_view", {}, context), { requested: true });
+  await assert.rejects(() => pluginService("close_view", { page: "other" }, context), /参数无效/);
+  stale = true;
+  await assert.rejects(() => pluginService("close_view", {}, context), /上下文变化/);
+  assert.equal(requests, 1);
+});
+
+test("宿主核心导航只接受当前作品的固定页面，不能代理路由或跨作品", async () => {
+  const opened: string[] = [];
+  const context = {
+    work, check() {}, preferences: () => ({ theme: "system", language: "zh-CN" }),
+    async request() { throw new Error("不读取作品"); }, async handoff() {}, async openDocument() {},
+    async openWork(target: string) { opened.push(target); },
+  };
+  for (const target of ["profile", "manuscript", "canon"])
+    assert.deepEqual(await pluginService("open_work", { target }, context), { requested: true });
+  await assert.rejects(() => pluginService("open_work", { target: "settings" }, context), /不可用/);
+  await assert.rejects(() => pluginService("open_work", { target: "profile", work_ref: work }, context), /参数无效/);
+  assert.deepEqual(opened, ["profile", "manuscript", "canon"]);
+});
+
 test("宿主交接核对固定成果和迟到上下文，只返回复制状态", async () => {
   const ref = { object_id: "ext_00000000-0000-4000-8000-000000000000", revision: 2, sha256: "a".repeat(64) };
   const handoffs: unknown[] = [];

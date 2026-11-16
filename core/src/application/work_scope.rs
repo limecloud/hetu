@@ -36,7 +36,10 @@ impl Kernel {
             | "hetu.works.list"
             | "hetu.agent_operations.catalog"
             | "hetu.agent_operations.list" => true,
-            "hetu.plugin_access.record_migration_decision"
+            "hetu.plugins.capabilities"
+            | "hetu.plugins.invoke"
+            | "hetu.novels.snapshot"
+            | "hetu.plugin_access.record_migration_decision"
             | "hetu.plugin_access.authorize"
             | "hetu.plugin_access.inspect"
             | "hetu.plugin_access.capabilities"
@@ -55,6 +58,7 @@ impl Kernel {
             "hetu.documents.get"
             | "hetu.documents.history"
             | "hetu.documents.save"
+            | "hetu.documents.rename"
             | "hetu.documents.withdraw_finalization"
             | "hetu.documents.lifecycle"
             | "hetu.drafts.submit_current" => {

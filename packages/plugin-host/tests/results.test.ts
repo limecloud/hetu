@@ -7,7 +7,7 @@ test("插件成果交接只固定获权版本，拒绝错误摘要、对象、�
   const selected={object_id:"ext_00000000-0000-4000-8000-000000000000",revision:2,sha256:"a".repeat(64)};
   const calls: any[]=[];
   let stale=false, mismatch=false;
-  const context={work,grant:"grant-test",packageSha:"b".repeat(64),check(){if(stale)throw new Error("上下文变化");},async call(method: string,params: any): Promise<any> {
+  const context={work,context:{},packageSha:"b".repeat(64),check(){if(stale)throw new Error("上下文变化");},async call(method: string,params: any): Promise<any> {
     calls.push({method,params});
     return {status:"succeeded",data:{object:{...selected,work_ref:work,owner_plugin_id:mismatch?"org.test.other":"org.test.result"},sha256:selected.sha256}};
   }};

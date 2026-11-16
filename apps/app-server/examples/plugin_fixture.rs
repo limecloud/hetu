@@ -156,7 +156,7 @@ fn main() {
             }
         }
     }
-    let result=kernel.extension_host_request_in(std::path::Path::new(&args[1]),json!({"method":"authorize","params":{"work_ref":work,"plugin_id":manifest["id"],"package_sha256":args[3],"permissions":manifest["permissions"],"types":manifest["contributions"]["data"],"operation_key":"fixture-plugin"}}));
+    let result=kernel.extension_host_request_in(std::path::Path::new(&args[1]),json!({"method":"authorize","params":{"work_ref":work,"plugin_id":manifest["id"],"package_sha256":args[3],"permissions":manifest.get("permissions").cloned().unwrap_or(json!([])),"types":manifest["contributions"]["data"],"operation_key":"fixture-plugin"}}));
     assert_eq!(result["status"], "succeeded", "{result}");
     let mut plugin_objects = Vec::new();
     if args.get(5).is_some_and(|flag| flag == "--plugin-results") {

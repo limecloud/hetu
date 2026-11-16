@@ -101,6 +101,23 @@ class ReleaseBoundaryTests(unittest.TestCase):
             with self.assertRaisesRegex(SystemExit, "相同"):
                 release.release_version(root)
 
+    def test_ticket_network_failure_retries_same_artifact_without_resubmission(self):
+        interrupted = SystemExit('NSURLErrorDomain Code=-1005 "The network connection was lost."')
+        command = ["xcrun", "stapler", "validate", "Hetu.dmg"]
+        with patch.object(release, "run", side_effect=[interrupted, "validated"]) as run, \
+                patch.object(release.time, "sleep") as sleep, contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(release.stapler("validate", Path("Hetu.dmg")), "validated")
+        self.assertEqual([call.args[0] for call in run.call_args_list], [command, command])
+        sleep.assert_called_once_with(2)
+
+    def test_ticket_network_retry_is_bounded_and_other_errors_fail_immediately(self):
+        for message, attempts in [("NSURLErrorDomain Code=-1001 timeout", 3), ("The validate action failed! Error 65.", 1)]:
+            with self.subTest(message=message), patch.object(release, "run", side_effect=SystemExit(message)) as run, \
+                    patch.object(release.time, "sleep"), contextlib.redirect_stdout(io.StringIO()):
+                with self.assertRaisesRegex(SystemExit, message):
+                    release.stapler("validate", Path("Hetu.dmg"))
+                self.assertEqual(run.call_count, attempts)
+
 
 
 if __name__ == "__main__":

@@ -57,6 +57,16 @@ test("Mac工作台布局、正文操作与阅读位置在真实Core中贯通", a
     expect((await size(".project-navigation")).width).toBe(170);
     expect((await size(".manuscript-directory")).width).toBe(210);
     expect((await size(".manuscript-paper")).width).toBe(880);
+    const proseLayout = await page.locator(".author-editor").evaluate(element => {
+      const style = getComputedStyle(element);
+      return { width: element.getBoundingClientRect().width, available: element.parentElement!.clientWidth,
+        border: style.borderTopWidth, padding: style.paddingLeft,
+        indent: getComputedStyle(element.querySelector(".cm-line")!).textIndent };
+    });
+    expect(proseLayout.width).toBe(proseLayout.available);
+    expect(proseLayout.border).toBe("0px");
+    expect(proseLayout.padding).toBe("0px");
+    expect(parseFloat(proseLayout.indent)).toBeGreaterThan(0);
     const typography = await page.evaluate(() => [...new Set([...document.querySelectorAll<HTMLElement>("body *")]
       .filter(element => element.checkVisibility() && [...element.childNodes].some(node => node.nodeType === Node.TEXT_NODE && node.textContent?.trim()))
       .map(element => parseFloat(getComputedStyle(element).fontSize)))].sort((a, b) => a - b));

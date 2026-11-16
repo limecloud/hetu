@@ -266,6 +266,7 @@ impl Kernel {
             "迁移目标Schema已变化。",
         )?;
         schema(&plan["content"], &target["schema"])?;
+        if grant["access_mode"] != "open" {
         let access = access.ok_or_else(|| Error::new("forbidden", "缺少可信宿主的迁移决定。"))?;
         let path = decision_path(grant, text(plan, "migration_id")?)?;
         ensure(
@@ -281,6 +282,7 @@ impl Kernel {
             "forbidden",
             "批准不属于此授权、包或迁移方案。",
         )?;
+        }
         let (mut record, before_sha) =
             self.extension_object(work, owner, text(plan, "object_id")?, None)?;
         ensure(

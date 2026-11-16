@@ -88,15 +88,6 @@ export class PluginPackage {
     const manifest: PluginManifest = JSON.parse(raw.toString("utf8"));
     if (!validate(manifest))
       throw new Error("插件清单不兼容：" + ajv.errorsText(validate.errors));
-    if (manifest.permissions.length && !manifest.contributions.data.length)
-      throw new Error("数据权限必须声明对应的专业数据类型。");
-    if (
-      manifest.contributions.actions.some(
-        (a) => a.effect === "managed_write",
-      ) &&
-      !manifest.permissions.includes("objects.write")
-    )
-      throw new Error("写动作必须声明专业对象写入权限。");
     const names = new Set<string>();
     for (const v of manifest.contributions.views) {
       if (names.has(v.id)) throw new Error("视图贡献重复。");

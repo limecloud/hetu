@@ -7,13 +7,13 @@ import { PluginPackage } from "../../../packages/plugin-host/src/package.ts";
 import { navigate } from "./navigation.ts";
 
 const root = path.resolve(import.meta.dirname, "../../..");
-test("无数据插件安装、计算、重开复用绑定、撤权拒绝及重新授权", async () => {
+test("无权限声明插件安装即用核心、重开、无新增授权及停用释放", async () => {
   test.setTimeout(180000);
   const folder = await mkdtemp(path.join(os.tmpdir(), "hetu-computation-ui-"));
   const packageDirectory = path.join(folder, "package"), workspace = path.join(folder, "作品"), profile = path.join(folder, "profile"), access = path.join(folder, "access");
   await mkdir(packageDirectory);
   await writeFile(path.join(packageDirectory, "plugin.json"), JSON.stringify({
-    manifest_version: 1, host_api: "1", id: "org.test.counter", version: "1.0.0", license: "MIT", dependencies: [], permissions: [],
+    manifest_version: 1, host_api: "1", id: "org.test.counter", version: "1.0.0", license: "MIT", dependencies: [],
     display: { "zh-CN": "文字计算器", en: "Text counter" }, description: { "zh-CN": "只统计作者明确输入的文字", en: "Counts explicitly supplied text" },
     contributions: { data: [], views: [{ id: "main", title: "字符统计", entry: "index.html", object_kinds: [] }], actions: [{ id: "count", title: "统计字符", effect: "read", input_schema: { type: "object", additionalProperties: false, required: ["text"], properties: { text: { type: "string", maxLength: 10000 } } } }] },
     runtime: { entry: "backend.mjs" },
@@ -25,6 +25,7 @@ test("无数据插件安装、计算、重开复用绑定、撤权拒绝及重�
   const fixture = spawnSync(path.join(root, "target/debug/examples/plugin_fixture"), [workspace, access, path.join(pkg.source, "plugin.json"), pkg.sha256], { encoding: "utf8", timeout: 30000 });
   expect(fixture.status, fixture.stderr).toBe(0);
   const context = JSON.parse(fixture.stdout);
+  const originalGrants = await readdir(path.join(access, "grants"));
   let app: ElectronApplication | undefined;
   async function launch() {
     app = await electron.launch({ args: [path.join(root, "apps/desktop")], env: {
@@ -51,36 +52,47 @@ test("无数据插件安装、计算、重开复用绑定、撤权拒绝及重�
     await navigate(page, "创作插件");
     await app!.evaluate(({ dialog }, directory) => { dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [directory] }); }, packageDirectory);
     await page.getByRole("button", { name: "安装插件包", exact: true }).click();
+    await expect(page.getByRole("button", { name: "字符统计", exact: true })).toBeVisible();
     await page.getByRole("button", { name: "字符统计", exact: true }).click();
     let view = await pluginPage();
+    await expect(page.locator(".workbench-topbar")).toHaveCount(0);
+    await expect(page.locator(".project-navigation")).toHaveCount(0);
+    const area = await page.locator(".surface").boundingBox();
+    expect(area?.x).toBe(0);
+    expect(area?.y).toBe(36);
+    await expect.poll(() => view.evaluate(() => innerWidth)).toBe(Math.round(area!.width));
     await view.getByRole("textbox", { name: "输入文字" }).fill("灯塔🌿");
     await view.getByRole("button", { name: "统计", exact: true }).click();
     await expect(view.getByRole("status")).toHaveText("3 个字符");
-    const denied = await view.evaluate(() => (window as any).hetu.request("hetu.extensions.objects.list", {}));
-    expect(denied.error.code).toBe("forbidden");
-    expect(await app!.evaluate(() => (globalThis as any).permissionPrompts)).toContainEqual(expect.stringContaining("无作品数据读取或写入权限"));
+    await page.getByRole("button", { name: "返回工作台", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "创作插件", exact: true })).toBeVisible();
+    await expect(page.locator(".workbench-topbar")).toBeVisible();
+    await expect(page.locator(".project-navigation")).toBeVisible();
+    await page.getByRole("button", { name: "字符统计", exact: true }).click();
+    view = await pluginPage();
+    const snapshot = await view.evaluate(() => (window as any).hetu.request("hetu.novels.snapshot", {}));
+    expect(snapshot.status).toBe("succeeded");
+    expect(snapshot.data.document_count).toBe(1);
+    const objects = await view.evaluate(() => (window as any).hetu.request("hetu.extensions.objects.list", {}));
+    expect(objects.status).toBe("succeeded");
+    expect(objects.data.objects).toEqual([]);
+    expect(JSON.parse(await app!.evaluate(() => JSON.stringify((globalThis as any).permissionPrompts)))).toHaveLength(1); // 只有安装选择。
     await app!.close(); app = undefined;
     page = await launch();
     await page.getByRole("button", { name: "字符统计", exact: true }).click();
     view = await pluginPage();
-    expect(await app!.evaluate(() => (globalThis as any).permissionPrompts)).toEqual([]);
+    expect(await app!.evaluate(() => JSON.stringify((globalThis as any).permissionPrompts))).toBe("[]");
     await view.getByRole("textbox", { name: "输入文字" }).fill("雾港");
     await view.getByRole("button", { name: "统计", exact: true }).click();
     await expect(view.getByRole("status")).toHaveText("2 个字符");
     const preferences = JSON.parse(await readFile(path.join(profile, "plugin-state.json"), "utf8"));
-    const grant = Object.values(preferences.grants)[0] as string;
-    const grantFile = path.join(access, "grants", grant + ".json");
-    const record = JSON.parse(await readFile(grantFile, "utf8"));
-    expect(record.permissions).toEqual([]); expect(record.types).toEqual([]);
-    await writeFile(grantFile, JSON.stringify({ ...record, revoked: true }));
-    await view.getByRole("button", { name: "统计", exact: true }).click();
-    await expect(view.getByRole("status")).toContainText("撤销");
+    expect(preferences.grants ?? {}).toEqual({});
+    expect(await readdir(path.join(access, "grants"))).toEqual(originalGrants);
+    await page.getByRole("button", { name: "返回工作台", exact: true }).click();
+    await expect(page.locator(".workbench-topbar")).toBeVisible();
     await navigate(page, "创作插件");
-    await page.getByRole("button", { name: "字符统计", exact: true }).click();
-    view = await pluginPage();
-    await view.getByRole("textbox", { name: "输入文字" }).fill("重新获权");
-    await view.getByRole("button", { name: "统计", exact: true }).click();
-    await expect(view.getByRole("status")).toHaveText("4 个字符");
-    expect((await readdir(path.join(access, "grants"))).length).toBe(3); // 夹具、首次宿主绑定、重新授权。
+    await page.getByRole("button", { name: "停用", exact: true }).click();
+    await expect(page.getByRole("button", { name: "启用", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "字符统计", exact: true })).toHaveCount(0);
   } finally { await app?.close(); }
 });

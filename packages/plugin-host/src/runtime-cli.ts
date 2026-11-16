@@ -1,4 +1,6 @@
 /** 同一插件宿主的无窗口入口；仅运行明确指定且摘要匹配的包。 */
+import { readFile } from "node:fs/promises";
+import { PluginInstallations } from "./installations.ts";
 import { PluginPackage } from "./package.ts";
 import { BackendSupervisor } from "./backend.ts";
 import { spawn } from "node:child_process";
@@ -29,6 +31,9 @@ while (args[0]?.startsWith("--") && args[0] !== "--mcp") {
       "--package-sha256",
       "--access-dir",
       "--core-cli",
+      "--work-ref",
+      "--state-dir",
+      "--management-context-file",
     ].includes(key) ||
     flags.has(key)
   )
@@ -43,11 +48,30 @@ const required = (key: string) => {
 const pkg = await PluginPackage.inspect(required("--package"));
 if (pkg.sha256 !== required("--package-sha256"))
   throw new Error("插件包摘要与授权不一致。");
+const openMode = flags.has("--work-ref");
+let sessionDirectory: string | undefined;
+const installed = openMode ? new PluginInstallations(required("--state-dir")) : undefined;
+async function checkInstalled() {
+  if (!installed) return;
+  const {state} = await installed.read(), host = await installed.host(state);
+  if (!host.active(pkg.manifest.id) || host.package(pkg.manifest.id).sha256 !== pkg.sha256)
+    throw new Error("插件已停用或包已变化，请重新发现。");
+}
+await checkInstalled();
+if (openMode) {
+  sessionDirectory = await mkdtemp(path.join(os.tmpdir(), "hetu-plugin-context-"));
+  const management = flags.has("--management-context-file")
+    ? JSON.parse(await readFile(required("--management-context-file"), "utf8")) : undefined;
+  await writeFile(path.join(sessionDirectory,"context.json"), JSON.stringify({
+    context: {plugin_id:pkg.manifest.id,package_sha256:pkg.sha256,
+      work_ref:JSON.parse(required("--work-ref")),types:pkg.manifest.contributions.data},
+    ...(management ? {management_binding:management} : {}),
+  }), {mode:0o600});
+}
 const coreArgs = [
   "--workspace",
   required("--workspace"),
-  "--grant",
-  required("--grant"),
+  ...(openMode ? ["--context-file", path.join(sessionDirectory!, "context.json")] : ["--grant", required("--grant")]),
   "--package-sha256",
   pkg.sha256,
   ...(flags.has("--access-dir")
@@ -99,28 +123,31 @@ if (
   context.package_sha256 !== pkg.sha256
 )
   throw new Error("授权身份与固定插件包不一致。");
-if (context.permissions.some((permission: any) => !pkg.manifest.permissions.includes(permission)) ||
-    context.types.some((type: any) => !pkg.manifest.contributions.data.some(declared => isDeepStrictEqual(type, declared))))
+if (!openMode && (context.permissions.some((permission: any) => !(pkg.manifest.permissions ?? []).includes(permission)) ||
+    context.types.some((type: any) => !pkg.manifest.contributions.data.some(declared => isDeepStrictEqual(type, declared)))))
   throw new Error("插件授权超出固定包声明，请重新核对类型与权限。");
 const actions = pkg.manifest.contributions.actions.filter(
   (action) =>
-    action.effect === "read" || context.permissions.includes("objects.write"),
+    openMode || action.effect === "read" || context.permissions.includes("objects.write"),
 );
-const request: PluginBridge["request"] = (action, input) => {
+const request: PluginBridge["request"] = async (action, input) => {
+  await checkInstalled();
   if (input.work_ref && !sameWork(input.work_ref, context.work_ref))
     return Promise.reject(new Error("插件不能切换作品。"));
   return core(["call", action, "--input", "-"], {
     ...input,
-    work_ref: context.work_ref,
+    ...(!openMode || action.startsWith("hetu.extensions.") ? {work_ref:context.work_ref} : {}),
   });
 };
 let backend: BackendSupervisor | undefined, snapshot: string | undefined;
 async function cleanup() {
   await backend?.dispose().catch(() => {});
   if (snapshot) await rm(snapshot, { recursive: true, force: true });
+  if (sessionDirectory) await rm(sessionDirectory, {recursive:true,force:true});
 }
 
 async function invoke(action: string, input: unknown) {
+  await checkInstalled();
   if (
     !actions.some((a) => a.id === action) ||
     (await core(["inspect"])).status !== "succeeded"
@@ -143,6 +170,7 @@ async function invoke(action: string, input: unknown) {
       pkg,
       work_ref: context.work_ref,
       request,
+      core_actions: context.core_actions,
     });
     await backend.initialize();
   }
@@ -155,10 +183,11 @@ const capabilities = () => ({
   actions,
   data_actions: context.actions,
   types: context.types,
-  permissions: context.permissions,
+  ...(openMode ? {access_mode:"open", core_actions:context.core_actions} : {permissions:context.permissions}),
 });
 if (args[0] === "capabilities" && args.length === 1) {
   console.log(JSON.stringify(capabilities()));
+  await cleanup();
 } else if (
   ["invoke", "call"].includes(args[0]) &&
   args.length === 4 &&
@@ -173,7 +202,7 @@ if (args[0] === "capabilities" && args.length === 1) {
   }
   try {
     const value = JSON.parse(input);
-    if (args[0] === "call" && !context.actions.some((action: any) => action.name === args[1]))
+    if (args[0] === "call" && !openMode && !context.actions.some((action: any) => action.name === args[1]))
       throw new Error("插件数据动作未获权。");
     console.log(JSON.stringify(args[0] === "call" ? await request(args[1], value) : await invoke(args[1], value)));
   } finally {
@@ -193,12 +222,20 @@ if (args[0] === "capabilities" && args.length === 1) {
       description: action.title,
       inputSchema: action.input_schema,
     })),
+    ...(openMode ? [{
+      name: "hetu_core_request",
+      description: "按已发现的核心动作与Schema调用宿主；保持当前作品和执行身份。",
+      inputSchema: {type:"object",additionalProperties:false,required:["action","input"],properties:{
+        action:{type:"string",enum:context.core_actions.map((a:any)=>a.name)},input:{type:"object"},
+      }},
+    }] : []),
   ];
   if (new Set(tools.map((t) => t.name)).size !== tools.length)
     throw new Error("动作映射产生MCP名称冲突。");
   const validators = tools.map((tool) =>
     new Ajv({ strict: false }).compile(tool.inputSchema),
   );
+  const bridgeRequest = request;
   const createServer = () => {
     const server = new Server(
       { name: "hetu-plugin-runtime", version: "0.9.0" },
@@ -208,10 +245,10 @@ if (args[0] === "capabilities" && args.length === 1) {
       },
     );
     let busy = false;
-    server.setRequestHandler("tools/list", async () => ({
-      tools:
-        (await core(["inspect"])).status === "succeeded" ? (tools as any) : [],
-    }));
+    server.setRequestHandler("tools/list", async () => {
+      await checkInstalled();
+      return {tools:(await core(["inspect"])).status === "succeeded" ? (tools as any) : []};
+    });
     server.setRequestHandler("tools/call", async (request) => {
       const index = tools.findIndex(
         (tool) => tool.name === request.params.name,
@@ -219,6 +256,7 @@ if (args[0] === "capabilities" && args.length === 1) {
       if (index < 0 || busy) throw new Error("工具不可用或前一操作尚未完成。");
       if (!validators[index](request.params.arguments ?? {}))
         throw new Error("工具参数不符合当前Schema。");
+      await checkInstalled();
       if ((await core(["inspect"])).status !== "succeeded")
         throw new Error("插件授权已撤销。");
       busy = true;
@@ -226,12 +264,12 @@ if (args[0] === "capabilities" && args.length === 1) {
         const declaration = context.actions.find(
           (action: any) => action.tool_name === request.params.name,
         );
-        const value = declaration
-          ? await core(["call", declaration.name, "--input", "-"], {
-              ...request.params.arguments,
-              work_ref: context.work_ref,
-            })
-          : await invoke(actions[index].id, request.params.arguments ?? {});
+        const input = request.params.arguments ?? {};
+        const value = request.params.name === "hetu_core_request" && openMode
+          ? await bridgeRequest(input.action as string, input.input as Record<string, unknown>)
+          : declaration
+            ? await bridgeRequest(declaration.name, input)
+            : await invoke(actions[index].id, input);
         return {
           content: [{ type: "text" as const, text: JSON.stringify(value) }],
           structuredContent: (value && typeof value === "object"

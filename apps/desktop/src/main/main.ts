@@ -44,7 +44,6 @@ import {
   BackendSupervisor,
 } from "@hetu/plugin-host";
 import {
-  dataActions,
   sameWork,
   type WorkRef,
   type Result,
@@ -123,7 +122,6 @@ let binding:
       token: string;
       owner: string;
       view: string;
-      grant: string;
       work: WorkRef;
       epoch: number;
       package_sha256: string;
@@ -250,6 +248,10 @@ async function closeSurface() {
   backend = undefined;
   await oldBackend?.dispose().catch(() => {});
 }
+function requestPluginReturn() {
+  if (binding && !window.isDestroyed())
+    window.webContents.send("desktop:close-plugin", { owner: binding.owner, view: binding.view, epoch: binding.epoch });
+}
 function layout() {
   if (!surface) return;
   const [width, height] = window.getContentSize();
@@ -260,78 +262,22 @@ function layout() {
     height: Math.max(0, Math.min(bounds.height, height - bounds.y)),
   });
 }
-function grantKey(pkg: PluginPackage, ref: WorkRef) {
-  return JSON.stringify([
-    pkg.manifest.id,
-    pkg.sha256,
-    ref.workspace_id,
-    ref.kind,
-    ref.object_id,
-  ]);
-}
-async function ensureGrant(pkg: PluginPackage) {
-  if (!server || !work) throw new Error("请先选择创作对象。");
-  const selectedWork = work,
-    selectedEpoch = epoch;
-  const key = grantKey(pkg, selectedWork);
-  let grant = prefs.grants[key];
-  if (grant) {
-    const probe = await server.request("extensions/host", {
-      method: "inspect",
-      params: { grant_id: grant, package_sha256: pkg.sha256 },
-    });
-    if (probe.status === "succeeded" && probe.data.plugin_id === pkg.manifest.id && sameWork(probe.data.work_ref, selectedWork)) return grant;
-    delete prefs.grants[key];
-  }
-  const decision = await dialog.showMessageBox(window, {
-    type: "question",
-    buttons: ["取消", "授权当前作品"],
-    defaultId: 0,
-    cancelId: 0,
-    title: "插件作品授权",
-    message: pkg.manifest.display["zh-CN"],
-    detail:
-      pkg.manifest.description["zh-CN"] +
-      "\n\n权限：" +
-      (pkg.manifest.permissions.join("、") || "无作品数据读取或写入权限") +
-      "\n仅当前创作对象，不包含正文采纳、定稿或其他作品。",
-  });
-  if (decision.response !== 1) throw new Error("未授权插件操作当前作品。");
-  if (epoch !== selectedEpoch || !work || !sameWork(work, selectedWork))
-    throw new Error("作品上下文已变化，请重新授权。");
-  const result = await server.request("extensions/host", {
-    method: "authorize",
-    params: {
-      work_ref: work,
-      plugin_id: pkg.manifest.id,
-      package_sha256: pkg.sha256,
-      permissions: pkg.manifest.permissions,
-      types: pkg.manifest.contributions.data,
-      operation_key: randomUUID(),
-    },
-  });
-  grant = unwrap(result).grant_id;
-  prefs.grants[key] = grant;
-  await persist();
-  return grant;
-}
 async function pluginContext(owner: string) {
   if (!server || !work || !host.active(owner)) throw new Error("请选择作品并启用对应插件。");
   const selectedServer = server, selectedWork = work, selectedEpoch = epoch, pkg = host.package(owner);
-  const grant = await ensureGrant(pkg);
   const check = () => {
     if (server !== selectedServer || epoch !== selectedEpoch || !work || !sameWork(work, selectedWork)
-      || !host.active(owner) || host.package(owner).sha256 !== pkg.sha256 || prefs.grants[grantKey(pkg, selectedWork)] !== grant)
-      throw new Error("作品、插件包或授权已变化，请重新读取。");
+      || !host.active(owner) || host.package(owner).sha256 !== pkg.sha256)
+      throw new Error("作品或插件包已变化，请重新读取。");
   };
   check();
-  return { work: selectedWork, grant, packageSha: pkg.sha256, call: (method: string, params: Record<string, unknown>) => selectedServer.request(method, params), check };
+  return { work: selectedWork, context: {plugin_id:owner,package_sha256:pkg.sha256,work_ref:selectedWork,types:pkg.manifest.contributions.data}, packageSha: pkg.sha256, call: (method: string, params: Record<string, unknown>) => selectedServer.request(method, params), check };
 }
 const pluginMigrations = new PluginMigrationReview(pluginContext);
-function pluginMachineConnection(owner: string, grant: string | undefined, selectedWork: WorkRef) {
+function pluginMachineConnection(owner: string, selectedWork: WorkRef) {
   const pkg = host.package(owner);
-  return { plugin_id: owner, package_sha256: pkg.sha256, grant_id: grant, work_ref: selectedWork,
-    workspace_path: workspaceRoot, package_path: pkg.source, access_directory: process.env.HETU_PLUGIN_ACCESS_DIR ?? null,
+  return { plugin_id: owner, package_sha256: pkg.sha256, access_mode: "open", work_ref: selectedWork,
+    workspace_path: workspaceRoot, package_path: pkg.source, state_directory: installations.directory, access_directory: process.env.HETU_PLUGIN_ACCESS_DIR ?? null,
     core_cli: process.env.HETU_PLUGIN_CLI ?? path.join(app.isPackaged ? process.resourcesPath : root,
       app.isPackaged ? "bin" : "target/debug", process.platform === "win32" ? "hetu-plugin.exe" : "hetu-plugin"),
     runtime: path.join(dist, "plugin-runtime.mjs"), node_executable: pluginNodeBinary() };
@@ -348,19 +294,12 @@ async function pluginRequest(
     !server
   )
     throw new Error("插件上下文已变化。");
-  if (!dataActions.includes(action as any))
-    throw new Error("插件未获此核心动作。");
-  if (!current.grant) throw new Error("此视图没有作品数据权限。");
-  if (input.work_ref && !sameWork(input.work_ref, current.work))
-    throw new Error("插件不能切换作品。");
-  return server.request("extensions/request", {
-    grant_id: current.grant,
-    package_sha256: current.package_sha256,
-    request: {
-      action,
-      contract_revision: "1",
-      input: { ...input, work_ref: current.work },
-    },
+  const pkg = host.package(current.owner);
+  if (pkg.sha256 !== current.package_sha256) throw new Error("插件包已变化，请重新发现。");
+  return server.request("plugins/request", {
+    context: { plugin_id: current.owner, package_sha256: current.package_sha256,
+      work_ref: current.work, types: pkg.manifest.contributions.data },
+    request: { action, contract_revision: "1", input },
   });
 }
 function serverBinary() {
@@ -699,7 +638,10 @@ app
         { type: "separator" as const }, { role: "quit" as const },
       ] }] : [{ label: "文件", submenu: [settingsMenu, { type: "separator" as const }, { role: "quit" as const }] }]),
       { role: "editMenu", label: "编辑" },
-      { label: "显示", submenu: [{ role: "togglefullscreen", label: "切换全屏" }] },
+      { label: "显示", submenu: [
+        { label: "返回工作台", accelerator: "Alt+Left", click: requestPluginReturn },
+        { role: "togglefullscreen", label: "切换全屏" },
+      ] },
       { role: "windowMenu", label: "窗口" },
     ]));
     window.webContents.on("will-navigate", (event) => event.preventDefault());
@@ -1338,7 +1280,7 @@ app
           context.check();
           clipboard.writeText("请通过河图的精确插件连接接续当前成果。先inspect或capabilities发现实际能力，再读取固定修订；按我的目标处理。范围仅此作品的插件对象，不含正文采纳、定稿或外部副作用。保留原操作键，未知结果先回读。\n" + JSON.stringify({
             ...fixed, page: "plugin.results", client_adapter: agentClient(),
-            plugin_connection: pluginMachineConnection(owner, context.grant, context.work), limitations: ["plugin_objects_only"],
+            plugin_connection: pluginMachineConnection(owner, context.work), limitations: ["plugin_objects_only"],
           }, null, 2));
           return { copied: true };
         }
@@ -1395,7 +1337,7 @@ app
         );
         context.limitations = handoff.limitations;
         if (binding) {
-          context.plugin_connection = pluginMachineConnection(binding.owner, binding.grant, binding.work);
+          context.plugin_connection = pluginMachineConnection(binding.owner, binding.work);
         }
         const text =
           "请通过河图的机器入口接续当前创作对象。使用所选客户端与确切 management_ref，先发现实际能力、读取固定修订与现有成果，再按我的目标处理本页。插件数据仅限以下精确范围；正文采纳、定稿及外部副作用须另行决定。保留原操作键，未知结果先回读。\n" +
@@ -1437,7 +1379,7 @@ app
           (pkg.manifest.runtime
             ? "包含Node后端代码，仅安装可信来源。"
             : "使用隔离Web界面。") +
-          "\n新包需要重新授予作品权限；现有成果和历史继续保留。",
+          "\n启用后可使用宿主核心能力；现有成果和历史继续保留。",
       });
       if (confirm.response !== 1) return overview();
       return applyPlugin({ action: "install", package_directory: selected.filePaths[0], package_sha256: pkg.sha256,
@@ -1456,7 +1398,7 @@ app
         cancelId: 0,
         message: "卸载" + pkg.manifest.display["zh-CN"] + "？",
         detail:
-          "作品成果、历史修订和通用导出将继续保留。插件授权会撤销，依赖插件会停用。",
+          "作品成果、历史修订和通用导出将继续保留。插件运行将停止，依赖插件会停用。",
       });
       if (decision.response !== 1) return overview();
       return applyPlugin({ action: "uninstall", plugin_id: id, package_sha256: pkg.sha256,
@@ -1494,8 +1436,7 @@ app
       const pkg = host.package(owner),
         view = pkg.manifest.contributions.views.find((v) => v.id === viewId);
       if (!view) throw new Error("视图未注册。");
-      const grant = await ensureGrant(pkg);
-      await closeSurface();
+          await closeSurface();
       const token = randomUUID(),
         partition = "plugin-" + token,
         s = session.fromPartition(partition, { cache: false });
@@ -1542,7 +1483,6 @@ app
         token,
         owner,
         view: viewId,
-        grant,
         work,
         epoch,
         package_sha256: pkg.sha256,
@@ -1573,6 +1513,7 @@ app
         work_ref: b.work,
         package_sha256: b.package_sha256,
         view_id: b.view,
+        navigation: host.package(b.owner).manifest.contributions.views.find(view => view.id === b.view)?.navigation ?? "host",
       };
     });
     ipcMain.handle("plugin:request", (event, action, input) =>
@@ -1582,12 +1523,8 @@ app
       const current = pluginCaller(event),
         pkg = host.package(current.owner);
       if (!server) throw new Error("作品连接已关闭。");
-      const live = unwrap(await server.request("extensions/host", {
-        method: "inspect",
-        params: { grant_id: current.grant, package_sha256: current.package_sha256 },
-      }));
-      if (pluginCaller(event) !== current || live.plugin_id !== current.owner || !sameWork(live.work_ref, current.work))
-        throw new Error("插件授权或作品上下文已变化。");
+      if (pluginCaller(event) !== current || pkg.sha256 !== current.package_sha256)
+        throw new Error("插件包或作品上下文已变化。");
       if (!backend) {
         const directory = await installations.snapshot(pkg);
         backend = new BackendSupervisor({
@@ -1597,6 +1534,7 @@ app
           pkg,
           work_ref: current.work,
           request: (action, input) => pluginRequest(current, action, input),
+          core_actions: unwrap(await pluginRequest(current, "hetu.capabilities.get", {})).actions,
         });
         await backend.initialize();
       }
@@ -1609,13 +1547,15 @@ app
       return pluginService(action,input,{
         work:current.work,check,request:(action,input)=>pluginRequest(current,action,input),
         preferences:()=>({theme:localState.preferences.appearance,language:localState.preferences.language??"zh-CN"}),
+        closeView:()=>{check();requestPluginReturn();},
+        openWork:async(target)=>{check();window.webContents.send("desktop:open-work",{work_ref:current.work,epoch:current.epoch,target});},
         handoff:async(input)=>{
           const connection=await ensureConnection(agentClient());check();
           const fixed=input.object_ref?[{kind:"plugin_object",work_ref:current.work,owner_plugin_id:current.owner,...input.object_ref as object}]:[];
           clipboard.writeText("请通过河图的机器入口接续当前小说规划。先发现实际能力、读取固定成果，再按目标处理；保留原键，未知先回读。正文采纳、定稿与外部副作用另行决定。\n"+JSON.stringify({
             goal:input.goal,work_ref:current.work,fixed_refs:fixed,node_id:input.node_id,run_ref:input.run_ref,
             client_adapter:agentClient(),management_ref:connection.management_ref,
-            plugin_connection:pluginMachineConnection(current.owner,current.grant,current.work),
+            plugin_connection:pluginMachineConnection(current.owner,current.work),
           },null,2));
         },
         openDocument:async(document_id)=>{check();window.webContents.send("desktop:open-document",{work_ref:current.work,document_id});},
@@ -1671,9 +1611,9 @@ app
       if (method === "continue") {
         const selectedEpoch = epoch;
         const fixed = await pluginMigrations.handoff(input.owner, input.migration_id, input.plan_sha256);
-        const connection = { ...pluginMachineConnection(input.owner, fixed.grant_id, fixed.work_ref), ...fixed };
+        const connection = { ...pluginMachineConnection(input.owner, fixed.work_ref), ...fixed };
         if (selectedEpoch !== epoch) throw new Error("作品已变化，请重新交接。");
-        clipboard.writeText("请接续河图的固定插件数据升级。先使用精确插件连接发现实际能力，读取 migrations.get 和原键 operations.get；只有 Core 核验作者批准后才能执行 migrations.execute。保留迁移ID、方案摘要与原操作键，未知结果先回读。范围仅当前作品的插件对象，不包含正文采纳、定稿或其他副作用。\n" + JSON.stringify({ page: "plugin.migration", client_adapter: agentClient(), plugin_connection: connection }, null, 2));
+        clipboard.writeText("请接续河图的固定插件数据升级。先使用精确插件连接发现实际能力，读取 migrations.get 和原键 operations.get；固定差异与 CAS 核验通过后执行 migrations.execute。保留迁移ID、方案摘要与原操作键，未知结果先回读。范围仅当前作品的插件对象，不包含正文采纳、定稿或其他副作用。\n" + JSON.stringify({ page: "plugin.migration", client_adapter: agentClient(), plugin_connection: connection }, null, 2));
         return { copied: true };
       }
       throw new Error("未知插件数据升级操作。");

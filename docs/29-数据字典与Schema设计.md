@@ -545,3 +545,11 @@ AssetDesign与AssetSelection继续拥有资料设计和用途选用，MediaArtif
 机器可读功能地图为生成投影，不保存作品状态、授权、凭据或第二份领域事实。字段与当前实现以 `contracts/capability-map.json` 指向的原动作Schema为准。
 
 插件核心格式与演进规则由[插件21](plugin/21-核心格式与动态能力发现.md#2-最小核心格式)索引。河图包、专业修订、本机安装和当前获权能力分别建模；外部Agent接入包不参与河图专业插件身份。安装状态不随作品交付，能力摘要只固定当前合同投影，不代替作品修订、授权或作者决定。
+
+## 开放宿主上下文与小说投影
+
+开放插件上下文为`plugin_id, package_sha256, work_ref, types`，由运行宿主装配；不增加权威数据库或插件授权记录。类型是专业对象的Schema声明。物理持久化仍复用现有Core修订和文件事务，见插件20及27。
+
+`hetu.novels.snapshot`返回`work_ref, fixed_ref, volumes, documents, document_count, word_count, counting_unit, statistics_sha256`。documents逐项包含document_id、title、volume_id、固定source_ref与word_count。计数为非空白Unicode标量，包含标点及单个emoji标量，不宣称等于平台计费字数。revision仅固定小说资料／目录修订；正文来源逐章固定实际读取修订，旧资料修订不代表整书历史正文快照。
+
+`hetu.documents.rename`不修改正文字节，建立新文稿修订作为CAS边界，返回相同内容摘要和新的revision_id。历史revision当前不包含独立标题快照，因此文稿历史不能据此声称可恢复历次标题；标题变更由操作及当前文档记录。未来若需要标题历史，必须扩充版本化记录合同，不能在插件私建一份历史。

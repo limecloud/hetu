@@ -39,6 +39,9 @@ const WORKSPACE_ACTIONS: &[&str] = &[
 ];
 // 已有作品授权只开放读取、方案和有界检查；具体变更仍须作者批准固定方案。
 const REVIEW_ACTIONS: &[&str] = &[
+    "hetu.plugins.capabilities",
+    "hetu.plugins.invoke",
+    "hetu.novels.snapshot",
     "hetu.plugin_access.authorize",
     "hetu.plugin_access.record_migration_decision",
     "hetu.plugin_access.inspect",
@@ -252,7 +255,10 @@ fn work_action_allowed(name: &str, reference: &Value) -> bool {
     }
     matches!(
         name,
-        "hetu.drafts.list"
+        "hetu.plugins.capabilities"
+            | "hetu.plugins.invoke"
+            | "hetu.novels.snapshot"
+            | "hetu.drafts.list"
             | "hetu.reviews.list"
             | "hetu.reviews.get"
             | "hetu.reviews.validate"

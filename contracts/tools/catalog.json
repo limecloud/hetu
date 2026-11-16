@@ -1276,6 +1276,33 @@
       "profiles": [
         "stable"
       ]
+    },
+    {
+      "name": "hetu_plugins_capabilities",
+      "action": "hetu.plugins.capabilities",
+      "title": "发现河图插件能力",
+      "description": "安装启用后使用宿主公开核心与专业动作，无独立插件授权；携带当前management_ref和固定包／能力摘要，未知结果按原键回读。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_plugins_invoke",
+      "action": "hetu.plugins.invoke",
+      "title": "调用河图插件动作",
+      "description": "安装启用后使用宿主公开核心与专业动作，无独立插件授权；携带当前management_ref和固定包／能力摘要，未知结果按原键回读。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_novels_snapshot",
+      "action": "hetu.novels.snapshot",
+      "title": "读取正式目录与实际字数",
+      "description": "读取当前小说的正式目录、固定正文来源和非空白Unicode字符统计。",
+      "profiles": [
+        "stable"
+      ]
     }
   ]
 }

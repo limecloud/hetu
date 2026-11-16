@@ -206,6 +206,12 @@ impl Server {
                     None => kernel.extension_host_request(params),
                 }
             }
+            "plugins/request" if self.state == State::Ready => {
+                let Some(kernel) = &self.kernel else {
+                    return Some(error(id.clone(), -32002, "连接未绑定作品。"));
+                };
+                kernel.open_plugin_request(params)
+            }
             "extensions/request" if self.state == State::Ready => {
                 let Some(kernel) = &self.kernel else {
                     return Some(error(id.clone(), -32002, "连接未绑定作品。"));

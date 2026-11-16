@@ -2,19 +2,21 @@
 
 # 应用 API 与机器协作合同
 
+公开插件接入遵循[开放宿主SDK](27-开放宿主SDK与核心能力审计.md)：安装启用后直接使用核心服务，业务规则与原操作恢复继续生效。历史插件授权字段不作为新插件接入前置。
+
 ## 1. 合同状态和原则
 
 下列目录描述目标合同，`design-1` 为文档示例修订，不是可调用版本。已实现的首期范围以[插件20](20-首期可执行合同与开发入口.md)、`contracts/extensions/actions.json` 和当前能力发现为准；同名动作不表示本文全部字段与生命周期均已发布。新增能力须进入合同、真实 CLI/MCP、Skills 和验收，不得直接把拟议目录发送给当前产品后推定支持。
 
-PAPI-018／019 的首期落点为插件20第24节的 `migrations.prepare/list/get/execute`：准备持久化单对象固定方案，不能称为无写入的 `preview`；作者批准使用私有宿主通道，公共 CLI/MCP 只准备、读取和执行已批准方案。批量迁移与跨插件数据迁移不属于该合同。
+PAPI-018／019 的首期落点为插件20第24节的 `migrations.prepare/list/get/execute`：准备持久化单对象固定方案，不能称为无写入的 `preview`；开放上下文执行自己的固定迁移，保留预览、CAS及原键，无插件专属批准。旧grant批准仅用于历史连接。批量迁移与跨插件数据迁移不属于该合同。
 
-成果标题检索的现行合同归插件20第25节：`objects.search`与`index.status`为读取，`index.rebuild`为`cache_write`且只需`objects.read`。后者只替换派生缓存，不提交权威修订、审计或业务操作回执；中断后先查状态，再按需要重建。三项均由独立CLI与MCP按当前授权动态发现。插件manifest仍只支持既有read／managed_write效果，后台只读动作不能借缓存接口写盘。
+成果标题检索的现行合同归插件20第25节：`objects.search`与`index.status`为读取，`index.rebuild`为`cache_write`。后者只替换派生缓存，不提交权威修订、审计或业务操作回执；中断后先查状态，再按需要重建。开放插件无需申请读取权限；旧grant路径仍核验`objects.read`。插件manifest仍只支持既有read／managed_write效果，后台只读动作不能借缓存接口写盘。
 
 入口继续消费共享应用用例。Electron经受限preload/主进程及JSON-RPC 2.0接入Rust；CLI/MCP直接复用Core，TS插件经范围SDK调用相同用例。公开结果沿用既有 AXI result，不新建另一套公开交换格式。插件工作进程内部通信见10，不能直接冒充公开入口。
 
 ## 2. 调用和身份
 
-河图插件不是Codex插件。稳定入口的 `hetu.plugins.inspect` 返回河图安装状态；`hetu.plugin_access.capabilities/invoke` 在同一机器连接上发现并调用已启用且获权的专业包。工具名保持稳定，专业动作Schema按需返回。输入固定WorkRef、management_ref、grant_id、包摘要及能力摘要；包路径由宿主解析。完整字段和热插拔用例见[21](21-核心格式与动态能力发现.md)，当前可用性以实际发现为准。
+河图插件不是Codex插件。稳定入口的 `hetu.plugins.inspect` 返回河图安装状态；`hetu.plugins.capabilities/invoke` 在同一机器连接上发现并调用已启用的专业包及核心能力。工具名保持稳定，动作Schema按需返回。输入固定WorkRef、management_ref、插件ID、包摘要及能力摘要；包路径由宿主解析，不提交插件grant。完整字段和热插拔用例见[21](21-核心格式与动态能力发现.md)，当前可用性以实际发现为准。
 
 组件注册、插槽、拖拽、缩放、布局和局部state由TypeScript宿主处理；作品读写才进入Rust。基础CLI/MCP无Node前提；执行TS插件动作时按需启动随功能制品分发的Node运行时，不要求Electron窗口。
 

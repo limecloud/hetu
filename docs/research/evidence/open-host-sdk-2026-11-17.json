@@ -1,0 +1,124 @@
+{
+  "recorded_on": "2026-11-17",
+  "platform": "macOS arm64",
+  "host": {
+    "version": "0.10.0",
+    "git_head": "ff14ac419aad16642b500f936db7123d0cea7a70",
+    "source_kind": "local_uncommitted_worktree",
+    "source_sha256": {
+      "core/src/application/extensions/open.rs": "d56cf88b85791da4fc315156187bc7ebe58290d81c8383c1a5a0d79702514066",
+      "core/src/application/novels.rs": "b1fcb04f54c040aa08e3895c6d9bfe4ffef237fff053c17d3f41dc52e94177e3",
+      "core/src/application/mod.rs": "eb110af3f53a8b859e70a57d09755bddea1c851be554e790c1531f2c516bdbeb",
+      "core/src/collaboration.rs": "0842c6a767ae32562d816b2243771941849c099d33d198d19b1260e888cc6f4e",
+      "core/src/collaboration/authoring.rs": "841305700afa400f7fa7fb376ca16f197a9e7b1d9c184fdd684827a7fd9c03a8",
+      "apps/app-server/src/lib.rs": "bebe545a373473ff64a40eec5c5bc06be54b2a74d90b88c642424f888fdd3cfb",
+      "apps/plugin-cli/src/main.rs": "b17e59e749cd0f3507258bde042c63de23df12e203529551efa14880e48f302d",
+      "packages/plugin-sdk/src/index.ts": "d14d545a95b4ba6e5f181e44d118e553b62355a4bf5ce2628e1ea7d67a3e3136",
+      "packages/plugin-host/src/runtime-cli.ts": "bf5fe204f8bf83c215d9476e3baaf42209224733f19ed4b4db5506058c2b57c6",
+      "packages/plugin-host/src/manager-cli.ts": "21e857dfc2618d28caad0c23bb898504d12d5934be6d0914700a6332c3fec0fe",
+      "packages/plugin-host/src/backend.ts": "4f6d32b5f6bd8c740347692c4e8292dc23a6c17a6fd131948be83422422e67bd",
+      "apps/desktop/src/main/main.ts": "d47265ffb4b1a778d45dbb8759e3c8f0ed8163ab341c5df58767dac51c88c33d",
+      "contracts/actions.json": "abcd6c6d4a3a4686992df2953038d8b119410386b8778a28496a4b2288ad2087",
+      "contracts/tools/catalog.json": "4439a021d3e799a603c4c20b00f194ef5d5f4d3979012a644f97be3561dbc84b"
+    }
+  },
+  "plugin": {
+    "id": "org.wordflowlab.novel-planner",
+    "version": "0.1.0",
+    "package_sha256": "c6d98a5b2fd681f5773249b3e08ae753562cc41b17f210c6aab17094f4f99c13"
+  },
+  "checks": [
+    {
+      "suite": "Core open_plugins, extensions, extension_migrations, extension_index",
+      "passed": 13,
+      "failed": 0,
+      "scope": "开放核心复用、来源、CAS、原键、索引与历史grant兼容"
+    },
+    {
+      "suite": "plugin-host node tests",
+      "passed": 41,
+      "failed": 0,
+      "scope": "开放无窗口MCP、运行隔离、生命周期、数据与桌面服务；含历史grant兼容旅程"
+    },
+    {
+      "suite": "MCP real stdio",
+      "passed": 28,
+      "failed": 0,
+      "scope": "稳定连接、任务与作品范围、原操作及既有业务回归"
+    },
+    {
+      "suite": "novel planner machine integration",
+      "passed": 7,
+      "failed": 0,
+      "scope": "同一真实MCP连接安装发现及21个专业动作；保持Agent身份"
+    },
+    {
+      "suite": "Electron planner",
+      "passed": 1,
+      "failed": 0,
+      "scope": [
+        "real_electron",
+        "standalone_full_width",
+        "trusted_back",
+        "failed_flush_keeps_view",
+        "return_restores_layout",
+        "hot_disable_restores_layout",
+        "machine_gui_same_revision",
+        "save_meta_detail_attach",
+        "ime_no_submission",
+        "switch_preserves_draft",
+        "close_reopen_recovery",
+        "three_way_cas_merge",
+        "native_fixed_export",
+        "modal_escape",
+        "scope_links",
+        "actual_statistics",
+        "trusted_handoff",
+        "relationship_table",
+        "light_dark",
+        "zh_en",
+        "narrow"
+      ]
+    },
+    {
+      "suite": "Electron computation",
+      "passed": 1,
+      "failed": 0,
+      "scope": "无权限声明包、核心读取、无新增grant、重开与停用"
+    },
+    {
+      "suite": "documentation",
+      "status": "passed",
+      "scope": "宿主85份文档链接／追踪；插件22份文档、26功能、56用例／验收定义；15图实际Mermaid渲染"
+    }
+  ],
+  "local_installation": {
+    "status": "passed",
+    "entry": "current_codex_session_cli",
+    "registry": "default_local_installation",
+    "package_sha256": "c6d98a5b2fd681f5773249b3e08ae753562cc41b17f210c6aab17094f4f99c13",
+    "access_mode": "open",
+    "professional_actions": 21,
+    "fixed_result_sha256": "dfe20797b031221fbab4e48a8c591240d131ac07d05384e31dc46bc50c0582a7",
+    "revision": 12,
+    "data_scope": "isolated_acceptance_novel"
+  },
+  "first_failures_and_fixes": [
+    "新MCP工具未映射：补齐catalog后重建",
+    "开放业务误走安装路由：区分本机管理与带作品上下文调用",
+    "新建作品连接未带单对象work_ref：遵循既有连接范围并核验实际作品",
+    "桌面旧授权断言及异步返回竞态：改用开放核心断言和可观察布局完成状态"
+  ],
+  "boundaries": [
+    "未替换已安装的桌面发行版，使用最新源码构建的CLI/MCP与Electron",
+    "Windows、Linux、干净系统、真实系统输入法和完整无障碍未验证",
+    "未调用付费模型、未测生成成本、未修改作者作品",
+    "未提交、推送、发行或上架；不声明完整首版全部56项验收通过"
+  ],
+  "artifacts": [
+    "output/open-plugin-audit-20261117/local-install.json",
+    "output/open-plugin-audit-20261117/local-readback.json",
+    "output/open-plugin-audit-20261117/diagrams/results.json",
+    "output/open-plugin-audit-20261117/plugin-doc-checks.json"
+  ]
+}

@@ -19,8 +19,8 @@
 | 起草、改稿或整理大纲 | `hetu-setup` | `hetu.creative_tasks.list` | 恢复已有任务或准备确切新任务 → 按任务类型选择写作Skill → 按需读取固定上下文 → 提交参考成果 → 阅读反馈并沿原任务继续 |
 | 设置偏好或安装所选Skills套件 | `hetu-manage` | `hetu.local_settings.get` | 读取本机基线 → 准备固定设置方案 → 记录真实选择 → 精确市场预检后执行；未知沿原键只读恢复 → 分别核对安装和本会话加载状态 |
 | 配置模型渠道 | `hetu-manage` | `hetu.model_settings.inspect` | 读取非敏感设置及摘要 → 按真实指令提交固定设置 → 凭据仅进入私密存储 → 回读非敏感结果；生成与费用另行授权 |
-| 安装、启停或卸载插件 | `hetu-manage` | `hetu.plugins.inspect` | 核对包内容及摘要 → 核对依赖和状态基线 → 提交真实安装选择 → 回读原操作 → 作品数据权限另行精确授权 |
-| 授权插件数据或确认数据迁移 | `hetu-manage` | `hetu.plugin_access.authorize` | 固定作品、包摘要、类型Schema及独立work.read范围 → 按真实选择授权 → 发现插件专业数据动作 → 迁移先准备并展示前后差异 → 登记确切迁移决定后执行及回读 |
+| 安装、启停或卸载插件 | `hetu-manage` | `hetu.plugins.inspect` | 核对包内容及摘要 → 核对依赖和状态基线 → 提交真实安装选择 → 回读原操作 → 启用后发现公开核心及插件能力 |
+| 使用插件及接续数据迁移 | `hetu-manage` | `hetu.plugins.capabilities` | 读取活动包与作品连接 → 发现核心和专业动作Schema → 固定输入及原键执行 → 迁移固定前后内容和CAS → 回读原操作及成果 |
 | 保存文稿版本 | `hetu-manage` | `hetu.git.status` | 读取本作品HEAD → 准备固定文稿快照 → 审阅完整差异及提交身份 → 记录确切snapshot决定 → 执行并沿原snapshot和键回读 |
 | 导出文稿或交付包 | `hetu-manage` | `hetu.documents.preview_export` | 读取确切修订及交付目标 → 准备固定交付方案 → 记录真实决定 → 执行并核验文件和摘要 |
 
@@ -31,14 +31,14 @@
 | 能力导航与Review | hetu-setup | 2 | 0 | 0 |
 | 接入与恢复 | hetu-setup | 4 | 0 | 0 |
 | 设定与规则 | hetu-outline | 6 | 0 | 0 |
-| 章节、正文与定稿 | hetu-import、hetu-manage | 15 | 0 | 0 |
+| 章节、正文与定稿 | hetu-import、hetu-manage | 16 | 0 | 0 |
 | 参考稿与采纳 | hetu-draft | 6 | 0 | 0 |
 | 剧情与一致性 | hetu-drama | 10 | 0 | 0 |
 | 剧本与改编 | hetu-drama | 18 | 0 | 0 |
 | 审核与返工 | hetu-revise | 5 | 0 | 0 |
 | 文稿版本与协作 | hetu-manage | 20 | 0 | 0 |
 | 图片与素材 | hetu-artwork、hetu-import | 10 | 0 | 0 |
-| 小说资料与目录 | hetu-book-profile | 4 | 0 | 0 |
+| 小说资料与目录 | hetu-book-profile | 5 | 0 | 0 |
 | 新建与创作库接纳 | hetu-book-create | 6 | 0 | 2 |
 | 创作任务与接续 | hetu-setup | 8 | 1 | 0 |
 | 局部选择 | hetu-setup | 2 | 0 | 0 |
@@ -58,7 +58,7 @@
 | 整书导入与恢复 | hetu-import | 3 | 0 | 0 |
 | 插件授权 | hetu-manage | 6 | 0 | 3 |
 | 模型渠道设置 | hetu-manage | 3 | 0 | 0 |
-| 插件安装与生命周期 | hetu-manage | 4 | 0 | 4 |
+| 插件安装与生命周期 | hetu-manage | 6 | 0 | 4 |
 
 ## AI 按需查询
 
@@ -146,6 +146,7 @@ MCP 对应调用 `hetu_get_capability_map`，参数同上。具体动作查询�
 | 由作者确认导入新文档修订并保存转换报告<br>`hetu.documents.import` | 固定方案 | [hetu-import](../tools/hetu-skills/base/skills/hetu-import/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
 | 固定一批小说原稿及目录基线，原子导入章节并保留逐章来源<br>`hetu.documents.import_batch` | 固定方案 | [hetu-import](../tools/hetu-skills/base/skills/hetu-import/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
 | 分页读取本作品正文修订历史<br>`hetu.documents.history` | `hetu_managed_documents_history` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
+| 按当前正文修订改名，保持内容不变<br>`hetu.documents.rename` | 固定方案 | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
 
 ### 参考稿与采纳
 
@@ -254,6 +255,7 @@ MCP 对应调用 `hetu_get_capability_map`，参数同上。具体动作查询�
 | 作者确认并初始化既有作品的小说目录<br>`hetu.novels.initialize` | 固定方案 | [hetu-book-profile](../tools/hetu-skills/base/skills/hetu-book-profile/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
 | 保存小说资料<br>`hetu.novels.update` | 固定方案 | [hetu-book-profile](../tools/hetu-skills/base/skills/hetu-book-profile/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
 | 保存小说卷章顺序与分卷归属<br>`hetu.novels.save_structure` | 固定方案 | [hetu-book-profile](../tools/hetu-skills/base/skills/hetu-book-profile/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
+| 读取小说目录、固定正文来源及实际字数<br>`hetu.novels.snapshot` | `hetu_novels_snapshot` (stable) | [hetu-book-profile](../tools/hetu-skills/base/skills/hetu-book-profile/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 
 ### 新建与创作库接纳
 
@@ -460,10 +462,14 @@ MCP 对应调用 `hetu_get_capability_map`，参数同上。具体动作查询�
 | 检查预构建插件包、贡献及代码风险<br>`hetu.plugins.inspect_package` | `hetu_plugins_inspect_package` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 固定包摘要＋安装状态基线＋真实安装选择 | 已验证；安装已发现 |
 | 执行确切插件安装、启用、停用或卸载选择<br>`hetu.plugins.apply` | `hetu_plugins_apply` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 固定包摘要＋安装状态基线＋真实安装选择 | 已验证；安装已发现 |
 | 按原键回读插件安装操作<br>`hetu.plugins.get_operation` | `hetu_plugins_get_operation` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 固定包摘要＋安装状态基线＋真实安装选择 | 已验证；安装已发现 |
+| 发现当前已启用河图插件的公开动作与实时Schema<br>`hetu.plugins.capabilities` | `hetu_plugins_capabilities` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 活动包与精确作品连接；无独立插件授权 | 源码已连线；安装待核对 |
+| 通过稳定入口调用确切河图插件或专业数据动作<br>`hetu.plugins.invoke` | `hetu_plugins_invoke` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 活动包与精确作品连接；无独立插件授权 | 源码已连线；安装待核对 |
 
 ## 插件发现入口
 
-河图插件安装在河图，不为每包安装Codex插件或新增MCP连接。先用 `hetu.plugins.inspect` 定位固定包及其自有功能清单；按精确作品授权通过稳定 `hetu.plugin_access.capabilities/invoke` 发现和调用实时Schema。专业对象读写与 `work.read` 分别核权；目录、固定来源及宿主窄服务见插件合同，不授予任意正文或文件写入。同一连接按需重新查询，停用或升级后旧引用拒绝。插件自行维护视图、数据类型、动作与验证信息，宿主不汇总其业务功能。核心格式和热插拔用例见[插件合同](plugin/21-核心格式与动态能力发现.md)。
+河图插件安装在河图，不为每包安装Codex插件或新增MCP连接。先用 `hetu.plugins.inspect` 定位固定包及其自有功能清单；复用作品连接通过稳定 `hetu.plugins.capabilities/invoke` 发现和调用实时Schema。插件启用后经公开SDK复用核心领域服务；目录、固定来源、CAS与恢复由Core统一管理，无独立插件授权。同一连接按需重新查询，停用或升级后旧引用拒绝。插件自行维护视图、数据类型、动作与验证信息，宿主不汇总其业务功能。核心格式和热插拔用例见[插件合同](plugin/21-核心格式与动态能力发现.md)。
+
+插件界面以独立页面打开；`views[].navigation=integrated` 将返回与插件工具栏合并，默认使用宿主返回栏。`host(close_view,{})` 仅请求关闭当前视图，退出前等待恢复稿；应用菜单与 Alt+Left 提供宿主返回入口。该能力只管理界面，不增加机器业务权限，具体合同见[插件20](plugin/20-首期可执行合同与开发入口.md)。
 
 
 ## 维护与检查

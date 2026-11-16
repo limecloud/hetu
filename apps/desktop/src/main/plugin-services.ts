@@ -1,4 +1,4 @@
-import type {WorkRef} from '@hetu/plugin-sdk';
+import type {WorkRef,WorkSurface} from '@hetu/plugin-sdk';
 import {sameWork,unwrap} from '@hetu/plugin-sdk';
 
 /** 插件只得到窄服务的结果；连接授权由受信宿主保存并交接。 */
@@ -9,11 +9,23 @@ export async function pluginService(action:string,input:Record<string,any>,conte
   handoff(input:Record<string,unknown>):Promise<void>;
   openDocument(id:string):Promise<void>;
   exportFile?(input:Record<string,unknown>):Promise<unknown>;
+  closeView?():void;
+  openWork?(target:WorkSurface):Promise<void>;
 }){
   context.check();
   const closed=(keys:string[])=>{if(!input||Object.keys(input).some(k=>!keys.includes(k)))throw new Error('插件服务参数无效。');};
   if(action==='preferences'){closed([]);return context.preferences();}
-  if(action==='work_snapshot'){closed([]);const r=unwrap(await context.request('hetu.extensions.work.snapshot',{}));context.check();return r;}
+  if(action==='open_work'){
+    closed(['target']);
+    if(!['profile','manuscript','canon'].includes(input.target)||!context.openWork)throw new Error('当前宿主工作面不可用。');
+    await context.openWork(input.target);return {requested:true};
+  }
+  if(action==='close_view'){
+    closed([]);
+    if(!context.closeView)throw new Error('当前宿主未提供返回入口。');
+    context.closeView();return {requested:true};
+  }
+  if(action==='work_snapshot'){closed([]);const r=unwrap(await context.request('hetu.novels.snapshot',{}));context.check();return r;}
   if(action==='handoff'){
     closed(['goal','object_ref','node_id','run_ref']);
     if(typeof input.goal!=='string'||!input.goal.trim()||input.goal.length>8000)throw new Error('请说明当前创作目标。');

@@ -61,6 +61,10 @@ function App() {
     return () => window.removeEventListener("hetu:work-changed", refresh);
   }, []);
   const surface = useRef<HTMLDivElement>(null);
+  const pluginReturn = useRef("plugins");
+  const pluginReturning = useRef(false);
+  const pluginView = state.views.find((view: any) => view.key === active);
+  const pluginActive = !!pluginView;
   const run = async (fn: () => Promise<unknown>) => {
     setBusy(true);
     setNotice("");
@@ -96,7 +100,13 @@ function App() {
   useEffect(() => {
     if (state.preferences) applyPreferences(state.preferences);
   }, [state.preferences]);
-  useEffect(() => desktop.onPluginsChanged(setState), []);
+  useEffect(() => desktop.onPluginsChanged(value => {
+    setState(value);
+    if (pluginActive) {
+      setActive(pluginReturn.current);
+      setNotice("插件状态已更新，可重新打开工作面。恢复稿已保留。");
+    }
+  }), [pluginActive]);
   useEffect(() => {
     if (!surface.current) return;
     const element = surface.current;
@@ -118,6 +128,31 @@ function App() {
     await desktop.closeSurface();
     setActive(id);
   };
+  const openPlugin = async (view: { key: string; owner: string; id: string }) => {
+    const previous = active;
+    await navigate(view.key);
+    pluginReturn.current = previous;
+    try {
+      await desktop.view(view.owner, view.id);
+    } catch (error) {
+      await desktop.closeSurface();
+      setActive(previous);
+      throw error;
+    }
+  };
+  useEffect(() => desktop.onClosePlugin(value => {
+    if (!pluginView || value.owner !== pluginView.owner || value.view !== pluginView.id || value.epoch !== state.epoch || pluginReturning.current) return;
+    pluginReturning.current = true;
+    void run(async () => {
+      try { await navigate(pluginReturn.current); }
+      finally { pluginReturning.current = false; }
+    });
+  }), [active, state.epoch]);
+  useEffect(() => desktop.onOpenWork(value => {
+    if (!pluginActive || value.epoch !== state.epoch || !state.work || !sameWork(value.work_ref, state.work)) return;
+    const target = value.target === "profile" ? "work.profile" : value.target === "canon" ? "work.canon" : value.target === "manuscript" ? ({novel:"novel.reader",drama:"drama.reader",video:"video.review"}[state.work.kind as "novel"]) : undefined;
+    if (target) void run(() => navigate(target));
+  }), [active, state.epoch]);
   useEffect(() => desktop.onOpenDocument?.(value => {
     if (!state.work || !sameWork(value.work_ref, state.work)) return;
     void run(async () => {
@@ -189,7 +224,7 @@ function App() {
     <Preferences.Provider value={state.preferences ?? {}}>
     <PageActionsTarget.Provider value={pageActionsTarget}>
     <Workbench.Provider value={{ directoryVisible, setDirectoryVisible, inspector, setInspector, focus, setFocus, setDocumentTools, agentStatus, setAgentStatus }}>
-      <header className={"workbench-topbar" + (workMode ? "" : " library-topbar")}>
+      {!pluginActive && <header className={"workbench-topbar" + (workMode ? "" : " library-topbar")}>
         {workMode ? <>
           <IconButton icon="sidebar" label="项目导航" aria-pressed={navigationVisible} onClick={() => setNavigationVisible(!navigationVisible)}/>
           <details className="workspace-switcher popover-menu">
@@ -253,9 +288,9 @@ function App() {
             <button onClick={() => void desktop.settingsWindow("open")}>本机设置</button>
           </div></details>
         </div>
-      </header>
+      </header>}
       <div className={"layout" + (workMode ? " workspace-layout" : " library-layout") + (!navigationVisible || focus ? " navigation-hidden" : "") + (focus ? " focus-mode" : "")}>
-        <aside className="project-navigation" aria-label={workMode ? "项目导航" : "创作库导航"}>
+        {!pluginActive && <aside className="project-navigation" aria-label={workMode ? "项目导航" : "创作库导航"}>
           {workMode ? <>
             <button className="back-library" disabled={busy} onClick={() => void run(() => navigate("library"))}><Icon name="back" size={13}/>返回创作库</button>
             <div className="navigation-scroll">
@@ -269,7 +304,7 @@ function App() {
                 {navItem("work.management")}{navItem("work.agent")}
                 {globalItem("plugins", "创作插件", "plugin")}{globalItem("browser", "参考浏览器", "search")}
               </NavigationGroup>
-              {state.views.length > 0 && <details className="navigation-group" open><summary>创作插件</summary>{state.views.map((view: any) => <button key={view.key} disabled={busy} className={active === view.key ? "selected" : ""} onClick={() => void run(async () => { await navigate(view.key); await desktop.view(view.owner, view.id); })}><Icon name="plugin"/>{view.title}</button>)}</details>}
+              {state.views.length > 0 && <details className="navigation-group" open><summary>创作插件</summary>{state.views.map((view: any) => <button key={view.key} disabled={busy} className={active === view.key ? "selected" : ""} onClick={() => void run(() => openPlugin(view))}><Icon name="plugin"/>{view.title}</button>)}</details>}
             </div>
             <div className="current-work"><WorkCover work={state.work} title={selected?.title ?? "当前作品"} compact/><div><strong>{selected?.title ?? "当前作品"}</strong><small>{{novel:"小说",drama:"剧本",video:"视频"}[state.work.kind as "novel"]}</small></div></div>
           </> : <>
@@ -278,15 +313,16 @@ function App() {
             <div className="navigation-divider"/>
             {globalItem("plugins", "创作插件", "plugin")}{globalItem("browser", "参考浏览器", "search")}
           </>}
-        </aside>
-        <main className={readerActive ? "reader-main" : "page-main"}>
-          {active !== "library" && !readerActive && !Component && !active.startsWith("fallback:") && <div className="toolbar"><div><h1>{title}</h1></div>{active === "plugins" && <button disabled={busy} onClick={() => void run(async () => setState(await desktop.install()))}>安装插件包</button>}</div>}
+        </aside>}
+        <main className={pluginActive ? "plugin-page" : readerActive ? "reader-main" : "page-main"}>
+          {pluginActive && pluginView.navigation !== "integrated" && <nav className="plugin-page-navigation" aria-label="插件页面导航"><button disabled={busy} aria-label="返回工作台" onClick={() => void run(() => navigate(pluginReturn.current))}><Icon name="back" size={14}/>返回</button></nav>}
+          {!pluginActive && active !== "library" && !readerActive && !Component && !active.startsWith("fallback:") && <div className="toolbar"><div><h1>{title}</h1></div>{active === "plugins" && <button disabled={busy} onClick={() => void run(async () => setState(await desktop.install()))}>安装插件包</button>}</div>}
           {notice && (
             <div className="notice" role="status">
               {notice}
             </div>
           )}
-          {active !== "work.tasks" && <AuditStatus
+          {!pluginActive && active !== "work.tasks" && <AuditStatus
             state={agentStatus.state}
             message={agentStatus.message}
             onReview={() => void run(() => navigate("work.tasks"))}

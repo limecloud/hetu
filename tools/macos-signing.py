@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import re
 import subprocess
+import time
 import tomllib
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -78,6 +79,21 @@ def signing_identity(keychain, name):
         raise SystemExit("导入证书必须包含唯一的指定签名身份及私钥。")
     # 同一团队可能已有多张同名证书，codesign 通过指纹选择本次导入的证书。
     return matches[0]
+
+
+def stapler(action, path):
+    if action not in ("staple", "validate"):
+        raise ValueError("不支持的票据操作。")
+    # Apple CloudKit 连接中断或超时只重试同一制品，不重新提交公证。
+    for attempt, delay in enumerate((0, 2, 5)):
+        if delay:
+            time.sleep(delay)
+        try:
+            return run(["xcrun", "stapler", action, str(path)])
+        except SystemExit as error:
+            if attempt == 2 or not re.search(r"NSURLErrorDomain Code=-(?:1001|1005)\b", str(error)):
+                raise
+            print(f"Apple 票据服务连接暂时中断，重试 {action}：{path.name}", flush=True)
 
 
 def notarize(archive, keychain, evidence):

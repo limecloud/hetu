@@ -1,6 +1,8 @@
 /** 稳定CLI/MCP和桌面共享安装Owner；发现仅读声明，调用才按需启动插件后端。 */
 import { PluginInstallations, type InstalledPackageIdentity } from "./installations.ts";
 import { PluginPackage } from "./package.ts";
+import {mkdtemp,writeFile,rm} from "node:fs/promises";
+import os from "node:os";
 import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
 import path from "node:path";
@@ -18,9 +20,15 @@ async function runtime() {
   if (!host.active(input.plugin_id)) throw new Error("插件未启用、包已变化或依赖不可用，请重新发现。");
   const pkg = host.package(input.plugin_id);
   if (pkg.sha256 !== input.package_sha256) throw new Error("插件包已更新，旧能力引用不可继续使用。");
+  const openMode = request.action.startsWith("hetu.plugins.");
+  const privateDirectory = openMode ? await mkdtemp(path.join(os.tmpdir(),"hetu-plugin-connection-")) : undefined;
+  if (privateDirectory) await writeFile(path.join(privateDirectory,"management.json"),JSON.stringify(input.management_binding),{mode:0o600});
+  try {
   const connection = [path.join(path.dirname(fileURLToPath(import.meta.url)), "plugin-runtime.mjs"),
-    "--package", pkg.source, "--workspace", input.workspace_directory, "--access-dir", input.access_directory,
-    "--grant", input.grant_id, "--package-sha256", pkg.sha256, "--core-cli", flags[3]];
+    "--package", pkg.source, "--workspace", input.workspace_directory,
+    ...(openMode ? ["--work-ref",JSON.stringify(input.work_ref),"--state-dir",store.directory,"--management-context-file",path.join(privateDirectory!,"management.json")]
+      : ["--access-dir",input.access_directory,"--grant",input.grant_id]),
+    "--package-sha256", pkg.sha256, "--core-cli", flags[3]];
   const run = (args: string[], value?: unknown) => new Promise<any>((resolve, reject) => {
     const child = spawn(process.execPath, [...connection, ...args], { stdio: "pipe", shell: false, windowsHide: true });
     let output = "", error = "";
@@ -41,12 +49,13 @@ async function runtime() {
   });
   const capabilities = await run(["capabilities"]);
   const capabilities_sha256 = createHash("sha256").update(JSON.stringify(capabilities)).digest("hex");
-  if (request.action === "hetu.plugin_access.capabilities") return { format_version: 1, ...capabilities, capabilities_sha256 };
+  if (["hetu.plugins.capabilities","hetu.plugin_access.capabilities"].includes(request.action)) return { format_version: 1, ...capabilities, capabilities_sha256 };
   if (input.capabilities_sha256 !== capabilities_sha256) throw new Error("插件能力已变化，请重新发现Schema。");
-  const data = capabilities.data_actions.some((a: any) => a.name === input.action);
+  const data = [...capabilities.data_actions,...(capabilities.core_actions??[])].some((a: any) => a.name === input.action);
   if (!data && !capabilities.actions.some((a: any) => a.id === input.action)) throw new Error("插件未声明该动作。");
   return { format_version: 1, plugin_id: pkg.manifest.id, package_sha256: pkg.sha256,
     capabilities_sha256, result: await run([data ? "call" : "invoke", input.action, "--input", "-"], input.arguments) };
+  } finally {if(privateDirectory)await rm(privateDirectory,{recursive:true,force:true});}
 }
 const revoke = async (pkg: InstalledPackageIdentity) => new Promise<void>((resolve, reject) => {
   const child = spawn(flags[3], ["disable-package", "--input", "-"], { stdio: "pipe", shell: false, windowsHide: true });
@@ -61,13 +70,15 @@ const revoke = async (pkg: InstalledPackageIdentity) => new Promise<void>((resol
 try {
   let data: unknown;
   switch (request.action) {
+    case "hetu.plugins.capabilities":
+    case "hetu.plugins.invoke":
     case "hetu.plugin_access.capabilities":
     case "hetu.plugin_access.invoke": data = await runtime(); break;
     case "hetu.plugins.inspect": data = { ...(await store.inspect()), state_directory: store.directory }; break;
     case "hetu.plugins.inspect_package": {
       const pkg = await PluginPackage.inspect(request.input.package_directory);
       data = { package_sha256: pkg.sha256, manifest: pkg.manifest,
-        code_execution: !!pkg.manifest.runtime, note: "安装可信来源；升级须重新授予作品权限。" };
+        code_execution: !!pkg.manifest.runtime, note: "安装并启用后可使用宿主公开核心能力。" };
       break;
     }
     case "hetu.plugins.apply": data = await store.apply({ ...request.input, client_adapter: request.client_adapter }, revoke); break;

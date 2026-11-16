@@ -943,3 +943,14 @@ CLI、MCP、MCP Apps、本地页面和原生端共用上述用例；Apps只在�
 会话决定记录 `confirmation_channel=agent_conversation`、真实指令、固定方案及原管理绑定；不是自然语言身份认证或作者模式。Core负责确定性授权、版本、摘要与事务校验，Agent负责如实提取用户决定。普通任务仍交付候选；作者必要决定在当前对话完成，不要求重复回桌面填写或点击。撤权重授不复活旧会话决定与派生任务。
 
 插件安装状态由共享PluginInstallations持有，GUI与无窗口入口使用同一文件、CAS和进程锁。启停与升级复用PluginHost依赖解析；停用、替换和卸载撤销受影响包的旧授权，保留专业对象及历史。机器安装不运行包后端；首次执行专业动作另核验固定包、精确作品和权限。并发状态变化时拒绝覆盖，不能以桌面旧缓存回写机器入口的新选择。
+
+## 开放宿主与小说补齐动作
+
+| 动作 | 固定输入 | 结果与恢复 |
+| --- | --- | --- |
+| `hetu.plugins.capabilities` | management_ref、work_ref、plugin_id、package_sha256 | 活动包专业动作、扩展数据动作、core_actions及capabilities_sha256；无插件grant |
+| `hetu.plugins.invoke` | 上述引用、能力摘要、action与arguments | 沿原客户端身份执行；Core原键与recover_action恢复 |
+| `hetu.novels.snapshot` | work_ref、可选revision | 正式目录、固定正文来源及实际字数；无GUI依赖 |
+| `hetu.documents.rename` | document_id、base_revision_id、title、operation_key | 当前修订CAS、相同正文内容的新修订；重放原回执 |
+
+公开SDK经统一request使用当前执行身份的全部核心能力，不维护插件逐动作白名单。外部Agent保持原management_ref及领域方案决定链；桌面插件复用作者工作面的核心用例。改名可经agent_operations准备固定方案，不新建第二条正文写链。对象与本体语义归28，字段归29，分层及兼容归插件27。

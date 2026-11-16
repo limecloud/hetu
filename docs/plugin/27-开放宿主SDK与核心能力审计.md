@@ -1,0 +1,119 @@
+> 本文属于[插件设计](README.md)，拥有开放宿主服务、分层和核心能力审计口径。
+
+# 开放宿主 SDK 与核心能力审计
+
+## 1. 产品决定
+
+安装并启用插件后即可使用宿主公开核心能力，不申请独立插件作品授权，不维护逐动作权限白名单。作品引用确定操作对象，包摘要确定代码版本，类型声明确定数据格式；它们不是授权票据。
+
+作品身份、正式卷章、正文、大纲、设定、素材、版本与事务只有宿主一个事实 Owner。规划、伏笔、节奏分析及专业渲染由插件组合核心服务。如果插件被迫重建小说系统，应先补齐宿主公共能力。
+
+开放接口继续执行业务规则：Schema、来源、CAS、原操作键、锁定、定稿及费用计划不因插件化而失效。外部 Agent 的作品连接保持其执行身份；河图插件与 Codex 插件的安装及生命周期分别管理。
+
+## 2. 调研与标准
+
+2026-11-17 读取一手资料。以下是可借鉴的公开机制，不存在可直接照搬的小说宿主行业标准。
+
+| 来源 | 核实机制 | 河图采用与差异 |
+| --- | --- | --- |
+| [DeepSeek Harness 架构](https://github.com/deepseek-ai/deepseek-harness/blob/39163dd30f703a79079e2d2446545cff3c453738/docs/architecture.md) | Cordis 服务、贡献、配置组合、生命周期；Web 与无窗口入口 | 复用核心服务、作用域清理及相同业务入口；不引入 Agent 循环。DSH 动态 Client 仍有自身批准机制，不能声称其没有授权 |
+| [Pi extensions](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/extensions.md) | ExtensionAPI、工具、事件及界面；扩展具有进程 OS 权限 | 统一开发入口与生命周期；河图保留视图和后端隔离，不复制其权限模型 |
+| [Obsidian API](https://github.com/obsidianmd/obsidian-api/blob/master/obsidian.d.ts) | App、Vault、Workspace、MetadataCache、注册资源释放 | 内容、工作面及缓存服务分工；河图保留正式卷章和正文修订 |
+| [VS Code capabilities](https://code.visualstudio.com/api/extension-capabilities/overview) | Common、Workbench、Language 等扩展能力分类 | 领域数据与界面服务分开；不复制创作工程尚不需要的扩展点 |
+
+来源摘要与失败记录见[调研记录](research/open-host-sdk-sources.json)。标准以可发现、可组合、可恢复、数据唯一归属及开发者可独立接入评价，工具数量不能证明完备。
+
+## 3. 分层架构
+
+```mermaid
+flowchart TB
+    A[外部 Agent] --> E[CLI / MCP 适配]
+    V[插件 React 工作面] --> S[公共 SDK / HostClient]
+    E --> H[插件运行宿主]
+    H --> P[普通 TypeScript 插件用例]
+    P --> S
+    S --> R[核心请求适配]
+    R --> K[Core 应用用例]
+    K --> D[小说 文稿 设定 素材领域]
+    K --> X[插件专业对象]
+    D --> T[存储 修订 CAS 原操作]
+    X --> T
+    H --> L[Cordis 依赖与生命周期]
+    S --> U[桌面导航 偏好 导出 交接]
+```
+
+| 层 | 拥有的职责 | 依赖方向 |
+| --- | --- | --- |
+| 公共 SDK | 语言无关数据、能力发现、请求与结果合同 | 不导入 Electron、Cordis、Rust 内部类型 |
+| 运行宿主 | 安装状态、活动包、依赖、进程、视图及资源释放 | 依赖 SDK，通过适配调用 Core |
+| Core 应用用例 | 领域动作、来源、业务决定、事务与恢复 | 不依赖插件 UI 或 Cordis |
+| 领域与存储 | 小说及专业对象的不变量、修订和持久化 | 不依赖入口与运行宿主 |
+
+核心动作由 Core 目录发现，`request(action, input)` 不复制一份插件白名单。桌面导航属于界面服务，不承担数据读写。正常业务在无窗口环境仍可执行。
+
+## 4. 调用时序
+
+```mermaid
+sequenceDiagram
+    participant C as CLI/MCP 或视图
+    participant H as 插件宿主
+    participant P as 插件用例
+    participant K as Core
+    C->>H: 选择已启用插件与作品
+    H->>H: 核验活动包及依赖
+    H->>K: 发现核心动作与 Schema
+    K-->>H: 当前实际能力
+    H->>P: 绑定作品和包版本的上下文
+    C->>P: 专业动作与固定输入
+    P->>K: SDK request
+    K->>K: Schema、业务规则、CAS、原键
+    K-->>P: 确切成果或可恢复错误
+    P-->>C: 专业结果与固定引用
+    Note over H,K: 没有插件授权步骤
+```
+
+## 5. 业务与恢复流程
+
+```mermaid
+flowchart TD
+    A[发现活动插件与核心能力] --> B[固定作品和输入]
+    B --> C{能力归属}
+    C -->|已有核心能力| D[SDK 复用核心用例]
+    C -->|通用能力缺失| E[补齐宿主合同及机器入口]
+    C -->|专业方法| F[插件实现专业用例]
+    E --> D
+    F --> D
+    D --> G{结果}
+    G -->|成功| H[回读成果并审阅]
+    G -->|冲突| I[保留输入并比较]
+    G -->|未知| J[原操作键回读]
+    J -->|已执行| H
+    J -->|明确未执行| D
+```
+
+## 6. 小说核心能力审计
+
+| 目标与插件反推需求 | 核心动作 | 处理 |
+| --- | --- | --- |
+| 识别及维护小说资料 | `works.get`、`novels.get/update` | 复用既有事实 |
+| 目录、固定正文来源、实际字数 | `novels.snapshot` | 将插件内目录统计提升为核心服务；目标字数与实际字数分开 |
+| 正式分卷及章节 | `documents.create`、`novels.save_structure` | 复用现有事务；规划节点不自动成为正式章节 |
+| 阅读、编辑及正文历史 | `documents.get/save/history` | 复用核心；插件不另存正式正文 |
+| 正式章节改名 | `documents.rename` | 补齐当前修订 CAS；改名不改正文内容 |
+| 整书、卷、章正式大纲 | `outlines.get/save` | 核心持有正式大纲，插件持有规划细节 |
+| 人物、势力、地点、世界、规则、事件 | `blueprints.get/preview_change/save` | 固定正典来源，规划卡不成为第二套正典 |
+| 物品、图片及资料 | `assets.*`、`resources.*`、`resource_usages.*` | 使用现行素材模型，不为标签臆造正典类型 |
+| 版本、检查、交付及恢复 | `git.*`、`validation.*`、`documents.*`、`operations.get` | 复用现有用例，保持作者决定语义 |
+| 规划结构、剧情、关系及伏笔 | 插件专业对象与动作 | 由插件维护自己的功能清单 |
+
+完备性以这些创作旅程能否经实际接口跑通判断，不承诺穷尽所有小说写作方法。既有能力未暴露和领域能力缺失分别修复，不能用跳转按钮掩盖缺少业务 API。
+
+## 7. 兼容与演进规则
+
+1. 公共合同独立于宿主内部模块。插件不得导入宿主源码或 Cordis 内部服务。
+2. 新增可选字段和新动作采用增量发布。改变必填字段、结果含义或原操作语义时使用新合同修订或新动作，保留旧操作回读。
+3. 类型声明保留未知版本的通用读取与导出；数据迁移固定旧、新内容与 CAS，不以包升级重写作品。
+4. Core 能力及插件能力分别发现。核心清单不复制插件的专业功能。
+5. 新能力同时更新 Schema、入口、SDK、用例、文档及验收；通过独立插件验证开发体验，不能仅以宿主内部调用证明可用。
+
+实际进度归主20/38及插件08。设计图不代替运行证据。

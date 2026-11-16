@@ -27,6 +27,11 @@ export async function openDirectory(page: Page) {
 
 /** 沿作者可见的创作库或项目导航展开分组。 */
 export async function navigate(page: Page, label: string) {
+  const back = page.getByRole("button", { name: "返回工作台", exact: true });
+  if (await back.isVisible()) {
+    await back.click();
+    await expect(back).toHaveCount(0);
+  }
   const navigation = page.getByRole("complementary", { name: /^(创作库导航|项目导航)$/ });
   const options = { name: label, exact: true, includeHidden: true };
   const button = navigation.getByRole("button", options);

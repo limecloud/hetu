@@ -91,8 +91,10 @@ test("插件成果搜索分页、固定导出与精确AI交接，停用后可读
     expect(handoff.fixed_refs[0]).toMatchObject({kind:"plugin_object",owner_plugin_id:pkg.manifest.id,object_id:fixture.plugin_objects[21].object.object_id,revision:1,sha256:fixture.plugin_objects[21].sha256});
     expect(handoff.plugin_connection.work_ref).toEqual(fixture.work_ref);
     const connection=handoff.plugin_connection;
+    expect(connection.access_mode).toBe("open");
+    expect(connection.grant_id).toBeUndefined();
     client=new Client({name:"hetu-result-handoff",version:"1"},{versionNegotiation:{mode:{pin:"2026-07-28"}}});
-    await client.connect(new StdioClientTransport({command:connection.node_executable,args:[connection.runtime,"--package",connection.package_path,"--workspace",connection.workspace_path,"--access-dir",access,"--grant",connection.grant_id,"--package-sha256",connection.package_sha256,"--core-cli",connection.core_cli,"--mcp"],stderr:"pipe"}));
+    await client.connect(new StdioClientTransport({command:connection.node_executable,args:[connection.runtime,"--package",connection.package_path,"--workspace",connection.workspace_path,"--work-ref",JSON.stringify(connection.work_ref),"--state-dir",connection.state_directory,"--package-sha256",connection.package_sha256,"--core-cli",connection.core_cli,"--mcp"],stderr:"pipe"}));
     const historic=await client.callTool({name:"plugin_objects_get",arguments:{object_id:handoff.fixed_refs[0].object_id,revision:1}});
     expect((historic.structuredContent as any).data.sha256).toBe(handoff.fixed_refs[0].sha256);
     expect((historic.structuredContent as any).data.object.title).toBe("雾港成果22");

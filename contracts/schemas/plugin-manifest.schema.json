@@ -11,7 +11,6 @@
     "description",
     "license",
     "dependencies",
-    "permissions",
     "contributions"
   ],
   "properties": {
@@ -167,6 +166,10 @@
                   "minLength": 1,
                   "maxLength": 250
                 }
+              },
+              "navigation": {
+                "type": "string",
+                "enum": ["host", "integrated"]
               }
             }
           }

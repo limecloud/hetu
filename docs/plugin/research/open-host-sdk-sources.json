@@ -1,0 +1,47 @@
+{
+  "sources": [
+    {
+      "name": "dsh",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/docs/architecture.md",
+      "retrieved_on": "2026-11-17",
+      "status": 200,
+      "sha256": "6a075f9477ef2c5265568b986ea5edfefcf581da4050f7ccf32e3247875ea942",
+      "bytes": 18922,
+      "scope": "公开接口、分层、生命周期；不是小说行业标准"
+    },
+    {
+      "name": "pi",
+      "url": "https://raw.githubusercontent.com/badlogic/pi-mono/main/packages/coding-agent/docs/extensions.md",
+      "retrieved_on": "2026-11-17",
+      "status": 200,
+      "sha256": "ae042262e31bb39cb2b2237a2d9c2ff6167058afd149c77442ef0521dc3c53e1",
+      "bytes": 158288,
+      "scope": "公开接口、分层、生命周期；不是小说行业标准"
+    },
+    {
+      "name": "obsidian",
+      "url": "https://raw.githubusercontent.com/obsidianmd/obsidian-api/master/obsidian.d.ts",
+      "retrieved_on": "2026-11-17",
+      "status": 200,
+      "sha256": "08f9a76cf2158d3ceaf8ca2a10d32c84e821a340807d88420764d0e1b1e8f4cc",
+      "bytes": 306583,
+      "scope": "公开接口、分层、生命周期；不是小说行业标准"
+    },
+    {
+      "name": "vscode",
+      "url": "https://code.visualstudio.com/api/extension-capabilities/overview",
+      "retrieved_on": "2026-11-17",
+      "status": 200,
+      "sha256": "cfed7ecde6c8ecf234606a3d7db500b067cbf432cc19acd574c9fe44af2d189e",
+      "bytes": 63926,
+      "scope": "公开接口、分层、生命周期；不是小说行业标准"
+    }
+  ],
+  "failed_requests": [
+    {
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/main/docs/architecture.md",
+      "status": 404,
+      "resolution": "查询GitHub默认分支master并固定commit后读取"
+    }
+  ]
+}

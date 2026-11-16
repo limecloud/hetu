@@ -14,21 +14,21 @@ Or:
 
 > Arrange the events in these three chapters as a timeline. Separate confirmed dates from estimates. Let me inspect it without changing the narrative order of the manuscript.
 
-Your Agent checks actual installed capabilities first. A catalog description, an installed package and permission for a work are distinct states.
+Your Agent checks actual installed capabilities and the work bound to this connection first. A catalog description cannot replace capability discovery.
 
 ## 2. Install the selected Hetu plugin
 
 Manage packages under **Creative plugins** in the library, or ask your Agent to inspect, install and read back a package through Hetu’s machine interface following your explicit choice. Installation does not require a desktop window.
 
-Check the source, version and declared permissions. A distribution contains built views, a manifest and necessary runtime files; a source folder is not the installable package. Plugin details link to source and build instructions for developers. Authors can ask their Agent to prepare the selected source.
+Check the source, version and features. A distribution contains built views, a manifest and necessary runtime files; a source folder is not the installable package. Plugin details link to source and build instructions for developers. Authors can ask their Agent to prepare the selected source.
 
 The website catalog helps you choose. It does not inspect local installation state, execute downloads or grant permissions.
 
-## 3. Limit access to this work
+## 3. Identify the work for this task
 
-Installation does not open the whole creative library. Identify the work and the professional data the plugin may read or save. Permission binds to a specific work and package.
+A trusted plugin can use public host capabilities once installed and enabled, without a separate plugin grant for each work. Identify the work and task for your Agent; the external Agent’s work connection still requires its own authorization.
 
-A graph or timeline does not gain manuscript adoption or finalization rights. Other works, linked scripts and videos retain separate scopes. A new package version needs its own permission check.
+Plugins reuse Hetu’s work data and business rules. Manuscript adoption, finalization and spending remain your decisions. Check the source and changes before upgrading; an old package connection cannot invoke a replacement package.
 
 If uncertain, say: “Show me what this task will read and write before I approve the scope.”
 
@@ -44,10 +44,10 @@ Ask it to read back saved data. If an operation times out, recover the original 
 
 In the existing conversation, ask: “Discover Hetu’s installed plugins again, check the capabilities permitted for this work, then continue.”
 
-Hetu plugins are discovered through the existing CLI or MCP connection. They do not require a matching Codex plugin. Discovery reflects current installation and permission; it does not automatically inject tools into the model’s context. Updates to the client’s own Skills or integration package follow that client’s refresh requirements.
+Hetu plugins are discovered through the existing CLI or MCP connection. They do not require a matching Codex plugin. Discovery reflects current installation and connection; it does not automatically inject tools into the model’s context. Updates to the client’s own Skills or integration package follow that client’s refresh requirements.
 
 ## 6. Disable a tool and keep the work
 
-Disabling or uninstalling invalidates the relevant access. Saved professional data remains available through generic reading and export; specialized editing needs the appropriate plugin and permission. Uninstalling a tool does not delete a work.
+Disabling or uninstalling stops plugin calls. Saved professional data remains available through generic reading and export; specialized editing needs the appropriate plugin enabled. Uninstalling a tool does not delete a work.
 
 For uncertain versions, permissions or results, keep the original references and follow [recovery guidance](troubleshooting.md). To make your own tool, read [Develop a creative plugin](plugin-development.md).

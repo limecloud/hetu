@@ -1,4 +1,4 @@
-import type { WorkRef } from "@hetu/plugin-sdk";
+import type { WorkRef, WorkSurface } from "@hetu/plugin-sdk";
 export interface DesktopBridge {
   workAgent(method: "get" | "inspect" | "select" | "choose_package" | "auto_detect" | "reveal_bundle" | "prepare_install" | "recover" | "acknowledge", input?: Record<string, unknown>): Promise<any>;
   canon(method: "get" | "preview" | "save" | "lock" | "recover" | "acknowledge", input?: Record<string, unknown>): Promise<any>;
@@ -13,6 +13,8 @@ export interface DesktopBridge {
   onPreferences(listener: (value: any) => void): () => void;
   onOpenDocument(listener: (value: {work_ref:WorkRef;document_id:string}) => void): () => void;
   onPluginsChanged(listener: (value: any) => void): () => void;
+  onClosePlugin(listener: (value: {owner:string;view:string;epoch:number}) => void): () => void;
+  onOpenWork(listener: (value: {work_ref:WorkRef;epoch:number;target:WorkSurface}) => void): () => void;
   zoom(): Promise<void>;
   library(
     method: "refresh" | "open" | "client" | "bootstrap",

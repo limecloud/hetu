@@ -819,6 +819,9 @@ impl Kernel {
         ) {
             return self.execute_model_network(action, input);
         }
+        if matches!(action, "hetu.plugins.capabilities" | "hetu.plugins.invoke") {
+            return Ok(domain::success(action, self.scope(), self.execute_open_plugin(action, input)?));
+        }
         if action.starts_with("hetu.plugin_access.") {
             return Ok(domain::success(
                 action,
@@ -1274,6 +1277,8 @@ impl Kernel {
                 input.get("revision_id").and_then(Value::as_str),
             ),
             "hetu.documents.save" => self.save_document(input, changes),
+            "hetu.documents.rename" => self.rename_document(input, changes),
+            "hetu.novels.snapshot" => self.novel_snapshot(input),
             "hetu.drafts.preview_adoption" => self.preview_adoption(input),
             "hetu.drafts.adopt" => self.adopt_draft(input, changes),
             "hetu.documents.validate" => self.validate_document(input, changes),
@@ -1542,6 +1547,18 @@ impl Kernel {
             Some(text(input, "base_revision_id")?),
             changes,
         )?;
+        Ok(json!({"document":document,"revision":revision}))
+    }
+    fn rename_document(&self, input: &Value, changes: &mut Changes) -> Result<Value> {
+        let current = self.document_content(text(input, "document_id")?, None)?;
+        let mut document = current["document"].clone();
+        ensure(document["draft_source_id"].is_null(), "forbidden", "草稿证据只读。")?;
+        ensure(document["current_revision_id"] == input["base_revision_id"],
+            "revision_conflict", "文稿已有新修订，请保留名称并重新比较。")?;
+        ensure(!text(input, "title")?.trim().is_empty(), "invalid_input", "文稿标题不能为空。")?;
+        document["title"] = input["title"].clone();
+        let revision = self.stage_revision(&mut document, text(&current, "content")?,
+            Some(text(input, "base_revision_id")?), changes)?;
         Ok(json!({"document":document,"revision":revision}))
     }
 }

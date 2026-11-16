@@ -1,13 +1,53 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, writeFile, readdir } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import os from "node:os";
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { PluginPackage } from "../src/package.ts";
+import { PluginInstallations } from "../src/installations.ts";
 const root = path.resolve(import.meta.dirname, "../../..");
+test("开放无窗口插件无需权限声明，MCP复用核心且停用立即失效", {timeout:120000}, async () => {
+  const folder=await mkdtemp(path.join(os.tmpdir(),"hetu-open-runtime-"));
+  const source=path.join(folder,"package"),workspace=path.join(folder,"作品"),access=path.join(folder,"access");
+  await mkdir(source);
+  await writeFile(path.join(source,"plugin.json"),JSON.stringify({
+    manifest_version:1,host_api:"1",id:"org.test.open",version:"1.0.0",license:"MIT",dependencies:[],
+    display:{"zh-CN":"开放统计",en:"Open statistics"},description:{"zh-CN":"复用核心统计",en:"Reuses core statistics"},
+    contributions:{views:[],data:[],actions:[{id:"statistics",title:"实际统计",effect:"read",input_schema:{type:"object",additionalProperties:false}}]},
+    runtime:{entry:"backend.mjs"},
+  }));
+  await writeFile(path.join(source,"backend.mjs"),'let context; export function apply(value) { context=value; }\nexport async function invoke() { return context.request("hetu.novels.snapshot",{}); }\n');
+  const pkg=await PluginPackage.inspect(source);
+  const fixture=json(path.join(root,"target/debug/examples/plugin_fixture"),[workspace,access,path.join(source,"plugin.json"),pkg.sha256]);
+  const before=await readdir(path.join(access,"grants"));
+  const installations=new PluginInstallations(path.join(folder,"state"));
+  const apply=async(action:string)=>installations.apply({client_adapter:"codex",action,plugin_id:pkg.manifest.id,
+    package_directory:source,package_sha256:pkg.sha256,expected_sha256:(await installations.read()).sha256,
+    authorization_note:"隔离开放运行验收",operation_key:action},async()=>{});
+  await apply("install");
+  const runtime=[path.join(root,"apps/desktop/dist/plugin-runtime.mjs"),"--package",source,"--workspace",workspace,
+    "--work-ref",JSON.stringify(fixture.work_ref),"--state-dir",installations.directory,"--package-sha256",pkg.sha256,
+    "--core-cli",path.join(root,"target/debug/hetu-plugin")];
+  const cap=json(process.execPath,[...runtime,"capabilities"]);
+  assert.equal(cap.access_mode,"open");assert.equal(cap.permissions,undefined);
+  assert.ok(cap.core_actions.some((a:any)=>a.name==="hetu.novels.snapshot"));
+  const client=new Client({name:"open-runtime",version:"1"},{versionNegotiation:{mode:{pin:"2026-07-28"}}});
+  try {
+    await client.connect(new StdioClientTransport({command:process.execPath,args:[...runtime,"--mcp"],stderr:"pipe"}));
+    const tools=(await client.listTools()).tools.map(t=>t.name);assert.ok(tools.includes("hetu_core_request"));
+    const result=await client.callTool({name:"hetu_core_request",arguments:{action:"hetu.novels.snapshot",input:{}}});
+    assert.equal((result.structuredContent as any).data.document_count,1);
+    const throughBackend=await client.callTool({name:"plugin_statistics",arguments:{}});
+    assert.equal((throughBackend.structuredContent as any).data.word_count,(result.structuredContent as any).data.word_count);
+    assert.deepEqual(await readdir(path.join(access,"grants")),before);
+    await apply("disable");
+    await assert.rejects(client.listTools(),/停用|变化/);
+    await assert.rejects(client.callTool({name:"hetu_core_request",arguments:{action:"hetu.novels.snapshot",input:{}}}),/停用|变化/);
+  } finally {await client.close();}
+});
 test("无数据类型的独立计算插件可经CLI和MCP执行，且不发现作品数据工具", { timeout: 90000 }, async () => {
   const folder = await mkdtemp(path.join(os.tmpdir(), "hetu-computation-"));
   const packageDirectory = path.join(folder, "package"), workspace = path.join(folder, "作品"), access = path.join(folder, "private");

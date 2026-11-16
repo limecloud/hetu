@@ -85,19 +85,19 @@
         "核对依赖和状态基线",
         "提交真实安装选择",
         "回读原操作",
-        "作品数据权限另行精确授权"
+        "启用后发现公开核心及插件能力"
       ]
     },
     {
-      "goal": "授权插件数据或确认数据迁移",
+      "goal": "使用插件及接续数据迁移",
       "skill": "hetu-manage",
-      "entry": "hetu.plugin_access.authorize",
+      "entry": "hetu.plugins.capabilities",
       "path": [
-        "固定作品、包摘要、类型Schema及独立work.read范围",
-        "按真实选择授权",
-        "发现插件专业数据动作",
-        "迁移先准备并展示前后差异",
-        "登记确切迁移决定后执行及回读"
+        "读取活动包与作品连接",
+        "发现核心和专业动作Schema",
+        "固定输入及原键执行",
+        "迁移固定前后内容和CAS",
+        "回读原操作及成果"
       ]
     },
     {
@@ -187,7 +187,8 @@
         "hetu.novels.get",
         "hetu.novels.initialize",
         "hetu.novels.update",
-        "hetu.novels.save_structure"
+        "hetu.novels.save_structure",
+        "hetu.novels.snapshot"
       ],
       "entry": "../skills/hetu-book-profile/SKILL.md"
     },
@@ -391,7 +392,10 @@
         "hetu.plugins.get_operation",
         "hetu.plugin_access.record_migration_decision",
         "hetu.plugin_access.capabilities",
-        "hetu.plugin_access.invoke"
+        "hetu.plugin_access.invoke",
+        "hetu.documents.rename",
+        "hetu.plugins.capabilities",
+        "hetu.plugins.invoke"
       ],
       "entry": "../skills/hetu-manage/SKILL.md"
     },
@@ -423,7 +427,7 @@
       "entry": "../skills/hetu-video/SKILL.md"
     }
   ],
-  "extension_runtime_discovery": "河图插件安装在河图；hetu.plugins.inspect → 精确作品授权 → hetu.plugin_access.capabilities → hetu.plugin_access.invoke；稳定入口实时发现，专业对象读写与work.read分别核权，不为每包安装客户端插件。",
+  "extension_runtime_discovery": "河图插件安装在河图；hetu.plugins.inspect → hetu.plugins.capabilities → hetu.plugins.invoke；启用后公开核心SDK，复用Agent作品连接，无独立插件grant；专业功能由插件维护。",
   "restricted_actions": [
     {
       "action": "hetu.git.approve_snapshot",

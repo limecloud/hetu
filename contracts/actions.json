@@ -5620,6 +5620,142 @@
           "arguments"
         ]
       }
+    },
+    {
+      "name": "hetu.documents.rename",
+      "purpose": "按当前正文修订改名，保持内容不变",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "base_revision_id": {
+            "type": "string",
+            "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "document_id",
+          "base_revision_id",
+          "title",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.novels.snapshot",
+      "purpose": "读取小说目录、固定正文来源及实际字数",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "work_ref"
+        ]
+      }
+    },
+    {
+      "name": "hetu.plugins.capabilities",
+      "purpose": "发现当前已启用河图插件的公开动作与实时Schema",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "package_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "plugin_id": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+)+$",
+            "maxLength": 120
+          }
+        },
+        "required": [
+          "work_ref",
+          "plugin_id",
+          "package_sha256"
+        ]
+      }
+    },
+    {
+      "name": "hetu.plugins.invoke",
+      "purpose": "通过稳定入口调用确切河图插件或专业数据动作",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "package_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "capabilities_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "action": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "arguments": {
+            "type": "object"
+          },
+          "plugin_id": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+)+$",
+            "maxLength": 120
+          }
+        },
+        "required": [
+          "work_ref",
+          "plugin_id",
+          "package_sha256",
+          "capabilities_sha256",
+          "action",
+          "arguments"
+        ]
+      }
     }
   ]
 }

@@ -14,6 +14,8 @@ export interface ViewContribution {
   title: string;
   entry: string;
   object_kinds: string[];
+  /** integrated 将返回入口合入插件工具栏，宿主菜单仍保留返回。 */
+  navigation?: "host" | "integrated";
 }
 export interface ActionContribution {
   id: string;
@@ -30,7 +32,8 @@ export interface PluginManifest {
   description: Record<"zh-CN" | "en", string>;
   license: string;
   dependencies: { id: string; version: string }[];
-  permissions: ("objects.read" | "objects.write" | "work.read")[];
+  /** 历史清单字段；开放宿主不据此限制核心能力。 */
+  permissions?: ("objects.read" | "objects.write" | "work.read")[];
   contributions: {
     views: ViewContribution[];
     data: TypeContribution[];
@@ -73,15 +76,17 @@ export interface PluginContext {
   work_ref: WorkRef;
   package_sha256: string;
   view_id: string;
+  navigation?: "host" | "integrated";
 }
+export type WorkSurface = "profile" | "manuscript" | "canon";
 export interface PluginBridge {
   context(): Promise<PluginContext>;
   /** 仅当前作品、插件与视图的本机恢复稿；不属于已保存作品。 */
   buffer(value?: unknown): Promise<unknown>;
   /** 关闭视图前完成恢复稿；拒绝时保留当前视图。 */
   onBeforeClose?(callback: () => void | Promise<void>): () => void;
-  /** 可信宿主的窄服务；handoff只返回已复制，不返回私密授权。 */
-  host?(action: "preferences" | "handoff" | "open_document" | "work_snapshot" | "export_file", input: Record<string, unknown>): Promise<unknown>;
+  /** 桌面工作面服务；handoff只返回已复制，不返回私密授权。 */
+  host?(action: "preferences" | "handoff" | "open_document" | "open_work" | "work_snapshot" | "export_file" | "close_view", input: Record<string, unknown>): Promise<unknown>;
   onPreferences?(callback: (value: {theme:string;language:string}) => void): () => void;
   invoke(action: string, input: Record<string, unknown>): Promise<unknown>;
   request<T = Record<string, unknown>>(
@@ -139,4 +144,20 @@ export function sameWork(left: unknown, right: WorkRef): boolean {
     ref.kind === right.kind &&
     ref.object_id === right.object_id
   );
+}
+
+/** 核心服务不依赖 Electron 或 Cordis；Schema 以当前入口能力发现为准。 */
+export interface CoreAction {
+  name: string;
+  contract_revision: string;
+  effect: string;
+  input_schema: Record<string, unknown>;
+}
+export interface HostCapabilities { actions: CoreAction[]; }
+export function createHostClient(request: PluginBridge["request"]) {
+  return {
+    request,
+    capabilities: async () => unwrap(await request<HostCapabilities>("hetu.capabilities.get", {})),
+    novelSnapshot: async (input: Record<string, unknown> = {}) => unwrap(await request("hetu.novels.snapshot", input)),
+  };
 }

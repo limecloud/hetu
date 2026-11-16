@@ -32,14 +32,14 @@ export function PluginMigrations({ plugin }: { plugin: any }) {
     </>}
     {preview && <section aria-label="固定插件数据升级预览">
       <h3>{preview.plan.before.object.title}</h3>
-      <p>数据格式 {preview.plan.before.object.schema_version} → {preview.plan.target_schema_version}。批准后由原 Agent 执行，历史版本继续保留。</p>
+      <p>数据格式 {preview.plan.before.object.schema_version} → {preview.plan.target_schema_version}，历史版本继续保留。</p>
       <h4>原内容</h4><pre>{JSON.stringify(preview.plan.before.object.content, null, 2)}</pre>
       <h4>升级后内容</h4><pre>{JSON.stringify(preview.plan.content, null, 2)}</pre>
       {preview.token && <button disabled={busy} onClick={() => void run(async () => {
         await desktop.migrations("approve", { token: preview.token });
         setPreview((current: any) => ({ ...current, token: undefined }));
-        setNotice("已批准此数据升级，等待原 Agent 执行。");
-      })}>批准此数据升级</button>}
+        setNotice("数据升级已执行，可读取新修订。");
+      })}>执行此数据升级</button>}
       {plugin.state === "active" && <button disabled={busy} onClick={() => void run(async () => {
         await desktop.migrations("continue", { owner: plugin.id, migration_id: preview.plan.migration_id, plan_sha256: preview.plan_sha256 });
         setNotice("已复制此升级的固定交接，交给原 Agent 继续。");

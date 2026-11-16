@@ -32,6 +32,7 @@ export class BackendSupervisor {
   >();
   readonly #pkg: PluginPackage;
   readonly #work: WorkRef;
+  readonly #coreActions: Map<string, string>;
   readonly #request: PluginBridge["request"];
   constructor(options: {
     node: string;
@@ -41,7 +42,9 @@ export class BackendSupervisor {
     work_ref: WorkRef;
     request: PluginBridge["request"];
     electron?: boolean;
+    core_actions?: {name:string;effect:string}[];
   }) {
+    this.#coreActions = new Map(options.core_actions?.map(a => [a.name, a.effect]));
     this.#pkg = options.pkg;
     this.#work = options.work_ref;
     this.#request = options.request;
@@ -101,15 +104,19 @@ export class BackendSupervisor {
       const params = message.params;
       if (
         typeof message.id !== "string" ||
-        !dataActions.includes(params?.action)
+        typeof params?.action !== "string" || !params.action.startsWith("hetu.")
       )
-        throw new Error("插件请求了未声明的核心动作。");
+        throw new Error("插件核心请求格式无效。");
       if (
         params.input?.work_ref &&
         !sameWork(params.input.work_ref, this.#work)
       )
         throw new Error("插件请求了其他作品。");
       if (++this.#callbacks > 256) throw new Error("插件调用超过单次预算。");
+      const coreEffect = this.#coreActions.get(params.action);
+      if (!dataActions.includes(params.action) && coreEffect === undefined) throw new Error("当前核心没有此动作，请重新发现。");
+      if (coreEffect && coreEffect !== "read" && (this.#effect !== "managed_write" || params.input?.operation_key !== this.#operationKey))
+        throw new Error("核心写入需要写动作及固定原操作键。");
       if (dataCacheActions.includes(params.action) && this.#effect !== "managed_write")
         throw new Error("只读插件动作不能重建派生缓存。");
       if (
@@ -120,7 +127,7 @@ export class BackendSupervisor {
         throw new Error("插件动作不能扩大写入权限或更换原操作键。");
       const result = await this.#request(params.action, {
         ...params.input,
-        work_ref: this.#work,
+        ...(params.action.startsWith("hetu.extensions.") ? {work_ref:this.#work} : {}),
         ...((params.action === "hetu.extensions.objects.save" ||
           params.action === "hetu.extensions.operations.get" && params.input?.operation_key === this.#operationKey) && this.#invocationSha
           ? { invocation_sha256: this.#invocationSha } : {}),

@@ -24,7 +24,7 @@ From the Hetu repository root, choose a destination that does not exist:
 node "apps/desktop/dist/plugin-dev.mjs" create "$PWD/../hetu-character-notes" --id dev.local.character-notes --title "Character notes"
 ```
 
-The scaffold includes a manifest, `CAPABILITIES.md`, a React view, JS backend, SDK types, build script and license. Its initial action counts explicitly supplied characters and has no work-data permissions.
+The scaffold includes a manifest, `CAPABILITIES.md`, a React view, JS backend, SDK types, build script and license. Its initial action counts explicitly supplied characters to verify the call chain.
 
 ```bash
 cd "../hetu-character-notes"
@@ -42,7 +42,7 @@ npm run build
 | `CAPABILITIES.md` | This plugin’s goals, features, permissions, limitations and checks |
 | `dist/` | Built distribution pinned by package digest at installation |
 
-A view or computation does not need its own storage. For persistent data, declare a plugin-owned type and schema version and use shared data actions. Do not write `.hetu` directly, request the whole library or expose manuscript adoption as a plugin action.
+A view or computation does not need its own storage. Once installed and enabled, use the public SDK to discover and reuse core services instead of maintaining a second novel directory or manuscript. For professional data, declare your own types and schema versions and use shared data actions. Do not write `.hetu` directly; Core still checks business decisions, CAS and recovery through the original operation.
 
 ## 4. Validate the distribution
 
@@ -54,13 +54,13 @@ node "apps/desktop/dist/plugin-dev.mjs" validate "$PWD/../hetu-character-notes/d
 
 The result reports identity, version, digest and contributions. Validation does not execute package code; runtime checks remain necessary. Do not modify a distribution after validating it for installation.
 
-Test against isolated demo works. Have your Agent discover the actual capabilities, inspect the package and installation baseline, and check per-work permission before invoking contributions. Do not copy obsolete payloads or fabricate approval fields.
+Test against isolated demo works. Have your Agent discover actual capabilities, inspect the package and installation baseline, and check the current work connection before invoking contributions. Do not copy obsolete payloads or fabricate approval fields.
 
 ## 5. Verify the same result in the UI and Agent connection
 
 Cover installation, discovery, scoped execution, save and read-back, close and reopen, conflicts, recovery through the original operation, disable and revocation, and generic export after uninstall. Stateless computation packages can omit storage cases but still need input, error and uninstall checks.
 
-The stable `hetu.plugins.*` and `hetu.plugin_access.*` entry points manage and invoke plugins. Rediscover after installation or permission changes. These prefixes are not unrestricted action access; use the schemas returned by the running version.
+The stable `hetu.plugins.*` entry points manage, discover and invoke plugins. Rediscover after installation or connection changes, and use the schemas returned by the running version. Legacy permission entry points support old connections; new plugins do not need them.
 
 ## 6. Prepare the handoff
 

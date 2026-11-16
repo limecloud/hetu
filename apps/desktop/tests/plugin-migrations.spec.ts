@@ -1,5 +1,5 @@
 import { test, expect, _electron as electron } from "@playwright/test";
-import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import os from "node:os";
@@ -9,7 +9,7 @@ import { PluginPackage } from "../../../packages/plugin-host/src/package.ts";
 import { navigate } from "./navigation.ts";
 
 const root = path.resolve(import.meta.dirname, "../../..");
-test("插件Schema升级经CLI准备、作者审阅、关窗MCP执行及原键恢复", async () => {
+test("插件Schema升级经CLI准备、固定审阅执行、关窗MCP原键回读", async () => {
   test.setTimeout(180000);
   const folder = await mkdtemp(path.join(os.tmpdir(), "hetu-plugin-migration-"));
   const workspace = path.join(folder, "作品"), profile = path.join(folder, "profile"), access = path.join(folder, "access");
@@ -34,12 +34,15 @@ test("插件Schema升级经CLI准备、作者审阅、关窗MCP执行及原键�
   const context = JSON.parse(fixture.stdout);
   const binary = process.env.HETU_PACKAGED_APP;
   let machine = path.join(root, "target/debug");
-  function cli(grant: string, sha: string, action: string, input: any) {
-    const result = spawnSync(path.join(machine, "hetu-plugin"), ["--workspace", workspace, "--access-dir", access, "--grant", grant, "--package-sha256", sha, "call", "hetu.extensions." + action, "--input", "-"], { encoding: "utf8", timeout: 30000, input: JSON.stringify({ ...input, work_ref: context.work_ref }) });
+  let runtimeArgs: string[] | undefined, runtimeNode = process.execPath;
+  function cli(sha: string, action: string, input: any) {
+    const command = runtimeArgs ? runtimeNode : path.join(machine, "hetu-plugin");
+    const connection = runtimeArgs ?? ["--workspace", workspace, "--access-dir", access, "--grant", context.grant_id, "--package-sha256", sha];
+    const result = spawnSync(command, [...connection, "call", "hetu.extensions." + action, "--input", "-"], { encoding: "utf8", timeout: 30000, input: JSON.stringify({ ...input, work_ref: context.work_ref }) });
     expect(result.error?.message ?? "", result.stderr).toBe("");
     return JSON.parse(result.stdout);
   }
-  const before = cli(context.grant_id, originalPackage.sha256, "objects.save", { kind: "relationships", title: "雾港人物", schema_version: "1", content: { names: ["江岚", "叶渡"] }, source_refs: context.source_refs, expected_revision: 0, expected_sha256: "", operation_key: "old-object" }).data;
+  const before = cli(originalPackage.sha256, "objects.save", { kind: "relationships", title: "雾港人物", schema_version: "1", content: { names: ["江岚", "叶渡"] }, source_refs: context.source_refs, expected_revision: 0, expected_sha256: "", operation_key: "old-object" }).data;
   const env = { ...process.env };
   for (const key of ["HETU_APP_SERVER", "HETU_CLI", "HETU_PLUGIN_NODE", "HETU_PLUGIN_CLI", "ELECTRON_RUN_AS_NODE"]) delete env[key];
   const app = await electron.launch({ ...(binary ? { executablePath: binary, args: [] } : { args: [path.join(root, "apps/desktop")] }), env: { ...env,
@@ -69,43 +72,50 @@ test("插件Schema升级经CLI准备、作者审阅、关窗MCP执行及原键�
     await page.getByRole("button", { name: "安装插件包", exact: true }).click();
     await page.getByRole("button", { name: "人物关系样本", exact: true }).click();
     await expect.poll(() => app.windows().some(view => view.url().startsWith("hetu-plugin://"))).toBe(true);
-    const preferences = JSON.parse(await readFile(path.join(profile, "plugin-state.json"), "utf8"));
-    const grant = Object.entries(preferences.grants).find(([key]) => key.includes(newPackage.sha256))![1] as string;
+    await page.evaluate(() => (window as any).hetuDesktop.handoff("plugin"));
+    const connection = await app.evaluate(({ clipboard }) => JSON.parse(clipboard.readText().split("\n").slice(1).join("\n")).plugin_connection);
+    expect(connection.access_mode).toBe("open");
+    expect(connection.grant_id).toBeUndefined();
+    runtimeNode = node;
+    runtimeArgs = [runtime, "--package", newPackage.source, "--workspace", workspace,
+      "--work-ref", JSON.stringify(context.work_ref), "--state-dir", connection.state_directory,
+      "--package-sha256", newPackage.sha256, "--core-cli", path.join(machine, "hetu-plugin")];
     await navigate(page, "创作插件");
-    const prepared = cli(grant, newPackage.sha256, "migrations.prepare", { object_id: before.object.object_id, expected_revision: 1, expected_sha256: before.sha256, target_schema_version: "2", content: { characters: before.object.content.names }, operation_key: "upgrade-characters" });
+    const prepared = cli(newPackage.sha256, "migrations.prepare", { object_id: before.object.object_id, expected_revision: 1, expected_sha256: before.sha256, target_schema_version: "2", content: { characters: before.object.content.names }, operation_key: "upgrade-characters" });
     expect(prepared.status).toBe("succeeded");
     const plan = prepared.data;
     const execution = { migration_id: plan.plan.migration_id, plan_sha256: plan.plan_sha256, operation_key: "upgrade-characters" };
-    expect(cli(grant, newPackage.sha256, "migrations.execute", execution).error.code).toBe("permission_denied");
+    expect(cli(newPackage.sha256,"objects.get",{object_id:before.object.object_id}).data.object.revision).toBe(1);
     const panel = page.getByRole("region", { name: "人物关系样本数据升级", exact: true });
     await panel.getByRole("button", { name: "查看数据升级", exact: true }).click();
     await panel.getByRole("button", { name: "审阅升级内容", exact: true }).click();
     const preview = panel.getByRole("region", { name: "固定插件数据升级预览", exact: true });
     await expect(preview).toContainText('"names"'); await expect(preview).toContainText('"characters"');
     await expect(preview).toContainText("江岚"); await expect(preview).toContainText("叶渡");
-    await preview.getByRole("button", { name: "批准此数据升级", exact: true }).click();
-    await expect(panel.getByRole("status")).toHaveText("已批准此数据升级，等待原 Agent 执行。");
+    await preview.getByRole("button", { name: "执行此数据升级", exact: true }).click();
+    await expect(panel.getByRole("status")).toHaveText("数据升级已执行，可读取新修订。");
     await preview.getByRole("button", { name: "让 AI 接续此升级", exact: true }).click();
     await expect(panel.getByRole("status")).toHaveText("已复制此升级的固定交接，交给原 Agent 继续。");
     const handoff = await app.evaluate(({ clipboard }) => clipboard.readText());
     expect(handoff).toContain(plan.plan.migration_id);
     const fixedHandoff = JSON.parse(handoff.slice(handoff.indexOf("{")));
-    expect(fixedHandoff.plugin_connection.grant_id).toBe(grant);
+    expect(fixedHandoff.plugin_connection.access_mode).toBe("open");
+    expect(fixedHandoff.plugin_connection.grant_id).toBeUndefined();
     expect(fixedHandoff.plugin_connection.operation_key).toBe("upgrade-characters");
     expect(fixedHandoff.plugin_connection.plan_sha256).toBe(plan.plan_sha256);
     expect(fixedHandoff.plugin_connection.work_ref).toEqual(context.work_ref);
-    expect(cli(grant,newPackage.sha256,"objects.get",{object_id:before.object.object_id}).data.object.revision).toBe(1);
+    expect(cli(newPackage.sha256,"objects.get",{object_id:before.object.object_id}).data.object.revision).toBe(2);
     await page.screenshot({ path: path.join(root, "output/plugin-doc-qa/plugin-migration-review.png") });
     await app.close(); closed = true;
     client = new Client({ name: "hetu-migration-e2e", version: "1" }, { versionNegotiation: { mode: { pin: "2026-07-28" } } });
-    await client.connect(new StdioClientTransport({ command: node, args: [runtime, "--package", newPackage.source, "--workspace", workspace, "--access-dir", access, "--grant", grant, "--package-sha256", newPackage.sha256, "--core-cli", path.join(machine, "hetu-plugin"), "--mcp"], stderr: "pipe" }));
+    await client.connect(new StdioClientTransport({ command: node, args: [...runtimeArgs, "--mcp"], stderr: "pipe" }));
     const names = (await client.listTools()).tools.map(tool => tool.name);
     expect(names).toContain("plugin_migrations_execute"); expect(names).not.toContain("approve_migration");
     const done: any = (await client.callTool({ name: "plugin_migrations_execute", arguments: execution })).structuredContent;
     expect(done.status).toBe("succeeded"); expect(done.data.object.revision).toBe(2);
-    const recovered = cli(grant,newPackage.sha256,"operations.get",{operation_key:"upgrade-characters"});
+    const recovered = cli(newPackage.sha256,"operations.get",{operation_key:"upgrade-characters"});
     expect(recovered).toEqual(done);
-    expect(cli(grant,newPackage.sha256,"migrations.execute",execution)).toEqual(done);
+    expect(cli(newPackage.sha256,"migrations.execute",execution)).toEqual(done);
     const history: any = (await client.callTool({ name: "plugin_objects_get", arguments: { object_id: before.object.object_id, revision: 1 } })).structuredContent;
     expect(history.data).toEqual(before);
   } finally { await client?.close(); if (!closed) await app.close(); }

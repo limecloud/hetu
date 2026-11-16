@@ -2,7 +2,7 @@ import { sameWork, unwrap, type WorkRef } from "@hetu/plugin-sdk";
 
 interface ResultContext {
   work: WorkRef;
-  grant: string;
+  context: Record<string,unknown>;
   packageSha: string;
   call(method: string, params: Record<string, unknown>): Promise<any>;
   check(): void;
@@ -17,8 +17,8 @@ export async function pluginResultHandoff(context: ResultContext, owner: string,
       || typeof selected.object_id !== "string" || !Number.isSafeInteger(selected.revision)
       || Number(selected.revision) < 1 || typeof selected.sha256 !== "string" || !/^[0-9a-f]{64}$/.test(selected.sha256))
       throw new Error("请选择确切版本的插件成果。");
-    const result = unwrap<any>(await context.call("extensions/request", {
-      grant_id: context.grant, package_sha256: context.packageSha,
+    const result = unwrap<any>(await context.call("plugins/request", {
+      context: context.context,
       request: { action: "hetu.extensions.objects.get", contract_revision: "1",
         input: { work_ref: context.work, object_id: selected.object_id, revision: selected.revision } },
     }));

@@ -252,7 +252,9 @@ impl CollaborationHub {
                 crate::capability_map::read(&request["input"])?,
             ));
         }
-        if action.starts_with("hetu.plugins.") {
+        if action.starts_with("hetu.plugins.")
+            && !matches!(action, "hetu.plugins.capabilities" | "hetu.plugins.invoke")
+        {
             return Ok(domain::success(
                 action,
                 "collaboration",

@@ -359,41 +359,27 @@ test(
         .getByRole("button", { name: "自动排列", exact: true })
         .click();
       await expect(plugin.getByRole("status")).toContainText("已重新排列");
-      const state = JSON.parse(
-        await readFile(path.join(profile, "plugin-state.json"), "utf8"),
-      );
-      const connection = [
-        "--workspace",
-        workspace,
-        "--grant",
-        Object.values(state.grants)[0] as string,
-        "--package-sha256",
-        pkg.sha256,
-        "--access-dir",
-        access,
-      ];
-      const listed = json(
-        bin("hetu-plugin"),
-        [...connection, "call", "hetu.extensions.objects.list", "--input", "-"],
-        { work_ref: context.work_ref },
-      );
-      expect(listed.data.objects).toHaveLength(1);
-      const objectId = listed.data.objects[0].object_id;
       const runtime = path.join(info.resources, "app/dist/plugin-runtime.mjs");
       await page.evaluate(() => (window as any).hetuDesktop.handoff("plugin"));
       const pluginHandoff = await application!.evaluate(({ clipboard }) =>
         JSON.parse(clipboard.readText().split("\n").slice(1).join("\n")),
       );
-      expect(pluginHandoff.plugin_connection.node_executable).toBe(bin("node"));
-      expect(pluginHandoff.plugin_connection.runtime).toBe(runtime);
-      const runtimeArgs = [
-        runtime,
-        "--package",
-        pluginDir,
-        ...connection,
-        "--core-cli",
-        bin("hetu-plugin"),
-      ];
+      const connection = pluginHandoff.plugin_connection;
+      expect(connection.access_mode).toBe("open");
+      expect(connection.grant_id).toBeUndefined();
+      expect(connection.node_executable).toBe(bin("node"));
+      expect(connection.runtime).toBe(runtime);
+      const runtimeArgs = [runtime, "--package", pluginDir,
+        "--workspace", workspace, "--work-ref", JSON.stringify(context.work_ref),
+        "--state-dir", connection.state_directory,
+        "--package-sha256", pkg.sha256, "--core-cli", bin("hetu-plugin")];
+      const listed = json(
+        bin("node"),
+        [...runtimeArgs, "call", "hetu.extensions.objects.list", "--input", "-"],
+        { work_ref: context.work_ref },
+      );
+      expect(listed.data.objects).toHaveLength(1);
+      const objectId = listed.data.objects[0].object_id;
       expect(
         json(bin("node"), [...runtimeArgs, "capabilities"]).actions.some(
           (a: any) => a.id === "arrange",
@@ -410,14 +396,14 @@ test(
       application = undefined;
       // 没有桌面窗口时，随包 CLI 仍可回读同一作品与插件成果。
       const readback = json(
-        bin("hetu-plugin"),
-        [...connection, "call", "hetu.extensions.objects.get", "--input", "-"],
+        bin("node"),
+        [...runtimeArgs, "call", "hetu.extensions.objects.get", "--input", "-"],
         { work_ref: context.work_ref, object_id: objectId },
       );
       expect(readback.data.object.revision).toBe(3);
       const cited = json(
-        bin("hetu-plugin"),
-        [...connection, "call", "hetu.extensions.objects.save", "--input", "-"],
+        bin("node"),
+        [...runtimeArgs, "call", "hetu.extensions.objects.save", "--input", "-"],
         {
           work_ref: context.work_ref,
           object_id: objectId,

@@ -573,26 +573,33 @@ test(
     await pluginPage.getByRole("button", { name: "添加并保存" }).click();
     await expect(pluginPage.getByRole("status")).toContainText("已保存修订 1");
     await expect(pluginPage.getByText("江岚").first()).toBeVisible();
-    const state = JSON.parse(
-        await readFile(path.join(profile, "plugin-state.json"), "utf8"),
-      ),
-      grant = Object.values(state.grants)[0] as string;
+    await page.evaluate(() => (window as any).hetuDesktop.handoff("plugin"));
+    const connection = await application.evaluate(({ clipboard }) =>
+      JSON.parse(clipboard.readText().split("\n").slice(1).join("\n")).plugin_connection,
+    );
+    expect(connection.access_mode).toBe("open");
+    expect(connection.grant_id).toBeUndefined();
     const cliArgs = [
+      connection.runtime,
+      "--package",
+      connection.package_path,
       "--workspace",
       workspace,
-      "--grant",
-      grant,
+      "--work-ref",
+      JSON.stringify(context.work_ref),
       "--package-sha256",
       pkg.sha256,
-      "--access-dir",
-      access,
+      "--state-dir",
+      connection.state_directory,
+      "--core-cli",
+      connection.core_cli,
       "call",
       "hetu.extensions.objects.list",
       "--input",
       "-",
     ];
     const result = spawnSync(
-      path.join(root, "target/debug/hetu-plugin"),
+      process.execPath,
       cliArgs,
       {
         input: JSON.stringify({ work_ref: context.work_ref }),
@@ -601,18 +608,12 @@ test(
     );
     expect(result.status, result.stderr).toBe(0);
     expect(JSON.parse(result.stdout).data.objects).toHaveLength(1);
-    const denied = await pluginPage.evaluate(async () => {
+    const invalidSave = await pluginPage.evaluate(async () => {
       const c = await (window as any).hetu.context();
-      try {
-        await (window as any).hetu.request("hetu.documents.save", {
-          work_ref: c.work_ref,
-        });
-        return false;
-      } catch {
-        return true;
-      }
+      return (window as any).hetu.request("hetu.documents.save", { work_ref: c.work_ref });
     });
-    expect(denied).toBe(true);
+    expect(invalidSave.status).toBe("failed");
+    expect(invalidSave.error.code).toBe("invalid_input");
     await pluginPage.getByRole("button", { name: "自动排列" }).click();
     await expect(pluginPage.getByRole("status")).toContainText("已重新排列");
     await page.screenshot({
@@ -657,14 +658,12 @@ test(
       const saved = await api.request("hetu.extensions.objects.save", input);
       if (saved.status !== "succeeded") throw new Error(JSON.stringify(saved));
     });
-    await page.getByRole("button", { name: "让 AI 处理", exact: true }).click();
-    await expect(page.getByRole("status")).toContainText(
-      "已复制当前作品的协作请求",
-    );
+    await page.evaluate(() => (window as any).hetuDesktop.handoff("plugin"));
     const handed = await application.evaluate(({ clipboard }) =>
       JSON.parse(clipboard.readText().split("\n").slice(1).join("\n")),
     );
-    expect(handed.plugin_connection.grant_id).toBe(grant);
+    expect(handed.plugin_connection.access_mode).toBe("open");
+    expect(handed.plugin_connection.grant_id).toBeUndefined();
     expect(handed.work_ref).toEqual(context.work_ref);
     await application.close();
     page = await launch();
@@ -701,7 +700,7 @@ test(
     await expect(reopened.getByRole("status")).toContainText("已保存修订 3");
     await expect(reopened.getByText("待恢复人物").first()).toBeVisible();
     const verify = spawnSync(
-      path.join(root, "target/debug/hetu-plugin"),
+      process.execPath,
       cliArgs,
       {
         input: JSON.stringify({ work_ref: context.work_ref }),
@@ -709,7 +708,7 @@ test(
       },
     );
     expect(JSON.parse(verify.stdout).data.objects[0].revision).toBe(3);
-    // 替换为另一固定包：旧连接撤权，新包重新授权，作品数据继续读取。
+    // 替换固定包后旧连接失效，新包继续读取原作品数据。
     const upgrade = path.join(folder, "upgrade");
     await cp(pkg.source, upgrade, { recursive: true });
     await writeFile(
@@ -726,7 +725,7 @@ test(
     await page.getByRole("button", { name: "安装插件包" }).click();
     await expect(page.getByText(/0\.2\.0/)).toBeVisible();
     const old = spawnSync(
-      path.join(root, "target/debug/hetu-plugin"),
+      process.execPath,
       cliArgs,
       {
         input: JSON.stringify({ work_ref: context.work_ref }),
@@ -760,7 +759,7 @@ test(
     await page.getByRole("button", { name: "查看导出" }).click();
     await expect(page.locator("pre")).toContainText("江岚");
     const revoked = spawnSync(
-      path.join(root, "target/debug/hetu-plugin"),
+      process.execPath,
       cliArgs,
       {
         input: JSON.stringify({ work_ref: context.work_ref }),

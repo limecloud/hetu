@@ -119,7 +119,7 @@ export function AuthorEditor(props: {
     const from = editor.state.doc.toString().indexOf(props.search);
     if (from !== -1) editor.dispatch({ selection: { anchor: from, head: from + props.search.length }, effects: EditorView.scrollIntoView(from, { y: "center" }) });
   }, [props.search]);
-  return <div className={"author-editor" + (props.indent ? " novel-editor" : "")} ref={container} />;
+  return <div className="author-editor" data-indent={props.indent || undefined} ref={container} />;
 }
 
 /** 浏览器选区是 UTF-16；保存的来源范围按固定原文 UTF-8 字节计算。 */

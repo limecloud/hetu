@@ -44,6 +44,16 @@ contextBridge.exposeInMainWorld(
       ipcRenderer.on("desktop:plugins-changed", handler);
       return () => ipcRenderer.removeListener("desktop:plugins-changed", handler);
     },
+    onClosePlugin: (listener: (value: unknown) => void) => {
+      const handler = (_event: unknown, value: unknown) => listener(value);
+      ipcRenderer.on("desktop:close-plugin", handler);
+      return () => ipcRenderer.removeListener("desktop:close-plugin", handler);
+    },
+    onOpenWork: (listener: (value: unknown) => void) => {
+      const handler = (_event: unknown, value: unknown) => listener(value);
+      ipcRenderer.on("desktop:open-work", handler);
+      return () => ipcRenderer.removeListener("desktop:open-work", handler);
+    },
     resources: invoke("desktop:resources"),
     media: invoke("desktop:media"),
     library: invoke("desktop:library"),

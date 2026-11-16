@@ -24,12 +24,12 @@ test("只读插件动作不能通过数据迁移绕过效果与原键检查", as
   }
 });
 
-test("可信迁移审核拒绝未经预览、旧token及上下文变化，丢回执后沿同一方案恢复", async () => {
+test("开放迁移执行拒绝未经预览、旧token及上下文变化，丢回执后沿同一方案恢复", async () => {
   let active = true, lost = true, approvals = 0;
   const params: unknown[] = [];
-  const plan = { owner_plugin_id:"org.test.migration",work_ref:{object_id:work.object_id,kind:work.kind,workspace_id:work.workspace_id},package_sha256:"a".repeat(64) };
-  const review = new PluginMigrationReview(async()=>({work,grant:"grant-test",packageSha:"a".repeat(64),check(){if(!active)throw new Error("上下文变化");},async call(method,input){
-    if(method==="extensions/request")return {status:"succeeded",data:{plan,plan_sha256:"b".repeat(64),result:{data:{state:"prepared"}}}};
+  const plan = { owner_plugin_id:"org.test.migration",work_ref:{object_id:work.object_id,kind:work.kind,workspace_id:work.workspace_id},package_sha256:"a".repeat(64),operation_key:"migration-original" };
+  const review = new PluginMigrationReview(async()=>({work,context:{plugin_id:"org.test.migration",work_ref:work},packageSha:"a".repeat(64),check(){if(!active)throw new Error("上下文变化");},async call(method,input){
+    if(input.request?.action==="hetu.extensions.migrations.get")return {status:"succeeded",data:{plan,plan_sha256:"b".repeat(64),result:{data:{state:"prepared"}}}};
     approvals++;params.push(input);
     if(lost)throw new Error("批准回执丢失");
     return {status:"succeeded",data:{approved:true,executed:false}};

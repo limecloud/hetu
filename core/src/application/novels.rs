@@ -44,6 +44,27 @@ fn stage_novel(store: &Store, novel: &Value, changes: &mut Changes) -> Result<()
 }
 
 impl Kernel {
+    pub(super) fn novel_snapshot(&self, input: &Value) -> Result<Value> {
+        let work = &input["work_ref"];
+        ensure(work["kind"] == "novel", "invalid_input", "此目录投影仅支持小说。")?;
+        let record = self.work_record(work, input["revision"].as_u64())?;
+        let chapters = record["chapters"].as_array()
+            .ok_or_else(|| Error::new("hetu.integrity_failure", "小说目录无效。"))?;
+        ensure(chapters.len() <= 1000, "hetu.budget_exceeded", "统计超过单次目录预算。")?;
+        let mut documents = Vec::new();
+        let mut total: usize = 0;
+        for chapter in chapters {
+            let document = self.document(text(chapter, "document_id")?)?;
+            ensure(self.document_in_work(&document, work)?, "forbidden", "章节不属于当前小说。")?;
+            let fixed = self.document_content(text(chapter, "document_id")?, None)?;
+            let count = fixed["content"].as_str().unwrap_or("")
+                .chars().filter(|c| !c.is_whitespace()).count();
+            total += count;
+            documents.push(json!({"document_id":document["document_id"],"title":document["title"],"volume_id":chapter["volume_id"],"source_ref":{"kind":"document","work_ref":work,"document_id":document["document_id"],"revision_id":fixed["revision"]["revision_id"],"sha256":fixed["revision"]["sha256"]},"word_count":count}));
+        }
+        Ok(json!({"work_ref":work,"fixed_ref":self.work_revision_ref(work,&record)?,"volumes":record["volumes"],"documents":documents,"document_count":documents.len(),"word_count":total,"counting_unit":"non_whitespace_unicode_scalars","statistics_sha256":Self::input_digest(&json!(documents))?}))
+    }
+
     pub(super) fn novel(&self) -> Result<Option<Value>> {
         let record = self.novel_record()?;
         if let Some(novel) = &record {
