@@ -320,10 +320,25 @@ fn one_work_grant_cannot_read_a_sibling_or_execute_its_proposal() {
         "documents.create",
         json!({"kind":"novel_chapter","title":"未获权原稿","content":"另一对象的正文不能因页面引用外发。","source_format":"markdown","operation_key":"other-document"}),
     ));
+    let image = dir.path().join("未获权素材.png");
+    let hex = "89504e470d0a1a0a0000000d4948445200000001000000010804000000b51c0c020000000b4944415478da6364f80f00010501012718e3660000000049454e44ae426082";
+    let bytes: Vec<u8> = (0..hex.len())
+        .step_by(2)
+        .map(|n| u8::from_str_radix(&hex[n..n + 2], 16).unwrap())
+        .collect();
+    std::fs::write(&image, bytes).unwrap();
+    let scan = ok(call(&k, "assets.inspect", json!({"file_path":image})));
+    let sibling_asset = ok(call(
+        &k,
+        "assets.import",
+        json!({"work_ref":b["work_ref"],"file_path":image,"expected_file":{"sha256":scan["sha256"],"size_bytes":scan["size_bytes"]},
+            "title":"未获权素材","source":{"source_type":"author_supplied","creator_statement":"隔离测试素材"},
+            "rights_status":"unknown","redistribution_allowed":false,"rights_statement":"","operation_key":"sibling-asset"}),
+    ));
     for extra in [
         json!({"video_episode_id":sibling_episode["episode"]["video_episode_id"]}),
         json!({"document_id":other_document["document"]["document_id"]}),
-        json!({"asset_id":"asset_00000000-0000-4000-8000-000000000000"}),
+        json!({"asset_id":sibling_asset["asset"]["asset_id"]}),
     ] {
         let mut object = extra;
         object["work_ref"] = a["work_ref"].clone();
@@ -336,6 +351,14 @@ fn one_work_grant_cannot_read_a_sibling_or_execute_its_proposal() {
             "forbidden"
         );
     }
+    assert_eq!(
+        request(
+            &ga,
+            "handoffs.get",
+            json!({"view_kind":"related_works","object_ref":{"work_ref":a["work_ref"],"asset_id":"asset_00000000-0000-4000-8000-000000000000"}})
+        )["error"]["code"],
+        "not_found"
+    );
     let caps = ok(request(&ga, "capabilities.get", json!({})));
     assert!(
         !caps["actions"]
