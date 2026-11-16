@@ -148,13 +148,18 @@ test("作品首页与文稿保留渐变背景和实色阅读纸面", async ({}, 
     await page.getByRole("button", { name: "打开作品", exact: true }).first().click();
     await page.getByRole("button", { name: /插件集成测试/ }).click();
     await expect(page.getByRole("complementary", { name: "项目导航", exact: true })).toBeVisible({ timeout: 30000 });
+    const cdp = await page.context().newCDPSession(page);
     for (const [width, appearance] of [[1360, "light"], [960, "light"], [1360, "dark"], [960, "dark"]] as const) {
       await page.setViewportSize({ width, height: 850 });
       const settings = await openSettings(application, page);
       await settings.getByRole("combobox", { name: "外观", exact: true }).selectOption(appearance);
       await expect(page.locator("html")).toHaveAttribute("data-appearance", appearance, { timeout: 30000 });
       await closeSettings(settings);
-      await page.emulateMedia({ colorScheme: appearance, contrast: "no-preference" });
+      await cdp.send("Emulation.setEmulatedMedia", { features: [
+        { name: "prefers-color-scheme", value: appearance },
+        { name: "prefers-reduced-transparency", value: "no-preference" },
+        { name: "prefers-contrast", value: "no-preference" },
+      ] });
       await navigate(page, "作品资料");
       const profilePage = page.locator('.workbench-page[data-surface="work.profile"]');
       await expect(profilePage.locator(".profile-overview")).toBeVisible();

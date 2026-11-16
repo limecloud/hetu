@@ -79,10 +79,7 @@ test(
       await page
         .getByRole("button", { name: "作品资料", exact: true })
         .click();
-      const structure = page.getByRole("region", {
-        name: "作品创作结构",
-        exact: true,
-      });
+      const structure = page.locator(".profile-structure");
       await structure.locator("summary").click();
       await expect(structure.getByRole("listitem")).toHaveCount(103);
       await expect(structure.getByRole("listitem").first()).toHaveText(
