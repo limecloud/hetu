@@ -128,7 +128,7 @@ test("CLI准备独立文稿快照、Electron审阅批准、无窗口提交及真
     await expect(page!.getByRole("region", { name: "版本批准预览", exact: true })).toContainText("分页长文结束。");
     await page!.getByRole("button", { name: "确认批准此快照", exact: true }).click();
     await expect(page!.getByRole("region", { name: "固定文稿快照", exact: true })).toContainText("等待 Agent 执行");
-    expect((await readdir(path.join(profile, "git-authorizations"))).length).toBeGreaterThan(0);
+    expect(data(cli(grant, "hetu.git.get_snapshot", { work_ref: work, snapshot_id: id })).approval_state).toBe("approved");
     expect(data(cli(grant, "hetu.git.status", { work_ref: work })).head.commit_id).toBeNull();
     await page!.getByRole("button", { name: "让 AI 接续此版本", exact: true }).click();
     await expect.poll(() => app!.evaluate(({ clipboard }) => clipboard.readText())).toContain(id);
