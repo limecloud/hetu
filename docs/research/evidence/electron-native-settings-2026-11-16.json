@@ -251,10 +251,28 @@
       "horizontal_overflow": false,
       "per_capture_font_count_max": 3,
       "minimum_font_px": 12,
-      "renderer_errors": "output/settings-native-20261116/round-6/renderer-errors.json"
+      "renderer_errors": "output/settings-native-20261116/round-6/renderer-errors.json",
+      "packaged_screenshots": [
+        {
+          "path": "output/settings-native-20261116/plan-review-packaged.png",
+          "sha256": "bc495922560b80cefc3281fadf65296d2723a4405565705a72524555b8dc9f7e"
+        },
+        {
+          "path": "output/settings-native-20261116/recovery-packaged.png",
+          "sha256": "f2d0daf835de138831324b43dd6158b37b1e3135fc313fe90a3edd78ff9fbb45"
+        },
+        {
+          "path": "output/settings-native-20261116/error-states-packaged/error-dark.png",
+          "sha256": "6431a3d9f65af7e98101c50ec49974b3a2a6248a5034858fd5514d5314743f7c"
+        },
+        {
+          "path": "output/settings-native-20261116/error-states-packaged/error-narrow.png",
+          "sha256": "ef2d2e447a7fa42d738d86cd6058c6a6724fcaba374304fc2f4e1dadd51de6a4"
+        }
+      ]
     },
     "package": {
-      "status": "awaiting_runtime_verification",
+      "status": "passed",
       "manifest": "output/settings-native-20261116/package/hetu-dev-Vta1ko/manifest.json",
       "manifest_sha256": "f9da01a25959522219352bf97d759ed5d8f3b3ed9da8de18c7bb48f0a9e581ec",
       "source_sha256": "f232d68de39fb8b320cf0c050c4d2dab0257a9076f99cf3a84a1bae209687cd1",
@@ -266,7 +284,29 @@
       "version": "0.8.0",
       "production_verified": false,
       "assembly_log": "output/settings-native-20261116/package.log",
-      "runtime_log": "output/settings-native-20261116/packaged-tests.log"
+      "runtime_log": "output/settings-native-20261116/packaged-tests.log",
+      "runtime_passed": 3,
+      "runtime_failed": 0,
+      "runtime_skipped": 0,
+      "post_test_verification": "output/settings-native-20261116/package-verification.json",
+      "post_test_source_and_artifacts_match": true,
+      "executable": "output/settings-native-20261116/package/hetu-dev-Vta1ko/package/Hetu Luoshu Electron Dev-darwin-arm64/Hetu Luoshu Electron Dev.app/Contents/MacOS/HetuElectronDev",
+      "scope": [
+        "随包Rust、受管Node、CLI/MCP及作者／插件完整旅程",
+        "渠道错误、输入保留、回读后修正与密钥清理",
+        "本机方案准备／批准／关窗执行／真实MCP回读、默认套件后的继续保存"
+      ]
+    },
+    "documentation": {
+      "status": "passed",
+      "log": "output/settings-native-20261116/docs-final.log",
+      "mermaid": 84,
+      "errors": 0
+    },
+    "typescript": {
+      "status": "passed",
+      "log": "output/settings-native-20261116/typescript.log",
+      "also_checked_by_package": true
     }
   },
   "visual_assessment": {
@@ -360,7 +400,7 @@
         "浅暗渠道浮层",
         "520px窄窗六分类与浮层",
         "520×460px错误和恢复",
-        "空方案与固定方案审阅",
+        "固定方案、未知操作恢复、空方案审阅",
         "未知操作恢复",
         "套件检索和接入说明",
         "键盘焦点与分类切换"

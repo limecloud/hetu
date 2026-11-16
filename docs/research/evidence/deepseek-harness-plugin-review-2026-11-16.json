@@ -157,6 +157,14 @@
       "packages/plugin-host/src/worker.mjs": "dcebbdebf575d6054e6d6bdb778e6cc8af27d40dcfe9fc6989a5fc4182216a39",
       "packages/plugin-host/tests/host.test.ts": "7d2b87fbe5468db38cab88e68b0573d16be765e4f6d9e367ccc2f5d9bb8feea4",
       "packages/plugin-host/tests/backend.test.ts": "7250f19996f0fd00e16f9fe88b0fac5267181da22efa022129925ee2ed7997d0"
+    },
+    "desktop_packaged": {
+      "status": "passed",
+      "passed": 1,
+      "scope": "同版开发包随包Rust、Node、CLI/MCP、作者及插件旅程；设置两项另记设置证据。",
+      "log": "output/settings-native-20261116/packaged-tests.log",
+      "manifest": "output/settings-native-20261116/package/hetu-dev-Vta1ko/manifest.json",
+      "post_test_verification": "output/settings-native-20261116/package-verification.json"
     }
   },
   "limitations": [
