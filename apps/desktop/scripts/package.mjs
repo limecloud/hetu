@@ -161,6 +161,8 @@ if (
 )
   throw new Error("Node 运行时与当前装配目标不一致。");
 const before = await sourceSnapshot();
+// Electron 42 按需安装二进制，直接装配也必须先取得同版运行时和许可。
+await run(process.execPath, [path.join(root, "node_modules/electron/install.js")]);
 await run("cargo", [
   "build",
   "--locked",
