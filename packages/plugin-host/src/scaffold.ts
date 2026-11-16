@@ -25,7 +25,22 @@ export async function scaffold(directory: string, id: string, title: string, kit
 import { mkdir, copyFile } from "node:fs/promises";
 await mkdir("dist", { recursive: true });
 await build({ entryPoints: ["src/view.tsx"], outfile: "dist/view.js", bundle: true, platform: "browser", format: "iife", target: "chrome140", jsx: "automatic" });
-for (const [source, target] of [["plugin.json", "plugin.json"], ["index.html", "index.html"], ["src/backend.mjs", "backend.mjs"], ["LICENSE", "LICENSE"]]) await copyFile(source, "dist/" + target);
+for (const [source, target] of [["plugin.json", "plugin.json"], ["CAPABILITIES.md", "CAPABILITIES.md"], ["index.html", "index.html"], ["src/backend.mjs", "backend.mjs"], ["LICENSE", "LICENSE"]]) await copyFile(source, "dist/" + target);
+`,
+    "CAPABILITIES.md": `# ${title.replace(/[\r\n]/g, " ")}
+
+统计调用方明确提供的文字，不读取作品内容。
+
+| 功能 | 入口 | 权限 |
+| --- | --- | --- |
+| 输入文字与查看结果 | 视图 main | 无作品数据权限 |
+| 统计 Unicode 字符 | 动作 count，参数 text | read，仅显式输入 |
+
+机器合同以本包 plugin.json 的 contributions 为准；安装在河图并获权后，经稳定 hetu.plugin_access.capabilities/invoke 发现和调用，无需在Codex安装同名插件。独立插件运行时也提供 capabilities 与 MCP。
+
+开发：npm install → npm run build → plugin-dev.mjs validate <本工程绝对路径>/dist。安装、启停和卸载由宿主公共机器入口执行，作品授权另行核验。
+
+变更功能时同步更新本文件与 plugin.json；功能验证记录由本插件维护，不复制到宿主功能清单。
 `,
     "index.html": '<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>创作插件</title><div id="root"></div><script src="view.js"></script></html>\n',
     "src/backend.mjs": 'export function apply() {}\nexport function invoke(action, input) { if (action !== "count") throw new Error("未知动作"); return { characters: Array.from(input.text).length }; }\n',

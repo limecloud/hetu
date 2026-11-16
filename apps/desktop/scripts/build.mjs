@@ -51,6 +51,7 @@ for (const name of ["relationships", "timeline"]) {
   const source = "../../plugins/" + name;
   await mkdir(source + "/dist", { recursive: true });
   await copyFile(source + "/plugin.json", source + "/dist/plugin.json");
+  await copyFile(source + "/CAPABILITIES.md", source + "/dist/CAPABILITIES.md");
   await build({
     entryPoints: [source + "/src/view.tsx"],
     outfile: source + "/dist/view.js",

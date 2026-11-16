@@ -14,6 +14,8 @@ PAPI-018／019 的首期落点为插件20第24节的 `migrations.prepare/list/ge
 
 ## 2. 调用和身份
 
+河图插件不是Codex插件。稳定入口的 `hetu.plugins.inspect` 返回河图安装状态；`hetu.plugin_access.capabilities/invoke` 在同一机器连接上发现并调用已启用且获权的专业包。工具名保持稳定，专业动作Schema按需返回。输入固定WorkRef、management_ref、grant_id、包摘要及能力摘要；包路径由宿主解析。完整字段和热插拔用例见[21](21-核心格式与动态能力发现.md)，当前可用性以实际发现为准。
+
 组件注册、插槽、拖拽、缩放、布局和局部state由TypeScript宿主处理；作品读写才进入Rust。基础CLI/MCP无Node前提；执行TS插件动作时按需启动随功能制品分发的Node运行时，不要求Electron窗口。
 
 应用请求包含 `action, contract_revision, input`。授权来自可信入口上下文，已有 management_ref、task_ref 和作品范围沿原合同核验。请求不能声明作者角色、整库路径、系统凭据或 `approved=true`。

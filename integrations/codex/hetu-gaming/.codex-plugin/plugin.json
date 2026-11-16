@@ -1,6 +1,6 @@
 {
   "name": "hetu-gaming",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "河图洛书游戏世界创作套件：任务流程与本题材方法，按作品选择安装",
   "skills": "./skills/",
   "category": "Productivity",

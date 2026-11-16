@@ -39,6 +39,8 @@ impl Kernel {
             "hetu.plugin_access.record_migration_decision"
             | "hetu.plugin_access.authorize"
             | "hetu.plugin_access.inspect"
+            | "hetu.plugin_access.capabilities"
+            | "hetu.plugin_access.invoke"
             | "hetu.plugin_access.revoke" => input["work_ref"] == reference,
             "hetu.works.get"
             | "hetu.work_links.list"

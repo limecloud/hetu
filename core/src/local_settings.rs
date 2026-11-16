@@ -474,29 +474,38 @@ impl LocalSettings {
             }
         } else {
             let fixed = plan["fixed"].clone();
-            ensure(
-                suites::inspect(text(&fixed["suite"], "suite_id")?)? == fixed["suite"],
-                "revision_conflict",
-                "所选套件字节或版本已变化，请重新准备。",
-            )?;
+            let recovering = plan["state"] == "executing";
+            // Codex未知恢复只核对原固定登记与缓存，不要求当前随包仍是旧版。
+            if !(recovering && fixed["agent_client"] == "codex") {
+                ensure(
+                    suites::inspect(text(&fixed["suite"], "suite_id")?)? == fixed["suite"],
+                    "revision_conflict",
+                    "所选套件字节或版本已变化，请重新准备。",
+                )?;
+            }
             if fixed["install"] == true {
                 ensure(
                     suites::target(text(&fixed, "agent_client")?)? == fixed["install_target"],
                     "revision_conflict",
                     "安装目标或客户端入口已变化，请重新准备。",
                 )?;
-                let recovering = plan["state"] == "executing";
-                if !recovering {
-                    plan["state"] = json!("executing");
-                    plan["execute_key"] = input["operation_key"].clone();
-                    self.store.install(
-                        &plan_path(operation_id)?,
-                        &serde_json::to_vec(&plan)?,
-                        false,
-                    )?;
-                }
-                let installed =
-                    suites::install(&fixed["suite"], text(&fixed, "agent_client")?, recovering)?;
+                let installed = suites::install(
+                    &fixed["suite"],
+                    text(&fixed, "agent_client")?,
+                    recovering,
+                    || {
+                        if !recovering {
+                            plan["state"] = json!("executing");
+                            plan["execute_key"] = input["operation_key"].clone();
+                            self.store.install(
+                                &plan_path(operation_id)?,
+                                &serde_json::to_vec(&plan)?,
+                                false,
+                            )?;
+                        }
+                        Ok(())
+                    },
+                )?;
                 let key = format!(
                     "{}:{}",
                     text(&fixed, "agent_client")?,

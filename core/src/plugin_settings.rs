@@ -1,4 +1,4 @@
-//! TS宿主拥有插件包与依赖；稳定机器连接只转发固定安装选择。
+//! TS宿主拥有插件包与依赖；稳定机器连接转发固定安装选择及精确授权的动态调用。
 use crate::{Error, Result, domain::ensure};
 use serde_json::{Value, json};
 use std::{

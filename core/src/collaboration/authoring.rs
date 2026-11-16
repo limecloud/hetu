@@ -42,6 +42,8 @@ const REVIEW_ACTIONS: &[&str] = &[
     "hetu.plugin_access.authorize",
     "hetu.plugin_access.record_migration_decision",
     "hetu.plugin_access.inspect",
+    "hetu.plugin_access.capabilities",
+    "hetu.plugin_access.invoke",
     "hetu.plugin_access.revoke",
     "hetu.works.list",
     "hetu.works.get",
@@ -217,6 +219,17 @@ pub(crate) fn granted_work(binding: &Value) -> Result<Option<Value>> {
         .filter(|value| value.is_object())
         .cloned())
 }
+/// 新建授权的插件范围固定为该次最初创建的作品，不扩为同根其他对象。
+pub(crate) fn created_work(binding: &Value) -> Result<Option<Value>> {
+    if binding["kind"] != "workspace" {
+        return Ok(None);
+    }
+    let grant = record(binding)?;
+    Ok(grant["created_workspace"]
+        .get("work_ref")
+        .filter(|value| value.is_object())
+        .cloned())
+}
 fn work_action_allowed(name: &str, reference: &Value) -> bool {
     if reference["kind"] == "video"
         && matches!(
@@ -261,6 +274,8 @@ fn work_action_allowed(name: &str, reference: &Value) -> bool {
             | "hetu.plugin_access.record_migration_decision"
             | "hetu.plugin_access.authorize"
             | "hetu.plugin_access.inspect"
+            | "hetu.plugin_access.capabilities"
+            | "hetu.plugin_access.invoke"
             | "hetu.plugin_access.revoke"
             | "hetu.capabilities.get"
             | "hetu.operations.get"
@@ -710,6 +725,13 @@ impl CollaborationHub {
             ensure(latest["revoked"] == false, "forbidden", "新建授权已撤销。")?;
             latest["created_workspace"] = json!({"workspace_id":target.scope(),"path":grant["target_path"],
                 "management_ref":result["data"]["workspace_management_ref"]});
+            let (kind, id_field) = match action {
+                "hetu.creation_projects.create_drama" => ("drama", "drama_project_id"),
+                "hetu.creation_projects.create_video" => ("video", "video_project_id"),
+                _ => ("novel", "novel_id"),
+            };
+            latest["created_workspace"]["work_ref"] = json!({"workspace_id":target.scope(),
+                "kind":kind,"object_id":result["data"]["created_workspace_ref"][id_field]});
             store.transaction(&BTreeMap::from([(path, encoded(&latest)?)]))?;
         }
         if action == "hetu.creative_tasks.prepare" {

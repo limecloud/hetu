@@ -53,6 +53,7 @@ export interface PluginState {
   reason?: string;
 }
 export class PluginHost {
+  readonly loadErrors = new Map<string, string>();
   readonly views = new SlotRegistry<ViewContribution>();
   readonly actions = new SlotRegistry<
     PluginPackage["manifest"]["contributions"]["actions"][number]

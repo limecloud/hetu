@@ -72,17 +72,19 @@
 
 ## 本机设置与套件
 
-读取 `hetu.local_settings.get` 得到白名单偏好、套件目录和实际受管安装客户端；设置某部作品的套件时携带确切 workspace_id。准备 preferences 或 agent_suite 方案，在当前对话展示确切差异，作者决定后用 `local_settings.record_decision` 登记；execute 只执行这次固定内容。其他客户端可保存明确选择，受管安装以实际能力为准。
+读取 `hetu.local_settings.get` 得到白名单偏好、套件目录和实际受管安装客户端；设置某部作品的套件时携带确切 work_ref。准备 preferences 或 agent_suite 方案，在当前对话展示确切差异，作者决定后用 `local_settings.record_decision` 登记；execute 只执行这次固定内容。其他客户端可保存明确选择，受管安装以实际能力为准。
 
 设置方案绑定本机偏好域、客户端、原值、套件指纹与期限。冲突时保留作者新设置，恢复只接续原意图，不把第三种值覆盖成旧计划。供应商密钥和私密模型配置由本机安全设置处理，不索取、不回读、不放进提示词。
 
-Electron 的本机设置由独立 Rust Owner 持有，稳定 CLI/MCP 无需窗口。交接中如有 local_settings_directory，沿同一可信启动目录连接，不把它作为业务请求字段；不要改用旧原生偏好或直接写设置文件。批准本身不执行；执行保持 operation_id、sha256 和原 operation_key，结果未知先 get_operation。安装状态 registered、files_installed 和当前 Agent 会话加载分开核对；Codex 未知只读检查官方登记及固定缓存字节，不换键重复安装。套件包、安装目标或偏好基线变化时重新准备，不扩大安装范围。
+Electron 的本机设置由独立 Rust Owner 持有，稳定 CLI/MCP 无需窗口。交接中如有 local_settings_directory，沿同一可信启动目录连接，不把它作为业务请求字段；不要改用旧原生偏好或直接写设置文件。批准本身不执行；执行保持 operation_id、sha256 和原 operation_key，结果未知先 get_operation。安装状态 registered、files_installed 和当前 Agent 会话加载分开核对。安装器精确检查所选 Codex 市场，不因无关市场损坏而要求修其他配置；只读预检失败保持 approved，可沿原方案继续。已进入 executing 时只读核对官方登记及原固定缓存，即使当前随包已升级也不重复安装；历史无阶段证据的未知操作同样保留，不换键重试。未开始执行的方案遇到套件包、安装目标或偏好基线变化时重新准备，不扩大安装范围。
 
 ## 会话固定方案与边界
 
 `hetu.agent_operations.catalog` 返回可准备领域动作及完整输入Schema。prepare只固定结果；在对话展示预览和差异后，依据用户的真实指令用record_decision固定proposal_id、proposal_sha256、expected_state_revision、decision、authorization_note和原键，再execute。任何工具成功、模型建议或用户对目标的泛化认可都不等于用户已认可尚未看到的定稿。既有明确授权足够时继续，不重复要求回桌面决定。
 
 插件生命周期按 `hetu.plugins.*` 检查安装状态、包清单和代码执行能力，固定包摘要和基线，执行真实安装选择，再回读原操作。依赖解析、停用和卸载使用同一宿主；升级撤销旧包授权，专业成果和历史保留。`plugin_access.authorize`另行固定作品、包、权限与Schema；权限撤销或管理授权修订变化后不复活旧连接。
+
+河图插件安装在河图，不为每包安装Codex插件或添加MCP连接。当前对话沿稳定入口先 `hetu.plugins.inspect`，获权后调用 `hetu.plugin_access.capabilities` 读取实时Schema与capabilities_sha256，再以 `hetu.plugin_access.invoke` 携带同一WorkRef、management_ref、grant_id、包及能力摘要执行声明动作，参数放在arguments。安装后、相关任务开始及旧调用失败时重新发现；停用、升级或撤权后旧引用拒绝，启用不复活旧授权。插件自己维护功能清单；宿主地图仅导航发现入口。未知写入通过该插件的获权operations.get回读原键，不换键重做。
 
 专业数据迁移先由插件准备固定方案，展示旧内容、目标Schema和完整新内容。用户决定后通过原客户端的 `hetu.plugin_access.record_migration_decision` 登记确切 grant_id、migration_id 和 plan_sha256，再由原插件执行；登记不迁移，未知结果沿原迁移及操作键回读。普通对象保存不能跨Schema版本，父管理授权撤销后旧插件访问失效，宿主仍可清理停用。
 

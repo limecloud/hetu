@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:hetu:plugin-object:1",
+  "title": "河图插件受管修订",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "object_id",
+    "workspace_id",
+    "work_ref",
+    "owner_plugin_id",
+    "kind",
+    "title",
+    "schema_version",
+    "revision",
+    "previous_sha256",
+    "created_at",
+    "updated_at",
+    "content",
+    "source_refs",
+    "package_sha256",
+    "actor_ref"
+  ],
+  "properties": {
+    "object_id": {
+      "type": "string",
+      "pattern": "^ext_[0-9a-f-]{36}$"
+    },
+    "workspace_id": {
+      "type": "string"
+    },
+    "work_ref": {
+      "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+    },
+    "owner_plugin_id": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "schema_version": {
+      "type": "string"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "previous_sha256": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "updated_at": {
+      "type": "string"
+    },
+    "content": {},
+    "source_refs": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "object"
+      }
+    },
+    "package_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "actor_ref": {
+      "type": "string"
+    }
+  }
+}

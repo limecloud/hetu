@@ -4,8 +4,14 @@ import { createHash, randomUUID } from "node:crypto";
 import path from "node:path";
 import { PluginPackage } from "./package.ts";
 import { PluginHost } from "./registry.ts";
+import Ajv from "ajv";
+import installationSchema from "../../../contracts/schemas/plugin-installation.schema.json" with { type: "json" };
+import manifestSchema from "../../../contracts/schemas/plugin-manifest.schema.json" with { type: "json" };
+export type InstalledPackageIdentity = Pick<PluginPackage, "manifest" | "sha256">;
+const validateState = new Ajv({ strict: false }).addSchema(manifestSchema, "urn:hetu:plugin-manifest:1").compile(installationSchema);
 
 export interface InstallationState {
+  format_version?: 1;
   packages: { path: string; sha256: string; enabled: boolean; removed?: boolean; manifest?: PluginPackage["manifest"] }[];
   grants: Record<string, string>;
   operations?: Record<string, { input_sha256: string; result: unknown; authorization_note: string; client_adapter: string }>;
@@ -25,7 +31,7 @@ export class PluginInstallations {
       if (error.code !== "ENOENT") throw new Error("插件状态无法读取，已停止写入。");
       state = { packages: [], grants: {} };
     }
-    if (!Array.isArray(state.packages) || !state.grants || typeof state.grants !== "object")
+    if (!validateState(state))
       throw new Error("插件状态无效。");
     return { state, sha256: digest(state) };
   }
@@ -50,6 +56,8 @@ export class PluginInstallations {
     }
   }
   async #write(state: InstallationState) {
+    state.format_version = 1;
+    if (!validateState(state)) throw new Error("插件状态不符合当前格式。");
     const temp = this.file + "." + randomUUID() + ".tmp";
     await writeFile(temp, JSON.stringify(state), { mode: 0o600 });
     await rename(temp, this.file);
@@ -65,12 +73,17 @@ export class PluginInstallations {
     const host = new PluginHost();
     for (const item of state.packages) {
       if (item.removed) continue;
-      const pkg = await PluginPackage.inspect(item.path);
-      if (pkg.sha256 !== item.sha256) throw new Error("已安装插件的固定包摘要不一致。");
-      host.add(pkg);
+      try {
+        const pkg = await PluginPackage.inspect(item.path);
+        if (pkg.sha256 !== item.sha256 || item.manifest && pkg.manifest.id !== item.manifest.id)
+          throw new Error("已安装插件的固定包摘要不一致。");
+        host.add(pkg);
+      } catch (error) {
+        host.loadErrors.set(item.manifest?.id ?? item.sha256, error instanceof Error ? error.message : "插件包无法读取。");
+      }
     }
     for (const item of state.packages)
-      if (!item.removed && item.manifest) {
+      if (!item.removed && item.manifest && host.has(item.manifest.id)) {
         if (item.enabled) await host.enable(item.manifest.id);
         else await host.disable(item.manifest.id);
       }
@@ -89,9 +102,14 @@ export class PluginInstallations {
   }
   async inspect() {
     const { state, sha256 } = await this.read(), host = await this.host(state);
-    return { state_sha256: sha256, packages: state.packages, states: host.states() };
+    return { state_sha256: sha256, packages: state.packages, states: [
+      ...host.states(),
+      ...state.packages.filter(item => !item.removed && item.manifest && host.loadErrors.has(item.manifest.id))
+        .map(item => ({ id: item.manifest!.id, installed: true, selected: item.enabled,
+          state: "failed", reason: host.loadErrors.get(item.manifest!.id) })),
+    ] };
   }
-  async apply(input: any, revoke: (pkg: PluginPackage) => Promise<void>) {
+  async apply(input: any, revoke: (pkg: InstalledPackageIdentity) => Promise<void>) {
     if (!["codex", "claude-code", "workbuddy", "generic", "desktop"].includes(input.client_adapter)
       || typeof input.operation_key !== "string" || !input.operation_key.trim() || input.operation_key.length > 128
       || typeof input.authorization_note !== "string" || !input.authorization_note.trim() || input.authorization_note.length > 8000)
@@ -105,40 +123,55 @@ export class PluginInstallations {
       }
       if (sha256 !== input.expected_sha256) throw new Error("插件状态已变化，请重新审阅。");
       const host = await this.host(state);
-      let pkg: PluginPackage;
+      let pkg: InstalledPackageIdentity;
       if (input.action === "install") {
         pkg = await PluginPackage.inspect(input.package_directory);
-      } else pkg = host.package(input.plugin_id);
+      } else {
+        const installed = state.packages.find(item => !item.removed && item.manifest?.id === input.plugin_id);
+        if (!installed?.manifest) throw new Error("插件未安装。");
+        pkg = { manifest: installed.manifest, sha256: installed.sha256 };
+      }
       if (pkg.sha256 !== input.package_sha256) throw new Error("操作与已选择的插件包摘要不一致。");
       const affected = new Set<string>();
-      if (input.action !== "install" || host.has(pkg.manifest.id)) affected.add(pkg.manifest.id);
+      if (input.action !== "install" || state.packages.some(item => !item.removed && item.manifest?.id === pkg.manifest.id)) affected.add(pkg.manifest.id);
       if (input.action !== "enable") {
         let changed = true;
         while (changed) {
           changed = false;
-          for (const current of host.states())
-            if (!affected.has(current.id) && host.package(current.id).manifest.dependencies.some(d => affected.has(d.id))) {
-              affected.add(current.id); changed = true;
+          for (const item of state.packages)
+            if (!item.removed && item.manifest && !affected.has(item.manifest.id) && item.manifest.dependencies.some(d => affected.has(d.id))) {
+              affected.add(item.manifest.id); changed = true;
             }
         }
       }
       if (!["install", "enable", "disable", "uninstall"].includes(input.action)) throw new Error("未知插件安装动作。");
       if (input.action !== "enable") {
         for (const owner of affected) {
-          await revoke(host.package(owner));
+          const item = state.packages.find(item => !item.removed && item.manifest?.id === owner)!;
+          await revoke({ manifest: item.manifest!, sha256: item.sha256 });
           for (const key of Object.keys(state.grants)) if (JSON.parse(key)[0] === owner) delete state.grants[key];
         }
       }
       if (input.action === "install") {
-        const directory = await this.snapshot(pkg);
-        if (host.has(pkg.manifest.id)) await host.replace(pkg); else host.add(pkg);
+        const verified = pkg as PluginPackage;
+        const directory = await this.snapshot(verified);
+        if (host.has(pkg.manifest.id)) await host.replace(verified); else host.add(verified);
         state.packages = state.packages.filter(p => p.manifest?.id !== pkg.manifest.id);
         state.packages.push({ path: directory, sha256: pkg.sha256, enabled: true, manifest: pkg.manifest });
         await host.enable(pkg.manifest.id);
       } else if (input.action === "enable") await host.enable(pkg.manifest.id);
-      else if (input.action === "disable") await host.disable(pkg.manifest.id);
+      else if (input.action === "disable") {
+        for (const owner of affected) {
+          if (host.has(owner)) await host.disable(owner);
+          state.packages.find(item => !item.removed && item.manifest?.id === owner)!.enabled = false;
+        }
+      }
       else {
-        await host.remove(pkg.manifest.id);
+        for (const owner of affected) {
+          if (host.has(owner)) await host.disable(owner);
+          state.packages.find(item => !item.removed && item.manifest?.id === owner)!.enabled = false;
+        }
+        if (host.has(pkg.manifest.id)) await host.remove(pkg.manifest.id);
         const item = state.packages.find(p => p.sha256 === pkg.sha256)!;
         item.enabled = false; item.removed = true;
       }

@@ -17,7 +17,7 @@
 | 导入已有小说 | `hetu-import` | `hetu.import_authorizations.register` | 发现能力及精确作品 → 核对原稿、完整目录和摘要 → 登记真实导入指令 → 固定分批方案并执行 → 逐篇回读及原键恢复 |
 | 整理资料、目录、设定或执行作者取舍 | `hetu-manage` | `hetu.agent_operations.catalog` | 读取对象及固定修订 → 按领域Schema准备方案 → 展示差异并记录真实决定 → 原Agent执行 → 回读领域结果 |
 | 起草、改稿或整理大纲 | `hetu-setup` | `hetu.creative_tasks.list` | 恢复已有任务或准备确切新任务 → 按任务类型选择写作Skill → 按需读取固定上下文 → 提交参考成果 → 阅读反馈并沿原任务继续 |
-| 设置偏好或安装所选Skills套件 | `hetu-manage` | `hetu.local_settings.get` | 读取本机基线 → 准备固定设置方案 → 记录真实选择 → 执行并回读 → 分别核对安装和本会话加载状态 |
+| 设置偏好或安装所选Skills套件 | `hetu-manage` | `hetu.local_settings.get` | 读取本机基线 → 准备固定设置方案 → 记录真实选择 → 精确市场预检后执行；未知沿原键只读恢复 → 分别核对安装和本会话加载状态 |
 | 配置模型渠道 | `hetu-manage` | `hetu.model_settings.inspect` | 读取非敏感设置及摘要 → 按真实指令提交固定设置 → 凭据仅进入私密存储 → 回读非敏感结果；生成与费用另行授权 |
 | 安装、启停或卸载插件 | `hetu-manage` | `hetu.plugins.inspect` | 核对包内容及摘要 → 核对依赖和状态基线 → 提交真实安装选择 → 回读原操作 → 作品数据权限另行精确授权 |
 | 授权插件数据或确认数据迁移 | `hetu-manage` | `hetu.plugin_access.authorize` | 固定作品、包摘要和类型Schema → 按真实选择授权 → 发现插件专业数据动作 → 迁移先准备并展示前后差异 → 登记确切迁移决定后执行及回读 |
@@ -39,7 +39,7 @@
 | 文稿版本与协作 | hetu-manage | 20 | 0 | 0 |
 | 图片与素材 | hetu-artwork、hetu-import | 10 | 0 | 0 |
 | 小说资料与目录 | hetu-book-profile | 4 | 0 | 0 |
-| 新建与创作库接纳 | hetu-book-create | 6 | 0 | 0 |
+| 新建与创作库接纳 | hetu-book-create | 6 | 0 | 2 |
 | 创作任务与接续 | hetu-setup | 8 | 1 | 0 |
 | 局部选择 | hetu-setup | 2 | 0 | 0 |
 | 封面 | hetu-cover、hetu-import | 9 | 2 | 0 |
@@ -52,13 +52,13 @@
 | 按需上下文 | hetu-setup | 3 | 0 | 0 |
 | 模型计划与费用 | hetu-setup | 8 | 0 | 0 |
 | 共享固定方案 | hetu-manage | 7 | 0 | 0 |
-| 本机设置与套件安装 | hetu-manage | 6 | 0 | 0 |
+| 本机设置与套件安装 | hetu-manage | 6 | 0 | 6 |
 | 作品读取与关联 | hetu-manage | 7 | 0 | 0 |
 | 视频工程 | hetu-video | 5 | 0 | 0 |
 | 整书导入与恢复 | hetu-import | 3 | 0 | 0 |
-| 插件授权 | hetu-manage | 4 | 0 | 0 |
+| 插件授权 | hetu-manage | 6 | 0 | 3 |
 | 模型渠道设置 | hetu-manage | 3 | 0 | 0 |
-| 插件安装与生命周期 | hetu-manage | 4 | 0 | 0 |
+| 插件安装与生命周期 | hetu-manage | 4 | 0 | 4 |
 
 ## AI 按需查询
 
@@ -261,9 +261,9 @@ MCP 对应调用 `hetu_get_capability_map`，参数同上。具体动作查询�
 | --- | --- | --- | --- | --- |
 | 读取单项建书筹备<br>`hetu.creation_projects.get` | `hetu_get_creation_project` (stable) | [hetu-book-create](../tools/hetu-skills/base/skills/hetu-book-create/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 | 保存作者的筹备想法和所选资料<br>`hetu.creation_projects.save` | `hetu_save_creation_project` (stable) | [hetu-book-create](../tools/hetu-skills/base/skills/hetu-book-create/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
-| 从筹备创建独立小说并保存来源<br>`hetu.creation_projects.create_novel` | `hetu_create_novel_from_project` (stable) | [hetu-book-create](../tools/hetu-skills/base/skills/hetu-book-create/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
+| 从筹备创建独立小说并保存来源<br>`hetu.creation_projects.create_novel` | `hetu_create_novel_from_project` (stable) | [hetu-book-create](../tools/hetu-skills/base/skills/hetu-book-create/SKILL.md) | 按任务或读取范围执行 | 已验证；安装已发现 |
 | 将筹备资料创建为独立剧本作品<br>`hetu.creation_projects.create_drama` | `hetu_create_drama_from_project` (stable) | [hetu-book-create](../tools/hetu-skills/base/skills/hetu-book-create/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
-| 开始独立筹备，预留全新受管作品目录，不获得既有作品权限<br>`hetu.creation_projects.create` | `hetu_begin_creation` (stable) | [hetu-book-create](../tools/hetu-skills/base/skills/hetu-book-create/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
+| 开始独立筹备，预留全新受管作品目录，不获得既有作品权限<br>`hetu.creation_projects.create` | `hetu_begin_creation` (stable) | [hetu-book-create](../tools/hetu-skills/base/skills/hetu-book-create/SKILL.md) | 按任务或读取范围执行 | 已验证；安装已发现 |
 | 将筹备创建为独立视频项目，无小说或剧本前置<br>`hetu.creation_projects.create_video` | `hetu_create_video_from_project` (stable) | [hetu-book-create](../tools/hetu-skills/base/skills/hetu-book-create/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 
 ### 创作任务与接续
@@ -396,12 +396,12 @@ MCP 对应调用 `hetu_get_capability_map`，参数同上。具体动作查询�
 
 | 功能／CLI 动作 | MCP 入口 | Skill | 范围／决定 | 状态 |
 | --- | --- | --- | --- | --- |
-| 读取可交接的本机偏好与套件目录<br>`hetu.local_settings.get` | `hetu_local_settings_get` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 独立本机固定方案；record_decision 后 execute | 源码已连线；安装待核对 |
-| 核对指定客户端的套件文件、版本及登记，不证明当前会话已加载<br>`hetu.local_settings.inspect_suite` | `hetu_local_settings_inspect_suite` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 独立本机固定方案；record_decision 后 execute | 源码已连线；安装待核对 |
-| 准备本机设置或套件选择安装方案<br>`hetu.local_settings.prepare` | `hetu_local_settings_prepare` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 独立本机固定方案；record_decision 后 execute | 源码已连线；安装待核对 |
-| 读取当前客户端本机方案与执行结果<br>`hetu.local_settings.get_operation` | `hetu_local_settings_get_operation` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 独立本机固定方案；record_decision 后 execute | 源码已连线；安装待核对 |
-| 执行作者批准的确切本机方案<br>`hetu.local_settings.execute` | `hetu_local_settings_execute` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 独立本机固定方案；record_decision 后 execute | 源码已连线；安装待核对 |
-| 记录当前会话对固定本机偏好或套件方案的确切决定<br>`hetu.local_settings.record_decision` | `hetu_local_settings_record_decision` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 独立本机固定方案；record_decision 后 execute | 源码已连线；安装待核对 |
+| 读取可交接的本机偏好与套件目录<br>`hetu.local_settings.get` | `hetu_local_settings_get` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 独立本机固定方案；record_decision 后 execute | 已验证；安装已发现 |
+| 核对指定客户端的套件文件、版本及登记，不证明当前会话已加载<br>`hetu.local_settings.inspect_suite` | `hetu_local_settings_inspect_suite` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 独立本机固定方案；record_decision 后 execute | 已验证；安装已发现 |
+| 准备本机设置或套件选择安装方案<br>`hetu.local_settings.prepare` | `hetu_local_settings_prepare` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 独立本机固定方案；record_decision 后 execute | 已验证；安装已发现 |
+| 读取当前客户端本机方案与执行结果<br>`hetu.local_settings.get_operation` | `hetu_local_settings_get_operation` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 独立本机固定方案；record_decision 后 execute | 已验证；安装已发现 |
+| 执行作者批准的确切本机方案<br>`hetu.local_settings.execute` | `hetu_local_settings_execute` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 独立本机固定方案；record_decision 后 execute | 已验证；安装已发现 |
+| 记录当前会话对固定本机偏好或套件方案的确切决定<br>`hetu.local_settings.record_decision` | `hetu_local_settings_record_decision` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 独立本机固定方案；record_decision 后 execute | 已验证；安装已发现 |
 
 ### 作品读取与关联
 
@@ -437,10 +437,12 @@ MCP 对应调用 `hetu_get_capability_map`，参数同上。具体动作查询�
 
 | 功能／CLI 动作 | MCP 入口 | Skill | 范围／决定 | 状态 |
 | --- | --- | --- | --- | --- |
-| 按当前会话的真实选择授权确切插件包及作品数据<br>`hetu.plugin_access.authorize` | `hetu_plugin_access_authorize` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
+| 按当前会话的真实选择授权确切插件包及作品数据<br>`hetu.plugin_access.authorize` | `hetu_plugin_access_authorize` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 按任务或读取范围执行 | 已验证；安装已发现 |
 | 读取当前作品的确切插件授权<br>`hetu.plugin_access.inspect` | `hetu_plugin_access_inspect` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 | 撤销当前作品的确切插件授权<br>`hetu.plugin_access.revoke` | `hetu_plugin_access_revoke` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 | 在当前会话登记固定插件数据迁移方案的真实作者决定<br>`hetu.plugin_access.record_migration_decision` | `hetu_plugin_access_record_migration_decision` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
+| 发现当前已启用河图插件的获权动作与实时Schema<br>`hetu.plugin_access.capabilities` | `hetu_plugin_access_capabilities` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 按任务或读取范围执行 | 已验证；安装已发现 |
+| 通过稳定入口调用确切河图插件或专业数据动作<br>`hetu.plugin_access.invoke` | `hetu_plugin_access_invoke` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 按任务或读取范围执行 | 已验证；安装已发现 |
 
 ### 模型渠道设置
 
@@ -454,14 +456,14 @@ MCP 对应调用 `hetu_get_capability_map`，参数同上。具体动作查询�
 
 | 功能／CLI 动作 | MCP 入口 | Skill | 范围／决定 | 状态 |
 | --- | --- | --- | --- | --- |
-| 读取插件安装与依赖状态<br>`hetu.plugins.inspect` | `hetu_plugins_inspect` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 固定包摘要＋安装状态基线＋真实安装选择 | 源码已连线；安装待核对 |
-| 检查预构建插件包、贡献及代码风险<br>`hetu.plugins.inspect_package` | `hetu_plugins_inspect_package` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 固定包摘要＋安装状态基线＋真实安装选择 | 源码已连线；安装待核对 |
-| 执行确切插件安装、启用、停用或卸载选择<br>`hetu.plugins.apply` | `hetu_plugins_apply` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 固定包摘要＋安装状态基线＋真实安装选择 | 源码已连线；安装待核对 |
-| 按原键回读插件安装操作<br>`hetu.plugins.get_operation` | `hetu_plugins_get_operation` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 固定包摘要＋安装状态基线＋真实安装选择 | 源码已连线；安装待核对 |
+| 读取插件安装与依赖状态<br>`hetu.plugins.inspect` | `hetu_plugins_inspect` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 固定包摘要＋安装状态基线＋真实安装选择 | 已验证；安装已发现 |
+| 检查预构建插件包、贡献及代码风险<br>`hetu.plugins.inspect_package` | `hetu_plugins_inspect_package` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 固定包摘要＋安装状态基线＋真实安装选择 | 已验证；安装已发现 |
+| 执行确切插件安装、启用、停用或卸载选择<br>`hetu.plugins.apply` | `hetu_plugins_apply` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 固定包摘要＋安装状态基线＋真实安装选择 | 已验证；安装已发现 |
+| 按原键回读插件安装操作<br>`hetu.plugins.get_operation` | `hetu_plugins_get_operation` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 固定包摘要＋安装状态基线＋真实安装选择 | 已验证；安装已发现 |
 
 ## 插件发现入口
 
-先用 `hetu.plugins.inspect` 定位已安装的固定包，再读取该插件自己的功能清单及 `manifest.contributions`；按精确授权调用 plugin-runtime 的 `capabilities` 或 MCP `tools/list`。插件维护自己的视图、数据类型、动作与验证信息，宿主不汇总维护其业务功能。共享专业数据协议见[插件合同](plugin/20-首期可执行合同与开发入口.md)。
+河图插件安装在河图，不为每包安装Codex插件或新增MCP连接。先用 `hetu.plugins.inspect` 定位固定包及其自有功能清单；按精确作品授权通过稳定 `hetu.plugin_access.capabilities/invoke` 发现和调用实时Schema。同一连接按需重新查询，停用或升级后旧引用拒绝。插件自行维护视图、数据类型、动作与验证信息，宿主不汇总其业务功能。核心格式和热插拔用例见[插件合同](plugin/21-核心格式与动态能力发现.md)。
 
 
 ## 维护与检查

@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:hetu:plugin-installation:1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "packages",
+    "grants"
+  ],
+  "properties": {
+    "format_version": {
+      "const": 1
+    },
+    "packages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "sha256",
+          "enabled"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "removed": {
+            "type": "boolean"
+          },
+          "manifest": {
+            "$ref": "urn:hetu:plugin-manifest:1"
+          }
+        }
+      }
+    },
+    "grants": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "operations": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "input_sha256",
+          "result",
+          "authorization_note",
+          "client_adapter"
+        ],
+        "properties": {
+          "input_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "result": {},
+          "authorization_note": {
+            "type": "string"
+          },
+          "client_adapter": {
+            "enum": [
+              "codex",
+              "claude-code",
+              "workbuddy",
+              "generic",
+              "desktop"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

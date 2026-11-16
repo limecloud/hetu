@@ -31,6 +31,7 @@ export async function navigate(page: Page, label: string) {
   const options = { name: label, exact: true, includeHidden: true };
   const button = navigation.getByRole("button", options);
   await expect(button).toBeAttached();
+  await expect(button).toBeEnabled();
   const group = navigation.locator("details.navigation-group").filter({ has: page.getByRole("button", options) });
   if (await group.count() && !(await group.evaluate((element) => (element as HTMLDetailsElement).open)))
     await group.locator(":scope > summary").click();

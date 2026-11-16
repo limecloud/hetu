@@ -157,10 +157,10 @@ function App() {
     const item = items.find((item) => item.id === id);
     if (!item) return null;
     const [label, icon] = labels[id] ?? [item.value.title, "file"];
-    return <button key={id} className={active === id ? "selected" : ""} aria-current={active === id ? "page" : undefined}
+    return <button key={id} disabled={busy} className={active === id ? "selected" : ""} aria-current={active === id ? "page" : undefined}
       onClick={() => void run(() => navigate(id))}><Icon name={icon}/><span>{label}</span></button>;
   };
-  const globalItem = (id: string, label: string, icon: IconName) => <button className={active === id ? "selected" : ""}
+  const globalItem = (id: string, label: string, icon: IconName) => <button disabled={busy} className={active === id ? "selected" : ""}
     onClick={() => void run(() => navigate(id))}><Icon name={icon}/><span>{label}</span></button>;
   const openWorkspace = () => run(async () => {
     const next = await desktop.open();
@@ -183,9 +183,9 @@ function App() {
           <details className="workspace-switcher popover-menu">
             <summary><span className="workspace-title">{selected?.title ?? "当前作品"}</span><span className="workspace-kind">{{ novel: "小说", drama: "剧本", video: "视频" }[state.work.kind as "novel"]}</span><Icon name="chevron" size={12}/></summary>
             <div className="menu-panel">
-              <button onClick={() => void run(() => navigate("library"))}>返回创作库</button>
-              <button onClick={() => void openWorkspace()}>打开作品</button>
-              {works.filter((item) => !item.unavailable).map((item) => <button key={item.work_ref.object_id} onClick={() => void run(async () => {
+              <button disabled={busy} onClick={() => void run(() => navigate("library"))}>返回创作库</button>
+              <button disabled={busy} onClick={() => void openWorkspace()}>打开作品</button>
+              {works.filter((item) => !item.unavailable).map((item) => <button key={item.work_ref.object_id} disabled={busy} onClick={() => void run(async () => {
                 if (documentTools?.dirty) throw new Error("请先保存当前修改。");
                 await desktop.library("open", { work_ref: item.work_ref });
                 setState(await desktop.select(item.work_ref));
@@ -197,7 +197,7 @@ function App() {
         </> : <div className="brand-lockup"><img className="brand-icon" src="app-icon.png" alt=""/><strong>河图洛书</strong></div>}
         <div className="topbar-actions">
           {workMode && !active.startsWith("fallback:") && (readerActive || !Component) &&
-            <button className="ai-button" aria-label="让 AI 处理" onClick={() => void run(async () => { if (readerActive && documentTools) documentTools.ai(); else await ai(); })}>
+            <button className="ai-button" disabled={busy} aria-label="让 AI 处理" onClick={() => void run(async () => { if (readerActive && documentTools) documentTools.ai(); else await ai(); })}>
               <Icon name="sparkles"/><span>让 AI 处理</span>
             </button>
           }
@@ -208,10 +208,10 @@ function App() {
             <button className="primary" disabled={documentTools.busy || !documentTools.dirty} onClick={documentTools.save}>保存修订</button>
             <IconButton icon="inspector" label="检查器" aria-pressed={inspector} onClick={() => setInspector(!inspector)}/>
           </>}
-          {!workMode && <button onClick={() => void openWorkspace()}>打开作品</button>}
+          {!workMode && <button disabled={busy} onClick={() => void openWorkspace()}>打开作品</button>}
           {!workMode && <details className="popover-menu create-work-menu"><summary className="primary">新建作品<Icon name="chevron" size={12}/></summary><div className="menu-panel">{([["novel", "小说"], ["drama", "剧本"], ["video", "视频"]] as const).map(([type, name]) => <button key={type} disabled={busy} onClick={() => void createWork(type, name)}>让 AI 新建{name}</button>)}</div></details>}
           <details className="popover-menu topbar-more"><summary aria-label="更多操作" title="更多操作"><Icon name="more"/></summary><div className="menu-panel">
-            <button onClick={() => void openWorkspace()}>打开作品</button>
+            <button disabled={busy} onClick={() => void openWorkspace()}>打开作品</button>
             {readerActive && <button aria-pressed={focus} onClick={() => setFocus(!focus)}>{focus ? "退出专注" : "专注阅读"}</button>}
 
             {!workMode && <label>
@@ -236,8 +236,8 @@ function App() {
                       <option value="generic">其他客户端</option>
                     </select>
                   </label>}
-            <button onClick={() => void run(() => navigate("plugins"))}>创作插件</button>
-            <button onClick={() => void run(() => navigate("browser"))}>参考浏览器</button>
+            <button disabled={busy} onClick={() => void run(() => navigate("plugins"))}>创作插件</button>
+            <button disabled={busy} onClick={() => void run(() => navigate("browser"))}>参考浏览器</button>
             <button onClick={() => void desktop.settingsWindow("open")}>本机设置</button>
           </div></details>
         </div>
@@ -245,7 +245,7 @@ function App() {
       <div className={"layout" + (workMode ? " workspace-layout" : " library-layout") + (!navigationVisible || focus ? " navigation-hidden" : "") + (focus ? " focus-mode" : "")}>
         <aside className="project-navigation" aria-label={workMode ? "项目导航" : "创作库导航"}>
           {workMode ? <>
-            <button className="back-library" onClick={() => void run(() => navigate("library"))}><Icon name="back" size={13}/>返回创作库</button>
+            <button className="back-library" disabled={busy} onClick={() => void run(() => navigate("library"))}><Icon name="back" size={13}/>返回创作库</button>
             <div className="navigation-scroll">
               {navItem("work.profile")}
               {navItem(state.work.kind === "novel" ? "novel.reader" : state.work.kind === "drama" ? "drama.reader" : "video.review")}
@@ -257,12 +257,12 @@ function App() {
                 {navItem("work.management")}{navItem("work.agent")}
                 {globalItem("plugins", "创作插件", "plugin")}{globalItem("browser", "参考浏览器", "search")}
               </NavigationGroup>
-              {state.views.length > 0 && <details className="navigation-group" open><summary>创作插件</summary>{state.views.map((view: any) => <button key={view.key} className={active === view.key ? "selected" : ""} onClick={() => void run(async () => { await navigate(view.key); await desktop.view(view.owner, view.id); })}><Icon name="plugin"/>{view.title}</button>)}</details>}
+              {state.views.length > 0 && <details className="navigation-group" open><summary>创作插件</summary>{state.views.map((view: any) => <button key={view.key} disabled={busy} className={active === view.key ? "selected" : ""} onClick={() => void run(async () => { await navigate(view.key); await desktop.view(view.owner, view.id); })}><Icon name="plugin"/>{view.title}</button>)}</details>}
             </div>
             <div className="current-work"><WorkCover work={state.work} title={selected?.title ?? "当前作品"} compact/><div><strong>{selected?.title ?? "当前作品"}</strong><small>{{novel:"小说",drama:"剧本",video:"视频"}[state.work.kind as "novel"]}</small></div></div>
           </> : <>
 
-            {([["all", "全部作品", "layers"], ["novel", "小说", "book"], ["drama", "剧本", "file"], ["video", "视频", "film"]] as [string, string, IconName][]).map(([id,label,icon]) => <button key={id} className={kind === id && active === "library" ? "selected" : ""} onClick={() => { setKind(id); void run(() => navigate("library")); }}><Icon name={icon}/>{label}</button>)}
+            {([["all", "全部作品", "layers"], ["novel", "小说", "book"], ["drama", "剧本", "file"], ["video", "视频", "film"]] as [string, string, IconName][]).map(([id,label,icon]) => <button key={id} disabled={busy} className={kind === id && active === "library" ? "selected" : ""} onClick={() => { setKind(id); void run(() => navigate("library")); }}><Icon name={icon}/>{label}</button>)}
             <div className="navigation-divider"/>
             {globalItem("plugins", "创作插件", "plugin")}{globalItem("browser", "参考浏览器", "search")}
           </>}

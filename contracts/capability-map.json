@@ -3,12 +3,12 @@
   "generated_by": "tools/sync-capability-map.py",
   "meaning": "source_wired仅表示源码合同和入口已连线；不证明安装、运行、跨平台或端到端通过。执行时先inspect实际能力。",
   "sources": {
-    "contracts/actions.json": "49887ed250f8b5b0b44a07461881230679dc96fb5b9bd0f7f8dcae903ed61878",
-    "contracts/tools/catalog.json": "c6ca5e83b650ca5a23a9cead50307292860e03699182fa7a6a46eb7eac7145f2",
+    "contracts/actions.json": "12d65c5529224964a49dd6c1c87afedde2145a637f514cffac6cd9597319f291",
+    "contracts/tools/catalog.json": "69b22f3019a9fadc729a3722418c09390bd7bf887e2ab9c593f0897e84b09073",
     "core/src/application/agent_operations.rs": "f4dc83e0324271484df71a50b35f8e2047a2a3107fac1f1c6e839aef496fe358",
     "core/src/application/creative_tasks.rs": "ee50d2e879c1f847cb81481b0f3d07f40bb3480711f2fae35b02df6b040acaa2",
-    "core/src/application/work_scope.rs": "0437f17a1cbcbd3d66ef07cbc9a3e3b52e16fbe3eee316fbf90c56391703dda7",
-    "core/src/collaboration/authoring.rs": "440b96cff584cc7066daaf53c2cf5a43080432275cfde8aea698248bed46722a",
+    "core/src/application/work_scope.rs": "7409cdb8f7f87345e46e94ad19e804c4fab5c2e46c48154d2c90cbad9bdf64f8",
+    "core/src/collaboration/authoring.rs": "135f6342be30d7b98df96ade744a1670ad31a511663f82c88caf31e435dd774c",
     "integrations/catalog.json": "ef1dbbef5ba2902486b78941664c733910b5170b4f9fe708c64829bd5dfa3a6f",
     "tools/hetu-skills/base/skills/hetu-artwork/SKILL.md": "4dc578dbc319c7772d4b33fe35f99e987367e08da8abfeafb9897f5ff09ebe89",
     "tools/hetu-skills/base/skills/hetu-book-create/SKILL.md": "cbe98f524986e18c38d816a49c7c3f9813520ca68d6beeaf29cb5902fd29b808",
@@ -24,7 +24,7 @@
     "tools/hetu-skills/base/skills/hetu-setup/SKILL.md": "6a415996b76d3b0ab807bd0303584459f1a82271561fe27bc4825bb323dffef2",
     "tools/hetu-skills/base/skills/hetu-video/SKILL.md": "08fbc22c1af8a7090a9c38b109c70e4e6ba20365bcbca4de9a9455faea4547f7"
   },
-  "verification_evidence": null,
+  "verification_evidence": "docs/research/evidence/2026-11-16-agent-capabilities.json",
   "skills": [
     {
       "name": "hetu-setup",
@@ -291,7 +291,9 @@
         "hetu.plugins.inspect_package",
         "hetu.plugins.apply",
         "hetu.plugins.get_operation",
-        "hetu.plugin_access.record_migration_decision"
+        "hetu.plugin_access.record_migration_decision",
+        "hetu.plugin_access.capabilities",
+        "hetu.plugin_access.invoke"
       ]
     },
     {
@@ -367,7 +369,7 @@
         "读取本机基线",
         "准备固定设置方案",
         "记录真实选择",
-        "执行并回读",
+        "精确市场预检后执行；未知沿原键只读恢复",
         "分别核对安装和本会话加载状态"
       ]
     },
@@ -430,7 +432,7 @@
       ]
     }
   ],
-  "extension_runtime_discovery": "hetu.plugins.inspect → 固定包contributions.actions → plugin-runtime capabilities／MCP tools/list",
+  "extension_runtime_discovery": "河图插件安装在河图；hetu.plugins.inspect → 精确作品授权 → hetu.plugin_access.capabilities → hetu.plugin_access.invoke；稳定入口实时发现，不为每包安装客户端插件。",
   "actions": [
     {
       "action": "hetu.capabilities.get",
@@ -3237,9 +3239,12 @@
       "recover": "hetu.operations.get",
       "equivalent_machine_actions": [],
       "host_boundary": null,
-      "installed_evidence": false,
-      "verification": [],
-      "status": "source_wired"
+      "installed_evidence": true,
+      "verification": [
+        "packages/plugin-host/tests/hotplug.test.ts",
+        "output/plugin-hotplug-final.log"
+      ],
+      "status": "verified"
     },
     {
       "action": "hetu.creation_projects.create_drama",
@@ -6255,9 +6260,12 @@
       "recover": "hetu.operations.get",
       "equivalent_machine_actions": [],
       "host_boundary": null,
-      "installed_evidence": false,
-      "verification": [],
-      "status": "source_wired"
+      "installed_evidence": true,
+      "verification": [
+        "packages/plugin-host/tests/hotplug.test.ts",
+        "output/plugin-hotplug-final.log"
+      ],
+      "status": "verified"
     },
     {
       "action": "hetu.collaboration.revoke_management",
@@ -7058,9 +7066,13 @@
       "recover": "hetu.local_settings.get_operation",
       "equivalent_machine_actions": [],
       "host_boundary": null,
-      "installed_evidence": false,
-      "verification": [],
-      "status": "source_wired"
+      "installed_evidence": true,
+      "verification": [
+        "core/tests/local_settings.rs",
+        "output/client-suite-core-tests.log",
+        "output/client-suite-cli-tests.log"
+      ],
+      "status": "verified"
     },
     {
       "action": "hetu.local_settings.inspect_suite",
@@ -7111,9 +7123,13 @@
       "recover": "hetu.local_settings.get_operation",
       "equivalent_machine_actions": [],
       "host_boundary": null,
-      "installed_evidence": false,
-      "verification": [],
-      "status": "source_wired"
+      "installed_evidence": true,
+      "verification": [
+        "core/tests/local_settings.rs",
+        "output/client-suite-core-tests.log",
+        "output/client-suite-cli-tests.log"
+      ],
+      "status": "verified"
     },
     {
       "action": "hetu.local_settings.prepare",
@@ -7284,9 +7300,13 @@
       "recover": "hetu.local_settings.get_operation",
       "equivalent_machine_actions": [],
       "host_boundary": null,
-      "installed_evidence": false,
-      "verification": [],
-      "status": "source_wired"
+      "installed_evidence": true,
+      "verification": [
+        "core/tests/local_settings.rs",
+        "output/client-suite-core-tests.log",
+        "output/client-suite-cli-tests.log"
+      ],
+      "status": "verified"
     },
     {
       "action": "hetu.local_settings.get_operation",
@@ -7326,9 +7346,13 @@
       "recover": "hetu.local_settings.get_operation",
       "equivalent_machine_actions": [],
       "host_boundary": null,
-      "installed_evidence": false,
-      "verification": [],
-      "status": "source_wired"
+      "installed_evidence": true,
+      "verification": [
+        "core/tests/local_settings.rs",
+        "output/client-suite-core-tests.log",
+        "output/client-suite-cli-tests.log"
+      ],
+      "status": "verified"
     },
     {
       "action": "hetu.local_settings.execute",
@@ -7379,9 +7403,13 @@
       "recover": "hetu.local_settings.get_operation",
       "equivalent_machine_actions": [],
       "host_boundary": null,
-      "installed_evidence": false,
-      "verification": [],
-      "status": "source_wired"
+      "installed_evidence": true,
+      "verification": [
+        "core/tests/local_settings.rs",
+        "output/client-suite-core-tests.log",
+        "output/client-suite-cli-tests.log"
+      ],
+      "status": "verified"
     },
     {
       "action": "hetu.collaboration.workspace_access",
@@ -9127,9 +9155,13 @@
       "recover": "hetu.local_settings.get_operation",
       "equivalent_machine_actions": [],
       "host_boundary": null,
-      "installed_evidence": false,
-      "verification": [],
-      "status": "source_wired"
+      "installed_evidence": true,
+      "verification": [
+        "core/tests/local_settings.rs",
+        "output/client-suite-core-tests.log",
+        "output/client-suite-cli-tests.log"
+      ],
+      "status": "verified"
     },
     {
       "action": "hetu.git.record_snapshot_decision",
@@ -9295,9 +9327,12 @@
       "recover": "hetu.operations.get",
       "equivalent_machine_actions": [],
       "host_boundary": null,
-      "installed_evidence": false,
-      "verification": [],
-      "status": "source_wired"
+      "installed_evidence": true,
+      "verification": [
+        "packages/plugin-host/tests/hotplug.test.ts",
+        "output/plugin-hotplug-final.log"
+      ],
+      "status": "verified"
     },
     {
       "action": "hetu.plugin_access.inspect",
@@ -9682,9 +9717,12 @@
       "recover": "hetu.plugins.get_operation",
       "equivalent_machine_actions": [],
       "host_boundary": null,
-      "installed_evidence": false,
-      "verification": [],
-      "status": "source_wired"
+      "installed_evidence": true,
+      "verification": [
+        "packages/plugin-host/tests/hotplug.test.ts",
+        "output/plugin-hotplug-final.log"
+      ],
+      "status": "verified"
     },
     {
       "action": "hetu.plugins.inspect_package",
@@ -9724,9 +9762,12 @@
       "recover": "hetu.plugins.get_operation",
       "equivalent_machine_actions": [],
       "host_boundary": null,
-      "installed_evidence": false,
-      "verification": [],
-      "status": "source_wired"
+      "installed_evidence": true,
+      "verification": [
+        "packages/plugin-host/tests/hotplug.test.ts",
+        "output/plugin-hotplug-final.log"
+      ],
+      "status": "verified"
     },
     {
       "action": "hetu.plugins.apply",
@@ -9800,9 +9841,12 @@
       "recover": "hetu.plugins.get_operation",
       "equivalent_machine_actions": [],
       "host_boundary": null,
-      "installed_evidence": false,
-      "verification": [],
-      "status": "source_wired"
+      "installed_evidence": true,
+      "verification": [
+        "packages/plugin-host/tests/hotplug.test.ts",
+        "output/plugin-hotplug-final.log"
+      ],
+      "status": "verified"
     },
     {
       "action": "hetu.plugins.get_operation",
@@ -9843,9 +9887,12 @@
       "recover": "hetu.plugins.get_operation",
       "equivalent_machine_actions": [],
       "host_boundary": null,
-      "installed_evidence": false,
-      "verification": [],
-      "status": "source_wired"
+      "installed_evidence": true,
+      "verification": [
+        "packages/plugin-host/tests/hotplug.test.ts",
+        "output/plugin-hotplug-final.log"
+      ],
+      "status": "verified"
     },
     {
       "action": "hetu.capabilities.map",
@@ -9978,6 +10025,127 @@
       "installed_evidence": false,
       "verification": [],
       "status": "source_wired"
+    },
+    {
+      "action": "hetu.plugin_access.capabilities",
+      "purpose": "发现当前已启用河图插件的获权动作与实时Schema",
+      "group": "插件授权",
+      "effect": "read",
+      "routes": [
+        "exact_management_ref"
+      ],
+      "cli": "hetu --client <client> call hetu.plugin_access.capabilities --input -",
+      "proposal_target": null,
+      "mcp": [
+        {
+          "name": "hetu_plugin_access_capabilities",
+          "profiles": [
+            "stable"
+          ]
+        }
+      ],
+      "mcp_via_proposal": false,
+      "skill": "hetu-manage",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-manage/SKILL.md",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "grant_id": {
+            "type": "string"
+          },
+          "package_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "work_ref",
+          "grant_id",
+          "package_sha256"
+        ]
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": true,
+      "verification": [
+        "packages/plugin-host/tests/hotplug.test.ts",
+        "output/plugin-hotplug-final.log"
+      ],
+      "status": "verified"
+    },
+    {
+      "action": "hetu.plugin_access.invoke",
+      "purpose": "通过稳定入口调用确切河图插件或专业数据动作",
+      "group": "插件授权",
+      "effect": "submit",
+      "routes": [
+        "exact_management_ref"
+      ],
+      "cli": "hetu --client <client> call hetu.plugin_access.invoke --input -",
+      "proposal_target": null,
+      "mcp": [
+        {
+          "name": "hetu_plugin_access_invoke",
+          "profiles": [
+            "stable"
+          ]
+        }
+      ],
+      "mcp_via_proposal": false,
+      "skill": "hetu-manage",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-manage/SKILL.md",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "grant_id": {
+            "type": "string"
+          },
+          "package_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "capabilities_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "action": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "arguments": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "work_ref",
+          "grant_id",
+          "package_sha256",
+          "capabilities_sha256",
+          "action",
+          "arguments"
+        ]
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": true,
+      "verification": [
+        "packages/plugin-host/tests/hotplug.test.ts",
+        "output/plugin-hotplug-final.log"
+      ],
+      "status": "verified"
     }
   ]
 }

@@ -61,7 +61,7 @@
         "读取本机基线",
         "准备固定设置方案",
         "记录真实选择",
-        "执行并回读",
+        "精确市场预检后执行；未知沿原键只读恢复",
         "分别核对安装和本会话加载状态"
       ]
     },
@@ -389,7 +389,9 @@
         "hetu.plugins.inspect_package",
         "hetu.plugins.apply",
         "hetu.plugins.get_operation",
-        "hetu.plugin_access.record_migration_decision"
+        "hetu.plugin_access.record_migration_decision",
+        "hetu.plugin_access.capabilities",
+        "hetu.plugin_access.invoke"
       ],
       "entry": "../skills/hetu-manage/SKILL.md"
     },
@@ -421,7 +423,7 @@
       "entry": "../skills/hetu-video/SKILL.md"
     }
   ],
-  "extension_runtime_discovery": "hetu.plugins.inspect → 固定包contributions.actions → plugin-runtime capabilities／MCP tools/list",
+  "extension_runtime_discovery": "河图插件安装在河图；hetu.plugins.inspect → 精确作品授权 → hetu.plugin_access.capabilities → hetu.plugin_access.invoke；稳定入口实时发现，不为每包安装客户端插件。",
   "restricted_actions": [
     {
       "action": "hetu.git.approve_snapshot",

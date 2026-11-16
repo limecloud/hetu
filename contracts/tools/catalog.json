@@ -1258,6 +1258,24 @@
       "profiles": [
         "stable"
       ]
+    },
+    {
+      "name": "hetu_plugin_access_capabilities",
+      "action": "hetu.plugin_access.capabilities",
+      "title": "发现河图插件能力",
+      "description": "发现河图插件能力；每次读取河图实际安装与精确作品授权，固定包摘要。插件无需安装到Codex；未知写入保留原键回读。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_plugin_access_invoke",
+      "action": "hetu.plugin_access.invoke",
+      "title": "调用河图插件动作",
+      "description": "调用河图插件动作；每次读取河图实际安装与精确作品授权，固定包摘要。插件无需安装到Codex；未知写入保留原键回读。",
+      "profiles": [
+        "stable"
+      ]
     }
   ]
 }

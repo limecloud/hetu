@@ -54,6 +54,7 @@
 ## 机器能力地图
 
 - 新增、修改或移除功能时，同步更新功能清单；[宿主清单](docs/40-机器能力地图与Review清单.md)维护宿主能力与插件发现入口，各插件自行维护其功能清单。
+- 河图插件由河图管理热插拔，外部Agent经稳定CLI/MCP实时发现与调用；不为每个河图插件安装Codex插件或新增客户端工具名。
 - 产品 Review 与 AI 定位统一从 [40 机器能力地图](docs/40-机器能力地图与Review清单.md) 和 `contracts/capability-map.json` 开始；执行前仍发现当前安装版实际能力。
 - 修改领域动作、权限路由、CLI/MCP 或 Skills 时运行 `python3 tools/sync-capability-map.py`，并用 `--check` 验证；合同已声明、源码已连线、安装已发现与业务实测分别取证，不能互相替代。
 

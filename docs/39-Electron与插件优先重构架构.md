@@ -6,13 +6,13 @@
 
 采用Electron＋TypeScript/React工作台、TypeScript插件宿主、Rust App Server、JSON-RPC 2.0私有stdio、独立CLI/MCP和受管Chromium内置浏览器。插件采用DSH风格JavaScript/TypeScript＋React，不使用Rust插件ABI。河图保持创作工作台定位，不引入 Agent Runtime、聊天或自主生成循环。
 
-保留现有 macOS 原生版作为可运行对照和必要回退，只维护兼容、完整性和必要缺陷；新增桌面产品能力优先进入 Electron。两版复用同一 Rust Core 和作品格式，不双写、不另建作品数据库。作者确认的 Mac 工作台是 Electron UI/UX 的还原基准；布局、视觉层级、导航、阅读编辑及审核恢复分别对照，原有机器授权边界保持。
+Swift原生客户端及专属桥接、构建和测试已退役，历史证据保留原版本范围。Electron复用Rust Core与作品格式，不双写、不另建作品数据库。作者确认的Mac工作台是UI/UX还原基准；布局、视觉层级、导航、阅读编辑及审核恢复分别对照，原有机器授权边界保持。
 
 先完成本系列及所有受影响规范的一致性更新和设计检查，再继续开发。采用插件优先的纵向用例：宿主发现一个独立能力包，经授权加载、操作、保存、CLI/MCP 回读，并在停用后仍能读取和导出成果。仅做出 Electron 窗口或复刻一组原生页面，不构成重构完成。
 
 ## 2. 重新审视现有实现
 
-现有实现的可复用基础包括作品身份、固定来源、Core 事务、CAS、原键恢复、作者决定和外部 Agent 协作合同。当前插件化缺口包括静态能力目录、固定领域包集合、硬编码 View 路由、缺少第三方 UI 加载器和插件身份、工作面缺少可撤销贡献注册。逐项源码证据与处置见[插件19](plugin/19-现有架构审计与插件优先重构.md)。
+可复用基础包括作品身份、固定来源、Core事务、CAS、原键恢复、作者决定和外部Agent协作合同。重构前审计发现静态能力目录、固定领域包集合、硬编码View路由，以及第三方加载、插件身份和贡献撤销的缺口。当前设计采用TS贡献宿主与稳定机器入口解决这些问题；第一方工作面的独立安装生命周期仍需继续收敛。审计背景与当前源码差距分别见[插件19](plugin/19-现有架构审计与插件优先重构.md)，实际验收范围以主38为准。
 
 这些缺口说明更换桌面壳只是必要基础之一。不能把所有旧页面移成 React 组件后继续在 App 中增加 if/else，也不能把任意 JavaScript 注入作者页面称为插件 SDK。
 
@@ -35,13 +35,14 @@
 ```mermaid
 flowchart TB
     Human[作者] --> Shell[可信 Electron 工作台]
+    Adapter[外部客户端接入包<br/>独立安装与加载] -. 基础Skills与连接 .-> Agent
     Agent[外部 Agent] --> Machine[独立 Rust CLI / MCP]
     Shell --> Preload[受限 preload]
     Preload --> Main[Electron 主进程]
     Main -->|私有 stdio JSON-RPC 2.0| Server[Rust App Server]
     Server --> Core[共享 Application / Core]
     Machine --> Core
-    Main --> TS[TypeScript插件注册与生命周期]
+    Main --> TS[TypeScript插件注册<br/>与生命周期]
     TS --> Views[插件容器与布局管理]
     Machine --> TS
     Views --> First[第一方贡献]
@@ -66,6 +67,12 @@ flowchart TB
 | 插件 renderer | TS宿主按当前工作面创建 | 固定包摘要、贡献、WorkRef、授权和会话代次；销毁即撤销桥接 |
 | 普通网页 renderer | 作者明确打开 | 独立 session，无河图业务 preload，默认拒绝权限、下载和弹窗 |
 | CLI／MCP | 调用方／外部宿主 | 基础能力直接用Rust Core；TS插件动作按需启动同一Node插件运行时，均不依赖GUI |
+
+### 4.2 河图插件与外部Agent接入
+
+河图专业插件安装在河图，TS宿主拥有其包、依赖、贡献和热插拔。外部Agent使用稳定CLI／MCP的安装发现、获权能力发现与调用入口，不为每个河图插件新增Codex插件或MCP连接。接入包中的基础Skills与客户端配置单独管理，其加载机制不能成为河图插件热插拔的前置条件。
+
+同一机器连接通过 `hetu.plugins.inspect` 读取新安装包，通过 `hetu.plugin_access.capabilities/invoke` 获取实时Schema并按固定包及能力摘要调用；每次重验活动状态、WorkRef和精确授权。停用或升级撤销旧授权，重新启用不复活旧引用。模型按需查询才获知新能力，宿主不声称后台变化已自动进入对话上下文。格式、时序及覆盖用例由[插件21](plugin/21-核心格式与动态能力发现.md)拥有。
 
 ## 5. JSON-RPC 的准确口径
 

@@ -12,14 +12,14 @@ Start with a novel, script or video project in the library. Link fixed source ve
 
 **Your taste, judgment and creative voice stay at the center.** Every author and screenwriter deserves respect. Story engineering makes the creative process visible, organized and easier to revise; it does not prescribe artistic choices. Read [our approach to creative ownership](https://hetu.limeai.run/en/blog/authors-at-the-center/).
 
-Bring your chosen external Agent to organize material, create drafts and perform scoped operations through Skills, CLI and MCP. Hetu preserves queryable, actionable and recoverable project state. The native app puts reading, watching, comparison, review and author decisions first, with direct editing whenever you choose. Your Agent prepares the project details so you can focus on creative judgment.
+Bring your chosen external Agent to organize material, create drafts and perform scoped operations through Skills, CLI and MCP. Hetu preserves queryable, actionable and recoverable project state. The desktop app puts reading, watching, comparison, review and author decisions first, with direct editing whenever you choose. Your Agent prepares the project details so you can focus on creative judgment.
 
 | Entrance | Purpose |
 | --- | --- |
 | MCP | Scoped project and task access, candidate submission and feedback |
 | CLI | Capability discovery, constrained operations and original-result recovery |
 | Skills | Task methods and genre guidance for an external Agent |
-| Native app | Writing, source inspection, asset selection and author finalization |
+| Desktop app | Writing, source inspection, asset selection and author finalization |
 
 These entrances share the core, workspace permissions and revisions. General agents already invest in reasoning, context management, tool execution and recovery. Hetu focuses on durable creative material rather than an embedded Agent runtime, chat loop or model API. Host support is verified separately for installation, Skills, MCP, Apps and actual tasks.
 
@@ -38,7 +38,13 @@ The software is free under [Apache-2.0](LICENSE). Your creative content retains 
 - Agent users: [Integrations](https://hetu.limeai.run/en/integrations/) and [connection guide](https://hetu.limeai.run/en/docs/agents/).
 - Developers: [Engineering documentation](docs/README.md) in Chinese and the source-build steps below.
 
-Download the Electron Mac DMG or ZIP from [GitHub Releases](https://github.com/limecloud/hetu/releases/latest). Packages support macOS 14+ on Apple Silicon and include Developer ID signing, Apple notarization, a release manifest and SHA-256 checksums.
+Download the Electron package for your platform from [GitHub Releases](https://github.com/limecloud/hetu/releases/latest):
+
+- macOS 14+ on Apple Silicon: open the DMG and drag `Hetu.app` into Applications, or extract the ZIP. The app is Developer ID signed and Apple notarized.
+- Windows 11 x64: extract the Windows ZIP and run `Hetu.exe`. The package is unsigned.
+- Linux x64: extract the Linux `tar.gz` and run `./Hetu`. The build baseline is Ubuntu 22.04; a graphical desktop and Electron runtime libraries are required. The package is unsigned.
+
+Each platform includes a release manifest and SHA-256 checksums. Keep the complete extracted directory, including the bundled CLI, MCP server and Node runtime.
 
 ## Run the source
 

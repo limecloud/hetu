@@ -78,7 +78,7 @@ npm run dev
 
 ### Electron 插件工作台源码入口
 
-使用 Rust 工具链和 Node.js 25。创作库登记既有作品，并在刷新时接纳外部 Agent 新建的小说、剧本和视频。独立插件包由“创作插件”安装，作品权限另行授予。
+使用 Rust 工具链和 Node.js 25。创作库登记既有作品，并在刷新时接纳外部 Agent 新建的小说、剧本和视频。独立插件包由CLI／MCP或“创作插件”安装，作品权限另行授予。
 
 ```bash
 npm ci
@@ -88,6 +88,8 @@ npm run start:desktop
 ```
 
 `npm run package:desktop` 装配独立开发应用，输出路径见命令返回的清单。插件开发合同、独立 CLI/MCP、隔离配置及测试命令见[插件开发入口](docs/plugin/20-首期可执行合同与开发入口.md)。
+
+河图专业插件安装在河图，外部Agent经稳定机器入口动态发现与调用，无需逐包安装Codex插件。数据格式与热插拔合同见[核心格式与动态能力发现](docs/plugin/21-核心格式与动态能力发现.md)。
 
 Electron 的非敏感偏好与所选创作方法通过“本机设置”审阅，CLI/MCP 复用独立本机服务。开发隔离可用 `HETU_LOCAL_SETTINGS_DIR` 指向绝对目录；模型渠道使用独立的 `HETU_MODEL_SERVICE_DIR`。桌面调试的 `HETU_DESKTOP_PROFILE` 同时隔离本机设置和模型渠道。套件资源来自 `integrations/catalog.json` 和 `integrations/codex/`，随开发应用装配；安装状态与当前外部 Agent 会话加载分别核对。
 

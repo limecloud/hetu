@@ -5548,6 +5548,77 @@
           "authorization_note"
         ]
       }
+    },
+    {
+      "name": "hetu.plugin_access.capabilities",
+      "purpose": "发现当前已启用河图插件的获权动作与实时Schema",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "grant_id": {
+            "type": "string"
+          },
+          "package_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "work_ref",
+          "grant_id",
+          "package_sha256"
+        ]
+      }
+    },
+    {
+      "name": "hetu.plugin_access.invoke",
+      "purpose": "通过稳定入口调用确切河图插件或专业数据动作",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "grant_id": {
+            "type": "string"
+          },
+          "package_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "capabilities_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "action": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "arguments": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "work_ref",
+          "grant_id",
+          "package_sha256",
+          "capabilities_sha256",
+          "action",
+          "arguments"
+        ]
+      }
     }
   ]
 }

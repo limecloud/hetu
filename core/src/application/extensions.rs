@@ -59,6 +59,15 @@ fn validate_data_input(action: &str, input: &Value) -> Result<()> {
 }
 
 pub fn access_directory() -> Result<PathBuf> {
+    if let Some(directory) = std::env::var_os("HETU_PLUGIN_ACCESS_DIR") {
+        let path = PathBuf::from(directory);
+        ensure(
+            path.is_absolute(),
+            "invalid_input",
+            "插件授权目录必须为绝对路径。",
+        )?;
+        return Ok(path);
+    }
     Ok(crate::collaboration::default_directory()?
         .parent()
         .ok_or_else(|| Error::new("missing_context", "无法确定插件授权目录。"))?
@@ -502,13 +511,54 @@ impl Kernel {
             .management_grant
             .as_ref()
             .ok_or_else(|| Error::new("forbidden", "须使用精确作品管理授权。"))?;
+        let work = self
+            .granted_work()?
+            .or(crate::collaboration::authoring::created_work(binding)?);
         ensure(
-            self.granted_work()?.as_ref() == Some(&input["work_ref"]),
+            work.as_ref() == Some(&input["work_ref"]),
             "forbidden",
             "插件能力只覆盖当前作品。",
         )?;
         let directory = access_directory()?;
         let method = action.strip_prefix("hetu.plugin_access.").unwrap_or("");
+        if matches!(method, "capabilities" | "invoke") {
+            {
+                let access = access_store(&directory)?;
+                let _guard = access.read_lock()?;
+                let grant = read_grant(&access, text(input, "grant_id")?)?;
+                ensure(
+                    grant["conversation_decision"]["management_binding"] == *binding,
+                    "forbidden",
+                    "插件调用须沿当前客户端的确切作品授权。",
+                )?;
+            }
+            let session = PluginSession::open(
+                &self.workspace_path,
+                &directory,
+                text(input, "grant_id")?,
+                text(input, "package_sha256")?,
+            )?;
+            let inspected = session.inspect();
+            ensure(
+                inspected["status"] == "succeeded",
+                "forbidden",
+                "插件授权已失效。",
+            )?;
+            ensure(
+                inspected["data"]["work_ref"] == input["work_ref"],
+                "forbidden",
+                "插件授权不属于当前作品。",
+            )?;
+            let mut runtime = input.clone();
+            runtime["plugin_id"] = inspected["data"]["plugin_id"].clone();
+            runtime["workspace_directory"] = json!(self.workspace_path);
+            runtime["access_directory"] = json!(directory);
+            return crate::plugin_settings::request(
+                binding["client_adapter"].as_str().unwrap_or(""),
+                action,
+                &runtime,
+            );
+        }
         let mut params = input.clone();
         params.as_object_mut().unwrap().remove("work_ref");
         if method == "authorize" {

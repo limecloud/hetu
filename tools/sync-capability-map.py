@@ -83,7 +83,7 @@ WORKFLOWS = [
     {"goal": "起草、改稿或整理大纲", "skill": "hetu-setup", "entry": "hetu.creative_tasks.list",
      "path": ["恢复已有任务或准备确切新任务", "按任务类型选择写作Skill", "按需读取固定上下文", "提交参考成果", "阅读反馈并沿原任务继续"]},
     {"goal": "设置偏好或安装所选Skills套件", "skill": "hetu-manage", "entry": "hetu.local_settings.get",
-     "path": ["读取本机基线", "准备固定设置方案", "记录真实选择", "执行并回读", "分别核对安装和本会话加载状态"]},
+     "path": ["读取本机基线", "准备固定设置方案", "记录真实选择", "精确市场预检后执行；未知沿原键只读恢复", "分别核对安装和本会话加载状态"]},
     {"goal": "配置模型渠道", "skill": "hetu-manage", "entry": "hetu.model_settings.inspect",
      "path": ["读取非敏感设置及摘要", "按真实指令提交固定设置", "凭据仅进入私密存储", "回读非敏感结果；生成与费用另行授权"]},
     {"goal": "安装、启停或卸载插件", "skill": "hetu-manage", "entry": "hetu.plugins.inspect",
@@ -206,7 +206,7 @@ def build():
               "sources": sources, "verification_evidence": evidence_path if evidence else None,
               "skills": skills,
               "workflows": WORKFLOWS,
-              "extension_runtime_discovery": "hetu.plugins.inspect → 固定包contributions.actions → plugin-runtime capabilities／MCP tools/list",
+              "extension_runtime_discovery": "河图插件安装在河图；hetu.plugins.inspect → 精确作品授权 → hetu.plugin_access.capabilities → hetu.plugin_access.invoke；稳定入口实时发现，不为每包安装客户端插件。",
               "actions": entries}
     lines = ["# 机器能力地图与 Review 清单", "",
              "这份地图供产品逐项审阅，也供 AI 按目标定位 Skills、CLI 和 MCP。它由同一组源码合同生成，不依赖打开桌面。", "",
@@ -250,7 +250,7 @@ def build():
             lines.append(f"| {item['purpose']}<br>`{item['action']}` | {mcp or '无直接工具映射'} | [{item['skill']}](../{item['skill_source']}) | {item['decision']} | {states[item['status']]}{installed_text} |")
         lines.append("")
     lines += ["## 插件发现入口", "",
-              "先用 `hetu.plugins.inspect` 定位已安装的固定包，再读取该插件自己的功能清单及 `manifest.contributions`；按精确授权调用 plugin-runtime 的 `capabilities` 或 MCP `tools/list`。插件维护自己的视图、数据类型、动作与验证信息，宿主不汇总维护其业务功能。共享专业数据协议见[插件合同](plugin/20-首期可执行合同与开发入口.md)。", ""]
+              "河图插件安装在河图，不为每包安装Codex插件或新增MCP连接。先用 `hetu.plugins.inspect` 定位固定包及其自有功能清单；按精确作品授权通过稳定 `hetu.plugin_access.capabilities/invoke` 发现和调用实时Schema。同一连接按需重新查询，停用或升级后旧引用拒绝。插件自行维护视图、数据类型、动作与验证信息，宿主不汇总其业务功能。核心格式和热插拔用例见[插件合同](plugin/21-核心格式与动态能力发现.md)。", ""]
     lines += ["", "## 维护与检查", "", "```bash", "python3 tools/sync-capability-map.py", "python3 tools/sync-capability-map.py --check", "```", "",
               "新增或修改领域动作、MCP 映射、权限路由或 Skill 时重新生成。功能测试通过后将确切动作与测试证据写入地图引用的 evidence 文件，再生成；生成器不会把合同声明自动算作验收通过。", ""]
     return json.dumps(result, ensure_ascii=False, indent=2) + "\n", "\n".join(lines)

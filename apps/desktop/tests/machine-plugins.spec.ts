@@ -3,10 +3,9 @@ import { mkdtemp } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import os from "node:os";
 import path from "node:path";
-import { navigate } from "./navigation.ts";
 
 const root = path.resolve(import.meta.dirname, "../../..");
-test("CLI安装启停卸载插件后桌面同步同一状态，无需界面执行", async () => {
+test("CLI安装启停卸载插件后桌面同步同一状态，无需界面执行", async ({}, testInfo) => {
   const folder = await mkdtemp(path.join(os.tmpdir(), "hetu-machine-plugins-"));
   const executable = process.env.HETU_PACKAGED_APP;
   const machine = executable ? path.resolve(executable, "../../Resources/bin")
@@ -28,7 +27,7 @@ test("CLI安装启停卸载插件后桌面同步同一状态，无需界面执�
     : { args:[path.join(root,"apps/desktop")] }), env });
   try {
     const page = await app.firstWindow();
-    await navigate(page,"创作插件");
+    await page.getByRole("complementary", {name:"创作库导航",exact:true}).getByRole("button", {name:"创作插件",exact:true}).click();
     await expect(page.getByText("还没有安装插件",{exact:true})).toBeVisible();
     const pkg = call("inspect_package",{package_directory:path.join(root,"plugins/relationships/dist")});
     let index = 0;
@@ -40,14 +39,17 @@ test("CLI安装启停卸载插件后桌面同步同一状态，无需界面执�
     await expect(page.getByText("人物关系图",{exact:true}).first()).toBeVisible();
     const row = page.locator(".plugin-content .row").filter({hasText:"人物关系图"});
     await expect(row.getByRole("button",{name:"停用",exact:true})).toBeVisible();
+    await page.screenshot({path:testInfo.outputPath("installed.png")});
     apply("disable");
     await expect(row.getByRole("button",{name:"启用",exact:true})).toBeVisible();
+    await page.screenshot({path:testInfo.outputPath("disabled.png")});
     apply("enable");
     await expect(row.getByRole("button",{name:"停用",exact:true})).toBeVisible();
     apply("uninstall");
     await expect(row.getByText(`已卸载 ${pkg.manifest.version}`,{exact:true})).toBeVisible();
     await expect(row.getByRole("button",{name:"启用",exact:true})).toHaveCount(0);
     await expect(row.getByRole("button",{name:"停用",exact:true})).toHaveCount(0);
+    await page.screenshot({path:testInfo.outputPath("uninstalled.png")});
     expect(call("get_operation",{operation_key:"operation-4"}).action).toBe("uninstall");
   } finally { await app.close(); }
 });

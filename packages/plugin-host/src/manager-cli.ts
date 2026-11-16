@@ -1,7 +1,10 @@
-/** 由稳定CLI/MCP和桌面共享的安装管理入口；不启动插件后端。 */
-import { PluginInstallations } from "./installations.ts";
+/** 稳定CLI/MCP和桌面共享安装Owner；发现仅读声明，调用才按需启动插件后端。 */
+import { PluginInstallations, type InstalledPackageIdentity } from "./installations.ts";
 import { PluginPackage } from "./package.ts";
 import { spawn } from "node:child_process";
+import { createHash } from "node:crypto";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 const flags = process.argv.slice(2);
 if (flags.length !== 4 || flags[0] !== "--directory" || flags[2] !== "--core-cli") throw new Error("插件管理连接参数无效。");
 let wire = "";
@@ -10,7 +13,42 @@ for await (const chunk of process.stdin) {
   if (Buffer.byteLength(wire) > 1024 * 1024) throw new Error("插件管理输入超过预算。");
 }
 const request = JSON.parse(wire), store = new PluginInstallations(flags[1]);
-const revoke = async (pkg: PluginPackage) => new Promise<void>((resolve, reject) => {
+async function runtime() {
+  const input = request.input, { state } = await store.read(), host = await store.host(state);
+  if (!host.active(input.plugin_id)) throw new Error("插件未启用、包已变化或依赖不可用，请重新发现。");
+  const pkg = host.package(input.plugin_id);
+  if (pkg.sha256 !== input.package_sha256) throw new Error("插件包已更新，旧能力引用不可继续使用。");
+  const connection = [path.join(path.dirname(fileURLToPath(import.meta.url)), "plugin-runtime.mjs"),
+    "--package", pkg.source, "--workspace", input.workspace_directory, "--access-dir", input.access_directory,
+    "--grant", input.grant_id, "--package-sha256", pkg.sha256, "--core-cli", flags[3]];
+  const run = (args: string[], value?: unknown) => new Promise<any>((resolve, reject) => {
+    const child = spawn(process.execPath, [...connection, ...args], { stdio: "pipe", shell: false, windowsHide: true });
+    let output = "", error = "";
+    const timer = setTimeout(() => { child.kill(); reject(new Error("插件结果未知，请保留原键回读。")); }, 35000);
+    child.stdout.on("data", chunk => {
+      output += chunk;
+      if (Buffer.byteLength(output) > 2 * 1024 * 1024) { child.kill(); reject(new Error("插件输出超过预算。")); }
+    });
+    child.stderr.on("data", chunk => { if (error.length < 8000) error += chunk; });
+    child.on("error", e => { clearTimeout(timer); reject(e); });
+    child.on("close", code => {
+      clearTimeout(timer);
+      if (code !== 0) return reject(new Error(error || "插件调用未完成，请按原键回读。"));
+      try { resolve(JSON.parse(output)); } catch { reject(new Error("插件回执无效，请保留原键。")); }
+    });
+    child.stdin.on("error", () => {});
+    child.stdin.end(value === undefined ? "" : JSON.stringify(value));
+  });
+  const capabilities = await run(["capabilities"]);
+  const capabilities_sha256 = createHash("sha256").update(JSON.stringify(capabilities)).digest("hex");
+  if (request.action === "hetu.plugin_access.capabilities") return { format_version: 1, ...capabilities, capabilities_sha256 };
+  if (input.capabilities_sha256 !== capabilities_sha256) throw new Error("插件能力已变化，请重新发现Schema。");
+  const data = capabilities.data_actions.some((a: any) => a.name === input.action);
+  if (!data && !capabilities.actions.some((a: any) => a.id === input.action)) throw new Error("插件未声明该动作。");
+  return { format_version: 1, plugin_id: pkg.manifest.id, package_sha256: pkg.sha256,
+    capabilities_sha256, result: await run([data ? "call" : "invoke", input.action, "--input", "-"], input.arguments) };
+}
+const revoke = async (pkg: InstalledPackageIdentity) => new Promise<void>((resolve, reject) => {
   const child = spawn(flags[3], ["disable-package", "--input", "-"], { stdio: "pipe", shell: false, windowsHide: true });
   const timer = setTimeout(() => { child.kill(); reject(new Error("撤权结果未知，请按原键回读。")); }, 30000);
   child.stdout.resume(); child.stderr.resume();
@@ -23,6 +61,8 @@ const revoke = async (pkg: PluginPackage) => new Promise<void>((resolve, reject)
 try {
   let data: unknown;
   switch (request.action) {
+    case "hetu.plugin_access.capabilities":
+    case "hetu.plugin_access.invoke": data = await runtime(); break;
     case "hetu.plugins.inspect": data = { ...(await store.inspect()), state_directory: store.directory }; break;
     case "hetu.plugins.inspect_package": {
       const pkg = await PluginPackage.inspect(request.input.package_directory);

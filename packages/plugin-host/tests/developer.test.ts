@@ -13,6 +13,8 @@ test("独立开发工具创建TS/React工程，拒绝覆盖，校验不执行包
   const create = spawnSync(process.execPath, [cli, "create", directory, "--id", "org.author.counter", "--title", "文字统计"], { encoding: "utf8" });
   assert.equal(create.status, 0, create.stderr);
   assert.deepEqual(JSON.parse(create.stdout).permissions, []);
+  const capabilities = await readFile(path.join(directory, "CAPABILITIES.md"), "utf8");
+  assert.ok(capabilities.includes("统计 Unicode 字符") && capabilities.includes("plugin.json"));
   const source = await readFile(path.join(directory, "src/view.tsx"), "utf8");
   assert.ok(source.includes('from "react"')); assert.ok(source.includes('from "./sdk.ts"'));
   assert.ok(!source.includes("@hetu/") && !source.includes(root));

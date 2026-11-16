@@ -152,3 +152,5 @@ CLI能力发现须覆盖独立小说／剧本／视频、固定来源关联、�
 CLI、MCP、Skills功能及源码与验收状态统一见[40机器能力地图](40-机器能力地图与Review清单.md)。稳定 `--client` 入口同时承接固定领域方案、会话决定、本机设置、插件生命周期、模型渠道设置和文稿版本；不依赖运行中的桌面。实际Schema从inspect和agent_operations.catalog发现，不从文档复制旧参数。
 
 决定与执行分开：Agent准备确切结果及差异，依据真实用户指令登记record_decision，再execute并回读。采纳、定稿、解锁、封面选用等必须有各自确切决定；无需因其是作者决定就强制使用GUI。费用和内容外发仍使用独立任务授权，执行者不提升为作者。
+
+河图插件由河图安装管理。稳定入口通过 `hetu.plugins.inspect` 读取最新安装状态，通过 `hetu.plugin_access.capabilities/invoke` 发现与调用当前获权Schema；同一Agent对话可以沿原CLI入口使用新包，无需逐包安装客户端插件。固定包与能力摘要、停用撤权及数据格式见[插件21](plugin/21-核心格式与动态能力发现.md)。

@@ -390,7 +390,7 @@ async function scopedReview(action: string, input: Record<string, unknown>) {
   context.check();
   return result;
 }
-async function revokePackage(pkg: PluginPackage) {
+async function revokePackage(pkg: Pick<PluginPackage, "manifest" | "sha256">) {
   const local = server ?? (await AppServer.open(serverBinary()));
   try {
     await local.request("extensions/disable", {
@@ -424,6 +424,7 @@ function overview() {
           installed: false,
           selected: false,
           state: p.removed ? "uninstalled" : "unavailable",
+          reason: host.loadErrors.get(p.manifest!.id),
           display: p.manifest!.display,
           description: p.manifest!.description,
           version: p.manifest!.version,
@@ -1653,4 +1654,5 @@ app
     console.error(error instanceof Error ? error.message : "桌面启动失败。");
     app.quit();
   });
-app.on("window-all-closed", () => app.quit());
+// 恢复稿flush会取消首次quit；等该轮退出状态清理后再请求退出。
+app.on("window-all-closed", () => { setImmediate(() => app.quit()); });

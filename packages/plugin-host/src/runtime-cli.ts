@@ -5,6 +5,7 @@ import { spawn } from "node:child_process";
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
+import { isDeepStrictEqual } from "node:util";
 import { fileURLToPath } from "node:url";
 import { Server } from "@modelcontextprotocol/server";
 import {
@@ -98,6 +99,9 @@ if (
   context.package_sha256 !== pkg.sha256
 )
   throw new Error("授权身份与固定插件包不一致。");
+if (context.permissions.some((permission: any) => !pkg.manifest.permissions.includes(permission)) ||
+    context.types.some((type: any) => !pkg.manifest.contributions.data.some(declared => isDeepStrictEqual(type, declared))))
+  throw new Error("插件授权超出固定包声明，请重新核对类型与权限。");
 const actions = pkg.manifest.contributions.actions.filter(
   (action) =>
     action.effect === "read" || context.permissions.includes("objects.write"),
@@ -156,7 +160,7 @@ const capabilities = () => ({
 if (args[0] === "capabilities" && args.length === 1) {
   console.log(JSON.stringify(capabilities()));
 } else if (
-  args[0] === "invoke" &&
+  ["invoke", "call"].includes(args[0]) &&
   args.length === 4 &&
   args[2] === "--input" &&
   args[3] === "-"
@@ -168,7 +172,10 @@ if (args[0] === "capabilities" && args.length === 1) {
       throw new Error("输入超过预算。");
   }
   try {
-    console.log(JSON.stringify(await invoke(args[1], JSON.parse(input))));
+    const value = JSON.parse(input);
+    if (args[0] === "call" && !context.actions.some((action: any) => action.name === args[1]))
+      throw new Error("插件数据动作未获权。");
+    console.log(JSON.stringify(args[0] === "call" ? await request(args[1], value) : await invoke(args[1], value)));
   } finally {
     await cleanup();
   }
@@ -251,4 +258,4 @@ if (args[0] === "capabilities" && args.length === 1) {
     }),
   });
 } else
-  throw new Error("使用 capabilities、invoke <action> --input - 或 --mcp。");
+  throw new Error("使用 capabilities、invoke/call <action> --input - 或 --mcp。");

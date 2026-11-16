@@ -173,3 +173,5 @@ Apps可对当前获权固定媒体展示局部播放、区间／画面位置意�
 [40机器能力地图](40-机器能力地图与Review清单.md)面向产品Review，`contracts/capability-map.json`面向AI导航；两者从动作合同、MCP映射、权限路由和Skill源生成。源码连线、安装发现及专项实测分别取证。MCP执行时以当前tools/list与实际返回的Schema为准。
 
 `hetu_list_management_actions`发现领域动作；prepare固定结果，`hetu_record_management_decision`如实记录当前会话对确切摘要及状态版本的决定，再执行并回读。设置、插件、模型渠道和文稿版本各有独立工具，名称及范围从地图与实际发现取得。既有任务不因管理能力增加而获得正文采纳或定稿权；必要作者决定在当前对话完成，桌面审阅为可选入口。
+
+河图专业插件使用稳定 `hetu_plugins_inspect`、`hetu_plugin_access_capabilities` 和 `hetu_plugin_access_invoke`；新增包只改变河图返回的安装与能力投影，不为每包增加MCP工具或客户端插件。同一连接按需查询新Schema，调用重验当前安装、WorkRef、原管理授权、插件grant、包与能力摘要。MCP工具列表变更通知不是热插拔前提；Agent仍需主动发现才能得知后台安装变化。格式、时序与HP验收边界由[插件21](plugin/21-核心格式与动态能力发现.md)拥有。

@@ -299,13 +299,20 @@ pub(super) fn command(args: &[&str]) -> Result<Value> {
     serde_json::from_slice(&output)
         .map_err(|_| Error::new("result_unknown", "安装回执格式无法确认。"))
 }
-fn materialize(directory: &Path, files: &BTreeMap<String, Vec<u8>>) -> Result<()> {
-    if directory.exists() {
-        ensure(
+fn validate_destination(directory: &Path, files: &BTreeMap<String, Vec<u8>>) -> Result<()> {
+    match std::fs::symlink_metadata(directory) {
+        Ok(_) => ensure(
             fingerprint(&bytes(directory)?)? == fingerprint(files)?,
             "revision_conflict",
             "目标已存在不同内容；保留作者已有文件。",
-        )?;
+        ),
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(()),
+        Err(error) => Err(error.into()),
+    }
+}
+fn materialize(directory: &Path, files: &BTreeMap<String, Vec<u8>>) -> Result<()> {
+    validate_destination(directory, files)?;
+    if directory.exists() {
         return Ok(());
     }
     let parent = directory
@@ -335,10 +342,58 @@ fn materialize(directory: &Path, files: &BTreeMap<String, Vec<u8>>) -> Result<()
         "实际安装文件与固定包不一致。",
     )
 }
+/// 精确查询也返回本地市场来源；无关市场的加载错误不影响所选套件。
+fn codex_market(fixed: &Value, registered: &Value) -> Result<PathBuf> {
+    let suite_id = text(fixed, "suite_id")?;
+    let name = text(fixed, "name")?;
+    let market_name = format!("hetu-luoshu-{suite_id}");
+    let base = default_directory()?
+        .parent()
+        .unwrap()
+        .join("AgentPackages/codex")
+        .join(suite_id);
+    let installed = registered["installed"]
+        .as_array()
+        .ok_or_else(|| Error::new("hetu.capability_unavailable", "无法核对所选市场登记。"))?;
+    let available = registered["available"]
+        .as_array()
+        .ok_or_else(|| Error::new("hetu.capability_unavailable", "无法核对所选市场目录。"))?;
+    let records: Vec<_> = installed.iter().chain(available).collect();
+    ensure(
+        records.len() <= 1,
+        "revision_conflict",
+        "所选市场包含重复或非受管插件。",
+    )?;
+    if let Some(record) = records.first() {
+        let source = &record["marketplaceSource"];
+        let candidate = PathBuf::from(text(source, "source")?);
+        ensure(
+            record["pluginId"] == format!("{name}@{market_name}")
+                && record["name"] == name
+                && record["marketplaceName"] == market_name
+                && source["sourceType"] == "local"
+                && candidate.is_absolute()
+                && (candidate == base || candidate.parent() == Some(base.as_path())),
+            "revision_conflict",
+            "已有市场来源不属于本机受管套件。",
+        )?;
+        return Ok(candidate);
+    }
+    // 空目录不证明同名市场未登记；正式add仍由官方CLI核验来源冲突。
+    Ok(base)
+}
 fn installed_codex(fixed: &Value) -> Result<Value> {
     let market = format!("hetu-luoshu-{}", text(fixed, "suite_id")?);
     let plugin_id = format!("{}@{market}", text(fixed, "name")?);
-    let registered = command(&["plugin", "list", "--marketplace", &market, "--json"])?;
+    let registered = command(&[
+        "plugin",
+        "list",
+        "--marketplace",
+        &market,
+        "--available",
+        "--json",
+    ])?;
+    codex_market(fixed, &registered)?;
     ensure(
         registered["installed"].as_array().is_some_and(|records| {
             records.iter().any(|r| {
@@ -368,7 +423,12 @@ fn installed_codex(fixed: &Value) -> Result<Value> {
         "directory":path,"state":"registered","session_loaded":false,"verified_at":domain::now()}),
     )
 }
-pub(super) fn install(fixed: &Value, client: &str, recovering: bool) -> Result<Value> {
+pub(super) fn install(
+    fixed: &Value,
+    client: &str,
+    recovering: bool,
+    begin: impl FnOnce() -> Result<()>,
+) -> Result<Value> {
     let suite_id = text(fixed, "suite_id")?;
     let name = text(fixed, "name")?;
     if client == "codex" && recovering {
@@ -404,6 +464,8 @@ pub(super) fn install(fixed: &Value, client: &str, recovering: bool) -> Result<V
         );
         let config = workbuddy_directory()?;
         let destination = config.join("skills").join(name);
+        validate_destination(&destination, &files)?;
+        begin()?;
         materialize(&destination, &files)?;
         return Ok(
             json!({"client":client,"suite_id":suite_id,"version":fixed["version"],"package_sha256":fixed["package_sha256"],
@@ -416,42 +478,24 @@ pub(super) fn install(fixed: &Value, client: &str, recovering: bool) -> Result<V
         "当前客户端不支持自动安装。",
     )?;
     let market_name = format!("hetu-luoshu-{suite_id}");
-    let base = default_directory()?
-        .parent()
-        .unwrap()
-        .join("AgentPackages/codex")
-        .join(suite_id);
-    let existing = command(&["plugin", "marketplace", "list", "--json"])?;
-    let records = existing["marketplaces"]
-        .as_array()
-        .ok_or_else(|| Error::new("result_unknown", "无法核对官方市场登记。"))?;
-    let matches: Vec<_> = records
-        .iter()
-        .filter(|r| r["name"] == market_name)
-        .collect();
-    ensure(
-        matches.len() <= 1,
-        "revision_conflict",
-        "存在重复市场登记。",
-    )?;
-    let market = if let Some(record) = matches.first() {
-        let candidate = PathBuf::from(text(record, "root")?);
-        ensure(
-            candidate.is_absolute()
-                && (candidate == base || candidate.parent() == Some(base.as_path()))
-                && record["marketplaceSource"]["sourceType"] == "local"
-                && record["marketplaceSource"]["source"] == record["root"],
-            "revision_conflict",
-            "已有市场来源不属于本机受管套件。",
-        )?;
-        candidate
-    } else {
-        base
-    };
-    std::fs::create_dir_all(&market)?;
-    let market_store = Store::open(&market)?;
+    let existing = command(&[
+        "plugin",
+        "list",
+        "--marketplace",
+        &market_name,
+        "--available",
+        "--json",
+    ])
+    .map_err(|_| {
+        Error::new(
+            "hetu.capability_unavailable",
+            "无法读取所选市场；尚未开始安装，请检查客户端后沿原方案继续。",
+        )
+    })?;
+    let market = codex_market(fixed, &existing)?;
     let manifest_path = ".agents/plugins/marketplace.json";
-    if market_store.exists(manifest_path)? {
+    if market.exists() && Store::open(&market)?.exists(manifest_path)? {
+        let market_store = Store::open(&market)?;
         let previous = market_store.json(manifest_path)?;
         let old_path = text(&previous["plugins"][0]["source"], "path")?;
         let parts: Vec<_> = old_path.split('/').collect();
@@ -461,7 +505,8 @@ pub(super) fn install(fixed: &Value, client: &str, recovering: bool) -> Result<V
                 && parts[1] == "versions"
                 && valid_version(parts[2])
                 && parts[3] == name)
-                || (old_path == format!("./{name}") && matches.len() == 1),
+                || (old_path == format!("./{name}")
+                    && !existing["installed"].as_array().unwrap().is_empty()),
             "revision_conflict",
             "市场清单包含非受管路径。",
         )?;
@@ -497,6 +542,16 @@ pub(super) fn install(fixed: &Value, client: &str, recovering: bool) -> Result<V
         }
     }
     let relative = format!("./versions/{}/{name}", text(fixed, "version")?);
+    validate_destination(&market.join(&relative), &files)?;
+    let cache = codex_home()?
+        .join("plugins/cache")
+        .join(&market_name)
+        .join(name)
+        .join(text(fixed, "version")?);
+    validate_destination(&cache, &files)?;
+    begin()?;
+    std::fs::create_dir_all(&market)?;
+    let market_store = Store::open(&market)?;
     materialize(&market.join(&relative), &files)?;
     market_store.install(
         manifest_path,

@@ -1,0 +1,397 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-16",
+  "scope": "河图插件的稳定CLI/MCP动态发现与调用；不是Codex插件热加载。",
+  "platform": "macOS arm64",
+  "sources": {
+    "AGENTS.md": "5abf0c46939fcacaf9bc9581b06f21f33b2aa8bbec1e7aedea12f5b1a5e9a0fe",
+    "contracts/actions.json": "12d65c5529224964a49dd6c1c87afedde2145a637f514cffac6cd9597319f291",
+    "contracts/tools/catalog.json": "69b22f3019a9fadc729a3722418c09390bd7bf887e2ab9c593f0897e84b09073",
+    "contracts/schemas/plugin-manifest.schema.json": "b5ebbfce34268a6b28cc849552deb971d26aacf5a4f811359656f8dc2ec2a51e",
+    "contracts/schemas/plugin-installation.schema.json": "7caeace8156c45f463d87eb8cb105e78a56cbb004f46fdab2b2ebfdf9f435999",
+    "contracts/schemas/plugin-capabilities.schema.json": "2b09f54e4702459187885851cd75acd07e7cada9285bd4fc5015d997117af737",
+    "contracts/schemas/plugin-object.schema.json": "4a1e7d3ce43b005b59b8bd550857c75533e258377a6c374ff38bb44362be6901",
+    "core/src/application/extensions.rs": "26bf14eac509d4c70d026121523051a2b2ef9e4fb194e13000cd2cd3a529fa60",
+    "core/src/application/work_scope.rs": "7409cdb8f7f87345e46e94ad19e804c4fab5c2e46c48154d2c90cbad9bdf64f8",
+    "core/src/collaboration.rs": "5c7f436e65ac79c044429f47a781726cd2a89e438e7cbbf1f69c451ceff3acb4",
+    "core/src/collaboration/authoring.rs": "135f6342be30d7b98df96ade744a1670ad31a511663f82c88caf31e435dd774c",
+    "core/src/plugin_settings.rs": "98d77a9a299a3aa0f96f9c2299a97ae3fe09a10a017cbaff16bd455203ed62a1",
+    "packages/plugin-host/src/installations.ts": "bbcf0c2b4f8ed9674307b68404efd4eab23781e6464e5f83f4d6d3086c2c116a",
+    "packages/plugin-host/src/registry.ts": "ff3d3deade4f15c63d0f4917067149644b61fff09fa46f9841e9b166c8de34a8",
+    "packages/plugin-host/src/manager-cli.ts": "df9d5a4804ee94bf36706fd6667eb6e30e3d9ae6a2ee9eea3797f192ce9f636e",
+    "packages/plugin-host/src/runtime-cli.ts": "159a72257a749ca34e0e3599ae0f7277fe03eaadfabe00b6338c113f8ca66f6c",
+    "packages/plugin-host/src/scaffold.ts": "ca7fcd9cfa512e5235d2cbe8bd5d3b393ffd5650809185321b75777b7151b92e",
+    "packages/plugin-host/tests/hotplug.test.ts": "10efe1b05c57207e4a65b8c9d88ab14686227f1cf29b4da075c6ba0f48ac9a66",
+    "packages/plugin-host/tests/installations.test.ts": "c1b1f8adee7e69e6a4724dfa297eabf1db3173b8b739404a0593b111705f64bb",
+    "packages/plugin-host/tests/developer.test.ts": "537a437865f6d88370d00a6fc460edc76056da053762ace0761c7fa82dbc8f72",
+    "apps/desktop/tests/machine-plugins.spec.ts": "87565fefe83eeed9634aead6488efeb97a9cf7e9fb11402f63326011672eb141",
+    "apps/desktop/src/main/main.ts": "8bb315ef01b80a0b298fa58acf693a8b36ae2c3c5e16520b6bbbf9ade074e3a4"
+  },
+  "reference_sources": "plugin-ecosystem-sources-2026-11-16.json",
+  "checks": [
+    {
+      "name": "宿主、安装隔离、核心格式与独立开发工具",
+      "status": "passed",
+      "tests": 11,
+      "log": "output/plugin-host-final.log"
+    },
+    {
+      "name": "同一MCP连接热插拔",
+      "status": "passed",
+      "scenario_tests": 12,
+      "runner_tests_including_parent": 13,
+      "log": "output/plugin-hotplug-final.log"
+    },
+    {
+      "name": "CLI管理与桌面状态同步",
+      "status": "passed",
+      "tests": 1,
+      "log": "output/machine-plugins-final-pass.log",
+      "screenshots": {
+        "apps/desktop/test-results/machine-plugins-CLI安装启停卸载插件后桌面同步同一状态，无需界面执行/installed.png": "930fc590347451af36bf6967c3da89619e8b7739d0f750274317a04860898694",
+        "apps/desktop/test-results/machine-plugins-CLI安装启停卸载插件后桌面同步同一状态，无需界面执行/disabled.png": "f1d8096fd580bd2ab9d9ad44abec2c7a48763a23690cb92161756ea1b2bf2058",
+        "apps/desktop/test-results/machine-plugins-CLI安装启停卸载插件后桌面同步同一状态，无需界面执行/uninstalled.png": "e41de00682111ff6568b40f136c4367c52e94af0d6e5d78455988e8384f61be8"
+      },
+      "visual_review": "实际查看三个状态；仅覆盖插件管理页，不推定全软件视觉评分。"
+    },
+    {
+      "name": "稳定CLI会话与真实MCP stdio回归",
+      "status": "passed",
+      "tests": 30,
+      "log": "output/all-agent-entrypoints-final.log"
+    },
+    {
+      "name": "随包同一MCP连接热插拔",
+      "status": "passed",
+      "runner_tests_including_parent": 13,
+      "log": "output/plugin-hotplug-packaged.log",
+      "package_manifest": "output/electron-packages/hetu-dev-Dn7MsJ/manifest.json",
+      "source_sha256": "ad40ee8f78adbc2bb9ad6d17815c07988a59d1488a52c08e0009054eec8dbf1b"
+    },
+    {
+      "name": "安装版CLI管理与桌面同步初验",
+      "status": "failed",
+      "business_assertions": "passed",
+      "failure": "Playwright app.close teardown exceeded timeout after all business assertions and screenshots passed; separate diagnostic with main-process inspection completed graceful exit.",
+      "logs": [
+        "output/machine-plugins-packaged.log",
+        "output/machine-plugins-installed-retest.log"
+      ],
+      "trace": "output/machine-plugins-installed-retest/trace.zip"
+    },
+    {
+      "name": "桌面异步恢复稿完成后退出与机器插件同步复验",
+      "status": "passed",
+      "tests": 1,
+      "log": "output/machine-plugins-deferred-quit.log",
+      "change": "window-all-closed在下一轮事件循环调用app.quit，避免首次退出被恢复稿flush取消后过早重入；未扩大测试超时。",
+      "packaged_recheck": {
+        "status": "passed",
+        "tests": 1,
+        "log": "output/machine-plugins-installed-final.log",
+        "timeout_ms": 90000
+      }
+    },
+    {
+      "name": "安装版能力地图回读",
+      "status": "passed",
+      "action": "hetu.plugin_access.invoke",
+      "installed_evidence": true,
+      "log": "output/installed-capability-map-final.json"
+    },
+    {
+      "name": "最终安装版同一MCP连接热插拔",
+      "status": "passed",
+      "runner_tests_including_parent": 13,
+      "log": "output/plugin-hotplug-installed-final.log",
+      "manifest": "output/electron-packages/hetu-dev-SWEh0a/manifest.json",
+      "source_sha256": "2d35ebd01d4ab38ac3e42df25bc8873d07a20ea5899ba3734cf80e4193a0ec62"
+    }
+  ],
+  "failures_and_fixes": [
+    {
+      "log": "output/plugin-hotplug-initial.log",
+      "cause": "真实机器新建作品的管理引用未固定可用于插件的原作品身份。",
+      "fix": "创建回执持久化最初WorkRef，插件授权仅接受该引用或已有精确作品授权；拒绝同根其他对象。"
+    },
+    {
+      "log": "output/plugin-hotplug-retest.log",
+      "cause": "能力投影的闭合Schema测试错误地包含管理连接附加的management_ref。",
+      "fix": "独立验证专业投影与管理信封，不复制管理Schema。"
+    },
+    {
+      "log": "output/machine-plugins-final.log",
+      "cause": "空创作库的测试误用项目导航。",
+      "fix": "沿实际创作库导航进入插件页。"
+    },
+    {
+      "log": "output/machine-plugins-retest.log",
+      "cause": "测试误以为卸载会删除历史条目。",
+      "fix": "核对已卸载状态及操作消失，保留作品成果的降级读取入口。"
+    }
+  ],
+  "verified_actions": {
+    "hetu.plugins.inspect": [
+      "packages/plugin-host/tests/hotplug.test.ts",
+      "output/plugin-hotplug-final.log"
+    ],
+    "hetu.plugins.inspect_package": [
+      "packages/plugin-host/tests/hotplug.test.ts",
+      "output/plugin-hotplug-final.log"
+    ],
+    "hetu.plugins.apply": [
+      "packages/plugin-host/tests/hotplug.test.ts",
+      "output/plugin-hotplug-final.log"
+    ],
+    "hetu.plugins.get_operation": [
+      "packages/plugin-host/tests/hotplug.test.ts",
+      "output/plugin-hotplug-final.log"
+    ],
+    "hetu.plugin_access.authorize": [
+      "packages/plugin-host/tests/hotplug.test.ts",
+      "output/plugin-hotplug-final.log"
+    ],
+    "hetu.plugin_access.capabilities": [
+      "packages/plugin-host/tests/hotplug.test.ts",
+      "output/plugin-hotplug-final.log"
+    ],
+    "hetu.plugin_access.invoke": [
+      "packages/plugin-host/tests/hotplug.test.ts",
+      "output/plugin-hotplug-final.log"
+    ],
+    "hetu.creation_projects.create": [
+      "packages/plugin-host/tests/hotplug.test.ts",
+      "output/plugin-hotplug-final.log"
+    ],
+    "hetu.creation_projects.create_novel": [
+      "packages/plugin-host/tests/hotplug.test.ts",
+      "output/plugin-hotplug-final.log"
+    ],
+    "hetu.local_settings.get": [
+      "core/tests/local_settings.rs",
+      "output/client-suite-core-tests.log",
+      "output/client-suite-cli-tests.log"
+    ],
+    "hetu.local_settings.inspect_suite": [
+      "core/tests/local_settings.rs",
+      "output/client-suite-core-tests.log",
+      "output/client-suite-cli-tests.log"
+    ],
+    "hetu.local_settings.prepare": [
+      "core/tests/local_settings.rs",
+      "output/client-suite-core-tests.log",
+      "output/client-suite-cli-tests.log"
+    ],
+    "hetu.local_settings.get_operation": [
+      "core/tests/local_settings.rs",
+      "output/client-suite-core-tests.log",
+      "output/client-suite-cli-tests.log"
+    ],
+    "hetu.local_settings.execute": [
+      "core/tests/local_settings.rs",
+      "output/client-suite-core-tests.log",
+      "output/client-suite-cli-tests.log"
+    ],
+    "hetu.local_settings.record_decision": [
+      "core/tests/local_settings.rs",
+      "output/client-suite-core-tests.log",
+      "output/client-suite-cli-tests.log"
+    ]
+  },
+  "installed_actions": [
+    "hetu.plugins.inspect",
+    "hetu.plugins.inspect_package",
+    "hetu.plugins.apply",
+    "hetu.plugins.get_operation",
+    "hetu.plugin_access.authorize",
+    "hetu.plugin_access.capabilities",
+    "hetu.plugin_access.invoke",
+    "hetu.creation_projects.create",
+    "hetu.creation_projects.create_novel",
+    "hetu.local_settings.get",
+    "hetu.local_settings.inspect_suite",
+    "hetu.local_settings.prepare",
+    "hetu.local_settings.get_operation",
+    "hetu.local_settings.execute",
+    "hetu.local_settings.record_decision"
+  ],
+  "logs": {
+    "output/plugin-host-final.log": "b5043eedac6eff54c727a3a08538dc0e1b2e5ec99b4a69ec72165cf531581425",
+    "output/plugin-hotplug-initial.log": "5a970e5d6ecafb1ee21b7281c5a25dc3fa80995710d37663470185bad3c449be",
+    "output/plugin-hotplug-retest.log": "9d5a37b552acdb1960feb61694337e604d42ef1d58bca551b2741f83702f7bfc",
+    "output/plugin-hotplug-final.log": "8cf2b7d947d0fc69c28509fc8973c90337853c80d9d51ef2b0876b7073bca6c0",
+    "output/machine-plugins-final.log": "d4cbd5f7809453883cf5232584f144d2de5748565dcf751a0d9016584da573e3",
+    "output/machine-plugins-retest.log": "807cb699190548876455528144706dda2b80c94a6bbeae325d2cdd4f2e2ef190",
+    "output/machine-plugins-final-pass.log": "89f1c0816c5dd17f7b1e3235bb0d5344fe34b1c0ec9b74fdd12e5dae985f3f82",
+    "output/all-agent-entrypoints-final.log": "0d1a1e25fd22d97c0c21538e424ef406c146bb4daf8aee5dfeea48f8644256dd",
+    "output/plugin-hotplug-packaged.log": "889cd624361446bcaf58cf16b149a4c161fe785b3f3876176bd4149f0db49b65",
+    "output/machine-plugins-packaged.log": "37ad90febfe45aae46bb8ef6e0a4702d959af3f81e3e58a66677b1bab854d1e3",
+    "output/machine-plugins-installed-retest.log": "7fad25ab451f763926e98325d36e1e535641cba5860118bdf767186d8264b521",
+    "output/machine-plugins-installed-graceful-close.log": "27ebabc4a3504719f92004f71fb24f12799e22fd244144bb38a7e6f81cda3603",
+    "output/chixie-import-installed-20261116.log": "c87300de267b51cb9d55197f2703101d2f8ff8bd15bcf628aabc485f2e7c6919",
+    "output/chixie-import-final-readback.log": "9bf6b1f23a44e3a42a51b72e0fa06ae6c7069cf77f961c916936991cf729d5af",
+    "output/machine-plugins-deferred-quit.log": "9ac60f1d61c049ac9fb1374ead2a1d1a9922c1eefeab13bb89018cb23335aec6",
+    "output/machine-plugins-installed-final.log": "253defdee8ac5891fd9a1e5ee00587abca013a6cf28642be75c1f4f25c18b11a",
+    "output/installed-capability-map-final.json": "6fcb6cee43ec0afa33c66c0781ece185316a8f2fbfa71d780787e9531aa7b22f",
+    "output/all-agent-package-final.log": "e6614e37b2b7c2f522bb3dbcaedde50bdab1b57cd05c63a5cbdf9c0e975447ba",
+    "output/plugin-hotplug-installed-final.log": "283162022d8a108cc068be8dc538f4fc9cdcd9a4ebf7d6a306ab341476ac1099",
+    "output/all-agent-docs-boundary-final.log": "cd01f9c56fde95912f3bb3c71cac14ff0ed224a1dbad06d3a0f42671aae211ad"
+  },
+  "not_verified": [
+    "Windows和Linux制品及干净系统",
+    "所有第一方工作面的独立安装生命周期",
+    "陌生人类开发者试用",
+    "公开插件索引、签名及生态供需",
+    "所有外部Agent客户端",
+    "任意插件代码和外部副作用的穷尽验证"
+  ],
+  "format_check": {
+    "touched_rust_files": "passed rustfmt --config skip_children=true",
+    "workspace_rustfmt": "failed existing format differences; output/all-agent-rust-format-check.log"
+  },
+  "documentation": {
+    "check": "output/all-agent-docs-boundary-final.log",
+    "status": "passed",
+    "mermaid_syntax_checked": 87,
+    "new_diagrams_rendered": 2,
+    "render_results": "output/hotplug-doc-qa/results.json",
+    "skills_suites_reproduced": 45,
+    "note": "图示与文档验证不代替运行、跨平台或生态完成。",
+    "boundary_diagrams_rendered": 3,
+    "boundary_render_results": "output/plugin-boundary-doc-qa/results.json",
+    "source_hashes": {
+      "AGENTS.md": "5abf0c46939fcacaf9bc9581b06f21f33b2aa8bbec1e7aedea12f5b1a5e9a0fe",
+      "docs/39-Electron与插件优先重构架构.md": "b821ba1e8d266fa2bf0b21a018c437934c6089046d4a81a0caf0251e449b712c",
+      "docs/plugin/21-核心格式与动态能力发现.md": "007cfef5ae14dbd406fa8fa655c0ff27da750f916f18882e2c03f8c535b0341f",
+      "docs/plugin/10-插件包SDK与生命周期.md": "ad4228ce8b9c3ccc374556ab2cd9777de50fe9bf2f229dc10668e00ea434d66d",
+      "docs/plugin/16-架构决策与风险登记.md": "d43fa38ba23b6eff96099ea75294b60af38a741bdd50acf9b912cc1f0c4e2c44"
+    }
+  },
+  "local_installation": {
+    "app": "/Applications/Hetu.app",
+    "version": "0.9.0",
+    "kind": "macOS arm64 local development package, ad-hoc signed",
+    "verification": "output/installed-package-final-verification.json",
+    "previous_bundle": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/hetu-before-deferred-quit-20261116.app",
+    "installed": "/Applications/Hetu.app",
+    "app_artifacts_verified": 2615,
+    "source_sha256": "2d35ebd01d4ab38ac3e42df25bc8873d07a20ea5899ba3734cf80e4193a0ec62",
+    "manifest": "output/electron-packages/hetu-dev-SWEh0a/manifest.json",
+    "signature": "passed",
+    "assembly_verification": "output/all-agent-package-final-verification.json",
+    "cli_version_output": "hetu 0.9.0"
+  },
+  "client_adapter_update": {
+    "suite": "general",
+    "client": "codex",
+    "bundled_version": "0.3.6",
+    "registered_version": "0.3.5",
+    "state": "unknown",
+    "operation_id": "localop_16b6f335-2eba-4d8b-9e4f-be24068bfa58",
+    "execute_key": "upgrade-general-codex-20261116-036-execute",
+    "reason": "Codex plugin marketplace list fails while loading unrelated limecloud-zhituan marketplace with unsupported manifest; exact general plugin list remains readable. Original operation retained; no unrelated configuration changed.",
+    "logs": [
+      "output/upgrade-general-suite-execute.json",
+      "output/upgrade-general-suite-recovery.json",
+      "output/codex-marketplace-registration.stderr",
+      "output/codex-general-target-registration.json"
+    ],
+    "session_reloaded": false,
+    "final_inspection": "output/installed-general-suite-final.json",
+    "current_bundle_sha256": "3c960099120f79aefce6e4498d7a631418081e4f2d8f1de3e54e41befc48ca65",
+    "original_fixed_package_sha256": "3c960099120f79aefce6e4498d7a631418081e4f2d8f1de3e54e41befc48ca65",
+    "original_bundle_manifest": "output/electron-packages/hetu-dev-Dn7MsJ/manifest.json"
+  },
+  "novel_import": {
+    "status": "passed",
+    "client": "codex",
+    "cli_version": "0.9.0",
+    "source_sha256": "4be14f1ee804b2dee9370fe528ce1d93504a9a539793fe8d2276361a52f29c10",
+    "documents": 511,
+    "volumes": [
+      {
+        "title": "作品说明",
+        "count": 1
+      },
+      {
+        "title": "第1部分",
+        "count": 88
+      },
+      {
+        "title": "第2部分",
+        "count": 100
+      },
+      {
+        "title": "第3部分",
+        "count": 133
+      },
+      {
+        "title": "第4部分",
+        "count": 189
+      }
+    ],
+    "mcp_document_pages": 3,
+    "authorization_state": "complete",
+    "original_journal_reused": true,
+    "source_revision_and_order_checks": 511,
+    "agent_did_not_adopt_or_finalize": true,
+    "work_ref": {
+      "workspace_id": "workspace_2c7b9eb4-339f-445d-9890-8242ea7fe8d0",
+      "kind": "novel",
+      "object_id": "novel_cb19aef0-ea68-4f72-8617-8d30dffd291b"
+    },
+    "note": "CLI Skill逐篇回读已核验正文修订摘要；独立MCP复核全部目录、标题、分卷、顺序和修订身份。未修改11月15日另一同名作品或其六集剧本。",
+    "record_directory": "/Users/coso/Downloads/持械入宋：第一季/河图导入记录-20261116",
+    "logs": [
+      "output/chixie-import-installed-20261116.log",
+      "output/chixie-import-final-readback.log"
+    ],
+    "readback_harness_initial_failure": {
+      "log": "output/chixie-import-readback-initial.log",
+      "cause": "验收脚本将完成后已移除的pending键当作必有字段；改为get后通过，导入业务结果未重做。"
+    }
+  },
+  "installed_ui_screenshots": {
+    "apps/desktop/test-results/machine-plugins-CLI安装启停卸载插件后桌面同步同一状态，无需界面执行/disabled.png": "31856810b14c1d65d2d0451bb1f331566865d9f956fd9b61ba917c743b2d1668",
+    "apps/desktop/test-results/machine-plugins-CLI安装启停卸载插件后桌面同步同一状态，无需界面执行/installed.png": "21f0ce9335636071ed84d01d8527acb92812ff8f3ebf6b35a09f6a2e0359ced5",
+    "apps/desktop/test-results/machine-plugins-CLI安装启停卸载插件后桌面同步同一状态，无需界面执行/uninstalled.png": "0caa953f57c854d07ff486d852c5e7ae2c22ae11dd4c42fbcb8f39afa4216b9e"
+  },
+  "installed_ui_review": "已查看启用、停用和卸载三态；此切片不扩为全App浅暗／窄窗矩阵通过。",
+  "suite_upgrade_repair": {
+    "scope": "客户端接入包安装器；与河图专业插件热插拔独立。",
+    "status": "source_tests_passed",
+    "core_tests": 8,
+    "cli_tests": 1,
+    "scenarios": [
+      "无关市场损坏仍能精确发现",
+      "只读预检失败保持approved并沿原方案继续",
+      "来源替换与重复插件拒绝",
+      "旧缓存和同版目标冲突不覆盖",
+      "悬空链接保留",
+      "同名空市场add失败只读恢复",
+      "升级保留旧缓存",
+      "写入后丢回执不重复安装",
+      "随包变化仍核对原固定缓存",
+      "原执行键不一致拒绝",
+      "固定套件变化拒绝"
+    ],
+    "installed_discovery": "output/client-suite-installed-discovery.json",
+    "installed_discovery_note": "installed_actions表示安装版已声明该动作；业务通过范围由verified_actions单独记录。",
+    "original_unknown_operation": {
+      "operation_id": "localop_16b6f335-2eba-4d8b-9e4f-be24068bfa58",
+      "recovery": "output/client-suite-original-recovery.json",
+      "state": "executing",
+      "reissued": false
+    },
+    "initial_failure": "首轮7项通过、1项失败：测试已包含悬空链接而Core编译仍为修复前输入；修复后8项完整复验通过。",
+    "sources": {
+      "core/src/local_settings.rs": "9725e737102fe00fcb6e268a812e44c65ea6a4efcca8664663520b966df4acdc",
+      "core/src/local_settings/suites.rs": "5cabbabe02512de11bb9dfac66a74fad51c06aba03ea44ca0ae6c929cee340d9",
+      "core/tests/local_settings.rs": "20c4ab8d751097ea1446807ab4ce71195257d5251412af7bfba9b666461eb8df",
+      "core/tests/fixtures/codex-settings.py": "5c5c28a287b7de2c9aa0cd925b2c6bd2fdfdf2bf3df388029930aa12db21686a"
+    },
+    "mcp_tests": 1,
+    "mcp_log": "output/client-suite-mcp-tests.log",
+    "documentation_check": "output/client-suite-docs.log"
+  }
+}

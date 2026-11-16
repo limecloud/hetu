@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:hetu:plugin-capabilities:1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format_version",
+    "plugin_id",
+    "package_sha256",
+    "work_ref",
+    "actions",
+    "data_actions",
+    "types",
+    "permissions",
+    "capabilities_sha256"
+  ],
+  "properties": {
+    "format_version": {
+      "const": 1
+    },
+    "plugin_id": {
+      "type": "string"
+    },
+    "package_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "work_ref": {
+      "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+    },
+    "capabilities_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "input_schema",
+          "effect"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "input_schema": {
+            "type": "object"
+          },
+          "effect": {
+            "enum": [
+              "read",
+              "managed_write"
+            ]
+          }
+        }
+      }
+    },
+    "data_actions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "types": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "permissions": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 2,
+      "items": {
+        "enum": [
+          "objects.read",
+          "objects.write"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "retrieved_on": "2026-11-16",
+  "scope": "公开固定版本文档和测试源码；未运行上游项目，不代表上游产品验收。",
+  "sources": [
+    {
+      "repo": "deepseek-ai/deepseek-harness",
+      "commit": "39163dd30f703a79079e2d2446545cff3c453738",
+      "path": "docs/cordis-tutorial/02-lifecycle-and-effects.zh.md",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/docs/cordis-tutorial/02-lifecycle-and-effects.zh.md",
+      "sha256": "568d7abd06db7f054c73348fe6c5decd57c1ca69f996dfcb8ab30ea3cdbc816c"
+    },
+    {
+      "repo": "deepseek-ai/deepseek-harness",
+      "commit": "39163dd30f703a79079e2d2446545cff3c453738",
+      "path": "docs/cookbook/adding-a-package.zh.md",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/docs/cookbook/adding-a-package.zh.md",
+      "sha256": "232029da3781caa5eb2bebea7f46bb7f03b07151c557f2a615f6f0e463c3dce0"
+    },
+    {
+      "repo": "deepseek-ai/deepseek-harness",
+      "commit": "39163dd30f703a79079e2d2446545cff3c453738",
+      "path": "README.zh.md",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/README.zh.md",
+      "sha256": "8f19db1b217e8ef30cf413b07056cc791048bc2ba2ec51ba104e383dcfb43c61"
+    },
+    {
+      "repo": "deepseek-ai/deepseek-harness",
+      "commit": "39163dd30f703a79079e2d2446545cff3c453738",
+      "path": "docs/architecture.zh.md",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/docs/architecture.zh.md",
+      "sha256": "8c1b6693c1c044bf9ca9cbdc1865cabbc37450a44956c7ad6050179e7b106dfc"
+    },
+    {
+      "repo": "deepseek-ai/deepseek-harness",
+      "commit": "39163dd30f703a79079e2d2446545cff3c453738",
+      "path": "docs/cordis-tutorial/01-first-plugin.zh.md",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/docs/cordis-tutorial/01-first-plugin.zh.md",
+      "sha256": "d83e9f2c2fdb025d0ce959de6d51f8b61752be23a1d328b1c7308fa18b81e5a8"
+    },
+    {
+      "repo": "deepseek-ai/deepseek-harness",
+      "commit": "39163dd30f703a79079e2d2446545cff3c453738",
+      "path": "docs/cordis-tutorial/06-composition-and-hmr.zh.md",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/docs/cordis-tutorial/06-composition-and-hmr.zh.md",
+      "sha256": "60a0d01a9b8300fd2290a5104403b33f66d94d78d64e2ac4d87996da32d75628"
+    },
+    {
+      "repo": "badlogic/pi-mono",
+      "commit": "0826f9f39f42bb252e4b6ea51015b63f00f63deb",
+      "path": "packages/coding-agent/README.md",
+      "url": "https://raw.githubusercontent.com/badlogic/pi-mono/0826f9f39f42bb252e4b6ea51015b63f00f63deb/packages/coding-agent/README.md",
+      "sha256": "fbc7abec7d0829ac8bc4b217e950794e1ba4d8d1b3e0850f970da318ad72e863"
+    },
+    {
+      "repo": "badlogic/pi-mono",
+      "commit": "0826f9f39f42bb252e4b6ea51015b63f00f63deb",
+      "path": "packages/coding-agent/docs/packages.md",
+      "url": "https://raw.githubusercontent.com/badlogic/pi-mono/0826f9f39f42bb252e4b6ea51015b63f00f63deb/packages/coding-agent/docs/packages.md",
+      "sha256": "f03ce96224985c1b0daac643cb6edc97a58701c492243c8eda16a7d1633e9dac"
+    },
+    {
+      "repo": "badlogic/pi-mono",
+      "commit": "0826f9f39f42bb252e4b6ea51015b63f00f63deb",
+      "path": "packages/coding-agent/docs/extensions.md",
+      "url": "https://raw.githubusercontent.com/badlogic/pi-mono/0826f9f39f42bb252e4b6ea51015b63f00f63deb/packages/coding-agent/docs/extensions.md",
+      "sha256": "ae042262e31bb39cb2b2237a2d9c2ff6167058afd149c77442ef0521dc3c53e1"
+    },
+    {
+      "repo": "badlogic/pi-mono",
+      "commit": "0826f9f39f42bb252e4b6ea51015b63f00f63deb",
+      "path": "packages/coding-agent/docs/skills.md",
+      "url": "https://raw.githubusercontent.com/badlogic/pi-mono/0826f9f39f42bb252e4b6ea51015b63f00f63deb/packages/coding-agent/docs/skills.md",
+      "sha256": "5b9805525b194474ef1fe5455a0917ef15ed7f710aa9bec2eee11879556469e5"
+    },
+    {
+      "repo": "badlogic/pi-mono",
+      "commit": "0826f9f39f42bb252e4b6ea51015b63f00f63deb",
+      "path": "apps/p2/docs/plugin-loading.md",
+      "url": "https://raw.githubusercontent.com/badlogic/pi-mono/0826f9f39f42bb252e4b6ea51015b63f00f63deb/apps/p2/docs/plugin-loading.md",
+      "sha256": "2d24870040c0316c241bad5c51b332dcdd3d0d1a27b0c5137afbfe337dbc39d2"
+    },
+    {
+      "repo": "badlogic/pi-mono",
+      "commit": "0826f9f39f42bb252e4b6ea51015b63f00f63deb",
+      "path": "apps/p2/docs/plugin-practices.md",
+      "url": "https://raw.githubusercontent.com/badlogic/pi-mono/0826f9f39f42bb252e4b6ea51015b63f00f63deb/apps/p2/docs/plugin-practices.md",
+      "sha256": "b972b05b2b289570c45de3517198363775d36003b1453593e42687a5f74b781b"
+    },
+    {
+      "repo": "deepseek-ai/deepseek-harness",
+      "commit": "39163dd30f703a79079e2d2446545cff3c453738",
+      "path": "apps/plugin-market-generator/tests/discovery.spec.ts",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/apps/plugin-market-generator/tests/discovery.spec.ts",
+      "sha256": "244b99d0cf278b6add4fdec37759e9fac8e4ce6259bdcdfd2560a11b53d12edf"
+    },
+    {
+      "repo": "deepseek-ai/deepseek-harness",
+      "commit": "39163dd30f703a79079e2d2446545cff3c453738",
+      "path": "apps/web/tests/plugin-install-cancel.e2e.ts",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/apps/web/tests/plugin-install-cancel.e2e.ts",
+      "sha256": "11c510f140e817c30108a56e4500259ac2c88d7179e2778f0a88e7c0c0d13285"
+    },
+    {
+      "repo": "deepseek-ai/deepseek-harness",
+      "commit": "39163dd30f703a79079e2d2446545cff3c453738",
+      "path": "apps/cli/tests/plugin.spec.ts",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/apps/cli/tests/plugin.spec.ts",
+      "sha256": "458e3d04f8cfddc8bf7807a1932c8a97e000f946b0726f317d6f18679297ea25"
+    },
+    {
+      "repo": "badlogic/pi-mono",
+      "commit": "0826f9f39f42bb252e4b6ea51015b63f00f63deb",
+      "path": "packages/coding-agent/test/extensions-discovery.test.ts",
+      "url": "https://raw.githubusercontent.com/badlogic/pi-mono/0826f9f39f42bb252e4b6ea51015b63f00f63deb/packages/coding-agent/test/extensions-discovery.test.ts",
+      "sha256": "2ade4ed3285252af2261350c9c99213a666e01d0f0e7a237b09bf3ba6921cd19"
+    },
+    {
+      "repo": "deepseek-ai/deepseek-harness",
+      "commit": "39163dd30f703a79079e2d2446545cff3c453738",
+      "path": "apps/web/tests/plugin-hmr-lifecycle.e2e.ts",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/apps/web/tests/plugin-hmr-lifecycle.e2e.ts",
+      "sha256": "ec55e65d943235eafdfbae99ccf8480418f0791bbb356f37e8f781c7887c30a7"
+    },
+    {
+      "repo": "deepseek-ai/deepseek-harness",
+      "commit": "39163dd30f703a79079e2d2446545cff3c453738",
+      "path": "apps/plugin-market-generator/src/metrics.ts",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/apps/plugin-market-generator/src/metrics.ts",
+      "sha256": "d6981784050ecba4c5f4f152c1cb67d21ffcedc43cf1a85283a9e15951501bc4"
+    },
+    {
+      "repo": "badlogic/pi-mono",
+      "commit": "0826f9f39f42bb252e4b6ea51015b63f00f63deb",
+      "path": "packages/coding-agent/test/extensions-runner.test.ts",
+      "url": "https://raw.githubusercontent.com/badlogic/pi-mono/0826f9f39f42bb252e4b6ea51015b63f00f63deb/packages/coding-agent/test/extensions-runner.test.ts",
+      "sha256": "ffcfc9f6550f3cf1eb7e2a02e94ef788713ab2ced3321dfcfca694123a7adcc1"
+    },
+    {
+      "repo": "badlogic/pi-mono",
+      "commit": "0826f9f39f42bb252e4b6ea51015b63f00f63deb",
+      "path": "packages/coding-agent/test/suite/regressions/9221-reload-during-tool.test.ts",
+      "url": "https://raw.githubusercontent.com/badlogic/pi-mono/0826f9f39f42bb252e4b6ea51015b63f00f63deb/packages/coding-agent/test/suite/regressions/9221-reload-during-tool.test.ts",
+      "sha256": "5d0e505bb397a30d4b269d9a6842ab2b8348d8034634c7ff3a12bff3c990532f"
+    },
+    {
+      "repo": "badlogic/pi-mono",
+      "commit": "0826f9f39f42bb252e4b6ea51015b63f00f63deb",
+      "path": "packages/coding-agent/test/agent-session-dynamic-tools.test.ts",
+      "url": "https://raw.githubusercontent.com/badlogic/pi-mono/0826f9f39f42bb252e4b6ea51015b63f00f63deb/packages/coding-agent/test/agent-session-dynamic-tools.test.ts",
+      "sha256": "a0262ef48073e038e3b9efe87ff10146381998b1bb91e76cd3c57447b290fe91"
+    }
+  ]
+}

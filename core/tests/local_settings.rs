@@ -311,8 +311,7 @@ fn default_association_replays_without_overwriting_exact_work_choices() {
 }
 
 #[cfg(unix)]
-#[test]
-fn suite_installation_recovers_registered_bytes_without_repeating_external_install() {
+fn suite_child(test: &str) -> bool {
     use std::{os::unix::fs::PermissionsExt, process::Command};
     if std::env::var_os("HETU_SETTINGS_SUITE_CHILD").is_none() {
         let folder = tempfile::tempdir().unwrap();
@@ -341,11 +340,7 @@ fn suite_installation_recovers_registered_bytes_without_repeating_external_insta
         std::fs::write(&executable, include_str!("fixtures/codex-settings.py")).unwrap();
         std::fs::set_permissions(&executable, std::fs::Permissions::from_mode(0o700)).unwrap();
         let output = Command::new(std::env::current_exe().unwrap())
-            .args([
-                "--exact",
-                "suite_installation_recovers_registered_bytes_without_repeating_external_install",
-                "--nocapture",
-            ])
+            .args(["--exact", test, "--nocapture"])
             .env("HETU_SETTINGS_SUITE_CHILD", "1")
             .env("HETU_INTEGRATIONS_DIR", &integrations)
             .env("HETU_LOCAL_SETTINGS_DIR", folder.path().join("settings"))
@@ -360,6 +355,202 @@ fn suite_installation_recovers_registered_bytes_without_repeating_external_insta
             String::from_utf8_lossy(&output.stdout),
             String::from_utf8_lossy(&output.stderr)
         );
+        return false;
+    }
+    true
+}
+
+#[cfg(unix)]
+fn suite_fixture() -> std::path::PathBuf {
+    std::path::PathBuf::from(std::env::var_os("CODEX_HOME").unwrap())
+}
+
+#[cfg(unix)]
+fn suite_version(version: &str) -> std::path::PathBuf {
+    use sha2::{Digest, Sha256};
+    let source = std::path::PathBuf::from(std::env::var_os("HETU_INTEGRATIONS_DIR").unwrap())
+        .join("codex/hetu");
+    let manifest_path = source.join("references/method-manifest.json");
+    let mut methods: Value =
+        serde_json::from_slice(&std::fs::read(&manifest_path).unwrap()).unwrap();
+    for name in ["plugin.json", ".codex-plugin/plugin.json"] {
+        let path = source.join(name);
+        let mut manifest: Value = serde_json::from_slice(&std::fs::read(&path).unwrap()).unwrap();
+        manifest["version"] = json!(version);
+        let bytes = serde_json::to_vec(&manifest).unwrap();
+        methods["files"][name] = json!(format!("{:x}", Sha256::digest(&bytes)));
+        std::fs::write(path, bytes).unwrap();
+    }
+    methods["version"] = json!(version);
+    std::fs::write(manifest_path, serde_json::to_vec(&methods).unwrap()).unwrap();
+    source
+}
+
+#[cfg(unix)]
+#[test]
+fn suite_empty_market_conflict_is_not_replayed() {
+    if !suite_child("suite_empty_market_conflict_is_not_replayed") {
+        return;
+    }
+    let service = LocalSettings::open_default().unwrap();
+    let plan = data(call(
+        &service,
+        "codex",
+        "prepare",
+        json!({"kind":"agent_suite","agent_client":"codex","suite_id":"general","install":true,"summary":"核对同名市场冲突","operation_key":"market-conflict"}),
+    ));
+    service
+        .host(decide(&service, &plan, "approve-market-conflict"))
+        .unwrap();
+    let root = suite_fixture();
+    std::fs::create_dir_all(&root).unwrap();
+    std::fs::write(root.join("market-add-conflict"), b"").unwrap();
+    assert_eq!(
+        execute(&service, &plan, "market-execute")["status"],
+        "unknown"
+    );
+    std::fs::remove_file(root.join("market-add-conflict")).unwrap();
+    // 空目录不证明官方add未发生；即使故障消失也不得重发。
+    assert_eq!(
+        execute(&service, &plan, "market-execute")["status"],
+        "unknown"
+    );
+    let log = std::fs::read_to_string(root.join("calls.log")).unwrap();
+    assert_eq!(
+        log.lines()
+            .filter(|l| l.starts_with("plugin marketplace add "))
+            .count(),
+        1
+    );
+    assert_eq!(
+        log.lines().filter(|l| l.starts_with("plugin add ")).count(),
+        0
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn suite_upgrade_checks_sources_and_caches_before_mutation() {
+    if !suite_child("suite_upgrade_checks_sources_and_caches_before_mutation") {
+        return;
+    }
+    let service = LocalSettings::open_default().unwrap();
+    let prepare_suite = |key: &str| {
+        data(call(
+            &service,
+            "codex",
+            "prepare",
+            json!({"kind":"agent_suite","agent_client":"codex","suite_id":"general","install":true,"summary":"所选套件升级","operation_key":key}),
+        ))
+    };
+    let first = prepare_suite("first");
+    service
+        .host(decide(&service, &first, "approve-first"))
+        .unwrap();
+    let installed = data(execute(&service, &first, "first-execute"));
+    let cache = std::path::PathBuf::from(installed["installation"]["directory"].as_str().unwrap());
+    let old_manifest = std::fs::read(cache.join("plugin.json")).unwrap();
+    let source = suite_version("9.9.1");
+    let upgrade = prepare_suite("upgrade");
+    assert_ne!(
+        upgrade["fixed"]["suite"]["package_sha256"],
+        first["fixed"]["suite"]["package_sha256"]
+    );
+    assert_eq!(
+        call(
+            &service,
+            "codex",
+            "prepare",
+            json!({"kind":"agent_suite","agent_client":"codex","suite_id":"military","install":true,"summary":"所选套件升级","operation_key":"upgrade"})
+        )["error"]["code"],
+        "idempotency_conflict"
+    );
+    service
+        .host(decide(&service, &upgrade, "approve-upgrade"))
+        .unwrap();
+    let root = suite_fixture();
+    for fault in ["foreign-source", "duplicate-record"] {
+        std::fs::write(root.join(fault), b"").unwrap();
+        assert_eq!(
+            execute(&service, &upgrade, "upgrade-execute")["error"]["code"],
+            "revision_conflict"
+        );
+        assert_eq!(
+            data(call(
+                &service,
+                "codex",
+                "get_operation",
+                json!({"operation_id":upgrade["operation_id"]})
+            ))["state"],
+            "approved"
+        );
+        std::fs::remove_file(root.join(fault)).unwrap();
+    }
+    std::fs::write(cache.join("plugin.json"), b"author modified cache").unwrap();
+    assert_eq!(
+        execute(&service, &upgrade, "upgrade-execute")["error"]["code"],
+        "revision_conflict"
+    );
+    assert_eq!(
+        std::fs::read(cache.join("plugin.json")).unwrap(),
+        b"author modified cache"
+    );
+    std::fs::write(cache.join("plugin.json"), &old_manifest).unwrap();
+    let target = cache.parent().unwrap().join("9.9.1");
+    std::fs::create_dir(&target).unwrap();
+    std::fs::write(target.join("plugin.json"), b"different target").unwrap();
+    assert_eq!(
+        execute(&service, &upgrade, "upgrade-execute")["error"]["code"],
+        "revision_conflict"
+    );
+    std::fs::remove_file(target.join("plugin.json")).unwrap();
+    std::fs::remove_dir(&target).unwrap();
+    std::os::unix::fs::symlink(root.join("missing-target"), &target).unwrap();
+    assert_eq!(
+        execute(&service, &upgrade, "upgrade-execute")["error"]["code"],
+        "hetu.unsafe_path"
+    );
+    assert!(
+        std::fs::symlink_metadata(&target)
+            .unwrap()
+            .file_type()
+            .is_symlink()
+    );
+    std::fs::remove_file(&target).unwrap();
+    let upgraded = data(execute(&service, &upgrade, "upgrade-execute"));
+    assert_eq!(upgraded["installation"]["version"], "9.9.1");
+    assert_eq!(upgraded["installation"]["session_loaded"], false);
+    assert_eq!(
+        std::fs::read(cache.join("plugin.json")).unwrap(),
+        old_manifest
+    );
+    let changed = prepare_suite("changed-bundle");
+    service
+        .host(decide(&service, &changed, "approve-changed"))
+        .unwrap();
+    std::fs::write(
+        source.join("skills/hetu-manage/SKILL.md"),
+        b"changed after review",
+    )
+    .unwrap();
+    assert_eq!(
+        execute(&service, &changed, "changed-execute")["error"]["code"],
+        "hetu.integrity_failure"
+    );
+    let log = std::fs::read_to_string(root.join("calls.log")).unwrap();
+    assert_eq!(
+        log.lines().filter(|l| l.starts_with("plugin add ")).count(),
+        2
+    );
+    assert!(!log.contains("plugin marketplace list"));
+}
+
+#[cfg(unix)]
+#[test]
+fn suite_installation_recovers_registered_bytes_without_repeating_external_install() {
+    if !suite_child(
+        "suite_installation_recovers_registered_bytes_without_repeating_external_install",
+    ) {
         return;
     }
     let service = LocalSettings::open_default().unwrap();
@@ -374,6 +565,24 @@ fn suite_installation_recovers_registered_bytes_without_repeating_external_insta
     service
         .host(decide(&service, &plan, "suite-approval"))
         .unwrap();
+    let root = suite_fixture();
+    std::fs::create_dir_all(&root).unwrap();
+    std::fs::write(root.join("fail-list"), b"").unwrap();
+    assert_eq!(
+        execute(&service, &plan, "suite-execute")["error"]["code"],
+        "hetu.capability_unavailable"
+    );
+    assert_eq!(
+        data(call(
+            &service,
+            "codex",
+            "get_operation",
+            json!({"operation_id":plan["operation_id"]})
+        ))["state"],
+        "approved"
+    );
+    std::fs::remove_file(root.join("fail-list")).unwrap();
+    std::fs::write(root.join("drop-receipt"), b"").unwrap();
     // 夹具完成官方登记后故意丢失第一次安装回执。
     assert_eq!(
         execute(&service, &plan, "suite-execute")["status"],
@@ -386,11 +595,32 @@ fn suite_installation_recovers_registered_bytes_without_repeating_external_insta
         json!({"operation_id":plan["operation_id"]}),
     ));
     assert_eq!(executing["state"], "executing");
+    assert_eq!(
+        execute(&service, &plan, "different-execute-key")["error"]["code"],
+        "idempotency_conflict"
+    );
+    let source = std::path::PathBuf::from(std::env::var_os("HETU_INTEGRATIONS_DIR").unwrap())
+        .join("codex/hetu");
+    let method = source.join("skills/hetu-manage/SKILL.md");
+    let original = std::fs::read(&method).unwrap();
+    // 随包升级不能阻止旧方案只读核对；缓存损坏仍保留未知，不重新安装。
+    std::fs::write(&method, b"new bundle after external install").unwrap();
+    let cache_method = root
+        .join("plugins/cache/hetu-luoshu-general/hetu")
+        .join(plan["fixed"]["suite"]["version"].as_str().unwrap())
+        .join("skills/hetu-manage/SKILL.md");
+    std::fs::write(&cache_method, b"damaged fixed cache").unwrap();
+    assert_eq!(
+        execute(&service, &plan, "suite-execute")["status"],
+        "unknown"
+    );
+    std::fs::write(&cache_method, &original).unwrap();
     drop(service);
     let service = LocalSettings::open_default().unwrap();
     let recovered = data(execute(&service, &plan, "suite-execute"));
     assert_eq!(recovered["installation"]["state"], "registered");
     assert_eq!(recovered["installation"]["session_loaded"], false);
+    std::fs::write(&method, original).unwrap();
     let log = std::fs::read_to_string(
         std::path::PathBuf::from(std::env::var_os("CODEX_HOME").unwrap()).join("calls.log"),
     )
@@ -399,6 +629,7 @@ fn suite_installation_recovers_registered_bytes_without_repeating_external_insta
         log.lines().filter(|l| l.starts_with("plugin add ")).count(),
         1
     );
+    assert!(!log.contains("plugin marketplace list"));
     let workbuddy = data(call(
         &service,
         "codex",

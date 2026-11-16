@@ -31,7 +31,22 @@ test("Electron作品授权、精确页面交接与无窗口Rust CLI在撤权后�
   const page = await application.firstWindow();
       await page.setViewportSize({ width: 1024, height: 768 });
   await page.getByRole("button", { name: "打开作品", exact: true }).first().click();
+  // 固定作品打开的回包时机，验证导航不会抢在作品上下文就绪前切页。
+  await application.evaluate(({ ipcMain }) => {
+    const handlers = (ipcMain as any)._invokeHandlers, select = handlers.get("desktop:select");
+    handlers.set("desktop:select", async (...args: any[]) => {
+      handlers.set("desktop:select", select);
+      await new Promise<void>(resolve => { (globalThis as any).__resumeWorkSelection = resolve; });
+      return select(...args);
+    });
+  });
   await page.getByRole("button", { name: /插件集成测试/ }).click();
+  try {
+    await expect.poll(() => application.evaluate(() => !!(globalThis as any).__resumeWorkSelection)).toBe(true);
+    await expect(page.getByRole("complementary", { name: "创作库导航", exact: true }).getByRole("button", { name: "创作插件", exact: true })).toBeDisabled();
+  } finally {
+    await application.evaluate(() => (globalThis as any).__resumeWorkSelection?.());
+  }
   await navigate(page, "Agent 协作");
   await expect(page.getByText("尚未授权当前作品。", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "授权当前作品", exact: true }).click();
