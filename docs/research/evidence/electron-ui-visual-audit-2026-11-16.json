@@ -1,0 +1,113 @@
+{
+  "date": "2026-11-16",
+  "status": "verified_workbench_slice",
+  "scope": "作品首页、创作库、小说与剧本工作面、设定、图库、审核及辅助页面的原生细节对照和风格复核",
+  "report": "output/profile-ui-20261116/review-report.html",
+  "report_data": "output/profile-ui-20261116/review-report.json",
+  "style_skill": ".agents/skills/hetu-ui-style/SKILL.md",
+  "package": {
+    "manifest": "output/electron-packages/hetu-dev-nWASwW/manifest.json",
+    "source_sha256": "59d1e3d512f5e226e1ec325bcdf6730756c3240822206cee2f9824d510211009",
+    "source_files": 2509,
+    "artifacts": 2572,
+    "platform": "darwin-arm64",
+    "signing": "ad-hoc-development",
+    "production_verified": false,
+    "isolated_preview": true,
+    "rust_build": "核验151份Rust及合同输入与既有已验包相同，复用逐字节一致的4个签名后Rust制品；前端重新构建、整包装配与签名，并完成随包旅程复验。不是当前共享源码的正式发行构建。",
+    "provenance": "output/profile-ui-20261116/prebuilt-rust-provenance.json"
+  },
+  "source_scope": {
+    "merged_workbench_css_files": 9,
+    "whole_file_matches": 8,
+    "style_css": "除另一进程维护的.settings-preferences与.local-settings选择器外一致",
+    "documents_tsx_matches": true,
+    "current_workspace_matches_package": false,
+    "parallel_changes": "共享源码另有设置、模型及插件修改；保留其文件，不将固定隔离包结果扩展为当前整仓通过。",
+    "record": "output/profile-ui-20261116/round-11-source-check.json"
+  },
+  "visual_review": {
+    "screenshots": 129,
+    "workbench_groups": 32,
+    "preserved_settings_reference_groups": 7,
+    "themes": ["light", "dark"],
+    "viewports": [[1600, 1000], [960, 800]],
+    "score_dimensions": ["布局", "间距与对齐", "排版", "颜色", "控件状态", "交互"],
+    "reviewed_workbench_score": 9,
+    "rubric": "评分是结合原生参考、本轮风格、实际尺寸、控件与行为证据的设计判断，不是自动像素相似度认证。仅覆盖报告所列状态；保留设置对照不计当前设置评分。",
+    "metric_failures": 0,
+    "actual_theme_checked": 129,
+    "style": "Radix浅暗语义色、0.5px边框、12/14/20px界面及18px正文，无中点分隔、额外阴影或动画。",
+    "homepage": "168×252px书封、32px间距、500px资料列，四项时间／修订值右对齐；首屏、中段与底部均已截图。",
+    "dimension_and_palette_record": "output/profile-ui-20261116/round-11-profile-dimensions.json",
+    "theme_record": "output/profile-ui-20261116/round-11-theme-check.json",
+    "validation_record": "output/profile-ui-20261116/round-11-validation.json",
+    "capture_repairs": "output/profile-ui-20261116/round-11-capture-repairs.json"
+  },
+  "regressions": [
+    {
+      "package_round": 11,
+      "scope": "工作台布局、正文保存与Core回读、搜索、批注、专注、窄窗目录及阅读位置",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "record": "output/profile-ui-20261116/round-11-native-regression.json"
+    },
+    {
+      "package_round": 11,
+      "scope": "独立开发包的2572项制品、开发签名、随包Rust/Node/CLI/MCP、插件保存及关闭重开",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "record": "output/profile-ui-20261116/round-11-packaged-regression.json"
+    },
+    {
+      "package_round": 10,
+      "scope": "封面、设定和渠道细节、文件变更拒绝、原键恢复与工作台；第11轮额外修正目录加载时误收起",
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "record": "output/profile-ui-20261116/round-10-native-regression.json"
+    },
+    {
+      "scope": "内嵌审核页的浅暗、双语、窄屏、未保存意见与丢回执恢复",
+      "passed": 15,
+      "failed": 0,
+      "skipped": 0,
+      "record": "output/profile-ui-20261116/task-view-regression.json"
+    }
+  ],
+  "failure_history": [
+    "第10轮发现初次文稿加载会收起作者刚展开的窄窗目录；保留原失败，第11轮修正后复验通过。",
+    "第11轮剧本切换默认5秒加载断言超时，隔离测试等待调整为30秒；未修改产品超时。",
+    "手动保存测试与1.8秒自动保存竞争；隔离测试先通过设置UI关闭自动保存，再完整核对未保存保护与手动保存。",
+    "整包旅程首次在关闭阶段超出300秒预算，保留回执；隔离测试总预算600秒，最终162.6秒完成，无功能断言放宽。",
+    "两张版本页暗色截图实际为浅色，首次补拍又捕获读取中状态；改为等待页面加载完成并核对实际主题后补拍。"
+  ],
+  "rea": {
+    "static_evidence_id": "ev_ec85ea17073e56c67ee8d25c6a2004971ebb44669d5c7b622467678f18b21506",
+    "fuses_evidence_id": "ev_74755d3c695f9989729b4c9df576d3d35f5b45a7855c4ce96aede2d6754dca91",
+    "reuse": "仅复用逐字节相同的shell-preload.cjs、plugin-preload.cjs、task-view.html及Electron Framework证据。",
+    "runtime": "REA不支持当前hetu-app协议运行捕获，原失败保留；真实截图使用Electron与Playwright。",
+    "record": "output/profile-ui-20261116/rea-round-11-reuse.json"
+  },
+  "limitations": [
+    "新独立设置窗口及共享源码中的并行模型、插件变更由对应进程另行验收。",
+    "未穷举全部权限、第三方插件、任意数据量、真实输入法、完整双语和无障碍状态。",
+    "视频只核对独立对象、分集及空成果工作面，不代表完整视频制作、音画审阅或工程交付。",
+    "不代表Windows、正式签名公证、干净系统或正式发行验收；R6整体保持进行中。"
+  ],
+  "final_checks": {
+    "docs": "77份文档、752个本地链接及84个Mermaid引用检查无错误",
+    "scoped_diff_check": "passed",
+    "workbench_css_literal_colors": 0,
+    "report_render": "39组、32组计分、120张图片实际加载通过，已查看报告预览"
+  },
+  "safety": {
+    "actual_author_content_changed": false,
+    "author_decision_executed": false,
+    "paid_generation": false,
+    "installed_app_overwritten": false,
+    "committed_or_pushed_by_this_task": false
+  }
+}

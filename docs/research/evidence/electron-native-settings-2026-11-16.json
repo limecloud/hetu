@@ -1,0 +1,441 @@
+{
+  "schema_version": 1,
+  "kind": "electron-native-settings-and-plugin-host",
+  "recorded_at": "2026-11-16",
+  "scope": "中文设置工作面、独立设置窗口、默认Agent套件与本机方案、Harness插件生命周期；隔离资料与本地渠道，不发起模型生成或付费请求。",
+  "native_reference": {
+    "application": "/Applications/Hetu.app",
+    "version": "0.7.0",
+    "captures": [
+      {
+        "page": "general",
+        "path": "output/settings-native-20261116/reference-general.png",
+        "sha256": "85e805a15a2a2b4b4b276ed3acfbb080b5f33d539f1b2eb1dcd650b873485f9d",
+        "width": 660,
+        "height": 610
+      },
+      {
+        "page": "writing",
+        "path": "output/settings-native-20261116/reference-writing.png",
+        "sha256": "9240dd5fcb5d340c246c2e2ff7dfd70b4a4e64667ec9cb8c5a687db6ecff24ad",
+        "width": 660,
+        "height": 610
+      },
+      {
+        "page": "models",
+        "path": "output/settings-native-20261116/reference-models.png",
+        "sha256": "65ee14e5aa2dfc544f184e96aca47f996ad31c47a77dcbc253d876c96f6cfd9c",
+        "width": 660,
+        "height": 610
+      },
+      {
+        "page": "agents",
+        "path": "output/settings-native-20261116/reference-agents.png",
+        "sha256": "3b6f081b8ecd9afb76ed4524f82ee8598755dada2187f4d0d80d609092b54dfe",
+        "width": 660,
+        "height": 610
+      },
+      {
+        "page": "versions",
+        "path": "output/settings-native-20261116/reference-versions.png",
+        "sha256": "1c8350e16facb592e2439787a55a05fb7056ba61018956082d5a24eaf5f5049d",
+        "width": 660,
+        "height": 610
+      },
+      {
+        "page": "about",
+        "path": "output/settings-native-20261116/reference-about.png",
+        "sha256": "4b03720540adaff7f396d19c404602c81991723171a530ffb9734cc9ac11cb4f",
+        "width": 660,
+        "height": 610
+      }
+    ],
+    "ax": "output/settings-native-20261116/native-settings-ax.txt"
+  },
+  "checks": {
+    "plugin_host": {
+      "status": "passed",
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/deepseek-harness-20261116/hetu-plugin-tests.log",
+      "review": "docs/research/evidence/deepseek-harness-plugin-review-2026-11-16.json"
+    },
+    "core_local_settings": {
+      "status": "passed",
+      "passed": 5,
+      "failed": 0,
+      "duration_seconds": 4.53,
+      "tool_receipt": "本轮exec会话55427；原始标准输出保留于对话，未另存日志。",
+      "scope": "固定方案、并发CAS、精确作品关联、默认关联原键重放、安装恢复；不代表全量Core回归。"
+    },
+    "desktop_development": {
+      "status": "passed_scoped_aggregate",
+      "passed": 8,
+      "failed_final": 0,
+      "skipped": 0,
+      "runs": [
+        {
+          "log": "output/settings-native-20261116/round-4.log",
+          "accepted_passed": 3,
+          "scope": "Core退出、固定本机决定原键、独立插件安装至停用导出；该轮其他4项失败保留。"
+        },
+        {
+          "log": "output/settings-native-20261116/round-6.log",
+          "accepted_passed": 4,
+          "scope": "完整工作台、模型渠道与封面、六分类视觉与保存、CLI/MCP固定方案与默认套件后的继续保存。"
+        },
+        {
+          "log": "output/settings-native-20261116/error-states.log",
+          "accepted_passed": 1,
+          "scope": "渠道失败保留输入、回读不重发、修正后保存及密钥不泄漏。"
+        }
+      ]
+    },
+    "visual": {
+      "status": "passed_scoped",
+      "logical_window": {
+        "width": 660,
+        "content_height": 588,
+        "toolbar_height": 58,
+        "macos_outer_height_approx": 610
+      },
+      "minimum_tested_window": {
+        "width": 520,
+        "height": 460
+      },
+      "final_matrix_captures": 31,
+      "final_screenshots": [
+        {
+          "path": "output/settings-native-20261116/round-6/about-dark.png",
+          "sha256": "94c6c93754b1462ded4e5d34a21f6203ae5b286239e631bed5b36f6c77ba0fbd"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/about-light.png",
+          "sha256": "fdd63d2f5d52d67871b1131291bce1b3dc57f56f2f3448e9a50de4b7077954ad"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/about-narrow.png",
+          "sha256": "14a1429d51ebb61aed125ef8ef901ad3231b2d9c934226aed3865883cd6ee59b"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/agents-dark-bottom.png",
+          "sha256": "5fd3908680f1321c7419c4a04ca3b51425160cd6f0b5e2193c5c54d4a265342b"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/agents-dark.png",
+          "sha256": "e719f2625946f92f820d691ce89a94555ec6a606d232297294f85c2b594222a9"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/agents-finder.png",
+          "sha256": "818fb5b21295f9d5f581bc82cd48938d94570ebc2b46cf087ea8fe73abfc271a"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/agents-guide.png",
+          "sha256": "825a8a58ea7eb2e1ca371bd091904d8240a6e2521698b8db4fe8424f8c82edc4"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/agents-light-bottom.png",
+          "sha256": "618fe61fac2a48ffd30021fe81fd986c1596de19116515be3cf01e3bff304bbb"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/agents-light.png",
+          "sha256": "f387de4b7352c795414701ec33a9ff48e94871d12cf4ec4414e69e0609dae100"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/agents-narrow.png",
+          "sha256": "ec792adca8e3a7cb3bf1fb65c1f6a96e675500c82708b2936804ec25e0a4a39f"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/general-dark.png",
+          "sha256": "1b300bb5d12cedcd9ab8c8e4b5b88bf3507174c97141d40ff9f63942de0b719f"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/general-light.png",
+          "sha256": "c4ab8103409bab0ead661782a1691fe471d84ae201241c7940fbcfd0a07ac085"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/general-narrow.png",
+          "sha256": "bdc6c7cf0bee9b6f3625c3b5ac2ec70f9e019ea59e30999fcd016c0cc18f3122"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/initial-general.png",
+          "sha256": "8ae6cef5eed6da02618fb8336a74bb99c0d037e2c50f2946587bff9949a87525"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/keyboard-focus.png",
+          "sha256": "b46dc70586f91d88e3edb947df38b05bf78c7814d49a7981ca345ed156ddfc34"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/model-channel-dialog.png",
+          "sha256": "a5031993bc704af92bffc41d77316cbeaedd144557072c965c873a462ef572cb"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/model-dialog-dark.png",
+          "sha256": "364f421f167931343fe9fb2007da043027c0b51c49e22c44c8f9734304d7ca28"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/model-dialog-light.png",
+          "sha256": "a5031993bc704af92bffc41d77316cbeaedd144557072c965c873a462ef572cb"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/model-dialog-narrow.png",
+          "sha256": "b9a498d53306c64d0efb06084ff70d5af438d121f3d4acc5a87584bee0f977d2"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/models-dark-bottom.png",
+          "sha256": "603b893320f65e1b095a1a9332fc30384629d38ad46f659a8c0394a0681a6105"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/models-dark.png",
+          "sha256": "375a512d92b8da5607d78d96016912f7e8e98174c5bd899e07b5f9a9616637b9"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/models-light-bottom.png",
+          "sha256": "8faf52a6ee39b92dede341467f6a8d737bd5ac174437c8427221ef60ade94565"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/models-light.png",
+          "sha256": "1ff7a6a55345ae97fa53eff8c9cef36e6a1498a7532e75d50bc48eb0d7f7feb0"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/models-narrow.png",
+          "sha256": "126aa78b2b5b4764893686df21cd089a950068655c82284c2763c1005c6eb00a"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/settings-review-empty.png",
+          "sha256": "c85d2cecccba302a98120056e7664a114f3fde6438b372e2503613cb34ec1286"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/versions-dark.png",
+          "sha256": "8cbc537d9372bcae277275248c1528303ff440abee6d44754e1d38109348153a"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/versions-light.png",
+          "sha256": "ca4c016e9281a5a19105eded104eb65d3eac5d53f2e30dc92226fd38a55f603a"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/versions-narrow.png",
+          "sha256": "25962bf9233098d4c7d97e26b14cac315f5aecc990ec9fa25b9048333555d5bd"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/writing-dark.png",
+          "sha256": "55f94d8c55abe4e9a6904d621de7e76ac89b70df1861542e8cb7f3ca5dceb2ac"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/writing-light.png",
+          "sha256": "dc98e984695a8ddd017eb95cd1e52b111834d3bb56787b9829b7ec0410c9ced6"
+        },
+        {
+          "path": "output/settings-native-20261116/round-6/writing-narrow.png",
+          "sha256": "9193b8ad4035ef61ea62c4a52cfc7489699468d04d83bff4468e3e3c7fdde51d"
+        },
+        {
+          "path": "output/settings-native-20261116/error-states/error-dark.png",
+          "sha256": "16633045f32dbe4d062f03cc57edde0849d957244f7571b1b24c9f5828af6e73"
+        },
+        {
+          "path": "output/settings-native-20261116/error-states/error-narrow.png",
+          "sha256": "26c29bb15a7fdefd781d25c5c249e0f70a5ec3e6ca26d596264953e6edc5ba11"
+        },
+        {
+          "path": "output/settings-native-20261116/plan-review.png",
+          "sha256": "41e42abd00e3554a218301af48cfa7f68a627891768b3a40178d243c2edc6182"
+        },
+        {
+          "path": "output/settings-native-20261116/recovery.png",
+          "sha256": "6b7fcb24a363cfb31357fec86d05e62309c704ea55c19075fbbc0f8e4171f2ba"
+        }
+      ],
+      "metrics": "output/settings-native-20261116/round-6/metrics.json",
+      "horizontal_overflow": false,
+      "per_capture_font_count_max": 3,
+      "minimum_font_px": 12,
+      "renderer_errors": "output/settings-native-20261116/round-6/renderer-errors.json"
+    },
+    "package": {
+      "status": "awaiting_runtime_verification",
+      "manifest": "output/settings-native-20261116/package/hetu-dev-Vta1ko/manifest.json",
+      "manifest_sha256": "f9da01a25959522219352bf97d759ed5d8f3b3ed9da8de18c7bb48f0a9e581ec",
+      "source_sha256": "f232d68de39fb8b320cf0c050c4d2dab0257a9076f99cf3a84a1bae209687cd1",
+      "source_inputs": 2512,
+      "artifacts": 2572,
+      "signing": "ad-hoc-development",
+      "platform": "darwin",
+      "arch": "arm64",
+      "version": "0.8.0",
+      "production_verified": false,
+      "assembly_log": "output/settings-native-20261116/package.log",
+      "runtime_log": "output/settings-native-20261116/packaged-tests.log"
+    }
+  },
+  "visual_assessment": {
+    "kind": "有截图、实际尺寸和真实交互支持的设计判断；不是自动像素认证，也不是作者认可。",
+    "threshold": 9,
+    "dimensions": [
+      "布局",
+      "间距与对齐",
+      "排版",
+      "颜色",
+      "控件状态",
+      "交互"
+    ],
+    "pages": [
+      {
+        "page": "general",
+        "scores": {
+          "布局": 9,
+          "间距与对齐": 9,
+          "排版": 9,
+          "颜色": 9,
+          "控件状态": 9,
+          "交互": 9
+        },
+        "basis": "独立窗口、六分类顺序、40px内容留白、界面与创作库分组；外观即时保存并同步工作台。"
+      },
+      {
+        "page": "writing",
+        "scores": {
+          "布局": 9,
+          "间距与对齐": 9,
+          "排版": 9,
+          "颜色": 9,
+          "控件状态": 9,
+          "交互": 9
+        },
+        "basis": "字体与字号步进、32×18px开关、150px排版预览；真实开关更新、19px保存和关闭重开通过。"
+      },
+      {
+        "page": "models",
+        "scores": {
+          "布局": 9,
+          "间距与对齐": 9,
+          "排版": 9,
+          "颜色": 9,
+          "控件状态": 9,
+          "交互": 9
+        },
+        "basis": "账号、渠道及文字／图片默认模型分组；独立浮层、密钥不回显、保存／取消可见；错误保留输入、只读检查后继续通过。"
+      },
+      {
+        "page": "agents",
+        "scores": {
+          "布局": 9,
+          "间距与对齐": 9,
+          "排版": 9,
+          "颜色": 9,
+          "控件状态": 9,
+          "交互": 9
+        },
+        "basis": "默认客户端、套件分类与外部Agent建议、检测、Skills清单与安装指引；选择后同步父页面修订，不覆盖作品选择。"
+      },
+      {
+        "page": "versions",
+        "scores": {
+          "布局": 9,
+          "间距与对齐": 9,
+          "排版": 9,
+          "颜色": 9,
+          "控件状态": 9,
+          "交互": 9
+        },
+        "basis": "姓名与邮箱、Git影响说明、连续输入快速切页和关闭前保存；不执行Git提交或同步。"
+      },
+      {
+        "page": "about",
+        "scores": {
+          "布局": 9,
+          "间距与对齐": 9,
+          "排版": 9,
+          "颜色": 9,
+          "控件状态": 9,
+          "交互": 9
+        },
+        "basis": "复用真实品牌图标、80px图像与20px宋体标题；版本及产品边界清楚，浅暗和窄窗不溢出。"
+      }
+    ],
+    "supplementary_states": {
+      "score_each_dimension": 9,
+      "scope": [
+        "浅暗渠道浮层",
+        "520px窄窗六分类与浮层",
+        "520×460px错误和恢复",
+        "空方案与固定方案审阅",
+        "未知操作恢复",
+        "套件检索和接入说明",
+        "键盘焦点与分类切换"
+      ]
+    },
+    "accepted_differences": [
+      "使用共享Radix中性色，不复刻原生装饰渐变。",
+      "普通界面最小12px，数值使用与实际CSS一致的px。",
+      "设置为独立可信窗口；Agent固定方案保留独立审阅，不增加第七个分类。",
+      "关于页显示当前0.8.0，与0.7.0对照图的版本号不同。"
+    ]
+  },
+  "iterations": [
+    {
+      "round": 1,
+      "status": "failed",
+      "finding": "原测试19pt与实际19px不符；另从截图发现旧CSS覆盖开关尺寸及关于图标边角。",
+      "resolution": "统一px，清理旧覆盖并修正32×18px滑动开关和品牌图标圆角。",
+      "log": "output/settings-native-20261116/round-1.log"
+    },
+    {
+      "round": 2,
+      "status": "failed",
+      "finding": "异步保存前受控开关回弹，真实uncheck不能成立。",
+      "resolution": "显示待确认值并由Core回执确认，失败回到实际值。",
+      "log": "output/settings-native-20261116/round-2.log"
+    },
+    {
+      "round": 3,
+      "status": "failed",
+      "finding": "测试调用不存在的toBeClosed断言；浮层按钮超出可见区，遮罩变量未定义，窄窗截图包含加载态。",
+      "resolution": "确认实际关闭事件，压紧表单、固定操作区、使用已定义色板并等待真实就绪内容。",
+      "log": "output/settings-native-20261116/round-3.log"
+    },
+    {
+      "round": 4,
+      "status": "partial",
+      "finding": "关闭时键盘回执先丢失；快速切页遗漏末尾输入；固定决定完成超出旧5秒UI断言预算。",
+      "resolution": "关闭助手仅接纳已实际关闭的目标错误，切页主动入同一保存队列；UI确认等待真实状态，Core超时与授权不变。",
+      "log": "output/settings-native-20261116/round-4.log",
+      "retained_artifacts": "output/settings-native-20261116/round-4-failures"
+    },
+    {
+      "round": 5,
+      "status": "partial",
+      "finding": "六分类及关闭重开通过；选择默认套件后父设置页保留旧修订，下一次保存被CAS拒绝。",
+      "resolution": "协作设置的变更完成后同步父页面状态；不放宽Core修订校验。",
+      "log": "output/settings-native-20261116/round-5.log",
+      "retained_artifacts": "output/settings-native-20261116/round-5-failures"
+    },
+    {
+      "round": 6,
+      "status": "passed",
+      "finding": "4条完整旅程通过；31张最终矩阵截图逐张复核，另有错误、方案和恢复截图。",
+      "log": "output/settings-native-20261116/round-6.log"
+    }
+  ],
+  "not_verified": [
+    "Windows实机、DPI及安装升级。",
+    "正式Developer ID签名、公证与生产发布。",
+    "完整英文界面、真实中文输入法及完整辅助技术矩阵。",
+    "真实云账号连接、联网模型生成、费用及模型质量。",
+    "插件市场、正式签名分发和第三方人类开发者试用。"
+  ],
+  "source_files": {
+    "apps/desktop/src/main/settings-window.ts": "295f6644e1b351c39224c2902474261bc7369aaea31c275614d7037bfa2cae1e",
+    "apps/desktop/src/main/settings.ts": "4c09a5b0d487bc727e282fd95d9118a2540628640f6000193bc6d89c109b0c86",
+    "apps/desktop/src/renderer/settings.tsx": "65fba5f5bec0b745c2b3fea5af756a28368c27d6c5fbfcdae7992a13e3ff46be",
+    "apps/desktop/src/renderer/settings.css": "21a78df16dbc15d4327ffda00df22baf8d623ddbc044cc1ccaa0250a574d583d",
+    "apps/desktop/src/renderer/work-agent.tsx": "d9f61f80d757c440e7108c31dfc3bb8eec4a82f299f1be6f9d76513f5718411a",
+    "apps/desktop/src/renderer/model-settings.tsx": "d84b030f8ed5f44817130ad20d3554591f324fc85058e332be399b8d0d661f67",
+    "apps/desktop/tests/settings-visual.spec.ts": "e5ce915ddfe6fa15a4717054c5bdf137932784d7bcaaf154c00c57a8e6949afb",
+    "apps/desktop/tests/settings.spec.ts": "ac30132ae6004f396a8dee134bb3d36c0aa967232dce6039572ea8892337ff96",
+    "apps/desktop/tests/navigation.ts": "ab91b446de68671d94a4934e02b4c147ffe6dd8c6f6356316e437344ce6f787d",
+    "core/src/local_settings.rs": "6818da51bf2ba67834947ef85b0d25ef9ba54c58ae0494c79cee01a3ecce8492",
+    "core/tests/local_settings.rs": "c391f40e57f9bb2543ecf8d74305d0300000f6b5f79c8c79e99c8fd9a3438e44"
+  }
+}

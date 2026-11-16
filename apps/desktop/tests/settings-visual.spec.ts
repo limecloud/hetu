@@ -147,3 +147,46 @@ test("独立设置六分类截图、即时保存、浮层和窗口权限", async
     await app.close();
   }
 });
+
+test("模型渠道错误保留输入并先回读原保存", async () => {
+  test.setTimeout(180000);
+  const profile = await mkdtemp(path.join(os.tmpdir(), "hetu-settings-error-"));
+  const executable = process.env.HETU_PACKAGED_APP;
+  const output = path.join(root, "output/settings-native-20261116", executable ? "error-states-packaged" : "error-states");
+  await mkdir(output, { recursive: true });
+  const app = await electron.launch({ ...(executable ? { executablePath: executable, args: [] } : { args: [path.join(root, "apps/desktop")] }), env: {
+    ...process.env, HETU_DESKTOP_PROFILE: profile, HETU_LOCAL_SETTINGS_DIR: path.join(profile, "settings"),
+    HETU_MODEL_SERVICE_DIR: path.join(profile, "models"), HETU_COLLABORATION_DIR: path.join(profile, "collaboration"),
+  } });
+  try {
+    const page = await openSettings(app, await app.firstWindow());
+    await page.getByRole("combobox", { name: "外观", exact: true }).selectOption("dark");
+    await expect.poll(() => page.evaluate(async () => (await window.hetuDesktop.settings("get")).preferences.appearance)).toBe("dark");
+    await page.getByRole("tab", { name: "模型服务", exact: true }).click();
+    await page.getByRole("button", { name: "添加渠道", exact: true }).click();
+    const dialog = page.getByRole("dialog", { name: "添加渠道", exact: true });
+    await dialog.getByLabel("渠道名称", { exact: true }).fill("错误恢复验收渠道");
+    await dialog.getByLabel("服务地址", { exact: true }).fill("ftp://provider.fixture.test/v1");
+    await dialog.getByLabel("API Key", { exact: true }).fill("isolated-error-secret");
+    await dialog.getByLabel("文字模型", { exact: true }).fill("text-one");
+    await dialog.getByRole("button", { name: "保存渠道", exact: true }).click();
+    await expect(dialog.getByRole("alert")).toContainText("HTTPS");
+    await expect(dialog.getByLabel("渠道名称", { exact: true })).toHaveValue("错误恢复验收渠道");
+    await page.screenshot({ path: path.join(output, "error-dark.png"), scale: "css" });
+    await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows().find(view => view.webContents.getURL().endsWith("?view=settings"))!.setContentSize(520, 460));
+    await dialog.getByRole("alert").scrollIntoViewIfNeeded();
+    const action = await dialog.getByRole("button", { name: "检查本次保存", exact: true }).boundingBox();
+    expect(action!.y + action!.height).toBeLessThanOrEqual(460);
+    await page.screenshot({ path: path.join(output, "error-narrow.png"), scale: "css" });
+    expect(Object.keys((await page.evaluate(() => window.hetuDesktop.models("inspect"))).custom_channels ?? {})).toHaveLength(0);
+    await dialog.getByRole("button", { name: "检查本次保存", exact: true }).click();
+    await expect(dialog.getByRole("button", { name: "保存渠道", exact: true })).toBeEnabled();
+    expect(Object.keys((await page.evaluate(() => window.hetuDesktop.models("inspect"))).custom_channels ?? {})).toHaveLength(0);
+    await dialog.getByLabel("服务地址", { exact: true }).fill("https://provider.fixture.test/v1");
+    await dialog.getByRole("button", { name: "保存渠道", exact: true }).click();
+    await expect(dialog).toBeHidden();
+    const state = await page.evaluate(() => window.hetuDesktop.models("inspect"));
+    expect(Object.keys(state.custom_channels)).toHaveLength(1);
+    expect(JSON.stringify(state)).not.toContain("isolated-error-secret");
+  } finally { await app.close(); }
+});
