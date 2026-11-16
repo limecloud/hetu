@@ -8,7 +8,8 @@
 .local-settings .settings-tabs > button[aria-selected="true"] { background: var(--pressed); color: var(--ink); }
 .local-settings .settings-tools { display: flex; justify-content: flex-end; align-items: center; gap: 8px; flex: none; padding: 20px 20px 10px; min-height: 60px; }
 .local-settings .settings-tools button { min-height: 30px; padding: 4px 10px; }
-.local-settings .settings-panel { flex: 1; min-height: 0; padding: 10px 40px 20px; overflow: auto; scrollbar-width: thin; }
+.local-settings .settings-panel { flex: 1; min-height: 0; padding: 24px 40px 20px; overflow: auto; scrollbar-width: thin; }
+.local-settings button { font-weight: 400; }
 .local-settings h2.settings-section-heading { font-size: 14px; font-weight: 600; margin: 0 0 16px; }
 .local-settings .settings-group { margin-bottom: 24px; }
 .local-settings .settings-group > h3 { margin: 0 10px 8px; font-size: 14px; font-weight: 600; color: var(--ink); }
@@ -29,7 +30,7 @@
 .local-settings .settings-stepper button { border: 0; border-radius: 0; min-width: 26px; min-height: 24px; padding: 0 5px; background: var(--surface); }
 .local-settings .settings-stepper button + button { border-left: .5px solid var(--line); }
 .local-settings .settings-note { margin: 10px 0; font-size: 12px; color: var(--muted); line-height: 1.6; }
-.local-settings .settings-reading-preview { padding: 10px; min-height: 130px; border: .5px solid var(--line); border-radius: 6px; background: var(--page); }
+.local-settings .settings-reading-preview { padding: 10px; min-height: 150px; border: .5px solid var(--line); border-radius: 6px; background: var(--page); }
 .local-settings .settings-reading-preview p { margin: 0; }
 .local-settings .settings-pending {
   position: absolute;
@@ -158,6 +159,7 @@
 .local-settings .settings-about img {
   display: block;
   object-fit: contain;
+  border-radius: 20px;
 }
 .local-settings .settings-empty {
   min-height: 180px;

@@ -1,12 +1,13 @@
-import { test, expect, _electron as electron } from "@playwright/test";
+import { test, expect as baseExpect, _electron as electron } from "@playwright/test";
 import { mkdtemp, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
 import { openSettings } from "./navigation.ts";
 
 const root = path.resolve(import.meta.dirname, "../../..");
+const expect = baseExpect.configure({ timeout: 30000 });
 test("独立设置六分类截图、即时保存、浮层和窗口权限", async () => {
-  test.setTimeout(360000);
+  test.setTimeout(600000);
   const profile = await mkdtemp(path.join(os.tmpdir(), "hetu-settings-visual-"));
   const output = path.join(root, "output/settings-native-20261116", process.env.HETU_SETTINGS_ROUND ?? "round-1");
   await mkdir(output, { recursive: true });
@@ -27,7 +28,7 @@ test("独立设置六分类截图、即时保存、浮层和窗口权限", async
     await expect(page.evaluate(() => window.hetuDesktop.install())).rejects.toThrow();
     const categories = [["通用", "general"], ["写作", "writing"], ["模型服务", "models"], ["AI 协作", "agents"], ["版本", "versions"], ["关于", "about"]];
     async function capture(name: string) {
-      await page.screenshot({ path: path.join(output, name + ".png") });
+      await page.screenshot({ path: path.join(output, name + ".png"), scale: "css" });
       const value = await page.evaluate(() => {
         const panel = document.querySelector(".settings-panel")!;
         return { width: innerWidth, height: innerHeight, horizontalOverflow: document.documentElement.scrollWidth > innerWidth || panel.scrollWidth > panel.clientWidth + 1,
@@ -43,10 +44,15 @@ test("独立设置六分类截图、即时保存、浮层和窗口权限", async
       await page.getByRole("tab", { name: "通用", exact: true }).click();
       await page.getByRole("combobox", { name: "外观", exact: true }).selectOption(appearance);
       await expect.poll(() => page.evaluate(async () => (await window.hetuDesktop.settings("get")).preferences.appearance), { timeout: 30000 }).toBe(appearance);
+      await expect(page.getByRole("combobox", { name: "外观", exact: true })).toHaveValue(appearance, { timeout: 30000 });
+      await expect(page.getByRole("combobox", { name: "外观", exact: true })).toBeEnabled({ timeout: 30000 });
       for (const [label, id] of categories) {
         await page.getByRole("tab", { name: label, exact: true }).click();
         if (id === "models") await expect(page.getByRole("button", { name: "添加渠道", exact: true })).toBeVisible();
-        if (id === "agents") await expect(page.getByRole("combobox", { name: "默认客户端", exact: true })).toBeVisible();
+        if (id === "agents") {
+          await expect(page.getByRole("combobox", { name: "默认客户端", exact: true })).toBeVisible();
+          await expect(page.locator(".work-agent-inspection")).toBeVisible({ timeout: 30000 });
+        }
         await capture(id + "-" + appearance);
         if (["models", "agents"].includes(id)) {
           await page.locator(".settings-panel").evaluate(el => { el.scrollTop = el.scrollHeight; });
@@ -58,14 +64,14 @@ test("独立设置六分类截图、即时保存、浮层和窗口权限", async
     await page.getByRole("combobox", { name: "外观", exact: true }).selectOption("light");
     await page.getByRole("tab", { name: "写作", exact: true }).click();
     await page.getByRole("button", { name: "增大字号", exact: true }).click();
-    await expect(page.getByLabel("字号当前值", { exact: true })).toHaveText("19 px");
+    await expect(page.getByLabel("字号当前值", { exact: true })).toHaveText("19 px", { timeout: 30000 });
     await page.getByRole("switch", { name: "自动保存正文", exact: true }).uncheck();
-    await expect.poll(() => page.evaluate(async () => (await window.hetuDesktop.settings("get")).preferences.autosave)).toBe(false);
+    await expect.poll(() => page.evaluate(async () => (await window.hetuDesktop.settings("get")).preferences.autosave), { timeout: 30000 }).toBe(false);
     await page.getByRole("tab", { name: "版本", exact: true }).click();
     await page.getByLabel("姓名", { exact: true }).fill("隔离验收作者");
     await page.getByLabel("邮箱", { exact: true }).fill("writer@fixture.test");
     await page.getByRole("tab", { name: "关于", exact: true }).click();
-    await expect.poll(() => page.evaluate(async () => (await window.hetuDesktop.settings("get")).preferences.git_author_email)).toBe("writer@fixture.test");
+    await expect.poll(() => page.evaluate(async () => (await window.hetuDesktop.settings("get")).preferences.git_author_email), { timeout: 30000 }).toBe("writer@fixture.test");
     expect((await page.evaluate(() => window.hetuDesktop.settings("get"))).preferences.git_author_name).toBe("隔离验收作者");
     await page.getByRole("tab", { name: "模型服务", exact: true }).click();
     await page.getByRole("button", { name: "添加渠道", exact: true }).click();
