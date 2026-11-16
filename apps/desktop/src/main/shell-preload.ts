@@ -34,6 +34,11 @@ contextBridge.exposeInMainWorld(
       ipcRenderer.on("desktop:preferences", handler);
       return () => ipcRenderer.removeListener("desktop:preferences", handler);
     },
+    onOpenDocument: (listener: (value: unknown) => void) => {
+      const handler = (_event: unknown, value: unknown) => listener(value);
+      ipcRenderer.on("desktop:open-document", handler);
+      return () => ipcRenderer.removeListener("desktop:open-document", handler);
+    },
     onPluginsChanged: (listener: (value: unknown) => void) => {
       const handler = (_event: unknown, value: unknown) => listener(value);
       ipcRenderer.on("desktop:plugins-changed", handler);

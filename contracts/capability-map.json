@@ -3,7 +3,7 @@
   "generated_by": "tools/sync-capability-map.py",
   "meaning": "source_wired仅表示源码合同和入口已连线；不证明安装、运行、跨平台或端到端通过。执行时先inspect实际能力。",
   "sources": {
-    "contracts/actions.json": "12d65c5529224964a49dd6c1c87afedde2145a637f514cffac6cd9597319f291",
+    "contracts/actions.json": "1ccc9975e9577916aada5c33a06aaad69a06a7272805c1093d27c60f8cf76ed9",
     "contracts/tools/catalog.json": "69b22f3019a9fadc729a3722418c09390bd7bf887e2ab9c593f0897e84b09073",
     "core/src/application/agent_operations.rs": "f4dc83e0324271484df71a50b35f8e2047a2a3107fac1f1c6e839aef496fe358",
     "core/src/application/creative_tasks.rs": "ee50d2e879c1f847cb81481b0f3d07f40bb3480711f2fae35b02df6b040acaa2",
@@ -9265,12 +9265,13 @@
           },
           "permissions": {
             "type": "array",
-            "maxItems": 2,
+            "maxItems": 3,
             "uniqueItems": true,
             "items": {
               "enum": [
                 "objects.read",
-                "objects.write"
+                "objects.write",
+                "work.read"
               ]
             }
           },

@@ -5028,12 +5028,13 @@
           },
           "permissions": {
             "type": "array",
-            "maxItems": 2,
+            "maxItems": 3,
             "uniqueItems": true,
             "items": {
               "enum": [
                 "objects.read",
-                "objects.write"
+                "objects.write",
+                "work.read"
               ]
             }
           },

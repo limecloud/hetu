@@ -109,6 +109,11 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 200
+          },
+          "invocation_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$",
+            "description": "受信宿主绑定的原始专业动作及参数摘要；不构成作者权限。"
           }
         }
       },
@@ -340,6 +345,11 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 200
+          },
+          "invocation_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$",
+            "description": "受信宿主绑定的原始专业动作及参数摘要；不构成作者权限。"
           }
         }
       },
@@ -541,6 +551,216 @@
         "additionalProperties": false,
         "required": [],
         "properties": {}
+      }
+    },
+    {
+      "name": "hetu.extensions.work.snapshot",
+      "tool_name": "plugin_work_snapshot",
+      "title": "读取当前小说目录及固定正文统计",
+      "effect": "read",
+      "required_permissions": [
+        "work.read"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [],
+        "properties": {
+          "revision": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "hetu.extensions.sources.inspect",
+      "tool_name": "plugin_sources_inspect",
+      "title": "读取明确固定的作品来源及实体",
+      "effect": "read",
+      "required_permissions": [
+        "work.read"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source_ref"
+        ],
+        "properties": {
+          "source_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "work_ref",
+              "sha256"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "document",
+                  "blueprint",
+                  "work",
+                  "asset",
+                  "cue"
+                ]
+              },
+              "work_ref": {
+                "type": "object"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "document_id": {
+                "type": "string",
+                "pattern": "^doc_[0-9a-f-]{36}$"
+              },
+              "revision_id": {
+                "type": "string",
+                "pattern": "^rev_[0-9a-f-]{36}$"
+              },
+              "blueprint_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "revision": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "revision_ref": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "revision"
+                ],
+                "properties": {
+                  "revision": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9007199254740991
+                  }
+                }
+              },
+              "asset_id": {
+                "type": "string",
+                "pattern": "^asset_[0-9a-f-]{36}$"
+              },
+              "cue_id": {
+                "type": "string",
+                "pattern": "^cue_[0-9a-f-]{36}$"
+              }
+            },
+            "oneOf": [
+              {
+                "properties": {
+                  "kind": {
+                    "const": "document"
+                  }
+                },
+                "required": [
+                  "document_id",
+                  "revision_id"
+                ],
+                "propertyNames": {
+                  "enum": [
+                    "kind",
+                    "work_ref",
+                    "sha256",
+                    "document_id",
+                    "revision_id"
+                  ]
+                }
+              },
+              {
+                "properties": {
+                  "kind": {
+                    "const": "blueprint"
+                  }
+                },
+                "required": [
+                  "blueprint_id",
+                  "revision"
+                ],
+                "propertyNames": {
+                  "enum": [
+                    "kind",
+                    "work_ref",
+                    "sha256",
+                    "blueprint_id",
+                    "revision"
+                  ]
+                }
+              },
+              {
+                "properties": {
+                  "kind": {
+                    "const": "work"
+                  }
+                },
+                "required": [
+                  "revision_ref"
+                ],
+                "propertyNames": {
+                  "enum": [
+                    "kind",
+                    "work_ref",
+                    "sha256",
+                    "revision_ref"
+                  ]
+                }
+              },
+              {
+                "properties": {
+                  "kind": {
+                    "const": "asset"
+                  }
+                },
+                "required": [
+                  "asset_id",
+                  "revision"
+                ],
+                "propertyNames": {
+                  "enum": [
+                    "kind",
+                    "work_ref",
+                    "sha256",
+                    "asset_id",
+                    "revision"
+                  ]
+                }
+              },
+              {
+                "properties": {
+                  "kind": {
+                    "const": "cue"
+                  }
+                },
+                "required": [
+                  "cue_id",
+                  "revision"
+                ],
+                "propertyNames": {
+                  "enum": [
+                    "kind",
+                    "work_ref",
+                    "sha256",
+                    "cue_id",
+                    "revision"
+                  ]
+                }
+              }
+            ]
+          },
+          "entity_ref": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        }
       }
     }
   ]

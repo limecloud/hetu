@@ -147,10 +147,10 @@ fn read_grant(access: &Store, grant_id: &str) -> Result<Value> {
             .as_array()
             .ok_or_else(|| Error::new("invalid_input", "授权权限无效。"))?;
         ensure(
-            permissions.len() <= 2
+            permissions.len() <= 3
                 && permissions
                     .iter()
-                    .all(|p| p == "objects.read" || p == "objects.write"),
+                    .all(|p| p == "objects.read" || p == "objects.write" || p == "work.read"),
             "invalid_input",
             "授权权限无效。",
         )?;
@@ -158,7 +158,7 @@ fn read_grant(access: &Store, grant_id: &str) -> Result<Value> {
             .as_array()
             .ok_or_else(|| Error::new("invalid_input", "授权类型无效。"))?;
         ensure(
-            (permissions.is_empty() || !types.is_empty()) && types.len() <= 16,
+            (!permissions.iter().any(|p| p == "objects.read" || p == "objects.write") || !types.is_empty()) && types.len() <= 16,
             "invalid_input",
             "授权类型无效。",
         )?;
@@ -683,18 +683,18 @@ impl Kernel {
                         .as_array()
                         .ok_or_else(|| Error::new("invalid_input", "权限须为数组。"))?;
                     ensure(
-                        permissions.len() <= 2
+                        permissions.len() <= 3
                             && permissions
                                 .iter()
-                                .all(|p| p == "objects.read" || p == "objects.write"),
+                                .all(|p| p == "objects.read" || p == "objects.write" || p == "work.read"),
                         "invalid_input",
-                        "首期只允许专业对象读写权限。",
+                        "仅允许专业对象读写及当前作品只读权限。",
                     )?;
                     let types = params["types"]
                         .as_array()
                         .ok_or_else(|| Error::new("invalid_input", "类型声明须为数组。"))?;
                     ensure(
-                        (permissions.is_empty() || !types.is_empty()) && types.len() <= 16,
+                        (!permissions.iter().any(|p| p == "objects.read" || p == "objects.write") || !types.is_empty()) && types.len() <= 16,
                         "invalid_input",
                         "类型声明数量无效。",
                     )?;
@@ -894,6 +894,58 @@ impl Kernel {
         };
         let mut changes = Changes::new();
         let data = match action {
+            "hetu.extensions.work.snapshot" => {
+                ensure(work["kind"] == "novel", "invalid_input", "此目录投影仅支持小说。")?;
+                let record = self.work_record(work, input["revision"].as_u64())?;
+                let chapters = record["chapters"].as_array().ok_or_else(|| Error::new("hetu.integrity_failure", "小说目录无效。"))?;
+                ensure(chapters.len() <= 1000, "hetu.budget_exceeded", "统计超过单次目录预算。")?;
+                let mut documents = Vec::new();
+                let mut total: usize = 0;
+                for chapter in chapters {
+                    let document = self.document(text(chapter, "document_id")?)?;
+                    ensure(self.document_in_work(&document, work)?, "forbidden", "章节不属于当前小说。")?;
+                    let fixed = self.document_content(text(chapter, "document_id")?, None)?;
+                    let count = fixed["content"].as_str().unwrap_or("").chars().filter(|c| !c.is_whitespace()).count();
+                    total += count;
+                    documents.push(json!({"document_id":document["document_id"],"title":document["title"],"volume_id":chapter["volume_id"],"source_ref":{"kind":"document","work_ref":work,"document_id":document["document_id"],"revision_id":fixed["revision"]["revision_id"],"sha256":fixed["revision"]["sha256"]},"word_count":count}));
+                }
+                json!({"work_ref":work,"fixed_ref":self.work_revision_ref(work,&record)?,"volumes":record["volumes"],"documents":documents,"document_count":documents.len(),"word_count":total,"counting_unit":"non_whitespace_unicode_scalars","statistics_sha256":Self::input_digest(&json!(documents))?})
+            }
+            "hetu.extensions.sources.inspect" => {
+                let source = &input["source_ref"];
+                self.validate_extension_sources(work, &json!([source]))?;
+                if source["kind"] == "blueprint" {
+                    let (blueprint, _) = self.source_blueprint(source)?;
+                    if let Some(entity) = input["entity_ref"].as_str() {
+                        let mut found = None;
+                        for (collection, field) in [("characters","character_id"),("factions","faction_id"),("locations","location_id"),("timeline","event_id"),("world","entry_id"),("rules","rule_id")] {
+                            if let Some(items) = blueprint[collection].as_array() {
+                                if let Some(item) = items.iter().find(|item| item[field] == entity) { found = Some((item.clone(),collection)); }
+                            }
+                        }
+                        let (entity, collection) = found.ok_or_else(|| Error::new("not_found","固定设定中不存在该实体。"))?;
+                        let entity_kind = match collection { "characters"=>"character", "factions"=>"faction", "locations"=>"location", "rules"=>"rule", "timeline"=>"event", _=>"world_entry" };
+                        json!({"source_ref":source,"entity":entity,"entity_kind":entity_kind})
+                    } else { json!({"source_ref":source,"blueprint":blueprint}) }
+                } else if source["kind"] == "document" {
+                    ensure(input.get("entity_ref").is_none(), "invalid_input", "正文来源不包含设定实体。")?;
+                    let fixed = self.document_content(text(source,"document_id")?,Some(text(source,"revision_id")?))?;
+                    json!({"source_ref":source,"document":fixed["document"],"content":fixed["content"]})
+                } else if source["kind"] == "work" {
+                    ensure(input.get("entity_ref").is_none(), "invalid_input", "作品资料来源不包含设定实体。")?;
+                    self.get_work(&json!({"work_ref":work,"revision":source["revision_ref"]["revision"]}))?
+                } else {
+                    let kind = text(source,"kind")?;
+                    let field = format!("{kind}_id");
+                    let record = if kind == "asset" { self.get_asset(&json!({field.clone():source[&field],"revision":source["revision"]}))? }
+                        else { self.get_cue(&json!({field.clone():source[&field],"revision":source["revision"]}))? };
+                    if let Some(entity) = input["entity_ref"].as_str() { ensure(source[&field] == entity,"not_found","来源实体身份不一致。")?; }
+                    // 私密物理路径不回传到专业插件。
+                    let mut record = record;
+                    if let Some(blob) = record["asset"]["blob"].as_object_mut() { blob.remove("path"); }
+                    json!({"source_ref":source,"resource":record,"entity_kind":kind})
+                }
+            }
             "hetu.extensions.objects.list" => {
                 closed(input, &["work_ref"], &["kind", "limit", "cursor"])?;
                 let limit = input
@@ -990,13 +1042,17 @@ impl Kernel {
                 }
             }
             "hetu.extensions.operations.get" => {
-                closed(input, &["work_ref", "operation_key"], &[])?;
-                let result = self.store.json(&operation_path(
+                closed(input, &["work_ref", "operation_key"], &["invocation_sha256"])?;
+                let record = self.store.json(&operation_path(
                     work,
                     owner,
                     text(input, "operation_key")?,
-                )?)?["result"]
-                    .clone();
+                )?)?;
+                if let Some(invocation) = input.get("invocation_sha256") {
+                    sha(invocation.as_str().ok_or_else(|| Error::new("invalid_input", "专业输入摘要无效。"))?)?;
+                    ensure(record["invocation_sha256"] == *invocation, "idempotency_conflict", "原操作键已绑定其他专业输入，或旧记录无法核验该输入。")?;
+                }
+                let result = record["result"].clone();
                 if let Some(grant) = grant {
                     ensure(
                         grant["types"].as_array().unwrap().iter().any(|t| {
@@ -1024,8 +1080,11 @@ impl Kernel {
                         "expected_sha256",
                         "operation_key",
                     ],
-                    &["object_id", "source_refs"],
+                    &["object_id", "source_refs", "invocation_sha256"],
                 )?;
+                if let Some(invocation) = input.get("invocation_sha256") {
+                    sha(invocation.as_str().ok_or_else(|| Error::new("invalid_input", "专业输入摘要无效。"))?)?;
+                }
                 let grant = grant.ok_or_else(|| Error::new("forbidden", "写入须有插件授权。"))?;
                 let path = operation_path(work, owner, text(input, "operation_key")?)?;
                 let mut fixed = input.clone();
@@ -1115,7 +1174,7 @@ impl Kernel {
                     extension_operation(text(input, "operation_key")?, &input_sha);
                 changes.insert(
                     path,
-                    bytes(&json!({"input_sha256":input_sha,"result":result}))?,
+                    bytes(&json!({"input_sha256":input_sha,"invocation_sha256":input.get("invocation_sha256").unwrap_or(&Value::Null),"result":result}))?,
                 );
                 changes.insert(format!(".hetu/audit/{}.json",result["operation"]["id"].as_str().unwrap()),bytes(&json!({"action":action,"plugin_id":owner,"work_ref":work,"package_sha256":grant["package_sha256"],"created_at":now(),"input_sha256":input_sha}))?);
                 self.stage_workspace_properties(&mut changes)?;

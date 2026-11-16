@@ -9,6 +9,7 @@ import { WorkCover, WorkCoverPreview } from "./work-cover.tsx";
 import { PluginMigrations } from "./plugin-migrations.tsx";
 import { PluginResults } from "./plugin-results.tsx";
 import { AuditStatus } from "./audit-status.tsx";
+import { sameWork } from "@hetu/plugin-sdk";
 
 function NavigationGroup({ title, active, children }: { title: string; active: boolean; children: React.ReactNode }) {
   const [open, setOpen] = useState(active);
@@ -117,6 +118,14 @@ function App() {
     await desktop.closeSurface();
     setActive(id);
   };
+  useEffect(() => desktop.onOpenDocument?.(value => {
+    if (!state.work || !sameWork(value.work_ref, state.work)) return;
+    void run(async () => {
+      if (documentTools?.dirty) throw new Error("请先保存当前修改，再打开关联正文。");
+      sessionStorage.setItem("hetu-document:" + value.work_ref.workspace_id + ":" + value.work_ref.object_id, value.document_id);
+      await navigate(value.work_ref.kind === "novel" ? "novel.reader" : "drama.reader");
+    });
+  }), [state.work, documentTools?.dirty]);
   const ai = async (object?: Record<string, unknown>) => {
     await desktop.handoff(active, object);
     setNotice("已复制当前作品的协作请求，可粘贴到你选择的外部 Agent。");

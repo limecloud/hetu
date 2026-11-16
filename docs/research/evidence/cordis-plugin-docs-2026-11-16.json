@@ -1,0 +1,96 @@
+{
+  "evidence_version": 1,
+  "date": "2026-11-16",
+  "scope": "标准插件文档与设计合同一致性，不代表运行验收",
+  "plugin_docs": {
+    "status": "passed",
+    "scope": "文档与设计合同一致性；不证明插件运行、跨平台或Core新合同",
+    "counts": {
+      "markdown_files": 15,
+      "local_links": 58,
+      "json_fences": 1,
+      "mermaid_diagrams": 8,
+      "schemas": 4,
+      "examples": 4,
+      "negative_schema_cases": 5,
+      "NP": 26,
+      "NPU": 56,
+      "NPT": 56,
+      "action_schemas": 21,
+      "manifest_bytes": 85441,
+      "example_semantics": "passed"
+    },
+    "errors": []
+  },
+  "mermaid": {
+    "status": "passed",
+    "diagrams": [
+      {
+        "file": "docs/plugin/26-Cordis采用与DSH兼容边界.md",
+        "index": 0,
+        "status": "rendered",
+        "artifact": "cordis0.svg"
+      },
+      {
+        "file": "docs/02-总体架构与技术选型.md",
+        "index": 0,
+        "status": "rendered",
+        "artifact": "cordis1.svg"
+      },
+      {
+        "file": "docs/02-总体架构与技术选型.md",
+        "index": 1,
+        "status": "rendered",
+        "artifact": "cordis2.svg"
+      },
+      {
+        "file": "docs/03-领域模型与数据合同.md",
+        "index": 0,
+        "status": "rendered",
+        "artifact": "cordis3.svg"
+      },
+      {
+        "file": "docs/03-领域模型与数据合同.md",
+        "index": 1,
+        "status": "rendered",
+        "artifact": "cordis4.svg"
+      },
+      {
+        "file": "docs/05-用户故事与业务流程.md",
+        "index": 0,
+        "status": "rendered",
+        "artifact": "cordis5.svg"
+      },
+      {
+        "file": "docs/05-用户故事与业务流程.md",
+        "index": 1,
+        "status": "rendered",
+        "artifact": "cordis6.svg"
+      },
+      {
+        "file": "docs/05-用户故事与业务流程.md",
+        "index": 2,
+        "status": "rendered",
+        "artifact": "cordis7.svg"
+      },
+      {
+        "file": "docs/09-开发发布与上架.md",
+        "index": 0,
+        "status": "rendered",
+        "artifact": "cordis8.svg"
+      }
+    ]
+  },
+  "host_docs": {
+    "documents": 84,
+    "local_links": 1071,
+    "status": "passed",
+    "command": "uv run tools/verify-docs.py"
+  },
+  "ajv": {
+    "content_schemas": 4,
+    "action_schemas": 21,
+    "status": "passed"
+  },
+  "runtime": "not_run"
+}

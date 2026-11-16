@@ -2,6 +2,7 @@ import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import path from "node:path";
 import { realpathSync } from "node:fs";
 import Ajv from "ajv";
+import { createHash } from "node:crypto";
 import {
   dataActions,
   dataWriteActions,
@@ -14,6 +15,7 @@ import type { PluginPackage } from "./package.ts";
 export class BackendSupervisor {
   #effect: "read" | "managed_write" | undefined;
   #operationKey: string | undefined;
+  #invocationSha: string | undefined;
   #callbacks = 0;
   #child: ChildProcessWithoutNullStreams;
   #buffer = "";
@@ -119,6 +121,9 @@ export class BackendSupervisor {
       const result = await this.#request(params.action, {
         ...params.input,
         work_ref: this.#work,
+        ...((params.action === "hetu.extensions.objects.save" ||
+          params.action === "hetu.extensions.operations.get" && params.input?.operation_key === this.#operationKey) && this.#invocationSha
+          ? { invocation_sha256: this.#invocationSha } : {}),
       });
       this.send({ jsonrpc: "2.0", id: message.id, result });
       return;
@@ -191,9 +196,15 @@ export class BackendSupervisor {
       throw new Error("插件写动作需要固定原操作键。");
     this.#effect = declaration.effect;
     this.#operationKey = (input as any)?.operation_key;
+    // 原始专业输入与最终save各自绑定，不能用同一成果掩盖不同请求。
+    const normalize = (value: any): any => Array.isArray(value) ? value.map(normalize)
+      : value && typeof value === "object" ? Object.fromEntries(Object.keys(value).sort().map(key => [key, normalize(value[key])])) : value;
+    this.#invocationSha = declaration.effect === "managed_write"
+      ? createHash("sha256").update(JSON.stringify(normalize({ action, input }))).digest("hex") : undefined;
     this.#callbacks = 0;
     return this.rpc("invoke", { action, input }).finally(() => {
       this.#effect = undefined;
+      this.#invocationSha = undefined;
       this.#operationKey = undefined;
     });
   }

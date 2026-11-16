@@ -709,6 +709,15 @@
           "context": " registry } }     }     case 'git': {       const commit = stringAt(object.commit, `${path}.commit`)       if (!COMMIT.test(commit)) fail(`${path}.commit`, 'must be a lowercase 40-hex-digit commit SHA')       const packageDir = optional(object, 'path', path, packagePath)       return { typ"
         }
       ]
+    },
+    {
+      "id": "SRC-CORDIS-ADOPTION",
+      "name": "Cordis采用、DSH分支与专业创作插件",
+      "retrieved_on": "2026-11-16",
+      "url": "https://github.com/cordiverse/cordis/tree/c9fe179ce5ac484620a387a1697409cb007d4178",
+      "verification": "fixed_public_source_review",
+      "evidence": "../research/evidence/cordis-adoption-2026-11-16.json",
+      "verification_scope": "固定公开源码与许可核对；未安装Cordis，未验证DSH或跨平台兼容。"
     }
   ],
   "user_supplied_article": {

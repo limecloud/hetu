@@ -77,11 +77,12 @@
     "permissions": {
       "type": "array",
       "uniqueItems": true,
-      "maxItems": 2,
+      "maxItems": 3,
       "items": {
         "enum": [
           "objects.read",
-          "objects.write"
+          "objects.write",
+          "work.read"
         ]
       }
     }

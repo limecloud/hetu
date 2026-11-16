@@ -28,6 +28,61 @@ fn call(kernel: &Kernel, action: &str, input: Value) -> Value {
 }
 
 #[test]
+fn work_read_requires_its_own_grant_and_preserves_fixed_document_sources() {
+    let root = tempfile::tempdir().unwrap();
+    let path = root.path().join("作品");
+    let dir = root.path().join("private");
+    let (kernel, work) = fixture(&path);
+    let original = "旧稿 🌿\n第二行";
+    let document = call(&kernel, "documents.create", json!({"kind":"novel_chapter","title":"第一章","source_format":"markdown","content":original,"operation_key":"work-read-document"}));
+    let source = json!({"kind":"document","work_ref":work,"document_id":document["document"]["document_id"],"revision_id":document["revision"]["revision_id"],"sha256":document["revision"]["sha256"]});
+    let ordinary = authorize(&kernel, &dir, &work, json!(["objects.read"]), "ordinary-read");
+    let ordinary = PluginSession::open(&path, &dir, ordinary["grant_id"].as_str().unwrap(), &"a".repeat(64)).unwrap();
+    for request in [req("work.snapshot", json!({"work_ref":work})), req("sources.inspect", json!({"work_ref":work,"source_ref":source}))] {
+        assert_eq!(ordinary.request(request)["error"]["code"], "forbidden");
+    }
+    let grant = authorize(&kernel, &dir, &work, json!(["work.read"]), "work-read");
+    let session = PluginSession::open(&path, &dir, grant["grant_id"].as_str().unwrap(), &"a".repeat(64)).unwrap();
+    let snapshot = session.request(req("work.snapshot", json!({"work_ref":work})));
+    assert_eq!(snapshot["status"], "succeeded", "{snapshot}");
+    assert_eq!(snapshot["data"]["document_count"], 1);
+    assert_eq!(snapshot["data"]["word_count"], 6);
+    assert_eq!(snapshot["data"]["documents"][0]["source_ref"], source);
+    call(&kernel, "documents.save", json!({"document_id":document["document"]["document_id"],"base_revision_id":document["revision"]["revision_id"],"source_format":"markdown","content":"新稿","operation_key":"work-read-advance"}));
+    let fixed = session.request(req("sources.inspect", json!({"work_ref":work,"source_ref":source})));
+    assert_eq!(fixed["status"], "succeeded", "{fixed}");
+    assert_eq!(fixed["data"]["content"], original);
+    let mut forged = source.clone();
+    forged["sha256"] = json!("b".repeat(64));
+    assert_eq!(session.request(req("sources.inspect", json!({"work_ref":work,"source_ref":forged})))["error"]["code"], "hetu.stale_evidence");
+    forged = source;
+    forged["work_ref"]["object_id"] = json!("novel_11111111-1111-4111-8111-111111111111");
+    assert_eq!(session.request(req("sources.inspect", json!({"work_ref":work,"source_ref":forged})))["error"]["code"], "forbidden");
+    let revoked = kernel.extension_host_request_in(&dir, json!({"method":"revoke","params":{"grant_id":grant["grant_id"]}}));
+    assert_eq!(revoked["status"], "succeeded");
+    assert_eq!(session.request(req("work.snapshot", json!({"work_ref":work})))["error"]["code"], "forbidden");
+}
+
+#[test]
+fn operation_recovery_rejects_a_different_professional_invocation() {
+    let root = tempfile::tempdir().unwrap();
+    let path = root.path().join("作品");
+    let dir = root.path().join("private");
+    let (kernel, work) = fixture(&path);
+    let grant = authorize(&kernel, &dir, &work, json!(["objects.read", "objects.write"]), "invocation-grant");
+    let session = PluginSession::open(&path, &dir, grant["grant_id"].as_str().unwrap(), &"a".repeat(64)).unwrap();
+    let mut input = json!({"work_ref":work,"kind":"relationships","title":"固定成果","schema_version":"1","content":{"nodes":["江岚"]},"expected_revision":0,"expected_sha256":"","operation_key":"bound-invocation","invocation_sha256":"c".repeat(64)});
+    let saved = session.request(req("objects.save", input.clone()));
+    assert_eq!(saved["status"], "succeeded", "{saved}");
+    let mut recovery = json!({"work_ref":work,"operation_key":"bound-invocation","invocation_sha256":"c".repeat(64)});
+    assert_eq!(session.request(req("operations.get", recovery.clone()))["data"], saved["data"]);
+    recovery["invocation_sha256"] = json!("d".repeat(64));
+    assert_eq!(session.request(req("operations.get", recovery))["error"]["code"], "idempotency_conflict");
+    input["invocation_sha256"] = json!("d".repeat(64));
+    assert_eq!(session.request(req("objects.save", input))["error"]["code"], "idempotency_conflict");
+}
+
+#[test]
 fn fixed_domain_sources_reject_forgery_preserve_history_and_do_not_grant_domain_access() {
     let root = tempfile::tempdir().unwrap();
     let path = root.path().join("作品");

@@ -333,12 +333,28 @@
       {
         "name": "cordis",
         "version": "4.0.0-rc.13",
-        "integrity": "sha512-rYsquBfrd1U8HuaDr/1TYpdnHiuy5X2oEWJbfEveIZwysfjg3vTXJWKvTPlaPtt2VeFsAJIrzHZnymONyOr3PA=="
+        "integrity": "sha512-rYsquBfrd1U8HuaDr/1TYpdnHiuy5X2oEWJbfEveIZwysfjg3vTXJWKvTPlaPtt2VeFsAJIrzHZnymONyOr3PA==",
+        "url": "https://registry.npmjs.org/cordis/4.0.0-rc.13",
+        "http_status": 200,
+        "sha256": "ac705078dd1f4f33ee27e49cbb3f8956344d638c06f2d9b38489c1d0f8977ee3",
+        "dependencies": {
+          "cosmokit": "^1.8.1",
+          "@standard-schema/spec": "^1.1.0"
+        },
+        "license": "MIT"
       },
       {
         "name": "@deepseek-ai/cordis",
         "version": "4.1.0",
-        "integrity": "sha512-CJrjNyBkKn1SfvBQUcgFYKFnLjS+uKrhdMsbHU60xabvi12d+xQ+IQSNlME5Z+B+4Zi6n4BDknKY94tEPeo47w=="
+        "integrity": "sha512-CJrjNyBkKn1SfvBQUcgFYKFnLjS+uKrhdMsbHU60xabvi12d+xQ+IQSNlME5Z+B+4Zi6n4BDknKY94tEPeo47w==",
+        "url": "https://registry.npmjs.org/@deepseek-ai%2fcordis/4.1.0",
+        "http_status": 200,
+        "sha256": "211637dea540020f11eaf128fe4a1da7cada70ccd14b68f0cd2efe7d66f2d10a",
+        "dependencies": {
+          "@deepseek-ai/cosmokit": "~1.9.0",
+          "@standard-schema/spec": "^1.1.0"
+        },
+        "license": "MIT"
       }
     ]
   },

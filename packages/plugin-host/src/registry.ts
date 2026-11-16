@@ -1,10 +1,17 @@
 import type { ViewContribution } from "@hetu/plugin-sdk";
 import type { PluginPackage } from "./package.ts";
+import { Context } from "cordis";
 export type Dispose = () => void | Promise<void>;
 export class EffectScope {
+  readonly #context = new Context();
   #effects: Dispose[] = [];
   #closed = false;
   #disposal?: Promise<void>;
+  readonly #release: () => Promise<void>;
+  constructor() {
+    // 一个有序disposer保留河图的逆序等待语义，Cordis拥有作用域及释放机制。
+    this.#release = this.#context.effect(() => () => this.#dispose());
+  }
   effect(dispose: Dispose) {
     if (this.#closed) throw new Error("贡献生命周期已结束。");
     this.#effects.push(dispose);
@@ -12,7 +19,7 @@ export class EffectScope {
   dispose(): Promise<void> {
     if (this.#disposal) return this.#disposal;
     this.#closed = true;
-    this.#disposal = Promise.resolve().then(() => this.#dispose());
+    this.#disposal = Promise.resolve().then(() => this.#release()).finally(() => this.#context.fiber.dispose());
     return this.#disposal;
   }
   async #dispose() {

@@ -11,6 +11,7 @@ export interface DesktopBridge {
   settingsWindow(method: "open" | "close"): Promise<void>;
   settingsAgent(method: string, input?: Record<string, unknown>): Promise<any>;
   onPreferences(listener: (value: any) => void): () => void;
+  onOpenDocument(listener: (value: {work_ref:WorkRef;document_id:string}) => void): () => void;
   onPluginsChanged(listener: (value: any) => void): () => void;
   zoom(): Promise<void>;
   library(

@@ -30,7 +30,7 @@ export interface PluginManifest {
   description: Record<"zh-CN" | "en", string>;
   license: string;
   dependencies: { id: string; version: string }[];
-  permissions: ("objects.read" | "objects.write")[];
+  permissions: ("objects.read" | "objects.write" | "work.read")[];
   contributions: {
     views: ViewContribution[];
     data: TypeContribution[];
@@ -78,6 +78,12 @@ export interface PluginBridge {
   context(): Promise<PluginContext>;
   /** 仅当前作品、插件与视图的本机恢复稿；不属于已保存作品。 */
   buffer(value?: unknown): Promise<unknown>;
+  /** 关闭视图前完成恢复稿；拒绝时保留当前视图。 */
+  onBeforeClose?(callback: () => void | Promise<void>): () => void;
+  /** 可信宿主的窄服务；handoff只返回已复制，不返回私密授权。 */
+  host?(action: "preferences" | "handoff" | "open_document" | "work_snapshot" | "export_file", input: Record<string, unknown>): Promise<unknown>;
+  onPreferences?(callback: (value: {theme:string;language:string}) => void): () => void;
+  invoke(action: string, input: Record<string, unknown>): Promise<unknown>;
   request<T = Record<string, unknown>>(
     action: string,
     input: Record<string, unknown>,
@@ -93,6 +99,8 @@ export interface BackendModule {
   invoke(action: string, input: unknown): unknown | Promise<unknown>;
 }
 export const dataActions = [
+  "hetu.extensions.work.snapshot",
+  "hetu.extensions.sources.inspect",
   "hetu.extensions.objects.list",
   "hetu.extensions.objects.search",
   "hetu.extensions.index.status",

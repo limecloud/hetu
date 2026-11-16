@@ -218,6 +218,8 @@ export function LocalSettings({
         const remaining = Object.entries(drafts.current).some(([key, value]) => value !== currentState.current?.preferences[key]);
         if (!remaining && currentState.current?.journal?.status !== "pending") {
           closeReady.current = true;
+          // 先让本次 beforeunload 取消完成，再关闭窗口，避免跨平台重入时丢失关闭请求。
+          await new Promise<void>(resolve => setTimeout(resolve, 0));
           await desktop.settingsWindow("close");
         }
       })().catch((error: unknown) => {

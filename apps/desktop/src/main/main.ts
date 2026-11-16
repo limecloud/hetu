@@ -18,6 +18,8 @@ import { readFile } from "node:fs/promises";
 import { randomUUID, createHash } from "node:crypto";
 import { RecoveryStore } from "./recovery.ts";
 import { pluginResultHandoff } from "./plugin-results.ts";
+import { pluginService } from "./plugin-services.ts";
+import { exportPluginFile } from "./plugin-export.ts";
 import { SettingsReview } from "./settings.ts";
 import { SettingsWindow } from "./settings-window.ts";
 import { workAssociation, workAgentRequest } from "./work-agent.ts";
@@ -96,6 +98,7 @@ async function refreshSettings() {
   nativeTheme.themeSource = localState.preferences.appearance;
   if (window && !window.isDestroyed()) window.webContents.send("desktop:preferences", localState.preferences);
   settingsWindow.preferences(localState.preferences);
+  if (surface && !surface.webContents.isDestroyed()) surface.webContents.send("plugin:preferences", {theme:localState.preferences.appearance,language:localState.preferences.language??"zh-CN"});
   return localState;
 }
 async function selectClient(client: string) {
@@ -218,7 +221,25 @@ async function core(action: string, input: unknown = {}) {
     input,
   });
 }
+async function flushSurface() {
+  if (!surface || surface.webContents.isDestroyed() || !binding) return;
+  const sender = surface.webContents.id, token = randomUUID();
+  await new Promise<void>((resolve, reject) => {
+    const finish = (error?: string) => {
+      clearTimeout(timer);
+      ipcMain.removeListener("plugin:flush-result", listener);
+      error ? reject(new Error(error)) : resolve();
+    };
+    const listener = (event: Electron.IpcMainEvent, received: string, error: string | null) => {
+      if (event.sender.id === sender && received === token) finish(error ?? undefined);
+    };
+    const timer = setTimeout(() => finish("插件恢复稿未完成，请保留当前视图后重试。"), 5000);
+    ipcMain.on("plugin:flush-result", listener);
+    surface!.webContents.send("plugin:flush", token);
+  });
+}
 async function closeSurface() {
+  await flushSurface();
   binding = undefined;
   if (surface) {
     window.contentView.removeChildView(surface);
@@ -702,8 +723,8 @@ app
         }) === 0
       )
         return;
-      void recovery
-        .flush()
+      void flushSurface()
+        .then(() => recovery.flush())
         .then(() => {
           flushedClose = true;
           window.close();
@@ -1557,7 +1578,7 @@ app
     ipcMain.handle("plugin:request", (event, action, input) =>
       pluginRequest(pluginCaller(event), action, input),
     );
-    ipcMain.handle("plugin:invoke", async (event, action, input) => {
+    const invokePlugin = async (event:IpcMainInvokeEvent, action:string, input:Record<string,unknown>) => {
       const current = pluginCaller(event),
         pkg = host.package(current.owner);
       if (!server) throw new Error("作品连接已关闭。");
@@ -1580,6 +1601,32 @@ app
         await backend.initialize();
       }
       return backend.invoke(action, input);
+    };
+    ipcMain.handle("plugin:invoke", invokePlugin);
+    ipcMain.handle("plugin:host", async (event, action, input) => {
+      const current = pluginCaller(event);
+      const check = () => { if(pluginCaller(event)!==current) throw new Error("插件上下文已变化。"); };
+      return pluginService(action,input,{
+        work:current.work,check,request:(action,input)=>pluginRequest(current,action,input),
+        preferences:()=>({theme:localState.preferences.appearance,language:localState.preferences.language??"zh-CN"}),
+        handoff:async(input)=>{
+          const connection=await ensureConnection(agentClient());check();
+          const fixed=input.object_ref?[{kind:"plugin_object",work_ref:current.work,owner_plugin_id:current.owner,...input.object_ref as object}]:[];
+          clipboard.writeText("请通过河图的机器入口接续当前小说规划。先发现实际能力、读取固定成果，再按目标处理；保留原键，未知先回读。正文采纳、定稿与外部副作用另行决定。\n"+JSON.stringify({
+            goal:input.goal,work_ref:current.work,fixed_refs:fixed,node_id:input.node_id,run_ref:input.run_ref,
+            client_adapter:agentClient(),management_ref:connection.management_ref,
+            plugin_connection:pluginMachineConnection(current.owner,current.grant,current.work),
+          },null,2));
+        },
+        openDocument:async(document_id)=>{check();window.webContents.send("desktop:open-document",{work_ref:current.work,document_id});},
+        exportFile:async(input)=>{
+          const declared=host.package(current.owner).manifest.contributions.actions.find(a=>a.id===input.action);
+          if(declared?.effect!=="read")throw new Error("只能导出声明的只读动作。");
+          return exportPluginFile(input as any,{check,invoke:(action,input)=>invokePlugin(event,action,input),choose:async(name)=>{
+            const chosen=await dialog.showSaveDialog(window,{title:"导出插件成果",defaultPath:name});return chosen.canceled?undefined:chosen.filePath;
+          }});
+        },
+      });
     });
     shellHandler("desktop:browser", async (address: string) => {
       const url = new URL(address);
