@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 
 def verify():
-    source = json.loads((ROOT / "assets/localization/shared.json").read_text())
+    source = json.loads((ROOT / "assets/localization/shared.json").read_text(encoding="utf-8"))
     for key, entry in source.items():
         expected = set(entry["parameters"])
         for locale in ["zh-CN", "en"]:
@@ -16,7 +16,7 @@ def verify():
                 raise ValueError(f"文案 {key}/{locale} 的翻译或占位符不完整")
         if not entry["purpose"].strip():
             raise ValueError(f"文案 {key} 缺少用途")
-    catalog = json.loads((ROOT / "integrations/catalog.json").read_text())
+    catalog = json.loads((ROOT / "integrations/catalog.json").read_text(encoding="utf-8"))
     required = {suite["titleKey"] for suite in catalog["suites"]}
     required.update("agent.skill." + name for name in catalog["skills"])
     missing = required - source.keys()

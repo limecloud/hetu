@@ -20,7 +20,7 @@ def sha(data):
 
 
 def taxonomy(genres):
-    snapshots = json.loads((SOURCE / 'platform-snapshots.json').read_text())
+    snapshots = json.loads((SOURCE / 'platform-snapshots.json').read_text(encoding="utf-8"))
     aliases = {}
     for genre in genres:
         for term in [genre['name'], *genre['aliases']]:
@@ -82,9 +82,9 @@ def genre_document(genre):
 
 
 def render():
-    genres = json.loads((SOURCE / 'genres.json').read_text())
+    genres = json.loads((SOURCE / 'genres.json').read_text(encoding="utf-8"))
     assert len({g['id'] for g in genres}) == len(genres)
-    provenance = json.loads((SOURCE / 'sources.json').read_text())
+    provenance = json.loads((SOURCE / 'sources.json').read_text(encoding="utf-8"))
     shared = {p.relative_to(SOURCE / 'base').as_posix(): p.read_bytes() for p in sorted((SOURCE / 'base').rglob('*')) if p.is_file() and '__pycache__' not in p.parts and p.suffix != '.pyc'}
     for path in (SOURCE / 'licenses').glob('*.txt'):
         shared['licenses/' + path.name] = path.read_bytes()

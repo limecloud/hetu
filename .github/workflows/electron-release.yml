@@ -32,6 +32,8 @@ jobs:
       - name: Install locked Rust toolchain
         run: rustup toolchain install 1.93.1 --profile minimal
       - uses: Swatinem/rust-cache@v2
+        with:
+          cache-on-failure: true
       - name: Verify source and release versions
         run: |
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
@@ -113,6 +115,8 @@ jobs:
             target: linux-x64
     runs-on: ${{ matrix.os }}
     timeout-minutes: 120
+    env:
+      PYTHONUTF8: "1"
     defaults:
       run:
         shell: bash
@@ -128,6 +132,8 @@ jobs:
       - name: Install locked Rust toolchain
         run: rustup toolchain install 1.93.1 --profile minimal
       - uses: Swatinem/rust-cache@v2
+        with:
+          cache-on-failure: true
       - name: Verify source and install dependencies
         run: |
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
