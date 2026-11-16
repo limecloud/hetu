@@ -163,8 +163,8 @@ test("原生模型渠道与封面本地导入、文件变更拒绝及历史恢�
     await metadata.getByRole("button", { name: "保存资料", exact: true }).click();
     await expect(metadata).not.toBeVisible();
     expect((await page.evaluate(() => window.hetuDesktop.novel("get"))).novel.metadata.author_name).toBe("测试作者");
-    await page.getByText("查看卷章结构", { exact: true }).click();
-    await page.getByRole("button", { name: "人工整理卷章", exact: true }).click();
+    await page.locator(".profile-structure > summary").click();
+    await page.getByRole("button", { name: "整理卷章", exact: true }).click();
     const structure = page.getByRole("dialog", { name: "整理卷章结构", exact: true });
     await structure.getByRole("textbox", { name: "新卷标题", exact: true }).fill("第一卷 雾港");
     await structure.getByRole("button", { name: "添加分卷", exact: true }).click();

@@ -17,6 +17,7 @@
   --sage-10: light-dark(#7c8481, #717d79);
   --sage-11: light-dark(#5f6563, #adb5b2);
   --sage-12: light-dark(#1a211e, #eceeed);
+  --sage-a6: light-dark(#00140d28, #edfbf42d);
   --jade-1: light-dark(#fbfefd, #0d1512);
   --jade-2: light-dark(#f4fbf7, #121c18);
   --jade-3: light-dark(#e6f7ed, #0f2e22);
@@ -59,6 +60,18 @@
   --ink: var(--sage-12); --muted: var(--sage-11);
   --page: var(--sage-1); --surface: var(--sage-1); --paper: var(--sage-2);
   --hover: var(--sage-3); --pressed: var(--sage-4); --line: var(--sage-6);
+  /* 官网的纸色、玉色与山水灰，作为工作台连续底色。 */
+  --wash-paper: color-mix(in srgb, var(--amber-2) 42%, var(--sage-2));
+  --wash-jade: color-mix(in srgb, var(--jade-4) 35%, var(--sage-5));
+  --wash-gold: color-mix(in srgb, var(--amber-3) 30%, var(--sage-2));
+  --workbench-background:
+    radial-gradient(ellipse at 0% 100%, var(--wash-jade), transparent 65%),
+    radial-gradient(ellipse at 100% 0%, var(--wash-gold), transparent 60%),
+    linear-gradient(135deg, var(--wash-paper) 10%, var(--page) 52%, var(--sage-4) 100%);
+  --chrome-surface: color-mix(in srgb, var(--surface) 18%, transparent);
+  --chrome-border: var(--sage-a6);
+  --workbench-panel: color-mix(in srgb, var(--surface) 82%, transparent);
+  --floating-surface: color-mix(in srgb, var(--surface) 85%, transparent);
   --jade: var(--jade-11); --jade-soft: var(--jade-3);
   --action: var(--jade-9); --action-hover: var(--jade-10); --action-ink: var(--white-a12);
   --warning: var(--amber-3); --warning-ink: var(--amber-11);
