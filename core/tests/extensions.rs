@@ -42,6 +42,11 @@ fn work_read_requires_its_own_grant_and_preserves_fixed_document_sources() {
         assert_eq!(ordinary.request(request)["error"]["code"], "forbidden");
     }
     let grant = authorize(&kernel, &dir, &work, json!(["work.read"]), "work-read");
+    let readonly = kernel.extension_host_request_in(&dir, json!({"method":"authorize","params":{"work_ref":work,"plugin_id":"org.hetu.reader","package_sha256":"b".repeat(64),"permissions":["work.read"],"types":[],"operation_key":"work-only-no-types"}}));
+    assert_eq!(readonly["status"], "succeeded", "{readonly}");
+    let readonly = PluginSession::open(&path, &dir, readonly["data"]["grant_id"].as_str().unwrap(), &"b".repeat(64)).unwrap();
+    assert_eq!(readonly.request(req("work.snapshot", json!({"work_ref":work})))["status"], "succeeded");
+    assert_eq!(readonly.request(req("objects.list", json!({"work_ref":work})))["error"]["code"], "forbidden");
     let session = PluginSession::open(&path, &dir, grant["grant_id"].as_str().unwrap(), &"a".repeat(64)).unwrap();
     let snapshot = session.request(req("work.snapshot", json!({"work_ref":work})));
     assert_eq!(snapshot["status"], "succeeded", "{snapshot}");
