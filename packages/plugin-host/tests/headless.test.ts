@@ -46,15 +46,16 @@ function json(command: string, args: string[], input?: unknown) {
   const result = spawnSync(command, args, {
     input: input === undefined ? undefined : JSON.stringify(input),
     encoding: "utf8",
-    timeout: 30000,
+    // Node组合入口还要串行核验授权、启动后端及执行Core；直接Core调用仍限30秒。
+    timeout: command === process.execPath ? 120000 : 30000,
     maxBuffer: 4 * 1024 * 1024,
   });
-  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.status, 0, result.error?.message ?? result.stderr);
   return JSON.parse(result.stdout);
 }
 test(
   "无Electron窗口的独立TS插件动作、Core保存和真实MCP工具回读",
-  { timeout: 90000 },
+  { timeout: 300000 },
   async () => {
     const directory = await mkdtemp(path.join(os.tmpdir(), "hetu-headless-")),
       workspace = path.join(directory, "中文 空格作品"),

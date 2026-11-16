@@ -3,6 +3,8 @@ import { pathToFileURL } from "node:url";
 import { createInterface } from "node:readline";
 let backend;
 let ready = false;
+let closing = false;
+let disposal;
 let next = 0;
 const pending = new Map();
 const effects = [];
@@ -20,14 +22,20 @@ const request = (action, input) =>
       params: { action, input },
     });
   });
-async function dispose() {
-  for (const cleanup of effects.reverse()) {
-    try {
-      await cleanup();
-    } catch {}
-  }
-  for (const p of pending.values()) p.reject(new Error("插件关闭。"));
-  pending.clear();
+function dispose() {
+  if (disposal) return disposal;
+  closing = true;
+  ready = false;
+  disposal = (async () => {
+    const errors = [];
+    for (const cleanup of effects.splice(0).reverse()) {
+      try { await cleanup(); } catch (error) { errors.push(error); }
+    }
+    for (const p of pending.values()) p.reject(new Error("插件关闭。"));
+    pending.clear();
+    if (errors.length) throw new AggregateError(errors, "插件清理失败。");
+  })();
+  return disposal;
 }
 let busy = false;
 input.on("line", async (line) => {
@@ -63,7 +71,7 @@ input.on("line", async (line) => {
   busy = true;
   try {
     let result;
-    if (message.method === "initialize" && !ready) {
+    if (message.method === "initialize" && !ready && !closing) {
       if (
         Number(process.versions.node.split(".")[0]) < 25 ||
         !process.permission ||
@@ -77,7 +85,10 @@ input.on("line", async (line) => {
       await backend.apply?.({
         work_ref: message.params.work_ref,
         request,
-        effect: (cleanup) => effects.push(cleanup),
+        effect: (cleanup) => {
+          if (closing || typeof cleanup !== "function") throw new Error("插件生命周期已结束或清理函数无效。");
+          effects.push(cleanup);
+        },
       });
       ready = true;
       result = { host_api: "1" };
@@ -109,5 +120,5 @@ input.on("line", async (line) => {
   }
 });
 input.on("close", () => {
-  void dispose();
+  void dispose().catch(() => { process.exitCode = 1; });
 });

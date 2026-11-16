@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import type { SurfaceContext } from "./contributions.tsx";
 import { readWorkContent } from "./work-content.ts";
 import { WorkCover } from "./work-cover.tsx";
-import { Icon, IconButton, PageActions } from "./workbench.tsx";
+import { Icon, IconButton, PageActions, Workbench } from "./workbench.tsx";
 import { ArtworkLibrary } from "./artwork.tsx";
 import { CoverWorkbench } from "./covers.tsx";
 import type { Artwork } from "./artwork-model.ts";
@@ -16,10 +16,12 @@ const status: Record<string, string> = {
 };
 
 export function WorkProfile({ work, ai, notify }: SurfaceContext) {
+  const { agentStatus } = React.useContext(Workbench);
   const [value, setValue] =
       useState<Awaited<ReturnType<typeof readWorkContent>>>(),
     [busy, setBusy] = useState(true),
     [error, setError] = useState(""), [coverOpen, setCoverOpen] = useState(false), [coverCandidate, setCoverCandidate] = useState<Artwork>(), [coverTab, setCoverTab] = useState<"candidates" | "local" | "history">("candidates"), [editing, setEditing] = useState<"metadata" | "structure">();
+  const held = busy || agentStatus.state === 'running';
   const generation = useRef(0);
   async function load() {
     const epoch = ++generation.current;
@@ -50,11 +52,12 @@ export function WorkProfile({ work, ai, notify }: SurfaceContext) {
   return (
     <section className="work-profile" aria-label="当前作品资料">
       <PageActions>
-        <IconButton icon="refresh" label="刷新作品资料" disabled={busy} onClick={() => void load()}/>
-        <button onClick={() => ai()}><Icon name="sparkles"/>让 AI 完善作品资料</button>
-        {work.kind === "novel" && <button className="primary" disabled={busy || !value} onClick={() => setEditing("metadata")}>编辑资料</button>}
+        <IconButton icon="refresh" label="刷新作品资料" disabled={held} onClick={() => void load()}/>
+        <button disabled={held} onClick={() => ai()}><Icon name="sparkles"/>让 AI 完善作品资料</button>
+        {work.kind === "novel" && <button className="primary" disabled={held || !value} onClick={() => setEditing("metadata")}>编辑资料</button>}
       </PageActions>
       {busy && <p role="status">正在读取作品资料…</p>}
+      {agentStatus.state === 'running' && <p role="status" className="notice">AI 正在执行编排任务，作品资料已自动锁定。</p>}
       {error && <p role="alert">{error}</p>}
       {value && (
         <>

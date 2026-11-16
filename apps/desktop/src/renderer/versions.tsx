@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { desktop } from "./bridge.ts";
 import type { SurfaceContext } from "./contributions.tsx";
-import { Icon, IconButton, PageActions } from "./workbench.tsx";
+import { Icon, IconButton, PageActions, Workbench } from "./workbench.tsx";
 import "./surface-pages.css";
 
 export function Versions({ work, notify, ai }: SurfaceContext) {
+  const { agentStatus } = React.useContext(Workbench);
   const [status, setStatus] = useState<any>(), [snapshots, setSnapshots] = useState<any[]>([]),
     [history, setHistory] = useState<any[]>([]), [snapshotCursor, setSnapshotCursor] = useState<string>(),
     [historyCursor, setHistoryCursor] = useState<string>(), [view, setView] = useState<any>(),

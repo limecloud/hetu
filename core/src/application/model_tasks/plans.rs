@@ -94,7 +94,7 @@ impl Kernel {
             "模型计划达到任务上限。",
         )?;
         let service = self.model_service()?;
-        let connection = service.identity_for_channel(kind, input["channel_id"].as_str())?;
+        let connection = service.identity_for_channel(MediaKind::from_str(kind)?, input["channel_id"].as_str())?;
         let provider = connection["channel"] == "custom";
         ensure(
             provider == (input["billing_mode"] == "provider"),

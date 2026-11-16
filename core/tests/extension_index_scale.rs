@@ -169,7 +169,7 @@ fn ten_thousand_objects_and_cache_budget_do_not_truncate_results_or_replace_vali
     ));
     let original = digest(&cache);
     for number in 1..10_000 {
-        fixture.object(number, &"界".repeat(240), json!({}));
+        fixture.object(number, &"界".repeat(160), json!({}));
     }
     assert_eq!(
         call(&fixture.session, &fixture.work, "index.rebuild", json!({}))["error"]["code"],

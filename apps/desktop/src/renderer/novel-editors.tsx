@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { desktop } from "./bridge.ts";
-import { IconButton } from "./workbench.tsx";
+import { IconButton, Workbench } from "./workbench.tsx";
 import "./novel-editors.css";
 
 export function NovelEditor({ kind, documents, onClose, onSaved }: { kind: "metadata" | "structure"; documents: any[]; onClose: () => void; onSaved: () => void }) {
+  const { agentStatus } = React.useContext(Workbench);
   const dialog = useRef<HTMLDialogElement>(null), live = useRef(true);
   const [base, setBase] = useState<any>(), [draft, setDraft] = useState<any>(), [busy, setBusy] = useState(false), [error, setError] = useState(""),
     [journal, setJournal] = useState<any>(), [discarding, setDiscarding] = useState(false), [volumeTitle, setVolumeTitle] = useState("");
   const dirty = !!base && JSON.stringify(draft) !== JSON.stringify(kind === "metadata" ? base.novel.metadata : { volumes: base.novel.volumes, chapters: base.novel.chapters });
-  const held = busy || journal?.status === "pending";
+  const held = busy || journal?.status === "pending" || agentStatus.state === 'running';
   async function run(action: () => Promise<unknown>) {
     if (busy) return;
     setBusy(true); setError("");
@@ -48,6 +49,7 @@ export function NovelEditor({ kind, documents, onClose, onSaved }: { kind: "meta
   return <dialog ref={dialog} className={"novel-editor " + (kind === "structure" ? "novel-structure-editor" : "")} aria-label={kind === "metadata" ? "编辑作品资料" : "整理卷章结构"} onClose={onClose} onCancel={e => { e.preventDefault(); close(); }}>
     <header><h2>{kind === "metadata" ? "作品资料" : "整理卷章结构"}</h2><IconButton icon="close" label="关闭编辑窗口" disabled={held} onClick={close}/></header>
     {error && <p role="alert">{error}</p>}
+    {agentStatus.state === 'running' && <p role="status" className="notice">AI 正在执行编排任务，编辑器已自动锁定以防冲突。</p>}
     {discarding && <div className="recover"><p>修改尚未保存。</p><button onClick={() => setDiscarding(false)}>继续编辑</button><button onClick={() => dialog.current?.close()}>放弃修改并关闭</button></div>}
     {journal?.status === "pending" && <div className="recover"><p>原保存结果尚未确认。</p><button disabled={busy} onClick={() => void run(async () => { await desktop.novel("recover"); await saved(); })}>恢复原小说操作</button></div>}
     {!draft ? <p role="status">正在读取作品资料…</p> : <>

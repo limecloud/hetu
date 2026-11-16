@@ -1,4 +1,13 @@
-import { expect, type Page } from "@playwright/test";
+import { expect, type Page, type ElectronApplication } from "@playwright/test";
+
+/** 设置使用独立窗口，重复打开复用同一窗口。 */
+export async function openSettings(application: ElectronApplication, page: Page) {
+  await page.getByRole("button", { name: "本机设置", exact: true }).first().click();
+  await expect.poll(() => application.windows().some(window => window.url().endsWith("?view=settings"))).toBe(true);
+  const settings = application.windows().find(window => window.url().endsWith("?view=settings"))!;
+  await expect(settings.getByRole("region", { name: "本机设置", exact: true })).toBeVisible();
+  return settings;
+}
 
 /** 窄窗口会自动收起目录，沿作者可见的入口重新打开。 */
 export async function openDirectory(page: Page) {

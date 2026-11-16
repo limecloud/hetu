@@ -135,6 +135,7 @@ test("cover previews decode locally and preserve the original aspect ratio", asy
   data.image_previews = [{ candidate_id: "candidate_cover", media_type: "image/jpeg", base64: (await readFile("../../assets/illustrations/library/cover-river-jade.jpg")).toString("base64"), width: 768, height: 1152 }];
   const { view } = await open(page, value);
   const image = view.getByRole("img", { name: "封面参考" });
+  await expect(view.locator(".candidate .badge")).toHaveText("图片候选");
   await image.evaluate(async image => { await (image as HTMLImageElement).decode(); });
   const dimensions = await image.evaluate(image => ({ width: image.getBoundingClientRect().width, height: image.getBoundingClientRect().height, fit: getComputedStyle(image).objectFit }));
   expect(dimensions.width / dimensions.height).toBeCloseTo(2 / 3, 2);

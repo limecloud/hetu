@@ -77,13 +77,52 @@ test("依赖缺失与环不会留下半注册贡献；清理失败仍继续释�
   });
   await assert.rejects(() => effects.dispose());
   assert.deepEqual(released, ["second", "first"]);
-  await effects.dispose();
+  await assert.rejects(() => effects.dispose(), /插件清理失败/);
   const slots = new SlotRegistry();
   const scope = new EffectScope();
   slots.register("a", "view", {}, scope);
   assert.throws(() => slots.register("b", "view", {}, scope));
   await scope.dispose();
   assert.equal(slots.list().length, 0);
+});
+
+test("并发启用、停用和替换按依赖图过渡顺序完成", async () => {
+  const base = await PluginPackage.inspect(path.join(root, "plugins/timeline/dist"));
+  async function pkg(id: string, dependency?: string, version = "1.0.0") {
+    const directory = await mkdtemp(path.join(os.tmpdir(), "hetu-lifecycle-"));
+    for (const [name, bytes] of base.entries()) await writeFile(path.join(directory, name), bytes);
+    await writeFile(path.join(directory, "plugin.json"), JSON.stringify({ ...base.manifest, id, version,
+      dependencies: dependency ? [{ id: dependency, version: "1.0.0" }] : [] }));
+    return PluginPackage.inspect(directory);
+  }
+  const a = await pkg("org.test.consumer", "org.test.provider"), b = await pkg("org.test.provider");
+  const host = new PluginHost(); host.add(a); host.add(b);
+  await Promise.all([host.enable(a.manifest.id), host.enable(a.manifest.id)]);
+  assert.equal(host.views.list().length, 2);
+  assert.equal(host.active(a.manifest.id), true);
+  await host.disable(b.manifest.id);
+  await Promise.all([host.enable(a.manifest.id), host.disable(b.manifest.id)]);
+  assert.equal(host.views.list().length, 0);
+  assert.ok(host.states().every(state => state.state === "disabled"));
+  const replacement = await pkg(b.manifest.id, undefined, "2.0.0");
+  await Promise.all([host.enable(a.manifest.id), host.replace(replacement)]);
+  assert.equal(host.views.list().length, 0);
+  assert.equal(host.package(b.manifest.id).manifest.version, "2.0.0");
+  await Promise.all([host.enable(a.manifest.id), host.remove(b.manifest.id)]);
+  assert.equal(host.active(a.manifest.id), false);
+  assert.equal(host.has(b.manifest.id), false);
+});
+
+test("重复清理等待同一次完成且拒绝晚到注册", async () => {
+  const scope = new EffectScope();
+  let finish!: () => void, released = 0;
+  scope.effect(() => new Promise<void>(resolve => { finish = () => { released++; resolve(); }; }));
+  const first = scope.dispose(), second = scope.dispose();
+  assert.equal(first, second);
+  assert.throws(() => scope.effect(() => {}), /生命周期已结束/);
+  await Promise.resolve(); finish();
+  await Promise.all([first, second]);
+  assert.equal(released, 1);
 });
 
 test("真实依赖环、替换和卸载会清理依赖贡献", async () => {

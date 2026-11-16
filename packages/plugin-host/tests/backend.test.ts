@@ -148,3 +148,34 @@ test("并发恢复稿以最后一次输入为准，损坏文件保持可诊断",
   await writeFile(file, "broken");
   await assert.rejects(() => store.read(file), /无法读取/);
 });
+
+test("后端清理按倒序全部尝试，失败回报且重复关闭共享结果", async () => {
+  const directory = await mkdtemp(path.join(os.tmpdir(), "hetu-cleanup-"));
+  await writeFile(path.join(directory, "plugin.json"), JSON.stringify({
+    manifest_version: 1, host_api: "1", id: "org.test.cleanup", version: "1.0.0",
+    display: { "zh-CN": "清理测试", en: "Cleanup" }, description: { "zh-CN": "清理测试", en: "Cleanup" },
+    license: "MIT", permissions: [], dependencies: [], runtime: { entry: "backend.mjs" },
+    contributions: { views: [], data: [], actions: [] },
+  }));
+  await writeFile(path.join(directory, "backend.mjs"), `
+    export function apply(ctx) {
+      ctx.effect(() => ctx.request("hetu.extensions.objects.list", { marker: "first" }));
+      ctx.effect(() => { throw new Error("private cleanup detail"); });
+      ctx.effect(() => ctx.request("hetu.extensions.objects.list", { marker: "last" }));
+    }
+  `);
+  const calls: unknown[] = [];
+  const backend = new BackendSupervisor({ node: process.execPath,
+    bootstrap: path.join(root, "packages/plugin-host/src/worker.mjs"), snapshot: directory,
+    pkg: await PluginPackage.inspect(directory), work_ref: work,
+    request: async (_action, input) => { calls.push(input.marker); return { spec_version: "0.2.1", status: "succeeded", data: {} }; },
+  });
+  try {
+    await backend.initialize();
+    const first = backend.dispose(), second = backend.dispose();
+    assert.equal(first, second);
+    await assert.rejects(first, error => String(error).includes("runtime_failure") && !String(error).includes("private cleanup detail"));
+    assert.deepEqual(calls, ["last", "first"]);
+    await assert.rejects(second);
+  } finally { backend.close(); }
+});

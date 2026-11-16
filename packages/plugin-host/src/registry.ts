@@ -4,13 +4,18 @@ export type Dispose = () => void | Promise<void>;
 export class EffectScope {
   #effects: Dispose[] = [];
   #closed = false;
+  #disposal?: Promise<void>;
   effect(dispose: Dispose) {
     if (this.#closed) throw new Error("贡献生命周期已结束。");
     this.#effects.push(dispose);
   }
-  async dispose() {
-    if (this.#closed) return;
+  dispose(): Promise<void> {
+    if (this.#disposal) return this.#disposal;
     this.#closed = true;
+    this.#disposal = Promise.resolve().then(() => this.#dispose());
+    return this.#disposal;
+  }
+  async #dispose() {
     const errors = [];
     for (const dispose of this.#effects.reverse()) {
       try {
@@ -55,6 +60,13 @@ export class PluginHost {
   #packages = new Map<string, PluginPackage>();
   #states = new Map<string, PluginState>();
   #scopes = new Map<string, EffectScope>();
+  #transition: Promise<unknown> = Promise.resolve();
+  /** 依赖图共享贡献；过渡串行化，防止迟到启用复活已停用的包。 */
+  #enqueue<T>(action: () => Promise<T>): Promise<T> {
+    const pending = this.#transition.then(action);
+    this.#transition = pending.catch(() => {});
+    return pending;
+  }
   add(pkg: PluginPackage) {
     if (this.#packages.has(pkg.manifest.id))
       throw new Error("同一插件已安装；升级须固定新版本并重新授权。");
@@ -74,9 +86,12 @@ export class PluginHost {
   has(id: string) {
     return this.#packages.has(id);
   }
-  async replace(pkg: PluginPackage) {
+  replace(pkg: PluginPackage) {
+    return this.#enqueue(() => this.#replace(pkg));
+  }
+  async #replace(pkg: PluginPackage) {
     this.package(pkg.manifest.id);
-    await this.disable(pkg.manifest.id);
+    await this.#disable(pkg.manifest.id);
     this.#packages.set(pkg.manifest.id, pkg);
     this.#states.set(pkg.manifest.id, {
       id: pkg.manifest.id,
@@ -85,15 +100,20 @@ export class PluginHost {
       state: "installed",
     });
   }
-  async remove(id: string) {
-    await this.disable(id);
-    this.#packages.delete(id);
-    this.#states.delete(id);
+  remove(id: string) {
+    return this.#enqueue(async () => {
+      await this.#disable(id);
+      this.#packages.delete(id);
+      this.#states.delete(id);
+    });
   }
   states() {
     return [...this.#states.values()].map((s) => ({ ...s }));
   }
-  async enable(id: string, visiting = new Set<string>()) {
+  enable(id: string) {
+    return this.#enqueue(() => this.#enable(id));
+  }
+  async #enable(id: string, visiting = new Set<string>()) {
     const pkg = this.package(id),
       state = this.#states.get(id)!;
     if (state.state === "active") return;
@@ -105,7 +125,7 @@ export class PluginHost {
       for (const dep of pkg.manifest.dependencies) {
         if (this.package(dep.id).manifest.version !== dep.version)
           throw new Error("依赖版本不匹配：" + dep.id);
-        await this.enable(dep.id, new Set(visiting));
+        await this.#enable(dep.id, new Set(visiting));
         if (this.#states.get(dep.id)?.state !== "active")
           throw new Error("依赖未就绪：" + dep.id);
       }
@@ -122,14 +142,17 @@ export class PluginHost {
       state.reason = error instanceof Error ? error.message : "插件加载失败。";
     }
   }
-  async disable(id: string) {
+  disable(id: string) {
+    return this.#enqueue(() => this.#disable(id));
+  }
+  async #disable(id: string) {
     for (const [other, pkg] of this.#packages) {
       if (
         other !== id &&
         pkg.manifest.dependencies.some((d) => d.id === id) &&
         this.#states.get(other)?.state === "active"
       )
-        await this.disable(other);
+        await this.#disable(other);
     }
     const state = this.#states.get(id);
     if (!state) throw new Error("插件未安装。");

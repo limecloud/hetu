@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-11-16",
+  "kind": "deepseek-harness-plugin-source-review",
+  "source": {
+    "url": "https://github.com/deepseek-ai/deepseek-harness",
+    "commit": "39163dd30f703a79079e2d2446545cff3c453738",
+    "default_branch": "master"
+  },
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "0f5516be2acde776f05572cbc8c3093c90549afe04ce118e11157d073d5d15f4",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/README.md",
+      "bytes": 2673
+    },
+    {
+      "path": "docs/architecture.md",
+      "sha256": "6a075f9477ef2c5265568b986ea5edfefcf581da4050f7ccf32e3247875ea942",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/docs/architecture.md",
+      "bytes": 18922
+    },
+    {
+      "path": "packages/boot/plugin-manager/src/index.ts",
+      "sha256": "3134e3dfe38b90ef0560ea3d672e7e7adeb6ae9a3dfbcd03b7de959711bc1340",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/packages/boot/plugin-manager/src/index.ts",
+      "bytes": 86750
+    },
+    {
+      "path": "packages/boot/plugin-manager/src/operations.ts",
+      "sha256": "a1206c627d45a409b8144171645a727654244e5338215e7e999a6ef3c4bc2422",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/packages/boot/plugin-manager/src/operations.ts",
+      "bytes": 36542
+    },
+    {
+      "path": "packages/client/ui-plugin-manager/src/client/slot-contract.ts",
+      "sha256": "5143aad0d042f8f20fc926c8800f1f49d7153f23a8423182da1a79a7f50a44ba",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/packages/client/ui-plugin-manager/src/client/slot-contract.ts",
+      "bytes": 9670
+    },
+    {
+      "path": "packages/extensions/cordis-client-runner/src/client/runtime.ts",
+      "sha256": "6c12cbcb6aac2ee9d56828b88651738fbc164fc4c2fbbdd989de713520264fd7",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/packages/extensions/cordis-client-runner/src/client/runtime.ts",
+      "bytes": 21837
+    },
+    {
+      "path": "packages/extensions/cordis-client-runner/src/client/orchestrator.ts",
+      "sha256": "4c402e8c9256a1d052b6e71495eacc01caf24b217deec20139f0f419f11786df",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/packages/extensions/cordis-client-runner/src/client/orchestrator.ts",
+      "bytes": 15914
+    },
+    {
+      "path": "packages/typert/loader/src/index.ts",
+      "sha256": "36c3adc83094b56c9f021eca0b5be2050b254b237b7c980b4c1da56645a6d379",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/packages/typert/loader/src/index.ts",
+      "bytes": 24233
+    },
+    {
+      "path": "apps/plugin-market-generator/src/sources.ts",
+      "sha256": "3e9679c08dd4c32cfd9d26896e15a3e605d45465bd5375ed2fdcf09d8a7beaac",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/apps/plugin-market-generator/src/sources.ts",
+      "bytes": 2230
+    },
+    {
+      "path": "apps/plugin-market-generator/src/packages.ts",
+      "sha256": "be2f988a1ad86bd3a49aa33719590a0792a5dc697e98f4866afe5a80eec37f2f",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/apps/plugin-market-generator/src/packages.ts",
+      "bytes": 10299
+    },
+    {
+      "path": "docs/cookbook/adding-a-plugin-preview.md",
+      "sha256": "ff26e678c6e8746d01bbda6690ed4f62f9f0f1081643302c4409a79a14278469",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/docs/cookbook/adding-a-plugin-preview.md",
+      "bytes": 3913
+    },
+    {
+      "path": "docs/cordis-tutorial/01-first-plugin.md",
+      "sha256": "d9e7fb1f2b1f14fa721c11fa390a3c852026ca5587fcde583baeb2e8896c6271",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/docs/cordis-tutorial/01-first-plugin.md",
+      "bytes": 3415
+    },
+    {
+      "path": "docs/upgrade-guide/v0.2.0-rc.2/subpath-plugin-display-manifest/guide.md",
+      "sha256": "e3eaadd5fd8cf8e0880a8a71c1d6c8ed241d8f0ea5f4f864de805f93480b16c0",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/docs/upgrade-guide/v0.2.0-rc.2/subpath-plugin-display-manifest/guide.md",
+      "bytes": 1637
+    },
+    {
+      "path": "docs/upgrade-guide/v0.2.1-alpha.1/jsonl-persistence-plugin/guide.md",
+      "sha256": "9b1f3ab2d0192e7f76bf6cc7c3f16a9068257f5a4485b1f3f8e34bcf35667d3e",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/docs/upgrade-guide/v0.2.1-alpha.1/jsonl-persistence-plugin/guide.md",
+      "bytes": 1684
+    },
+    {
+      "path": "docs/upgrade-guide/v0.2.1-alpha.1/plugin-option-placement/guide.md",
+      "sha256": "3943ae43c7fe0bf89a7aea9033d76a4b1875f6a3cab0a1f5a12a2de1b89b9830",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/39163dd30f703a79079e2d2446545cff3c453738/docs/upgrade-guide/v0.2.1-alpha.1/plugin-option-placement/guide.md",
+      "bytes": 1577
+    }
+  ],
+  "findings": [
+    {
+      "mechanism": "组合与依赖",
+      "source": "docs/architecture.md",
+      "observation": "Cordis Context注册服务、事件与可撤销effects；配置层组合profile与bundle，依赖决定就绪顺序。",
+      "hetu": "清单声明依赖与视图/动作/数据贡献；Rust只持有领域事务与确定性权限。"
+    },
+    {
+      "mechanism": "生命周期串行化",
+      "source": "packages/extensions/cordis-client-runner/src/client/runtime.ts",
+      "observation": "按插件串行load/unload，固定package及run身份，卸载释放loader项、factory与样式。",
+      "hetu_gap": "宿主enable遇到异步依赖时可与disable/replace交错；补齐依赖图过渡队列。"
+    },
+    {
+      "mechanism": "Host与Client分工",
+      "source": "packages/extensions/cordis-client-runner/src/client/orchestrator.ts",
+      "observation": "Host激活先于Client加载，同一插件状态持有进行中的批准和错误。",
+      "hetu": "第三方Client使用隔离WebContentsView，后端受管Node；不复制Agent循环。"
+    },
+    {
+      "mechanism": "生态来源",
+      "source": "apps/plugin-market-generator/src/sources.ts",
+      "observation": "索引接收npm包和HTTPS Git来源并去重；条目数量不证明兼容或经过审核。",
+      "hetu": "当前交付预构建固定包与创建/校验开发工具，生态分发另行验收。"
+    }
+  ],
+  "verification_scope": "公开源码静态核对；未运行Harness，也不声明河图兼容DSH包。河图变更验证另记checks。",
+  "checks": {
+    "status": "in_progress"
+  }
+}

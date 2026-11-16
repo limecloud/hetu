@@ -1,5 +1,5 @@
 use super::*;
-use crate::model_service::{ModelService, plan_digest};
+use crate::model_service::{MediaKind, ModelService, plan_digest};
 mod approval;
 mod authorization;
 mod collection;
@@ -41,7 +41,7 @@ fn credits(value: &Value) -> Result<u128> {
         .ok_or_else(|| Error::new("invalid_input", "额度必须为非负整数字符串。"))
 }
 fn plan_connection(service: &ModelService, plan: &Value) -> Result<Value> {
-    service.identity_for_channel(text(plan, "kind")?, plan["channel_id"].as_str())
+    service.identity_for_channel(MediaKind::from_str(text(plan, "kind")?)?, plan["channel_id"].as_str())
 }
 impl Kernel {
     pub(super) fn dispatch_model_local(

@@ -142,6 +142,22 @@ test(
     await page
       .getByRole("combobox", { name: "当前审阅任务" })
       .selectOption(context.task_ref.task_id);
+    // 外观更新同一审核面板，不能丢弃作者尚未保存的意见。
+    const taskView = page.frameLocator("iframe");
+    const feedback = taskView.getByLabel("补充要求或意见");
+    await feedback.fill("保留当前意见");
+    await page.emulateMedia({ colorScheme: "light" });
+    for (const appearance of ["dark", "light", "system"]) {
+      await page.evaluate((value) => {
+        document.documentElement.dataset.appearance = value;
+      }, appearance);
+      await expect(taskView.locator("html")).toHaveAttribute("data-theme", appearance === "dark" ? "dark" : "light");
+      await expect(feedback).toHaveValue("保留当前意见");
+    }
+    await page.emulateMedia({ colorScheme: "dark" });
+    await expect(taskView.locator("html")).toHaveAttribute("data-theme", "dark");
+    await expect(feedback).toHaveValue("保留当前意见");
+    await feedback.fill("");
     await page.getByText("采纳到作者正文", { exact: true }).click();
     await page
       .getByRole("combobox", { name: "采纳参考方案" })

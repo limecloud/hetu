@@ -444,7 +444,6 @@ impl LocalSettings {
                 let mut fields = vec!["work_ref", "expected_revision", "agent_client", "suite_id", "operation_key"];
                 if package { fields.push("directory"); }
                 closed(params, &fields)?;
-                ensure(params.get("work_ref").is_some(), "invalid_input", "请指定当前作品。")?;
                 let scope_key = association_key(params)?;
                 validate_patch(&json!({"agent_client":params["agent_client"]}))?;
                 suites::inspect(text(params, "suite_id")?)?;
@@ -466,6 +465,9 @@ impl LocalSettings {
                     let package_key = format!("{}:{}", text(params, "agent_client")?, text(params, "suite_id")?);
                     next["package_directories"][package_key] = params["directory"].clone();
                 } else {
+                    if scope_key == "default" {
+                        next["preferences"]["agent_client"] = params["agent_client"].clone();
+                    }
                     next["associations"][scope_key] = json!({"client":params["agent_client"],"suite":params["suite_id"],"work_ref":params["work_ref"]});
                 }
                 next["revision"] = json!(next["revision"].as_u64().unwrap() + 1);

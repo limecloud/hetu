@@ -3,11 +3,12 @@ import { mkdtemp } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import os from "node:os";
+import { openSettings, openDirectory } from "./navigation.ts";
 import { PluginPackage } from "../../../packages/plugin-host/src/package.ts";
 
 const root = path.resolve(import.meta.dirname, "../../..");
 test("Mac工作台布局、正文操作与阅读位置在真实Core中贯通", async () => {
-  test.setTimeout(180000);
+  test.setTimeout(300000);
   const folder = await mkdtemp(path.join(os.tmpdir(), "hetu-native-workbench-"));
   const workspace = path.join(folder, "作品"), access = path.join(folder, "access");
   const pkg = await PluginPackage.inspect(path.join(root, "plugins/relationships/dist"));
@@ -46,6 +47,7 @@ test("Mac工作台布局、正文操作与阅读位置在真实Core中贯通", a
     const content = Array.from({length: 90}, (_, i) => `第${i + 1}段：清晨的雾气沿着山谷缓缓流动。江岚把旧日记放回书袋，沿海岸寻找灯塔。每一封信，都有自己的来处。`).join("\n");
     expect((await read("hetu.documents.save", { document_id: context.document.document_id,
       base_revision_id: original.revision.revision_id, source_format: "markdown", content, operation_key: "native-workbench-sample" })).status).toBe("succeeded");
+    await openDirectory(page);
     await page.getByRole("button", { name: "第一章 雾港", exact: true }).click();
     const editor = page.getByRole("textbox", { name: "文稿编辑", exact: true });
     await expect(editor).toBeVisible();
@@ -73,7 +75,13 @@ test("Mac工作台布局、正文操作与阅读位置在真实Core中贯通", a
     await expect.poll(() => page.locator(".cm-scroller").evaluate((element) => element.scrollTop)).toBeGreaterThan(900);
     await page.getByRole("button", { name: "作品资料", exact: true }).click();
     await expect(page.getByRole("region", { name: "当前作品资料", exact: true }).getByRole("heading", { name: "插件集成测试", exact: true })).toBeVisible();
+    await expect.poll(() => page.locator(".default-cover img").first().evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0)).toBe(true);
+    expect(await size(".profile-cover .work-cover")).toEqual({ width: 168, height: 252 });
     expect(await page.evaluate(async () => (await (window as any).hetuDesktop.read("hetu.covers.get", {})).data.cover)).toBeNull();
+    await page.locator('summary[aria-label="更多封面操作"]').click();
+    await page.getByRole("button", { name: "封面历史", exact: true }).click();
+    await expect(page.getByRole("tab", { name: "历史", exact: true })).toHaveAttribute("aria-selected", "true");
+    await page.getByRole("button", { name: "关闭封面窗口", exact: true }).click();
     await page.screenshot({ path: path.join(root, "output/desktop-native-qa/work-profile.png") });
     await page.getByRole("button", { name: "小说", exact: true }).click();
     await expect(editor).toBeVisible();
@@ -122,17 +130,15 @@ test("Mac工作台布局、正文操作与阅读位置在真实Core中贯通", a
     expect(notes[0].source_ref.byte_start).toBe(0);
     expect(notes[0].source_ref.byte_end).toBe(4);
     await page.getByRole("button", { name: "关闭检查器", exact: true }).click();
-    await page.getByRole("button", { name: "本机设置", exact: true }).first().click();
-    const dialog = page.getByRole("dialog");
-    await expect(dialog).toBeVisible();
-    await expect(dialog.getByText("阅读与工作台偏好", { exact: true })).toBeVisible();
-    await page.screenshot({ path: path.join(root, "output/desktop-native-qa/settings.png") });
-    await page.getByRole("tab", { name: "写作", exact: true }).click();
-    await expect(page.locator(".settings-reading-preview")).toBeVisible();
-    await page.locator(".settings-reading-preview").scrollIntoViewIfNeeded();
-    await page.screenshot({ path: path.join(root, "output/rea-mac-ui-20261116/settings-writing.png") });
-    await page.keyboard.press("Escape");
-    await expect(dialog).toBeHidden();
+    const settingsPage = await openSettings(application, page);
+    await expect(settingsPage.getByRole("tab", { name: "通用", exact: true })).toHaveAttribute("aria-selected", "true");
+    await settingsPage.screenshot({ path: path.join(root, "output/desktop-native-qa/settings.png") });
+    await settingsPage.getByRole("tab", { name: "写作", exact: true }).click();
+    await expect(settingsPage.locator(".settings-reading-preview")).toBeVisible();
+    await settingsPage.locator(".settings-reading-preview").scrollIntoViewIfNeeded();
+    await settingsPage.screenshot({ path: path.join(root, "output/rea-mac-ui-20261116/settings-writing.png") });
+    await settingsPage.keyboard.press("Escape");
+    await expect(settingsPage).toBeClosed();
     await page.evaluate(() => { document.documentElement.dataset.appearance = "dark"; document.documentElement.style.colorScheme = "dark"; });
     expect(await page.locator(".manuscript-paper").evaluate((element) => getComputedStyle(element).backgroundColor)).toBe("rgb(16, 18, 17)");
     await page.screenshot({ path: path.join(root, "output/desktop-native-qa/manuscript-dark.png") });

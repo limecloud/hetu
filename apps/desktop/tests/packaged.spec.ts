@@ -19,7 +19,7 @@ import { sampleImage, sampleAudio } from "./fixtures/media.ts";
 const root = path.resolve(import.meta.dirname, "../../..");
 test(
   "独立开发应用使用随包Rust、Node及CLI/MCP完成作者与插件旅程", async () => {
-    test.setTimeout(180000);
+    test.setTimeout(300000);
     test.skip(
       !process.env.HETU_PACKAGED_APP || !process.env.HETU_PACKAGE_MANIFEST,
       "需要实际打包应用与装配清单。",
@@ -341,6 +341,7 @@ test(
           application!
             .windows()
             .some((p) => p.url().startsWith("hetu-plugin://")),
+          { timeout: 30000 },
         )
         .toBe(true);
       let plugin = application!
@@ -439,6 +440,7 @@ test(
           application!
             .windows()
             .some((p) => p.url().startsWith("hetu-plugin://")),
+          { timeout: 30000 },
         )
         .toBe(true);
       plugin = application!

@@ -33,7 +33,7 @@ const messages = {
     error: "任务操作未完成：", source: "查看固定参考资料（只读）", readSource: "读取原文", nextSource: "下一段", sourceIndex: "返回设定目录", moreSourceEntries: "更多设定", characters: "人物", factions: "势力", locations: "地点", timeline: "时间线", world: "世界观", rules: "规则", imageMissing: "此候选没有可显示的缩略图，请回桌面端核对原图。",
     partial: "部分结果", missing: "缺少的结果", select: "选择这个方案", selected: "已记录的意见", closed: "任务已关闭，请回桌面端查看历史。",
     scopeChanged: "此面板绑定原任务，不能切换作品或任务。请重新打开对应任务面板。",
-    concept: "故事方向", titleKind: "书名", synopsis: "简介", outline: "大纲", text: "参考稿", image: "封面候选", before: "原文", after: "建议", change: "改动", bible: "设定集", noSources: "这个任务没有附加参考资料。", readonly: "宿主未提供工具交互能力，请回桌面端保存意见。",
+    concept: "故事方向", titleKind: "书名", synopsis: "简介", outline: "大纲", text: "参考稿", image: "图片候选", before: "原文", after: "建议", change: "改动", bible: "设定集", noSources: "这个任务没有附加参考资料。", readonly: "宿主未提供工具交互能力，请回桌面端保存意见。",
   },
   en: {
     title: "Compare references", boundary: "Preferences only. Adopt and finalize in Hetu Luoshu.",
@@ -47,7 +47,7 @@ const messages = {
     error: "Task operation did not complete: ", source: "View fixed reference material (read-only)", readSource: "Read source", nextSource: "Next passage", sourceIndex: "Back to story bible index", moreSourceEntries: "More entries", characters: "Characters", factions: "Factions", locations: "Locations", timeline: "Timeline", world: "World", rules: "Rules", imageMissing: "A preview is unavailable. Inspect the original image in the desktop app.",
     partial: "Partial results", missing: "Missing results", select: "Choose this option", selected: "Recorded feedback", closed: "This task is closed. Open its history in the desktop app.",
     scopeChanged: "This view is bound to its original task. Open a new panel to change tasks or books.",
-    concept: "Story direction", titleKind: "Book title", synopsis: "Synopsis", outline: "Outline", text: "Reference draft", image: "Cover candidate", before: "Original", after: "Suggestion", change: "Change", bible: "Story bible", noSources: "No additional reference material is attached to this task.", readonly: "The host has not enabled tool interactions. Save feedback in the desktop app.",
+    concept: "Story direction", titleKind: "Book title", synopsis: "Synopsis", outline: "Outline", text: "Reference draft", image: "Image candidate", before: "Original", after: "Suggestion", change: "Change", bible: "Story bible", noSources: "No additional reference material is attached to this task.", readonly: "The host has not enabled tool interactions. Save feedback in the desktop app.",
   },
 };
 

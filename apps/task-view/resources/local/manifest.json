@@ -2,9 +2,9 @@
   "schema_version": "1.0.0",
   "ipc_revision": "1",
   "source_sha256": {
-    "src/app.ts": "e435859ad612e841f76ce4519a69697a21f9b42194ce80f36c5129ed9595b7ba",
+    "src/app.ts": "97bff85dd5d8be4231c0eed6fcf00ac9fa8e2889cb0d1322207bf013f6194155",
     "src/app.css": "c6bb7d456f8420d3278423fb2225782aa6349a05146169ac94ea09dc1a208625",
-    "../../assets/styles/radix-workbench.css": "a0da53683add0848340b526913bb890a55d687cb8a725e935fa5b8f1dfc220d9",
+    "../../assets/styles/radix-workbench.css": "f1fc71ce2529ef96bbb9c066ee5229e7601b437c42ca0d9a4f62ed05bf2cda6b",
     "scripts/build.mjs": "35c3c54a54aa45e9b3cfb1f02d85d52ae3aeb6d68f65124bc3b5e33760a0cab5",
     "package.json": "d40d4e202823a804030d16fcd72d77493a8277f061185d9576408c2f56fb09d6",
     "THIRD-PARTY-NOTICES.txt": "64e64f33d6dd0f206ffa47b474d43ffd8df1fd295bc87ccf59428003892ac78b",
@@ -15,8 +15,8 @@
   "files": {
     "host.js": "2172d6a93a1c54e5247e5e0909487ea463b325cecf3b2d5a61ae7946ca0078b1",
     "server.mjs": "3f01a663aa4b04b45f17e5103af9874ad947beb41d2982a2a339dc711fb0ad47",
-    "index.html": "1ea28327a8325424958301072b2c2dabd8e178265f5a2c3ba85a89a6056be2e0",
-    "task-view.html": "f66a732ac7b168c1cad58035fc078f6ac2897f84e3a1184db14d090dbf516376",
+    "index.html": "3ea327ded5ce6e84be1bea31ba37325dc3ea943940eaa1fb1599bd2485182ec0",
+    "task-view.html": "dc4dc8a1424131f0804546bf452b304842d908b8ac98876eb96793efb5af4d03",
     "THIRD-PARTY-NOTICES.txt": "64e64f33d6dd0f206ffa47b474d43ffd8df1fd295bc87ccf59428003892ac78b"
   }
 }

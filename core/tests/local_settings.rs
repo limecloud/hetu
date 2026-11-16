@@ -213,6 +213,31 @@ fn work_associations_are_exact_replayable_and_do_not_change_defaults_or_siblings
     assert_eq!(data(call(&service,"codex","get",json!({})))["preferences"],original["preferences"]);
 }
 
+#[test]
+fn default_association_replays_without_overwriting_exact_work_choices() {
+    let folder = tempfile::tempdir().unwrap();
+    let service = LocalSettings::open(folder.path()).unwrap();
+    let work = json!({"workspace_id":"workspace_11111111-1111-4111-8111-111111111111","kind":"novel","object_id":"novel_first"});
+    service.host(json!({"method":"associate","input":{"expected_revision":1,"work_ref":work,"agent_client":"codex","suite_id":"historical-brainstorm","operation_key":"work-choice"}})).unwrap();
+    let selection = json!({"method":"associate","input":{"expected_revision":2,"agent_client":"workbuddy","suite_id":"military","operation_key":"default-choice"}});
+    let result = service.host(selection.clone()).unwrap();
+    assert_eq!(result["revision"], 3);
+    assert_eq!(result["preferences"]["agent_client"], "workbuddy");
+    let reopened = LocalSettings::open(folder.path()).unwrap();
+    assert_eq!(reopened.host(selection.clone()).unwrap(), result);
+    assert_eq!(data(call(&reopened,"codex","get",json!({})))["association"]["suite"], "military");
+    assert_eq!(data(call(&reopened,"codex","get",json!({"work_ref":work})))["association"]["suite"], "historical-brainstorm");
+    let mut changed = selection.clone(); changed["input"]["suite_id"] = json!("general");
+    assert!(reopened.host(changed).is_err());
+    let mut stale = selection; stale["input"]["operation_key"] = json!("stale-default");
+    assert!(reopened.host(stale).is_err());
+    assert_eq!(call(&reopened,"codex","associate",json!({}))["error"]["code"], "hetu.capability_unavailable");
+    let directory = json!({"method":"package_directory","input":{"expected_revision":3,"agent_client":"workbuddy","suite_id":"military","directory":null,"operation_key":"default-auto-detect"}});
+    let selected = reopened.host(directory.clone()).unwrap();
+    assert_eq!(selected["revision"], 4);
+    assert_eq!(reopened.host(directory).unwrap(), selected);
+}
+
 #[cfg(unix)]
 #[test]
 fn suite_installation_recovers_registered_bytes_without_repeating_external_install() {

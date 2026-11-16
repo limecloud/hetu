@@ -2,7 +2,10 @@ import { contextBridge, ipcRenderer } from "electron";
 const invoke =
   (name: string) =>
   (...args: unknown[]) =>
-    ipcRenderer.invoke(name, ...args);
+    ipcRenderer.invoke(name, ...args).catch((error: Error) => {
+      const message = error.message.replace(/^Error invoking remote method '[^']+': (?:Error: )?/, "");
+      throw new Error(message);
+    });
 contextBridge.exposeInMainWorld(
   "hetuDesktop",
   Object.freeze({
@@ -18,17 +21,14 @@ contextBridge.exposeInMainWorld(
     author: invoke("desktop:author"),
     management: invoke("desktop:management"),
     settings: invoke("desktop:settings"),
+    settingsWindow: invoke("desktop:settings-window"),
+    settingsAgent: invoke("desktop:settings-agent"),
     workAgent: invoke("desktop:work-agent"),
     models: invoke("desktop:models"),
     covers: invoke("desktop:covers"),
     novel: invoke("desktop:novel"),
     canon: invoke("desktop:canon"),
     zoom: invoke("desktop:zoom"),
-    onSettingsRequested: (listener: () => void) => {
-      const handler = () => listener();
-      ipcRenderer.on("desktop:open-settings", handler);
-      return () => ipcRenderer.removeListener("desktop:open-settings", handler);
-    },
     onPreferences: (listener: (value: unknown) => void) => {
       const handler = (_event: unknown, value: unknown) => listener(value);
       ipcRenderer.on("desktop:preferences", handler);

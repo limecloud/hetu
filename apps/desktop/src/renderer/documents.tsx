@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { SurfaceContext } from "./contributions.tsx";
 import { desktop, data } from "./bridge.ts";
 import { AuthorEditor, selectedSource } from "./editor.tsx";
@@ -17,6 +17,7 @@ export function Documents({ work, notify, ai }: SurfaceContext) {
   const layout = useRef<HTMLDivElement>(null);
   const [floatingDirectory, setFloatingDirectory] = useState(false);
   const [floatingInspector, setFloatingInspector] = useState(false);
+  const previousLayout = useRef<{ width: number; floatingDirectory: boolean }>();
   const selectionKey = "hetu-document:" + work.workspace_id + ":" + work.object_id;
   const positionKey = selectionKey + ":positions";
   const positions = useRef<Record<string, number>>(JSON.parse(sessionStorage.getItem(positionKey) ?? "{}"));
@@ -75,12 +76,13 @@ export function Documents({ work, notify, ai }: SurfaceContext) {
       generation.current++;
     };
   }, [work, reload]);
-  async function load(document: any) {
+  async function load(document: any, selectedByAuthor = false) {
     if (current.current && text.current !== current.current.content) {
       notify("请先保存当前修改。");
       return;
     }
     const epoch = ++generation.current;
+    if (selectedByAuthor && floatingDirectory) shell.setDirectoryVisible(false);
     setBusy(true);
     try {
       const result = data(
@@ -118,7 +120,6 @@ export function Documents({ work, notify, ai }: SurfaceContext) {
       setRecovery(saved);
       setHistory(data(historyResult).revisions ?? []);
       if (authorOperation?.status === "pending" || authorOperation?.status === "blocked") shell.setInspector(true);
-      if (floatingDirectory) shell.setDirectoryVisible(false);
     } catch (error) {
       notify((error as Error).message);
     } finally {
@@ -230,18 +231,23 @@ export function Documents({ work, notify, ai }: SurfaceContext) {
   }, [selected, content, busy, composing, quote, recovery]);
   useEffect(() => () => shell.setDocumentTools(undefined), []);
   useEffect(() => { if (quote || noteRecovery?.pending) shell.setInspector(true); }, [quote, noteRecovery]);
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!layout.current) return;
-    const observer = new ResizeObserver(([entry]) => {
-      const width = entry.contentRect.width;
+    const measure = (width: number) => {
       const inspectorFloats = width < 680 + 280 + 36 + (shell.directoryVisible ? 210 : 0);
+      const directoryFloats = width < 680 + 210 + 36 + (shell.inspector && !inspectorFloats ? 280 : 0);
       setFloatingInspector(inspectorFloats);
-      setFloatingDirectory(width < 680 + 210 + 36 + (shell.inspector && !inspectorFloats ? 280 : 0));
-    });
+      setFloatingDirectory(directoryFloats);
+      const previous = previousLayout.current;
+      // 首次窄窗或缩窄至浮层时收起；加载和面板切换保留作者刚打开的目录。
+      if (directoryFloats && (!previous || (width < previous.width && !previous.floatingDirectory))) shell.setDirectoryVisible(false);
+      previousLayout.current = { width, floatingDirectory: directoryFloats };
+    };
+    measure(layout.current.getBoundingClientRect().width);
+    const observer = new ResizeObserver(([entry]) => measure(entry.contentRect.width));
     observer.observe(layout.current);
     return () => observer.disconnect();
   }, [shell.inspector, shell.directoryVisible]);
-  useEffect(() => { if (floatingDirectory) shell.setDirectoryVisible(false); }, [floatingDirectory]);
   useEffect(() => {
     const close = (event: KeyboardEvent) => {
       if (event.key !== "Escape" || event.defaultPrevented || document.querySelector("dialog[open]")) return;
@@ -268,7 +274,7 @@ export function Documents({ work, notify, ai }: SurfaceContext) {
         <div className="directory-scroll">
           {loading && <p className="muted directory-message">正在读取完整目录…</p>}
           {loadError && <div className="directory-message" role="alert"><p>{loadError}</p><button onClick={() => setReload((value) => value + 1)}>重新读取文稿目录</button><button onClick={() => ai()}>让 AI 检查目录</button></div>}
-          {groups.map((group, index) => <details key={index} open className="chapter-group"><summary>{group.title}</summary>{group.documents.map((doc) => <button key={doc.document_id} className={selected?.document.document_id === doc.document_id ? "selected" : ""} aria-current={selected?.document.document_id === doc.document_id ? "page" : undefined} onClick={() => void load(doc)}><Icon name="file" size={13}/><span>{doc.title}</span></button>)}</details>)}
+          {groups.map((group, index) => <details key={index} open className="chapter-group"><summary>{group.title}</summary>{group.documents.map((doc) => <button key={doc.document_id} className={selected?.document.document_id === doc.document_id ? "selected" : ""} aria-current={selected?.document.document_id === doc.document_id ? "page" : undefined} onClick={() => void load(doc, true)}><Icon name="file" size={13}/><span>{doc.title}</span></button>)}</details>)}
         </div>
         <div className="directory-footer">{documents.length} {work.kind === "drama" ? "集" : "章"}</div>
       </nav>

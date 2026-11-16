@@ -6,34 +6,45 @@ import {
 import { desktop, data } from "./bridge.ts";
 import type { SurfaceContext } from "./contributions.tsx";
 import { AuthorAdoption } from "./author-review.tsx";
-import { Icon, IconButton, PageActions } from "./workbench.tsx";
+import { Icon, IconButton, PageActions, Workbench } from "./workbench.tsx";
 import "./surface-pages.css";
 
 export function TaskReview({ work, notify, ai }: SurfaceContext) {
+  const { agentStatus, setAgentStatus } = React.useContext(Workbench);
+  const generation = useRef(0);
   const [tasks, setTasks] = useState<any[]>([]),
     [selected, setSelected] = useState<any>(),
     [cursor, setCursor] = useState<string>(),
     [loading, setLoading] = useState(true),
     [failed, setFailed] = useState(false);
   async function load(next?: string) {
+    const epoch = generation.current;
     setLoading(true);
     setFailed(false);
     try {
       const result = data(
         await desktop.tasks("list", undefined, { cursor: next }),
       );
+      if (epoch !== generation.current) return;
       setTasks((old) => (next ? [...old, ...result.tasks] : result.tasks));
       setCursor(result.next_cursor ?? undefined);
+      const reviewable = result.tasks.find((task: any) => task.submission_count > 0 && task.state !== "closed");
+      setAgentStatus(reviewable ? { state: "waiting_for_audit", taskId: reviewable.task_ref.task_id, message: reviewable.brief } : { state: "idle" });
     } catch (error) {
+      if (epoch !== generation.current) return;
       setFailed(true);
       notify((error as Error).message);
     } finally {
-      setLoading(false);
+      if (epoch === generation.current) setLoading(false);
     }
   }
   useEffect(() => {
     void load();
+    return () => { generation.current++; setAgentStatus({ state: "idle" }); };
   }, [work]);
+  useEffect(() => {
+    if (agentStatus.taskId) setSelected(tasks.find(task => task.task_ref.task_id === agentStatus.taskId));
+  }, [tasks, agentStatus.taskId]);
   return (
     <div className="task-review surface-page">
       <PageActions>
@@ -111,19 +122,32 @@ export function TaskPanel({
     let active = true,
       timer: ReturnType<typeof setTimeout>;
     const iframe = frame.current!;
+    const root = document.documentElement;
+    const systemTheme = matchMedia("(prefers-color-scheme: dark)");
+    const theme = (): "dark" | "light" =>
+      root.dataset.appearance === "dark" ||
+      (root.dataset.appearance !== "light" && systemTheme.matches)
+        ? "dark"
+        : "light";
     const bridge = new AppBridge(
       null,
       { name: "Hetu Luoshu author review", version: "0.8.0" },
       { serverTools: {}, serverResources: {} },
       {
         hostContext: {
-          theme: matchMedia("(prefers-color-scheme: dark)").matches
-            ? "dark"
-            : "light",
+          theme: theme(),
           locale: "zh-CN",
         },
       },
     );
+    const syncTheme = () =>
+      bridge.setHostContext({ theme: theme(), locale: "zh-CN" });
+    const appearanceObserver = new MutationObserver(syncTheme);
+    appearanceObserver.observe(root, {
+      attributes: true,
+      attributeFilter: ["data-appearance"],
+    });
+    systemTheme.addEventListener("change", syncTheme);
     const updateJournal = async () => {
       const record = await desktop.tasks("journal", task.task_ref);
       if (active) setJournal(record);
@@ -195,6 +219,8 @@ export function TaskPanel({
     return () => {
       active = false;
       clearTimeout(timer);
+      appearanceObserver.disconnect();
+      systemTheme.removeEventListener("change", syncTheme);
       iframe.src = "about:blank";
       void bridge.close().catch(() => {});
     };

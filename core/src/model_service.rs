@@ -1,5 +1,6 @@
 //! 河图产品服务与作者自定义渠道；凭据只进入本机私密存储，不向 Agent 返回。
 mod custom;
+mod middleware;
 use crate::domain::{self, Error, Result, digest, ensure};
 use crate::infrastructure::store::Store;
 use serde_json::{Value, json};
@@ -9,6 +10,28 @@ use std::{
     path::{Path, PathBuf},
     time::Duration,
 };
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub enum MediaKind {
+    Text,
+    Image,
+}
+
+impl MediaKind {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            MediaKind::Text => "text",
+            MediaKind::Image => "image",
+        }
+    }
+    pub fn from_str(s: &str) -> Result<Self> {
+        match s {
+            "text" => Ok(MediaKind::Text),
+            "image" => Ok(MediaKind::Image),
+            _ => Err(Error::new("invalid_input", "模型种类无效。")),
+        }
+    }
+}
 
 const ORIGIN: &str = "https://hetu.limeai.run";
 const JSON_LIMIT: u64 = 256 * 1024;
@@ -61,17 +84,12 @@ impl ModelService {
             encoded(settings)?,
         )]))
     }
-    pub(crate) fn identity_for(&self, kind: &str) -> Result<Value> {
+    pub(crate) fn identity_for(&self, kind: MediaKind) -> Result<Value> {
         self.identity_for_channel(kind, None)
     }
-    pub(crate) fn identity_for_channel(&self, kind: &str, channel: Option<&str>) -> Result<Value> {
+    pub(crate) fn identity_for_channel(&self, kind: MediaKind, channel: Option<&str>) -> Result<Value> {
         let _lock = self.store.read_lock()?;
         let settings = self.settings()?;
-        ensure(
-            matches!(kind, "text" | "image"),
-            "invalid_input",
-            "模型种类无效。",
-        )?;
         match channel {
             None => self.selected_identity(&settings, kind),
             Some("cloud") => Self::settings_identity(&settings),
@@ -80,7 +98,7 @@ impl ModelService {
     }
     pub(crate) fn authorization_connections(
         &self,
-        kind: &str,
+        kind: MediaKind,
         configured: bool,
     ) -> Result<Vec<Value>> {
         let _lock = self.store.read_lock()?;
@@ -94,7 +112,7 @@ impl ModelService {
         }
         if let Some(channels) = settings["custom_channels"].as_object() {
             for (channel, profile) in channels {
-                if profile["models"][kind]
+                if profile["models"][kind.as_str()]
                     .as_array()
                     .is_some_and(|models| !models.is_empty())
                 {
@@ -109,13 +127,8 @@ impl ModelService {
         )?;
         Ok(connections)
     }
-    fn selected_identity(&self, settings: &Value, kind: &str) -> Result<Value> {
-        ensure(
-            matches!(kind, "text" | "image"),
-            "invalid_input",
-            "模型种类无效。",
-        )?;
-        let channel = settings["channels"][kind].as_str().unwrap_or("cloud");
+    fn selected_identity(&self, settings: &Value, kind: MediaKind) -> Result<Value> {
+        let channel = settings["channels"][kind.as_str()].as_str().unwrap_or("cloud");
         if channel == "cloud" {
             Self::settings_identity(settings)
         } else {
@@ -367,26 +380,16 @@ impl ModelService {
                 self.author_request("inspect", &json!({}))
             }
             "catalog" => {
-                let kind = text(input, "kind")?;
-                ensure(
-                    matches!(kind, "text" | "image"),
-                    "invalid_input",
-                    "模型种类无效。",
-                )?;
+                let kind = MediaKind::from_str(text(input, "kind")?)?;
                 self.api(
                     "GET",
-                    &format!("/models/{kind}"),
+                    &format!("/models/{}", kind.as_str()),
                     None,
                     &self.identity_for(kind)?,
                 )
             }
             "select" => {
-                let kind = text(input, "kind")?;
-                ensure(
-                    matches!(kind, "text" | "image"),
-                    "invalid_input",
-                    "模型种类无效。",
-                )?;
+                let kind = MediaKind::from_str(text(input, "kind")?)?;
                 let snapshot = {
                     let _lock = self.store.read_lock()?;
                     self.settings()?
@@ -400,7 +403,7 @@ impl ModelService {
                     "invalid_input",
                     "请选择当前可用模型。",
                 )?;
-                settings["defaults"][kind] = input["model_id"].clone();
+                settings["defaults"][kind.as_str()] = input["model_id"].clone();
                 let _lock = self.store.lock()?;
                 ensure(
                     self.settings()? == snapshot,
@@ -427,12 +430,7 @@ impl ModelService {
             }
             "custom_save" => self.save_custom(input),
             "channel_select" => {
-                let kind = text(input, "kind")?;
-                ensure(
-                    matches!(kind, "text" | "image"),
-                    "invalid_input",
-                    "模型种类无效。",
-                )?;
+                let kind = MediaKind::from_str(text(input, "kind")?)?;
                 let channel = text(input, "channel_id")?;
                 let _lock = self.store.lock()?;
                 let mut settings = self.settings()?;
@@ -444,8 +442,8 @@ impl ModelService {
                 if !settings["channels"].is_object() {
                     settings["channels"] = json!({});
                 }
-                settings["channels"][kind] = json!(channel);
-                settings["defaults"][kind] = json!("");
+                settings["channels"][kind.as_str()] = json!(channel);
+                settings["defaults"][kind.as_str()] = json!("");
                 self.save(&settings)?;
                 Ok(json!({"channels":settings["channels"]}))
             }

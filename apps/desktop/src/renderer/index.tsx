@@ -4,10 +4,12 @@ import { desktop } from "./bridge.ts";
 import { surfaces } from "./contributions.tsx";
 import { Preferences, applyPreferences } from "./preferences.tsx";
 import { LocalSettings } from "./settings.tsx";
-import { Icon, IconButton, Workbench, PageActionsTarget, type DocumentTools, type IconName } from "./workbench.tsx";
-import { WorkCover } from "./work-cover.tsx";
+import { Icon, IconButton, Workbench, PageActionsTarget, type DocumentTools, type IconName, type AgentStatus } from "./workbench.tsx";
+import { WorkCover, WorkCoverPreview } from "./work-cover.tsx";
 import { PluginMigrations } from "./plugin-migrations.tsx";
 import { PluginResults } from "./plugin-results.tsx";
+import { AuditStatus } from "./audit-status.tsx";
+
 function NavigationGroup({ title, active, children }: { title: string; active: boolean; children: React.ReactNode }) {
   const [open, setOpen] = useState(active);
   useEffect(() => { if (active) setOpen(true); }, [active]);
@@ -19,6 +21,7 @@ function App() {
     [active, setActive] = useState("library"),
     [notice, setNotice] = useState(""),
     [busy, setBusy] = useState(false),
+    [agentStatus, setAgentStatus] = useState<AgentStatus>({ state: "idle" }),
     [address, setAddress] = useState("");
   const [kind, setKind] = useState("all");
   const [search, setSearch] = useState("");
@@ -29,9 +32,7 @@ function App() {
   const [inspector, setInspector] = useState(false);
   const [focus, setFocus] = useState(false);
   const [documentTools, setDocumentTools] = useState<DocumentTools>();
-  const [settingsOpen, setSettingsOpen] = useState(false);
   const [pageActionsTarget, setPageActionsTarget] = useState<HTMLDivElement | null>(null);
-  const settingsDialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const narrow = window.matchMedia("(max-width: 760px)");
     const collapse = () => { if (narrow.matches) setNavigationVisible(false); };
@@ -50,11 +51,6 @@ function App() {
     document.addEventListener("keydown", closeMenus);
     return () => { document.removeEventListener("click", closeMenus); document.removeEventListener("keydown", closeMenus); };
   }, []);
-  useEffect(() => {
-    if (settingsOpen) settingsDialog.current?.showModal();
-    else settingsDialog.current?.close();
-  }, [settingsOpen]);
-  useEffect(() => desktop.onSettingsRequested(() => setSettingsOpen(true)), []);
   useEffect(() => {
     const refresh = () => { void desktop.library("refresh").then(value => { setState(value); setWorks(value.works ?? []); }).catch(error => setNotice(error.message)); };
     window.addEventListener("hetu:work-changed", refresh);
@@ -179,7 +175,7 @@ function App() {
   return (
     <Preferences.Provider value={state.preferences ?? {}}>
     <PageActionsTarget.Provider value={pageActionsTarget}>
-    <Workbench.Provider value={{ directoryVisible, setDirectoryVisible, inspector, setInspector, focus, setFocus, setDocumentTools }}>
+    <Workbench.Provider value={{ directoryVisible, setDirectoryVisible, inspector, setInspector, focus, setFocus, setDocumentTools, agentStatus, setAgentStatus }}>
       <header className={"workbench-topbar" + (workMode ? "" : " library-topbar")}>
         {workMode ? <>
           <IconButton icon="sidebar" label="项目导航" aria-pressed={navigationVisible} onClick={() => setNavigationVisible(!navigationVisible)}/>
@@ -197,11 +193,15 @@ function App() {
             </div>
           </details>
           {readerActive && <IconButton icon="list" label="卷章目录" aria-pressed={directoryVisible} onClick={() => { setDirectoryVisible(!directoryVisible); setFocus(false); }}/ >}
-        </> : <div className="brand-lockup"><img className="brand-icon" src="app-icon.png" alt=""/><strong>河图洛书</strong><span className="brand-badge">创作台</span></div>}
+        </> : <div className="brand-lockup"><img className="brand-icon" src="app-icon.png" alt=""/><strong>河图洛书</strong></div>}
         <div className="topbar-actions">
-          {workMode && !active.startsWith("fallback:") && (readerActive || !Component) && <button className="ai-button" aria-label="让 AI 处理" onClick={() => void run(async () => { if (readerActive && documentTools) documentTools.ai(); else await ai(); })}><Icon name="sparkles"/><span>让 AI 处理</span></button>}
+          {workMode && !active.startsWith("fallback:") && (readerActive || !Component) &&
+            <button className="ai-button" aria-label="让 AI 处理" onClick={() => void run(async () => { if (readerActive && documentTools) documentTools.ai(); else await ai(); })}>
+              <Icon name="sparkles"/><span>让 AI 处理</span>
+            </button>
+          }
           {readerActive && documentTools && <span className="save-state" aria-live="polite"><Icon name="check" size={13}/>{documentTools.busy ? "正在保存…" : documentTools.dirty ? "有未保存修改" : "修订已保存"}</span>}
-          <IconButton icon="settings" label="本机设置" onClick={() => setSettingsOpen(true)}/>
+          <IconButton icon="settings" label="本机设置" onClick={() => void desktop.settingsWindow("open")}/>
           {workMode && <IconButton icon="expand" label="缩放窗口" onClick={() => void desktop.zoom()}/>}
           {readerActive && documentTools && <>
             <button className="primary" disabled={documentTools.busy || !documentTools.dirty} onClick={documentTools.save}>保存修订</button>
@@ -237,7 +237,7 @@ function App() {
                   </label>}
             <button onClick={() => void run(() => navigate("plugins"))}>创作插件</button>
             <button onClick={() => void run(() => navigate("browser"))}>参考浏览器</button>
-            <button onClick={() => setSettingsOpen(true)}>本机设置</button>
+            <button onClick={() => void desktop.settingsWindow("open")}>本机设置</button>
           </div></details>
         </div>
       </header>
@@ -267,12 +267,17 @@ function App() {
           </>}
         </aside>
         <main className={readerActive ? "reader-main" : "page-main"}>
-          {!readerActive && !Component && !active.startsWith("fallback:") && <div className="toolbar"><div><h1>{title}</h1></div>{workMode && <small>{selected?.title}</small>}</div>}
+          {!readerActive && !Component && !active.startsWith("fallback:") && <div className="toolbar"><div><h1>{title}</h1></div>{active === "plugins" && <button disabled={busy} onClick={() => void run(async () => setState(await desktop.install()))}>安装插件包</button>}</div>}
           {notice && (
             <div className="notice" role="status">
               {notice}
             </div>
           )}
+          <AuditStatus
+            state={agentStatus.state}
+            message={agentStatus.message}
+            onReview={() => void run(() => navigate("work.tasks"))}
+          />
           {active === "library" ? (
             <div className="content library-content">
               <div className="library-search-row">
@@ -292,6 +297,7 @@ function App() {
                   {visibleWorks.map((item) => (
                       <button
                         className="work"
+                        data-work-kind={item.work_ref.kind}
                         key={item.work_ref.object_id}
                         disabled={busy || item.unavailable}
                         onClick={() =>
@@ -311,7 +317,7 @@ function App() {
                           })
                         }
                       >
-                        <div className="work-thumbnail">{item.cover_preview?.media_type === "image/jpeg" ? <img src={"data:image/jpeg;base64," + item.cover_preview.base64} alt={item.title + "的封面"}/> : <Icon name={item.work_ref.kind === "novel" ? "book" : item.work_ref.kind === "video" ? "film" : "file"} size={25}/>}</div>
+                        <div className="work-thumbnail"><WorkCoverPreview work={item.work_ref} title={item.title} author={item.author_name} compact={(listMode ?? state.preferences?.library_list ?? true) || item.work_ref.kind !== "novel"} preview={item.cover_preview} error={item.unavailable ? item.error : ""}/></div>
                         <div className="library-work-description"><strong>{item.title}</strong>{(item.author_name || item.genre) && <small>{[item.author_name, item.genre].filter(Boolean).join(" ")}</small>}</div>
                         {item.unavailable && <span>{item.error}</span>}
                         <span className="pill">
@@ -321,8 +327,8 @@ function App() {
                             ]
                           }
                         </span>
-                        {item.status && <span className="library-work-status">{({planning:"筹备中",writing:"创作中",completed:"已完成",archived:"已归档"} as Record<string,string>)[item.status]}</span>}
-                        {item.chapter_count !== undefined && <small className="library-work-count">{item.chapter_count} 章</small>}
+                        <div className="library-work-metrics">{item.status && <span className="library-work-status">{({planning:"筹备中",writing:"创作中",completed:"已完成",archived:"已归档"} as Record<string,string>)[item.status]}</span>}
+                        {item.chapter_count !== undefined && <small className="library-work-count">{item.chapter_count} 章</small>}</div>
                         {item.updated_at && <small className="library-work-date">{new Date(item.updated_at).toLocaleDateString()}</small>}
                       </button>
                     ))}
@@ -348,30 +354,9 @@ function App() {
               )}
               {!!works.length && !visibleWorks.length && <div className="empty"><Icon name="search" size={28}/><h2>没有匹配的作品</h2><button onClick={() => { setKind("all"); setSearch(""); setStatusFilter("all"); }}>清除筛选</button></div>}
             </div>
-          ) : active === "settings" ? (
-            <div className="content">
-              <LocalSettings
-                notify={setNotice}
-                changed={(preferences) =>
-                  setState((current: any) => ({ ...current, preferences }))
-                }
-              />
-            </div>
           ) : active === "plugins" ? (
-            <div className="content">
-              <div className="row">
-                <p className="muted">
-                  按需安装创作方式；停用后保留作品数据与通用导出。
-                </p>
-                <button
-                  disabled={busy}
-                  onClick={() =>
-                    void run(async () => setState(await desktop.install()))
-                  }
-                >
-                  安装插件包
-                </button>
-              </div>
+            <div className="content plugin-content">
+              {!state.plugins.length && <div className="empty"><Icon name="plugin" size={28}/><p>还没有安装插件</p></div>}
               {state.plugins.map((plugin: any) => (
                 <React.Fragment key={plugin.id}>
                 <div className="row">
@@ -479,13 +464,23 @@ function App() {
           )}
         </main>
       </div>
-      <dialog className="settings-dialog" ref={settingsDialog} onCancel={() => setSettingsOpen(false)} onClick={(event) => { if (event.target === settingsDialog.current) setSettingsOpen(false); }}>
-        <div className="dialog-heading"><h2>设置</h2><IconButton icon="close" label="关闭设置" onClick={() => setSettingsOpen(false)}/></div>
-        <div className="settings-dialog-content">{settingsOpen && <LocalSettings notify={setNotice} changed={(preferences) => setState((current: any) => ({ ...current, preferences }))}/>}</div>
-      </dialog>
     </Workbench.Provider>
     </PageActionsTarget.Provider>
     </Preferences.Provider>
   );
 }
-createRoot(document.getElementById("root")!).render(<App />);
+function SettingsApp() {
+  const [notice, setNotice] = useState("");
+  useEffect(() => {
+    document.documentElement.dataset.window = "settings";
+    document.title = "设置";
+    const remove = desktop.onPreferences(applyPreferences);
+    const close = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !document.querySelector("dialog[open]")) void desktop.settingsWindow("close");
+    };
+    document.addEventListener("keydown", close);
+    return () => { remove(); document.removeEventListener("keydown", close); };
+  }, []);
+  return <main className="settings-window"><LocalSettings notify={setNotice} changed={applyPreferences}/>{notice && <p className="settings-window-notice" role="status">{notice}</p>}</main>;
+}
+createRoot(document.getElementById("root")!).render(new URLSearchParams(location.search).get("view") === "settings" ? <SettingsApp/> : <App />);

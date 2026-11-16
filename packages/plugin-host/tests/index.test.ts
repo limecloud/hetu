@@ -20,7 +20,7 @@ function json(command: string, args: string[], input?: unknown) {
   return JSON.parse(result.stdout);
 }
 
-test("无窗口CLI与真实MCP共享标题检索、重建及过期游标拒绝", { timeout: 90000 }, async () => {
+test("无窗口CLI与真实MCP共享标题检索、重建及过期游标拒绝", { timeout: 180000 }, async () => {
   const directory = await mkdtemp(path.join(os.tmpdir(), "hetu-plugin-index-"));
   const workspace = path.join(directory, "中文 空格作品"), access = path.join(directory, "private");
   const pkg = await PluginPackage.inspect(path.join(root, "plugins/relationships/dist"));

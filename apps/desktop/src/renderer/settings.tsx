@@ -4,18 +4,19 @@ import { Icon, IconButton, type IconName } from "./workbench.tsx";
 import { version } from "../../package.json";
 import "./settings.css";
 import { ModelSettings } from "./model-settings.tsx";
+import { WorkAgent } from "./work-agent.tsx";
 
 const labels: Record<string, string> = {
   language: "界面语言",
   appearance: "外观",
   library_list: "创作库布局",
-  autosave: "自动保存人工编辑",
-  font_family: "阅读字体",
-  font_size: "正文字号",
-  line_spacing: "正文行距",
-  first_line_indent: "正文首行缩进",
-  git_author_name: "版本作者姓名",
-  git_author_email: "版本作者邮箱",
+  autosave: "自动保存正文",
+  font_family: "字体",
+  font_size: "字号",
+  line_spacing: "行间距",
+  first_line_indent: "小说段落首行缩进两字",
+  git_author_name: "姓名",
+  git_author_email: "邮箱",
   agent_client: "默认外部 Agent",
 };
 const values: Record<string, string> = {
@@ -25,7 +26,7 @@ const values: Record<string, string> = {
   light: "浅色",
   dark: "深色",
   songti: "宋体",
-  pingfang: "黑体",
+  pingfang: "苹方",
   codex: "Codex",
   workbuddy: "WorkBuddy",
   claudeCode: "Claude Code",
@@ -47,13 +48,12 @@ const planStates: Record<string, string> = {
 };
 type Tab = "general" | "writing" | "agents" | "models" | "versions" | "plans" | "about";
 const tabs: { id: Tab; title: string; icon: IconName }[] = [
-  { id: "general", title: "通用", icon: "settings" },
-  { id: "writing", title: "写作", icon: "file" },
-  { id: "agents", title: "AI协作", icon: "plugin" },
-  { id: "models", title: "模型服务", icon: "link" },
+  { id: "general", title: "通用", icon: "sliders" },
+  { id: "writing", title: "写作", icon: "type" },
+  { id: "models", title: "模型服务", icon: "globe" },
+  { id: "agents", title: "AI 协作", icon: "plugin" },
   { id: "versions", title: "版本", icon: "branch" },
-  { id: "plans", title: "设置方案", icon: "list" },
-  { id: "about", title: "关于", icon: "book" },
+  { id: "about", title: "关于", icon: "info" },
 ];
 function display(value: any) {
   return typeof value === "boolean"
@@ -103,19 +103,19 @@ export function LocalSettings({
     [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
     [preview, setPreview] = useState<any>(),
-    [draft, setDraft] = useState<any>(),
-    [suite, setSuite] = useState("general"),
-    [client, setClient] = useState("codex"),
-    [install, setInstall] = useState(false),
+    [textDrafts, setTextDrafts] = useState<Record<string, string>>({}),
     [tab, setTab] = useState<Tab>("general");
   const panel = useRef<HTMLDivElement>(null);
-  const draftBase = useRef<any>();
+  const returnTab = useRef<Tab>("general");
+  const saves = useRef<Promise<void>>(Promise.resolve());
+  const currentState = useRef<any>();
   const plan = plans.find((p) => p.operation_id === selected);
   async function refresh(next?: string) {
     const [current, list] = await Promise.all([
       desktop.settings("get"),
       desktop.settings("list", next ? { cursor: next } : {}),
     ]);
+    currentState.current = current;
     setState(current);
     changed(current.preferences);
     setPlans(list.operations);
@@ -146,6 +146,7 @@ export function LocalSettings({
     if (panel.current) panel.current.scrollTop = 0;
   }, [tab, preview]);
   function chooseTab(next: Tab) {
+    setPreview(undefined);
     setTab(next);
   }
   function tabKey(
@@ -167,69 +168,52 @@ export function LocalSettings({
     chooseTab(tabs[next].id);
     document.getElementById("settings-tab-" + tabs[next].id)?.focus();
   }
+  function savePreference(key: string, value: unknown) {
+    const pending = saves.current.then(async () => {
+      const latest = currentState.current;
+      if (!latest || latest.journal?.status === "pending") return;
+      await run(async () => {
+        try {
+          if (value !== latest.preferences[key]) {
+            await desktop.settings("update", { expected_revision: latest.revision, patch: { [key]: value } });
+            await refresh();
+          }
+          setTextDrafts(current => {
+            if (current[key] !== value) return current;
+            const next = { ...current }; delete next[key]; return next;
+          });
+        } catch (error) {
+          // 先回读原操作状态，不换键重发；保留作者尚未确认的输入。
+          await refresh().catch(() => {});
+          throw error;
+        }
+      });
+    });
+    saves.current = pending.catch(() => {});
+    return pending;
+  }
   function field(key: string) {
-    const value = draft ? draft[key] : state.preferences[key];
-    return (
-      <label className="settings-field" key={key}>
-        <span>{labels[key]}</span>
-        {!draft ? (
-          <output>{preferenceValue(key, value)}</output>
-        ) : key === "library_list" ? (
-          <select
-            aria-label={labels[key]}
-            value={value ? "list" : "grid"}
-            disabled={busy}
-            onChange={(e) =>
-              setDraft({ ...draft, [key]: e.target.value === "list" })
-            }
-          >
-            <option value="grid">封面</option>
-            <option value="list">列表</option>
-          </select>
-        ) : typeof value === "boolean" ? (
-          <input
-            type="checkbox"
-            aria-label={labels[key]}
-            checked={value}
-            disabled={busy}
-            onChange={(e) => setDraft({ ...draft, [key]: e.target.checked })}
-          />
-        ) : ["font_size", "line_spacing"].includes(key) ? (
-          <input
-            type="number"
-            aria-label={labels[key]}
-            disabled={busy}
-            min={key === "font_size" ? 14 : 0}
-            max={key === "font_size" ? 30 : 16}
-            value={value}
-            onChange={(e) =>
-              setDraft({ ...draft, [key]: Number(e.target.value) })
-            }
-          />
-        ) : choices[key] ? (
-          <select
-            aria-label={labels[key]}
-            value={value}
-            disabled={busy}
-            onChange={(e) => setDraft({ ...draft, [key]: e.target.value })}
-          >
-            {choices[key].map((choice) => (
-              <option key={choice} value={choice}>
-                {display(choice)}
-              </option>
-            ))}
-          </select>
-        ) : (
-          <input
-            aria-label={labels[key]}
-            maxLength={256}
-            value={value}
-            disabled={busy}
-            onChange={(e) => setDraft({ ...draft, [key]: e.target.value })}
-          />
-        )}
-      </label>
-    );
+    const value = state.preferences[key], disabled = busy || state.journal?.status === "pending";
+    const label = labels[key];
+    return <label className="settings-field" key={key}>
+      <span>{label}</span>
+      {key === "library_list" ? <select aria-label={label} value={value ? "list" : "grid"} disabled={disabled}
+        onChange={e => void savePreference(key, e.target.value === "list")}><option value="grid">封面网格</option><option value="list">作品列表</option></select>
+      : typeof value === "boolean" ? <input className="settings-switch" type="checkbox" role="switch" aria-label={label} checked={value} disabled={disabled}
+        onChange={e => void savePreference(key, e.target.checked)}/>
+      : ["font_size", "line_spacing"].includes(key) ? <span className="settings-stepper">
+        <output aria-label={label + "当前值"}>{value} px</output>
+        <span><button type="button" aria-label={"减小" + label} disabled={disabled || value <= (key === "font_size" ? 14 : 0)} onClick={() => void savePreference(key, value - 1)}>−</button>
+        <button type="button" aria-label={"增大" + label} disabled={disabled || value >= (key === "font_size" ? 30 : 16)} onClick={() => void savePreference(key, value + 1)}>+</button></span>
+      </span>
+      : choices[key] ? <select aria-label={label} value={value} disabled={disabled} onChange={e => void savePreference(key, e.target.value)}>
+        {choices[key].map(choice => <option key={choice} value={choice}>{key === "font_family" && choice === "system" ? "系统字体" : display(choice)}</option>)}
+      </select>
+      : <input aria-label={label} maxLength={256} value={textDrafts[key] ?? value} disabled={state.journal?.status === "pending"}
+        onChange={e => setTextDrafts(current => ({ ...current, [key]: e.target.value }))}
+        onBlur={e => void savePreference(key, e.target.value)} onKeyDown={e => { if (e.key === "Enter") e.currentTarget.blur(); }}/>
+      }
+    </label>;
   }
   function fields(title: string, keys: string[]) {
     return (
@@ -239,29 +223,9 @@ export function LocalSettings({
       </section>
     );
   }
-  const editable = ["general", "writing", "agents", "versions"].includes(tab);
-  const current = draft ?? state?.preferences;
+  const current = state?.preferences;
   return (
     <section className="local-settings" aria-label="本机设置">
-      <div className="settings-tools">
-        {tab !== "models" && <button
-          disabled={busy}
-          onClick={() =>
-            void run(async () => {
-              await desktop.settings("handoff", { section: tab });
-              notify("已复制本机设置协作请求。");
-            })
-          }
-        >
-          <Icon name="sparkles" />让 AI 调整设置
-        </button>}
-        {tab !== "models" && <IconButton
-          icon="refresh"
-          label="刷新本机设置"
-          disabled={busy}
-          onClick={() => void run(() => refresh())}
-        />}
-      </div>
       <div className="settings-tabs" role="tablist" aria-label="设置分类">
         {tabs.map((item, index) => (
           <button
@@ -277,12 +241,14 @@ export function LocalSettings({
           >
             <Icon name={item.icon} size={18} />
             <span>{item.title}</span>
-            {item.id === "plans" &&
-              plans.some((p) => p.state === "pending") && (
-                <span className="settings-pending" aria-label="有待审方案" />
-              )}
           </button>
         ))}
+      </div>
+      <div className="settings-tools">
+        {tab === "plans" ? <><button onClick={() => { setPreview(undefined); setTab(returnTab.current); }}>返回设置</button>
+          <button disabled={busy} onClick={() => void run(async () => { await desktop.settings("handoff", { section: returnTab.current }); notify("已复制本机设置协作请求。"); })}><Icon name="sparkles"/>让 AI 调整设置</button>
+          <IconButton icon="refresh" label="刷新本机设置" disabled={busy} onClick={() => void run(() => refresh())}/></>
+          : <button disabled={busy} onClick={() => { returnTab.current = tab; setPreview(undefined); setTab("plans"); void run(() => refresh()); }}><Icon name="sparkles"/>让 AI 处理与审阅{plans.some(p => p.state === "pending") && <span className="settings-pending" aria-label="有待审方案"/>}</button>}
       </div>
       {error && (
         <p role="alert" className="settings-feedback">
@@ -340,7 +306,8 @@ export function LocalSettings({
             className="settings-panel"
             role="tabpanel"
             id={"settings-panel-" + tab}
-            aria-labelledby={"settings-tab-" + tab}
+            aria-label={tab === "plans" ? "本机操作审阅" : undefined}
+            aria-labelledby={tab === "plans" ? undefined : "settings-tab-" + tab}
             tabIndex={0}
           >
             {preview ? (
@@ -350,17 +317,10 @@ export function LocalSettings({
                 aria-label="本机设置决定预览"
               >
                 <h3>{preview.title}</h3>
-                {preview.kind === "manual" ? (
-                  <Changes
-                    before={preview.view.preferences}
-                    patch={preview.input.patch}
-                  />
-                ) : (
                   <p>
                     仅{preview.input.approve ? "批准" : "拒绝"}
                     刚才审阅的固定方案；批准后由外部 Agent 执行。
                   </p>
-                )}
                 <div className="actions">
                   <button
                     className="primary"
@@ -371,12 +331,9 @@ export function LocalSettings({
                           token: preview.token,
                         });
                         setPreview(undefined);
-                        setDraft(undefined);
                         await refresh();
                         notify(
-                          preview.kind === "manual"
-                            ? "已保存本机偏好。"
-                            : "本机审核决定已保存；批准本身不会执行设置或安装。",
+                          "本机审核决定已保存；批准本身不会执行设置或安装。",
                         );
                       })
                     }
@@ -393,16 +350,14 @@ export function LocalSettings({
                 {tab === "models" && <ModelSettings/>}
                 {tab === "general" && (
                   <>
-                    <h2 className="settings-section-heading">
-                      阅读与工作台偏好
-                    </h2>
                     {fields("界面", ["language", "appearance"])}
                     {fields("创作库", ["library_list"])}
+                    <p className="settings-note">设置自动保存，并立即应用到所有河图洛书窗口。</p>
                   </>
                 )}
                 {tab === "writing" && (
                   <>
-                    {fields("正文", [
+                    {fields("正文排版", [
                       "autosave",
                       "font_family",
                       "font_size",
@@ -410,7 +365,7 @@ export function LocalSettings({
                       "first_line_indent",
                     ])}
                     <section className="settings-group">
-                      <h3>阅读预览</h3>
+                      <h3>排版预览</h3>
                       <div
                         className="settings-reading-preview"
                         style={{
@@ -426,106 +381,27 @@ export function LocalSettings({
                           textIndent: current.first_line_indent ? "2em" : "0",
                         }}
                       >
-                        清晨的雾气沿着山谷缓缓流动。她将旧日记放回书袋，沿海岸寻找灯塔。每一封信，都有自己的来处。
+                        <p>雨落在窗边，故事从这一刻开始。</p><p>远处的灯亮了，有人正踏着夜色归来。</p>
                       </div>
                     </section>
+                    <p className="settings-note">排版只改变显示，不向正文添加空格。Fountain 剧本保持场次与对白的原有对齐。</p>
                   </>
                 )}
                 {tab === "versions" && (
                   <>
-                    {fields("版本作者", [
+                    {fields("快照作者信息", [
                       "git_author_name",
                       "git_author_email",
                     ])}
                     <p className="settings-note">
-                      仅用于河图的版本操作，不修改系统 Git 身份。
+                      名称与邮箱会写入 Git 历史，并随仓库同步。这里只保存本机署名，不修改系统 Git 配置，也不执行提交或同步。
                     </p>
                   </>
                 )}
-                {tab === "agents" && (
-                  <>
-                    {fields("外部 Agent", ["agent_client"])}
-                    <details className="settings-suite">
-                      <summary>选择创作方法与外部 Agent 套件</summary>
-                      <label className="settings-field">
-                        <span>创作方法</span>
-                        <select
-                          aria-label="创作方法套件"
-                          disabled={busy}
-                          value={suite}
-                          onChange={(e) => setSuite(e.target.value)}
-                        >
-                          {state.suites.map((s: any) => (
-                            <option value={s.suite_id} key={s.suite_id}>
-                              {s.family} {s.name}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-                      <p className="settings-note">
-                        {
-                          state.suites.find((s: any) => s.suite_id === suite)
-                            ?.summary
-                        }
-                      </p>
-                      <label className="settings-field">
-                        <span>接入客户端</span>
-                        <select
-                          aria-label="套件接入客户端"
-                          disabled={busy}
-                          value={client}
-                          onChange={(e) => {
-                            setClient(e.target.value);
-                            setInstall(false);
-                          }}
-                        >
-                          {["codex", "workbuddy", "claudeCode", "other"].map(
-                            (v) => (
-                              <option key={v} value={v}>
-                                {display(v)}
-                              </option>
-                            ),
-                          )}
-                        </select>
-                      </label>
-                      <label className="settings-install">
-                        <input
-                          type="checkbox"
-                          checked={install}
-                          disabled={
-                            busy || !state.installable_clients.includes(client)
-                          }
-                          onChange={(e) => setInstall(e.target.checked)}
-                        />
-                        安装所选方法文件
-                      </label>
-                      <button
-                        disabled={busy}
-                        onClick={() =>
-                          void run(async () => {
-                            const result = await desktop.settings(
-                              "select_suite",
-                              {
-                                suite_id: suite,
-                                agent_client: client,
-                                install,
-                              },
-                            );
-                            await refresh();
-                            setSelected(result.operation_id);
-                            setTab("plans");
-                            notify("已准备套件方案，请审阅固定版本后批准。");
-                          })
-                        }
-                      >
-                        准备套件选择方案
-                      </button>
-                    </details>
-                  </>
-                )}
+                {tab === "agents" && <WorkAgent notify={notify}/>}
                 {tab === "plans" && (
                   <>
-                    <h2 className="settings-section-heading">设置方案</h2>
+                    <h2 className="settings-section-heading">本机操作审阅</h2>
                     {plans.length ? (
                       <>
                         <label className="settings-plan-picker">
@@ -705,64 +581,15 @@ export function LocalSettings({
                 {tab === "about" && (
                   <div className="settings-about">
                     <img src="app-icon.png" width="80" height="80" alt="" />
-                    <h2>河图洛书</h2>
+                    <h2>河图洛书 Hetu Luoshu</h2>
                     <p className="settings-note">{version}</p>
-                    <p>设定有据，作者掌规，Agent 佐笔。</p>
-                    <p className="settings-note">作品与偏好保存在本机。</p>
+                    <p>设定有据，创作有序。</p>
+                    <p className="settings-note">作品保存在各自的本地目录。创作由你选择的外部 Agent 协助完成。</p>
                   </div>
                 )}
               </>
             )}
           </div>
-          {!preview && editable && (
-            <div className="settings-edit-actions">
-              {draft ? (
-                <>
-                  <button
-                    className="primary"
-                    disabled={busy}
-                    onClick={() =>
-                      void run(async () => {
-                        const patch = Object.fromEntries(
-                          Object.entries(draft).filter(
-                            ([key, value]) =>
-                              draftBase.current.preferences[key] !== value,
-                          ),
-                        );
-                        if (!Object.keys(patch).length)
-                          throw new Error("尚未修改偏好。");
-                        setPreview({
-                          ...(await desktop.settings("manual", {
-                            expected_revision: draftBase.current.revision,
-                            patch,
-                          })),
-                          kind: "manual",
-                        });
-                      })
-                    }
-                  >
-                    预览偏好变化
-                  </button>
-                  <button disabled={busy} onClick={() => setDraft(undefined)}>
-                    收起编辑
-                  </button>
-                </>
-              ) : (
-                <button
-                  disabled={busy}
-                  onClick={() => {
-                    draftBase.current = {
-                      revision: state.revision,
-                      preferences: { ...state.preferences },
-                    };
-                    setDraft({ ...state.preferences });
-                  }}
-                >
-                  自行调整偏好
-                </button>
-              )}
-            </div>
-          )}
         </>
       )}
     </section>

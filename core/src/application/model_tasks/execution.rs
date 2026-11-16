@@ -57,8 +57,8 @@ impl Kernel {
                 let _lock = self.store.read_lock()?;
                 self.model_context(&input["task_ref"])?;
             }
-            let identity =
-                service.identity_for_channel(text(input, "kind")?, input["channel_id"].as_str())?;
+            let kind = MediaKind::from_str(text(input, "kind")?)?;
+            let identity = service.identity_for_channel(kind, input["channel_id"].as_str())?;
             let mut data = service.api(
                 "GET",
                 &format!("/models/{}", text(input, "kind")?),
@@ -73,7 +73,7 @@ impl Kernel {
                 self.model_context(&input["task_ref"])?;
                 ensure(
                     service
-                        .identity_for_channel(text(input, "kind")?, input["channel_id"].as_str())?
+                        .identity_for_channel(kind, input["channel_id"].as_str())?
                         == identity,
                     "forbidden",
                     "模型账号已切换，请重新读取目录。",

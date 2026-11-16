@@ -10,7 +10,9 @@ export function ModelSettings() {
   const [connection, setConnection] = useState<any>(), [catalogs, setCatalogs] = useState<Record<string, any>>({}),
     [busy, setBusy] = useState(false), [error, setError] = useState(""), [editor, setEditor] = useState<any>(),
     [apiKey, setApiKey] = useState(""), [unknown, setUnknown] = useState(false);
-  const live = useRef(true);
+  const live = useRef(true), dialog = useRef<HTMLDialogElement>(null);
+  useEffect(() => { if (editor) dialog.current?.showModal(); }, [!!editor]);
+  function closeEditor() { setEditor(undefined); setApiKey(""); setError(""); }
   async function inspect() {
     const state = await desktop.models("inspect");
     if (!live.current) return;
@@ -61,8 +63,9 @@ export function ModelSettings() {
       setUnknown(false);
     }
   }
-  if (editor) return <section className="model-settings" aria-label="编辑模型渠道">
-    <h2 className="settings-section-heading">{editor.previous ? "编辑渠道" : "添加渠道"}</h2>
+  const channelEditor = editor && <dialog ref={dialog} className="model-channel-dialog" aria-labelledby="channel-editor-title" onCancel={event => { if (busy) event.preventDefault(); else closeEditor(); }}>
+    <section className="model-settings" aria-label="编辑模型渠道">
+    <h2 id="channel-editor-title" className="settings-section-heading">{editor.previous ? "编辑渠道" : "添加渠道"}</h2>
     <form onSubmit={event => { event.preventDefault(); void run(save); }}>
       <fieldset disabled={busy || unknown}>
         <label>渠道名称<input required maxLength={200} value={editor.name} onChange={e => setEditor({ ...editor, name: e.target.value })}/></label>
@@ -77,13 +80,13 @@ export function ModelSettings() {
       <div className="actions">
         {unknown ? <button type="button" disabled={busy} onClick={() => void run(recover)}>检查本次保存</button>
           : <button type="submit" className="primary" disabled={busy}>保存渠道</button>}
-        <button type="button" disabled={busy} onClick={() => { setEditor(undefined); setApiKey(""); setError(""); }}>返回模型服务</button>
+        <button type="button" disabled={busy} onClick={closeEditor}>取消</button>
       </div>
     </form>
-  </section>;
+  </section></dialog>;
   return <section className="model-settings" aria-label="模型服务">
     <div className="model-settings-heading"><h2 className="settings-section-heading">模型服务</h2><IconButton icon="refresh" label="刷新模型服务" disabled={busy} onClick={() => void run(inspect)}/></div>
-    {error && <p role="alert">{error}</p>}
+    {error && !editor && <p role="alert">{error}</p>}
     {!connection ? <p role="status">正在读取模型设置…</p> : <>
       <section className="settings-group"><h3>河图账号</h3><div className="model-account">
         <div className="settings-field"><span>连接状态</span><output>{connection.connected ? "已连接" : "未连接"}</output></div>
@@ -116,5 +119,6 @@ export function ModelSettings() {
         </div></section>;
       })}
     </>}
+    {channelEditor}
   </section>;
 }

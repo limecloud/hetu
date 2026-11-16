@@ -7,9 +7,10 @@ export interface DesktopBridge {
   covers(method: "get" | "requests" | "candidates" | "choose_file" | "prepare" | "commit" | "recover" | "acknowledge", input?: Record<string, unknown>): Promise<any>;
   migrations(method: "preview" | "approve" | "continue", input: Record<string, unknown>): Promise<any>;
   versions(method: "status" | "snapshots" | "snapshot" | "diff" | "snapshot_diff" | "history" | "version" | "journal" | "prepare" | "commit" | "recover" | "acknowledge" | "continue", input?: Record<string, unknown>): Promise<any>;
-  settings(method: "get" | "list" | "operation" | "prepare" | "manual" | "commit" | "recover" | "acknowledge" | "handoff" | "continue" | "select_suite", input?: Record<string, unknown>): Promise<any>;
+  settings(method: "get" | "list" | "operation" | "prepare" | "manual" | "update" | "commit" | "recover" | "acknowledge" | "handoff" | "continue" | "select_suite", input?: Record<string, unknown>): Promise<any>;
+  settingsWindow(method: "open" | "close"): Promise<void>;
+  settingsAgent(method: string, input?: Record<string, unknown>): Promise<any>;
   onPreferences(listener: (value: any) => void): () => void;
-  onSettingsRequested(listener: () => void): () => void;
   zoom(): Promise<void>;
   library(
     method: "refresh" | "open" | "client" | "bootstrap",

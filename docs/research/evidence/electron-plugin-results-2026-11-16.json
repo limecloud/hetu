@@ -4,24 +4,301 @@
   "recorded_at": "2026-11-16",
   "scope": "插件成果检索、固定修订导出与精确插件交接，索引规模预算；仅隔离测试作品。",
   "checks": {
-    "core": {"status": "passed", "passed": 11, "log": "output/plugin-doc-qa/transfer/index-results-core-rechecked.log"},
-    "plugin_host": {"status": "passed", "passed": 13, "skipped": 0, "log": "output/plugin-doc-qa/transfer/index-results-node-serial.log"},
-    "desktop_development": {"status": "passed", "passed": 2, "logs": ["output/plugin-doc-qa/transfer/index-results-electron.log", "output/plugin-doc-qa/transfer/index-results-electron-serial.log"], "scope": "首次迁移通过及成果工作面串行复验；顶栏收敛后的最终验证由制品专项记录。"},
-    "local_settings": {"status": "passed", "passed": 4, "log": "output/plugin-doc-qa/transfer/index-results-settings-regression.log"},
-    "package": {"status": "running", "log": "output/plugin-doc-qa/transfer/index-results-package-frozen.log"}
+    "core": {
+      "status": "passed",
+      "passed": 11,
+      "failed": 0,
+      "logs": [
+        "output/plugin-doc-qa/transfer/index-results-core-v080-final.log",
+        "output/plugin-doc-qa/transfer/index-results-scale-final.log"
+      ],
+      "scope": "v0.8.0当前Core的索引2项、迁移2项、插件5项及规模2项；Core实现摘要与固定包相同。"
+    },
+    "plugin_host": {
+      "status": "passed",
+      "passed": 13,
+      "skipped": 0,
+      "log": "output/plugin-doc-qa/transfer/index-results-node-serial.log"
+    },
+    "desktop_development": {
+      "status": "passed",
+      "passed": 2,
+      "logs": [
+        "output/plugin-doc-qa/transfer/index-results-electron.log",
+        "output/plugin-doc-qa/transfer/index-results-electron-serial.log",
+        "output/plugin-doc-qa/transfer/index-results-electron-packaged.log"
+      ],
+      "scope": "先前成果与迁移开发旅程2项通过；固定副本独立插件安装、保存、机器回读、重开与停用卸载导出另1项通过。此项使用开发目录，不能计入随包结果。",
+      "additional_lifecycle_passed": 1
+    },
+    "local_settings": {
+      "status": "passed",
+      "passed": 4,
+      "log": "output/plugin-doc-qa/transfer/index-results-settings-regression.log"
+    },
+    "package": {
+      "status": "passed_fixed_source",
+      "log": "output/plugin-doc-qa/transfer/index-results-package-frozen.log",
+      "manifest": "output/electron-packages/hetu-dev-xgafBJ/manifest.json",
+      "manifest_sha256": "5044402dd005ef8d2fcd9172a1ade1b3358fff2dfade9d0fcd5e87f6ae7f6b35",
+      "source_sha256": "e5b74080844a2674dafcf4b9a03cd8dd0452b1657e74af8181530efa36b1f659",
+      "source_inputs_checked": 2505,
+      "artifacts_checked": 2569,
+      "post_test_source_and_artifacts_match": true,
+      "platform": "darwin",
+      "arch": "arm64",
+      "version": "0.8.0",
+      "signing": "ad-hoc-development",
+      "production_verified": false,
+      "executable": "output/electron-packages/hetu-dev-xgafBJ/package/Hetu Luoshu Electron Dev-darwin-arm64/Hetu Luoshu Electron Dev.app/Contents/MacOS/HetuElectronDev"
+    },
+    "scale": {
+      "status": "passed",
+      "passed": 2,
+      "failed": 0,
+      "log": "output/plugin-doc-qa/transfer/index-results-scale-final.log",
+      "fixture_title_utf8_bytes": 480,
+      "fixture_title_save_limit_bytes": 512,
+      "observed": {
+        "objects": 10000,
+        "cache_bytes": 5810494,
+        "scan_ms": 8766,
+        "rebuild_ms": 10872
+      },
+      "timing_scope": "并行开发中的本机单次样本；不作为性能承诺。",
+      "covered": [
+        "10000对象中末尾对象完整检索",
+        "10001对象明确拒绝",
+        "32MiB逻辑记录扫描预算附近的成功与拒绝",
+        "8MiB以上旧缓存降级读取",
+        "重建投影溢出拒绝且不替换原缓存"
+      ]
+    },
+    "plugin_host_fixed_source": {
+      "status": "passed_scoped_aggregate",
+      "passed": 13,
+      "failed_final": 0,
+      "skipped": 0,
+      "logs": [
+        "output/plugin-doc-qa/transfer/index-results-node-frozen.log",
+        "output/plugin-doc-qa/transfer/index-results-headless-frozen-final.log"
+      ],
+      "scope": "固定源码13项首次12项通过、1项超时取消；只重跑失败项后通过。保留此前取消与失败回执，不宣称一次全量通过。",
+      "direct_core_timeout_ms": 30000,
+      "composed_node_timeout_ms": 120000,
+      "headless_journey_timeout_ms": 300000
+    },
+    "desktop_packaged": {
+      "status": "passed",
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/plugin-doc-qa/transfer/index-results-electron-packaged-final.log",
+      "scope": [
+        "随包Rust、Node、CLI及真实MCP，图片音视频播放，插件安装保存、关窗与重开",
+        "单对象Schema升级的CLI准备、作者审核、关窗MCP执行与原键恢复",
+        "22项成果分页、搜索与迟到响应、固定旧版导出和真实MCP交接、停用读取及跨作品隔离"
+      ],
+      "display_verified": [
+        "960px窄窗口无横向溢出",
+        "浅色和深色截图目视核对",
+        "成果区字号集合核对",
+        "复制导出支持键盘触发"
+      ],
+      "clipboard_scope": "验证真实主进程clipboard适配器写入，隔离并行桌面会话的系统剪贴板竞争。",
+      "test_directory": "output/plugin-doc-qa/plugin-results-source-b_4u5_pk/apps/desktop",
+      "test_files": [
+        "packaged.spec.ts",
+        "plugin-migrations.spec.ts",
+        "plugin-results.spec.ts"
+      ]
+    },
+    "documentation": {
+      "status": "passed",
+      "documents": 77,
+      "mermaid": 84,
+      "errors": 0,
+      "log": "output/plugin-doc-qa/transfer/index-results-docs-completed.log"
+    },
+    "diff_check": {
+      "status": "passed",
+      "log": "output/plugin-doc-qa/transfer/index-results-diff-completed.log"
+    }
   },
   "resolved_failures": [
-    {"stage": "initial_scale_test_compile", "reason": "测试变量声明使用逗号而非分号。", "resolution": "修正并格式化测试代码，11项Core复验通过。", "log": "output/plugin-doc-qa/transfer/index-results-core.log"},
-    {"stage": "parallel_integration_run", "reason": "成果夹具30秒超时，未进入界面；无窗口旅程90秒取消。", "resolution": "新夹具单独使用120秒预算，集成测试串行执行，13项通过。", "logs": ["output/plugin-doc-qa/transfer/index-results-electron.log", "output/plugin-doc-qa/transfer/index-results-node.log"]},
-    {"stage": "shared_source_assembly", "reason": "签名期间及构建期间相关源码发生变化，两次被一致性门禁拒绝。", "resolution": "保留失败产物；捕获固定源码副本后独立装配，继续使用相同源码门禁。", "logs": ["output/plugin-doc-qa/transfer/index-results-package.log", "output/plugin-doc-qa/transfer/index-results-package-reassembled.log"]},
-    {"stage": "shared_source_compile", "reason": "本机设置作品范围代码调用不存在的domain::schema函数。", "resolution": "复用本模块已有jsonschema校验方式，保留新作品范围逻辑；本机设置4项通过。", "log": "output/plugin-doc-qa/transfer/index-results-package-final.log"},
-    {"stage": "source_capture_cache_copy", "reason": "复制编译缓存时，其他构建移除了临时release文件；最初来源比对还发现并行更新。", "resolution": "编译缓存与源码分开核验，补拷发生变化的源码；2726份输入与工作区一致后固定，独立Cargo重新核验缓存。", "logs": ["output/plugin-doc-qa/transfer/index-results-freeze.log", "output/plugin-doc-qa/transfer/index-results-freeze-verified.log", "output/plugin-doc-qa/transfer/index-results-freeze-final.log"]}
+    {
+      "stage": "initial_scale_test_compile",
+      "reason": "测试变量声明使用逗号而非分号。",
+      "resolution": "修正并格式化测试代码，11项Core复验通过。",
+      "log": "output/plugin-doc-qa/transfer/index-results-core.log"
+    },
+    {
+      "stage": "parallel_integration_run",
+      "reason": "成果夹具30秒超时，未进入界面；无窗口旅程90秒取消。",
+      "resolution": "新夹具单独使用120秒预算，集成测试串行执行，13项通过。",
+      "logs": [
+        "output/plugin-doc-qa/transfer/index-results-electron.log",
+        "output/plugin-doc-qa/transfer/index-results-node.log"
+      ]
+    },
+    {
+      "stage": "shared_source_assembly",
+      "reason": "签名期间及构建期间相关源码发生变化，两次被一致性门禁拒绝。",
+      "resolution": "保留失败产物；捕获固定源码副本后独立装配，继续使用相同源码门禁。",
+      "logs": [
+        "output/plugin-doc-qa/transfer/index-results-package.log",
+        "output/plugin-doc-qa/transfer/index-results-package-reassembled.log"
+      ]
+    },
+    {
+      "stage": "shared_source_compile",
+      "reason": "本机设置作品范围代码调用不存在的domain::schema函数。",
+      "resolution": "复用本模块已有jsonschema校验方式，保留新作品范围逻辑；本机设置4项通过。",
+      "log": "output/plugin-doc-qa/transfer/index-results-package-final.log"
+    },
+    {
+      "stage": "source_capture_cache_copy",
+      "reason": "复制编译缓存时，其他构建移除了临时release文件；最初来源比对还发现并行更新。",
+      "resolution": "编译缓存与源码分开核验，补拷发生变化的源码；2726份输入与工作区一致后固定，独立Cargo重新核验缓存。",
+      "logs": [
+        "output/plugin-doc-qa/transfer/index-results-freeze.log",
+        "output/plugin-doc-qa/transfer/index-results-freeze-verified.log",
+        "output/plugin-doc-qa/transfer/index-results-freeze-final.log"
+      ]
+    },
+    {
+      "stage": "scale_fixture_title_limit",
+      "reason": "原规模样本的240个汉字为720字节，超过公开保存合同的512字节标题上限。",
+      "resolution": "改为160个汉字、480字节，在合法标题范围内独立覆盖缓存预算溢出；最终规模2项通过。",
+      "log": "output/plugin-doc-qa/transfer/index-results-scale-final.log"
+    },
+    {
+      "stage": "fixed_source_headless_timeouts",
+      "reason": "初次13项中无窗口组合旅程90秒取消；单独重跑还触及30秒Node子命令预算。",
+      "resolution": "组合Node入口使用120秒预算、完整旅程300秒，直接Core调用保持30秒，重跑实际通过；改善错误断言保留底层超时原因。",
+      "logs": [
+        "output/plugin-doc-qa/transfer/index-results-node-frozen.log",
+        "output/plugin-doc-qa/transfer/index-results-headless-frozen-rechecked.log",
+        "output/plugin-doc-qa/transfer/index-results-headless-frozen-final.log"
+      ]
+    },
+    {
+      "stage": "packaged_invocation_path",
+      "reason": "调用者把应用展示名称误作二进制名，3项在启动前ENOENT；开发目录生命周期1项通过。",
+      "resolution": "从实际包确认入口为Contents/MacOS/HetuElectronDev，同一包的3项复验全部通过。",
+      "logs": [
+        "output/plugin-doc-qa/transfer/index-results-electron-packaged.log",
+        "output/plugin-doc-qa/transfer/index-results-electron-packaged-final.log"
+      ]
+    },
+    {
+      "stage": "playwright_invocation_path",
+      "reason": "固定副本未提供apps/desktop/node_modules/.bin/playwright，命令在测试开始前退出。",
+      "resolution": "使用实际存在的根node_modules/@playwright/test/cli.js，最终3项通过。",
+      "log": "output/plugin-doc-qa/transfer/index-results-electron-packaged-corrected.log"
+    }
   ],
   "validation_boundaries": [
     "一万对象、10001拒绝、32MiB逻辑记录预算附近及8MiB缓存溢出已经实测；不是所有预算的逐字节边界矩阵。",
     "规模样本使用Core生成的完整修订格式和正确摘要；测试不执行一万次业务保存事务。",
     "不声明跨设备性能SLA、SQLite、全文搜索、批量迁移或生态分发完成。",
     "未修改真实作者作品，未执行正文采纳、定稿、模型付费调用、提交、推送、发布或安装替换。",
-    "未完成Windows、干净系统安装升级、正式签名公证、真实输入法、完整无障碍及整个R6验收。"
-  ]
+    "未完成Windows、干净系统安装升级、正式签名公证、真实输入法、完整无障碍及整个R6验收。",
+    "实际随包专项仅覆盖固定源码副本，不代表当前共享UI全量回归；后续差异逐文件列于source_snapshot。"
+  ],
+  "source_snapshot": {
+    "capture_manifest": "output/plugin-doc-qa/transfer/index-results-frozen-source.json",
+    "capture_file_count": 2726,
+    "source_matches_at_capture": true,
+    "runtime_inputs_unchanged_after_tests": true,
+    "current_workspace_delta_from_package": [
+      "apps/desktop/scripts/build.mjs",
+      "apps/desktop/scripts/package.mjs",
+      "apps/desktop/src/main/main.ts",
+      "apps/desktop/src/main/shell-preload.ts",
+      "apps/desktop/src/renderer/covers.tsx",
+      "apps/desktop/src/renderer/index.tsx",
+      "apps/desktop/src/renderer/style.css",
+      "apps/desktop/src/renderer/work-agent.css",
+      "apps/desktop/src/renderer/work-agent.tsx",
+      "apps/desktop/src/renderer/work-cover.tsx",
+      "apps/desktop/src/renderer/work-profile.tsx",
+      "apps/mcp/resources/operation-view.html",
+      "apps/mcp/resources/operation-view.manifest.json",
+      "apps/mcp/resources/task-view.html",
+      "apps/mcp/resources/task-view.manifest.json",
+      "assets/styles/radix-workbench.css"
+    ],
+    "scope": "固定副本装配和测试；Core与插件功能实现保持相同摘要，共享UI与装配脚本的后续改动未纳入本包验收。"
+  },
+  "test_source_sha256": {
+    "core/tests/extension_index_scale.rs": "44dc0ad9f4aafdd8ebd94388a9fb2c1fff373ff78d4c57ebba88eb5136dae1d9",
+    "core/tests/extension_index.rs": "407c3d69aff78ba0ea717bf0c95ce47485531adee7e9b1f1fe90ad694e1374c3",
+    "core/tests/extension_migrations.rs": "1b01611e85782fdb097f938563e66d5f30b377ab3d56c04bb159678abae83087",
+    "core/tests/extensions.rs": "17ba6f4b4153f4fdd3eaa98b18ca13a79e3f4d4e9088a90cf3a17ef7fcb96b60",
+    "packages/plugin-host/tests/headless.test.ts": "c3e56e61cc3c3d375a5ae1d497b449e18e94e714d83c4bb0d66e2415a0110752",
+    "packages/plugin-host/tests/index.test.ts": "4af409eef128c916f6047633fa59971ea6bad570db39abc3c50199964413c927",
+    "apps/desktop/tests/plugin-results.spec.ts": "e75baac20810c9714930b393c5432fc4936263c2c46e15b679d20dc568656847",
+    "apps/desktop/tests/plugin-migrations.spec.ts": "de0e2381d6fcd28d68a9db436aa23ef59df30e1a2a030f1da9681149f6e5d149",
+    "apps/desktop/tests/packaged.spec.ts": "58c4aead8b836a0b3272914e7162771549c3fbe7ce97b67ff4d16f190bf0b247",
+    "apps/desktop/tests/workbench.spec.ts": "bbfb8f951b27b1b4ac5940f32cabe4578a433739f7d9d3ef962499cb5a1feaba"
+  },
+  "artifacts": {
+    "logs": {
+      "index-results-scale-final.log": {
+        "path": "output/plugin-doc-qa/transfer/index-results-scale-final.log",
+        "sha256": "c35608cf5a0ce475a208f99927bee21ee2e152cd7b0399fce514d6baf411cbec"
+      },
+      "index-results-core-v080-final.log": {
+        "path": "output/plugin-doc-qa/transfer/index-results-core-v080-final.log",
+        "sha256": "414f8e9a3b26f9ca523c92d1f36c02c1e2570cd7c96bcbb35acd99a8ae6e7228"
+      },
+      "index-results-node-frozen.log": {
+        "path": "output/plugin-doc-qa/transfer/index-results-node-frozen.log",
+        "sha256": "241a58a6a887017c91b5f78461788e427a55e247495fc83a9f2df52525cf6cd0"
+      },
+      "index-results-headless-frozen-rechecked.log": {
+        "path": "output/plugin-doc-qa/transfer/index-results-headless-frozen-rechecked.log",
+        "sha256": "281558d425d83804b93c6f25be8a8ef345c1ae58173dfb206672bbd34026484d"
+      },
+      "index-results-headless-frozen-final.log": {
+        "path": "output/plugin-doc-qa/transfer/index-results-headless-frozen-final.log",
+        "sha256": "4a2d73ef757b4bf021835c00d979a911d757c69d3a851fcdca005dd60d92805c"
+      },
+      "index-results-package-frozen.log": {
+        "path": "output/plugin-doc-qa/transfer/index-results-package-frozen.log",
+        "sha256": "f9d8ec0b9dde3167d30e89c802c44717bc90111bcb266f373c27b0648e481ea2"
+      },
+      "index-results-electron-packaged.log": {
+        "path": "output/plugin-doc-qa/transfer/index-results-electron-packaged.log",
+        "sha256": "fca9c8f403c4c05df3f823f45878776a41930f3973fde5c698a71f062786d1f0"
+      },
+      "index-results-electron-packaged-corrected.log": {
+        "path": "output/plugin-doc-qa/transfer/index-results-electron-packaged-corrected.log",
+        "sha256": "ae13fbd6cd1cb4473f61df55752edfb0199a2643e9332fdc465e58814cc5e2f3"
+      },
+      "index-results-electron-packaged-final.log": {
+        "path": "output/plugin-doc-qa/transfer/index-results-electron-packaged-final.log",
+        "sha256": "0710d6813ac4f187f39ad3768ce3e8ad97b7fdfec5f4de2c2d3dafd7b53c8775"
+      },
+      "index-results-docs-completed.log": {
+        "path": "output/plugin-doc-qa/transfer/index-results-docs-completed.log",
+        "sha256": "b9690fb1695b84e2e448642d0ed660d30fd662dab9e0fc42d25d2a94e89158ed"
+      },
+      "index-results-diff-completed.log": {
+        "path": "output/plugin-doc-qa/transfer/index-results-diff-completed.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "screenshots": {
+      "plugin-results-narrow.png": {
+        "path": "output/plugin-doc-qa/plugin-results-source-b_4u5_pk/output/plugin-doc-qa/transfer/plugin-results-narrow.png",
+        "sha256": "3d25fe4b312b12656903c831bc21ee6ca0dd225873c595c224f536abf27f01b7"
+      },
+      "plugin-results-narrow-dark.png": {
+        "path": "output/plugin-doc-qa/plugin-results-source-b_4u5_pk/output/plugin-doc-qa/transfer/plugin-results-narrow-dark.png",
+        "sha256": "e64bfc44477d3a8c7b8a3ce323225b67a266f52cbbfb29cac6137067603934d4"
+      }
+    }
+  }
 }

@@ -19,6 +19,7 @@ import { randomUUID, createHash } from "node:crypto";
 import { RecoveryStore } from "./recovery.ts";
 import { pluginResultHandoff } from "./plugin-results.ts";
 import { SettingsReview } from "./settings.ts";
+import { SettingsWindow } from "./settings-window.ts";
 import { workAssociation, workAgentRequest } from "./work-agent.ts";
 import { CoverReview } from "./covers.ts";
 import { NovelDetails } from "./novel-details.ts";
@@ -91,6 +92,8 @@ function agentClient() {
 async function refreshSettings() {
   localState = await settings.get();
   nativeTheme.themeSource = localState.preferences.appearance;
+  if (window && !window.isDestroyed()) window.webContents.send("desktop:preferences", localState.preferences);
+  settingsWindow.preferences(localState.preferences);
   return localState;
 }
 async function selectClient(client: string) {
@@ -150,6 +153,7 @@ const policy = (text: string) =>
 const recovery = new RecoveryStore();
 let flushedClose = false;
 const appUrl = "hetu-app://shell/index.html";
+const settingsWindow = new SettingsWindow(path.join(dist, "shell-preload.cjs"), appUrl);
 function denyPermissions(s: Session) {
   s.setPermissionRequestHandler((_wc, _permission, callback) =>
     callback(false),
@@ -162,7 +166,8 @@ function harden(view: WebContentsView) {
   view.webContents.on("will-navigate", (event) => event.preventDefault());
   view.webContents.on("will-redirect", (event) => event.preventDefault());
 }
-function trusted(event: IpcMainInvokeEvent) {
+function trusted(event: IpcMainInvokeEvent, channel: string) {
+  if (settingsWindow.accepts(event, channel)) return;
   if (
     event.sender !== window.webContents ||
     event.senderFrame !== event.sender.mainFrame ||
@@ -596,7 +601,7 @@ async function snapshot(pkg: PluginPackage) {
 }
 function shellHandler(name: string, fn: (...args: any[]) => unknown) {
   ipcMain.handle(name, (event, ...args) => {
-    trusted(event);
+    trusted(event, name);
     return fn(...args);
   });
 }
@@ -704,7 +709,7 @@ app
     const settingsMenu = {
       label: "设置…",
       accelerator: "CmdOrCtrl+,",
-      click: () => window.webContents.send("desktop:open-settings"),
+      click: () => { void settingsWindow.open(window); },
     };
     Menu.setApplicationMenu(Menu.buildFromTemplate([
       ...(process.platform === "darwin" ? [{ label: "河图洛书", submenu: [
@@ -753,6 +758,7 @@ app
         });
     });
     window.on("closed", () => {
+      settingsWindow.close();
       backend?.close();
       if (surface && !surface.webContents.isDestroyed()) surface.webContents.close();
       surface = undefined;
@@ -852,6 +858,11 @@ app
       throw new Error("未知创作库用例。");
     });
     shellHandler("desktop:state", async () => { await refreshSettings(); return overview(); });
+    shellHandler("desktop:settings-window", (method: string) => {
+      if (method === "open") return settingsWindow.open(window);
+      if (method === "close") return settingsWindow.close();
+      throw new Error("未知设置窗口操作。");
+    });
     shellHandler("desktop:models", async (action: string, input: any = {}) => {
       if (action === "account" || action === "verify") {
         const connection = unwrap(await settingsServer.request("model_service/host", { action: "inspect", input: {} }));
@@ -879,12 +890,26 @@ app
         reveal: directory => shell.showItemInFolder(directory),
       });
     });
+    shellHandler("desktop:settings-agent", (method: string, input: any = {}) => workAgentRequest(method, input, {
+      directory: "", settings, check: () => {}, refresh: refreshSettings,
+      inspect: params => settingsServer.request("local_settings/host", { method: "inspect_suite", input: params }),
+      prepare: async params => unwrap(await scopedCli(coreCliBinary(), agentClient(), process.env.HETU_COLLABORATION_DIR, "hetu.local_settings.prepare", params)),
+      choose: async () => { const result = await dialog.showOpenDialog(settingsWindow.window ?? window, { properties: ["openDirectory"], title: "选择已安装的创作套件" }); return result.canceled ? undefined : result.filePaths[0]; },
+      reveal: directory => shell.showItemInFolder(directory),
+    }));
     shellHandler("desktop:settings", async (method: string, input: any = {}) => {
       if (method === "get") return { ...(await refreshSettings()), journal: await settings.journal() };
       if (method === "list") return settings.list(input.cursor);
       if (method === "operation") return settings.operation(input.operation_id);
       if (method === "prepare") return settings.prepare(input.operation_id, input.sha256, input.revision, input.approve);
       if (method === "manual") return settings.manual(input.expected_revision, input.patch);
+      if (method === "update") {
+        const preview = await settings.manual(input.expected_revision, input.patch);
+        const result = await settings.commit(preview.token);
+        await settings.acknowledge();
+        await refreshSettings();
+        return result;
+      }
       if (method === "recover") { const result = await settings.recover(); await refreshSettings(); return result; }
       if (method === "acknowledge") return settings.acknowledge();
       if (method === "select_suite") {
@@ -895,7 +920,7 @@ app
       }
       if (method === "commit") {
         const preview = settings.prepared(input.token);
-        const answer = await dialog.showMessageBox(window, {
+        const answer = await dialog.showMessageBox(settingsWindow.window ?? window, {
           type: "question", buttons: ["取消", "确认"], defaultId: 0, cancelId: 0,
           message: preview.title + "？", detail: "只提交刚才审阅的固定变化。批准方案后，由外部 Agent 执行；不会在此安装或执行生成。",
         });

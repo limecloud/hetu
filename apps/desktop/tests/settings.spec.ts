@@ -13,6 +13,7 @@ import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { SettingsReview } from "../src/main/settings.ts";
 import { RecoveryStore } from "../src/main/recovery.ts";
 import { AppServer } from "../src/main/rpc.ts";
+import { openSettings } from "./navigation.ts";
 
 const root = path.resolve(import.meta.dirname, "../../..");
 test("Core异常退出及重复关闭不阻塞桌面清理", async () => {
@@ -113,9 +114,10 @@ test("CLI准备本机方案、Electron固定审阅与恢复、无窗口执行和
       });
       dialog.showMessageBoxSync = () => 1;
     });
-    const page = await app.firstWindow();
+    const main = await app.firstWindow();
+    const page = await openSettings(app, main);
     await page.emulateMedia({ colorScheme: null });
-    await page.getByRole("button", { name: "本机设置", exact: true }).click();
+    await page.getByRole("button", { name: "让 AI 处理与审阅", exact: true }).click();
     await expect(
       page.getByRole("button", { name: "刷新本机设置", exact: true }),
     ).toBeVisible();
@@ -144,7 +146,7 @@ test("CLI准备本机方案、Electron固定审阅与恢复、无窗口执行和
     await page
       .getByRole("button", { name: "让 AI 调整设置", exact: true })
       .click();
-    await expect(page.locator(".notice[role='status']")).toContainText(
+    await expect(page.locator(".settings-window-notice[role='status']")).toContainText(
       "已复制本机设置协作请求",
     );
     const handoff = await app!.evaluate(({ clipboard }) =>
@@ -160,7 +162,6 @@ test("CLI准备本机方案、Electron固定审阅与恢复、无窗口执行和
     await page
       .getByRole("button", { name: "刷新本机设置", exact: true })
       .click();
-    await page.getByRole("tab", { name: "设置方案", exact: true }).click();
     await page
       .getByRole("combobox", { name: "当前本机方案" })
       .selectOption(plan.operation_id);
@@ -176,7 +177,7 @@ test("CLI准备本机方案、Electron固定审阅与恢复、无窗口执行和
     await page
       .getByRole("button", { name: "确认本机决定", exact: true })
       .click();
-    await expect(page.locator(".notice[role='status']")).toContainText("批准本身不会执行");
+    await expect(page.locator(".settings-window-notice[role='status']")).toContainText("批准本身不会执行");
     expect(cli("hetu.local_settings.get", {}).preferences.font_size).toBe(18);
     await app!.close();
     app = undefined;
@@ -189,12 +190,11 @@ test("CLI准备本机方案、Electron固定审阅与恢复、无窗口执行和
     await page
       .getByRole("button", { name: "恢复原本机操作", exact: true })
       .click();
-    await expect(page.locator(".notice[role='status']")).toContainText("原本机操作已确认");
-    await page.getByRole("tab", { name: "设置方案", exact: true }).click();
+    await expect(page.locator(".settings-window-notice[role='status']")).toContainText("原本机操作已确认");
     await page
       .getByRole("button", { name: "让 AI 执行此方案", exact: true })
       .click();
-    await expect(page.locator(".notice[role='status']")).toContainText(
+    await expect(page.locator(".settings-window-notice[role='status']")).toContainText(
       "已复制原方案执行请求",
     );
     const execute = await app!.evaluate(({ clipboard }) =>
@@ -234,7 +234,6 @@ test("CLI准备本机方案、Electron固定审阅与恢复、无窗口执行和
       await mcp.close();
     }
     page = await launch();
-    await page.getByRole("tab", { name: "设置方案", exact: true }).click();
     await expect(
       page.getByRole("region", { name: "本机方案内容" }),
     ).toContainText("已执行");
@@ -256,21 +255,23 @@ test("CLI准备本机方案、Electron固定审阅与恢复、无窗口执行和
           (executable ? "settings-packaged.png" : "settings.png"),
       ),
     });
-    await page.getByRole("tab", { name: "AI协作", exact: true }).click();
-    await page
-      .getByText("选择创作方法与外部 Agent 套件", { exact: true })
-      .click();
-    await page
-      .getByRole("combobox", { name: "创作方法套件" })
-      .selectOption("military");
-    await page
-      .getByRole("button", { name: "准备套件选择方案", exact: true })
-      .click();
-    await expect(page.locator(".notice[role='status']")).toContainText("已准备套件方案");
-    await expect(
-      page.getByRole("region", { name: "本机方案内容" }),
-    ).toContainText("仅选择，不安装文件");
-    expect(cli("hetu.local_settings.get", {}).association.suite).toBeNull();
+    await page.getByRole("button", { name: "返回设置", exact: true }).click();
+    await page.getByRole("tab", { name: "AI 协作", exact: true }).click();
+    const before = cli("hetu.local_settings.get", {});
+    await page.getByRole("combobox", { name: "题材 Skills 套件" }).selectOption("military");
+    await expect.poll(() => cli("hetu.local_settings.get", {}).association.suite).toBe("military");
+    const after = cli("hetu.local_settings.get", {});
+    expect(after.installations).toEqual(before.installations);
+    await page.getByRole("tab", { name: "写作", exact: true }).click();
+    await page.getByRole("switch", { name: "自动保存正文", exact: true }).check();
+    await expect.poll(() => cli("hetu.local_settings.get", {}).preferences.autosave).toBe(true);
+    await expect(app!.windows().find(window => !window.url().endsWith("?view=settings"))!.locator("html")).toHaveAttribute("data-appearance", "dark");
+    // 设置窗口只能访问本机设置，不能扩大到作品和作者操作。
+    await expect(page.evaluate(() => window.hetuDesktop.read("hetu.works.list", {}))).rejects.toThrow();
+    await expect(page.evaluate(() => window.hetuDesktop.author("journal", {}))).rejects.toThrow();
+    const main = app!.windows().find(window => !window.url().endsWith("?view=settings"))!;
+    expect(await openSettings(app!, main)).toBe(page);
+    expect(app!.windows().filter(window => window.url().endsWith("?view=settings"))).toHaveLength(1);
   } finally {
     await app?.close();
   }

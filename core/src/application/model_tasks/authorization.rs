@@ -85,6 +85,7 @@ impl Kernel {
         let kind = text(&record["plan"], "kind")?;
         let service = self.model_service()?;
         let connections = if p.channels == "configured" {
+            let kind = MediaKind::from_str(kind)?;
             service.authorization_connections(kind, true)?
         } else {
             vec![plan_connection(&service, &record["plan"])?]

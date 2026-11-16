@@ -7,8 +7,12 @@ export function PageActions({ children }: { children: React.ReactNode }) {
   return target ? createPortal(children, target) : null;
 }
 
-export type IconName = "sidebar" | "inspector" | "book" | "file" | "shield" | "link" | "layers" | "image" | "branch" | "export" | "check" | "settings" | "expand" | "more" | "chevron" | "back" | "list" | "sparkles" | "search" | "comment" | "grid" | "refresh" | "plus" | "film" | "close" | "plugin";
+export type IconName = "sidebar" | "inspector" | "book" | "file" | "shield" | "link" | "layers" | "image" | "branch" | "export" | "check" | "settings" | "expand" | "more" | "chevron" | "back" | "list" | "sparkles" | "search" | "comment" | "grid" | "refresh" | "plus" | "film" | "close" | "plugin" | "sliders" | "type" | "globe" | "info";
 const paths: Record<IconName, React.ReactNode> = {
+  sliders: <><path d="M3 5h4m4 0h10M3 12h10m4 0h4M3 19h4m4 0h10"/><circle cx="9" cy="5" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="19" r="2"/></>,
+  type: <><path d="M4 5h12M10 5v15M6 20h8M4 8V5m12 3V5m1 15 3-9 3 9m-5-3h4"/></>,
+  globe: <><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18M5 6.5c4 2 10 2 14 0M5 17.5c4-2 10-2 14 0"/></>,
+  info: <><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></>,
   sidebar: <><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M6 8h.01M6 11h.01"/></>,
   inspector: <><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16M18 8h.01M18 11h.01"/></>,
   book: <><path d="M12 5v15M12 5C8 2 3 4 2 5v15c3-2 7-2 10 0 3-2 7-2 10 0V5c-3-2-7-2-10 0Z"/></>,
@@ -48,6 +52,13 @@ export interface DocumentTools {
   save: () => void;
   ai: () => void;
 }
+
+export interface AgentStatus {
+  state: "idle" | "running" | "waiting_for_audit" | "failed";
+  message?: string;
+  taskId?: string;
+}
+
 export const Workbench = createContext<{
   directoryVisible: boolean;
   setDirectoryVisible: React.Dispatch<React.SetStateAction<boolean>>;
@@ -56,5 +67,14 @@ export const Workbench = createContext<{
   focus: boolean;
   setFocus: React.Dispatch<React.SetStateAction<boolean>>;
   setDocumentTools: React.Dispatch<React.SetStateAction<DocumentTools | undefined>>;
-}>({ directoryVisible: true, setDirectoryVisible: () => {}, inspector: false, setInspector: () => {}, focus: false, setFocus: () => {}, setDocumentTools: () => {} });
+  agentStatus: AgentStatus;
+  setAgentStatus: React.Dispatch<React.SetStateAction<AgentStatus>>;
+}>({
+  directoryVisible: true, setDirectoryVisible: () => {},
+  inspector: false, setInspector: () => {},
+  focus: false, setFocus: () => {},
+  setDocumentTools: () => {},
+  agentStatus: { state: "idle" },
+  setAgentStatus: () => {}
+});
 export const useWorkbench = () => useContext(Workbench);

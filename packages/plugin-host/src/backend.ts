@@ -19,6 +19,7 @@ export class BackendSupervisor {
   #buffer = "";
   #next = 0;
   #closed = false;
+  #disposal?: Promise<void>;
   #pending = new Map<
     number,
     {
@@ -196,7 +197,11 @@ export class BackendSupervisor {
       this.#operationKey = undefined;
     });
   }
-  async dispose() {
+  dispose(): Promise<void> {
+    if (!this.#disposal) this.#disposal = this.#dispose();
+    return this.#disposal;
+  }
+  async #dispose() {
     if (this.#closed) return;
     let timer: ReturnType<typeof setTimeout> | undefined;
     try {

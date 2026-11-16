@@ -255,11 +255,11 @@ impl ModelService {
             )?;
             let input = input.ok_or_else(|| Error::new("invalid_input", "缺少固定生成输入。"))?;
             let kind = text(input, "kind")?.to_owned();
+            super::middleware::trust::TrustMiddleware::pre_check(input)?;
             ensure(
-                matches!(kind.as_str(), "text" | "image")
-                    && input["provider_billing_accepted"] == true,
-                "hetu.author_confirmation_required",
-                "请作者明确批准供应商单次计费。",
+                matches!(kind.as_str(), "text" | "image"),
+                "invalid_input",
+                "模型种类无效。",
             )?;
             let payload = &input["payload"];
             let model = text(payload, "model_id")?;
@@ -416,7 +416,7 @@ mod tests {
                 )
                 .unwrap();
         }
-        let identity = service.identity_for("image").unwrap();
+        let identity = service.identity_for(super::MediaKind::Image).unwrap();
         (root, service, identity, crate::domain::id("model"))
     }
     fn input() -> Value {
