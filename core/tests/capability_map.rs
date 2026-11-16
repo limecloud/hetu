@@ -6,6 +6,10 @@ fn capability_map_is_available_without_work_and_navigates_exact_machine_contract
     let path = root.path().join("not-created");
     let hub = CollaborationHub::open(&path, "codex").unwrap();
     let result=hub.request(json!({"action":"hetu.capabilities.map","contract_revision":"1","input":{"action":"hetu.documents.finalize","include_schema":true}}));
+    let schema: serde_json::Value =
+        serde_json::from_str(include_str!("../../contracts/schemas/result.schema.json")).unwrap();
+    let validator = jsonschema::validator_for(&schema).unwrap();
+    validator.validate(&result).unwrap();
     assert_eq!(result["status"], "succeeded", "{result}");
     assert_eq!(result["data"]["total"], 1);
     let action = &result["data"]["actions"][0];
@@ -23,4 +27,5 @@ fn capability_map_is_available_without_work_and_navigates_exact_machine_contract
         json!({"action":"hetu.capabilities.map","contract_revision":"1","input":{"limit":0}}),
     );
     assert_eq!(denied["error"]["code"], "invalid_input");
+    validator.validate(&denied).unwrap();
 }

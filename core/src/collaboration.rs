@@ -248,14 +248,14 @@ impl CollaborationHub {
         if action == "hetu.capabilities.map" {
             return Ok(domain::success(
                 action,
-                "local",
+                "collaboration",
                 crate::capability_map::read(&request["input"])?,
             ));
         }
         if action.starts_with("hetu.plugins.") {
             return Ok(domain::success(
                 action,
-                "local",
+                "collaboration",
                 crate::plugin_settings::request(&self.client, action, &request["input"])?,
             ));
         }
@@ -265,7 +265,7 @@ impl CollaborationHub {
                 action,
                 &request["input"],
             )?;
-            return Ok(domain::success(action, "local", data));
+            return Ok(domain::success(action, "collaboration", data));
         }
         if action.starts_with("hetu.local_settings.") {
             return self.execute_local(request);
