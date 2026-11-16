@@ -9,6 +9,14 @@ export async function openSettings(application: ElectronApplication, page: Page)
   return settings;
 }
 
+/** Escape可能先销毁窗口，再返回键盘回执；仍须确认实际关闭。 */
+export async function closeSettings(page: Page) {
+  await page.keyboard.press("Escape").catch(error => {
+    if (!page.isClosed()) throw error;
+  });
+  await expect.poll(() => page.isClosed(), { timeout: 30000 }).toBe(true);
+}
+
 /** 窄窗口会自动收起目录，沿作者可见的入口重新打开。 */
 export async function openDirectory(page: Page) {
   const toggle = page.getByRole("button", { name: "卷章目录", exact: true });

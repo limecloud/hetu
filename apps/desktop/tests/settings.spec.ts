@@ -257,14 +257,14 @@ test("CLI准备本机方案、Electron固定审阅与恢复、无窗口执行和
     });
     await page.getByRole("button", { name: "返回设置", exact: true }).click();
     await page.getByRole("tab", { name: "AI 协作", exact: true }).click();
-    const before = cli("hetu.local_settings.get", {});
+    const before = await page.evaluate(() => window.hetuDesktop.settings("get"));
     await page.getByRole("combobox", { name: "题材 Skills 套件" }).selectOption("military");
-    await expect.poll(() => cli("hetu.local_settings.get", {}).association.suite).toBe("military");
-    const after = cli("hetu.local_settings.get", {});
-    expect(after.installations).toEqual(before.installations);
+    await expect(page.getByRole("region", { name: "默认AI协作", exact: true })).toHaveAttribute("aria-busy", "false");
+    await expect.poll(() => page.evaluate(async () => (await window.hetuDesktop.settingsAgent("get")).association.suite)).toBe("military");
     await page.getByRole("tab", { name: "写作", exact: true }).click();
     await page.getByRole("switch", { name: "自动保存正文", exact: true }).check();
-    await expect.poll(() => cli("hetu.local_settings.get", {}).preferences.autosave).toBe(true);
+    await expect.poll(() => page.evaluate(async () => (await window.hetuDesktop.settings("get")).preferences.autosave)).toBe(true);
+    await expect(page.getByRole("switch", { name: "自动保存正文", exact: true })).toBeEnabled();
     await expect(app!.windows().find(window => !window.url().endsWith("?view=settings"))!.locator("html")).toHaveAttribute("data-appearance", "dark");
     // 设置窗口只能访问本机设置，不能扩大到作品和作者操作。
     await expect(page.evaluate(() => window.hetuDesktop.read("hetu.works.list", {}))).rejects.toThrow();
@@ -272,6 +272,13 @@ test("CLI准备本机方案、Electron固定审阅与恢复、无窗口执行和
     const main = app!.windows().find(window => !window.url().endsWith("?view=settings"))!;
     expect(await openSettings(app!, main)).toBe(page);
     expect(app!.windows().filter(window => window.url().endsWith("?view=settings"))).toHaveLength(1);
+    // 关窗后再由独立CLI核验落盘，避免与桌面尚在执行的设置事务争锁。
+    await app!.close();
+    app = undefined;
+    const after = cli("hetu.local_settings.get", {});
+    expect(after.association.suite).toBe("military");
+    expect(after.preferences.autosave).toBe(true);
+    expect(after.installations).toEqual(before.installations);
   } finally {
     await app?.close();
   }

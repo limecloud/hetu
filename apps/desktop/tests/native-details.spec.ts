@@ -9,7 +9,7 @@ import { RecoveryStore } from "../src/main/recovery.ts";
 import { CoverReview } from "../src/main/covers.ts";
 import { CanonReview } from "../src/main/canon.ts";
 import { sampleImage } from "./fixtures/media.ts";
-import { navigate, openSettings } from "./navigation.ts";
+import { navigate, openSettings, closeSettings } from "./navigation.ts";
 
 const root = path.resolve(import.meta.dirname, "../../..");
 test("设定保存丢回执只查询原操作，切作品后旧编辑失效", async () => {
@@ -80,11 +80,11 @@ test("原生模型渠道与封面本地导入、文件变更拒绝及历史恢�
     }, workspace);
     const settingsPage = await openSettings(application, page);
     await settingsPage.getByRole("tab", { name: "模型服务", exact: true }).click();
-    const models = page.getByRole("region", { name: "模型服务", exact: true });
+    const models = settingsPage.getByRole("region", { name: "模型服务", exact: true });
     await expect(models).toContainText("未连接", { timeout: 30000 });
     expect(Object.keys((await settingsPage.evaluate(() => window.hetuDesktop.models("inspect"))).custom_channels ?? {})).toHaveLength(0);
     await models.getByRole("button", { name: "添加渠道", exact: true }).click();
-    const editor = page.getByRole("region", { name: "编辑模型渠道", exact: true });
+    const editor = settingsPage.getByRole("region", { name: "编辑模型渠道", exact: true });
     await editor.getByLabel("渠道名称", { exact: true }).fill("本机测试渠道");
     await editor.getByLabel("服务地址", { exact: true }).fill("https://provider.test/v1");
     await editor.getByLabel("API Key", { exact: true }).fill("isolated-fixture-secret");
@@ -110,8 +110,7 @@ test("原生模型渠道与封面本地导入、文件变更拒绝及历史恢�
     await editor.getByRole("button", { name: "保存渠道", exact: true }).click();
     await expect(models.getByText("本机渠道", { exact: true }).first()).toBeVisible();
     await expect(page.evaluate(() => window.hetuDesktop.models("generate" as any))).rejects.toThrow("未知模型设置");
-    await settingsPage.keyboard.press("Escape");
-    await expect(settingsPage).toBeClosed();
+    await closeSettings(settingsPage);
     await page.getByRole("button", { name: "打开作品", exact: true }).first().click();
     await page.getByRole("button", { name: /插件集成测试/ }).click();
     await navigate(page, "作品资料");

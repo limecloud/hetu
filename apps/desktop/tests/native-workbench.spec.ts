@@ -3,7 +3,7 @@ import { mkdtemp } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import os from "node:os";
-import { openSettings, openDirectory } from "./navigation.ts";
+import { openSettings, closeSettings, openDirectory } from "./navigation.ts";
 import { PluginPackage } from "../../../packages/plugin-host/src/package.ts";
 
 const root = path.resolve(import.meta.dirname, "../../..");
@@ -137,8 +137,7 @@ test("Mac工作台布局、正文操作与阅读位置在真实Core中贯通", a
     await expect(settingsPage.locator(".settings-reading-preview")).toBeVisible();
     await settingsPage.locator(".settings-reading-preview").scrollIntoViewIfNeeded();
     await settingsPage.screenshot({ path: path.join(root, "output/rea-mac-ui-20261116/settings-writing.png") });
-    await settingsPage.keyboard.press("Escape");
-    await expect(settingsPage).toBeClosed();
+    await closeSettings(settingsPage);
     await page.evaluate(() => { document.documentElement.dataset.appearance = "dark"; document.documentElement.style.colorScheme = "dark"; });
     expect(await page.locator(".manuscript-paper").evaluate((element) => getComputedStyle(element).backgroundColor)).toBe("rgb(16, 18, 17)");
     await page.screenshot({ path: path.join(root, "output/desktop-native-qa/manuscript-dark.png") });

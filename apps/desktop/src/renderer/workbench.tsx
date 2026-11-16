@@ -37,7 +37,7 @@ const paths: Record<IconName, React.ReactNode> = {
   plus: <path d="M12 4v16M4 12h16"/>,
   film: <><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 3v18M17 3v18M3 8h4m-4 8h4m10-8h4m-4 8h4"/></>,
   close: <path d="m6 6 12 12M18 6 6 18"/>,
-  plugin: <path d="M9 3h6v5h5v7h-5v6H9v-6H3V8h6Z"/>,
+  plugin: <path d="M9 3H5a2 2 0 0 0-2 2v4h2a2 2 0 1 1 0 4H3v6a2 2 0 0 0 2 2h6v-2a2 2 0 1 1 4 0v2h4a2 2 0 0 0 2-2v-6h-2a2 2 0 1 1 0-4h2V5a2 2 0 0 0-2-2h-6v2a2 2 0 1 1-4 0Z"/>,
 };
 export function Icon({ name, size = 16 }: { name: IconName; size?: number }) {
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;

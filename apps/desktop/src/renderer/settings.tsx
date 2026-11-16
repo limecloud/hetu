@@ -104,11 +104,16 @@ export function LocalSettings({
     [error, setError] = useState(""),
     [preview, setPreview] = useState<any>(),
     [textDrafts, setTextDrafts] = useState<Record<string, string>>({}),
+    [pendingPreferences, setPendingPreferences] = useState<Record<string, unknown>>({}),
     [tab, setTab] = useState<Tab>("general");
   const panel = useRef<HTMLDivElement>(null);
   const returnTab = useRef<Tab>("general");
   const saves = useRef<Promise<void>>(Promise.resolve());
   const currentState = useRef<any>();
+  const drafts = useRef(textDrafts), closing = useRef(false), closeReady = useRef(false);
+  const pendingValues = useRef(pendingPreferences);
+  drafts.current = textDrafts;
+  pendingValues.current = pendingPreferences;
   const plan = plans.find((p) => p.operation_id === selected);
   async function refresh(next?: string) {
     const [current, list] = await Promise.all([
@@ -146,6 +151,9 @@ export function LocalSettings({
     if (panel.current) panel.current.scrollTop = 0;
   }, [tab, preview]);
   function chooseTab(next: Tab) {
+    for (const [key, value] of Object.entries(drafts.current)) {
+      if (value !== currentState.current?.preferences[key]) void savePreference(key, value);
+    }
     setPreview(undefined);
     setTab(next);
   }
@@ -169,6 +177,7 @@ export function LocalSettings({
     document.getElementById("settings-tab-" + tabs[next].id)?.focus();
   }
   function savePreference(key: string, value: unknown) {
+    if (!["git_author_name", "git_author_email"].includes(key)) setPendingPreferences(current => ({ ...current, [key]: value }));
     const pending = saves.current.then(async () => {
       const latest = currentState.current;
       if (!latest || latest.journal?.status === "pending") return;
@@ -188,12 +197,41 @@ export function LocalSettings({
           throw error;
         }
       });
-    });
+    }).finally(() => setPendingPreferences(current => {
+      if (current[key] !== value) return current;
+      const next = { ...current }; delete next[key]; return next;
+    }));
     saves.current = pending.catch(() => {});
     return pending;
   }
+  useEffect(() => {
+    const beforeClose = (event: BeforeUnloadEvent) => {
+      if (closeReady.current) return;
+      const edits = Object.entries(drafts.current).filter(([key, value]) => value !== currentState.current?.preferences[key]);
+      if (!edits.length && !busy && !Object.keys(pendingValues.current).length) return;
+      event.preventDefault(); event.returnValue = false;
+      if (closing.current) return;
+      closing.current = true;
+      void (async () => {
+        for (const [key, value] of edits) await savePreference(key, value);
+        await saves.current;
+        const remaining = Object.entries(drafts.current).some(([key, value]) => value !== currentState.current?.preferences[key]);
+        if (!remaining && currentState.current?.journal?.status !== "pending") {
+          closeReady.current = true;
+          await desktop.settingsWindow("close");
+        }
+      })().catch((error: unknown) => {
+        closeReady.current = false;
+        const message = (error as Error).message;
+        setError(message);
+        notify(message);
+      }).finally(() => { closing.current = false; });
+    };
+    window.addEventListener("beforeunload", beforeClose);
+    return () => window.removeEventListener("beforeunload", beforeClose);
+  }, [busy]);
   function field(key: string) {
-    const value = state.preferences[key], disabled = busy || state.journal?.status === "pending";
+    const value = pendingPreferences[key] ?? state.preferences[key], disabled = busy || state.journal?.status === "pending";
     const label = labels[key];
     return <label className="settings-field" key={key}>
       <span>{label}</span>
@@ -223,7 +261,7 @@ export function LocalSettings({
       </section>
     );
   }
-  const current = state?.preferences;
+  const current = state && { ...state.preferences, ...pendingPreferences };
   return (
     <section className="local-settings" aria-label="本机设置">
       <div className="settings-tabs" role="tablist" aria-label="设置分类">
@@ -245,10 +283,10 @@ export function LocalSettings({
         ))}
       </div>
       <div className="settings-tools">
-        {tab === "plans" ? <><button onClick={() => { setPreview(undefined); setTab(returnTab.current); }}>返回设置</button>
+        {tab === "plans" ? <><button onClick={() => chooseTab(returnTab.current)}>返回设置</button>
           <button disabled={busy} onClick={() => void run(async () => { await desktop.settings("handoff", { section: returnTab.current }); notify("已复制本机设置协作请求。"); })}><Icon name="sparkles"/>让 AI 调整设置</button>
           <IconButton icon="refresh" label="刷新本机设置" disabled={busy} onClick={() => void run(() => refresh())}/></>
-          : <button disabled={busy} onClick={() => { returnTab.current = tab; setPreview(undefined); setTab("plans"); void run(() => refresh()); }}><Icon name="sparkles"/>让 AI 处理与审阅{plans.some(p => p.state === "pending") && <span className="settings-pending" aria-label="有待审方案"/>}</button>}
+          : <button disabled={busy} onClick={() => { returnTab.current = tab; chooseTab("plans"); void run(() => refresh()); }}><Icon name="sparkles"/>让 AI 处理与审阅{plans.some(p => p.state === "pending") && <span className="settings-pending" aria-label="有待审方案"/>}</button>}
       </div>
       {error && (
         <p role="alert" className="settings-feedback">
