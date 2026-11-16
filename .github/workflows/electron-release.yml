@@ -54,8 +54,8 @@ jobs:
           python3 "tools/sync-writing-methods.py" --check
           python3 "tools/verify-skills.py"
           npm run check --workspace @hetu/task-view
-      - name: Test optimized Rust workspace
-        run: cargo test --locked --release --workspace --jobs 2 -- --test-threads=2
+      - name: Test Rust workspace
+        run: cargo test --locked --workspace --jobs 2 -- --test-threads=2
       - name: Test CLI launcher, plugins and Electron workbench
         run: |
           npm run test:cli

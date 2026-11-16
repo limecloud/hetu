@@ -1,3 +1,4 @@
+import { openDirectory } from "./navigation.ts";
 import { test, expect, _electron as electron } from "@playwright/test";
 import { mkdtemp } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
@@ -40,6 +41,7 @@ test(
     });
     try {
       const page = await application.firstWindow();
+      await page.setViewportSize({ width: 1024, height: 768 });
       await application.evaluate(({ dialog }, directory) => {
         dialog.showOpenDialog = async () => ({
           canceled: false,
@@ -51,15 +53,17 @@ test(
         .first()
         .click();
       await page.getByRole("button", { name: /插件集成测试/ }).click();
+      await openDirectory(page);
       const directory = page.getByRole("navigation", {
         name: "文稿目录",
         exact: true,
       });
-      await expect(directory.getByRole("button")).toHaveCount(103);
-      await expect(directory.getByRole("button").first()).toHaveText(
+      const chapters = directory.locator(".chapter-group").getByRole("button");
+      await expect(chapters).toHaveCount(103);
+      await expect(chapters.first()).toHaveText(
         "目录试读第102章",
       );
-      await expect(directory.getByRole("button").last()).toHaveText(
+      await expect(chapters.last()).toHaveText(
         "第一章 雾港",
       );
       await expect(
@@ -68,7 +72,7 @@ test(
       await expect(
         directory.locator("summary", { hasText: "未分卷" }),
       ).toBeVisible();
-      await directory.getByRole("button").first().click();
+      await chapters.first().click();
       await expect(
         page.getByText("江岚在第102个清晨抵达雾港。", { exact: true }),
       ).toBeVisible();
@@ -89,7 +93,8 @@ test(
       await expect(
         page.getByRole("complementary", { name: "项目导航", exact: true }),
       ).toBeVisible();
-      await expect(directory.getByRole("button")).toHaveCount(1);
+      await openDirectory(page);
+      await expect(chapters).toHaveCount(1);
       await expect(
         directory.locator("summary", { hasText: "第1集 第一集" }),
       ).toBeVisible();

@@ -1,3 +1,4 @@
+import { openDirectory } from "./navigation.ts";
 import {
   test,
   expect,
@@ -151,7 +152,9 @@ test(
           checkboxChecked: false,
         });
       }, workspace);
-      return application.firstWindow();
+      const page = await application.firstWindow();
+      await page.setViewportSize({ width: 1024, height: 768 });
+      return page;
     }
     let page = await launch();
     const read = (action: string, input: any) =>
@@ -395,6 +398,7 @@ test(
       await page
         .getByRole("button", { name: "剧本", exact: true })
         .click();
+      await openDirectory(page);
       await page
         .getByRole("button", { name: "第二集 潮汐", exact: true })
         .click();

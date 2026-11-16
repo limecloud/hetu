@@ -1,3 +1,4 @@
+import { openDirectory } from "./navigation.ts";
 import { test, expect, _electron as electron } from "@playwright/test";
 import { mkdtemp } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
@@ -37,6 +38,7 @@ test(
     });
     try {
       const page = await application.firstWindow();
+      await page.setViewportSize({ width: 1024, height: 768 });
       await application.evaluate(({ dialog }, directory) => {
         dialog.showOpenDialog = async () => ({
           canceled: false,
@@ -82,6 +84,7 @@ test(
       });
       expect(saved.status).toBe("succeeded");
       const start = performance.now();
+      await openDirectory(page);
       await page
         .getByRole("button", { name: "第一章 雾港", exact: true })
         .click();

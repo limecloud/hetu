@@ -1,4 +1,4 @@
-import { documentAction, navigate } from "./navigation.ts";
+import { documentAction, navigate, openDirectory } from "./navigation.ts";
 import {
   test,
   expect,
@@ -29,6 +29,7 @@ test("Electron作品授权、精确页面交接与无窗口Rust CLI在撤权后�
     dialog.showMessageBox = async () => ({ response: 1, checkboxChecked: false });
   }, workspace);
   const page = await application.firstWindow();
+      await page.setViewportSize({ width: 1024, height: 768 });
   await page.getByRole("button", { name: "打开作品", exact: true }).first().click();
   await page.getByRole("button", { name: /插件集成测试/ }).click();
   await navigate(page, "Agent 协作");
@@ -55,6 +56,7 @@ test("Electron作品授权、精确页面交接与无窗口Rust CLI在撤权后�
   expect(cli("hetu.documents.list", { work_ref: context.work_ref }).status).not.toBe(0);
   expect(cli("hetu.documents.list", { work_ref: context.work_ref }, current.management_ref).status).toBe(0);
   await page.getByRole("button", { name: "小说", exact: true }).click();
+  await openDirectory(page);
   await page.getByRole("button", { name: "第一章 雾港", exact: true }).click();
   await page.locator("summary[aria-label='文稿操作']").click();
   await documentAction(page, "让 AI 处理本稿");
@@ -103,6 +105,7 @@ test(
         });
       }, workspace);
       const page = await application.firstWindow();
+      await page.setViewportSize({ width: 1024, height: 768 });
       await page
         .getByRole("button", { name: "打开作品", exact: true })
         .first()
@@ -200,6 +203,7 @@ test(
       JSON.stringify({ ...journal, status: "pending" }),
     );
     page = await launch();
+    await openDirectory(page);
     await page
       .getByRole("button", { name: "第一章 雾港", exact: true })
       .click();
@@ -292,6 +296,7 @@ test(
         });
       }, workspace);
       const page = await application.firstWindow();
+      await page.setViewportSize({ width: 1024, height: 768 });
       await page
         .getByRole("button", { name: "打开作品", exact: true })
         .first()
@@ -491,6 +496,7 @@ test(
       })
       .toContain("插件集成测试");
     await page.getByRole("button", { name: "插件集成测试" }).click();
+    await openDirectory(page);
     await expect(
       page.getByRole("navigation", { name: "文稿目录", exact: true }),
     ).toBeVisible();
@@ -820,11 +826,13 @@ test(
         dialog.showMessageBoxSync = () => 1;
       }, workspace);
       const page = await application.firstWindow();
+      await page.setViewportSize({ width: 1024, height: 768 });
       await page
         .getByRole("button", { name: "打开作品", exact: true })
         .first()
         .click();
       await page.getByRole("button", { name: /插件集成测试/ }).click();
+      await openDirectory(page);
       await page
         .getByRole("button", { name: "第一章 雾港", exact: true })
         .click();

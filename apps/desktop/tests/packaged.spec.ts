@@ -1,4 +1,4 @@
-import { navigate } from "./navigation.ts";
+import { navigate, openDirectory } from "./navigation.ts";
 import {
   test,
   expect,
@@ -104,6 +104,7 @@ test(
         env,
       });
       const page = await application.firstWindow();
+      await page.setViewportSize({ width: 1024, height: 768 });
       await application.evaluate(({ dialog, clipboard }, directory) => {
         dialog.showOpenDialog = async () => ({
           canceled: false,
@@ -149,6 +150,7 @@ test(
           "bin",
           name + (process.platform === "win32" ? ".exe" : ""),
         );
+      await openDirectory(page);
       await page
         .getByRole("button", { name: "第一章 雾港", exact: true })
         .click();

@@ -1,4 +1,12 @@
-import type { Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
+
+/** 窄窗口会自动收起目录，沿作者可见的入口重新打开。 */
+export async function openDirectory(page: Page) {
+  const toggle = page.getByRole("button", { name: "卷章目录", exact: true });
+  await expect(toggle).toBeVisible();
+  if (await toggle.getAttribute("aria-pressed") !== "true") await toggle.click();
+  await expect(page.getByRole("navigation", { name: "文稿目录", exact: true })).toBeVisible();
+}
 
 /** 沿作者可见的项目导航展开分组，不通过内部桥接代替导航。 */
 export async function navigate(page: Page, label: string) {
