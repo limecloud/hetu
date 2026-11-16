@@ -28,9 +28,10 @@ export async function openDirectory(page: Page) {
 /** 沿作者可见的项目导航展开分组，不通过内部桥接代替导航。 */
 export async function navigate(page: Page, label: string) {
   const navigation = page.getByRole("complementary", { name: "项目导航", exact: true });
-  const button = navigation.getByRole("button", { name: label, exact: true });
+  const options = { name: label, exact: true, includeHidden: true };
+  const button = navigation.getByRole("button", options);
   await expect(button).toBeAttached();
-  const group = navigation.locator("details.navigation-group").filter({ has: page.getByRole("button", { name: label, exact: true }) });
+  const group = navigation.locator("details.navigation-group").filter({ has: page.getByRole("button", options) });
   if (await group.count() && !(await group.evaluate((element) => (element as HTMLDetailsElement).open)))
     await group.locator(":scope > summary").click();
   await button.click();
