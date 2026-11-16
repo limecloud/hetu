@@ -222,4 +222,4 @@
 .model-channel-dialog input, .model-channel-dialog textarea { padding: 4px 7px; }
 .model-channel-dialog textarea { height: 44px; resize: vertical; }
 .model-channel-dialog .settings-note { margin: 6px 0; }
-.model-channel-dialog .actions { position: sticky; bottom: -20px; margin: 0 -20px -20px; padding: 12px 20px; justify-content: flex-end; flex-direction: row-reverse; background: var(--paper); border-top: .5px solid var(--line); }
+.model-channel-dialog .actions { position: sticky; bottom: -20px; margin: 0 -20px -20px; padding: 12px 20px; justify-content: flex-end; background: var(--paper); border-top: .5px solid var(--line); }

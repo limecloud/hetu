@@ -78,9 +78,9 @@ export function ModelSettings() {
       </fieldset>
       {error && <p role="alert">{error}</p>}
       <div className="actions">
+        <button type="button" disabled={busy} onClick={closeEditor}>取消</button>
         {unknown ? <button type="button" disabled={busy} onClick={() => void run(recover)}>检查本次保存</button>
           : <button type="submit" className="primary" disabled={busy}>保存渠道</button>}
-        <button type="button" disabled={busy} onClick={closeEditor}>取消</button>
       </div>
     </form>
   </section></dialog>;

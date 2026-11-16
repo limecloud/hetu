@@ -171,6 +171,7 @@ test("CLI准备本机方案、Electron固定审阅与恢复、无窗口执行和
     await expect(
       page.getByRole("region", { name: "本机方案内容" }),
     ).toContainText("24");
+    await page.screenshot({ path: path.join(root, "output/settings-native-20261116", executable ? "plan-review-packaged.png" : "plan-review.png"), scale: "css" });
     await page
       .getByRole("button", { name: "批准本机方案", exact: true })
       .click();
@@ -190,6 +191,8 @@ test("CLI准备本机方案、Electron固定审阅与恢复、无窗口执行和
     delete record.result;
     await writeFile(file, JSON.stringify(record));
     page = await launch();
+    await expect(page.getByRole("button", { name: "恢复原本机操作", exact: true })).toBeEnabled();
+    await page.screenshot({ path: path.join(root, "output/settings-native-20261116", executable ? "recovery-packaged.png" : "recovery.png"), scale: "css" });
     await page
       .getByRole("button", { name: "恢复原本机操作", exact: true })
       .click();
@@ -282,6 +285,7 @@ test("CLI准备本机方案、Electron固定审阅与恢复、无窗口执行和
     expect(after.association.suite).toBe("military");
     expect(after.preferences.autosave).toBe(true);
     expect(after.installations).toEqual(before.installations);
+    expect(rendererErrors).toEqual([]);
   } finally {
     await test.info().attach("renderer-errors", { body: JSON.stringify(rendererErrors, null, 2), contentType: "application/json" });
     await app?.close();

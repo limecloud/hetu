@@ -81,10 +81,8 @@ function Canon({ work, notify, ai }: SurfaceContext) {
     desktop.canon("get")
       .then((r) => {
         if (!active) return;
-        const value = r, blueprint = value.blueprint ?? value;
+        const value = r;
         setCanon({ workKey, value });
-        setKind((current) => blueprint?.[current]?.length ? current :
-          (canonKinds.find((category) => blueprint?.[category.section]?.length)?.section ?? current));
       })
       .catch((e) => {
         if (active) { setError(e.message); notify(e.message); }

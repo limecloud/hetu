@@ -9,9 +9,14 @@ const clientName = (value: string) => clients.find(([id]) => id === value)?.[1] 
 const states: Record<string, string> = { missing: "未发现安装记录或包文件", found: "已找到完整套件文件", invalid: "套件文件不完整或身份不符", unsupported: "请手动接入后在客户端验证", manual: "暂不使用外部客户端" };
 const registrations: Record<string, string> = { enabled: "已启用", disabled: "已登记，尚未启用", missing: "未发现对应启用登记", unknown: "未能核对", not_applicable: "待在客户端验证" };
 
-export function WorkAgent({ work, notify }: { work?: WorkRef; notify(message: string): void }) {
+export function WorkAgent({ work, notify, changed }: { work?: WorkRef; notify(message: string): void; changed?(): Promise<void> }) {
   const { agentStatus } = React.useContext(Workbench);
-  const request = work ? desktop.workAgent : desktop.settingsAgent;
+  const call = work ? desktop.workAgent : desktop.settingsAgent;
+  async function request(method: Parameters<typeof desktop.workAgent>[0], input?: Record<string, unknown>) {
+    const value = await call(method, input);
+    if (["select", "choose_package", "auto_detect", "recover", "acknowledge"].includes(method)) await changed?.();
+    return value;
+  }
   const [state, setState] = useState<any>(), [inspection, setInspection] = useState<any>(), [busy, setBusy] = useState(false), [checking, setChecking] = useState(false), [error, setError] = useState("");
   const [query, setQuery] = useState(""), [platform, setPlatform] = useState(""), [channel, setChannel] = useState("");
   const [brief, setBrief] = useState(""), [reply, setReply] = useState(""), [advice, setAdvice] = useState<any[]>([]), [adviceError, setAdviceError] = useState("");

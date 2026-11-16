@@ -436,7 +436,7 @@ export function LocalSettings({
                     </p>
                   </>
                 )}
-                {tab === "agents" && <WorkAgent notify={notify}/>}
+                {tab === "agents" && <WorkAgent notify={notify} changed={() => refresh()}/>}
                 {tab === "plans" && (
                   <>
                     <h2 className="settings-section-heading">本机操作审阅</h2>

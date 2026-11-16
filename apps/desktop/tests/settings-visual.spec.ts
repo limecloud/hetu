@@ -61,6 +61,13 @@ test("独立设置六分类截图、即时保存、浮层和窗口权限", async
         await page.getByRole("tab", { name: label, exact: true }).click();
         await ready(id);
         await capture(id + "-" + appearance);
+        if (id === "models") {
+          await page.getByRole("button", { name: "添加渠道", exact: true }).click();
+          await expect(page.getByRole("dialog", { name: "添加渠道", exact: true })).toBeVisible();
+          await capture("model-dialog-" + appearance);
+          await page.keyboard.press("Escape");
+          await expect(page.getByRole("dialog", { name: "添加渠道", exact: true })).toBeHidden();
+        }
         if (["models", "agents"].includes(id)) {
           await page.locator(".settings-panel").evaluate(el => { el.scrollTop = el.scrollHeight; });
           await capture(id + "-" + appearance + "-bottom");
@@ -114,6 +121,12 @@ test("独立设置六分类截图、即时保存、浮层和窗口权限", async
     await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows().find(view => view.webContents.getURL().endsWith("?view=settings"))!.setContentSize(520, 588));
     for (const [label, id] of categories) {
       await page.getByRole("tab", { name: label, exact: true }).click(); await ready(id); await capture(id + "-narrow");
+      if (id === "models") {
+        await page.getByRole("button", { name: "添加渠道", exact: true }).click();
+        await expect(page.getByRole("dialog", { name: "添加渠道", exact: true })).toBeVisible();
+        await capture("model-dialog-narrow");
+        await page.keyboard.press("Escape");
+      }
     }
     await page.getByRole("tab", { name: "通用", exact: true }).click();
     await page.keyboard.press("ArrowRight");
