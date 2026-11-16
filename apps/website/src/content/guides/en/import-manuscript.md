@@ -28,6 +28,12 @@ Ask the Agent to list volumes, chapters, ordering and uncertain boundaries. Numb
 
 A matching word count is not enough. Have the Agent flag uncertain divisions so you can compare them against the original.
 
+## Complete the import in your conversation
+
+Once you have explicitly asked the Agent to import a particular manuscript, it fixes the agreed contents and continues importing and verifying within that scope. You do not need to approve volumes or individual batches in the desktop app. Unclear scope, a changed source or a conflicting chapter list requires a decision in the conversation.
+
+Importing preserves the original and its provenance. It does not adopt AI revisions or finalize the manuscript. You can ask the Agent to stop; completed imports and their records remain available.
+
 ## Keep a record of format conversion
 
 Different formats preserve different information. Check prose, headings, footnotes, comments and layout separately. If conversion is needed, retain the source and ask what information it loses.

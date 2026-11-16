@@ -15,7 +15,7 @@ import sys
 import tempfile
 
 ROOT = Path(__file__).resolve().parent.parent
-spec = importlib.util.spec_from_file_location("macos_release", ROOT / "tools/release-macos.py")
+spec = importlib.util.spec_from_file_location("macos_signing", ROOT / "tools/macos-signing.py")
 macos = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(macos)
 
@@ -35,7 +35,7 @@ def artifact_inventory(directory):
 
 def verify_package(app, version, team):
     info = plistlib.loads((app / "Contents/Info.plist").read_bytes())
-    if info.get("CFBundleIdentifier") != "run.limeai.hetu.electron" or info.get("CFBundleShortVersionString") != version:
+    if info.get("CFBundleIdentifier") != "run.limeai.hetu" or info.get("CFBundleShortVersionString") != version:
         raise SystemExit("Electron 应用身份或版本与发行源码不一致。")
     macos.verify_signature(app, team)
     bin_dir = app / "Contents/Resources/bin"

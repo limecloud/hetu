@@ -19,6 +19,61 @@ spec.loader.exec_module(m)
 
 
 class NovelImportTests(unittest.TestCase):
+    def test_conversation_authorization_recovers_exact_input_after_unknown_receipt(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); source = root / "novel.txt"; source.write_text("第1章 原稿\n保留原文。\n")
+            folder = root / "record"
+            with contextlib.redirect_stdout(io.StringIO()):
+                m.plan(argparse.Namespace(source=source, output=folder, encoding=None, layout=None, chapter_pattern=None))
+            reference = root / "management.json"; m.save(reference, {"scope_ref": {"kind": "workspace", "id": "workspace-fixture"}})
+            requests = []; unknown = True
+            def rpc(command, *, input, **kwargs):
+                request = json.loads(input)
+                if "hetu.novels.get" in command:
+                    data = {"revision": 1, "sha256": "baseline", "novel": {"novel_id": "novel-fixture"}}
+                elif "hetu.operations.get" in command:
+                    return subprocess.CompletedProcess(command, 1, json.dumps({"status": "failed", "error": {"code": "not_found"}}), "")
+                else:
+                    requests.append(request)
+                    if unknown: raise subprocess.TimeoutExpired(command, 300)
+                    data = {"import_authorization_ref": {"authorization_id": "fixed-authorization", "sha256": "fixed-digest"}}
+                return subprocess.CompletedProcess(command, 0, json.dumps({"status": "succeeded", "data": data}), "")
+            args = argparse.Namespace(command="authorize", plan=folder / "plan.json", management_ref=reference, cli=root / "hetu", collaboration_dir=None, client="codex", locale="zh-CN", authorization_note="请导入这份指定原稿，保留原文。")
+            with patch.object(m.subprocess, "run", side_effect=rpc), contextlib.redirect_stdout(io.StringIO()):
+                with self.assertRaises(subprocess.TimeoutExpired): m.command(args)
+                unknown = False; m.command(args)
+            self.assertEqual(requests[0], requests[1])
+            self.assertEqual(requests[0]["authorization_note"], args.authorization_note)
+            self.assertNotIn("approved", requests[0])
+            self.assertEqual(len(requests[0]["plan"]["units"]), 1)
+            self.assertEqual(json.loads((folder / "journal.json").read_text())["next_index"], 0)
+
+    def test_conversation_authorization_reads_lost_receipt_without_registering_twice(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); source = root / "novel.txt"; source.write_text("第1章 原稿\n保留原文。\n")
+            folder = root / "record"
+            with contextlib.redirect_stdout(io.StringIO()):
+                m.plan(argparse.Namespace(source=source, output=folder, encoding=None, layout=None, chapter_pattern=None))
+            reference = root / "management.json"; m.save(reference, {"scope_ref": {"kind": "workspace", "id": "workspace-fixture"}})
+            actions = []; registered = {"import_authorization_ref": {"authorization_id": "original", "sha256": "fixed"}}
+            def rpc(command, *, input, **kwargs):
+                action = command[command.index("call") + 1]; actions.append(action)
+                if action == "hetu.novels.get":
+                    data = {"revision": 1, "sha256": "baseline", "novel": {"novel_id": "novel-fixture"}}
+                elif action == "hetu.import_authorizations.register":
+                    raise subprocess.TimeoutExpired(command, 300)
+                else:
+                    self.assertEqual(action, "hetu.operations.get")
+                    self.assertEqual(json.loads(input)["key"], "authorize-import-" + m.sha(source.read_bytes())[:20])
+                    data = {"original_result": {"status": "succeeded", "action": "hetu.import_authorizations.register", "data": registered}}
+                return subprocess.CompletedProcess(command, 0, json.dumps({"status": "succeeded", "data": data}), "")
+            args = argparse.Namespace(command="authorize", plan=folder / "plan.json", management_ref=reference, cli=root / "hetu", collaboration_dir=None, client="codex", locale="zh-CN", authorization_note="请导入这份原稿。")
+            with patch.object(m.subprocess, "run", side_effect=rpc), contextlib.redirect_stdout(io.StringIO()):
+                with self.assertRaises(subprocess.TimeoutExpired): m.command(args)
+                m.command(args)
+            self.assertEqual(actions, ["hetu.novels.get", "hetu.import_authorizations.register", "hetu.operations.get"])
+            self.assertEqual(json.loads((folder / "journal.json").read_text())["import_authorization_ref"], registered["import_authorization_ref"])
+
     def test_chinese_restart_duplicate_and_false_heading_preserve_every_character(self):
         text = "书名：渡口\r\n作者：作者\r\n\r\n第1章 开场\r\n原稿🌿\r\n第三回合时，他没有退让。\r\n第2章 接续\r\n原稿二\r\n第1章 新卷\r\n原稿三\r\n第2章 旧章号\r\n原稿四\r\n第2章 重号仍保留\r\n原稿五\r\n"
         units, warnings = m.make_layout(text)

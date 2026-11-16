@@ -27,7 +27,7 @@ class ElectronReleaseTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             app = Path(directory) / "Hetu.app"
             (app / "Contents").mkdir(parents=True)
-            for identity, version in [("run.limeai.hetu.electron.dev", "0.8.0"), ("run.limeai.hetu.electron", "0.7.0")]:
+            for identity, version in [("run.limeai.hetu.dev", "0.8.0"), ("run.limeai.hetu.electron", "0.8.0"), ("run.limeai.hetu", "0.7.0")]:
                 (app / "Contents/Info.plist").write_bytes(plistlib.dumps({
                     "CFBundleIdentifier": identity, "CFBundleShortVersionString": version,
                 }))
@@ -35,6 +35,26 @@ class ElectronReleaseTests(unittest.TestCase):
                     with self.assertRaisesRegex(SystemExit, "身份或版本"):
                         release.verify_package(app, "0.8.0", "ABCDEFGHIJ")
                     verify.assert_not_called()
+
+    def test_original_mac_identity_accepts_matching_release(self):
+        with tempfile.TemporaryDirectory() as directory:
+            app = Path(directory) / "Hetu.app"
+            (app / "Contents").mkdir(parents=True)
+            (app / "Contents/Info.plist").write_bytes(plistlib.dumps({
+                "CFBundleIdentifier": "run.limeai.hetu", "CFBundleShortVersionString": "0.8.0",
+            }))
+
+            def run(command):
+                if command[0] == "lipo":
+                    return "arm64"
+                if command[-1] == "--version":
+                    return "hetu 0.8.0"
+                return ""
+
+            with patch.object(release.macos, "run", side_effect=run), \
+                    patch.object(release.macos, "verify_signature") as verify:
+                release.verify_package(app, "0.8.0", "ABCDEFGHIJ")
+            self.assertEqual(verify.call_count, 6)
 
     def test_existing_notarization_receipt_prevents_rebuilding(self):
         with tempfile.TemporaryDirectory() as directory:

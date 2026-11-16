@@ -1,0 +1,564 @@
+{
+  "schema_version": "1.0.0",
+  "meaning": "source_wired仅表示源码合同和入口已连线；不证明安装、运行、跨平台或端到端通过。执行时先inspect实际能力。",
+  "discovery": "hetu.collaboration.inspect",
+  "map_action": "hetu.capabilities.map",
+  "mcp_map_tool": "hetu_get_capability_map",
+  "query": {
+    "filters": [
+      "group",
+      "action",
+      "skill"
+    ],
+    "pagination": [
+      "offset",
+      "limit"
+    ],
+    "include_schema": false
+  },
+  "workflows": [
+    {
+      "goal": "导入已有小说",
+      "skill": "hetu-import",
+      "entry": "hetu.import_authorizations.register",
+      "path": [
+        "发现能力及精确作品",
+        "核对原稿、完整目录和摘要",
+        "登记真实导入指令",
+        "固定分批方案并执行",
+        "逐篇回读及原键恢复"
+      ]
+    },
+    {
+      "goal": "整理资料、目录、设定或执行作者取舍",
+      "skill": "hetu-manage",
+      "entry": "hetu.agent_operations.catalog",
+      "path": [
+        "读取对象及固定修订",
+        "按领域Schema准备方案",
+        "展示差异并记录真实决定",
+        "原Agent执行",
+        "回读领域结果"
+      ]
+    },
+    {
+      "goal": "起草、改稿或整理大纲",
+      "skill": "hetu-setup",
+      "entry": "hetu.creative_tasks.list",
+      "path": [
+        "恢复已有任务或准备确切新任务",
+        "按任务类型选择写作Skill",
+        "按需读取固定上下文",
+        "提交参考成果",
+        "阅读反馈并沿原任务继续"
+      ]
+    },
+    {
+      "goal": "设置偏好或安装所选Skills套件",
+      "skill": "hetu-manage",
+      "entry": "hetu.local_settings.get",
+      "path": [
+        "读取本机基线",
+        "准备固定设置方案",
+        "记录真实选择",
+        "执行并回读",
+        "分别核对安装和本会话加载状态"
+      ]
+    },
+    {
+      "goal": "配置模型渠道",
+      "skill": "hetu-manage",
+      "entry": "hetu.model_settings.inspect",
+      "path": [
+        "读取非敏感设置及摘要",
+        "按真实指令提交固定设置",
+        "凭据仅进入私密存储",
+        "回读非敏感结果；生成与费用另行授权"
+      ]
+    },
+    {
+      "goal": "安装、启停或卸载插件",
+      "skill": "hetu-manage",
+      "entry": "hetu.plugins.inspect",
+      "path": [
+        "核对包内容及摘要",
+        "核对依赖和状态基线",
+        "提交真实安装选择",
+        "回读原操作",
+        "作品数据权限另行精确授权"
+      ]
+    },
+    {
+      "goal": "授权插件数据或确认数据迁移",
+      "skill": "hetu-manage",
+      "entry": "hetu.plugin_access.authorize",
+      "path": [
+        "固定作品、包摘要和类型Schema",
+        "按真实选择授权",
+        "发现插件专业数据动作",
+        "迁移先准备并展示前后差异",
+        "登记确切迁移决定后执行及回读"
+      ]
+    },
+    {
+      "goal": "保存文稿版本",
+      "skill": "hetu-manage",
+      "entry": "hetu.git.status",
+      "path": [
+        "读取本作品HEAD",
+        "准备固定文稿快照",
+        "审阅完整差异及提交身份",
+        "记录确切snapshot决定",
+        "执行并沿原snapshot和键回读"
+      ]
+    },
+    {
+      "goal": "导出文稿或交付包",
+      "skill": "hetu-manage",
+      "entry": "hetu.documents.preview_export",
+      "path": [
+        "读取确切修订及交付目标",
+        "准备固定交付方案",
+        "记录真实决定",
+        "执行并核验文件和摘要"
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "name": "hetu-setup",
+      "description": "在河图洛书任务首次接入、检查当前客户端能力或恢复已知任务时使用；不用于生成小说正文。",
+      "actions": [
+        "hetu.capabilities.get",
+        "hetu.workspaces.get",
+        "hetu.workspaces.list",
+        "hetu.operations.get",
+        "hetu.creative_tasks.preview_prompt",
+        "hetu.creative_tasks.prepare",
+        "hetu.creative_tasks.get",
+        "hetu.creative_tasks.list",
+        "hetu.creative_tasks.submit_result",
+        "hetu.creative_tasks.inspect_inbox",
+        "hetu.creative_tasks.close",
+        "hetu.creative_tasks.mark_copied",
+        "hetu.interactions.get",
+        "hetu.interactions.save_selection",
+        "hetu.collaboration.authorize",
+        "hetu.collaboration.revoke",
+        "hetu.collaboration.inspect",
+        "hetu.collaboration.open",
+        "hetu.task_context.list",
+        "hetu.task_context.read",
+        "hetu.task_context.search",
+        "hetu.models.list",
+        "hetu.model_tasks.list",
+        "hetu.model_tasks.prepare",
+        "hetu.model_tasks.authorize_usage",
+        "hetu.model_tasks.approve",
+        "hetu.model_tasks.get",
+        "hetu.model_tasks.submit",
+        "hetu.model_tasks.collect",
+        "hetu.collaboration.revoke_management",
+        "hetu.handoffs.get",
+        "hetu.collaboration.authorize_workspace",
+        "hetu.collaboration.created_works",
+        "hetu.collaboration.workspace_access",
+        "hetu.capabilities.map"
+      ],
+      "entry": "../skills/hetu-setup/SKILL.md"
+    },
+    {
+      "name": "hetu-book-create",
+      "description": "作者希望从零筹备小说或剧本，或为已有河图洛书筹备构思方向、书名、简介及初步大纲时使用。",
+      "actions": [
+        "hetu.creation_projects.get",
+        "hetu.creation_projects.save",
+        "hetu.creation_projects.create_novel",
+        "hetu.creation_projects.create_drama",
+        "hetu.creation_projects.create",
+        "hetu.creation_projects.create_video"
+      ],
+      "entry": "../skills/hetu-book-create/SKILL.md"
+    },
+    {
+      "name": "hetu-book-profile",
+      "description": "作者在河图洛书为已知作品拟书名、简介、卖点或其他资料候选时使用。",
+      "actions": [
+        "hetu.novels.get",
+        "hetu.novels.initialize",
+        "hetu.novels.update",
+        "hetu.novels.save_structure"
+      ],
+      "entry": "../skills/hetu-book-profile/SKILL.md"
+    },
+    {
+      "name": "hetu-outline",
+      "description": "作者通过河图洛书设计或调整总纲、卷纲和章纲时使用。",
+      "actions": [
+        "hetu.blueprints.get",
+        "hetu.blueprints.preview_change",
+        "hetu.blueprints.save",
+        "hetu.blueprints.lock",
+        "hetu.blueprints.unlock",
+        "hetu.outlines.get",
+        "hetu.outlines.save",
+        "hetu.blueprints.initialize"
+      ],
+      "entry": "../skills/hetu-outline/SKILL.md"
+    },
+    {
+      "name": "hetu-cover",
+      "description": "为河图洛书 Hetu Luoshu 小说封面任务设计并生成候选图片，按任务约定写回作品目录，供作者在河图洛书预览选用。用于用户提供河图洛书封面 request.json 或请求完成河图洛书封面设计时。",
+      "actions": [
+        "hetu.covers.get",
+        "hetu.covers.preview_prompt",
+        "hetu.covers.create_request",
+        "hetu.covers.list_requests",
+        "hetu.covers.list_candidates",
+        "hetu.covers.select",
+        "hetu.covers.list_preparations",
+        "hetu.covers.inspect_file"
+      ],
+      "entry": "../skills/hetu-cover/SKILL.md"
+    },
+    {
+      "name": "hetu-draft",
+      "description": "作者通过河图洛书明确请求章节起草或续写参考稿时使用，不在保存正文时自动触发。",
+      "actions": [
+        "hetu.drafts.submit",
+        "hetu.drafts.list",
+        "hetu.drafts.get",
+        "hetu.drafts.submit_current",
+        "hetu.drafts.preview_adoption",
+        "hetu.drafts.adopt",
+        "hetu.working_copies.create",
+        "hetu.working_copies.get",
+        "hetu.working_copies.list",
+        "hetu.working_copies.save"
+      ],
+      "entry": "../skills/hetu-draft/SKILL.md"
+    },
+    {
+      "name": "hetu-revise",
+      "description": "作者通过河图洛书明确请求固定原文选区改稿，或依据公开批注返工参考稿时使用。",
+      "actions": [
+        "hetu.reviews.begin",
+        "hetu.reviews.validate",
+        "hetu.reviews.decide",
+        "hetu.reviews.get",
+        "hetu.reviews.list",
+        "hetu.annotations.list",
+        "hetu.annotations.save",
+        "hetu.task_feedback.save",
+        "hetu.task_feedback.list"
+      ],
+      "entry": "../skills/hetu-revise/SKILL.md"
+    },
+    {
+      "name": "hetu-drama",
+      "description": "作者通过河图洛书创作原创短剧，或将已授权原著改编为 Fountain 参考稿时使用。",
+      "actions": [
+        "hetu.plot.extract",
+        "hetu.plot.correct",
+        "hetu.plot.get",
+        "hetu.plot.list",
+        "hetu.validation.run",
+        "hetu.findings.disposition",
+        "hetu.reports.get",
+        "hetu.reports.list",
+        "hetu.drama.build_skeleton",
+        "hetu.drama.get_skeleton",
+        "hetu.drama.list_skeletons",
+        "hetu.drama.edit_skeleton",
+        "hetu.drama.compare",
+        "hetu.drama.get_comparison",
+        "hetu.drama.list_comparisons",
+        "hetu.drama.create_script",
+        "hetu.drama.get_script_mapping",
+        "hetu.drama.projects.create",
+        "hetu.drama.projects.get",
+        "hetu.drama.projects.list",
+        "hetu.drama.projects.update",
+        "hetu.drama.projects.attach",
+        "hetu.drama.episodes.create",
+        "hetu.drama.episodes.get",
+        "hetu.drama.episodes.update",
+        "hetu.drama.episodes.reorder",
+        "hetu.findings.suggest",
+        "hetu.findings.suggestions"
+      ],
+      "entry": "../skills/hetu-drama/SKILL.md"
+    },
+    {
+      "name": "hetu-resources",
+      "description": "作者通过河图洛书资料任务整理人物资料、场景参考、道具说明或考据笔记时使用。",
+      "actions": [
+        "hetu.resources.create",
+        "hetu.resources.update",
+        "hetu.resources.get",
+        "hetu.resources.list",
+        "hetu.resources.adopt",
+        "hetu.resources.archive",
+        "hetu.resource_usages.save",
+        "hetu.resource_usages.list"
+      ],
+      "entry": "../skills/hetu-resources/SKILL.md"
+    },
+    {
+      "name": "hetu-artwork",
+      "description": "为河图洛书角色、场景、道具及插图任务设计图片候选，通过实际发现的图像工具生成并回写固定任务，供作者预览。",
+      "actions": [
+        "hetu.assets.inspect",
+        "hetu.assets.update",
+        "hetu.assets.get",
+        "hetu.assets.list",
+        "hetu.cues.save",
+        "hetu.cues.get",
+        "hetu.cues.list",
+        "hetu.image_tasks.preview_prompt",
+        "hetu.image_tasks.prepare"
+      ],
+      "entry": "../skills/hetu-artwork/SKILL.md"
+    },
+    {
+      "name": "hetu-manage",
+      "description": "作者需要在河图洛书整理作品资料、卷章大纲、设定、短剧场次、资料关联、导入交付、版本或本机设置时使用。由 Agent 准备完整操作，作者审阅后执行；正文创作和改稿使用对应写作 Skill。",
+      "actions": [
+        "hetu.documents.create",
+        "hetu.documents.list",
+        "hetu.documents.get",
+        "hetu.documents.save",
+        "hetu.git.status",
+        "hetu.git.diff",
+        "hetu.git.log",
+        "hetu.git.init",
+        "hetu.git.snapshot",
+        "hetu.git.approve_snapshot",
+        "hetu.git.get_snapshot",
+        "hetu.git.list_snapshots",
+        "hetu.git.snapshot_diff",
+        "hetu.documents.validate",
+        "hetu.documents.preview_finalization",
+        "hetu.documents.finalize",
+        "hetu.documents.withdraw_finalization",
+        "hetu.documents.lifecycle",
+        "hetu.bundles.preview",
+        "hetu.bundles.export",
+        "hetu.bundles.verify",
+        "hetu.documents.preview_export",
+        "hetu.documents.export",
+        "hetu.documents.history",
+        "hetu.agent_operations.prepare",
+        "hetu.agent_operations.get",
+        "hetu.agent_operations.list",
+        "hetu.agent_operations.decide",
+        "hetu.agent_operations.execute",
+        "hetu.local_settings.get",
+        "hetu.local_settings.inspect_suite",
+        "hetu.local_settings.prepare",
+        "hetu.local_settings.get_operation",
+        "hetu.local_settings.execute",
+        "hetu.git.references",
+        "hetu.git.merge_preview",
+        "hetu.git.branch_create",
+        "hetu.git.branch_switch",
+        "hetu.git.merge",
+        "hetu.git.remote_save",
+        "hetu.git.fetch",
+        "hetu.git.push",
+        "hetu.git.pull",
+        "hetu.git.read_version",
+        "hetu.works.list",
+        "hetu.works.get",
+        "hetu.work_links.create",
+        "hetu.work_links.list",
+        "hetu.work_links.get",
+        "hetu.work_links.update_source",
+        "hetu.work_links.set_archived",
+        "hetu.agent_operations.catalog",
+        "hetu.agent_operations.record_decision",
+        "hetu.local_settings.record_decision",
+        "hetu.git.record_snapshot_decision",
+        "hetu.plugin_access.authorize",
+        "hetu.plugin_access.inspect",
+        "hetu.plugin_access.revoke",
+        "hetu.model_settings.inspect",
+        "hetu.model_settings.get_operation",
+        "hetu.model_settings.update",
+        "hetu.plugins.inspect",
+        "hetu.plugins.inspect_package",
+        "hetu.plugins.apply",
+        "hetu.plugins.get_operation",
+        "hetu.plugin_access.record_migration_decision"
+      ],
+      "entry": "../skills/hetu-manage/SKILL.md"
+    },
+    {
+      "name": "hetu-import",
+      "description": "作者要求将已有小说导入河图洛书，或从 TXT、Markdown、Word、EPUB 整理分卷章节并接续改编时使用。保留原稿、核对目录和来源，通过 CLI/MCP 固定方案导入，支持中断恢复。",
+      "actions": [
+        "hetu.assets.import",
+        "hetu.covers.import_preparation",
+        "hetu.documents.preview_import",
+        "hetu.documents.import",
+        "hetu.documents.import_batch",
+        "hetu.import_authorizations.register",
+        "hetu.import_authorizations.get",
+        "hetu.import_authorizations.revoke"
+      ],
+      "entry": "../skills/hetu-import/SKILL.md"
+    },
+    {
+      "name": "hetu-video",
+      "description": "为河图洛书视频项目组织分镜、动态分镜或白模预演、视频生成、剪辑音画、媒体返工与工程交付时使用。",
+      "actions": [
+        "hetu.video.projects.create",
+        "hetu.video.projects.get",
+        "hetu.video.projects.update",
+        "hetu.video.episodes.create",
+        "hetu.video.episodes.get"
+      ],
+      "entry": "../skills/hetu-video/SKILL.md"
+    }
+  ],
+  "extension_runtime_discovery": "hetu.plugins.inspect → 固定包contributions.actions → plugin-runtime capabilities／MCP tools/list",
+  "restricted_actions": [
+    {
+      "action": "hetu.git.approve_snapshot",
+      "status": "machine_alternative",
+      "decision": "机器使用独立合同：hetu.git.record_snapshot_decision",
+      "equivalent_machine_actions": [
+        "hetu.git.record_snapshot_decision"
+      ]
+    },
+    {
+      "action": "hetu.creative_tasks.inspect_inbox",
+      "status": "machine_alternative",
+      "decision": "机器使用独立合同：hetu.creative_tasks.submit_result",
+      "equivalent_machine_actions": [
+        "hetu.creative_tasks.submit_result"
+      ]
+    },
+    {
+      "action": "hetu.creative_tasks.close",
+      "status": "author_only_gap",
+      "decision": "仅作者入口；机器路径缺口须逐项处理",
+      "equivalent_machine_actions": []
+    },
+    {
+      "action": "hetu.creative_tasks.mark_copied",
+      "status": "host_boundary",
+      "decision": "宿主剪贴板状态；机器执行不要求复制提示词。",
+      "equivalent_machine_actions": []
+    },
+    {
+      "action": "hetu.covers.preview_prompt",
+      "status": "machine_alternative",
+      "decision": "机器使用独立合同：hetu.image_tasks.preview_prompt",
+      "equivalent_machine_actions": [
+        "hetu.image_tasks.preview_prompt"
+      ]
+    },
+    {
+      "action": "hetu.covers.create_request",
+      "status": "machine_alternative",
+      "decision": "机器使用独立合同：hetu.image_tasks.prepare",
+      "equivalent_machine_actions": [
+        "hetu.image_tasks.prepare"
+      ]
+    },
+    {
+      "action": "hetu.covers.list_requests",
+      "status": "machine_alternative",
+      "decision": "机器使用独立合同：hetu.creative_tasks.list",
+      "equivalent_machine_actions": [
+        "hetu.creative_tasks.list"
+      ]
+    },
+    {
+      "action": "hetu.covers.list_candidates",
+      "status": "machine_alternative",
+      "decision": "机器使用独立合同：hetu.creative_tasks.get、hetu.assets.list",
+      "equivalent_machine_actions": [
+        "hetu.creative_tasks.get",
+        "hetu.assets.list"
+      ]
+    },
+    {
+      "action": "hetu.covers.import_preparation",
+      "status": "author_only_gap",
+      "decision": "仅作者入口；机器路径缺口须逐项处理",
+      "equivalent_machine_actions": []
+    },
+    {
+      "action": "hetu.covers.list_preparations",
+      "status": "author_only_gap",
+      "decision": "仅作者入口；机器路径缺口须逐项处理",
+      "equivalent_machine_actions": []
+    },
+    {
+      "action": "hetu.covers.inspect_file",
+      "status": "host_boundary",
+      "decision": "作者文件选择入口；机器导入固定inline_source后使用hetu.assets.inspect。",
+      "equivalent_machine_actions": []
+    },
+    {
+      "action": "hetu.annotations.list",
+      "status": "host_boundary",
+      "decision": "作者私密批注；对外反馈使用hetu.task_feedback.list。",
+      "equivalent_machine_actions": []
+    },
+    {
+      "action": "hetu.annotations.save",
+      "status": "host_boundary",
+      "decision": "作者私密批注；Agent反馈使用hetu.task_feedback.save。",
+      "equivalent_machine_actions": []
+    },
+    {
+      "action": "hetu.collaboration.authorize",
+      "status": "host_boundary",
+      "decision": "初始任务授权由宿主核验；机器prepare创建的任务自动登记精确task_locator。",
+      "equivalent_machine_actions": []
+    },
+    {
+      "action": "hetu.collaboration.revoke",
+      "status": "host_boundary",
+      "decision": "任务访问撤销属于宿主授权控制；不能从任务内提升权限。",
+      "equivalent_machine_actions": []
+    },
+    {
+      "action": "hetu.model_tasks.approve",
+      "status": "machine_alternative",
+      "decision": "机器使用独立合同：hetu.model_tasks.authorize_usage",
+      "equivalent_machine_actions": [
+        "hetu.model_tasks.authorize_usage"
+      ]
+    },
+    {
+      "action": "hetu.collaboration.revoke_management",
+      "status": "host_boundary",
+      "decision": "撤销父级管理授权属于宿主授权控制。",
+      "equivalent_machine_actions": []
+    },
+    {
+      "action": "hetu.agent_operations.decide",
+      "status": "machine_alternative",
+      "decision": "机器使用独立合同：hetu.agent_operations.record_decision",
+      "equivalent_machine_actions": [
+        "hetu.agent_operations.record_decision"
+      ]
+    },
+    {
+      "action": "hetu.collaboration.authorize_workspace",
+      "status": "host_boundary",
+      "decision": "已有作品初始授权由宿主核验；机器新建作品自动接纳精确授权。",
+      "equivalent_machine_actions": []
+    },
+    {
+      "action": "hetu.collaboration.workspace_access",
+      "status": "host_boundary",
+      "decision": "宿主查询初始授权状态；机器以inspect及精确management_ref发现。",
+      "equivalent_machine_actions": []
+    }
+  ]
+}

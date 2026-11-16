@@ -10,7 +10,7 @@ PAPI-018／019 的首期落点为插件20第24节的 `migrations.prepare/list/ge
 
 成果标题检索的现行合同归插件20第25节：`objects.search`与`index.status`为读取，`index.rebuild`为`cache_write`且只需`objects.read`。后者只替换派生缓存，不提交权威修订、审计或业务操作回执；中断后先查状态，再按需要重建。三项均由独立CLI与MCP按当前授权动态发现。插件manifest仍只支持既有read／managed_write效果，后台只读动作不能借缓存接口写盘。
 
-入口继续消费共享应用用例。Electron经受限preload/主进程及JSON-RPC 2.0接入Rust；CLI/MCP直接复用Core，TS插件经范围SDK调用相同用例，原生对照继续使用C ABI。公开结果沿用既有 AXI result，不新建另一套公开交换格式。插件工作进程内部通信见10，不能直接冒充公开入口。
+入口继续消费共享应用用例。Electron经受限preload/主进程及JSON-RPC 2.0接入Rust；CLI/MCP直接复用Core，TS插件经范围SDK调用相同用例。公开结果沿用既有 AXI result，不新建另一套公开交换格式。插件工作进程内部通信见10，不能直接冒充公开入口。
 
 ## 2. 调用和身份
 

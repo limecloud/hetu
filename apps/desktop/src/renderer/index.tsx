@@ -92,6 +92,7 @@ function App() {
   useEffect(() => {
     if (state.preferences) applyPreferences(state.preferences);
   }, [state.preferences]);
+  useEffect(() => desktop.onPluginsChanged(setState), []);
   useEffect(() => {
     if (!surface.current) return;
     const element = surface.current;

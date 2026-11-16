@@ -218,6 +218,11 @@ impl Kernel {
                         "骨架索引修订不是规范格式。",
                     )?;
                     let record = self.skeleton_descriptor(&skeleton_id, Some(revision))?;
+                    if let Some(work) = self.granted_work()? {
+                        if !self.plot_in_work(text(&record, "plot_revision_id")?, &work)? {
+                            continue;
+                        }
+                    }
                     if input
                         .get("plot_revision_id")
                         .is_none_or(|r| *r == record["plot_revision_id"])
@@ -390,6 +395,11 @@ impl Kernel {
                     .strip_suffix(".json")
                     .ok_or_else(|| Error::new("hetu.integrity_failure", "差异索引名称无效。"))?;
                 let record = self.comparison_descriptor(comparison_id)?;
+                if let Some(work) = self.granted_work()? {
+                    if !self.sources_in_work(&record["source_revisions"], &work)? {
+                        continue;
+                    }
+                }
                 if record["skeleton_ref"]["skeleton_id"] == input["skeleton_id"] {
                     records.push(record);
                 }

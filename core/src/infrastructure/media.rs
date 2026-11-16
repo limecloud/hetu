@@ -1,6 +1,9 @@
+use super::platform::{
+    self, FileMetadata, FileMetadataExt,
+    fs::{self, AtFlags, Mode, OFlags},
+};
 use super::store::Store;
 use crate::domain::{Result, digest, ensure, id, media};
-use rustix::fs::{self, AtFlags, Mode, OFlags};
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use std::{
@@ -11,9 +14,8 @@ use std::{
     sync::{Mutex, OnceLock},
 };
 
-fn checked_file(file: &File) -> Result<std::fs::Metadata> {
-    use std::os::unix::fs::MetadataExt;
-    let metadata = file.metadata()?;
+fn checked_file(file: &File) -> Result<FileMetadata> {
+    let metadata = platform::metadata(file)?;
     ensure(
         metadata.is_file() && metadata.nlink() == 1 && metadata.mode() & 0o111 == 0,
         "hetu.unsafe_path",
@@ -211,7 +213,6 @@ pub fn selected_file(path: &Path) -> Result<File> {
 }
 
 pub fn scan(file: &mut File, mut target: Option<&mut File>) -> Result<Value> {
-    use std::os::unix::fs::MetadataExt;
     let before = checked_file(file)?;
     file.seek(SeekFrom::Start(0))?;
     let mut hasher = Sha256::new();

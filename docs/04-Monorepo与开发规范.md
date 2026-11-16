@@ -10,18 +10,15 @@ hetu/
     website/                  # Astro 双语宣传网站，独立 Cloudflare Pages 制品
     desktop/                  # 目标Electron宿主、受限preload、React工作面与插件容器
     app-server/               # Rust私有stdio桌面适配器
-    macos/                    # 保留的SwiftUI/AppKit对照客户端
-    cli/                      # 独立Rust CLI；Sources保留Swift迁移对照
+    cli/                      # 独立Rust CLI
     mcp/                      # Rust stdio MCP Server
     task-view/                # Apps 与本地页面共享的视图、双语文案和本地代理
-  core/                       # Rust library，输出 rlib 与 cdylib
+  core/                       # 共享 Rust library，供各 Rust 入口静态复用
     src/domain/               # 设定集、节点、草稿、审核
     src/application/          # 用例与任务
     src/engines/              # 规则抽取、校验与骨架
     src/formats/              # Markdown、Fountain、DOCX 与交付适配
     src/infrastructure/       # 文件、事务、Git、ZIP
-    bindings/c/               # 版本化 C ABI
-  bindings/swift/              # CLI 与 macOS 共享的 Swift C ABI 包装
   contracts/
     actions.json              # 已实现动作、权限、副作用与输入合同
     schemas/                  # 持久化与公开输入输出 JSON Schema
@@ -41,7 +38,6 @@ hetu/
   Cargo.toml                  # Rust workspace 构建入口
   Cargo.lock                  # 固定完整 Rust 依赖图
   rust-toolchain.toml          # Rust 工具链版本
-  Package.swift               # 保留的原生对照版与Swift CLI构建入口
 ```
 
 上述为软件工程的模块归属规范，构建只声明实际存在的 target。内容工作区的 `packages/novel`、`packages/drama` 属于作者作品，`apps/task-view/` 属于软件代码；它们具有不同根和生命周期。作者小说不能写入软件仓库或成为编译依赖。局部视图共用一份组件，不为 Apps、浏览器或不同宿主复制第二套业务实现。
@@ -50,9 +46,9 @@ hetu/
 
 Domain 不依赖 Application、Infrastructure 或任何入口。Application 调用 Domain 与必要接口，Infrastructure 实现接口，入口负责组装。引擎不能调用 UI 或外部模型，原生平台层不能维护第二套设定集校验器。
 
-Electron主进程以标准JSON-RPC 2.0私有stdio调用App Server；插件不获得通用作者通道。目标Rust CLI/MCP直接复用应用层，既有Swift绑定继续消费C ABI；C ABI 只暴露句柄、定长标量与明确所有权的 UTF-8 数据。禁止 Rust 所有权类型、panic 或编译器对象布局跨 ABI。公开字段语义唯一维护于合同，生成绑定不得手工修改。
+Electron主进程以标准JSON-RPC 2.0私有stdio调用App Server；插件不获得通用作者通道。Rust CLI/MCP直接复用应用层。桌面与插件通过固定JSON合同传输数据，不暴露Rust对象布局、指针或通用作者句柄；公开字段语义唯一维护于合同。
 
-Swift CLI target 不引用 SwiftUI、AppKit、Keychain 专属应用代码或 C# 工程；平台终端与凭据经必要适配处理，文件、Git 和业务仍由共享内核执行。Cargo 先构建并 staging C ABI 库与模块头，再由 SwiftPM 消费，不维护两份 Rust 构建参数。
+平台终端与凭据经必要适配处理，文件、Git和业务由共享内核执行。Cargo统一构建App Server、CLI、MCP和插件CLI，不另维护动态库桥接。
 
 Node.js 页面仅作为按需 UI 适配器，通过明确白名单的本机 IPC 消费同一应用用例；不直接改 JSON、正文或审核文件，不引入模型 SDK。Apps 与普通网页分别实现宿主桥接和本机 HTTP 桥接，共享候选组件、任务类型和双语文案。专用 Skills 从共同方法源打包，宿主差异只在安装、元数据、调用语法及工具映射中维护，生成目录不反向覆盖源文件。
 
@@ -62,10 +58,10 @@ Node.js 页面仅作为按需 UI 适配器，通过明确白名单的本机 IPC 
 
 | 来源 | 消费者 | 一致性检查 |
 | --- | --- | --- |
-| `contracts/actions.json` 与 `contracts/schemas/` | Rust、TypeScript、CLI、MCP及保留的Swift绑定 | 动作发现、输入校验、共享正负夹具 |
+| `contracts/actions.json` 与 `contracts/schemas/` | Rust、TypeScript、CLI和MCP | 动作发现、输入校验、共享正负夹具 |
 | `contracts/tools/` | MCP discovery、帮助与文档投影 | 工具输入输出与实现逐项比对 |
-| `assets/design/` | Web语义token及原生对照资源 | 确定性生成与无差异检查 |
-| `assets/localization/` | Electron、CLI/MCP、Apps及原生对照文案 | 键、占位符、回退与复数检查 |
+| `assets/design/` | Electron、插件和Web语义token | 确定性生成与无差异检查 |
+| `assets/localization/` | Electron、CLI/MCP和Apps文案 | 键、占位符、回退与复数检查 |
 | `contracts/fixtures/` | 各入口和平台 | 相同语义结果，平台差异单独记录 |
 
 V1 完整提供简体中文与英文，默认简体中文；机器字段、错误码与枚举不本地化。共享 token 表达语义，不强制两个平台使用相同字体、窗口控件或系统交互。

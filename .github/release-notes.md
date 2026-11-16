@@ -1,14 +1,18 @@
-河图洛书 v0.8.0 将桌面工作台切换为 Electron＋TypeScript 插件宿主＋Rust Core。小说、剧本与视频分别进入对应工作面；外部 Agent 通过 CLI／MCP 处理获权任务，作者阅读、比较、反馈并决定采纳与定稿。
+河图洛书 v0.9.0 使用 Electron＋TypeScript 插件宿主＋Rust Core，沿用 Mac 正式应用标识 `run.limeai.hetu`。
 
-- Electron 创作库、目录、阅读与编辑、参考稿审核、设定、人物形象、素材及本机设置复用共享作品与权限。
-- 本机设置使用独立窗口，普通偏好即时保存；审核面板同步浅暗外观并保留未保存意见，窄窗口目录保留作者的展开操作。
-- 新增独立 Rust CLI、App Server、插件 CLI 与 TypeScript 插件 SDK／宿主；插件具有独立权限、数据、迁移和可重建标题索引。
-- 插件启停、替换与清理按生命周期顺序执行，并发或重复关闭共享同一次结果。
-- 精确文稿版本、固定来源关联、文字资料与媒体预览、导入交付和设置方案支持真实机器入口、版本核验与原操作恢复。
-- 随包提供独立 Node 25、CLI、MCP、所选方法资源与第三方许可，不要求安装开发工具或保持桌面窗口运行。
-- GitHub Actions 发布 Electron Mac DMG／ZIP，撤下 SwiftUI 原生包发布；普通 CI 保留原生对照测试，并增加 Electron 与插件回归。
-- npm 启动器使用同版本 Electron 发行包与新的助手路径，校验包类型、身份、摘要、官方签名及公证状态。
+- 移除 Swift/SwiftUI 原生客户端、Swift CLI、C ABI 桥接及专属构建测试。
+- 修复基础样式缺失导致的启动页布局异常，保留完整创作库、作品工作面和浅暗主题。
+- 更新机器能力地图、精确作品授权、导入与原操作恢复、本机设置及插件安装管理。
+- 共享双语词库独立维护；Apple 签名、公证和恢复保护继续执行。
+- GitHub Actions 分别在 macOS arm64、Windows x64、Linux x64 构建、测试并打包，全部通过后统一发布。
+- 更新安装、构建、开发与验收文档；开发版使用 `run.limeai.hetu.dev`，本机安装包与官方发行包分别标识。
 
-支持 macOS 14 及以上的 Apple Silicon Mac。下载 DMG 后将 `Hetu.app` 拖入“应用程序”，或解压 ZIP 使用。正式附件经过 Developer ID 签名、Apple 公证与 Gatekeeper 检查；`release-manifest.json` 和 `SHA256SUMS` 固定源码版本与最终附件摘要。升级前请备份作品；Electron 与原生对照版分别保存应用偏好，作品继续从原目录打开。
+下载与安装：
 
-本次不包含 Windows／Intel Mac 安装包、原生源码退役或视频完整制作链路验收。完整 P0、干净系统安装、实际外部宿主与付费生成分别取证，具体边界见仓库验收矩阵和创作工作台执行计划。
+- macOS 14+ Apple Silicon：打开 DMG，将 `Hetu.app` 拖入“应用程序”，或解压 ZIP。Mac 包经过 Developer ID 签名、Apple 公证与 Gatekeeper 检查。
+- Windows 11 x64：解压 `windows-x64.zip`，运行 `Hetu.exe`。Windows 包未做代码签名。
+- Linux x64：解压 `linux-x64.tar.gz`，运行目录内的 `./Hetu`。构建基线为 Ubuntu 22.04，需要桌面图形环境与 Electron 运行库；Linux 包未签名。
+
+每个平台附带固定源码、文件摘要和签名状态的发行清单。解压时保留包内完整目录，CLI、MCP、App Server 及 Node 均随包提供。
+
+覆盖应用不删除作者作品；作品继续从原目录打开。干净系统、发行版兼容、Intel Mac和完整视频制作等验收范围见仓库测试矩阵与执行计划。

@@ -21,7 +21,7 @@ test('release metadata must identify the exact official notarized version', () =
     notarization_status: 'Accepted', files: { [`Hetu-${version}-macos-arm64.zip`]: 'a'.repeat(64) },
   };
   assert.equal(releaseDigest(manifest), 'a'.repeat(64));
-  for (const change of [{ kind: 'electron-development-package' }, { version: '0.0.0' }, { platform: 'linux' }, { architecture: 'x64' },
+  for (const change of [{ kind: 'electron-development-package' }, { kind: 'electron-local-install-package' }, { version: '0.0.0' }, { platform: 'linux' }, { architecture: 'x64' },
     { team_id: 'ABCDEFGHIJ' }, { notarization_status: 'In Progress' }, { files: {} }]) {
     assert.throws(() => releaseDigest({ ...manifest, ...change }), /不匹配/);
   }

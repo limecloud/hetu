@@ -194,7 +194,7 @@ if (args[0] === "capabilities" && args.length === 1) {
   );
   const createServer = () => {
     const server = new Server(
-      { name: "hetu-plugin-runtime", version: "0.8.0" },
+      { name: "hetu-plugin-runtime", version: "0.9.0" },
       {
         capabilities: { tools: {} },
         supportedProtocolVersions: ["2026-07-28", "2025-06-18"],

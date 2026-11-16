@@ -1217,9 +1217,9 @@ impl Kernel {
                 request,
                 "file_path",
             )?))?;
-            let before = file.metadata()?;
+            let before = crate::infrastructure::platform::metadata(&file)?;
             ensure(
-                file.metadata()?.len() <= 8 * 1024 * 1024,
+                crate::infrastructure::platform::metadata(&file)?.len() <= 8 * 1024 * 1024,
                 "hetu.budget_exceeded",
                 "导入源文件超过 8 MiB，请拆分后导入。",
             )?;
@@ -1233,7 +1233,8 @@ impl Kernel {
                 "导入文件读取期间超过预算。",
             )?;
             ensure(
-                stable_file(&before, &file.metadata()?) && before.len() == original.len() as u64,
+                stable_file(&before, &crate::infrastructure::platform::metadata(&file)?)
+                    && before.len() == original.len() as u64,
                 "revision_conflict",
                 "导入文件在读取期间发生变化，请重新选择。",
             )?;
@@ -1380,7 +1381,7 @@ impl Kernel {
 
 fn file_summary(file: &mut std::fs::File) -> Result<Value> {
     use sha2::{Digest, Sha256};
-    let before = file.metadata()?;
+    let before = crate::infrastructure::platform::metadata(&file)?;
     file.seek(SeekFrom::Start(0))?;
     let mut sha = Sha256::new();
     let mut total = 0u64;
@@ -1399,15 +1400,19 @@ fn file_summary(file: &mut std::fs::File) -> Result<Value> {
         sha.update(&buffer[..count]);
     }
     ensure(
-        stable_file(&before, &file.metadata()?) && before.len() == total,
+        stable_file(&before, &crate::infrastructure::platform::metadata(&file)?)
+            && before.len() == total,
         "revision_conflict",
         "格式文件在核验期间发生变化。",
     )?;
     Ok(json!({"sha256":format!("{:x}",sha.finalize()),"size_bytes":total}))
 }
 
-fn stable_file(before: &std::fs::Metadata, after: &std::fs::Metadata) -> bool {
-    use std::os::unix::fs::MetadataExt;
+fn stable_file(
+    before: &crate::infrastructure::platform::FileMetadata,
+    after: &crate::infrastructure::platform::FileMetadata,
+) -> bool {
+    use crate::infrastructure::platform::FileMetadataExt;
     before.dev() == after.dev()
         && before.ino() == after.ino()
         && before.len() == after.len()

@@ -142,6 +142,13 @@ impl Kernel {
                     .strip_suffix(".json")
                     .ok_or_else(|| Error::new("hetu.integrity_failure", "报告索引名称无效。"))?;
                 let record = self.report_descriptor(id)?;
+                if let Some(work) = self.granted_work()? {
+                    if !self
+                        .sources_in_work(&record["input_snapshot"]["source_revisions"], &work)?
+                    {
+                        continue;
+                    }
+                }
                 if filter.is_none_or(|p| record["input_snapshot"]["plot_revision_id"] == p) {
                     records.push(record);
                 }

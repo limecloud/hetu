@@ -40,8 +40,10 @@ fn text<'a>(value: &'a Value, field: &str) -> Result<&'a str> {
         .as_str()
         .ok_or_else(|| Error::new("invalid_input", "模型连接缺少必要字段。"))
 }
+mod machine;
 pub struct ModelService {
     store: Store,
+    machine_decision: Option<Value>,
 }
 fn encoded(value: &Value) -> Result<Vec<u8>> {
     Ok(serde_json::to_vec(value)?)
@@ -66,7 +68,10 @@ impl ModelService {
         std::fs::create_dir_all(directory)?;
         let store = Store::open(directory)?;
         store.directory(".hetu/transactions")?;
-        Ok(Self { store })
+        Ok(Self {
+            store,
+            machine_decision: None,
+        })
     }
     pub fn open_default() -> Result<Self> {
         Self::open(&default_directory()?)
@@ -79,15 +84,18 @@ impl ModelService {
         }
     }
     fn save(&self, settings: &Value) -> Result<()> {
-        self.store.transaction(&BTreeMap::from([(
-            "connection.json".into(),
-            encoded(settings)?,
-        )]))
+        let mut changes = BTreeMap::from([("connection.json".into(), encoded(settings)?)]);
+        self.stage_machine_receipt(settings, &mut changes)?;
+        self.store.transaction(&changes)
     }
     pub(crate) fn identity_for(&self, kind: MediaKind) -> Result<Value> {
         self.identity_for_channel(kind, None)
     }
-    pub(crate) fn identity_for_channel(&self, kind: MediaKind, channel: Option<&str>) -> Result<Value> {
+    pub(crate) fn identity_for_channel(
+        &self,
+        kind: MediaKind,
+        channel: Option<&str>,
+    ) -> Result<Value> {
         let _lock = self.store.read_lock()?;
         let settings = self.settings()?;
         match channel {
@@ -128,7 +136,9 @@ impl ModelService {
         Ok(connections)
     }
     fn selected_identity(&self, settings: &Value, kind: MediaKind) -> Result<Value> {
-        let channel = settings["channels"][kind.as_str()].as_str().unwrap_or("cloud");
+        let channel = settings["channels"][kind.as_str()]
+            .as_str()
+            .unwrap_or("cloud");
         if channel == "cloud" {
             Self::settings_identity(settings)
         } else {

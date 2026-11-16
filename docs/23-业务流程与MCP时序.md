@@ -48,7 +48,6 @@ flowchart TD
         desktop["Electron / TypeScript插件宿主"] --> rpc["JSON-RPC 2.0私有stdio"]
         rpc --> server["Rust App Server"]
         cli["独立Rust CLI"]
-        native["保留的原生版与Swift CLI"] --> abi["C ABI"]
         mcp["Rust MCP Server"]
         web["Node.js 局部页面"] --> ipc["受限 IPC 适配"]
         appUi["MCP Apps 资源"] --> hostBridge["宿主桥接"]
@@ -74,7 +73,7 @@ flowchart TD
     infrastructure --> os["OS 平台适配<br/>文件、进程锁与凭据"]
 ```
 
-图中表示源码依赖，不表示领域对象直接读写磁盘。应用层在入口组合时获得基础设施实现，领域与规则运算只消费显式输入；只在实际外部边界使用窄接口。Electron/TS插件宿主、Rust Core与原生对照的分工见39，CLI/MCP独立入口见03，运行进程与通道见第21节。
+图中表示源码依赖，不表示领域对象直接读写磁盘。应用层在入口组合时获得基础设施实现，领域与规则运算只消费显式输入；只在实际外部边界使用窄接口。Electron/TS插件宿主与Rust Core的分工见39，CLI/MCP独立入口见03，运行进程与通道见第21节。
 
 ## 3. 首次使用与客户端接入流程
 
@@ -798,6 +797,48 @@ flowchart TD
 默认路线由 Agent 处理业务、作者可视化 review 和作出必要决定；作者手动撰写与优化随时可用。图中不规定作者必须先建完设定，也不要求每章都改编短剧。两种创作方式共用同一编辑和定稿合同；书库切换见第16节，参考稿审核与采纳分别见第10／26节。日常保存、Git 快照、定稿和交付各自有独立结果，Git 快照可包含作者明确选定的未定稿修订。
 
 ## 29. 小说与剧本导入时序
+
+### 29.1 会话内整书小说导入
+
+这是已有小说原稿的默认 Agent 旅程。作者在当前对话明确指定原稿与导入目标；Agent 核对完整目录和异常，Core 固定可执行范围。桌面用于完成后的阅读核对，无需开启桌面窗口批准分卷或逐批执行。
+
+```mermaid
+sequenceDiagram
+    actor author as 作者
+    participant agent as 外部 Agent 与导入 Skill
+    participant api as CLI 或稳定 MCP
+    participant core as Rust Core
+    participant store as 作品事务存储
+    author->>agent: 将指定原稿导入河图，保留原文
+    agent->>agent: 保存原稿快照，核对目录、连续范围与摘要
+    agent->>api: 发现实际能力，读取确切作品及已有导入成果
+    api->>core: register 精确授权、目录基线、计划及真实指令
+    core->>store: 固定范围与客户端管理绑定，尚不写正文
+    core-->>agent: import_authorization_ref
+    loop 固定分卷及下一组有界批次
+        agent->>api: prepare 原输入与原操作键
+        api->>core: execute 原方案与导入授权引用
+        core->>core: 重验权限、期限、CAS、顺序、标题及原字节
+        alt 范围与版本一致
+            opt 最后一批
+                core->>core: 提交前复核整书阅读摘要
+            end
+            core->>store: 同事务提交正文、来源、方案结果与授权游标
+            core-->>agent: 原方案结果及新目录基线
+            agent->>api: 回读每篇修订及导入来源
+        else 撤权、过期、目录变化或内容不符
+            core-->>agent: 停止，保留原方案与已有成果
+        end
+    end
+    Note over agent,core: 结果未知先查询原回执，不换键重导
+    agent-->>author: 已核验目录与篇目、来源和异常
+```
+
+`authorization_note` 由 Agent 如实记录实际用户指令，Core 核验确定性范围，不鉴别自然语言说话者或授予作者身份。范围不清时在当前会话澄清；不能借原稿导入进行改稿、采纳、定稿、付费或外部操作。状态与事务字段见[29的导入授权数据](29-数据字典与Schema设计.md#25-会话导入授权数据)，动作及预算见[30的导入授权合同](30-应用API详细设计.md#会话内整书导入授权合同)。
+
+### 29.2 可选人工导入
+
+作者自行选择文件、校正结构时沿用以下旅程；它不构成 Agent 整书导入的前置步骤。
 
 ```mermaid
 sequenceDiagram

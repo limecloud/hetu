@@ -1,31 +1,14 @@
 # 进程通信、内核ABI与CLI合同
 
-新桌面采用JSON-RPC 2.0私有stdio连接Rust App Server，初始化、消息预算、错误和退出合同由[39第5节](39-Electron与插件优先重构架构.md#5-json-rpc-的准确口径)拥有。现有C ABI服务原生对照与Swift CLI，不是Electron的必经桥接。目标Rust CLI独立复用Core，公开命令、JSON、退出码、权限与恢复语义保持兼容。
+新桌面采用JSON-RPC 2.0私有stdio连接Rust App Server，初始化、消息预算、错误和退出合同由[39第5节](39-Electron与插件优先重构架构.md#5-json-rpc-的准确口径)拥有。Rust CLI和MCP独立复用Core，公开命令、JSON、退出码、权限与恢复语义保持兼容。
 
-ABI 主版本为 `1`，领域 Schema 为 `1.0.0`；CLI／MCP 公开结果采用 AXI `0.2.1` 及逐动作合同修订。应用动作与签名见[30](30-应用API详细设计.md)。
+领域 Schema 为 `1.0.0`；CLI／MCP 公开结果采用 AXI `0.2.1` 及逐动作合同修订。应用动作与签名见[30](30-应用API详细设计.md)。
 
-## 1. C ABI 边界
+## 1. 共享应用边界
 
-Rust 内核通过 `extern "C"` 与 `#[repr(C)]` 提供不透明上下文／任务句柄、显式长度 UTF-8 缓冲和定长整数。初始按 JSON 用例请求保持桥接简单，性能原型证明存在瓶颈后再为热路径增加专用接口；不导出 Rust 对象布局。
+Rust Core以library供App Server、CLI、MCP和插件CLI静态复用。桌面通过私有stdio传递固定JSON请求；不提供Swift桥接、C ABI、裸指针或动态Core加载入口。公开动作由 `contracts/actions.json` 和对应Schema维护。
 
-最小接口族：
-
-| 接口 | 语义 |
-| --- | --- |
-| `hetu_abi_version` | 查询 ABI 与兼容范围，不打开项目 |
-| `hetu_context_open / close` | 绑定工作区、入口身份与授权上下文 |
-| `hetu_request` | 执行有界同步查询，返回结果缓冲 |
-| `hetu_model_service_request` | 可信原生设置读取或连接河图网站服务；不绑定作品，不返回连接凭据 |
-| `hetu_task_start / poll / cancel / release` | 长任务、进度、取消及生命周期 |
-| `hetu_buffer_free` | 释放 Core 分配的输出缓冲 |
-
-正式头文件需固定调用约定、导出宏、结构尺寸、所有权、线程与空指针行为。所有导出函数隔离 panic 并映射稳定错误；输出分配采用可失败路径，panic 不得跨 ABI 传播。长度使用明确宽度并检查溢出，不暴露 Rust 引用、trait 对象、容器布局、`bool` 布局或平台 `long`。
-
-上下文不允许任意线程并发写同一对象；任务查询和取消的线程安全语义在头文件明确。关闭上下文先停止接收任务，收敛或保留持久操作，再释放资源；不可释放仍在被调用方使用的缓冲。
-
-工作区写入锁只排斥其他写入者，不阻止打开与查询。读请求通过独立的发布保护读取完整已提交状态；多文件事务发布与恢复期间短暂等待，不能绕过未完成事务。`hetu.workspaces.get` 的 `data.access.write_available` 表示查询时是否可写，客户端可据此提示只读并检查恢复；该标记不是授权或写入预约，实际保存仍检查锁、固定修订及 CAS。
-
-ABI 任务启动、查询与取消的回执只说明句柄生命周期，`data.task_state` 为 queued／running／completed，`data.original_result` 保存原动作的真实 AXI 结果。任务启动成功不等于原业务成功；调用方必须检查原结果。持久操作仍通过原键与 `hetu.operations.get` 恢复，临时任务句柄不充当跨进程恢复标识。
+工作区写入锁只排斥其他写入者，不阻止打开与查询。读请求通过发布保护读取完整已提交状态；多文件事务发布与恢复期间短暂等待。实际保存仍检查授权、固定修订、CAS和原操作键。临时进程请求标识不充当持久恢复引用，未知结果通过原操作回读。
 
 ## 2. 用例请求与结果
 
@@ -49,15 +32,15 @@ ABI 任务启动、查询与取消的回执只说明句柄生命周期，`data.t
 }
 ```
 
-公开状态为 `succeeded|pending|blocked|failed|partial|cancelled|unknown`；“待作者批准”放在 `data.approval_state`，不新增 AXI 顶层枚举。异步任务身份放在 `data.task_id`，原操作放在 `operation`。Git 待作者审阅的 pending 返回固定快照与摘要，不包含不存在的异步 task_id；Swift Bridge 只对 snapshot prepare 的该类结果开放待审数据读取。报告含问题仍可任务成功；工具执行失败与作品存在冲突是两种不同结果。
+公开状态为 `succeeded|pending|blocked|failed|partial|cancelled|unknown`；“待作者批准”放在 `data.approval_state`，不新增 AXI 顶层枚举。异步任务身份放在 `data.task_id`，原操作放在 `operation`。Git 待作者审阅的 pending 返回固定快照与摘要，不包含不存在的异步 task_id。报告含问题仍可任务成功；工具执行失败与作品存在冲突是两种不同结果。
 
 内核错误短名按下表管理；公开 AXI 错误优先复用其标准码，其余使用 `hetu.` 命名空间，例如 `hetu.blueprint_locked`。`operation_unknown` 对外映射 `result_unknown` 并提供原操作恢复动作。AXI 为本团队草案，不是 MCP 官方标准，采用映射和证据见[27](27-Agent与Codex插件集成设计.md)。
 
-稳定接入尚未绑定作品时，结果的 `context.scope_id` 为 `collaboration`；任务调用成功后使用实际作品或筹备范围。无权任务的错误不回显其名称、目录或内容。无状态 ABI `hetu_collaboration_request` 接受固定客户端、可选本机接入目录和业务请求，使用相同缓冲释放约定；登记及撤权仍由作者 Workspace 动作执行。
+稳定接入尚未绑定作品时，结果的 `context.scope_id` 为 `collaboration`；任务调用成功后使用实际作品或筹备范围。无权任务的错误不回显其名称、目录或内容。稳定机器入口接受固定客户端、可选本机接入目录和业务请求；登记及撤权仍由作者 Workspace 动作执行。
 
 无作品时，稳定入口的 `hetu.creation_projects.create` 接受 `brief, locale, operation_key`，分配独立筹备和全新受管作品目录，返回 `management_ref, project_path, target_path`。后续筹备维护、创建、空章节／分集及首任务准备携带确切 `management_ref`，领域输入仍使用各动作的原 Schema。创建成功返回新的 `workspace_management_ref`；准备首任务后，以返回的 `task_locator` 打开固定任务。该有限新建规则不接管任意用户目录，也不授予正文写入、采纳、定稿或其他客户端权限；业务 JSON 和公开 CLI 均不能组装内部管理连接。可信作者通过 `hetu.collaboration.revoke_management` 可撤销本作品的管理授权及派生任务。
 
-`hetu_model_service_request` 接收 `{action,input}`，支持 `inspect|connect|poll|catalog|select|disconnect|custom_save|channel_select`，使用相同 UTF-8 缓冲及释放约定。网络设置调用由原生后台任务执行。CLI 仅通过 `model-service status|login|poll` 开放连接状态与浏览器登录交接，输出连接状态、账号引用、到期时间及待验证链接和验证码；不返回凭据，不开放渠道配置、断开连接或创作计划批准。模型业务仍通过固定任务动作执行，费用授权在作者当前 Agent 对话登记。
+可信App Server提供模型连接与渠道设置的专用请求，网络调用由受管后台任务执行。CLI 仅通过 `model-service status|login|poll` 开放连接状态与浏览器登录交接，输出连接状态、账号引用、到期时间及待验证链接和验证码；不返回凭据，不开放渠道配置、断开连接或创作计划批准。模型业务仍通过固定任务动作执行，费用授权在作者当前 Agent 对话登记。
 
 ## 3. 错误分类
 
@@ -74,21 +57,15 @@ ABI 任务启动、查询与取消的回执只说明句柄生命周期，`data.t
 | `git_conflict, non_fast_forward, authentication_failed` | 回到 Git 审阅或凭据流程 |
 | `operation_unknown` | 查询原操作并核对副作用，不能自动重试 |
 
-## 4. 独立CLI与Swift迁移对照
+## 4. 独立CLI
 
-Rust薄入口与Swift对照源码同放 `apps/cli/`，分别构建。Rust制品使用 `cargo build --locked --package hetu-cli --bin hetu`，直接复用Core和CollaborationHub，不依赖Swift、桌面进程或动态Core库；不据此替换已安装应用的工具。
+Rust CLI源码位于 `apps/cli/src/main.rs`，使用 `cargo build --locked --package hetu-cli --bin hetu` 构建。它直接复用Core和CollaborationHub，不调用桌面作者RPC，不依赖桌面进程或动态Core库。
 
 机器输入为文件或stdin中的完整UTF-8 JSON对象，上限16MiB，接受UTF-8 BOM并计入完整字节预算；默认输出单个AXI结果，也接受命令末尾的 `--json`。无效参数及输入不回显原文或路径。全局 `--locale zh-CN|en` 控制帮助，`--version` 读取制品版本，不要求作品或用户授权目录。稳定接入、旧任务入口、bundle验证及模型连接状态沿用现有公开参数和权限。
 
-本机偏好及所选方法安装由独立Rust本机Owner执行；稳定客户端调用及兼容`--local --client`入口复用同一私密存储，不递归调用自身。公开合同无作者批准，可信Electron App Server独立提供固定审核。旧Swift设置和历史方案保留原义；新服务不静默双写。模型服务命令仅开放 `status|login|poll` 和既有公开连接字段，不开放渠道配置或费用批准。目标平台与制品分发分别验收，不能由核心读写通过推导完成。
+本机偏好及所选方法安装由独立Rust本机Owner执行；稳定客户端调用及兼容`--local --client`入口复用同一私密存储，不递归调用自身。公开合同无作者批准，可信Electron App Server独立提供固定审核。历史设置和方案保留原义，新服务不静默双写。模型服务命令仅开放 `status|login|poll` 和既有公开连接字段，不开放渠道配置或费用批准。目标平台与制品分发分别验收，不能由核心读写通过推导完成。
 
-现有CLI使用Swift源码，通过Swift Bridge调用C ABI，作为迁移对照。目标Rust CLI负责参数、帮助、能力发现和JSON编解码，直接调用Core／CollaborationHub，不经过桌面作者RPC。领域规则、持久化、Git 与 Bundle 不在 Swift 重写。Swift ArgumentParser、Foundation 与终端桥接仅属于现有 Swift CLI 对照范围；新 Rust CLI 不继承其运行时依赖。
-
-Swift 对照入口使用 Foundation 的跨平台子集；POSIX `/dev/tty`、Darwin 信号与 `isatty` 不能直接当作 Windows 行为。终端适配分别处理 POSIX TTY／信号和 Windows Console／Ctrl+C、UTF-8、非交互 stdin 与重定向。命令表、Schema 和退出码保持一致。
-
-目标Rust CLI按Windows和macOS分别构建、签名并核验native依赖，在无Swift／Xcode／.NET／GUI的干净系统独立运行。保留的Swift CLI仍按其真实runtime和ABI依赖验收，不把原生对照的分发负担转成新Rust CLI前提。Linux 作为后续 CLI 目标，不计 V1 桌面支持。
-
-原生/Swift对照阶段验证SwiftPM → C ABI → Rust工作区读写、中文／空格路径、JSON 管道、TTY 确认、取消、崩溃后原操作查询、凭据接口和无开发环境启动。新 Rust CLI 的 Windows 阶段以同一业务合同单独验证构建与分发，Windows 结果不作为启动 Mac 实施的前置条件。平台通过自身验收后才声明支持。MCP 不嵌入 CLI 进程，使用独立 Rust Server。
+终端适配分别处理POSIX TTY／信号和Windows Console／Ctrl+C、UTF-8、非交互stdin与重定向。macOS、Windows的签名分发和干净系统运行独立验收；Linux作为后续CLI目标，不计V1桌面支持。MCP使用独立Rust Server，不嵌入CLI进程。
 
 ## 5. CLI 命令面
 
@@ -158,12 +135,20 @@ CLI/MCP 对同一用例提供发现、预览、准备、获权执行、回读及
 
 需要作者判断的操作由机器生成完整提案，固定 action、输入摘要、目标对象及版本、预期影响和所需决定；确认只授权该确切操作。Core 在执行时重新验证授权、CAS、输入及外部目标，不把提案文本里的“已批准”解释成权限。具体行为与数据见[30第25节](30-应用API详细设计.md#25-全软件联动与操作提案合同)。
 
+整书原稿导入使用 `hetu.import_authorizations.register/get/revoke`：Agent 根据作者当前会话真实指令登记固定 WorkRef、完整目录和原稿／阅读文本摘要；Core 返回 `import_authorization_ref`。管理方案执行携带该引用，只允许固定分卷与下一组导入批次，正文与游标同事务落盘。既有明确导入授权在范围内复用，不要求桌面批准或逐批再次确认；其他作者决定仍按各自合同处理。
+
 CLI/MCP 缺业务入口属于未完成用例，不能要求 Skill 通过 Computer Use 操作 GUI 补齐。GUI 验收可以调用 Computer Use；真正没有机器入口的外部系统才按实际限制使用兜底，并记录范围。
 
 ## 独立创作对象与视频入口
 
-CLI能力发现须覆盖独立小说／剧本／视频、固定来源关联、分镜、预演、媒体接收、视频计划、剪辑音画、位置意见和交付。具体动作名、Schema及限制从当前能力目录获取，不将[30第26节](30-应用API详细设计.md#26-独立创作对象与视频用例合同)的设计名称直接写成已发布命令。C ABI复用相同用例，保持薄封装，不在Swift入口另做授权或业务状态。
+CLI能力发现须覆盖独立小说／剧本／视频、固定来源关联、分镜、预演、媒体接收、视频计划、剪辑音画、位置意见和交付。具体动作名、Schema及限制从当前能力目录获取，不将[30第26节](30-应用API详细设计.md#26-独立创作对象与视频用例合同)的设计名称直接写成已发布命令。各入口复用相同用例，不另建授权或业务状态。
 
 每次调用携带明确对象／任务及固定版本，不使用全局当前项目。大媒体和工程使用有界文件流或任务inbox，JSON只回必要元数据与受管引用；原操作、授权、分页、CAS与退出码保持一致。机器新建和制作不依赖桌面窗口；收到媒体、技术校验、内容观看和作者确认分别回执，unknown先查询原计划，不能因进程重启重复付费。
 
 精确作品的文稿版本在 `hetu.git.status/diff/log/snapshot/get_snapshot/list_snapshots/snapshot_diff/read_version` 显式携带 `work_ref`。新快照1.1.0固定作品，旧1.0.0保持工作区语义；不从当前页面补历史归属。稳定MCP的 `hetu_commit_snapshot` 提供同一准备／执行合同，作者批准只由可信宿主完成。独立作品引用从空树建立，整仓引用／合并／远端能力不向单作品连接开放。具体约束见[插件20第22节](plugin/20-首期可执行合同与开发入口.md#22-精确作品的文稿版本)。
+
+## 全软件会话入口
+
+CLI、MCP、Skills功能及源码与验收状态统一见[40机器能力地图](40-机器能力地图与Review清单.md)。稳定 `--client` 入口同时承接固定领域方案、会话决定、本机设置、插件生命周期、模型渠道设置和文稿版本；不依赖运行中的桌面。实际Schema从inspect和agent_operations.catalog发现，不从文档复制旧参数。
+
+决定与执行分开：Agent准备确切结果及差异，依据真实用户指令登记record_decision，再execute并回读。采纳、定稿、解锁、封面选用等必须有各自确切决定；无需因其是作者决定就强制使用GUI。费用和内容外发仍使用独立任务授权，执行者不提升为作者。

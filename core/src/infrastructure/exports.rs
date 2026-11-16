@@ -1,14 +1,15 @@
+use super::platform::{
+    self, FileMetadata as Metadata, FileMetadataExt, OwnedFd,
+    fs::{self, AtFlags, FlockOperation, Mode, OFlags},
+};
 use super::store::Store;
 use crate::domain::{Error, Result, checked_id, digest, ensure};
-use rustix::fd::OwnedFd;
-use rustix::fs::{self, AtFlags, FlockOperation, Mode, OFlags};
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use std::{
     collections::BTreeMap,
-    fs::{File, Metadata},
+    fs::File,
     io::{self, Read, Seek, SeekFrom, Write},
-    os::unix::fs::MetadataExt,
 };
 use zip::{CompressionMethod, ZipArchive, ZipWriter, write::SimpleFileOptions};
 
@@ -80,7 +81,7 @@ fn zip_output_error(error: zip::result::ZipError) -> Error {
 }
 
 fn checked_file_with_links(file: &File, limit: u64, links: u64) -> Result<Metadata> {
-    let metadata = file.metadata()?;
+    let metadata = platform::metadata(file)?;
     ensure(
         metadata.is_file() && metadata.nlink() == links && metadata.mode() & 0o111 == 0,
         "hetu.unsafe_path",
@@ -384,7 +385,7 @@ pub fn write_bundle(
         }
     }
     let mut file = writer.finish().map_err(zip_output_error)?.file;
-    file.sync_all()?;
+    platform::sync_all(&file)?;
     let length = checked_file(&file, BUNDLE_LIMIT)?.len();
     archive_budget(&mut file, length)?;
     let descriptor = file_digest(&mut file)?;
@@ -688,7 +689,7 @@ impl Store {
         )?);
         checked_file(&file, 0)?;
         fs::flock(&file, FlockOperation::NonBlockingLockExclusive).map_err(|error| {
-            if error == rustix::io::Errno::WOULDBLOCK {
+            if error == platform::Errno::WOULDBLOCK {
                 Error::new("result_unknown", "原交付操作仍在执行，请保留原键检查进度。")
             } else {
                 error.into()
@@ -732,7 +733,7 @@ impl Store {
         )?;
         let file = self.open_export_file(staging)?;
         let before = checked_file(&file, BUNDLE_LIMIT)?;
-        file.sync_all()?;
+        platform::sync_all(&file)?;
         let (source_parent, source_leaf) = self.parent(staging, false)?;
         let (target_parent, target_leaf) = self.parent(destination, true)?;
         check_path_inode(&source_parent, &source_leaf, &before, 1)?;
@@ -749,7 +750,7 @@ impl Store {
             AtFlags::empty(),
         )
         .map_err(|error| {
-            if error == rustix::io::Errno::EXIST {
+            if error == platform::Errno::EXIST {
                 Error::new("revision_conflict", "交付目标已存在，不能覆盖。")
             } else {
                 error.into()
@@ -788,7 +789,7 @@ impl Store {
         let (target_parent, target_leaf) = self.parent(destination, true)?;
         let target = match fs::statat(&target_parent, &target_leaf, AtFlags::SYMLINK_NOFOLLOW) {
             Ok(target) => target,
-            Err(rustix::io::Errno::NOENT) => return Ok(false),
+            Err(platform::Errno::NOENT) => return Ok(false),
             Err(error) => return Err(error.into()),
         };
         if target.st_nlink == 1 {
@@ -853,7 +854,7 @@ impl Store {
             Mode::empty(),
         ) {
             Ok(file) => File::from(file),
-            Err(rustix::io::Errno::NOENT) => return Ok(()),
+            Err(platform::Errno::NOENT) => return Ok(()),
             Err(error) => return Err(error.into()),
         };
         let before = checked_file(&file, BUNDLE_LIMIT)?;
@@ -1301,7 +1302,11 @@ mod tests {
         assert!(store.open_export_file(&staging).is_err());
         assert!(store.discard_export_staging(&staging).is_err());
         let symbolic = staging.replace("artifact.tmp", "symbolic.tmp");
+        #[cfg(unix)]
         std::os::unix::fs::symlink(root.path().join(&staging), root.path().join(&symbolic))
+            .unwrap();
+        #[cfg(windows)]
+        std::os::windows::fs::symlink_file(root.path().join(&staging), root.path().join(&symbolic))
             .unwrap();
         assert!(store.open_export_file(&symbolic).is_err());
         assert!(store.create_export_file(&symbolic).is_err());

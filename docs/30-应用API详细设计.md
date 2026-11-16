@@ -107,7 +107,7 @@ typed_changes 是受限的实体新增、字段更新、归档、引用迁移和
 | `hetu.drafts.list` | state?、package? | 获权草稿摘要 | 不宣称列表为空就是没有未授权草稿；分页待审查询使用 reviews.list |
 | `hetu.annotations.add` | source_ref、body、visibility、operation_key | annotation_id | 绑定确切修订；外发范围显式 |
 
-Agent 通过 drafts.submit 创作，不通过 documents.save 直接覆盖正文。草稿提交与诊断是独立动作；需要检查时调用 reviews.validate，不能把接收成功解释为诊断通过或已定稿。
+创作任务默认通过 drafts.submit 或 working_copies 交付参考稿。作者明确要求保存指定正文时，由管理固定方案持有完整差异、基线与真实会话决定后执行 documents.save；普通任务不能直接覆盖正文。草稿提交与诊断是独立动作；需要检查时调用 reviews.validate，不能把接收成功解释为诊断通过或已定稿。
 
 ## 6. 抽取、骨架、对比与校验
 
@@ -743,7 +743,7 @@ MCP Apps 仅在真实宿主能力、用户同意和当前会话范围内使用�
 | `hetu.model_tasks.get` | 查询原计划及远端原操作；结果未知不重新生成 |
 | `hetu.model_tasks.collect` | 校验原结果，写本任务候选文件并返回提交入口 |
 
-所有动作携带 task_ref，稳定连接先核验完整 sha256 后归一到领域引用。单计划作者批准不向 Agent 开放；Agent 使用对话任务授权，并记录真实授权说明和来源，不伪装作者签名。model_service设置仅供可信作者入口；现有原生使用C ABI，Electron须经受限主进程用例，响应不包含连接凭据。网络执行不持有作品锁，成功与失败结果保存前均重验请求、任务关闭、账号及环境。
+所有动作携带 task_ref，稳定连接先核验完整 sha256 后归一到领域引用。单计划作者批准不向 Agent 开放；Agent 使用对话任务授权，并记录真实授权说明和来源，不伪装作者签名。模型渠道设置由共享私密Owner持有；Electron和 `hetu.model_settings.*` 会话入口复用同一状态与CAS，响应不含连接凭据。网络执行不持有作品锁，成功与失败结果保存前均重验请求、任务关闭、账号及环境。
 
 目录和计划可显式指定 `channel_id`，不修改全局默认渠道。任务授权固定渠道身份集合、宿主与授权修订，提交时将额度预留和已提交意图放在同一事务。额度内连续执行，达到上限才在对话追加授权；换操作键、重复登记和充值均不能重置已用额度。明确余额不足且未扣费的失败释放原预留；充值后通过 `resume_from_plan_id` 关联唯一恢复计划。建单前的余额拒绝保存本地明确回执，查询不依赖远端存在操作；未知结果保留预留，仅沿原计划查询。
 
@@ -813,7 +813,7 @@ GUI 路由和定位引用帮助人审阅相同对象；CLI/MCP 不依赖页面�
 
 当前作品范围的已发布切片使用 `hetu.handoffs.get` 生成真实能力和固定对象交接；`hetu.agent_operations.prepare/list/get/decide/execute` 管理单项固定方案。`decide` 仅可信作者可用，MCP 不暴露批准工具。`prepare` 复用明确允许的本地域用例 Schema 和校验，固定预演产生的对象身份、正式文件字节、变更前摘要及作品基线；仅方案和回执进入事务，不提前提交正式内容。`execute` 在相同作品锁内重新检查批准、有效期、摘要及原文件，正式变更与方案执行状态同一事务提交，审计保留 Agent 身份。原方案成功结果可重复回读，不再次写入业务内容。
 
-允许的动作包括作品资料、空文档、卷章、大纲、未锁定设定、剧情校正、短剧项目／分集／骨架、协作任务准备、素材元数据与原文件导入、资料关联、线索、文稿导入和固定交付，以及确切 Git 操作。白名单由 Core 持有；不开放正文直接保存、采纳、定稿、解锁或费用批准。新任务执行后为同客户端派生独立 TaskGrant，结果返回 task_locator，再通过稳定连接 open 获得完整 task_ref；不因此获得整库权限。Schema 和状态词汇见 `contracts/schemas/agent-operation.schema.json`，MCP 名称从工具目录发现。
+允许的动作包括作品资料、空文档、卷章、大纲、未锁定设定、剧情校正、短剧项目／分集／骨架、协作任务准备、素材元数据与原文件导入、资料关联、线索、文稿导入和固定交付，以及确切 Git 操作。可准备动作由 Core 的 `hetu.agent_operations.catalog` 持有；正文保存、采纳、定稿、解锁、封面选用及问题处置可在作者对确切结果作出决定后执行固定方案。任务权限不会因此扩大；模型费用仍走独立合同。新任务执行后为同客户端派生独立 TaskGrant，结果返回 task_locator，再通过稳定连接 open 获得完整 task_ref；不因此获得整库权限。Schema 和状态词汇见 `contracts/schemas/agent-operation.schema.json`，MCP 名称从工具目录发现。
 
 已有作品的 `hetu.collaboration.authorize_workspace` 与 `workspace_access` 仅可信作者可用，返回带 grant_revision 的 management_ref。私有授权绑定客户端、作品身份、目录 dev/ino、修订和期限；每次读取、执行及重放都核验。撤权后再授权推进修订，不能复活旧管理引用或旧派生任务。`hetu.collaboration.created_works` 分页列本客户端有限新建的有效作品，由原生书库核验并接纳，不公开整库目录。
 
@@ -843,7 +843,7 @@ Git 读取动作 references、read_version、merge_preview 提供版本线、固
 
 ### 25.7 本机设置与安装方案
 
-`hetu.local_settings.get/prepare/get_operation/execute` 在 Electron 架构中由独立 Rust 本机服务持有，稳定 CLI/MCP 直接复用，无需窗口或子 CLI。旧原生 LocalAutomation 保留原偏好域与原方案，不和新宿主双写。公开入口没有 decide，作者通过可信 `local_settings/host` 审阅固定差异。偏好白名单包括语言、主题、书库布局、自动保存、字体、字号、行距、缩进、Git 作者和默认客户端；密钥与私密模型配置不回读。
+`hetu.local_settings.get/prepare/get_operation/execute` 在 Electron 架构中由独立 Rust 本机服务持有，稳定 CLI/MCP 直接复用，无需窗口或子 CLI。旧原生 LocalAutomation 保留原偏好域与原方案，不和新宿主双写。公开 `hetu.local_settings.record_decision` 可依据当前会话的真实用户指令登记确切方案决定；桌面 `local_settings/host` 使用同一决定实现。登记不执行，执行仍核验原客户端、状态版本、摘要与基线。偏好白名单包括语言、主题、书库布局、自动保存、字体、字号、行距、缩进、Git 作者和默认客户端；密钥与私密模型配置不回读。
 
 方案绑定 Owner、客户端、完整原值、套件指纹与安装目标、可选工作区身份和24小时期限。执行使用跨进程锁、CAS及可恢复事务；偏好和方案结果原子提交，executing 只接续原键与固定包。设置变化导致冲突，不能强行覆盖。套件选择可独立保存，受管安装按实际客户端能力执行；Codex 安装未知先只读核实官方登记及全部缓存字节，不自动重复安装。MCP Apps 的 `ui://hetu/operation-view/1` 只读方案及状态；批准来自可信作者工作面，任务面板的偏好和意见不构成批准。详细私有边界见插件20第21节。
 
@@ -910,3 +910,36 @@ CLI、MCP、MCP Apps、本地页面和原生端共用上述用例；Apps只在�
 可信桌面的私有`media/open/read/close`只适配当前作品固定素材预览：Core核验作者内核、WorkRef、修订、摘要和受管原字节，打开只读句柄；App Server按最多512KiB分块提供数据，主进程以临时媒体协议呈现。参数、HTTP范围、句柄及作品切换边界由[插件20第19节](plugin/20-首期可执行合同与开发入口.md#19-可信媒体预览传输)统一定义。该传输不登记到公开领域动作目录，不给插件或管理连接增加原文件读取权；资产导入、来源、权利和线索仍走既有公开固定方案。
 
 文稿版本合同扩展见[插件20第22节](plugin/20-首期可执行合同与开发入口.md#22-精确作品的文稿版本)：既有 `hetu.git.*` 在显式 `work_ref` 下只操作本作品文稿引用。`snapshot` prepare固定头／路径／身份，作者审核完整差异后批准，Agent按原键execute；历史读取核验同作品固定快照与执行回执，不直接替换领域数据。工作区分支、合并、远端和网络同步不从单作品授权推导。
+
+## 会话内整书导入授权合同
+
+| 动作 | 固定输入 | 输出及约束 |
+| --- | --- | --- |
+| `hetu.import_authorizations.register` | `management_ref, work_ref, expected, plan, authorization_note, operation_key` | 返回 `import_authorization_ref`；仅当前获权客户端登记实际用户指令，不写正文，不授予作者身份。 |
+| `hetu.import_authorizations.get` | 精确管理引用和 `import_authorization_ref` | 固定范围、原指令、期限、状态、目录基线、分卷状态、下一篇游标及已导入标识。 |
+| `hetu.import_authorizations.revoke` | 原引用和原操作键 | 状态变为 revoked，已导入正文及历史保留，不自动重授。 |
+| `hetu.agent_operations.execute` | 原方案引用／摘要／键，可选 `import_authorization_ref` | 原授权范围内执行固定分卷或下一组批次；没有该引用时保留原决定合同。 |
+
+`plan` 固定原文件名称与摘要、UTF-8 阅读文本摘要、Unicode 字符总数、语言、卷身份和有序 units。每项固定 index、连续 start/end、标题、卷身份与内容摘要。范围从0连续覆盖全文；卷身份唯一；目录最多10000篇、1000卷和2 MiB。正文仍按每批至多32篇和现有方案预算传输，不能改用任意本机路径。
+
+不可变范围摘要绑定精确作品、实际客户端管理连接、管理授权修订、最初目录与实际会话指令，有效期为登记后86400秒，不自动延期。可变进度记录活动／撤销／完成状态、下一篇、分卷状态和预期目录修订。执行先检查目录仍等于预期，再逐项检查标题、卷、语言、格式、原字节摘要及字符长度；完成时复核整书阅读摘要。正文、方案结果、下一篇及新目录基线在同一事务提交，失败不推进游标。
+
+`authorization_note` 是外部 Agent 根据实际用户指令登记的审计文本，不是 Core 对自然语言身份的认证。执行保持 Agent 身份；此授权不能批准其他管理动作、改变作者旧稿、采纳、定稿、付费或外部副作用。重放已执行方案只回读原结果；不更换操作键或静默更换固定计划。
+
+## 28. 全软件会话决定与安装管理合同
+
+功能导航与完整Schema由[40机器能力地图](40-机器能力地图与Review清单.md)及 `contracts/capability-map.json` 提供；实际执行先发现安装版能力。
+
+| 用例 | 公开动作 | 固定内容及恢复 |
+| --- | --- | --- |
+| 领域动作发现 | `hetu.agent_operations.catalog` | 返回可prepare的完整领域Schema、决定与执行入口；不因目录可见获得权限 |
+| 会话决定 | `hetu.agent_operations.record_decision` | proposal_id、proposal_sha256、expected_state_revision、decision、authorization_note、operation_key；只允许准备方案的原管理绑定 |
+| 本机设置决定 | `hetu.local_settings.record_decision` | operation_id、sha256、revision、decision、authorization_note、原键；get_operation回读 |
+| 文稿版本决定 | `hetu.git.record_snapshot_decision` | 固定作品、snapshot_id／SHA、提交身份和真实指令；不执行提交；get_snapshot回读 |
+| 模型渠道 | `hetu.model_settings.inspect/update/get_operation` | 固定设置摘要、具体方法和真实选择；设置与原回执同事务；密钥只进入私密凭据文件 |
+| 插件生命周期 | `hetu.plugins.inspect/inspect_package/apply/get_operation` | 固定安装状态、包SHA、依赖影响和真实安装选择；TS宿主共用依赖图、快照与状态Owner |
+| 插件作品权限 | `hetu.plugin_access.authorize/inspect/revoke` | 独立固定WorkRef、包SHA、类型Schema及专业对象权限；安装不自动授予作品权限 |
+
+会话决定记录 `confirmation_channel=agent_conversation`、真实指令、固定方案及原管理绑定；不是自然语言身份认证或作者模式。Core负责确定性授权、版本、摘要与事务校验，Agent负责如实提取用户决定。普通任务仍交付候选；作者必要决定在当前对话完成，不要求重复回桌面填写或点击。撤权重授不复活旧会话决定与派生任务。
+
+插件安装状态由共享PluginInstallations持有，GUI与无窗口入口使用同一文件、CAS和进程锁。启停与升级复用PluginHost依赖解析；停用、替换和卸载撤销受影响包的旧授权，保留专业对象及历史。机器安装不运行包后端；首次执行专业动作另核验固定包、精确作品和权限。并发状态变化时拒绝覆盖，不能以桌面旧缓存回写机器入口的新选择。

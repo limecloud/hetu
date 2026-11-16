@@ -1,5 +1,7 @@
 # Windows Electron实施方案
 
+v0.9.0的GitHub Actions按macOS arm64、Windows x64和Linux x64分别构建原生Rust助手及Electron包。Windows安全文件访问使用句柄相对目录适配，Linux复用Unix实现；每个平台分别核验构建、独立CLI、包体与启动。macOS继续使用Developer ID及Apple公证；Windows和Linux附件按实际签名状态标记，平台交互与干净系统验收独立记录。
+
 本文件路径保留以维持引用。新Windows桌面采用与macOS共同的Electron＋TypeScript/React工作台、Rust App Server及独立Rust CLI/MCP；目标为Windows 11 x64，支持声明以实机验收为准。总体决定见[39](39-Electron与插件优先重构架构.md)。旧WinUI／C#／WebView2方案保留在源码历史与[备选研究](plugin/17-原生宿主与插件渲染技术方案.md)，不与Electron并行建设第二套Windows产品。
 
 ## 1. 工程与职责
@@ -35,7 +37,7 @@ V1默认不支持UNC写工作区或未下载的云盘占位文件；中文、空
 
 ## 5. 构建与分发
 
-按Windows x64构建Electron包、匹配的Rust App Server、CLI/MCP及native依赖，清单固定源、软件/协议/合同版本、OS、架构、许可及签名后摘要。Chromium随Electron分发，普通插件渲染不额外依赖系统WebView2。ARM64与其他平台只在各自依赖和实机验收后扩展。
+按Windows x64构建Electron包、匹配的Rust App Server、CLI/MCP及native依赖，清单固定源、软件/协议/合同版本、OS、架构、许可及签名后摘要。Chromium随Electron分发，普通插件渲染不额外依赖系统WebView2。Windows ARM64在依赖和实机验收后扩展；Linux x64使用独立runner复用Unix存储并打包。
 
 正式发行需要Authenticode、干净用户安装、升级、卸载、系统保护和进程加载验证。安装器方案在实际打包验证后冻结，不在文档虚构已存在MSIX或流水线。卸载不删除作者工作区，个人数据清理单独确认；独立CLI/MCP在无开发工具、Node、Swift、.NET或桌面运行进程时可用。
 
@@ -44,3 +46,5 @@ V1默认不支持UNC写工作区或未下载的云盘占位文件；中文、空
 覆盖中文输入、DPI、Narrator、权限拒绝、文件占用、junction、大小写、CRLF、凭据、Git冲突、断网、崩溃、原键恢复、插件加载／撤权／停用／升级和签名安装。相同作品与插件得到相同领域结果，平台交互分别取证。
 
 Mac上的交叉编译、TypeScript检查、浏览器截图或共用Chromium不能代替Windows旅程。Windows实施不阻塞Mac纵向闭环，但在目标功能宣称跨系统完成前必须通过；具体状态归38，验收要求归19。
+
+Windows发行构建入口为 `node "tools/release-portable.mjs"`，GitHub Actions使用Windows x64 runner执行Core单测、受管存储测试及随包CLI/MCP、插件、重开与浅暗布局。ZIP未做代码签名，清单明确标记unsigned；Windows 11干净系统验收独立记录。目录句柄访问拒绝reparse point、设备名、ADS与名称别名；文件和日志刷新不等同于Unix目录fsync的断电持久性。

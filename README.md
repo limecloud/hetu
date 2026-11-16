@@ -34,13 +34,20 @@
 - 开始写作 → [快速入门](https://hetu.limeai.run/docs/getting-started/)、[选择创作路径](https://hetu.limeai.run/docs/creative-paths/)。
 - 使用外部 Agent → [接入指南](https://hetu.limeai.run/docs/agents/)、[Skills 选择与安装](https://hetu.limeai.run/docs/skills/)。
 - 了解改编与创作方法 → [博客](https://hetu.limeai.run/blog/)、[市场与创作者价值研究](docs/research/12-故事改编市场与创作者价值研究.md)。
+- 功能 Review 与 AI 导航 → [MCP／CLI／Skills 能力地图](docs/40-机器能力地图与Review清单.md)、[机器可读索引](contracts/capability-map.json)。
 - 开发与维护 → [工程文档](docs/README.md)、[总体架构](docs/03-总体技术架构.md)、[Monorepo 规范](docs/04-Monorepo与开发规范.md)。
 
 ## 快速上手
 
 ### 下载与安装
 
-从 [GitHub Release](https://github.com/limecloud/hetu/releases/latest) 下载 Electron Mac DMG 或 ZIP。支持 macOS 14 及以上的 Apple Silicon Mac；打开 DMG，将 `Hetu.app` 拖入“应用程序”。正式安装包经过 Developer ID 签名与 Apple 公证，随包提供 `SHA256SUMS` 和 `release-manifest.json`。发布流程与签名配置见[构建分发](docs/21-构建分发与运维.md#61-github-actions)。
+从 [GitHub Release](https://github.com/limecloud/hetu/releases/latest) 下载对应平台的 Electron 包：
+
+- macOS 14+ Apple Silicon：打开 DMG，将 `Hetu.app` 拖入“应用程序”，或解压 ZIP。应用经过 Developer ID 签名与 Apple 公证。
+- Windows 11 x64：解压 Windows ZIP，运行 `Hetu.exe`。当前包未做代码签名。
+- Linux x64：解压 Linux `tar.gz`，运行目录内的 `./Hetu`。构建基线为 Ubuntu 22.04，需系统图形环境与 Electron 运行库；当前包未签名。
+
+各平台附带 SHA-256 校验文件和发行清单。发布流程、平台验收范围与签名配置见[构建分发](docs/21-构建分发与运维.md#61-github-actions)。
 
 ### 源码构建前置条件
 
@@ -100,12 +107,12 @@ CLI 参数与本机设置接入边界见[CLI 合同](docs/13-内核ABI与CLI合�
 npm run check
 npm run build
 npm run test --workspace @hetu/website
-python3 "tools/build-native.py" --test
+cargo test --locked --workspace --jobs 2
 ```
 
-网站测试所需浏览器见[网站说明](apps/website/README.md)，原生构建与分发见[构建规范](docs/21-构建分发与运维.md)。
+网站测试所需浏览器见[网站说明](apps/website/README.md)，Electron 构建与分发见[构建规范](docs/21-构建分发与运维.md)。
 
-GitHub Actions 的 `CI` 执行原生与网页测试；`macOS signed package` 从 `main` 手动构建签名、公证的 Mac 下载包，推送匹配版本的 `v*.*.*` 标签时构建并发布 GitHub Release。所需 Secrets 与制品下载方式见[构建规范](docs/21-构建分发与运维.md#61-github-actions)。
+GitHub Actions 的 `CI` 执行 Electron、Rust 与网页测试；`Electron release` 从 `main` 手动构建三平台下载包，推送匹配版本的 `v*.*.*` 标签时，在全部平台验证通过后发布 GitHub Release。Mac 包执行签名与公证。所需 Secrets 与制品下载方式见[构建规范](docs/21-构建分发与运维.md#61-github-actions)。
 
 ## 配置与接入
 
@@ -119,7 +126,7 @@ hetu --version
 hetu-mcp --client codex
 ```
 
-npm 启动器需要 Node.js 22.12+，支持 macOS 14+ Apple Silicon。首次运行获取对应版本的官方运行时并验证摘要、签名和公证，无需打开桌面窗口。免安装调用和 MCP 配置见[启动器说明](packages/npm-cli/README.md)。原生随包工具的源码构建产物为 `build/native/bin/hetu` 和 `build/native/bin/hetu-mcp`；独立 Rust 构建产物位于 `target/debug/`。
+npm 启动器需要 Node.js 22.12+，支持 macOS 14+ Apple Silicon。首次运行获取对应版本的官方运行时并验证摘要、签名和公证，无需打开桌面窗口。免安装调用和 MCP 配置见[启动器说明](packages/npm-cli/README.md)。Electron 随包工具位于 `Contents/Resources/bin/`；独立 Rust 构建产物位于 `target/debug/`。
 
 MCP Server 的构建、权限与宿主配置见[MCP 接入规范](docs/14-MCP与Agent接入.md)；CLI 参数见[CLI 合同](docs/13-内核ABI与CLI合同.md)；插件、Skills 与 MCP Apps 见[Agent 集成说明](docs/27-Agent与Codex插件集成设计.md)。外部 Agent 自身的模型账号由其客户端管理。河图可选模型服务可用 `hetu model-service login` 取得网站验证入口，完成后运行 `hetu model-service poll`，状态用 `hetu model-service status` 查询；也可在“设置 → 模型服务”连接网站账号，或添加 HTTPS 自定义渠道、密钥和文字／图片模型代码。设置页面只配置服务。河图作为应用在 Cloud 登记，Cloud Console 的应用入口打开河图网站自有 `/console/`；页面及河图功能由本项目提供，服务端消费 Cloud 开放平台，账号与费用复用平台能力。接入配置见[网站说明](apps/website/README.md)；自定义渠道凭据不进入作品或 Agent 返回。
 

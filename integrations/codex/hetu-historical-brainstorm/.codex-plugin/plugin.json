@@ -1,6 +1,6 @@
 {
   "name": "hetu-historical-brainstorm",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "河图洛书历史脑洞创作套件：任务流程与本题材方法，按作品选择安装",
   "skills": "./skills/",
   "category": "Productivity",

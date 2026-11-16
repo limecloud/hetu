@@ -66,7 +66,6 @@ flowchart TB
 | 插件 renderer | TS宿主按当前工作面创建 | 固定包摘要、贡献、WorkRef、授权和会话代次；销毁即撤销桥接 |
 | 普通网页 renderer | 作者明确打开 | 独立 session，无河图业务 preload，默认拒绝权限、下载和弹窗 |
 | CLI／MCP | 调用方／外部宿主 | 基础能力直接用Rust Core；TS插件动作按需启动同一Node插件运行时，均不依赖GUI |
-| 旧 SwiftUI App／Swift CLI | 迁移对照入口 | 保留现有 ABI；不作为新插件宿主的运行依赖 |
 
 ## 5. JSON-RPC 的准确口径
 
@@ -155,7 +154,7 @@ A2UI 描述组合，不替代插件代码、专业组件、作品数据或授权
 
 插件管理、贡献发现、受限动作调用和对象事务的拟议动作见[插件09](plugin/09-应用API与机器协作合同.md)。GUI、CLI/MCP 与 SDK 复用这些用例，实际未登记的动作返回 unavailable；不能以插件拥有按钮代替机器入口。
 
-CLI 的目标实现采用 Rust 薄入口，直接复用 Core／CollaborationHub；现有 Swift CLI 保留到公开命令、JSON、退出码、授权和未知恢复回归通过。基础CLI/MCP不依赖Electron、桌面App Server或系统Node；需要TS后端贡献时，按需使用功能制品中随附且已验证的独立Node运行时，不以Electron窗口作为服务。纯视图插件不启动后端，外部Python等仅在明确工具需求下调用。不存在全局当前作品。原生C ABI在仍有调用方时保留，不把它变成新 Electron 的永久依赖。
+CLI 的目标实现采用 Rust 薄入口，直接复用 Core／CollaborationHub；Swift CLI及原生C ABI桥接已退役，公开命令、JSON、退出码、授权和未知恢复继续由Rust入口核验。基础CLI/MCP不依赖Electron、桌面App Server或系统Node；需要TS后端贡献时，按需使用功能制品中随附且已验证的独立Node运行时，不以Electron窗口作为服务。纯视图插件不启动后端，外部Python等仅在明确工具需求下调用。不存在全局当前作品。Electron不链接Core动态库，所有桌面业务进入受限App Server。
 
 ## 9. 平台与选型约束
 

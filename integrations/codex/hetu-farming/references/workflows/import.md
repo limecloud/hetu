@@ -13,6 +13,7 @@ TXT、Markdown 检查 UTF-8、带 BOM 的 UTF-16 或 GB18030；自动判断有�
 ```bash
 python3 scripts/import_novel.py plan --source "作者指定的原稿" --output "持久的导入记录目录"
 python3 scripts/import_novel.py status --plan "导入记录目录/plan.json"
+python3 scripts/import_novel.py run --plan "导入记录目录/plan.json" --cli "河图CLI路径" --management-ref "精确作品引用.json" --collaboration-dir "当前连接目录" --authorization-note "作者在当前会话中明确给出的原稿导入指令"
 python3 scripts/import_novel.py prepare --plan "导入记录目录/plan.json" --cli "河图CLI路径" --management-ref "精确作品引用.json" --collaboration-dir "当前连接目录"
 python3 scripts/import_novel.py execute --plan "导入记录目录/plan.json" --cli "河图CLI路径" --management-ref "精确作品引用.json" --collaboration-dir "当前连接目录"
 ```
@@ -21,7 +22,11 @@ python3 scripts/import_novel.py execute --plan "导入记录目录/plan.json" --
 
 新作品通过公开筹备入口建立；已有作品必须有精确授权。作品和导入记录放在持久目录，不能放进 build、output、临时目录或编译缓存。`prepare` 首先准备分卷，再按有界字节与至多32章准备 `hetu.documents.import_batch`。每批原子保存正文、逐章原字节、转换报告和目录修订，维持 Agent 执行身份。原始文件快照保存在导入记录中；章节原字节由 Core 另行固定。
 
-作者在可信入口批准固定方案后 `execute`。MCP 使用同一 `hetu_prepare_management_operation` 与 `hetu_execute_management_operation` 合同；脚本只是 CLI 编排，不是新的业务事实源。缺动作时报告实际版本，修复并更新河图后沿原记录继续，不改为直接写 .hetu 或通过 GUI 填表。
+作者明确要求导入指定原稿即构成本次导入指令。Agent 核对完整目录后，通过 `hetu.import_authorizations.register` 登记实际会话指令、确切 WorkRef、当前目录基线、原文件摘要、阅读文本摘要、连续范围、标题、分卷和逐篇摘要。`authorization_note` 记录真实用户原意，不写“系统默认批准”等虚构来源；没有明确指令就在当前会话请求必要决定。
+
+Core 返回固定 `import_authorization_ref`。`hetu.agent_operations.execute` 携带该引用时，只执行这份目录的分卷和下一组有界导入批次；正文与授权游标原子提交。其他管理动作仍使用各自的决定合同。Core 不鉴别自然语言说话者，不把 Agent 的登记伪装成桌面作者身份；它核验客户端绑定、管理授权修订、固定范围、摘要、状态和冲突。撤权、撤销、过期、目录外改动或字节不符立即停止，不自动扩大或重新授权。
+
+`run` 自动完成授权登记、`prepare`、`execute` 和逐篇回读；独立 `authorize` 用于仅登记，`prepare`／`execute` 保留细粒度恢复入口。MCP 的 `hetu_register_import_authorization`、`hetu_get_import_authorization`、`hetu_revoke_import_authorization` 与 CLI 使用同一 Core；执行沿原管理方案工具。桌面只作可选阅读和核对。缺动作时更新软件及套件后沿原记录继续，不直接写 .hetu、不通过 GUI 填表或点击批准补业务。
 
 ## 接续与验收
 

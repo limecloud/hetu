@@ -1,5 +1,5 @@
-use hetu_core::{collaboration::CollaborationHub, Kernel};
-use serde_json::{json, Value};
+use hetu_core::{Kernel, collaboration::CollaborationHub};
+use serde_json::{Value, json};
 
 fn call(k: &Kernel, a: &str, i: Value) -> Value {
     k.request(json!({"action":format!("hetu.{a}"),"contract_revision":"1","input":i}))
@@ -180,11 +180,13 @@ fn exact_versions_start_empty_isolate_history_and_preserve_workspace_head_and_in
     let status = ok(agent(&hub, &grant, "git.status", json!({"work_ref":novel})));
     assert!(status["head"]["commit_id"].is_null());
     assert!(!status.to_string().contains("秘密"));
-    assert!(status["changes"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .all(|p| p["path"].as_str().unwrap().contains(doc_id)));
+    assert!(
+        status["changes"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .all(|p| p["path"].as_str().unwrap().contains(doc_id))
+    );
     let handoff = ok(agent(
         &hub,
         &grant,
@@ -268,13 +270,14 @@ fn exact_versions_start_empty_isolate_history_and_preserve_workspace_head_and_in
     assert_eq!(ok(agent(&hub, &grant, "git.snapshot", execute)), done);
     let first_id = git2::Oid::from_str(done["commit_id"].as_str().unwrap()).unwrap();
     assert_eq!(repo.find_commit(first_id).unwrap().parent_count(), 0);
-    assert!(repo
-        .find_commit(first_id)
-        .unwrap()
-        .tree()
-        .unwrap()
-        .get_path(std::path::Path::new("README.md"))
-        .is_err());
+    assert!(
+        repo.find_commit(first_id)
+            .unwrap()
+            .tree()
+            .unwrap()
+            .get_path(std::path::Path::new("README.md"))
+            .is_err()
+    );
     assert_eq!(repo.head().unwrap().target(), Some(workspace_commit));
     assert_eq!(
         std::fs::read(workspace.join(".git/index")).unwrap(),
@@ -298,18 +301,22 @@ fn exact_versions_start_empty_isolate_history_and_preserve_workspace_head_and_in
         "handoffs.get",
         json!({"view_kind":"git","object_ref":{"work_ref":novel,"git_commit_id":first_id.to_string(),"git_path":body}}),
     ));
-    assert!(historical_handoff["fixed_refs"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .any(|r| r["kind"] == "git_commit"
-            && r["path"] == body
-            && r["sha256"] == chapter["revision"]["sha256"]));
-    assert!(!historical_handoff["fixed_refs"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .any(|r| r["kind"] == "git_difference"));
+    assert!(
+        historical_handoff["fixed_refs"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|r| r["kind"] == "git_commit"
+                && r["path"] == body
+                && r["sha256"] == chapter["revision"]["sha256"])
+    );
+    assert!(
+        !historical_handoff["fixed_refs"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|r| r["kind"] == "git_difference")
+    );
     ok(call(
         &k,
         "documents.save",
@@ -466,11 +473,13 @@ fn independent_drama_versions_reject_revoked_preparations_and_changed_bytes() {
         "git.read_version",
         json!({"work_ref":work,"commit_id":saved["commit_id"]}),
     ));
-    assert!(historical["files"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .all(|f| f["document_id"] == *doc));
+    assert!(
+        historical["files"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .all(|f| f["document_id"] == *doc)
+    );
     assert!(ok(agent(&hub, &renewed, "git.read_version", json!({"work_ref":work,"commit_id":saved["commit_id"],"path":draft["revision"]["content_path"]})))["content"].as_str().unwrap().contains("风吹开木门"));
     let latest = ok(call(&k, "documents.get", json!({"document_id":doc})));
     let edited = ok(call(

@@ -1,8 +1,9 @@
+use super::platform::{self, FileMetadata as Metadata, FileMetadataExt};
 use crate::domain::{Error, Result, ensure, id};
 use base64::{Engine, engine::general_purpose::STANDARD};
 use serde_json::{Value, json};
 use std::{
-    fs::{File, Metadata},
+    fs::File,
     io::{Read, Seek, SeekFrom},
     time::SystemTime,
 };
@@ -13,7 +14,6 @@ pub const MEDIA_CHUNK_LIMIT: u64 = 512 * 1024;
 struct Stamp {
     size: u64,
     modified: SystemTime,
-    #[cfg(unix)]
     identity: (u64, u64, i64, i64, u64, u32),
 }
 impl Stamp {
@@ -26,9 +26,7 @@ impl Stamp {
         Ok(Self {
             size: metadata.len(),
             modified: metadata.modified()?,
-            #[cfg(unix)]
             identity: {
-                use std::os::unix::fs::MetadataExt;
                 (
                     metadata.dev(),
                     metadata.ino(),
@@ -50,13 +48,13 @@ pub struct AssetMedia {
 }
 impl AssetMedia {
     pub(crate) fn open(mut file: File, expected: &Value, asset_ref: Value) -> Result<Self> {
-        let stamp = Stamp::of(file.metadata()?)?;
+        let stamp = Stamp::of(platform::metadata(&file)?)?;
         let actual = super::media::scan(&mut file, None)?;
         ensure(
             actual["sha256"] == expected["sha256"]
                 && actual["size_bytes"] == expected["size_bytes"]
                 && actual["media_type"] == expected["media_type"]
-                && stamp == Stamp::of(file.metadata()?)?,
+                && stamp == Stamp::of(platform::metadata(&file)?)?,
             "hetu.integrity_failure",
             "媒体原字节与固定素材不一致。",
         )?;
@@ -104,7 +102,7 @@ impl AssetMedia {
                     .map_err(|_| Error::new("hetu.unsupported_media", "图片像素无法完整解码。"))?;
             }
             ensure(
-                stamp == Stamp::of(file.metadata()?)?,
+                stamp == Stamp::of(platform::metadata(&file)?)?,
                 "hetu.integrity_failure",
                 "图片读取期间发生变化。",
             )?;
@@ -136,7 +134,7 @@ impl AssetMedia {
         Ok(json!({"base64":STANDARD.encode(bytes),"offset":offset,"size_bytes":length}))
     }
     fn unchanged(&self) -> Result<()> {
-        if self.stamp != Stamp::of(self.file.metadata()?)? {
+        if self.stamp != Stamp::of(platform::metadata(&self.file)?)? {
             return Err(Error::new(
                 "hetu.integrity_failure",
                 "媒体读取期间文件发生变化，请重新核对。",

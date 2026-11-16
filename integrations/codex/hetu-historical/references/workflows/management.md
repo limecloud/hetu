@@ -17,11 +17,11 @@
 | 剧情和短剧 | 读取固定剧情、骨架、场次和原著映射，准备剧情校正、骨架修改、项目、分集或空剧本。台词和动作走独立参考稿。 |
 | 关联作品 | list／get 读取固定关系和历史，按使用依据的目标作品准备更新、解除或恢复方案；关联不授予另一端读取权。 |
 | 资料与图片 | 资料维护走获权 resource_organize 任务；关联、素材权利声明及文件导入走固定方案。先 inspect，再固定摘要；不能把参考许可猜成可再分发。 |
-| 问题意见 | 读取确切报告和 finding_id，可提交 findings.suggest；建议不改变正式处置，作者在问题页面取舍。 |
+| 问题意见 | 读取确切报告和 finding_id，可提交 findings.suggest；建议不改变正式处置；作者在会话作出取舍后，通过固定 `findings.disposition` 方案执行。 |
 | 原稿导入 | 先 preview_import，解释可观察的格式损失，准备完整导入方案。执行使用审阅时固定的原文件字节，不替换为后来变化的外部文件。 |
 | 导出交付 | 读取选定修订，preview_export 或 bundles.preview，准备完整方案；正式交付只用有效定稿。作者批准后执行并回读、校验产物。 |
 | 快照 | 读取 HEAD 和变更，填写身份、说明及选集，按已有 snapshot 准备、独立批准和执行合同继续。 |
-| 文稿版本 | 精确作品调用 git.status、diff、snapshot、log、read_version 时显式携带 work_ref。prepare 固定作品版本头、所选路径及提交身份，作者在“文稿版本”审阅完整差异并批准后，用原 snapshot_id 和执行键提交；同根其他作品与旧工作区历史不可读。 |
+| 文稿版本 | 精确作品调用 git.status、diff、snapshot、log、read_version 时显式携带 work_ref。prepare 固定作品版本头、所选路径及提交身份，在当前对话展示完整差异及提交身份，作者决定后用 `git.record_snapshot_decision` 登记，再，用原 snapshot_id 和执行键提交；同根其他作品与旧工作区历史不可读。 |
 | 工作区版本线与同步 | 仅在实际发现且具有对应工作区授权时读取 git.references、read_version 和 merge_preview，准备分支、合并或远端方案。fetch 固定远端提交；pull 合并已拉取的确切提交；push 只推送固定提交，不强制覆盖。精确作品授权不扩大为整仓权限。 |
 
 版本线切换及合并组织 Git 版本记录，保留当前正文、领域修订和未保存稿。作者要恢复历史内容时先读取确切 commit_id 与有界文件，比较后通过参考稿流程交付，不把历史 checkout 直接覆盖作品。远端仅用不含凭据的 HTTPS、SSH 或明确本地路径；私密信息和凭据不进入普通回读。
@@ -32,7 +32,7 @@
 
 导入与交付显式携带当前精确 `work_ref`。小说单章导入的 `novel_expected` 和批量导入的 `expected` 固定审阅时目录修订／摘要；剧本导入的 `drama_project_ref` 固定项目身份、修订和摘要，由 Core 原子建立正文和分集。导入预览也固定同一作品，不能把小说预览改投剧本，或创建未归属游离稿。批量条目保留原顺序、同名和原字节，执行后逐篇回读来源与正文。
 
-文稿导出固定同作品 `revision_refs`；作品包固定本作品设定、正文、素材与线索。没有作品归属的历史报告／骨架／比较不能借同目录加入包内；视频工程不使用文稿包替代。作者在“原稿导入”或“作品交付”审阅确切正文、格式损失和选集，批准后仍由你执行原方案。实际结果保留路径和摘要，包核验携带同一 `work_ref,bundle_id`；核验不等于版权确认或作者认可。旧包没有作品归属时据实说明，不换整根授权绕过。
+文稿导出固定同作品 `revision_refs`；作品包固定本作品设定、正文、素材与线索。没有作品归属的历史报告／骨架／比较不能借同目录加入包内；视频工程不使用文稿包替代。整书导入按[导入工作法](import.md)在当前 Agent 会话登记真实指令和固定范围，范围内连续执行，不要求进入桌面批准；交付仍按各自决定合同审阅确切正文、格式损失和选集。实际结果保留路径和摘要，包核验携带同一 `work_ref,bundle_id`；核验不等于版权确认或作者认可。旧包没有作品归属时据实说明，不换整根授权绕过。
 
 ## 作品与设定归属
 
@@ -72,8 +72,18 @@
 
 ## 本机设置与套件
 
-读取 `hetu.local_settings.get` 得到白名单偏好、套件目录和实际受管安装客户端；设置某部作品的套件时携带确切 workspace_id。准备 preferences 或 agent_suite 方案，软件显示差异后由作者批准；execute 只执行这次固定内容。其他客户端可保存明确选择，受管安装以实际能力为准。
+读取 `hetu.local_settings.get` 得到白名单偏好、套件目录和实际受管安装客户端；设置某部作品的套件时携带确切 workspace_id。准备 preferences 或 agent_suite 方案，在当前对话展示确切差异，作者决定后用 `local_settings.record_decision` 登记；execute 只执行这次固定内容。其他客户端可保存明确选择，受管安装以实际能力为准。
 
 设置方案绑定本机偏好域、客户端、原值、套件指纹与期限。冲突时保留作者新设置，恢复只接续原意图，不把第三种值覆盖成旧计划。供应商密钥和私密模型配置由本机安全设置处理，不索取、不回读、不放进提示词。
 
 Electron 的本机设置由独立 Rust Owner 持有，稳定 CLI/MCP 无需窗口。交接中如有 local_settings_directory，沿同一可信启动目录连接，不把它作为业务请求字段；不要改用旧原生偏好或直接写设置文件。批准本身不执行；执行保持 operation_id、sha256 和原 operation_key，结果未知先 get_operation。安装状态 registered、files_installed 和当前 Agent 会话加载分开核对；Codex 未知只读检查官方登记及固定缓存字节，不换键重复安装。套件包、安装目标或偏好基线变化时重新准备，不扩大安装范围。
+
+## 会话固定方案与边界
+
+`hetu.agent_operations.catalog` 返回可准备领域动作及完整输入Schema。prepare只固定结果；在对话展示预览和差异后，依据用户的真实指令用record_decision固定proposal_id、proposal_sha256、expected_state_revision、decision、authorization_note和原键，再execute。任何工具成功、模型建议或用户对目标的泛化认可都不等于用户已认可尚未看到的定稿。既有明确授权足够时继续，不重复要求回桌面决定。
+
+插件生命周期按 `hetu.plugins.*` 检查安装状态、包清单和代码执行能力，固定包摘要和基线，执行真实安装选择，再回读原操作。依赖解析、停用和卸载使用同一宿主；升级撤销旧包授权，专业成果和历史保留。`plugin_access.authorize`另行固定作品、包、权限与Schema；权限撤销或管理授权修订变化后不复活旧连接。
+
+专业数据迁移先由插件准备固定方案，展示旧内容、目标Schema和完整新内容。用户决定后通过原客户端的 `hetu.plugin_access.record_migration_decision` 登记确切 grant_id、migration_id 和 plan_sha256，再由原插件执行；登记不迁移，未知结果沿原迁移及操作键回读。普通对象保存不能跨Schema版本，父管理授权撤销后旧插件访问失效，宿主仍可清理停用。
+
+模型设置按 `hetu.model_settings.inspect/update/get_operation` 操作；update固定settings_sha256和真实用户选择，密钥仅通过私密输入进入本机凭据文件，普通回读、审计和作品不保存密钥原文。模型登录仍使用实际公开连接流程；渠道设置不授予生成费用。

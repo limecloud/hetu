@@ -169,6 +169,12 @@ impl Server {
                     }
                 }
             }
+            "plugins/directory" if self.state == State::Ready => {
+                match hetu_core::plugin_settings::directory() {
+                    Ok(directory) => json!({"directory":directory}),
+                    Err(e) => return Some(error(id.clone(), -32602, &e.message)),
+                }
+            }
             "extensions/disable" if self.state == State::Ready => {
                 let outcome = (|| {
                     let input = params.as_object().ok_or("撤权参数无效。")?;

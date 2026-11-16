@@ -25,6 +25,7 @@ mod agent_operations;
 mod authoring;
 pub mod extensions;
 mod handoffs;
+mod import_authorizations;
 mod import_sources;
 mod model_tasks;
 mod novels;
@@ -818,6 +819,13 @@ impl Kernel {
         ) {
             return self.execute_model_network(action, input);
         }
+        if action.starts_with("hetu.plugin_access.") {
+            return Ok(domain::success(
+                action,
+                self.scope(),
+                self.execute_plugin_access(action, input)?,
+            ));
+        }
         let write = metadata["effect"] != "read"
             && !(action == "hetu.plot.extract" && input["save_result"] == false)
             && !(action == "hetu.drama.compare" && input["save_result"] == false)
@@ -1070,6 +1078,9 @@ impl Kernel {
         if action.starts_with("hetu.agent_operations.") {
             return self.dispatch_agent_operations(action, input, changes);
         }
+        if action.starts_with("hetu.import_authorizations.") {
+            return self.dispatch_import_authorizations(action, input, changes);
+        }
         if matches!(
             action,
             "hetu.model_tasks.list"
@@ -1170,6 +1181,7 @@ impl Kernel {
             "hetu.git.init" => self.git_init(input),
             "hetu.git.snapshot" => self.prepare_git_snapshot(input, changes),
             "hetu.git.approve_snapshot" => self.approve_git_snapshot(input),
+            "hetu.git.record_snapshot_decision" => self.record_git_snapshot_decision(input),
             "hetu.assets.inspect" => self.inspect_asset(input),
             "hetu.resources.create" => self.create_resource(input, changes),
             "hetu.resources.update" => self.update_resource(input, changes),

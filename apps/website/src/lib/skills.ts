@@ -1,12 +1,12 @@
 import catalog from '../../../../integrations/catalog.json';
 import genres from '../../../../tools/hetu-skills/genres.json';
-import nativeStrings from '../../../../assets/localization/native.json';
+import sharedStrings from '../../../../assets/localization/shared.json';
 import type { Locale } from './site';
 
 const manifests = import.meta.glob<{ version: string }>(
   '../../../../integrations/codex/*/plugin.json', { eager: true, import: 'default' },
 );
-const strings = nativeStrings as Record<string, Record<Locale, string>>;
+const strings = sharedStrings as Record<string, Record<Locale, string>>;
 
 // 英文官网只翻译介绍；安装包中的中文方法始终直接读取题材事实源。
 const englishSummaries: Record<string, string> = {

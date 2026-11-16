@@ -24,15 +24,19 @@ const { values } = parseArgs({
     out: { type: "string" },
     release: { type: "boolean", default: false },
     distribution: { type: "boolean", default: false },
+    "local-install": { type: "boolean", default: false },
   },
 });
-if (!["darwin", "win32"].includes(process.platform))
-  throw new Error("开发应用只在目标 macOS 或 Windows 系统装配。");
-if (values.distribution && (!values.release || process.platform !== "darwin" || process.arch !== "arm64"))
-  throw new Error("正式发行仅接受 macOS arm64 与优化构建。");
-if (values.distribution && (!process.env.HETU_SIGNING_IDENTITY || !process.env.HETU_SIGNING_KEYCHAIN))
+if (!["darwin", "win32", "linux"].includes(process.platform))
+  throw new Error("应用须在目标 macOS、Windows 或 Linux 系统装配。");
+if (values["local-install"] && (values.distribution || process.platform !== "darwin"))
+  throw new Error("本机覆盖安装仅支持macOS，且不能与正式发行模式同时使用。");
+if (values.distribution && (!values.release || process.arch !== (process.platform === "darwin" ? "arm64" : "x64")))
+  throw new Error("正式发行需要优化构建，目标为 macOS arm64、Windows x64 或 Linux x64。");
+if (values.distribution && process.platform === "darwin" && (!process.env.HETU_SIGNING_IDENTITY || !process.env.HETU_SIGNING_KEYCHAIN))
   throw new Error("正式发行必须由发行入口提供临时签名身份与钥匙串。");
-const productName = values.distribution ? "Hetu" : "Hetu Luoshu Electron Dev";
+const installedIdentity = values.distribution || values["local-install"];
+const productName = installedIdentity ? "Hetu" : "Hetu Luoshu Electron Dev";
 const runtime = path.resolve(values.node ?? process.execPath);
 const out = path.resolve(
   values.out ?? path.join(root, "output/electron-packages"),
@@ -107,7 +111,7 @@ async function sourceSnapshot() {
     "apps/mcp/Cargo.toml",
     "apps/app-server/Cargo.toml",
     "apps/plugin-cli/Cargo.toml",
-    "assets/localization/native.json",
+    "assets/localization/shared.json",
     "assets/styles/radix-workbench.css",
     "assets/licenses/radix-colors-MIT.txt",
     "assets/fonts/HetuExportSansSC-Regular.ttf",
@@ -119,9 +123,8 @@ async function sourceSnapshot() {
     "assets/illustrations/library/cover-cloud-rose.jpg",
     "assets/illustrations/library/cover-stars-ink.jpg",
     "integrations/catalog.json",
-    process.platform === "darwin"
-      ? "assets/brand/icons/macos/Hetu.icns"
-      : "assets/brand/icons/windows/hetu.ico",
+    process.platform === "darwin" ? "assets/brand/icons/macos/Hetu.icns"
+      : process.platform === "win32" ? "assets/brand/icons/windows/hetu.ico" : "assets/brand/app-icon-1024.png",
   ];
   for (const directory of sourceRoots)
     for (const name of await files(path.join(root, directory))) {
@@ -217,7 +220,7 @@ await cp(path.join(root, "integrations/codex"), path.join(integrations, "codex")
 await writeFile(
   path.join(stageApp, "package.json"),
   JSON.stringify({
-    name: values.distribution ? "hetu-electron" : "hetu-electron-dev",
+    name: installedIdentity ? "hetu-electron" : "hetu-electron-dev",
     productName,
     version: manifest.version,
     main: "dist/main.cjs",
@@ -347,8 +350,8 @@ const paths = await packager({
   tmpdir: path.join(stage, "packager-tmp"),
   overwrite: false,
   name: productName,
-  executableName: values.distribution ? "Hetu" : "HetuElectronDev",
-  appBundleId: values.distribution ? "run.limeai.hetu.electron" : "run.limeai.hetu.electron.dev",
+  executableName: installedIdentity ? "Hetu" : "HetuElectronDev",
+  appBundleId: installedIdentity ? "run.limeai.hetu" : "run.limeai.hetu.dev",
   appCategoryType: "public.app-category.productivity",
   ...(process.platform === "darwin" ? { extendInfo: { LSMinimumSystemVersion: "14.0" } } : {}),
   appVersion: manifest.version,
@@ -357,9 +360,8 @@ const paths = await packager({
   arch: process.arch,
   icon: path.join(
     root,
-    process.platform === "darwin"
-      ? "assets/brand/icons/macos/Hetu.icns"
-      : "assets/brand/icons/windows/hetu.ico",
+    process.platform === "darwin" ? "assets/brand/icons/macos/Hetu.icns"
+      : process.platform === "win32" ? "assets/brand/icons/windows/hetu.ico" : "assets/brand/app-icon-1024.png",
   ),
   asar: false,
   prune: false,
@@ -400,7 +402,7 @@ for (const file of await files(paths[0])) {
 }
 const evidence = {
   schema_version: 1,
-  kind: values.distribution ? "electron-release-package" : "electron-development-package",
+  kind: values.distribution ? "electron-release-package" : values["local-install"] ? "electron-local-install-package" : "electron-development-package",
   created_at: new Date().toISOString(),
   platform: process.platform,
   arch: process.arch,
@@ -414,7 +416,7 @@ const evidence = {
   signing:
     process.platform === "darwin"
       ? (values.distribution ? "developer-id" : "ad-hoc-development")
-      : "unsigned-development",
+      : values.distribution ? "unsigned" : "unsigned-development",
   ...(values.distribution ? {} : { production_verified: false }),
 };
 await writeFile(

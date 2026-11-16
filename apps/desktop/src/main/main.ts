@@ -14,7 +14,7 @@ import {
   type Session,
 } from "electron";
 import path from "node:path";
-import { readFile, writeFile, mkdir, rename } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import { randomUUID, createHash } from "node:crypto";
 import { RecoveryStore } from "./recovery.ts";
 import { pluginResultHandoff } from "./plugin-results.ts";
@@ -35,6 +35,8 @@ import { scopedCli } from "./cli.ts";
 import { CreativeLibrary } from "./library.ts";
 import {
   PluginHost,
+  PluginInstallations,
+  type InstallationState,
   PluginPackage,
   resourcePath,
   BackendSupervisor,
@@ -62,8 +64,8 @@ protocol.registerSchemesAsPrivileged([
   },
 ]);
 const dist = __dirname,
-  root = path.resolve(dist, "../../.."),
-  host = new PluginHost();
+  root = path.resolve(dist, "../../..");
+let host = new PluginHost();
 let window: BrowserWindow,
   server: AppServer | undefined,
   work: WorkRef | undefined,
@@ -124,16 +126,26 @@ let binding:
       package_sha256: string;
     }
   | undefined;
-let prefs: {
-  packages: {
-    path: string;
-    sha256: string;
-    enabled: boolean;
-    removed?: boolean;
-    manifest?: PluginManifest;
-  }[];
-  grants: Record<string, string>;
-} = { packages: [], grants: {} };
+let prefs: InstallationState = { packages: [], grants: {} };
+let installations: PluginInstallations, installationSha = "", pluginTransition = false;
+async function reloadPlugins(force = false) {
+  const loaded = await installations.read();
+  if (!force && loaded.sha256 === installationSha) return;
+  const next = await installations.host(loaded.state);
+  await closeSurface();
+  for (const state of host.states()) await host.disable(state.id);
+  host = next; prefs = loaded.state; installationSha = loaded.sha256;
+  if (window && !window.isDestroyed()) window.webContents.send("desktop:plugins-changed", overview());
+}
+async function applyPlugin(input: Record<string, unknown>) {
+  pluginTransition = true;
+  try {
+    await closeSurface();
+    await installations.apply({ ...input, expected_sha256: installationSha, client_adapter: "desktop", operation_key: randomUUID() }, revokePackage);
+    await reloadPlugins(true);
+    return overview();
+  } finally { pluginTransition = false; }
+}
 const mime = (name: string) =>
   ({
     ".html": "text/html; charset=utf-8",
@@ -195,11 +207,7 @@ function unwrap(result: any) {
   return result.data;
 }
 async function persist() {
-  const file = path.join(app.getPath("userData"), "plugin-state.json");
-  await mkdir(path.dirname(file), { recursive: true });
-  const temp = file + "." + randomUUID() + ".tmp";
-  await writeFile(temp, JSON.stringify(prefs), { mode: 0o600 });
-  await rename(temp, file);
+  installationSha = await installations.save(prefs, installationSha);
 }
 async function core(action: string, input: unknown = {}) {
   if (!server) throw new Error("请先打开作品。");
@@ -395,36 +403,6 @@ async function revokePackage(pkg: PluginPackage) {
     if (local !== server) await local.close();
   }
 }
-async function disablePlugin(id: string) {
-  // 依赖插件也必须撤销外部 CLI/MCP 的旧授权，不能只移除其视图。
-  const affected = new Set([id]);
-  let changed = true;
-  while (changed) {
-    changed = false;
-    for (const state of host.states())
-      if (
-        !affected.has(state.id) &&
-        host
-          .package(state.id)
-          .manifest.dependencies.some((d) => affected.has(d.id))
-      ) {
-        affected.add(state.id);
-        changed = true;
-      }
-  }
-  await closeSurface();
-  for (const owner of affected) await revokePackage(host.package(owner));
-  await host.disable(id);
-  syncSelected();
-}
-function syncSelected() {
-  for (const state of host.states()) {
-    const item = prefs.packages.find(
-      (p) => p.sha256 === host.package(state.id).sha256,
-    );
-    if (item) item.enabled = state.selected;
-  }
-}
 function overview() {
   return {
     works: library?.rows() ?? [],
@@ -487,7 +465,7 @@ async function listWorks(connection: AppServer) {
   return works;
 }
 async function openWorkspace(directory: string, expected?: WorkRef) {
-  const next = await AppServer.open(serverBinary(), directory, path.join(app.getPath("userData"), "git-authorizations"));
+  const next = await AppServer.open(serverBinary(), directory);
   let works: any[];
   try {
     works = await listWorks(next);
@@ -585,20 +563,6 @@ async function ensureConnection(client: string) {
   }
   return context.status();
 }
-async function snapshot(pkg: PluginPackage) {
-  const directory = path.join(
-    app.getPath("userData"),
-    "plugin-packages",
-    pkg.sha256,
-  );
-  await mkdir(directory, { recursive: true });
-  for (const [relative, bytes] of pkg.entries()) {
-    const target = path.join(directory, relative);
-    await mkdir(path.dirname(target), { recursive: true });
-    await writeFile(target, bytes, { mode: 0o600 });
-  }
-  return directory;
-}
 function shellHandler(name: string, fn: (...args: any[]) => unknown) {
   ipcMain.handle(name, (event, ...args) => {
     trusted(event, name);
@@ -614,6 +578,8 @@ app
       process.env.HETU_LOCAL_SETTINGS_DIR = path.join(app.getPath("userData"), "local-settings");
     if (process.env.HETU_DESKTOP_PROFILE && !process.env.HETU_MODEL_SERVICE_DIR)
       process.env.HETU_MODEL_SERVICE_DIR = path.join(app.getPath("userData"), "model-service");
+    if (process.env.HETU_DESKTOP_PROFILE && !process.env.HETU_PLUGIN_STATE_DIR)
+      process.env.HETU_PLUGIN_STATE_DIR = app.getPath("userData");
     settingsServer = await AppServer.open(serverBinary());
     settings = new SettingsReview(
       (method, input) => settingsServer.request("local_settings/host", { method, input }),
@@ -624,7 +590,7 @@ app
       path.join(app.getPath("userData"), "creative-library.json"),
       recovery,
       async (directory) => {
-        const connection = await AppServer.open(serverBinary(), directory, path.join(app.getPath("userData"), "git-authorizations"));
+        const connection = await AppServer.open(serverBinary(), directory);
         try {
           return await listWorks(connection);
         } finally {
@@ -659,38 +625,28 @@ app
       media?.handle(request) ?? new Response(null, { status: 410 }),
     );
     denyPermissions(session.defaultSession);
+    const pluginDirectory = await settingsServer.request("plugins/directory", {});
+    installations = new PluginInstallations(pluginDirectory.directory);
+    // 仅在共享Owner尚无状态时接纳旧桌面登记；包路径和历史保留原义。
     try {
-      const saved = JSON.parse(
-        await readFile(
-          path.join(app.getPath("userData"), "plugin-state.json"),
-          "utf8",
-        ),
-      );
-      if (
-        Array.isArray(saved.packages) &&
-        saved.grants &&
-        typeof saved.grants === "object"
-      )
-        prefs = saved;
-    } catch {}
-    for (const item of prefs.packages) {
-      if (item.removed) continue;
+      await readFile(installations.file);
+    } catch (error: any) {
+      if (error.code !== "ENOENT") throw error;
       try {
-        const pkg = await PluginPackage.inspect(item.path);
-        if (pkg.sha256 !== item.sha256) continue;
-        host.add(pkg);
-        item.manifest = pkg.manifest;
-      } catch {}
+        const saved = JSON.parse(await readFile(path.join(app.getPath("userData"), "plugin-state.json"), "utf8"));
+        const empty = await installations.read();
+        await installations.save(saved, empty.sha256);
+      } catch (error: any) { if (error.code !== "ENOENT") throw error; }
     }
-    // 全部包登记后再解析依赖，避免安装顺序决定加载结果。
-    for (const item of prefs.packages)
-      if (
-        !item.removed &&
-        item.enabled &&
-        item.manifest &&
-        host.has(item.manifest.id)
-      )
-        await host.enable(item.manifest.id);
+    await reloadPlugins(true);
+    const pluginWatcher = setInterval(async () => {
+      if (pluginTransition) return;
+      pluginTransition = true;
+      try { await reloadPlugins(); }
+      catch (error) { console.error("插件状态同步失败：", error instanceof Error ? error.message : "未知结果"); }
+      finally { pluginTransition = false; }
+    }, 1500);
+    pluginWatcher.unref();
     window = new BrowserWindow({
       width: 1360,
       height: 900,
@@ -1461,36 +1417,12 @@ app
           "\n新包需要重新授予作品权限；现有成果和历史继续保留。",
       });
       if (confirm.response !== 1) return overview();
-      const directory = await snapshot(pkg),
-        fixed = await PluginPackage.inspect(directory);
-      if (fixed.sha256 !== pkg.sha256) throw new Error("包快照校验失败。");
-      if (host.has(fixed.manifest.id)) {
-        if (host.package(fixed.manifest.id).sha256 === fixed.sha256)
-          return overview();
-        await disablePlugin(fixed.manifest.id);
-        await host.replace(fixed);
-      } else host.add(fixed);
-      prefs.packages = prefs.packages.filter(
-        (item) => item.manifest?.id !== fixed.manifest.id,
-      );
-      prefs.packages.push({
-        path: directory,
-        sha256: fixed.sha256,
-        enabled: true,
-        manifest: fixed.manifest,
-      });
-      await host.enable(fixed.manifest.id);
-      syncSelected();
-      await persist();
-      return overview();
+      return applyPlugin({ action: "install", package_directory: selected.filePaths[0], package_sha256: pkg.sha256,
+        authorization_note: "作者在桌面确认安装确切插件包：" + pkg.manifest.id + " " + pkg.manifest.version });
     });
     shellHandler("desktop:toggle", async (id: string, enabled: boolean) => {
-      if (enabled) {
-        await host.enable(id);
-        syncSelected();
-      } else await disablePlugin(id);
-      await persist();
-      return overview();
+      return applyPlugin({ action: enabled ? "enable" : "disable", plugin_id: id, package_sha256: host.package(id).sha256,
+        authorization_note: "作者在桌面选择" + (enabled ? "启用" : "停用") + id });
     });
     shellHandler("desktop:uninstall", async (id: string) => {
       const pkg = host.package(id);
@@ -1504,14 +1436,8 @@ app
           "作品成果、历史修订和通用导出将继续保留。插件授权会撤销，依赖插件会停用。",
       });
       if (decision.response !== 1) return overview();
-      await disablePlugin(id);
-      await host.remove(id);
-      const item = prefs.packages.find((p) => p.sha256 === pkg.sha256)!;
-      item.enabled = false;
-      item.removed = true;
-      item.manifest = pkg.manifest;
-      await persist();
-      return overview();
+      return applyPlugin({ action: "uninstall", plugin_id: id, package_sha256: pkg.sha256,
+        authorization_note: "作者在桌面确认卸载" + id + "；保留作品成果和历史。" });
     });
     shellHandler("desktop:surface-bounds", (rect: typeof bounds) => {
       if (
@@ -1640,7 +1566,7 @@ app
       if (pluginCaller(event) !== current || live.plugin_id !== current.owner || !sameWork(live.work_ref, current.work))
         throw new Error("插件授权或作品上下文已变化。");
       if (!backend) {
-        const directory = await snapshot(pkg);
+        const directory = await installations.snapshot(pkg);
         backend = new BackendSupervisor({
           node: pluginNodeBinary(),
           bootstrap: path.join(dist, "plugin-worker.mjs"),

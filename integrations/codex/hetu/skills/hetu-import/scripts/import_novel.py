@@ -244,6 +244,19 @@ def loaded(path):
 
 
 def command(args):
+    if args.command == "run":
+        args.command = "authorize"
+        command(args)
+        while True:
+            journal = json.loads((args.plan.parent / "journal.json").read_text())
+            manifest, _ = loaded(args.plan)
+            if journal["next_index"] >= len(manifest["units"]) and not journal.get("pending"):
+                args.command = "status"; command(args); return
+            before = (journal["next_index"], journal["volumes_ready"])
+            args.command = "prepare"; command(args)
+            args.command = "execute"; command(args)
+            after = json.loads((args.plan.parent / "journal.json").read_text())
+            if before == (after["next_index"], after["volumes_ready"]): raise ValueError("原导入没有推进，请回读原操作。")
     path = args.plan.resolve(); manifest, text = loaded(path); journal_path = path.parent / "journal.json"
     plan_sha = sha(path.read_bytes())
     journal = json.loads(journal_path.read_text()) if journal_path.exists() else {"source_sha256": manifest["source_sha256"], "plan_sha256": plan_sha, "next_index": 0, "imported": [], "volumes_ready": False}
@@ -254,7 +267,7 @@ def command(args):
     if reference.get("scope_ref", {}).get("kind") != "workspace": raise ValueError("需要确切已有小说作品的management_ref。")
     if journal.get("scope_ref", reference["scope_ref"]) != reference["scope_ref"] or journal["source_sha256"] != manifest["source_sha256"]: raise ValueError("此导入记录已绑定其他作品或原稿。")
     journal["scope_ref"] = reference["scope_ref"]
-    def invoke(action, fields):
+    def invoke(action, fields, *, allow_missing=False):
         cmd = [str(args.cli.resolve()), "--client", args.client]
         if args.collaboration_dir: cmd += ["--collaboration-dir", str(args.collaboration_dir.resolve())]
         request = {"management_ref": reference, **fields}
@@ -262,8 +275,37 @@ def command(args):
         value = json.loads(result.stdout)
         log = path.parent / "receipts.jsonl"
         with log.open("a") as f: f.write(json.dumps({"action": action, "input_sha256": sha(json.dumps(request, sort_keys=True, ensure_ascii=False).encode()), "exit_code": result.returncode, "result": value}, ensure_ascii=False) + "\n")
-        if result.returncode or value.get("status") != "succeeded": raise ValueError(json.dumps(value, ensure_ascii=False))
+        if result.returncode or value.get("status") != "succeeded":
+            if allow_missing and value.get("error", {}).get("code") == "not_found": return None
+            raise ValueError(json.dumps(value, ensure_ascii=False))
         return value["data"]
+    if args.command == "authorize":
+        if journal.get("import_authorization_ref"):
+            result = invoke("import_authorizations.get", {"import_authorization_ref": journal["import_authorization_ref"]})
+            if result["state"] not in ("active", "complete"): raise ValueError("原导入授权已撤销；不能自动重新授权。")
+            print(json.dumps({"import_authorization_ref": journal["import_authorization_ref"], "state": result["state"], "next_index": result["next_index"]}, ensure_ascii=False)); return
+        if not args.authorization_note.strip(): raise ValueError("仅在作者当前会话真实要求导入时，记录其明确指令。")
+        if journal["next_index"] or journal["volumes_ready"]: raise ValueError("已有部分执行记录，请核对原授权后继续，不能替换导入范围。")
+        request = journal.get("authorization_input")
+        recovering = request is not None
+        if request:
+            if request["authorization_note"] != args.authorization_note: raise ValueError("原授权指令已固定，请回读原操作，不更换原话。")
+        else:
+            current = invoke("novels.get", {})
+            fixed = {key: manifest[key] for key in ("source_name", "source_sha256", "reading_sha256", "reading_characters", "volumes")}
+            fixed["language_tag"] = args.locale
+            fixed["units"] = [{key: u[key] for key in ("index", "start", "end", "title", "volume_id", "content_sha256")} for u in manifest["units"]]
+            request = {"work_ref": {"workspace_id": reference["scope_ref"]["id"], "kind": "novel", "object_id": current["novel"]["novel_id"]}, "expected": {"revision": current["revision"], "sha256": current["sha256"]}, "plan": fixed, "authorization_note": args.authorization_note, "operation_key": "authorize-import-" + manifest["source_sha256"][:20]}
+        journal["authorization_input"] = request; save(journal_path, journal)
+        original = invoke("operations.get", {"action": "hetu.import_authorizations.register", "key": request["operation_key"]}, allow_missing=True) if recovering else None
+        if original:
+            receipt = original["original_result"]
+            if receipt.get("status") != "succeeded" or receipt.get("action") != "hetu.import_authorizations.register": raise ValueError("原授权回执无效，请保留记录。")
+            result = receipt["data"]
+        else:
+            result = invoke("import_authorizations.register", request)
+        journal["import_authorization_ref"] = result["import_authorization_ref"]; save(journal_path, journal)
+        print(json.dumps(result, ensure_ascii=False)); return
     if args.command == "prepare":
         if journal.get("pending"):
             pending = journal["pending"]
@@ -297,7 +339,11 @@ def command(args):
     else:
         pending = journal.get("pending")
         if not pending or not pending.get("proposal_id"): raise ValueError("没有已准备的方案，请先prepare。")
-        result = invoke("agent_operations.execute", {"proposal_id": pending["proposal_id"], "proposal_sha256": pending["proposal_sha256"], "operation_key": pending["execute_key"]})["result"]
+        execute = {"proposal_id": pending["proposal_id"], "proposal_sha256": pending["proposal_sha256"], "operation_key": pending["execute_key"]}
+        if journal.get("import_authorization_ref"): execute["import_authorization_ref"] = journal["import_authorization_ref"]
+        if pending.get("execute_input") and pending["execute_input"] != execute: raise ValueError("原执行输入已固定，不能更换授权引用或操作键。")
+        pending["execute_input"] = execute; save(journal_path, journal)
+        result = invoke("agent_operations.execute", execute)["result"]
         if pending["indices"]:
             documents = result["documents"]
             if len(documents) != len(pending["indices"]): raise ValueError("实际导入数量与固定批次不符。")
@@ -323,10 +369,11 @@ def command(args):
 def main():
     parser = argparse.ArgumentParser(description=__doc__); sub = parser.add_subparsers(dest="command", required=True)
     p = sub.add_parser("plan"); p.add_argument("--source", type=Path, required=True); p.add_argument("--output", type=Path, required=True); p.add_argument("--encoding"); p.add_argument("--chapter-pattern"); p.add_argument("--layout", type=Path)
-    for name in ["status", "prepare", "execute"]:
+    for name in ["status", "prepare", "execute", "authorize", "run"]:
         p = sub.add_parser(name); p.add_argument("--plan", type=Path, required=True)
         if name != "status":
             p.add_argument("--cli", type=Path, required=True); p.add_argument("--management-ref", type=Path, required=True); p.add_argument("--collaboration-dir", type=Path); p.add_argument("--client", choices=["codex", "claude-code", "workbuddy", "generic"], default="codex"); p.add_argument("--locale", choices=["zh-CN", "en"], default="zh-CN")
+            if name in ("authorize", "run"): p.add_argument("--authorization-note", required=True, help="作者在当前会话中明确要求导入此份原稿的真实指令；不得自行编造。")
     args = parser.parse_args()
     try:
         plan(args) if args.command == "plan" else command(args)

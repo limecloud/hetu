@@ -458,3 +458,59 @@ main { flex: 1; min-width: 0; min-height: 0; overflow: hidden; }
 button.primary:hover, .create-work-menu > summary.primary:hover { background: var(--action-hover); }
 
 .menu-panel label { display: grid; gap: 6px; padding: 8px; font-size: 12px; color: var(--muted); }
+
+/* 补充表面样式沿用共享色板，基础尺寸由上方布局维护。 */
+:root {
+  font: 14px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", "SF Pro Text", "Inter", sans-serif;
+  color: var(--ink);
+  background: var(--page);
+  --radius: 10px;
+  --card-shadow: none;
+  --card-hover-shadow: none;
+  --glass-bg: var(--surface);
+  --glass-border: var(--line);
+}
+
+body { margin: 0; background: var(--page); }
+html, body, #root { height: 100%; overflow: hidden; color: var(--ink); }
+#root { display: flex; flex-direction: column; background: var(--page); }
+
+/* 玻璃态布局 */
+.workbench-topbar {
+  display: flex; align-items: center; gap: 12px; padding: 0 20px;
+  border-bottom: .5px solid var(--line);
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  z-index: 10;
+}
+.layout { display: flex; flex: 1; min-height: 0; position: relative; overflow: hidden; }
+.layout > aside.project-navigation {
+  padding: 16px 10px;
+  border-right: .5px solid var(--line);
+  background: var(--surface);
+  backdrop-filter: blur(20px);
+  display: flex; flex-direction: column; gap: 4px; overflow: hidden;
+}
+main { flex: 1; min-width: 0; min-height: 0; overflow: hidden; display: flex; flex-direction: column; background: var(--page); }
+
+.menu-panel {
+  position: absolute; z-index: 50; top: calc(100% + 6px); left: 0;
+  padding: 8px; border: .5px solid var(--glass-border); border-radius: 12px;
+  background: var(--surface);
+  backdrop-filter: blur(20px);
+  box-shadow: none;
+}
+
+/* 卡片样式 */
+.library-grid .work {
+  padding: 12px; border-radius: var(--radius);
+  background: var(--surface);
+  border: .5px solid var(--line);
+  box-shadow: var(--card-shadow);
+  transition: none;
+}
+.library-grid .work:hover {
+  background: var(--hover);
+  border-color: var(--jade-6);
+  box-shadow: var(--card-hover-shadow);
+}

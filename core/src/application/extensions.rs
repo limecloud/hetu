@@ -3,16 +3,33 @@ use super::*;
 use std::path::{Path, PathBuf};
 
 const LIMIT: usize = 1024 * 1024;
-mod migrations;
 mod index;
+mod migrations;
 
 fn data_write(action: &str) -> bool {
-    action_catalog()["actions"].as_array().unwrap().iter().any(|a| a["name"] == action && (a["effect"] == "managed_write" || a["effect"] == "cache_write"))
+    action_catalog()["actions"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .any(|a| {
+            a["name"] == action && (a["effect"] == "managed_write" || a["effect"] == "cache_write")
+        })
 }
 fn action_allowed(grant: &Value, action: &str) -> bool {
-    action_catalog()["actions"].as_array().unwrap().iter().find(|a| a["name"] == action).is_some_and(|a| {
-        a["required_permissions"].as_array().is_some_and(|permissions| permissions.iter().all(|p| grant["permissions"].as_array().unwrap().contains(p)))
-    })
+    action_catalog()["actions"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|a| a["name"] == action)
+        .is_some_and(|a| {
+            a["required_permissions"]
+                .as_array()
+                .is_some_and(|permissions| {
+                    permissions
+                        .iter()
+                        .all(|p| grant["permissions"].as_array().unwrap().contains(p))
+                })
+        })
 }
 fn extension_operation(key: &str, input_sha: &str) -> Value {
     let mut operation = Kernel::operation(key, input_sha);
@@ -102,7 +119,7 @@ fn read_grant(access: &Store, grant_id: &str) -> Result<Value> {
                 "revoked",
                 "created_at",
             ],
-            &[],
+            &["conversation_decision"],
         )?;
         ensure(
             grant["grant_id"] == grant_id && grant["revoked"].is_boolean(),
@@ -158,6 +175,16 @@ fn read_grant(access: &Store, grant_id: &str) -> Result<Value> {
         )
     })?;
     Ok(grant)
+}
+fn check_parent_grant(grant: &Value) -> Result<()> {
+    if grant["conversation_decision"].is_object() {
+        crate::collaboration::authoring::check_management(
+            &grant["conversation_decision"]["management_binding"],
+            Path::new(text(grant, "root")?),
+            None,
+        )?;
+    }
+    Ok(())
 }
 fn request_schema(value: &Value) -> Result<()> {
     schema(
@@ -217,6 +244,7 @@ impl PluginSession {
         let access = access_store(directory)?;
         let _guard = access.read_lock()?;
         let grant = read_grant(&access, grant_id)?;
+        check_parent_grant(&grant)?;
         ensure(
             grant["revoked"] == false
                 && grant["package_sha256"] == package_sha256
@@ -242,6 +270,7 @@ impl PluginSession {
             let access = access_store(&self.directory)?;
             let _guard = access.read_lock()?;
             let grant = read_grant(&access, &self.grant_id)?;
+            check_parent_grant(&grant)?;
             ensure(
                 grant["revoked"] == false
                     && grant["package_sha256"] == self.package_sha256
@@ -293,6 +322,7 @@ impl PluginSession {
         // 撤权与本次作品事务按同一授权锁串行；撤权完成后旧会话不能继续提交。
         let _grant_guard = access.read_lock()?;
         let grant = read_grant(&access, &self.grant_id)?;
+        check_parent_grant(&grant)?;
         ensure(
             grant["revoked"] == false
                 && grant["package_sha256"] == self.package_sha256
@@ -330,11 +360,21 @@ impl PluginSession {
 }
 
 impl Kernel {
-    fn extension_object(&self, work: &Value, owner: &str, object_id: &str, revision: Option<u64>) -> Result<(Value, String)> {
+    fn extension_object(
+        &self,
+        work: &Value,
+        owner: &str,
+        object_id: &str,
+        revision: Option<u64>,
+    ) -> Result<(Value, String)> {
         checked_id(object_id, "ext")?;
-        let (record, sha, _) = self.versioned_record(&collection(work, owner)?, object_id, "object_id", revision)?;
-        ensure(record["work_ref"] == *work && record["owner_plugin_id"] == owner,
-            "hetu.integrity_failure", "插件对象归属不一致。")?;
+        let (record, sha, _) =
+            self.versioned_record(&collection(work, owner)?, object_id, "object_id", revision)?;
+        ensure(
+            record["work_ref"] == *work && record["owner_plugin_id"] == owner,
+            "hetu.integrity_failure",
+            "插件对象归属不一致。",
+        )?;
         Ok((record, sha))
     }
 
@@ -456,6 +496,82 @@ impl Kernel {
         })();
         result.unwrap_or_else(|e| domain::failure("hetu.extensions.request", self.scope(), &e))
     }
+    /// 精确管理授权下的会话入口；不开放作者私有路由或跨作品授权。
+    pub(super) fn execute_plugin_access(&self, action: &str, input: &Value) -> Result<Value> {
+        let binding = self
+            .management_grant
+            .as_ref()
+            .ok_or_else(|| Error::new("forbidden", "须使用精确作品管理授权。"))?;
+        ensure(
+            self.granted_work()?.as_ref() == Some(&input["work_ref"]),
+            "forbidden",
+            "插件能力只覆盖当前作品。",
+        )?;
+        let directory = access_directory()?;
+        let method = action.strip_prefix("hetu.plugin_access.").unwrap_or("");
+        let mut params = input.clone();
+        params.as_object_mut().unwrap().remove("work_ref");
+        if method == "authorize" {
+            ensure(
+                !text(input, "authorization_note")?.trim().is_empty(),
+                "invalid_input",
+                "须如实记录作者的插件安装与授权选择。",
+            )?;
+            params.as_object_mut().unwrap().remove("authorization_note");
+            params["work_ref"] = input["work_ref"].clone();
+            params["conversation_decision"] = json!({"confirmation_channel":"agent_conversation","authorization_note":input["authorization_note"],"management_binding":binding});
+        } else {
+            let access = access_store(&directory)?;
+            let grant = read_grant(&access, text(input, "grant_id")?)?;
+            ensure(
+                grant["work_ref"] == input["work_ref"]
+                    && grant["root"]
+                        == self
+                            .workspace_path
+                            .canonicalize()?
+                            .to_string_lossy()
+                            .as_ref(),
+                "forbidden",
+                "插件授权属于其他作品。",
+            )?;
+            if method == "record_migration_decision" {
+                ensure(
+                    grant["conversation_decision"]["management_binding"] == *binding
+                        && !text(input, "authorization_note")?.trim().is_empty(),
+                    "forbidden",
+                    "迁移决定须沿本客户端的原插件授权记录真实指令。",
+                )?;
+                params.as_object_mut().unwrap().remove("authorization_note");
+                params["conversation_decision"] = json!({"confirmation_channel":"agent_conversation","authorization_note":input["authorization_note"],"management_binding":binding});
+            }
+            if method == "revoke" {
+                ensure(
+                    !text(input, "authorization_note")?.trim().is_empty(),
+                    "invalid_input",
+                    "须记录撤权指令。",
+                )?;
+                params = json!({"grant_id":input["grant_id"]});
+            }
+        }
+        ensure(
+            matches!(
+                method,
+                "authorize" | "inspect" | "revoke" | "record_migration_decision"
+            ),
+            "invalid_input",
+            "未开放此插件管理动作。",
+        )?;
+        let host_method = if method == "record_migration_decision" {
+            "approve_migration"
+        } else {
+            method
+        };
+        self.extension_host_action(
+            &directory,
+            json!({"method":host_method,"params":params}),
+            true,
+        )
+    }
     pub fn extension_host_request(&self, input: Value) -> Value {
         match access_directory() {
             Ok(directory) => self.extension_host_request_in(&directory, input),
@@ -464,11 +580,19 @@ impl Kernel {
     }
     /// 仅供可信作者宿主与隔离测试组装；不得由机器参数转发到此通道。
     pub fn extension_host_request_in(&self, directory: &Path, input: Value) -> Value {
-        let result = (|| -> Result<Value> {
+        self.extension_host_request_impl(directory, input, false)
+    }
+    fn extension_host_action(
+        &self,
+        directory: &Path,
+        input: Value,
+        conversation: bool,
+    ) -> Result<Value> {
+        (|| -> Result<Value> {
             ensure(
-                self.author,
+                self.author || conversation,
                 "forbidden",
-                "插件授权与通用降级读取仅允许可信作者入口。",
+                "插件授权须通过可信作者入口或精确会话决定。",
             )?;
             let method = text(&input, "method")?;
             let params = &input["params"];
@@ -500,7 +624,7 @@ impl Kernel {
                             "types",
                             "operation_key",
                         ],
-                        &[],
+                        &["conversation_decision"],
                     )?;
                     self.work_record(&params["work_ref"], None)?;
                     plugin_id(text(params, "plugin_id")?)?;
@@ -661,8 +785,16 @@ impl Kernel {
                 }
                 _ => Err(Error::new("invalid_input", "未知插件宿主方法。")),
             }
-        })();
-        result
+        })()
+    }
+
+    fn extension_host_request_impl(
+        &self,
+        directory: &Path,
+        input: Value,
+        conversation: bool,
+    ) -> Value {
+        self.extension_host_action(directory, input, conversation)
             .map(|data| {
                 if data["spec_version"] == "0.2.1" {
                     data
@@ -701,7 +833,9 @@ impl Kernel {
         if action.starts_with("hetu.extensions.migrations.") {
             return self.extension_migration(work, owner, action, input, grant, access);
         }
-        if action.starts_with("hetu.extensions.index.") || action == "hetu.extensions.objects.search" {
+        if action.starts_with("hetu.extensions.index.")
+            || action == "hetu.extensions.objects.search"
+        {
             return self.extension_index(work, owner, action, input, grant);
         }
         let root = collection(work, owner)?;
@@ -815,11 +949,12 @@ impl Kernel {
                     .clone();
                 if let Some(grant) = grant {
                     ensure(
-                        grant["types"]
-                            .as_array()
-                            .unwrap()
-                            .iter()
-                            .any(|t| &t["kind"] == result["data"]["object"].get("kind").unwrap_or(&result["data"]["plan"]["kind"])),
+                        grant["types"].as_array().unwrap().iter().any(|t| {
+                            &t["kind"]
+                                == result["data"]["object"]
+                                    .get("kind")
+                                    .unwrap_or(&result["data"]["plan"]["kind"])
+                        }),
                         "forbidden",
                         "原操作类型不在当前授权内。",
                     )?;
@@ -855,7 +990,15 @@ impl Kernel {
                         "idempotency_conflict",
                         "原操作键已绑定其他输入。",
                     )?;
-                    ensure(grant["types"].as_array().unwrap().iter().any(|t| t["kind"] == old["result"]["data"]["object"]["kind"]), "forbidden", "原操作类型不在当前插件授权内。")?;
+                    ensure(
+                        grant["types"]
+                            .as_array()
+                            .unwrap()
+                            .iter()
+                            .any(|t| t["kind"] == old["result"]["data"]["object"]["kind"]),
+                        "forbidden",
+                        "原操作类型不在当前插件授权内。",
+                    )?;
                     return Ok(old["result"].clone());
                 }
                 let kind = grant["types"]
@@ -918,7 +1061,8 @@ impl Kernel {
                 let sha = self.stage_versioned_record(&root, "object_id", &record, &mut changes)?;
                 let mut result =
                     domain::success(action, self.scope(), json!({"object":record,"sha256":sha}));
-                result["operation"] = extension_operation(text(input, "operation_key")?, &input_sha);
+                result["operation"] =
+                    extension_operation(text(input, "operation_key")?, &input_sha);
                 changes.insert(
                     path,
                     bytes(&json!({"input_sha256":input_sha,"result":result}))?,

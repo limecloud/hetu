@@ -5,9 +5,6 @@ edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 
-[lib]
-crate-type = ["rlib", "cdylib"]
-
 [dependencies]
 serde.workspace = true
 serde_json.workspace = true
@@ -16,11 +13,10 @@ sha2.workspace = true
 uuid.workspace = true
 time.workspace = true
 jsonschema.workspace = true
-rustix.workspace = true
 pulldown-cmark.workspace = true
 aho-corasick.workspace = true
 url = "2.5"
-base64 = "=0.22.1"
+base64.workspace = true
 image = { version = "=0.25.9", default-features = false, features = ["png", "jpeg", "webp"] }
 git2 = { version = "=0.20.4", default-features = false, features = ["vendored-libgit2"] }
 zip = { version = "=9.4.1", default-features = false, features = ["deflate-flate2-zlib-rs"] }
@@ -35,3 +31,11 @@ tempfile = "3.25"
 
 [lints]
 workspace = true
+
+[target."cfg(unix)".dependencies]
+rustix.workspace = true
+
+[target."cfg(windows)".dependencies]
+cap-fs-ext = "=3.4.6"
+cap-std = "=3.4.6"
+windows-sys = { version = "0.61.2", features = ["Win32_Storage_FileSystem", "Win32_Foundation"] }

@@ -1,15 +1,23 @@
 # 版本记录
 
+## v0.9.0 — 2026-11-16
+
+- 移除Swift/SwiftUI原生客户端、Swift CLI、C ABI桥接及专属构建测试，Electron沿用Mac应用标识。
+- 修复工作台基础布局丢失，保留完整创作库、工作面和浅暗主题；统一共享文案、0.5px边框与Radix颜色。
+- 统一机器能力地图、精确作品授权、导入会话恢复、本机设置和插件安装管理，保留作者决定与原操作恢复。
+- 独立Apple签名与公证工具，增加本机覆盖安装包类型，更新构建、安装、CI及相关文档。
+
 ## v0.8.0 — 2026-11-16
 
 - 桌面工作台采用 Electron、TypeScript 插件宿主与 Rust Core，保留创作库、独立小说／剧本／视频工作面、阅读编辑、审核与作者决定。
 - 增加独立 Rust CLI、App Server、插件 CLI 与插件 SDK，覆盖受限数据访问、无数据计算、显式 Schema 迁移和可重建标题索引。
 - 完善固定来源关联、作品范围资料、媒体预览、导入交付、本机设置与精确文稿版本，保留机器入口、权限核验和原键恢复。
-- 发布版本同步至 npm／Cargo workspace 及锁文件，GitHub Actions 改为 Electron macOS arm64 DMG／ZIP 发布，撤下 SwiftUI 原生包发布，保留对照测试。
+- 发布版本同步至 npm／Cargo workspace 及锁文件，GitHub Actions提供Electron macOS arm64 DMG／ZIP、Windows x64 ZIP和Linux x64 tar.gz，全部平台通过后统一发布，退役Swift/SwiftUI客户端、Swift CLI、C ABI桥接及原生专属构建测试。
 - Electron 发行装配独立 Node 25、CLI／MCP、方法资源与许可，执行 Developer ID 签名、App／DMG 公证、Gatekeeper、最终摘要和随包专项。
+- Electron沿用Mac正式身份 `run.limeai.hetu` 与开发身份 `run.limeai.hetu.dev`，新增具有独立清单类型的本机覆盖安装模式。
 - npm 启动器匹配 Electron 正式应用身份与 `Contents/Resources/bin/`，拒绝开发包和版本漂移。
 
-Windows 文件系统适配、干净系统安装与完整视频制作等验收独立跟进，范围见 `docs/19-测试策略与验收矩阵.md`、`docs/20-实施路线与里程碑.md` 和 `docs/38-创作工作台重构执行计划.md`。
+Windows句柄存储适配与跨平台存储测试纳入本版；干净系统安装、Linux发行版兼容与完整视频制作等验收独立跟进，范围见 `docs/19-测试策略与验收矩阵.md`、`docs/20-实施路线与里程碑.md` 和 `docs/38-创作工作台重构执行计划.md`。
 
 ## v0.7.0 — 2026-11-15
 

@@ -80,6 +80,149 @@ struct Client {
 }
 
 #[tokio::test]
+async fn stable_capability_map_and_fixed_conversation_decision_work_without_desktop() {
+    let (root, author) = setup();
+    let directory = root.path().join("会话机器入口");
+    let work = call(&author, "works.list", json!({}))["data"]["works"][0]["work_ref"].clone();
+    let authorized = call(
+        &author,
+        "collaboration.authorize_workspace",
+        json!({"client_adapter":"codex","collaboration_path":directory,"work_ref":work,"operation_key":"conversation-grant"}),
+    );
+    assert_eq!(authorized["status"], "succeeded", "{authorized}");
+    let grant = authorized["data"]["management_ref"].clone();
+    let mut client = Client::start_stable(&directory);
+    client.rpc("server/discover", json!({})).await;
+    let map = client
+        .tool(
+            "hetu_get_capability_map",
+            json!({"action":"hetu.novels.update"}),
+        )
+        .await;
+    assert_eq!(map["status"], "succeeded", "{map}");
+    assert_eq!(
+        map["data"]["actions"][0]["proposal_target"],
+        "hetu.novels.update"
+    );
+    let current = client
+        .tool("hetu_get_novel", json!({"management_ref":grant}))
+        .await;
+    assert_eq!(current["status"], "succeeded", "{current}");
+    let mut metadata = current["data"]["novel"]["metadata"].clone();
+    metadata["synopsis"] = json!("作者在当前会话要求的新简介。");
+    let prepared=client.tool("hetu_prepare_management_operation",json!({"management_ref":grant,"action":"hetu.novels.update","input":{"expected":{"revision":current["data"]["revision"],"sha256":current["data"]["sha256"]},"metadata":metadata,"operation_key":"metadata"},"summary":"更新简介","operation_key":"prepare-metadata"})).await;
+    assert_eq!(prepared["status"], "succeeded", "{prepared}");
+    let p = &prepared["data"];
+    let decision = json!({"management_ref":grant,"proposal_id":p["proposal_id"],"proposal_sha256":p["proposal_sha256"],"expected_state_revision":p["state_revision"],"decision":"approve","authorization_note":"测试用户在当前会话明确要求保存展示的新简介。","operation_key":"record-metadata"});
+    let recorded = client
+        .tool("hetu_record_management_decision", decision.clone())
+        .await;
+    assert_eq!(recorded["status"], "succeeded", "{recorded}");
+    assert_eq!(
+        recorded,
+        client
+            .tool("hetu_record_management_decision", decision)
+            .await
+    );
+    let unchanged = client
+        .tool("hetu_get_novel", json!({"management_ref":grant}))
+        .await;
+    assert_eq!(unchanged, current);
+    let execute = json!({"management_ref":grant,"proposal_id":p["proposal_id"],"proposal_sha256":p["proposal_sha256"],"operation_key":"execute-metadata"});
+    let result = client
+        .tool("hetu_execute_management_operation", execute.clone())
+        .await;
+    assert_eq!(result["status"], "succeeded", "{result}");
+    assert_eq!(
+        result,
+        client
+            .tool("hetu_execute_management_operation", execute)
+            .await
+    );
+    let updated = client
+        .tool("hetu_get_novel", json!({"management_ref":grant}))
+        .await;
+    assert_eq!(updated["data"]["novel"]["metadata"], metadata);
+    client.close().await;
+}
+
+#[tokio::test]
+async fn stable_conversation_import_uses_fixed_scope_without_gui_author_approval() {
+    use base64::{Engine, engine::general_purpose::STANDARD};
+    let root = tempfile::tempdir().unwrap();
+    let mut client = Client::start_stable(&root.path().join("会话导入"));
+    client.rpc("server/discover", json!({})).await;
+    let tools = client.rpc("tools/list", json!({})).await;
+    assert!(
+        tools["result"]["tools"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|t| t["name"] == "hetu_register_import_authorization")
+    );
+    let created = client
+        .tool(
+            "hetu_begin_creation",
+            json!({"brief":"导入指定原稿。","locale":"zh-CN","operation_key":"begin-import"}),
+        )
+        .await;
+    let start = &created["data"];
+    let work = client.tool("hetu_create_novel_from_project",json!({"management_ref":start["management_ref"],"project_id":start["project"]["project_id"],"expected":{"revision":start["revision"],"sha256":start["sha256"]},"target_path":start["target_path"],"metadata":{"title":"原稿","author_name":"作者","synopsis":"原稿保留。","genre":"","language_tag":"zh-CN","status":"writing"},"operation_key":"create-import-work"})).await;
+    assert_eq!(work["status"], "succeeded", "{work}");
+    let grant = work["data"]["workspace_management_ref"].clone();
+    let current = client
+        .tool("hetu_get_novel", json!({"management_ref":grant}))
+        .await;
+    assert_eq!(current["status"], "succeeded", "{current}");
+    let expected =
+        json!({"revision":current["data"]["revision"],"sha256":current["data"]["sha256"]});
+    let volume = json!({"volume_id":"volume_11111111-1111-4111-8111-111111111111","title":"原稿"});
+    let text = "第1章 渡口\r\n原稿🌿。\r\n";
+    let sha = format!("{:x}", Sha256::digest(text.as_bytes()));
+    let registration = json!({"management_ref":grant,"work_ref":{"workspace_id":grant["scope_ref"]["id"],"kind":"novel","object_id":work["data"]["novel"]["novel_id"]},"expected":expected,"plan":{"source_name":"原稿.txt","source_sha256":sha,"reading_sha256":sha,"reading_characters":text.chars().count(),"language_tag":"zh-CN","volumes":[volume],"units":[{"index":0,"start":0,"end":text.chars().count(),"title":"第1章 渡口","volume_id":volume["volume_id"],"content_sha256":sha}]},"authorization_note":"作者在当前对话明确要求将这份指定原稿导入。","operation_key":"register-import"});
+    let registered = client
+        .tool("hetu_register_import_authorization", registration.clone())
+        .await;
+    assert_eq!(registered["status"], "succeeded", "{registered}");
+    assert_eq!(
+        registered,
+        client
+            .tool("hetu_register_import_authorization", registration)
+            .await
+    );
+    let reference = registered["data"]["import_authorization_ref"].clone();
+    let proposal = client.tool("hetu_prepare_management_operation",json!({"management_ref":grant,"action":"hetu.novels.save_structure","input":{"expected":expected,"volumes":[volume],"chapters":[],"operation_key":"volumes"},"summary":"按原稿固定分卷","operation_key":"prepare-volumes"})).await;
+    let execute = json!({"management_ref":grant,"proposal_id":proposal["data"]["proposal_id"],"proposal_sha256":proposal["data"]["proposal_sha256"],"import_authorization_ref":reference,"operation_key":"execute-volumes"});
+    let result = client
+        .tool("hetu_execute_management_operation", execute)
+        .await;
+    assert_eq!(result["status"], "succeeded", "{result}");
+    let next = &result["data"]["result"];
+    let batch = client.tool("hetu_prepare_management_operation",json!({"management_ref":grant,"action":"hetu.documents.import_batch","input":{"expected":{"revision":next["revision"],"sha256":next["sha256"]},"items":[{"title":"第1章 渡口","language_tag":"zh-CN","volume_id":volume["volume_id"],"source":{"format":"txt","profile":"source/1","inline_source":{"filename":"000001.txt","base64":STANDARD.encode(text),"sha256":sha}}}],"acknowledgement":"保留原稿，不定稿。","operation_key":"import-one"},"summary":"导入固定原稿","operation_key":"prepare-import-one"})).await;
+    assert_eq!(batch["status"], "succeeded", "{batch}");
+    let execute = json!({"management_ref":grant,"proposal_id":batch["data"]["proposal_id"],"proposal_sha256":batch["data"]["proposal_sha256"],"import_authorization_ref":reference,"operation_key":"execute-import-one"});
+    let imported = client
+        .tool("hetu_execute_management_operation", execute.clone())
+        .await;
+    assert_eq!(imported["status"], "succeeded", "{imported}");
+    assert_eq!(
+        imported,
+        client
+            .tool("hetu_execute_management_operation", execute)
+            .await
+    );
+    let progress = client
+        .tool(
+            "hetu_get_import_authorization",
+            json!({"management_ref":grant,"import_authorization_ref":reference}),
+        )
+        .await;
+    assert_eq!(progress["data"]["state"], "complete");
+    assert_eq!(progress["data"]["next_index"], 1);
+    client.close().await;
+}
+
+#[tokio::test]
 async fn stable_bootstrap_creates_new_work_and_first_task_without_gui_or_author_seed() {
     let root = tempfile::tempdir().unwrap();
     let directory = root.path().join("从零接入");

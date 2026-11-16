@@ -431,8 +431,9 @@ mod tests {
     }
     #[test]
     fn custom_credentials_stay_private_and_connection_changes_invalidate_old_plans() {
+        #[cfg(unix)]
         use std::os::unix::fs::PermissionsExt;
-        let (root, service, identity, _) = service();
+        let (_root, service, identity, _) = service();
         let settings = service.author_request("inspect", &json!({})).unwrap();
         let catalog = service
             .custom_api_with(
@@ -446,22 +447,25 @@ mod tests {
         for value in [&settings, &catalog, &identity] {
             assert!(!value.to_string().contains("private-fixture-key"));
         }
-        let key_path = root.path().join(format!(
-            "credentials/{}.json",
-            identity["credential_ref"].as_str().unwrap()
-        ));
-        assert_eq!(
-            std::fs::metadata(key_path).unwrap().permissions().mode() & 0o777,
-            0o600
-        );
-        assert_eq!(
-            std::fs::metadata(root.path().join("credentials"))
-                .unwrap()
-                .permissions()
-                .mode()
-                & 0o777,
-            0o700
-        );
+        #[cfg(unix)]
+        {
+            let key_path = _root.path().join(format!(
+                "credentials/{}.json",
+                identity["credential_ref"].as_str().unwrap()
+            ));
+            assert_eq!(
+                std::fs::metadata(key_path).unwrap().permissions().mode() & 0o777,
+                0o600
+            );
+            assert_eq!(
+                std::fs::metadata(_root.path().join("credentials"))
+                    .unwrap()
+                    .permissions()
+                    .mode()
+                    & 0o777,
+                0o700
+            );
+        }
         let mut edit = json!({"channel_id":identity["channel_id"],"name":"编辑","base_url":"https://other.test","models":{"text":["text-one"],"image":["image-one"]}});
         assert!(service.author_request("custom_save", &edit).is_err());
         edit["api_key"] = json!("replacement-key");

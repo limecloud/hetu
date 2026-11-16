@@ -3,7 +3,7 @@ use git2::{
     DiffOptions, Index, IndexEntry, IndexTime, ObjectType, Oid, Repository, RepositoryInitOptions,
     Signature,
 };
-use std::{collections::BTreeSet, path::PathBuf};
+use std::collections::BTreeSet;
 mod collaboration;
 mod work_versions;
 
@@ -285,18 +285,18 @@ impl Kernel {
         Ok(repo)
     }
     fn git_instance(&self) -> Result<String> {
-        use std::os::unix::fs::MetadataExt;
-        let work = std::fs::symlink_metadata(&self.workspace_path)?;
-        let git = std::fs::symlink_metadata(self.workspace_path.join(".git"))?;
+        let work = crate::infrastructure::platform::identity(&self.workspace_path)?;
+        let git = crate::infrastructure::platform::identity(&self.workspace_path.join(".git"))?;
         Ok(digest(format!(
             "{}:{}:{}:{}:{}",
             self.scope(),
-            work.dev(),
-            work.ino(),
-            git.dev(),
-            git.ino()
+            work.0,
+            work.1,
+            git.0,
+            git.1
         )))
     }
+
     fn git_changes(&self, repo: &Repository, work: Option<&Value>) -> Result<Vec<Value>> {
         // 独立快照不改用户 index；内容状态必须直接比较 HEAD 与工作树。
         let tree = self.git_version_head(repo, work)?["commit_id"]
@@ -821,13 +821,10 @@ impl Kernel {
         let path = if let Some(path) = &self.authorization_path {
             path.clone()
         } else {
-            let home = std::env::var_os("HOME").ok_or_else(|| {
-                Error::new(
-                    "hetu.author_confirmation_required",
-                    "找不到本机作者授权目录。",
-                )
-            })?;
-            PathBuf::from(home).join("Library/Application Support/Hetu/Authorizations")
+            crate::collaboration::default_directory()?
+                .parent()
+                .ok_or_else(|| Error::new("missing_context", "无法确定本机作者授权目录。"))?
+                .join("Authorizations")
         };
         ensure(
             path.is_absolute() && !path.starts_with(&self.workspace_path),
@@ -835,11 +832,14 @@ impl Kernel {
             "作者批准必须保存在工作区以外的本机授权目录。",
         )?;
         if create {
-            use std::os::unix::fs::DirBuilderExt;
-            std::fs::DirBuilder::new()
-                .recursive(true)
-                .mode(0o700)
-                .create(&path)?;
+            let mut builder = std::fs::DirBuilder::new();
+            builder.recursive(true);
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::DirBuilderExt;
+                builder.mode(0o700);
+            }
+            builder.create(&path)?;
         }
         ensure(
             path.is_dir(),
@@ -863,6 +863,12 @@ impl Kernel {
         Ok(format!("{}/{id}.json", self.git_instance()?))
     }
     pub(super) fn approve_git_snapshot(&self, input: &Value) -> Result<Value> {
+        self.record_git_snapshot_approval(input, false)
+    }
+    pub(super) fn record_git_snapshot_decision(&self, input: &Value) -> Result<Value> {
+        self.record_git_snapshot_approval(input, true)
+    }
+    fn record_git_snapshot_approval(&self, input: &Value, conversation: bool) -> Result<Value> {
         self.check_git_snapshot_work(input)?;
         let repo = self.git_repository()?;
         let snapshot_id = text(input, "snapshot_id")?;
@@ -872,13 +878,57 @@ impl Kernel {
             "revision_conflict",
             "批准的快照摘要已变化。",
         )?;
-        self.verify_git_snapshot(&repo, &snapshot)?;
         let authorizations = self.authorizations(true)?;
-        let approval = json!({"schema_version":"1.0.0","snapshot_id":snapshot_id,"snapshot_sha256":sha,"repository_instance":snapshot["repository_instance"],"actor_ref":AUTHOR,"approved_at":now(),"expires_at":time::OffsetDateTime::now_utc().unix_timestamp()+900});
-        authorizations.install(&self.approval_path(snapshot_id)?, &bytes(&approval)?, false)?;
-        Ok(
-            json!({"snapshot_id":snapshot_id,"snapshot_sha256":sha,"approval_state":"approved","expires_at":approval["expires_at"]}),
-        )
+        authorizations.directory(".hetu/transactions")?;
+        let _guard = authorizations.lock()?;
+        authorizations.recover()?;
+        let operation = format!(
+            "decisions/{}.json",
+            digest(bytes(
+                &json!({"instance":snapshot["repository_instance"],"actor":self.actor(),"binding":self.management_grant,"key":input["operation_key"]})
+            )?)
+        );
+        let input_sha = Self::input_digest(input)?;
+        if authorizations.exists(&operation)? {
+            let previous = authorizations.json(&operation)?;
+            ensure(
+                previous["input_sha256"] == input_sha,
+                "idempotency_conflict",
+                "原快照决定键已绑定其他输入。",
+            )?;
+            return Ok(previous["result"].clone());
+        }
+        self.verify_git_snapshot(&repo, &snapshot)?;
+        let mut approval = json!({"schema_version":"1.0.0","snapshot_id":snapshot_id,"snapshot_sha256":sha,"repository_instance":snapshot["repository_instance"],"actor_ref":self.actor(),"approved_at":now(),"expires_at":time::OffsetDateTime::now_utc().unix_timestamp()+900});
+        if conversation {
+            let binding = self
+                .management_grant
+                .as_ref()
+                .ok_or_else(|| Error::new("forbidden", "会话决定须使用原作品管理授权。"))?;
+            ensure(
+                !text(input, "authorization_note")?.trim().is_empty(),
+                "invalid_input",
+                "须如实记录作者在当前会话的决定。",
+            )?;
+            ensure(
+                ["client_adapter", "grant_id", "grant_revision"]
+                    .iter()
+                    .all(|key| snapshot["prepared_by"][key] == binding[key]),
+                "forbidden",
+                "仅准备此快照的原客户端授权可登记会话决定。",
+            )?;
+            approval["conversation_decision"] = json!({"confirmation_channel":"agent_conversation","authorization_note":input["authorization_note"],"management_binding":binding});
+        }
+        let result = json!({"snapshot_id":snapshot_id,"snapshot_sha256":sha,"approval_state":"approved","expires_at":approval["expires_at"],"conversation_decision":approval["conversation_decision"]});
+        authorizations.directory("decisions")?;
+        authorizations.transaction(&Changes::from([
+            (self.approval_path(snapshot_id)?, bytes(&approval)?),
+            (
+                operation,
+                bytes(&json!({"input_sha256":input_sha,"result":result}))?,
+            ),
+        ]))?;
+        Ok(result)
     }
     fn verify_git_snapshot(&self, repo: &Repository, snapshot: &Value) -> Result<()> {
         ensure(
@@ -917,7 +967,21 @@ impl Kernel {
         ensure(
             approval["snapshot_sha256"] == sha
                 && approval["repository_instance"] == snapshot["repository_instance"]
-                && approval["actor_ref"] == AUTHOR
+                && (approval["actor_ref"] == AUTHOR
+                    || (approval["actor_ref"] == AGENT
+                        && approval["conversation_decision"]["confirmation_channel"]
+                            == "agent_conversation"
+                        && approval["conversation_decision"]["authorization_note"]
+                            .as_str()
+                            .is_some_and(|v| !v.trim().is_empty())
+                        && self.management_grant.as_ref()
+                            == Some(&approval["conversation_decision"]["management_binding"])
+                        && ["client_adapter", "grant_id", "grant_revision"]
+                            .iter()
+                            .all(|key| {
+                                snapshot["prepared_by"][key]
+                                    == approval["conversation_decision"]["management_binding"][key]
+                            })))
                 && (!fresh
                     || approval["expires_at"]
                         .as_i64()

@@ -170,12 +170,8 @@ fn empty_chapter_and_drama_project_use_reserved_identity_without_author_imperson
         "渡口短剧"
     );
     for forbidden in [
-        "hetu.documents.save",
-        "hetu.documents.finalize",
-        "hetu.drafts.adopt",
-        "hetu.blueprints.unlock",
         "hetu.model_tasks.approve",
-        "hetu.covers.select",
+        "hetu.collaboration.authorize_workspace",
     ] {
         assert_eq!(
             call(
@@ -184,6 +180,22 @@ fn empty_chapter_and_drama_project_use_reserved_identity_without_author_imperson
                 json!({"action":forbidden,"input":{},"summary":"不能提升身份","operation_key":forbidden})
             )["error"]["code"],
             "hetu.capability_unavailable"
+        );
+    }
+    for fixed_decision in [
+        "hetu.documents.save",
+        "hetu.documents.finalize",
+        "hetu.drafts.adopt",
+        "hetu.blueprints.unlock",
+        "hetu.covers.select",
+    ] {
+        assert_eq!(
+            call(
+                &agent,
+                "agent_operations.prepare",
+                json!({"action":fixed_decision,"input":{},"summary":"必须先准备完整固定结果","operation_key":fixed_decision})
+            )["error"]["code"],
+            "invalid_input"
         );
     }
     let other = tempfile::tempdir().unwrap();

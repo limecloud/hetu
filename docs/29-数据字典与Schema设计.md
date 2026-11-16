@@ -512,6 +512,34 @@ AssetDesign与AssetSelection继续拥有资料设计和用途选用，MediaArtif
 
 同根多个对象共享工作区锁与事务机制，但必须核验具体目标和对象访问范围。跨根关系及快照按原操作可恢复，不宣称跨文件系统原子。删除或迁移列出所拥有内容、其他引用、在途及unknown调用；单项目删除不删除共享媒体或同根其他对象。历史定稿、成片确认和Bundle始终指向原输入，不因上游更新改写。
 
+## 25. 会话导入授权数据
+
+以下字段与已发布的 `hetu.import_authorizations.*` 动作及 Core 实现对应。记录由 Core 保存在 `.hetu/import-authorizations/<authorization_id>.json`，不由 Skill 写入；固定摘要使用规范化 JSON，仅覆盖不可变的 `fixed`，进度由事务持有。
+
+| 记录部分 | 字段 | 不变量 |
+| --- | --- | --- |
+| 引用 | `authorization_id, sha256` | `import_authorization_ref` 必须完整回传；不以名称、当前作品或路径替代 |
+| 固定范围 | `fixed.work_ref, plan, binding, initial_expected, base_volumes, base_chapters` | 精确小说、完整目录、实际管理连接及原目录；同客户端与授权修订继续有效时才可执行 |
+| 固定审计 | `fixed.authorization_note, confirmation_channel, host, created_at, expires_at` | channel 为 `agent_conversation`，登记真实用户指令；期限为登记后86400秒，不自动延期或重授 |
+| 计划 | `source_name, source_sha256, reading_sha256, reading_characters, language_tag, volumes, units` | 原文件与阅读表示分别固定；Unicode 范围从0连续覆盖全文，重复标题及章号保留 |
+| 顺序项 | `index, start, end, title, volume_id, content_sha256` | 每篇固定标题、分卷与UTF-8字节摘要；只允许导入下一组连续项 |
+| 进度 | `state, next_index, volumes_ready, expected, imported` | state 为 active／revoked／complete；游标等于已导入唯一文稿标识数量，expected 为下一次执行的目录基线 |
+
+批次提交同时保存文稿修订、原字节、来源报告、目录、方案执行结果和授权进度。最后一批先校验拼接后阅读文本的整书摘要，再提交完成状态；失败不产生部分章节或提前游标。撤销与过期只阻断后续操作，已导入成果与原回执保留；已执行方案重放只返回原结果。授权登记不表示作品版权确认、正文定稿或AI候选采纳。
+
 ## 插件优先重构的接入边界
 
 新增插件实体、复合身份、ERD、权威文件与派生索引的设计由插件08拥有；首期JSON标题投影合同归插件20第25节，SQLite DDL用于后续规模评估。现有WorkRef和SourceRef保持原义。新字段在实现并验证后进入contracts，不提前改变旧Schema语义。目标分工见[39](39-Electron与插件优先重构架构.md)，详细扩展合同见[插件系列](plugin/README.md)，实际进度归38。
+
+## 26. 会话决定与本机操作回执
+
+| 记录 | 不可变绑定 | 状态与持久化 |
+| --- | --- | --- |
+| 管理方案fixed | 领域input、原management_binding、差异、基线、SHA和期限 | state以revision作CAS，记录conversation_decision；执行与正式领域写入同事务 |
+| conversation_decision | channel、authorization_note、原管理绑定、proposal_sha256、decision、recorded_by／at | 登记者为Agent，不冒充作者；登记本身不执行 |
+| 文稿快照决定 | snapshot_id、SHA、仓库实例、客户端／授权修订、真实指令 | 独立私密授权Store；900秒期限，原键回读不延长决定 |
+| 模型设置回执 | 客户端、原键、输入摘要、旧设置SHA和真实指令 | 与connection.json同事务；回执仅含非敏感设置与新摘要，密钥不进入回执 |
+| 插件安装状态 | 包快照路径／SHA、显式启用选择、依赖状态、操作回执 | 同一PluginInstallations Owner；进程锁、CAS、原键与原输入摘要；GUI不能覆盖另一入口的新状态 |
+| 插件会话授权 | WorkRef、插件ID／SHA、类型Schema、objects权限及原管理绑定 | 作品外私密Store；原管理授权撤销／重授后旧授权不可复活 |
+
+机器可读功能地图为生成投影，不保存作品状态、授权、凭据或第二份领域事实。字段与当前实现以 `contracts/capability-map.json` 指向的原动作Schema为准。

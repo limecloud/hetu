@@ -53,7 +53,7 @@ function appVersion(app) {
 
 function verifyApp(app) {
   if (appVersion(app) !== version) throw new Error('河图原生运行时与 npm 包版本不一致。');
-  if (command('/usr/libexec/PlistBuddy', ['-c', 'Print :CFBundleIdentifier', join(app, 'Contents/Info.plist')]).trim() !== 'run.limeai.hetu.electron') {
+  if (command('/usr/libexec/PlistBuddy', ['-c', 'Print :CFBundleIdentifier', join(app, 'Contents/Info.plist')]).trim() !== 'run.limeai.hetu') {
     throw new Error('河图运行时应用身份不匹配。');
   }
   command('/usr/bin/codesign', ['--verify', '--deep', '--strict', app]);

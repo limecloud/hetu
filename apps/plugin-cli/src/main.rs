@@ -13,6 +13,30 @@ fn run() -> Result<Value, String> {
             json!({"usage":"hetu-plugin --workspace <absolute> --grant <grant_id> --package-sha256 <sha> [--access-dir <absolute>] call <action> --input -","identity":"scoped plugin; no author override"}),
         );
     }
+    if args == ["disable-package", "--input", "-"] {
+        let mut bytes = Vec::new();
+        io::stdin()
+            .take(16385)
+            .read_to_end(&mut bytes)
+            .map_err(|_| "输入无法读取。")?;
+        if bytes.len() > 16384 {
+            return Err("撤权输入超过预算。".into());
+        }
+        let input: Value = serde_json::from_slice(&bytes).map_err(|_| "撤权输入无效。")?;
+        if input["authorization_note"]
+            .as_str()
+            .is_none_or(|s| s.trim().is_empty())
+            || input["operation_key"].as_str().is_none_or(|s| s.is_empty())
+        {
+            return Err("须提供真实安装选择和原键。".into());
+        }
+        return hetu_core::application::extensions::disable_package_in(
+            &access_directory().map_err(|e| e.to_string())?,
+            input["plugin_id"].as_str().ok_or("插件标识无效。")?,
+            input["package_sha256"].as_str().ok_or("插件摘要无效。")?,
+        )
+        .map_err(|e| e.to_string());
+    }
     let mut values = std::collections::BTreeMap::new();
     let mut index = 0;
     while args.get(index).is_some_and(|a| a.starts_with("--")) {

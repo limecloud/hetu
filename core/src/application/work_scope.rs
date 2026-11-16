@@ -34,7 +34,12 @@ impl Kernel {
             | "hetu.operations.get"
             | "hetu.workspaces.get"
             | "hetu.works.list"
+            | "hetu.agent_operations.catalog"
             | "hetu.agent_operations.list" => true,
+            "hetu.plugin_access.record_migration_decision"
+            | "hetu.plugin_access.authorize"
+            | "hetu.plugin_access.inspect"
+            | "hetu.plugin_access.revoke" => input["work_ref"] == reference,
             "hetu.works.get"
             | "hetu.work_links.list"
             | "hetu.work_links.get"
@@ -42,9 +47,142 @@ impl Kernel {
             "hetu.documents.list" => {
                 input["work_ref"] == reference && matches!(kind.as_str(), Some("novel" | "drama"))
             }
-            "hetu.documents.get" | "hetu.documents.history" => {
+            "hetu.documents.create" => {
+                kind == "novel" && input["kind"] == "novel_chapter" && input["content"] == ""
+            }
+            "hetu.documents.get"
+            | "hetu.documents.history"
+            | "hetu.documents.save"
+            | "hetu.documents.withdraw_finalization"
+            | "hetu.documents.lifecycle"
+            | "hetu.drafts.submit_current" => {
                 self.work_record(&reference, None)?;
                 self.document_in_work(&self.document(text(input, "document_id")?)?, &reference)?
+            }
+            "hetu.documents.validate" | "hetu.documents.preview_finalization" => self
+                .document_in_work(
+                    &self.document(text(&input["document_ref"], "document_id")?)?,
+                    &reference,
+                )?,
+            "hetu.documents.finalize" => {
+                return self.check_work_access(
+                    "hetu.documents.preview_finalization",
+                    &input["preview"]["request"],
+                );
+            }
+            "hetu.drafts.list" => input["work_ref"] == reference,
+            "hetu.reviews.list"
+            | "hetu.plot.list"
+            | "hetu.reports.list"
+            | "hetu.drama.list_skeletons" => {
+                if let Some(id) = input["document_id"].as_str() {
+                    self.document_in_work(&self.document(id)?, &reference)?
+                } else if let Some(id) = input["plot_revision_id"].as_str() {
+                    self.plot_in_work(id, &reference)?
+                } else {
+                    true
+                }
+            }
+            "hetu.reviews.get" => {
+                let id = if let Some(id) = input["draft_id"].as_str() {
+                    id.to_owned()
+                } else {
+                    let id = checked_id(text(input, "review_id")?, "review")?;
+                    text(
+                        &self.store.json(&format!(".hetu/reviews/{id}.json"))?,
+                        "draft_id",
+                    )?
+                    .to_owned()
+                };
+                self.draft_work_owner(&self.draft_content(&id)?["draft"])?
+                    .as_ref()
+                    == Some(&reference)
+            }
+            "hetu.plot.extract" => {
+                input["work_ref"] == reference
+                    && self.sources_in_work(&input["document_revisions"], &reference)?
+            }
+            "hetu.plot.get" | "hetu.plot.correct" | "hetu.validation.run" => {
+                self.plot_in_work(text(input, "plot_revision_id")?, &reference)?
+            }
+            "hetu.drama.build_skeleton" => {
+                self.plot_in_work(text(input, "plot_revision_id")?, &reference)?
+                    && input
+                        .get("project_ref")
+                        .is_none_or(|p| kind == "drama" && p["project_id"] == *object_id)
+            }
+            "hetu.reports.get"
+            | "hetu.findings.disposition"
+            | "hetu.findings.suggest"
+            | "hetu.findings.suggestions" => self.plot_in_work(
+                text(
+                    &self.report_descriptor(text(input, "report_id")?)?["input_snapshot"],
+                    "plot_revision_id",
+                )?,
+                &reference,
+            )?,
+            "hetu.drama.get_skeleton"
+            | "hetu.drama.edit_skeleton"
+            | "hetu.drama.list_comparisons" => {
+                let (skeleton, _) =
+                    self.read_skeleton(text(input, "skeleton_id")?, input["revision"].as_u64())?;
+                self.plot_in_work(&skeleton.plot_revision_id, &reference)?
+            }
+            "hetu.drama.compare" | "hetu.drama.create_script" => {
+                let (skeleton, _) = self.read_skeleton(
+                    text(&input["skeleton_ref"], "skeleton_id")?,
+                    Some(integer(&input["skeleton_ref"], "revision")?),
+                )?;
+                let mut valid = self.plot_in_work(&skeleton.plot_revision_id, &reference)?;
+                if action == "hetu.drama.compare" {
+                    valid &= self.sources_in_work(&input["source_revisions"], &reference)?;
+                }
+                if let Some(id) = input["episode_id"].as_str() {
+                    valid &= kind == "drama"
+                        && self.read_drama_episode(id, None)?.0["project_id"] == *object_id;
+                }
+                valid
+            }
+            "hetu.drama.get_comparison" => {
+                let comparison = self.get_comparison(input)?;
+                self.sources_in_work(&comparison["comparison"]["source_revisions"], &reference)?
+            }
+            "hetu.drama.get_script_mapping" => {
+                self.document_in_work(&self.document(text(input, "document_id")?)?, &reference)?
+            }
+            "hetu.drafts.get"
+            | "hetu.reviews.begin"
+            | "hetu.reviews.decide"
+            | "hetu.reviews.validate" => {
+                let draft = self.draft_content(text(input, "draft_id")?)?;
+                self.draft_work_owner(&draft["draft"])?.as_ref() == Some(&reference)
+            }
+            "hetu.drafts.preview_adoption" => {
+                let draft = self.draft_content(text(&input["draft_ref"], "draft_id")?)?;
+                let owned = self.draft_work_owner(&draft["draft"])?.as_ref() == Some(&reference);
+                owned
+                    && match input["target_ref"]["document_id"].as_str() {
+                        Some(id) => self.document_in_work(&self.document(id)?, &reference)?,
+                        None => true,
+                    }
+            }
+            "hetu.drafts.adopt" => {
+                return self.check_work_access(
+                    "hetu.drafts.preview_adoption",
+                    &input["preview"]["request"],
+                );
+            }
+            "hetu.outlines.get" | "hetu.outlines.save" => kind == "novel",
+            "hetu.covers.get" => kind == "novel",
+            "hetu.covers.select" => {
+                kind == "novel"
+                    && input["source"]["kind"] == "asset"
+                    && self.media_in_work(
+                        "asset",
+                        text(&input["source"]["asset_ref"], "asset_id")?,
+                        Some(integer(&input["source"]["asset_ref"], "revision")?),
+                        &reference,
+                    )?
             }
             "hetu.documents.preview_import" => {
                 input["work_ref"] == reference
@@ -71,6 +209,12 @@ impl Kernel {
                         }
                         _ => false,
                     }
+            }
+            "hetu.import_authorizations.register" => {
+                input["work_ref"] == reference && kind == "novel"
+            }
+            "hetu.import_authorizations.get" | "hetu.import_authorizations.revoke" => {
+                kind == "novel"
             }
             "hetu.documents.import_batch" => {
                 input["work_ref"] == reference
@@ -110,7 +254,10 @@ impl Kernel {
             | "hetu.git.init" => {
                 input["work_ref"] == reference && matches!(kind.as_str(), Some("novel" | "drama"))
             }
-            "hetu.git.snapshot" | "hetu.git.get_snapshot" | "hetu.git.snapshot_diff" => {
+            "hetu.git.snapshot"
+            | "hetu.git.get_snapshot"
+            | "hetu.git.snapshot_diff"
+            | "hetu.git.record_snapshot_decision" => {
                 if input["work_ref"] != reference
                     || !matches!(kind.as_str(), Some("novel" | "drama"))
                 {
@@ -227,6 +374,8 @@ impl Kernel {
             "hetu.blueprints.get"
             | "hetu.blueprints.preview_change"
             | "hetu.blueprints.save"
+            | "hetu.blueprints.lock"
+            | "hetu.blueprints.unlock"
             | "hetu.blueprints.initialize" => input["work_ref"] == reference,
             "hetu.creative_tasks.preview_prompt"
             | "hetu.creative_tasks.prepare"
@@ -285,7 +434,9 @@ impl Kernel {
                 return self.check_work_access(text(input, "action")?, &input["input"]);
             }
             // 方案读取和执行另外核验固定动作，不能借 proposal_id 读取其他对象。
-            "hetu.agent_operations.get" | "hetu.agent_operations.execute" => true,
+            "hetu.agent_operations.get"
+            | "hetu.agent_operations.execute"
+            | "hetu.agent_operations.record_decision" => true,
             _ => false,
         };
         ensure(
@@ -293,6 +444,21 @@ impl Kernel {
             "forbidden",
             "此授权仅覆盖所选创作对象；其他对象及资料须另行授权。",
         )
+    }
+
+    pub(super) fn sources_in_work(&self, sources: &Value, reference: &Value) -> Result<bool> {
+        let Some(sources) = sources.as_array().filter(|items| !items.is_empty()) else {
+            return Ok(false);
+        };
+        for source in sources {
+            if !self.document_in_work(&self.document(text(source, "document_id")?)?, reference)? {
+                return Ok(false);
+            }
+        }
+        Ok(true)
+    }
+    pub(super) fn plot_in_work(&self, id: &str, reference: &Value) -> Result<bool> {
+        self.sources_in_work(&self.plot_descriptor(id)?["source_revisions"], reference)
     }
 
     fn handoff_objects_in_work(&self, reference: &Value, object: &Value) -> Result<bool> {

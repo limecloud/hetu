@@ -40,8 +40,8 @@ impl From<std::io::Error> for Error {
         )
     }
 }
-impl From<rustix::io::Errno> for Error {
-    fn from(_: rustix::io::Errno) -> Self {
+impl From<crate::infrastructure::platform::Errno> for Error {
+    fn from(_: crate::infrastructure::platform::Errno) -> Self {
         Self::new(
             "hetu.unsafe_path",
             "无法安全访问受管路径，请检查链接和文件权限。",

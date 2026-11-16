@@ -1,6 +1,8 @@
+use super::platform::{
+    self, OwnedFd,
+    fs::{self, FlockOperation, Mode, OFlags},
+};
 use crate::domain::{Error, Result, digest, ensure, id};
-use rustix::fd::OwnedFd;
-use rustix::fs::{self, FlockOperation, Mode, OFlags};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 use std::fs::File;
@@ -65,12 +67,12 @@ impl Store {
             "hetu.unsafe_path",
             "受管路径必须为不含跳转的相对路径。",
         )?;
-        let mut parent = rustix::io::dup(&self.root)?;
+        let mut parent = platform::dup(&self.root)?;
         for part in &parts[..parts.len() - 1] {
             if create {
                 match fs::mkdirat(&parent, *part, Mode::from_raw_mode(0o700)) {
                     Ok(()) => fs::fsync(&parent)?,
-                    Err(rustix::io::Errno::EXIST) => {}
+                    Err(platform::Errno::EXIST) => {}
                     Err(e) => return Err(e.into()),
                 }
             }
@@ -81,7 +83,7 @@ impl Store {
                 Mode::empty(),
             ) {
                 Ok(directory) => directory,
-                Err(rustix::io::Errno::NOENT) if !create => return Ok(None),
+                Err(platform::Errno::NOENT) if !create => return Ok(None),
                 Err(error) => return Err(error.into()),
             };
         }
@@ -188,7 +190,7 @@ impl Store {
                 )?;
                 Ok(true)
             }
-            Err(rustix::io::Errno::NOENT) => Ok(false),
+            Err(platform::Errno::NOENT) => Ok(false),
             Err(e) => Err(e.into()),
         }
     }
@@ -201,7 +203,7 @@ impl Store {
             Mode::empty(),
         )
         .map_err(|e| {
-            if e == rustix::io::Errno::NOENT {
+            if e == platform::Errno::NOENT {
                 Error::new("not_found", "受管记录不存在。")
             } else {
                 e.into()
@@ -242,31 +244,20 @@ impl Store {
         };
         let (parent, leaf) = self.parent(&probe, false)?;
         let _ = leaf;
-        let mut result = Vec::new();
-        for entry in fs::Dir::read_from(&parent)? {
-            let entry = entry?;
-            let name = entry
-                .file_name()
-                .to_str()
-                .map_err(|_| Error::new("hetu.unsafe_path", "目录名称不是有效 UTF-8。"))?;
-            if name != "." && name != ".." {
-                result.push(name.into());
-            }
-            ensure(
-                result.len() <= 100_000,
-                "hetu.budget_exceeded",
-                "目录超过当前枚举预算。",
-            )?;
-        }
+        let mut result = fs::names(&parent)?;
         result.sort();
         Ok(result)
     }
     pub fn matches_root(&self, path: &Path) -> Result<()> {
-        use std::os::unix::fs::MetadataExt;
-        let current = std::fs::symlink_metadata(path)?;
+        let current = fs::open(
+            path,
+            OFlags::RDONLY | OFlags::DIRECTORY | OFlags::NOFOLLOW,
+            Mode::empty(),
+        )?;
+        let current = fs::fstat(&current)?;
         let root = fs::fstat(&self.root)?;
         ensure(
-            current.is_dir() && current.dev() == root.st_dev as u64 && current.ino() == root.st_ino,
+            current.st_dev == root.st_dev && current.st_ino == root.st_ino,
             "hetu.unsafe_path",
             "工作区路径已被替换，请停止操作并重新打开。",
         )

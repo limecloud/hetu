@@ -16,6 +16,7 @@ rmcp = { version = "=3.9.0", default-features = false, features = ["server", "tr
 tokio = { version = "1.49", features = ["rt-multi-thread", "macros", "sync", "time"] }
 
 [dev-dependencies]
+base64.workspace = true
 tempfile = "3.25"
 rmcp = { version = "=3.9.0", default-features = false, features = ["client"] }
 tokio = { version = "1.49", features = ["process"] }

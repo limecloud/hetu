@@ -1,6 +1,6 @@
 //! 新桌面的非敏感本机设置；公开机器入口与可信作者入口共享事务及恢复记录。
-mod suites;
 mod inspection;
+mod suites;
 
 use crate::{
     Kernel,
@@ -94,11 +94,20 @@ fn plan_path(operation_id: &str) -> Result<String> {
 }
 fn association_key(input: &Value) -> Result<String> {
     if let Some(reference) = input.get("work_ref") {
-        ensure(input.get("workspace_id").is_none(), "invalid_input", "作品与旧工作区范围不能混用。")?;
-        let schema: Value = serde_json::from_str(include_str!("../../contracts/schemas/work.schema.json"))?;
+        ensure(
+            input.get("workspace_id").is_none(),
+            "invalid_input",
+            "作品与旧工作区范围不能混用。",
+        )?;
+        let schema: Value =
+            serde_json::from_str(include_str!("../../contracts/schemas/work.schema.json"))?;
         let validator = jsonschema::validator_for(&schema["$defs"]["work_ref"])
             .map_err(|_| Error::new("hetu.integrity_failure", "作品引用合同无效。"))?;
-        ensure(validator.is_valid(reference), "invalid_input", "作品引用不符合设置合同。")?;
+        ensure(
+            validator.is_valid(reference),
+            "invalid_input",
+            "作品引用不符合设置合同。",
+        )?;
         return Ok(format!("work:{}", hash(reference)?));
     }
     if let Some(workspace) = input.get("workspace_id") {
@@ -248,6 +257,7 @@ impl LocalSettings {
                 )?;
                 Ok(self.view(plan, &state))
             }
+            "hetu.local_settings.record_decision" => self.decide(&json!({"operation_id":input["operation_id"],"sha256":input["sha256"],"revision":input["revision"],"approve":input["decision"] == "approve","operation_key":input["operation_key"]}), &state, Some((client,text(input,"authorization_note")?))),
             "hetu.local_settings.execute" => self.commit(client, input, &state),
             _ => Err(Error::new(
                 "hetu.capability_unavailable",
@@ -291,7 +301,9 @@ impl LocalSettings {
                 "请指定套件接入客户端。",
             )?;
             fixed["workspace_id"] = input["workspace_id"].clone();
-            if let Some(reference) = input.get("work_ref") { fixed["work_ref"] = reference.clone(); }
+            if let Some(reference) = input.get("work_ref") {
+                fixed["work_ref"] = reference.clone();
+            }
             if let Some(workspace) = input["workspace_id"].as_str() {
                 checked_id(workspace, "workspace")?;
             }
@@ -319,6 +331,104 @@ impl LocalSettings {
         ]);
         self.store.transaction(&changes)?;
         Ok(self.view(plan, state))
+    }
+    fn decide(
+        &self,
+        params: &Value,
+        state: &Value,
+        conversation: Option<(&str, &str)>,
+    ) -> Result<Value> {
+        closed(
+            params,
+            &[
+                "operation_id",
+                "sha256",
+                "revision",
+                "approve",
+                "operation_key",
+            ],
+        )?;
+        let operation_id = text(params, "operation_id")?;
+        let mut plan = self.plan(operation_id)?;
+        ensure(
+            plan["sha256"] == params["sha256"],
+            "revision_conflict",
+            "本机方案摘要已变化。",
+        )?;
+        if let Some((client, note)) = conversation {
+            ensure(
+                plan["fixed"]["client_adapter"] == client && !note.trim().is_empty(),
+                "forbidden",
+                "本机会话决定须属于原客户端并记录真实用户指令。",
+            )?;
+        }
+        let decision_sha = if conversation.is_some() {
+            hash(&json!([params, conversation]))?
+        } else {
+            hash(params)?
+        };
+        let key = text(params, "operation_key")?;
+        ensure(
+            !key.is_empty() && key.len() <= 128 && params["approve"].is_boolean(),
+            "invalid_input",
+            "本机审核决定无效。",
+        )?;
+        let receipt = format!("decisions/{}.json", hash(&json!([operation_id, key]))?);
+        if self.store.exists(&receipt)? {
+            let prior = self.store.json(&receipt)?;
+            ensure(
+                prior["input_sha256"] == decision_sha,
+                "idempotency_conflict",
+                "本机审核键已用于不同决定。",
+            )?;
+            return Ok(prior["result"].clone());
+        }
+        ensure(
+            plan["revision"] == params["revision"]
+                && !matches!(plan["state"].as_str(), Some("executing" | "executed")),
+            "revision_conflict",
+            "方案状态已变化，请回读后审阅。",
+        )?;
+        if params["approve"] == true {
+            ensure(
+                plan["fixed"]["before"] == *state,
+                "revision_conflict",
+                "偏好基线已变化，请重新准备。",
+            )?;
+            ensure(
+                plan["fixed"]["expires_at"].as_i64().unwrap_or(0)
+                    > time::OffsetDateTime::now_utc().unix_timestamp(),
+                "hetu.author_confirmation_required",
+                "方案已过期。",
+            )?;
+            if plan["fixed"]["kind"] == "agent_suite" {
+                ensure(
+                    suites::inspect(text(&plan["fixed"]["suite"], "suite_id")?)?
+                        == plan["fixed"]["suite"],
+                    "revision_conflict",
+                    "套件包已变化。",
+                )?;
+            }
+        }
+        plan["state"] = json!(if params["approve"] == true {
+            "approved"
+        } else {
+            "rejected"
+        });
+        plan["revision"] = json!(plan["revision"].as_u64().unwrap() + 1);
+        plan["decided_at"] = json!(domain::now());
+        if let Some((client, note)) = conversation {
+            plan["conversation_decision"] = json!({"confirmation_channel":"agent_conversation","client_adapter":client,"authorization_note":note,"decision":if params["approve"] == true {"approve"} else {"reject"},"recorded_at":domain::now()});
+        }
+        let result = self.view(plan.clone(), &state);
+        self.store.transaction(&BTreeMap::from([
+            (plan_path(operation_id)?, serde_json::to_vec(&plan)?),
+            (
+                receipt,
+                serde_json::to_vec(&json!({"input_sha256":decision_sha,"result":result}))?,
+            ),
+        ]))?;
+        Ok(result)
     }
     fn commit(&self, client: &str, input: &Value, state: &Value) -> Result<Value> {
         let operation_id = text(input, "operation_id")?;
@@ -396,11 +506,13 @@ impl LocalSettings {
                 plan["installation"] = installed;
             }
             let mut scope = json!({});
-            if !fixed["work_ref"].is_null() { scope["work_ref"] = fixed["work_ref"].clone(); }
-            else if !fixed["workspace_id"].is_null() { scope["workspace_id"] = fixed["workspace_id"].clone(); }
+            if !fixed["work_ref"].is_null() {
+                scope["work_ref"] = fixed["work_ref"].clone();
+            } else if !fixed["workspace_id"].is_null() {
+                scope["workspace_id"] = fixed["workspace_id"].clone();
+            }
             let key = association_key(&scope)?;
-            next["associations"][&key] =
-                json!({"client":fixed["agent_client"],"suite":fixed["suite"]["suite_id"],"work_ref":fixed["work_ref"]});
+            next["associations"][&key] = json!({"client":fixed["agent_client"],"suite":fixed["suite"]["suite_id"],"work_ref":fixed["work_ref"]});
             if key == "default" {
                 next["preferences"]["agent_client"] = fixed["agent_client"].clone();
             }
@@ -441,28 +553,60 @@ impl LocalSettings {
             "inspect_suite" => inspection::inspect(&state, params),
             "associate" | "package_directory" => {
                 let package = input["method"] == "package_directory";
-                let mut fields = vec!["work_ref", "expected_revision", "agent_client", "suite_id", "operation_key"];
-                if package { fields.push("directory"); }
+                let mut fields = vec![
+                    "work_ref",
+                    "expected_revision",
+                    "agent_client",
+                    "suite_id",
+                    "operation_key",
+                ];
+                if package {
+                    fields.push("directory");
+                }
                 closed(params, &fields)?;
                 let scope_key = association_key(params)?;
                 validate_patch(&json!({"agent_client":params["agent_client"]}))?;
                 suites::inspect(text(params, "suite_id")?)?;
                 let key = text(params, "operation_key")?;
-                ensure(!key.is_empty() && key.len() <= 128, "invalid_input", "本机操作键无效。")?;
-                let receipt = format!("associations/{}.json", hash(&json!([input["method"], key]))?);
+                ensure(
+                    !key.is_empty() && key.len() <= 128,
+                    "invalid_input",
+                    "本机操作键无效。",
+                )?;
+                let receipt = format!(
+                    "associations/{}.json",
+                    hash(&json!([input["method"], key]))?
+                );
                 if self.store.exists(&receipt)? {
                     let prior = self.store.json(&receipt)?;
-                    ensure(prior["input_sha256"] == hash(params)?, "idempotency_conflict", "原操作键已用于不同选择。")?;
+                    ensure(
+                        prior["input_sha256"] == hash(params)?,
+                        "idempotency_conflict",
+                        "原操作键已用于不同选择。",
+                    )?;
                     return Ok(prior["result"].clone());
                 }
-                ensure(state["revision"] == params["expected_revision"], "revision_conflict", "本机设置已变化，请刷新后选择。")?;
+                ensure(
+                    state["revision"] == params["expected_revision"],
+                    "revision_conflict",
+                    "本机设置已变化，请刷新后选择。",
+                )?;
                 let mut next = state;
                 if package {
                     if !params["directory"].is_null() {
-                        inspection::validate_directory(text(params, "directory")?, text(params, "suite_id")?)?;
+                        inspection::validate_directory(
+                            text(params, "directory")?,
+                            text(params, "suite_id")?,
+                        )?;
                     }
-                    if next["package_directories"].is_null() { next["package_directories"] = json!({}); }
-                    let package_key = format!("{}:{}", text(params, "agent_client")?, text(params, "suite_id")?);
+                    if next["package_directories"].is_null() {
+                        next["package_directories"] = json!({});
+                    }
+                    let package_key = format!(
+                        "{}:{}",
+                        text(params, "agent_client")?,
+                        text(params, "suite_id")?
+                    );
                     next["package_directories"][package_key] = params["directory"].clone();
                 } else {
                     if scope_key == "default" {
@@ -473,7 +617,10 @@ impl LocalSettings {
                 next["revision"] = json!(next["revision"].as_u64().unwrap() + 1);
                 self.store.transaction(&BTreeMap::from([
                     ("settings.json".into(), serde_json::to_vec(&next)?),
-                    (receipt, serde_json::to_vec(&json!({"input_sha256":hash(params)?,"result":next}))?),
+                    (
+                        receipt,
+                        serde_json::to_vec(&json!({"input_sha256":hash(params)?,"result":next}))?,
+                    ),
                 ]))?;
                 Ok(next)
             }
@@ -534,84 +681,7 @@ impl LocalSettings {
                 };
                 Ok(json!({"operations":selected,"next_cursor":cursor}))
             }
-            "decide" => {
-                closed(
-                    params,
-                    &[
-                        "operation_id",
-                        "sha256",
-                        "revision",
-                        "approve",
-                        "operation_key",
-                    ],
-                )?;
-                let operation_id = text(params, "operation_id")?;
-                let mut plan = self.plan(operation_id)?;
-                ensure(
-                    plan["sha256"] == params["sha256"],
-                    "revision_conflict",
-                    "本机方案摘要已变化。",
-                )?;
-                let key = text(params, "operation_key")?;
-                ensure(
-                    !key.is_empty() && key.len() <= 128 && params["approve"].is_boolean(),
-                    "invalid_input",
-                    "本机审核决定无效。",
-                )?;
-                let receipt = format!("decisions/{}.json", hash(&json!([operation_id, key]))?);
-                if self.store.exists(&receipt)? {
-                    let prior = self.store.json(&receipt)?;
-                    ensure(
-                        prior["input_sha256"] == hash(params)?,
-                        "idempotency_conflict",
-                        "本机审核键已用于不同决定。",
-                    )?;
-                    return Ok(prior["result"].clone());
-                }
-                ensure(
-                    plan["revision"] == params["revision"]
-                        && !matches!(plan["state"].as_str(), Some("executing" | "executed")),
-                    "revision_conflict",
-                    "方案状态已变化，请回读后审阅。",
-                )?;
-                if params["approve"] == true {
-                    ensure(
-                        plan["fixed"]["before"] == state,
-                        "revision_conflict",
-                        "偏好基线已变化，请重新准备。",
-                    )?;
-                    ensure(
-                        plan["fixed"]["expires_at"].as_i64().unwrap_or(0)
-                            > time::OffsetDateTime::now_utc().unix_timestamp(),
-                        "hetu.author_confirmation_required",
-                        "方案已过期。",
-                    )?;
-                    if plan["fixed"]["kind"] == "agent_suite" {
-                        ensure(
-                            suites::inspect(text(&plan["fixed"]["suite"], "suite_id")?)?
-                                == plan["fixed"]["suite"],
-                            "revision_conflict",
-                            "套件包已变化。",
-                        )?;
-                    }
-                }
-                plan["state"] = json!(if params["approve"] == true {
-                    "approved"
-                } else {
-                    "rejected"
-                });
-                plan["revision"] = json!(plan["revision"].as_u64().unwrap() + 1);
-                plan["decided_at"] = json!(domain::now());
-                let result = self.view(plan.clone(), &state);
-                self.store.transaction(&BTreeMap::from([
-                    (plan_path(operation_id)?, serde_json::to_vec(&plan)?),
-                    (
-                        receipt,
-                        serde_json::to_vec(&json!({"input_sha256":hash(params)?,"result":result}))?,
-                    ),
-                ]))?;
-                Ok(result)
-            }
+            "decide" => self.decide(params, &state, None),
             "update" => {
                 closed(params, &["expected_revision", "patch", "operation_key"])?;
                 validate_patch(&params["patch"])?;

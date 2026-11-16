@@ -29,7 +29,7 @@ hetu model-service <status|login|poll>\n\n\
 Calls return one AXI JSON result. Input is a UTF-8 JSON object, up to 16 MiB.\n\
 Start without a workspace: inspect, then use the discovered creation action.\n\
 Keep the management reference, reserved directory and operation key.\n\
-This entry runs as an Agent. It cannot approve, adopt or finalize author work.\n"
+This entry stays an Agent. Discover fixed proposals, record real author decisions in the conversation, execute and read back. Model costs keep their own authorization.\n"
     } else {
         "河图洛书命令行\n\n\
 hetu [--locale zh-CN|en] --help\n\
@@ -45,7 +45,7 @@ hetu model-service <status|login|poll>\n\n\
 调用返回单个AXI JSON结果，输入须为完整UTF-8 JSON对象，最多16MiB。\n\
 从零开始无需工作区：先inspect，再使用已发现的新建动作。\n\
 保留管理引用、预留目录与原操作键，按实际能力继续。\n\
-本入口固定为Agent身份，不代替作者批准、采纳或定稿。\n"
+本入口保持Agent身份；发现固定方案，依据真实作者决定在当前会话登记、执行并回读。模型费用遵循独立授权合同。\n"
     }
 }
 

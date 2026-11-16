@@ -553,7 +553,7 @@
       "name": "hetu_execute_management_operation",
       "action": "hetu.agent_operations.execute",
       "title": "执行已批准方案 / Execute approved proposal",
-      "description": "仅限启动时明确绑定的作品。先发现Schema；执行方案需要作者对确切摘要的批准，不取得采纳或定稿权。Limited to the explicitly bound workspace; inspect schemas and obtain the author decision for the exact proposal digest.",
+      "description": "仅限启动时明确绑定的作品。先发现Schema；执行方案需要作者对确切摘要的批准，不取得采纳或定稿权。Limited to the explicitly bound workspace; inspect schemas and obtain the author decision for the exact proposal digest. 整书原稿导入可携带固定 import_authorization_ref，由 Core 核验当前会话授权的下一步，无需桌面逐批批准。",
       "profiles": [
         "workspace",
         "stable"
@@ -1048,6 +1048,213 @@
       "action": "hetu.video.episodes.get",
       "title": "读取视频分集 / Read video episode",
       "description": "读取固定视频分集与归属。Read the exact video episode and owner.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_register_import_authorization",
+      "title": "登记会话内整书导入授权",
+      "description": "仅依据作者在当前对话中明确要求导入的真实指令，登记已核对的固定原稿与目录。保留原话 authorization_note；不得自行授权、不接受 approved 或作者角色。只允许同作品分卷与顺序批次，不允许采纳、定稿、其他正文写入或外部副作用。已明确授权时直接登记并连续执行，不要求回桌面逐批批准。",
+      "action": "hetu.import_authorizations.register",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_get_import_authorization",
+      "title": "读取整书导入进度",
+      "description": "读取精确导入授权、固定范围、状态与游标；未知结果先回读，不换键重发。",
+      "action": "hetu.import_authorizations.get",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_revoke_import_authorization",
+      "title": "撤销整书导入授权",
+      "description": "停止本会话此份导入授权；保留已导入正文、历史和原操作。",
+      "action": "hetu.import_authorizations.revoke",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_list_management_actions",
+      "action": "hetu.agent_operations.catalog",
+      "title": "发现可准备的作品操作",
+      "description": "发现各领域固定方案的实际输入 Schema、会话决定与恢复入口。Discover actual fixed-operation schemas and conversation decisions.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_record_management_decision",
+      "action": "hetu.agent_operations.record_decision",
+      "title": "记录会话中的方案决定",
+      "description": "仅依据作者当前会话真实指令，记录确切方案、摘要和状态修订的决定。登记不执行，不授予作者身份或其他方案权限。Record a real user decision for this exact proposal; no execution or author impersonation.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_local_settings_record_decision",
+      "action": "hetu.local_settings.record_decision",
+      "title": "记录本机方案的会话决定",
+      "description": "依据作者当前会话真实指令记录固定偏好或套件方案决定，不执行、不读密钥。Record a real conversation decision for exact local settings; no execution or secret access.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_preview_adoption",
+      "action": "hetu.drafts.preview_adoption",
+      "title": "预览确切参考稿采纳",
+      "description": "在精确管理授权内读取固定结果。决定经固定方案登记，读取不执行采纳、选用或定稿。Read fixed results within exact management scope; no implicit decision.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_preview_finalization",
+      "action": "hetu.documents.preview_finalization",
+      "title": "预览确切修订定稿资格",
+      "description": "在精确管理授权内读取固定结果。决定经固定方案登记，读取不执行采纳、选用或定稿。Read fixed results within exact management scope; no implicit decision.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_read_document_lifecycle",
+      "action": "hetu.documents.lifecycle",
+      "title": "读取文稿采纳与定稿历史",
+      "description": "在精确管理授权内读取固定结果。决定经固定方案登记，读取不执行采纳、选用或定稿。Read fixed results within exact management scope; no implicit decision.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_read_cover",
+      "action": "hetu.covers.get",
+      "title": "读取当前封面及固定历史",
+      "description": "在精确管理授权内读取固定结果。决定经固定方案登记，读取不执行采纳、选用或定稿。Read fixed results within exact management scope; no implicit decision.",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_record_version_decision",
+      "action": "hetu.git.record_snapshot_decision",
+      "title": "登记文稿版本决定 / Record version decision",
+      "description": "如实登记当前会话对确切文稿快照的决定；不执行提交，仍为Agent身份。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_plugin_access_authorize",
+      "action": "hetu.plugin_access.authorize",
+      "title": "授权插件",
+      "description": "授权插件；使用精确范围与实际Schema，保留原键，会话决定须来自真实用户指令。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_plugin_access_inspect",
+      "action": "hetu.plugin_access.inspect",
+      "title": "读取插件授权",
+      "description": "读取插件授权；使用精确范围与实际Schema，保留原键，会话决定须来自真实用户指令。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_plugin_access_revoke",
+      "action": "hetu.plugin_access.revoke",
+      "title": "撤销插件授权",
+      "description": "撤销插件授权；使用精确范围与实际Schema，保留原键，会话决定须来自真实用户指令。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_model_settings_inspect",
+      "action": "hetu.model_settings.inspect",
+      "title": "读取模型设置",
+      "description": "读取模型设置；使用精确范围与实际Schema，保留原键，会话决定须来自真实用户指令。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_model_settings_update",
+      "action": "hetu.model_settings.update",
+      "title": "更新模型设置",
+      "description": "更新模型设置；使用精确范围与实际Schema，保留原键，会话决定须来自真实用户指令。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_model_settings_get_operation",
+      "action": "hetu.model_settings.get_operation",
+      "title": "回读模型设置操作",
+      "description": "回读模型设置操作；使用精确范围与实际Schema，保留原键，会话决定须来自真实用户指令。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_plugins_inspect",
+      "action": "hetu.plugins.inspect",
+      "title": "插件管理 inspect",
+      "description": "共享宿主的插件安装管理；先检查固定包摘要与当前状态，依据真实用户选择执行，原键恢复。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_plugins_inspect_package",
+      "action": "hetu.plugins.inspect_package",
+      "title": "插件管理 inspect_package",
+      "description": "共享宿主的插件安装管理；先检查固定包摘要与当前状态，依据真实用户选择执行，原键恢复。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_plugins_apply",
+      "action": "hetu.plugins.apply",
+      "title": "插件管理 apply",
+      "description": "共享宿主的插件安装管理；先检查固定包摘要与当前状态，依据真实用户选择执行，原键恢复。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_plugins_get_operation",
+      "action": "hetu.plugins.get_operation",
+      "title": "插件管理 get_operation",
+      "description": "共享宿主的插件安装管理；先检查固定包摘要与当前状态，依据真实用户选择执行，原键恢复。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_get_capability_map",
+      "action": "hetu.capabilities.map",
+      "title": "查询功能地图 / Read capability map",
+      "description": "无需作品，按领域、动作或Skill分页定位CLI、MCP、Skill、决定、恢复和验证证据。地图用于导航，执行先发现实际获权能力。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_plugin_access_record_migration_decision",
+      "action": "hetu.plugin_access.record_migration_decision",
+      "title": "登记插件迁移决定",
+      "description": "依据真实用户选择登记当前作品的固定插件迁移方案；不执行迁移，保留原键和包摘要。",
       "profiles": [
         "stable"
       ]

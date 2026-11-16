@@ -280,6 +280,11 @@ impl Kernel {
                 if input.get("state").is_some_and(|s| *s != draft["state"]) {
                     continue;
                 }
+                if let Some(work) = self.granted_work()? {
+                    if self.draft_work_owner(&draft)?.as_ref() != Some(&work) {
+                        continue;
+                    }
+                }
                 records.push(draft);
             }
         }

@@ -65,7 +65,10 @@ fn fixed_migration_requires_author_decision_and_survives_headless_retry() {
     );
     let id = before["object"]["object_id"].clone();
     ok(call(&session, "index.rebuild", json!({"work_ref":work})));
-    assert_eq!(ok(call(&session,"index.status",json!({"work_ref":work})))["state"],"ready");
+    assert_eq!(
+        ok(call(&session, "index.status", json!({"work_ref":work})))["state"],
+        "ready"
+    );
     let get = json!({"work_ref":work,"object_id":id});
     assert_eq!(ok(call(&session, "objects.get", get.clone())), before);
     let normal = json!({"work_ref":work,"object_id":id,"kind":"relationships","title":"雾港人物🌿","schema_version":"2","content":{"characters":["江岚","叶渡"]},"expected_revision":1,"expected_sha256":before["sha256"],"operation_key":"implicit-migration"});
@@ -87,7 +90,10 @@ fn fixed_migration_requires_author_decision_and_survives_headless_retry() {
         "forbidden"
     );
     let plan = ok(prepared.clone());
-    assert_eq!(prepared["operation"]["recover_action"], "hetu.extensions.operations.get");
+    assert_eq!(
+        prepared["operation"]["recover_action"],
+        "hetu.extensions.operations.get"
+    );
     assert_eq!(plan["plan"]["before"], before);
     let listed = ok(call(
         &session,
@@ -107,7 +113,11 @@ fn fixed_migration_requires_author_decision_and_survives_headless_retry() {
         ))["plan"],
         plan["plan"]
     );
-    let query = ok(call(&session, "migrations.get", json!({"work_ref":work,"migration_id":plan["plan"]["migration_id"]})));
+    let query = ok(call(
+        &session,
+        "migrations.get",
+        json!({"work_ref":work,"migration_id":plan["plan"]["migration_id"]}),
+    ));
     assert!(query["result"]["data"].get("plan").is_none());
     assert_eq!(ok(call(&session, "objects.get", get.clone())), before);
     assert_eq!(call(&open(), "migrations.prepare", input.clone()), prepared);
@@ -180,9 +190,16 @@ fn fixed_migration_requires_author_decision_and_survives_headless_retry() {
     let after = ok(executed.clone());
     assert_eq!(after["object"]["revision"], 2);
     assert_eq!(after["object"]["schema_version"], "2");
-    assert_eq!(ok(call(&session,"index.status",json!({"work_ref":work})))["state"],"stale");
-    let search = ok(call(&session,"objects.search",json!({"work_ref":work,"query":"雾港人物"})));
-    assert_eq!(search["objects"][0]["schema_version"],"2");
+    assert_eq!(
+        ok(call(&session, "index.status", json!({"work_ref":work})))["state"],
+        "stale"
+    );
+    let search = ok(call(
+        &session,
+        "objects.search",
+        json!({"work_ref":work,"query":"雾港人物"}),
+    ));
+    assert_eq!(search["objects"][0]["schema_version"], "2");
     assert_eq!(
         after["object"]["source_refs"],
         before["object"]["source_refs"]

@@ -131,7 +131,7 @@ export function TaskPanel({
         : "light";
     const bridge = new AppBridge(
       null,
-      { name: "Hetu Luoshu author review", version: "0.8.0" },
+      { name: "Hetu Luoshu author review", version: "0.9.0" },
       { serverTools: {}, serverResources: {} },
       {
         hostContext: {

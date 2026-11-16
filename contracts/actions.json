@@ -3235,6 +3235,24 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 128
+          },
+          "import_authorization_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "authorization_id": {
+                "type": "string",
+                "pattern": "^import_authorization_[0-9a-f-]{36}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "authorization_id",
+              "sha256"
+            ]
           }
         },
         "required": [
@@ -4579,6 +4597,957 @@
       "effect": "submit",
       "author_only": true,
       "input_schema_ref": "schemas/work.schema.json#/$defs/canon_initialize_input"
+    },
+    {
+      "name": "hetu.import_authorizations.register",
+      "purpose": "仅依据作者当前会话的明确指令登记固定整书导入范围",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "workspace_id": {
+                "type": "string",
+                "pattern": "^workspace_[0-9a-f-]{36}$"
+              },
+              "kind": {
+                "const": "novel"
+              },
+              "object_id": {
+                "type": "string",
+                "pattern": "^novel_[0-9a-f-]{36}$"
+              }
+            },
+            "required": [
+              "workspace_id",
+              "kind",
+              "object_id"
+            ]
+          },
+          "expected": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "revision",
+              "sha256"
+            ]
+          },
+          "plan": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "source_name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 255
+              },
+              "source_sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "reading_sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "reading_characters": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 67108864
+              },
+              "language_tag": {
+                "enum": [
+                  "zh-CN",
+                  "en"
+                ]
+              },
+              "volumes": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 1000,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "volume_id": {
+                      "type": "string",
+                      "pattern": "^volume_[0-9a-f-]{36}$"
+                    },
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    }
+                  },
+                  "required": [
+                    "volume_id",
+                    "title"
+                  ]
+                }
+              },
+              "units": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 10000,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "index": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "start": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "end": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    },
+                    "volume_id": {
+                      "type": "string",
+                      "pattern": "^volume_[0-9a-f-]{36}$"
+                    },
+                    "content_sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    }
+                  },
+                  "required": [
+                    "index",
+                    "start",
+                    "end",
+                    "title",
+                    "volume_id",
+                    "content_sha256"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "source_name",
+              "source_sha256",
+              "reading_sha256",
+              "reading_characters",
+              "language_tag",
+              "volumes",
+              "units"
+            ]
+          },
+          "authorization_note": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "work_ref",
+          "expected",
+          "plan",
+          "authorization_note",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.import_authorizations.get",
+      "purpose": "回读确切整书导入授权及执行游标",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "import_authorization_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "authorization_id": {
+                "type": "string",
+                "pattern": "^import_authorization_[0-9a-f-]{36}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "authorization_id",
+              "sha256"
+            ]
+          }
+        },
+        "required": [
+          "import_authorization_ref"
+        ]
+      }
+    },
+    {
+      "name": "hetu.import_authorizations.revoke",
+      "purpose": "撤销当前客户端的确切导入授权，保留已导入正文",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "import_authorization_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "authorization_id": {
+                "type": "string",
+                "pattern": "^import_authorization_[0-9a-f-]{36}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "authorization_id",
+              "sha256"
+            ]
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "import_authorization_ref",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.agent_operations.catalog",
+      "purpose": "发现固定方案支持的领域动作、输入Schema与会话决定路径",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "hetu.agent_operations.record_decision",
+      "purpose": "记录作者在当前会话对确切固定方案的决定，保留Agent执行身份",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "proposal_id": {
+            "type": "string",
+            "pattern": "^proposal_[0-9a-f-]{36}$"
+          },
+          "proposal_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "expected_state_revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "decision": {
+            "enum": [
+              "approve",
+              "reject"
+            ]
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "authorization_note": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8000
+          }
+        },
+        "required": [
+          "proposal_id",
+          "proposal_sha256",
+          "expected_state_revision",
+          "decision",
+          "operation_key",
+          "authorization_note"
+        ]
+      }
+    },
+    {
+      "name": "hetu.local_settings.record_decision",
+      "purpose": "记录当前会话对固定本机偏好或套件方案的确切决定",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "operation_id": {
+            "type": "string",
+            "pattern": "^localop_[0-9a-f-]{36}$"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "decision": {
+            "enum": [
+              "approve",
+              "reject"
+            ]
+          },
+          "authorization_note": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8000
+          }
+        },
+        "required": [
+          "operation_id",
+          "sha256",
+          "operation_key",
+          "revision",
+          "decision",
+          "authorization_note"
+        ]
+      }
+    },
+    {
+      "name": "hetu.git.record_snapshot_decision",
+      "purpose": "记录作者在当前会话对固定文稿版本及提交身份的决定",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "snapshot_id": {
+            "type": "string",
+            "pattern": "^gitsnapshot_[0-9a-f-]{36}$"
+          },
+          "snapshot_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "authorization_note": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8000
+          }
+        },
+        "required": [
+          "snapshot_id",
+          "snapshot_sha256",
+          "operation_key",
+          "work_ref",
+          "authorization_note"
+        ]
+      }
+    },
+    {
+      "name": "hetu.plugin_access.authorize",
+      "purpose": "按当前会话的真实选择授权确切插件包及作品数据",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "plugin_id": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "package_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "permissions": {
+            "type": "array",
+            "maxItems": 2,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "objects.read",
+                "objects.write"
+              ]
+            }
+          },
+          "types": {
+            "type": "array",
+            "maxItems": 16,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 120
+                },
+                "schema_version": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                },
+                "schema": {
+                  "type": "object"
+                }
+              },
+              "required": [
+                "kind",
+                "schema_version",
+                "schema"
+              ]
+            }
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "authorization_note": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8000
+          }
+        },
+        "required": [
+          "work_ref",
+          "plugin_id",
+          "package_sha256",
+          "permissions",
+          "types",
+          "operation_key",
+          "authorization_note"
+        ]
+      }
+    },
+    {
+      "name": "hetu.plugin_access.inspect",
+      "purpose": "读取当前作品的确切插件授权",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "grant_id": {
+            "type": "string"
+          },
+          "package_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "work_ref",
+          "grant_id",
+          "package_sha256"
+        ]
+      }
+    },
+    {
+      "name": "hetu.plugin_access.revoke",
+      "purpose": "撤销当前作品的确切插件授权",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "grant_id": {
+            "type": "string"
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "authorization_note": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8000
+          }
+        },
+        "required": [
+          "work_ref",
+          "grant_id",
+          "operation_key",
+          "authorization_note"
+        ]
+      }
+    },
+    {
+      "name": "hetu.model_settings.inspect",
+      "purpose": "读取本机模型设置摘要与非敏感状态",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {},
+        "required": []
+      },
+      "scopes": [
+        "collaboration"
+      ]
+    },
+    {
+      "name": "hetu.model_settings.get_operation",
+      "purpose": "按原键回读模型设置操作",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "operation_key"
+        ]
+      },
+      "scopes": [
+        "collaboration"
+      ]
+    },
+    {
+      "name": "hetu.model_settings.update",
+      "purpose": "依据真实会话选择修改模型设置，凭据不回显",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "method": {
+            "enum": [
+              "custom_save",
+              "channel_select",
+              "select",
+              "disconnect"
+            ]
+          },
+          "expected_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "settings": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "base_url": {
+                    "type": "string",
+                    "maxLength": 2048
+                  },
+                  "models": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "text": {
+                        "type": "array",
+                        "maxItems": 32,
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 64
+                        }
+                      },
+                      "image": {
+                        "type": "array",
+                        "maxItems": 32,
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 64
+                        }
+                      }
+                    },
+                    "required": [
+                      "text",
+                      "image"
+                    ]
+                  },
+                  "channel_id": {
+                    "type": "string"
+                  },
+                  "api_key": {
+                    "type": "string",
+                    "maxLength": 8192
+                  }
+                },
+                "required": [
+                  "name",
+                  "base_url",
+                  "models"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "text",
+                      "image"
+                    ]
+                  },
+                  "channel_id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "channel_id"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "text",
+                      "image"
+                    ]
+                  },
+                  "model_id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "model_id"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {},
+                "required": []
+              }
+            ]
+          },
+          "authorization_note": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8000
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "method",
+          "expected_sha256",
+          "settings",
+          "authorization_note",
+          "operation_key"
+        ]
+      },
+      "scopes": [
+        "collaboration"
+      ]
+    },
+    {
+      "name": "hetu.plugins.inspect",
+      "purpose": "读取插件安装与依赖状态",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "hetu.plugins.inspect_package",
+      "purpose": "检查预构建插件包、贡献及代码风险",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "package_directory": {
+            "type": "string",
+            "maxLength": 4096
+          }
+        },
+        "required": [
+          "package_directory"
+        ]
+      }
+    },
+    {
+      "name": "hetu.plugins.apply",
+      "purpose": "执行确切插件安装、启用、停用或卸载选择",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "enum": [
+              "install",
+              "enable",
+              "disable",
+              "uninstall"
+            ]
+          },
+          "package_directory": {
+            "type": "string",
+            "maxLength": 4096
+          },
+          "plugin_id": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "package_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "expected_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "authorization_note": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8000
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "action",
+          "package_sha256",
+          "expected_sha256",
+          "authorization_note",
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.plugins.get_operation",
+      "purpose": "按原键回读插件安装操作",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "operation_key"
+        ]
+      }
+    },
+    {
+      "name": "hetu.capabilities.map",
+      "purpose": "按目标、领域或Skill查询人机能力地图及Review证据",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "group": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "skill": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "include_schema": {
+            "type": "boolean"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "hetu.plugin_access.record_migration_decision",
+      "purpose": "在当前会话登记固定插件数据迁移方案的真实作者决定",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "grant_id": {
+            "type": "string"
+          },
+          "package_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "migration_id": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "plan_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "authorization_note": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8000
+          }
+        },
+        "required": [
+          "work_ref",
+          "grant_id",
+          "package_sha256",
+          "migration_id",
+          "plan_sha256",
+          "operation_key",
+          "authorization_note"
+        ]
+      }
     }
   ]
 }

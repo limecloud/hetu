@@ -186,6 +186,11 @@ impl Kernel {
                     .strip_suffix(".json")
                     .ok_or_else(|| Error::new("hetu.integrity_failure", "剧情索引名称无效。"))?;
                 let record = self.plot_descriptor(revision)?;
+                if let Some(work) = self.granted_work()? {
+                    if !self.sources_in_work(&record["source_revisions"], &work)? {
+                        continue;
+                    }
+                }
                 if filter.is_none_or(|doc| {
                     record["source_revisions"]
                         .as_array()

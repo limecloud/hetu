@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import manifest from '../../../assets/manifest.json' with { type: 'json' };
 import agentCatalog from '../../../integrations/catalog.json' with { type: 'json' };
-import nativeStrings from '../../../assets/localization/native.json' with { type: 'json' };
+import nativeStrings from '../../../assets/localization/shared.json' with { type: 'json' };
 import guideCaptures from '../assets/guides/captures.json' with { type: 'json' };
 
 const militaryVersion = JSON.parse(readFileSync(new URL('../../../integrations/codex/hetu-military/plugin.json', import.meta.url), 'utf8')).version;

@@ -1,6 +1,6 @@
 # Git 版本与协作
 
-Rust 内核通过固定版本的 `git2`／libgit2 管理独立的 IP 内容工作区。本地快照动作由版本工作面贡献、CLI/MCP与原生对照共用；Electron通过App Server接入，不在JavaScript重写Git事务。具体可调用动作以内核 `contracts/actions.json` 为准。
+Rust 内核通过固定版本的 `git2`／libgit2 管理独立的 IP 内容工作区。本地快照动作由版本工作面贡献与CLI/MCP共用；Electron通过App Server接入，不在JavaScript重写Git事务。具体可调用动作以内核 `contracts/actions.json` 为准。
 
 ## 1. 仓库范围
 

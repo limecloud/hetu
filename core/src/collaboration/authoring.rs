@@ -39,6 +39,10 @@ const WORKSPACE_ACTIONS: &[&str] = &[
 ];
 // 已有作品授权只开放读取、方案和有界检查；具体变更仍须作者批准固定方案。
 const REVIEW_ACTIONS: &[&str] = &[
+    "hetu.plugin_access.authorize",
+    "hetu.plugin_access.record_migration_decision",
+    "hetu.plugin_access.inspect",
+    "hetu.plugin_access.revoke",
     "hetu.works.list",
     "hetu.works.get",
     "hetu.work_links.list",
@@ -52,6 +56,7 @@ const REVIEW_ACTIONS: &[&str] = &[
     "hetu.documents.list",
     "hetu.documents.get",
     "hetu.documents.history",
+    "hetu.drafts.list",
     "hetu.creative_tasks.list",
     "hetu.outlines.get",
     "hetu.blueprints.get",
@@ -79,6 +84,10 @@ const REVIEW_ACTIONS: &[&str] = &[
     "hetu.reviews.get",
     "hetu.reviews.validate",
     "hetu.drafts.get",
+    "hetu.drafts.preview_adoption",
+    "hetu.documents.preview_finalization",
+    "hetu.documents.lifecycle",
+    "hetu.covers.get",
     "hetu.creative_tasks.preview_prompt",
     "hetu.git.status",
     "hetu.git.diff",
@@ -88,6 +97,7 @@ const REVIEW_ACTIONS: &[&str] = &[
     "hetu.git.snapshot_diff",
     "hetu.bundles.verify",
     "hetu.git.snapshot",
+    "hetu.git.record_snapshot_decision",
     "hetu.image_tasks.preview_prompt",
     "hetu.git.references",
     "hetu.git.read_version",
@@ -104,9 +114,14 @@ const REVIEW_ACTIONS: &[&str] = &[
     "hetu.drama.get_script_mapping",
     "hetu.handoffs.get",
     "hetu.agent_operations.prepare",
+    "hetu.agent_operations.catalog",
+    "hetu.agent_operations.record_decision",
     "hetu.agent_operations.list",
     "hetu.agent_operations.get",
     "hetu.agent_operations.execute",
+    "hetu.import_authorizations.register",
+    "hetu.import_authorizations.get",
+    "hetu.import_authorizations.revoke",
 ];
 pub(crate) fn management_action(action: &str) -> bool {
     PROJECT_ACTIONS.contains(&action)
@@ -224,7 +239,30 @@ fn work_action_allowed(name: &str, reference: &Value) -> bool {
     }
     matches!(
         name,
-        "hetu.capabilities.get"
+        "hetu.drafts.list"
+            | "hetu.reviews.list"
+            | "hetu.reviews.get"
+            | "hetu.reviews.validate"
+            | "hetu.plot.extract"
+            | "hetu.plot.get"
+            | "hetu.plot.list"
+            | "hetu.validation.run"
+            | "hetu.reports.get"
+            | "hetu.reports.list"
+            | "hetu.findings.suggest"
+            | "hetu.findings.suggestions"
+            | "hetu.drama.build_skeleton"
+            | "hetu.drama.get_skeleton"
+            | "hetu.drama.list_skeletons"
+            | "hetu.drama.compare"
+            | "hetu.drama.get_comparison"
+            | "hetu.drama.list_comparisons"
+            | "hetu.drama.get_script_mapping"
+            | "hetu.plugin_access.record_migration_decision"
+            | "hetu.plugin_access.authorize"
+            | "hetu.plugin_access.inspect"
+            | "hetu.plugin_access.revoke"
+            | "hetu.capabilities.get"
             | "hetu.operations.get"
             | "hetu.workspaces.get"
             | "hetu.works.list"
@@ -233,12 +271,21 @@ fn work_action_allowed(name: &str, reference: &Value) -> bool {
             | "hetu.work_links.get"
             | "hetu.handoffs.get"
             | "hetu.novels.get"
+            | "hetu.import_authorizations.register"
+            | "hetu.import_authorizations.get"
+            | "hetu.import_authorizations.revoke"
             | "hetu.drama.projects.get"
             | "hetu.drama.projects.list"
             | "hetu.drama.episodes.get"
             | "hetu.documents.list"
             | "hetu.documents.get"
             | "hetu.documents.history"
+            | "hetu.documents.preview_finalization"
+            | "hetu.documents.lifecycle"
+            | "hetu.drafts.get"
+            | "hetu.drafts.preview_adoption"
+            | "hetu.covers.get"
+            | "hetu.outlines.get"
             | "hetu.creative_tasks.list"
             | "hetu.resources.list"
             | "hetu.resources.get"
@@ -264,9 +311,12 @@ fn work_action_allowed(name: &str, reference: &Value) -> bool {
             | "hetu.git.get_snapshot"
             | "hetu.git.snapshot_diff"
             | "hetu.git.snapshot"
+            | "hetu.git.record_snapshot_decision"
             | "hetu.creative_tasks.preview_prompt"
             | "hetu.image_tasks.preview_prompt"
             | "hetu.agent_operations.prepare"
+            | "hetu.agent_operations.catalog"
+            | "hetu.agent_operations.record_decision"
             | "hetu.agent_operations.list"
             | "hetu.agent_operations.get"
             | "hetu.agent_operations.execute"
@@ -302,12 +352,11 @@ pub(crate) fn check_management(binding: &Value, root: &Path, action: Option<&str
             "hetu.unsafe_path",
             "管理目录不能是链接或文件。",
         )?;
-        #[cfg(unix)]
         if grant["root_identity"].is_object() {
-            use std::os::unix::fs::MetadataExt;
+            let identity = crate::infrastructure::platform::identity(root)?;
             ensure(
-                grant["root_identity"]["device"] == metadata.dev()
-                    && grant["root_identity"]["inode"] == metadata.ino(),
+                grant["root_identity"]["device"] == identity.0
+                    && grant["root_identity"]["inode"] == identity.1,
                 "forbidden",
                 "作品目录身份已变化，请重新授权。",
             )?;
@@ -601,6 +650,7 @@ impl CollaborationHub {
                                         | "hetu.git.get_snapshot"
                                         | "hetu.git.snapshot_diff"
                                         | "hetu.git.snapshot"
+                                        | "hetu.git.record_snapshot_decision"
                                 )
                             )
                         {
@@ -806,14 +856,8 @@ impl Kernel {
         } else {
             Value::Null
         };
-        #[cfg(unix)]
-        let identity = {
-            use std::os::unix::fs::MetadataExt;
-            let meta = std::fs::metadata(self.root_path())?;
-            json!({"device":meta.dev(),"inode":meta.ino()})
-        };
-        #[cfg(not(unix))]
-        let identity = Value::Null;
+        let identity = crate::infrastructure::platform::identity(self.root_path())?;
+        let identity = json!({"device":identity.0,"inode":identity.1});
         let revision = if previous["revoked"] == false
             && previous["expires_at"] == expires
             && previous["target_path"] == json!(self.root_path())

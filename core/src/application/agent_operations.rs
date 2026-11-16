@@ -1,4 +1,4 @@
-//! Agent 准备固定管理变更，作者审阅后批准；执行不提升调用方身份。
+//! Agent 准备固定领域变更；作者在会话或桌面决定，执行不提升调用方身份。
 use super::*;
 use base64::{Engine, engine::general_purpose::STANDARD};
 
@@ -16,6 +16,20 @@ pub(super) const PROPOSABLE: &[&str] = &[
     "hetu.outlines.save",
     "hetu.blueprints.save",
     "hetu.blueprints.initialize",
+    "hetu.blueprints.lock",
+    "hetu.blueprints.unlock",
+    "hetu.documents.save",
+    "hetu.documents.validate",
+    "hetu.documents.finalize",
+    "hetu.documents.withdraw_finalization",
+    "hetu.drafts.submit_current",
+    "hetu.drafts.adopt",
+    "hetu.reviews.begin",
+    "hetu.reviews.decide",
+    "hetu.resources.adopt",
+    "hetu.resources.archive",
+    "hetu.findings.disposition",
+    "hetu.covers.select",
     "hetu.drama.projects.create",
     "hetu.drama.projects.update",
     "hetu.drama.projects.attach",
@@ -177,6 +191,14 @@ impl Kernel {
         let state = self.store.json(&path.replace(".json", ".state.json"))?;
         contract["$ref"] = json!("#/$defs/decision_record");
         schema(&state, &contract)?;
+        if state["conversation_decision"].is_object() && !self.author {
+            ensure(
+                self.management_grant.as_ref()
+                    == Some(&state["conversation_decision"]["management_binding"]),
+                "forbidden",
+                "会话决定只允许原客户端与原管理授权接续，撤权重授不恢复旧决定。",
+            )?;
+        }
         ensure(
             state["proposal_sha256"] == sha,
             "hetu.integrity_failure",
@@ -211,7 +233,9 @@ impl Kernel {
             "expires_at":fixed["expires_at"],"input":fixed["input"],"preview":fixed["preview"],
             "changes":fixed["review_changes"],"state":state["state"],"state_revision":state["revision"],
             "is_expired":time::OffsetDateTime::now_utc().unix_timestamp() >= integer(fixed, "expires_at")? as i64,
-            "is_current":current,"result":state.get("result").cloned().unwrap_or(Value::Null)}),
+            "is_current":current,"result":state.get("result").cloned().unwrap_or(Value::Null),
+            "import_authorization_ref":state.get("import_authorization_ref").cloned().unwrap_or(Value::Null),
+            "conversation_decision":state.get("conversation_decision").cloned().unwrap_or(Value::Null)}),
         )
     }
     pub(super) fn dispatch_agent_operations(
@@ -231,16 +255,35 @@ impl Kernel {
             "作品管理方案不能借用创作任务或有限新建授权。",
         )?;
         match action {
+            "hetu.agent_operations.catalog" => {
+                let actions = catalog()["actions"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .filter(|a| PROPOSABLE.contains(&a["name"].as_str().unwrap_or("")))
+                    .cloned()
+                    .collect::<Vec<_>>();
+                Ok(
+                    json!({"actions":actions,"prepare":"hetu.agent_operations.prepare","record_decision":"hetu.agent_operations.record_decision","execute":"hetu.agent_operations.execute","recover":"hetu.operations.get","scope":"exact_management_ref","confirmation_channel":"agent_conversation","author_identity":false}),
+                )
+            }
             "hetu.agent_operations.prepare" => {
                 let target = text(input, "action")?;
                 ensure(
                     PROPOSABLE.contains(&target),
                     "hetu.capability_unavailable",
-                    "此管理操作未开放方案准备；不能代替作者采纳、定稿、解锁或付费批准。",
+                    "此动作未开放固定方案，请发现对应领域的机器合同。",
                 )?;
                 let arguments = &input["input"];
                 validate_action_input(target, arguments)?;
                 self.check_work_access(target, arguments)?;
+                if target == "hetu.covers.select" {
+                    ensure(
+                        arguments["source"]["kind"] == "asset",
+                        "forbidden",
+                        "机器封面选用须先将图片导入为本作品固定素材，不允许文件路径或未受管图片。",
+                    )?;
+                }
                 if target == "hetu.documents.import_batch" {
                     for item in arguments["items"].as_array().unwrap() {
                         let source = &item["source"];
@@ -334,6 +377,9 @@ impl Kernel {
                 let mut fixed = json!({"action":target,"input":arguments,"summary":input["summary"],"created_at":now(),
                     "expires_at":time::OffsetDateTime::now_utc().unix_timestamp()+86400,
                     "baseline":self.proposal_baseline(target, arguments)?,"before_files":before,"writes":writes,"binary_writes":binary,"preview":preview,"review_changes":review});
+                if let Some(binding) = &self.management_grant {
+                    fixed["management_binding"] = binding.clone();
+                }
                 if deferred {
                     fixed["effect"] = json!("deferred");
                 }
@@ -390,11 +436,29 @@ impl Kernel {
                 let (proposal, state) = self.read_proposal(input)?;
                 self.proposal_view(&proposal, &state)
             }
-            "hetu.agent_operations.decide" | "hetu.agent_operations.execute" => {
+            "hetu.agent_operations.decide"
+            | "hetu.agent_operations.record_decision"
+            | "hetu.agent_operations.execute" => {
                 let (proposal, mut state) = self.read_proposal(input)?;
                 let view = self.proposal_view(&proposal, &state)?;
-                if action.ends_with(".decide") {
-                    ensure(self.author, "forbidden", "操作方案只能由作者确认或拒绝。")?;
+                if action.ends_with(".decide") || action.ends_with(".record_decision") {
+                    if action.ends_with(".record_decision") {
+                        ensure(
+                            !text(input, "authorization_note")?.trim().is_empty()
+                                && self.management_grant.as_ref().is_some_and(|binding| {
+                                    proposal["fixed"]["management_binding"] == *binding
+                                }),
+                            "forbidden",
+                            "会话决定须记录真实用户指令，并使用准备该固定方案的原客户端与授权修订。",
+                        )?;
+                        state["conversation_decision"] = json!({"confirmation_channel":"agent_conversation","authorization_note":input["authorization_note"],"management_binding":self.management_grant,"proposal_sha256":proposal["sha256"],"decision":input["decision"],"recorded_by":self.actor(),"recorded_at":now()});
+                    } else {
+                        ensure(
+                            self.author,
+                            "forbidden",
+                            "作者通道只接受可信本机决定；Agent 使用固定会话决定合同。",
+                        )?;
+                    }
                     ensure(
                         state["state"] != "executed" && state["state"] != "executing",
                         "revision_conflict",
@@ -427,6 +491,19 @@ impl Kernel {
                 } else {
                     if state["state"] == "executed" {
                         return self.proposal_view(&proposal, &state);
+                    }
+                    if input.get("import_authorization_ref").is_some() {
+                        ensure(
+                            state["state"] == "pending" || state["state"] == "approved",
+                            "forbidden",
+                            "方案已拒绝，不能沿导入授权执行。",
+                        )?;
+                        let reference =
+                            self.stage_import_authorized_execution(input, &proposal, changes)?;
+                        state["state"] = json!("approved");
+                        state["decided_by"] = json!(self.actor());
+                        state["decided_at"] = json!(now());
+                        state["import_authorization_ref"] = reference;
                     }
                     ensure(
                         state["state"] == "approved",

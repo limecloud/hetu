@@ -76,12 +76,14 @@ pub fn client_request(value: Value) -> Value {
 }
 
 pub fn default_directory() -> Result<PathBuf> {
-    let home = std::env::var_os("HOME")
-        .ok_or_else(|| Error::new("missing_context", "无法确定本机用户目录。"))?;
+    #[cfg(windows)]
+    let (variable, suffix) = ("LOCALAPPDATA", "Hetu/Collaboration");
     #[cfg(target_os = "macos")]
-    let suffix = "Library/Application Support/Hetu/Collaboration";
-    #[cfg(not(target_os = "macos"))]
-    let suffix = ".local/share/hetu/collaboration";
+    let (variable, suffix) = ("HOME", "Library/Application Support/Hetu/Collaboration");
+    #[cfg(all(unix, not(target_os = "macos")))]
+    let (variable, suffix) = ("HOME", ".local/share/hetu/collaboration");
+    let home = std::env::var_os(variable)
+        .ok_or_else(|| Error::new("missing_context", "无法确定本机用户目录。"))?;
     Ok(PathBuf::from(home).join(suffix))
 }
 
@@ -233,7 +235,7 @@ impl CollaborationHub {
             return Ok(domain::success(
                 action,
                 "collaboration",
-                json!({"version":env!("CARGO_PKG_VERSION"),"client_adapter":self.client,"actions":catalog,"task_selection":"explicit_reference"}),
+                json!({"version":env!("CARGO_PKG_VERSION"),"client_adapter":self.client,"actions":catalog,"task_selection":"explicit_reference","capability_map_action":"hetu.capabilities.map"}),
             ));
         }
         if action == "hetu.collaboration.created_works" {
@@ -242,6 +244,28 @@ impl CollaborationHub {
                 "collaboration",
                 self.created_works(&request["input"])?,
             ));
+        }
+        if action == "hetu.capabilities.map" {
+            return Ok(domain::success(
+                action,
+                "local",
+                crate::capability_map::read(&request["input"])?,
+            ));
+        }
+        if action.starts_with("hetu.plugins.") {
+            return Ok(domain::success(
+                action,
+                "local",
+                crate::plugin_settings::request(&self.client, action, &request["input"])?,
+            ));
+        }
+        if action.starts_with("hetu.model_settings.") {
+            let data = crate::model_service::ModelService::open_default()?.machine_request(
+                &self.client,
+                action,
+                &request["input"],
+            )?;
+            return Ok(domain::success(action, "local", data));
         }
         if action.starts_with("hetu.local_settings.") {
             return self.execute_local(request);

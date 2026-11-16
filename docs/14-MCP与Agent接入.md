@@ -159,3 +159,17 @@ MCP与CLI对等提供[30第26节](30-应用API详细设计.md#26-独立创作对
 Apps可对当前获权固定媒体展示局部播放、区间／画面位置意见及版本比较；大视图按需用同任务本地页面，缺能力回原生端或复制精确继续引用。`updateModelContext`不自动启动回复，消息受理不等于返工完成；宿主能力必须实测，不由协议或SDK推定当前Codex Apps可用。技术来源见[research/13](research/13-短剧预演视频与人工审阅研究.md)。
 
 原视频、声音及工程不以大段base64塞进工具结果；资源读取使用受管预览、流量预算和固定摘要，网页不能读取任意路径、供应商URL或密钥。任务状态、固定媒体、作者意见和继续回执共用Core记录，不保存第二套制作事实。
+
+## 会话内整书原稿导入
+
+`hetu_register_import_authorization` 对应 `hetu.import_authorizations.register`，接收确切管理引用、小说身份、目录基线、固定原稿和阅读摘要、连续范围、逐篇标题／分卷／摘要以及实际用户指令 `authorization_note`。作者已明确要求导入时直接登记；没有明确指令时只在当前会话询问必要决定。登记不提前写正文，不创建作者身份。
+
+`hetu_execute_management_operation` 可携带 `import_authorization_ref`，由 Core 验证分卷方案或下一组原稿批次。范围内连续执行，不要求开启桌面窗口或逐批批准。`hetu_get_import_authorization` 回读固定范围和游标，`hetu_revoke_import_authorization` 停止后续执行并保留历史。管理撤权、重授、过期、外部目录修改、错误顺序或内容摘要不符均拒绝；未知结果沿同一授权、方案与操作键恢复。
+
+该合同沿用模型任务的 `agent_conversation` 登记方式：外部 Agent 对真实用户指令的提取负责，Core 不声称鉴别自然语言说话者；Core 负责确定性范围、摘要、版本与事务校验。伪造 `approved` 或作者模式无效。授权只覆盖本次原稿导入，不覆盖其他正文修改、AI 候选采纳、定稿、模型费用或网络动作。
+
+## 全软件能力地图与会话操作
+
+[40机器能力地图](40-机器能力地图与Review清单.md)面向产品Review，`contracts/capability-map.json`面向AI导航；两者从动作合同、MCP映射、权限路由和Skill源生成。源码连线、安装发现及专项实测分别取证。MCP执行时以当前tools/list与实际返回的Schema为准。
+
+`hetu_list_management_actions`发现领域动作；prepare固定结果，`hetu_record_management_decision`如实记录当前会话对确切摘要及状态版本的决定，再执行并回读。设置、插件、模型渠道和文稿版本各有独立工具，名称及范围从地图与实际发现取得。既有任务不因管理能力增加而获得正文采纳或定稿权；必要作者决定在当前对话完成，桌面审阅为可选入口。

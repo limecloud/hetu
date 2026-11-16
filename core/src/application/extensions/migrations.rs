@@ -73,7 +73,7 @@ impl Kernel {
         closed(
             params,
             &["grant_id", "package_sha256", "migration_id", "plan_sha256"],
-            &[],
+            &["conversation_decision", "operation_key"],
         )?;
         sha(text(params, "plan_sha256")?)?;
         let access = access_store(directory)?;
@@ -97,6 +97,22 @@ impl Kernel {
             "forbidden",
             "迁移授权已撤销或不属于当前包与作品。",
         )?;
+        if params["conversation_decision"].is_object() {
+            let path = decision_path(&grant, text(params, "migration_id")?)?;
+            if access.exists(&path)? {
+                let original = access.json(&path)?;
+                ensure(
+                    original["plan_sha256"] == params["plan_sha256"]
+                        && original["conversation_decision"] == params["conversation_decision"]
+                        && original["operation_key"] == params["operation_key"],
+                    "idempotency_conflict",
+                    "迁移决定已固定其他输入；不能更换原方案。",
+                )?;
+                return Ok(
+                    json!({"approved":true,"migration_id":params["migration_id"],"plan_sha256":params["plan_sha256"],"executed":false}),
+                );
+            }
+        }
         let _guard = self.store.read_lock()?;
         ensure(
             digest(self.store.read(self.config_path())?) == self.config_sha,
@@ -135,7 +151,7 @@ impl Kernel {
             "revision_conflict",
             "迁移对象已变化，请重新准备并审阅。",
         )?;
-        let decision = json!({"grant_id":grant["grant_id"],"package_sha256":grant["package_sha256"],"plan_sha256":params["plan_sha256"],"approved_at":now()});
+        let decision = json!({"grant_id":grant["grant_id"],"package_sha256":grant["package_sha256"],"plan_sha256":params["plan_sha256"],"approved_at":now(),"conversation_decision":params["conversation_decision"],"operation_key":params["operation_key"]});
         access.transaction(&Changes::from([(
             decision_path(&grant, text(params, "migration_id")?)?,
             bytes(&decision)?,
@@ -324,7 +340,8 @@ impl Kernel {
             )?;
             return Ok(operation["result"].clone());
         }
-        let (before, before_sha) = self.extension_object(work, owner, text(input, "object_id")?, None)?;
+        let (before, before_sha) =
+            self.extension_object(work, owner, text(input, "object_id")?, None)?;
         ensure(
             before["revision"] == input["expected_revision"]
                 && before_sha == input["expected_sha256"],

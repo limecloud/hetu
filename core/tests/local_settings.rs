@@ -188,29 +188,90 @@ fn work_associations_are_exact_replayable_and_do_not_change_defaults_or_siblings
     let folder = tempfile::tempdir().unwrap();
     let service = LocalSettings::open(folder.path()).unwrap();
     let work = json!({"workspace_id":"workspace_11111111-1111-4111-8111-111111111111","kind":"novel","object_id":"novel_first"});
-    let sibling = json!({"workspace_id":work["workspace_id"],"kind":"novel","object_id":"novel_second"});
+    let sibling =
+        json!({"workspace_id":work["workspace_id"],"kind":"novel","object_id":"novel_second"});
     let original = data(call(&service, "codex", "get", json!({})));
     let selection = json!({"method":"associate","input":{"expected_revision":1,"work_ref":work,"agent_client":"codex","suite_id":"historical-brainstorm","operation_key":"choose-work"}});
     let changed = service.host(selection.clone()).unwrap();
     assert_eq!(changed["revision"], 2);
     assert_eq!(service.host(selection).unwrap(), changed);
-    assert_eq!(data(call(&service,"codex","get",json!({"work_ref":work})))["association"]["suite"],"historical-brainstorm");
-    assert!(data(call(&service,"codex","get",json!({"work_ref":sibling})))["association"]["suite"].is_null());
-    assert!(data(call(&service,"codex","get",json!({"workspace_id":work["workspace_id"]})))["association"]["suite"].is_null());
-    assert_eq!(data(call(&service,"codex","get",json!({})))["preferences"],original["preferences"]);
+    assert_eq!(
+        data(call(&service, "codex", "get", json!({"work_ref":work})))["association"]["suite"],
+        "historical-brainstorm"
+    );
+    assert!(
+        data(call(&service, "codex", "get", json!({"work_ref":sibling})))["association"]["suite"]
+            .is_null()
+    );
+    assert!(
+        data(call(
+            &service,
+            "codex",
+            "get",
+            json!({"workspace_id":work["workspace_id"]})
+        ))["association"]["suite"]
+            .is_null()
+    );
+    assert_eq!(
+        data(call(&service, "codex", "get", json!({})))["preferences"],
+        original["preferences"]
+    );
     assert!(service.host(json!({"method":"associate","input":{"expected_revision":1,"work_ref":sibling,"agent_client":"workbuddy","suite_id":"general","operation_key":"stale"}})).is_err());
-    assert_eq!(call(&service,"codex","get",json!({"work_ref":work,"workspace_id":work["workspace_id"]}))["status"],"blocked");
-    assert_eq!(call(&service,"codex","inspect_suite",json!({"agent_client":"none","suite_id":"general","directory":"/arbitrary"}))["status"],"blocked");
-    let inspection = data(call(&service,"codex","inspect_suite",json!({"agent_client":"none","suite_id":"general"})));
-    assert_eq!(inspection["session"],"unverified");
-    assert_eq!(inspection["state"],"manual");
-    assert_eq!(data(call(&service,"codex","get",json!({})))["skills"].as_array().unwrap().len(),13);
-    let plan = data(call(&service,"codex","prepare",json!({"kind":"agent_suite","work_ref":sibling,"agent_client":"workbuddy","suite_id":"general","install":false,"summary":"为同根另一作品选择套件","operation_key":"sibling-plan"})));
-    service.host(decide(&service,&plan,"sibling-approve")).unwrap();
-    data(execute(&service,&plan,"sibling-execute"));
-    assert_eq!(data(call(&service,"codex","get",json!({"work_ref":sibling})))["association"]["client"],"workbuddy");
-    assert_eq!(data(call(&service,"codex","get",json!({"work_ref":work})))["association"]["client"],"codex");
-    assert_eq!(data(call(&service,"codex","get",json!({})))["preferences"],original["preferences"]);
+    assert_eq!(
+        call(
+            &service,
+            "codex",
+            "get",
+            json!({"work_ref":work,"workspace_id":work["workspace_id"]})
+        )["status"],
+        "blocked"
+    );
+    assert_eq!(
+        call(
+            &service,
+            "codex",
+            "inspect_suite",
+            json!({"agent_client":"none","suite_id":"general","directory":"/arbitrary"})
+        )["status"],
+        "blocked"
+    );
+    let inspection = data(call(
+        &service,
+        "codex",
+        "inspect_suite",
+        json!({"agent_client":"none","suite_id":"general"}),
+    ));
+    assert_eq!(inspection["session"], "unverified");
+    assert_eq!(inspection["state"], "manual");
+    assert_eq!(
+        data(call(&service, "codex", "get", json!({})))["skills"]
+            .as_array()
+            .unwrap()
+            .len(),
+        13
+    );
+    let plan = data(call(
+        &service,
+        "codex",
+        "prepare",
+        json!({"kind":"agent_suite","work_ref":sibling,"agent_client":"workbuddy","suite_id":"general","install":false,"summary":"为同根另一作品选择套件","operation_key":"sibling-plan"}),
+    ));
+    service
+        .host(decide(&service, &plan, "sibling-approve"))
+        .unwrap();
+    data(execute(&service, &plan, "sibling-execute"));
+    assert_eq!(
+        data(call(&service, "codex", "get", json!({"work_ref":sibling})))["association"]["client"],
+        "workbuddy"
+    );
+    assert_eq!(
+        data(call(&service, "codex", "get", json!({"work_ref":work})))["association"]["client"],
+        "codex"
+    );
+    assert_eq!(
+        data(call(&service, "codex", "get", json!({})))["preferences"],
+        original["preferences"]
+    );
 }
 
 #[test]
@@ -225,13 +286,24 @@ fn default_association_replays_without_overwriting_exact_work_choices() {
     assert_eq!(result["preferences"]["agent_client"], "workbuddy");
     let reopened = LocalSettings::open(folder.path()).unwrap();
     assert_eq!(reopened.host(selection.clone()).unwrap(), result);
-    assert_eq!(data(call(&reopened,"codex","get",json!({})))["association"]["suite"], "military");
-    assert_eq!(data(call(&reopened,"codex","get",json!({"work_ref":work})))["association"]["suite"], "historical-brainstorm");
-    let mut changed = selection.clone(); changed["input"]["suite_id"] = json!("general");
+    assert_eq!(
+        data(call(&reopened, "codex", "get", json!({})))["association"]["suite"],
+        "military"
+    );
+    assert_eq!(
+        data(call(&reopened, "codex", "get", json!({"work_ref":work})))["association"]["suite"],
+        "historical-brainstorm"
+    );
+    let mut changed = selection.clone();
+    changed["input"]["suite_id"] = json!("general");
     assert!(reopened.host(changed).is_err());
-    let mut stale = selection; stale["input"]["operation_key"] = json!("stale-default");
+    let mut stale = selection;
+    stale["input"]["operation_key"] = json!("stale-default");
     assert!(reopened.host(stale).is_err());
-    assert_eq!(call(&reopened,"codex","associate",json!({}))["error"]["code"], "hetu.capability_unavailable");
+    assert_eq!(
+        call(&reopened, "codex", "associate", json!({}))["error"]["code"],
+        "hetu.capability_unavailable"
+    );
     let directory = json!({"method":"package_directory","input":{"expected_revision":3,"agent_client":"workbuddy","suite_id":"military","directory":null,"operation_key":"default-auto-detect"}});
     let selected = reopened.host(directory.clone()).unwrap();
     assert_eq!(selected["revision"], 4);
@@ -400,5 +472,43 @@ fn suite_installation_recovers_registered_bytes_without_repeating_external_insta
             json!({"kind":"agent_suite","agent_client":"workbuddy","suite_id":"general","install":true,"summary":"拒绝链接资源","operation_key":"symlink-package"})
         )["status"],
         "blocked"
+    );
+}
+
+#[test]
+fn conversation_settings_decision_is_fixed_to_client_and_does_not_execute() {
+    let folder = tempfile::tempdir().unwrap();
+    let service = LocalSettings::open(folder.path()).unwrap();
+    let plan = prepare(
+        &service,
+        "conversation",
+        json!({"font_size":21,"appearance":"dark"}),
+    );
+    let input = json!({"operation_id":plan["operation_id"],"sha256":plan["sha256"],"revision":plan["revision"],"decision":"approve","authorization_note":"测试用户要求将阅读字号改为21并使用深色。","operation_key":"conversation-decision"});
+    assert_eq!(
+        call(&service, "claude-code", "record_decision", input.clone())["error"]["code"],
+        "forbidden"
+    );
+    let decision = data(call(&service, "codex", "record_decision", input.clone()));
+    assert_eq!(decision["state"], "approved");
+    assert_eq!(
+        data(call(&service, "codex", "record_decision", input.clone())),
+        decision
+    );
+    assert_eq!(
+        data(call(&service, "codex", "get", json!({})))["preferences"]["font_size"],
+        18
+    );
+    let mut changed = input.clone();
+    changed["authorization_note"] = json!("不同的用户指令");
+    assert_eq!(
+        call(&service, "codex", "record_decision", changed)["error"]["code"],
+        "idempotency_conflict"
+    );
+    let result = data(execute(&service, &plan, "conversation-execute"));
+    assert_eq!(result["result"]["font_size"], 21);
+    assert_eq!(
+        result["conversation_decision"]["confirmation_channel"],
+        "agent_conversation"
     );
 }

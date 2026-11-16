@@ -88,3 +88,9 @@ await build({
 });
 await copyFile("../../packages/plugin-sdk/src/index.ts", "dist/developer-sdk.ts");
 await copyFile("../../LICENSE", "dist/developer-LICENSE.txt");
+
+await build({
+  entryPoints: ["../../packages/plugin-host/src/manager-cli.ts"],
+  outfile: "dist/plugin-manager.mjs", bundle: true, platform: "node", target: "node24", format: "esm",
+  banner: { js: 'import { createRequire } from "node:module"; const require = createRequire(import.meta.url);' },
+});

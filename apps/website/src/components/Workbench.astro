@@ -1,12 +1,12 @@
 ---
 import type { Locale } from '../lib/site';
 import catalog from '../../../../integrations/catalog.json';
-import nativeStrings from '../../../../assets/localization/native.json';
+import sharedStrings from '../../../../assets/localization/shared.json';
 import '../styles/workbench.css';
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const plugins = import.meta.glob<{ version: string }>('../../../../integrations/codex/*/plugin.json', { eager: true, import: 'default' });
-const strings = nativeStrings as Record<string, { 'zh-CN': string; en: string }>;
+const strings = sharedStrings as Record<string, { 'zh-CN': string; en: string }>;
 const demoCatalog = {
   skills: catalog.skills,
   skillTitles: Object.fromEntries(catalog.skills.map(id => {

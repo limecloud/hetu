@@ -242,6 +242,9 @@
         },
         "effect": {
           "const": "deferred"
+        },
+        "management_binding": {
+          "type": "object"
         }
       },
       "required": [
@@ -290,6 +293,65 @@
         },
         "result": {
           "type": "object"
+        },
+        "import_authorization_ref": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "authorization_id": {
+              "type": "string",
+              "pattern": "^import_authorization_[0-9a-f-]{36}$"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "authorization_id",
+            "sha256"
+          ]
+        },
+        "conversation_decision": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "confirmation_channel": {
+              "const": "agent_conversation"
+            },
+            "authorization_note": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8000
+            },
+            "management_binding": {
+              "type": "object"
+            },
+            "proposal_sha256": {
+              "$ref": "#/$defs/digest"
+            },
+            "decision": {
+              "enum": [
+                "approve",
+                "reject"
+              ]
+            },
+            "recorded_by": {
+              "type": "string"
+            },
+            "recorded_at": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "confirmation_channel",
+            "authorization_note",
+            "management_binding",
+            "proposal_sha256",
+            "decision",
+            "recorded_by",
+            "recorded_at"
+          ]
         }
       },
       "required": [

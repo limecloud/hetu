@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pymupdf
 
-from book_journey import FIXTURE, manuscript, write_json
+from book_fixture import FIXTURE, manuscript, write_json
 
 
 def png(path, width, height, pixels):

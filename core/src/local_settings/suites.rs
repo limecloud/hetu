@@ -9,8 +9,9 @@ use std::{
 pub(super) fn catalog() -> Value {
     let catalog: Value = serde_json::from_str(include_str!("../../../integrations/catalog.json"))
         .expect("embedded suite catalog");
-    let labels: Value = serde_json::from_str(include_str!("../../../assets/localization/native.json"))
-        .expect("embedded localization");
+    let labels: Value =
+        serde_json::from_str(include_str!("../../../assets/localization/shared.json"))
+            .expect("embedded localization");
     json!({"suites":catalog["suites"].as_array().unwrap().iter().map(|s|json!({
         "suite_id":s["id"],"name":s["pluginName"],"title_key":s["titleKey"],"title":labels[s["titleKey"].as_str().unwrap()]["zh-CN"],
         "family":s["family"],"summary":s["summary"],"aliases":s["aliases"]

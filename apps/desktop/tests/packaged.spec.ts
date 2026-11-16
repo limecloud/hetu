@@ -72,7 +72,7 @@ test(
     });
     const pkg = await PluginPackage.inspect(pluginDir);
     const fixture = spawnSync(
-      path.join(root, "target/debug/examples/plugin_fixture"),
+      path.join(root, "target/debug/examples/plugin_fixture" + (process.platform === "win32" ? ".exe" : "")),
       [workspace, access, path.join(pluginDir, "plugin.json"), pkg.sha256],
       { encoding: "utf8", timeout: 30000 },
     );
@@ -100,6 +100,7 @@ test(
     async function launch() {
       application = await electron.launch({
         executablePath: executable,
+        ...(process.platform === "linux" && process.env.CI ? { args: ["--no-sandbox"] } : {}),
         cwd: folder,
         env,
       });
