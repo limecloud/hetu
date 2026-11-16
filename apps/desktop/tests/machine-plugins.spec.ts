@@ -45,7 +45,9 @@ test("CLI安装启停卸载插件后桌面同步同一状态，无需界面执�
     apply("enable");
     await expect(row.getByRole("button",{name:"停用",exact:true})).toBeVisible();
     apply("uninstall");
-    await expect(page.getByText("还没有安装插件",{exact:true})).toBeVisible();
+    await expect(row.getByText(`已卸载 ${pkg.manifest.version}`,{exact:true})).toBeVisible();
+    await expect(row.getByRole("button",{name:"启用",exact:true})).toHaveCount(0);
+    await expect(row.getByRole("button",{name:"停用",exact:true})).toHaveCount(0);
     expect(call("get_operation",{operation_key:"operation-4"}).action).toBe("uninstall");
   } finally { await app.close(); }
 });

@@ -1,6 +1,6 @@
 # 河图洛书 Hetu Luoshu
 
-> 免费开源的本地小说、剧本与视频创作工作台。MCP、CLI、Skills 与原生界面并列为一等入口。
+> 免费开源的本地小说、剧本与视频创作工作台。MCP、CLI、Skills 与桌面界面并列为一等入口。
 
 [English](README.en.md) / [官网](https://hetu.limeai.run) / [在线体验](https://hetu.limeai.run/#prototype) / [使用指南](https://hetu.limeai.run/docs/)
 

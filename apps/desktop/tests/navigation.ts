@@ -25,9 +25,9 @@ export async function openDirectory(page: Page) {
   await expect(page.getByRole("navigation", { name: "文稿目录", exact: true })).toBeVisible();
 }
 
-/** 沿作者可见的项目导航展开分组，不通过内部桥接代替导航。 */
+/** 沿作者可见的创作库或项目导航展开分组。 */
 export async function navigate(page: Page, label: string) {
-  const navigation = page.getByRole("complementary", { name: "项目导航", exact: true });
+  const navigation = page.getByRole("complementary", { name: /^(创作库导航|项目导航)$/ });
   const options = { name: label, exact: true, includeHidden: true };
   const button = navigation.getByRole("button", options);
   await expect(button).toBeAttached();
