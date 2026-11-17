@@ -208,5 +208,187 @@
     "complete assistive technology and system IME",
     "paid model performance/cost",
     "author acceptance"
-  ]
+  ],
+  "website": {
+    "source_commit": "340a79eb93b745c40cd5df496148de17177e3917",
+    "deployment_url": "https://c74473e6.hetu-website-3uu.pages.dev",
+    "production_origin": "https://hetu.limeai.run",
+    "build": {
+      "pages": 129,
+      "local_references": 8289
+    },
+    "local_browser_stats": {
+      "startTime": "2026-11-17T13:07:46.873Z",
+      "duration": 8320.802,
+      "expected": 24,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "production_browser_stats": {
+      "startTime": "2026-11-17T13:11:42.353Z",
+      "duration": 73382.07699999999,
+      "expected": 24,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "public_responses": [
+      {
+        "path": "/plugins/prose-studio/",
+        "http_status": "200",
+        "exit_code": 0,
+        "sha256": "2b08e8b8ed8e8427ccfff1202e90db0ff43733b18ab05599f6ae0d97107af17e",
+        "listing_matches": true
+      },
+      {
+        "path": "/plugins/novel-review/",
+        "http_status": "200",
+        "exit_code": 0,
+        "sha256": "c3751b7559dad19fbd38718044204846a38ab8f20a681df978cdc4ebb66bd0d7",
+        "listing_matches": true
+      },
+      {
+        "path": "/plugins/novel-atlas/",
+        "http_status": "200",
+        "exit_code": 0,
+        "sha256": "4a9f1d3bd2354fe1072d9ae274cb30e3c50a90ca44732b877682de76ae4e533d",
+        "listing_matches": true
+      },
+      {
+        "path": "/plugins/novel-planner/",
+        "http_status": "200",
+        "exit_code": 0,
+        "sha256": "ee1591083c258a21509c4f202808d319409636afb2dc776ca1d7a37c36c40706",
+        "listing_matches": true
+      },
+      {
+        "path": "/plugins/",
+        "http_status": "200",
+        "exit_code": 0,
+        "sha256": "3457fc630f9306bb31b3482ef5484451698010e5b5458a1535181a3bf2374576"
+      },
+      {
+        "path": "/blog/novel-ecosystem/",
+        "http_status": "200",
+        "exit_code": 0,
+        "sha256": "2f41eee609872e8c84103054714788fc1ba264d3f554a15c6554c89adab0d46e"
+      },
+      {
+        "path": "/docs/plugins/",
+        "http_status": "200",
+        "exit_code": 0,
+        "sha256": "99e24dfe8cdd2e59cab4cb1662e432da62835587a72a886875e311fa90170c7b"
+      },
+      {
+        "path": "/en/plugins/prose-studio/",
+        "http_status": "200",
+        "exit_code": 0,
+        "sha256": "5d80874d27d163cfc878f7efa98f5eda5739a53facde4288549a0121854d6d59",
+        "listing_matches": true
+      },
+      {
+        "path": "/en/plugins/novel-review/",
+        "http_status": "200",
+        "exit_code": 0,
+        "sha256": "89cd2ebc2b07425705ea8540641b1ff47f352ae09a56bcafc49488d1fc6a0c13",
+        "listing_matches": true
+      },
+      {
+        "path": "/en/plugins/novel-atlas/",
+        "http_status": "200",
+        "exit_code": 0,
+        "sha256": "cdc9444a73a8ecdb75b028507eadc5035b653239878b1e45b7125d577f03dedb",
+        "listing_matches": true
+      },
+      {
+        "path": "/en/plugins/novel-planner/",
+        "http_status": "200",
+        "exit_code": 0,
+        "sha256": "5902f5ceee0b9343a9852d020298bf911b81a8f9c9879a1c144cca35a8a0874b",
+        "listing_matches": true
+      },
+      {
+        "path": "/en/plugins/",
+        "http_status": "200",
+        "exit_code": 0,
+        "sha256": "eb8a510f0d4b2a90ffb4614bbaf75c37a5a32c58f46c8914b91650d769497fb5"
+      },
+      {
+        "path": "/en/blog/novel-ecosystem/",
+        "http_status": "200",
+        "exit_code": 0,
+        "sha256": "423659dd8fc4a4578d72db129d09a56fdebb438d983c56c5166f127a72cf62ea"
+      },
+      {
+        "path": "/en/docs/plugins/",
+        "http_status": "200",
+        "exit_code": 0,
+        "sha256": "b04a5fed8e7e9cd01787cb1246a6687ab8409470949d980bccd139e4749699d2"
+      },
+      {
+        "path": "/plugins/prose-studio.png",
+        "http_status": "200",
+        "exit_code": 0,
+        "sha256": "dd025e728eb540007662fc4f79a6a7b4c3e3e19909144d5d91ae6e2fe7d414c4",
+        "fixed_build_bytes_match": true
+      },
+      {
+        "path": "/plugins/novel-review.png",
+        "http_status": "200",
+        "exit_code": 0,
+        "sha256": "8bec68b7540e4e29314865f045e73eff42d72f3758d18bd849a2f57c2dc5ac78",
+        "fixed_build_bytes_match": true
+      },
+      {
+        "path": "/plugins/novel-atlas.png",
+        "http_status": "200",
+        "exit_code": 0,
+        "sha256": "48c89fb21943da8aea6d1c04770a077478bbd766e7e1c82a3be248440830214c",
+        "fixed_build_bytes_match": true
+      },
+      {
+        "path": "/plugins/novel-planner.png",
+        "http_status": "200",
+        "exit_code": 0,
+        "sha256": "a11e143fdacd21223b2879d705376323f6316d434a4899cc57c42ed3da883a03",
+        "fixed_build_bytes_match": true
+      }
+    ],
+    "fixed_public_plugin_evidence": [
+      {
+        "slug": "prose-studio",
+        "evidence_url": "https://github.com/wordflowlab/hetu-prose-studio/blob/e519a6251607a32aeafa987aa6e77954853c9656/docs/research/release-acceptance-2026-11-17.json",
+        "status": 200,
+        "sha256": "a25132f8767f2239e5c35ba159d4f5a4eb56880dae6060ac93534ff220de6629",
+        "package_matches": true
+      },
+      {
+        "slug": "novel-review",
+        "evidence_url": "https://github.com/wordflowlab/hetu-novel-review/blob/78606f8405d43f7e3e8acb64a309330abc70013b/docs/research/release-acceptance-2026-11-17.json",
+        "status": 200,
+        "sha256": "54215eef6c744a61e176a3f90d99d2ae44863ac58d41b516d8ba85c5004f2aea",
+        "package_matches": true
+      },
+      {
+        "slug": "novel-atlas",
+        "evidence_url": "https://github.com/wordflowlab/hetu-novel-atlas/blob/3e061734c77bfba1444cb5facd260d2f0f169f78/docs/research/release-acceptance-2026-11-17.json",
+        "status": 200,
+        "sha256": "54a014597cba1d90453452c6252dd2c9a6dd5beee815ed948ac345ee061f9047",
+        "package_matches": true
+      },
+      {
+        "slug": "novel-planner",
+        "evidence_url": "https://github.com/wordflowlab/hetu-novel-planner/blob/94cfe5fc91fc77529192ee2d61de7fdf012bb92a/docs/research/release-acceptance-2026-11-17.json",
+        "status": 200,
+        "sha256": "0f8c70e9f180c0527dd0112ec819940b189f652ab1a1249354d68973d8df8c38",
+        "package_matches": true
+      }
+    ],
+    "probe_failure": {
+      "probe": "Python urllib public-page check",
+      "result": "HTTP 403 interrupted the aggregate probe; failed target was not emitted",
+      "followup": "individual curl responses and real browser checks recorded separately; no site change made"
+    }
+  }
 }
