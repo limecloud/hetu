@@ -4,9 +4,15 @@ import '../styles/plugins.css';
 interface Props { locale: Locale; kind?: string; }
 const { locale, kind = 'relationships' } = Astro.props;
 const en = locale === 'en';
+const captures: Record<string, { width: number; height: number; zh: string; en: string }> = {
+  'novel-planner': { width: 1360, height: 847, zh: '小说规划展示卷列表、卷信息、卷规划与剧情工作记录，使用演示资料。', en: 'Novel Planner showing volume plans and work records with demonstration data.' },
+  screenplay: { width: 1440, height: 960, zh: '剧本创作的人物关系与伏笔工作面，使用演示资料。', en: 'Screenplay relationships and clues with demonstration data.' },
+  'video-studio': { width: 1440, height: 960, zh: '视听制作的固定剪辑版本与时间映射，使用演示资料。', en: 'Video Studio edit versions and time mappings with demonstration data.' },
+};
+const capture = captures[kind];
 ---
 <figure class:list={['plugin-visual', `visual-${kind}`]}>
-  {kind === 'novel-planner' ? <img src="/plugins/novel-planner.png" width="1360" height="847" loading="lazy" alt={en ? 'Novel Planner showing a volume list, volume information, plans and plot work records using demonstration data.' : '小说规划展示卷列表、卷信息、卷规划与剧情工作记录，使用演示资料。'}/> : kind === 'relationships' ? <svg viewBox="0 0 360 240" role="img" aria-label={en ? 'Example: Lin and Qiao are siblings, and both know Zhou.' : '示例：林舟与林乔为兄妹，两人分别与周远相识。'}>
+  {capture ? <img src={`/plugins/${kind}.png`} width={capture.width} height={capture.height} loading="lazy" alt={en ? capture.en : capture.zh}/> : kind === 'relationships' ? <svg viewBox="0 0 360 240" role="img" aria-label={en ? 'Example: Lin and Qiao are siblings, and both know Zhou.' : '示例：林舟与林乔为兄妹，两人分别与周远相识。'}>
     <path class="graph-link" d="M85 65H275 M85 65L180 180 M275 65L180 180"/>
     <g class="graph-label"><text x="180" y="51">{en ? 'Siblings' : '兄妹'}</text><text x="85" y="143">{en ? 'Old friend' : '旧友'}</text><text x="275" y="143">{en ? 'Colleagues' : '同事'}</text></g>
     {[{ x: 85, y: 65, label: en ? 'Lin' : '林舟' }, { x: 275, y: 65, label: en ? 'Qiao' : '林乔' }, { x: 180, y: 180, label: en ? 'Zhou' : '周远' }].map(n => <g class="graph-node"><rect x={n.x - 48} y={n.y - 22} width="96" height="44" rx="6"/><text x={n.x} y={n.y} dominant-baseline="middle">{n.label}</text></g>)}
@@ -15,5 +21,5 @@ const en = locale === 'en';
     <li><span>{en ? 'Day 1 / Night' : '第一天 深夜'}</span><strong>{en ? 'A letter in the old clock' : '旧钟里藏着一封信'}</strong></li>
     <li><span>{en ? 'Day 2 / Dawn' : '第二天 黎明'}</span><strong>{en ? 'An unexpected visitor' : '意料之外的来访者'}</strong></li>
   </ol></div>}
-  <figcaption>{kind === 'novel-planner' ? (en ? 'Novel Planner with demonstration data' : '小说规划工作面 演示资料') : (en ? 'Creative structure example' : '创作结构示意')}</figcaption>
+  <figcaption>{capture ? (en ? 'Hetu plugin with demonstration data' : '河图插件工作面 演示资料') : (en ? 'Creative structure example' : '创作结构示意')}</figcaption>
 </figure>

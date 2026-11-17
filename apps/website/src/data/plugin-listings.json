@@ -36,5 +36,73 @@
       "evidence_url": "https://github.com/wordflowlab/hetu-novel-planner/blob/b7534a068fe4578833c5d1c2c46dad6e991d125c/docs/research/runtime-acceptance-2026-11-17.json",
       "integrity_url": "https://github.com/wordflowlab/hetu-novel-planner/releases/download/v0.1.0/release-integrity.json"
     }
+  },
+  {
+    "slug": "screenplay",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.screenplay",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "剧本创作",
+        "en": "Screenplay"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-screenplay",
+    "source_commit": "825872496b6612393b9465dfc09aa1f3866340b9",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-screenplay/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-screenplay/releases/download/v0.1.0/org.wordflowlab.screenplay-0.1.0.tgz",
+      "archive_sha256": "49a0bee7a81c8bd0bec167f630fc479703b3f6e825e2bfd5602e9ab8bbd2d2ab",
+      "package_sha256": "0293c96e06579aee4636a2f0283c8afbbcf5ff742e4e0f1fa1d5c009d8ca4361",
+      "size_bytes": 360697,
+      "minimum_host_version": "0.10.0",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-screenplay/blob/825872496b6612393b9465dfc09aa1f3866340b9/docs/research/runtime-acceptance-2026-11-17.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-screenplay/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "video-studio",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.video-studio",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "视听制作",
+        "en": "Video Studio"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-video-studio",
+    "source_commit": "448ac7ff3a71ddfc91f9aa9664f6d26ec483c41c",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-video-studio/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-video-studio/releases/download/v0.1.0/org.wordflowlab.video-studio-0.1.0.tgz",
+      "archive_sha256": "e7e792767e2eb4d13e3fe7e78c422673693ef83cb6cbccee1ee6ce60f13aec7b",
+      "package_sha256": "ef99e6eb1767342f4c1994a0b9ed1b3c684dd8c25f513e7e4ea7db2add5d32f5",
+      "size_bytes": 376288,
+      "minimum_host_version": "0.10.0",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-video-studio/blob/448ac7ff3a71ddfc91f9aa9664f6d26ec483c41c/docs/research/runtime-acceptance-2026-11-17.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-video-studio/releases/download/v0.1.0/release-integrity.json"
+    }
   }
 ]

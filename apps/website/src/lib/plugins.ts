@@ -27,9 +27,25 @@ const editorial = [
     request: { 'zh-CN': '重新发现河图已安装的插件与实际能力，核对小说规划包、本次小说和固定修订。先读取现有规划、实体与工作记录，再整理各卷目标、主题、冲突、转折和详细剧情；保留作者主张及其他范围。保存成果并回读，结果未知先查原操作，不改正文、不采纳或定稿。', en: 'Rediscover Hetu’s installed plugins and actual capabilities. Check Novel Planner, this novel and its fixed revision. Read existing plans, story entities and work records before developing each volume’s goal, theme, conflict, turning points and detailed plot. Preserve author choices and other scopes. Save and read back the results, checking original operations for unknown outcomes. Do not change, adopt or finalize manuscript text.' },
     review: { 'zh-CN': '沿卷列表阅读卷信息、卷规划与详细剧情，核对实体关联和线索回收。指出具体卷章与修改目标，让 Agent 沿固定成果继续；也可以亲自编辑、比较版本与查看真实工作步骤。', en: 'Read volume information, plans and detailed plots from the volume list. Check linked entities and clue payoffs. Name a specific node and goal for your Agent to continue from fixed results, or edit, compare revisions and inspect real work steps yourself.' },
   },
+  {
+    slug: 'screenplay', category: 'screenplay',
+    summary: { 'zh-CN': '把全剧、分集、场次与人物选择连起来，从规划继续到可比较的剧本参考稿。', en: 'Connect the whole story, episodes, scenes and character choices, then continue into comparable screenplay drafts.' },
+    use: { 'zh-CN': '原创电影、系列短剧、旧稿复盘、人物弧线与场次返工', en: 'Original films, episodic drama, script review, character arcs and scene revisions' },
+    request: { 'zh-CN': '发现河图剧本创作插件与本次作品的实际能力，按同包Skill先阅读已有方案和固定原稿，再整理全剧、分集、场次、人物弧线与伏笔。把选定分集关联宿主写作任务，准备Fountain参考稿，读取意见后返工并回读两版成果；不自动采纳或定稿。未知结果沿原操作查询。', en: 'Discover Screenplay and the actual capabilities for this work. Read its packaged Skill, existing plans and fixed manuscripts before organizing the story, episodes, scenes, character arcs and clues. Connect an episode to a host writing task, prepare a Fountain draft, revise against feedback and read both versions back. Do not adopt or finalize text automatically. Recover unknown outcomes through the original operation.' },
+    review: { 'zh-CN': '沿故事结构阅读人物的目标、冲突与代价，对照关系和伏笔。阅读实际分集稿，指出具体场次，让 Agent 依据固定版本继续。', en: 'Review goals, conflicts and costs alongside relationships and clues. Read the actual episode draft and name the scene your Agent should continue from a fixed version.' },
+  },
+  {
+    slug: 'video-studio', category: 'video',
+    summary: { 'zh-CN': '围绕分镜、素材、预演和剪辑版本推进制作，把审片意见接续到局部返工与工程交付。', en: 'Organize shots, assets, previs and edit versions, then carry review feedback into local rework and project delivery.' },
+    use: { 'zh-CN': '短剧视频、独立短片、已有素材续作、预演审片与返工交付', en: 'Short drama, independent films, existing footage, previs review and rework delivery' },
+    request: { 'zh-CN': '发现河图视听制作插件与本次视频作品的实际能力，读取同包Skill和已有工程，先梳理分镜、素材职责及实际媒体。按需要准备预演，固定制作请求和预算；需要付费或外发时另行确认。导入真实成果并核验完整解码，组织剪辑时间映射，按固定区间意见建立新版本，核验媒体及工程清单后交付。未知先查原任务，不自动认可成片。', en: 'Discover Video Studio and the actual capabilities for this video work. Read its packaged Skill and existing project, then organize shots, asset roles and actual media. Prepare previs when useful and fix production requests and budgets; confirm costs and external sharing separately. Import results, verify full decoding, organize edit mappings, create a new version from fixed-range feedback, and verify media and the project manifest before delivery. Recover unknown tasks first and do not approve the final film automatically.' },
+    review: { 'zh-CN': '观看固定预演或成片，明确哪一段需要改变。保留旧版与意见，对照返工版本，再决定选用及交付。', en: 'Watch fixed previs or rendered edits and identify the interval to change. Keep the old version and feedback, compare the rework, then decide what to select and deliver.' },
+  },
 ] as const;
 export const categories = [
   { id: 'planning', title: { 'zh-CN': '小说规划', en: 'Novel planning' } },
+  { id: 'screenplay', title: { 'zh-CN': '剧本创作', en: 'Screenwriting' } },
+  { id: 'video', title: { 'zh-CN': '视听制作', en: 'Video production' } },
   { id: 'relationships', title: { 'zh-CN': '人物关系', en: 'Relationships' } },
   { id: 'timeline', title: { 'zh-CN': '故事时间', en: 'Chronology' } },
 ] as const;
