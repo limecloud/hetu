@@ -1,0 +1,119 @@
+{
+  "status": "passed_with_explicit_scope",
+  "shanhai_version": "0.1.4",
+  "core_source_commit": "d006f6aa2020d7f5f45ed0d9ca311b2e39f2f679",
+  "website_deployment": {
+    "date": "2026-11-17T08:04:14.908834+00:00",
+    "status": "deployed",
+    "project": "hetu-website",
+    "environment": "production",
+    "deployment_id": "1c4a97e8-4c1d-449e-8d55-d42d6f90eba0",
+    "deployment_url": "https://1c4a97e8.hetu-website-3uu.pages.dev",
+    "origin": "https://hetu.limeai.run",
+    "source_commit": "7809b29625765f4050b9c98fe93c48f83ca57a15",
+    "source_dirty": false,
+    "scope": "仅山海v0.1.4目录信息，未发布桌面安装包"
+  },
+  "website_browser": {
+    "date": "2026-11-17T08:05:41.380438+00:00",
+    "status": "passed",
+    "origin": "https://hetu.limeai.run",
+    "source_commit": "7809b29625765f4050b9c98fe93c48f83ca57a15",
+    "stats": {
+      "startTime": "2026-11-17T08:03:07.481Z",
+      "duration": 98468.66,
+      "expected": 45,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "execution": {
+      "workers": 1,
+      "test_timeout_ms": 90000,
+      "retries": 0
+    },
+    "scope": "中英文插件目录及山海入口，375、768与1440宽度；不代表全站121页全部业务。",
+    "initial_local_attempt": {
+      "passed": 44,
+      "failed": 1,
+      "evidence": "失败前最后一帧已正确显示1个插件，随后约38秒浏览器停顿；并发系统负载137。保留原trace；相同源码串行本地45项及生产45项均通过。"
+    }
+  },
+  "website_responses": {
+    "date": "2026-11-17T08:08:53.330Z",
+    "status": "passed",
+    "origin": "https://hetu.limeai.run",
+    "source_commit": "7809b29625765f4050b9c98fe93c48f83ca57a15",
+    "verified": [
+      {
+        "path": "/",
+        "status": 200,
+        "bytes": 132645,
+        "sha256": "daac6c1b2759e75267efa3d53886ed01dcf9217b7784975c479291521b43de11",
+        "build_sha256": "219b3c50c6b75512746e0870ddf9f9d4c3c4467ed96ce321db664641840cce7d",
+        "transformation": "Cloudflare Web Analytics: removed only the exact observed beacon block",
+        "beacon_sha256": "bec3efd8c8b367e4109f7380eee732877f0e1115f4a1cd7e7373446cdd1cd570"
+      },
+      {
+        "path": "/en/",
+        "status": 200,
+        "bytes": 135578,
+        "sha256": "146d0e28a9fb6baf59710443b571f2e5a7f52072242191da4ed838ee9d1f4c11",
+        "build_sha256": "8a7bbae326218db9de31796493ae3740952be1818ae08d50e0505153c9e21618",
+        "transformation": "Cloudflare Web Analytics: removed only the exact observed beacon block",
+        "beacon_sha256": "bec3efd8c8b367e4109f7380eee732877f0e1115f4a1cd7e7373446cdd1cd570"
+      },
+      {
+        "path": "/plugins/",
+        "status": 200,
+        "bytes": 18795,
+        "sha256": "0509bb8072b2ea9299797dbfc9751f6a0f637383af803417862cc7ba084f080c",
+        "build_sha256": "e5a5d2d035839628ea40b0db8b66859bbefd83c9217fa28ef9c25bdae5101230",
+        "transformation": "Cloudflare Web Analytics: removed only the exact observed beacon block",
+        "beacon_sha256": "bec3efd8c8b367e4109f7380eee732877f0e1115f4a1cd7e7373446cdd1cd570"
+      },
+      {
+        "path": "/en/plugins/",
+        "status": 200,
+        "bytes": 18661,
+        "sha256": "0103a1d57eab4700aac0a4c500be59bcce7de1676f6c6f737a57f725e5db9c3f",
+        "build_sha256": "00fa1e9396194d65ce2c53ae943c4b462ef0b3286af7318f0fa7b5eb61b69182",
+        "transformation": "Cloudflare Web Analytics: removed only the exact observed beacon block",
+        "beacon_sha256": "bec3efd8c8b367e4109f7380eee732877f0e1115f4a1cd7e7373446cdd1cd570"
+      },
+      {
+        "path": "/plugins/shanhai/",
+        "status": 200,
+        "bytes": 11000,
+        "sha256": "43c47092290f93e3da2cee275c050b8f9a9fbb64785b443049a8dae644caf523",
+        "build_sha256": "90a97d97d697ae9262b93efbe0b31331256b4f7baba9fd22bfda41012ef14015",
+        "transformation": "Cloudflare Web Analytics: removed only the exact observed beacon block",
+        "beacon_sha256": "bec3efd8c8b367e4109f7380eee732877f0e1115f4a1cd7e7373446cdd1cd570"
+      },
+      {
+        "path": "/en/plugins/shanhai/",
+        "status": 200,
+        "bytes": 10874,
+        "sha256": "d3fa06a38cd3bee1fa59dd639842109480e896b8ab38337c557aaf1c1ae36eaf",
+        "build_sha256": "0a5edef94d2c7794dea198fe6b827e9fc0e94336c5a8ce0f2af2c8702817b58d",
+        "transformation": "Cloudflare Web Analytics: removed only the exact observed beacon block",
+        "beacon_sha256": "bec3efd8c8b367e4109f7380eee732877f0e1115f4a1cd7e7373446cdd1cd570"
+      },
+      {
+        "path": "/plugins/shanhai.png",
+        "status": 200,
+        "bytes": 401135,
+        "sha256": "bb5e902a11dd5d85d4f1b75e59ac4dd9af745ce5d8ff149b67f7e7729fcd4d6b",
+        "build_sha256": "bb5e902a11dd5d85d4f1b75e59ac4dd9af745ce5d8ff149b67f7e7729fcd4d6b"
+      }
+    ],
+    "initial_check": "Raw HTML differs only by the identified Cloudflare Analytics block; raw response hashes retained, image compared without transformation."
+  },
+  "package_source_commit": "978b259ada3f48d60db0eb668dc2c100381ac1ee",
+  "full_evidence": "https://github.com/wordflowlab/shanhai/releases/download/v0.1.4/release-acceptance-v0.1.4.json",
+  "boundaries": [
+    "本次发布河图官网目录和山海修正版，未生成或替换河图桌面安装包。",
+    "管理范围读取任务已在Core及实际插件回调验证；旧安装版继续按已验证的固定草稿路径接续。",
+    "其他并行桌面和插件导航变更未包含在本次发布中。"
+  ]
+}
