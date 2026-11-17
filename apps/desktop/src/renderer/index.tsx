@@ -426,6 +426,7 @@ function App() {
                         )[plugin.state]}{" "}
                       {plugin.version}
                     </span>
+                    <span className="muted"> {plugin.work_kinds?.map((kind: string) => ({ novel: "小说", drama: "剧本", video: "视频" })[kind as "novel"]).join("、") ?? "全部作品"}</span>
                   </div>
                   <div className="actions">
                     {plugin.installed && (

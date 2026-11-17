@@ -40,6 +40,8 @@ export interface PluginManifest {
   description: Record<"zh-CN" | "en", string>;
   license: string;
   dependencies: { id: string; version: string }[];
+  /** 工作面适用范围；省略兼容全部作品类型，不改变作品授权。 */
+  work_kinds?: WorkRef["kind"][];
   /** 历史清单字段；开放宿主不据此限制核心能力。 */
   permissions?: ("objects.read" | "objects.write" | "work.read")[];
   contributions: {
@@ -153,6 +155,10 @@ export function sameWork(left: unknown, right: WorkRef): boolean {
     ref.kind === right.kind &&
     ref.object_id === right.object_id
   );
+}
+
+export function supportsWork(manifest: Pick<PluginManifest, "work_kinds">, work: WorkRef): boolean {
+  return manifest.work_kinds === undefined || manifest.work_kinds.includes(work.kind);
 }
 
 /** 核心服务不依赖 Electron 或 Cordis；Schema 以当前入口能力发现为准。 */

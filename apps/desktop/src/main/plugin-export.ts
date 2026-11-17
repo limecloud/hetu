@@ -17,7 +17,7 @@ export async function exportPluginFile(input:{action:string;input:Record<string,
       context.check();const part=unwrap<any>(await context.invoke(input.action,{...input.input,...(cursor?{cursor}:{})}));context.check();
       if(index===0&&part.project_ref&&Number.isSafeInteger(part.offset)){
         let chunk=part;const ref=JSON.stringify(part.project_ref),expectedBytes=part.total_bytes;
-        if(!Number.isSafeInteger(expectedBytes)||expectedBytes<0||expectedBytes>256*1024*1024||!['text/markdown','application/json'].includes(part.media_type))throw new Error('固定对象导出预算或格式无效。');
+        if(!Number.isSafeInteger(expectedBytes)||expectedBytes<0||expectedBytes>256*1024*1024||!['text/markdown','application/json','text/html'].includes(part.media_type))throw new Error('固定对象导出预算或格式无效。');
         const mediaType=part.media_type;
         while(true){
           context.check();

@@ -46,6 +46,7 @@ import {
 } from "@hetu/plugin-host";
 import {
   sameWork,
+  supportsWork,
   type WorkRef,
   type Result,
   type PluginManifest,
@@ -383,6 +384,7 @@ function overview() {
         display: host.package(state.id).manifest.display,
         description: host.package(state.id).manifest.description,
         version: host.package(state.id).manifest.version,
+        work_kinds: host.package(state.id).manifest.work_kinds,
       })),
       ...prefs.packages
         .filter((p) => p.manifest && !host.has(p.manifest.id))
@@ -395,10 +397,12 @@ function overview() {
           display: p.manifest!.display,
           description: p.manifest!.description,
           version: p.manifest!.version,
+          work_kinds: p.manifest!.work_kinds,
         })),
     ],
     views: host.views
       .list()
+      .filter((v) => work && supportsWork(host.package(v.owner).manifest, work))
       .map((v) => ({ key: v.id, owner: v.owner, ...v.value })),
   };
 }
@@ -1442,6 +1446,7 @@ app
       const pkg = host.package(owner),
         view = pkg.manifest.contributions.views.find((v) => v.id === viewId);
       if (!view) throw new Error("视图未注册。");
+      if (!supportsWork(pkg.manifest, work)) throw new Error("此插件不适用于当前作品。");
           await closeSurface();
       const token = randomUUID(),
         partition = "plugin-" + token,

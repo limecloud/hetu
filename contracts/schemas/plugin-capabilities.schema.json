@@ -18,6 +18,13 @@
     {"required": ["access_mode", "core_actions"]}
   ],
   "properties": {
+    "work_kinds": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "uniqueItems": true,
+      "items": { "enum": ["novel", "drama", "video"] }
+    },
     "access_mode": {"const": "open"},
     "core_actions": {"type": "array", "items": {"type": "object"}},
     "skills": {

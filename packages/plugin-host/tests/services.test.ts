@@ -124,3 +124,21 @@ test('固定对象偏移分块导出完整UTF-8，摘要或偏移错误不替换
   if(broken==='none'){assert.equal((await result).saved,true);assert.equal(await readFile(target,'utf8'),parts.join(''));}else{await assert.rejects(()=>result,/不连续或摘要/);assert.equal(await readFile(target,'utf8'),'原文件');}
  }
 });
+
+test('HTML固定对象按字节导出，坏摘要及跨块格式变化保留已有文件',async()=>{
+ const dir=await mkdtemp(path.join(os.tmpdir(),'plugin-html-export-'));
+ const target=path.join(dir,'图鉴.html');
+ const ref={object_id:'ext_fixed',revision:3,sha256:'a'.repeat(64)};
+ const parts=['<!doctype html><title>雨港🧭</title>','<p>&lt;script&gt;不执行</p>'];
+ const total=parts.reduce((n,p)=>n+Buffer.byteLength(p),0);
+ for(const fault of ['digest','media','none']){
+  await writeFile(target,'原交付');let count=0;
+  const result=exportPluginFile({action:'export_project',input:{object_id:ref.object_id,revision:3,format:'html'},suggested_name:'图鉴.html'},{choose:async()=>target,check(){},async invoke(_a,input){
+   const index=count++,content=parts[index];
+   return {status:'succeeded',data:{project_ref:ref,offset:input.offset??0,total_bytes:total,media_type:fault==='media'&&index===1?'text/markdown':'text/html',content,content_sha256:fault==='digest'&&index===1?'b'.repeat(64):createHash('sha256').update(content).digest('hex'),next_offset:index===0?Buffer.byteLength(content):null}};
+  }});
+  if(fault==='none'){assert.equal((await result).saved,true);assert.equal(await readFile(target,'utf8'),parts.join(''));}
+  else{await assert.rejects(()=>result,/不连续或摘要/);assert.equal(await readFile(target,'utf8'),'原交付');}
+  assert.deepEqual(await readdir(dir),['图鉴.html']);
+ }
+});

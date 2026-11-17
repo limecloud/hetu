@@ -183,6 +183,7 @@ async function invoke(action: string, input: unknown) {
 }
 const capabilities = () => ({
   plugin_id: pkg.manifest.id,
+  work_kinds: pkg.manifest.work_kinds ?? ["novel", "drama", "video"],
   package_sha256: pkg.sha256,
   work_ref: context.work_ref,
   actions,

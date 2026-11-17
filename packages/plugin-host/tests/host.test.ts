@@ -5,7 +5,25 @@ import os from "node:os";
 import path from "node:path";
 import { PluginPackage } from "../src/package.ts";
 import { PluginHost, EffectScope, SlotRegistry } from "../src/registry.ts";
+import { supportsWork, type WorkRef } from "@hetu/plugin-sdk";
 const root = path.resolve(import.meta.dirname, "../../..");
+test("插件作品范围由清单声明，数据类型不参与判断，旧通用包保持兼容", async () => {
+  const base = await PluginPackage.inspect(path.join(root, "plugins/timeline/dist"));
+  const directory = await mkdtemp(path.join(os.tmpdir(), "hetu-work-kinds-"));
+  for (const [name, bytes] of base.entries()) await writeFile(path.join(directory, name), bytes);
+  const work = (kind: WorkRef["kind"]): WorkRef => ({ workspace_id: "workspace", object_id: "work", kind });
+  for (const kind of ["novel", "drama", "video"] as const) assert.equal(supportsWork(base.manifest, work(kind)), true);
+  await writeFile(path.join(directory, "plugin.json"), JSON.stringify({ ...base.manifest, work_kinds: ["drama", "video"] }));
+  const pkg = await PluginPackage.inspect(directory);
+  assert.equal(supportsWork(pkg.manifest, work("novel")), false);
+  assert.equal(supportsWork(pkg.manifest, work("drama")), true);
+  assert.equal(supportsWork(pkg.manifest, work("video")), true);
+  assert.notEqual(pkg.sha256, base.sha256);
+  for (const work_kinds of [[], ["novel", "novel"], ["screenplay"], "video", null]) {
+    await writeFile(path.join(directory, "plugin.json"), JSON.stringify({ ...base.manifest, work_kinds }));
+    await assert.rejects(() => PluginPackage.inspect(directory), /插件清单不兼容/);
+  }
+});
 test("独立包的注册、依赖和清理不需要修改宿主路由", async () => {
   const graph = await PluginPackage.inspect(
     path.join(root, "plugins/relationships/dist"),

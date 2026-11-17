@@ -125,7 +125,7 @@ flowchart TD
 
 GUI通过`host.media_open`／`host.media_release`预览当前作品固定asset来源；宿主核验来源、签发临时媒体地址，隔离会话仅允许本会话已签发的地址，关闭或切换作品立即失效，不暴露文件路径。机器业务继续使用核心素材与固定来源动作，预览服务不产生采纳或认可。
 
-`host.export_file`支持固定清单分段及固定对象UTF-8偏移分块两种只读返回。后者包含`project_ref`、`offset`、`next_offset`、`total_bytes`、`content_sha256`、`media_type`；所有块固定同一对象与总字节数，连续偏移并核验摘要后才原子替换作者选择的目标。
+`host.export_file`支持固定清单分段及固定对象UTF-8偏移分块两种只读返回。后者包含`project_ref`、`offset`、`next_offset`、`total_bytes`、`content_sha256`、`media_type`；所有块固定同一对象与总字节数，连续偏移并核验摘要后才原子替换作者选择的目标。固定对象可导出`text/markdown`、`application/json`和`text/html`；HTML按原字节保存，不在宿主执行，离线内容与转义由插件负责。视图提交`action,input,suggested_name`，不把任意内容或路径交给窄服务。
 
 `host.save_artifact`为通用二进制文件服务，核验当前作品固定对象及有限字节后，仅向作者在保存对话框选择的目标原子写入PNG、GLB、ZIP、WebM或MP4。它不执行三维或媒体专业逻辑，不写Core业务状态，不开放任意路径读写。格式、预算及取消恢复合同归[插件20](20-首期可执行合同与开发入口.md)；专业插件负责派生与渲染，同一工作流可由CLI/MCP固定计划和独立脚本完成。
 
@@ -142,3 +142,7 @@ sequenceDiagram
  H->>C: 分块读取／关闭
  Note over P,H: 关闭视图或作品切换时撤销
 ```
+
+### 作品类型适用范围
+
+插件清单的 `work_kinds` 可声明 `novel`、`drama`、`video` 中的一个或多个类型；省略表示兼容全部。它只描述专业工作面适用范围，不扩大或替代外部 Agent 的作品授权。宿主按当前作品过滤入口，打开前再次核验；能力发现返回相同声明，专业后端继续核验自身领域。新增脚手架显式给出类型范围，空数组、重复及未知类型被 Schema 拒绝。

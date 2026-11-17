@@ -10,7 +10,7 @@ export async function scaffold(directory: string, id: string, title: string, kit
   await mkdir(directory); // 已存在即拒绝；不对用户目录进行覆盖或清理。
   await mkdir(path.join(directory, "src"));
   const manifest = {
-    manifest_version: 1, host_api: "1", id, version: "0.1.0", license: "Apache-2.0", dependencies: [], permissions: [],
+    manifest_version: 1, host_api: "1", id, version: "0.1.0", license: "Apache-2.0", dependencies: [], permissions: [], work_kinds: ["novel", "drama", "video"],
     display: { "zh-CN": title, en: title }, description: { "zh-CN": "统计明确输入的文字，不读取作品数据。", en: "Counts explicit input without accessing work data." },
     contributions: {
       views: [{ id: "main", title, entry: "index.html", object_kinds: [] }], data: [],
