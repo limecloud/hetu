@@ -5,6 +5,8 @@ import type { Locale } from './site';
 import { evidence } from './market';
 
 export const articles = [
+  { id: 'novel-ecosystem', titles: { 'zh-CN': '从规划到下一稿，让工具围绕同一部小说工作', en: 'From the plan to the next draft' }, descriptions: { 'zh-CN': '规划、文风、审校与图鉴如何围绕固定作品接续，让作者把时间用在阅读、判断与下一轮创作。', en: 'Connect planning, preferences, review and an atlas around a durable novel.' } },
+
   { id: 'creative-plugins', titles: { 'zh-CN': '工具可以生长，作品始终在你手中', en: 'Let the tools grow around your story' }, descriptions: { 'zh-CN': '从一张人物关系图开始，谈稳定的作品底座、按需扩展的工具，以及作者不必承担的操作复杂度。', en: 'Why a durable creative workspace, optional tools and Agent-driven operations belong together.' } },
   { id: 'creative-library', titles: { 'zh-CN': '写剧本，不必先建一本不存在的小说', en: 'A screenplay should not need a placeholder novel' }, descriptions: { 'zh-CN': '小说、剧本与视频各有起点。让作品独立，让关联记住来源，把每次修改的决定留给作者。', en: 'Novels, scripts and videos begin in different places. Keep each work independent and its source connections explicit.' } },
   { id: 'preview-before-production', titles: { 'zh-CN': '先看这一场怎样发生，再决定怎样生成', en: 'See how the scene works before generating it' }, descriptions: { 'zh-CN': '剧本、动态分镜、白模和真实片段回答不同问题。先用合适的材料判断，再把预算用在需要验证的画面上。', en: 'Scripts, animatics, simple 3D previews and real clips answer different questions. Choose what you need to inspect before spending on production.' } },

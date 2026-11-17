@@ -1,0 +1,1043 @@
+{
+  "record_version": 1,
+  "retrieved_on": "2026-11-17",
+  "purpose": "小说插件研究证据与候选分类，不是河图能力清单、兼容认证或上架目录。",
+  "market_scope": {
+    "market_url": "https://www.dsh.so/zh/artifacts/",
+    "query": "小说",
+    "verification_filter": [
+      "L5"
+    ],
+    "matched_count": 34,
+    "read_count": 32,
+    "scope": "Computer Use读取实际已打开市场第一页；第二页未读取，不声称覆盖全部条目或L3/L4。"
+  },
+  "evidence_summary": {
+    "repositories": 32,
+    "fixed_readmes_retrieved": 18,
+    "focused_source_repositories": [
+      "LiPu-jpg/Openwrite",
+      "sailoumili/novel-writer",
+      "KurohaneKaoruko/DSH-Creator",
+      "shiyan688/dsh-novel-craft"
+    ],
+    "root_licenses_retrieved": 10,
+    "upstream_installed": false,
+    "upstream_tests_run": false,
+    "hetu_ports_implemented": false
+  },
+  "limitations": [
+    "只覆盖当时L5筛选第一页；不是完整市场或全部小说项目。",
+    "GitHub描述和README为项目主张，定向源码检查不覆盖整个实现。",
+    "市场L5不表示已兼容河图、生成质量通过或许可适用于全部文件。",
+    "未对上游测试声明、模型费用、性能、用户采用和创作效果进行运行验证。"
+  ],
+  "source_snapshots": [
+    {
+      "url": "https://www.dsh.so/zh/artifacts/",
+      "kind": "public_html",
+      "sha256": "df45402981eb95b43ca0829347ecf8b80a43a29419631dfbeaa4c5a7f182855b",
+      "scope": "公开页面外壳；实际搜索条目来自现场UI读取，不能由HTML摘要证明动态筛选结果。"
+    },
+    {
+      "url": "https://api.github.com/graphql",
+      "kind": "repository_metadata_response",
+      "sha256": "493e0d5408c771fa27c621cbe2ea91517fbdc9594ead3f50a0b0e9f8872f253b",
+      "scope": "32个仓库的元数据响应；不保存任何认证信息。"
+    }
+  ],
+  "entries": [
+    {
+      "repository": "LiPu-jpg/Openwrite",
+      "repository_url": "https://github.com/LiPu-jpg/Openwrite",
+      "market_url": "https://www.dsh.so/zh/artifact/openwrite/",
+      "fixed_commit": "3635a1e5ca5ab9398e8adb7c3a91526826184a30",
+      "description_claim": "dsh-Openwrite：OpenWrite 的 DeepSeek Harness 小说创作插件，含统一创作 Agent、56 个小说工具、原生工作台与标准审稿 DAG",
+      "category": "creation_workbench",
+      "evidence_level": "focused_source_and_docs",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "Apache-2.0",
+        "fixed_license_file_retrieved": true,
+        "fixed_license_sha256": "6f8d16d014bb0f033b21519ed7fd7323660f21c873328e32c6fa3f008ee124de",
+        "license_file_identified": "Apache-2.0",
+        "scope": "仅所列根LICENSE；依赖、方法、子目录及素材仍需分别核对。"
+      },
+      "hetu_assessment": "小说审校的六域框架与覆盖依据；不搬入内置Agent及模型路由。"
+    },
+    {
+      "repository": "kuroshio4396/dafayu-pixiv-duty",
+      "repository_url": "https://github.com/kuroshio4396/dafayu-pixiv-duty",
+      "market_url": "https://www.dsh.so/zh/artifact/dafayu-pixiv-duty/",
+      "fixed_commit": "991a84f38ba9ba9dbdab4e20121f7eccd42ee544",
+      "description_claim": "大肥鱼自动刷Pixiv｜DSH 插件：按你的口味刷 Pixiv，把插画 / 漫画 / 中文小说挑出来存到本地；标签先筛、再读图读正文确认",
+      "category": "material_collection",
+      "evidence_level": "github_metadata",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "NOASSERTION",
+        "fixed_license_file_retrieved": false,
+        "fixed_license_sha256": null,
+        "license_file_identified": null,
+        "scope": "仅GitHub元数据，不能据此决定源码复用。"
+      },
+      "hetu_assessment": "依据市场和仓库描述分类，当前不列优先项；未深入源码。"
+    },
+    {
+      "repository": "sailoumili/novel-writer",
+      "repository_url": "https://github.com/sailoumili/novel-writer",
+      "market_url": "https://www.dsh.so/zh/artifact/novel-writer/",
+      "fixed_commit": "bd0082106998a4737d3428bed334cacde46accd9",
+      "description_claim": "小说创作模式：一个统筹队长统领全局，5 个专职子代理各司其职——架构世界、策划剧情、管理人物、执笔写文、质检复核——协同写作。",
+      "category": "agent_preset",
+      "evidence_level": "focused_source_and_docs",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "MIT",
+        "fixed_license_file_retrieved": false,
+        "fixed_license_sha256": null,
+        "license_file_identified": null,
+        "scope": "仅GitHub元数据，不能据此决定源码复用。"
+      },
+      "hetu_assessment": "方法分工可进入Skill，不引入内置多Agent调度器。"
+    },
+    {
+      "repository": "baisama-cloud/dsh-galgame-generator",
+      "repository_url": "https://github.com/baisama-cloud/dsh-galgame-generator",
+      "market_url": "https://www.dsh.so/zh/artifact/dsh-galgame-generator/",
+      "fixed_commit": "276974e36a89dbaf07d9a7d4208d980088741160",
+      "description_claim": "DeepSeek Harness (DSH) 的 Galgame 生成器：提供一份剧本文档 + 立绘/背景/音乐素材，即可生成一个可玩的视觉小说（Galgame）网页。 新增一个GalGame生成模式，在这个模式的工作区下提供一份剧本文档 + 立绘/CG/背景/音乐素材等，即可生成Galgame网页。",
+      "category": "interactive_fiction",
+      "evidence_level": "fixed_readme",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "MIT",
+        "fixed_license_file_retrieved": true,
+        "fixed_license_sha256": "9a44b95ac2ef20c6a9ee6af70d50551d94cfb07baa77182b53100e24974f36c0",
+        "license_file_identified": "MIT",
+        "scope": "仅所列根LICENSE；依赖、方法、子目录及素材仍需分别核对。"
+      },
+      "hetu_assessment": "后续独立互动叙事工程。"
+    },
+    {
+      "repository": "KurohaneKaoruko/DSH-Creator",
+      "repository_url": "https://github.com/KurohaneKaoruko/DSH-Creator",
+      "market_url": "https://www.dsh.so/zh/artifact/dsh-novelist/",
+      "fixed_commit": "e9a8e121a2ce9cd5e8d2721a31ab5ba7c1a399f3",
+      "description_claim": "小说作家智能体预设，用于在DeepSeek Herness里让AI写小说，管理一整套作品工程。",
+      "category": "creation_workbench",
+      "evidence_level": "focused_source_and_docs",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "MIT",
+        "fixed_license_file_retrieved": true,
+        "fixed_license_sha256": "74fdbb2cb7cc1d85da2fa9758eeb6e2e5fe2cfeaa82066c2c754695c3af78b54",
+        "license_file_identified": "MIT",
+        "scope": "仅所列根LICENSE；依赖、方法、子目录及素材仍需分别核对。"
+      },
+      "hetu_assessment": "规则检查供审校参考；标点、文风偏好不作为通用保存硬门禁。"
+    },
+    {
+      "repository": "shiyan688/dsh-novel-craft",
+      "repository_url": "https://github.com/shiyan688/dsh-novel-craft",
+      "market_url": "https://www.dsh.so/zh/artifact/dsh-novel-craft-2/",
+      "fixed_commit": "8a52268b3d521e11fd78a3117c03c1f5a771a2cf",
+      "description_claim": "面向中文小说作者的开源 DSH 写作插件：点赞/点踩提炼可编辑的文风偏好，支持候选稿、章节管理与局部改稿。MIT；需 DeepSeek Harness 和自备模型。",
+      "category": "prose_preference",
+      "evidence_level": "focused_source_and_docs",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "MIT",
+        "fixed_license_file_retrieved": true,
+        "fixed_license_sha256": "858f8cf87b60ff6f313ba93c1dd6ca97380ed7a09b78a175c8f80e95ebf1292d",
+        "license_file_identified": "MIT",
+        "scope": "仅所列根LICENSE；依赖、方法、子目录及素材仍需分别核对。"
+      },
+      "hetu_assessment": "第一批文风工坊主要参考。"
+    },
+    {
+      "repository": "Tkingxiao/dsh-novel-solo",
+      "repository_url": "https://github.com/Tkingxiao/dsh-novel-solo",
+      "market_url": "https://www.dsh.so/zh/artifact/dsh-novel-solo/",
+      "fixed_commit": "5e10e69535eb2d8bf953b4e79b9131bc0885a90f",
+      "description_claim": "DeepSeek Harness 的「单核写作」插件：面向量化小模型做了充分的工具瘦身与输出加固，适合在本机用本地模型跑长篇小说流水线。",
+      "category": "agent_preset",
+      "evidence_level": "fixed_readme",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "MIT",
+        "fixed_license_file_retrieved": false,
+        "fixed_license_sha256": null,
+        "license_file_identified": null,
+        "scope": "仅GitHub元数据，不能据此决定源码复用。"
+      },
+      "hetu_assessment": "任务方法与上下文精简参考，不照搬宿主工具禁用和调度。"
+    },
+    {
+      "repository": "peterwangze/dsh-novel-writing",
+      "repository_url": "https://github.com/peterwangze/dsh-novel-writing",
+      "market_url": "https://www.dsh.so/zh/artifact/dsh-novel-writing/",
+      "fixed_commit": "ab96fdb55fb01cfd9711643eee50342c4db8ae3d",
+      "description_claim": "DSH (DeepSeek Harness) 自动化小说写作发布流水线插件：claude-writing-workflow 迁移版 agent 预设 + 小说工作台（可视化/实时渲染/章节编辑）+ 多平台发布配置与数据驱动优化闭环",
+      "category": "creation_and_publishing",
+      "evidence_level": "fixed_readme",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": null,
+        "fixed_license_file_retrieved": false,
+        "fixed_license_sha256": null,
+        "license_file_identified": null,
+        "scope": "仅GitHub元数据，不能据此决定源码复用。"
+      },
+      "hetu_assessment": "创作交付与发布运营分开；本轮不推进发布运营。"
+    },
+    {
+      "repository": "shuaweng/DSH_xieshujing",
+      "repository_url": "https://github.com/shuaweng/DSH_xieshujing",
+      "market_url": "https://www.dsh.so/zh/artifact/dsh-xieshujing/",
+      "fixed_commit": "f6f747dd547102cc571b72ecc1ca0cd4dfca76ad",
+      "description_claim": "写书鲸：面向 DeepSeek Harness 的原生 AI 小说创作工作台插件",
+      "category": "creation_workbench",
+      "evidence_level": "fixed_readme",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "MIT",
+        "fixed_license_file_retrieved": false,
+        "fixed_license_sha256": null,
+        "license_file_identified": null,
+        "scope": "仅GitHub元数据，不能据此决定源码复用。"
+      },
+      "hetu_assessment": "依据市场和仓库描述分类，当前不列优先项；未深入源码。"
+    },
+    {
+      "repository": "cayan0x/Lume",
+      "repository_url": "https://github.com/cayan0x/Lume",
+      "market_url": "https://www.dsh.so/zh/artifact/lume/",
+      "fixed_commit": "67e988d097f3682603d8fbee07185a7394a8349f",
+      "description_claim": "微光 (Lume) — DSH Desktop 增强插件：任务执行纪律（注入分层 / 意图路由 / 真实工具证据 / 交付前复核 / 文档能力感知）+ 方法层（任务契约、改动台账、假设台账、按工作目录跨会话的项目知识、行为触发器）+ 人设系统（聊天记录与小说剧本蒸馏具名角色、长期记忆、风格随对话演进）。约束按需注入，闲聊不额外付 token。",
+      "category": "general_agent_extension",
+      "evidence_level": "github_metadata",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "MIT",
+        "fixed_license_file_retrieved": false,
+        "fixed_license_sha256": null,
+        "license_file_identified": null,
+        "scope": "仅GitHub元数据，不能据此决定源码复用。"
+      },
+      "hetu_assessment": "依据市场和仓库描述分类，当前不列优先项；未深入源码。"
+    },
+    {
+      "repository": "watersxya/dsh-novel-forge",
+      "repository_url": "https://github.com/watersxya/dsh-novel-forge",
+      "market_url": "https://www.dsh.so/zh/artifact/dsh-novel-forge/",
+      "fixed_commit": "453baef2fb0f87a6a7d449864c17a965ba951581",
+      "description_claim": "AI 编译纯文本小说工作台 for DSH：大纲导入、道藏/大世界设定、卷与章节规划、逐章 AI 生成 3000-4000 字、九维审稿、全书质检、全本导出。AI novel writing workbench (text-only).",
+      "category": "creation_workbench",
+      "evidence_level": "fixed_readme",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "AGPL-3.0",
+        "fixed_license_file_retrieved": true,
+        "fixed_license_sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+        "license_file_identified": "AGPL-3.0",
+        "scope": "仅所列根LICENSE；依赖、方法、子目录及素材仍需分别核对。"
+      },
+      "hetu_assessment": "审稿维度可研究；引入源码前单独评估AGPL义务。"
+    },
+    {
+      "repository": "micellince/dsh-long-novel-workbench",
+      "repository_url": "https://github.com/micellince/dsh-long-novel-workbench",
+      "market_url": "https://www.dsh.so/zh/artifact/dsh-long-novel-workbench/",
+      "fixed_commit": "fae33646ad17565b64792e94be411f1d3fcf7e95",
+      "description_claim": "长篇中文小说工作台（DSH 插件）。围绕「读—批注—审—改」：正文页优先的连续阅读与页内编辑、读者批注、四路审阅（逻辑·注意力·AI 味·读者）、段落级提案、全文动作 run，配合注意力设计、账本与世界地图。",
+      "category": "creation_workbench",
+      "evidence_level": "fixed_readme",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "MIT",
+        "fixed_license_file_retrieved": true,
+        "fixed_license_sha256": "3e47e1c602831bf3f6ee9585f8fa7de7bebab40fdb2a2364bbd70cded1811cea",
+        "license_file_identified": "MIT",
+        "scope": "仅所列根LICENSE；依赖、方法、子目录及素材仍需分别核对。"
+      },
+      "hetu_assessment": "阅读与意见接续复用宿主；专业问题分类归审校插件。"
+    },
+    {
+      "repository": "wbb316/dsh-novel",
+      "repository_url": "https://github.com/wbb316/dsh-novel",
+      "market_url": "https://www.dsh.so/zh/artifact/dsh-novel-4/",
+      "fixed_commit": "e1fd5a8ad9cb55f26187554f09678c0556bfb7e2",
+      "description_claim": "DSH 插件：小说创作台 —— 给 agent 5 个 novel_* 工具 + 一个开书向导 / 设定表单 / 关系图 / 剧情任务栏 / 一键续写流式直播的面板（宿主原生席位，入口在左侧栏）",
+      "category": "creation_workbench",
+      "evidence_level": "github_metadata",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "MIT",
+        "fixed_license_file_retrieved": false,
+        "fixed_license_sha256": null,
+        "license_file_identified": null,
+        "scope": "仅GitHub元数据，不能据此决定源码复用。"
+      },
+      "hetu_assessment": "依据市场和仓库描述分类，当前不列优先项；未深入源码。"
+    },
+    {
+      "repository": "XiaoOu2024/dsh-novel-generator",
+      "repository_url": "https://github.com/XiaoOu2024/dsh-novel-generator",
+      "market_url": "https://www.dsh.so/zh/artifact/dsh-novel-generator/",
+      "fixed_commit": "8e45f22ce6e5ebf5f6ce98efce8c8a2a199c82c8",
+      "description_claim": "Novel Studio for DeepSeek Harness: write a novel on a draggable timeline — world snapshots, chapter outlines and synopses, chapter import, AI revise, and a dedicated writing agent per work. 小说工坊：在时间线上写小说，世界快照、章节大纲与梗概、章节导入、AI 改写，每部作品一个独立的写作会话。",
+      "category": "timeline_workbench",
+      "evidence_level": "fixed_readme",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "MIT",
+        "fixed_license_file_retrieved": false,
+        "fixed_license_sha256": null,
+        "license_file_identified": null,
+        "scope": "仅GitHub元数据，不能据此决定源码复用。"
+      },
+      "hetu_assessment": "时间线和世界状态推断供规划及投影参考，推断不是正式设定。"
+    },
+    {
+      "repository": "ahao430/dsh-funhub",
+      "repository_url": "https://github.com/ahao430/dsh-funhub",
+      "market_url": "https://www.dsh.so/zh/artifact/dsh-funhub/",
+      "fixed_commit": "552d4de3b5aee5cd01f3f171e39484105854e43e",
+      "description_claim": "DSH（DeepSeek Harness）娱乐工作台插件，集成音乐播放、小说阅读、漫画浏览、HTML5 小游戏和图片广场，支持阅读书源、洛雪音乐音源、漫画源及 RSS 订阅，提供统一资源管理、本地数据存储与 WebDAV 多设备同步。",
+      "category": "entertainment_reader",
+      "evidence_level": "github_metadata",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "MIT",
+        "fixed_license_file_retrieved": false,
+        "fixed_license_sha256": null,
+        "license_file_identified": null,
+        "scope": "仅GitHub元数据，不能据此决定源码复用。"
+      },
+      "hetu_assessment": "依据市场和仓库描述分类，当前不列优先项；未深入源码。"
+    },
+    {
+      "repository": "xrn1997/dsh-novel",
+      "repository_url": "https://github.com/xrn1997/dsh-novel",
+      "market_url": "https://www.dsh.so/zh/artifact/dsh-novel-2/",
+      "fixed_commit": "ceccf3d535e6c068bae3ba55a194dc449dac9f60",
+      "description_claim": "deepseek-harness嵌入一个小说阅读功能，防止打瞌睡",
+      "category": "reader",
+      "evidence_level": "github_metadata",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "Apache-2.0",
+        "fixed_license_file_retrieved": false,
+        "fixed_license_sha256": null,
+        "license_file_identified": null,
+        "scope": "仅GitHub元数据，不能据此决定源码复用。"
+      },
+      "hetu_assessment": "依据市场和仓库描述分类，当前不列优先项；未深入源码。"
+    },
+    {
+      "repository": "ling-long-ling/dsh-novel-writer",
+      "repository_url": "https://github.com/ling-long-ling/dsh-novel-writer",
+      "market_url": "https://www.dsh.so/zh/artifact/dsh-novel-writer-3/",
+      "fixed_commit": "fa182fef22341d0c4395bf51678981e6e9040e7e",
+      "description_claim": "DSH Desktop 插件：小说创作搭档 —— 边提问边完善世界观/人物/情节，每章先写大纲给作者改，定稿后再写正文。",
+      "category": "creation_workbench",
+      "evidence_level": "github_metadata",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "MIT",
+        "fixed_license_file_retrieved": false,
+        "fixed_license_sha256": null,
+        "license_file_identified": null,
+        "scope": "仅GitHub元数据，不能据此决定源码复用。"
+      },
+      "hetu_assessment": "依据市场和仓库描述分类，当前不列优先项；未深入源码。"
+    },
+    {
+      "repository": "ShanJun-pro-max/dsh-novel-workbench",
+      "repository_url": "https://github.com/ShanJun-pro-max/dsh-novel-workbench",
+      "market_url": "https://www.dsh.so/zh/artifact/dsh-novel-workbench/",
+      "fixed_commit": "1c728bbca362c99dd379c26894008b56d4122460",
+      "description_claim": "DeepSeek Harness 的一页式小说创作工作台：开新章给方向、候选稿抽卡、剧情总结带索引、别称识别、情节体检、偏好档案按类型跨书继承",
+      "category": "prose_and_context",
+      "evidence_level": "fixed_readme",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "MIT",
+        "fixed_license_file_retrieved": false,
+        "fixed_license_sha256": null,
+        "license_file_identified": null,
+        "scope": "仅GitHub元数据，不能据此决定源码复用。"
+      },
+      "hetu_assessment": "偏好继承、别称及选材策略参考，不自动跨作品共享。"
+    },
+    {
+      "repository": "gongfpp/dsh-novel-fish",
+      "repository_url": "https://github.com/gongfpp/dsh-novel-fish",
+      "market_url": "https://www.dsh.so/zh/artifact/dsh-novel-fish/",
+      "fixed_commit": "92e3d07251f66f873b79345115c99f702b1c242d",
+      "description_claim": "小说摸鱼：在 DSH 真实对话的思考/工具区域里读本地小说（EPUB/TXT/MD），保留原文、进度本地保存、不发给模型。DSH Web plugin, host >=0.2.1-rc.2 <=0.2.2-alpha.2.",
+      "category": "reader",
+      "evidence_level": "github_metadata",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "MIT",
+        "fixed_license_file_retrieved": false,
+        "fixed_license_sha256": null,
+        "license_file_identified": null,
+        "scope": "仅GitHub元数据，不能据此决定源码复用。"
+      },
+      "hetu_assessment": "依据市场和仓库描述分类，当前不列优先项；未深入源码。"
+    },
+    {
+      "repository": "DrizzleGig/dsh-novel-beat",
+      "repository_url": "https://github.com/DrizzleGig/dsh-novel-beat",
+      "market_url": "https://www.dsh.so/zh/artifact/dsh-novel-beat/",
+      "fixed_commit": "577d0995f9f47ba6b6a1398300089e7d42cb055a",
+      "description_claim": "AI 写小说时，关键剧情不该由模型顺手决定。「拍板」在影响故事走向的岔路暂停，给你 2–4 个真不同的走向和各自代价；你选的写进全书账本，写作按段推进、逐段登记。DSH 插件，默认关闭，不写正文，不依赖其他插件。",
+      "category": "plot_decision",
+      "evidence_level": "fixed_readme",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "MIT",
+        "fixed_license_file_retrieved": true,
+        "fixed_license_sha256": "002c4314f4d571d18024e5be0859daac5d8a5dfdd1de6a0873c62e46ed7ba217",
+        "license_file_identified": "MIT",
+        "scope": "仅所列根LICENSE；依赖、方法、子目录及素材仍需分别核对。"
+      },
+      "hetu_assessment": "优先增强现有小说规划的走向与代价比较，不强制逐段确认。"
+    },
+    {
+      "repository": "luxueliu/luxueliu-dsh-story",
+      "repository_url": "https://github.com/luxueliu/luxueliu-dsh-story",
+      "market_url": "https://www.dsh.so/zh/artifact/luxueliu-dsh-story/",
+      "fixed_commit": "568dce67f7af6fd05a9db9e709970e1a9b65aa0c",
+      "description_claim": "DSH 写小说缺的四件事一次配齐！世界书角色卡拖进输入框，正文整篇进上下文；剧情断了 /gemini-sum 一键交接新窗；/out 导出干净成稿；/sum 一句话成角色卡/世界书；[论坛体][第二人称] 打字即展开 — DeepSeek Harness 创作插件",
+      "category": "context_connector",
+      "evidence_level": "github_metadata",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "MIT",
+        "fixed_license_file_retrieved": false,
+        "fixed_license_sha256": null,
+        "license_file_identified": null,
+        "scope": "仅GitHub元数据，不能据此决定源码复用。"
+      },
+      "hetu_assessment": "依据市场和仓库描述分类，当前不列优先项；未深入源码。"
+    },
+    {
+      "repository": "ReWebaiyu/dsh-novel-assist",
+      "repository_url": "https://github.com/ReWebaiyu/dsh-novel-assist",
+      "market_url": "https://www.dsh.so/zh/artifact/dsh-novel-assist/",
+      "fixed_commit": "9f2feca4d74b96a23fd2c2c87b814fd95ea6a785",
+      "description_claim": "DSH 小说辅助模拟插件 dsh-novel-assist 0.6.0：自建 DSH 插件完整工程（Host + Client + 文档）",
+      "category": "creation_assistant_claim",
+      "evidence_level": "github_metadata",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": null,
+        "fixed_license_file_retrieved": false,
+        "fixed_license_sha256": null,
+        "license_file_identified": null,
+        "scope": "仅GitHub元数据，不能据此决定源码复用。"
+      },
+      "hetu_assessment": "依据市场和仓库描述分类，当前不列优先项；未深入源码。"
+    },
+    {
+      "repository": "hulibuld/dsh-lifecard",
+      "repository_url": "https://github.com/hulibuld/dsh-lifecard",
+      "market_url": "https://www.dsh.so/zh/artifact/dsh-lifecard/",
+      "fixed_commit": "cc9364edd69c6959698c5d5a901d458fac17c09f",
+      "description_claim": "Life Cards —— 把你认识的人和虚构角色写成档案。真实人物 / 写小说 / 酒馆三种用法；数据是你自己文件夹里的一组 Markdown 文件。",
+      "category": "character_profile",
+      "evidence_level": "github_metadata",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "MIT",
+        "fixed_license_file_retrieved": false,
+        "fixed_license_sha256": null,
+        "license_file_identified": null,
+        "scope": "仅GitHub元数据，不能据此决定源码复用。"
+      },
+      "hetu_assessment": "依据市场和仓库描述分类，当前不列优先项；未深入源码。"
+    },
+    {
+      "repository": "elither-gpt/pixiv-skill",
+      "repository_url": "https://github.com/elither-gpt/pixiv-skill",
+      "market_url": "https://www.dsh.so/zh/artifact/pixiv-skill/",
+      "fixed_commit": "4b437f93fb0ddeb64bb774940df1f0301cf371d9",
+      "description_claim": "给 AI 助手用的 Pixiv 技能：搜索、排行、详情，下载插画、漫画、动图和小说（多页转 PDF、动图转 GIF、小说系列合并）。兼容 Claude Code、Codex、OpenClaw、Hermes、DeepSeek Harness。",
+      "category": "material_collection",
+      "evidence_level": "github_metadata",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "MIT",
+        "fixed_license_file_retrieved": false,
+        "fixed_license_sha256": null,
+        "license_file_identified": null,
+        "scope": "仅GitHub元数据，不能据此决定源码复用。"
+      },
+      "hetu_assessment": "依据市场和仓库描述分类，当前不列优先项；未深入源码。"
+    },
+    {
+      "repository": "overflow7782/dsh-plugin-novel-reader",
+      "repository_url": "https://github.com/overflow7782/dsh-plugin-novel-reader",
+      "market_url": "https://www.dsh.so/zh/artifact/dsh-plugin-novel-reader/",
+      "fixed_commit": "fe1c3cb2f4a4cc5abd22c889cf38cd2f893e52ce",
+      "description_claim": "摸鱼小说阅读器 for DeepSeek Harness：状态栏悬停速览 + 侧边栏阅读",
+      "category": "reader",
+      "evidence_level": "github_metadata",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "MIT",
+        "fixed_license_file_retrieved": false,
+        "fixed_license_sha256": null,
+        "license_file_identified": null,
+        "scope": "仅GitHub元数据，不能据此决定源码复用。"
+      },
+      "hetu_assessment": "依据市场和仓库描述分类，当前不列优先项；未深入源码。"
+    },
+    {
+      "repository": "lilinshuei/novel-atlas",
+      "repository_url": "https://github.com/lilinshuei/novel-atlas",
+      "market_url": "https://www.dsh.so/zh/artifact/novel-atlas/",
+      "fixed_commit": "2a6cd304c9ce4a7db00bb31e4a2ec08571f0efd3",
+      "description_claim": "把一本小说变成能读、能点、能探索的离线世界｜阅读器、世界地图、人物关系、成长曲线，一条命令出成品。",
+      "category": "visual_projection",
+      "evidence_level": "fixed_readme",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "MIT",
+        "fixed_license_file_retrieved": true,
+        "fixed_license_sha256": "a2fcfce1a85d15cffea7bba96f399205494dfcaaecd79f0946fff39f33c202d3",
+        "license_file_identified": "MIT",
+        "scope": "仅所列根LICENSE；依赖、方法、子目录及素材仍需分别核对。"
+      },
+      "hetu_assessment": "小说图鉴候选；统计抽取为草稿，不复制正典。"
+    },
+    {
+      "repository": "Tonited/dsh-stealth-reader",
+      "repository_url": "https://github.com/Tonited/dsh-stealth-reader",
+      "market_url": "https://www.dsh.so/zh/artifact/dsh-stealth-reader/",
+      "fixed_commit": "62b0505d4c8a52c0abe45c02dbe9818583b81c2f",
+      "description_claim": "在 DeepSeek Harness 会话界面里伪装成日志流读小说：导入 txt/epub，只覆盖右侧消息区，鼠标一动即回到工作界面。",
+      "category": "reader",
+      "evidence_level": "github_metadata",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "MIT",
+        "fixed_license_file_retrieved": false,
+        "fixed_license_sha256": null,
+        "license_file_identified": null,
+        "scope": "仅GitHub元数据，不能据此决定源码复用。"
+      },
+      "hetu_assessment": "依据市场和仓库描述分类，当前不列优先项；未深入源码。"
+    },
+    {
+      "repository": "Jokii-Joy/novel-writer",
+      "repository_url": "https://github.com/Jokii-Joy/novel-writer",
+      "market_url": "https://www.dsh.so/zh/artifact/novel-writer-2/",
+      "fixed_commit": "e9df9b16a576bf3475c485c5d424b5067b423c5f",
+      "description_claim": "精神空间 — DeepSeek Harness 的沉浸式小说写作插件（GPL-3.0）",
+      "category": "writing_workbench",
+      "evidence_level": "fixed_readme",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "GPL-3.0",
+        "fixed_license_file_retrieved": true,
+        "fixed_license_sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+        "license_file_identified": "GPL-3.0",
+        "scope": "仅所列根LICENSE；依赖、方法、子目录及素材仍需分别核对。"
+      },
+      "hetu_assessment": "沉浸阅读体验参考；GPL源码引入另行评估，不复制投稿运营。"
+    },
+    {
+      "repository": "EastChilde/dsh-novel-forge",
+      "repository_url": "https://github.com/EastChilde/dsh-novel-forge",
+      "market_url": "https://www.dsh.so/zh/artifact/dsh-novel-forge-3/",
+      "fixed_commit": "cc93e6b4086753e3871d045f729ca50ce2c0eb23",
+      "description_claim": "DeepSeek Harness 小说创作插件：从一句想法到能连载的长篇网文。设定/大纲/正文/伏笔全部落成可读可改的文件，模型每章只拿该拿的上下文。A DSH plugin for long-form Chinese web fiction.",
+      "category": "creation_workbench",
+      "evidence_level": "fixed_readme",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "MIT",
+        "fixed_license_file_retrieved": false,
+        "fixed_license_sha256": null,
+        "license_file_identified": null,
+        "scope": "仅GitHub元数据，不能据此决定源码复用。"
+      },
+      "hetu_assessment": "上下文装配与状态组织参考，复用河图正文和设定Owner。"
+    },
+    {
+      "repository": "github-yousen/dsh-novel-mode",
+      "repository_url": "https://github.com/github-yousen/dsh-novel-mode",
+      "market_url": "https://www.dsh.so/zh/artifact/dsh-novel-mode/",
+      "fixed_commit": "5cd7bc610989f1ae9d3b151ea7cdf37638522d2e",
+      "description_claim": "小说模式 (Novel Mode): a one-click DSH plugin that runs the complete long-form novel writing workflow",
+      "category": "agent_preset",
+      "evidence_level": "github_metadata",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "NOASSERTION",
+        "fixed_license_file_retrieved": false,
+        "fixed_license_sha256": null,
+        "license_file_identified": null,
+        "scope": "仅GitHub元数据，不能据此决定源码复用。"
+      },
+      "hetu_assessment": "依据市场和仓库描述分类，当前不列优先项；未深入源码。"
+    },
+    {
+      "repository": "good-saltfish/dsh-novel-agent",
+      "repository_url": "https://github.com/good-saltfish/dsh-novel-agent",
+      "market_url": "https://www.dsh.so/zh/artifact/dsh-novel-agent/",
+      "fixed_commit": "5bd613217691165768b52018ee5811926e812a3e",
+      "description_claim": "DeepSeek Harness 小说工坊插件：并行候选、硬门闸门、连写台账",
+      "category": "creation_workbench",
+      "evidence_level": "fixed_readme",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "MIT",
+        "fixed_license_file_retrieved": false,
+        "fixed_license_sha256": null,
+        "license_file_identified": null,
+        "scope": "仅GitHub元数据，不能据此决定源码复用。"
+      },
+      "hetu_assessment": "上下文包与确定性检查参考；不照搬模型自循环或私有Python引擎。"
+    },
+    {
+      "repository": "ZzimaR/dsh-yanfield",
+      "repository_url": "https://github.com/ZzimaR/dsh-yanfield",
+      "market_url": "https://www.dsh.so/zh/artifact/dsh-yanfield/",
+      "fixed_commit": "45109f995fd24ef76ab0ac91beb6d5c791edd78b",
+      "description_claim": "A long-form fiction writing desk for DeepSeek Harness: drafts, outlines, research, and reviewable AI revisions. 砚田，在 DSH 里写长篇小说。",
+      "category": "writing_workbench",
+      "evidence_level": "fixed_readme",
+      "runtime_verified": false,
+      "license": {
+        "github_spdx": "NOASSERTION",
+        "fixed_license_file_retrieved": true,
+        "fixed_license_sha256": "a625dd9677e6da447c2311bd6f9bb873ddf209175e858ac485ee93db03351726",
+        "license_file_identified": "PolyForm-Noncommercial-1.0.0",
+        "scope": "仅所列根LICENSE；依赖、方法、子目录及素材仍需分别核对。"
+      },
+      "hetu_assessment": "实际LICENSE为PolyForm Noncommercial 1.0.0，不按宽松开源处理。"
+    }
+  ],
+  "fixed_files": [
+    {
+      "repository": "LiPu-jpg/Openwrite",
+      "commit": "3635a1e5ca5ab9398e8adb7c3a91526826184a30",
+      "path": "README.md",
+      "sha256": "ada5da0d2ef50424ffd29db74764335ada3f756992087e257599ffa1551017ed",
+      "bytes": 20646,
+      "url": "https://github.com/LiPu-jpg/Openwrite/blob/3635a1e5ca5ab9398e8adb7c3a91526826184a30/README.md",
+      "kind": "readme"
+    },
+    {
+      "repository": "sailoumili/novel-writer",
+      "commit": "bd0082106998a4737d3428bed334cacde46accd9",
+      "path": "README.md",
+      "sha256": "7d31d3565781c2333892ca23fdbe8b828c439a77843b5677c9026975bc498854",
+      "bytes": 6212,
+      "url": "https://github.com/sailoumili/novel-writer/blob/bd0082106998a4737d3428bed334cacde46accd9/README.md",
+      "kind": "readme"
+    },
+    {
+      "repository": "baisama-cloud/dsh-galgame-generator",
+      "commit": "276974e36a89dbaf07d9a7d4208d980088741160",
+      "path": "README.md",
+      "sha256": "b8193196e701112c6e813fbe1fb91b3aa9e81fa29291ab13b1f1319b856a4ccd",
+      "bytes": 6494,
+      "url": "https://github.com/baisama-cloud/dsh-galgame-generator/blob/276974e36a89dbaf07d9a7d4208d980088741160/README.md",
+      "kind": "readme"
+    },
+    {
+      "repository": "KurohaneKaoruko/DSH-Creator",
+      "commit": "e9a8e121a2ce9cd5e8d2721a31ab5ba7c1a399f3",
+      "path": "README.md",
+      "sha256": "1dee27d3f0953a12a26a6d7fc30935349a4727322d8313c5a119eb048c8368ae",
+      "bytes": 9413,
+      "url": "https://github.com/KurohaneKaoruko/DSH-Creator/blob/e9a8e121a2ce9cd5e8d2721a31ab5ba7c1a399f3/README.md",
+      "kind": "readme"
+    },
+    {
+      "repository": "shiyan688/dsh-novel-craft",
+      "commit": "8a52268b3d521e11fd78a3117c03c1f5a771a2cf",
+      "path": "README.md",
+      "sha256": "b5661e71186d8792776adf97ce2b4599362aaa5a995f01b9a1230dc4b7f50196",
+      "bytes": 24473,
+      "url": "https://github.com/shiyan688/dsh-novel-craft/blob/8a52268b3d521e11fd78a3117c03c1f5a771a2cf/README.md",
+      "kind": "readme"
+    },
+    {
+      "repository": "Tkingxiao/dsh-novel-solo",
+      "commit": "5e10e69535eb2d8bf953b4e79b9131bc0885a90f",
+      "path": "README.md",
+      "sha256": "a2389df326977c8573e7a82f88d19575638c9fb48ed0d9ba8bfcd8181fe8fa55",
+      "bytes": 17146,
+      "url": "https://github.com/Tkingxiao/dsh-novel-solo/blob/5e10e69535eb2d8bf953b4e79b9131bc0885a90f/README.md",
+      "kind": "readme"
+    },
+    {
+      "repository": "peterwangze/dsh-novel-writing",
+      "commit": "ab96fdb55fb01cfd9711643eee50342c4db8ae3d",
+      "path": "README.md",
+      "sha256": "375cdb7b70dbbb2427de28201351d2b6a713fd7b3553db142fc4686135098ec8",
+      "bytes": 10446,
+      "url": "https://github.com/peterwangze/dsh-novel-writing/blob/ab96fdb55fb01cfd9711643eee50342c4db8ae3d/README.md",
+      "kind": "readme"
+    },
+    {
+      "repository": "shuaweng/DSH_xieshujing",
+      "commit": "f6f747dd547102cc571b72ecc1ca0cd4dfca76ad",
+      "path": "README.md",
+      "sha256": "6d02c884d01fc62ccf9d94bd18faa83c0b6b8388067f50e0a6c21999ee64e8f7",
+      "bytes": 7315,
+      "url": "https://github.com/shuaweng/DSH_xieshujing/blob/f6f747dd547102cc571b72ecc1ca0cd4dfca76ad/README.md",
+      "kind": "readme"
+    },
+    {
+      "repository": "watersxya/dsh-novel-forge",
+      "commit": "453baef2fb0f87a6a7d449864c17a965ba951581",
+      "path": "README.md",
+      "sha256": "6aeaea6ff04b7e5d71fa8dd5de38126e986564f6b10c9b32b96d094ef7931050",
+      "bytes": 41520,
+      "url": "https://github.com/watersxya/dsh-novel-forge/blob/453baef2fb0f87a6a7d449864c17a965ba951581/README.md",
+      "kind": "readme"
+    },
+    {
+      "repository": "micellince/dsh-long-novel-workbench",
+      "commit": "fae33646ad17565b64792e94be411f1d3fcf7e95",
+      "path": "README.md",
+      "sha256": "5814f8a5d766129738700f3abcabb5dc054881d385818843f5913974cb56d42a",
+      "bytes": 29327,
+      "url": "https://github.com/micellince/dsh-long-novel-workbench/blob/fae33646ad17565b64792e94be411f1d3fcf7e95/README.md",
+      "kind": "readme"
+    },
+    {
+      "repository": "XiaoOu2024/dsh-novel-generator",
+      "commit": "8e45f22ce6e5ebf5f6ce98efce8c8a2a199c82c8",
+      "path": "README.md",
+      "sha256": "8eb97e3504d3a20c3cfefb549e354b0b73f7019a8feb2e0dce905a38d7878fd7",
+      "bytes": 17494,
+      "url": "https://github.com/XiaoOu2024/dsh-novel-generator/blob/8e45f22ce6e5ebf5f6ce98efce8c8a2a199c82c8/README.md",
+      "kind": "readme"
+    },
+    {
+      "repository": "ShanJun-pro-max/dsh-novel-workbench",
+      "commit": "1c728bbca362c99dd379c26894008b56d4122460",
+      "path": "README.md",
+      "sha256": "571767dc6049ddc98e700b59f98b33534abf5856c1fb01104cd9282a2917e62b",
+      "bytes": 15477,
+      "url": "https://github.com/ShanJun-pro-max/dsh-novel-workbench/blob/1c728bbca362c99dd379c26894008b56d4122460/README.md",
+      "kind": "readme"
+    },
+    {
+      "repository": "DrizzleGig/dsh-novel-beat",
+      "commit": "577d0995f9f47ba6b6a1398300089e7d42cb055a",
+      "path": "README.md",
+      "sha256": "c34042627c45618fd5cb7ade063fdfab40b7fa22bed3591aecd890e6b6a5a0b0",
+      "bytes": 13221,
+      "url": "https://github.com/DrizzleGig/dsh-novel-beat/blob/577d0995f9f47ba6b6a1398300089e7d42cb055a/README.md",
+      "kind": "readme"
+    },
+    {
+      "repository": "lilinshuei/novel-atlas",
+      "commit": "2a6cd304c9ce4a7db00bb31e4a2ec08571f0efd3",
+      "path": "README.md",
+      "sha256": "42a75360020cc6a10a086b79799d678bbff06d5e97d57e1ce7347d8cbc138cdd",
+      "bytes": 6246,
+      "url": "https://github.com/lilinshuei/novel-atlas/blob/2a6cd304c9ce4a7db00bb31e4a2ec08571f0efd3/README.md",
+      "kind": "readme"
+    },
+    {
+      "repository": "Jokii-Joy/novel-writer",
+      "commit": "e9df9b16a576bf3475c485c5d424b5067b423c5f",
+      "path": "README.md",
+      "sha256": "fd60818089c84e81556f5a5419d375309ce3e7226030161d1aeecee68893757c",
+      "bytes": 18880,
+      "url": "https://github.com/Jokii-Joy/novel-writer/blob/e9df9b16a576bf3475c485c5d424b5067b423c5f/README.md",
+      "kind": "readme"
+    },
+    {
+      "repository": "EastChilde/dsh-novel-forge",
+      "commit": "cc93e6b4086753e3871d045f729ca50ce2c0eb23",
+      "path": "README.md",
+      "sha256": "5e8c0cab6e05ef19df964a5313db74e742bf92b9e71f230b1afa5e292ce0fd6e",
+      "bytes": 8962,
+      "url": "https://github.com/EastChilde/dsh-novel-forge/blob/cc93e6b4086753e3871d045f729ca50ce2c0eb23/README.md",
+      "kind": "readme"
+    },
+    {
+      "repository": "good-saltfish/dsh-novel-agent",
+      "commit": "5bd613217691165768b52018ee5811926e812a3e",
+      "path": "README.md",
+      "sha256": "ac715d43e4b516e16cb954b649361b31c85637b281b86fd3a598cb6c38831f96",
+      "bytes": 8440,
+      "url": "https://github.com/good-saltfish/dsh-novel-agent/blob/5bd613217691165768b52018ee5811926e812a3e/README.md",
+      "kind": "readme"
+    },
+    {
+      "repository": "ZzimaR/dsh-yanfield",
+      "commit": "45109f995fd24ef76ab0ac91beb6d5c791edd78b",
+      "path": "README.md",
+      "sha256": "b62cdb030f4b35d9bb6007b855833f8570d240625bdada589fda4a2e3c681b4b",
+      "bytes": 13263,
+      "url": "https://github.com/ZzimaR/dsh-yanfield/blob/45109f995fd24ef76ab0ac91beb6d5c791edd78b/README.md",
+      "kind": "readme"
+    },
+    {
+      "repository": "LiPu-jpg/Openwrite",
+      "commit": "3635a1e5ca5ab9398e8adb7c3a91526826184a30",
+      "path": "LICENSE",
+      "sha256": "6f8d16d014bb0f033b21519ed7fd7323660f21c873328e32c6fa3f008ee124de",
+      "bytes": 11359,
+      "url": "https://github.com/LiPu-jpg/Openwrite/blob/3635a1e5ca5ab9398e8adb7c3a91526826184a30/LICENSE",
+      "kind": "license"
+    },
+    {
+      "repository": "baisama-cloud/dsh-galgame-generator",
+      "commit": "276974e36a89dbaf07d9a7d4208d980088741160",
+      "path": "LICENSE",
+      "sha256": "9a44b95ac2ef20c6a9ee6af70d50551d94cfb07baa77182b53100e24974f36c0",
+      "bytes": 1070,
+      "url": "https://github.com/baisama-cloud/dsh-galgame-generator/blob/276974e36a89dbaf07d9a7d4208d980088741160/LICENSE",
+      "kind": "license"
+    },
+    {
+      "repository": "KurohaneKaoruko/DSH-Creator",
+      "commit": "e9a8e121a2ce9cd5e8d2721a31ab5ba7c1a399f3",
+      "path": "LICENSE",
+      "sha256": "74fdbb2cb7cc1d85da2fa9758eeb6e2e5fe2cfeaa82066c2c754695c3af78b54",
+      "bytes": 1072,
+      "url": "https://github.com/KurohaneKaoruko/DSH-Creator/blob/e9a8e121a2ce9cd5e8d2721a31ab5ba7c1a399f3/LICENSE",
+      "kind": "license"
+    },
+    {
+      "repository": "shiyan688/dsh-novel-craft",
+      "commit": "8a52268b3d521e11fd78a3117c03c1f5a771a2cf",
+      "path": "LICENSE",
+      "sha256": "858f8cf87b60ff6f313ba93c1dd6ca97380ed7a09b78a175c8f80e95ebf1292d",
+      "bytes": 1066,
+      "url": "https://github.com/shiyan688/dsh-novel-craft/blob/8a52268b3d521e11fd78a3117c03c1f5a771a2cf/LICENSE",
+      "kind": "license"
+    },
+    {
+      "repository": "watersxya/dsh-novel-forge",
+      "commit": "453baef2fb0f87a6a7d449864c17a965ba951581",
+      "path": "LICENSE",
+      "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+      "bytes": 34523,
+      "url": "https://github.com/watersxya/dsh-novel-forge/blob/453baef2fb0f87a6a7d449864c17a965ba951581/LICENSE",
+      "kind": "license"
+    },
+    {
+      "repository": "micellince/dsh-long-novel-workbench",
+      "commit": "fae33646ad17565b64792e94be411f1d3fcf7e95",
+      "path": "LICENSE",
+      "sha256": "3e47e1c602831bf3f6ee9585f8fa7de7bebab40fdb2a2364bbd70cded1811cea",
+      "bytes": 1099,
+      "url": "https://github.com/micellince/dsh-long-novel-workbench/blob/fae33646ad17565b64792e94be411f1d3fcf7e95/LICENSE",
+      "kind": "license"
+    },
+    {
+      "repository": "DrizzleGig/dsh-novel-beat",
+      "commit": "577d0995f9f47ba6b6a1398300089e7d42cb055a",
+      "path": "LICENSE",
+      "sha256": "002c4314f4d571d18024e5be0859daac5d8a5dfdd1de6a0873c62e46ed7ba217",
+      "bytes": 1067,
+      "url": "https://github.com/DrizzleGig/dsh-novel-beat/blob/577d0995f9f47ba6b6a1398300089e7d42cb055a/LICENSE",
+      "kind": "license"
+    },
+    {
+      "repository": "lilinshuei/novel-atlas",
+      "commit": "2a6cd304c9ce4a7db00bb31e4a2ec08571f0efd3",
+      "path": "LICENSE",
+      "sha256": "a2fcfce1a85d15cffea7bba96f399205494dfcaaecd79f0946fff39f33c202d3",
+      "bytes": 1067,
+      "url": "https://github.com/lilinshuei/novel-atlas/blob/2a6cd304c9ce4a7db00bb31e4a2ec08571f0efd3/LICENSE",
+      "kind": "license"
+    },
+    {
+      "repository": "Jokii-Joy/novel-writer",
+      "commit": "e9df9b16a576bf3475c485c5d424b5067b423c5f",
+      "path": "LICENSE",
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "bytes": 35149,
+      "url": "https://github.com/Jokii-Joy/novel-writer/blob/e9df9b16a576bf3475c485c5d424b5067b423c5f/LICENSE",
+      "kind": "license"
+    },
+    {
+      "repository": "ZzimaR/dsh-yanfield",
+      "commit": "45109f995fd24ef76ab0ac91beb6d5c791edd78b",
+      "path": "LICENSE",
+      "sha256": "a625dd9677e6da447c2311bd6f9bb873ddf209175e858ac485ee93db03351726",
+      "bytes": 4724,
+      "url": "https://github.com/ZzimaR/dsh-yanfield/blob/45109f995fd24ef76ab0ac91beb6d5c791edd78b/LICENSE",
+      "kind": "license"
+    },
+    {
+      "repository": "shiyan688/dsh-novel-craft",
+      "commit": "8a52268b3d521e11fd78a3117c03c1f5a771a2cf",
+      "path": "lib/core/ledger.js",
+      "sha256": "443fdcc69a3c211acbda1c7c72b4f1af840bf4bb55b7771a8b07a84bcab6d54f",
+      "bytes": 32662,
+      "url": "https://github.com/shiyan688/dsh-novel-craft/blob/8a52268b3d521e11fd78a3117c03c1f5a771a2cf/lib/core/ledger.js",
+      "kind": "focused_file"
+    },
+    {
+      "repository": "shiyan688/dsh-novel-craft",
+      "commit": "8a52268b3d521e11fd78a3117c03c1f5a771a2cf",
+      "path": "lib/core/annotate.js",
+      "sha256": "aaf43020ddd71432b51f2bb88dbdc59460af35bb9211d076bc0c2fa680578aba",
+      "bytes": 16770,
+      "url": "https://github.com/shiyan688/dsh-novel-craft/blob/8a52268b3d521e11fd78a3117c03c1f5a771a2cf/lib/core/annotate.js",
+      "kind": "focused_file"
+    },
+    {
+      "repository": "shiyan688/dsh-novel-craft",
+      "commit": "8a52268b3d521e11fd78a3117c03c1f5a771a2cf",
+      "path": "lib/core/pack.js",
+      "sha256": "a057a8e98811c1ef48568c9c04f042cb8cf529ef80065ccd5181d3123efbfdf4",
+      "bytes": 20428,
+      "url": "https://github.com/shiyan688/dsh-novel-craft/blob/8a52268b3d521e11fd78a3117c03c1f5a771a2cf/lib/core/pack.js",
+      "kind": "focused_file"
+    },
+    {
+      "repository": "shiyan688/dsh-novel-craft",
+      "commit": "8a52268b3d521e11fd78a3117c03c1f5a771a2cf",
+      "path": "lib/core/pipeline.js",
+      "sha256": "8a07927f9c16f9a2089f099b83d1050c9f62c67e7d83e9315ce25635a8a2eaf5",
+      "bytes": 47383,
+      "url": "https://github.com/shiyan688/dsh-novel-craft/blob/8a52268b3d521e11fd78a3117c03c1f5a771a2cf/lib/core/pipeline.js",
+      "kind": "focused_file"
+    },
+    {
+      "repository": "shiyan688/dsh-novel-craft",
+      "commit": "8a52268b3d521e11fd78a3117c03c1f5a771a2cf",
+      "path": "skills/taste-calibration/SKILL.md",
+      "sha256": "61ea2301c9cd5e84dddf0cf31d554aa90050e25031019e9b7c5d8fbbab688707",
+      "bytes": 6662,
+      "url": "https://github.com/shiyan688/dsh-novel-craft/blob/8a52268b3d521e11fd78a3117c03c1f5a771a2cf/skills/taste-calibration/SKILL.md",
+      "kind": "focused_file"
+    },
+    {
+      "repository": "shiyan688/dsh-novel-craft",
+      "commit": "8a52268b3d521e11fd78a3117c03c1f5a771a2cf",
+      "path": "THIRD_PARTY_NOTICES.md",
+      "sha256": "1653c9e0e92aed2b86bd1f05aff397d3d33b6a773d6726da78434d385f112328",
+      "bytes": 4093,
+      "url": "https://github.com/shiyan688/dsh-novel-craft/blob/8a52268b3d521e11fd78a3117c03c1f5a771a2cf/THIRD_PARTY_NOTICES.md",
+      "kind": "focused_file"
+    },
+    {
+      "repository": "shiyan688/dsh-novel-craft",
+      "commit": "8a52268b3d521e11fd78a3117c03c1f5a771a2cf",
+      "path": "package.json",
+      "sha256": "8afc830c79698510eee0554046e6f12c18e6f7e359919f8af83f14c1b6ed0e58",
+      "bytes": 2067,
+      "url": "https://github.com/shiyan688/dsh-novel-craft/blob/8a52268b3d521e11fd78a3117c03c1f5a771a2cf/package.json",
+      "kind": "focused_file"
+    },
+    {
+      "repository": "KurohaneKaoruko/DSH-Creator",
+      "commit": "e9a8e121a2ce9cd5e8d2721a31ab5ba7c1a399f3",
+      "path": "plugins/lint.mjs",
+      "sha256": "359d5fd84d846929d5435cb25bf40690a46a6fbce3fd4b32834fcdc0aebaab00",
+      "bytes": 23427,
+      "url": "https://github.com/KurohaneKaoruko/DSH-Creator/blob/e9a8e121a2ce9cd5e8d2721a31ab5ba7c1a399f3/plugins/lint.mjs",
+      "kind": "focused_file"
+    },
+    {
+      "repository": "KurohaneKaoruko/DSH-Creator",
+      "commit": "e9a8e121a2ce9cd5e8d2721a31ab5ba7c1a399f3",
+      "path": "plugins/creator-tools.mjs",
+      "sha256": "439c7d437163b225cb3f6bc42fb789b0a4781f01301b64bf862aa80c2b9138fb",
+      "bytes": 51918,
+      "url": "https://github.com/KurohaneKaoruko/DSH-Creator/blob/e9a8e121a2ce9cd5e8d2721a31ab5ba7c1a399f3/plugins/creator-tools.mjs",
+      "kind": "focused_file"
+    },
+    {
+      "repository": "KurohaneKaoruko/DSH-Creator",
+      "commit": "e9a8e121a2ce9cd5e8d2721a31ab5ba7c1a399f3",
+      "path": "plugins/project-core.mjs",
+      "sha256": "0054f7fb0ae1444dc8d1dcc22d834109dbfb1d7fe1e3170c2aa942437673016e",
+      "bytes": 47501,
+      "url": "https://github.com/KurohaneKaoruko/DSH-Creator/blob/e9a8e121a2ce9cd5e8d2721a31ab5ba7c1a399f3/plugins/project-core.mjs",
+      "kind": "focused_file"
+    },
+    {
+      "repository": "KurohaneKaoruko/DSH-Creator",
+      "commit": "e9a8e121a2ce9cd5e8d2721a31ab5ba7c1a399f3",
+      "path": "docs/ARCHITECTURE.md",
+      "sha256": "8ac1ed19ed034e9c074bcb3c0dbf7f91ab1bf083a318b7137db7b347eaaa1648",
+      "bytes": 11358,
+      "url": "https://github.com/KurohaneKaoruko/DSH-Creator/blob/e9a8e121a2ce9cd5e8d2721a31ab5ba7c1a399f3/docs/ARCHITECTURE.md",
+      "kind": "focused_file"
+    },
+    {
+      "repository": "KurohaneKaoruko/DSH-Creator",
+      "commit": "e9a8e121a2ce9cd5e8d2721a31ab5ba7c1a399f3",
+      "path": "package.json",
+      "sha256": "f72f2bc48eed43c957cd5c182afb4de2bebe5d7592ab3e34d5f3078628420ce3",
+      "bytes": 1620,
+      "url": "https://github.com/KurohaneKaoruko/DSH-Creator/blob/e9a8e121a2ce9cd5e8d2721a31ab5ba7c1a399f3/package.json",
+      "kind": "focused_file"
+    },
+    {
+      "repository": "sailoumili/novel-writer",
+      "commit": "bd0082106998a4737d3428bed334cacde46accd9",
+      "path": "agent.cordis.yml",
+      "sha256": "f0fee33def0902ac132b3d039d4b2be1263e7daa3bb1bbdea32eb22cd1cbf228",
+      "bytes": 19054,
+      "url": "https://github.com/sailoumili/novel-writer/blob/bd0082106998a4737d3428bed334cacde46accd9/agent.cordis.yml",
+      "kind": "focused_file"
+    },
+    {
+      "repository": "sailoumili/novel-writer",
+      "commit": "bd0082106998a4737d3428bed334cacde46accd9",
+      "path": "package.json",
+      "sha256": "995ae973c86080e3cf9ba2aa190370c647aa7a82a7f3c564a1c183b9b92edaab",
+      "bytes": 1214,
+      "url": "https://github.com/sailoumili/novel-writer/blob/bd0082106998a4737d3428bed334cacde46accd9/package.json",
+      "kind": "focused_file"
+    },
+    {
+      "repository": "LiPu-jpg/Openwrite",
+      "commit": "3635a1e5ca5ab9398e8adb7c3a91526826184a30",
+      "path": "docs/REVIEW_DAG_FRAMEWORK.md",
+      "sha256": "82b2ffec63472b841677f8f3b3f1ab5f58c6117aadc211c3d0d24d4ee8e2e74b",
+      "bytes": 3741,
+      "url": "https://github.com/LiPu-jpg/Openwrite/blob/3635a1e5ca5ab9398e8adb7c3a91526826184a30/docs/REVIEW_DAG_FRAMEWORK.md",
+      "kind": "focused_file"
+    },
+    {
+      "repository": "LiPu-jpg/Openwrite",
+      "commit": "3635a1e5ca5ab9398e8adb7c3a91526826184a30",
+      "path": "docs/TOOLS.md",
+      "sha256": "e186e9d943e9ee0d62dedc0f55d177704393da12614742237fdc6852e8e45f0e",
+      "bytes": 68584,
+      "url": "https://github.com/LiPu-jpg/Openwrite/blob/3635a1e5ca5ab9398e8adb7c3a91526826184a30/docs/TOOLS.md",
+      "kind": "focused_file"
+    },
+    {
+      "repository": "LiPu-jpg/Openwrite",
+      "commit": "3635a1e5ca5ab9398e8adb7c3a91526826184a30",
+      "path": "THIRD_PARTY_NOTICES.md",
+      "sha256": "cf67633c1a0365f116bce0659d86ccabb915bc73d06ee8ec52585e0765265440",
+      "bytes": 1875,
+      "url": "https://github.com/LiPu-jpg/Openwrite/blob/3635a1e5ca5ab9398e8adb7c3a91526826184a30/THIRD_PARTY_NOTICES.md",
+      "kind": "focused_file"
+    },
+    {
+      "repository": "LiPu-jpg/Openwrite",
+      "commit": "3635a1e5ca5ab9398e8adb7c3a91526826184a30",
+      "path": "package.json",
+      "sha256": "aaf468ed601d2c79eaea3e098e1c7f24b07a341b3dcde6396a9f0781e38e6522",
+      "bytes": 6158,
+      "url": "https://github.com/LiPu-jpg/Openwrite/blob/3635a1e5ca5ab9398e8adb7c3a91526826184a30/package.json",
+      "kind": "focused_file"
+    }
+  ]
+}

@@ -65,3 +65,11 @@ Hetu plugins are discovered through the existing CLI or MCP connection. They do 
 Disabling or uninstalling stops plugin calls. Saved professional data remains available through generic reading and export; specialized editing needs the appropriate plugin enabled. Uninstalling a tool does not delete a work.
 
 For uncertain versions, permissions or results, keep the original references and follow [recovery guidance](troubleshooting.md). To make your own tool, read [Develop a creative plugin](plugin-development.md).
+
+## From a plan to the next draft
+
+[Prose Studio](/en/plugins/prose-studio/) records your preferences and evidence; [Novel Review](/en/plugins/novel-review/) tracks coverage and concerns across six domains; [Novel Atlas](/en/plugins/novel-atlas/) presents linked views of people, relationships, places and events. Choose what helps; none requires the other two.
+
+Ask your Agent to read existing work and plans, state its actual reading scope, compare two directions and their costs, then prepare a candidate using your preferences. Continue from specific feedback, read the revised candidate and recheck the original concern before marking it resolved.
+
+Novel Planner also compares future directions, story time and narrative order, and what a character knows at a particular event. Unknown time stays unknown; a planned direction is not an event that has occurred. Novel Atlas exports offline HTML without full chapters and remains readable without scripts or a network.
