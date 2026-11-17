@@ -307,7 +307,7 @@
       "verified_platforms": [
         "macOS arm64"
       ],
-      "evidence_url": "https://github.com/wordflowlab/hetu-story-research/releases/download/v0.1.0/runtime-acceptance.json",
+      "evidence_url": "https://github.com/wordflowlab/hetu-story-research/releases/download/v0.1.0/installed-acceptance.json",
       "integrity_url": "https://github.com/wordflowlab/hetu-story-research/releases/download/v0.1.0/release-integrity.json"
     }
   },
@@ -341,7 +341,7 @@
       "verified_platforms": [
         "macOS arm64"
       ],
-      "evidence_url": "https://github.com/wordflowlab/hetu-character-lab/releases/download/v0.1.0/runtime-acceptance.json",
+      "evidence_url": "https://github.com/wordflowlab/hetu-character-lab/releases/download/v0.1.0/installed-acceptance.json",
       "integrity_url": "https://github.com/wordflowlab/hetu-character-lab/releases/download/v0.1.0/release-integrity.json"
     }
   },
@@ -375,7 +375,7 @@
       "verified_platforms": [
         "macOS arm64"
       ],
-      "evidence_url": "https://github.com/wordflowlab/hetu-story-analysis/releases/download/v0.1.0/runtime-acceptance.json",
+      "evidence_url": "https://github.com/wordflowlab/hetu-story-analysis/releases/download/v0.1.0/installed-acceptance.json",
       "integrity_url": "https://github.com/wordflowlab/hetu-story-analysis/releases/download/v0.1.0/release-integrity.json"
     }
   }

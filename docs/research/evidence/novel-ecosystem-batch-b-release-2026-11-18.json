@@ -73,11 +73,356 @@
       "failure": "无脚本用例把目录第一项固定当成人物关系图，改为精确身份导航",
       "focused_recheck_passed": 1
     },
-    "production": "pending"
+    "production": {
+      "origin": "https://hetu.limeai.run",
+      "deployment_url": "https://2614c0ae.hetu-website-3uu.pages.dev",
+      "source_commit": "ec1fe34",
+      "pages": [
+        {
+          "url": "https://hetu.limeai.run/plugins/story-research/",
+          "http_status": 200,
+          "fixed_release": true
+        },
+        {
+          "url": "https://hetu.limeai.run/en/plugins/story-research/",
+          "http_status": 200,
+          "fixed_release": true
+        },
+        {
+          "url": "https://hetu.limeai.run/plugins/character-lab/",
+          "http_status": 200,
+          "fixed_release": true
+        },
+        {
+          "url": "https://hetu.limeai.run/en/plugins/character-lab/",
+          "http_status": 200,
+          "fixed_release": true
+        },
+        {
+          "url": "https://hetu.limeai.run/plugins/story-analysis/",
+          "http_status": 200,
+          "fixed_release": true
+        },
+        {
+          "url": "https://hetu.limeai.run/en/plugins/story-analysis/",
+          "http_status": 200,
+          "fixed_release": true
+        }
+      ],
+      "all_three_images_sha256_match": true,
+      "browser_tests": {
+        "passed": 94,
+        "failed": 1,
+        "failure": "故事分析中文768px详情在等待元素稳定时超时；保留原结果",
+        "focused_recheck_passed": 1,
+        "focused_recheck_duration_seconds": 6.9,
+        "test_or_assertions_changed": false
+      }
+    }
   },
   "installation": {
-    "status": "pending",
-    "required_host_version": "0.11.7"
+    "date": "2026-11-18",
+    "status": "passed_with_explicit_scope",
+    "local_host": {
+      "source_build": false,
+      "version": "hetu 0.11.7",
+      "git_sha": "3d929978419b8b230aee5fa2f9aed83614d4e2dd",
+      "release_url": "https://github.com/limecloud/hetu/releases/tag/v0.11.7",
+      "archive_sha256": "94fcbc55dc0dcdc9e7edce5ec82812760a15aef80a3907a9eed1dc8bba66b3ec",
+      "team_id": "93RF7VQ26C",
+      "signature_verified": true,
+      "gatekeeper": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/novel-batch-b/official-host-v0.11.7/expanded/Hetu.app: accepted\nsource=Notarized Developer ID",
+      "staple": "Processing: /Users/coso/Documents/dev/ai/limecloud/hetu/output/novel-batch-b/official-host-v0.11.7/expanded/Hetu.app\nThe validate action worked!",
+      "application_path": "/Applications/Hetu.app",
+      "no_backup": true,
+      "author_data_untouched": true
+    },
+    "normal_installation": {
+      "host_version": "hetu 0.11.7",
+      "source_build": false,
+      "public_packages_installed": [
+        {
+          "plugin_id": "org.wordflowlab.story-research",
+          "version": "0.1.0",
+          "package_sha256": "5adeffdf4bfe4f71ac614204bfe77825747164fa4705f6b9ec52a1d908b5bf9f",
+          "public_archive_sha256": "41187357c1f391d4cdd3a7f93741e9972ce1f60a001a0fbb6305cec21c8d885a",
+          "skill_name": "hetu-story-research",
+          "skill_content_sha256": "eb016d4c45689c25031dc7b6b8dac69dc554fcca4c2e9885bbec62065529d70a"
+        },
+        {
+          "plugin_id": "org.wordflowlab.character-lab",
+          "version": "0.1.0",
+          "package_sha256": "d3404b533b5e8a03e45e84eb23f5d4a99209568a0d8e09e03b13a0b05d6a4944",
+          "public_archive_sha256": "cf0bf4ca21d7eff32d317a618e5cf64bd8b1d0177f18a55f6613a30a5c32b681",
+          "skill_name": "hetu-character-lab",
+          "skill_content_sha256": "c77d31b84fc5a7ae7c7015b700081282af4fdb44b6eaa639c310e9ed56e8bcdd"
+        },
+        {
+          "plugin_id": "org.wordflowlab.story-analysis",
+          "version": "0.1.0",
+          "package_sha256": "fb117ee372a4fce7cde8cb1afd997f3d0b168066af2b1334171e721dfcd21009",
+          "public_archive_sha256": "fdbe2135ac2ddb789e6788ff2637149fef8aae03dbf573c5ee801bca0a6f769b",
+          "skill_name": "hetu-story-analysis",
+          "skill_content_sha256": "13bdbf944070f39a63ba88891bfe1fdc5e839786b81014da0f4b60f660960bba"
+        }
+      ],
+      "all_active": true,
+      "previous_packages_preserved": true,
+      "initial_package_count": 7,
+      "final_package_count": 10,
+      "state_sha256": "06dc2714687d7414ad09f462d0eb1632c1e40b25824e74cca9816e1a1815c28a"
+    },
+    "native_mcp_discovery": {
+      "entry": "current Codex native MCP connection",
+      "restarted": false,
+      "new_codex_plugin": false,
+      "client_configuration_changed": false,
+      "status": "succeeded",
+      "package_count": 10,
+      "plugins": [
+        {
+          "plugin_id": "org.wordflowlab.story-research",
+          "version": "0.1.0",
+          "package_sha256": "5adeffdf4bfe4f71ac614204bfe77825747164fa4705f6b9ec52a1d908b5bf9f",
+          "enabled": true
+        },
+        {
+          "plugin_id": "org.wordflowlab.character-lab",
+          "version": "0.1.0",
+          "package_sha256": "d3404b533b5e8a03e45e84eb23f5d4a99209568a0d8e09e03b13a0b05d6a4944",
+          "enabled": true
+        },
+        {
+          "plugin_id": "org.wordflowlab.story-analysis",
+          "version": "0.1.0",
+          "package_sha256": "fb117ee372a4fce7cde8cb1afd997f3d0b168066af2b1334171e721dfcd21009",
+          "enabled": true
+        }
+      ],
+      "skills": [
+        {
+          "plugin_id": "org.wordflowlab.story-research",
+          "name": "hetu-story-research",
+          "package_sha256": "5adeffdf4bfe4f71ac614204bfe77825747164fa4705f6b9ec52a1d908b5bf9f",
+          "content_sha256": "eb016d4c45689c25031dc7b6b8dac69dc554fcca4c2e9885bbec62065529d70a"
+        },
+        {
+          "plugin_id": "org.wordflowlab.character-lab",
+          "name": "hetu-character-lab",
+          "package_sha256": "d3404b533b5e8a03e45e84eb23f5d4a99209568a0d8e09e03b13a0b05d6a4944",
+          "content_sha256": "c77d31b84fc5a7ae7c7015b700081282af4fdb44b6eaa639c310e9ed56e8bcdd"
+        },
+        {
+          "plugin_id": "org.wordflowlab.story-analysis",
+          "name": "hetu-story-analysis",
+          "package_sha256": "fb117ee372a4fce7cde8cb1afd997f3d0b168066af2b1334171e721dfcd21009",
+          "content_sha256": "13bdbf944070f39a63ba88891bfe1fdc5e839786b81014da0f4b60f660960bba"
+        }
+      ],
+      "mcp_process_version": "0.10.0",
+      "packaged_core_version": "0.11.7",
+      "demo": {
+        "title": "插件验收示例",
+        "work_ref": {
+          "workspace_id": "workspace_765f436c-d36a-4713-8146-2d52cdf92923",
+          "kind": "novel",
+          "object_id": "novel_14e945e3-29bd-4dbf-ac01-8b8c3a4c6d7d"
+        },
+        "manuscript_imported": false
+      },
+      "live_skill_reads": [
+        {
+          "plugin_id": "org.wordflowlab.story-research",
+          "package_sha256": "5adeffdf4bfe4f71ac614204bfe77825747164fa4705f6b9ec52a1d908b5bf9f",
+          "professional_actions": 18,
+          "capabilities_sha256": "2c38d7544020cd668ff8e9e38d92223409cc40a83048624cc39d76a6a7339c8c",
+          "skill_id": "story-research",
+          "skill_name": "hetu-story-research",
+          "skill_content_sha256": "eb016d4c45689c25031dc7b6b8dac69dc554fcca4c2e9885bbec62065529d70a",
+          "skill_read": "succeeded"
+        },
+        {
+          "plugin_id": "org.wordflowlab.character-lab",
+          "package_sha256": "d3404b533b5e8a03e45e84eb23f5d4a99209568a0d8e09e03b13a0b05d6a4944",
+          "professional_actions": 22,
+          "capabilities_sha256": "97ae72192f8d108e95d34dfa7c4650ee87b8546602622321b6a7d262db28a6db",
+          "skill_id": "character-lab",
+          "skill_name": "hetu-character-lab",
+          "skill_content_sha256": "c77d31b84fc5a7ae7c7015b700081282af4fdb44b6eaa639c310e9ed56e8bcdd",
+          "skill_read": "succeeded"
+        },
+        {
+          "plugin_id": "org.wordflowlab.story-analysis",
+          "package_sha256": "fb117ee372a4fce7cde8cb1afd997f3d0b168066af2b1334171e721dfcd21009",
+          "professional_actions": 23,
+          "capabilities_sha256": "37d85a5b76850013ec53570f842f3a185253295eb8abfa2c277952591e4c7384",
+          "skill_id": "story-analysis",
+          "skill_name": "hetu-story-analysis",
+          "skill_content_sha256": "13bdbf944070f39a63ba88891bfe1fdc5e839786b81014da0f4b60f660960bba",
+          "skill_read": "succeeded"
+        }
+      ],
+      "initial_parallel_capability_requests": {
+        "succeeded": 1,
+        "tool_errors": 2,
+        "recovered_by_serial_readback": true
+      },
+      "grant_included": false,
+      "live_backend_reads": [
+        {
+          "plugin_id": "org.wordflowlab.story-research",
+          "action": "list_projects",
+          "status": "succeeded",
+          "returned_objects": 0
+        },
+        {
+          "plugin_id": "org.wordflowlab.character-lab",
+          "action": "list_projects",
+          "status": "succeeded",
+          "returned_objects": 0
+        },
+        {
+          "plugin_id": "org.wordflowlab.story-analysis",
+          "action": "list_projects",
+          "status": "succeeded",
+          "returned_objects": 0
+        }
+      ]
+    },
+    "computer_use": {
+      "status": "unavailable",
+      "application": "/Applications/Hetu.app",
+      "attempt": "reset after verified v0.11.7 installation; getApp absolute path",
+      "error_code": -10005,
+      "error": "timeoutReached",
+      "native_window_observed": false,
+      "substitute_evidence": "Three actual installed Electron Playwright journeys and screenshots passed separately; no native Computer Use pass claimed."
+    },
+    "preserved_ci_failure": {
+      "run_id": 44137197913,
+      "url": "https://github.com/wordflowlab/hetu-story-analysis/actions/runs/44137197913",
+      "passed_checks": 6,
+      "failed_check": "cross",
+      "cause": "Fixed review test helper validators.ts was not generated; ERR_MODULE_NOT_FOUND. Added helper generation; published artifacts unchanged."
+    },
+    "official_bundle_ci": {
+      "conclusion": "success",
+      "databaseId": 44140866485,
+      "headSha": "660f4030c1f190980dbb16b9ab58e41c58e42ad2",
+      "status": "completed",
+      "url": "https://github.com/wordflowlab/hetu-story-analysis/actions/runs/44140866485",
+      "host": {
+        "source_build": false,
+        "version": "hetu 0.11.7",
+        "git_sha": "3d929978419b8b230aee5fa2f9aed83614d4e2dd",
+        "archive_sha256": "94fcbc55dc0dcdc9e7edce5ec82812760a15aef80a3907a9eed1dc8bba66b3ec",
+        "signature_verified": true,
+        "gatekeeper": "/Applications/Hetu.app: accepted\nsource=Notarized Developer ID",
+        "staple": "Processing: /Applications/Hetu.app\nThe validate action worked!",
+        "application_path": "/Applications/Hetu.app"
+      },
+      "results": [
+        {
+          "slug": "story-research",
+          "test": "machine",
+          "exit_code": 0
+        },
+        {
+          "slug": "story-research",
+          "test": "ui",
+          "exit_code": 0
+        },
+        {
+          "slug": "character-lab",
+          "test": "machine",
+          "exit_code": 0
+        },
+        {
+          "slug": "character-lab",
+          "test": "ui",
+          "exit_code": 0
+        },
+        {
+          "slug": "story-analysis",
+          "test": "machine",
+          "exit_code": 0
+        },
+        {
+          "slug": "story-analysis",
+          "test": "ui",
+          "exit_code": 0
+        },
+        {
+          "slug": "story-analysis",
+          "test": "cross",
+          "exit_code": 0
+        }
+      ]
+    },
+    "local_acceptance": {
+      "results": [
+        {
+          "slug": "story-research",
+          "test": "machine",
+          "exit_code": 0
+        },
+        {
+          "slug": "story-research",
+          "test": "ui",
+          "exit_code": 0
+        },
+        {
+          "slug": "character-lab",
+          "test": "machine",
+          "exit_code": 1
+        }
+      ],
+      "additional_ui": [
+        {
+          "slug": "character-lab",
+          "test": "ui",
+          "exit_code": 0
+        },
+        {
+          "slug": "story-analysis",
+          "test": "ui",
+          "exit_code": 0
+        }
+      ],
+      "all_local_machine_tests_passed": false,
+      "preserved_failure": "人物工坊本机用例600秒总时限取消；后续原操作与最终回读完成且断言回执保留，不合并为绿色测试。正式包完整机器验收由独立CI取证。"
+    },
+    "plugins": [
+      {
+        "plugin_id": "org.wordflowlab.story-research",
+        "version": "0.1.0",
+        "package_sha256": "5adeffdf4bfe4f71ac614204bfe77825747164fa4705f6b9ec52a1d908b5bf9f",
+        "runtime_source": "official_bundle_ci",
+        "ui_source": "official_bundle_ci"
+      },
+      {
+        "plugin_id": "org.wordflowlab.character-lab",
+        "version": "0.1.0",
+        "package_sha256": "d3404b533b5e8a03e45e84eb23f5d4a99209568a0d8e09e03b13a0b05d6a4944",
+        "runtime_source": "official_bundle_ci",
+        "ui_source": "official_bundle_ci"
+      },
+      {
+        "plugin_id": "org.wordflowlab.story-analysis",
+        "version": "0.1.0",
+        "package_sha256": "fb117ee372a4fce7cde8cb1afd997f3d0b168066af2b1334171e721dfcd21009",
+        "runtime_source": "official_bundle_ci",
+        "ui_source": "official_bundle_ci"
+      }
+    ],
+    "installation_script_contract_correction": "初次查询原操作不存在由CLI返回blocked/hetu.plugin_operation_failed；只读检查后按实际合同处理，保留同一操作键，未重复安装。",
+    "unverified": [
+      "Windows/Linux专业插件业务",
+      "多机性能及高负载时限",
+      "真实创作质量与作者认可",
+      "正文采纳、正式设定及定稿",
+      "付费模型调用"
+    ]
   },
   "historical_failures_preserved": true,
   "unverified": [
