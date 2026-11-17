@@ -39,12 +39,17 @@ for (const file of files) {
 }
 const sitemap = await readFile(path.join(root, 'sitemap.xml'), 'utf8');
 // 目录展示事实必须对应真实包，不以手写官网版本替代包清单。
-for (const slug of ['relationships', 'timeline']) {
-  const manifest = JSON.parse(await readFile(new URL(`../../../plugins/${slug}/plugin.json`, import.meta.url), 'utf8'));
+const externalListings = JSON.parse(await readFile(new URL('../src/data/plugin-listings.json', import.meta.url), 'utf8'));
+for (const slug of ['relationships', 'timeline', ...externalListings.map(entry => entry.slug)]) {
+  const listing = externalListings.find(entry => entry.slug === slug);
+  const manifest = listing?.manifest ?? JSON.parse(await readFile(new URL(`../../../plugins/${slug}/plugin.json`, import.meta.url), 'utf8'));
   for (const prefix of ['', 'en/']) {
     const pathname = `/${prefix}plugins/${slug}/`;
     const html = await readFile(path.join(root, pathname, 'index.html'), 'utf8');
     assert.ok(html.includes(manifest.id) && html.includes(manifest.version), `插件身份或版本不符：${pathname}`);
+    if (listing) {
+      for (const value of [listing.source_commit, listing.release.archive_sha256, listing.release.package_sha256, listing.release.download_url]) assert.ok(html.includes(value), '外部插件固定来源缺失：'+pathname);
+    }
     for (const permission of manifest.permissions) assert.ok(html.includes(permission), `插件权限未展示：${pathname}/${permission}`);
     assert.ok(sitemap.includes(`<loc>https://hetu.limeai.run${pathname}</loc>`), `站点地图缺少插件：${pathname}`);
   }

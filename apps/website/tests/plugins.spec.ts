@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
-const packages = ['relationships', 'timeline'].map(slug => ({ slug, ...JSON.parse(readFileSync(new URL(`../../../plugins/${slug}/plugin.json`, import.meta.url), 'utf8')) }));
+const listings = JSON.parse(readFileSync(new URL('../src/data/plugin-listings.json', import.meta.url), 'utf8'));
+const packages = ['relationships', 'timeline'].map(slug => ({ slug, ...JSON.parse(readFileSync(new URL(`../../../plugins/${slug}/plugin.json`, import.meta.url), 'utf8')) })).concat(listings.map((entry:any)=>({slug:entry.slug,...entry.manifest})));
 
 for (const prefix of ['', '/en']) {
   const en = !!prefix;
@@ -57,7 +58,7 @@ for (const prefix of ['', '/en']) {
 
   test(`${prefix || 'zh-CN'} 插件作者与开发者指南、博客和SEO相互可达`, async ({ page, request }) => {
     const sitemap = await (await request.get('/sitemap.xml')).text();
-    for (const path of ['plugins', 'plugins/relationships', 'plugins/timeline', 'docs/plugins', 'docs/plugin-development', 'docs/plugin-publishing', 'blog/creative-plugins']) {
+    for (const path of ['plugins', 'plugins/relationships', 'plugins/timeline', 'plugins/novel-planner', 'docs/plugins', 'docs/plugin-development', 'docs/plugin-publishing', 'blog/creative-plugins']) {
       await page.goto(`${prefix}/${path}/`);
       await expect(page.locator('main h1')).toHaveCount(1);
       await expect(page.locator('main h1')).toBeVisible();
@@ -92,4 +93,21 @@ test('剪贴板受限时保留可手动复制的请求并给出反馈', async ({
   await page.locator('[data-copy-plugin-request]').click();
   await expect(page.locator('[data-plugin-copy-status]')).toContainText('手动复制');
   await expect(page.locator('[data-plugin-request]')).toBeVisible();
+});
+
+for (const prefix of ['', '/en']) for (const width of [375, 768, 1440]) test((prefix || 'zh-CN')+` ${width}px 外部插件展示发布者、固定制品与验收范围`, async ({page})=>{
+  const listing=listings[0];
+  await page.setViewportSize({width,height:960});
+  await page.goto(prefix+'/plugins/novel-planner/');
+  await expect(page.locator('.plugin-byline')).toContainText('WordFlowLab');
+  await expect(page.locator('.plugin-byline')).toContainText(prefix?'Preview':'开发预览');
+  await expect(page.locator('.plugin-package')).toContainText('macOS arm64');
+  await expect(page.locator('.plugin-release > a')).toHaveAttribute('href',listing.release.download_url);
+  await page.locator('.plugin-release summary').click();
+  await expect(page.locator('.plugin-release')).toContainText(listing.release.package_sha256);
+  await expect(page.locator('.plugin-release')).toContainText(listing.release.archive_sha256);
+  await expect(page.locator('.plugin-package nav a').first()).toHaveAttribute('href',listing.source_repository+'/tree/'+listing.source_commit);
+  await expect(page.locator('img[src="/plugins/novel-planner.png"]')).toBeVisible();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await page.screenshot({path:`test-results/novel-planner-${prefix?'en':'zh-CN'}-${width}.png`,fullPage:true});
 });

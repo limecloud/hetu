@@ -1,0 +1,40 @@
+[
+  {
+    "slug": "novel-planner",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.novel-planner",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "小说规划",
+        "en": "Novel Planner"
+      },
+      "license": "Apache-2.0",
+      "permissions": [
+        "objects.read",
+        "objects.write",
+        "work.read"
+      ]
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-novel-planner",
+    "source_commit": "b7534a068fe4578833c5d1c2c46dad6e991d125c",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-novel-planner/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-novel-planner/releases/download/v0.1.0/hetu-novel-planner-0.1.0.zip",
+      "archive_sha256": "029f6ccbdcfe37ffb8234afefe94b563ae1602073f15182407fb740a2d01d86d",
+      "package_sha256": "05c6e9a51a16867a01225a1d296c692c2b4abda8b11d05fbc5c43fb0e8d6d4e8",
+      "size_bytes": 449372,
+      "minimum_host_version": "0.10.0",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-novel-planner/blob/b7534a068fe4578833c5d1c2c46dad6e991d125c/docs/research/runtime-acceptance-2026-11-17.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-novel-planner/releases/download/v0.1.0/release-integrity.json"
+    }
+  }
+]

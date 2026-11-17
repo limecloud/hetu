@@ -16,11 +16,17 @@ Or:
 
 Your Agent checks actual installed capabilities and the work bound to this connection first. A catalog description cannot replace capability discovery.
 
+For a long novel, choose [Novel Planner](/en/plugins/novel-planner/) and ask:
+
+> Read the novel’s existing plans before organizing each volume’s goal, theme, conflict, turning points and detailed plot. Preserve my decisions, save and read back the results. Do not change, adopt or finalize manuscript text.
+
 ## 2. Install the selected Hetu plugin
 
 Manage packages under **Creative plugins** in the library, or ask your Agent to inspect, install and read back a package through Hetu’s machine interface following your explicit choice. Installation does not require a desktop window.
 
 Check the source, version and features. A distribution contains built views, a manifest and necessary runtime files; a source folder is not the installable package. Plugin details link to source and build instructions for developers. Authors can ask their Agent to prepare the selected source.
+
+Novel Planner’s detail page links to its preview release and verified platforms. Give the page to your Agent to download the fixed runtime package, verify digests, extract it and install through Hetu. Building source is unnecessary. Rediscover capabilities afterward to confirm the actual version.
 
 The website catalog helps you choose. It does not inspect local installation state, execute downloads or grant permissions.
 
@@ -35,6 +41,8 @@ If uncertain, say: “Show me what this task will read and write before I approv
 ## 4. Inspect the result and give precise feedback
 
 Check people, link direction and labels in a graph. Check dates, sequence and context in a timeline. A tidy arrangement does not establish that the story is consistent.
+
+In Novel Planner, use the volume list to read volume information, plans and detailed plots, then inspect linked characters, places and clues. Work records show actual steps and status; a stop request still needs acknowledgment from the external Agent.
 
 For example: “Qiao does not know Zhou’s identity yet. Change that connection to reflect what she currently knows.” Your Agent continues from the saved revision. Review the result or edit it yourself.
 

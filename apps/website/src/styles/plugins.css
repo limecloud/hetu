@@ -19,7 +19,7 @@
 .plugin-categories button { padding: 8px 14px; border: .5px solid transparent; border-radius: 6px; color: var(--muted); background: transparent; font-size: 14px; }
 .plugin-categories button[aria-pressed='true'] { background: var(--jade-3); border-color: var(--jade-6); color: var(--jade-12); }
 .plugin-categories button:hover { color: var(--jade); }
-.plugin-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+.plugin-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
 .plugin-card { min-width: 0; border: .5px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--white); }
 .plugin-card:hover { border-color: var(--sage-8); }
 .plugin-card > a { display: block; height: 100%; }
@@ -31,6 +31,13 @@
 .plugin-card-body > p { color: var(--muted); margin: 0 0 24px; }
 .plugin-card-meta { display: flex; gap: 20px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-bottom: 20px; }
 .plugin-visual { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--sage-3); margin: 0; min-width: 0; }
+.plugin-visual > img { width:100%;height:auto;max-height:290px;object-fit:cover;object-position:top; }
+.plugin-release { margin-bottom:24px;font-size:12px; }
+.plugin-release a { display:block;color:var(--jade);margin:10px 0; }
+.plugin-release details { margin-top:16px; }
+.plugin-release summary { cursor:pointer; }
+.plugin-release details dl > div { display:block; }
+.plugin-release dd { text-align:left;margin-top:8px; }
 .plugin-visual > svg { width: 100%; height: auto; max-height: 290px; stroke-width: 1; }
 .plugin-visual text { font-family: inherit; text-anchor: middle; stroke: none; }
 .plugin-visual .graph-link { stroke: var(--sage-8); }
@@ -84,6 +91,7 @@
 .integration-plugins h2 { font-size: 24px; }
 .integration-plugins p { color: var(--muted); max-width: 740px; }
 @media (max-width: 1000px) {
+  .plugin-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
   .plugin-center-hero, .plugin-detail-hero { gap: 32px; }
   .plugin-detail-layout { gap: 32px; grid-template-columns: minmax(0, 1fr) 270px; }
   .plugin-boundaries { gap: 32px; }

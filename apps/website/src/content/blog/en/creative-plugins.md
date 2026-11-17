@@ -14,6 +14,8 @@ Professional tools vary much more. One author traces secrets across a cast; anot
 
 Hetu keeps the work foundation stable and lets specialized tools join when useful.
 
+[Novel Planner](/en/plugins/novel-planner/) applies that boundary to long-form writing. Review volume goals, themes, conflicts and detailed plots together, with links to characters, places and clues. The Agent organizes the structure while the author reads and edits through a volume list. Formal chapters, manuscripts and story settings reuse host capabilities. Its preview release provides a fixed runtime package and a specific validation scope.
+
 ## A canvas can be optional
 
 Relationships can be a graph. Events can be a timeline. Other questions may call for images, tables or a specialized view. There is no single best representation for every creative problem.
@@ -36,7 +38,7 @@ This value extends beyond today’s model costs. Stronger models produce more ma
 
 Skills and client integration packages live in the external Agent environment, providing methods and a connection. A new Hetu plugin does not need a corresponding Codex plugin. A connected Agent queries current installed and permitted capabilities again; it does not automatically know that a tool has appeared.
 
-Installation is separate from access to a work. Editing a graph is separate from adopting manuscript text. Saving a result is separate from finalizing it.
+Trusted Hetu plugins use public host capabilities once enabled; the external Agent’s work connection remains separate. Graph editing, manuscript adoption and author finalization each follow explicit rules.
 
 ## Start an ecosystem with tools that can be checked
 

@@ -1,6 +1,6 @@
 # Publish and list a plugin
 
-GitHub provides source hosting, release notes, issue tracking and listing collaboration. The website catalog provides discovery. Hetu’s local manager validates, installs, enables and disables packages, with separate per-work permissions. Publishing source, listing a tool, installing it and completing a task require separate evidence.
+GitHub provides source hosting, release notes, issue tracking and listing collaboration. The website catalog provides discovery. Hetu’s local manager validates, installs, enables and disables packages. Trusted enabled plugins reuse the public host SDK; external Agent work connections remain separate. Publishing source, listing a tool, installing it and completing a task require separate evidence.
 
 ## 1. Prepare a verifiable version
 
@@ -20,7 +20,7 @@ Download your own release, extract it into a fresh directory and validate it aga
 
 Use the [GitHub plugin listing form](https://github.com/limecloud/hetu/issues/new?template=plugin-listing.yml). Continue updates in the original request; catalog changes go through code review.
 
-Include the plugin ID and exact version, source commit, artifact URL, digests, license, maintainer contact, use case, localized descriptions, permissions, compatibility evidence and an installation plus real-task check. Screenshots must use demo material and identify the tested version.
+Include the plugin ID and exact version, source commit, release channel, artifact URL, both digests, file size, license, maintainer contact, use case, localized descriptions, host capability usage, compatibility evidence and an installation plus real-task check. Use demo material and identify its tested version.
 
 Use categories and tags for related genres rather than listing renamed duplicates of one tool. A separate plugin should have a clear capability or maintenance boundary.
 
@@ -28,7 +28,9 @@ Use categories and tags for related genres rather than listing renamed duplicate
 
 Maintainers check source, package format, permissions, runtime compatibility and creative use separately. Describe the level actually checked. A repository or download count does not establish safety, quality or usability.
 
-The website curates entries and does not perform installation. Users still choose the exact package and grant work access separately. A Hetu plugin does not need a corresponding Codex plugin.
+The website curates entries and does not perform installation. Users choose the exact package; external Agent work connections are checked independently. A Hetu plugin does not need a corresponding Codex plugin.
+
+Maintainers record external fixed releases in `apps/website/src/data/plugin-listings.json`, organize author scenarios in `src/lib/plugins.ts` and link capability lists at exact plugin commits. Catalog builds do not execute external code. Download, extraction and package digest verification need separate evidence. [Novel Planner](/en/plugins/novel-planner/) is an example of this listing format.
 
 ## 5. Maintain updates and withdrawal
 

@@ -26,7 +26,7 @@
     "description": "Novels, screenplays and videos, each with a place in your creative library.\nLet your Agent develop the work. Return to read, watch and choose.\nKeep the sources and decisions that make the next revision possible.",
     "primary": "Try the workspace here",
     "secondary": "Read the user guide",
-    "note": "macOS / Apache-2.0 / Try the demo without installing",
+    "note": "macOS / Windows / Linux / Apache-2.0 / Try the demo without installing",
     "alt": "Original Hetu landscape: a manuscript-paper bridge crosses a pale jade river between distant mountains, connecting story and screen."
   },
   "promises": [
@@ -211,7 +211,7 @@
   },
   "footer": {
     "description": "Keep the results, sources and creative decisions behind your novels, scripts and videos.",
-    "status": "macOS / Homepage prototype uses in-page demo data.",
+    "status": "macOS / Windows / Linux / Homepage prototype uses in-page demo data.",
     "license": "Core license: Apache-2.0",
     "privacy": "Demo input stays in this page. The console uses essential sign-in cookies. Model input is sent only for tasks you approve. Hosting may process connection and performance data under its privacy policies.",
     "design": "Interactive prototype",

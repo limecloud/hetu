@@ -26,7 +26,7 @@
     "description": "小说、剧本与视频，在创作库中各自展开。\n让熟悉的 Agent 推进创作与制作，回来阅读、观看与取舍。\n每一版成果，都带着来源和你的选择继续。",
     "primary": "在首页体验工作台",
     "secondary": "阅读使用指南",
-    "note": "macOS / Apache-2.0 / 页面演示无需安装",
+    "note": "macOS / Windows / Linux / Apache-2.0 / 页面演示无需安装",
     "alt": "河图洛书原创背景：浅玉色河谷、远山与由书页延展而成的长桥，象征从故事到剧本的连接。"
   },
   "promises": [
@@ -211,7 +211,7 @@
   },
   "footer": {
     "description": "让小说、剧本与视频的成果、来源和作者选择持续积累。",
-    "status": "macOS / 首页原型为页面内演示。",
+    "status": "macOS / Windows / Linux / 首页原型为页面内演示。",
     "license": "核心许可证 Apache-2.0",
     "privacy": "原型输入仅留在当前页面。控制台使用必要的登录 Cookie；仅在你批准的任务中发送模型输入。托管平台可能按其隐私政策处理连接与性能数据。",
     "design": "交互原型",
