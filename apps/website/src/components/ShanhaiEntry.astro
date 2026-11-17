@@ -1,0 +1,18 @@
+---
+import type { Locale } from '../lib/site';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const en = locale === 'en';
+const stories = [
+  { id: 'annotated-manuscript', title: '失踪者的七页批注', kind: en ? 'A story in the margins' : '档案与页边批注', body: en ? 'Read seven pages, uncover annotations and follow the evidence left behind.' : '翻开七页手稿，从页边批注发现另一个人的故事。' },
+  { id: 'dinner-secrets', title: '这桌饭，没人说真话', kind: en ? 'Who knows the truth?' : '饭局里的信息差', body: en ? 'Change who knows the secret, then read how the entire scene changes.' : '换一个知情者，看看同一场饭局怎样变成另一出戏。' },
+  { id: 'tidal-city', title: '退潮后的第十三座城', kind: en ? 'A world shaped by its rules' : '群岛与世界规则', body: en ? 'Explore the islands and let the world’s rules shape choices and costs.' : '走入潮汐群岛，让世界规则变成人物的选择与代价。' },
+];
+---
+<section class="section shanhai-entry" aria-labelledby="shanhai-title">
+  <div class="shanhai-heading"><div><h2 id="shanhai-title">{en ? 'Find your next story through a story.' : '先走进故事，再找到写法。'}</h2><p>{en ? 'Shanhai Jingwei is an independent library of creative templates for novels, screenplays and short drama. Explore complete examples, try another version and take the method into your own work.' : '山海经纬，面向小说、剧本与短剧的独立创作模板库。先读完整范例，试一试另一种展开，再把方法带回自己的作品。'}</p><p class="shanhai-note">{en ? 'Chinese-language examples. Read and download independently, or continue in Hetu with the Shanhai plugin.' : '可以独立阅读、复制和下载；也可以安装山海插件，在河图里接续创作。'}</p></div><a class="button secondary" href="https://shanhai.limeai.run/">{en ? 'Explore Shanhai templates' : '探索山海模板'} <span aria-hidden="true">↗</span></a></div>
+  <div class="shanhai-stories">{stories.map(story => <a href={`https://shanhai.limeai.run/templates/${story.id}`}><span>{story.kind}</span><h3>{story.title}</h3><p>{story.body}</p><span class="text-link">{en ? 'Step into the story' : '进入故事'} ↗</span></a>)}</div>
+</section>
+<style>
+  .shanhai-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:32px}.shanhai-heading>div{max-width:720px}.shanhai-heading .button{flex-shrink:0}.shanhai-heading h2{margin:0 0 20px}.shanhai-heading p{color:var(--muted);line-height:1.8}.shanhai-heading .shanhai-note{font-size:14px}.shanhai-stories{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;margin-top:32px}.shanhai-stories>a{display:flex;flex-direction:column;align-items:flex-start;border-top:.5px solid var(--line);padding:24px 0;text-decoration:none;color:inherit}.shanhai-stories>a>span:first-child{color:var(--muted);font-size:14px}.shanhai-stories h3{font-size:22px;margin:16px 0}.shanhai-stories p{line-height:1.8;margin:0 0 20px}.shanhai-stories .text-link{margin-top:auto}.shanhai-stories a:focus-visible{outline:2px solid currentColor;outline-offset:6px}@media(max-width:760px){.shanhai-heading{display:block}.shanhai-heading .button{margin-top:12px}.shanhai-stories{grid-template-columns:1fr;gap:4px}}
+</style>
