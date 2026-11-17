@@ -147,7 +147,7 @@
     },
     "manifest": {
       "id": "org.wordflowlab.shanhai",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "host_api": "1",
       "display": {
         "zh-CN": "山海经纬",
@@ -157,22 +157,22 @@
       "permissions": []
     },
     "source_repository": "https://github.com/wordflowlab/shanhai",
-    "source_commit": "978b259ada3f48d60db0eb668dc2c100381ac1ee",
+    "source_commit": "332de6b070fdee20027e7f6f76b845b4a65a79aa",
     "capabilities_path": "docs/15-机器能力清单.md",
     "homepage": "https://shanhai.limeai.run/",
     "release": {
       "channel": "preview",
-      "url": "https://github.com/wordflowlab/shanhai/releases/tag/v0.1.4",
-      "download_url": "https://github.com/wordflowlab/shanhai/releases/download/v0.1.4/shanhai-0.1.4.zip",
-      "archive_sha256": "1be279783dea35873a3dca1657b53423ea0f1ef8de71c4e5b5e398eaaf78fee7",
-      "package_sha256": "5d965d57ed7aefb99227f965de2628cbc456d6bbf4cd2b697a911e90a0ce8fd2",
-      "size_bytes": 279687,
+      "url": "https://github.com/wordflowlab/shanhai/releases/tag/v0.1.5",
+      "download_url": "https://github.com/wordflowlab/shanhai/releases/download/v0.1.5/shanhai-0.1.5.zip",
+      "archive_sha256": "baf11201141a5ceedfaee3e013957f8e2b7020eabe9141cb0597c8e7602d448c",
+      "package_sha256": "505868a6a7067a8b93b77dcdd0d46d07e77568ed3b9a920624e14ecccd24be20",
+      "size_bytes": 391197,
       "minimum_host_version": "0.11.2",
       "verified_platforms": [
         "macOS arm64"
       ],
-      "evidence_url": "https://github.com/wordflowlab/shanhai/blob/978b259ada3f48d60db0eb668dc2c100381ac1ee/docs/research/runtime-acceptance-v0.1.4.json",
-      "integrity_url": "https://github.com/wordflowlab/shanhai/releases/download/v0.1.4/shanhai-0.1.4.json"
+      "evidence_url": "https://github.com/wordflowlab/shanhai/blob/332de6b070fdee20027e7f6f76b845b4a65a79aa/docs/research/runtime-acceptance-v0.1.5.json",
+      "integrity_url": "https://github.com/wordflowlab/shanhai/releases/download/v0.1.5/shanhai-0.1.5.json"
     }
   }
 ]
