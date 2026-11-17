@@ -1,7 +1,10 @@
 import React, { useEffect, useRef } from "react";
-import { Compartment, EditorState } from "@codemirror/state";
+import { Annotation, Compartment, EditorState, Transaction } from "@codemirror/state";
 import { EditorView, keymap } from "@codemirror/view";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
+import { editorSource, editorSourceHistory, editorSourceSelection, restoreEditorSource } from "./editor-source.ts";
+
+const externalContent = Annotation.define<boolean>();
 
 export function AuthorEditor(props: {
   content: string;
@@ -26,6 +29,8 @@ export function AuthorEditor(props: {
       state: EditorState.create({
         doc: props.content,
         extensions: [
+          editorSource.init(() => props.content),
+          editorSourceHistory,
           history(),
           EditorView.lineWrapping,
           EditorView.domEventHandlers({
@@ -56,16 +61,11 @@ export function AuthorEditor(props: {
             spellcheck: "false",
           }),
           EditorView.updateListener.of((update) => {
-            if (update.docChanged)
-              callbacks.current.onChange(update.state.doc.toString());
+            if (update.docChanged && !update.transactions.every(transaction => transaction.annotation(externalContent)))
+              callbacks.current.onChange(update.state.field(editorSource));
             if (update.selectionSet && update.transactions.some((transaction) => transaction.isUserEvent("select"))) {
               const { from, to } = update.state.selection.main;
-              const text = update.state.doc.toString(), encoder = new TextEncoder();
-              callbacks.current.onSelectionChange?.(from === to ? null : {
-                byte_start: encoder.encode(text.slice(0, from)).length,
-                byte_end: encoder.encode(text.slice(0, to)).length,
-                quote: text.slice(from, to),
-              });
+              callbacks.current.onSelectionChange?.(from === to ? null : editorSourceSelection(update.state, from, to));
             }
           }),
           EditorView.theme({
@@ -97,13 +97,15 @@ export function AuthorEditor(props: {
   }, []);
   useEffect(() => {
     const editor = view.current;
-    if (editor && editor.state.doc.toString() !== props.content)
+    if (editor && editor.state.field(editorSource) !== props.content)
       editor.dispatch({
         changes: {
           from: 0,
           to: editor.state.doc.length,
           insert: props.content,
         },
+        effects: restoreEditorSource.of(props.content),
+        annotations: [externalContent.of(true), Transaction.addToHistory.of(false)],
       });
   }, [props.content]);
   useEffect(() => {

@@ -449,6 +449,14 @@ impl Kernel {
                         "插件设定来源身份或摘要不一致。",
                     )?;
                 }
+                "resource" => {
+                    closed(
+                        source,
+                        &["kind", "work_ref", "resource_id", "revision", "sha256"],
+                        &[],
+                    )?;
+                    self.source_resource(source)?;
+                }
                 "asset" | "cue" => {
                     let kind = text(source, "kind")?;
                     let field = format!("{kind}_id");
@@ -918,6 +926,10 @@ impl Kernel {
                     ensure(input.get("entity_ref").is_none(), "invalid_input", "正文来源不包含设定实体。")?;
                     let fixed = self.document_content(text(source,"document_id")?,Some(text(source,"revision_id")?))?;
                     json!({"source_ref":source,"document":fixed["document"],"content":fixed["content"]})
+                } else if source["kind"] == "resource" {
+                    ensure(input.get("entity_ref").is_none(), "invalid_input", "资料来源不包含设定实体。")?;
+                    let (record, sha) = self.source_resource(source)?;
+                    json!({"source_ref":source,"resource":record,"sha256":sha})
                 } else if source["kind"] == "work" {
                     ensure(input.get("entity_ref").is_none(), "invalid_input", "作品资料来源不包含设定实体。")?;
                     self.get_work(&json!({"work_ref":work,"revision":source["revision_ref"]["revision"]}))?

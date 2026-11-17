@@ -15,7 +15,7 @@ fn entries(request: &Value) -> Vec<Value> {
                 "allowed_ranges":null,"title":source.get("title").cloned().unwrap_or(json!("")),
                 "size_bytes":source.get("size_bytes").cloned().unwrap_or_else(|| {
                     json!(source["content"].as_str().map(str::len).unwrap_or(0))
-                }),"summary_ref":null,"source_kind":"author"})
+                }),"summary_ref":null,"source_kind":if source["reference"]["kind"] == "resource" { "resource" } else { "author" }})
         })
         .collect()
 }
@@ -26,6 +26,18 @@ fn before_boundary(content: &str, mut at: usize) -> usize {
         at -= 1;
     }
     at
+}
+
+fn text_source_ref(entry: &Value, content: &str, start: usize, end: usize) -> Value {
+    let mut reference = if entry["kind"] == "resource" {
+        entry["fixed_ref"].clone()
+    } else {
+        json!({"document_id":entry["fixed_ref"]["document_id"],"revision_id":entry["fixed_ref"]["revision_id"]})
+    };
+    reference["byte_start"] = json!(start);
+    reference["byte_end"] = json!(end);
+    reference["quote"] = json!(&content[start..end]);
+    reference
 }
 
 impl Kernel {
@@ -188,6 +200,14 @@ impl Kernel {
                 )?;
             }
             Ok(json!({"content":document["content"]}))
+        } else if reference["kind"] == "resource" {
+            let (record, sha) = self.source_resource(reference)?;
+            ensure(
+                source["sha256"] == sha,
+                "hetu.integrity_failure",
+                "固定资料记录摘要不一致。",
+            )?;
+            Ok(json!({"content":record["body"]}))
         } else {
             let (blueprint, sha) = self.source_blueprint(reference)?;
             ensure(
@@ -262,7 +282,7 @@ impl Kernel {
             }
         }
         let quote = &content[start..end];
-        let source_ref = json!({"document_id":entry["fixed_ref"]["document_id"],"revision_id":entry["fixed_ref"]["revision_id"],"byte_start":start,"byte_end":end,"quote":quote});
+        let source_ref = text_source_ref(entry, content, start, end);
         Ok(
             json!({"context_ref":input["context_ref"],"fixed_ref":entry["fixed_ref"],"sha256":entry["sha256"],"source_ref":source_ref,"content":quote,
             "range":{"byte_start":start,"byte_end":end},"size_bytes":content.len(),"complete":end == requested_end,
@@ -280,7 +300,7 @@ impl Kernel {
             if input.get("kind").is_some_and(|kind| *kind != entry["kind"]) {
                 continue;
             }
-            if entry["kind"] != "document" {
+            if entry["kind"] == "blueprint" {
                 skipped_structured += 1;
                 continue;
             }
@@ -292,11 +312,11 @@ impl Kernel {
                 let to = before_boundary(content, (at + query.len()).saturating_add(120));
                 matches.push(json!({"context_ref":{"context_id":entry["context_id"],"sha256":entry["sha256"]},
                     "title":entry["title"],"fixed_ref":entry["fixed_ref"],"sha256":entry["sha256"],"excerpt":&content[from..to],
-                    "source_ref":{"document_id":entry["fixed_ref"]["document_id"],"revision_id":entry["fixed_ref"]["revision_id"],"byte_start":at,"byte_end":at+query.len(),"quote":query}}));
+                    "source_ref":text_source_ref(entry, content, at, at+query.len())}));
             }
         }
         let mut result = self.ordered_record_page(input, matches, "matches")?;
-        result["coverage"] = json!({"scope":"authorized_fixed_documents","scanned_entries":scanned,
+        result["coverage"] = json!({"scope":"authorized_fixed_texts","scanned_entries":scanned,
             "unsearched_structured_entries":skipped_structured,"match_mode":"first_per_entry","complete":skipped_structured == 0});
         Ok(result)
     }

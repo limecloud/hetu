@@ -452,9 +452,11 @@ TaskGrant、CheckoutRecord 和 ContinuationReceipt 留在本机私有存储或�
 
 请求版本链追加而不改旧记录。普通返工追加 TaskFeedback 与 WorkingRevision；补充上下文／变更基线由作者生成新请求及授权版本。新请求发布后旧工作副本只读；显式创建后继副本保留 parent_ref。旧提交、历史反馈与原操作仍引用原请求，持有当前权限的作者始终能查看；失权 Agent 不凭旧引用读取。
 
-`creative-task.schema.json` 的1.0.0记录以 task_ref 加 request_sha256 共同固定请求；稳定 MCP／CLI 业务输入携带合并后的完整 task_ref。两种表示必须核验一致，不能省略请求摘要。工作副本头的记录摘要由任务状态锚定，current_revision_sha256 固定当前修订记录，previous_sha256 串联不可变历史；WorkingCopyRef 的 sha256 固定内容字节。
+`creative-task.schema.json` 的1.0.0记录以 task_ref 加 request_sha256 共同固定请求；稳定 MCP／CLI 业务输入携带合并后的完整 task_ref。两种表示必须核验一致，不能省略请求摘要。WorkingCopy 的 `base_refs` 在创建输入和持久化记录中、候选的 `source_refs` 在提交记录中均最多100项，且每项必须属于固定任务的 `input_refs`；来源数量不扩大作品授权。工作副本头的记录摘要由任务状态锚定，current_revision_sha256 固定当前修订记录，previous_sha256 串联不可变历史；WorkingCopyRef 的 sha256 固定内容字节。
 
-请求记录1.1.0通过 context_manifest_ref 固定目录摘要；ContextRef 为 `{context_id,sha256}`，必须在该请求已授权清单中解析。原文从固定 DocumentRef／设定集修订回读并重验摘要，不在任务中复制整书。目录、范围和请求的字节身份相互核验；读取不会改旧任务或跟随正文当前头。文本片段的 SourceRef 保持既有字段，内容摘要单列为 sha256，不往 SourceRef 偷加字段。
+请求记录1.1.0通过 context_manifest_ref 固定目录摘要；ContextRef 为 `{context_id,sha256}`，必须在该请求已授权清单中解析。原文从固定 DocumentRef／设定集修订回读并重验摘要，不在任务中复制整书。目录、范围和请求的字节身份相互核验；读取不会改旧任务或跟随正文当前头。正文片段的 SourceRef 保持既有字段，内容摘要单列为 sha256，不往既有 SourceRef 偷加字段。
+
+任务只读资料引用为 `{kind:"resource",work_ref,resource_id,revision,sha256}`，必须属于任务的确切作品并固定不可变资料修订。`sha256` 固定整条资料记录，`size_bytes` 计量该修订的 Markdown body；两者不能混作正文摘要。上下文目录标为 `source_kind:resource`，读取和检索返回固定资料引用及 body 的 UTF-8 字节选区。工作副本 `base_refs` 与候选 `source_refs` 只能沿用任务输入中的资料引用。资料引用不授予修改权；资料修改仍要求独立 `resource_organize` 和 `resource_scope`。改编摘录归下游资料，来源说明保留上游固定身份、读取范围和许可依据；不由下游授权自动读取上游，也不据此声称已实现完整来源授权子系统。
 
 工作副本、正式候选和作者正文具有不同身份。一个工作修订可用于多个明确批次，但每批 submission_id 与原键独立；采纳仍经 Draft／AdoptionRecord 形成正文新修订。缓存、检出文件、外部完成声明及对话文本均不能成为另一份正文或设定真值。
 

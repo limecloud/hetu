@@ -332,6 +332,18 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
+            "kind": { "const": "resource" },
+            "work_ref": { "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref" },
+            "resource_id": { "type": "string", "pattern": "^resource_[0-9a-f-]{36}$" },
+            "revision": { "type": "integer", "minimum": 1 },
+            "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+          },
+          "required": ["kind", "work_ref", "resource_id", "revision", "sha256"]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
             "kind": {
               "const": "document"
             },
@@ -1721,7 +1733,7 @@
           "items": {
             "$ref": "#/$defs/source_ref"
           },
-          "maxItems": 8
+          "maxItems": 100
         },
         "relative_path": {
           "type": "string",
@@ -2499,7 +2511,7 @@
             "$ref": "#/$defs/source_ref"
           },
           "minItems": 0,
-          "maxItems": 8,
+          "maxItems": 100,
           "uniqueItems": true
         },
         "parent_ref": {
@@ -2857,7 +2869,8 @@
         "kind": {
           "enum": [
             "document",
-            "blueprint"
+            "blueprint",
+            "resource"
           ]
         }
       },
@@ -2945,7 +2958,8 @@
         "kind": {
           "enum": [
             "document",
-            "blueprint"
+            "blueprint",
+            "resource"
           ]
         },
         "query": {
@@ -3002,7 +3016,8 @@
               "kind": {
                 "enum": [
                   "document",
-                  "blueprint"
+                  "blueprint",
+                  "resource"
                 ]
               },
               "fixed_ref": {
@@ -3027,7 +3042,7 @@
                 "type": "null"
               },
               "source_kind": {
-                "const": "author"
+                "enum": ["author", "resource"]
               }
             },
             "required": [

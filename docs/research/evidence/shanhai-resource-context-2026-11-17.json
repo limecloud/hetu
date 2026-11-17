@@ -1,0 +1,357 @@
+{
+  "verified_at": "2026-11-17T12:44:19.044Z",
+  "scope": "同作品固定资料只读来源，Core回归与隔离公开CLI/MCP改编练习。",
+  "production_verified": false,
+  "schema": "creative-task.source_ref resource与task_context过滤；extensions.sources.inspect与objects.save资料来源。",
+  "checks": {
+    "host_resource_context_regressions": 2,
+    "host_related_regressions": 22,
+    "plugin_application_tests": 9,
+    "typescript": "passed",
+    "machine": "passed",
+    "desktop": "passed_isolated_local_package",
+    "release_installation": "not_run",
+    "plugin_unit_suite": 12,
+    "documentation": "passed",
+    "capability_map": "passed",
+    "comparison_rendering_regressions": 2,
+    "comparison_plugin_unit_suite": 14
+  },
+  "source_selection": {
+    "host_base": "3064d9c56c90a5b85046d0f096100f76b5181ca1",
+    "plugin_base": "6320f5a863901e001627c395d3d3c13dcdc6abd1",
+    "host_overlay_sha256": {
+      "contracts/schemas/creative-task.schema.json": "0b38a5b74d089c508a0061db1751d533fba62ed8925a5d6c4829c2a84c82385a",
+      "contracts/extensions/actions.json": "122ae5e4223f1ee6e59b08536041f81ab37bc86133c89c6184e078f8d9041523",
+      "core/src/application/resources.rs": "892745a6873493f01337b6325319283bb436d786b44187a199f47d3604d859bb",
+      "core/src/application/creative_tasks.rs": "a748acd1135d728f15512b2df724deea0e91c624abe99dbf9b9fe5de9fd0b99d",
+      "core/src/application/creative_tasks/context.rs": "e5159bf3ab935c7e79bca8a442a9e8fb28b8476c7e0ad4c70bd348f73c2236f0",
+      "core/src/application/work_canons.rs": "47ab8c6f1b76f6f190046614dbe889c37aa149c29e5cbdf40618cc95c1e49dd5",
+      "core/src/application/extensions.rs": "83938cb12f6e5ec5d48b332f8451757caadeb167b59eb4367754749685d8d0bb",
+      "core/tests/task_resource_context.rs": "0aa7e3eb67a5383b4c4341624904cf3199a500eaba8848d6fcd3b673320e6cec"
+    }
+  },
+  "runtime_sha256": {
+    "hetu": "2fc55e46b332efa15c0c974a1f5e5f9defa3a8f0ff3a5721695f02d6052deeb0",
+    "hetu-mcp": "979471815828839e6d88f0f000501f05526974250336a3d4def9669760e6e961",
+    "hetu-plugin": "5199167dd876bd5982e206fe342ed3344c33b63857f22de3f2eef1355fb73763"
+  },
+  "plugin_runtime_sha256": {
+    "plugin-manager.mjs": "083a47f4ed7b7725bc0f70bb47bca53c32f241ba256981fbb9e1f89908b28bae",
+    "plugin-runtime.mjs": "e56c59505026ebfbb02479553186867421603f047587e96e94b09da71c2f8df4",
+    "plugin-worker.mjs": "dcebbdebf575d6054e6d6bdb778e6cc8af27d40dcfe9fc6989a5fc4182216a39"
+  },
+  "integration": {
+    "package_sha256": "20fc9e5083e5bad842ea2ad68a174fe1f49b36bfa518952578077a6c1395aeb8",
+    "upstream_documents_unchanged": 20,
+    "source_ref": {
+      "kind": "resource",
+      "work_ref": {
+        "workspace_id": "workspace_b5135b10-5cb9-4db6-af47-4de9070ddba9",
+        "kind": "drama",
+        "object_id": "drama_96f7d30a-0edc-4ae9-b810-18610dab92e8"
+      },
+      "resource_id": "resource_af7164a9-cfd2-4fba-85c4-5ca421d6995f",
+      "revision": 1,
+      "sha256": "8fdbdd50e539469960680a6174167124dc79fe9e211ed17bcfa1aad164c49e0d"
+    },
+    "fixed_context_after_resource_update": true,
+    "cli_write_mcp_read": true,
+    "candidates": [
+      {
+        "id": "v1",
+        "label": "第1稿",
+        "kind": "draft",
+        "draft_ref": {
+          "work_ref": {
+            "workspace_id": "workspace_b5135b10-5cb9-4db6-af47-4de9070ddba9",
+            "kind": "drama",
+            "object_id": "drama_96f7d30a-0edc-4ae9-b810-18610dab92e8"
+          },
+          "draft_id": "draft_e1d8b3d4-eae8-4f3d-9710-255a2737dc53",
+          "sha256": "6b00e2deecd2b6d5cb5fb469890b62fac029dc0a33a5003c0618dfd03e2d171b"
+        },
+        "sha256": "6b00e2deecd2b6d5cb5fb469890b62fac029dc0a33a5003c0618dfd03e2d171b"
+      },
+      {
+        "id": "v2",
+        "label": "第2稿",
+        "kind": "draft",
+        "draft_ref": {
+          "work_ref": {
+            "workspace_id": "workspace_b5135b10-5cb9-4db6-af47-4de9070ddba9",
+            "kind": "drama",
+            "object_id": "drama_96f7d30a-0edc-4ae9-b810-18610dab92e8"
+          },
+          "draft_id": "draft_81acc7f6-245c-4eb7-8220-27212310d56c",
+          "sha256": "91dbac99dc566cd58f606a00479267cd74807f4513c5b8e68537bda6d535c42e"
+        },
+        "sha256": "91dbac99dc566cd58f606a00479267cd74807f4513c5b8e68537bda6d535c42e"
+      }
+    ],
+    "instance": {
+      "object_id": "ext_7e446273-0353-4fb6-8c5c-44dedf5258d1",
+      "revision": 2,
+      "sha256": "a287edf57044565ab69ee7bb8065f6c08cec03982888be04a14e1647ea1d7f17"
+    },
+    "export_sha256": "7e6a21027cff9ff1ecb5c24ed6cd45d302e1faf6112d4dad88bc86543bed99c9"
+  },
+  "limitations": [
+    "来源说明保存在下游资料，不等同完整SourceRights子系统。",
+    "公版片段练习不核验第三方授权。",
+    "独立源码构建未进入正式宿主或山海发行包。",
+    "没有作者采纳、定稿或正式桌面发行。"
+  ],
+  "failures_preserved": [
+    "最初插件来源入口Schema遗漏resource，新增回归捕获后补齐。",
+    "最初越权测试漏传task_ref，输入校验先拒绝；补齐完整task_ref后确认权限拒绝。",
+    "隔离插件首次构建缺少生成目录与workspace依赖链接；先构建内容并恢复同锁依赖链接后成功。",
+    "桌面首轮脚本将Core测试源码误当作装配运行输入，启动前被拒；分别核验后通过。"
+  ],
+  "post_run_source_delta": {
+    "path": "tests/machine/support.ts",
+    "tested_sha256": "a196d9d11b6e6de98390fcdf246ae7faf3de7feef7b879e910ef6ab73955583e",
+    "current_sha256": "0d7d91d7a7f5b9a56bba5b0030771dfc90072fa032e7d3bf01e328b606d8dd9b",
+    "change": "安装备注将发行包改为显式固定的包，避免把开发包叫作发行；仅文案，未重建作品复跑。"
+  },
+  "desktop_review": {
+    "status": "passed",
+    "verified_at": "2026-11-17T13:14:25.577Z",
+    "development_only": true,
+    "production_verified": false,
+    "host_mode": "isolated-local-package",
+    "package_manifest_sha256": "6f936467c4746fff3bdead0caf29c47359f818c6d956d5a759b9284b22d23fb7",
+    "package_source_sha256": "f6a23b46b75418cfd1888ae09a9a0ca6c233434e2165c295748227ffa4b80f44",
+    "package_artifacts": 2800,
+    "runtime_sha256": {
+      "hetu-app-server": "bd11c35d13fb707d726c62e7a70fdc848a722e1d020ae5ca5c1568d730e990bc",
+      "hetu": "2fc55e46b332efa15c0c974a1f5e5f9defa3a8f0ff3a5721695f02d6052deeb0",
+      "hetu-mcp": "979471815828839e6d88f0f000501f05526974250336a3d4def9669760e6e961",
+      "hetu-plugin": "5199167dd876bd5982e206fe342ed3344c33b63857f22de3f2eef1355fb73763",
+      "node": "3a0b47fda00d3d2daa2173695b91c065d5318780b5b79674a06274e00d7e4adf"
+    },
+    "regression_source_sha256": {
+      "core/tests/task_resource_context.rs": "0aa7e3eb67a5383b4c4341624904cf3199a500eaba8848d6fcd3b673320e6cec"
+    },
+    "plugin_package_sha256": "7d21489f08eb090550f926a4eb2b3dd8f90ed5fd5f8c3827937f6c323472053c",
+    "instance_original_package_sha256": "20fc9e5083e5bad842ea2ad68a174fe1f49b36bfa518952578077a6c1395aeb8",
+    "work_ref": {
+      "workspace_id": "workspace_b5135b10-5cb9-4db6-af47-4de9070ddba9",
+      "kind": "drama",
+      "object_id": "drama_96f7d30a-0edc-4ae9-b810-18610dab92e8"
+    },
+    "instance": {
+      "object_id": "ext_7e446273-0353-4fb6-8c5c-44dedf5258d1",
+      "revision": 2,
+      "sha256": "a287edf57044565ab69ee7bb8065f6c08cec03982888be04a14e1647ea1d7f17"
+    },
+    "fixed_source": {
+      "kind": "resource",
+      "work_ref": {
+        "workspace_id": "workspace_b5135b10-5cb9-4db6-af47-4de9070ddba9",
+        "kind": "drama",
+        "object_id": "drama_96f7d30a-0edc-4ae9-b810-18610dab92e8"
+      },
+      "resource_id": "resource_af7164a9-cfd2-4fba-85c4-5ca421d6995f",
+      "revision": 1,
+      "sha256": "8fdbdd50e539469960680a6174167124dc79fe9e211ed17bcfa1aad164c49e0d"
+    },
+    "source_state": {
+      "current_revision": 2,
+      "current_sha256": "9233c4f2fa7e6f18300d655acd36701287772b1a216e6c2726218fcbb47a4361",
+      "fixed_sha256": "ef56e147825c5914c18cf62a3d75fa21b2fc42ea3bd272834ed9904ca1471a7a"
+    },
+    "manuscripts": [
+      "6b00e2deecd2b6d5cb5fb469890b62fac029dc0a33a5003c0618dfd03e2d171b",
+      "91dbac99dc566cd58f606a00479267cd74807f4513c5b8e68537bda6d535c42e"
+    ],
+    "export_sha256": "48d22e996ec5b6bac162d0164270d994e5c9f661189c419dafc8f3bc6a8d255f",
+    "upstream_current_heads_unchanged": 20,
+    "packaged_resources_unchanged": true,
+    "frozen_installed_resources_unchanged": true,
+    "checks": [
+      "same-machine-adaptation-instance",
+      "both-full-fountain-manuscripts",
+      "agent-feedback",
+      "fixed-resource-source",
+      "instance-comparison",
+      "readable-comparison-and-fixed-manuscripts",
+      "actual-file-export",
+      "light-dark-1440-600",
+      "close-reopen-same-instance",
+      "upstream-twenty-heads-unchanged"
+    ],
+    "limitations": [
+      "本机开发签名装配，未公开发行",
+      "公版片段不等同第三方改编授权",
+      "未模拟作者采纳或定稿",
+      "未验物理输入法或Windows"
+    ],
+    "initial_desktop": {
+      "status": "passed",
+      "verified_at": "2026-11-17T13:04:19.578Z",
+      "development_only": true,
+      "production_verified": false,
+      "host_mode": "isolated-local-package",
+      "package_manifest_sha256": "6f936467c4746fff3bdead0caf29c47359f818c6d956d5a759b9284b22d23fb7",
+      "package_source_sha256": "f6a23b46b75418cfd1888ae09a9a0ca6c233434e2165c295748227ffa4b80f44",
+      "package_artifacts": 2800,
+      "runtime_sha256": {
+        "hetu-app-server": "bd11c35d13fb707d726c62e7a70fdc848a722e1d020ae5ca5c1568d730e990bc",
+        "hetu": "2fc55e46b332efa15c0c974a1f5e5f9defa3a8f0ff3a5721695f02d6052deeb0",
+        "hetu-mcp": "979471815828839e6d88f0f000501f05526974250336a3d4def9669760e6e961",
+        "hetu-plugin": "5199167dd876bd5982e206fe342ed3344c33b63857f22de3f2eef1355fb73763",
+        "node": "3a0b47fda00d3d2daa2173695b91c065d5318780b5b79674a06274e00d7e4adf"
+      },
+      "regression_source_sha256": {
+        "core/tests/task_resource_context.rs": "0aa7e3eb67a5383b4c4341624904cf3199a500eaba8848d6fcd3b673320e6cec"
+      },
+      "plugin_package_sha256": "20fc9e5083e5bad842ea2ad68a174fe1f49b36bfa518952578077a6c1395aeb8",
+      "work_ref": {
+        "workspace_id": "workspace_b5135b10-5cb9-4db6-af47-4de9070ddba9",
+        "kind": "drama",
+        "object_id": "drama_96f7d30a-0edc-4ae9-b810-18610dab92e8"
+      },
+      "instance": {
+        "object_id": "ext_7e446273-0353-4fb6-8c5c-44dedf5258d1",
+        "revision": 2,
+        "sha256": "a287edf57044565ab69ee7bb8065f6c08cec03982888be04a14e1647ea1d7f17"
+      },
+      "fixed_source": {
+        "kind": "resource",
+        "work_ref": {
+          "workspace_id": "workspace_b5135b10-5cb9-4db6-af47-4de9070ddba9",
+          "kind": "drama",
+          "object_id": "drama_96f7d30a-0edc-4ae9-b810-18610dab92e8"
+        },
+        "resource_id": "resource_af7164a9-cfd2-4fba-85c4-5ca421d6995f",
+        "revision": 1,
+        "sha256": "8fdbdd50e539469960680a6174167124dc79fe9e211ed17bcfa1aad164c49e0d"
+      },
+      "source_state": {
+        "current_revision": 2,
+        "current_sha256": "9233c4f2fa7e6f18300d655acd36701287772b1a216e6c2726218fcbb47a4361",
+        "fixed_sha256": "ef56e147825c5914c18cf62a3d75fa21b2fc42ea3bd272834ed9904ca1471a7a"
+      },
+      "manuscripts": [
+        "6b00e2deecd2b6d5cb5fb469890b62fac029dc0a33a5003c0618dfd03e2d171b",
+        "91dbac99dc566cd58f606a00479267cd74807f4513c5b8e68537bda6d535c42e"
+      ],
+      "export_sha256": "48d22e996ec5b6bac162d0164270d994e5c9f661189c419dafc8f3bc6a8d255f",
+      "upstream_current_heads_unchanged": 20,
+      "packaged_resources_unchanged": true,
+      "frozen_installed_resources_unchanged": true,
+      "checks": [
+        "same-machine-adaptation-instance",
+        "both-full-fountain-manuscripts",
+        "agent-feedback",
+        "fixed-resource-source",
+        "instance-comparison",
+        "actual-file-export",
+        "light-dark-1440-600",
+        "close-reopen-same-instance",
+        "upstream-twenty-heads-unchanged"
+      ],
+      "limitations": [
+        "本机开发签名装配，未公开发行",
+        "公版片段不等同第三方改编授权",
+        "未模拟作者采纳或定稿",
+        "未验物理输入法或Windows"
+      ]
+    },
+    "source_selection": {
+      "root": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/shanhai-resource-adaptation-40426ujo",
+      "host": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/shanhai-resource-adaptation-40426ujo/host",
+      "host_base": "3064d9c56c90a5b85046d0f096100f76b5181ca1",
+      "plugin": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/shanhai-resource-adaptation-40426ujo/plugin",
+      "plugin_base": "6320f5a863901e001627c395d3d3c13dcdc6abd1",
+      "host_overlay_sha256": {
+        "contracts/schemas/creative-task.schema.json": "0b38a5b74d089c508a0061db1751d533fba62ed8925a5d6c4829c2a84c82385a",
+        "contracts/extensions/actions.json": "122ae5e4223f1ee6e59b08536041f81ab37bc86133c89c6184e078f8d9041523",
+        "core/src/application/resources.rs": "892745a6873493f01337b6325319283bb436d786b44187a199f47d3604d859bb",
+        "core/src/application/creative_tasks.rs": "a748acd1135d728f15512b2df724deea0e91c624abe99dbf9b9fe5de9fd0b99d",
+        "core/src/application/creative_tasks/context.rs": "e5159bf3ab935c7e79bca8a442a9e8fb28b8476c7e0ad4c70bd348f73c2236f0",
+        "core/src/application/work_canons.rs": "47ab8c6f1b76f6f190046614dbe889c37aa149c29e5cbdf40618cc95c1e49dd5",
+        "core/src/application/extensions.rs": "83938cb12f6e5ec5d48b332f8451757caadeb167b59eb4367754749685d8d0bb",
+        "core/tests/task_resource_context.rs": "0aa7e3eb67a5383b4c4341624904cf3199a500eaba8848d6fcd3b673320e6cec"
+      },
+      "desktop_overlay_sha256": {
+        "apps/desktop/src/renderer/editor-source.ts": "36671790a6c494e8b067191fa8f150a60bf3e0b625c4e77d85376a57fb796179",
+        "apps/desktop/src/renderer/editor.tsx": "bff84dedd4d78bdeef1bbfa705cc8d3105096400d04e4319229ecc87ab3f5b31",
+        "packages/plugin-sdk/src/index.ts": "2097981d7355c3fabcb82c4c03197c95077328c7eeae6adc88b44fa3fd48f59b"
+      },
+      "desktop_source_note": "同一隔离host额外叠加已通过的CRLF编辑修复及resource SDK类型；workspace依赖定向本隔离源码。"
+    },
+    "plugin_comparison_package": {
+      "directory": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/shanhai-resource-adaptation-40426ujo/plugin-comparison",
+      "base": "6320f5a863901e001627c395d3d3c13dcdc6abd1",
+      "original_package_sha256": "20fc9e5083e5bad842ea2ad68a174fe1f49b36bfa518952578077a6c1395aeb8",
+      "development_only": true,
+      "ui_overlay_sha256": {
+        "packages/hetu-plugin/src/view.tsx": "634bdb9b57dc238abd6dd93c059b6bbe56c37253ab77fb58276dd55aa17b1137",
+        "packages/hetu-plugin/src/view.css": "f6ef3e48f61f16a61a98784c6ab0bbc39d22bc150a3fccee1fed5f09abee88b6",
+        "packages/hetu-plugin/src/comparison.tsx": "65074864e44da76256b791bc1fd1de2a31e58ee95b96c43a956167b65dfd0c05"
+      },
+      "release": {
+        "version": "0.1.5",
+        "plugin_id": "org.wordflowlab.shanhai",
+        "host_api": "1",
+        "package_sha256": "7d21489f08eb090550f926a4eb2b3dd8f90ed5fd5f8c3827937f6c323472053c",
+        "archive_sha256": "a2261053ce2c07ec771d0391cce055f413f388f4c17dfe4561833816bee62e8b",
+        "archive_bytes": 393161,
+        "templates": 22,
+        "runtime": "Node 25+ permission model"
+      }
+    },
+    "screenshots_sha256": {
+      "1440-dark.png": "80d220de3a76bec879600c95f75ea2179ec13991172e90389f655e93f5ecfaa9",
+      "1440-light.png": "4bf3c24cd112e30e7c7cde761b77687a0130dd00b988f7c870768679684d00cb",
+      "600-dark.png": "08424e9be1155a6012ac9dd221a383e3734b5fb240753e22e5eb930d0ffeb720",
+      "600-light.png": "d2529272dcb8620faa2fd534a9668b6585f7312ec2556e58ee0199220aea4b8d",
+      "comparison-feedback-1440-dark.png": "630a588fe15adc95f89aa638b98b8ad21b73a607445cf272f40199e4ded23865",
+      "comparison-feedback-1440-light.png": "70033002d99dfbe094627fd47a418bbbcefd968d3681b9e1a2f3f24d2758f390",
+      "comparison-feedback-600-dark.png": "0fb3ec9ad76159735a53944b267308cd103f8dae261cdf0eec2dfa00873bde2f",
+      "comparison-feedback-600-light.png": "bdd5efe72bba620eac178b2cb3278c0e6d7b199dda3fd077bcfa2f75c48ae7e4",
+      "comparison-results-1440-dark.png": "f57eb375827f1da5c21fc8af42ea68d5d17df777064b6dd44f80b40470c69ecc",
+      "comparison-results-1440-light.png": "3a8821cc0a24b315991792b41420f98f34b8e5743e40f371ca27a790d962da58",
+      "comparison-results-600-dark.png": "b82dc8649d371d97afffb21f7529ee0d17858bc753fa9024b2bf849485f0a107",
+      "comparison-results-600-light.png": "01838c31e2ff54dfe431ef9c0248d4878db8a28dc22b8bf3675d4ee8f0ae3b94"
+    },
+    "test_source_sha256": {
+      "tests/desktop/resource-adaptation.ts": "5576cc02abbc13e9c4b85945d2f4fb35ac79f01200edc24a0f362645d18482e0",
+      "tests/comparison.test.ts": "e81bf2e12199fa6c3dbff05ef8e854c00e954a35a6e20e94059f24ab5e705c18"
+    },
+    "rendering_regressions": 2,
+    "unit_suite": 14,
+    "typescript": "passed",
+    "signature_verification": "passed_ad_hoc",
+    "production_release_boundary": {
+      "verified_at": "2026-11-17T13:15:09.958Z",
+      "production_release_unchanged": true,
+      "release": {
+        "version": "0.1.5",
+        "plugin_id": "org.wordflowlab.shanhai",
+        "host_api": "1",
+        "package_sha256": "505868a6a7067a8b93b77dcdd0d46d07e77568ed3b9a920624e14ecccd24be20",
+        "archive_sha256": "baf11201141a5ceedfaee3e013957f8e2b7020eabe9141cb0597c8e7602d448c",
+        "archive_bytes": 391197,
+        "templates": 22,
+        "runtime": "Node 25+ permission model"
+      },
+      "workspace_generated_package_sha256": "72f32c1c72c43bb8cf6ae509f3a59b7adbc5906f902409395005c94b8851fd61",
+      "workspace_generated_archive_sha256": "f84f908cb8d5468ce0dadee707b5270e690a9e97e80072aa860fb9cfabcaea7d",
+      "workspace_generated_mtime": "2026-11-17T08:52:37.044Z",
+      "note": "工作树生成目录在本轮开始前已是开发字节；与线上固定发行分开，未覆盖或部署。"
+    },
+    "manual_review": "人工核对基线浅暗宽窄阅读图，以及同一修正包的浅暗宽窄成果／意见比较图。",
+    "logs": {
+      "package": "output/resource-adaptation/desktop-package.log",
+      "signature": "output/resource-adaptation/desktop-package-signature.log",
+      "initial_desktop": "output/resource-adaptation/desktop-source-scopes.log",
+      "comparison_desktop": "output/resource-adaptation/comparison-desktop-final.log",
+      "unit": "output/resource-adaptation/comparison-unit-all.log",
+      "typecheck": "output/resource-adaptation/comparison-typecheck-final.log"
+    },
+    "preserved_initial_failure": "output/resource-adaptation/desktop-first.log：回归测试源码不在装配运行输入清单；改为单独核验后通过。"
+  }
+}

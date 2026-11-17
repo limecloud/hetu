@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE = ROOT / 'tools/hetu-skills'
-VERSION = '0.3.8'
+VERSION = '0.3.9'
 SKILLS = ['hetu-setup', 'hetu-book-create', 'hetu-book-profile', 'hetu-outline', 'hetu-cover', 'hetu-draft', 'hetu-revise', 'hetu-drama', 'hetu-resources', 'hetu-artwork', 'hetu-manage', 'hetu-import', 'hetu-video']
 
 

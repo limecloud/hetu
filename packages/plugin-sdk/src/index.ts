@@ -67,6 +67,7 @@ export interface PluginObject {
 export type PluginSourceRef = { work_ref: WorkRef; sha256: string } & (
   | { kind: "document"; document_id: string; revision_id: string }
   | { kind: "blueprint"; blueprint_id: string; revision: number }
+  | { kind: "resource"; resource_id: string; revision: number }
   | { kind: "work"; revision_ref: { revision: number } }
   | { kind: "asset"; asset_id: string; revision: number }
   | { kind: "cue"; cue_id: string; revision: number }

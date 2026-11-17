@@ -186,6 +186,16 @@ impl Kernel {
                 if source["work_ref"] != *reference {
                     return Ok(false);
                 }
+            } else if source["kind"] == "resource" {
+                if source["work_ref"] != *reference
+                    || !self.resource_in_work(
+                        text(source, "resource_id")?,
+                        Some(integer(source, "revision")?),
+                        reference,
+                    )?
+                {
+                    return Ok(false);
+                }
             } else if self
                 .document_work_ref(&self.document(text(source, "document_id")?)?)?
                 .as_ref()

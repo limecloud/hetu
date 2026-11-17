@@ -6,7 +6,7 @@
     "contracts/actions.json": "2fb8df789a24ca40148b97f8549d9aaeaa6494817eba7f9d92613989c2ea1475",
     "contracts/tools/catalog.json": "acca6346fac7c0c325e51925afe5dabc9500c088e5a93461889cf9022bdbd52e",
     "core/src/application/agent_operations.rs": "8373a3f81847980ddb5fb1e03fc73bad8f15935b7924adea757fcebe12af6ccd",
-    "core/src/application/creative_tasks.rs": "ee50d2e879c1f847cb81481b0f3d07f40bb3480711f2fae35b02df6b040acaa2",
+    "core/src/application/creative_tasks.rs": "a748acd1135d728f15512b2df724deea0e91c624abe99dbf9b9fe5de9fd0b99d",
     "core/src/application/work_scope.rs": "cee3cad66a6c2d31076607e59d3866b2429e88849460103f1e0732bf9f9a1b1b",
     "core/src/collaboration/authoring.rs": "1ed3ad93790f446be076530db097fc050798e0970884027b14f4ef5337466170",
     "integrations/catalog.json": "d2193b2fe08a7a7571395905fa571f775dc3bf3988462fd0e020a3077e7a5825",

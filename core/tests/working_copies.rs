@@ -56,6 +56,80 @@ fn submit(k: &Kernel, t: &Value, r: Value, feedback_refs: Value, key: &str) -> V
 }
 
 #[test]
+fn whole_book_working_copy_keeps_twenty_authorized_sources_after_reopen_and_submit() {
+    let (folder, author) = setup();
+    let mut sources = Vec::new();
+    for index in 0..21 {
+        let doc = ok(call(
+            &author,
+            "documents.create",
+            json!({"kind":"novel_chapter","title":format!("第{}回", index + 1),"source_format":"markdown","content":format!("第{}回原著正文保持。", index + 1),"operation_key":format!("chapter-{index}")}),
+        ));
+        sources.push(json!({"kind":"document","document_id":doc["document"]["document_id"],"revision_id":doc["revision"]["revision_id"]}));
+    }
+    let authorized = json!(&sources[..20]);
+    let t = task(&author, "outline", authorized.clone(), None);
+    let agent = reader(&folder, &t);
+    let input = json!({"task_ref":t["task_ref"],"artifact_kind":"outline","source_format":"markdown","title":"二十回复盘","base_refs":authorized,"content":"二十回初次复盘。","operation_key":"whole-book-copy"});
+    let first = ok(call(&agent, "working_copies.create", input.clone()));
+    assert_eq!(
+        ok(call(&agent, "working_copies.create", input.clone())),
+        first
+    );
+    assert_eq!(first["working_copy"]["base_refs"], authorized);
+    let mut outside = input;
+    outside["base_refs"] = json!([sources[20]]);
+    outside["operation_key"] = json!("outside-task");
+    assert_eq!(
+        call(&agent, "working_copies.create", outside)["error"]["code"],
+        "forbidden"
+    );
+    drop(agent);
+    let agent = reader(&folder, &t);
+    assert_eq!(
+        get(&agent, &t, &first["working_copy_ref"])["working_copy"]["base_refs"],
+        authorized
+    );
+    let second = ok(call(
+        &agent,
+        "working_copies.save",
+        json!({"task_ref":t["task_ref"],"working_copy_id":first["working_copy_ref"]["working_copy_id"],"expected":first["working_copy_ref"],"content":"补充二十回跨章依据。","feedback_refs":[],"operation_key":"whole-book-second"}),
+    ));
+    submit(
+        &agent,
+        &t,
+        second["working_copy_ref"].clone(),
+        json!([]),
+        "whole-book-submit",
+    );
+    let loaded = ok(call(
+        &agent,
+        "creative_tasks.get",
+        json!({"task_ref":t["task_ref"]}),
+    ));
+    assert_eq!(
+        loaded["submission"]["candidates"][0]["content"],
+        "补充二十回跨章依据。"
+    );
+    assert_eq!(
+        get(&agent, &t, &first["working_copy_ref"])["revision"]["content"],
+        "二十回初次复盘。"
+    );
+    assert_eq!(
+        get(&agent, &t, &second["working_copy_ref"])["working_copy"]["base_refs"],
+        authorized
+    );
+    for source in &sources {
+        let doc = ok(call(
+            &author,
+            "documents.get",
+            json!({"document_id":source["document_id"]}),
+        ));
+        assert_eq!(doc["revision"]["revision_id"], source["revision_id"]);
+    }
+}
+
+#[test]
 fn continuous_revision_feedback_fixed_submission_and_resume_preserve_author_text() {
     let (folder, author) = setup();
     let doc = ok(call(

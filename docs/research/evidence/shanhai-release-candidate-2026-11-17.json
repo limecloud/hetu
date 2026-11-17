@@ -1,0 +1,295 @@
+{
+  "status": "passed_local_candidate_not_released",
+  "verified_at": "2026-11-17T14:42:33.054Z",
+  "host_version": "0.11.6",
+  "plugin_version": "0.1.6",
+  "source_bases": {
+    "host": "211edf38de2e1de1c1b1415a2c08e201e9f374d4",
+    "plugin": "6320f5a863901e001627c395d3d3c13dcdc6abd1"
+  },
+  "plugin": {
+    "version": "0.1.6",
+    "plugin_id": "org.wordflowlab.shanhai",
+    "host_api": "1",
+    "package_sha256": "8aae7136032bf52abfc28d96bf79f1cc49c38b5e809fb79a7688df7bb29c0588",
+    "archive_sha256": "0e25962972e98844aac55cf9d877722954e531519d5d452d78daab560daf2420",
+    "archive_bytes": 393291,
+    "templates": 22,
+    "runtime": "Node 25+ permission model"
+  },
+  "host_manifest_sha256": "b1cadc110706aa7a1480f348897ffd5f9c8b4b421acbc771598bd9cc759d92cb",
+  "host_runtime_source_sha256": "608b8582a8bda6a4201e62b95c90c7b749cae33a59396b47f63f64df148660c4",
+  "checks": {
+    "host_core": 31,
+    "editor_mapping": 4,
+    "plugin_units": 14,
+    "website_initial_passed": 27,
+    "website_context_setup_failed": 1,
+    "website_failed_item_recheck_passed": 1,
+    "desktop": [
+      "same-machine-adaptation-instance",
+      "both-full-fountain-manuscripts",
+      "agent-feedback",
+      "fixed-resource-source",
+      "instance-comparison",
+      "readable-comparison-and-fixed-manuscripts",
+      "actual-file-export",
+      "light-dark-1440-600",
+      "close-reopen-same-instance",
+      "upstream-twenty-heads-unchanged"
+    ],
+    "fixed_runtime_inputs": 2764,
+    "packaged_artifacts": 2800,
+    "historical_plugin_downloads": 12,
+    "upstream_current_heads_unchanged": 20,
+    "same_instance_after_upgrade": true,
+    "typescript": true,
+    "documents": true,
+    "version_consistency": true,
+    "third_party_cargo_versions_unchanged": true,
+    "release_rust_workspace": {
+      "status": "passed",
+      "groups": 63,
+      "passed": 344,
+      "failed": 0,
+      "ignored": 0,
+      "log": "release-workspace-tests.log"
+    },
+    "release_plugin_host": 87,
+    "release_desktop": {
+      "workbench": {
+        "initial_passed": 43,
+        "initial_failed": 1,
+        "failure": "computation.spec.ts:10:1 work selection predicate timeout at 5000ms",
+        "isolated_recheck_passed": 1,
+        "first_failure_trace_retained": true,
+        "cause": "not_established",
+        "source_changed_for_recheck": false
+      },
+      "packaged": 1
+    },
+    "packaged_skills": {
+      "suites": 45,
+      "version": "0.3.9",
+      "fixed_files": 2475,
+      "all_bytes_match_manifest": true
+    },
+    "release_tooling": 25,
+    "release_cli_launcher": 6,
+    "release_version_drift": 1,
+    "creative_methods": 8,
+    "entrypoint_parity": {
+      "status": "passed",
+      "actions": 8,
+      "templates": 22,
+      "instances": 3,
+      "structured_rejections": 4
+    }
+  },
+  "desktop": {
+    "status": "passed",
+    "verified_at": "2026-11-17T14:14:03.903Z",
+    "development_only": true,
+    "production_verified": false,
+    "host_mode": "isolated-local-package",
+    "package_manifest_sha256": "b1cadc110706aa7a1480f348897ffd5f9c8b4b421acbc771598bd9cc759d92cb",
+    "package_source_sha256": "608b8582a8bda6a4201e62b95c90c7b749cae33a59396b47f63f64df148660c4",
+    "package_artifacts": 2800,
+    "runtime_sha256": {
+      "hetu-app-server": "fcc441e890b69701650c4f7a63a6b0ec4638b8dc6cdcbb9fac7f511eca32b1c9",
+      "hetu": "171933b178d227d3f3f6c04b9cc6a6c7934b98f59f42dd33ba40701a9ec5c1d7",
+      "hetu-mcp": "6402059659d4e5ef06ab6d86611216bd64cb3acb89ce991c7256e0f75c322df6",
+      "hetu-plugin": "6a7486d09ce114b840b44aa24fb3c990258ea1fb8e4d71908f8f79f8e0f1e5ae",
+      "node": "3a0b47fda00d3d2daa2173695b91c065d5318780b5b79674a06274e00d7e4adf"
+    },
+    "regression_source_sha256": {
+      "core/tests/task_resource_context.rs": "7bea1d7d7e052c851e7e08afadcb307279e80b6881ef9f3cfa265ebba90fea74"
+    },
+    "plugin_package_sha256": "8aae7136032bf52abfc28d96bf79f1cc49c38b5e809fb79a7688df7bb29c0588",
+    "instance_original_package_sha256": "20fc9e5083e5bad842ea2ad68a174fe1f49b36bfa518952578077a6c1395aeb8",
+    "work_ref": {
+      "workspace_id": "workspace_b5135b10-5cb9-4db6-af47-4de9070ddba9",
+      "kind": "drama",
+      "object_id": "drama_96f7d30a-0edc-4ae9-b810-18610dab92e8"
+    },
+    "instance": {
+      "object_id": "ext_7e446273-0353-4fb6-8c5c-44dedf5258d1",
+      "revision": 2,
+      "sha256": "a287edf57044565ab69ee7bb8065f6c08cec03982888be04a14e1647ea1d7f17"
+    },
+    "fixed_source": {
+      "kind": "resource",
+      "work_ref": {
+        "workspace_id": "workspace_b5135b10-5cb9-4db6-af47-4de9070ddba9",
+        "kind": "drama",
+        "object_id": "drama_96f7d30a-0edc-4ae9-b810-18610dab92e8"
+      },
+      "resource_id": "resource_af7164a9-cfd2-4fba-85c4-5ca421d6995f",
+      "revision": 1,
+      "sha256": "8fdbdd50e539469960680a6174167124dc79fe9e211ed17bcfa1aad164c49e0d"
+    },
+    "source_state": {
+      "current_revision": 2,
+      "current_sha256": "9233c4f2fa7e6f18300d655acd36701287772b1a216e6c2726218fcbb47a4361",
+      "fixed_sha256": "ef56e147825c5914c18cf62a3d75fa21b2fc42ea3bd272834ed9904ca1471a7a"
+    },
+    "manuscripts": [
+      "6b00e2deecd2b6d5cb5fb469890b62fac029dc0a33a5003c0618dfd03e2d171b",
+      "91dbac99dc566cd58f606a00479267cd74807f4513c5b8e68537bda6d535c42e"
+    ],
+    "export_sha256": "48d22e996ec5b6bac162d0164270d994e5c9f661189c419dafc8f3bc6a8d255f",
+    "upstream_current_heads_unchanged": 20,
+    "packaged_resources_unchanged": true,
+    "frozen_installed_resources_unchanged": true,
+    "checks": [
+      "same-machine-adaptation-instance",
+      "both-full-fountain-manuscripts",
+      "agent-feedback",
+      "fixed-resource-source",
+      "instance-comparison",
+      "readable-comparison-and-fixed-manuscripts",
+      "actual-file-export",
+      "light-dark-1440-600",
+      "close-reopen-same-instance",
+      "upstream-twenty-heads-unchanged"
+    ],
+    "limitations": [
+      "本机开发签名装配，未公开发行",
+      "公版片段不等同第三方改编授权",
+      "未模拟作者采纳或定稿",
+      "未验物理输入法或Windows"
+    ]
+  },
+  "failure_history": [
+    "官网首轮一项在Chrome context创建阶段超时，页面逻辑尚未执行；单worker单项复验通过，保留原始trace。",
+    "候选准备脚本的文档标题、已登记新文件与Cargo节定位断言曾拒绝，修正脚本后再准备；未作用于正式仓库或制品。",
+    "直接执行任务面板校验的工作目录与npm入口不同，输入清单不一致；使用仓库规定workspace入口后通过。",
+    "初次直接TypeScript命令选错嵌套路径；仓库build:desktop入口编译与类型检查通过。",
+    "完整桌面首轮43项通过，作品打开的5秒状态断言超时；保留trace后原样单项复验通过，未修改断言或产品源码，未确定超时根因。",
+    "正式门禁补检发现共享方法源与派生套件不同步；同步45套方法、升为0.3.9后重新固定源码清单、重新装配及复验。",
+    "插件门禁首轮由终端默认Node23启动，11项因运行时不支持失败；固定到发行工作流Node25.0.0后87项全部通过，旧日志保留。",
+    "首次脚本用签前source_binary_sha256校验签后运行文件，在业务动作前停止；改为核验签后artifacts清单，并确保失败时关闭MCP连接。",
+    "第二轮目录分页中一次CLI退出5；相同请求单独复查成功，根因未确定。旧日志保留，公共测试辅助函数补齐失败前的原始回执和进程状态保存。",
+    "第三轮全部负例均被两端拒绝；脚本误期望无效字段返回插件invalid_input，实际为宿主Schema层的hetu.plugin_operation_failed。按真实层级核对错误码及具体Schema拒绝原因后完整复验，不修改产品代码。"
+  ],
+  "logs": {
+    "host_core": "output/release-v0.1.6/host-core-tests.log",
+    "editor": "output/release-v0.1.6/editor-tests.log",
+    "plugin": "output/release-v0.1.6/plugin-verify.log",
+    "website": "output/release-v0.1.6/plugin-ui.log",
+    "website_recheck": "output/release-v0.1.6/plugin-ui-context-recheck.log",
+    "desktop": "output/release-v0.1.6/desktop.log",
+    "patch_validation": "output/release-v0.1.6/patch-validation.json",
+    "release_gates": "output/release-v0.1.6/release-local-gates.json",
+    "same_instance_gates": "output/release-v0.1.6/same-instance-gates.json",
+    "skills_sync": "output/release-v0.1.6/skills-sync.json",
+    "entrypoint_parity": "output/release-v0.1.6/entrypoint-parity-final.log"
+  },
+  "boundaries": [
+    "隔离macOS arm64开发签名候选，未公开发行、未覆盖Applications。",
+    "两仓未commit、push或创建标签；未触发正式发行CI或Cloudflare部署。",
+    "同一隔离实例原两稿、资料固定版本及作者决定保持；该改编接续未新建作品或模拟作者采纳定稿。",
+    "正式山海v0.1.5继续作为线上版本；v0.1.6完整功能基线需河图v0.11.6。",
+    "Windows/Linux业务、物理输入法、真实作者决定及第三方授权继续独立。",
+    "机器入口补验另建一部隔离空小说和三个方法实例；不含正文、候选生成、作者决定或付费调用。"
+  ],
+  "skills_sync": {
+    "status": "passed",
+    "suite_version": "0.3.9",
+    "suites": 45,
+    "changed_generated_files": 225,
+    "generated_files": 2475,
+    "old_candidate_retained": true,
+    "repackaged": true
+  },
+  "entrypoint_parity": {
+    "status": "passed_with_explicit_scope",
+    "verified_at": "2026-11-17T14:42:33.054Z",
+    "plugin_version": "0.1.6",
+    "package_sha256": "8aae7136032bf52abfc28d96bf79f1cc49c38b5e809fb79a7688df7bb29c0588",
+    "host_manifest_sha256": "b1cadc110706aa7a1480f348897ffd5f9c8b4b421acbc771598bd9cc759d92cb",
+    "host_source_sha256": "608b8582a8bda6a4201e62b95c90c7b749cae33a59396b47f63f64df148660c4",
+    "host_binaries_unchanged": true,
+    "packaged_runtime_sha256": {
+      "hetu-app-server": "c7ff44df5ff20e599f8bd203cbdd4e2677efe58a0ce26154a32e1a65aae31758",
+      "hetu": "f7e0da723124e6c8c80c831b51c93fe22b69c54a95711541f2a63ea0696376ea",
+      "hetu-mcp": "d1f03763c1b7ab5c0fac6a5c65a22dfa878e263943e9e657b5518b9116fe9acc",
+      "hetu-plugin": "1caf3258387455f6bdf5cca4892b8399b20577ce5d3c64785572268454e8db97",
+      "node": "51212eb5af1789a955caca1599265b684ed761e58573ea0f018e282da5424a84"
+    },
+    "actions": [
+      "catalog.list",
+      "catalog.get",
+      "sessions.list",
+      "sessions.get",
+      "sessions.create",
+      "sessions.update",
+      "sessions.compare",
+      "sessions.export"
+    ],
+    "checks": [
+      {
+        "name": "catalog_two_entries_all_pages",
+        "templates": 22
+      },
+      {
+        "name": "bidirectional_create_update_and_original_key",
+        "instances": 2,
+        "revisions": [
+          {
+            "object_id": "ext_d6061fc2-d615-4b54-ac0c-005ccec6c9f0",
+            "revision": 1,
+            "sha256": "4ad2a40e1c6a6043e8969ff73226b88bd43acb724eb1d484747654d4018449b5"
+          },
+          {
+            "object_id": "ext_d6061fc2-d615-4b54-ac0c-005ccec6c9f0",
+            "revision": 2,
+            "sha256": "bfd96a40a866d80b55fb2c49a66f0e883b3f752340192b9baf8232b3b62e9545"
+          },
+          {
+            "object_id": "ext_ad04a506-17c4-46ec-921e-daf184fc8395",
+            "revision": 1,
+            "sha256": "88288a942a209a9fcf1323247bdc4f54a677c41526151d62e2618ca39b690283"
+          },
+          {
+            "object_id": "ext_ad04a506-17c4-46ec-921e-daf184fc8395",
+            "revision": 2,
+            "sha256": "e2ce930dbe4d06bd241393dfa5fa56a304d16306c6a50637356cbe3b0f5288eb"
+          }
+        ]
+      },
+      {
+        "name": "comparison_and_exact_export_bytes",
+        "formats": [
+          "json",
+          "markdown"
+        ],
+        "export_scope": "instance_without_candidates; not an author-approved delivery"
+      },
+      {
+        "name": "pagination_and_structured_rejection_parity",
+        "instances": 3,
+        "stale_cursor": "snapshot_changed",
+        "stale_write": "revision_conflict",
+        "changed_replay": "idempotency_conflict",
+        "invalid_input": "hetu.plugin_operation_failed"
+      }
+    ],
+    "boundaries": [
+      "显式固定的macOS本地装配；不作为正式发行或跨平台安装验收。",
+      "仅创建隔离空作品与方法实例，不生成正文、采纳、定稿或调用付费模型。",
+      "本项验证机器入口双向一致性；不替代GUI、候选全文导出或完整授权负向矩阵。"
+    ],
+    "test_source_sha256": {
+      "tests/machine/entrypoint-parity.test.ts": "837d20c33c2503437726c2f4ff9da2e97e21b190a42a246593bdcea091549666",
+      "tests/machine/support.ts": "2da891c0a860bbffb6089a1349ca86a7034e3c90a0d2228eb0e1be87b623fd43"
+    },
+    "host_version": "0.11.6",
+    "final_log_sha256": "b3f0e75d03efa87f03094e16633a6a25476b6cd9e6927e6b2e9494a700156103",
+    "failure_history": [
+      "首次脚本用签前source_binary_sha256校验签后运行文件，在业务动作前停止；改为核验签后artifacts清单，并确保失败时关闭MCP连接。",
+      "第二轮目录分页中一次CLI退出5；相同请求单独复查成功，根因未确定。旧日志保留，公共测试辅助函数补齐失败前的原始回执和进程状态保存。",
+      "第三轮全部负例均被两端拒绝；脚本误期望无效字段返回插件invalid_input，实际为宿主Schema层的hetu.plugin_operation_failed。按真实层级核对错误码及具体Schema拒绝原因后完整复验，不修改产品代码。"
+    ]
+  }
+}

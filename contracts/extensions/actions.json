@@ -179,7 +179,8 @@
                     "blueprint",
                     "work",
                     "asset",
-                    "cue"
+                    "cue",
+                    "resource"
                   ]
                 },
                 "work_ref": {
@@ -228,6 +229,10 @@
                 "cue_id": {
                   "type": "string",
                   "pattern": "^cue_[0-9a-f-]{36}$"
+                },
+                "resource_id": {
+                  "type": "string",
+                  "pattern": "^resource_[0-9a-f-]{36}$"
                 }
               },
               "oneOf": [
@@ -325,6 +330,26 @@
                       "work_ref",
                       "sha256",
                       "cue_id",
+                      "revision"
+                    ]
+                  }
+                },
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "resource"
+                    }
+                  },
+                  "required": [
+                    "resource_id",
+                    "revision"
+                  ],
+                  "propertyNames": {
+                    "enum": [
+                      "kind",
+                      "work_ref",
+                      "sha256",
+                      "resource_id",
                       "revision"
                     ]
                   }
@@ -603,7 +628,8 @@
                   "blueprint",
                   "work",
                   "asset",
-                  "cue"
+                  "cue",
+                  "resource"
                 ]
               },
               "work_ref": {
@@ -652,6 +678,10 @@
               "cue_id": {
                 "type": "string",
                 "pattern": "^cue_[0-9a-f-]{36}$"
+              },
+              "resource_id": {
+                "type": "string",
+                "pattern": "^resource_[0-9a-f-]{36}$"
               }
             },
             "oneOf": [
@@ -749,6 +779,26 @@
                     "work_ref",
                     "sha256",
                     "cue_id",
+                    "revision"
+                  ]
+                }
+              },
+              {
+                "properties": {
+                  "kind": {
+                    "const": "resource"
+                  }
+                },
+                "required": [
+                  "resource_id",
+                  "revision"
+                ],
+                "propertyNames": {
+                  "enum": [
+                    "kind",
+                    "work_ref",
+                    "sha256",
+                    "resource_id",
                     "revision"
                   ]
                 }

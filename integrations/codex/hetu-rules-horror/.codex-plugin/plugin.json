@@ -1,6 +1,6 @@
 {
   "name": "hetu-rules-horror",
-  "version": "0.3.8",
+  "version": "0.3.9",
   "description": "河图洛书规则怪谈创作套件：任务流程与本题材方法，按作品选择安装",
   "skills": "./skills/",
   "category": "Productivity",

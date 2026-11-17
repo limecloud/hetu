@@ -1,0 +1,233 @@
+{
+  "verified_at": "2026-11-17T10:59:44.558959Z",
+  "status": "source-fix-verified",
+  "problem": "创建输入和任务可固定100个来源，工作副本记录及候选记录却只容纳8个；二十章整书复盘失败。",
+  "schema_changes": {
+    "$defs.working_record.properties.base_refs.maxItems": {
+      "before": 8,
+      "after": 100
+    },
+    "$defs.candidate_record.properties.source_refs.maxItems": {
+      "before": 8,
+      "after": 100
+    }
+  },
+  "source_base_sha": "3064d9c56c90a5b85046d0f096100f76b5181ca1",
+  "isolation": "git archive HEAD + only creative-task.schema.json and working_copies regression; APFS clone of build cache",
+  "source_sha256": {
+    "contracts/schemas/creative-task.schema.json": "aef459d4271cd09b642d8b63f74ad4cb50dfbecf33268a970e3d0d211c060ec2",
+    "core/tests/working_copies.rs": "baaa6bdd3f4757de96dc84dbf35f700c96f513dfc0276387e17e072e37b2f7dc"
+  },
+  "tests": {
+    "working_copies": {
+      "passed": 5,
+      "failed": 0,
+      "log": "output/shanhai-whole20-regression-passed.log"
+    },
+    "creative_tasks": {
+      "passed": 10,
+      "failed": 0
+    },
+    "task_context": {
+      "passed": 3,
+      "failed": 0
+    },
+    "related_log": "output/shanhai-whole20-related-tests.log"
+  },
+  "real_continuation": {
+    "verified_at": "2026-11-17T10:58:50.046Z",
+    "host_mode": "isolated-source-built-schema-fix",
+    "runtime_sha256": {
+      "hetu": "4a5439836b79df0ad38c28d67ebdcad17ba7a7c4fe5d0c63fc10d4f47c7bb24c",
+      "hetu-mcp": "b22ace691a82218a52e638b28531a2845cd64da60f7aaed27e73b139853f527f",
+      "hetu-plugin": "b7c523d133fb34612c60213f07a797f804dc6ab11692c9ccb66703a33bec8658",
+      "hetu-app-server": "3cf462ed197126449277a79ce722297900745a716851151d86cd19b626a5d385"
+    },
+    "frozen_installed_resources_unchanged": true,
+    "plugin_version": "0.1.5",
+    "package_sha256": "505868a6a7067a8b93b77dcdd0d46d07e77568ed3b9a920624e14ecccd24be20",
+    "source_sha256": "273f4cbaecb4c4d396ecec7103b4761e62bde0c0f368185a1697c1880cfe9cf7",
+    "read_chapters": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20
+    ],
+    "unread_chapters": [],
+    "notebooks": [
+      {
+        "file": "tests/fixtures/laocan/reading-01-04.json",
+        "sha256": "9b56ba0863189ab57ddb0519b42d968e7abb8864bed552e355dc0f001ffb035d",
+        "read_on": "2026-11-17",
+        "read_chapters": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "reading_method": "2026-11-17，Agent完整阅读真实安装版回读的01.txt至04.txt全部段落；章标题、首尾抽样和摘要比对不作为语义阅读依据。后续回归测试核验这份固定阅读记录，不自行执行语义阅读。"
+      },
+      {
+        "file": "tests/fixtures/laocan/reading-05-08.json",
+        "sha256": "f30cfb7dfad3f7bcbd6f5f8a74e13c314701bdb29d7f9fef3863069bdef15edf",
+        "read_on": "2026-11-17",
+        "read_chapters": [
+          5,
+          6,
+          7,
+          8
+        ],
+        "reading_method": "Agent实际完整阅读安装版回读的05.txt至08.txt全部段落。首次合并输出中第六、七回被工具输出预算截断，随后单独完整读取这两回，才登记本批完成。"
+      },
+      {
+        "file": "tests/fixtures/laocan/reading-09-12.json",
+        "sha256": "1524d8ab68c489003c1d4bd2826ef18991871ed36b70fe177c5f2ef40cfaa47d",
+        "read_on": "2026-11-17",
+        "read_chapters": [
+          9,
+          10,
+          11,
+          12
+        ],
+        "reading_method": "Agent完整阅读安装版回读的09.txt至12.txt全部段落；第九、十回沿上一轮已完整读取的正文接续，第十一、十二回逐段完整展示并阅读。摘要、章名和引句检索不代替全文阅读。"
+      },
+      {
+        "file": "tests/fixtures/laocan/reading-13-16.json",
+        "sha256": "f5fb93c7244945d1b6f5cc12253717bc624ed6c1f100535c3af03dfe58cb95e3",
+        "read_on": "2026-11-17",
+        "read_chapters": [
+          13,
+          14,
+          15,
+          16
+        ],
+        "reading_method": "Agent完整阅读安装版回读的13.txt至16.txt全部段落，分两次各两回展示；工具输出均未截断。引句定位随后核验，不作为全文阅读的替代。"
+      },
+      {
+        "file": "tests/fixtures/laocan/reading-17-20.json",
+        "sha256": "c05ad175e6308ccca3104b18e9b3587748aad5fdab144c64fdaa5c96c5521ec7",
+        "read_on": "2026-11-17",
+        "read_chapters": [
+          17,
+          18,
+          19,
+          20
+        ],
+        "reading_method": "Agent完整阅读安装版回读的17.txt至20.txt全部段落，分两次各两回展示，均未截断；读至末回结尾对联。至此本固定二十回版本全篇实际读完，尚不代表新的整书宿主任务已交付。"
+      }
+    ],
+    "source_claims": 99,
+    "instance": {
+      "object_id": "ext_456ba72e-1206-4c60-963d-3b3b27a2fe65",
+      "revision": 3,
+      "sha256": "b7b4c8a8adb26282a02c63c9b83caa5289b370d7f6f0b8aca4ee6ad641b8ebb1"
+    },
+    "task_id": "task_328366d3-3028-4c8f-aabf-7ced9fc4a200",
+    "candidates": [
+      {
+        "id": "v1",
+        "label": "二十回复盘 v1",
+        "kind": "draft",
+        "draft_ref": {
+          "work_ref": {
+            "workspace_id": "workspace_8af4dd1d-3e47-4a95-a8c2-6d8f4cfc24b0",
+            "kind": "novel",
+            "object_id": "novel_beef2a84-b8de-48a6-9135-d68fae283d5e"
+          },
+          "draft_id": "draft_71ca0f74-eb3b-4048-bf8d-d3efc2f54945",
+          "sha256": "4526f81a84709128f22333c0dd9f260f295e70d29633ba84b93c3a3a366e004c"
+        },
+        "sha256": "4526f81a84709128f22333c0dd9f260f295e70d29633ba84b93c3a3a366e004c"
+      },
+      {
+        "id": "v2",
+        "label": "二十回复盘 v2",
+        "kind": "draft",
+        "draft_ref": {
+          "work_ref": {
+            "workspace_id": "workspace_8af4dd1d-3e47-4a95-a8c2-6d8f4cfc24b0",
+            "kind": "novel",
+            "object_id": "novel_beef2a84-b8de-48a6-9135-d68fae283d5e"
+          },
+          "draft_id": "draft_5c5c376e-1311-4438-af0b-dfbee7008454",
+          "sha256": "59b1b1d10c565f8c1f6602f2e40cbb8cd53f1d95e3f45aacc8b965fc09136e7f"
+        },
+        "sha256": "59b1b1d10c565f8c1f6602f2e40cbb8cd53f1d95e3f45aacc8b965fc09136e7f"
+      }
+    ],
+    "feedback_sha256": "1cbae83baa1c72a4d1352140b6d8844d417b3158b2779181dbd39b2858d5de29",
+    "exports": {
+      "json": "9ed1e5cefd0412d5b29b5a1c2c7bd5750c9f1c839cbc45fd8f98ab9f16c30844",
+      "markdown": "0fd15134888579bb7880452f2971760b53e879ef1f8ae0367f07f0706e82608f"
+    },
+    "formal_state_unchanged": true,
+    "previous_four_chapter_task_unchanged": true,
+    "decisions": [],
+    "checks": [
+      "same-existing-novel",
+      "twenty-fixed-inputs",
+      "same-task-two-drafts",
+      "agent-feedback",
+      "idempotent-submit",
+      "cli-write-mcp-read",
+      "full-text-export",
+      "formal-heads-unchanged",
+      "eight-host-fingerprints-unchanged"
+    ],
+    "limitations": [
+      "实际语义阅读来自五批人工阅读笔记；脚本只核验固定记录及工作流",
+      "后续方向未获作者选择，未创建改编",
+      "没有作者采纳或定稿"
+    ],
+    "runtime_log": "output/existing-novel/whole20-runtime-final.log",
+    "test_source_sha256": "ce112c81d765f7047228760be9db4cc9f308cea97866b9eab8520a53fe4ab16b",
+    "manuscripts_sha256": {
+      "review-whole-v1.md": "4526f81a84709128f22333c0dd9f260f295e70d29633ba84b93c3a3a366e004c",
+      "review-whole-v2.md": "59b1b1d10c565f8c1f6602f2e40cbb8cd53f1d95e3f45aacc8b965fc09136e7f"
+    },
+    "earlier_failures": [
+      "脚本缺少模板必需source_note，校验拒绝，补齐后使用原输入",
+      "整份99依据塞入brief超过合同，改为20回代表依据及固定实例引用；全部依据仍在实例",
+      "原0.11.2安装版working_record.base_refs最多8，二十章创建副本失败",
+      "同一任务prepare重新preview产生不同输入，被原键正确拒绝；恢复唯一原成功回执后接续"
+    ]
+  },
+  "source_build_log": "output/shanhai-whole20-fixed-build.log",
+  "frozen_installed_host": "0.11.2 resources unchanged; original installed runtime fails; successful continuation uses separately built CLI/MCP/plugin/app-server",
+  "first_failures": [
+    "initial twenty-source working copy reproduces hetu.integrity_failure",
+    "after working_record correction, candidate_record eight-source persistence rejects submission",
+    "after both schema fixes, new regression used content from submission metadata; corrected to public creative_tasks.get full-text readback; no additional product change"
+  ],
+  "format_validation": {
+    "changed_rust_file": "passed",
+    "workspace_wide": "failed on pre-existing formatting outside this change; no unrelated formatting applied"
+  },
+  "publication": {
+    "committed": false,
+    "pushed": false,
+    "new_desktop_release": false,
+    "website_deployment_changed": false
+  },
+  "limitations": [
+    "not a new installed desktop acceptance",
+    "no author adoption or finalization",
+    "cross-platform and remaining independent product gates retain their existing scope"
+  ]
+}

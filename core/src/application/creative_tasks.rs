@@ -225,6 +225,20 @@ impl Kernel {
                     "单篇上下文超过 1 MiB，请缩小范围。",
                 )?;
                 sources.push(json!({"reference":reference,"title":doc["document"]["title"],"source_format":doc["document"]["source_format"],"sha256":doc["revision"]["sha256"],"size_bytes":text(&doc,"content")?.len()}));
+            } else if reference["kind"] == "resource" {
+                ensure(
+                    self.task_work_reference(input)?.as_ref() == Some(&reference["work_ref"]),
+                    "forbidden",
+                    "任务资料来源须属于明确的当前作品。",
+                )?;
+                let (record, sha) = self.source_resource(reference)?;
+                let content = text(&record, "body")?;
+                ensure(
+                    content.len() <= TEXT_LIMIT,
+                    "hetu.budget_exceeded",
+                    "单份资料上下文超过 1 MiB，请缩小范围。",
+                )?;
+                sources.push(json!({"reference":reference,"title":record["title"],"source_format":"markdown","sha256":sha,"size_bytes":content.len()}));
             } else {
                 let (bp, sha) = self.source_blueprint(reference)?;
                 ensure(

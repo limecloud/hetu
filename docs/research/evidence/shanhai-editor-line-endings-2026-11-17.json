@@ -1,0 +1,412 @@
+{
+  "verified_at": "2026-11-17T11:38:48.471629+00:00",
+  "status": "local-package-machine-and-desktop-passed",
+  "problem": "打开CRLF正文时CodeMirror逻辑换行规范化被受控同步误报为作者修改，自动保存并阻止导航。",
+  "fix": [
+    "原文独立StateField与逻辑位置映射，只替换实际编辑范围",
+    "外部同步Annotation阻止作者修改回调，并排除撤销历史",
+    "原文UTF8选区；撤销历史只保存换行格式，恢复合并输入的最后效果"
+  ],
+  "source_base_sha": "3064d9c56c90a5b85046d0f096100f76b5181ca1",
+  "source_sha256": {
+    "apps/desktop/src/renderer/editor.tsx": "bff84dedd4d78bdeef1bbfa705cc8d3105096400d04e4319229ecc87ab3f5b31",
+    "apps/desktop/src/renderer/editor-source.ts": "36671790a6c494e8b067191fa8f150a60bf3e0b625c4e77d85376a57fb796179",
+    "apps/desktop/tests/editor-source.test.ts": "9ebcc57020399454bdfebca7f18e6f250a45ec09d57df04274f71ef8668e82c9",
+    "contracts/schemas/creative-task.schema.json": "aef459d4271cd09b642d8b63f74ad4cb50dfbecf33268a970e3d0d211c060ec2"
+  },
+  "isolation": "固定HEAD归档仅添加本任务来源预算和编辑器修复；工作树其他线程改动未装配。",
+  "package": {
+    "kind": "electron-local-install-package",
+    "version": "0.11.2",
+    "platform": "darwin",
+    "arch": "arm64",
+    "source_sha256": "d915759712d3d0854bc116a35b95bef1575bb48833c1bd0a467e5af175ecc849",
+    "manifest_sha256": "0406bfc48b87d30b4104932a69afd0ce3249599e40da0ac4b8816d4c52f213bf",
+    "source_inputs": 2764,
+    "artifacts": 2800,
+    "signing": "ad-hoc-development",
+    "codesign_verify_deep_strict": "passed",
+    "production_verified": false,
+    "assembly_log": "output/whole20-final-package.log (isolated checkout)"
+  },
+  "editor_regression": {
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0,
+    "log": "output/shanhai-editor-source-final.log",
+    "log_sha256": "c3d7091d8faee0102f973bb9c3a1e879d715a45965b24bce089a4fa9192dce0c"
+  },
+  "machine": {
+    "verified_at": "2026-11-17T11:29:36.478Z",
+    "host_mode": "isolated-local-package",
+    "package_manifest_sha256": "0406bfc48b87d30b4104932a69afd0ce3249599e40da0ac4b8816d4c52f213bf",
+    "package_source_sha256": "d915759712d3d0854bc116a35b95bef1575bb48833c1bd0a467e5af175ecc849",
+    "packaged_resources_unchanged": true,
+    "package_artifacts": 2800,
+    "runtime_sha256": {
+      "hetu": "8e178f92a059bba3b0f41d9b5aa3617d20861b95f285ffabfc2e3c6d48879300",
+      "hetu-mcp": "63e5c3bb7e911001359914b2cecc492964aa2b41717a9dda1d6b486333aa8046",
+      "hetu-plugin": "9285e3aed79ec70302a7c26daf2eafc539c888f127af7b189f60842622815b31",
+      "hetu-app-server": "87d7d25f7613fa4a7b747902e22d1458607fba7849671cc97bf441e7e24296e8"
+    },
+    "frozen_installed_resources_unchanged": true,
+    "plugin_version": "0.1.5",
+    "title": "老残游记 · 二十回复盘与探索（装配验收）",
+    "current_heads": [
+      {
+        "document_id": "doc_8e30fa6d-5c55-4b99-82c1-30f382584080",
+        "revision_id": "rev_a9197695-2a86-49e3-9a6f-efae79d2d339",
+        "sha256": "47980314d5ba3154eb89d0f8b05202a93b8a3eddf0c29cee8fcb3c5a1302b3ed"
+      },
+      {
+        "document_id": "doc_ef2a3889-d02a-40aa-bad6-38f3d8a1d7ae",
+        "revision_id": "rev_0e58a550-7554-4f2d-bf1e-5bcad0f23903",
+        "sha256": "f250b7c389bbd6cbd0890503d0da6932be721c317194bf2830926d8c50402d27"
+      },
+      {
+        "document_id": "doc_dd67e919-41db-49ba-8c5a-ebe0191fc45b",
+        "revision_id": "rev_f3f58967-546d-415c-a030-c3d3b69cfefd",
+        "sha256": "84895493519fe0938b0714f1b9d3bbcae6c146fa1eb1c19682201a3a6d138901"
+      },
+      {
+        "document_id": "doc_3a949853-7771-421d-a303-2543d1588070",
+        "revision_id": "rev_bd257a0d-4e2e-446f-860e-40a724f77d71",
+        "sha256": "5df1bcc89f56c00b2b2b71e7f5fd70e57e05a56fdd1a9ccb78fcec5584d5cc96"
+      },
+      {
+        "document_id": "doc_a03cc64a-dbe6-4067-9846-c73401e493ff",
+        "revision_id": "rev_7e382d6e-4dce-4aab-bc01-59350291744b",
+        "sha256": "457f6a70f063a32f2065cbeb36f3bd910102dc86bc8532f7830f97cb5e069ab4"
+      },
+      {
+        "document_id": "doc_9b523d5c-0865-40c8-8d2f-aeeb819ebf71",
+        "revision_id": "rev_ffbbdbe9-0e1c-4a64-a724-4fd17339c1bb",
+        "sha256": "178a7227d5bafdd9e3fd1550e692d8c8a22daf16f3c38fecfde9262ff3e78aeb"
+      },
+      {
+        "document_id": "doc_843f9bcd-1770-4a63-be75-d6fa3ba8aec5",
+        "revision_id": "rev_8445081c-a6c7-4829-b962-9b4338afedca",
+        "sha256": "4342c050455f0222826bde3546127e91643a9dc9e5db648ca35efbb8cd3ab1e5"
+      },
+      {
+        "document_id": "doc_cca3f172-6ae6-49eb-8ae9-2b2b8ef7bb15",
+        "revision_id": "rev_744a3b54-495a-4dce-9ff6-1b325daaac5a",
+        "sha256": "01d8e5fd59f5f1ac687c7f9babb4d3e8d778defd2a78e6c57db5cbf0bcec3cc0"
+      },
+      {
+        "document_id": "doc_641b86d5-4ee7-4bce-b535-19bff0726c81",
+        "revision_id": "rev_193ccfc2-4a6c-4d89-8386-993f115613a6",
+        "sha256": "6893e54046506e7dc3b432a6cc04f6a628fb897f8626471c062fa2b9c700ccf2"
+      },
+      {
+        "document_id": "doc_eecda072-5118-4fb4-a3e6-4c7d377a3872",
+        "revision_id": "rev_59cb4fe7-f456-49cf-b932-287ad2b35e72",
+        "sha256": "5e168178c808ffbcbaef545cfc7f1ce46e9b264782b67132d5634ad9de2b71ea"
+      },
+      {
+        "document_id": "doc_2539356d-1324-43f8-8d60-e96547a3cf1e",
+        "revision_id": "rev_b3ce6738-9fc3-4baa-b925-0053ece874cb",
+        "sha256": "2ca56cadc4947310f6faeb389fd236ceb135f9b7e690aaf48c54356c09c7edae"
+      },
+      {
+        "document_id": "doc_00586932-9a0e-4227-b7c4-2de7c36792cb",
+        "revision_id": "rev_3cae9fe9-9da0-4dc7-9a44-defc37b5f3c0",
+        "sha256": "19c58d0030a1b1aab640943413c24f60cee4f9e109740697db38369c20fc73d2"
+      },
+      {
+        "document_id": "doc_f174bdb2-c03a-4cc5-af2f-59a6d43aafc3",
+        "revision_id": "rev_14de9bf1-0b4d-464d-98fb-669779228df4",
+        "sha256": "5c0c304150344c30912c44ceb5a9f9d23bc2c8f0f4a3b806dc1458e1cd37f7c6"
+      },
+      {
+        "document_id": "doc_5b4d5c5a-9314-4bc6-9c7e-0e9786819b8a",
+        "revision_id": "rev_540c5aa1-118d-4246-83a4-1aa76ad07cb1",
+        "sha256": "520ffac4c2e4128c3d1454f636c5a4889722cc1d25c8da4bec6c2b1953c8154a"
+      },
+      {
+        "document_id": "doc_3364af98-532f-45eb-ab7a-d1dedebe39bb",
+        "revision_id": "rev_29cf72b6-7703-405b-a757-200eccae38bc",
+        "sha256": "27ccdb4e720a0f9c6eaaed4d1c629daa54c5a661d32093bd515fde8c3321d7ac"
+      },
+      {
+        "document_id": "doc_b7dcb689-9d4a-4661-99d4-cbd04914959d",
+        "revision_id": "rev_9cad9add-faa7-4574-95c9-ee98e51d80e4",
+        "sha256": "97212d4ae8e150b0429b20634033b2cddf275d80b3df82f745944f1a03228f97"
+      },
+      {
+        "document_id": "doc_0c5b80a0-2353-4e5e-98bd-99e47c4492cb",
+        "revision_id": "rev_ef0ec1a3-83d5-43c1-a9d1-59141d24b7ae",
+        "sha256": "cadbb24fc2654b4085c83e2c6b6394c57b758c27547e705d9c9ad691b8e817a8"
+      },
+      {
+        "document_id": "doc_ec116acb-cbd7-4edd-9b74-61f92d462712",
+        "revision_id": "rev_19e80610-5b41-4b8b-aaf9-1119dd223fff",
+        "sha256": "c26e242dfebd227aee50b2e37dc3b8e88ff354f244eefecf674b8dbadac18f35"
+      },
+      {
+        "document_id": "doc_3da74555-a371-4b45-b568-a3eedc7ce225",
+        "revision_id": "rev_4a4d9ce8-8e9a-4e39-bb24-6b5fc37fb940",
+        "sha256": "52ca712f603b55b3b0e02b3cb6210ea0039f2f549ce0aca9f58a9724bfb4a43a"
+      },
+      {
+        "document_id": "doc_9bcb01ca-25c9-4011-8b4f-9f2872456f37",
+        "revision_id": "rev_b2d02e93-1c04-4cdd-85b4-d2bf5abc1524",
+        "sha256": "dc536372a6aad28e090d8a52d36a9665aa3565fab9c980aa2d87249cac2e088f"
+      }
+    ],
+    "current_heads_differ_from_import": [
+      1
+    ],
+    "package_sha256": "505868a6a7067a8b93b77dcdd0d46d07e77568ed3b9a920624e14ecccd24be20",
+    "source_sha256": "273f4cbaecb4c4d396ecec7103b4761e62bde0c0f368185a1697c1880cfe9cf7",
+    "read_chapters": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20
+    ],
+    "unread_chapters": [],
+    "notebooks": [
+      {
+        "file": "tests/fixtures/laocan/reading-01-04.json",
+        "sha256": "9b56ba0863189ab57ddb0519b42d968e7abb8864bed552e355dc0f001ffb035d",
+        "read_on": "2026-11-17",
+        "read_chapters": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "reading_method": "2026-11-17，Agent完整阅读真实安装版回读的01.txt至04.txt全部段落；章标题、首尾抽样和摘要比对不作为语义阅读依据。后续回归测试核验这份固定阅读记录，不自行执行语义阅读。"
+      },
+      {
+        "file": "tests/fixtures/laocan/reading-05-08.json",
+        "sha256": "f30cfb7dfad3f7bcbd6f5f8a74e13c314701bdb29d7f9fef3863069bdef15edf",
+        "read_on": "2026-11-17",
+        "read_chapters": [
+          5,
+          6,
+          7,
+          8
+        ],
+        "reading_method": "Agent实际完整阅读安装版回读的05.txt至08.txt全部段落。首次合并输出中第六、七回被工具输出预算截断，随后单独完整读取这两回，才登记本批完成。"
+      },
+      {
+        "file": "tests/fixtures/laocan/reading-09-12.json",
+        "sha256": "1524d8ab68c489003c1d4bd2826ef18991871ed36b70fe177c5f2ef40cfaa47d",
+        "read_on": "2026-11-17",
+        "read_chapters": [
+          9,
+          10,
+          11,
+          12
+        ],
+        "reading_method": "Agent完整阅读安装版回读的09.txt至12.txt全部段落；第九、十回沿上一轮已完整读取的正文接续，第十一、十二回逐段完整展示并阅读。摘要、章名和引句检索不代替全文阅读。"
+      },
+      {
+        "file": "tests/fixtures/laocan/reading-13-16.json",
+        "sha256": "f5fb93c7244945d1b6f5cc12253717bc624ed6c1f100535c3af03dfe58cb95e3",
+        "read_on": "2026-11-17",
+        "read_chapters": [
+          13,
+          14,
+          15,
+          16
+        ],
+        "reading_method": "Agent完整阅读安装版回读的13.txt至16.txt全部段落，分两次各两回展示；工具输出均未截断。引句定位随后核验，不作为全文阅读的替代。"
+      },
+      {
+        "file": "tests/fixtures/laocan/reading-17-20.json",
+        "sha256": "c05ad175e6308ccca3104b18e9b3587748aad5fdab144c64fdaa5c96c5521ec7",
+        "read_on": "2026-11-17",
+        "read_chapters": [
+          17,
+          18,
+          19,
+          20
+        ],
+        "reading_method": "Agent完整阅读安装版回读的17.txt至20.txt全部段落，分两次各两回展示，均未截断；读至末回结尾对联。至此本固定二十回版本全篇实际读完，尚不代表新的整书宿主任务已交付。"
+      }
+    ],
+    "source_claims": 99,
+    "instance": {
+      "object_id": "ext_58affb0a-8766-4ca6-a3c7-9734a2cbcb92",
+      "revision": 3,
+      "sha256": "62f640331526b6090ecb467e83e9b3b3cfd304587b67fc5427de52724ef4ca61"
+    },
+    "task_id": "task_8221115e-dc1f-4a54-8aea-a74a092591a1",
+    "candidates": [
+      {
+        "id": "v1",
+        "label": "二十回复盘 v1",
+        "kind": "draft",
+        "draft_ref": {
+          "work_ref": {
+            "workspace_id": "workspace_8af4dd1d-3e47-4a95-a8c2-6d8f4cfc24b0",
+            "kind": "novel",
+            "object_id": "novel_beef2a84-b8de-48a6-9135-d68fae283d5e"
+          },
+          "draft_id": "draft_edca7f29-1c61-47fb-8f1d-89bd01717b14",
+          "sha256": "4526f81a84709128f22333c0dd9f260f295e70d29633ba84b93c3a3a366e004c"
+        },
+        "sha256": "4526f81a84709128f22333c0dd9f260f295e70d29633ba84b93c3a3a366e004c"
+      },
+      {
+        "id": "v2",
+        "label": "二十回复盘 v2",
+        "kind": "draft",
+        "draft_ref": {
+          "work_ref": {
+            "workspace_id": "workspace_8af4dd1d-3e47-4a95-a8c2-6d8f4cfc24b0",
+            "kind": "novel",
+            "object_id": "novel_beef2a84-b8de-48a6-9135-d68fae283d5e"
+          },
+          "draft_id": "draft_60f7b9ae-d4e6-4259-9705-b38730ab042b",
+          "sha256": "59b1b1d10c565f8c1f6602f2e40cbb8cd53f1d95e3f45aacc8b965fc09136e7f"
+        },
+        "sha256": "59b1b1d10c565f8c1f6602f2e40cbb8cd53f1d95e3f45aacc8b965fc09136e7f"
+      }
+    ],
+    "feedback_sha256": "1cbae83baa1c72a4d1352140b6d8844d417b3158b2779181dbd39b2858d5de29",
+    "exports": {
+      "json": "e0f2176abf784719c2491a81209cf16df484f00571215d6b3cbae2426c449f83",
+      "markdown": "e648407c1157979a40de962a4b93abc024e7408f35536a039516a8645ade9c56"
+    },
+    "formal_state_unchanged": true,
+    "previous_four_chapter_task_unchanged": true,
+    "decisions": [],
+    "checks": [
+      "same-existing-novel",
+      "twenty-fixed-inputs",
+      "same-task-two-drafts",
+      "agent-feedback",
+      "idempotent-submit",
+      "cli-write-mcp-read",
+      "full-text-export",
+      "formal-heads-unchanged",
+      "eight-host-fingerprints-unchanged"
+    ],
+    "limitations": [
+      "实际语义阅读来自五批人工阅读笔记；脚本只核验固定记录及工作流",
+      "后续方向未获作者选择，未创建改编",
+      "没有作者采纳或定稿"
+    ]
+  },
+  "desktop": {
+    "verified_at": "2026-11-17T11:35:14.214Z",
+    "status": "passed",
+    "host_mode": "isolated-local-package",
+    "package_manifest_sha256": "0406bfc48b87d30b4104932a69afd0ce3249599e40da0ac4b8816d4c52f213bf",
+    "package_source_sha256": "d915759712d3d0854bc116a35b95bef1575bb48833c1bd0a467e5af175ecc849",
+    "package_artifacts": 2800,
+    "runtime_sha256": {
+      "hetu": "8e178f92a059bba3b0f41d9b5aa3617d20861b95f285ffabfc2e3c6d48879300",
+      "hetu-mcp": "63e5c3bb7e911001359914b2cecc492964aa2b41717a9dda1d6b486333aa8046",
+      "hetu-plugin": "9285e3aed79ec70302a7c26daf2eafc539c888f127af7b189f60842622815b31",
+      "hetu-app-server": "87d7d25f7613fa4a7b747902e22d1458607fba7849671cc97bf441e7e24296e8"
+    },
+    "plugin_version": "0.1.5",
+    "package_sha256": "505868a6a7067a8b93b77dcdd0d46d07e77568ed3b9a920624e14ecccd24be20",
+    "work_ref": {
+      "workspace_id": "workspace_8af4dd1d-3e47-4a95-a8c2-6d8f4cfc24b0",
+      "kind": "novel",
+      "object_id": "novel_beef2a84-b8de-48a6-9135-d68fae283d5e"
+    },
+    "instance": {
+      "object_id": "ext_58affb0a-8766-4ca6-a3c7-9734a2cbcb92",
+      "revision": 3,
+      "sha256": "62f640331526b6090ecb467e83e9b3b3cfd304587b67fc5427de52724ef4ca61"
+    },
+    "source_chapters": 20,
+    "manuscripts": [
+      "4526f81a84709128f22333c0dd9f260f295e70d29633ba84b93c3a3a366e004c",
+      "59b1b1d10c565f8c1f6602f2e40cbb8cd53f1d95e3f45aacc8b965fc09136e7f"
+    ],
+    "current_heads_unchanged": true,
+    "current_heads_differ_from_import": [
+      1
+    ],
+    "export_sha256": "e648407c1157979a40de962a4b93abc024e7408f35536a039516a8645ade9c56",
+    "packaged_resources_unchanged": true,
+    "frozen_installed_resources_unchanged": true,
+    "checks": [
+      "same-machine-novel-and-instance",
+      "both-full-manuscripts",
+      "twenty-fixed-sources",
+      "agent-feedback",
+      "comparison",
+      "actual-file-export",
+      "light-dark-1440-600",
+      "close-reopen-same-revision",
+      "reading-crlf-no-autosave"
+    ],
+    "limitations": [
+      "本机开发签名装配，不是公开新版发行",
+      "未模拟作者采纳、定稿或探索方向选择",
+      "不代表物理输入法或Windows验收"
+    ],
+    "screenshots_sha256": {
+      "output/existing-novel/whole20-editor-fixed-desktop/1440-light.png": "aee354f3dbbedeb349f951fb943c350689d5f905c8898aee61ed0072164283e8",
+      "output/existing-novel/whole20-editor-fixed-desktop/1440-dark.png": "ff93555b2686e5c17c566219d26f57614ba757c68287152c455ec44c1e8e835d",
+      "output/existing-novel/whole20-editor-fixed-desktop/600-light.png": "0d5f7cc47530017c6e8bee6a6f3713c2cb4c7e7e1e98458073b6fee50cd5f1d0",
+      "output/existing-novel/whole20-editor-fixed-desktop/600-dark.png": "5953d90596f221826449e158e34f40ad2d04ec7d8265b2535a6948a2e73b1019"
+    },
+    "screenshots_visually_reviewed": true
+  },
+  "plugin_test_source_sha256": {
+    "tests/machine/continue-existing-novel.ts": "d32b63744099678eccd95e450d5648db28282fc72eff4a9ff30df68235cfe941",
+    "tests/desktop/existing-novel.ts": "f712bae56397d26515774f7794fcf4787a3b4f65ff1ab6c27783fa65497a25e1"
+  },
+  "first_failures": [
+    {
+      "stage": "schema-only-local-package-desktop",
+      "log": "output/existing-novel/whole20-packaged-desktop.log",
+      "reason": "CRLF规范化被受控同步回调为作者修改，产生自动保存并阻塞导航",
+      "chapter": 1,
+      "import_revision_id": "rev_480a4023-b8b3-4ca7-a308-0aebc2e117ad",
+      "import_sha256": "b616c311304923ac8b909ac0a7cc16d44b5a34f6c8cc872209f395b03ed6d36c",
+      "new_revision_id": "rev_a9197695-2a86-49e3-9a6f-efae79d2d339",
+      "new_sha256": "47980314d5ba3154eb89d0f8b05202a93b8a3eddf0c29cee8fcb3c5a1302b3ed",
+      "history_preserved": true,
+      "original_import_revision_readable": true
+    },
+    {
+      "stage": "editor-fixed-desktop-title-selection",
+      "log": "output/existing-novel/whole20-editor-fixed-desktop.log",
+      "reason": "两个合法同名实例使测试定位不唯一，改为公开分页目录精确object_id；不改产品、不删历史"
+    },
+    {
+      "stage": "test-typescript",
+      "log": "output/existing-novel/typecheck-final.log",
+      "reason": "分页调用的返回类型循环推导TS7022，显式标注类型后通过；无运行行为修改"
+    }
+  ],
+  "formal_state_scope": "当前头保持只比较本次运行前后；第一回因首次失败改变，原导入固定修订仍用于来源任务；没有回退历史。",
+  "publication": {
+    "committed": false,
+    "pushed": false,
+    "public_desktop_release": false,
+    "website_deployment_changed": false
+  },
+  "limitations": [
+    "本机开发签名包，不是Developer ID正式发行",
+    "未替换原冻结安装版，八项指纹保持",
+    "真实作者选择、采纳、定稿、物理IME与跨平台未在本轮验收"
+  ]
+}

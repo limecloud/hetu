@@ -27,6 +27,24 @@ impl Kernel {
             .map_err(|_| Error::new("hetu.integrity_failure", "资料记录不符合合同。"))?;
         Ok(result)
     }
+    /// 只读来源固定资料记录修订及真实归属，不包含资料修改授权。
+    pub(super) fn source_resource(&self, reference: &Value) -> Result<(Value, String)> {
+        let (record, sha, _) = self.read_resource(
+            text(reference, "resource_id")?,
+            Some(integer(reference, "revision")?),
+        )?;
+        ensure(
+            record["work_ref"].is_object() && record["work_ref"] == reference["work_ref"],
+            "forbidden",
+            "资料来源不属于所选作品。",
+        )?;
+        ensure(
+            reference["sha256"] == sha,
+            "hetu.stale_evidence",
+            "资料来源修订摘要不一致。",
+        )?;
+        Ok((record, sha))
+    }
     fn resource_task_owner(&self) -> Result<Option<Value>> {
         let Some(id) = self.task_id.as_deref() else {
             return Ok(None);

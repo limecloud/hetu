@@ -603,6 +603,8 @@ Agent 需要协作时，先发现当前能力与作品摘要，读取固定项�
 
 `resource_usages.save` 固定资料与作者正文同作品；更新同时检查旧使用记录，禁止借 usage_id 迁移归属。采用、归档仍为作者决定，普通管理连接不能直接执行；Agent 经固定任务方案准备和执行维护草稿。Electron 的私有审阅用例固定预览、原生确认和持久恢复，不向第三方容器暴露作者方法。
 
+写作任务可在 `input_refs` 固定同作品的 `{kind:"resource",work_ref,resource_id,revision,sha256}`。`task_context.list/search` 支持 `kind:resource`，`read` 分页读取该修订的 body，摘要核验针对整条资料记录；不跟随资料当前头。返回资料片段的 `source_ref` 为固定资料引用加 `byte_start,byte_end,quote`，正文片段保持旧字段。只读引用不开放 `resources.update`，不能代替资料整理任务的可改集合。`extensions.sources.inspect` 以相同固定引用核验所属作品、修订与摘要，返回资料记录；插件保存来源不产生跨作品或作者决定权限。
+
 ### 21.1 任务授权与批量操作
 
 授权固定 `task_ref, scope_ref, allowed_actions, object_refs, editable_fields, input_refs, limits, expires_at` 及本机主体与授权修订，由可信入口创建并在 Core 检查；版本语义见第23节。读参考、改草稿、提交文件、作者采用分别授权；Agent 不传作者身份、角色或批准布尔值。关闭任务或撤权后先拒绝请求，再处理已知操作键，不能用原回执泄漏失权数据。
@@ -687,7 +689,7 @@ Agent 需要协作时，先发现当前能力与作品摘要，读取固定项�
 
 正文参考稿采用 Markdown，短剧参考稿采用 Fountain；资料草稿仍复用第21节的领域动作，不重复维护正式 Resource 事实。媒体二进制走固定 inbox，工作副本只引用已核验文件组。文本单项1 MiB；每任务最多100份参考稿，每份最多100个修订，每任务最多100条公开意见。预算由任务读取回执公布。超限提供拆分工作项的明确缺口，不静默裁剪；文件检出可分段编辑，但最终导入仍受发布预算约束。`revision` 类型工作副本只接受范围内 patches，或由这些 patches 渲染的只读预览；不得用普通全稿保存绕过 EditScope。
 
-工作副本保存的 expected 为完整 WorkingCopyRef，字段定义见[29第22节](29-数据字典与Schema设计.md#22-持续协作上下文与反馈)。create／save／import 与新修订、head、原操作和审计同事务。提交固定一个已保存修订，后续 save 不能改旧候选。工作副本尚未正式提交时可供作者查看，不显示为待采纳候选或定稿；正式采纳仍只接收已提交且核验过的 Draft。请求升级、任务关闭、撤权、工作副本冲突或已采用资料均不能被 checkout 路径绕过。
+工作副本保存的 expected 为完整 WorkingCopyRef，字段定义见[29第22节](29-数据字典与Schema设计.md#22-持续协作上下文与反馈)。`base_refs` 与提交候选的 `source_refs` 均最多100项，创建、持久化、重开和提交保持同一清单，每项逐一核验属于固定任务；不能以缩减来源清单绕过保存限制。create／save／import 与新修订、head、原操作和审计同事务。提交固定一个已保存修订，后续 save 不能改旧候选。工作副本尚未正式提交时可供作者查看，不显示为待采纳候选或定稿；正式采纳仍只接收已提交且核验过的 Draft。请求升级、任务关闭、撤权、工作副本冲突或已采用资料均不能被 checkout 路径绕过。
 
 ### 23.4 公开反馈与继续修改
 
