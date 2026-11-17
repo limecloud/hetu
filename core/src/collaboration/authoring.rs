@@ -63,6 +63,7 @@ const REVIEW_ACTIONS: &[&str] = &[
     "hetu.documents.history",
     "hetu.drafts.list",
     "hetu.creative_tasks.list",
+    "hetu.creative_tasks.get",
     "hetu.outlines.get",
     "hetu.blueprints.get",
     "hetu.blueprints.preview_change",
@@ -308,6 +309,7 @@ fn work_action_allowed(name: &str, reference: &Value) -> bool {
             | "hetu.covers.get"
             | "hetu.outlines.get"
             | "hetu.creative_tasks.list"
+            | "hetu.creative_tasks.get"
             | "hetu.resources.list"
             | "hetu.resources.get"
             | "hetu.resource_usages.list"

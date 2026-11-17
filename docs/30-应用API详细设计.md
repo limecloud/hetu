@@ -494,7 +494,7 @@ C ABI 整数码、MCP 协议错误、AXI 执行结果、诊断 findings 和作�
 | `hetu.creation_projects.create_drama` | project_id、expected、profile={title,description,mode,language_tag}、target_path、operation_key；稳定入口另带 management_ref | 剧本作品、首个短剧项目、创建回执、来源及新管理引用 | 作者或确切有限新建授权；不创建空小说；mode 为 original 或 adaptation；跨目录创建先保存意图，恢复不重复建项目 |
 | `hetu.creative_tasks.preview_prompt` | scope_ref、task_kind、brief、input_refs、client_adapter、language_tag、candidate_limit?、edit_scope? | 外发资料、完整可编辑 Prompt、prepare_input、输出合同 | 仅作者；本地模板，无模型、无落盘；Skill 由任务类型确定 |
 | `hetu.creative_tasks.prepare` | 固定预览输入、作者编辑后的 Prompt、expected_scope、operation_key | 不可变 task_ref、请求摘要、可复制调用说明 | 仅作者；不启动客户端、不发送消息、不调用生成服务 |
-| `hetu.creative_tasks.get` | task_ref、submission_id? | 固定请求、当前请求引用、成果摘要、反馈游标及观察状态 | Agent 只读当前获权任务；不内联全部原文或历史候选，具体内容通过固定引用读取 |
+| `hetu.creative_tasks.get` | task_ref、submission_id?；作品管理入口另带 management_ref | 固定请求、当前请求引用、成果摘要、反馈游标及观察状态 | 精确任务连接读取本任务；精确作品管理连接及插件读取真实归属本作品的任务，不因同目录扩大范围；不授予提交、采纳或定稿权 |
 | `hetu.creative_tasks.list` | 当前 scope、state?、cursor?、limit? | 任务摘要与 next_cursor | 游标绑定 scope／身份／筛选，默认20、最多100；不跨作品 |
 | `hetu.creative_tasks.submit_result` | task_ref、request_sha256、candidates、complete、missing_items、provenance、operation_key | submission_ref、submission、expected、approval_state | Agent 可在精确任务提交；候选内容／固定 inbox 文件／改稿 patches 三选一；禁止任意路径和作者决定字段，不自动采纳 |
 | `hetu.creative_tasks.inspect_inbox` | task_ref、file_name、manifest_sha256、operation_key | 核验后的提交回执或具体错误 | 只检查该任务 inbox 内的指定清单；摘要不符或半写入不登记，原键不重复导入 |

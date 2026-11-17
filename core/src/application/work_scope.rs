@@ -285,6 +285,10 @@ impl Kernel {
                         None => true,
                     }
             }
+            "hetu.creative_tasks.get" => {
+                self.check_task_work_access(input, &reference)?;
+                true
+            }
             "hetu.resources.list" => input["work_ref"] == reference,
             "hetu.assets.list" => input["work_ref"] == reference,
             "hetu.cues.list" => {
@@ -452,6 +456,16 @@ impl Kernel {
             allowed,
             "forbidden",
             "此授权仅覆盖所选创作对象；其他对象及资料须另行授权。",
+        )
+    }
+
+    /// 任务 ID 和同根目录都不是作品归属；复用固定快照及历史目标的归属核验。
+    pub(super) fn check_task_work_access(&self, input: &Value, reference: &Value) -> Result<()> {
+        let (request, _, _, _) = self.task_for_reference(&input["task_ref"])?;
+        ensure(
+            self.task_work_owner(&request)?.as_ref() == Some(reference),
+            "forbidden",
+            "任务不属于当前创作对象或无法确认其归属。",
         )
     }
 

@@ -83,9 +83,10 @@
       "name": "hetu_read_creative_task",
       "action": "hetu.creative_tasks.get",
       "title": "读取本次创作任务 / Read creative task",
-      "description": "读取连接绑定的固定任务、授权原文及参考候选；不能遍历其他章节、作品或任务。Read only the bound task, fixed authorized sources and reference candidates; no access to other documents, books or tasks.",
+      "description": "精确任务连接读取本任务；management_ref 读取真实归属当前获权作品的固定任务及参考成果，不扩权到同根其他作品，不提交、采纳或定稿。Read the bound task, or a task verified to belong to the exact management scope; no cross-work access or author decisions.",
       "profiles": [
-        "task"
+        "task",
+        "stable"
       ]
     },
     {

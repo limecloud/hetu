@@ -144,6 +144,10 @@ impl Kernel {
                     request["input"]["work_ref"] = context["work_ref"].clone();
                 }
             }
+            // 作者视图的插件上下文也固定作品，不能借可信入口读取同根其他作品任务。
+            if action == "hetu.creative_tasks.get" {
+                self.check_task_work_access(&request["input"], &context["work_ref"])?;
+            }
             Ok(self.request(request))
         };
         run().unwrap_or_else(|e| domain::failure(&action, self.scope(), &e))

@@ -279,7 +279,7 @@ MCP 对应调用 `hetu_get_capability_map`，参数同上。具体动作查询�
 | --- | --- | --- | --- | --- |
 | 预览固定范围的外部协作提示词<br>`hetu.creative_tasks.preview_prompt` | `hetu_preview_creative_task` (stable/workspace) | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 | 准备外部任务，不发送生成请求<br>`hetu.creative_tasks.prepare` | `hetu_prepare_creative_task` (stable)<br>固定方案 | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
-| 读取指定任务与参考结果<br>`hetu.creative_tasks.get` | `hetu_read_creative_task` (task) | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
+| 读取指定任务与参考结果<br>`hetu.creative_tasks.get` | `hetu_read_creative_task` (task/stable) | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 | 列出本范围的外部任务<br>`hetu.creative_tasks.list` | `hetu_list_creative_tasks` (stable) | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 | 向获权任务提交独立参考成果<br>`hetu.creative_tasks.submit_result` | `hetu_submit_creative_result` (task) | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 | 核验指定任务收件文件并登记成果<br>`hetu.creative_tasks.inspect_inbox` | 无直接工具映射 | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 机器使用独立合同：hetu.creative_tasks.submit_result | 机器替代入口；安装待核对 |

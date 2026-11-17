@@ -1,0 +1,58 @@
+{
+  "verified_at": "2026-11-17T07:36:16.057960+00:00",
+  "status": "passed_with_explicit_scope",
+  "change": "精确作品管理连接及插件开放creative_tasks.get；核心核验任务真实WorkRef，稳定MCP复用同一动作。",
+  "tests": {
+    "core": {
+      "command": "cargo test -p hetu-core --test managed_task_read --test open_plugins --test collaboration",
+      "passed": 8,
+      "failed": 0
+    },
+    "plugin_integration": {
+      "verified_at": "2026-11-17T07:35:20.434Z",
+      "status": "passed",
+      "host_mode": "development_source",
+      "plugin_version": "0.1.4",
+      "package_sha256": "5d965d57ed7aefb99227f965de2628cbc456d6bbf4cd2b697a911e90a0ce8fd2",
+      "checks": [
+        "stable-mcp-management-task-read",
+        "actual-plugin-callback",
+        "scope-context-owner",
+        "exact-submission-and-candidate",
+        "fake-sha-rejected",
+        "fake-decision-rejected"
+      ],
+      "task_request_sha256": "7f320f43773222bd6010f8056343b816efd5483dc3befd0c04ef6fb332bad3fd",
+      "candidate_sha256": "9a70ca304b3f82184210abfc508b61945d65891fb7d5e9a49809e31fd4583d28",
+      "boundaries": [
+        "不代表既有0.11.2安装包已含宿主修复",
+        "无真实作者采纳或定稿"
+      ]
+    },
+    "capability_map": "generated_and_check_passed",
+    "docs": "verify-docs.py passed"
+  },
+  "source_sha256": {
+    "core/src/application/extensions/open.rs": "16d9a8ac90240d6de993064504fb636c1867900f43dae1e061f5d20634e56b84",
+    "core/src/application/work_scope.rs": "cee3cad66a6c2d31076607e59d3866b2429e88849460103f1e0732bf9f9a1b1b",
+    "core/src/collaboration/authoring.rs": "1ed3ad93790f446be076530db097fc050798e0970884027b14f4ef5337466170",
+    "contracts/tools/catalog.json": "acca6346fac7c0c325e51925afe5dabc9500c088e5a93461889cf9022bdbd52e"
+  },
+  "runtime_sha256": {
+    "fixed-bin/hetu-plugin": "cdff815088f52b87341b56b33b83d1bca3935902fbecc655670b9460b894b545",
+    "fixed-bin/hetu": "12daa03a88956a1af0338708e453452c0bafb95c0e4687e0345d53f0322e75c9",
+    "fixed-bin/hetu-mcp": "ced219f10567ca2a7f8e31e138b8f8af6f779f6e628b9655c9373e6e45251ce6",
+    "fixed-runtime/plugin-runtime.mjs": "e56c59505026ebfbb02479553186867421603f047587e96e94b09da71c2f8df4",
+    "fixed-runtime/plugin-worker.mjs": "dcebbdebf575d6054e6d6bdb778e6cc8af27d40dcfe9fc6989a5fc4182216a39",
+    "fixed-runtime/plugin-manager.mjs": "083a47f4ed7b7725bc0f70bb47bca53c32f241ba256981fbb9e1f89908b28bae"
+  },
+  "boundaries": [
+    "仅本地开发Core二进制与冻结0.11.2 JS运行资源联调，不表示已更新已发行安装包",
+    "现有任务连接仍按精确task_ref运行；管理读取不开放提交、采纳或定稿",
+    "其他并行桌面与插件开发改动未纳入本专项递交或验收"
+  ],
+  "initial_failures": [
+    "首次联调使用了错误工具名，按真实目录修正",
+    "第二次开发JS资源在运行间变化，旧能力摘要被拒绝；固定二进制及JS运行资源后通过"
+  ]
+}
