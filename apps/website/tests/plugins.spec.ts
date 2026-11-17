@@ -4,6 +4,17 @@ import { readFileSync } from 'node:fs';
 const listings = JSON.parse(readFileSync(new URL('../src/data/plugin-listings.json', import.meta.url), 'utf8'));
 const packages = ['relationships', 'timeline'].map(slug => ({ slug, ...JSON.parse(readFileSync(new URL(`../../../plugins/${slug}/plugin.json`, import.meta.url), 'utf8')) })).concat(listings.map((entry:any)=>({slug:entry.slug,...entry.manifest})));
 
+for (const [slug, category] of [['story-research', 'research'], ['character-lab', 'characters'], ['story-analysis', 'analysis']]) {
+  for (const prefix of ['', '/en']) test(`${prefix || 'zh-CN'} ${slug} 分类与精确身份检索`, async ({ page }) => {
+    await page.goto(prefix + '/plugins/');
+    await page.locator(`[data-plugin-category="${category}"]`).click();
+    await expect(page.locator('.plugin-card:visible')).toHaveCount(1);
+    await expect(page.locator('.plugin-card:visible a').first()).toHaveAttribute('href', `${prefix}/plugins/${slug}/`);
+    await page.getByRole('searchbox').fill(`org.wordflowlab.${slug}`);
+    await expect(page.locator('.plugin-card:visible')).toHaveCount(1);
+  });
+}
+
 for (const prefix of ['', '/en']) {
   const en = !!prefix;
   for (const width of [375, 768, 1440]) {
@@ -80,7 +91,7 @@ test('禁用脚本时插件目录和详情仍可阅读', async ({ browser, baseU
   await page.goto('/plugins/');
   await expect(page.locator('.plugin-card')).toHaveCount(packages.length);
   await expect(page.locator('[data-plugin-filters]')).toBeHidden();
-  await page.locator('.plugin-card a').first().click();
+  await page.locator('.plugin-card a[href="/plugins/relationships/"]').click();
   await expect(page.locator('.plugin-package')).toContainText(packages[0].id);
   await expect(page.locator('[data-plugin-request]')).toBeVisible();
   await expect(page.locator('[data-copy-plugin-request]')).toBeHidden();

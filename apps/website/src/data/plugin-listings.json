@@ -276,5 +276,107 @@
       "evidence_url": "https://github.com/wordflowlab/hetu-novel-planner/blob/94cfe5fc91fc77529192ee2d61de7fdf012bb92a/docs/research/release-acceptance-2026-11-17.json",
       "integrity_url": "https://github.com/wordflowlab/hetu-novel-planner/releases/download/v0.2.0/release-integrity.json"
     }
+  },
+  {
+    "slug": "story-research",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.story-research",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "创作研究台",
+        "en": "Story Research"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-story-research",
+    "source_commit": "2f8195cb7a20fa280cd7ead134f9d988fba23e48",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-story-research/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-story-research/releases/download/v0.1.0/org.wordflowlab.story-research-0.1.0.tgz",
+      "archive_sha256": "41187357c1f391d4cdd3a7f93741e9972ce1f60a001a0fbb6305cec21c8d885a",
+      "package_sha256": "5adeffdf4bfe4f71ac614204bfe77825747164fa4705f6b9ec52a1d908b5bf9f",
+      "size_bytes": 239100,
+      "minimum_host_version": "0.11.7",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-story-research/releases/download/v0.1.0/runtime-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-story-research/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "character-lab",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.character-lab",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "人物工坊",
+        "en": "Character Lab"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-character-lab",
+    "source_commit": "923482752db23cec279fced68d8ac7e3edfcb9b8",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-character-lab/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-character-lab/releases/download/v0.1.0/org.wordflowlab.character-lab-0.1.0.tgz",
+      "archive_sha256": "cf0bf4ca21d7eff32d317a618e5cf64bd8b1d0177f18a55f6613a30a5c32b681",
+      "package_sha256": "d3404b533b5e8a03e45e84eb23f5d4a99209568a0d8e09e03b13a0b05d6a4944",
+      "size_bytes": 268990,
+      "minimum_host_version": "0.11.7",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-character-lab/releases/download/v0.1.0/runtime-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-character-lab/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "story-analysis",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.story-analysis",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "故事分析",
+        "en": "Story Analysis"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-story-analysis",
+    "source_commit": "2df3135f0ce67f256c648d17ddef27f53abd60c2",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-story-analysis/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-story-analysis/releases/download/v0.1.0/org.wordflowlab.story-analysis-0.1.0.tgz",
+      "archive_sha256": "fdbe2135ac2ddb789e6788ff2637149fef8aae03dbf573c5ee801bca0a6f769b",
+      "package_sha256": "fb117ee372a4fce7cde8cb1afd997f3d0b168066af2b1334171e721dfcd21009",
+      "size_bytes": 269352,
+      "minimum_host_version": "0.11.7",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-story-analysis/releases/download/v0.1.0/runtime-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-story-analysis/releases/download/v0.1.0/release-integrity.json"
+    }
   }
 ]

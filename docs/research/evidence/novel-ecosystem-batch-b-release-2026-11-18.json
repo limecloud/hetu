@@ -1,0 +1,89 @@
+{
+  "date": "2026-11-18",
+  "host_source_commit": "3d929978419b8b230aee5fa2f9aed83614d4e2dd",
+  "host_source_version": "0.11.7",
+  "plugins": [
+    {
+      "repository": "wordflowlab/hetu-story-research",
+      "source_commit": "2f8195cb7a20fa280cd7ead134f9d988fba23e48",
+      "version": "0.1.0",
+      "archive_sha256": "41187357c1f391d4cdd3a7f93741e9972ce1f60a001a0fbb6305cec21c8d885a",
+      "package_sha256": "5adeffdf4bfe4f71ac614204bfe77825747164fa4705f6b9ec52a1d908b5bf9f",
+      "professional_actions": 18,
+      "ci_run": 44121797714,
+      "ci_url": "https://github.com/wordflowlab/hetu-story-research/actions/runs/44121797714",
+      "release_url": "https://github.com/wordflowlab/hetu-story-research/releases/tag/v0.1.0",
+      "website_image_sha256": "836a835441d90ae04a0b832cad263aff00ccee9f177e48700d43f3cfa474e506",
+      "website_image_source": "同一CI最终包Electron验收的workspace-light.png",
+      "public_release_redownload_sha256_verified": true
+    },
+    {
+      "repository": "wordflowlab/hetu-character-lab",
+      "source_commit": "923482752db23cec279fced68d8ac7e3edfcb9b8",
+      "version": "0.1.0",
+      "archive_sha256": "cf0bf4ca21d7eff32d317a618e5cf64bd8b1d0177f18a55f6613a30a5c32b681",
+      "package_sha256": "d3404b533b5e8a03e45e84eb23f5d4a99209568a0d8e09e03b13a0b05d6a4944",
+      "professional_actions": 22,
+      "ci_run": 44121794717,
+      "ci_url": "https://github.com/wordflowlab/hetu-character-lab/actions/runs/44121794717",
+      "release_url": "https://github.com/wordflowlab/hetu-character-lab/releases/tag/v0.1.0",
+      "website_image_sha256": "3db7ec41833141cc29d16e763b65cf3fc3c95c518ab9310983ab64d6925eb2a7",
+      "website_image_source": "同一CI最终包Electron验收的workspace-light.png",
+      "public_release_redownload_sha256_verified": true
+    },
+    {
+      "repository": "wordflowlab/hetu-story-analysis",
+      "source_commit": "2df3135f0ce67f256c648d17ddef27f53abd60c2",
+      "version": "0.1.0",
+      "archive_sha256": "fdbe2135ac2ddb789e6788ff2637149fef8aae03dbf573c5ee801bca0a6f769b",
+      "package_sha256": "fb117ee372a4fce7cde8cb1afd997f3d0b168066af2b1334171e721dfcd21009",
+      "professional_actions": 23,
+      "ci_run": 44121741880,
+      "ci_url": "https://github.com/wordflowlab/hetu-story-analysis/actions/runs/44121741880",
+      "release_url": "https://github.com/wordflowlab/hetu-story-analysis/releases/tag/v0.1.0",
+      "website_image_sha256": "d01e49520f7b9b22872b01515c25159558d7d7aa38797b0fc7f660ae597256c6",
+      "website_image_source": "同一CI最终包Electron验收的workspace-light.png",
+      "public_release_redownload_sha256_verified": true
+    }
+  ],
+  "source_acceptance": {
+    "unit_tests": 30,
+    "professional_actions": 63,
+    "electron_journeys": 3,
+    "cross_plugin_stages": [
+      "research",
+      "characters",
+      "analysis",
+      "book-volume-chapter",
+      "candidate",
+      "review",
+      "new-source-impact"
+    ],
+    "old_basis_survived_upstream_revision": true,
+    "adopted": false,
+    "finalized": false
+  },
+  "website": {
+    "build_pages": 135,
+    "build_local_links": 8561,
+    "type_errors": 0,
+    "browser_tests": {
+      "initial_passed": 94,
+      "initial_failed": 1,
+      "failure": "无脚本用例把目录第一项固定当成人物关系图，改为精确身份导航",
+      "focused_recheck_passed": 1
+    },
+    "production": "pending"
+  },
+  "installation": {
+    "status": "pending",
+    "required_host_version": "0.11.7"
+  },
+  "historical_failures_preserved": true,
+  "unverified": [
+    "Windows/Linux专业插件业务",
+    "真实作者创作质量",
+    "正文采纳、正式设定和定稿",
+    "付费模型调用"
+  ]
+}

@@ -5,6 +5,9 @@ interface Props { locale: Locale; kind?: string; }
 const { locale, kind = 'relationships' } = Astro.props;
 const en = locale === 'en';
 const captures: Record<string, { width: number; height: number; zh: string; en: string }> = {
+  'story-research': { width:1360, height:900, zh:'创作研究台的问题、固定来源与研究结论，使用演示资料。', en:'Story Research questions, fixed sources and conclusions with demonstration data.' },
+  'character-lab': { width:1360, height:900, zh:'人物工坊的侧写与动机工作面，使用演示资料。', en:'Character Lab profiles and motivations with demonstration data.' },
+  'story-analysis': { width:1360, height:900, zh:'故事分析的结构、覆盖与问题依据，使用演示资料。', en:'Story Analysis structure, coverage and findings with demonstration data.' },
   'prose-studio': {width:1360,height:900,zh:'文风工坊的作者偏好与固定依据，使用演示资料。',en:'Prose Studio preferences and fixed evidence with demonstration data.'},
   'novel-review': {width:1360,height:900,zh:'小说审校的问题依据与处理状态，使用演示资料。',en:'Novel Review concerns and dispositions with demonstration data.'},
   'novel-atlas': {width:1360,height:906,zh:'小说图鉴的人物关系及同源关系列表，使用演示资料。',en:'Novel Atlas relationship graph and equivalent list with demonstration data.'},

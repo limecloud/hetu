@@ -7,6 +7,27 @@ import externalListings from '../data/plugin-listings.json';
 // 官网只组织作者场景；可执行合同与版本仍归各插件包。
 const editorial = [
   {
+    slug: 'story-research', category: 'research',
+    summary: { 'zh-CN': '从问题出发整理来源、观察与反证，让研究结论带着依据进入下一轮创作。', en: 'Connect questions, observations and counterevidence, then carry qualified conclusions into the next draft.' },
+    use: { 'zh-CN': '旧稿复盘、人物动机研究、情节考据与有据创作交接', en: 'Manuscript research, character motivations and evidence-linked handoffs' },
+    request: { 'zh-CN': '发现创作研究台与本作品的实际能力，读取同包Skill、固定原稿与现有研究。围绕我的问题记录来源观察、支持与反证，区分原文、推断和待核实内容；结论不掩盖反证。保存回读，整理有界研究摘要及固定交接，不改正文、正式设定或定稿。未知先查原操作。', en: 'Discover Story Research and this work’s capabilities. Read its packaged Skill, fixed sources and existing research. Record observations, support and counterevidence. Separate facts, inferences and uncertainties. Save, read back and prepare a bounded digest and fixed handoff without changing manuscript, canon or finalization. Recover unknown operations first.' },
+    review: { 'zh-CN': '先看研究覆盖与来源，再对照支持、反证和有条件结论。指出需要补证的问题，让Agent沿同一研究接续。', en: 'Review sources and scope before support, counterevidence and qualified conclusions. Name the question that needs more evidence to continue the same research.' },
+  },
+  {
+    slug: 'character-lab', category: 'characters',
+    summary: { 'zh-CN': '把人物侧写、动机假设、访谈、对白试演与弧光放在一起，比较人物选择的依据和代价。', en: 'Review character profiles, motivation hypotheses, interviews, dialogue trials and arcs with their evidence and costs.' },
+    use: { 'zh-CN': '人物塑造、动机比较、对白试演、成长弧光与字面提及测量', en: 'Character development, motivation alternatives, dialogue trials, arcs and literal mention measurement' },
+    request: { 'zh-CN': '发现人物工坊与当前小说能力，读取同包Skill、固定来源及已有侧写。核对正式人物引用，把事实、动机假设和未来弧光分开。准备访谈与对白试演，明确参与者和创作问题；姓名提及统计不冒充实际出场。保存回读并准备接续上下文，不改正式设定、正文，不采纳或定稿；未知先查原操作。', en: 'Discover Character Lab and this novel’s capabilities. Read its packaged Skill, sources and profiles. Verify canonical references; separate facts, hypotheses and future arcs. Prepare interviews and dialogue trials with explicit participants. Name counts do not prove appearances. Save, read back and prepare writing context without changing canon, adopting or finalizing. Recover unknown operations first.' },
+    review: { 'zh-CN': '核对人物依据、访谈与试演的参与者，以及弧光各阶段的选择和代价。假设与试演可继续修改，不自动成为正式人物事实。', en: 'Check evidence, participants, and choices and costs at each arc stage. Hypotheses and trials remain revisable and do not become canon automatically.' },
+  },
+  {
+    slug: 'story-analysis', category: 'analysis',
+    summary: { 'zh-CN': '看清实际读了什么，再从场景、叙事信号与问题依据分析故事，接续新稿影响和复核。', en: 'Establish what was actually read, analyze scenes and narrative signals, then inspect the impact of a revised draft.' },
+    use: { 'zh-CN': '旧稿结构拆解、阅读覆盖、模拟读者、问题定位与新稿影响预览', en: 'Manuscript structure, reading coverage, simulated readers and revision impact' },
+    request: { 'zh-CN': '发现故事分析与当前小说能力，读取同包Skill、固定阅读范围及已有分析。按实际阅读保存分块、场景、叙事信号和问题依据，覆盖按字节并集计算。模拟读者观点明确标注，不冒充真实反馈。读取新固定候选后预览影响与缺口，不自动解决旧问题、替换来源或采纳定稿。保存回读，未知先查原操作。', en: 'Discover Story Analysis and this novel’s capabilities. Read its packaged Skill, fixed scope and existing analysis. Record reading chunks, scenes, signals and findings; compute coverage from byte-range unions. Label simulated readers. Read a new fixed candidate to preview impact without resolving findings, replacing sources, adopting or finalizing automatically. Save and read back; recover unknown operations first.' },
+    review: { 'zh-CN': '先看已读范围与缺口，再读场景、信号和问题。比较新稿影响时保留原依据，模拟读者只作为分析视角。', en: 'Read coverage and gaps before scenes, signals and findings. Keep original evidence when comparing revisions; simulated readers provide analytical viewpoints only.' },
+  },
+  {
     slug: 'relationships', category: 'relationships',
     summary: { 'zh-CN': '谁信任谁，谁隐瞒了什么。把复杂人物关系放在同一张图里审阅。', en: 'See loyalties, secrets and connections together as your cast grows.' },
     use: { 'zh-CN': '群像故事、悬疑线索、多方阵营', en: 'Ensemble casts, mysteries and rival factions' },
@@ -60,6 +81,9 @@ const editorial = [
   {"slug": "novel-atlas", "category": "atlas", "summary": {"zh-CN": "从同一份作品资料阅读人物、势力、关系、地点、时间与器物，并带走离线图鉴。", "en": "Explore people, factions, relationships, places, events and objects from one evidence-linked atlas, including an offline edition."}, "use": {"zh-CN": "长篇设定复盘、群像关系、事件顺序、状态变化与离线阅读", "en": "Long-form world review, ensemble relationships, chronology, changing states and offline reading"}, "request": {"zh-CN": "发现小说图鉴及当前小说的实际能力，读取同包Skill、固定正文和设定。保留正式投影、抽取候选与未来规划的区别，建立同源人物、关系、地点和事件视图；未知时间与位置保持未知。保存回读，导出不带整章正文的离线HTML，不改正式设定、不采纳或定稿。", "en": "Discover Novel Atlas and this novel’s capabilities. Read its packaged Skill, fixed manuscript and canon. Distinguish canonical projections, extracted candidates and future plans. Build linked views of people, relationships, places and events, leaving unknown times and locations unknown. Save, read back and export offline HTML without full chapters; do not change canon, adopt or finalize text."}, "review": {"zh-CN": "在目录、关系图和时间线交叉核对；按故事时间文本或叙事顺序阅读。地点示意不代表真实地理，导出可离线阅读且不依赖脚本。", "en": "Cross-check the directory, graph and timeline. Sort by narrative order or recorded story-time text. Location diagrams do not establish geography; exported HTML is readable offline without scripts."}},
 ] as const;
 export const categories = [
+  { id: 'research', title: { 'zh-CN': '创作研究', en: 'Story research' } },
+  { id: 'characters', title: { 'zh-CN': '人物塑造', en: 'Character development' } },
+  { id: 'analysis', title: { 'zh-CN': '故事分析', en: 'Story analysis' } },
   { id: 'editing', title: { 'zh-CN': '文风与审校', en: 'Style and review' } },
   { id: 'atlas', title: { 'zh-CN': '小说图鉴', en: 'Novel atlas' } },
   { id: 'templates', title: { 'zh-CN': '创作模板', en: 'Creative templates' } },

@@ -73,3 +73,11 @@ For uncertain versions, permissions or results, keep the original references and
 Ask your Agent to read existing work and plans, state its actual reading scope, compare two directions and their costs, then prepare a candidate using your preferences. Continue from specific feedback, read the revised candidate and recheck the original concern before marking it resolved.
 
 Novel Planner also compares future directions, story time and narrative order, and what a character knows at a particular event. Unknown time stays unknown; a planned direction is not an event that has occurred. Novel Atlas exports offline HTML without full chapters and remains readable without scripts or a network.
+
+## Connect research, characters and analysis
+
+[Story Research](/en/plugins/story-research/) organizes questions, observations, support and counterevidence. [Character Lab](/en/plugins/character-lab/) develops motivation hypotheses, interviews, dialogue trials and arcs. [Story Analysis](/en/plugins/story-analysis/) tracks reading coverage, scenes, signals and evidence-linked findings. Use each independently or connect them around the same novel.
+
+Ask your Agent to research why Lin stays at the station, separate source facts from inferences and counterevidence, compare two motivations in Character Lab, then analyze their consequences for the next chapter. Read existing book, volume and chapter plans before preparing a candidate. Revise from feedback and read the new draft before rechecking the concern. Keep fixed handoff evidence; canon, adoption and finalization remain your decisions.
+
+Review sources before conclusions, distinguish facts from hypotheses, and check reading coverage before findings. Simulated readers are not real reader feedback, name mentions do not establish appearances, and a new draft alone does not resolve a concern.

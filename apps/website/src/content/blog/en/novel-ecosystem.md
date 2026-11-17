@@ -18,6 +18,14 @@ Novel Planner keeps book, volume and chapter structure alongside detailed plots,
 
 Offline HTML remains readable without scripts and excludes full chapters by default. Saved professional data remains when a plugin is disabled.
 
+## Connect research, characters and analysis
+
+[Story Research](/en/plugins/story-research/) organizes questions, observations, support and counterevidence. [Character Lab](/en/plugins/character-lab/) develops motivation hypotheses, interviews, dialogue trials and arcs. [Story Analysis](/en/plugins/story-analysis/) tracks reading coverage, scenes, signals and evidence-linked findings. Use each independently or connect them around the same novel.
+
+Ask your Agent to research why Lin stays at the station, separate source facts from inferences and counterevidence, compare two motivations in Character Lab, then analyze their consequences for the next chapter. Read existing book, volume and chapter plans before preparing a candidate. Revise from feedback and read the new draft before rechecking the concern. Keep fixed handoff evidence; canon, adoption and finalization remain your decisions.
+
+Review sources before conclusions, distinguish facts from hypotheses, and check reading coverage before findings. Simulated readers are not real reader feedback, name mentions do not establish appearances, and a new draft alone does not resolve a concern.
+
 ## You do not need to operate every tool
 
 Give your Agent a goal. It discovers installed Hetu plugins, reads their packaged methods and works through the shared machine interface. Return to read plans, compare candidates, inspect sources and give feedback. Adoption and finalization remain your decisions.
