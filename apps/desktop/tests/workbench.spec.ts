@@ -568,7 +568,14 @@ test(
     expect(await application.evaluate(async ({ webContents }) => {
       const plugin = webContents.getAllWebContents().find(w => w.getURL().startsWith("hetu-plugin://"))!;
       return plugin.session.protocol.isProtocolHandled("hetu-media");
-    })).toBe(false);
+    })).toBe(true);
+    // 协议可用不代表任意地址可读；插件只能加载为当前会话签发的媒体。
+    expect(await pluginPage.evaluate(() => new Promise(resolve => {
+      const image = new Image();
+      image.onload = () => resolve("loaded");
+      image.onerror = () => resolve("blocked");
+      image.src = "hetu-media://unissued/source";
+    }))).toBe("blocked");
     await pluginPage.getByRole("textbox", { name: "新增条目" }).fill("江岚");
     await pluginPage.getByRole("button", { name: "添加并保存" }).click();
     await expect(pluginPage.getByRole("status")).toContainText("已保存修订 1");
