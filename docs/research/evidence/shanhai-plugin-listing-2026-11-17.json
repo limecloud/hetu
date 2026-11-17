@@ -40,7 +40,7 @@
     ]
   },
   "website_checks": {
-    "status": "passed_local",
+    "status": "passed_production",
     "build": {
       "pages": 121,
       "local_references": 7889
@@ -69,6 +69,53 @@
         "no horizontal overflow"
       ]
     },
-    "production": "verify_after_deployment"
+    "production": {
+      "status": "passed",
+      "source_commit": "6f64dc18b1c13d5b47197f5da574b93a51cfefd0",
+      "deployment_id": "16e3479e-ec7c-4b63-bfc1-23f92ca33769",
+      "deployment": "https://16e3479e.hetu-website-3uu.pages.dev",
+      "origin": "https://hetu.limeai.run",
+      "browser_passed": 45,
+      "browser_failed": 0,
+      "browser_skipped": 0,
+      "responses": [
+        {
+          "url": "https://hetu.limeai.run/plugins/",
+          "status": 200,
+          "bytes": 18795,
+          "sha256": "50f1ab43bf826dc29aeae66072e24f091ca5323d715cbc5cf905488d34454169"
+        },
+        {
+          "url": "https://hetu.limeai.run/en/plugins/",
+          "status": 200,
+          "bytes": 18661,
+          "sha256": "f75f5459b25a0db5c8da4adbda10072eb3f39b8badbad5182ed0aaf0249c04a4"
+        },
+        {
+          "url": "https://hetu.limeai.run/plugins/shanhai/",
+          "status": 200,
+          "bytes": 11000,
+          "sha256": "fc2d71b4330f0f9b60b3c50dc40b195033c0df9b4fc131d8e58628f0b2b622e2"
+        },
+        {
+          "url": "https://hetu.limeai.run/en/plugins/shanhai/",
+          "status": 200,
+          "bytes": 10874,
+          "sha256": "747ee6aeb004bd16c0886044657e83569599dfa7215c4683c78d4613464f5f21"
+        },
+        {
+          "url": "https://hetu.limeai.run/plugins/shanhai.png",
+          "status": 200,
+          "bytes": 401135,
+          "sha256": "bb5e902a11dd5d85d4f1b75e59ac4dd9af745ce5d8ff149b67f7e7729fcd4d6b"
+        }
+      ],
+      "transport": "chromium",
+      "ecosystem_widths": [
+        390,
+        1440
+      ],
+      "ecosystem_scope": "plugin search and template category to independent Shanhai website, exact story, continuation guide and template return"
+    }
   }
 }
