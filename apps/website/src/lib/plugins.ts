@@ -48,8 +48,16 @@ const editorial = [
     request: { 'zh-CN': '重新发现河图已安装的导演布景台及当前作品能力，读取同包Skill、已有场景与固定来源。按我的目标安排人物站位、家具、机位、关键帧和镜头切换，保存后回读。固定计划并输出真实白模图、预演和可接续场景工程，检查画面与完整解码，再按固定版本意见返工并比较两版。正常操作通过CLI/MCP完成，不要求我先学三维操作；不自动调用付费模型或认可成片，未知先回读原操作。', en: 'Rediscover Director Stage and the actual capabilities for this work. Read its packaged Skill, existing scenes and fixed sources. Arrange people, props, cameras, keyframes and cuts for my goal, then save and read back. Fix a render plan and produce actual white-model images, previs and a reusable scene project. Inspect the images and full decoding, revise against fixed-version feedback and compare both versions. Use CLI/MCP without requiring me to learn 3D controls. Do not invoke paid models or approve a final film automatically; recover unknown operations first.' },
     review: { 'zh-CN': '查看人物相对位置、遮挡和机位，播放白模预演。说出哪一帧、哪个人物或哪次切镜需要改变，让 Agent 沿固定场景继续；也可直接拖动、精确编辑和导出。', en: 'Inspect positions, occlusion and cameras, then watch the previs. Name a frame, person or cut for your Agent to revise from the fixed scene, or drag, edit and export it yourself.' },
   },
+  {
+    slug: 'shanhai', category: 'templates',
+    summary: { 'zh-CN': '先读一个故事，再带走它的写法。用创作模板推进小说、剧本与短剧，并在作品里接续两稿与意见。', en: 'Try a story, take its method and continue fiction or screenwriting with fixed drafts and feedback.' },
+    use: { 'zh-CN': '故事构思、人物设定、长篇复盘、章节起草、场次改编、审阅与交付', en: 'Story ideas, characters, manuscript review, chapters, scenes, revisions and delivery' },
+    request: { 'zh-CN': '发现已安装的山海经纬和本次作品能力，读取同包 Skill，按我的目标选择固定模板。先阅读已有资料并列明实际覆盖范围，保存方法实例，再通过宿主任务准备候选、读取意见并沿原任务返工。核对两稿和固定引用后整理交付，不自动采纳或定稿。山海与小说规划为平行插件，无需先安装其他专业插件；结果未知先查原操作。', en: 'Discover Shanhai and the capabilities for this work. Read its packaged Skill and choose a fixed template for my goal. Read existing material and state the actual coverage, save a method instance, then use host tasks to prepare drafts and revise against feedback. Verify both drafts and fixed references before delivery. Do not adopt or finalize automatically. Shanhai works independently of Novel Planner; recover unknown outcomes through the original operation.' },
+    review: { 'zh-CN': '在山海独立官网体验原创故事和方法；回到河图阅读固定候选、比较版本、写下意见，沿当前实例继续。模板可以独立浏览、复制和下载。', en: 'Explore original stories and methods on Shanhai’s independent website. In Hetu, read fixed drafts, compare versions, leave feedback and continue the same instance. Templates can also be read, copied and downloaded independently.' },
+  },
 ] as const;
 export const categories = [
+  { id: 'templates', title: { 'zh-CN': '创作模板', en: 'Creative templates' } },
   { id: 'planning', title: { 'zh-CN': '小说规划', en: 'Novel planning' } },
   { id: 'screenplay', title: { 'zh-CN': '剧本创作', en: 'Screenwriting' } },
   { id: 'video', title: { 'zh-CN': '视听制作', en: 'Video production' } },
@@ -67,7 +75,8 @@ export const plugins = editorial.map(item => {
   if (listing) {
     if (!/^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(manifest.id) || !/^[0-9a-f]{40}$/.test(listing.source_commit)) throw new Error(`外部插件来源无效：${item.slug}`);
     if (!/^[0-9a-f]{64}$/.test(listing.release.archive_sha256) || !/^[0-9a-f]{64}$/.test(listing.release.package_sha256)) throw new Error(`插件缺少固定摘要：${item.slug}`);
-    for (const url of [listing.source_repository, listing.release.url, listing.release.download_url, listing.release.evidence_url, listing.release.integrity_url]) if (new URL(url).protocol !== 'https:') throw new Error(`插件来源必须为HTTPS：${item.slug}`);
+    for (const url of [listing.source_repository, listing.release.url, listing.release.download_url, listing.release.evidence_url, listing.release.integrity_url, ...(listing.homepage ? [listing.homepage] : [])]) if (new URL(url).protocol !== 'https:') throw new Error(`插件来源必须为HTTPS：${item.slug}`);
+    if (listing.capabilities_path && (/[\\?#]/.test(listing.capabilities_path) || listing.capabilities_path.split('/').some(part => !part || part === '.' || part === '..'))) throw new Error(`插件功能清单路径无效：${item.slug}`);
   } else {
     if (manifest.id !== `org.hetu.${item.slug}`) throw new Error(`插件目录与包不符：${directory}`);
     fs.accessSync(path.resolve(process.cwd(), '../..', directory, 'CAPABILITIES.md'));
@@ -77,8 +86,9 @@ export const plugins = editorial.map(item => {
     ...item, ...manifest, directory,
     publisher: listing?.publisher ?? { 'zh-CN': '河图洛书', en: 'Hetu Luoshu' },
     release: listing?.release,
+    homepage: listing?.homepage,
     source: listing ? `${repository}/tree/${listing.source_commit}` : `${source}/tree/main/${directory}`,
-    capabilities: listing ? `${repository}/blob/${listing.source_commit}/CAPABILITIES.md` : `${source}/blob/main/${directory}/CAPABILITIES.md`,
+    capabilities: listing ? `${repository}/blob/${listing.source_commit}/${listing.capabilities_path ?? 'CAPABILITIES.md'}` : `${source}/blob/main/${directory}/CAPABILITIES.md`,
   };
 });
 export type CreativePlugin = typeof plugins[number];

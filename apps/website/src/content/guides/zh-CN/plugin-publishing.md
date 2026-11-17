@@ -30,7 +30,7 @@ GitHub 负责源码、版本说明、问题反馈和收录协作；官网插件�
 
 官网维护精选条目，不替用户执行安装。安装仍需核对本次确切包和选择；外部 Agent 的作品连接独立核验。一个河图插件不需要对应一个 Codex 插件。
 
-维护者将外部固定发行信息登记到 `apps/website/src/data/plugin-listings.json`，作者场景写入 `src/lib/plugins.ts`，功能清单链接到插件确切提交。目录构建不执行外部代码；实际下载、解压与包摘要核对须单独记录。[小说规划](/plugins/novel-planner/)提供这类条目的实例。
+维护者将外部固定发行信息登记到 `apps/website/src/data/plugin-listings.json`，作者场景写入 `src/lib/plugins.ts`，功能清单链接到插件确切提交。使用 `capabilities_path` 指定仓库内的清单路径，`homepage` 链接独立官网。目录构建不执行外部代码；实际下载、解压与包摘要核对须单独记录。[山海经纬](/plugins/shanhai/)与[小说规划](/plugins/novel-planner/)提供独立条目的实例。
 
 ## 5. 更新、撤回与停止维护
 

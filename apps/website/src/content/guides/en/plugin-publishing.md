@@ -30,7 +30,7 @@ Maintainers check source, package format, permissions, runtime compatibility and
 
 The website curates entries and does not perform installation. Users choose the exact package; external Agent work connections are checked independently. A Hetu plugin does not need a corresponding Codex plugin.
 
-Maintainers record external fixed releases in `apps/website/src/data/plugin-listings.json`, organize author scenarios in `src/lib/plugins.ts` and link capability lists at exact plugin commits. Catalog builds do not execute external code. Download, extraction and package digest verification need separate evidence. [Novel Planner](/en/plugins/novel-planner/) is an example of this listing format.
+Maintainers record external fixed releases in `apps/website/src/data/plugin-listings.json`, organize author scenarios in `src/lib/plugins.ts` and link capability lists at exact plugin commits. Use `capabilities_path` for a capability list in a subdirectory and `homepage` for an independent website. Catalog builds do not execute external code. Download, extraction and package digest verification need separate evidence. [Shanhai](/en/plugins/shanhai/) and [Novel Planner](/en/plugins/novel-planner/) are independent examples.
 
 ## 5. Maintain updates and withdrawal
 

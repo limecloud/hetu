@@ -106,6 +106,8 @@ for (const listing of listings) for (const prefix of ['', '/en']) for (const wid
   await expect(page.locator('.plugin-release')).toContainText(listing.release.package_sha256);
   await expect(page.locator('.plugin-release')).toContainText(listing.release.archive_sha256);
   await expect(page.locator('.plugin-package nav a').first()).toHaveAttribute('href',listing.source_repository+'/tree/'+listing.source_commit);
+  await expect(page.locator('.plugin-package nav a').nth(1)).toHaveAttribute('href',listing.source_repository+'/blob/'+listing.source_commit+'/'+(listing.capabilities_path ?? 'CAPABILITIES.md'));
+  if (listing.homepage) await expect(page.locator('.plugin-detail-section a[href="'+listing.homepage+'"]')).toBeVisible();
   await expect(page.locator(`img[src="/plugins/${listing.slug}.png"]`)).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.screenshot({path:`test-results/${listing.slug}-${prefix?'en':'zh-CN'}-${width}.png`,fullPage:true});

@@ -13,6 +13,13 @@ for (const prefix of ['', '/en']) for (const width of [375, 1440]) {
     }
     await page.goto(prefix + '/plugins/');
     await expect(page.locator('.site-footer a[href="https://shanhai.limeai.run/"]')).toBeVisible();
+    await page.getByRole('searchbox').fill('org.wordflowlab.shanhai');
+    await page.locator('[data-plugin-category="templates"]').click();
+    await expect(page.locator('.plugin-card:visible')).toHaveCount(1);
+    await page.locator(`.plugin-card a[href="${prefix}/plugins/shanhai/"]`).click();
+    await expect(page.locator('main h1')).toHaveText(prefix ? 'Shanhai' : '山海经纬');
+    await expect(page.locator('.plugin-detail-section a[href="https://shanhai.limeai.run/"]')).toBeVisible();
+    await expect(page.locator('.plugin-package')).toContainText('org.wordflowlab.shanhai');
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   });
 }
