@@ -37,6 +37,7 @@ plugin-package/
 | `platforms` | 已声明的系统与架构范围 | 声明与验证结果分别展示 |
 | `dependencies` | 精确贡献依赖和可接受合同 | 无环，解析后锁定版本与摘要 |
 | `contributions` | 数据、动作、视图、方法及适配器 | 稳定 ID，资源路径闭合 |
+| `work_kinds` | 工作面适用的作品类型 | 可选非空去重数组，仅`novel`、`drama`、`video`；省略兼容全部类型，导航与视图打开一致核验 |
 | `permissions` | 历史包的可选兼容字段 | 新开放SDK不以该字段分配作品权限 |
 | `runtime` | 静态资源或明确工作进程入口 | 无默认安装脚本和任意 shell 拼接 |
 | `license, notices` | 代码及必要依赖许可入口 | 素材、字体与模型服务条款分别记录 |

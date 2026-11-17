@@ -66,7 +66,6 @@ contextBridge.exposeInMainWorld(
     bounds: invoke("desktop:surface-bounds"),
     closeSurface: invoke("desktop:close-surface"),
     view: invoke("desktop:view"),
-    browser: invoke("desktop:browser"),
     fallback: invoke("desktop:fallback"),
   }),
 );

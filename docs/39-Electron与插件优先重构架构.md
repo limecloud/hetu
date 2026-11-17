@@ -6,7 +6,7 @@
 
 ## 1. 已采纳的决定
 
-采用Electron＋TypeScript/React工作台、TypeScript插件宿主、Rust App Server、JSON-RPC 2.0私有stdio、独立CLI/MCP和受管Chromium内置浏览器。插件采用DSH风格JavaScript/TypeScript＋React，不使用Rust插件ABI。河图保持创作工作台定位，不引入 Agent Runtime、聊天或自主生成循环。
+采用Electron＋TypeScript/React工作台、TypeScript插件宿主、Rust App Server、JSON-RPC 2.0私有stdio、独立CLI/MCP和受管Chromium插件视图。插件采用DSH风格JavaScript/TypeScript＋React，不使用Rust插件ABI。河图保持创作工作台定位，不引入 Agent Runtime、聊天或自主生成循环。
 
 采用Cordis作为TS运行时的依赖注入、服务组合与生命周期基础，河图SDK及作品格式保持独立；来源固定、可替换边界和DSH兼容准入见[插件26](plugin/26-Cordis采用与DSH兼容边界.md)。该决定不表示当前自有注册实现已完成迁移，也不表示DSH插件自动兼容，实施状态归38。
 
@@ -51,7 +51,6 @@ flowchart TB
     Machine --> TS
     Views --> First[第一方贡献]
     Views --> Third[隔离的第三方 Web 视图]
-    Views --> Browser[普通网页 WebContentsView]
     Third --> Scoped[绑定插件身份的窄代理]
     Scoped --> Core
     Core --> Files[权威作品文件 / 修订 / 操作记录]
@@ -59,7 +58,7 @@ flowchart TB
     Core --> Workers[按需专业工作进程]
 ```
 
-图中的 Scoped 是插件授权边界，不能直接复用作者 `workspace/request` 通道。普通网页不连接它。Core 在各入口进程复用同一代码，文件锁、CAS 与持久操作协调并发；不要求中央后台常驻。当前入口与权限子集见[插件20](plugin/20-首期可执行合同与开发入口.md)。
+图中的 Scoped 是插件授权边界，不能直接复用作者 `workspace/request` 通道。普通网页使用系统浏览器，不提供桌面任意网页导航或业务桥接。Core 在各入口进程复用同一代码，文件锁、CAS 与持久操作协调并发；不要求中央后台常驻。当前入口与权限子集见[插件20](plugin/20-首期可执行合同与开发入口.md)。
 
 ### 4.1 运行单元
 
@@ -69,7 +68,6 @@ flowchart TB
 | 可信 renderer | 主进程 | 无 Node；preload 仅暴露明确的桌面用例 |
 | Rust App Server | 主进程 | 启动时绑定明确作品；私有管道，无监听端口、无通用远程作者接口 |
 | 插件 renderer | TS宿主按当前工作面创建 | 固定包摘要、贡献、WorkRef、授权和会话代次；销毁即撤销桥接 |
-| 普通网页 renderer | 作者明确打开 | 独立 session，无河图业务 preload，默认拒绝权限、下载和弹窗 |
 | CLI／MCP | 调用方／外部宿主 | 基础能力直接用Rust Core；TS插件动作按需启动同一Node插件运行时，均不依赖GUI |
 
 ### 4.2 河图插件与外部Agent接入
@@ -141,7 +139,7 @@ sequenceDiagram
 
 A2UI 描述组合，不替代插件代码、专业组件、作品数据或授权。固定组件和增量更新可以节省生成与等待；Token 成本下降后，持久作品、操作合同与反馈接续仍是产品价值。协议不适合的表达继续使用自由成果，不穷举所有 UI。
 
-普通网页、插件视图、自由 HTML 成果和可信作者页使用不同的会话及桥接策略。所有 Web 内容默认 `contextIsolation:true`、`nodeIntegration:false`、`sandbox:true`、`webSecurity:true`；这些设置需要与来源校验、导航、CSP、权限及安装合同共同验证。不能将任意页面和第一方 React 组件一起放入作者全权限执行环境。
+插件视图、自由 HTML 成果和可信作者页使用不同的会话及桥接策略。普通网页由系统浏览器打开，不装配河图业务 preload。所有 Web 内容默认 `contextIsolation:true`、`nodeIntegration:false`、`sandbox:true`、`webSecurity:true`；这些设置需要与来源校验、导航、CSP、权限及安装合同共同验证。不能将任意页面和第一方 React 组件一起放入作者全权限执行环境。
 
 ## 7. 工作面贡献与新的交互模型
 

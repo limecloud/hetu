@@ -109,7 +109,7 @@
     },
     "manifest": {
       "id": "org.wordflowlab.shanhai",
-      "version": "0.1.5",
+      "version": "0.1.6",
       "host_api": "1",
       "display": {
         "zh-CN": "山海经纬",
@@ -119,22 +119,22 @@
       "permissions": []
     },
     "source_repository": "https://github.com/wordflowlab/shanhai",
-    "source_commit": "332de6b070fdee20027e7f6f76b845b4a65a79aa",
+    "source_commit": "c113ccb492789f2fd0cc5651f1efb27555b0be17",
     "capabilities_path": "docs/15-机器能力清单.md",
     "homepage": "https://shanhai.limeai.run/",
     "release": {
       "channel": "preview",
-      "url": "https://github.com/wordflowlab/shanhai/releases/tag/v0.1.5",
-      "download_url": "https://github.com/wordflowlab/shanhai/releases/download/v0.1.5/shanhai-0.1.5.zip",
-      "archive_sha256": "baf11201141a5ceedfaee3e013957f8e2b7020eabe9141cb0597c8e7602d448c",
-      "package_sha256": "505868a6a7067a8b93b77dcdd0d46d07e77568ed3b9a920624e14ecccd24be20",
-      "size_bytes": 391197,
-      "minimum_host_version": "0.11.2",
+      "url": "https://github.com/wordflowlab/shanhai/releases/tag/v0.1.6",
+      "download_url": "https://github.com/wordflowlab/shanhai/releases/download/v0.1.6/shanhai-0.1.6.zip",
+      "archive_sha256": "0e25962972e98844aac55cf9d877722954e531519d5d452d78daab560daf2420",
+      "package_sha256": "8aae7136032bf52abfc28d96bf79f1cc49c38b5e809fb79a7688df7bb29c0588",
+      "size_bytes": 393291,
+      "minimum_host_version": "0.11.6",
       "verified_platforms": [
         "macOS arm64"
       ],
-      "evidence_url": "https://github.com/wordflowlab/shanhai/blob/332de6b070fdee20027e7f6f76b845b4a65a79aa/docs/research/runtime-acceptance-v0.1.5.json",
-      "integrity_url": "https://github.com/wordflowlab/shanhai/releases/download/v0.1.5/shanhai-0.1.5.json"
+      "evidence_url": "https://github.com/wordflowlab/shanhai/blob/db23ea6af5819d81a7041f5d42873c54d74524a1/docs/research/release-acceptance-v0.1.6.json",
+      "integrity_url": "https://github.com/wordflowlab/shanhai/releases/download/v0.1.6/shanhai-0.1.6.json"
     }
   },
   {

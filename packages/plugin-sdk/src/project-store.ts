@@ -1,5 +1,5 @@
 /** 独立专业插件的受管存储适配；领域语义由插件提供。 */
-import type { BackendContext, ObjectResult, PluginSourceRef, Result } from "./index.ts";
+import type { BackendContext, ObjectResult, PluginSourceRef, PluginBasisRef, Result } from "./index.ts";
 
 export class ProjectError extends Error {
   code: string;
@@ -51,6 +51,16 @@ export class ProjectStore {
   async baseline(input: any) {
     const r = await this.get(input.object_id, input.expected_revision);
     requireValue(r.sha256 === input.expected_sha256, "固定编辑基线摘要不一致。", "revision_conflict");
+    return r;
+  }
+  async basis(ref: PluginBasisRef): Promise<ObjectResult> {
+    requireValue(Number.isSafeInteger(ref.revision) && ref.revision > 0 && /^[a-f0-9]{64}$/.test(ref.sha256), "专业依据须固定修订和摘要。");
+    const r: ObjectResult = data(await this.call("hetu.extensions.objects.get", {
+      owner_plugin_id: ref.owner_plugin_id, object_id: ref.object_id, revision: ref.revision,
+    }));
+    requireValue(r.object.owner_plugin_id === ref.owner_plugin_id && r.object.object_id === ref.object_id && r.object.revision === ref.revision
+      && canonical(r.object.work_ref) === canonical(this.context.work_ref) && r.sha256 === ref.sha256,
+      "固定专业依据的归属、修订或摘要不一致。", "hetu.stale_evidence");
     return r;
   }
   async sources(refs: PluginSourceRef[]) {

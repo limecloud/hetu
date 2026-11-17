@@ -711,6 +711,15 @@
       ]
     },
     {
+      "id": "SRC-NOVEL-ECOSYSTEM",
+      "name": "DSH社区小说插件检索与固定源码调研",
+      "retrieved_on": "2026-11-17",
+      "url": "https://www.dsh.so/zh/artifacts/",
+      "verification": "market_ui_and_fixed_public_source_review",
+      "evidence": "research/novel-ecosystem-2026-11-17.json",
+      "verification_scope": "小说关键词、L5筛选第一页32条；18份固定README、重点源码和根许可证核对；未安装上游插件、未运行测试、未完成河图适配。"
+    },
+    {
       "id": "SRC-CORDIS-ADOPTION",
       "name": "Cordis采用、DSH分支与专业创作插件",
       "retrieved_on": "2026-11-16",

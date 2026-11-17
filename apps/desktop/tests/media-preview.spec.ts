@@ -8,7 +8,6 @@ import {
 import { mkdtemp, readFile, mkdir } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { createServer } from "node:http";
 import os from "node:os";
 import path from "node:path";
 import { PluginPackage } from "../../../packages/plugin-host/src/package.ts";
@@ -89,13 +88,6 @@ test("固定图片等比预览、真实音视频播放和seek、损坏提示及�
     await setup.close();
   }
   let app: ElectronApplication | undefined;
-  const reference = createServer((_req, res) => {
-    res.setHeader("Content-Type", "text/html");
-    res.end("<!doctype html><title>Reference</title><p>Reference</p>");
-  });
-  await new Promise<void>((resolve) =>
-    reference.listen(0, "127.0.0.1", resolve),
-  );
   try {
     app = await electron.launch({
       args: [path.join(root, "apps/desktop")],
@@ -222,39 +214,10 @@ test("固定图片等比预览、真实音视频播放和seek、损坏提示及�
         a,
       ),
     ).rejects.toThrow("不属于当前作品");
-    // 普通参考页和独立插件session均没有工作台媒体协议或可信preload。
-    const address = reference.address();
-    if (!address || typeof address === "string")
-      throw new Error("参考页未启动");
-    const referenceUrl = `http://127.0.0.1:${address.port}/`;
-    await page.evaluate(
-      (url) => (window as any).hetuDesktop.browser(url),
-      referenceUrl,
-    );
-    const isolation = await app.evaluate(
-      async ({ webContents, session }, { referenceUrl, videoUrl }) => {
-        const browser = webContents
-          .getAllWebContents()
-          .find((w) => w.getURL() === referenceUrl)!;
-        return {
-          bridge: await browser.executeJavaScript("typeof window.hetuDesktop"),
-          media: await browser.session.protocol.isProtocolHandled("hetu-media"),
-          pluginMedia: await session
-            .fromPartition("plugin-media-isolation", { cache: false })
-            .protocol.isProtocolHandled("hetu-media"),
-          image: await browser.executeJavaScript(
-            `new Promise(resolve => { const image = new Image(); image.onload = () => resolve('loaded'); image.onerror = () => resolve('blocked'); image.src = ${JSON.stringify(videoUrl)}; })`,
-          ),
-        };
-      },
-      { referenceUrl, videoUrl },
-    );
-    expect(isolation).toEqual({
-      bridge: "undefined",
-      media: false,
-      pluginMedia: false,
-      image: "blocked",
-    });
+    // 未签发媒体访问的会话不能继承可信工作台的协议。
+    expect(await app.evaluate(async ({ session }) => session
+      .fromPartition("plugin-media-isolation", { cache: false })
+      .protocol.isProtocolHandled("hetu-media"))).toBe(false);
     await expect(
       page.evaluate(() =>
         (window as any).hetuDesktop.media("open", { file_path: "/arbitrary" }),
@@ -262,8 +225,5 @@ test("固定图片等比预览、真实音视频播放和seek、损坏提示及�
     ).rejects.toThrow("固定素材");
   } finally {
     await app?.close();
-    await new Promise<void>((resolve, reject) =>
-      reference.close((error) => (error ? reject(error) : resolve())),
-    );
   }
 });

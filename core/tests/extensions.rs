@@ -38,6 +38,7 @@ fn work_read_requires_its_own_grant_and_preserves_fixed_document_sources() {
     let source = json!({"kind":"document","work_ref":work,"document_id":document["document"]["document_id"],"revision_id":document["revision"]["revision_id"],"sha256":document["revision"]["sha256"]});
     let ordinary = authorize(&kernel, &dir, &work, json!(["objects.read"]), "ordinary-read");
     let ordinary = PluginSession::open(&path, &dir, ordinary["grant_id"].as_str().unwrap(), &"a".repeat(64)).unwrap();
+    assert_eq!(ordinary.request(req("objects.get", json!({"work_ref":work,"owner_plugin_id":"org.test.other","object_id":"ext_11111111-1111-4111-8111-111111111111","revision":1})))["error"]["code"], "forbidden");
     for request in [req("work.snapshot", json!({"work_ref":work})), req("sources.inspect", json!({"work_ref":work,"source_ref":source}))] {
         assert_eq!(ordinary.request(request)["error"]["code"], "forbidden");
     }

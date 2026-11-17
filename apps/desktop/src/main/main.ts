@@ -1446,8 +1446,9 @@ app
       const pkg = host.package(owner),
         view = pkg.manifest.contributions.views.find((v) => v.id === viewId);
       if (!view) throw new Error("视图未注册。");
-      if (!supportsWork(pkg.manifest, work)) throw new Error("此插件不适用于当前作品。");
-          await closeSurface();
+      if (!supportsWork(pkg.manifest, work))
+        throw new Error("此插件不适用于当前作品。");
+      await closeSurface();
       const token = randomUUID(),
         partition = "plugin-" + token,
         s = session.fromPartition(partition, { cache: false });
@@ -1588,43 +1589,6 @@ app
           const chosen=await dialog.showSaveDialog(window,{title:"导出插件成果",defaultPath:name});return chosen.canceled?undefined:chosen.filePath;
         }}),
       });
-    });
-    shellHandler("desktop:browser", async (address: string) => {
-      const url = new URL(address);
-      if (
-        !["https:", "http:"].includes(url.protocol) ||
-        url.username ||
-        url.password
-      )
-        throw new Error("请输入不含凭据的HTTP(S)地址。");
-      await closeSurface();
-      const partition = "browser-" + randomUUID(),
-        s = session.fromPartition(partition, { cache: false });
-      denyPermissions(s);
-      s.webRequest.onBeforeRequest((details, callback) =>
-        callback({
-          cancel: !["http:", "https:", "data:", "blob:"].includes(
-            new URL(details.url).protocol,
-          ),
-        }),
-      );
-      surface = new WebContentsView({
-        webPreferences: {
-          partition,
-          nodeIntegration: false,
-          contextIsolation: true,
-          sandbox: true,
-          webSecurity: true,
-        },
-      });
-      surface.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
-      surface.webContents.on("will-navigate", (event, url) => {
-        if (!/^https?:/.test(url)) event.preventDefault();
-      });
-      window.contentView.addChildView(surface);
-      layout();
-      await surface.webContents.loadURL(url.href);
-      return { opened: true };
     });
     shellHandler("desktop:migrations", async (method: string, input: any) => {
       if (method === "preview") return pluginMigrations.preview(input.owner, input.migration_id, input.plan_sha256);

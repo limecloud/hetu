@@ -1007,7 +1007,7 @@ impl Kernel {
                 json!({"next_cursor":if more {objects.last().unwrap()["object_id"].clone()} else {Value::Null},"objects":objects})
             }
             "hetu.extensions.objects.get" | "hetu.extensions.objects.export" => {
-                closed(input, &["work_ref", "object_id"], &["revision", "format"])?;
+                closed(input, &["work_ref", "object_id"], &["revision", "format", "owner_plugin_id"])?;
                 let revision = input
                     .get("revision")
                     .map(|v| {
@@ -1015,8 +1015,17 @@ impl Kernel {
                             .ok_or_else(|| Error::new("invalid_input", "修订须为整数。"))
                     })
                     .transpose()?;
-                let (record, sha) = read(text(input, "object_id")?, revision)?;
-                if let Some(grant) = grant {
+                let cross_owner = input.get("owner_plugin_id").is_some();
+                let (record, sha) = if let Some(target_owner) = input.get("owner_plugin_id") {
+                    ensure(action == "hetu.extensions.objects.get" && grant.is_some_and(|context| context["access_mode"] == "open"), "forbidden", "固定跨插件读取仅适用于开放SDK对象读取。")?;
+                    let target_owner = target_owner.as_str().ok_or_else(|| Error::new("invalid_input", "插件Owner须为字符串。"))?;
+                    plugin_id(target_owner)?;
+                    ensure(revision.is_some_and(|v| v > 0), "invalid_input", "显式Owner读取必须固定修订。")?;
+                    self.extension_object(work, target_owner, text(input, "object_id")?, revision)?
+                } else {
+                    read(text(input, "object_id")?, revision)?
+                };
+                if let Some(grant) = grant.filter(|_| !cross_owner) {
                     ensure(
                         grant["types"]
                             .as_array()

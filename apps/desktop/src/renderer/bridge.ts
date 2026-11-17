@@ -87,7 +87,6 @@ export interface DesktopBridge {
   }): Promise<void>;
   closeSurface(): Promise<void>;
   view(owner: string, id: string): Promise<void>;
-  browser(address: string): Promise<void>;
   fallback(
     owner: string,
     action: string,

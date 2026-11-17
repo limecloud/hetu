@@ -279,7 +279,7 @@ sequenceDiagram
     actor author as 作者
     participant desktop as 河图洛书原生端
     participant node as 按需 Node.js 页面服务
-    participant browser as 内置浏览器或 WebView
+    participant browser as 系统浏览器或外部客户端
     participant core as Core 与本机授权
     author->>desktop: 打开本任务的局部交互页面
     desktop->>node: 启动回环服务并绑定任务

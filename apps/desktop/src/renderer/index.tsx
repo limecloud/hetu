@@ -22,8 +22,7 @@ function App() {
     [active, setActive] = useState("library"),
     [notice, setNotice] = useState(""),
     [operationBusy, setBusy] = useState(false),
-    [agentStatus, setAgentStatus] = useState<AgentStatus>({ state: "idle" }),
-    [address, setAddress] = useState("");
+    [agentStatus, setAgentStatus] = useState<AgentStatus>({ state: "idle" });
   const [initializing, setInitializing] = useState(true);
   const busy = initializing || operationBusy;
   const appearance = state.preferences?.appearance ?? "system";
@@ -180,11 +179,9 @@ function App() {
         ? "创作插件"
         : active === "settings"
           ? "本机设置"
-          : active === "browser"
-            ? "参考浏览器"
-            : active.startsWith("fallback:")
-              ? "插件成果"
-              : (contribution?.title ??
+          : active.startsWith("fallback:")
+            ? "插件成果"
+            : (contribution?.title ??
                 state.views.find((v: any) => v.key === active)?.title ??
                 "创作工作面");
   const readerActive = active === "novel.reader" || active === "drama.reader";
@@ -284,7 +281,6 @@ function App() {
                     </select>
                   </label>}
             <button disabled={busy} onClick={() => void run(() => navigate("plugins"))}>创作插件</button>
-            <button disabled={busy} onClick={() => void run(() => navigate("browser"))}>参考浏览器</button>
             <button onClick={() => void desktop.settingsWindow("open")}>本机设置</button>
           </div></details>
         </div>
@@ -300,9 +296,9 @@ function App() {
               <div className="navigation-divider"/>
               <NavigationGroup title="创作资料" active={["work.canon", "work.images", "work.resources", "work.media"].includes(active)}>{["work.canon", "work.images", "work.resources", "work.media"].map(navItem)}</NavigationGroup>
               <NavigationGroup title="版本与交付" active={["work.versions", "work.import", "work.delivery"].includes(active)}>{["work.versions", "work.import", "work.delivery"].map(navItem)}</NavigationGroup>
-              <NavigationGroup title="检查工具" active={["work.management", "work.agent", "plugins", "browser"].includes(active)}>
+              <NavigationGroup title="检查工具" active={["work.management", "work.agent", "plugins"].includes(active)}>
                 {navItem("work.management")}{navItem("work.agent")}
-                {globalItem("plugins", "创作插件", "plugin")}{globalItem("browser", "参考浏览器", "search")}
+                {globalItem("plugins", "创作插件", "plugin")}
               </NavigationGroup>
               {state.views.length > 0 && <details className="navigation-group" open><summary>创作插件</summary>{state.views.map((view: any) => <button key={view.key} disabled={busy} className={active === view.key ? "selected" : ""} onClick={() => void run(() => openPlugin(view))}><Icon name="plugin"/>{view.title}</button>)}</details>}
             </div>
@@ -311,7 +307,7 @@ function App() {
 
             {([["all", "全部作品", "layers"], ["novel", "小说", "book"], ["drama", "剧本", "file"], ["video", "视频", "film"]] as [string, string, IconName][]).map(([id,label,icon]) => <button key={id} disabled={busy} className={kind === id && active === "library" ? "selected" : ""} onClick={() => { setKind(id); void run(() => navigate("library")); }}><Icon name={icon}/>{label}</button>)}
             <div className="navigation-divider"/>
-            {globalItem("plugins", "创作插件", "plugin")}{globalItem("browser", "参考浏览器", "search")}
+            {globalItem("plugins", "创作插件", "plugin")}
           </>}
         </aside>}
         <main className={pluginActive ? "plugin-page" : readerActive ? "reader-main" : "page-main"}>
@@ -478,26 +474,6 @@ function App() {
               title={state.plugins.find((plugin: any) => plugin.id === active.slice(9))?.display["zh-CN"] ?? "插件"}
               enabled={state.plugins.some((plugin: any) => plugin.id === active.slice(9) && plugin.state === "active")}
               back={() => void run(() => navigate("plugins"))}/></div>
-          ) : active === "browser" ? (
-            <>
-              <div className="browser-address">
-                <input
-                  aria-label="参考网页地址"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  placeholder="输入参考网页地址"
-                />
-                <button
-                  onClick={() => void run(() => desktop.browser(address))}
-                >
-                  打开参考
-                </button>
-                <button onClick={() => void desktop.closeSurface()}>
-                  关闭网页
-                </button>
-              </div>
-              <div className="surface" ref={surface} />
-            </>
           ) : Component ? (
             <div className={readerActive ? "content manuscript-content" : "content workbench-page"} data-surface={active}>
               {!readerActive && <div className="surface-heading"><h1>{title}</h1><div className="surface-heading-actions" ref={setPageActionsTarget}/></div>}

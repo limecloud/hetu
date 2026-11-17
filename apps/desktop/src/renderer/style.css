@@ -101,14 +101,6 @@ main { display: flex; flex-direction: column; position: relative; }
   width: 22%;
 }
 .management-review .delivery-files th:first-child { width: 78%; }
-.browser-address {
-  display: flex;
-  gap: 8px;
-  padding: 12px 26px;
-}
-.browser-address input {
-  flex: 1;
-}
 pre {
   white-space: pre-wrap;
   overflow-wrap: anywhere;

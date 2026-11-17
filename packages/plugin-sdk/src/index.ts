@@ -83,6 +83,13 @@ export interface ObjectResult {
   object: PluginObject;
   sha256: string;
 }
+/** 同作品的固定专业依据；不携带另一作品授权或写入权限。 */
+export interface PluginBasisRef {
+  owner_plugin_id: string;
+  object_id: string;
+  revision: number;
+  sha256: string;
+}
 export interface PluginContext {
   plugin_id: string;
   work_ref: WorkRef;

@@ -533,6 +533,8 @@ AssetDesign与AssetSelection继续拥有资料设计和用途选用，MediaArtif
 
 ## 插件优先重构的接入边界
 
+插件专业依据使用`owner_plugin_id`、`object_id`、`revision`和`sha256`固定同作品的上游专业修订；WorkRef由当前受管上下文绑定。公开对象读取可显式选择Owner和固定修订，写入仍归当前插件，不能借引用修改其他插件对象。该引用由消费插件保存，不增加第二套正文SourceRef或统一专业数据库；摘要、Owner与实际作品须逐项核验。
+
 新增插件实体、复合身份、ERD、权威文件与派生索引的设计由插件08拥有；首期JSON标题投影合同归插件20第25节，SQLite DDL用于后续规模评估。现有WorkRef和SourceRef保持原义。新字段在实现并验证后进入contracts，不提前改变旧Schema语义。目标分工见[39](39-Electron与插件优先重构架构.md)，详细扩展合同见[插件系列](plugin/README.md)，实际进度归38。
 
 ## 26. 会话决定与本机操作回执

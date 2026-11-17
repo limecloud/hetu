@@ -62,6 +62,27 @@ test("固定快照不会执行校验后被改写的源文件，越界与软链�
   await symlink(path.join(root, "Cargo.toml"), path.join(directory, "escape"));
   await assert.rejects(() => PluginPackage.inspect(directory), /普通文件/);
 });
+test("复用Schema编译检查仍读取文件变化并拒绝新的非法Schema", async () => {
+  const base = await PluginPackage.inspect(path.join(root, "plugins/relationships/dist"));
+  const directory = await mkdtemp(path.join(os.tmpdir(), "hetu-schema-recheck-"));
+  for (const [name, bytes] of base.entries()) await writeFile(path.join(directory, name), bytes);
+  const initial = await PluginPackage.inspect(directory);
+  assert.equal((await PluginPackage.inspect(directory)).sha256, initial.sha256);
+  await writeFile(path.join(directory, "view.js"), "// 新的视图字节\n");
+  assert.notEqual((await PluginPackage.inspect(directory)).sha256, initial.sha256);
+  const manifest = JSON.parse(JSON.stringify(base.manifest));
+  manifest.contributions.data[0].schema = { type: "object", properties: { value: { $ref: "#/missing" } } };
+  await writeFile(path.join(directory, "plugin.json"), JSON.stringify(manifest));
+  await assert.rejects(() => PluginPackage.inspect(directory), /reference|resolve/i);
+  manifest.contributions.data[0].schema = { type: "object", properties: { value: { type: "string" } } };
+  await writeFile(path.join(directory, "plugin.json"), JSON.stringify(manifest));
+  const changed = await PluginPackage.inspect(directory);
+  assert.notEqual(changed.sha256, initial.sha256);
+  assert.equal((await PluginPackage.inspect(directory)).sha256, changed.sha256);
+  manifest.contributions.actions[0].input_schema = { type: "object", properties: { value: { $ref: "#/missing" } } };
+  await writeFile(path.join(directory, "plugin.json"), JSON.stringify(manifest));
+  await assert.rejects(() => PluginPackage.inspect(directory), /reference|resolve/i);
+});
 test("依赖缺失与环不会留下半注册贡献；清理失败仍继续释放其他资源", async () => {
   const base = await PluginPackage.inspect(
     path.join(root, "plugins/timeline/dist"),

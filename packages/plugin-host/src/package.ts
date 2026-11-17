@@ -7,6 +7,15 @@ import manifestSchema from "../../../contracts/schemas/plugin-manifest.schema.js
 export { manifestSchema };
 const ajv = new Ajv({ strict: false, allErrors: true });
 const validate = ajv.compile(manifestSchema);
+// 仅复用相同Schema的成功编译检查；每次inspect仍核验实际文件和包摘要。
+const checkedSchemas = new Set<string>();
+function checkSchema(schema: object) {
+  const text = JSON.stringify(schema);
+  if (checkedSchemas.has(text)) return;
+  new Ajv({ strict: false }).compile(schema);
+  if (checkedSchemas.size >= 128) checkedSchemas.delete(checkedSchemas.values().next().value!);
+  checkedSchemas.add(text);
+}
 export function resourcePath(value: string): string {
   if (
     !value ||
@@ -106,14 +115,14 @@ export class PluginPackage {
       names.add(t.kind);
       if (JSON.stringify(t.schema).length > 32768)
         throw new Error("数据Schema超过预算。");
-      new Ajv({ strict: false }).compile(t.schema);
+      checkSchema(t.schema);
     }
     names.clear();
     for (const a of manifest.contributions.actions) {
       if (a.id.startsWith("hetu.") || a.id === "skills.read" || names.has(a.id))
         throw new Error("插件动作重复或覆盖核心动作。");
       names.add(a.id);
-      new Ajv({ strict: false }).compile(a.input_schema);
+      checkSchema(a.input_schema);
     }
     names.clear();
     const skillNames = new Set<string>();

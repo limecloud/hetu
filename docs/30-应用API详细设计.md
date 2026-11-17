@@ -957,6 +957,8 @@ CLI、MCP、MCP Apps、本地页面和原生端共用上述用例；Apps只在�
 
 ## 开放宿主与小说补齐动作
 
+`hetu.extensions.objects.get`可选`owner_plugin_id`，用于开放SDK在当前WorkRef内读取确切上游专业对象；显式Owner必须同时给出正整数revision。返回对象的Owner、修订和sha256由消费者核对，不自动追随当前头。旧请求省略Owner时仍读取自身对象。历史受限grant不获得跨Owner读取，保存、列表、操作恢复及通用导出的Owner保持原义；字段Schema归`contracts/extensions/actions.json`。SDK的`ProjectStore.basis`封装固定读取和摘要核验，专业语义仍归消费插件。
+
 | 动作 | 固定输入 | 结果与恢复 |
 | --- | --- | --- |
 | `hetu.plugins.capabilities` | management_ref、work_ref、plugin_id、package_sha256 | 活动包专业动作、扩展数据动作、core_actions及capabilities_sha256；无插件grant |

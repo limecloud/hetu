@@ -1,0 +1,203 @@
+{
+  "record_version": 1,
+  "checked_on": "2026-11-17",
+  "scope": "固定研究与文档完整性；不包含新专业功能运行、Mermaid渲染或上游测试",
+  "status": "passed",
+  "research_record_sha256": "c248fd504199e0f6dd0b9bbb6f6be2c00c8ee0a3f42c3e9264d55208af25831c",
+  "candidates": 248,
+  "categories": 18,
+  "fixed_research_bases": [
+    {
+      "repository": "shiyan688/dsh-novel-craft",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "ShanJun-pro-max/dsh-novel-workbench",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "micellince/dsh-long-novel-workbench",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "LiPu-jpg/Openwrite",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "KurohaneKaoruko/DSH-Creator",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "DrizzleGig/dsh-novel-beat",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "XiaoOu2024/dsh-novel-generator",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "lilinshuei/novel-atlas",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "baisama-cloud/dsh-galgame-generator",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "sailoumili/novel-writer",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "Tkingxiao/dsh-novel-solo",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "lingfengQAQ/webnovel-writer",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "EthanYoQ/Pagekin",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "zenstory-ai/oh-story-dsh",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "siweina/dsh-novel-writer",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "zhangzhend0ng/canonkeeper",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "ShikangPang/jizuo-creator-memory",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "MlittleFriend/dsh-character-profiler",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "hulibuld/dsh-lifecard",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "xia-sc/dsh-cc-studio",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "609476965/dsh-LorebookMD",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "canghai666x/dsh-web-novel-research",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "kilo-s/dsh-rank-scan",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "PIDust/dsh-novel-proofread",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "umairrrkhan/dsh-novel-quality-analyzer",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "ARKsealin/stylome",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "Adkid-Zephyr/Liltloom",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "ymz001130/dsh-style-memory",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "Wang-Lin-Chang/dsh-story",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "LeeGuanWei-a/serial-story-writer",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "cong7781/novel",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "lihaoran0412/dsh-narrative-engine",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "CHET-LI/DSH-galgame-galbook",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "coldgust/dsh-translation-assistant",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "visangela/dsh-novel-assistant",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    },
+    {
+      "repository": "darlingsakurua/dsh-novels",
+      "fixed_commit_matches": true,
+      "clean_worktree": true
+    }
+  ],
+  "inspected_file_digests_verified": 49,
+  "plugin_documents_checked": 52,
+  "local_links_checked": 168,
+  "mermaid_blocks_found": 27,
+  "professional_cases_designed_not_run": {
+    "hetu-prose-studio": 12,
+    "hetu-novel-review": 12,
+    "hetu-novel-atlas": 13,
+    "hetu-novel-planner": 10
+  },
+  "cross_plugin_cases_designed_not_run": 18,
+  "errors": []
+}

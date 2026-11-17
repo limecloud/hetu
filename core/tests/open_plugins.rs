@@ -114,3 +114,34 @@ fn open_objects_keep_schema_cas_owner_and_original_operation() {
     );
     assert_ne!(malformed["status"], "succeeded");
 }
+
+#[test]
+fn open_sdk_reads_fixed_other_owner_without_transferring_write_ownership() {
+    let folder = tempfile::tempdir().unwrap();
+    let (k, work) = fixture(folder.path());
+    let producer = context(&work);
+    let mut consumer = producer.clone();
+    consumer["plugin_id"] = json!("org.test.consumer");
+    consumer["types"] = json!([]);
+    let saved = request(&k, &producer, "hetu.extensions.objects.save", json!({"kind":"plan","title":"上游依据","schema_version":"1","content":{"text":"固定结论"},"source_refs":[],"expected_revision":0,"expected_sha256":"","operation_key":"basis-create"}));
+    assert_eq!(saved["status"], "succeeded", "{saved}");
+    let read = json!({"owner_plugin_id":"org.test.open","object_id":saved["data"]["object"]["object_id"],"revision":1});
+    let first = request(&k, &consumer, "hetu.extensions.objects.get", read.clone());
+    assert_eq!(first["data"], saved["data"], "{first}");
+    let updated = request(&k, &producer, "hetu.extensions.objects.save", json!({"object_id":saved["data"]["object"]["object_id"],"kind":"plan","title":"上游新版","schema_version":"1","content":{"text":"新的结论"},"source_refs":[],"expected_revision":1,"expected_sha256":saved["data"]["sha256"],"operation_key":"basis-update"}));
+    assert_eq!(updated["status"], "succeeded", "{updated}");
+    assert_eq!(request(&k, &consumer, "hetu.extensions.objects.get", read.clone())["data"], first["data"]);
+    let mut missing_revision = read.clone();
+    missing_revision.as_object_mut().unwrap().remove("revision");
+    assert_ne!(request(&k, &consumer, "hetu.extensions.objects.get", missing_revision)["status"], "succeeded");
+    let mut wrong_owner = read.clone();
+    wrong_owner["owner_plugin_id"] = json!("org.test.wrong");
+    assert_ne!(request(&k, &consumer, "hetu.extensions.objects.get", wrong_owner)["status"], "succeeded");
+    let mut wrong_work = consumer.clone();
+    wrong_work["work_ref"]["object_id"] = json!("novel_11111111-1111-4111-8111-111111111111");
+    assert_ne!(request(&k, &wrong_work, "hetu.extensions.objects.get", read.clone())["status"], "succeeded");
+    assert_ne!(request(&k, &consumer, "hetu.extensions.objects.get", json!({"object_id":read["object_id"],"revision":1}))["status"], "succeeded");
+    let mut forged = updated["data"]["object"].clone();
+    forged["owner_plugin_id"] = json!("org.test.open");
+    assert_ne!(request(&k, &consumer, "hetu.extensions.objects.save", forged)["status"], "succeeded");
+}

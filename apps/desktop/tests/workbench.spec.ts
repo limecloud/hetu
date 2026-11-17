@@ -9,7 +9,6 @@ import { mkdtemp, readFile, writeFile, cp, readdir } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import os from "node:os";
-import { createServer } from "node:http";
 import { PluginPackage } from "../../../packages/plugin-host/src/package.ts";
 const root = path.resolve(import.meta.dirname, "../../..");
 let application: ElectronApplication;
@@ -511,6 +510,9 @@ test(
     await expect(
       page.getByRole("heading", { name: "创作库", exact: true }),
     ).toBeVisible();
+    await expect(page.getByRole("button", { name: "参考浏览器", exact: true })).toHaveCount(0);
+    expect(await page.evaluate(() => typeof (window as any).hetuDesktop.browser)).toBe("undefined");
+    expect(await application.evaluate(({ ipcMain }) => (ipcMain as any)._invokeHandlers.has("desktop:browser"))).toBe(false);
     await application.evaluate(({ dialog }, directory) => {
       dialog.showOpenDialog = async () => ({
         canceled: false,
@@ -781,45 +783,6 @@ test(
     await page.getByRole("button", { name: "读取成果" }).click();
     await page.getByRole("button", { name: "查看导出" }).click();
     await expect(page.locator("pre")).toContainText("待恢复人物");
-    const http = createServer((_request, response) => {
-      response.setHeader("Content-Type", "text/html; charset=utf-8");
-      response.end(
-        "<!doctype html><title>参考资料测试</title><h1>普通参考网页</h1>",
-      );
-    });
-    await new Promise<void>((resolve) => http.listen(0, "127.0.0.1", resolve));
-    try {
-      await navigate(page, "参考浏览器");
-      const address = "http://127.0.0.1:" + (http.address() as any).port + "/";
-      await page.getByRole("textbox", { name: "参考网页地址" }).fill(address);
-      await page.getByRole("button", { name: "打开参考", exact: true }).click();
-      await expect
-        .poll(() =>
-          application
-            .windows()
-            .find((p) => p.url() === address)
-            ?.url(),
-        )
-        .toBe(address);
-      const browser = application.windows().find((p) => p.url() === address)!;
-      await expect(
-        browser.getByRole("heading", { name: "普通参考网页" }),
-      ).toBeVisible();
-      expect(
-        await browser.evaluate(() => ({
-          node: typeof (window as any).require,
-          plugin: typeof (window as any).hetu,
-          author: typeof (window as any).hetuDesktop,
-        })),
-      ).toEqual({
-        node: "undefined",
-        plugin: "undefined",
-        author: "undefined",
-      });
-      await page.getByRole("button", { name: "关闭网页", exact: true }).click();
-    } finally {
-      await new Promise<void>((resolve) => http.close(() => resolve()));
-    }
   },
 );
 
