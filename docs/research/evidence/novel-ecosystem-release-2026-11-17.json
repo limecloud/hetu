@@ -1,0 +1,212 @@
+{
+  "recorded_date": "2026-11-17",
+  "host": {
+    "version": "0.11.5",
+    "git_sha": "f485ef44fc2e2562df6af2884953ba7523083ad2",
+    "archive_sha256": "7adec82e8427e6e4efa0dc72e449f6434d4ff6d8371fbc92d12eb016b77adea7",
+    "manifest_sha256": "4a1c80178669e6aef1e631fd4c9ffa6b7c553e51ca35acda158c0ab0515c6e4b",
+    "source_files": 2763,
+    "application_entries": 2798,
+    "signature": true,
+    "notarization_status": "Accepted",
+    "staple_valid": true,
+    "platform": "macOS arm64"
+  },
+  "host_release": "https://github.com/limecloud/hetu/releases/tag/v0.11.5",
+  "host_ci": "https://github.com/limecloud/hetu/actions/runs/44077740567",
+  "host_ci_platforms": [
+    "macOS arm64",
+    "Windows x64",
+    "Linux x64"
+  ],
+  "installed_platform": "macOS arm64",
+  "installation": {
+    "application_inventory_matches": true,
+    "backup_created": false
+  },
+  "common_host_changes": [
+    "work_kinds: manifest, SDK, discovery, scaffold, desktop filtering and open validation",
+    "fixed text/html file delivery with UTF-8 continuity, chunk and total hashes, byte budget and atomic replacement"
+  ],
+  "plugin_acceptance_urls": [
+    "https://github.com/wordflowlab/hetu-prose-studio/blob/e519a6251607a32aeafa987aa6e77954853c9656/docs/research/release-acceptance-2026-11-17.json",
+    "https://github.com/wordflowlab/hetu-novel-review/blob/78606f8405d43f7e3e8acb64a309330abc70013b/docs/research/release-acceptance-2026-11-17.json",
+    "https://github.com/wordflowlab/hetu-novel-atlas/blob/3e061734c77bfba1444cb5facd260d2f0f169f78/docs/research/release-acceptance-2026-11-17.json",
+    "https://github.com/wordflowlab/hetu-novel-planner/blob/94cfe5fc91fc77529192ee2d61de7fdf012bb92a/docs/research/release-acceptance-2026-11-17.json"
+  ],
+  "professional_action_counts": [
+    15,
+    13,
+    16,
+    29
+  ],
+  "unit_test_counts": [
+    16,
+    14,
+    15,
+    19
+  ],
+  "installed_machine_and_electron": "all four plugins passed; prose v0.1.1 rerun passed",
+  "ecosystem": {
+    "date": "2026-11-17T12:56:55.055Z",
+    "platform": "darwin arm64",
+    "packages": {
+      "prose": "a793eb0ff1438593696340d01640d7ae5c4eb95108c68c68aa2b74a5cbeeb3f7",
+      "planner": "2e05158d8ee1076370e3d186491fdc83083cb3a19e8f66ff6ef3452aacadd1e9",
+      "review": "bb7078c860d39ee684d0b028c9db4ddd55db3182574e55f7a72608b9b31c2bb9",
+      "atlas": "3d2526fb4f9ae0a39ff591f7c7ad559a1983e526df26614babf7c981e2fe764b"
+    },
+    "checks": [
+      "same_stable_mcp_connection",
+      "four_plugins_same_novel",
+      "packaged_skills",
+      "fixed_import",
+      "existing_plan_then_continuation",
+      "host_candidate",
+      "fixed_feedback",
+      "same_task_rework",
+      "feedback_linked_submission",
+      "unchanged_outside_utf8",
+      "new_evidence_review",
+      "atlas_fixed_projection",
+      "offline_export_without_full_manuscript"
+    ],
+    "refs": {
+      "plan": {
+        "object_id": "ext_f3e01dac-6508-4c52-bd28-b47db520bbd9",
+        "revision": 1,
+        "sha256": "4581e0013d53405227a7f9531d402169d8dd01906fc308375f9efb88883f6f48"
+      },
+      "continuity": {
+        "object_id": "ext_54668b07-dbdf-4082-897d-b71b8d0f527d",
+        "revision": 1,
+        "sha256": "518bf7e505ca18188081fdb0706ed3519b61872d7814052b804260fe71f6bfbf"
+      },
+      "prose": {
+        "object_id": "ext_81a07d88-b352-4a8a-8c56-e1991cfc3df7",
+        "revision": 3,
+        "sha256": "3bab03d3f910802355d950e5c536ae2f10160c490ba581f708afcdd617702220"
+      },
+      "review": {
+        "object_id": "ext_26150a3a-31c5-4787-91e8-49e89d6f2c17",
+        "revision": 3,
+        "sha256": "ae7ac1d737185c14853c8ad74c923e462722423e49afdb9d6530723ff9751b36"
+      },
+      "atlas": {
+        "object_id": "ext_6a04449d-0364-4aad-9249-2c00912df669",
+        "revision": 1,
+        "sha256": "b36e017997e52c714e3e7ffe66a48eca353e326fbace9beb2ba041ebd9fb8659"
+      }
+    },
+    "adoption": false,
+    "finalization": false,
+    "paid_generation": false
+  },
+  "native_conversation": {
+    "recorded_at": "2026-11-17T12:58:01.300Z",
+    "entry": "current Codex native MCP connection",
+    "existing_mcp_version": "0.10.0",
+    "new_codex_plugin": false,
+    "restarted_connection": false,
+    "plugins": [
+      {
+        "plugin_id": "org.wordflowlab.prose-studio",
+        "package_sha256": "a793eb0ff1438593696340d01640d7ae5c4eb95108c68c68aa2b74a5cbeeb3f7",
+        "actions": 15,
+        "skill_content_sha256": "b56b34b7f8fc18d0ea15dfc7abab062f04527f0a1689763e6dd7c62336b2c7cd",
+        "skill_read": "succeeded",
+        "method_resources_read": 2,
+        "existing_objects_checked": true,
+        "work_snapshot_read": true,
+        "saved_ref": {
+          "object_id": "ext_6c78d0d3-42bf-4dc5-a345-2fb9d5082489",
+          "revision": 1,
+          "sha256": "fa98a34d54ef88ebfc9b35aeb7fd8d5d0a9cd5fe79e6ad68f982acb7dd068235"
+        },
+        "readback_matches": true,
+        "replay_matches": true,
+        "previous_release_package_sha256": "95c2e067b3256ae3e612c294c09ae4425c3a5f3625d1dc2ade370b99b8385ecf",
+        "version": "0.1.1",
+        "hot_upgrade": {
+          "restarted_connection": false,
+          "actions_rediscovered": 15,
+          "skill_reloaded": true,
+          "existing_revision_unchanged": true
+        }
+      },
+      {
+        "plugin_id": "org.wordflowlab.novel-review",
+        "package_sha256": "bb7078c860d39ee684d0b028c9db4ddd55db3182574e55f7a72608b9b31c2bb9",
+        "actions": 13,
+        "skill_content_sha256": "fd26c8ede842085237634cee47d23e91a389a03161153e402b9bb2dba2a8a55f",
+        "skill_read": "succeeded",
+        "method_resources_read": 2,
+        "existing_objects_checked": true,
+        "work_snapshot_read": true,
+        "saved_ref": {
+          "object_id": "ext_7c77e01c-b2a8-4b58-b621-f302898edeb7",
+          "revision": 1,
+          "sha256": "57b6de7a9c532c1e154e93520dc76b7c2042c0bed10164b7a1791b1fa9744d10"
+        },
+        "readback_matches": true,
+        "replay_matches": true
+      },
+      {
+        "plugin_id": "org.wordflowlab.novel-atlas",
+        "package_sha256": "3d2526fb4f9ae0a39ff591f7c7ad559a1983e526df26614babf7c981e2fe764b",
+        "actions": 16,
+        "skill_content_sha256": "6d428a99f495cb7a676fdc8713d6d4929ad6140f837ebc687184a31c045bf18c",
+        "skill_read": "succeeded",
+        "method_resources_read": 2,
+        "existing_objects_checked": true,
+        "work_snapshot_read": true,
+        "saved_ref": {
+          "object_id": "ext_82a6b79c-f077-4019-a871-b3689e725c73",
+          "revision": 1,
+          "sha256": "a8aa2484a638984f554184aa30d3d27d1cc76c46b3801385ee3775c9c7097fb2"
+        },
+        "readback_matches": true,
+        "replay_matches": true
+      },
+      {
+        "plugin_id": "org.wordflowlab.novel-planner",
+        "package_sha256": "2e05158d8ee1076370e3d186491fdc83083cb3a19e8f66ff6ef3452aacadd1e9",
+        "actions": 29,
+        "skill_content_sha256": "e6df67ba69f9f3fa99e91dfb75dc619275ce5c7e3800796bbef63749db06068f",
+        "skill_read": "succeeded",
+        "method_resources_read": 2,
+        "existing_objects_checked": true,
+        "work_snapshot_read": true,
+        "saved_ref": {
+          "object_id": "ext_ddb250e1-5118-49b0-aa66-302d6e014197",
+          "revision": 1,
+          "sha256": "09282065b0b31b62beca41cd6374d34886e9f8d6663967e8fb06e2b8675e280a"
+        },
+        "readback_matches": true,
+        "replay_matches": true
+      }
+    ],
+    "planned_data_only": true,
+    "continuity_context_read": "succeeded",
+    "atlas_projection_read": "succeeded",
+    "adoption": false,
+    "finalization": false,
+    "paid_generation": false,
+    "limits": [
+      "既有MCP进程不会被桌面覆盖安装替换；正式安装版CLI/MCP/GUI另行验收。"
+    ]
+  },
+  "computer_use": {
+    "installed_application": "0.11.5",
+    "workspaces_and_return": "observed",
+    "crash_observed": false,
+    "capture_limit": "普通窗口捕获右侧空白，宿主与插件相同；缩放后完整。未将该状态算作普通窗口视觉通过，原因未确定。"
+  },
+  "not_verified": [
+    "Windows/Linux plugin business journeys on real machines",
+    "clean-system installation",
+    "complete assistive technology and system IME",
+    "paid model performance/cost",
+    "author acceptance"
+  ]
+}

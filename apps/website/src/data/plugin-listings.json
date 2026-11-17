@@ -145,7 +145,7 @@
     },
     "manifest": {
       "id": "org.wordflowlab.prose-studio",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "host_api": "1",
       "display": {
         "zh-CN": "文风工坊",
@@ -155,20 +155,20 @@
       "permissions": []
     },
     "source_repository": "https://github.com/wordflowlab/hetu-prose-studio",
-    "source_commit": "2dcb51bdf11c99bcbdb13d74e2e7011eb08d83a2",
+    "source_commit": "95b0364ca814b2b9c15581f8ea9e11284a2c818f",
     "release": {
       "channel": "preview",
-      "url": "https://github.com/wordflowlab/hetu-prose-studio/releases/tag/v0.1.0",
-      "download_url": "https://github.com/wordflowlab/hetu-prose-studio/releases/download/v0.1.0/org.wordflowlab.prose-studio-0.1.0.tgz",
-      "archive_sha256": "42011a21b6a7cead6a6ec5d17d8fe63f42b7ca443f1dd28c350ef67af5d3129d",
-      "package_sha256": "95c2e067b3256ae3e612c294c09ae4425c3a5f3625d1dc2ade370b99b8385ecf",
-      "size_bytes": 237603,
+      "url": "https://github.com/wordflowlab/hetu-prose-studio/releases/tag/v0.1.1",
+      "download_url": "https://github.com/wordflowlab/hetu-prose-studio/releases/download/v0.1.1/org.wordflowlab.prose-studio-0.1.1.tgz",
+      "archive_sha256": "73eff1d42c3d06911401ad92c60c206acb55fc7f2338b6a8cc3bf753ff19aa81",
+      "package_sha256": "a793eb0ff1438593696340d01640d7ae5c4eb95108c68c68aa2b74a5cbeeb3f7",
+      "size_bytes": 237590,
       "minimum_host_version": "0.11.5",
       "verified_platforms": [
         "macOS arm64"
       ],
-      "evidence_url": "https://github.com/wordflowlab/hetu-prose-studio/blob/2dcb51bdf11c99bcbdb13d74e2e7011eb08d83a2/docs/08-实施计划与验收记录.md",
-      "integrity_url": "https://github.com/wordflowlab/hetu-prose-studio/releases/download/v0.1.0/release-integrity.json"
+      "evidence_url": "https://github.com/wordflowlab/hetu-prose-studio/blob/e519a6251607a32aeafa987aa6e77954853c9656/docs/research/release-acceptance-2026-11-17.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-prose-studio/releases/download/v0.1.1/release-integrity.json"
     }
   },
   {
@@ -201,7 +201,7 @@
       "verified_platforms": [
         "macOS arm64"
       ],
-      "evidence_url": "https://github.com/wordflowlab/hetu-novel-review/blob/634ac7e4ab62ba8ab9dfe605d2c144e359c3edd4/docs/08-实施计划与验收记录.md",
+      "evidence_url": "https://github.com/wordflowlab/hetu-novel-review/blob/78606f8405d43f7e3e8acb64a309330abc70013b/docs/research/release-acceptance-2026-11-17.json",
       "integrity_url": "https://github.com/wordflowlab/hetu-novel-review/releases/download/v0.1.0/release-integrity.json"
     }
   },
@@ -235,7 +235,7 @@
       "verified_platforms": [
         "macOS arm64"
       ],
-      "evidence_url": "https://github.com/wordflowlab/hetu-novel-atlas/blob/0cc2f1ae36dc11581efc2aee00ed96de34def54c/docs/08-实施计划与验收记录.md",
+      "evidence_url": "https://github.com/wordflowlab/hetu-novel-atlas/blob/3e061734c77bfba1444cb5facd260d2f0f169f78/docs/research/release-acceptance-2026-11-17.json",
       "integrity_url": "https://github.com/wordflowlab/hetu-novel-atlas/releases/download/v0.1.0/release-integrity.json"
     }
   },
@@ -273,7 +273,7 @@
       "verified_platforms": [
         "macOS arm64"
       ],
-      "evidence_url": "https://github.com/wordflowlab/hetu-novel-planner/blob/639985a2193275f718a98c33083af3b7e7afcf18/docs/08-实施计划与验收记录.md",
+      "evidence_url": "https://github.com/wordflowlab/hetu-novel-planner/blob/94cfe5fc91fc77529192ee2d61de7fdf012bb92a/docs/research/release-acceptance-2026-11-17.json",
       "integrity_url": "https://github.com/wordflowlab/hetu-novel-planner/releases/download/v0.2.0/release-integrity.json"
     }
   }
