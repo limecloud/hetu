@@ -1,13 +1,33 @@
 {
   "name": "@limecloud/hetu",
-  "version": "0.11.4",
+  "version": "0.11.5",
   "description": "Hetu Luoshu native CLI and MCP server launcher for external AI agents",
   "type": "module",
   "license": "Apache-2.0",
-  "engines": { "node": ">=22.12.0" },
-  "bin": { "hetu": "bin/hetu.mjs", "hetu-mcp": "bin/hetu-mcp.mjs" },
-  "files": ["bin", "src", "README.md", "LICENSE"],
-  "scripts": { "prepack": "node scripts/prepare.mjs", "test": "node --test test/*.test.mjs" },
-  "repository": { "type": "git", "url": "git+https://github.com/limecloud/hetu.git", "directory": "packages/npm-cli" },
-  "publishConfig": { "access": "public", "registry": "https://registry.npmjs.org" }
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "bin": {
+    "hetu": "bin/hetu.mjs",
+    "hetu-mcp": "bin/hetu-mcp.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "prepack": "node scripts/prepare.mjs",
+    "test": "node --test test/*.test.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/limecloud/hetu.git",
+    "directory": "packages/npm-cli"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  }
 }
