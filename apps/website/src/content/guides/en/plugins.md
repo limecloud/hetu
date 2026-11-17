@@ -52,7 +52,7 @@ For example: “Qiao does not know Zhou’s identity yet. Change that connection
 
 Ask it to read back saved data. If an operation times out, recover the original operation rather than creating another graph.
 
-Director Stage shows 3D space, camera framing and white-model previs. Identify a person, camera or frame for the Agent to revise from a fixed scene. Dragging and numeric editing are optional. Previs does not establish final actor identity, materials or exact model reproduction.
+Director Stage connects a floor plan, actual 3D framing and shot dialogue in one scene. Change only shot three’s blocking while preserving neighboring shots; estimated dialogue timing, geometric occlusion and explicit axis checks flag issues for review. Identify a person, camera or frame for the Agent to revise from a fixed scene. Dragging and numeric editing are optional. Previs does not establish final actor identity, materials or exact model reproduction.
 
 ## 5. Let your Agent discover a newly installed plugin
 

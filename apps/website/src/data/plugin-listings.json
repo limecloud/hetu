@@ -113,7 +113,7 @@
     },
     "manifest": {
       "id": "org.wordflowlab.director-stage",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "host_api": "1",
       "display": {
         "zh-CN": "导演布景台",
@@ -123,20 +123,20 @@
       "permissions": []
     },
     "source_repository": "https://github.com/wordflowlab/hetu-director-stage",
-    "source_commit": "58a1edd7a6757bfed6612bf81bf69434442dc8b1",
+    "source_commit": "03eab799a426dbc0883dd59c9c56ce5ee03affeb",
     "release": {
       "channel": "preview",
-      "url": "https://github.com/wordflowlab/hetu-director-stage/releases/tag/v0.1.0",
-      "download_url": "https://github.com/wordflowlab/hetu-director-stage/releases/download/v0.1.0/org.wordflowlab.director-stage-0.1.0.tgz",
-      "archive_sha256": "48cf28b179ad2dec22a101734ac759e1d174e8ca6462d8c4f30f5ae1e6e815e0",
-      "package_sha256": "a5ad3022c5db21628a13aa2fda2ad06d4a883f88158fc58bd613f0328196db24",
-      "size_bytes": 937392,
+      "url": "https://github.com/wordflowlab/hetu-director-stage/releases/tag/v0.2.0",
+      "download_url": "https://github.com/wordflowlab/hetu-director-stage/releases/download/v0.2.0/org.wordflowlab.director-stage-0.2.0.tgz",
+      "archive_sha256": "7a6a8c8f45a3f8398adcf85cca9112e39ee3f9f7dc982d87b69c507c8b032aaa",
+      "package_sha256": "3a2c3cebd17854981fd40a95f3bd68558a33305444c4f2fcdca2c0bfcdb1fc66",
+      "size_bytes": 1007163,
       "minimum_host_version": "0.11.2",
       "verified_platforms": [
         "macOS arm64"
       ],
-      "evidence_url": "https://github.com/wordflowlab/hetu-director-stage/blob/58a1edd7a6757bfed6612bf81bf69434442dc8b1/docs/research/runtime-acceptance-2026-11-17.json",
-      "integrity_url": "https://github.com/wordflowlab/hetu-director-stage/releases/download/v0.1.0/release-integrity.json"
+      "evidence_url": "https://github.com/wordflowlab/hetu-director-stage/blob/03eab799a426dbc0883dd59c9c56ce5ee03affeb/docs/research/runtime-v020-acceptance-2026-11-17.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-director-stage/releases/download/v0.2.0/release-integrity.json"
     }
   },
   {
