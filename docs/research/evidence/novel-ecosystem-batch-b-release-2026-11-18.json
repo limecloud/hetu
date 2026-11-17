@@ -75,48 +75,112 @@
     },
     "production": {
       "origin": "https://hetu.limeai.run",
-      "deployment_url": "https://2614c0ae.hetu-website-3uu.pages.dev",
-      "source_commit": "ec1fe34",
+      "deployment_url": "https://481824d4.hetu-website-3uu.pages.dev",
+      "source_commit": "1459ec77e59718a80a7042b17d9135c944d77899",
       "pages": [
         {
           "url": "https://hetu.limeai.run/plugins/story-research/",
           "http_status": 200,
-          "fixed_release": true
+          "fixed_release": true,
+          "installed_evidence_url": "https://github.com/wordflowlab/hetu-story-research/releases/download/v0.1.0/installed-acceptance.json"
         },
         {
           "url": "https://hetu.limeai.run/en/plugins/story-research/",
           "http_status": 200,
-          "fixed_release": true
+          "fixed_release": true,
+          "installed_evidence_url": "https://github.com/wordflowlab/hetu-story-research/releases/download/v0.1.0/installed-acceptance.json"
         },
         {
           "url": "https://hetu.limeai.run/plugins/character-lab/",
           "http_status": 200,
-          "fixed_release": true
+          "fixed_release": true,
+          "installed_evidence_url": "https://github.com/wordflowlab/hetu-character-lab/releases/download/v0.1.0/installed-acceptance.json"
         },
         {
           "url": "https://hetu.limeai.run/en/plugins/character-lab/",
           "http_status": 200,
-          "fixed_release": true
+          "fixed_release": true,
+          "installed_evidence_url": "https://github.com/wordflowlab/hetu-character-lab/releases/download/v0.1.0/installed-acceptance.json"
         },
         {
           "url": "https://hetu.limeai.run/plugins/story-analysis/",
           "http_status": 200,
-          "fixed_release": true
+          "fixed_release": true,
+          "installed_evidence_url": "https://github.com/wordflowlab/hetu-story-analysis/releases/download/v0.1.0/installed-acceptance.json"
         },
         {
           "url": "https://hetu.limeai.run/en/plugins/story-analysis/",
           "http_status": 200,
-          "fixed_release": true
+          "fixed_release": true,
+          "installed_evidence_url": "https://github.com/wordflowlab/hetu-story-analysis/releases/download/v0.1.0/installed-acceptance.json"
         }
       ],
-      "all_three_images_sha256_match": true,
-      "browser_tests": {
-        "passed": 94,
-        "failed": 1,
-        "failure": "故事分析中文768px详情在等待元素稳定时超时；保留原结果",
-        "focused_recheck_passed": 1,
-        "focused_recheck_duration_seconds": 6.9,
-        "test_or_assertions_changed": false
+      "public_installed_evidence": [
+        {
+          "url": "https://github.com/wordflowlab/hetu-story-research/releases/download/v0.1.0/installed-acceptance.json",
+          "http_status": 200,
+          "sha256": "a352f26dfe405e9690af7ce85228b887c516b2b958e0d614cbf490b56e4ac98f",
+          "anonymous_download": true
+        },
+        {
+          "url": "https://github.com/wordflowlab/hetu-character-lab/releases/download/v0.1.0/installed-acceptance.json",
+          "http_status": 200,
+          "sha256": "6992b7c4b10b92122cd8d969537027aa7575f7a3f3c150d0abcbabb22ac63a8f",
+          "anonymous_download": true
+        },
+        {
+          "url": "https://github.com/wordflowlab/hetu-story-analysis/releases/download/v0.1.0/installed-acceptance.json",
+          "http_status": 200,
+          "sha256": "5fb55c55c6bb3915b23b6047f5597fcb9affa662b09e41a08845966ec898a102",
+          "anonymous_download": true
+        }
+      ],
+      "images_unchanged_from_verified_initial_registration": true,
+      "initial_registration": {
+        "origin": "https://hetu.limeai.run",
+        "deployment_url": "https://2614c0ae.hetu-website-3uu.pages.dev",
+        "source_commit": "ec1fe34",
+        "pages": [
+          {
+            "url": "https://hetu.limeai.run/plugins/story-research/",
+            "http_status": 200,
+            "fixed_release": true
+          },
+          {
+            "url": "https://hetu.limeai.run/en/plugins/story-research/",
+            "http_status": 200,
+            "fixed_release": true
+          },
+          {
+            "url": "https://hetu.limeai.run/plugins/character-lab/",
+            "http_status": 200,
+            "fixed_release": true
+          },
+          {
+            "url": "https://hetu.limeai.run/en/plugins/character-lab/",
+            "http_status": 200,
+            "fixed_release": true
+          },
+          {
+            "url": "https://hetu.limeai.run/plugins/story-analysis/",
+            "http_status": 200,
+            "fixed_release": true
+          },
+          {
+            "url": "https://hetu.limeai.run/en/plugins/story-analysis/",
+            "http_status": 200,
+            "fixed_release": true
+          }
+        ],
+        "all_three_images_sha256_match": true,
+        "browser_tests": {
+          "passed": 94,
+          "failed": 1,
+          "failure": "故事分析中文768px详情在等待元素稳定时超时；保留原结果",
+          "focused_recheck_passed": 1,
+          "focused_recheck_duration_seconds": 6.9,
+          "test_or_assertions_changed": false
+        }
       }
     }
   },
@@ -422,6 +486,82 @@
       "真实创作质量与作者认可",
       "正文采纳、正式设定及定稿",
       "付费模型调用"
+    ],
+    "published_evidence_verification": [
+      {
+        "repository": "wordflowlab/hetu-story-research",
+        "tag_unchanged": true,
+        "archive_unchanged": true,
+        "integrity_unchanged": true,
+        "installed_evidence_assets": [
+          {
+            "name": "installed-runtime-acceptance.json",
+            "sha256": "0f09190e2ec0af80f8bcd21764b85ff5f3d1b2b57ba133588168c42f4430ed16",
+            "size_bytes": 1620
+          },
+          {
+            "name": "installed-ui-acceptance.json",
+            "sha256": "34019eb52a647726c1d0eeee8f7edebc598c8ffe1951f7c51f81b5480287615a",
+            "size_bytes": 1000
+          },
+          {
+            "name": "installed-acceptance.json",
+            "sha256": "a352f26dfe405e9690af7ce85228b887c516b2b958e0d614cbf490b56e4ac98f",
+            "size_bytes": 15101
+          }
+        ]
+      },
+      {
+        "repository": "wordflowlab/hetu-character-lab",
+        "tag_unchanged": true,
+        "archive_unchanged": true,
+        "integrity_unchanged": true,
+        "installed_evidence_assets": [
+          {
+            "name": "installed-runtime-acceptance.json",
+            "sha256": "ae61fcb4e1684f34a4c900794440730c612967e8c4fa1a9f5c9549fed0f46395",
+            "size_bytes": 1685
+          },
+          {
+            "name": "installed-ui-acceptance.json",
+            "sha256": "3aaed0556fe477e8907591cb9c30e09625016b35a6f7eb78cf9d0e288ddfb24c",
+            "size_bytes": 999
+          },
+          {
+            "name": "installed-acceptance.json",
+            "sha256": "6992b7c4b10b92122cd8d969537027aa7575f7a3f3c150d0abcbabb22ac63a8f",
+            "size_bytes": 15187
+          }
+        ]
+      },
+      {
+        "repository": "wordflowlab/hetu-story-analysis",
+        "tag_unchanged": true,
+        "archive_unchanged": true,
+        "integrity_unchanged": true,
+        "installed_evidence_assets": [
+          {
+            "name": "installed-runtime-acceptance.json",
+            "sha256": "90a4931f210a37b2227397a3f0806292d3cdc3bd5e551af9cf16cdb5922221c6",
+            "size_bytes": 1702
+          },
+          {
+            "name": "installed-ui-acceptance.json",
+            "sha256": "6aa9db787cf7101710dfec7a29db887b5cb8869a322c5d7e9768e2c5c19b6960",
+            "size_bytes": 1000
+          },
+          {
+            "name": "installed-acceptance.json",
+            "sha256": "5fb55c55c6bb3915b23b6047f5597fcb9affa662b09e41a08845966ec898a102",
+            "size_bytes": 17777
+          },
+          {
+            "name": "installed-cross-plugin-acceptance.json",
+            "sha256": "66b08c704514883ec8889c2d4478f00183760f0891304c0ebab4966e87ae79c8",
+            "size_bytes": 2163
+          }
+        ]
+      }
     ]
   },
   "historical_failures_preserved": true,
