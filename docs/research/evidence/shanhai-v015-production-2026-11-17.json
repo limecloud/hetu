@@ -1,0 +1,145 @@
+{
+  "verified_at": "2026-11-17T09:32:12.503024+00:00",
+  "status": "passed_with_explicit_scope",
+  "scope": "山海经纬v0.1.5目录更新与双站往返，未发布河图桌面安装包",
+  "website_source_commit": "a0430c9e09de9c9a7fcef86fac71f2e76468f725",
+  "shanhai_source_commit": "332de6b070fdee20027e7f6f76b845b4a65a79aa",
+  "deployment": {
+    "date": "2026-11-17T09:28:45.378061+00:00",
+    "status": "deployed_and_byte_verified",
+    "project": "hetu-website",
+    "environment": "production",
+    "deployment_id": "aea54329-a6c8-447e-8601-5674f6d518da",
+    "deployment_url": "https://aea54329.hetu-website-3uu.pages.dev",
+    "origin": "https://hetu.limeai.run",
+    "source_commit": "a0430c9e09de9c9a7fcef86fac71f2e76468f725",
+    "tracked_sources_match_commit": true,
+    "version_scope": "Only Shanhai v0.1.5 listing; existing desktop package retained",
+    "verification_note": "Temporary Git metadata was initially placed in the website subdirectory, then corrected to the checkout root. The tracked source matched the commit; two dependency symlinks were excluded locally. The uploaded dist was unchanged and seven production responses were independently verified."
+  },
+  "local_browser": {
+    "startTime": "2026-11-17T09:17:44.862Z",
+    "duration": 32929.473,
+    "expected": 40,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "production_browser": {
+    "startTime": "2026-11-17T09:24:20.774Z",
+    "duration": 178440.95500000002,
+    "expected": 40,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "production_bytes": {
+    "date": "2026-11-17T09:23:38.183Z",
+    "status": "passed",
+    "origin": "https://hetu.limeai.run",
+    "source_commit": "a0430c9e09de9c9a7fcef86fac71f2e76468f725",
+    "verified": [
+      {
+        "path": "/",
+        "status": 200,
+        "sha256": "219b3c50c6b75512746e0870ddf9f9d4c3c4467ed96ce321db664641840cce7d",
+        "build_sha256": "219b3c50c6b75512746e0870ddf9f9d4c3c4467ed96ce321db664641840cce7d",
+        "bytes": 132278
+      },
+      {
+        "path": "/en/",
+        "status": 200,
+        "sha256": "8a7bbae326218db9de31796493ae3740952be1818ae08d50e0505153c9e21618",
+        "build_sha256": "8a7bbae326218db9de31796493ae3740952be1818ae08d50e0505153c9e21618",
+        "bytes": 135211
+      },
+      {
+        "path": "/plugins/",
+        "status": 200,
+        "sha256": "5db8d9e8fe965027304abf0a1ca6818cd8f655ed47e2e52a7bdd1d83bf66cc10",
+        "build_sha256": "5db8d9e8fe965027304abf0a1ca6818cd8f655ed47e2e52a7bdd1d83bf66cc10",
+        "bytes": 18453
+      },
+      {
+        "path": "/en/plugins/",
+        "status": 200,
+        "sha256": "58fbf491bc9cc360b127d99f36214caf02c6d1fea0ab755939ac95c018404459",
+        "build_sha256": "58fbf491bc9cc360b127d99f36214caf02c6d1fea0ab755939ac95c018404459",
+        "bytes": 18331
+      },
+      {
+        "path": "/plugins/shanhai/",
+        "status": 200,
+        "sha256": "78b830142b86746f89b08a455f744631080935baedbf0be4a82f6d96b2a50d97",
+        "build_sha256": "78b830142b86746f89b08a455f744631080935baedbf0be4a82f6d96b2a50d97",
+        "bytes": 10633
+      },
+      {
+        "path": "/en/plugins/shanhai/",
+        "status": 200,
+        "sha256": "727bb533c85e7acc02dc717dd4c572821c3a8f0b8f99dfc4aabbd8765c30290d",
+        "build_sha256": "727bb533c85e7acc02dc717dd4c572821c3a8f0b8f99dfc4aabbd8765c30290d",
+        "bytes": 10507
+      },
+      {
+        "path": "/plugins/shanhai.png",
+        "status": 200,
+        "sha256": "bb5e902a11dd5d85d4f1b75e59ac4dd9af745ce5d8ff149b67f7e7729fcd4d6b",
+        "build_sha256": "bb5e902a11dd5d85d4f1b75e59ac4dd9af745ce5d8ff149b67f7e7729fcd4d6b",
+        "bytes": 401135
+      }
+    ]
+  },
+  "ecosystem": {
+    "date": "2026-11-17T09:28:19.506Z",
+    "status": "passed",
+    "checks": [
+      {
+        "width": 390,
+        "status": "passed",
+        "template": "annotated-manuscript",
+        "checks": [
+          "hetu-home-to-shanhai-story",
+          "fixed-template-continuation",
+          "return-to-template",
+          "shanhai-to-hetu",
+          "plugin-search-and-template-category",
+          "independent-plugin-detail-to-shanhai",
+          "catalog-template-continuation-and-return",
+          "no-pageerror"
+        ]
+      },
+      {
+        "width": 1440,
+        "status": "passed",
+        "template": "annotated-manuscript",
+        "checks": [
+          "hetu-home-to-shanhai-story",
+          "fixed-template-continuation",
+          "return-to-template",
+          "shanhai-to-hetu",
+          "plugin-search-and-template-category",
+          "independent-plugin-detail-to-shanhai",
+          "catalog-template-continuation-and-return",
+          "no-pageerror"
+        ]
+      }
+    ]
+  },
+  "plugin_release": {
+    "version": "0.1.5",
+    "plugin_id": "org.wordflowlab.shanhai",
+    "host_api": "1",
+    "package_sha256": "505868a6a7067a8b93b77dcdd0d46d07e77568ed3b9a920624e14ecccd24be20",
+    "archive_sha256": "baf11201141a5ceedfaee3e013957f8e2b7020eabe9141cb0597c8e7602d448c",
+    "archive_bytes": 391197,
+    "templates": 22,
+    "runtime": "Node 25+ permission model"
+  },
+  "release_url": "https://github.com/wordflowlab/shanhai/releases/tag/v0.1.5",
+  "boundaries": [
+    "仅山海目录项发生更新；其他插件条目逐项比对保持",
+    "现有0.11.2桌面安装包保持，开发工作树改动未纳入部署",
+    "三类分类覆盖不等于每类已有模板；创作与作者决定门槛仍由山海docs/08维护"
+  ]
+}
