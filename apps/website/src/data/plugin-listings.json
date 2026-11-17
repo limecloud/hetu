@@ -104,5 +104,39 @@
       "evidence_url": "https://github.com/wordflowlab/hetu-video-studio/blob/448ac7ff3a71ddfc91f9aa9664f6d26ec483c41c/docs/research/runtime-acceptance-2026-11-17.json",
       "integrity_url": "https://github.com/wordflowlab/hetu-video-studio/releases/download/v0.1.0/release-integrity.json"
     }
+  },
+  {
+    "slug": "director-stage",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.director-stage",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "导演布景台",
+        "en": "Director Stage"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-director-stage",
+    "source_commit": "58a1edd7a6757bfed6612bf81bf69434442dc8b1",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-director-stage/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-director-stage/releases/download/v0.1.0/org.wordflowlab.director-stage-0.1.0.tgz",
+      "archive_sha256": "48cf28b179ad2dec22a101734ac759e1d174e8ca6462d8c4f30f5ae1e6e815e0",
+      "package_sha256": "a5ad3022c5db21628a13aa2fda2ad06d4a883f88158fc58bd613f0328196db24",
+      "size_bytes": 937392,
+      "minimum_host_version": "0.11.2",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-director-stage/blob/58a1edd7a6757bfed6612bf81bf69434442dc8b1/docs/research/runtime-acceptance-2026-11-17.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-director-stage/releases/download/v0.1.0/release-integrity.json"
+    }
   }
 ]

@@ -20,6 +20,10 @@ For a long novel, choose [Novel Planner](/en/plugins/novel-planner/) and ask:
 
 > Read the novel’s existing plans before organizing each volume’s goal, theme, conflict, turning points and detailed plot. Preserve my decisions, save and read back the results. Do not change, adopt or finalize manuscript text.
 
+For blocking and camera choices, use [Director Stage](/en/plugins/director-stage/):
+
+> Block the station dialogue with white models. Show the two people on opposite sides of the table, then compare a wide shot and a close-up. Produce previs, keep the old version and delay the close-up by half a second. The previs checks space and pacing; it is not approval of a final film.
+
 ## 2. Install the selected Hetu plugin
 
 Manage packages under **Creative plugins** in the library, or ask your Agent to inspect, install and read back a package through Hetu’s machine interface following your explicit choice. Installation does not require a desktop window.
@@ -47,6 +51,8 @@ In Novel Planner, use the volume list to read volume information, plans and deta
 For example: “Qiao does not know Zhou’s identity yet. Change that connection to reflect what she currently knows.” Your Agent continues from the saved revision. Review the result or edit it yourself.
 
 Ask it to read back saved data. If an operation times out, recover the original operation rather than creating another graph.
+
+Director Stage shows 3D space, camera framing and white-model previs. Identify a person, camera or frame for the Agent to revise from a fixed scene. Dragging and numeric editing are optional. Previs does not establish final actor identity, materials or exact model reproduction.
 
 ## 5. Let your Agent discover a newly installed plugin
 

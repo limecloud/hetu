@@ -41,6 +41,13 @@ const editorial = [
     request: { 'zh-CN': '发现河图视听制作插件与本次视频作品的实际能力，读取同包Skill和已有工程，先梳理分镜、素材职责及实际媒体。按需要准备预演，固定制作请求和预算；需要付费或外发时另行确认。导入真实成果并核验完整解码，组织剪辑时间映射，按固定区间意见建立新版本，核验媒体及工程清单后交付。未知先查原任务，不自动认可成片。', en: 'Discover Video Studio and the actual capabilities for this video work. Read its packaged Skill and existing project, then organize shots, asset roles and actual media. Prepare previs when useful and fix production requests and budgets; confirm costs and external sharing separately. Import results, verify full decoding, organize edit mappings, create a new version from fixed-range feedback, and verify media and the project manifest before delivery. Recover unknown tasks first and do not approve the final film automatically.' },
     review: { 'zh-CN': '观看固定预演或成片，明确哪一段需要改变。保留旧版与意见，对照返工版本，再决定选用及交付。', en: 'Watch fixed previs or rendered edits and identify the interval to change. Keep the old version and feedback, compare the rework, then decide what to select and deliver.' },
   },
+  {
+    slug: 'director-stage', category: 'video',
+    summary: { 'zh-CN': '让 Agent 布置人物、家具与机位，用三维白模看清空间、构图和镜头节奏。', en: 'Ask your Agent to arrange people, props and cameras, then inspect space, framing and pacing in 3D previs.' },
+    use: { 'zh-CN': '对白走位、场景布置、机位比较、白模预演与工程参考', en: 'Dialogue blocking, set layout, camera comparisons, previs and reusable scene projects' },
+    request: { 'zh-CN': '重新发现河图已安装的导演布景台及当前作品能力，读取同包Skill、已有场景与固定来源。按我的目标安排人物站位、家具、机位、关键帧和镜头切换，保存后回读。固定计划并输出真实白模图、预演和可接续场景工程，检查画面与完整解码，再按固定版本意见返工并比较两版。正常操作通过CLI/MCP完成，不要求我先学三维操作；不自动调用付费模型或认可成片，未知先回读原操作。', en: 'Rediscover Director Stage and the actual capabilities for this work. Read its packaged Skill, existing scenes and fixed sources. Arrange people, props, cameras, keyframes and cuts for my goal, then save and read back. Fix a render plan and produce actual white-model images, previs and a reusable scene project. Inspect the images and full decoding, revise against fixed-version feedback and compare both versions. Use CLI/MCP without requiring me to learn 3D controls. Do not invoke paid models or approve a final film automatically; recover unknown operations first.' },
+    review: { 'zh-CN': '查看人物相对位置、遮挡和机位，播放白模预演。说出哪一帧、哪个人物或哪次切镜需要改变，让 Agent 沿固定场景继续；也可直接拖动、精确编辑和导出。', en: 'Inspect positions, occlusion and cameras, then watch the previs. Name a frame, person or cut for your Agent to revise from the fixed scene, or drag, edit and export it yourself.' },
+  },
 ] as const;
 export const categories = [
   { id: 'planning', title: { 'zh-CN': '小说规划', en: 'Novel planning' } },

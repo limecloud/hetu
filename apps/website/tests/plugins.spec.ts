@@ -58,7 +58,7 @@ for (const prefix of ['', '/en']) {
 
   test(`${prefix || 'zh-CN'} 插件作者与开发者指南、博客和SEO相互可达`, async ({ page, request }) => {
     const sitemap = await (await request.get('/sitemap.xml')).text();
-    for (const path of ['plugins', 'plugins/relationships', 'plugins/timeline', 'plugins/novel-planner', 'plugins/screenplay', 'plugins/video-studio', 'docs/plugins', 'docs/plugin-development', 'docs/plugin-publishing', 'blog/creative-plugins']) {
+    for (const path of ['plugins', ...packages.map(item => 'plugins/' + item.slug), 'docs/plugins', 'docs/plugin-development', 'docs/plugin-publishing', 'blog/creative-plugins']) {
       await page.goto(`${prefix}/${path}/`);
       await expect(page.locator('main h1')).toHaveCount(1);
       await expect(page.locator('main h1')).toBeVisible();

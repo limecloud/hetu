@@ -16,6 +16,8 @@ Hetu keeps the work foundation stable and lets specialized tools join when usefu
 
 [Novel Planner](/en/plugins/novel-planner/) applies that boundary to long-form writing. Review volume goals, themes, conflicts and detailed plots together, with links to characters, places and clues. The Agent organizes the structure while the author reads and edits through a volume list. Formal chapters, manuscripts and story settings reuse host capabilities. Its preview release provides a fixed runtime package and a specific validation scope.
 
+[Director Stage](/en/plugins/director-stage/) applies this approach to space and cameras. An Agent arranges people, props, cameras and keyframes; the author watches actual white-model previs and can ask, “Wait until he reaches the table before cutting to the close-up.” The scene, feedback and revisions remain part of the same work. A reusable project and a final image remain separate results.
+
 ## A canvas can be optional
 
 Relationships can be a graph. Events can be a timeline. Other questions may call for images, tables or a specialized view. There is no single best representation for every creative problem.
