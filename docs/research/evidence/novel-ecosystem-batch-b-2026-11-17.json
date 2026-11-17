@@ -1,0 +1,881 @@
+{
+  "recorded_at": "2026-11-17T15:35:17.057093+00:00",
+  "scope": "local novel ecosystem batch B; no release or Applications replacement",
+  "platform": "macOS arm64",
+  "source_build": true,
+  "core_version": "0.11.5 plus local fixed cross-owner reading",
+  "plugin_runtime": "same-source host with bounded successful schema compilation checks",
+  "host_source_files": [
+    {
+      "path": "contracts/extensions/actions.json",
+      "sha256": "efe70901c780404a619406791cde9c215e85e13f2552007901ac23f076721ac7"
+    },
+    {
+      "path": "core/src/application/extensions.rs",
+      "sha256": "5e36b3f5e8c5a61eecac7ec0859d3e3962f27b2e31490bc8195b4f77310fa98b"
+    },
+    {
+      "path": "core/tests/open_plugins.rs",
+      "sha256": "7e770b86e35c259bf16e5ae46840e06a45943e22639646c09f22b0afb666c843"
+    },
+    {
+      "path": "core/tests/extensions.rs",
+      "sha256": "aa3754aa2457edff50cde87a9189744f52f95572678ec00c9eb283abe4e3af30"
+    },
+    {
+      "path": "packages/plugin-sdk/src/index.ts",
+      "sha256": "c8ac54e23169c394a8908978567ca26d74371027b1d94ed8abe72d94e9a35258"
+    },
+    {
+      "path": "packages/plugin-sdk/src/project-store.ts",
+      "sha256": "4e09985f2cda87cd7b8dfdcc0c7cb892f85ddab5f0aa2f820e22157322aa57c9"
+    },
+    {
+      "path": "packages/plugin-host/src/package.ts",
+      "sha256": "783b020e4e257116300f6dffd045221b19537d14c4101cefeb961f31e62d0e7c"
+    },
+    {
+      "path": "packages/plugin-host/tests/host.test.ts",
+      "sha256": "8295d4ab56865bce4a30fb5a34da30bcf8261bd3bc161e8b10e62aaec849c041"
+    },
+    {
+      "path": "apps/desktop/dist/plugin-manager.mjs",
+      "sha256": "58feda8977bca9ce66ca15b6f20465000307900b04b87a4b667dcef3b050a806"
+    },
+    {
+      "path": "apps/desktop/dist/plugin-runtime.mjs",
+      "sha256": "074cb010dbf84cd9972283999ed7197703bcaaafd939412261023107c49f6925"
+    }
+  ],
+  "host_binaries": [
+    {
+      "path": "target/debug/hetu",
+      "sha256": "62dae3b8ccbdb75c94090b2fb3e238406e6d586c9461fa2cab8e1a45d5431695"
+    },
+    {
+      "path": "target/debug/hetu-mcp",
+      "sha256": "3281a6a89d81d00e0535c4af13abeaf1fa29bd4f63cef10830fac00b33d22611"
+    },
+    {
+      "path": "target/debug/hetu-plugin",
+      "sha256": "509e9573bab1b714f0957c07fe234862f987977291c0c281935a914245314c18"
+    },
+    {
+      "path": "target/debug/hetu-app-server",
+      "sha256": "c4c4860d2d553cff146e0696cbbcd5d1266ea1543c2e2f4503d296e3f5b7a98a"
+    }
+  ],
+  "plugins": [
+    {
+      "repository": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-story-research",
+      "plugin_id": "org.wordflowlab.story-research",
+      "version": "0.1.0",
+      "professional_actions": 18,
+      "unit_tests": 10,
+      "archive": {
+        "archive": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-story-research/output/org.wordflowlab.story-research-0.1.0.tgz",
+        "archive_sha256": "41187357c1f391d4cdd3a7f93741e9972ce1f60a001a0fbb6305cec21c8d885a",
+        "unpacked_directory": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-story-research-archive-_482280n/package",
+        "package_sha256": "5adeffdf4bfe4f71ac614204bfe77825747164fa4705f6b9ec52a1d908b5bf9f",
+        "inspector_status": "succeeded"
+      },
+      "runtime": {
+        "date": "2026-11-17T14:40:47.468Z",
+        "platform": "darwin arm64",
+        "package_sha256": "b66d5c542ae33c59c1ba3a084450875d22aef5f850ebe54eb3cd519c07131c3e",
+        "actions": [
+          "skills.read",
+          "save_project",
+          "put_question",
+          "put_observation",
+          "put_conclusion",
+          "list_projects",
+          "get_source",
+          "get_operation",
+          "get_basis",
+          "get_research_digest",
+          "check_project",
+          "remove_observation",
+          "build_research_context",
+          "create_handoff",
+          "remove_conclusion",
+          "remove_question",
+          "compare_versions",
+          "export_project",
+          "get_project"
+        ],
+        "core_version": "0.11.5+local-cross-owner",
+        "source_build": true,
+        "directory": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-story-research-u1ODng",
+        "cli_mcp": true,
+        "skill_resources": true,
+        "hotplug": true,
+        "uninstall_reinstall": true,
+        "candidate_fixed_ref": {
+          "kind": "document",
+          "work_ref": {
+            "workspace_id": "workspace_1f935b9e-9a93-426d-9710-5802dd958fb7",
+            "kind": "novel",
+            "object_id": "novel_f5a75802-3952-498f-bec1-2616172c5d0b"
+          },
+          "document_id": "doc_9e39f398-1770-40c2-8ecb-fd99402c7fda",
+          "revision_id": "rev_01692125-fd06-451d-8b7b-f36c496e05b0",
+          "sha256": "16295785ca4f287dd11fc6f1d5884a64c51a26bc537868a7cb043c43a57ce6b5"
+        },
+        "handoff": {
+          "object_id": "ext_b3caf046-9d65-49bd-872b-23ef2ec240f0",
+          "owner_plugin_id": "org.wordflowlab.story-research",
+          "revision": 11,
+          "sha256": "47637c69e93073fa0ecc2c47ccccedc8ba5a460783e17522e2a60053c6d544b7"
+        },
+        "windows": false
+      },
+      "ui": {
+        "date": "2026-11-17T14:54:36.260Z",
+        "platform": "darwin arm64",
+        "package_sha256": "5adeffdf4bfe4f71ac614204bfe77825747164fa4705f6b9ec52a1d908b5bf9f",
+        "source_build": true,
+        "host": "/Users/coso/Documents/dev/ai/limecloud/hetu",
+        "evidence_directory": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-story-research/test-results/workspace-真实Electron专业工作面、AI交接、固定导出、冲突与重开",
+        "checks": [
+          "empty-to-agent-result-refresh",
+          "all-tabs-light-dark",
+          "fixed-evidence",
+          "professional-calculation",
+          "keyboard",
+          "ai-handoff",
+          "fixed-html-export",
+          "narrow-no-overflow",
+          "cas-retains-input",
+          "close-reopen-retains-baseline"
+        ],
+        "viewport": [
+          1360,
+          900
+        ],
+        "narrow_viewport": [
+          760,
+          860
+        ],
+        "page_errors": []
+      },
+      "final_files": [
+        {
+          "path": "CAPABILITIES.md",
+          "sha256": "093bbe37fdc85b8fe75c3dbb38a4d403a9249a121dc0b47136b1c607ec4b90fe"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        },
+        {
+          "path": "THIRD_PARTY_NOTICES.md",
+          "sha256": "52b96a7d282364707626f9d57aadecf242be153f70e02f7d3c3d218e32a19bd6"
+        },
+        {
+          "path": "backend.mjs",
+          "sha256": "4281e7dea5dcc5f14e77d22a2fd31d4b859099db6cf039950db42fc1cacba4dc"
+        },
+        {
+          "path": "index.html",
+          "sha256": "9ebfb3d84934e7f4382e59103a06c548ec5d9dfc35398c7517dc89e9b71709fd"
+        },
+        {
+          "path": "licenses/ajv.txt",
+          "sha256": "a05350a88e318e4f5f2c2a1ff1e2e88daa4dd38e6e78b71cccae422bdc762cc3"
+        },
+        {
+          "path": "licenses/hetu-sources.json",
+          "sha256": "9ec0726746c511f661d61e4a17e047bce248ce86b10a64f75cc3ab7ec1ad0f67"
+        },
+        {
+          "path": "licenses/hetu.txt",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        },
+        {
+          "path": "licenses/radix-colors-MIT.txt",
+          "sha256": "9c400881b9139571aa7acc3bd6e422a4f05223b4519169fb661298fb44bf228e"
+        },
+        {
+          "path": "licenses/react-dom.txt",
+          "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85"
+        },
+        {
+          "path": "licenses/react.txt",
+          "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85"
+        },
+        {
+          "path": "licenses/scheduler.txt",
+          "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85"
+        },
+        {
+          "path": "plugin.json",
+          "sha256": "14aff398a0b7b8fb8b172e70c0273b9044e642f3dd67d21f3ab609ced66af23a"
+        },
+        {
+          "path": "skills/hetu-story-research/SKILL.md",
+          "sha256": "eb016d4c45689c25031dc7b6b8dac69dc554fcca4c2e9885bbec62065529d70a"
+        },
+        {
+          "path": "skills/hetu-story-research/references/operations.md",
+          "sha256": "8774bca6e79da14364ba4565123ab3a8917061ad5ec96fa73a856d1ba7e1f6bd"
+        },
+        {
+          "path": "skills/hetu-story-research/references/workflows.md",
+          "sha256": "3e787491db5620f98049ca9ccc13933348ba8585aa3b7e144272e31e1a046749"
+        },
+        {
+          "path": "view.css",
+          "sha256": "3b0973646a956a59afe29efb5d805837c4d166f86a3bd78ad60c669c9a4141a3"
+        },
+        {
+          "path": "view.js",
+          "sha256": "cd706642169da50163fe12b37c8bf77107449e6be2eac0df0c428f6eced16a63"
+        }
+      ],
+      "archive_ui_package_equal": true,
+      "previous_machine_package_equal_final": false,
+      "final_archive_machine_acceptance": "blocked; runtime time limit reached"
+    },
+    {
+      "repository": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-character-lab",
+      "plugin_id": "org.wordflowlab.character-lab",
+      "version": "0.1.0",
+      "professional_actions": 22,
+      "unit_tests": 10,
+      "archive": {
+        "archive": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-character-lab/output/org.wordflowlab.character-lab-0.1.0.tgz",
+        "archive_sha256": "cf0bf4ca21d7eff32d317a618e5cf64bd8b1d0177f18a55f6613a30a5c32b681",
+        "unpacked_directory": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-character-lab-archive-2lpkm8zg/package",
+        "package_sha256": "d3404b533b5e8a03e45e84eb23f5d4a99209568a0d8e09e03b13a0b05d6a4944",
+        "inspector_status": "succeeded"
+      },
+      "runtime": {
+        "date": "2026-11-17T14:41:31.967Z",
+        "platform": "darwin arm64",
+        "package_sha256": "bbd664b1235077129f00f1e74e86fcb2640efe324951e9b6a4614d100087ed4d",
+        "actions": [
+          "skills.read",
+          "save_project",
+          "put_character",
+          "put_hypothesis",
+          "put_interview",
+          "put_trial",
+          "put_arc",
+          "list_projects",
+          "get_source",
+          "get_operation",
+          "get_basis",
+          "measure_mentions",
+          "check_development",
+          "get_character_context",
+          "create_handoff",
+          "remove_arc",
+          "remove_trial",
+          "remove_interview",
+          "remove_hypothesis",
+          "remove_character",
+          "compare_versions",
+          "export_project",
+          "get_project"
+        ],
+        "core_version": "0.11.5+local-cross-owner",
+        "source_build": true,
+        "directory": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-character-lab-AeobeI",
+        "cli_mcp": true,
+        "skill_resources": true,
+        "hotplug": true,
+        "uninstall_reinstall": true,
+        "candidate_fixed_ref": {
+          "kind": "document",
+          "work_ref": {
+            "workspace_id": "workspace_0bd32dea-60d8-45b8-81b2-a77e7c5360bd",
+            "kind": "novel",
+            "object_id": "novel_e562e9f3-b11c-4ca1-bf9a-6411b294b062"
+          },
+          "document_id": "doc_84780d96-2dcd-4b91-9478-10beac32d564",
+          "revision_id": "rev_6fc830b2-2ab9-4e6c-811e-0684c60fd511",
+          "sha256": "16295785ca4f287dd11fc6f1d5884a64c51a26bc537868a7cb043c43a57ce6b5"
+        },
+        "handoff": {
+          "object_id": "ext_6034f743-3164-41af-a12b-65de537b016a",
+          "owner_plugin_id": "org.wordflowlab.character-lab",
+          "revision": 9,
+          "sha256": "4acb90c05ea78751d7106efebdcbdadbfe5a81e494eef68137476c330e4447d7"
+        },
+        "windows": false
+      },
+      "ui": {
+        "date": "2026-11-17T14:55:12.761Z",
+        "platform": "darwin arm64",
+        "package_sha256": "d3404b533b5e8a03e45e84eb23f5d4a99209568a0d8e09e03b13a0b05d6a4944",
+        "source_build": true,
+        "host": "/Users/coso/Documents/dev/ai/limecloud/hetu",
+        "evidence_directory": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-character-lab/test-results/workspace-真实Electron专业工作面、AI交接、固定导出、冲突与重开",
+        "checks": [
+          "empty-to-agent-result-refresh",
+          "all-tabs-light-dark",
+          "fixed-evidence",
+          "professional-calculation",
+          "keyboard",
+          "ai-handoff",
+          "fixed-html-export",
+          "narrow-no-overflow",
+          "cas-retains-input",
+          "close-reopen-retains-baseline"
+        ],
+        "viewport": [
+          1360,
+          900
+        ],
+        "narrow_viewport": [
+          760,
+          860
+        ],
+        "page_errors": []
+      },
+      "final_files": [
+        {
+          "path": "CAPABILITIES.md",
+          "sha256": "f52f04ef917e3db06af6f7f1e27d518654300f3503da97fa33cf0a3026607941"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        },
+        {
+          "path": "THIRD_PARTY_NOTICES.md",
+          "sha256": "52b96a7d282364707626f9d57aadecf242be153f70e02f7d3c3d218e32a19bd6"
+        },
+        {
+          "path": "backend.mjs",
+          "sha256": "02a03181eab9a21f9e98fc9a66ab4c804c80d46d61cea8143ed4dc67822966b4"
+        },
+        {
+          "path": "index.html",
+          "sha256": "439f1b205beb524404475f0a897cdef276c2592cb28a0886dfd11a0dad39500a"
+        },
+        {
+          "path": "licenses/ajv.txt",
+          "sha256": "a05350a88e318e4f5f2c2a1ff1e2e88daa4dd38e6e78b71cccae422bdc762cc3"
+        },
+        {
+          "path": "licenses/hetu-sources.json",
+          "sha256": "9ec0726746c511f661d61e4a17e047bce248ce86b10a64f75cc3ab7ec1ad0f67"
+        },
+        {
+          "path": "licenses/hetu.txt",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        },
+        {
+          "path": "licenses/radix-colors-MIT.txt",
+          "sha256": "9c400881b9139571aa7acc3bd6e422a4f05223b4519169fb661298fb44bf228e"
+        },
+        {
+          "path": "licenses/react-dom.txt",
+          "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85"
+        },
+        {
+          "path": "licenses/react.txt",
+          "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85"
+        },
+        {
+          "path": "licenses/scheduler.txt",
+          "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85"
+        },
+        {
+          "path": "plugin.json",
+          "sha256": "38de28f1f21343c14566bdeb74223ab89aadff294d5f03d6bd3f5e85ad4fe567"
+        },
+        {
+          "path": "skills/hetu-character-lab/SKILL.md",
+          "sha256": "c77d31b84fc5a7ae7c7015b700081282af4fdb44b6eaa639c310e9ed56e8bcdd"
+        },
+        {
+          "path": "skills/hetu-character-lab/references/operations.md",
+          "sha256": "9201e24f1d42639b5825a575e61018a5c66612378d8988e8143627d918f8e448"
+        },
+        {
+          "path": "skills/hetu-character-lab/references/workflows.md",
+          "sha256": "0b5b47e297e4658b9c4a1b740a457005ccf19f4cd7b4e28138521977eb00a74f"
+        },
+        {
+          "path": "view.css",
+          "sha256": "3b0973646a956a59afe29efb5d805837c4d166f86a3bd78ad60c669c9a4141a3"
+        },
+        {
+          "path": "view.js",
+          "sha256": "63359e46d6bdaa17348e23a223d7dd4ae3b04da8786fd37cf75b91336e73f9fa"
+        }
+      ],
+      "archive_ui_package_equal": true,
+      "previous_machine_package_equal_final": false,
+      "final_archive_machine_acceptance": "blocked; runtime time limit reached"
+    },
+    {
+      "repository": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-story-analysis",
+      "plugin_id": "org.wordflowlab.story-analysis",
+      "version": "0.1.0",
+      "professional_actions": 23,
+      "unit_tests": 10,
+      "archive": {
+        "archive": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-story-analysis/output/org.wordflowlab.story-analysis-0.1.0.tgz",
+        "archive_sha256": "fdbe2135ac2ddb789e6788ff2637149fef8aae03dbf573c5ee801bca0a6f769b",
+        "unpacked_directory": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-story-analysis-archive-toio1nsf/package",
+        "package_sha256": "fb117ee372a4fce7cde8cb1afd997f3d0b168066af2b1334171e721dfcd21009",
+        "inspector_status": "succeeded"
+      },
+      "runtime": {
+        "date": "2026-11-17T14:41:29.010Z",
+        "platform": "darwin arm64",
+        "package_sha256": "b0ec5b166a5ed04d204f55b6c59cf812c1271dc0a05c33de1cd7bd46cf9ddad4",
+        "actions": [
+          "skills.read",
+          "save_project",
+          "put_segment",
+          "put_scene",
+          "put_signal",
+          "put_reader_view",
+          "put_finding",
+          "list_projects",
+          "get_source",
+          "get_operation",
+          "get_basis",
+          "build_analysis_context",
+          "create_handoff",
+          "get_coverage",
+          "get_structure",
+          "preview_update",
+          "remove_finding",
+          "remove_reader_view",
+          "remove_signal",
+          "remove_scene",
+          "remove_segment",
+          "compare_versions",
+          "export_project",
+          "get_project"
+        ],
+        "core_version": "0.11.5+local-cross-owner",
+        "source_build": true,
+        "directory": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-story-analysis-lfpr66",
+        "cli_mcp": true,
+        "skill_resources": true,
+        "hotplug": true,
+        "uninstall_reinstall": true,
+        "candidate_fixed_ref": {
+          "kind": "document",
+          "work_ref": {
+            "workspace_id": "workspace_19ddc73f-b3d9-4b31-a8ef-bae3a9d947c2",
+            "kind": "novel",
+            "object_id": "novel_8be43835-980a-4122-afbe-76bbf6ae71d3"
+          },
+          "document_id": "doc_3e86242b-1d44-46b9-a3f7-89fd03a24acf",
+          "revision_id": "rev_a152dfd3-f911-4dc2-8d23-9cb2c616ce68",
+          "sha256": "16295785ca4f287dd11fc6f1d5884a64c51a26bc537868a7cb043c43a57ce6b5"
+        },
+        "handoff": {
+          "object_id": "ext_f897df36-d058-4238-aa4d-ae6ad5aaa874",
+          "owner_plugin_id": "org.wordflowlab.story-analysis",
+          "revision": 9,
+          "sha256": "55d7719cd23d8c8b6bb61fa61a70156d6378ab77b8229a654213519053f3e041"
+        },
+        "windows": false
+      },
+      "ui": {
+        "date": "2026-11-17T14:55:40.332Z",
+        "platform": "darwin arm64",
+        "package_sha256": "fb117ee372a4fce7cde8cb1afd997f3d0b168066af2b1334171e721dfcd21009",
+        "source_build": true,
+        "host": "/Users/coso/Documents/dev/ai/limecloud/hetu",
+        "evidence_directory": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-story-analysis/test-results/workspace-真实Electron专业工作面、AI交接、固定导出、冲突与重开",
+        "checks": [
+          "empty-to-agent-result-refresh",
+          "all-tabs-light-dark",
+          "fixed-evidence",
+          "professional-calculation",
+          "keyboard",
+          "ai-handoff",
+          "fixed-html-export",
+          "narrow-no-overflow",
+          "cas-retains-input",
+          "close-reopen-retains-baseline"
+        ],
+        "viewport": [
+          1360,
+          900
+        ],
+        "narrow_viewport": [
+          760,
+          860
+        ],
+        "page_errors": []
+      },
+      "final_files": [
+        {
+          "path": "CAPABILITIES.md",
+          "sha256": "833a04679fc329319fc853a9eaa23ad8f2591f50967762bc8f3f175ffcba9dba"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        },
+        {
+          "path": "THIRD_PARTY_NOTICES.md",
+          "sha256": "52b96a7d282364707626f9d57aadecf242be153f70e02f7d3c3d218e32a19bd6"
+        },
+        {
+          "path": "backend.mjs",
+          "sha256": "41ed6f62d221a812b362c7f086a2a8a54f8b7755925c186d5f2e830207f64367"
+        },
+        {
+          "path": "index.html",
+          "sha256": "471bc8ec8506bcca4eebb8980b41f1a3c34341f1229b4269c6f0503ed7f67868"
+        },
+        {
+          "path": "licenses/ajv.txt",
+          "sha256": "a05350a88e318e4f5f2c2a1ff1e2e88daa4dd38e6e78b71cccae422bdc762cc3"
+        },
+        {
+          "path": "licenses/hetu-sources.json",
+          "sha256": "9ec0726746c511f661d61e4a17e047bce248ce86b10a64f75cc3ab7ec1ad0f67"
+        },
+        {
+          "path": "licenses/hetu.txt",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        },
+        {
+          "path": "licenses/radix-colors-MIT.txt",
+          "sha256": "9c400881b9139571aa7acc3bd6e422a4f05223b4519169fb661298fb44bf228e"
+        },
+        {
+          "path": "licenses/react-dom.txt",
+          "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85"
+        },
+        {
+          "path": "licenses/react.txt",
+          "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85"
+        },
+        {
+          "path": "licenses/scheduler.txt",
+          "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85"
+        },
+        {
+          "path": "plugin.json",
+          "sha256": "a10d1be81f296c8c24ac6554608b7b73c883e858ac380e21a1f733af9595cbd4"
+        },
+        {
+          "path": "skills/hetu-story-analysis/SKILL.md",
+          "sha256": "13bdbf944070f39a63ba88891bfe1fdc5e839786b81014da0f4b60f660960bba"
+        },
+        {
+          "path": "skills/hetu-story-analysis/references/operations.md",
+          "sha256": "0a23b01b4d2e7afde1be364202ba704158401858b65276879e095f0567e3dc7e"
+        },
+        {
+          "path": "skills/hetu-story-analysis/references/workflows.md",
+          "sha256": "821c7c6225b3bf039748425d5028ab424d1a8a8e779919c6f854c120299b5a5a"
+        },
+        {
+          "path": "view.css",
+          "sha256": "3b0973646a956a59afe29efb5d805837c4d166f86a3bd78ad60c669c9a4141a3"
+        },
+        {
+          "path": "view.js",
+          "sha256": "4f50bf1ac8c3b335d60c4c47f9c3bfd35b51ee46afccde4c3177f84fb07ba5c4"
+        }
+      ],
+      "archive_ui_package_equal": true,
+      "previous_machine_package_equal_final": false,
+      "final_archive_machine_acceptance": "blocked; runtime time limit reached"
+    }
+  ],
+  "validation": {
+    "plugin_unit_tests": 30,
+    "previous_build_professional_actions": 63,
+    "core_tests": 10,
+    "plugin_host_tests": 88,
+    "electron_journeys": 3,
+    "electron_host_scope": "final plugin archives on source host before compilation-check cache",
+    "final_archives": [
+      {
+        "plugin": "hetu-story-research",
+        "stage": "machine",
+        "exit_code": 1,
+        "seconds": 277.06,
+        "log": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/novel-batch-b/hetu-story-research-archive-machine-final.log"
+      }
+    ],
+    "documents": {
+      "date": "2026-11-17T15:03:07.610Z",
+      "files": 45,
+      "local_links": 112,
+      "diagrams": [
+        {
+          "file": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-story-research/docs/02-架构与领域设计.md",
+          "index": 0,
+          "sha256": "33f8d0f51ff9c390a2fd46d8044c45c46f71993c2d12a45e4a862b5ee5c40ca6",
+          "rendered": true
+        },
+        {
+          "file": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-story-research/docs/02-架构与领域设计.md",
+          "index": 1,
+          "sha256": "3cf7e797f4888dcf8615c7b7bf9e9dce5a5fc71f42e81ff3c3b906acc204f30a",
+          "rendered": true
+        },
+        {
+          "file": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-story-research/docs/02-架构与领域设计.md",
+          "index": 2,
+          "sha256": "9fbb85abfae9920ae6a43398fd11cce39dc459f2d8652df2bd1ab0cba13385fb",
+          "rendered": true
+        },
+        {
+          "file": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-story-research/docs/02-架构与领域设计.md",
+          "index": 3,
+          "sha256": "3dbba46436bddbc71534a1d86e02c02b93cd612e1bf8e17953652d3d3460c656",
+          "rendered": true
+        },
+        {
+          "file": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-story-research/docs/06-Skill与机器协作方案.md",
+          "index": 0,
+          "sha256": "4b678af028d84aba2364a01a18d73ac5c42cbc900dbb29244b0f0efd0c609841",
+          "rendered": true
+        },
+        {
+          "file": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-character-lab/docs/02-架构与领域设计.md",
+          "index": 0,
+          "sha256": "33f8d0f51ff9c390a2fd46d8044c45c46f71993c2d12a45e4a862b5ee5c40ca6",
+          "rendered": true
+        },
+        {
+          "file": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-character-lab/docs/02-架构与领域设计.md",
+          "index": 1,
+          "sha256": "3cf7e797f4888dcf8615c7b7bf9e9dce5a5fc71f42e81ff3c3b906acc204f30a",
+          "rendered": true
+        },
+        {
+          "file": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-character-lab/docs/02-架构与领域设计.md",
+          "index": 2,
+          "sha256": "d5126ef564aab8986d1adcf3c682b7ca7e838de5dce99a479b35938a98ccc237",
+          "rendered": true
+        },
+        {
+          "file": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-character-lab/docs/02-架构与领域设计.md",
+          "index": 3,
+          "sha256": "3dbba46436bddbc71534a1d86e02c02b93cd612e1bf8e17953652d3d3460c656",
+          "rendered": true
+        },
+        {
+          "file": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-character-lab/docs/06-Skill与机器协作方案.md",
+          "index": 0,
+          "sha256": "4b678af028d84aba2364a01a18d73ac5c42cbc900dbb29244b0f0efd0c609841",
+          "rendered": true
+        },
+        {
+          "file": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-story-analysis/docs/02-架构与领域设计.md",
+          "index": 0,
+          "sha256": "33f8d0f51ff9c390a2fd46d8044c45c46f71993c2d12a45e4a862b5ee5c40ca6",
+          "rendered": true
+        },
+        {
+          "file": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-story-analysis/docs/02-架构与领域设计.md",
+          "index": 1,
+          "sha256": "3cf7e797f4888dcf8615c7b7bf9e9dce5a5fc71f42e81ff3c3b906acc204f30a",
+          "rendered": true
+        },
+        {
+          "file": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-story-analysis/docs/02-架构与领域设计.md",
+          "index": 2,
+          "sha256": "0e726844423a7bf452fc652427515e791c4c5f945cf7ba5fa87d5c737a33fb59",
+          "rendered": true
+        },
+        {
+          "file": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-story-analysis/docs/02-架构与领域设计.md",
+          "index": 3,
+          "sha256": "3dbba46436bddbc71534a1d86e02c02b93cd612e1bf8e17953652d3d3460c656",
+          "rendered": true
+        },
+        {
+          "file": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-story-analysis/docs/06-Skill与机器协作方案.md",
+          "index": 0,
+          "sha256": "4b678af028d84aba2364a01a18d73ac5c42cbc900dbb29244b0f0efd0c609841",
+          "rendered": true
+        }
+      ],
+      "errors": []
+    }
+  },
+  "cross_plugin": {
+    "date": "2026-11-17T14:47:19.577Z",
+    "directory": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-story-analysis-DuIAVl",
+    "source_build": true,
+    "upstream_packages": [
+      "org.wordflowlab.story-research",
+      "org.wordflowlab.character-lab",
+      "org.wordflowlab.novel-planner",
+      "org.wordflowlab.novel-review"
+    ],
+    "stages": [
+      "research",
+      "characters",
+      "analysis",
+      "book-volume-chapter",
+      "candidate",
+      "review",
+      "new-source-impact"
+    ],
+    "fixed_basis": [
+      {
+        "object_id": "ext_2428b4f4-5049-4142-9bf7-e0261a5dbb4c",
+        "owner_plugin_id": "org.wordflowlab.story-research",
+        "revision": 1,
+        "sha256": "2e22262818ab804f9502997e8db09d0bc71a590750635ee2162b72bc8256368e"
+      },
+      {
+        "object_id": "ext_c819dabd-3564-4281-95e8-c54fcbdc24e4",
+        "owner_plugin_id": "org.wordflowlab.character-lab",
+        "revision": 1,
+        "sha256": "cf6b97dee17de1cf4478ae6c4d271a297dc15e1bff24b399286140234b54bc4d"
+      },
+      {
+        "object_id": "ext_f4af01cb-849e-40a0-afad-21aac078c0ee",
+        "owner_plugin_id": "org.wordflowlab.story-analysis",
+        "revision": 1,
+        "sha256": "2b5db5c978c635f79b29b932ce5eb1932b20aa6e6c5d19f1729296355a95492c"
+      }
+    ],
+    "old_basis_survived_upstream_revision": true,
+    "adopted": false,
+    "finalized": false
+  },
+  "initial_backend_formatting_comparison": [
+    {
+      "plugin": "hetu-story-research",
+      "old_package_sha256": "b66d5c542ae33c59c1ba3a084450875d22aef5f850ebe54eb3cd519c07131c3e",
+      "normalized_javascript_sha256": "9414cec1d11c196473368aa61a705ebab21162ba90f93582a28f8f9ea301dfda",
+      "backend_transform_equal": true,
+      "raw_backend_equal": false,
+      "method": "esbuild 0.28.2 parse and minify whitespace; no identifier or syntax minification"
+    },
+    {
+      "plugin": "hetu-character-lab",
+      "old_package_sha256": "bbd664b1235077129f00f1e74e86fcb2640efe324951e9b6a4614d100087ed4d",
+      "normalized_javascript_sha256": "04c16dd4241af17f5cf6d74adf4a05dc101bd2e480700d5508fff4de774d6adb",
+      "backend_transform_equal": true,
+      "raw_backend_equal": false,
+      "method": "esbuild 0.28.2 parse and minify whitespace; no identifier or syntax minification"
+    },
+    {
+      "plugin": "hetu-story-analysis",
+      "old_package_sha256": "b0ec5b166a5ed04d204f55b6c59cf812c1271dc0a05c33de1cd7bd46cf9ddad4",
+      "normalized_javascript_sha256": "d2ac5fa30b1f6de3bafced35049f3331973ddb76cc05bd4b31a6e96e61fde414",
+      "backend_transform_equal": true,
+      "raw_backend_equal": false,
+      "method": "esbuild 0.28.2 parse and minify whitespace; no identifier or syntax minification"
+    }
+  ],
+  "failures_and_recovery": {
+    "before_fix": "Three concurrent archive journeys and one serial journey reached runtime time limits; retained as failed runs.",
+    "fix": "Cache at most 128 successful checks keyed by exact schema JSON in one process; files, package digest, lifecycle and inputs remain checked.",
+    "original_key_readback": [
+      {
+        "directory": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-story-research-ccvPE3",
+        "operation_key": "machine-11",
+        "seconds": 18.73,
+        "outer_status": "succeeded",
+        "status": "succeeded",
+        "sha256": "d72064653b09e7a9236519d88f5fb53fac1cb715aa0c5420db20f217ba4fffa8",
+        "error": null
+      },
+      {
+        "directory": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-story-analysis-O7QPhj",
+        "operation_key": "machine-9",
+        "seconds": 13.0,
+        "outer_status": "succeeded",
+        "status": "blocked",
+        "sha256": null,
+        "error": {
+          "code": "not_found",
+          "message": "受管记录不存在。",
+          "resolution": {
+            "kind": "correct_input"
+          }
+        }
+      },
+      {
+        "directory": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-story-research-gLJn4h",
+        "operation_key": "first",
+        "seconds": 8.29,
+        "outer_status": "succeeded",
+        "status": "succeeded",
+        "sha256": "23013b4ab034de1d82861560de7ff2d8061091c108cdf4d46428f94e71030cf6",
+        "error": null
+      }
+    ],
+    "confirmed_absent_then_exact_replay": {
+      "directory": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-story-analysis-O7QPhj",
+      "operation_key": "machine-9",
+      "steps": [
+        {
+          "step": "same-key-exact-replay",
+          "seconds": 8.89,
+          "status": "succeeded",
+          "result_status": "succeeded",
+          "error": null,
+          "sha256": "97ba812841f8705a0417d81852f83d9a168ead5dbb515c9f6c4626ba552e3a05"
+        },
+        {
+          "step": "original-key-readback",
+          "seconds": 3.73,
+          "status": "succeeded",
+          "result_status": "succeeded",
+          "error": null,
+          "sha256": "97ba812841f8705a0417d81852f83d9a168ead5dbb515c9f6c4626ba552e3a05"
+        }
+      ]
+    },
+    "latest_failed_write_readback": {
+      "directory": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-story-research-n2RpTE",
+      "operation_key": "machine-10",
+      "seconds": 19.91,
+      "outer_status": "succeeded",
+      "status": "blocked",
+      "sha256": null,
+      "error": {
+        "code": "not_found",
+        "message": "受管记录不存在。",
+        "resolution": {
+          "kind": "correct_input"
+        }
+      }
+    },
+    "timeout_limits_unchanged": true,
+    "performance_root_cause_fully_resolved": false,
+    "after_fix_final_archive_machine_acceptance": "research journey still timed out; character and analysis not rerun in this serial round"
+  },
+  "native_codex_mcp": {
+    "inspection_date": "2026-11-17",
+    "status": "succeeded",
+    "version": "0.10.0",
+    "client_adapter": "codex",
+    "scope": "stable plugin entry discovery only",
+    "plugin_actions": [
+      "hetu.plugins.inspect",
+      "hetu.plugins.inspect_package",
+      "hetu.plugins.apply",
+      "hetu.plugins.get_operation",
+      "hetu.plugins.capabilities",
+      "hetu.plugins.invoke"
+    ]
+  },
+  "not_verified": [
+    "Windows/Linux plugin business journeys",
+    "released host with these changes",
+    "author assessment of real-work creative quality",
+    "adoption/finalization",
+    "paid model calls"
+  ],
+  "release_acceptance": "blocked by final archive machine journey timeouts",
+  "published": false,
+  "applications_replaced": false,
+  "author_decisions_performed": false
+}
