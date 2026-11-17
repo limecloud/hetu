@@ -9,6 +9,7 @@ export async function pluginService(action:string,input:Record<string,any>,conte
   handoff(input:Record<string,unknown>):Promise<void>;
   openDocument(id:string):Promise<void>;
   exportFile?(input:Record<string,unknown>):Promise<unknown>;
+  saveArtifact?(input:Record<string,unknown>):Promise<unknown>;
   mediaOpen?(input:Record<string,unknown>):Promise<unknown>;
   mediaRelease?(url:string):Promise<unknown>;
   closeView?():void;
@@ -16,6 +17,14 @@ export async function pluginService(action:string,input:Record<string,any>,conte
 }){
   context.check();
   const closed=(keys:string[])=>{if(!input||Object.keys(input).some(k=>!keys.includes(k)))throw new Error('插件服务参数无效。');};
+  if(action==='save_artifact'){
+    closed(['object_ref','suggested_name','media_type','base64','sha256']);
+    const ref=input.object_ref;
+    if(!ref||Object.keys(ref).sort().join(',')!=='object_id,revision,sha256'||!/^ext_[a-f0-9-]{36}$/.test(ref.object_id)||!Number.isSafeInteger(ref.revision)||ref.revision<1||!/^[a-f0-9]{64}$/.test(ref.sha256)||!context.saveArtifact)throw new Error('请选择当前作品的固定成果。');
+    const r=unwrap<any>(await context.request('hetu.extensions.objects.get',{object_id:ref.object_id,revision:ref.revision}));
+    context.check();if(!sameWork(r.object.work_ref,context.work)||r.sha256!==ref.sha256)throw new Error('成果范围或摘要不一致。');
+    const {object_ref,...artifact}=input;return context.saveArtifact(artifact);
+  }
   if(action==='preferences'){closed([]);return context.preferences();}
   if(action==='media_open'){
     closed(['source_ref']);const source=input.source_ref;

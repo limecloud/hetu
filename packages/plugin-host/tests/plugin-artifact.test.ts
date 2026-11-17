@@ -1,0 +1,35 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtemp,readFile,writeFile,readdir} from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+import {savePluginArtifact} from '../../../apps/desktop/src/main/plugin-artifact.ts';
+import {pluginService} from '../../../apps/desktop/src/main/plugin-services.ts';
+const bytes=Buffer.from('89504e470d0a1a0a0000000d49484452','hex');
+const input={suggested_name:'camera.png',media_type:'image/png',base64:bytes.toString('base64'),sha256:createHash('sha256').update(bytes).digest('hex')};
+test('二进制派生文件固定字节原子保存，取消及错误保留原文件',async()=>{
+ const root=await mkdtemp(path.join(os.tmpdir(),'hetu-artifact-')),file=path.join(root,'camera.png');let selected=0;
+ const context={choose:async()=>{selected++;return file;},check(){}};
+ assert.deepEqual(await savePluginArtifact(input,context),{saved:true,bytes:bytes.length,sha256:input.sha256});assert.deepEqual(await readFile(file),bytes);
+ await writeFile(file,'原文件');
+ for(const bad of [{...input,sha256:'0'.repeat(64)},{...input,suggested_name:'../camera.png'},{...input,base64:input.base64+' '},{...input,media_type:'model/gltf-binary'},{...input,base64:'AAAA',sha256:createHash('sha256').update(Buffer.alloc(3)).digest('hex')}]){await assert.rejects(savePluginArtifact(bad,context));assert.equal(await readFile(file,'utf8'),'原文件');}
+ assert.equal(selected,1);assert.deepEqual(await savePluginArtifact(input,{...context,choose:async()=>undefined}),{saved:false,cancelled:true});
+ let checks=0;await assert.rejects(savePluginArtifact(input,{...context,check(){if(++checks===3)throw new Error('上下文变化');}}),/上下文变化/);assert.equal(await readFile(file,'utf8'),'原文件');assert.deepEqual(await readdir(root),['camera.png']);
+});
+test('二进制服务核验固定作品与摘要，不接收路径或未知字段',async()=>{
+ const work={workspace_id:'workspace_test',kind:'video' as const,object_id:'video_test'},ref={object_id:'ext_11111111-1111-4111-8111-111111111111',revision:1,sha256:'a'.repeat(64)};let saved=0;
+ const context={work,check(){},preferences:()=>({theme:'light',language:'zh-CN'}),handoff:async()=>{},openDocument:async()=>{},request:async()=>({status:'succeeded',data:{object:{work_ref:work},sha256:ref.sha256}}),saveArtifact:async()=>{saved++;return {saved:true};}};
+ assert.deepEqual(await pluginService('save_artifact',{...input,object_ref:ref},context),{saved:true});
+ await assert.rejects(pluginService('save_artifact',{...input,object_ref:{...ref,sha256:'b'.repeat(64)}},context),/摘要/);
+ await assert.rejects(pluginService('save_artifact',{...input,object_ref:ref,file_path:'/tmp/a'},context),/无效/);
+ await assert.rejects(pluginService('save_artifact',{...input,object_ref:ref},{...context,work:{...work,object_id:'other'}}),/范围/);assert.equal(saved,1);
+});
+test('完整32MiB预算不会触发正则栈溢出，超出预算在选择文件前拒绝',async()=>{
+ const bytes=Buffer.alloc(32*1024*1024,1);bytes.write('PK\x03\x04','binary');
+ const payload={suggested_name:'batch.zip',media_type:'application/zip',base64:bytes.toString('base64'),sha256:createHash('sha256').update(bytes).digest('hex')};
+ let selected=0;const context={check(){},choose:async()=>{selected++;return undefined;}};
+ assert.deepEqual(await savePluginArtifact(payload,context),{saved:false,cancelled:true});
+ await assert.rejects(savePluginArtifact({...payload,base64:payload.base64+'AAAA'},context),/预算/);
+ assert.equal(selected,1);
+});

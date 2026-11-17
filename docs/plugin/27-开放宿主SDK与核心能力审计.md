@@ -126,6 +126,8 @@ GUI通过`host.media_open`／`host.media_release`预览当前作品固定asset�
 
 `host.export_file`支持固定清单分段及固定对象UTF-8偏移分块两种只读返回。后者包含`project_ref`、`offset`、`next_offset`、`total_bytes`、`content_sha256`、`media_type`；所有块固定同一对象与总字节数，连续偏移并核验摘要后才原子替换作者选择的目标。
 
+`host.save_artifact`为通用二进制文件服务，核验当前作品固定对象及有限字节后，仅向作者在保存对话框选择的目标原子写入PNG、GLB、ZIP、WebM或MP4。它不执行三维或媒体专业逻辑，不写Core业务状态，不开放任意路径读写。格式、预算及取消恢复合同归[插件20](20-首期可执行合同与开发入口.md)；专业插件负责派生与渲染，同一工作流可由CLI/MCP固定计划和独立脚本完成。
+
 ```mermaid
 sequenceDiagram
  participant P as 专业插件界面

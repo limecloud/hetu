@@ -262,7 +262,8 @@ def build():
         lines.append("")
     lines += ["## 插件发现入口", "",
               "河图插件安装在河图，不为每包安装Codex插件或新增MCP连接。先用 `hetu.plugins.inspect` 定位固定包及其自有功能清单；复用作品连接通过稳定 `hetu.plugins.capabilities/invoke` 发现和调用实时Schema。插件启用后经公开SDK复用核心领域服务；目录、固定来源、CAS与恢复由Core统一管理，无独立插件授权。同一连接按需重新查询，停用或升级后旧引用拒绝。插件自行维护视图、数据类型、动作与验证信息，宿主不汇总其业务功能。核心格式和热插拔用例见[插件合同](plugin/21-核心格式与动态能力发现.md)。", "",
-              "插件界面以独立页面打开；`views[].navigation=integrated` 将返回与插件工具栏合并，默认使用宿主返回栏。`host(close_view,{})` 仅请求关闭当前视图，退出前等待恢复稿；应用菜单与 Alt+Left 提供宿主返回入口。该能力只管理界面，不增加机器业务权限，具体合同见[插件20](plugin/20-首期可执行合同与开发入口.md)。", ""]
+              "插件界面以独立页面打开；`views[].navigation=integrated` 将返回与插件工具栏合并，默认使用宿主返回栏。`host(close_view,{})` 仅请求关闭当前视图，退出前等待恢复稿；应用菜单与 Alt+Left 提供宿主返回入口。该能力只管理界面，不增加机器业务权限，具体合同见[插件20](plugin/20-首期可执行合同与开发入口.md)。", "",
+              "通用二进制导出由`host(save_artifact,...)`核验固定对象、字节预算、摘要与格式后保存到作者选择的文件；不增加Core业务动作或任意路径接口。机器业务从各插件发现固定渲染计划及同包脚本，正常操作无需GUI。具体合同与验收归[插件20](plugin/20-首期可执行合同与开发入口.md)，宿主不维护插件的三维专业清单。", ""]
     lines += ["", "## 维护与检查", "", "```bash", "python3 tools/sync-capability-map.py", "python3 tools/sync-capability-map.py --check", "```", "",
               "新增或修改领域动作、MCP 映射、权限路由或 Skill 时重新生成。功能测试通过后将确切动作与测试证据写入地图引用的 evidence 文件，再生成；生成器不会把合同声明自动算作验收通过。", ""]
     return json.dumps(result, ensure_ascii=False, indent=2) + "\n", "\n".join(lines)

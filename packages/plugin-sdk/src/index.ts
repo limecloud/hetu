@@ -95,7 +95,7 @@ export interface PluginBridge {
   /** 关闭视图前完成恢复稿；拒绝时保留当前视图。 */
   onBeforeClose?(callback: () => void | Promise<void>): () => void;
   /** 桌面工作面服务；handoff只返回已复制，不返回私密授权。 */
-  host?(action: "preferences" | "handoff" | "open_document" | "open_work" | "work_snapshot" | "export_file" | "media_open" | "media_release" | "close_view", input: Record<string, unknown>): Promise<unknown>;
+  host?(action: "preferences" | "handoff" | "open_document" | "open_work" | "work_snapshot" | "export_file" | "save_artifact" | "media_open" | "media_release" | "close_view", input: Record<string, unknown>): Promise<unknown>;
   onPreferences?(callback: (value: {theme:string;language:string}) => void): () => void;
   invoke(action: string, input: Record<string, unknown>): Promise<unknown>;
   request<T = Record<string, unknown>>(

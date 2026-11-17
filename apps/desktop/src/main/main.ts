@@ -20,6 +20,7 @@ import { RecoveryStore } from "./recovery.ts";
 import { pluginResultHandoff } from "./plugin-results.ts";
 import { pluginService } from "./plugin-services.ts";
 import { exportPluginFile } from "./plugin-export.ts";
+import { savePluginArtifact } from "./plugin-artifact.ts";
 import { SettingsReview } from "./settings.ts";
 import { SettingsWindow } from "./settings-window.ts";
 import { workAssociation, workAgentRequest } from "./work-agent.ts";
@@ -1578,6 +1579,9 @@ app
             const chosen=await dialog.showSaveDialog(window,{title:"导出插件成果",defaultPath:name});return chosen.canceled?undefined:chosen.filePath;
           }});
         },
+        saveArtifact:async(input)=>savePluginArtifact(input as any,{check,choose:async(name)=>{
+          const chosen=await dialog.showSaveDialog(window,{title:"导出插件成果",defaultPath:name});return chosen.canceled?undefined:chosen.filePath;
+        }}),
       });
     });
     shellHandler("desktop:browser", async (address: string) => {
