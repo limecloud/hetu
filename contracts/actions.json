@@ -4580,6 +4580,28 @@
       "input_schema_ref": "schemas/work.schema.json#/$defs/video_episode_get_input"
     },
     {
+      "name": "hetu.video.episodes.update",
+      "purpose": "更新视频分集资料或归档",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/work.schema.json#/$defs/video_episode_update_input"
+    },
+    {
+      "name": "hetu.video.episodes.reorder",
+      "purpose": "重排完整视频分集目录",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/work.schema.json#/$defs/video_episode_reorder_input"
+    },
+    {
       "name": "hetu.creation_projects.create_video",
       "purpose": "将筹备创建为独立视频项目，无小说或剧本前置",
       "contract_revision": "1",

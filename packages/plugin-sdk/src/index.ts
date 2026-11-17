@@ -1,4 +1,5 @@
 /** 插件仅消费语言无关的作品合同；局部渲染不调用 Core。 */
+export { ProjectStore, ProjectError, requireValue, canonical, clone, fixed, success, failure, data } from './project-store.ts';
 export interface WorkRef {
   workspace_id: string;
   kind: "novel" | "drama" | "video";
@@ -23,6 +24,13 @@ export interface ActionContribution {
   input_schema: Record<string, unknown>;
   effect: "read" | "managed_write";
 }
+/** 由插件包拥有的方法；通过宿主按需读取，不注册新的客户端插件。 */
+export interface SkillContribution {
+  id: string;
+  name: string;
+  description: string;
+  entry: string;
+}
 export interface PluginManifest {
   manifest_version: 1;
   host_api: "1";
@@ -38,6 +46,7 @@ export interface PluginManifest {
     views: ViewContribution[];
     data: TypeContribution[];
     actions: ActionContribution[];
+    skills?: SkillContribution[];
   };
   runtime?: { entry: string };
 }
@@ -86,7 +95,7 @@ export interface PluginBridge {
   /** 关闭视图前完成恢复稿；拒绝时保留当前视图。 */
   onBeforeClose?(callback: () => void | Promise<void>): () => void;
   /** 桌面工作面服务；handoff只返回已复制，不返回私密授权。 */
-  host?(action: "preferences" | "handoff" | "open_document" | "open_work" | "work_snapshot" | "export_file" | "close_view", input: Record<string, unknown>): Promise<unknown>;
+  host?(action: "preferences" | "handoff" | "open_document" | "open_work" | "work_snapshot" | "export_file" | "media_open" | "media_release" | "close_view", input: Record<string, unknown>): Promise<unknown>;
   onPreferences?(callback: (value: {theme:string;language:string}) => void): () => void;
   invoke(action: string, input: Record<string, unknown>): Promise<unknown>;
   request<T = Record<string, unknown>>(

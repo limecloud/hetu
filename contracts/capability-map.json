@@ -3,26 +3,26 @@
   "generated_by": "tools/sync-capability-map.py",
   "meaning": "source_wired仅表示源码合同和入口已连线；不证明安装、运行、跨平台或端到端通过。执行时先inspect实际能力。",
   "sources": {
-    "contracts/actions.json": "abcd6c6d4a3a4686992df2953038d8b119410386b8778a28496a4b2288ad2087",
+    "contracts/actions.json": "2fb8df789a24ca40148b97f8549d9aaeaa6494817eba7f9d92613989c2ea1475",
     "contracts/tools/catalog.json": "4439a021d3e799a603c4c20b00f194ef5d5f4d3979012a644f97be3561dbc84b",
-    "core/src/application/agent_operations.rs": "5ab703f3f5bf1ba1ef385cfe22136793e2d7d24be1acc033fd538f6b54c48ad1",
+    "core/src/application/agent_operations.rs": "8373a3f81847980ddb5fb1e03fc73bad8f15935b7924adea757fcebe12af6ccd",
     "core/src/application/creative_tasks.rs": "ee50d2e879c1f847cb81481b0f3d07f40bb3480711f2fae35b02df6b040acaa2",
-    "core/src/application/work_scope.rs": "5de3df08156fcaea73eb8f760d8bc6b8f46741c4d8412d63fff4aa1854116498",
+    "core/src/application/work_scope.rs": "eccf27101794665e9eae43be8d588d0b49c1ed38c60d5f47e79769605d3f6635",
     "core/src/collaboration/authoring.rs": "841305700afa400f7fa7fb376ca16f197a9e7b1d9c184fdd684827a7fd9c03a8",
-    "integrations/catalog.json": "ef1dbbef5ba2902486b78941664c733910b5170b4f9fe708c64829bd5dfa3a6f",
+    "integrations/catalog.json": "d2193b2fe08a7a7571395905fa571f775dc3bf3988462fd0e020a3077e7a5825",
     "tools/hetu-skills/base/skills/hetu-artwork/SKILL.md": "4dc578dbc319c7772d4b33fe35f99e987367e08da8abfeafb9897f5ff09ebe89",
     "tools/hetu-skills/base/skills/hetu-book-create/SKILL.md": "cbe98f524986e18c38d816a49c7c3f9813520ca68d6beeaf29cb5902fd29b808",
     "tools/hetu-skills/base/skills/hetu-book-profile/SKILL.md": "6736d7c67a36ac573a627498c0f8237e7e2c3b01159f02027b5514c0632c926e",
     "tools/hetu-skills/base/skills/hetu-cover/SKILL.md": "f731fc206fe638eef727935f21090e3b587c60e6bfd107d7f4eb9c66305e8ae0",
     "tools/hetu-skills/base/skills/hetu-draft/SKILL.md": "26e3204ad54c5e4f5336dd5d2dfa609e3c7f248bbd61bf2b105c1dc8bd492fd3",
-    "tools/hetu-skills/base/skills/hetu-drama/SKILL.md": "4e771f42f3f0612509722cc0535ab5c6b8a2362042a4ab9384fb3a0eea5a210b",
+    "tools/hetu-skills/base/skills/hetu-drama/SKILL.md": "0caf21895131809eace197dd16c30a669e31b374ea65d794bde717385240dc17",
     "tools/hetu-skills/base/skills/hetu-import/SKILL.md": "824ff4a5171a5a0fb32c5c49f54b17465e2632b0a2535870c9fa2bbddaee15b0",
     "tools/hetu-skills/base/skills/hetu-manage/SKILL.md": "e04b62018d84b1abb3d0dcc41f1a9ee8df9132de5cb7eaca09a05f9828b488ec",
     "tools/hetu-skills/base/skills/hetu-outline/SKILL.md": "e50e201cddc866adc504960227ad90e4068e1a4c64045cd8d6dbbc39c26f0610",
     "tools/hetu-skills/base/skills/hetu-resources/SKILL.md": "9e1abce08712cf9f85d1cd7ff563ba4dd618bb903fb3d9c6f8d8e2dcc93dadb2",
     "tools/hetu-skills/base/skills/hetu-revise/SKILL.md": "bb22f018e11bcdfaca52a4bb087f2367bc27931d494d6577aa105c14a24a9be6",
-    "tools/hetu-skills/base/skills/hetu-setup/SKILL.md": "6a415996b76d3b0ab807bd0303584459f1a82271561fe27bc4825bb323dffef2",
-    "tools/hetu-skills/base/skills/hetu-video/SKILL.md": "08fbc22c1af8a7090a9c38b109c70e4e6ba20365bcbca4de9a9455faea4547f7"
+    "tools/hetu-skills/base/skills/hetu-setup/SKILL.md": "803ba6631b4834daceb7efbd7805d8f95797e32878596bec80ae8e1128cb8b27",
+    "tools/hetu-skills/base/skills/hetu-video/SKILL.md": "ef2096ca72950833441683326672948f0abc701c677ffa6bb806c558be3e7a50"
   },
   "verification_evidence": "docs/research/evidence/2026-11-16-agent-capabilities.json",
   "skills": [
@@ -158,7 +158,7 @@
     },
     {
       "name": "hetu-drama",
-      "description": "作者通过河图洛书创作原创短剧，或将已授权原著改编为 Fountain 参考稿时使用。",
+      "description": "作者通过河图洛书复盘、规划、创作或返工剧本，组织全剧、分集和场次，或将已授权原著改编为 Fountain 参考稿时使用。",
       "source": "tools/hetu-skills/base/skills/hetu-drama/SKILL.md",
       "actions": [
         "hetu.plot.extract",
@@ -317,14 +317,16 @@
     },
     {
       "name": "hetu-video",
-      "description": "为河图洛书视频项目组织分镜、动态分镜或白模预演、视频生成、剪辑音画、媒体返工与工程交付时使用。",
+      "description": "在河图洛书复盘、规划或推进短剧视频项目，组织全季分集、分镜、预演、生成、剪辑音画、媒体返工及工程交付时使用。",
       "source": "tools/hetu-skills/base/skills/hetu-video/SKILL.md",
       "actions": [
         "hetu.video.projects.create",
         "hetu.video.projects.get",
         "hetu.video.projects.update",
         "hetu.video.episodes.create",
-        "hetu.video.episodes.get"
+        "hetu.video.episodes.get",
+        "hetu.video.episodes.update",
+        "hetu.video.episodes.reorder"
       ]
     }
   ],
@@ -363,6 +365,30 @@
         "按需读取固定上下文",
         "提交参考成果",
         "阅读反馈并沿原任务继续"
+      ]
+    },
+    {
+      "goal": "剧本复盘、全剧分集规划与场次创作",
+      "skill": "hetu-drama",
+      "entry": "hetu.drama.projects.get",
+      "path": [
+        "新作先独立筹备；已有作品读取确切项目、分集及固定正文",
+        "区分作者稿、候选、旧大纲及原著阅读覆盖",
+        "全剧→分集→场次；专业规划按实际插件能力保存",
+        "固定Fountain任务起草、意见及同任务返工",
+        "分集入口回读正文与来源；采纳后增量更新，完整范围单独验收"
+      ]
+    },
+    {
+      "goal": "短剧视频全季规划、制作与返工交付",
+      "skill": "hetu-video",
+      "entry": "hetu.video.projects.get",
+      "path": [
+        "独立筹备或恢复确切项目与原操作",
+        "复盘剧本、已选素材、旧工程及实际观看覆盖",
+        "全季→分集→分镜与资产；专业数据按实际插件合同保存",
+        "按问题预演并固定代表性生成与预算，未知查原提供方任务",
+        "剪辑音画→固定区间意见→局部返工→逐集成片与可恢复工程"
       ]
     },
     {
@@ -413,6 +439,17 @@
       ]
     },
     {
+      "goal": "发现并按需读取插件Skill",
+      "skill": "hetu-setup",
+      "entry": "hetu.plugins.inspect",
+      "path": [
+        "列出活动插件方法摘要",
+        "按精确作品发现skills及resource_actions",
+        "通过invoke的skills.read读取同包方法与引用",
+        "按实际Schema执行并回读；停用或升级后重查"
+      ]
+    },
+    {
       "goal": "保存文稿版本",
       "skill": "hetu-manage",
       "entry": "hetu.git.status",
@@ -436,7 +473,7 @@
       ]
     }
   ],
-  "extension_runtime_discovery": "河图插件安装在河图；hetu.plugins.inspect → hetu.plugins.capabilities → hetu.plugins.invoke；启用后公开核心SDK，复用Agent作品连接，无独立插件grant；专业功能由插件维护。",
+  "extension_runtime_discovery": "河图插件安装在河图；hetu.plugins.inspect → hetu.plugins.capabilities → hetu.plugins.invoke；活动Skill由同一目录发现并通过skills.read按需读取；启用后公开核心SDK，复用Agent作品连接，无独立插件grant；专业功能由插件维护。",
   "actions": [
     {
       "action": "hetu.capabilities.get",
@@ -8605,6 +8642,56 @@
         "$ref": "schemas/work.schema.json#/$defs/video_episode_get_input"
       },
       "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.video.episodes.update",
+      "purpose": "更新视频分集资料或归档",
+      "group": "视频工程",
+      "effect": "submit",
+      "routes": [
+        "fixed_proposal"
+      ],
+      "cli": "hetu --client <client> call hetu.agent_operations.prepare --input -",
+      "proposal_target": "hetu.video.episodes.update",
+      "mcp": [],
+      "mcp_via_proposal": true,
+      "skill": "hetu-video",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-video/SKILL.md",
+      "input_schema": {
+        "$ref": "schemas/work.schema.json#/$defs/video_episode_update_input"
+      },
+      "decision": "准备固定方案 → 会话或桌面记录作者决定 → 执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.video.episodes.reorder",
+      "purpose": "重排完整视频分集目录",
+      "group": "视频工程",
+      "effect": "submit",
+      "routes": [
+        "fixed_proposal"
+      ],
+      "cli": "hetu --client <client> call hetu.agent_operations.prepare --input -",
+      "proposal_target": "hetu.video.episodes.reorder",
+      "mcp": [],
+      "mcp_via_proposal": true,
+      "skill": "hetu-video",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-video/SKILL.md",
+      "input_schema": {
+        "$ref": "schemas/work.schema.json#/$defs/video_episode_reorder_input"
+      },
+      "decision": "准备固定方案 → 会话或桌面记录作者决定 → 执行",
       "recover": "hetu.operations.get",
       "equivalent_machine_actions": [],
       "host_boundary": null,

@@ -7,6 +7,7 @@ import { PluginHost } from "./registry.ts";
 import Ajv from "ajv";
 import installationSchema from "../../../contracts/schemas/plugin-installation.schema.json" with { type: "json" };
 import manifestSchema from "../../../contracts/schemas/plugin-manifest.schema.json" with { type: "json" };
+import { skillSummaries } from "./skills.ts";
 export type InstalledPackageIdentity = Pick<PluginPackage, "manifest" | "sha256">;
 const validateState = new Ajv({ strict: false }).addSchema(manifestSchema, "urn:hetu:plugin-manifest:1").compile(installationSchema);
 
@@ -102,7 +103,9 @@ export class PluginInstallations {
   }
   async inspect() {
     const { state, sha256 } = await this.read(), host = await this.host(state);
-    return { state_sha256: sha256, packages: state.packages, states: [
+    return { state_sha256: sha256, packages: state.packages,
+      skills: host.states().filter(item => item.state === "active").flatMap(item => skillSummaries(host.package(item.id))),
+      states: [
       ...host.states(),
       ...state.packages.filter(item => !item.removed && item.manifest && host.loadErrors.has(item.manifest.id))
         .map(item => ({ id: item.manifest!.id, installed: true, selected: item.enabled,

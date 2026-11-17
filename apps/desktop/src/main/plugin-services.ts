@@ -9,12 +9,24 @@ export async function pluginService(action:string,input:Record<string,any>,conte
   handoff(input:Record<string,unknown>):Promise<void>;
   openDocument(id:string):Promise<void>;
   exportFile?(input:Record<string,unknown>):Promise<unknown>;
+  mediaOpen?(input:Record<string,unknown>):Promise<unknown>;
+  mediaRelease?(url:string):Promise<unknown>;
   closeView?():void;
   openWork?(target:WorkSurface):Promise<void>;
 }){
   context.check();
   const closed=(keys:string[])=>{if(!input||Object.keys(input).some(k=>!keys.includes(k)))throw new Error('插件服务参数无效。');};
   if(action==='preferences'){closed([]);return context.preferences();}
+  if(action==='media_open'){
+    closed(['source_ref']);const source=input.source_ref;
+    if(source?.kind!=='asset'||!sameWork(source.work_ref,context.work)||!context.mediaOpen)throw new Error('请选择当前作品的固定媒体资产。');
+    unwrap(await context.request('hetu.extensions.sources.inspect',{source_ref:source}));context.check();
+    return context.mediaOpen({asset_id:source.asset_id,revision:source.revision,sha256:source.sha256});
+  }
+  if(action==='media_release'){
+    closed(['url']);if(typeof input.url!=='string'||!context.mediaRelease)throw new Error('媒体地址无效。');
+    return context.mediaRelease(input.url);
+  }
   if(action==='open_work'){
     closed(['target']);
     if(!['profile','manuscript','canon'].includes(input.target)||!context.openWork)throw new Error('当前宿主工作面不可用。');

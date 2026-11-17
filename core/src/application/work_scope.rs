@@ -421,7 +421,10 @@ impl Kernel {
                         == *object_id
             }
             "hetu.video.projects.get" => kind == "video" && input["video_project_id"] == *object_id,
-            "hetu.video.projects.update" | "hetu.video.episodes.create" => {
+            "hetu.video.projects.update"
+            | "hetu.video.episodes.create"
+            | "hetu.video.episodes.update"
+            | "hetu.video.episodes.reorder" => {
                 kind == "video" && input["project_ref"]["video_project_id"] == *object_id
             }
             "hetu.video.episodes.get" => {

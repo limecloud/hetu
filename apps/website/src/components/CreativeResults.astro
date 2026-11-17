@@ -1,0 +1,40 @@
+---
+import { creativeSamples, storyShots } from '../lib/creative-samples';
+import { route, type Locale } from '../lib/site';
+import { assetURL } from '../lib/assets';
+import '../styles/creative-experience.css';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const en = locale === 'en';
+const samples = creativeSamples(locale);
+const shots = storyShots(locale).map(shot=>({...shot,src:assetURL(shot.image)}));
+---
+<div class="creative-results" data-creative-results data-story-shots={JSON.stringify(shots)} data-motion-demo data-step="0" data-playing="false" data-play-label={en?'Play':'播放'} data-pause-label={en?'Pause':'暂停'}>
+  <div class="result-topbar">
+    <div class="result-tabs" role="tablist" aria-label={en?'Preview a creative result':'预览创作成果'}>
+      {samples.map((sample,i)=><button type="button" role="tab" id={`result-tab-${sample.id}`} aria-controls={`result-panel-${sample.id}`} aria-selected={i===0?'true':'false'} tabindex={i===0?0:-1} data-result-tab={sample.id}>{sample.label}</button>)}
+    </div>
+    <span class="result-demo-label">{en?'Original example':'原创示例'}</span>
+  </div>
+  <div class="result-stage">
+    <div class="result-pages">
+      {samples.map((sample,i)=><div class:list={['result-page', `result-${sample.id}`]} id={`result-panel-${sample.id}`} role="tabpanel" aria-labelledby={`result-tab-${sample.id}`} tabindex="0" hidden={i!==0} data-result-panel={sample.id}>
+        <div class="result-page-meta"><span>{sample.location}</span><span>{en?'Draft / R1':'参考稿 / 第 1 版'}</span></div>
+        <h2>{sample.title}</h2>
+        <div class="result-excerpt">{sample.excerpt.map((paragraph,index)=><p class:list={{'result-beat':index>0}}>{paragraph}</p>)}</div>
+        <details class="result-read-more"><summary>{en?'Read the rest':'继续阅读'}<span aria-hidden="true">＋</span></summary><p>{sample.continuation}</p><a class="text-link" href={route(locale, 'docs/'+sample.guide)}>{en?'Explore this creative path':'了解这条创作路径'} →</a></details>
+        <p class="result-review-state"><span aria-hidden="true"></span>{en?'Ready for your review':'等你审阅'}</p>
+      </div>)}
+    </div>
+    <figure class="result-art">
+      <img src={assetURL('/images/ferry-arrival.webp')} width="1536" height="1024" alt={en?'Original story illustration: a traveler with a hidden letter meets a boatkeeper on a misty river at dusk.':'原创故事插画：傍晚的雾江，带着来信的旅人与船夫在渡口相遇。'} loading="eager"/>
+      <figcaption><span data-result-caption>{shots[0].caption}</span><span>{en?'Illustrated preview':'插画预演'} <span data-result-frame-count>01 / {String(shots.length).padStart(2,'0')}</span></span></figcaption>
+    </figure>
+  </div>
+  <div class="result-filmstrip" role="group" aria-label={en?'Explore the illustrated sequence':'查看连续镜头'}>{shots.map((shot,i)=><button type="button" data-result-shot={i} aria-pressed={i===0?'true':'false'} aria-label={`${i+1}. ${shot.label}`}><img data-story-thumbnail src={shot.src} width="160" height="90" loading="lazy" alt=""/><span><b>{shot.time}</b>{shot.label}</span></button>)}</div>
+  <div class="result-bottom"><p><span class="result-trace" aria-hidden="true">↳</span>{en?'Your idea':'你的构思'}<span aria-hidden="true">→</span>{en?'Agent prepares':'Agent 准备成果'}<span aria-hidden="true">→</span><strong>{en?'You decide what stays':'你决定留下什么'}</strong></p><div class="creative-playback"><button type="button" data-motion-play>{en?'Play':'播放'}</button><button type="button" data-motion-replay>{en?'Replay':'重播'}<span aria-hidden="true">↺</span></button></div></div>
+</div>
+<script>
+  import { initCreativeExperiences } from '../scripts/creative-experience';
+  initCreativeExperiences();
+</script>

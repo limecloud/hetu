@@ -2,9 +2,9 @@
 
 The creative library registers novels, scripts and videos. Their content and permissions remain separate even when they share a workspace directory. The software’s open-source license does not automatically apply to your writing.
 
-## Website demo
+## Website preview
 
-The [homepage demo](/en/#prototype) keeps state only in the current page. Saving, adoption, finals and snapshots never write to disk; refreshing resets everything. Switching books or tasks retains in-page buffers, and interface language never translates your text.
+The [desktop preview](/en/#prototype) displays real Electron screenshots with isolated example projects. Creative animations use prepared examples. The website does not open local projects, save manuscripts, adopt text, finalize revisions or create Git snapshots.
 
 ## Local saving and versions
 
@@ -18,7 +18,7 @@ Each novel or script has its own manuscript history. Read an earlier version wit
 
 Manuscript versions cover saved text and document metadata. Back up images, videos and production projects separately. These versions do not use the software repository or push automatically.
 
-The website demonstrates preparation and confirmation without running Git. If a real result is unknown, retain the original task and inspect its receipt before retrying.
+If a real result is unknown, retain the original task and inspect its receipt before retrying.
 
 ## Independent backups
 

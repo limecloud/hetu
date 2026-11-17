@@ -1,0 +1,50 @@
+---
+import { workflowScenarios } from '../lib/creation-workflow';
+import { route, type Locale } from '../lib/site';
+import AgentInstallPrompt from './AgentInstallPrompt.astro';
+import WorkflowModels from './WorkflowModels.astro';
+import RevisionExperience from './RevisionExperience.astro';
+import ProjectLayers from './ProjectLayers.astro';
+import '../styles/creation-workflow.css';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const en = locale === 'en';
+const scenarios = workflowScenarios(locale);
+const setup = scenarios[0];
+const creation = scenarios.filter(scene => ['novel', 'screenplay', 'video'].includes(scene.id));
+const revision = scenarios.find(scene => scene.id === 'revision')!;
+const roleNames = en ? ['You', 'Your external Agent', 'Hetu'] : ['你', '外部 Agent', '河图'];
+---
+<div class="wf-page" data-agent-workflow data-client="codex">
+  <header class="page-hero wf-page-hero"><h1>{en ? 'The whole creative workflow.' : '看清整个创作工程。'}</h1><p>{en ? 'From the first connection to an editable handoff. Start with a novel, a script or a short video, and keep every creative decision yours.' : '从第一次接入，到可继续创作的工程交付。小说、剧本、短视频，各有自己的起点与成果。'}</p><nav class="wf-page-jump" aria-label={en ? 'Workflow stages' : '工作流阶段'}><a href="#connect">{en ? 'Connect' : '接入'}</a><span aria-hidden="true">→</span><a href="#create">{en ? 'Create' : '创作'}</a><span aria-hidden="true">→</span><a href="#revise">{en ? 'Review & revise' : '审阅与返工'}</a><span aria-hidden="true">→</span><a href="#deliver">{en ? 'Deliver' : '交付'}</a></nav></header>
+  <section class="wf-map-section" id="connect" aria-labelledby="wf-connect-title"><div class="wf-map-heading"><h2 id="wf-connect-title">{en ? 'Connect once. Continue with your own Agent.' : '接入自己的 Agent，开始协作。'}</h2><a class="text-link" href={route(locale, 'docs/install')}>{en ? 'Download Hetu' : '下载河图'} ↗</a></div><AgentInstallPrompt locale={locale}/>
+    <WorkflowModels locale={locale}/>
+    <div class="wf-lanes-heading" aria-hidden="true"><span></span>{roleNames.map(name => <strong>{name}</strong>)}</div>
+    <ol class="wf-lanes wf-setup-lanes">{[setup.phases[0], setup.phases[1], setup.phases[2]].map((phase, index) => <li><div class="wf-lane-stage"><span>0{index + 1}</span><h3>{phase.title}</h3></div>{[phase.author, phase.agent, phase.hetu].map((text, role) => <div class="wf-lane-cell"><span class="wf-mobile-role">{roleNames[role]}</span><p>{text}</p></div>)}</li>)}</ol>
+  </section>
+  <section class="wf-map-section" id="create" data-workflow-map aria-labelledby="wf-create-title"><div class="wf-map-heading"><h2 id="wf-create-title">{en ? 'Choose the work you want to make.' : '从你想做的作品开始。'}</h2><a class="text-link" href={route(locale) + '#creation-workflow'}>{en ? 'Watch the workflow demo' : '观看流程演示'} ↗</a></div>
+    <div class="wf-tabs wf-type-tabs" role="tablist" aria-label={en ? 'Project type' : '创作工程类型'}>{creation.map((scene, index) => <button type="button" id={`map-tab-${scene.id}`} role="tab" aria-controls={scene.id} aria-selected={index === 0 ? 'true' : 'false'} tabindex={index === 0 ? 0 : -1} data-map-tab={scene.id}>{scene.title}</button>)}</div>
+    <p class="wf-map-note">{en ? 'Each type starts independently. Link an authorized source revision when you choose to adapt.' : '三类作品都能独立开始。需要改编时，再关联获权来源和所用版本。'}</p>
+    {creation.map((scene, sceneIndex) => <div id={scene.id} role="tabpanel" aria-labelledby={`map-tab-${scene.id}`} hidden={sceneIndex !== 0} data-map-panel={scene.id}>
+      <blockquote class="wf-example-prompt"><span class="wf-caption">{en ? 'Say this to your Agent' : '向 Agent 说出目标'}</span><p>{scene.prompt}</p></blockquote>
+      <div class="wf-lanes-heading" aria-hidden="true"><span></span>{roleNames.map(name => <strong>{name}</strong>)}</div>
+      <ol class="wf-lanes">{scene.phases.map((phase, index) => <li><div class="wf-lane-stage"><span>{String(index + 4).padStart(2, '0')}</span><h3>{phase.title}</h3></div>{[phase.author, phase.agent, phase.hetu].map((text, role) => <div class="wf-lane-cell"><span class="wf-mobile-role">{roleNames[role]}</span><p>{text}</p></div>)}</li>)}</ol>
+      <div class="wf-map-results"><strong>{en ? 'Return to review' : '回河图审阅'}</strong><span>{scene.artifacts.slice(0, 3).join(' / ')}</span><a class="text-link" href={route(locale, 'docs/' + scene.guide)}>{en ? 'Open the guide' : '查看使用指南'} →</a></div>
+    </div>)}
+  </section>
+  <section class="wf-map-section" id="revise" aria-label={en?'Review and revise':'审阅与返工'}><RevisionExperience locale={locale}/>
+    <details class="wf-revision-details"><summary>{en?'Follow the revision step by step':'查看返工的完整步骤'}</summary>
+    <div class="wf-lanes-heading" aria-hidden="true"><span></span>{roleNames.map(name => <strong>{name}</strong>)}</div>
+    <ol class="wf-lanes">{revision.phases.slice(0, 4).map(phase => <li><div class="wf-lane-stage"><span aria-hidden="true">↺</span><h3>{phase.title}</h3></div>{[phase.author, phase.agent, phase.hetu].map((text, role) => <div class="wf-lane-cell"><span class="wf-mobile-role">{roleNames[role]}</span><p>{text}</p></div>)}</li>)}</ol></details>
+  </section>
+  <section class="wf-map-section" id="deliver" aria-labelledby="wf-deliver-title"><div class="wf-map-heading"><h2 id="wf-deliver-title">{en ? 'Choose a revision. Hand over work that can continue.' : '确认版本，交付能继续创作的成果。'}</h2><a class="text-link" href={route(locale, 'docs/formats-and-delivery')}>{en ? 'Delivery guide' : '交付指南'} →</a></div><div class="wf-lanes-heading" aria-hidden="true"><span></span>{roleNames.map(name => <strong>{name}</strong>)}</div><ol class="wf-lanes">{revision.phases.slice(4).map(phase => <li><div class="wf-lane-stage"><span aria-hidden="true">✓</span><h3>{phase.title}</h3></div>{[phase.author, phase.agent, phase.hetu].map((text, role) => <div class="wf-lane-cell"><span class="wf-mobile-role">{roleNames[role]}</span><p>{text}</p></div>)}</li>)}</ol>
+    <div class="wf-deliverables">{(en ? [['Novel', 'Selected manuscript, story bible and sources'], ['Script', 'Selected episode scripts and adaptation sources'], ['Short video', 'Confirmed cut, media, sound and editable project']] : [['小说', '所选文稿、设定与来源'], ['剧本', '所选分集剧本与改编依据'], ['短视频', '确认成片、媒体、声音与可编辑工程']]).map(([title, text]) => <div><strong>{title}</strong><p>{text}</p></div>)}</div>
+  </section>
+  <ProjectLayers locale={locale}/>
+  <div class="wf-further"><details><summary>{en ? 'Add creative tools when you need them' : '按需添加创作工具'}</summary><p>{en ? 'Install relationship graphs, timelines and other creative plugins in Hetu. Your connected Agent discovers their available capabilities through the existing connection.' : '关系图、时间线等创作插件安装在河图。已接入的 Agent 通过原有连接发现实际可用能力，无需为每个工具重新安装 Codex 插件。'}</p><a class="text-link" href={route(locale, 'plugins')}>{en ? 'Creative plugins' : '浏览创作插件'} →</a></details><details><summary>{en ? 'Content transfer, cost and interrupted tasks' : '内容外发、费用与中断恢复'}</summary><p>{en ? 'Confirm the material and cost before paid generation. Continue within the approved scope; make a new decision when it changes. If a result is unknown, query the original operation before sending again.' : '付费生成前，确认本次材料外发和费用。授权范围内连续推进，范围变化时再决定。结果未知时先查询原操作，保留已有成果与版本。'}</p><a class="text-link" href={route(locale, 'docs/agents')}>{en ? 'Collaboration guide' : '了解协作方式'} →</a></details></div>
+  <div class="page-cta"><a class="button secondary" href={route(locale, 'docs/getting-started')}>{en ? 'Start your own project' : '开始你的创作工程'} →</a><a class="text-link" href={route(locale) + '#creation-workflow'}>{en ? 'Back to the demo' : '返回流程演示'} ↑</a></div>
+</div>
+<script>
+  import { initWorkflowMaps } from '../scripts/creation-workflow';
+  initWorkflowMaps();
+</script>

@@ -260,6 +260,8 @@ impl Kernel {
                     "hetu.video.projects.update",
                     "hetu.video.episodes.create",
                     "hetu.video.episodes.get",
+                    "hetu.video.episodes.update",
+                    "hetu.video.episodes.reorder",
                 ],
                 &["video_media_task_required"],
             ),

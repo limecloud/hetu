@@ -13,7 +13,13 @@ npm run build
 npm run preview --workspace @hetu/website
 ```
 
-开发地址为 `http://127.0.0.1:4350`，构建预览为 `http://127.0.0.1:4351`。使用指南位于 `src/content/guides/zh-CN/` 与 `src/content/guides/en/`。首页 `/#prototype` 与 `/en/#prototype` 内嵌当前 macOS 布局的交互演示，不发布独立原型页面。构建读取根 `assets/`，不发布仓库 `docs/` 的工程文档；不编辑 `public/` 中生成的副本。
+开发地址为 `http://127.0.0.1:4350`，构建预览为 `http://127.0.0.1:4351`。使用指南位于 `src/content/guides/zh-CN/` 与 `src/content/guides/en/`。首页 `/#prototype` 与 `/en/#prototype` 内嵌当前 Electron 客户端实图预览，可切换创作库、文稿、剧本与参考稿审核，并原位放大，不发布独立原型页面。构建读取根 `assets/`，不发布仓库 `docs/` 的工程文档；不编辑 `public/` 中生成的副本。
+
+首页 `/#creation-workflow` 与 `/en/#creation-workflow` 展示接入、小说、剧本、短视频及返工交付的流程动画。完整流程位于 `/workflow/` 与 `/en/workflow/`，按作者、外部 Agent 和河图分别展示操作与成果，三类工程可独立开始。可选择 Codex、Claude Code、Cursor 或 WorkBuddy，复制各自的安装提示词；动画状态属于演示，不安装插件、不连接本机或调用生成服务。播放支持暂停、重播、逐步查看及减少动态效果。
+
+客户端与 OpenAI、Anthropic、Gemini、DeepSeek、GLM、Kimi、Qwen、豆包、混元模型品牌分组展示，模型栏不代表内置路由或所有客户端均支持这些模型。原始 SVG、来源和 SHA-256 位于 `src/assets/agents/`；WorkBuddy 使用官网素材，其余图标来自固定版本的 LobeHub 品牌图标库，GLM 使用智谱品牌标识，许可证随文件保留。
+
+首页成果示例使用六张连续镜头插画，进入视口播放一次后停止；意见比较只展示变化内容，保留原版与待审状态。动效共用一个播放焦点，支持手动浏览、暂停和减少动态效果。
 
 展示图片、图标、下载及分享卡使用根 `assets/manifest.json` 核验摘要；作者指南的实际截图由本目录 `assets/guides/captures.json` 登记来源、尺寸与摘要。图片内容变化时，URL 的 `v` 参数随之更新；构建检查发布副本与摘要，防止旧 CDN 缓存继续显示旧图。
 

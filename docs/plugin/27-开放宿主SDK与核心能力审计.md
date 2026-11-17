@@ -117,3 +117,25 @@ flowchart TD
 5. 新能力同时更新 Schema、入口、SDK、用例、文档及验收；通过独立插件验证开发体验，不能仅以宿主内部调用证明可用。
 
 实际进度归主20/38及插件08。设计图不代替运行证据。
+
+## 专业工作面的文件与媒体服务
+
+`ProjectStore`为公开SDK纯TypeScript适配器，统一受管对象读取、固定基线、来源追加、原操作回读与单次CAS保存。专业Schema、不变量和推进方法仍归各插件。
+
+GUI通过`host.media_open`／`host.media_release`预览当前作品固定asset来源；宿主核验来源、签发临时媒体地址，隔离会话仅允许本会话已签发的地址，关闭或切换作品立即失效，不暴露文件路径。机器业务继续使用核心素材与固定来源动作，预览服务不产生采纳或认可。
+
+`host.export_file`支持固定清单分段及固定对象UTF-8偏移分块两种只读返回。后者包含`project_ref`、`offset`、`next_offset`、`total_bytes`、`content_sha256`、`media_type`；所有块固定同一对象与总字节数，连续偏移并核验摘要后才原子替换作者选择的目标。
+
+```mermaid
+sequenceDiagram
+ participant P as 专业插件界面
+ participant H as 受信宿主
+ participant C as Rust Core
+ P->>H: media_open 固定asset来源
+ H->>C: 核验作品与来源；打开固定字节
+ C-->>H: 临时媒体句柄
+ H-->>P: 会话内临时URL
+ P->>H: Range读取／release
+ H->>C: 分块读取／关闭
+ Note over P,H: 关闭视图或作品切换时撤销
+```

@@ -12,54 +12,41 @@ Your Agent organizes details and saves the proposal. Confirm the necessary scope
 
 Say “Change only the last line” or “Hold this moment longer.” Keep the version and task with the feedback, then compare the revision. Adopting text, approving a preview and confirming a final cut are separate decisions.
 
-## Practice a review without installing
+## Explore the workspace first
 
-The following steps use the homepage’s novel demo to read a reference, give feedback and adopt an excerpt. It does not connect an Agent or generate video, and resets on reload. Screenshots show the demo’s actual controls.
+[Explore the desktop preview](/en/#prototype). Switch between the library, manuscript, script and reference review, or enlarge a screen. The images below show the current Electron client with original sample projects. The captured interface is in Chinese.
 
-## 1. Open a book from the library
+## 1. Open a project from your creative library
 
-Choose [Try the homepage workspace](/en/#prototype), find “Chronicles of Wuchuan” and select its cover.
+Install and open Hetu. The creative library holds independent novels, scripts and videos. Ask your connected Agent to create a project, or use Open project for an existing one. A script or video does not require a novel first.
 
-The book workspace opens. Use the left side to switch between chapters, the story bible and draft review. Choose “Back to library” whenever you want another book.
+![Current Electron creative library with independent example projects](/images/guides/electron-library.webp)
 
-![Homepage demo library with book covers that open the workspace](/images/guides/quickstart-library-en.webp)
+## 2. Read the full manuscript before changing it
 
-*Homepage demo screenshot. These are sample books; the demo does not read your local writing.*
+Open a novel and choose a chapter from its contents. Read continuously, edit a line when you want to, then save the revision. Use the AI handoff to continue with your Agent in the context of this work.
 
-## 2. Read a reference and decide what to use
+![Current Electron manuscript workspace with chapter contents and text](/images/guides/electron-novel.webp)
 
-1. Choose “Draft review” on the left and read the suggested replacement.
-2. Try writing a suggestion under “Review comment” and choose “Request changes” to see the status change. The demo only records it; it does not send a message or generate a new draft.
-3. If it fits, check the source, select the confirmation box and choose “Approve review.” The manuscript has not changed yet.
-4. Choose “Adopt an excerpt,” compare before and after, then confirm to put the selected passage into your manuscript.
+For example: “Change only the final paragraph. Hint that the boatkeeper recognizes the visitor, but leave the umbrella unexplained.” Continue from the fixed version; a new candidate does not overwrite your manuscript.
 
-![Homepage demo draft review with a reference passage and adoption controls](/images/guides/quickstart-review-en.webp)
+## 3. Compare references and leave specific feedback
 
-*Homepage demo screenshot. Approving a reference, adopting text and finalizing a revision are separate author decisions.*
+Open reference draft review, read each complete candidate and compare approaches. Select the proposal you want to discuss, add specific feedback, then save the selection and comments. Your Agent can revise within the same task.
 
-## 3. Edit directly when you want to
+![Current Electron reference draft review with two candidates and a feedback field](/images/guides/electron-review.webp)
 
-Return to the chapter and read the adopted passage in context. Keep it, adjust a line or write your own ending. Try adding “She stood at the door but could not bring herself to knock,” then choose “Save text.” Switch chapters and return to check the saved text.
+Receiving a candidate, selecting a reference, adopting text and finalizing a revision are separate decisions. Review the actual changes before choosing what stays.
 
-![Homepage demo writing workspace with chapters, text and the save button](/images/guides/quickstart-writing-en.webp)
+## 4. Read scripts by scene, watch videos continuously
 
-*Homepage demo screenshot. Saving keeps this change within the page; reloading resets the demo.*
+A script opens with episodes, action and dialogue. Point your Agent to the episode and scene you want to change; no novel conversion is required.
 
-To keep a final version, choose “Finalize revision,” review it and confirm. Later changes preserve that earlier final.
+![Current Electron script workspace showing an episode with action and dialogue](/images/guides/electron-script.webp)
 
-## 4. Start your own book in the desktop app
+Video projects progress through storyboards, previews, clips and a final cut. Ask “Hear the bell first, hold one second, then turn.” Return to watch that version and judge the timing before continuing. See [From preview to finished video](video.md).
 
-Give your idea to a connected Codex or another external Agent. It prepares titles, a synopsis, an outline and a proposed folder. Review the proposal, confirm the creation scope and let the Agent create the book. Open the Mac library to see the result.
-
-![Mac library showing separate creative works](/images/guides/mac-library-en.webp)
-
-*Actual Mac app novel list with sample works. Open to enlarge; this image does not show the script or video workspace.*
-
-You can discuss an undecided title or direction before creating the book. The Agent prepares and saves the details; you do not enter them again in a form. Undecided ideas remain in the plan. Manual creation and editing are also available if you prefer to write entirely on your own.
-
-For example: “An apocalypse survival story about a woman rebuilding a community, focused on supplies and trust.” For help with titles and a synopsis, read [Plan a book with Codex](codex-first-task.md).
-
-The desktop app saves your real work. The homepage demo resets when reloaded, so do not leave the only copy of your writing there.
+Discuss titles, the synopsis and outlines with your Agent as ideas develop. It organizes and saves the details without asking you to retype them. To start a novel, follow [Plan a new book with Codex](codex-first-task.md).
 
 ## What to try next
 

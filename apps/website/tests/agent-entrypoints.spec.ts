@@ -1,23 +1,23 @@
 import { test, expect } from '@playwright/test';
 
 for (const prefix of ['', '/en']) {
-  test(`${prefix || 'zh-CN'} 改编对照支持键盘且作者主张与市场口径可达`, async ({ page }) => {
+  test(`${prefix || 'zh-CN'} 成果对照支持键盘且作者主张与市场口径可达`, async ({ page }) => {
     await page.goto(prefix + '/');
     await expect(page.locator('.hero-stage .hero-art')).toBeVisible();
     await expect(page.locator('.hero-stage .hero-art')).toHaveAttribute('src', /hetu-river-background\.webp\?v=/);
     await page.locator('.hero-author-voice').click();
     await expect(page.locator('#author-values')).toBeInViewport();
-    const tabs = page.locator('.adaptation-tabs [role="tab"]');
+    const tabs = page.locator('[data-review-tab]');
     await tabs.first().focus();
     await page.keyboard.press('ArrowRight');
     await expect(tabs.nth(1)).toBeFocused();
-    await expect(page.locator('#adapt-panel-1')).toBeVisible();
-    await expect(page.locator('#adapt-panel-0')).toBeHidden();
+    await expect(page.locator('#review-panel-screenplay')).toBeVisible();
+    await expect(page.locator('#review-panel-novel')).toBeHidden();
     await page.keyboard.press('End');
-    await expect(page.locator('#adapt-panel-2')).toBeVisible();
+    await expect(page.locator('#review-panel-video')).toBeVisible();
     await page.keyboard.press('Home');
     await expect(tabs.first()).toHaveAttribute('aria-selected', 'true');
-    await expect(page.locator('.creative-route-grid > article')).toHaveCount(6);
+    await expect(page.locator('.creative-route-grid > article')).toHaveCount(3);
     const market = page.locator('[data-market]');
     await expect(market).toHaveAttribute('data-market', prefix ? 'global' : 'china');
     await expect(market).toContainText(prefix ? 'Sensor Tower' : 'CNNIC');
@@ -50,9 +50,9 @@ for (const prefix of ['', '/en']) {
     await expect(page).toHaveURL(prefix + '/integrations/#skills-catalog');
     await expect(page.locator('[data-skills-catalog]')).toBeVisible();
     await page.goto(prefix + '/#prototype');
-    await page.locator('.demo-entrypoints [data-action="settings"]').click();
-    await expect(page.locator('.demo-agent')).toBeVisible();
-    await expect(page.locator('[data-agent-context="settings"][name="agent-client"]')).toHaveValue('none');
+    await expect(page.locator('[data-workbench-preview]')).toBeVisible();
+    await page.locator('[data-workbench-panel]:visible .text-link').click();
+    await expect(page).toHaveURL(prefix+'/docs/creative-library/');
   });
 
   for (const width of [375, 768, 1440, 2560]) {
@@ -79,13 +79,14 @@ for (const prefix of ['', '/en']) {
       const copyBounds = await page.locator('.hero-copy').boundingBox();
       expect(Math.abs(copyBounds!.x + copyBounds!.width / 2 - width / 2)).toBeLessThan(1);
       await expect(page.locator('.hero-protocols a')).toHaveCount(3);
-      await expect(page.locator('.story-sequence img')).toBeAttached();
+      await expect(page.locator('[data-story-thumbnail]')).toHaveCount(6);
+      const resultBounds = await page.locator('.creative-results').boundingBox();
+      expect(resultBounds!.y).toBeGreaterThanOrEqual(heroBounds!.y + heroBounds!.height);
+      await expect(page.locator('.hero-stage .creative-results')).toHaveCount(0);
       await expect(page.locator('.home-journal .journal-cover')).toHaveCount(3);
-      const marketingImages = await page.locator('main img').evaluateAll(images => images.filter(image => !image.closest('.demo')).map(image => new URL(image.getAttribute('src')!, document.baseURI).pathname));
+      const marketingImages = await page.locator('main img:not([data-brand-logo]):not([data-story-thumbnail]):not([data-preview-full])').evaluateAll(images => images.map(image => new URL(image.getAttribute('src')!, document.baseURI).pathname));
       expect(new Set(marketingImages).size).toBe(marketingImages.length);
-      await expect(page.locator('.demo-library-banner')).toContainText('MCP');
-      await expect(page.locator('.demo-library-banner')).toContainText('CLI');
-      await expect(page.locator('.demo-library-banner')).toContainText('Skills');
+      await expect(page.locator('[data-workbench-preview]')).toBeAttached();
     });
   }
 }

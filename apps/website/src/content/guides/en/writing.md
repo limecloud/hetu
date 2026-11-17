@@ -12,35 +12,31 @@ A related script or video remains an independent work. When the novel changes, i
 
 ## Books and chapters
 
-The [homepage demo](/en/#prototype) supports search, filtering and book switching. **Book details** lets you change the title, author, synopsis, status and sample cover.
+Open a novel in the local creative library, then choose a manuscript from its contents. Search by project name or filter by status. The [desktop preview](/en/#prototype) shows the current interface without editing local projects.
+
+Use project details for the title, synopsis and cover. Each novel keeps its own metadata and chapters; books need not share a story world.
 
 ## Change a book cover
 
-In the Mac client, open **Book details** and click **Use as Cover** on a candidate to apply it immediately. The library updates with it, and the candidate is marked **Current Cover**. Click an image to preview it, or choose **Change Cover** to browse the candidates.
+Open Change cover from project details and compare candidate previews. For an existing image, select Local import and choose the file. Check its preview and optional title overlay before confirming. Cancelling retains the existing cover; earlier covers remain in history.
 
-For artwork outside the book, choose **Import Image** from the cover’s more menu, select a PNG, JPEG or WebP, review the preview and optional title overlay, then confirm **Use as Cover**. Cancelling keeps the existing cover; earlier covers remain in cover history. Candidates returned by your agent need no extra import.
-
-To design a new cover, use the page’s AI handoff to work with your chosen agent, then return to review the candidates. Importing an image requires no AI setup.
-
-Chapter navigation works on mobile too. Select a title or create an empty chapter with **New chapter**. The demo shows a volume; the native client also provides structure management and revision checks.
+To commission a new design, use the cover’s AI handoff and return to compare the candidates. Importing an existing image requires no model configuration.
 
 ## Edit and save
 
-Edits show **Unsaved changes**. Select **Save text** to save an in-page revision. Switching chapters, tasks or books retains the demo buffer; refreshing resets it.
+Edit the manuscript directly, then save its revision. The desktop client writes the revision to the project and protects input, conflict handling and recovery buffers. If a result is unknown, inspect the original operation before retrying.
 
-The local client saves to the book workspace with Chinese input, conflict handling and recovery buffers. Saving text does not create a Git commit.
-
-The demo counts non-whitespace characters. This is a writing aid, not a publisher’s billing count.
+Saving text does not create a Git commit. To retain a milestone, prepare and review a manuscript version separately. The character count is a writing aid, not a publisher’s billing rule.
 
 ## Finalize, then keep writing
 
-**Finalize revision** requires saved text. Inspect the chapter and revision, then confirm the evidence checkbox in the dialog.
+Finalize a saved revision only after inspecting the chapter, text and evidence.
 
 Later edits show **Earlier final retained**. Save and confirm the new revision separately; edits never silently rewrite the earlier final.
 
 ## Language and theme
 
-The demo toolbar switches interface language and light or dark theme. Text, titles and author input stay unchanged. The English homepage initializes a separate English sample; switching language does not translate a book.
+Interface language and appearance change the presentation, not your writing. Text, character names and titles remain unchanged; switching website language does not translate a local project.
 
 Continue with [Story bible](story-bible.md) and [Draft review](review.md).
 

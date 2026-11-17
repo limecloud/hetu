@@ -1,5 +1,6 @@
 //! 视频项目独立于小说和剧本；本模块不调用模型或执行制作工具。
 use super::*;
+use std::collections::BTreeSet;
 
 const PROJECTS: &str = "packages/video/projects";
 const EPISODES: &str = "packages/video/episodes";
@@ -164,7 +165,75 @@ impl Kernel {
             .ok_or_else(|| Error::new("hetu.integrity_failure", "视频分集未登记在项目中。"))?;
         Ok(
             json!({"episode":record,"sha256":sha,"is_head":current["revision"]==record["revision"],
-            "episode_number":index+1,"work_ref":self.work_ref("video", &record["video_project_id"])}),
+            "episode_number":index+1,"work_ref":self.work_ref("video", &record["video_project_id"]),
+            "project_ref":{"video_project_id":project["video_project_id"],"revision":project["revision"],"sha256":digest(bytes(&project)?)}}),
         )
+    }
+
+    pub(super) fn update_video_episode(
+        &self,
+        input: &Value,
+        changes: &mut Changes,
+    ) -> Result<Value> {
+        let project = self.expected_video_project(&input["project_ref"])?;
+        let episode_id = checked_id(text(input, "video_episode_id")?, "vepisode")?;
+        let (mut episode, sha, _) =
+            self.versioned_record(EPISODES, &episode_id, "video_episode_id", None)?;
+        ensure(
+            episode["video_project_id"] == project["video_project_id"]
+                && project["episode_refs"]
+                    .as_array()
+                    .unwrap()
+                    .contains(&episode["video_episode_id"]),
+            "invalid_input",
+            "视频分集不属于当前项目。",
+        )?;
+        ensure(
+            input["expected"] == json!({"revision":episode["revision"],"sha256":sha}),
+            "revision_conflict",
+            "视频分集已有更新，请重新读取并比较。",
+        )?;
+        ensure(
+            !text(input, "title")?.trim().is_empty(),
+            "invalid_input",
+            "视频分集名称不能为空。",
+        )?;
+        self.advance_record(&mut episode, &sha)?;
+        for field in ["title", "brief", "archived"] {
+            episode[field] = input[field].clone();
+        }
+        schema(&episode, &works::definition("video_episode"))?;
+        let sha = self.stage_versioned_record(EPISODES, "video_episode_id", &episode, changes)?;
+        Ok(json!({"episode":episode,"sha256":sha}))
+    }
+
+    pub(super) fn reorder_video_episodes(
+        &self,
+        input: &Value,
+        changes: &mut Changes,
+    ) -> Result<Value> {
+        let mut project = self.expected_video_project(&input["project_ref"])?;
+        let previous: BTreeSet<_> = project["episode_refs"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|v| v.as_str().unwrap())
+            .collect();
+        let requested = input["episode_refs"].as_array().unwrap();
+        ensure(
+            requested.len() == previous.len()
+                && requested
+                    .iter()
+                    .map(|v| v.as_str().unwrap())
+                    .collect::<BTreeSet<_>>()
+                    == previous,
+            "invalid_input",
+            "视频分集重排必须包含完整且不重复的原目录。",
+        )?;
+        let previous_sha = digest(bytes(&project)?);
+        self.advance_record(&mut project, &previous_sha)?;
+        project["episode_refs"] = input["episode_refs"].clone();
+        let sha = self.stage_versioned_record(PROJECTS, "video_project_id", &project, changes)?;
+        Ok(json!({"project":project,"sha256":sha}))
     }
 }

@@ -1,0 +1,8 @@
+---
+import { workflowModels } from '../lib/workflow-clients';
+import type { Locale } from '../lib/site';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const localNames: Record<string, string> = { Doubao: '豆包', Hunyuan: '混元' };
+---
+<div class="wf-models"><span class="wf-caption">{locale === 'en' ? 'Models via your Agent or configured channel' : '通过 Agent 或已配置渠道使用模型'}</span><ul aria-label={locale === 'en' ? 'Model brands' : '模型品牌'}>{workflowModels.map(model => <li><img data-brand-logo src={model.icon} width="24" height="24" alt=""/><span>{locale === 'en' ? model.name : (localNames[model.name] ?? model.name)}</span></li>)}</ul></div>

@@ -317,6 +317,185 @@ async fn stable_bootstrap_creates_new_work_and_first_task_without_gui_or_author_
 }
 
 #[tokio::test]
+async fn stable_original_drama_revises_fountain_and_resumes_without_adoption_or_gui() {
+    let root = tempfile::tempdir().unwrap();
+    let directory = root.path().join("原创剧本接入");
+    let mut client = Client::start_stable(&directory);
+    client.rpc("server/discover", json!({})).await;
+    let tools = client.rpc("tools/list", json!({})).await;
+    for name in [
+        "hetu_begin_creation",
+        "hetu_create_drama_from_project",
+        "hetu_read_drama_episode",
+        "hetu_save_working_copy",
+    ] {
+        assert!(
+            tools["result"]["tools"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|t| t["name"] == name),
+            "{name}"
+        );
+    }
+    let created = client.tool("hetu_begin_creation", json!({"brief":"雨夜渡口，两个人为最后一班船争执。","locale":"zh-CN","operation_key":"drama-begin"})).await;
+    assert_eq!(created["status"], "succeeded", "{created}");
+    let start = &created["data"];
+    let saved = client.tool("hetu_save_creation_project", json!({"management_ref":start["management_ref"],"project_id":start["project"]["project_id"],"expected":{"revision":start["revision"],"sha256":start["sha256"]},"brief":"先写一集两场的原创剧本参考稿，不采纳。","selected_fields":{"title":{"value":"最后一班船","candidate_ref":null}},"work_profile":{"work_type":"drama","language_tag":"zh-CN","drama_mode":"original"},"operation_key":"drama-profile"})).await;
+    assert_eq!(saved["status"], "succeeded", "{saved}");
+    let work = client.tool("hetu_create_drama_from_project", json!({"management_ref":start["management_ref"],"project_id":start["project"]["project_id"],"expected":{"revision":saved["data"]["revision"],"sha256":saved["data"]["sha256"]},"target_path":start["target_path"],"profile":{"title":"最后一班船","description":"全剧方向：陌生人以各自的代价换来一次同行。","mode":"original","language_tag":"zh-CN"},"operation_key":"drama-create"})).await;
+    assert_eq!(work["status"], "succeeded", "{work}");
+    let grant = &work["data"]["workspace_management_ref"];
+    let project_id = &work["data"]["created_workspace_ref"]["drama_project_id"];
+    let before = client
+        .tool(
+            "hetu_read_drama_project",
+            json!({"management_ref":grant,"project_id":project_id}),
+        )
+        .await;
+    assert_eq!(before["status"], "succeeded", "{before}");
+    let episode = client.tool("hetu_create_drama_episode", json!({"management_ref":grant,"project_ref":{"project_id":project_id,"revision":before["data"]["project"]["revision"],"sha256":before["data"]["sha256"]},"title":"第一集 留船","plan":"两场：渡口争船；候船亭交换秘密。收束为两人共同留下，而非独自逃离。","language_tag":"zh-CN","operation_key":"drama-episode"})).await;
+    assert_eq!(episode["status"], "succeeded", "{episode}");
+    let episode_id = &episode["data"]["episode"]["episode_id"];
+    let reading = client
+        .tool(
+            "hetu_read_drama_episode",
+            json!({"management_ref":grant,"episode_id":episode_id}),
+        )
+        .await;
+    assert_eq!(reading["status"], "succeeded", "{reading}");
+    let original_author = &reading["data"]["manuscript"]["author_ref"];
+    let directory_before = client
+        .tool(
+            "hetu_read_drama_project",
+            json!({"management_ref":grant,"project_id":project_id}),
+        )
+        .await;
+    let preview = client.tool("hetu_preview_creative_task", json!({"management_ref":grant,"scope_ref":grant["scope_ref"],"task_kind":"drama_draft","brief":"按全剧方向与本集计划写两场Fountain参考稿：争船、交换秘密，结尾共同留下。","input_refs":[],"target_ref":original_author,"client_adapter":"codex","language_tag":"zh-CN"})).await;
+    assert_eq!(preview["status"], "succeeded", "{preview}");
+    let mut input = preview["data"]["prepare_input"].clone();
+    input["management_ref"] = grant.clone();
+    input["operation_key"] = json!("drama-task");
+    let task = client.tool("hetu_prepare_creative_task", input).await;
+    assert_eq!(task["status"], "succeeded", "{task}");
+    let opened = client
+        .tool(
+            "hetu_open_collaboration_task",
+            json!({"task_locator":task["data"]["task_locator"]}),
+        )
+        .await;
+    assert_eq!(opened["status"], "succeeded", "{opened}");
+    let r = &opened["data"]["task_ref"];
+    let v1 = ".EXT. 渡口 - 夜\n\n林溪攥住缆绳。\n\n@林溪\n等我一分钟。\n\n.INT. 候船亭 - 夜\n\n陈舟把退票放在桌上。\n\n@陈舟\n这次一起留下。\n";
+    let first = client.tool("hetu_create_working_copy", json!({"task_ref":r,"artifact_kind":"text","source_format":"fountain","title":"第一集参考稿","base_refs":[],"content":v1,"operation_key":"drama-v1"})).await;
+    assert_eq!(first["status"], "succeeded", "{first}");
+    let w1 = &first["data"]["working_copy_ref"];
+    let feedback = client.tool("hetu_save_task_feedback", json!({"task_ref":r,"expected_feedback_head":null,"target_refs":[{"kind":"working_copy","working_copy_ref":w1}],"intent":"request_changes","public_comment":"Agent自查：共同留下的决定缺少行动代价，补上退票撕毁，保留两场与结尾。","selected_refs":[],"operation_key":"drama-feedback"})).await;
+    assert_eq!(feedback["status"], "succeeded", "{feedback}");
+    let f = &feedback["data"]["feedback_ref"];
+    let v2 = v1.replace(
+        "陈舟把退票放在桌上。",
+        "陈舟把退票放在桌上，撕成两半。林溪松开缆绳，走进亭内。",
+    );
+    let revise_input = json!({"task_ref":r,"working_copy_id":w1["working_copy_id"],"expected":w1,"content":v2,"feedback_refs":[f],"operation_key":"drama-v2"});
+    let revised = client
+        .tool("hetu_save_working_copy", revise_input.clone())
+        .await;
+    assert_eq!(revised["status"], "succeeded", "{revised}");
+    let mut conflict = revise_input.clone();
+    conflict["operation_key"] = json!("drama-stale");
+    assert_eq!(
+        client.tool("hetu_save_working_copy", conflict).await["error"]["code"],
+        "revision_conflict"
+    );
+    let submit_input = json!({"task_ref":r,"request_sha256":task["data"]["request_sha256"],"working_copy_refs":[revised["data"]["working_copy_ref"]],"feedback_refs":[f],"complete":true,"missing_items":[],"provenance":{"client":"stdio-test","skill_version":"drama-workflow"},"operation_key":"drama-submit"});
+    let submitted = client
+        .tool("hetu_submit_creative_result", submit_input.clone())
+        .await;
+    assert_eq!(submitted["status"], "succeeded", "{submitted}");
+    client.close().await;
+
+    let mut resumed = Client::start_stable(&directory);
+    resumed.rpc("server/discover", json!({})).await;
+    let reopened = resumed
+        .tool(
+            "hetu_open_collaboration_task",
+            json!({"task_locator":task["data"]["task_locator"]}),
+        )
+        .await;
+    assert_eq!(reopened["status"], "succeeded", "{reopened}");
+    assert_eq!(reopened["data"]["task_ref"], *r);
+    let recovered = resumed
+        .tool(
+            "hetu_read_task_operation",
+            json!({"task_ref":r,"action":"hetu.working_copies.save","key":"drama-v2"}),
+        )
+        .await;
+    assert_eq!(recovered["status"], "succeeded", "{recovered}");
+    assert_eq!(
+        recovered["data"]["original_result"]["data"]["working_copy_ref"],
+        revised["data"]["working_copy_ref"]
+    );
+    assert_eq!(
+        recovered["data"]["original_result"]["data"]["revision"],
+        revised["data"]["revision"]
+    );
+    assert_eq!(
+        submitted,
+        resumed
+            .tool("hetu_submit_creative_result", submit_input)
+            .await
+    );
+    let old = resumed
+        .tool(
+            "hetu_read_working_copy",
+            json!({"task_ref":r,"working_copy_ref":w1}),
+        )
+        .await;
+    assert_eq!(old["data"]["revision"]["content"], v1);
+    let new = resumed
+        .tool(
+            "hetu_read_working_copy",
+            json!({"task_ref":r,"working_copy_ref":revised["data"]["working_copy_ref"]}),
+        )
+        .await;
+    assert_eq!(new["data"]["revision"]["content"], v2);
+    let final_reading = resumed
+        .tool(
+            "hetu_read_drama_episode",
+            json!({"management_ref":grant,"episode_id":episode_id}),
+        )
+        .await;
+    let manuscript = &final_reading["data"]["manuscript"];
+    assert_eq!(manuscript["author_state"], "empty");
+    assert_eq!(manuscript["author_ref"], *original_author);
+    assert_eq!(manuscript["references"].as_array().unwrap().len(), 1);
+    assert_eq!(manuscript["references"][0]["kind"], "submitted");
+    assert_eq!(
+        manuscript["references"][0]["working_copy_ref"],
+        revised["data"]["working_copy_ref"]
+    );
+    assert_eq!(manuscript["references"][0]["source_format"], "fountain");
+    let final_project = resumed
+        .tool(
+            "hetu_read_drama_project",
+            json!({"management_ref":grant,"project_id":project_id}),
+        )
+        .await;
+    assert_eq!(
+        final_project["data"]["project"],
+        directory_before["data"]["project"]
+    );
+    let works = resumed
+        .tool("hetu_list_works", json!({"management_ref":grant}))
+        .await;
+    assert_eq!(works["status"], "succeeded", "{works}");
+    assert_eq!(works["data"]["works"].as_array().unwrap().len(), 1);
+    assert_eq!(works["data"]["works"][0]["work_ref"]["kind"], "drama");
+    resumed.close().await;
+}
+
+#[tokio::test]
 async fn stable_video_bootstrap_and_episode_resume_without_upstream_or_gui() {
     let root = tempfile::tempdir().unwrap();
     let directory = root.path().join("独立视频接入");
@@ -396,6 +575,145 @@ async fn stable_video_bootstrap_and_episode_resume_without_upstream_or_gui() {
             .tool("hetu_create_video_episode", episode_input)
             .await,
         episode
+    );
+    resumed.close().await;
+}
+
+#[tokio::test]
+async fn stable_video_episode_changes_use_exact_scope_fixed_decision_and_original_receipt() {
+    let (root, author) = setup();
+    let p = call(
+        &author,
+        "video.projects.create",
+        json!({"title":"渡口制作","brief":"两集短剧","language_tag":"zh-CN","operation_key":"video-plan"}),
+    );
+    assert_eq!(p["status"], "succeeded", "{p}");
+    let project_id = &p["data"]["project"]["video_project_id"];
+    let project_ref = |value: &Value| json!({"video_project_id":value["project"]["video_project_id"],"revision":value["project"]["revision"],"sha256":value["sha256"]});
+    let a = call(
+        &author,
+        "video.episodes.create",
+        json!({"project_ref":project_ref(&p["data"]),"title":"第一集","brief":"争船","operation_key":"first"}),
+    );
+    assert_eq!(a["status"], "succeeded", "{a}");
+    let b = call(
+        &author,
+        "video.episodes.create",
+        json!({"project_ref":project_ref(&a["data"]),"title":"第二集","brief":"离岸","operation_key":"second"}),
+    );
+    assert_eq!(b["status"], "succeeded", "{b}");
+    let foreign = call(
+        &author,
+        "video.projects.create",
+        json!({"title":"另一个视频","brief":"不可借授权管理","language_tag":"zh-CN","operation_key":"foreign"}),
+    );
+    assert_eq!(foreign["status"], "succeeded", "{foreign}");
+    let directory = root.path().join("视频精确范围");
+    let grant = call(
+        &author,
+        "collaboration.authorize_workspace",
+        json!({"client_adapter":"codex","collaboration_path":directory,"work_ref":p["data"]["work_ref"],"operation_key":"video-grant"}),
+    );
+    assert_eq!(grant["status"], "succeeded", "{grant}");
+    let grant = &grant["data"]["management_ref"];
+    let mut client = Client::start_stable(&directory);
+    client.rpc("server/discover", json!({})).await;
+    let catalog = client
+        .tool(
+            "hetu_list_management_actions",
+            json!({"management_ref":grant}),
+        )
+        .await;
+    assert_eq!(catalog["status"], "succeeded", "{catalog}");
+    for action in ["hetu.video.episodes.update", "hetu.video.episodes.reorder"] {
+        assert!(
+            catalog["data"]["actions"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|a| a["name"] == action)
+        );
+    }
+    let read_input =
+        json!({"management_ref":grant,"video_episode_id":a["data"]["episode"]["video_episode_id"]});
+    let before = client
+        .tool("hetu_read_video_episode", read_input.clone())
+        .await;
+    assert_eq!(before["status"], "succeeded", "{before}");
+    let update = json!({"project_ref":before["data"]["project_ref"],"video_episode_id":a["data"]["episode"]["video_episode_id"],"expected":{"revision":before["data"]["episode"]["revision"],"sha256":before["data"]["sha256"]},"title":"等待汽笛","brief":"先听见脚步，再切门口；保留已选片段。","archived":false,"operation_key":"video-update"});
+    let prepared = client.tool("hetu_prepare_management_operation", json!({"management_ref":grant,"action":"hetu.video.episodes.update","input":update,"summary":"更新第一集制作说明","operation_key":"prepare-video-update"})).await;
+    assert_eq!(prepared["status"], "succeeded", "{prepared}");
+    let fixed = &prepared["data"];
+    let execute = json!({"management_ref":grant,"proposal_id":fixed["proposal_id"],"proposal_sha256":fixed["proposal_sha256"],"operation_key":"execute-video-update"});
+    assert_eq!(
+        client
+            .tool("hetu_execute_management_operation", execute.clone())
+            .await["error"]["code"],
+        "hetu.author_confirmation_required"
+    );
+    let approved = client.tool("hetu_record_management_decision", json!({"management_ref":grant,"proposal_id":fixed["proposal_id"],"proposal_sha256":fixed["proposal_sha256"],"expected_state_revision":fixed["state_revision"],"decision":"approve","authorization_note":"隔离验收中的测试作者明确决定更新第一集制作说明。","operation_key":"decide-video-update"})).await;
+    assert_eq!(approved["status"], "succeeded", "{approved}");
+    assert_eq!(
+        client
+            .tool("hetu_read_video_episode", read_input.clone())
+            .await,
+        before
+    );
+    let executed = client
+        .tool("hetu_execute_management_operation", execute.clone())
+        .await;
+    assert_eq!(executed["status"], "succeeded", "{executed}");
+    let after = client
+        .tool("hetu_read_video_episode", read_input.clone())
+        .await;
+    assert_eq!(after["data"]["episode"]["title"], "等待汽笛");
+    assert_eq!(after["data"]["episode"]["revision"], 2);
+    let mut wrong = update.clone();
+    wrong["project_ref"] = project_ref(&foreign["data"]);
+    wrong["operation_key"] = json!("wrong-scope");
+    let denied = client.tool("hetu_prepare_management_operation", json!({"management_ref":grant,"action":"hetu.video.episodes.update","input":wrong,"summary":"不能管理其他视频","operation_key":"prepare-foreign"})).await;
+    assert_eq!(denied["error"]["code"], "forbidden");
+    let reorder = client.tool("hetu_prepare_management_operation", json!({"management_ref":grant,"action":"hetu.video.episodes.reorder","input":{"project_ref":after["data"]["project_ref"],"episode_refs":[b["data"]["episode"]["video_episode_id"],a["data"]["episode"]["video_episode_id"]],"operation_key":"video-reorder"},"summary":"第二集移到前面","operation_key":"prepare-video-reorder"})).await;
+    assert_eq!(reorder["status"], "succeeded", "{reorder}");
+    let fixed = &reorder["data"];
+    let approved = client.tool("hetu_record_management_decision", json!({"management_ref":grant,"proposal_id":fixed["proposal_id"],"proposal_sha256":fixed["proposal_sha256"],"expected_state_revision":fixed["state_revision"],"decision":"approve","authorization_note":"测试作者明确决定重排两集目录。","operation_key":"decide-video-reorder"})).await;
+    assert_eq!(approved["status"], "succeeded", "{approved}");
+    let reorder_execute = json!({"management_ref":grant,"proposal_id":fixed["proposal_id"],"proposal_sha256":fixed["proposal_sha256"],"operation_key":"execute-video-reorder"});
+    let ordered = client
+        .tool("hetu_execute_management_operation", reorder_execute.clone())
+        .await;
+    assert_eq!(ordered["status"], "succeeded", "{ordered}");
+    client.close().await;
+    let mut resumed = Client::start_stable(&directory);
+    resumed.rpc("server/discover", json!({})).await;
+    assert_eq!(
+        resumed
+            .tool("hetu_execute_management_operation", execute)
+            .await,
+        executed
+    );
+    assert_eq!(
+        resumed
+            .tool("hetu_execute_management_operation", reorder_execute)
+            .await,
+        ordered
+    );
+    let current = resumed.tool("hetu_read_video_episode", read_input).await;
+    assert_eq!(current["data"]["episode"], after["data"]["episode"]);
+    assert_eq!(current["data"]["episode_number"], 2);
+    let history = resumed.tool("hetu_read_video_episode", json!({"management_ref":grant,"video_episode_id":a["data"]["episode"]["video_episode_id"],"revision":1})).await;
+    assert_eq!(history["data"]["episode"], a["data"]["episode"]);
+    assert_eq!(history["data"]["is_head"], false);
+    let read_project = resumed
+        .tool(
+            "hetu_read_video_project",
+            json!({"management_ref":grant,"video_project_id":project_id}),
+        )
+        .await;
+    assert_eq!(read_project["status"], "succeeded", "{read_project}");
+    assert_eq!(
+        read_project["data"]["episodes"][0]["episode"]["video_episode_id"],
+        b["data"]["episode"]["video_episode_id"]
     );
     resumed.close().await;
 }

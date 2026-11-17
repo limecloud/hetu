@@ -5,7 +5,7 @@ await mkdir(new URL('brand/',out),{recursive:true});await mkdir(new URL('images/
 await cp(new URL('assets/brand/icons/web/',repo),new URL('brand/',out),{recursive:true});
 for(const name of ['app-icon-1024.png','mascot-master.png','river-seal.svg'])await copyFile(new URL('assets/brand/'+name,repo),new URL('brand/'+name,out));
 await cp(new URL('assets/marketing/',repo),new URL('images/',out),{recursive:true});
-// 首页原型复用原生书库与工作台插画，不复制另一份原型页面。
+// 保留受管书库插画，桌面界面预览使用下方登记的实际截图。
 await cp(new URL('assets/illustrations/library/',repo),new URL('images/library/',out),{recursive:true});
 await mkdir(new URL('resources/brand/',out),{recursive:true});
 for(const name of ['mascot-master.png','icon-overview.png','icon-overview-en.png','wordmark.png','wordmark-en.png','wordmark-dark.png','wordmark-en-dark.png'])await copyFile(new URL('assets/brand/'+name,repo),new URL('resources/brand/'+name,out));
@@ -48,4 +48,4 @@ await writeFile(new URL('build/website/asset-versions.json', repo), JSON.stringi
 // 仅清理构建生成的旧文档副本；工程规范不属于网站发布资源。
 await rm(new URL('sources/',out),{recursive:true,force:true});
 await rm(new URL('prototype/',out),{recursive:true,force:true});
-console.log('品牌与原生插画已同步；交互原型仅在首页，工程文档不参与发布。');
+console.log('品牌、插画与实际截图已核验同步，工程文档不参与发布。');

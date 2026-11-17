@@ -4,9 +4,10 @@ import { PluginPackage } from "./package.ts";
 import {mkdtemp,writeFile,rm} from "node:fs/promises";
 import os from "node:os";
 import { spawn } from "node:child_process";
-import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { skillSummaries } from "./skills.ts";
+import { capabilitiesSha } from "./dispatch.ts";
 const flags = process.argv.slice(2);
 if (flags.length !== 4 || flags[0] !== "--directory" || flags[2] !== "--core-cli") throw new Error("插件管理连接参数无效。");
 let wire = "";
@@ -47,14 +48,13 @@ async function runtime() {
     child.stdin.on("error", () => {});
     child.stdin.end(value === undefined ? "" : JSON.stringify(value));
   });
-  const capabilities = await run(["capabilities"]);
-  const capabilities_sha256 = createHash("sha256").update(JSON.stringify(capabilities)).digest("hex");
-  if (["hetu.plugins.capabilities","hetu.plugin_access.capabilities"].includes(request.action)) return { format_version: 1, ...capabilities, capabilities_sha256 };
-  if (input.capabilities_sha256 !== capabilities_sha256) throw new Error("插件能力已变化，请重新发现Schema。");
-  const data = [...capabilities.data_actions,...(capabilities.core_actions??[])].some((a: any) => a.name === input.action);
-  if (!data && !capabilities.actions.some((a: any) => a.id === input.action)) throw new Error("插件未声明该动作。");
-  return { format_version: 1, plugin_id: pkg.manifest.id, package_sha256: pkg.sha256,
-    capabilities_sha256, result: await run([data ? "call" : "invoke", input.action, "--input", "-"], input.arguments) };
+  if (["hetu.plugins.capabilities","hetu.plugin_access.capabilities"].includes(request.action)) {
+    const capabilities = await run(["capabilities"]);
+    const capabilities_sha256 = capabilitiesSha(capabilities);
+    return { format_version: 1, ...capabilities, capabilities_sha256 };
+  }
+  return await run(["dispatch", "--input", "-"], {capabilities_sha256:input.capabilities_sha256,
+    action:input.action, arguments:input.arguments});
   } finally {if(privateDirectory)await rm(privateDirectory,{recursive:true,force:true});}
 }
 const revoke = async (pkg: InstalledPackageIdentity) => new Promise<void>((resolve, reject) => {
@@ -77,7 +77,7 @@ try {
     case "hetu.plugins.inspect": data = { ...(await store.inspect()), state_directory: store.directory }; break;
     case "hetu.plugins.inspect_package": {
       const pkg = await PluginPackage.inspect(request.input.package_directory);
-      data = { package_sha256: pkg.sha256, manifest: pkg.manifest,
+      data = { package_sha256: pkg.sha256, manifest: pkg.manifest, skills: skillSummaries(pkg),
         code_execution: !!pkg.manifest.runtime, note: "安装并启用后可使用宿主公开核心能力。" };
       break;
     }

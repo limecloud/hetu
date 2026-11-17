@@ -81,6 +81,8 @@ let management: ManagementReview | undefined;
 let versions: VersionReview | undefined;
 let resources: ResourceReview | undefined;
 let media: MediaAccess | undefined;
+let pluginMedia: MediaAccess | undefined;
+const pluginMediaUrls = new Set<string>();
 let library: CreativeLibrary;
 let settingsServer: AppServer;
 let settings: SettingsReview;
@@ -238,6 +240,9 @@ async function flushSurface() {
 }
 async function closeSurface() {
   await flushSurface();
+  await pluginMedia?.dispose();
+  pluginMedia = undefined;
+  pluginMediaUrls.clear();
   binding = undefined;
   if (surface) {
     window.contentView.removeChildView(surface);
@@ -1443,7 +1448,7 @@ app
       denyPermissions(s);
       s.webRequest.onBeforeRequest((details, callback) =>
         callback({
-          cancel: !details.url.startsWith("hetu-plugin://" + token + "/"),
+          cancel: !details.url.startsWith("hetu-plugin://" + token + "/") && !pluginMediaUrls.has(details.url),
         }),
       );
       s.protocol.handle("hetu-plugin", (request) => {
@@ -1457,7 +1462,7 @@ app
             headers: {
               "Content-Type": mime(relative),
               "Content-Security-Policy": policy(
-                "default-src [none]; script-src [self]; style-src [self] [unsafe-inline]; img-src [self] data:; font-src [self]; connect-src [none]; frame-src [none]; object-src [none]; base-uri [none]; form-action [none]",
+                "default-src [none]; script-src [self]; style-src [self] [unsafe-inline]; img-src [self] data: hetu-media:; media-src hetu-media:; font-src [self]; connect-src [none]; frame-src [none]; object-src [none]; base-uri [none]; form-action [none]",
               ),
             },
           });
@@ -1465,6 +1470,7 @@ app
           return new Response(null, { status: 404 });
         }
       });
+      s.protocol.handle("hetu-media", request => pluginMedia?.handle(request) ?? new Response(null,{status:410}));
       surface = new WebContentsView({
         webPreferences: {
           partition,
@@ -1548,11 +1554,17 @@ app
         work:current.work,check,request:(action,input)=>pluginRequest(current,action,input),
         preferences:()=>({theme:localState.preferences.appearance,language:localState.preferences.language??"zh-CN"}),
         closeView:()=>{check();requestPluginReturn();},
+        mediaOpen:async(input)=>{
+          check();if(!server)throw new Error("作品连接已关闭。");
+          if(!pluginMedia){const selected=current,selectedServer=server;pluginMedia=new MediaAccess(current.work,server,()=>binding===selected&&server===selectedServer&&host.active(selected.owner));}
+          const result=await pluginMedia.open(input);check();pluginMediaUrls.add(result.url);return result;
+        },
+        mediaRelease:async(url)=>{check();pluginMediaUrls.delete(url);await pluginMedia?.release(url);return {released:true};},
         openWork:async(target)=>{check();window.webContents.send("desktop:open-work",{work_ref:current.work,epoch:current.epoch,target});},
         handoff:async(input)=>{
           const connection=await ensureConnection(agentClient());check();
           const fixed=input.object_ref?[{kind:"plugin_object",work_ref:current.work,owner_plugin_id:current.owner,...input.object_ref as object}]:[];
-          clipboard.writeText("请通过河图的机器入口接续当前小说规划。先发现实际能力、读取固定成果，再按目标处理；保留原键，未知先回读。正文采纳、定稿与外部副作用另行决定。\n"+JSON.stringify({
+          clipboard.writeText("请通过河图的机器入口接续当前创作工程。先发现实际能力、读取固定成果，再按目标处理；保留原键，未知先回读。正文采纳、定稿、成片认可与外部副作用另行决定。\n"+JSON.stringify({
             goal:input.goal,work_ref:current.work,fixed_refs:fixed,node_id:input.node_id,run_ref:input.run_ref,
             client_adapter:agentClient(),management_ref:connection.management_ref,
             plugin_connection:pluginMachineConnection(current.owner,current.work),

@@ -4,8 +4,11 @@ import Workbench from './Workbench.astro';
 import PluginVisual from './PluginVisual.astro';
 import SkillsCatalog from './SkillsCatalog.astro';
 import AgentEntrypoints from './AgentEntrypoints.astro';
+import WorkflowShowcase from './WorkflowShowcase.astro';
 import AuthorPrinciple from './AuthorPrinciple.astro';
-import StoryBridge from './StoryBridge.astro';
+import CreativeResults from './CreativeResults.astro';
+import RevisionExperience from './RevisionExperience.astro';
+import ProjectLayers from './ProjectLayers.astro';
 import CreativeRoutes from './CreativeRoutes.astro';
 import MarketEvidence from './MarketEvidence.astro';
 import { positioning } from '../lib/positioning';
@@ -17,11 +20,6 @@ const { locale } = Astro.props;
 const m = messages(locale);
 const p = positioning(locale);
 const en = locale === 'en';
-const icons = [
-  'M5 10h14v11H5z M8 10V7a4 4 0 0 1 8 0v3 M12 14v3',
-  'M3 11 12 3l9 8 M5 10v11h14V10 M9 21v-7h6v7',
-  'M5 3h14v18H5z M8 12l3 3 5-6',
-];
 ---
 <section class="hero-stage">
   <picture class="hero-backdrop">
@@ -30,8 +28,8 @@ const icons = [
   </picture>
   <div class="container hero">
     <div class="hero-copy">
-      <h1>{m.hero.line1}<br/><em>{m.hero.line2}</em></h1>
-      <p class="hero-description">{m.hero.description}</p>
+      <h1>{m.hero.line1}<br/><em>{en?m.hero.line2:<><span class="hero-phrase">看见它的</span><wbr/><span class="hero-phrase">下一种表达。</span></>}</em></h1>
+      <p class="hero-description">{en?'Start a novel, a script or a short video. Your Agent creates. You read, watch and shape what comes next.':'从小说、剧本或短视频开始。让熟悉的 Agent 推进，回河图阅读、观看与取舍。'}</p>
       <a class="hero-author-voice" href="#author-values">{en?'Your taste and creative judgment lead the way.':'品味、判断与创意，始终由你掌握。'}</a>
       <nav class="hero-protocols" aria-label={en?'Connect your Agent':'连接你的 Agent'}>
         <a href={route(locale,'docs/agents')+'#mcp'}>MCP ↗</a>
@@ -39,59 +37,39 @@ const icons = [
         <a href={route(locale,'integrations')+'#skills-catalog'}>Skills ↗</a>
       </nav>
       <div class="hero-actions">
-        <a class="button primary" href={prototype(locale)}>{locale==='en'?'Try it now':'立即体验'}<span aria-hidden="true">↗</span></a>
+        <a class="button primary" href={prototype(locale)}>{locale==='en'?'Explore the workspace':'查看创作工作台'}<span aria-hidden="true">↗</span></a>
         <a class="button secondary" href={route(locale,'docs/install')}>{en?'Download Hetu':'下载桌面版'}<span aria-hidden="true">→</span></a>
       </div>
-      <p class="hero-quick-start"><a class="text-link" href={route(locale,'docs/getting-started')}>{en?'Give your Agent a goal, then review what comes back':'向 Agent 说出目标，回来阅读或观看成果'}<span aria-hidden="true">→</span></a></p>
       <p class="hero-note">{m.hero.note}</p>
     </div>
   </div>
 </section>
 <div class="container">
+  <section class="section results-section" aria-label={en?'Explore original creative examples':'查看原创创作示例'}><CreativeResults locale={locale}/></section>
   <div class="hero-market-signal">
     <p><strong>{en?evidence.global.downloads_q1_2025.display:evidence.china.drama_users.display}</strong><span>{en?'global short-drama app downloads / Q1 2025':'中国微短剧用户 / 2025年12月'}</span></p>
     <a class="text-link" href="#market-evidence">{en?'See the evidence and scope':'查看数据与口径'} ↓</a>
     <p class="hero-agent-signal">{en?'Agent-friendly software':'AI 友好的创作软件'}<strong>MCP / CLI / Skills</strong></p>
   </div>
-  <AuthorPrinciple locale={locale}/>
-  <AgentEntrypoints locale={locale}/>
-  <div class="assurances">
-    {m.promises.map((promise,index)=><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d={icons[index]}/></svg><span><b>{promise.title}</b><small>{promise.description}</small></span></div>)}
-  </div>
-  <MarketEvidence locale={locale}/>
-  <StoryBridge locale={locale}/>
   <CreativeRoutes locale={locale}/>
+  <WorkflowShowcase locale={locale}/>
+  <RevisionExperience locale={locale}/>
   <section class="section workspace-section" id="prototype">
     <div class="section-head">
       <div><h2>{m.workspace.title}</h2></div>
-      <span class="demo-version">v{version} / macOS</span>
+      <span class="demo-version">v{version} / Electron</span>
     </div>
     <p class="section-intro">{m.workspace.body}</p>
     <Workbench locale={locale}/>
   </section>
-  <section class="section features-section" id="features">
-    <div class="section-head"><div><h2>{m.features.title}</h2></div><p>{m.features.intro}</p></div>
-    <div class="feature-grid">
-      {m.features.items.map((item)=><article class="feature">
-        <div class="feature-art"><img src={assetURL('/images/'+item.image)} width="1254" height="1254" alt={item.alt} loading="lazy"/></div>
-        <h3>{item.title}</h3><p>{item.body}</p>
-      </article>)}
-    </div>
-  </section>
+  <ProjectLayers locale={locale}/>
+  <AuthorPrinciple locale={locale}/>
   <section class="section plugin-home">
     <div class="plugin-home-grid"><div><h2>{en ? 'A workspace that grows with your story.' : '作品越深入，工具越贴合。'}</h2><p>{en ? 'Explore a growing cast as a relationship graph. Trace events on a story timeline. Add the tools you need, let your Agent organize the structure and keep your attention on the creative choices.' : '人物多了，用关系图看清彼此牵连；时间复杂了，用时间线核对事件顺序。按需添加工具，让 Agent 整理结构，把注意力留给创作判断。'}</p><div class="plugin-home-links"><a class="text-link" href={route(locale, 'plugins')}>{en ? 'Explore creative plugins' : '探索创作插件'} →</a><a class="text-link" href={route(locale, 'docs/plugin-development')}>{en ? 'Build a plugin' : '开发你的插件'} →</a></div></div><PluginVisual locale={locale}/></div>
   </section>
   <SkillsCatalog locale={locale} compact/>
-  <section class="section workflow-section">
-    <div class="section-head"><div><h2>{m.workflow.title}</h2></div><a class="text-link" href={route(locale,'workflow')}>{m.nav.workflow} <span aria-hidden="true">→</span></a></div>
-    <div class="steps">{m.workflow.steps.map((step,index)=><article class="step"><span>0{index+1}</span><h3>{step.title}</h3><p>{step.body}</p></article>)}</div>
-  </section>
-  <section class="format-section">
-    <div><h2>{m.formats.title}</h2><p>{m.formats.body}</p><a class="text-link" href={route(locale,'docs/formats-and-delivery')}>{m.formats.cta} <span aria-hidden="true">→</span></a></div>
-    <div class="format-files" aria-label={locale==='en'?'Document formats':'文档格式'}>
-      {['.md','.fountain','.docx','.pdf'].map((format,index)=><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 2h9l5 5v15H5z M14 2v6h5 M9 13h6 M9 17h6"/></svg><b>{format}</b><span>{m.formats.labels[index]}</span></div>)}
-    </div>
-  </section>
+  <AgentEntrypoints locale={locale}/>
+  <MarketEvidence locale={locale}/>
   <section class="section home-questions">
     <div class="section-head"><div><h2>{p.questionsTitle}</h2></div></div>
     <div class="faq-list">{p.questions.map(([q,a])=><details><summary>{q}<span aria-hidden="true">+</span></summary><p>{a}</p></details>)}</div>

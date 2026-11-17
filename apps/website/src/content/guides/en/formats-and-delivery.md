@@ -17,7 +17,7 @@ A review bundle and a formal delivery have different purposes. Novel finalizatio
 | Collaboration and reading | DOCX, PDF, TXT | Inspect conversion and the recipient’s template |
 | Video and editing project | Selected video, subtitles, audio, assets and editable external project | Full playback, sound, text and source dependencies |
 
-Let your Agent prepare an import, export or delivery proposal, then inspect its scope and preview before execution. Manual import and export remain available. The homepage demo does not download submission files.
+Let your Agent prepare an import, export or delivery proposal, then inspect its scope and preview before execution. Manual import and export remain available. The website preview does not generate delivery files.
 
 ## Before a handoff
 

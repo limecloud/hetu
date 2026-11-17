@@ -1,0 +1,28 @@
+---
+import { route, type Locale } from '../lib/site';
+import '../styles/creative-experience.css';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const en = locale==='en';
+const layers = en?[
+  ['Manuscript','Your words, ready to read.','Chapter 1 / The last ferry','A manuscript or a script, organized into chapters or scenes.','.md / .fountain'],
+  ['Story bible','Keep the story consistent.','Qing / The boatkeeper / The river landing','Characters, locations and the details a new draft needs to respect.','Characters / Locations / Sources'],
+  ['Assets','Every image has its place.','Character references / Storyboards','Keep references connected to their characters and shots.','Images / Clips / Sound'],
+  ['Revisions','A history you can continue.','R1 → Your note → R2 awaiting review','Read earlier results and continue with the note that led to a change.','Original / Feedback / Candidate'],
+  ['Delivery','Take the work further.','Selected revision and its material','Choose the revision to deliver, with sources and editable project files.','.docx / .pdf / Project files'],
+]:[
+  ['文稿','完整阅读文稿。','第一章 / 最后一班渡船','小说按卷章展开，剧本按分集与场次组织。','.md / .fountain'],
+  ['设定','每次接续，都有据可循。','沈青 / 船夫 / 渡口','人物、地点与关键细节，成为下一次创作的依据。','人物 / 地点 / 来源'],
+  ['素材','画面与声音，都有自己的位置。','人物参考 / 场景 / 分镜','参考图关联人物，镜头连着素材，不再散落各处。','图片 / 片段 / 声音'],
+  ['修订','每一次选择，都能继续。','第 1 版 → 你的意见 → 第 2 版待审','回看原版与意见，沿同一任务接续下一次修改。','原版 / 意见 / 候选'],
+  ['交付','带走成果，也带走继续的可能。','所选版本与配套材料','确认交付版本，连同来源、素材与可编辑工程交接。','.docx / .pdf / 工程文件'],
+];
+---
+<section class="section project-layers" id="project-layers" data-project-layers aria-labelledby="layers-title">
+  <div class="project-layer-copy"><h2 id="layers-title">{en?'More than a file. A work you can build on.':<>每一份成果，<br/>都能接着创作。</>}</h2><p>{en?'Words, references and decisions stay connected. Start with any kind of project.':'文稿、资料和每次选择连在一起。小说、剧本、视频，各有自己的工程。'}</p><a class="text-link" href={route(locale,'docs/formats-and-delivery')}>{en?'Explore formats and delivery':'了解格式与交付'} →</a></div>
+  <div class="project-layer-visual"><div class="project-layer-stack" role="tablist" aria-orientation="vertical" aria-label={en?'Explore the project':'查看工程层次'}>{layers.map(([label],i)=><button type="button" role="tab" id={`layer-tab-${i}`} aria-controls={`layer-panel-${i}`} aria-selected={i===0?'true':'false'} tabindex={i===0?0:-1} data-layer-tab={i} style={`--layer-index:${i}`}><span class="layer-sheet-lines" aria-hidden="true"></span><span>{String(i+1).padStart(2,'0')}</span><strong>{label}</strong><span aria-hidden="true">↗</span></button>)}</div><div class="project-layer-details">{layers.map(([label,title,file,body,formats],i)=><div id={`layer-panel-${i}`} role="tabpanel" aria-labelledby={`layer-tab-${i}`} hidden={i!==0} tabindex="0"><span class="layer-detail-type">{label}</span><h3>{title}</h3><strong>{file}</strong><p>{body}</p><span class="layer-formats">{formats}</span></div>)}</div></div>
+</section>
+<script>
+  import { initProjectLayers } from '../scripts/creative-experience';
+  initProjectLayers();
+</script>

@@ -480,6 +480,8 @@ TaskGrant、CheckoutRecord 和 ContinuationReceipt 留在本机私有存储或�
 
 本节定义目标语义，不宣称这些字段已经进入现有Schema。实现须发布各自机器合同、版本及兼容策略；不将新字段写入旧记录后重算摘要。已有Novel、DramaProject、Document、CreativeTask及路径保持，新增登记投影复用原身份，授权另行核验。
 
+视频项目与分集当前发布字段以`contracts/schemas/work.schema.json`为准。分集元数据维护固定`project_ref`与分集`expected`修订／摘要，只修改`title,brief,archived`，不替换分集身份或专业制作成果。重排提交完整、不重复的`video_episode_id`序列，顺序只由项目拥有；分集历史仍可读取，历史项目组合不冒充所有子对象在同一时点的快照。专业制作对象由插件维护，不能将本节目标表直接当已发布输入。
+
 | 对象 | 必需语义字段 | 不变量 |
 | --- | --- | --- |
 | WorkRef | `workspace_id,kind,object_id` | kind为novel／drama／video；指向明确类型，名称和目录不作身份；不构成授权 |

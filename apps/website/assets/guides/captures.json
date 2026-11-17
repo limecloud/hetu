@@ -82,5 +82,37 @@
       968,
       315
     ]
+  },
+  "electron-library.webp": {
+    "width": 1440,
+    "height": 900,
+    "sha256": "5cc26807eed2088d6f09f856e88ce2190f75224e675c4ada205c68b41b5a7684",
+    "source": "electron-development",
+    "captured_at": "2026-11-17T03:50:57.646Z",
+    "fixture": "isolated original public samples"
+  },
+  "electron-novel.webp": {
+    "width": 1440,
+    "height": 900,
+    "sha256": "fb356daa93039b06467a48678b993e080df5fb22817109ac5589e3db7b147b85",
+    "source": "electron-development",
+    "captured_at": "2026-11-17T03:50:57.646Z",
+    "fixture": "isolated original public samples"
+  },
+  "electron-script.webp": {
+    "width": 1440,
+    "height": 900,
+    "sha256": "0145cf1d79a7c0a152b5a79e7ef8f029d921bbba8badc13b1990c2baae608b11",
+    "source": "electron-development",
+    "captured_at": "2026-11-17T03:50:57.646Z",
+    "fixture": "isolated original public samples"
+  },
+  "electron-review.webp": {
+    "width": 1440,
+    "height": 900,
+    "sha256": "fcce1f445571a25eabd5f7151c668007c698a8d45fa2fe700c43afcbef9c9e2f",
+    "source": "electron-development",
+    "captured_at": "2026-11-17T03:50:57.646Z",
+    "fixture": "isolated original public samples"
   }
 }

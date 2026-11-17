@@ -1,0 +1,113 @@
+{
+  "logos": [
+    {
+      "id": "codex",
+      "file": "codex.svg",
+      "source_url": "https://registry.npmmirror.com/@lobehub/icons-static-svg/1.103.0/files/icons/codex-color.svg",
+      "source": "@lobehub/icons-static-svg 1.103.0",
+      "sha256": "4a2f43ce46b5b6e3722c95088f88d26ef91e6a8c2e598e70642a1c54367386e4",
+      "retrieved_on": "2026-11-17"
+    },
+    {
+      "id": "claude-code",
+      "file": "claude-code.svg",
+      "source_url": "https://registry.npmmirror.com/@lobehub/icons-static-svg/1.103.0/files/icons/claudecode-color.svg",
+      "source": "@lobehub/icons-static-svg 1.103.0",
+      "sha256": "670b3d8d749d0815ad8f7e62a59d51cb5e2053cb19403f3541a8aed7036a877f",
+      "retrieved_on": "2026-11-17"
+    },
+    {
+      "id": "cursor",
+      "file": "cursor.svg",
+      "source_url": "https://registry.npmmirror.com/@lobehub/icons-static-svg/1.103.0/files/icons/cursor.svg",
+      "source": "@lobehub/icons-static-svg 1.103.0",
+      "sha256": "0cb51bddf264ae108926fd554c063ef40fc1aac3c5c921ddb39ad184e4e5d0ef",
+      "retrieved_on": "2026-11-17"
+    },
+    {
+      "id": "deepseek",
+      "file": "deepseek.svg",
+      "source_url": "https://registry.npmmirror.com/@lobehub/icons-static-svg/1.103.0/files/icons/deepseek-color.svg",
+      "source": "@lobehub/icons-static-svg 1.103.0",
+      "sha256": "deba5f98a5c1796e20fcac3149bcd7eb8a32f0bdd04d048819400b1f28bd1439",
+      "retrieved_on": "2026-11-17"
+    },
+    {
+      "id": "glm",
+      "file": "glm.svg",
+      "source_url": "https://registry.npmmirror.com/@lobehub/icons-static-svg/1.103.0/files/icons/zhipu-color.svg",
+      "source": "@lobehub/icons-static-svg 1.103.0",
+      "sha256": "8174e65ff71647d5c705c920c953a82bd723d9e3e42887bdd4ffc9dfe51207a0",
+      "retrieved_on": "2026-11-17"
+    },
+    {
+      "id": "kimi",
+      "file": "kimi.svg",
+      "source_url": "https://registry.npmmirror.com/@lobehub/icons-static-svg/1.103.0/files/icons/kimi.svg",
+      "source": "@lobehub/icons-static-svg 1.103.0",
+      "sha256": "ed08131b46acf70e6e2144eceb775e74098b58ea65fa21eaee04be7b05cfe63b",
+      "retrieved_on": "2026-11-17"
+    },
+    {
+      "id": "qwen",
+      "file": "qwen.svg",
+      "source_url": "https://registry.npmmirror.com/@lobehub/icons-static-svg/1.103.0/files/icons/qwen-color.svg",
+      "source": "@lobehub/icons-static-svg 1.103.0",
+      "sha256": "a158a0e3ed5b541e4f91384ece02c3acf0a0d81b7b11a46d77bafb248b09e32c",
+      "retrieved_on": "2026-11-17"
+    },
+    {
+      "id": "workbuddy",
+      "file": "workbuddy.svg",
+      "source_url": "https://assets.workbuddy.cn/web/workbuddy/8e036eb06f87c6b08437546b3cbd58e60af45b10/assets/logo.svg",
+      "source": "WorkBuddy official website",
+      "sha256": "10ccbc099e7bc3d5ff12c315c4edd7b21386aa7166c1ec19997b3d55010d5c7d",
+      "retrieved_on": "2026-11-17"
+    },
+    {
+      "id": "openai",
+      "file": "openai.svg",
+      "source_url": "https://registry.npmmirror.com/@lobehub/icons-static-svg/1.103.0/files/icons/openai.svg",
+      "source": "@lobehub/icons-static-svg 1.103.0",
+      "sha256": "a595df6b423920c67a7f8f73c063e4bfb72d415948097b6cac063a2366bb5186",
+      "retrieved_on": "2026-11-17"
+    },
+    {
+      "id": "anthropic",
+      "file": "anthropic.svg",
+      "source_url": "https://registry.npmmirror.com/@lobehub/icons-static-svg/1.103.0/files/icons/anthropic.svg",
+      "source": "@lobehub/icons-static-svg 1.103.0",
+      "sha256": "e833fdfa7e7187a86a05b870925067556a506dcd4239089aed73e1e58c9366a3",
+      "retrieved_on": "2026-11-17"
+    },
+    {
+      "id": "gemini",
+      "file": "gemini.svg",
+      "source_url": "https://registry.npmmirror.com/@lobehub/icons-static-svg/1.103.0/files/icons/gemini-color.svg",
+      "source": "@lobehub/icons-static-svg 1.103.0",
+      "sha256": "8ab0a9bafec11f7e69bcb9fc4ffd8f1bc927d1ddcbbb6ff36dee5ae8b5a9d602",
+      "retrieved_on": "2026-11-17"
+    },
+    {
+      "id": "doubao",
+      "file": "doubao.svg",
+      "source_url": "https://registry.npmmirror.com/@lobehub/icons-static-svg/1.103.0/files/icons/doubao-color.svg",
+      "source": "@lobehub/icons-static-svg 1.103.0",
+      "sha256": "3cd31ba03ae44b8c29561597a3b863809efecb13fcdfd08407a086df86a69b55",
+      "retrieved_on": "2026-11-17"
+    },
+    {
+      "id": "hunyuan",
+      "file": "hunyuan.svg",
+      "source_url": "https://registry.npmmirror.com/@lobehub/icons-static-svg/1.103.0/files/icons/hunyuan-color.svg",
+      "source": "@lobehub/icons-static-svg 1.103.0",
+      "sha256": "510e7bb438506b5aadfaf8b9551d1606efd5b4171161a64a64204c72a453658a",
+      "retrieved_on": "2026-11-17"
+    }
+  ],
+  "license": {
+    "source_url": "https://raw.githubusercontent.com/lobehub/lobe-icons/master/LICENSE",
+    "file": "LICENSE-lobe-icons.txt",
+    "sha256": "add9d7531d1b21646317a8958e38fc727506fa39d24bdecb44154d943c82753a"
+  }
+}

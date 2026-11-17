@@ -1,1 +1,1 @@
-{"name":"@hetu/plugin-sdk","version":"0.10.0","private":true,"type":"module","exports":"./src/index.ts"}
+{"name":"@hetu/plugin-sdk","version":"0.11.0","private":true,"type":"module","exports":"./src/index.ts"}

@@ -9,6 +9,8 @@ pub(super) const PROPOSABLE: &[&str] = &[
     "hetu.video.projects.create",
     "hetu.video.projects.update",
     "hetu.video.episodes.create",
+    "hetu.video.episodes.update",
+    "hetu.video.episodes.reorder",
     "hetu.novels.initialize",
     "hetu.novels.update",
     "hetu.novels.save_structure",

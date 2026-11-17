@@ -15,42 +15,36 @@ Reference drafts, working manuscripts and author finals have separate roles. Rev
 
 ## Inspect sources first
 
-Open the sample book in the [homepage demo](/en/#prototype). Plot beats, consistency checks and the drama outline show fixed sample results with original citations and navigation to working text.
+In your project’s reference review, read the fixed source and original text before comparing the current manuscript. A changed character identity or passage may make an earlier suggestion unsuitable. A timeline advisory can signal missing information rather than a proven error.
 
-A timeline advisory signals incomplete information, not a proven error. The demo does not analyze edited text. Changed excerpts require another source check.
+The [desktop preview](/en/#prototype) shows the current Electron review screen with original sample projects. The website’s revision examples are prepared content and do not analyze or save your work.
 
-## Record a review decision
+## Save specific feedback and continue the task
 
-Enter a specific comment in **Draft review**, then select **Request changes**. A comment is required.
+Select the candidate you want to discuss, write a precise comment, then save the selection and feedback. For example:
 
-To approve, inspect the source, check the evidence box and select **Approve review**. This records a reference decision without overwriting text, finalizing a manuscript or sending an agent a message.
+> Keep the last question. Rewrite only the three lines after he recognizes the letter. Do not add family history or change the ending.
 
-## Continue the task in the Mac app
+Use the task’s continuation handoff to return to your chosen Agent. Earlier results and feedback stay with the same task. Saved feedback does not prove the Agent has acted; refresh and read the actual returned revision.
 
-Under **Revision feedback**, choose the result you are responding to. Describe what to preserve and what should change, then select **Save revision feedback**. For example:
+A working reference may continue changing, while a submitted candidate retains its fixed revision. Selecting a reference does not overwrite your manuscript or finalize it.
 
-> Keep the last question. Rewrite only the three lines after he notices the clasp. Do not add family history or change the ending.
+![Current Electron reference review with two candidates and a feedback field](/images/guides/electron-review.webp)
 
-Select **Copy continuation prompt** and continue in your external Agent client. The task retains the earlier result and your specific feedback, so this revision does not need a new task.
-
-Saved feedback does not prove that an Agent has acted on it. Refresh the task to inspect the actual returned draft. A working reference may continue changing; a submitted candidate keeps its fixed revision.
-
-![Reference comparison and adoption in the homepage demo](/images/guides/quickstart-review-en.webp)
-
-*Homepage demo screenshot showing comparison and adoption. The continuation steps above belong to the Mac task view; the demo does not run an Agent.*
+*Actual Electron client with original example projects. Chinese interface shown.*
 
 ## Adopt an excerpt
 
 1. Save any edits to Chapter 1.
-2. Select **Adopt an excerpt**.
+2. Select the reference passage you want to adopt.
 3. Compare the current passage with the reference excerpt.
 4. Confirm adoption and inspect the new working revision.
 
-The demo replaces only the clasp description. If the source changed, recheck the selection. The native client supports author-selected excerpts and replacement text.
+Replace only the selected range. If the current manuscript or source changed, inspect the selection again before confirming.
 
 ## Finalize independently
 
-In the editor, select **Finalize revision**, inspect the saved revision and confirm the text, canon and evidence. A manually written manuscript can be finalized without a reference-review approval acting as an automatic gate.
+Inspect the saved revision, then confirm the text, canon and evidence before finalizing. A manually written manuscript can be finalized without a reference-review approval acting as an automatic gate.
 
 Later edits retain earlier finals. Changed text, canon or evidence requires renewed checks; new text does not inherit an old decision.
 

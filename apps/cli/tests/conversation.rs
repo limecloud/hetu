@@ -16,8 +16,14 @@ struct Session {
 }
 impl Session {
     fn new() -> Self {
+        Self::new_for("novel")
+    }
+    fn new_for(kind: &str) -> Self {
         let root = tempfile::tempdir().unwrap();
-        let author=Kernel::open(json!({"workspace_path":root.path().join("work"),"mode":"author","create":{"title":"无窗口验收","locale":"zh-CN","operation_key":"init"}})).unwrap();
+        let author=Kernel::open(json!({"workspace_path":root.path().join("work"),"mode":"author","create":{"work_type":kind,"title":"无窗口验收","locale":"zh-CN","operation_key":"init"}})).unwrap();
+        if kind == "video" {
+            ok(author.request(json!({"action":"hetu.video.projects.create","contract_revision":"1","input":{"title":"无窗口视频","brief":"独立项目","language_tag":"zh-CN","operation_key":"project"}})));
+        }
         let work = ok(
             author.request(json!({"action":"hetu.works.list","contract_revision":"1","input":{}}))
         )["works"][0]["work_ref"]
@@ -64,6 +70,52 @@ impl Session {
         ok(self.call("agent_operations.execute",json!({"proposal_id":p["proposal_id"],"proposal_sha256":p["proposal_sha256"],"operation_key":format!("e-{key}")})))["result"].clone()
     }
 }
+#[test]
+fn video_episode_metadata_and_order_are_managed_by_public_cli_without_gui() {
+    let s = Session::new_for("video");
+    let reference = |p: &Value| json!({"video_project_id":p["project"]["video_project_id"],"revision":p["project"]["revision"],"sha256":p["sha256"]});
+    let p = ok(s.call(
+        "video.projects.get",
+        json!({"video_project_id":s.work["object_id"]}),
+    ));
+    let a = s.apply("video.episodes.create", json!({"project_ref":reference(&p),"title":"第一集","brief":"雨夜旧站","operation_key":"first"}), "first");
+    let b = s.apply("video.episodes.create", json!({"project_ref":reference(&a),"title":"第二集","brief":"末班车","operation_key":"second"}), "second");
+    let before = ok(s.call(
+        "video.episodes.get",
+        json!({"video_episode_id":a["episode"]["video_episode_id"]}),
+    ));
+    let changed = s.apply("video.episodes.update", json!({"project_ref":before["project_ref"],"video_episode_id":a["episode"]["video_episode_id"],"expected":{"revision":before["episode"]["revision"],"sha256":before["sha256"]},"title":"先听见车轮","brief":"只更新制作计划，保留原素材与工程。","archived":false,"operation_key":"metadata"}), "metadata");
+    assert_eq!(changed["episode"]["revision"], 2);
+    let reordered = s.apply("video.episodes.reorder", json!({"project_ref":reference(&b),"episode_refs":[b["episode"]["video_episode_id"],a["episode"]["video_episode_id"]],"operation_key":"reorder"}), "reorder");
+    assert_eq!(
+        reordered["project"]["episode_refs"][0],
+        b["episode"]["video_episode_id"]
+    );
+    let read = ok(s.call(
+        "video.episodes.get",
+        json!({"video_episode_id":a["episode"]["video_episode_id"]}),
+    ));
+    assert_eq!(read["episode"], changed["episode"]);
+    assert_eq!(read["episode_number"], 2);
+    let old = ok(s.call(
+        "video.episodes.get",
+        json!({"video_episode_id":a["episode"]["video_episode_id"],"revision":1}),
+    ));
+    assert_eq!(old["episode"], a["episode"]);
+    assert_eq!(old["is_head"], false);
+    let catalog = ok(s.call("agent_operations.catalog", json!({})));
+    for action in ["hetu.video.episodes.update", "hetu.video.episodes.reorder"] {
+        assert!(
+            catalog["actions"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|a| a["name"] == action
+                    && a["input_schema"]["properties"]["project_ref"].is_object())
+        );
+    }
+}
+
 #[test]
 fn version_snapshot_and_plugin_permissions_complete_in_conversation_without_gui() {
     let s = Session::new();

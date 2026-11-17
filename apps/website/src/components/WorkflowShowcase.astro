@@ -1,0 +1,56 @@
+---
+import { workflowScenarios } from '../lib/creation-workflow';
+import { route, type Locale } from '../lib/site';
+import { assetURL } from '../lib/assets';
+import AgentInstallPrompt from './AgentInstallPrompt.astro';
+import WorkflowClients from './WorkflowClients.astro';
+import WorkflowModels from './WorkflowModels.astro';
+import { workflowClients } from '../lib/workflow-clients';
+import '../styles/creation-workflow.css';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const en = locale === 'en';
+// 首页返工动画止于新版待审；确认与交付的必要决定留在完整流程中。
+const scenarios = workflowScenarios(locale).map(scene => scene.id === 'revision' ? {
+  ...scene, title: en?'Review & revise':'意见与返工', phases: scene.phases.slice(0,4),
+  artifacts: en?['Original & feedback','Focused revision','Revision comparison','Your decision']:['原版与意见','局部返工','新版对照','由你决定'],
+} : scene);
+const types = en ? ['Novel', 'Script', 'Short video'] : ['小说', '剧本', '短视频'];
+---
+<section class="section wf-showcase" id="creation-workflow" aria-labelledby="wf-title" data-agent-workflow data-client="codex">
+  <div class="section-head"><div><h2 id="wf-title">{en ? 'One idea. A whole creative workflow.' : '从一个想法，展开整个创作工程。'}</h2></div><a class="text-link" href={route(locale, 'workflow')}>{en ? 'Explore the full workflow' : '查看完整工作流'} →</a></div>
+  <p class="section-intro">{en ? 'Start a novel, a script or a short video. Your Agent moves it forward; you return to read, watch and decide.' : '小说、剧本、短视频，都可以直接开始。让 Agent 推进，回河图阅读、观看与取舍。'}</p>
+  <div class="wf-overview" aria-label={en ? 'How an Agent and Hetu support your creative work' : 'Agent 与河图如何承接创作'}>
+    <div class="wf-overview-agents"><span class="wf-caption">{en ? 'Choose your external Agent' : '选择你使用的外部 Agent'}</span><WorkflowClients locale={locale}/><p>{en ? 'Understand, plan, use tools' : '理解目标，规划与调用工具'}</p></div>
+    <span class="wf-overview-arrow" aria-hidden="true">↔</span>
+    <div class="wf-overview-core"><img src={assetURL('/brand/river-seal.svg')} width="40" height="40" alt=""/><div><strong>{en ? 'Hetu Luoshu' : '河图洛书'}</strong><p>{en ? 'Your work, sources and revisions' : '作品、资料、成果与版本'}</p></div></div>
+    <span class="wf-overview-arrow" aria-hidden="true">↔</span>
+    <div class="wf-overview-works"><div>{types.map(type => <strong>{type}</strong>)}</div><p>{en ? 'Read, watch, compare, decide' : '阅读、观看、比较与决定'}</p></div>
+  </div>
+  <div class="wf-demo" data-workflow-demo data-playing="false" data-play-label={en ? 'Play' : '播放'} data-pause-label={en ? 'Pause' : '暂停'}>
+    <div class="wf-demo-top"><div class="wf-tabs" role="tablist" aria-label={en ? 'Creative workflow scenarios' : '创作工作流场景'}>{scenarios.map((scene, index) => <button type="button" id={`wf-tab-${scene.id}`} role="tab" aria-controls={`wf-panel-${scene.id}`} aria-selected={index === 0 ? 'true' : 'false'} tabindex={index === 0 ? 0 : -1} data-workflow-tab={scene.id}>{scene.title}</button>)}</div><span class="wf-demo-label">{en ? 'Workflow demo' : '流程演示'}</span></div>
+    {scenarios.map((scene, sceneIndex) => <div class="wf-scene" id={`wf-panel-${scene.id}`} role="tabpanel" aria-labelledby={`wf-tab-${scene.id}`} hidden={sceneIndex !== 0} data-workflow-scene={scene.id} data-phase="0" data-phases={JSON.stringify(scene.phases)}>
+      <div class="wf-demo-body">
+        <svg class="wf-wires" aria-hidden="true"><path data-wire="agent"/><path data-wire="feedback"/>{scene.artifacts.map((_, index) => <path data-wire-artifact={index} class:list={{ 'is-active': index === scene.phases[0].artifact }}/>)}</svg>
+        <div class="wf-source"><span class="wf-caption">{en ? 'Your goal' : '你的目标'}</span><blockquote data-connect-prompt={scene.id === 'connect' ? scene.prompt : undefined}>{scene.prompt}</blockquote><div class="wf-agent" data-wf-node="agent"><div class="wf-node-heading"><img data-brand-logo data-selected-agent-icon src={workflowClients[0].icon} width="24" height="24" alt=""/><strong data-selected-agent-name>Codex</strong><span class="wf-caption">{en ? 'External Agent' : '外部 Agent'}</span></div><p data-wf-agent>{scene.phases[0].agent}</p><span class="wf-tool" data-selected-agent-method={scene.id === 'connect' ? '' : undefined}>{scene.id === 'connect' ? 'Codex Plugin' : scene.id === 'video' || scene.id === 'revision' ? (en ? 'Methods & production tools' : '创作方法与制作工具') : (en ? 'Skills & creative tools' : 'Skills 与创作工具')}</span></div></div>
+        <div class="wf-core" data-wf-node="core"><span class="wf-core-brand" style={`background-image: url('${assetURL('/brand/river-seal.svg')}')`} aria-hidden="true"></span><strong>{en ? 'Hetu' : '河图'}</strong><span class="wf-project">{scene.project}</span><div class="wf-core-tags"><span>{en ? 'Sources' : '资料'}</span><span>{en ? 'Tasks' : '任务'}</span><span>{en ? 'Revisions' : '版本'}</span></div><p data-wf-core>{scene.phases[0].hetu}</p></div>
+        <div class="wf-output"><ol class="wf-artifacts" aria-label={en ? 'Results of this workflow' : '本次创作成果'}>{scene.artifacts.map((artifact, index) => <li data-wf-artifact={index} class:list={{ 'is-current': index === scene.phases[0].artifact }}><span class="wf-artifact-dot" aria-hidden="true"></span><strong>{artifact}</strong><span data-wf-artifact-state>{index === scene.phases[0].artifact ? '←' : ''}</span></li>)}</ol><div class:list={['wf-result-preview', { 'wf-video-preview': scene.id === 'video' }]}>
+          {scene.id==='novel'&&<div class="wf-output-passage"><span>{en?'Chapter draft / R1':'章节参考稿 / 第 1 版'}</span><strong>{en?'Chapter 1 / The letter':'第一章 来信'}</strong><p>{en?'Rain had been falling for hours when the letter arrived. Lin left it sealed. His hand had stopped over the last stroke of the name.':'雨落到第三更，信才送到。林舟没有拆开。落款的最后一笔，他看了很久。'}</p><p>{en?'Outside, someone knocked three times. He slid the letter beneath the unlit lamp.':'门外传来三声叩门。他把信压在那盏未点的灯下。'}</p></div>}
+          {scene.id==='screenplay'&&<div class="wf-output-passage"><span>{en?'Script draft / R1':'剧本参考稿 / 第 1 版'}</span><strong>{en?'INT. TEA ROOM — NIGHT':'内景 茶室 夜'}</strong><p>{en?'Lin reaches for the pendant. His hand stops above it.':'林舟伸手，停在玉扣上方。'}</p><p class="wf-passage-dialogue">{en?'SU: You recognize it?':'苏晚：你认得它？'}</p><p>{en?'Lin withdraws his hand. Three knocks. They both turn.':'林舟收回手。三声叩门。两人同时回头。'}</p></div>}
+          {scene.id==='revision'&&<div class="wf-output-diff"><span>{en?'Shot 03 / 00:12–00:16':'第三镜 / 00:12–00:16'}</span><p><small>{en?'R1':'原版'}</small>{en?'Turn → hear a knock':'先回头，再听见叩门'}</p><p><small>{en?'R2':'新版'}</small>{en?'A knock → hold 1 second → turn':'叩门 → 停顿 1 秒 → 回头'}</p><strong>{en?'New candidate awaiting review':'新版候选待审阅'}</strong></div>}
+          {scene.id === 'video' && <><div class="wf-filmstrip" aria-label={en ? 'Illustrated three-shot animatic' : '三个镜头的预演示意'} style={`--wf-story: url('${assetURL('/images/story-actions.webp')}')`}>{[0,1,2].map(index => <div class="wf-film-frame" data-wf-frame={index} style={`--wf-frame: ${index}`}><span>0{index + 1}</span></div>)}</div><div class="wf-edit-tracks" aria-label={en ? 'Illustrated picture, sound and subtitle tracks' : '画面、声音与字幕轨道示意'}>{(en ? ['Picture', 'Sound', 'Subtitles'] : ['画面', '声音', '字幕']).map((label, index) => <div><span>{label}</span><div class={`wf-track wf-track-${index}`} aria-hidden="true"><i></i><i></i><i></i></div></div>)}</div></>}
+          <div class="wf-preview-copy">{[0, 1, 2].map(index => <p data-wf-preview-line={index}>{scene.phases[0].preview[index] ?? ''}</p>)}</div>
+        </div></div>
+      </div>
+      <div class="wf-scene-footer"><p class="wf-current-step"><span class="wf-status-light" aria-hidden="true"></span><strong data-wf-phase-title>{scene.phases[0].title}</strong><span data-wf-phase-count>1 / {scene.phases.length}</span></p><div class="wf-steps" role="group" aria-label={en ? 'View a workflow step' : '查看工作流步骤'}>{scene.phases.map((phase, index) => <button type="button" data-workflow-step={index} aria-label={`${index + 1}. ${phase.title}`} aria-current={index === 0 ? 'step' : undefined}><span aria-hidden="true">{index + 1}</span><span>{phase.title}</span></button>)}</div></div>
+    </div>)}
+    <div class="wf-demo-bottom"><div class="wf-playback"><button type="button" data-workflow-play aria-label={en ? 'Play' : '播放'}><svg viewBox="0 0 24 24" aria-hidden="true"><path data-play-icon d="m9 5 11 7-11 7z"/></svg><span data-play-text>{en ? 'Play' : '播放'}</span></button><button type="button" data-workflow-replay><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10a8 8 0 1 1 1 8 M4 4v6h6"/></svg>{en ? 'Replay' : '重播'}</button></div><a class="text-link" data-workflow-detail href={route(locale, 'workflow') + '#connect'}>{en ? 'Follow this workflow' : '了解这条流程'} →</a></div>
+    <p class="wf-sr-only" aria-live="polite" data-workflow-announcement></p>
+  </div>
+  <WorkflowModels locale={locale}/>
+  <AgentInstallPrompt locale={locale} showClients={false}/>
+</section>
+<script>
+  import { initWorkflowDemos } from '../scripts/creation-workflow';
+  initWorkflowDemos();
+</script>

@@ -1,0 +1,9 @@
+---
+import { workflowClients } from '../lib/workflow-clients';
+import type { Locale } from '../lib/site';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+---
+<div class="wf-clients" role="group" aria-label={locale === 'en' ? 'Choose your Agent' : '选择你使用的 Agent'}>
+  {workflowClients.map((client, index) => <button type="button" data-workflow-client={client.id} aria-pressed={index === 0 ? 'true' : 'false'}><img data-brand-logo src={client.icon} width="24" height="24" alt=""/><span>{client.name}</span></button>)}
+</div>

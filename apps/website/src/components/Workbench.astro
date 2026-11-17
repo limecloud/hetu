@@ -1,33 +1,35 @@
 ---
 import type { Locale } from '../lib/site';
-import catalog from '../../../../integrations/catalog.json';
-import sharedStrings from '../../../../assets/localization/shared.json';
-import '../styles/workbench.css';
+import { route } from '../lib/site';
+import { assetURL } from '../lib/assets';
+import '../styles/workbench-preview.css';
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
-const plugins = import.meta.glob<{ version: string }>('../../../../integrations/codex/*/plugin.json', { eager: true, import: 'default' });
-const strings = sharedStrings as Record<string, { 'zh-CN': string; en: string }>;
-const demoCatalog = {
-  skills: catalog.skills,
-  skillTitles: Object.fromEntries(catalog.skills.map(id => {
-    const title = strings[`agent.skill.${id}`];
-    if (!title?.['zh-CN'] || !title.en) throw new Error(`缺少任务双语名称：${id}`);
-    return [id, [title['zh-CN'], title.en]];
-  })),
-  suites: catalog.suites.map(suite => {
-    const plugin = plugins[`../../../../integrations/codex/${suite.pluginName}/plugin.json`];
-    const title = strings[suite.titleKey];
-    if (!plugin?.version || !title?.['zh-CN'] || !title.en) throw new Error(`缺少题材包或双语名称：${suite.id}`);
-    return { id: suite.id, title, version: plugin.version };
-  }),
-};
+const en = locale === 'en';
+const screens = [
+  { id:'library', label:en?'Creative library':'创作库', alt:en?'Current Electron creative library with example projects':'当前 Electron 创作库与示例作品', guide:'creative-library' },
+  { id:'novel', label:en?'Manuscript':'阅读文稿', alt:en?'Current Electron manuscript reader showing an original Chinese sample':'当前 Electron 文稿阅读界面与原创示例', guide:'writing' },
+  { id:'script', label:en?'Script scenes':'剧本场次', alt:en?'Current Electron script workspace showing an original Chinese scene':'当前 Electron 剧本工作台与原创场次', guide:'screenplays' },
+  { id:'review', label:en?'Draft review':'参考稿审核', alt:en?'Current Electron reference draft review with two candidates':'当前 Electron 参考稿审核与两个候选', guide:'review' },
+];
 ---
-<div class="demo" data-hetu-demo data-agent-catalog={JSON.stringify(demoCatalog)} data-locale={locale} data-theme="light" role="region" aria-label={locale === 'en' ? 'Interactive Hetu Luoshu workspace demo' : '河图洛书工作台交互演示'}>
-  <div class="demo-app"></div>
-  <p class="demo-notice">{locale === 'en' ? 'In-page demo of the current macOS interface. No files, models or MCP connections are accessed. Refreshing resets all changes.' : '按当前 macOS 界面制作的页面内演示。不读写文件、不调用模型、不连接 MCP；刷新后所有修改重置。'}</p>
-  <noscript><p>{locale === 'en' ? 'Enable JavaScript to try the demo. The user guides are available without it.' : '启用 JavaScript 后可操作演示；使用指南无需 JavaScript 即可阅读。'}</p></noscript>
+<div class="workbench-preview" data-workbench-preview>
+  <div class="workbench-preview-tabs" role="tablist" aria-label={en?'Explore the desktop workspace':'查看桌面工作台'}>
+    {screens.map((screen,i)=><button type="button" role="tab" id={`workbench-tab-${screen.id}`} aria-controls={`workbench-panel-${screen.id}`} aria-selected={i===0?'true':'false'} tabindex={i===0?0:-1}>{screen.label}</button>)}
+  </div>
+  {screens.map((screen,i)=><div role="tabpanel" id={`workbench-panel-${screen.id}`} aria-labelledby={`workbench-tab-${screen.id}`} hidden={i!==0} data-workbench-panel>
+    <a class="workbench-preview-image" href={assetURL(`/images/guides/electron-${screen.id}.webp`)} data-preview-zoom aria-label={`${en?'Enlarge':'放大'} ${screen.label}`}>
+      <img src={assetURL(`/images/guides/electron-${screen.id}.webp`)} width="1440" height="900" alt={screen.alt} loading="lazy"/>
+      <span>{en?'Enlarge':'放大查看'} ↗</span>
+    </a>
+    <div class="workbench-preview-footer"><span>{en?'Electron / Chinese interface / Example projects':'Electron 客户端 / 示例资料'}</span><a class="text-link" href={route(locale,'docs/'+screen.guide)}>{en?'Read the guide':'查看使用指南'} →</a></div>
+  </div>)}
+  <dialog class="workbench-zoom" aria-label={en?'Desktop interface preview':'桌面界面预览'}>
+    <header><span data-preview-title></span><button type="button" data-preview-close>{en?'Close':'关闭'} <span aria-hidden="true">×</span></button></header>
+    <div class="workbench-zoom-canvas"><img width="1440" height="900" alt="" data-preview-full/></div>
+  </dialog>
 </div>
 <script>
-  import { initializeWorkbench } from '../scripts/workbench';
-  document.querySelectorAll<HTMLElement>('[data-hetu-demo]').forEach(initializeWorkbench);
+  import { initWorkbenchPreviews } from '../scripts/workbench-preview';
+  initWorkbenchPreviews();
 </script>

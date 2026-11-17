@@ -9,10 +9,10 @@ const visibleCards = '[data-skills-catalog] [data-suite-id]:not([hidden])';
 for (const prefix of ['', '/en']) {
   const locale = prefix ? 'en' : 'zh-CN';
 
-  test(`${locale} 首页提供 Agent 接入、快速起步和首页原型入口`, async ({ page }) => {
+  test(`${locale} 首页提供 Agent 接入、快速起步和桌面预览入口`, async ({ page }) => {
     await page.goto(`${prefix}/`);
     await expect(page.locator('.hero-actions a.primary')).toHaveAttribute('href', `${prefix}/#prototype`);
-    await expect(page.locator('.hero-quick-start a')).toHaveAttribute('href', `${prefix}/docs/getting-started/`);
+    await expect(page.locator('.closing-links a.button')).toHaveAttribute('href', `${prefix}/docs/getting-started/`);
     await expect(page.locator('.hero-actions a.secondary')).toHaveAttribute('href', `${prefix}/docs/install/`);
     await expect(page.locator('#skills [data-suite-id]')).toHaveCount(6);
     await page.locator('#skills [data-suite-id="apocalypse"] a').click();

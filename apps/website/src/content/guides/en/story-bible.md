@@ -8,11 +8,11 @@ Keep sources for names, aliases, identities, relationships and timelines. The sa
 
 Discovered entities stay candidates. Resolve aliases, duplicate names and missing evidence before confirming facts.
 
-## Try locking
+## Inspect canon in your project
 
-Open the sample book in the [homepage demo](/en/#prototype), then **Story bible**. Inspect entries and switch between **Unlock story bible** and **Lock story bible**. The demo edits no real entries.
+Open the local project’s story bible to read confirmed entries and their sources. Review changes and lock or unlock canon when needed. The [desktop preview](/en/#prototype) introduces the workspace without editing local records.
 
-The local client provides canon editing and revision history. Locks control author editing; managed interfaces never give agents canon-write or unlock permission.
+The local client provides canon editing and revision history. Locks control author editing; managed interfaces never give Agents canon-write or unlock permission.
 
 ## Recheck after changes
 

@@ -17,6 +17,8 @@ import {
 import type { PluginBridge } from "@hetu/plugin-sdk";
 import { sameWork } from "@hetu/plugin-sdk";
 import Ajv from "ajv";
+import { skillSummaries, skillReadAction, readSkill } from "./skills.ts";
+import { dispatchPlugin } from "./dispatch.ts";
 const args = process.argv.slice(2);
 const flags = new Map<string, string>();
 while (args[0]?.startsWith("--") && args[0] !== "--mcp") {
@@ -148,6 +150,9 @@ async function cleanup() {
 
 async function invoke(action: string, input: unknown) {
   await checkInstalled();
+  if (action === "skills.read") return {
+    spec_version: "0.2.1", status: "succeeded", data: readSkill(pkg, input),
+  };
   if (
     !actions.some((a) => a.id === action) ||
     (await core(["inspect"])).status !== "succeeded"
@@ -183,11 +188,23 @@ const capabilities = () => ({
   actions,
   data_actions: context.actions,
   types: context.types,
+  skills: skillSummaries(pkg),
+  resource_actions: [skillReadAction],
   ...(openMode ? {access_mode:"open", core_actions:context.core_actions} : {permissions:context.permissions}),
 });
 if (args[0] === "capabilities" && args.length === 1) {
   console.log(JSON.stringify(capabilities()));
   await cleanup();
+} else if (args.length === 3 && args[0] === "dispatch" && args[1] === "--input" && args[2] === "-") {
+  // 稳定入口在同一进程完成发现核验和调用，不重复启动完整运行时。
+  try {
+    let input = "";
+    for await (const chunk of process.stdin) {
+      input += chunk;
+      if (Buffer.byteLength(input) > 1024 * 1024) throw new Error("输入超过预算。");
+    }
+    console.log(JSON.stringify(await dispatchPlugin(capabilities(), JSON.parse(input), { request, invoke })));
+  } finally { await cleanup(); }
 } else if (
   ["invoke", "call"].includes(args[0]) &&
   args.length === 4 &&
@@ -296,4 +313,4 @@ if (args[0] === "capabilities" && args.length === 1) {
     }),
   });
 } else
-  throw new Error("使用 capabilities、invoke/call <action> --input - 或 --mcp。");
+  throw new Error("使用 capabilities、dispatch --input -、invoke/call <action> --input - 或 --mcp。");

@@ -49,4 +49,4 @@ Make and save manuscript edits in the editor. To record a new use, explicitly li
 
 For an independent author working with a script editor or production collaborator, a jacket can be a memory in prose and a visible reveal on screen. Separate purpose notes make those uses understandable without requiring everyone to reconstruct an old conversation.
 
-Continue with [Story bible](story-bible.md), [Draft review](review.md) or [Formats and delivery](formats-and-delivery.md). Reference version comparisons belong to the Mac app and are not included in the homepage demo.
+Continue with [Story bible](story-bible.md), [Draft review](review.md) or [Formats and delivery](formats-and-delivery.md). Compare reference versions in the desktop client; website previews do not perform these operations.

@@ -757,6 +757,93 @@
         "operation_key",
         "archived"
       ]
+    },
+    "video_episode_update_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "project_ref": {
+          "$ref": "#/$defs/video_project_ref"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "brief": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 100000
+        },
+        "archived": {
+          "type": "boolean"
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "video_episode_id": {
+          "type": "string",
+          "pattern": "^vepisode_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "expected": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "revision": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "revision",
+            "sha256"
+          ]
+        }
+      },
+      "required": [
+        "project_ref",
+        "title",
+        "brief",
+        "archived",
+        "operation_key",
+        "video_episode_id",
+        "expected"
+      ]
+    },
+    "video_episode_reorder_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "project_ref": {
+          "$ref": "#/$defs/video_project_ref"
+        },
+        "episode_refs": {
+          "type": "array",
+          "maxItems": 10000,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^vepisode_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          }
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "project_ref",
+        "episode_refs",
+        "operation_key"
+      ]
     }
   }
 }

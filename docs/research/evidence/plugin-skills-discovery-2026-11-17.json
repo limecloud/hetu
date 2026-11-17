@@ -1,0 +1,554 @@
+{
+  "recorded_at": "2026-11-17",
+  "method": "公开官方文档HTTP获取及固定源码读取；未运行上游Agent",
+  "sources": [
+    {
+      "id": "dsh-badge-pinned",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/0a53fb55bea101816fa226bb964ae2bed71c343b/packages/skill/skill-badge/src/index.ts",
+      "status": 200,
+      "bytes": 1990,
+      "sha256": "64f4636a21909bde14f58e45cbae2d8e0d4c6d5fd0b053452bff13ce7c993c86"
+    },
+    {
+      "id": "dsh-filesystem-pinned",
+      "url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/0a53fb55bea101816fa226bb964ae2bed71c343b/packages/skill/skill-filesystem/README.md",
+      "status": 200,
+      "bytes": 11295,
+      "sha256": "38fb9051fdd4a7ca22b96d747e6d4f66854d14fa3b4c7f655eab6bfa2e3c647d"
+    },
+    {
+      "id": "pi-skills-pinned",
+      "url": "https://raw.githubusercontent.com/badlogic/pi-mono/1f6f319bb28992a40b99c147fffb23b65a23129d/packages/coding-agent/docs/skills.md",
+      "status": 200,
+      "bytes": 4793,
+      "sha256": "5b9805525b194474ef1fe5455a0917ef15ed7f710aa9bec2eee11879556469e5"
+    },
+    {
+      "id": "pi-packages-pinned",
+      "url": "https://raw.githubusercontent.com/badlogic/pi-mono/1f6f319bb28992a40b99c147fffb23b65a23129d/packages/coding-agent/docs/packages.md",
+      "status": 200,
+      "bytes": 8171,
+      "sha256": "f03ce96224985c1b0daac643cb6edc97a58701c492243c8eda16a7d1633e9dac"
+    },
+    {
+      "id": "codex-skills",
+      "url": "https://developers.openai.com/codex/skills/",
+      "status": 200,
+      "bytes": 440467,
+      "sha256": "18763b7662d17cd021441a2aa40de85bf6917b90d1e35528ae3762a062e8963c"
+    },
+    {
+      "id": "codex-build-plugins",
+      "url": "https://developers.openai.com/codex/plugins/build/",
+      "status": 200,
+      "bytes": 548061,
+      "sha256": "68b67ec7f6e05b30c6e3031aad2560d08c0ad3431e5d0b11c4cc69bc75dbe883"
+    }
+  ],
+  "decisions": [
+    "标准Skill随河图插件包分发",
+    "宿主静态发现和按需读取，不为每个插件新建Codex插件或MCP连接",
+    "客户端本地注册与河图动态加载分别取证"
+  ],
+  "limitations": [
+    "未证明当前Codex会话原生Skill选择器自动刷新",
+    "上游事实不代表河图已安装制品通过"
+  ],
+  "validation": {
+    "recorded_on": "2026-11-17",
+    "platform": "macOS arm64",
+    "node_version": "25.0.0",
+    "host_source_version": "0.10.0",
+    "source_is_uncommitted": true,
+    "source_head": "80f2de7f4680de59b93eb95b61026eb750e505cb",
+    "host_regression": {
+      "command": "npm run test:plugins",
+      "status": "passed",
+      "count": 80,
+      "includes_subtests": true,
+      "skipped": 0,
+      "new_method_and_dispatch_unit_count": 38,
+      "duration_ms": 32781.872583,
+      "evidence": {
+        "file": "output/plugin-skill-research-20261117/final-host-node25.log",
+        "bytes": 7551,
+        "sha256": "98c49878761cc50b1b37f97f78a54db6dc86fb3923c7592f95a6a47bac053ac2"
+      }
+    },
+    "plugin_repository": "https://github.com/wordflowlab/hetu-novel-planner",
+    "plugin_followup": {
+      "recorded_on": "2026-11-17",
+      "platform": "macOS arm64",
+      "node_version": "25.0.0",
+      "source_version": "0.1.1",
+      "source_is_uncommitted": true,
+      "source_head": "b7534a068fe4578833c5d1c2c46dad6e991d125c",
+      "package_sha256": "2ec6d51be05d7ccfa622f3a27cbe17bc3ede1a743511d9b5f3dfe9fa77b5812c",
+      "unit": {
+        "status": "passed",
+        "count": 65,
+        "includes_subtests": true,
+        "skipped": 0,
+        "coverage_scope": [
+          "src/domain/model.ts",
+          "src/application/planner.ts",
+          "src/application/write-flow.ts"
+        ],
+        "coverage": {
+          "lines": 99.5,
+          "branches": 96.28,
+          "functions": 97.08
+        },
+        "coverage_minimum": {
+          "lines": 95,
+          "branches": 90,
+          "functions": 90
+        },
+        "coverage_by_file": {
+          "src/domain/model.ts": {
+            "lines": 100,
+            "branches": 98.0,
+            "functions": 98.53
+          },
+          "src/application/planner.ts": {
+            "lines": 99.21,
+            "branches": 95.42,
+            "functions": 95.45
+          },
+          "src/application/write-flow.ts": {
+            "lines": 100,
+            "branches": 100,
+            "functions": 100
+          }
+        },
+        "structural_moves": 600,
+        "run_state_pairs": 64,
+        "evidence": {
+          "file": "output/planning-unit-coverage-final.log",
+          "bytes": 6784,
+          "sha256": "0d3f60b39aca40d8a137a1a45c9a12c9c85aa5556c11fe73a68c854a0c4c3420"
+        }
+      },
+      "machine": {
+        "status": "passed",
+        "count": 7,
+        "includes_subtests": true,
+        "skipped": 0,
+        "professional_actions": 21,
+        "checks": [
+          "标准Skill全文及三份引用与包内内容一致",
+          "全部专业动作",
+          "MCP写入与CLI固定回读",
+          "CLI写入与MCP固定回读",
+          "Core身份与目录统计",
+          "停止请求与外部确认分离",
+          "完整固定清单导出",
+          "同一MCP连接停用与恢复"
+        ],
+        "duration_ms": 184791.667375
+      },
+      "verification": {
+        "command": "npm run verify",
+        "status": "passed",
+        "steps": [
+          "类型检查",
+          "65项单元与覆盖率门禁",
+          "插件构建",
+          "7项真实机器集成"
+        ],
+        "evidence": {
+          "file": "output/final-verification.log",
+          "bytes": 8277,
+          "sha256": "d435184a937e957adee08fb8231b92f0e4aa9346408ae7649bce3d42666e7b75"
+        }
+      },
+      "inputs": [
+        {
+          "file": "package.json",
+          "bytes": 1431,
+          "sha256": "f7cd5338204e389de6d85394b5f7a0a4aed327520014670d1e26bffc35cf99d5"
+        },
+        {
+          "file": "contracts/plugin-manifest.json",
+          "bytes": 120630,
+          "sha256": "ed659c87ff9818fa64d4e82d4787317acf7d80142ce432964bfa4a1f69e70ba3"
+        },
+        {
+          "file": "scripts/build.mjs",
+          "bytes": 3157,
+          "sha256": "861594d5cec73c5ab25245139519a6053583012ebd252072f1bb6d462fedf162"
+        },
+        {
+          "file": "src/domain/model.ts",
+          "bytes": 15516,
+          "sha256": "1ceed747910bddced0c71a161f3769ba7135d07e1d52011fa9dbce39a29dbbda"
+        },
+        {
+          "file": "src/application/planner.ts",
+          "bytes": 34962,
+          "sha256": "c785f046a0ddb1e119ecd35bfae886fd23be48668303a9621a6f7a6207c7186a"
+        },
+        {
+          "file": "src/application/write-flow.ts",
+          "bytes": 2336,
+          "sha256": "291660847ead4a9e8f5996e78a3152fbb78c8d48610505839fbfc0d2cc2b074a"
+        },
+        {
+          "file": "tests/domain.test.ts",
+          "bytes": 9907,
+          "sha256": "8d5fdcc51dd9686c06a88ad040a059d3097cc27a735dad7d199965b2e18b1473"
+        },
+        {
+          "file": "tests/application.test.ts",
+          "bytes": 6637,
+          "sha256": "815a20909f3d574802fe36fb856f43273b8bc158b64b647c08407e29f19d744f"
+        },
+        {
+          "file": "tests/aggregate.test.ts",
+          "bytes": 21354,
+          "sha256": "1fa131731b463442e4963b8d0a1513985150feff199d5fc69d2d71293167cd50"
+        },
+        {
+          "file": "tests/continuation.test.ts",
+          "bytes": 10596,
+          "sha256": "4a4c0f01f4b130f21ea4318bc2d006cee629b4d07bce2a3a9ed37290721e58cd"
+        },
+        {
+          "file": "tests/write-flow.test.ts",
+          "bytes": 5448,
+          "sha256": "b0d25102a85d306e487f9b99282809f1f1f830aefa7c38c16e740f10a054a960"
+        },
+        {
+          "file": "tests/machine.integration.test.ts",
+          "bytes": 17325,
+          "sha256": "a47f507aa05c35d905cc735ba7a21d39aef03edd6a5ec151a2248c2193365404"
+        },
+        {
+          "file": "skills/hetu-novel-planner/SKILL.md",
+          "bytes": 2741,
+          "sha256": "43a620ec6298426982422f75bdff03bf73d13093fc93c14af79927d755def2e7"
+        },
+        {
+          "file": "skills/hetu-novel-planner/references/existing-novel.md",
+          "bytes": 2127,
+          "sha256": "aff609a6f4da3cce7ec594efbfb445736e6ec75b9db79cb8676a7ea39b07ad75"
+        },
+        {
+          "file": "skills/hetu-novel-planner/references/progression.md",
+          "bytes": 1944,
+          "sha256": "c329b9ec3c77152536291bda540ef76473157b67b28c87b6cdca6f86f197191d"
+        },
+        {
+          "file": "skills/hetu-novel-planner/references/continuation.md",
+          "bytes": 1659,
+          "sha256": "a542c662409e156b9ff0517ceac7a4d02092837f3b91d16fd2d65605c691f360"
+        }
+      ],
+      "retained_failures": [
+        "原0.1.1机器回归17通过3失败，停止及导出unknown保留；原停止按test-19回读成功，原环境后续导出未完成",
+        "开发期间断言文案及TypeScript重载错误已修正，最终复验通过"
+      ],
+      "boundaries": [
+        "覆盖率只含已加载的领域与应用模块",
+        "不证明GUI或Windows",
+        "不证明真实整书语义复盘或正文迭代",
+        "未发行或安装0.1.1，不覆盖既有0.1.0发行字节"
+      ]
+    },
+    "documents": {
+      "status": "passed",
+      "host_documents": 86,
+      "host_local_links": 1113,
+      "host_mermaid_blocks": 96,
+      "plugin_markdown_files": 28,
+      "plugin_local_links": 99,
+      "plugin_capabilities": 27,
+      "plugin_action_schemas": 21,
+      "boundary": "插件检查器旧计数仅记录首批56用例；新增57至81不因此自动通过"
+    },
+    "skills_distribution": {
+      "status": "passed",
+      "suites": 45,
+      "files": 2295,
+      "categories": 908
+    },
+    "diagrams": {
+      "status": "rendered_and_reviewed",
+      "count": 3,
+      "evidence": {
+        "file": "output/plugin-skill-research-20261117/diagrams/results.json",
+        "bytes": 502,
+        "sha256": "d25ddf10f95fe661fb7509a830a2cb73ddc270f4df564c4354a1db17761c3476"
+      }
+    },
+    "map_and_methods": {
+      "status": "passed",
+      "commands": [
+        "python3 tools/sync-capability-map.py --check",
+        "python3 tools/sync-writing-methods.py --check"
+      ]
+    },
+    "host_inputs": [
+      {
+        "file": "contracts/schemas/plugin-manifest.schema.json",
+        "bytes": 6085,
+        "sha256": "a777b05fab475b546aca3c415f250a6aef6b21f8229fe20b3d90af8fae740eb6"
+      },
+      {
+        "file": "contracts/schemas/plugin-capabilities.schema.json",
+        "bytes": 2164,
+        "sha256": "8daea7aa998f00232f42daa1817a2f77e7da5d3c924a77aa4f2c82f9ee25f1d3"
+      },
+      {
+        "file": "packages/plugin-sdk/src/index.ts",
+        "bytes": 5986,
+        "sha256": "39cb0425f2ed8eb4c114f89625b3a97cea810fa4ee34403e14e4b05947594076"
+      },
+      {
+        "file": "packages/plugin-host/src/package.ts",
+        "bytes": 6558,
+        "sha256": "914fb1d3495f71dfdde4aaabc29c75115d67dba333501e5a5f4318a393376f39"
+      },
+      {
+        "file": "packages/plugin-host/src/installations.ts",
+        "bytes": 10419,
+        "sha256": "278cb13ad5457ae95fea7ce99db2b5def8ff6df821adfecbd3eab5d4ae6198a4"
+      },
+      {
+        "file": "packages/plugin-host/src/skills.ts",
+        "bytes": 2237,
+        "sha256": "21ddcc01a739888d583f89b050c74219e41a18b85dd7ab4e22ae45342afeba46"
+      },
+      {
+        "file": "packages/plugin-host/src/dispatch.ts",
+        "bytes": 1946,
+        "sha256": "6b59f7d9aad938011790cd215b848a057b53ff2635a8389da651a7ba8c8a6fc4"
+      },
+      {
+        "file": "packages/plugin-host/src/manager-cli.ts",
+        "bytes": 5942,
+        "sha256": "017992cd051786eea3f9ecadb3b531500403315957ee6664025454ccb3c67962"
+      },
+      {
+        "file": "packages/plugin-host/src/runtime-cli.ts",
+        "bytes": 12109,
+        "sha256": "a7194cd48e7c7f668672f3940dc37445648c2becefcc12f40ba90e330c56f12f"
+      },
+      {
+        "file": "packages/plugin-host/tests/skills.test.ts",
+        "bytes": 10482,
+        "sha256": "b715d3011cf9634c245fb0f5d57f407afb9787f517c4f80b58257e0cbb43aac0"
+      },
+      {
+        "file": "packages/plugin-host/tests/dispatch.test.ts",
+        "bytes": 4038,
+        "sha256": "cb2eba84f647eda70dda4d22684043c8c1515bfefee19ae9cf203bfa243be1ff"
+      },
+      {
+        "file": "packages/plugin-host/tests/skill-hotplug.test.ts",
+        "bytes": 7655,
+        "sha256": "f294d52b8e283c9616e1b39406a766cf6de901ee104b137c457dda094f0db1d1"
+      },
+      {
+        "file": "packages/plugin-host/tests/headless.test.ts",
+        "bytes": 12719,
+        "sha256": "b271dc788485a7b4044cae870d35ae34f87b7156045d292b00a28d6f0234f0c4"
+      }
+    ],
+    "retained_environment_failure": {
+      "runtime": "Node.js 23.4.0",
+      "status": "unsupported_runtime",
+      "passed": 69,
+      "failed": 11,
+      "resolution": "按工程engines改用Node25后全量80通过；不修改权限保护或扩大超时",
+      "evidence": {
+        "file": "output/plugin-skill-research-20261117/final-host-regression.log",
+        "bytes": 28224,
+        "sha256": "93c13bdf36cf53eef9a831a3762a156b3aa4d56ade0c19a96881a1098c76e3a3"
+      }
+    },
+    "installed_state": {
+      "host_version": "0.10.0",
+      "planner_version": "0.1.1",
+      "method_changes_installed": true,
+      "codex_suite_source_version": "0.3.8",
+      "current_session_suite_version": "0.3.7",
+      "native_planner_skill_registered": false
+    },
+    "boundaries": [
+      "未取得Codex原生Skill选择器刷新证据",
+      "未验证Windows或干净系统",
+      "未完成真实511篇小说语义复盘与两版续写",
+      "本轮GUI未重新验收",
+      "工作区网站并行改动不纳入本项"
+    ],
+    "skill_route_and_live_session_followup": {
+      "recorded_on": "2026-11-17",
+      "platform": "macOS arm64",
+      "node_version": "25.0.0",
+      "source_version": "0.1.1",
+      "source_is_uncommitted": true,
+      "package_sha256": "28594018fd737c9db18cde52abbaa525139338d13624875d091d16b493a83499",
+      "navigation": {
+        "capabilities": 27,
+        "professional_actions": 21,
+        "reference_resources": 4,
+        "test_file": "tests/skill.test.ts",
+        "boundary": "导航合同不证明创作质量"
+      },
+      "verification": {
+        "command": "npm run verify",
+        "status": "passed",
+        "unit_count": 67,
+        "machine_count": 7,
+        "skipped": 0,
+        "machine_duration_ms": 140612.910292,
+        "coverage": {
+          "lines": 99.5,
+          "branches": 96.28,
+          "functions": 97.08
+        },
+        "evidence": {
+          "file": "output/live-skill-complete-verification.log",
+          "bytes": 8471,
+          "sha256": "0f51a75b9d35a8e442da9ea3ece33deedadc0f429d4710da120ab1f63c2f27a2"
+        },
+        "boundary": "验证后仅更新功能清单及文档并重新构建；最终安装字节按本会话回读另验"
+      },
+      "skill_validation": {
+        "status": "passed",
+        "command": "uv run --with PyYAML python quick_validate.py skills/hetu-novel-planner",
+        "retained_failure": "系统python缺少PyYAML；未全局安装"
+      },
+      "host_installation": {
+        "status": "installed_and_verified",
+        "version": "0.10.0",
+        "source_sha256": "735741f73330e79d075501909f73b70cf6700724f1b3da7ef364230c89b1658e",
+        "files_and_links_verified": 2617,
+        "signing": "ad-hoc-development",
+        "signature_verified": true,
+        "backup_created": false,
+        "normal_quit": true
+      },
+      "current_codex_session": {
+        "transport": "already-connected MCP",
+        "status": "passed",
+        "steps": [
+          "inspect",
+          "inspect_package",
+          "apply install",
+          "inspect active",
+          "capabilities",
+          "skills.read entry and four resources"
+        ],
+        "resources_byte_identical_to_installed_package": true,
+        "resources": [
+          {
+            "resource": "SKILL.md",
+            "bytes": 3244,
+            "sha256": "a2141054973daf34c015be5b9f9e161d02d5887d96469afc0e9a18d5e9bbddfc"
+          },
+          {
+            "resource": "references/existing-novel.md",
+            "bytes": 2127,
+            "sha256": "aff609a6f4da3cce7ec594efbfb445736e6ec75b9db79cb8676a7ea39b07ad75"
+          },
+          {
+            "resource": "references/progression.md",
+            "bytes": 1944,
+            "sha256": "c329b9ec3c77152536291bda540ef76473157b67b28c87b6cdca6f86f197191d"
+          },
+          {
+            "resource": "references/continuation.md",
+            "bytes": 1659,
+            "sha256": "a542c662409e156b9ff0517ceac7a4d02092837f3b91d16fd2d65605c691f360"
+          },
+          {
+            "resource": "references/operations.md",
+            "bytes": 6764,
+            "sha256": "cd8b256e457bd31bc56e3656d0b33d5045209c72feb7f230a30211de48bd09be"
+          }
+        ],
+        "native_skill_list_registered": false,
+        "external_client_settings_modified": false,
+        "suite_loaded_version": "0.3.7",
+        "suite_bundled_version": "0.3.8",
+        "existing_plan_fixed_readback": {
+          "status": "passed",
+          "revision": 2,
+          "nodes": 517,
+          "sha256": "5af127eaa2fc9629ca409278d7574c3c6f73827da819fd0fac35f807f63be17c"
+        }
+      },
+      "inputs": [
+        {
+          "file": "skills/hetu-novel-planner/SKILL.md",
+          "bytes": 3244,
+          "sha256": "a2141054973daf34c015be5b9f9e161d02d5887d96469afc0e9a18d5e9bbddfc"
+        },
+        {
+          "file": "skills/hetu-novel-planner/references/operations.md",
+          "bytes": 6764,
+          "sha256": "cd8b256e457bd31bc56e3656d0b33d5045209c72feb7f230a30211de48bd09be"
+        },
+        {
+          "file": "tests/skill.test.ts",
+          "bytes": 2147,
+          "sha256": "40a634cab3b9cf1867877fe551d7ec90c910c588a4de65be20b07f92839034b6"
+        },
+        {
+          "file": "tests/machine.integration.test.ts",
+          "bytes": 17352,
+          "sha256": "a58bcac943f5588876a3a5b718afe9190ede2923851f16316c0a09f7f7f4e94d"
+        },
+        {
+          "file": "CAPABILITIES.md",
+          "bytes": 5098,
+          "sha256": "5fb071207949a75e6bde40b3667cc937e2cb97a161c65ab5096556785237a0b3"
+        }
+      ],
+      "boundaries": [
+        "未完成511篇整书语义复盘或两版续写",
+        "未重新验收GUI或Windows",
+        "未发行、提交或推送",
+        "原unknown历史不被新测试覆盖"
+      ],
+      "partial_real_novel_method_use": {
+        "status": "partial_semantic_review_persisted_and_read_back",
+        "plan_revision": 7,
+        "plan_sha256": "4d0327edd9b1a67e56178b9f8530d625a710d61614f943648e1e109341f4cbd0",
+        "plan_node_count": 517,
+        "metadata_documents_read": 1,
+        "story_documents_read": 3,
+        "story_documents_total": 510,
+        "remaining_story_documents": 507,
+        "details_saved_attached_and_read_back": 4,
+        "query_pages": 6,
+        "empty_pages_followed": 5,
+        "formal_novel_fixed_ref_and_statistics_unchanged": true,
+        "future_suggestion_kept_in_history": true,
+        "whole_book_semantic_review_complete": false,
+        "retained_failure": "首次错误地用只存在于长剧情中的词检索；六页返回无匹配。按实际标题／目标／主题检索范围修正为核验结果，只重做只读查询，未重发写入。",
+        "pending": [
+          "其余逐章复盘",
+          "卷与整书汇总",
+          "独立未来总纲",
+          "卷章场景链",
+          "固定任务v1→意见→v2"
+        ],
+        "evidence_boundary": "完整业务回执及来源正文仅保留在作者获权持久目录，公开证据不含正文或管理引用"
+      },
+      "document_validation": {
+        "status": "passed",
+        "host_documents": 86,
+        "host_local_links": 1113,
+        "host_mermaid_blocks": 96,
+        "plugin_markdown_files": 21,
+        "plugin_local_links": 90,
+        "capability_map_check": "passed",
+        "writing_methods_check": "passed",
+        "note": "宿主按脚本内声明依赖使用uv run；系统Python首次缺markdown_it未通过，不计为验收通过"
+      }
+    }
+  }
+}

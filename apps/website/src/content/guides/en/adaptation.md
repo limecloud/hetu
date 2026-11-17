@@ -10,26 +10,22 @@ Your Agent reads earlier drafts and decisions before preparing action and dialog
 
 Give a specific comment, such as “This explanation is too early; revise only this scene.” Continue the same task, compare the revision and decide adoption and finalization separately. See [Develop and review a screenplay](screenplays.md).
 
-## Practice source comparison in the homepage demo
-
-The following plot and outline controls belong to the sample novel demo. They help you inspect structure and evidence without creating a local screenplay file.
-
 ## Plot and provenance
 
-Open **Plot beats** for the sample book in the [homepage demo](/en/#prototype). Arrival, entering the inn and the clasp point to fixed source revisions.
+Ask your Agent to identify the events in the authorized source and retain the exact revision and citations. Read the source passage before checking the current manuscript. Changed source text requires another check; earlier results do not become a live analysis.
 
-Select **Inspect source**, then **Locate in working text**. Changed source text requires new extraction. Earlier results are not a live analysis.
+Use the [desktop preview](/en/#prototype) to inspect the current reading and script workspaces. The website creates no local screenplay file.
 
 ## Drama outline
 
-The sample outline contains the gate and inn scenes with location, time, beats and citations. A structural candidate is not a final and generates no dialogue.
+An outline records location, time, beats and source citations. A structural candidate is not a final and generates no dialogue.
 
-The native client supports editing, splitting, adjacent merges, reordering, source mappings and structural comparison reports. Building new candidates preserves existing manual structure.
+The desktop client supports editing, splitting, adjacent merges, reordering, source mappings and structural comparison reports. Building new candidates preserves existing manual structure.
 
 ## Independent script
 
 Let your Agent prepare an independent Fountain script with fixed source references, using details already discussed. Manual creation from an outline is also available. Scripts retain their own text and revisions, with initial mappings and notices when those mappings become stale.
 
-The website demonstrates structure and source inspection only; it creates no script file. Explain time compression, scene merges and added details for author review.
+Explain time compression, scene merges and added details for author review.
 
 Let your Agent organize character, location and prop references and fix the versions used. Continue with [Checks and draft review](review.md), [Reference changes](references.md) and [From preview to finished video](video.md).

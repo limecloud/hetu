@@ -4,24 +4,18 @@ interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const en = locale === 'en';
 const items = en ? [
-  ['Write a new story', 'Start with a premise, a character or a chapter. Develop your own manuscript before deciding whether to adapt it.', 'writing', 'Explore manuscript writing'],
-  ['Develop an original script', 'A screenplay can begin with an original idea. A novel and a source-extraction step are not creative prerequisites.', 'screenplays', 'Plan a script project'],
-  ['Adapt your own book', 'Choose a source revision, identify a dramatic question and try one scene. Keep the adaptation separate from the manuscript.', 'adaptation', 'Try a source-based adaptation'],
-  ['Work with licensed material', 'Record the edition and your rights to adapt, share source material and distribute references. Those permissions may differ.', 'creative-paths', 'Understand sources and permissions'],
-  ['Reimagine a public-domain work', 'Check the original and the specific translation or edition. Public-domain stories may contain separately protected material.', 'creative-paths', 'Choose the right source'],
-  ['Continue with existing footage', 'Start a video project from a brief, a storyboard or clips you already have. Review pacing, sound and subtitles without creating a placeholder novel or script.', 'video', 'Plan a video project'],
+  ['A novel worth reading', 'Begin with a character, a premise or a manuscript. Read the chapters. Shape the next draft.', 'writing', 'Write a novel'],
+  ['A script ready to perform', 'Start with an original idea or a chosen source. Review the action, dialogue and dramatic turns.', 'screenplays', 'Develop a script'],
+  ['A story told on screen', 'Bring an idea, a storyboard or existing clips. Watch, leave a note and refine the cut.', 'video', 'Make a short video'],
 ] : [
-  ['从零写小说', '从一个人物、一段构思或第一章开始。先把故事写出来，再决定是否改编。', 'writing', '了解章节写作'],
-  ['从零写剧本', '直接构思人物、冲突和场次。原创剧本有自己的分集与修订，无需先写一本小说。', 'screenplays', '了解剧本创作路径'],
-  ['改编自己的小说', '固定原著版本，从一场戏尝试改编。保留原文，独立推敲分集节奏与对白。', 'adaptation', '从一章开始改编'],
-  ['改编获授权作品', '记录原著来源与授权范围，分别确认改编、向 Agent 提供材料及对外交付的权限。', 'creative-paths', '了解来源与授权'],
-  ['改编公版原著', '从经典故事重新出发，核对原作版本。现代译文、插画和校注可能有各自的权利。', 'creative-paths', '选择适用的原著版本'],
-  ['从已有素材做视频', '带着创意、分镜或已有片段开始，核对节奏、声音与字幕。视频独立保存，无需补建空小说或空剧本。', 'video', '了解视频创作路径'],
+  ['写成值得读的小说', '从人物、构思或已有原稿开始，连贯阅读章节，推敲下一版。', 'writing', '开始小说创作'],
+  ['写成可以演的剧本', '从原创构思或选定原著出发，审阅行动、对白与戏剧转折。', 'screenplays', '开始剧本创作'],
+  ['让故事在画面中发生', '带着创意、分镜或已有片段开始，观看、提意见，再打磨节奏。', 'video', '开始短视频创作'],
 ];
 ---
 <section class="section creative-routes" id="creative-routes">
   <div class="section-head"><div><h2>{en ? 'Start with the work you actually have.' : '你从哪里开始，河图就从哪里连接。'}</h2></div></div>
-  <p class="section-intro">{en ? 'Novels, screenplays and videos have their own places in your creative library. Begin with any of them, then connect the sources and versions you choose.' : '创作库中的小说、剧本与视频各自独立。可以从任意一种开始，需要关联时，再保留明确的来源和版本。'}</p>
+  <p class="section-intro">{en ? 'Your creative library holds independent novels, scripts and videos. Start with any of them.' : '创作库中的小说、剧本与视频各自独立，从你想做的那一种开始。'}</p>
   <div class="creative-route-grid">{items.map(([title, body, target, label]) => <article><h3>{title}</h3><p>{body}</p><a class="text-link" href={route(locale, 'docs/' + target)}>{label}<span aria-hidden="true">→</span></a></article>)}</div>
-  <p class="sample-note">{en ? 'Bring an existing manuscript or screenplay too. Ask your Agent to inspect its structure and conversion losses before importing it.' : '已有小说或剧本也可以接着写。让 Agent 先核对原稿目录、正文与转换损失，再确认导入。'}</p>
+  <div class="creative-route-related"><span>{en?'Already have a source?':'已有作品？'}</span><a href={route(locale,'docs/import-manuscript')}>{en?'Import a manuscript':'导入原稿'} ↗</a><a href={route(locale,'docs/adaptation')}>{en?'Adapt a chosen source':'改编已有作品'} ↗</a><a href={route(locale,'docs/creative-paths')}>{en?'Sources and permissions':'来源与授权'} ↗</a></div>
 </section>

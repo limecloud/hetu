@@ -1,0 +1,33 @@
+---
+import { creativeSamples } from '../lib/creative-samples';
+import { route, type Locale } from '../lib/site';
+import '../styles/creative-experience.css';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const en = locale === 'en';
+const samples = creativeSamples(locale);
+const stages = en?['Read','Leave a note','Agent revises','Compare','Awaiting review']:['阅读成果','提出意见','Agent 返工','比较新版','等你审阅'];
+---
+<section class="section revision-experience" id="review-experience" aria-labelledby="revision-title">
+  <div class="section-head"><div><h2 id="revision-title">{en?'Your judgment shapes the next revision.':'让你的判断，落在下一版里。'}</h2></div><a class="text-link" href={route(locale,'docs/review')}>{en?'How review works':'了解成果审阅'} →</a></div>
+  <p class="section-intro">{en?'A passage, a line, a moment. Keep what works. Be specific about what should change.':'一段文字、一句对白、一个镜头。留下好的部分，把想改的说具体。'}</p>
+  <div class="revision-demo" data-revision-demo data-motion-demo data-step="0" data-playing="false" data-play-label={en?'Play':'播放'} data-pause-label={en?'Pause':'暂停'}>
+    <div class="result-topbar"><div class="result-tabs" role="tablist" aria-label={en?'Review an example':'审阅示例'}>{samples.map((sample,i)=><button type="button" role="tab" id={`review-tab-${sample.id}`} aria-controls={`review-panel-${sample.id}`} aria-selected={i===0?'true':'false'} tabindex={i===0?0:-1} data-review-tab={sample.id}>{sample.label}</button>)}</div><span class="result-demo-label">{en?'Prepared examples':'预置示例'}</span></div>
+    {samples.map((sample,i)=><div class="revision-panel" id={`review-panel-${sample.id}`} role="tabpanel" aria-labelledby={`review-tab-${sample.id}`} hidden={i!==0} data-review-panel={sample.id}>
+      <div class="revision-options" role="group" aria-label={en?'Choose a creative intention':'选择创作意图'}><span>{en?'Try a different intention':'试试不同的创作意图'}</span>{sample.feedback.map((feedback,j)=><button type="button" data-revision-variant={j} aria-pressed={j===0?'true':'false'}>{feedback.label}</button>)}</div>
+      <div class="revision-source"><strong>{sample.title}</strong><span data-revision-anchor>{sample.feedback[0].anchor??sample.location}</span></div>
+      {sample.id==='video'&&<div class="revision-timing" aria-label={en?'Change only the selected timing':'只调整选定镜头的时间'}><span>{en?'Selected moment':'选中区间'}</span><p data-revision-context>{sample.feedback[0].context}</p><div class="revision-timing-track" aria-hidden="true">{Array.from({length:6},(_,index)=><i data-revision-shot={index} data-active={index===sample.feedback[0].shot?'true':'false'}/>)}</div></div>}
+      <div class="revision-comparison">
+        <article class="revision-original"><header><span>{en?'Original / R1':'原版 / 第 1 版'}</span></header><p class="revision-before" data-revision-before>{sample.feedback[0].before}</p><div class="revision-note"><span>{en?'Your note':'你的意见'}</span><p data-revision-note>{sample.feedback[0].note}</p></div></article>
+        <article class="revision-new"><header><span>{en?'Candidate / R2':'新版候选 / 第 2 版'}</span><span class="revision-pending">{en?'Awaiting review':'待审阅'}</span></header><p class="revision-after" data-revision-after>{sample.feedback[0].after}</p><p class="revision-retained"><span aria-hidden="true">↳</span>{en?'The original and your note stay with this revision.':'原版与意见保留，可沿同一任务继续。'}</p></article>
+      </div>
+      <script type="application/json" data-revision-variants set:html={JSON.stringify(sample.feedback).replace(/</g,'\u003c')}/>
+    </div>)}
+    <div class="revision-timeline" role="group" aria-label={en?'Review cycle steps':'审阅与返工步骤'}>{stages.map((stage,i)=><button type="button" data-motion-step={i} aria-current={i===0?'step':undefined}><span aria-hidden="true">{String(i+1).padStart(2,'0')}</span>{stage}</button>)}</div>
+    <div class="revision-footer"><p data-revision-status aria-live="polite">{en?'Compare the prepared examples. Adoption stays your decision.':'对照预置示例，采纳与定稿由你决定。'}</p><div class="creative-playback"><button type="button" data-motion-play>{en?'Play':'播放'}</button><button type="button" data-motion-replay>{en?'Replay':'重播'}<span aria-hidden="true">↺</span></button></div></div>
+  </div>
+</section>
+<script>
+  import { initCreativeExperiences } from '../scripts/creative-experience';
+  initCreativeExperiences();
+</script>

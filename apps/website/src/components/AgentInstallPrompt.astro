@@ -1,0 +1,22 @@
+---
+import { agentInstallPrompt } from '../lib/creation-workflow';
+import { workflowClients } from '../lib/workflow-clients';
+import { route, type Locale } from '../lib/site';
+import WorkflowClients from './WorkflowClients.astro';
+interface Props { locale: Locale; showClients?: boolean; }
+const { locale, showClients = true } = Astro.props;
+const en = locale === 'en';
+const clients = workflowClients.map(client => ({ ...client, method: client.method[en ? 1 : 0], prompt: agentInstallPrompt(locale, client.id) }));
+---
+<div class="wf-install" data-install-prompt data-workflow-clients={JSON.stringify(clients)} data-copy-done={en ? 'Copied. Paste into {client}.' : '已复制，粘贴给 {client}。'} data-copy-failed={en ? 'Select and copy the prompt below.' : '请选择下方提示词复制。'}>
+  {showClients && <WorkflowClients locale={locale}/>}
+  <div class="wf-install-heading"><img data-brand-logo data-selected-agent-icon src={workflowClients[0].icon} width="32" height="32" alt=""/><div><strong>{en ? 'Start with ' : '从 ' }<span data-selected-agent-name>Codex</span>{en ? '.' : ' 开始。'}</strong><span>{en ? 'Copy the prompt to guide installation.' : '复制提示词，引导安装与接入。'}</span></div></div>
+  <div class="wf-install-actions"><button class="button primary" type="button" data-copy-install>{en ? 'Copy installation prompt' : '复制安装提示词'}<span aria-hidden="true">↗</span></button><a class="text-link" href={route(locale, 'docs/agents')}>{en ? 'Connection guide' : '接入指南'} →</a></div>
+  <details class="wf-prompt-details"><summary>{en ? 'Read the prompt' : '查看提示词'}</summary><textarea readonly rows="6" aria-label={en ? 'Installation prompt' : '安装提示词'}>{agentInstallPrompt(locale)}</textarea></details>
+  <p class="wf-copy-status" role="status" aria-live="polite" data-install-status></p>
+</div>
+<script>
+  import { initInstallPrompts, initWorkflowClients } from '../scripts/creation-workflow';
+  initWorkflowClients();
+  initInstallPrompts();
+</script>

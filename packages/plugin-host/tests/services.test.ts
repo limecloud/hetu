@@ -104,3 +104,23 @@ test("分段导出固定清单且原子替换，摘要错误保留现有文件",
   assert.equal(await readFile(target, "utf8"), "已有作者文件");
   assert.deepEqual(await readdir(directory), ["成果.json"]);
 });
+
+test('插件媒体预览核验当前作品固定来源，不接收物理路径',async()=>{
+ let inspected=0,opened:any,released='';
+ const source={kind:'asset',work_ref:work,asset_id:'asset_fixed',revision:1,sha256:'a'.repeat(64)};
+ const context={work,check(){},preferences:()=>({theme:'light',language:'zh-CN'}),async request(action:string,input:any){assert.equal(action,'hetu.extensions.sources.inspect');assert.deepEqual(input.source_ref,source);inspected++;return {status:'succeeded',data:{}};},async handoff(){},async openDocument(){},async mediaOpen(input:any){opened=input;return {url:'hetu-media://fixed/source'};},async mediaRelease(url:string){released=url;return {released:true};}};
+ assert.deepEqual(await pluginService('media_open',{source_ref:source},context),{url:'hetu-media://fixed/source'});
+ assert.equal(inspected,1);assert.deepEqual(opened,{asset_id:'asset_fixed',revision:1,sha256:'a'.repeat(64)});
+ await pluginService('media_release',{url:'hetu-media://fixed/source'},context);assert.equal(released,'hetu-media://fixed/source');
+ await assert.rejects(()=>pluginService('media_open',{source_ref:{...source,work_ref:{...work,object_id:'foreign'}}},context),/当前作品/);
+ await assert.rejects(()=>pluginService('media_open',{source_ref:source,file_path:'/private/media'},context),/参数无效/);
+});
+
+test('固定对象偏移分块导出完整UTF-8，摘要或偏移错误不替换已有文件',async()=>{
+ const dir=await mkdtemp(path.join(os.tmpdir(),'plugin-object-export-'));const target=path.join(dir,'作品.md');await writeFile(target,'原文件');
+ const ref={object_id:'ext_fixed',revision:2,sha256:'a'.repeat(64)},parts=['# 雨港\n','旧站与来信🧭'];const total=parts.reduce((n,p)=>n+Buffer.byteLength(p),0);
+ for(const broken of ['digest','offset','none']){
+  let count=0;const result=exportPluginFile({action:'export_project',input:{object_id:ref.object_id,revision:2,format:'markdown'},suggested_name:'作品.md'},{choose:async()=>target,check(){},async invoke(_a,input){const index=count++;const content=parts[index];return {status:'succeeded',data:{project_ref:ref,offset:broken==='offset'&&index===1?1:input.offset??0,total_bytes:total,media_type:'text/markdown',content,content_sha256:broken==='digest'&&index===1?'b'.repeat(64):createHash('sha256').update(content).digest('hex'),next_offset:index===0?Buffer.byteLength(content):null}};}});
+  if(broken==='none'){assert.equal((await result).saved,true);assert.equal(await readFile(target,'utf8'),parts.join(''));}else{await assert.rejects(()=>result,/不连续或摘要/);assert.equal(await readFile(target,'utf8'),'原文件');}
+ }
+});

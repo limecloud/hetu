@@ -1,0 +1,24 @@
+.workbench-preview { border:.5px solid var(--sage-7); border-radius:8px; overflow:hidden; background:var(--white); }
+.workbench-preview-tabs { display:flex; gap:28px; padding:0 24px; background:var(--sage-2); border-bottom:.5px solid var(--line); }
+.workbench-preview-tabs button { padding:16px 0; margin-bottom:-.5px; border:0; border-bottom:.5px solid transparent; background:transparent; color:var(--muted); font-size:14px; white-space:nowrap; cursor:pointer; }
+.workbench-preview-tabs button[aria-selected='true'] { color:var(--jade); border-color:var(--jade); font-weight:600; }
+.workbench-preview-image { display:block; position:relative; background:var(--sage-2); cursor:zoom-in; }
+.workbench-preview-image img { display:block; width:100%; height:auto; aspect-ratio:8/5; }
+.workbench-preview-image > span { position:absolute; right:16px; bottom:16px; padding:6px 12px; border:.5px solid var(--sage-7); border-radius:4px; background:var(--white); color:var(--jade); font-size:12px; }
+.workbench-preview-footer { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; padding:16px 24px; border-top:.5px solid var(--line); font-size:12px; color:var(--muted); }
+.workbench-preview-footer .text-link { font-size:12px; }
+.workbench-zoom { width:min(1488px,calc(100vw - 48px)); max-width:none; max-height:calc(100dvh - 48px); padding:0; border:.5px solid var(--sage-7); border-radius:8px; background:var(--sage-1); color:var(--ink); }
+.workbench-zoom::backdrop { background:color-mix(in srgb,var(--sage-12) 65%,transparent); }
+.workbench-zoom > header { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px 20px; font-size:14px; border-bottom:.5px solid var(--line); }
+.workbench-zoom button { display:flex; gap:16px; align-items:center; border:0; padding:4px; background:transparent; color:var(--muted); font-size:14px; cursor:pointer; }
+.workbench-zoom-canvas { overflow:auto; max-height:calc(100dvh - 108px); }
+.workbench-zoom-canvas img { display:block; width:100%; height:auto; }
+@media(max-width:760px) {
+  .workbench-preview-tabs { gap:0; padding:0 12px; justify-content:space-between; }
+  .workbench-preview-tabs button { font-size:12px; padding:14px 0; }
+  .workbench-preview-footer { padding:12px 16px; }
+  .workbench-preview-image > span { right:8px; bottom:8px; padding:4px 8px; }
+  .workbench-zoom { width:calc(100vw - 24px); max-height:calc(100dvh - 24px); border-radius:6px; }
+  .workbench-zoom-canvas { max-height:calc(100dvh - 84px); }
+  .workbench-zoom-canvas img { width:1440px; max-width:none; }
+}

@@ -48,7 +48,7 @@ Return to watch an animatic, a simple 3D preview when needed, or an actual edit.
 
 ## What you can test here
 
-The homepage demo covers a sample novel, editing, story facts, plot evidence, an adaptation outline, review and adoption. It resets on reload and creates no local project. It is a focused demonstration rather than proof of every project-creation flow.
+The homepage shows original creative examples, revision comparisons and current Electron screenshots. It creates no local project and does not adopt or finalize work. Use the desktop client for your own novel, script or video.
 
 Your Agent handles your own novels, scripts and videos within the scope you authorize; return to review the same results. Keep the sample demo separate from your local work and actual video. The starting material and handoff requirements differ across these routes.
 

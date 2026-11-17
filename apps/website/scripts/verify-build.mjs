@@ -110,7 +110,10 @@ for (const required of ['index.html','en/index.html','docs/getting-started/index
   assert.ok(paths.has(path.join(root, required)), `缺少产物：${required}`);
 }
 for (const home of ['index.html', 'en/index.html']) {
-  assert.ok((await readFile(path.join(root, home), 'utf8')).includes('data-hetu-demo'), `首页缺少交互原型：${home}`);
+  const html=await readFile(path.join(root,home),'utf8');
+  assert.ok(html.includes('data-workbench-preview'), `首页缺少当前桌面预览：${home}`);
+  assert.ok(html.includes('data-creative-results'), `首页缺少创作成果示例：${home}`);
+  assert.ok(!html.includes('data-hetu-demo'), `首页仍包含过时工作台：${home}`);
 }
 for (const file of files) assert.ok((await stat(file)).size < 25 * 1024 * 1024, `超过 Pages 单文件限制：${file}`);
 assert.deepEqual(errors, [], '静态产物链接或安全检查失败');

@@ -8,6 +8,7 @@ import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { PluginPackage } from "../src/package.ts";
 import { PluginInstallations } from "../src/installations.ts";
+import { createHash } from "node:crypto";
 const root = path.resolve(import.meta.dirname, "../../..");
 test("开放无窗口插件无需权限声明，MCP复用核心且停用立即失效", {timeout:120000}, async () => {
   const folder=await mkdtemp(path.join(os.tmpdir(),"hetu-open-runtime-"));
@@ -34,6 +35,14 @@ test("开放无窗口插件无需权限声明，MCP复用核心且停用立即�
   const cap=json(process.execPath,[...runtime,"capabilities"]);
   assert.equal(cap.access_mode,"open");assert.equal(cap.permissions,undefined);
   assert.ok(cap.core_actions.some((a:any)=>a.name==="hetu.novels.snapshot"));
+  const dispatch={capabilities_sha256:createHash("sha256").update(JSON.stringify(cap)).digest("hex"),action:"hetu.novels.snapshot",arguments:{}};
+  const dispatched=json(process.execPath,[...runtime,"dispatch","--input","-"],dispatch);
+  assert.equal(dispatched.result.data.document_count,1);
+  assert.equal(dispatched.capabilities_sha256,dispatch.capabilities_sha256);
+  for(const invalid of [{...dispatch,capabilities_sha256:"0".repeat(64)},{...dispatch,action:"unregistered"}]) {
+    const denied=spawnSync(process.execPath,[...runtime,"dispatch","--input","-"],{input:JSON.stringify(invalid),encoding:"utf8",timeout:30000});
+    assert.notEqual(denied.status,0);assert.match(denied.stderr,/能力已变化|未声明/);
+  }
   const client=new Client({name:"open-runtime",version:"1"},{versionNegotiation:{mode:{pin:"2026-07-28"}}});
   try {
     await client.connect(new StdioClientTransport({command:process.execPath,args:[...runtime,"--mcp"],stderr:"pipe"}));

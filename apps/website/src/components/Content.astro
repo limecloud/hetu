@@ -4,12 +4,11 @@ import { assetURL } from '../lib/assets';
 import SkillsCatalog from './SkillsCatalog.astro';
 import '../styles/plugins.css';
 import AgentEntrypoints from './AgentEntrypoints.astro';
+import WorkflowPage from './WorkflowPage.astro';
 interface Props { locale: Locale; page: string; }
 const { locale, page } = Astro.props;
 const m = messages(locale);
 const en = locale === 'en';
-const guideIDs = ['creative-paths', 'review', 'video', 'formats-and-delivery'];
-const stepLinks = en ? ['Choose your starting point', 'Review a reference draft', 'Review a video', 'Prepare a handoff'] : ['找到你的起点', '比较和采纳参考稿', '观看预演与成片', '准备交付'];
 const faqGroups = [
   { title: en ? 'Writing and AI' : '创作与 AI', indexes: [0, 1, 2, 3] },
   { title: en ? 'Availability and costs' : '获取与费用', indexes: [4, 5, 8] },
@@ -17,21 +16,7 @@ const faqGroups = [
 ];
 ---
 <div class:list={['container', 'subpage', `${page}-page`]}>
-  {page === 'workflow' ? <>
-    <header class="page-hero page-hero-split workflow-intro">
-      <div><h1>{m.workflow.title}</h1><p>{m.workflow.intro}</p><a class="button primary" href={route(locale, 'docs/creative-paths')}>{en ? 'Find your starting point' : '找到我的创作起点'} <span aria-hidden="true">→</span></a></div>
-      <figure class="workflow-art"><img src={assetURL('/images/hero-workspace.webp')} width="1536" height="1024" alt={en ? 'Xiaotu with a manuscript, story references and a prepared handoff.' : '小图身旁的稿本、设定关系与交付资料的概念插画。'}/></figure>
-    </header>
-    <ol class="workflow-path" aria-label={en ? 'Four stages of creative work' : '从想法到交稿的四个步骤'}>
-      {m.workflow.steps.map((step, index) => <li><span class="path-number" aria-hidden="true">0{index + 1}</span><h2>{step.title}</h2><p>{step.body}</p><a class="text-link" href={route(locale, `docs/${guideIDs[index]}`)}>{stepLinks[index]} <span aria-hidden="true">→</span></a></li>)}
-    </ol>
-    <section class="workflow-in-practice" aria-labelledby="practice-title">
-      <div><h2 id="practice-title">{en ? 'See the passage. Keep what works.' : '看着原文改，留下你认可的那一段。'}</h2><p>{en ? 'A useful suggestion may be a single line. Compare it with the manuscript, adopt the part you want and keep editing. Finalization is a separate decision.' : '一份参考稿，不必整段接受。对照原文，选中合适的部分，采纳后继续修改。写到满意，再独立确认定稿。'}</p><a class="text-link" href={prototype(locale)}>{en ? 'Try the review demo' : '进入首页演示，试着审一稿'} <span aria-hidden="true">→</span></a></div>
-      <figure class="product-figure"><a href={assetURL(`/images/guides/quickstart-review-${locale}.webp`)} target="_blank" rel="noreferrer" aria-label={en ? 'Enlarge the review demo screenshot' : '放大查看首页审核演示截图'}><img src={assetURL(`/images/guides/quickstart-review-${locale}.webp`)} width="2368" height={en ? 1402 : 1398} alt={en ? 'Homepage demo showing the manuscript and reference draft for review.' : '首页演示中对照原文与参考稿的审核界面。'} loading="lazy"/></a><figcaption>{en ? 'Homepage demo / Draft review' : '首页演示 / 参考稿审核'}</figcaption></figure>
-    </section>
-    <section class="section workflow-principles"><h2>{m.workflow.detail}</h2><div class="principle-grid">{m.workflow.details.map(item => <article><h3>{item.title}</h3><p>{item.body}</p></article>)}</div></section>
-    <div class="page-cta"><a class="button primary" href={prototype(locale)}>{m.workspace.cta} <span aria-hidden="true">↗</span></a><a class="text-link" href={route(locale, 'docs')}>{m.nav.docs} <span aria-hidden="true">→</span></a></div>
-  </> : page === 'integrations' ? <>
+  {page === 'workflow' ? <WorkflowPage locale={locale}/> : page === 'integrations' ? <>
     <header class="page-hero page-hero-split">
       <div><h1>{m.integrations.title}</h1><p>{m.integrations.intro}</p><a class="button primary" href="#skills-catalog">{en ? 'Find your Skills' : '为这本书选 Skills'} <span aria-hidden="true">↓</span></a></div>
       <figure class="collaboration-map" aria-label={en ? 'How your Agent, Hetu Luoshu and you work together' : '外部 Agent、河图洛书与作者的协作关系'}>

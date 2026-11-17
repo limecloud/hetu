@@ -110,10 +110,22 @@ export class PluginPackage {
     }
     names.clear();
     for (const a of manifest.contributions.actions) {
-      if (a.id.startsWith("hetu.") || names.has(a.id))
+      if (a.id.startsWith("hetu.") || a.id === "skills.read" || names.has(a.id))
         throw new Error("插件动作重复或覆盖核心动作。");
       names.add(a.id);
       new Ajv({ strict: false }).compile(a.input_schema);
+    }
+    names.clear();
+    const skillNames = new Set<string>();
+    for (const skill of manifest.contributions.skills ?? []) {
+      if (names.has(skill.id) || skillNames.has(skill.name)) throw new Error("Skill贡献重复。");
+      names.add(skill.id);
+      skillNames.add(skill.name);
+      const entry = resourcePath(skill.entry), bytes = files.get(entry);
+      if (!entry.endsWith("/SKILL.md") || !bytes || bytes.length > 64 * 1024)
+        throw new Error("Skill入口缺失或超过预算。");
+      const text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+      if (text.includes("\0")) throw new Error("Skill入口须为UTF-8文本。");
     }
     if (manifest.contributions.actions.length && !manifest.runtime)
       throw new Error("动作贡献缺少后端入口。");

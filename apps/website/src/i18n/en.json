@@ -24,9 +24,9 @@
     "line1": "Your story.",
     "line2": "Room for its next form.",
     "description": "Novels, screenplays and videos, each with a place in your creative library.\nLet your Agent develop the work. Return to read, watch and choose.\nKeep the sources and decisions that make the next revision possible.",
-    "primary": "Try the workspace here",
+    "primary": "Explore the workspace",
     "secondary": "Read the user guide",
-    "note": "macOS / Windows / Linux / Apache-2.0 / Try the demo without installing",
+    "note": "macOS / Windows / Linux / Apache-2.0",
     "alt": "Original Hetu landscape: a manuscript-paper bridge crosses a pale jade river between distant mountains, connecting story and screen."
   },
   "promises": [
@@ -69,16 +69,16 @@
     ]
   },
   "workspace": {
-    "eyebrow": "GET TO KNOW HETU LUOSHU, HANDS ON",
-    "title": "Try a small creative decision before a big project.",
-    "body": "Open the sample manuscript, edit a passage and trace an adaptation to its source. Review and adopt a reference separately. This interactive page demo resets on reload.",
-    "cta": "Try the homepage workspace",
-    "alt": "Hetu Luoshu native desktop design with chapters, a manuscript editor and a story inspector",
-    "caption": "In-page demo. Refresh to reset."
+    "eyebrow": "The current desktop workspace",
+    "title": "A clear view of your work.",
+    "body": "Explore the current Electron interface: a creative library, manuscript and script workspaces, and reference draft review.",
+    "cta": "Explore the desktop workspace",
+    "alt": "Current Electron workspace with original example projects",
+    "caption": "Actual Electron interface / Example projects"
   },
   "workflow": {
     "eyebrow": "Your creative workflow",
-    "title": "Your Agent moves the work forward. You shape the story.",
+    "title": "Creative project workflow",
     "intro": "Start with an idea, a draft or existing footage. Give your familiar Agent a goal, return to read or watch the result, then point to what needs changing and continue the same task.",
     "steps": [
       {
@@ -211,10 +211,10 @@
   },
   "footer": {
     "description": "Keep the results, sources and creative decisions behind your novels, scripts and videos.",
-    "status": "macOS / Windows / Linux / Homepage prototype uses in-page demo data.",
+    "status": "macOS / Windows / Linux",
     "license": "Core license: Apache-2.0",
     "privacy": "Demo input stays in this page. The console uses essential sign-in cookies. Model input is sent only for tasks you approve. Hosting may process connection and performance data under its privacy policies.",
-    "design": "Interactive prototype",
+    "design": "Desktop preview",
     "rights": "Hetu Luoshu"
   },
   "foundation": {

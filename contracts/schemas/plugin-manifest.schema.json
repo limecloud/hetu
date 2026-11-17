@@ -131,6 +131,21 @@
         "actions"
       ],
       "properties": {
+        "skills": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "name", "description", "entry"],
+            "properties": {
+              "id": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "maxLength": 64},
+              "name": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "maxLength": 64},
+              "description": {"type": "string", "minLength": 1, "maxLength": 1024},
+              "entry": {"type": "string", "minLength": 1, "maxLength": 250}
+            }
+          }
+        },
         "views": {
           "type": "array",
           "maxItems": 32,

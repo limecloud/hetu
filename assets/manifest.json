@@ -343,6 +343,101 @@
       "height": 1536,
       "prompt_source": "assets/marketing/prompts/hetu-river-background-mobile.txt",
       "reference_image": "output/imagegen/home-visuals/hetu-river-background-alt.png"
+    },
+    {
+      "path": "output/imagegen/creative-workflow-20261117/ferry-arrival.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "8343e363f1744ea9aa203eb74c69342501c4bcfa51d996fc62d1738a96cc9ca1",
+      "width": 1536,
+      "height": 1024,
+      "prompt_source": "assets/marketing/prompts/creative-workflow-20261117.jsonl",
+      "prompt_job": "ferry-arrival"
+    },
+    {
+      "path": "output/imagegen/creative-workflow-20261117/ferry-storyboard.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "19689b0337ef0019980f05f685fdf8ab35cab88b36418d3fe04957e1489812d9",
+      "width": 2172,
+      "height": 724,
+      "prompt_source": "assets/marketing/prompts/creative-workflow-20261117.jsonl",
+      "prompt_job": "ferry-storyboard",
+      "reference_image": "output/imagegen/creative-workflow-20261117/ferry-arrival.png"
+    },
+    {
+      "path": "output/imagegen/creative-workflow-20261117/ferry-letter.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "231649648ec377cf374ab0d89dc5e894515433c6fbc5364426dc2ea3908028e4",
+      "width": 1536,
+      "height": 1024,
+      "prompt_source": "assets/marketing/prompts/creative-workflow-20261117.jsonl",
+      "prompt_job": "ferry-letter",
+      "reference_image": "output/imagegen/creative-workflow-20261117/ferry-arrival.png"
+    },
+    {
+      "path": "output/imagegen/creative-workflow-20261117/ferry-rope.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "87e62f7a477cdc0e3a7ca2dd0f7e27456cf6497c1a72ac8655439f8b9920206d",
+      "width": 1536,
+      "height": 1024,
+      "prompt_source": "assets/marketing/prompts/creative-workflow-20261117.jsonl",
+      "prompt_job": "ferry-rope",
+      "reference_image": "output/imagegen/creative-workflow-20261117/ferry-arrival.png"
+    },
+    {
+      "path": "output/imagegen/creative-workflow-20261117/ferry-listen.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "df7a29b9ac8216b73fc8c00ac35c9067cd40721f8a5f51f135fe0e209be99b2b",
+      "width": 1536,
+      "height": 1024,
+      "prompt_source": "assets/marketing/prompts/creative-workflow-20261117.jsonl",
+      "prompt_job": "ferry-listen",
+      "reference_image": "output/imagegen/creative-workflow-20261117/ferry-arrival.png"
+    },
+    {
+      "path": "output/imagegen/creative-workflow-20261117/ferry-empty.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "6a063ce86e76f7c7612e3299e2198e702e17eb113ee681184ee0802020751871",
+      "width": 1536,
+      "height": 1024,
+      "prompt_source": "assets/marketing/prompts/creative-workflow-20261117.jsonl",
+      "prompt_job": "ferry-empty",
+      "reference_image": "output/imagegen/creative-workflow-20261117/ferry-arrival.png"
+    },
+    {
+      "path": "output/imagegen/creative-workflow-20261117/ferry-wait.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "87f501721922bd9736257c434d1b1d61539a487d99073b5c37685f5ab5c705a5",
+      "width": 1536,
+      "height": 1024,
+      "prompt_source": "assets/marketing/prompts/creative-workflow-20261117.jsonl",
+      "prompt_job": "ferry-wait",
+      "reference_image": "output/imagegen/creative-workflow-20261117/ferry-arrival.png"
+    },
+    {
+      "path": "output/imagegen/creative-workflow-20261117/refinements/harbor-cover.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "662a3f78de211018e4ff5446a7a133879efeeac6f15486559d503af386d2ca8b",
+      "width": 1024,
+      "height": 1536,
+      "prompt_source": "assets/marketing/prompts/creative-workflow-20261117.jsonl"
+    },
+    {
+      "path": "output/imagegen/creative-workflow-20261117/refinements/empty-bank.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "642aa41ad853bd8635256212dc207cc989f777eb297a308eab8a05cdb5775311",
+      "width": 1536,
+      "height": 1024,
+      "prompt_source": "assets/marketing/prompts/creative-workflow-20261117.jsonl",
+      "reference_image": "output/imagegen/creative-workflow-20261117/ferry-arrival.png"
+    },
+    {
+      "path": "output/imagegen/creative-workflow-20261117/refinements/paused-step.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "45f7d52efbc6b41235699dd3a36b729981fadce8181a79719c53774265a7fd36",
+      "width": 1536,
+      "height": 1024,
+      "prompt_source": "assets/marketing/prompts/creative-workflow-20261117.jsonl",
+      "reference_image": "output/imagegen/creative-workflow-20261117/ferry-arrival.png"
     }
   ],
   "assets": [
@@ -1433,6 +1528,110 @@
       "derived_from": "output/imagegen/home-visuals/hetu-river-background-mobile.png",
       "text_in_image": false,
       "resize": "proportional"
+    },
+    {
+      "path": "assets/marketing/ferry-arrival.webp",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "3ff43d0c35bb9a069300aee0142f38e806ddd057e51a39d094550fc658d85b8c",
+      "derived_from": "output/imagegen/creative-workflow-20261117/ferry-arrival.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          1024
+        ],
+        "format": "webp",
+        "quality": 88
+      }
+    },
+    {
+      "path": "assets/marketing/ferry-storyboard.webp",
+      "width": 1536,
+      "height": 512,
+      "sha256": "e385f2dc5ea79ef529341a0cc96563e205143665a346bc6b38c4f3a91ad11f17",
+      "derived_from": "output/imagegen/creative-workflow-20261117/ferry-storyboard.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          512
+        ],
+        "format": "webp",
+        "quality": 88
+      }
+    },
+    {
+      "path": "assets/marketing/ferry-letter.webp",
+      "width": 1280,
+      "height": 853,
+      "sha256": "20ef4457cf2a6c3ba0136ef5b62cf383252e59caae9c5e29f63feb7099f4959c",
+      "derived_from": "output/imagegen/creative-workflow-20261117/ferry-letter.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1280,
+          853
+        ],
+        "format": "webp",
+        "quality": 86
+      }
+    },
+    {
+      "path": "assets/marketing/ferry-rope.webp",
+      "width": 1280,
+      "height": 853,
+      "sha256": "12218423cce62b92097a8a51d6367623aab126b00e3f4076f6d63bfa2a06269a",
+      "derived_from": "output/imagegen/creative-workflow-20261117/ferry-rope.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1280,
+          853
+        ],
+        "format": "webp",
+        "quality": 86
+      }
+    },
+    {
+      "path": "assets/marketing/ferry-listen.webp",
+      "width": 1280,
+      "height": 853,
+      "sha256": "f7107a97d3a0ea87761c980d6e88ccb91d178ceafb8ca447821e6c865903e71b",
+      "derived_from": "output/imagegen/creative-workflow-20261117/ferry-listen.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1280,
+          853
+        ],
+        "format": "webp",
+        "quality": 86
+      }
+    },
+    {
+      "path": "assets/marketing/ferry-empty.webp",
+      "sha256": "44c375877460f59df63b837a49d5032812b5e0dbfa4dbb4d945979494de1d4a4",
+      "width": 1280,
+      "height": 853,
+      "source": "output/imagegen/creative-workflow-20261117/refinements/empty-bank.png",
+      "transform": "proportional WebP export"
+    },
+    {
+      "path": "assets/marketing/ferry-wait.webp",
+      "sha256": "5dbe67594243e09024a368c5919e8579993e9aa55b999e8a355891da386eb83c",
+      "width": 1280,
+      "height": 853,
+      "source": "output/imagegen/creative-workflow-20261117/refinements/paused-step.png",
+      "transform": "proportional WebP export"
+    },
+    {
+      "path": "assets/marketing/harbor-cover.webp",
+      "sha256": "5e844024656c5c18e6d7b977408c603a5cac2c84a00e2e97d8874e746635597f",
+      "width": 800,
+      "height": 1200,
+      "source": "output/imagegen/creative-workflow-20261117/refinements/harbor-cover.png",
+      "transform": "proportional WebP export"
     }
   ]
 }

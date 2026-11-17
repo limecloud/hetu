@@ -1,0 +1,199 @@
+{
+  "date": "2026-11-17",
+  "status": "scoped_checks_passed",
+  "scope": "剧本与视频方法、基础目录及机器旅程；不等同专业规划／制作插件或全剧媒体完成",
+  "source_version": "0.10.0",
+  "skills_source_version": "0.3.8",
+  "worktree": "保留已有未提交变更，未提交／推送／发布；此记录不代表固定发行制品",
+  "tests": {
+    "core_drama_existing": {
+      "status": "passed",
+      "passed": 23,
+      "failed": 0,
+      "ignored": 0,
+      "log": "output/drama-completeness-20261117/core-tests.log",
+      "sha256": "04824c0882fc1de8020e57c3cfc6d24f2f765b80bca8ff576885f9d459514a84"
+    },
+    "core_video_episode_lifecycle": {
+      "status": "passed",
+      "passed": 3,
+      "failed": 0,
+      "ignored": 0,
+      "log": "output/drama-completeness-20261117/core-video-final.log",
+      "sha256": "18984a00b19389a6495c5a1a53cdbcd8ce607ae734a6bee01489af9650c32a7e"
+    },
+    "core_routing_and_scope": {
+      "status": "passed",
+      "passed": 16,
+      "failed": 0,
+      "ignored": 0,
+      "log": "output/drama-completeness-20261117/core-routing.log",
+      "sha256": "1b3716fa33a32a10af999975fbe5b4df4ad2b44597d403ed2df81c4b574581cf"
+    },
+    "stable_mcp": {
+      "status": "passed",
+      "passed": 10,
+      "failed": 0,
+      "ignored": 0,
+      "log": "output/drama-completeness-20261117/mcp-final.log",
+      "sha256": "54a152fdc0a1c9757eaff781f121011e014982376fa381b1195167557f61342e"
+    },
+    "public_cli_video": {
+      "status": "passed",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "log": "output/drama-completeness-20261117/cli-video-final.log",
+      "sha256": "0b97fd42e7fdaae5b27cce277897416baa7e8333a3119a086ef1014cb5bd279b"
+    },
+    "method_contract": {
+      "status": "passed",
+      "passed": 8,
+      "scope": "剧本28项、视频7项动作、固定方案边界、DRM-01～12、VID-01～14、缺动作／缺旅程／失效及越界引用负例",
+      "command": "python3 tools/test-creative-methods.py"
+    }
+  },
+  "test_total": 61,
+  "distribution": {
+    "suites": 45,
+    "files": 2475,
+    "bytes": 9890616,
+    "catalog_nodes": 908,
+    "checks": [
+      "sync-capability-map.py --check",
+      "sync-writing-methods.py --check",
+      "verify-skills.py",
+      "两项Skill Creator格式检查"
+    ]
+  },
+  "runtime_discovery": {
+    "current_codex_mcp": {
+      "build_version": "0.10.0",
+      "drama_actions": 28,
+      "video_actions": 5,
+      "new_video_actions_present": false,
+      "limit": "已建立的安装版MCP连接不因源码编译热更新宿主Core"
+    },
+    "development_cli": {
+      "status": "succeeded",
+      "build_version": "0.10.0",
+      "actions": [
+        "hetu.video.projects.create",
+        "hetu.video.projects.get",
+        "hetu.video.projects.update",
+        "hetu.video.episodes.create",
+        "hetu.video.episodes.get",
+        "hetu.video.episodes.update",
+        "hetu.video.episodes.reorder"
+      ],
+      "total": 7
+    },
+    "native_skill_list": "本对话通用套件仍为0.3.7，未声明新方法原生加载或覆盖安装"
+  },
+  "implementation": {
+    "video_episode_actions": [
+      "hetu.video.episodes.update",
+      "hetu.video.episodes.reorder"
+    ],
+    "access": "共享Core、固定管理方案、CLI／MCP、精确作品范围及页面交接；不新增作者身份开关",
+    "invariants": [
+      "分集双CAS、归属和身份保持",
+      "唯一完整顺序，拒绝重复／缺失／外来ID",
+      "归档拒绝及恢复",
+      "历史可读、未知先回读原键、同键异参拒绝",
+      "批准不执行，任务候选不采纳或定稿"
+    ]
+  },
+  "failed_attempts": [
+    {
+      "log": "output/drama-completeness-20261117/mcp-drama.log",
+      "reason": "初次测试将重开后的动态任务状态与创建时完整响应比较；改为固定TaskRef和确切成果验证。"
+    },
+    {
+      "log": "output/drama-completeness-20261117/core-video.log",
+      "reason": "编译缺少BTreeSet导入，补齐后复验。"
+    },
+    {
+      "log": "output/drama-completeness-20261117/core-video-recheck.log",
+      "reason": "夹具只创建video工作区、未建立独立VideoProject，补齐正确对象建立流程。"
+    },
+    {
+      "log": "output/drama-completeness-20261117/mcp-recheck.log",
+      "reason": "测试将未批准执行误判为forbidden，实际合同为hetu.author_confirmation_required；原回执比较改为稳定修订与引用，避免外层响应补全差异。"
+    },
+    {
+      "log": "output/drama-completeness-20261117/cli-video.log",
+      "reason": "测试辅助函数给无作品地图附加management_ref被Schema拒绝，改用确切范围的管理动作目录验证。"
+    }
+  ],
+  "mermaid": {
+    "status": "rendered",
+    "source": "docs/37-创作库与小说剧本视频设计.md",
+    "artifact": "output/drama-completeness-20261117/drama-progress.svg",
+    "sha256": "ce056796ffbf1052a82f07608225d4690982471aef7458c3ce6393ca56a59172"
+  },
+  "not_run": [
+    "新方法覆盖安装及当前Codex原生Skill重载",
+    "独立剧本专业规划插件",
+    "视频分镜／预演／生成／剪辑／区间反馈及成片工程全链路",
+    "整剧语义复盘、完整成文与作者认可",
+    "真实付费生成、成片观看及离线工程接收",
+    "GUI与Windows／Linux"
+  ],
+  "current_source_inputs": {
+    "tools/hetu-skills/base/skills/hetu-drama/SKILL.md": "0caf21895131809eace197dd16c30a669e31b374ea65d794bde717385240dc17",
+    "tools/hetu-skills/base/skills/hetu-video/SKILL.md": "ef2096ca72950833441683326672948f0abc701c677ffa6bb806c558be3e7a50",
+    "tools/hetu-skills/base/references/workflows/drama-planning.md": "0b29ca8e7d2a7119368118522511b8a2beb30daa820fdac6d422f81a4e2f5c42",
+    "tools/hetu-skills/base/references/workflows/drama-operations.md": "53e9ab922c62a7dc31c6d63d0b12cf31bca387457799d518ca3ab1949e94db38",
+    "tools/hetu-skills/base/references/workflows/video-planning.md": "0b39caad612617f8ca18f2202f73f7e7537d68ba4b22b54e5c20405e486ec37a",
+    "tools/hetu-skills/base/references/workflows/video-operations.md": "2cafd91159a0750840a1bd107870ad55150e41e623823e25f2f3ed72de726132",
+    "tools/test-creative-methods.py": "7235bced179de165e8ded1c624575d4618e6d8cc9bf5abeb980241f8c13b775f",
+    "tools/sync-capability-map.py": "7b9ea19389adc4b8fc4d05555ae2a21665fd6145ec27a83c5bc938bb30de5bc9",
+    "core/src/application/videos.rs": "36db7cafb49413aa7d93910e7e324b11b0353adead5aa894c0872e778cfc391a",
+    "core/src/application/agent_operations.rs": "8373a3f81847980ddb5fb1e03fc73bad8f15935b7924adea757fcebe12af6ccd",
+    "core/src/application/mod.rs": "5fdd4aeb3dded47501613e82d5f04ca217ec829335c9a49d1563ff6083a2e598",
+    "core/src/application/work_scope.rs": "eccf27101794665e9eae43be8d588d0b49c1ed38c60d5f47e79769605d3f6635",
+    "core/src/application/handoffs.rs": "eb05f5d1ebdd51b5db5ec6875dcf759f4d75ee5128ffb4099c68e26da158eab9",
+    "core/tests/video_episodes.rs": "852503950da4e2533fb693e2b2646e59d6ceabcaa9030147d2394bec6e788475",
+    "apps/mcp/tests/stdio.rs": "27a4c54f70998e5037dcda7ff2d584a10f9ddb433cbb3a5d7fd28bd52bd48a8c",
+    "apps/cli/tests/conversation.rs": "cf3dc5248445657ad4b8156a072dc4aaff155820d4c9fe64040c3352d7464c16",
+    "contracts/actions.json": "2fb8df789a24ca40148b97f8549d9aaeaa6494817eba7f9d92613989c2ea1475",
+    "contracts/schemas/work.schema.json": "42f05b41e0f86a875d267448c568d4a05a491f282aebbfd3cf5441db158f8c5d"
+  },
+  "documentation": {
+    "status": "passed",
+    "result": {
+      "documents": 86,
+      "local_links": 1126,
+      "fragment_links": 228,
+      "traceability": {
+        "FR": 40,
+        "US": 61,
+        "UC": 54,
+        "E2E": 30,
+        "AC": 65
+      },
+      "id_references": 1261,
+      "json_examples": 11,
+      "schemas": 2,
+      "mermaid": 97,
+      "errors": []
+    },
+    "log": "output/drama-completeness-20261117/docs-final.log",
+    "sha256": "cb7a226919ab08dcb94fca1b975426cb7539861569f5905f90d589fd3406b2ee"
+  },
+  "review_documents": {
+    "docs/19-测试策略与验收矩阵.md": "3422cc5dcb15926db9b8d33d3b477ff59d69b137e9cfe6f87b3ee179e5544987",
+    "docs/20-实施路线与里程碑.md": "0b47c5fb439c00e8024d4510a8e1a39bcbc982cf5b41d13ac9efed98cdf2bf12",
+    "docs/29-数据字典与Schema设计.md": "85808e03fd7e7aa50ee780977a3c123ec605af6fd541ce87d5d4ffcf19ccd453",
+    "docs/30-应用API详细设计.md": "9874d5da3ee3557a1fd1870f68e34ad5ae3d27d177ab4dfc946caf3448f12c87",
+    "docs/37-创作库与小说剧本视频设计.md": "9408392775c8d724286e7f3e22ed42812ef7a40ea75e41801997c0a9cb3e2b4e",
+    "docs/38-创作工作台重构执行计划.md": "6ccdbe47ee19d8c0f35788039bc4f1ca7aaf7c1f163cdff25af2a1c80c8d4440"
+  },
+  "formatting": {
+    "status": "passed",
+    "command": "rustfmt --check --edition 2024 core/src/application/videos.rs core/tests/video_episodes.rs apps/mcp/tests/stdio.rs apps/cli/tests/conversation.rs",
+    "note": "CLI测试最终只调整rustfmt换行，未改行为"
+  },
+  "author_selected_acceptance_scope": "先验收Skill、CLI/MCP和现有核心能力，专业插件另行推进。"
+}

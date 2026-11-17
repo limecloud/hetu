@@ -877,6 +877,15 @@ Git 读取动作 references、read_version、merge_preview 提供版本线、固
 
 ### 26.2 制作与媒体用例
 
+视频分集目录维护使用以下已定义动作，Schema唯一源为`contracts/schemas/work.schema.json`；稳定Agent通过固定管理方案准备、记录真实决定并执行，不能自报作者身份。
+
+| 动作 | 必要输入 | 结果与限制 |
+| --- | --- | --- |
+| `hetu.video.episodes.update` | `project_ref,video_episode_id,expected,title,brief,archived,operation_key` | 分集修订与摘要；核验项目归属、项目与分集CAS；不改媒体或工程 |
+| `hetu.video.episodes.reorder` | `project_ref,episode_refs,operation_key` | 项目修订与摘要；完整且不重复的原分集ID序列；保留各分集身份及修订 |
+
+归档项目拒绝新增、修改及重排分集，恢复项目后可继续。原键恢复先于当前头检查；同键异参拒绝，历史元数据与当前组合分别回读。`episodes.get`返回当前`project_ref`便于准备差异，不据此构成固定全季组合。
+
 | 用例 | 必要输入 | 成功回读 |
 | --- | --- | --- |
 | 保存分镜与镜头 | 固定制作依据、镜头顺序、必要资产、前版expected与原键 | 新分镜修订、来源和缺项；不修改剧本对白 |

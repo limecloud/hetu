@@ -7,6 +7,7 @@
 - 无窗口查询：CLI 使用 `hetu --client codex call hetu.capabilities.map --input -`；MCP 使用 `hetu_get_capability_map`，支持 group、action、skill 筛选与分页。
 - AI 完整索引：[contracts/capability-map.json](../contracts/capability-map.json)。其中包含输入 Schema、MCP profile、Skill 源文件和恢复动作。
 - 维护边界：本清单只维护宿主能力及插件发现入口；各插件自行维护功能清单和 manifest，AI按安装包继续发现，不在宿主重复登记插件功能。
+- 插件公共服务：SDK提供受管项目适配、固定来源与原操作恢复；桌面提供固定素材预览和完整分块导出。合同见[开放宿主SDK](plugin/27-开放宿主SDK与核心能力审计.md)，专业Schema仍由插件维护。
 - 插件选择：[官网插件中心](https://hetu.limeai.run/plugins/)展示来源、发行与包内功能清单；目录不代表本机安装状态，执行仍需重新发现。开发与上架见[插件23](plugin/23-插件发布与上架指南.md)。
 - 状态解释：**已验证**有专项证据；**源码已连线**需要运行验收；**机器替代入口**指向独立合同；**宿主边界**保留授权或私密性；**作者入口缺口**需继续处理。安装证据与功能验收分别记录。
 - 进度由 [38](38-创作工作台重构执行计划.md) 管理；验收要求见 [19](19-测试策略与验收矩阵.md)，构建和实测证据见 [20](20-实施路线与里程碑.md)。
@@ -18,10 +19,13 @@
 | 导入已有小说 | `hetu-import` | `hetu.import_authorizations.register` | 发现能力及精确作品 → 核对原稿、完整目录和摘要 → 登记真实导入指令 → 固定分批方案并执行 → 逐篇回读及原键恢复 |
 | 整理资料、目录、设定或执行作者取舍 | `hetu-manage` | `hetu.agent_operations.catalog` | 读取对象及固定修订 → 按领域Schema准备方案 → 展示差异并记录真实决定 → 原Agent执行 → 回读领域结果 |
 | 起草、改稿或整理大纲 | `hetu-setup` | `hetu.creative_tasks.list` | 恢复已有任务或准备确切新任务 → 按任务类型选择写作Skill → 按需读取固定上下文 → 提交参考成果 → 阅读反馈并沿原任务继续 |
+| 剧本复盘、全剧分集规划与场次创作 | `hetu-drama` | `hetu.drama.projects.get` | 新作先独立筹备；已有作品读取确切项目、分集及固定正文 → 区分作者稿、候选、旧大纲及原著阅读覆盖 → 全剧→分集→场次；专业规划按实际插件能力保存 → 固定Fountain任务起草、意见及同任务返工 → 分集入口回读正文与来源；采纳后增量更新，完整范围单独验收 |
+| 短剧视频全季规划、制作与返工交付 | `hetu-video` | `hetu.video.projects.get` | 独立筹备或恢复确切项目与原操作 → 复盘剧本、已选素材、旧工程及实际观看覆盖 → 全季→分集→分镜与资产；专业数据按实际插件合同保存 → 按问题预演并固定代表性生成与预算，未知查原提供方任务 → 剪辑音画→固定区间意见→局部返工→逐集成片与可恢复工程 |
 | 设置偏好或安装所选Skills套件 | `hetu-manage` | `hetu.local_settings.get` | 读取本机基线 → 准备固定设置方案 → 记录真实选择 → 精确市场预检后执行；未知沿原键只读恢复 → 分别核对安装和本会话加载状态 |
 | 配置模型渠道 | `hetu-manage` | `hetu.model_settings.inspect` | 读取非敏感设置及摘要 → 按真实指令提交固定设置 → 凭据仅进入私密存储 → 回读非敏感结果；生成与费用另行授权 |
 | 安装、启停或卸载插件 | `hetu-manage` | `hetu.plugins.inspect` | 核对包内容及摘要 → 核对依赖和状态基线 → 提交真实安装选择 → 回读原操作 → 启用后发现公开核心及插件能力 |
 | 使用插件及接续数据迁移 | `hetu-manage` | `hetu.plugins.capabilities` | 读取活动包与作品连接 → 发现核心和专业动作Schema → 固定输入及原键执行 → 迁移固定前后内容和CAS → 回读原操作及成果 |
+| 发现并按需读取插件Skill | `hetu-setup` | `hetu.plugins.inspect` | 列出活动插件方法摘要 → 按精确作品发现skills及resource_actions → 通过invoke的skills.read读取同包方法与引用 → 按实际Schema执行并回读；停用或升级后重查 |
 | 保存文稿版本 | `hetu-manage` | `hetu.git.status` | 读取本作品HEAD → 准备固定文稿快照 → 审阅完整差异及提交身份 → 记录确切snapshot决定 → 执行并沿原snapshot和键回读 |
 | 导出文稿或交付包 | `hetu-manage` | `hetu.documents.preview_export` | 读取确切修订及交付目标 → 准备固定交付方案 → 记录真实决定 → 执行并核验文件和摘要 |
 
@@ -55,7 +59,7 @@
 | 共享固定方案 | hetu-manage | 7 | 0 | 0 |
 | 本机设置与套件安装 | hetu-manage | 6 | 0 | 6 |
 | 作品读取与关联 | hetu-manage | 7 | 0 | 0 |
-| 视频工程 | hetu-video | 5 | 0 | 0 |
+| 视频工程 | hetu-video | 7 | 0 | 0 |
 | 整书导入与恢复 | hetu-import | 3 | 0 | 0 |
 | 插件授权 | hetu-manage | 6 | 0 | 3 |
 | 模型渠道设置 | hetu-manage | 3 | 0 | 0 |
@@ -84,12 +88,12 @@ MCP 对应调用 `hetu_get_capability_map`，参数同上。具体动作查询�
 | `hetu-cover` | 为河图洛书 Hetu Luoshu 小说封面任务设计并生成候选图片，按任务约定写回作品目录，供作者在河图洛书预览选用。用于用户提供河图洛书封面 request.json 或请求完成河图洛书封面设计时。 | [SKILL.md](../tools/hetu-skills/base/skills/hetu-cover/SKILL.md) |
 | `hetu-draft` | 作者通过河图洛书明确请求章节起草或续写参考稿时使用，不在保存正文时自动触发。 | [SKILL.md](../tools/hetu-skills/base/skills/hetu-draft/SKILL.md) |
 | `hetu-revise` | 作者通过河图洛书明确请求固定原文选区改稿，或依据公开批注返工参考稿时使用。 | [SKILL.md](../tools/hetu-skills/base/skills/hetu-revise/SKILL.md) |
-| `hetu-drama` | 作者通过河图洛书创作原创短剧，或将已授权原著改编为 Fountain 参考稿时使用。 | [SKILL.md](../tools/hetu-skills/base/skills/hetu-drama/SKILL.md) |
+| `hetu-drama` | 作者通过河图洛书复盘、规划、创作或返工剧本，组织全剧、分集和场次，或将已授权原著改编为 Fountain 参考稿时使用。 | [SKILL.md](../tools/hetu-skills/base/skills/hetu-drama/SKILL.md) |
 | `hetu-resources` | 作者通过河图洛书资料任务整理人物资料、场景参考、道具说明或考据笔记时使用。 | [SKILL.md](../tools/hetu-skills/base/skills/hetu-resources/SKILL.md) |
 | `hetu-artwork` | 为河图洛书角色、场景、道具及插图任务设计图片候选，通过实际发现的图像工具生成并回写固定任务，供作者预览。 | [SKILL.md](../tools/hetu-skills/base/skills/hetu-artwork/SKILL.md) |
 | `hetu-manage` | 作者需要在河图洛书整理作品资料、卷章大纲、设定、短剧场次、资料关联、导入交付、版本或本机设置时使用。由 Agent 准备完整操作，作者审阅后执行；正文创作和改稿使用对应写作 Skill。 | [SKILL.md](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) |
 | `hetu-import` | 作者要求将已有小说导入河图洛书，或从 TXT、Markdown、Word、EPUB 整理分卷章节并接续改编时使用。保留原稿、核对目录和来源，通过 CLI/MCP 固定方案导入，支持中断恢复。 | [SKILL.md](../tools/hetu-skills/base/skills/hetu-import/SKILL.md) |
-| `hetu-video` | 为河图洛书视频项目组织分镜、动态分镜或白模预演、视频生成、剪辑音画、媒体返工与工程交付时使用。 | [SKILL.md](../tools/hetu-skills/base/skills/hetu-video/SKILL.md) |
+| `hetu-video` | 在河图洛书复盘、规划或推进短剧视频项目，组织全季分集、分镜、预演、生成、剪辑音画、媒体返工及工程交付时使用。 | [SKILL.md](../tools/hetu-skills/base/skills/hetu-video/SKILL.md) |
 
 ## Review 方法
 
@@ -427,6 +431,8 @@ MCP 对应调用 `hetu_get_capability_map`，参数同上。具体动作查询�
 | 更新视频项目资料或归档<br>`hetu.video.projects.update` | 固定方案 | [hetu-video](../tools/hetu-skills/base/skills/hetu-video/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
 | 建立视频分集<br>`hetu.video.episodes.create` | `hetu_create_video_episode` (stable)<br>固定方案 | [hetu-video](../tools/hetu-skills/base/skills/hetu-video/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
 | 读取固定视频分集<br>`hetu.video.episodes.get` | `hetu_read_video_episode` (stable) | [hetu-video](../tools/hetu-skills/base/skills/hetu-video/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
+| 更新视频分集资料或归档<br>`hetu.video.episodes.update` | 固定方案 | [hetu-video](../tools/hetu-skills/base/skills/hetu-video/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
+| 重排完整视频分集目录<br>`hetu.video.episodes.reorder` | 固定方案 | [hetu-video](../tools/hetu-skills/base/skills/hetu-video/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
 
 ### 整书导入与恢复
 

@@ -1073,6 +1073,8 @@ impl Kernel {
             "hetu.video.projects.update" => return self.update_video_project(input, changes),
             "hetu.video.episodes.create" => return self.create_video_episode(input, changes),
             "hetu.video.episodes.get" => return self.get_video_episode(input),
+            "hetu.video.episodes.update" => return self.update_video_episode(input, changes),
+            "hetu.video.episodes.reorder" => return self.reorder_video_episodes(input, changes),
             _ => {}
         }
         if action == "hetu.handoffs.get" {
