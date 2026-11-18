@@ -70,14 +70,14 @@ async function publish() {
       "--tag", "latest", "--provenance", "--registry", registry], { cwd: root, stdio: "inherit" });
   }
   let verified = false;
-  for (let attempt = 0; attempt < 5; attempt++) {
+  for (let attempt = 0; attempt < 30; attempt++) {
     const existing = await registryVersion(version);
     if (existing !== null) {
       publicationAction(existing, packed);
       verified = true;
       break;
     }
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 10_000));
   }
   if (!verified) throw new Error("npm 发布结果尚未可读；重跑同一任务，不能改版本重复发布。");
   const latest = await registryVersion("latest");

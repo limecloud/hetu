@@ -1,0 +1,232 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-11-18",
+  "version": "0.12.0",
+  "runtime_git_sha": "b2fba2e1cba4c84a0c06176cfc8d23a9f83ed058",
+  "status": "passed_with_website_cache_limit",
+  "release": {
+    "url": "https://github.com/limecloud/hetu/releases/tag/v0.12.0",
+    "published_at": "2026-11-18T06:35:38Z",
+    "assets": [
+      {
+        "name": "Hetu-0.12.0-linux-x64.tar.gz",
+        "size": 235548023,
+        "digest": null
+      },
+      {
+        "name": "Hetu-0.12.0-macos-arm64.dmg",
+        "size": 267311176,
+        "digest": null
+      },
+      {
+        "name": "Hetu-0.12.0-macos-arm64.zip",
+        "size": 226046402,
+        "digest": null
+      },
+      {
+        "name": "Hetu-0.12.0-windows-x64.zip",
+        "size": 249860665,
+        "digest": null
+      },
+      {
+        "name": "release-manifest-linux-x64.json",
+        "size": 903355,
+        "digest": null
+      },
+      {
+        "name": "release-manifest-windows-x64.json",
+        "size": 903643,
+        "digest": null
+      },
+      {
+        "name": "release-manifest.json",
+        "size": 1001385,
+        "digest": null
+      },
+      {
+        "name": "SHA256SUMS",
+        "size": 276,
+        "digest": null
+      },
+      {
+        "name": "SHA256SUMS-linux-x64",
+        "size": 193,
+        "digest": null
+      },
+      {
+        "name": "SHA256SUMS-windows-x64",
+        "size": 194,
+        "digest": null
+      }
+    ],
+    "all_platforms": "passed",
+    "mac_signing": "developer-id",
+    "mac_notarization": "Accepted",
+    "workflow_status": "success",
+    "workflow_url": "https://github.com/limecloud/hetu/actions/runs/44248314812",
+    "final_attempt": 3
+  },
+  "ci": {
+    "url": "https://github.com/limecloud/hetu/actions/runs/44248315182",
+    "status": "success",
+    "rust": {
+      "passed": 359,
+      "failed": 0,
+      "ignored": 0
+    },
+    "plugins": 90,
+    "desktop": 44,
+    "website": 222,
+    "task_view": 29
+  },
+  "npm": {
+    "package": "@limecloud/hetu",
+    "version": "0.12.0",
+    "integrity": "sha512-YhSAF+GyyObonDvHUPOJgBolXowPGN/zdAGA12fOlP3HK20n68XJX0ueDtOlOml+2tfPIGU7bgrBMts83Xytrw==",
+    "status": "published",
+    "workflow": "electron-release.yml",
+    "trusted_publisher": "limecloud/hetu",
+    "provenance_log": "https://search.sigstore.dev/?logIndex=3963389976",
+    "runtime_smoke": {
+      "runtime_version": "0.12.0",
+      "methods_version": "0.3.10",
+      "tools": [
+        "hetu_read_creative_task",
+        "hetu_open_task_view",
+        "hetu_save_task_selection",
+        "hetu_inspect_collaboration",
+        "hetu_open_collaboration_task",
+        "hetu_read_task_operation",
+        "hetu_begin_creation",
+        "hetu_get_capability_map",
+        "hetu_call_action",
+        "hetu_inspect_runtime",
+        "hetu_get_task_checkpoint",
+        "hetu_save_task_checkpoint"
+      ],
+      "tool_count": 12,
+      "doctor_read_only": true
+    },
+    "latest": "0.12.0",
+    "trusted_publisher_validation": "success",
+    "readback_retry": "already_published_same_integrity",
+    "public_registry_install": "passed",
+    "registry_mcp": {
+      "version": "0.12.0",
+      "methods": "0.3.10",
+      "tool_count": 12,
+      "tools": [
+        "hetu_read_creative_task",
+        "hetu_open_task_view",
+        "hetu_save_task_selection",
+        "hetu_inspect_collaboration",
+        "hetu_open_collaboration_task",
+        "hetu_read_task_operation",
+        "hetu_begin_creation",
+        "hetu_get_capability_map",
+        "hetu_call_action",
+        "hetu_inspect_runtime",
+        "hetu_get_task_checkpoint",
+        "hetu_save_task_checkpoint"
+      ]
+    },
+    "provenance": {
+      "url": "https://registry.npmjs.org/-/npm/v1/attestations/@limecloud%2fhetu@0.12.0",
+      "provenance": {
+        "predicateType": "https://slsa.dev/provenance/v1"
+      }
+    },
+    "registry_install_attempts": [
+      {
+        "status": "failed",
+        "reason": "版本详情先于安装索引可用，ETARGET"
+      },
+      {
+        "status": "passed",
+        "reason": "独立cache且prefer-online后普通npm安装成功"
+      }
+    ]
+  },
+  "website": {
+    "origin": "https://hetu.limeai.run",
+    "deployment": "41cd3c71-cbe6-42c2-8e86-e530ea3e27a1",
+    "source_sha": "7a5af93bf0ada7fb2f2f0722f20ce7fd533d9fc9",
+    "pages": 147,
+    "local_references": 9099,
+    "production_passed": 20,
+    "production_failed": 2,
+    "unresolved": "两条已移除指南在正式域名仍命中历史缓存；部署域名与带新查询的请求为404。四类清除请求均被API接受，未把接受等同刷新完成。"
+  },
+  "cloudflare_cli": {
+    "status": "verified",
+    "secret_storage": "macOS Keychain",
+    "scope": "limeai.run: Zone Read and Cache Purge",
+    "expires_on": "2027-02-16T15:59:59Z",
+    "commands": [
+      "cloudflare-cache status",
+      "cloudflare-cache purge <HTTPS URLs>"
+    ]
+  },
+  "attempts": [
+    {
+      "sha": "c5cc86e",
+      "run": 44241965637,
+      "status": "failed",
+      "reason": "共享页面清单受调用方目录影响",
+      "fixed": "固定构建目录并验证仓库、workspace与外部目录一致"
+    },
+    {
+      "sha": "7a5af93",
+      "run": 44242482180,
+      "status": "cancelled_after_failure",
+      "reason": "旧旅程假定完整默认工具目录",
+      "fixed": "通用入口执行真实业务并保留权限断言"
+    },
+    {
+      "sha": "b39dfa6",
+      "run": 44245774103,
+      "status": "failed",
+      "reason": "非法输入的旧恢复断言",
+      "fixed": "核对确切Schema读取及correct_input重试策略"
+    },
+    {
+      "sha": "b2fba2e",
+      "run": 44248314812,
+      "attempt": 1,
+      "status": "npm_auth_failed_after_release_success",
+      "reason": "可信发布者尚未完成通行密钥验证"
+    },
+    {
+      "sha": "b2fba2e",
+      "run": 44248314812,
+      "attempt": 2,
+      "status": "npm_readback_timeout_after_publish_accepted",
+      "reason": "registry处理超过10秒；等待原版本并扩展后续门禁至5分钟"
+    },
+    {
+      "sha": "b2fba2e",
+      "run": 44248314812,
+      "attempt": 3,
+      "status": "success",
+      "reason": "registry可读后按固定包摘要恢复，无重复发布"
+    }
+  ],
+  "logs": {
+    "fourth-ci-macos-job.log": "3837beaac0a456812f6edae5520574cadff09b05da186fef851a873943c4c6c1",
+    "fourth-web-job.log": "daf99c6b7ce669d3a679884ee6495a15a4b2292eafb19fed18fff0ac06cf2377",
+    "fourth-optimized-job.log": "b0f2921b6d9f1949138b90ae34c675e87229259c9b01cf9e52a511733a5d647b",
+    "fourth-release-macos-job.log": "e54d39f713ae95de49fa86e6f70bf7508dad9c9b0a1f87023f97de85c724de5d",
+    "fourth-windows-job.log": "4dc0de1fb7ee3d396729ba30b084a71d14435628a04749041358ee7da903fb0a",
+    "fourth-linux-job.log": "aa97712360dfdb3cf943303a7423176d59ff70028dee88fc978a80f2562fac43",
+    "release-publish-job.log": "1efe176352d7adb9437dcdedd6be63ad07ea5dc5e289dd9985fe40dbe2e8efb1",
+    "npm-publish-failure.log": "c1a43036d20c453431a4de662384b98c11d7765295dc2422f968723a1407895e",
+    "npm-publish-final.log": "81616247ede614b94530843dfec23dbd2effab1ccab0fe42ff0356ac1cb2aca5",
+    "npm-publish-success.log": "c216f372f16bec1a2211d801ef12c327ad4527f3cd8cf30b7cb6b135dd86f924"
+  },
+  "limits": [
+    "本机正式运行时只安装于npm私有缓存，未覆盖Applications或重载现有MCP连接。",
+    "Windows/Linux仅runner和随包验收，不代表全部目标系统与专业创作质量。",
+    "未执行作者采纳、定稿或付费模型请求。",
+    "早期未公开构建的标签移动和失败SHA已保留；正式发布后的v0.12.0保持不可变。"
+  ]
+}
