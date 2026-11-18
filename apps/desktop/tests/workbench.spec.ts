@@ -623,7 +623,12 @@ test(
     });
     expect(invalidSave.status).toBe("blocked");
     expect(invalidSave.error.code).toBe("invalid_input");
-    expect(invalidSave.error.resolution.kind).toBe("correct_input");
+    expect(invalidSave.error.resolution).toMatchObject({
+      kind: "read",
+      action: "hetu.collaboration.inspect",
+      input: { action: "hetu.documents.save", include_schema: true },
+      retry: "correct_input",
+    });
     await pluginPage.getByRole("button", { name: "自动排列" }).click();
     await expect(pluginPage.getByRole("status")).toContainText("已重新排列");
     await page.screenshot({
