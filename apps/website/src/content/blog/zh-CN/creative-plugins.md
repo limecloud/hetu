@@ -51,3 +51,5 @@ Skills 和客户端接入包安装在你使用的 Agent 环境里，为它提供
 一个有用的插件，可以只解决一个反复出现的小问题。先让它在一部作品中可用，再让更多作者选择它。工具可以不断增加，作者不必接触自己用不到的复杂度。
 
 从[插件中心](/plugins/)找一件当前用得上的工具，或沿[开发指南](/docs/plugin-development/)与[发布指南](/docs/plugin-publishing/)把自己的方法做成工具。它最终应该帮作者更清楚地看见作品，并更有把握地决定下一步。
+
+世界、悬念和视听也可以分别选择工具：[世界构建](/plugins/world-studio/)核对前提，[悬疑推演](/plugins/mystery-lab/)区分作者与读者已知，[美术设定台](/plugins/art-direction/)组织实际参考图，[字幕工坊](/plugins/subtitle-studio/)播放并核对双语字幕。它们如何接续创作，见[从世界的规则，到屏幕上的一句话](/blog/world-to-screen/)。

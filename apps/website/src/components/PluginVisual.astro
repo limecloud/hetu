@@ -5,6 +5,10 @@ interface Props { locale: Locale; kind?: string; }
 const { locale, kind = 'relationships' } = Astro.props;
 const en = locale === 'en';
 const captures: Record<string, { width: number; height: number; zh: string; en: string }> = {
+  "world-studio": {"width": 1360, "height": 900, "zh": "世界构建实际工作面，macOS隔离演示资料。", "en": "World Studio actual work surface with isolated macOS demonstration data."},
+  "mystery-lab": {"width": 1360, "height": 900, "zh": "悬疑推演实际工作面，macOS隔离演示资料。", "en": "Mystery Lab actual work surface with isolated macOS demonstration data."},
+  "art-direction": {"width": 1345, "height": 1159, "zh": "美术设定台实际工作面，macOS隔离演示资料。", "en": "Art Direction actual work surface with isolated macOS demonstration data."},
+  "subtitle-studio": {"width": 1345, "height": 1110, "zh": "字幕工坊实际工作面，macOS隔离演示资料。", "en": "Subtitle Studio actual work surface with isolated macOS demonstration data."},
   "adaptation-studio": {"width": 1360, "height": 900, "zh": "改编工程真实工作面，使用macOS隔离验收资料。", "en": "Adaptation Studio actual work surface with isolated macOS acceptance data."},
   "reader-review": {"width": 1360, "height": 900, "zh": "试读工作台真实工作面，使用macOS隔离验收资料。", "en": "Reader Review actual work surface with isolated macOS acceptance data."},
   "comic-studio": {"width": 1345, "height": 1435, "zh": "漫画创作真实工作面，使用macOS隔离验收资料。", "en": "Comic Studio actual work surface with isolated macOS acceptance data."},

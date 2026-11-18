@@ -120,3 +120,15 @@ Choose a tool for the question at hand. Keep adaptations separate from the origi
 - [Audio Drama](/en/plugins/audio-drama/)：Listen to complete dialogue and mixes. Leave interval notes and recheck their position when the timeline changes.
 
 For example: “Plan how these chapters become one episode while keeping the sender a mystery. Share fixed excerpts, revise from returned feedback, then arrange this scene as two comic pages and a short dialogue. Use my supplied images and recordings; confirm costs separately.”
+
+
+## Worlds, mysteries and audiovisual expression
+
+- [World Studio](/en/plugins/world-studio/): declare fictional calendars, premises and units, then inspect change impacts before continuing.
+- [Mystery Lab](/en/plugins/mystery-lab/): distinguish author truth from reader knowledge and evaluate clues by reveal stage.
+- [Art Direction](/en/plugins/art-direction/): view actual reference images, compare palettes and designs, and leave region notes.
+- [Subtitle Studio](/en/plugins/subtitle-studio/): play fixed media, review languages, timing and reading load, and preserve originals when delivering subtitles.
+
+Try: “Check dates and food supplies for three days of harbour closure. Decide whether readers have enough clues by chapter two without revealing the sender. Prepare the next chapter. Use my actual reference images for costumes, play the full dialogue to check subtitles, and recheck old notes after timing changes.”
+
+Novels, scripts and video remain independent works. Existing images, subtitles and notes retain their original revisions. Generation costs, manuscript adoption and final approval remain separate decisions.

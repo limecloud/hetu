@@ -1,0 +1,783 @@
+{
+  "recorded_at": "2026-11-18T16:03:42.903375+00:00",
+  "phase": "插件正式交付通过，官网最终回归与部署取证中",
+  "plugins": [
+    {
+      "slug": "world-studio",
+      "directory": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-world-studio",
+      "steps": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "check"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "test:unit"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "node",
+            "scripts/verify-docs.mjs"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "node",
+            "scripts/package.mjs"
+          ],
+          "exit_code": 0
+        }
+      ],
+      "package_sha256": "5050928ecd28c72b5be6eb227a39e09919ee8c12354967cc482f0b2011d364d5",
+      "archive": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-world-studio/output/org.wordflowlab.world-studio-0.1.0.tgz",
+      "archive_sha256": "dc23ebb6968f1572423b066de80752b2d850c8d1f858e702dbe38f5538f201bd",
+      "plugin_id": "org.wordflowlab.world-studio",
+      "version": "0.1.0",
+      "source_commit": "914153bcf98b26f8b1070d31d04b5dd841d6f191",
+      "tested_source_commit": "c9ff375148a17764d063f4610bee28cd2d21abc3",
+      "size_bytes": 103391,
+      "minimum_host_version": "0.12.4",
+      "host_git_sha": "3617eb7cabeda135f46d475eff28488d470f3bbe",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "acceptance_url": "https://github.com/wordflowlab/hetu-world-studio/blob/914153bcf98b26f8b1070d31d04b5dd841d6f191/docs/research/release-acceptance.json",
+      "release_url": "https://github.com/wordflowlab/hetu-world-studio/releases/tag/v0.1.0"
+    },
+    {
+      "slug": "mystery-lab",
+      "directory": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-mystery-lab",
+      "steps": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "check"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "test:unit"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "node",
+            "scripts/verify-docs.mjs"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "node",
+            "scripts/package.mjs"
+          ],
+          "exit_code": 0
+        }
+      ],
+      "package_sha256": "2c93b9094f2660a96e5193224530bfbc078594f071b8c4b5057fd7df7147f606",
+      "archive": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-mystery-lab/output/org.wordflowlab.mystery-lab-0.1.0.tgz",
+      "archive_sha256": "7c2bcf37d38adeea21e71901286dc4568d392260d78708d714709f0f1dfa709b",
+      "plugin_id": "org.wordflowlab.mystery-lab",
+      "version": "0.1.0",
+      "source_commit": "ff72135d32c27a1fd325df64f9d501e27126e2f7",
+      "tested_source_commit": "8e65df943322bfb1bfdb73208e813432bac83ee1",
+      "size_bytes": 98705,
+      "minimum_host_version": "0.12.4",
+      "host_git_sha": "3617eb7cabeda135f46d475eff28488d470f3bbe",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "acceptance_url": "https://github.com/wordflowlab/hetu-mystery-lab/blob/ff72135d32c27a1fd325df64f9d501e27126e2f7/docs/research/release-acceptance.json",
+      "release_url": "https://github.com/wordflowlab/hetu-mystery-lab/releases/tag/v0.1.0"
+    },
+    {
+      "slug": "subtitle-studio",
+      "directory": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-subtitle-studio",
+      "steps": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "check"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "test:unit"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "node",
+            "scripts/verify-docs.mjs"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "node",
+            "scripts/package.mjs"
+          ],
+          "exit_code": 0
+        }
+      ],
+      "package_sha256": "5c9baeffe35b436d7504752db9fa5c2613fa65418fcbea921c4bfef9dd5a84d8",
+      "archive": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-subtitle-studio/output/org.wordflowlab.subtitle-studio-0.1.0.tgz",
+      "archive_sha256": "de7ea2c1e7e3271f1136e0077c81777fa6aec9b34bef808f2d67d53fe704c1bc",
+      "plugin_id": "org.wordflowlab.subtitle-studio",
+      "version": "0.1.0",
+      "source_commit": "3f806ea49b3c7f38911aa3fd00499dec00759954",
+      "tested_source_commit": "a736e6b7013331b48c6d1f9d7cf0547bb83af9d0",
+      "size_bytes": 103799,
+      "minimum_host_version": "0.12.4",
+      "host_git_sha": "3617eb7cabeda135f46d475eff28488d470f3bbe",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "acceptance_url": "https://github.com/wordflowlab/hetu-subtitle-studio/blob/3f806ea49b3c7f38911aa3fd00499dec00759954/docs/research/release-acceptance.json",
+      "release_url": "https://github.com/wordflowlab/hetu-subtitle-studio/releases/tag/v0.1.0"
+    },
+    {
+      "slug": "art-direction",
+      "directory": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-art-direction",
+      "steps": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "check"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "test:unit"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "node",
+            "scripts/verify-docs.mjs"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "node",
+            "scripts/package.mjs"
+          ],
+          "exit_code": 0
+        }
+      ],
+      "package_sha256": "54f05a084e642455f90defc9a2fc8da9c71b9d4204e8f51b176843d5f3673682",
+      "archive": "/Users/coso/Documents/dev/ai/wordflowlab/hetu-art-direction/output/org.wordflowlab.art-direction-0.1.0.tgz",
+      "archive_sha256": "3deb17b09640d4ab8ac3557294c68f6137fadbecdfc0fd1b877e02cbef171db9",
+      "plugin_id": "org.wordflowlab.art-direction",
+      "version": "0.1.0",
+      "source_commit": "74b768a18e05cda4885ce409003cf01b477c6312",
+      "tested_source_commit": "2399c7c1331c04624b355c5a61e14cbd3594a015",
+      "size_bytes": 103895,
+      "minimum_host_version": "0.12.4",
+      "host_git_sha": "3617eb7cabeda135f46d475eff28488d470f3bbe",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "acceptance_url": "https://github.com/wordflowlab/hetu-art-direction/blob/74b768a18e05cda4885ce409003cf01b477c6312/docs/research/release-acceptance.json",
+      "release_url": "https://github.com/wordflowlab/hetu-art-direction/releases/tag/v0.1.0"
+    }
+  ],
+  "public_verification": [
+    {
+      "slug": "world-studio",
+      "archive_sha256": "dc23ebb6968f1572423b066de80752b2d850c8d1f858e702dbe38f5538f201bd",
+      "package_sha256": "5050928ecd28c72b5be6eb227a39e09919ee8c12354967cc482f0b2011d364d5",
+      "source_commit": "914153bcf98b26f8b1070d31d04b5dd841d6f191",
+      "local_package": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/plugin-gh/published-downloads/world-studio/package",
+      "public_verified": true
+    },
+    {
+      "slug": "mystery-lab",
+      "archive_sha256": "7c2bcf37d38adeea21e71901286dc4568d392260d78708d714709f0f1dfa709b",
+      "package_sha256": "2c93b9094f2660a96e5193224530bfbc078594f071b8c4b5057fd7df7147f606",
+      "source_commit": "ff72135d32c27a1fd325df64f9d501e27126e2f7",
+      "local_package": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/plugin-gh/published-downloads/mystery-lab/package",
+      "public_verified": true
+    },
+    {
+      "slug": "subtitle-studio",
+      "archive_sha256": "de7ea2c1e7e3271f1136e0077c81777fa6aec9b34bef808f2d67d53fe704c1bc",
+      "package_sha256": "5c9baeffe35b436d7504752db9fa5c2613fa65418fcbea921c4bfef9dd5a84d8",
+      "source_commit": "3f806ea49b3c7f38911aa3fd00499dec00759954",
+      "local_package": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/plugin-gh/published-downloads/subtitle-studio/package",
+      "public_verified": true
+    },
+    {
+      "slug": "art-direction",
+      "archive_sha256": "3deb17b09640d4ab8ac3557294c68f6137fadbecdfc0fd1b877e02cbef171db9",
+      "package_sha256": "54f05a084e642455f90defc9a2fc8da9c71b9d4204e8f51b176843d5f3673682",
+      "source_commit": "74b768a18e05cda4885ce409003cf01b477c6312",
+      "local_package": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/plugin-gh/published-downloads/art-direction/package",
+      "public_verified": true
+    }
+  ],
+  "official_ci": {
+    "world-studio": {
+      "head_sha": "c9ff375148a17764d063f4610bee28cd2d21abc3",
+      "repository": "wordflowlab/hetu-world-studio",
+      "run_id": 44336534419,
+      "conclusion": "success",
+      "databaseId": 44336534419,
+      "headSha": "c9ff375148a17764d063f4610bee28cd2d21abc3",
+      "status": "completed",
+      "url": "https://github.com/wordflowlab/hetu-world-studio/actions/runs/44336534419"
+    },
+    "mystery-lab": {
+      "head_sha": "8e65df943322bfb1bfdb73208e813432bac83ee1",
+      "repository": "wordflowlab/hetu-mystery-lab",
+      "run_id": 44336568126,
+      "conclusion": "success",
+      "databaseId": 44336568126,
+      "headSha": "8e65df943322bfb1bfdb73208e813432bac83ee1",
+      "status": "completed",
+      "url": "https://github.com/wordflowlab/hetu-mystery-lab/actions/runs/44336568126"
+    },
+    "art-direction": {
+      "head_sha": "2399c7c1331c04624b355c5a61e14cbd3594a015",
+      "repository": "wordflowlab/hetu-art-direction",
+      "run_id": 44339382801,
+      "conclusion": "success",
+      "databaseId": 44339382801,
+      "headSha": "2399c7c1331c04624b355c5a61e14cbd3594a015",
+      "status": "completed",
+      "url": "https://github.com/wordflowlab/hetu-art-direction/actions/runs/44339382801"
+    },
+    "subtitle-studio": {
+      "head_sha": "a736e6b7013331b48c6d1f9d7cf0547bb83af9d0",
+      "repository": "wordflowlab/hetu-subtitle-studio",
+      "run_id": 44339421408,
+      "conclusion": "success",
+      "databaseId": 44339421408,
+      "headSha": "a736e6b7013331b48c6d1f9d7cf0547bb83af9d0",
+      "status": "completed",
+      "url": "https://github.com/wordflowlab/hetu-subtitle-studio/actions/runs/44339421408"
+    }
+  },
+  "official_local": [
+    {
+      "slug": "world-studio",
+      "exit_code": 0
+    },
+    {
+      "slug": "mystery-lab",
+      "exit_code": 0
+    },
+    {
+      "slug": "art-direction",
+      "exit_code": 0
+    },
+    {
+      "slug": "subtitle-studio",
+      "exit_code": 0
+    }
+  ],
+  "host_installation": {
+    "version": "hetu 0.12.4",
+    "source_commit": "3617eb7cabeda135f46d475eff28488d470f3bbe",
+    "archive_sha256": "39c55fea493132c172dfe4d4da34a082831540afedc4eda0de6636dd7e1b0f0c",
+    "signature_verified": true,
+    "gatekeeper": true,
+    "stapled_notarization": true,
+    "backup_created": false,
+    "author_data_modified": false,
+    "recorded_at": "2026-11-18T15:41:27.245596+00:00"
+  },
+  "installation_handoff": {
+    "recorded_at": "2026-11-18T15:59:51.119757+00:00",
+    "recipient_thread": "01a1ec19-57ac-76e1-b4f2-bec4732a41e9",
+    "path": "/Applications/Hetu.app",
+    "formal_version_verified_before_handoff": "0.12.4",
+    "all_local_tests_passed": [
+      {
+        "slug": "world-studio",
+        "exit_code": 0
+      },
+      {
+        "slug": "mystery-lab",
+        "exit_code": 0
+      },
+      {
+        "slug": "art-direction",
+        "exit_code": 0
+      },
+      {
+        "slug": "subtitle-studio",
+        "exit_code": 0
+      }
+    ],
+    "installation_path_released": true,
+    "further_installation_or_gui_calls": false,
+    "reserved_other_directory_untouched": "output/conversation-direct-20261118-1795008348154"
+  },
+  "current_codex": {
+    "recorded_at": "2026-11-18T15:05:21.976Z",
+    "connection": "current Codex MCP connection",
+    "connection_core_version": "0.11.11",
+    "packages_before": [
+      {
+        "id": "org.wordflowlab.screenplay",
+        "sha256": "3db2b1f8b3577b6bd1806e8ca0b1a25b019b51299a4f6a3fea53fc821cecdf99",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.video-studio",
+        "sha256": "549b654781dc4949ee4abc28a94be97bb3bb12df96aead7208eb0ca1b7c0db2a",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.director-stage",
+        "sha256": "1f7755622c1f50c9932ff7536c5175d113f30bcff77f58921efffe012dab645c",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.story-research",
+        "sha256": "5adeffdf4bfe4f71ac614204bfe77825747164fa4705f6b9ec52a1d908b5bf9f",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.character-lab",
+        "sha256": "d3404b533b5e8a03e45e84eb23f5d4a99209568a0d8e09e03b13a0b05d6a4944",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.story-analysis",
+        "sha256": "fb117ee372a4fce7cde8cb1afd997f3d0b168066af2b1334171e721dfcd21009",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.lorebook-bridge",
+        "sha256": "0620fb1c75dbedd1e76306e1be3445ab383f801cfe0eac5341623a9e05054402",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.interactive-fiction",
+        "sha256": "c777120519a56fd93d1e132c078ac99b5a65f19103070a088b1cedf8f74e0a00",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.series-organizer",
+        "sha256": "e51032102970d97f650165fdd2e17a3a6b5991e707ab3028dfc54422969663dc",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.story-translation",
+        "sha256": "59080c4c196a79bdd09c50ebbd2a99d46a43dc561575a785fb9b8eed78ec3148",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.readthrough",
+        "sha256": "5723789aa1a672cdf9d1fb2e3a0756e7f2b194a67e50815d6ea5e8543dce8bd1",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.book-export",
+        "sha256": "e9dfd676d26c6ec450f21cdce83599b921492ca46e1a29a414400433a09c3e68",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.novel-review",
+        "sha256": "f5eceea32772e9028ddaf36607ceb2c4eddd0a70eb17373e4c4bf871c21c18f4",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.novel-atlas",
+        "sha256": "3b0b6006069eb0b2c70c709ee9a3ed2bd006b4491946a161748389e77a46d298",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.prose-studio",
+        "sha256": "5005ec439334b5babd9d9bd35b3a7575185b55df67f3ea3623ed3c21226c3c7f",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.novel-planner",
+        "sha256": "a38c3204bbb35fb075690f4ff2c991c63a136e09b34b8c24d67c93115de5df0c",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.adaptation-studio",
+        "sha256": "354d2fb5e325828e0b189bac79eff50be3ee312466c0a437c73f3ca907b061e1",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.audio-drama",
+        "sha256": "95ab0357cce70a38643070f144a3b7a1c7a7d697b3573b1c0cc67c728584fa23",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.reader-review",
+        "sha256": "9b354d5494d2158da3431b67bd76ad326c617dc08c9908dc594d6b1a1fb454ab",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.comic-studio",
+        "sha256": "7e18dc9956a2678171c5692eef3c512315e0a40447d507c1bb292214fe284420",
+        "enabled": true
+      }
+    ],
+    "packages_after": [
+      {
+        "id": "org.wordflowlab.screenplay",
+        "sha256": "3db2b1f8b3577b6bd1806e8ca0b1a25b019b51299a4f6a3fea53fc821cecdf99",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.video-studio",
+        "sha256": "549b654781dc4949ee4abc28a94be97bb3bb12df96aead7208eb0ca1b7c0db2a",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.director-stage",
+        "sha256": "1f7755622c1f50c9932ff7536c5175d113f30bcff77f58921efffe012dab645c",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.story-research",
+        "sha256": "5adeffdf4bfe4f71ac614204bfe77825747164fa4705f6b9ec52a1d908b5bf9f",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.character-lab",
+        "sha256": "d3404b533b5e8a03e45e84eb23f5d4a99209568a0d8e09e03b13a0b05d6a4944",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.story-analysis",
+        "sha256": "fb117ee372a4fce7cde8cb1afd997f3d0b168066af2b1334171e721dfcd21009",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.lorebook-bridge",
+        "sha256": "0620fb1c75dbedd1e76306e1be3445ab383f801cfe0eac5341623a9e05054402",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.interactive-fiction",
+        "sha256": "c777120519a56fd93d1e132c078ac99b5a65f19103070a088b1cedf8f74e0a00",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.series-organizer",
+        "sha256": "e51032102970d97f650165fdd2e17a3a6b5991e707ab3028dfc54422969663dc",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.story-translation",
+        "sha256": "59080c4c196a79bdd09c50ebbd2a99d46a43dc561575a785fb9b8eed78ec3148",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.readthrough",
+        "sha256": "5723789aa1a672cdf9d1fb2e3a0756e7f2b194a67e50815d6ea5e8543dce8bd1",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.book-export",
+        "sha256": "e9dfd676d26c6ec450f21cdce83599b921492ca46e1a29a414400433a09c3e68",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.novel-review",
+        "sha256": "f5eceea32772e9028ddaf36607ceb2c4eddd0a70eb17373e4c4bf871c21c18f4",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.novel-atlas",
+        "sha256": "3b0b6006069eb0b2c70c709ee9a3ed2bd006b4491946a161748389e77a46d298",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.prose-studio",
+        "sha256": "5005ec439334b5babd9d9bd35b3a7575185b55df67f3ea3623ed3c21226c3c7f",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.novel-planner",
+        "sha256": "a38c3204bbb35fb075690f4ff2c991c63a136e09b34b8c24d67c93115de5df0c",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.adaptation-studio",
+        "sha256": "354d2fb5e325828e0b189bac79eff50be3ee312466c0a437c73f3ca907b061e1",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.audio-drama",
+        "sha256": "95ab0357cce70a38643070f144a3b7a1c7a7d697b3573b1c0cc67c728584fa23",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.reader-review",
+        "sha256": "9b354d5494d2158da3431b67bd76ad326c617dc08c9908dc594d6b1a1fb454ab",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.comic-studio",
+        "sha256": "7e18dc9956a2678171c5692eef3c512315e0a40447d507c1bb292214fe284420",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.world-studio",
+        "sha256": "5050928ecd28c72b5be6eb227a39e09919ee8c12354967cc482f0b2011d364d5",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.mystery-lab",
+        "sha256": "2c93b9094f2660a96e5193224530bfbc078594f071b8c4b5057fd7df7147f606",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.art-direction",
+        "sha256": "54f05a084e642455f90defc9a2fc8da9c71b9d4204e8f51b176843d5f3673682",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.subtitle-studio",
+        "sha256": "5c9baeffe35b436d7504752db9fa5c2613fa65418fcbea921c4bfef9dd5a84d8",
+        "enabled": true
+      }
+    ],
+    "existing_packages_preserved": true,
+    "skill_resources": [
+      "SKILL.md",
+      "references/workflows.md"
+    ],
+    "work_ref": {
+      "workspace_id": "workspace_ad1c70dc-ba4a-4aad-9327-0661bd20e4a5",
+      "kind": "novel",
+      "object_id": "novel_297f377b-21d5-4de4-869a-15d9c4cba9f8"
+    },
+    "checks": [
+      {
+        "slug": "world-studio",
+        "plugin_id": "org.wordflowlab.world-studio",
+        "package_sha256": "5050928ecd28c72b5be6eb227a39e09919ee8c12354967cc482f0b2011d364d5",
+        "fixed": {
+          "object_id": "ext_e13d832f-41aa-4483-a0bc-c4dd8847273a",
+          "revision": 1,
+          "sha256": "e40137df7b1896fd0a8a0da3ed0cfa7af3e2c9b5225a45961eb44960ea16389e"
+        },
+        "calls": [
+          {
+            "action": "get_project",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "simulate_resources",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "convert_date",
+            "status": "succeeded",
+            "result_status": "failed",
+            "error": {
+              "code": "invalid_input",
+              "message": "日期不存在。"
+            }
+          },
+          {
+            "action": "convert_date",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "create_handoff",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "get_operation",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          }
+        ]
+      },
+      {
+        "slug": "mystery-lab",
+        "plugin_id": "org.wordflowlab.mystery-lab",
+        "package_sha256": "2c93b9094f2660a96e5193224530bfbc078594f071b8c4b5057fd7df7147f606",
+        "fixed": {
+          "object_id": "ext_eb99f432-a855-4b3d-a67a-ad5b0fa4743e",
+          "revision": 1,
+          "sha256": "dfd86fa40cecfbd56c25575737ed9826324008e6a8a2174cc1228c55f974375d"
+        },
+        "calls": [
+          {
+            "action": "get_project",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "reader_view",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "evaluate_hypotheses",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "create_handoff",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "get_operation",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          }
+        ]
+      },
+      {
+        "slug": "art-direction",
+        "plugin_id": "org.wordflowlab.art-direction",
+        "package_sha256": "54f05a084e642455f90defc9a2fc8da9c71b9d4204e8f51b176843d5f3673682",
+        "fixed": {
+          "object_id": "ext_53039763-d64e-4a0d-a8ad-43b2c8b7ffe7",
+          "revision": 1,
+          "sha256": "9a5cb46f26fa0a76f79481bd45f363dfd12b8fdaef6d0c4bdf7d71f0fbf1d06f"
+        },
+        "calls": [
+          {
+            "action": "get_project",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "palette_contrast",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "compare_designs",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "create_handoff",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "get_operation",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          }
+        ]
+      },
+      {
+        "slug": "subtitle-studio",
+        "plugin_id": "org.wordflowlab.subtitle-studio",
+        "package_sha256": "5c9baeffe35b436d7504752db9fa5c2613fa65418fcbea921c4bfef9dd5a84d8",
+        "fixed": {
+          "object_id": "ext_fbfcab92-0c68-4426-afc3-bcf056ad37fb",
+          "revision": 1,
+          "sha256": "b17ce240aca2b6a4f7607d89c2125c39e5c5ff369a3722cfe27f45d7579e35de"
+        },
+        "calls": [
+          {
+            "action": "get_project",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "check_subtitles",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "locate_time",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "create_handoff",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "get_operation",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          }
+        ]
+      }
+    ],
+    "limits": [
+      "当前连接0.11.11；不冒充正式0.12.4安装验收",
+      "本对话专业示例不含真实媒体；实际媒体由正式包隔离验收覆盖",
+      "非法历法日期作为失败保留，改用工程已有日期完成正例",
+      "未采纳、定稿或付费生成"
+    ]
+  },
+  "limits": [
+    "专业旅程限macOS arm64隔离示例，不代替文学、美术、诡计公平或表演认可",
+    "原Codex连接仍为0.11.11，正式0.12.4单独取证",
+    "未执行付费生成、正文采纳、定稿或内容外发"
+  ]
+}

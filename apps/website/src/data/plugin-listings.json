@@ -718,5 +718,141 @@
       "evidence_url": "https://github.com/wordflowlab/hetu-audio-drama/blob/5e55c7c02928f96801dedbe0cbaef29bc1fc2d40/docs/research/release-acceptance.json",
       "integrity_url": "https://github.com/wordflowlab/hetu-audio-drama/releases/download/v0.1.0/release-integrity.json"
     }
+  },
+  {
+    "slug": "world-studio",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.world-studio",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "世界构建",
+        "en": "World Studio"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-world-studio",
+    "source_commit": "914153bcf98b26f8b1070d31d04b5dd841d6f191",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-world-studio/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-world-studio/releases/download/v0.1.0/org.wordflowlab.world-studio-0.1.0.tgz",
+      "archive_sha256": "dc23ebb6968f1572423b066de80752b2d850c8d1f858e702dbe38f5538f201bd",
+      "package_sha256": "5050928ecd28c72b5be6eb227a39e09919ee8c12354967cc482f0b2011d364d5",
+      "size_bytes": 103391,
+      "minimum_host_version": "0.12.4",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-world-studio/blob/914153bcf98b26f8b1070d31d04b5dd841d6f191/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-world-studio/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "mystery-lab",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.mystery-lab",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "悬疑推演",
+        "en": "Mystery Lab"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-mystery-lab",
+    "source_commit": "ff72135d32c27a1fd325df64f9d501e27126e2f7",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-mystery-lab/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-mystery-lab/releases/download/v0.1.0/org.wordflowlab.mystery-lab-0.1.0.tgz",
+      "archive_sha256": "7c2bcf37d38adeea21e71901286dc4568d392260d78708d714709f0f1dfa709b",
+      "package_sha256": "2c93b9094f2660a96e5193224530bfbc078594f071b8c4b5057fd7df7147f606",
+      "size_bytes": 98705,
+      "minimum_host_version": "0.12.4",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-mystery-lab/blob/ff72135d32c27a1fd325df64f9d501e27126e2f7/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-mystery-lab/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "art-direction",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.art-direction",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "美术设定台",
+        "en": "Art Direction"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-art-direction",
+    "source_commit": "74b768a18e05cda4885ce409003cf01b477c6312",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-art-direction/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-art-direction/releases/download/v0.1.0/org.wordflowlab.art-direction-0.1.0.tgz",
+      "archive_sha256": "3deb17b09640d4ab8ac3557294c68f6137fadbecdfc0fd1b877e02cbef171db9",
+      "package_sha256": "54f05a084e642455f90defc9a2fc8da9c71b9d4204e8f51b176843d5f3673682",
+      "size_bytes": 103895,
+      "minimum_host_version": "0.12.4",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-art-direction/blob/74b768a18e05cda4885ce409003cf01b477c6312/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-art-direction/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "subtitle-studio",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.subtitle-studio",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "字幕工坊",
+        "en": "Subtitle Studio"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-subtitle-studio",
+    "source_commit": "3f806ea49b3c7f38911aa3fd00499dec00759954",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-subtitle-studio/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-subtitle-studio/releases/download/v0.1.0/org.wordflowlab.subtitle-studio-0.1.0.tgz",
+      "archive_sha256": "de7ea2c1e7e3271f1136e0077c81777fa6aec9b34bef808f2d67d53fe704c1bc",
+      "package_sha256": "5c9baeffe35b436d7504752db9fa5c2613fa65418fcbea921c4bfef9dd5a84d8",
+      "size_bytes": 103799,
+      "minimum_host_version": "0.12.4",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-subtitle-studio/blob/3f806ea49b3c7f38911aa3fd00499dec00759954/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-subtitle-studio/releases/download/v0.1.0/release-integrity.json"
+    }
   }
 ]
