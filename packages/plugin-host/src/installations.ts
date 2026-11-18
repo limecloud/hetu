@@ -70,9 +70,19 @@ export class PluginInstallations {
       return this.#write(state);
     });
   }
-  async host(state: InstallationState) {
+  async host(state: InstallationState, target?: string) {
     const host = new PluginHost();
-    for (const item of state.packages) {
+    let packages=state.packages;
+    if(target && state.packages.every(item=>item.removed||item.manifest)){
+      const needed=new Set<string>(),pending=[target];
+      while(pending.length){
+        const id=pending.pop()!;if(needed.has(id))continue;needed.add(id);
+        const entry=state.packages.find(item=>!item.removed&&item.manifest?.id===id);
+        if(entry)pending.push(...entry.manifest!.dependencies.map(dep=>dep.id));
+      }
+      packages=state.packages.filter(item=>item.manifest&&needed.has(item.manifest.id));
+    }
+    for (const item of packages) {
       if (item.removed) continue;
       try {
         const pkg = await PluginPackage.inspect(item.path);
@@ -83,11 +93,13 @@ export class PluginInstallations {
         host.loadErrors.set(item.manifest?.id ?? item.sha256, error instanceof Error ? error.message : "插件包无法读取。");
       }
     }
-    for (const item of state.packages)
-      if (!item.removed && item.manifest && host.has(item.manifest.id)) {
-        if (item.enabled) await host.enable(item.manifest.id);
-        else await host.disable(item.manifest.id);
-      }
+    for (const item of packages)
+      if (!item.removed && item.manifest && item.enabled && host.has(item.manifest.id))
+        await host.enable(item.manifest.id);
+    // 最后应用显式停用，防止后遍历的上层包重新激活已停用依赖。
+    for (const item of packages)
+      if (!item.removed && item.manifest && !item.enabled && host.has(item.manifest.id))
+        await host.disable(item.manifest.id);
     return host;
   }
   async snapshot(pkg: PluginPackage) {

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, writeFile, cp } from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
 import { PluginInstallations } from "../src/installations.ts";
@@ -88,4 +88,23 @@ test("安装格式读取保留旧v1字节，写入显式版本，未知版本与
     await assert.rejects(store.read(), /状态无效/);
     assert.equal(await readFile(store.file, "utf8"), bytes);
   }
+});
+
+
+test("定向运行只核验依赖闭包，拒绝缺失、停用、错版和被篡改依赖",async()=>{
+ const directory=await mkdtemp(path.join(os.tmpdir(),"hetu-targeted-install-")),store=new PluginInstallations(directory);
+ const dependency=await PluginPackage.inspect(path.join(root,"plugins/relationships/dist"));
+ const targetDirectory=path.join(directory,"target");await cp(path.join(root,"plugins/timeline/dist"),targetDirectory,{recursive:true});
+ const targetManifest=JSON.parse(await readFile(path.join(targetDirectory,"plugin.json"),"utf8"));targetManifest.dependencies=[{id:dependency.manifest.id,version:dependency.manifest.version}];
+ await writeFile(path.join(targetDirectory,"plugin.json"),JSON.stringify(targetManifest));const target=await PluginPackage.inspect(targetDirectory);
+ const depPath=await store.snapshot(dependency),targetPath=await store.snapshot(target);
+ const state={packages:[{path:depPath,manifest:dependency.manifest,sha256:dependency.sha256,enabled:true},{path:targetPath,manifest:target.manifest,sha256:target.sha256,enabled:true},{path:"/not-read-unrelated",manifest:{...dependency.manifest,id:"org.test.unrelated"},sha256:"0".repeat(64),enabled:true}],grants:{}};
+ const original=PluginPackage.inspect,seen:string[]=[];PluginPackage.inspect=async function(path:string){seen.push(path);return original.call(this,path);};
+ try{
+  assert.equal((await store.host(state,target.manifest.id)).active(target.manifest.id),true);assert.deepEqual(new Set(seen),new Set([depPath,targetPath]));
+ }finally{PluginPackage.inspect=original;}
+ const disabled=structuredClone(state);disabled.packages[0].enabled=false;assert.equal((await store.host(disabled,target.manifest.id)).active(target.manifest.id),false);
+ const missing=structuredClone(state);missing.packages.splice(0,1);assert.equal((await store.host(missing,target.manifest.id)).active(target.manifest.id),false);
+ const wrong=structuredClone(state);wrong.packages[0].manifest.version="99.0.0";wrong.packages[0].sha256="0".repeat(64);assert.equal((await store.host(wrong,target.manifest.id)).active(target.manifest.id),false);
+ await writeFile(path.join(depPath,"index.html"),"被改写");assert.equal((await store.host(state,target.manifest.id)).active(target.manifest.id),false);
 });

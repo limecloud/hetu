@@ -55,7 +55,7 @@ let sessionDirectory: string | undefined;
 const installed = openMode ? new PluginInstallations(required("--state-dir")) : undefined;
 async function checkInstalled() {
   if (!installed) return;
-  const {state} = await installed.read(), host = await installed.host(state);
+  const {state} = await installed.read(), host = await installed.host(state,pkg.manifest.id);
   if (!host.active(pkg.manifest.id) || host.package(pkg.manifest.id).sha256 !== pkg.sha256)
     throw new Error("插件已停用或包已变化，请重新发现。");
 }

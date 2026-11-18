@@ -17,7 +17,7 @@ for await (const chunk of process.stdin) {
 }
 const request = JSON.parse(wire), store = new PluginInstallations(flags[1]);
 async function runtime() {
-  const input = request.input, { state } = await store.read(), host = await store.host(state);
+  const input = request.input, { state } = await store.read(), host = await store.host(state,input.plugin_id);
   if (!host.active(input.plugin_id)) throw new Error("插件未启用、包已变化或依赖不可用，请重新发现。");
   const pkg = host.package(input.plugin_id);
   if (pkg.sha256 !== input.package_sha256) throw new Error("插件包已更新，旧能力引用不可继续使用。");
