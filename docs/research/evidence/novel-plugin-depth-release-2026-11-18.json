@@ -194,7 +194,7 @@
     }
   },
   "installation": {
-    "recorded_at": "2026-11-18T06:42:37.448Z",
+    "recorded_at": "2026-11-18T07:02:45.682Z",
     "packages": [
       {
         "plugin_id": "org.wordflowlab.screenplay",
@@ -369,8 +369,66 @@
     "errors": []
   },
   "website": {
-    "registration": "fixed releases and actual work surfaces",
-    "production_acceptance": "pending"
+    "source_commit": "96c052cf72d46d0e06e43c6b21da87bfd71c71df",
+    "origin": "https://hetu.limeai.run",
+    "deployment_id": "32667d22",
+    "deployment_url": "https://32667d22.hetu-website-3uu.pages.dev",
+    "build": {
+      "pages": 147,
+      "local_references": 9123,
+      "passed": true
+    },
+    "local_browser": {
+      "passed": 118,
+      "failed": 0
+    },
+    "production_browser": {
+      "initial_passed": 117,
+      "initial_failed": 1,
+      "failure": "中文指南串联26个页面的30秒总预算在最终404请求处耗尽；逐页导航均成功，trace保留",
+      "targeted_recheck": {
+        "same_assertions": true,
+        "timeout_ms": 30000,
+        "passed": 1,
+        "elapsed_seconds": 5.8
+      },
+      "all_cases_verified": true
+    },
+    "fixed_release_and_images": [
+      {
+        "slug": "novel-review",
+        "version": "0.2.0",
+        "localized_pages": 2,
+        "fixed_fields_match": true,
+        "image_sha256": "f375459985594db6c5b3451b58349163df6e7da653cfbd9336d0e59cf119daa1",
+        "public_integrity_verified": true
+      },
+      {
+        "slug": "novel-atlas",
+        "version": "0.2.0",
+        "localized_pages": 2,
+        "fixed_fields_match": true,
+        "image_sha256": "b46688b7cea70b4d3948b696b51c17ff06b9b1d053c970ebac8e6b10de9cfe2b",
+        "public_integrity_verified": true
+      },
+      {
+        "slug": "prose-studio",
+        "version": "0.2.0",
+        "localized_pages": 2,
+        "fixed_fields_match": true,
+        "image_sha256": "8e6399cea12db0212a2fd0c971d6a9d84c9cf2c372fa1ae5da4c39dc9c742b0a",
+        "public_integrity_verified": true
+      },
+      {
+        "slug": "novel-planner",
+        "version": "0.3.0",
+        "localized_pages": 2,
+        "fixed_fields_match": true,
+        "image_sha256": "1ed6a617ec884c61e8269000a883f52343a6439e16a0a11742ee356ad326c9dc",
+        "public_integrity_verified": true
+      }
+    ],
+    "read_only_verification_limit": "Python默认HTTP客户端被站点403拒绝；同一正式域名的真实浏览器及公开完整性文件逐项验证成功，不更改站点策略"
   },
   "failures_retained": [
     "默认透明度模拟未生效，按实际媒体查询改用CDP后核对渐变与实色",
@@ -378,7 +436,8 @@
     "规划页头52px违反原50px合同，固定选择器32px后原断言通过",
     "英文导航检查需先展开实际折叠导航，再核对名称及状态",
     "44253682717队列中取消以保留最终联合回执，不计为通过",
-    "本机高负载unknown沿原键回读，未合并为绿色性能结论"
+    "本机高负载unknown沿原键回读，未合并为绿色性能结论",
+    "公网中文指南串联首轮超时，原30秒及原断言单项复验5.8秒通过；首次复验筛选正则未匹配用例，不计通过"
   ],
   "not_verified": [
     "Windows/Linux专业业务旅程",
