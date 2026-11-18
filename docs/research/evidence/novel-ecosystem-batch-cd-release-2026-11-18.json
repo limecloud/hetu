@@ -289,7 +289,81 @@
   "website": {
     "pages": 147,
     "local_references": 9087,
-    "plugin_browser_checks": 118
+    "plugin_browser_checks": 118,
+    "production_plugin_browser_checks": 118,
+    "initial_deployment_url": "https://7c584507.hetu-website-3uu.pages.dev",
+    "production_origin": "https://hetu.limeai.run",
+    "initial_source_commit": "c7030dad3c6ad26c3720987034a9da9b2974749f",
+    "prior_plain_http_client_status": 403,
+    "browser_verification": "production Chromium test suite",
+    "final_source_commit": "63257e9b12fb147e864c87640f987ee9ce9cc16d",
+    "deployment_url": "https://ca2f0716.hetu-website-3uu.pages.dev",
+    "final_local_references": 9099,
+    "final_routes_and_assets": {
+      "origin": "https://hetu.limeai.run",
+      "plugins": [
+        {
+          "slug": "lorebook-bridge",
+          "routes": [
+            "/plugins/lorebook-bridge/",
+            "/en/plugins/lorebook-bridge/"
+          ],
+          "fixed_release_fields": true,
+          "actual_capture_sha256": "04df87d3c2eacac104c44bf0f48e9ce09f241ef46bf2a793cee1bcad8b256704"
+        },
+        {
+          "slug": "interactive-fiction",
+          "routes": [
+            "/plugins/interactive-fiction/",
+            "/en/plugins/interactive-fiction/"
+          ],
+          "fixed_release_fields": true,
+          "actual_capture_sha256": "4c90e0167280034fd05bfef1c6642e991f13bff014f66e5364dd9ace8dde5409"
+        },
+        {
+          "slug": "series-organizer",
+          "routes": [
+            "/plugins/series-organizer/",
+            "/en/plugins/series-organizer/"
+          ],
+          "fixed_release_fields": true,
+          "actual_capture_sha256": "4d1e4e7adc254bdde9942a87c3685bfb624f4c29968fcecff50c54e5c0ac3282"
+        },
+        {
+          "slug": "story-translation",
+          "routes": [
+            "/plugins/story-translation/",
+            "/en/plugins/story-translation/"
+          ],
+          "fixed_release_fields": true,
+          "actual_capture_sha256": "7c5b7fa111075deb999001901da20f55f1f44d4b5d4671312c35bdd8d47b2bb6"
+        },
+        {
+          "slug": "readthrough",
+          "routes": [
+            "/plugins/readthrough/",
+            "/en/plugins/readthrough/"
+          ],
+          "fixed_release_fields": true,
+          "actual_capture_sha256": "6e9be18bb561fb42038165861df2229980c006a9cf87a78c0a8908957f6b00cf"
+        },
+        {
+          "slug": "book-export",
+          "routes": [
+            "/plugins/book-export/",
+            "/en/plugins/book-export/"
+          ],
+          "fixed_release_fields": true,
+          "actual_capture_sha256": "1a85fd63e0568ac40925b9bb8243499b61d83b6c85143264c5de0b257c039683"
+        }
+      ],
+      "guides_and_blog_bilingual": true,
+      "verification": "actual Chromium pages and same-origin asset bytes",
+      "prior_urllib_status": 403
+    },
+    "all_six_registered": true,
+    "ci_followup_url": "https://github.com/limecloud/hetu/actions/runs/44224631577",
+    "ci_followup_status_at_recording": "in_progress; formal host and six professional release acceptance runs already passed"
   },
   "unit_tests": 80,
   "expected_action_rejection_count": 1,
@@ -440,5 +514,56 @@
       "archive_and_directory_hashes_are_distinct": true
     }
   ],
-  "release_tags_immutable": true
+  "release_tags_immutable": true,
+  "public_archive_verification": [
+    {
+      "slug": "lorebook-bridge",
+      "release": true,
+      "archive_sha256": "09e81480b3c06aa65b00683c1f1caf392ba5572cab7d896c344165f6530d2314",
+      "package_sha256": "0620fb1c75dbedd1e76306e1be3445ab383f801cfe0eac5341623a9e05054402",
+      "evidence_matches": true
+    },
+    {
+      "slug": "interactive-fiction",
+      "release": true,
+      "archive_sha256": "7ee0109232658b551ae5fe648ea9804cf1777eb577e59cf32be55c4e914f32f6",
+      "package_sha256": "c777120519a56fd93d1e132c078ac99b5a65f19103070a088b1cedf8f74e0a00",
+      "evidence_matches": true
+    },
+    {
+      "slug": "series-organizer",
+      "release": true,
+      "archive_sha256": "46c93611de2cbc786604d970beaeda489ba4d3e63ab6d1947f94a074e78cdbab",
+      "package_sha256": "e51032102970d97f650165fdd2e17a3a6b5991e707ab3028dfc54422969663dc",
+      "evidence_matches": true
+    },
+    {
+      "slug": "story-translation",
+      "release": true,
+      "archive_sha256": "66157ad348c3ab8a2a086fe39fe93dbc3fb3254db296e7d461de8ae31f350704",
+      "package_sha256": "59080c4c196a79bdd09c50ebbd2a99d46a43dc561575a785fb9b8eed78ec3148",
+      "evidence_matches": true
+    },
+    {
+      "slug": "readthrough",
+      "release": true,
+      "archive_sha256": "ab258906a6bfecee3387213e7be7ed152ca0c3295a4ee2ce3ac62c147d49e62f",
+      "package_sha256": "5723789aa1a672cdf9d1fb2e3a0756e7f2b194a67e50815d6ea5e8543dce8bd1",
+      "evidence_matches": true
+    },
+    {
+      "slug": "book-export",
+      "release": true,
+      "archive_sha256": "b3e1cecf241916aa92fccc9e1ebdec6cc67d5f0376c4c7621d4e905d643ddce7",
+      "package_sha256": "e9dfd676d26c6ec450f21cdce83599b921492ca46e1a29a414400433a09c3e68",
+      "evidence_matches": true
+    }
+  ],
+  "final_installation": {
+    "host_version": "0.11.11",
+    "new_plugins_active": 6,
+    "total_active_plugins": 16,
+    "original_ten_package_digests_preserved": true,
+    "backup_created": false
+  }
 }
