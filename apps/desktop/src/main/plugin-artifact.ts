@@ -16,6 +16,9 @@ const formats: Record<string, { extension: string; signature: (b: Buffer) => boo
   'application/epub+zip': { extension: '.epub', signature: b => b.length >= 58 && b.readUInt32LE(0)===0x04034b50 && b.readUInt16LE(8)===0 && b.readUInt16LE(26)===8 && b.readUInt16LE(28)===0 && b.toString('ascii',30,38)==='mimetype' && b.toString('ascii',38,58)==='application/epub+zip' },
   'text/html': { extension: '.html', signature: b => textSignature(b, text => /^<!doctype html[\s>]/i.test(text)||/^<html[\s>]/i.test(text)) },
   'application/xliff+xml': { extension: '.xlf', signature: b => textSignature(b, text => /^(?:<\?xml[^?]*\?>\s*)?<xliff[\s>]/.test(text)) },
+  'application/x-subrip': { extension: '.srt', signature: b => textSignature(b, text => /^\d+\r?\n\d{2,}:\d{2}:\d{2},\d{3}\s+-->\s+\d{2,}:\d{2}:\d{2},\d{3}(?:[^\r\n]*)?\r?\n/.test(text)) },
+  'text/vtt': { extension: '.vtt', signature: b => textSignature(b, text => /^WEBVTT(?:[ \t][^\r\n]*)?(?:\r?\n|$)/.test(text)) },
+  'text/x-ssa': { extension: '.ass', signature: b => textSignature(b, text => /^\[Script Info\](?:\r?\n)/.test(text) && /^\[Events\]\r?$/m.test(text) && /^Format:.*\bStart\b.*\bEnd\b.*\bText\b/im.test(text)) },
 };
 function textSignature(bytes:Buffer, check:(text:string)=>boolean) {
   try { const text=new TextDecoder('utf-8',{fatal:true}).decode(bytes).trimStart();return !text.includes('\u0000')&&check(text); } catch { return false; }
