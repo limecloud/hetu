@@ -226,7 +226,7 @@ def build():
              "- 无窗口查询：CLI 使用 `hetu --client codex call hetu.capabilities.map --input -`；MCP 使用 `hetu_get_capability_map`，支持 group、action、skill 筛选与分页。",
              "- AI 完整索引：[contracts/capability-map.json](../contracts/capability-map.json)。其中包含输入 Schema、MCP profile、Skill 源文件和恢复动作。",
              "- 维护边界：本清单只维护宿主能力及插件发现入口；各插件自行维护功能清单和 manifest，AI按安装包继续发现，不在宿主重复登记插件功能。",
-             "- 插件公共服务：SDK提供受管项目适配、固定来源与原操作恢复；桌面提供固定素材预览，以及Markdown／JSON／HTML固定对象分块导出。合同见[开放宿主SDK](plugin/27-开放宿主SDK与核心能力审计.md)，专业Schema仍由插件维护。",
+             "- 插件公共服务：SDK提供受管项目适配、固定来源与原操作恢复；桌面提供固定素材预览及当前渲染器派生Blob媒体播放，以及Markdown／JSON／HTML固定对象分块导出。合同见[开放宿主SDK](plugin/27-开放宿主SDK与核心能力审计.md)，专业Schema仍由插件维护。",
              "- 插件选择：[官网插件中心](https://hetu.limeai.run/plugins/)展示来源、发行与包内功能清单；目录不代表本机安装状态，执行仍需重新发现。开发与上架见[插件23](plugin/23-插件发布与上架指南.md)。",
              "- 状态解释：**已验证**有专项证据；**源码已连线**需要运行验收；**机器替代入口**指向独立合同；**宿主边界**保留授权或私密性；**作者入口缺口**需继续处理。安装证据与功能验收分别记录。",
              "- 进度由 [38](38-创作工作台重构执行计划.md) 管理；验收要求见 [19](19-测试策略与验收矩阵.md)，构建和实测证据见 [20](20-实施路线与里程碑.md)。", "",
