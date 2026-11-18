@@ -1,0 +1,444 @@
+{
+  "recorded_at": "2026-11-18",
+  "host": {
+    "source_build": false,
+    "version": "hetu 0.11.11",
+    "git_sha": "6053f973a6740b6f4d7fca1bd69452b2bac3fa46",
+    "release_url": "https://github.com/limecloud/hetu/releases/tag/v0.11.11",
+    "archive_sha256": "4df6c60e28b2627c031c0c9a4655d57aa85b8211ad33bc2bdca0fa635189f91d",
+    "team_id": "93RF7VQ26C",
+    "signature_verified": true,
+    "gatekeeper": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/novel-batch-cd/official-host-v0.11.11/expanded/Hetu.app: accepted\nsource=Notarized Developer ID",
+    "staple": "Processing: /Users/coso/Documents/dev/ai/limecloud/hetu/output/novel-batch-cd/official-host-v0.11.11/expanded/Hetu.app\nThe validate action worked!",
+    "application_path": "/Applications/Hetu.app",
+    "no_backup": true,
+    "author_data_untouched": true
+  },
+  "host_release_ci": "https://github.com/limecloud/hetu/actions/runs/44212929940",
+  "plugins": [
+    {
+      "slug": "lorebook-bridge",
+      "version": "0.1.0",
+      "package_sha256": "0620fb1c75dbedd1e76306e1be3445ab383f801cfe0eac5341623a9e05054402",
+      "archive_sha256": "09e81480b3c06aa65b00683c1f1caf392ba5572cab7d896c344165f6530d2314",
+      "size_bytes": 244110,
+      "ci_url": "https://github.com/wordflowlab/hetu-lorebook-bridge/actions/runs/44219709490",
+      "successful_actions": 20,
+      "expected_rejections": [],
+      "skill_resources": 3,
+      "local_machine_and_ui": true
+    },
+    {
+      "slug": "interactive-fiction",
+      "version": "0.1.0",
+      "package_sha256": "c777120519a56fd93d1e132c078ac99b5a65f19103070a088b1cedf8f74e0a00",
+      "archive_sha256": "7ee0109232658b551ae5fe648ea9804cf1777eb577e59cf32be55c4e914f32f6",
+      "size_bytes": 246483,
+      "ci_url": "https://github.com/wordflowlab/hetu-interactive-fiction/actions/runs/44219864541",
+      "successful_actions": 22,
+      "expected_rejections": [],
+      "skill_resources": 3,
+      "local_machine_and_ui": true
+    },
+    {
+      "slug": "series-organizer",
+      "version": "0.1.0",
+      "package_sha256": "e51032102970d97f650165fdd2e17a3a6b5991e707ab3028dfc54422969663dc",
+      "archive_sha256": "46c93611de2cbc786604d970beaeda489ba4d3e63ab6d1947f94a074e78cdbab",
+      "size_bytes": 245998,
+      "ci_url": "https://github.com/wordflowlab/hetu-series-organizer/actions/runs/44219865532",
+      "successful_actions": 20,
+      "expected_rejections": [
+        "inspect_member_link:no_host_link"
+      ],
+      "skill_resources": 3,
+      "local_machine_and_ui": true
+    },
+    {
+      "slug": "story-translation",
+      "version": "0.1.0",
+      "package_sha256": "59080c4c196a79bdd09c50ebbd2a99d46a43dc561575a785fb9b8eed78ec3148",
+      "archive_sha256": "66157ad348c3ab8a2a086fe39fe93dbc3fb3254db296e7d461de8ae31f350704",
+      "size_bytes": 240121,
+      "ci_url": "https://github.com/wordflowlab/hetu-story-translation/actions/runs/44219864881",
+      "successful_actions": 20,
+      "expected_rejections": [],
+      "skill_resources": 3,
+      "local_machine_and_ui": true
+    },
+    {
+      "slug": "readthrough",
+      "version": "0.1.0",
+      "package_sha256": "5723789aa1a672cdf9d1fb2e3a0756e7f2b194a67e50815d6ea5e8543dce8bd1",
+      "archive_sha256": "ab258906a6bfecee3387213e7be7ed152ca0c3295a4ee2ce3ac62c147d49e62f",
+      "size_bytes": 254557,
+      "ci_url": "https://github.com/wordflowlab/hetu-readthrough/actions/runs/44219866015",
+      "successful_actions": 22,
+      "expected_rejections": [],
+      "skill_resources": 3,
+      "local_machine_and_ui": true
+    },
+    {
+      "slug": "book-export",
+      "version": "0.1.0",
+      "package_sha256": "e9dfd676d26c6ec450f21cdce83599b921492ca46e1a29a414400433a09c3e68",
+      "archive_sha256": "b3e1cecf241916aa92fccc9e1ebdec6cc67d5f0376c4c7621d4e905d643ddce7",
+      "size_bytes": 7232480,
+      "ci_url": "https://github.com/wordflowlab/hetu-book-export/actions/runs/44222195380",
+      "successful_actions": 18,
+      "expected_rejections": [],
+      "skill_resources": 3,
+      "local_machine_and_ui": true
+    }
+  ],
+  "cross": {
+    "date": "2026-11-18",
+    "host_version": "hetu 0.11.11",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "plugins": {
+      "lorebook-bridge": "0620fb1c75dbedd1e76306e1be3445ab383f801cfe0eac5341623a9e05054402",
+      "interactive-fiction": "c777120519a56fd93d1e132c078ac99b5a65f19103070a088b1cedf8f74e0a00",
+      "series-organizer": "e51032102970d97f650165fdd2e17a3a6b5991e707ab3028dfc54422969663dc",
+      "story-translation": "59080c4c196a79bdd09c50ebbd2a99d46a43dc561575a785fb9b8eed78ec3148",
+      "readthrough": "5723789aa1a672cdf9d1fb2e3a0756e7f2b194a67e50815d6ea5e8543dce8bd1",
+      "book-export": "e9dfd676d26c6ec450f21cdce83599b921492ca46e1a29a414400433a09c3e68"
+    },
+    "stages": [
+      "角色卡与世界书交换",
+      "确定性分支试玩",
+      "固定路线成为宿主候选",
+      "系列与独立作品隔离",
+      "固定源译对齐与译稿候选",
+      "真实声音与固定原文映射",
+      "双语书稿HTML EPUB PDF交付",
+      "新工程与旧书稿依据独立接续"
+    ],
+    "stable_mcp_connections": 1,
+    "separate_work_authorization": true,
+    "original_manuscript_unchanged": true,
+    "offline_play_save_reload": true,
+    "actual_tts_audio": true,
+    "audio_sha256": "78781809a55b2cd3438fbe252e43d6ac86c8efa59c746ca13bd30463950e314a",
+    "audio_duration_ms": 2068.875,
+    "complete_pcm_frames": true,
+    "speech_content_human_review": false,
+    "paid_model_calls": 0,
+    "limits": [
+      "Windows/Linux专业旅程、声音权利、人工听读、文学质量、正文采纳与定稿未在此验收"
+    ]
+  },
+  "current_codex": {
+    "date": "2026-11-18",
+    "connection_started_with_version": "0.11.7",
+    "installed_host_version": "0.11.11",
+    "stable_mcp_connection": true,
+    "old_packages_preserved": true,
+    "before": [
+      {
+        "id": "org.wordflowlab.screenplay",
+        "sha256": "3db2b1f8b3577b6bd1806e8ca0b1a25b019b51299a4f6a3fea53fc821cecdf99"
+      },
+      {
+        "id": "org.wordflowlab.video-studio",
+        "sha256": "549b654781dc4949ee4abc28a94be97bb3bb12df96aead7208eb0ca1b7c0db2a"
+      },
+      {
+        "id": "org.wordflowlab.director-stage",
+        "sha256": "1f7755622c1f50c9932ff7536c5175d113f30bcff77f58921efffe012dab645c"
+      },
+      {
+        "id": "org.wordflowlab.novel-review",
+        "sha256": "bb7078c860d39ee684d0b028c9db4ddd55db3182574e55f7a72608b9b31c2bb9"
+      },
+      {
+        "id": "org.wordflowlab.novel-atlas",
+        "sha256": "3d2526fb4f9ae0a39ff591f7c7ad559a1983e526df26614babf7c981e2fe764b"
+      },
+      {
+        "id": "org.wordflowlab.novel-planner",
+        "sha256": "2e05158d8ee1076370e3d186491fdc83083cb3a19e8f66ff6ef3452aacadd1e9"
+      },
+      {
+        "id": "org.wordflowlab.prose-studio",
+        "sha256": "a793eb0ff1438593696340d01640d7ae5c4eb95108c68c68aa2b74a5cbeeb3f7"
+      },
+      {
+        "id": "org.wordflowlab.story-research",
+        "sha256": "5adeffdf4bfe4f71ac614204bfe77825747164fa4705f6b9ec52a1d908b5bf9f"
+      },
+      {
+        "id": "org.wordflowlab.character-lab",
+        "sha256": "d3404b533b5e8a03e45e84eb23f5d4a99209568a0d8e09e03b13a0b05d6a4944"
+      },
+      {
+        "id": "org.wordflowlab.story-analysis",
+        "sha256": "fb117ee372a4fce7cde8cb1afd997f3d0b168066af2b1334171e721dfcd21009"
+      }
+    ],
+    "after": [
+      {
+        "id": "org.wordflowlab.screenplay",
+        "sha256": "3db2b1f8b3577b6bd1806e8ca0b1a25b019b51299a4f6a3fea53fc821cecdf99"
+      },
+      {
+        "id": "org.wordflowlab.video-studio",
+        "sha256": "549b654781dc4949ee4abc28a94be97bb3bb12df96aead7208eb0ca1b7c0db2a"
+      },
+      {
+        "id": "org.wordflowlab.director-stage",
+        "sha256": "1f7755622c1f50c9932ff7536c5175d113f30bcff77f58921efffe012dab645c"
+      },
+      {
+        "id": "org.wordflowlab.novel-review",
+        "sha256": "bb7078c860d39ee684d0b028c9db4ddd55db3182574e55f7a72608b9b31c2bb9"
+      },
+      {
+        "id": "org.wordflowlab.novel-atlas",
+        "sha256": "3d2526fb4f9ae0a39ff591f7c7ad559a1983e526df26614babf7c981e2fe764b"
+      },
+      {
+        "id": "org.wordflowlab.novel-planner",
+        "sha256": "2e05158d8ee1076370e3d186491fdc83083cb3a19e8f66ff6ef3452aacadd1e9"
+      },
+      {
+        "id": "org.wordflowlab.prose-studio",
+        "sha256": "a793eb0ff1438593696340d01640d7ae5c4eb95108c68c68aa2b74a5cbeeb3f7"
+      },
+      {
+        "id": "org.wordflowlab.story-research",
+        "sha256": "5adeffdf4bfe4f71ac614204bfe77825747164fa4705f6b9ec52a1d908b5bf9f"
+      },
+      {
+        "id": "org.wordflowlab.character-lab",
+        "sha256": "d3404b533b5e8a03e45e84eb23f5d4a99209568a0d8e09e03b13a0b05d6a4944"
+      },
+      {
+        "id": "org.wordflowlab.story-analysis",
+        "sha256": "fb117ee372a4fce7cde8cb1afd997f3d0b168066af2b1334171e721dfcd21009"
+      },
+      {
+        "id": "org.wordflowlab.lorebook-bridge",
+        "sha256": "0620fb1c75dbedd1e76306e1be3445ab383f801cfe0eac5341623a9e05054402"
+      },
+      {
+        "id": "org.wordflowlab.interactive-fiction",
+        "sha256": "c777120519a56fd93d1e132c078ac99b5a65f19103070a088b1cedf8f74e0a00"
+      },
+      {
+        "id": "org.wordflowlab.series-organizer",
+        "sha256": "e51032102970d97f650165fdd2e17a3a6b5991e707ab3028dfc54422969663dc"
+      },
+      {
+        "id": "org.wordflowlab.story-translation",
+        "sha256": "59080c4c196a79bdd09c50ebbd2a99d46a43dc561575a785fb9b8eed78ec3148"
+      },
+      {
+        "id": "org.wordflowlab.readthrough",
+        "sha256": "5723789aa1a672cdf9d1fb2e3a0756e7f2b194a67e50815d6ea5e8543dce8bd1"
+      },
+      {
+        "id": "org.wordflowlab.book-export",
+        "sha256": "e9dfd676d26c6ec450f21cdce83599b921492ca46e1a29a414400433a09c3e68"
+      }
+    ],
+    "new_skills": [
+      {
+        "name": "hetu-lorebook-bridge",
+        "plugin_id": "org.wordflowlab.lorebook-bridge",
+        "package_sha256": "0620fb1c75dbedd1e76306e1be3445ab383f801cfe0eac5341623a9e05054402"
+      },
+      {
+        "name": "hetu-interactive-fiction",
+        "plugin_id": "org.wordflowlab.interactive-fiction",
+        "package_sha256": "c777120519a56fd93d1e132c078ac99b5a65f19103070a088b1cedf8f74e0a00"
+      },
+      {
+        "name": "hetu-series-organizer",
+        "plugin_id": "org.wordflowlab.series-organizer",
+        "package_sha256": "e51032102970d97f650165fdd2e17a3a6b5991e707ab3028dfc54422969663dc"
+      },
+      {
+        "name": "hetu-story-translation",
+        "plugin_id": "org.wordflowlab.story-translation",
+        "package_sha256": "59080c4c196a79bdd09c50ebbd2a99d46a43dc561575a785fb9b8eed78ec3148"
+      },
+      {
+        "name": "hetu-readthrough",
+        "plugin_id": "org.wordflowlab.readthrough",
+        "package_sha256": "5723789aa1a672cdf9d1fb2e3a0756e7f2b194a67e50815d6ea5e8543dce8bd1"
+      },
+      {
+        "name": "hetu-book-export",
+        "plugin_id": "org.wordflowlab.book-export",
+        "package_sha256": "e9dfd676d26c6ec450f21cdce83599b921492ca46e1a29a414400433a09c3e68"
+      }
+    ],
+    "all_six_packaged_skills_read_in_current_codex": true,
+    "native_codex_plugin_installations": 0,
+    "limits": [
+      "旧MCP进程仍报告0.11.7；正式0.11.11新进程已在CLI/MCP安装验收取证。",
+      "能力读取期间的一次超时未记为通过，重新发现后仅读取恢复成功。"
+    ]
+  },
+  "documents": {
+    "markdown_files": 90,
+    "diagrams_rendered": 36,
+    "broken_links": 0
+  },
+  "website": {
+    "pages": 147,
+    "local_references": 9087,
+    "plugin_browser_checks": 118
+  },
+  "unit_tests": 80,
+  "expected_action_rejection_count": 1,
+  "local_and_ci_package_digests_match": true,
+  "failures_retained": [
+    {
+      "host": "v0.11.8",
+      "reason": "生成资源一致性门禁",
+      "result": "未发布"
+    },
+    {
+      "host": "v0.11.9",
+      "reason": "待补专业文件保存格式",
+      "result": "取消"
+    },
+    {
+      "host": "v0.11.10",
+      "reason": "中文跨管道分块破坏能力摘要",
+      "result": "取消；0.11.11固定UTF-8流式解码回归通过"
+    },
+    {
+      "book_ci": 44219864791,
+      "reason": "测试CommonJS入口的ESM命名导出"
+    },
+    {
+      "book_ci": 44221359300,
+      "reason": "测试Electron argv位置受调试参数影响"
+    }
+  ],
+  "limits": [
+    "Windows/Linux宿主打包与验收通过，但六插件专业旅程只验收macOS arm64。",
+    "语音权利与人工听读、真实文学品质、正文采纳、定稿及付费模型不在本次自动验收范围。",
+    "主工作区另有核心续接开发，本次使用独立worktree固定正式发行，不纳入未验收改动。"
+  ],
+  "published_releases": [
+    {
+      "schema_version": 1,
+      "plugin_id": "org.wordflowlab.lorebook-bridge",
+      "version": "0.1.0",
+      "source_repository": "https://github.com/wordflowlab/hetu-lorebook-bridge",
+      "source_commit": "0042bfb52911b47e98c20d8ee5a6e8656f3c2252",
+      "archive": "org.wordflowlab.lorebook-bridge-0.1.0.tgz",
+      "archive_sha256": "09e81480b3c06aa65b00683c1f1caf392ba5572cab7d896c344165f6530d2314",
+      "package_sha256": "0620fb1c75dbedd1e76306e1be3445ab383f801cfe0eac5341623a9e05054402",
+      "size_bytes": 244110,
+      "minimum_host_version": "0.11.11",
+      "host_api": "1",
+      "license": "Apache-2.0",
+      "acceptance_run": "https://github.com/wordflowlab/hetu-lorebook-bridge/actions/runs/44219709490",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "archive_and_directory_hashes_are_distinct": true
+    },
+    {
+      "schema_version": 1,
+      "plugin_id": "org.wordflowlab.interactive-fiction",
+      "version": "0.1.0",
+      "source_repository": "https://github.com/wordflowlab/hetu-interactive-fiction",
+      "source_commit": "bcfa89b4c755fb909af752f383a38dbd146511de",
+      "archive": "org.wordflowlab.interactive-fiction-0.1.0.tgz",
+      "archive_sha256": "7ee0109232658b551ae5fe648ea9804cf1777eb577e59cf32be55c4e914f32f6",
+      "package_sha256": "c777120519a56fd93d1e132c078ac99b5a65f19103070a088b1cedf8f74e0a00",
+      "size_bytes": 246483,
+      "minimum_host_version": "0.11.11",
+      "host_api": "1",
+      "license": "Apache-2.0",
+      "acceptance_run": "https://github.com/wordflowlab/hetu-interactive-fiction/actions/runs/44219864541",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "archive_and_directory_hashes_are_distinct": true
+    },
+    {
+      "schema_version": 1,
+      "plugin_id": "org.wordflowlab.series-organizer",
+      "version": "0.1.0",
+      "source_repository": "https://github.com/wordflowlab/hetu-series-organizer",
+      "source_commit": "d599657d09d109d4e36c57aaf3e30840c64c2a1d",
+      "archive": "org.wordflowlab.series-organizer-0.1.0.tgz",
+      "archive_sha256": "46c93611de2cbc786604d970beaeda489ba4d3e63ab6d1947f94a074e78cdbab",
+      "package_sha256": "e51032102970d97f650165fdd2e17a3a6b5991e707ab3028dfc54422969663dc",
+      "size_bytes": 245998,
+      "minimum_host_version": "0.11.11",
+      "host_api": "1",
+      "license": "Apache-2.0",
+      "acceptance_run": "https://github.com/wordflowlab/hetu-series-organizer/actions/runs/44219865532",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "archive_and_directory_hashes_are_distinct": true
+    },
+    {
+      "schema_version": 1,
+      "plugin_id": "org.wordflowlab.story-translation",
+      "version": "0.1.0",
+      "source_repository": "https://github.com/wordflowlab/hetu-story-translation",
+      "source_commit": "a0ba48d98e9324fd0721186fb8579f19aaed0c7d",
+      "archive": "org.wordflowlab.story-translation-0.1.0.tgz",
+      "archive_sha256": "66157ad348c3ab8a2a086fe39fe93dbc3fb3254db296e7d461de8ae31f350704",
+      "package_sha256": "59080c4c196a79bdd09c50ebbd2a99d46a43dc561575a785fb9b8eed78ec3148",
+      "size_bytes": 240121,
+      "minimum_host_version": "0.11.11",
+      "host_api": "1",
+      "license": "Apache-2.0",
+      "acceptance_run": "https://github.com/wordflowlab/hetu-story-translation/actions/runs/44219864881",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "archive_and_directory_hashes_are_distinct": true
+    },
+    {
+      "schema_version": 1,
+      "plugin_id": "org.wordflowlab.readthrough",
+      "version": "0.1.0",
+      "source_repository": "https://github.com/wordflowlab/hetu-readthrough",
+      "source_commit": "673750ae3dcc30f948386342e47385c7debc50b5",
+      "archive": "org.wordflowlab.readthrough-0.1.0.tgz",
+      "archive_sha256": "ab258906a6bfecee3387213e7be7ed152ca0c3295a4ee2ce3ac62c147d49e62f",
+      "package_sha256": "5723789aa1a672cdf9d1fb2e3a0756e7f2b194a67e50815d6ea5e8543dce8bd1",
+      "size_bytes": 254557,
+      "minimum_host_version": "0.11.11",
+      "host_api": "1",
+      "license": "Apache-2.0",
+      "acceptance_run": "https://github.com/wordflowlab/hetu-readthrough/actions/runs/44219866015",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "archive_and_directory_hashes_are_distinct": true
+    },
+    {
+      "schema_version": 1,
+      "plugin_id": "org.wordflowlab.book-export",
+      "version": "0.1.0",
+      "source_repository": "https://github.com/wordflowlab/hetu-book-export",
+      "source_commit": "034fc53d8d3182cd317cb5fe5f366a0e574cea8c",
+      "archive": "org.wordflowlab.book-export-0.1.0.tgz",
+      "archive_sha256": "b3e1cecf241916aa92fccc9e1ebdec6cc67d5f0376c4c7621d4e905d643ddce7",
+      "package_sha256": "e9dfd676d26c6ec450f21cdce83599b921492ca46e1a29a414400433a09c3e68",
+      "size_bytes": 7232480,
+      "minimum_host_version": "0.11.11",
+      "host_api": "1",
+      "license": "Apache-2.0",
+      "acceptance_run": "https://github.com/wordflowlab/hetu-book-export/actions/runs/44222195380",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "archive_and_directory_hashes_are_distinct": true
+    }
+  ],
+  "release_tags_immutable": true
+}

@@ -81,3 +81,22 @@ Novel Planner also compares future directions, story time and narrative order, a
 Ask your Agent to research why Lin stays at the station, separate source facts from inferences and counterevidence, compare two motivations in Character Lab, then analyze their consequences for the next chapter. Read existing book, volume and chapter plans before preparing a candidate. Revise from feedback and read the new draft before rechecking the concern. Keep fixed handoff evidence; canon, adoption and finalization remain your decisions.
 
 Review sources before conclusions, distinguish facts from hypotheses, and check reading coverage before findings. Simulated readers are not real reader feedback, name mentions do not establish appearances, and a new draft alone does not resolve a concern.
+
+## More forms for the same work
+
+Character cards, branching stories, series, translations, recordings and book files can build on an existing work. Install the tools needed for your current question.
+
+| Goal | Plugin | What to review |
+| --- | --- | --- |
+| Exchange character cards and lorebooks | [Lorebook Bridge](/en/plugins/lorebook-bridge/) | Characters, entries, mappings and conversion notes |
+| Compare choices and endings | [Interactive Fiction](/en/plugins/interactive-fiction/) | Playable routes, variables and version-bound saves |
+| Organize sequels and side stories | [Series Organizer](/en/plugins/series-organizer/) | Reading order, appearances and target works |
+| Translate and revise | [Story Translation](/en/plugins/story-translation/) | Alignments, terms, gaps and feedback |
+| Listen for prose and dialogue issues | [Readthrough](/en/plugins/readthrough/) | Actual recordings, mapped text and interval feedback |
+| Prepare readable manuscript files | [Book Export](/en/plugins/book-export/) | Contents, notes, illustrations and actual files |
+
+For example:
+
+> Read this novel and its existing artifacts. Build two playable routes from the chosen sequence. Prepare an English draft of one route, review it by passage and record feedback. Use only recordings I provide or explicitly authorize. Compile chosen fixed drafts into book files and inspect complete files without adopting or finalizing my manuscript.
+
+Every handoff keeps its source version. New upstream drafts do not silently change earlier translations, audio mappings or deliveries. Inspect their impact before updating.

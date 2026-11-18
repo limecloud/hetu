@@ -31,3 +31,9 @@ Review sources before conclusions, distinguish facts from hypotheses, and check 
 Give your Agent a goal. It discovers installed Hetu plugins, reads their packaged methods and works through the shared machine interface. Return to read plans, compare candidates, inspect sources and give feedback. Adoption and finalization remain your decisions.
 
 Choose only what helps the current task; these tools do not require one another. Explore the [plugin center](/en/plugins/) or the [author guide](/en/docs/plugins/).
+
+## More forms for the same work
+
+Exchange cards with their original files, explore playable routes, or organize sequels and side stories. Keep translation feedback aligned to fixed source passages, connect recordings to text, then compile chosen versions into readable book files.
+
+The tools share fixed sources rather than forcing you to enter the same material again. Review actual results and decide what follows. See the six workflows and conversation examples in the [plugin guide](/en/docs/plugins/).

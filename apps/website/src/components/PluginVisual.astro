@@ -5,6 +5,18 @@ interface Props { locale: Locale; kind?: string; }
 const { locale, kind = 'relationships' } = Astro.props;
 const en = locale === 'en';
 const captures: Record<string, { width: number; height: number; zh: string; en: string }> = {
+  'book-export': {"width": 1360, "height": 900, "zh": "书稿交付实际工作面，macOS正式安装版与隔离演示资料。", "en": "Book Export actual work surface with the official macOS installation and isolated demonstration data."},
+
+  'readthrough': {"width": 1360, "height": 996, "zh": "朗读审阅实际工作面，macOS正式安装版与隔离演示资料。", "en": "Readthrough actual work surface with the official macOS installation and isolated demonstration data."},
+
+  'story-translation': {"width": 1360, "height": 900, "zh": "译稿工坊实际工作面，macOS正式安装版与隔离演示资料。", "en": "Story Translation actual work surface with the official macOS installation and isolated demonstration data."},
+
+  'series-organizer': {"width": 1360, "height": 900, "zh": "系列组织实际工作面，macOS正式安装版与隔离演示资料。", "en": "Series Organizer actual work surface with the official macOS installation and isolated demonstration data."},
+
+  'interactive-fiction': {"width": 1360, "height": 900, "zh": "互动叙事实际工作面，macOS正式安装版与隔离演示资料。", "en": "Interactive Fiction actual work surface with the official macOS installation and isolated demonstration data."},
+
+  'lorebook-bridge': {"width": 1360, "height": 917, "zh": "世界书互通实际工作面，macOS正式安装版与隔离演示资料。", "en": "Lorebook Bridge actual work surface with the official macOS installation and isolated demonstration data."},
+
   'story-research': { width:1360, height:900, zh:'创作研究台的问题、固定来源与研究结论，使用演示资料。', en:'Story Research questions, fixed sources and conclusions with demonstration data.' },
   'character-lab': { width:1360, height:900, zh:'人物工坊的侧写与动机工作面，使用演示资料。', en:'Character Lab profiles and motivations with demonstration data.' },
   'story-analysis': { width:1360, height:900, zh:'故事分析的结构、覆盖与问题依据，使用演示资料。', en:'Story Analysis structure, coverage and findings with demonstration data.' },

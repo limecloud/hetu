@@ -378,5 +378,209 @@
       "evidence_url": "https://github.com/wordflowlab/hetu-story-analysis/releases/download/v0.1.0/installed-acceptance.json",
       "integrity_url": "https://github.com/wordflowlab/hetu-story-analysis/releases/download/v0.1.0/release-integrity.json"
     }
+  },
+  {
+    "slug": "lorebook-bridge",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.lorebook-bridge",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "世界书互通",
+        "en": "Lorebook Bridge"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-lorebook-bridge",
+    "source_commit": "0042bfb52911b47e98c20d8ee5a6e8656f3c2252",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-lorebook-bridge/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-lorebook-bridge/releases/download/v0.1.0/org.wordflowlab.lorebook-bridge-0.1.0.tgz",
+      "archive_sha256": "09e81480b3c06aa65b00683c1f1caf392ba5572cab7d896c344165f6530d2314",
+      "package_sha256": "0620fb1c75dbedd1e76306e1be3445ab383f801cfe0eac5341623a9e05054402",
+      "size_bytes": 244110,
+      "minimum_host_version": "0.11.11",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-lorebook-bridge/releases/download/v0.1.0/installed-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-lorebook-bridge/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "interactive-fiction",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.interactive-fiction",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "互动叙事",
+        "en": "Interactive Fiction"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-interactive-fiction",
+    "source_commit": "bcfa89b4c755fb909af752f383a38dbd146511de",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-interactive-fiction/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-interactive-fiction/releases/download/v0.1.0/org.wordflowlab.interactive-fiction-0.1.0.tgz",
+      "archive_sha256": "7ee0109232658b551ae5fe648ea9804cf1777eb577e59cf32be55c4e914f32f6",
+      "package_sha256": "c777120519a56fd93d1e132c078ac99b5a65f19103070a088b1cedf8f74e0a00",
+      "size_bytes": 246483,
+      "minimum_host_version": "0.11.11",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-interactive-fiction/releases/download/v0.1.0/installed-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-interactive-fiction/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "series-organizer",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.series-organizer",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "系列组织",
+        "en": "Series Organizer"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-series-organizer",
+    "source_commit": "d599657d09d109d4e36c57aaf3e30840c64c2a1d",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-series-organizer/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-series-organizer/releases/download/v0.1.0/org.wordflowlab.series-organizer-0.1.0.tgz",
+      "archive_sha256": "46c93611de2cbc786604d970beaeda489ba4d3e63ab6d1947f94a074e78cdbab",
+      "package_sha256": "e51032102970d97f650165fdd2e17a3a6b5991e707ab3028dfc54422969663dc",
+      "size_bytes": 245998,
+      "minimum_host_version": "0.11.11",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-series-organizer/releases/download/v0.1.0/installed-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-series-organizer/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "story-translation",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.story-translation",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "译稿工坊",
+        "en": "Story Translation"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-story-translation",
+    "source_commit": "a0ba48d98e9324fd0721186fb8579f19aaed0c7d",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-story-translation/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-story-translation/releases/download/v0.1.0/org.wordflowlab.story-translation-0.1.0.tgz",
+      "archive_sha256": "66157ad348c3ab8a2a086fe39fe93dbc3fb3254db296e7d461de8ae31f350704",
+      "package_sha256": "59080c4c196a79bdd09c50ebbd2a99d46a43dc561575a785fb9b8eed78ec3148",
+      "size_bytes": 240121,
+      "minimum_host_version": "0.11.11",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-story-translation/releases/download/v0.1.0/installed-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-story-translation/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "readthrough",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.readthrough",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "朗读审阅",
+        "en": "Readthrough"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-readthrough",
+    "source_commit": "673750ae3dcc30f948386342e47385c7debc50b5",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-readthrough/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-readthrough/releases/download/v0.1.0/org.wordflowlab.readthrough-0.1.0.tgz",
+      "archive_sha256": "ab258906a6bfecee3387213e7be7ed152ca0c3295a4ee2ce3ac62c147d49e62f",
+      "package_sha256": "5723789aa1a672cdf9d1fb2e3a0756e7f2b194a67e50815d6ea5e8543dce8bd1",
+      "size_bytes": 254557,
+      "minimum_host_version": "0.11.11",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-readthrough/releases/download/v0.1.0/installed-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-readthrough/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "book-export",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.book-export",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "书稿交付",
+        "en": "Book Export"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-book-export",
+    "source_commit": "034fc53d8d3182cd317cb5fe5f366a0e574cea8c",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-book-export/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-book-export/releases/download/v0.1.0/org.wordflowlab.book-export-0.1.0.tgz",
+      "archive_sha256": "b3e1cecf241916aa92fccc9e1ebdec6cc67d5f0376c4c7621d4e905d643ddce7",
+      "package_sha256": "e9dfd676d26c6ec450f21cdce83599b921492ca46e1a29a414400433a09c3e68",
+      "size_bytes": 7232480,
+      "minimum_host_version": "0.11.11",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-book-export/releases/download/v0.1.0/installed-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-book-export/releases/download/v0.1.0/release-integrity.json"
+    }
   }
 ]
