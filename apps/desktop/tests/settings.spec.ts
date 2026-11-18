@@ -225,11 +225,11 @@ test("CLI准备本机方案、Electron固定审阅与恢复、无窗口执行和
       );
       expect(
         (await mcp.listTools()).tools.some(
-          (t) => t.name === "hetu_local_settings_get",
+          (t) => t.name === "hetu_call_action",
         ),
       ).toBe(true);
       const read = (
-        await mcp.callTool({ name: "hetu_local_settings_get", arguments: {} })
+        await mcp.callTool({ name: "hetu_call_action", arguments: { action: "hetu.local_settings.get", input: {} } })
       ).structuredContent as any;
       expect(read.data.preferences).toMatchObject({
         font_size: 24,

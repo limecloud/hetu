@@ -142,8 +142,8 @@ test("CLI准备独立文稿快照、Electron审阅批准、无窗口提交及真
     client = new Client({ name: "hetu-version-e2e", version: "1" }, { versionNegotiation: { mode: { pin: "2026-07-28" } } });
     await client.connect(new StdioClientTransport({ command: binary("hetu-mcp"), args: ["--client", "codex", "--collaboration-dir", collaboration], stderr: "pipe" }));
     const names = (await client.listTools()).tools.map(t => t.name);
-    expect(names).toContain("hetu_commit_snapshot"); expect(names).not.toContain("hetu_git_approve_snapshot");
-    const mcp = await client.callTool({ name: "hetu_managed_git_log", arguments: { management_ref: grant, work_ref: work } });
+    expect(names).toContain("hetu_call_action"); expect(names).not.toContain("hetu_git_approve_snapshot");
+    const mcp = await client.callTool({ name: "hetu_call_action", arguments: { action: "hetu.git.log", input: { management_ref: grant, work_ref: work } } });
     expect(data(mcp.structuredContent).commits[0].commit_id).toBe(done.commit_id);
     await launch();
     await navigate(page!, "文稿版本");

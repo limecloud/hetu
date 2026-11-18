@@ -307,7 +307,7 @@ test(
       const task_ref = opened.task_ref;
       expect(task_ref).toBeTruthy();
       const tools = await client.listTools();
-      expect(tools.tools.some((t) => t.name === "hetu_create_resource")).toBe(
+      expect(tools.tools.some((t) => t.name === "hetu_call_action")).toBe(
         true,
       );
       const createInput = {
@@ -324,8 +324,8 @@ test(
           },
         ],
       };
-      const first = data(await tool("hetu_create_resource", createInput));
-      expect(data(await tool("hetu_create_resource", createInput))).toEqual(
+      const first = data(await tool("hetu_call_action", { action: "hetu.resources.create", input: createInput }));
+      expect(data(await tool("hetu_call_action", { action: "hetu.resources.create", input: createInput }))).toEqual(
         first,
       );
       expect(first.resource.work_ref).toEqual(work);

@@ -214,14 +214,17 @@ test(
         );
         expect(
           (await mcp.listTools()).tools.some(
-            (t) => t.name === "hetu_list_documents",
+            (t) => t.name === "hetu_call_action",
           ),
         ).toBe(true);
         const read = await mcp.callTool({
-          name: "hetu_list_documents",
+          name: "hetu_call_action",
           arguments: {
-            management_ref: handoff.management_ref,
-            work_ref: context.work_ref,
+            action: "hetu.documents.list",
+            input: {
+              management_ref: handoff.management_ref,
+              work_ref: context.work_ref,
+            },
           },
         });
         expect(

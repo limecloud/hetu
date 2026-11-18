@@ -77,12 +77,15 @@ test("同一河图MCP连接动态发现、调用和热插拔专业插件，无�
     const { management_ref: _, ...projection } = capabilities;
     assert.ok(validCapabilities(projection), JSON.stringify(validCapabilities.errors));
   }
-  const invoke = (action: string, args: any, extra = {}) => call("hetu_plugin_access_invoke", {
-    ...binding(), capabilities_sha256: capabilities.capabilities_sha256, action, arguments: args, ...extra,
+  const invoke = (action: string, args: any, extra = {}) => call("hetu_call_action", {
+    action: "hetu.plugin_access.invoke", input: {
+      ...binding(), capabilities_sha256: capabilities.capabilities_sha256, action, arguments: args, ...extra,
+    },
   });
   try {
     await t.test("HP-01 连接先建立，再安装和发现，工具目录保持稳定", async () => {
-      assert.ok(initialTools.includes("hetu_plugin_access_invoke"));
+      assert.ok(initialTools.includes("hetu_call_action"));
+      assert.ok(initialTools.length <= 12);
       assert.deepEqual((await ok("hetu_plugins_inspect")).packages, []);
       ({ work, management } = await createWork("first"));
       pkg = await ok("hetu_plugins_inspect_package", { package_directory: packageDirectory });

@@ -82,12 +82,14 @@ for (const kind of ["novel", "drama"] as const) test(`${kind} CLI/MCP固定导�
     client = new Client({ name: "hetu-transfer-e2e", version: "1" }, { versionNegotiation: { mode: { pin: "2026-07-28" } } });
     await client.connect(new StdioClientTransport({ command: binary("hetu-mcp"), args: ["--client", "codex", "--collaboration-dir", collaboration], stderr: "pipe" }));
     const exposed = (await client.listTools()).tools.map((tool) => tool.name);
-    expect(exposed).toContain("hetu_get_document");
-    expect(exposed).toContain("hetu_managed_documents_preview_import");
+    expect(exposed).toContain("hetu_call_action");
+    expect(exposed.length).toBeLessThanOrEqual(12);
     const tool = async (name: string, args: any) => (await client!.callTool({ name, arguments: { ...args, management_ref: grant } })).structuredContent as any;
     const text = kind === "novel" ? "# 潮汐来信\n\n潮汐带回了那封信🌿。\n" : "INT. 灯塔 - NIGHT\n\n江岚\n潮汐带回了那封信🌿。\n";
     const source = { work_ref: work, inline_source: { filename: "原稿.txt", base64: Buffer.from(text).toString("base64"), sha256: createHash("sha256").update(text).digest("hex") }, format: kind === "novel" ? "markdown" : "fountain", profile: "source/1" };
-    const preview = data(await tool("hetu_managed_documents_preview_import", source)).preview;
+    const preview = data((await client.callTool({ name: "hetu_call_action", arguments: {
+      action: "hetu.documents.preview_import", input: { ...source, management_ref: grant },
+    } })).structuredContent).preview;
     let target: any;
     if (kind === "novel") {
       const novel = data(cli(grant, "hetu.novels.get", {}));
