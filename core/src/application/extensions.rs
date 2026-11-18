@@ -906,6 +906,27 @@ impl Kernel {
             "hetu.extensions.work.snapshot" => {
                 self.novel_snapshot(input)?
             }
+            "hetu.extensions.sources.read_blob" => {
+                let source = &input["source_ref"];
+                self.validate_extension_sources(work, &json!([source]))?;
+                ensure(source["kind"] == "asset", "invalid_input", "字节读取仅支持固定媒体资产。")?;
+                let (asset, _, _) = self.read_media_record("asset", text(source, "asset_id")?, source["revision"].as_u64())?;
+                let file = self.store.managed_media(text(&asset["blob"], "path")?)?;
+                let mut media = AssetMedia::open(file, &asset["blob"], source.clone())?;
+                let offset = input["offset"].as_u64().unwrap_or(0);
+                let length = input["max_bytes"].as_u64().unwrap_or(65536);
+                let total = asset["blob"]["size_bytes"].as_u64().unwrap_or(0);
+                let chunk = media.read(offset, length)?;
+                let next = offset + chunk["size_bytes"].as_u64().unwrap_or(0);
+                use base64::Engine;
+                let chunk_bytes = base64::engine::general_purpose::STANDARD.decode(text(&chunk, "base64")?)
+                    .map_err(|_| Error::new("hetu.integrity_failure", "媒体分块编码无效。"))?;
+                json!({"source_ref":source,"offset":offset,"base64":chunk["base64"],
+                    "size_bytes":chunk["size_bytes"],"total_bytes":total,
+                    "next_offset":if next < total {json!(next)} else {Value::Null},
+                    "sha256":asset["blob"]["sha256"],"chunk_sha256":digest(chunk_bytes),
+                    "media_type":asset["blob"]["media_type"]})
+            }
             "hetu.extensions.sources.inspect" => {
                 let source = &input["source_ref"];
                 self.validate_extension_sources(work, &json!([source]))?;

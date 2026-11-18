@@ -559,3 +559,7 @@ AssetDesign与AssetSelection继续拥有资料设计和用途选用，MediaArtif
 `hetu.novels.snapshot`返回`work_ref, fixed_ref, volumes, documents, document_count, word_count, counting_unit, statistics_sha256`。documents逐项包含document_id、title、volume_id、固定source_ref与word_count。计数为非空白Unicode标量，包含标点及单个emoji标量，不宣称等于平台计费字数。revision仅固定小说资料／目录修订；正文来源逐章固定实际读取修订，旧资料修订不代表整书历史正文快照。
 
 `hetu.documents.rename`不修改正文字节，建立新文稿修订作为CAS边界，返回相同内容摘要和新的revision_id。历史revision当前不包含独立标题快照，因此文稿历史不能据此声称可恢复历次标题；标题变更由操作及当前文档记录。未来若需要标题历史，必须扩充版本化记录合同，不能在插件私建一份历史。
+
+## 固定媒体分块的数据合同
+
+插件的固定媒体读取沿当前WorkRef与asset来源核验，Schema唯一Owner为 `contracts/extensions/actions.json`。分块返回原文件摘要、分块摘要、实际字节数和下一偏移；资产记录摘要与文件摘要各有原义，不互换。字段及边界见[插件27](plugin/27-开放宿主SDK与核心能力审计.md#固定媒体字节的公共读取)，专业声音与书稿数据仍由对应插件拥有。

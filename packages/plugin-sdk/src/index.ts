@@ -125,6 +125,7 @@ export interface BackendModule {
 export const dataActions = [
   "hetu.extensions.work.snapshot",
   "hetu.extensions.sources.inspect",
+  "hetu.extensions.sources.read_blob",
   "hetu.extensions.objects.list",
   "hetu.extensions.objects.search",
   "hetu.extensions.index.status",

@@ -967,3 +967,7 @@ CLI、MCP、MCP Apps、本地页面和原生端共用上述用例；Apps只在�
 | `hetu.documents.rename` | document_id、base_revision_id、title、operation_key | 当前修订CAS、相同正文内容的新修订；重放原回执 |
 
 公开SDK经统一request使用当前执行身份的全部核心能力，不维护插件逐动作白名单。外部Agent保持原management_ref及领域方案决定链；桌面插件复用作者工作面的核心用例。改名可经agent_operations准备固定方案，不新建第二条正文写链。对象与本体语义归28，字段归29，分层及兼容归插件27。
+
+## 固定媒体的插件公共读取
+
+`hetu.extensions.sources.read_blob` 为只读数据动作，通过既有稳定插件发现／调用入口使用；接受固定asset来源、offset及有界max_bytes，不接受路径。当前作品、资产修订、记录与文件摘要逐次核验，返回Base64及完整／分块摘要。调用方重组后核对完整文件，不将素材元数据当格式解码结果。具体Schema归extensions动作合同，SDK分层及边界归[插件27](plugin/27-开放宿主SDK与核心能力审计.md#固定媒体字节的公共读取)。

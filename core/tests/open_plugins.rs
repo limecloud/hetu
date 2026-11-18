@@ -18,6 +18,59 @@ fn request(k: &Kernel, context: &Value, action: &str, input: Value) -> Value {
 }
 
 #[test]
+fn fixed_plugin_blob_chunks_are_exact_bounded_and_work_scoped() {
+    use base64::{Engine, engine::general_purpose::STANDARD};
+    use sha2::{Digest, Sha256};
+    let folder = tempfile::tempdir().unwrap();
+    let (k, work) = fixture(folder.path());
+    let ctx = context(&work);
+    let mut raw = vec![37u8; 150_019];
+    raw[..12].copy_from_slice(b"RIFF\x00\x00\x10\x00WAVE");
+    let file_sha = format!("{:x}", Sha256::digest(&raw));
+    let inline = json!({"filename":"声音字节.wav","base64":STANDARD.encode(&raw),"sha256":file_sha});
+    let scan = call(&k, "hetu.assets.inspect", json!({"inline_source":inline}));
+    assert_eq!(scan["status"], "succeeded", "{scan}");
+    let imported = call(&k, "hetu.assets.import", json!({"work_ref":work,"inline_source":inline,
+        "expected_file":{"sha256":file_sha,"size_bytes":raw.len()},"title":"固定声音",
+        "source":{"source_type":"author_supplied","creator_statement":"格式验收样本，非真实语音"},
+        "rights_status":"unknown","redistribution_allowed":false,"rights_statement":"","operation_key":"blob-import"}));
+    assert_eq!(imported["status"], "succeeded", "{imported}");
+    let asset = &imported["data"];
+    let source = json!({"kind":"asset","work_ref":work,"asset_id":asset["asset"]["asset_id"],
+        "revision":asset["asset"]["revision"],"sha256":asset["sha256"]});
+    let mut bytes = Vec::new();
+    let mut offset = 0;
+    loop {
+        let r = request(&k, &ctx, "hetu.extensions.sources.read_blob", json!({"source_ref":source,"offset":offset,"max_bytes":65536}));
+        assert_eq!(r["status"], "succeeded", "{r}");
+        let data = &r["data"];
+        let part = STANDARD.decode(data["base64"].as_str().unwrap()).unwrap();
+        assert_eq!(data["sha256"], file_sha);
+        assert_eq!(data["chunk_sha256"], format!("{:x}", Sha256::digest(&part)));
+        assert!(data.get("path").is_none());
+        bytes.extend(part);
+        if data["next_offset"].is_null() { break; }
+        offset = data["next_offset"].as_u64().unwrap();
+    }
+    assert_eq!(bytes, raw);
+    for input in [json!({"source_ref":source,"offset":raw.len()}),json!({"source_ref":source,"max_bytes":0}),
+        json!({"source_ref":source,"max_bytes":131073}),json!({"source_ref":source,"file_path":"/etc/passwd"})] {
+        let rejected = request(&k,&ctx,"hetu.extensions.sources.read_blob",input);
+        assert_ne!(rejected["status"], "succeeded", "{rejected}");
+        assert!(rejected["error"]["code"].is_string());
+    }
+    let mut stale = source.clone(); stale["sha256"] = json!("b".repeat(64));
+    assert_ne!(request(&k,&ctx,"hetu.extensions.sources.read_blob",json!({"source_ref":stale}))["status"],"succeeded");
+    let other = call(&k,"hetu.video.projects.create",json!({"title":"独立视频","brief":"不共享读取范围","language_tag":"zh-CN","operation_key":"other"}));
+    assert_eq!(other["status"],"succeeded","{other}");
+    let other_ctx = context(&other["data"]["work_ref"]);
+    assert_ne!(request(&k,&other_ctx,"hetu.extensions.sources.read_blob",json!({"source_ref":source}))["status"],"succeeded");
+    let path = asset["asset"]["blob"]["path"].as_str().unwrap();
+    std::fs::write(folder.path().join(path), vec![0u8;raw.len()]).unwrap();
+    assert_ne!(request(&k,&ctx,"hetu.extensions.sources.read_blob",json!({"source_ref":source}))["status"],"succeeded");
+}
+
+#[test]
 fn open_sdk_reuses_novel_and_document_services_without_plugin_grants() {
     let folder = tempfile::tempdir().unwrap();
     let (k, work) = fixture(folder.path());
