@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 const listings = JSON.parse(readFileSync(new URL('../src/data/plugin-listings.json', import.meta.url), 'utf8'));
 const packages = ['relationships', 'timeline'].map(slug => ({ slug, ...JSON.parse(readFileSync(new URL(`../../../plugins/${slug}/plugin.json`, import.meta.url), 'utf8')) })).concat(listings.map((entry:any)=>({slug:entry.slug,...entry.manifest})));
 
-for (const [slug, category] of [['story-research', 'research'], ['character-lab', 'characters'], ['story-analysis', 'analysis']]) {
+for (const [slug, category] of [['adaptation-studio', 'adaptation'], ['reader-review', 'beta'], ['comic-studio', 'comics'], ['audio-drama', 'audio'], ['story-research', 'research'], ['character-lab', 'characters'], ['story-analysis', 'analysis']]) {
   for (const prefix of ['', '/en']) test(`${prefix || 'zh-CN'} ${slug} 分类与精确身份检索`, async ({ page }) => {
     await page.goto(prefix + '/plugins/');
     await page.locator(`[data-plugin-category="${category}"]`).click();

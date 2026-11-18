@@ -109,3 +109,14 @@ Every handoff keeps its source version. New upstream drafts do not silently chan
 - [Novel Atlas](/en/plugins/novel-atlas/): explore maps, routes, growth and relationship stages, object transfers and actual reading coverage, including an offline atlas.
 
 Try: “Review the first two volumes and prepare the next opening. Express Lin’s fear through action. After revision, check when she learned the code, then update the atlas. Keep unread and uncertain material explicit.”
+
+## From a story to more forms
+
+Choose a tool for the question at hand. Keep adaptations separate from the original, preserve reader comments, and use actual images and recordings.
+
+- [Adaptation Studio](/en/plugins/adaptation-studio/)：Review mappings and their reasons alongside the original and target, then ask your Agent to revise a specific unit.
+- [Reader Review](/en/plugins/reader-review/)：Read original comments and coverage before decisions. Old feedback belongs to its fixed draft; recheck revisions explicitly.
+- [Comic Studio](/en/plugins/comic-studio/)：Read complete rendered pages, check order, balloons and art, then identify the panel to change.
+- [Audio Drama](/en/plugins/audio-drama/)：Listen to complete dialogue and mixes. Leave interval notes and recheck their position when the timeline changes.
+
+For example: “Plan how these chapters become one episode while keeping the sender a mystery. Share fixed excerpts, revise from returned feedback, then arrange this scene as two comic pages and a short dialogue. Use my supplied images and recordings; confirm costs separately.”

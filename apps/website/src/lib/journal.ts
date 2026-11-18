@@ -5,6 +5,7 @@ import type { Locale } from './site';
 import { evidence } from './market';
 
 export const articles = [
+  {"id": "story-across-media", "titles": {"zh-CN": "一个故事，可以怎样继续生长", "en": "More ways for one story to continue"}, "descriptions": {"zh-CN": "从改编理由、固定试读反馈到漫画页面与实际声音，让不同表达接续同一部作品。", "en": "Connect adaptation choices, fixed reader feedback, comic pages and actual recordings."}},
   { id: 'novel-ecosystem', titles: { 'zh-CN': '从规划到下一稿，让工具围绕同一部小说工作', en: 'From the plan to the next draft' }, descriptions: { 'zh-CN': '规划、文风、审校与图鉴如何围绕固定作品接续，让作者把时间用在阅读、判断与下一轮创作。', en: 'Connect planning, preferences, review and an atlas around a durable novel.' } },
 
   { id: 'creative-plugins', titles: { 'zh-CN': '工具可以生长，作品始终在你手中', en: 'Let the tools grow around your story' }, descriptions: { 'zh-CN': '从一张人物关系图开始，谈稳定的作品底座、按需扩展的工具，以及作者不必承担的操作复杂度。', en: 'Why a durable creative workspace, optional tools and Agent-driven operations belong together.' } },

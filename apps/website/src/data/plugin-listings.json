@@ -582,5 +582,141 @@
       "evidence_url": "https://github.com/wordflowlab/hetu-book-export/releases/download/v0.1.0/installed-acceptance.json",
       "integrity_url": "https://github.com/wordflowlab/hetu-book-export/releases/download/v0.1.0/release-integrity.json"
     }
+  },
+  {
+    "slug": "adaptation-studio",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.adaptation-studio",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "改编工程",
+        "en": "Adaptation Studio"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-adaptation-studio",
+    "source_commit": "97c85295477c9ee19ace53dd48982f85f09825d4",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-adaptation-studio/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-adaptation-studio/releases/download/v0.1.0/org.wordflowlab.adaptation-studio-0.1.0.tgz",
+      "archive_sha256": "fb570034b3e75c660f84892d9b4e3f1922050e75a1fa2024ef0f253e5183fe27",
+      "package_sha256": "354d2fb5e325828e0b189bac79eff50be3ee312466c0a437c73f3ca907b061e1",
+      "size_bytes": 97214,
+      "minimum_host_version": "0.12.2",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-adaptation-studio/blob/97c85295477c9ee19ace53dd48982f85f09825d4/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-adaptation-studio/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "reader-review",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.reader-review",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "试读工作台",
+        "en": "Reader Review"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-reader-review",
+    "source_commit": "923e2c258a3fb5366662afca3d0c246533def82b",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-reader-review/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-reader-review/releases/download/v0.1.0/org.wordflowlab.reader-review-0.1.0.tgz",
+      "archive_sha256": "f34d871f9e3cca690306e5ccfbb96446574b40b852b0ba8fa3a7237d2afcd8e4",
+      "package_sha256": "9b354d5494d2158da3431b67bd76ad326c617dc08c9908dc594d6b1a1fb454ab",
+      "size_bytes": 100107,
+      "minimum_host_version": "0.12.2",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-reader-review/blob/923e2c258a3fb5366662afca3d0c246533def82b/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-reader-review/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "comic-studio",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.comic-studio",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "漫画创作",
+        "en": "Comic Studio"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-comic-studio",
+    "source_commit": "3eba8bf2200d81772e3e9b8affb8659aed344f18",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-comic-studio/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-comic-studio/releases/download/v0.1.0/org.wordflowlab.comic-studio-0.1.0.tgz",
+      "archive_sha256": "d28cfecf6b58930165aa33b800b02d4f623689a0a85efd015d244f2663901101",
+      "package_sha256": "7e18dc9956a2678171c5692eef3c512315e0a40447d507c1bb292214fe284420",
+      "size_bytes": 98906,
+      "minimum_host_version": "0.12.2",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-comic-studio/blob/3eba8bf2200d81772e3e9b8affb8659aed344f18/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-comic-studio/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "audio-drama",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.audio-drama",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "有声剧制作",
+        "en": "Audio Drama"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-audio-drama",
+    "source_commit": "5e55c7c02928f96801dedbe0cbaef29bc1fc2d40",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-audio-drama/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-audio-drama/releases/download/v0.1.0/org.wordflowlab.audio-drama-0.1.0.tgz",
+      "archive_sha256": "5bb4e2f79a9c46c1aff8150929e6b2e8cea2b462077d530d06017ac5e2932df0",
+      "package_sha256": "95ab0357cce70a38643070f144a3b7a1c7a7d697b3573b1c0cc67c728584fa23",
+      "size_bytes": 100333,
+      "minimum_host_version": "0.12.2",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-audio-drama/blob/5e55c7c02928f96801dedbe0cbaef29bc1fc2d40/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-audio-drama/releases/download/v0.1.0/release-integrity.json"
+    }
   }
 ]
