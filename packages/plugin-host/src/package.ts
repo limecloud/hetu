@@ -9,10 +9,11 @@ const ajv = new Ajv({ strict: false, allErrors: true });
 const validate = ajv.compile(manifestSchema);
 // 仅复用相同Schema的成功编译检查；每次inspect仍核验实际文件和包摘要。
 const checkedSchemas = new Set<string>();
+const schemaChecker = new Ajv({ strict: false });
 function checkSchema(schema: object) {
   const text = JSON.stringify(schema);
   if (checkedSchemas.has(text)) return;
-  new Ajv({ strict: false }).compile(schema);
+  try { schemaChecker.compile(schema); } finally { schemaChecker.removeSchema(); }
   if (checkedSchemas.size >= 128) checkedSchemas.delete(checkedSchemas.values().next().value!);
   checkedSchemas.add(text);
 }
@@ -44,7 +45,7 @@ export class PluginPackage {
     this.manifest = deepFreeze(manifest);
     this.sha256 = sha256;
   }
-  static async inspect(source: string): Promise<PluginPackage> {
+  static async inspect(source: string, installedSha256?: string): Promise<PluginPackage> {
     if (!path.isAbsolute(source)) throw new Error("插件目录须为绝对路径。");
     if ((await lstat(source)).isSymbolicLink())
       throw new Error("插件根目录不能是软链接。");
@@ -91,6 +92,20 @@ export class PluginPackage {
       }
     }
     await walk("");
+    const hash = createHash("sha256");
+    for (const [name, data] of [...files].sort(([a], [b]) =>
+      Buffer.compare(Buffer.from(a), Buffer.from(b)),
+    )) {
+      const nameBytes = Buffer.from(name);
+      const sizes = Buffer.alloc(12);
+      sizes.writeUInt32BE(nameBytes.length);
+      sizes.writeBigUInt64BE(BigInt(data.length), 4);
+      hash.update(sizes).update(nameBytes).update(data);
+    }
+    const sha256=hash.digest("hex");
+    // 仅复用宿主安装时已完整编译的固定包；实际字节及摘要每次重新核对。
+    if(installedSha256!==undefined && installedSha256!==sha256)
+      throw new Error("已安装插件的固定包摘要不一致。");
     const raw = files.get("plugin.json");
     if (!raw || raw.length > 128 * 1024)
       throw new Error("插件清单缺失或过大。");
@@ -115,14 +130,14 @@ export class PluginPackage {
       names.add(t.kind);
       if (JSON.stringify(t.schema).length > 32768)
         throw new Error("数据Schema超过预算。");
-      checkSchema(t.schema);
+      if(installedSha256===undefined)checkSchema(t.schema);
     }
     names.clear();
     for (const a of manifest.contributions.actions) {
       if (a.id.startsWith("hetu.") || a.id === "skills.read" || names.has(a.id))
         throw new Error("插件动作重复或覆盖核心动作。");
       names.add(a.id);
-      checkSchema(a.input_schema);
+      if(installedSha256===undefined)checkSchema(a.input_schema);
     }
     names.clear();
     const skillNames = new Set<string>();
@@ -140,17 +155,7 @@ export class PluginPackage {
       throw new Error("动作贡献缺少后端入口。");
     if (manifest.runtime && !files.has(resourcePath(manifest.runtime.entry)))
       throw new Error("后端入口缺失。");
-    const hash = createHash("sha256");
-    for (const [name, data] of [...files].sort(([a], [b]) =>
-      Buffer.compare(Buffer.from(a), Buffer.from(b)),
-    )) {
-      const nameBytes = Buffer.from(name);
-      const sizes = Buffer.alloc(12);
-      sizes.writeUInt32BE(nameBytes.length);
-      sizes.writeBigUInt64BE(BigInt(data.length), 4);
-      hash.update(sizes).update(nameBytes).update(data);
-    }
-    return new PluginPackage(root, files, manifest, hash.digest("hex"));
+    return new PluginPackage(root, files, manifest, sha256);
   }
   file(relative: string): Buffer {
     const bytes = this.#files.get(resourcePath(relative));

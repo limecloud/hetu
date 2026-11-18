@@ -85,7 +85,7 @@ export class PluginInstallations {
     for (const item of packages) {
       if (item.removed) continue;
       try {
-        const pkg = await PluginPackage.inspect(item.path);
+        const pkg = await PluginPackage.inspect(item.path,item.sha256);
         if (pkg.sha256 !== item.sha256 || item.manifest && pkg.manifest.id !== item.manifest.id)
           throw new Error("已安装插件的固定包摘要不一致。");
         host.add(pkg);
