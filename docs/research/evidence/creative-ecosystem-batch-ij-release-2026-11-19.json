@@ -1,6 +1,6 @@
 {
-  "status": "awaiting_public_deployment",
-  "recorded_at": "2026-11-18T17:42:23.433180+00:00",
+  "status": "complete",
+  "recorded_at": "2026-11-18T17:47:01.997154+00:00",
   "plugins": [
     {
       "slug": "murder-mystery",
@@ -906,8 +906,67 @@
       "log_sha256": "830f23062b0e2a382852a23050cdb23801e97271af63b498c32ac89f6485eabf"
     },
     "production": {
-      "status": "pending"
-    }
+      "origin": "https://hetu.limeai.run",
+      "recorded_at": "2026-11-18T17:44:41.316Z",
+      "results": [
+        {
+          "route": "/plugins/murder-mystery/",
+          "status": 200,
+          "package_sha256": "c2bf8995da6ddb2cbead5e4962bb9d9130ee6e8d387df5bdca39015374bfed24",
+          "image_sha256": "85fb8410ff2b3eead2be24dc7aecdb6d21c36e15bb349c128716df9f0071ab9d"
+        },
+        {
+          "route": "/plugins/picturebook/",
+          "status": 200,
+          "package_sha256": "6125d3b3f303f441ffdcad1b4762c16858a3122e39015751219292aa60d758ed",
+          "image_sha256": "bfbe753bb1953f8a3a5f26c549c4030b5e66a0f6f06e8756ff719cc931fcd35b"
+        },
+        {
+          "route": "/plugins/",
+          "status": 200
+        },
+        {
+          "route": "/docs/plugins/",
+          "status": 200
+        },
+        {
+          "route": "/blog/pages-and-players/",
+          "status": 200
+        },
+        {
+          "route": "/en/plugins/murder-mystery/",
+          "status": 200,
+          "package_sha256": "c2bf8995da6ddb2cbead5e4962bb9d9130ee6e8d387df5bdca39015374bfed24",
+          "image_sha256": "85fb8410ff2b3eead2be24dc7aecdb6d21c36e15bb349c128716df9f0071ab9d"
+        },
+        {
+          "route": "/en/plugins/picturebook/",
+          "status": 200,
+          "package_sha256": "6125d3b3f303f441ffdcad1b4762c16858a3122e39015751219292aa60d758ed",
+          "image_sha256": "bfbe753bb1953f8a3a5f26c549c4030b5e66a0f6f06e8756ff719cc931fcd35b"
+        },
+        {
+          "route": "/en/plugins/",
+          "status": 200
+        },
+        {
+          "route": "/en/docs/plugins/",
+          "status": 200
+        },
+        {
+          "route": "/en/blog/pages-and-players/",
+          "status": 200
+        }
+      ]
+    },
+    "production_regression": {
+      "recorded_at": "2026-11-18T17:47:01.968173+00:00",
+      "origin": "https://hetu.limeai.run",
+      "passed": 22,
+      "selection": "picturebook|murder-mystery|pages-and-players",
+      "log_sha256": "640dcada8353575cb267b9f98e6e6bd43eac7d103ae3a3cb33257e948cb83fdd"
+    },
+    "deploy_log_sha256": "1f26f250e94f7186f630702aab021d2e0494030ba1fd1692dbcb5f42f614d0e6"
   },
   "failure_records": [
     {
