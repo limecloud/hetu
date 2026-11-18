@@ -34,6 +34,6 @@ Choose only what helps the current task; these tools do not require one another.
 
 ## More forms for the same work
 
-Exchange cards with their original files, explore playable routes, or organize sequels and side stories. Keep translation feedback aligned to fixed source passages, connect recordings to text, then compile chosen versions into readable book files.
+[Lorebook Bridge](/en/plugins/lorebook-bridge/) preserves original card files. [Interactive Fiction](/en/plugins/interactive-fiction/) offers playable routes, while [Series Organizer](/en/plugins/series-organizer/) organizes sequels and side stories. [Story Translation](/en/plugins/story-translation/) aligns translation feedback to fixed passages, [Readthrough](/en/plugins/readthrough/) connects recordings to text, and [Book Export](/en/plugins/book-export/) compiles chosen versions into readable files.
 
 The tools share fixed sources rather than forcing you to enter the same material again. Review actual results and decide what follows. See the six workflows and conversation examples in the [plugin guide](/en/docs/plugins/).
