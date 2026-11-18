@@ -37,3 +37,11 @@ Choose only what helps the current task; these tools do not require one another.
 [Lorebook Bridge](/en/plugins/lorebook-bridge/) preserves original card files. [Interactive Fiction](/en/plugins/interactive-fiction/) offers playable routes, while [Series Organizer](/en/plugins/series-organizer/) organizes sequels and side stories. [Story Translation](/en/plugins/story-translation/) aligns translation feedback to fixed passages, [Readthrough](/en/plugins/readthrough/) connects recordings to text, and [Book Export](/en/plugins/book-export/) compiles chosen versions into readable files.
 
 The tools share fixed sources rather than forcing you to enter the same material again. Review actual results and decide what follows. See the six workflows and conversation examples in the [plugin guide](/en/docs/plugins/).
+
+## Continue the next chapter with its reasons intact
+
+[Novel Planner](/en/plugins/novel-planner/) records explicit event order, simultaneity and time intervals, keeping learning, belief and forgetting separate. [Prose Studio](/en/plugins/prose-studio/) selects preferences for the current character, chapter and scene. A chosen revision can become a learning sample; a single experiment does not become a permanent rule.
+
+[Novel Review](/en/plugins/novel-review/) checks fixed text against author dictionaries, finds exact repeated sentences and examines evidenced balances, objects, character states and knowledge. Missing premises remain inconclusive. [Novel Atlas](/en/plugins/novel-atlas/) presents maps, routes, numerical curves or qualitative stages, directional relationships and object transfers, with unread chapters and unknown positions visible.
+
+Ask your Agent to review earlier volumes, prepare the next chapter, revise a chosen passage, recheck knowledge and object changes, and update the atlas. Each handoff keeps its fixed version. Adoption and finalization remain your decisions.

@@ -1,0 +1,389 @@
+{
+  "recorded_at": "2026-11-18",
+  "host": {
+    "version": "0.11.11",
+    "source_build": false,
+    "platform": "macOS arm64",
+    "signature_verified": true
+  },
+  "plugins": [
+    {
+      "slug": "novel-review",
+      "version": "0.2.0",
+      "source_commit": "aace07aa0739ab94e2dde580fc2964dc2758d324",
+      "archive_sha256": "29cee6a6f2fc67ca66ad5b0f2943e2e0194320aee091436be8776d5c1329c603",
+      "package_sha256": "f5eceea32772e9028ddaf36607ceb2c4eddd0a70eb17373e4c4bf871c21c18f4",
+      "ci_run": 44250874980,
+      "release_url": "https://github.com/wordflowlab/hetu-novel-review/releases/tag/v0.2.0",
+      "action_count": 20,
+      "unit_tests": 29,
+      "tested_source_commit": "33b7302d0ece3834af7067b7d6f63ddc84718b6f",
+      "results": [
+        {
+          "test": "machine",
+          "exit_code": 0
+        },
+        {
+          "test": "ui",
+          "exit_code": 0
+        }
+      ],
+      "capture": {
+        "path": "apps/website/public/plugins/novel-review.png",
+        "sha256": "f375459985594db6c5b3451b58349163df6e7da653cfbd9336d0e59cf119daa1",
+        "width": 1345,
+        "height": 1058,
+        "source_ci": 44250874980
+      }
+    },
+    {
+      "slug": "novel-atlas",
+      "version": "0.2.0",
+      "source_commit": "770f56860d3154dfb5e3e54d851db121e8886b1e",
+      "archive_sha256": "c05edb885f8b7e4b2d98cacaea2f5f50d78b196acbbbf081f1ce10062e0ce45f",
+      "package_sha256": "3b0b6006069eb0b2c70c709ee9a3ed2bd006b4491946a161748389e77a46d298",
+      "ci_run": 44250608587,
+      "release_url": "https://github.com/wordflowlab/hetu-novel-atlas/releases/tag/v0.2.0",
+      "action_count": 24,
+      "unit_tests": 29,
+      "tested_source_commit": "2dd292e63bd82b70a2b5a24c6ce092dce76bca63",
+      "results": [
+        {
+          "test": "machine",
+          "exit_code": 0
+        },
+        {
+          "test": "ui",
+          "exit_code": 0
+        }
+      ],
+      "capture": {
+        "path": "apps/website/public/plugins/novel-atlas.png",
+        "sha256": "b46688b7cea70b4d3948b696b51c17ff06b9b1d053c970ebac8e6b10de9cfe2b",
+        "width": 1345,
+        "height": 1222,
+        "source_ci": 44250608587
+      }
+    },
+    {
+      "slug": "prose-studio",
+      "version": "0.2.0",
+      "source_commit": "1d4f013d05f8caa6cb1e2cbf6365dad413879a0f",
+      "archive_sha256": "5743fc40049df9b8bd0d0dddbf5259755348913302caecc7c7fded2995a0162b",
+      "package_sha256": "5005ec439334b5babd9d9bd35b3a7575185b55df67f3ea3623ed3c21226c3c7f",
+      "ci_run": 44250659933,
+      "release_url": "https://github.com/wordflowlab/hetu-prose-studio/releases/tag/v0.2.0",
+      "action_count": 26,
+      "unit_tests": 27,
+      "tested_source_commit": "4338d7389d18222a446ccfefeee248f06961d973",
+      "results": [
+        {
+          "test": "machine",
+          "exit_code": 0
+        },
+        {
+          "test": "ui",
+          "exit_code": 0
+        }
+      ],
+      "capture": {
+        "path": "apps/website/public/plugins/prose-studio.png",
+        "sha256": "8e6399cea12db0212a2fd0c971d6a9d84c9cf2c372fa1ae5da4c39dc9c742b0a",
+        "width": 1345,
+        "height": 1343,
+        "source_ci": 44250659933
+      }
+    },
+    {
+      "slug": "novel-planner",
+      "version": "0.3.0",
+      "source_commit": "e4d057ea8d66332452785d5c491929fb8714aba1",
+      "archive_sha256": "e42db055ee5f24d5be283fe7e5333c5dcf197d0b17994fda3ccfd4d2fd04d7e4",
+      "package_sha256": "a38c3204bbb35fb075690f4ff2c991c63a136e09b34b8c24d67c93115de5df0c",
+      "ci_run": 44253986347,
+      "release_url": "https://github.com/wordflowlab/hetu-novel-planner/releases/tag/v0.3.0",
+      "action_count": 38,
+      "unit_tests": 33,
+      "tested_source_commit": "6303ba5fccb053a86d6780b6db9622f9d61a8d90",
+      "results": [
+        {
+          "test": "machine",
+          "exit_code": 0
+        },
+        {
+          "test": "ui",
+          "exit_code": 0
+        },
+        {
+          "test": "cross",
+          "exit_code": 0
+        }
+      ],
+      "capture": {
+        "path": "apps/website/public/plugins/novel-planner.png",
+        "sha256": "1ed6a617ec884c61e8269000a883f52343a6439e16a0a11742ee356ad326c9dc",
+        "width": 1345,
+        "height": 1053,
+        "source_ci": 44253986347
+      }
+    }
+  ],
+  "unit_tests": 118,
+  "declared_actions": 108,
+  "current_codex_connection": {
+    "recorded_at": "2026-11-18T06:41:32.700Z",
+    "entry": "current Codex native MCP connection",
+    "plugins": [
+      {
+        "slug": "novel-planner",
+        "plugin_id": "org.wordflowlab.novel-planner",
+        "package_sha256": "a38c3204bbb35fb075690f4ff2c991c63a136e09b34b8c24d67c93115de5df0c",
+        "capabilities_sha256": "faa2b49951062ff3266dff2f069244b37a7055d8737c5fb870b223c16a302a2e",
+        "action_count": 38,
+        "discovered": true,
+        "skill_resource": "references/depth.md",
+        "skill_read": true,
+        "skill_content_sha256": "893e20b11de48b405a1d0d7c098c405eb1f5626c4ca775ce93ff66d4c5f38df5"
+      },
+      {
+        "slug": "novel-review",
+        "plugin_id": "org.wordflowlab.novel-review",
+        "package_sha256": "f5eceea32772e9028ddaf36607ceb2c4eddd0a70eb17373e4c4bf871c21c18f4",
+        "capabilities_sha256": "9dd44ad4293347ccc9156bed66ab370ba8cf8258ac5ccb1fd1fba1f844c2182d",
+        "action_count": 20,
+        "discovered": true,
+        "skill_resource": "references/depth.md",
+        "skill_read": true,
+        "skill_content_sha256": "44db459b474fba2a605198f2d0c8ecf26068f67ac85842480618fbf4f863a831"
+      },
+      {
+        "slug": "novel-atlas",
+        "plugin_id": "org.wordflowlab.novel-atlas",
+        "package_sha256": "3b0b6006069eb0b2c70c709ee9a3ed2bd006b4491946a161748389e77a46d298",
+        "capabilities_sha256": "924afa9e143bcc62f9604af75aa474233e62e6a6f1ed7fc03f7c8a9ff95f0f49",
+        "action_count": 24,
+        "discovered": true,
+        "skill_resource": "references/depth.md",
+        "skill_read": true,
+        "skill_content_sha256": "11a178d3e9de4a68d59d95951b80abbf29e46cf561fa73df8123606a896bfeb5"
+      },
+      {
+        "slug": "prose-studio",
+        "plugin_id": "org.wordflowlab.prose-studio",
+        "package_sha256": "5005ec439334b5babd9d9bd35b3a7575185b55df67f3ea3623ed3c21226c3c7f",
+        "capabilities_sha256": "51cb81f0660bb740551b206340520840a543e1f14f5409ae6cd5c3b7c4e2e26c",
+        "action_count": 26,
+        "discovered": true,
+        "skill_resource": "references/depth.md",
+        "skill_read": true,
+        "skill_content_sha256": "5c907c4380a2d9ecc41530bccbffc25eb110b4ff19294888a93345db435de49e"
+      }
+    ],
+    "separate_codex_plugins_installed": false,
+    "earlier_read_timeouts_retained": true,
+    "native_write_and_compile": {
+      "plugin_id": "org.wordflowlab.prose-studio",
+      "object_id": "ext_16335996-fa60-4a93-95a7-585a491f2105",
+      "revision": 1,
+      "sha256": "fa95b00dcc81018cb585d4e5573e52fb8d0e25df1d875223836f36d9cb110f91",
+      "write_readback": true,
+      "compiled_complete": true,
+      "selected_rule_ids": [
+        "test-rule"
+      ]
+    }
+  },
+  "installation": {
+    "recorded_at": "2026-11-18T06:42:37.448Z",
+    "packages": [
+      {
+        "plugin_id": "org.wordflowlab.screenplay",
+        "version": "0.1.0",
+        "package_sha256": "3db2b1f8b3577b6bd1806e8ca0b1a25b019b51299a4f6a3fea53fc821cecdf99",
+        "enabled": true
+      },
+      {
+        "plugin_id": "org.wordflowlab.video-studio",
+        "version": "0.1.0",
+        "package_sha256": "549b654781dc4949ee4abc28a94be97bb3bb12df96aead7208eb0ca1b7c0db2a",
+        "enabled": true
+      },
+      {
+        "plugin_id": "org.wordflowlab.director-stage",
+        "version": "0.2.0",
+        "package_sha256": "1f7755622c1f50c9932ff7536c5175d113f30bcff77f58921efffe012dab645c",
+        "enabled": true
+      },
+      {
+        "plugin_id": "org.wordflowlab.story-research",
+        "version": "0.1.0",
+        "package_sha256": "5adeffdf4bfe4f71ac614204bfe77825747164fa4705f6b9ec52a1d908b5bf9f",
+        "enabled": true
+      },
+      {
+        "plugin_id": "org.wordflowlab.character-lab",
+        "version": "0.1.0",
+        "package_sha256": "d3404b533b5e8a03e45e84eb23f5d4a99209568a0d8e09e03b13a0b05d6a4944",
+        "enabled": true
+      },
+      {
+        "plugin_id": "org.wordflowlab.story-analysis",
+        "version": "0.1.0",
+        "package_sha256": "fb117ee372a4fce7cde8cb1afd997f3d0b168066af2b1334171e721dfcd21009",
+        "enabled": true
+      },
+      {
+        "plugin_id": "org.wordflowlab.lorebook-bridge",
+        "version": "0.1.0",
+        "package_sha256": "0620fb1c75dbedd1e76306e1be3445ab383f801cfe0eac5341623a9e05054402",
+        "enabled": true
+      },
+      {
+        "plugin_id": "org.wordflowlab.interactive-fiction",
+        "version": "0.1.0",
+        "package_sha256": "c777120519a56fd93d1e132c078ac99b5a65f19103070a088b1cedf8f74e0a00",
+        "enabled": true
+      },
+      {
+        "plugin_id": "org.wordflowlab.series-organizer",
+        "version": "0.1.0",
+        "package_sha256": "e51032102970d97f650165fdd2e17a3a6b5991e707ab3028dfc54422969663dc",
+        "enabled": true
+      },
+      {
+        "plugin_id": "org.wordflowlab.story-translation",
+        "version": "0.1.0",
+        "package_sha256": "59080c4c196a79bdd09c50ebbd2a99d46a43dc561575a785fb9b8eed78ec3148",
+        "enabled": true
+      },
+      {
+        "plugin_id": "org.wordflowlab.readthrough",
+        "version": "0.1.0",
+        "package_sha256": "5723789aa1a672cdf9d1fb2e3a0756e7f2b194a67e50815d6ea5e8543dce8bd1",
+        "enabled": true
+      },
+      {
+        "plugin_id": "org.wordflowlab.book-export",
+        "version": "0.1.0",
+        "package_sha256": "e9dfd676d26c6ec450f21cdce83599b921492ca46e1a29a414400433a09c3e68",
+        "enabled": true
+      },
+      {
+        "plugin_id": "org.wordflowlab.novel-review",
+        "version": "0.2.0",
+        "package_sha256": "f5eceea32772e9028ddaf36607ceb2c4eddd0a70eb17373e4c4bf871c21c18f4",
+        "enabled": true
+      },
+      {
+        "plugin_id": "org.wordflowlab.novel-atlas",
+        "version": "0.2.0",
+        "package_sha256": "3b0b6006069eb0b2c70c709ee9a3ed2bd006b4491946a161748389e77a46d298",
+        "enabled": true
+      },
+      {
+        "plugin_id": "org.wordflowlab.prose-studio",
+        "version": "0.2.0",
+        "package_sha256": "5005ec439334b5babd9d9bd35b3a7575185b55df67f3ea3623ed3c21226c3c7f",
+        "enabled": true
+      },
+      {
+        "plugin_id": "org.wordflowlab.novel-planner",
+        "version": "0.3.0",
+        "package_sha256": "a38c3204bbb35fb075690f4ff2c991c63a136e09b34b8c24d67c93115de5df0c",
+        "enabled": true
+      }
+    ],
+    "preserved_other_packages": true,
+    "other_count": 12
+  },
+  "cross_plugin_continuation": {
+    "recorded_at": "2026-11-18T06:55:31.757Z",
+    "platform": "darwin arm64",
+    "host_version": "0.11.11",
+    "source_build": false,
+    "stages": [
+      "已导入两章的固定复盘与整书卷章规划",
+      "确切人物与章节作用域的有界上下文",
+      "固定宿主候选与指定选区返工，范围外字节保持",
+      "从明确修改与意见保留学习样本",
+      "新候选逐项审校复核，作者问题不自动解决",
+      "同源地图、变化、流转与真实阅读覆盖",
+      "上游产生新修订，旧下游依据保持，影响单独复核",
+      "独立CLI进程接续下一章，正文仍为宿主候选"
+    ],
+    "snapshots": [
+      {
+        "slug": "novel-planner",
+        "ref": {
+          "owner_plugin_id": "org.wordflowlab.novel-planner",
+          "object_id": "ext_ec2aec64-f28f-42ba-ad10-368eb19be799",
+          "revision": 2,
+          "sha256": "e99e2dc76cfa6b40f947cffa260b93f4133c5d96371141a20a669321a50ea51a"
+        },
+        "package_sha256": "a38c3204bbb35fb075690f4ff2c991c63a136e09b34b8c24d67c93115de5df0c"
+      },
+      {
+        "slug": "prose-studio",
+        "ref": {
+          "owner_plugin_id": "org.wordflowlab.prose-studio",
+          "object_id": "ext_9b9b6292-7829-4469-bfbb-505851ce0cac",
+          "revision": 4,
+          "sha256": "a24b074a77f31c2234735a40c6446091c85c3297bfa03e9464ce9dd05f0d6447"
+        },
+        "package_sha256": "5005ec439334b5babd9d9bd35b3a7575185b55df67f3ea3623ed3c21226c3c7f"
+      },
+      {
+        "slug": "novel-review",
+        "ref": {
+          "owner_plugin_id": "org.wordflowlab.novel-review",
+          "object_id": "ext_1aca4410-5d75-4a47-8629-290524904094",
+          "revision": 2,
+          "sha256": "21d5118e1fedb8fb0b63d2d6f85c54ec8ca337850e5c045a136d4cc7d7770f2e"
+        },
+        "package_sha256": "f5eceea32772e9028ddaf36607ceb2c4eddd0a70eb17373e4c4bf871c21c18f4"
+      },
+      {
+        "slug": "novel-atlas",
+        "ref": {
+          "owner_plugin_id": "org.wordflowlab.novel-atlas",
+          "object_id": "ext_217bf64f-82ab-4dee-8fa0-258b3ad6dd41",
+          "revision": 1,
+          "sha256": "e3214fc1aeb58b27beb79c31ccce28b9dab02065bf881308360efe811eb52593"
+        },
+        "package_sha256": "3b0b6006069eb0b2c70c709ee9a3ed2bd006b4491946a161748389e77a46d298"
+      }
+    ],
+    "original_sha256": "fe797525f0cc09a4210ba43888fde87a988297c2fd7bdbc04aec68d31ef82354",
+    "final_sha256": "fe797525f0cc09a4210ba43888fde87a988297c2fd7bdbc04aec68d31ef82354",
+    "adopted": false,
+    "finalized": false,
+    "limits": [
+      "本轮候选为固定验收样稿，非文学质量评价",
+      "不包含付费模型、正文采纳和定稿"
+    ]
+  },
+  "documentation": {
+    "files": 73,
+    "local_links": 212,
+    "rendered_diagrams": 30,
+    "errors": []
+  },
+  "website": {
+    "registration": "fixed releases and actual work surfaces",
+    "production_acceptance": "pending"
+  },
+  "failures_retained": [
+    "默认透明度模拟未生效，按实际媒体查询改用CDP后核对渐变与实色",
+    "旧页签数组分支、已销毁物品再流转、文风场景重置均修复并复验",
+    "规划页头52px违反原50px合同，固定选择器32px后原断言通过",
+    "英文导航检查需先展开实际折叠导航，再核对名称及状态",
+    "44253682717队列中取消以保留最终联合回执，不计为通过",
+    "本机高负载unknown沿原键回读，未合并为绿色性能结论"
+  ],
+  "not_verified": [
+    "Windows/Linux专业业务旅程",
+    "文学质量与作者认可",
+    "付费模型",
+    "正文采纳及定稿"
+  ]
+}

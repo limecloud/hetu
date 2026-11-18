@@ -145,7 +145,7 @@
     },
     "manifest": {
       "id": "org.wordflowlab.prose-studio",
-      "version": "0.1.1",
+      "version": "0.2.0",
       "host_api": "1",
       "display": {
         "zh-CN": "文风工坊",
@@ -155,20 +155,20 @@
       "permissions": []
     },
     "source_repository": "https://github.com/wordflowlab/hetu-prose-studio",
-    "source_commit": "95b0364ca814b2b9c15581f8ea9e11284a2c818f",
+    "source_commit": "1d4f013d05f8caa6cb1e2cbf6365dad413879a0f",
     "release": {
       "channel": "preview",
-      "url": "https://github.com/wordflowlab/hetu-prose-studio/releases/tag/v0.1.1",
-      "download_url": "https://github.com/wordflowlab/hetu-prose-studio/releases/download/v0.1.1/org.wordflowlab.prose-studio-0.1.1.tgz",
-      "archive_sha256": "73eff1d42c3d06911401ad92c60c206acb55fc7f2338b6a8cc3bf753ff19aa81",
-      "package_sha256": "a793eb0ff1438593696340d01640d7ae5c4eb95108c68c68aa2b74a5cbeeb3f7",
-      "size_bytes": 237590,
-      "minimum_host_version": "0.11.5",
+      "url": "https://github.com/wordflowlab/hetu-prose-studio/releases/tag/v0.2.0",
+      "download_url": "https://github.com/wordflowlab/hetu-prose-studio/releases/download/v0.2.0/org.wordflowlab.prose-studio-0.2.0.tgz",
+      "archive_sha256": "5743fc40049df9b8bd0d0dddbf5259755348913302caecc7c7fded2995a0162b",
+      "package_sha256": "5005ec439334b5babd9d9bd35b3a7575185b55df67f3ea3623ed3c21226c3c7f",
+      "size_bytes": 125527,
+      "minimum_host_version": "0.11.11",
       "verified_platforms": [
         "macOS arm64"
       ],
-      "evidence_url": "https://github.com/wordflowlab/hetu-prose-studio/blob/e519a6251607a32aeafa987aa6e77954853c9656/docs/research/release-acceptance-2026-11-17.json",
-      "integrity_url": "https://github.com/wordflowlab/hetu-prose-studio/releases/download/v0.1.1/release-integrity.json"
+      "evidence_url": "https://github.com/wordflowlab/hetu-prose-studio/blob/1d4f013d05f8caa6cb1e2cbf6365dad413879a0f/docs/research/depth-acceptance-2026-11-18.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-prose-studio/releases/download/v0.2.0/release-integrity.json"
     }
   },
   {
@@ -179,7 +179,7 @@
     },
     "manifest": {
       "id": "org.wordflowlab.novel-review",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "host_api": "1",
       "display": {
         "zh-CN": "小说审校",
@@ -189,20 +189,20 @@
       "permissions": []
     },
     "source_repository": "https://github.com/wordflowlab/hetu-novel-review",
-    "source_commit": "634ac7e4ab62ba8ab9dfe605d2c144e359c3edd4",
+    "source_commit": "aace07aa0739ab94e2dde580fc2964dc2758d324",
     "release": {
       "channel": "preview",
-      "url": "https://github.com/wordflowlab/hetu-novel-review/releases/tag/v0.1.0",
-      "download_url": "https://github.com/wordflowlab/hetu-novel-review/releases/download/v0.1.0/org.wordflowlab.novel-review-0.1.0.tgz",
-      "archive_sha256": "b6137715585d1cdc3b9f7d61599e74ec87b02ee14bcfc34943570a186c9a2210",
-      "package_sha256": "bb7078c860d39ee684d0b028c9db4ddd55db3182574e55f7a72608b9b31c2bb9",
-      "size_bytes": 228818,
-      "minimum_host_version": "0.11.5",
+      "url": "https://github.com/wordflowlab/hetu-novel-review/releases/tag/v0.2.0",
+      "download_url": "https://github.com/wordflowlab/hetu-novel-review/releases/download/v0.2.0/org.wordflowlab.novel-review-0.2.0.tgz",
+      "archive_sha256": "29cee6a6f2fc67ca66ad5b0f2943e2e0194320aee091436be8776d5c1329c603",
+      "package_sha256": "f5eceea32772e9028ddaf36607ceb2c4eddd0a70eb17373e4c4bf871c21c18f4",
+      "size_bytes": 115570,
+      "minimum_host_version": "0.11.11",
       "verified_platforms": [
         "macOS arm64"
       ],
-      "evidence_url": "https://github.com/wordflowlab/hetu-novel-review/blob/78606f8405d43f7e3e8acb64a309330abc70013b/docs/research/release-acceptance-2026-11-17.json",
-      "integrity_url": "https://github.com/wordflowlab/hetu-novel-review/releases/download/v0.1.0/release-integrity.json"
+      "evidence_url": "https://github.com/wordflowlab/hetu-novel-review/blob/aace07aa0739ab94e2dde580fc2964dc2758d324/docs/research/depth-acceptance-2026-11-18.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-novel-review/releases/download/v0.2.0/release-integrity.json"
     }
   },
   {
@@ -213,7 +213,7 @@
     },
     "manifest": {
       "id": "org.wordflowlab.novel-atlas",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "host_api": "1",
       "display": {
         "zh-CN": "小说图鉴",
@@ -223,20 +223,20 @@
       "permissions": []
     },
     "source_repository": "https://github.com/wordflowlab/hetu-novel-atlas",
-    "source_commit": "0cc2f1ae36dc11581efc2aee00ed96de34def54c",
+    "source_commit": "770f56860d3154dfb5e3e54d851db121e8886b1e",
     "release": {
       "channel": "preview",
-      "url": "https://github.com/wordflowlab/hetu-novel-atlas/releases/tag/v0.1.0",
-      "download_url": "https://github.com/wordflowlab/hetu-novel-atlas/releases/download/v0.1.0/org.wordflowlab.novel-atlas-0.1.0.tgz",
-      "archive_sha256": "5c52542de22cd34fd3e146edac7d660c19729458032086e643ac373d45f83c9c",
-      "package_sha256": "3d2526fb4f9ae0a39ff591f7c7ad559a1983e526df26614babf7c981e2fe764b",
-      "size_bytes": 244587,
-      "minimum_host_version": "0.11.5",
+      "url": "https://github.com/wordflowlab/hetu-novel-atlas/releases/tag/v0.2.0",
+      "download_url": "https://github.com/wordflowlab/hetu-novel-atlas/releases/download/v0.2.0/org.wordflowlab.novel-atlas-0.2.0.tgz",
+      "archive_sha256": "c05edb885f8b7e4b2d98cacaea2f5f50d78b196acbbbf081f1ce10062e0ce45f",
+      "package_sha256": "3b0b6006069eb0b2c70c709ee9a3ed2bd006b4491946a161748389e77a46d298",
+      "size_bytes": 128849,
+      "minimum_host_version": "0.11.11",
       "verified_platforms": [
         "macOS arm64"
       ],
-      "evidence_url": "https://github.com/wordflowlab/hetu-novel-atlas/blob/3e061734c77bfba1444cb5facd260d2f0f169f78/docs/research/release-acceptance-2026-11-17.json",
-      "integrity_url": "https://github.com/wordflowlab/hetu-novel-atlas/releases/download/v0.1.0/release-integrity.json"
+      "evidence_url": "https://github.com/wordflowlab/hetu-novel-atlas/blob/770f56860d3154dfb5e3e54d851db121e8886b1e/docs/research/depth-acceptance-2026-11-18.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-novel-atlas/releases/download/v0.2.0/release-integrity.json"
     }
   },
   {
@@ -247,7 +247,7 @@
     },
     "manifest": {
       "id": "org.wordflowlab.novel-planner",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "host_api": "1",
       "display": {
         "zh-CN": "小说规划",
@@ -261,20 +261,20 @@
       ]
     },
     "source_repository": "https://github.com/wordflowlab/hetu-novel-planner",
-    "source_commit": "639985a2193275f718a98c33083af3b7e7afcf18",
+    "source_commit": "e4d057ea8d66332452785d5c491929fb8714aba1",
     "release": {
       "channel": "preview",
-      "url": "https://github.com/wordflowlab/hetu-novel-planner/releases/tag/v0.2.0",
-      "download_url": "https://github.com/wordflowlab/hetu-novel-planner/releases/download/v0.2.0/org.wordflowlab.novel-planner-0.2.0.tgz",
-      "archive_sha256": "70a84841b7c6fbf9b1f0bf2bff379b62dfa37710560da49a697f294a0aab9937",
-      "package_sha256": "2e05158d8ee1076370e3d186491fdc83083cb3a19e8f66ff6ef3452aacadd1e9",
-      "size_bytes": 663798,
-      "minimum_host_version": "0.11.5",
+      "url": "https://github.com/wordflowlab/hetu-novel-planner/releases/tag/v0.3.0",
+      "download_url": "https://github.com/wordflowlab/hetu-novel-planner/releases/download/v0.3.0/org.wordflowlab.novel-planner-0.3.0.tgz",
+      "archive_sha256": "e42db055ee5f24d5be283fe7e5333c5dcf197d0b17994fda3ccfd4d2fd04d7e4",
+      "package_sha256": "a38c3204bbb35fb075690f4ff2c991c63a136e09b34b8c24d67c93115de5df0c",
+      "size_bytes": 340632,
+      "minimum_host_version": "0.11.11",
       "verified_platforms": [
         "macOS arm64"
       ],
-      "evidence_url": "https://github.com/wordflowlab/hetu-novel-planner/blob/94cfe5fc91fc77529192ee2d61de7fdf012bb92a/docs/research/release-acceptance-2026-11-17.json",
-      "integrity_url": "https://github.com/wordflowlab/hetu-novel-planner/releases/download/v0.2.0/release-integrity.json"
+      "evidence_url": "https://github.com/wordflowlab/hetu-novel-planner/blob/e4d057ea8d66332452785d5c491929fb8714aba1/docs/research/depth-acceptance-2026-11-18.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-novel-planner/releases/download/v0.3.0/release-integrity.json"
     }
   },
   {

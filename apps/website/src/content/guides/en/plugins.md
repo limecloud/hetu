@@ -100,3 +100,12 @@ For example:
 > Read this novel and its existing artifacts. Build two playable routes from the chosen sequence. Prepare an English draft of one route, review it by passage and record feedback. Use only recordings I provide or explicitly authorize. Compile chosen fixed drafts into book files and inspect complete files without adopting or finalizing my manuscript.
 
 Every handoff keeps its source version. New upstream drafts do not silently change earlier translations, audio mappings or deliveries. Inspect their impact before updating.
+
+## Continue and review a long work
+
+- [Novel Planner](/en/plugins/novel-planner/): review earlier chapters, inspect event order, character knowledge and change impact, then prepare the next outline and candidate.
+- [Prose Studio](/en/plugins/prose-studio/): select preferences for the current character, chapter and scene; resolve conflicts and use explicitly chosen revisions as samples.
+- [Novel Review](/en/plugins/novel-review/): select fixed sources and author dictionaries, check repeated sentences and evidenced state changes, then recheck each concern in the new draft.
+- [Novel Atlas](/en/plugins/novel-atlas/): explore maps, routes, growth and relationship stages, object transfers and actual reading coverage, including an offline atlas.
+
+Try: “Review the first two volumes and prepare the next opening. Express Lin’s fear through action. After revision, check when she learned the code, then update the atlas. Keep unread and uncertain material explicit.”
