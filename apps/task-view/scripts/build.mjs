@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 
 const root = new URL("../", import.meta.url);
 const bundle = await build({
+  absWorkingDir: fileURLToPath(root),
   entryPoints: [fileURLToPath(new URL("src/app.ts", root))],
   bundle: true,
   write: false,
@@ -37,7 +38,7 @@ const manifest = JSON.stringify({
   source_sha256: sourceHashes,
   inputs: Object.keys(bundle.metafile.inputs).sort(),
 }, null, 2) + "\n";
-const operationBundle = await build({ entryPoints: [fileURLToPath(new URL("src/operation.ts", root))], bundle: true, write: false, minify: true, legalComments: "inline", format: "iife", target: "es2022" });
+const operationBundle = await build({ absWorkingDir: fileURLToPath(root), entryPoints: [fileURLToPath(new URL("src/operation.ts", root))], bundle: true, write: false, minify: true, legalComments: "inline", format: "iife", target: "es2022" });
 const operationCSS = radixCSS + await readFile(new URL("src/operation.css", root), "utf8");
 const operationHTML = `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="${csp}"><title>河图洛书 操作方案 / Hetu Luoshu Operation</title><style>${operationCSS}</style></head><body><main id="app"></main><script>${operationBundle.outputFiles[0].text.replaceAll("</script", "<\\/script")}</script></body></html>\n`;
 const operationPath = new URL("../mcp/resources/operation-view.html", root);
@@ -47,7 +48,7 @@ for (const source of ["src/operation.ts", "src/operation.css", radixSource, "scr
 const operationManifest = JSON.stringify({ schema_version: "1.0.0", resource_uri: "ui://hetu/operation-view/1", mime_type: "text/html;profile=mcp-app", sdk: "@modelcontextprotocol/ext-apps@2.0.4", sha256: createHash("sha256").update(operationHTML).digest("hex"), size_bytes: Buffer.byteLength(operationHTML), source_sha256: operationHashes }, null, 2) + "\n";
 const localOutputs = new Map();
 for (const [source, name, platform] of [["src/local/host.ts", "host.js", "browser"], ["src/local/server.ts", "server.mjs", "node"]]) {
-  const output = await build({ entryPoints: [fileURLToPath(new URL(source, root))], bundle: true, write: false, minify: true, legalComments: "inline", format: "esm", platform, target: platform === "node" ? "node24" : "es2022" });
+  const output = await build({ absWorkingDir: fileURLToPath(root), entryPoints: [fileURLToPath(new URL(source, root))], bundle: true, write: false, minify: true, legalComments: "inline", format: "esm", platform, target: platform === "node" ? "node24" : "es2022" });
   localOutputs.set(name, output.outputFiles[0].text);
 }
 localOutputs.set("index.html", (await readFile(new URL("src/local/index.html", root), "utf8")).replace("/* shared-radix */", radixCSS));
