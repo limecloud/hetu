@@ -204,10 +204,18 @@ impl CollaborationHub {
             .as_str()
             .unwrap_or("hetu.request.invalid")
             .to_owned();
-        match self.execute(&request) {
+        let mut result = match self.execute(&request) {
             Ok(value) => value,
             Err(error) => domain::failure(&action, "collaboration", &error),
-        }
+        };
+        let actual = result["action"].as_str().unwrap_or(&action).to_owned();
+        let recovery_input = if action == "hetu.collaboration.invoke" && actual != action {
+            &request["input"]["input"]
+        } else {
+            &request["input"]
+        };
+        crate::machine::recovery(&mut result, &actual, recovery_input);
+        result
     }
     fn execute(&self, request: &Value) -> Result<Value> {
         domain::ensure(
@@ -232,11 +240,48 @@ impl CollaborationHub {
             ));
         }
         if action == "hetu.collaboration.inspect" {
+            let mut data = crate::machine::catalog_page(&catalog, &request["input"])?;
+            data["version"] = json!(env!("CARGO_PKG_VERSION"));
+            data["client_adapter"] = json!(self.client);
+            data["task_selection"] = json!("explicit_reference");
+            data["capability_map_action"] = json!("hetu.capabilities.map");
+            return Ok(domain::success(action, "collaboration", data));
+        }
+        if action == "hetu.runtime.inspect" {
             return Ok(domain::success(
                 action,
                 "collaboration",
-                json!({"version":env!("CARGO_PKG_VERSION"),"client_adapter":self.client,"actions":catalog,"task_selection":"explicit_reference","capability_map_action":"hetu.capabilities.map"}),
+                crate::machine::runtime(&catalog, &request["input"])?,
             ));
+        }
+        if action == "hetu.collaboration.invoke" {
+            let target = text(&request["input"], "action")?;
+            ensure(
+                target != action,
+                "invalid_input",
+                "不允许递归调用通用入口。",
+            )?;
+            let projected = request["input"].get("view");
+            if projected.is_some() {
+                ensure(
+                    catalog
+                        .as_array()
+                        .unwrap()
+                        .iter()
+                        .any(|a| a["name"] == target && a["effect"] == "read"),
+                    "invalid_input",
+                    "结果投影只允许只读动作，不能重新执行写入。",
+                )?;
+            }
+            let result = self.request(
+                json!({"action":target,"contract_revision":"1","input":request["input"]["input"]}),
+            );
+            return match projected {
+                Some(view) if result.get("error").is_none() => {
+                    crate::machine::read_projection(result, view)
+                }
+                _ => Ok(result),
+            };
         }
         if action == "hetu.collaboration.created_works" {
             return Ok(domain::success(
@@ -318,7 +363,7 @@ impl CollaborationHub {
             "登记目录与任务身份不一致。",
         )?;
         let legacy_ref = json!({"scope_ref":reference["scope_ref"],"task_id":reference["task_id"],"request_revision":grant["request_revision"]});
-        let mut opened = kernel.request(json!({"action":"hetu.creative_tasks.get","contract_revision":"1","input":{"task_ref":legacy_ref}}));
+        let mut opened = kernel.request(json!({"action":"hetu.creative_tasks.get","contract_revision":"1","input":{"task_ref":legacy_ref,"detail":"summary"}}));
         if opened["status"] != "succeeded" {
             opened["action"] = json!(action);
             return Ok(opened);
@@ -332,7 +377,9 @@ impl CollaborationHub {
         if action == "hetu.collaboration.open" {
             opened["action"] = json!(action);
             opened["data"]["task_ref"] = task_ref;
-            opened["data"]["allowed_actions"] = self.allowed_actions(&kernel);
+            let page = crate::machine::catalog_page(&self.allowed_actions(&kernel), &json!({}))?;
+            opened["data"]["allowed_actions"] = page["actions"].clone();
+            opened["data"]["allowed_actions_page"] = page;
             return Ok(opened);
         }
         ensure(
@@ -354,7 +401,7 @@ impl CollaborationHub {
             .get("task_ref")
             .is_some()
         {
-            routed["input"]["task_ref"] = legacy_ref;
+            routed["input"]["task_ref"] = legacy_ref.clone();
         } else {
             routed["input"].as_object_mut().unwrap().remove("task_ref");
         }
@@ -363,6 +410,7 @@ impl CollaborationHub {
             result["data"]["actions"] = self.allowed_actions(&kernel);
         }
         if result["data"].is_object() {
+            expand_task_refs(&mut result["data"], &legacy_ref, &task_ref);
             result["data"]["task_ref"] = task_ref;
         }
         Ok(result)
@@ -392,6 +440,23 @@ impl CollaborationHub {
                 })
                 .collect::<Vec<_>>()
         )
+    }
+}
+
+fn expand_task_refs(value: &mut Value, legacy: &Value, exact: &Value) {
+    // 仅补全执行入口引用；持久记录及费用计划的字节属于其原摘要。
+    if let Some(references) = value["candidate_refs"].as_array_mut() {
+        for reference in references {
+            if reference["task_ref"] == *legacy {
+                reference["task_ref"] = exact.clone();
+            }
+        }
+    }
+    if value["candidate_ref"]["task_ref"] == *legacy {
+        value["candidate_ref"]["task_ref"] = exact.clone();
+    }
+    if value["original_result"]["data"].is_object() {
+        expand_task_refs(&mut value["original_result"]["data"], legacy, exact);
     }
 }
 

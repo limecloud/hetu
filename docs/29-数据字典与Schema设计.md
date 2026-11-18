@@ -563,3 +563,11 @@ AssetDesign与AssetSelection继续拥有资料设计和用途选用，MediaArtif
 ## 固定媒体分块的数据合同
 
 插件的固定媒体读取沿当前WorkRef与asset来源核验，Schema唯一Owner为 `contracts/extensions/actions.json`。分块返回原文件摘要、分块摘要、实际字节数和下一偏移；资产记录摘要与文件摘要各有原义，不互换。字段及边界见[插件27](plugin/27-开放宿主SDK与核心能力审计.md#固定媒体字节的公共读取)，专业声音与书稿数据仍由对应插件拥有。
+
+## 机器接续与有界读取
+
+creative-task.schema.json维护任务接续记录及输入；记录包含schema_version、task_ref、revision、previous_sha256、checkpoint和updated_at，固定内容摘要作为expected返回。checkpoint保存阶段、步骤、来源阅读范围、工作稿引用、反馈引用、未知问题和下一步，不保存模型思维过程或凭据。来源覆盖区分返回字节与Agent声明理解；statement类型区分inference、proposal与question，不将推断升级为作者事实。版本冲突保留调用方内容，记录历史不可覆盖。
+
+动作发现与运行诊断字段由actions.json拥有；error.resolution可携带input与retry策略。operations.get按原操作键、动作和输入摘要回读，可选择JSON pointer和有界片段；分页引用保留原操作及输入摘要，不能跨授权或跟随当前头。
+
+固定设定实体超过单次预算时，task_context.read以原context_ref、section和entity_id携带result_path读取字段目录，再以offset和max_bytes读取字段片段；整份设定及实体摘要保持。字段读取不跟随当前设定，文本来源拒绝实体字段参数。MCP预算失败返回同一固定实体的字段读取参数，不要求无限提高传输预算。

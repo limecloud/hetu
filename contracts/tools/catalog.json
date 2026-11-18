@@ -1304,6 +1304,54 @@
       "profiles": [
         "stable"
       ]
+    },
+    {
+      "name": "hetu_call_action",
+      "action": "hetu.collaboration.invoke",
+      "title": "调用确切动作",
+      "description": "调用确切动作；先发现真实Schema，使用精确引用与原操作键。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_inspect_runtime",
+      "action": "hetu.runtime.inspect",
+      "title": "检查运行与方法版本",
+      "description": "检查运行与方法版本；先发现真实Schema，使用精确引用与原操作键。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_get_task_checkpoint",
+      "action": "hetu.task_checkpoint.get",
+      "title": "读取任务接续",
+      "description": "读取任务接续；先发现真实Schema，使用精确引用与原操作键。",
+      "profiles": [
+        "task",
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_save_task_checkpoint",
+      "action": "hetu.task_checkpoint.save",
+      "title": "保存任务接续",
+      "description": "保存任务接续；先发现真实Schema，使用精确引用与原操作键。",
+      "profiles": [
+        "task",
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_read_task_candidate",
+      "action": "hetu.creative_tasks.read_candidate",
+      "title": "读取固定候选片段",
+      "description": "读取固定候选片段；先发现真实Schema，使用精确引用与原操作键。",
+      "profiles": [
+        "task",
+        "stable"
+      ]
     }
   ]
 }

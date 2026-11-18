@@ -108,7 +108,21 @@ impl Kernel {
     }
 
     pub(in crate::application) fn get_working_copy(&self, input: &Value) -> Result<Value> {
-        self.working_revision(&input["task_ref"], &input["working_copy_ref"])
+        let mut result = self.working_revision(&input["task_ref"], &input["working_copy_ref"])?;
+        if input["detail"] == "summary"
+            || input.get("range").is_some()
+            || input.get("max_bytes").is_some()
+        {
+            let content = result["revision"]["content"].as_str().unwrap_or("");
+            if input["detail"] != "summary" {
+                result["content_page"] = crate::machine::text_page(content, input)?;
+            }
+            result["revision"]
+                .as_object_mut()
+                .unwrap()
+                .remove("content");
+        }
+        Ok(result)
     }
     pub(in crate::application) fn list_working_copies(&self, input: &Value) -> Result<Value> {
         let (_, _, state, _) = self.task_for_reference(&input["task_ref"])?;

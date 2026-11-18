@@ -154,3 +154,11 @@ CLI、MCP、Skills功能及源码与验收状态统一见[40机器能力地图](
 决定与执行分开：Agent准备确切结果及差异，依据真实用户指令登记record_decision，再execute并回读。采纳、定稿、解锁、封面选用等必须有各自确切决定；无需因其是作者决定就强制使用GUI。费用和内容外发仍使用独立任务授权，执行者不提升为作者。
 
 河图插件由河图安装管理。稳定入口通过 `hetu.plugins.inspect` 读取最新安装状态，通过 `hetu.plugin_access.capabilities/invoke` 发现与调用当前获权Schema；同一Agent对话可以沿原CLI入口使用新包，无需逐包安装客户端插件。固定包与能力摘要、停用撤权及数据格式见[插件21](plugin/21-核心格式与动态能力发现.md)。
+
+## 机器发现、诊断与有界恢复
+
+稳定入口 inspect 默认返回有界动作摘要，支持 action、group、offset、limit 和 include_schema；完整Schema仅按需读取。catalog_sha256固定本构建实际目录，分页须核对同一摘要。CLI的doctor与hetu.runtime.inspect复用只读诊断，不创建作品、安装配置或读取凭据；运行版本、随包方法和调用方报告的会话方法分别表达，未观察的安装与会话加载状态保持unknown。
+
+稳定MCP默认列出精简入口与hetu_call_action，后者只转发已登记动作并重新经过原Core授权和Schema核验；--all-tools保留完整工具目录，历史工具名仍按原权限调用。CLI call与MCP调用复用相同动作。
+
+任务读取可选detail=summary，候选全文、工作稿和操作回执支持固定引用下的有界读取。超限不改变业务完成状态：已持久化写入返回操作引用和准确恢复参数，未持久保留的只读结果不能声称已保存。预算按最终MCP结果（含文本和structuredContent）计算。错误resolution提供准确动作、参数和重试策略；unknown只查询原键，不能由可重查推导可重执行。

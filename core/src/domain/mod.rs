@@ -102,7 +102,9 @@ pub fn failure(action: &str, scope: &str, error: &Error) -> Value {
         }
         _ => json!({"kind":"correct_input"}),
     };
-    let status = if error.code == "result_unknown" {
+    let status = if error.code == "cancelled" {
+        "cancelled"
+    } else if error.code == "result_unknown" {
         "unknown"
     } else if matches!(
         error.code,

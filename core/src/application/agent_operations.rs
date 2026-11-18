@@ -266,9 +266,15 @@ impl Kernel {
                     .filter(|a| PROPOSABLE.contains(&a["name"].as_str().unwrap_or("")))
                     .cloned()
                     .collect::<Vec<_>>();
-                Ok(
-                    json!({"actions":actions,"prepare":"hetu.agent_operations.prepare","record_decision":"hetu.agent_operations.record_decision","execute":"hetu.agent_operations.execute","recover":"hetu.operations.get","scope":"exact_management_ref","confirmation_channel":"agent_conversation","author_identity":false}),
-                )
+                let mut page = crate::machine::catalog_page(&json!(actions), input)?;
+                page["schema_lookup"]["action"]=json!("hetu.agent_operations.catalog");
+                for (key,value) in [("prepare","hetu.agent_operations.prepare"),
+                    ("record_decision","hetu.agent_operations.record_decision"),("execute","hetu.agent_operations.execute"),
+                    ("recover","hetu.operations.get"),("scope","exact_management_ref"),("confirmation_channel","agent_conversation")] {
+                    page[key]=json!(value);
+                }
+                page["author_identity"]=json!(false);
+                Ok(page)
             }
             "hetu.agent_operations.prepare" => {
                 let target = text(input, "action")?;

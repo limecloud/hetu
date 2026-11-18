@@ -103,8 +103,11 @@ fn video_episode_metadata_and_order_are_managed_by_public_cli_without_gui() {
     ));
     assert_eq!(old["episode"], a["episode"]);
     assert_eq!(old["is_head"], false);
-    let catalog = ok(s.call("agent_operations.catalog", json!({})));
     for action in ["hetu.video.episodes.update", "hetu.video.episodes.reorder"] {
+        let catalog = ok(s.call(
+            "agent_operations.catalog",
+            json!({"action":action,"include_schema":true}),
+        ));
         assert!(
             catalog["actions"]
                 .as_array()

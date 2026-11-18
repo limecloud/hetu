@@ -198,7 +198,12 @@
         "hetu.collaboration.authorize_workspace",
         "hetu.collaboration.created_works",
         "hetu.collaboration.workspace_access",
-        "hetu.capabilities.map"
+        "hetu.capabilities.map",
+        "hetu.collaboration.invoke",
+        "hetu.runtime.inspect",
+        "hetu.task_checkpoint.get",
+        "hetu.task_checkpoint.save",
+        "hetu.creative_tasks.read_candidate"
       ],
       "entry": "../skills/hetu-setup/SKILL.md"
     },

@@ -1,6 +1,6 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "hetu-historical",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "description": "河图洛书历史古代创作套件：任务流程与本题材方法，按作品选择安装"
 }

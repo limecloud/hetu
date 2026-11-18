@@ -26,6 +26,8 @@ Choose MCP on the library home to read the guide and configure your client. Host
 
 The CLI is an independent entry point for agents and automation. Query the current work’s actual capabilities, then call scoped actions. After an interruption or unknown result, query the original operation to avoid repeating the work.
 
+Long tasks can preserve their stage, saved drafts, unread material and next steps. Ask: “Continue the same task. Read the existing drafts and feedback, then pick up the unfinished work.” A new conversation can resume that task while earlier drafts remain available for comparison. A progress note does not mean you adopted or finalized the result.
+
 CLI and MCP share the same core, permissions and revision rules. Advanced setup is documented in the [GitHub repository](https://github.com/limecloud/hetu#配置与接入). Authors can continue using the desktop workspace.
 
 ## Skills: methods for the genre and task

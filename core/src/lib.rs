@@ -4,6 +4,7 @@ pub mod collaboration;
 mod domain;
 mod infrastructure;
 pub mod local_settings;
+pub mod machine;
 pub mod model_service;
 pub mod plugin_settings;
 

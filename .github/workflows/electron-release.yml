@@ -209,3 +209,31 @@ jobs:
           fi
           gh release upload "$GITHUB_REF_NAME" release-assets/*/* --clobber
           gh release edit "$GITHUB_REF_NAME" --draft=false --latest
+
+  npm:
+    name: Publish npmjs launcher
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: publish
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "25.0.0"
+          registry-url: "https://registry.npmjs.org"
+      - name: Test launcher and npm release guards
+        run: |
+          npm run test:cli
+          node --test tests/release/npm.test.mjs
+      - name: Publish matching verified release to npmjs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: node "tools/publish-npm.mjs"

@@ -3,7 +3,7 @@ use super::*;
 const DEFAULT_READ_BYTES: usize = 16 * 1024;
 const MAX_READ_BYTES: usize = 64 * 1024;
 
-fn entries(request: &Value) -> Vec<Value> {
+pub(super) fn entries(request: &Value) -> Vec<Value> {
     request["input_snapshot"]["sources"]
         .as_array()
         .unwrap()
@@ -53,6 +53,12 @@ impl Kernel {
             "invalid_input",
             "设定集不接受文本选区。",
         )?;
+        ensure(
+            (input.get("result_path").is_none() && input.get("offset").is_none())
+                || (input["section"].is_string() && input["entity_id"].is_string()),
+            "invalid_input",
+            "字段分页必须选择固定设定实体。",
+        )?;
         let mut result = json!({"context_ref":input["context_ref"],"fixed_ref":entry["fixed_ref"],"sha256":entry["sha256"]});
         let Some(section) = input["section"].as_str() else {
             ensure(
@@ -96,6 +102,13 @@ impl Kernel {
                 .find(|row| row[*id_field] == entity_id)
                 .ok_or_else(|| Error::new("not_found", "固定设定集中没有此实体。"))?;
             let raw = bytes(entity)?;
+            if input.get("result_path").is_some() {
+                result["entity_id"] = json!(entity_id);
+                result["entity_sha256"] = json!(digest(&raw));
+                result["entity_page"] = crate::machine::value_page(entity, input)?;
+                result["complete"] = json!(false);
+                return Ok(result);
+            }
             ensure(
                 raw.len() <= budget,
                 "hetu.budget_exceeded",
@@ -254,9 +267,16 @@ impl Kernel {
             return self.read_structured_context(input, entry, &source["blueprint"], budget);
         }
         ensure(
-            ["section", "entity_id", "cursor", "limit"]
-                .iter()
-                .all(|key| input.get(*key).is_none()),
+            [
+                "section",
+                "entity_id",
+                "cursor",
+                "limit",
+                "result_path",
+                "offset",
+            ]
+            .iter()
+            .all(|key| input.get(*key).is_none()),
             "invalid_input",
             "文本原文不接受设定分类或实体参数。",
         )?;

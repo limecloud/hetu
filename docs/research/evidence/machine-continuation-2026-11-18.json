@@ -1,0 +1,943 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-11-18",
+  "status": "passed",
+  "scope": "CLI/MCP/Skills有界发现、运行诊断、固定结果读取、任务接续及本对话实际验收",
+  "platform": "macOS arm64",
+  "runtime_version": "0.11.11",
+  "methods_version": "0.3.10",
+  "source_manifest_sha256": "d3320a7626d50ee673c10c46b2e9addb51c0d6ea98577df68565678937740cad",
+  "full_regression_source_manifest_sha256": "642677594853431c7859f2109087be1f961c1c6bd1b5e0fc30b500234eea6ff7",
+  "source_files": {
+    "core/src/machine.rs": "e586e7e9c977efe93c367a829e211c1d7678a8ac7da6cd8845543aa8af4e3765",
+    "core/src/collaboration.rs": "7333caa274fbee5916916d912605cef36bbef21ebd45197611d147bb7be8704d",
+    "core/src/domain/mod.rs": "5003b79568389f12046a41baf6610d1cec5beae2fc6fea2424a0de042a55bdcf",
+    "core/src/application/mod.rs": "c2bb5443547953e6b5a554c366d1a95f2ed7bebe14cb7a87a13447a26cf3f795",
+    "core/src/application/agent_operations.rs": "a87c933745bb068d42c6a99bcdda499b0734fa316b603f0f6e725dbc1b865206",
+    "core/src/application/creative_tasks.rs": "8d82a1d2935341ca67aa9f14c1ae5ee95ef7609d40942f8c5f20a4905ffe48ac",
+    "core/src/application/creative_tasks/checkpoint.rs": "1535790d03e89237d06b7124dd3fdd315d9ca6c4ef94234e928c8d0ccabc6fd1",
+    "core/src/application/creative_tasks/context.rs": "06404c09be5db708093235d59fac2baa731cc2174437f0bd71332d9ec6eff413",
+    "core/src/application/creative_tasks/working.rs": "782496436c19982f307755d9ee34bdd4de2af85d1487abb90fad3cfdd62b23a6",
+    "apps/cli/src/main.rs": "e4477a494d61d584b2776817906b0cb3252a9bfb65794d6b014e657be53d6e34",
+    "apps/mcp/src/lib.rs": "167e8c3eaf01316ec82097c432b516aa52310fe1c5e6d37b0790fe8ad7ffd596",
+    "apps/mcp/src/stable.rs": "7e684321ca3ade300cee33a1a6b119a1e2ea597d6c9ec99f03a84762b30754bf",
+    "apps/mcp/src/main.rs": "58bc43c3bc4d6fb5c8d72a125711476f0251fb114b71f7290f0f1b7c003597f3",
+    "apps/mcp/src/response.rs": "5112fedbb5d55b010ffcefb0aa374b1483f8cd92273a8c5ffab69d7a3609830e",
+    "apps/mcp/src/model_confirmation.rs": "7a9092ae4a8737fc39b6401fd294ca57b501edfb9edc0bee5b4f35bc215bc30e",
+    "contracts/actions.json": "ae2fa91f81bedc92fc2b06ad36057429c429f13a06f30edc57c8561075185826",
+    "contracts/schemas/result.schema.json": "3f2ca874b68f6eaca3d4b92da3f83aade3415079f00f16c2ef75bf757b4fa366",
+    "contracts/schemas/creative-task.schema.json": "a9127dc84e6f89fd1328a2d0dbaa14ef07660c9db3b8c55630e1101fa64da248",
+    "contracts/tools/catalog.json": "290f98466f51aaa9f415c5d46c19a5894c171b53efda0fc749dc01e000773f0c",
+    "core/tests/machine_continuation.rs": "d156b235a0762839e817e35bc6034fb28b63be2a2ff81203bbb15211b7356690",
+    "core/tests/task_context.rs": "4acdeac606a99e9045d920153d7f9e086d3cf838bb3b4ae4b1e97c864188fe48",
+    "apps/mcp/tests/stdio.rs": "2b804e8fda4da2067e40ceaa261cd39e9391c041b0ee31e2f956dee45eb8c585",
+    "apps/cli/tests/commands.rs": "8ffaa6494b76b2d9f8fd0a219f3f83f943a592906f81502f9d5b658203559420",
+    "apps/cli/tests/conversation.rs": "b787425fd4ecbeb475e22df7caf5fcd22209624a4fcdf9dfe2e6bf90a17b1cc8"
+  },
+  "validation": {
+    "full_core_cli_mcp": {
+      "passed": 352,
+      "failed": 0,
+      "ignored": 0,
+      "suites": 59,
+      "log_sha256": "3aee53fc0de1b80fb75fbd352b37d2136755ab636ecf74a6ff3627934becf5fa"
+    },
+    "final_affected_core_cli_mcp": {
+      "passed": 128,
+      "failed": 0,
+      "ignored": 0,
+      "suites": 9,
+      "log_sha256": "8e550d37b9100bbc68e25bbebad56faf7168cf1aa113654cc8f05946240d1a8c"
+    },
+    "final_mcp_after_bounding_confirmation": {
+      "passed": 36,
+      "failed": 0,
+      "ignored": 0,
+      "suites": 2,
+      "log_sha256": "2c5e78775ffdb1966c80e8e4e67aae3a30867dea8900f2f1785de487fb5590c3"
+    },
+    "clippy": {
+      "command_status": "passed_with_existing_warnings",
+      "warnings": [
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/creative_tasks/context.rs",
+          "line": 297,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/creative_tasks/context.rs",
+          "line": 298,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::needless_borrow",
+          "file": "core/src/application/creative_tasks.rs",
+          "line": 420,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::needless_borrow",
+          "file": "core/src/application/creative_tasks.rs",
+          "line": 422,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/creative_tasks.rs",
+          "line": 522,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/creative_tasks.rs",
+          "line": 917,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::needless_borrow",
+          "file": "core/src/application/creative_tasks.rs",
+          "line": 1076,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::needless_borrow",
+          "file": "core/src/application/creative_tasks.rs",
+          "line": 1088,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::needless_borrow",
+          "file": "core/src/application/delivery.rs",
+          "line": 1384,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::needless_borrow",
+          "file": "core/src/application/delivery.rs",
+          "line": 1403,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/drafts.rs",
+          "line": 75,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/dramas.rs",
+          "line": 221,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/dramas.rs",
+          "line": 398,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/git/work_versions.rs",
+          "line": 77,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/git.rs",
+          "line": 333,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::too_many_arguments",
+          "file": "core/src/application/agent_effects.rs",
+          "line": 178,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/agent_operations.rs",
+          "line": 134,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/agent_operations.rs",
+          "line": 319,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/extensions/open.rs",
+          "line": 133,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/extensions.rs",
+          "line": 938,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/handoffs.rs",
+          "line": 138,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/plots.rs",
+          "line": 189,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/reports.rs",
+          "line": 145,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/resources.rs",
+          "line": 240,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/reviews.rs",
+          "line": 283,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/work_canons.rs",
+          "line": 169,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/work_scope.rs",
+          "line": 515,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/work_scope.rs",
+          "line": 520,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/work_scope.rs",
+          "line": 527,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/work_scope.rs",
+          "line": 537,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/work_scope.rs",
+          "line": 545,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/work_scope.rs",
+          "line": 551,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/works.rs",
+          "line": 181,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/works.rs",
+          "line": 182,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/mod.rs",
+          "line": 707,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::unnecessary_unwrap",
+          "file": "core/src/application/mod.rs",
+          "line": 797,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/mod.rs",
+          "line": 807,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/application/mod.rs",
+          "line": 940,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/domain/delivery_formats.rs",
+          "line": 1273,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::collapsible_if",
+          "file": "core/src/domain/delivery_formats.rs",
+          "line": 1352,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::manual_range_contains",
+          "file": "core/src/infrastructure/exports.rs",
+          "line": 489,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::needless_borrow",
+          "file": "core/src/local_settings.rs",
+          "line": 423,
+          "on_changed_lines": false
+        },
+        {
+          "code": "clippy::should_implement_trait",
+          "file": "core/src/model_service.rs",
+          "line": 27,
+          "on_changed_lines": false
+        }
+      ],
+      "warnings_on_changed_lines": 0
+    },
+    "docs": {
+      "status": "passed",
+      "documents": 88,
+      "local_links": 1194,
+      "fragment_links": 239,
+      "mermaid": 100
+    },
+    "skills": {
+      "status": "passed",
+      "entrypoints": 13,
+      "suites": 45,
+      "files": 2475,
+      "source_reproduction": "passed",
+      "capability_map_check": "passed"
+    },
+    "website": {
+      "status": "passed",
+      "pages": 135,
+      "local_references": 8561,
+      "log_sha256": "98d5dd2e71e4a734b54d3c743e6c378baa10bd923227a577dc29da21145b4d74"
+    },
+    "diff_check": "passed"
+  },
+  "conversation": {
+    "schema_version": "1.0.0",
+    "kind": "conversation_machine_acceptance",
+    "runtime_version": "0.11.11",
+    "cli_sha256": "63116c38dd35b1fe06ac4c8e2fbb16ee456afbac3f0bab886a217758e5a9939a",
+    "mcp_sha256": "efa9e955b86173a9aba1af71a65c3d2e11d75576fe043f2e376c9527059bd569",
+    "methods_version": "0.3.10",
+    "catalog_sha256": "94c95635aed69a4dae0084cfbeb434467763aeddc683efc21d3d3d620d8c7f5e",
+    "default_tool_count": 12,
+    "discovery_bytes": 5706,
+    "fixed_text_bytes": 132080,
+    "fixed_text_sha256": "61d1fb67b4824c74f7bea8b985fb329b68577ec8e0357b07b56625df9aec0f7c",
+    "fixed_text_pages": 32,
+    "checks": [
+      "bounded_discovery",
+      "version_difference",
+      "generic_dispatch",
+      "idempotent_save",
+      "public_feedback",
+      "checkpoint_reopen",
+      "checkpoint_conflict",
+      "cli_mcp_recovery",
+      "oversize_fixed_summary",
+      "old_revision_unicode_reassembly",
+      "fixed_submission",
+      "fixed_candidate_read",
+      "delivered_checkpoint",
+      "recursive_dispatch_denied"
+    ],
+    "limits": [
+      "synthetic_creation_project",
+      "no_author_adoption_or_finalization",
+      "no_paid_model_calls",
+      "installed_desktop_not_updated"
+    ],
+    "receipts": [
+      {
+        "surface": "cli",
+        "action": "hetu.collaboration.inspect",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 5877,
+        "elapsed_ms": 289,
+        "receipt_sha256": "bbf3125ca27d2515e966e353056df19b9d69401f7c36b1f5334c49f626c2fc63"
+      },
+      {
+        "surface": "cli",
+        "action": "hetu.runtime.inspect",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 1146,
+        "elapsed_ms": 285,
+        "receipt_sha256": "d962f9343146073561f946d1ff019f59b2c4abf45721c329eee8835b883dd570"
+      },
+      {
+        "surface": "cli",
+        "action": "hetu.creation_projects.create",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 1519,
+        "elapsed_ms": 283,
+        "receipt_sha256": "ede99a937c903cddb0eba4537d60cc290c2f04947abf7d4b7ed077f323e5e612"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.collaboration.open",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 36587,
+        "elapsed_ms": 1019,
+        "receipt_sha256": "de53fe3b5bae09f269379a912a69187f5a29b9547b1b084464defb0fa5d623ec"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.create",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 5121,
+        "elapsed_ms": 361,
+        "receipt_sha256": "32591ad84c12eb0304228d73f962fdf0c52dd61e27b931d7e38100ec62191338"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.create",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 5121,
+        "elapsed_ms": 301,
+        "receipt_sha256": "32591ad84c12eb0304228d73f962fdf0c52dd61e27b931d7e38100ec62191338"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.task_feedback.save",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 4257,
+        "elapsed_ms": 444,
+        "receipt_sha256": "da3f07a0093b49142dbcfcf3bd2274f9e4dc647dea8694494673d389bc68dfeb"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.task_checkpoint.save",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 5467,
+        "elapsed_ms": 182,
+        "receipt_sha256": "994683ba9bb86f3a2c199d6d0fe63f9d0e336573809fc2c0f3f7656bcf49560b"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.collaboration.open",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 36587,
+        "elapsed_ms": 1239,
+        "receipt_sha256": "de53fe3b5bae09f269379a912a69187f5a29b9547b1b084464defb0fa5d623ec"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.task_checkpoint.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 3821,
+        "elapsed_ms": 204,
+        "receipt_sha256": "3829bb610d81baaa367fef049884e085d39b73d2e33765efe38ac67c4509e57e"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.task_checkpoint.save",
+        "status": "blocked",
+        "error": "revision_conflict",
+        "bytes": 1482,
+        "elapsed_ms": 232,
+        "receipt_sha256": "021f25e5f22fa1526e8fb395ed846239a2df43f5eb6a888957ff4b68d6f610a9"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.save",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 5945,
+        "elapsed_ms": 225,
+        "receipt_sha256": "ea81b81749d73d00c55c16fbf1f84b3e6ceb244bd66f9ccbfa50fdf99f96d347"
+      },
+      {
+        "surface": "cli",
+        "action": "hetu.operations.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 3045,
+        "elapsed_ms": 1453,
+        "receipt_sha256": "0dd431c5240ed1c3932d39116b207bdd6403e10e15d0872f6fc5abb3c3f0f175"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 8079,
+        "elapsed_ms": 269,
+        "receipt_sha256": "fd11b5b14d650184380cfa0016a6b8664772702a2ca8eede547387822607d869"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15975,
+        "elapsed_ms": 139,
+        "receipt_sha256": "46751ae814744e7a6b3642a6f0a2dc1775d049bba7076b4391e335e9e1d77492"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15987,
+        "elapsed_ms": 403,
+        "receipt_sha256": "af651a50b86ed0b93cbcb808de93ff3179d96be76362440d220c38a17c4e33c8"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15985,
+        "elapsed_ms": 559,
+        "receipt_sha256": "3bf050a065246be55843381e80f07d54817ebd5ded6fc6af6ef9d6a9c960f3da"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15988,
+        "elapsed_ms": 309,
+        "receipt_sha256": "7b2b58855423d4607e0c4a8f2ffae11e6e7b428f9ba6a7bfc888dd8fd6a69dbb"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15988,
+        "elapsed_ms": 486,
+        "receipt_sha256": "c26fa32bd6b34a7dae62878dd01b6fd0b0614f6b8b3864c397243acee85a4781"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15988,
+        "elapsed_ms": 334,
+        "receipt_sha256": "86f0ad40020d24f69576d9650c5a0e02ca9557a2c2869058373dcfc6a3b91471"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15988,
+        "elapsed_ms": 339,
+        "receipt_sha256": "7e37ab91691dc94ed863bc027bd2fe7a1c9efd61d5a6b6f6066339a0f9347242"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15988,
+        "elapsed_ms": 362,
+        "receipt_sha256": "982a1e76b9d36c3e076d4dd6ee4af5c2c1a443380ed3494364adddb065270b3b"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15988,
+        "elapsed_ms": 330,
+        "receipt_sha256": "0ce55533a66b8232a31456c22a8f5efc6d96f994622617e98d58c2affbf2e971"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15988,
+        "elapsed_ms": 445,
+        "receipt_sha256": "026f0a99268d4aa0ea8b222787da624ec40422e797f612fcb2fd74df665c382f"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15988,
+        "elapsed_ms": 202,
+        "receipt_sha256": "6a92c87c4334da4e85e3f9c433261a1ea798d1b3ef41cb7e36f624d0c09f5eff"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15988,
+        "elapsed_ms": 384,
+        "receipt_sha256": "aacd99fb0ff840a9f1e407d153942cab317c0f4df4ac4a4adb1e34170be01251"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15988,
+        "elapsed_ms": 415,
+        "receipt_sha256": "db622cc61d1b43863ba4e385da9c2e4ae889511e0286f8b0c3c97bdfb0d9ea58"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15988,
+        "elapsed_ms": 436,
+        "receipt_sha256": "b81191eefd1b3472a32adc50b48cf5c9bb82bcb8d08637222fb4b11004734810"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15988,
+        "elapsed_ms": 183,
+        "receipt_sha256": "7086c79b41767f75ec1e3096ddf03103bb6d3fb8e9116109f48f7632cabb50f8"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15988,
+        "elapsed_ms": 266,
+        "receipt_sha256": "21e029d2a6edd374e24b4d8775151254ee7770de3a4d23abd8a912dd86087fcd"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15988,
+        "elapsed_ms": 454,
+        "receipt_sha256": "73c3d1524e87fdf51e17d15e625645bc9a3846bce86aa5783fa0ec4b0f991591"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15988,
+        "elapsed_ms": 240,
+        "receipt_sha256": "edea30143e2ecc57ecbee575eb8fc547dd35bdfaec9e2aaf7e07db0b2472f380"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15988,
+        "elapsed_ms": 444,
+        "receipt_sha256": "7929bf83a6761747cce8ce92a8b5971933d4ab402d0f874d7986f65da1573bd1"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15988,
+        "elapsed_ms": 403,
+        "receipt_sha256": "bae7bda6aa3d60169502a30598ea1b1c0ab9d5a18b5b25ba4434ccab2f8825fc"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15988,
+        "elapsed_ms": 380,
+        "receipt_sha256": "7f2b7953a2a8509991cf93ae775e1825371f09e23040d798471a27bad9c6eaf2"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15988,
+        "elapsed_ms": 737,
+        "receipt_sha256": "c7789938584871adcc5b55d152ea8df38301806f0eccbaa98bc32c38971ea187"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15988,
+        "elapsed_ms": 298,
+        "receipt_sha256": "fe38035e379ee83fa387c8664fe181eb30a981ce93d560aa0caf928343fc3a76"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15988,
+        "elapsed_ms": 650,
+        "receipt_sha256": "e02c82f60621cddadfa53c0831a2c0b51c6c7a8676de93ef3f2b4c3500239588"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15992,
+        "elapsed_ms": 553,
+        "receipt_sha256": "6e0ff00a8e0ae7f138eab3e3697e55aa31197bbad3a6f1a66f7c2d98db67f8c0"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15994,
+        "elapsed_ms": 318,
+        "receipt_sha256": "79340cedb1ff87d1dff1d9163aebb4ba4812c90c9780df0e5a130b8f4fb93d20"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15994,
+        "elapsed_ms": 171,
+        "receipt_sha256": "0e23301db768ec352a1b0a50098fb223ac040f4fb21bb85c3206bdbdf2b01971"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15994,
+        "elapsed_ms": 314,
+        "receipt_sha256": "0988633357ec07fcf8b32b5065396453ef6a4447dc4680a30ba5ddc59db036bb"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15994,
+        "elapsed_ms": 192,
+        "receipt_sha256": "629c2f4e91256a5cb4ae2a229a16abbae12b1446a7f6d1b691797a5c112afa6f"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15994,
+        "elapsed_ms": 607,
+        "receipt_sha256": "c6a08795955ae7773d34d293be2ce9237ec2c32a4b792d51cf84c9ccab70b453"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 15994,
+        "elapsed_ms": 288,
+        "receipt_sha256": "b6808549525ae2b94b0ebd4e76d63a227165dda9d8d685d85e379eb8379e62b5"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.working_copies.get",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 18334,
+        "elapsed_ms": 197,
+        "receipt_sha256": "501290aa0657b9c3bfcc74a34bc956f6fa7eff07825455f7fd22e3d5d8d4e13d"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.creative_tasks.submit_result",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 6228,
+        "elapsed_ms": 463,
+        "receipt_sha256": "f7baae643fbc1697ac19b9d486afae6729e11412d996cf7f113149959ceb5b81"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.creative_tasks.read_candidate",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 2680,
+        "elapsed_ms": 355,
+        "receipt_sha256": "8280549e06f2775667512266db9b6a8302ed880853c46505eb691147012e6797"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.task_feedback.list",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 4780,
+        "elapsed_ms": 307,
+        "receipt_sha256": "a0fcad0244055aaa9f1e13ff717a2495af4ad3cf354d918343c55d25d74e561a"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.task_checkpoint.save",
+        "status": "succeeded",
+        "error": null,
+        "bytes": 5712,
+        "elapsed_ms": 279,
+        "receipt_sha256": "508b2f720809d145cd745bec3bad7de31ad9e4a07479cf4d7b638b2f25a38c89"
+      },
+      {
+        "surface": "mcp",
+        "action": "hetu.collaboration.invoke",
+        "status": "blocked",
+        "error": "invalid_input",
+        "bytes": 993,
+        "elapsed_ms": 59,
+        "receipt_sha256": "67a1843ba7a16938b837911110a72d4d8b7c3e3f672233a148d35b5901fd91c8"
+      }
+    ]
+  },
+  "replay_counts": {
+    "tasks": 1,
+    "working_copies": 1,
+    "feedback": 1,
+    "submissions": 1,
+    "checkpoint_revision": 2
+  },
+  "requirements": {
+    "bounded_discovery": {
+      "status": "passed",
+      "evidence": [
+        "discovery_is_bounded_snapshot_checked_and_diagnostics_are_read_only",
+        "compact_catalog_dispatches_discovered_actions_without_tool_list_refresh"
+      ],
+      "observed_tools": 12,
+      "discovery_bytes": 5706
+    },
+    "bounded_fixed_results": {
+      "status": "passed",
+      "evidence": [
+        "fixed_working_copy_and_operation_pages_reassemble_unicode_after_new_revision",
+        "large_story_bible_has_bounded_entity_directory_and_immutable_entity_reads",
+        "oversized_checkpoint_keeps_persisted_operation_and_can_be_browsed_after_reopen",
+        "model_confirmation_summary_preserves_approval_and_fixed_plan_read"
+      ],
+      "max_observed_mcp_bytes": 36587
+    },
+    "runtime_diagnostics": {
+      "status": "passed",
+      "evidence": [
+        "doctor_reports_runtime_and_unknown_session_without_creating_a_connection",
+        "bounded_discovery",
+        "version_difference"
+      ],
+      "session_loading": "unknown_by_contract"
+    },
+    "task_checkpoint": {
+      "status": "passed",
+      "evidence": [
+        "checkpoint_reopens_replays_rejects_conflicts_and_revocation",
+        "checkpoint_rejects_foreign_sources_invalid_utf8_and_preserves_author_text",
+        "closed_task_rejects_checkpoint_writes_and_tampering_cannot_replace_history",
+        "checkpoint_reopen",
+        "delivered_checkpoint"
+      ]
+    },
+    "recovery_and_authority": {
+      "status": "passed",
+      "evidence": [
+        "cancellation_before_execution_keeps_cancelled_status",
+        "conflict_recovery_reads_the_exact_object_without_echoing_content",
+        "model_confirmation_uses_real_host_response_and_never_submits_generation",
+        "cli_mcp_recovery",
+        "recursive_dispatch_denied"
+      ]
+    },
+    "skills_and_author_guides": {
+      "status": "passed",
+      "evidence": [
+        "13个Skill入口校验",
+        "45套件引用、摘要与可复现检查",
+        "中英文官网构建与固定页面验证"
+      ]
+    }
+  },
+  "preserved_failures": [
+    {
+      "stage": "initial_stdio",
+      "failures": [
+        "capability_schema_over_budget",
+        "checkpoint_pretty_json_budget",
+        "local_settings_catalog_over_budget",
+        "legacy_catalog_all_actions_assumption"
+      ],
+      "resolution": "有界能力与只读投影、按持久字节预算测试、显式筛选及分页；32项回归通过。"
+    },
+    {
+      "stage": "final_reference_projection",
+      "failure": "模型计划的固定task_ref被递归改写，摘要校验拒绝确认。",
+      "resolution": "只补全候选执行入口及原操作中的入口引用，保留计划与批准记录；宿主确认及最终32项stdio通过。"
+    },
+    {
+      "stage": "strict_clippy",
+      "failure": "-D warnings因43项位于未修改代码的诊断失败。",
+      "resolution": "常规Clippy完成，本次新增4项已修复；最终无修改行诊断，既有诊断保留。"
+    },
+    {
+      "stage": "host_reboot",
+      "failure": "早期临时目录和进程在机器重启后消失。",
+      "resolution": "在持久隔离目录重新冻结、构建并验证，未沿用丢失结果。"
+    }
+  ],
+  "limits": [
+    "仅macOS arm64本地源码制品；不代替Windows/Linux及签名发行验收。",
+    "未更新正式桌面安装或现有会话MCP登记；当前会话实际工具列表仍由已连接进程决定。",
+    "创作旅程使用独立测试筹备，意见明确为Agent自查；未代表作者采纳、定稿或调用付费模型。",
+    "只读投影逐次重验完整结果摘要，不声称保存了新的结果库。",
+    "严格Clippy零告警门禁仍受43项既有诊断影响；本次修改行无新增诊断。",
+    "未执行Git提交、推送、发布或部署。"
+  ]
+}

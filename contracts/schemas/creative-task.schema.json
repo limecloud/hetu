@@ -332,13 +332,32 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "kind": { "const": "resource" },
-            "work_ref": { "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref" },
-            "resource_id": { "type": "string", "pattern": "^resource_[0-9a-f-]{36}$" },
-            "revision": { "type": "integer", "minimum": 1 },
-            "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+            "kind": {
+              "const": "resource"
+            },
+            "work_ref": {
+              "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+            },
+            "resource_id": {
+              "type": "string",
+              "pattern": "^resource_[0-9a-f-]{36}$"
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
           },
-          "required": ["kind", "work_ref", "resource_id", "revision", "sha256"]
+          "required": [
+            "kind",
+            "work_ref",
+            "resource_id",
+            "revision",
+            "sha256"
+          ]
         },
         {
           "type": "object",
@@ -660,6 +679,41 @@
         "submission_id": {
           "type": "string",
           "pattern": "^submission_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "detail": {
+          "enum": [
+            "full",
+            "summary"
+          ]
+        },
+        "request_field": {
+          "enum": [
+            "brief",
+            "prompt"
+          ]
+        },
+        "range": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "byte_start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "byte_end": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "byte_start",
+            "byte_end"
+          ]
+        },
+        "max_bytes": {
+          "type": "integer",
+          "minimum": 256,
+          "maximum": 65536
         }
       },
       "required": [
@@ -1675,6 +1729,9 @@
           "minItems": 0,
           "maxItems": 100,
           "uniqueItems": true
+        },
+        "checkpoint_ref": {
+          "$ref": "#/$defs/expected"
         }
       },
       "required": [
@@ -2430,6 +2487,35 @@
         },
         "working_copy_ref": {
           "$ref": "#/$defs/working_ref"
+        },
+        "range": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "byte_start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "byte_end": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "byte_start",
+            "byte_end"
+          ]
+        },
+        "max_bytes": {
+          "type": "integer",
+          "minimum": 256,
+          "maximum": 65536
+        },
+        "detail": {
+          "enum": [
+            "full",
+            "summary"
+          ]
         }
       },
       "required": [
@@ -2932,6 +3018,14 @@
           "type": "integer",
           "minimum": 4,
           "maximum": 65536
+        },
+        "result_path": {
+          "type": "string",
+          "maxLength": 512
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0
         }
       },
       "required": [
@@ -3042,7 +3136,10 @@
                 "type": "null"
               },
               "source_kind": {
-                "enum": ["author", "resource"]
+                "enum": [
+                  "author",
+                  "resource"
+                ]
               }
             },
             "required": [
@@ -3290,6 +3387,311 @@
         "profile",
         "target_path",
         "operation_key"
+      ]
+    },
+    "checkpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "phase": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "title": {
+                "type": "string",
+                "maxLength": 300
+              },
+              "status": {
+                "enum": [
+                  "todo",
+                  "doing",
+                  "done",
+                  "blocked"
+                ]
+              },
+              "reason": {
+                "type": "string",
+                "maxLength": 1000
+              }
+            },
+            "required": [
+              "title",
+              "status"
+            ]
+          },
+          "maxItems": 30
+        },
+        "working_copy_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/working_ref"
+          },
+          "maxItems": 20
+        },
+        "feedback_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/feedback_ref"
+          },
+          "maxItems": 30
+        },
+        "coverage": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "context_ref": {
+                "$ref": "#/$defs/context_ref"
+              },
+              "ranges": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "byte_start": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "byte_end": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "byte_start",
+                    "byte_end"
+                  ]
+                },
+                "maxItems": 100
+              },
+              "status": {
+                "enum": [
+                  "unread",
+                  "returned",
+                  "agent_reviewed"
+                ]
+              }
+            },
+            "required": [
+              "context_ref",
+              "ranges",
+              "status"
+            ]
+          },
+          "maxItems": 100
+        },
+        "statements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "inference",
+                  "proposal",
+                  "question"
+                ]
+              },
+              "text": {
+                "type": "string",
+                "maxLength": 2000
+              },
+              "context_refs": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/context_ref"
+                },
+                "maxItems": 20
+              }
+            },
+            "required": [
+              "kind",
+              "text",
+              "context_refs"
+            ]
+          },
+          "maxItems": 30
+        },
+        "next_actions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "maxItems": 10
+        },
+        "pending_operations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "type": "string",
+                "maxLength": 128
+              },
+              "operation_key": {
+                "type": "string",
+                "maxLength": 128
+              },
+              "input_digest": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "action",
+              "operation_key",
+              "input_digest"
+            ]
+          },
+          "maxItems": 20
+        }
+      },
+      "required": [
+        "phase",
+        "working_copy_refs",
+        "feedback_refs",
+        "coverage",
+        "statements",
+        "next_actions",
+        "pending_operations"
+      ]
+    },
+    "checkpoint_get_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        }
+      },
+      "required": [
+        "task_ref"
+      ]
+    },
+    "checkpoint_save_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        },
+        "expected": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/expected"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "checkpoint": {
+          "$ref": "#/$defs/checkpoint"
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "task_ref",
+        "expected",
+        "checkpoint",
+        "operation_key"
+      ]
+    },
+    "checkpoint_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "previous_sha256": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          ]
+        },
+        "checkpoint": {
+          "$ref": "#/$defs/checkpoint"
+        },
+        "updated_at": {
+          "type": "string",
+          "maxLength": 100
+        }
+      },
+      "required": [
+        "schema_version",
+        "task_ref",
+        "revision",
+        "previous_sha256",
+        "checkpoint",
+        "updated_at"
+      ]
+    },
+    "candidate_read_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        },
+        "candidate_ref": {
+          "$ref": "#/$defs/candidate_ref"
+        },
+        "range": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "byte_start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "byte_end": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "byte_start",
+            "byte_end"
+          ]
+        },
+        "max_bytes": {
+          "type": "integer",
+          "minimum": 256,
+          "maximum": 65536
+        }
+      },
+      "required": [
+        "task_ref",
+        "candidate_ref"
       ]
     }
   }

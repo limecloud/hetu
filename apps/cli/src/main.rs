@@ -18,6 +18,7 @@ fn help(english: bool) -> &'static str {
         "Hetu Luoshu command line\n\n\
 hetu [--locale zh-CN|en] --help\n\
 hetu --version\n\
+hetu --client <client> doctor\n\
 hetu --client <codex|claude-code|workbuddy|generic> [--collaboration-dir <absolute path>] collaboration inspect\n\
 hetu --client <client> [--collaboration-dir <absolute path>] collaboration open --input <JSON file|->\n\
 hetu --client <client> [--collaboration-dir <absolute path>] call <hetu.action> --input <JSON file|-> [--json]\n\
@@ -34,6 +35,7 @@ This entry stays an Agent. Discover fixed proposals, record real author decision
         "河图洛书命令行\n\n\
 hetu [--locale zh-CN|en] --help\n\
 hetu --version\n\
+hetu --client <client> doctor\n\
 hetu --client <codex|claude-code|workbuddy|generic> [--collaboration-dir <绝对目录>] collaboration inspect\n\
 hetu --client <客户端> [--collaboration-dir <绝对目录>] collaboration open --input <JSON文件|->\n\
 hetu --client <客户端> [--collaboration-dir <绝对目录>] call <hetu.action> --input <JSON文件|-> [--json]\n\
@@ -102,6 +104,9 @@ struct Call {
 }
 
 fn call_args(command: &[String], stable: bool) -> Result<(String, Option<String>, Value)> {
+    if stable && command == ["doctor"] {
+        return Ok(("hetu.runtime.inspect".into(), None, json!({})));
+    }
     if command == ["capabilities"] || (stable && command == ["collaboration", "inspect"]) {
         return Ok((
             if stable {

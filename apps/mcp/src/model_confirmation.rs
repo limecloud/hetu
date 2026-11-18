@@ -5,6 +5,16 @@ use tokio::sync::OwnedSemaphorePermit;
 
 pub const TOOL: &str = "hetu_request_model_confirmation";
 
+fn result(value: Value, input: &Value) -> CallToolResponse {
+    let value = response::summary_read(value, "hetu.model_tasks.get", input);
+    let value = response::bounded(value, "hetu.model_tasks.get", input, MAX_RESULT_BYTES);
+    if value.get("error").is_some() {
+        CallToolResult::structured_error(value).into()
+    } else {
+        CallToolResult::structured(value).into()
+    }
+}
+
 pub fn input_schema(base: &JsonObject) -> JsonObject {
     let mut schema = Value::Object(base.clone());
     let contract: Value = serde_json::from_str(include_str!(
@@ -39,6 +49,7 @@ pub async fn request(
     }
     let authorization = arguments.remove("authorization");
     let args = Value::Object(arguments);
+    let recovery_input = args.clone();
     // 先经普通业务入口验证完整参数，拒绝 approved 等调用方自报决定。
     let prepared = tokio::task::spawn_blocking(move || {
         let _permit = permit;
@@ -50,7 +61,7 @@ pub async fn request(
     }).await.map_err(|_| ErrorData::internal_error("确认上下文准备中断，请查询原计划。", None))?;
     let confirmation = match prepared {
         Ok(value) => value,
-        Err(failure) => return Ok(CallToolResult::structured_error(failure).into()),
+        Err(failure) => return Ok(result(failure, &recovery_input)),
     };
     let record = confirmation.record();
     let requested = &record["requested_authorization"];
@@ -111,13 +122,16 @@ pub async fn request(
         {
             let mut data = record.clone();
             data["confirmation_status"] = json!("not_approved");
-            return Ok(CallToolResult::structured(json!({"spec_version":"0.2.1","kind":"result","action":"hetu.model_tasks.get","contract_revision":"1","status":"succeeded","context":{"scope_id":plan["task_ref"]["scope_ref"]["id"]},"data":data})).into());
+            return Ok(result(
+                json!({"spec_version":"0.2.1","kind":"result","action":"hetu.model_tasks.get","contract_revision":"1","status":"succeeded","context":{"scope_id":plan["task_ref"]["scope_ref"]["id"]},"data":data}),
+                &recovery_input,
+            ));
         }
     }
     // 用户决定只来自上述宿主响应；等待期间的撤权、计划或渠道变化由 Core 再次校验。
-    let result = tokio::task::spawn_blocking(move || confirmation.confirm())
+    let confirmed = tokio::task::spawn_blocking(move || confirmation.confirm())
         .await
         .map_err(|_| ErrorData::internal_error("确认回执未知，请读取原计划，勿重复生成。", None))?
         .map_err(|error| ErrorData::invalid_request(error.message, None))?;
-    Ok(CallToolResult::structured(result).into())
+    Ok(result(confirmed, &recovery_input))
 }

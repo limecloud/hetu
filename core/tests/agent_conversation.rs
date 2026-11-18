@@ -72,7 +72,10 @@ impl Session {
 #[test]
 fn metadata_structure_text_validation_and_finalization_run_without_gui() {
     let s = Session::new();
-    let catalog = ok(s.call("agent_operations.catalog", json!({})));
+    let catalog = ok(s.call(
+        "agent_operations.catalog",
+        json!({"limit":50,"include_schema":true}),
+    ));
     for action in [
         "hetu.novels.update",
         "hetu.documents.save",

@@ -216,6 +216,33 @@ fn stable_discovery_is_read_only_and_file_input_matches_stdin() {
 }
 
 #[test]
+fn doctor_reports_runtime_and_unknown_session_without_creating_a_connection() {
+    let root = tempfile::tempdir().unwrap();
+    let directory = root.path().join("not-created");
+    let receipt = value(
+        run(
+            &[
+                "--client",
+                "codex",
+                "--collaboration-dir",
+                directory.to_str().unwrap(),
+                "doctor",
+            ],
+            b"",
+            None,
+        ),
+        0,
+    );
+    assert_eq!(
+        receipt["data"]["runtime_version"],
+        env!("CARGO_PKG_VERSION")
+    );
+    assert_eq!(receipt["data"]["session_skill_loading"], "unknown");
+    assert_eq!(receipt["data"]["repairs_performed"], false);
+    assert!(!directory.exists());
+}
+
+#[test]
 fn bootstrap_task_replay_fixed_submission_and_legacy_read_share_core_state() {
     let root = tempfile::tempdir().unwrap();
     let directory = root.path().join("接入");

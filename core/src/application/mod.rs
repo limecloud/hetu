@@ -697,6 +697,7 @@ impl Kernel {
                         && !name.starts_with("hetu.working_copies.")
                         && !name.starts_with("hetu.task_feedback.")
                         && !name.starts_with("hetu.task_context.")
+                        && !name.starts_with("hetu.task_checkpoint.")
                         && !name.starts_with("hetu.models.")
                         && !name.starts_with("hetu.model_tasks.")
                         && !matches!(name, "hetu.resources.create" | "hetu.resources.update")
@@ -735,6 +736,7 @@ impl Kernel {
         {
             output["contract_revision"] = metadata["contract_revision"].clone();
         }
+        crate::machine::recovery(&mut output, &action, &request["input"]);
         output
     }
     fn input_digest(input: &Value) -> Result<String> {
@@ -1125,6 +1127,9 @@ impl Kernel {
             "hetu.creative_tasks.get" => self.get_creative_task(input),
             "hetu.creative_tasks.list" => self.list_creative_tasks(input),
             "hetu.creative_tasks.submit_result" => self.submit_creative_result(input, changes),
+            "hetu.task_checkpoint.get" => self.get_task_checkpoint(input),
+            "hetu.task_checkpoint.save" => self.save_task_checkpoint(input, changes),
+            "hetu.creative_tasks.read_candidate" => self.read_task_candidate(input),
             "hetu.working_copies.create" => self.create_working_copy(input, changes),
             "hetu.working_copies.get" => self.get_working_copy(input),
             "hetu.working_copies.list" => self.list_working_copies(input),
@@ -1374,12 +1379,17 @@ impl Kernel {
                     }
                     found.ok_or_else(|| Error::new("not_found", "此范围内没有该原操作。"))?
                 } else {
-                    self.store.json(
-                        &self.operation_record_path(text(input, "action")?, text(input, "key")?),
-                    )?
+                    let path =
+                        self.operation_record_path(text(input, "action")?, text(input, "key")?);
+                    ensure(
+                        self.store.exists(&path)?,
+                        "not_found",
+                        "此范围内没有该原操作；保留原输入与键。",
+                    )?;
+                    self.store.json(&path)?
                 };
                 self.check_operation_task(&record)?;
-                Ok(json!({"original_result":record["result"]}))
+                crate::machine::operation_view(&record, input)
             }
             _ => Err(Error::new("hetu.capability_unavailable", "动作尚未实现。")),
         }

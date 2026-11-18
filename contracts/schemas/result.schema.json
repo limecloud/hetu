@@ -9,7 +9,7 @@
     "kind": {"const":"result"},
     "action": {"type":"string","pattern":"^hetu\\.[a-z_]+(?:\\.[a-z_]+)+$"},
     "contract_revision": {"const":"1"},
-    "status": {"enum":["succeeded","partial","pending","blocked","failed","unknown"]},
+    "status": {"enum":["succeeded","partial","pending","blocked","failed","cancelled","unknown"]},
     "context": {"type":"object","additionalProperties":false,"properties":{"scope_id":{"type":"string","pattern":"^(collaboration|(workspace|project)_[0-9a-f-]{36})$"}},"required":["scope_id"]},
     "data": {"type":"object","description":"Action-specific domain payload; governed by that action's contract."},
     "error": {
@@ -17,7 +17,7 @@
       "properties": {
         "code":{"type":"string","minLength":1},
         "message":{"type":"string","minLength":1},
-        "resolution":{"type":"object","additionalProperties":false,"properties":{"kind":{"enum":["read","request_decision","recover","correct_input"]},"action":{"type":"string"}},"required":["kind"]}
+        "resolution":{"type":"object","additionalProperties":false,"properties":{"kind":{"enum":["read","request_decision","recover","correct_input"]},"action":{"type":"string"},"input":{"type":"object"},"retry":{"enum":["query_original","after_read","after_decision","correct_input","never"]}},"required":["kind"]}
       },"required":["code","message","resolution"]
     },
     "operation": {

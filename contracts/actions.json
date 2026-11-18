@@ -450,6 +450,34 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 200
+          },
+          "detail": {
+            "enum": [
+              "full",
+              "summary"
+            ]
+          },
+          "result_path": {
+            "type": "string",
+            "maxLength": 512
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "max_bytes": {
+            "type": "integer",
+            "minimum": 256,
+            "maximum": 65536
+          },
+          "input_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
           }
         },
         "required": []
@@ -2724,7 +2752,33 @@
       "input_schema": {
         "type": "object",
         "additionalProperties": false,
-        "properties": {},
+        "properties": {
+          "action": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "group": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "动作命名空间，如creative_tasks、working_copies；中文领域使用capabilities.map查询。"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "include_schema": {
+            "type": "boolean"
+          },
+          "expected_catalog_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
         "required": []
       }
     },
@@ -4880,7 +4934,33 @@
       "input_schema": {
         "type": "object",
         "additionalProperties": false,
-        "properties": {},
+        "properties": {
+          "action": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "group": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "动作命名空间，如creative_tasks、working_copies；中文领域使用capabilities.map查询。"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "include_schema": {
+            "type": "boolean"
+          },
+          "expected_catalog_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
         "required": []
       }
     },
@@ -5778,6 +5858,128 @@
           "arguments"
         ]
       }
+    },
+    {
+      "name": "hetu.collaboration.invoke",
+      "purpose": "调用本连接已登记的确切动作；复用原授权与Schema",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string",
+            "pattern": "^hetu[.][a-z_]+([.][a-z_]+)+$",
+            "maxLength": 128
+          },
+          "input": {
+            "type": "object"
+          },
+          "view": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "result_path": {
+                "type": "string",
+                "maxLength": 512
+              },
+              "offset": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100
+              },
+              "max_bytes": {
+                "type": "integer",
+                "minimum": 256,
+                "maximum": 16384
+              },
+              "expected_result_sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "action",
+          "input"
+        ]
+      }
+    },
+    {
+      "name": "hetu.runtime.inspect",
+      "purpose": "只读诊断实际运行版本、目录摘要与方法版本；不修复配置",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "expected_runtime_version": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "expected_catalog_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "observed_skill_version": {
+            "type": "string",
+            "maxLength": 80
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "hetu.task_checkpoint.get",
+      "purpose": "读取同一任务的接续记录与固定引用",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/checkpoint_get_input"
+    },
+    {
+      "name": "hetu.task_checkpoint.save",
+      "purpose": "CAS保存任务接续说明；不改变作者稿与决定",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/checkpoint_save_input"
+    },
+    {
+      "name": "hetu.creative_tasks.read_candidate",
+      "purpose": "分块读取固定文字候选；不跟随新版",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/candidate_read_input"
     }
   ]
 }

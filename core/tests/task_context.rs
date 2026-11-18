@@ -204,7 +204,7 @@ fn large_story_bible_has_bounded_entity_directory_and_immutable_entity_reads() {
     let initial = ok(call(&author, "blueprints.get", json!({})));
     let changes = (0..80).map(|index| json!({"type":"upsert_character","entity":{
         "character_id":format!("character_{index:08x}-1111-4111-8111-111111111111"),"name":format!("人物{index}"),
-        "aliases":[],"description":"旧设定。".repeat(150),"traits":[],"facts":[],"archived":false
+        "aliases":[],"description":"旧设定。".repeat(if index==0 {2000}else{150}),"traits":[],"facts":[],"archived":false
     }})).collect::<Vec<_>>();
     let fixed = ok(call(
         &author,
@@ -264,11 +264,35 @@ fn large_story_bible_has_bounded_entity_directory_and_immutable_entity_reads() {
         json!({"expected":{"revision":fixed["revision"],"sha256":fixed["sha256"]},"typed_changes":[{"type":"upsert_character","entity":changed}],"operation_key":"new-bible"}),
     ));
     let entity = ok(read(
-        json!({"section":"characters","entity_id":first["entity_id"]}),
+        json!({"section":"characters","entity_id":first["entity_id"],"max_bytes":65_536}),
     ));
-    assert_eq!(entity["entity"]["description"], "旧设定。".repeat(150));
+    assert_eq!(entity["entity"]["description"], "旧设定。".repeat(2000));
     assert_eq!(entity["entity_sha256"], first["entity_sha256"]);
     assert_eq!(entity["sha256"], context["sha256"]);
+    let fields = ok(read(
+        json!({"section":"characters","entity_id":first["entity_id"],"result_path":"","max_bytes":256}),
+    ));
+    assert!(
+        fields["entity_page"]["fields"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|f| f["result_path"] == "/description")
+    );
+    let mut offset = 0;
+    let mut description = String::new();
+    loop {
+        let page = ok(read(
+            json!({"section":"characters","entity_id":first["entity_id"],"result_path":"/description","offset":offset,"max_bytes":4096}),
+        ));
+        assert_eq!(page["entity_sha256"], entity["entity_sha256"]);
+        description.push_str(page["entity_page"]["page"]["content"].as_str().unwrap());
+        if page["entity_page"]["next_offset"].is_null() {
+            break;
+        }
+        offset = page["entity_page"]["next_offset"].as_u64().unwrap();
+    }
+    assert_eq!(description, "旧设定。".repeat(2000));
     assert_eq!(
         read(json!({"section":"characters","entity_id":first["entity_id"],"max_bytes":100}))["error"]
             ["code"],

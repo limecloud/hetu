@@ -17,9 +17,11 @@ Bring your chosen external Agent to organize material, create drafts and perform
 | Entrance | Purpose |
 | --- | --- |
 | MCP | Scoped project and task access, candidate submission and feedback |
-| CLI | Capability discovery, constrained operations and original-result recovery |
+| CLI | Scoped capability discovery, read-only diagnostics, bounded result reads and task recovery |
 | Skills | Task methods and genre guidance for an external Agent |
 | Desktop app | Writing, source inspection, asset selection and author finalization |
+
+The stable MCP connection lists a compact set of tools and routes discovered actions through `hetu_call_action`. Use `hetu-mcp --client codex --all-tools` for the complete tool list. `hetu --client codex doctor` reports the running service and bundled method versions; it does not certify which methods the current Agent session has loaded. See the [machine contract](docs/13-内核ABI与CLI合同.md#机器发现诊断与有界恢复) for bounded reads and task checkpoints.
 
 These entrances share the core, workspace permissions and revisions. General agents already invest in reasoning, context management, tool execution and recovery. Hetu focuses on durable creative material rather than an embedded Agent runtime, chat loop or model API. Host support is verified separately for installation, Skills, MCP, Apps and actual tasks.
 

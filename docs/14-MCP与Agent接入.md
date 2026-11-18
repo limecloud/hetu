@@ -88,7 +88,7 @@ Rust Server 使用官方 `rmcp =3.9.0`，关闭默认 feature，启用 Server、
 
 历史内容使用确切修订与摘要，不静默跳到 head。工具投影及交互扩展见[30第19节](30-应用API详细设计.md#19-mcp-工具投影与兼容)与[第23节](30-应用API详细设计.md#23-持续协作与任务接续合同)。不借资源 URI 扫描书库，不返回应用私有凭据。
 
-内核任务在阻塞线程执行，每个 Server 同时接受一个领域任务，繁忙立即返回 `workspace_busy`。单行输入上限 16 MiB，领域结果上限 8 MiB；超限结果保留已有原操作引用。取消可阻止尚未开始的任务；已开始的原子事务完成后沿原键恢复。EOF 关闭连接，进程退出前收束已经开始的内核任务。传输取消不等于业务撤销。
+内核任务在阻塞线程执行，每个 Server 同时接受一个领域任务，繁忙立即返回 `workspace_busy`。单行输入上限16MiB，工具结果默认按最终MCP表示限制为64KiB；大结果优先返回固定摘要与继续读取参数，持久结果保留原操作引用。取消可阻止尚未开始的任务；已开始的原子事务完成后沿原键恢复。EOF 关闭连接，进程退出前收束已经开始的内核任务。传输取消不等于业务撤销。
 
 ## 4. 幂等与失败
 
@@ -175,3 +175,15 @@ Apps可对当前获权固定媒体展示局部播放、区间／画面位置意�
 `hetu_list_management_actions`发现领域动作；prepare固定结果，`hetu_record_management_decision`如实记录当前会话对确切摘要及状态版本的决定，再执行并回读。设置、插件、模型渠道和文稿版本各有独立工具，名称及范围从地图与实际发现取得。既有任务不因管理能力增加而获得正文采纳或定稿权；必要作者决定在当前对话完成，桌面审阅为可选入口。
 
 河图专业插件使用稳定 `hetu_plugins_inspect`、`hetu_plugin_access_capabilities` 和 `hetu_plugin_access_invoke`；新增包只改变河图返回的安装与能力投影，不为每包增加MCP工具或客户端插件。同一连接按需查询新Schema，调用重验当前安装、WorkRef、原管理授权、插件grant、包与能力摘要。MCP工具列表变更通知不是热插拔前提；Agent仍需主动发现才能得知后台安装变化。格式、时序与HP验收边界由[插件21](plugin/21-核心格式与动态能力发现.md)拥有。
+
+## 精简发现与任务接续
+
+稳定tools/list默认公布精简发现、固定任务、接续和通用动作入口；hetu_call_action返回被调用动作的AXI结果，只允许本构建catalog中的动作，不提供作者身份覆盖、任意路径或Shell。需要完整静态工具目录时显式使用--all-tools；不依赖宿主动态刷新工具列表。inspect默认有界摘要，按筛选和include_schema读取真实参数；open默认返回任务摘要，全文按固定引用读取。旧工作区profile保持独立权限，作者确切决定可以在当前会话通过已有固定方案登记，不能暗示必须回桌面。
+
+hetu.task_checkpoint.get/save维护同一任务的阶段、成果引用、来源覆盖、未决问题与下一步。记录为Agent的接续说明，不是作品正典、作者决定或自动执行计划；保存必须CAS、原键及精确任务授权，关闭和撤权后拒绝。Core核验来源、稿件及反馈引用，返回字节不证明Agent语义通读。正文、专业规划、作者意见与费用计划保持各自Owner，不复制到接续记录。
+
+MCP读取按最终双重JSON表示收敛max_bytes：带引文的task_context.read最多8KiB，其他文字片段最多16KiB；CLI保留Core最多64KiB的合同。max_bytes为上限，实际范围及next_range由回执给出；不修改写入参数或原操作摘要。
+
+固定设定实体超过单次预算时，task_context.read以原context_ref、section和entity_id携带result_path读取字段目录，再以offset和max_bytes读取字段片段；整份设定及实体摘要保持。字段读取不跟随当前设定，文本来源拒绝实体字段参数。MCP预算失败返回同一固定实体的字段读取参数，不要求无限提高传输预算。
+
+通用只读动作可通过hetu_call_action的view选择result_path、offset、limit和max_bytes；expected_result_sha256绑定本次读取的完整结果，数据变化返回冲突，不能静默跨快照拼接。自动缩略回执返回source_result_sha256和下一步读取参数，原小字段保持。此投影不创建持久结果库、不接受写动作；持久写入仍查询原operations.get。

@@ -1,7 +1,9 @@
 use super::*;
 use std::collections::BTreeSet;
 
+mod checkpoint;
 mod context;
+use context::entries;
 mod feedback;
 mod targets;
 mod working;
@@ -9,6 +11,9 @@ mod working;
 pub(super) const TASK_ACTIONS: &[&str] = &[
     "hetu.capabilities.get",
     "hetu.operations.get",
+    "hetu.task_checkpoint.get",
+    "hetu.task_checkpoint.save",
+    "hetu.creative_tasks.read_candidate",
     "hetu.creative_tasks.get",
     "hetu.creative_tasks.submit_result",
     "hetu.interactions.get",
@@ -60,6 +65,7 @@ pub(super) fn record_schema(record: &Value, name: &str) -> Result<()> {
             "working_revision_record",
             "feedback_record",
             "context_manifest_record",
+            "checkpoint_record",
         ]
         .into_iter()
         .map(|name| (name, OnceLock::new()))
@@ -77,6 +83,11 @@ pub(super) fn record_schema(record: &Value, name: &str) -> Result<()> {
 }
 fn root(task_id: &str) -> Result<String> {
     Ok(format!(".hetu/tasks/{}", checked_id(task_id, "task")?))
+}
+fn candidate_references(submission: &Value, task_ref: &Value) -> Value {
+    json!(submission["candidates"].as_array().into_iter().flatten().map(|candidate| {
+        json!({"task_ref":task_ref,"submission_id":submission["submission_id"],"candidate_id":candidate["candidate_id"]})
+    }).collect::<Vec<_>>())
 }
 fn check_span<'a>(content: &'a str, range: &Value) -> Result<&'a str> {
     let start = usize::try_from(integer(range, "byte_start")?)
@@ -782,7 +793,12 @@ impl Kernel {
             .ok_or_else(|| Error::new("not_found", "此批次没有该候选。"))
     }
     pub(super) fn get_creative_task(&self, input: &Value) -> Result<Value> {
-        let (request, sha, state, state_sha) = self.task_for_reference(&input["task_ref"])?;
+        let (mut request, sha, mut state, state_sha) =
+            self.task_for_reference(&input["task_ref"])?;
+        if let Some(field) = input["request_field"].as_str() {
+            return Ok(json!({"request_sha256":sha,"request_field":field,
+                "page":crate::machine::text_page(text(&request,field)?,input)?}));
+        }
         let submission_id = input["submission_id"].as_str().or_else(|| {
             state["submission_refs"]
                 .as_array()
@@ -791,7 +807,7 @@ impl Kernel {
                 .and_then(|r| r["submission_id"].as_str())
         });
         let submission = submission_id
-            .map(|id| self.read_submission(&request, &state, id, true))
+            .map(|id| self.read_submission(&request, &state, id, input["detail"] != "summary"))
             .transpose()?
             .unwrap_or(Value::Null);
         let decision = if state["last_decision_ref"].is_null() {
@@ -818,7 +834,7 @@ impl Kernel {
             decision
         };
         let working =
-            self.list_working_copies(&json!({"task_ref":input["task_ref"],"limit":20}))?;
+            self.list_working_copies(&json!({"task_ref":input["task_ref"],"limit":if input["detail"]=="summary" {5}else{20}}))?;
         let feedback_head = state["feedback_refs"]
             .as_array()
             .and_then(|refs| refs.last())
@@ -829,8 +845,48 @@ impl Kernel {
         } else {
             self.read_task_feedback(&input["task_ref"], &feedback_head)?
         };
+        if input["detail"] == "summary" {
+            request.as_object_mut().unwrap().remove("input_snapshot");
+            request["input_ref_count"] =
+                json!(request["input_refs"].as_array().map_or(0, Vec::len));
+            request.as_object_mut().unwrap().remove("input_refs");
+            for field in ["submission_refs", "feedback_refs"] {
+                if let Some(refs) = state[field].as_array() {
+                    let count = refs.len();
+                    let last = refs.last().cloned();
+                    state[format!("{field}_count")] = json!(count);
+                    state[field] = json!(last.into_iter().collect::<Vec<_>>());
+                }
+            }
+            request.as_object_mut().unwrap().remove("prompt");
+            let brief = text(&request, "brief")?;
+            let brief_size = brief.len();
+            let preview = brief.chars().take(512).collect::<String>();
+            request["brief_complete"] = json!(preview.len() == brief_size);
+            request["brief_size_bytes"] = json!(brief_size);
+            request["brief"] = json!(preview);
+        }
+        let mut checkpoint = self.get_task_checkpoint(input)?;
+        if input["detail"] == "summary" {
+            checkpoint = json!({"expected":checkpoint["expected"],"phase":checkpoint["checkpoint"]["phase"],"authority":"agent_notes",
+                "read_action":"hetu.task_checkpoint.get"});
+        }
         Ok(
-            json!({"request":request,"request_sha256":sha,"observation":state,"expected":{"revision":state["revision"],"sha256":state_sha},"submission":submission,"decision":decision,"working_copies":working["working_copies"],"working_copies_next_cursor":working["next_cursor"],"feedback_head":feedback_head,"last_feedback":last_feedback,"working_limits":{"copies_per_task":100,"revisions_per_copy":100,"feedback_per_task":100,"text_bytes":TEXT_LIMIT}}),
+            json!({"request":request,"request_sha256":sha,"observation":state,"expected":{"revision":state["revision"],"sha256":state_sha},"submission":submission,"candidate_refs":candidate_references(&submission,&input["task_ref"]),"decision":decision,"working_copies":working["working_copies"],"working_copies_next_cursor":working["next_cursor"],"feedback_head":feedback_head,"last_feedback":last_feedback,"checkpoint":checkpoint,"detail":input["detail"].as_str().unwrap_or("full"),"working_limits":{"copies_per_task":100,"revisions_per_copy":100,"feedback_per_task":100,"text_bytes":TEXT_LIMIT}}),
+        )
+    }
+    pub(in crate::application) fn read_task_candidate(&self, input: &Value) -> Result<Value> {
+        ensure(
+            input["candidate_ref"]["task_ref"] == input["task_ref"],
+            "forbidden",
+            "候选不属于当前固定任务。",
+        )?;
+        let candidate = self.task_candidate(&input["candidate_ref"])?;
+        let content = candidate["content"]
+            .as_str()
+            .ok_or_else(|| Error::new("invalid_input", "图片请使用受管媒体预览，不按文字读取。"))?;
+        Ok(
+            json!({"candidate_ref":input["candidate_ref"],"page":crate::machine::text_page(content,input)?}),
         )
     }
     pub(super) fn list_creative_tasks(&self, input: &Value) -> Result<Value> {
@@ -1278,7 +1334,7 @@ impl Kernel {
         });
         let sha = self.stage_task_state(&mut state, Some(&previous), changes)?;
         Ok(
-            json!({"submission_ref":reference,"submission":submission,"expected":{"revision":integer(&state,"revision")?,"sha256":sha},"approval_state":"awaiting_author"}),
+            json!({"submission_ref":reference,"submission":submission,"candidate_refs":candidate_references(&submission,&input["task_ref"]),"expected":{"revision":integer(&state,"revision")?,"sha256":sha},"approval_state":"awaiting_author"}),
         )
     }
     pub(super) fn inspect_task_inbox(&self, input: &Value, changes: &mut Changes) -> Result<Value> {

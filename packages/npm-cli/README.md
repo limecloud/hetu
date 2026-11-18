@@ -18,3 +18,5 @@ MCP 客户端可将命令配置为 `npx`，参数为 `--yes --package @limecloud
 可选环境变量 `HETU_APP_PATH` 指向精确版本的官方 `Hetu.app`；指定路径同样必须通过身份、版本、签名及公证检查。模型渠道配置、任务授权和作者确认沿用河图原生合同。
 
 平台模型连接使用 `hetu model-service login` 取得验证链接和验证码，作者在浏览器核验并连接后，用 `hetu model-service poll` 查询原连接；`hetu model-service status` 查看本机状态。登录无需作品，不返回凭据，也不代表批准生成费用。
+
+维护者推送匹配版本的发行标签后，`Electron release` 工作流在三平台运行时通过并公开后发布本包到 npmjs，核对同一源码、正式Mac运行时与包摘要。可信发布者及失败恢复见[发布配置](../../docs/21-构建分发与运维.md#61-github-actions)。

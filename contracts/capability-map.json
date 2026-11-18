@@ -3,25 +3,25 @@
   "generated_by": "tools/sync-capability-map.py",
   "meaning": "source_wired仅表示源码合同和入口已连线；不证明安装、运行、跨平台或端到端通过。执行时先inspect实际能力。",
   "sources": {
-    "contracts/actions.json": "2fb8df789a24ca40148b97f8549d9aaeaa6494817eba7f9d92613989c2ea1475",
-    "contracts/tools/catalog.json": "acca6346fac7c0c325e51925afe5dabc9500c088e5a93461889cf9022bdbd52e",
-    "core/src/application/agent_operations.rs": "8373a3f81847980ddb5fb1e03fc73bad8f15935b7924adea757fcebe12af6ccd",
-    "core/src/application/creative_tasks.rs": "a748acd1135d728f15512b2df724deea0e91c624abe99dbf9b9fe5de9fd0b99d",
+    "contracts/actions.json": "ae2fa91f81bedc92fc2b06ad36057429c429f13a06f30edc57c8561075185826",
+    "contracts/tools/catalog.json": "290f98466f51aaa9f415c5d46c19a5894c171b53efda0fc749dc01e000773f0c",
+    "core/src/application/agent_operations.rs": "a87c933745bb068d42c6a99bcdda499b0734fa316b603f0f6e725dbc1b865206",
+    "core/src/application/creative_tasks.rs": "8d82a1d2935341ca67aa9f14c1ae5ee95ef7609d40942f8c5f20a4905ffe48ac",
     "core/src/application/work_scope.rs": "cee3cad66a6c2d31076607e59d3866b2429e88849460103f1e0732bf9f9a1b1b",
     "core/src/collaboration/authoring.rs": "1ed3ad93790f446be076530db097fc050798e0970884027b14f4ef5337466170",
     "integrations/catalog.json": "d2193b2fe08a7a7571395905fa571f775dc3bf3988462fd0e020a3077e7a5825",
     "tools/hetu-skills/base/skills/hetu-artwork/SKILL.md": "4dc578dbc319c7772d4b33fe35f99e987367e08da8abfeafb9897f5ff09ebe89",
-    "tools/hetu-skills/base/skills/hetu-book-create/SKILL.md": "cbe98f524986e18c38d816a49c7c3f9813520ca68d6beeaf29cb5902fd29b808",
-    "tools/hetu-skills/base/skills/hetu-book-profile/SKILL.md": "6736d7c67a36ac573a627498c0f8237e7e2c3b01159f02027b5514c0632c926e",
+    "tools/hetu-skills/base/skills/hetu-book-create/SKILL.md": "54d61aa957d57cd19a395eea6a0ab544cfdd50ccbd7d93733dd5b6e5fdc57989",
+    "tools/hetu-skills/base/skills/hetu-book-profile/SKILL.md": "73078fbf0c5a3afb6c3c7bc00a93b2916659b3652d5bfd388f7324bab4975c8e",
     "tools/hetu-skills/base/skills/hetu-cover/SKILL.md": "f731fc206fe638eef727935f21090e3b587c60e6bfd107d7f4eb9c66305e8ae0",
-    "tools/hetu-skills/base/skills/hetu-draft/SKILL.md": "26e3204ad54c5e4f5336dd5d2dfa609e3c7f248bbd61bf2b105c1dc8bd492fd3",
-    "tools/hetu-skills/base/skills/hetu-drama/SKILL.md": "0caf21895131809eace197dd16c30a669e31b374ea65d794bde717385240dc17",
+    "tools/hetu-skills/base/skills/hetu-draft/SKILL.md": "d3266f52d8d349f65de7452e4a9ca2efeb898298bcae3cb415cc3246d3930dc2",
+    "tools/hetu-skills/base/skills/hetu-drama/SKILL.md": "3cf03e121b1129fc73818087f53dcb6d3badd610b019a6d560b8b356889eb8a5",
     "tools/hetu-skills/base/skills/hetu-import/SKILL.md": "824ff4a5171a5a0fb32c5c49f54b17465e2632b0a2535870c9fa2bbddaee15b0",
     "tools/hetu-skills/base/skills/hetu-manage/SKILL.md": "e04b62018d84b1abb3d0dcc41f1a9ee8df9132de5cb7eaca09a05f9828b488ec",
-    "tools/hetu-skills/base/skills/hetu-outline/SKILL.md": "e50e201cddc866adc504960227ad90e4068e1a4c64045cd8d6dbbc39c26f0610",
+    "tools/hetu-skills/base/skills/hetu-outline/SKILL.md": "ba07e47e0011600a4696446a5d39726acaf17ed1b430f67b5c02b443db830bf1",
     "tools/hetu-skills/base/skills/hetu-resources/SKILL.md": "9e1abce08712cf9f85d1cd7ff563ba4dd618bb903fb3d9c6f8d8e2dcc93dadb2",
-    "tools/hetu-skills/base/skills/hetu-revise/SKILL.md": "bb22f018e11bcdfaca52a4bb087f2367bc27931d494d6577aa105c14a24a9be6",
-    "tools/hetu-skills/base/skills/hetu-setup/SKILL.md": "803ba6631b4834daceb7efbd7805d8f95797e32878596bec80ae8e1128cb8b27",
+    "tools/hetu-skills/base/skills/hetu-revise/SKILL.md": "4c47a91ea54d69815ba6d4bdc9c064797c5c7e10155ab827865ba5fa3bbeb813",
+    "tools/hetu-skills/base/skills/hetu-setup/SKILL.md": "e2f863aabe0d782ceebe32f3cc8c2acda1db527a39985c6aaa48c41082d045cd",
     "tools/hetu-skills/base/skills/hetu-video/SKILL.md": "ef2096ca72950833441683326672948f0abc701c677ffa6bb806c558be3e7a50"
   },
   "verification_evidence": "docs/research/evidence/2026-11-16-agent-capabilities.json",
@@ -65,7 +65,12 @@
         "hetu.collaboration.authorize_workspace",
         "hetu.collaboration.created_works",
         "hetu.collaboration.workspace_access",
-        "hetu.capabilities.map"
+        "hetu.capabilities.map",
+        "hetu.collaboration.invoke",
+        "hetu.runtime.inspect",
+        "hetu.task_checkpoint.get",
+        "hetu.task_checkpoint.save",
+        "hetu.creative_tasks.read_candidate"
       ]
     },
     {
@@ -1240,6 +1245,34 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 200
+          },
+          "detail": {
+            "enum": [
+              "full",
+              "summary"
+            ]
+          },
+          "result_path": {
+            "type": "string",
+            "maxLength": 512
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "max_bytes": {
+            "type": "integer",
+            "minimum": 256,
+            "maximum": 65536
+          },
+          "input_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
           }
         },
         "required": []
@@ -5626,7 +5659,33 @@
       "input_schema": {
         "type": "object",
         "additionalProperties": false,
-        "properties": {},
+        "properties": {
+          "action": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "group": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "动作命名空间，如creative_tasks、working_copies；中文领域使用capabilities.map查询。"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "include_schema": {
+            "type": "boolean"
+          },
+          "expected_catalog_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
         "required": []
       },
       "decision": "按任务或读取范围执行",
@@ -9099,7 +9158,33 @@
       "input_schema": {
         "type": "object",
         "additionalProperties": false,
-        "properties": {},
+        "properties": {
+          "action": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "group": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "动作命名空间，如creative_tasks、working_copies；中文领域使用capabilities.map查询。"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "include_schema": {
+            "type": "boolean"
+          },
+          "expected_catalog_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
         "required": []
       },
       "decision": "按任务或读取范围执行",
@@ -10452,6 +10537,229 @@
       },
       "decision": "活动包与精确作品连接；无独立插件授权",
       "recover": "领域recover_action及原操作键",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.collaboration.invoke",
+      "purpose": "调用本连接已登记的确切动作；复用原授权与Schema",
+      "group": "连接与精确授权",
+      "effect": "submit",
+      "routes": [
+        "client_local"
+      ],
+      "cli": "hetu --client <client> call hetu.collaboration.invoke --input -",
+      "proposal_target": null,
+      "mcp": [
+        {
+          "name": "hetu_call_action",
+          "profiles": [
+            "stable"
+          ]
+        }
+      ],
+      "mcp_via_proposal": false,
+      "skill": "hetu-setup",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-setup/SKILL.md",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string",
+            "pattern": "^hetu[.][a-z_]+([.][a-z_]+)+$",
+            "maxLength": 128
+          },
+          "input": {
+            "type": "object"
+          },
+          "view": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "result_path": {
+                "type": "string",
+                "maxLength": 512
+              },
+              "offset": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100
+              },
+              "max_bytes": {
+                "type": "integer",
+                "minimum": 256,
+                "maximum": 16384
+              },
+              "expected_result_sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "action",
+          "input"
+        ]
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.runtime.inspect",
+      "purpose": "只读诊断实际运行版本、目录摘要与方法版本；不修复配置",
+      "group": "运行与方法诊断",
+      "effect": "read",
+      "routes": [
+        "client_local"
+      ],
+      "cli": "hetu --client <client> call hetu.runtime.inspect --input -",
+      "proposal_target": null,
+      "mcp": [
+        {
+          "name": "hetu_inspect_runtime",
+          "profiles": [
+            "stable"
+          ]
+        }
+      ],
+      "mcp_via_proposal": false,
+      "skill": "hetu-setup",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-setup/SKILL.md",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "expected_runtime_version": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "expected_catalog_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "observed_skill_version": {
+            "type": "string",
+            "maxLength": 80
+          }
+        },
+        "required": []
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.task_checkpoint.get",
+      "purpose": "读取同一任务的接续记录与固定引用",
+      "group": "任务接续与交接",
+      "effect": "read",
+      "routes": [
+        "exact_task_ref"
+      ],
+      "cli": "hetu --client <client> call hetu.task_checkpoint.get --input -",
+      "proposal_target": null,
+      "mcp": [
+        {
+          "name": "hetu_get_task_checkpoint",
+          "profiles": [
+            "task",
+            "stable"
+          ]
+        }
+      ],
+      "mcp_via_proposal": false,
+      "skill": "hetu-setup",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-setup/SKILL.md",
+      "input_schema": {
+        "$ref": "schemas/creative-task.schema.json#/$defs/checkpoint_get_input"
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.task_checkpoint.save",
+      "purpose": "CAS保存任务接续说明；不改变作者稿与决定",
+      "group": "任务接续与交接",
+      "effect": "submit",
+      "routes": [
+        "exact_task_ref"
+      ],
+      "cli": "hetu --client <client> call hetu.task_checkpoint.save --input -",
+      "proposal_target": null,
+      "mcp": [
+        {
+          "name": "hetu_save_task_checkpoint",
+          "profiles": [
+            "task",
+            "stable"
+          ]
+        }
+      ],
+      "mcp_via_proposal": false,
+      "skill": "hetu-setup",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-setup/SKILL.md",
+      "input_schema": {
+        "$ref": "schemas/creative-task.schema.json#/$defs/checkpoint_save_input"
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.creative_tasks.read_candidate",
+      "purpose": "分块读取固定文字候选；不跟随新版",
+      "group": "创作任务与接续",
+      "effect": "read",
+      "routes": [
+        "exact_task_ref"
+      ],
+      "cli": "hetu --client <client> call hetu.creative_tasks.read_candidate --input -",
+      "proposal_target": null,
+      "mcp": [
+        {
+          "name": "hetu_read_task_candidate",
+          "profiles": [
+            "task",
+            "stable"
+          ]
+        }
+      ],
+      "mcp_via_proposal": false,
+      "skill": "hetu-setup",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-setup/SKILL.md",
+      "input_schema": {
+        "$ref": "schemas/creative-task.schema.json#/$defs/candidate_read_input"
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
       "equivalent_machine_actions": [],
       "host_boundary": null,
       "installed_evidence": false,

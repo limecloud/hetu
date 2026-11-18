@@ -23,11 +23,13 @@
 | 入口 | 用途 |
 | --- | --- |
 | MCP | 在授权范围内查询作品与任务、提交候选、读取反馈；Server 可独立运行 |
-| CLI | 发现工作区能力、调用受限动作、回读原操作结果 |
+| CLI | 按需发现能力、只读诊断版本、调用受限动作、分块回读原操作与恢复任务 |
 | Skills | 为作者选用的外部 Agent 提供题材方法与任务步骤 |
 | 桌面客户端 | 优先审阅成果、比较差异与确认决定；随时手动编辑优化 |
 
-这些入口共用内核、作品、权限与修订。通用 Agent 的推理、上下文管理、工具调度和执行恢复需要长期投入，Codex、Claude Code、WorkBuddy 等产品专注于此。河图提供它们可以操作的创作软件；可选文字与图片模型通过河图网站服务端连接 Lime Cloud，作者逐计划批准内容外发和费用。也可在本机配置自定义渠道，由 CLI／MCP 封装供外部 Agent 调用；密钥只保存在本机私密存储。不内置聊天或自动生成循环。
+稳定 MCP 默认使用精简工具目录，通过 `hetu_call_action` 调用已发现动作；需要完整目录可使用 `hetu-mcp --client codex --all-tools`。CLI 使用 `hetu --client codex doctor` 查看运行与随包方法版本。接入、分块读取和任务接续见[机器合同](docs/13-内核ABI与CLI合同.md#机器发现诊断与有界恢复)。
+
+这些入口共用内核、作品、权限与修订。通用 Agent 的推理、上下文管理、工具调度和执行恢复需要长期投入，Codex、Claude Code、WorkBuddy 等产品专注于此。河图提供它们可以操作的创作软件；可选文字与图片模型通过河图网站服务端连接 Lime Cloud，作者批准内容外发与任务费用范围。也可在本机配置自定义渠道，由 CLI／MCP 封装供外部 Agent 调用；密钥只保存在本机私密存储。不内置聊天或自动生成循环。
 
 ## 角色分流
 
@@ -114,7 +116,7 @@ cargo test --locked --workspace --jobs 2
 
 网站测试所需浏览器见[网站说明](apps/website/README.md)，Electron 构建与分发见[构建规范](docs/21-构建分发与运维.md)。
 
-GitHub Actions 的 `CI` 执行 Electron、Rust 与网页测试；`Electron release` 从 `main` 手动构建三平台下载包，推送匹配版本的 `v*.*.*` 标签时，在全部平台验证通过后发布 GitHub Release。Mac 包执行签名与公证。所需 Secrets 与制品下载方式见[构建规范](docs/21-构建分发与运维.md#61-github-actions)。
+GitHub Actions 的 `CI` 执行 Electron、Rust 与网页测试；`Electron release` 从 `main` 手动构建三平台下载包，推送匹配版本的 `v*.*.*` 标签时，在全部平台验证通过后发布 GitHub Release，再发布同版本 `@limecloud/hetu` 到 npmjs。Mac 包执行签名与公证。发布凭据与制品下载方式见[构建规范](docs/21-构建分发与运维.md#61-github-actions)。
 
 ## 配置与接入
 

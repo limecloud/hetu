@@ -971,3 +971,13 @@ CLI、MCP、MCP Apps、本地页面和原生端共用上述用例；Apps只在�
 ## 固定媒体的插件公共读取
 
 `hetu.extensions.sources.read_blob` 为只读数据动作，通过既有稳定插件发现／调用入口使用；接受固定asset来源、offset及有界max_bytes，不接受路径。当前作品、资产修订、记录与文件摘要逐次核验，返回Base64及完整／分块摘要。调用方重组后核对完整文件，不将素材元数据当格式解码结果。具体Schema归extensions动作合同，SDK分层及边界归[插件27](plugin/27-开放宿主SDK与核心能力审计.md#固定媒体字节的公共读取)。
+
+## 机器发现与长任务接续
+
+collaboration.inspect和agent_operations.catalog支持action、group、offset、limit、include_schema；默认仅返回有界摘要，catalog_sha256标记真实目录身份。collaboration.invoke只路由本连接已登记的动作，不接受递归调用或身份覆盖；返回实际动作结果。runtime.inspect只报告实际运行版本、合同摘要和随包方法身份，调用方报告的版本标明reported；未观察的会话加载与安装状态保持unknown。
+
+task_checkpoint.get/save只在精确任务内读取和维护接续记录，首次保存expected=null，后续使用返回revision和sha256，operation_key保持幂等；关闭、撤权、来源或成果越界拒绝。记录引用固定context、working_copy和feedback；阅读范围须落在固定UTF-8内容，Core不鉴定语义理解。阶段、未决问题与下一步不自动驱动Agent或扩大执行权。
+
+creative_tasks.get可选detail=summary；working_copies.get、候选读取和operations.get提供固定结果的有界读取。默认新旅程先摘要，旧直接读取保留原结果语义。超限回执保留原操作与恢复输入，恢复始终重新核验授权。
+
+固定设定实体超过单次预算时，task_context.read以原context_ref、section和entity_id携带result_path读取字段目录，再以offset和max_bytes读取字段片段；整份设定及实体摘要保持。字段读取不跟随当前设定，文本来源拒绝实体字段参数。MCP预算失败返回同一固定实体的字段读取参数，不要求无限提高传输预算。

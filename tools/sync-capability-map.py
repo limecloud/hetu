@@ -32,6 +32,8 @@ ROUTES = {
     "collaboration": ("连接与精确授权", "hetu-setup"),
     "working_copies": ("持续参考稿与反馈", "hetu-draft"),
     "task_feedback": ("持续参考稿与反馈", "hetu-revise"),
+    "task_checkpoint": ("任务接续与交接", "hetu-setup"),
+    "runtime": ("运行与方法诊断", "hetu-setup"),
     "task_context": ("按需上下文", "hetu-setup"),
     "models": ("模型计划与费用", "hetu-setup"),
     "model_tasks": ("模型计划与费用", "hetu-setup"),

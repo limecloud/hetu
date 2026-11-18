@@ -80,6 +80,104 @@ struct Client {
 }
 
 #[tokio::test]
+async fn compact_catalog_dispatches_discovered_actions_without_tool_list_refresh() {
+    let root = tempfile::tempdir().unwrap();
+    let directory = root.path().join("absent");
+    let mut command = Command::new(binary());
+    command
+        .args(["--client", "codex", "--collaboration-dir"])
+        .arg(&directory);
+    let mut client = Client::spawn(command);
+    let listed = client.rpc("tools/list", json!({})).await;
+    let tools = listed["result"]["tools"].as_array().unwrap();
+    assert!(tools.len() <= 12, "{listed}");
+    assert!(tools.iter().any(|t| t["name"] == "hetu_call_action"));
+    let discovered = client
+        .tool(
+            "hetu_inspect_collaboration",
+            json!({"action":"hetu.runtime.inspect","include_schema":true}),
+        )
+        .await;
+    assert_eq!(discovered["data"]["total"], 1);
+    let actual = client
+        .tool(
+            "hetu_call_action",
+            json!({"action":"hetu.runtime.inspect","input":{"observed_skill_version":"old"}}),
+        )
+        .await;
+    assert_eq!(actual["action"], "hetu.runtime.inspect");
+    assert_eq!(actual["data"]["session_skill_loading"], "unknown");
+    let denied = client
+        .tool(
+            "hetu_call_action",
+            json!({"action":"hetu.documents.save","input":{"mode":"author"}}),
+        )
+        .await;
+    assert!(denied.get("error").is_some());
+    assert!(!directory.exists());
+    client.close().await;
+    let mut command = Command::new(binary());
+    command
+        .args(["--client", "codex", "--all-tools", "--collaboration-dir"])
+        .arg(&directory);
+    let mut full = Client::spawn(command);
+    let listed = full.rpc("tools/list", json!({})).await;
+    assert!(listed["result"]["tools"].as_array().unwrap().len() > 100);
+    full.close().await;
+}
+
+#[tokio::test]
+async fn oversized_checkpoint_keeps_persisted_operation_and_can_be_browsed_after_reopen() {
+    let (root, k) = setup();
+    let task = creative_task(&k, json!([]), None);
+    let directory = root.path().join("bounded-connection");
+    let grant = call(
+        &k,
+        "collaboration.authorize",
+        json!({"task_ref":task["task_ref"],"client_adapter":"codex","collaboration_path":directory,"operation_key":"bounded-grant"}),
+    );
+    assert_eq!(grant["status"], "succeeded", "{grant}");
+    let mut client = Client::start_stable(&directory);
+    let opened=client.tool("hetu_open_collaboration_task",json!({"task_locator":{"scope_ref":task["task_ref"]["scope_ref"],"task_id":task["task_ref"]["task_id"]}})).await;
+    let reference = &opened["data"]["task_ref"];
+    let mut note = json!({"phase":"传输预算测试","working_copy_refs":[],"feedback_refs":[],"coverage":[],"statements":[],"next_actions":[],"pending_operations":[]});
+    for _ in 0..8 {
+        note["statements"]
+            .as_array_mut()
+            .unwrap()
+            .push(json!({"kind":"question","text":"a".repeat(1900),"context_refs":[]}));
+    }
+    let remaining = 16200 - serde_json::to_vec_pretty(&note).unwrap().len();
+    note["next_actions"] = json!(["b".repeat(remaining.saturating_sub(4))]);
+    assert!(serde_json::to_vec_pretty(&note).unwrap().len() <= 16 * 1024);
+    let input = json!({"task_ref":reference,"expected":null,"checkpoint":note,"operation_key":"bounded-checkpoint"});
+    let saved = client
+        .tool("hetu_save_task_checkpoint", input.clone())
+        .await;
+    assert_eq!(saved["status"], "succeeded", "{saved}");
+    assert_eq!(saved["data"]["response"]["retained"], true, "{saved}");
+    assert_eq!(saved, client.tool("hetu_save_task_checkpoint", input).await);
+    let recover = saved["data"]["recovery"]["input"].clone();
+    client.close().await;
+    let mut client = Client::start_stable(&directory);
+    let summary = client
+        .tool("hetu_read_task_operation", recover.clone())
+        .await;
+    assert_eq!(summary["data"]["original_status"], "succeeded", "{summary}");
+    let mut read = recover;
+    read["result_path"] = json!("/data/checkpoint/statements/0/text");
+    read["max_bytes"] = json!(256);
+    let part = client.tool("hetu_read_task_operation", read).await;
+    assert_eq!(part["data"]["page"]["content"], "a".repeat(256));
+    assert_eq!(part["data"]["page"]["complete"], false);
+    let checkpoint = client
+        .tool("hetu_get_task_checkpoint", json!({"task_ref":reference}))
+        .await;
+    assert_eq!(checkpoint["data"]["checkpoint"], note);
+    client.close().await;
+}
+
+#[tokio::test]
 async fn stable_capability_map_and_fixed_conversation_decision_work_without_desktop() {
     let (root, author) = setup();
     let directory = root.path().join("会话机器入口");
@@ -618,14 +716,14 @@ async fn stable_video_episode_changes_use_exact_scope_fixed_decision_and_origina
     let grant = &grant["data"]["management_ref"];
     let mut client = Client::start_stable(&directory);
     client.rpc("server/discover", json!({})).await;
-    let catalog = client
-        .tool(
-            "hetu_list_management_actions",
-            json!({"management_ref":grant}),
-        )
-        .await;
-    assert_eq!(catalog["status"], "succeeded", "{catalog}");
     for action in ["hetu.video.episodes.update", "hetu.video.episodes.reorder"] {
+        let catalog = client
+            .tool(
+                "hetu_list_management_actions",
+                json!({"management_ref":grant,"action":action}),
+            )
+            .await;
+        assert_eq!(catalog["status"], "succeeded", "{catalog}");
         assert!(
             catalog["data"]["actions"]
                 .as_array()
@@ -941,7 +1039,8 @@ impl Client {
             .arg("--client")
             .arg("codex")
             .arg("--collaboration-dir")
-            .arg(directory);
+            .arg(directory)
+            .arg("--all-tools");
         Self::spawn(command)
     }
     fn start_config(path: &Path, home: Option<&Path>, scope: &str, task: Option<&str>) -> Self {
@@ -1104,6 +1203,19 @@ async fn stable_local_settings_need_exact_author_decision_and_survive_mcp_restar
     client.rpc("server/discover", json!({})).await;
     let before = client.tool("hetu_local_settings_get", json!({})).await;
     assert_eq!(before["status"], "succeeded", "{before}");
+    assert!(before["data"].get("categories").is_none());
+    let mut read = before["data"]["response"]["read"]["input"].clone();
+    read["view"]["result_path"] = json!("/categories");
+    read["view"]["limit"] = json!(2);
+    let categories = client.tool("hetu_call_action", read.clone()).await;
+    assert_eq!(
+        categories["data"]["view"]["items"]
+            .as_array()
+            .unwrap()
+            .len(),
+        2
+    );
+    assert_eq!(categories["data"]["view"]["next_offset"], 2);
     let input = json!({"kind":"preferences","patch":{"font_size":23,"appearance":"dark"},"summary":"设置阅读偏好","operation_key":"prepare"});
     let created = client
         .tool("hetu_local_settings_prepare", input.clone())
@@ -1136,6 +1248,8 @@ async fn stable_local_settings_need_exact_author_decision_and_survive_mcp_restar
         .tool("hetu_local_settings_execute", execute.clone())
         .await;
     assert_eq!(executed["status"], "succeeded", "{executed}");
+    let stale = client.tool("hetu_call_action", read).await;
+    assert_eq!(stale["error"]["code"], "hetu.stale_evidence");
     client.close().await;
     let mut client = Client::start_stable(&directory);
     client.rpc("server/discover", json!({})).await;
@@ -1490,7 +1604,10 @@ async fn task_connection_exposes_only_fixed_task_and_rejects_overwrite_and_revok
             "hetu_get_model_task",
             "hetu_authorize_model_usage",
             "hetu_submit_model_task",
-            "hetu_collect_model_task"
+            "hetu_collect_model_task",
+            "hetu_get_task_checkpoint",
+            "hetu_save_task_checkpoint",
+            "hetu_read_task_candidate"
         ]
     );
     assert!(
