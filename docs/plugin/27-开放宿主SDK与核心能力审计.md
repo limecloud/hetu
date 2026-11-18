@@ -139,7 +139,7 @@ GUI通过`host.media_open`／`host.media_release`预览当前作品固定asset�
 
 `host.export_file`支持固定清单分段及固定对象UTF-8偏移分块两种只读返回。后者包含`project_ref`、`offset`、`next_offset`、`total_bytes`、`content_sha256`、`media_type`；所有块固定同一对象与总字节数，连续偏移并核验摘要后才原子替换作者选择的目标。固定对象可导出`text/markdown`、`application/json`和`text/html`；HTML按原字节保存，不在宿主执行，离线内容与转义由插件负责。视图提交`action,input,suggested_name`，不把任意内容或路径交给窄服务。
 
-`host.save_artifact`为通用二进制文件服务，核验当前作品固定对象及有限字节后，仅向作者在保存对话框选择的目标原子写入PNG、GLB、ZIP、WebM或MP4。它不执行三维或媒体专业逻辑，不写Core业务状态，不开放任意路径读写。格式、预算及取消恢复合同归[插件20](20-首期可执行合同与开发入口.md)；专业插件负责派生与渲染，同一工作流可由CLI/MCP固定计划和独立脚本完成。
+`host.save_artifact`为通用二进制文件服务，核验当前作品固定对象及有限字节后，仅向作者在保存对话框选择的目标原子写入PNG、GLB、ZIP、WebM、MP4、WAV、PDF、EPUB、HTML或XLIFF。它不执行三维或媒体专业逻辑，不写Core业务状态，不开放任意路径读写。格式、预算及取消恢复合同归[插件20](20-首期可执行合同与开发入口.md)；专业插件负责派生与渲染，同一工作流可由CLI/MCP固定计划和独立脚本完成。
 
 ```mermaid
 sequenceDiagram
@@ -158,3 +158,5 @@ sequenceDiagram
 ### 作品类型适用范围
 
 插件清单的 `work_kinds` 可声明 `novel`、`drama`、`video` 中的一个或多个类型；省略表示兼容全部。它只描述专业工作面适用范围，不扩大或替代外部 Agent 的作品授权。宿主按当前作品过滤入口，打开前再次核验；能力发现返回相同声明，专业后端继续核验自身领域。新增脚手架显式给出类型范围，空数组、重复及未知类型被 Schema 拒绝。
+
+能力发现与派发的进程管道须使用流式UTF-8解码，跨分块的汉字和其他多字节字符必须保持；不能逐块Buffer转字符串后拼接，以免Schema与能力摘要变化。大清单与小清单使用同一合同。

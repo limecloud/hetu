@@ -32,6 +32,9 @@ async function runtime() {
     "--package-sha256", pkg.sha256, "--core-cli", flags[3]];
   const run = (args: string[], value?: unknown) => new Promise<any>((resolve, reject) => {
     const child = spawn(process.execPath, [...connection, ...args], { stdio: "pipe", shell: false, windowsHide: true });
+    // 保留跨管道分块的 UTF-8 字符，否则中文 Schema 会改变能力摘要。
+    child.stdout.setEncoding("utf8");
+    child.stderr.setEncoding("utf8");
     let output = "", error = "";
     const timer = setTimeout(() => { child.kill(); reject(new Error("插件结果未知，请保留原键回读。")); }, 35000);
     child.stdout.on("data", chunk => {
