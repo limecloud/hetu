@@ -33,3 +33,16 @@ test('完整32MiB预算不会触发正则栈溢出，超出预算在选择文件
  await assert.rejects(savePluginArtifact({...payload,base64:payload.base64+'AAAA'},context),/预算/);
  assert.equal(selected,1);
 });
+
+test('书稿译稿与声音派生格式核验签名、扩展名及原字节',async()=>{
+ const root=await mkdtemp(path.join(os.tmpdir(),'hetu-creative-files-'));
+ const epub=Buffer.alloc(58);epub.writeUInt32LE(0x04034b50);epub.writeUInt16LE(8,26);epub.write('mimetype',30);epub.write('application/epub+zip',38);
+ const wav=Buffer.from('RIFF\x04\x00\x00\x00WAVE','binary');
+ const samples=[['book.epub','application/epub+zip',epub],['book.pdf','application/pdf',Buffer.from('%PDF-1.7\n1 0 obj\nendobj\n%%EOF\n')],['draft.html','text/html',Buffer.from('<!doctype html><html lang="zh-CN"><body>原稿</body></html>')],['draft.xlf','application/xliff+xml',Buffer.from('<?xml version="1.0"?><xliff version="2.0"></xliff>')],['voice.wav','audio/wav',wav]] as const;
+ for(const [name,type,bytes]of samples){const file=path.join(root,name);let selected=0;const context={check(){},choose:async()=>{selected++;return file;}},payload={suggested_name:name,media_type:type,base64:bytes.toString('base64'),sha256:createHash('sha256').update(bytes).digest('hex')};
+  assert.equal((await savePluginArtifact(payload,context)).saved,true);assert.deepEqual(await readFile(file),bytes);
+  await assert.rejects(savePluginArtifact({...payload,suggested_name:name+'.bad'},context));
+  const wrong=Buffer.from('并非此格式');await assert.rejects(savePluginArtifact({...payload,base64:wrong.toString('base64'),sha256:createHash('sha256').update(wrong).digest('hex')},context));assert.equal(selected,1);assert.deepEqual(await readFile(file),bytes);
+ }
+ const invalid=Buffer.from('<html>\u0000</html>');await assert.rejects(savePluginArtifact({suggested_name:'bad.html',media_type:'text/html',base64:invalid.toString('base64'),sha256:createHash('sha256').update(invalid).digest('hex')},{check(){},choose:async()=>{throw Error('错误文件不应进入选择');}}));
+});

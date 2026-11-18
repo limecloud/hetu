@@ -11,7 +11,15 @@ const formats: Record<string, { extension: string; signature: (b: Buffer) => boo
   'application/zip': { extension: '.zip', signature: b => ['504b0304', '504b0506'].includes(b.subarray(0, 4).toString('hex')) },
   'video/webm': { extension: '.webm', signature: b => b.subarray(0, 4).toString('hex') === '1a45dfa3' },
   'video/mp4': { extension: '.mp4', signature: b => b.length >= 12 && b.toString('ascii', 4, 8) === 'ftyp' },
+  'audio/wav': { extension: '.wav', signature: b => b.length >= 12 && b.toString('ascii',0,4)==='RIFF' && b.toString('ascii',8,12)==='WAVE' && b.readUInt32LE(4)+8===b.length },
+  'application/pdf': { extension: '.pdf', signature: b => b.toString('ascii',0,5)==='%PDF-' && b.subarray(-1024).includes(Buffer.from('%%EOF')) },
+  'application/epub+zip': { extension: '.epub', signature: b => b.length >= 58 && b.readUInt32LE(0)===0x04034b50 && b.readUInt16LE(8)===0 && b.readUInt16LE(26)===8 && b.readUInt16LE(28)===0 && b.toString('ascii',30,38)==='mimetype' && b.toString('ascii',38,58)==='application/epub+zip' },
+  'text/html': { extension: '.html', signature: b => textSignature(b, text => /^<!doctype html[\s>]/i.test(text)||/^<html[\s>]/i.test(text)) },
+  'application/xliff+xml': { extension: '.xlf', signature: b => textSignature(b, text => /^(?:<\?xml[^?]*\?>\s*)?<xliff[\s>]/.test(text)) },
 };
+function textSignature(bytes:Buffer, check:(text:string)=>boolean) {
+  try { const text=new TextDecoder('utf-8',{fatal:true}).decode(bytes).trimStart();return !text.includes('\u0000')&&check(text); } catch { return false; }
+}
 
 /** 保存派生文件，不登记素材或认可内容；目标只来自作者文件选择。 */
 export async function savePluginArtifact(input: ArtifactInput, context: {
