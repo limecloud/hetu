@@ -213,7 +213,7 @@ impl ServerHandler for StableServer {
                 "本机操作未返回，请沿原键查询。",
             ),
         };
-        let is_read = result["action"]
+        let is_read = response::plugin_read(&result) || result["action"]
             .as_str()
             .is_some_and(|action| self.read_actions.iter().any(|name| name == action));
         let result = if is_read && arguments.get("view").is_none() {

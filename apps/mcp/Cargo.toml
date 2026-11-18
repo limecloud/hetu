@@ -9,6 +9,7 @@ license.workspace = true
 hetu-core = { path = "../../core" }
 serde.workspace = true
 serde_json.workspace = true
+serde_json_canonicalizer.workspace = true
 jsonschema.workspace = true
 sha2.workspace = true
 form_urlencoded = "1.2"

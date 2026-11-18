@@ -3,12 +3,12 @@
   "generated_by": "tools/sync-capability-map.py",
   "meaning": "source_wired仅表示源码合同和入口已连线；不证明安装、运行、跨平台或端到端通过。执行时先inspect实际能力。",
   "sources": {
-    "contracts/actions.json": "ae2fa91f81bedc92fc2b06ad36057429c429f13a06f30edc57c8561075185826",
+    "contracts/actions.json": "76168318148b7a24bd56f840fcce3a7189c071aee6ac939b01a51acfe8a30a56",
     "contracts/tools/catalog.json": "290f98466f51aaa9f415c5d46c19a5894c171b53efda0fc749dc01e000773f0c",
     "core/src/application/agent_operations.rs": "a87c933745bb068d42c6a99bcdda499b0734fa316b603f0f6e725dbc1b865206",
     "core/src/application/creative_tasks.rs": "8d82a1d2935341ca67aa9f14c1ae5ee95ef7609d40942f8c5f20a4905ffe48ac",
     "core/src/application/work_scope.rs": "cee3cad66a6c2d31076607e59d3866b2429e88849460103f1e0732bf9f9a1b1b",
-    "core/src/collaboration/authoring.rs": "1ed3ad93790f446be076530db097fc050798e0970884027b14f4ef5337466170",
+    "core/src/collaboration/authoring.rs": "6eacfd01e53a8960852e690d71bab826fdfdb745f6dcc72f45e2381b4edb6aad",
     "integrations/catalog.json": "d2193b2fe08a7a7571395905fa571f775dc3bf3988462fd0e020a3077e7a5825",
     "tools/hetu-skills/base/skills/hetu-artwork/SKILL.md": "4dc578dbc319c7772d4b33fe35f99e987367e08da8abfeafb9897f5ff09ebe89",
     "tools/hetu-skills/base/skills/hetu-book-create/SKILL.md": "54d61aa957d57cd19a395eea6a0ab544cfdd50ccbd7d93733dd5b6e5fdc57989",
@@ -10524,6 +10524,35 @@
             "type": "string",
             "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+)+$",
             "maxLength": 120
+          },
+          "view": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "result_path": {
+                "type": "string",
+                "maxLength": 512
+              },
+              "offset": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100
+              },
+              "max_bytes": {
+                "type": "integer",
+                "minimum": 256,
+                "maximum": 16384
+              },
+              "expected_result_sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": []
           }
         },
         "required": [

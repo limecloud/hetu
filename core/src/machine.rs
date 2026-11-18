@@ -221,6 +221,26 @@ pub fn recovery(result: &mut Value, action: &str, input: &Value) {
             args[key] = value.clone();
         }
     }
+    if matches!(code,"result_unknown"|"hetu.outcome_unknown"|"hetu.cleanup_failed"|"hetu.output_budget_exceeded") {
+        if matches!(action,"hetu.plugins.invoke"|"hetu.plugin_access.invoke")
+            && input["arguments"]["operation_key"].as_str().is_some_and(|key|!key.is_empty()&&key.len()<=128) {
+            for key in ["work_ref","plugin_id","grant_id","package_sha256","capabilities_sha256"] {
+                if let Some(value)=input.get(key) {args[key]=value.clone();}
+            }
+            args["action"]=json!("hetu.extensions.operations.get");
+            args["arguments"]=json!({"operation_key":input["arguments"]["operation_key"]});
+            if let Ok(raw)=serde_json_canonicalizer::to_vec(&json!({"action":input["action"],"input":input["arguments"]})) {
+                args["arguments"]["invocation_sha256"]=json!(digest(raw));
+            }
+            result["error"]["resolution"]=json!({"kind":"recover","action":action,"input":args,"retry":"query_original"});
+            return;
+        }
+        if action=="hetu.plugins.apply" && input["operation_key"].is_string() {
+            result["error"]["resolution"]=json!({"kind":"recover","action":"hetu.plugins.get_operation",
+                "input":{"operation_key":input["operation_key"]},"retry":"query_original"});
+            return;
+        }
+    }
     let target = match code {
         "hetu.stale_evidence"
             if matches!(
@@ -271,7 +291,7 @@ pub fn recovery(result: &mut Value, action: &str, input: &Value) {
             args["detail"] = json!("summary");
             "hetu.creative_tasks.get"
         }
-        "result_unknown" | "workspace_busy" | "hetu.recovery_required" => {
+        "result_unknown" | "hetu.outcome_unknown" | "hetu.cleanup_failed" | "hetu.output_budget_exceeded" | "workspace_busy" | "hetu.recovery_required" => {
             args["action"] = json!(action);
             args["key"] = input["operation_key"].clone();
             "hetu.operations.get"
@@ -295,6 +315,25 @@ pub fn recovery(result: &mut Value, action: &str, input: &Value) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn interrupted_plugin_recovers_the_original_owner_operation_without_echoing_content() {
+        let input=json!({"management_ref":{"grant_id":"a".repeat(64)},"work_ref":{"kind":"novel"},
+            "plugin_id":"org.wordflowlab.novel-review","package_sha256":"b".repeat(64),"capabilities_sha256":"c".repeat(64),
+            "action":"save_project","arguments":{"operation_key":"same-owner-key","content":"private-creative-content"}});
+        for code in ["hetu.outcome_unknown","hetu.cleanup_failed","hetu.output_budget_exceeded"] {
+            let mut result=crate::failure_result("hetu.plugins.invoke","collaboration",&Error::new(code,"interrupted"));
+            recovery(&mut result,"hetu.plugins.invoke",&input);
+            assert_eq!(result["status"],"unknown");
+            let resolution=&result["error"]["resolution"];
+            assert_eq!(resolution["action"],"hetu.plugins.invoke");
+            assert_eq!(resolution["input"]["action"],"hetu.extensions.operations.get");
+            assert_eq!(resolution["input"]["arguments"]["operation_key"],"same-owner-key");
+            assert_eq!(resolution["input"]["arguments"]["invocation_sha256"],digest(serde_json_canonicalizer::to_vec(
+                &json!({"action":input["action"],"input":input["arguments"]})).unwrap()));
+            assert!(!result.to_string().contains("private-creative-content"));
+        }
+    }
 
     #[test]
     fn conflict_recovery_reads_the_exact_object_without_echoing_content() {

@@ -8,6 +8,7 @@ import Ajv from "ajv";
 import installationSchema from "../../../contracts/schemas/plugin-installation.schema.json" with { type: "json" };
 import manifestSchema from "../../../contracts/schemas/plugin-manifest.schema.json" with { type: "json" };
 import { skillSummaries } from "./skills.ts";
+import { PluginInvocationRejected } from "./rejection.ts";
 export type InstalledPackageIdentity = Pick<PluginPackage, "manifest" | "sha256">;
 const validateState = new Ajv({ strict: false }).addSchema(manifestSchema, "urn:hetu:plugin-manifest:1").compile(installationSchema);
 
@@ -128,25 +129,26 @@ export class PluginInstallations {
     if (!["codex", "claude-code", "workbuddy", "generic", "desktop"].includes(input.client_adapter)
       || typeof input.operation_key !== "string" || !input.operation_key.trim() || input.operation_key.length > 128
       || typeof input.authorization_note !== "string" || !input.authorization_note.trim() || input.authorization_note.length > 8000)
-      throw new Error("须提供客户端、原操作键与真实的安装选择。");
+      throw new PluginInvocationRejected("须提供客户端、原操作键与真实的安装选择。");
     return this.#locked(async () => {
       const { state, sha256 } = await this.read(), key = digest([input.client_adapter, input.operation_key]);
       const previous = state.operations?.[key], input_sha256 = digest(input);
       if (previous) {
-        if (previous.input_sha256 !== input_sha256) throw new Error("原操作键已绑定其他输入。");
+        if (previous.input_sha256 !== input_sha256) throw new PluginInvocationRejected("原操作键已绑定其他输入。");
         return previous.result;
       }
-      if (sha256 !== input.expected_sha256) throw new Error("插件状态已变化，请重新审阅。");
+      if (sha256 !== input.expected_sha256) throw new PluginInvocationRejected("插件状态已变化，请重新审阅。");
       const host = await this.host(state);
       let pkg: InstalledPackageIdentity;
       if (input.action === "install") {
-        pkg = await PluginPackage.inspect(input.package_directory);
+        try { pkg = await PluginPackage.inspect(input.package_directory); }
+        catch (error) { throw new PluginInvocationRejected(error instanceof Error ? error.message : "插件包无法读取。"); }
       } else {
         const installed = state.packages.find(item => !item.removed && item.manifest?.id === input.plugin_id);
-        if (!installed?.manifest) throw new Error("插件未安装。");
+        if (!installed?.manifest) throw new PluginInvocationRejected("插件未安装。");
         pkg = { manifest: installed.manifest, sha256: installed.sha256 };
       }
-      if (pkg.sha256 !== input.package_sha256) throw new Error("操作与已选择的插件包摘要不一致。");
+      if (pkg.sha256 !== input.package_sha256) throw new PluginInvocationRejected("操作与已选择的插件包摘要不一致。");
       const affected = new Set<string>();
       if (input.action !== "install" || state.packages.some(item => !item.removed && item.manifest?.id === pkg.manifest.id)) affected.add(pkg.manifest.id);
       if (input.action !== "enable") {
@@ -159,7 +161,7 @@ export class PluginInstallations {
             }
         }
       }
-      if (!["install", "enable", "disable", "uninstall"].includes(input.action)) throw new Error("未知插件安装动作。");
+      if (!["install", "enable", "disable", "uninstall"].includes(input.action)) throw new PluginInvocationRejected("未知插件安装动作。");
       if (input.action !== "enable") {
         for (const owner of affected) {
           const item = state.packages.find(item => !item.removed && item.manifest?.id === owner)!;

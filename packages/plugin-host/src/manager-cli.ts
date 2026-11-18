@@ -8,6 +8,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { skillSummaries } from "./skills.ts";
 import { capabilitiesSha } from "./dispatch.ts";
+import { PluginInvocationRejected, isInvocationRejection } from "./rejection.ts";
 const flags = process.argv.slice(2);
 if (flags.length !== 4 || flags[0] !== "--directory" || flags[2] !== "--core-cli") throw new Error("插件管理连接参数无效。");
 let wire = "";
@@ -18,9 +19,9 @@ for await (const chunk of process.stdin) {
 const request = JSON.parse(wire), store = new PluginInstallations(flags[1]);
 async function runtime() {
   const input = request.input, { state } = await store.read(), host = await store.host(state,input.plugin_id);
-  if (!host.active(input.plugin_id)) throw new Error("插件未启用、包已变化或依赖不可用，请重新发现。");
+  if (!host.active(input.plugin_id)) throw new PluginInvocationRejected("插件未启用、包已变化或依赖不可用，请重新发现。");
   const pkg = host.package(input.plugin_id);
-  if (pkg.sha256 !== input.package_sha256) throw new Error("插件包已更新，旧能力引用不可继续使用。");
+  if (pkg.sha256 !== input.package_sha256) throw new PluginInvocationRejected("插件包已更新，旧能力引用不可继续使用。");
   const openMode = request.action.startsWith("hetu.plugins.");
   const privateDirectory = openMode ? await mkdtemp(path.join(os.tmpdir(),"hetu-plugin-connection-")) : undefined;
   if (privateDirectory) await writeFile(path.join(privateDirectory,"management.json"),JSON.stringify(input.management_binding),{mode:0o600});
@@ -46,7 +47,11 @@ async function runtime() {
     child.on("close", code => {
       clearTimeout(timer);
       if (code !== 0) return reject(new Error(error || "插件调用未完成，请按原键回读。"));
-      try { resolve(JSON.parse(output)); } catch { reject(new Error("插件回执无效，请保留原键。")); }
+      try {
+        const reply = JSON.parse(output);
+        if (isInvocationRejection(reply)) reject(new PluginInvocationRejected(reply.message));
+        else resolve(reply);
+      } catch { reject(new Error("插件回执无效，请保留原键。")); }
     });
     child.stdin.on("error", () => {});
     child.stdin.end(value === undefined ? "" : JSON.stringify(value));
@@ -57,7 +62,7 @@ async function runtime() {
     return { format_version: 1, ...capabilities, capabilities_sha256 };
   }
   return await run(["dispatch", "--input", "-"], {capabilities_sha256:input.capabilities_sha256,
-    action:input.action, arguments:input.arguments});
+    action:input.action, arguments:input.arguments, ...(input.view === undefined ? {} : {require_read_only:true})});
   } finally {if(privateDirectory)await rm(privateDirectory,{recursive:true,force:true});}
 }
 const revoke = async (pkg: InstalledPackageIdentity) => new Promise<void>((resolve, reject) => {
@@ -79,7 +84,9 @@ try {
     case "hetu.plugin_access.invoke": data = await runtime(); break;
     case "hetu.plugins.inspect": data = { ...(await store.inspect()), state_directory: store.directory }; break;
     case "hetu.plugins.inspect_package": {
-      const pkg = await PluginPackage.inspect(request.input.package_directory);
+      let pkg: PluginPackage;
+      try { pkg = await PluginPackage.inspect(request.input.package_directory); }
+      catch (error) { throw new PluginInvocationRejected(error instanceof Error ? error.message : "插件包无法读取。"); }
       data = { package_sha256: pkg.sha256, manifest: pkg.manifest, skills: skillSummaries(pkg),
         code_execution: !!pkg.manifest.runtime, note: "安装并启用后可使用宿主公开核心能力。" };
       break;
@@ -91,5 +98,6 @@ try {
   process.stdout.write(JSON.stringify({ ok: true, data }));
 } catch (error) {
   process.stdout.write(JSON.stringify({ ok: false, message: error instanceof Error ? error.message : "插件管理未完成。" }));
-  process.exitCode = 1;
+  // 只有确定尚未分派的拒绝正常返回；其他异常继续由Core视为结果未知。
+  process.exitCode = error instanceof PluginInvocationRejected ? 0 : 1;
 }

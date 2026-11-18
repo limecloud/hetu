@@ -1,0 +1,244 @@
+{
+  "date": "2026-11-19",
+  "status": "local_machine_and_desktop_passed_release_pending",
+  "shanhai_version": "0.2.2",
+  "shanhai_package_sha256": "a11d100054f4fce4e2560c33416221e87bdece3f534201484ee2b0a70d957bb8",
+  "host": {
+    "version": "0.12.5",
+    "manifest_sha256": "fb5abb9f0f645f5c8621d3d37e3d6061a78ba49ce2a1c7055cd9d664d74ff46a",
+    "source_sha256": "456ac4529f28bd02297d4d904838379c246a3cf0dfe35b087bc2279a2310ad55",
+    "kind": "isolated-development-candidate",
+    "production_verified": false,
+    "original_installed_app_modified": false
+  },
+  "strict_tests": {
+    "plugin-projection-guard": {
+      "status": "passed",
+      "checks": [
+        "old-before-dispatch",
+        "write-before-dispatch",
+        "unknown-before-dispatch",
+        "stale-before-dispatch",
+        "real-capability-package-and-work-rejection",
+        "disabled-view-refused-and-enabled-view-restored",
+        "revoked-view-refused"
+      ],
+      "package_sha256": "a11d100054f4fce4e2560c33416221e87bdece3f534201484ee2b0a70d957bb8",
+      "unexpected_dispatches": 0,
+      "boundary": "新旧manager边界使用隔离桩；包、作品、停用及撤权通过真实MCP和manager验证。"
+    },
+    "plugin-result-budget": {
+      "status": "passed",
+      "package_sha256": "a11d100054f4fce4e2560c33416221e87bdece3f534201484ee2b0a70d957bb8",
+      "source_result_sha256": "826db8ead43a720f2a75c1b78fcd40ce9ea4384f318316935891aded2a55e092",
+      "unicode_bytes": 14500,
+      "max_transport_bytes": 8684,
+      "only_one_saved_object": true,
+      "checks": [
+        "read-summary",
+        "fixed-sha-unicode-pages",
+        "same-cli-result",
+        "compact-tool-dynamic-view",
+        "generic-write-view-refused",
+        "original-write-operation",
+        "write-view-rejected-before-dispatch",
+        "wrong-invocation-rejected"
+      ],
+      "boundaries": [
+        "工程传输与恢复验收，不是模板内容质量或作者认可",
+        "分块不自动代表语义通读"
+      ]
+    },
+    "plugin-unknown-recovery": {
+      "status": "passed",
+      "package_sha256": "a11d100054f4fce4e2560c33416221e87bdece3f534201484ee2b0a70d957bb8",
+      "error_code": "hetu.outcome_unknown",
+      "recovery": "query_original",
+      "saved_objects": 1,
+      "write_replayed": false,
+      "checks": [
+        "real-core-write-before-manager-exit",
+        "nonzero-is-unknown",
+        "no-creative-input-echo",
+        "original-key-and-fingerprint",
+        "stable-original-result",
+        "unique-object"
+      ],
+      "boundary": "隔离manager在真实写入成功后人为丢弃回执；不是宿主崩溃、磁盘故障或作者验收。"
+    }
+  },
+  "previous_candidate": {
+    "version": "0.12.4-local-patch",
+    "status": "failed_final_gate",
+    "reason": "manager nonzero exit incorrectly classified as deterministic blocked failure",
+    "original_timed_out_update_recovered": true,
+    "isolated_post_write_failure_reproduced": true,
+    "failed_write_replayed": false
+  },
+  "source_baseline": {
+    "tag": "v0.12.4",
+    "commit": "3617eb7cabeda135f46d475eff28488d470f3bbe",
+    "remote_main_before_patch": "760719b5e90af8001026bc39a54756d4da6f253d",
+    "old_manifest_source_map_reused": false
+  },
+  "boundaries": [
+    "strict MCP tests use real stdio, fixed package and current candidate",
+    "old-manager guard uses an isolated trusted-manager stub; actual installation/work/revocation use real owner paths",
+    "unknown test drops receipt after real Core write; no original write replay",
+    "not user value, author acceptance, public release, notarization or cross-platform proof"
+  ],
+  "remaining": [
+    "0.12.5 CI, Developer ID, notarization and downloaded artifacts",
+    "shanhai 0.2.2 source release and production deployment",
+    "real-use review remains 260/510 full chapters and tail incomplete"
+  ],
+  "business": {
+    "status": "passed",
+    "host_manifest_sha256": "fb5abb9f0f645f5c8621d3d37e3d6061a78ba49ce2a1c7055cd9d664d74ff46a",
+    "runtime_unchanged": true,
+    "tests": [
+      {
+        "test": "entrypoint-parity",
+        "exit_code": 0,
+        "elapsed_seconds": 216.469,
+        "log_sha256": "e752ae7d4f808176ae23eb932f29bd2e128174ae576c4536f2a6fc0ee862b97b"
+      },
+      {
+        "test": "lifecycle",
+        "exit_code": 0,
+        "elapsed_seconds": 119.695,
+        "log_sha256": "b8875e057f9fa8292d02751bb6ca0a70029169aca52c27682b7c3c46e70d06f8"
+      },
+      {
+        "test": "source-scale",
+        "exit_code": 0,
+        "elapsed_seconds": 68.008,
+        "log_sha256": "113d572e3c37fe2cebe6bbb6b343290f16c079f82a75b36c9acd1ac4f784a283"
+      },
+      {
+        "test": "outcome-journey",
+        "exit_code": 0,
+        "elapsed_seconds": 363.494,
+        "log_sha256": "bfbe1df83790dbe391fe372115819d8d9b9847ef4245e1e4acf68487e4f54916"
+      }
+    ],
+    "limits": [
+      "macOS arm64隔离机器旅程",
+      "未证明用户收益、GUI或正式发行"
+    ]
+  },
+  "desktop": {
+    "status": "passed",
+    "version": "0.2.2",
+    "package_sha256": "a11d100054f4fce4e2560c33416221e87bdece3f534201484ee2b0a70d957bb8",
+    "host": "explicit_installed_app",
+    "checks": [
+      {
+        "track": "novel",
+        "application_ref": {
+          "object_id": "ext_da70cd12-98cd-4d96-b815-85ac4779a889",
+          "revision": 5,
+          "sha256": "e7dbe33dc8a94e7f3fd46fe6b29a6ab734b9efa20949463339e414679a492e78"
+        },
+        "original_ref": {
+          "object_id": "ext_da70cd12-98cd-4d96-b815-85ac4779a889",
+          "revision": 4,
+          "sha256": "d306ac6c3599798739f1dbdfcd586b89b7c975f853b3f88494566c36b2dd2d0a"
+        },
+        "actual_files": 3,
+        "file_bytes_match_machine": true,
+        "saved_feedback": true,
+        "unsaved_recovery": true,
+        "widths": [
+          1440,
+          600
+        ],
+        "errors": []
+      },
+      {
+        "track": "drama",
+        "application_ref": {
+          "object_id": "ext_3c5ed6f1-928e-43ef-9406-cfcdf94b905b",
+          "revision": 5,
+          "sha256": "9b8b6192b28296bea2d3794fc22f5d66ff64e3d07de2f556b407a6f238ef3801"
+        },
+        "original_ref": {
+          "object_id": "ext_3c5ed6f1-928e-43ef-9406-cfcdf94b905b",
+          "revision": 4,
+          "sha256": "8bb4eb90690547376a5a4105e688fd42a8f42315b84e04ec9989b7a0daba635d"
+        },
+        "actual_files": 2,
+        "file_bytes_match_machine": true,
+        "saved_feedback": true,
+        "unsaved_recovery": true,
+        "widths": [
+          1440,
+          600
+        ],
+        "errors": []
+      },
+      {
+        "track": "video",
+        "application_ref": {
+          "object_id": "ext_0ba3a9d2-a338-4392-8722-bfe1f460bbf8",
+          "revision": 5,
+          "sha256": "b65b4cd2116fd707d0fb923a585c08ed33d6ba9a5f28ae511a3071506293177e"
+        },
+        "original_ref": {
+          "object_id": "ext_0ba3a9d2-a338-4392-8722-bfe1f460bbf8",
+          "revision": 4,
+          "sha256": "1716f139e8b0c66d4c8af0133a30ffa762061943027072ae905b31fe412f6306"
+        },
+        "actual_files": 6,
+        "file_bytes_match_machine": true,
+        "saved_feedback": true,
+        "unsaved_recovery": true,
+        "widths": [
+          1440,
+          600
+        ],
+        "errors": []
+      }
+    ],
+    "boundaries": [
+      "真实安装版同一机器成果的GUI阅读、媒体播放、意见、恢复与文件保存",
+      "静音视频播放不证明人工完整试听",
+      "未采纳、定稿或宣称真实用户收益"
+    ]
+  },
+  "candidate_resource_manifest_followup": {
+    "status": "release_source_corrected",
+    "generated_html_changed": false,
+    "candidate_runtime_changed": false,
+    "files": [
+      {
+        "path": "apps/mcp/resources/operation-view.manifest.json",
+        "candidate_source_sha256": "2f31a98dbf54661b9e05f51749633d5b9ba7236ac7533d723cf1d894ead6c928",
+        "current_source_sha256": "8249539e6a2b3d10a8035a6d2ebea8d1548dad6e1766e4d9640856829abc29c2",
+        "change": "package.json 0.12.5 input hash; generated HTML bytes unchanged"
+      },
+      {
+        "path": "apps/mcp/resources/task-view.manifest.json",
+        "candidate_source_sha256": "fa557edc8482baecb88a7a5519b9812f6e968d135a4f5f96db12caf8835d535d",
+        "current_source_sha256": "21296d13b604ac4442f491abc86841fc156376be44e293e599359c63ef0cc876",
+        "change": "package.json 0.12.5 input hash; generated HTML bytes unchanged"
+      },
+      {
+        "path": "apps/task-view/resources/local/manifest.json",
+        "candidate_source_sha256": "b717b48b3e2b33abf8406bcccbd79b4c6794468940545e989c3e24962b3a3a28",
+        "current_source_sha256": "856418576bf56bbad96e29bde33dc714d830049d1f157657ca82a49e7206472e",
+        "change": "package.json 0.12.5 input hash; generated HTML bytes unchanged"
+      }
+    ],
+    "release_guard_tests": 4
+  },
+  "unit_and_source_checks": {
+    "typescript": "passed",
+    "trusted_dispatch_tests": 21,
+    "process_supervisor_tests": 2,
+    "original_operation_recovery_unit_tests": 1,
+    "core_integration_tests": 11,
+    "release_guard_tests": 4,
+    "mcp_response_tests": 7
+  }
+}

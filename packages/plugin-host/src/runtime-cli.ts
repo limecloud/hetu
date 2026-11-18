@@ -19,6 +19,7 @@ import { sameWork } from "@hetu/plugin-sdk";
 import Ajv from "ajv";
 import { skillSummaries, skillReadAction, readSkill } from "./skills.ts";
 import { dispatchPlugin } from "./dispatch.ts";
+import { PluginInvocationRejected, invocationRejection } from "./rejection.ts";
 const args = process.argv.slice(2);
 const flags = new Map<string, string>();
 while (args[0]?.startsWith("--") && args[0] !== "--mcp") {
@@ -57,7 +58,7 @@ async function checkInstalled() {
   if (!installed) return;
   const {state} = await installed.read(), host = await installed.host(state,pkg.manifest.id);
   if (!host.active(pkg.manifest.id) || host.package(pkg.manifest.id).sha256 !== pkg.sha256)
-    throw new Error("插件已停用或包已变化，请重新发现。");
+    throw new PluginInvocationRejected("插件已停用或包已变化，请重新发现。");
 }
 await checkInstalled();
 if (openMode) {
@@ -157,7 +158,7 @@ async function invoke(action: string, input: unknown) {
     !actions.some((a) => a.id === action) ||
     (await core(["inspect"])).status !== "succeeded"
   )
-    throw new Error("插件动作未获权或授权已撤销。");
+    throw new PluginInvocationRejected("插件动作未获权或授权已撤销。");
   if (!backend) {
     snapshot = await mkdtemp(path.join(os.tmpdir(), "hetu-plugin-runtime-"));
     for (const [name, bytes] of pkg.entries()) {
@@ -182,6 +183,7 @@ async function invoke(action: string, input: unknown) {
   return backend.invoke(action, input);
 }
 const capabilities = () => ({
+  invocation_projection_version: 1,
   plugin_id: pkg.manifest.id,
   work_kinds: pkg.manifest.work_kinds ?? ["novel", "drama", "video"],
   package_sha256: pkg.sha256,
@@ -205,6 +207,9 @@ if (args[0] === "capabilities" && args.length === 1) {
       if (Buffer.byteLength(input) > 1024 * 1024) throw new Error("输入超过预算。");
     }
     console.log(JSON.stringify(await dispatchPlugin(capabilities(), JSON.parse(input), { request, invoke })));
+  } catch (error) {
+    if (!(error instanceof PluginInvocationRejected)) throw error;
+    console.log(JSON.stringify(invocationRejection(error)));
   } finally { await cleanup(); }
 } else if (
   ["invoke", "call"].includes(args[0]) &&

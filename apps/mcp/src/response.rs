@@ -1,9 +1,13 @@
 //! 以最终工具结果预算保护传输；业务状态与完整持久回执保持原义。
 use super::*;
+use sha2::{Digest, Sha256};
 
 fn size(value: &Value) -> usize {
     serde_json::to_vec(&CallToolResult::structured(value.clone()))
         .map_or(usize::MAX, |v| v.len().saturating_add(256))
+}
+pub(crate) fn plugin_read(result: &Value) -> bool {
+    result["action"] == "hetu.plugins.invoke" && result["data"]["invocation"]["effect"] == "read"
 }
 pub(crate) fn summary_read(mut result: Value, action: &str, input: &Value) -> Value {
     if result.get("error").is_some()
@@ -23,14 +27,31 @@ pub(crate) fn summary_read(mut result: Value, action: &str, input: &Value) -> Va
                 fields.insert(key.clone(), value.clone());
             }
         }
+        let view = json!({"result_path":"","expected_result_sha256":sha});
+        let read = if action == "hetu.plugins.invoke" {
+            let mut read = input.clone();
+            read["view"] = view.clone();
+            json!({"action":action,"input":read})
+        } else {
+            json!({"action":"hetu.collaboration.invoke","input":{"action":action,"input":input,"view":view}})
+        };
         fields.insert("response".into(),json!({"detail":"summary","complete":false,"retained":false,
-            "source_result_sha256":sha,"read":{"action":"hetu.collaboration.invoke","input":{"action":action,
-                "input":input,"view":{"result_path":"","expected_result_sha256":sha}}}}));
+            "source_result_sha256":sha,"read":read}));
         fields.insert(
             "result_fields".into(),
             projected["data"]["view"]["fields"].clone(),
         );
         result["data"] = Value::Object(fields);
+        // 大输入已经在调用方手中；不要让恢复说明复制输入后再次超预算。
+        if action == "hetu.plugins.invoke" && size(&result) > MAX_RESULT_BYTES
+            && let Ok(canonical) = serde_json_canonicalizer::to_vec(input)
+        {
+            result["data"]["response"]["read"] = json!({
+                "action":action,
+                "base_input":{"source":"original_request","sha256":format!("{:x}",Sha256::digest(canonical))},
+                "input_patch":{"view":view}
+            });
+        }
     }
     result
 }
@@ -80,6 +101,26 @@ pub(crate) fn bounded(mut result: Value, action: &str, input: &Value, budget: us
         return result;
     }
     let actual = result["action"].as_str().unwrap_or(action).to_owned();
+    if actual == "hetu.plugins.invoke" && result.get("error").is_none()
+        && result["data"]["invocation"]["effect"] == "managed_write"
+        && result["data"]["result"]["operation"]["recover_action"] == "hetu.extensions.operations.get"
+        && let (Some(key), Some(sha)) = (result["data"]["invocation"]["operation_key"].as_str(),
+            result["data"]["invocation"]["sha256"].as_str())
+    {
+        let original_data = result["data"].clone();
+        let mut recovery = input.clone();
+        recovery.as_object_mut().unwrap().remove("view");
+        recovery["action"] = json!("hetu.extensions.operations.get");
+        recovery["arguments"] = json!({"operation_key":key,"invocation_sha256":sha});
+        let original = result["data"].as_object_mut().unwrap().remove("result").unwrap();
+        result["data"]["result_status"] = original["status"].clone();
+        result["data"]["operation"] = original["operation"].clone();
+        result["data"]["response"] = json!({"detail":"summary","complete":false,"retained":true,
+            "reason":"transport_budget","limit_bytes":budget});
+        result["data"]["recovery"] = json!({"action":"hetu.plugins.invoke","input":recovery,"retry":"query_original"});
+        if size(&result) <= budget { return result; }
+        result["data"] = original_data;
+    }
     let mut recover_input = json!({});
     for key in ["task_ref", "management_ref"] {
         if let Some(value) = input.get(key) {
@@ -207,6 +248,77 @@ pub(crate) fn bounded(mut result: Value, action: &str, input: &Value, budget: us
 #[cfg(test)]
 mod tests {
     use super::*;
+use sha2::{Digest, Sha256};
+    #[test]
+    fn plugin_read_with_large_input_reuses_original_instead_of_echoing_it() {
+        let input = json!({"management_ref":{"grant_id":"private"},"work_ref":{"kind":"novel"},
+            "plugin_id":"org.test.large","package_sha256":"a".repeat(64),"capabilities_sha256":"b".repeat(64),
+            "action":"preview","arguments":{"scope":"资料中🌿\n\"保持\"\\固定".repeat(20000)}});
+        let original = json!({"spec_version":"0.2.1","kind":"result","action":"hetu.plugins.invoke",
+            "contract_revision":"1","status":"succeeded","context":{"scope_id":"test"},
+            "data":{"invocation":{"action":"preview","effect":"read"},"result":{"status":"succeeded","data":input["arguments"]}}});
+        let summary = bounded(summary_read(original.clone(), "hetu.plugins.invoke", &input),
+            "hetu.plugins.invoke", &input, MAX_RESULT_BYTES);
+        assert_eq!(summary["status"], "succeeded");
+        let read = &summary["data"]["response"]["read"];
+        assert!(read.get("input").is_none());
+        assert_eq!(read["base_input"]["source"], "original_request");
+        assert_eq!(read["base_input"]["sha256"],
+            format!("{:x}", Sha256::digest(serde_json_canonicalizer::to_vec(&input).unwrap())));
+        let mut restored = input.clone();
+        restored.as_object_mut().unwrap().extend(read["input_patch"].as_object().unwrap().clone());
+        assert_eq!(restored["arguments"], input["arguments"]);
+        for key in ["management_ref", "work_ref", "package_sha256", "capabilities_sha256"] {
+            assert_eq!(restored[key], input[key]);
+        }
+        assert_eq!(restored["view"]["expected_result_sha256"],
+            hetu_core::machine::read_projection(original, &json!({})).unwrap()["data"]["view"]["source_result_sha256"]);
+        assert!(size(&summary) <= MAX_RESULT_BYTES);
+    }
+    #[test]
+    fn plugin_read_summary_recovers_only_the_verified_read_action_with_fixed_sha() {
+        let input = json!({"management_ref":{"grant_id":"private"},"work_ref":{"kind":"novel"},
+            "plugin_id":"org.test.large","package_sha256":"a".repeat(64),"capabilities_sha256":"b".repeat(64),
+            "action":"preview","arguments":{"scope":"fixed"}});
+        let original = json!({"spec_version":"0.2.1","kind":"result","action":"hetu.plugins.invoke",
+            "contract_revision":"1","status":"succeeded","context":{"scope_id":"test"},
+            "data":{"invocation":{"action":"preview","effect":"read"},"result":{"status":"succeeded","data":{"content":"中🌿".repeat(20000)}}}});
+        assert!(plugin_read(&original));
+        let mut spoofed = original.clone();
+        spoofed["data"]["invocation"]["effect"] = json!("managed_write");
+        spoofed["data"]["result"]["invocation"] = json!({"effect":"read"});
+        assert!(!plugin_read(&spoofed));
+        let summary = summary_read(original.clone(), "hetu.plugins.invoke", &input);
+        let read = &summary["data"]["response"]["read"];
+        assert_eq!(read["action"], "hetu.plugins.invoke");
+        assert_eq!(read["input"]["action"], "preview");
+        assert_eq!(read["input"]["arguments"], input["arguments"]);
+        assert_eq!(read["input"]["view"]["expected_result_sha256"],
+            hetu_core::machine::read_projection(original, &json!({})).unwrap()["data"]["view"]["source_result_sha256"]);
+        assert!(size(&summary) <= MAX_RESULT_BYTES);
+    }
+    #[test]
+    fn plugin_write_budget_recovers_original_extension_operation_without_replaying_write() {
+        let input = json!({"management_ref":{"grant_id":"private"},"work_ref":{"kind":"novel"},
+            "plugin_id":"org.test.large","package_sha256":"a".repeat(64),"capabilities_sha256":"b".repeat(64),
+            "action":"save","arguments":{"operation_key":"original","content":"中🌿".repeat(20000)}});
+        let original = json!({"spec_version":"0.2.1","kind":"result","action":"hetu.plugins.invoke",
+            "contract_revision":"1","status":"succeeded","context":{"scope_id":"test"},
+            "data":{"invocation":{"action":"save","effect":"managed_write","operation_key":"original","sha256":"c".repeat(64)},
+                "result":{"status":"succeeded","operation":{"id":"original-op","recover_action":"hetu.extensions.operations.get"},
+                    "data":{"content":"中🌿".repeat(20000)}}}});
+        let summary = bounded(original, "hetu.plugins.invoke", &input, MAX_RESULT_BYTES);
+        assert_eq!(summary["status"], "succeeded");
+        assert_eq!(summary["data"]["result_status"], "succeeded");
+        assert!(summary["data"].get("result").is_none());
+        let recovery = &summary["data"]["recovery"];
+        assert_eq!(recovery["retry"], "query_original");
+        assert_eq!(recovery["input"]["action"], "hetu.extensions.operations.get");
+        assert_eq!(recovery["input"]["arguments"], json!({"operation_key":"original","invocation_sha256":"c".repeat(64)}));
+        assert!(recovery["input"].get("view").is_none());
+        assert_eq!(recovery["input"]["management_ref"], input["management_ref"]);
+        assert!(size(&summary) <= MAX_RESULT_BYTES);
+    }
     #[test]
     fn model_confirmation_summary_preserves_approval_and_fixed_plan_read() {
         let original = json!({"spec_version":"0.2.1","kind":"result","action":"hetu.model_tasks.get","contract_revision":"1","status":"succeeded","context":{"scope_id":"collaboration"},"data":{"approval":{"confirmation_channel":"mcp_elicitation"},"plan":{"payload":{"prompt":"字".repeat(40000)}},"submitted":false}});

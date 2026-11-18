@@ -5847,6 +5847,35 @@
             "type": "string",
             "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+)+$",
             "maxLength": 120
+          },
+          "view": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "result_path": {
+                "type": "string",
+                "maxLength": 512
+              },
+              "offset": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100
+              },
+              "max_bytes": {
+                "type": "integer",
+                "minimum": 256,
+                "maximum": 16384
+              },
+              "expected_result_sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": []
           }
         },
         "required": [

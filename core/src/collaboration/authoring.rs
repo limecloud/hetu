@@ -712,6 +712,12 @@ impl CollaborationHub {
             }
         }
         result["data"]["management_ref"] = reference.clone();
+        if action == "hetu.plugins.invoke" && let Some(view) = request["input"].get("view") {
+            // TS分派器已在执行前核验真实声明；插件正文中的同名字段无权提升效果。
+            ensure(result["data"]["invocation"]["effect"] == "read", "invalid_input",
+                "结果投影没有受信只读分派回执。")?;
+            return crate::machine::read_projection(result, view);
+        }
         if matches!(
             action,
             "hetu.creation_projects.create_novel"

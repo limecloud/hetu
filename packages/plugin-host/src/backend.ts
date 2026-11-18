@@ -12,6 +12,7 @@ import {
   type WorkRef,
 } from "@hetu/plugin-sdk";
 import type { PluginPackage } from "./package.ts";
+import { PluginInvocationRejected } from "./rejection.ts";
 export class BackendSupervisor {
   #effect: "read" | "managed_write" | undefined;
   #operationKey: string | undefined;
@@ -21,6 +22,7 @@ export class BackendSupervisor {
   #buffer = "";
   #next = 0;
   #closed = false;
+  #exited: Promise<void>;
   #disposal?: Promise<void>;
   #pending = new Map<
     number,
@@ -73,6 +75,7 @@ export class BackendSupervisor {
         },
       },
     );
+    this.#exited = new Promise(resolve => this.#child.once("close", () => resolve()));
     this.#child.stdout.setEncoding("utf8");
     this.#child.stdout.on("data", (text: string) => {
       this.#buffer += text;
@@ -95,7 +98,8 @@ export class BackendSupervisor {
     });
     this.#child.stderr.on("data", () => {});
     this.#child.on("error", () => this.close());
-    this.#child.on("exit", () => this.close());
+    // close在stdout/stderr排空后发生，exit可能早于最后一份响应。
+    this.#child.on("close", () => this.close());
     this.#child.stdin.on("error", () => this.close());
   }
   async message(message: any) {
@@ -188,19 +192,19 @@ export class BackendSupervisor {
     const declaration = this.#pkg.manifest.contributions.actions.find(
       (a) => a.id === action,
     );
-    if (!declaration) throw new Error("插件动作未声明。");
+    if (!declaration) throw new PluginInvocationRejected("插件动作未声明。");
     const validate = new Ajv({ strict: false }).compile(
       declaration.input_schema,
     );
-    if (!validate(input)) throw new Error("插件动作参数不符合Schema。");
-    if (this.#effect) throw new Error("插件正在执行其他动作。");
+    if (!validate(input)) throw new PluginInvocationRejected("插件动作参数不符合Schema。");
+    if (this.#effect) throw new PluginInvocationRejected("插件正在执行其他动作。");
     if (
       declaration.effect === "managed_write" &&
       (!input ||
         typeof input !== "object" ||
         typeof (input as any).operation_key !== "string")
     )
-      throw new Error("插件写动作需要固定原操作键。");
+      throw new PluginInvocationRejected("插件写动作需要固定原操作键。");
     this.#effect = declaration.effect;
     this.#operationKey = (input as any)?.operation_key;
     // 原始专业输入与最终save各自绑定，不能用同一成果掩盖不同请求。
@@ -220,7 +224,7 @@ export class BackendSupervisor {
     return this.#disposal;
   }
   async #dispose() {
-    if (this.#closed) return;
+    if (this.#closed) { await this.#waitForExit(); return; }
     let timer: ReturnType<typeof setTimeout> | undefined;
     try {
       await Promise.race([
@@ -232,7 +236,21 @@ export class BackendSupervisor {
     } finally {
       if (timer) clearTimeout(timer);
       this.close();
+      await this.#waitForExit();
     }
+  }
+  async #waitForExit() {
+    const wait = async () => {
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      try {
+        return await Promise.race([this.#exited.then(() => true), new Promise<boolean>(resolve => {
+          timer = setTimeout(() => resolve(false), 1000);
+        })]);
+      } finally { if (timer) clearTimeout(timer); }
+    };
+    if (await wait()) return;
+    this.#child.kill("SIGKILL");
+    if (!await wait()) throw new Error("插件进程未能关闭；保留原操作回读。");
   }
   close() {
     if (this.#closed) return;
@@ -243,5 +261,9 @@ export class BackendSupervisor {
     }
     this.#pending.clear();
     this.#child.kill();
+    // 后端禁止创建后代；外层受管manager另拥有进程族清理。
+    const force = setTimeout(() => this.#child.kill("SIGKILL"), 1000);
+    force.unref();
+    void this.#exited.finally(() => clearTimeout(force));
   }
 }

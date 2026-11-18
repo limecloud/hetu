@@ -1,12 +1,7 @@
 //! TS宿主拥有插件包与依赖；稳定机器连接转发固定安装选择及精确授权的动态调用。
 use crate::{Error, Result, domain::ensure};
 use serde_json::{Value, json};
-use std::{
-    io::{Read, Write},
-    path::PathBuf,
-    process::{Command, Stdio},
-    time::{Duration, Instant},
-};
+use std::{path::PathBuf, process::Command, time::Duration};
 pub fn directory() -> Result<PathBuf> {
     let path = std::env::var_os("HETU_PLUGIN_STATE_DIR")
         .map(PathBuf::from)
@@ -24,6 +19,14 @@ pub fn directory() -> Result<PathBuf> {
     Ok(path)
 }
 pub fn request(client: &str, action: &str, input: &Value) -> Result<Value> {
+    request_cancellable(client, action, input, &|| false)
+}
+pub fn request_cancellable(
+    client: &str,
+    action: &str,
+    input: &Value,
+    cancelled: &dyn Fn() -> bool,
+) -> Result<Value> {
     let exe = std::env::current_exe()?;
     let bin = exe
         .parent()
@@ -61,46 +64,19 @@ pub fn request(client: &str, action: &str, input: &Value) -> Result<Value> {
     let plugin = std::env::var_os("HETU_PLUGIN_CLI")
         .map(PathBuf::from)
         .unwrap_or(bin.join(format!("hetu-plugin{suffix}")));
-    let mut child = Command::new(node)
+    let mut command = Command::new(node);
+    command
         .arg(script)
         .arg("--directory")
         .arg(directory()?)
         .arg("--core-cli")
-        .arg(plugin)
-        .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
-        .stderr(Stdio::null())
-        .spawn()?;
-    child.stdin.take().unwrap().write_all(&serde_json::to_vec(
-        &json!({"client_adapter":client,"action":action,"input":input}),
-    )?)?;
-    let stdout = child.stdout.take().unwrap();
-    let reader = std::thread::spawn(move || {
-        let mut bytes = Vec::new();
-        stdout
-            .take(4 * 1024 * 1024 + 1)
-            .read_to_end(&mut bytes)
-            .map(|_| bytes)
-    });
-    let started = Instant::now();
-    while child.try_wait()?.is_none() {
-        if started.elapsed() > Duration::from_secs(45) {
-            let _ = child.kill();
-            let _ = child.wait();
-            return Err(Error::new(
-                "hetu.outcome_unknown",
-                "插件操作结果未知，请按原键回读。",
-            ));
-        }
-        std::thread::sleep(Duration::from_millis(20));
-    }
-    let bytes = reader
-        .join()
-        .map_err(|_| Error::new("hetu.outcome_unknown", "插件回读未完成。"))??;
-    ensure(
-        bytes.len() <= 4 * 1024 * 1024,
-        "hetu.budget_exceeded",
-        "插件管理结果超过预算。",
+        .arg(plugin);
+    let bytes = crate::process_supervisor::run(
+        &mut command,
+        serde_json::to_vec(&json!({"client_adapter":client,"action":action,"input":input}))?,
+        Duration::from_secs(45),
+        4 * 1024 * 1024,
+        cancelled,
     )?;
     let response: Value = serde_json::from_slice(&bytes)?;
     ensure(
