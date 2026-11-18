@@ -1469,7 +1469,7 @@ app
             headers: {
               "Content-Type": mime(relative),
               "Content-Security-Policy": policy(
-                "default-src [none]; script-src [self]; style-src [self] [unsafe-inline]; img-src [self] data: hetu-media:; media-src hetu-media:; font-src [self]; connect-src [none]; frame-src [none]; object-src [none]; base-uri [none]; form-action [none]",
+                "default-src [none]; script-src [self]; style-src [self] [unsafe-inline]; img-src [self] data: hetu-media:; media-src hetu-media: blob:; font-src [self]; connect-src [none]; frame-src [none]; object-src [none]; base-uri [none]; form-action [none]",
               ),
             },
           });

@@ -210,3 +210,7 @@ flowchart TD
 | Codex固定源码提交，见第5节 | App Server、协议与入口分工 | 不复制Agent业务和权限模型 |
 | Lime现役源码，证据见[插件17](plugin/17-原生宿主与插件渲染技术方案.md) | Electron＋Rust接线、WebContentsView及布局生命周期 | 不复制聊天／Agent Runtime，不将Lime机制当河图验收 |
 | DSH／Pi／A2UI，见[插件02](plugin/02-产品与生态调研.md) | 贡献、生命周期、按需方法与声明式渲染 | 收录数量不等于成熟创作插件数量 |
+
+## 插件派生声音预览
+
+插件工作面可以播放自己在当前渲染进程创建的Blob音视频，例如固定工程经完整摘要核验后的确定性混音。插件CSP仅在media-src增加blob:；受管作品素材仍经hetu-media:核验固定来源，connect-src、脚本、iframe和任意本机路径边界保持。预览地址在替换或关闭时释放，预览不登记为作者选用资产或成片认可。
