@@ -132,3 +132,13 @@ For example: “Plan how these chapters become one episode while keeping the sen
 Try: “Check dates and food supplies for three days of harbour closure. Decide whether readers have enough clues by chapter two without revealing the sender. Prepare the next chapter. Use my actual reference images for costumes, play the full dialogue to check subtitles, and recheck old notes after timing changes.”
 
 Novels, scripts and video remain independent works. Existing images, subtitles and notes retain their original revisions. Generation costs, manuscript adoption and final approval remain separate decisions.
+
+
+## Picturebooks and immersive stories
+
+- [Picturebook Studio](/en/plugins/picturebook/): read actual illustrated spreads, review page turns, leave page-specific feedback and export offline HTML or embedded-font PDF.
+- [Murder Mystery Studio](/en/plugins/murder-mystery/): inspect role packets and staged clues, then record playtests and debriefs against a fixed author revision.
+
+Try: “Turn Rain Harbour Letters into four picturebook pages. Leave the key unexplained on page two. Create a separate two-role mystery without showing Lin the register early. Simulate two acts, retain releases and debriefs, then prepare another draft. Use existing images and confirm paid generation separately.”
+
+Physical page checks do not replace printer approval. Role packets contain the selected perspective; the authoring workspace is not a player permission system. Simulations and human experience are separate evidence, and revisions preserve previous playtests.
