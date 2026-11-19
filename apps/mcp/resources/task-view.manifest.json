@@ -14,7 +14,7 @@
     "THIRD-PARTY-NOTICES.txt": "64e64f33d6dd0f206ffa47b474d43ffd8df1fd295bc87ccf59428003892ac78b"
   },
   "inputs": [
-    "../../../../../../limecloud/hetu/node_modules/@modelcontextprotocol/ext-apps/dist/src/app-with-deps.js",
+    "../../node_modules/@modelcontextprotocol/ext-apps/dist/src/app-with-deps.js",
     "src/app.ts"
   ]
 }
