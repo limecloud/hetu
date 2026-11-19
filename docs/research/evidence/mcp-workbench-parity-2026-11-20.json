@@ -33,6 +33,15 @@
     {
       "log": "build/mcp-workbench-0137/desktop-all.log",
       "reason": "两项导入／交付测试把App专用桥接计入旧模型工具数量断言；修正为限制模型可见目录，并单独核验桥接仅App可见。"
+    },
+    {
+      "reason": "0.13.9首次发行的原生布局测试直接修改DOM外观，被正常偏好同步覆盖，深色背景断言失败；同SHA常规macOS CI桌面全量通过。保留原Tag，重跑失败发行任务，主线测试改用真实外观设置。",
+      "log": "build/mcp-workbench-0139/macos-ci.log",
+      "sha256": "7e484e8c72c1a4b94502b2a59ab405d2999d3bafc7090f96168a86993d68e246",
+      "release_run": 44589060141,
+      "failed_job": 135789780455,
+      "passed_desktop": 49,
+      "failed_desktop": 1
     }
   ],
   "scope_limits": [
@@ -40,8 +49,58 @@
     "当前Computer Use未能启动原生管道，浏览器访问宿主也不可用；使用Playwright Electron与标准AppBridge分别验收。"
   ],
   "release": {
-    "status": "pending",
-    "tag": "v0.13.9"
+    "status": "published",
+    "tag": "v0.13.9",
+    "run": 44589060141,
+    "git_sha": "3b7d852ec3367cb858eb73e3745a78788509a112",
+    "attempt": 3,
+    "url": "https://github.com/limecloud/hetu/releases/tag/v0.13.9",
+    "infrastructure_failures": [
+      {
+        "attempt": 2,
+        "job": 135809612297,
+        "conclusion": "cancelled before acquiring hosted runner",
+        "reason": "The job was not acquired by Runner of type hosted even after multiple attempts; macOS arm64 capacity constraints.",
+        "evidence": "build/mcp-workbench-0139/runner-capacity-attempt-2.json",
+        "sha256": "b818630a514847cd3ce59d6edfe8d8ab83efe57bae10b9306496091e9caba004"
+      }
+    ],
+    "conclusion": "success",
+    "workflow_url": "https://github.com/limecloud/hetu/actions/runs/44589060141",
+    "published_at": "2026-11-19T19:58:58Z",
+    "public_verification": {
+      "version": "0.13.9",
+      "tag": "v0.13.9",
+      "git_sha": "3b7d852ec3367cb858eb73e3745a78788509a112",
+      "url": "https://github.com/limecloud/hetu/releases/tag/v0.13.9",
+      "published_at": "2026-11-19T19:58:58Z",
+      "uploaded_packages": [
+        {
+          "name": "Hetu-0.13.9-macos-arm64.zip",
+          "size_bytes": 228693390,
+          "sha256": "53eaba2a33be94cd9012b9f65aa60fd712d307af48e723b564946890df9a8b5b"
+        },
+        {
+          "name": "Hetu-0.13.9-macos-arm64.dmg",
+          "size_bytes": 270190917,
+          "sha256": "6d9eb312c2b411c32f078eae782235ff7ac87ecc1add9b3fc38f34c4943c570c"
+        },
+        {
+          "name": "Hetu-0.13.9-windows-x64.zip",
+          "size_bytes": 253006587,
+          "sha256": "d5621c6e15c04309525c5cc1920ba7fb05545164a5e36b31c5b453c766d37000"
+        },
+        {
+          "name": "Hetu-0.13.9-linux-x64.tar.gz",
+          "size_bytes": 238713966,
+          "sha256": "64902d761afb77afdae114ab63f27c57d6ac5909debff1740f24cac185fa939a"
+        }
+      ],
+      "all_three_platforms": true,
+      "source_files_match_local": true,
+      "macos_signature": "Developer ID and accepted notarization in manifest",
+      "method": "下载清单与校验文件并核对字节；四个安装包使用GitHub服务端计算的上传SHA256比对清单。本项不声称下载完整安装包。"
+    }
   },
   "preflight_fixes": [
     "共享固定交接，保留作品／文稿／插件修订、实际动作及原操作。",
@@ -57,7 +116,43 @@
     "build_pages": 219,
     "local_references": 13073,
     "build_log": "build/mcp-workbench-0139/website-build.log",
-    "deployment": "pending"
+    "deployment": "published",
+    "deployment_id": "5e154050-9082-4d56-b8ac-b5199ceaae60",
+    "deployment_url": "https://5e154050.hetu-website-3uu.pages.dev",
+    "source_commit": "3b7d852ec3367cb858eb73e3745a78788509a112",
+    "deployment_log": "build/mcp-workbench-0139/website-deploy.log",
+    "deployment_tests": {
+      "passed": 35,
+      "failed": 0,
+      "log": "build/mcp-workbench-0139/website-deployment-tests.log",
+      "sha256": "0bd820f8a5844068a7303e0285779552961c0c8c90e768451954de8bab839255"
+    },
+    "production_tests": {
+      "passed": 33,
+      "failed": 2,
+      "log": "build/mcp-workbench-0139/website-production-tests.log",
+      "sha256": "e91e1341bbb850692dc83137e91498ce7809753e7bf6927bd9196b46101cf50f"
+    },
+    "production_guides": [
+      {
+        "locale": "zh-CN",
+        "url": "https://hetu.limeai.run/docs/agents/",
+        "http_status": 200,
+        "new_installation_and_direct_open_text": true,
+        "response_sha256": "55b6beb758ca4541291787e47fe73059b4083e8765d29dd38efb029b4c7fbcef",
+        "source_sha256": "eb74c7d4e4d8ef1444fadbc478b09172583d1d748ef809c6a14335796b8d7eda"
+      },
+      {
+        "locale": "en",
+        "url": "https://hetu.limeai.run/en/docs/agents/",
+        "http_status": 200,
+        "new_installation_and_direct_open_text": true,
+        "response_sha256": "c0d9a3a2d93c8581393f5ecadb248a10523d32d4abe5c2ee6e3798c9eb8b56ed",
+        "source_sha256": "d9c773bada9f5fcd0297ecb8bb06dcf7862af4f869c06de6bb4c76925f5cadf5"
+      }
+    ],
+    "production_limit": "两个已移除旧安装指南的无查询地址仍返回此前缓存的200页面；同一路径添加版本查询及本次固定部署均为404。清理这两个缓存的API返回401，未扩大账号权限。当前中英Agent指南的新安装与直接打开文案均已在正式域名200回读。",
+    "cache_purge_receipt": "build/mcp-workbench-0139/website-cache-purge.json"
   },
   "previous_candidates": [
     {
@@ -595,23 +690,156 @@
       "refresh_passed": true,
       "screenshot": "本机私有证据，不公开作者稿件截图。",
       "scope": "安装版本机18作品一致、刷新与真实剧本只读打开；不代替指定Codex GUI逐页验收。",
-      "agent_grants_unchanged": true
+      "agent_connection_work_count_unchanged": true,
+      "runtime": "/Applications/Hetu.app/Contents/Resources/bin/hetu-mcp",
+      "signing": "developer-id"
     },
     "packaged": {
       "passed": 1,
       "failed": 0,
       "log": "build/mcp-workbench-0139/packaged.log",
       "sha256": "3230a790c5048436bf96dc522d248167a668a097329a229d59fef69ae70f3622"
+    },
+    "native_theme_test_fix": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "log": "build/mcp-workbench-0139/native-theme-recheck.log",
+      "sha256": "4105b6f6fd7a8b92d7bfe574a1ac1c74a187dd9efd64f4e47c182a861f482979",
+      "scope": "主线测试通过真实通用外观设置切换，保留深色CSS断言；仅测试修改，发行版2814份受管源码摘要保持。"
+    },
+    "docs": {
+      "passed": true,
+      "log": "build/mcp-workbench-0139/docs-published.log",
+      "sha256": "c546b864da6e7fc483c416580df94e3c8ec63b6a62979b46faf07d5bf9e8b301"
+    },
+    "ci": {
+      "run": 44589039371,
+      "url": "https://github.com/limecloud/hetu/actions/runs/44589039371",
+      "conclusion": "success",
+      "git_sha": "3b7d852ec3367cb858eb73e3745a78788509a112",
+      "jobs": [
+        {
+          "name": "macOS optimized Core tests",
+          "conclusion": "success"
+        },
+        {
+          "name": "Electron macOS arm64 tests",
+          "conclusion": "success"
+        },
+        {
+          "name": "Website and task view tests",
+          "conclusion": "success"
+        }
+      ],
+      "log": "build/mcp-workbench-0139/ci-final.json",
+      "sha256": "cd697941ec830bdd41356ba8a26df454e7c5475a1a5a77364e8005237e761228"
+    },
+    "actual_library_development": {
+      "version": "0.13.9",
+      "desktop_registered": 18,
+      "mcp_total": 18,
+      "same_work_identities": true,
+      "authorized": 13,
+      "previously_without_agent_connection": 5,
+      "html_sha256": "c9bbe6f73323f557de7420f5525dfa2255f03c657bf18fb6463cb65833c81e9d",
+      "catalog_identities_unchanged": true,
+      "real_drama_opened_without_authorization": true,
+      "reference_characters": 2128,
+      "real_work_files_unchanged": true,
+      "previously_unconnected_works_opened": [
+        {
+          "kind": "drama",
+          "opened": true
+        },
+        {
+          "kind": "novel",
+          "opened": true
+        },
+        {
+          "kind": "novel",
+          "opened": true
+        },
+        {
+          "kind": "drama",
+          "opened": true
+        },
+        {
+          "kind": "novel",
+          "opened": true
+        }
+      ],
+      "browser_cards": 18,
+      "refresh_passed": true,
+      "screenshot": "本机私有证据，不公开作者稿件截图。",
+      "scope": "安装版本机18作品一致、刷新与真实剧本只读打开；不代替指定Codex GUI逐页验收。",
+      "agent_grants_unchanged": true
+    },
+    "release_ci": {
+      "run": 44589060141,
+      "attempt": 3,
+      "job": 135819606429,
+      "conclusion": "success",
+      "rust_passed": 389,
+      "cli_passed": 6,
+      "apps_passed": 53,
+      "apps_skipped": 2,
+      "apps_skip_reason": "CI无官方Codex CLI；本机此前使用实际官方CLI的55项App回归无跳过通过。",
+      "plugins_passed": 104,
+      "desktop_passed": 50,
+      "packaged_passed": 1,
+      "log": "build/mcp-workbench-0139/macos-ci-final.log",
+      "sha256": "1f234db183d00dade2cdfac4fda20e7b3e5fc7b1a11650d431e1cd17254d7b36"
     }
   },
   "package": {
-    "manifest": "build/mcp-workbench-0139/package/hetu-dev-m0zQOq/manifest.json",
-    "source_sha256": "83f58203435635e684e8161ddb19445cac2463548331b1cac939ac223771401e",
     "version": "0.13.9",
-    "signing": "ad-hoc-development",
-    "artifacts": 3387
+    "manifest": "build/mcp-workbench-0139/public-release/release-manifest.json",
+    "source_sha256": "83f58203435635e684e8161ddb19445cac2463548331b1cac939ac223771401e",
+    "source_files": 2814,
+    "signing": "developer-id",
+    "notarization_status": "Accepted",
+    "artifact_inventory": 2803,
+    "installed_app_artifacts_verified": 2800,
+    "downloaded_mac_archive_sha256": "53eaba2a33be94cd9012b9f65aa60fd712d307af48e723b564946890df9a8b5b",
+    "archive_bytes": 228693390
   },
   "installation": {
+    "installed_at": "2026-11-19T20:01:47.583688+00:00",
+    "version": "0.13.9",
+    "application": "/Applications/Hetu.app",
+    "backup": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-0139/replaced-0.13.9-development.app",
+    "manifest": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-0139/public-release/release-manifest.json",
+    "archive": "Hetu-0.13.9-macos-arm64.zip",
+    "archive_bytes": 228693390,
+    "archive_sha256": "53eaba2a33be94cd9012b9f65aa60fd712d307af48e723b564946890df9a8b5b",
+    "source_sha256": "83f58203435635e684e8161ddb19445cac2463548331b1cac939ac223771401e",
+    "artifacts_verified": 2800,
+    "signing": "developer-id",
+    "notarization_status": "Accepted",
+    "codesign_verified": true,
+    "gatekeeper_accepted": true,
+    "stapler_validated": true,
+    "cli_version": "hetu 0.13.9",
+    "author_content_modified": false
+  },
+  "npm": {
+    "package": "@limecloud/hetu",
+    "version": "0.13.9",
+    "latest": "0.13.9",
+    "tarball_bytes": 9219,
+    "integrity_verified": true,
+    "integrity": "sha512-ywrInNXB1KHESm7ci3aUKownbzCkcsnjYIsagRxS62T8gGVve3N0MZx8b8QBseJcE73wmAI43/VwBYGEWik7gQ==",
+    "git_head": null,
+    "attestations": {
+      "url": "https://registry.npmjs.org/-/npm/v1/attestations/@limecloud%2fhetu@0.13.9",
+      "provenance": {
+        "predicateType": "https://slsa.dev/provenance/v1"
+      }
+    },
+    "runtime_downloaded": false
+  },
+  "development_installation": {
     "installed_at": "2026-11-19T18:30:11.059756+00:00",
     "version": "0.13.9",
     "application": "/Applications/Hetu.app",
@@ -623,5 +851,12 @@
     "codesign_verified": true,
     "cli_version": "hetu 0.13.9",
     "author_content_modified": false
+  },
+  "development_package": {
+    "manifest": "build/mcp-workbench-0139/package/hetu-dev-m0zQOq/manifest.json",
+    "source_sha256": "83f58203435635e684e8161ddb19445cac2463548331b1cac939ac223771401e",
+    "version": "0.13.9",
+    "signing": "ad-hoc-development",
+    "artifacts": 3387
   }
 }

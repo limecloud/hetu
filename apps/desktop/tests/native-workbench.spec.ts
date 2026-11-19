@@ -147,9 +147,11 @@ test("Mac工作台布局、正文操作与阅读位置在真实Core中贯通", a
     await expect(settingsPage.locator(".settings-reading-preview")).toBeVisible();
     await settingsPage.locator(".settings-reading-preview").scrollIntoViewIfNeeded();
     await settingsPage.screenshot({ path: path.join(root, "output/rea-mac-ui-20261116/settings-writing.png") });
+    await settingsPage.getByRole("tab", { name: "通用", exact: true }).click();
+    await settingsPage.getByRole("combobox", { name: "外观", exact: true }).selectOption("dark");
+    await expect(page.locator("html")).toHaveAttribute("data-appearance", "dark");
     await closeSettings(settingsPage);
-    await page.evaluate(() => { document.documentElement.dataset.appearance = "dark"; document.documentElement.style.colorScheme = "dark"; });
-    expect(await page.locator(".manuscript-paper").evaluate((element) => getComputedStyle(element).backgroundColor)).toBe("rgb(16, 18, 17)");
+    await expect(page.locator(".manuscript-paper")).toHaveCSS("background-color", "rgb(16, 18, 17)");
     await page.screenshot({ path: path.join(root, "output/desktop-native-qa/manuscript-dark.png") });
     await page.setViewportSize({ width: 960, height: 800 });
     await expect(page.locator(".manuscript-directory")).toBeHidden();
