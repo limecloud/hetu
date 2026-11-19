@@ -45,6 +45,7 @@ test("局部采纳固定中文与emoji选区、拒绝伪造和旧坐标、保留
         response: 1,
         checkboxChecked: false,
       });
+      dialog.showMessageBoxSync = () => 1;
     }, workspace);
     await page
       .getByRole("button", { name: "打开作品", exact: true })

@@ -98,6 +98,11 @@ let covers: CoverReview | undefined;
 let novelDetails: NovelDetails | undefined;
 let canon: CanonReview | undefined;
 let localState: any;
+async function agentSettings(action: string, input: unknown, client = agentClient()) {
+  return unwrap(await settingsServer.request("local_settings/request", {
+    client_adapter: client, request: { action, contract_revision: "1", input },
+  }));
+}
 function agentClient() {
   const selected = localState ? workAssociation(localState, work).client : "codex";
   return ({ claudeCode: "claude-code", other: "generic", none: "generic" } as Record<string, string>)[selected] ?? selected;
@@ -190,6 +195,7 @@ const policy = (text: string) =>
   );
 const recovery = new RecoveryStore();
 let flushedClose = false;
+let quitRequested = false;
 const appUrl = "hetu-app://shell/index.html";
 const settingsWindow = new SettingsWindow(path.join(dist, "shell-preload.cjs"), appUrl);
 function denyPermissions(s: Session) {
@@ -581,7 +587,7 @@ app
       recovery, path.join(app.getPath("userData"), "local-settings-journal.json"),
     );
     agentConnectionInstall = new AgentConnectionInstall(
-      async (action, input) => unwrap(await scopedCli(coreCliBinary(), "codex", process.env.HETU_COLLABORATION_DIR, action, input)),
+      (action, input) => agentSettings(action, input, "codex"),
       async plan => {
         const preview = await settings.prepare(plan.operation_id, plan.sha256, plan.revision, true);
         const answer = await dialog.showMessageBox(settingsWindow.window ?? window, {
@@ -717,7 +723,8 @@ app
         .then(() => recovery.flush())
         .then(() => {
           flushedClose = true;
-          window.close();
+          // 先完成首次被取消的quit，再关闭窗口，避免微任务重入吞掉退出事件。
+          setImmediate(() => { if (quitRequested) app.quit(); else window.close(); });
         })
         .catch(() => {
           dialog.showErrorBox(
@@ -854,7 +861,7 @@ app
       return workAgentRequest(method, input, {
         work: selected, directory: workspaceRoot, settings, check, refresh: refreshSettings,
         inspect: params => settingsServer.request("local_settings/host", { method: "inspect_suite", input: params }),
-        prepare: async params => unwrap(await scopedCli(coreCliBinary(), agentClient(), process.env.HETU_COLLABORATION_DIR, "hetu.local_settings.prepare", params)),
+        prepare: params => agentSettings("hetu.local_settings.prepare", params),
         choose: async () => { const result = await dialog.showOpenDialog(window, { properties: ["openDirectory"], title: "选择已安装的创作套件" }); return result.canceled ? undefined : result.filePaths[0]; },
         reveal: directory => shell.showItemInFolder(directory),
       });
@@ -862,7 +869,7 @@ app
     shellHandler("desktop:settings-agent", (method: string, input: any = {}) => workAgentRequest(method, input, {
       directory: "", settings, check: () => {}, refresh: refreshSettings,
       inspect: params => settingsServer.request("local_settings/host", { method: "inspect_suite", input: params }),
-      prepare: async params => unwrap(await scopedCli(coreCliBinary(), agentClient(), process.env.HETU_COLLABORATION_DIR, "hetu.local_settings.prepare", params)),
+      prepare: params => agentSettings("hetu.local_settings.prepare", params),
       choose: async () => { const result = await dialog.showOpenDialog(settingsWindow.window ?? window, { properties: ["openDirectory"], title: "选择已安装的创作套件" }); return result.canceled ? undefined : result.filePaths[0]; },
       reveal: directory => shell.showItemInFolder(directory),
     }));
@@ -914,13 +921,13 @@ app
       }
       throw new Error("未知本机设置用例。");
     });
+    shellHandler("desktop:install-connection", async (client: string) => {
+      if (client !== "codex") throw new Error("当前只提供 Codex 受管连接安装。");
+      const result = await agentConnectionInstall.run(); await refreshSettings(); return result;
+    });
     shellHandler(
       "desktop:connection",
       async (method: string, client: string) => {
-        if (method === "install") {
-          if (client !== "codex") throw new Error("当前只提供 Codex 受管连接安装。");
-          const result = await agentConnectionInstall.run(); await refreshSettings(); return result;
-        }
         const context = collaborationContext(client);
         if (method === "select") {
           await selectClient(client);
@@ -1700,5 +1707,13 @@ app
     console.error(error instanceof Error ? error.message : "桌面启动失败。");
     app.quit();
   });
-// 恢复稿flush会取消首次quit；等该轮退出状态清理后再请求退出。
+// app.quit期间不保证触发window-all-closed，落盘后须接续原退出请求。
+app.on("before-quit", event => {
+  quitRequested = true;
+  if (!flushedClose && window && !window.isDestroyed()) {
+    event.preventDefault();
+    window.close();
+  }
+});
+// 普通关闭最后一个窗口时也在本轮事件结束后退出。
 app.on("window-all-closed", () => { setImmediate(() => app.quit()); });

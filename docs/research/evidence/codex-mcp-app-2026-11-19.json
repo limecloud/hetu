@@ -1,0 +1,264 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-11-19",
+  "version": "0.13.0",
+  "scope": "外部MCP App工作台、共享任务审核、按能力协商的OpenAI增强及Codex连接安装",
+  "source": {
+    "baseline_commit": "e33f3ed1b189d35133c67344c19f7466b7ad8623",
+    "worktree_changes_included": true,
+    "files_sha256": {
+      "apps/mcp/src/app.rs": "c1cfb216e15ee00e8681ad2780a83d864b6e5654af35003e2168156504cd397c",
+      "apps/mcp/src/ui.rs": "ba41a4d69c60bdc979c1c3a5e4f2a3db7f52f2ccb4916a43331d458b091c38c5",
+      "apps/mcp/src/stable.rs": "eb80d3f3d7a7486cc5a1f91dca6c5b17654faacbb2af063e71fc201900bd1179",
+      "apps/mcp/src/response.rs": "a7862058d672c13abee2273ddc4db0e5ab4ba6781db3e3b9c3b0b6766a585ab3",
+      "core/src/local_settings.rs": "8eb37d6f1104ece47e12f73a6656a7f68d3632664b1547af9dab501aa10f58b6",
+      "core/src/local_settings/suites.rs": "21a5265793554b7964c7628d8880967b7d607fe368c5ca332712338a541218f7",
+      "apps/desktop/src/main/agent-connection-install.ts": "d5a29937e3015e712762b34883740da75f1402f204c625cc4342592599a7c463",
+      "apps/desktop/src/main/main.ts": "362bb9a6df7cd7f4564ee4e057fbd10deb8fc1976580d1560a1692db9f8a58e2",
+      "apps/desktop/src/main/settings-window.ts": "5ed93e877145190f9994760faf7f6d4a22e177cc048dd46181864f980e2b4b34",
+      "apps/desktop/src/main/shell-preload.ts": "a92632c4f8f699fc87856ebb254df712d1b8fe3c174b1451d874b394a3cd33c0",
+      "apps/desktop/src/renderer/agent-app-install.tsx": "cdd097cbdcec94c8e30eaf61320c558ea272f2b4c2d62ed634042e702a949fab",
+      "apps/desktop/src/renderer/bridge.ts": "0eeec1c10def55351a3e3b17128e229de10bbac307f02fa6cb3a747349f32722",
+      "contracts/actions.json": "937b14fbf4a03718ecd77f9de2739388b295f40250a038a6178bd3869c48726c",
+      "apps/app-server/src/lib.rs": "2af21bea53ff474f85dbd9b16c90e1478a74003822cca4962dd820e8e4c529b9",
+      "apps/app-server/tests/stdio.rs": "268174967a4044406f8ee3603f273f7350ecc9e685d8bf962ffd66575cb4d9e3"
+    }
+  },
+  "resources": {
+    "workbench": {
+      "schema_version": "1.0.0",
+      "resource_uri": "ui://hetu/workbench/1",
+      "mime_type": "text/html;profile=mcp-app",
+      "sdk": "@modelcontextprotocol/ext-apps@2.0.4",
+      "sha256": "633770fbd4d4efae7ec88f01900eae92afead55d63722d0a3332d81a48dccee7",
+      "size_bytes": 676559,
+      "source_sha256": {
+        "src/host/openai.ts": "a545c4feb5e23dcb3cfeddc7ea927e6c31e4a046bc86fb16912c1cff424c7442",
+        "src/host/bridge.ts": "30aba8f1b0395c49436a9a4f057c690ac3c0395ec00a55d2e26ab4678904e2fa",
+        "src/task-reference.ts": "fb880bca4f703ddcebebd3ba52c054cb4cf8993c603655d84f85fcff6d422757",
+        "src/task-review.ts": "d48f3f4fb752c76c2447fd4a28fc3e78b63447b0b8bc09f2d8c0ae7a209f3db6",
+        "src/workbench/gateway.ts": "d43bfb8ff7332af69519682f7d81c286a3ef330916a0a80757730ea0fcb197aa",
+        "src/workbench/domains.ts": "e6af3400df01b827e6e94de3853cb1ce59cc2f5c5f76cc5beeeb94904a3f6e58",
+        "src/workbench/render.ts": "58dc98db2a74e162c245e784900738e1b9a4046729cc814b67de524a21cbbc4d",
+        "src/workbench/media.ts": "944f9dc5b42cf5b6eb69db3663d8794ae607e7cea96a36c2a655025037b8537c",
+        "src/workbench.ts": "469fca4ebe274f8f71954073b6aec4592122d66a0f0dde2ffb7a14a0acc2c32b",
+        "src/app.css": "c6bb7d456f8420d3278423fb2225782aa6349a05146169ac94ea09dc1a208625",
+        "src/workbench.css": "adf7feee2f52e3a844705969324cc5080fc0d267cf3297140b3f78987cab1a96",
+        "../../assets/styles/radix-workbench.css": "ccf9f4d25676a4225180128d05a3d0a9d26e92fa832fdccb7d80c4d52ee4b625",
+        "scripts/build.mjs": "15f1c4437e103918f012e975e400094400d391f8f0f056def2653879a75e8f40",
+        "package.json": "2d3ca0594ed2cf9227f00a69fdc98a40c4c8477a43d29f82d89d2d90a5482971",
+        "THIRD-PARTY-NOTICES.txt": "64e64f33d6dd0f206ffa47b474d43ffd8df1fd295bc87ccf59428003892ac78b"
+      }
+    },
+    "task-view": {
+      "schema_version": "1.0.0",
+      "resource_uri": "ui://hetu/task-view/1",
+      "mime_type": "text/html;profile=mcp-app",
+      "sdk": "@modelcontextprotocol/ext-apps@2.0.4",
+      "sha256": "89b5d2deb666f9db5cfeb07a42ebf14c1fb215d415a87d8a5021b8117d90556c",
+      "size_bytes": 646875,
+      "source_sha256": {
+        "src/host/openai.ts": "a545c4feb5e23dcb3cfeddc7ea927e6c31e4a046bc86fb16912c1cff424c7442",
+        "src/host/bridge.ts": "30aba8f1b0395c49436a9a4f057c690ac3c0395ec00a55d2e26ab4678904e2fa",
+        "src/task-reference.ts": "fb880bca4f703ddcebebd3ba52c054cb4cf8993c603655d84f85fcff6d422757",
+        "src/task-review.ts": "d48f3f4fb752c76c2447fd4a28fc3e78b63447b0b8bc09f2d8c0ae7a209f3db6",
+        "src/app.ts": "f19dfcfe3aaca4648faf7bdeb947ecbf42218bd8f781887eefc566efaf6434a0",
+        "src/app.css": "c6bb7d456f8420d3278423fb2225782aa6349a05146169ac94ea09dc1a208625",
+        "../../assets/styles/radix-workbench.css": "ccf9f4d25676a4225180128d05a3d0a9d26e92fa832fdccb7d80c4d52ee4b625",
+        "scripts/build.mjs": "15f1c4437e103918f012e975e400094400d391f8f0f056def2653879a75e8f40",
+        "package.json": "2d3ca0594ed2cf9227f00a69fdc98a40c4c8477a43d29f82d89d2d90a5482971",
+        "THIRD-PARTY-NOTICES.txt": "64e64f33d6dd0f206ffa47b474d43ffd8df1fd295bc87ccf59428003892ac78b"
+      },
+      "inputs": [
+        "../../node_modules/@modelcontextprotocol/ext-apps/dist/src/app-with-deps.js",
+        "src/app.ts",
+        "src/host/bridge.ts",
+        "src/host/openai.ts",
+        "src/task-reference.ts",
+        "src/task-review.ts"
+      ]
+    },
+    "operation-view": {
+      "schema_version": "1.0.0",
+      "resource_uri": "ui://hetu/operation-view/1",
+      "mime_type": "text/html;profile=mcp-app",
+      "sdk": "@modelcontextprotocol/ext-apps@2.0.4",
+      "sha256": "e6e0ca17eb287ebdccc90ba8bea4ddb496b8108e036b8c0640c346e0e05eac01",
+      "size_bytes": 610913,
+      "source_sha256": {
+        "src/host/openai.ts": "a545c4feb5e23dcb3cfeddc7ea927e6c31e4a046bc86fb16912c1cff424c7442",
+        "src/host/bridge.ts": "30aba8f1b0395c49436a9a4f057c690ac3c0395ec00a55d2e26ab4678904e2fa",
+        "src/operation.ts": "812a3029c75bf74679ba7c6a949d86f5bb78ba8569188539014f055cd8e2a843",
+        "src/operation.css": "495a05aabf10999dda05313f6d3db27c295282e05820caced60b6a09fa03aeb5",
+        "../../assets/styles/radix-workbench.css": "ccf9f4d25676a4225180128d05a3d0a9d26e92fa832fdccb7d80c4d52ee4b625",
+        "scripts/build.mjs": "15f1c4437e103918f012e975e400094400d391f8f0f056def2653879a75e8f40",
+        "package.json": "2d3ca0594ed2cf9227f00a69fdc98a40c4c8477a43d29f82d89d2d90a5482971",
+        "THIRD-PARTY-NOTICES.txt": "64e64f33d6dd0f206ffa47b474d43ffd8df1fd295bc87ccf59428003892ac78b"
+      }
+    }
+  },
+  "architecture": {
+    "domain": "Core及CollaborationHub拥有同一作品、任务、授权、CAS、作者决定与恢复。",
+    "transport": "MCP表现层只注册资源、工具与入口元数据。",
+    "host": "标准MCP Apps App桥接为默认；OpenAI字段集中在host/openai.ts。",
+    "ui": "工作台复用task-review和固定引用，不另建任务、正文存储或模型循环。",
+    "desktop_install": "独立本机安装通道可由可信设置窗口调用，不开放作品授权通道。"
+  },
+  "checks": {
+    "mcp_apps": {
+      "status": "passed",
+      "passed": 42,
+      "official_cli": "codex-cli 0.169.0",
+      "command": "HETU_ACCEPT_CODEX_BINARY=<official-codex> npm run test:task-view",
+      "coverage": [
+        "空全局入口不枚举授权",
+        "真实stdio及获权小说、剧本、视频",
+        "固定文本及完整媒体字节摘要",
+        "官方AppBridge及任务意见持久回读",
+        "草稿active/new与send:false",
+        "显式固定上下文、恶意深链接拒绝",
+        "丢回执、CAS、撤权与无增强回退",
+        "375及1180窄宽窗口",
+        "模拟CLI丢回执不重复登记",
+        "官方CLI在临时CODEX_HOME实际安装及缓存字节回读"
+      ]
+    },
+    "website": {
+      "status": "passed",
+      "passed": 438,
+      "pages": 189,
+      "local_references": 11333,
+      "logs": [
+        "build/mcp-app-website-build.log",
+        "build/mcp-app-website-tests.log"
+      ],
+      "log_sha256": "f45bc01e35d718db9bc9827fd30568db16a2ce076ada93bcfcfd8c55f80154f6"
+    },
+    "local_settings_regression": {
+      "status": "passed",
+      "passed": 8,
+      "log": "build/mcp-app-local-settings-final.log",
+      "log_sha256": "3f8c65a8be0b6cff60a18aceb4ac255591cbc2a833c24e9e376ba1ec4df5018b"
+    },
+    "rust_workspace": {
+      "status": "passed",
+      "passed": 385,
+      "log": "build/mcp-app-rust-final.log",
+      "boundary": "本机完整workspace；新增私有Agent路由另以最终stdio复验。",
+      "log_sha256": "01f4051a62097a437b7c8d1c2813369879bfdaf79458766c3c46a9e007211590"
+    },
+    "electron": {
+      "status": "passed",
+      "passed": 46,
+      "log": "build/mcp-app-desktop-accepted.log",
+      "log_sha256": "d204399f423dde3aac2911b090fef1bbdd24688efaf924f46826f8a9b21e502a",
+      "boundary": "完整Electron本机回归；共享调用整理后的设置专项另行复验。"
+    },
+    "tooling": {
+      "status": "passed",
+      "passed": 25
+    },
+    "release_guards": {
+      "status": "passed",
+      "passed": 4
+    },
+    "docs": {
+      "status": "passed",
+      "documents": 88,
+      "schemas": 2,
+      "errors": 0,
+      "log": "build/mcp-app-docs-final.log",
+      "local_links": 1283,
+      "log_sha256": "d84abe7834a450dcf94dba43d0abe290c854cc15c91373751bdad9c1a37e6a9c"
+    },
+    "capability_map_skills_localization": {
+      "status": "passed"
+    },
+    "stdio_final": {
+      "status": "passed",
+      "passed": 41,
+      "app_server": 6,
+      "mcp": 35,
+      "log": "build/mcp-app-stdio-final.log",
+      "log_sha256": "3e2666f02dfce4b7841457e341002f7f4cfff6b50037bd56e1b6b24f48dcd88e"
+    },
+    "plugins": {
+      "status": "passed",
+      "passed": 104,
+      "log": "build/mcp-app-plugin-tests-final.log",
+      "log_sha256": "e5c61ad1b14eb00bfa5460a82e269e4e9de83775b06ef801b17e6d968d07af6e"
+    },
+    "cli": {
+      "status": "passed",
+      "passed": 6
+    },
+    "website_server": {
+      "status": "passed",
+      "passed": 15,
+      "log": "build/mcp-app-website-server-tests.log",
+      "log_sha256": "02d932d015e635f946d039afab0adf91ee92b21796a634a7ffd1389d2ad70222"
+    },
+    "screenshots": {
+      "status": "reviewed",
+      "paths": [
+        "build/task-view/acceptance/workbench-375.png",
+        "build/task-view/acceptance/workbench-1180.png"
+      ],
+      "sha256": {
+        "build/task-view/acceptance/workbench-375.png": "9ed1d1a313116276d0e0fa0110a0635a621975834a7d918e54f7f4a15ad1d9d3",
+        "build/task-view/acceptance/workbench-1180.png": "17c0383acbc3f69a9c63c1b3ff0d9ab7d65fd0065fd70f2709b56b356b2511f9"
+      },
+      "boundary": "自动化AppBridge页面，不是Codex Desktop GUI截图。"
+    },
+    "electron_settings_final": {
+      "status": "passed",
+      "passed": 6,
+      "log": "build/mcp-app-settings-final.log",
+      "log_sha256": "933b2c952ebbc278fe67ae5908d6db802268a4e8cff60fad6e34ff0897f47d8b"
+    }
+  },
+  "failures_and_corrections": [
+    {
+      "finding": "媒体base64加MCP双份结果超过传输预算",
+      "correction": "读取块改为12000字节，检查原字节类型、连续偏移与完整SHA；真实媒体测试通过。"
+    },
+    {
+      "finding": "macOS官方CLI将/var规范化为/private/var，原字符串比较误报市场冲突",
+      "correction": "核验真实目录，非法来源仍以revision_conflict拒绝；官方CLI安装与8项原安装回归通过。"
+    },
+    {
+      "finding": "并行Playwright进程共用输出目录，teardown清理互相删除trace",
+      "correction": "按顺序运行同组件测试，42项完整通过；不同专项使用独立输出目录。"
+    },
+    {
+      "finding": "合并双方相同测试定义造成Rust编译重复",
+      "correction": "仅去掉逐字相同副本，保留3项大结果及原操作恢复回归。"
+    },
+    {
+      "finding": "Electron退出在异步恢复稿落盘后丢失原quit请求",
+      "correction": "延至下一事件轮接续显式quit；普通关闭仍独立处理，重开旅程复验。"
+    },
+    {
+      "finding": "独立设置窗口未接通机器连接安装IPC",
+      "correction": "增加专用本机安装通道，保留设置窗口无法调用作品授权通道的边界；真实Electron测试取消、确认与不重复安装。"
+    },
+    {
+      "finding": "独立设置回读与另起安装CLI竞争本机锁",
+      "correction": "经同一App Server队列调用公开用例，保留Agent客户端身份和作者决定防线；最终stdio及设置安装业务断言通过。"
+    }
+  ],
+  "not_verified": [
+    "指定Codex Desktop GUI实际加载与消息交互（Computer Use原生和浏览器宿主不可用）",
+    "其他外部宿主的MCP App实机兼容",
+    "公开插件目录上架",
+    "mentions索引及任意文件编辑扩展（未注册）",
+    "独立桌面Agent会话宿主R7-01及Claude/ACP会话适配",
+    "付费模型、作者正文采纳与定稿不属于本次隔离MCP App验收"
+  ],
+  "release": {
+    "status": "source_verified_for_release",
+    "tag": "v0.13.0",
+    "url": "https://github.com/limecloud/hetu/releases/tag/v0.13.0",
+    "boundary": "发布工作流及公开制品结果单独回写；此记录不预判三平台已发布。"
+  }
+}

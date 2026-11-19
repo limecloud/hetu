@@ -41,3 +41,26 @@ for (const lost of [false, true]) test(`fixed connection installation ${lost ? "
     expect(log).not.toContain("plugin marketplace list");
   } finally { await client.close(); }
 });
+
+test("installed official Codex CLI accepts the connection package in an isolated home", async () => {
+  const binary = process.env.HETU_ACCEPT_CODEX_BINARY;
+  test.skip(!binary, "指定HETU_ACCEPT_CODEX_BINARY才验收已安装的官方CLI，不依赖开发者真实配置。");
+  test.setTimeout(90_000);
+  const folder = await mkdtemp(join(tmpdir(), "hetu-official-codex-install-"));
+  const codexHome = join(folder, "codex"); await mkdir(codexHome);
+  const client = new Client({ name: "Hetu official CLI isolated acceptance", version: "1" });
+  const env = Object.fromEntries(Object.entries(process.env).filter((entry): entry is [string, string] => typeof entry[1] === "string"));
+  await client.connect(new StdioClientTransport({ command: resolve(process.env.HETU_CARGO_TARGET_DIR ?? "../../target", "debug/hetu-mcp"), args: ["--client", "codex", "--collaboration-dir", join(folder, "collaboration")], env: { ...env, HETU_CODEX_BINARY: binary!, CODEX_HOME: codexHome, HETU_LOCAL_SETTINGS_DIR: join(folder, "settings") }, stderr: "pipe" }));
+  const invoke = async (action: string, input: Record<string, unknown>) => (await client.callTool({ name: "hetu_call_action", arguments: { action: `hetu.local_settings.${action}`, input } })).structuredContent as { status: string; data: Record<string, any> };
+  try {
+    const prepared = await invoke("prepare", { kind: "agent_connection", agent_client: "codex", summary: "官方Codex隔离连接验收", operation_key: "official-prepare" });
+    expect(prepared.status).toBe("succeeded"); const plan = prepared.data;
+    expect((await invoke("record_decision", { operation_id: plan.operation_id, sha256: plan.sha256, revision: plan.revision, decision: "approve", authorization_note: "本次用户授权的官方CLI隔离安装验收，仅修改临时CODEX_HOME。", operation_key: "official-decision" })).status).toBe("succeeded");
+    const installed = await invoke("execute", { operation_id: plan.operation_id, sha256: plan.sha256, operation_key: "official-execute" });
+    expect(installed.status, JSON.stringify(installed)).toBe("succeeded");
+    const current = await invoke("inspect_connection", { agent_client: "codex" });
+    expect(current.status).toBe("succeeded"); expect(current.data.registered).toBe(true); expect(current.data.session_loaded).toBe(false);
+    const mcp = JSON.parse(await readFile(join(current.data.directory, "mcp.json"), "utf8"));
+    expect(mcp.mcpServers.hetu.args).toEqual(["--client", "codex"]);
+  } finally { await client.close(); }
+});

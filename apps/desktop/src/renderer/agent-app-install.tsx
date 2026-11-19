@@ -8,7 +8,7 @@ export function AgentAppInstall({ disabled = false }: { disabled?: boolean }) {
   return <div className="actions">
     <button disabled={disabled || busy} onClick={() => {
       setBusy(true);
-      void desktop.connection("install", "codex").then(() => {
+      void desktop.installConnection("codex").then(() => {
         if (alive.current) setNotice("连接包已登记。请刷新或重启 Codex Desktop，再打开河图面板；当前会话加载尚待核对。");
       }).catch(error => { if (alive.current) setNotice(error.message); }).finally(() => { if (alive.current) setBusy(false); });
     }}>{busy ? "正在核对接入…" : "接入 Codex MCP App"}</button>

@@ -68,9 +68,10 @@ export interface DesktopBridge {
   ): Promise<any>;
   handoff(page: string, object?: Record<string, unknown>): Promise<void>;
   connection(
-    method: "status" | "select" | "authorize" | "revoke" | "install",
+    method: "status" | "select" | "authorize" | "revoke",
     client: string,
   ): Promise<any>;
+  installConnection(client: string): Promise<any>;
   dirty(value: boolean): Promise<void>;
   buffer(
     document_id: string,

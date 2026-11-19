@@ -403,17 +403,23 @@ fn codex_market(fixed: &Value, registered: &Value) -> Result<PathBuf> {
     if let Some(record) = records.first() {
         let source = &record["marketplaceSource"];
         let candidate = PathBuf::from(text(source, "source")?);
+        // 官方 CLI 会规范化本机路径（例如 macOS 的 /var → /private/var）。
+        // 核对真实目录，既接受同一来源，也不让符号链接扩大受管范围。
+        let managed = base.canonicalize().map_err(|_| Error::new(
+            "revision_conflict", "受管市场来源无法核对，请保留原登记。"))?;
+        let actual = candidate.canonicalize().map_err(|_| Error::new(
+            "revision_conflict", "已有市场来源无法核对，请保留原登记。"))?;
         ensure(
             record["pluginId"] == format!("{name}@{market_name}")
                 && record["name"] == name
                 && record["marketplaceName"] == market_name
                 && source["sourceType"] == "local"
                 && candidate.is_absolute()
-                && (candidate == base || candidate.parent() == Some(base.as_path())),
+                && (actual == managed || actual.parent() == Some(managed.as_path())),
             "revision_conflict",
             "已有市场来源不属于本机受管套件。",
         )?;
-        return Ok(candidate);
+        return Ok(actual);
     }
     // 空目录不证明同名市场未登记；正式add仍由官方CLI核验来源冲突。
     Ok(base)

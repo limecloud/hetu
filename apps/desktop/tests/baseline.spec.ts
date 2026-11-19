@@ -41,6 +41,7 @@ test("空插件目录的小说大纲、剧本阅读、视频播放与区间反�
     await app.evaluate(({ dialog }, input) => {
       dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [input.workspace] });
       dialog.showSaveDialog = async () => ({ canceled: false, filePath: input.exported });
+      dialog.showMessageBoxSync = () => 1;
     }, { workspace, exported });
     const page = await app.firstWindow();
     await page.setViewportSize({ width: 1360, height: 900 });

@@ -877,6 +877,8 @@ Git 读取动作 references、read_version、merge_preview 提供版本线、固
 
 `hetu.local_settings.get/prepare/get_operation/execute` 在 Electron 架构中由独立 Rust 本机服务持有，稳定 CLI/MCP 直接复用，无需窗口或子 CLI。旧原生 LocalAutomation 保留原偏好域与原方案，不和新宿主双写。公开 `hetu.local_settings.record_decision` 可依据当前会话的真实用户指令登记确切方案决定；桌面 `local_settings/host` 使用同一决定实现。登记不执行，执行仍核验原客户端、状态版本、摘要与基线。偏好白名单包括语言、主题、书库布局、自动保存、字体、字号、行距、缩进、Git 作者和默认客户端；密钥与私密模型配置不回读。
 
+桌面机器连接安装通过同一本机App Server的私有`local_settings/request`传递`{client_adapter, request}`；request仍是公开动作、合同修订及输入信封，经Core按Agent身份核验。它与`local_settings/host`共享顺序队列，避免本机设置回读与另起CLI竞争锁；不把安装执行变成作者身份，也不提供作品或通用Shell入口。设置窗口仅开放专用安装IPC，作品授权仍走原工作台通道。
+
 方案绑定 Owner、客户端、完整原值、套件指纹与安装目标、可选工作区身份和24小时期限。执行使用跨进程锁、CAS及可恢复事务；偏好和方案结果原子提交，executing 只接续原键与固定包。设置变化导致冲突，不能强行覆盖。套件选择可独立保存，受管安装按实际客户端能力执行；Codex 安装未知先只读核实官方登记及全部缓存字节，不自动重复安装。MCP Apps 的 `ui://hetu/operation-view/1` 只读方案及状态；批准来自可信作者工作面，任务面板的偏好和意见不构成批准。详细私有边界见插件20第21节。
 
 ## 26. 独立创作对象与视频用例合同
