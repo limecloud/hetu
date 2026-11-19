@@ -111,6 +111,26 @@
       {
         "path": "build/mcp-app-discovery/v0134-structure-final.log",
         "sha256": "8f50e6c24980979cbcbfb74fd51aa3e6a1a8ab8da5446a1fe3a3d983871488e0"
+      },
+      {
+        "path": "build/mcp-app-discovery/v0134-ci-electron.log",
+        "sha256": "8a42e54103b3384564f6aefccb83a24e4474eeaa579826b455c1e9152d65928f"
+      },
+      {
+        "path": "build/mcp-app-discovery/v0134-ci-web-completed.log",
+        "sha256": "6a54060b26d768189e2b43dc22e7061c9ae1c65c1fe995b43b53c0fe3f105860"
+      },
+      {
+        "path": "build/mcp-app-discovery/v0134-release-mac.log",
+        "sha256": "3931afd9ab01167f7b680f6bb6538ed142d30dc543e192312477d0349b5dbb9b"
+      },
+      {
+        "path": "build/mcp-app-discovery/v0134-release-windows.log",
+        "sha256": "8fd124ab416f100324edfb19d1d8e7818a2d4c7eb699648dffa0f519ce633515"
+      },
+      {
+        "path": "build/mcp-app-discovery/v0134-release-linux-completed.log",
+        "sha256": "0f6842c589ca0910daebcb409ad66ad6f2f7eb4a76f9b68a48e7aa2bb5d84f07"
       }
     ],
     "packaged_bundle_journey": {
@@ -122,6 +142,27 @@
       "passed": 1,
       "failed": 0,
       "log": "build/mcp-app-discovery/v0134-structure-final.log"
+    },
+    "ci": {
+      "status": "success",
+      "run_id": 44515846962,
+      "url": "https://github.com/limecloud/hetu/actions/runs/44515846962",
+      "git_sha": "feb332a4684fc137eaa1c0acfab226039451fdc7",
+      "desktop": 47,
+      "plugins": 104,
+      "website": 524,
+      "mcp_app": 50,
+      "mcp_app_skipped": 2,
+      "skip_reason": "需要本机官方Codex可执行文件；本机52项包含对应两项且均通过。"
+    },
+    "computer_use_recheck": {
+      "apps": [],
+      "browsers": [],
+      "errors": [
+        "Sky Computer Use native pipe startup failed",
+        "The browser access host is unavailable"
+      ],
+      "scope": "再次检查当前桌面及浏览器控制通道，无可用表面；不据此声称指定GUI逐页操作通过。"
     }
   },
   "visual": {
@@ -165,6 +206,11 @@
       "kind": "final_packaged_invocation_and_structure_selector",
       "log": "build/mcp-app-discovery/v0134-installed-desktop.log",
       "resolution": "分集专项通过；打包测试须以完整装配目录为入口核验归档附属文件，安装目录另按应用子树核验；目录实际显示第一集，旧测试重复第1集前缀，修正为确切目录断言并等待作品切换。"
+    },
+    {
+      "kind": "slow_public_download_route",
+      "resolution": "原始公开URL的Python单连接约读40MB后改用官方发行下载接口并行核对四个完整文件；停止的只是本轮只读下载进程，发布、制品和本机安装不变。",
+      "status": "interrupted_read_only_verification"
     }
   ],
   "installation": {
@@ -207,9 +253,103 @@
     }
   },
   "release": {
-    "status": "ready",
+    "status": "published",
     "tag": "v0.13.4",
-    "scope": "Current shared UI and functional completion; prior unpublished discovery and episode fixes included."
+    "url": "https://github.com/limecloud/hetu/releases/tag/v0.13.4",
+    "git_sha": "feb332a4684fc137eaa1c0acfab226039451fdc7",
+    "run_id": 44516029376,
+    "run_url": "https://github.com/limecloud/hetu/actions/runs/44516029376",
+    "jobs": [
+      {
+        "name": "Electron macOS arm64",
+        "conclusion": "success"
+      },
+      {
+        "name": "Electron windows-x64",
+        "conclusion": "success"
+      },
+      {
+        "name": "Electron linux-x64",
+        "conclusion": "success"
+      },
+      {
+        "name": "publish",
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish npmjs launcher",
+        "conclusion": "success"
+      }
+    ],
+    "npm": {
+      "name": "@limecloud/hetu",
+      "version": "0.13.4",
+      "url": "https://www.npmjs.com/package/@limecloud/hetu/v/0.13.4",
+      "latest": "0.13.4",
+      "integrity": "sha512-nue7fJsTBaR1w982kEfXxdlJQ/fhlmfjQ8shfuOj8v/hYL+l+UQfU4HtIpMB+YpS5+2RhBllGjfYohJx703TQA=="
+    },
+    "public_verification": {
+      "version": "0.13.4",
+      "git_sha": "feb332a4684fc137eaa1c0acfab226039451fdc7",
+      "release": "https://github.com/limecloud/hetu/releases/tag/v0.13.4",
+      "manifests": [
+        {
+          "name": "release-manifest.json",
+          "platform": "macos",
+          "sha256": "7c73914b17cd86feb61f1867e5e3cb389fa4cd831c34722867bf87f676fe1bd5",
+          "source_sha256": "76e62eadd9ccc3ef7e77619d76468a67631b47f7f4359528365917a2888ad259",
+          "signing": "developer-id"
+        },
+        {
+          "name": "release-manifest-windows-x64.json",
+          "platform": "windows",
+          "sha256": "9dc7123f9fccace6437ec06b98fd479fd250a7dd3fa44607e262c5d39dc57fc4",
+          "source_sha256": "7d026a93181474c433159457593d201a32a6145fbf9959c989b08a4ab6c48395",
+          "signing": "unsigned"
+        },
+        {
+          "name": "release-manifest-linux-x64.json",
+          "platform": "linux",
+          "sha256": "fd0e7d771c47d40b502bbe2de3f2bdf81d84cb7c28fefeb8c186a2b2f0524737",
+          "source_sha256": "d8f1d6b1649be6b26a100f634efafc6f6a5731141a27b400c60e90b744aeb1df",
+          "signing": "unsigned"
+        }
+      ],
+      "downloads": [
+        {
+          "name": "Hetu-0.13.4-macos-arm64.zip",
+          "sha256": "e5469090b00f040f833ae0ee00e767f5c57cd9347e7704e9583f2c62c2403f5e",
+          "size_bytes": 227995979,
+          "method": "downloaded_bytes_via_official_release_asset"
+        },
+        {
+          "name": "Hetu-0.13.4-linux-x64.tar.gz",
+          "sha256": "e08db8ed47a80b922083bf0dfc45507821d567dc54f291ed88314baf2ecb900f",
+          "size_bytes": 237989518,
+          "method": "downloaded_bytes_via_official_release_asset"
+        },
+        {
+          "name": "Hetu-0.13.4-windows-x64.zip",
+          "sha256": "b7c166ebf928f2b817e69a07c95c7230a0b6d41f641a91cfb87de40578bf4d8c",
+          "size_bytes": 252350244,
+          "method": "downloaded_bytes_via_official_release_asset"
+        },
+        {
+          "name": "Hetu-0.13.4-macos-arm64.dmg",
+          "sha256": "a7c2ef276fe5e26c1b98121a928418956e7bfa8f16924065858cc7346c16a28d",
+          "size_bytes": 268249728,
+          "method": "downloaded_bytes_via_official_release_asset"
+        }
+      ],
+      "npm": {
+        "name": "@limecloud/hetu",
+        "version": "0.13.4",
+        "latest": "0.13.4",
+        "integrity": "sha512-nue7fJsTBaR1w982kEfXxdlJQ/fhlmfjQ8shfuOj8v/hYL+l+UQfU4HtIpMB+YpS5+2RhBllGjfYohJx703TQA=="
+      }
+    },
+    "public_verification_path": "build/mcp-app-public-v0134/verification.json",
+    "public_verification_sha256": "e36094facf98f4aef0daf66681985d552fc3d08aecad57afe34224a1781d512d"
   },
   "not_verified": [
     "Claude等其他GUI宿主的实机兼容",
