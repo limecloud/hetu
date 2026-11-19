@@ -185,7 +185,8 @@
           "original_32_states_preserved": true
         }
       },
-      "professional_owner": "https://github.com/wordflowlab/hetu-essay-studio/tree/main/docs"
+      "professional_owner": "https://github.com/wordflowlab/hetu-essay-studio/tree/main/docs",
+      "delivery_documentation_commit": "557c0628bd91a3e48274a46ccdb013c5029e4a29"
     },
     {
       "slug": "criticism-studio",
@@ -375,7 +376,8 @@
           "original_32_states_preserved": true
         }
       },
-      "professional_owner": "https://github.com/wordflowlab/hetu-criticism-studio/tree/main/docs"
+      "professional_owner": "https://github.com/wordflowlab/hetu-criticism-studio/tree/main/docs",
+      "delivery_documentation_commit": "21273de7affc9bbe4b52e603e338edbca512d496"
     }
   ],
   "host": {
@@ -419,7 +421,7 @@
     }
   ],
   "website": {
-    "state": "locally_verified_before_mainline_integration",
+    "state": "deployed_and_verified",
     "public_release_links": [
       {
         "slug": "essay-studio",
@@ -508,7 +510,153 @@
     ],
     "pages_built": 195,
     "local_references_checked": 11667,
-    "local_browser_checks_passed": 38
+    "local_browser_checks_passed": 38,
+    "origin": "https://hetu.limeai.run",
+    "deployment": "https://d737ae82.hetu-website-3uu.pages.dev",
+    "deployed_source_commit": "128a5c2655c8d8d77582907f21144ffaf4509104",
+    "integrated_mainline": "b3063938351a89b383dd604d9eea9fdd3bf712c9",
+    "production_browser_checks_passed": 38,
+    "public_responses": {
+      "origin": "https://hetu.limeai.run",
+      "responses": [
+        {
+          "route": "/plugins/",
+          "status": 200,
+          "raw_sha256": "0221b54cb483369bf4e7747d3c6fef527123b84861e7f27d14f034aea66b3690",
+          "expected_sha256": "0221b54cb483369bf4e7747d3c6fef527123b84861e7f27d14f034aea66b3690",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/plugins/",
+          "status": 200,
+          "raw_sha256": "5d85742ea0014768a73fc6696a1f2d3713ce3237abb7ed9fab1782d8b96b8b2e",
+          "expected_sha256": "5d85742ea0014768a73fc6696a1f2d3713ce3237abb7ed9fab1782d8b96b8b2e",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/docs/plugins/",
+          "status": 200,
+          "raw_sha256": "4aa08baf8d6aa24f8a2ca24e475012e421a6d7c24d80882595dea9ec10f85f0a",
+          "expected_sha256": "4aa08baf8d6aa24f8a2ca24e475012e421a6d7c24d80882595dea9ec10f85f0a",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/docs/plugins/",
+          "status": 200,
+          "raw_sha256": "0bb737f50d28f8b845c939f9e6d637daa4197be400a761a9ef03e1291e6d4ce9",
+          "expected_sha256": "0bb737f50d28f8b845c939f9e6d637daa4197be400a761a9ef03e1291e6d4ce9",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/blog/fragments-and-readings/",
+          "status": 200,
+          "raw_sha256": "a6af4946f9da2a2b13e4aa254fbeec91baacf55e1d9e1f30648eb28971011133",
+          "expected_sha256": "a6af4946f9da2a2b13e4aa254fbeec91baacf55e1d9e1f30648eb28971011133",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/blog/fragments-and-readings/",
+          "status": 200,
+          "raw_sha256": "ab004ea33a7f0f22b52637399629de4bc3c77d390d6798ac5f076ee1ac7b2550",
+          "expected_sha256": "ab004ea33a7f0f22b52637399629de4bc3c77d390d6798ac5f076ee1ac7b2550",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/blog/creative-plugins/",
+          "status": 200,
+          "raw_sha256": "f4d1a1a49db25dde03c111f6d43112ad76f660051620295f462ee47a7ae23e25",
+          "expected_sha256": "f4d1a1a49db25dde03c111f6d43112ad76f660051620295f462ee47a7ae23e25",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/blog/creative-plugins/",
+          "status": 200,
+          "raw_sha256": "dd8be47343b5b340c567ca2a2c564fe04fed78e252094cec1c8feb6463dfdbd1",
+          "expected_sha256": "dd8be47343b5b340c567ca2a2c564fe04fed78e252094cec1c8feb6463dfdbd1",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/essay-studio/",
+          "status": 200,
+          "raw_sha256": "e5f1c2926caf06ab0def755ecfe5972337cef941787d10efe36b641115896e00",
+          "expected_sha256": "e5f1c2926caf06ab0def755ecfe5972337cef941787d10efe36b641115896e00",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/plugins/essay-studio/",
+          "status": 200,
+          "raw_sha256": "c903c8890e4400ad7bb985d1c374f050b3ce2be330f6eb1936cc7b1fd5916e87",
+          "expected_sha256": "c903c8890e4400ad7bb985d1c374f050b3ce2be330f6eb1936cc7b1fd5916e87",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/essay-studio.png",
+          "status": 200,
+          "raw_sha256": "c6ed1d4f70d2e62311d2d2b40607ecabb2252abdaddce7985424a70c72ebc735",
+          "expected_sha256": "c6ed1d4f70d2e62311d2d2b40607ecabb2252abdaddce7985424a70c72ebc735",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/criticism-studio/",
+          "status": 200,
+          "raw_sha256": "0a979377200a585dfff056c8482db872420db68fda43083a2754f16343665b14",
+          "expected_sha256": "0a979377200a585dfff056c8482db872420db68fda43083a2754f16343665b14",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/plugins/criticism-studio/",
+          "status": 200,
+          "raw_sha256": "44c3f8ff95360e56480aa8de0d82c9bacad3422579d2bd17b06341fa67e963ce",
+          "expected_sha256": "44c3f8ff95360e56480aa8de0d82c9bacad3422579d2bd17b06341fa67e963ce",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/criticism-studio.png",
+          "status": 200,
+          "raw_sha256": "416dabe15b7d4bd6b3fc0ead2416f2ac829b54f35a5d456f8511acc12dbd1b67",
+          "expected_sha256": "416dabe15b7d4bd6b3fc0ead2416f2ac829b54f35a5d456f8511acc12dbd1b67",
+          "observed_changes": [],
+          "matches_build": true
+        }
+      ]
+    },
+    "byte_verification": "14条生产响应均与构建原字节一致，未移除统计标签或空白。",
+    "logs": {
+      "website-deploy.log": {
+        "sha256": "c0714a70f5d7bcc088944c9ab2a7320352795aa795446303d7ceff77f55bad9b"
+      },
+      "website-build-integrated.log": {
+        "sha256": "3e7b7b2adb3cb7857946086c4be0b3fda3c84144ac9d6a18c6d22c595f47dbf8"
+      },
+      "website-tests-integrated.log": {
+        "sha256": "01182bcfd550cd20259d52c3ead64862e25445ede52b2f3d809606e27e642e62"
+      },
+      "production-tests.log": {
+        "sha256": "889928b9ac920b09502c9f5a6e84c0fd0fc2285d1499ed942d25adfc1fb1e3eb"
+      },
+      "production-bytes.log": {
+        "sha256": "eb63707fbe0efb87aecda83653411966fb8fe778b5d2c6bf7710a89482bf93c2"
+      },
+      "public-install.log": {
+        "sha256": "8c80cac6a6ca0704ac52e215921e985edb3c9205a6bb8b151c26cd7cd04aad2c"
+      },
+      "download.log": {
+        "sha256": "a32519271fc0c4f32d4b32d2d48f2cc243c5ada3e5d7a7cdba53f19fe31176e9"
+      }
+    }
   },
   "limits": [
     "macOS arm64专业开发预览，Windows/Linux专业实机未验",
