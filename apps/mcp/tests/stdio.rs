@@ -122,7 +122,7 @@ async fn compact_catalog_dispatches_discovered_actions_without_tool_list_refresh
     let mut client = Client::spawn(command);
     let listed = client.rpc("tools/list", json!({})).await;
     let tools = listed["result"]["tools"].as_array().unwrap();
-    assert!(tools.len() <= 12, "{listed}");
+    assert!(tools.len() <= 13, "{listed}");
     assert!(tools.iter().any(|t| t["name"] == "hetu_call_action"));
     let discovered = client
         .tool(
@@ -1848,14 +1848,22 @@ fn uri(k: &Kernel, path: &str) -> String {
 }
 
 #[tokio::test]
-async fn mcp_workbench_entry_is_optional_empty_and_keeps_app_only_tools_discoverable() {
+async fn mcp_workbench_entry_is_discoverable_before_ui_negotiation_and_keeps_app_only_tools_scoped() {
     let folder = tempfile::tempdir().unwrap();
     let directory = folder.path().join("no-authorizations");
     let mut command = Command::new(binary());
     command.args(["--client", "codex", "--collaboration-dir"]).arg(&directory);
     let mut client = Client::spawn(command);
     let ordinary = client.rpc("tools/list", json!({})).await;
-    assert!(!ordinary["result"]["tools"].as_array().unwrap().iter().any(|t| t["name"] == "hetu_open_app"));
+    assert!(ordinary["result"]["tools"].as_array().unwrap().iter().any(|t| t["name"] == "hetu_open_app"));
+    assert!(ordinary["result"]["tools"].as_array().unwrap().len() <= 13);
+    let empty = client.tool("hetu_open_app", json!({})).await;
+    assert_eq!(empty["data"], json!({"app":{"route":"home"}}));
+    let resources = client.rpc("resources/list", json!({})).await;
+    assert_eq!(resources["result"]["resources"].as_array().unwrap().len(), 1);
+    assert_eq!(resources["result"]["resources"][0]["uri"], "ui://hetu/workbench/1");
+    let static_ui = client.rpc("resources/read", json!({"uri":"ui://hetu/workbench/1"})).await;
+    assert_eq!(static_ui["result"]["contents"][0]["mimeType"], "text/html;profile=mcp-app");
     client.apps = true;
     let listed = client.rpc("tools/list", json!({})).await;
     let tools = listed["result"]["tools"].as_array().unwrap();
@@ -1874,6 +1882,38 @@ async fn mcp_workbench_entry_is_optional_empty_and_keeps_app_only_tools_discover
     assert_eq!(resource["result"]["contents"][0]["mimeType"], "text/html;profile=mcp-app");
     assert!(resource["result"]["contents"][0]["text"].as_str().unwrap().contains("media-src blob:"));
     client.close().await;
+}
+
+#[tokio::test]
+async fn legacy_workbench_discovery_does_not_require_ui_and_normalizes_capability_fields() {
+    let ui = json!({"mimeTypes":["text/html;profile=mcp-app"]});
+    for (capabilities, enhanced) in [
+        (json!({}), false),
+        (json!({"experimental":{"io.modelcontextprotocol/ui":ui}}), true),
+        (json!({"extensions":{"io.modelcontextprotocol/ui":ui}}), true),
+        (json!({"extensions":{"io.modelcontextprotocol/ui":{}},"experimental":{"io.modelcontextprotocol/ui":ui}}), false),
+    ] {
+        let folder = tempfile::tempdir().unwrap();
+        let directory = folder.path().join("no-grants");
+        let mut command = Command::new(binary());
+        command.args(["--client", "codex", "--collaboration-dir"]).arg(&directory);
+        let mut client = Client::spawn(command);
+        client.legacy = true;
+        let initialized = client.rpc("initialize", json!({"protocolVersion":"2025-06-18", "capabilities":capabilities,
+            "clientInfo":{"name":"codex-global-catalog-regression","version":"1"}})).await;
+        assert_eq!(initialized["result"]["protocolVersion"], "2025-06-18");
+        client.raw(r#"{"jsonrpc":"2.0","method":"notifications/initialized"}"#).await;
+        let listed = client.rpc("tools/list", json!({})).await;
+        let tools = listed["result"]["tools"].as_array().unwrap();
+        let entry = tools.iter().find(|tool| tool["name"] == "hetu_open_app").unwrap();
+        assert_eq!(entry["_meta"]["openai/ui"]["entrypoints"], json!([{"type":"global"},{"type":"thread"}]));
+        assert_eq!(tools.len() > 100, enhanced, "{capabilities}");
+        assert_eq!(client.tool("hetu_open_app", json!({})).await["data"], json!({"app":{"route":"home"}}));
+        let resource = client.rpc("resources/read", json!({"uri":"ui://hetu/workbench/1"})).await;
+        assert_eq!(resource["result"]["contents"][0]["mimeType"], "text/html;profile=mcp-app");
+        assert!(!directory.exists(), "目录探测不得创建作品或授权");
+        client.close().await;
+    }
 }
 
 #[tokio::test]
