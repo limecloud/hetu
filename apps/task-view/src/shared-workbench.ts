@@ -69,7 +69,16 @@ window.hetuDesktop=bridge;
 (window as any).hetuWorkbenchAssets=libraryAssets;
 (window as any).hetuTaskViewResource=async()=>{const result=await host.readServerResource({uri:"ui://hetu/task-view/1"});return result.contents.find(item=>"text"in item)?.text;};
 host.onhostcontextchanged=context=>{if(context.theme)document.documentElement.dataset.theme=context.theme;};
-host.onteardown=async()=>{await releasePlugin();if(session)await call("close");for(const url of media.keys())URL.revokeObjectURL(url);media.clear();return {};};
+async function closeSettings(){
+ if(!document.querySelector("dialog.embedded-settings"))return;
+ await new Promise<void>((resolve,reject)=>{
+  const finished=(event:Event)=>{if((event as CustomEvent).detail!=="close")return;clearTimeout(timer);window.removeEventListener("hetu:settings-window",finished);resolve();};
+  const timer=setTimeout(()=>{window.removeEventListener("hetu:settings-window",finished);reject(new Error("设置保存尚未完成，请保留当前面板并沿原操作恢复。"));},10000);
+  window.addEventListener("hetu:settings-window",finished);
+  window.dispatchEvent(new Event("hetu:settings-close-request"));
+ });
+}
+host.onteardown=async()=>{await closeSettings();await releasePlugin();if(session)await call("close");for(const url of media.keys())URL.revokeObjectURL(url);media.clear();return {};};
 await host.connect();
 await ready;
 await import("../../desktop/src/renderer/index.tsx");

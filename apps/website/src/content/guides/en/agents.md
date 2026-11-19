@@ -18,9 +18,9 @@ Cursor, Grok Build, DeepSeek Harness and Doubao are also developing their own Ag
 
 External agents use MCP to discover capabilities, create authorized projects, organize chapters and references, submit candidates, prepare delivery and retrieve feedback. Your chosen client manages the connection, so the native window need not stay open. Configure the stable connection once; each explicit work and task identifies its authorized material. Novels, related scripts and videos keep separate access scopes, even in the same folder. A connection does not grant library-wide access, and reauthorization does not revive revoked tasks.
 
-In Settings → AI Collaboration or the work’s collaboration page, choose “Connect Codex MCP App,” review and confirm the installation target, then refresh or restart Codex as prompted. The connection package and genre Skills install separately. Verify registration and current-session loading separately. The library’s MCP guide covers other clients.
+In Settings → AI Collaboration → Install to Codex Desktop, choose “Install MCP App” and “Install Skills Suite” separately. Confirm the installation target and Hetu completes the installation, then refresh or restart Codex as prompted. Only the selected genre suite is installed. Verify registration and current-session loading separately.
 
-Hosts that support MCP Apps can show authorized works, references, tasks, fixed image and audiovisual previews, candidate comparisons and saved feedback within the conversation. Use the contextual AI handoff to request further work. Message drafts, accepted messages and returned results have separate states. Other hosts continue with tool results and the desktop workspace.
+Hosts that support MCP Apps open the same workspace as the desktop application. Open registered local works directly to read, edit, review references and tasks, preview images and audiovisual material, compare candidates and save feedback, without a separate authorization step for each work. Use the contextual AI handoff to continue from the fixed manuscript. Message drafts, accepted messages and returned results have separate states. Adoption, finalization and costs still require reviewing the exact result. Other hosts continue with tool results and the desktop workspace.
 
 ## CLI: discover and call creative tools
 

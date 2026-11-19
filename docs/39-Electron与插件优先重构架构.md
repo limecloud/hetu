@@ -334,3 +334,5 @@ flowchart TD
 ### MCP工作台共享宿主
 
 MCP App与Electron装配同一`apps/desktop/src/renderer`工作台；`apps/desktop/src/main/work-session.ts`复用作品应用用例、固定预览与原操作恢复。Electron通过IPC连接，MCP通过第一方App桥接连接同包受管Node宿主；普通Agent动作继续使用独立CollaborationHub，不接收作者句柄。每个App视图持有独立连接，作品从桌面登记解析并经Core核验，不能从工具参数指定任意作品路径。打开本机登记作品不逐作品授权。文件选择及必要的固定决定复用原生交互，读写与Core执行不依赖打开桌面主窗口。
+
+`library-works.ts`统一创作库资料、章数与封面投影，`workbench-handoff.ts`统一作品、新建、设置、插件成果和迁移接续；宿主只适配剪贴板或对话草稿的递送。`work-connection.ts`统一主动协作的当前作品连接和未知结果回读。内嵌设置沿同一保存流程完成关闭，面板拆除先保存未失焦偏好与插件恢复稿，再关闭私有连接。

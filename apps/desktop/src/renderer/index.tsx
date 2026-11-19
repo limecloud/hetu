@@ -413,7 +413,7 @@ function App() {
           )}
         </main>
       </div>
-      {settingsOpen && <dialog ref={embeddedSettings} className="embedded-settings" aria-label="设置" onCancel={()=>setSettingsOpen(false)}><button className="embedded-settings-close" aria-label="关闭设置" onClick={()=>setSettingsOpen(false)}>关闭</button><SettingsApp embedded/></dialog>}
+      {settingsOpen && <dialog ref={embeddedSettings} className="embedded-settings" aria-label="设置" onCancel={event=>{event.preventDefault();window.dispatchEvent(new Event("hetu:settings-close-request"));}}><button className="embedded-settings-close" aria-label="关闭设置" onClick={()=>window.dispatchEvent(new Event("hetu:settings-close-request"))}>关闭</button><SettingsApp embedded/></dialog>}
     </Workbench.Provider>
     </PageActionsTarget.Provider>
     </Preferences.Provider>

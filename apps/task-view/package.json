@@ -1,6 +1,6 @@
 {
   "name": "@hetu/task-view",
-  "version": "0.13.6",
+  "version": "0.13.7",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/ext-apps": "2.0.4",
-    "@hetu/workbench-ui": "0.13.6",
+    "@hetu/workbench-ui": "0.13.7",
     "react": "18.3.1",
     "react-dom": "18.3.1"
   },

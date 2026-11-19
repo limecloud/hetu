@@ -205,11 +205,12 @@ export function LocalSettings({
     return pending;
   }
   useEffect(() => {
-    const beforeClose = (event: BeforeUnloadEvent) => {
-      if (closeReady.current) return;
+    const beforeClose = (event: Event) => {
+      const embedded = event.type === "hetu:settings-close-request";
+      if (closeReady.current) { if (embedded) void desktop.settingsWindow("close"); return; }
       const edits = Object.entries(drafts.current).filter(([key, value]) => value !== currentState.current?.preferences[key]);
-      if (!edits.length && !busy && !Object.keys(pendingValues.current).length) return;
-      event.preventDefault(); event.returnValue = false;
+      if (!edits.length && !busy && !Object.keys(pendingValues.current).length) { if (embedded) void desktop.settingsWindow("close"); return; }
+      event.preventDefault(); if (!embedded) (event as BeforeUnloadEvent).returnValue = false;
       if (closing.current) return;
       closing.current = true;
       void (async () => {
@@ -230,7 +231,8 @@ export function LocalSettings({
       }).finally(() => { closing.current = false; });
     };
     window.addEventListener("beforeunload", beforeClose);
-    return () => window.removeEventListener("beforeunload", beforeClose);
+    window.addEventListener("hetu:settings-close-request", beforeClose);
+    return () => { window.removeEventListener("beforeunload", beforeClose); window.removeEventListener("hetu:settings-close-request", beforeClose); };
   }, [busy]);
   function field(key: string) {
     const value = pendingPreferences[key] ?? state.preferences[key], disabled = busy || state.journal?.status === "pending";

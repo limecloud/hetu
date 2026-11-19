@@ -33,11 +33,13 @@ test("MCP App直接打开未授权作品，复用桌面编辑保存及设置，�
  const resource=await client.readResource({uri:"ui://hetu/workbench/2"});
  const html=(resource.contents[0] as {text:string}).text;
  const host=await build({entryPoints:["tests/host.ts"],bundle:true,write:false,format:"esm",target:"es2022"});
+ let releasePreferenceSave:(()=>void)|undefined;
  const server=createServer(async(request,response)=>{
   try{
    if(request.url==="/rpc"){
     const chunks:Buffer[]=[];for await(const chunk of request)chunks.push(Buffer.from(chunk));
     const {method,params}=JSON.parse(Buffer.concat(chunks).toString());
+    if(params.name==="hetu_app_request"&&params.arguments.method==="settings"&&params.arguments.args[0]==="update"&&params.arguments.args[1].patch?.git_author_name==="共享工作台验收")await new Promise<void>(resolve=>{releasePreferenceSave=resolve;});
     response.setHeader("Content-Type","application/json");
     response.end(JSON.stringify(method==="tools/call"?await client.callTool(params):await client.readResource(params)));
    }else if(request.url==="/host.js"){response.setHeader("Content-Type","application/javascript");response.end(host.outputFiles[0].text);}
@@ -54,6 +56,10 @@ test("MCP App直接打开未授权作品，复用桌面编辑保存及设置，�
   const view=page.frameLocator("iframe");
   const card=view.getByRole("button",{name:"打开作品 插件集成测试",exact:true});
   await expect(card).toBeEnabled({timeout:60000});
+  await expect.poll(async()=>{
+   const state=await view.locator("#root").evaluate(()=>(window as any).hetuDesktop.state());
+   return state.works.find((row:any)=>row.work_ref.object_id===context.work_ref.object_id)?.chapter_count;
+  },{timeout:30000}).toBe(1);
   await card.click();
   const editor=view.getByRole("textbox",{name:"文稿编辑",exact:true});
   await expect(editor).toBeVisible({timeout:30000});
@@ -77,7 +83,15 @@ test("MCP App直接打开未授权作品，复用桌面编辑保存及设置，�
   await view.getByRole("tab",{name:"AI 协作",exact:true}).click();
   await expect(view.getByRole("button",{name:"安装 MCP App",exact:true})).toBeVisible();
   await expect(view.getByRole("button",{name:"安装 Skills 套件",exact:true})).toBeVisible();
+  await view.getByRole("tab",{name:"版本",exact:true}).click();
+  await view.getByRole("textbox",{name:"姓名",exact:true}).fill("共享工作台验收");
   await view.getByRole("button",{name:"关闭设置",exact:true}).click();
+  await expect.poll(()=>!!releasePreferenceSave).toBe(true);
+  await expect(view.locator("dialog.embedded-settings")).toBeVisible();
+  releasePreferenceSave!();
+  await expect(view.locator("dialog.embedded-settings")).toHaveCount(0);
+  const preferencesAfterClose=await client.callTool({name:"hetu_app_request",arguments:{session:token,method:"settings",args:["get"]}});
+  expect((preferencesAfterClose.structuredContent as any).value.preferences.git_author_name).toBe("共享工作台验收");
   await view.getByRole("button",{name:"参考稿审核",exact:true}).click();
   await view.getByRole("combobox",{name:"当前审阅任务",exact:true}).selectOption(context.task_ref.task_id);
   const taskView=view.frameLocator('iframe[title="任务候选审阅"]');
@@ -94,5 +108,33 @@ test("MCP App直接打开未授权作品，复用桌面编辑保存及设置，�
   await page.screenshot({path:path.join(root,"build/task-view/shared-workbench.png"),fullPage:true});
   expect(errors).toEqual([]);
   expect(await readdir(path.join(collaboration,"management/codex")).catch(()=>[])).toEqual([]);
+  const request=async(method:string,args:any[])=>{
+   const result=await client.callTool({name:"hetu_app_request",arguments:{session:token,method,args}});
+   expect(result.isError).not.toBe(true);return result.structuredContent as any;
+  };
+  const fixed=JSON.parse((await request("handoff",["novel",{document_id:context.document.document_id,revision_id:(read.structuredContent as any).value.data.revision.revision_id}])).copied.split("\n").slice(1).join("\n"));
+  expect(fixed.work_ref).toEqual(context.work_ref);
+  expect(fixed.fixed_ref).toBeTruthy();
+  expect(fixed.fixed_refs.some((item:any)=>item.kind==="document"&&item.document_id===context.document.document_id)).toBe(true);
+  expect(fixed.direct_actions.length).toBeGreaterThan(0);
+  expect(fixed.proposal_actions.length).toBeGreaterThan(0);
+  expect(fixed.management_ref.grant_revision).toBe(1);
+  const bootstrap=JSON.parse((await request("library",["bootstrap",{kind:"video"}])).copied.split("\n").slice(1).join("\n"));
+  expect(bootstrap.work_type).toBe("video");expect(bootstrap.creation_action).toBe("hetu.creation_projects.create");
+  const preferences=JSON.parse((await request("settings",["handoff",{section:"preferences"}])).copied.split("\n").slice(1).join("\n"));
+  expect(preferences.action).toBe("hetu.local_settings.get");expect(preferences.core_cli).toBeTruthy();
+  const objects=(await request("fallback",[pkg.manifest.id,"hetu.extensions.objects.list",{}])).value.data.objects;
+  const object=(await request("fallback",[pkg.manifest.id,"hetu.extensions.objects.get",{object_id:objects[0].object_id}])).value.data;
+  const pluginFixed=JSON.parse((await request("handoff",["fallback:"+pkg.manifest.id,{object_id:object.object.object_id,revision:object.object.revision,sha256:object.sha256}])).copied.split("\n").slice(1).join("\n"));
+  expect(pluginFixed.fixed_refs[0].owner_plugin_id).toBe(pkg.manifest.id);
+  expect(pluginFixed.plugin_connection.runtime).toMatch(/plugin-runtime\.mjs$/);
+  expect(pluginFixed.management_ref).toBeUndefined();
+  await view.getByRole("button",{name:"本机设置",exact:true}).first().click();
+  await view.getByRole("tab",{name:"版本",exact:true}).click();
+  await view.getByRole("textbox",{name:"姓名",exact:true}).fill("退出保存验收");
+  await page.evaluate(()=>window.harness.teardown());
+  const reopened=await client.callTool({name:"hetu_open_app",arguments:{}});
+  const restored=await client.callTool({name:"hetu_app_request",arguments:{session:reopened._meta?.["hetu/workbenchSession"],method:"settings",args:["get"]}});
+  expect((restored.structuredContent as any).value.preferences.git_author_name).toBe("退出保存验收");
  }finally{await client.close();await new Promise<void>(resolve=>server.close(()=>resolve()));}
 });

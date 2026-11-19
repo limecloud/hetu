@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "date": "2026-11-20",
-  "version": "0.13.6",
+  "version": "0.13.7",
   "request": "MCP App与桌面完整交互一致，登记作品直接打开，桌面点击安装MCP App及所选Skills。",
   "implementation": {
     "renderer": "同一桌面React入口和共享样式",
@@ -9,72 +9,248 @@
     "mcp_host": "Rust独立App私有会话＋Node共享作品用例和插件运行时",
     "library": "锁内重读合并同一目录登记",
     "optional_arguments": "undefined_args保留读取与清空恢复稿的区别",
-    "authorization": "作者App直接操作登记作品；普通Agent仍使用独立精确机器引用；作品选择不授Agent管理权限。"
+    "authorization": "作者App直接操作登记作品；普通Agent仍使用独立精确机器引用；作品选择不授Agent管理权限。",
+    "handoffs": "workbench-handoff.ts统一固定引用、动作、设置、插件及迁移接续",
+    "library_projection": "library-works.ts统一小说资料、章数和封面投影"
+  },
+  "retained_failures": [
+    {
+      "reason": "桌面测试保留旧的尚未连接文案及手动连接前置；按已采纳的自动连接流程修正后通过，保留撤权及旧引用失效检查。",
+      "log": "build/mcp-workbench-parity/desktop-regression.log"
+    },
+    {
+      "reason": "新增App专用桥接后，两个旧测试仍把仅App可见工具计入模型工具上限。改为继续限制模型可见工具，并明确断言桥接仅App可见。",
+      "log": "build/mcp-workbench-parity/stdio-final.log"
+    },
+    {
+      "log": "build/mcp-workbench-parity/actual-library-all-unconnected.log",
+      "reason": "验收脚本未展开已收起的项目导航，找不到返回按钮。"
+    },
+    {
+      "log": "build/mcp-workbench-parity/actual-library-all-unconnected-recheck.log",
+      "reason": "同名作品造成标题定位歧义；补验使用精确WorkRef核对。"
+    },
+    {
+      "log": "build/mcp-workbench-0137/desktop-all.log",
+      "reason": "两项导入／交付测试把App专用桥接计入旧模型工具数量断言；修正为限制模型可见目录，并单独核验桥接仅App可见。"
+    }
+  ],
+  "scope_limits": [
+    "官方Codex CLI与标准AppBridge实际通过；指定Codex Desktop GUI当前窗口的全部逐页交互尚未直接观察。",
+    "当前Computer Use未能启动原生管道，浏览器访问宿主也不可用；使用Playwright Electron与标准AppBridge分别验收。"
+  ],
+  "release": {
+    "status": "pending",
+    "tag": "v0.13.7"
+  },
+  "previous_candidate": {
+    "version": "0.13.6",
+    "commit": "9bb50ff9dd9d858ab549de7d5ac5f3c81b8ede0e",
+    "release_run": 44568492310,
+    "release_conclusion": "cancelled",
+    "reason": "发布复核发现MCP交接和创作库资料投影仍有简化分支，停止发行并提取共享用例。",
+    "verification": {
+      "apps": {
+        "passed": 55,
+        "failed": 0,
+        "log": "build/mcp-workbench-parity/apps-all-final.log",
+        "sha256": "04801640b4e2b6373f0a6d393800da4689025cdce4dc07cf1e26e2892310ce0f"
+      },
+      "desktop_initial": {
+        "passed": 11,
+        "failed": 1,
+        "log": "build/mcp-workbench-parity/desktop-regression.log",
+        "sha256": "a15e97c7789cc73cc3f8374128bcb71a3d974cee4dfe6999fa147c4ce8ddd4a3"
+      },
+      "desktop_recheck": {
+        "passed": 1,
+        "failed": 0,
+        "log": "build/mcp-workbench-parity/connection-regression-final.log",
+        "sha256": "7926600240fd79cd9ad63c831d692e0a85d4fd68b5d85205967ddeb99d1865bb"
+      },
+      "release_guards": {
+        "passed": 4,
+        "failed": 0,
+        "log": "build/mcp-workbench-parity/release-guards.log",
+        "sha256": "a40d828defdc0422eb4d2852d7d7b5b9069f1b010f9183197794ec361964301c"
+      },
+      "core": {
+        "passed": 13,
+        "failed": 0,
+        "log": "build/mcp-workbench-parity/core-final.log",
+        "sha256": "33dc7ca61993fcd0da1b91996ebbfc2cc0e66a43ecdd86ecf181ac590243f122"
+      },
+      "npm_cli": {
+        "passed": 6,
+        "failed": 0,
+        "log": "build/mcp-workbench-parity/npm-cli.log",
+        "sha256": "0345826c5041a6a521c054fd6513906519e1d0375ca36ec61101530ad5728d8f"
+      },
+      "stdio_initial": {
+        "passed": 35,
+        "failed": 2,
+        "log": "build/mcp-workbench-parity/stdio-final.log",
+        "sha256": "47b19aed6815761f414d934b99734e8a8d3079da7f15844c41242e9e0f06fea6"
+      },
+      "stdio_final": {
+        "passed": 37,
+        "failed": 0,
+        "log": "build/mcp-workbench-parity/stdio-recheck.log",
+        "sha256": "fe97788aac42a93e0245af4ac3ae323e6d2999bdd675880d4af1e55dd0caa4a2"
+      },
+      "shared_return_recheck": {
+        "passed": 1,
+        "failed": 0,
+        "log": "build/mcp-workbench-parity/shared-return-final.log",
+        "sha256": "86e5557372e1b7c5202c1ee0a4cf5b289cbcff3a34b6492975b041e9a89c7df6",
+        "scope": "插件返回后重新验证嵌套审核的完整候选正文，避免仅截图尚未加载的工作面。"
+      },
+      "packaged": {
+        "passed": 1,
+        "failed": 0,
+        "log": "build/mcp-workbench-parity/packaged-final.log",
+        "sha256": "23a65e20ff786bf82ea79e50b6c1958a6147702a83591166c0a5782b80a828cd"
+      },
+      "official_codex_installed": {
+        "version": "0.13.6",
+        "plugin_id": "hetu-workbench@hetu-luoshu-machine-connection",
+        "tools_error": null,
+        "entrypoints": [
+          {
+            "type": "global"
+          },
+          {
+            "type": "thread"
+          }
+        ],
+        "html_sha256": "37a6bfe0b72a2e6b8976efb704489dcc109b032169e649ef04749742e18fb716",
+        "html_bytes": 4137661,
+        "manual_mcp_configuration": false,
+        "gui_observed": false,
+        "app_only_bridge_called": true,
+        "private_session_preserved": true,
+        "registered_works": 18,
+        "same_desktop_work_refs": true,
+        "model_turn_started": false
+      },
+      "actual_library": {
+        "version": "0.13.6",
+        "desktop_registered": 18,
+        "mcp_total": 18,
+        "same_work_identities": true,
+        "authorized": 13,
+        "previously_without_agent_connection": 5,
+        "html_sha256": "37a6bfe0b72a2e6b8976efb704489dcc109b032169e649ef04749742e18fb716",
+        "catalog_identities_unchanged": true,
+        "real_drama_opened_without_authorization": true,
+        "reference_characters": 2128,
+        "real_work_files_unchanged": true,
+        "previously_unconnected_works_opened": [
+          {
+            "kind": "drama",
+            "opened": true
+          },
+          {
+            "kind": "novel",
+            "opened": true
+          },
+          {
+            "kind": "novel",
+            "opened": true
+          },
+          {
+            "kind": "drama",
+            "opened": true
+          },
+          {
+            "kind": "novel",
+            "opened": true
+          }
+        ],
+        "browser_cards": 18,
+        "refresh_passed": true,
+        "screenshot": "本机私有证据，不公开作者稿件截图。",
+        "scope": "安装版本机18作品一致、刷新与真实剧本只读打开；不代替指定Codex GUI逐页验收。",
+        "agent_grants_unchanged": true,
+        "supplemental_scope": "原无Agent连接的5个作品，使用App私有会话按确切WorkRef逐一打开并核对；真实剧本另经AppBridge页面阅读。"
+      }
+    },
+    "installation": {
+      "installed_at": "2026-11-19T16:35:52.480135+00:00",
+      "version": "0.13.6",
+      "application": "/Applications/Hetu.app",
+      "backup": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-parity/replaced-0.13.5.app",
+      "manifest": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-parity/package/hetu-dev-nxCoS7/manifest.json",
+      "source_sha256": "60dbc861c04c6490dc2e93f01b037ba2ecac8eef3d8baba4d41cdccbfdada3dd",
+      "artifacts_verified": 3387,
+      "signing": "ad-hoc-development",
+      "codesign_verified": true,
+      "cli_version": "hetu 0.13.6",
+      "author_content_modified": false
+    },
+    "package": {
+      "manifest": "build/mcp-workbench-parity/package/hetu-dev-nxCoS7/manifest.json",
+      "source_sha256": "60dbc861c04c6490dc2e93f01b037ba2ecac8eef3d8baba4d41cdccbfdada3dd",
+      "version": "0.13.6",
+      "signing": "ad-hoc development"
+    }
   },
   "verification": {
-    "apps": {
-      "passed": 55,
+    "stdio": {
+      "passed": 37,
       "failed": 0,
-      "log": "build/mcp-workbench-parity/apps-all-final.log",
-      "sha256": "04801640b4e2b6373f0a6d393800da4689025cdce4dc07cf1e26e2892310ce0f"
+      "skipped": 0,
+      "log": "build/mcp-workbench-0137/stdio.log",
+      "sha256": "93bd6aef697205c980bf030bb773c6250b2951d332fa2b8afa0e1bb753832e96"
     },
-    "desktop_initial": {
-      "passed": 11,
-      "failed": 1,
-      "log": "build/mcp-workbench-parity/desktop-regression.log",
-      "sha256": "a15e97c7789cc73cc3f8374128bcb71a3d974cee4dfe6999fa147c4ce8ddd4a3"
-    },
-    "desktop_recheck": {
-      "passed": 1,
+    "apps_initial": {
+      "passed": 53,
       "failed": 0,
-      "log": "build/mcp-workbench-parity/connection-regression-final.log",
-      "sha256": "7926600240fd79cd9ad63c831d692e0a85d4fd68b5d85205967ddeb99d1865bb"
+      "skipped": 2,
+      "log": "build/mcp-workbench-0137/apps-all.log",
+      "sha256": "14cb6a3e184a6ff47e49fb70fd69efbb5797a0246ae8eeb7df3383244d48fb45"
     },
     "release_guards": {
       "passed": 4,
       "failed": 0,
-      "log": "build/mcp-workbench-parity/release-guards.log",
-      "sha256": "a40d828defdc0422eb4d2852d7d7b5b9069f1b010f9183197794ec361964301c"
+      "skipped": 0,
+      "log": "build/mcp-workbench-0137/release-guards.log",
+      "sha256": "10bef04d5b8f22f6ef380ff701c66d5266da0b77dfcbe31f097f97d8f3b5c452"
     },
-    "core": {
-      "passed": 13,
-      "failed": 0,
-      "log": "build/mcp-workbench-parity/core-final.log",
-      "sha256": "33dc7ca61993fcd0da1b91996ebbfc2cc0e66a43ecdd86ecf181ac590243f122"
-    },
-    "npm_cli": {
-      "passed": 6,
-      "failed": 0,
-      "log": "build/mcp-workbench-parity/npm-cli.log",
-      "sha256": "0345826c5041a6a521c054fd6513906519e1d0375ca36ec61101530ad5728d8f"
-    },
-    "stdio_initial": {
-      "passed": 35,
-      "failed": 2,
-      "log": "build/mcp-workbench-parity/stdio-final.log",
-      "sha256": "47b19aed6815761f414d934b99734e8a8d3079da7f15844c41242e9e0f06fea6"
-    },
-    "stdio_final": {
-      "passed": 37,
-      "failed": 0,
-      "log": "build/mcp-workbench-parity/stdio-recheck.log",
-      "sha256": "fe97788aac42a93e0245af4ac3ae323e6d2999bdd675880d4af1e55dd0caa4a2"
-    },
-    "shared_return_recheck": {
+    "shared_close_and_handoff": {
       "passed": 1,
       "failed": 0,
-      "log": "build/mcp-workbench-parity/shared-return-final.log",
-      "sha256": "86e5557372e1b7c5202c1ee0a4cf5b289cbcff3a34b6492975b041e9a89c7df6",
-      "scope": "插件返回后重新验证嵌套审核的完整候选正文，避免仅截图尚未加载的工作面。"
+      "skipped": 0,
+      "log": "build/mcp-workbench-0137/shared-workbench.log",
+      "sha256": "57efba62b8e36c5184df0478aab36049c2d808e9049993c72382ae2cf0e73150"
+    },
+    "desktop_initial": {
+      "passed": 48,
+      "failed": 2,
+      "log": "build/mcp-workbench-0137/desktop-all.log",
+      "sha256": "748f8643b522a7400e6bc313d9eba25573e022963c837574e1c85451bd424f36"
+    },
+    "official_codex": {
+      "passed": 2,
+      "failed": 0,
+      "log": "build/mcp-workbench-0137/official-codex.log",
+      "sha256": "90b07e987958f696004fec799ce301a4a96d7b2084eb13dd8421e76e03b3c0b9"
+    },
+    "desktop_recheck": {
+      "passed": 2,
+      "failed": 0,
+      "log": "build/mcp-workbench-0137/transfer-recheck.log",
+      "sha256": "6f71f394eae2a82b39e15eb7acbd0088f41e37b4b5992d2eb5147399f170bd18"
     },
     "packaged": {
       "passed": 1,
       "failed": 0,
-      "log": "build/mcp-workbench-parity/packaged-final.log",
-      "sha256": "23a65e20ff786bf82ea79e50b6c1958a6147702a83591166c0a5782b80a828cd"
+      "log": "build/mcp-workbench-0137/packaged.log",
+      "sha256": "2035f1759c3de2151243195a41b3d61a957381d2feff6a476d53c0821c4ff627"
     },
-    "official_codex_installed": {
-      "version": "0.13.6",
+    "coverage_note": "App53项及官方Codex2项分批通过，桌面48项及导入／交付2项分批通过；不宣称同一次全量运行无跳过或失败。",
+    "official_installed": {
+      "version": "0.13.7",
       "plugin_id": "hetu-workbench@hetu-luoshu-machine-connection",
       "tools_error": null,
       "entrypoints": [
@@ -85,8 +261,8 @@
           "type": "thread"
         }
       ],
-      "html_sha256": "37a6bfe0b72a2e6b8976efb704489dcc109b032169e649ef04749742e18fb716",
-      "html_bytes": 4137661,
+      "html_sha256": "6e3145381a9e944d68440372f592419e574e0b1b9bc2d2f4400931ab70d61c98",
+      "html_bytes": 4138612,
       "manual_mcp_configuration": false,
       "gui_observed": false,
       "app_only_bridge_called": true,
@@ -96,58 +272,80 @@
       "model_turn_started": false
     },
     "actual_library": {
-      "version": "0.13.6",
+      "version": "0.13.7",
       "desktop_registered": 18,
       "mcp_total": 18,
       "same_work_identities": true,
       "authorized": 13,
       "previously_without_agent_connection": 5,
-      "html_sha256": "37a6bfe0b72a2e6b8976efb704489dcc109b032169e649ef04749742e18fb716",
+      "html_sha256": "6e3145381a9e944d68440372f592419e574e0b1b9bc2d2f4400931ab70d61c98",
       "catalog_identities_unchanged": true,
       "real_drama_opened_without_authorization": true,
       "reference_characters": 2128,
       "real_work_files_unchanged": true,
+      "previously_unconnected_works_opened": [
+        {
+          "kind": "drama",
+          "opened": true
+        },
+        {
+          "kind": "novel",
+          "opened": true
+        },
+        {
+          "kind": "novel",
+          "opened": true
+        },
+        {
+          "kind": "drama",
+          "opened": true
+        },
+        {
+          "kind": "novel",
+          "opened": true
+        }
+      ],
       "browser_cards": 18,
       "refresh_passed": true,
       "screenshot": "本机私有证据，不公开作者稿件截图。",
-      "scope": "安装版本机18作品一致、刷新与真实剧本只读打开；不代替指定Codex GUI逐页验收。"
+      "scope": "安装版本机18作品一致、刷新与真实剧本只读打开；不代替指定Codex GUI逐页验收。",
+      "agent_grants_unchanged": true
     }
   },
-  "retained_failures": [
-    {
-      "reason": "桌面测试保留旧的尚未连接文案及手动连接前置；按已采纳的自动连接流程修正后通过，保留撤权及旧引用失效检查。",
-      "log": "build/mcp-workbench-parity/desktop-regression.log"
-    },
-    {
-      "reason": "新增App专用桥接后，两个旧测试仍把仅App可见工具计入模型工具上限。改为继续限制模型可见工具，并明确断言桥接仅App可见。",
-      "log": "build/mcp-workbench-parity/stdio-final.log"
-    }
-  ],
-  "scope_limits": [
-    "官方Codex CLI与标准AppBridge实际通过；指定Codex Desktop GUI当前窗口的全部逐页交互尚未直接观察。",
-    "当前Computer Use未能启动原生管道，浏览器访问宿主也不可用；使用Playwright Electron与标准AppBridge分别验收。"
-  ],
   "package": {
-    "manifest": "build/mcp-workbench-parity/package/hetu-dev-nxCoS7/manifest.json",
-    "source_sha256": "60dbc861c04c6490dc2e93f01b037ba2ecac8eef3d8baba4d41cdccbfdada3dd",
-    "version": "0.13.6",
-    "signing": "ad-hoc development"
+    "manifest": "build/mcp-workbench-0137/package/hetu-dev-FMS0jy/manifest.json",
+    "source_sha256": "05140393cdeef9fa3acb14aa5baff179ce641b05c410a67df8ae96257933fa4b",
+    "version": "0.13.7",
+    "signing": "ad-hoc-development",
+    "artifacts": 3387
+  },
+  "preflight_fixes": [
+    "共享固定交接，保留作品／文稿／插件修订、实际动作及原操作。",
+    "统一创作库小说资料、章数和封面投影。",
+    "内嵌设置及面板关闭等待保存，并回读尚未失焦的输入。",
+    "设置回读保留恢复日志，原生目录选择取消不改变所选套件。"
+  ],
+  "website": {
+    "guides": [
+      "zh-CN/agents",
+      "en/agents"
+    ],
+    "build_pages": 219,
+    "local_references": 13073,
+    "build_log": "build/mcp-workbench-0137/website-build.log",
+    "deployment": "pending"
   },
   "installation": {
-    "installed_at": "2026-11-19T16:35:52.480135+00:00",
-    "version": "0.13.6",
+    "installed_at": "2026-11-19T17:17:43.319776+00:00",
+    "version": "0.13.7",
     "application": "/Applications/Hetu.app",
-    "backup": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-parity/replaced-0.13.5.app",
-    "manifest": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-parity/package/hetu-dev-nxCoS7/manifest.json",
-    "source_sha256": "60dbc861c04c6490dc2e93f01b037ba2ecac8eef3d8baba4d41cdccbfdada3dd",
+    "backup": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-0137/replaced-0.13.6.app",
+    "manifest": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-0137/package/hetu-dev-FMS0jy/manifest.json",
+    "source_sha256": "05140393cdeef9fa3acb14aa5baff179ce641b05c410a67df8ae96257933fa4b",
     "artifacts_verified": 3387,
     "signing": "ad-hoc-development",
     "codesign_verified": true,
-    "cli_version": "hetu 0.13.6",
+    "cli_version": "hetu 0.13.7",
     "author_content_modified": false
-  },
-  "release": {
-    "status": "pending",
-    "tag": "v0.13.6"
   }
 }

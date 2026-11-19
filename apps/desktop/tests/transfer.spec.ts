@@ -81,7 +81,9 @@ for (const kind of ["novel", "drama"] as const) test(`${kind} CLI/MCP固定导�
     const grant = (await page!.evaluate(() => (window as any).hetuDesktop.connection("authorize", "codex"))).management_ref;
     client = new Client({ name: "hetu-transfer-e2e", version: "1" }, { versionNegotiation: { mode: { pin: "2026-07-28" } } });
     await client.connect(new StdioClientTransport({ command: binary("hetu-mcp"), args: ["--client", "codex", "--collaboration-dir", collaboration], stderr: "pipe" }));
-    const exposed = (await client.listTools()).tools.map((tool) => tool.name);
+    const catalog = (await client.listTools()).tools;
+    const exposed = catalog.filter(tool => JSON.stringify((tool._meta?.ui as any)?.visibility) !== '["app"]').map((tool) => tool.name);
+    expect(catalog.find(tool => tool.name === "hetu_app_request")?._meta).toMatchObject({ui:{visibility:["app"]}});
     expect(exposed).toContain("hetu_call_action");
     expect(exposed.length).toBeLessThanOrEqual(13);
     const tool = async (name: string, args: any) => (await client!.callTool({ name, arguments: { ...args, management_ref: grant } })).structuredContent as any;
