@@ -139,6 +139,11 @@
       "log": "build/mcp-app-discovery/drama-acceptance-final4.log",
       "log_sha256": "ea98cdf2e2f19116cde0e59384bf1f64d9b5053e769057a857746e5a9b459dd5",
       "process_cleanup": "窗口关闭后清理隔离测试进程树；本专项不认证进程正常退出。"
+    },
+    "author_gui": {
+      "status": "confirmed_by_author",
+      "source": "当前对话作者截图及“这边已经显示了”反馈",
+      "observed": "全书改编20集目录，第1集参考稿及字数实际可见；不据此认证全部分集内容或作者采纳。"
     }
   },
   "installation": {

@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
-import { mkdtemp, readFile, writeFile, chmod, mkdir } from "node:fs/promises";
+import { mkdtemp, readFile, writeFile, chmod, mkdir, rename } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { spawn } from "node:child_process";
@@ -41,6 +41,32 @@ for (const lost of [false, true]) test(`fixed connection installation ${lost ? "
     expect(log.split("\n").filter(line => line.startsWith("plugin add "))).toHaveLength(1);
     expect(log.split("\n").filter(line => line.startsWith("plugin marketplace add "))).toHaveLength(1);
     expect(log).not.toContain("plugin marketplace list");
+    if (!lost) {
+      // 旧版本也只有Codex专用清单时，升级仍须核验来源和缓存，保留旧字节。
+      const statePath = join(codexHome, "fixture-state.json"), state = JSON.parse(await readFile(statePath, "utf8"));
+      const market = state.marketplaces[0].root, marketPath = join(market, ".agents/plugins/marketplace.json");
+      const catalog = JSON.parse(await readFile(marketPath, "utf8")), oldVersion = "0.0.1";
+      const source = join(market, catalog.plugins[0].source.path), oldSource = join(market, "versions", oldVersion, "hetu-workbench");
+      const oldCache = join(codexHome, "plugins/cache/hetu-luoshu-machine-connection/hetu-workbench", oldVersion);
+      await mkdir(join(market, "versions", oldVersion), { recursive: true });
+      await rename(source, oldSource); await rename(installed.directory, oldCache);
+      const manifest = JSON.parse(await readFile(join(oldSource, ".codex-plugin/plugin.json"), "utf8"));
+      manifest.version = oldVersion;
+      const oldBytes = JSON.stringify(manifest);
+      for (const directory of [oldSource, oldCache]) await writeFile(join(directory, ".codex-plugin/plugin.json"), oldBytes);
+      catalog.plugins[0].source.path = `./versions/${oldVersion}/hetu-workbench`;
+      await writeFile(marketPath, JSON.stringify(catalog));
+      state.installed[0].version = oldVersion; state.installed[0].source.path = oldSource;
+      await writeFile(statePath, JSON.stringify(state));
+      const upgrade = await invoke("prepare", { kind: "agent_connection", agent_client: "codex", summary: "升级Codex专用格式连接", operation_key: "prepare-upgrade" });
+      expect(upgrade.status).toBe("succeeded"); const fixed = upgrade.data;
+      expect((await invoke("record_decision", { operation_id: fixed.operation_id, sha256: fixed.sha256, revision: fixed.revision, decision: "approve", authorization_note: "隔离测试中升级旧连接，保留旧版本缓存。", operation_key: "approve-upgrade" })).status).toBe("succeeded");
+      const upgraded = await invoke("execute", { operation_id: fixed.operation_id, sha256: fixed.sha256, operation_key: "execute-upgrade" });
+      expect(upgraded.status, JSON.stringify(upgraded)).toBe("succeeded");
+      expect(upgraded.data.installation.version).toBe(plan.fixed.suite.version);
+      expect(await readFile(join(oldSource, ".codex-plugin/plugin.json"), "utf8")).toBe(oldBytes);
+      expect(await readFile(join(oldCache, ".codex-plugin/plugin.json"), "utf8")).toBe(oldBytes);
+    }
   } finally { await client.close(); }
 });
 
@@ -67,13 +93,23 @@ test("installed official Codex CLI accepts the connection package in an isolated
   } finally { await client.close(); }
 });
 
-test("official Codex global catalog discovers the App before UI negotiation", async () => {
+test("official Codex loads the installed plugin and discovers the App before UI negotiation", async () => {
   const binary = process.env.HETU_ACCEPT_CODEX_BINARY;
   test.skip(!binary, "指定HETU_ACCEPT_CODEX_BINARY才验收真实Codex App Server的目录发现。");
   test.setTimeout(60_000);
   const folder = await mkdtemp(join(tmpdir(), "hetu-codex-app-catalog-"));
   const command = resolve(process.env.HETU_CARGO_TARGET_DIR ?? "../../target", "debug/hetu-mcp");
-  await writeFile(join(folder, "config.toml"), `[mcp_servers.hetu_probe]\ncommand = ${JSON.stringify(command)}\nargs = ${JSON.stringify(["--client", "codex", "--collaboration-dir", join(folder, "access")])}\n`);
+  const client = new Client({ name: "Hetu plugin catalog acceptance", version: "1" });
+  const env = Object.fromEntries(Object.entries(process.env).filter((entry): entry is [string, string] => typeof entry[1] === "string"));
+  await client.connect(new StdioClientTransport({ command, args: ["--client", "codex", "--collaboration-dir", join(folder, "access")], env: { ...env, CODEX_HOME: folder, HETU_CODEX_BINARY: binary!, HETU_LOCAL_SETTINGS_DIR: join(folder, "settings") }, stderr: "pipe" }));
+  try {
+    const invoke = async (action: string, input: Record<string, unknown>) => (await client.callTool({ name: "hetu_call_action", arguments: { action: `hetu.local_settings.${action}`, input } })).structuredContent as { status: string; data: Record<string, any> };
+    const prepared = await invoke("prepare", { kind: "agent_connection", agent_client: "codex", summary: "实际插件加载与全局入口验收", operation_key: "catalog-prepare" });
+    expect(prepared.status).toBe("succeeded"); const plan = prepared.data;
+    expect((await invoke("record_decision", { operation_id: plan.operation_id, sha256: plan.sha256, revision: plan.revision, decision: "approve", authorization_note: "用户授权的本次隔离插件加载验收，仅修改临时Codex目录。", operation_key: "catalog-decision" })).status).toBe("succeeded");
+    const installed = await invoke("execute", { operation_id: plan.operation_id, sha256: plan.sha256, operation_key: "catalog-install" });
+    expect(installed.status, JSON.stringify(installed)).toBe("succeeded");
+  } finally { await client.close(); }
   const child = spawn(binary!, ["app-server"], { env: { ...process.env, CODEX_HOME: folder }, stdio: ["pipe", "pipe", "ignore"] });
   const lines = createInterface({ input: child.stdout });
   let next = 0;
@@ -93,15 +129,16 @@ test("official Codex global catalog discovers the App before UI negotiation", as
     await call("initialize", { clientInfo: { name: "hetu-app-catalog-acceptance", version: "1" }, capabilities: { experimentalApi: true } });
     child.stdin.write(JSON.stringify({ jsonrpc: "2.0", method: "initialized" }) + "\n");
     const catalog = await call("mcpServerStatus/list", { limit: 100 });
-    const server = catalog.data.find((entry: any) => entry.name === "hetu_probe");
+    const server = catalog.data.find((entry: any) => entry.name === "hetu");
     expect(server?.toolsError).toBeNull();
+    expect(server?.pluginId).toBe("hetu-workbench@hetu-luoshu-machine-connection");
     const entry = server.tools.hetu_open_app;
     expect(entry?._meta?.["openai/ui"]?.entrypoints).toEqual([{ type: "global" }, { type: "thread" }]);
     expect(entry?._meta?.ui?.resourceUri).toBe("ui://hetu/workbench/1");
     // Codex额外协商elicitation时会暴露固定模型确认工具。
     expect(Object.keys(server.tools).length).toBeLessThanOrEqual(14);
     expect(server.resources.some((resource: any) => resource.uri === "ui://hetu/workbench/1")).toBe(true);
-    const resource = await call("mcpServer/resource/read", { server: "hetu_probe", uri: "ui://hetu/workbench/1" });
+    const resource = await call("mcpServer/resource/read", { server: "hetu", uri: "ui://hetu/workbench/1" });
     expect(resource.contents[0].mimeType).toBe("text/html;profile=mcp-app");
     expect(resource.contents[0].text).toContain("<!doctype html>");
   } finally {

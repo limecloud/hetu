@@ -42,11 +42,9 @@ pub(super) fn connection_package() -> Result<Value> {
 fn connection_files(binary: &Path) -> Result<BTreeMap<String, Vec<u8>>> {
     let manifest = json!({"name":"hetu-workbench","version":env!("CARGO_PKG_VERSION"),
         "description":"河图洛书工作台：小说、剧本、视频、固定成果与意见","mcpServers":"./.mcp.json"});
-    let portable = json!({"$schema":"https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
-        "name":"hetu-workbench","version":env!("CARGO_PKG_VERSION"),"description":manifest["description"]});
     let mcp = json!({"mcpServers":{"hetu":{"type":"stdio","command":binary,"args":["--client","codex"]}}});
+    // 此包是Codex对已安装应用的适配；通用plugin.json会切换到禁止绝对命令的便携解析器。
     Ok(BTreeMap::from([
-        ("plugin.json".into(),serde_json::to_vec(&portable)?),
         (".codex-plugin/plugin.json".into(),serde_json::to_vec(&manifest)?),
         ("mcp.json".into(),serde_json::to_vec(&mcp)?),
         (".mcp.json".into(),serde_json::to_vec(&mcp)?),
@@ -567,6 +565,7 @@ pub(super) fn install(
         let manifest: Value = serde_json::from_slice(
             previous_files
                 .get("plugin.json")
+                .or_else(|| previous_files.get(".codex-plugin/plugin.json"))
                 .ok_or_else(|| Error::new("hetu.integrity_failure", "旧市场包缺少身份。"))?,
         )?;
         ensure(

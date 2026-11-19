@@ -29,7 +29,10 @@ elif args[:2] == ["plugin", "add"]:
     market = Path(state["marketplaces"][0]["root"])
     manifest = json.loads((market / ".agents/plugins/marketplace.json").read_text())
     source = market / manifest["plugins"][0]["source"]["path"]
-    version = json.loads((source / "plugin.json").read_text())["version"]
+    plugin = source / "plugin.json"
+    if not plugin.exists():
+        plugin = source / ".codex-plugin/plugin.json"
+    version = json.loads(plugin.read_text())["version"]
     target = root / "plugins/cache" / market_name / name / version
     shutil.copytree(source, target)
     state["installed"] = [{"pluginId": args[2], "name": name, "marketplaceName": market_name,

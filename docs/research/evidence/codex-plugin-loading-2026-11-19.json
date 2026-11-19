@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-11-19",
+  "version": "0.13.3",
+  "problem": "插件登记成功但真实客户端MCP目录缺少河图，侧栏与深链均找不到入口。",
+  "host": {
+    "desktop": "26.1111.71025",
+    "build": "28661",
+    "bundled_codex": "0.169.0-alpha.11.1"
+  },
+  "actual_before": {
+    "installed_plugin": "0.13.2",
+    "registered": true,
+    "enabled": true,
+    "catalog_hetu_service_present": false,
+    "deep_link_result": "App link unavailable entrypoint=global result=not-found tool=hetu_open_app"
+  },
+  "official_isolated_comparison": [
+    {
+      "package_format": "original",
+      "hetu_service_present": false,
+      "entrypoints": null,
+      "reason": "缺mcp.json.$schema"
+    },
+    {
+      "package_format": "schema",
+      "hetu_service_present": false,
+      "entrypoints": null,
+      "reason": "便携格式禁止应用绝对命令"
+    },
+    {
+      "package_format": "legacy-file",
+      "hetu_service_present": true,
+      "entrypoints": [
+        {
+          "type": "global"
+        },
+        {
+          "type": "thread"
+        }
+      ],
+      "reason": "Codex专用格式成功；自建未上架市场"
+    },
+    {
+      "package_format": "legacy-inline",
+      "hetu_service_present": true,
+      "entrypoints": [
+        {
+          "type": "global"
+        },
+        {
+          "type": "thread"
+        }
+      ],
+      "reason": "Codex专用格式成功；自建未上架市场"
+    }
+  ],
+  "conclusion": "本故障不是必须官网上架；同一本地未上架包使用Codex专用格式可发现带pluginId的服务和入口。",
+  "correction": "Codex连接包只使用.codex-plugin/plugin.json和其MCP配置，移除会切换解析器的便携根清单；现有版本缓存不覆盖。",
+  "verification": {
+    "status": "isolated_plugin_loading_passed",
+    "requirement": "Core生成→官方plugin marketplace add/add→真实pluginId及MCP服务→入口→资源读取；禁止用手工mcp_servers代替。",
+    "app_regression": {
+      "passed": 44,
+      "failed": 0,
+      "official_cli": "Desktop内嵌0.169.0-alpha.11.1",
+      "manual_mcp_server_configuration": false,
+      "plugin_id": "hetu-workbench@hetu-luoshu-machine-connection",
+      "entrypoints": [
+        "global",
+        "thread"
+      ],
+      "resource_uri": "ui://hetu/workbench/1",
+      "resource_mime_type": "text/html;profile=mcp-app",
+      "log": "build/mcp-app-discovery/v0133-app-tests-final.log"
+    },
+    "official_reference": "https://github.com/openai/mcp-extensions/blob/main/docs/spec.md#mcp-app-entrypoints",
+    "upgrade": "Codex专用清单的旧连接升级回归通过，旧市场与缓存字节保持；复用原有完整性核验。",
+    "core_settings_regression": {
+      "passed": 8,
+      "failed": 0,
+      "scope": "补充旧包清单回退前的设置全回归；补充后的升级分支由App连接测试覆盖。",
+      "log": "build/mcp-app-discovery/v0133-core-settings-tests.log"
+    }
+  },
+  "not_verified": [
+    "指定Codex Desktop GUI最终侧栏显示，需更新连接后观察。"
+  ],
+  "release": {
+    "status": "pending"
+  },
+  "installation": {
+    "status": "pending"
+  }
+}
