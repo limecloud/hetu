@@ -245,6 +245,12 @@
     {
       "finding": "独立设置回读与另起安装CLI竞争本机锁",
       "correction": "经同一App Server队列调用公开用例，保留Agent客户端身份和作者决定防线；最终stdio及设置安装业务断言通过。"
+    },
+    {
+      "finding": "发布Mac runner缺少Playwright Chromium，39项浏览器用例无法启动",
+      "correction": "发布依赖后显式安装Chromium；以0.13.1重新执行，不覆盖v0.13.0标签。",
+      "log": "build/mcp-app-release-mac-job.log",
+      "log_sha256": "12f35ad47f29373629db14e871cac529f366b10a4c4d28354cb8784cac483c8d"
     }
   ],
   "not_verified": [
@@ -256,9 +262,86 @@
     "付费模型、作者正文采纳与定稿不属于本次隔离MCP App验收"
   ],
   "release": {
-    "status": "source_verified_for_release",
-    "tag": "v0.13.0",
-    "url": "https://github.com/limecloud/hetu/releases/tag/v0.13.0",
-    "boundary": "发布工作流及公开制品结果单独回写；此记录不预判三平台已发布。"
+    "status": "revalidating_release_configuration",
+    "tag": "v0.13.1",
+    "url": "https://github.com/limecloud/hetu/releases/tag/v0.13.1",
+    "previous_failed_tag": "v0.13.0",
+    "previous_run": "https://github.com/limecloud/hetu/actions/runs/44471222498",
+    "previous_failure": "Mac runner未安装新增MCP App测试所需Chromium；签名和公证未执行，无正式Release。",
+    "correction": "显式npx playwright install chromium；版本进位，不改写原标签。"
+  },
+  "validated_base_version": "0.13.0",
+  "release_resources": {
+    "workbench": {
+      "schema_version": "1.0.0",
+      "resource_uri": "ui://hetu/workbench/1",
+      "mime_type": "text/html;profile=mcp-app",
+      "sdk": "@modelcontextprotocol/ext-apps@2.0.4",
+      "sha256": "633770fbd4d4efae7ec88f01900eae92afead55d63722d0a3332d81a48dccee7",
+      "size_bytes": 676559,
+      "source_sha256": {
+        "src/host/openai.ts": "a545c4feb5e23dcb3cfeddc7ea927e6c31e4a046bc86fb16912c1cff424c7442",
+        "src/host/bridge.ts": "30aba8f1b0395c49436a9a4f057c690ac3c0395ec00a55d2e26ab4678904e2fa",
+        "src/task-reference.ts": "fb880bca4f703ddcebebd3ba52c054cb4cf8993c603655d84f85fcff6d422757",
+        "src/task-review.ts": "d48f3f4fb752c76c2447fd4a28fc3e78b63447b0b8bc09f2d8c0ae7a209f3db6",
+        "src/workbench/gateway.ts": "d43bfb8ff7332af69519682f7d81c286a3ef330916a0a80757730ea0fcb197aa",
+        "src/workbench/domains.ts": "e6af3400df01b827e6e94de3853cb1ce59cc2f5c5f76cc5beeeb94904a3f6e58",
+        "src/workbench/render.ts": "58dc98db2a74e162c245e784900738e1b9a4046729cc814b67de524a21cbbc4d",
+        "src/workbench/media.ts": "944f9dc5b42cf5b6eb69db3663d8794ae607e7cea96a36c2a655025037b8537c",
+        "src/workbench.ts": "469fca4ebe274f8f71954073b6aec4592122d66a0f0dde2ffb7a14a0acc2c32b",
+        "src/app.css": "c6bb7d456f8420d3278423fb2225782aa6349a05146169ac94ea09dc1a208625",
+        "src/workbench.css": "adf7feee2f52e3a844705969324cc5080fc0d267cf3297140b3f78987cab1a96",
+        "../../assets/styles/radix-workbench.css": "ccf9f4d25676a4225180128d05a3d0a9d26e92fa832fdccb7d80c4d52ee4b625",
+        "scripts/build.mjs": "15f1c4437e103918f012e975e400094400d391f8f0f056def2653879a75e8f40",
+        "package.json": "cb16231460af9ccaa3b2c0bf1d177824f0cee89fc545ff7bf3508f5fa58f8a2f",
+        "THIRD-PARTY-NOTICES.txt": "64e64f33d6dd0f206ffa47b474d43ffd8df1fd295bc87ccf59428003892ac78b"
+      }
+    },
+    "task-view": {
+      "schema_version": "1.0.0",
+      "resource_uri": "ui://hetu/task-view/1",
+      "mime_type": "text/html;profile=mcp-app",
+      "sdk": "@modelcontextprotocol/ext-apps@2.0.4",
+      "sha256": "89b5d2deb666f9db5cfeb07a42ebf14c1fb215d415a87d8a5021b8117d90556c",
+      "size_bytes": 646875,
+      "source_sha256": {
+        "src/host/openai.ts": "a545c4feb5e23dcb3cfeddc7ea927e6c31e4a046bc86fb16912c1cff424c7442",
+        "src/host/bridge.ts": "30aba8f1b0395c49436a9a4f057c690ac3c0395ec00a55d2e26ab4678904e2fa",
+        "src/task-reference.ts": "fb880bca4f703ddcebebd3ba52c054cb4cf8993c603655d84f85fcff6d422757",
+        "src/task-review.ts": "d48f3f4fb752c76c2447fd4a28fc3e78b63447b0b8bc09f2d8c0ae7a209f3db6",
+        "src/app.ts": "f19dfcfe3aaca4648faf7bdeb947ecbf42218bd8f781887eefc566efaf6434a0",
+        "src/app.css": "c6bb7d456f8420d3278423fb2225782aa6349a05146169ac94ea09dc1a208625",
+        "../../assets/styles/radix-workbench.css": "ccf9f4d25676a4225180128d05a3d0a9d26e92fa832fdccb7d80c4d52ee4b625",
+        "scripts/build.mjs": "15f1c4437e103918f012e975e400094400d391f8f0f056def2653879a75e8f40",
+        "package.json": "cb16231460af9ccaa3b2c0bf1d177824f0cee89fc545ff7bf3508f5fa58f8a2f",
+        "THIRD-PARTY-NOTICES.txt": "64e64f33d6dd0f206ffa47b474d43ffd8df1fd295bc87ccf59428003892ac78b"
+      },
+      "inputs": [
+        "../../node_modules/@modelcontextprotocol/ext-apps/dist/src/app-with-deps.js",
+        "src/app.ts",
+        "src/host/bridge.ts",
+        "src/host/openai.ts",
+        "src/task-reference.ts",
+        "src/task-review.ts"
+      ]
+    },
+    "operation-view": {
+      "schema_version": "1.0.0",
+      "resource_uri": "ui://hetu/operation-view/1",
+      "mime_type": "text/html;profile=mcp-app",
+      "sdk": "@modelcontextprotocol/ext-apps@2.0.4",
+      "sha256": "e6e0ca17eb287ebdccc90ba8bea4ddb496b8108e036b8c0640c346e0e05eac01",
+      "size_bytes": 610913,
+      "source_sha256": {
+        "src/host/openai.ts": "a545c4feb5e23dcb3cfeddc7ea927e6c31e4a046bc86fb16912c1cff424c7442",
+        "src/host/bridge.ts": "30aba8f1b0395c49436a9a4f057c690ac3c0395ec00a55d2e26ab4678904e2fa",
+        "src/operation.ts": "812a3029c75bf74679ba7c6a949d86f5bb78ba8569188539014f055cd8e2a843",
+        "src/operation.css": "495a05aabf10999dda05313f6d3db27c295282e05820caced60b6a09fa03aeb5",
+        "../../assets/styles/radix-workbench.css": "ccf9f4d25676a4225180128d05a3d0a9d26e92fa832fdccb7d80c4d52ee4b625",
+        "scripts/build.mjs": "15f1c4437e103918f012e975e400094400d391f8f0f056def2653879a75e8f40",
+        "package.json": "cb16231460af9ccaa3b2c0bf1d177824f0cee89fc545ff7bf3508f5fa58f8a2f",
+        "THIRD-PARTY-NOTICES.txt": "64e64f33d6dd0f206ffa47b474d43ffd8df1fd295bc87ccf59428003892ac78b"
+      }
+    }
   }
 }
