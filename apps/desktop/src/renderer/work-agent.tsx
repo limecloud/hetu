@@ -21,7 +21,7 @@ export function WorkAgent({ work, notify, changed }: { work?: WorkRef; notify(me
   const [state, setState] = useState<any>(), [inspection, setInspection] = useState<any>(), [busy, setBusy] = useState(false), [checking, setChecking] = useState(false), [error, setError] = useState("");
   const [query, setQuery] = useState(""), [platform, setPlatform] = useState(""), [channel, setChannel] = useState("");
   const [brief, setBrief] = useState(""), [reply, setReply] = useState(""), [advice, setAdvice] = useState<any[]>([]), [adviceError, setAdviceError] = useState("");
-  const [modal, setModal] = useState<"guide" | "install">(), [plan, setPlan] = useState<any>(), [decision, setDecision] = useState<any>();
+  const [modal, setModal] = useState<"guide">();
   const alive = useRef(true), generation = useRef(0), dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => { alive.current = true; void refresh(); return () => { alive.current = false; generation.current++; }; }, [work?.workspace_id, work?.kind, work?.object_id]);
   useEffect(() => { if (modal) dialog.current?.showModal(); else dialog.current?.close(); }, [modal]);
@@ -45,7 +45,7 @@ export function WorkAgent({ work, notify, changed }: { work?: WorkRef; notify(me
     generation.current++; setInspection(undefined);
     await run(async () => { const value = await request("select", { expected_revision: state.revision, agent_client: client, suite_id: suite }); if (!alive.current) return; setState(value); await check(); });
   }
-  const association = state?.association, selected = state?.suites.find((s: any) => s.suite_id === association.suite);
+  const association = state?.association;
   const scoped = state?.categories.filter((c: any) => (!platform || c.platform === platform) && (!channel || c.channel === channel || c.channel === "shared")) ?? [];
   const allowed = new Set(scoped.flatMap((c: any) => c.suiteIDs));
   const matching = state?.suites.filter((s: any) => (!platform && !channel || allowed.has(s.suite_id)) && (!query || [s.title, s.family, ...(s.aliases ?? [])].some((v: string) => v?.includes(query)) || scoped.some((c: any) => c.name.includes(query) && c.suiteIDs.includes(s.suite_id)))) ?? [];
@@ -53,7 +53,7 @@ export function WorkAgent({ work, notify, changed }: { work?: WorkRef; notify(me
   const disabled = busy || !!state?.other_pending || state?.journal?.status === "pending" || agentStatus.state === 'running';
   const installable = state?.installable_clients.includes(association?.client);
   async function prepareInstall() {
-    await run(async () => { const value = await request("prepare_install"); if (!alive.current) return; setPlan(value); setDecision(undefined); setModal("install"); });
+    await run(async () => { await desktop.installSuite(work ? {work_ref:work} : {}); await refresh(); notify("Skills 套件已安装。请在所选客户端刷新或新建会话后验证。"); });
   }
   async function copySelection() {
     await desktop.copy("请帮助我为河图洛书" + (work ? "当前作品" : "新作品默认创作方法") + "选择题材Skills套件。先理解我的创作意图，再从以下真实目录推荐最多三项；不要安装全部套件，不要改写作品或声称已接入。返回JSON：{\"recommendations\":[{\"suiteID\":\"目录ID\",\"reason\":\"推荐理由与取舍\"}]}。\n" + JSON.stringify({ work_ref: work, scope: work ? "work" : "default", author_input: brief, suites: state.suites.map((s: any) => ({ id: s.suite_id, title: s.title, summary: s.summary })) }, null, 2));
@@ -78,8 +78,8 @@ export function WorkAgent({ work, notify, changed }: { work?: WorkRef; notify(me
       {(state.journal || state.other_pending) && <div className="work-agent-recovery" role="status"><p>{state.other_pending ? "有待确认的本机操作，请在设置中恢复。" : state.journal.status === "pending" ? "上次选择的结果尚未确认。" : "上次选择已有明确结果。"}</p>{!state.other_pending && <button disabled={busy} onClick={() => void run(async () => { await request(state.journal.status === "pending" ? "recover" : "acknowledge"); await refresh(); })}>{state.journal.status === "pending" ? "恢复原操作" : "收起已确认操作"}</button>}</div>}
       <div className="work-agent-options">
         <label className="work-agent-client"><span>{work ? "本作品客户端" : "默认客户端"}</span><select aria-label={work ? "本作品客户端" : "默认客户端"} value={association.client} disabled={disabled} onChange={e => void select(e.target.value, association.suite)}>{clients.map(([id,title]) => <option key={id} value={id}>{title}</option>)}</select></label>
-        {association.client === "codex" && <AgentAppInstall disabled={disabled}/>}
         <label><span>题材 Skills 套件</span><select aria-label="题材 Skills 套件" value={association.suite} disabled={disabled} onChange={e => void select(association.client, e.target.value)}>{options.map((s: any) => <option key={s.suite_id} value={s.suite_id}>{s.title}</option>)}</select></label>
+        {association.client === "codex" && <section aria-label="安装到 Codex Desktop"><strong>安装到 Codex Desktop</strong><div className="actions"><button disabled={disabled || !installable} onClick={() => void prepareInstall()}>安装 Skills 套件</button><AgentAppInstall disabled={disabled} onInstalled={refresh}/></div></section>}
         <details className="work-agent-finder"><summary>按分类查找或由外部 Agent 引导</summary><div>
           <input aria-label="搜索题材套件" placeholder="搜索题材或分类" value={query} onChange={e => setQuery(e.target.value)}/>
           <div className="work-agent-filters"><label>平台<select aria-label="题材平台" value={platform} onChange={e => setPlatform(e.target.value)}><option value="">全部平台</option><option value="fanqie">番茄小说</option><option value="qidian">起点中文网</option></select></label><label>频道<select aria-label="题材频道" value={channel} onChange={e => setChannel(e.target.value)}><option value="">全部频道</option><option value="male">男频</option><option value="female">女频</option></select></label></div>
@@ -102,19 +102,15 @@ export function WorkAgent({ work, notify, changed }: { work?: WorkRef; notify(me
       <details className="work-agent-skills" open><summary>套件包含的 Skills</summary><ul>{state.skills.map((skill: any) => {
         const found = inspection?.found_skills.includes(skill.id); return <li key={skill.id}><span className={found ? "work-agent-skill-check found" : "work-agent-skill-check"} aria-hidden="true">{found ? <Icon name="check"/> : <svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="2 2"/></svg>}</span><div><span>{skill.title}</span><small>{skill.id}</small></div><div className="work-agent-skill-state"><span>{checking ? "正在检查" : found ? "已找到方法文件" : "未验证安装"}</span>{found && <small>版本 {inspection.version}</small>}</div></li>;
       })}</ul></details>
-      <div className="actions work-agent-package-actions"><button disabled={disabled || !installable} onClick={() => void prepareInstall()}>安装 Skills 套件</button><button onClick={() => setModal("guide")}>安装与接入说明</button><button disabled={busy} onClick={() => void run(async () => { await request("reveal_bundle"); })}>查看随附套件</button><button disabled={disabled || association.client === "none"} onClick={() => void run(async () => { await request("choose_package"); await refresh(); })}>选择已安装目录</button>{inspection?.selected_directory && <button disabled={disabled} onClick={() => void run(async () => { await request("auto_detect"); await refresh(); })}>自动检测</button>}</div>
+      <div className="actions work-agent-package-actions">{association.client !== "codex" && <button disabled={disabled || !installable} onClick={() => void prepareInstall()}>安装 Skills 套件</button>}<button onClick={() => setModal("guide")}>安装与接入说明</button><button disabled={busy} onClick={() => void run(async () => { await request("reveal_bundle"); })}>查看随附套件</button><button disabled={disabled || association.client === "none"} onClick={() => void run(async () => { await request("choose_package"); await refresh(); })}>选择已安装目录</button>{inspection?.selected_directory && <button disabled={disabled} onClick={() => void run(async () => { await request("auto_detect"); await refresh(); })}>自动检测</button>}</div>
       {state.directory && <div className="work-agent-folder"><span>作品目录</span><span>{state.directory}</span></div>}
     </>}
-    {modal && <dialog className="work-agent-dialog" ref={dialog} onCancel={() => { setModal(undefined); setDecision(undefined); }}><header><h2>{modal === "guide" ? "安装与接入说明" : "安装 Skills 套件"}</h2><IconButton icon="close" label="关闭接入窗口" disabled={busy} onClick={() => { setModal(undefined); setDecision(undefined); }}/></header>
-      {modal === "guide" ? <><p>将所选题材套件安装到{clientName(association?.client)}，再在该客户端的新会话中验证 Skills 与任务连接。</p><p>Codex 和 WorkBuddy 可准备固定安装方案；其他客户端使用随附目录中的任务方法与接入说明。</p><p className="muted">套件选择与当前作品授权分别管理。安装不会修改正文、采纳候选或确认定稿。</p><button onClick={() => void run(async () => { await request("reveal_bundle"); })}>打开所选套件目录</button></> : plan && <>
-        <dl><dt>接入客户端</dt><dd>{clientName(plan.fixed.agent_client)}</dd><dt>所选套件</dt><dd>{selected?.title}</dd><dt>固定版本</dt><dd>{plan.fixed.suite.version}</dd><dt>文件数量</dt><dd>{plan.fixed.suite.file_count}</dd><dt>作者决定</dt><dd>{plan.state === "approved" ? "已批准，待 Agent 执行" : "待审阅"}</dd></dl>
-        <p className="muted">只安装当前所选套件。批准后由外部 Agent 沿原方案执行。</p>
-        {plan.state === "approved" ? <button className="primary" disabled={busy} onClick={() => void run(async () => { await desktop.settings("continue", { operation_id: plan.operation_id }); notify("已复制原安装方案，请交给当前客户端执行。"); })}>复制给 Agent 执行</button> : <button className="primary" disabled={busy} onClick={() => void run(async () => {
-          const preview = decision ?? await desktop.settings("prepare", { operation_id: plan.operation_id, sha256: plan.sha256, revision: plan.revision, approve: true });
-          if (!alive.current) return; setDecision(preview);
-          const approved = await desktop.settings("commit", { token: preview.token }); if (alive.current) { setPlan(approved); setDecision(undefined); }
-        })}>批准此安装方案</button>}
-      </>}{error && <p role="alert">{error}</p>}
+    {modal && <dialog className="work-agent-dialog" ref={dialog} onCancel={() => setModal(undefined)}><header><h2>安装与接入说明</h2><IconButton icon="close" label="关闭接入窗口" disabled={busy} onClick={() => setModal(undefined)}/></header>
+      <p>将当前所选题材套件安装到{clientName(association?.client)}，再在新会话中验证。</p>
+      <p>点击安装并确认固定版本后，河图直接完成安装。Codex Desktop 的 MCP App 与 Skills 分别安装，完成后刷新或重启客户端。</p>
+      <p className="muted">安装不会修改正文、采纳候选或确认定稿。</p>
+      <button onClick={() => void run(async () => { await request("reveal_bundle"); })}>打开所选套件目录</button>
+      {error && <p role="alert">{error}</p>}
     </dialog>}
   </section>;
 }

@@ -58,6 +58,9 @@ pub(super) fn inspect_connection(installation: &Value) -> Result<Value> {
     fixed["suite_id"] = json!("machine-connection");
     let mut result = installed_codex(&fixed)?;
     result["registered"] = json!(true);
+    let bundled = connection_package()?;
+    result["version_differs"] = json!(fixed["version"] != bundled["version"] || fixed["package_sha256"] != bundled["package_sha256"]);
+    result["bundled"] = bundled;
     Ok(result)
 }
 pub(super) fn integration_directory() -> Result<PathBuf> {

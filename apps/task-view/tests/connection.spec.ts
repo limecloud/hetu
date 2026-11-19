@@ -90,6 +90,14 @@ test("installed official Codex CLI accepts the connection package in an isolated
     expect(current.status).toBe("succeeded"); expect(current.data.registered).toBe(true); expect(current.data.session_loaded).toBe(false);
     const mcp = JSON.parse(await readFile(join(current.data.directory, "mcp.json"), "utf8"));
     expect(mcp.mcpServers.hetu.args).toEqual(["--client", "codex"]);
+    const suite=await invoke("prepare",{kind:"agent_suite",agent_client:"codex",suite_id:"general",install:true,summary:"官方Codex隔离安装当前Skills",operation_key:"official-suite-prepare"});
+    expect(suite.status).toBe("succeeded");const fixed=suite.data;
+    expect((await invoke("record_decision",{operation_id:fixed.operation_id,sha256:fixed.sha256,revision:fixed.revision,decision:"approve",authorization_note:"用户授权本次隔离环境中核对MCP App与所选Skills均实际安装，不使用真实Codex配置。",operation_key:"official-suite-decision"})).status).toBe("succeeded");
+    const executed=await invoke("execute",{operation_id:fixed.operation_id,sha256:fixed.sha256,operation_key:"official-suite-execute"});
+    expect(executed.status,JSON.stringify(executed)).toBe("succeeded");
+    const skills=await invoke("inspect_suite",{agent_client:"codex",suite_id:"general"});
+    expect(skills.data.state).toBe("found");expect(skills.data.registration).toBe("enabled");
+    expect((await invoke("inspect_connection",{agent_client:"codex"})).data.registered).toBe(true);
   } finally { await client.close(); }
 });
 
@@ -132,13 +140,14 @@ test("official Codex loads the installed plugin and discovers the App before UI 
     const server = catalog.data.find((entry: any) => entry.name === "hetu");
     expect(server?.toolsError).toBeNull();
     expect(server?.pluginId).toBe("hetu-workbench@hetu-luoshu-machine-connection");
+    expect(server.tools.hetu_app_request?._meta?.ui?.visibility).toEqual(["app"]);
     const entry = server.tools.hetu_open_app;
     expect(entry?._meta?.["openai/ui"]?.entrypoints).toEqual([{ type: "global" }, { type: "thread" }]);
-    expect(entry?._meta?.ui?.resourceUri).toBe("ui://hetu/workbench/1");
+    expect(entry?._meta?.ui?.resourceUri).toBe("ui://hetu/workbench/2");
     // Codex额外协商elicitation时会暴露固定模型确认工具。
-    expect(Object.keys(server.tools).length).toBeLessThanOrEqual(14);
-    expect(server.resources.some((resource: any) => resource.uri === "ui://hetu/workbench/1")).toBe(true);
-    const resource = await call("mcpServer/resource/read", { server: "hetu", uri: "ui://hetu/workbench/1" });
+    expect(Object.keys(server.tools).length).toBeLessThanOrEqual(15);
+    expect(server.resources.some((resource: any) => resource.uri === "ui://hetu/workbench/2")).toBe(true);
+    const resource = await call("mcpServer/resource/read", { server: "hetu", uri: "ui://hetu/workbench/2" });
     expect(resource.contents[0].mimeType).toBe("text/html;profile=mcp-app");
     expect(resource.contents[0].text).toContain("<!doctype html>");
   } finally {

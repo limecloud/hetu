@@ -32,7 +32,7 @@ test("无作品的设置窗口确认Codex连接安装，回读登记且重复点
     const page = await application.firstWindow();
     const settings = await openSettings(application, page);
     await settings.getByRole("tab", { name: "AI 协作", exact: true }).click();
-    const install = settings.getByRole("button", { name: "接入 Codex MCP App", exact: true });
+    const install = settings.getByRole("button", { name: "安装 MCP App", exact: true });
     await install.click();
     await expect(settings.getByRole("status")).toContainText("已取消 Codex 接入");
     expect(await readFile(path.join(codexHome, "calls.log"), "utf8").catch(() => "")).not.toContain("plugin add ");
@@ -46,11 +46,18 @@ test("无作品的设置窗口确认Codex连接安装，回读登记且重复点
     expect(log.split("\n").filter(line => line.startsWith("plugin add "))).toHaveLength(1);
     const state = JSON.parse(await readFile(path.join(settingsDirectory, "settings.json"), "utf8"));
     expect(state.installations["codex:machine-connection"].version).toBe(JSON.parse(await readFile(path.join(root, "package.json"), "utf8")).version);
+    const skills=settings.getByRole("button",{name:"安装 Skills 套件",exact:true});
+    await skills.click();
+    await expect(settings.getByText("Skills 套件已安装。请在所选客户端刷新或新建会话后验证。",{exact:true})).toBeVisible({timeout:30000});
+    await skills.click();
+    await expect(skills).toBeEnabled();
+    const installedLog=await readFile(path.join(codexHome,"calls.log"),"utf8");
+    expect(installedLog.split("\n").filter(line=>line.startsWith("plugin add "))).toHaveLength(2);
     expect(await settings.evaluate(async () => {
       try { await window.hetuDesktop.connection("authorize", "codex"); return "unexpectedly allowed"; }
       catch (error) { return (error as Error).message; }
     })).toContain("此通道只供可信工作台使用");
-    expect(await application.evaluate(() => (globalThis as any).installPrompts.length)).toBe(2);
+    expect(await application.evaluate(() => (globalThis as any).installPrompts.length)).toBe(3);
     await closeSettings(settings);
   } finally { await application.close(); }
 });

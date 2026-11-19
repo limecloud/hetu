@@ -330,3 +330,7 @@ flowchart TD
 完整安装检查继续核验所有实际包字节和每个声明Schema；复用同一Ajv实例的元Schema，并在每次独立Schema编译后清除注册，避免插件之间相同$id冲突。成功Schema仍按完整内容有界缓存，不以缓存替代文件摘要校验。
 
 已安装包的宿主私密登记保存首次完整Schema验证后的内容摘要。每次发现仍读取全部实际文件并核验该摘要、资源路径与清单；字节一致才复用首次编译结论，变化立即拒绝。安装新包及选择新包摘要始终完整编译，不能通过调用方传入开关跳过。定向业务调用由Core继续核验实际Schema及作品权限。
+
+### MCP工作台共享宿主
+
+MCP App与Electron装配同一`apps/desktop/src/renderer`工作台；`apps/desktop/src/main/work-session.ts`复用作品应用用例、固定预览与原操作恢复。Electron通过IPC连接，MCP通过第一方App桥接连接同包受管Node宿主；普通Agent动作继续使用独立CollaborationHub，不接收作者句柄。每个App视图持有独立连接，作品从桌面登记解析并经Core核验，不能从工具参数指定任意作品路径。打开本机登记作品不逐作品授权。文件选择及必要的固定决定复用原生交互，读写与Core执行不依赖打开桌面主窗口。

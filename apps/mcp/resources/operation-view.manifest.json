@@ -11,8 +11,8 @@
     "src/operation.ts": "812a3029c75bf74679ba7c6a949d86f5bb78ba8569188539014f055cd8e2a843",
     "src/operation.css": "495a05aabf10999dda05313f6d3db27c295282e05820caced60b6a09fa03aeb5",
     "../../assets/styles/radix-workbench.css": "ccf9f4d25676a4225180128d05a3d0a9d26e92fa832fdccb7d80c4d52ee4b625",
-    "scripts/build.mjs": "d39d431830c13a9134d4b3ff6660a09b8ab09979cbc51effc0ca4fb19bfabfe0",
-    "package.json": "3b184f054598a1dcba0cfab00746c9d9014fb4d940f68a52b3b3078980627922",
+    "scripts/build.mjs": "51f5f593a576b6d03a5e40d91ecdc6f25e8d26e165808e1bc4ab61111fa0f08f",
+    "package.json": "e81e2a7181ef0acf3bae10ebc3eec4bcc7ad96acc1365cfbd360b77a0e0eea97",
     "THIRD-PARTY-NOTICES.txt": "c2688d858cc503cc3ae80816392d8e8b97e35356f72dfcfed473e52bab2d62b9"
   }
 }

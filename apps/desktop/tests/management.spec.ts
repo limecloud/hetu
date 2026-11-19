@@ -91,16 +91,9 @@ test(
     try {
       let page = await launch();
       await navigate(page, "管理方案");
-      await expect(page.getByRole("alert")).toContainText(
-        "请先在 Agent 协作中授权当前作品",
-      );
+      await expect(page.getByRole("alert")).toHaveCount(0);
       await navigate(page, "Agent 协作");
-      await page
-        .getByRole("button", { name: "授权当前作品", exact: true })
-        .click();
-      await expect(
-        page.getByText("已授权当前作品。", { exact: true }),
-      ).toBeVisible();
+      await expect(page.getByText("已连接当前作品。", {exact:true})).toBeVisible();
       const connection = await page.evaluate(() =>
         (window as any).hetuDesktop.connection("status", "codex"),
       );
@@ -304,11 +297,11 @@ test(
       });
       await navigate(page, "Agent 协作");
       await page
-        .getByRole("button", { name: "撤销当前作品授权", exact: true })
+        .getByRole("button", { name: "断开当前作品连接", exact: true })
         .click();
       await navigate(page, "管理方案");
       await expect(page.getByRole("alert")).toContainText(
-        "请先在 Agent 协作中授权当前作品",
+        "当前作品的 Agent 连接已断开",
       );
     } finally {
       await application?.close();

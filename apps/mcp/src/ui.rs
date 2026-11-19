@@ -10,7 +10,7 @@ pub const MIME: &str = "text/html;profile=mcp-app";
 const HTML: &str = include_str!("../resources/task-view.html");
 pub const OPERATION_URI: &str = "ui://hetu/operation-view/1";
 const OPERATION_HTML: &str = include_str!("../resources/operation-view.html");
-pub const WORKBENCH_URI: &str = "ui://hetu/workbench/1";
+pub const WORKBENCH_URI: &str = "ui://hetu/workbench/2";
 const WORKBENCH_HTML: &str = include_str!("../resources/workbench.html");
 
 pub fn supported(context: &RequestContext<RoleServer>) -> bool {

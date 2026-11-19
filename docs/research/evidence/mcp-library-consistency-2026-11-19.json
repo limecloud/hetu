@@ -132,9 +132,47 @@
     "installed_library_log": "build/mcp-library-fix/installed-library.log"
   },
   "release": {
-    "status": "pending",
+    "status": "published",
     "tag": "v0.13.5",
-    "scope": "本机修复及覆盖验证已完成，按作者此前全部递交发布授权继续正式发行。"
+    "git_sha": "452cbcf1b8c42683ea791af01ded8842853aee23",
+    "run_id": 44542776407,
+    "url": "https://github.com/limecloud/hetu/releases/tag/v0.13.5",
+    "platforms": [
+      "macos-arm64",
+      "windows-x64",
+      "linux-x64"
+    ],
+    "npm": "@limecloud/hetu@0.13.5",
+    "scope": "发行工作流全部成功，公开Release及三平台manifest已回读；完整下载摘要另行核对。",
+    "public_downloads": {
+      "version": "0.13.5",
+      "downloads": [
+        {
+          "name": "Hetu-0.13.5-linux-x64.tar.gz",
+          "size_bytes": 238063415,
+          "sha256": "b51d2c86b4df17dfe0966d32cbf2d49fb3ece5a20f92149f3f88acb561c10e37",
+          "verified": true
+        },
+        {
+          "name": "Hetu-0.13.5-macos-arm64.zip",
+          "size_bytes": 228049317,
+          "sha256": "74cdc8f65cd6b71bc0beda12240351de4823ed4900722a6b3d80e37ea881067f",
+          "verified": true
+        },
+        {
+          "name": "Hetu-0.13.5-macos-arm64.dmg",
+          "size_bytes": 266802198,
+          "sha256": "211418b3a85843dc6a3eb41386529ca84c15caa73ffd5996d77f740c26aecab8",
+          "verified": true
+        },
+        {
+          "name": "Hetu-0.13.5-windows-x64.zip",
+          "size_bytes": 252403527,
+          "sha256": "a57d4281e3b1db1f34d08835c19ec243bbbab9678eca572032dc8745852b6b82",
+          "verified": true
+        }
+      ]
+    }
   },
   "not_verified": [
     "指定Codex GUI的全部业务逐页操作",

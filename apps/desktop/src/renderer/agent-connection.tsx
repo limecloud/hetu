@@ -34,7 +34,7 @@ export function AgentConnection({ work, notify, ai }: SurfaceContext) {
   return (
     <section className="agent-connection surface-page">
       <PageActions>
-        <IconButton icon="refresh" label="刷新授权状态" disabled={busy} onClick={() => void act("status")}/>
+        <IconButton icon="refresh" label="刷新连接状态" disabled={busy} onClick={() => void act("status")}/>
         <button disabled={busy} onClick={() => ai()}><Icon name="sparkles"/>复制作品协作请求</button>
       </PageActions>
       <label className="agent-client-field">
@@ -64,14 +64,14 @@ export function AgentConnection({ work, notify, ai }: SurfaceContext) {
         <Icon name="shield" size={20}/>
         {status
           ? status.authorized
-            ? "已授权当前作品。"
-            : "尚未授权当前作品。"
-          : "正在核对作品授权…"}
+            ? "已连接当前作品。"
+            : "发起协作时自动连接当前作品。"
+          : "正在核对作品连接…"}
       </p>
       <div className="actions">
         {status?.authorized ? (
           <button disabled={busy} onClick={() => void act("revoke")}>
-            撤销当前作品授权
+            断开当前作品连接
           </button>
         ) : (
           <button
@@ -79,12 +79,12 @@ export function AgentConnection({ work, notify, ai }: SurfaceContext) {
             disabled={busy || !status}
             onClick={() => void act("authorize")}
           >
-            授权当前作品
+            连接当前作品
           </button>
         )}
       </div>
       <p className="muted">
-        授权仅覆盖当前创作对象。作者保留采纳与定稿权；作品内容和本机文件权限分别管理。
+        连接仅覆盖当前创作对象。阅读和编辑无需另行接入；采纳、定稿和费用仍按固定结果确认。
       </p>
     </section>
   );

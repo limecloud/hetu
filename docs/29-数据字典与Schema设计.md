@@ -605,3 +605,7 @@ creative-task.schema.json维护任务接续记录及输入；记录包含schema_
 statement_id和issue_id使用稳定UUID标识；已有标识和新结构不能被旧客户端裁掉。supporting／contradicting逐项核验任务内固定来源、工作稿或公开反馈，同一依据不同时列入两边。任务问题resolved须有消解依据；专业问题以referred、owner_context_ref及原生owner_item_id引用任务固定的原Owner与具体问题；小说审校适配核验原问题存在，专业状态仍由原Owner维护。result_provenance由actions.json声明，通过MCP的_meta.provenance传递，不授予指令权或业务权限。
 
 固定设定实体超过单次预算时，task_context.read以原context_ref、section和entity_id携带result_path读取字段目录，再以offset和max_bytes读取字段片段；整份设定及实体摘要保持。字段读取不跟随当前设定，文本来源拒绝实体字段参数。MCP预算失败返回同一固定实体的字段读取参数，不要求无限提高传输预算。
+
+### 第一方MCP工作台视图桥接
+
+完整工作台使用独立App视图会话：宿主从工具结果私有元数据获得会话引用，桥接只接受固定方法、参数数组及可选参数位置，不接收任意Core动作、作者模式或工作区路径。JSON的`null`与可选参数`undefined`分别传递，避免读取恢复稿被误解为清空。该私有表现协议不进入普通Agent领域动作目录；作品身份、CAS、固定决定与恢复仍由共享应用用例和Core执行。

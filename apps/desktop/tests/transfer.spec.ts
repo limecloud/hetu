@@ -106,7 +106,7 @@ for (const kind of ["novel", "drama"] as const) test(`${kind} CLI/MCP固定导�
     await page!.getByRole("combobox", { name: "当前管理方案" }).selectOption(proposal.proposal_id);
     await expect(page!.getByRole("region", { name: "固定导入内容" })).toContainText(text.trim());
     await page!.getByRole("button", { name: "让 AI 准备导入", exact: true }).click();
-    await expect(page!.getByRole("status")).toContainText("已复制当前作品的协作请求");
+    await expect(page!.getByRole("status")).toContainText("已准备当前作品的协作请求");
     const handoff = await app!.evaluate(({ clipboard }) => JSON.parse(clipboard.readText().split("\n").slice(1).join("\n")));
     expect(handoff.page).toBe("work.import");
     expect(handoff.management_ref).toEqual(grant);
@@ -160,7 +160,7 @@ for (const kind of ["novel", "drama"] as const) test(`${kind} CLI/MCP固定导�
     await page!.screenshot({ path: path.join(root, `output/plugin-doc-qa/transfer-${kind}${executable ? "-packaged" : ""}.png`) });
     await page!.evaluate(() => (window as any).hetuDesktop.connection("revoke", "codex"));
     await page!.getByRole("button", { name: "核验实际交付包", exact: true }).click();
-    await expect(page!.getByRole("alert")).toContainText("请先在 Agent 协作中授权当前作品");
+    await expect(page!.getByRole("alert")).toContainText("当前作品的 Agent 连接已断开");
   } finally {
     await client?.close();
     await app?.close();

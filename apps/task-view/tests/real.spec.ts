@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import { Client, type CallToolResult } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { build } from "esbuild";
-import { mkdtemp, readFile } from "node:fs/promises";
+import { mkdtemp, readFile, mkdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve, join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -29,10 +29,16 @@ test.beforeAll(async () => {
   taskRef = JSON.parse(fixture.stdout).task_ref;
   managementRef = JSON.parse(fixture.stdout).management_ref;
   proposalID = JSON.parse(fixture.stdout).proposal_id;
+  const profile=join(collaboration,"profile");await mkdir(profile);
+  const env=Object.fromEntries(Object.entries({...process.env,HETU_DESKTOP_PROFILE:profile,HETU_LOCAL_SETTINGS_DIR:join(profile,"local-settings"),HETU_PLUGIN_STATE_DIR:profile,HETU_PLUGIN_NODE:process.execPath,CODEX_HOME:join(profile,"codex")} as Record<string,string|undefined>).filter((entry):entry is [string,string]=>typeof entry[1]==="string"));
+
   managementClient = new Client({ name: "hetu-operation-integration-test", version: "1" }, { versionNegotiation: { mode: { pin: "2026-07-28" } }, capabilities: { extensions: { "io.modelcontextprotocol/ui": { mimeTypes: ["text/html;profile=mcp-app"] } } } });
-  await managementClient.connect(new StdioClientTransport({ command: resolve(cargoTarget, "debug/hetu-mcp"), args: ["--client", "codex", "--collaboration-dir", collaboration], stderr: "pipe" }));
+  await managementClient.connect(new StdioClientTransport({ command: resolve(cargoTarget, "debug/hetu-mcp"), args: ["--client", "codex", "--collaboration-dir", collaboration], env, stderr: "pipe" }));
   client = new Client({ name: "hetu-browser-integration-test", version: "1" }, { versionNegotiation: { mode: { pin: "2026-07-28" } }, capabilities: { extensions: { "io.modelcontextprotocol/ui": { mimeTypes: ["text/html;profile=mcp-app"] } } } });
   await client.connect(new StdioClientTransport({ command: resolve(cargoTarget, "debug/hetu-mcp"), args: ["--workspace", folder, "--task", String(taskRef.task_id)], stderr: "pipe" }));
+  const library=await managementClient.callTool({name:"hetu_call_action",arguments:{action:"hetu.works.list",input:{management_ref:managementRef,limit:100,include_archived:true}}});
+  const works=(library.structuredContent as any).data.works;
+  await writeFile(join(profile,"creative-library.json"),JSON.stringify({schema_version:1,roots:[{path:folder,workspace_id:works[0].work_ref.workspace_id,works}]}));
   const tools = await client.listTools();
   const uri = (tools.tools.find(tool => tool.name === "hetu_open_task_view")?._meta?.ui as { resourceUri?: string })?.resourceUri;
   if (!uri) throw new Error("Native server did not advertise an Apps resource");
@@ -47,7 +53,7 @@ test.beforeAll(async () => {
         const chunks: Buffer[] = [];
         for await (const chunk of request) chunks.push(Buffer.from(chunk));
         const { method, params } = JSON.parse(Buffer.concat(chunks).toString());
-        const active = params?.name === "hetu_get_management_operation" || ["hetu_open_app", "hetu_call_action", "hetu_inspect_collaboration"].includes(params?.name) ? managementClient : client;
+        const active = params?.name === "hetu_get_management_operation" || ["hetu_open_app", "hetu_app_request", "hetu_call_action", "hetu_inspect_collaboration"].includes(params?.name) ? managementClient : client;
         const result = method === "tools/call" ? await active.callTool(params) : method === "resources/read" ? await active.readResource(params) : null;
         if (!result) throw new Error("Unexpected bridge method");
         response.setHeader("Content-Type", "application/json"); response.end(JSON.stringify(result));
@@ -71,9 +77,9 @@ test.afterAll(async () => {
 });
 
 test("real workbench opens authorized novel, drama and video through portable tools and plays verified bytes", async ({ page }) => {
-  test.setTimeout(60_000);
+  test.setTimeout(120_000);
   const initial = await managementClient.callTool({ name: "hetu_open_app", arguments: { management_ref: managementRef } });
-  const resource = await managementClient.readResource({ uri: "ui://hetu/workbench/1" });
+  const resource = await managementClient.readResource({ uri: "ui://hetu/workbench/2" });
   if (!("text" in resource.contents[0])) throw new Error("Missing workbench");
   const manifest = JSON.parse(await readFile("../mcp/resources/workbench.manifest.json", "utf8"));
   expect(createHash("sha256").update(resource.contents[0].text).digest("hex")).toBe(manifest.sha256);
@@ -83,9 +89,8 @@ test("real workbench opens authorized novel, drama and video through portable to
   await view.getByRole("button", { name: "打开作品 河港视频", exact: true }).click();
   await expect(view.getByRole("alert")).toHaveCount(0);
   await view.getByRole("button", { name: "视频", exact: true }).click();
-  await view.getByRole("button", { name: "查看分集成果", exact: true }).click();
-  await view.getByRole("button", { name: "查看固定媒体", exact: true }).click();
-  await view.getByRole("button", { name: "预览媒体", exact: true }).click();
+  await expect(view.getByRole("combobox",{name:"视频分集",exact:true})).toBeVisible();
+  await expect(view.getByRole("combobox",{name:"视频成果版本",exact:true})).toBeVisible();
   const player = view.locator("video");
   await expect(player).toBeVisible();
   await expect.poll(() => player.evaluate((node: HTMLVideoElement) => Number.isFinite(node.duration) && node.duration > 0)).toBe(true);

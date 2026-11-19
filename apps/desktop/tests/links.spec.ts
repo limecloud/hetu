@@ -90,7 +90,7 @@ test(
       await page
         .getByRole("button", { name: "让 AI 处理此关联", exact: true })
         .click();
-      await expect(page.getByRole("status")).toContainText("已复制当前作品");
+      await expect(page.getByRole("status")).toContainText("已准备当前作品");
       const handoff = await application.evaluate(({ clipboard }) =>
         JSON.parse(clipboard.readText().split("\n").slice(1).join("\n")),
       );

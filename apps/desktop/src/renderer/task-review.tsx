@@ -214,7 +214,8 @@ export function TaskPanel({
           await bridge.close();
           return;
         }
-        iframe.src = "hetu-app://shell/task-view.html";
+        if ((window as any).hetuTaskViewResource) iframe.srcdoc = await (window as any).hetuTaskViewResource();
+        else iframe.src = "hetu-app://shell/task-view.html";
         timer = setTimeout(() => {
           if (active) setError("审阅面板未能连接，请重试。");
         }, 10000);

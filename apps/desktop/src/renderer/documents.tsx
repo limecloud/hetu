@@ -1,3 +1,4 @@
+import { viewStorage } from "./view-storage.ts";
 import { ManuscriptText } from "@hetu/workbench-ui";
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { SurfaceContext } from "./contributions.tsx";
@@ -22,10 +23,10 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
   const previousLayout = useRef<{ width: number; floatingDirectory: boolean }>();
   const selectionKey = "hetu-document:" + work.workspace_id + ":" + work.object_id;
   const positionKey = selectionKey + ":positions";
-  const positions = useRef<Record<string, number>>(JSON.parse(sessionStorage.getItem(positionKey) ?? "{}"));
+  const positions = useRef<Record<string, number>>(JSON.parse(viewStorage.getItem(positionKey) ?? "{}"));
   function rememberPosition(id: string, top: number) {
     positions.current[id] = top;
-    sessionStorage.setItem(positionKey, JSON.stringify(positions.current));
+    viewStorage.setItem(positionKey, JSON.stringify(positions.current));
   }
   const [composing, setComposing] = useState(false);
   const [documents, setDocuments] = useState<any[]>([]),
@@ -65,7 +66,7 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
         if (active) {
           setDocuments(result.documents);
           setGroups(result.groups);
-          const previous = sessionStorage.getItem(selectionKey);
+          const previous = viewStorage.getItem(selectionKey);
           const document = result.documents.find((item) => item.document_id === previous) ?? result.groups[0]?.documents[0] ?? result.documents[0];
           if (document) void load(document);
         }
@@ -123,7 +124,7 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
       setManuscript(episode?.manuscript);
       setReference(preferred);
       setReferenceContent(preferredContent);
-      sessionStorage.setItem(selectionKey, document.document_id);
+      viewStorage.setItem(selectionKey, document.document_id);
       setContent(result.content);
       setEditing(true);
       setShowImages(false);

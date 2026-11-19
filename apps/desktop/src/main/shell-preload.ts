@@ -61,6 +61,7 @@ contextBridge.exposeInMainWorld(
     library: invoke("desktop:library"),
     connection: invoke("desktop:connection"),
     installConnection: invoke("desktop:install-connection"),
+    installSuite: invoke("desktop:install-suite"),
     copy: invoke("desktop:copy"),
     handoff: invoke("desktop:handoff"),
     install: invoke("desktop:install"),

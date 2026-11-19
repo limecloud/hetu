@@ -1,16 +1,16 @@
 {
   "name": "@hetu/task-view",
-  "version": "0.13.5",
+  "version": "0.13.6",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "tsc --noEmit && node scripts/build.mjs",
     "check": "tsc --noEmit && node scripts/build.mjs --check",
-    "test": "npm run check && cargo build --locked --manifest-path ../../Cargo.toml -p hetu-mcp --example task_view_fixture --bin hetu-mcp && playwright test"
+    "test": "npm run check && npm run build:workbench --workspace @hetu/desktop && cargo build --locked --manifest-path ../../Cargo.toml -p hetu-mcp -p hetu-app-server -p hetu-cli --example task_view_fixture --example plugin_fixture --bin hetu-mcp --bin hetu-app-server --bin hetu && playwright test"
   },
   "dependencies": {
     "@modelcontextprotocol/ext-apps": "2.0.4",
-    "@hetu/workbench-ui": "0.13.5",
+    "@hetu/workbench-ui": "0.13.6",
     "react": "18.3.1",
     "react-dom": "18.3.1"
   },

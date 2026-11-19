@@ -22,11 +22,11 @@ elif args[:3] == ["plugin", "marketplace", "add"]:
     market = Path(args[3])
     manifest = json.loads((market / ".agents/plugins/marketplace.json").read_text())
     record = {"name": manifest["name"], "root": str(market), "marketplaceSource": {"sourceType": "local", "source": str(market)}}
-    state["marketplaces"] = [record]
+    state["marketplaces"] = [item for item in state["marketplaces"] if item["name"] != record["name"]] + [record]
     result = record
 elif args[:2] == ["plugin", "add"]:
     name, market_name = args[2].split("@")
-    market = Path(state["marketplaces"][0]["root"])
+    market = Path(next(item for item in state["marketplaces"] if item["name"] == market_name)["root"])
     manifest = json.loads((market / ".agents/plugins/marketplace.json").read_text())
     source = market / manifest["plugins"][0]["source"]["path"]
     plugin = source / "plugin.json"
@@ -35,7 +35,7 @@ elif args[:2] == ["plugin", "add"]:
     version = json.loads(plugin.read_text())["version"]
     target = root / "plugins/cache" / market_name / name / version
     shutil.copytree(source, target)
-    state["installed"] = [{"pluginId": args[2], "name": name, "marketplaceName": market_name,
+    state["installed"] = [item for item in state["installed"] if item["pluginId"] != args[2]] + [{"pluginId": args[2], "name": name, "marketplaceName": market_name,
                            "installed": True, "enabled": True, "version": version,
                            "source": {"source": "local", "path": str(source)},
                            "marketplaceSource": {"sourceType": "local", "source": str(market)}}]
@@ -47,7 +47,8 @@ elif args[:2] == ["plugin", "list"]:
     if (root / "fail-list").exists():
         sys.exit(18)
     assert "--marketplace" in args
-    result = {"installed": state["installed"], "available": []}
+    market_name = args[args.index("--marketplace") + 1]
+    result = {"installed": [item for item in state["installed"] if item["marketplaceName"] == market_name], "available": []}
     if (root / "foreign-source").exists() and result["installed"]:
         result["installed"][0]["marketplaceSource"]["source"] = str(root / "foreign")
     if (root / "duplicate-record").exists():

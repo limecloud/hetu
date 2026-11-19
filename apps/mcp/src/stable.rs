@@ -5,6 +5,7 @@ use std::path::Path;
 /// 同一连接显式路由多个获权任务，不更改服务进程的当前作品。
 pub struct StableServer {
     hub: Arc<CollaborationHub>,
+    workbench: workbench::WorkbenchRuntime,
     tools: Vec<(Tool, String)>,
     gate: Arc<Semaphore>,
     all_tools: bool,
@@ -53,8 +54,10 @@ impl StableServer {
             ));
             tools.push((tool, mapping.action));
         }
+        let workbench = workbench::WorkbenchRuntime::new(directory,client,hub.library_directory().ok());
         Ok(Self {
             hub: Arc::new(hub),
+            workbench,
             tools,
             gate: Arc::new(Semaphore::new(1)),
             all_tools: false,
@@ -152,6 +155,7 @@ impl ServerHandler for StableServer {
                 .collect();
         // 全局目录探测尚未协商UI；静态入口必须先可发现，才能打开界面。
         tools.push(app::tool());
+        tools.push(workbench::tool());
         Ok(ListToolsResult::with_all_items(tools))
     }
     async fn call_tool(
@@ -159,15 +163,19 @@ impl ServerHandler for StableServer {
         request: CallToolRequestParams,
         context: RequestContext<RoleServer>,
     ) -> Result<CallToolResponse, ErrorData> {
+        if request.name == workbench::TOOL { return self.workbench.call(request.arguments.unwrap_or_default()).await; }
         if request.name == app::TOOL {
             let _permit = self.gate.clone().try_acquire_owned().map_err(|_| ErrorData::internal_error("入口忙，请稍后读取 / App is busy", None))?;
             let hub = self.hub.clone();
             let cancellation = context.ct.clone();
             let arguments = request.arguments.unwrap_or_default();
-            return tokio::task::spawn_blocking(move || {
+            let mut result = tokio::task::spawn_blocking(move || {
                 let _permit = _permit;
                 app::open(&hub, arguments, &|| cancellation.is_cancelled())
-            }).await.map_err(|_| ErrorData::internal_error("App读取未完成 / App read interrupted", None))?.map(Into::into);
+            }).await.map_err(|_| ErrorData::internal_error("App读取未完成 / App read interrupted", None))??;
+            let session=self.workbench.open().await?;
+            result.meta=Some(json!({"hetu/workbenchSession":session}).as_object().unwrap().clone().into());
+            return Ok(result.into());
         }
         let (_, action) = self
             .tools

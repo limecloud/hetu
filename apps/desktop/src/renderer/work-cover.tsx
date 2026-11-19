@@ -23,5 +23,5 @@ export function WorkCover({ work, title, author = "", compact = false }: { work:
       .catch((error) => { if (active) setError(error.message); });
     return () => { active = false; };
   }, [work.workspace_id, work.object_id, work.kind, revision]);
-  return <WorkCoverPreview work={work} title={title} author={author} compact={compact} preview={value?.preview} presentation={value?.cover?.presentation} error={error}/>;
+  return <WorkCoverPreview defaultCovers={(window as any).hetuWorkbenchAssets?.covers} work={work} title={title} author={author} compact={compact} preview={value?.preview} presentation={value?.cover?.presentation} error={error}/>;
 }

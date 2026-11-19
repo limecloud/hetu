@@ -171,12 +171,12 @@ test(
       ).toBeVisible();
       await navigate(page, "Agent 协作");
       await page
-        .getByRole("button", { name: "授权当前作品", exact: true })
+        .getByRole("button", { name: "连接当前作品", exact: true })
         .click();
       await page
         .getByRole("button", { name: "复制作品协作请求", exact: true })
         .click();
-      await expect(page.getByRole("status")).toContainText("已复制当前作品");
+      await expect(page.getByRole("status")).toContainText("已准备当前作品");
       const handoff = await application!.evaluate(({ clipboard }) =>
         JSON.parse(clipboard.readText().split("\n").slice(1).join("\n")),
       );

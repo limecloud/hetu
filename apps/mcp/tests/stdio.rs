@@ -122,7 +122,8 @@ async fn compact_catalog_dispatches_discovered_actions_without_tool_list_refresh
     let mut client = Client::spawn(command);
     let listed = client.rpc("tools/list", json!({})).await;
     let tools = listed["result"]["tools"].as_array().unwrap();
-    assert!(tools.len() <= 13, "{listed}");
+    assert!(tools.iter().filter(|tool| tool["_meta"]["ui"]["visibility"] != json!(["app"])).count() <= 13, "{listed}");
+    assert_eq!(tools.iter().find(|tool| tool["name"] == "hetu_app_request").unwrap()["_meta"]["ui"]["visibility"], json!(["app"]));
     assert!(tools.iter().any(|t| t["name"] == "hetu_call_action"));
     let discovered = client
         .tool(
@@ -1856,21 +1857,23 @@ async fn mcp_workbench_entry_is_discoverable_before_ui_negotiation_and_keeps_app
     let mut client = Client::spawn(command);
     let ordinary = client.rpc("tools/list", json!({})).await;
     assert!(ordinary["result"]["tools"].as_array().unwrap().iter().any(|t| t["name"] == "hetu_open_app"));
-    assert!(ordinary["result"]["tools"].as_array().unwrap().len() <= 13);
+    let ordinary_tools = ordinary["result"]["tools"].as_array().unwrap();
+    assert!(ordinary_tools.iter().filter(|tool| tool["_meta"]["ui"]["visibility"] != json!(["app"])).count() <= 13);
+    assert_eq!(ordinary_tools.iter().find(|tool| tool["name"] == "hetu_app_request").unwrap()["_meta"]["ui"]["visibility"], json!(["app"]));
     let empty = client.tool("hetu_open_app", json!({})).await;
     assert_eq!(empty["data"]["app"]["route"], "library");
     assert_eq!(empty["data"]["works"], json!([]));
     let resources = client.rpc("resources/list", json!({})).await;
     assert_eq!(resources["result"]["resources"].as_array().unwrap().len(), 1);
-    assert_eq!(resources["result"]["resources"][0]["uri"], "ui://hetu/workbench/1");
-    let static_ui = client.rpc("resources/read", json!({"uri":"ui://hetu/workbench/1"})).await;
+    assert_eq!(resources["result"]["resources"][0]["uri"], "ui://hetu/workbench/2");
+    let static_ui = client.rpc("resources/read", json!({"uri":"ui://hetu/workbench/2"})).await;
     assert_eq!(static_ui["result"]["contents"][0]["mimeType"], "text/html;profile=mcp-app");
     client.apps = true;
     let listed = client.rpc("tools/list", json!({})).await;
     let tools = listed["result"]["tools"].as_array().unwrap();
     let app = tools.iter().find(|t| t["name"] == "hetu_open_app").unwrap();
     assert_eq!(app["_meta"]["openai/ui"]["entrypoints"], json!([{"type":"global"},{"type":"thread"}]));
-    assert_eq!(app["_meta"]["ui"]["resourceUri"], "ui://hetu/workbench/1");
+    assert_eq!(app["_meta"]["ui"]["resourceUri"], "ui://hetu/workbench/2");
     let feedback = tools.iter().find(|t| t["name"] == "hetu_save_task_feedback").unwrap();
     assert_eq!(feedback["_meta"]["ui"]["visibility"], json!(["app"]));
     let operation = tools.iter().find(|t| t["name"] == "hetu_get_management_operation").unwrap();
@@ -1880,7 +1883,7 @@ async fn mcp_workbench_entry_is_discoverable_before_ui_negotiation_and_keeps_app
     assert_eq!(home["data"]["app"]["route"], "library");
     assert_eq!(home["data"]["works"], json!([]));
     assert!(!directory.exists(), "empty entry must not create or enumerate authorizations");
-    let resource = client.rpc("resources/read", json!({"uri":"ui://hetu/workbench/1"})).await;
+    let resource = client.rpc("resources/read", json!({"uri":"ui://hetu/workbench/2"})).await;
     assert_eq!(resource["result"]["contents"][0]["mimeType"], "text/html;profile=mcp-app");
     assert!(resource["result"]["contents"][0]["text"].as_str().unwrap().contains("media-src blob:"));
     client.close().await;
@@ -1913,7 +1916,7 @@ async fn legacy_workbench_discovery_does_not_require_ui_and_normalizes_capabilit
         let home=client.tool("hetu_open_app", json!({})).await;
         assert_eq!(home["data"]["app"]["route"], "library");
         assert_eq!(home["data"]["works"], json!([]));
-        let resource = client.rpc("resources/read", json!({"uri":"ui://hetu/workbench/1"})).await;
+        let resource = client.rpc("resources/read", json!({"uri":"ui://hetu/workbench/2"})).await;
         assert_eq!(resource["result"]["contents"][0]["mimeType"], "text/html;profile=mcp-app");
         assert!(!directory.exists(), "目录探测不得创建作品或授权");
         client.close().await;

@@ -480,3 +480,5 @@ impl ServerHandler for HetuServer {
         .into())
     }
 }
+
+mod workbench;

@@ -178,7 +178,8 @@ impl CollaborationHub {
         )
     }
 
-    fn library_directory(&self) -> Result<PathBuf> {
+    /// 第一方表现宿主复用同一目录策略；路径不进入普通机器结果。
+    pub fn library_directory(&self) -> Result<PathBuf> {
         if let Some(profile) = std::env::var_os("HETU_DESKTOP_PROFILE") {
             let path = PathBuf::from(profile);
             ensure(

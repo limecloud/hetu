@@ -620,7 +620,7 @@ export function LocalSettings({
                 )}
                 {tab === "about" && (
                   <div className="settings-about">
-                    <img src="app-icon.png" width="80" height="80" alt="" />
+                    <img src={(window as any).hetuWorkbenchAssets?.brand ?? "app-icon.png"} width="80" height="80" alt="" />
                     <h2>河图洛书 Hetu Luoshu</h2>
                     <p className="settings-note">{version}</p>
                     <p>设定有据，创作有序。</p>

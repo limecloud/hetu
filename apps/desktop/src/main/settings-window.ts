@@ -8,7 +8,7 @@ export class SettingsWindow {
     this.url = appUrl + "?view=settings";
   }
   accepts(event: IpcMainInvokeEvent, channel: string) {
-    return ["desktop:settings", "desktop:settings-agent", "desktop:settings-window", "desktop:install-connection", "desktop:models", "desktop:copy"].includes(channel)
+    return ["desktop:settings", "desktop:settings-agent", "desktop:settings-window", "desktop:install-connection", "desktop:install-suite", "desktop:models", "desktop:copy"].includes(channel)
       && this.#window?.webContents === event.sender
       && event.senderFrame === event.sender.mainFrame
       && event.senderFrame?.url === this.url;

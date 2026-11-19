@@ -1,0 +1,153 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-11-20",
+  "version": "0.13.6",
+  "request": "MCP App与桌面完整交互一致，登记作品直接打开，桌面点击安装MCP App及所选Skills。",
+  "implementation": {
+    "renderer": "同一桌面React入口和共享样式",
+    "work_use_cases": "apps/desktop/src/main/work-session.ts",
+    "mcp_host": "Rust独立App私有会话＋Node共享作品用例和插件运行时",
+    "library": "锁内重读合并同一目录登记",
+    "optional_arguments": "undefined_args保留读取与清空恢复稿的区别",
+    "authorization": "作者App直接操作登记作品；普通Agent仍使用独立精确机器引用；作品选择不授Agent管理权限。"
+  },
+  "verification": {
+    "apps": {
+      "passed": 55,
+      "failed": 0,
+      "log": "build/mcp-workbench-parity/apps-all-final.log",
+      "sha256": "04801640b4e2b6373f0a6d393800da4689025cdce4dc07cf1e26e2892310ce0f"
+    },
+    "desktop_initial": {
+      "passed": 11,
+      "failed": 1,
+      "log": "build/mcp-workbench-parity/desktop-regression.log",
+      "sha256": "a15e97c7789cc73cc3f8374128bcb71a3d974cee4dfe6999fa147c4ce8ddd4a3"
+    },
+    "desktop_recheck": {
+      "passed": 1,
+      "failed": 0,
+      "log": "build/mcp-workbench-parity/connection-regression-final.log",
+      "sha256": "7926600240fd79cd9ad63c831d692e0a85d4fd68b5d85205967ddeb99d1865bb"
+    },
+    "release_guards": {
+      "passed": 4,
+      "failed": 0,
+      "log": "build/mcp-workbench-parity/release-guards.log",
+      "sha256": "a40d828defdc0422eb4d2852d7d7b5b9069f1b010f9183197794ec361964301c"
+    },
+    "core": {
+      "passed": 13,
+      "failed": 0,
+      "log": "build/mcp-workbench-parity/core-final.log",
+      "sha256": "33dc7ca61993fcd0da1b91996ebbfc2cc0e66a43ecdd86ecf181ac590243f122"
+    },
+    "npm_cli": {
+      "passed": 6,
+      "failed": 0,
+      "log": "build/mcp-workbench-parity/npm-cli.log",
+      "sha256": "0345826c5041a6a521c054fd6513906519e1d0375ca36ec61101530ad5728d8f"
+    },
+    "stdio_initial": {
+      "passed": 35,
+      "failed": 2,
+      "log": "build/mcp-workbench-parity/stdio-final.log",
+      "sha256": "47b19aed6815761f414d934b99734e8a8d3079da7f15844c41242e9e0f06fea6"
+    },
+    "stdio_final": {
+      "passed": 37,
+      "failed": 0,
+      "log": "build/mcp-workbench-parity/stdio-recheck.log",
+      "sha256": "fe97788aac42a93e0245af4ac3ae323e6d2999bdd675880d4af1e55dd0caa4a2"
+    },
+    "shared_return_recheck": {
+      "passed": 1,
+      "failed": 0,
+      "log": "build/mcp-workbench-parity/shared-return-final.log",
+      "sha256": "86e5557372e1b7c5202c1ee0a4cf5b289cbcff3a34b6492975b041e9a89c7df6",
+      "scope": "插件返回后重新验证嵌套审核的完整候选正文，避免仅截图尚未加载的工作面。"
+    },
+    "packaged": {
+      "passed": 1,
+      "failed": 0,
+      "log": "build/mcp-workbench-parity/packaged-final.log",
+      "sha256": "23a65e20ff786bf82ea79e50b6c1958a6147702a83591166c0a5782b80a828cd"
+    },
+    "official_codex_installed": {
+      "version": "0.13.6",
+      "plugin_id": "hetu-workbench@hetu-luoshu-machine-connection",
+      "tools_error": null,
+      "entrypoints": [
+        {
+          "type": "global"
+        },
+        {
+          "type": "thread"
+        }
+      ],
+      "html_sha256": "37a6bfe0b72a2e6b8976efb704489dcc109b032169e649ef04749742e18fb716",
+      "html_bytes": 4137661,
+      "manual_mcp_configuration": false,
+      "gui_observed": false,
+      "app_only_bridge_called": true,
+      "private_session_preserved": true,
+      "registered_works": 18,
+      "same_desktop_work_refs": true,
+      "model_turn_started": false
+    },
+    "actual_library": {
+      "version": "0.13.6",
+      "desktop_registered": 18,
+      "mcp_total": 18,
+      "same_work_identities": true,
+      "authorized": 13,
+      "previously_without_agent_connection": 5,
+      "html_sha256": "37a6bfe0b72a2e6b8976efb704489dcc109b032169e649ef04749742e18fb716",
+      "catalog_identities_unchanged": true,
+      "real_drama_opened_without_authorization": true,
+      "reference_characters": 2128,
+      "real_work_files_unchanged": true,
+      "browser_cards": 18,
+      "refresh_passed": true,
+      "screenshot": "本机私有证据，不公开作者稿件截图。",
+      "scope": "安装版本机18作品一致、刷新与真实剧本只读打开；不代替指定Codex GUI逐页验收。"
+    }
+  },
+  "retained_failures": [
+    {
+      "reason": "桌面测试保留旧的尚未连接文案及手动连接前置；按已采纳的自动连接流程修正后通过，保留撤权及旧引用失效检查。",
+      "log": "build/mcp-workbench-parity/desktop-regression.log"
+    },
+    {
+      "reason": "新增App专用桥接后，两个旧测试仍把仅App可见工具计入模型工具上限。改为继续限制模型可见工具，并明确断言桥接仅App可见。",
+      "log": "build/mcp-workbench-parity/stdio-final.log"
+    }
+  ],
+  "scope_limits": [
+    "官方Codex CLI与标准AppBridge实际通过；指定Codex Desktop GUI当前窗口的全部逐页交互尚未直接观察。",
+    "当前Computer Use未能启动原生管道，浏览器访问宿主也不可用；使用Playwright Electron与标准AppBridge分别验收。"
+  ],
+  "package": {
+    "manifest": "build/mcp-workbench-parity/package/hetu-dev-nxCoS7/manifest.json",
+    "source_sha256": "60dbc861c04c6490dc2e93f01b037ba2ecac8eef3d8baba4d41cdccbfdada3dd",
+    "version": "0.13.6",
+    "signing": "ad-hoc development"
+  },
+  "installation": {
+    "installed_at": "2026-11-19T16:35:52.480135+00:00",
+    "version": "0.13.6",
+    "application": "/Applications/Hetu.app",
+    "backup": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-parity/replaced-0.13.5.app",
+    "manifest": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-parity/package/hetu-dev-nxCoS7/manifest.json",
+    "source_sha256": "60dbc861c04c6490dc2e93f01b037ba2ecac8eef3d8baba4d41cdccbfdada3dd",
+    "artifacts_verified": 3387,
+    "signing": "ad-hoc-development",
+    "codesign_verified": true,
+    "cli_version": "hetu 0.13.6",
+    "author_content_modified": false
+  },
+  "release": {
+    "status": "pending",
+    "tag": "v0.13.6"
+  }
+}

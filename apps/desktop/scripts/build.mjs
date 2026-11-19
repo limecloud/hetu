@@ -1,3 +1,4 @@
+import {buildWorkbench} from "./build-workbench.mjs";
 import { build } from "esbuild";
 import { fileURLToPath } from "node:url";
 import { verifyBaseline } from "./baseline.mjs";
@@ -20,6 +21,7 @@ await writeFile("dist/baseline.json", JSON.stringify(baseline, null, 2) + "\n");
 await buildMain("main", "main");
 await buildMain("shell-preload", "shell-preload");
 await buildMain("plugin-preload", "plugin-preload");
+await buildWorkbench();
 await copyFile(
   "../../packages/plugin-host/src/worker.mjs",
   "dist/plugin-worker.mjs",

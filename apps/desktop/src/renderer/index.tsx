@@ -1,3 +1,4 @@
+import { viewStorage } from "./view-storage.ts";
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { desktop } from "./bridge.ts";
@@ -7,13 +8,17 @@ import { LocalSettings } from "./settings.tsx";
 import { Icon, IconButton, Workbench, PageActionsTarget, type DocumentTools, type IconName, type AgentStatus } from "./workbench.tsx";
 import { WorkCover } from "./work-cover.tsx";
 import { LibraryHeader, LibraryNavigation, LibraryContent, NavigationGroup, WorkspaceHeader, type LibraryAssets } from "@hetu/workbench-ui";
-const libraryAssets: LibraryAssets = {brand:"app-icon.png",light:"river-dawn-v1.webp",dark:"river-night-v1.webp",covers:["cover-river-jade.jpg","cover-cloud-rose.jpg","cover-stars-ink.jpg"]};
+const libraryAssets: LibraryAssets = (window as any).hetuWorkbenchAssets ?? {brand:"app-icon.png",light:"river-dawn-v1.webp",dark:"river-night-v1.webp",covers:["cover-river-jade.jpg","cover-cloud-rose.jpg","cover-stars-ink.jpg"]};
 import { PluginMigrations } from "./plugin-migrations.tsx";
 import { PluginResults } from "./plugin-results.tsx";
 import { AuditStatus } from "./audit-status.tsx";
 import { sameWork } from "@hetu/plugin-sdk";
 
 function App() {
+  const [settingsOpen,setSettingsOpen]=useState(false);
+  const embeddedSettings=useRef<HTMLDialogElement>(null);
+  useEffect(()=>{if(settingsOpen)embeddedSettings.current?.showModal();},[settingsOpen]);
+  useEffect(()=>{const listener=(event:Event)=>setSettingsOpen((event as CustomEvent).detail==="open");window.addEventListener("hetu:settings-window",listener);return()=>window.removeEventListener("hetu:settings-window",listener);},[]);
   const [state, setState] = useState<any>({ plugins: [], views: [] }),
     [works, setWorks] = useState<any[]>([]),
     [active, setActive] = useState("library"),
@@ -78,6 +83,13 @@ function App() {
         const current = await desktop.library("refresh");
         setState(current);
         setWorks(current.works ?? []);
+        const initial=(window as any).hetuWorkbenchInitial;
+        if(initial?.work_ref&&current.works?.some((item:any)=>sameWork(item.work_ref,initial.work_ref))){
+          await desktop.library("open",{work_ref:initial.work_ref});
+          const selected=await desktop.select(initial.work_ref);setState(selected);setWorks(selected.works??[]);
+          setActive(initial.task_id?"work.tasks":surfaces.list().find(({value})=>value.kinds.includes(initial.work_ref.kind))?.id??"library");
+          if(initial.task_id)setAgentStatus({state:"waiting_for_audit",taskId:initial.task_id});
+        }
       } catch (error) {
         setNotice((error as Error).message);
       }
@@ -150,13 +162,13 @@ function App() {
     if (!state.work || !sameWork(value.work_ref, state.work)) return;
     void run(async () => {
       if (documentTools?.dirty) throw new Error("请先保存当前修改，再打开关联正文。");
-      sessionStorage.setItem("hetu-document:" + value.work_ref.workspace_id + ":" + value.work_ref.object_id, value.document_id);
+      viewStorage.setItem("hetu-document:" + value.work_ref.workspace_id + ":" + value.work_ref.object_id, value.document_id);
       await navigate(value.work_ref.kind === "novel" ? "novel.reader" : "drama.reader");
     });
   }), [state.work, documentTools?.dirty]);
   const ai = async (object?: Record<string, unknown>) => {
     await desktop.handoff(active, object);
-    setNotice("已复制当前作品的协作请求，可粘贴到你选择的外部 Agent。");
+    setNotice("已准备当前作品的协作请求，请在所选 Agent 中继续。");
   };
   const items = surfaces
     .list()
@@ -206,7 +218,7 @@ function App() {
   });
   const createWork = (type: string, name: string) => run(async () => {
     await desktop.library("bootstrap", { kind: type });
-    setNotice("已复制新建" + name + "请求，可粘贴到所选外部 Agent；作品尚未创建。Agent 完成后刷新创作库。其间可以继续处理其他作品。");
+    setNotice("已准备新建" + name + "请求，请在所选 Agent 中继续；作品尚未创建。Agent 完成后刷新创作库。其间可以继续处理其他作品。");
   });
   return (
     <Preferences.Provider value={state.preferences ?? {}}>
@@ -257,7 +269,7 @@ function App() {
           }
           {readerActive && documentTools && <span className="save-state" aria-live="polite"><Icon name="check" size={13}/>{documentTools.readOnly ? documentTools.busy ? "正在读取…" : "参考稿 只读" : documentTools.busy ? "正在保存…" : documentTools.dirty ? "有未保存修改" : "修订已保存"}</span>}
           <IconButton icon="settings" label="本机设置" onClick={() => void desktop.settingsWindow("open")}/>
-          {workMode && <IconButton icon="expand" label="缩放窗口" onClick={() => void desktop.zoom()}/>}
+          {workMode && desktop.windowControls?.zoom !== false && <IconButton icon="expand" label="缩放窗口" onClick={() => void desktop.zoom()}/>}
           {readerActive && documentTools && <>
             <button className="primary" disabled={documentTools.busy || !documentTools.dirty} onClick={documentTools.save}>保存修订</button>
             <IconButton icon="inspector" label="检查器" aria-pressed={inspector} onClick={() => setInspector(!inspector)}/>
@@ -401,15 +413,16 @@ function App() {
           )}
         </main>
       </div>
+      {settingsOpen && <dialog ref={embeddedSettings} className="embedded-settings" aria-label="设置" onCancel={()=>setSettingsOpen(false)}><button className="embedded-settings-close" aria-label="关闭设置" onClick={()=>setSettingsOpen(false)}>关闭</button><SettingsApp embedded/></dialog>}
     </Workbench.Provider>
     </PageActionsTarget.Provider>
     </Preferences.Provider>
   );
 }
-function SettingsApp() {
+function SettingsApp({embedded=false}:{embedded?:boolean}) {
   const [notice, setNotice] = useState("");
   useEffect(() => {
-    document.documentElement.dataset.window = "settings";
+    if(!embedded)document.documentElement.dataset.window = "settings";
     document.title = "设置";
     const remove = desktop.onPreferences(applyPreferences);
     const close = (event: KeyboardEvent) => {

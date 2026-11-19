@@ -1,3 +1,4 @@
+import {withLibraryLock} from "./library-lock.ts";
 import { realpath } from "node:fs/promises";
 import path from "node:path";
 import { sameWork, type WorkRef } from "@hetu/plugin-sdk";
@@ -22,9 +23,10 @@ export class CreativeLibrary {
     private recovery: RecoveryStore,
     private read: (directory: string) => Promise<any[]>,
   ) {}
-  async load() {
+  async load(preserveViews = false) {
+    const previous = new Map((preserveViews ? this.#views : []).map(work => [JSON.stringify(work.work_ref),work]));
     const record: any = await this.recovery.read(this.file);
-    if (record === null) return;
+    if (record === null) { this.#roots=[];this.#views=[];return; }
     if (
       record?.schema_version !== 1 ||
       !Array.isArray(record.roots) ||
@@ -45,9 +47,10 @@ export class CreativeLibrary {
     this.#roots = record.roots;
     this.#views = this.#roots.flatMap((root) =>
       root.works.map((work) => ({
+        ...previous.get(JSON.stringify(work.work_ref)),
         ...work,
-        unavailable: true,
-        error: "尚未核验作品位置，请刷新创作库。",
+        unavailable: previous.get(JSON.stringify(work.work_ref))?.unavailable ?? true,
+        error: previous.get(JSON.stringify(work.work_ref))?.error ?? "尚未核验作品位置，请刷新创作库。",
       })),
     );
   }
@@ -55,7 +58,7 @@ export class CreativeLibrary {
     return this.#views;
   }
   #serial<T>(fn: () => Promise<T>) {
-    const pending = this.#queue.catch(() => {}).then(fn);
+    const pending = this.#queue.catch(() => {}).then(() => withLibraryLock(this.file,async () => { await this.load(true); return fn(); }));
     this.#queue = pending;
     return pending;
   }

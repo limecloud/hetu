@@ -47,11 +47,11 @@ test("Electron作品授权、精确页面交接与无窗口Rust CLI在撤权后�
     await application.evaluate(() => (globalThis as any).__resumeWorkSelection?.());
   }
   await navigate(page, "Agent 协作");
-  await expect(page.getByText("尚未授权当前作品。", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "授权当前作品", exact: true }).click();
-  await expect(page.getByText("已授权当前作品。", { exact: true })).toBeVisible();
+  await expect(page.getByText("发起协作时自动连接当前作品。", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "复制作品协作请求", exact: true }).click();
-  await expect(page.getByRole("status")).toContainText("已复制当前作品");
+  await expect(page.getByRole("status")).toContainText("已准备当前作品");
+  await page.getByRole("button", { name: "刷新连接状态", exact: true }).click();
+  await expect(page.getByText("已连接当前作品。", { exact: true })).toBeVisible();
   const handoff = await application.evaluate(({ clipboard }) => JSON.parse(clipboard.readText().split("\n").slice(1).join("\n")));
   expect(handoff.work_ref).toEqual(context.work_ref);
   expect(handoff.management_ref.grant_revision).toBe(1);
@@ -60,11 +60,11 @@ test("Electron作品授权、精确页面交接与无窗口Rust CLI在撤权后�
   expect(listed.status, listed.stderr).toBe(0);
   expect(JSON.parse(listed.stdout).data.documents.map((d: any) => d.document_id)).toEqual([context.document.document_id]);
   expect(cli("hetu.documents.get", { document_id: context.other_document }).status).not.toBe(0);
-  await page.getByRole("button", { name: "撤销当前作品授权", exact: true }).click();
-  await expect(page.getByText("尚未授权当前作品。", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "断开当前作品连接", exact: true }).click();
+  await expect(page.getByText("发起协作时自动连接当前作品。", { exact: true })).toBeVisible();
   expect(cli("hetu.documents.list", { work_ref: context.work_ref }).status).not.toBe(0);
-  await page.getByRole("button", { name: "授权当前作品", exact: true }).click();
-  await expect(page.getByText("已授权当前作品。", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "连接当前作品", exact: true }).click();
+  await expect(page.getByText("已连接当前作品。", { exact: true })).toBeVisible();
   const current = await page.evaluate(() => (window as any).hetuDesktop.connection("status", "codex"));
   expect(current.management_ref.grant_revision).toBeGreaterThan(handoff.management_ref.grant_revision);
   expect(cli("hetu.documents.list", { work_ref: context.work_ref }).status).not.toBe(0);
@@ -74,7 +74,7 @@ test("Electron作品授权、精确页面交接与无窗口Rust CLI在撤权后�
   await page.getByRole("button", { name: "第一章 雾港", exact: true }).click();
   await page.locator("summary[aria-label='文稿操作']").click();
   await documentAction(page, "让 AI 处理本稿");
-  await expect(page.getByRole("status")).toContainText("已复制当前作品");
+  await expect(page.getByRole("status")).toContainText("已准备当前作品");
   const fixed = await application.evaluate(({ clipboard }) => JSON.parse(clipboard.readText().split("\n").slice(1).join("\n")));
   expect(fixed.fixed_refs.find((r: any) => r.kind === "document").document_id).toBe(context.document.document_id);
   expect(fixed.management_ref).toEqual(current.management_ref);
