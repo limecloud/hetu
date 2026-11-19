@@ -71,3 +71,6 @@ Skills 和客户端接入包安装在你使用的 Agent 环境里，为它提供
 
 
 从提示与段单到解释和任务，见[一个旧站，四种继续创作的方式](/blog/one-station-four-forms/)。
+
+
+继续了解[场记、构造语言、音乐剧与完整剧本杀](/blog/letter-to-role-books/)。

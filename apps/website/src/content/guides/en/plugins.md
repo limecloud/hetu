@@ -191,3 +191,14 @@ Tell your Agent: “Turn my experience of waiting for a letter into two bits, se
 Tell your Agent: “Explain average speed using 20 metres in 10 seconds, check the units and state the analogy’s limits.” Return to [Science Writing Studio](/en/plugins/science-studio/) to read the article and inspect exact calculations and scope. Revisit earlier claims and paragraphs when numbers change.
 
 Tell your Agent: “Design a quest where I take a letter, spend a ticket and deliver it at the station. Check what happens without a ticket.” Return to [Quest Studio](/en/plugins/quest-studio/) to inspect conditions and costs, run a fixed route and review the complete state trace. Preserve uncertainty when exploration is incomplete, and revisit old routes after changes.
+
+
+## Supervision, languages, musicals and murder mysteries
+
+Tell your Agent: “Compare which hand holds the envelope in these two takes. Keep missing observations unknown and fix an edit selection.” Return to [Script Supervisor](/en/plugins/script-supervisor/) to inspect explicit in/out comparisons. Corrections preserve earlier records.
+
+Tell your Agent: “Derive the station name and its inhabitants’ title from one root, with a glossed example.” Return to [Constructed Language Studio](/en/plugins/language-studio/) to inspect ordered steps and revisit earlier names after changing rules.
+
+Tell your Agent: “Turn the letter into dialogue, a duet and a final reprise. Compare two programs.” Read through [Musical Theatre Studio](/en/plugins/musical-studio/), inspect vocal entries and revise from fixed rehearsal notes.
+
+Tell your Agent: “Write complete staged role books, arrange searches, exchanges, votes and reveals, then simulate a playtest.” Read role and host books in [Murder Mystery Studio](/en/plugins/murder-mystery/), then review actual releases, blockers and ties. Preserve earlier playtests and start another after revision. Simulation and human feedback remain separate.

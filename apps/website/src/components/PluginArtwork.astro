@@ -1,0 +1,23 @@
+---
+import artwork from '../../../../assets/marketing/plugin-artwork.json';
+import type { Locale } from '../lib/site';
+import '../styles/plugins.css';
+
+interface Props { locale: Locale; kind?: string; priority?: boolean; }
+const { locale, kind = 'relationships', priority = false } = Astro.props;
+const image = artwork.images.find(image => image.slug === kind);
+if (!image) throw new Error(`Missing promotional artwork for ${kind}`);
+---
+<figure class="plugin-artwork" data-plugin-artwork={kind}>
+  <img
+    src={image.path}
+    srcset={image.variants.map(variant => `${variant.path} ${variant.width}w`).join(', ')}
+    sizes="(max-width: 760px) calc(100vw - 40px), (max-width: 1000px) 46vw, 380px"
+    width={image.width}
+    height={image.height}
+    alt={image.alt[locale]}
+    loading={priority ? 'eager' : 'lazy'}
+    fetchpriority={priority ? 'high' : undefined}
+    decoding="async"
+  />
+</figure>

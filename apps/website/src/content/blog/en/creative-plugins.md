@@ -71,3 +71,6 @@ Continue with [documentaries and podcasts](/en/blog/accounts-and-listening/).
 
 
 Continue with [stage, stand-up, science and quests](/en/blog/one-station-four-forms/).
+
+
+Continue with [supervision, languages, musicals and complete mystery playtests](/en/blog/letter-to-role-books/).

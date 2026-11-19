@@ -1,0 +1,1947 @@
+{
+  "date": "2026-11-19",
+  "source_commit": "04be1a85c00d608521734fd790e3d5c17880b5d0",
+  "origin": "https://hetu.limeai.run",
+  "catalogue": "https://hetu.limeai.run/plugins/",
+  "deployment": "https://68c45b1f.hetu-website-3uu.pages.dev",
+  "coverage": {
+    "plugins": 45,
+    "original_generated_images": 45,
+    "responsive_webp_files": 135,
+    "page_byte_verifications": 94,
+    "image_byte_verifications": 135,
+    "all_public_bytes_match_build": true
+  },
+  "artwork": {
+    "manifest": "assets/marketing/plugin-artwork.json",
+    "manifest_sha256": "3faeadc6920a34eea5c9eba882d3b7a355bdde1e317dddfd9cda8c96e2d7fa74",
+    "models": [
+      "gpt-image-2.5-flare",
+      "gpt-image-2.5-sunburst"
+    ],
+    "provider_origin": "https://img.aishenji.top",
+    "workflow": "imagegen skill bundled CLI generate-batch",
+    "originals": "output/imagegen/plugin-marketing（本地原图）",
+    "deployed_assets": "apps/website/public/plugins/illustrations",
+    "responsive_widths": [
+      480,
+      960,
+      1440
+    ],
+    "all_variant_bytes": 23649778,
+    "all_480_bytes": 1936090,
+    "credential_in_source": false,
+    "temporary_private_configuration_removed": true
+  },
+  "presentation": {
+    "catalogue_and_hero": "插件专属主题插画",
+    "real_work_surface": "详情中单独展示真实工作面，两个内置示例保留明确示意身份",
+    "sharing": "每个插件的OG和Twitter图片对应本插件",
+    "locales": [
+      "zh-CN",
+      "en"
+    ],
+    "viewport_widths": [
+      375,
+      768,
+      1440
+    ]
+  },
+  "verification": {
+    "build_pages": 219,
+    "local_references": 13073,
+    "local_browser_tests": {
+      "passed": 549,
+      "failed": 0
+    },
+    "production_browser_tests": {
+      "distinct_cases": 157,
+      "first_attempt": {
+        "passed": 156,
+        "failed": 1,
+        "reason": "ERR_CONNECTION_CLOSED before page load"
+      },
+      "targeted_recheck": {
+        "passed": 1,
+        "failed": 0,
+        "case": "zh-CN 1440px 键盘详情与语言接续"
+      }
+    },
+    "design_review": {
+      "date": "2026-11-19",
+      "coverage": 45,
+      "actual_visual_review": "当前Codex实际查看45张原图，全部联系表及有歧义项原图，另检查实际中英手机和桌面详情",
+      "review": {
+        "subject_recognition": 9,
+        "distinct_creative_purpose": 9,
+        "composition_and_crop": 9,
+        "brand_consistency": 9,
+        "web_readability": 9
+      },
+      "out_of": 10,
+      "meaning": "设计判断，结合实际图像和网页行为；不证明点击转化提升",
+      "models": [
+        "gpt-image-2.5-flare",
+        "gpt-image-2.5-sunburst"
+      ],
+      "source_prompts_and_digests": "assets/marketing/plugin-artwork.json",
+      "originals_local_only": "output/imagegen/plugin-marketing",
+      "final_web_assets": "apps/website/public/plugins/illustrations",
+      "responsive_variants": 135,
+      "temporary_api_configuration_removed": true,
+      "interface_evidence_separate": true,
+      "local_browser_checks": 549
+    },
+    "logs": {
+      "build-final.log": "710782321b23ecfff0977647fae0ba6b869aca961295d93331ed6333cb8faddb",
+      "website-local.log": "126be4c26bf340cd75a7768cd682eef809c64c4251cc3a27a0c1a7519fc435f3",
+      "website-production.log": "2d13bf4fc5dbe98f1b08f73ced12bdc349854fbfab965fac2114701aa93de3be",
+      "website-production-recheck.log": "2e6f38ad12c5209e3094d6c1290584363a8f0e0b163df56956a6af900d0b166a",
+      "deploy.log": "7c21e87a7072499b6d5f3b5669240f86cbd1de35b4328d14a550bffe7cf78a80",
+      "public-verification.log": "3ffa1c76da2991f98ecde964ee9c3b38daa58f422b45a6bf3d52a38cef841b83"
+    }
+  },
+  "public_response_evidence": {
+    "count": 229,
+    "record_sha256": "7b54ce030d997524ccdd60c99060b0dc8fa2bf6dba009b187f51ec1ac8d07a81",
+    "responses": [
+      {
+        "route": "/",
+        "status": 200,
+        "expected_sha256": "8844384928daf3300f33d706eaf612ef6d8c58ccb37b7755ada2c61a8f1ac808",
+        "raw_sha256": "8844384928daf3300f33d706eaf612ef6d8c58ccb37b7755ada2c61a8f1ac808",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/",
+        "status": 200,
+        "expected_sha256": "32ebb184ab6947dc3887ab075f7aedd2953bceb1d55cb25f37901b9aa33fb960",
+        "raw_sha256": "32ebb184ab6947dc3887ab075f7aedd2953bceb1d55cb25f37901b9aa33fb960",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/",
+        "status": 200,
+        "expected_sha256": "ced5d1515f7e5f2d3d3d6e95763695393b210e911238cbe504d21ff8f2468d32",
+        "raw_sha256": "ced5d1515f7e5f2d3d3d6e95763695393b210e911238cbe504d21ff8f2468d32",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/",
+        "status": 200,
+        "expected_sha256": "3bb5dc5ee78dab6397f3a69328ad31b98535d04796925563435debab17141111",
+        "raw_sha256": "3bb5dc5ee78dab6397f3a69328ad31b98535d04796925563435debab17141111",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/screenplay/",
+        "status": 200,
+        "expected_sha256": "7b0881d78cc1897a2c2de7ccbe56e924864ee05b6b5f85c8a78cd905103ca012",
+        "raw_sha256": "7b0881d78cc1897a2c2de7ccbe56e924864ee05b6b5f85c8a78cd905103ca012",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/screenplay/",
+        "status": 200,
+        "expected_sha256": "df8845832076a2c209e23668430779ce681b2dea505b6a05edc5a6d161777cfb",
+        "raw_sha256": "df8845832076a2c209e23668430779ce681b2dea505b6a05edc5a6d161777cfb",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/screenplay-480-5daa9c3a38c3.webp",
+        "status": 200,
+        "expected_sha256": "5daa9c3a38c30b09132385cd98244562f8b65404030a899472137825d2a5b7fd",
+        "raw_sha256": "5daa9c3a38c30b09132385cd98244562f8b65404030a899472137825d2a5b7fd",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/screenplay-960-45b39a361e57.webp",
+        "status": 200,
+        "expected_sha256": "45b39a361e578529e158a5bb8954dedf2f7877f7908a25c080ba013219e37f58",
+        "raw_sha256": "45b39a361e578529e158a5bb8954dedf2f7877f7908a25c080ba013219e37f58",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/screenplay-1440-c0677abfc8e9.webp",
+        "status": 200,
+        "expected_sha256": "c0677abfc8e9292ffe11e3afafeb8cb8f3fee3e1433944e5b2cebd8529a7e1a4",
+        "raw_sha256": "c0677abfc8e9292ffe11e3afafeb8cb8f3fee3e1433944e5b2cebd8529a7e1a4",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/video-studio/",
+        "status": 200,
+        "expected_sha256": "ec9077b0f5a3065f200a807976c7af5ec3d6a0f5ef5de9c884a35806bb8be087",
+        "raw_sha256": "ec9077b0f5a3065f200a807976c7af5ec3d6a0f5ef5de9c884a35806bb8be087",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/video-studio/",
+        "status": 200,
+        "expected_sha256": "1d6cd30f75c63b27cf91ba2cc6cc218beca7ce6dbfaa6b4b7da7e33d23806baa",
+        "raw_sha256": "1d6cd30f75c63b27cf91ba2cc6cc218beca7ce6dbfaa6b4b7da7e33d23806baa",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/video-studio-480-5bb88250e76b.webp",
+        "status": 200,
+        "expected_sha256": "5bb88250e76b0bb170140e1653d0615c9d5e11c9c8ee4143f95735deca97642d",
+        "raw_sha256": "5bb88250e76b0bb170140e1653d0615c9d5e11c9c8ee4143f95735deca97642d",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/video-studio-960-c29c7b244a25.webp",
+        "status": 200,
+        "expected_sha256": "c29c7b244a25bf091838490798de4e672c6a3e4598315e9d7896ea42da168241",
+        "raw_sha256": "c29c7b244a25bf091838490798de4e672c6a3e4598315e9d7896ea42da168241",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/video-studio-1440-6319bf3ec8a8.webp",
+        "status": 200,
+        "expected_sha256": "6319bf3ec8a8c46c7e081a9e20922d61f901d5d667bb1a2a6ebd401d689ef439",
+        "raw_sha256": "6319bf3ec8a8c46c7e081a9e20922d61f901d5d667bb1a2a6ebd401d689ef439",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/director-stage/",
+        "status": 200,
+        "expected_sha256": "c29dff3df6944c60977b4fc8c3aa8e0d98260caf7e0a06b2312c2088550397bf",
+        "raw_sha256": "c29dff3df6944c60977b4fc8c3aa8e0d98260caf7e0a06b2312c2088550397bf",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/director-stage/",
+        "status": 200,
+        "expected_sha256": "bd3c3abcdaeeee0a4fbb91df89453ceea58e54d90bac3336829720eea4a94aa9",
+        "raw_sha256": "bd3c3abcdaeeee0a4fbb91df89453ceea58e54d90bac3336829720eea4a94aa9",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/director-stage-480-48994965338c.webp",
+        "status": 200,
+        "expected_sha256": "48994965338c1d4416367632c745ebdece578c2fbb6511a013c03c12794b62d5",
+        "raw_sha256": "48994965338c1d4416367632c745ebdece578c2fbb6511a013c03c12794b62d5",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/director-stage-960-0856ddfeb3c0.webp",
+        "status": 200,
+        "expected_sha256": "0856ddfeb3c0a82816c0fd98dc89f4ca667a1fbf9efa123fe071f930bcf8b120",
+        "raw_sha256": "0856ddfeb3c0a82816c0fd98dc89f4ca667a1fbf9efa123fe071f930bcf8b120",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/director-stage-1440-0851959c65d8.webp",
+        "status": 200,
+        "expected_sha256": "0851959c65d8697294cf371782ae7ca4b919a434bbdb80da23f2e1d98bf9d47d",
+        "raw_sha256": "0851959c65d8697294cf371782ae7ca4b919a434bbdb80da23f2e1d98bf9d47d",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/shanhai/",
+        "status": 200,
+        "expected_sha256": "be2973385119177796c02d5e3afdd4d1fd8c514168fd8449a45e6d7b962e9fa5",
+        "raw_sha256": "be2973385119177796c02d5e3afdd4d1fd8c514168fd8449a45e6d7b962e9fa5",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/shanhai/",
+        "status": 200,
+        "expected_sha256": "8fdf79c361e11b45d7f5eaee45509bf22d4b301ec5506a74a536cd65588a994d",
+        "raw_sha256": "8fdf79c361e11b45d7f5eaee45509bf22d4b301ec5506a74a536cd65588a994d",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/shanhai-480-266692672679.webp",
+        "status": 200,
+        "expected_sha256": "2666926726793bd88115e9ec6f7a027fa31c9d5b063a737746ba1f28c7f96263",
+        "raw_sha256": "2666926726793bd88115e9ec6f7a027fa31c9d5b063a737746ba1f28c7f96263",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/shanhai-960-4423d3d42d11.webp",
+        "status": 200,
+        "expected_sha256": "4423d3d42d111854c9eb434e757d820f5fa62e3744ff95ace911da4061cac82e",
+        "raw_sha256": "4423d3d42d111854c9eb434e757d820f5fa62e3744ff95ace911da4061cac82e",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/shanhai-1440-14b8e908aac1.webp",
+        "status": 200,
+        "expected_sha256": "14b8e908aac1b5f67f30bb03e56e0729afed70358a08e2fb7666b064735c9156",
+        "raw_sha256": "14b8e908aac1b5f67f30bb03e56e0729afed70358a08e2fb7666b064735c9156",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/prose-studio/",
+        "status": 200,
+        "expected_sha256": "efef0abbc7dc303e70c661aa2c371d03912cb0170e460490fc93d15926fb81c6",
+        "raw_sha256": "efef0abbc7dc303e70c661aa2c371d03912cb0170e460490fc93d15926fb81c6",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/prose-studio/",
+        "status": 200,
+        "expected_sha256": "f8247b3db0745c9adc5ac586be307ad2b0f7f3e2f09ce51a690e1e33491fc785",
+        "raw_sha256": "f8247b3db0745c9adc5ac586be307ad2b0f7f3e2f09ce51a690e1e33491fc785",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/prose-studio-480-2efb3ba5f3d6.webp",
+        "status": 200,
+        "expected_sha256": "2efb3ba5f3d6eb6224fd3161f08498d6fb8de445cf76f431268d89d19226c4e9",
+        "raw_sha256": "2efb3ba5f3d6eb6224fd3161f08498d6fb8de445cf76f431268d89d19226c4e9",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/prose-studio-960-34cd899908ff.webp",
+        "status": 200,
+        "expected_sha256": "34cd899908ffa9200b84fea4bf0ce579193c6e0eedecf4d5525aa3a08bff4aa3",
+        "raw_sha256": "34cd899908ffa9200b84fea4bf0ce579193c6e0eedecf4d5525aa3a08bff4aa3",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/prose-studio-1440-4cb1fe6ee908.webp",
+        "status": 200,
+        "expected_sha256": "4cb1fe6ee9086d472830fcd6b7cab3a1fcbdb6e3ae248a06018f72f5d10963b2",
+        "raw_sha256": "4cb1fe6ee9086d472830fcd6b7cab3a1fcbdb6e3ae248a06018f72f5d10963b2",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/novel-review/",
+        "status": 200,
+        "expected_sha256": "af9b3246c455151598e7646c6382918d3f191007739e179e6603a09c3a2a00dc",
+        "raw_sha256": "af9b3246c455151598e7646c6382918d3f191007739e179e6603a09c3a2a00dc",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/novel-review/",
+        "status": 200,
+        "expected_sha256": "3415d719b6d28ef5da9052d3b7406f653d17a20677bb87a5c81f188e79b7ea02",
+        "raw_sha256": "3415d719b6d28ef5da9052d3b7406f653d17a20677bb87a5c81f188e79b7ea02",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/novel-review-480-10324e1e84e8.webp",
+        "status": 200,
+        "expected_sha256": "10324e1e84e8182f26fd8f5d66f3c4530db3892370d5396e97e23aa6122f8bf7",
+        "raw_sha256": "10324e1e84e8182f26fd8f5d66f3c4530db3892370d5396e97e23aa6122f8bf7",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/novel-review-960-29e9bf725594.webp",
+        "status": 200,
+        "expected_sha256": "29e9bf725594c3570d0d7d581f03cbd8ea349c0f26548b02160b04bc7f70d2f3",
+        "raw_sha256": "29e9bf725594c3570d0d7d581f03cbd8ea349c0f26548b02160b04bc7f70d2f3",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/novel-review-1440-8cacbdc0e9ad.webp",
+        "status": 200,
+        "expected_sha256": "8cacbdc0e9ad2709e7085823dab6b4df4ba2cc111ca33289b6dc3449f3e2dbf0",
+        "raw_sha256": "8cacbdc0e9ad2709e7085823dab6b4df4ba2cc111ca33289b6dc3449f3e2dbf0",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/novel-atlas/",
+        "status": 200,
+        "expected_sha256": "bab7a876b355dff7ca5b7014bc060d692899cb915d377d9dd6f959b23f79d2ae",
+        "raw_sha256": "bab7a876b355dff7ca5b7014bc060d692899cb915d377d9dd6f959b23f79d2ae",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/novel-atlas/",
+        "status": 200,
+        "expected_sha256": "d57da877bbe27c6586e732913ee787d8e66cee98c6aa30ef4f8653e5589721db",
+        "raw_sha256": "d57da877bbe27c6586e732913ee787d8e66cee98c6aa30ef4f8653e5589721db",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/novel-atlas-480-38addf5991a3.webp",
+        "status": 200,
+        "expected_sha256": "38addf5991a3f934bd304f35e5e39144af094d2e0ed3d294e5ff06a1d14e8ce0",
+        "raw_sha256": "38addf5991a3f934bd304f35e5e39144af094d2e0ed3d294e5ff06a1d14e8ce0",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/novel-atlas-960-c5d6b7c32c86.webp",
+        "status": 200,
+        "expected_sha256": "c5d6b7c32c860c254975cfa709b78efe9a66c43c45e9fa4754cf49a63903d006",
+        "raw_sha256": "c5d6b7c32c860c254975cfa709b78efe9a66c43c45e9fa4754cf49a63903d006",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/novel-atlas-1440-3c615f78c948.webp",
+        "status": 200,
+        "expected_sha256": "3c615f78c948a3cc13de023829d4583d28d9765b1f36c74b9d0a5320afb44bc2",
+        "raw_sha256": "3c615f78c948a3cc13de023829d4583d28d9765b1f36c74b9d0a5320afb44bc2",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/novel-planner/",
+        "status": 200,
+        "expected_sha256": "73d4aa6a9efac63763c352181a4e47fcd9f56209656ad83f86f2a339b1d6c599",
+        "raw_sha256": "73d4aa6a9efac63763c352181a4e47fcd9f56209656ad83f86f2a339b1d6c599",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/novel-planner/",
+        "status": 200,
+        "expected_sha256": "af62edc50f70563e0b1e575bb92061c89f56a20ff57e9e6c3af8e6242e7710cc",
+        "raw_sha256": "af62edc50f70563e0b1e575bb92061c89f56a20ff57e9e6c3af8e6242e7710cc",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/novel-planner-480-20b9540c8bab.webp",
+        "status": 200,
+        "expected_sha256": "20b9540c8bab709be07691879d28e2ccf152fe75ba16a13942290b4815dfb5a6",
+        "raw_sha256": "20b9540c8bab709be07691879d28e2ccf152fe75ba16a13942290b4815dfb5a6",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/novel-planner-960-ff6899cfcb74.webp",
+        "status": 200,
+        "expected_sha256": "ff6899cfcb747f85895c046f0abc0fbc19d7ea9859d87afb48a4ff180db7cd5a",
+        "raw_sha256": "ff6899cfcb747f85895c046f0abc0fbc19d7ea9859d87afb48a4ff180db7cd5a",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/novel-planner-1440-ba79bf7c578f.webp",
+        "status": 200,
+        "expected_sha256": "ba79bf7c578fa817d34438acb57c40e3d3f88482bf2e240ee6157d6627c476f5",
+        "raw_sha256": "ba79bf7c578fa817d34438acb57c40e3d3f88482bf2e240ee6157d6627c476f5",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/story-research/",
+        "status": 200,
+        "expected_sha256": "4b1740bc14b8be664da4f4d7b34655b8756cb5d49c1765b52d50c8297517ad48",
+        "raw_sha256": "4b1740bc14b8be664da4f4d7b34655b8756cb5d49c1765b52d50c8297517ad48",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/story-research/",
+        "status": 200,
+        "expected_sha256": "8c469d1a0f935df1f886125e951687682bb58132b99cb4d817f222edbc3b426e",
+        "raw_sha256": "8c469d1a0f935df1f886125e951687682bb58132b99cb4d817f222edbc3b426e",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/story-research-480-3329f948572f.webp",
+        "status": 200,
+        "expected_sha256": "3329f948572f1765c468f7cd6438afbefa5842de40b8f721b2737b22c560fa9a",
+        "raw_sha256": "3329f948572f1765c468f7cd6438afbefa5842de40b8f721b2737b22c560fa9a",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/story-research-960-feda564eb5ce.webp",
+        "status": 200,
+        "expected_sha256": "feda564eb5ce97518746fa3635b5da024212af8b5d27875cfefbade600ac6cfa",
+        "raw_sha256": "feda564eb5ce97518746fa3635b5da024212af8b5d27875cfefbade600ac6cfa",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/story-research-1440-f2cf90434b75.webp",
+        "status": 200,
+        "expected_sha256": "f2cf90434b7541e5b321651b8c8055f4106b770f13c510b45b4841d520809eac",
+        "raw_sha256": "f2cf90434b7541e5b321651b8c8055f4106b770f13c510b45b4841d520809eac",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/character-lab/",
+        "status": 200,
+        "expected_sha256": "a959302346983a2ae06ff1cc484d555a4fe0b477c9398a865e565377c4f99c64",
+        "raw_sha256": "a959302346983a2ae06ff1cc484d555a4fe0b477c9398a865e565377c4f99c64",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/character-lab/",
+        "status": 200,
+        "expected_sha256": "c3c344437d65693a450304cdd304884f41d36841c47ac2b581e88dc636551da4",
+        "raw_sha256": "c3c344437d65693a450304cdd304884f41d36841c47ac2b581e88dc636551da4",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/character-lab-480-5b6256828d76.webp",
+        "status": 200,
+        "expected_sha256": "5b6256828d76138ea5335d613a50c0c0a177689e4d39d856d5a4fe775088ebbd",
+        "raw_sha256": "5b6256828d76138ea5335d613a50c0c0a177689e4d39d856d5a4fe775088ebbd",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/character-lab-960-0f7d0b90ea1b.webp",
+        "status": 200,
+        "expected_sha256": "0f7d0b90ea1bb788ab163ba03dd84c4ca677b058248cc003ee628d5f585dd990",
+        "raw_sha256": "0f7d0b90ea1bb788ab163ba03dd84c4ca677b058248cc003ee628d5f585dd990",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/character-lab-1440-2a5cca2c8caa.webp",
+        "status": 200,
+        "expected_sha256": "2a5cca2c8caa57dbb7db3bb80de7d27e3dc63bb30ebb07295d9f434e9ce5ca0c",
+        "raw_sha256": "2a5cca2c8caa57dbb7db3bb80de7d27e3dc63bb30ebb07295d9f434e9ce5ca0c",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/story-analysis/",
+        "status": 200,
+        "expected_sha256": "86d3c9a07367c091f2088f0d6859e1c0173053ca0170aa1c8fad8c37f54aa245",
+        "raw_sha256": "86d3c9a07367c091f2088f0d6859e1c0173053ca0170aa1c8fad8c37f54aa245",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/story-analysis/",
+        "status": 200,
+        "expected_sha256": "5f592436232ec5ff85ca358eb6ac859b1a87b3b233991d79b686593f213cbef3",
+        "raw_sha256": "5f592436232ec5ff85ca358eb6ac859b1a87b3b233991d79b686593f213cbef3",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/story-analysis-480-8e789e559f7d.webp",
+        "status": 200,
+        "expected_sha256": "8e789e559f7defe164afbcc7ac1ba335b6e75c29f28153fc2fc52191468bac8d",
+        "raw_sha256": "8e789e559f7defe164afbcc7ac1ba335b6e75c29f28153fc2fc52191468bac8d",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/story-analysis-960-1f56e50c2d91.webp",
+        "status": 200,
+        "expected_sha256": "1f56e50c2d9125b05d7111699070669d05a8f98dcec331571b1d5d3d6c1022c1",
+        "raw_sha256": "1f56e50c2d9125b05d7111699070669d05a8f98dcec331571b1d5d3d6c1022c1",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/story-analysis-1440-f81a47f14049.webp",
+        "status": 200,
+        "expected_sha256": "f81a47f14049f03f35db3f73fb0bec1528f026e4f185eec3d77f65a5d59985db",
+        "raw_sha256": "f81a47f14049f03f35db3f73fb0bec1528f026e4f185eec3d77f65a5d59985db",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/lorebook-bridge/",
+        "status": 200,
+        "expected_sha256": "4818fa44b2ce91857fab39f21f471dd6b4f634fd1c2ce981e4d364b861ef88e0",
+        "raw_sha256": "4818fa44b2ce91857fab39f21f471dd6b4f634fd1c2ce981e4d364b861ef88e0",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/lorebook-bridge/",
+        "status": 200,
+        "expected_sha256": "914f82507cd94c1565a61dd382950a641eb2d77a556e8635989a822ee3b51a7a",
+        "raw_sha256": "914f82507cd94c1565a61dd382950a641eb2d77a556e8635989a822ee3b51a7a",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/lorebook-bridge-480-c191031c3256.webp",
+        "status": 200,
+        "expected_sha256": "c191031c32569de700e31194f48a456a3b67ccce451e4930f6059320b7f52e25",
+        "raw_sha256": "c191031c32569de700e31194f48a456a3b67ccce451e4930f6059320b7f52e25",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/lorebook-bridge-960-e57540d365d4.webp",
+        "status": 200,
+        "expected_sha256": "e57540d365d40b9bfcf697a1dcdd639b53f7ecdc38993f46a84217851e1cfc45",
+        "raw_sha256": "e57540d365d40b9bfcf697a1dcdd639b53f7ecdc38993f46a84217851e1cfc45",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/lorebook-bridge-1440-6bfd0ce005e9.webp",
+        "status": 200,
+        "expected_sha256": "6bfd0ce005e91cb9389e8f6a35e3ce3b4d35d147c20c0560943eca3635f604d3",
+        "raw_sha256": "6bfd0ce005e91cb9389e8f6a35e3ce3b4d35d147c20c0560943eca3635f604d3",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/interactive-fiction/",
+        "status": 200,
+        "expected_sha256": "42d06525797d871231f4142626443f3a5560657eabbfed8f9f618fc70bde6944",
+        "raw_sha256": "42d06525797d871231f4142626443f3a5560657eabbfed8f9f618fc70bde6944",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/interactive-fiction/",
+        "status": 200,
+        "expected_sha256": "fdb828e24f5f533fc2e90298f5dfe6d578ad0043ee4bc8677c1ac7b6a922d392",
+        "raw_sha256": "fdb828e24f5f533fc2e90298f5dfe6d578ad0043ee4bc8677c1ac7b6a922d392",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/interactive-fiction-480-6ea9d54c505b.webp",
+        "status": 200,
+        "expected_sha256": "6ea9d54c505b115fff27445ecd97db5e4381d1f1664210211f5578702865dd09",
+        "raw_sha256": "6ea9d54c505b115fff27445ecd97db5e4381d1f1664210211f5578702865dd09",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/interactive-fiction-960-8b96176be094.webp",
+        "status": 200,
+        "expected_sha256": "8b96176be0949dfbc0f63f3088c91613160fa6bc24cb9ed89a0b80dc52d5f0e2",
+        "raw_sha256": "8b96176be0949dfbc0f63f3088c91613160fa6bc24cb9ed89a0b80dc52d5f0e2",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/interactive-fiction-1440-b7632c5aaccc.webp",
+        "status": 200,
+        "expected_sha256": "b7632c5aacccaad7729554b524d0c359d282a22950f83177f39817f0bf5366ef",
+        "raw_sha256": "b7632c5aacccaad7729554b524d0c359d282a22950f83177f39817f0bf5366ef",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/series-organizer/",
+        "status": 200,
+        "expected_sha256": "335e4d988aa802125eb89a6d078e2b19cfdec09ca761e0e6d4dcad41c9c1c66b",
+        "raw_sha256": "335e4d988aa802125eb89a6d078e2b19cfdec09ca761e0e6d4dcad41c9c1c66b",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/series-organizer/",
+        "status": 200,
+        "expected_sha256": "43762303995c6d6d7a97d3eb5b3e263d199eb70a562a22abe54450d1b7a19854",
+        "raw_sha256": "43762303995c6d6d7a97d3eb5b3e263d199eb70a562a22abe54450d1b7a19854",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/series-organizer-480-23ea43ddb5c3.webp",
+        "status": 200,
+        "expected_sha256": "23ea43ddb5c3e1ba94529998ef69dd7232acf8f1caed77a99784317ce8cac081",
+        "raw_sha256": "23ea43ddb5c3e1ba94529998ef69dd7232acf8f1caed77a99784317ce8cac081",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/series-organizer-960-92448dede855.webp",
+        "status": 200,
+        "expected_sha256": "92448dede855a14ad793be3e0be8c02b4d6d1a98acc8d94749d80d462994a7fe",
+        "raw_sha256": "92448dede855a14ad793be3e0be8c02b4d6d1a98acc8d94749d80d462994a7fe",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/series-organizer-1440-a597743391c3.webp",
+        "status": 200,
+        "expected_sha256": "a597743391c399d4d6bd633bd8bacc904051dcbca0515a56b2c4c6864eba42b7",
+        "raw_sha256": "a597743391c399d4d6bd633bd8bacc904051dcbca0515a56b2c4c6864eba42b7",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/story-translation/",
+        "status": 200,
+        "expected_sha256": "fb96d6af6259a7644007da58f946ec28866b85650b189607bac82a9186867f33",
+        "raw_sha256": "fb96d6af6259a7644007da58f946ec28866b85650b189607bac82a9186867f33",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/story-translation/",
+        "status": 200,
+        "expected_sha256": "e34ffde7138fe5f97359e0b2d0f61347fb4cbf887db13cadafd1cd4b92470424",
+        "raw_sha256": "e34ffde7138fe5f97359e0b2d0f61347fb4cbf887db13cadafd1cd4b92470424",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/story-translation-480-75242ae8477e.webp",
+        "status": 200,
+        "expected_sha256": "75242ae8477e60eb478c49fc295ee6e243f4d429150fd9e6ef24867ea3818e02",
+        "raw_sha256": "75242ae8477e60eb478c49fc295ee6e243f4d429150fd9e6ef24867ea3818e02",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/story-translation-960-0e6a6fa950ee.webp",
+        "status": 200,
+        "expected_sha256": "0e6a6fa950ee4042ce95add9cd194d8e1ff646777b089540e3f8f10a41b86644",
+        "raw_sha256": "0e6a6fa950ee4042ce95add9cd194d8e1ff646777b089540e3f8f10a41b86644",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/story-translation-1440-a3f77d81fabd.webp",
+        "status": 200,
+        "expected_sha256": "a3f77d81fabde743082ef8789489bbbec780c8d61f736c4471df442db3b4b1d6",
+        "raw_sha256": "a3f77d81fabde743082ef8789489bbbec780c8d61f736c4471df442db3b4b1d6",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/readthrough/",
+        "status": 200,
+        "expected_sha256": "ada72d02646ac2160608a791251edb144731c40a39e63bef5c3efea32127b416",
+        "raw_sha256": "ada72d02646ac2160608a791251edb144731c40a39e63bef5c3efea32127b416",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/readthrough/",
+        "status": 200,
+        "expected_sha256": "a1d470eab80819f98e75bf644d10e638b4f14f6c28f390983560f663989356c4",
+        "raw_sha256": "a1d470eab80819f98e75bf644d10e638b4f14f6c28f390983560f663989356c4",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/readthrough-480-5e09dae4a13c.webp",
+        "status": 200,
+        "expected_sha256": "5e09dae4a13ccc685272090383e81b1eb21e05edef812ef71efbf16f3d523e1c",
+        "raw_sha256": "5e09dae4a13ccc685272090383e81b1eb21e05edef812ef71efbf16f3d523e1c",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/readthrough-960-e652db808950.webp",
+        "status": 200,
+        "expected_sha256": "e652db808950347ed0dd6e09e6baf3cb75a9cb6365e2484c8fc8c58d24921289",
+        "raw_sha256": "e652db808950347ed0dd6e09e6baf3cb75a9cb6365e2484c8fc8c58d24921289",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/readthrough-1440-49b2b6cd94ef.webp",
+        "status": 200,
+        "expected_sha256": "49b2b6cd94ef40a1c22355b23d082be65a105792746b2d440f3e17d9ce5c6962",
+        "raw_sha256": "49b2b6cd94ef40a1c22355b23d082be65a105792746b2d440f3e17d9ce5c6962",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/book-export/",
+        "status": 200,
+        "expected_sha256": "42472af95480c5f8e20078e6a330ea71a4da0d495799814814067f9e64b5241c",
+        "raw_sha256": "42472af95480c5f8e20078e6a330ea71a4da0d495799814814067f9e64b5241c",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/book-export/",
+        "status": 200,
+        "expected_sha256": "36eec4c91380bcd8a749f382ca1e2c74c748ce18f97dc31dc2af10df0bb190da",
+        "raw_sha256": "36eec4c91380bcd8a749f382ca1e2c74c748ce18f97dc31dc2af10df0bb190da",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/book-export-480-e705247a3b2f.webp",
+        "status": 200,
+        "expected_sha256": "e705247a3b2f15c8aa5b6d337db170801a6115f57dc4937701fbbbb69e61ba10",
+        "raw_sha256": "e705247a3b2f15c8aa5b6d337db170801a6115f57dc4937701fbbbb69e61ba10",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/book-export-960-8e352c17ae06.webp",
+        "status": 200,
+        "expected_sha256": "8e352c17ae062ca519ede6af51011d0eccb7b991667e42186c5a1ffd43652962",
+        "raw_sha256": "8e352c17ae062ca519ede6af51011d0eccb7b991667e42186c5a1ffd43652962",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/book-export-1440-07bc83a3d5b3.webp",
+        "status": 200,
+        "expected_sha256": "07bc83a3d5b3a9d0058ef26ca55f198551677f6319814a56eb1cdac163ebf523",
+        "raw_sha256": "07bc83a3d5b3a9d0058ef26ca55f198551677f6319814a56eb1cdac163ebf523",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/adaptation-studio/",
+        "status": 200,
+        "expected_sha256": "5653b44778d89400e03c08ffee22021e1a8f1f6bbc45703cc6522e72fbf19c10",
+        "raw_sha256": "5653b44778d89400e03c08ffee22021e1a8f1f6bbc45703cc6522e72fbf19c10",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/adaptation-studio/",
+        "status": 200,
+        "expected_sha256": "0ce3aa4f5a17b89e92e7d36636ab7284c65edc6f9b5496a56a7d08c5faa3b69b",
+        "raw_sha256": "0ce3aa4f5a17b89e92e7d36636ab7284c65edc6f9b5496a56a7d08c5faa3b69b",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/adaptation-studio-480-545264766b6e.webp",
+        "status": 200,
+        "expected_sha256": "545264766b6efbfeea2138887013cd500bb7e58294fe2f7dc5f48fc6238b6d0d",
+        "raw_sha256": "545264766b6efbfeea2138887013cd500bb7e58294fe2f7dc5f48fc6238b6d0d",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/adaptation-studio-960-17c51e6124d2.webp",
+        "status": 200,
+        "expected_sha256": "17c51e6124d2b7b090a101e685ba3849af6fe47cfe39a0082d06128bb368c466",
+        "raw_sha256": "17c51e6124d2b7b090a101e685ba3849af6fe47cfe39a0082d06128bb368c466",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/adaptation-studio-1440-d35337ca95ad.webp",
+        "status": 200,
+        "expected_sha256": "d35337ca95adbc0de13ecb025ecf261c737dc8c1b8b63f6677d96ceef42e9763",
+        "raw_sha256": "d35337ca95adbc0de13ecb025ecf261c737dc8c1b8b63f6677d96ceef42e9763",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/reader-review/",
+        "status": 200,
+        "expected_sha256": "119700516996f5362db16d7a7696ba692f16010e2ce1e61163e43676f88ef353",
+        "raw_sha256": "119700516996f5362db16d7a7696ba692f16010e2ce1e61163e43676f88ef353",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/reader-review/",
+        "status": 200,
+        "expected_sha256": "b4755a9609ee4855c071bea23b646f6a00bcf4bee52a3dc10413aaf414da1185",
+        "raw_sha256": "b4755a9609ee4855c071bea23b646f6a00bcf4bee52a3dc10413aaf414da1185",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/reader-review-480-b0429bdfab48.webp",
+        "status": 200,
+        "expected_sha256": "b0429bdfab4891c61b558b51701f898d8bceb6b4f8c897d68329933563bfdf47",
+        "raw_sha256": "b0429bdfab4891c61b558b51701f898d8bceb6b4f8c897d68329933563bfdf47",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/reader-review-960-e6a17ced11e6.webp",
+        "status": 200,
+        "expected_sha256": "e6a17ced11e64c5b078a539f694a255d3acb38c767baf323f9a7356fcf248987",
+        "raw_sha256": "e6a17ced11e64c5b078a539f694a255d3acb38c767baf323f9a7356fcf248987",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/reader-review-1440-8305b0ba6432.webp",
+        "status": 200,
+        "expected_sha256": "8305b0ba6432949c394d27da1055eaccfdee19a6f86007d68b0e38c9647d7f3d",
+        "raw_sha256": "8305b0ba6432949c394d27da1055eaccfdee19a6f86007d68b0e38c9647d7f3d",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/comic-studio/",
+        "status": 200,
+        "expected_sha256": "1167cabf5985f5c97e60ea0f49663da86d27327d6d2a41d739301dcd9f23b1ed",
+        "raw_sha256": "1167cabf5985f5c97e60ea0f49663da86d27327d6d2a41d739301dcd9f23b1ed",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/comic-studio/",
+        "status": 200,
+        "expected_sha256": "86191487f15c76b28b7e5c1319ca88c470b9b0c7d9d052e3e06baafa6597517a",
+        "raw_sha256": "86191487f15c76b28b7e5c1319ca88c470b9b0c7d9d052e3e06baafa6597517a",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/comic-studio-480-0fb33749370e.webp",
+        "status": 200,
+        "expected_sha256": "0fb33749370ed9261058f717d7c44111f59ed7bea899ce03b8dcf6ddc12d07d4",
+        "raw_sha256": "0fb33749370ed9261058f717d7c44111f59ed7bea899ce03b8dcf6ddc12d07d4",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/comic-studio-960-9445c2b44a21.webp",
+        "status": 200,
+        "expected_sha256": "9445c2b44a21de073dbb6947b57de05c318a4c070f332a7531f0b57dbb6d8246",
+        "raw_sha256": "9445c2b44a21de073dbb6947b57de05c318a4c070f332a7531f0b57dbb6d8246",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/comic-studio-1440-ffa4ec0f3982.webp",
+        "status": 200,
+        "expected_sha256": "ffa4ec0f3982c2799adbf070c2bbd09ecea23779337eded8e3525a3b6604b555",
+        "raw_sha256": "ffa4ec0f3982c2799adbf070c2bbd09ecea23779337eded8e3525a3b6604b555",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/audio-drama/",
+        "status": 200,
+        "expected_sha256": "1f2edc7ecdae3c54137892426e029c925c9277a3aabecf65ca52fd2722e33fd6",
+        "raw_sha256": "1f2edc7ecdae3c54137892426e029c925c9277a3aabecf65ca52fd2722e33fd6",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/audio-drama/",
+        "status": 200,
+        "expected_sha256": "69009c422816e69da9e2386473f5c39ec9d30ead9feb6ce9d0e0a0c2b9be5781",
+        "raw_sha256": "69009c422816e69da9e2386473f5c39ec9d30ead9feb6ce9d0e0a0c2b9be5781",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/audio-drama-480-f40cf02fe932.webp",
+        "status": 200,
+        "expected_sha256": "f40cf02fe9329bc11b95d7ae76f34b1a6466816e89e8ce742e4bbae79eae7ef5",
+        "raw_sha256": "f40cf02fe9329bc11b95d7ae76f34b1a6466816e89e8ce742e4bbae79eae7ef5",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/audio-drama-960-2e80d70e9777.webp",
+        "status": 200,
+        "expected_sha256": "2e80d70e977744788e7d2f8c4e3d0681801cdf0c59cbd3d94ed5dd47c83d8a70",
+        "raw_sha256": "2e80d70e977744788e7d2f8c4e3d0681801cdf0c59cbd3d94ed5dd47c83d8a70",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/audio-drama-1440-beb5a79792dd.webp",
+        "status": 200,
+        "expected_sha256": "beb5a79792ddfc83ae9cd104c20a19825945a8f3fa332106f144949c0f195fb1",
+        "raw_sha256": "beb5a79792ddfc83ae9cd104c20a19825945a8f3fa332106f144949c0f195fb1",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/world-studio/",
+        "status": 200,
+        "expected_sha256": "234516d4475892712965d77624b1a99cc1129bcc7ec43cb5c183e389d1b25814",
+        "raw_sha256": "234516d4475892712965d77624b1a99cc1129bcc7ec43cb5c183e389d1b25814",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/world-studio/",
+        "status": 200,
+        "expected_sha256": "85761aab795ebffeb1f6360923eb7924cb796774fafbb1d7b9e94db5b0ad679a",
+        "raw_sha256": "85761aab795ebffeb1f6360923eb7924cb796774fafbb1d7b9e94db5b0ad679a",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/world-studio-480-b5173fd127a6.webp",
+        "status": 200,
+        "expected_sha256": "b5173fd127a6a4edf758f765757d1dc736328cd40bcfb7935f7b895ec2e2dc26",
+        "raw_sha256": "b5173fd127a6a4edf758f765757d1dc736328cd40bcfb7935f7b895ec2e2dc26",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/world-studio-960-61965f2fe32b.webp",
+        "status": 200,
+        "expected_sha256": "61965f2fe32ba4bfb14c8bfdf177e6b1861061e4e9887fe5d9e442686fc82db4",
+        "raw_sha256": "61965f2fe32ba4bfb14c8bfdf177e6b1861061e4e9887fe5d9e442686fc82db4",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/world-studio-1440-38551c886446.webp",
+        "status": 200,
+        "expected_sha256": "38551c886446773bc986c6f3700b1bc51ace9ace272a3fe2ddc048959a212996",
+        "raw_sha256": "38551c886446773bc986c6f3700b1bc51ace9ace272a3fe2ddc048959a212996",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/mystery-lab/",
+        "status": 200,
+        "expected_sha256": "575d665fa5965da2ef951375ccad3c9b76734b11341d6c5f5e7cfd1ad23ec46e",
+        "raw_sha256": "575d665fa5965da2ef951375ccad3c9b76734b11341d6c5f5e7cfd1ad23ec46e",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/mystery-lab/",
+        "status": 200,
+        "expected_sha256": "637fdc6c579bcf50dcc06d2c463d0666da8f32f6b860addc4217dafef798c646",
+        "raw_sha256": "637fdc6c579bcf50dcc06d2c463d0666da8f32f6b860addc4217dafef798c646",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/mystery-lab-480-efde9e93f36a.webp",
+        "status": 200,
+        "expected_sha256": "efde9e93f36a7d48755a77d508b2b16b2c89151bf26770be7bb6628388b524f0",
+        "raw_sha256": "efde9e93f36a7d48755a77d508b2b16b2c89151bf26770be7bb6628388b524f0",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/mystery-lab-960-6b3e73b6851b.webp",
+        "status": 200,
+        "expected_sha256": "6b3e73b6851bb8b71570613305ad0bb6e3d77f87fa6a4a5e223436ee7e479e32",
+        "raw_sha256": "6b3e73b6851bb8b71570613305ad0bb6e3d77f87fa6a4a5e223436ee7e479e32",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/mystery-lab-1440-e94e234cb9fe.webp",
+        "status": 200,
+        "expected_sha256": "e94e234cb9feaa1bfa1ec73c461c29e28a4fe0c7f5fd8028956c7eb101b7e05b",
+        "raw_sha256": "e94e234cb9feaa1bfa1ec73c461c29e28a4fe0c7f5fd8028956c7eb101b7e05b",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/art-direction/",
+        "status": 200,
+        "expected_sha256": "20fd8f53bf4ccb0e7fc0ceba1ac0c6c20ed2b8f37eb0408d1e1cd7bcbdcb3dec",
+        "raw_sha256": "20fd8f53bf4ccb0e7fc0ceba1ac0c6c20ed2b8f37eb0408d1e1cd7bcbdcb3dec",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/art-direction/",
+        "status": 200,
+        "expected_sha256": "c2568e1168fa98d75a108c3512f55cda62601eb0b5473d59ca6dcff77303b51b",
+        "raw_sha256": "c2568e1168fa98d75a108c3512f55cda62601eb0b5473d59ca6dcff77303b51b",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/art-direction-480-eddbc0d8d1f1.webp",
+        "status": 200,
+        "expected_sha256": "eddbc0d8d1f1bb53b501115643ad101a866adae41745fab016965566bd1f4560",
+        "raw_sha256": "eddbc0d8d1f1bb53b501115643ad101a866adae41745fab016965566bd1f4560",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/art-direction-960-ae5ed7710972.webp",
+        "status": 200,
+        "expected_sha256": "ae5ed771097207d57425b52836d854ea496568b67934b132403d7e758c0a6969",
+        "raw_sha256": "ae5ed771097207d57425b52836d854ea496568b67934b132403d7e758c0a6969",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/art-direction-1440-9e8df4ad2e31.webp",
+        "status": 200,
+        "expected_sha256": "9e8df4ad2e316a1376661976ed81680db39d75dad839c2a68293e21c3edb63b4",
+        "raw_sha256": "9e8df4ad2e316a1376661976ed81680db39d75dad839c2a68293e21c3edb63b4",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/subtitle-studio/",
+        "status": 200,
+        "expected_sha256": "f8f8d5cf453d7bc30437a3b6bfa4228600af0e336cac2dbe216d71508d038a85",
+        "raw_sha256": "f8f8d5cf453d7bc30437a3b6bfa4228600af0e336cac2dbe216d71508d038a85",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/subtitle-studio/",
+        "status": 200,
+        "expected_sha256": "581986ac6a83907fdfbdd83aaee418afe82c8055ab3c66e26564cd1b33ffc0dc",
+        "raw_sha256": "581986ac6a83907fdfbdd83aaee418afe82c8055ab3c66e26564cd1b33ffc0dc",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/subtitle-studio-480-56b9d5772c00.webp",
+        "status": 200,
+        "expected_sha256": "56b9d5772c004e897eb53f8a5870db4ffd57885e062f740ec0e72e07ce9e0b72",
+        "raw_sha256": "56b9d5772c004e897eb53f8a5870db4ffd57885e062f740ec0e72e07ce9e0b72",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/subtitle-studio-960-67254c4d884e.webp",
+        "status": 200,
+        "expected_sha256": "67254c4d884e48ce0c15d55c6c4618ac909e767c5b6d96e1818c73cc4d665cb3",
+        "raw_sha256": "67254c4d884e48ce0c15d55c6c4618ac909e767c5b6d96e1818c73cc4d665cb3",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/subtitle-studio-1440-19266ad5786e.webp",
+        "status": 200,
+        "expected_sha256": "19266ad5786ebf52aee1a70206fb2171902c4e98f0b04f8fa2360ad47ece2fe2",
+        "raw_sha256": "19266ad5786ebf52aee1a70206fb2171902c4e98f0b04f8fa2360ad47ece2fe2",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/picturebook/",
+        "status": 200,
+        "expected_sha256": "225d8384d4ef6ce4847092d856735cb0fd8acc6f58d4f5b0367f43dc92d2251b",
+        "raw_sha256": "225d8384d4ef6ce4847092d856735cb0fd8acc6f58d4f5b0367f43dc92d2251b",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/picturebook/",
+        "status": 200,
+        "expected_sha256": "bc2dae11101ea7f9bdfb5000ff84d69684713e70768397315d1adad8e4bc701d",
+        "raw_sha256": "bc2dae11101ea7f9bdfb5000ff84d69684713e70768397315d1adad8e4bc701d",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/picturebook-480-03a4881285f4.webp",
+        "status": 200,
+        "expected_sha256": "03a4881285f4d901c335325c7c7f870b340f62ee801e8cd65109690e1623d2dd",
+        "raw_sha256": "03a4881285f4d901c335325c7c7f870b340f62ee801e8cd65109690e1623d2dd",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/picturebook-960-ae87693981f5.webp",
+        "status": 200,
+        "expected_sha256": "ae87693981f596d981de9494554d58323edc959af0f3a13c96497f52488ce028",
+        "raw_sha256": "ae87693981f596d981de9494554d58323edc959af0f3a13c96497f52488ce028",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/picturebook-1440-6ae6c456075d.webp",
+        "status": 200,
+        "expected_sha256": "6ae6c456075d43a49c40a7ec11c68ffe4e58080c18677ed3c79ef8a08ae88a69",
+        "raw_sha256": "6ae6c456075d43a49c40a7ec11c68ffe4e58080c18677ed3c79ef8a08ae88a69",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/murder-mystery/",
+        "status": 200,
+        "expected_sha256": "b1e596a61ce6cffa49c2d1cb1a5318bf6f69f8f2c5a014d7be1ea3e05debf0d0",
+        "raw_sha256": "b1e596a61ce6cffa49c2d1cb1a5318bf6f69f8f2c5a014d7be1ea3e05debf0d0",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/murder-mystery/",
+        "status": 200,
+        "expected_sha256": "86f8926f6733d809b73121cb7c72a5b26d85193ba7a3c8d50a0d618c0077f5d6",
+        "raw_sha256": "86f8926f6733d809b73121cb7c72a5b26d85193ba7a3c8d50a0d618c0077f5d6",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/murder-mystery-480-8dc2dd7229fd.webp",
+        "status": 200,
+        "expected_sha256": "8dc2dd7229fda98a5ec1689082f3048b870552c96eaacb15383fbb5ed2d0bd63",
+        "raw_sha256": "8dc2dd7229fda98a5ec1689082f3048b870552c96eaacb15383fbb5ed2d0bd63",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/murder-mystery-960-467dfb407656.webp",
+        "status": 200,
+        "expected_sha256": "467dfb40765686c5abc749d7a087e5c319bcd0d521f565fd73eb3703cd2c0098",
+        "raw_sha256": "467dfb40765686c5abc749d7a087e5c319bcd0d521f565fd73eb3703cd2c0098",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/murder-mystery-1440-13b8555872af.webp",
+        "status": 200,
+        "expected_sha256": "13b8555872af3db349d05d8ec7a114e4c74f0e1161a90a0fd25e737419cc579e",
+        "raw_sha256": "13b8555872af3db349d05d8ec7a114e4c74f0e1161a90a0fd25e737419cc579e",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/production-planner/",
+        "status": 200,
+        "expected_sha256": "f99b14234c6c1490d5d3b1e015e461f51455e96d0948d2fac9c617ce9a938542",
+        "raw_sha256": "f99b14234c6c1490d5d3b1e015e461f51455e96d0948d2fac9c617ce9a938542",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/production-planner/",
+        "status": 200,
+        "expected_sha256": "b7d53a83935385c7c0ea5a8b5123db399612ddfe36230bd318ac5e4bbd07b217",
+        "raw_sha256": "b7d53a83935385c7c0ea5a8b5123db399612ddfe36230bd318ac5e4bbd07b217",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/production-planner-480-149eb29f6e37.webp",
+        "status": 200,
+        "expected_sha256": "149eb29f6e37e246650f123f8856b4697b51f9a9987f06d11a53c4ae34247150",
+        "raw_sha256": "149eb29f6e37e246650f123f8856b4697b51f9a9987f06d11a53c4ae34247150",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/production-planner-960-330fc2e55718.webp",
+        "status": 200,
+        "expected_sha256": "330fc2e55718fff253b857ff41e848e3cfddafed63f9e53999050da0112ff82f",
+        "raw_sha256": "330fc2e55718fff253b857ff41e848e3cfddafed63f9e53999050da0112ff82f",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/production-planner-1440-58eac6c3f64f.webp",
+        "status": 200,
+        "expected_sha256": "58eac6c3f64f62c5af4cf231f79ba96ccb5784c9bcc10c77b7b430da2803321c",
+        "raw_sha256": "58eac6c3f64f62c5af4cf231f79ba96ccb5784c9bcc10c77b7b430da2803321c",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/lyric-studio/",
+        "status": 200,
+        "expected_sha256": "193f9971a7a88423727a45982482b56cc4c79cc486707329d3edf1106c32a400",
+        "raw_sha256": "193f9971a7a88423727a45982482b56cc4c79cc486707329d3edf1106c32a400",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/lyric-studio/",
+        "status": 200,
+        "expected_sha256": "4620daa3610a1483bfb373e97621f88683d448f44fc1e3ed80267f11054db40c",
+        "raw_sha256": "4620daa3610a1483bfb373e97621f88683d448f44fc1e3ed80267f11054db40c",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/lyric-studio-480-e995da5ef344.webp",
+        "status": 200,
+        "expected_sha256": "e995da5ef34451972aaf89fe17877b6826330f62b6278e5ef374f23682674141",
+        "raw_sha256": "e995da5ef34451972aaf89fe17877b6826330f62b6278e5ef374f23682674141",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/lyric-studio-960-7b925dbc6aa7.webp",
+        "status": 200,
+        "expected_sha256": "7b925dbc6aa7321144d50e27d40ce466f4029248c4d3e893d943b045205ee809",
+        "raw_sha256": "7b925dbc6aa7321144d50e27d40ce466f4029248c4d3e893d943b045205ee809",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/lyric-studio-1440-1c666a737d1b.webp",
+        "status": 200,
+        "expected_sha256": "1c666a737d1b0f12a194f506efbac86807686d276f512db95ca720a81039e489",
+        "raw_sha256": "1c666a737d1b0f12a194f506efbac86807686d276f512db95ca720a81039e489",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/poetry-studio/",
+        "status": 200,
+        "expected_sha256": "04baa24f8b365c9d4b4d72fe4e569ffe6d2cb2a319e609322cdc835684f3c203",
+        "raw_sha256": "04baa24f8b365c9d4b4d72fe4e569ffe6d2cb2a319e609322cdc835684f3c203",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/poetry-studio/",
+        "status": 200,
+        "expected_sha256": "513f8614c9e678f42540126b18bb13e16b3fbf302f8aae952623b7262ac0c5b6",
+        "raw_sha256": "513f8614c9e678f42540126b18bb13e16b3fbf302f8aae952623b7262ac0c5b6",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/poetry-studio-480-561724aee509.webp",
+        "status": 200,
+        "expected_sha256": "561724aee5098b8bb4b609a885cdc6be5021d0240f3afe0612636ece8546d8ca",
+        "raw_sha256": "561724aee5098b8bb4b609a885cdc6be5021d0240f3afe0612636ece8546d8ca",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/poetry-studio-960-03ad176e93e8.webp",
+        "status": 200,
+        "expected_sha256": "03ad176e93e893786c87550dc846d9c6b1b727aa47ca7a709afb33923912069c",
+        "raw_sha256": "03ad176e93e893786c87550dc846d9c6b1b727aa47ca7a709afb33923912069c",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/poetry-studio-1440-55a8d3709ec6.webp",
+        "status": 200,
+        "expected_sha256": "55a8d3709ec6d324a062a5daf77ed33ccbdbdb15055603af5c8bd29cf441d900",
+        "raw_sha256": "55a8d3709ec6d324a062a5daf77ed33ccbdbdb15055603af5c8bd29cf441d900",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/nonfiction-studio/",
+        "status": 200,
+        "expected_sha256": "19958cba7a2b86aab7d2dd7a4ae39c0eb8478affad6ced35a2e26657ee74b55c",
+        "raw_sha256": "19958cba7a2b86aab7d2dd7a4ae39c0eb8478affad6ced35a2e26657ee74b55c",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/nonfiction-studio/",
+        "status": 200,
+        "expected_sha256": "df6ad053e8740c8bad45cab443fb7b810d7cc6011258c5fde2eb6a93fd055e0b",
+        "raw_sha256": "df6ad053e8740c8bad45cab443fb7b810d7cc6011258c5fde2eb6a93fd055e0b",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/nonfiction-studio-480-179f170e697b.webp",
+        "status": 200,
+        "expected_sha256": "179f170e697b09192f99acf32fd97d2a3221611698456dadbcbbcf9916b42c24",
+        "raw_sha256": "179f170e697b09192f99acf32fd97d2a3221611698456dadbcbbcf9916b42c24",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/nonfiction-studio-960-01125d36ac91.webp",
+        "status": 200,
+        "expected_sha256": "01125d36ac91c858246a77eca6c4e3c3b5d0f46ab982adb243524a610c0679cc",
+        "raw_sha256": "01125d36ac91c858246a77eca6c4e3c3b5d0f46ab982adb243524a610c0679cc",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/nonfiction-studio-1440-ee7686e6d363.webp",
+        "status": 200,
+        "expected_sha256": "ee7686e6d363bce0ae423b1d1d8cf63721093a57490774925f086f70eb016154",
+        "raw_sha256": "ee7686e6d363bce0ae423b1d1d8cf63721093a57490774925f086f70eb016154",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/biography-studio/",
+        "status": 200,
+        "expected_sha256": "9d2f6ad08783c441d65962a2b26db671171bd43bd4107d48511f6f918222b4d1",
+        "raw_sha256": "9d2f6ad08783c441d65962a2b26db671171bd43bd4107d48511f6f918222b4d1",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/biography-studio/",
+        "status": 200,
+        "expected_sha256": "ae816036e98269acc2258ac8ccf025024bb0e693349b05541553160e398dfc9b",
+        "raw_sha256": "ae816036e98269acc2258ac8ccf025024bb0e693349b05541553160e398dfc9b",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/biography-studio-480-3db5372101a8.webp",
+        "status": 200,
+        "expected_sha256": "3db5372101a853e190cc40934538712a434e4e3c4ba2a29eb60b7400658650ae",
+        "raw_sha256": "3db5372101a853e190cc40934538712a434e4e3c4ba2a29eb60b7400658650ae",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/biography-studio-960-facf21c87fde.webp",
+        "status": 200,
+        "expected_sha256": "facf21c87fde27e6386a004969832bfdf8efa5d43bdd064bb92fce8ec1884bbe",
+        "raw_sha256": "facf21c87fde27e6386a004969832bfdf8efa5d43bdd064bb92fce8ec1884bbe",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/biography-studio-1440-2d127c44628b.webp",
+        "status": 200,
+        "expected_sha256": "2d127c44628b27cb32a783a869fd8025216cc563817e417131619ec2734acac5",
+        "raw_sha256": "2d127c44628b27cb32a783a869fd8025216cc563817e417131619ec2734acac5",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/essay-studio/",
+        "status": 200,
+        "expected_sha256": "eda5587ba416fcb550777e7c205c19b6b7206ead19bebf3048fa5fcf9ae4bb61",
+        "raw_sha256": "eda5587ba416fcb550777e7c205c19b6b7206ead19bebf3048fa5fcf9ae4bb61",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/essay-studio/",
+        "status": 200,
+        "expected_sha256": "5a8fb18acecb08faa0b79aa25ad029ba49ba5376606b237f529ad1cf64944c4e",
+        "raw_sha256": "5a8fb18acecb08faa0b79aa25ad029ba49ba5376606b237f529ad1cf64944c4e",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/essay-studio-480-f865c094830f.webp",
+        "status": 200,
+        "expected_sha256": "f865c094830fe197706e25eff723826bdc4c2faa9398aa33ce720f3c00e4a7ea",
+        "raw_sha256": "f865c094830fe197706e25eff723826bdc4c2faa9398aa33ce720f3c00e4a7ea",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/essay-studio-960-4ea7f3b3c3f8.webp",
+        "status": 200,
+        "expected_sha256": "4ea7f3b3c3f83f82112bb17608b55b9bfbc94472146f9cd203f29b1051cfa791",
+        "raw_sha256": "4ea7f3b3c3f83f82112bb17608b55b9bfbc94472146f9cd203f29b1051cfa791",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/essay-studio-1440-a918a84836c1.webp",
+        "status": 200,
+        "expected_sha256": "a918a84836c15b6f8773e3e1b7b46bc350df03cbcd6e2ea666faba944f58912d",
+        "raw_sha256": "a918a84836c15b6f8773e3e1b7b46bc350df03cbcd6e2ea666faba944f58912d",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/criticism-studio/",
+        "status": 200,
+        "expected_sha256": "848fb3e21d01dd030f1eaeab7514ef3105f6c203e584415ac5567e544ef33f91",
+        "raw_sha256": "848fb3e21d01dd030f1eaeab7514ef3105f6c203e584415ac5567e544ef33f91",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/criticism-studio/",
+        "status": 200,
+        "expected_sha256": "8e46692e76ff1273b43f7c0282f1fea1b59ce1d749b4fc14895971ac8a93f8c7",
+        "raw_sha256": "8e46692e76ff1273b43f7c0282f1fea1b59ce1d749b4fc14895971ac8a93f8c7",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/criticism-studio-480-708646c6cd07.webp",
+        "status": 200,
+        "expected_sha256": "708646c6cd074f45b9c3c26beacdfa7b05b8eeac2e457391c02290ae810e906d",
+        "raw_sha256": "708646c6cd074f45b9c3c26beacdfa7b05b8eeac2e457391c02290ae810e906d",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/criticism-studio-960-55226e49cc2d.webp",
+        "status": 200,
+        "expected_sha256": "55226e49cc2d95f2f2d752b30af4562b0cb515e182ce241cea81c39407b7bc5b",
+        "raw_sha256": "55226e49cc2d95f2f2d752b30af4562b0cb515e182ce241cea81c39407b7bc5b",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/criticism-studio-1440-625b8f946464.webp",
+        "status": 200,
+        "expected_sha256": "625b8f94646447cd1a4de04db65a949cd6350405f8ea36083af3ba4d397c2439",
+        "raw_sha256": "625b8f94646447cd1a4de04db65a949cd6350405f8ea36083af3ba4d397c2439",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/documentary-studio/",
+        "status": 200,
+        "expected_sha256": "29a088f7ac562b8a98e33ed3a19a5141d26c7b5ea7ebad0dd9eead05a5d36cc6",
+        "raw_sha256": "29a088f7ac562b8a98e33ed3a19a5141d26c7b5ea7ebad0dd9eead05a5d36cc6",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/documentary-studio/",
+        "status": 200,
+        "expected_sha256": "afdaf0d9d2cdc7ffe460f2faf8585a20bcc546f72635b5406e3152bc817c66c7",
+        "raw_sha256": "afdaf0d9d2cdc7ffe460f2faf8585a20bcc546f72635b5406e3152bc817c66c7",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/documentary-studio-480-dad067ddc329.webp",
+        "status": 200,
+        "expected_sha256": "dad067ddc3299a82eb47fe2720e4a1818b71218c127d82409145386de9d9ad23",
+        "raw_sha256": "dad067ddc3299a82eb47fe2720e4a1818b71218c127d82409145386de9d9ad23",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/documentary-studio-960-a45dc89b718a.webp",
+        "status": 200,
+        "expected_sha256": "a45dc89b718a7775a9c9ea3fcc79c67ee57566a1e23d3bf92b4cb857061f698d",
+        "raw_sha256": "a45dc89b718a7775a9c9ea3fcc79c67ee57566a1e23d3bf92b4cb857061f698d",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/documentary-studio-1440-adb5c6c22be7.webp",
+        "status": 200,
+        "expected_sha256": "adb5c6c22be76018ec1dd65c7616352d4a3dd06b833201a143bed91208282a81",
+        "raw_sha256": "adb5c6c22be76018ec1dd65c7616352d4a3dd06b833201a143bed91208282a81",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/podcast-studio/",
+        "status": 200,
+        "expected_sha256": "6316b4b3da905ba244c9297d884671fedcd2b025f9a51a8e1c4f6a9f8280a9ea",
+        "raw_sha256": "6316b4b3da905ba244c9297d884671fedcd2b025f9a51a8e1c4f6a9f8280a9ea",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/podcast-studio/",
+        "status": 200,
+        "expected_sha256": "c151cf587ca1d13effa08b25f900d92829686ae7f7e36fb11fff8c8c00d7bd07",
+        "raw_sha256": "c151cf587ca1d13effa08b25f900d92829686ae7f7e36fb11fff8c8c00d7bd07",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/podcast-studio-480-43465d7153df.webp",
+        "status": 200,
+        "expected_sha256": "43465d7153df89b38f68b940d43461ba82b0936fdb0dcd68374a9641a686b70c",
+        "raw_sha256": "43465d7153df89b38f68b940d43461ba82b0936fdb0dcd68374a9641a686b70c",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/podcast-studio-960-ce2d7c830e72.webp",
+        "status": 200,
+        "expected_sha256": "ce2d7c830e72506c2dede699bea417377416af90fb6ce280ef93d0ddb94f5398",
+        "raw_sha256": "ce2d7c830e72506c2dede699bea417377416af90fb6ce280ef93d0ddb94f5398",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/podcast-studio-1440-0a4505bc62c8.webp",
+        "status": 200,
+        "expected_sha256": "0a4505bc62c89c59feea517fd078e842aaa688e0c46cf91090972b5e0d0a1f99",
+        "raw_sha256": "0a4505bc62c89c59feea517fd078e842aaa688e0c46cf91090972b5e0d0a1f99",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/stage-rehearsal/",
+        "status": 200,
+        "expected_sha256": "df3d734e7ac0989caad228f874c76d350d9ee49e1c19a8abc41324e5362c1661",
+        "raw_sha256": "df3d734e7ac0989caad228f874c76d350d9ee49e1c19a8abc41324e5362c1661",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/stage-rehearsal/",
+        "status": 200,
+        "expected_sha256": "1d7143611b7fc86cfc1638b33445624435df2de0c0d292b1cfba6104e2f44a4f",
+        "raw_sha256": "1d7143611b7fc86cfc1638b33445624435df2de0c0d292b1cfba6104e2f44a4f",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/stage-rehearsal-480-2b6490369565.webp",
+        "status": 200,
+        "expected_sha256": "2b64903695655f30d5d4965f8bdd7dd3ef55c61db8c20247a8942e85610f63b1",
+        "raw_sha256": "2b64903695655f30d5d4965f8bdd7dd3ef55c61db8c20247a8942e85610f63b1",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/stage-rehearsal-960-99660a627dbe.webp",
+        "status": 200,
+        "expected_sha256": "99660a627dbe3303b54f7effcb1c0f7eda08eae9840f83bb23b3cd410484411b",
+        "raw_sha256": "99660a627dbe3303b54f7effcb1c0f7eda08eae9840f83bb23b3cd410484411b",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/stage-rehearsal-1440-419737d17a2b.webp",
+        "status": 200,
+        "expected_sha256": "419737d17a2b2a0ef223372b708ebf6dc24c7a3dde32c7b7f186291ac91b69d2",
+        "raw_sha256": "419737d17a2b2a0ef223372b708ebf6dc24c7a3dde32c7b7f186291ac91b69d2",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/standup-studio/",
+        "status": 200,
+        "expected_sha256": "d846faa919dd541880b2d16d70e1f7f29c8ff6264c75b72e167002dc552c380e",
+        "raw_sha256": "d846faa919dd541880b2d16d70e1f7f29c8ff6264c75b72e167002dc552c380e",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/standup-studio/",
+        "status": 200,
+        "expected_sha256": "b845adf45cd85e2f3ddee998663b2243349d2cd9a7a2ff6b046300bac7114da9",
+        "raw_sha256": "b845adf45cd85e2f3ddee998663b2243349d2cd9a7a2ff6b046300bac7114da9",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/standup-studio-480-b71bfd5df0d4.webp",
+        "status": 200,
+        "expected_sha256": "b71bfd5df0d4332a52c1daee0db87812d7ee4df59650f12321cc901c16ef251c",
+        "raw_sha256": "b71bfd5df0d4332a52c1daee0db87812d7ee4df59650f12321cc901c16ef251c",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/standup-studio-960-8a7342f64701.webp",
+        "status": 200,
+        "expected_sha256": "8a7342f64701d38cd5a2952fe87f9582368e3666a600f8f0b4bc1ab3f50427e2",
+        "raw_sha256": "8a7342f64701d38cd5a2952fe87f9582368e3666a600f8f0b4bc1ab3f50427e2",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/standup-studio-1440-8064a941f05f.webp",
+        "status": 200,
+        "expected_sha256": "8064a941f05f49870cefade8b3c8c5741cec37c9791a70acc1b5902641e1ff9c",
+        "raw_sha256": "8064a941f05f49870cefade8b3c8c5741cec37c9791a70acc1b5902641e1ff9c",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/science-studio/",
+        "status": 200,
+        "expected_sha256": "3fd56fc64a85caadab19a22e75ae8b74ca810493f79053faf575c00243603540",
+        "raw_sha256": "3fd56fc64a85caadab19a22e75ae8b74ca810493f79053faf575c00243603540",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/science-studio/",
+        "status": 200,
+        "expected_sha256": "b9e01badac18df376fc9ae5d7217f51444f11c3cf1c96fdec39f109eaa7e37b6",
+        "raw_sha256": "b9e01badac18df376fc9ae5d7217f51444f11c3cf1c96fdec39f109eaa7e37b6",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/science-studio-480-99af9ec2733f.webp",
+        "status": 200,
+        "expected_sha256": "99af9ec2733fe826efe8bd8fef892cab5326e70dc7ff1e615ed7202ae505200b",
+        "raw_sha256": "99af9ec2733fe826efe8bd8fef892cab5326e70dc7ff1e615ed7202ae505200b",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/science-studio-960-4e579077e9a8.webp",
+        "status": 200,
+        "expected_sha256": "4e579077e9a8299a2ec6f30d7108636322a2d84abfd9efe1be8b76a28b403eb2",
+        "raw_sha256": "4e579077e9a8299a2ec6f30d7108636322a2d84abfd9efe1be8b76a28b403eb2",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/science-studio-1440-fa45f4ce36ee.webp",
+        "status": 200,
+        "expected_sha256": "fa45f4ce36eef8b15008734634c06c15e4ecd1392f944a0536a17b01ab0d7ef2",
+        "raw_sha256": "fa45f4ce36eef8b15008734634c06c15e4ecd1392f944a0536a17b01ab0d7ef2",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/quest-studio/",
+        "status": 200,
+        "expected_sha256": "eb6954409f61260b766495129c18e4730eff87687a2984dee0bf3e283cf8f4c1",
+        "raw_sha256": "eb6954409f61260b766495129c18e4730eff87687a2984dee0bf3e283cf8f4c1",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/quest-studio/",
+        "status": 200,
+        "expected_sha256": "f84a7f61803c6df6be98beff29e838b0fa56b9929509f4ead8eb27cf0afdbb8f",
+        "raw_sha256": "f84a7f61803c6df6be98beff29e838b0fa56b9929509f4ead8eb27cf0afdbb8f",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/quest-studio-480-ebdbe69c12b9.webp",
+        "status": 200,
+        "expected_sha256": "ebdbe69c12b9c775cc316353099cc41e114abbbc3dcd4112e9ba04383850ffb0",
+        "raw_sha256": "ebdbe69c12b9c775cc316353099cc41e114abbbc3dcd4112e9ba04383850ffb0",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/quest-studio-960-08c6f9a86478.webp",
+        "status": 200,
+        "expected_sha256": "08c6f9a864787d721070bba059b82e50e240fcbee238b3d06dbdc409ded58bd8",
+        "raw_sha256": "08c6f9a864787d721070bba059b82e50e240fcbee238b3d06dbdc409ded58bd8",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/quest-studio-1440-6f5083e41ba0.webp",
+        "status": 200,
+        "expected_sha256": "6f5083e41ba0a8dc78b359482625bee9b5229c78b2119b8d845dd47ac2388ee5",
+        "raw_sha256": "6f5083e41ba0a8dc78b359482625bee9b5229c78b2119b8d845dd47ac2388ee5",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/script-supervisor/",
+        "status": 200,
+        "expected_sha256": "7eb5848f0318ea7e958a51f0f6851cfdd0777e23829b53b0b7cd09533327d56d",
+        "raw_sha256": "7eb5848f0318ea7e958a51f0f6851cfdd0777e23829b53b0b7cd09533327d56d",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/script-supervisor/",
+        "status": 200,
+        "expected_sha256": "039f33c970b16b06d28ff9d0601556d309e2589875df4ba0fbadce368c6b50ed",
+        "raw_sha256": "039f33c970b16b06d28ff9d0601556d309e2589875df4ba0fbadce368c6b50ed",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/script-supervisor-480-8532d56f6c5f.webp",
+        "status": 200,
+        "expected_sha256": "8532d56f6c5f3d3d6843ed4ad1d6c5c668e599dc42760726a138e21a8123a375",
+        "raw_sha256": "8532d56f6c5f3d3d6843ed4ad1d6c5c668e599dc42760726a138e21a8123a375",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/script-supervisor-960-26238a35edd3.webp",
+        "status": 200,
+        "expected_sha256": "26238a35edd3a9311b1bb6e712093220331d24552c7b9c82cdb4f18b37f8bb4f",
+        "raw_sha256": "26238a35edd3a9311b1bb6e712093220331d24552c7b9c82cdb4f18b37f8bb4f",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/script-supervisor-1440-d9104ebbd913.webp",
+        "status": 200,
+        "expected_sha256": "d9104ebbd9132294ee017ee86dc5cba83459f6c082a9b81f71f22fd9bc33bba2",
+        "raw_sha256": "d9104ebbd9132294ee017ee86dc5cba83459f6c082a9b81f71f22fd9bc33bba2",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/language-studio/",
+        "status": 200,
+        "expected_sha256": "07787d90a46be9946a956bc18fd2c0ff00b00844f75ddc55d918c8a02421cada",
+        "raw_sha256": "07787d90a46be9946a956bc18fd2c0ff00b00844f75ddc55d918c8a02421cada",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/language-studio/",
+        "status": 200,
+        "expected_sha256": "9b2e09f2dc7ede46bece169888533d10f799823b576127ce10a2f34cca6b9e05",
+        "raw_sha256": "9b2e09f2dc7ede46bece169888533d10f799823b576127ce10a2f34cca6b9e05",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/language-studio-480-c309d0575523.webp",
+        "status": 200,
+        "expected_sha256": "c309d05755236d850f878eeacfc3518a5582e3aa7a3a13cf17399e66be527b29",
+        "raw_sha256": "c309d05755236d850f878eeacfc3518a5582e3aa7a3a13cf17399e66be527b29",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/language-studio-960-ce970b618b9e.webp",
+        "status": 200,
+        "expected_sha256": "ce970b618b9eb4a8d74565fa35da0840daab53489e81e08281febd6f8b6aab1c",
+        "raw_sha256": "ce970b618b9eb4a8d74565fa35da0840daab53489e81e08281febd6f8b6aab1c",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/language-studio-1440-a83bd282b097.webp",
+        "status": 200,
+        "expected_sha256": "a83bd282b0973655be1f5b7d8a613c9519a04b5d2c232c546918f36e02c2abaf",
+        "raw_sha256": "a83bd282b0973655be1f5b7d8a613c9519a04b5d2c232c546918f36e02c2abaf",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/musical-studio/",
+        "status": 200,
+        "expected_sha256": "deb20f39f08796795aaf0b771e6ca4f54c69bb291423429d747eee64d76c23ef",
+        "raw_sha256": "deb20f39f08796795aaf0b771e6ca4f54c69bb291423429d747eee64d76c23ef",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/musical-studio/",
+        "status": 200,
+        "expected_sha256": "8c82d908b1e7b0797b2855fce8f1c9b06c8e9a4c4cea0a6879ed0f3b61ed7332",
+        "raw_sha256": "8c82d908b1e7b0797b2855fce8f1c9b06c8e9a4c4cea0a6879ed0f3b61ed7332",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/musical-studio-480-bf8bc9978d29.webp",
+        "status": 200,
+        "expected_sha256": "bf8bc9978d292e5f6a67c8ca48ab396fa68fea23edb2c3704206c07af184bfe1",
+        "raw_sha256": "bf8bc9978d292e5f6a67c8ca48ab396fa68fea23edb2c3704206c07af184bfe1",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/musical-studio-960-9c936a893181.webp",
+        "status": 200,
+        "expected_sha256": "9c936a8931810533e10d7a7c26970e89629b1ab58626e5c9609cc334bd54cb7e",
+        "raw_sha256": "9c936a8931810533e10d7a7c26970e89629b1ab58626e5c9609cc334bd54cb7e",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/musical-studio-1440-b2a0e17613a1.webp",
+        "status": 200,
+        "expected_sha256": "b2a0e17613a13e1ca30608259486432653b8883d858e7087e5f1ae9fcc1fe256",
+        "raw_sha256": "b2a0e17613a13e1ca30608259486432653b8883d858e7087e5f1ae9fcc1fe256",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/relationships/",
+        "status": 200,
+        "expected_sha256": "5e1d5ffc152bb9d6d85eb5ab7771b194d4e03261133c9a13214cbbc1cc99c596",
+        "raw_sha256": "5e1d5ffc152bb9d6d85eb5ab7771b194d4e03261133c9a13214cbbc1cc99c596",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/relationships/",
+        "status": 200,
+        "expected_sha256": "d75fae9b86b62e0c3cca1842e9ddea08de14e7c6328a95d68085304c169122bc",
+        "raw_sha256": "d75fae9b86b62e0c3cca1842e9ddea08de14e7c6328a95d68085304c169122bc",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/relationships-480-9e884a64eead.webp",
+        "status": 200,
+        "expected_sha256": "9e884a64eead63fc590117118f9cc2daa85a6a61b4b80d020c9ce754f004fc19",
+        "raw_sha256": "9e884a64eead63fc590117118f9cc2daa85a6a61b4b80d020c9ce754f004fc19",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/relationships-960-49fb3c70562c.webp",
+        "status": 200,
+        "expected_sha256": "49fb3c70562c8986a7044328a9db1f32a89ce8bc3d816b101cfe179b4822663e",
+        "raw_sha256": "49fb3c70562c8986a7044328a9db1f32a89ce8bc3d816b101cfe179b4822663e",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/relationships-1440-bf4c5292f0b9.webp",
+        "status": 200,
+        "expected_sha256": "bf4c5292f0b9f1550adea9f585ae5cc33294770a1747342d0c1d74fded172539",
+        "raw_sha256": "bf4c5292f0b9f1550adea9f585ae5cc33294770a1747342d0c1d74fded172539",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/timeline/",
+        "status": 200,
+        "expected_sha256": "5995d88eeada04f8c6a60c483cf5aa3310e94e0d7ee08abd57fd095b3e6de42e",
+        "raw_sha256": "5995d88eeada04f8c6a60c483cf5aa3310e94e0d7ee08abd57fd095b3e6de42e",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/en/plugins/timeline/",
+        "status": 200,
+        "expected_sha256": "1af984d753482f3e30a393907a8223f222bddfe3acd59d3b67f596cd5949c797",
+        "raw_sha256": "1af984d753482f3e30a393907a8223f222bddfe3acd59d3b67f596cd5949c797",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/timeline-480-937f8e4fd811.webp",
+        "status": 200,
+        "expected_sha256": "937f8e4fd811835697f93dc8839dba0b44c642c42b27554a1a4a52383c9899e6",
+        "raw_sha256": "937f8e4fd811835697f93dc8839dba0b44c642c42b27554a1a4a52383c9899e6",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/timeline-960-2f85667e4958.webp",
+        "status": 200,
+        "expected_sha256": "2f85667e49585b5b1ed035397bb34e9c414d4d5340a345ef4408a7c7e39632ae",
+        "raw_sha256": "2f85667e49585b5b1ed035397bb34e9c414d4d5340a345ef4408a7c7e39632ae",
+        "matches_build": true,
+        "observed_changes": []
+      },
+      {
+        "route": "/plugins/illustrations/timeline-1440-7358ea46a32b.webp",
+        "status": 200,
+        "expected_sha256": "7358ea46a32b3a106fadffebe1b5a76cafd72f8bc425db4935a87d07be930398",
+        "raw_sha256": "7358ea46a32b3a106fadffebe1b5a76cafd72f8bc425db4935a87d07be930398",
+        "matches_build": true,
+        "observed_changes": []
+      }
+    ]
+  },
+  "limits": [
+    "图像用途辨识与视觉质量是实际查看后的设计判断，不证明点击转化提升。",
+    "宣传图不证明专业功能实现；专业插件的正式验收与发行证据单独维护。",
+    "线上首轮网络失败与目标复验分别保留，不改写成同一轮全部通过。"
+  ]
+}
