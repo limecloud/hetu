@@ -58,7 +58,7 @@
   "conclusion": "本故障不是必须官网上架；同一本地未上架包使用Codex专用格式可发现带pluginId的服务和入口。",
   "correction": "Codex连接包只使用.codex-plugin/plugin.json和其MCP配置，移除会切换解析器的便携根清单；现有版本缓存不覆盖。",
   "verification": {
-    "status": "isolated_plugin_loading_passed",
+    "status": "real_installed_plugin_loading_passed",
     "requirement": "Core生成→官方plugin marketplace add/add→真实pluginId及MCP服务→入口→资源读取；禁止用手工mcp_servers代替。",
     "app_regression": {
       "passed": 44,
@@ -81,15 +81,119 @@
       "failed": 0,
       "scope": "补充旧包清单回退前的设置全回归；补充后的升级分支由App连接测试覆盖。",
       "log": "build/mcp-app-discovery/v0133-core-settings-tests.log"
+    },
+    "real_home": {
+      "manual_mcp_server_configuration": false,
+      "server": "hetu",
+      "plugin_id": "hetu-workbench@hetu-luoshu-machine-connection",
+      "tools_error": null,
+      "tool_count": 14,
+      "entrypoints": [
+        "global",
+        "thread"
+      ],
+      "resource_html_bytes": 677462,
+      "resource_html_sha256": "dcf9c7c1d35a5a67d332618c7ae9b566aae4d1b1ec4fcca2049567d035dd68c6",
+      "receipt": "build/local-update-v0133-dev/installed-global-discovery.json"
     }
   },
   "not_verified": [
-    "指定Codex Desktop GUI最终侧栏显示，需更新连接后观察。"
+    "河图页面的视觉、侧栏排布及具体创作操作仍待作者实机确认；日志证明入口解析、页面加载和初始化。"
   ],
   "release": {
-    "status": "pending"
+    "status": "pending_author_local_test",
+    "public_latest": "0.13.1",
+    "source_pushed": true,
+    "fix_commit": "1452419"
   },
   "installation": {
-    "status": "pending"
+    "status": "installed",
+    "version": "0.13.3",
+    "signing": "ad-hoc-development",
+    "source_sha256": "7aef7a0a7a95e532aca33ebf856c04cf03ea24936e43fe3f72c1467770388d5d",
+    "artifacts_verified": 3386,
+    "codesign_verified": true,
+    "connection_registered": true,
+    "current_session_loaded": false,
+    "backup": "build/local-update-v0133-dev/replaced-0.13.2.app",
+    "author_workspace_modified": false,
+    "receipt": "build/local-update-v0133-dev/installation.json"
+  },
+  "gui": {
+    "deep_link_requested": true,
+    "host_log_confirmed": true,
+    "entrypoint": "global",
+    "deep_link_result": "found",
+    "server": "hetu",
+    "host": "local",
+    "connector_id": null,
+    "sandbox_document_committed": true,
+    "widget_frame_committed": true,
+    "initialize_mcp_app": true,
+    "visual_observed": false,
+    "author_verification": "requested",
+    "receipt": "build/local-update-v0133-dev/gui-probe.json",
+    "source_log": "codex-desktop-c44cf1f3-14f9-48f3-9752-97bbceaac2d4-79789-t0-i1-103517-0.log",
+    "events": [
+      {
+        "time": "2026-11-19T10:35:33.362Z",
+        "event": "found_app_view",
+        "host": "local",
+        "server": "hetu",
+        "tool": "hetu_open_app",
+        "views_enabled": true
+      },
+      {
+        "time": "2026-11-19T10:35:34.039Z",
+        "event": "read_app_resource",
+        "server": "hetu",
+        "uri": "ui://hetu/workbench/1"
+      },
+      {
+        "time": "2026-11-19T10:35:34.824Z",
+        "event": "starting_app_sandbox",
+        "host": "local",
+        "server": "hetu",
+        "connector_id": null,
+        "sandbox_id": "source-4f022a7cc8c4842e"
+      },
+      {
+        "time": "2026-11-19T10:35:36.753Z",
+        "event": "sandbox_document_committed",
+        "sandbox_id": "source-4f022a7cc8c4842e"
+      },
+      {
+        "time": "2026-11-19T10:35:39.501Z",
+        "event": "widget_frame_committed",
+        "sandbox_id": "source-4f022a7cc8c4842e"
+      },
+      {
+        "time": "2026-11-19T10:35:39.647Z",
+        "event": "initialize_mcp_app",
+        "sandbox_id": "source-4f022a7cc8c4842e"
+      },
+      {
+        "time": "2026-11-19T10:35:47.591Z",
+        "event": "resolved_app_link",
+        "entrypoint": "global",
+        "plugin_id": "hetu-workbench@hetu-luoshu-machine-connection",
+        "result": "found",
+        "tool": "hetu_open_app"
+      },
+      {
+        "time": "2026-11-19T10:35:47.629Z",
+        "event": "found_app_view",
+        "host": "local",
+        "server": "hetu",
+        "tool": "hetu_open_app",
+        "views_enabled": true
+      },
+      {
+        "time": "2026-11-19T10:35:47.678Z",
+        "event": "read_app_resource",
+        "server": "hetu",
+        "uri": "ui://hetu/workbench/1"
+      }
+    ]
   }
 }
