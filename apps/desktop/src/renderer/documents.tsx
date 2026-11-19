@@ -1,3 +1,4 @@
+import { ManuscriptText } from "@hetu/workbench-ui";
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { SurfaceContext } from "./contributions.tsx";
 import { desktop, data } from "./bridge.ts";
@@ -342,14 +343,14 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
                     </div>
                   )}
               <div className="manuscript-scroll" ref={scroll} onScroll={() => { if (scroll.current && !editing) rememberPosition(selected.document.document_id, scroll.current.scrollTop); }}>
-                {reference ? <article className="reader reference-reader" aria-label="剧本参考稿">{referenceContent}</article> : editing ? <AuthorEditor key={selected.document.document_id} content={content} disabled={busy} search={search} indent={work.kind === "novel"}
+                {reference ? <ManuscriptText className="reference-reader" aria-label="剧本参考稿" text={referenceContent}/> : editing ? <AuthorEditor key={selected.document.document_id} content={content} disabled={busy} search={search} indent={work.kind === "novel"}
                   scrollTop={positions.current[selected.document.document_id]} onScroll={(top) => rememberPosition(selected.document.document_id, top)}
                   onChange={(value) => void change(value).catch((error) => notify(error.message))} onSave={() => void save()}
                   onCompositionChange={(active) => { composition.current = active; setComposing(active); }}
                   onSelectionChange={(selection) => { if (content === selected.content) setQuote(selection); }}/>
-                  : <article className={work.kind === "novel" ? "reader novel-reader" : "reader"} ref={reader}
+                  : <ManuscriptText novel={work.kind === "novel"} ref={reader} text={content}
                     onDoubleClick={() => setEditing(true)} onMouseUp={() => reader.current && setQuote(selectedSource(reader.current, selected.content))}
-                    onKeyUp={() => reader.current && setQuote(selectedSource(reader.current, selected.content))}>{content}</article>}
+                    onKeyUp={() => reader.current && setQuote(selectedSource(reader.current, selected.content))}/>}
               </div>
               <footer className="manuscript-footer"><span>{(reference?.source_format ?? selected.revision.source_format) === "fountain" ? "Fountain" : "Markdown"}</span><span title={`汉字 ${count}、英文词 ${words}、总字符 ${characters}`}>{count} 字</span></footer>
             </section>

@@ -92,6 +92,7 @@ const sourceRoots = [
   "apps/desktop/scripts",
   "packages/plugin-host/src",
   "packages/plugin-sdk/src",
+  "packages/workbench-ui/src",
   "plugins",
   "contracts",
   "integrations/codex",
@@ -106,6 +107,7 @@ async function sourceSnapshot() {
     "apps/desktop/tsconfig.json",
     "packages/plugin-host/package.json",
     "packages/plugin-sdk/package.json",
+    "packages/workbench-ui/package.json",
     "core/Cargo.toml",
     "core/build.rs",
     "apps/cli/Cargo.toml",
@@ -413,6 +415,8 @@ const paths = await packager({
     : {}),
 });
 if (paths.length !== 1) throw new Error("没有生成唯一目标应用。");
+if (process.platform === "darwin")
+  await run("codesign", ["--verify", "--deep", "--strict", path.join(paths[0], `${productName}.app`)]);
 if ((await sourceSnapshot()).sha256 !== after.sha256)
   throw new Error("装配或签名期间相关源码发生变化，请保留本次产物并重新装配。");
 const artifacts = {};

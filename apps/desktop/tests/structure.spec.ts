@@ -87,14 +87,16 @@ test(
       );
       await page.getByRole("button", { name: "返回创作库", exact: true }).click();
       await page.getByRole("button", { name: /独立剧本/ }).click();
+      await expect(page.locator(".workspace-switcher .workspace-title")).toHaveText("独立剧本");
+      await expect(page.getByRole("button", { name: "剧本", exact: true })).toBeEnabled();
       await expect(
         page.getByRole("complementary", { name: "项目导航", exact: true }),
       ).toBeVisible();
       await openDirectory(page);
       await expect(chapters).toHaveCount(1);
       await expect(
-        directory.locator("summary", { hasText: "第1集 第一集" }),
-      ).toBeVisible();
+        directory.locator(".chapter-group > summary"),
+      ).toHaveText(["第一集"]);
       await expect(
         directory.getByRole("button", { name: "第一章 雾港", exact: true }),
       ).toHaveCount(0);

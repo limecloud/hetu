@@ -1,0 +1,218 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-11-19",
+  "version": "0.13.4",
+  "problem": "Codex内MCP App已打开，但与独立桌面界面不同，且领域详情和固定版本接续不完整。",
+  "implementation": {
+    "shared_package": "packages/workbench-ui",
+    "shared": [
+      "创作库页头与内容",
+      "类型导航与分组",
+      "图标与封面预览",
+      "工作台样式",
+      "作品页头",
+      "文稿阅读",
+      "视频意见字段"
+    ],
+    "assets": "同一品牌、山水和默认封面原文件；MCP内联固定字节，桌面随包提供。",
+    "adapters": "Electron私有IPC与MCP AppBridge分别提供数据和动作；不向MCP暴露window.hetuDesktop或作者身份。",
+    "features": [
+      "历史文稿及快照差异",
+      "固定参考稿与工作稿",
+      "修订与原著映射",
+      "审核和检查详情",
+      "资料使用位置",
+      "视频前版、区间意见交接和交付清单",
+      "设置方案及专业插件能力"
+    ],
+    "signing": "装配必须通过codesign --verify --deep --strict才生成交付清单。"
+  },
+  "figma_reference": {
+    "tool_entries": [
+      {
+        "name": "open_figma_mcp_app_in_thread",
+        "entrypoints": [
+          {
+            "type": "thread"
+          }
+        ],
+        "resource_uri": "ui://figma/codex.html",
+        "mime_type": "text/html;profile=mcp-app",
+        "html_bytes": 644962,
+        "html_sha256": "3562224edf1f9e30f13ac7bec14da6d914445c38404aecbbd9cf3c897c653e2c",
+        "iframe_count": 0,
+        "external_origins": []
+      },
+      {
+        "name": "open_figma_mcp_app",
+        "entrypoints": [
+          {
+            "type": "global"
+          }
+        ],
+        "resource_uri": "ui://figma/codex.html",
+        "mime_type": "text/html;profile=mcp-app",
+        "html_bytes": 644962,
+        "html_sha256": "3495cebc0e2be6c88a13f72c80688a6e2561d782607b28083938daff68e104e1",
+        "iframe_count": 0,
+        "external_origins": []
+      }
+    ],
+    "scope": "Connected official Figma MCP App resource; not Figma private application source."
+  },
+  "verification": {
+    "app_full": {
+      "passed": 52,
+      "failed": 0,
+      "log": "build/mcp-app-discovery/v0134-app-full-clean-disk.log"
+    },
+    "final_fixed_reference_ui": {
+      "passed": 15,
+      "failed": 0,
+      "log": "build/mcp-app-discovery/v0134-fixed-refresh-browser.log"
+    },
+    "desktop": {
+      "library_layout_and_manuscript": 4,
+      "baseline_with_cli_mcp_and_video": 1,
+      "episode_references_and_reopen": 1,
+      "version_contracts": 3,
+      "note": "版本合同3项在初次领域运行通过；最后基线1项及分集1项分别在独立最终运行通过。分集专项只认证窗口关闭和成果重开，退出后清理测试进程。"
+    },
+    "release_guards": 4,
+    "logs": [
+      {
+        "path": "build/mcp-app-discovery/v0134-app-full-clean-disk.log",
+        "sha256": "c7580dc405209335f59cf153481a96e463d40259385ad6e65906ab751b497804"
+      },
+      {
+        "path": "build/mcp-app-discovery/v0134-fixed-refresh-browser.log",
+        "sha256": "0854933e827f5247a9a0b9d481de7bb42f3ef0ef61e22a9fff089a05fa3e523a"
+      },
+      {
+        "path": "build/mcp-app-discovery/shared-ui-desktop-e2e.log",
+        "sha256": "860e631f1dee7359c0d40d8e24916bc6728321ae99e93e377cad7ad53cbf7721"
+      },
+      {
+        "path": "build/mcp-app-discovery/shared-ui-desktop-domain-final.log",
+        "sha256": "d24f08095c14c23a035ca64ac8c3c8b2a2eb028e37ce8f526d81ba93837c4a86"
+      },
+      {
+        "path": "build/mcp-app-discovery/shared-ui-episodes-final.log",
+        "sha256": "a68b06ce89a567499e89db9361147b12a98164817ce6ef6f39c5c1b81bfe5664"
+      },
+      {
+        "path": "build/mcp-app-discovery/v0134-release-guards.log",
+        "sha256": "62101c7cb01c37344080f403415036a181bd5e6ea570a85ae14ef66990a561b2"
+      },
+      {
+        "path": "build/mcp-app-discovery/v0134-packaged-final.log",
+        "sha256": "b28e8dcc5e615bd6b0bc03d08ab39140ed4685cae7e53093be2bd757a1cd3a91"
+      },
+      {
+        "path": "build/mcp-app-discovery/v0134-structure-final.log",
+        "sha256": "8f50e6c24980979cbcbfb74fd51aa3e6a1a8ab8da5446a1fe3a3d983871488e0"
+      }
+    ],
+    "packaged_bundle_journey": {
+      "passed": 1,
+      "failed": 0,
+      "log": "build/mcp-app-discovery/v0134-packaged-final.log"
+    },
+    "full_novel_and_drama_directory": {
+      "passed": 1,
+      "failed": 0,
+      "log": "build/mcp-app-discovery/v0134-structure-final.log"
+    }
+  },
+  "visual": {
+    "artifact_directory": "build/task-view/acceptance",
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "widths": [
+      375,
+      1440
+    ],
+    "observed": "实际浏览器检查内联山水和封面解码、无横向溢出、60px页头及字号；图片已人工复核。",
+    "scope": "浏览器共享组件及桌面实机测试，不代替作者在指定宿主所有页面逐项使用。"
+  },
+  "retained_failures": [
+    {
+      "kind": "test_artifact_collision",
+      "log": "build/mcp-app-discovery/v0134-app-full-tests.log",
+      "resolution": "独立Playwright产物目录重跑；保留失败。"
+    },
+    {
+      "kind": "disk_full",
+      "log": "build/mcp-app-discovery/v0134-app-full-final.log",
+      "resolution": "只清理本轮可重建装配中间文件；保留作品、源码、安装备份和失败证据；52项重跑通过。"
+    },
+    {
+      "kind": "initial_signing",
+      "log": "build/mcp-app-discovery/v0134-local-package.log",
+      "resolution": "初包未安装；签名复验后以固定引用刷新保护和签名门禁的最终源码重新装配。"
+    },
+    {
+      "kind": "desktop_test_environment",
+      "logs": [
+        "build/mcp-app-discovery/shared-ui-desktop-domain-e2e.log",
+        "build/mcp-app-discovery/shared-ui-desktop-domain-final.log"
+      ],
+      "resolution": "视频测试显式静音播放；分集测试等待作品实际切换并保留启动时进程引用；最终分别通过。"
+    },
+    {
+      "kind": "final_packaged_invocation_and_structure_selector",
+      "log": "build/mcp-app-discovery/v0134-installed-desktop.log",
+      "resolution": "分集专项通过；打包测试须以完整装配目录为入口核验归档附属文件，安装目录另按应用子树核验；目录实际显示第一集，旧测试重复第1集前缀，修正为确切目录断言并等待作品切换。"
+    }
+  ],
+  "installation": {
+    "status": "installed",
+    "source_sha256": "76e62eadd9ccc3ef7e77619d76468a67631b47f7f4359528365917a2888ad259",
+    "manifest": "build/local-update-v0134-final/hetu-dev-aDGzYs/manifest.json",
+    "artifacts_verified": 3386,
+    "signing": "ad-hoc-development",
+    "codesign_verified": true,
+    "installed_at": "2026-11-19T11:25:22.467404+00:00",
+    "application": "/Applications/Hetu.app",
+    "backup": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/local-update-v0134-final/replaced-0.13.3.app",
+    "receipt": "build/local-update-v0134-final/installation.json",
+    "cli_version": "hetu 0.13.4",
+    "author_workspace_modified": false,
+    "codex_plugin": {
+      "version": "0.13.4",
+      "registered": true,
+      "plugin_id": "hetu-workbench@hetu-luoshu-machine-connection",
+      "tools_error": null,
+      "entrypoints": [
+        {
+          "type": "global"
+        },
+        {
+          "type": "thread"
+        }
+      ],
+      "html_sha256": "bf2bee34da854a779d33904530799c74d5eeb3185223b3db1265589000dd4bb2",
+      "html_bytes": 2437543,
+      "receipt": "build/local-update-v0134-final/codex-installed-plugin.json",
+      "gui_observed": false
+    },
+    "app_subtree_verification": {
+      "version": "0.13.4",
+      "application": "/Applications/Hetu.app",
+      "source_sha256": "76e62eadd9ccc3ef7e77619d76468a67631b47f7f4359528365917a2888ad259",
+      "verified_app_entries": 2798,
+      "all_matching": true
+    }
+  },
+  "release": {
+    "status": "ready",
+    "tag": "v0.13.4",
+    "scope": "Current shared UI and functional completion; prior unpublished discovery and episode fixes included."
+  },
+  "not_verified": [
+    "Claude等其他GUI宿主的实机兼容",
+    "指定Codex Desktop新界面全部业务逐页作者使用"
+  ]
+}

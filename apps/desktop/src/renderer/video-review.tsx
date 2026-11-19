@@ -1,3 +1,4 @@
+import { VideoFeedbackFields } from "@hetu/workbench-ui";
 import React, { useEffect, useRef, useState } from "react";
 import type { SurfaceContext } from "./contributions.tsx";
 import { desktop, data } from "./bridge.ts";
@@ -118,16 +119,8 @@ export function VideoReview({ work, notify, ai }: SurfaceContext) {
       <section aria-label="视频修改意见">
         <h3>修改意见</h3>
         {journal?.status === "pending" && <p role="status">前次意见的保存结果尚未确认。<button disabled={busy} onClick={() => run(recover)}>恢复原操作</button></p>}
-        <fieldset disabled={feedbackLocked} className="baseline-editor-fields">
-        <label><input type="checkbox" checked={ranged} onChange={e => { setRanged(e.target.checked); draft({ ranged: e.target.checked }); }}/>指定片段</label>
-        {ranged && <div className="surface-filters">
-          <label>开始（秒）<input aria-label="意见开始秒数" type="number" min="0" step="0.001" value={start} onChange={e => { setStart(e.target.value); draft({ start: e.target.value }); }}/></label>
-          <button onClick={() => { const value = position.toFixed(3); setStart(value); draft({ start: value }); }}>以当前位置为开始</button>
-          <label>结束（秒）<input aria-label="意见结束秒数" type="number" min="0" step="0.001" value={end} onChange={e => { setEnd(e.target.value); draft({ end: e.target.value }); }}/></label>
-          <button onClick={() => { const value = position.toFixed(3); setEnd(value); draft({ end: value }); }}>以当前位置为结束</button>
-        </div>}
-        <textarea aria-label="视频修改意见" placeholder="例如：先听到脚步声，再切到门口。" value={comment} onChange={e => { setComment(e.target.value); draft({ comment: e.target.value }); }}/>
-        </fieldset>
+        <VideoFeedbackFields value={{comment,start,end,ranged}} disabled={feedbackLocked} onChange={changes=>{if(changes.comment!==undefined)setComment(changes.comment);if(changes.start!==undefined)setStart(changes.start);if(changes.end!==undefined)setEnd(changes.end);if(changes.ranged!==undefined)setRanged(changes.ranged);draft(changes);}} onPosition={edge=>{const value=position.toFixed(3);if(edge==="start")setStart(value);else setEnd(value);draft({[edge]:value});}}/>
+
         <div className="surface-filters"><button disabled={busy || !comment.trim() || journal?.status === "pending"} onClick={() => run(save)}>保存意见</button><button disabled={busy} onClick={() => run(async () => { await desktop.video("draft", { media_ref: selected, value: null }); setComment(""); dirty.current = false; await desktop.dirty(false); })}>清除草稿</button></div>
         {feedback.map(row => <blockquote key={row.feedback.feedback_id}><p>{row.feedback.comment}</p><small>{row.feedback.range ? `${seconds(row.feedback.range.start_tick, row.feedback.time_base).toFixed(3)}–${seconds(row.feedback.range.end_tick, row.feedback.time_base).toFixed(3)} 秒` : "整版意见"}</small></blockquote>)}
         {feedbackCursor && <button disabled={busy} onClick={() => run(async () => { const page = await desktop.video("feedback", { media_ref: selected, cursor: feedbackCursor }); setFeedback(old => [...old, ...page.items]); setFeedbackCursor(page.next_cursor ?? undefined); })}>更多意见</button>}

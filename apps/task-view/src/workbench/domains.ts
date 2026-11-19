@@ -28,7 +28,7 @@ export const localSections: Section[] = [
   { id: "models", title: "模型渠道", intent: "检查非敏感模型设置与连接状态，按明确范围配置渠道或恢复模型任务", read: exact("hetu.model_settings.inspect") },
 ];
 
-export type DetailLink = { label: string; action?: string; input?: RecordValue; task?: RecordValue };
+export type DetailLink = { label: string; action?: string; input?: RecordValue; task?: RecordValue; expected?: { revision?: unknown; sha256?: unknown } };
 export function detailLinks(item: RecordValue): DetailLink[] {
   const links: DetailLink[] = [];
   const add = (label: string, action: string, input: RecordValue) => links.push({ label, action, input });
@@ -46,8 +46,16 @@ export function detailLinks(item: RecordValue): DetailLink[] {
   if (typeof item.proposal_id === "string") add("查看固定方案", "hetu.agent_operations.get", { proposal_id: item.proposal_id });
   if (typeof item.draft_id === "string") add("查看待审稿", "hetu.drafts.get", { draft_id: item.draft_id });
   const draft = item.draft_ref && typeof item.draft_ref === "object" ? item.draft_ref as RecordValue : undefined;
-  if (typeof draft?.draft_id === "string") add("阅读参考稿", "hetu.drafts.get", { draft_id: draft.draft_id });
+  if (typeof draft?.draft_id === "string") links.push({label:"阅读参考稿",action:"hetu.drafts.get",input:{draft_id:draft.draft_id},expected:{revision:draft.revision,sha256:item.sha256}});
+  if(item.working_copy_ref && item.task_ref) links.push({label:"阅读未提交工作稿",action:"hetu.working_copies.get",input:{task_ref:item.task_ref,working_copy_ref:item.working_copy_ref},expected:{sha256:item.sha256??(item.working_copy_ref as RecordValue).sha256}});
+  if(typeof item.operation_id==="string"&&item.operation_id.startsWith("localop_"))add("查看固定设置方案","hetu.local_settings.get_operation",{operation_id:item.operation_id});
+  if(typeof item.suite_id==="string")add("查看创作方法安装","hetu.local_settings.inspect_suite",{suite_id:item.suite_id,agent_client:"codex"});
   if (typeof item.report_id === "string") add("查看固定检查", "hetu.reports.get", { report_id: item.report_id });
+  if (typeof item.review_id === "string") add("审阅固定内容", "hetu.reviews.get", { review_id: item.review_id });
+  if (typeof item.snapshot_id === "string") add("审阅文稿快照", "hetu.git.get_snapshot", { snapshot_id: item.snapshot_id });
+  if (typeof item.commit_id === "string") add("阅读历史版本", "hetu.git.read_version", { commit_id: item.commit_id, ...(typeof item.path === "string" ? { path: item.path, max_bytes: 12000 } : {}) });
+  if (typeof item.skeleton_id === "string") add("查看分集场次", "hetu.drama.get_skeleton", { skeleton_id: item.skeleton_id, ...(typeof item.revision === "number" ? { revision: item.revision } : {}) });
+  if (typeof item.comparison_id === "string") add("查看原著对照", "hetu.drama.get_comparison", { comparison_id: item.comparison_id });
   if (typeof item.link_id === "string") add("查看固定关联", "hetu.work_links.get", { link_id: item.link_id, ...(typeof item.revision === "number" ? { revision: item.revision } : {}) });
   return links;
 }

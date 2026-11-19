@@ -34,7 +34,8 @@ await build({
   sourcemap: true,
 });
 await copyFile("src/renderer/index.html", "dist/renderer/index.html");
-await copyFile("src/renderer/style.css", "dist/renderer/style.css");
+const sharedStyle = await build({ entryPoints: ["src/renderer/style.css"], bundle: true, write: false });
+await writeFile("dist/renderer/style.css", sharedStyle.outputFiles[0].text);
 const radixCSS = await readFile("../../assets/styles/radix-workbench.css", "utf8");
 await writeFile("dist/renderer/radix-workbench.css", radixCSS);
 await copyFile("../../assets/brand/app-icon-1024.png", "dist/renderer/app-icon.png");

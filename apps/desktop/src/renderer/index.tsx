@@ -5,17 +5,14 @@ import { surfaces } from "./contributions.tsx";
 import { Preferences, applyPreferences } from "./preferences.tsx";
 import { LocalSettings } from "./settings.tsx";
 import { Icon, IconButton, Workbench, PageActionsTarget, type DocumentTools, type IconName, type AgentStatus } from "./workbench.tsx";
-import { WorkCover, WorkCoverPreview } from "./work-cover.tsx";
+import { WorkCover } from "./work-cover.tsx";
+import { LibraryHeader, LibraryNavigation, LibraryContent, NavigationGroup, WorkspaceHeader, type LibraryAssets } from "@hetu/workbench-ui";
+const libraryAssets: LibraryAssets = {brand:"app-icon.png",light:"river-dawn-v1.webp",dark:"river-night-v1.webp",covers:["cover-river-jade.jpg","cover-cloud-rose.jpg","cover-stars-ink.jpg"]};
 import { PluginMigrations } from "./plugin-migrations.tsx";
 import { PluginResults } from "./plugin-results.tsx";
 import { AuditStatus } from "./audit-status.tsx";
 import { sameWork } from "@hetu/plugin-sdk";
 
-function NavigationGroup({ title, active, children }: { title: string; active: boolean; children: React.ReactNode }) {
-  const [open, setOpen] = useState(active);
-  useEffect(() => { if (active) setOpen(true); }, [active]);
-  return <details className="navigation-group" open={open} onToggle={(event) => setOpen(event.currentTarget.open)}><summary>{title}</summary>{children}</details>;
-}
 function App() {
   const [state, setState] = useState<any>({ plugins: [], views: [] }),
     [works, setWorks] = useState<any[]>([]),
@@ -27,9 +24,6 @@ function App() {
   const busy = initializing || operationBusy;
   const appearance = state.preferences?.appearance ?? "system";
   const [kind, setKind] = useState("all");
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [listMode, setListMode] = useState<boolean>();
   const [navigationVisible, setNavigationVisible] = useState(true);
   const [directoryVisible, setDirectoryVisible] = useState(true);
   const [inspector, setInspector] = useState(false);
@@ -210,9 +204,6 @@ function App() {
     const next = await desktop.open();
     if (next) { setState(next); setWorks(next.works); setActive("library"); }
   });
-  const visibleWorks = works.filter((item) => (kind === "all" || item.work_ref.kind === kind) &&
-    (statusFilter === "all" || item.status === statusFilter || (statusFilter === "archived" && item.archived)) &&
-    [item.title, item.author_name, item.genre].filter(Boolean).join(" ").toLocaleLowerCase().includes(search.toLocaleLowerCase()));
   const createWork = (type: string, name: string) => run(async () => {
     await desktop.library("bootstrap", { kind: type });
     setNotice("已复制新建" + name + "请求，可粘贴到所选外部 Agent；作品尚未创建。Agent 完成后刷新创作库。其间可以继续处理其他作品。");
@@ -221,44 +212,7 @@ function App() {
     <Preferences.Provider value={state.preferences ?? {}}>
     <PageActionsTarget.Provider value={pageActionsTarget}>
     <Workbench.Provider value={{ directoryVisible, setDirectoryVisible, inspector, setInspector, focus, setFocus, setDocumentTools, agentStatus, setAgentStatus }}>
-      {!pluginActive && <header className={"workbench-topbar" + (workMode ? "" : " library-topbar")}>
-        {workMode ? <>
-          <IconButton icon="sidebar" label="项目导航" aria-pressed={navigationVisible} onClick={() => setNavigationVisible(!navigationVisible)}/>
-          <details className="workspace-switcher popover-menu">
-            <summary><span className="workspace-title">{selected?.title ?? "当前作品"}</span><span className="workspace-kind">{{ novel: "小说", drama: "剧本", video: "视频" }[state.work.kind as "novel"]}</span><Icon name="chevron" size={12}/></summary>
-            <div className="menu-panel">
-              <button disabled={busy} onClick={() => void run(() => navigate("library"))}>返回创作库</button>
-              <button disabled={busy} onClick={() => void openWorkspace()}>打开作品</button>
-              {works.filter((item) => !item.unavailable).map((item) => <button key={item.work_ref.object_id} disabled={busy} onClick={() => void run(async () => {
-                if (documentTools?.dirty) throw new Error("请先保存当前修改。");
-                await desktop.library("open", { work_ref: item.work_ref });
-                setState(await desktop.select(item.work_ref));
-                setActive(item.work_ref.kind === "novel" ? "novel.reader" : item.work_ref.kind === "drama" ? "drama.reader" : "video.review");
-              })}>{item.title}</button>)}
-            </div>
-          </details>
-          {readerActive && <IconButton icon="list" label="卷章目录" aria-pressed={directoryVisible} onClick={() => { setDirectoryVisible(!directoryVisible); setFocus(false); }}/ >}
-        </> : <div className="brand-lockup"><img className="brand-icon" src="app-icon.png" alt=""/><strong>河图洛书</strong></div>}
-        <div className="topbar-actions">
-          {workMode && !active.startsWith("fallback:") && (readerActive || !Component) &&
-            <button className="ai-button" disabled={busy} aria-label="让 AI 处理" onClick={() => void run(async () => { if (readerActive && documentTools) documentTools.ai(); else await ai(); })}>
-              <Icon name="sparkles"/><span>让 AI 处理</span>
-            </button>
-          }
-          {readerActive && documentTools && <span className="save-state" aria-live="polite"><Icon name="check" size={13}/>{documentTools.readOnly ? documentTools.busy ? "正在读取…" : "参考稿 只读" : documentTools.busy ? "正在保存…" : documentTools.dirty ? "有未保存修改" : "修订已保存"}</span>}
-          <IconButton icon="settings" label="本机设置" onClick={() => void desktop.settingsWindow("open")}/>
-          {workMode && <IconButton icon="expand" label="缩放窗口" onClick={() => void desktop.zoom()}/>}
-          {readerActive && documentTools && <>
-            <button className="primary" disabled={documentTools.busy || !documentTools.dirty} onClick={documentTools.save}>保存修订</button>
-            <IconButton icon="inspector" label="检查器" aria-pressed={inspector} onClick={() => setInspector(!inspector)}/>
-          </>}
-          {!workMode && <button disabled={busy} onClick={() => void openWorkspace()}>打开作品</button>}
-          {!workMode && <details className="popover-menu create-work-menu"><summary className="primary">新建作品<Icon name="chevron" size={12}/></summary><div className="menu-panel">{([["novel", "小说"], ["drama", "剧本"], ["video", "视频"]] as const).map(([type, name]) => <button key={type} disabled={busy} onClick={() => void createWork(type, name)}>让 AI 新建{name}</button>)}</div></details>}
-          <details className="popover-menu topbar-more"><summary aria-label="更多操作" title="更多操作"><Icon name="more"/></summary><div className="menu-panel">
-            <button disabled={busy} onClick={() => void openWorkspace()}>打开作品</button>
-            {readerActive && <button aria-pressed={focus} onClick={() => setFocus(!focus)}>{focus ? "退出专注" : "专注阅读"}</button>}
-
-            {!workMode && <label>
+      {!pluginActive && !workMode && <LibraryHeader assets={libraryAssets} busy={busy} onOpen={() => void openWorkspace()} onCreate={(type, title) => void createWork(type, title)} onSettings={() => void desktop.settingsWindow("open")} onPlugins={() => void run(() => navigate("plugins"))} onToggleNavigation={() => setNavigationVisible(!navigationVisible)} menu={<label>
                     外部 Agent{" "}
                     <select
                       aria-label="创作库协作客户端"
@@ -279,12 +233,45 @@ function App() {
                       <option value="workbuddy">WorkBuddy</option>
                       <option value="generic">其他客户端</option>
                     </select>
-                  </label>}
+                  </label>}/> }
+      {!pluginActive && workMode && <WorkspaceHeader title={selected?.title ?? "当前作品"} kind={state.work.kind} onNavigation={() => setNavigationVisible(!navigationVisible)} switcher={
+          <details className="workspace-switcher popover-menu">
+            <summary><span className="workspace-title">{selected?.title ?? "当前作品"}</span><span className="workspace-kind">{{ novel: "小说", drama: "剧本", video: "视频" }[state.work.kind as "novel"]}</span><Icon name="chevron" size={12}/></summary>
+            <div className="menu-panel">
+              <button disabled={busy} onClick={() => void run(() => navigate("library"))}>返回创作库</button>
+              <button disabled={busy} onClick={() => void openWorkspace()}>打开作品</button>
+              {works.filter((item) => !item.unavailable).map((item) => <button key={item.work_ref.object_id} disabled={busy} onClick={() => void run(async () => {
+                if (documentTools?.dirty) throw new Error("请先保存当前修改。");
+                await desktop.library("open", { work_ref: item.work_ref });
+                setState(await desktop.select(item.work_ref));
+                setActive(item.work_ref.kind === "novel" ? "novel.reader" : item.work_ref.kind === "drama" ? "drama.reader" : "video.review");
+              })}>{item.title}</button>)}
+            </div>
+          </details>}>
+          {readerActive && <IconButton icon="list" label="卷章目录" aria-pressed={directoryVisible} onClick={() => { setDirectoryVisible(!directoryVisible); setFocus(false); }}/ >}
+        <div className="topbar-actions">
+          {workMode && !active.startsWith("fallback:") && (readerActive || !Component) &&
+            <button className="ai-button" disabled={busy} aria-label="让 AI 处理" onClick={() => void run(async () => { if (readerActive && documentTools) documentTools.ai(); else await ai(); })}>
+              <Icon name="sparkles"/><span>让 AI 处理</span>
+            </button>
+          }
+          {readerActive && documentTools && <span className="save-state" aria-live="polite"><Icon name="check" size={13}/>{documentTools.readOnly ? documentTools.busy ? "正在读取…" : "参考稿 只读" : documentTools.busy ? "正在保存…" : documentTools.dirty ? "有未保存修改" : "修订已保存"}</span>}
+          <IconButton icon="settings" label="本机设置" onClick={() => void desktop.settingsWindow("open")}/>
+          {workMode && <IconButton icon="expand" label="缩放窗口" onClick={() => void desktop.zoom()}/>}
+          {readerActive && documentTools && <>
+            <button className="primary" disabled={documentTools.busy || !documentTools.dirty} onClick={documentTools.save}>保存修订</button>
+            <IconButton icon="inspector" label="检查器" aria-pressed={inspector} onClick={() => setInspector(!inspector)}/>
+          </>}
+          <details className="popover-menu topbar-more"><summary aria-label="更多操作" title="更多操作"><Icon name="more"/></summary><div className="menu-panel">
+            <button disabled={busy} onClick={() => void openWorkspace()}>打开作品</button>
+            {readerActive && <button aria-pressed={focus} onClick={() => setFocus(!focus)}>{focus ? "退出专注" : "专注阅读"}</button>}
+
+
             <button disabled={busy} onClick={() => void run(() => navigate("plugins"))}>创作插件</button>
             <button onClick={() => void desktop.settingsWindow("open")}>本机设置</button>
           </div></details>
         </div>
-      </header>}
+      </WorkspaceHeader>}
       <div className={"layout" + (workMode ? " workspace-layout" : " library-layout") + (!navigationVisible || focus ? " navigation-hidden" : "") + (focus ? " focus-mode" : "")}>
         {!pluginActive && <aside className="project-navigation" aria-label={workMode ? "项目导航" : "创作库导航"}>
           {workMode ? <>
@@ -303,12 +290,8 @@ function App() {
               {state.views.length > 0 && <details className="navigation-group" open><summary>创作插件</summary>{state.views.map((view: any) => <button key={view.key} disabled={busy} className={active === view.key ? "selected" : ""} onClick={() => void run(() => openPlugin(view))}><Icon name="plugin"/>{view.title}</button>)}</details>}
             </div>
             <div className="current-work"><WorkCover work={state.work} title={selected?.title ?? "当前作品"} compact/><div><strong>{selected?.title ?? "当前作品"}</strong><small>{{novel:"小说",drama:"剧本",video:"视频"}[state.work.kind as "novel"]}</small></div></div>
-          </> : <>
-
-            {([["all", "全部作品", "layers"], ["novel", "小说", "book"], ["drama", "剧本", "file"], ["video", "视频", "film"]] as [string, string, IconName][]).map(([id,label,icon]) => <button key={id} disabled={busy} className={kind === id && active === "library" ? "selected" : ""} onClick={() => { setKind(id); void run(() => navigate("library")); }}><Icon name={icon}/>{label}</button>)}
-            <div className="navigation-divider"/>
-            {globalItem("plugins", "创作插件", "plugin")}
-          </>}
+          </> : <LibraryNavigation kind={kind} active={active} busy={busy} onKind={id => { setKind(id); void run(() => navigate("library")); }} onPlugins={() => void run(() => navigate("plugins"))}/>
+          }
         </aside>}
         <main className={pluginActive ? "plugin-page" : readerActive ? "reader-main" : "page-main"}>
           {pluginActive && pluginView.navigation !== "integrated" && <nav className="plugin-page-navigation" aria-label="插件页面导航"><button disabled={busy} aria-label="返回工作台" onClick={() => void run(() => navigate(pluginReturn.current))}><Icon name="back" size={14}/>返回</button></nav>}
@@ -324,80 +307,7 @@ function App() {
             onReview={() => void run(() => navigate("work.tasks"))}
           />}
           {active === "library" ? (
-            <div className="content library-content">
-              <section className="library-intro" aria-labelledby="library-title">
-                <picture className="library-intro-art" aria-hidden="true">
-                  <source media={appearance === "dark" ? "all" : appearance === "light" ? "not all" : "(prefers-color-scheme: dark)"} srcSet="river-night-v1.webp"/>
-                  <img src="river-dawn-v1.webp" alt="" draggable={false}/>
-                </picture>
-                <div className="library-intro-copy"><h1 id="library-title">创作库</h1></div>
-              </section>
-              <div className="library-search-row">
-                <strong>{({ all:"全部作品",novel:"小说",drama:"剧本",video:"视频" } as Record<string,string>)[kind]}<span className="muted"> {visibleWorks.length}</span></strong><IconButton icon="refresh" label="刷新创作库" disabled={busy} onClick={() => void run(async () => { const next = await desktop.library("refresh"); setState(next); setWorks(next.works ?? []); })}/>
-                <select aria-label="创作状态筛选" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>{[["all","全部状态"],["planning","筹备中"],["writing","创作中"],["completed","已完成"],["archived","已归档"]].map(([value,label]) => <option key={value} value={value}>{label}</option>)}</select>
-                <label className="library-search"><Icon name="search"/><input aria-label="搜索作品" placeholder="搜索作品" value={search} onChange={(e) => setSearch(e.target.value)}/></label>
-                <div className="segmented-control" aria-label="创作库布局"><IconButton icon="list" label="列表视图" aria-pressed={listMode ?? state.preferences?.library_list ?? true} onClick={() => setListMode(true)}/><IconButton icon="grid" label="封面视图" aria-pressed={!(listMode ?? state.preferences?.library_list ?? true)} onClick={() => setListMode(false)}/></div>
-              </div>
-              {works.length ? (
-                <div
-                  className={
-                    (listMode ?? state.preferences?.library_list ?? true)
-                      ? "library-works"
-                      : "library-works library-grid"
-                  }
-                >
-                  {visibleWorks.map((item) => (
-                      <button
-                        className="work"
-                        data-work-kind={item.work_ref.kind}
-                        key={item.work_ref.object_id}
-                        disabled={busy || item.unavailable}
-                        onClick={() =>
-                          void run(async () => {
-                            await desktop.library("open", {
-                              work_ref: item.work_ref,
-                            });
-                            const next = await desktop.select(item.work_ref);
-                            setState(next);
-                            setActive(
-                              surfaces
-                                .list()
-                                .find(({ value }) =>
-                                  value.kinds.includes(item.work_ref.kind),
-                                )?.id ?? "library",
-                            );
-                          })
-                        }
-                      >
-                        <div className="work-thumbnail"><WorkCoverPreview work={item.work_ref} title={item.title} author={item.author_name} compact={(listMode ?? state.preferences?.library_list ?? true) || item.work_ref.kind !== "novel"} preview={item.cover_preview} error={item.unavailable ? item.error : ""}/></div>
-                        <div className="library-work-description"><strong>{item.title}</strong>{(item.author_name || item.genre) && <small>{[item.author_name, item.genre].filter(Boolean).join(" ")}</small>}</div>
-                        {item.unavailable && <span>{item.error}</span>}
-                        <span className="pill">
-                          {
-                            { novel: "小说", drama: "剧本", video: "视频" }[
-                              item.work_ref.kind as "novel" | "drama" | "video"
-                            ]
-                          }
-                        </span>
-                        <div className="library-work-metrics">{item.status && <span className="library-work-status">{({planning:"筹备中",writing:"创作中",completed:"已完成",archived:"已归档"} as Record<string,string>)[item.status]}</span>}
-                        {item.chapter_count !== undefined && <small className="library-work-count">{item.chapter_count} 章</small>}</div>
-                        {item.updated_at && <small className="library-work-date">{new Date(item.updated_at).toLocaleDateString()}</small>}
-                      </button>
-                    ))}
-                </div>
-              ) : (
-                <div className="library-empty">
-                  <h2>还没有作品</h2>
-                  <div className="library-start-options">
-                    {([["novel", "小说", "book"], ["drama", "剧本", "file"], ["video", "视频", "film"]] as const).map(([type, name, icon]) =>
-                      <button key={type} disabled={busy} onClick={() => void createWork(type, name)}><Icon name={icon} size={24}/><span>新建{name}</span><Icon name="chevron" size={14}/></button>,
-                    )}
-                  </div>
-                  <button className="library-open-existing" disabled={busy} onClick={() => void openWorkspace()}><Icon name="file"/>打开已有作品</button>
-                </div>
-              )}
-              {!!works.length && !visibleWorks.length && <div className="empty"><Icon name="search" size={28}/><h2>没有匹配的作品</h2><button onClick={() => { setKind("all"); setSearch(""); setStatusFilter("all"); }}>清除筛选</button></div>}
-            </div>
+            <LibraryContent works={works} assets={libraryAssets} appearance={appearance} kind={kind} busy={busy} loading={initializing} initialListMode={state.preferences?.library_list ?? true} onKind={setKind} onOpen={() => void openWorkspace()} onCreate={(type,title) => void createWork(type,title)} onRefresh={() => void run(async () => { const next=await desktop.library("refresh"); setState(next); setWorks(next.works ?? []); })} onSelect={item => void run(async () => { await desktop.library("open",{work_ref:item.work_ref}); const next=await desktop.select(item.work_ref); setState(next); setActive(surfaces.list().find(({value}) => value.kinds.includes(item.work_ref.kind))?.id ?? "library"); })}/>
           ) : active === "plugins" ? (
             <div className="content plugin-content">
               {state.plugin_state_error && <p role="alert">{state.plugin_state_error} 请保留原文件后修复。基础创作仍可使用。</p>}

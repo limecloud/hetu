@@ -77,7 +77,7 @@ test("空插件目录的小说大纲、剧本阅读、视频播放与区间反�
     await page.getByRole("combobox", { name: "视频成果版本" }).selectOption(context.second.media_id);
     const video = page.locator('article.video-review-content video').first();
     await expect.poll(() => video.evaluate((element: HTMLVideoElement) => element.readyState)).toBeGreaterThan(0);
-    await video.evaluate((element: HTMLVideoElement) => element.play());
+    await video.evaluate((element: HTMLVideoElement) => { element.muted = true; return element.play(); });
     await expect.poll(() => video.evaluate((element: HTMLVideoElement) => element.currentTime)).toBeGreaterThan(0.15);
     await video.evaluate((element: HTMLVideoElement) => element.pause());
     await page.getByRole("checkbox", { name: "指定片段", exact: true }).check();

@@ -1,6 +1,6 @@
 {
   "name": "@hetu/task-view",
-  "version": "0.13.3",
+  "version": "0.13.4",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,7 +9,10 @@
     "test": "npm run check && cargo build --locked --manifest-path ../../Cargo.toml -p hetu-mcp --example task_view_fixture --bin hetu-mcp && playwright test"
   },
   "dependencies": {
-    "@modelcontextprotocol/ext-apps": "2.0.4"
+    "@modelcontextprotocol/ext-apps": "2.0.4",
+    "@hetu/workbench-ui": "0.13.4",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
   },
   "devDependencies": {
     "@modelcontextprotocol/client": "2.4.0",

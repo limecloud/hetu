@@ -58,24 +58,26 @@ test("分集直接阅读已提交参考稿和工作稿，原任务分页审阅�
   const pending = save(submittedTask, "更新但未提交的工作稿", "INT. 渡口 - 晨\n\n这是仍在修改的另一版。", false);
   save(workingTask, "只有工作稿", "EXT. 山路 - 日\n\n江岚停下脚步。", false);
   let app: ElectronApplication | undefined;
+  const processes = new WeakMap<ElectronApplication, ReturnType<ElectronApplication["process"]>>();
   function cleanup(application: ElectronApplication) {
-    const pid = application.process().pid!;
+    const child = processes.get(application);
+    if (!child || child.exitCode !== null) return;
+    const pid = child.pid!;
     if (process.platform === "win32") spawnSync("taskkill", ["/pid", String(pid), "/T", "/F"]);
-    else { try { process.kill(-pid, "SIGKILL"); } catch { application.process().kill("SIGKILL"); } }
+    else { try { process.kill(-pid, "SIGKILL"); } catch { child.kill("SIGKILL"); } }
   }
   async function close() {
-    const closing = app!;
+    const closing = app!, child = processes.get(closing)!;
+    const exited = child.exitCode !== null ? Promise.resolve() : new Promise<void>(resolve => child.once("exit", () => resolve()));
     await closing.evaluate(({ BrowserWindow }) => { setTimeout(() => BrowserWindow.getAllWindows()[0]?.close(), 100); });
     await expect.poll(() => closing.windows().length).toBe(0);
-    // 本专项核对窗口关闭及持久成果重开，进程退出另由现有生命周期测试覆盖。
-    const exited = new Promise<void>(resolve => closing.process().once("exit", () => resolve()));
-    cleanup(closing);
-    await exited;
-    await closing.close(); app = undefined;
+    // 已验证窗口关闭；保留启动时的进程引用，断连后不再调用Playwright进程接口。
+    cleanup(closing); await exited; app = undefined;
   }
   async function launch() {
     app = await electron.launch({ args: [path.join(root, "apps/desktop")], env: { ...process.env, HETU_DESKTOP_PROFILE: profile, HETU_COLLABORATION_DIR: collaboration, HETU_PLUGIN_STATE_DIR: path.join(folder, "empty-plugins"), HETU_APP_SERVER: path.join(root, "target/debug/hetu-app-server") } });
-    app.process().stderr?.on("data", chunk => { if (chunk.toString().includes("验收退出")) console.error(chunk.toString()); });
+    processes.set(app, app.process());
+    processes.get(app)!.stderr?.on("data", chunk => { if (chunk.toString().includes("验收退出")) console.error(chunk.toString()); });
     await app.evaluate(({ dialog, app }, directory) => {
       dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [directory] });
       dialog.showMessageBoxSync = () => 1;
@@ -88,6 +90,7 @@ test("分集直接阅读已提交参考稿和工作稿，原任务分页审阅�
     let page = await launch();
     await page.getByRole("button", { name: "打开作品", exact: true }).first().click();
     await page.getByRole("button", { name: /默认剧本/ }).click();
+    await expect(page.locator(".workspace-switcher .workspace-title")).toHaveText("默认剧本", { timeout: 30_000 });
     await expect(page.getByRole("button", { name: "剧本", exact: true })).toBeEnabled({ timeout: 30_000 });
     await navigate(page, "剧本"); await openDirectory(page);
     await expect(page.getByRole("textbox", { name: "文稿编辑", exact: true })).toContainText("船还没来");
@@ -130,6 +133,7 @@ test("分集直接阅读已提交参考稿和工作稿，原任务分页审阅�
     await expect(page.getByRole("article", { name: "剧本参考稿" })).toContainText("江岚停下脚步");
     await close();
     page = await launch(); await page.getByRole("button", { name: /默认剧本/ }).click();
+    await expect(page.locator(".workspace-switcher .workspace-title")).toHaveText("默认剧本", { timeout: 30_000 });
     await expect(page.getByRole("button", { name: "剧本", exact: true })).toBeEnabled({ timeout: 30_000 });
     await navigate(page, "剧本"); await openDirectory(page);
     await page.getByRole("button", { name: "第二集 参考稿已到", exact: true }).click();

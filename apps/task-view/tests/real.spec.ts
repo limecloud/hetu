@@ -80,11 +80,9 @@ test("real workbench opens authorized novel, drama and video through portable to
   await page.addInitScript(value => Object.assign(window, value), { initialTask: initial, viewHtml: resource.contents[0].text, realTask: true, workbenchMode: true });
   await page.goto(origin);
   const view = page.frameLocator("iframe");
-  await expect(view.getByRole("heading", { name: "河港视频", exact: true })).toBeVisible();
-  const row = view.locator(".work-row").filter({ has: view.getByRole("heading", { name: "河港视频", exact: true }) });
-  await row.getByRole("button", { name: "打开作品", exact: true }).click();
+  await view.getByRole("button", { name: "打开作品 河港视频", exact: true }).click();
   await expect(view.getByRole("alert")).toHaveCount(0);
-  await view.getByRole("button", { name: "正文与分集", exact: true }).click();
+  await view.getByRole("button", { name: "视频", exact: true }).click();
   await view.getByRole("button", { name: "查看分集成果", exact: true }).click();
   await view.getByRole("button", { name: "查看固定媒体", exact: true }).click();
   await view.getByRole("button", { name: "预览媒体", exact: true }).click();
@@ -93,10 +91,9 @@ test("real workbench opens authorized novel, drama and video through portable to
   await expect.poll(() => player.evaluate((node: HTMLVideoElement) => Number.isFinite(node.duration) && node.duration > 0)).toBe(true);
   await player.evaluate((node: HTMLVideoElement) => { node.muted = true; return node.play(); });
   await expect.poll(() => player.evaluate((node: HTMLVideoElement) => node.currentTime)).toBeGreaterThan(0);
-  await view.getByRole("button", { name: "创作库", exact: true }).click();
-  const drama = view.locator(".work-row").filter({ has: view.getByRole("heading", { name: "河港剧本", exact: true }) });
-  await drama.getByRole("button", { name: "打开作品", exact: true }).click();
-  await view.getByRole("button", { name: "正文与分集", exact: true }).click();
+  await view.getByRole("button", { name: "返回创作库", exact: true }).click();
+  await view.getByRole("button", { name: "打开作品 河港剧本", exact: true }).click();
+  await view.getByRole("button", { name: "剧本", exact: true }).click();
   await expect(view.getByText("河港剧本", { exact: true }).last()).toBeVisible();
   await expect(view.getByRole("alert")).toHaveCount(0);
 });

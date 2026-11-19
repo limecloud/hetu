@@ -1,24 +1,20 @@
-/* MCP App宿主共享作品内容与Radix语义，不绑定某一Agent品牌。 */
-:root { background:linear-gradient(145deg,var(--sage-2),var(--jade-2) 58%,var(--sage-3));background-attachment:fixed; }
-body { min-height:100vh; }
-.workbench-header { display:flex;align-items:baseline;gap:16px;padding-bottom:14px;border-bottom:.5px solid var(--line); }
-.workbench-layout { display:grid;grid-template-columns:148px minmax(0,1fr);gap:20px;min-height:420px; }
-.workbench-layout nav { display:flex;flex-direction:column;align-items:stretch;padding-top:14px;gap:3px; }
-.workbench-layout nav button { text-align:left;background:transparent;border-color:transparent;padding:6px 9px; }
-.workbench-layout nav button[aria-current=page] { color:var(--jade);background:var(--jade-soft); }
-.workbench-content { min-width:0;padding-top:18px; }
-.workbench-content > h2 { font-size:20px;margin-bottom:12px; }
-.work-row,.record-row { padding:12px 0;border-bottom:.5px solid var(--line); }
-.work-row { display:flex;align-items:center;gap:12px;flex-wrap:wrap; }
-.work-row h3 { flex:1; }
-.record-fields { min-width:0; }
-.record-field { margin:10px 0; }
-.record-field h4 { font-size:12px;font-weight:500;color:var(--muted);margin:0 0 3px; }
-.reading { white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;margin:0;max-height:640px;overflow:auto; }
-.technical { margin:12px 0;color:var(--muted);font-size:12px; }
-.technical pre { white-space:pre-wrap;overflow-wrap:anywhere;max-height:200px;overflow:auto; }
-.agent-request { border-top:.5px solid var(--line);padding-top:16px;margin-top:16px; }
-.media-preview video { display:block;width:100%;max-height:560px;margin-top:16px; }
-.media-preview audio { display:block;width:100%;margin-top:16px; }
-@media(prefers-reduced-transparency:reduce),(prefers-contrast:more) { :root{background:var(--page)} }
-@media(max-width:600px) { .workbench-layout{grid-template-columns:minmax(0,1fr);gap:4px}.workbench-layout nav{flex-direction:row;overflow:auto;padding-bottom:8px}.workbench-layout nav button{white-space:nowrap}.workbench-content{padding-top:10px} }
+/* 共享桌面工作台；此处只承接AppBridge的数据阅读和会话交接。 */
+.workbench-chrome { display: contents; }
+.workbench-status { flex: none; margin: 0; padding: 8px 20px; font-size: 12px; }
+.workbench-status:empty { display: none; }
+.workbench-content:not(:has(> .library-content)) { padding: 24px 30px; overflow: auto; }
+.workbench-content > h2 { font-size: 20px; margin: 0 0 12px; }
+.workbench-content > .library-content { height: 100%; }
+.record-row { padding: 12px 0; border-bottom: .5px solid var(--line); }
+.record-fields { min-width: 0; }
+.record-field { margin: 10px 0; }
+.record-field h4 { font-size: 12px; font-weight: 500; color: var(--muted); margin: 0 0 3px; }
+.reading { white-space: pre-wrap; overflow-wrap: anywhere; font: var(--reader-font-size,18px)/1.9 var(--reader-font,serif); }
+.agent-request { position: absolute; z-index: 30; right: 20px; bottom: 20px; width: min(620px,calc(100% - 40px)); max-height: calc(100% - 90px); overflow: auto; padding: 20px; border: .5px solid var(--chrome-border); border-radius: 8px; background: var(--floating-surface); }
+.agent-request h2 { margin: 0 0 12px; }
+.agent-request textarea { width: 100%; min-height: 100px; resize: vertical; padding: 10px; background: var(--paper); border: .5px solid var(--line); border-radius: 6px; }
+.agent-request .actions { flex-wrap: wrap; margin: 12px 0; }
+.media-preview video { display: block; width: 100%; max-height: 560px; margin-top: 16px; }
+.media-preview audio { display: block; width: 100%; margin-top: 16px; }
+.navigation-close { margin-top: auto !important; }
+@media(max-width:760px) { .workbench-content:not(:has(> .library-content)) { padding: 18px; } .agent-request { right: 12px; bottom: 12px; width: calc(100% - 24px); } }

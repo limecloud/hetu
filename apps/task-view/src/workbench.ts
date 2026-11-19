@@ -1,20 +1,32 @@
+import { createElement } from "react";
+import { createRoot, type Root } from "react-dom/client";
+import { flushSync } from "react-dom";
+import { LibraryHeader, LibraryNavigation, LibraryContent, ManuscriptText, NavigationGroup, WorkspaceHeader, WorkCoverPreview, Icon, type IconName, type LibraryWork } from "@hetu/workbench-ui";
+import { libraryAssets } from "./workbench/assets.ts";
 import { createAppHost } from "./host/bridge.ts";
 import { mountTaskReview } from "./task-review.ts";
 import { WorkbenchGateway, result, object, type RecordValue, type WorkRef } from "./workbench/gateway.ts";
 import { sections, localSections, type Section, type DetailLink } from "./workbench/domains.ts";
 import { element, button, renderData } from "./workbench/render.ts";
 import { readMedia } from "./workbench/media.ts";
+import { relatedViews } from "./workbench/navigation.ts";
+import {VideoFeedback} from "./workbench/video-feedback.tsx";
 
 const host = createAppHost("Hetu Luoshu workbench");
 const gateway = new WorkbenchGateway(host);
 const root = document.getElementById("app")!;
+const reactRoots = new Map<HTMLElement,Root>();
+let libraryKind = "all", navigationVisible = innerWidth > 760;
+function unmountReact() { for (const view of reactRoots.values()) view.unmount(); reactRoots.clear(); }
+function mountReact(parent: HTMLElement, view: ReturnType<typeof createElement>) { const target=reactRoots.get(parent)??createRoot(parent); reactRoots.set(parent,target); flushSync(() => target.render(view)); }
 let connected = false, disposed = false, epoch = 0, busy = false;
 let route: Section | undefined, work: WorkRef | undefined, works: RecordValue[] = [];
-type Reading = { action: string; input: RecordValue; data: RecordValue; view?: RecordValue };
+type Reading = { action: string; input: RecordValue; data: RecordValue; view?: RecordValue; expected?: DetailLink["expected"] };
 let current: Reading | undefined;
 let history: Reading[] = [];
 let taskView: ReturnType<typeof mountTaskReview> | undefined;
 let mediaUrl: string | undefined;
+let feedbackDirty=false;
 let error = "", notice = "", initialBinding: string | undefined;
 let content = element("section"), status = element("p");
 let request: { intent: string; references: RecordValue; text: string; delivery: "ready" | "pending" | "accepted" | "drafted" | "unknown" | "rejected" } | undefined;
@@ -22,52 +34,59 @@ let request: { intent: string; references: RecordValue; text: string; delivery: 
 function live(ticket: number) { return !disposed && ticket === epoch; }
 function fail(value: unknown) { error = value instanceof Error ? value.message : String(value); }
 function canLeave() {
+  if(feedbackDirty){notice="请先交接或清除当前视频意见，再切换成果。";updateStatus();return false;}
   if (taskView && !taskView.canLeave()) { notice = "请先保存当前选择或意见，并查询未确认操作，再切换页面。"; updateStatus(); return false; }
   if (request?.delivery === "pending" || request?.delivery === "unknown") { notice = "消息结果尚未确认，请先核对当前会话。"; updateStatus(); return false; }
   if (request?.delivery === "ready" && request.text.trim()) { notice = "当前目标尚未交接，请先发送、放入草稿或明确放弃。"; updateStatus(); return false; }
   return true;
 }
 function releaseMedia() { if (mediaUrl) URL.revokeObjectURL(mediaUrl); mediaUrl = undefined; }
-function leave() { releaseMedia(); taskView?.dispose(); taskView = undefined; current = undefined; history = []; request = undefined; error = ""; notice = ""; bindEvents(); }
+function leave() { feedbackDirty=false;releaseMedia(); taskView?.dispose(); taskView = undefined; current = undefined; history = []; request = undefined; error = ""; notice = ""; bindEvents(); }
 function updateStatus() { status.textContent = error || notice; status.setAttribute("role", error ? "alert" : "status"); }
 
+function localPage(title: string) { const section=localSections.find(item => item.title === title); if(section) void showSection(section); }
+function openExisting() { prepare("打开已有小说、剧本或视频，确认作者要继续的确切作品并核验当前客户端的精确授权，保留已有任务和成果", {}); }
+function newWork(kind: string, title: string) { prepare(`从当前想法筹备${title}，先讨论方向并保留作者选择权`, {kind}); }
 function render() {
-  root.replaceChildren(); root.setAttribute("aria-busy", String(busy));
-  const header = element("header", undefined, "workbench-header");
-  header.append(element("h1", "河图洛书"));
-  if (work) header.append(element("span", works.find(item => JSON.stringify(item.work_ref) === JSON.stringify(work))?.title as string ?? "当前作品"));
-  root.append(header);
-  const layout = element("div", undefined, "workbench-layout");
-  const nav = element("nav"); nav.setAttribute("aria-label", "创作工作台");
-  nav.append(button("创作库", () => showHome()));
-  if (gateway.management) for (const section of sections) {
-    const item = button(section.title, () => showSection(section)); item.disabled = busy || !work;
-    if (route?.id === section.id) item.setAttribute("aria-current", "page"); nav.append(item);
+  unmountReact(); root.replaceChildren(); root.setAttribute("aria-busy", String(busy));
+  const chrome=element("div",undefined,"workbench-chrome"); root.append(chrome);
+  const toggleNavigation=()=>{navigationVisible=!navigationVisible;root.querySelector(".layout")?.classList.toggle("navigation-hidden",!navigationVisible);};
+  const title=String(works.find(item=>JSON.stringify(item.work_ref)===JSON.stringify(work))?.title??"当前作品");
+  mountReact(chrome, work&&route ? createElement(WorkspaceHeader,{title,kind:work.kind,onNavigation:toggleNavigation,children:createElement("div",{className:"topbar-actions"},createElement("button",{className:"ai-button",onClick:()=>prepare(route!.intent,references())},"让 AI 处理"),createElement("button",{onClick:()=>localPage("本机设置")},"本机设置"))}) : createElement(LibraryHeader,{assets:libraryAssets,busy,onOpen:openExisting,onCreate:newWork,onSettings:()=>localPage("本机设置"),onPlugins:()=>localPage("插件"),onToggleNavigation:toggleNavigation}));
+  const layout = element("div", undefined, "layout " + (work && route ? "workspace-layout" : "library-layout") + (navigationVisible ? "" : " navigation-hidden"));
+  const nav = element("aside",undefined,"project-navigation"); nav.setAttribute("aria-label", route && work ? "项目导航" : "创作库导航");
+  if (!route) renderLibraryNavigation(nav);
+  else {
+    const back=button("返回创作库",()=>showHome());back.className="back-library";nav.append(back);
+    const labels:Record<string,[string,IconName]>={profile:["作品资料","file"],content:[work?.kind==="novel"?"小说":work?.kind==="drama"?"剧本":"视频",work?.kind==="video"?"film":work?.kind==="novel"?"book":"file"],tasks:["参考稿审核","shield"],links:["关联作品","link"],outline:["作品大纲","file"],canon:["作品设定","layers"],assets:["图片成果","image"],resources:["资料与素材","file"],cues:["素材与线索","image"],versions:["文稿版本","branch"],delivery:["作品交付","export"],operations:["管理方案","shield"],reviews:["审核记录","shield"],reports:["检查报告","check"]};
+    const item=(section:Section)=>createElement("button",{key:section.id,type:"button",disabled:busy||(!work&&sections.includes(section)),className:route?.id===section.id?"selected":"","aria-current":route?.id===section.id?"page":undefined,onClick:()=>void showSection(section)},createElement(Icon,{name:labels[section.id]?.[1]??"settings"}),createElement("span",null,labels[section.id]?.[0]??section.title));
+    const list=element("div",undefined,"navigation-scroll");nav.append(list);
+    const groups=[["创作资料",["outline","canon","assets","resources","cues"]],["版本与交付",["versions","delivery"]],["检查工具",["reviews","reports","operations"]]] as const;
+    mountReact(list,createElement("div",null,...(gateway.management?sections.filter(section=>["profile","content","tasks","links"].includes(section.id)).map(item):[]),...(gateway.management?groups.map(([title,ids])=>createElement(NavigationGroup,{key:title,title,active:!!route&&ids.some(id=>id===route!.id),children:sections.filter(section=>ids.some(id=>id===section.id)).map(item)})):[]),createElement(NavigationGroup,{title:"本机与扩展",active:localSections.some(section=>section.id===route?.id),children:localSections.map(item)})));
   }
-  for (const section of localSections) { const item = button(section.title, () => showSection(section)); item.disabled = busy; nav.append(item); }
-  content = element("section", undefined, "workbench-content");
-  layout.append(nav, content); root.append(layout);
-  status = element("p", undefined, "status"); root.append(status); updateStatus();
+  if(work&&route){const currentWork=element("div",undefined,"current-work");nav.append(currentWork);mountReact(currentWork,createElement("div",null,createElement(WorkCoverPreview,{work,title,compact:true,defaultCovers:libraryAssets.covers}),createElement("strong",null,title)));}
+  if(innerWidth<=760 && navigationVisible) { const close=button("关闭导航",()=>{navigationVisible=false;root.querySelector(".layout")?.classList.add("navigation-hidden");});close.className="navigation-close";nav.append(close); }
+  content=element("main",undefined,"page-main workbench-content");
+  layout.append(nav,content);root.append(layout);
+  status=element("p",undefined,"status workbench-status");root.append(status);updateStatus();
+  if(request)renderRequest();
+}
+function setLibraryKind(id: string) {
+  if(!canLeave())return;
+  libraryKind=id;
+  if(innerWidth<=760) {navigationVisible=false;root.querySelector(".layout")?.classList.add("navigation-hidden");}
+  const nav=root.querySelector<HTMLElement>(".project-navigation");if(nav)renderLibraryNavigation(nav);
+  renderHome();
+}
+function renderLibraryNavigation(nav: HTMLElement) {
+  mountReact(nav,createElement(LibraryNavigation,{kind:libraryKind,active:"library",busy,onKind:setLibraryKind,onPlugins:()=>localPage("插件")}));
+}
+function renderHome() {
+  mountReact(content,createElement(LibraryContent,{works:works as unknown as LibraryWork[],assets:libraryAssets,kind:libraryKind,busy,loading:!connected,appearance:document.documentElement.dataset.theme??"system",initialListMode:false,emptyTitle:"尚未打开获权作品",emptyMessage:"打开已有作品，或让当前 Agent 从一个想法开始。",onKind:setLibraryKind,onOpen:openExisting,onCreate:newWork,onSelect:(item:LibraryWork)=>{work=item.work_ref;gateway.work=work;void showSection(sections[0]);},onRefresh:()=>{if(!gateway.management){openExisting();return;}void readWorks().then(renderHome).catch(value=>{fail(value);updateStatus();});}}));
 }
 function showHome() {
   if (!canLeave()) return;
-  epoch++; leave(); route = undefined; render();
-  content.append(element("h2", "创作库"));
-  if (!connected) { content.append(element("p", "正在连接河图…", "empty")); return; }
-  if (!works.length) {
-    content.append(element("p", "尚未打开获权作品。请在当前对话说明要创作或继续的作品，让 Agent 打开对应任务或作品。", "empty"));
-    content.append(button("从一个想法开始", () => prepare("从当前想法筹备小说、剧本或视频，先讨论方向并保留作者选择权", {})));
-  }
-  for (const item of works) {
-    const ref = object(item.work_ref) as WorkRef;
-    const row = element("section", undefined, "work-row");
-    row.append(element("h3", String(item.title ?? "未命名作品")), element("span", ({ novel: "小说", drama: "剧本", video: "视频" })[ref.kind] ?? "作品"));
-    row.append(button("打开作品", async () => { work = ref; gateway.work = ref; await showSection(sections[0]); })); content.append(row);
-  }
-  if (gateway.management) content.append(button("刷新获权作品", async () => {
-    if (!canLeave()) return;
-    await readWorks(); showHome();
-  }));
+  epoch++; leave(); route=undefined;render();renderHome();
 }
 async function readWorks() {
   const data = await gateway.read("hetu.works.list", { limit: 20 });
@@ -75,13 +94,13 @@ async function readWorks() {
 }
 function pageActions() {
   const actions = element("div", undefined, "actions");
-  if (route) actions.append(button("让 AI 处理", () => prepare(route!.intent, references())));
+  if (route && !work) actions.append(button("让 AI 处理", () => prepare(route!.intent, references())));
   if (current) {
     const source = current;
-    actions.append(button("刷新", () => load(source.action, source.input, source.view, false)));
+    actions.append(button("刷新", () => load(source.action, source.input, source.view, false, source.expected)));
   }
   if (history.length) actions.append(button("返回上一项", async () => {
-    const previous = history.pop()!; await load(previous.action, previous.input, previous.view, false);
+    const previous = history.pop()!; await load(previous.action, previous.input, previous.view, false, previous.expected);
   }));
   return actions;
 }
@@ -98,7 +117,7 @@ async function showSection(section: Section) {
   }
   await load(read.action, read.input ?? {});
 }
-async function load(action: string, input: RecordValue = {}, view?: RecordValue, navigate = true) {
+async function load(action: string, input: RecordValue = {}, view?: RecordValue, navigate = true, expected?: DetailLink["expected"]) {
   if (busy || !connected || disposed) return;
   if (navigate && current) history.push(current);
   const ticket = ++epoch; busy = true; error = ""; notice = "";
@@ -107,20 +126,22 @@ async function load(action: string, input: RecordValue = {}, view?: RecordValue,
   try {
     const data = await gateway.read(action, input, view);
     if (!live(ticket)) return;
+    const fixedRecord = object(action === "hetu.working_copies.get" ? data.revision : data.draft);
+    if(expected && ((expected.revision !== undefined && fixedRecord.revision !== expected.revision) || (expected.sha256 !== undefined && (fixedRecord.content_sha256 ?? fixedRecord.sha256) !== expected.sha256))) throw new Error("成果修订或摘要与所选固定版本不一致，请重新读取目录。");
+    if(action === "hetu.working_copies.get" && typeof fixedRecord.content === "string") data.content = fixedRecord.content;
     if (action === "hetu.drama.episodes.get" && !view) {
       const manuscript = object(data.manuscript);
-      const reference = (Array.isArray(manuscript.references) ? manuscript.references.map(object) : []).find(item => item.kind === "submitted");
+      const reference = (Array.isArray(manuscript.references) ? manuscript.references.map(object) : []).find(item => item.kind === "submitted") ?? (Array.isArray(manuscript.references) ? manuscript.references.map(object)[0] : undefined);
       if (manuscript.author_has_content === false && reference) {
-        const fixed = object(reference.draft_ref);
-        const draft = await gateway.read("hetu.drafts.get", { draft_id: fixed.draft_id });
-        if (!live(ticket)) return;
-        const record = object(draft.draft);
-        if (record.revision !== fixed.revision || record.content_sha256 !== reference.sha256)
-          throw new Error("参考稿已变化，请刷新分集后重新读取。");
-        if (typeof draft.content === "string") data.reference_content = draft.content;
+        const submitted=reference.kind==="submitted", fixed=object(submitted?reference.draft_ref:reference.working_copy_ref);
+        const draft = await gateway.read(submitted?"hetu.drafts.get":"hetu.working_copies.get",submitted?{draft_id:fixed.draft_id}:{task_ref:reference.task_ref,working_copy_ref:fixed});
+        if(!live(ticket))return;
+        const record=object(submitted?draft.draft:draft.revision);
+        if((submitted&&record.revision!==fixed.revision)||(record.content_sha256??record.sha256)!==reference.sha256)throw new Error("参考稿已变化，请刷新分集后重新读取。");
+        const text=submitted?draft.content:record.content;if(typeof text==="string")data.reference_content=text;
       }
     }
-    current = { action, input, data, view };
+    current = { action, input, data, view, expected };
   } catch (value) { if (live(ticket)) { current = undefined; fail(value); } }
   finally { if (live(ticket)) { busy = false; render(); showCurrent(); } }
 }
@@ -128,13 +149,27 @@ function showCurrent() {
   content.append(element("h2", route?.title ?? "固定成果"), pageActions());
   if (!current) { content.append(element("p", error ? "读取未完成，可刷新或让 Agent 检查当前授权。" : "暂无成果", "empty")); return; }
   const source = current;
-  content.append(renderData(source.data, link => { void openDetail(link); }));
+  const prose = source.data.reference_content ?? source.data.content;
+  if(typeof prose === "string" && ["hetu.documents.get","hetu.drama.episodes.get","hetu.drafts.get","hetu.working_copies.get","hetu.git.read_version"].includes(source.action)) {
+    const stage=element("div",undefined,"manuscript-stage"),paper=element("section",undefined,"manuscript-paper");
+    const title=element("div",undefined,"manuscript-title");title.append(element("h1",String(object(source.data.document).title??object(source.data.episode).title??object(source.data.draft).title??"文稿")),element("span",source.data.reference_content?"参考稿":"只读"));
+    paper.append(title);
+    const text=element("div",undefined,"manuscript-scroll");paper.append(text);
+    mountReact(text,createElement(ManuscriptText,{text:prose,novel:work?.kind==="novel","aria-label":source.data.reference_content?"最新提交参考稿":"固定正文"}));
+    const footer=element("footer",undefined,"manuscript-footer");footer.append(element("span",String(object(source.data.revision).source_format??object(source.data.draft).source_format??(work?.kind==="novel"?"Markdown":"Fountain"))),element("span",`${Array.from(prose).filter(char=>/\p{Script=Han}/u.test(char)).length} 字`));paper.append(footer);stage.append(paper);content.append(stage);
+    const details=element("details");details.append(element("summary","稿件版本与固定依据"),renderData(Object.fromEntries(Object.entries(source.data).filter(([key])=>key!=="content"&&key!=="reference_content")),link=>{void openDetail(link);}));content.append(details);
+  } else content.append(renderData(source.data, link => { void openDetail(link); }));
+  const related=relatedViews(source.action,source.data,source.input,work);
+  if(related.length){const links=element("div",undefined,"actions");for(const link of related)links.append(button(link.label,()=>openDetail(link)));content.append(links);}
+
   if (source.action === "hetu.plugins.capabilities" && typeof source.data.capabilities_sha256 === "string") {
     const declared = [...(Array.isArray(source.data.actions) ? source.data.actions : []), ...(Array.isArray(source.data.data_actions) ? source.data.data_actions : [])].map(object);
     for (const capability of declared) {
       const schema = object(capability.input_schema), required = Array.isArray(schema.required) ? schema.required : [];
-      if (capability.effect !== "read" || required.length || typeof (capability.id ?? capability.name) !== "string") continue;
-      content.append(button(String(capability.title ?? capability.purpose ?? "读取专业成果"), () => load("hetu.plugins.invoke", {
+      if (typeof (capability.id ?? capability.name) !== "string") continue;
+      const title=String(capability.title??capability.purpose??"专业创作功能");
+      if(capability.effect!=="read"||required.length){content.append(button(`让 AI ${title}`,()=>prepare(`使用当前专业插件${title}，先读取固定对象与已有成果，按此能力的实际Schema准备完整操作`,{plugin_id:source.data.plugin_id,package_sha256:source.data.package_sha256??source.input.package_sha256,capabilities_sha256:source.data.capabilities_sha256,action:capability.id??capability.name})));continue;}
+      content.append(button(title, () => load("hetu.plugins.invoke", {
         plugin_id: source.data.plugin_id, package_sha256: source.data.package_sha256 ?? source.input.package_sha256,
         capabilities_sha256: source.data.capabilities_sha256, action: capability.id ?? capability.name, arguments: {},
       }, {})));
@@ -155,6 +190,10 @@ function showCurrent() {
       } catch (value) { if (live(ticket)) { fail(value); preview.replaceChildren(); updateStatus(); } }
     })); content.append(preview);
   }
+  if(source.action==="hetu.video.media.get"&&source.data.media_ref) {
+    const panel=element("div");content.append(panel);
+    mountReact(panel,createElement(VideoFeedback,{media,mediaRef:object(source.data.media_ref),onDirty:(value:boolean)=>{feedbackDirty=value;},onPrepare:(intent:string,fixed:RecordValue)=>{feedbackDirty=false;prepare(intent,fixed);if(request){request.text=intent;renderRequest();}}}));
+  }
   if (typeof source.data.next_cursor === "string") content.append(button("下一页", () => load(source.action, { ...source.input, cursor: source.data.next_cursor })));
   if (source.data.response) {
     const response = object(source.data.response), recovery = object(response.read), patch = object(object(response.read).input_patch);
@@ -171,10 +210,7 @@ function showCurrent() {
   if (typeof projection.next_path === "string") content.append(button("展开固定内容", () => load(source.action, source.input, { result_path: projection.next_path, expected_result_sha256: projection.source_result_sha256, max_bytes: 12000 })));
   if (projection.page) content.append(renderData(page.text ?? page.items ?? page, link => { void openDetail(link); }));
   if (typeof projection.next_offset === "number") content.append(button("继续读取固定内容", () => load(source.action, source.input, { result_path: projection.result_path, expected_result_sha256: projection.source_result_sha256, offset: projection.next_offset, max_bytes: 12000 })));
-  if (route?.id === "versions") {
-    const links = element("div", undefined, "actions");
-    links.append(button("查看历史", () => load("hetu.git.log", { limit: 20 })), button("查看快照", () => load("hetu.git.list_snapshots", { limit: 20 }))); content.append(links);
-  }
+
 }
 function fieldTitle(key: string) { return ({ content: "正文", novel: "卷章", project: "项目", blueprint: "设定", actions: "能力", tasks: "任务", documents: "正文目录", resources: "资料", works: "作品" } as Record<string, string>)[key] ?? "内容"; }
 async function openDetail(link: DetailLink) {
@@ -186,17 +222,18 @@ async function openDetail(link: DetailLink) {
       if (!live(ticket)) return;
       busy = false; showTask(response);
     } catch (value) { if (live(ticket)) { busy = false; fail(value); updateStatus(); } }
-  } else if (link.action) await load(link.action, link.input);
+  } else if (link.action) await load(link.action, link.input, undefined, true, link.expected);
 }
 function showTask(response: Parameters<ReturnType<typeof mountTaskReview>["receive"]>[0]) {
   if (!canLeave()) return;
   leave(); render(); content.append(element("h2", "任务与参考稿"));
-  const pane = element("div"); content.append(pane);
+  const pane = element("div",undefined,"task-review"); content.append(pane);
   taskView = mountTaskReview(host, pane); taskView.receive(response); if (connected) taskView.ready();
   host.onteardown = teardown;
 }
 
 function prepare(intent: string, references_: RecordValue) {
+  if(request && !canLeave())return;
   request = { intent, references: references_, text: "", delivery: "ready" }; renderRequest();
 }
 function renderRequest() {
@@ -234,6 +271,7 @@ function renderRequest() {
   for (const node of actions.querySelectorAll("button")) if (node !== copy) node.disabled = value.delivery !== "ready";
   panel.append(actions);
   if (value.delivery === "ready") panel.append(button("放弃未发送请求", () => { request = undefined; panel.remove(); }));
+  if(value.delivery === "unknown")panel.append(button("已核对宿主，结束此次交接",()=>{request=undefined;panel.remove();notice="已结束此次交接，保留原作品与成果；未重复发送。";updateStatus();}));
   const states = { ready: "先核对目标，再交给 Agent。", pending: "正在核对并交接…", accepted: "宿主已受理，等待实际成果。", drafted: "请求已放入草稿，尚未发送。", rejected: "宿主未接收请求，可复制后继续。", unknown: "结果尚未确认，请先查看当前会话，不自动重发。" };
   panel.append(element("p", states[value.delivery], "muted")); root.append(panel);
 }
@@ -261,17 +299,17 @@ async function teardown() {
   disposed = true; epoch++; connected = false; taskView?.dispose(); taskView = undefined;
   releaseMedia();
   gateway.management = undefined; gateway.work = undefined; works = []; work = undefined; current = undefined; history = []; request = undefined;
-  root.replaceChildren(element("p", "面板连接已结束。已保存成果保留在原作品。", "empty")); return {};
+  unmountReact(); root.replaceChildren(element("p", "面板连接已结束。已保存成果保留在原作品。", "empty")); return {};
 }
 function bindEvents() {
   host.ontoolresult = response => { void receive(response); };
   host.onhostcontextchanged = context => {
-    if (context.theme) document.documentElement.dataset.theme = context.theme;
+    if (context.theme) {document.documentElement.dataset.theme=context.theme;if(!route&&connected)renderHome();}
     void deepLink(context);
   };
   host.onteardown = teardown;
 }
-bindEvents(); render();
+bindEvents(); render(); renderHome();
 if (window.parent === window) { error = "请在支持 MCP Apps 的客户端打开河图。"; updateStatus(); }
 else void host.connect().then(async () => {
   if (disposed) return;
