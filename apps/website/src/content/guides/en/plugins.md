@@ -180,3 +180,14 @@ Observation and memory retain their character. Accurate quotation and convincing
 Tell your Agent: “Organize both station interviews, keep their disagreement about the closing year, compare two paper edits and mark narration that has not been recorded.” Return to [Documentary Studio](/en/plugins/documentary-studio/) to read the complete sequence, inspect support and counterevidence, and play the original media. Give feedback on a claim or excerpt, then continue research and revision with source ranges and estimates intact.
 
 Tell your Agent: “Make a station-letter podcast using existing recordings, leave a half-second pause and identify revised lines that need recording.” Return to [Podcast Studio](/en/plugins/podcast-studio/) to listen, comment by chapter and position, and deliver audio, script and real chapter timing after review. The first release joins PCM16 WAV with matching sample rate and channels in sequence; your chosen audio tools handle complex mixing. Hosting and publishing are separate.
+
+
+## Stage, stand-up, science and quests
+
+Tell your Agent: “Prepare light and sound cues for the station scene, with explicit triggers and prerequisites, and retain rehearsal notes.” Return to [Stage Rehearsal](/en/plugins/stage-rehearsal/) to read the prompt book and compare holds and call order. Plans and observed notes remain distinct; revisit cues after revision.
+
+Tell your Agent: “Turn my experience of waiting for a letter into two bits, seed a callback and offer a punchline variant.” Return to [Stand-up Studio](/en/plugins/standup-studio/) to compare set order and local wording, then revise from specific notes. Structural checks support the creator’s judgment.
+
+Tell your Agent: “Explain average speed using 20 metres in 10 seconds, check the units and state the analogy’s limits.” Return to [Science Writing Studio](/en/plugins/science-studio/) to read the article and inspect exact calculations and scope. Revisit earlier claims and paragraphs when numbers change.
+
+Tell your Agent: “Design a quest where I take a letter, spend a ticket and deliver it at the station. Check what happens without a ticket.” Return to [Quest Studio](/en/plugins/quest-studio/) to inspect conditions and costs, run a fixed route and review the complete state trace. Preserve uncertainty when exploration is incomplete, and revisit old routes after changes.

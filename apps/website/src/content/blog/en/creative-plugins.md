@@ -68,3 +68,6 @@ Continue with [essays and competing readings](/en/blog/fragments-and-readings/).
 
 
 Continue with [documentaries and podcasts](/en/blog/accounts-and-listening/).
+
+
+Continue with [stage, stand-up, science and quests](/en/blog/one-station-four-forms/).

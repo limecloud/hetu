@@ -5,6 +5,10 @@ interface Props { locale: Locale; kind?: string; }
 const { locale, kind = 'relationships' } = Astro.props;
 const en = locale === 'en';
 const captures: Record<string, { width: number; height: number; zh: string; en: string }> = {
+  "stage-rehearsal": {"width": 1360, "height": 900, "zh": "舞台排演实际工作面，固定正式macOS制品与原创虚构演示资料。", "en": "Stage Rehearsal actual work surface from a fixed official macOS artifact with original fictional demonstration data."},
+  "standup-studio": {"width": 1360, "height": 900, "zh": "脱口秀工坊实际工作面，固定正式macOS制品与原创虚构演示资料。", "en": "Stand-up Studio actual work surface from a fixed official macOS artifact with original fictional demonstration data."},
+  "science-studio": {"width": 1360, "height": 900, "zh": "科普写作实际工作面，固定正式macOS制品与原创虚构演示资料。", "en": "Science Writing Studio actual work surface from a fixed official macOS artifact with original fictional demonstration data."},
+  "quest-studio": {"width": 1360, "height": 900, "zh": "游戏任务工坊实际工作面，固定正式macOS制品与原创虚构演示资料。", "en": "Quest Studio actual work surface from a fixed official macOS artifact with original fictional demonstration data."},
   "documentary-studio": {"width": 1360, "height": 900, "zh": "纪录片策划实际工作面，固定正式macOS制品与原创虚构演示资料。", "en": "Documentary Studio actual work surface from a fixed official macOS artifact with original fictional demonstration data."},
   "podcast-studio": {"width": 1360, "height": 900, "zh": "播客工坊实际工作面，固定正式macOS制品与原创虚构演示资料。", "en": "Podcast Studio actual work surface from a fixed official macOS artifact with original fictional demonstration data."},
   "essay-studio": {"width": 1360, "height": 900, "zh": "散文工坊实际工作面，固定正式macOS制品与原创虚构演示资料。", "en": "Essay Studio actual work surface from a fixed official macOS artifact with original fictional demonstration data."},

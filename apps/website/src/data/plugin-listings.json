@@ -1224,5 +1224,137 @@
       "evidence_url": "https://github.com/wordflowlab/hetu-podcast-studio/blob/88484d2d1de2c44263b4062e8e5825e4f640a519/docs/research/release-acceptance.json",
       "integrity_url": "https://github.com/wordflowlab/hetu-podcast-studio/releases/download/v0.1.0/release-integrity.json"
     }
+  },
+  {
+    "slug": "stage-rehearsal",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.stage-rehearsal",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "舞台排演",
+        "en": "Stage Rehearsal"
+      },
+      "license": "Apache-2.0"
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-stage-rehearsal",
+    "source_commit": "204b27f6b1fd37eb319ecd738eeffd85b3f9c0bb",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-stage-rehearsal/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-stage-rehearsal/releases/download/v0.1.0/org.wordflowlab.stage-rehearsal-0.1.0.tgz",
+      "archive_sha256": "a7ccbe2b665f8622bc8f5ca423c366056283409e082f04c6ff360478bb1ea1ec",
+      "package_sha256": "943aabdcbd8cd92c96aa8ce748fe3afb44e57ed6475071befae8d6a4067d4748",
+      "size_bytes": 117773,
+      "minimum_host_version": "0.12.6",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-stage-rehearsal/blob/204b27f6b1fd37eb319ecd738eeffd85b3f9c0bb/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-stage-rehearsal/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "standup-studio",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.standup-studio",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "脱口秀工坊",
+        "en": "Stand-up Studio"
+      },
+      "license": "Apache-2.0"
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-standup-studio",
+    "source_commit": "dbaf8860c3c4f5f1c5f610567f969a940c0ce117",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-standup-studio/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-standup-studio/releases/download/v0.1.0/org.wordflowlab.standup-studio-0.1.0.tgz",
+      "archive_sha256": "bacdd7bb9675d56c5d0e51c5e7cb8f43e73d8f943c69d63a09b35b83339a5596",
+      "package_sha256": "4fe146a60d39ea2444a084d8576b952c4096049b9905ceb2d0425aaa7812bacb",
+      "size_bytes": 120694,
+      "minimum_host_version": "0.12.6",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-standup-studio/blob/dbaf8860c3c4f5f1c5f610567f969a940c0ce117/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-standup-studio/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "science-studio",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.science-studio",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "科普写作",
+        "en": "Science Writing Studio"
+      },
+      "license": "Apache-2.0"
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-science-studio",
+    "source_commit": "e855eee242a271ec2799759962a4a2f52dc31ec4",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-science-studio/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-science-studio/releases/download/v0.1.0/org.wordflowlab.science-studio-0.1.0.tgz",
+      "archive_sha256": "a3bfca7cf3a359d99cf18fb0647c74e710e38b4ac4c554ad713d45b93a3f1457",
+      "package_sha256": "4bf88dca36aa8959e4e8559e431220865558e69f8b4fddaf410f8ac1f831f345",
+      "size_bytes": 107572,
+      "minimum_host_version": "0.12.6",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-science-studio/blob/e855eee242a271ec2799759962a4a2f52dc31ec4/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-science-studio/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "quest-studio",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.quest-studio",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "游戏任务工坊",
+        "en": "Quest Studio"
+      },
+      "license": "Apache-2.0"
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-quest-studio",
+    "source_commit": "dcaf6a31fbbee9f66393fa7ae67d8bacf0378066",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-quest-studio/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-quest-studio/releases/download/v0.1.0/org.wordflowlab.quest-studio-0.1.0.tgz",
+      "archive_sha256": "745bef9c9fe037a0fe6b61b690978f6f0d34ed30518438ae6b658dcdcf1201c4",
+      "package_sha256": "c9392b643db2fbd9477d09a35cde6d5c09dc009fd8392e77f6fa28ebdaaa0f2e",
+      "size_bytes": 122209,
+      "minimum_host_version": "0.12.6",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-quest-studio/blob/dcaf6a31fbbee9f66393fa7ae67d8bacf0378066/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-quest-studio/releases/download/v0.1.0/release-integrity.json"
+    }
   }
 ]

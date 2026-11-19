@@ -5,6 +5,7 @@ import type { Locale } from './site';
 import { evidence } from './market';
 
 export const articles = [
+  {"id": "one-station-four-forms", "titles": {"zh-CN": "一个旧站，四种继续创作的方式", "en": "One station, four ways to keep creating"}, "descriptions": {"zh-CN": "从舞台提示和脱口秀段单，到科普解释与游戏任务，让不同结构围绕作品继续积累。", "en": "Keep the structures needed for another revision, from stage cues and comedy sets to science explanations and game quests."}},
   {"id": "accounts-and-listening", "titles": {"zh-CN": "两段证词，两种听法", "en": "Two accounts, two ways to listen"}, "descriptions": {"zh-CN": "从采访原片到纪录片纸剪和播客单集，让相反说法与实际声音各有位置。", "en": "Keep disagreement and actual sound in view, from interview media to documentary paper edits and podcast episodes."}},
   {"id": "fragments-and-readings", "titles": {"zh-CN": "灯还亮着，下一段怎么写", "en": "The light is still on. What comes next?"}, "descriptions": {"zh-CN": "用同样片段比较散文的次序，让准确引文和不同读法进入下一篇评论。", "en": "Compare arrangements of the same fragments, then carry exact quotations and competing readings into a critical response."}},
   {"id": "a-life-in-its-own-words", "titles": {"zh-CN": "同一个人，可以怎样写下来", "en": "More than one way to write a life"}, "descriptions": {"zh-CN": "从诗行的取舍、纪实主张到人物生平，让明确依据与未知都能留在下一稿。", "en": "From line alternatives to reported claims and life histories, keep evidence and uncertainty available for the next revision."}},
