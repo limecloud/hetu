@@ -65,3 +65,6 @@ Continue with [poetry, nonfiction and biography around one work](/en/blog/a-life
 
 
 Continue with [essays and competing readings](/en/blog/fragments-and-readings/).
+
+
+Continue with [documentaries and podcasts](/en/blog/accounts-and-listening/).

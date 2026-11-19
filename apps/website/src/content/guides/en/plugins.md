@@ -173,3 +173,10 @@ Ask your Agent to make an essay from the station rain, a remembered letter and a
 - [Literary Criticism](/en/plugins/criticism-studio/): compare quotations with reasons, competing interpretations and the article, then revisit evidence after revisions.
 
 Observation and memory retain their character. Accurate quotation and convincing interpretation remain separate judgments. Projects can continue from fixed results while expression and choice stay with the author.
+
+
+## Documentaries and podcasts
+
+Tell your Agent: “Organize both station interviews, keep their disagreement about the closing year, compare two paper edits and mark narration that has not been recorded.” Return to [Documentary Studio](/en/plugins/documentary-studio/) to read the complete sequence, inspect support and counterevidence, and play the original media. Give feedback on a claim or excerpt, then continue research and revision with source ranges and estimates intact.
+
+Tell your Agent: “Make a station-letter podcast using existing recordings, leave a half-second pause and identify revised lines that need recording.” Return to [Podcast Studio](/en/plugins/podcast-studio/) to listen, comment by chapter and position, and deliver audio, script and real chapter timing after review. The first release joins PCM16 WAV with matching sample rate and channels in sequence; your chosen audio tools handle complex mixing. Hosting and publishing are separate.

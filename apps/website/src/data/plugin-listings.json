@@ -1158,5 +1158,71 @@
       "evidence_url": "https://github.com/wordflowlab/hetu-criticism-studio/blob/c87d9a68dfd22dc55edc4995379d34628c165023/docs/research/release-acceptance.json",
       "integrity_url": "https://github.com/wordflowlab/hetu-criticism-studio/releases/download/v0.1.0/release-integrity.json"
     }
+  },
+  {
+    "slug": "documentary-studio",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.documentary-studio",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "纪录片策划",
+        "en": "Documentary Studio"
+      },
+      "license": "Apache-2.0"
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-documentary-studio",
+    "source_commit": "59ddaeb1548e8c980c56300f535f8e018a1e9d54",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-documentary-studio/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-documentary-studio/releases/download/v0.1.0/org.wordflowlab.documentary-studio-0.1.0.tgz",
+      "archive_sha256": "b5af816d9366b296a62f5044a2ce66fee0045f0a2691f96f69281cdb2b667ead",
+      "package_sha256": "9c50bc5babcae0567b21c4081fea6950478f315f7aac5ce1b3047258357f2d43",
+      "size_bytes": 111365,
+      "minimum_host_version": "0.12.6",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-documentary-studio/blob/59ddaeb1548e8c980c56300f535f8e018a1e9d54/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-documentary-studio/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "podcast-studio",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.podcast-studio",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "播客工坊",
+        "en": "Podcast Studio"
+      },
+      "license": "Apache-2.0"
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-podcast-studio",
+    "source_commit": "88484d2d1de2c44263b4062e8e5825e4f640a519",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-podcast-studio/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-podcast-studio/releases/download/v0.1.0/org.wordflowlab.podcast-studio-0.1.0.tgz",
+      "archive_sha256": "e92beb19170ddcdcd06e089ff699df3a3b76da64cd539ee9a9aeb4db0b46f900",
+      "package_sha256": "3a58fe327df83001b35b4363a0edcf7b6149840fcce74ed7da92b13c17386c79",
+      "size_bytes": 107703,
+      "minimum_host_version": "0.12.6",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-podcast-studio/blob/88484d2d1de2c44263b4062e8e5825e4f640a519/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-podcast-studio/releases/download/v0.1.0/release-integrity.json"
+    }
   }
 ]
