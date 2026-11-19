@@ -68,3 +68,6 @@ Skills 和客户端接入包安装在你使用的 Agent 环境里，为它提供
 
 
 从采访原片到纸剪与声音，见[两段证词，两种听法](/blog/accounts-and-listening/)。
+
+
+从提示与段单到解释和任务，见[一个旧站，四种继续创作的方式](/blog/one-station-four-forms/)。
