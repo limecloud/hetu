@@ -34,7 +34,8 @@
         },
         "fixed_readback": true
       },
-      "professional_evidence": "https://github.com/wordflowlab/hetu-poetry-studio/tree/main/docs/research"
+      "professional_evidence": "https://github.com/wordflowlab/hetu-poetry-studio/tree/main/docs/research",
+      "delivery_documentation_commit": "3bbe9ab4ef031a447452f0cc45eb8a68d9473e63"
     },
     {
       "slug": "nonfiction-studio",
@@ -69,7 +70,8 @@
         },
         "fixed_readback": true
       },
-      "professional_evidence": "https://github.com/wordflowlab/hetu-nonfiction-studio/tree/main/docs/research"
+      "professional_evidence": "https://github.com/wordflowlab/hetu-nonfiction-studio/tree/main/docs/research",
+      "delivery_documentation_commit": "4aac917b33ed134dcde71a6816b28634b3b2ec23"
     },
     {
       "slug": "biography-studio",
@@ -104,7 +106,8 @@
         },
         "fixed_readback": true
       },
-      "professional_evidence": "https://github.com/wordflowlab/hetu-biography-studio/tree/main/docs/research"
+      "professional_evidence": "https://github.com/wordflowlab/hetu-biography-studio/tree/main/docs/research",
+      "delivery_documentation_commit": "1c3fd45041b7369905dc9f55a9000868e55a7ff4"
     }
   ],
   "host": {
@@ -125,7 +128,7 @@
     "host_capability_map_check": true
   },
   "website": {
-    "state": "locally_verified",
+    "state": "deployed_and_verified",
     "pages_built": 189,
     "local_references_checked": 11333,
     "local_browser_checks_passed": 48,
@@ -238,7 +241,169 @@
         "status": 200,
         "sha256": "6d2754f8e26cbe4b1a825cff03283986cefaeaf907aac5927b7fbc5b87cb5bf1"
       }
-    ]
+    ],
+    "deployment": "https://3a821705.hetu-website-3uu.pages.dev",
+    "deployed_source_commit": "ef0a66f23dade89219c3b8929a207a722a067ca4",
+    "origin": "https://hetu.limeai.run",
+    "browser_checks_passed": 48,
+    "public_responses": {
+      "origin": "https://hetu.limeai.run",
+      "responses": [
+        {
+          "route": "/plugins/",
+          "status": 200,
+          "raw_sha256": "8c24041c917b505beef56496c7b606a45c48c87a5a935776f7a688871477a7da",
+          "expected_sha256": "8c24041c917b505beef56496c7b606a45c48c87a5a935776f7a688871477a7da",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/plugins/",
+          "status": 200,
+          "raw_sha256": "00f79570ef12f9aaac6996036d1cd1c69eda430196c63c5d6832a6c34c897342",
+          "expected_sha256": "00f79570ef12f9aaac6996036d1cd1c69eda430196c63c5d6832a6c34c897342",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/docs/plugins/",
+          "status": 200,
+          "raw_sha256": "6a6cca7e7e659b368b46d2e877c20985d939b6aea120450bc311dd923152cf3f",
+          "expected_sha256": "6a6cca7e7e659b368b46d2e877c20985d939b6aea120450bc311dd923152cf3f",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/docs/plugins/",
+          "status": 200,
+          "raw_sha256": "f9f41ae46fd68603f79626d17b8458785069db63f534322ef2b2b905e8d6f81e",
+          "expected_sha256": "f9f41ae46fd68603f79626d17b8458785069db63f534322ef2b2b905e8d6f81e",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/blog/a-life-in-its-own-words/",
+          "status": 200,
+          "raw_sha256": "e0167446dd2793a11eaf1795e6a9ab67eeaafb417531e06adf57cea199c64517",
+          "expected_sha256": "e0167446dd2793a11eaf1795e6a9ab67eeaafb417531e06adf57cea199c64517",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/blog/a-life-in-its-own-words/",
+          "status": 200,
+          "raw_sha256": "da2b4b20d5bca9f0aaee3006705f28c7372af193ef0bf95f4cf8832ad9e21aef",
+          "expected_sha256": "da2b4b20d5bca9f0aaee3006705f28c7372af193ef0bf95f4cf8832ad9e21aef",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/blog/creative-plugins/",
+          "status": 200,
+          "raw_sha256": "aeda0383fdfdad1bc5b39c6d3c97845212fc4eff102505632ef73f449cc34056",
+          "expected_sha256": "aeda0383fdfdad1bc5b39c6d3c97845212fc4eff102505632ef73f449cc34056",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/blog/creative-plugins/",
+          "status": 200,
+          "raw_sha256": "285a69afeb041958265bdaec62bc6133eddce427538a622a3463dd6956dc3979",
+          "expected_sha256": "285a69afeb041958265bdaec62bc6133eddce427538a622a3463dd6956dc3979",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/poetry-studio/",
+          "status": 200,
+          "raw_sha256": "6b7099b6969176d10d3465025c20fa30f8bef2c74ca8ab9fb23e24d966b65dc4",
+          "expected_sha256": "6b7099b6969176d10d3465025c20fa30f8bef2c74ca8ab9fb23e24d966b65dc4",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/plugins/poetry-studio/",
+          "status": 200,
+          "raw_sha256": "3853af5a185b66d8e3002529c947438f6fe9f01a5189dbdac828baf715e55d02",
+          "expected_sha256": "3853af5a185b66d8e3002529c947438f6fe9f01a5189dbdac828baf715e55d02",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/poetry-studio.png",
+          "status": 200,
+          "raw_sha256": "bf0ef33383a3268ec2c73f0a603ed7dfbe85e5faab5c9df6bb97aa3bca74d4b4",
+          "expected_sha256": "bf0ef33383a3268ec2c73f0a603ed7dfbe85e5faab5c9df6bb97aa3bca74d4b4",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/nonfiction-studio/",
+          "status": 200,
+          "raw_sha256": "e13b431fc45ae3f09277e7e2ca5632892ca47dda66965e193aec2f655d1b48fd",
+          "expected_sha256": "e13b431fc45ae3f09277e7e2ca5632892ca47dda66965e193aec2f655d1b48fd",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/plugins/nonfiction-studio/",
+          "status": 200,
+          "raw_sha256": "2eb8e819af55909c484cd9bf65199d3265a1145c4c00dc7bea3d2e986ba2d499",
+          "expected_sha256": "2eb8e819af55909c484cd9bf65199d3265a1145c4c00dc7bea3d2e986ba2d499",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/nonfiction-studio.png",
+          "status": 200,
+          "raw_sha256": "eadc83c5ff97ae1f044485bce9274c620bf3c9da8ae132d61d58b41d0fba072f",
+          "expected_sha256": "eadc83c5ff97ae1f044485bce9274c620bf3c9da8ae132d61d58b41d0fba072f",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/biography-studio/",
+          "status": 200,
+          "raw_sha256": "94f0be2050431f0abea0604c16e779c8181559534a8ca8e1e2f852430f5cdc28",
+          "expected_sha256": "94f0be2050431f0abea0604c16e779c8181559534a8ca8e1e2f852430f5cdc28",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/plugins/biography-studio/",
+          "status": 200,
+          "raw_sha256": "479bb815166643f3de34c272aa6c1ae8fb5740169cb78e95ec3fe50df65db55e",
+          "expected_sha256": "479bb815166643f3de34c272aa6c1ae8fb5740169cb78e95ec3fe50df65db55e",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/biography-studio.png",
+          "status": 200,
+          "raw_sha256": "5cb54d09f7d6b1174420580e5f6d1ccd3ce5aa8dc5fbc904f90c353608d8bbcf",
+          "expected_sha256": "5cb54d09f7d6b1174420580e5f6d1ccd3ce5aa8dc5fbc904f90c353608d8bbcf",
+          "observed_changes": [],
+          "matches_build": true
+        }
+      ]
+    },
+    "logs": {
+      "website-deploy.log": {
+        "sha256": "83c048b7cffe5c5d5cca258275ae9b53c43dd490af0517c05dca49076ff313e3"
+      },
+      "website-tests.log": {
+        "sha256": "9354b3094fb4934a0b4e53f9576553537fbef524cc441c4f648c1e21c91e3c6e"
+      },
+      "production-tests.log": {
+        "sha256": "3ae14cf6ffe9308ad533232093919385f56dd7a307c11ac5ec5c869ab1ca1dab"
+      },
+      "production-bytes.log": {
+        "sha256": "711e8552b49de1611fc503fd2287e22713da340ad4cad5157fc532692dd2c53a"
+      },
+      "public-install.log": {
+        "sha256": "2ced7b3e37f325e303ec606e065869007629e36013c98112d8e6961b88c08e09"
+      }
+    }
   },
   "limits": [
     "macOS arm64专业开发预览；Windows/Linux专业实机未验收",
