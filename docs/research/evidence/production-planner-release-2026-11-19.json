@@ -34,5 +34,124 @@
   "limits": [
     "macOS arm64开发预览",
     "未执行Windows/Linux专业实机、付费模型、真实拍摄、作者选用或定稿"
-  ]
+  ],
+  "website": {
+    "deployment": "https://7193df2e.hetu-website-3uu.pages.dev",
+    "deployed_source_commit": "f0b4fb8f0523177c0e586545d096a98826441c85",
+    "origin": "https://hetu.limeai.run",
+    "browser_checks_passed": 28,
+    "local_release_link_checks_passed": 24,
+    "public_response_check": {
+      "origin": "https://hetu.limeai.run",
+      "responses": [
+        {
+          "route": "/plugins/",
+          "status": 200,
+          "raw_sha256": "3c0e3ea6ee6eaebe192bbaea970288e5cd8b6e5ec8a0db2b8ca7a2faac4fb4ae",
+          "expected_sha256": "0181e46834340763a397b50c526ebe2d7faabd44b44589d76b3b65cc5816f2db",
+          "known_analytics_tags_removed": 1,
+          "matches_build": true,
+          "known_analytics_newlines_removed": 1
+        },
+        {
+          "route": "/en/plugins/",
+          "status": 200,
+          "raw_sha256": "2c3b8274162b982ab9c4dba3d70775dc1dfa9f21d66843b906c4b2145a22cfc6",
+          "expected_sha256": "817806127cd89aaf63bd98b0b814a3c2887a7cc855fb7d6f4fba47c60b0bceee",
+          "known_analytics_tags_removed": 1,
+          "matches_build": true,
+          "known_analytics_newlines_removed": 1
+        },
+        {
+          "route": "/plugins/production-planner/",
+          "status": 200,
+          "raw_sha256": "1201e929630909931cf78f891bc93ffbbec3ce2711c39dbfae63471cd064d151",
+          "expected_sha256": "328258cbadba853e07fc4e3e51280ca8504e4c38d3caff51f8a71ba3dac528e1",
+          "known_analytics_tags_removed": 1,
+          "matches_build": true,
+          "known_analytics_newlines_removed": 1
+        },
+        {
+          "route": "/en/plugins/production-planner/",
+          "status": 200,
+          "raw_sha256": "98abb2d9983dda36955e73ce6c7b8b787629ee141feb214a524185a535970743",
+          "expected_sha256": "dd0ac9713c0a4365091a1b9f60b90818700ad73bbb9ef602bcdf8fc8aa4ec3c4",
+          "known_analytics_tags_removed": 1,
+          "matches_build": true,
+          "known_analytics_newlines_removed": 1
+        },
+        {
+          "route": "/plugins/director-stage/",
+          "status": 200,
+          "raw_sha256": "d6b164dd5b0cd514f99c27911a97cf0d4f50ade706ed4aebffc74f3a599ccc48",
+          "expected_sha256": "09abd635db0f5b223cf565f56ea6ab8d53beb8404063b5ac3f71271cfdef630f",
+          "known_analytics_tags_removed": 1,
+          "matches_build": true,
+          "known_analytics_newlines_removed": 1
+        },
+        {
+          "route": "/en/plugins/director-stage/",
+          "status": 200,
+          "raw_sha256": "e387ce1a5e032735a52f0b32b8b2e2892de3e1f6e7af19e96631caf0c0824047",
+          "expected_sha256": "180dfb4f0611c4ae25bd30ee07f722d142065ccdd014b9fad732acd77b8fe4aa",
+          "known_analytics_tags_removed": 1,
+          "matches_build": true,
+          "known_analytics_newlines_removed": 1
+        },
+        {
+          "route": "/docs/plugins/",
+          "status": 200,
+          "raw_sha256": "ae29a55af75322f0374913dea397186db4bf1042198ea185c36d44d73b8b37f8",
+          "expected_sha256": "cf65d54cf10b037ed307ea9c54191775c5202d46a723b01f8a7dd6c9c9421208",
+          "known_analytics_tags_removed": 1,
+          "matches_build": true,
+          "known_analytics_newlines_removed": 1
+        },
+        {
+          "route": "/en/docs/plugins/",
+          "status": 200,
+          "raw_sha256": "2d11902702e0a86cf302afaa8e49e7c6c91f3733cefd6da2d4e9a4e3b54ca6c2",
+          "expected_sha256": "63cd9f88af9106dc8aeca57cb07b7e9d0a771cdb8f47485273a5d44f3c17766f",
+          "known_analytics_tags_removed": 1,
+          "matches_build": true,
+          "known_analytics_newlines_removed": 1
+        },
+        {
+          "route": "/blog/script-to-preparation/",
+          "status": 200,
+          "raw_sha256": "89aaa2d0622f510649e0026ba440ead0c4800b871af77581bb3d4e2a0225adb1",
+          "expected_sha256": "ab869b662e24039672a0836d49db178734bf1da74899c4ab553805489865d7fe",
+          "known_analytics_tags_removed": 1,
+          "matches_build": true,
+          "known_analytics_newlines_removed": 1
+        },
+        {
+          "route": "/en/blog/script-to-preparation/",
+          "status": 200,
+          "raw_sha256": "161109e16059da890b6d6d6074466b6b9d083b56f67e449c47aeafe2000c4d2d",
+          "expected_sha256": "0f903e5ac3e3d1aa7f39ae0bfc36b1d874693b9e2ff03a57d2a33ef88a692be5",
+          "known_analytics_tags_removed": 1,
+          "matches_build": true,
+          "known_analytics_newlines_removed": 1
+        },
+        {
+          "route": "/plugins/production-planner.png",
+          "status": 200,
+          "raw_sha256": "3496f329c983e7156fa42834472e60d4a0f6eed2791f26e9a4d850829d34d36b",
+          "expected_sha256": "3496f329c983e7156fa42834472e60d4a0f6eed2791f26e9a4d850829d34d36b",
+          "known_analytics_tags_removed": 0,
+          "matches_build": true
+        },
+        {
+          "route": "/sitemap.xml",
+          "status": 200,
+          "raw_sha256": "983bb2fe362a2f065aee5ba378cfa32bb2f1828249a0cbce89a7ececb13de46f",
+          "expected_sha256": "983bb2fe362a2f065aee5ba378cfa32bb2f1828249a0cbce89a7ececb13de46f",
+          "known_analytics_tags_removed": 0,
+          "matches_build": true
+        }
+      ],
+      "normalization": "仅移除实际观察到的Cloudflare统计标签及它在body闭合前新增的一个换行，保留原响应摘要；其他字节必须一致。"
+    }
+  }
 }
