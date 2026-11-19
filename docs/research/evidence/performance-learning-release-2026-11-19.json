@@ -1,0 +1,492 @@
+{
+  "recorded_at": "2026-11-19",
+  "plugins": {
+    "stage-rehearsal": {
+      "schema_version": 1,
+      "plugin_id": "org.wordflowlab.stage-rehearsal",
+      "version": "0.1.0",
+      "source_commit": "204b27f6b1fd37eb319ecd738eeffd85b3f9c0bb",
+      "archive": "org.wordflowlab.stage-rehearsal-0.1.0.tgz",
+      "archive_sha256": "a7ccbe2b665f8622bc8f5ca423c366056283409e082f04c6ff360478bb1ea1ec",
+      "package_sha256": "943aabdcbd8cd92c96aa8ce748fe3afb44e57ed6475071befae8d6a4067d4748",
+      "size_bytes": 117773,
+      "minimum_host_version": "0.12.6",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "official_host": {
+        "version": "0.12.6",
+        "git_sha": "b75293837aaa220803b9dc964ba72b8646fa7244",
+        "archive_sha256": "de012d76bb9751d6f2ed78427c6887563fcfd4455ae19717c6f65a9182700ab3"
+      },
+      "acceptance": "https://github.com/wordflowlab/hetu-stage-rehearsal/actions/runs/44498801329",
+      "evidence_url": "https://github.com/wordflowlab/hetu-stage-rehearsal/blob/204b27f6b1fd37eb319ecd738eeffd85b3f9c0bb/docs/research/release-acceptance.json"
+    },
+    "standup-studio": {
+      "schema_version": 1,
+      "plugin_id": "org.wordflowlab.standup-studio",
+      "version": "0.1.0",
+      "source_commit": "dbaf8860c3c4f5f1c5f610567f969a940c0ce117",
+      "archive": "org.wordflowlab.standup-studio-0.1.0.tgz",
+      "archive_sha256": "bacdd7bb9675d56c5d0e51c5e7cb8f43e73d8f943c69d63a09b35b83339a5596",
+      "package_sha256": "4fe146a60d39ea2444a084d8576b952c4096049b9905ceb2d0425aaa7812bacb",
+      "size_bytes": 120694,
+      "minimum_host_version": "0.12.6",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "official_host": {
+        "version": "0.12.6",
+        "git_sha": "b75293837aaa220803b9dc964ba72b8646fa7244",
+        "archive_sha256": "de012d76bb9751d6f2ed78427c6887563fcfd4455ae19717c6f65a9182700ab3"
+      },
+      "acceptance": "https://github.com/wordflowlab/hetu-standup-studio/actions/runs/44498827001",
+      "evidence_url": "https://github.com/wordflowlab/hetu-standup-studio/blob/dbaf8860c3c4f5f1c5f610567f969a940c0ce117/docs/research/release-acceptance.json"
+    },
+    "science-studio": {
+      "schema_version": 1,
+      "plugin_id": "org.wordflowlab.science-studio",
+      "version": "0.1.0",
+      "source_commit": "e855eee242a271ec2799759962a4a2f52dc31ec4",
+      "archive": "org.wordflowlab.science-studio-0.1.0.tgz",
+      "archive_sha256": "a3bfca7cf3a359d99cf18fb0647c74e710e38b4ac4c554ad713d45b93a3f1457",
+      "package_sha256": "4bf88dca36aa8959e4e8559e431220865558e69f8b4fddaf410f8ac1f831f345",
+      "size_bytes": 107572,
+      "minimum_host_version": "0.12.6",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "official_host": {
+        "version": "0.12.6",
+        "git_sha": "b75293837aaa220803b9dc964ba72b8646fa7244",
+        "archive_sha256": "de012d76bb9751d6f2ed78427c6887563fcfd4455ae19717c6f65a9182700ab3"
+      },
+      "acceptance": "https://github.com/wordflowlab/hetu-science-studio/actions/runs/44498856525",
+      "evidence_url": "https://github.com/wordflowlab/hetu-science-studio/blob/e855eee242a271ec2799759962a4a2f52dc31ec4/docs/research/release-acceptance.json"
+    },
+    "quest-studio": {
+      "schema_version": 1,
+      "plugin_id": "org.wordflowlab.quest-studio",
+      "version": "0.1.0",
+      "source_commit": "dcaf6a31fbbee9f66393fa7ae67d8bacf0378066",
+      "archive": "org.wordflowlab.quest-studio-0.1.0.tgz",
+      "archive_sha256": "745bef9c9fe037a0fe6b61b690978f6f0d34ed30518438ae6b658dcdcf1201c4",
+      "package_sha256": "c9392b643db2fbd9477d09a35cde6d5c09dc009fd8392e77f6fa28ebdaaa0f2e",
+      "size_bytes": 122209,
+      "minimum_host_version": "0.12.6",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "official_host": {
+        "version": "0.12.6",
+        "git_sha": "b75293837aaa220803b9dc964ba72b8646fa7244",
+        "archive_sha256": "de012d76bb9751d6f2ed78427c6887563fcfd4455ae19717c6f65a9182700ab3"
+      },
+      "acceptance": "https://github.com/wordflowlab/hetu-quest-studio/actions/runs/44499674316",
+      "evidence_url": "https://github.com/wordflowlab/hetu-quest-studio/blob/dcaf6a31fbbee9f66393fa7ae67d8bacf0378066/docs/research/release-acceptance.json"
+    }
+  },
+  "official_full_runs": {
+    "stage-rehearsal": "https://github.com/wordflowlab/hetu-stage-rehearsal/actions/runs/44498801329",
+    "standup-studio": "https://github.com/wordflowlab/hetu-standup-studio/actions/runs/44498827001",
+    "science-studio": "https://github.com/wordflowlab/hetu-science-studio/actions/runs/44498856525",
+    "quest-studio": "https://github.com/wordflowlab/hetu-quest-studio/actions/runs/44499674316"
+  },
+  "verification": {
+    "unit_tests": 125,
+    "domain_actions": 124,
+    "rendered_diagrams": 16,
+    "actual_work_surfaces": 124,
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "widths": [
+      1360,
+      760
+    ],
+    "all_runtime_actions": true,
+    "fixed_source_continuation_task_bytes": true,
+    "four_package_fixed_basis": true,
+    "independent_drama_video_and_wrong_work": true,
+    "public_runtime_files_each": 18,
+    "current_codex_skill_files_byte_verified": 12,
+    "original_36_plugin_states_preserved": true,
+    "public_package_install_preserved_original_and_revised": true
+  },
+  "website": {
+    "source_commit": "ac9f0ac1e933886455e2bdb15ea3c727f817c87d",
+    "deployment": "https://1dea9859.hetu-website-3uu.pages.dev",
+    "origin": "https://hetu.limeai.run",
+    "pages": 211,
+    "local_references": 12531,
+    "local_browser_tests": 60,
+    "production_browser_tests": 60,
+    "exact_responses": 20,
+    "logs": {
+      "build_sha256": "4a4bb92b6317d5acb6c416859b4c6217d48b6aef2cb52b8e16ce22e2e070a4b0",
+      "local_sha256": "b20ab2f778c9adc2d9b04ebba1dc1092a1317f7dbf1b5bd59dce317f24f2af93",
+      "deploy_sha256": "add1d8f5a136ee2fc13b1e9c8f587f0c19da6cba8f888adeaa3943c5f030325e",
+      "production_sha256": "193a7f0fbfd1e78920f9b86899603fbdf47d64c37d5c3986c135f0ce7b390a71"
+    },
+    "public": {
+      "origin": "https://hetu.limeai.run",
+      "responses": [
+        {
+          "route": "/plugins/",
+          "status": 200,
+          "raw_sha256": "270de12379cb742d0be46bac98a6ad5c009d9cec316e2492377cf1dbada00947",
+          "expected_sha256": "270de12379cb742d0be46bac98a6ad5c009d9cec316e2492377cf1dbada00947",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/plugins/",
+          "status": 200,
+          "raw_sha256": "482735e80ba728d0a9691fc207c5fabba72aadf1d3cf6f452c26d968b4c7d5f9",
+          "expected_sha256": "482735e80ba728d0a9691fc207c5fabba72aadf1d3cf6f452c26d968b4c7d5f9",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/docs/plugins/",
+          "status": 200,
+          "raw_sha256": "29897e90c38501e2fa124b3384f520d998556deb66212b20209584c4cef501a7",
+          "expected_sha256": "29897e90c38501e2fa124b3384f520d998556deb66212b20209584c4cef501a7",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/docs/plugins/",
+          "status": 200,
+          "raw_sha256": "0da8d365328b81382b1c7a1e7585f723d56fc1589f877c1382121cca206116e4",
+          "expected_sha256": "0da8d365328b81382b1c7a1e7585f723d56fc1589f877c1382121cca206116e4",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/blog/one-station-four-forms/",
+          "status": 200,
+          "raw_sha256": "73bac861ab51bb4b87b5216b9d8eebbebb2ae7fe5219536d1561335c81d07b18",
+          "expected_sha256": "73bac861ab51bb4b87b5216b9d8eebbebb2ae7fe5219536d1561335c81d07b18",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/blog/one-station-four-forms/",
+          "status": 200,
+          "raw_sha256": "d8db37d2f827563ef3510617cae647a1ad23b6c6701befb304075e5274317b23",
+          "expected_sha256": "d8db37d2f827563ef3510617cae647a1ad23b6c6701befb304075e5274317b23",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/blog/creative-plugins/",
+          "status": 200,
+          "raw_sha256": "6697e829d48da63c6d15b1a8b54569bd4699ff558c36bc07315e5a0f38a22465",
+          "expected_sha256": "6697e829d48da63c6d15b1a8b54569bd4699ff558c36bc07315e5a0f38a22465",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/blog/creative-plugins/",
+          "status": 200,
+          "raw_sha256": "7074a70fdb107165b68fb8783420a0b69a9d3764252022bfe278c5cd66f713f6",
+          "expected_sha256": "7074a70fdb107165b68fb8783420a0b69a9d3764252022bfe278c5cd66f713f6",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/stage-rehearsal/",
+          "status": 200,
+          "raw_sha256": "5170cfcd00d458a6277f6f05eb520d719de6dd3e27ab75f17a77b9b3dabbfcf2",
+          "expected_sha256": "5170cfcd00d458a6277f6f05eb520d719de6dd3e27ab75f17a77b9b3dabbfcf2",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/plugins/stage-rehearsal/",
+          "status": 200,
+          "raw_sha256": "e8e59b65ef018e0b3c0d2b3856428d5fabf6dbd25c0a6215f083b9d587f6bfef",
+          "expected_sha256": "e8e59b65ef018e0b3c0d2b3856428d5fabf6dbd25c0a6215f083b9d587f6bfef",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/stage-rehearsal.png",
+          "status": 200,
+          "raw_sha256": "5b817e7f9cf2618f363e98d9df5a0b8c9dd78d1b2a5c6b118d0a6f985db54f64",
+          "expected_sha256": "5b817e7f9cf2618f363e98d9df5a0b8c9dd78d1b2a5c6b118d0a6f985db54f64",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/standup-studio/",
+          "status": 200,
+          "raw_sha256": "7e052c161a2e67d2009dea6165840da57c230109176e24c7b19c982754b92e90",
+          "expected_sha256": "7e052c161a2e67d2009dea6165840da57c230109176e24c7b19c982754b92e90",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/plugins/standup-studio/",
+          "status": 200,
+          "raw_sha256": "6112a613122c84b2596f33da258f55e07fb6f029d13441c44736f18a2839ad86",
+          "expected_sha256": "6112a613122c84b2596f33da258f55e07fb6f029d13441c44736f18a2839ad86",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/standup-studio.png",
+          "status": 200,
+          "raw_sha256": "af6e927a269555c6b0628edf3c3cfc5dedbfb374646838cdbecfb9247133b717",
+          "expected_sha256": "af6e927a269555c6b0628edf3c3cfc5dedbfb374646838cdbecfb9247133b717",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/science-studio/",
+          "status": 200,
+          "raw_sha256": "dedab88475055e47edc7a79445192ea51e197d855d06ba526f019e6478baf904",
+          "expected_sha256": "dedab88475055e47edc7a79445192ea51e197d855d06ba526f019e6478baf904",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/plugins/science-studio/",
+          "status": 200,
+          "raw_sha256": "05498648321aa20a9c0f6ed952af2f6610a6e452091976564b2789145e6a177f",
+          "expected_sha256": "05498648321aa20a9c0f6ed952af2f6610a6e452091976564b2789145e6a177f",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/science-studio.png",
+          "status": 200,
+          "raw_sha256": "ebebb6003a71e11263d1571624e64c7549973b7f915f76fff9f4baa4f9346c70",
+          "expected_sha256": "ebebb6003a71e11263d1571624e64c7549973b7f915f76fff9f4baa4f9346c70",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/quest-studio/",
+          "status": 200,
+          "raw_sha256": "e0f6d4fe92269ce0b6f7ef09cc4d7e78fb02829ae36f7e136e81d0bb526c1b72",
+          "expected_sha256": "e0f6d4fe92269ce0b6f7ef09cc4d7e78fb02829ae36f7e136e81d0bb526c1b72",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/plugins/quest-studio/",
+          "status": 200,
+          "raw_sha256": "43e67b6483b697928b93583e957b69780c43e9af5129eb659494a29e0e74e178",
+          "expected_sha256": "43e67b6483b697928b93583e957b69780c43e9af5129eb659494a29e0e74e178",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/quest-studio.png",
+          "status": 200,
+          "raw_sha256": "1c17d249791d912515b9cd7b23b0bea84c4f899d86e55f157be1acaaf6666ea5",
+          "expected_sha256": "1c17d249791d912515b9cd7b23b0bea84c4f899d86e55f157be1acaaf6666ea5",
+          "observed_changes": [],
+          "matches_build": true
+        }
+      ]
+    },
+    "first_production_attempt": {
+      "first_attempt": {
+        "browser_passed": 59,
+        "browser_failed": 1,
+        "browser_failure": "English catalogue served preceding deployment without stage category (38 plugins)",
+        "byte_verification_failure": "/blog/one-station-four-forms/ returned 404"
+      },
+      "observed_before_rerun": {
+        "production_blog_status": 200,
+        "preview_blog_status": 200,
+        "production_english_catalogue_includes_stage_category": true
+      },
+      "logs_directory": "output/performance-learning-batch/website-first-production-attempt",
+      "preserved_log_sha256": {
+        "verify-public.log": "d119cd06d0328675e62533212dfd4586dcb37cbbbdb610e33801c785f4c6187e",
+        "website-production.log": "870d3d83853037e1971e7c1e6b6c0c4db7feedcb23d975b1cfd5ebc1e9808a76"
+      }
+    }
+  },
+  "public_links": [
+    {
+      "slug": "stage-rehearsal",
+      "url": "https://github.com/wordflowlab/hetu-stage-rehearsal/releases/download/v0.1.0/org.wordflowlab.stage-rehearsal-0.1.0.tgz",
+      "status": 200,
+      "sha256": "a7ccbe2b665f8622bc8f5ca423c366056283409e082f04c6ff360478bb1ea1ec"
+    },
+    {
+      "slug": "stage-rehearsal",
+      "url": "https://github.com/wordflowlab/hetu-stage-rehearsal/releases/download/v0.1.0/org.wordflowlab.stage-rehearsal-0.1.0.tgz.sha256",
+      "status": 200,
+      "sha256": "dba7f1ce15a18f0d180b7207fca511658bbd3a8fe729251649f07b24eb61bd92"
+    },
+    {
+      "slug": "stage-rehearsal",
+      "url": "https://github.com/wordflowlab/hetu-stage-rehearsal/releases/download/v0.1.0/release-integrity.json",
+      "status": 200,
+      "sha256": "7d5250bd4c3c32bc55091d4c26175e3cade89450a64a33bc88bd531900f52a3b"
+    },
+    {
+      "slug": "stage-rehearsal",
+      "url": "https://github.com/wordflowlab/hetu-stage-rehearsal/releases/tag/v0.1.0",
+      "status": 200,
+      "sha256": "8dad45f0e3648e53215e0a96b703c585006694af1e444e12ea91fba108f7bb75"
+    },
+    {
+      "slug": "stage-rehearsal",
+      "url": "https://github.com/wordflowlab/hetu-stage-rehearsal/blob/204b27f6b1fd37eb319ecd738eeffd85b3f9c0bb/docs/research/release-acceptance.json",
+      "status": 200,
+      "sha256": "c5d8e39908608654c489d2a90408b99da4ceec95fdc5d711e2ef55ab156619f7"
+    },
+    {
+      "slug": "stage-rehearsal",
+      "url": "https://github.com/wordflowlab/hetu-stage-rehearsal/blob/204b27f6b1fd37eb319ecd738eeffd85b3f9c0bb/CAPABILITIES.md",
+      "status": 200,
+      "sha256": "ae5e1cbc307af9717b2ec41958a97481e273224b4fe6ee056ff3f9daa0d6846c"
+    },
+    {
+      "slug": "stage-rehearsal",
+      "url": "https://github.com/wordflowlab/hetu-stage-rehearsal/tree/204b27f6b1fd37eb319ecd738eeffd85b3f9c0bb/docs",
+      "status": 200,
+      "sha256": "7f56df66d1071d2da8b1a8c8c3f03773d7e095df649b5452f6425406d79ecf4d"
+    },
+    {
+      "slug": "standup-studio",
+      "url": "https://github.com/wordflowlab/hetu-standup-studio/releases/download/v0.1.0/org.wordflowlab.standup-studio-0.1.0.tgz",
+      "status": 200,
+      "sha256": "bacdd7bb9675d56c5d0e51c5e7cb8f43e73d8f943c69d63a09b35b83339a5596"
+    },
+    {
+      "slug": "standup-studio",
+      "url": "https://github.com/wordflowlab/hetu-standup-studio/releases/download/v0.1.0/org.wordflowlab.standup-studio-0.1.0.tgz.sha256",
+      "status": 200,
+      "sha256": "95aadb8c4e31e70373732f19a23bdd95782e98cff272b22c8a3325b105e4289b"
+    },
+    {
+      "slug": "standup-studio",
+      "url": "https://github.com/wordflowlab/hetu-standup-studio/releases/download/v0.1.0/release-integrity.json",
+      "status": 200,
+      "sha256": "9a992b331150266db97ce9f6b002b2c5466c030daaafc75be97c3f90845aa4b3"
+    },
+    {
+      "slug": "standup-studio",
+      "url": "https://github.com/wordflowlab/hetu-standup-studio/releases/tag/v0.1.0",
+      "status": 200,
+      "sha256": "ffbd9488e04862053ea5688eddf5b1b8e953794375f10bff4d5b71d5372b1e01"
+    },
+    {
+      "slug": "standup-studio",
+      "url": "https://github.com/wordflowlab/hetu-standup-studio/blob/dbaf8860c3c4f5f1c5f610567f969a940c0ce117/docs/research/release-acceptance.json",
+      "status": 200,
+      "sha256": "1962e45dcf57f7eedfde88da631b09a749d93a68dc71c3ac6ac21362bdd30b0b"
+    },
+    {
+      "slug": "standup-studio",
+      "url": "https://github.com/wordflowlab/hetu-standup-studio/blob/dbaf8860c3c4f5f1c5f610567f969a940c0ce117/CAPABILITIES.md",
+      "status": 200,
+      "sha256": "7a91f3250e9f7f4a37df5651ea7a9dcb874b54f6ce105553b5fbc8917a100e68"
+    },
+    {
+      "slug": "standup-studio",
+      "url": "https://github.com/wordflowlab/hetu-standup-studio/tree/dbaf8860c3c4f5f1c5f610567f969a940c0ce117/docs",
+      "status": 200,
+      "sha256": "c04252f081c1555f5e4e8601bbf04cd4418808f6be29d0fa3f4e0d5fcbb2ee5f"
+    },
+    {
+      "slug": "science-studio",
+      "url": "https://github.com/wordflowlab/hetu-science-studio/releases/download/v0.1.0/org.wordflowlab.science-studio-0.1.0.tgz",
+      "status": 200,
+      "sha256": "a3bfca7cf3a359d99cf18fb0647c74e710e38b4ac4c554ad713d45b93a3f1457"
+    },
+    {
+      "slug": "science-studio",
+      "url": "https://github.com/wordflowlab/hetu-science-studio/releases/download/v0.1.0/org.wordflowlab.science-studio-0.1.0.tgz.sha256",
+      "status": 200,
+      "sha256": "d3f58228ebc8f3218d7396907f8147b42f68e618233c82e022245f021c0e04b3"
+    },
+    {
+      "slug": "science-studio",
+      "url": "https://github.com/wordflowlab/hetu-science-studio/releases/download/v0.1.0/release-integrity.json",
+      "status": 200,
+      "sha256": "883774fcf9427f82fe1c268cbdff6f64c95168ffe5bbbbdd8fe8739a545c1e49"
+    },
+    {
+      "slug": "science-studio",
+      "url": "https://github.com/wordflowlab/hetu-science-studio/releases/tag/v0.1.0",
+      "status": 200,
+      "sha256": "0cb181aeacbe0cefb8031473a49a2ba9e7c5000dacac6e6f70f26242ec056405"
+    },
+    {
+      "slug": "science-studio",
+      "url": "https://github.com/wordflowlab/hetu-science-studio/blob/e855eee242a271ec2799759962a4a2f52dc31ec4/docs/research/release-acceptance.json",
+      "status": 200,
+      "sha256": "9e75d214590400b90e3ac83651a21f3c98e3b74460c0c4f277ca02b81243216b"
+    },
+    {
+      "slug": "science-studio",
+      "url": "https://github.com/wordflowlab/hetu-science-studio/blob/e855eee242a271ec2799759962a4a2f52dc31ec4/CAPABILITIES.md",
+      "status": 200,
+      "sha256": "5ad13f95a790904bb79077f68c16ca8e37bbbf1efbaa867173598fffbb1ab6c6"
+    },
+    {
+      "slug": "science-studio",
+      "url": "https://github.com/wordflowlab/hetu-science-studio/tree/e855eee242a271ec2799759962a4a2f52dc31ec4/docs",
+      "status": 200,
+      "sha256": "37122d9e74623b12fbeb73e465785e3841799a3e5094715283a8dd2f53e47d5c"
+    },
+    {
+      "slug": "quest-studio",
+      "url": "https://github.com/wordflowlab/hetu-quest-studio/releases/download/v0.1.0/org.wordflowlab.quest-studio-0.1.0.tgz",
+      "status": 200,
+      "sha256": "745bef9c9fe037a0fe6b61b690978f6f0d34ed30518438ae6b658dcdcf1201c4"
+    },
+    {
+      "slug": "quest-studio",
+      "url": "https://github.com/wordflowlab/hetu-quest-studio/releases/download/v0.1.0/org.wordflowlab.quest-studio-0.1.0.tgz.sha256",
+      "status": 200,
+      "sha256": "c2e16f7db8188507776efefb4d29b6f7f15a3f288e0ab7a9b91b31f41432fdaf"
+    },
+    {
+      "slug": "quest-studio",
+      "url": "https://github.com/wordflowlab/hetu-quest-studio/releases/download/v0.1.0/release-integrity.json",
+      "status": 200,
+      "sha256": "c3e3533eeffdf26160282ac3892ddded5339fda2462b15e1f98d29dba0e1577b"
+    },
+    {
+      "slug": "quest-studio",
+      "url": "https://github.com/wordflowlab/hetu-quest-studio/releases/tag/v0.1.0",
+      "status": 200,
+      "sha256": "793efc1878918013a9b6cb9b5c88539b2ffcc65aba8ac29fa974a44fd2ec5175"
+    },
+    {
+      "slug": "quest-studio",
+      "url": "https://github.com/wordflowlab/hetu-quest-studio/blob/dcaf6a31fbbee9f66393fa7ae67d8bacf0378066/docs/research/release-acceptance.json",
+      "status": 200,
+      "sha256": "51a43d111205dd313ff6eb39178d060dfccbd12e4038b063b77e77858468dead"
+    },
+    {
+      "slug": "quest-studio",
+      "url": "https://github.com/wordflowlab/hetu-quest-studio/blob/dcaf6a31fbbee9f66393fa7ae67d8bacf0378066/CAPABILITIES.md",
+      "status": 200,
+      "sha256": "b19a2a0819b1e171f71d90e0ae3e4703a960cdde4c9d2e3bf7a1ffb8110b20c5"
+    },
+    {
+      "slug": "quest-studio",
+      "url": "https://github.com/wordflowlab/hetu-quest-studio/tree/dcaf6a31fbbee9f66393fa7ae67d8bacf0378066/docs",
+      "status": 200,
+      "sha256": "8d97e73e237007aa8f47b3caa050bd503bccb08fa2676457f4173ca519b3ced0"
+    }
+  ],
+  "limits": [
+    "专业实测范围为macOS arm64；Windows/Linux专业实机与原生窗口材质未验证",
+    "原创虚构材料不认证真人排演、观众反应、科学解释或游戏体验",
+    "科普可选单位合同与任务图箭头修正后完整复验；本机脱口秀退出清理超时保留，不计为完整本机旅程通过",
+    "共享/Applications/Hetu.app未替换；未执行作品内容外发、付费、正文采纳、定稿或作品对外发布"
+  ]
+}
