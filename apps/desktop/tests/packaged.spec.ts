@@ -351,6 +351,19 @@ test(
       let plugin = application!
         .windows()
         .find((p) => p.url().startsWith("hetu-plugin://"))!;
+      // 派生媒体在同一插件渲染器播放；固定素材仍走独立受管媒体入口。
+      await plugin.evaluate((base64) => {
+        const bytes=Uint8Array.from(atob(base64),v=>v.charCodeAt(0));
+        const audio=document.createElement("audio");audio.id="derived-audio";audio.controls=true;
+        audio.src=URL.createObjectURL(new Blob([bytes],{type:"audio/wav"}));document.body.append(audio);
+      },sampleAudio().toString("base64"));
+      const derived=plugin.locator("#derived-audio");
+      await expect.poll(()=>derived.evaluate((el:HTMLAudioElement)=>el.readyState)).toBeGreaterThanOrEqual(2);
+      expect(await derived.evaluate((el:HTMLAudioElement)=>el.duration)).toBe(4);
+      await derived.evaluate((el:HTMLAudioElement)=>el.play());
+      await expect.poll(()=>derived.evaluate((el:HTMLAudioElement)=>el.currentTime)).toBeGreaterThan(.1);
+      await derived.evaluate((el:HTMLAudioElement)=>{el.pause();URL.revokeObjectURL(el.src);el.remove();});
+      await expect(plugin.evaluate(()=>fetch("https://invalid.example/").then(()=>true))).rejects.toThrow();
       await plugin
         .getByRole("textbox", { name: "新增条目" })
         .fill("独立应用人物");

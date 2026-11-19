@@ -285,7 +285,7 @@ impl Kernel {
                         None => true,
                     }
             }
-            "hetu.creative_tasks.get" => {
+            "hetu.creative_tasks.get" | "hetu.creative_tasks.assess" => {
                 self.check_task_work_access(input, &reference)?;
                 true
             }
@@ -424,6 +424,9 @@ impl Kernel {
                     && self.read_drama_episode(text(input, "episode_id")?, None)?.0["project_id"]
                         == *object_id
             }
+            "hetu.video.media.save" | "hetu.video.media.get" | "hetu.video.media.list"
+            | "hetu.video.feedback.save" | "hetu.video.feedback.list" | "hetu.video.delivery.preview"
+            | "hetu.assets.read_blob" => input["work_ref"] == reference,
             "hetu.video.projects.get" => kind == "video" && input["video_project_id"] == *object_id,
             "hetu.video.projects.update"
             | "hetu.video.episodes.create"
@@ -497,6 +500,7 @@ impl Kernel {
                         | "project_id"
                         | "episode_id"
                         | "video_episode_id"
+                        | "media_ref"
                         | "revision"
                         | "entity_ref"
                         | "blueprint_revision"
@@ -533,6 +537,9 @@ impl Kernel {
             {
                 return Ok(false);
             }
+        }
+        if object["media_ref"].is_object() {
+            self.fixed_video_media(reference, &object["media_ref"])?;
         }
         if let Some(document) = object["document_id"].as_str() {
             if self.document_work_ref(&self.document(document)?)?.as_ref() != Some(reference) {

@@ -10,6 +10,8 @@ pub const MIME: &str = "text/html;profile=mcp-app";
 const HTML: &str = include_str!("../resources/task-view.html");
 pub const OPERATION_URI: &str = "ui://hetu/operation-view/1";
 const OPERATION_HTML: &str = include_str!("../resources/operation-view.html");
+pub const WORKBENCH_URI: &str = "ui://hetu/workbench/1";
+const WORKBENCH_HTML: &str = include_str!("../resources/workbench.html");
 
 pub fn supported(context: &RequestContext<RoleServer>) -> bool {
     context
@@ -39,7 +41,22 @@ pub fn tool(mut tool: Tool) -> Tool {
                 .into(),
         );
     }
+    // 精简模型目录与App调用目录分别管理，权限仍由Core核验。
+    if tool.meta.is_none() {
+        tool.meta = Some(json!({"ui":{"visibility":["model","app"]}}).as_object().unwrap().clone().into());
+    }
     tool
+}
+
+pub fn workbench_resource() -> Resource {
+    Resource::new(WORKBENCH_URI, "hetu-workbench")
+        .with_title("河图洛书 / Hetu Luoshu")
+        .with_mime_type(MIME)
+        .with_size(WORKBENCH_HTML.len() as u64)
+}
+pub fn read_workbench() -> ReadResourceResult {
+    ReadResourceResult::new(vec![ResourceContents::text(WORKBENCH_HTML, WORKBENCH_URI).with_mime_type(MIME)
+        .with_meta(json!({"ui":{"csp":{"connectDomains":[],"resourceDomains":[],"frameDomains":[],"baseUriDomains":[]},"permissions":{},"prefersBorder":true}}).as_object().unwrap().clone().into())])
 }
 
 pub fn operation_resource() -> Resource {

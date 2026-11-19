@@ -8,13 +8,20 @@ declare global {
     testTheme?: "light" | "dark";
     testLocale?: string;
     testMessages?: boolean;
+    testExtensions?: boolean;
+    testContext?: boolean;
+    testDeepLink?: string;
+    testActions?: Record<string, Record<string, unknown>>;
     realTask?: boolean;
+    workbenchMode?: boolean;
     operationInput?: Record<string, unknown>;
     harness: {
       calls: { name: string; arguments?: Record<string, unknown> }[];
       reads: string[];
       saveMode: "normal" | "lost" | "conflict" | "absent";
       messages: unknown[];
+      wireMessages: unknown[];
+      contexts: unknown[];
       messageMode: "accepted" | "rejected" | "lost";
       send: (result: CallToolResult) => void;
       teardown: () => Promise<unknown>;
@@ -28,14 +35,18 @@ iframe.setAttribute("sandbox", "allow-scripts");
 iframe.style.cssText = "width:100%;height:1400px;border:0;display:block";
 document.body.style.margin = "0";
 document.body.append(iframe);
-const bridge = new AppBridge(null, { name: "Hetu Apps contract host", version: "1" }, { serverTools: {}, serverResources: {}, ...(window.testMessages ? { message: { text: {} } } : {}) }, { hostContext: { theme: window.testTheme ?? "light", locale: window.testLocale ?? "zh-CN" } });
+const bridge = new AppBridge(null, { name: "Hetu Apps contract host", version: "1" }, { serverTools: {}, serverResources: {}, ...(window.testMessages ? { message: { text: {} } } : {}), ...(window.testContext ? { updateModelContext: { text: {} } } : {}), ...(window.testExtensions ? { experimental: { "openai/message": {} } } : {}) }, { hostContext: { theme: window.testTheme ?? "light", locale: window.testLocale ?? "zh-CN", ...(window.testDeepLink ? { "openai/deepLink": { url: window.testDeepLink } } : {}) } });
 let current = structuredClone(window.initialTask);
 let original: CallToolResult | undefined;
 const harness: Window["harness"] = window.harness = {
-  calls: [], reads: [], saveMode: "normal", messages: [], messageMode: "accepted",
+  calls: [], reads: [], saveMode: "normal", messages: [], wireMessages: [], contexts: [], messageMode: "accepted",
   send: result => { current = structuredClone(result); bridge.sendToolResult(result); },
   teardown: () => bridge.teardownResource({}),
 };
+window.addEventListener("message", event => {
+  if (event.source === iframe.contentWindow && event.data?.method === "ui/message") harness.wireMessages.push(structuredClone(event.data.params));
+});
+bridge.onupdatemodelcontext = async params => { harness.contexts.push(structuredClone(params)); return {}; };
 bridge.oncalltool = async params => {
   harness.calls.push(structuredClone(params));
   if (window.realTask) {
@@ -43,6 +54,16 @@ bridge.oncalltool = async params => {
     if (!response.ok) throw new Error("Real MCP tool call failed");
     return await response.json();
   }
+  if (params.name === "hetu_inspect_collaboration" && window.testActions) {
+    const action = String(params.arguments?.action);
+    return { content: [], structuredContent: { status: "succeeded", data: { actions: [{ name: action, effect: "read", input_schema: { properties: { management_ref: {}, work_ref: {} } } }] } } };
+  }
+  if (params.name === "hetu_call_action" && window.testActions) {
+    const action = String(params.arguments?.action);
+    const value = window.testActions[action];
+    return value ? { content: [], structuredContent: { status: "succeeded", data: value } } : { content: [], isError: true, structuredContent: { status: "blocked", error: { code: "forbidden", message: "Not authorized" } } };
+  }
+  if (params.name === "hetu_open_app") return current;
   if (params.name === "hetu_open_task_view") return current;
   if (["hetu_get_management_operation", "hetu_local_settings_get_operation"].includes(params.name)) return current;
   if (params.name === "hetu_read_task_operation") {
@@ -85,6 +106,9 @@ bridge.onreadresource = async params => {
   return { contents: [{ uri: params.uri, mimeType: "application/json", text: JSON.stringify(result) }] };
 };
 bridge.oninitialized = () => {
+  if ((current.structuredContent as { data?: { app?: unknown } }).data?.app) {
+    bridge.sendToolInput({ arguments: {} }); bridge.sendToolResult(current); return;
+  }
   if (window.operationInput) {
     bridge.sendToolInput({ arguments: window.operationInput }); bridge.sendToolResult(current); return;
   }

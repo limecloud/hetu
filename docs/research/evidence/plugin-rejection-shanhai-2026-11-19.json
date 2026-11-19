@@ -1,0 +1,291 @@
+{
+  "date": "2026-11-19",
+  "status": "passed_with_explicit_scope",
+  "shanhai_version": "0.2.0",
+  "package_sha256": "be225fda128ba021b4b63c81b8e0029c2398bc118dcdf015e27a97ff87784486",
+  "host": {
+    "baseline_version": "0.12.4",
+    "kind": "isolated-host-rejection-patch",
+    "signing": "ad-hoc-development",
+    "manifest_sha256": "6858f344d794c20e8181f3fd5a04d4853975d3ea8a2518d48f3535a9b3afa5ee",
+    "runtime_patch_sha256": "c9d4a39c761be9caa4c79359f8aeb71c384c3db2665a1b1114bc9bc5d0ef98ae",
+    "artifacts_sha256": {
+      "Contents/Resources/bin/hetu-app-server": "699ed02f2afea17bb613c76ef298a4f8f3f5ff5582ead19d6b488f14670efdd7",
+      "Contents/Resources/bin/hetu": "b091604b4e587c030852ebcd632668088c152dfb8587437a572e35d7e60ca527",
+      "Contents/Resources/bin/hetu-mcp": "335b97f0b8cff8c8c7583a08d6d5ffe12a97969f6df86764436245b61c3e0fbe",
+      "Contents/Resources/bin/hetu-plugin": "d9dc6036eb76be87d18ab323ba99248ea9c0424b110369713637f1cdd3f7537c",
+      "Contents/Resources/bin/node": "51212eb5af1789a955caca1599265b684ed761e58573ea0f018e282da5424a84",
+      "Contents/Resources/app/dist/plugin-manager.mjs": "8641b9734dd2c44c0bae2f6325e9770a3fe9d96e0c6ea8b2163b2b3f113ed6d4",
+      "Contents/Resources/app/dist/plugin-runtime.mjs": "3081caa278735595da26612b2d2ec45fad938d4ce0c8b0e6f9bc8bb972941c2e",
+      "Contents/Resources/app/dist/plugin-worker.mjs": "dcebbdebf575d6054e6d6bdb778e6cc8af27d40dcfe9fc6989a5fc4182216a39"
+    },
+    "original_installed_app_unchanged": true,
+    "public_host_release": false
+  },
+  "checks": {
+    "entrypoint": {
+      "status": "passed",
+      "tests": 1,
+      "scope": "同包八动作CLI/MCP双向、分页、原键、非法Schema明确拒绝及旧修订保持",
+      "log": "output/host-rejection-entrypoint-v2.log"
+    },
+    "lifecycle": {
+      "status": "passed",
+      "tests": 8,
+      "checks": [
+        {
+          "name": "已发行旧包安装与真实实例保存",
+          "status": "passed",
+          "previous_version": "0.1.4",
+          "previous_package_sha256": "5d965d57ed7aefb99227f965de2628cbc456d6bbf4cd2b697a911e90a0ce8fd2",
+          "initial": {
+            "object_id": "ext_5bc1760f-0227-4021-ace3-fdf13faec95c",
+            "revision": 1,
+            "sha256": "99de0e8d7b395ccb38018ac42837cdeece9b1f616e7bdacac9624ddb3cce9642"
+          },
+          "method_sha256": "dcff0ead03265dbc8df63221f5b5d68b4a6c3b4a28f56986d31b3491fa0d25b3"
+        },
+        {
+          "name": "同连接升级、旧摘要拒绝及旧实例快照保持",
+          "status": "passed",
+          "package_sha256": "be225fda128ba021b4b63c81b8e0029c2398bc118dcdf015e27a97ff87784486",
+          "old_package_rejection": "hetu.plugin_operation_failed",
+          "instance": {
+            "object_id": "ext_5bc1760f-0227-4021-ace3-fdf13faec95c",
+            "revision": 2,
+            "sha256": "e2016184cce1daf0394e047b5916179d53184def6a30d5d686409ffb9d6566aa"
+          },
+          "current_templates": 22
+        },
+        {
+          "name": "坏包与错误能力摘要失败后当前包仍可用",
+          "status": "passed",
+          "changed_bytes_rejection": "hetu.plugin_operation_failed",
+          "invalid_manifest_rejection": "hetu.plugin_operation_failed",
+          "capability_rejection": "hetu.plugin_operation_failed"
+        },
+        {
+          "name": "真实并发 CAS 保留胜方、旧端点及冲突输入",
+          "status": "passed",
+          "winner": 0,
+          "first_rejection": "revision_conflict",
+          "conflict": "revision_conflict",
+          "instance": {
+            "object_id": "ext_5bc1760f-0227-4021-ace3-fdf13faec95c",
+            "revision": 3,
+            "sha256": "f2c9e1881898da84e496f05dd1ee0bf41f45eb680d6a23f11b1a2be66aae571e"
+          },
+          "entries": [
+            "MCP",
+            "independent CLI"
+          ],
+          "preserved_inputs": [
+            "保留来信，不说明寄信人",
+            "保留渡口，先处理人物代价"
+          ]
+        },
+        {
+          "name": "错误作品、错误来源与另一客户端拒绝且无副作用",
+          "status": "passed",
+          "mismatched_work": "forbidden",
+          "cross_read": "not_found",
+          "cross_write": "not_found",
+          "cross_source": "forbidden",
+          "cross_client": "forbidden"
+        },
+        {
+          "name": "实际写入后丢弃客户端回执，原键恢复唯一实例",
+          "status": "passed",
+          "recovered": {
+            "object_id": "ext_e5900b96-0f70-4bd6-80c2-cc0afb3b1f7e",
+            "revision": 1,
+            "sha256": "0858383cfc7c6dbaf9d3c855cf8fbb37fc046d51be6ce6eceae6dc71c45c5d10"
+          },
+          "instances": 2,
+          "scope": "写入进程成功后丢弃客户端输出；未注入宿主崩溃"
+        },
+        {
+          "name": "撤权拒绝读写及任务恢复，新授权不复活旧任务",
+          "status": "passed",
+          "read": "forbidden",
+          "write": "forbidden",
+          "old_task": "forbidden",
+          "old_locator": "forbidden",
+          "old_management_after_regrant": "forbidden",
+          "old_task_after_regrant": "forbidden",
+          "instance": {
+            "object_id": "ext_5bc1760f-0227-4021-ace3-fdf13faec95c",
+            "revision": 3,
+            "sha256": "f2c9e1881898da84e496f05dd1ee0bf41f45eb680d6a23f11b1a2be66aae571e"
+          },
+          "decisions": []
+        }
+      ],
+      "log": "output/host-rejection-lifecycle-v2.log"
+    },
+    "host_boundary": {
+      "status": "passed",
+      "tests": 7,
+      "scope": "真实manager/runtime/后端、隔离Core写回调；坏包/Schema拒绝、写后崩溃、伪造拒绝、安装状态保护",
+      "log": "hetu/output/plugin-rejection-installations.log"
+    },
+    "host_dispatch_stream": {
+      "status": "passed",
+      "tests": 21,
+      "log": "hetu/output/plugin-rejection-tests.log",
+      "limit": "首轮调用前分类版本；最终安装路径变更由7项边界回归及最终同包机器重验覆盖"
+    },
+    "backend": {
+      "status": "passed",
+      "tests": 3,
+      "log": "hetu/output/plugin-rejection-backend.log"
+    },
+    "rust_process_supervisor": {
+      "status": "passed",
+      "tests": 2,
+      "scope": "取消、超时、后代清理和异常退出仍为unknown",
+      "log": "hetu/output/plugin-rejection-rust.log"
+    },
+    "typescript": "passed",
+    "host_docs": {
+      "documents": 88,
+      "local_links": 1244,
+      "errors": 0
+    },
+    "capability_map": "consistent",
+    "final_host_three_media": {
+      "status": "passed",
+      "machine_tests": 4,
+      "machine_log": "output/outcome-fixed-delivery-patched-host.log",
+      "desktop_log": "output/desktop-outcome-patched-host.log",
+      "desktop": {
+        "status": "passed",
+        "version": "0.2.0",
+        "package_sha256": "be225fda128ba021b4b63c81b8e0029c2398bc118dcdf015e27a97ff87784486",
+        "host": "explicit_installed_app",
+        "checks": [
+          {
+            "track": "novel",
+            "application_ref": {
+              "object_id": "ext_ecf27f6e-540f-4b70-9a4d-4f622ec1c64a",
+              "revision": 5,
+              "sha256": "eb861c235be63666b34f91a857fb106305e1452228a05dfb7f2e83f5724b0a77"
+            },
+            "original_ref": {
+              "object_id": "ext_ecf27f6e-540f-4b70-9a4d-4f622ec1c64a",
+              "revision": 4,
+              "sha256": "59f5ca1141e41223b8f111d7203cc27fefe0b345a83c9441971c9a8c5a858afa"
+            },
+            "actual_files": 3,
+            "file_bytes_match_machine": true,
+            "saved_feedback": true,
+            "unsaved_recovery": true,
+            "widths": [
+              1440,
+              600
+            ],
+            "errors": []
+          },
+          {
+            "track": "drama",
+            "application_ref": {
+              "object_id": "ext_dac21422-f037-45d9-926f-58f6b6e619aa",
+              "revision": 5,
+              "sha256": "10f57ec8da6eea43653004d1e42881808f84fead0d24495a16303ee020c8597f"
+            },
+            "original_ref": {
+              "object_id": "ext_dac21422-f037-45d9-926f-58f6b6e619aa",
+              "revision": 4,
+              "sha256": "5571bdd80065256ccbf3349ccaed47da6ade31bb89b01f7b72318d020175b09b"
+            },
+            "actual_files": 2,
+            "file_bytes_match_machine": true,
+            "saved_feedback": true,
+            "unsaved_recovery": true,
+            "widths": [
+              1440,
+              600
+            ],
+            "errors": []
+          },
+          {
+            "track": "video",
+            "application_ref": {
+              "object_id": "ext_aa856083-73d0-4e6b-a665-2a6c7c9ff6be",
+              "revision": 5,
+              "sha256": "f3f8797098b74e1fffc0ec5def6558b979ac27cc63f305944fc706c8780835c2"
+            },
+            "original_ref": {
+              "object_id": "ext_aa856083-73d0-4e6b-a665-2a6c7c9ff6be",
+              "revision": 4,
+              "sha256": "5c173908747d180ad8b6309f34c7e2e2bf7749e419e0d6b2150b5163ce947b40"
+            },
+            "actual_files": 6,
+            "file_bytes_match_machine": true,
+            "saved_feedback": true,
+            "unsaved_recovery": true,
+            "widths": [
+              1440,
+              600
+            ],
+            "errors": []
+          }
+        ],
+        "boundaries": [
+          "真实安装版同一机器成果的GUI阅读、媒体播放、意见、恢复与文件保存",
+          "静音视频播放不证明人工完整试听",
+          "未采纳、定稿或宣称真实用户收益"
+        ]
+      },
+      "host_manifest_sha256": "6858f344d794c20e8181f3fd5a04d4853975d3ea8a2518d48f3535a9b3afa5ee",
+      "limits": [
+        "静音完整播放不等于人工音画认可",
+        "工程新目录重开与外部依赖仍单独验收"
+      ]
+    }
+  },
+  "source_files": [
+    {
+      "path": "packages/plugin-host/src/manager-cli.ts",
+      "baseline_sha256": "b3b52160927ad941391219d48d27deccc09417b0aeb552bbdbb67303bfc2558e",
+      "current_sha256": "ebc64b4471d977395a65f320fefdda1e411df4b019083a155fb4b283fde6f92a"
+    },
+    {
+      "path": "packages/plugin-host/src/runtime-cli.ts",
+      "baseline_sha256": "aaaa63dd56a6db2bd17d5cc0ba6d9c96295d461f8aaaffc281418e5ecb34839f",
+      "current_sha256": "b337894b28d80359f82e4667d51ff3599331f8514ba06053d8d5ec9871b45a66"
+    },
+    {
+      "path": "packages/plugin-host/src/backend.ts",
+      "baseline_sha256": "4f6d32b5f6bd8c740347692c4e8292dc23a6c17a6fd131948be83422422e67bd",
+      "current_sha256": "8af42b364702142f3a1cf831a88bb2389c2820d9240e1508cca31eb50dfd69a5"
+    },
+    {
+      "path": "packages/plugin-host/src/dispatch.ts",
+      "baseline_sha256": "6b59f7d9aad938011790cd215b848a057b53ff2635a8389da651a7ba8c8a6fc4",
+      "current_sha256": "35628e154f623242ed94f455d420bf9f7d554b3ed0781ff5ff21ae8553e4f9b6"
+    },
+    {
+      "path": "packages/plugin-host/src/installations.ts",
+      "baseline_sha256": "5031408809c6796a91b9ef37adf602d8b841226104eb0e2d411418ac4dee3e26",
+      "current_sha256": "582045cf2dfb8953db501033b9a82a342d4c3c09a870cf71fc97f5918c049dcc"
+    },
+    {
+      "path": "packages/plugin-host/src/rejection.ts",
+      "baseline_sha256": null,
+      "current_sha256": "b1be67959d433881060fd3bab6d954e6fd1f7c358c96c6926ef3ce81d0c9c3b2"
+    },
+    {
+      "path": "packages/plugin-host/tests/invocation-rejection.test.ts",
+      "baseline_sha256": null,
+      "current_sha256": "221fc3b3077869efdb59949c714eccf02a50a40c86ed8fc4d91ed497bf9ce4d9"
+    }
+  ],
+  "boundaries": [
+    "最终证据使用原安装版副本加确切TS宿主修复，并重新开发签名；原安装版不变",
+    "Rust二进制、Node与worker保持基线，未修改或发布正式桌面应用",
+    "宿主边界测试Core回调为隔离记录器；稳定机器旅程使用真实Core/CLI/MCP",
+    "未包含正式签名公证、Windows/Linux、生产部署或作者采纳与定稿",
+    "原安装版仍有已复现缺陷；不能把修复的隔离结果追记为原安装版通过"
+  ]
+}

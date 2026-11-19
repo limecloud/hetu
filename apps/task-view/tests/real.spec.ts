@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import { Client, type CallToolResult } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { build } from "esbuild";
-import { mkdtemp } from "node:fs/promises";
+import { mkdtemp, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve, join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -46,7 +46,7 @@ test.beforeAll(async () => {
         const chunks: Buffer[] = [];
         for await (const chunk of request) chunks.push(Buffer.from(chunk));
         const { method, params } = JSON.parse(Buffer.concat(chunks).toString());
-        const active = params?.name === "hetu_get_management_operation" ? managementClient : client;
+        const active = params?.name === "hetu_get_management_operation" || ["hetu_open_app", "hetu_call_action", "hetu_inspect_collaboration"].includes(params?.name) ? managementClient : client;
         const result = method === "tools/call" ? await active.callTool(params) : method === "resources/read" ? await active.readResource(params) : null;
         if (!result) throw new Error("Unexpected bridge method");
         response.setHeader("Content-Type", "application/json"); response.end(JSON.stringify(result));
@@ -67,6 +67,36 @@ test.afterAll(async () => {
   if (server) await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
   if (client) await client.close();
   if (managementClient) await managementClient.close();
+});
+
+test("real workbench opens authorized novel, drama and video through portable tools and plays verified bytes", async ({ page }) => {
+  test.setTimeout(60_000);
+  const initial = await managementClient.callTool({ name: "hetu_open_app", arguments: { management_ref: managementRef } });
+  const resource = await managementClient.readResource({ uri: "ui://hetu/workbench/1" });
+  if (!("text" in resource.contents[0])) throw new Error("Missing workbench");
+  expect(resource.contents[0].text).toBe(await readFile("../mcp/resources/workbench.html", "utf8"));
+  await page.addInitScript(value => Object.assign(window, value), { initialTask: initial, viewHtml: resource.contents[0].text, realTask: true, workbenchMode: true });
+  await page.goto(origin);
+  const view = page.frameLocator("iframe");
+  await expect(view.getByRole("heading", { name: "河港视频", exact: true })).toBeVisible();
+  const row = view.locator(".work-row").filter({ has: view.getByRole("heading", { name: "河港视频", exact: true }) });
+  await row.getByRole("button", { name: "打开作品", exact: true }).click();
+  await expect(view.getByRole("alert")).toHaveCount(0);
+  await view.getByRole("button", { name: "正文与分集", exact: true }).click();
+  await view.getByRole("button", { name: "查看分集成果", exact: true }).click();
+  await view.getByRole("button", { name: "查看固定媒体", exact: true }).click();
+  await view.getByRole("button", { name: "预览媒体", exact: true }).click();
+  const player = view.locator("video");
+  await expect(player).toBeVisible();
+  await expect.poll(() => player.evaluate((node: HTMLVideoElement) => Number.isFinite(node.duration) && node.duration > 0)).toBe(true);
+  await player.evaluate((node: HTMLVideoElement) => { node.muted = true; return node.play(); });
+  await expect.poll(() => player.evaluate((node: HTMLVideoElement) => node.currentTime)).toBeGreaterThan(0);
+  await view.getByRole("button", { name: "创作库", exact: true }).click();
+  const drama = view.locator(".work-row").filter({ has: view.getByRole("heading", { name: "河港剧本", exact: true }) });
+  await drama.getByRole("button", { name: "打开作品", exact: true }).click();
+  await view.getByRole("button", { name: "正文与分集", exact: true }).click();
+  await expect(view.getByText("河港剧本", { exact: true }).last()).toBeVisible();
+  await expect(view.getByRole("alert")).toHaveCount(0);
 });
 
 test("stable management → real operation resource → sandboxed review keeps the author decision separate", async ({ page }) => {

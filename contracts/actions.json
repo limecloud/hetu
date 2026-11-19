@@ -17,7 +17,16 @@
       "scopes": [
         "workspace",
         "creation_project"
-      ]
+      ],
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "public_contract"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.workspaces.get",
@@ -31,6 +40,15 @@
         "additionalProperties": false,
         "properties": {},
         "required": []
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -45,6 +63,15 @@
         "additionalProperties": false,
         "properties": {},
         "required": []
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -76,6 +103,15 @@
             "revision"
           ]
         }
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -84,7 +120,16 @@
       "contract_revision": "1",
       "effect": "read",
       "author_only": true,
-      "input_schema_ref": "schemas/blueprint-preview-input.schema.json"
+      "input_schema_ref": "schemas/blueprint-preview-input.schema.json",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.blueprints.save",
@@ -92,7 +137,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/blueprint-save-input.schema.json"
+      "input_schema_ref": "schemas/blueprint-save-input.schema.json",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.blueprints.lock",
@@ -145,6 +199,15 @@
           "expected",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -199,6 +262,15 @@
           "reason",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -254,6 +326,15 @@
           "content",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -290,6 +371,15 @@
           }
         },
         "required": []
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -315,6 +405,15 @@
         "required": [
           "document_id"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -359,6 +458,15 @@
           "content",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -367,7 +475,16 @@
       "contract_revision": "1",
       "effect": "draft",
       "author_only": false,
-      "input_schema_ref": "schemas/draft-submit-input.schema.json"
+      "input_schema_ref": "schemas/draft-submit-input.schema.json",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.drafts.list",
@@ -403,6 +520,15 @@
           }
         },
         "required": []
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -424,6 +550,15 @@
         "required": [
           "draft_id"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -485,7 +620,18 @@
       "scopes": [
         "workspace",
         "creation_project"
-      ]
+      ],
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "author_content",
+          "agent_content",
+          "professional_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.plot.extract",
@@ -493,7 +639,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": false,
-      "input_schema_ref": "schemas/plot-extract-input.schema.json"
+      "input_schema_ref": "schemas/plot-extract-input.schema.json",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.plot.correct",
@@ -501,7 +656,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/plot-correct-input.schema.json"
+      "input_schema_ref": "schemas/plot-correct-input.schema.json",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.plot.get",
@@ -521,6 +685,15 @@
         "required": [
           "plot_revision_id"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -549,6 +722,15 @@
           }
         },
         "required": []
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -557,7 +739,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": false,
-      "input_schema_ref": "schemas/validation-run-input.schema.json"
+      "input_schema_ref": "schemas/validation-run-input.schema.json",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.findings.disposition",
@@ -565,7 +756,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/finding-disposition-input.schema.json"
+      "input_schema_ref": "schemas/finding-disposition-input.schema.json",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.reports.get",
@@ -585,6 +785,15 @@
         "required": [
           "report_id"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -613,6 +822,15 @@
           }
         },
         "required": []
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -621,7 +839,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": false,
-      "input_schema_ref": "schemas/drama-build-input.schema.json"
+      "input_schema_ref": "schemas/drama-build-input.schema.json",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.drama.get_skeleton",
@@ -646,6 +873,15 @@
         "required": [
           "skeleton_id"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -674,6 +910,15 @@
           }
         },
         "required": []
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -682,7 +927,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/drama-edit-input.schema.json"
+      "input_schema_ref": "schemas/drama-edit-input.schema.json",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.drama.compare",
@@ -690,7 +944,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": false,
-      "input_schema_ref": "schemas/drama-compare-input.schema.json"
+      "input_schema_ref": "schemas/drama-compare-input.schema.json",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.drama.get_comparison",
@@ -710,6 +973,15 @@
         "required": [
           "comparison_id"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -740,6 +1012,15 @@
         "required": [
           "skeleton_id"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -748,7 +1029,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/drama-script-input.schema.json"
+      "input_schema_ref": "schemas/drama-script-input.schema.json",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.drama.get_script_mapping",
@@ -769,6 +1059,15 @@
         "required": [
           "document_id"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -829,6 +1128,15 @@
           "blueprint_revision",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -837,7 +1145,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/review-begin-input.schema.json"
+      "input_schema_ref": "schemas/review-begin-input.schema.json",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.reviews.validate",
@@ -845,7 +1162,16 @@
       "contract_revision": "1",
       "effect": "derive",
       "author_only": false,
-      "input_schema_ref": "schemas/review-validate-input.schema.json"
+      "input_schema_ref": "schemas/review-validate-input.schema.json",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.reviews.decide",
@@ -853,7 +1179,16 @@
       "contract_revision": "2",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/review-decide-input.schema.json"
+      "input_schema_ref": "schemas/review-decide-input.schema.json",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.reviews.get",
@@ -908,6 +1243,15 @@
             }
           }
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -942,6 +1286,15 @@
           }
         },
         "required": []
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -960,6 +1313,15 @@
           }
         },
         "required": []
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -1008,6 +1370,15 @@
             "max_bytes"
           ]
         }
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -1035,6 +1406,15 @@
           }
         },
         "required": []
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -1066,6 +1446,15 @@
           "branch",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -1074,7 +1463,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": false,
-      "input_schema_ref": "schemas/git-snapshot-input.schema.json"
+      "input_schema_ref": "schemas/git-snapshot-input.schema.json",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.git.approve_snapshot",
@@ -1109,6 +1507,15 @@
           "snapshot_sha256",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -1133,6 +1540,15 @@
         "required": [
           "snapshot_id"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -1160,6 +1576,15 @@
           }
         },
         "required": []
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -1213,6 +1638,15 @@
             "max_bytes"
           ]
         }
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -1221,7 +1655,16 @@
       "contract_revision": "1",
       "effect": "read",
       "author_only": true,
-      "input_schema_ref": "schemas/media.schema.json#/$defs/inspect_input"
+      "input_schema_ref": "schemas/media.schema.json#/$defs/inspect_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.assets.import",
@@ -1229,7 +1672,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/media.schema.json#/$defs/import_input"
+      "input_schema_ref": "schemas/media.schema.json#/$defs/import_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.assets.update",
@@ -1237,7 +1689,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/media.schema.json#/$defs/asset_update_input"
+      "input_schema_ref": "schemas/media.schema.json#/$defs/asset_update_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.assets.get",
@@ -1245,7 +1706,16 @@
       "contract_revision": "1",
       "effect": "read",
       "author_only": false,
-      "input_schema_ref": "schemas/media.schema.json#/$defs/asset_get_input"
+      "input_schema_ref": "schemas/media.schema.json#/$defs/asset_get_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.assets.list",
@@ -1253,7 +1723,16 @@
       "contract_revision": "1",
       "effect": "read",
       "author_only": false,
-      "input_schema_ref": "schemas/media.schema.json#/$defs/asset_list_input"
+      "input_schema_ref": "schemas/media.schema.json#/$defs/asset_list_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.cues.save",
@@ -1261,7 +1740,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/media.schema.json#/$defs/cue_save_input"
+      "input_schema_ref": "schemas/media.schema.json#/$defs/cue_save_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.cues.get",
@@ -1269,7 +1757,16 @@
       "contract_revision": "1",
       "effect": "read",
       "author_only": false,
-      "input_schema_ref": "schemas/media.schema.json#/$defs/cue_get_input"
+      "input_schema_ref": "schemas/media.schema.json#/$defs/cue_get_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.cues.list",
@@ -1277,7 +1774,16 @@
       "contract_revision": "1",
       "effect": "read",
       "author_only": false,
-      "input_schema_ref": "schemas/media.schema.json#/$defs/cue_list_input"
+      "input_schema_ref": "schemas/media.schema.json#/$defs/cue_list_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.novels.get",
@@ -1285,7 +1791,16 @@
       "contract_revision": "1",
       "effect": "read",
       "author_only": false,
-      "input_schema_ref": "schemas/novel.schema.json#/$defs/get_input"
+      "input_schema_ref": "schemas/novel.schema.json#/$defs/get_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.novels.initialize",
@@ -1293,7 +1808,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/novel.schema.json#/$defs/initialize_input"
+      "input_schema_ref": "schemas/novel.schema.json#/$defs/initialize_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.novels.update",
@@ -1301,7 +1825,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/novel.schema.json#/$defs/update_input"
+      "input_schema_ref": "schemas/novel.schema.json#/$defs/update_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.novels.save_structure",
@@ -1309,7 +1842,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/novel.schema.json#/$defs/structure_input"
+      "input_schema_ref": "schemas/novel.schema.json#/$defs/structure_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.drafts.preview_adoption",
@@ -1317,7 +1859,16 @@
       "contract_revision": "1",
       "effect": "read",
       "author_only": true,
-      "input_schema_ref": "schemas/document-lifecycle.schema.json#/$defs/preview_adoption_input"
+      "input_schema_ref": "schemas/document-lifecycle.schema.json#/$defs/preview_adoption_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.drafts.adopt",
@@ -1325,7 +1876,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/document-lifecycle.schema.json#/$defs/adopt_input"
+      "input_schema_ref": "schemas/document-lifecycle.schema.json#/$defs/adopt_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.documents.validate",
@@ -1333,7 +1893,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/document-lifecycle.schema.json#/$defs/validate_input"
+      "input_schema_ref": "schemas/document-lifecycle.schema.json#/$defs/validate_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.documents.preview_finalization",
@@ -1341,7 +1910,16 @@
       "contract_revision": "1",
       "effect": "read",
       "author_only": true,
-      "input_schema_ref": "schemas/document-lifecycle.schema.json#/$defs/preview_finalization_input"
+      "input_schema_ref": "schemas/document-lifecycle.schema.json#/$defs/preview_finalization_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.documents.finalize",
@@ -1349,7 +1927,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/document-lifecycle.schema.json#/$defs/finalize_input"
+      "input_schema_ref": "schemas/document-lifecycle.schema.json#/$defs/finalize_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.documents.withdraw_finalization",
@@ -1357,7 +1944,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/document-lifecycle.schema.json#/$defs/withdraw_input"
+      "input_schema_ref": "schemas/document-lifecycle.schema.json#/$defs/withdraw_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.documents.lifecycle",
@@ -1365,7 +1961,16 @@
       "contract_revision": "1",
       "effect": "read",
       "author_only": true,
-      "input_schema_ref": "schemas/document-lifecycle.schema.json#/$defs/lifecycle_input"
+      "input_schema_ref": "schemas/document-lifecycle.schema.json#/$defs/lifecycle_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.creation_projects.get",
@@ -1376,7 +1981,16 @@
       "scopes": [
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/project_get_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/project_get_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.creation_projects.save",
@@ -1387,7 +2001,16 @@
       "scopes": [
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/project_save_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/project_save_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.creation_projects.create_novel",
@@ -1398,7 +2021,16 @@
       "scopes": [
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/create_novel_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/create_novel_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.creation_projects.create_drama",
@@ -1409,11 +2041,20 @@
       "scopes": [
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/create_drama_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/create_drama_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.creative_tasks.preview_prompt",
-      "purpose": "预览固定范围的外部协作提示词",
+      "purpose": "预览小说构思、书名简介、大纲、章节起草、改稿、剧本和资料整理的固定任务与提示词",
       "contract_revision": "1",
       "effect": "read",
       "author_only": false,
@@ -1421,11 +2062,22 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/preview_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/preview_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "author_content",
+          "agent_content",
+          "professional_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.creative_tasks.prepare",
-      "purpose": "准备外部任务，不发送生成请求",
+      "purpose": "准备小说构思、书名简介、大纲、章节起草、改稿、剧本和资料整理的固定协作任务",
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
@@ -1433,7 +2085,18 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/prepare_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/prepare_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "author_content",
+          "agent_content",
+          "professional_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.creative_tasks.get",
@@ -1445,7 +2108,18 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/get_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/get_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "author_content",
+          "agent_content",
+          "professional_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.creative_tasks.list",
@@ -1457,7 +2131,18 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/list_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/list_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "author_content",
+          "agent_content",
+          "professional_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.creative_tasks.submit_result",
@@ -1469,7 +2154,18 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/submit_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/submit_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "author_content",
+          "agent_content",
+          "professional_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.creative_tasks.inspect_inbox",
@@ -1481,7 +2177,18 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/inspect_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/inspect_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "author_content",
+          "agent_content",
+          "professional_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.creative_tasks.close",
@@ -1493,7 +2200,18 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/close_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/close_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "author_content",
+          "agent_content",
+          "professional_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.creative_tasks.mark_copied",
@@ -1505,7 +2223,18 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/copy_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/copy_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "author_content",
+          "agent_content",
+          "professional_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.interactions.get",
@@ -1517,7 +2246,16 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/interaction_get_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/interaction_get_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.interactions.save_selection",
@@ -1529,7 +2267,16 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/selection_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/selection_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.covers.get",
@@ -1537,7 +2284,16 @@
       "contract_revision": "1",
       "effect": "read",
       "author_only": true,
-      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/get_input"
+      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/get_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.covers.preview_prompt",
@@ -1545,7 +2301,16 @@
       "contract_revision": "1",
       "effect": "read",
       "author_only": true,
-      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/preview_input"
+      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/preview_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.covers.create_request",
@@ -1553,7 +2318,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/create_input"
+      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/create_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.covers.list_requests",
@@ -1561,7 +2335,16 @@
       "contract_revision": "1",
       "effect": "read",
       "author_only": true,
-      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/list_input"
+      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/list_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.covers.list_candidates",
@@ -1569,7 +2352,16 @@
       "contract_revision": "1",
       "effect": "read",
       "author_only": true,
-      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/candidates_input"
+      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/candidates_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.covers.select",
@@ -1577,7 +2369,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/select_input"
+      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/select_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.covers.import_preparation",
@@ -1585,7 +2386,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/import_preparation_input"
+      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/import_preparation_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.covers.list_preparations",
@@ -1593,7 +2403,16 @@
       "contract_revision": "1",
       "effect": "read",
       "author_only": true,
-      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/list_preparations_input"
+      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/list_preparations_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.covers.inspect_file",
@@ -1601,7 +2420,16 @@
       "contract_revision": "1",
       "effect": "read",
       "author_only": true,
-      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/inspect_input"
+      "input_schema_ref": "schemas/book-cover.schema.json#/$defs/inspect_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.bundles.preview",
@@ -1609,7 +2437,16 @@
       "contract_revision": "1",
       "effect": "read",
       "author_only": true,
-      "input_schema_ref": "schemas/delivery.schema.json#/$defs/bundle_preview_input"
+      "input_schema_ref": "schemas/delivery.schema.json#/$defs/bundle_preview_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.bundles.export",
@@ -1617,7 +2454,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/delivery.schema.json#/$defs/export_input"
+      "input_schema_ref": "schemas/delivery.schema.json#/$defs/export_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.bundles.verify",
@@ -1625,7 +2471,16 @@
       "contract_revision": "1",
       "effect": "read",
       "author_only": false,
-      "input_schema_ref": "schemas/delivery.schema.json#/$defs/verify_input"
+      "input_schema_ref": "schemas/delivery.schema.json#/$defs/verify_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.documents.preview_export",
@@ -1633,7 +2488,16 @@
       "contract_revision": "1",
       "effect": "read",
       "author_only": true,
-      "input_schema_ref": "schemas/delivery.schema.json#/$defs/document_preview_input"
+      "input_schema_ref": "schemas/delivery.schema.json#/$defs/document_preview_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.documents.export",
@@ -1641,7 +2505,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/delivery.schema.json#/$defs/export_input"
+      "input_schema_ref": "schemas/delivery.schema.json#/$defs/export_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.documents.preview_import",
@@ -1649,7 +2522,16 @@
       "contract_revision": "1",
       "effect": "read",
       "author_only": true,
-      "input_schema_ref": "schemas/delivery.schema.json#/$defs/import_preview_input"
+      "input_schema_ref": "schemas/delivery.schema.json#/$defs/import_preview_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.documents.import",
@@ -1657,7 +2539,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/delivery.schema.json#/$defs/import_input"
+      "input_schema_ref": "schemas/delivery.schema.json#/$defs/import_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.documents.import_batch",
@@ -1665,7 +2556,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/delivery.schema.json#/$defs/import_batch_input"
+      "input_schema_ref": "schemas/delivery.schema.json#/$defs/import_batch_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.documents.history",
@@ -1695,6 +2595,15 @@
         "required": [
           "document_id"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -1715,6 +2624,15 @@
         "required": [
           "document_id"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -1825,6 +2743,15 @@
           "items",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -1838,6 +2765,15 @@
         "additionalProperties": false,
         "properties": {},
         "required": []
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -1925,6 +2861,15 @@
           "items",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -1992,6 +2937,15 @@
           "title",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -2013,6 +2967,15 @@
         "required": [
           "project_id"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -2039,6 +3002,15 @@
           }
         },
         "required": []
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -2130,6 +3102,15 @@
           "archived",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -2232,6 +3213,15 @@
             }
           }
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -2333,6 +3323,15 @@
             "skeleton_ref"
           ]
         }
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -2359,6 +3358,15 @@
         "required": [
           "episode_id"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -2447,6 +3455,15 @@
           "archived",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -2504,6 +3521,15 @@
           "episode_refs",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -2512,7 +3538,16 @@
       "contract_revision": "1",
       "effect": "write",
       "author_only": false,
-      "input_schema_ref": "schemas/resources.schema.json#/$defs/create_input"
+      "input_schema_ref": "schemas/resources.schema.json#/$defs/create_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.resources.update",
@@ -2520,7 +3555,16 @@
       "contract_revision": "1",
       "effect": "write",
       "author_only": false,
-      "input_schema_ref": "schemas/resources.schema.json#/$defs/update_input"
+      "input_schema_ref": "schemas/resources.schema.json#/$defs/update_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.resources.get",
@@ -2528,7 +3572,16 @@
       "contract_revision": "1",
       "effect": "read",
       "author_only": false,
-      "input_schema_ref": "schemas/resources.schema.json#/$defs/get_input"
+      "input_schema_ref": "schemas/resources.schema.json#/$defs/get_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.resources.list",
@@ -2536,7 +3589,16 @@
       "contract_revision": "1",
       "effect": "read",
       "author_only": false,
-      "input_schema_ref": "schemas/resources.schema.json#/$defs/list_input"
+      "input_schema_ref": "schemas/resources.schema.json#/$defs/list_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.resources.adopt",
@@ -2544,7 +3606,16 @@
       "contract_revision": "1",
       "effect": "write",
       "author_only": true,
-      "input_schema_ref": "schemas/resources.schema.json#/$defs/state_input"
+      "input_schema_ref": "schemas/resources.schema.json#/$defs/state_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.resources.archive",
@@ -2552,7 +3623,16 @@
       "contract_revision": "1",
       "effect": "write",
       "author_only": true,
-      "input_schema_ref": "schemas/resources.schema.json#/$defs/state_input"
+      "input_schema_ref": "schemas/resources.schema.json#/$defs/state_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.resource_usages.save",
@@ -2560,7 +3640,16 @@
       "contract_revision": "1",
       "effect": "write",
       "author_only": true,
-      "input_schema_ref": "schemas/resources.schema.json#/$defs/usage_save_input"
+      "input_schema_ref": "schemas/resources.schema.json#/$defs/usage_save_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.resource_usages.list",
@@ -2568,7 +3657,16 @@
       "contract_revision": "1",
       "effect": "read",
       "author_only": false,
-      "input_schema_ref": "schemas/resources.schema.json#/$defs/usage_list_input"
+      "input_schema_ref": "schemas/resources.schema.json#/$defs/usage_list_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.collaboration.authorize",
@@ -2653,6 +3751,15 @@
             ]
           }
         }
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -2738,6 +3845,15 @@
             ]
           }
         }
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -2777,9 +3893,29 @@
           "expected_catalog_sha256": {
             "type": "string",
             "pattern": "^[0-9a-f]{64}$"
+          },
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "\\S",
+            "description": "按动作名和用途筛选，多个空白分隔词必须全部匹配；文字匹配不替代Agent理解。"
+          },
+          "expected_selection_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
           }
         },
         "required": []
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "public_contract"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -2833,6 +3969,15 @@
         "required": [
           "task_locator"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -2845,7 +3990,18 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/working_create_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/working_create_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "author_content",
+          "agent_content",
+          "professional_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.working_copies.get",
@@ -2857,7 +4013,18 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/working_get_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/working_get_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "author_content",
+          "agent_content",
+          "professional_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.working_copies.list",
@@ -2869,7 +4036,18 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/working_list_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/working_list_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "author_content",
+          "agent_content",
+          "professional_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.working_copies.save",
@@ -2881,7 +4059,18 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/working_save_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/working_save_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "author_content",
+          "agent_content",
+          "professional_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.task_feedback.save",
@@ -2893,7 +4082,18 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/feedback_save_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/feedback_save_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "author_content",
+          "agent_content",
+          "professional_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.task_feedback.list",
@@ -2905,7 +4105,18 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/feedback_list_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/feedback_list_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "author_content",
+          "agent_content",
+          "professional_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.task_context.list",
@@ -2917,7 +4128,18 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/context_list_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/context_list_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "author_content",
+          "agent_content",
+          "professional_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.task_context.read",
@@ -2929,7 +4151,18 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/context_read_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/context_read_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "author_content",
+          "agent_content",
+          "professional_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.task_context.search",
@@ -2941,7 +4174,18 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/context_search_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/context_search_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "author_content",
+          "agent_content",
+          "professional_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.models.list",
@@ -2953,7 +4197,16 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/model-service.schema.json#/$defs/list_input"
+      "input_schema_ref": "schemas/model-service.schema.json#/$defs/list_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.model_tasks.list",
@@ -2965,7 +4218,16 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/model-service.schema.json#/$defs/plans_input"
+      "input_schema_ref": "schemas/model-service.schema.json#/$defs/plans_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.model_tasks.prepare",
@@ -2977,7 +4239,16 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/model-service.schema.json#/$defs/prepare_input"
+      "input_schema_ref": "schemas/model-service.schema.json#/$defs/prepare_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.model_tasks.authorize_usage",
@@ -2989,7 +4260,16 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/model-service.schema.json#/$defs/authorization_input"
+      "input_schema_ref": "schemas/model-service.schema.json#/$defs/authorization_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.model_tasks.approve",
@@ -3001,7 +4281,16 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/model-service.schema.json#/$defs/approve_input"
+      "input_schema_ref": "schemas/model-service.schema.json#/$defs/approve_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.model_tasks.get",
@@ -3013,7 +4302,16 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/model-service.schema.json#/$defs/get_input"
+      "input_schema_ref": "schemas/model-service.schema.json#/$defs/get_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.model_tasks.submit",
@@ -3025,7 +4323,16 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/model-service.schema.json#/$defs/execute_input"
+      "input_schema_ref": "schemas/model-service.schema.json#/$defs/execute_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.model_tasks.collect",
@@ -3037,11 +4344,20 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/model-service.schema.json#/$defs/execute_input"
+      "input_schema_ref": "schemas/model-service.schema.json#/$defs/execute_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.creation_projects.create",
-      "purpose": "开始独立筹备，预留全新受管作品目录，不获得既有作品权限",
+      "purpose": "开始独立小说、剧本或视频筹备，预留全新受管目录，不获得既有作品权限",
       "contract_revision": "1",
       "effect": "submit",
       "author_only": false,
@@ -3073,6 +4389,15 @@
             "maxLength": 128
           }
         }
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -3117,6 +4442,15 @@
             "maxLength": 128
           }
         }
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -3128,7 +4462,16 @@
       "scopes": [
         "workspace"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/image_preview_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/image_preview_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.image_tasks.prepare",
@@ -3139,7 +4482,16 @@
       "scopes": [
         "workspace"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/image_prepare_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/image_prepare_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.agent_operations.prepare",
@@ -3175,6 +4527,15 @@
           "summary",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -3199,6 +4560,15 @@
         "required": [
           "proposal_id"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -3222,6 +4592,15 @@
           }
         },
         "required": []
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -3265,6 +4644,15 @@
           "decision",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -3314,6 +4702,15 @@
           "proposal_sha256",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -3489,6 +4886,30 @@
                 "type": "integer",
                 "minimum": 1,
                 "maximum": 9007199254740991
+              },
+              "media_ref": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "media_id": {
+                    "type": "string",
+                    "pattern": "^vmedia_[0-9a-f-]{36}$"
+                  },
+                  "revision": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9007199254740991
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  }
+                },
+                "required": [
+                  "media_id",
+                  "revision",
+                  "sha256"
+                ]
               }
             }
           }
@@ -3496,6 +4917,15 @@
         "required": [
           "view_kind"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -3567,6 +4997,15 @@
             ]
           }
         }
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -3593,6 +5032,15 @@
             "pattern": "^[0-9]{1,12}$"
           }
         }
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -3647,6 +5095,15 @@
             "work_ref"
           ]
         }
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "local_configuration"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -3681,7 +5138,26 @@
           "agent_client",
           "suite_id"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "local_configuration"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
+    },
+    {
+      "name": "hetu.local_settings.inspect_connection",
+      "purpose": "核对所选Agent的机器连接包登记与固定缓存，不推定当前GUI会话已加载",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": ["collaboration"],
+      "input_schema": {"type":"object","additionalProperties":false,"properties":{"agent_client":{"enum":["codex"]}},"required":["agent_client"]},
+      "result_provenance": {"contract_revision":"1","data_roles":["core_receipt","public_contract"],"instruction_authority":"none","authorization_effect":"none"}
     },
     {
       "name": "hetu.local_settings.prepare",
@@ -3696,12 +5172,13 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "kind": {
-            "enum": [
-              "preferences",
-              "agent_suite"
-            ]
-          },
+        "kind": {
+          "enum": [
+            "preferences",
+            "agent_suite",
+            "agent_connection"
+          ]
+        },
           "patch": {
             "type": "object",
             "additionalProperties": false,
@@ -3835,6 +5312,15 @@
             "work_ref"
           ]
         }
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "local_configuration"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -3858,6 +5344,15 @@
         "required": [
           "operation_id"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "local_configuration"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -3892,6 +5387,15 @@
           "sha256",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "local_configuration"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -3951,6 +5455,15 @@
             ]
           }
         }
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -3964,6 +5477,15 @@
         "additionalProperties": false,
         "properties": {},
         "required": []
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -4009,6 +5531,15 @@
         "required": [
           "target_commit"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -4064,6 +5595,15 @@
           "start_commit",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -4114,6 +5654,15 @@
           "branch",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -4215,6 +5764,15 @@
           "message",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -4248,6 +5806,15 @@
           "url",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -4281,6 +5848,15 @@
           "branch",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -4319,6 +5895,15 @@
           "target_commit",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -4420,6 +6005,15 @@
           "message",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -4428,7 +6022,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": false,
-      "input_schema_ref": "schemas/finding-disposition-input.schema.json"
+      "input_schema_ref": "schemas/finding-disposition-input.schema.json",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.findings.suggestions",
@@ -4453,6 +6056,15 @@
           "report_id",
           "finding_id"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -4499,6 +6111,15 @@
             "path"
           ]
         }
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -4510,7 +6131,16 @@
       "scopes": [
         "workspace"
       ],
-      "input_schema_ref": "schemas/work.schema.json#/$defs/list_input"
+      "input_schema_ref": "schemas/work.schema.json#/$defs/list_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.works.get",
@@ -4521,7 +6151,16 @@
       "scopes": [
         "workspace"
       ],
-      "input_schema_ref": "schemas/work.schema.json#/$defs/get_input"
+      "input_schema_ref": "schemas/work.schema.json#/$defs/get_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.work_links.create",
@@ -4532,7 +6171,16 @@
       "scopes": [
         "workspace"
       ],
-      "input_schema_ref": "schemas/work.schema.json#/$defs/link_create_input"
+      "input_schema_ref": "schemas/work.schema.json#/$defs/link_create_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.work_links.list",
@@ -4543,7 +6191,16 @@
       "scopes": [
         "workspace"
       ],
-      "input_schema_ref": "schemas/work.schema.json#/$defs/links_list_input"
+      "input_schema_ref": "schemas/work.schema.json#/$defs/links_list_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.work_links.get",
@@ -4554,7 +6211,16 @@
       "scopes": [
         "workspace"
       ],
-      "input_schema_ref": "schemas/work.schema.json#/$defs/link_get_input"
+      "input_schema_ref": "schemas/work.schema.json#/$defs/link_get_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.work_links.update_source",
@@ -4565,7 +6231,16 @@
       "scopes": [
         "workspace"
       ],
-      "input_schema_ref": "schemas/work.schema.json#/$defs/link_update_source_input"
+      "input_schema_ref": "schemas/work.schema.json#/$defs/link_update_source_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.work_links.set_archived",
@@ -4576,7 +6251,16 @@
       "scopes": [
         "workspace"
       ],
-      "input_schema_ref": "schemas/work.schema.json#/$defs/link_set_archived_input"
+      "input_schema_ref": "schemas/work.schema.json#/$defs/link_set_archived_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.video.projects.create",
@@ -4587,7 +6271,16 @@
       "scopes": [
         "workspace"
       ],
-      "input_schema_ref": "schemas/work.schema.json#/$defs/video_create_input"
+      "input_schema_ref": "schemas/work.schema.json#/$defs/video_create_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.video.projects.get",
@@ -4598,7 +6291,16 @@
       "scopes": [
         "workspace"
       ],
-      "input_schema_ref": "schemas/work.schema.json#/$defs/video_get_input"
+      "input_schema_ref": "schemas/work.schema.json#/$defs/video_get_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.video.projects.update",
@@ -4609,7 +6311,16 @@
       "scopes": [
         "workspace"
       ],
-      "input_schema_ref": "schemas/work.schema.json#/$defs/video_update_input"
+      "input_schema_ref": "schemas/work.schema.json#/$defs/video_update_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.video.episodes.create",
@@ -4620,7 +6331,16 @@
       "scopes": [
         "workspace"
       ],
-      "input_schema_ref": "schemas/work.schema.json#/$defs/video_episode_create_input"
+      "input_schema_ref": "schemas/work.schema.json#/$defs/video_episode_create_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.video.episodes.get",
@@ -4631,7 +6351,16 @@
       "scopes": [
         "workspace"
       ],
-      "input_schema_ref": "schemas/work.schema.json#/$defs/video_episode_get_input"
+      "input_schema_ref": "schemas/work.schema.json#/$defs/video_episode_get_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.video.episodes.update",
@@ -4642,7 +6371,16 @@
       "scopes": [
         "workspace"
       ],
-      "input_schema_ref": "schemas/work.schema.json#/$defs/video_episode_update_input"
+      "input_schema_ref": "schemas/work.schema.json#/$defs/video_episode_update_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.video.episodes.reorder",
@@ -4653,7 +6391,16 @@
       "scopes": [
         "workspace"
       ],
-      "input_schema_ref": "schemas/work.schema.json#/$defs/video_episode_reorder_input"
+      "input_schema_ref": "schemas/work.schema.json#/$defs/video_episode_reorder_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.creation_projects.create_video",
@@ -4664,7 +6411,16 @@
       "scopes": [
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/create_video_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/create_video_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.blueprints.initialize",
@@ -4672,7 +6428,16 @@
       "contract_revision": "1",
       "effect": "submit",
       "author_only": true,
-      "input_schema_ref": "schemas/work.schema.json#/$defs/canon_initialize_input"
+      "input_schema_ref": "schemas/work.schema.json#/$defs/canon_initialize_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.import_authorizations.register",
@@ -4849,6 +6614,15 @@
           "authorization_note",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -4883,6 +6657,15 @@
         "required": [
           "import_authorization_ref"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -4923,6 +6706,15 @@
           "import_authorization_ref",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -4959,9 +6751,29 @@
           "expected_catalog_sha256": {
             "type": "string",
             "pattern": "^[0-9a-f]{64}$"
+          },
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "\\S",
+            "description": "按动作名和用途筛选，多个空白分隔词必须全部匹配；文字匹配不替代Agent理解。"
+          },
+          "expected_selection_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
           }
         },
         "required": []
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "public_contract"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -5011,6 +6823,15 @@
           "operation_key",
           "authorization_note"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -5063,6 +6884,15 @@
           "decision",
           "authorization_note"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "local_configuration"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -5105,6 +6935,15 @@
           "work_ref",
           "authorization_note"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -5188,6 +7027,15 @@
           "operation_key",
           "authorization_note"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "plugin_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -5216,6 +7064,15 @@
           "grant_id",
           "package_sha256"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "plugin_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -5251,6 +7108,15 @@
           "operation_key",
           "authorization_note"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "plugin_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -5267,7 +7133,16 @@
       },
       "scopes": [
         "collaboration"
-      ]
+      ],
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "local_configuration"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.model_settings.get_operation",
@@ -5291,7 +7166,16 @@
       },
       "scopes": [
         "collaboration"
-      ]
+      ],
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "local_configuration"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.model_settings.update",
@@ -5439,7 +7323,16 @@
       },
       "scopes": [
         "collaboration"
-      ]
+      ],
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "local_configuration"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.plugins.inspect",
@@ -5455,6 +7348,15 @@
         "additionalProperties": false,
         "properties": {},
         "required": []
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "plugin_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -5478,6 +7380,15 @@
         "required": [
           "package_directory"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "plugin_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -5535,6 +7446,15 @@
           "authorization_note",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "plugin_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -5559,6 +7479,15 @@
         "required": [
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "plugin_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -5597,9 +7526,29 @@
           },
           "include_schema": {
             "type": "boolean"
+          },
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "\\S",
+            "description": "按动作名和用途筛选，多个空白分隔词必须全部匹配；文字匹配不替代Agent理解。"
+          },
+          "expected_selection_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
           }
         },
         "required": []
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "public_contract"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -5650,6 +7599,15 @@
           "operation_key",
           "authorization_note"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "plugin_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -5678,6 +7636,15 @@
           "grant_id",
           "package_sha256"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "plugin_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -5721,6 +7688,15 @@
           "action",
           "arguments"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "plugin_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -5759,6 +7735,15 @@
           "title",
           "operation_key"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -5782,6 +7767,15 @@
         "required": [
           "work_ref"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -5812,6 +7806,15 @@
           "plugin_id",
           "package_sha256"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "plugin_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -5847,6 +7850,35 @@
             "type": "string",
             "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+)+$",
             "maxLength": 120
+          },
+          "view": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "result_path": {
+                "type": "string",
+                "maxLength": 512
+              },
+              "offset": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100
+              },
+              "max_bytes": {
+                "type": "integer",
+                "minimum": 256,
+                "maximum": 16384
+              },
+              "expected_result_sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": []
           }
         },
         "required": [
@@ -5857,6 +7889,15 @@
           "action",
           "arguments"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "plugin_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -5914,6 +7955,15 @@
           "action",
           "input"
         ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -5943,6 +7993,15 @@
           }
         },
         "required": []
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "public_contract"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
       }
     },
     {
@@ -5955,11 +8014,20 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/checkpoint_get_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/checkpoint_get_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "agent_notes"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.task_checkpoint.save",
-      "purpose": "CAS保存任务接续说明；不改变作者稿与决定",
+      "purpose": "CAS保存计划、逐条依据与假设、交接及陷阱；不改变作者稿与决定",
       "contract_revision": "1",
       "effect": "submit",
       "author_only": false,
@@ -5967,7 +8035,16 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/checkpoint_save_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/checkpoint_save_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "agent_notes"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.creative_tasks.read_candidate",
@@ -5979,7 +8056,346 @@
         "workspace",
         "creation_project"
       ],
-      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/candidate_read_input"
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/candidate_read_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "author_content",
+          "agent_content",
+          "professional_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.methods.list",
+      "purpose": "按任务查找随包共同方法、固定摘要与读取入口",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "\\S"
+          },
+          "skill": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "\\S"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25
+          },
+          "expected_catalog_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": []
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "public_method"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.methods.read",
+      "purpose": "按固定摘要分块读取共同方法；不读取任意本机文件",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          },
+          "expected_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "max_bytes": {
+            "type": "integer",
+            "minimum": 256,
+            "maximum": 16384
+          }
+        },
+        "required": [
+          "path",
+          "expected_sha256"
+        ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "public_method"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.task_executions.list",
+      "purpose": "按精确任务分页查询执行成功、失败、取消和未知状态；不读取请求正文",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/execution_list_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "execution_observation"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.task_executions.get",
+      "purpose": "核对执行尝试与终态，沿固定原操作或模型计划恢复",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/execution_get_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "execution_observation"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.creative_tasks.assess",
+      "purpose": "分层核对固定候选、专业Owner检查覆盖与反证、作者决定；不以Agent说明或候选存在宣称完成",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace",
+        "creation_project"
+      ],
+      "input_schema_ref": "schemas/creative-task.schema.json#/$defs/assess_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "author_content",
+          "agent_content",
+          "professional_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.video.media.save",
+      "purpose": "登记分集固定媒体与声明时基，接收不代表选用",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/video-review.schema.json#/$defs/media_save_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.video.media.get",
+      "purpose": "读取分集固定媒体与素材",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/video-review.schema.json#/$defs/media_get_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.video.media.list",
+      "purpose": "分页读取当前分集固定成果",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/video-review.schema.json#/$defs/media_list_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.video.feedback.save",
+      "purpose": "保存固定媒体上的公开区间意见",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/video-review.schema.json#/$defs/feedback_save_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.video.feedback.list",
+      "purpose": "读取固定媒体公开意见，不迁移旧坐标",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/video-review.schema.json#/$defs/feedback_list_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.video.delivery.preview",
+      "purpose": "核对选择的固定媒体并准备基础文件交付清单",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/video-review.schema.json#/$defs/delivery_preview_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.assets.read_blob",
+      "purpose": "分块读取当前作品固定素材原字节",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/video-review.schema.json#/$defs/asset_read_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.baseline.inspect",
+      "purpose": "核对随包基础能力合同，无作品和无插件可查询",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "collaboration",
+        "workspace"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {},
+        "required": []
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     }
   ]
 }

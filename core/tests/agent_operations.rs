@@ -254,6 +254,10 @@ fn page_handoff_resolves_fixed_chinese_document_and_does_not_advertise_author_ex
             created["revision"]["sha256"]
         );
         assert_eq!(handoff["unsaved_buffer_included"], false);
+        assert_eq!(
+            handoff["workflow"]["author_decision"],
+            "hetu.agent_operations.record_decision"
+        );
         for action in handoff["direct_actions"].as_array().unwrap() {
             assert_eq!(action["author_only"], false);
         }

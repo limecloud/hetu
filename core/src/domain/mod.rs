@@ -97,14 +97,14 @@ pub fn failure(action: &str, scope: &str, error: &Error) -> Value {
             json!({"kind":"read","action":"hetu.workspaces.get"})
         }
         "forbidden" | "hetu.author_confirmation_required" => json!({"kind":"request_decision"}),
-        "hetu.recovery_required" | "result_unknown" => {
+        "hetu.recovery_required" | "result_unknown" | "hetu.outcome_unknown" | "hetu.cleanup_failed" | "hetu.output_budget_exceeded" => {
             json!({"kind":"recover","action":"hetu.operations.get"})
         }
         _ => json!({"kind":"correct_input"}),
     };
     let status = if error.code == "cancelled" {
         "cancelled"
-    } else if error.code == "result_unknown" {
+    } else if matches!(error.code,"result_unknown"|"hetu.outcome_unknown"|"hetu.cleanup_failed"|"hetu.output_budget_exceeded") {
         "unknown"
     } else if matches!(
         error.code,

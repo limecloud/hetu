@@ -2,6 +2,8 @@ use super::*;
 use std::collections::BTreeSet;
 
 mod checkpoint;
+mod executions;
+mod assessment;
 mod context;
 use context::entries;
 mod feedback;
@@ -13,6 +15,9 @@ pub(super) const TASK_ACTIONS: &[&str] = &[
     "hetu.operations.get",
     "hetu.task_checkpoint.get",
     "hetu.task_checkpoint.save",
+    "hetu.task_executions.list",
+    "hetu.task_executions.get",
+    "hetu.creative_tasks.assess",
     "hetu.creative_tasks.read_candidate",
     "hetu.creative_tasks.get",
     "hetu.creative_tasks.submit_result",
@@ -66,6 +71,7 @@ pub(super) fn record_schema(record: &Value, name: &str) -> Result<()> {
             "feedback_record",
             "context_manifest_record",
             "checkpoint_record",
+            "execution_record",
         ]
         .into_iter()
         .map(|name| (name, OnceLock::new()))
@@ -128,6 +134,7 @@ fn nonoverlapping(ranges: &[Value]) -> Result<Vec<Value>> {
 
 impl Kernel {
     pub(crate) fn requested_task_for_grant(&self, reference: &Value) -> Result<Value> {
+        self.check_work_access("hetu.creative_tasks.get", &json!({"task_ref":reference}))?;
         let (request, sha, _, _) = self.task_for_reference(reference)?;
         Ok(json!({"request":request,"request_sha256":sha}))
     }
@@ -250,6 +257,13 @@ impl Kernel {
                     "单份资料上下文超过 1 MiB，请缩小范围。",
                 )?;
                 sources.push(json!({"reference":reference,"title":record["title"],"source_format":"markdown","sha256":sha,"size_bytes":content.len()}));
+            } else if reference["kind"] == "plugin_object" {
+                ensure(self.task_work_reference(input)?.as_ref() == Some(&reference["work_ref"]),
+                    "forbidden", "专业来源须属于当前明确作品。")?;
+                let (record, sha) = self.fixed_professional_object(reference)?;
+                let content = bytes(&record)?;
+                ensure(content.len() <= TEXT_LIMIT, "hetu.budget_exceeded", "专业来源超过任务上下文预算。")?;
+                sources.push(json!({"reference":reference,"title":record["title"],"source_format":"json","sha256":sha,"size_bytes":content.len()}));
             } else {
                 let (bp, sha) = self.source_blueprint(reference)?;
                 ensure(

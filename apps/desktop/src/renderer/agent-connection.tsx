@@ -3,6 +3,7 @@ import { desktop } from "./bridge.ts";
 import type { SurfaceContext } from "./contributions.tsx";
 import { Icon, IconButton, PageActions } from "./workbench.tsx";
 import "./surface-pages.css";
+import { AgentAppInstall } from "./agent-app-install.tsx";
 
 export function AgentConnection({ work, notify, ai }: SurfaceContext) {
   const [client, setClient] = useState("codex"),
@@ -58,6 +59,7 @@ export function AgentConnection({ work, notify, ai }: SurfaceContext) {
           <option value="generic">其他客户端</option>
         </select>
       </label>
+      {client === "codex" && <AgentAppInstall disabled={busy}/>}
       <p className="agent-authorization-state">
         <Icon name="shield" size={20}/>
         {status

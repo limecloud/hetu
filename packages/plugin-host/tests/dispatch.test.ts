@@ -4,9 +4,9 @@ import { capabilitiesSha, dispatchPlugin } from "../src/dispatch.ts";
 
 const capabilities = {
   plugin_id: "org.test.planner", package_sha256: "a".repeat(64),
-  actions: [{ id: "put_plan" }],
-  data_actions: [{ name: "hetu.extensions.operations.get" }],
-  core_actions: [{ name: "hetu.novels.snapshot" }],
+  actions: [{ id: "put_plan", effect: "managed_write" }],
+  data_actions: [{ name: "hetu.extensions.operations.get", effect: "read" }],
+  core_actions: [{ name: "hetu.novels.snapshot", effect: "read" }],
 };
 function fixture(cap = capabilities) {
   const calls: { route: string; action: string; input: unknown }[] = [];
@@ -70,4 +70,23 @@ test("业务失败、未知及抛出异常均原样传播，不重试不换原�
     calls++; throw new Error("回执丢失，沿原键查询");
   } }), /沿原键/);
   assert.equal(calls, 1);
+});
+
+test("投影要求在回调前核验真实effect，插件返回字段不能提升效果", async () => {
+  const f = fixture();
+  await assert.rejects(dispatchPlugin(f.cap, { ...f.input("put_plan"), require_read_only: true }, f.routes), /只读/);
+  assert.deepEqual(f.calls, []);
+  const read = await dispatchPlugin(f.cap, { ...f.input("hetu.extensions.operations.get"), require_read_only: true }, f.routes);
+  assert.equal(read.invocation.effect, "read");
+  const write = await dispatchPlugin(f.cap, f.input("put_plan", { operation_key: "fixed" }), {
+    ...f.routes, invoke: async () => ({ invocation: { effect: "read" } }),
+  });
+  assert.equal(write.invocation.effect, "managed_write");
+  assert.equal(write.invocation.operation_key, "fixed");
+  const missing = { ...f.cap, actions: [{ id: "put_plan" }] };
+  await assert.rejects(dispatchPlugin(missing, { ...f.input("put_plan"), capabilities_sha256: capabilitiesSha(missing), require_read_only: true }, f.routes), /只读/);
+  const original = await dispatchPlugin(f.cap, f.input("put_plan", { b: "中🌿", operation_key: "fixed", a: 1 }), f.routes);
+  const reordered = await dispatchPlugin(f.cap, f.input("put_plan", { a: 1, operation_key: "fixed", b: "中🌿" }), f.routes);
+  assert.equal(original.invocation.sha256, reordered.invocation.sha256);
+  assert.notEqual(original.invocation.sha256, write.invocation.sha256);
 });

@@ -1,5 +1,12 @@
 # 数据字典与 Schema 设计
 
+## 默认基础产品与视频审阅数据
+
+`contracts/baseline.json`拥有随包作品类型、核心动作和工作面要求，不属于作品数据或插件安装状态。视频基础合同由 `contracts/schemas/video-review.schema.json` 拥有：媒体记录固定work_ref、video_episode_id、asset_ref、purpose、stream_index、time_base、duration_ticks和previous_media_ref；区间采用同一流时基的半开区间start_tick至end_tick。时长与流信息标为提交方声明，Core不从文件签名推定解码或观看成功。
+
+媒体及意见是不可变版本化记录，保存使用共同事务和原操作键。列表使用固定集合摘要游标，新增内容后拒绝拼接旧分页。意见保存不改变正式选用、预演认可或成片决定。基础文件交付保留固定资产摘要、完整字节及用途，不包含未声明的专业工程。归属见[28](28-领域设计与边界上下文.md#默认基础与专业扩展归属)。
+
+
 本章定义字段语义与约束；`contracts/schemas/` 负责已发布的机器校验合同，两者变更须同步评审。现有格式基线为 `1.0.0`，新增记录独立版本化；采纳与定稿拆分涉及的接口不得沿用旧语义版本。设计结构不自动成为运行时可接收字段，调用以能力目录公布的精确 Schema 为准。
 
 ## 1. 类型、公用字段与存储选择
@@ -460,6 +467,21 @@ TaskGrant、CheckoutRecord 和 ContinuationReceipt 留在本机私有存储或�
 
 工作副本、正式候选和作者正文具有不同身份。一个工作修订可用于多个明确批次，但每批 submission_id 与原键独立；采纳仍经 Draft／AdoptionRecord 形成正文新修订。缓存、检出文件、外部完成声明及对话文本均不能成为另一份正文或设定真值。
 
+### 22.1 Agent 会话与双入口绑定
+
+本节定义双入口会话宿主的目标语义，不表示已发布Schema或动作。会话适配器合同归[39第4.3节](39-Electron与插件优先重构架构.md#43-agent-会话宿主)；实现时单独版本化本机记录，不向已有任务记录补字段后重算历史摘要。
+
+| 本机记录 | 必需语义 | 不变量 |
+| --- | --- | --- |
+| 会话绑定 | 本机会话身份、入口、引擎及版本、引擎thread/session引用、能力声明、连接代次 | 引擎引用不是task_id，不证明作品授权；同一引擎会话只有一个受管写入者 |
+| 任务绑定 | 会话引用、精确WorkRef／task_ref／请求摘要、客户端主体及本机授权引用 | 每次业务调用重验权限；切换作品或入口不修改旧绑定，不向日志、Prompt或深链接输出授权材料 |
+| 消息尝试 | 本机消息身份、会话与连接代次、目标任务、投递回执、关联轮次 | 投递前持久记录；未发送、已写入、已受理、执行结束分别可观察，未知不自动重发 |
+| 待答请求 | 引擎请求身份、所属会话／轮次／连接代次、请求类型、状态与答复回执 | 引擎拥有请求及有效期，宿主保存投影；引擎工具审批不替代Core作者决定，旧连接的请求不可回答新会话 |
+
+会话记录和经作者选择保留的对话留在本机私有存储，不进入作品Git、Bundle或普通支持日志；凭据由引擎或独立私密存储持有。作品只保存既有任务、工作修订、候选、公开反馈、作者决定与原操作。会话摘要不能成为另一份正文、设定或决定真值；作者显式公开的接续说明仍按既有任务接续合同保存。
+
+外部MCP App未必能获取宿主引擎会话标识，应允许其缺失；只能记录真实可观察的消息和面板回执，不能猜测线程、读取私有聊天或由打开面板推断执行中。跨入口恢复以Core固定事实为准，同引擎历史恢复还需独立验证版本、权限和会话归属。
+
 ## 23. 页面交接与操作提案
 
 本节定义[30第25节](30-应用API详细设计.md#25-全软件联动与操作提案合同)的数据语义。实际发布时为对应记录分配 Schema 版本并登记动作合同；未进入能力目录的设计字段不得由 Skill 直接写入受管文件。
@@ -566,8 +588,18 @@ AssetDesign与AssetSelection继续拥有资料设计和用途选用，MediaArtif
 
 ## 机器接续与有界读取
 
-creative-task.schema.json维护任务接续记录及输入；记录包含schema_version、task_ref、revision、previous_sha256、checkpoint和updated_at，固定内容摘要作为expected返回。checkpoint保存阶段、步骤、来源阅读范围、工作稿引用、反馈引用、未知问题和下一步，不保存模型思维过程或凭据。来源覆盖区分返回字节与Agent声明理解；statement类型区分inference、proposal与question，不将推断升级为作者事实。版本冲突保留调用方内容，记录历史不可覆盖。
+creative-task.schema.json维护任务接续记录及输入；记录包含schema_version、task_ref、revision、previous_sha256、checkpoint和updated_at，固定内容摘要作为expected返回。checkpoint保存阶段、步骤、来源阅读范围、工作稿引用、反馈引用、未知问题和下一步，不保存模型思维过程或凭据。来源覆盖区分返回字节与Agent声明理解；statement类型区分observation、derivation、hypothesis、inference、proposal与question，不将说明升级为作者事实。observation与derivation必须关联至少一个固定来源、工作稿或公开反馈；hypothesis包含prediction及testing／supported／refuted／abandoned状态，supported与refuted必须有引用。每条说明的working_copy_refs与feedback_refs可选，存在时逐项核验同任务固定修订。可选handoff保存summary及pitfalls，下一步继续使用next_actions。旧记录保持可读，新增字段仅按运行版Schema使用；16KiB总预算、CAS及历史不可覆盖规则保持。
 
 动作发现与运行诊断字段由actions.json拥有；error.resolution可携带input与retry策略。operations.get按原操作键、动作和输入摘要回读，可选择JSON pointer和有界片段；分页引用保留原操作及输入摘要，不能跨授权或跟随当前头。
+
+目录query按动作名与用途进行文字筛选，前置条件由同一动作合同和路由元数据派生，readiness在没有业务上下文时明确未核验。目录摘要绑定随包合同及授权变体，筛选摘要另绑定query、action与group；摘要发现不要求构造全部动作Schema。共同方法资源由Skills唯一源生成，包含路径、版本、内容摘要与UTF-8大小；读取只接受目录中公布的资源，不读取任意本机文件。
+
+任务执行记录独立版本化，使用稳定attempt_id和固定task_ref，状态区分started、succeeded、partial、pending、blocked、failed、cancelled、unknown；只保存规范动作、输入摘要、可恢复原操作、错误码和时间，不保存任意参数或错误正文。接续说明的稳定标识不因数组位置或文字改写变化，支持与反证分别关联固定引用；未决问题保留状态、消解依据与原专业Owner引用。新增结构可选，旧记录保持可读。
+
+执行记录使用phase区分started／finished，status另记实际结果；未观察终态的started按unknown读取，原操作可证明已经提交。查询绑定客户端当前授权摘要，最多返回50项、扫描200项；成员游标不冒充异步终态快照。原操作只保存摘要索引，Agent不能提交自报执行记录。
+
+专业只读来源plugin_object固定work_ref、owner_plugin_id、object_id、revision及sha256，任务准备时核验同作品归属；读取按确切对象投影，不扩大TaskRef权限。creative_tasks.assess分别返回delivery、professional、author_decision，不产生总质量通过值。小说审校适配读取其已发布novel_review合同，报告固定候选的六域覆盖、未检查、反证及错误目标；其他Owner明确unsupported_owner。reported_pass只表示Owner声明，语义正确性仍未由宿主核实。
+
+statement_id和issue_id使用稳定UUID标识；已有标识和新结构不能被旧客户端裁掉。supporting／contradicting逐项核验任务内固定来源、工作稿或公开反馈，同一依据不同时列入两边。任务问题resolved须有消解依据；专业问题以referred、owner_context_ref及原生owner_item_id引用任务固定的原Owner与具体问题；小说审校适配核验原问题存在，专业状态仍由原Owner维护。result_provenance由actions.json声明，通过MCP的_meta.provenance传递，不授予指令权或业务权限。
 
 固定设定实体超过单次预算时，task_context.read以原context_ref、section和entity_id携带result_path读取字段目录，再以offset和max_bytes读取字段片段；整份设定及实体摘要保持。字段读取不跟随当前设定，文本来源拒绝实体字段参数。MCP预算失败返回同一固定实体的字段读取参数，不要求无限提高传输预算。

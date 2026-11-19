@@ -176,8 +176,24 @@ impl CollaborationHub {
         })
     }
     pub fn catalog(&self) -> Value {
-        let mut actions = Kernel::task_action_catalog();
+        self.catalog_selection(true, None)
+    }
+    pub fn catalog_summary(&self) -> Value {
+        self.catalog_selection(false, None)
+    }
+    pub fn action_descriptor(&self, name: &str) -> Option<Value> {
+        self.catalog_selection(true, Some(name))
+            .as_array()?
+            .first()
+            .cloned()
+    }
+    fn catalog_selection(&self, include_schema: bool, exact: Option<&str>) -> Value {
+        let mut actions = Kernel::task_action_metadata(include_schema, exact);
         for action in actions.as_array_mut().unwrap() {
+            action["authorization"] = json!("exact_task");
+            if !include_schema {
+                continue;
+            }
             let schema = &mut action["input_schema"];
             schema["properties"]["task_ref"] = task_ref_schema();
             if schema["$defs"].get("task_ref").is_some() {
@@ -190,21 +206,27 @@ impl CollaborationHub {
         }
         let list = actions.as_array_mut().unwrap();
         list.extend(
-            Kernel::collaboration_action_catalog()
+            Kernel::collaboration_action_metadata(include_schema, exact)
                 .as_array()
                 .unwrap()
                 .iter()
                 .cloned(),
         );
-        authoring::extend_catalog(list);
+        authoring::extend_catalog(list, include_schema, exact);
+        for action in list {
+            crate::machine::describe_action(action);
+        }
         actions
     }
     pub fn request(&self, request: Value) -> Value {
+        self.request_cancellable(request, &|| false)
+    }
+    pub fn request_cancellable(&self, request: Value, cancelled: &dyn Fn() -> bool) -> Value {
         let action = request["action"]
             .as_str()
             .unwrap_or("hetu.request.invalid")
             .to_owned();
-        let mut result = match self.execute(&request) {
+        let mut result = match self.execute(&request, cancelled) {
             Ok(value) => value,
             Err(error) => domain::failure(&action, "collaboration", &error),
         };
@@ -217,41 +239,62 @@ impl CollaborationHub {
         crate::machine::recovery(&mut result, &actual, recovery_input);
         result
     }
-    fn execute(&self, request: &Value) -> Result<Value> {
+    fn execute(&self, request: &Value, cancelled: &dyn Fn() -> bool) -> Result<Value> {
         domain::ensure(
             request["contract_revision"] == "1",
             "unsupported_version",
             "接入合同修订不受支持。",
         )?;
         let action = text(request, "action")?;
-        let catalog = self.catalog();
-        let metadata = catalog
-            .as_array()
-            .unwrap()
-            .iter()
-            .find(|a| a["name"] == action)
+        let metadata = self
+            .action_descriptor(action)
             .ok_or_else(|| Error::new("hetu.capability_unavailable", "稳定入口未开放该动作。"))?;
         let validator = jsonschema::validator_for(&metadata["input_schema"])
             .map_err(|_| Error::new("hetu.integrity_failure", "接入合同无效。"))?;
         if let Some(error) = validator.iter_errors(&request["input"]).next() {
-            return Err(Error::new(
-                "invalid_input",
-                format!("接入参数不符合当前合同：{}", error.instance_path),
-            ));
+            let refusal=Error::new("invalid_input",format!("接入参数不符合当前合同：{}", error.instance_path));
+            let result=domain::failure(action,"collaboration",&refusal);
+            let _=self.record_rejected_task_request(request,&result);
+            return Err(refusal);
+        }
+        if action != "hetu.collaboration.invoke"
+            && action != "hetu.collaboration.open"
+            && !request["input"]["task_ref"].is_object()
+            && cancelled()
+        {
+            return Err(Error::new("cancelled", "请求在业务执行前取消。"));
         }
         if action == "hetu.collaboration.inspect" {
+            let catalog = self.catalog_summary();
             let mut data = crate::machine::catalog_page(&catalog, &request["input"])?;
+            if request["input"]["include_schema"] == true {
+                for item in data["actions"].as_array_mut().unwrap() {
+                    *item = self
+                        .action_descriptor(item["name"].as_str().unwrap())
+                        .unwrap();
+                }
+            }
             data["version"] = json!(env!("CARGO_PKG_VERSION"));
             data["client_adapter"] = json!(self.client);
             data["task_selection"] = json!("explicit_reference");
             data["capability_map_action"] = json!("hetu.capabilities.map");
             return Ok(domain::success(action, "collaboration", data));
         }
+        if action == "hetu.baseline.inspect" {
+            return Ok(domain::success(action, "collaboration", crate::baseline::inspect()?));
+        }
         if action == "hetu.runtime.inspect" {
             return Ok(domain::success(
                 action,
                 "collaboration",
-                crate::machine::runtime(&catalog, &request["input"])?,
+                crate::machine::runtime(&self.catalog_summary(), &request["input"])?,
+            ));
+        }
+        if action.starts_with("hetu.methods.") {
+            return Ok(domain::success(
+                action,
+                "collaboration",
+                crate::methods::request(action, &request["input"])?,
             ));
         }
         if action == "hetu.collaboration.invoke" {
@@ -264,7 +307,7 @@ impl CollaborationHub {
             let projected = request["input"].get("view");
             if projected.is_some() {
                 ensure(
-                    catalog
+                    self.catalog_summary()
                         .as_array()
                         .unwrap()
                         .iter()
@@ -273,8 +316,9 @@ impl CollaborationHub {
                     "结果投影只允许只读动作，不能重新执行写入。",
                 )?;
             }
-            let result = self.request(
+            let result = self.request_cancellable(
                 json!({"action":target,"contract_revision":"1","input":request["input"]["input"]}),
+                cancelled,
             );
             return match projected {
                 Some(view) if result.get("error").is_none() => {
@@ -303,7 +347,7 @@ impl CollaborationHub {
             return Ok(domain::success(
                 action,
                 "collaboration",
-                crate::plugin_settings::request(&self.client, action, &request["input"])?,
+                crate::plugin_settings::request_cancellable(&self.client, action, &request["input"], cancelled)?,
             ));
         }
         if action.starts_with("hetu.model_settings.") {
@@ -320,13 +364,58 @@ impl CollaborationHub {
         if action == "hetu.creation_projects.create"
             || request["input"].get("management_ref").is_some()
         {
-            return self.execute_authoring(request);
+            return self.execute_authoring(request,cancelled);
         }
         let reference = if action == "hetu.collaboration.open" {
             &request["input"]["task_locator"]
         } else {
             &request["input"]["task_ref"]
         };
+        let (kernel,task_ref,legacy_ref,mut opened)=self.task_connection(reference)?;
+        if opened["status"]!="succeeded" { opened["action"]=json!(action); return Ok(opened); }
+        if action == "hetu.collaboration.open" {
+            opened["action"] = json!(action);
+            expand_task_refs(&mut opened["data"], &legacy_ref, &task_ref);
+            opened["data"]["task_ref"] = task_ref;
+            let page = crate::machine::catalog_page(&self.allowed_actions(&kernel), &json!({}))?;
+            opened["data"]["allowed_actions"] = page["actions"].clone();
+            opened["data"]["allowed_actions_page"] = page;
+            return Ok(opened);
+        }
+        ensure(
+            reference == &task_ref,
+            "hetu.stale_request",
+            "请使用打开任务返回的确切请求引用。",
+        )?;
+        let mut routed = request.clone();
+        normalize_task_refs(&mut routed["input"], &task_ref, &legacy_ref)?;
+        // 协作层检查完整引用；旧领域动作仍按其已发布的合同读取。
+        let action_metadata = Kernel::task_action_metadata(true, Some(action))
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|a| a["name"] == action)
+            .cloned()
+            .unwrap();
+        if action_metadata["input_schema"]["properties"]
+            .get("task_ref")
+            .is_some()
+        {
+            routed["input"]["task_ref"] = legacy_ref.clone();
+        } else {
+            routed["input"].as_object_mut().unwrap().remove("task_ref");
+        }
+        let mut result = kernel.request_cancellable(routed, cancelled);
+        if action == "hetu.capabilities.get" && result["data"].is_object() {
+            result["data"]["actions"] = self.allowed_actions(&kernel);
+        }
+        if result["data"].is_object() {
+            expand_task_refs(&mut result["data"], &legacy_ref, &task_ref);
+            result["data"]["task_ref"] = task_ref;
+        }
+        Ok(result)
+    }
+    fn task_connection(&self, reference: &Value) -> Result<(Kernel,Value,Value,Value)> {
         let store = Store::open(&self.directory)
             .map_err(|_| Error::new("forbidden", "此客户端尚未获权访问该任务。"))?;
         // 先读私有映射；业务请求在作品锁内再次检查，保持锁顺序一致。
@@ -363,57 +452,22 @@ impl CollaborationHub {
             "登记目录与任务身份不一致。",
         )?;
         let legacy_ref = json!({"scope_ref":reference["scope_ref"],"task_id":reference["task_id"],"request_revision":grant["request_revision"]});
-        let mut opened = kernel.request(json!({"action":"hetu.creative_tasks.get","contract_revision":"1","input":{"task_ref":legacy_ref,"detail":"summary"}}));
-        if opened["status"] != "succeeded" {
-            opened["action"] = json!(action);
-            return Ok(opened);
+        let opened = kernel.request_untracked(json!({"action":"hetu.creative_tasks.get","contract_revision":"1","input":{"task_ref":legacy_ref,"detail":"summary"}}));
+        if opened["status"]=="succeeded" {
+            ensure(opened["data"]["request_sha256"] == grant["request_sha256"], "hetu.stale_request", "请求已变化，请由作者确认当前授权。")?;
         }
-        ensure(
-            opened["data"]["request_sha256"] == grant["request_sha256"],
-            "hetu.stale_request",
-            "请求已变化，请由作者确认当前授权。",
-        )?;
-        let task_ref = json!({"scope_ref":reference["scope_ref"],"task_id":reference["task_id"],"request_revision":grant["request_revision"],"sha256":grant["request_sha256"]});
-        if action == "hetu.collaboration.open" {
-            opened["action"] = json!(action);
-            opened["data"]["task_ref"] = task_ref;
-            let page = crate::machine::catalog_page(&self.allowed_actions(&kernel), &json!({}))?;
-            opened["data"]["allowed_actions"] = page["actions"].clone();
-            opened["data"]["allowed_actions_page"] = page;
-            return Ok(opened);
-        }
-        ensure(
-            reference == &task_ref,
-            "hetu.stale_request",
-            "请使用打开任务返回的确切请求引用。",
-        )?;
-        let mut routed = request.clone();
-        normalize_task_refs(&mut routed["input"], &task_ref, &legacy_ref)?;
-        // 协作层检查完整引用；旧领域动作仍按其已发布的合同读取。
-        let action_metadata = Kernel::task_action_catalog()
-            .as_array()
-            .unwrap()
-            .iter()
-            .find(|a| a["name"] == action)
-            .cloned()
-            .unwrap();
-        if action_metadata["input_schema"]["properties"]
-            .get("task_ref")
-            .is_some()
-        {
-            routed["input"]["task_ref"] = legacy_ref.clone();
-        } else {
-            routed["input"].as_object_mut().unwrap().remove("task_ref");
-        }
-        let mut result = kernel.request(routed);
-        if action == "hetu.capabilities.get" && result["data"].is_object() {
-            result["data"]["actions"] = self.allowed_actions(&kernel);
-        }
-        if result["data"].is_object() {
-            expand_task_refs(&mut result["data"], &legacy_ref, &task_ref);
-            result["data"]["task_ref"] = task_ref;
-        }
-        Ok(result)
+        let task_ref=json!({"scope_ref":reference["scope_ref"],"task_id":reference["task_id"],"request_revision":grant["request_revision"],"sha256":grant["request_sha256"]});
+        Ok((kernel,task_ref,legacy_ref,opened))
+    }
+    fn record_rejected_task_request(&self, request: &Value, result: &Value) -> Result<()> {
+        let Some(action)=request["action"].as_str() else { return Ok(()); };
+        if Kernel::task_action_metadata(false,Some(action)).as_array().is_none_or(|actions|actions.is_empty()) { return Ok(()); }
+        let reference=&request["input"]["task_ref"];
+        let (kernel,exact,legacy,opened)=self.task_connection(reference)?;
+        ensure(reference==&exact && opened["status"]=="succeeded","forbidden","无法验证拒绝请求的任务归属。")?;
+        let mut routed=request.clone();
+        routed["input"]["task_ref"]=legacy;
+        kernel.record_rejected_task_request(&routed,result)
     }
     fn allowed_actions(&self, kernel: &Kernel) -> Value {
         let actual = kernel
@@ -433,7 +487,7 @@ impl CollaborationHub {
                 .cloned()
                 .map(|mut action| {
                     if action["authorization"] == "task_or_new_managed_scope" {
-                        action["input_schema"] = action["input_schema"]["oneOf"][0].clone();
+                        action["input_schema"] = schema_branch(&action["input_schema"], 0);
                         action["authorization"] = json!("task");
                     }
                     action
@@ -443,21 +497,40 @@ impl CollaborationHub {
     }
 }
 
+fn schema_branch(schema: &Value, index: usize) -> Value {
+    let mut branch = schema["oneOf"][index].clone();
+    if let Some(shared) = schema["$defs"].as_object() {
+        let definitions = branch.as_object_mut().unwrap().entry("$defs")
+            .or_insert_with(|| json!({})).as_object_mut().unwrap();
+        definitions.extend(shared.iter().map(|(key, value)| (key.clone(), value.clone())));
+    }
+    branch
+}
+
 fn expand_task_refs(value: &mut Value, legacy: &Value, exact: &Value) {
-    // 仅补全执行入口引用；持久记录及费用计划的字节属于其原摘要。
-    if let Some(references) = value["candidate_refs"].as_array_mut() {
-        for reference in references {
-            if reference["task_ref"] == *legacy {
-                reference["task_ref"] = exact.clone();
+    // 只补全明确存在的执行入口引用；不向无关回执插入空字段或改写固定记录。
+    let update = |reference: &mut Value| {
+        if reference.get("task_ref")==Some(legacy) {reference["task_ref"]=exact.clone();}
+    };
+    if let Some(rows)=value.get_mut("executions").and_then(Value::as_array_mut) {
+        for row in rows {if let Some(input)=row.pointer_mut("/recovery/input") {update(input);}}
+    }
+    if let Some(input)=value.pointer_mut("/execution/recovery/input") {update(input);}
+    if let Some(rows)=value.pointer_mut("/delivery/candidates").and_then(Value::as_array_mut) {
+        for row in rows {if let Some(reference)=row.get_mut("candidate_ref") {update(reference);}}
+    }
+    if let Some(reports)=value.pointer_mut("/professional/reports").and_then(Value::as_array_mut) {
+        for report in reports {
+            if let Some(rows)=report.get_mut("candidate_coverage").and_then(Value::as_array_mut) {
+                for row in rows {if let Some(reference)=row.get_mut("candidate_ref") {update(reference);}}
             }
         }
     }
-    if value["candidate_ref"]["task_ref"] == *legacy {
-        value["candidate_ref"]["task_ref"] = exact.clone();
+    if let Some(references)=value.get_mut("candidate_refs").and_then(Value::as_array_mut) {
+        for reference in references {update(reference);}
     }
-    if value["original_result"]["data"].is_object() {
-        expand_task_refs(&mut value["original_result"]["data"], legacy, exact);
-    }
+    if let Some(reference)=value.get_mut("candidate_ref") {update(reference);}
+    if let Some(original)=value.pointer_mut("/original_result/data") {expand_task_refs(original,legacy,exact);}
 }
 
 fn normalize_task_refs(value: &mut Value, expected: &Value, legacy: &Value) -> Result<()> {

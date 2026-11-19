@@ -1,12 +1,15 @@
 pub mod application;
 pub mod capability_map;
+pub mod baseline;
 pub mod collaboration;
 mod domain;
 mod infrastructure;
 pub mod local_settings;
 pub mod machine;
+pub mod methods;
 pub mod model_service;
 pub mod plugin_settings;
+mod process_supervisor;
 
 pub use application::Kernel;
 pub use domain::{Error, Result, failure as failure_result};

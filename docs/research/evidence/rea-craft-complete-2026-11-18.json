@@ -1,0 +1,842 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-11-18",
+  "status": "complete",
+  "scope": "REA与Craft Anything源码对照六个工作包的完整实现及本会话验收",
+  "platform": {
+    "system": "Darwin",
+    "machine": "arm64",
+    "runtime_verification": "macOS arm64"
+  },
+  "source_review": {
+    "evidence_path": "docs/research/evidence/rea-craft-session-acceptance-2026-11-18.json",
+    "evidence_sha256": "b77531c48aebb189fec58472666b659161f440363c3ea981e5213567341e4833",
+    "rea_commit": "b21db3f3293bcfaffa6793be2f09b1aaf35dcc69",
+    "craft_commit": "788642e487c5d39a4a0f8823c07024c301761861",
+    "reviewed_files": 38,
+    "rechecked_source_hashes_unchanged": true,
+    "executed_upstream_tests": false
+  },
+  "work_packages": [
+    {
+      "id": "discovery_methods",
+      "implemented": true,
+      "owner": "Core动作目录与Skills唯一源",
+      "changes": [
+        "关键词、筛选摘要、结构化前置条件",
+        "单动作按需Schema构造与冷启动观测",
+        "methods目录及固定摘要分块读取",
+        "定向插件发现只装配目标与依赖，逐次核验状态及字节"
+      ],
+      "tests": [
+        "cold_discovery_selects_contracts_and_reads_methods_without_workspace_state",
+        "discovery_is_bounded_snapshot_checked_and_diagnostics_are_read_only",
+        "定向发现只核对目标与依赖，停用或替换依赖后不能继续"
+      ]
+    },
+    {
+      "id": "executions",
+      "implemented": true,
+      "owner": "Core精确任务执行经过",
+      "changes": [
+        "开始、成功、失败、取消、unknown",
+        "授权摘要隔离、有界目录及原操作恢复",
+        "无正文、凭据、错误正文、模型对话或原键文本"
+      ],
+      "tests": [
+        "execution_history_reopens_replays_and_recovers_without_recording_creative_content",
+        "rejected_schema_is_recorded_only_for_a_verified_task",
+        "unfinished_attempt_preserves_unknown_and_recovers_an_already_committed_operation",
+        "journal_admission_failure_prevents_new_work_but_does_not_block_original_recovery"
+      ]
+    },
+    {
+      "id": "assessment",
+      "implemented": true,
+      "owner": "宿主交付与决定；专业结论仍归原Owner",
+      "changes": [
+        "固定plugin_object只读来源",
+        "固定候选、专业报告与作者决定分层",
+        "小说审校Owner六域覆盖、反证、错误目标、部分覆盖、不确定",
+        "已有作品、新建作品、筹备管理授权分支及TaskRef越界拒绝"
+      ],
+      "limits": [
+        "其他专业Owner明确unsupported_owner；不自造通用专业检查通过协议",
+        "reported_pass仅为Owner声明，文学质量未由Core核实"
+      ],
+      "tests": [
+        "assessment_separates_delivery_agent_claims_and_author_decisions",
+        "professional_reports_bind_candidate_sources_and_task_authorization"
+      ]
+    },
+    {
+      "id": "continuation",
+      "implemented": true,
+      "owner": "原checkpoint；专业问题留在原专业对象",
+      "changes": [
+        "稳定statement_id与issue_id",
+        "固定支持及反证、预测修订",
+        "任务问题状态与消解依据",
+        "专业对象及原生问题ID引用；旧客户端裁剪拒绝"
+      ],
+      "tests": [
+        "stable_statements_preserve_opposing_evidence_and_issue_lifecycle",
+        "professional_reports_bind_candidate_sources_and_task_authorization"
+      ]
+    },
+    {
+      "id": "provenance_processes",
+      "implemented": true,
+      "owner": "生产动作合同、共享MCP输出及现有进程宿主",
+      "changes": [
+        "逐结果_meta.provenance，错误与预算一致",
+        "输入、执行、退出、排空统一期限",
+        "Unix进程组、Windows Job、取消与后代清理",
+        "macOS SIGPIPE退出竞态的受控回收",
+        "专业unknown沿原Owner、原键与调用摘要恢复"
+      ],
+      "tests": [
+        "result_provenance_comes_from_the_same_contract_in_both_adapters",
+        "input_output_cancel_and_exit_share_the_same_bounded_lifecycle",
+        "parent_exit_does_not_bypass_drain_deadline_and_descendant_cleanup",
+        "interrupted_plugin_recovers_the_original_owner_operation_without_echoing_content"
+      ]
+    },
+    {
+      "id": "real_agent_evaluation",
+      "implemented": true,
+      "owner": "当前外部主Agent；记录器不内置创作序列",
+      "changes": [
+        "小说简介两版与固定意见",
+        "独立原创剧本Fountain稿与稳定接续",
+        "独立视频首集与原video-studio固定分镜",
+        "首次选路、错误纠正、实际成果及原操作核对",
+        "目标token账本、wait4 CPU、进程族RSS采样与冷暖进程"
+      ],
+      "reports": {
+        "novel": {
+          "report_path": "output/rea-craft-complete-20261118/agent-novel/evaluation.json",
+          "sha256": "4f2e696fa9925863a299d8074bd3a81a11dc539b09824c9f2246e7678d9c4455",
+          "selection_owner": "current_external_agent",
+          "automatic_workflow": false,
+          "calls": 24,
+          "first_action": "hetu.collaboration.inspect",
+          "observed_errors": 0,
+          "assertions": 6,
+          "assertions_passed": true,
+          "elapsed_ms": 857309,
+          "goal_accounted_token_delta": 41296,
+          "provider_input_output_tokens": null,
+          "token_scope": "目标账本区间包含主Agent规划、同期工程诊断及修复；不能当作供应商逐请求输入输出token",
+          "peak_sampled_family_rss_bytes": 253870080,
+          "process_cpu_seconds": 4.101724,
+          "process_cpu_scope": "CLI单次进程及已回收后代，加各MCP整个会话及已回收后代；不含采样器",
+          "temperatures": [
+            "fresh_mcp_including_initialize",
+            "fresh_process_os_cache_uncontrolled",
+            "warm_mcp_process"
+          ],
+          "conclusion": "最终开发制品的简介关键词已命中真实任务入口；原任务两版、固定意见、重开与原操作回读通过，固定候选未重复，专业检查与作者决定保持独立待审。小说旅程未采纳或定稿。"
+        },
+        "drama": {
+          "report_path": "output/rea-craft-complete-20261118/agent-drama/evaluation.json",
+          "sha256": "dbbff3e9a7237f613e27fcf984613438d8d073741d38a9068aa76f8d9afb2012",
+          "selection_owner": "current_external_agent",
+          "automatic_workflow": false,
+          "calls": 16,
+          "first_action": "hetu.collaboration.inspect",
+          "observed_errors": 0,
+          "assertions": 4,
+          "assertions_passed": true,
+          "elapsed_ms": 290574,
+          "goal_accounted_token_delta": 13683,
+          "provider_input_output_tokens": null,
+          "token_scope": "目标账本区间包含主Agent规划、同期工程诊断及修复；不能当作供应商逐请求输入输出token",
+          "peak_sampled_family_rss_bytes": 186925056,
+          "process_cpu_seconds": 3.019593,
+          "process_cpu_scope": "CLI单次进程及已回收后代，加各MCP整个会话及已回收后代；不含采样器",
+          "temperatures": [
+            "fresh_mcp_including_initialize",
+            "fresh_process_os_cache_uncontrolled",
+            "warm_mcp_process"
+          ],
+          "conclusion": "首次按独立剧本关键词正确定位；独立原创剧本、Fountain稿、稳定接续、CLI重读、重开提交及分层回读通过。专业语义与作者取舍保留，未采纳或定稿。"
+        },
+        "video": {
+          "report_path": "output/rea-craft-complete-20261118/agent-video/evaluation.json",
+          "sha256": "2c5d6f7f880b54f4f9a438c3ccd2bce72a92872f0763bb33b765a35edf962d9c",
+          "selection_owner": "current_external_agent",
+          "automatic_workflow": false,
+          "calls": 24,
+          "first_action": "hetu.collaboration.inspect",
+          "observed_errors": 2,
+          "assertions": 4,
+          "assertions_passed": true,
+          "elapsed_ms": 1488397,
+          "goal_accounted_token_delta": 84053,
+          "provider_input_output_tokens": null,
+          "token_scope": "目标账本区间包含主Agent规划、同期工程诊断及修复；不能当作供应商逐请求输入输出token",
+          "peak_sampled_family_rss_bytes": 755367936,
+          "process_cpu_seconds": 63.359024,
+          "process_cpu_scope": "CLI单次进程及已回收后代，加各MCP整个会话及已回收后代；不含采样器",
+          "temperatures": [
+            "fresh_mcp_including_initialize",
+            "fresh_process_os_cache_uncontrolled",
+            "warm_mcp_process"
+          ],
+          "conclusion": "首次独立视频选路正确，宿主分镜查询未命中后经活动专业方法定位video-studio；真实只读超时促成按目标与依赖加载修复。最终固定分镜保存、关闭重开、独立CLI首集回读及原操作摘要一致；没有真实媒体、付费生成或成片认可，计划与成片未混同。"
+        }
+      }
+    }
+  ],
+  "validation": {
+    "baseline_workspace": {
+      "passed": 374,
+      "failed": 0,
+      "ignored": 0,
+      "log": "output/rea-craft-complete-20261118/workspace-final-regression.log"
+    },
+    "plugin_host": {
+      "passed": 91,
+      "failed": 0,
+      "skipped": 0
+    },
+    "installation_focus": {
+      "passed": 5,
+      "failed": 0
+    },
+    "backend_focus": {
+      "passed": 3,
+      "failed": 0
+    },
+    "managed_continuation_focus": {
+      "passed": 13,
+      "failed": 0,
+      "log": "output/rea-craft-complete-20261118/continuation-management-tests.log"
+    },
+    "windows_supervisor_cross_compile": "passed",
+    "windows_full_core_cross_compile": "blocked_missing_windows_C_SDK_assert.h",
+    "windows_runtime": "not_executed",
+    "linux_runtime": "not_executed",
+    "deterministic_final_journey": {
+      "checks": 23,
+      "calls": 71,
+      "same_key_replay": "passed",
+      "fixed_utf8_bytes": 132080,
+      "pages": 32,
+      "max_mcp_or_cli_result_bytes": 18519,
+      "report": "output/rea-craft-complete-20261118/final-contract-journey.json",
+      "note": "确定性传输与事务回归，与真实Agent选路评价分开。",
+      "replay_calls": 69,
+      "replay_report": "output/rea-craft-complete-20261118/final-contract-replay.json"
+    },
+    "final_workspace": {
+      "passed": 374,
+      "failed": 0,
+      "ignored": 0,
+      "suites": 64,
+      "log": "output/rea-craft-complete-20261118/workspace-verified-final.log",
+      "build_profile_overrides": {
+        "hetu-core.opt-level": 0,
+        "hetu-core.debug": 0,
+        "hetu-core.codegen-units": 8
+      },
+      "jobs": 1,
+      "test_threads": 2
+    },
+    "capability_map": "passed",
+    "methods_generation": "passed",
+    "skills": {
+      "suites": 45,
+      "files": 2475,
+      "catalog_nodes": 908,
+      "status": "passed"
+    },
+    "documentation": {
+      "documents": 88,
+      "local_links": 1208,
+      "fragment_links": 242,
+      "traceability": {
+        "FR": 40,
+        "US": 61,
+        "UC": 54,
+        "E2E": 30,
+        "AC": 65
+      },
+      "id_references": 1261,
+      "json_examples": 11,
+      "schemas": 2,
+      "mermaid": 100,
+      "errors": []
+    },
+    "typescript": "passed",
+    "diff_whitespace": "passed",
+    "same_source_plugin_readback": {
+      "status": "passed",
+      "report": "output/rea-craft-complete-20261118/final-plugin-artifact-recovery.json",
+      "sha256": "f0dbb3bba6318b8a457b39820adf36672504b4fdcfffda8f825b7fdc4724b422",
+      "checks": [
+        "重新发现最终Core插件能力",
+        "原video-studio操作与固定分镜摘要一致",
+        "两次回包均有生产合同来源元数据"
+      ]
+    }
+  },
+  "preserved_failures": [
+    {
+      "phase": "build_storage",
+      "finding": "缓存构建空间耗尽，随后缓存目录被外部清理",
+      "resolution": "仅清理本轮增量缓存；转至仓库output保留日志并重建，不据旧缓存宣称最终通过"
+    },
+    {
+      "phase": "execution_recovery",
+      "finding": "绑定旧任务入口恢复多传task_ref",
+      "resolution": "按连接合同生成原操作恢复参数"
+    },
+    {
+      "phase": "process_cleanup",
+      "finding": "macOS最后一个组成员SIGPIPE退出未回收时killpg可报EPERM",
+      "resolution": "先有界回收，只在整个组已不存在时确认清理完成；真实进程测试通过"
+    },
+    {
+      "phase": "real_novel_discovery",
+      "finding": "简介关键词最初未命中",
+      "resolution": "完善真实任务用途说明，最终同查询命中两项任务动作"
+    },
+    {
+      "phase": "real_video_discovery",
+      "finding": "只读能力与方法调用超时",
+      "resolution": "使用随包Node25并将定向检查缩到目标及依赖，原方法读取、分镜保存与重开回读通过"
+    },
+    {
+      "phase": "management_scope",
+      "finding": "目录声明评估动作，但已有作品授权动作表遗漏",
+      "resolution": "补齐精确对象与三种管理分支；保留TaskRef越界拒绝"
+    },
+    {
+      "phase": "transport_reference_projection",
+      "finding": "补全固定引用时可意外插入无关null字段",
+      "resolution": "只更新实际存在的精确引用；最终Agent回读与回归核对"
+    }
+  ],
+  "logs": {
+    "workspace-acceptance-tests.log": {
+      "path": "output/rea-craft-complete-20261118/workspace-acceptance-tests.log",
+      "sha256": "c87a1de589546cbf81304c49ee493830f412e94c2e955f82f8b5b9bc3d6a74e0"
+    },
+    "workspace-corrected-tests.log": {
+      "path": "output/rea-craft-complete-20261118/workspace-corrected-tests.log",
+      "sha256": "796d96103703f59f2e55893cf6e4e69eae0ca52f10a79f35e0c08cbeed254890"
+    },
+    "supervisor-focused-tests.log": {
+      "path": "output/rea-craft-complete-20261118/supervisor-focused-tests.log",
+      "sha256": "3ee309800f9051b094d6d596b01e0a606d910e46ca2df768e194d7b7925b4184"
+    },
+    "isolated-supervisor-tests.log": {
+      "path": "output/rea-craft-complete-20261118/isolated-supervisor-tests.log",
+      "sha256": "de6032d4981a94d1fe49f52356bffc97081a2a39c2e375d5fccb05be524e8b98"
+    },
+    "isolated-supervisor-corrected-tests.log": {
+      "path": "output/rea-craft-complete-20261118/isolated-supervisor-corrected-tests.log",
+      "sha256": "bedc3af7b4ae154bc640bddbb7f7451bbe064fef55f95c29b24bdb9b2f4c76b0"
+    },
+    "workspace-final-regression.log": {
+      "path": "output/rea-craft-complete-20261118/workspace-final-regression.log",
+      "sha256": "5c591630ec73964d0174658fc22d48d667bbb2d0a9feccacdcc205a163eaebaa"
+    },
+    "continuation-final-tests.log": {
+      "path": "output/rea-craft-complete-20261118/continuation-final-tests.log",
+      "sha256": "18c0df7995318ed6011c3e5d6ceb1920fed23c0c184cfac025e830fce45cb4d9"
+    },
+    "continuation-management-tests.log": {
+      "path": "output/rea-craft-complete-20261118/continuation-management-tests.log",
+      "sha256": "1c763eb7647a0c6838c0fc71faf472efdb945bd9c6f1bece352acbd9e9a377d5"
+    },
+    "plugin-host-all-tests.log": {
+      "path": "output/rea-craft-complete-20261118/plugin-host-all-tests.log",
+      "sha256": "313f7c17589880fcaf7a2e56abac4b28e0c64692aa8f222b1155a4801ead8d6f"
+    },
+    "installations-tests.log": {
+      "path": "output/rea-craft-complete-20261118/installations-tests.log",
+      "sha256": "e9247a666cd14b53eccfd3138f1c02ad1d244067afc2af80ff6d0abc4d602c02"
+    },
+    "backend-final-tests.log": {
+      "path": "output/rea-craft-complete-20261118/backend-final-tests.log",
+      "sha256": "6fb9ae24e92982f2dee3d1cb9175fd1e33add4c533cf6017448f59ddc4c15a1e"
+    },
+    "typescript-final.log": {
+      "path": "output/rea-craft-complete-20261118/typescript-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "windows-supervisor-final-check.log": {
+      "path": "output/rea-craft-complete-20261118/windows-supervisor-final-check.log",
+      "sha256": "6a35dfd38bbee3ba089bc836870e21248267eff21975171ed4ae1c3c4c46c693"
+    },
+    "windows-core-check.log": {
+      "path": "output/rea-craft-complete-20261118/windows-core-check.log",
+      "sha256": "ccf7c7a03c5681466e5eea0f0b5b4fdf9c26f8e8ed8b348e6f3538d5c88338d4"
+    },
+    "docs-final-check.log": {
+      "path": "output/rea-craft-complete-20261118/docs-final-check.log",
+      "sha256": "684e6d8dab7bb439f2844d8b91a69228a8a0a985d9c41f93bc743dd337ba843b"
+    },
+    "skills-check.log": {
+      "path": "output/rea-craft-complete-20261118/skills-check.log",
+      "sha256": "d0bb4190b9f06238766364035d407a9801ce96a61a51d119be67424888ea04d9"
+    },
+    "method-check.log": {
+      "path": "output/rea-craft-complete-20261118/method-check.log",
+      "sha256": "42eb2486f223188d7d09cc7ee354ab642cd34bd81657ced128b00a3af4825c86"
+    },
+    "docs-check.log": {
+      "path": "output/rea-craft-complete-20261118/docs-check.log",
+      "sha256": "d4f2b3cc98c3221d8c73e5507c999eb68edee579bc040a2bb07aa855736b0163"
+    },
+    "final-contract-journey.log": {
+      "path": "output/rea-craft-complete-20261118/final-contract-journey.log",
+      "sha256": "edcbaebae91ca940099f96941587a2f174bf43cbd051ca473906ecd51ef77841"
+    },
+    "typescript.log": {
+      "path": "output/rea-craft-complete-20261118/typescript.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "workspace-verified-final.log": {
+      "path": "output/rea-craft-complete-20261118/workspace-verified-final.log",
+      "sha256": "79f0a49d699dede34782f014ff85c1ce66dbd75da15d532d377a1df47db445bd"
+    },
+    "map-check.log": {
+      "path": "output/rea-craft-complete-20261118/map-check.log",
+      "sha256": "0a290158f76b29bce06ee0505bff2ee5daced0e452e7f8c4d22e52abf0deba80"
+    },
+    "workspace-final-tests.log": {
+      "path": "output/rea-craft-complete-20261118/workspace-final-tests.log",
+      "sha256": "44c5d0b8ff9b28f18b2fb89537cae6c81ef6f375d1c7855a7da3e1e80c90b693"
+    },
+    "backend-tests.log": {
+      "path": "output/rea-craft-complete-20261118/backend-tests.log",
+      "sha256": "36b7cead977b2595c37a84c18d74227c16bfe3864257f55f3a9b3340019a6238"
+    },
+    "windows-supervisor-check.log": {
+      "path": "output/rea-craft-complete-20261118/windows-supervisor-check.log",
+      "sha256": "713b7bed6f4accfe7c1e860f3f5d43ea86cc00d0ebfff6c576fb9f9ee9ef864a"
+    },
+    "final-binaries-build.log": {
+      "path": "output/rea-craft-complete-20261118/final-binaries-build.log",
+      "sha256": "6a6cdaa5ac39f79675e68a9c7a2d3a274b9df42a7b169f529acab5aa589aaa9d"
+    },
+    "method-generate.log": {
+      "path": "output/rea-craft-complete-20261118/method-generate.log",
+      "sha256": "b65d8de8f351ffb9d87541c944997e1738aa279995218042f711a62053138422"
+    },
+    "desktop-final-build.log": {
+      "path": "output/rea-craft-complete-20261118/desktop-final-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "desktop-build.log": {
+      "path": "output/rea-craft-complete-20261118/desktop-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "final-contract-replay.log": {
+      "path": "output/rea-craft-complete-20261118/final-contract-replay.log",
+      "sha256": "edcbaebae91ca940099f96941587a2f174bf43cbd051ca473906ecd51ef77841"
+    },
+    "workspace-tests.log": {
+      "path": "output/rea-craft-complete-20261118/workspace-tests.log",
+      "sha256": "2b3ee77dbc9742ae6dd0e435b8c9e0a6755adc276457b5fb039ae3cc193511de"
+    },
+    "method-verified-final.log": {
+      "path": "output/rea-craft-complete-20261118/method-verified-final.log",
+      "sha256": "42eb2486f223188d7d09cc7ee354ab642cd34bd81657ced128b00a3af4825c86"
+    },
+    "skills-verified-final.log": {
+      "path": "output/rea-craft-complete-20261118/skills-verified-final.log",
+      "sha256": "d0bb4190b9f06238766364035d407a9801ce96a61a51d119be67424888ea04d9"
+    },
+    "verified-final-binaries.log": {
+      "path": "output/rea-craft-complete-20261118/verified-final-binaries.log",
+      "sha256": "8624fabadfdfdaf4b4ec7eb4a3774d219da5ed3dc33c26bbf336e652bcc3371e"
+    },
+    "docs-verified-final.log": {
+      "path": "output/rea-craft-complete-20261118/docs-verified-final.log",
+      "sha256": "296f160559a4b94e2d074a410706224432238c1f591c29a186fd4598bf51c01e"
+    },
+    "final-plugin-artifact-recovery.log": {
+      "path": "output/rea-craft-complete-20261118/final-plugin-artifact-recovery.log",
+      "sha256": "d334a68046d2602ebff468e858f8dd847a6569b61469da3dd76eb9529f758095"
+    }
+  },
+  "method_version": "0.3.12",
+  "software_version": "0.12.0",
+  "release_modified": false,
+  "committed": false,
+  "pushed": false,
+  "deployed": false,
+  "limits": [
+    "上游为38份生产源码及关联测试定义的定向审阅，未运行两仓完整测试",
+    "供应商逐请求输入输出token不可观察；不以回包字节估算",
+    "高并发机器负载及OS缓存不受控，RSS采样可能漏掉短进程和瞬间峰值；不据此宣称性能倍数",
+    "未调用付费模型，未执行作者采纳、定稿或真实成片认可",
+    "Windows仅监督模块交叉编译；完整跨平台发布另行验收",
+    "wait4只覆盖本进程及由其回收的后代；超时清理后重托管的后代CPU可能不完整，不冒充进程族精确总量。"
+  ],
+  "source_snapshot": {
+    "head": "06c8f53211312c08726682368578f64450acdc61",
+    "scope": "当前工作树变更与新增文件；包含此前保留的改动，不声明均由本轮产生",
+    "files": {
+      "Cargo.toml": "d37baf471d91386fb5d45f0244aa1516dde507b34ef10203c9d10e661b2e4157",
+      "apps/cli/tests/commands.rs": "32da43a5dfec57a692de0e70872193c8b16581644e7b04c08526be44427c5e58",
+      "apps/mcp/src/lib.rs": "2ef113ca3d20c1ceba0b3522028b5dc6820b1ae4f3ca7447e777a0a99bde1546",
+      "apps/mcp/src/model_confirmation.rs": "bd1d9b682d2a708d982809513ec7a2d10749cae003508bc416b33437ee19c256",
+      "apps/mcp/src/response.rs": "fd5b327ce57f59b58dc27dfdab30d1a5516fec73d9c7cc7f91a6aa13ea26919d",
+      "apps/mcp/src/stable.rs": "d93fc379f89c9e68f8a8fa288be880e51169d98c6870ea0802c079635be6a498",
+      "apps/mcp/tests/stdio.rs": "2bf9ca24b780348c2e3875e661f3821f0be4a4b9ff0b352df201f92fa9cdfb41",
+      "contracts/actions.json": "1c815439f867726588f9e61e97a966a67da376448e435f7fb7533e5ca909ee6b",
+      "contracts/capability-map.json": "cf8511ca19e0e1fb6b28a751f3ce5639f535bd51f86f775a1f61bf6d5244b649",
+      "contracts/method-resources.json": "93eb31b539d57376c761d3425967cf349f3410bd3d92b1643a69997cff40e3be",
+      "contracts/schemas/creative-task.schema.json": "20f4734993d3d8bde88c9e5dc74f16a834d006d1d2d97360f139a5ece2cbe7c4",
+      "core/Cargo.toml": "f17f78c1f6e2912437d7235063deaa41e9f07ca7a27280ae41f222a575bbe8e2",
+      "core/build.rs": "383c6130ff4f52b9846846af4372723b65e4b58e094bc3cd2f37a1fd3c4df649",
+      "core/src/application/agent_operations.rs": "cacc0a968986e6c404f322aa943aced83c4b8017443a89ed310a70bddeed7955",
+      "core/src/application/catalog.rs": "5030b25064d0f6d61f85465e44212472205d6f9936834b336ec066ef56875fa2",
+      "core/src/application/creative_tasks/assessment.rs": "741e5aac392568aa62c9b91ed84264cebe5a9ea8e9ef0d0ea0669a0699d80052",
+      "core/src/application/creative_tasks/checkpoint.rs": "d735730a3b70ef0bd8bfbc12a29e773569d63a3e92a8fd7fed79fd9f3a21da42",
+      "core/src/application/creative_tasks/context.rs": "da00ff54b1c7b8b1d245eac845cd51d531d6e4135681cba5ca89274cec7bebff",
+      "core/src/application/creative_tasks/executions.rs": "88324c3234d147210cd3b0a8fc7c2e7beefd413bbbf9e1b962ca72648687dcc6",
+      "core/src/application/creative_tasks.rs": "aab088e65d359a6de1ca3b964cd9f1662bd6d87f5922d9091a3440c457992a8c",
+      "core/src/application/extensions/open.rs": "7d8a9c0fe3eb374e4a6675b239791e6ddf3f7811d82d802adc1eb1b575c53c95",
+      "core/src/application/extensions.rs": "0adf12821bb8d7b1e3de2e4fb5f3178abb3b3942d963d2166492c68fc519c29c",
+      "core/src/application/mod.rs": "ffdbb44ab6049bc64d4085da3800c3d80c4d0f26fc36af4a835dc0a804f604ce",
+      "core/src/application/work_canons.rs": "d263874055fbce889e89b86fed03ec7dec8dc232e20d442a1ec7fdfc524bea1a",
+      "core/src/application/work_scope.rs": "583d049375eefe9520f5ba3acbde723b8a7e3076b48e339b7fa7c042a01d20c2",
+      "core/src/capability_map.rs": "58499d968c05f4d20e9468ffa4d7baf54eff64ba4e2139674e11f38959e602d1",
+      "core/src/collaboration/authoring.rs": "037c1b3498abbd7288033fd490e76dbf223a5f950219d36b720fe560bdfc5f6f",
+      "core/src/collaboration.rs": "0865d529c1a42ac9f902c6ce89ab423aa00ff28655c54fb52ba43f4b2748167a",
+      "core/src/domain/mod.rs": "29489d2f2a0bd1fd4014617ae9feaccc64db6e2299a2f7d4c0c6ac2fe46ce2c7",
+      "core/src/lib.rs": "5d1d64b1b8f58a0367eaeff686341a3ab8f11cd08bd9a0a90c00774b251cd2e2",
+      "core/src/machine.rs": "541bf2caf133751ae9caac2c9448c3bf400a52a5161ad872b13d77a83e4b30bf",
+      "core/src/methods.rs": "32865e3c5cfce34f9270f5d2c6f602b3bfee1aae7de6d43da6966fb8d9e258f4",
+      "core/src/plugin_settings.rs": "f243710ffe4308e6599fdc55dc2e9c9af818627b342c1673c2b1b236831a2e11",
+      "core/src/process_supervisor.rs": "8e24db4ecdb31a23ee4d2a903868e9fdb61ab472f4837499264bc4018ddecd36",
+      "core/tests/machine_continuation.rs": "64c3d42a81d1609ac12aff3f0bdd0c3a6782bfd2564663e74a1a5c20a16bf6fc",
+      "docs/19-测试策略与验收矩阵.md": "42421357b4080d6d324fbe36c6e4d71f21beacfe9a3ceb0bad9c08e1c5e15413",
+      "docs/20-实施路线与里程碑.md": "20306cfead6f55ce34f8c542a038cd7fbcbb91635f056126e73c25d10dab16f0",
+      "docs/28-领域设计与边界上下文.md": "4649cd95c0787f31743506a4771abd00e7152784fb75d31dd9014d23767aa3d4",
+      "docs/29-数据字典与Schema设计.md": "f0829a5e004bc8c726ab9f566cd89c948db6465444dcf1fa41f57999aecbe855",
+      "docs/30-应用API详细设计.md": "91bec1b292b189f8b6fa78449ce7c2223dff864deebecdf754b65aa16a959211",
+      "docs/38-创作工作台重构执行计划.md": "d2fbb7cf7936562dfdc4e2e660f137388263a1c1829fd719a76fbe7c2f8f9b11",
+      "docs/40-机器能力地图与Review清单.md": "9fc1c59cc0d3cee366ae32baa43a803d8e7fbd6062870f858003b7b3fd6d14c4",
+      "docs/research/evidence/rea-craft-session-acceptance-2026-11-18.json": "b77531c48aebb189fec58472666b659161f440363c3ea981e5213567341e4833",
+      "integrations/codex/hetu/.codex-plugin/plugin.json": "2495f212ce7b7621bc176892498d2e8f4b34b714ccb96181d32ad5404f9cb847",
+      "integrations/codex/hetu/plugin.json": "a0ad41a415b11dfbe9556b9e8bb30f5c9c30612a2002215d37df2239daefd4b7",
+      "integrations/codex/hetu/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu/references/method-manifest.json": "a151d94387c5bcac9201d9981f4c745c3fdaa35d30047c9dbca54b215eca711b",
+      "integrations/codex/hetu/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu/skills/hetu-setup/SKILL.md": "f799b3a2c7f79496ab84c68a84539375ccb8cdd7d60870fabb366cd1b0ca040d",
+      "integrations/codex/hetu-apocalypse/.codex-plugin/plugin.json": "9f32082e9d684c87f53286465cdfc9fdba543b0dfa689443cbf9b21d3b1a0d36",
+      "integrations/codex/hetu-apocalypse/plugin.json": "70e130da460d7a9f5c209d6ec0911b20370aff4c16629368eb652e8bf30c0e9b",
+      "integrations/codex/hetu-apocalypse/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-apocalypse/references/method-manifest.json": "82ed67a365b88bfb53b91bc007baeaf1ab59933ecd3eb4bdd91d9df904396166",
+      "integrations/codex/hetu-apocalypse/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-apocalypse/skills/hetu-setup/SKILL.md": "1c57a8a9d8bf7ae7c5cdce1ffaad964b02315365577cb893bf0df886e6acf0ff",
+      "integrations/codex/hetu-baihe/.codex-plugin/plugin.json": "3fee3bfba49b24b9b60bf868c4c5f139269fe7bc2824ef920a49f77c33847316",
+      "integrations/codex/hetu-baihe/plugin.json": "f8c6c0c4d3e9158cea19d6300267038e66b2ee6edb254df47ff8b6ffc36b57c5",
+      "integrations/codex/hetu-baihe/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-baihe/references/method-manifest.json": "0f5c02297c51fa32ddd257383cd12477af0c20de3cb3031e347d0331c40b5320",
+      "integrations/codex/hetu-baihe/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-baihe/skills/hetu-setup/SKILL.md": "a1e783fa36d6e1afe234cec2761533853ce23b01142a9b495974986d1dc7ec70",
+      "integrations/codex/hetu-business/.codex-plugin/plugin.json": "389282e6e273b788783c181ec42a2232ad67ea44e933325d6665d6087770ae11",
+      "integrations/codex/hetu-business/plugin.json": "6309339c241b381c1e434c73a69598f4e3ea0c07d67e895a73b4721ac513464a",
+      "integrations/codex/hetu-business/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-business/references/method-manifest.json": "715bf3cc4aa1025116877d443ead93e0dfdeced669f0d8d1764a8aca6a7c07ef",
+      "integrations/codex/hetu-business/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-business/skills/hetu-setup/SKILL.md": "eeb5973202f2201affc9221bb547d77a8a25ee539482224201a28794bf73d44f",
+      "integrations/codex/hetu-ceo-romance/.codex-plugin/plugin.json": "13c0fd18c7a0fc58b4b3dc2e16b8cc51f5e3ad8544b7d0d3188f12a8845ea7c3",
+      "integrations/codex/hetu-ceo-romance/plugin.json": "7cd23cef3567bff87fa3b3b5a554fe55c9e6c5a2e2dd19e404b0e1c6f4cdc5bd",
+      "integrations/codex/hetu-ceo-romance/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-ceo-romance/references/method-manifest.json": "d05473d204725df1c16d64173af4712b9f650a397d76d4546ededd981f0cd7eb",
+      "integrations/codex/hetu-ceo-romance/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-ceo-romance/skills/hetu-setup/SKILL.md": "b5d661a30bd4c761432adb12769fa7151c026765014ba9002f9c17caaf7dcf95",
+      "integrations/codex/hetu-danmei/.codex-plugin/plugin.json": "0c6eee6e369528620fb27afb94019ec08786547bfd6e9c71d795c77c0d15c8ce",
+      "integrations/codex/hetu-danmei/plugin.json": "e34d15eca9bdbfde0877691026a81ba742f3132463a0d53f1d0644820dfdf9dc",
+      "integrations/codex/hetu-danmei/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-danmei/references/method-manifest.json": "9a4067069df67caaf7c90a920457c057348f8c3c78cd46750fa62dee9daa2ecc",
+      "integrations/codex/hetu-danmei/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-danmei/skills/hetu-setup/SKILL.md": "1625f6a66be3617d6372e85ff1ad40e7e760f4c6003197b36dd0c4327cc10979",
+      "integrations/codex/hetu-derivative/.codex-plugin/plugin.json": "eed27430811235c6a75c18bf89f1f584c08f8315989617ac255151844b6b04db",
+      "integrations/codex/hetu-derivative/plugin.json": "a631220ce7f32696d89e4cec48ae78f9b75eb3e8fc405126bc5d64220b4523f4",
+      "integrations/codex/hetu-derivative/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-derivative/references/method-manifest.json": "e962d930e5e35161778075e2e768b6e78769a3d0d40a0e41f3acec0350f4ca42",
+      "integrations/codex/hetu-derivative/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-derivative/skills/hetu-setup/SKILL.md": "bc4f8341c5d87c98c4dab840624bb84576a55942db33dbd6e5f8c70b996aa831",
+      "integrations/codex/hetu-entertainment/.codex-plugin/plugin.json": "b21a4dc079d8d72f2dae0bfc6e8d4686caa3866deba4b4a5c5ec4b01e2249093",
+      "integrations/codex/hetu-entertainment/plugin.json": "1127d91375b794034a3096e9ae977e81e1397655fe69c5ca31e638e468de48b3",
+      "integrations/codex/hetu-entertainment/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-entertainment/references/method-manifest.json": "8c1913ee9284ef41da3ac6afecc14e162e159df86a150a7d4373bb3554ea8208",
+      "integrations/codex/hetu-entertainment/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-entertainment/skills/hetu-setup/SKILL.md": "dd0b8fe776b504cacf2a34b97740aa9837fcbab262b25dc2ec77ca51ae8834c0",
+      "integrations/codex/hetu-espionage/.codex-plugin/plugin.json": "425e3da595fe8941dbc11c0f7f768db0587d5f1c184fd66c97b8a86d6bfa8231",
+      "integrations/codex/hetu-espionage/plugin.json": "02aaf3431ff70e6277064a3205fcd1d90bfc213518ed9187b7ef48752b492202",
+      "integrations/codex/hetu-espionage/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-espionage/references/method-manifest.json": "1e3919062cbdce1812518de4436e65327e21aece7c9b9b094ef6eb7404c688b2",
+      "integrations/codex/hetu-espionage/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-espionage/skills/hetu-setup/SKILL.md": "3bf2b4074f1b803e2945fcbd5f18345b9b5de8ee8c2a6b8d3e2ac02983bdccb5",
+      "integrations/codex/hetu-esports/.codex-plugin/plugin.json": "14d92ad5fe07ba8fe8f6519caf08bd5e840671b98235f92aababeda6568a56c1",
+      "integrations/codex/hetu-esports/plugin.json": "5e356ead4c5ef43cf1f0485685c967492bd6292685246fb61abf2402ec77c099",
+      "integrations/codex/hetu-esports/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-esports/references/method-manifest.json": "e51bb74a10f93137aedca26a4e55494691e4e67c3002850ca4dbd21812880a27",
+      "integrations/codex/hetu-esports/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-esports/skills/hetu-setup/SKILL.md": "d4e20ef578aec47a8c6cad09a0135dcb72569f0b8d4e46ed6aa180e4cd829969",
+      "integrations/codex/hetu-fantasy-romance/.codex-plugin/plugin.json": "03777f39ce500b1122921e13f996127e384ef3fa05c9e02e5e65ac1a9f5924ff",
+      "integrations/codex/hetu-fantasy-romance/plugin.json": "4109411af778bbdc5933ae58ce334a65ab5224564e21cb9f4530c709780cac08",
+      "integrations/codex/hetu-fantasy-romance/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-fantasy-romance/references/method-manifest.json": "b38dea113775fedbad0abe6264894e99917d22f60d81ab6f1cb981cb36e0b898",
+      "integrations/codex/hetu-fantasy-romance/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-fantasy-romance/skills/hetu-setup/SKILL.md": "b5c97f479ba8334ec42d09835d68833d47c9fc32967b6a759e8bf933dbbd365f",
+      "integrations/codex/hetu-farming/.codex-plugin/plugin.json": "ca992a22dad64407c4761880834c03b075292a187008fbc7df96e8288638f24c",
+      "integrations/codex/hetu-farming/plugin.json": "856fab063800571be95c3ace6061b7514bcbc970064b31dd9a1f0180c8de932f",
+      "integrations/codex/hetu-farming/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-farming/references/method-manifest.json": "6b8800e1942178099c85bfcabd5fb2b3a24fc1dea4826d73892b57e9f0558a26",
+      "integrations/codex/hetu-farming/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-farming/skills/hetu-setup/SKILL.md": "5bfe406aa7d3582b18bed690267c0025cccdaf304fbd8022a81810bd2900353f",
+      "integrations/codex/hetu-gaming/.codex-plugin/plugin.json": "792a3effe6e40b99ab1a47c5a9789f3571da1bfd865dae94d8a81ffb3b9bbe5b",
+      "integrations/codex/hetu-gaming/plugin.json": "f1cd9988bd187b3bfd3b674c19eae1d22381575460836a2baf9e0b6e02fad53e",
+      "integrations/codex/hetu-gaming/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-gaming/references/method-manifest.json": "034eaf0ebaa8aac5fdf9f789e7e81e255a19cc121e83215147a82e6d2e56e7c0",
+      "integrations/codex/hetu-gaming/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-gaming/skills/hetu-setup/SKILL.md": "e520d8d20fae339a38546faf76981d267db9550c6f95547e7955fc6aa2a469cc",
+      "integrations/codex/hetu-historical/.codex-plugin/plugin.json": "061e2a15aa096c73b902400aa9c36511231ebc38a7819a743605434798bedf8e",
+      "integrations/codex/hetu-historical/plugin.json": "15de313f4ef57c8b0ac96f07f049b2e3b1ef95b798eb02137f7c9e53b5404441",
+      "integrations/codex/hetu-historical/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-historical/references/method-manifest.json": "d8ef198f695d647f2a414bb3fc88e221d6ae379cf63f38f1994870bddef23fcb",
+      "integrations/codex/hetu-historical/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-historical/skills/hetu-setup/SKILL.md": "9c44fe1a035e69b23ee224a6fabeadbb621a6525db8fa2527915eef210549df0",
+      "integrations/codex/hetu-historical-brainstorm/.codex-plugin/plugin.json": "092c934c2ea824f225313a71ec54f887eead21534e2edc37439d12c2b121ec90",
+      "integrations/codex/hetu-historical-brainstorm/plugin.json": "18ebd8ceae230b082fbf7f27b58cbe7cce5c821e8bc96c09752f270c01ef3157",
+      "integrations/codex/hetu-historical-brainstorm/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-historical-brainstorm/references/method-manifest.json": "42126f72e0dc70d0284ceea1d686a5e9fad294241e336e590e2762ad3cb40a20",
+      "integrations/codex/hetu-historical-brainstorm/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-historical-brainstorm/skills/hetu-setup/SKILL.md": "0c34aaf13a1d5c9b511b3d20f538002e52dc1a4280a12bfd9d9398e210c5d28d",
+      "integrations/codex/hetu-historical-life/.codex-plugin/plugin.json": "5c8b2b9185fb4bf6f4a348c9a9f3f3361eab2cc6a194f2d33e97ad5fe5d7ea5d",
+      "integrations/codex/hetu-historical-life/plugin.json": "a6cc5bb1f90745d9a5de25b06593a88fd16c1755f87d2ac55931691e69e71e28",
+      "integrations/codex/hetu-historical-life/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-historical-life/references/method-manifest.json": "fd6ffcbe106ade9422d7ce36321f1ed4b7a63622e3452ccf85647a39e6a0879b",
+      "integrations/codex/hetu-historical-life/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-historical-life/skills/hetu-setup/SKILL.md": "43fd4e04d08d2538c746e24528196d4632d1c737b152b27c5b218722f0b23ba9",
+      "integrations/codex/hetu-historical-romance/.codex-plugin/plugin.json": "8aea4af6017b9e60af0c2067a0ba632c25f165d09831ea2e1b805f517a48b450",
+      "integrations/codex/hetu-historical-romance/plugin.json": "ef650d854c12a5caa36e75b80ab7a3af3bbfa9620e566bcab7e784e314d32c1f",
+      "integrations/codex/hetu-historical-romance/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-historical-romance/references/method-manifest.json": "18aa586ce411b269090d0f648c031a6ae9646289a5d7e6a15150d6918b58393b",
+      "integrations/codex/hetu-historical-romance/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-historical-romance/skills/hetu-setup/SKILL.md": "42e4962e9f25c0b7ba454aa33a1f5978c4740e3bb08fc5addea6fa2fac2af01c",
+      "integrations/codex/hetu-infinite/.codex-plugin/plugin.json": "deb9669163ec5e3772167fb26d81bc726c6ae62fe8b507fc80f26de1082a49e3",
+      "integrations/codex/hetu-infinite/plugin.json": "add074f19063f156c3338070904da0edaa886c4c572600fa3555c6c44ebd617a",
+      "integrations/codex/hetu-infinite/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-infinite/references/method-manifest.json": "751d387774688ae33912496c01c14cc27554f00e6681c691304e3afe3ee98ce9",
+      "integrations/codex/hetu-infinite/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-infinite/skills/hetu-setup/SKILL.md": "41878d8f158c494fd3fc6f69b0501d0651c5e2f39ea55bcae17f0fc70c4810d8",
+      "integrations/codex/hetu-light-novel/.codex-plugin/plugin.json": "a322d5203a8557b42e7307e0f57d230c92cce7d6c92135ffecc5ea413bf43f8d",
+      "integrations/codex/hetu-light-novel/plugin.json": "694ab6c5579756f2a7a1ae07c3d3787970ebf661583a2a7c9f66f323931b3b63",
+      "integrations/codex/hetu-light-novel/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-light-novel/references/method-manifest.json": "0a31c3f2c3f65dee325436d3d9a3732b2005e23c60e3c16d0b3e401d09445175",
+      "integrations/codex/hetu-light-novel/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-light-novel/skills/hetu-setup/SKILL.md": "5e9c37229c24adf44d0946bf7c897463f218f790b9339e0c3091c888042c6c3e",
+      "integrations/codex/hetu-military/.codex-plugin/plugin.json": "b3c2b5b4e3797fac6d8b1a5d7c926fe4a56c590e72bf9130a432ce6043a0f557",
+      "integrations/codex/hetu-military/plugin.json": "3ae3a899bac63efb06460f2fb2b713a3423d7da7e4cfb9082fdde0481b8f6a05",
+      "integrations/codex/hetu-military/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-military/references/method-manifest.json": "752ddeb36b7141274f85023ee0355110bc275c4c8ab4ad899ac4ac1625355e01",
+      "integrations/codex/hetu-military/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-military/skills/hetu-setup/SKILL.md": "db064cebb977346ec49aa10730a72115e7aedb2a9500bd3ed4b8ca7dd51ceeb5",
+      "integrations/codex/hetu-modern-romance/.codex-plugin/plugin.json": "94b472c865183a8b502b2d0f71cf4093eae6e75e2cae702b6b23b18736d1ddab",
+      "integrations/codex/hetu-modern-romance/plugin.json": "28c7f038e6646dce844f438f717c0a60f1676b72fe4b9ef009f026c6364e4dbd",
+      "integrations/codex/hetu-modern-romance/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-modern-romance/references/method-manifest.json": "4dd8cf9b450c9d05dd06ed0cc0a55571f2dc6009b5cde02367c44bf4de73ced8",
+      "integrations/codex/hetu-modern-romance/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-modern-romance/skills/hetu-setup/SKILL.md": "1b69999acc4364bbfe5d7c38a689f5d8a095b4e2a7d43771aeb910b31206e9d0",
+      "integrations/codex/hetu-mystery/.codex-plugin/plugin.json": "637fee6fa4aa7e5eddb1cc386ee184ec518329e0bfa5ab16fd3eef3203b32861",
+      "integrations/codex/hetu-mystery/plugin.json": "66d0632b3d04621782eeb076317b5612e8ca9f579711d7ff550856f33db16005",
+      "integrations/codex/hetu-mystery/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-mystery/references/method-manifest.json": "7e661b96160bfa271e7812b25e6b338b3608286762608972d1b847fd8d4d37c4",
+      "integrations/codex/hetu-mystery/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-mystery/skills/hetu-setup/SKILL.md": "5510a3ff9937d39a8ba925da833f5b949729cf699793eb2af37c7cae7d50e939",
+      "integrations/codex/hetu-palace/.codex-plugin/plugin.json": "fb10c723ae8e4412748552b020c9c888c0b05617f13a83f6e716062b94e499e2",
+      "integrations/codex/hetu-palace/plugin.json": "e515d241e4abe3677d39099ee00bcc4147fe50e1530211fd00da0e0be3b9b35e",
+      "integrations/codex/hetu-palace/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-palace/references/method-manifest.json": "84552b270bf726dd7ffa06381bb7ae003c10f73f2d5d05513382295840e79751",
+      "integrations/codex/hetu-palace/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-palace/skills/hetu-setup/SKILL.md": "6ae15b2289480e528d60f727e602d034d59391ca9969b26f0213e98a8f1b93f7",
+      "integrations/codex/hetu-period/.codex-plugin/plugin.json": "29e59e8968f7152aa253b59ea0572fcba1e3e7f13a4a36a100bef58bb691eb8f",
+      "integrations/codex/hetu-period/plugin.json": "31718c2baab3a2592dfc66073bc298cdd8471c37715e6f7c55cf2d54325d5dff",
+      "integrations/codex/hetu-period/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-period/references/method-manifest.json": "c56b7957b62d5a9492a6c4fa1fbec1b00621f73be785e85b3b9f578998d2b797",
+      "integrations/codex/hetu-period/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-period/skills/hetu-setup/SKILL.md": "575051c9e748df7ec7bcb6c9f39adc8ec4a226e7511a6203580e6698df34d94b",
+      "integrations/codex/hetu-quick-transmigration/.codex-plugin/plugin.json": "8c19546ac1ada56affd08b38393a0e954b837a7fe36beb16be4dcf68f1a0adab",
+      "integrations/codex/hetu-quick-transmigration/plugin.json": "adfbf7ad09d24ea0bb0ba824687e806e31ea2a722cc01b5f191047301fa3642f",
+      "integrations/codex/hetu-quick-transmigration/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-quick-transmigration/references/method-manifest.json": "a752cab1cd40245452ff8cad27e0fd953fb0e3da92469766fffd9603a5020138",
+      "integrations/codex/hetu-quick-transmigration/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-quick-transmigration/skills/hetu-setup/SKILL.md": "0a93b48d0bbeecf586504d573e2a5da1ed28a0979a3b34a326dc53c99b514857",
+      "integrations/codex/hetu-realistic/.codex-plugin/plugin.json": "2a4efe2e1f2a7ae894db7ccbc5a30e14b2f5a8018cc5de199582dd3fe9b3320e",
+      "integrations/codex/hetu-realistic/plugin.json": "74fbb11a0ae6b51d0b0b86bdfa424763ab73f8befeae7971bc3eac0044d78aa1",
+      "integrations/codex/hetu-realistic/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-realistic/references/method-manifest.json": "0b8ad5cee1d06d8f5f0f79c55dca210204de87219250987713a6ed955869b92a",
+      "integrations/codex/hetu-realistic/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-realistic/skills/hetu-setup/SKILL.md": "16317f05db6fc8ad5eab8414b49dd1aeb8a4112fe9a1e87b162043944399ffb0",
+      "integrations/codex/hetu-rules-horror/.codex-plugin/plugin.json": "5ee1638947da1d688426b45f35322ffd9c2002307bd1735cf31d58301348b5c8",
+      "integrations/codex/hetu-rules-horror/plugin.json": "042aa8c6220c29f3ddc16d900f421767063d10970ade0d8275362dfd735e88b7",
+      "integrations/codex/hetu-rules-horror/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-rules-horror/references/method-manifest.json": "5a477b56609d7264f457b9ed3accb0a7d0b1d867c8c453ffce722c7090000204",
+      "integrations/codex/hetu-rules-horror/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-rules-horror/skills/hetu-setup/SKILL.md": "2f9f490819e17118220c13e5601a1a5268ac5bad77f70d96808eb8ceffafee12",
+      "integrations/codex/hetu-scifi/.codex-plugin/plugin.json": "34e0c0a737f90376c296ee738dc9084387ecd69bee5d486964845aa522f5ed8b",
+      "integrations/codex/hetu-scifi/plugin.json": "c05090f76418c419683856955ee707a313491bbe3b98a4483754014ca6ecec9d",
+      "integrations/codex/hetu-scifi/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-scifi/references/method-manifest.json": "2de42701c76bc260b8ba2057b40c43ea64e500627e09db07c74f9030b9031516",
+      "integrations/codex/hetu-scifi/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-scifi/skills/hetu-setup/SKILL.md": "9749235da81eac9f4f42f331d9288ae85f5a2be56dd88bc63c952aec2fd19e30",
+      "integrations/codex/hetu-short-story/.codex-plugin/plugin.json": "f9e5afa25833eecdd270948c42fbf7cfc6e7f78d6e2e9cf695560ca035b7756c",
+      "integrations/codex/hetu-short-story/plugin.json": "cc435a43fab9881fbd6baa4b643c2ea884e646fb1d3b44e649df78901583f030",
+      "integrations/codex/hetu-short-story/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-short-story/references/method-manifest.json": "a90985aeb99f828345ac143657019ee481717e111303d447241673b662976b4c",
+      "integrations/codex/hetu-short-story/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-short-story/skills/hetu-setup/SKILL.md": "490e02886721e435fbb54cb09183f311211692d6ba1ed22df48a84910a2157c8",
+      "integrations/codex/hetu-sports/.codex-plugin/plugin.json": "93d7e5b9fa6c7e453736fa3911b409caa0fe11802eb9f4616c0922693eae8090",
+      "integrations/codex/hetu-sports/plugin.json": "2a3df45d67fa2705779fdc91158e88397c721eadf07546fc8005089e6cfed7f6",
+      "integrations/codex/hetu-sports/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-sports/references/method-manifest.json": "fd20f13f9f4a8dc50508d234398388a119db258ca974e6f00df3cb879b25b810",
+      "integrations/codex/hetu-sports/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-sports/skills/hetu-setup/SKILL.md": "203cbfa04412ba0a923d71a52e32c0905c4d5d57ebc8e6c16f45a3526fff0389",
+      "integrations/codex/hetu-supernatural/.codex-plugin/plugin.json": "e6068652ecc8451d2b18efe8d46e3e62785e4d75cfc2c08efa5a917e69b8018d",
+      "integrations/codex/hetu-supernatural/plugin.json": "00b13bdedd3bffbea6f5adbec696551b9ac5c21bb84612af75d51a25b294be3a",
+      "integrations/codex/hetu-supernatural/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-supernatural/references/method-manifest.json": "5cc5e8e17c2935cb3ccdf8acad70e1bace3e861820d6c4ad6c6877128a20b443",
+      "integrations/codex/hetu-supernatural/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-supernatural/skills/hetu-setup/SKILL.md": "ff38e2ad89a74d47d544e6a83864c9c6d601c576b953a90d00d67c1d2a022787",
+      "integrations/codex/hetu-thriller/.codex-plugin/plugin.json": "4d59b972619fe044a18efaa3d79fd1b5e1d4135a6c79ae340931c336cd375d50",
+      "integrations/codex/hetu-thriller/plugin.json": "23adba935dc18828fc96970f1b830417dc5538e37d218e8a9e6725a6cd705d98",
+      "integrations/codex/hetu-thriller/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-thriller/references/method-manifest.json": "d4d3bc28c8c7a4de3743bc4843647922362728ea26c5485bc0bd040fb8951756",
+      "integrations/codex/hetu-thriller/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-thriller/skills/hetu-setup/SKILL.md": "b6a563200cdf3a9f7f7e231e549f93df489aadc93b2e7ead7ba14e171934c345",
+      "integrations/codex/hetu-urban-brainstorm/.codex-plugin/plugin.json": "f603449ec17508c054205c430423218e8ab3defe9b37048ef3b5446b757c4fca",
+      "integrations/codex/hetu-urban-brainstorm/plugin.json": "6aa0c611e7ab60a70d89961b1cf631ba10681413353d9daab0666b5e59b1656e",
+      "integrations/codex/hetu-urban-brainstorm/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-urban-brainstorm/references/method-manifest.json": "f4cb5e53736367b99af196a92249448aca8773df92ccdba55345d00df339833c",
+      "integrations/codex/hetu-urban-brainstorm/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-urban-brainstorm/skills/hetu-setup/SKILL.md": "7d7e0ee023b1bc4b0cdf9935c4e0e0b40f0c97d6a8636869b42a30dc7c8492d1",
+      "integrations/codex/hetu-urban-cultivation/.codex-plugin/plugin.json": "517796b919d9e18f0419af9807ca015d4a71f34fead3260912a0914e6c6ddf8e",
+      "integrations/codex/hetu-urban-cultivation/plugin.json": "4ba754bef5b5ce36e07ea74463801135e0c93a5f8ceefdf3c1dcde8cbf460701",
+      "integrations/codex/hetu-urban-cultivation/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-urban-cultivation/references/method-manifest.json": "2a52165d04da6fe625e1a720069429999e6775346bfab35533fc3955b1a52f53",
+      "integrations/codex/hetu-urban-cultivation/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-urban-cultivation/skills/hetu-setup/SKILL.md": "3518d5c5be4b9a7c43d12d24cc53025d605ff85ba5f5206870d8db2d08ed82b5",
+      "integrations/codex/hetu-urban-daily/.codex-plugin/plugin.json": "0f9f5ad875e508778e568568da3a4146fe626f2988f85809c0eadad7cffcb555",
+      "integrations/codex/hetu-urban-daily/plugin.json": "f45df8872d00720ace11489b7c1ce85bf0b250bda5ff088727c1ab008a2fcdb8",
+      "integrations/codex/hetu-urban-daily/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-urban-daily/references/method-manifest.json": "9f5be3aaeab41ef49949cb590233c1c8eafcb687ccbd5a7173c8a98042e32d3d",
+      "integrations/codex/hetu-urban-daily/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-urban-daily/skills/hetu-setup/SKILL.md": "6273984cb37e47c8a1a9cb779e69c755706c36349f2601ebd2e62394c0dcbb28",
+      "integrations/codex/hetu-urban-farming/.codex-plugin/plugin.json": "c99fd1ea1427d4b0911e8fa8b7b5f17b613947417dd0984967e0e7dd23d4f84a",
+      "integrations/codex/hetu-urban-farming/plugin.json": "a2f92a868b226cf108afd6f05831620c378e2898dad876f5a42df02c3311510e",
+      "integrations/codex/hetu-urban-farming/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-urban-farming/references/method-manifest.json": "9933242a7778e9c90975d32553d12f786bf81caa41cec240c483d1cf5d3cc6b3",
+      "integrations/codex/hetu-urban-farming/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-urban-farming/skills/hetu-setup/SKILL.md": "2b7ee641c495ac1f9b023aa329057cd5120273b822ecdf01c4b9bbae3823b6a3",
+      "integrations/codex/hetu-urban-high-martial/.codex-plugin/plugin.json": "f474e10abd0e818a3766de464e2e6bf8beccca99a0ec48464f789074fe49cbd6",
+      "integrations/codex/hetu-urban-high-martial/plugin.json": "806d2a36edbe53c5fd6f451445e32a09b4db71c8df97fde64fe2e259b3125cee",
+      "integrations/codex/hetu-urban-high-martial/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-urban-high-martial/references/method-manifest.json": "23c712a340070bfef808432e789a651097ee3685edcdf0ff72580465bab19ac8",
+      "integrations/codex/hetu-urban-high-martial/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-urban-high-martial/skills/hetu-setup/SKILL.md": "a93a59a201ee4e49433a20f539b2fc71d63d1dbcc5d1fcba6dbc8a36d83f7567",
+      "integrations/codex/hetu-war-god/.codex-plugin/plugin.json": "a78ef01a3000f28651bfd3038a87105e311c165217fabd1c04c232d867e46a7b",
+      "integrations/codex/hetu-war-god/plugin.json": "24193a4f234aa67ffb531e810eba05cd25edcec925b29ecf983d14b9133dc413",
+      "integrations/codex/hetu-war-god/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-war-god/references/method-manifest.json": "94fd5270876ebf10ca95add93213474800f840ffe00ebba611176eb43af0cf3f",
+      "integrations/codex/hetu-war-god/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-war-god/skills/hetu-setup/SKILL.md": "f6f7778f0ba3b59cf269e157ef5c573c64c21a69149ede4140d902edfe7dd257",
+      "integrations/codex/hetu-western-fantasy/.codex-plugin/plugin.json": "61e97af9f6cc274392962c3cb760c83bbe445572ae944793ff1398c0bc800193",
+      "integrations/codex/hetu-western-fantasy/plugin.json": "2b766f707eb7f8ffcb4aac5120e922d0c7ec339022533fe7931a15197caad6d9",
+      "integrations/codex/hetu-western-fantasy/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-western-fantasy/references/method-manifest.json": "a2215a5c9e564aa5a1eab4909384c6d677e5b66545b949a7b3043d9754638159",
+      "integrations/codex/hetu-western-fantasy/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-western-fantasy/skills/hetu-setup/SKILL.md": "d76bda4def74478be3d6fefcb1bdcfbd05156da1da0711bce4452c09f6b82c12",
+      "integrations/codex/hetu-workplace-romance/.codex-plugin/plugin.json": "3fe7dd63043ca6bea8a0b9a74dbe7601ce44febe80645bdfdaa7485109ec2460",
+      "integrations/codex/hetu-workplace-romance/plugin.json": "a0ef23d53a9ed20cc7b523d9b9cf674e607eb23484d45ec52230baa44886680e",
+      "integrations/codex/hetu-workplace-romance/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-workplace-romance/references/method-manifest.json": "08cb1f8a87fb851e93faaa82147daa76d8de1658d2ce6e282da3af1ca0bbcf99",
+      "integrations/codex/hetu-workplace-romance/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-workplace-romance/skills/hetu-setup/SKILL.md": "a2e03f4db6386f4bf70b8d329687e01f2cb92ac57e1adbd22cce508a6fe4dd74",
+      "integrations/codex/hetu-wuxia/.codex-plugin/plugin.json": "9d14b01090e8ddd07645b26dee39908f877c19a53110569ec428d3c0edc84dee",
+      "integrations/codex/hetu-wuxia/plugin.json": "a02cdb73560aaca657130c45d81197a513b539c763f3d432bf79e073f7dfbee7",
+      "integrations/codex/hetu-wuxia/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-wuxia/references/method-manifest.json": "fdc019c7b0973ee67408e67d818d6ae32d1b0e431dc8c5e6856c1e68cd590b79",
+      "integrations/codex/hetu-wuxia/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-wuxia/skills/hetu-setup/SKILL.md": "4270d81d144ffc9ac11478c1002c3b34e4a355bf644c78d13cc502e0adb5e2a9",
+      "integrations/codex/hetu-xianxia/.codex-plugin/plugin.json": "9a922e684320d4cfc9e9a899a3e8a8e998f1bb17788eb03690aeaf8300dbc79f",
+      "integrations/codex/hetu-xianxia/plugin.json": "874b4a60543f3f57cfad696ff565b5fc6888a303c4d87d8c432864862d27c0a3",
+      "integrations/codex/hetu-xianxia/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-xianxia/references/method-manifest.json": "8c61d808a5ebace3340459c6203b72438b4cdf9f57d188b7e46da04dbef8831f",
+      "integrations/codex/hetu-xianxia/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-xianxia/skills/hetu-setup/SKILL.md": "280da8cf95a2a7bab350425c13bac6dff6b1c9969fd8ddfd771d2944d2fa77ae",
+      "integrations/codex/hetu-xuanhuan/.codex-plugin/plugin.json": "093d71c77acf697f7ef1de8d96bfd804282ae6f75029c2dc2237d41d32fef289",
+      "integrations/codex/hetu-xuanhuan/plugin.json": "1de33c5dcb457b3dbd914898e5bf0af9cb8afca0a6957398595ff2155e36f080",
+      "integrations/codex/hetu-xuanhuan/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-xuanhuan/references/method-manifest.json": "1545124fc7553b9304aa76a6253550cd040d0a291e1175767a25538a2a93945d",
+      "integrations/codex/hetu-xuanhuan/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-xuanhuan/skills/hetu-setup/SKILL.md": "1fe69de8da16f34664e5719788ec87d55cf987fc681158598bdf2f56e1a32358",
+      "integrations/codex/hetu-xuanhuan-brainstorm/.codex-plugin/plugin.json": "0791fce34e2748476a069b8b8117f204cf1ef2c37709889867bbe07344997520",
+      "integrations/codex/hetu-xuanhuan-brainstorm/plugin.json": "bf13c45bc92556a6c693b9181f8524df2857bd286084903f03c105c723bae689",
+      "integrations/codex/hetu-xuanhuan-brainstorm/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-xuanhuan-brainstorm/references/method-manifest.json": "b2e506774bef56f12e19c713e8971e8890699949e718a35545e3748c1d8659c9",
+      "integrations/codex/hetu-xuanhuan-brainstorm/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-xuanhuan-brainstorm/skills/hetu-setup/SKILL.md": "a985109c0417ed720843948eecc894954207d078bebac7b9918e184448d5b461",
+      "integrations/codex/hetu-youth-romance/.codex-plugin/plugin.json": "a778537223349804be6e319002a54d7595c352be1f6c6aa3eb137de52003a4cc",
+      "integrations/codex/hetu-youth-romance/plugin.json": "4b66fe5cdb160ef9a487d7c460edee4ca9395172d13f8aade4d1aca6a45f75f7",
+      "integrations/codex/hetu-youth-romance/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "integrations/codex/hetu-youth-romance/references/method-manifest.json": "012945831bb12fa5dc190cc96d5c3549bb0fc8f95bbd9272c123e70074926891",
+      "integrations/codex/hetu-youth-romance/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "integrations/codex/hetu-youth-romance/skills/hetu-setup/SKILL.md": "794345e81365276624bebb11a3e631019308d472f8ada57badfbbe9488bf58e8",
+      "packages/plugin-host/src/backend.ts": "7c9b5d8c00fdb481ec2085586c54b071b488c283d88a15d2e5896aaec63c4f10",
+      "packages/plugin-host/src/installations.ts": "fd1564b3bfdbcc5535ef750ed81db16151476938a899c3f3c5c83cadc69c5fc1",
+      "packages/plugin-host/src/manager-cli.ts": "b3b52160927ad941391219d48d27deccc09417b0aeb552bbdbb67303bfc2558e",
+      "packages/plugin-host/src/runtime-cli.ts": "aaaa63dd56a6db2bd17d5cc0ba6d9c96295d461f8aaaffc281418e5ecb34839f",
+      "packages/plugin-host/tests/backend.test.ts": "ed8f0b147d532cf349c7fe96155bcfde67b5b2f5884c32a21f8838d11f196c3f",
+      "packages/plugin-host/tests/installations.test.ts": "3769ec106f96d111fdb0d29cb07c95c490d8f79127c2f5acc27e6213a4f3d169",
+      "tools/accept-machine-continuation.py": "8d0a02bb15660dfc1dbf54ff7695679b0cbb9dd3b904389911cc41c45c9b9108",
+      "tools/evaluate-machine-task.py": "e9c73194bc1b35fa0e5e23ad302f1ccd80d127c4b7e4c0ec2847c449749f49e0",
+      "tools/hetu-skills/base/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
+      "tools/hetu-skills/base/references/task-contract.md": "da8ea95ca88a422536f85f3f238424277c06d2ff86ac7a9c061bc86233b65e8b",
+      "tools/hetu-skills/base/skills/hetu-setup/SKILL.md": "e9bcd2b8c04daa7adbbbe3c308b9e6980a522f283b672efc7fd20daca3a7bfac",
+      "tools/sync-writing-methods.py": "b0e110cfd5fd19cd158f9f95b19129ca684600c9a44efb1d83d25e7434a9330a"
+    },
+    "sha256": "aebe590a65b239c00db0374b6891e77826e790c086530186917b6ba6d029db7c"
+  },
+  "artifacts": {
+    "target/debug/hetu": {
+      "sha256": "a37953487202b828c8d07d6f78078b2a9ca879feae64c6bb911eab537e158d16",
+      "size_bytes": 54712184
+    },
+    "target/debug/hetu-mcp": {
+      "sha256": "44a6c1363533a04a73bfe4d2f34687234cc561788e034704b3fefcd30738b370",
+      "size_bytes": 65499784
+    },
+    "target/debug/hetu-plugin": {
+      "sha256": "535608fa083fe47be2fa7814323a5ff607e6e2bad6ec064a46365abb246dd681",
+      "size_bytes": 52597856
+    },
+    "apps/desktop/dist/plugin-manager.mjs": {
+      "sha256": "0b9458fd43d6d36be0f296a4fe70bc69fd0fc76863b84891aadcb8ca095d9e1a",
+      "size_bytes": 365708
+    },
+    "apps/desktop/dist/plugin-runtime.mjs": {
+      "sha256": "2a5a7e366eaa7da85c343b61a3cc44956383390b7dc60c2d42066f00dccddf38",
+      "size_bytes": 1230652
+    }
+  },
+  "worktree": {
+    "commit": "06c8f53211312c08726682368578f64450acdc61",
+    "state": "保留未提交改动；未建分支、未推送、未发布",
+    "source_snapshot_verified": true,
+    "artifact_hashes_verified": true
+  }
+}

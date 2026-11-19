@@ -1,0 +1,530 @@
+{
+  "recorded_at": "2026-11-18T17:19:07.002415+00:00",
+  "objective": "完整实现随包默认能力与可选专业插件分层，更新CLI/MCP/Skills，并使用当前Codex对话实际测试",
+  "status": "implemented_installed_and_current_conversation_verified",
+  "platform": "macOS arm64",
+  "source": {
+    "git_head": "06c8f53211312c08726682368578f64450acdc61",
+    "working_tree": "保留既有及本轮改动；本轮未提交、推送或建分支",
+    "critical_files": [
+      {
+        "path": "core/src/application/handoffs.rs",
+        "sha256": "87ea261ff20be8793bebb8cba54457fd44974bbcb0e1a47d6d4459206324f32b"
+      },
+      {
+        "path": "core/src/application/work_scope.rs",
+        "sha256": "f98749b0f7db68274a69cb2be32e3ac1d962166843087e75da0a21ceebc97363"
+      },
+      {
+        "path": "core/src/application/video_review.rs",
+        "sha256": "cd6cc7aad5a88710de98918378a09acf6e570b78c180d747693da5e644c45bc8"
+      },
+      {
+        "path": "core/tests/video_review.rs",
+        "sha256": "8292caf5c524b29dea5d02426d5078075e79aae63250dc5edc2c9e9330a9e599"
+      },
+      {
+        "path": "core/tests/agent_operations.rs",
+        "sha256": "be5eb1eb9959f3c84765d82fb1e3696af327efb1fbb55a681628a5d5a612a210"
+      },
+      {
+        "path": "core/tests/works.rs",
+        "sha256": "9da326bfa04cf780066724a26158c49d656ea52b721bbc10f3b16a56f3295b0d"
+      },
+      {
+        "path": "contracts/baseline.json",
+        "sha256": "e819875ff3ceb1dcfb7f1097e60ba32d2f6bb0052586762b9ef6496e93839188"
+      },
+      {
+        "path": "contracts/actions.json",
+        "sha256": "10d64baad2f3e096163a82b9f2dc8ff1d095e69d1acbfbc068dd792ace352254"
+      },
+      {
+        "path": "docs/19-测试策略与验收矩阵.md",
+        "sha256": "8b0b081674953a2581b740c1a9faa8d4bb65bc3091eba4676cded71d5fd01690"
+      },
+      {
+        "path": "docs/20-实施路线与里程碑.md",
+        "sha256": "873f1ecf05dad74c713bfd307b1c36941f68d89b260b8e23e7d71e77a9d69c53"
+      },
+      {
+        "path": "docs/30-应用API详细设计.md",
+        "sha256": "5ceb1f4e382cc3cf9ae04b37f507f37f4ebceb42b669df5e3f762c6cf9885f8c"
+      },
+      {
+        "path": "docs/38-创作工作台重构执行计划.md",
+        "sha256": "de9c3f33b0256e20abedc2d670a1c41a193d74bb7d1435fb77d2f707cc494025"
+      }
+    ]
+  },
+  "installation": {
+    "kind": "local_development_machine_runtime",
+    "runtime_directory": "/Users/coso/Library/Application Support/Hetu/DevelopmentRuntimes/0.12.3-baseline-20261119-r2",
+    "runtime_version": "0.12.3",
+    "runtime_manifest_sha256": "01e12d1fc0ddf77150b757f8edd55d3b8d0cb834b12d3056d94cd8ce975f8aba",
+    "verified_runtime_files": 2486,
+    "all_runtime_hashes_match": true,
+    "source_inputs_match": true,
+    "cli_commands": [
+      "/Users/coso/.local/bin/hetu",
+      "/Users/coso/.local/bin/hetu-mcp",
+      "/Users/coso/.local/bin/hetu-plugin"
+    ],
+    "cli_entry_kind": "显式exec完整运行时，避免macOS符号链接current_exe导致资源定位到入口目录",
+    "mcp_configuration": {
+      "name": "hetu",
+      "command": "/Users/coso/Library/Application Support/Hetu/DevelopmentRuntimes/0.12.3-baseline-20261119-r2/bin/hetu-mcp",
+      "args": [
+        "--client",
+        "codex"
+      ],
+      "tool_timeout_sec": 360,
+      "other_settings_preserved": true
+    },
+    "skills": {
+      "suite": "general",
+      "previous_version": "0.3.7",
+      "version": "0.3.12",
+      "cache_directory": "/Users/coso/.codex/plugins/cache/hetu-luoshu-general/hetu/0.3.12",
+      "registration": "enabled",
+      "verified_files": 55,
+      "package_sha256": "3e91fb58478888ca603d12c864fda721b7e0c7dbe214d11215258d35818081ee",
+      "cache_matches_bundled_files": true,
+      "actual_method_read": {
+        "path": "skills/hetu-setup/SKILL.md",
+        "sha256": "821d204bdc7173933c3f174f1dc815548c71bdec4c8056dca097e776ba8950f9",
+        "complete": true
+      },
+      "host_force_reload": {
+        "method": "skills/list",
+        "forceReload": true,
+        "enabled_skill_count": 13,
+        "version": "0.3.12",
+        "all_paths_match_installed_version": true,
+        "discovery_errors": [],
+        "receipt": "output/conversation-baseline-20261119/codex-host-refresh.json"
+      }
+    },
+    "applications_overwritten": false,
+    "official_release_published": false
+  },
+  "current_conversation": {
+    "mode": "Agent在当前对话逐步发现Schema、编写内容并调用公开动作；非standalone_fixture创作",
+    "configured_tool_at_start": {
+      "runtime_version": "0.12.0",
+      "catalog_sha256": "94c95635aed69a4dae0084cfbeb434467763aeddc683efc21d3d3d620d8c7f5e",
+      "source": "本对话mcp__hetu__hetu_inspect_collaboration与runtime.inspect回执"
+    },
+    "old_registered_connection_hot_reload_claimed": true,
+    "actual_mcp_transport": "业务旅程由本对话Node REPL调用已安装新二进制的真实MCP stdio；官方刷新后再由原注册MCP工具核验运行时、基础合同及完整方法",
+    "actual_mcp_executable": "/Users/coso/Library/Application Support/Hetu/DevelopmentRuntimes/0.12.3-baseline-20261119-r2/bin/hetu-mcp",
+    "protocol_version": "2025-06-18",
+    "actual_server": {
+      "name": "hetu-mcp",
+      "version": "0.12.3"
+    },
+    "tools_observed": 12,
+    "test_collaboration_directory": "/Users/coso/Documents/河图验收/无插件默认产品-20261119/collaboration",
+    "optional_hetu_plugins": 0,
+    "selected_codex_skill_suite": "general@0.3.12",
+    "skills_read_and_applied": [
+      "hetu-setup",
+      "hetu-book-create",
+      "hetu-draft",
+      "hetu-drama",
+      "hetu-video"
+    ],
+    "novel": {
+      "work_ref": {
+        "kind": "novel",
+        "object_id": "novel_bc921346-ab60-440f-ba57-43b02e739244",
+        "workspace_id": "workspace_6d56bb56-e418-46f4-b13a-eff153ec83fd"
+      },
+      "task_id": "task_745bb7e5-3c0a-4227-90fc-f5cbb1fcf299",
+      "steps": [
+        "公开筹备及独立创建",
+        "固定大纲方案、对话测试授权与执行",
+        "分卷及空章节",
+        "当前Agent撰写首稿",
+        "固定Agent自查意见",
+        "同一工作稿保存第二版并提交候选",
+        "独立已安装CLI读取旧新版及原键重放",
+        "公开固定修订读取后交付Markdown参考副本",
+        "任务接续保存及新MCP进程恢复"
+      ],
+      "working_revisions": 2,
+      "author_text_adopted": false
+    },
+    "drama": {
+      "work_ref": {
+        "kind": "drama",
+        "object_id": "drama_24539b8d-72f8-43b9-8198-22a5238c784c",
+        "workspace_id": "workspace_0eef6bfa-025e-48a7-8fb6-90c025416d24"
+      },
+      "task_id": "task_4ef27bc1-dccb-4cbe-b24f-38d293e662c0",
+      "steps": [
+        "无小说或原著前置独立创建",
+        "首集空目标及两场计划",
+        "当前Agent撰写两场Fountain",
+        "固定Agent自查意见与第二版提交",
+        "CLI读取分集manuscript候选投影和旧稿",
+        "公开固定修订读取后交付Fountain参考副本",
+        "任务接续保存及新进程恢复"
+      ],
+      "working_revisions": 2,
+      "author_text_adopted": false
+    },
+    "video": {
+      "work_ref": {
+        "kind": "video",
+        "object_id": "video_e3917c21-95f7-479d-ba56-9675b9d6d18f",
+        "workspace_id": "workspace_0a92251a-ed4b-49ee-99c9-ab9f13b85044"
+      },
+      "episode_id": "vepisode_3360abcb-0178-4b22-bbae-9c903427770d",
+      "media_refs": [
+        {
+          "media_id": "vmedia_e508f93b-21db-4b50-b37b-0abd8d84670c",
+          "revision": 1,
+          "sha256": "c95ea6111ae4796135144b3d947adeda4221007fcffe6ac0fb1e976fc3042d27"
+        },
+        {
+          "media_id": "vmedia_8872ade8-6838-4400-b88f-53c71cffd759",
+          "revision": 1,
+          "sha256": "74837546ace0d2b0228958c1642042f61e9be94d5d4bd4d6f046c4a344dbe63b"
+        }
+      ],
+      "steps": [
+        "独立视频筹备及创建",
+        "固定inline字节接收四秒原片",
+        "本机avconvert从第1秒裁切3秒新版",
+        "AVFoundation分别完整解码两版音视频",
+        "工具实际报告1/15360视频时基",
+        "第一版0至15360半开区间技术自查意见",
+        "登记不同资产字节的新媒体及前版引用",
+        "CLI核对旧版1条意见、新版0条",
+        "真实MCP连续读取5个有界分块",
+        "核对35759字节及完整摘要并交付",
+        "重新读取当前交付权利与同一清单"
+      ],
+      "new_file_sha256": "7de1f1cb128ac721019246e45d905ef34053024731db0e7cd55cf46bc7d0a1bf",
+      "decoding": [
+        {
+          "duration_seconds": 4,
+          "file": "/Users/coso/Documents/河图验收/无插件默认产品-20261119/media/source-v1.mp4",
+          "full_decoding": true,
+          "tracks": [
+            {
+              "decoded_samples": 60,
+              "duration_seconds": 4,
+              "duration_ticks": 61440,
+              "height": 90,
+              "stream_index": 0,
+              "time_base": {
+                "denominator": 15360,
+                "numerator": 1
+              },
+              "type": "vide",
+              "width": 160
+            },
+            {
+              "decoded_samples": 24,
+              "duration_seconds": 4,
+              "duration_ticks": 176400,
+              "height": 0,
+              "stream_index": 1,
+              "time_base": {
+                "denominator": 44100,
+                "numerator": 1
+              },
+              "type": "soun",
+              "width": 0
+            }
+          ]
+        },
+        {
+          "duration_seconds": 3,
+          "file": "/Users/coso/Documents/河图验收/无插件默认产品-20261119/media/trimmed-v2.mp4",
+          "full_decoding": true,
+          "tracks": [
+            {
+              "decoded_samples": 45,
+              "duration_seconds": 3,
+              "duration_ticks": 46080,
+              "height": 90,
+              "stream_index": 0,
+              "time_base": {
+                "denominator": 15360,
+                "numerator": 1
+              },
+              "type": "vide",
+              "width": 160
+            },
+            {
+              "decoded_samples": 17,
+              "duration_seconds": 3,
+              "duration_ticks": 132300,
+              "height": 0,
+              "stream_index": 1,
+              "time_base": {
+                "denominator": 44100,
+                "numerator": 1
+              },
+              "type": "soun",
+              "width": 0
+            }
+          ]
+        }
+      ],
+      "author_approval": "not_recorded",
+      "professional_editing_project": "not_included"
+    },
+    "cross_work_read_refused": true,
+    "restart": {
+      "previous_pid": 61561,
+      "current_pid": 71844,
+      "same_novel_and_drama_task_recovered": true,
+      "each_task_keeps_two_working_revisions": true,
+      "media_versions_after_restart": 2
+    },
+    "registered_connection_refresh": {
+      "mechanism": "Codex app-server官方config/mcpServer/reload",
+      "host_version": "0.170.0",
+      "acknowledged": true,
+      "verification_transport": "本对话原注册mcp__hetu__hetu_call_action",
+      "actual_runtime_version": "0.12.3",
+      "actual_bundled_skill_version": "0.3.12",
+      "actual_catalog_sha256": "671d3ee61eb5dc22a45187fa5af1f79da630f8b03e9a35abba0ebf0720faa1a7",
+      "baseline_status": "contract_complete",
+      "method_complete": true,
+      "method_size_bytes": 7456,
+      "method_sha256": "821d204bdc7173933c3f174f1dc815548c71bdec4c8056dca097e776ba8950f9",
+      "receipt": "output/conversation-baseline-20261119/registered-mcp-after-refresh.json"
+    }
+  },
+  "repairs": [
+    {
+      "issue": "页面交接仍将作者决定指向native_review",
+      "change": "指向实际hetu.agent_operations.record_decision；CLI及本对话新MCP均核对通过"
+    },
+    {
+      "issue": "精确WorkRef的媒体交接缺少media_ref归属路由",
+      "change": "复用fixed_video_media核对同作品、固定修订及摘要；合法交接可达，篡改摘要拒绝"
+    },
+    {
+      "issue": "旧works回归仍断言video_media_task_required",
+      "change": "改为核对基础媒体读取、反馈、交付和固定写方案入口，保留原业务断言"
+    },
+    {
+      "issue": "会话辅助程序闭包继续引用旧RPC，导致重连等待超时及一次REPL重置",
+      "change": "显式传运行时路径并通过稳定连接对象替换RPC；本对话R2真实进程61561至71844重连通过，未重建任务或换键提交"
+    }
+  ],
+  "automated_regressions": {
+    "core": {
+      "command": "cargo test --locked -p hetu-core --test agent_operations --test video_review --test works --test work_canons",
+      "passed": 28,
+      "failed": 0,
+      "log": "output/conversation-baseline-20261119/core-final-tests.log"
+    },
+    "transfer": {
+      "command": "Node25 playwright test transfer.spec.ts",
+      "environment": "HETU_PLUGIN_STATE_DIR指向本轮空目录",
+      "passed": 2,
+      "failed": 0,
+      "log": "output/conversation-baseline-20261119/transfer-tests.log",
+      "evidence_scope": "自动化作者审阅与固定文稿交付；不冒充当前对话的文学采纳"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "/Users/coso/Documents/河图验收/无插件默认产品-20261119/交付/参考稿清单.json",
+      "size_bytes": 893,
+      "sha256": "bec5aefd3dd8b3329caf06c84e356c99257ed34a9cf55d82fd386c0e7569c526"
+    },
+    {
+      "path": "/Users/coso/Documents/河图验收/无插件默认产品-20261119/交付/视频交付清单.json",
+      "size_bytes": 1196,
+      "sha256": "6166773ee1c022422635dd5d02d57f802fbc96c93c79225774d46109d82ae352"
+    },
+    {
+      "path": "/Users/coso/Documents/河图验收/无插件默认产品-20261119/交付/视频第二版-三秒.mp4",
+      "size_bytes": 35759,
+      "sha256": "7de1f1cb128ac721019246e45d905ef34053024731db0e7cd55cf46bc7d0a1bf"
+    },
+    {
+      "path": "/Users/coso/Documents/河图验收/无插件默认产品-20261119/交付/雨夜留票-第二版参考稿.fountain",
+      "size_bytes": 850,
+      "sha256": "3ce6091bd57ecc00df54135a27406445e55c8dd1c416225cb87187d7e5028a98"
+    },
+    {
+      "path": "/Users/coso/Documents/河图验收/无插件默认产品-20261119/交付/雾港末班船-第二版参考稿.md",
+      "size_bytes": 1467,
+      "sha256": "d9743546bc135d1c0e7115e05852639c217d59142a6cef9b8215234740fa1975"
+    }
+  ],
+  "private_local_receipts": [
+    {
+      "path": "output/conversation-baseline-20261119/cli-handoff-r2.json",
+      "sha256": "9e0428258d9540ce1c41793acda00665b7d759504cb82421d5b3bcc4f2c9903e"
+    },
+    {
+      "path": "output/conversation-baseline-20261119/client-update.json",
+      "sha256": "061a28fda695f3ba9b4b57c76623b5a9f05b33ef746f8f03aad5a599b5fd8e5a"
+    },
+    {
+      "path": "output/conversation-baseline-20261119/core-final-tests.log",
+      "sha256": "82dc708e30fe5fb0e2899c9b873826a5d2798c2396bbbfbe6682b63c1d4b4b30"
+    },
+    {
+      "path": "output/conversation-baseline-20261119/final-live-r2-summary.json",
+      "sha256": "5ae6ddb196a3e20abd8b34bfb20b03f375870a64292d07d854fc0cc45ba76bc3"
+    },
+    {
+      "path": "output/conversation-baseline-20261119/final-restart-r2.json",
+      "sha256": "be253cf6bb995725876f0dd8ed1cb178c054f43e8d09cdb9fec0202b30c90e15"
+    },
+    {
+      "path": "output/conversation-baseline-20261119/final-skills-inspection.json",
+      "sha256": "55d21ea1b74ba1c322df9ba15f31e158aa1488af74f27e5e11e88e74b6d73201"
+    },
+    {
+      "path": "output/conversation-baseline-20261119/live-recovered-receipts.jsonl",
+      "sha256": "0e59d8aec5a2e0dd41092a6bd6fcde71aee2a77f6fbf19e69e686b4c8942914f",
+      "sha256_before_final_recovery_append": "207417adfffa1af4e5ac45868859cf314458b18d5d3e9104b9f42b09b5574a72"
+    },
+    {
+      "path": "output/conversation-baseline-20261119/live-state.json",
+      "sha256": "0376e3bf0fb842ea89e136c01102d7d02fec4660ddc6c53803eab78ec1498cb0"
+    },
+    {
+      "path": "output/conversation-baseline-20261119/media-probe.json",
+      "sha256": "d542a90b81c3bb7888be085e0c4b3753171facda1ee80788e0bbb961f313ae36"
+    },
+    {
+      "path": "output/conversation-baseline-20261119/media-probe.stderr.log",
+      "sha256": "25c45848394e665f9127621c2abfcfe94b9988c995a69c96e2735fb9cb34bd09"
+    },
+    {
+      "path": "output/conversation-baseline-20261119/reconnected-summary.json",
+      "sha256": "c2dc568d1975a80c285afedca87d2b52826115ea86262aa69ce7778316a1ef16"
+    },
+    {
+      "path": "output/conversation-baseline-20261119/runtime-install.json",
+      "sha256": "c79f49ff89b6d812f85699d829b9a387bb011354df00032a71b5116ff49e723f"
+    },
+    {
+      "path": "output/conversation-baseline-20261119/runtime-rebuild.log",
+      "sha256": "42b4091b04ad9356383fc9c82f358800c777ffaf9509999cc9115a3394e7eca1"
+    },
+    {
+      "path": "output/conversation-baseline-20261119/runtime-update-r2.json",
+      "sha256": "a16b618ac8f18936be788938abe0d9c7f740c3294a1eb3da1a4f3670f0bec62f"
+    },
+    {
+      "path": "output/conversation-baseline-20261119/skills-install.json",
+      "sha256": "ada7fc60b5c5b75a63ca3500242d22ece8e839c7c8e80f95eb93eddeae7cdd2e"
+    },
+    {
+      "path": "output/conversation-baseline-20261119/transfer-tests.log",
+      "sha256": "f2295fa4d4251a4a59a999be41f450f98b0dbd109ace432910fe01c3a2fc8a7b"
+    },
+    {
+      "path": "output/conversation-baseline-20261119/codex-host-refresh.json",
+      "sha256": "7d71f81b61a50cb88c3d1995e3d3f525ab2b20b6f326cbfd5336de8d37710674"
+    },
+    {
+      "path": "output/conversation-baseline-20261119/registered-mcp-after-refresh.json",
+      "sha256": "4ae11390768f9fbbb8a2f2907b5122353d43d4fa8b062479edf68d868b9ad528"
+    },
+    {
+      "path": "output/conversation-baseline-20261119/capability-check.log",
+      "sha256": "0a290158f76b29bce06ee0505bff2ee5daced0e452e7f8c4d22e52abf0deba80"
+    },
+    {
+      "path": "output/conversation-baseline-20261119/methods-check.log",
+      "sha256": "42eb2486f223188d7d09cc7ee354ab642cd34bd81657ced128b00a3af4825c86"
+    },
+    {
+      "path": "output/conversation-baseline-20261119/skills-check.log",
+      "sha256": "4bfe3615a1cd3ccfd988b36f84628103b012dc2543bbfddfd6df82875fd51e5c"
+    },
+    {
+      "path": "output/conversation-baseline-20261119/docs-check.json",
+      "sha256": "68b36752f0a2be76ce3453ac100f8df63cf40f648c30bb5c880b74fe8e9a91ac"
+    },
+    {
+      "path": "output/conversation-baseline-20261119/diff-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "final_consistency_checks": {
+    "status": "passed",
+    "recorded_at": "2026-11-18T17:19:07.002415+00:00",
+    "checks": [
+      {
+        "name": "capabilities",
+        "command": "python3 tools/sync-capability-map.py --check",
+        "exit_code": 0,
+        "log": "output/conversation-baseline-20261119/capability-check.log",
+        "sha256": "0a290158f76b29bce06ee0505bff2ee5daced0e452e7f8c4d22e52abf0deba80"
+      },
+      {
+        "name": "methods",
+        "command": "python3 tools/sync-writing-methods.py --check",
+        "exit_code": 0,
+        "log": "output/conversation-baseline-20261119/methods-check.log",
+        "sha256": "42eb2486f223188d7d09cc7ee354ab642cd34bd81657ced128b00a3af4825c86"
+      },
+      {
+        "name": "skills",
+        "command": "python3 tools/verify-skills.py",
+        "exit_code": 0,
+        "log": "output/conversation-baseline-20261119/skills-check.log",
+        "sha256": "4bfe3615a1cd3ccfd988b36f84628103b012dc2543bbfddfd6df82875fd51e5c"
+      },
+      {
+        "name": "documents",
+        "command": "uv run tools/verify-docs.py",
+        "exit_code": 0,
+        "log": "output/conversation-baseline-20261119/docs-check.json",
+        "sha256": "68b36752f0a2be76ce3453ac100f8df63cf40f648c30bb5c880b74fe8e9a91ac"
+      },
+      {
+        "name": "diff",
+        "command": "git diff --check",
+        "exit_code": 0,
+        "log": "output/conversation-baseline-20261119/diff-check.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "documents": {
+      "documents": 88,
+      "local_links": 1242,
+      "fragment_links": 259,
+      "traceability": {
+        "FR": 40,
+        "US": 61,
+        "UC": 54,
+        "E2E": 30,
+        "AC": 65
+      },
+      "id_references": 1261,
+      "json_examples": 11,
+      "schemas": 2,
+      "mermaid": 103,
+      "errors": []
+    },
+    "runtime_source_unchanged": true,
+    "artifact_hashes_match": true,
+    "registered_mcp_refreshed": true,
+    "installed_skills_discovered": true
+  },
+  "limits": [
+    "官方强制重扫与原注册MCP实读证明本次发现和调用；初始系统提示中的旧Skills清单不因此追溯改写",
+    "当前方法已实际读取，不能将runtime.inspect的observed_skill_version自报字段当成宿主加载证明",
+    "文学反馈均为Agent自查，参考稿未采纳，视频未作作者成片确认",
+    "测试视频为仓库合成技术样本及本机裁切结果，不作为短剧表演或创作品质验收",
+    "Markdown/Fountain为公开读取固定工作修订后的参考副本；正式导入导出另由两项自动化旅程验证",
+    "未覆盖Applications、发布、推送、付费模型或其他平台运行"
+  ]
+}

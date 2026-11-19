@@ -1,4 +1,7 @@
 import { build } from "esbuild";
+import { fileURLToPath } from "node:url";
+import { verifyBaseline } from "./baseline.mjs";
+const baseline = await verifyBaseline(fileURLToPath(new URL("../../../", import.meta.url)));
 import { mkdir, copyFile, writeFile, readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 const buildMain = (file, out) =>
@@ -13,6 +16,7 @@ const buildMain = (file, out) =>
     sourcemap: true,
   });
 await mkdir("dist/renderer", { recursive: true });
+await writeFile("dist/baseline.json", JSON.stringify(baseline, null, 2) + "\n");
 await buildMain("main", "main");
 await buildMain("shell-preload", "shell-preload");
 await buildMain("plugin-preload", "plugin-preload");

@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE = ROOT / 'tools/hetu-skills'
-VERSION = '0.3.10'
+VERSION = '0.3.12'
 SKILLS = ['hetu-setup', 'hetu-book-create', 'hetu-book-profile', 'hetu-outline', 'hetu-cover', 'hetu-draft', 'hetu-revise', 'hetu-drama', 'hetu-resources', 'hetu-artwork', 'hetu-manage', 'hetu-import', 'hetu-video']
 
 
@@ -149,6 +149,23 @@ def main():
     parser.add_argument('--check', action='store_true', help='只核对可复现产物，不写入')
     args = parser.parse_args()
     packages, catalog = render()
+    # 独立CLI/MCP按同包摘要提供共同方法，不读取调用方任意文件，也不代替所选题材套件。
+    resources = []
+    for path, content in sorted(packages['hetu'].items()):
+        if not path.endswith('.md') or not path.startswith(('skills/', 'references/')):
+            continue
+        text = content.decode('utf-8')
+        description = next((line.partition(':')[2].strip().strip('"') for line in text.splitlines() if line.startswith('description:')), None)
+        summary = description or next((line.lstrip('# ').strip() for line in text.splitlines() if line.startswith('# ')), path)
+        resources.append(dict(path=path, sha256=sha(content), size_bytes=len(content),
+                              skill=path.split('/')[1] if path.startswith('skills/') else None, summary=summary, content=text))
+    method_data = encoded(dict(schema_version='1.0.0', version=VERSION, suite_id='general', resources=resources))
+    method_destination = ROOT / 'contracts/method-resources.json'
+    if args.check:
+        if method_destination.read_bytes() != method_data:
+            raise SystemExit('机器方法资源与所选共同套件不同步')
+    else:
+        method_destination.write_bytes(method_data)
     for name, expected in packages.items():
         directory = ROOT / 'integrations/codex' / name
         actual = {p.relative_to(directory).as_posix(): p for p in directory.rglob('*') if p.is_file()}

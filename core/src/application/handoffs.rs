@@ -63,6 +63,11 @@ impl Kernel {
             )?;
             fixed.push(json!({"kind":"video_episode","video_episode_id":episode,"revision":value["episode"]["revision"],"sha256":value["sha256"]}));
         }
+        if object["media_ref"].is_object() {
+            let (media, sha) = self.fixed_video_media(&object["work_ref"], &object["media_ref"])?;
+            ensure(object["video_episode_id"].is_null() || object["video_episode_id"] == media["video_episode_id"], "forbidden", "交接媒体不属于所选分集。")?;
+            fixed.push(json!({"kind":"video_media","media_ref":object["media_ref"],"sha256":sha,"asset_ref":media["asset_ref"],"read_action":"hetu.video.media.get","feedback_action":"hetu.video.feedback.list"}));
+        }
         if let Some(document) = object["document_id"].as_str() {
             let value = self.document_content(document, object["revision_id"].as_str())?;
             fixed.push(json!({"kind":"document","document_id":document,"revision_id":value["revision"]["revision_id"],"sha256":value["revision"]["sha256"]}));
@@ -262,8 +267,14 @@ impl Kernel {
                     "hetu.video.episodes.get",
                     "hetu.video.episodes.update",
                     "hetu.video.episodes.reorder",
+                    "hetu.video.media.save",
+                    "hetu.video.media.list",
+                    "hetu.video.media.get",
+                    "hetu.video.feedback.list",
+                    "hetu.video.feedback.save",
+                    "hetu.video.delivery.preview",
                 ],
-                &["video_media_task_required"],
+                &[],
             ),
             "book" => (
                 &[
@@ -491,7 +502,7 @@ impl Kernel {
         Ok(
             json!({"scope_ref":{"kind":self.scope_kind(),"id":self.scope()},"view_kind":page,"object_ref":object,
             "fixed_refs":fixed,"direct_actions":available,"proposal_actions":proposals,"limitations":missing,
-            "workflow":{"prepare":"hetu.agent_operations.prepare","read":"hetu.agent_operations.get","execute":"hetu.agent_operations.execute","author_decision":"native_review"},
+            "workflow":{"prepare":"hetu.agent_operations.prepare","read":"hetu.agent_operations.get","execute":"hetu.agent_operations.execute","author_decision":"hetu.agent_operations.record_decision"},
             "unsaved_buffer_included":false,"computer_use_required":false}),
         )
     }

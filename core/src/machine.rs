@@ -5,8 +5,38 @@ use crate::{
 };
 use serde_json::{Value, json};
 
+pub fn describe_action(action: &mut Value) {
+    let alternatives = match action["authorization"].as_str() {
+        Some("exact_task") => json!([["task_ref"]]),
+        Some("new_managed_scope") => json!([["management_ref"]]),
+        Some("task_or_new_managed_scope") => json!([["task_ref"], ["management_ref"]]),
+        _ => json!([]),
+    };
+    action["prerequisites"] = json!({"reference_alternatives":alternatives,
+        "effect":action["effect"],"author_only":action["author_only"],
+        "model_content_and_cost_approval":action["name"]=="hetu.model_tasks.submit"});
+    action["readiness"] = json!({"status":"not_checked","authority":"core_checks_each_request"});
+}
+
+fn catalog_identity(catalog: &Value) -> Result<String> {
+    let metadata = catalog
+        .as_array()
+        .ok_or_else(|| Error::new("hetu.integrity_failure", "能力目录无效。"))?
+        .iter()
+        .map(|action| {
+            let mut action = action.clone();
+            action.as_object_mut().unwrap().remove("input_schema");
+            action.as_object_mut().unwrap().remove("input_schema_ref");
+            action
+        })
+        .collect::<Vec<_>>();
+    Ok(digest(serde_json::to_vec(
+        &json!({"contract_sha256":include_str!(concat!(env!("OUT_DIR"),"/action-contract-sha256.txt")),"actions":metadata}),
+    )?))
+}
+
 pub fn catalog_page(catalog: &Value, input: &Value) -> Result<Value> {
-    let sha = digest(serde_json::to_vec(catalog)?);
+    let sha = catalog_identity(catalog)?;
     ensure(
         input
             .get("expected_catalog_sha256")
@@ -28,8 +58,28 @@ pub fn catalog_page(catalog: &Value, input: &Value) -> Result<Value> {
                 && input["group"]
                     .as_str()
                     .is_none_or(|g| a["name"].as_str().and_then(|s| s.split('.').nth(1)) == Some(g))
+                && input["query"].as_str().is_none_or(|query| {
+                    let haystack = format!(
+                        "{} {}",
+                        a["name"].as_str().unwrap_or(""),
+                        a["purpose"].as_str().unwrap_or("")
+                    )
+                    .to_lowercase();
+                    query
+                        .split_whitespace()
+                        .all(|word| haystack.contains(&word.to_lowercase()))
+                })
         })
         .collect::<Vec<_>>();
+    let selection_sha = digest(serde_json::to_vec(&json!({"catalog_sha256":sha,
+        "query":input["query"],"action":input["action"],"group":input["group"]}))?);
+    ensure(
+        input
+            .get("expected_selection_sha256")
+            .is_none_or(|value| value == &selection_sha),
+        "hetu.stale_evidence",
+        "目录筛选已变化，请重新查询。",
+    )?;
     let start = input["offset"].as_u64().unwrap_or(0) as usize;
     ensure(
         start <= selected.len(),
@@ -50,7 +100,8 @@ pub fn catalog_page(catalog: &Value, input: &Value) -> Result<Value> {
         })
         .collect::<Vec<_>>();
     Ok(
-        json!({"discovery_revision":"2","catalog_sha256":sha,"groups":groups,
+        json!({"discovery_revision":"3","catalog_sha256":sha,"selection_sha256":selection_sha,
+        "query":input["query"],"groups":groups,
         "total":selected.len(),"actions":actions,"next_offset":(end<selected.len()).then_some(end),
         "schema_lookup":{"action":"hetu.collaboration.inspect","input":{"include_schema":true,"limit":1}},
         "authorization":"listed_actions_do_not_grant_access"}),
@@ -60,7 +111,7 @@ pub fn catalog_page(catalog: &Value, input: &Value) -> Result<Value> {
 pub fn runtime(catalog: &Value, input: &Value) -> Result<Value> {
     let package: Value =
         serde_json::from_str(include_str!("../../integrations/codex/hetu/plugin.json"))?;
-    let sha = digest(serde_json::to_vec(catalog)?);
+    let sha = catalog_identity(catalog)?;
     let mut checks = Vec::new();
     for (field, actual) in [
         ("expected_runtime_version", json!(env!("CARGO_PKG_VERSION"))),
@@ -72,8 +123,9 @@ pub fn runtime(catalog: &Value, input: &Value) -> Result<Value> {
     }
     Ok(
         json!({"runtime_version":env!("CARGO_PKG_VERSION"),"platform":std::env::consts::OS,
-        "architecture":std::env::consts::ARCH,"catalog_sha256":sha,"discovery_revision":"2",
+        "architecture":std::env::consts::ARCH,"catalog_sha256":sha,"discovery_revision":"3",
         "bundled_skill":{"name":package["name"],"version":package["version"]},"checks":checks,
+        "schema_materialization":crate::application::schema_materialization(),"baseline":crate::baseline::inspect()?,
         "installation":"unknown","session_skill_loading":"unknown","repairs_performed":false,
         "next_actions":["Compare this receipt with the tools and methods actually visible in the current Agent session.",
             "Use the selected suite's local_settings.inspect receipt for installation and registration; do not infer session loading."]}),
@@ -221,6 +273,26 @@ pub fn recovery(result: &mut Value, action: &str, input: &Value) {
             args[key] = value.clone();
         }
     }
+    if matches!(code,"result_unknown"|"hetu.outcome_unknown"|"hetu.cleanup_failed"|"hetu.output_budget_exceeded") {
+        if matches!(action,"hetu.plugins.invoke"|"hetu.plugin_access.invoke")
+            && input["arguments"]["operation_key"].as_str().is_some_and(|key|!key.is_empty()&&key.len()<=128) {
+            for key in ["work_ref","plugin_id","grant_id","package_sha256","capabilities_sha256"] {
+                if let Some(value)=input.get(key) {args[key]=value.clone();}
+            }
+            args["action"]=json!("hetu.extensions.operations.get");
+            args["arguments"]=json!({"operation_key":input["arguments"]["operation_key"]});
+            if let Ok(raw)=serde_json_canonicalizer::to_vec(&json!({"action":input["action"],"input":input["arguments"]})) {
+                args["arguments"]["invocation_sha256"]=json!(digest(raw));
+            }
+            result["error"]["resolution"]=json!({"kind":"recover","action":action,"input":args,"retry":"query_original"});
+            return;
+        }
+        if action=="hetu.plugins.apply" && input["operation_key"].is_string() {
+            result["error"]["resolution"]=json!({"kind":"recover","action":"hetu.plugins.get_operation",
+                "input":{"operation_key":input["operation_key"]},"retry":"query_original"});
+            return;
+        }
+    }
     let target = match code {
         "hetu.stale_evidence"
             if matches!(
@@ -271,7 +343,7 @@ pub fn recovery(result: &mut Value, action: &str, input: &Value) {
             args["detail"] = json!("summary");
             "hetu.creative_tasks.get"
         }
-        "result_unknown" | "workspace_busy" | "hetu.recovery_required" => {
+        "result_unknown" | "hetu.outcome_unknown" | "hetu.cleanup_failed" | "hetu.output_budget_exceeded" | "workspace_busy" | "hetu.recovery_required" => {
             args["action"] = json!(action);
             args["key"] = input["operation_key"].clone();
             "hetu.operations.get"
@@ -295,6 +367,25 @@ pub fn recovery(result: &mut Value, action: &str, input: &Value) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn interrupted_plugin_recovers_the_original_owner_operation_without_echoing_content() {
+        let input=json!({"management_ref":{"grant_id":"a".repeat(64)},"work_ref":{"kind":"novel"},
+            "plugin_id":"org.wordflowlab.novel-review","package_sha256":"b".repeat(64),"capabilities_sha256":"c".repeat(64),
+            "action":"save_project","arguments":{"operation_key":"same-owner-key","content":"private-creative-content"}});
+        for code in ["hetu.outcome_unknown","hetu.cleanup_failed","hetu.output_budget_exceeded"] {
+            let mut result=crate::failure_result("hetu.plugins.invoke","collaboration",&Error::new(code,"interrupted"));
+            recovery(&mut result,"hetu.plugins.invoke",&input);
+            assert_eq!(result["status"],"unknown");
+            let resolution=&result["error"]["resolution"];
+            assert_eq!(resolution["action"],"hetu.plugins.invoke");
+            assert_eq!(resolution["input"]["action"],"hetu.extensions.operations.get");
+            assert_eq!(resolution["input"]["arguments"]["operation_key"],"same-owner-key");
+            assert_eq!(resolution["input"]["arguments"]["invocation_sha256"],digest(serde_json_canonicalizer::to_vec(
+                &json!({"action":input["action"],"input":input["arguments"]})).unwrap()));
+            assert!(!result.to_string().contains("private-creative-content"));
+        }
+    }
 
     #[test]
     fn conflict_recovery_reads_the_exact_object_without_echoing_content() {

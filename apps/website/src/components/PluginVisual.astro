@@ -5,6 +5,10 @@ interface Props { locale: Locale; kind?: string; }
 const { locale, kind = 'relationships' } = Astro.props;
 const en = locale === 'en';
 const captures: Record<string, { width: number; height: number; zh: string; en: string }> = {
+  "adaptation-studio": {"width": 1360, "height": 900, "zh": "改编工程真实工作面，使用macOS隔离验收资料。", "en": "Adaptation Studio actual work surface with isolated macOS acceptance data."},
+  "reader-review": {"width": 1360, "height": 900, "zh": "试读工作台真实工作面，使用macOS隔离验收资料。", "en": "Reader Review actual work surface with isolated macOS acceptance data."},
+  "comic-studio": {"width": 1345, "height": 1435, "zh": "漫画创作真实工作面，使用macOS隔离验收资料。", "en": "Comic Studio actual work surface with isolated macOS acceptance data."},
+  "audio-drama": {"width": 1360, "height": 900, "zh": "有声剧制作真实工作面，使用macOS隔离验收资料。", "en": "Audio Drama actual work surface with isolated macOS acceptance data."},
   'book-export': {"width": 1360, "height": 900, "zh": "书稿交付实际工作面，macOS正式安装版与隔离演示资料。", "en": "Book Export actual work surface with the official macOS installation and isolated demonstration data."},
 
   'readthrough': {"width": 1360, "height": 996, "zh": "朗读审阅实际工作面，macOS正式安装版与隔离演示资料。", "en": "Readthrough actual work surface with the official macOS installation and isolated demonstration data."},

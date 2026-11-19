@@ -61,6 +61,7 @@ jobs:
       - name: Test CLI launcher, plugins and Electron workbench
         run: |
           npm run test:cli
+          npm run test:task-view
           npm run test:plugins
           npm run test:e2e --workspace @hetu/desktop -- --grep-invert '独立开发应用'
       - name: Sign, notarize and package Electron

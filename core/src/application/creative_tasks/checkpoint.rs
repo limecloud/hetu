@@ -86,6 +86,202 @@ impl Kernel {
                 })
                 .ok_or_else(|| Error::new("forbidden", "接续来源不属于本任务固定资料。"))
         };
+        let evidence = |item: &Value| -> Result<()> {
+            match text(item, "kind")? {
+                "context" => {
+                    find(&item["reference"])?;
+                }
+                "working_copy" => {
+                    self.working_revision(&input["task_ref"], &item["reference"])?;
+                }
+                "feedback" => {
+                    self.check_feedback_refs(&input["task_ref"], &json!([item["reference"]]))?;
+                }
+                _ => return Err(Error::new("invalid_input", "接续依据类型无效。")),
+            }
+            Ok(())
+        };
+        let statements = note["statements"].as_array().unwrap();
+        let mut identifiers = BTreeSet::new();
+        for statement in statements {
+            if let Some(identifier) = statement["statement_id"].as_str() {
+                checked_id(identifier, "statement")?;
+                ensure(
+                    identifiers.insert(identifier),
+                    "invalid_input",
+                    "接续说明标识重复。",
+                )?;
+            }
+            for key in ["supporting", "contradicting"] {
+                for item in statement[key].as_array().into_iter().flatten() {
+                    evidence(item)?;
+                }
+            }
+            let opposed = statement["supporting"]
+                .as_array()
+                .into_iter()
+                .flatten()
+                .any(|item| {
+                    statement["contradicting"]
+                        .as_array()
+                        .is_some_and(|items| items.contains(item))
+                });
+            ensure(
+                !opposed,
+                "invalid_input",
+                "同一依据不能同时列为支持和反证。",
+            )?;
+            if statement.get("supporting").is_some() || statement.get("contradicting").is_some() {
+                ensure(
+                    statement["statement_id"].is_string(),
+                    "invalid_input",
+                    "正反依据必须绑定稳定说明标识。",
+                )?;
+                if statement["kind"] == "hypothesis"
+                    && matches!(statement["status"].as_str(), Some("supported" | "refuted"))
+                {
+                    let key = if statement["status"] == "supported" {
+                        "supporting"
+                    } else {
+                        "contradicting"
+                    };
+                    ensure(
+                        statement[key]
+                            .as_array()
+                            .is_some_and(|items| !items.is_empty()),
+                        "invalid_input",
+                        "假设状态须有对应方向的固定依据。",
+                    )?;
+                }
+            }
+        }
+        for old in current["checkpoint"]["statements"]
+            .as_array()
+            .into_iter()
+            .flatten()
+        {
+            if old["statement_id"].is_string() {
+                let updated = statements
+                    .iter()
+                    .find(|s| s["statement_id"] == old["statement_id"])
+                    .ok_or_else(|| {
+                        Error::new(
+                            "hetu.stale_schema",
+                            "不能裁掉已有稳定说明；请保留其标识并更新状态。",
+                        )
+                    })?;
+                ensure(
+                    updated["kind"] == old["kind"],
+                    "invalid_input",
+                    "稳定说明不能更换种类。",
+                )?;
+                for key in ["supporting", "contradicting"] {
+                    ensure(
+                        old.get(key).is_none() || updated.get(key).is_some(),
+                        "hetu.stale_schema",
+                        "不能裁掉已有正反依据结构。",
+                    )?;
+                }
+                if updated["prediction"] != old["prediction"]
+                    && matches!(updated["status"].as_str(), Some("supported" | "refuted"))
+                {
+                    ensure(
+                        updated["supporting"] != old["supporting"]
+                            || updated["contradicting"] != old["contradicting"],
+                        "invalid_input",
+                        "预测变化后应重新检验或提交新的方向依据。",
+                    )?;
+                }
+            }
+        }
+        let mut issue_ids = BTreeSet::new();
+        for issue in note["issues"].as_array().into_iter().flatten() {
+            let identifier = checked_id(text(issue, "issue_id")?, "issue")?;
+            ensure(
+                issue_ids.insert(identifier),
+                "invalid_input",
+                "未决问题标识重复。",
+            )?;
+            for identifier in issue["statement_ids"].as_array().unwrap() {
+                ensure(
+                    identifier
+                        .as_str()
+                        .is_some_and(|id| identifiers.contains(id)),
+                    "invalid_input",
+                    "问题引用的稳定说明不存在。",
+                )?;
+            }
+            for item in issue["resolution"].as_array().unwrap() {
+                evidence(item)?;
+            }
+            if issue["scope"] == "professional" {
+                let index = find(&issue["owner_context_ref"])?;
+                ensure(
+                    sources[index]["kind"] == "plugin_object",
+                    "invalid_input",
+                    "专业问题须指回本任务固定的原Owner对象。",
+                )?;
+                let fixed =
+                    self.fixed_context_source(&request["input_snapshot"]["sources"][index])?;
+                let owner = &fixed["plugin_object"];
+                ensure(
+                    owner["owner_plugin_id"] == "org.wordflowlab.novel-review"
+                        && owner["kind"] == "novel_review",
+                    "hetu.capability_unavailable",
+                    "此专业Owner的问题引用尚无宿主适配，请沿原插件继续。",
+                )?;
+                ensure(
+                    owner["content"]["issues"].as_array().is_some_and(|rows| {
+                        rows.iter().any(|row| row["id"] == issue["owner_item_id"])
+                    }),
+                    "not_found",
+                    "原Owner的固定修订中不存在此问题标识。",
+                )?;
+            }
+        }
+        ensure(
+            current["checkpoint"].get("issues").is_none() || note.get("issues").is_some(),
+            "hetu.stale_schema",
+            "不能裁掉未决问题结构。",
+        )?;
+        for old in current["checkpoint"]["issues"]
+            .as_array()
+            .into_iter()
+            .flatten()
+        {
+            let updated = note["issues"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .find(|i| i["issue_id"] == old["issue_id"])
+                .ok_or_else(|| {
+                    Error::new(
+                        "hetu.stale_schema",
+                        "不能删除已有问题标识；请明确解决、放弃或接续原Owner。",
+                    )
+                })?;
+            ensure(
+                updated["scope"] == old["scope"],
+                "invalid_input",
+                "问题不能改变专业归属。",
+            )?;
+            if old["scope"] == "professional" {
+                ensure(
+                    updated["owner_item_id"] == old["owner_item_id"],
+                    "forbidden",
+                    "专业接续不能替换原问题标识。",
+                )?;
+                let before = find(&old["owner_context_ref"])?;
+                let after = find(&updated["owner_context_ref"])?;
+                for key in ["owner_plugin_id", "object_id", "work_ref"] {
+                    ensure(
+                        sources[before]["fixed_ref"][key] == sources[after]["fixed_ref"][key],
+                        "forbidden",
+                        "专业问题必须接续原Owner对象。",
+                    )?;
+                }
+            }
+        }
         for coverage in note["coverage"].as_array().unwrap() {
             let index = find(&coverage["context_ref"])?;
             let source = self.fixed_context_source(&request["input_snapshot"]["sources"][index])?;
@@ -113,6 +309,14 @@ impl Kernel {
         for statement in note["statements"].as_array().unwrap() {
             for reference in statement["context_refs"].as_array().unwrap() {
                 find(reference)?;
+            }
+            if let Some(references) = statement["working_copy_refs"].as_array() {
+                for reference in references {
+                    self.working_revision(&input["task_ref"], reference)?;
+                }
+            }
+            if statement.get("feedback_refs").is_some() {
+                self.check_feedback_refs(&input["task_ref"], &statement["feedback_refs"])?;
             }
         }
         for operation in note["pending_operations"].as_array().unwrap() {

@@ -2,7 +2,7 @@
 use super::*;
 
 impl Kernel {
-    pub(crate) fn execute_open_plugin(&self, action: &str, input: &Value) -> Result<Value> {
+    pub(crate) fn execute_open_plugin(&self, action: &str, input: &Value, cancelled: &dyn Fn()->bool) -> Result<Value> {
         let binding = self
             .management_grant
             .as_ref()
@@ -18,10 +18,26 @@ impl Kernel {
         let mut runtime = input.clone();
         runtime["workspace_directory"] = json!(self.workspace_path);
         runtime["management_binding"] = binding.clone();
-        crate::plugin_settings::request(
+        if action == "hetu.plugins.invoke" && input.get("view").is_some() {
+            let capabilities = crate::plugin_settings::request_cancellable(
+                binding["client_adapter"].as_str().unwrap_or(""),
+                "hetu.plugins.capabilities", &runtime, cancelled,
+            )?;
+            ensure(capabilities["invocation_projection_version"] == 1,
+                "hetu.capability_unavailable", "当前插件宿主未提供调用前只读投影检查。")?;
+            ensure(capabilities["capabilities_sha256"] == input["capabilities_sha256"],
+                "hetu.stale_evidence", "插件能力已变化，请重新发现。")?;
+            let target = &input["action"];
+            ensure(["actions", "data_actions", "core_actions", "resource_actions"].iter().any(|group|
+                capabilities[*group].as_array().is_some_and(|items| items.iter().any(|item|
+                    (item["id"] == *target || item["name"] == *target) && item["effect"] == "read"))),
+                "invalid_input", "结果投影只允许只读动作，不能重新执行写入。")?;
+        }
+        crate::plugin_settings::request_cancellable(
             binding["client_adapter"].as_str().unwrap_or(""),
             action,
             &runtime,
+            cancelled,
         )
     }
 

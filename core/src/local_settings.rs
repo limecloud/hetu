@@ -247,6 +247,10 @@ impl LocalSettings {
                 "installable_clients":suites::installable_clients(),"installations":state["installations"]}),
             ),
             "hetu.local_settings.inspect_suite" => inspection::inspect(&state, input),
+            "hetu.local_settings.inspect_connection" => {
+                ensure(input["agent_client"] == "codex", "hetu.capability_unavailable", "当前只提供Codex连接核对。")?;
+                suites::inspect_connection(&state["installations"]["codex:machine-connection"])
+            }
             "hetu.local_settings.prepare" => self.prepare(client, input, &state),
             "hetu.local_settings.get_operation" => {
                 let plan = self.plan(text(input, "operation_id")?)?;
@@ -286,6 +290,12 @@ impl LocalSettings {
             closed(input, &["kind", "patch", "summary", "operation_key"])?;
             validate_patch(&input["patch"])?;
             fixed["patch"] = input["patch"].clone();
+        } else if input["kind"] == "agent_connection" {
+            closed(input, &["kind", "agent_client", "summary", "operation_key"])?;
+            ensure(input["agent_client"] == "codex", "hetu.capability_unavailable", "当前只提供Codex受管机器连接安装。")?;
+            fixed["agent_client"] = json!("codex");
+            fixed["suite"] = suites::connection_package()?;
+            fixed["install_target"] = suites::target("codex")?;
         } else {
             ensure(
                 input.get("patch").is_none(),
@@ -472,6 +482,20 @@ impl LocalSettings {
             for (name, value) in patch.as_object().unwrap() {
                 next["preferences"][name] = value.clone();
             }
+        } else if plan["fixed"]["kind"] == "agent_connection" {
+            let fixed = plan["fixed"].clone();
+            let recovering = plan["state"] == "executing";
+            ensure(suites::target("codex")? == fixed["install_target"], "revision_conflict", "Codex安装目标已变化，请保留原方案核对。")?;
+            let installed = suites::install(&fixed["suite"], "codex", recovering, || {
+                if !recovering {
+                    plan["state"] = json!("executing");
+                    plan["execute_key"] = input["operation_key"].clone();
+                    self.store.install(&plan_path(operation_id)?, &serde_json::to_vec(&plan)?, false)?;
+                }
+                Ok(())
+            })?;
+            next["installations"]["codex:machine-connection"] = installed.clone();
+            plan["installation"] = installed;
         } else {
             let fixed = plan["fixed"].clone();
             let recovering = plan["state"] == "executing";

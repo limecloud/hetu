@@ -704,75 +704,83 @@
     },
     {
       "path": "assets/brand/icons/macos/Hetu.icns",
-      "sha256": "f259964680e3dae3bb9d1e50dd133c87d06bf689614236a09364d91ce1f88ff9",
-      "size_bytes": 1350358,
+      "sha256": "4c4d4344306863b7829e0b8cd02bc87707586e4cf7cd090e1a8d32d3b7f2a84c",
+      "size_bytes": 971009,
       "width": 1024,
       "height": 1024,
       "format": "ICNS",
-      "mode": "RGBA"
+      "mode": "RGBA",
+      "derived_from": "assets/brand/app-icon-1024.png"
     },
     {
       "path": "assets/brand/icons/macos/icon-1024.png",
-      "sha256": "35aeabb0732be3ff8c0fd465ea2a3982a4526f341d1a823ecf97477a3095e289",
-      "size_bytes": 688393,
+      "sha256": "c2b625fdbb1af1ae70010c2b33a29088c69ce0321c4bae31452c7d98df499cd0",
+      "size_bytes": 475886,
       "width": 1024,
       "height": 1024,
       "format": "PNG",
-      "mode": "RGBA"
+      "mode": "RGBA",
+      "derived_from": "assets/brand/app-icon-1024.png"
     },
     {
       "path": "assets/brand/icons/macos/icon-128.png",
-      "sha256": "af4e83be3576c3b50b6f2675e8bf6edad85eb5df697d0354b6c411c583e7419b",
-      "size_bytes": 17038,
+      "sha256": "29cfbe59d5f1407d4c35a668dc992ff554923e67a19fcbfb7af613c193bb1d01",
+      "size_bytes": 13899,
       "width": 128,
       "height": 128,
       "format": "PNG",
-      "mode": "RGBA"
+      "mode": "RGBA",
+      "derived_from": "assets/brand/app-icon-1024.png"
     },
     {
       "path": "assets/brand/icons/macos/icon-16.png",
-      "sha256": "96f90ef1e6b6a0cfa13f4ce599f8c4be5724a4d6963a22edc7ff3cce8277ccd5",
-      "size_bytes": 595,
+      "sha256": "13dbde6abb56295d9a990b505016a3aec37961639eaa294917a3cd0976592854",
+      "size_bytes": 636,
       "width": 16,
       "height": 16,
       "format": "PNG",
-      "mode": "RGBA"
+      "mode": "RGBA",
+      "derived_from": "assets/brand/app-icon-1024.png"
     },
     {
       "path": "assets/brand/icons/macos/icon-256.png",
-      "sha256": "322c16e5b8641dad9a5e937de5935bbd86168c8dcd4b7d400658e9d36d6a77cc",
-      "size_bytes": 53507,
+      "sha256": "6c555aac499a6e9c0186d78b109557069899d2ca3d06d6416eca26ddcafb44df",
+      "size_bytes": 41716,
       "width": 256,
       "height": 256,
       "format": "PNG",
-      "mode": "RGBA"
+      "mode": "RGBA",
+      "derived_from": "assets/brand/app-icon-1024.png"
     },
     {
       "path": "assets/brand/icons/macos/icon-32.png",
-      "sha256": "3cf0ff70b9324ce13a554aab0f7dcdf0ca102e392859285b36438acf5fb1eaa9",
-      "size_bytes": 1717,
+      "sha256": "707c48bf0eb31104f3e7a4e986578bcc9c75c08bf74e26ff5364b9f1efcb57cf",
+      "size_bytes": 1693,
       "width": 32,
       "height": 32,
       "format": "PNG",
-      "mode": "RGBA"
+      "mode": "RGBA",
+      "derived_from": "assets/brand/app-icon-1024.png"
     },
     {
       "path": "assets/brand/icons/macos/icon-512.png",
-      "sha256": "d84b2340902f0ec65479cb65261ca9e162db915bbaf4b93323b0357123dcfd70",
-      "size_bytes": 179719,
+      "sha256": "3f896e9b99fce03560181738ab290c388db7bc4af0990802dd6d16d6e1bb5fdd",
+      "size_bytes": 133239,
       "width": 512,
       "height": 512,
       "format": "PNG",
-      "mode": "RGBA"
+      "mode": "RGBA",
+      "derived_from": "assets/brand/app-icon-1024.png"
     },
     {
       "path": "assets/brand/icons/macos/icon-64.png",
-      "sha256": "13bb5b120bd1f33edc1ada94a6eb7489e2f64ecaf2688a2a6ac3c65eba085259",
-      "size_bytes": 5228,
+      "sha256": "075b1999683c88dbd23c03f37ea1e6844c0a5ccfd1a1f21bd1567ce281f573c8",
+      "size_bytes": 4581,
       "width": 64,
       "height": 64,
       "format": "PNG",
-      "mode": "RGBA"
+      "mode": "RGBA",
+      "derived_from": "assets/brand/app-icon-1024.png"
     },
     {
       "path": "assets/brand/icons/web/favicon.ico",

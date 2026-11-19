@@ -4,9 +4,9 @@ import { readFileSync } from 'node:fs';
 const listings = JSON.parse(readFileSync(new URL('../src/data/plugin-listings.json', import.meta.url), 'utf8'));
 const packages = ['relationships', 'timeline'].map(slug => ({ slug, ...JSON.parse(readFileSync(new URL(`../../../plugins/${slug}/plugin.json`, import.meta.url), 'utf8')) })).concat(listings.map((entry:any)=>({slug:entry.slug,...entry.manifest})));
 
-for (const [slug, category] of [['story-research', 'research'], ['character-lab', 'characters'], ['story-analysis', 'analysis']]) {
+for (const [slug, category] of [['adaptation-studio', 'adaptation'], ['reader-review', 'beta'], ['comic-studio', 'comics'], ['audio-drama', 'audio'], ['story-research', 'research'], ['character-lab', 'characters'], ['story-analysis', 'analysis']]) {
   for (const prefix of ['', '/en']) test(`${prefix || 'zh-CN'} ${slug} 分类与精确身份检索`, async ({ page }) => {
-    await page.goto(prefix + '/plugins/');
+    await page.goto(prefix + '/plugins/', { waitUntil: 'domcontentloaded' });
     await page.locator(`[data-plugin-category="${category}"]`).click();
     await expect(page.locator('.plugin-card:visible')).toHaveCount(1);
     await expect(page.locator('.plugin-card:visible a').first()).toHaveAttribute('href', `${prefix}/plugins/${slug}/`);
@@ -23,7 +23,7 @@ for (const prefix of ['', '/en']) {
       page.on('pageerror', error => errors.push(error.message));
       await context.grantPermissions(['clipboard-read', 'clipboard-write']);
       await page.setViewportSize({ width, height: 960 });
-      await page.goto(prefix + '/');
+      await page.goto(prefix + '/', { waitUntil: 'domcontentloaded' });
       await expect(page.locator('.plugin-home a').first()).toHaveAttribute('href', prefix + '/plugins/');
       if (width <= 1100) await page.locator('.mobile-nav summary').click();
       await page.locator(`.site-nav a[href="${prefix}/plugins/"]:visible`).click();
@@ -67,18 +67,21 @@ for (const prefix of ['', '/en']) {
     });
   }
 
-  test(`${prefix || 'zh-CN'} 插件作者与开发者指南、博客和SEO相互可达`, async ({ page, request }) => {
-    const sitemap = await (await request.get('/sitemap.xml')).text();
-    for (const path of ['plugins', ...packages.map(item => 'plugins/' + item.slug), 'docs/plugins', 'docs/plugin-development', 'docs/plugin-publishing', 'blog/creative-plugins']) {
-      await page.goto(`${prefix}/${path}/`);
+  for (const path of ['plugins', ...packages.map(item => 'plugins/' + item.slug), 'docs/plugins', 'docs/plugin-development', 'docs/plugin-publishing', 'blog/creative-plugins', 'blog/story-across-media']) {
+    test(`${prefix || 'zh-CN'} ${path} 标题、SEO与站点地图`, async ({ page, request }) => {
+      const sitemap = await (await request.get('/sitemap.xml')).text();
+      await page.goto(`${prefix}/${path}/`, { waitUntil: 'domcontentloaded' });
       await expect(page.locator('main h1')).toHaveCount(1);
       await expect(page.locator('main h1')).toBeVisible();
       await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `https://hetu.limeai.run${prefix}/${path}/`);
       expect(sitemap).toContain(`<loc>https://hetu.limeai.run${prefix}/${path}/</loc>`);
-    }
-    await page.goto(`${prefix}/docs/plugins/`);
+    });
+  }
+
+  test(`${prefix || 'zh-CN'} 插件作者与开发者指南和未知插件`, async ({ page, request }) => {
+    await page.goto(`${prefix}/docs/plugins/`, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('.doc-article pre')).toHaveCount(0);
-    await page.goto(`${prefix}/docs/plugin-publishing/`);
+    await page.goto(`${prefix}/docs/plugin-publishing/`, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('.doc-article a[href*="template=plugin-listing.yml"]')).toHaveCount(1);
     const missing = await request.get(`${prefix}/plugins/not-a-plugin/`);
     expect(missing.status()).toBe(404);
@@ -88,7 +91,7 @@ for (const prefix of ['', '/en']) {
 test('禁用脚本时插件目录和详情仍可阅读', async ({ browser, baseURL }) => {
   const context = await browser.newContext({ javaScriptEnabled: false, baseURL });
   const page = await context.newPage();
-  await page.goto('/plugins/');
+  await page.goto('/plugins/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('.plugin-card')).toHaveCount(packages.length);
   await expect(page.locator('[data-plugin-filters]')).toBeHidden();
   await page.locator('.plugin-card a[href="/plugins/relationships/"]').click();
@@ -100,7 +103,7 @@ test('禁用脚本时插件目录和详情仍可阅读', async ({ browser, baseU
 
 test('剪贴板受限时保留可手动复制的请求并给出反馈', async ({ page }) => {
   await page.addInitScript(() => Object.defineProperty(navigator.clipboard, 'writeText', { value: async () => { throw new Error('denied'); } }));
-  await page.goto('/plugins/timeline/');
+  await page.goto('/plugins/timeline/', { waitUntil: 'domcontentloaded' });
   await page.locator('[data-copy-plugin-request]').click();
   await expect(page.locator('[data-plugin-copy-status]')).toContainText('手动复制');
   await expect(page.locator('[data-plugin-request]')).toBeVisible();
@@ -108,7 +111,7 @@ test('剪贴板受限时保留可手动复制的请求并给出反馈', async ({
 
 for (const listing of listings) for (const prefix of ['', '/en']) for (const width of [375, 768, 1440]) test((prefix || 'zh-CN')+` ${width}px ${listing.slug} 外部插件展示发布者、固定制品与验收范围`, async ({page})=>{
   await page.setViewportSize({width,height:960});
-  await page.goto(prefix+'/plugins/'+listing.slug+'/');
+  await page.goto(prefix+'/plugins/'+listing.slug+'/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('.plugin-byline')).toContainText('WordFlowLab');
   await expect(page.locator('.plugin-byline')).toContainText(prefix?'Preview':'开发预览');
   await expect(page.locator('.plugin-package')).toContainText('macOS arm64');
@@ -120,6 +123,10 @@ for (const listing of listings) for (const prefix of ['', '/en']) for (const wid
   await expect(page.locator('.plugin-package nav a').nth(1)).toHaveAttribute('href',listing.source_repository+'/blob/'+listing.source_commit+'/'+(listing.capabilities_path ?? 'CAPABILITIES.md'));
   if (listing.homepage) await expect(page.locator('.plugin-detail-section a[href="'+listing.homepage+'"]')).toBeVisible();
   await expect(page.locator(`img[src="/plugins/${listing.slug}.png"]`)).toBeVisible();
+  expect(await page.locator(`img[src="/plugins/${listing.slug}.png"]`).evaluate(async (image: HTMLImageElement) => {
+    await image.decode();
+    return image.naturalWidth > 0 && image.naturalHeight > 0;
+  })).toBe(true);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.screenshot({path:`test-results/${listing.slug}-${prefix?'en':'zh-CN'}-${width}.png`,fullPage:true});
 });

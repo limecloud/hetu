@@ -56,6 +56,8 @@ contextBridge.exposeInMainWorld(
     },
     resources: invoke("desktop:resources"),
     media: invoke("desktop:media"),
+    video: invoke("desktop:video"),
+    outlines: invoke("desktop:outlines"),
     library: invoke("desktop:library"),
     connection: invoke("desktop:connection"),
     copy: invoke("desktop:copy"),

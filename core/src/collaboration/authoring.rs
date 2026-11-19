@@ -11,6 +11,7 @@ const PROJECT_ACTIONS: &[&str] = &[
     "hetu.creation_projects.create_video",
     "hetu.creative_tasks.preview_prompt",
     "hetu.creative_tasks.prepare",
+    "hetu.creative_tasks.assess",
 ];
 const WORKSPACE_ACTIONS: &[&str] = &[
     "hetu.capabilities.get",
@@ -36,6 +37,7 @@ const WORKSPACE_ACTIONS: &[&str] = &[
     "hetu.video.episodes.get",
     "hetu.creative_tasks.preview_prompt",
     "hetu.creative_tasks.prepare",
+    "hetu.creative_tasks.assess",
 ];
 // 已有作品授权只开放读取、方案和有界检查；具体变更仍须作者批准固定方案。
 const REVIEW_ACTIONS: &[&str] = &[
@@ -54,6 +56,11 @@ const REVIEW_ACTIONS: &[&str] = &[
     "hetu.work_links.get",
     "hetu.video.projects.get",
     "hetu.video.episodes.get",
+    "hetu.video.media.get",
+    "hetu.video.media.list",
+    "hetu.video.feedback.list",
+    "hetu.video.delivery.preview",
+    "hetu.assets.read_blob",
     "hetu.capabilities.get",
     "hetu.operations.get",
     "hetu.workspaces.get",
@@ -64,6 +71,7 @@ const REVIEW_ACTIONS: &[&str] = &[
     "hetu.drafts.list",
     "hetu.creative_tasks.list",
     "hetu.creative_tasks.get",
+    "hetu.creative_tasks.assess",
     "hetu.outlines.get",
     "hetu.blueprints.get",
     "hetu.blueprints.preview_change",
@@ -137,18 +145,23 @@ pub(crate) fn management_action(action: &str) -> bool {
 fn reference_schema() -> Value {
     json!({"type":"object","additionalProperties":false,"required":["grant_id","scope_ref"],"properties":{"grant_id":{"type":"string","pattern":"^[0-9a-f]{64}$"},"grant_revision":{"type":"integer","minimum":1},"scope_ref":{"type":"object","additionalProperties":false,"required":["kind","id"],"properties":{"kind":{"enum":["workspace","creation_project"]},"id":{"type":"string","maxLength":64}}}}})
 }
-pub(super) fn extend_catalog(actions: &mut Vec<Value>) {
-    for mut action in Kernel::management_action_catalog()
+pub(super) fn extend_catalog(actions: &mut Vec<Value>, include_schema: bool, exact: Option<&str>) {
+    for mut action in Kernel::management_action_metadata(include_schema, exact)
         .as_array()
         .unwrap()
         .iter()
         .cloned()
     {
-        action["input_schema"]["properties"]["management_ref"] = reference_schema();
-        if action["name"] == "hetu.work_links.get" {
-            action["input_schema"]["properties"]["related_management_ref"] = reference_schema();
-        }
-        action["input_schema"]
+        if include_schema {
+            action["input_schema"]["properties"]["management_ref"] = reference_schema();
+            if action["name"] == "hetu.creative_tasks.assess" {
+                action["input_schema"]["properties"]["task_ref"] = task_ref_schema();
+                action["input_schema"]["$defs"]["task_ref"] = task_ref_schema();
+            }
+            if action["name"] == "hetu.work_links.get" {
+                action["input_schema"]["properties"]["related_management_ref"] = reference_schema();
+            }
+            action["input_schema"]
             .as_object_mut()
             .unwrap()
             .entry("required")
@@ -156,18 +169,31 @@ pub(super) fn extend_catalog(actions: &mut Vec<Value>) {
             .as_array_mut()
             .unwrap()
             .push(json!("management_ref"));
+        }
         action["authorization"] = json!("new_managed_scope");
         if let Some(existing) = actions
             .iter_mut()
             .find(|existing| existing["name"] == action["name"])
         {
             // oneOf 的两个分支各自保留 Schema 资源边界，局部 $defs 不指向组合根。
-            let name = action["name"].as_str().unwrap();
-            existing["input_schema"]["$id"] = json!(format!("urn:hetu:collaboration:{name}:task"));
-            action["input_schema"]["$id"] =
-                json!(format!("urn:hetu:collaboration:{name}:management"));
-            existing["input_schema"] =
-                json!({"type":"object","oneOf":[existing["input_schema"], action["input_schema"]]});
+            if include_schema {
+                let name = action["name"].as_str().unwrap();
+                existing["input_schema"]["$id"] = json!(format!("urn:hetu:collaboration:{name}:task"));
+                action["input_schema"]["$id"] = json!(format!("urn:hetu:collaboration:{name}:management"));
+                let mut task_schema = existing["input_schema"].take();
+                let mut management_schema = action["input_schema"].take();
+                // 同一绝对资源只声明一次；分支的局部引用仍保留各自资源边界。
+                let shared: BTreeMap<String, Value> = task_schema["$defs"].as_object().into_iter()
+                    .flat_map(|defs| defs.iter())
+                    .filter(|(key, value)| value.get("$id").is_some()
+                        && management_schema["$defs"].get(*key) == Some(*value))
+                    .map(|(key, value)| (key.clone(), value.clone())).collect();
+                for key in shared.keys() {
+                    task_schema["$defs"].as_object_mut().unwrap().remove(key);
+                    management_schema["$defs"].as_object_mut().unwrap().remove(key);
+                }
+                existing["input_schema"] = json!({"type":"object","$defs":shared,"oneOf":[task_schema,management_schema]});
+            }
             existing["authorization"] = json!("task_or_new_managed_scope");
         } else {
             actions.push(action);
@@ -310,6 +336,7 @@ fn work_action_allowed(name: &str, reference: &Value) -> bool {
             | "hetu.outlines.get"
             | "hetu.creative_tasks.list"
             | "hetu.creative_tasks.get"
+            | "hetu.creative_tasks.assess"
             | "hetu.resources.list"
             | "hetu.resources.get"
             | "hetu.resource_usages.list"
@@ -320,6 +347,11 @@ fn work_action_allowed(name: &str, reference: &Value) -> bool {
             | "hetu.cues.get"
             | "hetu.video.projects.get"
             | "hetu.video.episodes.get"
+            | "hetu.video.media.get"
+            | "hetu.video.media.list"
+            | "hetu.video.feedback.list"
+            | "hetu.video.delivery.preview"
+            | "hetu.assets.read_blob"
             | "hetu.blueprints.get"
             | "hetu.blueprints.preview_change"
             | "hetu.documents.preview_import"
@@ -597,7 +629,7 @@ impl CollaborationHub {
         Ok(())
     }
 
-    pub(super) fn execute_authoring(&self, request: &Value) -> Result<Value> {
+    pub(super) fn execute_authoring(&self, request: &Value, cancelled: &dyn Fn()->bool) -> Result<Value> {
         let action = text(request, "action")?;
         if action == "hetu.creation_projects.create" {
             return self.begin_creation(&request["input"]);
@@ -609,6 +641,19 @@ impl CollaborationHub {
             .as_object_mut()
             .unwrap()
             .remove("management_ref");
+        let assessment_refs = if action == "hetu.creative_tasks.assess" {
+            let exact = request["input"]["task_ref"].clone();
+            let legacy = json!({"scope_ref":exact["scope_ref"],"task_id":exact["task_id"],
+                "request_revision":exact["request_revision"]});
+            // 在原管理范围核对作品边界与摘要，不要求额外的独立任务授权。
+            let fixed = kernel.requested_task_for_grant(&legacy)?;
+            ensure(exact["sha256"] == fixed["request_sha256"],
+                "hetu.stale_request", "任务请求摘要不一致，请重新打开原任务。")?;
+            normalize_task_refs(&mut routed["input"], &exact, &legacy)?;
+            Some((legacy, exact))
+        } else {
+            None
+        };
         let related_reference = if action == "hetu.work_links.get" {
             routed["input"]
                 .as_object_mut()
@@ -625,9 +670,13 @@ impl CollaborationHub {
         ) {
             workspace_binding(&binding, Path::new(text(&routed["input"], "target_path")?))?;
         }
-        let mut result = kernel.request(routed);
+        let mut result = kernel.request_cancellable(routed,cancelled);
         if result["status"] != "succeeded" {
             return Ok(result);
+        }
+        if let Some((legacy, exact)) = assessment_refs {
+            expand_task_refs(&mut result["data"], &legacy, &exact);
+            result["data"]["task_ref"] = exact;
         }
         if let Some(related_reference) = related_reference {
             self.read_related_profile(&related_reference, &mut result["data"])?;
@@ -648,7 +697,7 @@ impl CollaborationHub {
                     .cloned()
                     .map(|mut item| {
                         if item["authorization"] == "task_or_new_managed_scope" {
-                            item["input_schema"] = item["input_schema"]["oneOf"][1].clone();
+                            item["input_schema"] = schema_branch(&item["input_schema"], 1);
                             item["authorization"] = json!("new_managed_scope");
                         }
                         if grant["work_ref"].is_object()
@@ -712,6 +761,12 @@ impl CollaborationHub {
             }
         }
         result["data"]["management_ref"] = reference.clone();
+        if action == "hetu.plugins.invoke" && let Some(view) = request["input"].get("view") {
+            // TS分派器已在执行前核验真实声明；插件正文中的同名字段无权提升效果。
+            ensure(result["data"]["invocation"]["effect"] == "read", "invalid_input",
+                "结果投影没有受信只读分派回执。")?;
+            return crate::machine::read_projection(result, view);
+        }
         if matches!(
             action,
             "hetu.creation_projects.create_novel"

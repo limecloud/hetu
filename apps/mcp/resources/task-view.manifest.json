@@ -3,18 +3,26 @@
   "resource_uri": "ui://hetu/task-view/1",
   "mime_type": "text/html;profile=mcp-app",
   "sdk": "@modelcontextprotocol/ext-apps@2.0.4",
-  "sha256": "214b21243590b9f35e7185387f73622ea063355199f6a93ae0e1b4b5892c8672",
-  "size_bytes": 643488,
+  "sha256": "89b5d2deb666f9db5cfeb07a42ebf14c1fb215d415a87d8a5021b8117d90556c",
+  "size_bytes": 646875,
   "source_sha256": {
-    "src/app.ts": "ba72eb8a2e0ee7f556ae5bec5ea9b1c79faa04ae75b2c1cad211ec44f00b6815",
+    "src/host/openai.ts": "a545c4feb5e23dcb3cfeddc7ea927e6c31e4a046bc86fb16912c1cff424c7442",
+    "src/host/bridge.ts": "30aba8f1b0395c49436a9a4f057c690ac3c0395ec00a55d2e26ab4678904e2fa",
+    "src/task-reference.ts": "fb880bca4f703ddcebebd3ba52c054cb4cf8993c603655d84f85fcff6d422757",
+    "src/task-review.ts": "d48f3f4fb752c76c2447fd4a28fc3e78b63447b0b8bc09f2d8c0ae7a209f3db6",
+    "src/app.ts": "f19dfcfe3aaca4648faf7bdeb947ecbf42218bd8f781887eefc566efaf6434a0",
     "src/app.css": "c6bb7d456f8420d3278423fb2225782aa6349a05146169ac94ea09dc1a208625",
     "../../assets/styles/radix-workbench.css": "ccf9f4d25676a4225180128d05a3d0a9d26e92fa832fdccb7d80c4d52ee4b625",
-    "scripts/build.mjs": "6180679014f36e1bda81f1c251f7b37971be454361192d3ffb5592a5f4ea4207",
-    "package.json": "b23227040c7ef36b47ff067ae054431b897d576ae9da2367c3c3509570f1554c",
+    "scripts/build.mjs": "15f1c4437e103918f012e975e400094400d391f8f0f056def2653879a75e8f40",
+    "package.json": "2d3ca0594ed2cf9227f00a69fdc98a40c4c8477a43d29f82d89d2d90a5482971",
     "THIRD-PARTY-NOTICES.txt": "64e64f33d6dd0f206ffa47b474d43ffd8df1fd295bc87ccf59428003892ac78b"
   },
   "inputs": [
     "../../node_modules/@modelcontextprotocol/ext-apps/dist/src/app-with-deps.js",
-    "src/app.ts"
+    "src/app.ts",
+    "src/host/bridge.ts",
+    "src/host/openai.ts",
+    "src/task-reference.ts",
+    "src/task-review.ts"
   ]
 }

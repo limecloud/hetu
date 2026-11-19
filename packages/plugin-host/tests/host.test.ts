@@ -218,3 +218,30 @@ test("真实依赖环、替换和卸载会清理依赖贡献", async () => {
   );
   assert.equal(host.views.list().length, 0);
 });
+
+
+test("不同插件相同Schema标识独立编译，非法引用不污染后续检查",async()=>{
+ const base=await PluginPackage.inspect(path.join(root,"plugins/relationships/dist"));
+ const dir=await mkdtemp(path.join(os.tmpdir(),"hetu-schema-id-isolation-"));
+ for(const [name,bytes] of base.entries())await writeFile(path.join(dir,name),bytes);
+ for(const type of ["string","integer"]){
+  const manifest=JSON.parse(JSON.stringify(base.manifest));manifest.contributions.data[0].schema={$id:"urn:hetu:test:shared-id",type};
+  await writeFile(path.join(dir,"plugin.json"),JSON.stringify(manifest));
+  assert.equal((await PluginPackage.inspect(dir)).manifest.contributions.data[0].schema.type,type);
+ }
+ const manifest=JSON.parse(JSON.stringify(base.manifest));manifest.contributions.data[0].schema={$id:"urn:hetu:test:shared-id",$ref:"#/missing"};
+ await writeFile(path.join(dir,"plugin.json"),JSON.stringify(manifest));await assert.rejects(()=>PluginPackage.inspect(dir),/reference|resolve/i);
+ manifest.contributions.data[0].schema={$id:"urn:hetu:test:shared-id",type:"boolean"};
+ await writeFile(path.join(dir,"plugin.json"),JSON.stringify(manifest));assert.equal((await PluginPackage.inspect(dir)).manifest.contributions.data[0].schema.type,"boolean");
+});
+
+
+test("安装时完整验证的包只复用固定Schema，任何实际字节变化仍拒绝",async()=>{
+ const base=await PluginPackage.inspect(path.join(root,"plugins/relationships/dist")),dir=await mkdtemp(path.join(os.tmpdir(),"hetu-fixed-schema-"));
+ for(const [name,bytes] of base.entries())await writeFile(path.join(dir,name),bytes);
+ assert.equal((await PluginPackage.inspect(dir,base.sha256)).sha256,base.sha256);
+ const manifest=JSON.parse(JSON.stringify(base.manifest));manifest.contributions.data[0].schema={$ref:"#/missing"};
+ await writeFile(path.join(dir,"plugin.json"),JSON.stringify(manifest));
+ await assert.rejects(()=>PluginPackage.inspect(dir,base.sha256),/固定包摘要/);
+ await assert.rejects(()=>PluginPackage.inspect(dir),/reference|resolve/i);
+});

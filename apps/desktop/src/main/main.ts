@@ -22,6 +22,7 @@ import { pluginService } from "./plugin-services.ts";
 import { exportPluginFile } from "./plugin-export.ts";
 import { savePluginArtifact } from "./plugin-artifact.ts";
 import { SettingsReview } from "./settings.ts";
+import { AgentConnectionInstall } from "./agent-connection-install.ts";
 import { SettingsWindow } from "./settings-window.ts";
 import { workAssociation, workAgentRequest } from "./work-agent.ts";
 import { CoverReview } from "./covers.ts";
@@ -34,6 +35,8 @@ import { VersionReview } from "./versions.ts";
 import { PluginMigrationReview } from "./plugin-migrations.ts";
 import { ResourceReview } from "./resources.ts";
 import { MediaAccess } from "./media.ts";
+import { VideoReview } from "./video-review.ts";
+import { OutlineReview } from "./outlines.ts";
 import { scopedCli } from "./cli.ts";
 import { CreativeLibrary } from "./library.ts";
 import {
@@ -83,11 +86,14 @@ let management: ManagementReview | undefined;
 let versions: VersionReview | undefined;
 let resources: ResourceReview | undefined;
 let media: MediaAccess | undefined;
+let videoReview: VideoReview | undefined;
+let outlineReview: OutlineReview | undefined;
 let pluginMedia: MediaAccess | undefined;
 const pluginMediaUrls = new Set<string>();
 let library: CreativeLibrary;
 let settingsServer: AppServer;
 let settings: SettingsReview;
+let agentConnectionInstall: AgentConnectionInstall;
 let covers: CoverReview | undefined;
 let novelDetails: NovelDetails | undefined;
 let canon: CanonReview | undefined;
@@ -133,16 +139,30 @@ let binding:
   | undefined;
 let prefs: InstallationState = { packages: [], grants: {} };
 let installations: PluginInstallations, installationSha = "", pluginTransition = false;
+let pluginStateError = "";
 async function reloadPlugins(force = false) {
-  const loaded = await installations.read();
+  let loaded: Awaited<ReturnType<PluginInstallations["read"]>>;
+  try { loaded = await installations.read(); }
+  catch (error) {
+    // 可选扩展状态损坏不能阻断随包基础作品；原文件保留，写入仍失败关闭。
+    const message = error instanceof Error ? error.message : "插件状态无法读取。";
+    if (pluginStateError === message && !force) return;
+    await closeSurface();
+    for (const state of host.states()) await host.disable(state.id);
+    host = new PluginHost(); prefs = { packages: [], grants: {} }; installationSha = "";
+    pluginStateError = message;
+    if (window && !window.isDestroyed()) window.webContents.send("desktop:plugins-changed", overview());
+    return;
+  }
   if (!force && loaded.sha256 === installationSha) return;
   const next = await installations.host(loaded.state);
   await closeSurface();
   for (const state of host.states()) await host.disable(state.id);
-  host = next; prefs = loaded.state; installationSha = loaded.sha256;
+  host = next; prefs = loaded.state; installationSha = loaded.sha256; pluginStateError = "";
   if (window && !window.isDestroyed()) window.webContents.send("desktop:plugins-changed", overview());
 }
 async function applyPlugin(input: Record<string, unknown>) {
+  if (pluginStateError) throw new Error(pluginStateError + " 请保留插件状态文件并修复，基础创作仍可使用。");
   pluginTransition = true;
   try {
     await closeSurface();
@@ -373,6 +393,7 @@ async function revokePackage(pkg: Pick<PluginPackage, "manifest" | "sha256">) {
 }
 function overview() {
   return {
+    plugin_state_error: pluginStateError || undefined,
     works: library?.rows() ?? [],
     work,
     epoch,
@@ -460,6 +481,8 @@ async function openWorkspace(directory: string, expected?: WorkRef) {
   management = undefined;
   versions = undefined;
   resources = undefined;
+  videoReview = undefined;
+  outlineReview = undefined;
   covers = undefined;
   novelDetails = undefined;
   canon = undefined;
@@ -557,6 +580,19 @@ app
       (method, input) => settingsServer.request("local_settings/host", { method, input }),
       recovery, path.join(app.getPath("userData"), "local-settings-journal.json"),
     );
+    agentConnectionInstall = new AgentConnectionInstall(
+      async (action, input) => unwrap(await scopedCli(coreCliBinary(), "codex", process.env.HETU_COLLABORATION_DIR, action, input)),
+      async plan => {
+        const preview = await settings.prepare(plan.operation_id, plan.sha256, plan.revision, true);
+        const answer = await dialog.showMessageBox(settingsWindow.window ?? window, {
+          type: "question", buttons: ["取消", "接入 Codex"], defaultId: 0, cancelId: 0,
+          message: "将河图 MCP App 接入 Codex？",
+          detail: "通过 Codex 官方入口安装河图机器连接包，不修改账号或授予作品权限。\n机器入口：" + plan.fixed.suite.mcp_binary + "\n安装位置：" + plan.fixed.install_target.package_directory + "\n完成后可能需要刷新或重启 Codex Desktop。",
+        });
+        if (answer.response !== 1) throw new Error("已取消 Codex 接入。");
+        await settings.commit(preview.token); await settings.acknowledge();
+      }, recovery, path.join(app.getPath("userData"), "codex-connection-journal.json"),
+    );
     await refreshSettings();
     library = new CreativeLibrary(
       path.join(app.getPath("userData"), "creative-library.json"),
@@ -603,12 +639,14 @@ app
     try {
       await readFile(installations.file);
     } catch (error: any) {
-      if (error.code !== "ENOENT") throw error;
+      if (error.code !== "ENOENT") { pluginStateError = "插件状态无法读取。"; }
+      else {
       try {
         const saved = JSON.parse(await readFile(path.join(app.getPath("userData"), "plugin-state.json"), "utf8"));
         const empty = await installations.read();
         await installations.save(saved, empty.sha256);
-      } catch (error: any) { if (error.code !== "ENOENT") throw error; }
+      } catch (error: any) { if (error.code !== "ENOENT") pluginStateError = "旧插件状态无法读取，已保留原文件。"; }
+      }
     }
     await reloadPlugins(true);
     const pluginWatcher = setInterval(async () => {
@@ -879,6 +917,10 @@ app
     shellHandler(
       "desktop:connection",
       async (method: string, client: string) => {
+        if (method === "install") {
+          if (client !== "codex") throw new Error("当前只提供 Codex 受管连接安装。");
+          const result = await agentConnectionInstall.run(); await refreshSettings(); return result;
+        }
         const context = collaborationContext(client);
         if (method === "select") {
           await selectClient(client);
@@ -954,6 +996,13 @@ app
           !!work &&
           sameWork(work, ref),
       );
+      outlineReview = ref.kind === "novel" ? new OutlineReview(ref, path.join(app.getPath("userData"), "outline-review"), recovery,
+        (action, input) => selectedServer.request("workspace/request", { action, input, contract_revision: "1" }),
+        () => epoch === selectedEpoch && server === selectedServer && !!work && sameWork(work, ref)) : undefined;
+      videoReview = ref.kind === "video" ? new VideoReview(ref, path.join(app.getPath("userData"), "video-review"), recovery,
+        (action, input) => selectedServer.request("workspace/request", { action, input, contract_revision: "1" }),
+        () => epoch === selectedEpoch && server === selectedServer && !!work && sameWork(work, ref),
+        (method, input) => selectedServer.request(method, input)) : undefined;
       resources = new ResourceReview(
         ref,
         path.join(app.getPath("userData"), "resource-buffers"),
@@ -1057,6 +1106,29 @@ app
         return current.chooseFile(selected.filePaths[0]);
       }
       throw new Error("未知封面用例。");
+    });
+    shellHandler("desktop:outlines", async (method: string, input: any = {}) => {
+      const current = outlineReview;
+      if (!current) throw new Error("请选择当前小说。");
+      if (method === "get") return current.get();
+      if (method === "save") return current.save(input);
+      if (method === "draft") return current.draft(input.value);
+      if (method === "recover") return current.recover();
+      throw new Error("未知大纲用例。");
+    });
+    shellHandler("desktop:video", async (method: string, input: any = {}) => {
+      const current = videoReview;
+      if (!current) throw new Error("请选择当前视频作品。");
+      if (["list", "media", "feedback", "delivery"].includes(method)) return current.read(method, input);
+      if (method === "save_feedback") return current.saveFeedback(input);
+      if (method === "journal") return current.journal();
+      if (method === "recover") return current.recover();
+      if (method === "draft") return current.draft(input.media_ref, input.value);
+      if (method === "export") return current.exportFile(input.media_ref, async name => {
+        const selected = await dialog.showSaveDialog(window, { title: "导出本版视频", defaultPath: name });
+        return selected.canceled ? undefined : selected.filePath;
+      });
+      throw new Error("未知视频审阅用例。");
     });
     shellHandler("desktop:media", async (method: string, input: any = {}) => {
       if (!media) throw new Error("请选择当前作品。");
@@ -1326,6 +1398,7 @@ app
             ? "related_works"
             : pageId === "work.resources"
               ? "resources"
+            : pageId === "novel.outlines" ? "structure"
             : pageId === "work.media"
               ? "media"
             : pageId === "work.images"
@@ -1469,7 +1542,7 @@ app
             headers: {
               "Content-Type": mime(relative),
               "Content-Security-Policy": policy(
-                "default-src [none]; script-src [self]; style-src [self] [unsafe-inline]; img-src [self] data: hetu-media:; media-src hetu-media:; font-src [self]; connect-src [none]; frame-src [none]; object-src [none]; base-uri [none]; form-action [none]",
+                "default-src [none]; script-src [self]; style-src [self] [unsafe-inline]; img-src [self] data: hetu-media:; media-src hetu-media: blob:; font-src [self]; connect-src [none]; frame-src [none]; object-src [none]; base-uri [none]; form-action [none]",
               ),
             },
           });

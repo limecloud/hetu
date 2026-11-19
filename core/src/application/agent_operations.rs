@@ -11,6 +11,8 @@ pub(super) const PROPOSABLE: &[&str] = &[
     "hetu.video.episodes.create",
     "hetu.video.episodes.update",
     "hetu.video.episodes.reorder",
+    "hetu.video.media.save",
+    "hetu.video.feedback.save",
     "hetu.novels.initialize",
     "hetu.novels.update",
     "hetu.novels.save_structure",
@@ -259,14 +261,13 @@ impl Kernel {
         )?;
         match action {
             "hetu.agent_operations.catalog" => {
-                let actions = catalog()["actions"]
-                    .as_array()
-                    .unwrap()
-                    .iter()
-                    .filter(|a| PROPOSABLE.contains(&a["name"].as_str().unwrap_or("")))
-                    .cloned()
-                    .collect::<Vec<_>>();
-                let mut page = crate::machine::catalog_page(&json!(actions), input)?;
+                let actions = catalog::select(false, None, |a| PROPOSABLE.contains(&a["name"].as_str().unwrap_or("")));
+                let mut page = crate::machine::catalog_page(&actions, input)?;
+                if input["include_schema"] == true {
+                    for item in page["actions"].as_array_mut().unwrap() {
+                        *item = catalog::descriptor(item["name"].as_str().unwrap()).unwrap().clone();
+                    }
+                }
                 page["schema_lookup"]["action"]=json!("hetu.agent_operations.catalog");
                 for (key,value) in [("prepare","hetu.agent_operations.prepare"),
                     ("record_decision","hetu.agent_operations.record_decision"),("execute","hetu.agent_operations.execute"),

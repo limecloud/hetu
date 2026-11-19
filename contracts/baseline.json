@@ -1,0 +1,211 @@
+{
+  "schema_version": "1.0.0",
+  "delivery": "application",
+  "requires_optional_plugins": false,
+  "modules": [
+    {
+      "id": "org.hetu.baseline.novel",
+      "work_kind": "novel",
+      "surfaces": [
+        {
+          "id": "novel.reader",
+          "source": "apps/desktop/src/renderer/documents.tsx"
+        },
+        {
+          "id": "work.tasks",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.profile",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.links",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.canon",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.images",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.resources",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.media",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.agent",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.management",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.import",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.delivery",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.versions",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "novel.outlines",
+          "source": "apps/desktop/src/renderer/outlines.tsx"
+        }
+      ],
+      "actions": [
+        "hetu.novels.get",
+        "hetu.novels.save_structure",
+        "hetu.outlines.get",
+        "hetu.outlines.save",
+        "hetu.documents.get",
+        "hetu.documents.save",
+        "hetu.documents.preview_export"
+      ]
+    },
+    {
+      "id": "org.hetu.baseline.drama",
+      "work_kind": "drama",
+      "surfaces": [
+        {
+          "id": "drama.reader",
+          "source": "apps/desktop/src/renderer/documents.tsx"
+        },
+        {
+          "id": "work.tasks",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.profile",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.links",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.canon",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.images",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.resources",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.media",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.agent",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.management",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.import",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.delivery",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.versions",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        }
+      ],
+      "actions": [
+        "hetu.drama.projects.get",
+        "hetu.drama.episodes.get",
+        "hetu.drama.episodes.create",
+        "hetu.documents.get",
+        "hetu.documents.save",
+        "hetu.documents.preview_export"
+      ]
+    },
+    {
+      "id": "org.hetu.baseline.video",
+      "work_kind": "video",
+      "surfaces": [
+        {
+          "id": "video.review",
+          "source": "apps/desktop/src/renderer/video-review.tsx"
+        },
+        {
+          "id": "work.tasks",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.profile",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.links",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.canon",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.images",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.resources",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.media",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.agent",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        },
+        {
+          "id": "work.management",
+          "source": "apps/desktop/src/renderer/contributions.tsx"
+        }
+      ],
+      "actions": [
+        "hetu.video.projects.get",
+        "hetu.video.episodes.get",
+        "hetu.video.media.save",
+        "hetu.video.media.get",
+        "hetu.video.media.list",
+        "hetu.video.feedback.save",
+        "hetu.video.feedback.list",
+        "hetu.video.delivery.preview",
+        "hetu.assets.read_blob"
+      ]
+    }
+  ],
+  "shared_actions": [
+    "hetu.works.get",
+    "hetu.creative_tasks.get",
+    "hetu.working_copies.save",
+    "hetu.task_feedback.list",
+    "hetu.operations.get",
+    "hetu.assets.get",
+    "hetu.agent_operations.prepare",
+    "hetu.agent_operations.execute"
+  ]
+}

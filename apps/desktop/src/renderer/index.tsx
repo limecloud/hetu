@@ -189,7 +189,7 @@ function App() {
   useEffect(() => { document.title = workMode ? selected?.title ?? "河图洛书" : "河图洛书"; }, [workMode, selected?.title]);
   const labels: Record<string, [string, IconName]> = {
     "work.profile": ["作品资料", "file"], "novel.reader": ["小说", "book"],
-    "drama.reader": ["剧本", "file"], "video.review": ["视频", "film"],
+    "novel.outlines": ["作品大纲", "file"], "drama.reader": ["剧本", "file"], "video.review": ["视频", "film"],
     "work.tasks": ["参考稿审核", "shield"], "work.links": ["关联作品", "link"],
     "work.canon": ["作品设定", "layers"], "work.images": ["图片成果", "image"],
     "work.resources": ["资料与素材", "file"], "work.media": ["素材与线索", "image"],
@@ -294,7 +294,7 @@ function App() {
               {navItem(state.work.kind === "novel" ? "novel.reader" : state.work.kind === "drama" ? "drama.reader" : "video.review")}
               {navItem("work.tasks")}{navItem("work.links")}
               <div className="navigation-divider"/>
-              <NavigationGroup title="创作资料" active={["work.canon", "work.images", "work.resources", "work.media"].includes(active)}>{["work.canon", "work.images", "work.resources", "work.media"].map(navItem)}</NavigationGroup>
+              <NavigationGroup title="创作资料" active={["novel.outlines", "work.canon", "work.images", "work.resources", "work.media"].includes(active)}>{["novel.outlines", "work.canon", "work.images", "work.resources", "work.media"].map(navItem)}</NavigationGroup>
               <NavigationGroup title="版本与交付" active={["work.versions", "work.import", "work.delivery"].includes(active)}>{["work.versions", "work.import", "work.delivery"].map(navItem)}</NavigationGroup>
               <NavigationGroup title="检查工具" active={["work.management", "work.agent", "plugins"].includes(active)}>
                 {navItem("work.management")}{navItem("work.agent")}
@@ -400,7 +400,8 @@ function App() {
             </div>
           ) : active === "plugins" ? (
             <div className="content plugin-content">
-              {!state.plugins.length && <div className="empty"><Icon name="plugin" size={28}/><p>还没有安装插件</p></div>}
+              {state.plugin_state_error && <p role="alert">{state.plugin_state_error} 请保留原文件后修复。基础创作仍可使用。</p>}
+              {!state.plugins.length && !state.plugin_state_error && <div className="empty"><Icon name="plugin" size={28}/><p>还没有安装插件</p></div>}
               {state.plugins.map((plugin: any) => (
                 <React.Fragment key={plugin.id}>
                 <div className="row">

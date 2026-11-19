@@ -167,6 +167,8 @@ export class Authoring {
       Object.keys(object).some(
         (key) =>
           ![
+            "video_episode_id",
+            "media_ref",
             "document_id",
             "snapshot_id",
             "git_path",
