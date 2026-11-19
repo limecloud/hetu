@@ -5,6 +5,7 @@ import type { Locale } from './site';
 import { evidence } from './market';
 
 export const articles = [
+  {"id": "a-life-in-its-own-words", "titles": {"zh-CN": "同一个人，可以怎样写下来", "en": "More than one way to write a life"}, "descriptions": {"zh-CN": "从诗行的取舍、纪实主张到人物生平，让明确依据与未知都能留在下一稿。", "en": "From line alternatives to reported claims and life histories, keep evidence and uncertainty available for the next revision."}},
   {"id": "line-to-take", "titles": {"zh-CN": "改过一句词，下一次该听什么", "en": "Change a line. Know what to hear next."}, "descriptions": {"zh-CN": "让歌词结构、逐句备选和实际录音保留固定联系，让下一轮返工知道从哪里继续。", "en": "Keep lyrics, alternatives and actual recordings connected so the next revision has a precise place to continue."}},
   {"id": "script-to-preparation", "titles": {"zh-CN": "从一把钥匙到一张制作单", "en": "From a key to a production sheet"}, "descriptions": {"zh-CN": "把固定剧本、制作需求、准备依赖和专业成果连起来，按具体缺漏继续下一轮。", "en": "Connect fixed scripts, requirements and professional results, then revise concrete gaps."}},
   {"id": "pages-and-players", "titles": {"zh-CN": "同一个故事，翻一页，或换一个人来读", "en": "Turn a page, or give the story another reader"}, "descriptions": {"zh-CN": "从绘本的翻页到剧本杀的角色资料，让不同表达保留来源、旧版与下一轮修改的依据。", "en": "From picturebook page turns to role-specific mystery packets, keep sources, prior versions and reasons for the next revision."}},

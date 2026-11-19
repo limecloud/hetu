@@ -990,5 +990,107 @@
       "evidence_url": "https://github.com/wordflowlab/hetu-lyric-studio/blob/35daf3f9c7a92badd7a937d0947757ab7f6b2b85/docs/research/release-acceptance.json",
       "integrity_url": "https://github.com/wordflowlab/hetu-lyric-studio/releases/download/v0.1.0/release-integrity.json"
     }
+  },
+  {
+    "slug": "poetry-studio",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.poetry-studio",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "诗词工坊",
+        "en": "Poetry Studio"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-poetry-studio",
+    "source_commit": "ceaa7c624f8f40823fda0dbbfb05401bb49653d3",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-poetry-studio/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-poetry-studio/releases/download/v0.1.0/org.wordflowlab.poetry-studio-0.1.0.tgz",
+      "archive_sha256": "639f305f89cf156b9c3154957783124624e6a949b99e57816e6c2e6f4221578b",
+      "package_sha256": "afa1c6acbde209b8c8f71c0e6d95f228101d3d5770ec8d1dacf2b5e5c99052c0",
+      "size_bytes": 109440,
+      "minimum_host_version": "0.12.6",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-poetry-studio/blob/ceaa7c624f8f40823fda0dbbfb05401bb49653d3/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-poetry-studio/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "nonfiction-studio",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.nonfiction-studio",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "纪实写作",
+        "en": "Nonfiction Studio"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-nonfiction-studio",
+    "source_commit": "a28cd242de4080592c7747cae2ddb47ccf6dfb3d",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-nonfiction-studio/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-nonfiction-studio/releases/download/v0.1.0/org.wordflowlab.nonfiction-studio-0.1.0.tgz",
+      "archive_sha256": "b013e98fe2b229ae08779fb1aba18ab6125be396bccce677c68d3a9949c46bd6",
+      "package_sha256": "df2b61ca9d3fbf8cfc7692535461971c6a083bc85e5f145da8243282add4c4b4",
+      "size_bytes": 103588,
+      "minimum_host_version": "0.12.6",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-nonfiction-studio/blob/a28cd242de4080592c7747cae2ddb47ccf6dfb3d/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-nonfiction-studio/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "biography-studio",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.biography-studio",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "传记工坊",
+        "en": "Biography Studio"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-biography-studio",
+    "source_commit": "fd1214f8c8dc258586d75c7b5c61bef161577e43",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-biography-studio/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-biography-studio/releases/download/v0.1.0/org.wordflowlab.biography-studio-0.1.0.tgz",
+      "archive_sha256": "c85cc3e400cec4021dee9c2c23e5deb2fcfe1d8f732ec2baf02a030e47efd59b",
+      "package_sha256": "e6dd4d89c86b34109d2cc83f133d65b3abd0acacaed9293d701251a3a0600896",
+      "size_bytes": 105916,
+      "minimum_host_version": "0.12.6",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-biography-studio/blob/fd1214f8c8dc258586d75c7b5c61bef161577e43/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-biography-studio/releases/download/v0.1.0/release-integrity.json"
+    }
   }
 ]

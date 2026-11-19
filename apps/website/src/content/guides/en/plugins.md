@@ -152,3 +152,14 @@ Ask your Agent to organize cast, costumes, props and sound from fixed scripts, r
 ## Lyrics and recorded revisions
 
 Ask your Agent to develop a character song, compare lines and choruses, retain explicit pronunciation and keep unknown syllables unknown. With actual audio, review timings and identify what needs another recording. In [Lyric Studio](/en/plugins/lyric-studio/), read, compare, play and continue fixed feedback. Dedicated audio and video tools handle their own production work.
+
+
+## Poetry, nonfiction and biography
+
+Ask your Agent to turn the station records into a poem, a reported article and a biography. Keep reasons for line alternatives, preserve conflicting closure accounts, and distinguish namesakes without inventing exact dates.
+
+- [Poetry Studio](/en/plugins/poetry-studio/): read the whole poem before declared form checks and line alternatives.
+- [Nonfiction Studio](/en/plugins/nonfiction-studio/): compare claims with exact interviews and counterevidence, then record the next verification question.
+- [Biography Studio](/en/plugins/biography-studio/): read chapters alongside identities, events and date precision, then revisit them as new material arrives.
+
+The projects can reference fixed results from one another while preserving separate judgments and revisions. Form checks, verification records and identity statements retain their precise scope.

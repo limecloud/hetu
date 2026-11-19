@@ -59,3 +59,6 @@ Review requirements, dependencies and unknown estimates with [Production Planner
 
 
 Stories can become songs. [Lyric Studio](/en/plugins/lyric-studio/) connects structure, line alternatives and actual recordings. Read [Change a line. Know what to hear next.](/en/blog/line-to-take/).
+
+
+Continue with [poetry, nonfiction and biography around one work](/en/blog/a-life-in-its-own-words/).
