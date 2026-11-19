@@ -1092,5 +1092,71 @@
       "evidence_url": "https://github.com/wordflowlab/hetu-biography-studio/blob/fd1214f8c8dc258586d75c7b5c61bef161577e43/docs/research/release-acceptance.json",
       "integrity_url": "https://github.com/wordflowlab/hetu-biography-studio/releases/download/v0.1.0/release-integrity.json"
     }
+  },
+  {
+    "slug": "essay-studio",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.essay-studio",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "散文工坊",
+        "en": "Essay Studio"
+      },
+      "license": "Apache-2.0"
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-essay-studio",
+    "source_commit": "a900a51966e5ca626eeb62253a2d8ef979ddaa68",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-essay-studio/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-essay-studio/releases/download/v0.1.0/org.wordflowlab.essay-studio-0.1.0.tgz",
+      "archive_sha256": "85761f0ef578382624e8ae9010dd2a4011b5682e17e56c9b3e046c98eec7797e",
+      "package_sha256": "6c841162cbf4860cd7ff2ed91ffbee744c77f30de31485229ef4b3640695de76",
+      "size_bytes": 106399,
+      "minimum_host_version": "0.12.6",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-essay-studio/blob/a900a51966e5ca626eeb62253a2d8ef979ddaa68/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-essay-studio/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "criticism-studio",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.criticism-studio",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "文学评论",
+        "en": "Literary Criticism"
+      },
+      "license": "Apache-2.0"
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-criticism-studio",
+    "source_commit": "c87d9a68dfd22dc55edc4995379d34628c165023",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-criticism-studio/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-criticism-studio/releases/download/v0.1.0/org.wordflowlab.criticism-studio-0.1.0.tgz",
+      "archive_sha256": "bcde44aaad529b55b4970f1e06a294d1624cfa9894002a162e31b5a585ece62c",
+      "package_sha256": "067da3af7390311455908ce6191c08ea1b26662e837c922e1649b47205d90f72",
+      "size_bytes": 107306,
+      "minimum_host_version": "0.12.6",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-criticism-studio/blob/c87d9a68dfd22dc55edc4995379d34628c165023/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-criticism-studio/releases/download/v0.1.0/release-integrity.json"
+    }
   }
 ]

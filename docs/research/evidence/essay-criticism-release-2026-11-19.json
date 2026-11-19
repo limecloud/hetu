@@ -1,0 +1,518 @@
+{
+  "recorded_at": "2026-11-19",
+  "plugins": [
+    {
+      "slug": "essay-studio",
+      "release": {
+        "schema_version": 1,
+        "plugin_id": "org.wordflowlab.essay-studio",
+        "version": "0.1.0",
+        "source_commit": "a900a51966e5ca626eeb62253a2d8ef979ddaa68",
+        "archive": "org.wordflowlab.essay-studio-0.1.0.tgz",
+        "archive_sha256": "85761f0ef578382624e8ae9010dd2a4011b5682e17e56c9b3e046c98eec7797e",
+        "package_sha256": "6c841162cbf4860cd7ff2ed91ffbee744c77f30de31485229ef4b3640695de76",
+        "size_bytes": 106399,
+        "minimum_host_version": "0.12.6",
+        "verified_platforms": [
+          "macOS arm64"
+        ],
+        "official_host": {
+          "version": "0.12.6",
+          "git_sha": "b75293837aaa220803b9dc964ba72b8646fa7244",
+          "archive_sha256": "de012d76bb9751d6f2ed78427c6887563fcfd4455ae19717c6f65a9182700ab3"
+        },
+        "acceptance": "https://github.com/wordflowlab/hetu-essay-studio/actions/runs/44470785839",
+        "evidence_url": "https://github.com/wordflowlab/hetu-essay-studio/blob/a900a51966e5ca626eeb62253a2d8ef979ddaa68/docs/research/release-acceptance.json"
+      },
+      "public_download": {
+        "release": "https://github.com/wordflowlab/hetu-essay-studio/releases/tag/v0.1.0",
+        "source_commit": "a900a51966e5ca626eeb62253a2d8ef979ddaa68",
+        "archive_sha256": "85761f0ef578382624e8ae9010dd2a4011b5682e17e56c9b3e046c98eec7797e",
+        "package_sha256": "6c841162cbf4860cd7ff2ed91ffbee744c77f30de31485229ef4b3640695de76",
+        "files_byte_identical": 18,
+        "verified": true
+      },
+      "official_verification": "https://github.com/wordflowlab/hetu-essay-studio/actions/runs/44470785839",
+      "unit_tests": 40,
+      "machine_actions": 33,
+      "current_codex": {
+        "recorded_at": "2026-11-19",
+        "entry": "当前Codex经公开0.12.6 CLI连续操作；既有MCP热发现另行登记",
+        "host_version": "0.12.6",
+        "work_ref": {
+          "workspace_id": "workspace_01abb9b1-8e4a-46ac-a8ee-82d200f35875",
+          "kind": "novel",
+          "object_id": "novel_c070a2bc-10f4-4b55-a61b-981caa46f1ac"
+        },
+        "package_sha256": "6c841162cbf4860cd7ff2ed91ffbee744c77f30de31485229ef4b3640695de76",
+        "original": {
+          "object_id": "ext_812d29f6-199f-42fe-8657-219e05fe5b70",
+          "revision": 1,
+          "sha256": "c099986b0fb3c4649cc9d74ed142cf17857e53a97d2088446c9b586a119576ca"
+        },
+        "revised": {
+          "object_id": "ext_812d29f6-199f-42fe-8657-219e05fe5b70",
+          "revision": 3,
+          "sha256": "4860ae635f129c1a7c60c51f941ae52ddce0f97ecad978fceb4361beca6ed083"
+        },
+        "source_ref": {
+          "kind": "resource",
+          "work_ref": {
+            "workspace_id": "workspace_01abb9b1-8e4a-46ac-a8ee-82d200f35875",
+            "kind": "novel",
+            "object_id": "novel_c070a2bc-10f4-4b55-a61b-981caa46f1ac"
+          },
+          "resource_id": "resource_854a7818-bcb0-4183-a96a-1c51c8f6b70a",
+          "revision": 1,
+          "sha256": "8593e7a3ca02f16df376acdcb78bc5f3fc896cb6689ac3755e51028a930badba"
+        },
+        "original_operation_preserved": true,
+        "previous_revision_preserved": true,
+        "other_states_preserved": 32,
+        "existing_objects_read": 0,
+        "checks_after": {
+          "basis_ref": {
+            "object_id": "ext_812d29f6-199f-42fe-8657-219e05fe5b70",
+            "owner_plugin_id": "org.wordflowlab.essay-studio",
+            "revision": 2,
+            "sha256": "982601acb78c8ce9c2feaabecab45f8368675db7abe117bbc46c2554d8fa43f3"
+          },
+          "note": "缺口不妨碍自由散文创作；检查只揭示明确结构与依据变化。",
+          "project_ref": {
+            "object_id": "ext_812d29f6-199f-42fe-8657-219e05fe5b70",
+            "revision": 2,
+            "sha256": "982601acb78c8ce9c2feaabecab45f8368675db7abe117bbc46c2554d8fa43f3"
+          },
+          "stale_arrangement_ids": [
+            "linear",
+            "reverse"
+          ],
+          "stale_fragment_ids": [],
+          "stale_note_ids": [
+            "note"
+          ],
+          "stale_variant_ids": [
+            "variant"
+          ],
+          "unarranged_fragment_ids": [],
+          "unused_observation_ids": []
+        },
+        "upstream_basis": [
+          {
+            "owner_plugin_id": "org.wordflowlab.criticism-studio",
+            "object_id": "ext_72be05ff-8784-4c19-87d5-c48744cf9715",
+            "revision": 3,
+            "sha256": "2e8ff40c8f1f7162be2eecb27d20d5452b469853078159b802be67532afbdf85"
+          }
+        ],
+        "adopted": false,
+        "finalized": false,
+        "fixture": "原创虚构故事、观察与评论，不是真人研究或文学判断认证",
+        "original_work_fixed_ref": {
+          "revision_ref": {
+            "revision": 1
+          },
+          "sha256": "6577f6a191a8b6889c1c769db9f18e6afeb47e07359c92b47f259514ad33aaaf",
+          "work_ref": {
+            "kind": "novel",
+            "object_id": "novel_c070a2bc-10f4-4b55-a61b-981caa46f1ac",
+            "workspace_id": "workspace_01abb9b1-8e4a-46ac-a8ee-82d200f35875"
+          }
+        },
+        "original_work_record_unchanged": true,
+        "continuation": {
+          "task_kind": "chapter_draft",
+          "fixed_input_refs": [
+            {
+              "kind": "resource",
+              "work_ref": {
+                "workspace_id": "workspace_01abb9b1-8e4a-46ac-a8ee-82d200f35875",
+                "kind": "novel",
+                "object_id": "novel_c070a2bc-10f4-4b55-a61b-981caa46f1ac"
+              },
+              "resource_id": "resource_854a7818-bcb0-4183-a96a-1c51c8f6b70a",
+              "revision": 1,
+              "sha256": "8593e7a3ca02f16df376acdcb78bc5f3fc896cb6689ac3755e51028a930badba"
+            },
+            {
+              "kind": "resource",
+              "work_ref": {
+                "workspace_id": "workspace_01abb9b1-8e4a-46ac-a8ee-82d200f35875",
+                "kind": "novel",
+                "object_id": "novel_c070a2bc-10f4-4b55-a61b-981caa46f1ac"
+              },
+              "resource_id": "resource_1111b67a-6c7a-4ff0-8d40-3c7165165cc1",
+              "revision": 1,
+              "sha256": "e5e21b7520d7f23fdb9fc27246cc4b317722553de024aa72c8aa2864d65f7f6f"
+            }
+          ],
+          "context_full_bytes_verified": true,
+          "candidate_saved_and_read": true,
+          "adopted": false
+        },
+        "current_mcp": {
+          "runtime_version": "0.12.3",
+          "package_sha256": "6c841162cbf4860cd7ff2ed91ffbee744c77f30de31485229ef4b3640695de76",
+          "capabilities_sha256": "49425163133fa10198dd7395bb32c3941747fdb2d74a91dd67a4d7258eabcd41",
+          "hot_discovery": true,
+          "skill_resources_read": 3,
+          "fixed_readback": [
+            {
+              "object_id": "ext_812d29f6-199f-42fe-8657-219e05fe5b70",
+              "revision": 1,
+              "sha256": "c099986b0fb3c4649cc9d74ed142cf17857e53a97d2088446c9b586a119576ca",
+              "title": "灯下的来信"
+            },
+            {
+              "object_id": "ext_812d29f6-199f-42fe-8657-219e05fe5b70",
+              "revision": 3,
+              "sha256": "4860ae635f129c1a7c60c51f941ae52ddce0f97ecad978fceb4361beca6ed083",
+              "title": "灯下的来信"
+            }
+          ],
+          "original_operation_preserved": true,
+          "method_sha256": {
+            "SKILL.md": "a0faeb8334829e970403bd7ff1906a52d630744a2c1a4d1623d2004a797c2a1e",
+            "references/workflows.md": "40a7dee8bd0564445485e7a174bed47d92694c7034e47682e9cc3edde94d163d",
+            "references/operations.md": "3fc36cb3cd0a9a347e061c701b3e718a2798d375bf39e421070752245c1e95e1"
+          }
+        },
+        "public_package_install": {
+          "original_and_revised_preserved": true,
+          "original_operation_preserved": true,
+          "skill_resources_byte_verified": 3,
+          "other_states_preserved": 33,
+          "original_32_states_preserved": true
+        }
+      },
+      "professional_owner": "https://github.com/wordflowlab/hetu-essay-studio/tree/main/docs"
+    },
+    {
+      "slug": "criticism-studio",
+      "release": {
+        "schema_version": 1,
+        "plugin_id": "org.wordflowlab.criticism-studio",
+        "version": "0.1.0",
+        "source_commit": "c87d9a68dfd22dc55edc4995379d34628c165023",
+        "archive": "org.wordflowlab.criticism-studio-0.1.0.tgz",
+        "archive_sha256": "bcde44aaad529b55b4970f1e06a294d1624cfa9894002a162e31b5a585ece62c",
+        "package_sha256": "067da3af7390311455908ce6191c08ea1b26662e837c922e1649b47205d90f72",
+        "size_bytes": 107306,
+        "minimum_host_version": "0.12.6",
+        "verified_platforms": [
+          "macOS arm64"
+        ],
+        "official_host": {
+          "version": "0.12.6",
+          "git_sha": "b75293837aaa220803b9dc964ba72b8646fa7244",
+          "archive_sha256": "de012d76bb9751d6f2ed78427c6887563fcfd4455ae19717c6f65a9182700ab3"
+        },
+        "acceptance": "https://github.com/wordflowlab/hetu-criticism-studio/actions/runs/44470802996",
+        "evidence_url": "https://github.com/wordflowlab/hetu-criticism-studio/blob/c87d9a68dfd22dc55edc4995379d34628c165023/docs/research/release-acceptance.json"
+      },
+      "public_download": {
+        "release": "https://github.com/wordflowlab/hetu-criticism-studio/releases/tag/v0.1.0",
+        "source_commit": "c87d9a68dfd22dc55edc4995379d34628c165023",
+        "archive_sha256": "bcde44aaad529b55b4970f1e06a294d1624cfa9894002a162e31b5a585ece62c",
+        "package_sha256": "067da3af7390311455908ce6191c08ea1b26662e837c922e1649b47205d90f72",
+        "files_byte_identical": 18,
+        "verified": true
+      },
+      "official_verification": "https://github.com/wordflowlab/hetu-criticism-studio/actions/runs/44470802996",
+      "unit_tests": 44,
+      "machine_actions": 34,
+      "current_codex": {
+        "recorded_at": "2026-11-19",
+        "entry": "当前Codex经公开0.12.6 CLI连续操作；既有MCP热发现另行登记",
+        "host_version": "0.12.6",
+        "work_ref": {
+          "workspace_id": "workspace_01abb9b1-8e4a-46ac-a8ee-82d200f35875",
+          "kind": "novel",
+          "object_id": "novel_c070a2bc-10f4-4b55-a61b-981caa46f1ac"
+        },
+        "package_sha256": "067da3af7390311455908ce6191c08ea1b26662e837c922e1649b47205d90f72",
+        "original": {
+          "object_id": "ext_72be05ff-8784-4c19-87d5-c48744cf9715",
+          "revision": 1,
+          "sha256": "555787f81e875002ed085ed10cb9e6b138d450dc4e69a248ca276b7d26659d3c"
+        },
+        "revised": {
+          "object_id": "ext_72be05ff-8784-4c19-87d5-c48744cf9715",
+          "revision": 3,
+          "sha256": "2e8ff40c8f1f7162be2eecb27d20d5452b469853078159b802be67532afbdf85"
+        },
+        "source_ref": {
+          "kind": "resource",
+          "work_ref": {
+            "workspace_id": "workspace_01abb9b1-8e4a-46ac-a8ee-82d200f35875",
+            "kind": "novel",
+            "object_id": "novel_c070a2bc-10f4-4b55-a61b-981caa46f1ac"
+          },
+          "resource_id": "resource_854a7818-bcb0-4183-a96a-1c51c8f6b70a",
+          "revision": 1,
+          "sha256": "8593e7a3ca02f16df376acdcb78bc5f3fc896cb6689ac3755e51028a930badba"
+        },
+        "original_operation_preserved": true,
+        "previous_revision_preserved": true,
+        "other_states_preserved": 33,
+        "existing_objects_read": 0,
+        "checks_after": {
+          "basis_ref": {
+            "object_id": "ext_72be05ff-8784-4c19-87d5-c48744cf9715",
+            "owner_plugin_id": "org.wordflowlab.criticism-studio",
+            "revision": 3,
+            "sha256": "2e8ff40c8f1f7162be2eecb27d20d5452b469853078159b802be67532afbdf85"
+          },
+          "note": "检查揭示依据缺口，不评分解释真伪、原创性或文学品质。",
+          "project_ref": {
+            "object_id": "ext_72be05ff-8784-4c19-87d5-c48744cf9715",
+            "revision": 3,
+            "sha256": "2e8ff40c8f1f7162be2eecb27d20d5452b469853078159b802be67532afbdf85"
+          },
+          "secondary_only_reading_ids": [],
+          "stale_anchor_ids": [
+            "claim"
+          ],
+          "stale_claim_basis_ids": [
+            "claim"
+          ],
+          "stale_note_ids": [
+            "note"
+          ],
+          "stale_variant_ids": [
+            "variant"
+          ],
+          "unanchored_block_ids": [
+            "ending"
+          ],
+          "unused_evidence_ids": []
+        },
+        "upstream_basis": [
+          {
+            "owner_plugin_id": "org.wordflowlab.essay-studio",
+            "object_id": "ext_812d29f6-199f-42fe-8657-219e05fe5b70",
+            "revision": 2,
+            "sha256": "982601acb78c8ce9c2feaabecab45f8368675db7abe117bbc46c2554d8fa43f3"
+          }
+        ],
+        "adopted": false,
+        "finalized": false,
+        "fixture": "原创虚构故事、观察与评论，不是真人研究或文学判断认证",
+        "original_work_fixed_ref": {
+          "revision_ref": {
+            "revision": 1
+          },
+          "sha256": "6577f6a191a8b6889c1c769db9f18e6afeb47e07359c92b47f259514ad33aaaf",
+          "work_ref": {
+            "kind": "novel",
+            "object_id": "novel_c070a2bc-10f4-4b55-a61b-981caa46f1ac",
+            "workspace_id": "workspace_01abb9b1-8e4a-46ac-a8ee-82d200f35875"
+          }
+        },
+        "original_work_record_unchanged": true,
+        "continuation": {
+          "task_kind": "chapter_draft",
+          "fixed_input_refs": [
+            {
+              "kind": "resource",
+              "work_ref": {
+                "workspace_id": "workspace_01abb9b1-8e4a-46ac-a8ee-82d200f35875",
+                "kind": "novel",
+                "object_id": "novel_c070a2bc-10f4-4b55-a61b-981caa46f1ac"
+              },
+              "resource_id": "resource_854a7818-bcb0-4183-a96a-1c51c8f6b70a",
+              "revision": 1,
+              "sha256": "8593e7a3ca02f16df376acdcb78bc5f3fc896cb6689ac3755e51028a930badba"
+            },
+            {
+              "kind": "resource",
+              "work_ref": {
+                "workspace_id": "workspace_01abb9b1-8e4a-46ac-a8ee-82d200f35875",
+                "kind": "novel",
+                "object_id": "novel_c070a2bc-10f4-4b55-a61b-981caa46f1ac"
+              },
+              "resource_id": "resource_1111b67a-6c7a-4ff0-8d40-3c7165165cc1",
+              "revision": 1,
+              "sha256": "e5e21b7520d7f23fdb9fc27246cc4b317722553de024aa72c8aa2864d65f7f6f"
+            }
+          ],
+          "context_full_bytes_verified": true,
+          "candidate_saved_and_read": true,
+          "adopted": false
+        },
+        "current_mcp": {
+          "runtime_version": "0.12.3",
+          "package_sha256": "067da3af7390311455908ce6191c08ea1b26662e837c922e1649b47205d90f72",
+          "capabilities_sha256": "f6139674f62a3a67dede2e589bc012bcb2a1798bfc452a516b30a31232966dee",
+          "hot_discovery": true,
+          "skill_resources_read": 3,
+          "fixed_readback": [
+            {
+              "object_id": "ext_72be05ff-8784-4c19-87d5-c48744cf9715",
+              "revision": 1,
+              "sha256": "555787f81e875002ed085ed10cb9e6b138d450dc4e69a248ca276b7d26659d3c",
+              "title": "一盏灯的两种读法"
+            },
+            {
+              "object_id": "ext_72be05ff-8784-4c19-87d5-c48744cf9715",
+              "revision": 3,
+              "sha256": "2e8ff40c8f1f7162be2eecb27d20d5452b469853078159b802be67532afbdf85",
+              "title": "一盏灯的两种读法"
+            }
+          ],
+          "original_operation_preserved": true,
+          "method_sha256": {
+            "SKILL.md": "5d4a532a0d1c09b76e6e180f60fad9b55edc5a28ff937540f5f304dfe4eff08b",
+            "references/workflows.md": "36b635416e79b6c35a361582453f57d41e1297afd4fea30e5798a25dc69399c5",
+            "references/operations.md": "67234702082b7913f50d6aedbd0bc1ad8f2047515e81759e9e85354113533670"
+          }
+        },
+        "public_package_install": {
+          "original_and_revised_preserved": true,
+          "original_operation_preserved": true,
+          "skill_resources_byte_verified": 3,
+          "other_states_preserved": 33,
+          "original_32_states_preserved": true
+        }
+      },
+      "professional_owner": "https://github.com/wordflowlab/hetu-criticism-studio/tree/main/docs"
+    }
+  ],
+  "host": {
+    "version": "0.12.6",
+    "git_sha": "b75293837aaa220803b9dc964ba72b8646fa7244",
+    "archive_sha256": "de012d76bb9751d6f2ed78427c6887563fcfd4455ae19717c6f65a9182700ab3",
+    "source_build": false,
+    "scope": "隔离公开签名公证副本，未替换共享Applications"
+  },
+  "verification": {
+    "unit_tests": 84,
+    "machine_actions": 67,
+    "report_browser_regressions_per_package": 2,
+    "rendered_diagrams": 8,
+    "work_surfaces_per_package": 31,
+    "current_cli": "0.12.6",
+    "existing_mcp": "0.12.3",
+    "skills_hot_discovered": true,
+    "original_32_states_preserved": true,
+    "public_files_per_package": 18,
+    "fixed_chapter_task_sources_verified": true,
+    "original_work_record_unchanged": true
+  },
+  "failures_retained": [
+    {
+      "scope": "本机首轮散文UI",
+      "result": "全部业务断言完成，Electron context.close在600秒总预算超时；原日志和轨迹保留。"
+    },
+    {
+      "scope": "Computer Use",
+      "result": "原生管道startup failed；未伪造窗口操作。"
+    },
+    {
+      "scope": "散文第二轮",
+      "run": "https://github.com/wordflowlab/hetu-essay-studio/actions/runs/44467733211",
+      "result": "正文起始347.171875超340px，调整标签同行后原阈值通过。"
+    },
+    {
+      "scope": "官网",
+      "result": "可选历史permissions导致渲染及静态检查失败，展示与校验遵循现行可选合同，不回填插件运行包。"
+    }
+  ],
+  "website": {
+    "state": "locally_verified_before_mainline_integration",
+    "public_release_links": [
+      {
+        "slug": "essay-studio",
+        "url": "https://github.com/wordflowlab/hetu-essay-studio/releases/download/v0.1.0/org.wordflowlab.essay-studio-0.1.0.tgz",
+        "status": 200,
+        "sha256": "85761f0ef578382624e8ae9010dd2a4011b5682e17e56c9b3e046c98eec7797e"
+      },
+      {
+        "slug": "essay-studio",
+        "url": "https://github.com/wordflowlab/hetu-essay-studio/releases/download/v0.1.0/org.wordflowlab.essay-studio-0.1.0.tgz.sha256",
+        "status": 200,
+        "sha256": "78c184f907a7b2c0a35aab55147ad753ba8b08c8497f8f916e958a5e840bfee6"
+      },
+      {
+        "slug": "essay-studio",
+        "url": "https://github.com/wordflowlab/hetu-essay-studio/releases/download/v0.1.0/release-integrity.json",
+        "status": 200,
+        "sha256": "9f1edf52233408ce1f065042a9e29b60f4990d1c6625fd2851e240973160ceb0"
+      },
+      {
+        "slug": "essay-studio",
+        "url": "https://github.com/wordflowlab/hetu-essay-studio/releases/tag/v0.1.0",
+        "status": 200,
+        "sha256": "781e0183358dbe1d2b918eae2303f31db9a636f46adacafc7f21c64013a88c29"
+      },
+      {
+        "slug": "essay-studio",
+        "url": "https://github.com/wordflowlab/hetu-essay-studio/blob/a900a51966e5ca626eeb62253a2d8ef979ddaa68/docs/research/release-acceptance.json",
+        "status": 200,
+        "sha256": "61959dc1b50c44daab01efed5d7da560eaa3f750d8fe4e4b9a59e273143faff8"
+      },
+      {
+        "slug": "essay-studio",
+        "url": "https://github.com/wordflowlab/hetu-essay-studio/blob/a900a51966e5ca626eeb62253a2d8ef979ddaa68/CAPABILITIES.md",
+        "status": 200,
+        "sha256": "99062310ee710639917fc20bad2816c72808d85aef8076e68a619b00dfbb1c76"
+      },
+      {
+        "slug": "essay-studio",
+        "url": "https://github.com/wordflowlab/hetu-essay-studio/tree/a900a51966e5ca626eeb62253a2d8ef979ddaa68/docs",
+        "status": 200,
+        "sha256": "37488e6d0ceca3791405833dda353589c23d0504eb4ff49c741345ce79bfdd1e"
+      },
+      {
+        "slug": "criticism-studio",
+        "url": "https://github.com/wordflowlab/hetu-criticism-studio/releases/download/v0.1.0/org.wordflowlab.criticism-studio-0.1.0.tgz",
+        "status": 200,
+        "sha256": "bcde44aaad529b55b4970f1e06a294d1624cfa9894002a162e31b5a585ece62c"
+      },
+      {
+        "slug": "criticism-studio",
+        "url": "https://github.com/wordflowlab/hetu-criticism-studio/releases/download/v0.1.0/org.wordflowlab.criticism-studio-0.1.0.tgz.sha256",
+        "status": 200,
+        "sha256": "8ded1bccefb1ee2f83e3038edb51c1875e63a033f9828dfcc3d8412d06716e0f"
+      },
+      {
+        "slug": "criticism-studio",
+        "url": "https://github.com/wordflowlab/hetu-criticism-studio/releases/download/v0.1.0/release-integrity.json",
+        "status": 200,
+        "sha256": "255c313a3e797f941c4b2ca77a0d08c9e0e5175a2db3d696b4139c43a1f723b2"
+      },
+      {
+        "slug": "criticism-studio",
+        "url": "https://github.com/wordflowlab/hetu-criticism-studio/releases/tag/v0.1.0",
+        "status": 200,
+        "sha256": "1ca12c19437be7ce6a62c29c565cf45a481f61957662ed0316a8d9e5ae6be4b5"
+      },
+      {
+        "slug": "criticism-studio",
+        "url": "https://github.com/wordflowlab/hetu-criticism-studio/blob/c87d9a68dfd22dc55edc4995379d34628c165023/docs/research/release-acceptance.json",
+        "status": 200,
+        "sha256": "e49146bad4afef9fd74f167fb1ab5a09469343d45ade76663911ea34a2a03bba"
+      },
+      {
+        "slug": "criticism-studio",
+        "url": "https://github.com/wordflowlab/hetu-criticism-studio/blob/c87d9a68dfd22dc55edc4995379d34628c165023/CAPABILITIES.md",
+        "status": 200,
+        "sha256": "66856fcd3495269a74790c717798779233882ec91f27fb957109b468eaad53b2"
+      },
+      {
+        "slug": "criticism-studio",
+        "url": "https://github.com/wordflowlab/hetu-criticism-studio/tree/c87d9a68dfd22dc55edc4995379d34628c165023/docs",
+        "status": 200,
+        "sha256": "88674ec8a99d51b96b1161b120071acb478004f699fa8a8d6ff511de72adcdaa"
+      }
+    ],
+    "pages_built": 195,
+    "local_references_checked": 11667,
+    "local_browser_checks_passed": 38
+  },
+  "limits": [
+    "macOS arm64专业开发预览，Windows/Linux专业实机未验",
+    "原创虚构资料，不是真人研究、学术认证或文学品质评判",
+    "未执行内容外发、付费、正文采纳或定稿"
+  ]
+}

@@ -50,7 +50,7 @@ for (const slug of ['relationships', 'timeline', ...externalListings.map(entry =
     if (listing) {
       for (const value of [listing.source_commit, listing.release.archive_sha256, listing.release.package_sha256, listing.release.download_url]) assert.ok(html.includes(value), '外部插件固定来源缺失：'+pathname);
     }
-    for (const permission of manifest.permissions) assert.ok(html.includes(permission), `插件权限未展示：${pathname}/${permission}`);
+    for (const permission of manifest.permissions ?? []) assert.ok(html.includes(permission), `插件权限未展示：${pathname}/${permission}`);
     assert.ok(sitemap.includes(`<loc>https://hetu.limeai.run${pathname}</loc>`), `站点地图缺少插件：${pathname}`);
   }
 }

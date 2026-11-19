@@ -62,3 +62,6 @@ Stories can become songs. [Lyric Studio](/en/plugins/lyric-studio/) connects str
 
 
 Continue with [poetry, nonfiction and biography around one work](/en/blog/a-life-in-its-own-words/).
+
+
+Continue with [essays and competing readings](/en/blog/fragments-and-readings/).

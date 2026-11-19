@@ -62,3 +62,6 @@ Skills 和客户端接入包安装在你使用的 Agent 环境里，为它提供
 
 
 诗篇形式、纪实主张与人物生平，可以怎样围绕同一部作品接续？见[同一个人，可以怎样写下来](/blog/a-life-in-its-own-words/)。
+
+
+从自由片段到不同读法，见[灯还亮着，下一段怎么写](/blog/fragments-and-readings/)。

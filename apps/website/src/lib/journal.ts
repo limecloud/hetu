@@ -5,6 +5,7 @@ import type { Locale } from './site';
 import { evidence } from './market';
 
 export const articles = [
+  {"id": "fragments-and-readings", "titles": {"zh-CN": "灯还亮着，下一段怎么写", "en": "The light is still on. What comes next?"}, "descriptions": {"zh-CN": "用同样片段比较散文的次序，让准确引文和不同读法进入下一篇评论。", "en": "Compare arrangements of the same fragments, then carry exact quotations and competing readings into a critical response."}},
   {"id": "a-life-in-its-own-words", "titles": {"zh-CN": "同一个人，可以怎样写下来", "en": "More than one way to write a life"}, "descriptions": {"zh-CN": "从诗行的取舍、纪实主张到人物生平，让明确依据与未知都能留在下一稿。", "en": "From line alternatives to reported claims and life histories, keep evidence and uncertainty available for the next revision."}},
   {"id": "line-to-take", "titles": {"zh-CN": "改过一句词，下一次该听什么", "en": "Change a line. Know what to hear next."}, "descriptions": {"zh-CN": "让歌词结构、逐句备选和实际录音保留固定联系，让下一轮返工知道从哪里继续。", "en": "Keep lyrics, alternatives and actual recordings connected so the next revision has a precise place to continue."}},
   {"id": "script-to-preparation", "titles": {"zh-CN": "从一把钥匙到一张制作单", "en": "From a key to a production sheet"}, "descriptions": {"zh-CN": "把固定剧本、制作需求、准备依赖和专业成果连起来，按具体缺漏继续下一轮。", "en": "Connect fixed scripts, requirements and professional results, then revise concrete gaps."}},

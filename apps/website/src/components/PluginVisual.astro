@@ -5,6 +5,8 @@ interface Props { locale: Locale; kind?: string; }
 const { locale, kind = 'relationships' } = Astro.props;
 const en = locale === 'en';
 const captures: Record<string, { width: number; height: number; zh: string; en: string }> = {
+  "essay-studio": {"width": 1360, "height": 900, "zh": "散文工坊实际工作面，固定正式macOS制品与原创虚构演示资料。", "en": "Essay Studio actual work surface from a fixed official macOS artifact with original fictional demonstration data."},
+  "criticism-studio": {"width": 1360, "height": 900, "zh": "文学评论实际工作面，固定正式macOS制品与原创虚构演示资料。", "en": "Literary Criticism actual work surface from a fixed official macOS artifact with original fictional demonstration data."},
   "poetry-studio": {"width": 1360, "height": 900, "zh": "诗词工坊实际工作面，固定正式macOS制品与原创虚构演示资料。", "en": "Poetry Studio actual work surface from a fixed official macOS artifact and original fictional demonstration data."},
   "nonfiction-studio": {"width": 1360, "height": 900, "zh": "纪实写作实际工作面，固定正式macOS制品与原创虚构演示资料。", "en": "Nonfiction Studio actual work surface from a fixed official macOS artifact and original fictional demonstration data."},
   "biography-studio": {"width": 1360, "height": 900, "zh": "传记工坊实际工作面，固定正式macOS制品与原创虚构演示资料。", "en": "Biography Studio actual work surface from a fixed official macOS artifact and original fictional demonstration data."},

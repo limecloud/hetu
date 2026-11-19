@@ -163,3 +163,13 @@ Ask your Agent to turn the station records into a poem, a reported article and a
 - [Biography Studio](/en/plugins/biography-studio/): read chapters alongside identities, events and date precision, then revisit them as new material arrives.
 
 The projects can reference fixed results from one another while preserving separate judgments and revisions. Form checks, verification records and identity statements retain their precise scope.
+
+
+## Essays and literary criticism
+
+Ask your Agent to make an essay from the station rain, a remembered letter and an explicitly invented wait. Compare two openings using the same fragments. Then write a critical response to the story's light, preserving both waiting and departure as possible readings with exact quotations.
+
+- [Essay Studio](/en/plugins/essay-studio/): read the complete arrangement, compare fragment order and motifs, then revise from specific feedback.
+- [Literary Criticism](/en/plugins/criticism-studio/): compare quotations with reasons, competing interpretations and the article, then revisit evidence after revisions.
+
+Observation and memory retain their character. Accurate quotation and convincing interpretation remain separate judgments. Projects can continue from fixed results while expression and choice stay with the author.
