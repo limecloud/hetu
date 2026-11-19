@@ -3,7 +3,7 @@
   "resource_uri": "ui://hetu/workbench/2",
   "mime_type": "text/html;profile=mcp-app",
   "sdk": "@modelcontextprotocol/ext-apps@2.0.4",
-  "sha256": "6e3145381a9e944d68440372f592419e574e0b1b9bc2d2f4400931ab70d61c98",
+  "sha256": "a7aac71df8bb8281af40ba4631bba832691c54cb0fdcf1196d9cb8b40a2b114f",
   "size_bytes": 4138612,
   "source_sha256": {
     "../../packages/workbench-ui/src/workbench.css": "496963f1ecb9eacd567e9c2de9a2b34dab654783f7b91841d55af0e43d0921cd",
@@ -79,7 +79,7 @@
     "../desktop/src/renderer/canon-editors.tsx": "c7a105832a23c5beae35deeb5e46380912f72994cc95874d0ef238cc9a0ac6a2",
     "../desktop/src/renderer/canon.css": "ff434d44e8acb4aa36e0c359140288b4c8e7f1012766bd08cc27e37a8446a5f7",
     "../desktop/src/renderer/contributions.tsx": "75cac13061a106133e9cdc72379649f79a554748a4880105873c1319f414de60",
-    "../desktop/package.json": "3a703f883cefc06b82634cd517432039fb5511abb1c55d7e642b3649e4f32d71",
+    "../desktop/package.json": "08c8c6a556682636df0ad62d2941b0ad66f5fe499069e3c13186bcd664dba642",
     "../desktop/src/renderer/settings.css": "21a78df16dbc15d4327ffda00df22baf8d623ddbc044cc1ccaa0250a574d583d",
     "../desktop/src/renderer/model-settings.tsx": "d84b030f8ed5f44817130ad20d3554591f324fc85058e332be399b8d0d661f67",
     "../desktop/src/renderer/settings.tsx": "5ba059530f303b0935c93081e0a9e4c180734780d504664f54d5c0ff28dd16b5",
@@ -95,7 +95,7 @@
     "src/workbench.css": "05017be3882ef4ec9851e613666b2e7e4fd32e5fe54cadf1023de5dc70cecf81",
     "../../assets/styles/radix-workbench.css": "ccf9f4d25676a4225180128d05a3d0a9d26e92fa832fdccb7d80c4d52ee4b625",
     "scripts/build.mjs": "51f5f593a576b6d03a5e40d91ecdc6f25e8d26e165808e1bc4ab61111fa0f08f",
-    "package.json": "fc85ebc8e7094bae3c3f66931f0ef5e8ba37540b5d00ecce59e8f4257a1c0d5e",
+    "package.json": "699d90cb8650937e646e35c341c06fd6fe108c0d1a808b57a42df81f0b3d2477",
     "THIRD-PARTY-NOTICES.txt": "c2688d858cc503cc3ae80816392d8e8b97e35356f72dfcfed473e52bab2d62b9"
   }
 }
