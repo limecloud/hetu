@@ -284,6 +284,11 @@ main { flex: 1; min-width: 0; min-height: 0; overflow: hidden; background: trans
 .manuscript-title { padding: 24px 0 18px; flex: none; }
 .manuscript-title h1 { font: 600 20px/1.4 "Songti SC", SimSun, serif; margin: 0 0 8px; }
 .manuscript-title > span { font-size: 12px; color: var(--muted); }
+.episode-manuscript-selector { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; font-size: 12px; }
+.episode-manuscript-selector label { display: flex; flex: 1; align-items: center; gap: 8px; min-width: 0; }
+.episode-manuscript-selector select { flex: 1; min-width: 0; max-width: 100%; }
+.episode-manuscript-selector button { flex: none; }
+.reference-reader { white-space: pre-wrap; }
 .manuscript-scroll { flex: 1; min-height: 0; overflow: auto; }
 .author-editor { height: 100%; min-height: 100%; }
 .author-editor[data-indent="true"] .cm-line { text-indent: var(--reader-indent, 2em); }

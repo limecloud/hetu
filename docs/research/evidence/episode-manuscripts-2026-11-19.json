@@ -1,0 +1,160 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-11-19",
+  "version": "0.13.2",
+  "problem": "Electron分集只读作者稿，忽略Core已有manuscript参考稿投影。",
+  "observed_source_version": "0.13.1",
+  "real_readback": {
+    "access": "公开CLI只读；未复制正文或凭据到验收文档",
+    "episodes": [
+      {
+        "episode_number": 1,
+        "author_state": "empty",
+        "submitted_count": 1,
+        "content_characters": 2128,
+        "content_bytes": 5395,
+        "sha256_verified": true
+      },
+      {
+        "episode_number": 2,
+        "author_state": "empty",
+        "submitted_count": 1,
+        "content_characters": 2109,
+        "content_bytes": 5390,
+        "sha256_verified": true
+      },
+      {
+        "episode_number": 3,
+        "author_state": "empty",
+        "submitted_count": 1,
+        "content_characters": 1921,
+        "content_bytes": 4949,
+        "sha256_verified": true
+      },
+      {
+        "episode_number": 4,
+        "author_state": "empty",
+        "submitted_count": 1,
+        "content_characters": 1764,
+        "content_bytes": 4502,
+        "sha256_verified": true
+      },
+      {
+        "episode_number": 5,
+        "author_state": "empty",
+        "submitted_count": 1,
+        "content_characters": 1912,
+        "content_bytes": 4958,
+        "sha256_verified": true
+      },
+      {
+        "episode_number": 6,
+        "author_state": "empty",
+        "submitted_count": 1,
+        "content_characters": 2389,
+        "content_bytes": 6217,
+        "sha256_verified": true
+      },
+      {
+        "episode_number": 7,
+        "author_state": "empty",
+        "submitted_count": 1,
+        "content_characters": 1712,
+        "content_bytes": 4355,
+        "sha256_verified": true
+      },
+      {
+        "episode_number": 8,
+        "author_state": "empty",
+        "submitted_count": 1,
+        "content_characters": 1754,
+        "content_bytes": 4492,
+        "sha256_verified": true
+      },
+      {
+        "episode_number": 9,
+        "author_state": "empty",
+        "submitted_count": 1,
+        "content_characters": 1965,
+        "content_bytes": 5016,
+        "sha256_verified": true
+      },
+      {
+        "episode_number": 10,
+        "author_state": "empty",
+        "submitted_count": 1,
+        "content_characters": 1851,
+        "content_bytes": 4746,
+        "sha256_verified": true
+      },
+      {
+        "episode_number": 11,
+        "author_state": "empty",
+        "submitted_count": 1,
+        "content_characters": 1656,
+        "content_bytes": 4222,
+        "sha256_verified": true
+      },
+      {
+        "episode_number": 12,
+        "author_state": "empty",
+        "submitted_count": 1,
+        "content_characters": 1659,
+        "content_bytes": 4222,
+        "sha256_verified": true
+      }
+    ],
+    "boundary": "该次回读为12集；后续创作会话可能继续增加。截图中的开篇改编与当前全书改编为不同作品，不能混用身份。"
+  },
+  "correction": [
+    "作者稿为空时显示最新已提交参考稿；未提交工作稿和作者稿可切换。",
+    "参考稿只读，禁止自动保存为正文；主进程重验分集、作品及固定修订。",
+    "分集可定位原审阅任务，超过第一页继续分页；作者采纳与定稿仍独立。",
+    "MCP App读取同一manuscript投影并显示已提交固定正文。"
+  ],
+  "verification": {
+    "mcp_apps": {
+      "passed": 44,
+      "failed": 0,
+      "log_sha256": "1e2a0d5fb80dbfc6faaf5b43a6bd609e0c105981a5c5426d8e5beac2de755efd"
+    },
+    "plugins": {
+      "passed": 104,
+      "failed": 0
+    },
+    "electron": {
+      "status": "passed",
+      "passed": 1,
+      "failed": 0,
+      "business_assertions": [
+        "空作者稿显示最新提交",
+        "工作稿和作者稿切换",
+        "保留已有作者稿",
+        "精确归属拒绝",
+        "跨30项分页定位原任务",
+        "保存公开意见后正文仍为空",
+        "浅暗1360/760渲染",
+        "关闭窗口及持久成果重开"
+      ],
+      "log": "build/mcp-app-discovery/drama-acceptance-final4.log",
+      "log_sha256": "ea98cdf2e2f19116cde0e59384bf1f64d9b5053e769057a857746e5a9b459dd5",
+      "process_cleanup": "窗口关闭后清理隔离测试进程树；本专项不认证进程正常退出。"
+    }
+  },
+  "installation": {
+    "status": "local_candidate_installed",
+    "version": "0.13.2",
+    "signing": "ad-hoc-development",
+    "notarized": false,
+    "artifact_files_verified": 3386,
+    "connection_plugin_registered": true,
+    "source_sha256": "824242c6a22e4f195bbd65d1a424de0f8f74b26144643487a693a2c40a3febf8",
+    "user_gui_acceptance": "pending",
+    "receipt": "build/local-update-v0132-dev/installation.json"
+  },
+  "not_verified": [
+    "本轮本机候选不是Apple签名公证的正式发行包。",
+    "指定Codex Desktop GUI侧栏最终显示仍需安装后实测。",
+    "Electron进程的正常退出不由本参考稿专项认证。"
+  ]
+}

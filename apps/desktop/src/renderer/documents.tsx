@@ -7,8 +7,9 @@ import { ArtworkLibrary } from "./artwork.tsx";
 import { usePreferences } from "./preferences.tsx";
 import { readWorkContent, type DocumentGroup } from "./work-content.ts";
 import { Icon, IconButton, useWorkbench } from "./workbench.tsx";
+import { manuscriptKey, readEpisodeReference } from "./episode-manuscript.ts";
 
-export function Documents({ work, notify, ai }: SurfaceContext) {
+export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
   const preferences = usePreferences();
   const shell = useWorkbench();
   const [showSearch, setShowSearch] = useState(false);
@@ -32,6 +33,9 @@ export function Documents({ work, notify, ai }: SurfaceContext) {
     [loadError, setLoadError] = useState(""),
     [reload, setReload] = useState(0),
     [selected, setSelected] = useState<any>(),
+    [manuscript, setManuscript] = useState<any>(),
+    [reference, setReference] = useState<any>(),
+    [referenceContent, setReferenceContent] = useState(""),
     [content, setContent] = useState(""),
     [editing, setEditing] = useState(false),
     [showImages, setShowImages] = useState(false),
@@ -60,6 +64,9 @@ export function Documents({ work, notify, ai }: SurfaceContext) {
         if (active) {
           setDocuments(result.documents);
           setGroups(result.groups);
+          const previous = sessionStorage.getItem(selectionKey);
+          const document = result.documents.find((item) => item.document_id === previous) ?? result.groups[0]?.documents[0] ?? result.documents[0];
+          if (document) void load(document);
         }
       })
       .catch((error) => {
@@ -90,7 +97,7 @@ export function Documents({ work, notify, ai }: SurfaceContext) {
           document_id: document.document_id,
         }),
       );
-      const [annotations, saved, historyResult, noteBuffer, authorOperation] = await Promise.all(
+      const [annotations, saved, historyResult, noteBuffer, authorOperation, episode] = await Promise.all(
         [
           desktop.read("hetu.annotations.list", {
             document_id: document.document_id,
@@ -101,12 +108,20 @@ export function Documents({ work, notify, ai }: SurfaceContext) {
           }),
           desktop.buffer(document.document_id, undefined, "annotations"),
           desktop.author("journal", { document_id: document.document_id }),
+          document.episode_id ? desktop.read("hetu.drama.episodes.get", { episode_id: document.episode_id }).then(data) : undefined,
         ],
       );
+      const hasRecovery = saved && (saved.pending || saved.content !== result.content);
+      const preferred = !hasRecovery && !result.content.trim() && episode?.manuscript.references.length
+        ? episode.manuscript.references.find((item: any) => item.kind === "submitted") ?? episode.manuscript.references[0] : undefined;
+      const preferredContent = preferred ? await readEpisodeReference(document.episode_id, preferred) : "";
       if (epoch !== generation.current) return;
       current.current = result;
       text.current = result.content;
-      setSelected(result);
+      setSelected({ ...result, episode_id: document.episode_id });
+      setManuscript(episode?.manuscript);
+      setReference(preferred);
+      setReferenceContent(preferredContent);
       sessionStorage.setItem(selectionKey, document.document_id);
       setContent(result.content);
       setEditing(true);
@@ -126,6 +141,23 @@ export function Documents({ work, notify, ai }: SurfaceContext) {
       if (epoch === generation.current) setBusy(false);
     }
   }
+  async function selectManuscript(key: string) {
+    if (current.current && text.current !== current.current.content) {
+      notify("请先保存当前修改。");
+      return;
+    }
+    if (key === "author") { setReference(undefined); setQuote(null); return; }
+    const next = manuscript?.references.find((item: any) => manuscriptKey(item) === key);
+    if (!next) return;
+    const epoch = ++generation.current;
+    setBusy(true);
+    try {
+      const value = await readEpisodeReference(selected.episode_id, next);
+      if (epoch !== generation.current) return;
+      setReference(next); setReferenceContent(value); setQuote(null);
+    } catch (error) { notify((error as Error).message); }
+    finally { if (epoch === generation.current) setBusy(false); }
+  }
   async function change(value: string) {
     text.current = value;
     setContent(value);
@@ -139,7 +171,7 @@ export function Documents({ work, notify, ai }: SurfaceContext) {
       });
   }
   async function save() {
-    if (!current.current || composition.current) return;
+    if (!current.current || composition.current || reference) return;
     setBusy(true);
     const base = current.current;
     if (!pending.current)
@@ -160,7 +192,7 @@ export function Documents({ work, notify, ai }: SurfaceContext) {
       });
       const result = data(await desktop.read("hetu.documents.save", fixed));
       current.current = { ...result, content: fixed.content };
-      setSelected(current.current);
+      setSelected({ ...current.current, episode_id: selected.episode_id });
       pending.current = undefined;
       await desktop.dirty(text.current !== fixed.content);
       await desktop.buffer(
@@ -203,16 +235,11 @@ export function Documents({ work, notify, ai }: SurfaceContext) {
     }
   }
   useEffect(() => {
-    if (!preferences.autosave || !editing || busy || composing || !current.current ||
+    if (reference || !preferences.autosave || !editing || busy || composing || !current.current ||
         pending.current || text.current === current.current.content) return;
     const timer = setTimeout(() => { void save(); }, 1800);
     return () => clearTimeout(timer);
-  }, [preferences.autosave, editing, busy, composing, content]);
-  useEffect(() => {
-    if (!documents.length || selected) return;
-    const previous = sessionStorage.getItem(selectionKey);
-    void load(documents.find((item) => item.document_id === previous) ?? groups[0]?.documents[0] ?? documents[0]);
-  }, [documents]);
+  }, [preferences.autosave, editing, busy, composing, content, reference]);
   useEffect(() => {
     if (!selected) return;
     const frame = requestAnimationFrame(() => {
@@ -223,12 +250,13 @@ export function Documents({ work, notify, ai }: SurfaceContext) {
   useEffect(() => {
     shell.setDocumentTools(selected ? {
       title: selected.document.title,
-      dirty: content !== selected.content || !!pending.current,
+      readOnly: !!reference,
+      dirty: !reference && (content !== selected.content || !!pending.current),
       busy: busy || composing,
       save: () => void save(),
-      ai: () => ai({ document_id: selected.document.document_id, revision_id: selected.revision.revision_id, ...(quote ?? {}) }),
+      ai: () => reference && reviewTask ? reviewTask(reference.task_ref.task_id) : ai({ document_id: selected.document.document_id, revision_id: selected.revision.revision_id, ...(quote ?? {}) }),
     } : undefined);
-  }, [selected, content, busy, composing, quote, recovery]);
+  }, [selected, content, busy, composing, quote, recovery, reference]);
   useEffect(() => () => shell.setDocumentTools(undefined), []);
   useEffect(() => { if (quote || noteRecovery?.pending) shell.setInspector(true); }, [quote, noteRecovery]);
   useLayoutEffect(() => {
@@ -259,12 +287,13 @@ export function Documents({ work, notify, ai }: SurfaceContext) {
     window.addEventListener("keydown", close);
     return () => window.removeEventListener("keydown", close);
   }, [floatingDirectory, shell.directoryVisible, shell.inspector, showSearch, shell.focus]);
+  const displayedContent = reference ? referenceContent : content;
   const { count, words, characters } = useMemo(() => {
     let characters = 0;
-    for (const _ of new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(content)) characters++;
-    return { count: content.match(/\p{Script=Han}/gu)?.length ?? 0,
-      words: content.match(/[A-Za-z]+(?:[’-][A-Za-z]+)*/g)?.length ?? 0, characters };
-  }, [content]);
+    for (const _ of new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(displayedContent)) characters++;
+    return { count: displayedContent.match(/\p{Script=Han}/gu)?.length ?? 0,
+      words: displayedContent.match(/[A-Za-z]+(?:[’-][A-Za-z]+)*/g)?.length ?? 0, characters };
+  }, [displayedContent]);
   const final = selected?.document.finalization_ref;
   return (
     <div ref={layout} className={"document-layout" + (!shell.directoryVisible || shell.focus ? " directory-hidden" : "") + (floatingDirectory ? " directory-floating" : "") + (floatingInspector ? " inspector-floating" : "")}>
@@ -282,15 +311,16 @@ export function Documents({ work, notify, ai }: SurfaceContext) {
         {selected ? <>
           <div className="manuscript-stage">
             <section className="manuscript-paper">
-              <div className="paper-toolbar"><div className="paper-actions"><IconButton icon="search" label="搜索正文" onClick={() => setShowSearch(!showSearch)}/><IconButton icon="comment" label="原文批注" onClick={() => shell.setInspector(!shell.inspector)}/><details className="popover-menu"><summary aria-label="文稿操作" title="文稿操作"><Icon name="more"/></summary><div className="menu-panel">
-                <button onClick={() => setEditing(true)}>编辑</button><button onClick={() => setEditing(false)}>阅读</button>
-                <button onClick={() => ai({ document_id: selected.document.document_id, revision_id: selected.revision.revision_id, ...(quote ?? {}) })}>让 AI 处理本稿</button>
+              <div className="paper-toolbar"><div className="paper-actions"><IconButton icon="refresh" label="刷新当前稿件" disabled={busy} onClick={() => void load({ ...selected.document, episode_id: selected.episode_id })}/><IconButton icon="search" label="搜索正文" disabled={!!reference} onClick={() => setShowSearch(!showSearch)}/><IconButton icon="comment" label="原文批注" disabled={!!reference} onClick={() => shell.setInspector(!shell.inspector)}/><details className="popover-menu"><summary aria-label="文稿操作" title="文稿操作"><Icon name="more"/></summary><div className="menu-panel">
+                <button disabled={!!reference} onClick={() => setEditing(true)}>编辑</button><button onClick={() => setEditing(false)}>阅读</button>
+                <button onClick={() => reference && reviewTask ? reviewTask(reference.task_ref.task_id) : ai({ document_id: selected.document.document_id, revision_id: selected.revision.revision_id, ...(quote ?? {}) })}>让 AI 处理本稿</button>
                 <button onClick={() => { setShowImages(!showImages); shell.setInspector(true); }}>{showImages ? "收起本稿图片" : "本稿图片"}</button>
                 <button onClick={() => shell.setInspector(true)}>比较修订与定稿</button>
               </div></details></div></div>
-              {showSearch && <div className="document-search"><Icon name="search"/><input autoFocus aria-label="搜索正文内容" placeholder="搜索当前正文" value={search} onChange={(event) => { setSearch(event.target.value); setEditing(true); }}/><span>{search ? content.split(search).length - 1 : 0} 处</span><IconButton icon="close" label="关闭正文搜索" onClick={() => { setShowSearch(false); setSearch(""); }}/></div>}
-              <div className="manuscript-title"><h1>{selected.document.title}</h1><span>{final ? "已定稿" : "未定稿"}</span></div>
-                {recovery &&
+              {showSearch && !reference && <div className="document-search"><Icon name="search"/><input autoFocus aria-label="搜索正文内容" placeholder="搜索当前正文" value={search} onChange={(event) => { setSearch(event.target.value); setEditing(true); }}/><span>{search ? content.split(search).length - 1 : 0} 处</span><IconButton icon="close" label="关闭正文搜索" onClick={() => { setShowSearch(false); setSearch(""); }}/></div>}
+              {manuscript && <div className="episode-manuscript-selector"><label>稿件版本<select aria-label="分集稿件版本" value={reference ? manuscriptKey(reference) : "author"} disabled={busy} onChange={(event) => void selectManuscript(event.target.value)}><option value="author">作者稿{manuscript.author_has_content ? "" : "（空）"}</option>{manuscript.references.map((item: any) => <option key={manuscriptKey(item)} value={manuscriptKey(item)}>{item.kind === "submitted" ? "参考稿" : "未提交工作稿"} {item.title}</option>)}</select></label>{reference && reviewTask && <button onClick={() => reviewTask(reference.task_ref.task_id)}>审阅与提意见</button>}</div>}
+              <div className="manuscript-title"><h1>{selected.document.title}</h1><span>{reference ? reference.kind === "submitted" ? "参考稿" : "未提交工作稿" : final ? "已定稿" : "未定稿"}</span></div>
+                {!reference && recovery &&
                   (recovery.pending ||
                     recovery.content !== selected.content) && (
                     <div className="recover">
@@ -312,7 +342,7 @@ export function Documents({ work, notify, ai }: SurfaceContext) {
                     </div>
                   )}
               <div className="manuscript-scroll" ref={scroll} onScroll={() => { if (scroll.current && !editing) rememberPosition(selected.document.document_id, scroll.current.scrollTop); }}>
-                {editing ? <AuthorEditor key={selected.document.document_id} content={content} disabled={busy} search={search} indent={work.kind === "novel"}
+                {reference ? <article className="reader reference-reader" aria-label="剧本参考稿">{referenceContent}</article> : editing ? <AuthorEditor key={selected.document.document_id} content={content} disabled={busy} search={search} indent={work.kind === "novel"}
                   scrollTop={positions.current[selected.document.document_id]} onScroll={(top) => rememberPosition(selected.document.document_id, top)}
                   onChange={(value) => void change(value).catch((error) => notify(error.message))} onSave={() => void save()}
                   onCompositionChange={(active) => { composition.current = active; setComposing(active); }}
@@ -321,10 +351,10 @@ export function Documents({ work, notify, ai }: SurfaceContext) {
                     onDoubleClick={() => setEditing(true)} onMouseUp={() => reader.current && setQuote(selectedSource(reader.current, selected.content))}
                     onKeyUp={() => reader.current && setQuote(selectedSource(reader.current, selected.content))}>{content}</article>}
               </div>
-              <footer className="manuscript-footer"><span>{selected.revision.source_format === "fountain" ? "Fountain" : "Markdown"}</span><span title={`汉字 ${count}、英文词 ${words}、总字符 ${characters}`}>{count} 字</span></footer>
+              <footer className="manuscript-footer"><span>{(reference?.source_format ?? selected.revision.source_format) === "fountain" ? "Fountain" : "Markdown"}</span><span title={`汉字 ${count}、英文词 ${words}、总字符 ${characters}`}>{count} 字</span></footer>
             </section>
           </div>
-          {shell.inspector && <aside className="manuscript-inspector" aria-label="检查器">
+          {shell.inspector && !reference && <aside className="manuscript-inspector" aria-label="检查器">
             <div className="inspector-heading"><strong>检查器</strong><IconButton icon="close" label="关闭检查器" onClick={() => shell.setInspector(false)}/></div>
             <h3>文稿信息</h3><dl className="inspector-metadata"><dt>名称</dt><dd>{selected.document.title}</dd><dt>格式</dt><dd>{selected.revision.source_format}</dd><dt>保存时间</dt><dd>{selected.revision.created_at ? new Date(selected.revision.created_at).toLocaleString() : "未记录"}</dd><dt>状态</dt><dd>{content !== selected.content ? "有未保存修改" : "修订已保存"}</dd></dl>
             <h3>批注与修订</h3>{!quote && !notes.items.length && <p className="muted">选中文字添加批注。</p>}

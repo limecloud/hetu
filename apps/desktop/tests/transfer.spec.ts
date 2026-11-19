@@ -83,7 +83,7 @@ for (const kind of ["novel", "drama"] as const) test(`${kind} CLI/MCP固定导�
     await client.connect(new StdioClientTransport({ command: binary("hetu-mcp"), args: ["--client", "codex", "--collaboration-dir", collaboration], stderr: "pipe" }));
     const exposed = (await client.listTools()).tools.map((tool) => tool.name);
     expect(exposed).toContain("hetu_call_action");
-    expect(exposed.length).toBeLessThanOrEqual(12);
+    expect(exposed.length).toBeLessThanOrEqual(13);
     const tool = async (name: string, args: any) => (await client!.callTool({ name, arguments: { ...args, management_ref: grant } })).structuredContent as any;
     const text = kind === "novel" ? "# 潮汐来信\n\n潮汐带回了那封信🌿。\n" : "INT. 灯塔 - NIGHT\n\n江岚\n潮汐带回了那封信🌿。\n";
     const source = { work_ref: work, inline_source: { filename: "原稿.txt", base64: Buffer.from(text).toString("base64"), sha256: createHash("sha256").update(text).digest("hex") }, format: kind === "novel" ? "markdown" : "fountain", profile: "source/1" };

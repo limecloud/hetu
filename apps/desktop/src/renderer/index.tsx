@@ -245,7 +245,7 @@ function App() {
               <Icon name="sparkles"/><span>让 AI 处理</span>
             </button>
           }
-          {readerActive && documentTools && <span className="save-state" aria-live="polite"><Icon name="check" size={13}/>{documentTools.busy ? "正在保存…" : documentTools.dirty ? "有未保存修改" : "修订已保存"}</span>}
+          {readerActive && documentTools && <span className="save-state" aria-live="polite"><Icon name="check" size={13}/>{documentTools.readOnly ? documentTools.busy ? "正在读取…" : "参考稿 只读" : documentTools.busy ? "正在保存…" : documentTools.dirty ? "有未保存修改" : "修订已保存"}</span>}
           <IconButton icon="settings" label="本机设置" onClick={() => void desktop.settingsWindow("open")}/>
           {workMode && <IconButton icon="expand" label="缩放窗口" onClick={() => void desktop.zoom()}/>}
           {readerActive && documentTools && <>
@@ -483,6 +483,7 @@ function App() {
                 work={state.work}
                 notify={setNotice}
                 ai={(object) => void run(() => ai(object))}
+                reviewTask={(taskId) => { setAgentStatus({ state: "waiting_for_audit", taskId }); setActive("work.tasks"); }}
               />
             </div>
           ) : (

@@ -107,6 +107,19 @@ async function load(action: string, input: RecordValue = {}, view?: RecordValue,
   try {
     const data = await gateway.read(action, input, view);
     if (!live(ticket)) return;
+    if (action === "hetu.drama.episodes.get" && !view) {
+      const manuscript = object(data.manuscript);
+      const reference = (Array.isArray(manuscript.references) ? manuscript.references.map(object) : []).find(item => item.kind === "submitted");
+      if (manuscript.author_has_content === false && reference) {
+        const fixed = object(reference.draft_ref);
+        const draft = await gateway.read("hetu.drafts.get", { draft_id: fixed.draft_id });
+        if (!live(ticket)) return;
+        const record = object(draft.draft);
+        if (record.revision !== fixed.revision || record.content_sha256 !== reference.sha256)
+          throw new Error("参考稿已变化，请刷新分集后重新读取。");
+        if (typeof draft.content === "string") data.reference_content = draft.content;
+      }
+    }
     current = { action, input, data, view };
   } catch (value) { if (live(ticket)) { current = undefined; fail(value); } }
   finally { if (live(ticket)) { busy = false; render(); showCurrent(); } }

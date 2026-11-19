@@ -71,10 +71,13 @@ export async function readWorkContent(
           .map((chapter: any) => chapter.document_id),
       );
   } else if (work.kind === "drama") {
-    for (const item of project.episodes)
-      append("第" + item.episode_number + "集 " + item.episode.title, [
+    for (const item of project.episodes) {
+      const document = index.get(item.episode.document_id);
+      if (document) document.episode_id = item.episode.episode_id;
+      append(/^第\s*[\d一二三四五六七八九十百零〇两]+\s*集/.test(item.episode.title) ? item.episode.title : "第" + item.episode_number + "集 " + item.episode.title, [
         item.episode.document_id,
       ]);
+    }
   }
   append(
     groups.length ? "其他稿件" : "文稿",

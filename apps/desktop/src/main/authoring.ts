@@ -106,6 +106,15 @@ export class Authoring {
     }
     if (!this.#owned.has(id)) throw new Error("此文稿不属于当前作品。");
   }
+  async #episode(id: string) {
+    if (this.work.kind !== "drama") throw new Error("请在当前剧本中读取分集。");
+    const result = await this.#call("hetu.drama.episodes.get", { episode_id: id });
+    const episode = data(result);
+    if (episode.project_ref.project_id !== this.work.object_id)
+      throw new Error("分集不属于当前剧本。");
+    await this.#document(episode.episode.document_id);
+    return result;
+  }
   async read(action: string, input: any) {
     const documentActions = new Set([
       "hetu.documents.get",
@@ -115,7 +124,25 @@ export class Authoring {
       "hetu.annotations.list",
       "hetu.annotations.save",
     ]);
-    if (documentActions.has(action)) {
+    if (action === "hetu.drama.episodes.get") {
+      return this.#episode(input.episode_id);
+    } else if (action === "hetu.drafts.get" || action === "hetu.working_copies.get") {
+      const episode = data(await this.#episode(input.episode_id));
+      const reference = episode.manuscript.references.find((item: any) =>
+        action === "hetu.drafts.get"
+          ? item.kind === "submitted" && item.draft_ref?.draft_id === input.draft_id
+          : isDeepStrictEqual(item.task_ref, input.task_ref) && isDeepStrictEqual(item.working_copy_ref, input.working_copy_ref));
+      if (!reference) throw new Error("参考稿不属于当前分集或固定修订已变化，请刷新。");
+      const result = await this.#call(action, action === "hetu.drafts.get"
+        ? { draft_id: input.draft_id }
+        : { task_ref: reference.task_ref, working_copy_ref: reference.working_copy_ref });
+      const value = data(result);
+      if (action === "hetu.drafts.get" && (value.draft.revision !== reference.draft_ref.revision ||
+          value.draft.content_sha256 !== reference.sha256 || value.draft.target_document_id !== episode.episode.document_id ||
+          !isDeepStrictEqual(value.draft.creative_task_ref, reference.task_ref)))
+        throw new Error("参考稿已变化，请刷新分集后重新读取。");
+      return result;
+    } else if (documentActions.has(action)) {
       await this.#document(input.document_id);
     } else if (
       [

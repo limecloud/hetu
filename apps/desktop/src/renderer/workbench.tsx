@@ -47,6 +47,7 @@ export function IconButton({ icon, label, ...props }: React.ButtonHTMLAttributes
 }
 export interface DocumentTools {
   title: string;
+  readOnly?: boolean;
   dirty: boolean;
   busy: boolean;
   save: () => void;

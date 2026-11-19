@@ -29,6 +29,7 @@ export interface SurfaceContext {
   work: WorkRef;
   notify: (message: string) => void;
   ai: (object?: Record<string, unknown>) => void;
+  reviewTask?: (taskId: string) => void;
 }
 export interface SurfaceContribution {
   id: string;

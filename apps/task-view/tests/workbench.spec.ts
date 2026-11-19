@@ -51,6 +51,25 @@ test("workbench follows exact work and fixed document references across domain v
   const read = calls.find(c => c.name === "hetu_call_action" && c.arguments?.action === "hetu.documents.get");
   expect(read?.arguments?.input).toMatchObject({ document_id: "doc_first", revision_id: "rev_first", management_ref: management, work_ref: work });
 });
+test("drama episode with an empty author draft displays its fixed submitted reference", async ({ page }) => {
+  const drama = { ...work, kind: "drama", object_id: "drama_fixture" };
+  const reference = { kind: "submitted", title: "渡口参考稿", draft_ref: { draft_id: "draft_fixed", revision: 1 }, sha256: "b".repeat(64) };
+  await page.addInitScript(value => Object.assign(window, value), {
+    viewHtml: html, initialTask: { content: [], structuredContent: { status: "succeeded", data: { app: { route: "works", management_ref: management }, works: [{ title: "渡口剧本", work_ref: drama }] } } },
+    testActions: { ...actions,
+      "hetu.drama.projects.get": { episodes: [{ episode: { title: "渡口", episode_id: "depisode_fixed" } }] },
+      "hetu.drama.episodes.get": { episode: { title: "渡口" }, manuscript: { author_has_content: false, author_state: "empty", references: [reference] } },
+      "hetu.drafts.get": { draft: { revision: 1, content_sha256: reference.sha256 }, content: "INT. 渡口 - 夜\n\n江岚\n船还没来。" },
+    },
+  });
+  await page.goto(origin); const view = page.frameLocator("iframe");
+  await view.getByRole("button", { name: "打开作品", exact: true }).click();
+  await view.getByRole("button", { name: "正文与分集", exact: true }).click();
+  await view.getByRole("button", { name: "阅读分集", exact: true }).click();
+  await expect(view.getByText(/船还没来/)).toBeVisible();
+  await expect(view.getByRole("heading", { name: "最新提交参考稿", exact: true })).toBeVisible();
+  expect((await page.evaluate(() => window.harness.calls)).every(call => !/save|adopt|finalize/.test(String(call.arguments?.action)))).toBe(true);
+});
 test("all work areas use existing reads and explicit AI drafts without exposing grants", async ({ page }) => {
   const view = await open(page);
   await view.getByRole("button", { name: "打开作品", exact: true }).click();

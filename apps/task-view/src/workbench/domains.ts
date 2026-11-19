@@ -45,6 +45,8 @@ export function detailLinks(item: RecordValue): DetailLink[] {
   if (item.media_ref) add("查看固定媒体", "hetu.video.media.get", { media_ref: item.media_ref });
   if (typeof item.proposal_id === "string") add("查看固定方案", "hetu.agent_operations.get", { proposal_id: item.proposal_id });
   if (typeof item.draft_id === "string") add("查看待审稿", "hetu.drafts.get", { draft_id: item.draft_id });
+  const draft = item.draft_ref && typeof item.draft_ref === "object" ? item.draft_ref as RecordValue : undefined;
+  if (typeof draft?.draft_id === "string") add("阅读参考稿", "hetu.drafts.get", { draft_id: draft.draft_id });
   if (typeof item.report_id === "string") add("查看固定检查", "hetu.reports.get", { report_id: item.report_id });
   if (typeof item.link_id === "string") add("查看固定关联", "hetu.work_links.get", { link_id: item.link_id, ...(typeof item.revision === "number" ? { revision: item.revision } : {}) });
   return links;

@@ -22,14 +22,20 @@ export function TaskReview({ work, notify, ai }: SurfaceContext) {
     setLoading(true);
     setFailed(false);
     try {
-      const result = data(
+      let result = data(
         await desktop.tasks("list", undefined, { cursor: next }),
       );
+      const requested = agentStatus.taskId;
+      const items = [...result.tasks];
+      while (!next && requested && !items.some((task: any) => task.task_ref.task_id === requested) && result.next_cursor) {
+        result = data(await desktop.tasks("list", undefined, { cursor: result.next_cursor }));
+        items.push(...result.tasks);
+      }
       if (epoch !== generation.current) return;
-      setTasks((old) => (next ? [...old, ...result.tasks] : result.tasks));
+      setTasks((old) => (next ? [...old, ...items] : items));
       setCursor(result.next_cursor ?? undefined);
-      const reviewable = result.tasks.find((task: any) => task.submission_count > 0 && task.state !== "closed");
-      setAgentStatus(reviewable ? { state: "waiting_for_audit", taskId: reviewable.task_ref.task_id, message: reviewable.brief } : { state: "idle" });
+      const reviewable = items.find((task: any) => task.task_ref.task_id === requested) ?? items.find((task: any) => task.submission_count > 0 && task.state !== "closed");
+      if (!next) setAgentStatus(reviewable ? { state: "waiting_for_audit", taskId: reviewable.task_ref.task_id, message: reviewable.brief } : { state: "idle" });
     } catch (error) {
       if (epoch !== generation.current) return;
       setFailed(true);

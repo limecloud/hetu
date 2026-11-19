@@ -63,13 +63,34 @@
       "build/mcp-app-discovery/stdio-tests.log": "73b6667e333c50f830c1529ad1ee10eedff70d585306246310e1200cb30d4a5f",
       "build/mcp-app-discovery/codex-bundled-handshake.json": "535c9b7b004851de934985f4b77ba3ae5fbeca467097672473d1aab3d5e521db"
     },
-    "test_source_version": "0.13.1 plus discovery fix; version-only rebuild recorded with release"
+    "test_source_version": "0.13.1 plus discovery fix; version-only rebuild recorded with release",
+    "release_version_mcp_apps": {
+      "version": "0.13.2",
+      "passed": 43,
+      "failed": 0,
+      "official_bundled_codex": "0.169.0-alpha.11.1",
+      "global_catalog_and_resource_read": "passed",
+      "log_sha256": "2f0b19163b0f2571c2c90591341ec2f27d3793e1034568c637dcd47fe1ae7372"
+    },
+    "plugins": {
+      "passed": 104,
+      "failed": 0,
+      "log_sha256": "66a783a8009d969e8093d6022ea75c6897c347ef48703cf8da070654fd14b847"
+    }
   },
   "release": {
     "status": "pending"
   },
   "installation": {
-    "status": "pending"
+    "status": "local_candidate_installed",
+    "version": "0.13.2",
+    "signing": "ad-hoc-development",
+    "notarized": false,
+    "artifact_files_verified": 3386,
+    "connection_plugin_registered": true,
+    "source_sha256": "824242c6a22e4f195bbd65d1a424de0f8f74b26144643487a693a2c40a3febf8",
+    "user_gui_acceptance": "pending",
+    "receipt": "build/local-update-v0132-dev/installation.json"
   },
   "not_verified": [
     "Codex Desktop GUI最终侧栏显示、点击打开和消息交互；当前Computer Use通道不可用，待作者实机测试。",
