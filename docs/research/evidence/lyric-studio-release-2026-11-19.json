@@ -37,7 +37,148 @@
     "未执行Windows/Linux专业实机、付费外发、作者选用或定稿"
   ],
   "website": {
-    "state": "local_verified_pending_deployment",
-    "origin": "https://hetu.limeai.run"
+    "state": "deployed_and_verified",
+    "deployment": "https://eb6fee0d.hetu-website-3uu.pages.dev",
+    "deployed_source_commit": "2c85cc973fb0ad38203580ecced917a4bb6813de",
+    "origin": "https://hetu.limeai.run",
+    "browser_checks_passed": 28,
+    "local_browser_checks_passed": 28,
+    "public_responses": {
+      "origin": "https://hetu.limeai.run",
+      "responses": [
+        {
+          "route": "/plugins/",
+          "status": 200,
+          "raw_sha256": "3a2140defa4744e948b8b6fce0efd2492a463874596440338125165c37b71de5",
+          "expected_sha256": "3a2140defa4744e948b8b6fce0efd2492a463874596440338125165c37b71de5",
+          "mode": "exact",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/plugins/",
+          "status": 200,
+          "raw_sha256": "c0bbf313c3bdd7934c6712698b0bb0b13c8b89343f9adf056141afbeeb1f8ea2",
+          "expected_sha256": "c0bbf313c3bdd7934c6712698b0bb0b13c8b89343f9adf056141afbeeb1f8ea2",
+          "mode": "exact",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/lyric-studio/",
+          "status": 200,
+          "raw_sha256": "401e55774db9004de616d7171816c9a5f0fc1673c52441b4cad3c598f6efe2c4",
+          "expected_sha256": "401e55774db9004de616d7171816c9a5f0fc1673c52441b4cad3c598f6efe2c4",
+          "mode": "exact",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/plugins/lyric-studio/",
+          "status": 200,
+          "raw_sha256": "a937d652fad828fe377627914a212663a286162101a03167b345f47989becb7f",
+          "expected_sha256": "a937d652fad828fe377627914a212663a286162101a03167b345f47989becb7f",
+          "mode": "exact",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/docs/plugins/",
+          "status": 200,
+          "raw_sha256": "3fc4876d303143342e87d8fc8d16036796ab5a56613e54db0b9d06a7f46fbe17",
+          "expected_sha256": "3fc4876d303143342e87d8fc8d16036796ab5a56613e54db0b9d06a7f46fbe17",
+          "mode": "exact",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/docs/plugins/",
+          "status": 200,
+          "raw_sha256": "94108c72b0d34e48dbdfd887ba761fe0d307e2cba1d94a4f2daae160a6b335d5",
+          "expected_sha256": "94108c72b0d34e48dbdfd887ba761fe0d307e2cba1d94a4f2daae160a6b335d5",
+          "mode": "exact",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/blog/line-to-take/",
+          "status": 200,
+          "raw_sha256": "8c635497a52bc4a2f21abded097cd6408a8b665e1170b5c927c2bd9c156b242c",
+          "expected_sha256": "8c635497a52bc4a2f21abded097cd6408a8b665e1170b5c927c2bd9c156b242c",
+          "mode": "exact",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/blog/line-to-take/",
+          "status": 200,
+          "raw_sha256": "898f864782fd8c5411eee3ba8101792e94738405c1aa8ea72188c5ec925cdf30",
+          "expected_sha256": "898f864782fd8c5411eee3ba8101792e94738405c1aa8ea72188c5ec925cdf30",
+          "mode": "exact",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/blog/creative-plugins/",
+          "status": 200,
+          "raw_sha256": "55bdac4e7ccc1a02fc4951945f4b95928254f5fa673582d24b1f66d5635d2b7a",
+          "expected_sha256": "55bdac4e7ccc1a02fc4951945f4b95928254f5fa673582d24b1f66d5635d2b7a",
+          "mode": "exact",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/blog/creative-plugins/",
+          "status": 200,
+          "raw_sha256": "4e5f91e3411fcece9a511669e6e0b7860f221f7d8a27aaccbd5b4a20e11e4e7c",
+          "expected_sha256": "4e5f91e3411fcece9a511669e6e0b7860f221f7d8a27aaccbd5b4a20e11e4e7c",
+          "mode": "exact",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/lyric-studio.png",
+          "status": 200,
+          "raw_sha256": "8fd0cd9d7ead3d1947b94165aabb8a73c74bc8d0de7408d57aee29bab3fcfd57",
+          "expected_sha256": "8fd0cd9d7ead3d1947b94165aabb8a73c74bc8d0de7408d57aee29bab3fcfd57",
+          "mode": "exact",
+          "observed_changes": [],
+          "matches_build": true
+        }
+      ]
+    },
+    "public_release_links": [
+      {
+        "url": "https://github.com/wordflowlab/hetu-lyric-studio/releases/tag/v0.1.0",
+        "status": 200,
+        "sha256": "02e3e0041764295f38f160297c26a55885ebf35403bdfe9a27ad1af5325b8227"
+      },
+      {
+        "url": "https://github.com/wordflowlab/hetu-lyric-studio/releases/download/v0.1.0/org.wordflowlab.lyric-studio-0.1.0.tgz",
+        "status": 200,
+        "sha256": "5f215af67be55035190b71055464ef745e835b53362dc4a134c9dccb7244833b"
+      },
+      {
+        "url": "https://github.com/wordflowlab/hetu-lyric-studio/releases/download/v0.1.0/release-integrity.json",
+        "status": 200,
+        "sha256": "48a198dab5c8b0cd9493e7df512fc6d4fbffdf4ed97e1d7d2748e43b6410f220"
+      },
+      {
+        "url": "https://github.com/wordflowlab/hetu-lyric-studio/blob/35daf3f9c7a92badd7a937d0947757ab7f6b2b85/docs/research/release-acceptance.json",
+        "status": 200,
+        "sha256": "b1b7adc162a3280d197c132938e7cb5ae20f980f5160e3a54c522d8ea830ce70"
+      },
+      {
+        "url": "https://github.com/wordflowlab/hetu-lyric-studio/blob/35daf3f9c7a92badd7a937d0947757ab7f6b2b85/CAPABILITIES.md",
+        "status": 200,
+        "sha256": "079957aed1b546fa8c706dacb2c7662b8bca625757e80e940e32abf35d20a9b5"
+      },
+      {
+        "url": "https://github.com/wordflowlab/hetu-lyric-studio/tree/35daf3f9c7a92badd7a937d0947757ab7f6b2b85/docs",
+        "status": 200,
+        "sha256": "22b66d2ff1ee544c725bf28135a417e42f7cec8b23ac8450c0c59fc52f2f90a7"
+      }
+    ],
+    "normalization": "11份响应与构建原字节一致，未移除统计标签或空白"
   }
 }
