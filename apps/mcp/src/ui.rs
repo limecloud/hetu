@@ -16,8 +16,12 @@ const WORKBENCH_HTML: &str = include_str!("../resources/workbench.html");
 pub fn supported(context: &RequestContext<RoleServer>) -> bool {
     context
         .client_capabilities()
-        .and_then(|capabilities| capabilities.extensions)
-        .and_then(|extensions| extensions.get("io.modelcontextprotocol/ui").cloned())
+        .and_then(|capabilities| {
+            // 目录发现不依赖此协商；任务增强兼容旧客户端的experimental字段。
+            capabilities.extensions.as_ref().and_then(|e| e.get("io.modelcontextprotocol/ui"))
+                .or_else(|| capabilities.experimental.as_ref().and_then(|e| e.get("io.modelcontextprotocol/ui")))
+                .cloned()
+        })
         .and_then(|settings| settings.get("mimeTypes").cloned())
         .and_then(|types| types.as_array().cloned())
         .is_some_and(|types| types.iter().any(|value| value == MIME))

@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-11-19",
+  "version": "0.13.2",
+  "scope": "Codex Desktop全局入口发现修复",
+  "source": {
+    "baseline_commit": "a2e278054bdaf88deeec2891c682c98958480937",
+    "files_sha256": {
+      "apps/mcp/src/stable.rs": "6b6a199c4fd694bc922fd825a459099573cee8d38e672022d39c55a334381795",
+      "apps/mcp/src/ui.rs": "5a19838ddd4a095470bc9267132982529c4632974450541866af7fc0ca7139ac",
+      "apps/mcp/tests/stdio.rs": "ceecc5762311b636e6ae9269e1ecbfc6def8157755afec675f5d2117652a5b6c",
+      "apps/task-view/tests/connection.spec.ts": "1e6c9a95e35c09e409c3d4b17bb764ea0bf6791da004e7728e396464e7be72c4"
+    }
+  },
+  "host": {
+    "desktop_version": "26.1111.71025",
+    "desktop_build": "28661",
+    "bundled_codex_version": "0.169.0-alpha.11.1"
+  },
+  "before": {
+    "version": "0.13.1",
+    "desktop_log": "App link unavailable entrypoint=global result=not-found tool=hetu_open_app",
+    "actual_global_handshake": {
+      "protocolVersion": "2025-06-18",
+      "capabilities": {
+        "elicitation": {
+          "form": {},
+          "url": {}
+        }
+      },
+      "clientInfo": {
+        "name": "codex-mcp-client",
+        "title": "Codex",
+        "version": "0.169.0-alpha.11.1"
+      }
+    },
+    "root_cause": "全局目录探测未携UI能力，河图以UI协商作为静态入口出现在工具目录的前提。",
+    "secondary_issue": "旧experimental UI能力字段未归一化。"
+  },
+  "correction": {
+    "static_tool": "hetu_open_app",
+    "static_resource": "ui://hetu/workbench/1",
+    "entrypoints": [
+      "global",
+      "thread"
+    ],
+    "discovery_requires_ui_capabilities": false,
+    "business_authorization": "继续由共享Core核验精确作品、任务引用与撤权"
+  },
+  "verification": {
+    "mcp_stdio": {
+      "passed": 36,
+      "failed": 0
+    },
+    "mcp_apps": {
+      "passed": 43,
+      "failed": 0,
+      "official_bundled_codex_global_catalog": "passed",
+      "official_bundled_codex_resource_read": "passed"
+    },
+    "logs": {
+      "build/mcp-app-discovery/app-tests.log": "7635e1abcae58314a8756912290ce7ca7f5c09338f30654169b897648003151b",
+      "build/mcp-app-discovery/stdio-tests.log": "73b6667e333c50f830c1529ad1ee10eedff70d585306246310e1200cb30d4a5f",
+      "build/mcp-app-discovery/codex-bundled-handshake.json": "535c9b7b004851de934985f4b77ba3ae5fbeca467097672473d1aab3d5e521db"
+    },
+    "test_source_version": "0.13.1 plus discovery fix; version-only rebuild recorded with release"
+  },
+  "release": {
+    "status": "pending"
+  },
+  "installation": {
+    "status": "pending"
+  },
+  "not_verified": [
+    "Codex Desktop GUI最终侧栏显示、点击打开和消息交互；当前Computer Use通道不可用，待作者实机测试。",
+    "其他宿主的GUI兼容性。"
+  ]
+}

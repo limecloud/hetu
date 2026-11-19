@@ -25,7 +25,7 @@ npm run test:task-view
 
 ## 交互边界
 
-- `hetu_open_app`在有Apps能力的稳定连接中提供全局／线程入口。空参数只显示接入首页；management_ref或task_locator分别打开已获权作品或原任务，不扫描书库。
+- `hetu_open_app`在稳定连接中提供全局／线程入口及静态工作台资源；目录探测未声明Apps能力时也能发现，避免侧栏入口与界面握手互相等待。普通客户端可读取同一结构结果。空参数只显示接入首页；management_ref或task_locator分别打开已获权作品或原任务，不扫描书库。
 - `src/host/bridge.ts`复用标准MCP Apps桥接，`src/host/openai.ts`隔离OpenAI消息和深链接扩展；业务视图按能力显示，不按Codex或Claude品牌分支。完整开发方案见[27第6.1节](../../docs/27-Agent与Codex插件集成设计.md#61-codex-mcp-app-开发方案)。
 - 草稿、发送、上下文附加及成果保存分别显示。媒体分块给base64和双份MCP结果预留预算；重验固定文件身份、连续范围和完整摘要后使用本地Blob播放，不加载任意网络媒体。
 

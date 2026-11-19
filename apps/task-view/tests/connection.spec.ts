@@ -4,6 +4,8 @@ import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { mkdtemp, readFile, writeFile, chmod, mkdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
+import { spawn } from "node:child_process";
+import { createInterface } from "node:readline";
 
 for (const lost of [false, true]) test(`fixed connection installation ${lost ? "recovers a lost receipt" : "registers once"} using isolated Codex state`, async () => {
   test.skip(process.platform === "win32", "本夹具使用Unix可执行脚本；Windows制品另验。");
@@ -63,4 +65,47 @@ test("installed official Codex CLI accepts the connection package in an isolated
     const mcp = JSON.parse(await readFile(join(current.data.directory, "mcp.json"), "utf8"));
     expect(mcp.mcpServers.hetu.args).toEqual(["--client", "codex"]);
   } finally { await client.close(); }
+});
+
+test("official Codex global catalog discovers the App before UI negotiation", async () => {
+  const binary = process.env.HETU_ACCEPT_CODEX_BINARY;
+  test.skip(!binary, "指定HETU_ACCEPT_CODEX_BINARY才验收真实Codex App Server的目录发现。");
+  test.setTimeout(60_000);
+  const folder = await mkdtemp(join(tmpdir(), "hetu-codex-app-catalog-"));
+  const command = resolve(process.env.HETU_CARGO_TARGET_DIR ?? "../../target", "debug/hetu-mcp");
+  await writeFile(join(folder, "config.toml"), `[mcp_servers.hetu_probe]\ncommand = ${JSON.stringify(command)}\nargs = ${JSON.stringify(["--client", "codex", "--collaboration-dir", join(folder, "access")])}\n`);
+  const child = spawn(binary!, ["app-server"], { env: { ...process.env, CODEX_HOME: folder }, stdio: ["pipe", "pipe", "ignore"] });
+  const lines = createInterface({ input: child.stdout });
+  let next = 0;
+  const pending = new Map<number, { resolve(value: any): void; reject(error: Error): void; timer: ReturnType<typeof setTimeout> }>();
+  lines.on("line", line => {
+    const response = JSON.parse(line), request = pending.get(response.id);
+    if (!request) return;
+    pending.delete(response.id); clearTimeout(request.timer);
+    response.error ? request.reject(new Error(JSON.stringify(response.error))) : request.resolve(response.result);
+  });
+  const call = (method: string, params: unknown) => new Promise<any>((resolve, reject) => {
+    const id = ++next, timer = setTimeout(() => { pending.delete(id); reject(new Error(`Codex ${method}超时`)); }, 30_000);
+    pending.set(id, { resolve, reject, timer });
+    child.stdin.write(JSON.stringify({ jsonrpc: "2.0", id, method, params }) + "\n");
+  });
+  try {
+    await call("initialize", { clientInfo: { name: "hetu-app-catalog-acceptance", version: "1" }, capabilities: { experimentalApi: true } });
+    child.stdin.write(JSON.stringify({ jsonrpc: "2.0", method: "initialized" }) + "\n");
+    const catalog = await call("mcpServerStatus/list", { limit: 100 });
+    const server = catalog.data.find((entry: any) => entry.name === "hetu_probe");
+    expect(server?.toolsError).toBeNull();
+    const entry = server.tools.hetu_open_app;
+    expect(entry?._meta?.["openai/ui"]?.entrypoints).toEqual([{ type: "global" }, { type: "thread" }]);
+    expect(entry?._meta?.ui?.resourceUri).toBe("ui://hetu/workbench/1");
+    // Codex额外协商elicitation时会暴露固定模型确认工具。
+    expect(Object.keys(server.tools).length).toBeLessThanOrEqual(14);
+    expect(server.resources.some((resource: any) => resource.uri === "ui://hetu/workbench/1")).toBe(true);
+    const resource = await call("mcpServer/resource/read", { server: "hetu_probe", uri: "ui://hetu/workbench/1" });
+    expect(resource.contents[0].mimeType).toBe("text/html;profile=mcp-app");
+    expect(resource.contents[0].text).toContain("<!doctype html>");
+  } finally {
+    for (const request of pending.values()) clearTimeout(request.timer);
+    lines.close(); child.stdin.end(); child.kill();
+  }
 });

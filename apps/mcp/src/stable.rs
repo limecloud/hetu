@@ -150,7 +150,8 @@ impl ServerHandler for StableServer {
                     }
                 })
                 .collect();
-        if apps { tools.push(app::tool()); }
+        // 全局目录探测尚未协商UI；静态入口必须先可发现，才能打开界面。
+        tools.push(app::tool());
         Ok(ListToolsResult::with_all_items(tools))
     }
     async fn call_tool(
@@ -159,7 +160,6 @@ impl ServerHandler for StableServer {
         context: RequestContext<RoleServer>,
     ) -> Result<CallToolResponse, ErrorData> {
         if request.name == app::TOOL {
-            if !ui::supported(&context) { return Err(ErrorData::invalid_params("客户端未声明MCP Apps能力 / MCP Apps capability required", None)); }
             let _permit = self.gate.clone().try_acquire_owned().map_err(|_| ErrorData::internal_error("入口忙，请稍后读取 / App is busy", None))?;
             let hub = self.hub.clone();
             let cancellation = context.ct.clone();
@@ -257,7 +257,7 @@ impl ServerHandler for StableServer {
             if ui::supported(&context) {
                 vec![ui::resource(), ui::operation_resource(), ui::workbench_resource()]
             } else {
-                vec![]
+                vec![ui::workbench_resource()]
             },
         ))
     }
@@ -274,7 +274,7 @@ impl ServerHandler for StableServer {
         request: ReadResourceRequestParams,
         context: RequestContext<RoleServer>,
     ) -> Result<ReadResourceResponse, ErrorData> {
-        if request.uri == ui::WORKBENCH_URI && ui::supported(&context) {
+        if request.uri == ui::WORKBENCH_URI {
             return Ok(ui::read_workbench().into());
         }
         if request.uri == ui::OPERATION_URI && ui::supported(&context) {
