@@ -897,30 +897,29 @@
     },
     "manifest": {
       "id": "org.wordflowlab.murder-mystery",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "host_api": "1",
       "display": {
         "zh-CN": "剧本杀工坊",
         "en": "Murder Mystery Studio"
       },
-      "license": "Apache-2.0",
-      "permissions": []
+      "license": "Apache-2.0"
     },
     "source_repository": "https://github.com/wordflowlab/hetu-murder-mystery",
-    "source_commit": "d7b8daac471ea4fa788b0a1d7082486dd114132d",
+    "source_commit": "a014a851ebf089f33e4fe273eb3ef5c108203bde",
     "release": {
       "channel": "preview",
-      "url": "https://github.com/wordflowlab/hetu-murder-mystery/releases/tag/v0.1.0",
-      "download_url": "https://github.com/wordflowlab/hetu-murder-mystery/releases/download/v0.1.0/org.wordflowlab.murder-mystery-0.1.0.tgz",
-      "archive_sha256": "1761a0cb369695f48bf5f9eafc166eedf60a47c2b401eff58a343281a376aaa4",
-      "package_sha256": "c2bf8995da6ddb2cbead5e4962bb9d9130ee6e8d387df5bdca39015374bfed24",
-      "size_bytes": 107472,
-      "minimum_host_version": "0.12.4",
+      "url": "https://github.com/wordflowlab/hetu-murder-mystery/releases/tag/v0.2.0",
+      "download_url": "https://github.com/wordflowlab/hetu-murder-mystery/releases/download/v0.2.0/org.wordflowlab.murder-mystery-0.2.0.tgz",
+      "archive_sha256": "f9ee51ad36578d60dd28b9354ee6040f96c7395df18a310a9a5e994fb2bcd62a",
+      "package_sha256": "eb21aaae3b13a8f3c2b965e49ffae5ca52e6df22288b0b6edfff4d6218ce3f9e",
+      "size_bytes": 164815,
+      "minimum_host_version": "0.12.6",
       "verified_platforms": [
         "macOS arm64"
       ],
-      "evidence_url": "https://github.com/wordflowlab/hetu-murder-mystery/blob/d7b8daac471ea4fa788b0a1d7082486dd114132d/docs/research/release-acceptance.json",
-      "integrity_url": "https://github.com/wordflowlab/hetu-murder-mystery/releases/download/v0.1.0/release-integrity.json"
+      "evidence_url": "https://github.com/wordflowlab/hetu-murder-mystery/blob/a014a851ebf089f33e4fe273eb3ef5c108203bde/docs/research/v0.2.0/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-murder-mystery/releases/download/v0.2.0/release-integrity.json"
     }
   },
   {
@@ -1355,6 +1354,105 @@
       ],
       "evidence_url": "https://github.com/wordflowlab/hetu-quest-studio/blob/dcaf6a31fbbee9f66393fa7ae67d8bacf0378066/docs/research/release-acceptance.json",
       "integrity_url": "https://github.com/wordflowlab/hetu-quest-studio/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "script-supervisor",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.script-supervisor",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "场记工作台",
+        "en": "Script Supervisor"
+      },
+      "license": "Apache-2.0"
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-script-supervisor",
+    "source_commit": "adb06003bf0aa4a1e3a37055d7089602400876d1",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-script-supervisor/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-script-supervisor/releases/download/v0.1.0/org.wordflowlab.script-supervisor-0.1.0.tgz",
+      "archive_sha256": "3a354dff0fc3568b2aa7c5fb0a6c7cadf5e7b1feb255009f14ad8f4b97bc5abb",
+      "package_sha256": "c7d2c3c11041ff19851d9fe85a48f28c74f972f965ed6547a3326e9a7431dfd0",
+      "size_bytes": 115002,
+      "minimum_host_version": "0.12.6",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-script-supervisor/blob/adb06003bf0aa4a1e3a37055d7089602400876d1/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-script-supervisor/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "language-studio",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.language-studio",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "构造语言工坊",
+        "en": "Constructed Language Studio"
+      },
+      "license": "Apache-2.0"
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-language-studio",
+    "source_commit": "8f759520a2359f67668d7259ed37f88aa3884fc6",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-language-studio/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-language-studio/releases/download/v0.1.0/org.wordflowlab.language-studio-0.1.0.tgz",
+      "archive_sha256": "d908fe0f46e2b0c162ce186cf017c4e585994a364655740c2433dd0a2c60a758",
+      "package_sha256": "c64913f4ace3eef524924e784b1e8f600a96173bedff08c2b107795cd9c54a12",
+      "size_bytes": 111078,
+      "minimum_host_version": "0.12.6",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-language-studio/blob/8f759520a2359f67668d7259ed37f88aa3884fc6/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-language-studio/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "musical-studio",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.musical-studio",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "音乐剧工坊",
+        "en": "Musical Theatre Studio"
+      },
+      "license": "Apache-2.0"
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-musical-studio",
+    "source_commit": "7444396340759d0bbbcbfcd331bd5e53ac0a6c0e",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-musical-studio/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-musical-studio/releases/download/v0.1.0/org.wordflowlab.musical-studio-0.1.0.tgz",
+      "archive_sha256": "f8bbbb068d24ccdb464a64b4b187b175b16391aa5bb546ea39b365f82ed179b7",
+      "package_sha256": "70f42fb31863b5be091c265d6415502573682e0c1cc52e13b510f7c58e2d6b85",
+      "size_bytes": 134791,
+      "minimum_host_version": "0.12.6",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-musical-studio/blob/7444396340759d0bbbcbfcd331bd5e53ac0a6c0e/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-musical-studio/releases/download/v0.1.0/release-integrity.json"
     }
   }
 ]

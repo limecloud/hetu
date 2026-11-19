@@ -30,6 +30,11 @@
 .plugin-card-heading > span { font-size: 12px; color: var(--muted); white-space: nowrap; }
 .plugin-card-body > p { color: var(--muted); margin: 0 0 24px; }
 .plugin-card-meta { display: flex; gap: 20px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+.plugin-artwork { margin: 0; overflow: hidden; aspect-ratio: 3 / 2; background: var(--sage-3); }
+.plugin-artwork img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.plugin-detail-hero .plugin-artwork, .plugin-home-grid .plugin-artwork { border-radius: 8px; }
+.plugin-workspace .plugin-visual { border: .5px solid var(--line); border-radius: 6px; overflow: hidden; }
+.plugin-workspace .plugin-visual > img { max-height: none; object-fit: contain; }
 .plugin-visual { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--sage-3); margin: 0; min-width: 0; }
 .plugin-visual > img { width:100%;height:auto;max-height:290px;object-fit:cover;object-position:top; }
 .plugin-release { margin-bottom:24px;font-size:12px; }

@@ -1,7 +1,7 @@
 ---
 import { categories, plugins } from '../lib/plugins';
 import { route, type Locale } from '../lib/site';
-import PluginVisual from './PluginVisual.astro';
+import PluginArtwork from './PluginArtwork.astro';
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const en = locale === 'en';
@@ -15,7 +15,7 @@ const en = locale === 'en';
     </div>
   </div>
   <div class="plugin-grid">{plugins.map(plugin => <article class="plugin-card" data-plugin-card data-category={plugin.category} data-search={`${plugin.display[locale]} ${plugin.id} ${plugin.summary[locale]} ${plugin.use[locale]}`.toLocaleLowerCase()}>
-    <a href={route(locale, `plugins/${plugin.slug}`)}><PluginVisual locale={locale} kind={plugin.slug}/><div class="plugin-card-body"><div class="plugin-card-heading"><h3>{plugin.display[locale]}</h3><span>v{plugin.version}{plugin.release?.channel === 'preview' && <> {en ? 'Preview' : '开发预览'}</>}</span></div><p>{plugin.summary[locale]}</p><div class="plugin-card-meta"><span>{en ? 'By ' : ''}{plugin.publisher[locale]}</span><span>{plugin.license}</span></div><span class="text-link">{en ? 'Explore plugin' : '了解插件'} <span aria-hidden="true">→</span></span></div></a>
+    <a href={route(locale, `plugins/${plugin.slug}`)}><PluginArtwork locale={locale} kind={plugin.slug}/><div class="plugin-card-body"><div class="plugin-card-heading"><h3>{plugin.display[locale]}</h3><span>v{plugin.version}{plugin.release?.channel === 'preview' && <> {en ? 'Preview' : '开发预览'}</>}</span></div><p>{plugin.summary[locale]}</p><div class="plugin-card-meta"><span>{en ? 'By ' : ''}{plugin.publisher[locale]}</span><span>{plugin.license}</span></div><span class="text-link">{en ? 'Explore plugin' : '了解插件'} <span aria-hidden="true">→</span></span></div></a>
   </article>)}</div>
   <div class="plugin-empty" hidden data-plugin-empty><h3>{en ? 'No matching plugins' : '没有找到匹配的插件'}</h3><p>{en ? 'Try another term or clear the filters.' : '试试其他关键词，或清除筛选后查看全部。'}</p><button class="button secondary" type="button" data-plugin-reset>{en ? 'Clear filters' : '清除筛选'}</button></div>
 </section>

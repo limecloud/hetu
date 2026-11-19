@@ -1,0 +1,2034 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-19",
+  "purpose": "官网插件主题宣传插画，实际产品工作面另行展示",
+  "provider_origin": "https://img.aishenji.top",
+  "workflow": "imagegen skill bundled CLI generate-batch; original PNG retained locally, WebP derivatives deployed",
+  "images": [
+    {
+      "slug": "screenplay",
+      "title": {
+        "zh-CN": "剧本创作",
+        "en": "Screenplay"
+      },
+      "model": "gpt-image-2.5-flare",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Two expressive actors rehearse an intimate conversation across a small stage doorway, while a fountain pen and loosely folded script pages frame the foreground. One warm theatre spotlight reveals action and dialogue as a living dramatic scene.",
+      "source_sha256": "450dbfe680552e01abb0eb28eea781a9d9d2968b9d670e7834d3d0012f8371a7",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/screenplay-1440-c0677abfc8e9.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "c0677abfc8e9292ffe11e3afafeb8cb8f3fee3e1433944e5b2cebd8529a7e1a4",
+      "alt": {
+        "zh-CN": "剧本创作主题插画，两位演员在舞台门前排演一场对话",
+        "en": "Screenplay creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/screenplay-480-5daa9c3a38c3.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "5daa9c3a38c30b09132385cd98244562f8b65404030a899472137825d2a5b7fd",
+          "size_bytes": 33848
+        },
+        {
+          "path": "/plugins/illustrations/screenplay-960-45b39a361e57.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "45b39a361e578529e158a5bb8954dedf2f7877f7908a25c080ba013219e37f58",
+          "size_bytes": 105170
+        },
+        {
+          "path": "/plugins/illustrations/screenplay-1440-c0677abfc8e9.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "c0677abfc8e9292ffe11e3afafeb8cb8f3fee3e1433944e5b2cebd8529a7e1a4",
+          "size_bytes": 234576
+        }
+      ]
+    },
+    {
+      "slug": "video-studio",
+      "title": {
+        "zh-CN": "视听制作",
+        "en": "Video Studio"
+      },
+      "model": "gpt-image-2.5-sunburst",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A film editor's hands join two physical strips of moving-picture film, showing one continuous cinematic action across the frames; a compact movie camera and soft studio light sit nearby. Instantly communicate crafting and editing a short film.",
+      "source_sha256": "9a6dc1bb33c249c9cc3b0213b0db53fc129439cbc11c3612a1dca276e50fdde5",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/video-studio-1440-6319bf3ec8a8.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "6319bf3ec8a8c46c7e081a9e20922d61f901d5d667bb1a2a6ebd401d689ef439",
+      "alt": {
+        "zh-CN": "视听制作主题插画，剪辑者连接展示连续动作的电影胶片",
+        "en": "Video Studio creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/video-studio-480-5bb88250e76b.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "5bb88250e76b0bb170140e1653d0615c9d5e11c9c8ee4143f95735deca97642d",
+          "size_bytes": 35722
+        },
+        {
+          "path": "/plugins/illustrations/video-studio-960-c29c7b244a25.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "c29c7b244a25bf091838490798de4e672c6a3e4598315e9d7896ea42da168241",
+          "size_bytes": 129732
+        },
+        {
+          "path": "/plugins/illustrations/video-studio-1440-6319bf3ec8a8.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "6319bf3ec8a8c46c7e081a9e20922d61f901d5d667bb1a2a6ebd401d689ef439",
+          "size_bytes": 314436
+        }
+      ]
+    },
+    {
+      "slug": "director-stage",
+      "title": {
+        "zh-CN": "导演布景台",
+        "en": "Director Stage"
+      },
+      "model": "gpt-image-2.5-flare",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A miniature film set seen in three-quarter perspective: two actors, one doorway, a chair, a movie camera on a small dolly and one overhead spotlight. A director's hand positions the camera toward the actors; unmistakable blocking and set direction.",
+      "source_sha256": "8f5ee18e0163e4412c27942c9f0e67fea7595fb889d9a5fc31610b3b065ce5b9",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/director-stage-1440-0851959c65d8.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "0851959c65d8697294cf371782ae7ca4b919a434bbdb80da23f2e1d98bf9d47d",
+      "alt": {
+        "zh-CN": "导演布景台主题插画，导演为演员、场景和摄影机安排位置",
+        "en": "Director Stage creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/director-stage-480-48994965338c.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "48994965338c1d4416367632c745ebdece578c2fbb6511a013c03c12794b62d5",
+          "size_bytes": 39208
+        },
+        {
+          "path": "/plugins/illustrations/director-stage-960-0856ddfeb3c0.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "0856ddfeb3c0a82816c0fd98dc89f4ca667a1fbf9efa123fe071f930bcf8b120",
+          "size_bytes": 136906
+        },
+        {
+          "path": "/plugins/illustrations/director-stage-1440-0851959c65d8.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "0851959c65d8697294cf371782ae7ca4b919a434bbdb80da23f2e1d98bf9d47d",
+          "size_bytes": 320662
+        }
+      ]
+    },
+    {
+      "slug": "shanhai",
+      "title": {
+        "zh-CN": "山海经纬",
+        "en": "Shanhai"
+      },
+      "model": "gpt-image-2.5-sunburst",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: An open illustrated field journal releases an elegant original mythical mountain creature, half deer and half flowing cloud, beside a layered jade mountain and a tiny brass compass. Evoke a Chinese mythological bestiary and exploratory world stories, not a generic landscape.",
+      "source_sha256": "1c2b05d9dd79c5fb6bfeffc7e005358639440877a4a809a51ab7a9827b028274",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/shanhai-1440-14b8e908aac1.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "14b8e908aac1b5f67f30bb03e56e0729afed70358a08e2fb7666b064735c9156",
+      "alt": {
+        "zh-CN": "山海经纬主题插画，云鹿从山海档案中跃出，群山与罗盘相伴",
+        "en": "Shanhai creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/shanhai-480-266692672679.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "2666926726793bd88115e9ec6f7a027fa31c9d5b063a737746ba1f28c7f96263",
+          "size_bytes": 46950
+        },
+        {
+          "path": "/plugins/illustrations/shanhai-960-4423d3d42d11.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "4423d3d42d111854c9eb434e757d820f5fa62e3744ff95ace911da4061cac82e",
+          "size_bytes": 168176
+        },
+        {
+          "path": "/plugins/illustrations/shanhai-1440-14b8e908aac1.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "14b8e908aac1b5f67f30bb03e56e0729afed70358a08e2fb7666b064735c9156",
+          "size_bytes": 383192
+        }
+      ]
+    },
+    {
+      "slug": "prose-studio",
+      "title": {
+        "zh-CN": "文风工坊",
+        "en": "Prose Studio"
+      },
+      "model": "gpt-image-2.5-flare",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A fountain pen draws one graceful sentence-like ribbon that changes from a crisp angular cut-paper form to a flowing painterly wave, beside two distinct manuscript leaves. Tangible act of refining a writer's voice, with no readable text.",
+      "source_sha256": "e2547aea0f5b5235737acc553caa66ee5c1f87916309e2312d6d01055ff740c9",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/prose-studio-1440-4cb1fe6ee908.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "4cb1fe6ee9086d472830fcd6b7cab3a1fcbdb6e3ae248a06018f72f5d10963b2",
+      "alt": {
+        "zh-CN": "文风工坊主题插画，钢笔把生硬的文字线条修成流畅的笔触",
+        "en": "Prose Studio creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/prose-studio-480-2efb3ba5f3d6.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "2efb3ba5f3d6eb6224fd3161f08498d6fb8de445cf76f431268d89d19226c4e9",
+          "size_bytes": 30972
+        },
+        {
+          "path": "/plugins/illustrations/prose-studio-960-34cd899908ff.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "34cd899908ffa9200b84fea4bf0ce579193c6e0eedecf4d5525aa3a08bff4aa3",
+          "size_bytes": 109874
+        },
+        {
+          "path": "/plugins/illustrations/prose-studio-1440-4cb1fe6ee908.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "4cb1fe6ee9086d472830fcd6b7cab3a1fcbdb6e3ae248a06018f72f5d10963b2",
+          "size_bytes": 263516
+        }
+      ]
+    },
+    {
+      "slug": "novel-review",
+      "title": {
+        "zh-CN": "小说审校",
+        "en": "Novel Review"
+      },
+      "model": "gpt-image-2.5-sunburst",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: An attentive editor examines a manuscript with a large magnifying glass; one tangled jade story thread is carefully untied with a pencil and paper markers. A clear visual of finding and correcting manuscript problems, warm and constructive.",
+      "source_sha256": "7e7d6f31c23e6fcfc2cc2e3e1c5205ab8155d3d397aa98a942e854a7a6a4a186",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/novel-review-1440-8cacbdc0e9ad.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "8cacbdc0e9ad2709e7085823dab6b4df4ba2cc111ca33289b6dc3449f3e2dbf0",
+      "alt": {
+        "zh-CN": "小说审校主题插画，编辑用放大镜查阅稿件并解开叙事线结",
+        "en": "Novel Review creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/novel-review-480-10324e1e84e8.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "10324e1e84e8182f26fd8f5d66f3c4530db3892370d5396e97e23aa6122f8bf7",
+          "size_bytes": 43548
+        },
+        {
+          "path": "/plugins/illustrations/novel-review-960-29e9bf725594.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "29e9bf725594c3570d0d7d581f03cbd8ea349c0f26548b02160b04bc7f70d2f3",
+          "size_bytes": 147810
+        },
+        {
+          "path": "/plugins/illustrations/novel-review-1440-8cacbdc0e9ad.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "8cacbdc0e9ad2709e7085823dab6b4df4ba2cc111ca33289b6dc3449f3e2dbf0",
+          "size_bytes": 343636
+        }
+      ]
+    },
+    {
+      "slug": "novel-atlas",
+      "title": {
+        "zh-CN": "小说图鉴",
+        "en": "Novel Atlas"
+      },
+      "model": "gpt-image-2.5-flare",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A story traveler walks through a tangible folded map with a walled town, river crossing and mountain pass, leaving a single clear trail. A large compass and little location pin are secondary; instantly a fictional world atlas and journeys.",
+      "source_sha256": "413bf500a8d6d606b4b2df5d1564301fd0628db8c1c4d1d88a14a7a5aa9f5a92",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/novel-atlas-1440-3c615f78c948.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "3c615f78c948a3cc13de023829d4583d28d9765b1f36c74b9d0a5320afb44bc2",
+      "alt": {
+        "zh-CN": "小说图鉴主题插画，旅人沿地图走过城镇、河桥和山口",
+        "en": "Novel Atlas creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/novel-atlas-480-38addf5991a3.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "38addf5991a3f934bd304f35e5e39144af094d2e0ed3d294e5ff06a1d14e8ce0",
+          "size_bytes": 51272
+        },
+        {
+          "path": "/plugins/illustrations/novel-atlas-960-c5d6b7c32c86.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "c5d6b7c32c860c254975cfa709b78efe9a66c43c45e9fa4754cf49a63903d006",
+          "size_bytes": 179172
+        },
+        {
+          "path": "/plugins/illustrations/novel-atlas-1440-3c615f78c948.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "3c615f78c948a3cc13de023829d4583d28d9765b1f36c74b9d0a5320afb44bc2",
+          "size_bytes": 406700
+        }
+      ]
+    },
+    {
+      "slug": "novel-planner",
+      "title": {
+        "zh-CN": "小说规划",
+        "en": "Novel Planner"
+      },
+      "model": "gpt-image-2.5-sunburst",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A writer shaping a novel: a curved procession of large folded manuscript leaves becomes three miniature story scenes, from a traveler leaving home to a confrontation at a bridge and a door opening onto sunrise. A fountain pen guides one visible jade narrative thread through these turning points. Instantly communicate planning a complete novel story arc, distinct from printing a book or generic reading.",
+      "source_sha256": "2771b899b9bbaf01c158e182dcde16a27ce3d89ffa730c9296e9de17b51aa2de",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/novel-planner-1440-ba79bf7c578f.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "ba79bf7c578fa817d34438acb57c40e3d3f88482bf2e240ee6157d6627c476f5",
+      "alt": {
+        "zh-CN": "小说规划主题插画，作家把出发、冲突和结局连成故事弧线",
+        "en": "Novel Planner creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/novel-planner-480-20b9540c8bab.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "20b9540c8bab709be07691879d28e2ccf152fe75ba16a13942290b4815dfb5a6",
+          "size_bytes": 48436
+        },
+        {
+          "path": "/plugins/illustrations/novel-planner-960-ff6899cfcb74.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "ff6899cfcb747f85895c046f0abc0fbc19d7ea9859d87afb48a4ff180db7cd5a",
+          "size_bytes": 158856
+        },
+        {
+          "path": "/plugins/illustrations/novel-planner-1440-ba79bf7c578f.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "ba79bf7c578fa817d34438acb57c40e3d3f88482bf2e240ee6157d6627c476f5",
+          "size_bytes": 350788
+        }
+      ]
+    },
+    {
+      "slug": "story-research",
+      "title": {
+        "zh-CN": "创作研究台",
+        "en": "Story Research"
+      },
+      "model": "gpt-image-2.5-flare",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A writer's research desk with one magnifying glass over a historical photograph, an opened reference volume and a clipped source note. The objects form a focused evidence investigation; large recognizable research tools, no tiny illegible documents.",
+      "source_sha256": "bda9afb7421a215ffefbdfda9bd097a5f3b158011fde5665b023d791092c9431",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/story-research-1440-f2cf90434b75.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "f2cf90434b7541e5b321651b8c8055f4106b770f13c510b45b4841d520809eac",
+      "alt": {
+        "zh-CN": "创作研究台主题插画，放大镜、历史照片与资料书组成研究案头",
+        "en": "Story Research creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/story-research-480-3329f948572f.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "3329f948572f1765c468f7cd6438afbefa5842de40b8f721b2737b22c560fa9a",
+          "size_bytes": 35848
+        },
+        {
+          "path": "/plugins/illustrations/story-research-960-feda564eb5ce.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "feda564eb5ce97518746fa3635b5da024212af8b5d27875cfefbade600ac6cfa",
+          "size_bytes": 130554
+        },
+        {
+          "path": "/plugins/illustrations/story-research-1440-f2cf90434b75.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "f2cf90434b7541e5b321651b8c8055f4106b770f13c510b45b4841d520809eac",
+          "size_bytes": 317240
+        }
+      ]
+    },
+    {
+      "slug": "character-lab",
+      "title": {
+        "zh-CN": "人物工坊",
+        "en": "Character Lab"
+      },
+      "model": "gpt-image-2.5-sunburst",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: One expressive protagonist stands in the center while three translucent sculpted silhouettes behind them reveal a brave choice, a concealed fear and a compassionate gesture. A portrait sketch and theatre mask are secondary; memorable character creation.",
+      "source_sha256": "4a61b66fb0839105eff90ff95e001e8b32327905bbc98d729146309f7e275819",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/character-lab-1440-2a5cca2c8caa.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "2a5cca2c8caa57dbb7db3bb80de7d27e3dc63bb30ebb07295d9f434e9ce5ca0c",
+      "alt": {
+        "zh-CN": "人物工坊主题插画，主人公的勇气、恐惧与选择形成不同侧影",
+        "en": "Character Lab creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/character-lab-480-5b6256828d76.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "5b6256828d76138ea5335d613a50c0c0a177689e4d39d856d5a4fe775088ebbd",
+          "size_bytes": 45366
+        },
+        {
+          "path": "/plugins/illustrations/character-lab-960-0f7d0b90ea1b.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "0f7d0b90ea1bb788ab163ba03dd84c4ca677b058248cc003ee628d5f585dd990",
+          "size_bytes": 161484
+        },
+        {
+          "path": "/plugins/illustrations/character-lab-1440-2a5cca2c8caa.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "2a5cca2c8caa57dbb7db3bb80de7d27e3dc63bb30ebb07295d9f434e9ce5ca0c",
+          "size_bytes": 376466
+        }
+      ]
+    },
+    {
+      "slug": "story-analysis",
+      "title": {
+        "zh-CN": "故事分析",
+        "en": "Story Analysis"
+      },
+      "model": "gpt-image-2.5-flare",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A manuscript is opened like a layered stage, revealing a hero pursuing a goal, an obstacle, and a decisive turn. A magnifying glass reveals how one scene connects to the next via a visible thread. Clearly story structure analysis rather than a graph UI.",
+      "source_sha256": "c569ee057dd6692ded51ccd1e45e5184b894864573324bc34084b68200497564",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/story-analysis-1440-f81a47f14049.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "f81a47f14049f03f35db3f73fb0bec1528f026e4f185eec3d77f65a5d59985db",
+      "alt": {
+        "zh-CN": "故事分析主题插画，手稿展开为目标、阻碍与转折相连的故事场景",
+        "en": "Story Analysis creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/story-analysis-480-8e789e559f7d.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "8e789e559f7defe164afbcc7ac1ba335b6e75c29f28153fc2fc52191468bac8d",
+          "size_bytes": 43446
+        },
+        {
+          "path": "/plugins/illustrations/story-analysis-960-1f56e50c2d91.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "1f56e50c2d9125b05d7111699070669d05a8f98dcec331571b1d5d3d6c1022c1",
+          "size_bytes": 149712
+        },
+        {
+          "path": "/plugins/illustrations/story-analysis-1440-f81a47f14049.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "f81a47f14049f03f35db3f73fb0bec1528f026e4f185eec3d77f65a5d59985db",
+          "size_bytes": 342456
+        }
+      ]
+    },
+    {
+      "slug": "lorebook-bridge",
+      "title": {
+        "zh-CN": "世界书互通",
+        "en": "Lorebook Bridge"
+      },
+      "model": "gpt-image-2.5-sunburst",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Two beautiful world encyclopedias face each other with a small arched jade bridge carrying the same distinctive dragon, tower and flower between their pages. Emphasize preserving world lore while moving it between story collections.",
+      "source_sha256": "55107922966775ad8e292ae440a86b1f38effa1c16318045b4c823307993ae4b",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/lorebook-bridge-1440-6bfd0ce005e9.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "6bfd0ce005e91cb9389e8f6a35e3ce3b4d35d147c20c0560943eca3635f604d3",
+      "alt": {
+        "zh-CN": "世界书互通主题插画，相同的龙、城塔和花朵跨桥进入另一部世界书",
+        "en": "Lorebook Bridge creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/lorebook-bridge-480-c191031c3256.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "c191031c32569de700e31194f48a456a3b67ccce451e4930f6059320b7f52e25",
+          "size_bytes": 45262
+        },
+        {
+          "path": "/plugins/illustrations/lorebook-bridge-960-e57540d365d4.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "e57540d365d40b9bfcf697a1dcdd639b53f7ecdc38993f46a84217851e1cfc45",
+          "size_bytes": 155494
+        },
+        {
+          "path": "/plugins/illustrations/lorebook-bridge-1440-6bfd0ce005e9.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "6bfd0ce005e91cb9389e8f6a35e3ce3b4d35d147c20c0560943eca3635f604d3",
+          "size_bytes": 349658
+        }
+      ]
+    },
+    {
+      "slug": "interactive-fiction",
+      "title": {
+        "zh-CN": "互动叙事",
+        "en": "Interactive Fiction"
+      },
+      "model": "gpt-image-2.5-flare",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A reader's hand chooses one of two physical doors emerging from a storybook, one revealing a moonlit forest and the other a lantern-lit city. A single hero waits at the fork. Immediate choose-your-own-story meaning.",
+      "source_sha256": "f2a8b1c810c0a505c2e99a7c4be0afe549add0d5e644160aee6c8f1485007f04",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/interactive-fiction-1440-b7632c5aaccc.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "b7632c5aacccaad7729554b524d0c359d282a22950f83177f39817f0bf5366ef",
+      "alt": {
+        "zh-CN": "互动叙事主题插画，读者在通往森林和城市的两扇故事门之间选择",
+        "en": "Interactive Fiction creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/interactive-fiction-480-6ea9d54c505b.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "6ea9d54c505b115fff27445ecd97db5e4381d1f1664210211f5578702865dd09",
+          "size_bytes": 45492
+        },
+        {
+          "path": "/plugins/illustrations/interactive-fiction-960-8b96176be094.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "8b96176be0949dfbc0f63f3088c91613160fa6bc24cb9ed89a0b80dc52d5f0e2",
+          "size_bytes": 167334
+        },
+        {
+          "path": "/plugins/illustrations/interactive-fiction-1440-b7632c5aaccc.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "b7632c5aacccaad7729554b524d0c359d282a22950f83177f39817f0bf5366ef",
+          "size_bytes": 394522
+        }
+      ]
+    },
+    {
+      "slug": "series-organizer",
+      "title": {
+        "zh-CN": "系列组织",
+        "en": "Series Organizer"
+      },
+      "model": "gpt-image-2.5-sunburst",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Three visually related volumes of a saga stand in a rising arc around one shared miniature city and recurring protagonist. A jade thread binds all three adventures, making a coherent ongoing story series clear at thumbnail size.",
+      "source_sha256": "300a77126a540c1e89d5b5b77c615094a331bae265adab7c41c5a39f06a6ff6c",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/series-organizer-1440-a597743391c3.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "a597743391c399d4d6bd633bd8bacc904051dcbca0515a56b2c4c6864eba42b7",
+      "alt": {
+        "zh-CN": "系列组织主题插画，同一主人公的三部作品围绕共同城市展开",
+        "en": "Series Organizer creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/series-organizer-480-23ea43ddb5c3.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "23ea43ddb5c3e1ba94529998ef69dd7232acf8f1caed77a99784317ce8cac081",
+          "size_bytes": 52266
+        },
+        {
+          "path": "/plugins/illustrations/series-organizer-960-92448dede855.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "92448dede855a14ad793be3e0be8c02b4d6d1a98acc8d94749d80d462994a7fe",
+          "size_bytes": 185570
+        },
+        {
+          "path": "/plugins/illustrations/series-organizer-1440-a597743391c3.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "a597743391c399d4d6bd633bd8bacc904051dcbca0515a56b2c4c6864eba42b7",
+          "size_bytes": 426544
+        }
+      ]
+    },
+    {
+      "slug": "story-translation",
+      "title": {
+        "zh-CN": "译稿工坊",
+        "en": "Story Translation"
+      },
+      "model": "gpt-image-2.5-flare",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Two facing manuscript leaves form a bridge across a small river; the same tiny scene of two people meeting is faithfully reflected on each side. A translator with a pencil carefully carries a small speech-shaped ribbon across. No writing or alphabets.",
+      "source_sha256": "47705c6bfa572dc655aa2dde8a33d629e9ae0285ec18a275981d7a5f8005097c",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/story-translation-1440-a3f77d81fabd.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "a3f77d81fabde743082ef8789489bbbec780c8d61f736c4471df442db3b4b1d6",
+      "alt": {
+        "zh-CN": "译稿工坊主题插画，译者把同一相遇场景从一页带到另一页",
+        "en": "Story Translation creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/story-translation-480-75242ae8477e.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "75242ae8477e60eb478c49fc295ee6e243f4d429150fd9e6ef24867ea3818e02",
+          "size_bytes": 45336
+        },
+        {
+          "path": "/plugins/illustrations/story-translation-960-0e6a6fa950ee.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "0e6a6fa950ee4042ce95add9cd194d8e1ff646777b089540e3f8f10a41b86644",
+          "size_bytes": 139814
+        },
+        {
+          "path": "/plugins/illustrations/story-translation-1440-a3f77d81fabd.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "a3f77d81fabde743082ef8789489bbbec780c8d61f736c4471df442db3b4b1d6",
+          "size_bytes": 297918
+        }
+      ]
+    },
+    {
+      "slug": "readthrough",
+      "title": {
+        "zh-CN": "朗读审阅",
+        "en": "Readthrough"
+      },
+      "model": "gpt-image-2.5-sunburst",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A writer wearing simple headphones listens as a ribbon of spoken sound rises from a manuscript page, catches on one small knot and becomes smooth again. A pencil rests at the knot; immediately listening to a draft for revision.",
+      "source_sha256": "85a43282bb91ddc836ff8a2a6dffde4873295742431d86a31866eb2518c93721",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/readthrough-1440-49b2b6cd94ef.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "49b2b6cd94ef40a1c22355b23d082be65a105792746b2d440f3e17d9ce5c6962",
+      "alt": {
+        "zh-CN": "朗读审阅主题插画，作者戴耳机听读稿件，用笔找出不顺的声音线结",
+        "en": "Readthrough creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/readthrough-480-5e09dae4a13c.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "5e09dae4a13ccc685272090383e81b1eb21e05edef812ef71efbf16f3d523e1c",
+          "size_bytes": 35458
+        },
+        {
+          "path": "/plugins/illustrations/readthrough-960-e652db808950.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "e652db808950347ed0dd6e09e6baf3cb75a9cb6365e2484c8fc8c58d24921289",
+          "size_bytes": 111480
+        },
+        {
+          "path": "/plugins/illustrations/readthrough-1440-49b2b6cd94ef.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "49b2b6cd94ef40a1c22355b23d082be65a105792746b2d440f3e17d9ce5c6962",
+          "size_bytes": 259004
+        }
+      ]
+    },
+    {
+      "slug": "book-export",
+      "title": {
+        "zh-CN": "书稿交付",
+        "en": "Book Export"
+      },
+      "model": "gpt-image-2.5-flare",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A completed manuscript transforms into a beautifully bound physical book, an e-reader slab with an illustrated page and a neatly tied delivery parcel. Clearly preparing and delivering a finished book in several formats, no interface or lettering.",
+      "source_sha256": "408682a65d76a6726b7036b597a49547ab41bba735fc77cee457c1c88020e6a5",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/book-export-1440-07bc83a3d5b3.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "07bc83a3d5b3a9d0058ef26ca55f198551677f6319814a56eb1cdac163ebf523",
+      "alt": {
+        "zh-CN": "书稿交付主题插画，手稿变为装订书、电子书与待交付书包",
+        "en": "Book Export creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/book-export-480-e705247a3b2f.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "e705247a3b2f15c8aa5b6d337db170801a6115f57dc4937701fbbbb69e61ba10",
+          "size_bytes": 42644
+        },
+        {
+          "path": "/plugins/illustrations/book-export-960-8e352c17ae06.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "8e352c17ae062ca519ede6af51011d0eccb7b991667e42186c5a1ffd43652962",
+          "size_bytes": 156000
+        },
+        {
+          "path": "/plugins/illustrations/book-export-1440-07bc83a3d5b3.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "07bc83a3d5b3a9d0058ef26ca55f198551677f6319814a56eb1cdac163ebf523",
+          "size_bytes": 372382
+        }
+      ]
+    },
+    {
+      "slug": "adaptation-studio",
+      "title": {
+        "zh-CN": "改编工程",
+        "en": "Adaptation Studio"
+      },
+      "model": "gpt-image-2.5-sunburst",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A novel's pages unfold into a small theatrical stage and a strip of cinema film depicting the same heroine and doorway. A continuous jade ribbon connects all three, instantly showing adaptation from book to script and screen.",
+      "source_sha256": "f9b068b858df11449ece34ba1aeb1a15e1117f2675cb9d3def001d7d4a4b2c49",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/adaptation-studio-1440-d35337ca95ad.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "d35337ca95adbc0de13ecb025ecf261c737dc8c1b8b63f6677d96ceef42e9763",
+      "alt": {
+        "zh-CN": "改编工程主题插画，同一故事从小说页展开为舞台和电影",
+        "en": "Adaptation Studio creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/adaptation-studio-480-545264766b6e.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "545264766b6efbfeea2138887013cd500bb7e58294fe2f7dc5f48fc6238b6d0d",
+          "size_bytes": 44146
+        },
+        {
+          "path": "/plugins/illustrations/adaptation-studio-960-17c51e6124d2.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "17c51e6124d2b7b090a101e685ba3849af6fe47cfe39a0082d06128bb368c466",
+          "size_bytes": 133318
+        },
+        {
+          "path": "/plugins/illustrations/adaptation-studio-1440-d35337ca95ad.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "d35337ca95adbc0de13ecb025ecf261c737dc8c1b8b63f6677d96ceef42e9763",
+          "size_bytes": 286738
+        }
+      ]
+    },
+    {
+      "slug": "reader-review",
+      "title": {
+        "zh-CN": "试读工作台",
+        "en": "Reader Review"
+      },
+      "model": "gpt-image-2.5-flare",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: An author and two engaged readers gather around one open manuscript; readers offer two distinct small handwritten-note shapes and the author thoughtfully marks one passage. Friendly constructive audience feedback, no visible writing.",
+      "source_sha256": "19420bfa57ef789c15217d39532e10898406e88969048a1a9dc78ee49c00c80d",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/reader-review-1440-8305b0ba6432.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "8305b0ba6432949c394d27da1055eaccfdee19a6f86007d68b0e38c9647d7f3d",
+      "alt": {
+        "zh-CN": "试读工作台主题插画，作者与两位读者围坐稿件讨论具体修改",
+        "en": "Reader Review creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/reader-review-480-b0429bdfab48.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "b0429bdfab4891c61b558b51701f898d8bceb6b4f8c897d68329933563bfdf47",
+          "size_bytes": 43654
+        },
+        {
+          "path": "/plugins/illustrations/reader-review-960-e6a17ced11e6.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "e6a17ced11e64c5b078a539f694a255d3acb38c767baf323f9a7356fcf248987",
+          "size_bytes": 151934
+        },
+        {
+          "path": "/plugins/illustrations/reader-review-1440-8305b0ba6432.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "8305b0ba6432949c394d27da1055eaccfdee19a6f86007d68b0e38c9647d7f3d",
+          "size_bytes": 344818
+        }
+      ]
+    },
+    {
+      "slug": "comic-studio",
+      "title": {
+        "zh-CN": "漫画创作",
+        "en": "Comic Studio"
+      },
+      "model": "gpt-image-2.5-sunburst",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A comic artist's brush brings a bold heroine through three large hand-drawn comic panels: a wide action shot, an expressive close-up and a dramatic reveal. Visible paper gutters, dynamic movement, empty speech balloons without lettering.",
+      "source_sha256": "9808e13fe54f89e546b49024409738cac9c61baa92fb61aafa5e4a78100807eb",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/comic-studio-1440-ffa4ec0f3982.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "ffa4ec0f3982c2799adbf070c2bbd09ecea23779337eded8e3525a3b6604b555",
+      "alt": {
+        "zh-CN": "漫画创作主题插画，画笔把漫画人物带入动作、特写和揭示三个画格",
+        "en": "Comic Studio creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/comic-studio-480-0fb33749370e.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "0fb33749370ed9261058f717d7c44111f59ed7bea899ce03b8dcf6ddc12d07d4",
+          "size_bytes": 47516
+        },
+        {
+          "path": "/plugins/illustrations/comic-studio-960-9445c2b44a21.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "9445c2b44a21de073dbb6947b57de05c318a4c070f332a7531f0b57dbb6d8246",
+          "size_bytes": 161212
+        },
+        {
+          "path": "/plugins/illustrations/comic-studio-1440-ffa4ec0f3982.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "ffa4ec0f3982c2799adbf070c2bbd09ecea23779337eded8e3525a3b6604b555",
+          "size_bytes": 360548
+        }
+      ]
+    },
+    {
+      "slug": "audio-drama",
+      "title": {
+        "zh-CN": "有声剧制作",
+        "en": "Audio Drama"
+      },
+      "model": "gpt-image-2.5-flare",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Two voice actors perform opposite studio microphones, with headphones and a small physical sound-effect prop in the foreground. A moonlit fictional scene rises between them as flowing jade sound, unmistakably a performed audio drama.",
+      "source_sha256": "b80fbdf02c77ed2546991e9160e84a8eefb1cfc007f5108c94b84cc7e11e6cf4",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/audio-drama-1440-beb5a79792dd.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "beb5a79792ddfc83ae9cd104c20a19825945a8f3fa332106f144949c0f195fb1",
+      "alt": {
+        "zh-CN": "有声剧制作主题插画，两位配音演员用声音共同演出一场故事",
+        "en": "Audio Drama creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/audio-drama-480-f40cf02fe932.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "f40cf02fe9329bc11b95d7ae76f34b1a6466816e89e8ce742e4bbae79eae7ef5",
+          "size_bytes": 48574
+        },
+        {
+          "path": "/plugins/illustrations/audio-drama-960-2e80d70e9777.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "2e80d70e977744788e7d2f8c4e3d0681801cdf0c59cbd3d94ed5dd47c83d8a70",
+          "size_bytes": 183218
+        },
+        {
+          "path": "/plugins/illustrations/audio-drama-1440-beb5a79792dd.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "beb5a79792ddfc83ae9cd104c20a19825945a8f3fa332106f144949c0f195fb1",
+          "size_bytes": 431100
+        }
+      ]
+    },
+    {
+      "slug": "world-studio",
+      "title": {
+        "zh-CN": "世界构建",
+        "en": "World Studio"
+      },
+      "model": "gpt-image-2.5-sunburst",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A world-builder's hand arranges a miniature fantasy civilization: an island city, a river, a small astronomical sphere and distinct cultural objects emerging from a sculpted paper world. Rich coherent world creation with a large clear focal city.",
+      "source_sha256": "9f721fdb52f9fb33be87091e220997d1405d5d1ef46b3f7710e0273cb43eb022",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/world-studio-1440-38551c886446.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "38551c886446773bc986c6f3700b1bc51ace9ace272a3fe2ddc048959a212996",
+      "alt": {
+        "zh-CN": "世界构建主题插画，创作者搭建包含城市、河流与文化物件的微缩世界",
+        "en": "World Studio creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/world-studio-480-b5173fd127a6.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "b5173fd127a6a4edf758f765757d1dc736328cd40bcfb7935f7b895ec2e2dc26",
+          "size_bytes": 53838
+        },
+        {
+          "path": "/plugins/illustrations/world-studio-960-61965f2fe32b.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "61965f2fe32ba4bfb14c8bfdf177e6b1861061e4e9887fe5d9e442686fc82db4",
+          "size_bytes": 189342
+        },
+        {
+          "path": "/plugins/illustrations/world-studio-1440-38551c886446.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "38551c886446773bc986c6f3700b1bc51ace9ace272a3fe2ddc048959a212996",
+          "size_bytes": 422396
+        }
+      ]
+    },
+    {
+      "slug": "mystery-lab",
+      "title": {
+        "zh-CN": "悬疑推演",
+        "en": "Mystery Lab"
+      },
+      "model": "gpt-image-2.5-flare",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A detective-like author studies three large pieces of story evidence on a desk: a torn letter, a key and a stopped pocket watch, with a magnifying glass revealing one hidden connection. Moody but inviting, clear mystery plotting, no murder gore.",
+      "source_sha256": "f610db95aded3eda042ebaf37994359c3398d4177e126d1684dd11b1c265b572",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/mystery-lab-1440-e94e234cb9fe.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "e94e234cb9feaa1bfa1ec73c461c29e28a4fe0c7f5fd8028956c7eb101b7e05b",
+      "alt": {
+        "zh-CN": "悬疑推演主题插画，放大镜连接信件、钥匙和停摆怀表里的谜题",
+        "en": "Mystery Lab creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/mystery-lab-480-efde9e93f36a.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "efde9e93f36a7d48755a77d508b2b16b2c89151bf26770be7bb6628388b524f0",
+          "size_bytes": 41972
+        },
+        {
+          "path": "/plugins/illustrations/mystery-lab-960-6b3e73b6851b.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "6b3e73b6851bb8b71570613305ad0bb6e3d77f87fa6a4a5e223436ee7e479e32",
+          "size_bytes": 134696
+        },
+        {
+          "path": "/plugins/illustrations/mystery-lab-1440-e94e234cb9fe.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "e94e234cb9feaa1bfa1ec73c461c29e28a4fe0c7f5fd8028956c7eb101b7e05b",
+          "size_bytes": 293668
+        }
+      ]
+    },
+    {
+      "slug": "art-direction",
+      "title": {
+        "zh-CN": "美术设定台",
+        "en": "Art Direction"
+      },
+      "model": "gpt-image-2.5-sunburst",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: An art director arranges a character costume mannequin, a painted miniature set facade and three harmonious pigment swatches. A broad brush connects them with one shared visual palette; unmistakable character-and-world visual design.",
+      "source_sha256": "f8fbda80ea7dfcf0e217cfaacefaf02670bad3ce83c2e2372387b36d5fd55fc7",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/art-direction-1440-9e8df4ad2e31.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "9e8df4ad2e316a1376661976ed81680db39d75dad839c2a68293e21c3edb63b4",
+      "alt": {
+        "zh-CN": "美术设定台主题插画，美术指导搭配人物服装、场景和统一色彩",
+        "en": "Art Direction creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/art-direction-480-eddbc0d8d1f1.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "eddbc0d8d1f1bb53b501115643ad101a866adae41745fab016965566bd1f4560",
+          "size_bytes": 46162
+        },
+        {
+          "path": "/plugins/illustrations/art-direction-960-ae5ed7710972.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "ae5ed771097207d57425b52836d854ea496568b67934b132403d7e758c0a6969",
+          "size_bytes": 162116
+        },
+        {
+          "path": "/plugins/illustrations/art-direction-1440-9e8df4ad2e31.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "9e8df4ad2e316a1376661976ed81680db39d75dad839c2a68293e21c3edb63b4",
+          "size_bytes": 365534
+        }
+      ]
+    },
+    {
+      "slug": "subtitle-studio",
+      "title": {
+        "zh-CN": "字幕工坊",
+        "en": "Subtitle Studio"
+      },
+      "model": "gpt-image-2.5-flare",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A cinematic scene on a physical strip of film is matched with two clean blank caption ribbons by a careful editor's hand; a dialogue waveform made of raised jade paper sits beneath. Clear film subtitle timing, no readable text or screen chrome.",
+      "source_sha256": "95bbc3c55322e63398636e7024f60a057b65db108791707a0d6f55fd1481d31d",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/subtitle-studio-1440-19266ad5786e.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "19266ad5786ebf52aee1a70206fb2171902c4e98f0b04f8fa2360ad47ece2fe2",
+      "alt": {
+        "zh-CN": "字幕工坊主题插画，编辑为电影对白对齐两条字幕带",
+        "en": "Subtitle Studio creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/subtitle-studio-480-56b9d5772c00.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "56b9d5772c004e897eb53f8a5870db4ffd57885e062f740ec0e72e07ce9e0b72",
+          "size_bytes": 36592
+        },
+        {
+          "path": "/plugins/illustrations/subtitle-studio-960-67254c4d884e.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "67254c4d884e48ce0c15d55c6c4618ac909e767c5b6d96e1818c73cc4d665cb3",
+          "size_bytes": 134444
+        },
+        {
+          "path": "/plugins/illustrations/subtitle-studio-1440-19266ad5786e.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "19266ad5786ebf52aee1a70206fb2171902c4e98f0b04f8fa2360ad47ece2fe2",
+          "size_bytes": 324356
+        }
+      ]
+    },
+    {
+      "slug": "picturebook",
+      "title": {
+        "zh-CN": "绘本工坊",
+        "en": "Picturebook Studio"
+      },
+      "model": "gpt-image-2.5-sunburst",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A parent-sized storyteller opens an enchanting children's picturebook; a curious small fox steps from the painted forest page toward a paper moon. Warm tactile illustrations, large joyful character, clear picturebook storytelling.",
+      "source_sha256": "b7b7d4cefb0c4079ca17d1908ad5b645a23e5cc03192149d2af217134598a85d",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/picturebook-1440-6ae6c456075d.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "6ae6c456075d43a49c40a7ec11c68ffe4e58080c18677ed3c79ef8a08ae88a69",
+      "alt": {
+        "zh-CN": "绘本工坊主题插画，小狐狸从温暖的森林绘本里走向纸月亮",
+        "en": "Picturebook Studio creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/picturebook-480-03a4881285f4.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "03a4881285f4d901c335325c7c7f870b340f62ee801e8cd65109690e1623d2dd",
+          "size_bytes": 45352
+        },
+        {
+          "path": "/plugins/illustrations/picturebook-960-ae87693981f5.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "ae87693981f596d981de9494554d58323edc959af0f3a13c96497f52488ce028",
+          "size_bytes": 153428
+        },
+        {
+          "path": "/plugins/illustrations/picturebook-1440-6ae6c456075d.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "6ae6c456075d43a49c40a7ec11c68ffe4e58080c18677ed3c79ef8a08ae88a69",
+          "size_bytes": 349966
+        }
+      ]
+    },
+    {
+      "slug": "murder-mystery",
+      "title": {
+        "zh-CN": "剧本杀工坊",
+        "en": "Murder Mystery Studio"
+      },
+      "model": "gpt-image-2.5-flare",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Three players sit around an intimate mystery-game table, each holding a distinct character dossier. A central key, sealed clue envelope and theatre half-mask invite investigation. Recognizable social roleplay mystery, suspenseful and playful, no weapons or gore.",
+      "source_sha256": "0a164478a81d13e47abaa5b677d91820c7f54dcf088ca669e4b8e50dac63b60b",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/murder-mystery-1440-13b8555872af.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "13b8555872af3db349d05d8ec7a114e4c74f0e1161a90a0fd25e737419cc579e",
+      "alt": {
+        "zh-CN": "剧本杀工坊主题插画，玩家手持角色档案，围桌查验密封线索与钥匙",
+        "en": "Murder Mystery Studio creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/murder-mystery-480-8dc2dd7229fd.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "8dc2dd7229fda98a5ec1689082f3048b870552c96eaacb15383fbb5ed2d0bd63",
+          "size_bytes": 46302
+        },
+        {
+          "path": "/plugins/illustrations/murder-mystery-960-467dfb407656.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "467dfb40765686c5abc749d7a087e5c319bcd0d521f565fd73eb3703cd2c0098",
+          "size_bytes": 154214
+        },
+        {
+          "path": "/plugins/illustrations/murder-mystery-1440-13b8555872af.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "13b8555872af3db349d05d8ec7a114e4c74f0e1161a90a0fd25e737419cc579e",
+          "size_bytes": 353758
+        }
+      ]
+    },
+    {
+      "slug": "production-planner",
+      "title": {
+        "zh-CN": "制片筹备台",
+        "en": "Production Planner"
+      },
+      "model": "gpt-image-2.5-sunburst",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A practical film producer organizes a compact location miniature, costume rack, camera case and physical shooting schedule sheets on one clear desk; a large clapperboard anchors the scene. Emphasize organizing the resources for a production, not editing film.",
+      "source_sha256": "7401766809530a5fe9a619499dc5f36358688c3ec0c13d9d4dea19095921c442",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/production-planner-1440-58eac6c3f64f.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "58eac6c3f64f62c5af4cf231f79ba96ccb5784c9bcc10c77b7b430da2803321c",
+      "alt": {
+        "zh-CN": "制片筹备台主题插画，制片人在案头组织场地、服装、摄影设备和拍摄安排",
+        "en": "Production Planner creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/production-planner-480-149eb29f6e37.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "149eb29f6e37e246650f123f8856b4697b51f9a9987f06d11a53c4ae34247150",
+          "size_bytes": 43234
+        },
+        {
+          "path": "/plugins/illustrations/production-planner-960-330fc2e55718.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "330fc2e55718fff253b857ff41e848e3cfddafed63f9e53999050da0112ff82f",
+          "size_bytes": 134358
+        },
+        {
+          "path": "/plugins/illustrations/production-planner-1440-58eac6c3f64f.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "58eac6c3f64f62c5af4cf231f79ba96ccb5784c9bcc10c77b7b430da2803321c",
+          "size_bytes": 285214
+        }
+      ]
+    },
+    {
+      "slug": "lyric-studio",
+      "title": {
+        "zh-CN": "歌词工坊",
+        "en": "Lyric Studio"
+      },
+      "model": "gpt-image-2.5-flare",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A songwriter writes beside a microphone as a flowing ribbon of verse becomes a simple melodic trail around an expressive singer. One folded lyric sheet and fountain pen anchor the image; words-to-song feeling without visible text or notation clutter.",
+      "source_sha256": "82a885b7361d60dc080b200bda75960702700098b55ca9af19f94b108346e029",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/lyric-studio-1440-1c666a737d1b.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "1c666a737d1b0f12a194f506efbac86807686d276f512db95ca720a81039e489",
+      "alt": {
+        "zh-CN": "歌词工坊主题插画，词作者把诗句化为歌声，歌手在旁演唱",
+        "en": "Lyric Studio creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/lyric-studio-480-e995da5ef344.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "e995da5ef34451972aaf89fe17877b6826330f62b6278e5ef374f23682674141",
+          "size_bytes": 39316
+        },
+        {
+          "path": "/plugins/illustrations/lyric-studio-960-7b925dbc6aa7.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "7b925dbc6aa7321144d50e27d40ce466f4029248c4d3e893d943b045205ee809",
+          "size_bytes": 151382
+        },
+        {
+          "path": "/plugins/illustrations/lyric-studio-1440-1c666a737d1b.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "1c666a737d1b0f12a194f506efbac86807686d276f512db95ca720a81039e489",
+          "size_bytes": 368532
+        }
+      ]
+    },
+    {
+      "slug": "poetry-studio",
+      "title": {
+        "zh-CN": "诗词工坊",
+        "en": "Poetry Studio"
+      },
+      "model": "gpt-image-2.5-sunburst",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A poet's brush captures a single falling leaf, a crescent moon and a ripple of water in one spacious flowing ribbon over textured paper. Elegant restrained lyrical imagery and deliberate rhythm, with the brush and poem sheet clearly present.",
+      "source_sha256": "571307201060e5cf7f95c29d35e9b00d899fd5f2971140860b5f20c7ee706f68",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/poetry-studio-1440-55a8d3709ec6.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "55a8d3709ec6d324a062a5daf77ed33ccbdbdb15055603af5c8bd29cf441d900",
+      "alt": {
+        "zh-CN": "诗词工坊主题插画，诗人的笔连接落叶、月亮与一圈水纹",
+        "en": "Poetry Studio creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/poetry-studio-480-561724aee509.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "561724aee5098b8bb4b609a885cdc6be5021d0240f3afe0612636ece8546d8ca",
+          "size_bytes": 27060
+        },
+        {
+          "path": "/plugins/illustrations/poetry-studio-960-03ad176e93e8.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "03ad176e93e893786c87550dc846d9c6b1b727aa47ca7a709afb33923912069c",
+          "size_bytes": 104350
+        },
+        {
+          "path": "/plugins/illustrations/poetry-studio-1440-55a8d3709ec6.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "55a8d3709ec6d324a062a5daf77ed33ccbdbdb15055603af5c8bd29cf441d900",
+          "size_bytes": 260410
+        }
+      ]
+    },
+    {
+      "slug": "nonfiction-studio",
+      "title": {
+        "zh-CN": "纪实写作",
+        "en": "Nonfiction Studio"
+      },
+      "model": "gpt-image-2.5-flare",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A nonfiction writer carefully compares a voice recorder, a documentary photograph and an open notebook while a real everyday street scene rises softly behind them. Grounded observation, evidence and human lives, no fantasy objects.",
+      "source_sha256": "81e479ae07b43df2afec32b340cd20d26ec2272c08e457bb1a2c987e4ffb302e",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/nonfiction-studio-1440-ee7686e6d363.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "ee7686e6d363bce0ae423b1d1d8cf63721093a57490774925f086f70eb016154",
+      "alt": {
+        "zh-CN": "纪实写作主题插画，写作者核对录音、照片与真实街头观察",
+        "en": "Nonfiction Studio creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/nonfiction-studio-480-179f170e697b.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "179f170e697b09192f99acf32fd97d2a3221611698456dadbcbbcf9916b42c24",
+          "size_bytes": 43572
+        },
+        {
+          "path": "/plugins/illustrations/nonfiction-studio-960-01125d36ac91.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "01125d36ac91c858246a77eca6c4e3c3b5d0f46ab982adb243524a610c0679cc",
+          "size_bytes": 136970
+        },
+        {
+          "path": "/plugins/illustrations/nonfiction-studio-1440-ee7686e6d363.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "ee7686e6d363bce0ae423b1d1d8cf63721093a57490774925f086f70eb016154",
+          "size_bytes": 293330
+        }
+      ]
+    },
+    {
+      "slug": "biography-studio",
+      "title": {
+        "zh-CN": "传记工坊",
+        "en": "Biography Studio"
+      },
+      "model": "gpt-image-2.5-sunburst",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: An intimate sculpted portrait of one person is surrounded by three large meaningful life moments: childhood at home, a decisive journey and a mature creative achievement. A gently winding thread joins them to an open memoir; clearly one life's story.",
+      "source_sha256": "2eee7ae867d586423e8df57b2e7b7401b8b68f9b1b6e4184207ed7918dc02587",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/biography-studio-1440-2d127c44628b.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "2d127c44628b27cb32a783a869fd8025216cc563817e417131619ec2734acac5",
+      "alt": {
+        "zh-CN": "传记工坊主题插画，一个人的童年、旅程与成就环绕其肖像展开",
+        "en": "Biography Studio creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/biography-studio-480-3db5372101a8.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "3db5372101a853e190cc40934538712a434e4e3c4ba2a29eb60b7400658650ae",
+          "size_bytes": 46278
+        },
+        {
+          "path": "/plugins/illustrations/biography-studio-960-facf21c87fde.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "facf21c87fde27e6386a004969832bfdf8efa5d43bdd064bb92fce8ec1884bbe",
+          "size_bytes": 172290
+        },
+        {
+          "path": "/plugins/illustrations/biography-studio-1440-2d127c44628b.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "2d127c44628b27cb32a783a869fd8025216cc563817e417131619ec2734acac5",
+          "size_bytes": 409020
+        }
+      ]
+    },
+    {
+      "slug": "essay-studio",
+      "title": {
+        "zh-CN": "散文工坊",
+        "en": "Essay Studio"
+      },
+      "model": "gpt-image-2.5-flare",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: An essayist sits beside a rainlit window with a tea cup and a loose manuscript, turning an ordinary fallen leaf into a thoughtful miniature memory of a street and home. Quiet personal observation and reflective prose, distinct from poetry brushwork.",
+      "source_sha256": "77b546a8fe2c35a0f2e37718b97504e3550c65b928fb14b75272464be2f5f956",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/essay-studio-1440-a918a84836c1.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "a918a84836c15b6f8773e3e1b7b46bc350df03cbcd6e2ea666faba944f58912d",
+      "alt": {
+        "zh-CN": "散文工坊主题插画，雨窗前的写作者从一片叶子想起街道与家",
+        "en": "Essay Studio creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/essay-studio-480-f865c094830f.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "f865c094830fe197706e25eff723826bdc4c2faa9398aa33ce720f3c00e4a7ea",
+          "size_bytes": 43604
+        },
+        {
+          "path": "/plugins/illustrations/essay-studio-960-4ea7f3b3c3f8.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "4ea7f3b3c3f83f82112bb17608b55b9bfbc94472146f9cd203f29b1051cfa791",
+          "size_bytes": 147936
+        },
+        {
+          "path": "/plugins/illustrations/essay-studio-1440-a918a84836c1.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "a918a84836c15b6f8773e3e1b7b46bc350df03cbcd6e2ea666faba944f58912d",
+          "size_bytes": 333420
+        }
+      ]
+    },
+    {
+      "slug": "criticism-studio",
+      "title": {
+        "zh-CN": "文学评论",
+        "en": "Literary Criticism"
+      },
+      "model": "gpt-image-2.5-sunburst",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A literary critic holds a magnifying glass over an open novel while comparing a marked passage and two small contrasting interpretations represented by theatre masks. Clear close reading, careful reasoning and literary discussion.",
+      "source_sha256": "8764c017d5261c3e7e6b00d51a00a296bd92d59718319a98271dfec7680d96b2",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/criticism-studio-1440-625b8f946464.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "625b8f94646447cd1a4de04db65a949cd6350405f8ea36083af3ba4d397c2439",
+      "alt": {
+        "zh-CN": "文学评论主题插画，评论者细读小说段落并比较两种理解",
+        "en": "Literary Criticism creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/criticism-studio-480-708646c6cd07.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "708646c6cd074f45b9c3c26beacdfa7b05b8eeac2e457391c02290ae810e906d",
+          "size_bytes": 43900
+        },
+        {
+          "path": "/plugins/illustrations/criticism-studio-960-55226e49cc2d.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "55226e49cc2d95f2f2d752b30af4562b0cb515e182ce241cea81c39407b7bc5b",
+          "size_bytes": 151304
+        },
+        {
+          "path": "/plugins/illustrations/criticism-studio-1440-625b8f946464.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "625b8f94646447cd1a4de04db65a949cd6350405f8ea36083af3ba4d397c2439",
+          "size_bytes": 352428
+        }
+      ]
+    },
+    {
+      "slug": "documentary-studio",
+      "title": {
+        "zh-CN": "纪录片策划",
+        "en": "Documentary Studio"
+      },
+      "model": "gpt-image-2.5-flare",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A documentary filmmaker with a compact shoulder camera listens to an interviewee in a real everyday setting; one archival photograph and voice recorder form the foreground. Honest human observation and researched nonfiction filmmaking.",
+      "source_sha256": "8a2159dbff1ff54fb7fbe1173623aab30325bb5e5417d08bd09b40ac32b77b1d",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/documentary-studio-1440-adb5c6c22be7.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "adb5c6c22be76018ec1dd65c7616352d4a3dd06b833201a143bed91208282a81",
+      "alt": {
+        "zh-CN": "纪录片策划主题插画，纪录片作者举起摄影机倾听受访者",
+        "en": "Documentary Studio creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/documentary-studio-480-dad067ddc329.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "dad067ddc3299a82eb47fe2720e4a1818b71218c127d82409145386de9d9ad23",
+          "size_bytes": 43246
+        },
+        {
+          "path": "/plugins/illustrations/documentary-studio-960-a45dc89b718a.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "a45dc89b718a7775a9c9ea3fcc79c67ee57566a1e23d3bf92b4cb857061f698d",
+          "size_bytes": 128142
+        },
+        {
+          "path": "/plugins/illustrations/documentary-studio-1440-adb5c6c22be7.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "adb5c6c22be76018ec1dd65c7616352d4a3dd06b833201a143bed91208282a81",
+          "size_bytes": 266928
+        }
+      ]
+    },
+    {
+      "slug": "podcast-studio",
+      "title": {
+        "zh-CN": "播客工坊",
+        "en": "Podcast Studio"
+      },
+      "model": "gpt-image-2.5-sunburst",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Two podcast hosts in a warm intimate recording corner speak into large studio microphones with headphones and a compact sound console. The spoken conversation forms a gentle jade sound ribbon; immediately a podcast recording.",
+      "source_sha256": "4f475bdc598ea91217c57a86c41460dcbfede6d0a6d7c2c2aeab54767dec3927",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/podcast-studio-1440-0a4505bc62c8.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "0a4505bc62c89c59feea517fd078e842aaa688e0c46cf91090972b5e0d0a1f99",
+      "alt": {
+        "zh-CN": "播客工坊主题插画，两位主持人在录音话筒前展开对谈",
+        "en": "Podcast Studio creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/podcast-studio-480-43465d7153df.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "43465d7153df89b38f68b940d43461ba82b0936fdb0dcd68374a9641a686b70c",
+          "size_bytes": 43994
+        },
+        {
+          "path": "/plugins/illustrations/podcast-studio-960-ce2d7c830e72.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "ce2d7c830e72506c2dede699bea417377416af90fb6ce280ef93d0ddb94f5398",
+          "size_bytes": 161934
+        },
+        {
+          "path": "/plugins/illustrations/podcast-studio-1440-0a4505bc62c8.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "0a4505bc62c89c59feea517fd078e842aaa688e0c46cf91090972b5e0d0a1f99",
+          "size_bytes": 375912
+        }
+      ]
+    },
+    {
+      "slug": "stage-rehearsal",
+      "title": {
+        "zh-CN": "舞台排演",
+        "en": "Stage Rehearsal"
+      },
+      "model": "gpt-image-2.5-flare",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A stage manager at the wing holds an open prompt book while two actors rehearse beneath a visible theatre spotlight; a headset, light cue and curtain frame the action. Clear theatre rehearsal and coordinated backstage cues.",
+      "source_sha256": "bfa95fec520a47ac7e9a7c1a6d971a6b436fd3cdba0123d250bb934683592195",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/stage-rehearsal-1440-419737d17a2b.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "419737d17a2b2a0ef223372b708ebf6dc24c7a3dde32c7b7f186291ac91b69d2",
+      "alt": {
+        "zh-CN": "舞台排演主题插画，场边舞台监督拿提示本协调演员与灯光排练",
+        "en": "Stage Rehearsal creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/stage-rehearsal-480-2b6490369565.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "2b64903695655f30d5d4965f8bdd7dd3ef55c61db8c20247a8942e85610f63b1",
+          "size_bytes": 36952
+        },
+        {
+          "path": "/plugins/illustrations/stage-rehearsal-960-99660a627dbe.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "99660a627dbe3303b54f7effcb1c0f7eda08eae9840f83bb23b3cd410484411b",
+          "size_bytes": 113060
+        },
+        {
+          "path": "/plugins/illustrations/stage-rehearsal-1440-419737d17a2b.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "419737d17a2b2a0ef223372b708ebf6dc24c7a3dde32c7b7f186291ac91b69d2",
+          "size_bytes": 245044
+        }
+      ]
+    },
+    {
+      "slug": "standup-studio",
+      "title": {
+        "zh-CN": "脱口秀工坊",
+        "en": "Stand-up Studio"
+      },
+      "model": "gpt-image-2.5-sunburst",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A single expressive comedian stands at a simple microphone on a small warm spotlight stage, holding a tiny cue card, while three audience silhouettes lean forward in laughter. Immediate live stand-up comedy, not music performance.",
+      "source_sha256": "660bf29ff269fc697a374718fa83e52ce280fc4c19e2dac071cf53ac11f13590",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/standup-studio-1440-8064a941f05f.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "8064a941f05f49870cefade8b3c8c5741cec37c9791a70acc1b5902641e1ff9c",
+      "alt": {
+        "zh-CN": "脱口秀工坊主题插画，喜剧演员在聚光灯下逗笑台前观众",
+        "en": "Stand-up Studio creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/standup-studio-480-b71bfd5df0d4.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "b71bfd5df0d4332a52c1daee0db87812d7ee4df59650f12321cc901c16ef251c",
+          "size_bytes": 31338
+        },
+        {
+          "path": "/plugins/illustrations/standup-studio-960-8a7342f64701.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "8a7342f64701d38cd5a2952fe87f9582368e3666a600f8f0b4bc1ab3f50427e2",
+          "size_bytes": 106906
+        },
+        {
+          "path": "/plugins/illustrations/standup-studio-1440-8064a941f05f.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "8064a941f05f49870cefade8b3c8c5741cec37c9791a70acc1b5902641e1ff9c",
+          "size_bytes": 247030
+        }
+      ]
+    },
+    {
+      "slug": "science-studio",
+      "title": {
+        "zh-CN": "科普写作",
+        "en": "Science Writing Studio"
+      },
+      "model": "gpt-image-2.5-flare",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A science writer explains a small planetary orbit and a water experiment with a bright prism and a measured physical pendulum on a desk. An open explanatory book connects observation to understanding; inviting scientific explanation, no formulas.",
+      "source_sha256": "2f71ac9b4408dd257b8da566324bfd9d25ba2bf88df1e054139120b1fbb61a07",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/science-studio-1440-fa45f4ce36ee.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "fa45f4ce36eef8b15008734634c06c15e4ecd1392f944a0536a17b01ab0d7ef2",
+      "alt": {
+        "zh-CN": "科普写作主题插画，科普作者用棱镜、摆锤与行星模型解释原理",
+        "en": "Science Writing Studio creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/science-studio-480-99af9ec2733f.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "99af9ec2733fe826efe8bd8fef892cab5326e70dc7ff1e615ed7202ae505200b",
+          "size_bytes": 39404
+        },
+        {
+          "path": "/plugins/illustrations/science-studio-960-4e579077e9a8.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "4e579077e9a8299a2ec6f30d7108636322a2d84abfd9efe1be8b76a28b403eb2",
+          "size_bytes": 141480
+        },
+        {
+          "path": "/plugins/illustrations/science-studio-1440-fa45f4ce36ee.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "fa45f4ce36eef8b15008734634c06c15e4ecd1392f944a0536a17b01ab0d7ef2",
+          "size_bytes": 340096
+        }
+      ]
+    },
+    {
+      "slug": "quest-studio",
+      "title": {
+        "zh-CN": "游戏任务工坊",
+        "en": "Quest Studio"
+      },
+      "model": "gpt-image-2.5-sunburst",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A game designer's miniature adventurer stands at a fork between a locked gate and a helpful villager, carrying one visible quest item and a single gold token. A clear path connects goal, choice and reward; unmistakable game quest design.",
+      "source_sha256": "97f59fd2149ac1efd22d1961682441208eb1807f2bdcb47903715ddcbd3b1b88",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/quest-studio-1440-6f5083e41ba0.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "6f5083e41ba0a8dc78b359482625bee9b5229c78b2119b8d845dd47ac2388ee5",
+      "alt": {
+        "zh-CN": "游戏任务工坊主题插画，冒险者带着任务物品在锁门与村民之间作出选择",
+        "en": "Quest Studio creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/quest-studio-480-ebdbe69c12b9.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "ebdbe69c12b9c775cc316353099cc41e114abbbc3dcd4112e9ba04383850ffb0",
+          "size_bytes": 53228
+        },
+        {
+          "path": "/plugins/illustrations/quest-studio-960-08c6f9a86478.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "08c6f9a864787d721070bba059b82e50e240fcbee238b3d06dbdc409ded58bd8",
+          "size_bytes": 169656
+        },
+        {
+          "path": "/plugins/illustrations/quest-studio-1440-6f5083e41ba0.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "6f5083e41ba0a8dc78b359482625bee9b5229c78b2119b8d845dd47ac2388ee5",
+          "size_bytes": 367726
+        }
+      ]
+    },
+    {
+      "slug": "script-supervisor",
+      "title": {
+        "zh-CN": "场记工作台",
+        "en": "Script Supervisor"
+      },
+      "model": "gpt-image-2.5-flare",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A script supervisor holds a large clapperboard beside two successive physical film frames showing the same actress carrying a red envelope; a pencil aligns the envelope position between takes. Strong continuity and take-recording concept, not a video editor UI.",
+      "source_sha256": "6ecc448d4f56ce20a0231d3646b60e888b338c70683f827816a6311fd53934c0",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/script-supervisor-1440-d9104ebbd913.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "d9104ebbd9132294ee017ee86dc5cba83459f6c082a9b81f71f22fd9bc33bba2",
+      "alt": {
+        "zh-CN": "场记工作台主题插画，场记核对两条镜头中演员手里的同一信封",
+        "en": "Script Supervisor creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/script-supervisor-480-8532d56f6c5f.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "8532d56f6c5f3d3d6843ed4ad1d6c5c668e599dc42760726a138e21a8123a375",
+          "size_bytes": 37728
+        },
+        {
+          "path": "/plugins/illustrations/script-supervisor-960-26238a35edd3.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "26238a35edd3a9311b1bb6e712093220331d24552c7b9c82cdb4f18b37f8bb4f",
+          "size_bytes": 107284
+        },
+        {
+          "path": "/plugins/illustrations/script-supervisor-1440-d9104ebbd913.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "d9104ebbd9132294ee017ee86dc5cba83459f6c082a9b81f71f22fd9bc33bba2",
+          "size_bytes": 231920
+        }
+      ]
+    },
+    {
+      "slug": "language-studio",
+      "title": {
+        "zh-CN": "构造语言工坊",
+        "en": "Constructed Language Studio"
+      },
+      "model": "gpt-image-2.5-sunburst",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A conlang creator shapes three large tactile phonetic stone-like forms into a branching word tree; each root becomes a distinctly related place-name emblem and spoken sound ribbon. A mouth silhouette and notebook show invented language creation, no readable letters.",
+      "source_sha256": "aa9452c58ec8102d0fe785778d5980016aadf95a1b730d72c11aeab4cef6c46c",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/language-studio-1440-a83bd282b097.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "a83bd282b0973655be1f5b7d8a613c9519a04b5d2c232c546918f36e02c2abaf",
+      "alt": {
+        "zh-CN": "构造语言工坊主题插画，语言创造者把音位和词根组织成派生词树",
+        "en": "Constructed Language Studio creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/language-studio-480-c309d0575523.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "c309d05755236d850f878eeacfc3518a5582e3aa7a3a13cf17399e66be527b29",
+          "size_bytes": 50266
+        },
+        {
+          "path": "/plugins/illustrations/language-studio-960-ce970b618b9e.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "ce970b618b9eb4a8d74565fa35da0840daab53489e81e08281febd6f8b6aab1c",
+          "size_bytes": 161742
+        },
+        {
+          "path": "/plugins/illustrations/language-studio-1440-a83bd282b097.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "a83bd282b0973655be1f5b7d8a613c9519a04b5d2c232c546918f36e02c2abaf",
+          "size_bytes": 356138
+        }
+      ]
+    },
+    {
+      "slug": "musical-studio",
+      "title": {
+        "zh-CN": "音乐剧工坊",
+        "en": "Musical Theatre Studio"
+      },
+      "model": "gpt-image-2.5-flare",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Two expressive performers sing toward one another on a small theatre stage while a dialogue ribbon transforms into a graceful rising musical staff. One dancer's step and a warm spotlight show a story moving through song, unmistakable musical theatre rather than a recording studio.",
+      "source_sha256": "da0bf375c9e0033545ed59a856362b7fb0a59c62731a0ad89428f1e318bd2abe",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/musical-studio-1440-b2a0e17613a1.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "b2a0e17613a13e1ca30608259486432653b8883d858e7087e5f1ae9fcc1fe256",
+      "alt": {
+        "zh-CN": "音乐剧工坊主题插画，两位舞台人物让对白化为对唱与行动",
+        "en": "Musical Theatre Studio creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/musical-studio-480-bf8bc9978d29.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "bf8bc9978d292e5f6a67c8ca48ab396fa68fea23edb2c3704206c07af184bfe1",
+          "size_bytes": 39874
+        },
+        {
+          "path": "/plugins/illustrations/musical-studio-960-9c936a893181.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "9c936a8931810533e10d7a7c26970e89629b1ab58626e5c9609cc334bd54cb7e",
+          "size_bytes": 124682
+        },
+        {
+          "path": "/plugins/illustrations/musical-studio-1440-b2a0e17613a1.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "b2a0e17613a13e1ca30608259486432653b8883d858e7087e5f1ae9fcc1fe256",
+          "size_bytes": 272712
+        }
+      ]
+    },
+    {
+      "slug": "relationships",
+      "title": {
+        "zh-CN": "人物关系图",
+        "en": "Relationships"
+      },
+      "model": "gpt-image-2.5-flare",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Three distinct full-character portrait miniatures stand around a small circular storytelling table, connected by taut jade and red silk threads held visibly between their hands. One pair leans close in trust while a third holds a concealed folded letter behind their back. Instantly suggest complex character relationships and secrets; faces and connections large and clear.",
+      "source_sha256": "bee7cd548625f325f6947a1f89145fb139a39fe0235263a4f6eb59d81d8cb436",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/relationships-1440-bf4c5292f0b9.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "bf4c5292f0b9f1550adea9f585ae5cc33294770a1747342d0c1d74fded172539",
+      "alt": {
+        "zh-CN": "人物关系图主题插画，三位人物以丝线相连，一人藏着密信",
+        "en": "Relationships creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/relationships-480-9e884a64eead.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "9e884a64eead63fc590117118f9cc2daa85a6a61b4b80d020c9ce754f004fc19",
+          "size_bytes": 47396
+        },
+        {
+          "path": "/plugins/illustrations/relationships-960-49fb3c70562c.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "49fb3c70562c8986a7044328a9db1f32a89ce8bc3d816b101cfe179b4822663e",
+          "size_bytes": 171074
+        },
+        {
+          "path": "/plugins/illustrations/relationships-1440-bf4c5292f0b9.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "bf4c5292f0b9f1550adea9f585ae5cc33294770a1747342d0c1d74fded172539",
+          "size_bytes": 400638
+        }
+      ]
+    },
+    {
+      "slug": "timeline",
+      "title": {
+        "zh-CN": "时间线",
+        "en": "Timeline"
+      },
+      "model": "gpt-image-2.5-flare",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A single winding path connects three large narrative moments in chronological order: a small boat arriving at dawn, a meeting beneath a noon arch, and a farewell under a moon. An elegant physical clock anchors the foreground; clear progression, not a data chart.",
+      "source_sha256": "2017e8f8ddcfe4e8509714d358da2a686c5e7af4a619518ff334d763de81d6aa",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "path": "/plugins/illustrations/timeline-1440-7358ea46a32b.webp",
+      "width": 1440,
+      "height": 960,
+      "sha256": "7358ea46a32b3a106fadffebe1b5a76cafd72f8bc425db4935a87d07be930398",
+      "alt": {
+        "zh-CN": "时间线主题插画，黎明、正午与月夜的事件沿同一路径推进",
+        "en": "Timeline creative scene illustration"
+      },
+      "variants": [
+        {
+          "path": "/plugins/illustrations/timeline-480-937f8e4fd811.webp",
+          "width": 480,
+          "height": 320,
+          "sha256": "937f8e4fd811835697f93dc8839dba0b44c642c42b27554a1a4a52383c9899e6",
+          "size_bytes": 50518
+        },
+        {
+          "path": "/plugins/illustrations/timeline-960-2f85667e4958.webp",
+          "width": 960,
+          "height": 640,
+          "sha256": "2f85667e49585b5b1ed035397bb34e9c414d4d5340a345ef4408a7c7e39632ae",
+          "size_bytes": 178276
+        },
+        {
+          "path": "/plugins/illustrations/timeline-1440-7358ea46a32b.webp",
+          "width": 1440,
+          "height": 960,
+          "sha256": "7358ea46a32b3a106fadffebe1b5a76cafd72f8bc425db4935a87d07be930398",
+          "size_bytes": 406726
+        }
+      ]
+    }
+  ]
+}
