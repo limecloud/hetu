@@ -1,0 +1,161 @@
+{
+  "date": "2026-11-19",
+  "plugins": [
+    {
+      "slug": "script-supervisor",
+      "release": "https://github.com/wordflowlab/hetu-script-supervisor/releases/tag/v0.1.0",
+      "source_commit": "adb06003bf0aa4a1e3a37055d7089602400876d1",
+      "package_sha256": "c7d2c3c11041ff19851d9fe85a48f28c74f972f965ed6547a3326e9a7431dfd0",
+      "archive_sha256": "3a354dff0fc3568b2aa7c5fb0a6c7cadf5e7b1feb255009f14ad8f4b97bc5abb",
+      "verified_public_files": 18,
+      "unit_tests": 34,
+      "actions": 31,
+      "official_verification": "https://github.com/wordflowlab/hetu-script-supervisor/actions/runs/44520833961",
+      "stage_evidence_reuse": [],
+      "current_mcp": {
+        "object_id": "ext_75efbb3b-d862-41e7-879c-7056dda32bb4",
+        "revision": 5,
+        "sha256": "bc796b4e6f841ec9ab0e0610e7ad7d810924fe3cefda3ba1b511cb1aa9e6236a"
+      },
+      "current_mcp_skill_resources": 3,
+      "public_install": {
+        "version": "0.1.0",
+        "package_sha256": "c7d2c3c11041ff19851d9fe85a48f28c74f972f965ed6547a3326e9a7431dfd0",
+        "original_and_revised_preserved": true,
+        "original_operation_preserved": true,
+        "skill_resources_byte_verified": 3,
+        "other_states_preserved": 42,
+        "original_unrelated_states_preserved": 39,
+        "initial_plugin_count": 40,
+        "current_plugin_count": 43
+      }
+    },
+    {
+      "slug": "language-studio",
+      "release": "https://github.com/wordflowlab/hetu-language-studio/releases/tag/v0.1.0",
+      "source_commit": "8f759520a2359f67668d7259ed37f88aa3884fc6",
+      "package_sha256": "c64913f4ace3eef524924e784b1e8f600a96173bedff08c2b107795cd9c54a12",
+      "archive_sha256": "d908fe0f46e2b0c162ce186cf017c4e585994a364655740c2433dd0a2c60a758",
+      "verified_public_files": 18,
+      "unit_tests": 36,
+      "actions": 31,
+      "official_verification": "https://github.com/wordflowlab/hetu-language-studio/actions/runs/44520854337",
+      "stage_evidence_reuse": [],
+      "current_mcp": {
+        "object_id": "ext_0ee7c0d8-ad63-4481-8abc-71da7ba18605",
+        "revision": 4,
+        "sha256": "99b458d4825db2b91fac15cac04ba905b4fe206f002d27bb3e89974ed2a32803"
+      },
+      "current_mcp_skill_resources": 3,
+      "public_install": {
+        "version": "0.1.0",
+        "package_sha256": "c64913f4ace3eef524924e784b1e8f600a96173bedff08c2b107795cd9c54a12",
+        "original_and_revised_preserved": true,
+        "original_operation_preserved": true,
+        "skill_resources_byte_verified": 3,
+        "other_states_preserved": 42,
+        "original_unrelated_states_preserved": 39,
+        "initial_plugin_count": 40,
+        "current_plugin_count": 43
+      }
+    },
+    {
+      "slug": "musical-studio",
+      "release": "https://github.com/wordflowlab/hetu-musical-studio/releases/tag/v0.1.0",
+      "source_commit": "7444396340759d0bbbcbfcd331bd5e53ac0a6c0e",
+      "package_sha256": "70f42fb31863b5be091c265d6415502573682e0c1cc52e13b510f7c58e2d6b85",
+      "archive_sha256": "f8bbbb068d24ccdb464a64b4b187b175b16391aa5bb546ea39b365f82ed179b7",
+      "verified_public_files": 18,
+      "unit_tests": 34,
+      "actions": 36,
+      "official_verification": "https://github.com/wordflowlab/hetu-musical-studio/actions/runs/44520875282",
+      "stage_evidence_reuse": [],
+      "current_mcp": {
+        "object_id": "ext_b2547580-8aee-413e-9faf-6112f2cf3570",
+        "revision": 6,
+        "sha256": "8cb2238ad24d71c155edf4553c8d303a06e4e5e2d28248b9cd795283353c2e08"
+      },
+      "current_mcp_skill_resources": 3,
+      "public_install": {
+        "version": "0.1.0",
+        "package_sha256": "70f42fb31863b5be091c265d6415502573682e0c1cc52e13b510f7c58e2d6b85",
+        "original_and_revised_preserved": true,
+        "original_operation_preserved": true,
+        "skill_resources_byte_verified": 3,
+        "other_states_preserved": 42,
+        "original_unrelated_states_preserved": 39,
+        "initial_plugin_count": 40,
+        "current_plugin_count": 43
+      }
+    },
+    {
+      "slug": "murder-mystery",
+      "release": "https://github.com/wordflowlab/hetu-murder-mystery/releases/tag/v0.2.0",
+      "source_commit": "a014a851ebf089f33e4fe273eb3ef5c108203bde",
+      "package_sha256": "eb21aaae3b13a8f3c2b965e49ffae5ca52e6df22288b0b6edfff4d6218ce3f9e",
+      "archive_sha256": "f9ee51ad36578d60dd28b9354ee6040f96c7395df18a310a9a5e994fb2bcd62a",
+      "verified_public_files": 18,
+      "unit_tests": 85,
+      "actions": 62,
+      "official_verification": "https://github.com/wordflowlab/hetu-murder-mystery/actions/runs/44532548851",
+      "stage_evidence_reuse": [
+        {
+          "test": "machine",
+          "exit_code": 0,
+          "evidence_from_run": "44525950754",
+          "receipt_sha256": "8d1491571635749965dc230424f5365b421b81332e1bf22e83f30ef788d99a70"
+        }
+      ],
+      "current_mcp": {
+        "object_id": "ext_34debb9b-d046-4619-9f8d-558a02795f4a",
+        "revision": 17,
+        "sha256": "528e57943c4464310edaad4e8145f645e6b26aeb0eac11c78a796eaf70f66705"
+      },
+      "current_mcp_skill_resources": 3,
+      "public_install": {
+        "version": "0.2.0",
+        "core_version": "hetu 0.13.4",
+        "package_sha256": "eb21aaae3b13a8f3c2b965e49ffae5ca52e6df22288b0b6edfff4d6218ce3f9e",
+        "original_and_revised_preserved": true,
+        "original_operation_preserved": true,
+        "skill_resources_byte_verified": 3,
+        "other_states_preserved": 42,
+        "original_unrelated_states_preserved": 39,
+        "initial_plugin_count": 40,
+        "current_plugin_count": 43
+      }
+    }
+  ],
+  "unit_tests": 189,
+  "professional_actions": 160,
+  "official_host": "0.12.6",
+  "current_installed_cli_compatibility": "0.13.4",
+  "current_mcp_core": "0.12.3",
+  "website": {
+    "origin": "https://hetu.limeai.run",
+    "local_browser_tests": 549,
+    "production_browser_tests": 157,
+    "production_first_attempt": {
+      "passed": 156,
+      "failed": 1,
+      "failure": "ERR_CONNECTION_CLOSED before page load"
+    },
+    "targeted_recheck": {
+      "passed": 1
+    },
+    "production_build_byte_matches": 20,
+    "listings_sha256": "ad150fff7ada8c8b38746fc007111ec6797761ab3d66a7a85cbd8b04b9b2f8c3"
+  },
+  "source_coverage": "01～09／剧本杀10、固定上游及许可、专业Schema、同包Skill、领域与应用回归、正式运行包、当前对话、公开包及生产站分别取证",
+  "preserved": [
+    "持久原作品及原操作",
+    "旧试玩及固定快照",
+    "39款原有非本批插件状态",
+    "其他会话管理的共享应用和主开发目录"
+  ],
+  "limits": [
+    "macOS arm64专业实机；Windows/Linux与原生窗口材质未验证",
+    "Agent模拟不证明真人测本、实际拍摄、语言学或音乐专业认可",
+    "未外发作品内容、付费、正文采纳、定稿或发布作品"
+  ]
+}
