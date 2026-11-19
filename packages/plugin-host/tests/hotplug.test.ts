@@ -76,6 +76,8 @@ test("同一河图MCP连接动态发现、调用和热插拔专业插件，无�
     // 管理连接附加原management_ref；专业能力Schema只校验自己的投影。
     const { management_ref: _, ...projection } = capabilities;
     assert.ok(validCapabilities(projection), JSON.stringify(validCapabilities.errors));
+    assert.equal(projection.invocation_projection_version, 1);
+    assert.equal(validCapabilities({ ...projection, invocation_projection_version: 2 }), false);
   }
   const invoke = (action: string, args: any, extra = {}) => call("hetu_call_action", {
     action: "hetu.plugin_access.invoke", input: {

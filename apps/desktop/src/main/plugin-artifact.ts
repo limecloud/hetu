@@ -5,7 +5,8 @@ import path from 'node:path';
 export interface ArtifactInput {
   suggested_name: string; media_type: string; base64: string; sha256: string;
 }
-const formats: Record<string, { extension: string; signature: (b: Buffer) => boolean }> = {
+const formats: Record<string, { extension: string | readonly string[]; signature: (b: Buffer) => boolean }> = {
+  'text/plain': { extension: ['.txt', '.lrc'], signature: b => textSignature(b, () => true) },
   'image/png': { extension: '.png', signature: b => b.subarray(0, 8).equals(Buffer.from('89504e470d0a1a0a', 'hex')) },
   'model/gltf-binary': { extension: '.glb', signature: b => b.length >= 20 && b.toString('ascii', 0, 4) === 'glTF' && b.readUInt32LE(4) === 2 && b.readUInt32LE(8) === b.length },
   'application/zip': { extension: '.zip', signature: b => ['504b0304', '504b0506'].includes(b.subarray(0, 4).toString('hex')) },
@@ -16,6 +17,9 @@ const formats: Record<string, { extension: string; signature: (b: Buffer) => boo
   'application/epub+zip': { extension: '.epub', signature: b => b.length >= 58 && b.readUInt32LE(0)===0x04034b50 && b.readUInt16LE(8)===0 && b.readUInt16LE(26)===8 && b.readUInt16LE(28)===0 && b.toString('ascii',30,38)==='mimetype' && b.toString('ascii',38,58)==='application/epub+zip' },
   'text/html': { extension: '.html', signature: b => textSignature(b, text => /^<!doctype html[\s>]/i.test(text)||/^<html[\s>]/i.test(text)) },
   'application/xliff+xml': { extension: '.xlf', signature: b => textSignature(b, text => /^(?:<\?xml[^?]*\?>\s*)?<xliff[\s>]/.test(text)) },
+  'application/x-subrip': { extension: '.srt', signature: b => textSignature(b, text => /^\d+\r?\n\d{2,}:\d{2}:\d{2},\d{3}\s+-->\s+\d{2,}:\d{2}:\d{2},\d{3}(?:[^\r\n]*)?\r?\n/.test(text)) },
+  'text/vtt': { extension: '.vtt', signature: b => textSignature(b, text => /^WEBVTT(?:[ \t][^\r\n]*)?(?:\r?\n|$)/.test(text)) },
+  'text/x-ssa': { extension: '.ass', signature: b => textSignature(b, text => /^\[Script Info\](?:\r?\n)/.test(text) && /^\[Events\]\r?$/m.test(text) && /^Format:.*\bStart\b.*\bEnd\b.*\bText\b/im.test(text)) },
 };
 function textSignature(bytes:Buffer, check:(text:string)=>boolean) {
   try { const text=new TextDecoder('utf-8',{fatal:true}).decode(bytes).trimStart();return !text.includes('\u0000')&&check(text); } catch { return false; }
@@ -29,7 +33,7 @@ export async function savePluginArtifact(input: ArtifactInput, context: {
   const format = formats[input.media_type];
   if (!format || typeof input.suggested_name !== 'string' || !input.suggested_name.trim() ||
       input.suggested_name.length > 120 || /[\\/\u0000-\u001f]/.test(input.suggested_name) ||
-      !input.suggested_name.toLowerCase().endsWith(format.extension) ||
+      !(typeof format.extension === 'string' ? [format.extension] : format.extension).some(extension => input.suggested_name.toLowerCase().endsWith(extension)) ||
       typeof input.base64 !== 'string' || input.base64.length > Math.ceil(32 * 1024 * 1024 / 3) * 4 ||
       input.base64.length % 4 !== 0 || /[^A-Za-z0-9+/=]/.test(input.base64) ||
       !/^[a-f0-9]{64}$/.test(input.sha256)) throw new Error('派生文件格式、名称或预算无效。');

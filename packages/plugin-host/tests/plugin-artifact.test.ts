@@ -46,3 +46,32 @@ test('书稿译稿与声音派生格式核验签名、扩展名及原字节',asy
  }
  const invalid=Buffer.from('<html>\u0000</html>');await assert.rejects(savePluginArtifact({suggested_name:'bad.html',media_type:'text/html',base64:invalid.toString('base64'),sha256:createHash('sha256').update(invalid).digest('hex')},{check(){},choose:async()=>{throw Error('错误文件不应进入选择');}}));
 });
+
+test('字幕派生格式保存中文多行原字节，伪类型和非法UTF-8在选择前拒绝',async()=>{
+ const root=await mkdtemp(path.join(os.tmpdir(),'hetu-subtitle-files-'));
+ const samples=[['captions.srt','application/x-subrip','1\n00:00:00,000 --> 00:00:01,000\n雨港来信\n第二行\n'],['captions.vtt','text/vtt','WEBVTT\n\n00:00:00.000 --> 00:00:01.000\n雨港来信\n'],['captions.ass','text/x-ssa','[Script Info]\nScriptType: v4.00+\n[Events]\nFormat: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text\nDialogue: 0,0:00:00.00,0:00:01.00,Default,,0,0,0,,雨港来信\n']] as const;
+ for(const [name,type,text] of samples){
+  const bytes=Buffer.from(text),file=path.join(root,name),payload={suggested_name:name,media_type:type,base64:bytes.toString('base64'),sha256:createHash('sha256').update(bytes).digest('hex')};let choices=0;
+  const context={check(){},choose:async()=>{choices++;return file;}};
+  assert.equal((await savePluginArtifact(payload,context)).saved,true);assert.deepEqual(await readFile(file),bytes);
+  for(const wrong of [Buffer.from('不是此格式'),Buffer.from(text+'\u0000'),Buffer.concat([bytes,Buffer.from([255])])])await assert.rejects(savePluginArtifact({...payload,base64:wrong.toString('base64'),sha256:createHash('sha256').update(wrong).digest('hex')},context));
+  await assert.rejects(savePluginArtifact({...payload,suggested_name:name+'.html'},context));assert.equal(choices,1);assert.deepEqual(await readFile(file),bytes);
+  assert.deepEqual(await savePluginArtifact(payload,{check(){},choose:async()=>undefined}),{saved:false,cancelled:true});
+ }
+});
+
+test('纯文本歌词保存TXT与LRC原字节，拒绝未知扩展名、非法编码并保留原文件',async()=>{
+ const root=await mkdtemp(path.join(os.tmpdir(),'hetu-text-files-'));
+ for(const name of ['歌词.txt','逐句歌词.LRC']){
+  const bytes=Buffer.from('\ufeff[ti:雨港]\r\n[00:01.250]旧信落在雨声里\r\n'),file=path.join(root,name);
+  const payload={suggested_name:name,media_type:'text/plain',base64:bytes.toString('base64'),sha256:createHash('sha256').update(bytes).digest('hex')};let choices=0;
+  const context={check(){},choose:async()=>{choices++;return file;}};
+  assert.equal((await savePluginArtifact(payload,context)).saved,true);assert.deepEqual(await readFile(file),bytes);
+  for(const suffix of ['.html','.js','.command','.lrc.exe'])await assert.rejects(savePluginArtifact({...payload,suggested_name:suffix},context));
+  for(const bad of [Buffer.from('歌词\u0000'),Buffer.concat([bytes,Buffer.from([255])])])await assert.rejects(savePluginArtifact({...payload,base64:bad.toString('base64'),sha256:createHash('sha256').update(bad).digest('hex')},context));
+  assert.deepEqual(await savePluginArtifact(payload,{...context,choose:async()=>undefined}),{saved:false,cancelled:true});
+  let checks=0;await assert.rejects(savePluginArtifact(payload,{...context,check(){if(++checks===3)throw Error('上下文变化');}}),/上下文变化/);
+  assert.deepEqual(await readFile(file),bytes);assert.equal(choices,2);
+ }
+ assert.deepEqual((await readdir(root)).sort(),['歌词.txt','逐句歌词.LRC'].sort());
+});

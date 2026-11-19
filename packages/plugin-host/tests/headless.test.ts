@@ -41,7 +41,12 @@ test("开放无窗口插件无需权限声明，MCP复用核心且停用立即�
   assert.equal(dispatched.capabilities_sha256,dispatch.capabilities_sha256);
   for(const invalid of [{...dispatch,capabilities_sha256:"0".repeat(64)},{...dispatch,action:"unregistered"}]) {
     const denied=spawnSync(process.execPath,[...runtime,"dispatch","--input","-"],{input:JSON.stringify(invalid),encoding:"utf8",timeout:30000});
-    assert.notEqual(denied.status,0);assert.match(denied.stderr,/能力已变化|未声明/);
+    assert.equal(denied.status,0,denied.stderr);
+    const refusal=JSON.parse(denied.stdout);
+    assert.deepEqual(Object.keys(refusal).sort(),["format_version","kind","message"]);
+    assert.equal(refusal.format_version,1);
+    assert.equal(refusal.kind,"hetu.plugin_invocation_rejected");
+    assert.match(refusal.message,/能力已变化|未声明/);
   }
   const client=new Client({name:"open-runtime",version:"1"},{versionNegotiation:{mode:{pin:"2026-07-28"}}});
   try {

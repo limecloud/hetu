@@ -5,6 +5,18 @@ interface Props { locale: Locale; kind?: string; }
 const { locale, kind = 'relationships' } = Astro.props;
 const en = locale === 'en';
 const captures: Record<string, { width: number; height: number; zh: string; en: string }> = {
+  "poetry-studio": {"width": 1360, "height": 900, "zh": "诗词工坊实际工作面，固定正式macOS制品与原创虚构演示资料。", "en": "Poetry Studio actual work surface from a fixed official macOS artifact and original fictional demonstration data."},
+  "nonfiction-studio": {"width": 1360, "height": 900, "zh": "纪实写作实际工作面，固定正式macOS制品与原创虚构演示资料。", "en": "Nonfiction Studio actual work surface from a fixed official macOS artifact and original fictional demonstration data."},
+  "biography-studio": {"width": 1360, "height": 900, "zh": "传记工坊实际工作面，固定正式macOS制品与原创虚构演示资料。", "en": "Biography Studio actual work surface from a fixed official macOS artifact and original fictional demonstration data."},
+
+  "lyric-studio": {"width": 1360, "height": 900, "zh": "歌词工坊实际工作面，macOS固定正式制品与原创演示资料。", "en": "Lyric Studio actual work surface from a fixed official macOS artifact with original demonstration data."},
+  "production-planner": {"width": 1360, "height": 1461, "zh": "制片筹备台实际工作面，macOS固定正式制品与隔离演示资料。", "en": "Production Planner actual work surface from a fixed official macOS artifact with isolated demonstration data."},
+  "picturebook": {"width": 1360, "height": 1070, "zh": "绘本工坊实际工作面，macOS固定正式制品与隔离演示资料。", "en": "Picturebook Studio actual work surface from a fixed official macOS artifact with isolated demonstration data."},
+  "murder-mystery": {"width": 1360, "height": 1080, "zh": "剧本杀工坊实际工作面，macOS固定正式制品与隔离演示资料。", "en": "Murder Mystery Studio actual work surface from a fixed official macOS artifact with isolated demonstration data."},
+  "world-studio": {"width": 1360, "height": 900, "zh": "世界构建实际工作面，macOS隔离演示资料。", "en": "World Studio actual work surface with isolated macOS demonstration data."},
+  "mystery-lab": {"width": 1360, "height": 900, "zh": "悬疑推演实际工作面，macOS隔离演示资料。", "en": "Mystery Lab actual work surface with isolated macOS demonstration data."},
+  "art-direction": {"width": 1345, "height": 1159, "zh": "美术设定台实际工作面，macOS隔离演示资料。", "en": "Art Direction actual work surface with isolated macOS demonstration data."},
+  "subtitle-studio": {"width": 1345, "height": 1110, "zh": "字幕工坊实际工作面，macOS隔离演示资料。", "en": "Subtitle Studio actual work surface with isolated macOS demonstration data."},
   "adaptation-studio": {"width": 1360, "height": 900, "zh": "改编工程真实工作面，使用macOS隔离验收资料。", "en": "Adaptation Studio actual work surface with isolated macOS acceptance data."},
   "reader-review": {"width": 1360, "height": 900, "zh": "试读工作台真实工作面，使用macOS隔离验收资料。", "en": "Reader Review actual work surface with isolated macOS acceptance data."},
   "comic-studio": {"width": 1345, "height": 1435, "zh": "漫画创作真实工作面，使用macOS隔离验收资料。", "en": "Comic Studio actual work surface with isolated macOS acceptance data."},

@@ -18,6 +18,9 @@
     {"required": ["access_mode", "core_actions"]}
   ],
   "properties": {
+    "invocation_projection_version": {
+      "const": 1
+    },
     "work_kinds": {
       "type": "array",
       "minItems": 1,

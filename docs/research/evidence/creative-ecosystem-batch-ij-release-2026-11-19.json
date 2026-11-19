@@ -1,0 +1,1041 @@
+{
+  "status": "complete",
+  "recorded_at": "2026-11-18T17:47:01.997154+00:00",
+  "plugins": [
+    {
+      "slug": "murder-mystery",
+      "package_sha256": "c2bf8995da6ddb2cbead5e4962bb9d9130ee6e8d387df5bdca39015374bfed24",
+      "archive_sha256": "1761a0cb369695f48bf5f9eafc166eedf60a47c2b401eff58a343281a376aaa4",
+      "plugin_id": "org.wordflowlab.murder-mystery",
+      "version": "0.1.0",
+      "source_commit": "d7b8daac471ea4fa788b0a1d7082486dd114132d",
+      "tested_source_commit": "c8b9071ac38f9e553557922d32c462494eab9a9d",
+      "size_bytes": 107472,
+      "minimum_host_version": "0.12.4",
+      "host_git_sha": "3617eb7cabeda135f46d475eff28488d470f3bbe",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "acceptance_url": "https://github.com/wordflowlab/hetu-murder-mystery/blob/d7b8daac471ea4fa788b0a1d7082486dd114132d/docs/research/release-acceptance.json",
+      "release_url": "https://github.com/wordflowlab/hetu-murder-mystery/releases/tag/v0.1.0",
+      "download_verified": true,
+      "tag_verified": true,
+      "unit_tests": 28,
+      "actions": 29,
+      "ci": {
+        "conclusion": "success",
+        "headSha": "c8b9071ac38f9e553557922d32c462494eab9a9d",
+        "status": "completed",
+        "url": "https://github.com/wordflowlab/hetu-murder-mystery/actions/runs/44357178236"
+      },
+      "local_tests": [
+        {
+          "test": "machine",
+          "exit_code": 0
+        },
+        {
+          "test": "ui",
+          "exit_code": 0
+        }
+      ]
+    },
+    {
+      "slug": "picturebook",
+      "package_sha256": "6125d3b3f303f441ffdcad1b4762c16858a3122e39015751219292aa60d758ed",
+      "archive_sha256": "ac029bc814f5958bc006434dd551c43bcad63f2370934a2d3e9d37b7f77e841a",
+      "plugin_id": "org.wordflowlab.picturebook",
+      "version": "0.1.0",
+      "source_commit": "6a566b7afdc46285b66d05737542767eeabfb6b0",
+      "tested_source_commit": "17c6dd51e65d81f3f710bd95225e1e2a5804213d",
+      "size_bytes": 6992584,
+      "minimum_host_version": "0.12.4",
+      "host_git_sha": "3617eb7cabeda135f46d475eff28488d470f3bbe",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "acceptance_url": "https://github.com/wordflowlab/hetu-picturebook/blob/6a566b7afdc46285b66d05737542767eeabfb6b0/docs/research/release-acceptance.json",
+      "release_url": "https://github.com/wordflowlab/hetu-picturebook/releases/tag/v0.1.0",
+      "download_verified": true,
+      "tag_verified": true,
+      "unit_tests": 26,
+      "actions": 19,
+      "ci": {
+        "conclusion": "success",
+        "headSha": "17c6dd51e65d81f3f710bd95225e1e2a5804213d",
+        "status": "completed",
+        "url": "https://github.com/wordflowlab/hetu-picturebook/actions/runs/44357173825"
+      },
+      "local_tests": [
+        {
+          "test": "machine",
+          "exit_code": 0
+        },
+        {
+          "test": "cross",
+          "exit_code": 0
+        },
+        {
+          "test": "ui",
+          "exit_code": 0
+        }
+      ]
+    }
+  ],
+  "host": {
+    "version": "0.12.4",
+    "git_sha": "3617eb7cabeda135f46d475eff28488d470f3bbe",
+    "archive_sha256": "39c55fea493132c172dfe4d4da34a082831540afedc4eda0de6636dd7e1b0f0c",
+    "source_build": false,
+    "signature_verified": true,
+    "gatekeeper": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/plugin-gh/host-v0124/expanded/Hetu.app: accepted\nsource=Notarized Developer ID",
+    "staple": "Processing: /Users/coso/Documents/dev/ai/limecloud/hetu/output/plugin-gh/host-v0124/expanded/Hetu.app\nThe validate action worked!"
+  },
+  "public_installation": {
+    "recorded_at": "2026-11-18T17:39:32.491Z",
+    "connection_version": "0.12.3",
+    "entry": "hetu_call_action",
+    "public_packages": [
+      {
+        "plugin_id": "org.wordflowlab.picturebook",
+        "package_sha256": "6125d3b3f303f441ffdcad1b4762c16858a3122e39015751219292aa60d758ed",
+        "action": "install"
+      },
+      {
+        "plugin_id": "org.wordflowlab.murder-mystery",
+        "package_sha256": "c2bf8995da6ddb2cbead5e4962bb9d9130ee6e8d387df5bdca39015374bfed24",
+        "action": "install"
+      }
+    ],
+    "old_records_retained": true
+  },
+  "public_readback": {
+    "recorded_at": "2026-11-18T17:41:20.831Z",
+    "connection_version": "0.12.3",
+    "reads": [
+      {
+        "plugin_id": "org.wordflowlab.picturebook",
+        "package_sha256": "6125d3b3f303f441ffdcad1b4762c16858a3122e39015751219292aa60d758ed",
+        "ref": {
+          "object_id": "ext_f0e3b66c-2bfa-4a30-b991-ef93f434fbe7",
+          "revision": 3,
+          "sha256": "5666fd0582e0d14e57bab2712db7c2aa222b10bb29058ab6aa53b4b7cb3ad6cc"
+        }
+      },
+      {
+        "plugin_id": "org.wordflowlab.murder-mystery",
+        "package_sha256": "c2bf8995da6ddb2cbead5e4962bb9d9130ee6e8d387df5bdca39015374bfed24",
+        "ref": {
+          "object_id": "ext_49e43c16-da0f-4e18-b2a0-e0eb96227dbc",
+          "revision": 9,
+          "sha256": "2b4a481e4587ebe08fb9e5e223a4d6e154460ccf9859dc137568793ef3fea4f2"
+        }
+      }
+    ],
+    "old_records_retained": true
+  },
+  "current_codex": {
+    "recorded_at": "2026-11-18T16:57:58.062Z",
+    "client_adapter": "codex",
+    "live_mcp_version": "0.11.11",
+    "separate_official_host_version": "0.12.4",
+    "original_plugins_preserved": true,
+    "before": [
+      {
+        "id": "org.wordflowlab.adaptation-studio",
+        "sha256": "354d2fb5e325828e0b189bac79eff50be3ee312466c0a437c73f3ca907b061e1",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.art-direction",
+        "sha256": "54f05a084e642455f90defc9a2fc8da9c71b9d4204e8f51b176843d5f3673682",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.audio-drama",
+        "sha256": "95ab0357cce70a38643070f144a3b7a1c7a7d697b3573b1c0cc67c728584fa23",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.book-export",
+        "sha256": "e9dfd676d26c6ec450f21cdce83599b921492ca46e1a29a414400433a09c3e68",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.character-lab",
+        "sha256": "d3404b533b5e8a03e45e84eb23f5d4a99209568a0d8e09e03b13a0b05d6a4944",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.comic-studio",
+        "sha256": "7e18dc9956a2678171c5692eef3c512315e0a40447d507c1bb292214fe284420",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.director-stage",
+        "sha256": "1f7755622c1f50c9932ff7536c5175d113f30bcff77f58921efffe012dab645c",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.interactive-fiction",
+        "sha256": "c777120519a56fd93d1e132c078ac99b5a65f19103070a088b1cedf8f74e0a00",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.lorebook-bridge",
+        "sha256": "0620fb1c75dbedd1e76306e1be3445ab383f801cfe0eac5341623a9e05054402",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.mystery-lab",
+        "sha256": "2c93b9094f2660a96e5193224530bfbc078594f071b8c4b5057fd7df7147f606",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.novel-atlas",
+        "sha256": "3b0b6006069eb0b2c70c709ee9a3ed2bd006b4491946a161748389e77a46d298",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.novel-planner",
+        "sha256": "a38c3204bbb35fb075690f4ff2c991c63a136e09b34b8c24d67c93115de5df0c",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.novel-review",
+        "sha256": "f5eceea32772e9028ddaf36607ceb2c4eddd0a70eb17373e4c4bf871c21c18f4",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.prose-studio",
+        "sha256": "5005ec439334b5babd9d9bd35b3a7575185b55df67f3ea3623ed3c21226c3c7f",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.reader-review",
+        "sha256": "9b354d5494d2158da3431b67bd76ad326c617dc08c9908dc594d6b1a1fb454ab",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.readthrough",
+        "sha256": "5723789aa1a672cdf9d1fb2e3a0756e7f2b194a67e50815d6ea5e8543dce8bd1",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.screenplay",
+        "sha256": "3db2b1f8b3577b6bd1806e8ca0b1a25b019b51299a4f6a3fea53fc821cecdf99",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.series-organizer",
+        "sha256": "e51032102970d97f650165fdd2e17a3a6b5991e707ab3028dfc54422969663dc",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.story-analysis",
+        "sha256": "fb117ee372a4fce7cde8cb1afd997f3d0b168066af2b1334171e721dfcd21009",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.story-research",
+        "sha256": "5adeffdf4bfe4f71ac614204bfe77825747164fa4705f6b9ec52a1d908b5bf9f",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.story-translation",
+        "sha256": "59080c4c196a79bdd09c50ebbd2a99d46a43dc561575a785fb9b8eed78ec3148",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.subtitle-studio",
+        "sha256": "5c9baeffe35b436d7504752db9fa5c2613fa65418fcbea921c4bfef9dd5a84d8",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.video-studio",
+        "sha256": "549b654781dc4949ee4abc28a94be97bb3bb12df96aead7208eb0ca1b7c0db2a",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.world-studio",
+        "sha256": "5050928ecd28c72b5be6eb227a39e09919ee8c12354967cc482f0b2011d364d5",
+        "enabled": true
+      }
+    ],
+    "after": [
+      {
+        "id": "org.wordflowlab.screenplay",
+        "sha256": "3db2b1f8b3577b6bd1806e8ca0b1a25b019b51299a4f6a3fea53fc821cecdf99",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.video-studio",
+        "sha256": "549b654781dc4949ee4abc28a94be97bb3bb12df96aead7208eb0ca1b7c0db2a",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.director-stage",
+        "sha256": "1f7755622c1f50c9932ff7536c5175d113f30bcff77f58921efffe012dab645c",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.story-research",
+        "sha256": "5adeffdf4bfe4f71ac614204bfe77825747164fa4705f6b9ec52a1d908b5bf9f",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.character-lab",
+        "sha256": "d3404b533b5e8a03e45e84eb23f5d4a99209568a0d8e09e03b13a0b05d6a4944",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.story-analysis",
+        "sha256": "fb117ee372a4fce7cde8cb1afd997f3d0b168066af2b1334171e721dfcd21009",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.lorebook-bridge",
+        "sha256": "0620fb1c75dbedd1e76306e1be3445ab383f801cfe0eac5341623a9e05054402",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.interactive-fiction",
+        "sha256": "c777120519a56fd93d1e132c078ac99b5a65f19103070a088b1cedf8f74e0a00",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.series-organizer",
+        "sha256": "e51032102970d97f650165fdd2e17a3a6b5991e707ab3028dfc54422969663dc",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.story-translation",
+        "sha256": "59080c4c196a79bdd09c50ebbd2a99d46a43dc561575a785fb9b8eed78ec3148",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.readthrough",
+        "sha256": "5723789aa1a672cdf9d1fb2e3a0756e7f2b194a67e50815d6ea5e8543dce8bd1",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.book-export",
+        "sha256": "e9dfd676d26c6ec450f21cdce83599b921492ca46e1a29a414400433a09c3e68",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.novel-review",
+        "sha256": "f5eceea32772e9028ddaf36607ceb2c4eddd0a70eb17373e4c4bf871c21c18f4",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.novel-atlas",
+        "sha256": "3b0b6006069eb0b2c70c709ee9a3ed2bd006b4491946a161748389e77a46d298",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.prose-studio",
+        "sha256": "5005ec439334b5babd9d9bd35b3a7575185b55df67f3ea3623ed3c21226c3c7f",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.novel-planner",
+        "sha256": "a38c3204bbb35fb075690f4ff2c991c63a136e09b34b8c24d67c93115de5df0c",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.adaptation-studio",
+        "sha256": "354d2fb5e325828e0b189bac79eff50be3ee312466c0a437c73f3ca907b061e1",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.audio-drama",
+        "sha256": "95ab0357cce70a38643070f144a3b7a1c7a7d697b3573b1c0cc67c728584fa23",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.reader-review",
+        "sha256": "9b354d5494d2158da3431b67bd76ad326c617dc08c9908dc594d6b1a1fb454ab",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.comic-studio",
+        "sha256": "7e18dc9956a2678171c5692eef3c512315e0a40447d507c1bb292214fe284420",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.world-studio",
+        "sha256": "5050928ecd28c72b5be6eb227a39e09919ee8c12354967cc482f0b2011d364d5",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.mystery-lab",
+        "sha256": "2c93b9094f2660a96e5193224530bfbc078594f071b8c4b5057fd7df7147f606",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.art-direction",
+        "sha256": "54f05a084e642455f90defc9a2fc8da9c71b9d4204e8f51b176843d5f3673682",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.subtitle-studio",
+        "sha256": "5c9baeffe35b436d7504752db9fa5c2613fa65418fcbea921c4bfef9dd5a84d8",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.picturebook",
+        "sha256": "6125d3b3f303f441ffdcad1b4762c16858a3122e39015751219292aa60d758ed",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.murder-mystery",
+        "sha256": "c2bf8995da6ddb2cbead5e4962bb9d9130ee6e8d387df5bdca39015374bfed24",
+        "enabled": true
+      }
+    ],
+    "fixed_work": {
+      "revision_ref": {
+        "revision": 1
+      },
+      "sha256": "9c8108a1d8300e5a86281c716a38c39ad44f357b0621e65452895476136e689b",
+      "work_ref": {
+        "kind": "novel",
+        "object_id": "novel_14c5646f-426c-418b-9344-1b4444bb5089",
+        "workspace_id": "workspace_d70ff2bb-b91f-4f8c-bc85-394e46d2ba69"
+      }
+    },
+    "plugins": [
+      {
+        "plugin_id": "org.wordflowlab.picturebook",
+        "package_sha256": "6125d3b3f303f441ffdcad1b4762c16858a3122e39015751219292aa60d758ed",
+        "actions": 19,
+        "skill_resources": [
+          "SKILL.md",
+          "references/operations.md",
+          "references/workflows.md"
+        ],
+        "saved_ref": {
+          "object_id": "ext_f0e3b66c-2bfa-4a30-b991-ef93f434fbe7",
+          "revision": 3,
+          "sha256": "5666fd0582e0d14e57bab2712db7c2aa222b10bb29058ab6aa53b4b7cb3ad6cc"
+        }
+      },
+      {
+        "plugin_id": "org.wordflowlab.murder-mystery",
+        "package_sha256": "c2bf8995da6ddb2cbead5e4962bb9d9130ee6e8d387df5bdca39015374bfed24",
+        "actions": 29,
+        "skill_resources": [
+          "SKILL.md",
+          "references/operations.md",
+          "references/workflows.md"
+        ],
+        "saved_ref": {
+          "object_id": "ext_49e43c16-da0f-4e18-b2a0-e0eb96227dbc",
+          "revision": 9,
+          "sha256": "2b4a481e4587ebe08fb9e5e223a4d6e154460ccf9859dc137568793ef3fea4f2"
+        }
+      }
+    ],
+    "completed": [
+      "热安装与动态发现",
+      "完整包内Skill及参考读取",
+      "新作品固定修订和已有工程读取",
+      "绘本保存、字体排版检查、页意见和固定交接",
+      "剧本杀两幕模拟发放、推测、复盘及精确修订回读",
+      "最终中文界面包热更新、原工程回读和下一轮返工",
+      "绘本旧意见过期检查、剧本杀旧试玩基线保持"
+    ],
+    "limits": [
+      "当前对话不替代正式0.12.4制品验收",
+      "隔离样本，模拟不是真人试玩",
+      "不含付费生成、外部发送、正文采纳或定稿"
+    ],
+    "final_checked_at": "2026-11-18T17:10:18.128Z",
+    "previous_candidates": [
+      {
+        "plugin_id": "org.wordflowlab.picturebook",
+        "package_sha256": "61011cea6c73c321de088032c08db71f848735ab71f49d1755e3b65ee2fabe15",
+        "actions": 19,
+        "skill_resources": [
+          "SKILL.md",
+          "references/operations.md",
+          "references/workflows.md"
+        ],
+        "saved_ref": {
+          "object_id": "ext_f0e3b66c-2bfa-4a30-b991-ef93f434fbe7",
+          "revision": 2,
+          "sha256": "f72c5092352fe61dff1ecbb72752d55688d37c46b0c6df1ea74a1a5d12a392d3"
+        }
+      },
+      {
+        "plugin_id": "org.wordflowlab.murder-mystery",
+        "package_sha256": "f23f301bb9c84edcbea1a2b8aa61febcd740507c5e156a342d40a0ed84bf5e3b",
+        "actions": 29,
+        "skill_resources": [
+          "SKILL.md",
+          "references/operations.md",
+          "references/workflows.md"
+        ],
+        "saved_ref": {
+          "object_id": "ext_49e43c16-da0f-4e18-b2a0-e0eb96227dbc",
+          "revision": 8,
+          "sha256": "c20799bb220bc060bbf8879b4e499da5afebb2ac36d0e69b83efbce413b2b0cb"
+        }
+      }
+    ],
+    "refreshed_connection": {
+      "version": "0.12.3",
+      "stable_action_entry_verified": true,
+      "plugins": [
+        {
+          "slug": "picturebook",
+          "version": "0.12.3",
+          "transport": "hetu_call_action",
+          "skill_sha256": "90862b185d07180180ab049d2f575b83b8e0595792a99044bee6b0eab29ec16d",
+          "package_sha256": "6125d3b3f303f441ffdcad1b4762c16858a3122e39015751219292aa60d758ed",
+          "record_ref": {
+            "object_id": "ext_f0e3b66c-2bfa-4a30-b991-ef93f434fbe7",
+            "revision": 3,
+            "sha256": "5666fd0582e0d14e57bab2712db7c2aa222b10bb29058ab6aa53b4b7cb3ad6cc"
+          }
+        },
+        {
+          "slug": "murder-mystery",
+          "version": "0.12.3",
+          "transport": "hetu_call_action",
+          "skill_sha256": "ed89089d85f0cfd42c6d35cd737d249b92a6ed865a3a43033b7bee97719b1ab8",
+          "package_sha256": "c2bf8995da6ddb2cbead5e4962bb9d9130ee6e8d387df5bdca39015374bfed24",
+          "record_ref": {
+            "object_id": "ext_49e43c16-da0f-4e18-b2a0-e0eb96227dbc",
+            "revision": 9,
+            "sha256": "2b4a481e4587ebe08fb9e5e223a4d6e154460ccf9859dc137568793ef3fea4f2"
+          }
+        }
+      ]
+    }
+  },
+  "cross_journey": {
+    "recorded_at": "2026-11-18T17:30:56.286Z",
+    "host_version": "hetu 0.12.4",
+    "package_sha256": "6125d3b3f303f441ffdcad1b4762c16858a3122e39015751219292aa60d758ed",
+    "peer_package_sha256": "c2bf8995da6ddb2cbead5e4962bb9d9130ee6e8d387df5bdca39015374bfed24",
+    "stages": [
+      "绘本固定真实图像与翻页意见，局部返工保留旧修订并标记过期意见",
+      "固定作者修订完成两幕模拟试玩，当前作者改稿不重写试玩基线",
+      "复盘交接到两个宿主参考稿，原正文、旧来源和旧专业修订保持",
+      "两个插件分别在独立剧本中保存，跨作品管理引用拒绝",
+      "绘本工程可在独立视频中保存，不要求建立上游小说或剧本"
+    ],
+    "adopted": false,
+    "finalized": false,
+    "limits": [
+      "Agent模拟非真人研究",
+      "未执行付费生成、对外发送、采纳与定稿"
+    ]
+  },
+  "local_cross_journey": {
+    "recorded_at": "2026-11-18T17:13:21.702Z",
+    "host_version": "hetu 0.12.4",
+    "package_sha256": "6125d3b3f303f441ffdcad1b4762c16858a3122e39015751219292aa60d758ed",
+    "peer_package_sha256": "c2bf8995da6ddb2cbead5e4962bb9d9130ee6e8d387df5bdca39015374bfed24",
+    "stages": [
+      "绘本固定真实图像与翻页意见，局部返工保留旧修订并标记过期意见",
+      "固定作者修订完成两幕模拟试玩，当前作者改稿不重写试玩基线",
+      "复盘交接到两个宿主参考稿，原正文、旧来源和旧专业修订保持",
+      "两个插件分别在独立剧本中保存，跨作品管理引用拒绝",
+      "绘本工程可在独立视频中保存，不要求建立上游小说或剧本"
+    ],
+    "adopted": false,
+    "finalized": false,
+    "limits": [
+      "Agent模拟非真人研究",
+      "未执行付费生成、对外发送、采纳与定稿"
+    ]
+  },
+  "pdf_rendering": {
+    "page_count": 4,
+    "pages": [
+      {
+        "height": 700,
+        "image": "picturebook-page-1.png",
+        "page": 1,
+        "text": "林溪在雨港等一封信。",
+        "width": 700
+      },
+      {
+        "height": 700,
+        "image": "picturebook-page-2.png",
+        "page": 2,
+        "text": "信封里，藏着一把旧钥匙。",
+        "width": 700
+      },
+      {
+        "height": 700,
+        "image": "picturebook-page-3.png",
+        "page": 3,
+        "text": "她决定沿着邮路出发。",
+        "width": 700
+      },
+      {
+        "height": 700,
+        "image": "picturebook-page-4.png",
+        "page": 4,
+        "text": "下一封信，由她寄出。",
+        "width": 700
+      }
+    ],
+    "renderer": "macOS PDFKit",
+    "pdf_sha256": "372fde83139a40ab9464cc2e7841e9558e8d2f482b0463d5d0c7771bfee709ab",
+    "final_package_sha256": "6125d3b3f303f441ffdcad1b4762c16858a3122e39015751219292aa60d758ed"
+  },
+  "docs": {
+    "standard_files": 30,
+    "local_links": 50,
+    "rendered_mermaid_diagrams": 10
+  },
+  "visual_review": [
+    {
+      "plugin": "picturebook",
+      "dimensions": {
+        "布局": 9,
+        "间距与对齐": 9,
+        "排版": 9,
+        "颜色": 9,
+        "控件状态": 9,
+        "交互": 9
+      },
+      "basis": [
+        "真实专业内容与文件实际读取",
+        "所有视图浅暗、1360与760宽度无横向溢出",
+        "字号档位、渐变、键盘与减少透明度断言",
+        "导出取消、保存冲突、手工重建基线、关闭重开与未保存输入恢复"
+      ],
+      "images": [
+        {
+          "file": "dark-1360-view-0.png",
+          "sha256": "2cb372345f8f9ffe0b7c06de2b395899e1f39cf9f6a71bbc0bbd346d4fa3f18c"
+        },
+        {
+          "file": "dark-1360-view-1.png",
+          "sha256": "a2ef2c199b0aff3d80bca7d4a22118ef09040f903c20210d2bd2124c6452475b"
+        },
+        {
+          "file": "dark-1360-view-2.png",
+          "sha256": "e619af9bbb25db27fab8c491302125c8f7f8788139241450181e4d899e849c75"
+        },
+        {
+          "file": "dark-1360-view-3.png",
+          "sha256": "ff6bf9d64e5d2ff71d7d755acb99f692a6c2f8d9f336516a01e74c1448615db4"
+        },
+        {
+          "file": "dark-1360-view-4.png",
+          "sha256": "fc8e20a2eae1652eeb13654beb48149e2abd9a66fa22488f32ca846acc9ef682"
+        },
+        {
+          "file": "dark-1360.png",
+          "sha256": "d917afc899ff7549db9bb6cf90b81bd05601cb4782e9bcfa1164ff99e24541de"
+        },
+        {
+          "file": "dark-760-view-0.png",
+          "sha256": "ba896766e90ed909e992571810ffb379149ed3048eeb526fc6da5d0742cc1b40"
+        },
+        {
+          "file": "dark-760-view-1.png",
+          "sha256": "d07575446813cfc5a4b91c3c1048eaebbe67b80abc42dd914ee557026a16e123"
+        },
+        {
+          "file": "dark-760-view-2.png",
+          "sha256": "f1c60450346de96641c3f3b5aa17392d5f958d52a468f0b979b3aa21fa9f1607"
+        },
+        {
+          "file": "dark-760-view-3.png",
+          "sha256": "c183dce123a992a6931f31fea2ad2ed854b2d2a075621602ff7ca49befa9aed1"
+        },
+        {
+          "file": "dark-760-view-4.png",
+          "sha256": "b0c567d5bd0c4ef8ff9fa7346b1ebb78a9dd3052578e78aea37da4d327bbfef8"
+        },
+        {
+          "file": "dark-760.png",
+          "sha256": "b0c567d5bd0c4ef8ff9fa7346b1ebb78a9dd3052578e78aea37da4d327bbfef8"
+        },
+        {
+          "file": "empty.png",
+          "sha256": "8d7a54ba84b4144d3a715eb350d0dc156c89ef50063d5cf86b3d369a1e59266a"
+        },
+        {
+          "file": "light-1360-view-0.png",
+          "sha256": "bfbe753bb1953f8a3a5f26c549c4030b5e66a0f6f06e8756ff719cc931fcd35b"
+        },
+        {
+          "file": "light-1360-view-1.png",
+          "sha256": "66002b211d0370c2625f00ba5adb19506ec569b205f18daa8dd107c97715e182"
+        },
+        {
+          "file": "light-1360-view-2.png",
+          "sha256": "29a583b53af88e10774e53fce570815df771d6b7c074ec6c8bc84c9faafbf9d8"
+        },
+        {
+          "file": "light-1360-view-3.png",
+          "sha256": "a0bb4654afceb07bfbec700bbec85a831c1a20a73856630abaebe7df86581903"
+        },
+        {
+          "file": "light-1360-view-4.png",
+          "sha256": "2bb6d67e6b7580527899a0e21202c68ca2f5b90ff89887fbc2512e02da49ce7a"
+        },
+        {
+          "file": "light-1360.png",
+          "sha256": "2bb6d67e6b7580527899a0e21202c68ca2f5b90ff89887fbc2512e02da49ce7a"
+        },
+        {
+          "file": "light-760-view-0.png",
+          "sha256": "d7ee03d54028c66462d7cdac89c437ad898054ea83e0026dd8a880b6bed14371"
+        },
+        {
+          "file": "light-760-view-1.png",
+          "sha256": "804c6e2aad671821e938161e2ba10cbea5e3a72e73a0ef2112ce8a914cafe99b"
+        },
+        {
+          "file": "light-760-view-2.png",
+          "sha256": "65f90d4e4052976f17ba0d775c5d39b148550814725edb3651dbb0d7753bb655"
+        },
+        {
+          "file": "light-760-view-3.png",
+          "sha256": "09b489979a099cf4e6590eac9513a684c35166cc8edfa79a69031ed2daf2f938"
+        },
+        {
+          "file": "light-760-view-4.png",
+          "sha256": "93f671417bba8aa8e6131f165f8222b7a3fa25705a024e6d1c3e1f7eb293dab9"
+        },
+        {
+          "file": "light-760.png",
+          "sha256": "4ae3c0d0d4ab9880c0defab43616cef5d5da52ef2f3c3c921b93377189785c48"
+        },
+        {
+          "file": "reduced-transparency.png",
+          "sha256": "1496edd7861fe37201072f6919205714bc64eba5fa6612c8d3ddce971666831a"
+        },
+        {
+          "file": "view-0.png",
+          "sha256": "f72e96d4810f8fc0aa783a138e8263f1ea60190fb9c6b59873c7571fb58197c5"
+        },
+        {
+          "file": "view-1.png",
+          "sha256": "287e90b4be2f435dc2aa1797cee1de6e33ea6c6fd2d2d41ef6e75b25be503202"
+        },
+        {
+          "file": "view-2.png",
+          "sha256": "4a27b6ffbe14aca970bd993c7b13666f39e914123119c17b0037982fa439bf84"
+        },
+        {
+          "file": "view-3.png",
+          "sha256": "e30f47378db08e683b9c8c738225b8f96473da81111252fd265a4f219013d0d1"
+        },
+        {
+          "file": "view-4.png",
+          "sha256": "b48ab511a6d242c689a98d6a4165e9aab6e3727332943ec930deca0fb512661c"
+        }
+      ],
+      "limits": [
+        "9分是有依据的设计评审，不是像素认证或创作品质认可",
+        "未验收Windows/Linux的原生外框和输入法"
+      ],
+      "package_sha256": "6125d3b3f303f441ffdcad1b4762c16858a3122e39015751219292aa60d758ed"
+    },
+    {
+      "plugin": "murder-mystery",
+      "dimensions": {
+        "布局": 9,
+        "间距与对齐": 9,
+        "排版": 9,
+        "颜色": 9,
+        "控件状态": 9,
+        "交互": 9
+      },
+      "basis": [
+        "真实专业内容与文件实际读取",
+        "所有视图浅暗、1360与760宽度无横向溢出",
+        "字号档位、渐变、键盘与减少透明度断言",
+        "导出取消、保存冲突、手工重建基线、关闭重开与未保存输入恢复"
+      ],
+      "images": [
+        {
+          "file": "dark-1360-view-0.png",
+          "sha256": "da5b95024be88c332681ec9b7ce74decc0c36103d19806a23d199a58acae70c7"
+        },
+        {
+          "file": "dark-1360-view-1.png",
+          "sha256": "59c1f0bd2fa29b68b870bb3df27e1beb2b64ca0816bf465beb7ce7c863ca6d8f"
+        },
+        {
+          "file": "dark-1360-view-2.png",
+          "sha256": "fea7ae1143d8f197bd0e420940b790d8ddc46d09d310e8f7a687bf0843092879"
+        },
+        {
+          "file": "dark-1360-view-3.png",
+          "sha256": "986dd3e40d5ed20fdd079c02e0277daa7703c55c5087169f90ee6c3f3b883ad2"
+        },
+        {
+          "file": "dark-1360-view-4.png",
+          "sha256": "1bef7c800777d3d9a2217360b390ce636ee9545c8b5f360bd695111705e00619"
+        },
+        {
+          "file": "dark-1360.png",
+          "sha256": "ac3cc537eb14c7e8a7e33f27475390764b2f078e8868a4e34a5c337a4f9737a4"
+        },
+        {
+          "file": "dark-760-view-0.png",
+          "sha256": "124752f943fb19915b81f7ecc77edc0e1dc0ae251a671dda242e2846abd659c9"
+        },
+        {
+          "file": "dark-760-view-1.png",
+          "sha256": "6ba780fc82fbbac00d5cf389b58c29c528f716e0c67e0783b2f58b5c5cefca86"
+        },
+        {
+          "file": "dark-760-view-2.png",
+          "sha256": "a03ca6c0f0733a1c29b5941fc0a40449fdb8652f13a2882ed8ba5dbc99c48a33"
+        },
+        {
+          "file": "dark-760-view-3.png",
+          "sha256": "46e9ee0a1fc97ab72a8847881a5d7fe2a41eb3e4f39efc527bbaf6299b796bcb"
+        },
+        {
+          "file": "dark-760-view-4.png",
+          "sha256": "5a52713884277cb418e28b5224793b320ee335a12505752921b9fc832998d392"
+        },
+        {
+          "file": "dark-760.png",
+          "sha256": "457749ce906c22f4ba043e099b7904ef521176edf6c6e4d2dd39a12e610cf19a"
+        },
+        {
+          "file": "empty.png",
+          "sha256": "20f8285b07398db32424f7a6362de65536f1cf4ff608bd48049526fef76b58d6"
+        },
+        {
+          "file": "light-1360-view-0.png",
+          "sha256": "2c3b845f1a9154d1a360e3d2940b7273e8836bfcceba3829103ae4765840649f"
+        },
+        {
+          "file": "light-1360-view-1.png",
+          "sha256": "907579599b1728ac6fb59bda4e0a5c0f1370dcfffefbf13bf4b770c7fc9b16c7"
+        },
+        {
+          "file": "light-1360-view-2.png",
+          "sha256": "85fb8410ff2b3eead2be24dc7aecdb6d21c36e15bb349c128716df9f0071ab9d"
+        },
+        {
+          "file": "light-1360-view-3.png",
+          "sha256": "511b37299d5be52d031d1d81613d93b29f9abb20c275ba3692e5d4993f53b167"
+        },
+        {
+          "file": "light-1360-view-4.png",
+          "sha256": "f704710b21af9acee8e2c0e3a3940fc3a9d8ed09b4cbed5d50a2155207edb821"
+        },
+        {
+          "file": "light-1360.png",
+          "sha256": "d6fe820a9cdb8f3faec1485e2a3a3019746491e66dba635e1410863ea15034f2"
+        },
+        {
+          "file": "light-760-view-0.png",
+          "sha256": "2ace20a1c136cd6f59033d661137c58cfbb8a7ca7b917593c7c10eeff8c2c768"
+        },
+        {
+          "file": "light-760-view-1.png",
+          "sha256": "a52869eb3deb06f28ea97a4d76eac73f20c10243d71fafa91c53e23823e5809e"
+        },
+        {
+          "file": "light-760-view-2.png",
+          "sha256": "ec5c11d120462f14101ee604b7bf6af0be4b21e6ed1dc975b8d38be3f609277d"
+        },
+        {
+          "file": "light-760-view-3.png",
+          "sha256": "54876f68b5d76c045638619843d1bb75da5dc2b64d67d1bfd7f6f9b34799c469"
+        },
+        {
+          "file": "light-760-view-4.png",
+          "sha256": "27ac844fe4f95e38c3ee42f71936fe9e5e824471d53c3d2eda54aa7d8d989aa7"
+        },
+        {
+          "file": "light-760.png",
+          "sha256": "1f68266a67c763deef7453e0ca51e386dda26c6f82b1f6f5940a3d6d49ef2057"
+        },
+        {
+          "file": "reduced-transparency.png",
+          "sha256": "1a4436358e0b35c94a9ca4de3ed92d85d10cca0c83f240fe19ef0e1164e2f29a"
+        },
+        {
+          "file": "view-0.png",
+          "sha256": "4d92b686656869baa839e75a58233958fdda8f2d3d15c2b0e3d76c1c3ace463f"
+        },
+        {
+          "file": "view-1.png",
+          "sha256": "1980b4c4864b7f79476ebd20275aa6f0eb4199a319daa2354c6197d02b29e607"
+        },
+        {
+          "file": "view-2.png",
+          "sha256": "045eaa75b816f1aca793849c71cdaff31a41a4161a77949eae665a7d6d615353"
+        },
+        {
+          "file": "view-3.png",
+          "sha256": "3231b9c7e8114c2733defffc6f4caec4b3ebc9e8ae75ae2039535efe3eb4b972"
+        },
+        {
+          "file": "view-4.png",
+          "sha256": "4ca53328bd4b7a6f7c1afc3728ca896d573e3e01f44e952b3c8e1b8809c8b816"
+        }
+      ],
+      "limits": [
+        "9分是有依据的设计评审，不是像素认证或创作品质认可",
+        "未验收Windows/Linux的原生外框和输入法"
+      ],
+      "package_sha256": "c2bf8995da6ddb2cbead5e4962bb9d9130ee6e8d387df5bdca39015374bfed24"
+    }
+  ],
+  "website": {
+    "local_regression": {
+      "passed": 382,
+      "log_sha256": "6e9729895d7de7a20b0d7fa7975985c9333e57f743b72e86f80daeff71ce9068"
+    },
+    "final_changed_pages": {
+      "passed": 22,
+      "log_sha256": "e4e1172303651eb480eb75918a10f3b0c3e4b734a85c7e04464cb1e53e5364f4"
+    },
+    "build": {
+      "pages": 173,
+      "local_references": 10433,
+      "log_sha256": "830f23062b0e2a382852a23050cdb23801e97271af63b498c32ac89f6485eabf"
+    },
+    "production": {
+      "origin": "https://hetu.limeai.run",
+      "recorded_at": "2026-11-18T17:44:41.316Z",
+      "results": [
+        {
+          "route": "/plugins/murder-mystery/",
+          "status": 200,
+          "package_sha256": "c2bf8995da6ddb2cbead5e4962bb9d9130ee6e8d387df5bdca39015374bfed24",
+          "image_sha256": "85fb8410ff2b3eead2be24dc7aecdb6d21c36e15bb349c128716df9f0071ab9d"
+        },
+        {
+          "route": "/plugins/picturebook/",
+          "status": 200,
+          "package_sha256": "6125d3b3f303f441ffdcad1b4762c16858a3122e39015751219292aa60d758ed",
+          "image_sha256": "bfbe753bb1953f8a3a5f26c549c4030b5e66a0f6f06e8756ff719cc931fcd35b"
+        },
+        {
+          "route": "/plugins/",
+          "status": 200
+        },
+        {
+          "route": "/docs/plugins/",
+          "status": 200
+        },
+        {
+          "route": "/blog/pages-and-players/",
+          "status": 200
+        },
+        {
+          "route": "/en/plugins/murder-mystery/",
+          "status": 200,
+          "package_sha256": "c2bf8995da6ddb2cbead5e4962bb9d9130ee6e8d387df5bdca39015374bfed24",
+          "image_sha256": "85fb8410ff2b3eead2be24dc7aecdb6d21c36e15bb349c128716df9f0071ab9d"
+        },
+        {
+          "route": "/en/plugins/picturebook/",
+          "status": 200,
+          "package_sha256": "6125d3b3f303f441ffdcad1b4762c16858a3122e39015751219292aa60d758ed",
+          "image_sha256": "bfbe753bb1953f8a3a5f26c549c4030b5e66a0f6f06e8756ff719cc931fcd35b"
+        },
+        {
+          "route": "/en/plugins/",
+          "status": 200
+        },
+        {
+          "route": "/en/docs/plugins/",
+          "status": 200
+        },
+        {
+          "route": "/en/blog/pages-and-players/",
+          "status": 200
+        }
+      ]
+    },
+    "production_regression": {
+      "recorded_at": "2026-11-18T17:47:01.968173+00:00",
+      "origin": "https://hetu.limeai.run",
+      "passed": 22,
+      "selection": "picturebook|murder-mystery|pages-and-players",
+      "log_sha256": "640dcada8353575cb267b9f98e6e6bd43eac7d103ae3a3cb33257e948cb83fdd"
+    },
+    "deploy_log_sha256": "1f26f250e94f7186f630702aab021d2e0494030ba1fd1692dbcb5f42f614d0e6"
+  },
+  "failure_records": [
+    {
+      "scope": "首轮源码CI",
+      "repository": "wordflowlab/hetu-picturebook",
+      "run_id": 44351511209,
+      "cause": "初次提交遗漏被全局忽略的contracts目录",
+      "resolution": "显式纳入可执行清单，后续源码CI成功"
+    },
+    {
+      "scope": "首轮界面验收",
+      "plugins": [
+        "picturebook",
+        "murder-mystery"
+      ],
+      "cause": "复用测试仍引用旧参考板元素",
+      "evidence": "local/picturebook/ui.log 与GitHub初次验收回执",
+      "resolution": "以本包真实专业元素验证并复验成功"
+    },
+    {
+      "scope": "当前对话固定修订读取",
+      "cause": "隔离新作品读取了不存在的修订2",
+      "resolution": "回读实际修订1并保留其确切fixed_ref"
+    },
+    {
+      "scope": "当前MCP并发只读检查",
+      "cause": "同时检查两个包时一次工具调用返回异常",
+      "resolution": "顺序回读固定包成功，未涉及写入"
+    },
+    {
+      "scope": "官网构建工作目录",
+      "cause": "首次构建从主工作树启动，结果未用于本次验收",
+      "resolution": "两次错误目录构建均不作为交付依据；后续构建、测试、部署显式固定到hetu-gh-release，最终提交与公网字节另行核验。",
+      "occurrences": 2
+    },
+    {
+      "scope": "PDF辅助联排图",
+      "cause": "本机缺少Pillow",
+      "resolution": "直接逐页检查PDFKit渲染图，不新增全局依赖"
+    },
+    {
+      "scope": "候选包审阅",
+      "cause": "检查面板有英文协议字段名",
+      "resolution": "增加中文显示，重新构建、固定新摘要并重跑全部最终包验收"
+    },
+    {
+      "scope": "GitHub旧候选队列",
+      "run_id": 44352488367,
+      "cause": "job没有分配runner、steps为空，后被新的同组验收替代",
+      "evidence": "superseded-ci.json及GitHub job 134971614520",
+      "code_failure": false
+    },
+    {
+      "scope": "最终GitHub正式制品验收",
+      "cause": "macos-15队列长时间未分配runner，steps为空",
+      "resolution": "核对actions/runner-images公开支持表后选用标准macos-26 Arm64；固定包未变化，重新执行相同验收",
+      "evidence": "macos15-queue.json与final-ci.json"
+    },
+    {
+      "scope": "绘本发行前置核验",
+      "cause": "CI已经成功，但回执附件尚在下载；发行脚本的存在性检查中止",
+      "mutation_performed": false,
+      "resolution": "保持CI原run，待固定附件下载完成后继续原发行准备"
+    }
+  ],
+  "limits": [
+    "专业验收限macOS arm64隔离样本；Windows/Linux专业旅程未验证",
+    "模拟不是真人研究，版面检查不代表印厂、儿童阅读或创作品质认可",
+    "未执行付费生成、内容外发、正文采纳或定稿",
+    "使用固定正式宿主隔离运行，不覆盖共享/Applications/Hetu.app"
+  ]
+}

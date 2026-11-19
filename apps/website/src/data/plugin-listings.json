@@ -75,7 +75,7 @@
     },
     "manifest": {
       "id": "org.wordflowlab.director-stage",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "host_api": "1",
       "display": {
         "zh-CN": "导演布景台",
@@ -85,20 +85,20 @@
       "permissions": []
     },
     "source_repository": "https://github.com/wordflowlab/hetu-director-stage",
-    "source_commit": "03eab799a426dbc0883dd59c9c56ce5ee03affeb",
+    "source_commit": "23bfaaeeb97d360863e7ff1859556e722f515741",
     "release": {
       "channel": "preview",
-      "url": "https://github.com/wordflowlab/hetu-director-stage/releases/tag/v0.2.0",
-      "download_url": "https://github.com/wordflowlab/hetu-director-stage/releases/download/v0.2.0/org.wordflowlab.director-stage-0.2.0.tgz",
-      "archive_sha256": "7a6a8c8f45a3f8398adcf85cca9112e39ee3f9f7dc982d87b69c507c8b032aaa",
-      "package_sha256": "3a2c3cebd17854981fd40a95f3bd68558a33305444c4f2fcdca2c0bfcdb1fc66",
-      "size_bytes": 1007163,
-      "minimum_host_version": "0.11.2",
+      "url": "https://github.com/wordflowlab/hetu-director-stage/releases/tag/v0.2.1",
+      "download_url": "https://github.com/wordflowlab/hetu-director-stage/releases/download/v0.2.1/org.wordflowlab.director-stage-0.2.1.tgz",
+      "archive_sha256": "43153a24597604fb70391f907a324bfdf2a8fd97ff8c426e7b207610793f6737",
+      "package_sha256": "bf0544d37b1bc9c67cd0a93fa0297a720e7a46fc73dcb21596885e62cac0a8c6",
+      "size_bytes": 1014674,
+      "minimum_host_version": "0.12.3",
       "verified_platforms": [
         "macOS arm64"
       ],
-      "evidence_url": "https://github.com/wordflowlab/hetu-director-stage/blob/03eab799a426dbc0883dd59c9c56ce5ee03affeb/docs/research/runtime-v020-acceptance-2026-11-17.json",
-      "integrity_url": "https://github.com/wordflowlab/hetu-director-stage/releases/download/v0.2.0/release-integrity.json"
+      "evidence_url": "https://github.com/wordflowlab/hetu-director-stage/blob/23bfaaeeb97d360863e7ff1859556e722f515741/docs/research/runtime-v021-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-director-stage/releases/download/v0.2.1/release-integrity.json"
     }
   },
   {
@@ -717,6 +717,380 @@
       ],
       "evidence_url": "https://github.com/wordflowlab/hetu-audio-drama/blob/5e55c7c02928f96801dedbe0cbaef29bc1fc2d40/docs/research/release-acceptance.json",
       "integrity_url": "https://github.com/wordflowlab/hetu-audio-drama/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "world-studio",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.world-studio",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "世界构建",
+        "en": "World Studio"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-world-studio",
+    "source_commit": "914153bcf98b26f8b1070d31d04b5dd841d6f191",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-world-studio/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-world-studio/releases/download/v0.1.0/org.wordflowlab.world-studio-0.1.0.tgz",
+      "archive_sha256": "dc23ebb6968f1572423b066de80752b2d850c8d1f858e702dbe38f5538f201bd",
+      "package_sha256": "5050928ecd28c72b5be6eb227a39e09919ee8c12354967cc482f0b2011d364d5",
+      "size_bytes": 103391,
+      "minimum_host_version": "0.12.4",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-world-studio/blob/914153bcf98b26f8b1070d31d04b5dd841d6f191/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-world-studio/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "mystery-lab",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.mystery-lab",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "悬疑推演",
+        "en": "Mystery Lab"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-mystery-lab",
+    "source_commit": "ff72135d32c27a1fd325df64f9d501e27126e2f7",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-mystery-lab/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-mystery-lab/releases/download/v0.1.0/org.wordflowlab.mystery-lab-0.1.0.tgz",
+      "archive_sha256": "7c2bcf37d38adeea21e71901286dc4568d392260d78708d714709f0f1dfa709b",
+      "package_sha256": "2c93b9094f2660a96e5193224530bfbc078594f071b8c4b5057fd7df7147f606",
+      "size_bytes": 98705,
+      "minimum_host_version": "0.12.4",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-mystery-lab/blob/ff72135d32c27a1fd325df64f9d501e27126e2f7/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-mystery-lab/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "art-direction",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.art-direction",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "美术设定台",
+        "en": "Art Direction"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-art-direction",
+    "source_commit": "74b768a18e05cda4885ce409003cf01b477c6312",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-art-direction/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-art-direction/releases/download/v0.1.0/org.wordflowlab.art-direction-0.1.0.tgz",
+      "archive_sha256": "3deb17b09640d4ab8ac3557294c68f6137fadbecdfc0fd1b877e02cbef171db9",
+      "package_sha256": "54f05a084e642455f90defc9a2fc8da9c71b9d4204e8f51b176843d5f3673682",
+      "size_bytes": 103895,
+      "minimum_host_version": "0.12.4",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-art-direction/blob/74b768a18e05cda4885ce409003cf01b477c6312/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-art-direction/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "subtitle-studio",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.subtitle-studio",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "字幕工坊",
+        "en": "Subtitle Studio"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-subtitle-studio",
+    "source_commit": "3f806ea49b3c7f38911aa3fd00499dec00759954",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-subtitle-studio/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-subtitle-studio/releases/download/v0.1.0/org.wordflowlab.subtitle-studio-0.1.0.tgz",
+      "archive_sha256": "de7ea2c1e7e3271f1136e0077c81777fa6aec9b34bef808f2d67d53fe704c1bc",
+      "package_sha256": "5c9baeffe35b436d7504752db9fa5c2613fa65418fcbea921c4bfef9dd5a84d8",
+      "size_bytes": 103799,
+      "minimum_host_version": "0.12.4",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-subtitle-studio/blob/3f806ea49b3c7f38911aa3fd00499dec00759954/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-subtitle-studio/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "picturebook",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.picturebook",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "绘本工坊",
+        "en": "Picturebook Studio"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-picturebook",
+    "source_commit": "6a566b7afdc46285b66d05737542767eeabfb6b0",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-picturebook/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-picturebook/releases/download/v0.1.0/org.wordflowlab.picturebook-0.1.0.tgz",
+      "archive_sha256": "ac029bc814f5958bc006434dd551c43bcad63f2370934a2d3e9d37b7f77e841a",
+      "package_sha256": "6125d3b3f303f441ffdcad1b4762c16858a3122e39015751219292aa60d758ed",
+      "size_bytes": 6992584,
+      "minimum_host_version": "0.12.4",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-picturebook/blob/6a566b7afdc46285b66d05737542767eeabfb6b0/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-picturebook/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "murder-mystery",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.murder-mystery",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "剧本杀工坊",
+        "en": "Murder Mystery Studio"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-murder-mystery",
+    "source_commit": "d7b8daac471ea4fa788b0a1d7082486dd114132d",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-murder-mystery/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-murder-mystery/releases/download/v0.1.0/org.wordflowlab.murder-mystery-0.1.0.tgz",
+      "archive_sha256": "1761a0cb369695f48bf5f9eafc166eedf60a47c2b401eff58a343281a376aaa4",
+      "package_sha256": "c2bf8995da6ddb2cbead5e4962bb9d9130ee6e8d387df5bdca39015374bfed24",
+      "size_bytes": 107472,
+      "minimum_host_version": "0.12.4",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-murder-mystery/blob/d7b8daac471ea4fa788b0a1d7082486dd114132d/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-murder-mystery/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "production-planner",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.production-planner",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "制片筹备台",
+        "en": "Production Planner"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-production-planner",
+    "source_commit": "9aba92415de7fed0727cb937292fa2cf72d8a8c8",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-production-planner/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-production-planner/releases/download/v0.1.0/org.wordflowlab.production-planner-0.1.0.tgz",
+      "archive_sha256": "c44f1b79c75a6e521653e8b71762a67ce02b48f9e0c05597f3f5baf3c4158144",
+      "package_sha256": "892e50ccb90398d5b67214bcb961c8dea70d335bf87b7b7112848cba0474540e",
+      "size_bytes": 114635,
+      "minimum_host_version": "0.12.3",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-production-planner/blob/9aba92415de7fed0727cb937292fa2cf72d8a8c8/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-production-planner/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "lyric-studio",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.lyric-studio",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "歌词工坊",
+        "en": "Lyric Studio"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-lyric-studio",
+    "source_commit": "35daf3f9c7a92badd7a937d0947757ab7f6b2b85",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-lyric-studio/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-lyric-studio/releases/download/v0.1.0/org.wordflowlab.lyric-studio-0.1.0.tgz",
+      "archive_sha256": "5f215af67be55035190b71055464ef745e835b53362dc4a134c9dccb7244833b",
+      "package_sha256": "4cbfe60783400aecb99e2f98357f14a2be97fafffd86d6bf45808b131d7cb6a0",
+      "size_bytes": 117520,
+      "minimum_host_version": "0.12.6",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-lyric-studio/blob/35daf3f9c7a92badd7a937d0947757ab7f6b2b85/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-lyric-studio/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "poetry-studio",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.poetry-studio",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "诗词工坊",
+        "en": "Poetry Studio"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-poetry-studio",
+    "source_commit": "ceaa7c624f8f40823fda0dbbfb05401bb49653d3",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-poetry-studio/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-poetry-studio/releases/download/v0.1.0/org.wordflowlab.poetry-studio-0.1.0.tgz",
+      "archive_sha256": "639f305f89cf156b9c3154957783124624e6a949b99e57816e6c2e6f4221578b",
+      "package_sha256": "afa1c6acbde209b8c8f71c0e6d95f228101d3d5770ec8d1dacf2b5e5c99052c0",
+      "size_bytes": 109440,
+      "minimum_host_version": "0.12.6",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-poetry-studio/blob/ceaa7c624f8f40823fda0dbbfb05401bb49653d3/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-poetry-studio/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "nonfiction-studio",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.nonfiction-studio",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "纪实写作",
+        "en": "Nonfiction Studio"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-nonfiction-studio",
+    "source_commit": "a28cd242de4080592c7747cae2ddb47ccf6dfb3d",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-nonfiction-studio/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-nonfiction-studio/releases/download/v0.1.0/org.wordflowlab.nonfiction-studio-0.1.0.tgz",
+      "archive_sha256": "b013e98fe2b229ae08779fb1aba18ab6125be396bccce677c68d3a9949c46bd6",
+      "package_sha256": "df2b61ca9d3fbf8cfc7692535461971c6a083bc85e5f145da8243282add4c4b4",
+      "size_bytes": 103588,
+      "minimum_host_version": "0.12.6",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-nonfiction-studio/blob/a28cd242de4080592c7747cae2ddb47ccf6dfb3d/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-nonfiction-studio/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "biography-studio",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.biography-studio",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "传记工坊",
+        "en": "Biography Studio"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-biography-studio",
+    "source_commit": "fd1214f8c8dc258586d75c7b5c61bef161577e43",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-biography-studio/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-biography-studio/releases/download/v0.1.0/org.wordflowlab.biography-studio-0.1.0.tgz",
+      "archive_sha256": "c85cc3e400cec4021dee9c2c23e5deb2fcfe1d8f732ec2baf02a030e47efd59b",
+      "package_sha256": "e6dd4d89c86b34109d2cc83f133d65b3abd0acacaed9293d701251a3a0600896",
+      "size_bytes": 105916,
+      "minimum_host_version": "0.12.6",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-biography-studio/blob/fd1214f8c8dc258586d75c7b5c61bef161577e43/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-biography-studio/releases/download/v0.1.0/release-integrity.json"
     }
   }
 ]

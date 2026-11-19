@@ -1,0 +1,413 @@
+{
+  "recorded_at": "2026-11-19",
+  "plugins": [
+    {
+      "slug": "poetry-studio",
+      "release": {
+        "release": "https://github.com/wordflowlab/hetu-poetry-studio/releases/tag/v0.1.0",
+        "source_commit": "ceaa7c624f8f40823fda0dbbfb05401bb49653d3",
+        "archive_sha256": "639f305f89cf156b9c3154957783124624e6a949b99e57816e6c2e6f4221578b",
+        "package_sha256": "afa1c6acbde209b8c8f71c0e6d95f228101d3d5770ec8d1dacf2b5e5c99052c0",
+        "files_byte_identical": 18,
+        "verified": true
+      },
+      "official_verification": "https://github.com/wordflowlab/hetu-poetry-studio/actions/runs/44459248142",
+      "unit_tests": 29,
+      "machine_actions": 33,
+      "current_codex_public_install": {
+        "original_and_revised_preserved": true,
+        "original_operation_preserved": true,
+        "skill_rediscovered": true,
+        "other_states_preserved": 31
+      },
+      "current_mcp": {
+        "runtime_version": "0.12.3",
+        "package_sha256": "afa1c6acbde209b8c8f71c0e6d95f228101d3d5770ec8d1dacf2b5e5c99052c0",
+        "capabilities_sha256": "e2ff46b5bf06df5641b7da5cb5481c0a24783f17da835a83bcfca534fff9d87d",
+        "workflow_sha256": "bc612929adf1d85bec52dad36fd69ae9f7d6315e58390b16aa790cb77b063927",
+        "skill_read": true,
+        "hot_discovery": true,
+        "revised": {
+          "object_id": "ext_1d650b88-f776-47ba-a9a2-cb828d2f3f3f",
+          "revision": 2,
+          "sha256": "bc62d1bd5ef6c4f09911a674743874b340a93ccfcd2be5483cddda2cab70c688"
+        },
+        "fixed_readback": true
+      },
+      "professional_evidence": "https://github.com/wordflowlab/hetu-poetry-studio/tree/main/docs/research",
+      "delivery_documentation_commit": "3bbe9ab4ef031a447452f0cc45eb8a68d9473e63"
+    },
+    {
+      "slug": "nonfiction-studio",
+      "release": {
+        "release": "https://github.com/wordflowlab/hetu-nonfiction-studio/releases/tag/v0.1.0",
+        "source_commit": "a28cd242de4080592c7747cae2ddb47ccf6dfb3d",
+        "archive_sha256": "b013e98fe2b229ae08779fb1aba18ab6125be396bccce677c68d3a9949c46bd6",
+        "package_sha256": "df2b61ca9d3fbf8cfc7692535461971c6a083bc85e5f145da8243282add4c4b4",
+        "files_byte_identical": 18,
+        "verified": true
+      },
+      "official_verification": "https://github.com/wordflowlab/hetu-nonfiction-studio/actions/runs/44459266071",
+      "unit_tests": 28,
+      "machine_actions": 33,
+      "current_codex_public_install": {
+        "original_and_revised_preserved": true,
+        "original_operation_preserved": true,
+        "skill_rediscovered": true,
+        "other_states_preserved": 31
+      },
+      "current_mcp": {
+        "runtime_version": "0.12.3",
+        "package_sha256": "df2b61ca9d3fbf8cfc7692535461971c6a083bc85e5f145da8243282add4c4b4",
+        "capabilities_sha256": "b7ff095ae8a2a95fd9c0cdb0c62cb525410de6f287be317cfc64272e81147e18",
+        "workflow_sha256": "9bddc37abf6372038afdeb5df0c86960bcf10d4c918667c2f229737a9155cbba",
+        "skill_read": true,
+        "hot_discovery": true,
+        "revised": {
+          "object_id": "ext_255aacbf-b717-434c-94c1-5e8cc26969a8",
+          "revision": 2,
+          "sha256": "1d89b2ec76c3161980f2f4dd2b6be4f8c57cff39211e400dad67326afbd80a0a"
+        },
+        "fixed_readback": true
+      },
+      "professional_evidence": "https://github.com/wordflowlab/hetu-nonfiction-studio/tree/main/docs/research",
+      "delivery_documentation_commit": "4aac917b33ed134dcde71a6816b28634b3b2ec23"
+    },
+    {
+      "slug": "biography-studio",
+      "release": {
+        "release": "https://github.com/wordflowlab/hetu-biography-studio/releases/tag/v0.1.0",
+        "source_commit": "fd1214f8c8dc258586d75c7b5c61bef161577e43",
+        "archive_sha256": "c85cc3e400cec4021dee9c2c23e5deb2fcfe1d8f732ec2baf02a030e47efd59b",
+        "package_sha256": "e6dd4d89c86b34109d2cc83f133d65b3abd0acacaed9293d701251a3a0600896",
+        "files_byte_identical": 18,
+        "verified": true
+      },
+      "official_verification": "https://github.com/wordflowlab/hetu-biography-studio/actions/runs/44459280451",
+      "unit_tests": 42,
+      "machine_actions": 31,
+      "current_codex_public_install": {
+        "original_and_revised_preserved": true,
+        "original_operation_preserved": true,
+        "skill_rediscovered": true,
+        "other_states_preserved": 31
+      },
+      "current_mcp": {
+        "runtime_version": "0.12.3",
+        "package_sha256": "e6dd4d89c86b34109d2cc83f133d65b3abd0acacaed9293d701251a3a0600896",
+        "capabilities_sha256": "824164787ba5cd3fa165cbe31685233c622ffe8d93544002356412c8ef68e020",
+        "workflow_sha256": "fc224b0952692e2cf627b0e2b89591a044e383e484382083df94164e41cd213a",
+        "skill_read": true,
+        "hot_discovery": true,
+        "revised": {
+          "object_id": "ext_52dfd9ab-567c-42c6-acb9-cd6d22f5763c",
+          "revision": 3,
+          "sha256": "f6bf1c8d3906d57139c25c76046f7d31461c6b99f2aa65fe55fe5996fbed3351"
+        },
+        "fixed_readback": true
+      },
+      "professional_evidence": "https://github.com/wordflowlab/hetu-biography-studio/tree/main/docs/research",
+      "delivery_documentation_commit": "1c3fd45041b7369905dc9f55a9000868e55a7ff4"
+    }
+  ],
+  "host": {
+    "version": "0.12.6",
+    "git_sha": "b75293837aaa220803b9dc964ba72b8646fa7244",
+    "archive_sha256": "de012d76bb9751d6f2ed78427c6887563fcfd4455ae19717c6f65a9182700ab3",
+    "source_build": false,
+    "scope": "隔离公开签名公证副本，未替换共享Applications安装"
+  },
+  "verification": {
+    "unit_tests": 99,
+    "machine_actions": 97,
+    "rendered_mermaid_diagrams": 12,
+    "work_surfaces_per_plugin": 31,
+    "current_codex_cli_and_mcp": true,
+    "public_download_files_per_plugin": 18,
+    "other_plugin_states_preserved_per_install": 31,
+    "host_capability_map_check": true
+  },
+  "website": {
+    "state": "deployed_and_verified",
+    "pages_built": 189,
+    "local_references_checked": 11333,
+    "local_browser_checks_passed": 48,
+    "public_release_links": [
+      {
+        "slug": "poetry-studio",
+        "url": "https://github.com/wordflowlab/hetu-poetry-studio/releases/tag/v0.1.0",
+        "status": 200,
+        "sha256": "af0893ccf611f53edae537b3ce18e160f0da24354b19ce288f4a7f28c623ec9d"
+      },
+      {
+        "slug": "poetry-studio",
+        "url": "https://github.com/wordflowlab/hetu-poetry-studio/releases/download/v0.1.0/org.wordflowlab.poetry-studio-0.1.0.tgz",
+        "status": 200,
+        "sha256": "639f305f89cf156b9c3154957783124624e6a949b99e57816e6c2e6f4221578b"
+      },
+      {
+        "slug": "poetry-studio",
+        "url": "https://github.com/wordflowlab/hetu-poetry-studio/releases/download/v0.1.0/release-integrity.json",
+        "status": 200,
+        "sha256": "af8965488d0ee5d06cf867916b27dbb234b9dd095607f5c7df986b9834e0eaa9"
+      },
+      {
+        "slug": "poetry-studio",
+        "url": "https://github.com/wordflowlab/hetu-poetry-studio/blob/ceaa7c624f8f40823fda0dbbfb05401bb49653d3/docs/research/release-acceptance.json",
+        "status": 200,
+        "sha256": "3a287c7da29ec6c793aa33bb46343f7c3bb1d69db6b44281120f6d76e5242696"
+      },
+      {
+        "slug": "poetry-studio",
+        "url": "https://github.com/wordflowlab/hetu-poetry-studio/blob/ceaa7c624f8f40823fda0dbbfb05401bb49653d3/CAPABILITIES.md",
+        "status": 200,
+        "sha256": "c6b7d83a3a00bd1e12bc81dd39491cdb5973e5608193a44e5d94205496767f1f"
+      },
+      {
+        "slug": "poetry-studio",
+        "url": "https://github.com/wordflowlab/hetu-poetry-studio/tree/ceaa7c624f8f40823fda0dbbfb05401bb49653d3/docs",
+        "status": 200,
+        "sha256": "628c9627afd74cb87999bed780f73256b6a93e5af5aafc46ff164aae59f7e381"
+      },
+      {
+        "slug": "nonfiction-studio",
+        "url": "https://github.com/wordflowlab/hetu-nonfiction-studio/releases/tag/v0.1.0",
+        "status": 200,
+        "sha256": "061bdd3a9dae9db855ccd25e5fd9f4a12b73980b31c7e781292c107a828d7301"
+      },
+      {
+        "slug": "nonfiction-studio",
+        "url": "https://github.com/wordflowlab/hetu-nonfiction-studio/releases/download/v0.1.0/org.wordflowlab.nonfiction-studio-0.1.0.tgz",
+        "status": 200,
+        "sha256": "b013e98fe2b229ae08779fb1aba18ab6125be396bccce677c68d3a9949c46bd6"
+      },
+      {
+        "slug": "nonfiction-studio",
+        "url": "https://github.com/wordflowlab/hetu-nonfiction-studio/releases/download/v0.1.0/release-integrity.json",
+        "status": 200,
+        "sha256": "0ed05027d150d9dbf74b5e8f0ca27b354d1ee44e5daf0b91f393929e8636558c"
+      },
+      {
+        "slug": "nonfiction-studio",
+        "url": "https://github.com/wordflowlab/hetu-nonfiction-studio/blob/a28cd242de4080592c7747cae2ddb47ccf6dfb3d/docs/research/release-acceptance.json",
+        "status": 200,
+        "sha256": "09be3ecba0866fcd4b7a0723865d12cf2db41800395ee64a2001bfff997aa53e"
+      },
+      {
+        "slug": "nonfiction-studio",
+        "url": "https://github.com/wordflowlab/hetu-nonfiction-studio/blob/a28cd242de4080592c7747cae2ddb47ccf6dfb3d/CAPABILITIES.md",
+        "status": 200,
+        "sha256": "a00b6c1f45f53443e7eae01347aaa8487d19742b0567a2be86b46a1dcbd7b84d"
+      },
+      {
+        "slug": "nonfiction-studio",
+        "url": "https://github.com/wordflowlab/hetu-nonfiction-studio/tree/a28cd242de4080592c7747cae2ddb47ccf6dfb3d/docs",
+        "status": 200,
+        "sha256": "0df0ce3bfca0248ca5581ffffe3a42cc2ca849ae76090d48db318b9561598dee"
+      },
+      {
+        "slug": "biography-studio",
+        "url": "https://github.com/wordflowlab/hetu-biography-studio/releases/tag/v0.1.0",
+        "status": 200,
+        "sha256": "c271b7c6ab39c7c30d1cad737aaed3b2a72da6cd33f7d59b122d04d06bdc0223"
+      },
+      {
+        "slug": "biography-studio",
+        "url": "https://github.com/wordflowlab/hetu-biography-studio/releases/download/v0.1.0/org.wordflowlab.biography-studio-0.1.0.tgz",
+        "status": 200,
+        "sha256": "c85cc3e400cec4021dee9c2c23e5deb2fcfe1d8f732ec2baf02a030e47efd59b"
+      },
+      {
+        "slug": "biography-studio",
+        "url": "https://github.com/wordflowlab/hetu-biography-studio/releases/download/v0.1.0/release-integrity.json",
+        "status": 200,
+        "sha256": "82e68a704385d234fa365f355bf60d849fde020dcf37e71dfda5b78121db2fd7"
+      },
+      {
+        "slug": "biography-studio",
+        "url": "https://github.com/wordflowlab/hetu-biography-studio/blob/fd1214f8c8dc258586d75c7b5c61bef161577e43/docs/research/release-acceptance.json",
+        "status": 200,
+        "sha256": "003b09046393202b70b763dcc7bb7a1ac09c009115a89ae4f3b2378825a9b2da"
+      },
+      {
+        "slug": "biography-studio",
+        "url": "https://github.com/wordflowlab/hetu-biography-studio/blob/fd1214f8c8dc258586d75c7b5c61bef161577e43/CAPABILITIES.md",
+        "status": 200,
+        "sha256": "a0c0f7e6c61e932bf4fd8d6ef155a29a42b8671b8c8e0d48c8a6ef2f709e9f1d"
+      },
+      {
+        "slug": "biography-studio",
+        "url": "https://github.com/wordflowlab/hetu-biography-studio/tree/fd1214f8c8dc258586d75c7b5c61bef161577e43/docs",
+        "status": 200,
+        "sha256": "6d2754f8e26cbe4b1a825cff03283986cefaeaf907aac5927b7fbc5b87cb5bf1"
+      }
+    ],
+    "deployment": "https://3a821705.hetu-website-3uu.pages.dev",
+    "deployed_source_commit": "ef0a66f23dade89219c3b8929a207a722a067ca4",
+    "origin": "https://hetu.limeai.run",
+    "browser_checks_passed": 48,
+    "public_responses": {
+      "origin": "https://hetu.limeai.run",
+      "responses": [
+        {
+          "route": "/plugins/",
+          "status": 200,
+          "raw_sha256": "8c24041c917b505beef56496c7b606a45c48c87a5a935776f7a688871477a7da",
+          "expected_sha256": "8c24041c917b505beef56496c7b606a45c48c87a5a935776f7a688871477a7da",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/plugins/",
+          "status": 200,
+          "raw_sha256": "00f79570ef12f9aaac6996036d1cd1c69eda430196c63c5d6832a6c34c897342",
+          "expected_sha256": "00f79570ef12f9aaac6996036d1cd1c69eda430196c63c5d6832a6c34c897342",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/docs/plugins/",
+          "status": 200,
+          "raw_sha256": "6a6cca7e7e659b368b46d2e877c20985d939b6aea120450bc311dd923152cf3f",
+          "expected_sha256": "6a6cca7e7e659b368b46d2e877c20985d939b6aea120450bc311dd923152cf3f",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/docs/plugins/",
+          "status": 200,
+          "raw_sha256": "f9f41ae46fd68603f79626d17b8458785069db63f534322ef2b2b905e8d6f81e",
+          "expected_sha256": "f9f41ae46fd68603f79626d17b8458785069db63f534322ef2b2b905e8d6f81e",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/blog/a-life-in-its-own-words/",
+          "status": 200,
+          "raw_sha256": "e0167446dd2793a11eaf1795e6a9ab67eeaafb417531e06adf57cea199c64517",
+          "expected_sha256": "e0167446dd2793a11eaf1795e6a9ab67eeaafb417531e06adf57cea199c64517",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/blog/a-life-in-its-own-words/",
+          "status": 200,
+          "raw_sha256": "da2b4b20d5bca9f0aaee3006705f28c7372af193ef0bf95f4cf8832ad9e21aef",
+          "expected_sha256": "da2b4b20d5bca9f0aaee3006705f28c7372af193ef0bf95f4cf8832ad9e21aef",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/blog/creative-plugins/",
+          "status": 200,
+          "raw_sha256": "aeda0383fdfdad1bc5b39c6d3c97845212fc4eff102505632ef73f449cc34056",
+          "expected_sha256": "aeda0383fdfdad1bc5b39c6d3c97845212fc4eff102505632ef73f449cc34056",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/blog/creative-plugins/",
+          "status": 200,
+          "raw_sha256": "285a69afeb041958265bdaec62bc6133eddce427538a622a3463dd6956dc3979",
+          "expected_sha256": "285a69afeb041958265bdaec62bc6133eddce427538a622a3463dd6956dc3979",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/poetry-studio/",
+          "status": 200,
+          "raw_sha256": "6b7099b6969176d10d3465025c20fa30f8bef2c74ca8ab9fb23e24d966b65dc4",
+          "expected_sha256": "6b7099b6969176d10d3465025c20fa30f8bef2c74ca8ab9fb23e24d966b65dc4",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/plugins/poetry-studio/",
+          "status": 200,
+          "raw_sha256": "3853af5a185b66d8e3002529c947438f6fe9f01a5189dbdac828baf715e55d02",
+          "expected_sha256": "3853af5a185b66d8e3002529c947438f6fe9f01a5189dbdac828baf715e55d02",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/poetry-studio.png",
+          "status": 200,
+          "raw_sha256": "bf0ef33383a3268ec2c73f0a603ed7dfbe85e5faab5c9df6bb97aa3bca74d4b4",
+          "expected_sha256": "bf0ef33383a3268ec2c73f0a603ed7dfbe85e5faab5c9df6bb97aa3bca74d4b4",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/nonfiction-studio/",
+          "status": 200,
+          "raw_sha256": "e13b431fc45ae3f09277e7e2ca5632892ca47dda66965e193aec2f655d1b48fd",
+          "expected_sha256": "e13b431fc45ae3f09277e7e2ca5632892ca47dda66965e193aec2f655d1b48fd",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/plugins/nonfiction-studio/",
+          "status": 200,
+          "raw_sha256": "2eb8e819af55909c484cd9bf65199d3265a1145c4c00dc7bea3d2e986ba2d499",
+          "expected_sha256": "2eb8e819af55909c484cd9bf65199d3265a1145c4c00dc7bea3d2e986ba2d499",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/nonfiction-studio.png",
+          "status": 200,
+          "raw_sha256": "eadc83c5ff97ae1f044485bce9274c620bf3c9da8ae132d61d58b41d0fba072f",
+          "expected_sha256": "eadc83c5ff97ae1f044485bce9274c620bf3c9da8ae132d61d58b41d0fba072f",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/biography-studio/",
+          "status": 200,
+          "raw_sha256": "94f0be2050431f0abea0604c16e779c8181559534a8ca8e1e2f852430f5cdc28",
+          "expected_sha256": "94f0be2050431f0abea0604c16e779c8181559534a8ca8e1e2f852430f5cdc28",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/plugins/biography-studio/",
+          "status": 200,
+          "raw_sha256": "479bb815166643f3de34c272aa6c1ae8fb5740169cb78e95ec3fe50df65db55e",
+          "expected_sha256": "479bb815166643f3de34c272aa6c1ae8fb5740169cb78e95ec3fe50df65db55e",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/biography-studio.png",
+          "status": 200,
+          "raw_sha256": "5cb54d09f7d6b1174420580e5f6d1ccd3ce5aa8dc5fbc904f90c353608d8bbcf",
+          "expected_sha256": "5cb54d09f7d6b1174420580e5f6d1ccd3ce5aa8dc5fbc904f90c353608d8bbcf",
+          "observed_changes": [],
+          "matches_build": true
+        }
+      ]
+    },
+    "logs": {
+      "website-deploy.log": {
+        "sha256": "83c048b7cffe5c5d5cca258275ae9b53c43dd490af0517c05dca49076ff313e3"
+      },
+      "website-tests.log": {
+        "sha256": "9354b3094fb4934a0b4e53f9576553537fbef524cc441c4f648c1e21c91e3c6e"
+      },
+      "production-tests.log": {
+        "sha256": "3ae14cf6ffe9308ad533232093919385f56dd7a307c11ac5ec5c869ab1ca1dab"
+      },
+      "production-bytes.log": {
+        "sha256": "711e8552b49de1611fc503fd2287e22713da340ad4cad5157fc532692dd2c53a"
+      },
+      "public-install.log": {
+        "sha256": "2ced7b3e37f325e303ec606e065869007629e36013c98112d8e6961b88c08e09"
+      }
+    }
+  },
+  "limits": [
+    "macOS arm64专业开发预览；Windows/Linux专业实机未验收",
+    "原创虚构人物与材料，不是真人采访、史实认证或文学品质评判",
+    "未执行内容外发、付费模型、正文采纳或定稿"
+  ]
+}

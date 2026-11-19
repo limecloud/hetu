@@ -120,3 +120,46 @@ Choose a tool for the question at hand. Keep adaptations separate from the origi
 - [Audio Drama](/en/plugins/audio-drama/)：Listen to complete dialogue and mixes. Leave interval notes and recheck their position when the timeline changes.
 
 For example: “Plan how these chapters become one episode while keeping the sender a mystery. Share fixed excerpts, revise from returned feedback, then arrange this scene as two comic pages and a short dialogue. Use my supplied images and recordings; confirm costs separately.”
+
+
+## Worlds, mysteries and audiovisual expression
+
+- [World Studio](/en/plugins/world-studio/): declare fictional calendars, premises and units, then inspect change impacts before continuing.
+- [Mystery Lab](/en/plugins/mystery-lab/): distinguish author truth from reader knowledge and evaluate clues by reveal stage.
+- [Art Direction](/en/plugins/art-direction/): view actual reference images, compare palettes and designs, and leave region notes.
+- [Subtitle Studio](/en/plugins/subtitle-studio/): play fixed media, review languages, timing and reading load, and preserve originals when delivering subtitles.
+
+Try: “Check dates and food supplies for three days of harbour closure. Decide whether readers have enough clues by chapter two without revealing the sender. Prepare the next chapter. Use my actual reference images for costumes, play the full dialogue to check subtitles, and recheck old notes after timing changes.”
+
+Novels, scripts and video remain independent works. Existing images, subtitles and notes retain their original revisions. Generation costs, manuscript adoption and final approval remain separate decisions.
+
+
+## Picturebooks and immersive stories
+
+- [Picturebook Studio](/en/plugins/picturebook/): read actual illustrated spreads, review page turns, leave page-specific feedback and export offline HTML or embedded-font PDF.
+- [Murder Mystery Studio](/en/plugins/murder-mystery/): inspect role packets and staged clues, then record playtests and debriefs against a fixed author revision.
+
+Try: “Turn Rain Harbour Letters into four picturebook pages. Leave the key unexplained on page two. Create a separate two-role mystery without showing Lin the register early. Simulate two acts, retain releases and debriefs, then prepare another draft. Use existing images and confirm paid generation separately.”
+
+Physical page checks do not replace printer approval. Role packets contain the selected perspective; the authoring workspace is not a player permission system. Simulations and human experience are separate evidence, and revisions preserve previous playtests.
+
+
+## Production planning
+
+Ask your Agent to organize cast, costumes, props and sound from fixed scripts, retain unknown estimates and check preparation order. Review source excerpts, dependencies and batches in [Production Planner](/en/plugins/production-planner/). Identify concrete gaps and reread affected material after revisions. Asset selection and fees remain separate decisions.
+
+
+## Lyrics and recorded revisions
+
+Ask your Agent to develop a character song, compare lines and choruses, retain explicit pronunciation and keep unknown syllables unknown. With actual audio, review timings and identify what needs another recording. In [Lyric Studio](/en/plugins/lyric-studio/), read, compare, play and continue fixed feedback. Dedicated audio and video tools handle their own production work.
+
+
+## Poetry, nonfiction and biography
+
+Ask your Agent to turn the station records into a poem, a reported article and a biography. Keep reasons for line alternatives, preserve conflicting closure accounts, and distinguish namesakes without inventing exact dates.
+
+- [Poetry Studio](/en/plugins/poetry-studio/): read the whole poem before declared form checks and line alternatives.
+- [Nonfiction Studio](/en/plugins/nonfiction-studio/): compare claims with exact interviews and counterevidence, then record the next verification question.
+- [Biography Studio](/en/plugins/biography-studio/): read chapters alongside identities, events and date precision, then revisit them as new material arrives.
+
+The projects can reference fixed results from one another while preserving separate judgments and revisions. Form checks, verification records and identity statements retain their precise scope.

@@ -7,6 +7,7 @@ import { tmpdir } from "node:os";
 import { resolve, join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { createServer, type Server } from "node:http";
+import { createHash } from "node:crypto";
 
 let client: Client;
 let server: Server;
@@ -74,7 +75,8 @@ test("real workbench opens authorized novel, drama and video through portable to
   const initial = await managementClient.callTool({ name: "hetu_open_app", arguments: { management_ref: managementRef } });
   const resource = await managementClient.readResource({ uri: "ui://hetu/workbench/1" });
   if (!("text" in resource.contents[0])) throw new Error("Missing workbench");
-  expect(resource.contents[0].text).toBe(await readFile("../mcp/resources/workbench.html", "utf8"));
+  const manifest = JSON.parse(await readFile("../mcp/resources/workbench.manifest.json", "utf8"));
+  expect(createHash("sha256").update(resource.contents[0].text).digest("hex")).toBe(manifest.sha256);
   await page.addInitScript(value => Object.assign(window, value), { initialTask: initial, viewHtml: resource.contents[0].text, realTask: true, workbenchMode: true });
   await page.goto(origin);
   const view = page.frameLocator("iframe");

@@ -1,0 +1,2474 @@
+{
+  "recorded_at": "2026-11-18T16:20:50.463389+00:00",
+  "plugins": [
+    {
+      "slug": "world-studio",
+      "plugin_id": "org.wordflowlab.world-studio",
+      "version": "0.1.0",
+      "source_commit": "914153bcf98b26f8b1070d31d04b5dd841d6f191",
+      "tested_source_commit": "c9ff375148a17764d063f4610bee28cd2d21abc3",
+      "package_sha256": "5050928ecd28c72b5be6eb227a39e09919ee8c12354967cc482f0b2011d364d5",
+      "archive_sha256": "dc23ebb6968f1572423b066de80752b2d850c8d1f858e702dbe38f5538f201bd",
+      "release_url": "https://github.com/wordflowlab/hetu-world-studio/releases/tag/v0.1.0",
+      "verification": {
+        "ci-final": {
+          "host.json": {
+            "version": "0.12.4",
+            "git_sha": "3617eb7cabeda135f46d475eff28488d470f3bbe",
+            "archive_sha256": "39c55fea493132c172dfe4d4da34a082831540afedc4eda0de6636dd7e1b0f0c",
+            "source_build": false,
+            "signature_verified": true,
+            "gatekeeper": "/Applications/Hetu.app: accepted\nsource=Notarized Developer ID",
+            "staple": "Processing: /Applications/Hetu.app\nThe validate action worked!"
+          },
+          "runtime-acceptance.json": {
+            "recorded_at": "2026-11-18T15:33:35.610Z",
+            "plugin_id": "org.wordflowlab.world-studio",
+            "package_sha256": "5050928ecd28c72b5be6eb227a39e09919ee8c12354967cc482f0b2011d364d5",
+            "host_version": "hetu 0.12.4",
+            "platform": "darwin",
+            "architecture": "arm64",
+            "actions": [
+              "skills.read",
+              "save_project",
+              "convert_date",
+              "compare_dates",
+              "check_rules",
+              "simulate_resources",
+              "preview_impact",
+              "put_calendar",
+              "put_marker",
+              "put_rule",
+              "put_resource",
+              "put_scenario",
+              "list_projects",
+              "get_source",
+              "get_operation",
+              "get_basis",
+              "build_context",
+              "create_handoff",
+              "compare_versions",
+              "export_project",
+              "remove_scenario",
+              "remove_resource",
+              "remove_rule",
+              "remove_marker",
+              "remove_calendar",
+              "get_project"
+            ],
+            "skill_resources": 3,
+            "lifecycle": [
+              "install",
+              "disable",
+              "enable",
+              "uninstall",
+              "install"
+            ],
+            "fixed_history": true,
+            "CAS": true,
+            "original_key_recovery": true,
+            "artifact_sha256_verified": true,
+            "limits": [
+              "没有付费模型、作者采纳、定稿或Windows/Linux专业运行验收"
+            ]
+          },
+          "ui-acceptance.json": {
+            "date": "2026-11-18",
+            "plugin_id": "org.wordflowlab.world-studio",
+            "package_sha256": "5050928ecd28c72b5be6eb227a39e09919ee8c12354967cc482f0b2011d364d5",
+            "host_version": "hetu 0.12.4",
+            "platform": "darwin",
+            "architecture": "arm64",
+            "tabs": [
+              "历法与纪年",
+              "制度与规则",
+              "资源推演",
+              "影响与依据",
+              "接续创作"
+            ],
+            "empty_state": true,
+            "professional_actions": true,
+            "artifact_files": [],
+            "themes": [
+              "light",
+              "dark"
+            ],
+            "widths": [
+              1360,
+              760
+            ],
+            "reduced_transparency": true,
+            "CAS_preserves_input": true,
+            "explicit_rebase": true,
+            "close_reopen": true,
+            "dirty_buffer_restore": true,
+            "page_errors": [],
+            "limits": [
+              "原生窗口材质、系统输入法及Windows/Linux未由本测试证明"
+            ]
+          },
+          "results.json": [
+            {
+              "test": "machine",
+              "exit_code": 0
+            },
+            {
+              "test": "ui",
+              "exit_code": 0
+            },
+            {
+              "test": "cross",
+              "exit_code": 0
+            }
+          ]
+        },
+        "installed-final": {
+          "host.json": {
+            "version": "0.12.4",
+            "git_sha": "3617eb7cabeda135f46d475eff28488d470f3bbe",
+            "archive_sha256": "39c55fea493132c172dfe4d4da34a082831540afedc4eda0de6636dd7e1b0f0c",
+            "source_build": false,
+            "signature_verified": true,
+            "gatekeeper": "/Applications/Hetu.app: accepted\nsource=Notarized Developer ID",
+            "staple": "Processing: /Applications/Hetu.app\nThe validate action worked!"
+          },
+          "runtime-acceptance.json": {
+            "recorded_at": "2026-11-18T15:44:24.857Z",
+            "plugin_id": "org.wordflowlab.world-studio",
+            "package_sha256": "5050928ecd28c72b5be6eb227a39e09919ee8c12354967cc482f0b2011d364d5",
+            "host_version": "hetu 0.12.4",
+            "platform": "darwin",
+            "architecture": "arm64",
+            "actions": [
+              "skills.read",
+              "save_project",
+              "convert_date",
+              "compare_dates",
+              "check_rules",
+              "simulate_resources",
+              "preview_impact",
+              "put_calendar",
+              "put_marker",
+              "put_rule",
+              "put_resource",
+              "put_scenario",
+              "list_projects",
+              "get_source",
+              "get_operation",
+              "get_basis",
+              "build_context",
+              "create_handoff",
+              "compare_versions",
+              "export_project",
+              "remove_scenario",
+              "remove_resource",
+              "remove_rule",
+              "remove_marker",
+              "remove_calendar",
+              "get_project"
+            ],
+            "skill_resources": 3,
+            "lifecycle": [
+              "install",
+              "disable",
+              "enable",
+              "uninstall",
+              "install"
+            ],
+            "fixed_history": true,
+            "CAS": true,
+            "original_key_recovery": true,
+            "artifact_sha256_verified": true,
+            "limits": [
+              "没有付费模型、作者采纳、定稿或Windows/Linux专业运行验收"
+            ]
+          },
+          "ui-acceptance.json": {
+            "date": "2026-11-18",
+            "plugin_id": "org.wordflowlab.world-studio",
+            "package_sha256": "5050928ecd28c72b5be6eb227a39e09919ee8c12354967cc482f0b2011d364d5",
+            "host_version": "hetu 0.12.4",
+            "platform": "darwin",
+            "architecture": "arm64",
+            "tabs": [
+              "历法与纪年",
+              "制度与规则",
+              "资源推演",
+              "影响与依据",
+              "接续创作"
+            ],
+            "empty_state": true,
+            "professional_actions": true,
+            "artifact_files": [],
+            "themes": [
+              "light",
+              "dark"
+            ],
+            "widths": [
+              1360,
+              760
+            ],
+            "reduced_transparency": true,
+            "CAS_preserves_input": true,
+            "explicit_rebase": true,
+            "close_reopen": true,
+            "dirty_buffer_restore": true,
+            "page_errors": [],
+            "limits": [
+              "原生窗口材质、系统输入法及Windows/Linux未由本测试证明"
+            ]
+          },
+          "results.json": [
+            {
+              "test": "machine",
+              "exit_code": 0
+            },
+            {
+              "test": "ui",
+              "exit_code": 0
+            },
+            {
+              "test": "cross",
+              "exit_code": 0
+            }
+          ]
+        }
+      },
+      "ci": {
+        "head_sha": "c9ff375148a17764d063f4610bee28cd2d21abc3",
+        "repository": "wordflowlab/hetu-world-studio",
+        "run_id": 44336534419,
+        "conclusion": "success",
+        "databaseId": 44336534419,
+        "headSha": "c9ff375148a17764d063f4610bee28cd2d21abc3",
+        "status": "completed",
+        "url": "https://github.com/wordflowlab/hetu-world-studio/actions/runs/44336534419"
+      }
+    },
+    {
+      "slug": "mystery-lab",
+      "plugin_id": "org.wordflowlab.mystery-lab",
+      "version": "0.1.0",
+      "source_commit": "ff72135d32c27a1fd325df64f9d501e27126e2f7",
+      "tested_source_commit": "8e65df943322bfb1bfdb73208e813432bac83ee1",
+      "package_sha256": "2c93b9094f2660a96e5193224530bfbc078594f071b8c4b5057fd7df7147f606",
+      "archive_sha256": "7c2bcf37d38adeea21e71901286dc4568d392260d78708d714709f0f1dfa709b",
+      "release_url": "https://github.com/wordflowlab/hetu-mystery-lab/releases/tag/v0.1.0",
+      "verification": {
+        "ci-final": {
+          "host.json": {
+            "version": "0.12.4",
+            "git_sha": "3617eb7cabeda135f46d475eff28488d470f3bbe",
+            "archive_sha256": "39c55fea493132c172dfe4d4da34a082831540afedc4eda0de6636dd7e1b0f0c",
+            "source_build": false,
+            "signature_verified": true,
+            "gatekeeper": "/Applications/Hetu.app: accepted\nsource=Notarized Developer ID",
+            "staple": "Processing: /Applications/Hetu.app\nThe validate action worked!"
+          },
+          "runtime-acceptance.json": {
+            "recorded_at": "2026-11-18T15:52:26.130Z",
+            "plugin_id": "org.wordflowlab.mystery-lab",
+            "package_sha256": "2c93b9094f2660a96e5193224530bfbc078594f071b8c4b5057fd7df7147f606",
+            "host_version": "hetu 0.12.4",
+            "platform": "darwin",
+            "architecture": "arm64",
+            "actions": [
+              "skills.read",
+              "save_project",
+              "reader_view",
+              "evaluate_hypotheses",
+              "check_mystery",
+              "compare_stages",
+              "locate_clue",
+              "put_proposition",
+              "put_witness",
+              "put_clue",
+              "put_testimony",
+              "put_hypothesis",
+              "put_stage",
+              "list_projects",
+              "get_source",
+              "get_operation",
+              "get_basis",
+              "build_context",
+              "create_handoff",
+              "compare_versions",
+              "export_project",
+              "remove_stage",
+              "remove_hypothesis",
+              "remove_testimony",
+              "remove_clue",
+              "remove_witness",
+              "remove_proposition",
+              "get_project"
+            ],
+            "skill_resources": 3,
+            "lifecycle": [
+              "install",
+              "disable",
+              "enable",
+              "uninstall",
+              "install"
+            ],
+            "fixed_history": true,
+            "CAS": true,
+            "original_key_recovery": true,
+            "artifact_sha256_verified": true,
+            "limits": [
+              "没有付费模型、作者采纳、定稿或Windows/Linux专业运行验收"
+            ]
+          },
+          "ui-acceptance.json": {
+            "date": "2026-11-18",
+            "plugin_id": "org.wordflowlab.mystery-lab",
+            "package_sha256": "2c93b9094f2660a96e5193224530bfbc078594f071b8c4b5057fd7df7147f606",
+            "host_version": "hetu 0.12.4",
+            "platform": "darwin",
+            "architecture": "arm64",
+            "tabs": [
+              "作者真相",
+              "线索与证词",
+              "读者推演",
+              "揭示与检查",
+              "接续创作"
+            ],
+            "empty_state": true,
+            "professional_actions": true,
+            "artifact_files": [],
+            "themes": [
+              "light",
+              "dark"
+            ],
+            "widths": [
+              1360,
+              760
+            ],
+            "reduced_transparency": true,
+            "CAS_preserves_input": true,
+            "explicit_rebase": true,
+            "close_reopen": true,
+            "dirty_buffer_restore": true,
+            "page_errors": [],
+            "limits": [
+              "原生窗口材质、系统输入法及Windows/Linux未由本测试证明"
+            ]
+          },
+          "results.json": [
+            {
+              "test": "machine",
+              "exit_code": 0
+            },
+            {
+              "test": "ui",
+              "exit_code": 0
+            }
+          ]
+        },
+        "installed-final": {
+          "host.json": {
+            "version": "0.12.4",
+            "git_sha": "3617eb7cabeda135f46d475eff28488d470f3bbe",
+            "archive_sha256": "39c55fea493132c172dfe4d4da34a082831540afedc4eda0de6636dd7e1b0f0c",
+            "source_build": false,
+            "signature_verified": true,
+            "gatekeeper": "/Applications/Hetu.app: accepted\nsource=Notarized Developer ID",
+            "staple": "Processing: /Applications/Hetu.app\nThe validate action worked!"
+          },
+          "runtime-acceptance.json": {
+            "recorded_at": "2026-11-18T15:51:55.700Z",
+            "plugin_id": "org.wordflowlab.mystery-lab",
+            "package_sha256": "2c93b9094f2660a96e5193224530bfbc078594f071b8c4b5057fd7df7147f606",
+            "host_version": "hetu 0.12.4",
+            "platform": "darwin",
+            "architecture": "arm64",
+            "actions": [
+              "skills.read",
+              "save_project",
+              "reader_view",
+              "evaluate_hypotheses",
+              "check_mystery",
+              "compare_stages",
+              "locate_clue",
+              "put_proposition",
+              "put_witness",
+              "put_clue",
+              "put_testimony",
+              "put_hypothesis",
+              "put_stage",
+              "list_projects",
+              "get_source",
+              "get_operation",
+              "get_basis",
+              "build_context",
+              "create_handoff",
+              "compare_versions",
+              "export_project",
+              "remove_stage",
+              "remove_hypothesis",
+              "remove_testimony",
+              "remove_clue",
+              "remove_witness",
+              "remove_proposition",
+              "get_project"
+            ],
+            "skill_resources": 3,
+            "lifecycle": [
+              "install",
+              "disable",
+              "enable",
+              "uninstall",
+              "install"
+            ],
+            "fixed_history": true,
+            "CAS": true,
+            "original_key_recovery": true,
+            "artifact_sha256_verified": true,
+            "limits": [
+              "没有付费模型、作者采纳、定稿或Windows/Linux专业运行验收"
+            ]
+          },
+          "ui-acceptance.json": {
+            "date": "2026-11-18",
+            "plugin_id": "org.wordflowlab.mystery-lab",
+            "package_sha256": "2c93b9094f2660a96e5193224530bfbc078594f071b8c4b5057fd7df7147f606",
+            "host_version": "hetu 0.12.4",
+            "platform": "darwin",
+            "architecture": "arm64",
+            "tabs": [
+              "作者真相",
+              "线索与证词",
+              "读者推演",
+              "揭示与检查",
+              "接续创作"
+            ],
+            "empty_state": true,
+            "professional_actions": true,
+            "artifact_files": [],
+            "themes": [
+              "light",
+              "dark"
+            ],
+            "widths": [
+              1360,
+              760
+            ],
+            "reduced_transparency": true,
+            "CAS_preserves_input": true,
+            "explicit_rebase": true,
+            "close_reopen": true,
+            "dirty_buffer_restore": true,
+            "page_errors": [],
+            "limits": [
+              "原生窗口材质、系统输入法及Windows/Linux未由本测试证明"
+            ]
+          },
+          "results.json": [
+            {
+              "test": "machine",
+              "exit_code": 0
+            },
+            {
+              "test": "ui",
+              "exit_code": 0
+            }
+          ]
+        }
+      },
+      "ci": {
+        "head_sha": "8e65df943322bfb1bfdb73208e813432bac83ee1",
+        "repository": "wordflowlab/hetu-mystery-lab",
+        "run_id": 44336568126,
+        "conclusion": "success",
+        "databaseId": 44336568126,
+        "headSha": "8e65df943322bfb1bfdb73208e813432bac83ee1",
+        "status": "completed",
+        "url": "https://github.com/wordflowlab/hetu-mystery-lab/actions/runs/44336568126"
+      }
+    },
+    {
+      "slug": "subtitle-studio",
+      "plugin_id": "org.wordflowlab.subtitle-studio",
+      "version": "0.1.0",
+      "source_commit": "3f806ea49b3c7f38911aa3fd00499dec00759954",
+      "tested_source_commit": "a736e6b7013331b48c6d1f9d7cf0547bb83af9d0",
+      "package_sha256": "5c9baeffe35b436d7504752db9fa5c2613fa65418fcbea921c4bfef9dd5a84d8",
+      "archive_sha256": "de7ea2c1e7e3271f1136e0077c81777fa6aec9b34bef808f2d67d53fe704c1bc",
+      "release_url": "https://github.com/wordflowlab/hetu-subtitle-studio/releases/tag/v0.1.0",
+      "verification": {
+        "ci-final": {
+          "host.json": {
+            "version": "0.12.4",
+            "git_sha": "3617eb7cabeda135f46d475eff28488d470f3bbe",
+            "archive_sha256": "39c55fea493132c172dfe4d4da34a082831540afedc4eda0de6636dd7e1b0f0c",
+            "source_build": false,
+            "signature_verified": true,
+            "gatekeeper": "/Applications/Hetu.app: accepted\nsource=Notarized Developer ID",
+            "staple": "Processing: /Applications/Hetu.app\nThe validate action worked!"
+          },
+          "runtime-acceptance.json": {
+            "recorded_at": "2026-11-18T15:48:35.492Z",
+            "plugin_id": "org.wordflowlab.subtitle-studio",
+            "package_sha256": "5c9baeffe35b436d7504752db9fa5c2613fa65418fcbea921c4bfef9dd5a84d8",
+            "host_version": "hetu 0.12.4",
+            "platform": "darwin",
+            "architecture": "arm64",
+            "actions": [
+              "skills.read",
+              "save_project",
+              "preview_import",
+              "import_subtitles",
+              "cue_digest",
+              "put_note",
+              "shift_track",
+              "check_subtitles",
+              "locate_time",
+              "export_subtitles",
+              "put_track",
+              "put_cue",
+              "list_projects",
+              "get_source",
+              "get_operation",
+              "get_basis",
+              "build_context",
+              "create_handoff",
+              "compare_versions",
+              "export_project",
+              "remove_note",
+              "remove_cue",
+              "remove_track",
+              "get_project"
+            ],
+            "skill_resources": 3,
+            "lifecycle": [
+              "install",
+              "disable",
+              "enable",
+              "uninstall",
+              "install"
+            ],
+            "fixed_history": true,
+            "CAS": true,
+            "original_key_recovery": true,
+            "artifact_sha256_verified": true,
+            "limits": [
+              "没有付费模型、作者采纳、定稿或Windows/Linux专业运行验收"
+            ]
+          },
+          "ui-acceptance.json": {
+            "date": "2026-11-18",
+            "plugin_id": "org.wordflowlab.subtitle-studio",
+            "package_sha256": "5c9baeffe35b436d7504752db9fa5c2613fa65418fcbea921c4bfef9dd5a84d8",
+            "host_version": "hetu 0.12.4",
+            "platform": "darwin",
+            "architecture": "arm64",
+            "tabs": [
+              "字幕与播放",
+              "双语对齐",
+              "时间与阅读检查",
+              "区间意见",
+              "接续创作"
+            ],
+            "empty_state": true,
+            "professional_actions": true,
+            "artifact_files": [
+              "字幕.ass",
+              "字幕.srt",
+              "字幕.vtt"
+            ],
+            "themes": [
+              "light",
+              "dark"
+            ],
+            "widths": [
+              1360,
+              760
+            ],
+            "reduced_transparency": true,
+            "CAS_preserves_input": true,
+            "explicit_rebase": true,
+            "close_reopen": true,
+            "dirty_buffer_restore": true,
+            "page_errors": [],
+            "limits": [
+              "原生窗口材质、系统输入法及Windows/Linux未由本测试证明"
+            ]
+          },
+          "results.json": [
+            {
+              "test": "machine",
+              "exit_code": 0
+            },
+            {
+              "test": "ui",
+              "exit_code": 0
+            }
+          ]
+        },
+        "installed-final": {
+          "host.json": {
+            "version": "0.12.4",
+            "git_sha": "3617eb7cabeda135f46d475eff28488d470f3bbe",
+            "archive_sha256": "39c55fea493132c172dfe4d4da34a082831540afedc4eda0de6636dd7e1b0f0c",
+            "source_build": false,
+            "signature_verified": true,
+            "gatekeeper": "/Applications/Hetu.app: accepted\nsource=Notarized Developer ID",
+            "staple": "Processing: /Applications/Hetu.app\nThe validate action worked!"
+          },
+          "runtime-acceptance.json": {
+            "recorded_at": "2026-11-18T15:54:23.804Z",
+            "plugin_id": "org.wordflowlab.subtitle-studio",
+            "package_sha256": "5c9baeffe35b436d7504752db9fa5c2613fa65418fcbea921c4bfef9dd5a84d8",
+            "host_version": "hetu 0.12.4",
+            "platform": "darwin",
+            "architecture": "arm64",
+            "actions": [
+              "skills.read",
+              "save_project",
+              "preview_import",
+              "import_subtitles",
+              "cue_digest",
+              "put_note",
+              "shift_track",
+              "check_subtitles",
+              "locate_time",
+              "export_subtitles",
+              "put_track",
+              "put_cue",
+              "list_projects",
+              "get_source",
+              "get_operation",
+              "get_basis",
+              "build_context",
+              "create_handoff",
+              "compare_versions",
+              "export_project",
+              "remove_note",
+              "remove_cue",
+              "remove_track",
+              "get_project"
+            ],
+            "skill_resources": 3,
+            "lifecycle": [
+              "install",
+              "disable",
+              "enable",
+              "uninstall",
+              "install"
+            ],
+            "fixed_history": true,
+            "CAS": true,
+            "original_key_recovery": true,
+            "artifact_sha256_verified": true,
+            "limits": [
+              "没有付费模型、作者采纳、定稿或Windows/Linux专业运行验收"
+            ]
+          },
+          "ui-acceptance.json": {
+            "date": "2026-11-18",
+            "plugin_id": "org.wordflowlab.subtitle-studio",
+            "package_sha256": "5c9baeffe35b436d7504752db9fa5c2613fa65418fcbea921c4bfef9dd5a84d8",
+            "host_version": "hetu 0.12.4",
+            "platform": "darwin",
+            "architecture": "arm64",
+            "tabs": [
+              "字幕与播放",
+              "双语对齐",
+              "时间与阅读检查",
+              "区间意见",
+              "接续创作"
+            ],
+            "empty_state": true,
+            "professional_actions": true,
+            "artifact_files": [
+              "字幕.ass",
+              "字幕.srt",
+              "字幕.vtt"
+            ],
+            "themes": [
+              "light",
+              "dark"
+            ],
+            "widths": [
+              1360,
+              760
+            ],
+            "reduced_transparency": true,
+            "CAS_preserves_input": true,
+            "explicit_rebase": true,
+            "close_reopen": true,
+            "dirty_buffer_restore": true,
+            "page_errors": [],
+            "limits": [
+              "原生窗口材质、系统输入法及Windows/Linux未由本测试证明"
+            ]
+          },
+          "results.json": [
+            {
+              "test": "machine",
+              "exit_code": 0
+            },
+            {
+              "test": "ui",
+              "exit_code": 0
+            }
+          ]
+        }
+      },
+      "ci": {
+        "head_sha": "a736e6b7013331b48c6d1f9d7cf0547bb83af9d0",
+        "repository": "wordflowlab/hetu-subtitle-studio",
+        "run_id": 44339421408,
+        "conclusion": "success",
+        "databaseId": 44339421408,
+        "headSha": "a736e6b7013331b48c6d1f9d7cf0547bb83af9d0",
+        "status": "completed",
+        "url": "https://github.com/wordflowlab/hetu-subtitle-studio/actions/runs/44339421408"
+      }
+    },
+    {
+      "slug": "art-direction",
+      "plugin_id": "org.wordflowlab.art-direction",
+      "version": "0.1.0",
+      "source_commit": "74b768a18e05cda4885ce409003cf01b477c6312",
+      "tested_source_commit": "2399c7c1331c04624b355c5a61e14cbd3594a015",
+      "package_sha256": "54f05a084e642455f90defc9a2fc8da9c71b9d4204e8f51b176843d5f3673682",
+      "archive_sha256": "3deb17b09640d4ab8ac3557294c68f6137fadbecdfc0fd1b877e02cbef171db9",
+      "release_url": "https://github.com/wordflowlab/hetu-art-direction/releases/tag/v0.1.0",
+      "verification": {
+        "ci-final": {
+          "host.json": {
+            "version": "0.12.4",
+            "git_sha": "3617eb7cabeda135f46d475eff28488d470f3bbe",
+            "archive_sha256": "39c55fea493132c172dfe4d4da34a082831540afedc4eda0de6636dd7e1b0f0c",
+            "source_build": false,
+            "signature_verified": true,
+            "gatekeeper": "/Applications/Hetu.app: accepted\nsource=Notarized Developer ID",
+            "staple": "Processing: /Applications/Hetu.app\nThe validate action worked!"
+          },
+          "runtime-acceptance.json": {
+            "recorded_at": "2026-11-18T15:49:55.350Z",
+            "plugin_id": "org.wordflowlab.art-direction",
+            "package_sha256": "54f05a084e642455f90defc9a2fc8da9c71b9d4204e8f51b176843d5f3673682",
+            "host_version": "hetu 0.12.4",
+            "platform": "darwin",
+            "architecture": "arm64",
+            "actions": [
+              "skills.read",
+              "save_project",
+              "check_designs",
+              "palette_contrast",
+              "render_board",
+              "export_board",
+              "compare_designs",
+              "locate_reference",
+              "put_reference",
+              "put_board",
+              "put_palette",
+              "put_design",
+              "put_note",
+              "list_projects",
+              "get_source",
+              "get_operation",
+              "get_basis",
+              "build_context",
+              "create_handoff",
+              "compare_versions",
+              "export_project",
+              "remove_note",
+              "remove_design",
+              "remove_palette",
+              "remove_board",
+              "remove_reference",
+              "get_project"
+            ],
+            "skill_resources": 3,
+            "lifecycle": [
+              "install",
+              "disable",
+              "enable",
+              "uninstall",
+              "install"
+            ],
+            "fixed_history": true,
+            "CAS": true,
+            "original_key_recovery": true,
+            "artifact_sha256_verified": true,
+            "limits": [
+              "没有付费模型、作者采纳、定稿或Windows/Linux专业运行验收"
+            ]
+          },
+          "ui-acceptance.json": {
+            "date": "2026-11-18",
+            "plugin_id": "org.wordflowlab.art-direction",
+            "package_sha256": "54f05a084e642455f90defc9a2fc8da9c71b9d4204e8f51b176843d5f3673682",
+            "host_version": "hetu 0.12.4",
+            "platform": "darwin",
+            "architecture": "arm64",
+            "tabs": [
+              "参考板",
+              "色板与对比",
+              "造型方案",
+              "区域意见",
+              "接续创作"
+            ],
+            "empty_state": true,
+            "professional_actions": true,
+            "artifact_files": [
+              "美术参考板.html"
+            ],
+            "themes": [
+              "light",
+              "dark"
+            ],
+            "widths": [
+              1360,
+              760
+            ],
+            "reduced_transparency": true,
+            "CAS_preserves_input": true,
+            "explicit_rebase": true,
+            "close_reopen": true,
+            "dirty_buffer_restore": true,
+            "page_errors": [],
+            "limits": [
+              "原生窗口材质、系统输入法及Windows/Linux未由本测试证明"
+            ]
+          },
+          "results.json": [
+            {
+              "test": "machine",
+              "exit_code": 0
+            },
+            {
+              "test": "ui",
+              "exit_code": 0
+            }
+          ]
+        },
+        "installed-final": {
+          "host.json": {
+            "version": "0.12.4",
+            "git_sha": "3617eb7cabeda135f46d475eff28488d470f3bbe",
+            "archive_sha256": "39c55fea493132c172dfe4d4da34a082831540afedc4eda0de6636dd7e1b0f0c",
+            "source_build": false,
+            "signature_verified": true,
+            "gatekeeper": "/Applications/Hetu.app: accepted\nsource=Notarized Developer ID",
+            "staple": "Processing: /Applications/Hetu.app\nThe validate action worked!"
+          },
+          "runtime-acceptance.json": {
+            "recorded_at": "2026-11-18T15:58:19.893Z",
+            "plugin_id": "org.wordflowlab.art-direction",
+            "package_sha256": "54f05a084e642455f90defc9a2fc8da9c71b9d4204e8f51b176843d5f3673682",
+            "host_version": "hetu 0.12.4",
+            "platform": "darwin",
+            "architecture": "arm64",
+            "actions": [
+              "skills.read",
+              "save_project",
+              "check_designs",
+              "palette_contrast",
+              "render_board",
+              "export_board",
+              "compare_designs",
+              "locate_reference",
+              "put_reference",
+              "put_board",
+              "put_palette",
+              "put_design",
+              "put_note",
+              "list_projects",
+              "get_source",
+              "get_operation",
+              "get_basis",
+              "build_context",
+              "create_handoff",
+              "compare_versions",
+              "export_project",
+              "remove_note",
+              "remove_design",
+              "remove_palette",
+              "remove_board",
+              "remove_reference",
+              "get_project"
+            ],
+            "skill_resources": 3,
+            "lifecycle": [
+              "install",
+              "disable",
+              "enable",
+              "uninstall",
+              "install"
+            ],
+            "fixed_history": true,
+            "CAS": true,
+            "original_key_recovery": true,
+            "artifact_sha256_verified": true,
+            "limits": [
+              "没有付费模型、作者采纳、定稿或Windows/Linux专业运行验收"
+            ]
+          },
+          "ui-acceptance.json": {
+            "date": "2026-11-18",
+            "plugin_id": "org.wordflowlab.art-direction",
+            "package_sha256": "54f05a084e642455f90defc9a2fc8da9c71b9d4204e8f51b176843d5f3673682",
+            "host_version": "hetu 0.12.4",
+            "platform": "darwin",
+            "architecture": "arm64",
+            "tabs": [
+              "参考板",
+              "色板与对比",
+              "造型方案",
+              "区域意见",
+              "接续创作"
+            ],
+            "empty_state": true,
+            "professional_actions": true,
+            "artifact_files": [
+              "美术参考板.html"
+            ],
+            "themes": [
+              "light",
+              "dark"
+            ],
+            "widths": [
+              1360,
+              760
+            ],
+            "reduced_transparency": true,
+            "CAS_preserves_input": true,
+            "explicit_rebase": true,
+            "close_reopen": true,
+            "dirty_buffer_restore": true,
+            "page_errors": [],
+            "limits": [
+              "原生窗口材质、系统输入法及Windows/Linux未由本测试证明"
+            ]
+          },
+          "results.json": [
+            {
+              "test": "machine",
+              "exit_code": 0
+            },
+            {
+              "test": "ui",
+              "exit_code": 0
+            }
+          ]
+        }
+      },
+      "ci": {
+        "head_sha": "2399c7c1331c04624b355c5a61e14cbd3594a015",
+        "repository": "wordflowlab/hetu-art-direction",
+        "run_id": 44339382801,
+        "conclusion": "success",
+        "databaseId": 44339382801,
+        "headSha": "2399c7c1331c04624b355c5a61e14cbd3594a015",
+        "status": "completed",
+        "url": "https://github.com/wordflowlab/hetu-art-direction/actions/runs/44339382801"
+      }
+    }
+  ],
+  "host": {
+    "version": "0.12.4",
+    "source_commit": "3617eb7cabeda135f46d475eff28488d470f3bbe",
+    "workflow": "https://github.com/limecloud/hetu/actions/runs/44319777713",
+    "all_jobs_succeeded": true,
+    "installation": {
+      "version": "hetu 0.12.4",
+      "source_commit": "3617eb7cabeda135f46d475eff28488d470f3bbe",
+      "archive_sha256": "39c55fea493132c172dfe4d4da34a082831540afedc4eda0de6636dd7e1b0f0c",
+      "signature_verified": true,
+      "gatekeeper": true,
+      "stapled_notarization": true,
+      "backup_created": false,
+      "author_data_modified": false,
+      "recorded_at": "2026-11-18T15:41:27.245596+00:00"
+    },
+    "plugin_state": {
+      "version": "hetu 0.12.4",
+      "count": 24,
+      "prior_packages_unchanged": 20,
+      "new_packages": [
+        {
+          "id": "org.wordflowlab.world-studio",
+          "package_sha256": "5050928ecd28c72b5be6eb227a39e09919ee8c12354967cc482f0b2011d364d5",
+          "public_download_verified": true
+        },
+        {
+          "id": "org.wordflowlab.mystery-lab",
+          "package_sha256": "2c93b9094f2660a96e5193224530bfbc078594f071b8c4b5057fd7df7147f606",
+          "public_download_verified": true
+        },
+        {
+          "id": "org.wordflowlab.art-direction",
+          "package_sha256": "54f05a084e642455f90defc9a2fc8da9c71b9d4204e8f51b176843d5f3673682",
+          "public_download_verified": true
+        },
+        {
+          "id": "org.wordflowlab.subtitle-studio",
+          "package_sha256": "5c9baeffe35b436d7504752db9fa5c2613fa65418fcbea921c4bfef9dd5a84d8",
+          "public_download_verified": true
+        }
+      ],
+      "state_sha256": "4760bc9c59142b673d9bfb670ff442962a221c4d2268a0a33095348eb7965971",
+      "backup_created": false,
+      "verification_time_scope": "安装路径交接前的正式0.12.4核验；公开包下载后离线复核同一摘要，未再次读取或占用交接路径"
+    }
+  },
+  "current_codex": {
+    "recorded_at": "2026-11-18T15:05:21.976Z",
+    "connection": "current Codex MCP connection",
+    "connection_core_version": "0.11.11",
+    "packages_before": [
+      {
+        "id": "org.wordflowlab.screenplay",
+        "sha256": "3db2b1f8b3577b6bd1806e8ca0b1a25b019b51299a4f6a3fea53fc821cecdf99",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.video-studio",
+        "sha256": "549b654781dc4949ee4abc28a94be97bb3bb12df96aead7208eb0ca1b7c0db2a",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.director-stage",
+        "sha256": "1f7755622c1f50c9932ff7536c5175d113f30bcff77f58921efffe012dab645c",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.story-research",
+        "sha256": "5adeffdf4bfe4f71ac614204bfe77825747164fa4705f6b9ec52a1d908b5bf9f",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.character-lab",
+        "sha256": "d3404b533b5e8a03e45e84eb23f5d4a99209568a0d8e09e03b13a0b05d6a4944",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.story-analysis",
+        "sha256": "fb117ee372a4fce7cde8cb1afd997f3d0b168066af2b1334171e721dfcd21009",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.lorebook-bridge",
+        "sha256": "0620fb1c75dbedd1e76306e1be3445ab383f801cfe0eac5341623a9e05054402",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.interactive-fiction",
+        "sha256": "c777120519a56fd93d1e132c078ac99b5a65f19103070a088b1cedf8f74e0a00",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.series-organizer",
+        "sha256": "e51032102970d97f650165fdd2e17a3a6b5991e707ab3028dfc54422969663dc",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.story-translation",
+        "sha256": "59080c4c196a79bdd09c50ebbd2a99d46a43dc561575a785fb9b8eed78ec3148",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.readthrough",
+        "sha256": "5723789aa1a672cdf9d1fb2e3a0756e7f2b194a67e50815d6ea5e8543dce8bd1",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.book-export",
+        "sha256": "e9dfd676d26c6ec450f21cdce83599b921492ca46e1a29a414400433a09c3e68",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.novel-review",
+        "sha256": "f5eceea32772e9028ddaf36607ceb2c4eddd0a70eb17373e4c4bf871c21c18f4",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.novel-atlas",
+        "sha256": "3b0b6006069eb0b2c70c709ee9a3ed2bd006b4491946a161748389e77a46d298",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.prose-studio",
+        "sha256": "5005ec439334b5babd9d9bd35b3a7575185b55df67f3ea3623ed3c21226c3c7f",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.novel-planner",
+        "sha256": "a38c3204bbb35fb075690f4ff2c991c63a136e09b34b8c24d67c93115de5df0c",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.adaptation-studio",
+        "sha256": "354d2fb5e325828e0b189bac79eff50be3ee312466c0a437c73f3ca907b061e1",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.audio-drama",
+        "sha256": "95ab0357cce70a38643070f144a3b7a1c7a7d697b3573b1c0cc67c728584fa23",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.reader-review",
+        "sha256": "9b354d5494d2158da3431b67bd76ad326c617dc08c9908dc594d6b1a1fb454ab",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.comic-studio",
+        "sha256": "7e18dc9956a2678171c5692eef3c512315e0a40447d507c1bb292214fe284420",
+        "enabled": true
+      }
+    ],
+    "packages_after": [
+      {
+        "id": "org.wordflowlab.screenplay",
+        "sha256": "3db2b1f8b3577b6bd1806e8ca0b1a25b019b51299a4f6a3fea53fc821cecdf99",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.video-studio",
+        "sha256": "549b654781dc4949ee4abc28a94be97bb3bb12df96aead7208eb0ca1b7c0db2a",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.director-stage",
+        "sha256": "1f7755622c1f50c9932ff7536c5175d113f30bcff77f58921efffe012dab645c",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.story-research",
+        "sha256": "5adeffdf4bfe4f71ac614204bfe77825747164fa4705f6b9ec52a1d908b5bf9f",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.character-lab",
+        "sha256": "d3404b533b5e8a03e45e84eb23f5d4a99209568a0d8e09e03b13a0b05d6a4944",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.story-analysis",
+        "sha256": "fb117ee372a4fce7cde8cb1afd997f3d0b168066af2b1334171e721dfcd21009",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.lorebook-bridge",
+        "sha256": "0620fb1c75dbedd1e76306e1be3445ab383f801cfe0eac5341623a9e05054402",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.interactive-fiction",
+        "sha256": "c777120519a56fd93d1e132c078ac99b5a65f19103070a088b1cedf8f74e0a00",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.series-organizer",
+        "sha256": "e51032102970d97f650165fdd2e17a3a6b5991e707ab3028dfc54422969663dc",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.story-translation",
+        "sha256": "59080c4c196a79bdd09c50ebbd2a99d46a43dc561575a785fb9b8eed78ec3148",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.readthrough",
+        "sha256": "5723789aa1a672cdf9d1fb2e3a0756e7f2b194a67e50815d6ea5e8543dce8bd1",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.book-export",
+        "sha256": "e9dfd676d26c6ec450f21cdce83599b921492ca46e1a29a414400433a09c3e68",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.novel-review",
+        "sha256": "f5eceea32772e9028ddaf36607ceb2c4eddd0a70eb17373e4c4bf871c21c18f4",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.novel-atlas",
+        "sha256": "3b0b6006069eb0b2c70c709ee9a3ed2bd006b4491946a161748389e77a46d298",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.prose-studio",
+        "sha256": "5005ec439334b5babd9d9bd35b3a7575185b55df67f3ea3623ed3c21226c3c7f",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.novel-planner",
+        "sha256": "a38c3204bbb35fb075690f4ff2c991c63a136e09b34b8c24d67c93115de5df0c",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.adaptation-studio",
+        "sha256": "354d2fb5e325828e0b189bac79eff50be3ee312466c0a437c73f3ca907b061e1",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.audio-drama",
+        "sha256": "95ab0357cce70a38643070f144a3b7a1c7a7d697b3573b1c0cc67c728584fa23",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.reader-review",
+        "sha256": "9b354d5494d2158da3431b67bd76ad326c617dc08c9908dc594d6b1a1fb454ab",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.comic-studio",
+        "sha256": "7e18dc9956a2678171c5692eef3c512315e0a40447d507c1bb292214fe284420",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.world-studio",
+        "sha256": "5050928ecd28c72b5be6eb227a39e09919ee8c12354967cc482f0b2011d364d5",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.mystery-lab",
+        "sha256": "2c93b9094f2660a96e5193224530bfbc078594f071b8c4b5057fd7df7147f606",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.art-direction",
+        "sha256": "54f05a084e642455f90defc9a2fc8da9c71b9d4204e8f51b176843d5f3673682",
+        "enabled": true
+      },
+      {
+        "id": "org.wordflowlab.subtitle-studio",
+        "sha256": "5c9baeffe35b436d7504752db9fa5c2613fa65418fcbea921c4bfef9dd5a84d8",
+        "enabled": true
+      }
+    ],
+    "existing_packages_preserved": true,
+    "skill_resources": [
+      "SKILL.md",
+      "references/workflows.md"
+    ],
+    "work_ref": {
+      "workspace_id": "workspace_ad1c70dc-ba4a-4aad-9327-0661bd20e4a5",
+      "kind": "novel",
+      "object_id": "novel_297f377b-21d5-4de4-869a-15d9c4cba9f8"
+    },
+    "checks": [
+      {
+        "slug": "world-studio",
+        "plugin_id": "org.wordflowlab.world-studio",
+        "package_sha256": "5050928ecd28c72b5be6eb227a39e09919ee8c12354967cc482f0b2011d364d5",
+        "fixed": {
+          "object_id": "ext_e13d832f-41aa-4483-a0bc-c4dd8847273a",
+          "revision": 1,
+          "sha256": "e40137df7b1896fd0a8a0da3ed0cfa7af3e2c9b5225a45961eb44960ea16389e"
+        },
+        "calls": [
+          {
+            "action": "get_project",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "simulate_resources",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "convert_date",
+            "status": "succeeded",
+            "result_status": "failed",
+            "error": {
+              "code": "invalid_input",
+              "message": "日期不存在。"
+            }
+          },
+          {
+            "action": "convert_date",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "create_handoff",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "get_operation",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          }
+        ]
+      },
+      {
+        "slug": "mystery-lab",
+        "plugin_id": "org.wordflowlab.mystery-lab",
+        "package_sha256": "2c93b9094f2660a96e5193224530bfbc078594f071b8c4b5057fd7df7147f606",
+        "fixed": {
+          "object_id": "ext_eb99f432-a855-4b3d-a67a-ad5b0fa4743e",
+          "revision": 1,
+          "sha256": "dfd86fa40cecfbd56c25575737ed9826324008e6a8a2174cc1228c55f974375d"
+        },
+        "calls": [
+          {
+            "action": "get_project",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "reader_view",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "evaluate_hypotheses",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "create_handoff",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "get_operation",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          }
+        ]
+      },
+      {
+        "slug": "art-direction",
+        "plugin_id": "org.wordflowlab.art-direction",
+        "package_sha256": "54f05a084e642455f90defc9a2fc8da9c71b9d4204e8f51b176843d5f3673682",
+        "fixed": {
+          "object_id": "ext_53039763-d64e-4a0d-a8ad-43b2c8b7ffe7",
+          "revision": 1,
+          "sha256": "9a5cb46f26fa0a76f79481bd45f363dfd12b8fdaef6d0c4bdf7d71f0fbf1d06f"
+        },
+        "calls": [
+          {
+            "action": "get_project",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "palette_contrast",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "compare_designs",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "create_handoff",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "get_operation",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          }
+        ]
+      },
+      {
+        "slug": "subtitle-studio",
+        "plugin_id": "org.wordflowlab.subtitle-studio",
+        "package_sha256": "5c9baeffe35b436d7504752db9fa5c2613fa65418fcbea921c4bfef9dd5a84d8",
+        "fixed": {
+          "object_id": "ext_fbfcab92-0c68-4426-afc3-bcf056ad37fb",
+          "revision": 1,
+          "sha256": "b17ce240aca2b6a4f7607d89c2125c39e5c5ff369a3722cfe27f45d7579e35de"
+        },
+        "calls": [
+          {
+            "action": "get_project",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "check_subtitles",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "locate_time",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "create_handoff",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          },
+          {
+            "action": "get_operation",
+            "status": "succeeded",
+            "result_status": "succeeded"
+          }
+        ]
+      }
+    ],
+    "limits": [
+      "当前连接0.11.11；不冒充正式0.12.4安装验收",
+      "本对话专业示例不含真实媒体；实际媒体由正式包隔离验收覆盖",
+      "非法历法日期作为失败保留，改用工程已有日期完成正例",
+      "未采纳、定稿或付费生成"
+    ]
+  },
+  "installation_handoff": {
+    "recorded_at": "2026-11-18T15:59:51.119757+00:00",
+    "recipient_thread": "01a1ec19-57ac-76e1-b4f2-bec4732a41e9",
+    "path": "/Applications/Hetu.app",
+    "formal_version_verified_before_handoff": "0.12.4",
+    "all_local_tests_passed": [
+      {
+        "slug": "world-studio",
+        "exit_code": 0
+      },
+      {
+        "slug": "mystery-lab",
+        "exit_code": 0
+      },
+      {
+        "slug": "art-direction",
+        "exit_code": 0
+      },
+      {
+        "slug": "subtitle-studio",
+        "exit_code": 0
+      }
+    ],
+    "installation_path_released": true,
+    "further_installation_or_gui_calls": false,
+    "reserved_other_directory_untouched": "output/conversation-direct-20261118-1795008348154"
+  },
+  "cross_plugin_journey": {
+    "recorded_at": "2026-11-18T15:36:08.695Z",
+    "host_version": "hetu 0.12.4",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "stages": [
+      "固定正文与设定，明确历法和封港假设，资源不足如实报告",
+      "区分作者真相与读者可见线索，按揭示阶段核对假说",
+      "形成宿主参考稿，规则更新先看影响，旧跨插件依据保持",
+      "实际参考图、色板与服装方案关联固定人物，区域意见绑定图像摘要",
+      "实际对白媒体与双语字幕同源，偏移后旧意见保留并提示过期，三种格式完整交付",
+      "独立下一章候选接续，原著正文与旧专业修订保持，无采纳定稿",
+      "四包分别在独立剧本保存工程，单端读取另一作品被拒绝",
+      "独立视频分别保存实际参考板和实际媒体双语字幕，单端跨作品读取拒绝"
+    ],
+    "snapshots": [
+      {
+        "slug": "world-studio",
+        "ref": {
+          "owner_plugin_id": "org.wordflowlab.world-studio",
+          "object_id": "ext_cc14331c-07a6-4547-8f36-6b0f6bd2df87",
+          "revision": 2,
+          "sha256": "592a7b60d25800e86de25cfc068f3fb43f9d6cbffd22b96d182bd6b2dfa0530e"
+        },
+        "package_sha256": "5050928ecd28c72b5be6eb227a39e09919ee8c12354967cc482f0b2011d364d5"
+      },
+      {
+        "slug": "mystery-lab",
+        "ref": {
+          "owner_plugin_id": "org.wordflowlab.mystery-lab",
+          "object_id": "ext_7de80d09-dc78-4104-9e7b-c71526aba6e5",
+          "revision": 1,
+          "sha256": "0f56b9eba5aad53494095f787ebf8d4078a3091b833630e656b5a2dc0a31a1ba"
+        },
+        "package_sha256": "2c93b9094f2660a96e5193224530bfbc078594f071b8c4b5057fd7df7147f606"
+      },
+      {
+        "slug": "art-direction",
+        "ref": {
+          "owner_plugin_id": "org.wordflowlab.art-direction",
+          "object_id": "ext_34f61328-d5d0-4a90-80dc-8d9f870c10b5",
+          "revision": 1,
+          "sha256": "b10ff8c0801e99b841c31a71732cfc1e9c1e884c3b4b923c654774d9ca103d8c"
+        },
+        "package_sha256": "54f05a084e642455f90defc9a2fc8da9c71b9d4204e8f51b176843d5f3673682"
+      },
+      {
+        "slug": "subtitle-studio",
+        "ref": {
+          "owner_plugin_id": "org.wordflowlab.subtitle-studio",
+          "object_id": "ext_8859fb5e-a630-4906-8dd7-10943e784633",
+          "revision": 3,
+          "sha256": "7ec98bc6cdd5f8f741ff57989ed43fb3aded9e380d609f28368fa3386bfa9037"
+        },
+        "package_sha256": "5c9baeffe35b436d7504752db9fa5c2613fa65418fcbea921c4bfef9dd5a84d8"
+      }
+    ],
+    "independent_target": {
+      "workspace_id": "workspace_933fa74c-68ce-4289-aba8-877831cb7de0",
+      "kind": "drama",
+      "object_id": "drama_4627269a-6f95-4693-aa6f-fd714028a113"
+    },
+    "independent_video": {
+      "kind": "video",
+      "object_id": "video_5c3760e4-9526-4f49-b5c8-17a597dc4de4",
+      "workspace_id": "workspace_e117451d-7d69-4fe5-b038-151feb05626f"
+    },
+    "video_snapshots": [
+      {
+        "slug": "art-direction",
+        "ref": {
+          "owner_plugin_id": "org.wordflowlab.art-direction",
+          "object_id": "ext_5b20fcaa-b0ba-4e74-a56c-e49d982770ff",
+          "revision": 1,
+          "sha256": "5a301549902eed77e53b17e5c4214c6ae605a5d3533c239cd3648578e529ae26"
+        }
+      },
+      {
+        "slug": "subtitle-studio",
+        "ref": {
+          "owner_plugin_id": "org.wordflowlab.subtitle-studio",
+          "object_id": "ext_14f1b061-eab5-4875-af60-988bf0328511",
+          "revision": 1,
+          "sha256": "04d4f5a9547fe76154fd5f9818d94bb26418b1ebfded5460a3f520e7a749c62a"
+        }
+      }
+    ],
+    "adopted": false,
+    "finalized": false,
+    "limits": [
+      "隔离原创与系统语音样本，不是文学、美术、表演或真实读者质量认可",
+      "未调用付费模型、外部发送、采纳或定稿"
+    ]
+  },
+  "local_cross_journey": {
+    "recorded_at": "2026-11-18T15:49:56.686Z",
+    "host_version": "hetu 0.12.4",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "stages": [
+      "固定正文与设定，明确历法和封港假设，资源不足如实报告",
+      "区分作者真相与读者可见线索，按揭示阶段核对假说",
+      "形成宿主参考稿，规则更新先看影响，旧跨插件依据保持",
+      "实际参考图、色板与服装方案关联固定人物，区域意见绑定图像摘要",
+      "实际对白媒体与双语字幕同源，偏移后旧意见保留并提示过期，三种格式完整交付",
+      "独立下一章候选接续，原著正文与旧专业修订保持，无采纳定稿",
+      "四包分别在独立剧本保存工程，单端读取另一作品被拒绝",
+      "独立视频分别保存实际参考板和实际媒体双语字幕，单端跨作品读取拒绝"
+    ],
+    "snapshots": [
+      {
+        "slug": "world-studio",
+        "ref": {
+          "owner_plugin_id": "org.wordflowlab.world-studio",
+          "object_id": "ext_7a958f92-e8e0-409d-83bf-7689e04d8760",
+          "revision": 2,
+          "sha256": "0a872c7ae5a9a3a512ce4cc275b496d18d8f2f6bd881397f5ced6451167a97ec"
+        },
+        "package_sha256": "5050928ecd28c72b5be6eb227a39e09919ee8c12354967cc482f0b2011d364d5"
+      },
+      {
+        "slug": "mystery-lab",
+        "ref": {
+          "owner_plugin_id": "org.wordflowlab.mystery-lab",
+          "object_id": "ext_b1e4aa57-be22-486c-a4dc-e7b47c819977",
+          "revision": 1,
+          "sha256": "12dc728cccafdf39062270224e93f12e6ea47f110fa2169ab891cd6aceeb8352"
+        },
+        "package_sha256": "2c93b9094f2660a96e5193224530bfbc078594f071b8c4b5057fd7df7147f606"
+      },
+      {
+        "slug": "art-direction",
+        "ref": {
+          "owner_plugin_id": "org.wordflowlab.art-direction",
+          "object_id": "ext_e4ba25e3-4c73-4ce3-9341-4bf785e6676a",
+          "revision": 1,
+          "sha256": "11a119784e2bbd327c079addb4d525e8de54dc619671f43b2ead03fbdecb8aed"
+        },
+        "package_sha256": "54f05a084e642455f90defc9a2fc8da9c71b9d4204e8f51b176843d5f3673682"
+      },
+      {
+        "slug": "subtitle-studio",
+        "ref": {
+          "owner_plugin_id": "org.wordflowlab.subtitle-studio",
+          "object_id": "ext_cd897baa-26d6-4841-9786-70f4096c2209",
+          "revision": 3,
+          "sha256": "3faa06619a644f63418b5607b6913f8171bddded314dfca752bd341e1321dc8e"
+        },
+        "package_sha256": "5c9baeffe35b436d7504752db9fa5c2613fa65418fcbea921c4bfef9dd5a84d8"
+      }
+    ],
+    "independent_target": {
+      "workspace_id": "workspace_3ee3be42-8472-4a7e-a7b4-e8a434b202e1",
+      "kind": "drama",
+      "object_id": "drama_782ddc54-52ae-4bae-92bf-8de79989d311"
+    },
+    "independent_video": {
+      "kind": "video",
+      "object_id": "video_7ca0ff75-eeb6-4957-b089-1dfeb0ff332f",
+      "workspace_id": "workspace_142f8601-00bc-4145-b8f3-5cf45cef02d1"
+    },
+    "video_snapshots": [
+      {
+        "slug": "art-direction",
+        "ref": {
+          "owner_plugin_id": "org.wordflowlab.art-direction",
+          "object_id": "ext_70014d55-011f-4080-aeea-3c9a4bb31df2",
+          "revision": 1,
+          "sha256": "b4e76601250dc1ecd9dae96d25f89f6633c95900765593c8c24861a94312388a"
+        }
+      },
+      {
+        "slug": "subtitle-studio",
+        "ref": {
+          "owner_plugin_id": "org.wordflowlab.subtitle-studio",
+          "object_id": "ext_f3721f7f-5c56-48d1-b17d-2bd4d4002331",
+          "revision": 1,
+          "sha256": "a9fdc9382dc44b4f35d5c2cabb1a3b54af6f104dbfc2ee013ce3607c8203e63b"
+        }
+      }
+    ],
+    "adopted": false,
+    "finalized": false,
+    "limits": [
+      "隔离原创与系统语音样本，不是文学、美术、表演或真实读者质量认可",
+      "未调用付费模型、外部发送、采纳或定稿"
+    ]
+  },
+  "docs": {
+    "files": 60,
+    "local_links": 112,
+    "rendered_mermaid_diagrams": 24
+  },
+  "visual_review": {
+    "method": "根据实际工作面、渲染尺寸和行为回执逐项设计判断，达到9/10门槛；不是像素认证、创作品质或原生窗口材质认证",
+    "reference": "hetu-ui-style、固定专业文档及当前宿主共享样式",
+    "plugins": [
+      {
+        "slug": "world-studio",
+        "package_sha256": "5050928ecd28c72b5be6eb227a39e09919ee8c12354967cc482f0b2011d364d5",
+        "scores": {
+          "布局": 9,
+          "间距与对齐": 9,
+          "排版": 9,
+          "颜色": 9,
+          "控件状态": 9,
+          "交互": 9
+        },
+        "reasons": [
+          "历法、规则与资源按专业页分组，日期和单位可核对",
+          "宽窄窗口内容不溢出，浅暗渐变连续，主要动作层级清楚"
+        ],
+        "themes": [
+          "light",
+          "dark"
+        ],
+        "widths": [
+          1360,
+          760
+        ],
+        "views": [
+          "历法与纪年",
+          "制度与规则",
+          "资源推演",
+          "影响与依据",
+          "接续创作"
+        ],
+        "evidence": [
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-1360-view-0.png",
+            "sha256": "0dc278c65a81ccb6b18700f68a95ffb47bf6e6a0db319de392170e40040c3049"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-1360-view-1.png",
+            "sha256": "8df469e3fc12f40f57eeddb7e864b334183f0c178414e23dcb2d02467b6d7d10"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-1360-view-2.png",
+            "sha256": "d7a114fd86ceee5955213d60e2025301750ea37019a7df1305e1c88422f3570b"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-1360-view-3.png",
+            "sha256": "cf2d6426a3cc0e428c079cc82a628c7f6a20b7bab1040a8c6bec7792fda8205a"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-1360-view-4.png",
+            "sha256": "f5d69b20a9911a690c26e5697a9ee43d966357b91b09a2b9371d3100dfb873a1"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-1360.png",
+            "sha256": "1791bdd53af0011363b7214cb230fb880247e8f3746fe6a6e7f5a429e8c9ffce"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-760-view-0.png",
+            "sha256": "df11c31fb7362cbf5f03f9d95f281dc6bf2bbce2d700dc589dc7d0a711674ae8"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-760-view-1.png",
+            "sha256": "50bf2faa2d83f7bc25d93764ad8716b42d7e48927d491bed700b95c29a754cf2"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-760-view-2.png",
+            "sha256": "c448cb71c4c78df8fb34d703ff5b4f138e065f7302568f01fd113d98bfa4aa1a"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-760-view-3.png",
+            "sha256": "f30deb819b3556335193b8b923cd9f3dcf91bc9ccf83b510b6412821eaacefa8"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-760-view-4.png",
+            "sha256": "45d1e73d51ff8679feb8e6e190742893870db3529c7e3822abd4698c3a1e38bb"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-760.png",
+            "sha256": "0b011b39df40df80f34a7c97fa63add4754291fb553848e7043a805af8e5684d"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/empty.png",
+            "sha256": "6ad1bc4251615c28669207dd178aaa17d07ad8ba1d115adb86b88707d7f9f10f"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-1360-view-0.png",
+            "sha256": "76c954e6a1f979c2472a780634e45161106a593c9bbf53d28d857b71ce5c31af"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-1360-view-1.png",
+            "sha256": "5cd047e6204074e14428ffa2105df4ee50229ca1e9def50ab9d757da4e494552"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-1360-view-2.png",
+            "sha256": "badb714c1acfd824449df62a57189b4663fb05a919a9a829cb8522da973b9f29"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-1360-view-3.png",
+            "sha256": "dec4ecf50e8c1514674d7e26ce0c22f784c7081b0acb0fbe957bf721f51038b0"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-1360-view-4.png",
+            "sha256": "100defae818ee42f110a3cc3e82a02f46c54ad270eaa6ed79397af0c08547228"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-1360.png",
+            "sha256": "0f5fa09217d53e6a9b262464e35171fa36041cbb987dde64e07d36d32e63ea38"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-760-view-0.png",
+            "sha256": "c6efc4ff0af46dd8fe8cbaa6645860b40276037a35144334071bd4f2d382b7a0"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-760-view-1.png",
+            "sha256": "078e932670471e5b44b383a9c4a3f7e2bdd16faa5fd0c3190d2c4c996d04b9de"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-760-view-2.png",
+            "sha256": "027d5b01ef0aa0d509a83ca5e0a44a823cf85d7572e4165d0869c8105a42b310"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-760-view-3.png",
+            "sha256": "50c58ae357262ecea31066cb91384a58643b70500fc692c1b2c4be74c2cd241b"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-760-view-4.png",
+            "sha256": "964c3847a79144fb50d994544086ab710cb0f4fb21ca22f9f434cd041ecd5c59"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-760.png",
+            "sha256": "08b08e09fd0f478b921bdc1c2d8570e27c3851293c82477260cfc9a57bfa32e1"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/reduced-transparency.png",
+            "sha256": "c1c36480874a170f288fd9f8ad5f8764e35c2116155104c4a8ea94ecc3bd6de2"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/view-0.png",
+            "sha256": "538880ac75c79b2cc56063efde6f1496072e87cea50be729f4c5c47581ef8789"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/view-1.png",
+            "sha256": "f945d72bb5d14869f092e4be8607ddc0df88b7b74143d815dbe2ab9152667de4"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/view-2.png",
+            "sha256": "be60301a8fb200631a82818bed11253a791054302bfd177de2a9d3bfe9b664a3"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/view-3.png",
+            "sha256": "0fd2f48c103882a3733af24ed892cfeeed57224aa5fddcccec8f330e7fffd96e"
+          },
+          {
+            "file": "ci-final/world-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/view-4.png",
+            "sha256": "53158768da0db1332e29cdaef82c08a9df2cce2c9cf559ed87bd98eeef271699"
+          }
+        ]
+      },
+      {
+        "slug": "mystery-lab",
+        "package_sha256": "2c93b9094f2660a96e5193224530bfbc078594f071b8c4b5057fd7df7147f606",
+        "scores": {
+          "布局": 9,
+          "间距与对齐": 9,
+          "排版": 9,
+          "颜色": 9,
+          "控件状态": 9,
+          "交互": 9
+        },
+        "reasons": [
+          "作者真相、证词及读者阶段分别阅读，按钮表意明确",
+          "揭示阶段和原文入口就地呈现；未定结论不伪装确定答案"
+        ],
+        "themes": [
+          "light",
+          "dark"
+        ],
+        "widths": [
+          1360,
+          760
+        ],
+        "views": [
+          "作者真相",
+          "线索与证词",
+          "读者推演",
+          "揭示与检查",
+          "接续创作"
+        ],
+        "evidence": [
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-1360-view-0.png",
+            "sha256": "236eca9ff904bb8866722cf36129cd7f52486ef880e32053c74785b81e9d90f2"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-1360-view-1.png",
+            "sha256": "6fad8dce0f31c5e3d178ff91d8e8c7bbe91bd630fecd270388efa299d2869799"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-1360-view-2.png",
+            "sha256": "721f1c7c885824ee59ea124ae58d192cfa3e4d012dab4835097309a7e48d7080"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-1360-view-3.png",
+            "sha256": "17af5c431c5f25c61e9f9f953ba93723b7fca46bcd8ff95b15d8d365f1bc3b54"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-1360-view-4.png",
+            "sha256": "f244e93324209c77683632d861d1b75d61bd3dd6eb6bc985f6ff54a958f86299"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-1360.png",
+            "sha256": "c9d8167635557a6d2a8a05164317fac0434325f053fe2dc63ae03e53a149ef80"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-760-view-0.png",
+            "sha256": "8dbe0c36d4e78aaa70b68d23c86dcc6310f40abaab9e66cf4b3c854355ddda61"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-760-view-1.png",
+            "sha256": "7b1cfb3dbc895f6f0675d409f11c9619a93495d316d516eb82949b4d2356c3d8"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-760-view-2.png",
+            "sha256": "a0496860a2b016bbaa27ebe0bef2d8149c8d543b321eeec4280ae57528fac471"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-760-view-3.png",
+            "sha256": "8b882834e1100eb1bad5d5bc5ba66b457dc8862262bb2933a985f0c7011787e9"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-760-view-4.png",
+            "sha256": "c61ba8fc32dad462b804949a7fce574b18e69c7c314e9a774a5b1d2d72d604fd"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-760.png",
+            "sha256": "868703876fdc110b5db51a72f0921befe30b18d34e131804f176406a7f3af2ea"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/empty.png",
+            "sha256": "37e168c9fe7e95a29f84df691e06a5e6131ab6d1393c2278e43b67687f7c8f3c"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-1360-view-0.png",
+            "sha256": "751a578bd352e9087a3400ff8f3ac09d8c4a30120f19e96317a0fcc04be9f46a"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-1360-view-1.png",
+            "sha256": "1c3e39d9d038705efef25665646f5ed2b83caef19099cc554653ea07a8adfdd7"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-1360-view-2.png",
+            "sha256": "8764465e89cd62de32f38b3ba61809e79da7b7ca330c6721446006ada0df1893"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-1360-view-3.png",
+            "sha256": "5be73995e7fe54f09484797787c2409a7f8cf903d7f520ae39ca74dc6f165716"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-1360-view-4.png",
+            "sha256": "0302c3fd98db9a06bf574791a32d2f1ff205484dbbc1b7c3689617581ce6e02f"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-1360.png",
+            "sha256": "194b5bfdc3bc172caf12946094f6588c74c83cf3557330349a04cfed166540c8"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-760-view-0.png",
+            "sha256": "f441bdc73a051795fb9d0654a378c9224eb565b11770f14d38e4946173e42139"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-760-view-1.png",
+            "sha256": "683147b7244c335f8cde6784145f14fa64742f5e9553ae1604d25b119770d701"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-760-view-2.png",
+            "sha256": "1f5a33b31413de18f8f9f678f586c8d8efd618aa757d225e0cb6fafbcab0faae"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-760-view-3.png",
+            "sha256": "6e2eac57083d69ae802445987a93904169c3337e9943e688c74074c40071a791"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-760-view-4.png",
+            "sha256": "a90cdc3a053a70d4181655c8a1af917468f7fcba505d02f6bf5df602e3feb5d5"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-760.png",
+            "sha256": "a90cdc3a053a70d4181655c8a1af917468f7fcba505d02f6bf5df602e3feb5d5"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/reduced-transparency.png",
+            "sha256": "b28a3fc801bdeb6f0265c4871458de8abbff248f53fa809511dd2b74a2c9a09b"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/view-0.png",
+            "sha256": "568e830ed2f63ef0bc985c391b39e64aad4c661a0913282a7d6de44a0b323cbc"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/view-1.png",
+            "sha256": "f552d2fcfd2de44e638a33156184c728ca1bdd561389782a70deaeefc44f2e5b"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/view-2.png",
+            "sha256": "d067df9e70c557b0e70dd87103a64c2352f329ebfc12a54ca633a19a59c89089"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/view-3.png",
+            "sha256": "ab69beff1cba12100ffb81bf2b0f0006aca54c92370bb6addb3d9b8a3e9e1d9b"
+          },
+          {
+            "file": "ci-final/mystery-lab/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/view-4.png",
+            "sha256": "687df769dfa84b980532e72420215efc7766afee8cc77c7ebd8f723c73d3b4b9"
+          }
+        ]
+      },
+      {
+        "slug": "art-direction",
+        "package_sha256": "54f05a084e642455f90defc9a2fc8da9c71b9d4204e8f51b176843d5f3673682",
+        "scores": {
+          "布局": 9,
+          "间距与对齐": 9,
+          "排版": 9,
+          "颜色": 9,
+          "控件状态": 9,
+          "交互": 9
+        },
+        "reasons": [
+          "实际参考板与固定区域图像完整解码，区域标记与意见对应",
+          "图片保持比例，色板与造型页分开；浅暗及窄窗逐视图验证"
+        ],
+        "themes": [
+          "light",
+          "dark"
+        ],
+        "widths": [
+          1360,
+          760
+        ],
+        "views": [
+          "参考板",
+          "色板与对比",
+          "造型方案",
+          "区域意见",
+          "接续创作"
+        ],
+        "evidence": [
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-1360-view-0.png",
+            "sha256": "29e812fcd3476485c712c5d345ceee0fca620816075ad4b8e27cce754fdbda57"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-1360-view-1.png",
+            "sha256": "df09784c6defe65551f5271967c261284775d3180b231cd0b429e023e5639401"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-1360-view-2.png",
+            "sha256": "5190bc59d097cb2da9405ba7b394970844b713b4581332d9e537483a5368e5c0"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-1360-view-3.png",
+            "sha256": "5b82b5ee6ecc9de82f73c7b73aabaaf8eaf7b3e2453c5d9d7e5b149754ed978f"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-1360-view-4.png",
+            "sha256": "7079a5e480672783c0ed1fc59a48eb93449ae995c58b0836585898b95b6d2501"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-1360.png",
+            "sha256": "923d848fbe5581407073e064767b5c0a6c7228aaa3534e74602ebbb9d90c1a16"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-760-view-0.png",
+            "sha256": "842f18077240e93abbb7b18b5a76cddc2682ab991a9976f30f94552c13748a47"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-760-view-1.png",
+            "sha256": "9437e46826025dffc8e298092b538f5eb602703e806e42fae10ad8e64404a9b0"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-760-view-2.png",
+            "sha256": "409d47810fb487251693395822249da97bcc21ca4970c0d97bacb83a0eb39c5c"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-760-view-3.png",
+            "sha256": "f534f8f3effc482fd6e1bb7ced16ce860cfda397c9ae2c9716bf187a63fd9a92"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-760-view-4.png",
+            "sha256": "6b64ce7453ff86829ec506c59f5da0b470edcf02f6dbf72578a0448563f4cad1"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-760.png",
+            "sha256": "a1788a316e32a5a2bcaf2753d86a0e65446557a039adedf37280039f6f4903b3"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/empty.png",
+            "sha256": "7d953952076ca7f4235548a07e15292f7974a3b70a0d42bfce6c8615868bfae2"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-1360-view-0.png",
+            "sha256": "1c1d538442b1c67e273c4ed413ad64d8d6e26197ea2cbfaab3f9878556efe5cb"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-1360-view-1.png",
+            "sha256": "f261578fee87bc6c3e04497cdd4233556f0676bd266c3337f15ccedf5f290254"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-1360-view-2.png",
+            "sha256": "7623279ddb407fb7a4244309e233860cc96decb827897a099500763e9ef4f5c4"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-1360-view-3.png",
+            "sha256": "4febb7ffb13e71b85f6bcebc498f7b43a883d020b72382afa9d7b04ca23b7abe"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-1360-view-4.png",
+            "sha256": "4355adf0fe777f8304354e710396b8f20ef3c8b3fb516085781b16101dd986df"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-1360.png",
+            "sha256": "3c3b1291789eac93f53a6cd0627a48c71da7f02fa6cb88a6033517f72c681ebd"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-760-view-0.png",
+            "sha256": "3e40db479aad91fd242cc0d3f1c09705460df7e9be6b45c359e92a1e4cf86b7a"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-760-view-1.png",
+            "sha256": "309c1a6305965f65759b79da01b08764eefe40be41f766415ddac2e39c13de2c"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-760-view-2.png",
+            "sha256": "39ffde9961892940ca61145236b313d27347d493f8ccbafc2e2713ff6b74ebbc"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-760-view-3.png",
+            "sha256": "f8bfc21c740e5673f0c29f32f1d92c209788f163da056542bcf2438376a1aca1"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-760-view-4.png",
+            "sha256": "c3982fc6c4fd595e620246365e82a95b407f87a3720e482b590f03026ae83bff"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-760.png",
+            "sha256": "006ffeed4a11820360fa396e72afee823eb32ba2aa285bc4888ddd4e86728bcf"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/reduced-transparency.png",
+            "sha256": "4f02a257bacf533fcc3de9965e6a9015634c6ba991e0a1d5d3f200404dda4be2"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/view-0.png",
+            "sha256": "cede8cd13087fda41033509e046759c78206a8511364304d294af644b9873fb2"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/view-1.png",
+            "sha256": "ce400d115601db0ba2c6fc02f9e6261be2e92a1e5a632f3ed40ef102fd8a7ecc"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/view-2.png",
+            "sha256": "b757bc2af75b21588ef1d72adb88dd962979f2c0c104d0cdd739c250618075f4"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/view-3.png",
+            "sha256": "c232340ad41e0be182e53e1e83e3fcf867f8e7925f2612d6a2025e6e548bbe0e"
+          },
+          {
+            "file": "ci-final/art-direction/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/view-4.png",
+            "sha256": "86d54a122d0db8905f4f2c882f7eb0bb415124aaaec419a31d24b0daf8425916"
+          }
+        ]
+      },
+      {
+        "slug": "subtitle-studio",
+        "package_sha256": "5c9baeffe35b436d7504752db9fa5c2613fa65418fcbea921c4bfef9dd5a84d8",
+        "scores": {
+          "布局": 9,
+          "间距与对齐": 9,
+          "排版": 9,
+          "颜色": 9,
+          "控件状态": 9,
+          "交互": 9
+        },
+        "reasons": [
+          "实际视频完整播放、双语切换及三格式导出通过",
+          "字幕轨、时间和正文列清晰；冲突保留及媒体背景读取串行复验通过"
+        ],
+        "themes": [
+          "light",
+          "dark"
+        ],
+        "widths": [
+          1360,
+          760
+        ],
+        "views": [
+          "字幕与播放",
+          "双语对齐",
+          "时间与阅读检查",
+          "区间意见",
+          "接续创作"
+        ],
+        "evidence": [
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-1360-view-0.png",
+            "sha256": "ab991134e6a847465f0eae1767c74ff5bcd39db347e939a801ea2c2c11b06d8c"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-1360-view-1.png",
+            "sha256": "ff8ad44a1228c3573eecbd9d267b23d7da07eb11196b1cff76dcb254ab0e1876"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-1360-view-2.png",
+            "sha256": "8c802cf2cd3e1cc2edb583ced1d42db9b6c3b531866224fae4b432fa554d61ee"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-1360-view-3.png",
+            "sha256": "625fe077b63436760ae1decfa442349a82fcf54bf99835825b5c46342e14d9c2"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-1360-view-4.png",
+            "sha256": "e9c6db56d83028a656cc6acd7dbe9b01480025f369162e22449a8839aec3642a"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-1360.png",
+            "sha256": "576041f795903db89647b398a383b15245e3c301b47ec9bb77f2f6cfc12762e0"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-760-view-0.png",
+            "sha256": "8bf38fb6ead8331985702249efb8c301749e8ca4c27721fe17b2bcad4d398443"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-760-view-1.png",
+            "sha256": "27ee9b3b7a1daf8af6cf6ae27e6af6e1b3b6f545c45fa0266208ddf4b44e459b"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-760-view-2.png",
+            "sha256": "d831571bb9dc22d5159ac39d4006243a2e8af31deb02ade0dc1bf680f0632339"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-760-view-3.png",
+            "sha256": "4406fe49c7c89206ad769240c84c9a0a330ae997c9d624b3733f47cb64897ed8"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-760-view-4.png",
+            "sha256": "2873808181d04b03788b0ca5e652f3f3b94663b5f1944f3e9d9055eabe801ba4"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/dark-760.png",
+            "sha256": "6624c1cd120a5800b13ddae4472a82b299b3c80522810d37c8174c7fd44b96b0"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/empty.png",
+            "sha256": "52ebb71e5ab06f4b15394357cb2814f98dc7b576157879fd94604c3ef4d2431e"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-1360-view-0.png",
+            "sha256": "b65803cd96288256f27cb9760ba0c428c03f35d9e6ddc8a92dc9f8099045d024"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-1360-view-1.png",
+            "sha256": "b392381bb256c577228312f139ebc1fb52c9f488a7703b6119becea08e240e65"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-1360-view-2.png",
+            "sha256": "f50364a2aca40fd8ec3361fd8285d4f602fd082ddb0e532d0e004e3be161e4c5"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-1360-view-3.png",
+            "sha256": "9f91f04074ff5f7a4d0929ac7bf98aa0e7ece5a020268db5bbebf8e00dd51435"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-1360-view-4.png",
+            "sha256": "1661a365e3f4182e6aa8bb77b6376d4525d969d9fdf5d8d8f212df8535a8a33d"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-1360.png",
+            "sha256": "a4d9ef8c1c629a1ce7c31756ffc4cee79b8b55c56ff8019926bbb9e5f71f2b02"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-760-view-0.png",
+            "sha256": "b90714d56f4d8ca0b762fb381d1673dd48244cac86f20b94f3472cdcdfafac11"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-760-view-1.png",
+            "sha256": "98e157d001feb5f904140b218c9534a39d697da461b9f02612db5e1dc5769dee"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-760-view-2.png",
+            "sha256": "db411e5eeb223aba35ac039e1db8548f113688870faf1c19b20aa59805334522"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-760-view-3.png",
+            "sha256": "1a00b91d19c2f504694e076be9776aa820ee59d09498f2ee3b9f4b9685ef496b"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-760-view-4.png",
+            "sha256": "7e264a2f591a9b9346d0dcefded412edc65028dd578f81ff83b508c1975307e7"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/light-760.png",
+            "sha256": "25fc3ec79def6fb51a44406f01bdc50dc2882e9919c38b7a9cbc6701a2399b9c"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/reduced-transparency.png",
+            "sha256": "dafa56f10317e2e3eed67a4d9bd3fff9d4f08a0fc02e72021ab4cfebb36bfbac"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/view-0.png",
+            "sha256": "c658b7ec11410cbb10a483d6052e80fd138d0808de6957905addd948ebcbf08a"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/view-1.png",
+            "sha256": "3cca6d202fa8f7c6c23c07fafd7378a7ce38b7f8e9a2d8aa1939adb193543438"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/view-2.png",
+            "sha256": "42cdeda8d3e1a2701d5abdf1efeaa6fc5c8e4236371b3a7baffad2e2dd17d1a3"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/view-3.png",
+            "sha256": "27a783c289e86a6f5751938a9b832571f506c632ea26bcb6e1dcc7c82816af10"
+          },
+          {
+            "file": "ci-final/subtitle-studio/test-results/workspace-真实Electron审阅、专业操作、导出、冲突保留与关闭重开/view-4.png",
+            "sha256": "5422cd5b3b03ceadeea645777d984c7e5c955fc5099582d6a9a65b8596b3cad5"
+          }
+        ]
+      }
+    ],
+    "inspected_composites": [
+      "official-visual-world-art.png",
+      "official-visual-mystery-media.png"
+    ],
+    "limits": [
+      "原生系统窗口材质、系统输入法、Windows/Linux另行验证",
+      "视频控制器为Chromium原生控件；完整播放结果与单帧图像分别取证"
+    ]
+  },
+  "website": {
+    "recorded_at": "2026-11-18T16:10:57.995072+00:00",
+    "origin": "https://hetu.limeai.run",
+    "plugins": [
+      {
+        "slug": "world-studio",
+        "details": [
+          "/plugins/world-studio/",
+          "/en/plugins/world-studio/"
+        ],
+        "fixed_release_fields_verified": true,
+        "image_sha256": "76c954e6a1f979c2472a780634e45161106a593c9bbf53d28d857b71ce5c31af"
+      },
+      {
+        "slug": "mystery-lab",
+        "details": [
+          "/plugins/mystery-lab/",
+          "/en/plugins/mystery-lab/"
+        ],
+        "fixed_release_fields_verified": true,
+        "image_sha256": "751a578bd352e9087a3400ff8f3ac09d8c4a30120f19e96317a0fcc04be9f46a"
+      },
+      {
+        "slug": "art-direction",
+        "details": [
+          "/plugins/art-direction/",
+          "/en/plugins/art-direction/"
+        ],
+        "fixed_release_fields_verified": true,
+        "image_sha256": "1c1d538442b1c67e273c4ed413ad64d8d6e26197ea2cbfaab3f9878556efe5cb"
+      },
+      {
+        "slug": "subtitle-studio",
+        "details": [
+          "/plugins/subtitle-studio/",
+          "/en/plugins/subtitle-studio/"
+        ],
+        "fixed_release_fields_verified": true,
+        "image_sha256": "b65803cd96288256f27cb9760ba0c428c03f35d9e6ddc8a92dc9f8099045d024"
+      }
+    ],
+    "pages": [
+      "/plugins/",
+      "/docs/plugins/",
+      "/blog/world-to-screen/",
+      "/en/plugins/",
+      "/en/docs/plugins/",
+      "/en/blog/world-to-screen/"
+    ],
+    "deployment": "https://904528bc.hetu-website-3uu.pages.dev",
+    "implementation_commit": "ebcc6e5297a32ac3051940b4fc62072a3146d926",
+    "build_pages": 167,
+    "local_references": 10117,
+    "local_browser_tests": 256,
+    "local_log_sha256": "6573974cffdbf421c58a7f5b35563426e87f7b8e6877eda92af852a8acaac717",
+    "production_browser_tests": {
+      "covered": 256,
+      "first_run_passed": 251,
+      "first_run_failed": 5,
+      "recheck_passed": 5,
+      "recheck_failed": 0,
+      "timeout_ms_per_test": 30000,
+      "recheck_workers": 1,
+      "initial_failures_retained": true
+    },
+    "browser_log_sha256": {
+      "website-production-final-tests.log": "f16349f712d13f66e98e6bddb97dcbb94e23a2d7c8f81feb695884742ccfa1a9",
+      "website-production-recheck.log": "02146e3010daf898d153878514d4c49f86b24f2673663c5eb50257be1e50661f"
+    }
+  },
+  "website_build_log_sha256": "f514c9b9c306438a6f86b422c5b02baeb336b42123e0959c2a5dd255f7a020cf",
+  "website_deploy_log_sha256": "6326a63d0c3aacdc2b0ae5e2ac4eae42d7eca76033b9be4f3d8e544d6ea7507c",
+  "failure_records": {
+    "failures": [
+      {
+        "file": "cross-initial.log",
+        "result": "unknown",
+        "original_key": "cross-art",
+        "recovery_file": "cross-original-recovery.json",
+        "recovery_result": "not_found",
+        "resumed_with_original_input_and_key": "replay-original.json",
+        "resumed_result": "succeeded",
+        "full_recheck": "cross-recheck.log"
+      },
+      {
+        "file": "subtitle-source-ui.log",
+        "cause": "MediaRecorder样片仅一帧且无音轨",
+        "fix": "固定6.5秒H.264/AAC真实语音样本，完整解码156帧及AAC音轨"
+      },
+      {
+        "file": "subtitle-source-ui-final.log",
+        "cause": "媒体背景读取与保存并发调用同一后端",
+        "fix": "串行视图调用队列并在媒体页验证CAS重新保存",
+        "passed_recheck": "subtitle-source-ui-serialized.log"
+      },
+      {
+        "file": "world-studio-ui-serialized.log",
+        "result": "unknown",
+        "original_key": "ui-seed",
+        "recovery_file": "hetu-world-studio-jhdw53-original-recovery.json",
+        "recovery_result": "not_found",
+        "scope": "0.12.3安装版及多实例并行测试，未计通过"
+      },
+      {
+        "file": "mystery-lab-ui-serialized.log",
+        "result": "unknown",
+        "original_key": "ui-seed",
+        "recovery_file": "hetu-mystery-lab-jQ5rWa-original-recovery.json",
+        "recovery_result": "not_found",
+        "scope": "0.12.3安装版及多实例并行测试，未计通过"
+      },
+      {
+        "file": "website-local-tests.log",
+        "cause": "新增详情未登记实际工作面图片，回退到示意图分支",
+        "fix": "PluginVisual登记四幅实际图片；重建后复验"
+      },
+      {
+        "file": "art-direction-initial-stapler68.log",
+        "phase": "正式本机验收前置",
+        "result": "xcrun stapler validate返回68；尚未开始插件测试",
+        "recheck": "同一未修改应用再次stapler validate通过；不能推定首次失败原因",
+        "next": "保留失败后重新执行本包正式验收，不跳过签名或公证检查"
+      }
+    ],
+    "policy": "保留失败及原键；当前正式安装版逐包执行，不自动重发未知写入",
+    "installation_coordination": {
+      "conflict_acknowledged": true,
+      "later_overwrite_stopped": true,
+      "window_released": "2026-11-18T15:59:51.119757+00:00",
+      "other_output_untouched": true
+    }
+  },
+  "website_regression": {
+    "first_full_run": {
+      "passed": 218,
+      "failed": 24,
+      "cause": "新增插件未登记真实工作面图片"
+    },
+    "second_full_run": {
+      "passed": 241,
+      "failed": 1,
+      "cause": "检索、详情及语言切换共用30秒测试预算，结束前超时"
+    },
+    "fix": {
+      "product": "登记四款真实工作面及尺寸",
+      "test": "目录检索与键盘详情／语言接续拆成独立用例，保留30秒每例上限"
+    },
+    "passed_recheck": {
+      "new_details_and_blog": 34,
+      "navigation_and_categories": 34
+    },
+    "final_publication_run": "256个用例均已覆盖：首轮251通过，5项超时在原30秒上限下单并发复验全部通过",
+    "final_local_run": {
+      "passed": 256,
+      "failed": 0,
+      "log": "website-local-final-tests.log",
+      "build_pages": 167,
+      "local_references": 10117
+    },
+    "public_fields": {
+      "passed": true,
+      "details": 8,
+      "directory_guide_blog_pages": 6,
+      "image_byte_sequences": 4,
+      "initial_transport_failure": "Python TLS连接重置；curl初次输出无法完整解码；改为逐次独立文件保存响应，保留传输失败并完整验证",
+      "successful_log": "website-public-fields-fixed.log",
+      "certificate_verification_disabled": false
+    },
+    "first_public_browser_run": {
+      "passed": 251,
+      "failed": 5,
+      "log": "website-production-final-tests.log",
+      "failure_traces": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/plugin-gh/website-public-first-failures",
+      "observed_failures": "page.goto或页面加载超过每例30秒；5项均为已有插件，新增4款详情全部通过",
+      "recheck": "只复验失败项，降低为单并发，保留原30秒上限"
+    },
+    "public_failed_case_recheck": {
+      "passed": 5,
+      "failed": 0,
+      "duration_seconds": 23.6,
+      "log": "website-production-recheck.log",
+      "same_code_and_same_timeout": true
+    }
+  },
+  "limits": [
+    "macOS arm64隔离示例；宿主跨平台发行不替代专业跨平台旅程",
+    "原Codex连接仍报告0.11.11；正式0.12.4机器连接单独取证",
+    "不代表文学、美术、诡计公平、真实读者或表演质量认可",
+    "未执行付费生成、内容外发、正文采纳或定稿"
+  ]
+}

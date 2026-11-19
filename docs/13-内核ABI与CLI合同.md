@@ -174,3 +174,5 @@ MCP对超预算的只读插件结果返回 `data.response.read`，其动作仍�
 原输入本身很大时，恢复说明不能再完整复制输入。此时 `read` 不含 `input`，改为 `base_input: {source: "original_request", sha256}` 与 `input_patch: {view}`：调用方先以RFC 8785规范化JSON核对自己保留的原输入SHA-256，再在原输入顶层替换 `input_patch` 指定的字段，调用同一个 `hetu.plugins.invoke`。这不是JSON Merge Patch，未列字段完整保留；`arguments`、作品、授权、包与能力引用均不得省略或重建默认值。没有原输入就不能继续，不能拿输入摘要代替输入或授权。`view.expected_result_sha256` 继续核验完整结果，每次分页仍由Core与dispatcher重新检查真实只读资格和当前权限；不新增服务端结果缓存或写操作重放入口。
 
 使用精简MCP `hetu_call_action` 时，原输入指 `hetu.plugins.invoke` 的领域输入，即工具参数中的 `input`，不包含通用工具封装。合成后使用 `{action: read.action, input: 合成输入}` 调用；动态 `view` 位于该领域输入内。通用工具顶层的 `view` 仍只接受静态只读动作，不能对整个 `plugins.invoke` 放宽。
+
+manager非零退出、执行或管道排空超时、输出超限及清理失败均返回 `unknown`，不能因stdout包含 `ok:false` 就归为可改输入的确定失败。只在进程正常退出且可信manager明确返回调用前拒绝时使用确定拒绝。进程期限覆盖输入写入、进程退出与输出排空，按本次受管进程族清理；写结果未知的恢复入口保留原作品、包、能力、操作键与调用指纹，只查询原插件操作，不重发写入。

@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 const listings = JSON.parse(readFileSync(new URL('../src/data/plugin-listings.json', import.meta.url), 'utf8'));
 const packages = ['relationships', 'timeline'].map(slug => ({ slug, ...JSON.parse(readFileSync(new URL(`../../../plugins/${slug}/plugin.json`, import.meta.url), 'utf8')) })).concat(listings.map((entry:any)=>({slug:entry.slug,...entry.manifest})));
 
-for (const [slug, category] of [['adaptation-studio', 'adaptation'], ['reader-review', 'beta'], ['comic-studio', 'comics'], ['audio-drama', 'audio'], ['story-research', 'research'], ['character-lab', 'characters'], ['story-analysis', 'analysis']]) {
+for (const [slug, category] of [['poetry-studio','poetry'],['nonfiction-studio','nonfiction'],['biography-studio','biography'],['lyric-studio','lyrics'],['production-planner','production'],['picturebook','picturebooks'],['murder-mystery','immersive'],['world-studio','worldbuilding'],['mystery-lab','mystery'],['art-direction','art'],['subtitle-studio','subtitles'],['adaptation-studio', 'adaptation'], ['reader-review', 'beta'], ['comic-studio', 'comics'], ['audio-drama', 'audio'], ['story-research', 'research'], ['character-lab', 'characters'], ['story-analysis', 'analysis']]) {
   for (const prefix of ['', '/en']) test(`${prefix || 'zh-CN'} ${slug} 分类与精确身份检索`, async ({ page }) => {
     await page.goto(prefix + '/plugins/', { waitUntil: 'domcontentloaded' });
     await page.locator(`[data-plugin-category="${category}"]`).click();
@@ -18,10 +18,9 @@ for (const [slug, category] of [['adaptation-studio', 'adaptation'], ['reader-re
 for (const prefix of ['', '/en']) {
   const en = !!prefix;
   for (const width of [375, 768, 1440]) {
-    test(`${prefix || 'zh-CN'} ${width}px 插件检索、详情与语言接续`, async ({ page, context }) => {
+    test(`${prefix || 'zh-CN'} ${width}px 插件检索与空状态`, async ({ page }) => {
       const errors: string[] = [];
       page.on('pageerror', error => errors.push(error.message));
-      await context.grantPermissions(['clipboard-read', 'clipboard-write']);
       await page.setViewportSize({ width, height: 960 });
       await page.goto(prefix + '/', { waitUntil: 'domcontentloaded' });
       await expect(page.locator('.plugin-home a').first()).toHaveAttribute('href', prefix + '/plugins/');
@@ -47,6 +46,14 @@ for (const prefix of ['', '/en']) {
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       await page.screenshot({ path: `test-results/plugins-${en ? 'en' : 'zh-CN'}-${width}.png`, fullPage: true });
 
+      expect(errors).toEqual([]);
+    });
+    test(`${prefix || 'zh-CN'} ${width}px 键盘详情与语言接续`, async ({ page, context }) => {
+      const errors: string[] = [];
+      page.on('pageerror', error => errors.push(error.message));
+      await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+      await page.setViewportSize({ width, height: 960 });
+      await page.goto(prefix + '/plugins/', { waitUntil: 'domcontentloaded' });
       await page.locator(`.plugin-card a[href="${prefix}/plugins/relationships/"]`).focus();
       await page.keyboard.press('Enter');
       await expect(page).toHaveURL(prefix + '/plugins/relationships/');
@@ -67,7 +74,7 @@ for (const prefix of ['', '/en']) {
     });
   }
 
-  for (const path of ['plugins', ...packages.map(item => 'plugins/' + item.slug), 'docs/plugins', 'docs/plugin-development', 'docs/plugin-publishing', 'blog/creative-plugins', 'blog/story-across-media']) {
+  for (const path of ['plugins', ...packages.map(item => 'plugins/' + item.slug), 'docs/plugins', 'docs/plugin-development', 'docs/plugin-publishing', 'blog/creative-plugins', 'blog/story-across-media', 'blog/world-to-screen', 'blog/pages-and-players', 'blog/script-to-preparation', 'blog/line-to-take', 'blog/a-life-in-its-own-words']) {
     test(`${prefix || 'zh-CN'} ${path} 标题、SEO与站点地图`, async ({ page, request }) => {
       const sitemap = await (await request.get('/sitemap.xml')).text();
       await page.goto(`${prefix}/${path}/`, { waitUntil: 'domcontentloaded' });

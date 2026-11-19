@@ -5,6 +5,11 @@ import type { Locale } from './site';
 import { evidence } from './market';
 
 export const articles = [
+  {"id": "a-life-in-its-own-words", "titles": {"zh-CN": "同一个人，可以怎样写下来", "en": "More than one way to write a life"}, "descriptions": {"zh-CN": "从诗行的取舍、纪实主张到人物生平，让明确依据与未知都能留在下一稿。", "en": "From line alternatives to reported claims and life histories, keep evidence and uncertainty available for the next revision."}},
+  {"id": "line-to-take", "titles": {"zh-CN": "改过一句词，下一次该听什么", "en": "Change a line. Know what to hear next."}, "descriptions": {"zh-CN": "让歌词结构、逐句备选和实际录音保留固定联系，让下一轮返工知道从哪里继续。", "en": "Keep lyrics, alternatives and actual recordings connected so the next revision has a precise place to continue."}},
+  {"id": "script-to-preparation", "titles": {"zh-CN": "从一把钥匙到一张制作单", "en": "From a key to a production sheet"}, "descriptions": {"zh-CN": "把固定剧本、制作需求、准备依赖和专业成果连起来，按具体缺漏继续下一轮。", "en": "Connect fixed scripts, requirements and professional results, then revise concrete gaps."}},
+  {"id": "pages-and-players", "titles": {"zh-CN": "同一个故事，翻一页，或换一个人来读", "en": "Turn a page, or give the story another reader"}, "descriptions": {"zh-CN": "从绘本的翻页到剧本杀的角色资料，让不同表达保留来源、旧版与下一轮修改的依据。", "en": "From picturebook page turns to role-specific mystery packets, keep sources, prior versions and reasons for the next revision."}},
+  {"id": "world-to-screen", "titles": {"zh-CN": "从世界的规则，到屏幕上的一句话", "en": "From a world’s rules to a line on screen"}, "descriptions": {"zh-CN": "把世界前提、读者线索、实际参考图与双语字幕，变成下一轮创作可以继续使用的依据。", "en": "Carry world premises, reader clues, actual images and bilingual subtitles into the next creative iteration."}},
   {"id": "story-across-media", "titles": {"zh-CN": "一个故事，可以怎样继续生长", "en": "More ways for one story to continue"}, "descriptions": {"zh-CN": "从改编理由、固定试读反馈到漫画页面与实际声音，让不同表达接续同一部作品。", "en": "Connect adaptation choices, fixed reader feedback, comic pages and actual recordings."}},
   { id: 'novel-ecosystem', titles: { 'zh-CN': '从规划到下一稿，让工具围绕同一部小说工作', en: 'From the plan to the next draft' }, descriptions: { 'zh-CN': '规划、文风、审校与图鉴如何围绕固定作品接续，让作者把时间用在阅读、判断与下一轮创作。', en: 'Connect planning, preferences, review and an atlas around a durable novel.' } },
 
