@@ -52,7 +52,8 @@ test("同一河图MCP连接动态发现、调用和热插拔专业插件，无�
     assert.equal(value.status, "succeeded", JSON.stringify(value));
     return value.data;
   }
-  const initialTools = (await client.listTools()).tools.map(tool => tool.name).sort();
+  const initialCatalog = (await client.listTools()).tools;
+  const initialTools = initialCatalog.map(tool => tool.name).sort();
   let operation = 0, pkg: any, work: any, management: any, grant: any, capabilities: any, object: any;
   async function createWork(key: string) {
     const start = await ok("hetu_begin_creation", { brief: "独立热插拔测试作品", locale: "zh-CN", operation_key: "begin-" + key });
@@ -87,7 +88,8 @@ test("同一河图MCP连接动态发现、调用和热插拔专业插件，无�
   try {
     await t.test("HP-01 连接先建立，再安装和发现，工具目录保持稳定", async () => {
       assert.ok(initialTools.includes("hetu_call_action"));
-      assert.ok(initialTools.length <= 13);
+      assert.ok(initialCatalog.filter(tool => JSON.stringify((tool._meta?.ui as any)?.visibility) !== '["app"]').length <= 13);
+      assert.deepEqual((initialCatalog.find(tool => tool.name === "hetu_app_request")?._meta?.ui as any)?.visibility, ["app"]);
       assert.deepEqual((await ok("hetu_plugins_inspect")).packages, []);
       ({ work, management } = await createWork("first"));
       pkg = await ok("hetu_plugins_inspect_package", { package_directory: packageDirectory });

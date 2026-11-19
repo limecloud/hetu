@@ -1,11 +1,11 @@
 {
   "name": "@hetu/plugin-host",
-  "version": "0.13.8",
+  "version": "0.13.9",
   "private": true,
   "type": "module",
   "exports": "./src/index.ts",
   "dependencies": {
-    "@hetu/plugin-sdk": "0.13.8",
+    "@hetu/plugin-sdk": "0.13.9",
     "@modelcontextprotocol/server": "2.4.0",
     "ajv": "8.20.0",
     "cordis": "4.0.0-rc.13"
