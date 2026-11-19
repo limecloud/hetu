@@ -75,7 +75,7 @@
     },
     "manifest": {
       "id": "org.wordflowlab.director-stage",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "host_api": "1",
       "display": {
         "zh-CN": "导演布景台",
@@ -85,20 +85,20 @@
       "permissions": []
     },
     "source_repository": "https://github.com/wordflowlab/hetu-director-stage",
-    "source_commit": "03eab799a426dbc0883dd59c9c56ce5ee03affeb",
+    "source_commit": "23bfaaeeb97d360863e7ff1859556e722f515741",
     "release": {
       "channel": "preview",
-      "url": "https://github.com/wordflowlab/hetu-director-stage/releases/tag/v0.2.0",
-      "download_url": "https://github.com/wordflowlab/hetu-director-stage/releases/download/v0.2.0/org.wordflowlab.director-stage-0.2.0.tgz",
-      "archive_sha256": "7a6a8c8f45a3f8398adcf85cca9112e39ee3f9f7dc982d87b69c507c8b032aaa",
-      "package_sha256": "3a2c3cebd17854981fd40a95f3bd68558a33305444c4f2fcdca2c0bfcdb1fc66",
-      "size_bytes": 1007163,
-      "minimum_host_version": "0.11.2",
+      "url": "https://github.com/wordflowlab/hetu-director-stage/releases/tag/v0.2.1",
+      "download_url": "https://github.com/wordflowlab/hetu-director-stage/releases/download/v0.2.1/org.wordflowlab.director-stage-0.2.1.tgz",
+      "archive_sha256": "43153a24597604fb70391f907a324bfdf2a8fd97ff8c426e7b207610793f6737",
+      "package_sha256": "bf0544d37b1bc9c67cd0a93fa0297a720e7a46fc73dcb21596885e62cac0a8c6",
+      "size_bytes": 1014674,
+      "minimum_host_version": "0.12.3",
       "verified_platforms": [
         "macOS arm64"
       ],
-      "evidence_url": "https://github.com/wordflowlab/hetu-director-stage/blob/03eab799a426dbc0883dd59c9c56ce5ee03affeb/docs/research/runtime-v020-acceptance-2026-11-17.json",
-      "integrity_url": "https://github.com/wordflowlab/hetu-director-stage/releases/download/v0.2.0/release-integrity.json"
+      "evidence_url": "https://github.com/wordflowlab/hetu-director-stage/blob/23bfaaeeb97d360863e7ff1859556e722f515741/docs/research/runtime-v021-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-director-stage/releases/download/v0.2.1/release-integrity.json"
     }
   },
   {
@@ -921,6 +921,40 @@
       ],
       "evidence_url": "https://github.com/wordflowlab/hetu-murder-mystery/blob/d7b8daac471ea4fa788b0a1d7082486dd114132d/docs/research/release-acceptance.json",
       "integrity_url": "https://github.com/wordflowlab/hetu-murder-mystery/releases/download/v0.1.0/release-integrity.json"
+    }
+  },
+  {
+    "slug": "production-planner",
+    "publisher": {
+      "zh-CN": "WordFlowLab",
+      "en": "WordFlowLab"
+    },
+    "manifest": {
+      "id": "org.wordflowlab.production-planner",
+      "version": "0.1.0",
+      "host_api": "1",
+      "display": {
+        "zh-CN": "制片筹备台",
+        "en": "Production Planner"
+      },
+      "license": "Apache-2.0",
+      "permissions": []
+    },
+    "source_repository": "https://github.com/wordflowlab/hetu-production-planner",
+    "source_commit": "9aba92415de7fed0727cb937292fa2cf72d8a8c8",
+    "release": {
+      "channel": "preview",
+      "url": "https://github.com/wordflowlab/hetu-production-planner/releases/tag/v0.1.0",
+      "download_url": "https://github.com/wordflowlab/hetu-production-planner/releases/download/v0.1.0/org.wordflowlab.production-planner-0.1.0.tgz",
+      "archive_sha256": "c44f1b79c75a6e521653e8b71762a67ce02b48f9e0c05597f3f5baf3c4158144",
+      "package_sha256": "892e50ccb90398d5b67214bcb961c8dea70d335bf87b7b7112848cba0474540e",
+      "size_bytes": 114635,
+      "minimum_host_version": "0.12.3",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "evidence_url": "https://github.com/wordflowlab/hetu-production-planner/blob/9aba92415de7fed0727cb937292fa2cf72d8a8c8/docs/research/release-acceptance.json",
+      "integrity_url": "https://github.com/wordflowlab/hetu-production-planner/releases/download/v0.1.0/release-integrity.json"
     }
   }
 ]

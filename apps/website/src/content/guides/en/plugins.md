@@ -142,3 +142,8 @@ Novels, scripts and video remain independent works. Existing images, subtitles a
 Try: “Turn Rain Harbour Letters into four picturebook pages. Leave the key unexplained on page two. Create a separate two-role mystery without showing Lin the register early. Simulate two acts, retain releases and debriefs, then prepare another draft. Use existing images and confirm paid generation separately.”
 
 Physical page checks do not replace printer approval. Role packets contain the selected perspective; the authoring workspace is not a player permission system. Simulations and human experience are separate evidence, and revisions preserve previous playtests.
+
+
+## Production planning
+
+Ask your Agent to organize cast, costumes, props and sound from fixed scripts, retain unknown estimates and check preparation order. Review source excerpts, dependencies and batches in [Production Planner](/en/plugins/production-planner/). Identify concrete gaps and reread affected material after revisions. Asset selection and fees remain separate decisions.

@@ -1,0 +1,38 @@
+{
+  "recorded_at": "2026-11-19",
+  "production_release": {
+    "release": "https://github.com/wordflowlab/hetu-production-planner/releases/tag/v0.1.0",
+    "source_commit": "9aba92415de7fed0727cb937292fa2cf72d8a8c8",
+    "archive_sha256": "c44f1b79c75a6e521653e8b71762a67ce02b48f9e0c05597f3f5baf3c4158144",
+    "package_sha256": "892e50ccb90398d5b67214bcb961c8dea70d335bf87b7b7112848cba0474540e",
+    "files_byte_identical": 18,
+    "verified": true
+  },
+  "director_release": {
+    "url": "https://github.com/wordflowlab/hetu-director-stage/releases/tag/v0.2.1",
+    "package_sha256": "bf0544d37b1bc9c67cd0a93fa0297a720e7a46fc73dcb21596885e62cac0a8c6",
+    "archive_sha256": "43153a24597604fb70391f907a324bfdf2a8fd97ff8c426e7b207610793f6737"
+  },
+  "verification": {
+    "official_host": "0.12.4",
+    "source_and_38_units": "https://github.com/wordflowlab/hetu-production-planner/actions/runs/44428511616",
+    "full_installed": "https://github.com/wordflowlab/hetu-production-planner/actions/runs/44428513304",
+    "machine_actions": 32,
+    "cross_workflows": 2,
+    "current_codex_host": "0.12.3",
+    "website_checks_passed": 28,
+    "pages_built": 177,
+    "local_references_checked": 10671,
+    "host_capability_map": "unchanged and check passed"
+  },
+  "retained_failures": [
+    "独立视频及剧本候选文稿来源误用由Core拒绝，改为各自获权资料任务",
+    "导演旧包缺resource合同，由专业Owner补齐并验证",
+    "外部清理导致隔离宿主路径消失，恢复同字节制品并锁定新工作树",
+    "新工作面图漏接展示组件，修复后28项官网检查通过"
+  ],
+  "limits": [
+    "macOS arm64开发预览",
+    "未执行Windows/Linux专业实机、付费模型、真实拍摄、作者选用或定稿"
+  ]
+}

@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 const listings = JSON.parse(readFileSync(new URL('../src/data/plugin-listings.json', import.meta.url), 'utf8'));
 const packages = ['relationships', 'timeline'].map(slug => ({ slug, ...JSON.parse(readFileSync(new URL(`../../../plugins/${slug}/plugin.json`, import.meta.url), 'utf8')) })).concat(listings.map((entry:any)=>({slug:entry.slug,...entry.manifest})));
 
-for (const [slug, category] of [['picturebook','picturebooks'],['murder-mystery','immersive'],['world-studio','worldbuilding'],['mystery-lab','mystery'],['art-direction','art'],['subtitle-studio','subtitles'],['adaptation-studio', 'adaptation'], ['reader-review', 'beta'], ['comic-studio', 'comics'], ['audio-drama', 'audio'], ['story-research', 'research'], ['character-lab', 'characters'], ['story-analysis', 'analysis']]) {
+for (const [slug, category] of [['production-planner','production'],['picturebook','picturebooks'],['murder-mystery','immersive'],['world-studio','worldbuilding'],['mystery-lab','mystery'],['art-direction','art'],['subtitle-studio','subtitles'],['adaptation-studio', 'adaptation'], ['reader-review', 'beta'], ['comic-studio', 'comics'], ['audio-drama', 'audio'], ['story-research', 'research'], ['character-lab', 'characters'], ['story-analysis', 'analysis']]) {
   for (const prefix of ['', '/en']) test(`${prefix || 'zh-CN'} ${slug} 分类与精确身份检索`, async ({ page }) => {
     await page.goto(prefix + '/plugins/', { waitUntil: 'domcontentloaded' });
     await page.locator(`[data-plugin-category="${category}"]`).click();
@@ -74,7 +74,7 @@ for (const prefix of ['', '/en']) {
     });
   }
 
-  for (const path of ['plugins', ...packages.map(item => 'plugins/' + item.slug), 'docs/plugins', 'docs/plugin-development', 'docs/plugin-publishing', 'blog/creative-plugins', 'blog/story-across-media', 'blog/world-to-screen', 'blog/pages-and-players']) {
+  for (const path of ['plugins', ...packages.map(item => 'plugins/' + item.slug), 'docs/plugins', 'docs/plugin-development', 'docs/plugin-publishing', 'blog/creative-plugins', 'blog/story-across-media', 'blog/world-to-screen', 'blog/pages-and-players', 'blog/script-to-preparation']) {
     test(`${prefix || 'zh-CN'} ${path} 标题、SEO与站点地图`, async ({ page, request }) => {
       const sitemap = await (await request.get('/sitemap.xml')).text();
       await page.goto(`${prefix}/${path}/`, { waitUntil: 'domcontentloaded' });

@@ -53,3 +53,6 @@ A useful plugin may solve just one recurring problem. Make it work for one proje
 Explore the [plugin center](/en/plugins/), or follow the [development](/en/docs/plugin-development/) and [publishing](/en/docs/plugin-publishing/) guides to contribute a tool of your own.
 
 Choose tools for each task: [World Studio](/en/plugins/world-studio/) checks explicit premises, [Mystery Lab](/en/plugins/mystery-lab/) separates reader knowledge, [Art Direction](/en/plugins/art-direction/) organizes actual images, and [Subtitle Studio](/en/plugins/subtitle-studio/) plays and checks bilingual captions. Read [From a world’s rules to a line on screen](/en/blog/world-to-screen/) to see how they connect.
+
+
+Review requirements, dependencies and unknown estimates with [Production Planner](/en/plugins/production-planner/). Read [From a key to a production sheet](/en/blog/script-to-preparation/).
