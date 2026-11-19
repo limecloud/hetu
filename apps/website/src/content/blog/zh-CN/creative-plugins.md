@@ -56,3 +56,6 @@ Skills 和客户端接入包安装在你使用的 Agent 环境里，为它提供
 
 
 从剧本走向制作，使用[制片筹备台](/plugins/production-planner/)核对需求、前置与未知估算，再接续专业工具。见[从一把钥匙到一张制作单](/blog/script-to-preparation/)。
+
+
+故事也可以进入歌曲。[歌词工坊](/plugins/lyric-studio/)保留结构、逐句备选与实际录音的联系，见[改过一句词，下一次该听什么](/blog/line-to-take/)。

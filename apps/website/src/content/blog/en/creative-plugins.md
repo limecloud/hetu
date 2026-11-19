@@ -56,3 +56,6 @@ Choose tools for each task: [World Studio](/en/plugins/world-studio/) checks exp
 
 
 Review requirements, dependencies and unknown estimates with [Production Planner](/en/plugins/production-planner/). Read [From a key to a production sheet](/en/blog/script-to-preparation/).
+
+
+Stories can become songs. [Lyric Studio](/en/plugins/lyric-studio/) connects structure, line alternatives and actual recordings. Read [Change a line. Know what to hear next.](/en/blog/line-to-take/).

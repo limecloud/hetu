@@ -147,3 +147,8 @@ Physical page checks do not replace printer approval. Role packets contain the s
 ## Production planning
 
 Ask your Agent to organize cast, costumes, props and sound from fixed scripts, retain unknown estimates and check preparation order. Review source excerpts, dependencies and batches in [Production Planner](/en/plugins/production-planner/). Identify concrete gaps and reread affected material after revisions. Asset selection and fees remain separate decisions.
+
+
+## Lyrics and recorded revisions
+
+Ask your Agent to develop a character song, compare lines and choruses, retain explicit pronunciation and keep unknown syllables unknown. With actual audio, review timings and identify what needs another recording. In [Lyric Studio](/en/plugins/lyric-studio/), read, compare, play and continue fixed feedback. Dedicated audio and video tools handle their own production work.

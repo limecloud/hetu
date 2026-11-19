@@ -1,0 +1,43 @@
+{
+  "recorded_at": "2026-11-19",
+  "plugin": {
+    "release": "https://github.com/wordflowlab/hetu-lyric-studio/releases/tag/v0.1.0",
+    "source_commit": "35daf3f9c7a92badd7a937d0947757ab7f6b2b85",
+    "package_sha256": "4cbfe60783400aecb99e2f98357f14a2be97fafffd86d6bf45808b131d7cb6a0",
+    "archive_sha256": "5f215af67be55035190b71055464ef745e835b53362dc4a134c9dccb7244833b",
+    "files_byte_identical": 18,
+    "verified": true
+  },
+  "host": {
+    "version": "0.12.6",
+    "git_sha": "b75293837aaa220803b9dc964ba72b8646fa7244",
+    "archive_sha256": "de012d76bb9751d6f2ed78427c6887563fcfd4455ae19717c6f65a9182700ab3",
+    "signature_verified": true,
+    "gatekeeper": "output/host-0.12.6/expanded/Hetu.app: accepted\nsource=Notarized Developer ID",
+    "staple": "Processing: /Users/coso/Documents/dev/ai/wordflowlab/hetu-production-host-20261119/output/host-0.12.6/expanded/Hetu.app\nThe validate action worked!",
+    "source_build": false,
+    "scope": "隔离正式安装副本，不替换共享应用"
+  },
+  "verification": {
+    "source_and_46_units": "https://github.com/wordflowlab/hetu-lyric-studio/actions/runs/44445498303",
+    "full_official_installed": "https://github.com/wordflowlab/hetu-lyric-studio/actions/runs/44447633510",
+    "machine_actions": 42,
+    "cross_workflows": 2,
+    "local_official_Electron": true,
+    "current_codex_skill_and_revisions": true,
+    "other_plugin_states_preserved": 28,
+    "website_local_checks": 28,
+    "pages_built": 181,
+    "local_references_checked": 10915,
+    "host_capability_map_check": true
+  },
+  "limits": [
+    "macOS arm64专业开发预览",
+    "原创合成节拍只验证实际音频、混音和接续，不代表演唱品质",
+    "未执行Windows/Linux专业实机、付费外发、作者选用或定稿"
+  ],
+  "website": {
+    "state": "local_verified_pending_deployment",
+    "origin": "https://hetu.limeai.run"
+  }
+}
