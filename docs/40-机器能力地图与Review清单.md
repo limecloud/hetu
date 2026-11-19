@@ -53,7 +53,7 @@
 | 作者批注 | hetu-revise | 2 | 0 | 0 |
 | 大纲 | hetu-outline | 2 | 0 | 0 |
 | 资料与来源 | hetu-resources | 8 | 0 | 0 |
-| 连接与精确授权 | hetu-setup | 9 | 0 | 0 |
+| 连接与精确授权 | hetu-setup | 10 | 0 | 0 |
 | 持续参考稿与反馈 | hetu-draft、hetu-revise | 6 | 0 | 0 |
 | 按需上下文 | hetu-setup | 3 | 0 | 0 |
 | 模型计划与费用 | hetu-setup | 8 | 0 | 0 |
@@ -363,6 +363,7 @@ MCP 对应调用 `hetu_get_capability_map`，参数同上。具体动作查询�
 | 打开作者已授权的确切任务<br>`hetu.collaboration.open` | `hetu_open_collaboration_task` (stable) | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 | 作者撤销本作品的有限管理授权及其派生任务<br>`hetu.collaboration.revoke_management` | 无直接工具映射 | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 撤销父级管理授权属于宿主授权控制。 | 宿主边界；安装待核对 |
 | 授权所选客户端读取当前作品并准备固定管理方案<br>`hetu.collaboration.authorize_workspace` | 无直接工具映射 | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 已有作品初始授权由宿主核验；机器新建作品自动接纳精确授权。 | 宿主边界；安装待核对 |
+| 读取桌面同一创作库的展示目录，逐作品核对当前客户端已有授权，不授予正文权限<br>`hetu.collaboration.library` | 无直接工具映射 | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 | 读取当前客户端新建的受管作品交接<br>`hetu.collaboration.created_works` | `hetu_list_created_works` (stable) | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 | 读取所选客户端当前作品的授权状态<br>`hetu.collaboration.workspace_access` | 无直接工具映射 | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 宿主查询初始授权状态；机器以inspect及精确management_ref发现。 | 宿主边界；安装待核对 |
 | 调用本连接已登记的确切动作；复用原授权与Schema<br>`hetu.collaboration.invoke` | `hetu_call_action` (stable) | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |

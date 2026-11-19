@@ -3,7 +3,7 @@
   "generated_by": "tools/sync-capability-map.py",
   "meaning": "source_wired仅表示源码合同和入口已连线；不证明安装、运行、跨平台或端到端通过。执行时先inspect实际能力。",
   "sources": {
-    "contracts/actions.json": "937b14fbf4a03718ecd77f9de2739388b295f40250a038a6178bd3869c48726c",
+    "contracts/actions.json": "92496ddea351bb87333e377b8de53c0e8e0d00c1216504551029d9128d9cc226",
     "contracts/tools/catalog.json": "290f98466f51aaa9f415c5d46c19a5894c171b53efda0fc749dc01e000773f0c",
     "core/src/application/agent_operations.rs": "95db837e9183345e419df57e423b04b8fc85f8c509f892db21e3e40b0ea4893c",
     "core/src/application/creative_tasks.rs": "b7a03b5fa753e7010851d7c157b8f211c3a9b5bfe8311fe22240fff98743d803",
@@ -21,7 +21,7 @@
     "tools/hetu-skills/base/skills/hetu-outline/SKILL.md": "ba07e47e0011600a4696446a5d39726acaf17ed1b430f67b5c02b443db830bf1",
     "tools/hetu-skills/base/skills/hetu-resources/SKILL.md": "9e1abce08712cf9f85d1cd7ff563ba4dd618bb903fb3d9c6f8d8e2dcc93dadb2",
     "tools/hetu-skills/base/skills/hetu-revise/SKILL.md": "4c47a91ea54d69815ba6d4bdc9c064797c5c7e10155ab827865ba5fa3bbeb813",
-    "tools/hetu-skills/base/skills/hetu-setup/SKILL.md": "ab6f32d62df8c4f79e91ad3f1b4ba03264dce148672ade386eb711a3d4788df1",
+    "tools/hetu-skills/base/skills/hetu-setup/SKILL.md": "97ba9ed3bf2019533ab9c0a67f3fa50f1097ef902899d05b6c50bbbb43c701c0",
     "tools/hetu-skills/base/skills/hetu-video/SKILL.md": "49cd8e97a95e3e28be11b937bf6c360320b74beb4661c735540659cf4daeba41"
   },
   "verification_evidence": "docs/research/evidence/2026-11-16-agent-capabilities.json",
@@ -63,6 +63,7 @@
         "hetu.collaboration.revoke_management",
         "hetu.handoffs.get",
         "hetu.collaboration.authorize_workspace",
+        "hetu.collaboration.library",
         "hetu.collaboration.created_works",
         "hetu.collaboration.workspace_access",
         "hetu.capabilities.map",
@@ -7102,6 +7103,44 @@
       "installed_evidence": false,
       "verification": [],
       "status": "host_boundary"
+    },
+    {
+      "action": "hetu.collaboration.library",
+      "purpose": "读取桌面同一创作库的展示目录，逐作品核对当前客户端已有授权，不授予正文权限",
+      "group": "连接与精确授权",
+      "effect": "read",
+      "routes": [
+        "client_local"
+      ],
+      "cli": "hetu --client <client> call hetu.collaboration.library --input -",
+      "proposal_target": null,
+      "mcp": [],
+      "mcp_via_proposal": false,
+      "skill": "hetu-setup",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-setup/SKILL.md",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [],
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "cursor": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}:[0-9]{1,12}$"
+          }
+        }
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
     },
     {
       "action": "hetu.collaboration.created_works",

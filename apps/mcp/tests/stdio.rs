@@ -1858,7 +1858,8 @@ async fn mcp_workbench_entry_is_discoverable_before_ui_negotiation_and_keeps_app
     assert!(ordinary["result"]["tools"].as_array().unwrap().iter().any(|t| t["name"] == "hetu_open_app"));
     assert!(ordinary["result"]["tools"].as_array().unwrap().len() <= 13);
     let empty = client.tool("hetu_open_app", json!({})).await;
-    assert_eq!(empty["data"], json!({"app":{"route":"home"}}));
+    assert_eq!(empty["data"]["app"]["route"], "library");
+    assert_eq!(empty["data"]["works"], json!([]));
     let resources = client.rpc("resources/list", json!({})).await;
     assert_eq!(resources["result"]["resources"].as_array().unwrap().len(), 1);
     assert_eq!(resources["result"]["resources"][0]["uri"], "ui://hetu/workbench/1");
@@ -1876,7 +1877,8 @@ async fn mcp_workbench_entry_is_discoverable_before_ui_negotiation_and_keeps_app
     assert_eq!(operation["_meta"]["ui"]["resourceUri"], "ui://hetu/operation-view/1");
     assert_eq!(operation["_meta"]["ui"]["visibility"], json!(["app"]));
     let home = client.tool("hetu_open_app", json!({})).await;
-    assert_eq!(home["data"], json!({"app":{"route":"home"}}));
+    assert_eq!(home["data"]["app"]["route"], "library");
+    assert_eq!(home["data"]["works"], json!([]));
     assert!(!directory.exists(), "empty entry must not create or enumerate authorizations");
     let resource = client.rpc("resources/read", json!({"uri":"ui://hetu/workbench/1"})).await;
     assert_eq!(resource["result"]["contents"][0]["mimeType"], "text/html;profile=mcp-app");
@@ -1908,12 +1910,40 @@ async fn legacy_workbench_discovery_does_not_require_ui_and_normalizes_capabilit
         let entry = tools.iter().find(|tool| tool["name"] == "hetu_open_app").unwrap();
         assert_eq!(entry["_meta"]["openai/ui"]["entrypoints"], json!([{"type":"global"},{"type":"thread"}]));
         assert_eq!(tools.len() > 100, enhanced, "{capabilities}");
-        assert_eq!(client.tool("hetu_open_app", json!({})).await["data"], json!({"app":{"route":"home"}}));
+        let home=client.tool("hetu_open_app", json!({})).await;
+        assert_eq!(home["data"]["app"]["route"], "library");
+        assert_eq!(home["data"]["works"], json!([]));
         let resource = client.rpc("resources/read", json!({"uri":"ui://hetu/workbench/1"})).await;
         assert_eq!(resource["result"]["contents"][0]["mimeType"], "text/html;profile=mcp-app");
         assert!(!directory.exists(), "目录探测不得创建作品或授权");
         client.close().await;
     }
+}
+
+#[tokio::test]
+async fn global_app_reads_the_desktop_catalog_without_turning_catalog_visibility_into_content_access() {
+    let (folder,author)=setup();
+    let directory=folder.path().join("Collaboration");
+    let listed=call(&author,"works.list",json!({}));
+    let work=listed["data"]["works"][0]["work_ref"].clone();
+    let record=json!({"schema_version":1,"roots":[{"path":folder.path().join("河图 离线测试 🌿"),"workspace_id":author.scope(),
+        "works":[{"work_ref":work,"title":"雾港来信","content":"私密正文不能进入目录"}]}]});
+    std::fs::write(folder.path().join("creative-library.json"),serde_json::to_vec(&record).unwrap()).unwrap();
+    let mut client=Client::start_stable(&directory);client.apps=true;
+    let catalog=client.tool("hetu_open_app",json!({})).await;
+    assert_eq!(catalog["status"],"succeeded","{catalog}");
+    assert_eq!(catalog["data"]["app"]["route"],"library");
+    assert_eq!(catalog["data"]["works"][0]["title"],"雾港来信");
+    assert_eq!(catalog["data"]["works"][0]["authorized"],false);
+    assert!(!catalog.to_string().contains("私密正文不能进入目录"));
+    assert!(!catalog.to_string().contains(folder.path().to_str().unwrap()));
+    assert!(!directory.exists());
+    let grant=call(&author,"collaboration.authorize_workspace",json!({"client_adapter":"codex","collaboration_path":directory,"work_ref":work,"operation_key":"library-grant"}));
+    assert_eq!(grant["status"],"succeeded","{grant}");
+    let refreshed=client.tool("hetu_open_app",json!({})).await;
+    assert_eq!(refreshed["data"]["works"][0]["authorized"],true,"{refreshed}");
+    assert_eq!(refreshed["data"]["works"][0]["management_ref"],grant["data"]["management_ref"]);
+    client.close().await;
 }
 
 #[tokio::test]

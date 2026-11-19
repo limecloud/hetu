@@ -39,6 +39,42 @@ test("empty global entry does not enumerate works, grants or files", async ({ pa
   expect(await page.evaluate(() => window.harness.calls)).toEqual([]);
   await expect(view.getByRole("button", { name: "本机设置", exact: true })).toBeVisible();
 });
+test("global library keeps desktop registrations visible and selects each exact grant without authorizing other works",async({page})=>{
+  const drama={...work,kind:"drama",object_id:"drama_registered"};
+  const another={...work,workspace_id:"workspace_22222222-2222-4222-8222-222222222222",object_id:"novel_22222222-2222-4222-8222-222222222222"};
+  const anotherGrant={...management,grant_id:"d".repeat(64),scope_ref:{kind:"workspace",id:another.workspace_id}};
+  const rows=[{title:"雾港",work_ref:work,authorized:true,management_ref:management},{title:"持械入宋 全书改编",work_ref:drama,authorized:false},{title:"长河",work_ref:another,authorized:true,management_ref:anotherGrant}];
+  await page.addInitScript(value=>Object.assign(window,value),{viewHtml:html,initialTask:{content:[],structuredContent:{status:"succeeded",data:{app:{route:"library"},works:rows,total:3}}},testActions:{...actions,"hetu.collaboration.library":{works:rows,total:3,next_cursor:null}},testMessages:true,testExtensions:true});
+  await page.goto(origin);const view=page.frameLocator("iframe");
+  await expect(view.getByRole("button",{name:/^打开作品 /})).toHaveCount(3);
+  await expect(view.getByText("尚未打开获权作品")).toHaveCount(0);
+  await view.getByRole("button",{name:"打开作品 持械入宋 全书改编",exact:true}).click();
+  await expect(view.getByRole("status")).toContainText("尚未授权");
+  expect((await page.evaluate(()=>window.harness.calls)).filter(call=>call.arguments?.action==="hetu.works.get")).toHaveLength(0);
+  await view.getByRole("button",{name:"放入当前草稿",exact:true}).click();
+  expect(JSON.stringify(await page.evaluate(()=>window.harness.wireMessages))).toContain("drama_registered");
+  expect(JSON.stringify(await page.evaluate(()=>window.harness.wireMessages))).not.toContain("grant_id");
+  await view.getByRole("button",{name:"打开作品 雾港",exact:true}).click();
+  await expect(view.getByText("循着旧灯塔寻找失踪的人。",{exact:true})).toBeVisible();
+  await view.getByRole("button",{name:"返回创作库",exact:true}).click();
+  await view.getByRole("button",{name:"打开作品 长河",exact:true}).click();
+  const calls=await page.evaluate(()=>window.harness.calls);
+  expect(calls.filter(call=>call.name==="hetu_call_action"&&call.arguments?.action==="hetu.works.get").map(call=>call.arguments?.input)).toEqual([
+    {work_ref:work,management_ref:management},{work_ref:another,management_ref:anotherGrant},
+  ]);
+  await view.getByRole("button",{name:"返回创作库",exact:true}).click();
+  await page.evaluate(()=>{window.testActions!["hetu.collaboration.library"]={works:[],total:0,next_cursor:null};});
+  await view.getByRole("button",{name:"刷新创作库",exact:true}).click();
+  await expect(view.getByRole("button",{name:/^打开作品 /})).toHaveCount(0);
+  await expect(view.getByText("还没有登记的作品",{exact:true})).toBeVisible();
+});
+test("a failed global catalog read shows recovery instead of reporting an empty library",async({page})=>{
+  await page.addInitScript(value=>Object.assign(window,value),{viewHtml:html,initialTask:{content:[],structuredContent:{status:"blocked",data:{app:{route:"library"}},error:{code:"hetu.integrity_failure",message:"创作库登记损坏"}}}});
+  await page.goto(origin);const view=page.frameLocator("iframe");
+  await expect(view.getByRole("alert")).toContainText("创作库登记损坏");
+  await expect(view.getByText("尚未打开获权作品",{exact:true})).toHaveCount(0);
+  await expect(view.getByRole("button",{name:"重新读取创作库",exact:true})).toBeVisible();
+});
 test("workbench follows exact work and fixed document references across domain views", async ({ page }) => {
   const view = await open(page);
   await view.getByRole("button", { name: "打开作品 雾港", exact: true }).click();
@@ -71,6 +107,7 @@ test("drama episode with an empty author draft displays its fixed submitted refe
   expect((await page.evaluate(() => window.harness.calls)).every(call => !/save|adopt|finalize/.test(String(call.arguments?.action)))).toBe(true);
 });
 test("all work areas use existing reads and explicit AI drafts without exposing grants", async ({ page }) => {
+  test.setTimeout(60_000); // 本例顺序覆盖15个工作面及真实消息桥接。
   const view = await open(page);
   await view.getByRole("button", { name: "打开作品 雾港", exact: true }).click();
   for (const name of ["大纲", "设定", "任务与参考稿", "资料", "图片与素材", "创作线索", "审核", "检查", "关联作品", "版本", "导入与交付", "操作方案", "插件", "本机设置", "模型渠道"]) {

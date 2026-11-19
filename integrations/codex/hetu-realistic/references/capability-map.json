@@ -196,6 +196,7 @@
         "hetu.collaboration.revoke_management",
         "hetu.handoffs.get",
         "hetu.collaboration.authorize_workspace",
+        "hetu.collaboration.library",
         "hetu.collaboration.created_works",
         "hetu.collaboration.workspace_access",
         "hetu.capabilities.map",

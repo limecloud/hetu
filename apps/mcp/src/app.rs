@@ -7,7 +7,7 @@ pub fn tool() -> Tool {
     let mut tool = Tool::default();
     tool.name = TOOL.into();
     tool.title = Some("河图洛书 / Hetu Luoshu".into());
-    tool.description = Some("打开河图工作台。空参数显示接入首页；作品使用确切management_ref，任务使用task_locator。只读取已有授权，不能授权、采纳或定稿。Open the Hetu workbench; pass an exact management_ref or task_locator for authorized content.".into());
+    tool.description = Some("打开河图工作台。空参数读取桌面同一创作库的展示目录；作品正文使用确切management_ref，任务使用task_locator。目录可见不授予正文权限，不能授权、采纳或定稿。Open the shared Hetu library; exact grants are still required for work content.".into());
     tool.input_schema = Arc::new(json!({"type":"object","additionalProperties":false,
         "properties":{"management_ref":{"type":"object"},"task_locator":{"type":"object"}},
         "not":{"required":["management_ref","task_locator"]}}).as_object().unwrap().clone());
@@ -37,9 +37,9 @@ pub fn open(hub: &hetu_core::collaboration::CollaborationHub, arguments: serde_j
         if works["status"] == "succeeded" { works["data"]["app"] = json!({"route":"works","management_ref":reference}); }
         works
     } else {
-        let mut home = hub.request_cancellable(json!({"action":"hetu.collaboration.inspect","contract_revision":"1","input":{"limit":1}}), cancelled);
-        if home["status"] == "succeeded" { home["data"] = json!({"app":{"route":"home"}}); }
-        return Ok(response::tool_result(home));
+        let mut home = hub.request_cancellable(json!({"action":"hetu.collaboration.library","contract_revision":"1","input":{"limit":20}}), cancelled);
+        if home["status"] == "succeeded" { home["data"]["app"] = json!({"route":"library"}); }
+        home
     };
     if result["status"] == "succeeded" && result["data"]["app"].is_null() {
         result["data"]["app"] = json!({"route":"home"});

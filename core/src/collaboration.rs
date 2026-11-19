@@ -12,6 +12,7 @@ use std::{
 };
 pub(crate) mod authoring;
 mod local;
+mod library;
 
 pub struct CollaborationHub {
     directory: PathBuf,
@@ -333,6 +334,9 @@ impl CollaborationHub {
                 "collaboration",
                 self.created_works(&request["input"])?,
             ));
+        }
+        if action == "hetu.collaboration.library" {
+            return Ok(domain::success(action, "collaboration", self.library(&request["input"], cancelled)?));
         }
         if action == "hetu.capabilities.map" {
             return Ok(domain::success(

@@ -1,0 +1,143 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-11-19",
+  "version": "0.13.5",
+  "problem": "MCP App全局入口只返回未绑定首页，桌面18个登记作品被显示为0项。",
+  "root_causes": [
+    "0.13.4空参数入口未读取桌面创作库，前端把未绑定等同于空列表。",
+    "全局视图只支持一个传入的management_ref，没有逐作品切换已有授权。",
+    "本机3条早期新建记录缺精确WorkRef，不能将其推断为工作区内容权限。"
+  ],
+  "implementation": {
+    "owner": "Core CollaborationHub",
+    "action": "hetu.collaboration.library",
+    "source": "读取桌面同一位置登记；无登记时才发现本客户端有效的有限新建作品。",
+    "authorization": "目录展示不授予正文权限；选择作品继续逐请求核验原精确management_ref；撤权不删除目录。",
+    "presentation": "与桌面共用LibraryContent；未获权提示接入，读取错误展示恢复入口；不写正文、原作品或作者决定。",
+    "skills_version": "0.3.13"
+  },
+  "verification": {
+    "native_stdio": {
+      "passed": 37,
+      "failed": 0,
+      "log": "build/mcp-library-fix/stdio-final.log",
+      "log_sha256": "1cc59419aecdabf347cec71fe51aefcc9a1c197da301da62ecf1d4f35c1a10e9"
+    },
+    "core": {
+      "passed": 5,
+      "failed": 0,
+      "log": "build/mcp-library-fix/core-latest.log",
+      "log_sha256": "6e96d2320c21adfebc8e0ec3d03712eeeac247c6978079188716b616f8a53f16"
+    },
+    "actual_catalog": {
+      "version": "0.13.5",
+      "desktop_registered": 18,
+      "mcp_total": 18,
+      "same_work_identities": true,
+      "authorized": 13,
+      "requires_work_authorization": 5,
+      "html_sha256": "3e26b02764bfba5662e120392384cbea789a95cc7fa208ce893b34b54b67c946",
+      "catalog_unchanged": true,
+      "browser_cards": 18,
+      "refresh_passed": true,
+      "screenshot": "build/mcp-library-fix/actual-library.png",
+      "scope": "本机真实目录只读核验及官方AppBridge浏览器渲染；不代替指定Codex GUI的逐页验收。"
+    },
+    "app_full": {
+      "cases": 54,
+      "full_run": {
+        "passed": 53,
+        "failed": 1,
+        "log": "build/mcp-library-fix/app-frozen.log",
+        "remaining_failure": "15工作面导航总超时，保留失败与trace。",
+        "log_sha256": "f94513f8120dda59275ccf86a309f18173f9881de08a89cbe3a7f8a851317c74"
+      },
+      "isolated_recheck": {
+        "passed": 1,
+        "failed": 0,
+        "log": "build/mcp-library-fix/navigation-isolated.log",
+        "log_sha256": "5b09cbf5314e2f4ee2c97b97ea9b56bc0cb88ea69dcd163925f8bfbd94bc6e83"
+      },
+      "scope": "同一最终功能源码的54项分批通过；不宣称某一次完整运行54项全部通过。"
+    },
+    "release_guards": {
+      "passed": 4,
+      "failed": 0,
+      "log": "build/mcp-library-fix/release-guards.log",
+      "log_sha256": "9175909748f429e4566a7b9feae88a6737aa9499ad37c2b6f2312e88cf59eea5"
+    },
+    "desktop_library": {
+      "passed": 1,
+      "failed": 0,
+      "log": "build/mcp-library-fix/desktop-library.log",
+      "log_sha256": "c4988119d9af252fc6c4af634d706bffc0adccbdac28ddc32ababf5f4bdc5ba1"
+    },
+    "packaged_journey": {
+      "passed": 1,
+      "failed": 0,
+      "log": "build/mcp-library-fix/packaged.log",
+      "log_sha256": "3a4b6baa50269ead4b171bc69a720cbe870358452ed95d40f633cd677bc14072"
+    },
+    "codex_installed_plugin": {
+      "version": "0.13.5",
+      "plugin_id": "hetu-workbench@hetu-luoshu-machine-connection",
+      "tools_error": null,
+      "entrypoints": [
+        {
+          "type": "global"
+        },
+        {
+          "type": "thread"
+        }
+      ],
+      "html_sha256": "3e26b02764bfba5662e120392384cbea789a95cc7fa208ce893b34b54b67c946",
+      "html_bytes": 2439740,
+      "manual_mcp_configuration": false,
+      "gui_observed": false
+    }
+  },
+  "retained_failures": [
+    {
+      "log": "build/mcp-library-fix/actual-library-legacy-failure.log",
+      "reason": "真实旧新建记录没有work_ref导致目录读取拒绝；修复后实际18项通过。"
+    },
+    {
+      "log": "build/mcp-library-fix/core-before-legacy-rebuild.log",
+      "reason": "旧记录兼容修改期间仍有旧源码编译在运行；保持失败记录，最终固定源码5项通过。"
+    },
+    {
+      "log": "build/mcp-library-fix/app-full-under-load.log",
+      "reason": "并行构建和内存压力下本地页面及15工作面用例超时；完整复验保留原断言，15工作面用例给予覆盖范围相称的60秒总预算。"
+    },
+    {
+      "log": "build/mcp-library-fix/app-all-latest.log",
+      "reason": "最后界面状态修正后HTML已更新但原生内嵌资源尚在重编，真实资源摘要检查拒绝；未安装不匹配制品。"
+    }
+  ],
+  "installation": {
+    "installed_at": "2026-11-19T14:10:32.216403+00:00",
+    "version": "0.13.5",
+    "application": "/Applications/Hetu.app",
+    "backup": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-library-fix/replaced-0.13.4.app",
+    "manifest": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-library-fix/package/hetu-dev-w3i928/manifest.json",
+    "source_sha256": "1d6c2320f6a4e5970aaffddd735a5e8fea363245d030a6efe76adc1a2b2bf448",
+    "artifacts_verified": 3386,
+    "signing": "ad-hoc-development",
+    "codesign_verified": true,
+    "cli_version": "hetu 0.13.5",
+    "author_content_modified": false,
+    "status": "installed",
+    "connection_registered": true,
+    "connection_version": "0.13.5",
+    "installed_library_log": "build/mcp-library-fix/installed-library.log"
+  },
+  "release": {
+    "status": "pending",
+    "tag": "v0.13.5",
+    "scope": "本机修复及覆盖验证已完成，按作者此前全部递交发布授权继续正式发行。"
+  },
+  "not_verified": [
+    "指定Codex GUI的全部业务逐页操作",
+    "其他GUI宿主的实机兼容"
+  ]
+}

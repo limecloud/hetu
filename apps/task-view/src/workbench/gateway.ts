@@ -22,7 +22,22 @@ export class WorkbenchGateway {
   management?: RecordValue;
   work?: WorkRef;
   private descriptors = new Map<string, RecordValue>();
+  private libraryGrants = new Map<string, RecordValue>();
   constructor(readonly host: AppHost) {}
+  useLibrary(rows: RecordValue[]) {
+    this.libraryGrants.clear();
+    return rows.map(row => {
+      const {management_ref, ...display} = row;
+      if (row.authorized === true && management_ref) this.libraryGrants.set(JSON.stringify(row.work_ref), object(management_ref));
+      return display;
+    });
+  }
+  selectLibraryWork(work: WorkRef) {
+    const reference = this.libraryGrants.get(JSON.stringify(work));
+    this.management = reference;
+    this.work = reference ? work : undefined;
+    return !!reference;
+  }
   async descriptor(action: string) {
     if (!this.descriptors.has(action)) {
       const response = result(await this.host.callServerTool({ name: "hetu_inspect_collaboration", arguments: { action, include_schema: true, limit: 1 } }));

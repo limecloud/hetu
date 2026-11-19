@@ -28,6 +28,7 @@ let taskView: ReturnType<typeof mountTaskReview> | undefined;
 let mediaUrl: string | undefined;
 let feedbackDirty=false;
 let error = "", notice = "", initialBinding: string | undefined;
+let libraryMode = false, libraryError = "";
 let content = element("section"), status = element("p");
 let request: { intent: string; references: RecordValue; text: string; delivery: "ready" | "pending" | "accepted" | "drafted" | "unknown" | "rejected" } | undefined;
 
@@ -42,7 +43,7 @@ function canLeave() {
 }
 function releaseMedia() { if (mediaUrl) URL.revokeObjectURL(mediaUrl); mediaUrl = undefined; }
 function leave() { feedbackDirty=false;releaseMedia(); taskView?.dispose(); taskView = undefined; current = undefined; history = []; request = undefined; error = ""; notice = ""; bindEvents(); }
-function updateStatus() { status.textContent = error || notice; status.setAttribute("role", error ? "alert" : "status"); }
+function updateStatus() { const failure=error&&!(!route&&libraryError);status.textContent=failure?error:notice;status.setAttribute("role",failure?"alert":"status"); }
 
 function localPage(title: string) { const section=localSections.find(item => item.title === title); if(section) void showSection(section); }
 function openExisting() { prepare("打开已有小说、剧本或视频，确认作者要继续的确切作品并核验当前客户端的精确授权，保留已有任务和成果", {}); }
@@ -82,15 +83,33 @@ function renderLibraryNavigation(nav: HTMLElement) {
   mountReact(nav,createElement(LibraryNavigation,{kind:libraryKind,active:"library",busy,onKind:setLibraryKind,onPlugins:()=>localPage("插件")}));
 }
 function renderHome() {
-  mountReact(content,createElement(LibraryContent,{works:works as unknown as LibraryWork[],assets:libraryAssets,kind:libraryKind,busy,loading:!connected,appearance:document.documentElement.dataset.theme??"system",initialListMode:false,emptyTitle:"尚未打开获权作品",emptyMessage:"打开已有作品，或让当前 Agent 从一个想法开始。",onKind:setLibraryKind,onOpen:openExisting,onCreate:newWork,onSelect:(item:LibraryWork)=>{work=item.work_ref;gateway.work=work;void showSection(sections[0]);},onRefresh:()=>{if(!gateway.management){openExisting();return;}void readWorks().then(renderHome).catch(value=>{fail(value);updateStatus();});}}));
+  mountReact(content,createElement(LibraryContent,{works:works as unknown as LibraryWork[],assets:libraryAssets,kind:libraryKind,busy,loading:!connected,error:libraryError,appearance:document.documentElement.dataset.theme??"system",initialListMode:false,emptyTitle:libraryMode?"还没有登记的作品":"尚未打开获权作品",emptyMessage:"打开已有作品，或让当前 Agent 从一个想法开始。",onKind:setLibraryKind,onOpen:openExisting,onCreate:newWork,onSelect:(item:LibraryWork)=>{
+    if(!canLeave())return;
+    if(libraryMode&&!gateway.selectLibraryWork(item.work_ref)){
+      work=undefined;
+      prepare(`打开已有${({novel:"小说",drama:"剧本",video:"视频"})[item.work_ref.kind]}《${item.title}》。目录已登记，先核对本客户端对此确切作品的授权；尚未授权时引导作者在可信作品接入页授予此作品范围，保留原任务与成果，不重新创建或导入`,{work_ref:item.work_ref});
+      notice="此作品尚未授权给当前 Agent，已准备精确作品接入请求。";updateStatus();return;
+    }
+    work=item.work_ref;gateway.work=work;void showSection(sections[0]);
+  },onRefresh:()=>{
+    if(!canLeave())return;
+    if(!libraryMode&&!gateway.management){openExisting();return;}
+    busy=true;libraryError="";renderHome();
+    void readWorks().catch(value=>{libraryError=value instanceof Error?value.message:String(value);}).finally(()=>{busy=false;renderHome();});
+  }}));
 }
 function showHome() {
   if (!canLeave()) return;
   epoch++; leave(); route=undefined;render();renderHome();
 }
 async function readWorks() {
-  const data = await gateway.read("hetu.works.list", { limit: 20 });
-  works = Array.isArray(data.works) ? data.works.map(object) : [];
+  const rows: RecordValue[]=[];let cursor: string|undefined;
+  do {
+    const data=await gateway.read(libraryMode?"hetu.collaboration.library":"hetu.works.list",{limit:20,...(!libraryMode?{include_archived:true}:{}),...(cursor?{cursor}:{})});
+    rows.push(...(Array.isArray(data.works)?data.works.map(object):[]));
+    cursor=typeof data.next_cursor==="string"?data.next_cursor:undefined;
+  }while(cursor);
+  works=libraryMode?gateway.useLibrary(rows):rows;
 }
 function pageActions() {
   const actions = element("div", undefined, "actions");
@@ -281,6 +300,13 @@ async function receive(response: Parameters<ReturnType<typeof mountTaskReview>["
     const data = result(response).data ?? {}, app = object(data.app);
     if (!canLeave()) return;
     if (app.route === "task") { showTask(response); return; }
+    if(app.route === "library") {
+      if(initialBinding && initialBinding!=="library")throw new Error("请另开面板查看创作库，当前固定作品保持原位。");
+      initialBinding="library";libraryMode=true;libraryError="";
+      works=gateway.useLibrary(Array.isArray(data.works)?data.works.map(object):[]);
+      if(data.next_cursor)await readWorks();
+      gateway.management=undefined;gateway.work=undefined;work=undefined;
+    }
     if (app.route === "works") {
       const reference = object(app.management_ref), binding = JSON.stringify(reference);
       if (initialBinding && binding !== initialBinding) throw new Error("请另开面板查看其他作品，当前未保存内容保持原位。");
@@ -288,7 +314,7 @@ async function receive(response: Parameters<ReturnType<typeof mountTaskReview>["
       works = Array.isArray(data.works) ? data.works.map(object) : [];
     }
     showHome();
-  } catch (value) { fail(value); updateStatus(); }
+  } catch (value) { fail(value); if(!route){libraryError=error;libraryMode=initialBinding==="library"||!initialBinding;renderHome();} updateStatus(); }
 }
 async function deepLink(context: Parameters<typeof host.taskLink>[0]) {
   const locator = host.taskLink(context);
@@ -298,7 +324,7 @@ async function deepLink(context: Parameters<typeof host.taskLink>[0]) {
 async function teardown() {
   disposed = true; epoch++; connected = false; taskView?.dispose(); taskView = undefined;
   releaseMedia();
-  gateway.management = undefined; gateway.work = undefined; works = []; work = undefined; current = undefined; history = []; request = undefined;
+  gateway.management = undefined; gateway.work = undefined; gateway.useLibrary([]); works = []; work = undefined; current = undefined; history = []; request = undefined;
   unmountReact(); root.replaceChildren(element("p", "面板连接已结束。已保存成果保留在原作品。", "empty")); return {};
 }
 function bindEvents() {

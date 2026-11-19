@@ -59,3 +59,5 @@ description: "作者选择河图洛书轻小说幻想套件时，在河图洛书
 使用河图扩展时先查询 `hetu.plugins.inspect` 的活动Skill摘要，再以精确作品、management_ref和包摘要查询 `hetu.plugins.capabilities`。若实际能力包含 `skills` 及 `resource_actions` 中的 `skills.read`，通过稳定 `hetu.plugins.invoke` 传 `action="skills.read"`、`arguments={"skill_id":"实际ID"}` 按需读完整方法；引用文件以同一skill_id加相对`resource`读取。再按方法发现并执行专业动作，包更新／停用后重新查询。河图包内Skill不等于Codex本地安装的Skill，不新增Codex插件或MCP连接；宿主未提供资源入口时明确报告版本缺口，不猜本机路径。
 
 使用[随包功能地图](../../references/capability-map.json)或已发现的 `hetu_get_capability_map` 按目标定位；需要精确领域参数时再发现实际Schema。在源码工作区使用 `docs/40-机器能力地图与Review清单.md` 与 `contracts/capability-map.json` 定位功能、CLI/MCP入口、Skill与验证证据。地图是导航，当前安装版的 `inspect` 和 `agent_operations.catalog` 是执行时能力依据；源码声明不能替代安装发现和业务回读。
+
+作者要打开已有作品时，可用 `hetu.collaboration.library` 读取与桌面相同的创作库展示目录；按 `next_cursor` 读完，不把未绑定作品误报为没有作品。目录记录不等于正文授权，选择确切 `work_ref` 后仅使用当前客户端已有的有效 `management_ref`。未授权时交接此作品的可信接入，不能重建作品或借用另一作品的授权。

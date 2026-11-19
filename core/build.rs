@@ -30,6 +30,7 @@ fn main() {
         "src/domain/schema.rs",
         "src/collaboration.rs",
         "src/collaboration/authoring.rs",
+        "src/collaboration/library.rs",
         "src/machine.rs",
     ] {
         files.push(root.join(source));

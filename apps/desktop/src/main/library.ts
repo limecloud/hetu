@@ -6,8 +6,12 @@ import { RecoveryStore } from "./recovery.ts";
 type Registration = {
   path: string;
   workspace_id: string;
-  works: { work_ref: WorkRef; title: string }[];
+  works: { work_ref: WorkRef; title: string; [key:string]:unknown }[];
 };
+function displayRecord(work: any) {
+  return Object.fromEntries(["work_ref","title","author_name","genre","status","archived","chapter_count","created_at","updated_at"]
+    .filter(key=>work[key]!==undefined).map(key=>[key,work[key]])) as Registration["works"][number];
+}
 /** 本机位置登记与名称缓存；作品内容及当前身份每次仍由 Core 核验。 */
 export class CreativeLibrary {
   #roots: Registration[] = [];
@@ -80,10 +84,7 @@ export class CreativeLibrary {
     const registration = {
       path: canonical,
       workspace_id,
-      works: works.map((item) => ({
-        work_ref: item.work_ref,
-        title: item.title,
-      })),
+      works: works.map(displayRecord),
     };
     if (existing) Object.assign(existing, registration);
     else {
@@ -130,10 +131,7 @@ export class CreativeLibrary {
             )
           )
             throw new Error("此位置的工作区身份已变化，不能沿旧登记打开。");
-          root.works = works.map((item) => ({
-            work_ref: item.work_ref,
-            title: item.title,
-          }));
+          root.works = works.map(displayRecord);
           views.push(...works.map((item) => ({ ...item, unavailable: false })));
         } catch (e) {
           views.push(

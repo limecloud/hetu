@@ -5009,6 +5009,41 @@
       }
     },
     {
+      "name": "hetu.collaboration.library",
+      "purpose": "读取桌面同一创作库的展示目录，逐作品核对当前客户端已有授权，不授予正文权限",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [],
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "cursor": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}:[0-9]{1,12}$"
+          }
+        }
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
       "name": "hetu.collaboration.created_works",
       "purpose": "读取当前客户端新建的受管作品交接",
       "contract_revision": "1",
@@ -5155,9 +5190,32 @@
       "contract_revision": "1",
       "effect": "read",
       "author_only": false,
-      "scopes": ["collaboration"],
-      "input_schema": {"type":"object","additionalProperties":false,"properties":{"agent_client":{"enum":["codex"]}},"required":["agent_client"]},
-      "result_provenance": {"contract_revision":"1","data_roles":["core_receipt","public_contract"],"instruction_authority":"none","authorization_effect":"none"}
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "agent_client": {
+            "enum": [
+              "codex"
+            ]
+          }
+        },
+        "required": [
+          "agent_client"
+        ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "public_contract"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     },
     {
       "name": "hetu.local_settings.prepare",
@@ -5172,13 +5230,13 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-        "kind": {
-          "enum": [
-            "preferences",
-            "agent_suite",
-            "agent_connection"
-          ]
-        },
+          "kind": {
+            "enum": [
+              "preferences",
+              "agent_suite",
+              "agent_connection"
+            ]
+          },
           "patch": {
             "type": "object",
             "additionalProperties": false,

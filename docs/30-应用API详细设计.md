@@ -668,6 +668,7 @@ Agent 需要协作时，先发现当前能力与作品摘要，读取固定项�
 | 动作 | 输入 | 输出与效果 |
 | --- | --- | --- |
 | `hetu.collaboration.inspect` | 客户端实际协商信息 | 本机助手、合同与可用功能；未获任务权不返回作品名、目录或内容，不持久写入 |
+| `hetu.collaboration.library` | limit、cursor? | 读取桌面同一创作库登记的展示字段；返回works、total、catalog_sha256及next_cursor。正文权限独立，逐作品核验当前客户端有效management_ref；旧新建记录缺精确作品时不推断权限，目录损坏返回明确错误，不接受文件路径参数 |
 | `hetu.collaboration.open` | task_locator、known_request_ref? | 当前 task_ref、目标、已确定事实引用、允许动作、上下文入口、成果／反馈摘要及可恢复操作；仅获权任务，分页读取历史 |
 | `hetu.creative_tasks.revise_request` | task_locator、expected_request_ref、作者确认的新 brief／context_manifest／edit_scope／输出合同、expected_grant_revision、operation_key | 新请求修订、摘要及新授权版本；仅可信作者，先预览外发差异，事务保留旧请求 |
 
