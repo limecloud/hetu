@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "date": "2026-11-19",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "scope": "外部MCP App工作台、共享任务审核、按能力协商的OpenAI增强及Codex连接安装",
   "source": {
     "baseline_commit": "e33f3ed1b189d35133c67344c19f7466b7ad8623",
@@ -215,6 +215,26 @@
       "passed": 6,
       "log": "build/mcp-app-settings-final.log",
       "log_sha256": "933b2c952ebbc278fe67ae5908d6db802268a4e8cff60fad6e34ff0897f47d8b"
+    },
+    "release_version_mcp_apps": {
+      "version": "0.13.1",
+      "status": "passed",
+      "passed": 42,
+      "log": "build/mcp-app-v0131-tests.log",
+      "log_sha256": "f8ef7d4cfb08752b9285be42d355e3bdf5bbd6456a0e61f073868cc147e687a4",
+      "official_cli": "0.169.0",
+      "gui_loaded": false
+    },
+    "release_workflow": {
+      "status": "passed",
+      "platforms": [
+        "macos-arm64",
+        "windows-x64",
+        "linux-x64"
+      ],
+      "publish": "success",
+      "npm": "success",
+      "url": "https://github.com/limecloud/hetu/actions/runs/44472873229"
     }
   },
   "failures_and_corrections": [
@@ -262,13 +282,66 @@
     "付费模型、作者正文采纳与定稿不属于本次隔离MCP App验收"
   ],
   "release": {
-    "status": "revalidating_release_configuration",
+    "status": "published_verified",
     "tag": "v0.13.1",
     "url": "https://github.com/limecloud/hetu/releases/tag/v0.13.1",
     "previous_failed_tag": "v0.13.0",
     "previous_run": "https://github.com/limecloud/hetu/actions/runs/44471222498",
     "previous_failure": "Mac runner未安装新增MCP App测试所需Chromium；签名和公证未执行，无正式Release。",
-    "correction": "显式npx playwright install chromium；版本进位，不改写原标签。"
+    "correction": "显式npx playwright install chromium；版本进位，不改写原标签。",
+    "source_commit": "b3063938351a89b383dd604d9eea9fdd3bf712c9",
+    "workflow_url": "https://github.com/limecloud/hetu/actions/runs/44472873229",
+    "ci": {
+      "status": "success",
+      "url": "https://github.com/limecloud/hetu/actions/runs/44472818378"
+    },
+    "published_at": "2026-11-19T07:08:14Z",
+    "platforms": [
+      {
+        "target": "macos-arm64",
+        "version": "0.13.1",
+        "git_sha": "b3063938351a89b383dd604d9eea9fdd3bf712c9",
+        "signing": "developer-id",
+        "notarization": "Accepted",
+        "files": {
+          "Hetu-0.13.1-macos-arm64.zip": "d20e935319cc162ad2f5ce02b50964ed8c2ec74b1823c28faadb7cf7110feb6e",
+          "Hetu-0.13.1-macos-arm64.dmg": "daac528b646660198479a55c83e209c61f23b96c0a298708c49b16d629548c09"
+        }
+      },
+      {
+        "target": "windows-x64",
+        "version": "0.13.1",
+        "git_sha": "b3063938351a89b383dd604d9eea9fdd3bf712c9",
+        "signing": "unsigned",
+        "notarization": "not-applicable",
+        "files": {
+          "Hetu-0.13.1-windows-x64.zip": "a2cd51f95f919036c17dba1e66f816a4ad7456d2dcce0e8fd95701f90d2f249f"
+        }
+      },
+      {
+        "target": "linux-x64",
+        "version": "0.13.1",
+        "git_sha": "b3063938351a89b383dd604d9eea9fdd3bf712c9",
+        "signing": "unsigned",
+        "notarization": "not-applicable",
+        "files": {
+          "Hetu-0.13.1-linux-x64.tar.gz": "10ca3ec2aba1e89c3a97370aa463a5e2d700e9485cd852352aa0a18b45a9d8ff"
+        }
+      }
+    ],
+    "public_verification": "重新下载公开清单与校验表；清单摘要、GitHub附件SHA256、版本及Git SHA一致。未在本机重新下载完整大型归档，实际归档由发行工作流逐字节校验。",
+    "assets": 10,
+    "mac_notarization": "Accepted",
+    "workflow_status": "success",
+    "npm": {
+      "name": "@limecloud/hetu",
+      "version": "0.13.1",
+      "latest": "0.13.1",
+      "integrity": "sha512-l4vHw+o0eAW/VJChZgFLIYdZcGWbWo47aoCzM0T7okBg/BgdUCDLUgMQGxB8v98SbmWceYs1epLsSktlixL9ZQ==",
+      "local_source_pack_matches_registry": true,
+      "url": "https://www.npmjs.com/package/@limecloud/hetu/v/0.13.1"
+    },
+    "public_manifest_verification_sha256": "90ac4067ea274dc362c3da3056181c1a10e38275a70113cd5209596e58a69c09"
   },
   "validated_base_version": "0.13.0",
   "release_resources": {
@@ -341,6 +414,46 @@
         "scripts/build.mjs": "15f1c4437e103918f012e975e400094400d391f8f0f056def2653879a75e8f40",
         "package.json": "cb16231460af9ccaa3b2c0bf1d177824f0cee89fc545ff7bf3508f5fa58f8a2f",
         "THIRD-PARTY-NOTICES.txt": "64e64f33d6dd0f206ffa47b474d43ffd8df1fd295bc87ccf59428003892ac78b"
+      }
+    }
+  },
+  "website_delivery": {
+    "deployment_source": "128a5c2655c8d8d77582907f21144ffaf4509104",
+    "deployment_id": "d737ae82-f671-422e-b91b-64b791357ce2",
+    "delivered_by": "并行官网交付会话，已集成本次中英文Agent接入指南；本轮核对线上状态，不覆盖部署。",
+    "integrated_build": {
+      "pages": 195,
+      "local_links": 11667,
+      "status": "passed",
+      "log": "build/mcp-app-website-integrated-build.log"
+    },
+    "public_guides": [
+      {
+        "path": "/docs/agents/",
+        "status": 200,
+        "sha256": "5e6f6860ff8b62bc6c862d4af243925ba22f178e36375b75101ab6f6b5a38fa5",
+        "guide_present": true
+      },
+      {
+        "path": "/en/docs/agents/",
+        "status": 200,
+        "sha256": "753d5998e496d55b7d77bb3b4e4949eb8b414caa4463c624f40ae56ee1cc59ff",
+        "guide_present": true
+      }
+    ],
+    "production_regression": {
+      "passed": 33,
+      "failed": 2,
+      "log": "build/mcp-app-website-production-tests.log",
+      "failure": "旧download-and-install路径命中age=321914的历史缓存返回200；同路径带新查询参数正确404。中英接入指南均200且包含新安装说明。",
+      "purge": {
+        "attempted_urls": [
+          "https://hetu.limeai.run/docs/download-and-install/",
+          "https://hetu.limeai.run/en/docs/download-and-install/"
+        ],
+        "status": 401,
+        "code": 10000,
+        "reason": "当前Cloudflare凭据无缓存清理权限；未重试或更换凭据。"
       }
     }
   }
