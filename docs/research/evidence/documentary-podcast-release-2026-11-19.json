@@ -1,0 +1,297 @@
+{
+  "recorded_at": "2026-11-19",
+  "plugins": {
+    "documentary-studio": {
+      "schema_version": 1,
+      "plugin_id": "org.wordflowlab.documentary-studio",
+      "version": "0.1.0",
+      "source_commit": "59ddaeb1548e8c980c56300f535f8e018a1e9d54",
+      "archive": "org.wordflowlab.documentary-studio-0.1.0.tgz",
+      "archive_sha256": "b5af816d9366b296a62f5044a2ce66fee0045f0a2691f96f69281cdb2b667ead",
+      "package_sha256": "9c50bc5babcae0567b21c4081fea6950478f315f7aac5ce1b3047258357f2d43",
+      "size_bytes": 111365,
+      "minimum_host_version": "0.12.6",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "official_host": {
+        "version": "0.12.6",
+        "git_sha": "b75293837aaa220803b9dc964ba72b8646fa7244",
+        "archive_sha256": "de012d76bb9751d6f2ed78427c6887563fcfd4455ae19717c6f65a9182700ab3"
+      },
+      "acceptance": "https://github.com/wordflowlab/hetu-documentary-studio/actions/runs/44487662883",
+      "evidence_url": "https://github.com/wordflowlab/hetu-documentary-studio/blob/59ddaeb1548e8c980c56300f535f8e018a1e9d54/docs/research/release-acceptance.json"
+    },
+    "podcast-studio": {
+      "schema_version": 1,
+      "plugin_id": "org.wordflowlab.podcast-studio",
+      "version": "0.1.0",
+      "source_commit": "88484d2d1de2c44263b4062e8e5825e4f640a519",
+      "archive": "org.wordflowlab.podcast-studio-0.1.0.tgz",
+      "archive_sha256": "e92beb19170ddcdcd06e089ff699df3a3b76da64cd539ee9a9aeb4db0b46f900",
+      "package_sha256": "3a58fe327df83001b35b4363a0edcf7b6149840fcce74ed7da92b13c17386c79",
+      "size_bytes": 107703,
+      "minimum_host_version": "0.12.6",
+      "verified_platforms": [
+        "macOS arm64"
+      ],
+      "official_host": {
+        "version": "0.12.6",
+        "git_sha": "b75293837aaa220803b9dc964ba72b8646fa7244",
+        "archive_sha256": "de012d76bb9751d6f2ed78427c6887563fcfd4455ae19717c6f65a9182700ab3"
+      },
+      "acceptance": "https://github.com/wordflowlab/hetu-podcast-studio/actions/runs/44487696070",
+      "evidence_url": "https://github.com/wordflowlab/hetu-podcast-studio/blob/88484d2d1de2c44263b4062e8e5825e4f640a519/docs/research/release-acceptance.json"
+    }
+  },
+  "official_full_runs": {
+    "documentary-studio": "https://github.com/wordflowlab/hetu-documentary-studio/actions/runs/44487662883",
+    "podcast-studio": "https://github.com/wordflowlab/hetu-podcast-studio/actions/runs/44487696070"
+  },
+  "verification": {
+    "unit_tests": 74,
+    "domain_actions": 62,
+    "rendered_diagrams": 8,
+    "actual_work_surfaces": 62,
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "widths": [
+      1360,
+      760
+    ],
+    "all_runtime_actions": true,
+    "fixed_source_continuation_task_bytes": true,
+    "independent_drama_video_and_wrong_work": true,
+    "public_runtime_files_each": 18,
+    "current_codex_skill_files_byte_verified": 6,
+    "original_34_plugin_states_preserved": true,
+    "public_package_install_preserved_original_and_revised": true
+  },
+  "website": {
+    "source_commit": "4a66f3895cb46296d4d79eb5ed3e944bec50caff",
+    "deployment": "https://8585f392.hetu-website-3uu.pages.dev",
+    "origin": "https://hetu.limeai.run",
+    "pages": 201,
+    "local_references": 12005,
+    "local_browser_tests": 40,
+    "production_browser_tests": 40,
+    "exact_responses": 14,
+    "logs": {
+      "build_sha256": "86b66fca783396b1e035e0a5230e188e81a4c261d5a6f5215e64d04bd59aa9c5",
+      "local_sha256": "685b1b837661284bad324d30afeb84417dcd1a02dcfa90cff6c11f5bee17907c",
+      "deploy_sha256": "5109cb833e499a176c8c4fc8444fcce3ee2351782013ad5b32c5b34a827c300b",
+      "production_sha256": "b0aacf6de4781af8f76fee6b9d6107189c0d29b02b16af46c43e1e4ba6b82a1b"
+    },
+    "public": {
+      "origin": "https://hetu.limeai.run",
+      "responses": [
+        {
+          "route": "/plugins/",
+          "status": 200,
+          "raw_sha256": "2bb3f8ab770110ac8c26552d8ab9754a4c607a1f9ba64ec0111b4d82f9b2b6a6",
+          "expected_sha256": "2bb3f8ab770110ac8c26552d8ab9754a4c607a1f9ba64ec0111b4d82f9b2b6a6",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/plugins/",
+          "status": 200,
+          "raw_sha256": "417c79159b42024a9ab75c8536761ed2098109187925cf3b1f01a2a3307b8a84",
+          "expected_sha256": "417c79159b42024a9ab75c8536761ed2098109187925cf3b1f01a2a3307b8a84",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/docs/plugins/",
+          "status": 200,
+          "raw_sha256": "734eec62c6046faed050686c04ed275a6ff91068b498a3257e1d4f78007b4983",
+          "expected_sha256": "734eec62c6046faed050686c04ed275a6ff91068b498a3257e1d4f78007b4983",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/docs/plugins/",
+          "status": 200,
+          "raw_sha256": "fe1eb4d8c925b74b629645e5c948e0d21e2c2e3ed95ca5a6ed2b5207628168e9",
+          "expected_sha256": "fe1eb4d8c925b74b629645e5c948e0d21e2c2e3ed95ca5a6ed2b5207628168e9",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/blog/accounts-and-listening/",
+          "status": 200,
+          "raw_sha256": "553181124baf92facece5f64c9c472c67d5f1d1579ce65542146ce17e5b892c3",
+          "expected_sha256": "553181124baf92facece5f64c9c472c67d5f1d1579ce65542146ce17e5b892c3",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/blog/accounts-and-listening/",
+          "status": 200,
+          "raw_sha256": "8811605f9849c8bc105f826bd90feefb51a8cd0880911f90fc8f48b318d83345",
+          "expected_sha256": "8811605f9849c8bc105f826bd90feefb51a8cd0880911f90fc8f48b318d83345",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/blog/creative-plugins/",
+          "status": 200,
+          "raw_sha256": "0c5ea82c29458822a4343e8dd4eb1b7669512f5a1407419ad727ec37063d561e",
+          "expected_sha256": "0c5ea82c29458822a4343e8dd4eb1b7669512f5a1407419ad727ec37063d561e",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/blog/creative-plugins/",
+          "status": 200,
+          "raw_sha256": "157b2493870da81861c64e3c0134b3d26023b8d883ed87a28545ed0e7e9f7830",
+          "expected_sha256": "157b2493870da81861c64e3c0134b3d26023b8d883ed87a28545ed0e7e9f7830",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/documentary-studio/",
+          "status": 200,
+          "raw_sha256": "1a6bcf91df47fdb206fd001b8a879c08b3fa6f99ee0a1557a06a8f027a2dbe32",
+          "expected_sha256": "1a6bcf91df47fdb206fd001b8a879c08b3fa6f99ee0a1557a06a8f027a2dbe32",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/plugins/documentary-studio/",
+          "status": 200,
+          "raw_sha256": "b4189062fddbce106184879bf8b6f31d018687add7e8aeb822cb7f02b9a0f652",
+          "expected_sha256": "b4189062fddbce106184879bf8b6f31d018687add7e8aeb822cb7f02b9a0f652",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/documentary-studio.png",
+          "status": 200,
+          "raw_sha256": "44572f0c780655f7e984c5594e124dcef00a58c9304a3a984c1ef7bcaaa92ceb",
+          "expected_sha256": "44572f0c780655f7e984c5594e124dcef00a58c9304a3a984c1ef7bcaaa92ceb",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/podcast-studio/",
+          "status": 200,
+          "raw_sha256": "d1a492498833475aac9c14f83203382bac34c5ec9a534a72ed0591f2767b109f",
+          "expected_sha256": "d1a492498833475aac9c14f83203382bac34c5ec9a534a72ed0591f2767b109f",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/en/plugins/podcast-studio/",
+          "status": 200,
+          "raw_sha256": "b6142f0c7f709d4c35bcc3ade2d1514154ce2f95f668decbe01946f57b8bb505",
+          "expected_sha256": "b6142f0c7f709d4c35bcc3ade2d1514154ce2f95f668decbe01946f57b8bb505",
+          "observed_changes": [],
+          "matches_build": true
+        },
+        {
+          "route": "/plugins/podcast-studio.png",
+          "status": 200,
+          "raw_sha256": "776c03155b8f39a023f4ad1ee61ef879064cd9e8ae3306e0b548e1b44c770ba6",
+          "expected_sha256": "776c03155b8f39a023f4ad1ee61ef879064cd9e8ae3306e0b548e1b44c770ba6",
+          "observed_changes": [],
+          "matches_build": true
+        }
+      ]
+    }
+  },
+  "public_links": [
+    {
+      "slug": "documentary-studio",
+      "url": "https://github.com/wordflowlab/hetu-documentary-studio/releases/download/v0.1.0/org.wordflowlab.documentary-studio-0.1.0.tgz",
+      "status": 200,
+      "sha256": "b5af816d9366b296a62f5044a2ce66fee0045f0a2691f96f69281cdb2b667ead"
+    },
+    {
+      "slug": "documentary-studio",
+      "url": "https://github.com/wordflowlab/hetu-documentary-studio/releases/download/v0.1.0/org.wordflowlab.documentary-studio-0.1.0.tgz.sha256",
+      "status": 200,
+      "sha256": "0e2dff00f2b6bc27535ce2ebb459674ad468a769f530a75031fd883bbfb9252f"
+    },
+    {
+      "slug": "documentary-studio",
+      "url": "https://github.com/wordflowlab/hetu-documentary-studio/releases/download/v0.1.0/release-integrity.json",
+      "status": 200,
+      "sha256": "37cd1a2f8995f70134cb547815a669c2aa7745475e388ebe51ec9ab8cc712417"
+    },
+    {
+      "slug": "documentary-studio",
+      "url": "https://github.com/wordflowlab/hetu-documentary-studio/releases/tag/v0.1.0",
+      "status": 200,
+      "sha256": "a14b8fa3d3f22b0e4d70ae829c59f28d4a9e972bd46ac9d27f74d2b4cf4613f5"
+    },
+    {
+      "slug": "documentary-studio",
+      "url": "https://github.com/wordflowlab/hetu-documentary-studio/blob/59ddaeb1548e8c980c56300f535f8e018a1e9d54/docs/research/release-acceptance.json",
+      "status": 200,
+      "sha256": "9e1b51e92c3de8e77c7189ffadfe4bba2872661767e66bd4f637959950bf4d87"
+    },
+    {
+      "slug": "documentary-studio",
+      "url": "https://github.com/wordflowlab/hetu-documentary-studio/blob/59ddaeb1548e8c980c56300f535f8e018a1e9d54/CAPABILITIES.md",
+      "status": 200,
+      "sha256": "d485e1b24a73c8a2ea650f62474f39ebe937ef13e2c8bf25eaec7dd76e71c971"
+    },
+    {
+      "slug": "documentary-studio",
+      "url": "https://github.com/wordflowlab/hetu-documentary-studio/tree/59ddaeb1548e8c980c56300f535f8e018a1e9d54/docs",
+      "status": 200,
+      "sha256": "b7234fe890149051e56f3940986c13154ac3f5fbd4d3b5e6bf1d4e81d65ba1f3"
+    },
+    {
+      "slug": "podcast-studio",
+      "url": "https://github.com/wordflowlab/hetu-podcast-studio/releases/download/v0.1.0/org.wordflowlab.podcast-studio-0.1.0.tgz",
+      "status": 200,
+      "sha256": "e92beb19170ddcdcd06e089ff699df3a3b76da64cd539ee9a9aeb4db0b46f900"
+    },
+    {
+      "slug": "podcast-studio",
+      "url": "https://github.com/wordflowlab/hetu-podcast-studio/releases/download/v0.1.0/org.wordflowlab.podcast-studio-0.1.0.tgz.sha256",
+      "status": 200,
+      "sha256": "309f57ec514adea08daf62206b00014eac4d3053b9f9500da02893603cde6ea7"
+    },
+    {
+      "slug": "podcast-studio",
+      "url": "https://github.com/wordflowlab/hetu-podcast-studio/releases/download/v0.1.0/release-integrity.json",
+      "status": 200,
+      "sha256": "6e3bc4b08c28ddea0a48e6052c7f0a82c56276bcacb8b3623b1bfc0f359facc1"
+    },
+    {
+      "slug": "podcast-studio",
+      "url": "https://github.com/wordflowlab/hetu-podcast-studio/releases/tag/v0.1.0",
+      "status": 200,
+      "sha256": "12e06278fccfac8f0a0c1fd0c79507525b9a36e5d5f69afce18244edaad1b651"
+    },
+    {
+      "slug": "podcast-studio",
+      "url": "https://github.com/wordflowlab/hetu-podcast-studio/blob/88484d2d1de2c44263b4062e8e5825e4f640a519/docs/research/release-acceptance.json",
+      "status": 200,
+      "sha256": "699a1cb6e8a8a3c92bf6d5266d157481eb0f2fe9e8c318bc2521d9f083cb7c95"
+    },
+    {
+      "slug": "podcast-studio",
+      "url": "https://github.com/wordflowlab/hetu-podcast-studio/blob/88484d2d1de2c44263b4062e8e5825e4f640a519/CAPABILITIES.md",
+      "status": 200,
+      "sha256": "ca69026790f676be3ed4d31119188b1ef5d34b583aff8600fd70de0e4514b504"
+    },
+    {
+      "slug": "podcast-studio",
+      "url": "https://github.com/wordflowlab/hetu-podcast-studio/tree/88484d2d1de2c44263b4062e8e5825e4f640a519/docs",
+      "status": 200,
+      "sha256": "0698d4e0d9ef46c4a2fc110608d7d91595fc7b2052eed5731124db0d06d0d939"
+    }
+  ],
+  "limits": [
+    "专业实测范围为macOS arm64；Windows/Linux专业实机与原生窗口材质未验证",
+    "原创虚构采访文字和合成音画，不含真人采访语音，不认证历史事实或作品品质",
+    "本机大音频测试回读路由错误修复后，正式完整旅程在独立macOS运行器通过；本机一次结果未知沿原键恢复及退出清理超时保留，不计作整个本机旅程通过",
+    "共享/Applications/Hetu.app未替换；未执行外发、付费、正文采纳、定稿或对外媒体发布"
+  ]
+}

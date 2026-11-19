@@ -65,3 +65,6 @@ Skills 和客户端接入包安装在你使用的 Agent 环境里，为它提供
 
 
 从自由片段到不同读法，见[灯还亮着，下一段怎么写](/blog/fragments-and-readings/)。
+
+
+从采访原片到纸剪与声音，见[两段证词，两种听法](/blog/accounts-and-listening/)。
