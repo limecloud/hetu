@@ -126,19 +126,35 @@ fn video_is_independent_and_keeps_cas_history_and_exact_type_boundaries() {
             .any(|item| item["kind"] == "video_episode")
     );
     assert!(
-        handoff["limitations"]
+        !handoff["limitations"]
             .as_array()
             .unwrap()
             .iter()
             .any(|item| item == "video_media_task_required")
     );
-    assert!(
-        handoff["direct_actions"]
-            .as_array()
-            .unwrap()
-            .iter()
-            .any(|item| item["name"] == "hetu.video.episodes.get")
-    );
+    for name in [
+        "hetu.video.episodes.get",
+        "hetu.video.media.get",
+        "hetu.video.feedback.list",
+        "hetu.video.delivery.preview",
+    ] {
+        assert!(
+            handoff["direct_actions"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|item| item["name"] == name)
+        );
+    }
+    for name in ["hetu.video.media.save", "hetu.video.feedback.save"] {
+        assert!(
+            handoff["proposal_actions"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|item| item["name"] == name)
+        );
+    }
     let stale = json!({"project_ref":reference,"title":"不能覆盖","brief":"","archived":false,"operation_key":"stale"});
     assert_eq!(
         call(&k, "video.projects.update", stale)["error"]["code"],

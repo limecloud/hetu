@@ -6,6 +6,7 @@
 - 执行前发现：`hetu --client codex collaboration inspect`，按返回的真实 Schema、精确 `management_ref` 或 `task_ref` 操作。
 - 无窗口查询：CLI 使用 `hetu --client codex call hetu.capabilities.map --input -`；MCP 使用 `hetu_get_capability_map`，支持 group、action、skill 筛选与分页。
 - AI 完整索引：[contracts/capability-map.json](../contracts/capability-map.json)。其中包含输入 Schema、MCP profile、Skill 源文件和恢复动作。
+- 默认产品：小说、剧本及视频基础能力随应用提供，无需额外创作插件；`hetu.baseline.inspect`核对合同，装配、业务及创作品质分别验收。
 - 维护边界：本清单只维护宿主能力及插件发现入口；各插件自行维护功能清单和 manifest，AI按安装包继续发现，不在宿主重复登记插件功能。
 - 插件公共服务：SDK提供受管项目适配、固定来源与原操作恢复；桌面提供固定素材预览、派生Blob媒体播放、Markdown／JSON／HTML固定对象分块导出，以及SRT／VTT／ASS／TXT／LRC派生文件保存。合同见[开放宿主SDK](plugin/27-开放宿主SDK与核心能力审计.md)，专业Schema仍由插件维护；定向机器调用仅核验本包与依赖闭包；已安装包始终核验实际字节摘要。
 - 插件选择：[官网插件中心](https://hetu.limeai.run/plugins/)展示来源、发行与包内功能清单；目录不代表本机安装状态，执行仍需重新发现。开发与上架见[插件23](plugin/23-插件发布与上架指南.md)。
@@ -34,7 +35,7 @@
 | 功能领域 | Skill | 动作数 | 作者入口缺口 | 专项已验证 |
 | --- | --- | ---: | ---: | ---: |
 | 能力导航与Review | hetu-setup | 2 | 0 | 0 |
-| 接入与恢复 | hetu-setup | 4 | 0 | 0 |
+| 接入与恢复 | hetu-setup | 8 | 0 | 0 |
 | 设定与规则 | hetu-outline | 6 | 0 | 0 |
 | 章节、正文与定稿 | hetu-import、hetu-manage | 16 | 0 | 0 |
 | 参考稿与采纳 | hetu-draft | 6 | 0 | 0 |
@@ -42,10 +43,10 @@
 | 剧本与改编 | hetu-drama | 18 | 0 | 0 |
 | 审核与返工 | hetu-revise | 5 | 0 | 0 |
 | 文稿版本与协作 | hetu-manage | 20 | 0 | 0 |
-| 图片与素材 | hetu-artwork、hetu-import | 10 | 0 | 0 |
+| 图片与素材 | hetu-artwork、hetu-import | 11 | 0 | 0 |
 | 小说资料与目录 | hetu-book-profile | 5 | 0 | 0 |
 | 新建与创作库接纳 | hetu-book-create | 6 | 0 | 2 |
-| 创作任务与接续 | hetu-setup | 9 | 1 | 0 |
+| 创作任务与接续 | hetu-setup | 10 | 1 | 0 |
 | 局部选择 | hetu-setup | 2 | 0 | 0 |
 | 封面 | hetu-cover、hetu-import | 9 | 2 | 0 |
 | 导出与交付 | hetu-manage | 3 | 0 | 0 |
@@ -57,15 +58,16 @@
 | 按需上下文 | hetu-setup | 3 | 0 | 0 |
 | 模型计划与费用 | hetu-setup | 8 | 0 | 0 |
 | 共享固定方案 | hetu-manage | 7 | 0 | 0 |
-| 本机设置与套件安装 | hetu-manage | 6 | 0 | 6 |
+| 本机设置与套件安装 | hetu-manage | 7 | 0 | 6 |
 | 作品读取与关联 | hetu-manage | 7 | 0 | 0 |
-| 视频工程 | hetu-video | 7 | 0 | 0 |
+| 视频工程 | hetu-video | 13 | 0 | 0 |
 | 整书导入与恢复 | hetu-import | 3 | 0 | 0 |
 | 插件授权 | hetu-manage | 6 | 0 | 3 |
 | 模型渠道设置 | hetu-manage | 3 | 0 | 0 |
 | 插件安装与生命周期 | hetu-manage | 6 | 0 | 4 |
 | 运行与方法诊断 | hetu-setup | 1 | 0 | 0 |
 | 任务接续与交接 | hetu-setup | 2 | 0 | 0 |
+| 随包基础能力 | hetu-setup | 1 | 0 | 0 |
 
 ## AI 按需查询
 
@@ -122,6 +124,10 @@ MCP 对应调用 `hetu_get_capability_map`，参数同上。具体动作查询�
 | 列出当前授权工作区与内容包<br>`hetu.workspaces.list` | `hetu_list_workspace` (workspace) | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 | 查询原操作回执<br>`hetu.operations.get` | `hetu_read_task_operation` (stable) | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 | 从当前对象和实际能力生成页面交接<br>`hetu.handoffs.get` | `hetu_get_page_handoff` (workspace/stable) | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
+| 按任务查找随包共同方法、固定摘要与读取入口<br>`hetu.methods.list` | 无直接工具映射 | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
+| 按固定摘要分块读取共同方法；不读取任意本机文件<br>`hetu.methods.read` | 无直接工具映射 | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
+| 按精确任务分页查询执行成功、失败、取消和未知状态；不读取请求正文<br>`hetu.task_executions.list` | 无直接工具映射 | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
+| 核对执行尝试与终态，沿固定原操作或模型计划恢复<br>`hetu.task_executions.get` | 无直接工具映射 | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 
 ### 设定与规则
 
@@ -253,6 +259,7 @@ MCP 对应调用 `hetu_get_capability_map`，参数同上。具体动作查询�
 | 分页查询乐律与视觉线索<br>`hetu.cues.list` | `hetu_managed_cues_list` (stable) | [hetu-artwork](../tools/hetu-skills/base/skills/hetu-artwork/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 | 预览当前作品的图片参考任务，不外发内容<br>`hetu.image_tasks.preview_prompt` | `hetu_preview_image_task` (workspace) | [hetu-artwork](../tools/hetu-skills/base/skills/hetu-artwork/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 | 准备当前作品的图片参考任务，不调用模型或批准费用<br>`hetu.image_tasks.prepare` | `hetu_prepare_image_task` (workspace)<br>固定方案 | [hetu-artwork](../tools/hetu-skills/base/skills/hetu-artwork/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
+| 分块读取当前作品固定素材原字节<br>`hetu.assets.read_blob` | 无直接工具映射 | [hetu-artwork](../tools/hetu-skills/base/skills/hetu-artwork/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 
 ### 小说资料与目录
 
@@ -272,15 +279,15 @@ MCP 对应调用 `hetu_get_capability_map`，参数同上。具体动作查询�
 | 保存作者的筹备想法和所选资料<br>`hetu.creation_projects.save` | `hetu_save_creation_project` (stable) | [hetu-book-create](../tools/hetu-skills/base/skills/hetu-book-create/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 | 从筹备创建独立小说并保存来源<br>`hetu.creation_projects.create_novel` | `hetu_create_novel_from_project` (stable) | [hetu-book-create](../tools/hetu-skills/base/skills/hetu-book-create/SKILL.md) | 按任务或读取范围执行 | 已验证；安装已发现 |
 | 将筹备资料创建为独立剧本作品<br>`hetu.creation_projects.create_drama` | `hetu_create_drama_from_project` (stable) | [hetu-book-create](../tools/hetu-skills/base/skills/hetu-book-create/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
-| 开始独立筹备，预留全新受管作品目录，不获得既有作品权限<br>`hetu.creation_projects.create` | `hetu_begin_creation` (stable) | [hetu-book-create](../tools/hetu-skills/base/skills/hetu-book-create/SKILL.md) | 按任务或读取范围执行 | 已验证；安装已发现 |
+| 开始独立小说、剧本或视频筹备，预留全新受管目录，不获得既有作品权限<br>`hetu.creation_projects.create` | `hetu_begin_creation` (stable) | [hetu-book-create](../tools/hetu-skills/base/skills/hetu-book-create/SKILL.md) | 按任务或读取范围执行 | 已验证；安装已发现 |
 | 将筹备创建为独立视频项目，无小说或剧本前置<br>`hetu.creation_projects.create_video` | `hetu_create_video_from_project` (stable) | [hetu-book-create](../tools/hetu-skills/base/skills/hetu-book-create/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 
 ### 创作任务与接续
 
 | 功能／CLI 动作 | MCP 入口 | Skill | 范围／决定 | 状态 |
 | --- | --- | --- | --- | --- |
-| 预览固定范围的外部协作提示词<br>`hetu.creative_tasks.preview_prompt` | `hetu_preview_creative_task` (stable/workspace) | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
-| 准备外部任务，不发送生成请求<br>`hetu.creative_tasks.prepare` | `hetu_prepare_creative_task` (stable)<br>固定方案 | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
+| 预览小说构思、书名简介、大纲、章节起草、改稿、剧本和资料整理的固定任务与提示词<br>`hetu.creative_tasks.preview_prompt` | `hetu_preview_creative_task` (stable/workspace) | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
+| 准备小说构思、书名简介、大纲、章节起草、改稿、剧本和资料整理的固定协作任务<br>`hetu.creative_tasks.prepare` | `hetu_prepare_creative_task` (stable)<br>固定方案 | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
 | 读取指定任务与参考结果<br>`hetu.creative_tasks.get` | `hetu_read_creative_task` (task/stable) | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 | 列出本范围的外部任务<br>`hetu.creative_tasks.list` | `hetu_list_creative_tasks` (stable) | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 | 向获权任务提交独立参考成果<br>`hetu.creative_tasks.submit_result` | `hetu_submit_creative_result` (task) | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
@@ -288,6 +295,7 @@ MCP 对应调用 `hetu_get_capability_map`，参数同上。具体动作查询�
 | 关闭本机任务跟踪并撤销后续任务访问<br>`hetu.creative_tasks.close` | 无直接工具映射 | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 仅作者入口；机器路径缺口须逐项处理 | 作者入口缺口；安装待核对 |
 | 记录作者已复制固定任务提示词<br>`hetu.creative_tasks.mark_copied` | 无直接工具映射 | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 宿主剪贴板状态；机器执行不要求复制提示词。 | 宿主边界；安装待核对 |
 | 分块读取固定文字候选；不跟随新版<br>`hetu.creative_tasks.read_candidate` | `hetu_read_task_candidate` (task/stable) | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
+| 分层核对固定候选、专业Owner检查覆盖与反证、作者决定；不以Agent说明或候选存在宣称完成<br>`hetu.creative_tasks.assess` | 无直接工具映射 | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 
 ### 局部选择
 
@@ -409,6 +417,7 @@ MCP 对应调用 `hetu_get_capability_map`，参数同上。具体动作查询�
 | --- | --- | --- | --- | --- |
 | 读取可交接的本机偏好与套件目录<br>`hetu.local_settings.get` | `hetu_local_settings_get` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 独立本机固定方案；record_decision 后 execute | 已验证；安装已发现 |
 | 核对指定客户端的套件文件、版本及登记，不证明当前会话已加载<br>`hetu.local_settings.inspect_suite` | `hetu_local_settings_inspect_suite` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 独立本机固定方案；record_decision 后 execute | 已验证；安装已发现 |
+| 核对所选Agent的机器连接包登记与固定缓存，不推定当前GUI会话已加载<br>`hetu.local_settings.inspect_connection` | 无直接工具映射 | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 独立本机固定方案；record_decision 后 execute | 源码已连线；安装待核对 |
 | 准备本机设置或套件选择安装方案<br>`hetu.local_settings.prepare` | `hetu_local_settings_prepare` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 独立本机固定方案；record_decision 后 execute | 已验证；安装已发现 |
 | 读取当前客户端本机方案与执行结果<br>`hetu.local_settings.get_operation` | `hetu_local_settings_get_operation` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 独立本机固定方案；record_decision 后 execute | 已验证；安装已发现 |
 | 执行作者批准的确切本机方案<br>`hetu.local_settings.execute` | `hetu_local_settings_execute` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 独立本机固定方案；record_decision 后 execute | 已验证；安装已发现 |
@@ -437,6 +446,12 @@ MCP 对应调用 `hetu_get_capability_map`，参数同上。具体动作查询�
 | 读取固定视频分集<br>`hetu.video.episodes.get` | `hetu_read_video_episode` (stable) | [hetu-video](../tools/hetu-skills/base/skills/hetu-video/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 | 更新视频分集资料或归档<br>`hetu.video.episodes.update` | 固定方案 | [hetu-video](../tools/hetu-skills/base/skills/hetu-video/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
 | 重排完整视频分集目录<br>`hetu.video.episodes.reorder` | 固定方案 | [hetu-video](../tools/hetu-skills/base/skills/hetu-video/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
+| 登记分集固定媒体与声明时基，接收不代表选用<br>`hetu.video.media.save` | 固定方案 | [hetu-video](../tools/hetu-skills/base/skills/hetu-video/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
+| 读取分集固定媒体与素材<br>`hetu.video.media.get` | 无直接工具映射 | [hetu-video](../tools/hetu-skills/base/skills/hetu-video/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
+| 分页读取当前分集固定成果<br>`hetu.video.media.list` | 无直接工具映射 | [hetu-video](../tools/hetu-skills/base/skills/hetu-video/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
+| 保存固定媒体上的公开区间意见<br>`hetu.video.feedback.save` | 固定方案 | [hetu-video](../tools/hetu-skills/base/skills/hetu-video/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
+| 读取固定媒体公开意见，不迁移旧坐标<br>`hetu.video.feedback.list` | 无直接工具映射 | [hetu-video](../tools/hetu-skills/base/skills/hetu-video/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
+| 核对选择的固定媒体并准备基础文件交付清单<br>`hetu.video.delivery.preview` | 无直接工具映射 | [hetu-video](../tools/hetu-skills/base/skills/hetu-video/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 
 ### 整书导入与恢复
 
@@ -487,7 +502,13 @@ MCP 对应调用 `hetu_get_capability_map`，参数同上。具体动作查询�
 | 功能／CLI 动作 | MCP 入口 | Skill | 范围／决定 | 状态 |
 | --- | --- | --- | --- | --- |
 | 读取同一任务的接续记录与固定引用<br>`hetu.task_checkpoint.get` | `hetu_get_task_checkpoint` (task/stable) | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
-| CAS保存任务接续说明；不改变作者稿与决定<br>`hetu.task_checkpoint.save` | `hetu_save_task_checkpoint` (task/stable) | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
+| CAS保存计划、逐条依据与假设、交接及陷阱；不改变作者稿与决定<br>`hetu.task_checkpoint.save` | `hetu_save_task_checkpoint` (task/stable) | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
+
+### 随包基础能力
+
+| 功能／CLI 动作 | MCP 入口 | Skill | 范围／决定 | 状态 |
+| --- | --- | --- | --- | --- |
+| 核对随包基础能力合同，无作品和无插件可查询<br>`hetu.baseline.inspect` | 无直接工具映射 | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 
 ## 插件发现入口
 

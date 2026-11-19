@@ -203,7 +203,13 @@
         "hetu.runtime.inspect",
         "hetu.task_checkpoint.get",
         "hetu.task_checkpoint.save",
-        "hetu.creative_tasks.read_candidate"
+        "hetu.creative_tasks.read_candidate",
+        "hetu.methods.list",
+        "hetu.methods.read",
+        "hetu.task_executions.list",
+        "hetu.task_executions.get",
+        "hetu.creative_tasks.assess",
+        "hetu.baseline.inspect"
       ],
       "entry": "../skills/hetu-setup/SKILL.md"
     },
@@ -357,7 +363,8 @@
         "hetu.cues.get",
         "hetu.cues.list",
         "hetu.image_tasks.preview_prompt",
-        "hetu.image_tasks.prepare"
+        "hetu.image_tasks.prepare",
+        "hetu.assets.read_blob"
       ],
       "entry": "../skills/hetu-artwork/SKILL.md"
     },
@@ -396,6 +403,7 @@
         "hetu.agent_operations.execute",
         "hetu.local_settings.get",
         "hetu.local_settings.inspect_suite",
+        "hetu.local_settings.inspect_connection",
         "hetu.local_settings.prepare",
         "hetu.local_settings.get_operation",
         "hetu.local_settings.execute",
@@ -464,7 +472,13 @@
         "hetu.video.episodes.create",
         "hetu.video.episodes.get",
         "hetu.video.episodes.update",
-        "hetu.video.episodes.reorder"
+        "hetu.video.episodes.reorder",
+        "hetu.video.media.save",
+        "hetu.video.media.get",
+        "hetu.video.media.list",
+        "hetu.video.feedback.save",
+        "hetu.video.feedback.list",
+        "hetu.video.delivery.preview"
       ],
       "entry": "../skills/hetu-video/SKILL.md"
     }

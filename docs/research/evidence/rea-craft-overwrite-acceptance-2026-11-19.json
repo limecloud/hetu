@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-11-18T16:02:45.820608+00:00",
+  "status": "installed_and_current_conversation_verified",
+  "version": "0.12.4",
+  "methods_version": "0.3.12",
+  "scope": "本对话直接调用公开MCP；完整包覆盖安装与原任务接续",
+  "source": {
+    "snapshot": "output/conversation-direct-20261118-1795008348154/recovered-source",
+    "sha256": "5dedef23cb8ccab4aa3558ab75272308248548458d2b55016250237f8fe2d419",
+    "official_increment_commit": "3617eb7cabeda135f46d475eff28488d470f3bbe",
+    "shared_development_included": false
+  },
+  "package": {
+    "manifest": "output/conversation-direct-20261118-1795008348154/packages-v0124/hetu-dev-YeqYZv/manifest.json",
+    "kind": "electron-local-install-package",
+    "signing": "ad-hoc-development",
+    "artifact_count": 2797,
+    "manifest_sha256": "ae23acb3a11d53489a9110554f3da7c0eb226be09f03a4ca2c6aa5851f9871c4"
+  },
+  "fixes": [
+    "本机覆盖模式复用锁定Electron，避免重复下载阻塞",
+    "管理评估验证完整TaskRef摘要，并保留候选和专业覆盖引用",
+    "组合Schema共享资源只声明一次，拆分分支时保留定义",
+    "重开任务补齐候选引用摘要",
+    "构建摘要包含Core构建脚本",
+    "并发运行诊断测试使用固定方法目录核对快照"
+  ],
+  "validation": {
+    "rust_collaboration_and_continuation": {
+      "passed": 18,
+      "failed": 0,
+      "ignored": 0,
+      "log": "output/conversation-direct-20261118-1795008348154/v0124-regression.log"
+    },
+    "subtitle_artifact": {
+      "passed": 5,
+      "failed": 0
+    },
+    "plugin_dependency_merge": {
+      "passed": 16,
+      "failed": 0
+    },
+    "docs": "passed",
+    "capability_map": "passed",
+    "methods_sync": "passed",
+    "final_document_check": {
+      "documents": 88,
+      "errors": 0
+    }
+  },
+  "limits": [
+    "当前原生MCP工具连接仍是旧长驻进程；本轮通过本对话MCP SDK直接连接实际可执行文件测试",
+    "本次为本地ad-hoc开发签名，未发布npm或GitHub",
+    "未重测Windows/Linux运行、付费模型生成或全部GUI旅程",
+    "专业规则结果不等于文学判断或作者采纳"
+  ],
+  "coordination": {
+    "official_v0124_preserved": "output/conversation-direct-20261118-1795008348154/backup-official-v0124/Hetu.app",
+    "shared_build_and_install_collisions": "preserved_receipts_and_rebuilt_from_isolated_source_and_target",
+    "package_only_direct_tests": [
+      "reopen_same_candidate_with_exact_task_digest",
+      "use_returned_candidate_ref_without_manual_patch",
+      "compile_task_branch_and_combined_schema_with_Ajv",
+      "read_actual_professional_report_keep_author_decision_pending"
+    ],
+    "installation_window": "parallel_official_acceptance_completed_and_released"
+  },
+  "installation": {
+    "path": "/Applications/Hetu.app",
+    "version": "0.12.4",
+    "bundle_id": "run.limeai.hetu",
+    "signing": "ad-hoc-development",
+    "user_data_touched": false,
+    "official_v0124_preserved": "output/conversation-direct-20261118-1795008348154/backup-official-v0124/Hetu.app",
+    "verification": "output/conversation-direct-20261118-1795008348154/v0124-installed-verification.json",
+    "app_process_running": true,
+    "final_recheck": "output/conversation-direct-20261118-1795008348154/v0124-installed-final-recheck.json"
+  },
+  "direct_session": {
+    "method": "当前主Agent通过持久MCP SDK逐次选择并调用公开工具，未运行预排业务场景脚本",
+    "calls": 94,
+    "assertions_passed": 43,
+    "assertions_failed": 0,
+    "superseded_assertions": [
+      {
+        "name": "旧结构裁剪被拒绝",
+        "passed": false,
+        "superseded_by": "兼容旧字段后验证历史完整性",
+        "reason": "首个裁剪样例遗漏旧版依据字段，先被输入Schema拒绝。"
+      },
+      {
+        "name": "修复后原任务与原候选保持不变",
+        "passed": false,
+        "resolution": "最终0.12.4安装版直接恢复同一完整候选引用通过。",
+        "superseded_by": "最终安装恢复同一完整候选引用"
+      },
+      {
+        "name": "安装版返回同一返工稿原文",
+        "passed": false,
+        "superseded_by": "按分块字段核对参考稿原文",
+        "reason": "首次断言使用了content字段；实际合同在content_page返回完整固定分块。"
+      }
+    ],
+    "raw_receipts": "output/conversation-direct-20261118-1795008348154/receipts.json",
+    "receipts_sha256": "582b15d05844a047a9e9cc00a2264f9f84e832260f28c0f1bff0a6431f885166",
+    "assertions": "output/conversation-direct-20261118-1795008348154/assertions.json",
+    "assertions_sha256": "47623cd67f589b9dd68219b962c3d99d470b8ae28523ee47ae896ed793496a5d",
+    "last_installed_runtime": "0.12.4",
+    "bundled_methods": "0.3.12",
+    "plugin_count": 24,
+    "plugin_state_sha256_unchanged": true
+  },
+  "cli": {
+    "status": "succeeded",
+    "professional": "fixed_reports_read",
+    "author_decision": "awaiting_author",
+    "receipt": "output/conversation-direct-20261118-1795008348154/final-installed-cli-assessment.json"
+  },
+  "coverage": [
+    "按关键词筛选与固定筛选分页，改筛选摘要拒绝",
+    "共同方法按固定摘要分块读取，错误摘要拒绝",
+    "覆盖与重开沿原TaskRef和原候选继续",
+    "参考稿同键重放不重复，固定反馈同稿返工",
+    "旧CAS拒绝并可回读失败执行",
+    "稳定假设支持/反证与问题open到resolved，旧结构裁剪拒绝",
+    "固定交付、专业Owner覆盖、作者决定独立",
+    "真实审校插件固定候选读取与UTF-8词项范围诊断",
+    "任务未固定专业报告拒绝，精确管理授权允许",
+    "错误任务摘要拒绝，完整Schema与分支Ajv可消费",
+    "执行成功/失败目录、固定尝试及原操作恢复",
+    "24款插件状态总摘要保持"
+  ]
+}

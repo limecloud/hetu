@@ -416,6 +416,9 @@
               "work_ref"
             ]
           }
+        },
+        {
+          "$ref": "#/$defs/professional_ref"
         }
       ]
     },
@@ -1334,7 +1337,8 @@
         "source_format": {
           "enum": [
             "markdown",
-            "fountain"
+            "fountain",
+            "json"
           ]
         },
         "sha256": {
@@ -2956,7 +2960,8 @@
           "enum": [
             "document",
             "blueprint",
-            "resource"
+            "resource",
+            "plugin_object"
           ]
         }
       },
@@ -3053,7 +3058,8 @@
           "enum": [
             "document",
             "blueprint",
-            "resource"
+            "resource",
+            "plugin_object"
           ]
         },
         "query": {
@@ -3111,7 +3117,8 @@
                 "enum": [
                   "document",
                   "blueprint",
-                  "resource"
+                  "resource",
+                  "plugin_object"
                 ]
               },
               "fixed_ref": {
@@ -3138,7 +3145,8 @@
               "source_kind": {
                 "enum": [
                   "author",
-                  "resource"
+                  "resource",
+                  "plugin"
                 ]
               }
             },
@@ -3496,6 +3504,9 @@
             "properties": {
               "kind": {
                 "enum": [
+                  "observation",
+                  "derivation",
+                  "hypothesis",
                   "inference",
                   "proposal",
                   "question"
@@ -3511,12 +3522,226 @@
                   "$ref": "#/$defs/context_ref"
                 },
                 "maxItems": 20
+              },
+              "working_copy_refs": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/working_ref"
+                },
+                "maxItems": 20
+              },
+              "feedback_refs": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/feedback_ref"
+                },
+                "maxItems": 20
+              },
+              "prediction": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              "status": {
+                "enum": [
+                  "testing",
+                  "supported",
+                  "refuted",
+                  "abandoned"
+                ]
+              },
+              "statement_id": {
+                "type": "string",
+                "pattern": "^statement_[0-9a-f-]{36}$"
+              },
+              "supporting": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/checkpoint_evidence"
+                },
+                "uniqueItems": true,
+                "maxItems": 20
+              },
+              "contradicting": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/checkpoint_evidence"
+                },
+                "uniqueItems": true,
+                "maxItems": 20
               }
             },
             "required": [
               "kind",
               "text",
               "context_refs"
+            ],
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "enum": [
+                        "observation",
+                        "derivation"
+                      ]
+                    }
+                  }
+                },
+                "then": {
+                  "anyOf": [
+                    {
+                      "required": [
+                        "context_refs"
+                      ],
+                      "properties": {
+                        "context_refs": {
+                          "minItems": 1
+                        }
+                      }
+                    },
+                    {
+                      "required": [
+                        "working_copy_refs"
+                      ],
+                      "properties": {
+                        "working_copy_refs": {
+                          "minItems": 1
+                        }
+                      }
+                    },
+                    {
+                      "required": [
+                        "feedback_refs"
+                      ],
+                      "properties": {
+                        "feedback_refs": {
+                          "minItems": 1
+                        }
+                      }
+                    },
+                    {
+                      "required": [
+                        "supporting"
+                      ],
+                      "properties": {
+                        "supporting": {
+                          "minItems": 1
+                        }
+                      }
+                    },
+                    {
+                      "required": [
+                        "contradicting"
+                      ],
+                      "properties": {
+                        "contradicting": {
+                          "minItems": 1
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "hypothesis"
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "prediction",
+                    "status"
+                  ],
+                  "allOf": [
+                    {
+                      "if": {
+                        "properties": {
+                          "status": {
+                            "enum": [
+                              "supported",
+                              "refuted"
+                            ]
+                          }
+                        }
+                      },
+                      "then": {
+                        "anyOf": [
+                          {
+                            "required": [
+                              "context_refs"
+                            ],
+                            "properties": {
+                              "context_refs": {
+                                "minItems": 1
+                              }
+                            }
+                          },
+                          {
+                            "required": [
+                              "working_copy_refs"
+                            ],
+                            "properties": {
+                              "working_copy_refs": {
+                                "minItems": 1
+                              }
+                            }
+                          },
+                          {
+                            "required": [
+                              "feedback_refs"
+                            ],
+                            "properties": {
+                              "feedback_refs": {
+                                "minItems": 1
+                              }
+                            }
+                          },
+                          {
+                            "required": [
+                              "supporting"
+                            ],
+                            "properties": {
+                              "supporting": {
+                                "minItems": 1
+                              }
+                            }
+                          },
+                          {
+                            "required": [
+                              "contradicting"
+                            ],
+                            "properties": {
+                              "contradicting": {
+                                "minItems": 1
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "else": {
+                  "not": {
+                    "anyOf": [
+                      {
+                        "required": [
+                          "prediction"
+                        ]
+                      },
+                      {
+                        "required": [
+                          "status"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
             ]
           },
           "maxItems": 30
@@ -3555,6 +3780,161 @@
             ]
           },
           "maxItems": 20
+        },
+        "handoff": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "summary": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            },
+            "pitfalls": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              "maxItems": 10
+            }
+          },
+          "required": [
+            "summary",
+            "pitfalls"
+          ]
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "issue_id": {
+                "type": "string",
+                "pattern": "^issue_[0-9a-f-]{36}$"
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              "scope": {
+                "enum": [
+                  "task",
+                  "professional"
+                ]
+              },
+              "status": {
+                "enum": [
+                  "open",
+                  "resolved",
+                  "abandoned",
+                  "referred"
+                ]
+              },
+              "statement_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^statement_[0-9a-f-]{36}$"
+                },
+                "uniqueItems": true,
+                "maxItems": 30
+              },
+              "resolution": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/checkpoint_evidence"
+                },
+                "maxItems": 20
+              },
+              "owner_context_ref": {
+                "$ref": "#/$defs/context_ref"
+              },
+              "owner_item_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              }
+            },
+            "required": [
+              "issue_id",
+              "text",
+              "scope",
+              "status",
+              "statement_ids",
+              "resolution"
+            ],
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "scope": {
+                      "const": "professional"
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "owner_context_ref",
+                    "owner_item_id"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "referred"
+                    },
+                    "resolution": {
+                      "maxItems": 0
+                    }
+                  }
+                },
+                "else": {
+                  "not": {
+                    "anyOf": [
+                      {
+                        "required": [
+                          "owner_context_ref"
+                        ]
+                      },
+                      {
+                        "required": [
+                          "owner_item_id"
+                        ]
+                      }
+                    ]
+                  },
+                  "properties": {
+                    "status": {
+                      "enum": [
+                        "open",
+                        "resolved",
+                        "abandoned"
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "status": {
+                      "const": "resolved"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "resolution": {
+                      "minItems": 1
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "maxItems": 30
         }
       },
       "required": [
@@ -3692,6 +4072,375 @@
       "required": [
         "task_ref",
         "candidate_ref"
+      ]
+    },
+    "attempt_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "type": "string",
+          "pattern": "^attempt_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "sha256"
+      ]
+    },
+    "execution_list_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        },
+        "action": {
+          "type": "string",
+          "pattern": "^hetu\\.[a-z_]+(?:\\.[a-z_]+)+$"
+        },
+        "status": {
+          "enum": [
+            "succeeded",
+            "partial",
+            "pending",
+            "blocked",
+            "failed",
+            "cancelled",
+            "unknown"
+          ]
+        },
+        "input_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "cursor": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      },
+      "required": [
+        "task_ref"
+      ]
+    },
+    "execution_get_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        },
+        "attempt_ref": {
+          "$ref": "#/$defs/attempt_ref"
+        }
+      },
+      "required": [
+        "task_ref",
+        "attempt_ref"
+      ]
+    },
+    "execution_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "attempt_id": {
+          "type": "string",
+          "pattern": "^attempt_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        },
+        "request_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "access_digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "action": {
+          "type": "string",
+          "pattern": "^hetu\\.[a-z_]+(?:\\.[a-z_]+)+$"
+        },
+        "effect": {
+          "enum": [
+            "derive",
+            "draft",
+            "read",
+            "submit",
+            "write"
+          ]
+        },
+        "input_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "phase": {
+          "enum": [
+            "started",
+            "finished"
+          ]
+        },
+        "status": {
+          "enum": [
+            "succeeded",
+            "partial",
+            "pending",
+            "blocked",
+            "failed",
+            "cancelled",
+            "unknown"
+          ]
+        },
+        "started_at": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "ended_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "elapsed_ms": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "error_code": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "result_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "operation_lookup": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}\\.json$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "operation_ref": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "operation_id": {
+                  "type": "string",
+                  "pattern": "^op_[0-9a-f-]{36}$"
+                },
+                "input_digest": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              },
+              "required": [
+                "operation_id",
+                "input_digest"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "plan_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^model_[0-9a-f-]{36}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "record_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "schema_version",
+        "attempt_id",
+        "task_ref",
+        "request_sha256",
+        "access_digest",
+        "action",
+        "effect",
+        "input_digest",
+        "phase",
+        "status",
+        "started_at",
+        "ended_at",
+        "elapsed_ms",
+        "error_code",
+        "result_sha256",
+        "operation_lookup",
+        "operation_ref",
+        "plan_id",
+        "record_sha256"
+      ]
+    },
+    "professional_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "plugin_object"
+        },
+        "work_ref": {
+          "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+        },
+        "owner_plugin_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)+$",
+          "maxLength": 120
+        },
+        "object_id": {
+          "type": "string",
+          "pattern": "^ext_[0-9a-f-]{36}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "kind",
+        "work_ref",
+        "owner_plugin_id",
+        "object_id",
+        "revision",
+        "sha256"
+      ]
+    },
+    "checkpoint_evidence": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "context"
+            },
+            "reference": {
+              "$ref": "#/$defs/context_ref"
+            }
+          },
+          "required": [
+            "kind",
+            "reference"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "working_copy"
+            },
+            "reference": {
+              "$ref": "#/$defs/working_ref"
+            }
+          },
+          "required": [
+            "kind",
+            "reference"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "feedback"
+            },
+            "reference": {
+              "$ref": "#/$defs/feedback_ref"
+            }
+          },
+          "required": [
+            "kind",
+            "reference"
+          ]
+        }
+      ]
+    },
+    "assess_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "task_ref": {
+          "$ref": "#/$defs/task_ref"
+        },
+        "candidate_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/candidate_ref"
+          },
+          "uniqueItems": true,
+          "maxItems": 4
+        },
+        "professional_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/professional_ref"
+          },
+          "uniqueItems": true,
+          "maxItems": 20
+        }
+      },
+      "required": [
+        "task_ref"
       ]
     }
   }

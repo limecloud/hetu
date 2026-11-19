@@ -49,6 +49,8 @@ jobs:
         run: python3 "tools/release-electron.py" --check
       - name: Install locked dependencies
         run: npm ci
+      - name: Install MCP App test browser
+        run: npx playwright install chromium
       - name: Verify tooling, Skills and shared resources
         run: |
           python3 -m unittest discover -s tests/tooling -v
@@ -61,6 +63,7 @@ jobs:
       - name: Test CLI launcher, plugins and Electron workbench
         run: |
           npm run test:cli
+          npm run test:task-view
           npm run test:plugins
           npm run test:e2e --workspace @hetu/desktop -- --grep-invert '独立开发应用'
       - name: Sign, notarize and package Electron

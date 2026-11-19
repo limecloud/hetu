@@ -1,6 +1,6 @@
 {
   "name": "hetu-urban-high-martial",
-  "version": "0.3.10",
+  "version": "0.3.12",
   "description": "河图洛书都市高武创作套件：任务流程与本题材方法，按作品选择安装",
   "skills": "./skills/",
   "category": "Productivity",

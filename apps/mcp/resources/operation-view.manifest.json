@@ -3,14 +3,16 @@
   "resource_uri": "ui://hetu/operation-view/1",
   "mime_type": "text/html;profile=mcp-app",
   "sdk": "@modelcontextprotocol/ext-apps@2.0.4",
-  "sha256": "3ef7db73f16feb1b04167236cb3627e98fde610cf5e3c91aba03d7ae44813d67",
-  "size_bytes": 609488,
+  "sha256": "e6e0ca17eb287ebdccc90ba8bea4ddb496b8108e036b8c0640c346e0e05eac01",
+  "size_bytes": 610913,
   "source_sha256": {
-    "src/operation.ts": "1660234b83f7eef7724421f6c28b689a47892ff4efaec6732d775cf397a3a857",
+    "src/host/openai.ts": "a545c4feb5e23dcb3cfeddc7ea927e6c31e4a046bc86fb16912c1cff424c7442",
+    "src/host/bridge.ts": "30aba8f1b0395c49436a9a4f057c690ac3c0395ec00a55d2e26ab4678904e2fa",
+    "src/operation.ts": "812a3029c75bf74679ba7c6a949d86f5bb78ba8569188539014f055cd8e2a843",
     "src/operation.css": "495a05aabf10999dda05313f6d3db27c295282e05820caced60b6a09fa03aeb5",
     "../../assets/styles/radix-workbench.css": "ccf9f4d25676a4225180128d05a3d0a9d26e92fa832fdccb7d80c4d52ee4b625",
-    "scripts/build.mjs": "6180679014f36e1bda81f1c251f7b37971be454361192d3ffb5592a5f4ea4207",
-    "package.json": "3079893cd71e67897e6d57c871858355554f16aede90eba9fa9619b0ba20f333",
+    "scripts/build.mjs": "15f1c4437e103918f012e975e400094400d391f8f0f056def2653879a75e8f40",
+    "package.json": "cb16231460af9ccaa3b2c0bf1d177824f0cee89fc545ff7bf3508f5fa58f8a2f",
     "THIRD-PARTY-NOTICES.txt": "64e64f33d6dd0f206ffa47b474d43ffd8df1fd295bc87ccf59428003892ac78b"
   }
 }

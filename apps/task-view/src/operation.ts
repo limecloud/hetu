@@ -1,8 +1,8 @@
-import { App } from "@modelcontextprotocol/ext-apps/app-with-deps";
+import { createAppHost } from "./host/bridge.ts";
 
 type RecordValue = Record<string, unknown>;
 type ToolResult = { structuredContent?: unknown; content?: { type: string; text?: string }[] };
-const app = new App({ name: "Hetu Luoshu operation review", version: "0.9.0" }, {});
+const app = createAppHost("Hetu Luoshu operation review");
 const root = document.getElementById("app")!;
 let locale = "zh-CN";
 let data: RecordValue | undefined;

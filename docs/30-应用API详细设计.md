@@ -1,5 +1,25 @@
 # 应用 API 详细设计
 
+## 默认基础能力与视频审阅入口
+
+`hetu.baseline.inspect`在无作品环境核对随包基础动作合同，不启动插件、不授予作品权限；CLI通过稳定call使用，MCP复用通用动作入口。基础清单由 `contracts/baseline.json` 唯一维护。
+
+| 动作 | 用途与边界 |
+| --- | --- |
+| `hetu.video.media.save` | 固定当前作品分集的已导入媒体、流时基、用途及前版；原键保存，不表示选用 |
+| `hetu.video.media.get` | 读取确切固定媒体及asset元数据 |
+| `hetu.video.media.list` | 在当前分集分页列出固定成果；集合变化拒绝旧游标 |
+| `hetu.video.feedback.save` | 保存确切媒体上的公开意见与可选半开区间，不代作者认可 |
+| `hetu.video.feedback.list` | 分页读取该固定媒体的意见，新版本不继承旧坐标 |
+| `hetu.video.delivery.preview` | 核对明确选择的固定媒体，返回基础文件清单与读取依据，不宣称专业工程完整 |
+
+写动作经现有管理方案准备、真实会话决定、原Agent执行；作者基础工作面使用独立可信窄通道。当前WorkRef、分集和素材须同属一个视频作品，错误摘要及前版跨集拒绝。固定字节读取通过 `hetu.assets.read_blob`；签名核验、技术解码、实际观看和作者认可分开表达。输入Schema为执行时唯一字段合同。
+
+`hetu.handoffs.get`的媒体对象交接在精确作品范围内核对`media_ref`归属及固定摘要；`workflow.author_decision`指向`hetu.agent_operations.record_decision`，与准备、执行及原操作恢复共用已有合同，不以返回桌面审核作为机器执行前置。
+
+桌面文件导出复用既有私有媒体通道：打开时核对固定素材及完整摘要，分块沿同一只读句柄读取并检查文件变化，落盘后再次核对完整摘要和当前交付权利，成功才替换目标文件。公共 `hetu.assets.read_blob` 为独立有界读取，每次核验固定文件；私有句柄不进入renderer或插件。
+
+
 独立小说、剧本、视频及全生命周期制作的新增合同见[第26节](#26-独立创作对象与视频用例合同)。已发布动作以实际能力目录及`contracts/`为准，设计用例名称不自动成为可调用工具。
 
 API为共享应用用例合同，供Electron GUI、独立CLI、MCP、插件和局部页面适配；现有原生GUI／Swift CLI作为迁移对照。V1不引入必装HTTP后端，桌面使用JSON-RPC 2.0私有stdio，传输与信任边界见[39](39-Electron与插件优先重构架构.md)。Node.js 页面通过受限本机 IPC 消费白名单用例，不能绕过 Core 直接写文件。领域见[28](28-领域设计与边界上下文.md)，字段语义见[29](29-数据字典与Schema设计.md)。
@@ -726,6 +746,16 @@ MCP Apps 仅在真实宿主能力、用户同意和当前会话范围内使用�
 这些是设计语义短名，发布时按13的 AXI 命名空间映射并登记精确错误 Schema。接入、权限、上下文、工作副本、反馈、原键恢复和真实宿主证据必须一同发布，不能只增加工具名或页面按钮。
 
 
+### 23.6 双入口会话与业务执行
+
+会话建立／恢复、发送、订阅事件、答复引擎请求、停止和关闭属于桌面会话宿主的控制面，合同归[39第4.3节](39-Electron与插件优先重构架构.md#43-agent-会话宿主)。这些控制不授予作品权限，也不因与可信桌面同进程就取得作者身份；本节不新增或暗示已有公开工具名。
+
+嵌入Agent和外部Agent均通过独立CLI／MCP执行已发布业务动作，携带各自主体获权的精确management_ref或task_ref；Core继续检查固定输入、CAS、范围、撤权及原操作。桌面可信作者决定使用原作者通道，不通过引擎工具审批、聊天答复或普通MCP App消息生成批准。发送前预览确切上下文，附加资源不自动扩大任务输入或授权。
+
+跨入口接续先恢复第23.5节的业务事实，再按引擎实际能力恢复会话或建立新会话。消息已受理、引擎轮次完成、Core成果保存及作者决定分别返回证据；无法核对投递时保留未知，先查原会话和原操作，不重发生成或改写任务身份。停止分别等待引擎回执、Core在途操作及提供方结果，不能把进程退出当成业务撤销。
+
+运行中追加、排队、历史、图像和审批分别协商；不支持时保留输入并说明可用操作，不静默新建任务模拟接续。会话数据Owner见[29第22.1节](29-数据字典与Schema设计.md#221-agent-会话与双入口绑定)，实际支持状态由38维护，能力目录仅公布已实现的业务动作。
+
 ## 24. 可选模型服务与固定计划
 
 图片候选可携带 `image_category` 及 `subject_refs`。分类限 character、scene、prop、illustration、costume、other；封面身份只由 cover 任务确定。对象引用为固定设定修订中的 entity_ref，或固定文档的 document_id + revision_id，且必须属于该候选声明的来源。Core 验证存在性与范围后写入不可变批次，拒绝文字候选附带图片字段。关联只控制展示，不授予编辑、素材采用或封面选用权。`hetu.interactions.get` 可携带 submission_id 回读指定批次及核验后的等比预览；省略时读取最新批次。
@@ -846,6 +876,8 @@ Git 读取动作 references、read_version、merge_preview 提供版本线、固
 ### 25.7 本机设置与安装方案
 
 `hetu.local_settings.get/prepare/get_operation/execute` 在 Electron 架构中由独立 Rust 本机服务持有，稳定 CLI/MCP 直接复用，无需窗口或子 CLI。旧原生 LocalAutomation 保留原偏好域与原方案，不和新宿主双写。公开 `hetu.local_settings.record_decision` 可依据当前会话的真实用户指令登记确切方案决定；桌面 `local_settings/host` 使用同一决定实现。登记不执行，执行仍核验原客户端、状态版本、摘要与基线。偏好白名单包括语言、主题、书库布局、自动保存、字体、字号、行距、缩进、Git 作者和默认客户端；密钥与私密模型配置不回读。
+
+桌面机器连接安装通过同一本机App Server的私有`local_settings/request`传递`{client_adapter, request}`；request仍是公开动作、合同修订及输入信封，经Core按Agent身份核验。它与`local_settings/host`共享顺序队列，避免本机设置回读与另起CLI竞争锁；不把安装执行变成作者身份，也不提供作品或通用Shell入口。设置窗口仅开放专用安装IPC，作品授权仍走原工作台通道。
 
 方案绑定 Owner、客户端、完整原值、套件指纹与安装目标、可选工作区身份和24小时期限。执行使用跨进程锁、CAS及可恢复事务；偏好和方案结果原子提交，executing 只接续原键与固定包。设置变化导致冲突，不能强行覆盖。套件选择可独立保存，受管安装按实际客户端能力执行；Codex 安装未知先只读核实官方登记及全部缓存字节，不自动重复安装。MCP Apps 的 `ui://hetu/operation-view/1` 只读方案及状态；批准来自可信作者工作面，任务面板的偏好和意见不构成批准。详细私有边界见插件20第21节。
 
@@ -968,6 +1000,8 @@ CLI、MCP、MCP Apps、本地页面和原生端共用上述用例；Apps只在�
 
 公开SDK经统一request使用当前执行身份的全部核心能力，不维护插件逐动作白名单。外部Agent保持原management_ref及领域方案决定链；桌面插件复用作者工作面的核心用例。改名可经agent_operations准备固定方案，不新建第二条正文写链。对象与本体语义归28，字段归29，分层及兼容归插件27。
 
+插件调用在专业动作分派前因活动包、能力摘要、动作声明或专业输入Schema不符而拒绝时，返回 `hetu.plugin_operation_failed` 及确切原因；动作开始后的进程异常、超时和回执丢失仍为 `hetu.outcome_unknown`，沿原键恢复。跨进程判定及不接受插件自报未执行的边界见[发现合同](plugin/21-核心格式与动态能力发现.md#调用前拒绝与结果未知)。
+
 ## 固定媒体的插件公共读取
 
 `hetu.extensions.sources.read_blob` 为只读数据动作，通过既有稳定插件发现／调用入口使用；接受固定asset来源、offset及有界max_bytes，不接受路径。当前作品、资产修订、记录与文件摘要逐次核验，返回Base64及完整／分块摘要。调用方重组后核对完整文件，不将素材元数据当格式解码结果。具体Schema归extensions动作合同，SDK分层及边界归[插件27](plugin/27-开放宿主SDK与核心能力审计.md#固定媒体字节的公共读取)。
@@ -976,8 +1010,14 @@ CLI、MCP、MCP Apps、本地页面和原生端共用上述用例；Apps只在�
 
 collaboration.inspect和agent_operations.catalog支持action、group、offset、limit、include_schema；默认仅返回有界摘要，catalog_sha256标记真实目录身份。collaboration.invoke只路由本连接已登记的动作，不接受递归调用或身份覆盖；返回实际动作结果。runtime.inspect只报告实际运行版本、合同摘要和随包方法身份，调用方报告的版本标明reported；未观察的会话加载与安装状态保持unknown。
 
-task_checkpoint.get/save只在精确任务内读取和维护接续记录，首次保存expected=null，后续使用返回revision和sha256，operation_key保持幂等；关闭、撤权、来源或成果越界拒绝。记录引用固定context、working_copy和feedback；阅读范围须落在固定UTF-8内容，Core不鉴定语义理解。阶段、未决问题与下一步不自动驱动Agent或扩大执行权。
+task_checkpoint.get/save只在精确任务内读取和维护接续记录，首次保存expected=null，后续使用返回revision和sha256，operation_key保持幂等；关闭、撤权、来源或成果越界拒绝。记录及每条statement引用固定context、working_copy和feedback，观察与计算说明必须有依据，假设包含prediction与状态；supported／refuted要求至少一个固定引用。handoff可保存summary与pitfalls。阅读范围须落在固定UTF-8内容，Core不鉴定语义理解或结论正确性。阶段、未决问题与下一步不自动驱动Agent或扩大执行权。
 
 creative_tasks.get可选detail=summary；working_copies.get、候选读取和operations.get提供固定结果的有界读取。默认新旅程先摘要，旧直接读取保留原结果语义。超限回执保留原操作与恢复输入，恢复始终重新核验授权。
+
+发现入口支持query和有界分页，返回动作的结构化前置条件及未核验的readiness；完整输入Schema只在确切查询或执行时构造。共同方法由methods.list/read发现和按固定摘要分块读取，CLI、MCP与所选Skills消费同一方法源。task_executions.list/get读取精确任务的执行尝试，不允许Agent提交自报执行结果。creative_tasks.assess组合固定交付、专业检查与作者决定，报告各项状态和缺失依据，不自动调用模型、采纳或定稿。
+
+assess在任务授权下只能读取已固定的专业来源；交付后新产生的检查使用该作品的精确management_ref和同任务完整TaskRef读取，管理授权分支同样核对请求摘要，并在候选及专业覆盖回读中保留完整引用，不能借TaskRef读取任意插件对象。专业报告未实现适配时返回unsupported_owner，目标修订不匹配返回wrong_target，部分覆盖、反证和不确定分别表达；不将已有候选或Agent的complete当作验收通过。两种MCP适配器使用相同生产合同标记结果来源，元数据计入最终传输预算。插件调用的取消可能留下已执行结果，回执明确unknown并沿原键查询。
+
+确切插件的能力发现及调用只装配目标包和其依赖闭包，安装管理与全量目录检查仍核对全部包。每次调用前重新读取当前启用状态和实际包摘要，不能以缓存跳过停用、换包或依赖核验；旧安装状态缺少声明身份时保留完整核验。无关包损坏与定向调用隔离，不把加载全部专业包作为读取一个方法的前置。
 
 固定设定实体超过单次预算时，task_context.read以原context_ref、section和entity_id携带result_path读取字段目录，再以offset和max_bytes读取字段片段；整份设定及实体摘要保持。字段读取不跟随当前设定，文本来源拒绝实体字段参数。MCP预算失败返回同一固定实体的字段读取参数，不要求无限提高传输预算。

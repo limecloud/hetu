@@ -107,6 +107,7 @@ async function sourceSnapshot() {
     "packages/plugin-host/package.json",
     "packages/plugin-sdk/package.json",
     "core/Cargo.toml",
+    "core/build.rs",
     "apps/cli/Cargo.toml",
     "apps/mcp/Cargo.toml",
     "apps/app-server/Cargo.toml",
@@ -168,6 +169,19 @@ if (
 const before = await sourceSnapshot();
 // Electron 42 按需安装二进制，直接装配也必须先取得同版运行时和许可。
 await run(process.execPath, [path.join(root, "node_modules/electron/install.js")]);
+// 本机覆盖复用已安装的锁定版本，避免装配器再次联网下载同一运行时。
+const electronZipDir = values["local-install"] ? path.join(stage, "electron-runtime") : undefined;
+let electronRuntimeArchive;
+if (electronZipDir) {
+  const distribution = path.join(root, "node_modules/electron/dist");
+  const expectedVersion = JSON.parse(await readFile(path.join(desktop, "package.json"), "utf8")).devDependencies.electron;
+  if ((await readFile(path.join(distribution, "version"), "utf8")).trim() !== expectedVersion)
+    throw new Error("已安装 Electron 运行时与锁定版本不一致。");
+  await mkdir(electronZipDir);
+  const archive = path.join(electronZipDir, `electron-v${expectedVersion}-${process.platform}-${process.arch}.zip`);
+  await run("/usr/bin/ditto", ["-c", "-k", "--sequesterRsrc", distribution, archive]);
+  electronRuntimeArchive = { source: "installed-dependency", version: expectedVersion, sha256: digest(await readFile(archive)) };
+}
 await run("cargo", [
   "build",
   "--locked",
@@ -364,6 +378,7 @@ const paths = await packager({
   ...(process.platform === "darwin" ? { extendInfo: { LSMinimumSystemVersion: "14.0" } } : {}),
   appVersion: manifest.version,
   electronVersion: manifest.devDependencies.electron,
+  ...(electronZipDir ? { electronZipDir } : {}),
   platform: process.platform,
   arch: process.arch,
   icon: path.join(
@@ -417,6 +432,7 @@ const evidence = {
   version: manifest.version,
   rust_profile: values.release ? "release" : "dev",
   electron: manifest.devDependencies.electron,
+  ...(electronRuntimeArchive ? { electron_runtime_archive: electronRuntimeArchive } : {}),
   node: runtimeInfo,
   source: after,
   source_binary_sha256: binaries,

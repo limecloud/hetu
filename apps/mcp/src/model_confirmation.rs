@@ -8,11 +8,7 @@ pub const TOOL: &str = "hetu_request_model_confirmation";
 fn result(value: Value, input: &Value) -> CallToolResponse {
     let value = response::summary_read(value, "hetu.model_tasks.get", input);
     let value = response::bounded(value, "hetu.model_tasks.get", input, MAX_RESULT_BYTES);
-    if value.get("error").is_some() {
-        CallToolResult::structured_error(value).into()
-    } else {
-        CallToolResult::structured(value).into()
-    }
+    response::tool_result(value).into()
 }
 
 pub fn input_schema(base: &JsonObject) -> JsonObject {

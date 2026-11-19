@@ -18,7 +18,9 @@ Cursor, Grok Build, DeepSeek Harness and Doubao are also developing their own Ag
 
 External agents use MCP to discover capabilities, create authorized projects, organize chapters and references, submit candidates, prepare delivery and retrieve feedback. Your chosen client manages the connection, so the native window need not stay open. Configure the stable connection once; each explicit work and task identifies its authorized material. Novels, related scripts and videos keep separate access scopes, even in the same folder. A connection does not grant library-wide access, and reauthorization does not revive revoked tasks.
 
-Choose MCP on the library home to read the guide and configure your client. Hosts that support MCP Apps can also show comparison and annotation panels. Other hosts continue with tool results and the desktop workspace.
+In Settings → AI Collaboration or the work’s collaboration page, choose “Connect Codex MCP App,” review and confirm the installation target, then refresh or restart Codex as prompted. The connection package and genre Skills install separately. Verify registration and current-session loading separately. The library’s MCP guide covers other clients.
+
+Hosts that support MCP Apps can show authorized works, references, tasks, fixed image and audiovisual previews, candidate comparisons and saved feedback within the conversation. Use the contextual AI handoff to request further work. Message drafts, accepted messages and returned results have separate states. Other hosts continue with tool results and the desktop workspace.
 
 ## CLI: discover and call creative tools
 

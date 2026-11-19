@@ -5,8 +5,38 @@ use crate::{
 };
 use serde_json::{Value, json};
 
+pub fn describe_action(action: &mut Value) {
+    let alternatives = match action["authorization"].as_str() {
+        Some("exact_task") => json!([["task_ref"]]),
+        Some("new_managed_scope") => json!([["management_ref"]]),
+        Some("task_or_new_managed_scope") => json!([["task_ref"], ["management_ref"]]),
+        _ => json!([]),
+    };
+    action["prerequisites"] = json!({"reference_alternatives":alternatives,
+        "effect":action["effect"],"author_only":action["author_only"],
+        "model_content_and_cost_approval":action["name"]=="hetu.model_tasks.submit"});
+    action["readiness"] = json!({"status":"not_checked","authority":"core_checks_each_request"});
+}
+
+fn catalog_identity(catalog: &Value) -> Result<String> {
+    let metadata = catalog
+        .as_array()
+        .ok_or_else(|| Error::new("hetu.integrity_failure", "能力目录无效。"))?
+        .iter()
+        .map(|action| {
+            let mut action = action.clone();
+            action.as_object_mut().unwrap().remove("input_schema");
+            action.as_object_mut().unwrap().remove("input_schema_ref");
+            action
+        })
+        .collect::<Vec<_>>();
+    Ok(digest(serde_json::to_vec(
+        &json!({"contract_sha256":include_str!(concat!(env!("OUT_DIR"),"/action-contract-sha256.txt")),"actions":metadata}),
+    )?))
+}
+
 pub fn catalog_page(catalog: &Value, input: &Value) -> Result<Value> {
-    let sha = digest(serde_json::to_vec(catalog)?);
+    let sha = catalog_identity(catalog)?;
     ensure(
         input
             .get("expected_catalog_sha256")
@@ -28,8 +58,28 @@ pub fn catalog_page(catalog: &Value, input: &Value) -> Result<Value> {
                 && input["group"]
                     .as_str()
                     .is_none_or(|g| a["name"].as_str().and_then(|s| s.split('.').nth(1)) == Some(g))
+                && input["query"].as_str().is_none_or(|query| {
+                    let haystack = format!(
+                        "{} {}",
+                        a["name"].as_str().unwrap_or(""),
+                        a["purpose"].as_str().unwrap_or("")
+                    )
+                    .to_lowercase();
+                    query
+                        .split_whitespace()
+                        .all(|word| haystack.contains(&word.to_lowercase()))
+                })
         })
         .collect::<Vec<_>>();
+    let selection_sha = digest(serde_json::to_vec(&json!({"catalog_sha256":sha,
+        "query":input["query"],"action":input["action"],"group":input["group"]}))?);
+    ensure(
+        input
+            .get("expected_selection_sha256")
+            .is_none_or(|value| value == &selection_sha),
+        "hetu.stale_evidence",
+        "目录筛选已变化，请重新查询。",
+    )?;
     let start = input["offset"].as_u64().unwrap_or(0) as usize;
     ensure(
         start <= selected.len(),
@@ -50,7 +100,8 @@ pub fn catalog_page(catalog: &Value, input: &Value) -> Result<Value> {
         })
         .collect::<Vec<_>>();
     Ok(
-        json!({"discovery_revision":"2","catalog_sha256":sha,"groups":groups,
+        json!({"discovery_revision":"3","catalog_sha256":sha,"selection_sha256":selection_sha,
+        "query":input["query"],"groups":groups,
         "total":selected.len(),"actions":actions,"next_offset":(end<selected.len()).then_some(end),
         "schema_lookup":{"action":"hetu.collaboration.inspect","input":{"include_schema":true,"limit":1}},
         "authorization":"listed_actions_do_not_grant_access"}),
@@ -60,7 +111,7 @@ pub fn catalog_page(catalog: &Value, input: &Value) -> Result<Value> {
 pub fn runtime(catalog: &Value, input: &Value) -> Result<Value> {
     let package: Value =
         serde_json::from_str(include_str!("../../integrations/codex/hetu/plugin.json"))?;
-    let sha = digest(serde_json::to_vec(catalog)?);
+    let sha = catalog_identity(catalog)?;
     let mut checks = Vec::new();
     for (field, actual) in [
         ("expected_runtime_version", json!(env!("CARGO_PKG_VERSION"))),
@@ -72,8 +123,9 @@ pub fn runtime(catalog: &Value, input: &Value) -> Result<Value> {
     }
     Ok(
         json!({"runtime_version":env!("CARGO_PKG_VERSION"),"platform":std::env::consts::OS,
-        "architecture":std::env::consts::ARCH,"catalog_sha256":sha,"discovery_revision":"2",
+        "architecture":std::env::consts::ARCH,"catalog_sha256":sha,"discovery_revision":"3",
         "bundled_skill":{"name":package["name"],"version":package["version"]},"checks":checks,
+        "schema_materialization":crate::application::schema_materialization(),"baseline":crate::baseline::inspect()?,
         "installation":"unknown","session_skill_loading":"unknown","repairs_performed":false,
         "next_actions":["Compare this receipt with the tools and methods actually visible in the current Agent session.",
             "Use the selected suite's local_settings.inspect receipt for installation and registration; do not infer session loading."]}),

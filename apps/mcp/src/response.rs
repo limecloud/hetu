@@ -3,8 +3,17 @@ use super::*;
 use sha2::{Digest, Sha256};
 
 fn size(value: &Value) -> usize {
-    serde_json::to_vec(&CallToolResult::structured(value.clone()))
+    serde_json::to_vec(&tool_result(value.clone()))
         .map_or(usize::MAX, |v| v.len().saturating_add(256))
+}
+pub(crate) fn tool_result(result: Value) -> CallToolResult {
+    let action=result["action"].as_str().unwrap_or("hetu.request.invalid").to_owned();
+    let mut provenance=hetu_core::application::result_provenance(&action);
+    provenance["action"]=json!(action);
+    if result.get("error").is_some() { provenance["data_roles"]=json!(["core_error"]); }
+    let mut response=if result.get("error").is_some() {CallToolResult::structured_error(result)} else {CallToolResult::structured(result)};
+    response.meta=Some(serde_json::from_value(json!({"provenance":provenance})).expect("fixed provenance metadata"));
+    response
 }
 pub(crate) fn plugin_read(result: &Value) -> bool {
     result["action"] == "hetu.plugins.invoke" && result["data"]["invocation"]["effect"] == "read"
@@ -248,7 +257,7 @@ pub(crate) fn bounded(mut result: Value, action: &str, input: &Value, budget: us
 #[cfg(test)]
 mod tests {
     use super::*;
-use sha2::{Digest, Sha256};
+    use sha2::{Digest, Sha256};
     #[test]
     fn plugin_read_with_large_input_reuses_original_instead_of_echoing_it() {
         let input = json!({"management_ref":{"grant_id":"private"},"work_ref":{"kind":"novel"},

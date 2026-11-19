@@ -1,6 +1,8 @@
 //! 浏览器集成测试的作者侧夹具，只对测试提供的临时目录创建内容。
 use hetu_core::Kernel;
 use serde_json::{Value, json};
+use base64::{Engine, engine::general_purpose::STANDARD};
+use sha2::{Digest, Sha256};
 
 fn call(kernel: &Kernel, action: &str, input: Value) -> Value {
     let result = kernel
@@ -47,6 +49,17 @@ fn main() {
     let mut output = json!({"task_ref":task["task_ref"]});
     if let Some(directory) = std::env::args_os().nth(2) {
         let directory = std::path::PathBuf::from(directory);
+        call(&kernel,"collaboration.authorize",json!({"task_ref":task["task_ref"],"client_adapter":"codex","collaboration_path":directory,"operation_key":"fixture-task-access"}));
+        let drama = call(&kernel,"drama.projects.create",json!({"title":"河港剧本","operation_key":"fixture-drama"}));
+        let video = call(&kernel,"video.projects.create",json!({"title":"河港视频","brief":"固定媒体审阅","language_tag":"zh-CN","operation_key":"fixture-video"}));
+        let episode = call(&kernel,"video.episodes.create",json!({"project_ref":{"video_project_id":video["project"]["video_project_id"],"revision":video["project"]["revision"],"sha256":video["sha256"]},"title":"雨夜片段","brief":"固定MP4","operation_key":"fixture-video-episode"}));
+        let bytes = include_bytes!("../../desktop/tests/fixtures/preview.mp4");
+        let inline = json!({"filename":"河港.mp4","sha256":format!("{:x}",Sha256::digest(bytes)),"base64":STANDARD.encode(bytes)});
+        let scan = call(&kernel,"assets.inspect",json!({"inline_source":inline}));
+        let asset = call(&kernel,"assets.import",json!({"work_ref":video["work_ref"],"inline_source":inline,"expected_file":{"sha256":scan["sha256"],"size_bytes":scan["size_bytes"]},"title":"河港固定片段","source":{"source_type":"author_supplied","creator_statement":"隔离验收样本"},"rights_status":"author_owned","redistribution_allowed":true,"rights_statement":"隔离样本允许本次验收","operation_key":"fixture-video-asset"}));
+        call(&kernel,"video.media.save",json!({"work_ref":video["work_ref"],"video_episode_id":episode["episode"]["video_episode_id"],"asset_ref":{"asset_id":asset["asset"]["asset_id"],"revision":1,"sha256":asset["sha256"]},"title":"河港固定片段","purpose":"clip","stream_index":0,"time_base":{"numerator":1,"denominator":1000},"duration_ticks":2000,"operation_key":"fixture-video-media"}));
+        output["drama_work_ref"] = drama["work_ref"].clone();
+        output["video_work_ref"] = video["work_ref"].clone();
         let grant = call(
             &kernel,
             "collaboration.authorize_workspace",

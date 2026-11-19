@@ -54,3 +54,14 @@
   .resources > .document-layout > section, .media-library > .document-layout > article { padding-left: 18px; }
   .surface-filters { gap: 10px 14px; }
 }
+
+/* 随包基础大纲与视频审阅共用正文和细线层次。 */
+.outline-entry { padding: 16px 0; border-bottom: 0.5px solid var(--line); }
+.outline-entry label { display: block; margin-bottom: 12px; }
+.outline-entry textarea, .video-review-content textarea { width: 100%; min-height: 120px; box-sizing: border-box; }
+.video-review-content { max-width: 980px; }
+.video-review-content .media-preview video { width: min(100%, 720px); height: auto; }
+.video-review-content .media-preview { margin-bottom: 12px; }
+.video-review-content label { display: inline-flex; gap: 8px; align-items: center; }
+.video-review-content blockquote { margin: 16px 0; padding: 0; }
+.baseline-editor-fields { border: 0; padding: 0; margin: 0; min-width: 0; }

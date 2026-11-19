@@ -48,6 +48,9 @@ fn result_envelope_accepts_registered_action_names_and_rejects_invalid_names() {
     let mut result = json!({"spec_version":"0.2.1","kind":"result","contract_revision":"1",
         "status":"succeeded","context":{"scope_id":"collaboration"},"data":{}});
     for action in catalog["actions"].as_array().unwrap() {
+        assert_eq!(action["result_provenance"]["instruction_authority"],"none");
+        assert_eq!(action["result_provenance"]["authorization_effect"],"none");
+        assert!(action["result_provenance"]["data_roles"].as_array().is_some_and(|roles|!roles.is_empty()));
         result["action"] = action["name"].clone();
         validator
             .validate(&result)
@@ -77,6 +80,35 @@ struct Client {
     apps: bool,
     legacy: bool,
     last_request: String,
+}
+
+#[tokio::test]
+async fn result_provenance_comes_from_the_same_contract_in_both_adapters() {
+    let (root,k)=setup();
+    let task=creative_task(&k,json!([]),None);
+    let directory=root.path().join("provenance-connection");
+    let grant=call(&k,"collaboration.authorize",json!({"task_ref":task["task_ref"],"client_adapter":"codex",
+        "collaboration_path":directory,"operation_key":"provenance-grant"}));
+    assert_eq!(grant["status"],"succeeded","{grant}");
+    let mut stable=Client::start_stable(&directory);
+    let opened=stable.tool("hetu_open_collaboration_task",json!({"task_locator":{"scope_ref":task["task_ref"]["scope_ref"],"task_id":task["task_ref"]["task_id"]}})).await;
+    let mut legacy=Client::start_task(&root.path().join("河图 离线测试 🌿"),false,task["task_ref"]["task_id"].as_str().unwrap());
+    let mut observed=Vec::new();
+    for (client,reference) in [(&mut stable,opened["data"]["task_ref"].clone()),(&mut legacy,task["task_ref"].clone())] {
+        let response=client.rpc("tools/call",json!({"name":"hetu_get_task_checkpoint","arguments":{"task_ref":reference}})).await;
+        let result=&response["result"];
+        assert_eq!(result["structuredContent"]["status"],"succeeded","{response}");
+        assert_eq!(result["_meta"]["provenance"]["instruction_authority"],"none");
+        assert_eq!(result["_meta"]["provenance"]["authorization_effect"],"none");
+        assert_eq!(result["_meta"]["provenance"]["action"],result["structuredContent"]["action"]);
+        assert!(serde_json::to_vec(result).unwrap().len()<=65536);
+        observed.push(result["_meta"]["provenance"].clone());
+    }
+    assert_eq!(observed[0],observed[1]);
+    let response=stable.rpc("tools/call",json!({"name":"hetu_call_action","arguments":{
+        "action":"hetu.methods.list","input":{}}})).await;
+    assert!(response["result"]["_meta"]["provenance"]["data_roles"].as_array().unwrap().contains(&json!("public_method")));
+    stable.close().await;legacy.close().await;
 }
 
 #[tokio::test]
@@ -1813,6 +1845,61 @@ fn draft_args(key: &str) -> Value {
 }
 fn uri(k: &Kernel, path: &str) -> String {
     format!("hetu://workspace/{}/{path}", k.scope())
+}
+
+#[tokio::test]
+async fn mcp_workbench_entry_is_optional_empty_and_keeps_app_only_tools_discoverable() {
+    let folder = tempfile::tempdir().unwrap();
+    let directory = folder.path().join("no-authorizations");
+    let mut command = Command::new(binary());
+    command.args(["--client", "codex", "--collaboration-dir"]).arg(&directory);
+    let mut client = Client::spawn(command);
+    let ordinary = client.rpc("tools/list", json!({})).await;
+    assert!(!ordinary["result"]["tools"].as_array().unwrap().iter().any(|t| t["name"] == "hetu_open_app"));
+    client.apps = true;
+    let listed = client.rpc("tools/list", json!({})).await;
+    let tools = listed["result"]["tools"].as_array().unwrap();
+    let app = tools.iter().find(|t| t["name"] == "hetu_open_app").unwrap();
+    assert_eq!(app["_meta"]["openai/ui"]["entrypoints"], json!([{"type":"global"},{"type":"thread"}]));
+    assert_eq!(app["_meta"]["ui"]["resourceUri"], "ui://hetu/workbench/1");
+    let feedback = tools.iter().find(|t| t["name"] == "hetu_save_task_feedback").unwrap();
+    assert_eq!(feedback["_meta"]["ui"]["visibility"], json!(["app"]));
+    let operation = tools.iter().find(|t| t["name"] == "hetu_get_management_operation").unwrap();
+    assert_eq!(operation["_meta"]["ui"]["resourceUri"], "ui://hetu/operation-view/1");
+    assert_eq!(operation["_meta"]["ui"]["visibility"], json!(["app"]));
+    let home = client.tool("hetu_open_app", json!({})).await;
+    assert_eq!(home["data"], json!({"app":{"route":"home"}}));
+    assert!(!directory.exists(), "empty entry must not create or enumerate authorizations");
+    let resource = client.rpc("resources/read", json!({"uri":"ui://hetu/workbench/1"})).await;
+    assert_eq!(resource["result"]["contents"][0]["mimeType"], "text/html;profile=mcp-app");
+    assert!(resource["result"]["contents"][0]["text"].as_str().unwrap().contains("media-src blob:"));
+    client.close().await;
+}
+
+#[tokio::test]
+async fn mcp_workbench_uses_exact_management_and_task_grants_and_rechecks_revocation() {
+    let (folder, author) = setup();
+    let directory = folder.path().join("workbench-access");
+    let grant = call(&author, "collaboration.authorize_workspace", json!({"client_adapter":"codex","collaboration_path":directory,"operation_key":"app-work"}));
+    assert_eq!(grant["status"], "succeeded", "{grant}");
+    let task = creative_task(&author, json!([]), None);
+    let task_grant = call(&author, "collaboration.authorize", json!({"task_ref":task["task_ref"],"client_adapter":"codex","collaboration_path":directory,"operation_key":"app-task"}));
+    assert_eq!(task_grant["status"], "succeeded", "{task_grant}");
+    let mut client = Client::start_stable(&directory); client.apps = true;
+    let work = client.tool("hetu_open_app", json!({"management_ref":grant["data"]["management_ref"]})).await;
+    assert_eq!(work["status"], "succeeded", "{work}");
+    assert_eq!(work["data"]["app"]["route"], "works");
+    assert!(work["data"]["works"].is_array());
+    let locator = json!({"scope_ref":task["task_ref"]["scope_ref"],"task_id":task["task_ref"]["task_id"]});
+    let view = client.tool("hetu_open_app", json!({"task_locator":locator})).await;
+    assert_eq!(view["status"], "succeeded", "{view}");
+    assert_eq!(view["data"]["app"]["route"], "task");
+    assert!(view["data"]["task_ref"]["sha256"].is_string());
+    let denied = call(&author,"collaboration.revoke",json!({"task_ref":task["task_ref"],"client_adapter":"codex","collaboration_path":directory,"operation_key":"revoke-app-task"}));
+    assert_eq!(denied["status"], "succeeded", "{denied}");
+    let revoked = client.tool("hetu_open_app", json!({"task_locator":locator})).await;
+    assert_eq!(revoked["status"], "blocked", "{revoked}");
+    client.close().await;
 }
 
 #[tokio::test]

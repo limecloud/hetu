@@ -15,7 +15,7 @@ pub(super) fn entries(request: &Value) -> Vec<Value> {
                 "allowed_ranges":null,"title":source.get("title").cloned().unwrap_or(json!("")),
                 "size_bytes":source.get("size_bytes").cloned().unwrap_or_else(|| {
                     json!(source["content"].as_str().map(str::len).unwrap_or(0))
-                }),"summary_ref":null,"source_kind":if source["reference"]["kind"] == "resource" { "resource" } else { "author" }})
+                }),"summary_ref":null,"source_kind":match source["reference"]["kind"].as_str() {Some("resource")=>"resource",Some("plugin_object")=>"plugin",_=>"author"}})
         })
         .collect()
 }
@@ -221,6 +221,10 @@ impl Kernel {
                 "固定资料记录摘要不一致。",
             )?;
             Ok(json!({"content":record["body"]}))
+        } else if reference["kind"] == "plugin_object" {
+            let (record, sha) = self.fixed_professional_object(reference)?;
+            ensure(source["sha256"] == sha, "hetu.integrity_failure", "固定专业来源摘要不一致。")?;
+            Ok(json!({"plugin_object":record}))
         } else {
             let (blueprint, sha) = self.source_blueprint(reference)?;
             ensure(
@@ -265,6 +269,14 @@ impl Kernel {
             .unwrap_or(DEFAULT_READ_BYTES as u64) as usize;
         if entry["kind"] == "blueprint" {
             return self.read_structured_context(input, entry, &source["blueprint"], budget);
+        }
+        if entry["kind"] == "plugin_object" {
+            ensure(["range","section","entity_id","cursor","limit"].iter().all(|key|input.get(*key).is_none()),
+                "invalid_input","专业对象使用字段投影与字节分页读取。")?;
+            let mut page_input=input.clone();
+            page_input["max_bytes"]=json!(budget);
+            return Ok(json!({"context_ref":input["context_ref"],"fixed_ref":entry["fixed_ref"],
+                "sha256":entry["sha256"],"source_kind":"plugin","page":crate::machine::value_page(&source["plugin_object"],&page_input)?}));
         }
         ensure(
             [
@@ -320,7 +332,7 @@ impl Kernel {
             if input.get("kind").is_some_and(|kind| *kind != entry["kind"]) {
                 continue;
             }
-            if entry["kind"] == "blueprint" {
+            if entry["kind"] == "blueprint" || entry["kind"] == "plugin_object" {
                 skipped_structured += 1;
                 continue;
             }

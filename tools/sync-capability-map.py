@@ -13,6 +13,7 @@ SKILL_MAP = ROOT / "tools/hetu-skills/base/references/capability-map.json"
 
 ROUTES = {
     "capabilities": ("能力导航与Review", "hetu-setup"),
+    "baseline": ("随包基础能力", "hetu-setup"),
     "blueprints": ("设定与规则", "hetu-outline"),
     "documents": ("章节、正文与定稿", "hetu-manage"),
     "drafts": ("参考稿与采纳", "hetu-draft"),
@@ -225,6 +226,7 @@ def build():
              "- 执行前发现：`hetu --client codex collaboration inspect`，按返回的真实 Schema、精确 `management_ref` 或 `task_ref` 操作。",
              "- 无窗口查询：CLI 使用 `hetu --client codex call hetu.capabilities.map --input -`；MCP 使用 `hetu_get_capability_map`，支持 group、action、skill 筛选与分页。",
              "- AI 完整索引：[contracts/capability-map.json](../contracts/capability-map.json)。其中包含输入 Schema、MCP profile、Skill 源文件和恢复动作。",
+             "- 默认产品：小说、剧本及视频基础能力随应用提供，无需额外创作插件；`hetu.baseline.inspect`核对合同，装配、业务及创作品质分别验收。",
              "- 维护边界：本清单只维护宿主能力及插件发现入口；各插件自行维护功能清单和 manifest，AI按安装包继续发现，不在宿主重复登记插件功能。",
              "- 插件公共服务：SDK提供受管项目适配、固定来源与原操作恢复；桌面提供固定素材预览、派生Blob媒体播放、Markdown／JSON／HTML固定对象分块导出，以及SRT／VTT／ASS／TXT／LRC派生文件保存。合同见[开放宿主SDK](plugin/27-开放宿主SDK与核心能力审计.md)，专业Schema仍由插件维护；定向机器调用仅核验本包与依赖闭包；已安装包始终核验实际字节摘要。",
              "- 插件选择：[官网插件中心](https://hetu.limeai.run/plugins/)展示来源、发行与包内功能清单；目录不代表本机安装状态，执行仍需重新发现。开发与上架见[插件23](plugin/23-插件发布与上架指南.md)。",

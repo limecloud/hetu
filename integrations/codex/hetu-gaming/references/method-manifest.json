@@ -1,10 +1,10 @@
 {
   "schema_version": "1.0.0",
   "suite_id": "gaming",
-  "version": "0.3.10",
+  "version": "0.3.12",
   "language": "zh-CN",
   "files": {
-    ".codex-plugin/plugin.json": "b6bd4ffc54e49595244df37ca0c0571f657434bb50a26ff596fe4f3cb9a8613e",
+    ".codex-plugin/plugin.json": "792a3effe6e40b99ab1a47c5a9789f3571da1bfd865dae94d8a81ffb3b9bbe5b",
     "THIRD_PARTY_NOTICES.md": "1e60d23fd7d0e177f2ab2a3c9102c5cc354c0b39e5cc0d758ea1c5e543c7c2d6",
     "hetu-suite.json": "97044133cb3033305b8ec52e3dec0b1c8e9e9607790ce2a44058c59e7a5708d3",
     "licenses/bookflow-MIT.txt": "44b86b87c41729aa8bc6e54e8d81303a0e725ca5bb291bde28e8c492285d8597",
@@ -15,8 +15,8 @@
     "licenses/story-MIT.txt": "1c8c7a7b5bef62874f510f603f02ada40f5880668e8983d2fc7d1150b4318226",
     "licenses/webnovel-MIT.txt": "52c71355258924a967927780245f70677b38ff7d073c03f9096df33888f34653",
     "licenses/webnovel-master-MIT.txt": "6ad9f25b48146e8c2ed94807eea0c410d5f27f7b6ce280de1093e46dcd73b7ab",
-    "plugin.json": "64cf38c26660e13002b068eb54bce7b9d50a5a1c795675f7939ba6fa02635514",
-    "references/capability-map.json": "44fd067a9e1cb350905d2a33d6eda587ea6e8cc987a08c664abdc94e0aa0b751",
+    "plugin.json": "f1cd9988bd187b3bfd3b674c19eae1d22381575460836a2baf9e0b6e02fad53e",
+    "references/capability-map.json": "f9f3215a281b8db8c921d704b40f4aa81a15eab04c77af7523fae4019fd1d804",
     "references/craft/characters.md": "97622bfc83a3c7d46e2de4314edf22db508a8e9353d4b358144eeac1bdf1c5a4",
     "references/craft/scenes.md": "f473fd25700c8262cc441c6a7b2e61a66de74437010c74ed48e61368ab614b38",
     "references/craft/structure.md": "d85bac57cadbe839bc8bfb23fc553a76331630c717a477cb69c6e3e842a238a5",
@@ -26,7 +26,7 @@
     "references/model-service.md": "203139201864d2c341bc206b44e1ed1759f037a896bfb389aa81c354fcd1c5a2",
     "references/models/seedance-2-5.md": "21373c4959c1acc00248275a376d26ddabcaadab5b884b4222d6ba174d1f63a5",
     "references/sources.json": "e29d667d1a94ecb4d78fe4e58b7adbeda83c8605797f9d0cbfaeba68887ffa79",
-    "references/task-contract.md": "d6e685965a0f937be89c3b2f6d44ac884314878f67bcf7bd4aa6c55810db154e",
+    "references/task-contract.md": "9e8a01b88dea99ccdd672cff7521af23f484aa39251e6e0c69db8d6e23bbaf7b",
     "references/workflows/adaptation.md": "e723f9a71c2c869600bb9bbce5c6c7c3de45a25d6f330cb266688ec267738880",
     "references/workflows/cover.md": "91282a5832557280d282f4b30f5fb07de2638a4a1ba2d1b127dba6887b5f3de0",
     "references/workflows/creation.md": "36f1eacaaf85b77cd34eedfe97b089131f97a9077654ee3b3a41ce0ac5dcf3c2",
@@ -38,7 +38,7 @@
     "references/workflows/outline.md": "96d88b38cd32f3f44114d6df5e394d72f5c92a3aea984397994ad4e079b76aad",
     "references/workflows/profile.md": "e8313c1ef1cc5545863e6ba928a18913ab4921c58941fab10e48533be4952dd3",
     "references/workflows/revision.md": "1deec125e38d38ba7173af480c6a907a682a048691ec15259a5c7cbaef1e546b",
-    "references/workflows/video-operations.md": "2cafd91159a0750840a1bd107870ad55150e41e623823e25f2f3ed72de726132",
+    "references/workflows/video-operations.md": "6ddf95b9ec4035a4ed6206b646e346d633e719074f8973e580b94b1fa02ab45a",
     "references/workflows/video-planning.md": "0b39caad612617f8ca18f2202f73f7e7537d68ba4b22b54e5c20405e486ec37a",
     "references/workflows/video.md": "f1dd5b0caa712dd5c7042b0fa773353034cfa154eea3c1c39a6665fa10d61d72",
     "references/writing-methods.md": "367c6572e058617b4387f9f42cd837fb8915c08d6f49f3a297dfa7cd91f6e1e6",
@@ -56,7 +56,7 @@
     "skills/hetu-outline/SKILL.md": "4a86c8ec3a41319f827f9a081b349497557df75c8330995e43484e418f1bb04d",
     "skills/hetu-resources/SKILL.md": "15c21a908bbdd1f1147e8f8c5c53b94827f99ae2b4a76b4c154e69e889a18f7b",
     "skills/hetu-revise/SKILL.md": "600436c447107dfaf7b20fd39c6a3f5e0b84adb4a37e4182be1ff162ef4e1b6e",
-    "skills/hetu-setup/SKILL.md": "d14ee78e4d120bfa4bbf33c4e89d134565df4d337379677c87d3699b83e8a48b",
-    "skills/hetu-video/SKILL.md": "6c716ec37405bf53bc628b9b980d76290cb6a9aa0c49b26bdc60b2fff21b83bd"
+    "skills/hetu-setup/SKILL.md": "4d64761dc140f2edef42986405b13aa1311432e77f225bb4572e3525ec3c3c72",
+    "skills/hetu-video/SKILL.md": "e96163decd09032541a463a8d0085a423a44be1cba43ddf57c023cbf96a174d1"
   }
 }

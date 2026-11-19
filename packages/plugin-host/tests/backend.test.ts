@@ -51,8 +51,10 @@ test(
       `
  import {readFile,writeFile} from "node:fs/promises";
  import {spawn} from "node:child_process";
+ process.on("SIGTERM",()=>{});
  let context; export function apply(c){context=c;c.effect(()=>new Promise(()=>{}));}
  export async function invoke(action,input){
+  if(input.kind==="pid")return process.pid;
   if(input.kind==="core")return context.request("hetu.extensions.objects.save",{operation_key:"forged"});
   try {
    if(input.kind==="read")await readFile(input.path);
@@ -125,9 +127,11 @@ test(
         }
         const stalled = makeBackend(node, electron);
         await stalled.initialize();
+        const pid = await stalled.invoke("probe", { kind: "pid" }) as number;
         const started = Date.now();
         await assert.rejects(() => stalled.dispose(), /清理超时/);
         assert.ok(Date.now() - started < 3000);
+        assert.throws(() => process.kill(pid, 0), (error: NodeJS.ErrnoException) => error.code === "ESRCH");
       }
     } finally {
       await new Promise<void>((resolve) => http.close(() => resolve()));

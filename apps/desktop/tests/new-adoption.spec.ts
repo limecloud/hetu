@@ -143,6 +143,8 @@ test(
         },
       });
       await application.evaluate(({ dialog }, directory) => {
+        // 关闭时明确保留编辑器恢复稿，避免原生同步确认阻塞测试退出。
+        dialog.showMessageBoxSync = () => 1;
         dialog.showOpenDialog = async () => ({
           canceled: false,
           filePaths: [directory],

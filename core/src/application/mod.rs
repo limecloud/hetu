@@ -11,6 +11,8 @@ mod cover_preparations;
 mod covers;
 mod creation;
 mod creative_tasks;
+mod catalog;
+use catalog::{catalog, raw_catalog};
 mod delivery;
 mod document_lifecycle;
 mod drafts;
@@ -37,6 +39,7 @@ mod resources;
 mod reviews;
 mod scripts;
 mod videos;
+mod video_review;
 mod work_activity;
 mod work_canons;
 mod work_links;
@@ -44,6 +47,13 @@ mod work_scope;
 mod works;
 
 type Changes = BTreeMap<String, Vec<u8>>;
+pub(crate) fn schema_materialization() -> Value { catalog::materialization() }
+/// 内容来源由生产合同声明；标记本身不授予指令权或作品权限。
+pub fn result_provenance(action: &str) -> Value {
+    raw_catalog()["actions"].as_array().unwrap().iter().find(|row|row["name"]==action)
+        .map(|row|row["result_provenance"].clone())
+        .unwrap_or_else(||json!({"contract_revision":"unknown","data_roles":["unclassified_content"],"instruction_authority":"none","authorization_effect":"none"}))
+}
 const PACKAGES: [&str; 5] = ["novel", "drama", "music-cue", "visual-prompt", "video"];
 const LEGACY_PACKAGES: [&str; 4] = ["novel", "drama", "music-cue", "visual-prompt"];
 const AUTHOR: &str = "actor_00000000-0000-4000-8000-000000000001";
@@ -95,142 +105,6 @@ pub struct Kernel {
     model_service_directory: Option<std::path::PathBuf>,
 }
 
-fn catalog() -> &'static Value {
-    static ACTIONS: OnceLock<Value> = OnceLock::new();
-    ACTIONS.get_or_init(|| {
-        let mut catalog: Value =
-            serde_json::from_str(include_str!("../../../contracts/actions.json"))
-                .expect("embedded action catalog");
-        for action in catalog["actions"].as_array_mut().unwrap() {
-            if let Some(reference) = action["input_schema_ref"].as_str() {
-                if let Some(definition) = reference.strip_prefix("schemas/work.schema.json#/$defs/")
-                {
-                    action["input_schema"] = works::definition(definition);
-                    action.as_object_mut().unwrap().remove("input_schema_ref");
-                    continue;
-                }
-                if let Some(definition) =
-                    reference.strip_prefix("schemas/model-service.schema.json#/$defs/")
-                {
-                    action["input_schema"] = model_tasks::definition(definition);
-                    action.as_object_mut().unwrap().remove("input_schema_ref");
-                    continue;
-                }
-                if let Some(definition) =
-                    reference.strip_prefix("schemas/resources.schema.json#/$defs/")
-                {
-                    action["input_schema"] = resources::definition(definition);
-                    action.as_object_mut().unwrap().remove("input_schema_ref");
-                    continue;
-                }
-                if let Some(definition) =
-                    reference.strip_prefix("schemas/delivery.schema.json#/$defs/")
-                {
-                    action["input_schema"] = delivery::definition(definition);
-                    action.as_object_mut().unwrap().remove("input_schema_ref");
-                    continue;
-                }
-                if let Some(definition) =
-                    reference.strip_prefix("schemas/book-cover.schema.json#/$defs/")
-                {
-                    action["input_schema"] = covers::definition(definition);
-                    action.as_object_mut().unwrap().remove("input_schema_ref");
-                    continue;
-                }
-                if let Some(definition) =
-                    reference.strip_prefix("schemas/novel.schema.json#/$defs/")
-                {
-                    action["input_schema"] = domain::novel::definition(definition);
-                    action.as_object_mut().unwrap().remove("input_schema_ref");
-                    continue;
-                }
-                if let Some(definition) =
-                    reference.strip_prefix("schemas/media.schema.json#/$defs/")
-                {
-                    action["input_schema"] = domain::media::definition(definition);
-                    action.as_object_mut().unwrap().remove("input_schema_ref");
-                    continue;
-                }
-                if let Some(definition) =
-                    reference.strip_prefix("schemas/document-lifecycle.schema.json#/$defs/")
-                {
-                    action["input_schema"] = document_lifecycle::definition(definition);
-                    action.as_object_mut().unwrap().remove("input_schema_ref");
-                    continue;
-                }
-                if let Some(definition) =
-                    reference.strip_prefix("schemas/creative-task.schema.json#/$defs/")
-                {
-                    action["input_schema"] = creative_tasks::definition(definition);
-                    action.as_object_mut().unwrap().remove("input_schema_ref");
-                    continue;
-                }
-                let source = match reference {
-                    "schemas/git-snapshot-input.schema.json" => {
-                        include_str!("../../../contracts/schemas/git-snapshot-input.schema.json")
-                    }
-                    "schemas/review-begin-input.schema.json" => {
-                        include_str!("../../../contracts/schemas/review-begin-input.schema.json")
-                    }
-                    "schemas/review-validate-input.schema.json" => {
-                        include_str!("../../../contracts/schemas/review-validate-input.schema.json")
-                    }
-                    "schemas/review-decide-input.schema.json" => {
-                        include_str!("../../../contracts/schemas/review-decide-input.schema.json")
-                    }
-                    "schemas/draft-submit-input.schema.json" => {
-                        include_str!("../../../contracts/schemas/draft-submit-input.schema.json")
-                    }
-                    "schemas/blueprint-save-input.schema.json" => {
-                        include_str!("../../../contracts/schemas/blueprint-save-input.schema.json")
-                    }
-                    "schemas/blueprint-preview-input.schema.json" => include_str!(
-                        "../../../contracts/schemas/blueprint-preview-input.schema.json"
-                    ),
-                    "schemas/plot-extract-input.schema.json" => {
-                        include_str!("../../../contracts/schemas/plot-extract-input.schema.json")
-                    }
-                    "schemas/plot-correct-input.schema.json" => {
-                        include_str!("../../../contracts/schemas/plot-correct-input.schema.json")
-                    }
-                    "schemas/validation-run-input.schema.json" => {
-                        include_str!("../../../contracts/schemas/validation-run-input.schema.json")
-                    }
-                    "schemas/finding-disposition-input.schema.json" => include_str!(
-                        "../../../contracts/schemas/finding-disposition-input.schema.json"
-                    ),
-                    "schemas/drama-build-input.schema.json" => {
-                        include_str!("../../../contracts/schemas/drama-build-input.schema.json")
-                    }
-                    "schemas/drama-edit-input.schema.json" => {
-                        include_str!("../../../contracts/schemas/drama-edit-input.schema.json")
-                    }
-                    "schemas/drama-compare-input.schema.json" => {
-                        include_str!("../../../contracts/schemas/drama-compare-input.schema.json")
-                    }
-                    "schemas/drama-script-input.schema.json" => {
-                        include_str!("../../../contracts/schemas/drama-script-input.schema.json")
-                    }
-                    _ => panic!("unregistered embedded input schema"),
-                };
-                let mut input = serde_json::from_str(source).expect("embedded input schema");
-                if reference.starts_with("schemas/blueprint-") {
-                    input = blueprint::bundle(input);
-                } else if reference.starts_with("schemas/plot-")
-                    || reference == "schemas/review-validate-input.schema.json"
-                {
-                    input = plot::bundle(input);
-                }
-                action["input_schema"] = input;
-                action.as_object_mut().unwrap().remove("input_schema_ref");
-            }
-        }
-        for action in catalog["actions"].as_array_mut().unwrap() {
-            action["input_schema"] = works::bundle_reference(action["input_schema"].take());
-        }
-        catalog
-    })
-}
 
 fn bytes(value: &Value) -> Result<Vec<u8>> {
     Ok(serde_json::to_vec_pretty(value)?)
@@ -289,7 +163,7 @@ fn validate_action_input(action: &str, input: &Value) -> Result<()> {
     static VALIDATORS: OnceLock<BTreeMap<String, OnceLock<jsonschema::Validator>>> =
         OnceLock::new();
     let validators = VALIDATORS.get_or_init(|| {
-        catalog()["actions"]
+        raw_catalog()["actions"]
             .as_array()
             .unwrap()
             .iter()
@@ -298,12 +172,7 @@ fn validate_action_input(action: &str, input: &Value) -> Result<()> {
     });
     // 打开单个任务无需先编译整个动作目录；每个动作仍使用同一份完整输入合同。
     let validator = validators[action].get_or_init(|| {
-        let descriptor = catalog()["actions"]
-            .as_array()
-            .unwrap()
-            .iter()
-            .find(|item| item["name"] == action)
-            .expect("registered action");
+        let descriptor = catalog::descriptor(action).expect("registered action");
         jsonschema::validator_for(&descriptor["input_schema"]).expect("embedded action validator")
     });
     if let Some(error) = validator.iter_errors(input).next() {
@@ -603,40 +472,25 @@ impl Kernel {
         &self.workspace_path
     }
     pub fn task_action_catalog() -> Value {
-        json!(
-            catalog()["actions"]
-                .as_array()
-                .unwrap()
-                .iter()
-                .filter(|action| creative_tasks::TASK_ACTIONS
-                    .contains(&action["name"].as_str().unwrap_or(""))
-                    && action["author_only"] == false)
-                .cloned()
-                .collect::<Vec<_>>()
-        )
+        Self::task_action_metadata(true, None)
+    }
+    pub(crate) fn task_action_metadata(include_schema: bool, exact: Option<&str>) -> Value {
+        catalog::select(include_schema, exact, |action| creative_tasks::TASK_ACTIONS
+            .contains(&action["name"].as_str().unwrap_or("")) && action["author_only"] == false)
     }
     pub fn collaboration_action_catalog() -> Value {
-        json!(
-            catalog()["actions"]
-                .as_array()
-                .unwrap()
-                .iter()
-                .filter(|action| action["scopes"]
-                    .as_array()
-                    .is_some_and(|scopes| scopes.iter().any(|scope| scope == "collaboration")))
-                .cloned()
-                .collect::<Vec<_>>()
-        )
+        Self::collaboration_action_metadata(true, None)
     }
-    pub(crate) fn management_action_catalog() -> Value {
+    pub(crate) fn collaboration_action_metadata(include_schema: bool, exact: Option<&str>) -> Value {
+        catalog::select(include_schema, exact, |action| action["scopes"].as_array()
+            .is_some_and(|scopes| scopes.iter().any(|scope| scope == "collaboration")))
+    }
+    pub(crate) fn management_action_metadata(include_schema: bool, exact: Option<&str>) -> Value {
         json!(
-            catalog()["actions"]
-                .as_array()
-                .unwrap()
-                .iter()
-                .filter(|action| crate::collaboration::authoring::management_action(
+            catalog::select(include_schema, exact, |action| crate::collaboration::authoring::management_action(
                     action["name"].as_str().unwrap_or("")
                 ))
+                .as_array().unwrap().iter()
                 .cloned()
                 .map(|mut action| {
                     // 此目录描述精确授权下的 Agent 变体，不沿用作者入口的身份标记。
@@ -698,6 +552,8 @@ impl Kernel {
                         && !name.starts_with("hetu.task_feedback.")
                         && !name.starts_with("hetu.task_context.")
                         && !name.starts_with("hetu.task_checkpoint.")
+                        && !name.starts_with("hetu.task_executions.")
+                        && name != "hetu.creative_tasks.assess"
                         && !name.starts_with("hetu.models.")
                         && !name.starts_with("hetu.model_tasks.")
                         && !matches!(name, "hetu.resources.create" | "hetu.resources.update")
@@ -719,24 +575,45 @@ impl Kernel {
         }
     }
     pub fn request(&self, request: Value) -> Value {
+        self.request_cancellable(request, &||false)
+    }
+    pub fn request_cancellable(&self, request: Value, cancelled: &dyn Fn() -> bool) -> Value {
+        self.request_observed(request, cancelled, true)
+    }
+    pub(crate) fn request_untracked(&self, request: Value) -> Value {
+        self.request_observed(request, &||false, false)
+    }
+    pub(crate) fn record_rejected_task_request(&self, request: &Value, result: &Value) -> Result<()> {
+        if let Some(mut attempt)=self.begin_task_attempt(request)? { attempt.finish(result)?; }
+        Ok(())
+    }
+    fn request_observed(&self, request: Value, cancelled: &dyn Fn() -> bool, track: bool) -> Value {
         let action = request
             .get("action")
             .and_then(Value::as_str)
             .unwrap_or("hetu.request.invalid")
             .to_owned();
-        let mut output = match self.execute(&request) {
+        let mut attempt = match if track { self.begin_task_attempt(&request) } else { Ok(None) } {
+            Ok(attempt) => attempt,
+            Err(error) => {
+                let mut result = domain::failure(&action,self.scope(),&Error::new(error.code,
+                    "未能记录执行开始，本次业务未执行；修复记录存储后保留原输入与键继续。"));
+                crate::machine::recovery(&mut result,&action,&request["input"]);
+                return result;
+            }
+        };
+        let execution = if cancelled() { Err(Error::new("cancelled","请求在业务执行前取消。")) } else { self.execute(&request,cancelled) };
+        let mut output = match execution {
             Ok(value) => value,
             Err(error) => domain::failure(&action, self.scope(), &error),
         };
-        if let Some(metadata) = catalog()["actions"]
-            .as_array()
-            .unwrap()
-            .iter()
-            .find(|a| a["name"] == action)
+        if let Some(metadata) = catalog::descriptor(&action)
         {
             output["contract_revision"] = metadata["contract_revision"].clone();
         }
         crate::machine::recovery(&mut output, &action, &request["input"]);
+        // 已完成事务的回执不受日志终态写入失败影响；原操作始终可回读。
+        if let Some(attempt) = &mut attempt { let _ = attempt.finish(&output); }
         output
     }
     fn input_digest(input: &Value) -> Result<String> {
@@ -752,17 +629,13 @@ impl Kernel {
     fn operation(key: &str, input_digest: &str) -> Value {
         json!({"id":id("op"),"key":key,"input_digest":input_digest,"recover_action":"hetu.operations.get"})
     }
-    fn execute(&self, request: &Value) -> Result<Value> {
+    fn execute(&self, request: &Value, cancelled: &dyn Fn()->bool) -> Result<Value> {
         schema(
             request,
             &json!({"type":"object","additionalProperties":false,"required":["action","contract_revision","input"],"properties":{"action":{"type":"string"},"contract_revision":{"type":"string"},"input":{"type":"object"}}}),
         )?;
         let action = text(request, "action")?;
-        let metadata = catalog()["actions"]
-            .as_array()
-            .unwrap()
-            .iter()
-            .find(|a| a["name"] == action)
+        let metadata = catalog::descriptor(action)
             .ok_or_else(|| Error::new("hetu.capability_unavailable", "此构建尚未实现该动作。"))?;
         ensure(
             self.action_available(metadata),
@@ -822,13 +695,13 @@ impl Kernel {
             return self.execute_model_network(action, input);
         }
         if matches!(action, "hetu.plugins.capabilities" | "hetu.plugins.invoke") {
-            return Ok(domain::success(action, self.scope(), self.execute_open_plugin(action, input)?));
+            return Ok(domain::success(action, self.scope(), self.execute_open_plugin(action, input, cancelled)?));
         }
         if action.starts_with("hetu.plugin_access.") {
             return Ok(domain::success(
                 action,
                 self.scope(),
-                self.execute_plugin_access(action, input)?,
+                self.execute_plugin_access(action, input, cancelled)?,
             ));
         }
         let write = metadata["effect"] != "read"
@@ -1070,6 +943,14 @@ impl Kernel {
             "hetu.work_links.get" => return self.get_work_link(input),
             "hetu.work_links.update_source" => return self.update_work_link_source(input, changes),
             "hetu.work_links.set_archived" => return self.set_work_link_archived(input, changes),
+            "hetu.baseline.inspect" => return crate::baseline::inspect(),
+            "hetu.video.media.save" => return self.save_video_media(input, changes),
+            "hetu.video.media.get" => return self.get_video_media(input),
+            "hetu.video.media.list" => return self.list_video_media(input),
+            "hetu.video.feedback.save" => return self.save_video_feedback(input, changes),
+            "hetu.video.feedback.list" => return self.list_video_feedback(input),
+            "hetu.video.delivery.preview" => return self.preview_video_delivery(input),
+            "hetu.assets.read_blob" => return self.read_asset_blob(input),
             "hetu.video.projects.create" => return self.create_video_project(input, changes),
             "hetu.video.projects.get" => return self.get_video_project(input),
             "hetu.video.projects.update" => return self.update_video_project(input, changes),
@@ -1129,6 +1010,8 @@ impl Kernel {
             "hetu.creative_tasks.submit_result" => self.submit_creative_result(input, changes),
             "hetu.task_checkpoint.get" => self.get_task_checkpoint(input),
             "hetu.task_checkpoint.save" => self.save_task_checkpoint(input, changes),
+            "hetu.task_executions.list" | "hetu.task_executions.get" => self.task_executions(action,input),
+            "hetu.creative_tasks.assess" => self.assess_creative_task(input),
             "hetu.creative_tasks.read_candidate" => self.read_task_candidate(input),
             "hetu.working_copies.create" => self.create_working_copy(input, changes),
             "hetu.working_copies.get" => self.get_working_copy(input),

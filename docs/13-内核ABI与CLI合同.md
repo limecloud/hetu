@@ -4,6 +4,8 @@
 
 领域 Schema 为 `1.0.0`；CLI／MCP 公开结果采用 AXI `0.2.1` 及逐动作合同修订。应用动作与签名见[30](30-应用API详细设计.md)。
 
+无作品和无额外创作插件时，可经稳定CLI的`hetu --client codex call hetu.baseline.inspect --input -`提交空JSON对象核对随包基础合同；`doctor`同时返回基础合同状态。读取或修改作品仍须精确管理或任务引用。
+
 ## 1. 共享应用边界
 
 Rust Core以library供App Server、CLI、MCP和插件CLI静态复用。桌面通过私有stdio传递固定JSON请求；不提供Swift桥接、C ABI、裸指针或动态Core加载入口。公开动作由 `contracts/actions.json` 和对应Schema维护。

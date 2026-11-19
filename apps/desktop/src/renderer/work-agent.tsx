@@ -3,6 +3,7 @@ import type { WorkRef } from "@hetu/plugin-sdk";
 import { desktop } from "./bridge.ts";
 import { Icon, IconButton, Workbench } from "./workbench.tsx";
 import "./work-agent.css";
+import { AgentAppInstall } from "./agent-app-install.tsx";
 
 const clients = [["codex", "Codex"], ["claudeCode", "Claude Code"], ["workbuddy", "WorkBuddy"], ["other", "其他客户端"], ["none", "暂不使用"]];
 const clientName = (value: string) => clients.find(([id]) => id === value)?.[1] ?? value;
@@ -77,6 +78,7 @@ export function WorkAgent({ work, notify, changed }: { work?: WorkRef; notify(me
       {(state.journal || state.other_pending) && <div className="work-agent-recovery" role="status"><p>{state.other_pending ? "有待确认的本机操作，请在设置中恢复。" : state.journal.status === "pending" ? "上次选择的结果尚未确认。" : "上次选择已有明确结果。"}</p>{!state.other_pending && <button disabled={busy} onClick={() => void run(async () => { await request(state.journal.status === "pending" ? "recover" : "acknowledge"); await refresh(); })}>{state.journal.status === "pending" ? "恢复原操作" : "收起已确认操作"}</button>}</div>}
       <div className="work-agent-options">
         <label className="work-agent-client"><span>{work ? "本作品客户端" : "默认客户端"}</span><select aria-label={work ? "本作品客户端" : "默认客户端"} value={association.client} disabled={disabled} onChange={e => void select(e.target.value, association.suite)}>{clients.map(([id,title]) => <option key={id} value={id}>{title}</option>)}</select></label>
+        {association.client === "codex" && <AgentAppInstall disabled={disabled}/>}
         <label><span>题材 Skills 套件</span><select aria-label="题材 Skills 套件" value={association.suite} disabled={disabled} onChange={e => void select(association.client, e.target.value)}>{options.map((s: any) => <option key={s.suite_id} value={s.suite_id}>{s.title}</option>)}</select></label>
         <details className="work-agent-finder"><summary>按分类查找或由外部 Agent 引导</summary><div>
           <input aria-label="搜索题材套件" placeholder="搜索题材或分类" value={query} onChange={e => setQuery(e.target.value)}/>

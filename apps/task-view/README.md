@@ -2,7 +2,7 @@
 
 # 任务局部交互
 
-本组件提供 MCP Apps 的参考方案比较面板及按需本地页面。页面通过官方 `@modelcontextprotocol/ext-apps` SDK 与宿主交互，支持书名／简介／大纲比较、局部改稿差异、封面预览及意见保存。界面提供中文和英文。
+本组件提供MCP App工作台、参考方案比较面板及按需本地页面。工作台按小说、剧本和视频组织正文、分集、设定、资料、任务、审核、版本、插件与本机设置；业务读取及执行复用Core。任务比较支持中英文、局部改稿差异、封面预览及意见保存。
 
 ## 构建与检查
 
@@ -17,13 +17,17 @@ npm run test:task-view
 
 测试使用 Playwright。可通过 `PLAYWRIGHT_EXECUTABLE_PATH` 指定本机浏览器；测试构建 `hetu-mcp` 与临时作品夹具，在浏览器沙箱中运行官方桥接并回读真实 stdio 保存结果。截图、跟踪和测试报告输出到根 `build/task-view/`。
 
-构建输出为 `apps/mcp/resources/task-view.html` 与同目录的 `task-view.manifest.json`。产物与源码摘要一起入库，直接编译 Rust 内核和独立 MCP 不需要 Node.js，也不在作者机器上安装前端依赖。修改前端源码后须先重新构建；Electron构建入口核对产物摘要，随包提供独立Node.js runtime。
+构建输出为`apps/mcp/resources/`中的`workbench`、`task-view`和`operation-view`单文件HTML与各自清单。产物与全部本地依赖源码摘要一起入库，直接编译Rust内核和独立MCP不需要Node.js，也不在作者机器上安装前端依赖。修改前端源码后须先重新构建；Electron构建入口核对产物摘要，随包提供独立Node.js runtime。
 
 本地宿主输出到 `apps/task-view/resources/local/`，包含固定页面、AppBridge、Node.js服务、许可与摘要清单，用于本地桥接的隔离测试。Electron直接装配同源任务面板；普通编辑和独立MCP不启动本地页面服务。Node服务只接受可信父进程的私有stdio配置，不能从公开命令行指定作品路径或作者身份。
 
 页面会话失效时清空任务内容；已保存意见保留在原任务中。实际宿主接入与权限由各宿主能力和当前连接决定。
 
 ## 交互边界
+
+- `hetu_open_app`在有Apps能力的稳定连接中提供全局／线程入口。空参数只显示接入首页；management_ref或task_locator分别打开已获权作品或原任务，不扫描书库。
+- `src/host/bridge.ts`复用标准MCP Apps桥接，`src/host/openai.ts`隔离OpenAI消息和深链接扩展；业务视图按能力显示，不按Codex或Claude品牌分支。完整开发方案见[27第6.1节](../../docs/27-Agent与Codex插件集成设计.md#61-codex-mcp-app-开发方案)。
+- 草稿、发送、上下文附加及成果保存分别显示。媒体分块给base64和双份MCP结果预留预算；重验固定文件身份、连续范围和完整摘要后使用本地Blob播放，不加载任意网络媒体。
 
 - 任务连接且宿主声明 Apps MIME 能力时，`hetu_open_task_view` 关联 `ui://hetu/task-view/1`；无 Apps 能力时保留同一工具的数据结果。
 - 面板只读取绑定任务、保存偏好与查询原操作。正式正文、设定、封面选用及定稿由作者在可信桌面端确认。

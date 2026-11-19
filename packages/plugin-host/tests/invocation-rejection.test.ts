@@ -24,12 +24,14 @@ test("真实manager/runtime/后端区分调用前拒绝、执行崩溃与插件�
     dependencies: [], permissions: ["objects.write"], runtime: { entry: "backend.mjs" },
     contributions: { views: [], data: [], actions: [{ id: "record", title: "固定记录", effect: "managed_write",
       input_schema: { type: "object", additionalProperties: false, required: ["operation_key", "mode"],
-        properties: { operation_key: { type: "string" }, mode: { enum: ["ok", "crash", "throw", "spoof"] } } } }] },
+        properties: { operation_key: { type: "string" }, mode: { enum: ["ok", "crash", "throw", "spoof"] } } } },
+      { id: "read", title: "读取", effect: "read", input_schema: { type: "object", additionalProperties: false } }] },
   }));
   await writeFile(path.join(source, "backend.mjs"), `
 let context;
 export function apply(value) { context = value; }
 export async function invoke(_action, input) {
+  if (_action === "read") return { content: "只读结果", invocation: { effect: "managed_write" } };
   await context.request("hetu.extensions.objects.save", { operation_key: input.operation_key });
   if (input.mode === "crash") process.exit(17);
   if (input.mode === "throw") throw Object.assign(new Error("插件动作参数不符合Schema。"), { code: "hetu.plugin_invocation_rejected" });
@@ -92,6 +94,16 @@ else {
     capabilities_sha256: discovered.reply.data.capabilities_sha256, action: "record",
     arguments: { operation_key: "original-" + mode, mode }, ...extra,
   });
+  const projectedWrite = invoke("ok", { view: {} });
+  assert.equal(projectedWrite.exit, 0);
+  assert.equal(projectedWrite.reply.ok, false);
+  assert.match(projectedWrite.reply.message, /只读/);
+  assert.deepEqual(await writes(), []);
+  const projectedRead = invoke("ok", { action: "read", arguments: {}, view: {} });
+  assert.equal(projectedRead.exit, 0);
+  assert.equal(projectedRead.reply.data.invocation.effect, "read");
+  assert.equal(projectedRead.reply.data.result.invocation.effect, "managed_write");
+  assert.deepEqual(await writes(), []);
   for (const [extra, reason] of [
     [{ package_sha256: "0".repeat(64) }, /旧能力引用/],
     [{ capabilities_sha256: "0".repeat(64) }, /能力已变化/],

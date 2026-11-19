@@ -7,6 +7,36 @@ import { PluginInstallations } from "../src/installations.ts";
 import { PluginPackage } from "../src/package.ts";
 const root = path.resolve(import.meta.dirname, "../../..");
 
+test("定向发现只核对目标与依赖，停用或替换依赖后不能继续", async () => {
+  const directory=await mkdtemp(path.join(os.tmpdir(),"hetu-selected-host-"));
+  const store=new PluginInstallations(directory);
+  const base=await PluginPackage.inspect(path.join(root,"plugins/relationships/dist"));
+  const targetDirectory=path.join(directory,"target");
+  const {mkdir}=await import("node:fs/promises");
+  for (const [name,bytes] of base.entries()) {
+    const file=path.join(targetDirectory,name);await mkdir(path.dirname(file),{recursive:true});await writeFile(file,bytes);
+  }
+  const manifest={...base.manifest,id:"org.test.selected",dependencies:[{id:base.manifest.id,version:base.manifest.version}]};
+  await writeFile(path.join(targetDirectory,"plugin.json"),JSON.stringify(manifest));
+  const target=await PluginPackage.inspect(targetDirectory);
+  const basePath=await store.snapshot(base),targetPath=await store.snapshot(target);
+  const state={packages:[{path:basePath,manifest:base.manifest,sha256:base.sha256,enabled:true},
+    {path:targetPath,manifest:target.manifest,sha256:target.sha256,enabled:true},
+    {path:path.join(directory,"unreadable-unrelated"),manifest:{...base.manifest,id:"org.test.unrelated"},sha256:"a".repeat(64),enabled:true}],grants:{}};
+  await store.save(state,(await store.read()).sha256);
+  let selected=await store.host((await store.read()).state,target.manifest.id);
+  assert.equal(selected.active(target.manifest.id),true);
+  assert.equal(selected.states().length,2);
+  assert.equal(selected.loadErrors.has("org.test.unrelated"),false);
+  assert.equal((await store.host(state)).loadErrors.has("org.test.unrelated"),true);
+  state.packages[0].enabled=false;
+  selected=await store.host(state,target.manifest.id);
+  assert.equal(selected.active(target.manifest.id),false);
+  state.packages[0].enabled=true;
+  state.packages[0].sha256="b".repeat(64);
+  assert.equal((await store.host(state,target.manifest.id)).active(target.manifest.id),false);
+});
+
 test("无窗口安装、停用和卸载共用状态；原键恢复，拒绝旧基线和包替换", async () => {
   const directory = await mkdtemp(path.join(os.tmpdir(), "hetu-installations-"));
   const store = new PluginInstallations(directory), other = new PluginInstallations(directory);

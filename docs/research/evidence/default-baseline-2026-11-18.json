@@ -1,0 +1,477 @@
+{
+  "recorded_at": "2026-11-18T15:53:29.316619+00:00",
+  "objective": "共享Core、统一CLI/MCP、随包基础模块与可选专业插件分层；无额外创作插件仍有小说、剧本和视频基础旅程",
+  "status": "implemented_and_development_verified",
+  "environment": {
+    "os": "Darwin",
+    "architecture": "arm64",
+    "node": "25.0.0",
+    "rustc": "1.93.1",
+    "runtime_version": "0.12.3"
+  },
+  "source": {
+    "git_head": "06c8f53211312c08726682368578f64450acdc61",
+    "working_tree": "包含既有并行改动；本任务未提交、未推送、未建分支",
+    "snapshot_scope": "关键已验证输入文件，非全工作树快照",
+    "files": [
+      {
+        "path": "contracts/baseline.json",
+        "size_bytes": 5909,
+        "sha256": "e819875ff3ceb1dcfb7f1097e60ba32d2f6bb0052586762b9ef6496e93839188"
+      },
+      {
+        "path": "contracts/actions.json",
+        "size_bytes": 231074,
+        "sha256": "10d64baad2f3e096163a82b9f2dc8ff1d095e69d1acbfbc068dd792ace352254"
+      },
+      {
+        "path": "contracts/schemas/video-review.schema.json",
+        "size_bytes": 7429,
+        "sha256": "b0dbe4e43e25bdbee80f71c8db3782744eb5d383579310878ff979846757ceaa"
+      },
+      {
+        "path": "core/src/baseline.rs",
+        "size_bytes": 1487,
+        "sha256": "ba1ce26fc3c2bf150855fb8e8ebd2109b96e452bd0cb93d68d61cdbfe46d495f"
+      },
+      {
+        "path": "core/src/application/video_review.rs",
+        "size_bytes": 13410,
+        "sha256": "cd6cc7aad5a88710de98918378a09acf6e570b78c180d747693da5e644c45bc8"
+      },
+      {
+        "path": "core/src/application/mod.rs",
+        "size_bytes": 71682,
+        "sha256": "ff9ade4734144ecc668a44c77f88f7f92c0e8748137a4024f7dcd6ecd87b1229"
+      },
+      {
+        "path": "core/src/application/catalog.rs",
+        "size_bytes": 9987,
+        "sha256": "b1e94e578950f444f5d6ec39dbecd09a110a106415ae4e8ce49a5c4820bca964"
+      },
+      {
+        "path": "core/src/application/work_scope.rs",
+        "size_bytes": 25160,
+        "sha256": "e2480752278d3a70c6b70d117a1a1d01d1be7c3477e943c084bb581d2d391732"
+      },
+      {
+        "path": "core/src/application/agent_operations.rs",
+        "size_bytes": 26876,
+        "sha256": "95db837e9183345e419df57e423b04b8fc85f8c509f892db21e3e40b0ea4893c"
+      },
+      {
+        "path": "core/src/application/handoffs.rs",
+        "size_bytes": 23319,
+        "sha256": "ffad20e7b7ee2b26b3f34cc9c6bb7f73592b73c60e5fc411a074538d5ffc8e0a"
+      },
+      {
+        "path": "core/src/collaboration.rs",
+        "size_bytes": 29363,
+        "sha256": "e22a252cad8f65cbf8b81f7de847e9d38cdbf9565706b212e6d63b3913900cac"
+      },
+      {
+        "path": "core/src/collaboration/authoring.rs",
+        "size_bytes": 42346,
+        "sha256": "b079011215513eff33c95f8ed10d765464a59308f3f94eb9b1e80837aed75fef"
+      },
+      {
+        "path": "core/tests/video_review.rs",
+        "size_bytes": 11013,
+        "sha256": "51ae1e582ac32052d6e6111f14af0c9ee1856796ed09c62e03cdcab88b024433"
+      },
+      {
+        "path": "packages/plugin-sdk/src/baseline.ts",
+        "size_bytes": 668,
+        "sha256": "8584898e3acce2c1741211ce73c6d8d0d6b6233a8e71f1ebdccda2732ce94c27"
+      },
+      {
+        "path": "packages/plugin-host/tests/baseline.test.ts",
+        "size_bytes": 8328,
+        "sha256": "5cd72ac527d78b466d2a809b5cedadffd0acdd8e476fd9765fae181dfd35c932"
+      },
+      {
+        "path": "apps/desktop/scripts/baseline.mjs",
+        "size_bytes": 1493,
+        "sha256": "e77477acfeb3a40dd3d3de6344b5cd01b6ffe9e8703f98b34f5872b9aa9d9feb"
+      },
+      {
+        "path": "apps/desktop/scripts/build.mjs",
+        "size_bytes": 4364,
+        "sha256": "8eeb00dc4e6688f2e5a9ffa707145e2937be5031241fdf462f5c00fb56f0d948"
+      },
+      {
+        "path": "apps/desktop/src/main/main.ts",
+        "size_bytes": 76523,
+        "sha256": "cbbe633d428a893a7faa454f611bdebb7230b48aba54fc1f8aa78a3d161d2e1f"
+      },
+      {
+        "path": "apps/desktop/src/main/video-review.ts",
+        "size_bytes": 7468,
+        "sha256": "b4650b0ba92360ec302f3b87de5e348b742e97e486627ecfdaabd1b91f837651"
+      },
+      {
+        "path": "apps/desktop/src/main/outlines.ts",
+        "size_bytes": 3949,
+        "sha256": "705d956d0d93f50b9a15d60cf69c20233420754c426f06988c90551b14915daf"
+      },
+      {
+        "path": "apps/desktop/src/main/shell-preload.ts",
+        "size_bytes": 3211,
+        "sha256": "a6e3afbea29b37d2d48abae940a7e125b22cd6afc7a1752386ea2e5ea59f955a"
+      },
+      {
+        "path": "apps/desktop/src/renderer/video-review.tsx",
+        "size_bytes": 12352,
+        "sha256": "0804174b599139c766290154f77471a81f4d840b76550b009a362e5f9a08fefb"
+      },
+      {
+        "path": "apps/desktop/src/renderer/outlines.tsx",
+        "size_bytes": 5811,
+        "sha256": "15fcecdd47872b37996a37e3b02f928d9045c19f5c0e8abdc2025949db89b205"
+      },
+      {
+        "path": "apps/desktop/src/renderer/contributions.tsx",
+        "size_bytes": 20778,
+        "sha256": "47dc655f4c89e4cbaee78391719e0da341672dc8536aaec652bef9ae38662dbf"
+      },
+      {
+        "path": "apps/desktop/src/renderer/media-preview.tsx",
+        "size_bytes": 3275,
+        "sha256": "e0060210b7849fb5b855a4ac1a36ffa50243e0f081bee226d867e8b3dba87624"
+      },
+      {
+        "path": "apps/desktop/src/renderer/surface-pages.css",
+        "size_bytes": 5805,
+        "sha256": "5d8e63461394474953d47b8dd17734352f494a46c62e34c624cdc6418b42a8ed"
+      },
+      {
+        "path": "apps/desktop/tests/baseline.spec.ts",
+        "size_bytes": 9727,
+        "sha256": "611a4464f7d727dc1fd6a461ef0d2bcff7dde17844a968840d2c7572666f4d12"
+      },
+      {
+        "path": "apps/desktop/tests/new-adoption.spec.ts",
+        "size_bytes": 15379,
+        "sha256": "4d71ab7b36030880312f28be18d1be370bc70948e337dcbdf1f1475c4a97fa93"
+      },
+      {
+        "path": "apps/app-server/examples/baseline_fixture.rs",
+        "size_bytes": 4375,
+        "sha256": "cfc8e1f9a644a38639b96dc5fb4cf9f55b1323c2bc1f5781041d7e5734f6e98b"
+      },
+      {
+        "path": "docs/39-Electron与插件优先重构架构.md",
+        "size_bytes": 24850,
+        "sha256": "21db4bbbab6b7e9da4d19783ec9da97959459c8598b9a2abe41e1a9eb5428dd6"
+      },
+      {
+        "path": "docs/38-创作工作台重构执行计划.md",
+        "size_bytes": 71492,
+        "sha256": "d7ae28ae62894b43a0539af83478c392b3fe9237d75c42f6176517627c04f841"
+      },
+      {
+        "path": "docs/20-实施路线与里程碑.md",
+        "size_bytes": 111148,
+        "sha256": "1c9efedbb371f2152b9a9b7120c8dc1ecc1fef73a59292ae29a29dedeee53926"
+      }
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "target/debug/hetu",
+      "size_bytes": 48983976,
+      "sha256": "822a3e42a9bc975850fcc970ecbf8c7aed0ae2e1f805940b937c066cfc881781"
+    },
+    {
+      "path": "target/debug/hetu-mcp",
+      "size_bytes": 59958200,
+      "sha256": "968ed0616010c663d2ceea1a4bcf84648d33dc805232e5a2e2ed403f40371353"
+    },
+    {
+      "path": "target/debug/hetu-app-server",
+      "size_bytes": 47751344,
+      "sha256": "76dad9680b133dd899108e40898129a9c6b813de407306f0221d0a7aac6bf859"
+    },
+    {
+      "path": "apps/desktop/dist/main.cjs",
+      "size_bytes": 578709,
+      "sha256": "4f54719e5e695f38e002c567a3f0694b75af06a2bef3f139ba5b2fb7b7602c03"
+    },
+    {
+      "path": "apps/desktop/dist/renderer/app.js",
+      "size_bytes": 3971415,
+      "sha256": "f880184f55e58951bd22b7f97651d8e239c72361c6def695d175e2211955571f"
+    },
+    {
+      "path": "apps/desktop/dist/renderer/app.css",
+      "size_bytes": 47755,
+      "sha256": "7fbd6201c5b8f781a3be01f9aa7dbdd3fb8c3552bf8d3c6154152e1d13377069"
+    },
+    {
+      "path": "apps/desktop/dist/baseline.json",
+      "size_bytes": 5909,
+      "sha256": "e819875ff3ceb1dcfb7f1097e60ba32d2f6bb0052586762b9ef6496e93839188"
+    },
+    {
+      "path": "output/baseline-qa/outlines-dark-960.png",
+      "size_bytes": 212814,
+      "sha256": "912858e5750342864b175d503ab607bbc4447d13c0e9e1b7d4dfcead0dcf61d9"
+    },
+    {
+      "path": "output/baseline-qa/outlines-light-1360.png",
+      "size_bytes": 232503,
+      "sha256": "29b920d4a5e039de80edd0f30653bc6393d677e2b72ae6a5b294922aa911f15b"
+    },
+    {
+      "path": "output/baseline-qa/video-dark-960.png",
+      "size_bytes": 385556,
+      "sha256": "b254befbb5fdefbab65de7c7b9bcc3c8f17180c7e1ee78042126e1853493ceae"
+    },
+    {
+      "path": "output/baseline-qa/video-light-1360.png",
+      "size_bytes": 407555,
+      "sha256": "f76287a9f451cc21a2f3818ededf48a1346a67744ed160e3dd657393a6a446e6"
+    },
+    {
+      "path": "output/baseline-doc-qa/diagram-1.png",
+      "size_bytes": 38859,
+      "sha256": "58f4e1bfb138a4c16e75763fd2dce81b8e188b845e224213e03c371905c1f4ae"
+    },
+    {
+      "path": "output/baseline-doc-qa/diagram-2.png",
+      "size_bytes": 62387,
+      "sha256": "79ffca430aaaa96fe574ccad88bcd592107d78a54d8c7c9b8cd1c326caae4f62"
+    },
+    {
+      "path": "output/baseline-doc-qa/diagram-3.png",
+      "size_bytes": 47489,
+      "sha256": "178d0b1a731892bae93526339936147e6de27a5bb6aeb2e0406a045e45a4154f"
+    },
+    {
+      "path": "output/baseline-doc-qa/diagram-3.svg",
+      "size_bytes": 28113,
+      "sha256": "7119c9affc18cc3c2c9575d3458fceace079bf9f4772c95ad451acb6d849c642"
+    },
+    {
+      "path": "output/baseline-doc-qa/diagram-2.svg",
+      "size_bytes": 29062,
+      "sha256": "7cdd8fedf515db162b52ea46e2419540fd928061cd07b2317080a7dfe54943ef"
+    },
+    {
+      "path": "output/baseline-doc-qa/diagram-1.svg",
+      "size_bytes": 24170,
+      "sha256": "3e70b4cc64d18f44683c69afdefb88755935f3fde44df9f436479f8792ce7d0e"
+    },
+    {
+      "path": "output/baseline-doc-qa/results.json",
+      "size_bytes": 276,
+      "sha256": "10f83db1d76881a8c3a1277fc7d819c970c39c0ee78feab75e7b06f4236a0a3d"
+    },
+    {
+      "path": "output/baseline-qa/capability-check.log",
+      "size_bytes": 19,
+      "sha256": "0a290158f76b29bce06ee0505bff2ee5daced0e452e7f8c4d22e52abf0deba80"
+    },
+    {
+      "path": "output/baseline-qa/methods-check.log",
+      "size_bytes": 77,
+      "sha256": "42eb2486f223188d7d09cc7ee354ab642cd34bd81657ced128b00a3af4825c86"
+    },
+    {
+      "path": "output/baseline-qa/skills-check.log",
+      "size_bytes": 118,
+      "sha256": "4bfe3615a1cd3ccfd988b36f84628103b012dc2543bbfddfd6df82875fd51e5c"
+    },
+    {
+      "path": "output/baseline-qa/docs-check.json",
+      "size_bytes": 263,
+      "sha256": "a38df25148484e267b77cab1d2e2d8ecde3e1efe574b66d5ea3533ebf5d73218"
+    },
+    {
+      "path": "output/baseline-qa/diff-check.log",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "output/baseline-qa/baseline-inspect.json",
+      "size_bytes": 4420,
+      "sha256": "ac040028a81e8c01cdfb2eb0f12840f93e9ea8cc784cbe6d3890959924e02210"
+    }
+  ],
+  "implementation": {
+    "baseline": "contracts/baseline.json为唯一随包清单；Core和桌面复用，不向用户插件目录隐式安装",
+    "core_actions": [
+      "hetu.baseline.inspect",
+      "hetu.video.media.save",
+      "hetu.video.media.get",
+      "hetu.video.media.list",
+      "hetu.video.feedback.save",
+      "hetu.video.feedback.list",
+      "hetu.video.delivery.preview",
+      "hetu.assets.read_blob"
+    ],
+    "desktop": [
+      "正式大纲阅读编辑与CAS冲突比较",
+      "视频固定成果播放与前版查看",
+      "固定区间意见及本机恢复稿",
+      "原输入原键恢复",
+      "受管句柄分块导出，完整摘要和当前权利核对",
+      "可选插件登记损坏时基础功能继续可用"
+    ],
+    "principles": {
+      "single_source": "复用共同事务、修订、授权和操作恢复，不建立第二份作品数据库",
+      "extension_boundary": "专业判断、工具适配和制作工程继续由可选插件及外部Agent承担",
+      "no_autonomous_loop": true
+    }
+  },
+  "verification_origin": "本会话工具执行回执；计数为最后通过的相关测试，不将重复复验累计为新增用例",
+  "tests": [
+    {
+      "command": "cargo test --locked -p hetu-core --test video_review --test video_episodes --test media_works --test authoring",
+      "passed": 14,
+      "failed": 0
+    },
+    {
+      "command": "cargo test --locked -p hetu-core --test agent_operations --test collaboration",
+      "passed": 13,
+      "failed": 0
+    },
+    {
+      "command": "cargo test --locked -p hetu-cli --test commands -p hetu-mcp --test stdio",
+      "passed": 42,
+      "failed": 0,
+      "by_adapter": {
+        "cli": 9,
+        "mcp_stdio": 33
+      }
+    },
+    {
+      "command": "Node25 --experimental-strip-types --test packages/plugin-host/tests/baseline.test.ts",
+      "passed": 6,
+      "failed": 0,
+      "final_recheck": "受管句柄导出变更后复验通过；1MiB以上样本跨3块，每次只打开1个句柄，成功与失败均关闭"
+    },
+    {
+      "command": "Node25 --experimental-strip-types --test packages/plugin-host/tests/host.test.ts packages/plugin-host/tests/installations.test.ts",
+      "passed": 16,
+      "failed": 0
+    },
+    {
+      "command": "Node25 playwright test baseline.spec.ts media-preview.spec.ts structure.spec.ts new-adoption.spec.ts",
+      "passed": 5,
+      "failed": 0,
+      "scope": "恢复默认正文入口、补齐原生退出确认后的完整复验",
+      "reported_duration": "1.9m"
+    },
+    {
+      "command": "Node25 playwright test baseline.spec.ts",
+      "passed": 1,
+      "failed": 0,
+      "duration_seconds": 28.3,
+      "repeat_of": "无插件完整旅程",
+      "scope": "最终受管句柄导出代码及完整字节比对"
+    }
+  ],
+  "unique_related_tests_passed": 96,
+  "builds": {
+    "rust_app_server_cli_mcp": "passed",
+    "desktop_typescript_and_esbuild": "passed",
+    "formal_installation_updated": false,
+    "release_published": false
+  },
+  "diagrams": [
+    {
+      "diagram": 1,
+      "status": "rendered",
+      "width": 519.1875,
+      "height": 694
+    },
+    {
+      "diagram": 2,
+      "status": "rendered",
+      "width": 1027,
+      "height": 680
+    },
+    {
+      "diagram": 3,
+      "status": "rendered",
+      "width": 900,
+      "height": 588
+    }
+  ],
+  "visual_review": {
+    "screenshots": [
+      "output/baseline-qa/outlines-light-1360.png",
+      "output/baseline-qa/outlines-dark-960.png",
+      "output/baseline-qa/video-light-1360.png",
+      "output/baseline-qa/video-dark-960.png"
+    ],
+    "overflow_assertion": "指定基础工作面scrollWidth不超过clientWidth+1，1360px浅色与960px暗色均通过",
+    "review": "实际截图核对基础排版与观看区，不作为自动像素评分"
+  },
+  "failure_history": [
+    {
+      "stage": "隔离样本准备",
+      "failure": "documents.save初始使用错误修订字段；随后修正为create_episode返回的document.current_revision_id",
+      "resolution": "按实际合同修正样本；未放宽产品校验"
+    },
+    {
+      "stage": "隔离样本授权",
+      "failure": "drama.projects.create结果没有work_ref",
+      "resolution": "从works.list读取真实剧本WorkRef后再授权"
+    },
+    {
+      "stage": "Electron目录回归",
+      "failure": "新增大纲位于贡献首位，意外成为小说默认打开页",
+      "resolution": "保留小说正文贡献为首项；无插件旅程增加默认正文入口断言",
+      "trace": "output/baseline-qa/first-regression-failures/structure-整部作品103章跨页读取、真实卷章顺序及独立剧本分集目录/trace.zip"
+    },
+    {
+      "stage": "Electron新章节与分集采纳恢复回归",
+      "failure": "业务断言已完成，退出时原生同步确认未被测试处理，达到原120秒时限",
+      "resolution": "明确选择保留恢复稿并退出，不增加时限、不跳过断言；完整复验22.1秒通过",
+      "trace": "output/baseline-qa/first-regression-failures/new-adoption-新章节与分集先预览后创建、精确归属，旧批次回执丢失后原键恢复不重复/trace.zip"
+    }
+  ],
+  "final_consistency_checks": {
+    "status": "passed",
+    "baseline_cli_matches_desktop_manifest": true,
+    "capability_map": "passed",
+    "method_distribution": "passed",
+    "skills": "passed",
+    "docs": {
+      "documents": 88,
+      "local_links": 1237,
+      "fragment_links": 259,
+      "traceability": {
+        "FR": 40,
+        "US": 61,
+        "UC": 54,
+        "E2E": 30,
+        "AC": 65
+      },
+      "id_references": 1261,
+      "json_examples": 11,
+      "schemas": 2,
+      "mermaid": 103,
+      "errors": []
+    },
+    "git_diff_check": "passed",
+    "logs": [
+      "output/baseline-qa/capability-check.log",
+      "output/baseline-qa/methods-check.log",
+      "output/baseline-qa/skills-check.log",
+      "output/baseline-qa/docs-check.json",
+      "output/baseline-qa/diff-check.log",
+      "output/baseline-qa/baseline-inspect.json"
+    ]
+  },
+  "boundaries": [
+    "本轮仅macOS arm64源码与开发Electron隔离样本，未覆盖正式安装或发行",
+    "Windows和Linux运行未验收",
+    "媒体流和时长为提交方声明；Core字节核验与实际播放分别取证",
+    "未执行付费模型制作、未评价实际创作品质、未作作者选用或成片确认",
+    "公共独立assets.read_blob每次核验固定文件；桌面导出沿单个受管媒体句柄分块",
+    "本轮未操作其他会话的独立源码、缓存或安装包"
+  ]
+}

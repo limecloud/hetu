@@ -1,5 +1,7 @@
 import type { WorkRef, WorkSurface } from "@hetu/plugin-sdk";
 export interface DesktopBridge {
+  outlines(method: "get" | "save" | "draft" | "recover", input?: Record<string, unknown>): Promise<any>;
+  video(method: "list" | "media" | "feedback" | "delivery" | "draft" | "journal" | "save_feedback" | "recover" | "export", input?: Record<string, unknown>): Promise<any>;
   workAgent(method: "get" | "inspect" | "select" | "choose_package" | "auto_detect" | "reveal_bundle" | "prepare_install" | "recover" | "acknowledge", input?: Record<string, unknown>): Promise<any>;
   canon(method: "get" | "preview" | "save" | "lock" | "recover" | "acknowledge", input?: Record<string, unknown>): Promise<any>;
   novel(method: "get" | "save" | "recover" | "acknowledge", input?: Record<string, unknown>): Promise<any>;
@@ -69,6 +71,7 @@ export interface DesktopBridge {
     method: "status" | "select" | "authorize" | "revoke",
     client: string,
   ): Promise<any>;
+  installConnection(client: string): Promise<any>;
   dirty(value: boolean): Promise<void>;
   buffer(
     document_id: string,

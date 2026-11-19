@@ -70,6 +70,38 @@ impl Drop for Client {
 }
 
 #[test]
+fn local_agent_requests_share_host_state_without_inheriting_author_decisions() {
+    let directory = tempfile::tempdir().unwrap();
+    let mut child = Command::new(env!("CARGO_BIN_EXE_hetu-app-server"))
+        .args(["--stdio", "--local"])
+        .env("HETU_LOCAL_SETTINGS_DIR", directory.path())
+        .stdin(Stdio::piped()).stdout(Stdio::piped()).stderr(Stdio::null())
+        .spawn().unwrap();
+    let mut client = Client {
+        input: child.stdin.take().unwrap(), output: BufReader::new(child.stdout.take().unwrap()), child, next: 0,
+    };
+    client.ready();
+    assert_eq!(client.rpc("local_settings/request", json!({"client_adapter":"codex","request":{},"approved":true}))["error"]["code"], -32602);
+    let prepared = client.rpc("local_settings/request", json!({"client_adapter":"codex","request":{
+        "action":"hetu.local_settings.prepare","contract_revision":"1","input":{
+            "kind":"preferences","patch":{"font_size":19},"summary":"私有传输保留Agent身份","operation_key":"prepare"
+        }}}));
+    assert_eq!(prepared["result"]["status"], "succeeded", "{prepared}");
+    let plan = &prepared["result"]["data"];
+    assert_eq!(plan["fixed"]["client_adapter"], "codex");
+    let blocked = client.rpc("local_settings/request", json!({"client_adapter":"codex","request":{
+        "action":"hetu.local_settings.execute","contract_revision":"1","input":{
+            "operation_id":plan["operation_id"],"sha256":plan["sha256"],"operation_key":"execute"
+        }}}));
+    assert_eq!(blocked["result"]["error"]["code"], "hetu.author_confirmation_required");
+    let host = client.rpc("local_settings/host", json!({"method":"get","input":{}}));
+    assert_eq!(host["result"]["preferences"]["font_size"], 18);
+    let forbidden = client.rpc("local_settings/request", json!({"client_adapter":"codex","request":{
+        "action":"hetu.documents.save","contract_revision":"1","input":{}}}));
+    assert_eq!(forbidden["result"]["error"]["code"], "hetu.capability_unavailable");
+}
+
+#[test]
 fn private_startup_paths_cannot_be_relative_duplicated_or_added_to_local_connection() {
     let directory = tempfile::tempdir().unwrap();
     let workspace = directory.path().join("作品");

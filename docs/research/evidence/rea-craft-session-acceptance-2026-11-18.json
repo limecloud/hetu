@@ -1,0 +1,736 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-11-18",
+  "status": "source_review_and_slice_verified",
+  "scope": "作者指定REA与Craft Anything本地源码定向对照；河图任务接续增强及正式版与源码版分开验收",
+  "platform": "macOS arm64",
+  "reference_review": {
+    "rea": {
+      "commit": "b21db3f3293bcfaffa6793be2f09b1aaf35dcc69",
+      "working_tree_clean": true,
+      "inspection": "focused_source_and_test_definition_review",
+      "executed_upstream_tests": false,
+      "files": {
+        "package.json": "ce25a0cc29b80eafe4ffed6b4a6dd3e46bd9ca34a1942a2cd2be9dd7253e10e4",
+        "src/contracts/catalog/catalogDiscovery.ts": "77777d3b658c297f3d50b1d5af9dfc085157a2c3717331077f8f3c2bf0dfb74e",
+        "src/server/DeferredEvidenceMcpServer.ts": "3efa19a240521bb2d3ac3b19d704b6b5071f044190928b69634b446d3f4db937",
+        "src/contracts/compactInputSchema.ts": "4be69ed548344ed91ca553c1d82b847d9cc1e2d2ac77d5391c67b766ccf21d9f",
+        "src/domain/evidence.ts": "09712e266c22434721dfd44b923a223fdb8d3a0cbb7f4cbf58f700a3ecf902ca",
+        "src/domain/evidenceRecordSummary.ts": "0b8f06834fcb128df5ac6dd9b5b97d67fde2fe194ddd9ec5f06727a3d7ffe946",
+        "src/domain/residualUnknown.ts": "2f41e44e2da78c151d9a8248cc2b7d5a990055010c327acca3c3221f6d487e11",
+        "src/application/investigation/InvestigationRecords.ts": "78a3795d635626b749a71a149c07c7dd1f6b3589cea75dc9c9726dd9d17ddbba",
+        "src/application/investigation/InvestigationRetention.ts": "61f398e787de7b154192618ae06cbc197d6d1f241f7d6d1a3a20e07ed9b31883",
+        "src/server/ToolResultDelivery.ts": "80c3dc485b128827a87d2dd4ac2e82b9b03c5d41841e78d4046f3c2382b299d1",
+        "src/server/retainedSummaryDelivery.ts": "f21a3e8d6db4e478be95780a32c59c5319608c7d230158dc35c2456bc6b6f46b",
+        "src/server/recoveryInstructions.ts": "e0f16370b6e1e778248e843a1c02be38926bf9f8826e1e809aeb451c6f6b1dfd",
+        "src/contracts/promptContracts.ts": "13c7a6be384f6c81bf90a8eb6e9c1c50b7fe77b08087aa4cfc1d8a8e35445165",
+        "src/application/GuidedWorkflowAccess.ts": "c670feea1d1c9eda5b6711044dac4ad72911625ec5d1ffe6938ca09e9b92346a",
+        "src/domain/evidenceCompletionLedger.ts": "ff9ec4d4c0cfc1987c3bfad710411a47828333ab8ab5503ffc4e1cf8327ef648",
+        "src/application/ReconstructionObligationLedgerEvaluation.ts": "52f6d51dc56d5c178206a416ba6284909e0c32ef3628ec236a3eaf8ca169810c",
+        "src/process/RetainedCommandCleanup.ts": "5550a901ba59da2e496ca84f439011f3ac3956f276c8de41eba36c263e270120",
+        "src/server/RequestTrackingMcpServer.ts": "8f91b5b047aed52461be11f378e388a2587d9ed1d60939ad61aaaacf320e4d3d",
+        "src/server/toolResultEncoding.ts": "57a76dd98485f3f1980576ea6c06832dc0dd38ecbe26738713568bd879b29797",
+        "src/application/investigation/EvidenceLedger.residualUnknown.test.ts": "39b63efcf28af8bd2c271b8ac26ccdaf57543a1c532e891ce3d6bf5ccbe36120",
+        "docs/development/tool-design.md": "cdd1b6a620b4830a62e465de2acbf9c3705ecc9221e7842d53561678ce586bca",
+        "docs/design/limits-and-recovery.md": "de5b6430a07ada629ae6604f2b3b9781816a93797bf6108e59531fa915fa41d8"
+      },
+      "version": "6.9.0",
+      "license": "MIT"
+    },
+    "craft_anything": {
+      "commit": "788642e487c5d39a4a0f8823c07024c301761861",
+      "working_tree_clean": true,
+      "inspection": "focused_source_and_test_definition_review",
+      "executed_upstream_tests": false,
+      "files": {
+        "Cargo.toml": "e75f09d4dc590ab69e33997028965392e2d0c3047028bd74bae8b4ac0ddebf85",
+        "crates/evidence/src/lib.rs": "6e2be63eac61822029ee3bd788ea4a52763d51f61ba9c27bfcb445e83ce8980b",
+        "crates/evidence/src/unknown.rs": "ffc1813cad337f9383930725379eb53c171f657cf1dcfa8d433a51a6c931ee35",
+        "crates/evidence/src/error.rs": "b7641680bad555f35ee4026be10bdb1934d2d422af4205f8dc5820ed378c2b3c",
+        "crates/engine/src/tool.rs": "1cd8fb9370b7ecb2ba10290211a69c9d67defe552949c9e07b0e5a7ddd8f4e82",
+        "crates/engine/src/registry.rs": "15600c95a13fc8b9ac935f347d5256ff65aaaf3ff0f6dec2b56a403dc6e5566d",
+        "crates/engine/src/lib.rs": "f9909c0c9d67dd8f88b9eca21f53d47318f85ae34e93882be547c96f81f5d7b8",
+        "crates/engine/src/tools/investigation_tools.rs": "1177ae95e94306b2f0f3ec82ae8a0fcd904623edf35c0f3561473350e24ff049",
+        "crates/engine/src/journal.rs": "5d655a90719ba75de94e8f926ff1ca80bffc1838cf6216450be0f4522663d77a",
+        "crates/engine/src/session.rs": "b051bd3adc47880834bd8714272a90d209c1c84506c4c2aecd213da11e4a4bf9",
+        "crates/engine/src/tools/session_tools.rs": "86ac8d47914b74331d6bf48d92c6242495ae82579e308840e3140c573692b623",
+        "crates/engine/src/tools/report_tools.rs": "c8b27e0cbbc0bf695d91dd429f9d1714144fa37a97f48c4b223ea7a5a8025442",
+        "crates/engine/src/tools/native_workflows.rs": "3f92d91d7cc06a53c63af21bf311e0e655d5ae0868af457737289045de0862bf",
+        "crates/analysis/src/js_ledger.rs": "fe5364eda31c41804dfb5f9e8aeafe7c2e815134982dad23b35359a26586717d",
+        "crates/platform/src/process.rs": "218b661d0b03fe1b9c0d97f35c8c21c8ab679451202a2a52ba362b29232899ae",
+        "crates/mcp/src/lib.rs": "f0014cf52692c26f46af9764d38dfa77da7849ee86ddb1d98bd13fbc2105e85f"
+      },
+      "version": "0.6.1",
+      "license": "MIT OR Apache-2.0"
+    }
+  },
+  "scope_correction": "前轮Skills与连接观察不能代表指定源码全部能力；本轮补38份固定身份文件的定向实现及测试定义检查。上游测试未运行。",
+  "comparison": [
+    {
+      "mechanism": "progressive_discovery_and_deferred_runtime",
+      "sources": [
+        "rea:src/contracts/catalog/catalogDiscovery.ts",
+        "rea:src/server/DeferredEvidenceMcpServer.ts",
+        "craft_anything:crates/mcp/src/lib.rs"
+      ],
+      "observed": "REA按关键词或确切名称加载小页Schema，并在首次实际调用时初始化运行时；Craft按工具组暴露。",
+      "hetu": "默认12工具、按组和确切动作读取Schema、通用路由已有；关键词筛选、结构化前置条件和冷启动成本尚需处理。",
+      "decision": "扩展现有目录Owner，不把目录可见性当作授权。",
+      "priority": "P0",
+      "status": "partial_existing"
+    },
+    {
+      "mechanism": "evidence_identity_authority_and_coverage",
+      "sources": [
+        "rea:src/domain/evidence.ts",
+        "rea:src/domain/evidenceRecordSummary.ts",
+        "craft_anything:crates/evidence/src/lib.rs"
+      ],
+      "observed": "不可变语义身份、来源权威、覆盖和局限分别表达；引用保留闭合不等于分析完整。",
+      "hetu": "固定任务、上下文、稿件、反馈和事务回执已有；本轮新增逐条依据。",
+      "decision": "复用各领域引用；不建立替代作品及专业事实Owner的证据库。",
+      "status": "implemented_slice"
+    },
+    {
+      "mechanism": "retention_before_summary_and_delivery_recovery",
+      "sources": [
+        "rea:src/server/retainedSummaryDelivery.ts",
+        "rea:src/application/investigation/InvestigationRetention.ts",
+        "rea:src/server/ToolResultDelivery.ts",
+        "craft_anything:crates/engine/src/session.rs"
+      ],
+      "observed": "REA在执行前核对保留能力，区分完整、部分、已保存及未保存结果；Craft可从项目盘上按ID回读未加载的记录。",
+      "hetu": "持久稿件与原操作可固定分页；普通只读投影明确retained=false，逐次重验摘要。",
+      "decision": "只在实际历史观察用例需要时增加保留；避免将重新执行读取冒充固定留存。",
+      "status": "partial_existing"
+    },
+    {
+      "mechanism": "durable_memory_hypotheses_and_unknowns",
+      "sources": [
+        "craft_anything:crates/engine/src/tools/investigation_tools.rs",
+        "craft_anything:crates/evidence/src/unknown.rs",
+        "rea:src/domain/residualUnknown.ts"
+      ],
+      "observed": "调查记忆有稳定假设和发现标识、支持与反证；Unknown有修订、状态、验证要求和消解依据。",
+      "hetu": "本轮有逐条依据、预测与状态、交接及陷阱；稳定说明标识、正反依据关系和专业Unknown生命周期未完成。",
+      "decision": "checkpoint只存Agent说明，专业问题沿研究、审校和规划插件Owner继续。",
+      "priority": "P0",
+      "status": "implemented_slice_with_remaining_gaps"
+    },
+    {
+      "mechanism": "execution_journal_and_uncertain_outcomes",
+      "sources": [
+        "craft_anything:crates/engine/src/lib.rs",
+        "craft_anything:crates/engine/src/journal.rs",
+        "rea:src/server/recoveryInstructions.ts"
+      ],
+      "observed": "Craft记录成功及失败调用；REA明确宿主超时不证明执行或清理结束，不重放未知操作。",
+      "hetu": "成功写入有原键回执和审计，模型计划可恢复；没有精确任务内统一可检索的失败、取消和未知执行目录。",
+      "decision": "新增执行目录前定义状态Owner和隐私预算，不复制请求正文或模型对话日志。",
+      "priority": "P0",
+      "status": "planned"
+    },
+    {
+      "mechanism": "completion_ledger_and_qualified_proof",
+      "sources": [
+        "rea:src/domain/evidenceCompletionLedger.ts",
+        "rea:src/application/ReconstructionObligationLedgerEvaluation.ts",
+        "craft_anything:crates/analysis/src/js_ledger.rs"
+      ],
+      "observed": "账本从具体义务、Owner、用例、验证强度及证据计算完成或缺项；弱证据和失败不能按已实现计为证明。",
+      "hetu": "收到候选、选择和定稿分别存在；Agent的done/supported不等于专业检查通过。",
+      "decision": "宿主聚合确定性交付事实，专业Owner报告检查覆盖和缺项，作者决定继续独立。",
+      "priority": "P0",
+      "status": "planned"
+    },
+    {
+      "mechanism": "tool_registry_and_optional_guided_workflows",
+      "sources": [
+        "craft_anything:crates/engine/src/tool.rs",
+        "craft_anything:crates/engine/src/registry.rs",
+        "rea:src/contracts/promptContracts.ts",
+        "rea:src/application/GuidedWorkflowAccess.ts"
+      ],
+      "observed": "Craft从共享ToolSpec派生各入口；REA将同一工作流从prompt及普通工具读取，render不执行业务。",
+      "hetu": "Core动作、CLI/MCP及专业动态Skills已共享；方法安装与当前会话加载分别核验。",
+      "decision": "重复的确定性组合在应用用例交付；生成、创作判断和工具选择留在外部Agent，不建内置Agent循环。",
+      "status": "partial_existing"
+    },
+    {
+      "mechanism": "result_content_provenance",
+      "sources": [
+        "rea:src/server/toolResultEncoding.ts",
+        "craft_anything:crates/mcp/src/lib.rs"
+      ],
+      "observed": "具体MCP结果附带目标内容来源标记，和初始化说明同时存在。",
+      "hetu": "初始化指令与Skills有数据及授权边界；缺少统一逐结果内容来源元数据。",
+      "decision": "从结果生产合同声明内容来源，避免通过正文关键字猜测。",
+      "priority": "P1",
+      "status": "planned"
+    },
+    {
+      "mechanism": "process_lifecycle_and_cleanup_ownership",
+      "sources": [
+        "craft_anything:crates/platform/src/process.rs",
+        "rea:src/process/RetainedCommandCleanup.ts",
+        "rea:src/server/RequestTrackingMcpServer.ts"
+      ],
+      "observed": "进程族、期限、输出排空、取消和重试清理有明确Owner；清理未完成时保留所有权。",
+      "hetu": "插件管理已有45秒期限和4MiB输出上限；输出排空及后代清理需要对应场景核对。",
+      "decision": "这是源码得到的检查项，不声称已复现正常插件运行故障，不直接移植逆向引擎生命周期。",
+      "priority": "P1",
+      "status": "source_review_only"
+    },
+    {
+      "mechanism": "whole_task_agent_evaluation",
+      "sources": [
+        "rea:docs/development/tool-design.md"
+      ],
+      "observed": "完整任务评价包括首次选路、参数错误、恢复、最终结论，以及token和进程族资源；脚本顺序不证明Agent自主选路。",
+      "hetu": "已有固定CLI/stdio脚本旅程、字节、调用和耗时；真实Agent选路、token及冷暖资源比较尚未测量。",
+      "decision": "建立小说、剧本、视频代表性任务，不用工具数或字节减少宣称性能提升。",
+      "priority": "P1",
+      "status": "planned"
+    }
+  ],
+  "implementation": {
+    "methods_version": "0.3.11",
+    "release_status": "unpublished_source",
+    "authority": "agent_notes",
+    "checkpoint_budget_bytes": 16384,
+    "implemented": [
+      "statement_fixed_context_working_copy_feedback_references",
+      "observation_derivation_require_evidence",
+      "hypothesis_prediction_and_testing_supported_refuted_abandoned",
+      "supported_refuted_require_resolvable_reference",
+      "handoff_summary_and_pitfalls",
+      "mandatory_CAS_and_existing_revision_hash_chain",
+      "legacy_checkpoint_read_compatibility",
+      "45_generated_method_suites_synced"
+    ],
+    "semantic_limit": "引用核验不证明结论或预测正确；假设先预测后验证属于方法要求，Core不鉴别语义或作者认可。",
+    "source_base_commit": "06c8f53211312c08726682368578f64450acdc61",
+    "source_manifest_sha256": "98912188ebbfb55b177223486ea042ca4b5083c3a3623254bd3e741fc2b8c9e0",
+    "source_manifest_file_count": 327,
+    "source_manifest_selection": [
+      "Cargo.toml",
+      "Cargo.lock",
+      "core",
+      "apps/cli",
+      "apps/mcp",
+      "apps/app-server",
+      "apps/plugin-cli",
+      "contracts",
+      "integrations/codex/hetu",
+      "tools/accept-machine-continuation.py",
+      "tools/sync-writing-methods.py",
+      "tools/hetu-skills/base"
+    ],
+    "source_manifest_algorithm": "SHA256 of UTF-8 JSON of sorted git-tracked relative-path-to-SHA256 map, sort_keys=true and separators comma/colon",
+    "source_files": {
+      "contracts/actions.json": "5ec316cf8cf241aa69f9d44e5ecaedaaa955cf9b73464f987c9aeb9b1fbba400",
+      "contracts/capability-map.json": "ddf3a1b9584446fdeee72014f16d35bb9b2cdb5a660eef3ece35ec7478d15c5f",
+      "contracts/schemas/creative-task.schema.json": "ab837b39d852b3cc9644edad4369ed7b63e68eec94e6ee0330503e766edd68cd",
+      "core/src/application/creative_tasks/checkpoint.rs": "fbcb6b9683482ecf96fe389fa83f698734560f3dd4c05cecabbec03cfd74ef31",
+      "core/tests/machine_continuation.rs": "6ba95bd3f7991436d0925385a474f12feef96a1700a83bf97e5568a200611ff7",
+      "tools/accept-machine-continuation.py": "8d0a02bb15660dfc1dbf54ff7695679b0cbb9dd3b904389911cc41c45c9b9108",
+      "tools/hetu-skills/base/references/task-contract.md": "3469ab2ec2d37ccdfdadae5a1c740a188fef2fdb3797f99d45417da1f4a79539",
+      "tools/hetu-skills/base/skills/hetu-setup/SKILL.md": "885da844533024d892de7b5972dcc9a43199c96536b713f65e9ef8df04f466e7",
+      "tools/sync-writing-methods.py": "e170112b68377669e28f0e5c8eab04c014444ab328a591cdfd89071f767ac9dc",
+      "integrations/codex/hetu/references/method-manifest.json": "6209e8a8aa0c982a002e8c97be108451aea35ed3e08f3c2e06c31e235fe74f07"
+    }
+  },
+  "official_v0120": {
+    "release_source_commit": "b2fba2e1cba4c84a0c06176cfc8d23a9f83ed058",
+    "methods_version": "0.3.10",
+    "initial": {
+      "schema_version": "1.0.0",
+      "kind": "conversation_machine_acceptance",
+      "runtime_version": "0.12.0",
+      "cli_sha256": "63876a2578a19731b48e232ad4f35beca2bb86c13b573edf835edd709102c786",
+      "mcp_sha256": "740df281c358afde2d7c60ff8ed9413256ac91fc2900028ee5c39025b8bc18a8",
+      "methods_version": "0.3.10",
+      "catalog_sha256": "94c95635aed69a4dae0084cfbeb434467763aeddc683efc21d3d3d620d8c7f5e",
+      "default_tool_count": 12,
+      "discovery_bytes": 5705,
+      "fixed_text_bytes": 132080,
+      "fixed_text_sha256": "61d1fb67b4824c74f7bea8b985fb329b68577ec8e0357b07b56625df9aec0f7c",
+      "fixed_text_pages": 32,
+      "checks": [
+        "bounded_discovery",
+        "version_difference",
+        "generic_dispatch",
+        "idempotent_save",
+        "public_feedback",
+        "checkpoint_reopen",
+        "checkpoint_conflict",
+        "cli_mcp_recovery",
+        "oversize_fixed_summary",
+        "old_revision_unicode_reassembly",
+        "fixed_submission",
+        "fixed_candidate_read",
+        "delivered_checkpoint",
+        "recursive_dispatch_denied"
+      ],
+      "limits": [
+        "synthetic_creation_project",
+        "no_author_adoption_or_finalization",
+        "no_paid_model_calls",
+        "installed_desktop_not_updated"
+      ],
+      "call_count": 53,
+      "max_recorded_mcp_bytes": 32399,
+      "sum_of_recorded_calls_ms": 2941,
+      "timing_scope": "recorded_calls_only_not_full_task_wall_time",
+      "expected_rejections": [
+        {
+          "action": "hetu.task_checkpoint.save",
+          "code": "revision_conflict"
+        },
+        {
+          "action": "hetu.collaboration.invoke",
+          "code": "invalid_input"
+        }
+      ],
+      "report_sha256": "b8f0d5a65955071029c95f68d204870ef35b0a2136efa6c51c399a6a67703f48"
+    },
+    "same_key_replay": {
+      "schema_version": "1.0.0",
+      "kind": "conversation_machine_acceptance",
+      "runtime_version": "0.12.0",
+      "cli_sha256": "63876a2578a19731b48e232ad4f35beca2bb86c13b573edf835edd709102c786",
+      "mcp_sha256": "740df281c358afde2d7c60ff8ed9413256ac91fc2900028ee5c39025b8bc18a8",
+      "methods_version": "0.3.10",
+      "catalog_sha256": "94c95635aed69a4dae0084cfbeb434467763aeddc683efc21d3d3d620d8c7f5e",
+      "default_tool_count": 12,
+      "discovery_bytes": 5705,
+      "fixed_text_bytes": 132080,
+      "fixed_text_sha256": "61d1fb67b4824c74f7bea8b985fb329b68577ec8e0357b07b56625df9aec0f7c",
+      "fixed_text_pages": 32,
+      "checks": [
+        "bounded_discovery",
+        "version_difference",
+        "generic_dispatch",
+        "idempotent_save",
+        "public_feedback",
+        "checkpoint_reopen",
+        "checkpoint_conflict",
+        "cli_mcp_recovery",
+        "oversize_fixed_summary",
+        "old_revision_unicode_reassembly",
+        "fixed_submission",
+        "fixed_candidate_read",
+        "delivered_checkpoint",
+        "recursive_dispatch_denied"
+      ],
+      "limits": [
+        "synthetic_creation_project",
+        "no_author_adoption_or_finalization",
+        "no_paid_model_calls",
+        "installed_desktop_not_updated"
+      ],
+      "call_count": 51,
+      "max_recorded_mcp_bytes": 36589,
+      "sum_of_recorded_calls_ms": 27170,
+      "timing_scope": "recorded_calls_only_not_full_task_wall_time",
+      "expected_rejections": [
+        {
+          "action": "hetu.task_checkpoint.save",
+          "code": "revision_conflict"
+        },
+        {
+          "action": "hetu.collaboration.invoke",
+          "code": "invalid_input"
+        }
+      ],
+      "report_sha256": "a23b9d6d97a747a5428515255e412078a76e9c157ea12b7ccaf896f7870feb2b"
+    },
+    "boundary_probes": {
+      "runtime": "0.12.0",
+      "catalog_actions": 144,
+      "checkpoint_revision": 2,
+      "checks": [
+        "catalog_complete_unique_and_bounded",
+        "catalog_stale_snapshot_denied",
+        "exact_schema_discovery",
+        "forged_task_reference_denied",
+        "identity_override_denied",
+        "write_projection_denied",
+        "recursive_dispatch_denied",
+        "unsubmitted_operation_not_found",
+        "unpublished_fields_fail_closed",
+        "denied_requests_do_not_change_checkpoint"
+      ],
+      "catalog_pages": 6,
+      "call_count": 19,
+      "working_copy_count": 1,
+      "candidate_count": 1
+    },
+    "discovery_modes": [
+      {
+        "mode": "compact",
+        "tools": 12,
+        "tool_list_bytes": 44857,
+        "runtime": "0.12.0",
+        "skill": "0.3.10"
+      },
+      {
+        "mode": "all_tools",
+        "tools": 142,
+        "tool_list_bytes": 560484,
+        "runtime": "0.12.0",
+        "skill": "0.3.10"
+      }
+    ],
+    "discovery_byte_measurement": "SDK tools/list payload serialization; differs from source raw RPC frame measurement"
+  },
+  "development_source": {
+    "initial": {
+      "schema_version": "1.0.0",
+      "kind": "conversation_machine_acceptance",
+      "runtime_version": "0.12.0",
+      "cli_sha256": "3c9a2f49e2f3680779e4e54739e02b82052b4df5fea843e88260e48a3f5e1e57",
+      "mcp_sha256": "3af2f3aaff7eb3cfe647f33922d4acb3448d7bbb326f75fc02a9a9dfd3f53dca",
+      "methods_version": "0.3.11",
+      "catalog_sha256": "f9faa67d2a1f4db629302c1aa04c4eda4835c9d838b8bba4ad689dda36390bd9",
+      "default_tool_count": 12,
+      "discovery_bytes": 5705,
+      "fixed_text_bytes": 132080,
+      "fixed_text_sha256": "61d1fb67b4824c74f7bea8b985fb329b68577ec8e0357b07b56625df9aec0f7c",
+      "fixed_text_pages": 32,
+      "checks": [
+        "bounded_discovery",
+        "version_difference",
+        "generic_dispatch",
+        "idempotent_save",
+        "public_feedback",
+        "checkpoint_reopen",
+        "checkpoint_conflict",
+        "cli_mcp_recovery",
+        "oversize_fixed_summary",
+        "old_revision_unicode_reassembly",
+        "fixed_submission",
+        "fixed_candidate_read",
+        "delivered_checkpoint",
+        "recursive_dispatch_denied",
+        "unbacked_claims_and_forged_evidence_denied_without_writes",
+        "evidence_links_and_handoff_reopened",
+        "agent_notes_never_become_author_facts",
+        "missing_operation_not_found",
+        "changed_input_same_key_denied",
+        "readonly_projection_snapshot_checked",
+        "write_projection_denied",
+        "prediction_verified_against_fixed_revised_artifact",
+        "old_evidence_revision_preserved_after_new_draft"
+      ],
+      "limits": [
+        "synthetic_creation_project",
+        "no_author_adoption_or_finalization",
+        "no_paid_model_calls",
+        "installed_desktop_not_updated"
+      ],
+      "call_count": 71,
+      "max_recorded_mcp_bytes": 32517,
+      "sum_of_recorded_calls_ms": 13252,
+      "timing_scope": "recorded_calls_only_not_full_task_wall_time",
+      "expected_rejections": [
+        {
+          "action": "hetu.task_checkpoint.save",
+          "code": "invalid_input"
+        },
+        {
+          "action": "hetu.task_checkpoint.save",
+          "code": "invalid_input"
+        },
+        {
+          "action": "hetu.task_checkpoint.save",
+          "code": "invalid_input"
+        },
+        {
+          "action": "hetu.task_checkpoint.save",
+          "code": "not_found"
+        },
+        {
+          "action": "hetu.task_checkpoint.save",
+          "code": "not_found"
+        },
+        {
+          "action": "hetu.operations.get",
+          "code": "not_found"
+        },
+        {
+          "action": "hetu.working_copies.create",
+          "code": "idempotency_conflict"
+        },
+        {
+          "action": "hetu.runtime.inspect",
+          "code": "hetu.stale_evidence"
+        },
+        {
+          "action": "hetu.working_copies.create",
+          "code": "invalid_input"
+        },
+        {
+          "action": "hetu.task_checkpoint.save",
+          "code": "revision_conflict"
+        },
+        {
+          "action": "hetu.collaboration.invoke",
+          "code": "invalid_input"
+        }
+      ],
+      "report_sha256": "b34d20c8b3cd6c42e22cb880c437a3b9d04cbdcb882fa7b1db53a120f1874232"
+    },
+    "same_key_replay": {
+      "schema_version": "1.0.0",
+      "kind": "conversation_machine_acceptance",
+      "runtime_version": "0.12.0",
+      "cli_sha256": "3c9a2f49e2f3680779e4e54739e02b82052b4df5fea843e88260e48a3f5e1e57",
+      "mcp_sha256": "3af2f3aaff7eb3cfe647f33922d4acb3448d7bbb326f75fc02a9a9dfd3f53dca",
+      "methods_version": "0.3.11",
+      "catalog_sha256": "f9faa67d2a1f4db629302c1aa04c4eda4835c9d838b8bba4ad689dda36390bd9",
+      "default_tool_count": 12,
+      "discovery_bytes": 5705,
+      "fixed_text_bytes": 132080,
+      "fixed_text_sha256": "61d1fb67b4824c74f7bea8b985fb329b68577ec8e0357b07b56625df9aec0f7c",
+      "fixed_text_pages": 32,
+      "checks": [
+        "bounded_discovery",
+        "version_difference",
+        "generic_dispatch",
+        "idempotent_save",
+        "public_feedback",
+        "checkpoint_reopen",
+        "checkpoint_conflict",
+        "cli_mcp_recovery",
+        "oversize_fixed_summary",
+        "old_revision_unicode_reassembly",
+        "fixed_submission",
+        "fixed_candidate_read",
+        "delivered_checkpoint",
+        "recursive_dispatch_denied",
+        "unbacked_claims_and_forged_evidence_denied_without_writes",
+        "evidence_links_and_handoff_reopened",
+        "agent_notes_never_become_author_facts",
+        "missing_operation_not_found",
+        "changed_input_same_key_denied",
+        "readonly_projection_snapshot_checked",
+        "write_projection_denied",
+        "prediction_verified_against_fixed_revised_artifact",
+        "old_evidence_revision_preserved_after_new_draft"
+      ],
+      "limits": [
+        "synthetic_creation_project",
+        "no_author_adoption_or_finalization",
+        "no_paid_model_calls",
+        "installed_desktop_not_updated"
+      ],
+      "call_count": 69,
+      "max_recorded_mcp_bytes": 36707,
+      "sum_of_recorded_calls_ms": 10940,
+      "timing_scope": "recorded_calls_only_not_full_task_wall_time",
+      "expected_rejections": [
+        {
+          "action": "hetu.task_checkpoint.save",
+          "code": "invalid_input"
+        },
+        {
+          "action": "hetu.task_checkpoint.save",
+          "code": "invalid_input"
+        },
+        {
+          "action": "hetu.task_checkpoint.save",
+          "code": "invalid_input"
+        },
+        {
+          "action": "hetu.task_checkpoint.save",
+          "code": "not_found"
+        },
+        {
+          "action": "hetu.task_checkpoint.save",
+          "code": "not_found"
+        },
+        {
+          "action": "hetu.operations.get",
+          "code": "not_found"
+        },
+        {
+          "action": "hetu.working_copies.create",
+          "code": "idempotency_conflict"
+        },
+        {
+          "action": "hetu.runtime.inspect",
+          "code": "hetu.stale_evidence"
+        },
+        {
+          "action": "hetu.working_copies.create",
+          "code": "invalid_input"
+        },
+        {
+          "action": "hetu.task_checkpoint.save",
+          "code": "revision_conflict"
+        },
+        {
+          "action": "hetu.collaboration.invoke",
+          "code": "invalid_input"
+        }
+      ],
+      "report_sha256": "656707e045a28059f2a2b4cef3fa4203f18bb2e8c9274ded414e23f89520b63b"
+    },
+    "discovery_modes": [
+      {
+        "mode": "compact",
+        "tools": 12,
+        "rpc_tool_list_bytes": 46310,
+        "status": "passed"
+      },
+      {
+        "mode": "all_tools",
+        "tools": 142,
+        "rpc_tool_list_bytes": 561937,
+        "status": "passed"
+      }
+    ],
+    "compatibility": {
+      "status": "passed",
+      "direction": "new_source_reads_official_v0120_records",
+      "checks": [
+        "old_checkpoint_exactly_preserved",
+        "old_checkpoint_head_unchanged",
+        "agent_notes_authority_preserved",
+        "no_new_drafts_or_candidates"
+      ],
+      "working_copy_count": 1,
+      "candidate_count": 1,
+      "receipts": [
+        {
+          "action": "hetu.collaboration.open",
+          "bytes": 17363,
+          "sha256": "26c659e3a11ced2e4373ee8708d50748025ef13ca513ed0156eff19f112b5111"
+        },
+        {
+          "action": "hetu.task_checkpoint.get",
+          "bytes": 1778,
+          "sha256": "10b3a7f4512d5b6bf81ee0e4cbe21635b238ceded94555a218f0674f5e462d4b"
+        },
+        {
+          "action": "hetu.working_copies.list",
+          "bytes": 1351,
+          "sha256": "3985f79b1d62e328dd51ab1ca5d13029a195a699791eeac8ba073473ee66deb2"
+        },
+        {
+          "action": "hetu.creative_tasks.get",
+          "bytes": 7082,
+          "sha256": "8dc7dca84748e7fcc220108356ae73817eb4ef0055e7d0ef9b0fad71eeb837b5"
+        }
+      ],
+      "report_sha256": "0dcc4f37f6637c1d75f0b3a43ded71871bcfe2844dbc5be48ba6497724656711"
+    },
+    "post_replay": {
+      "status": "passed",
+      "direction": "same_key_replay_does_not_create_duplicate_artifacts",
+      "checks": [
+        "old_checkpoint_exactly_preserved",
+        "old_checkpoint_head_unchanged",
+        "agent_notes_authority_preserved",
+        "no_new_drafts_or_candidates"
+      ],
+      "working_copy_count": 1,
+      "candidate_count": 1,
+      "receipts": [
+        {
+          "action": "hetu.collaboration.open",
+          "bytes": 17362,
+          "sha256": "5f4d9021822f0d5e8f007ae57443a5507f88ebe5777fae9bd739b3e93a46035d"
+        },
+        {
+          "action": "hetu.task_checkpoint.get",
+          "bytes": 3332,
+          "sha256": "ceeff0770f0c0fe2e9e59d3f5275550e0de85d7bfbee8b3c18cb03b38a73caa4"
+        },
+        {
+          "action": "hetu.working_copies.list",
+          "bytes": 1351,
+          "sha256": "8a096450c48d25b6e7f22515e5e72ec68cb1055dd3ec67d679f05bf298cc5f09"
+        },
+        {
+          "action": "hetu.creative_tasks.get",
+          "bytes": 7081,
+          "sha256": "38e36f2c45635770f1114b7c33e4457dde8594ac4c512a1b4195db492d1af963"
+        }
+      ]
+    },
+    "pre_workspace_build": {
+      "initial_cli_sha256": "cbebe3ac74bb6d40a4a93aee3b6599cd3508558c34e955a3cdaebf2ab690fc29",
+      "initial_mcp_sha256": "7e11d5171603e209638d55f0b3f1abe0cd8112026b00eb3729f8fc9358f9a4cc",
+      "initial_calls": 71,
+      "replay_calls": 69,
+      "reason_for_final_journey": "Workspace feature unification rebuilt the binaries; final acceptance uses their final digests without source input drift."
+    }
+  },
+  "validation": {
+    "workspace_regression": {
+      "status": "passed",
+      "command": "cargo test --workspace --locked --jobs 2 -- --test-threads=2",
+      "exit_code": 0,
+      "passed": 361,
+      "failed": 0,
+      "ignored": 0,
+      "suites": 64,
+      "log_sha256": "f9af4391485b639cfe3c9e03fce39cad5ac20fdc51d93588d8051de7ea132858"
+    },
+    "focused_core_evidence_tests_initial": {
+      "passed": 7,
+      "failed": 0,
+      "log_sha256": "d3000e28dc091315248c7d10c21fd60c5a7d0958b930ff55dc7ad6a7a7e11fc6",
+      "final_changes_rechecked_by_workspace": true
+    },
+    "changed_rust_files_rustfmt": "passed",
+    "python_compile": "passed",
+    "git_diff_check": "passed",
+    "capability_map_check": "passed",
+    "writing_methods_sync_check": "passed",
+    "skills_validation": {
+      "status": "passed",
+      "suites": 45,
+      "files": 2475,
+      "bytes": 10181721,
+      "classification_nodes": 908
+    },
+    "skill_creator_validation": {
+      "status": "passed",
+      "entry_points": 13
+    },
+    "docs": {
+      "documents": 88,
+      "local_links": 1200,
+      "fragment_links": 242,
+      "traceability": {
+        "FR": 40,
+        "US": 61,
+        "UC": 54,
+        "E2E": 30,
+        "AC": 65
+      },
+      "id_references": 1261,
+      "json_examples": 11,
+      "schemas": 2,
+      "mermaid": 100,
+      "errors": [],
+      "status": "passed",
+      "log_sha256": "2f4e1468c3499bc0b4a79b7b7726b52ce97d3b43238419faec73d912e45ca0fa"
+    }
+  },
+  "preserved_failures": [
+    "全仓cargo fmt --all --check存在既有格式差异；仅本轮两个Rust文件格式核验通过，没有格式化无关源码。",
+    "发现模式的辅助探针首次漏传--client而在握手前退出；按实际--help修正后两种模式通过，没有业务调用。"
+  ],
+  "limits": [
+    "38份上游文件是定向源码及测试定义检查，不是两仓完整审计；未运行上游依赖、测试或逆向提供方。",
+    "固定脚本证明真实CLI与stdio通路和事务行为，不证明外部Agent自主选择工具、文学质量或真实性能提升。",
+    "引用存在、Agent状态、确定性检查和作者决定分开；未执行实际作者采纳、定稿或付费模型调用。",
+    "开发源码仍使用0.12.0包版本，通过制品和输入摘要区分正式发行；增强方法0.3.11未发布、未覆盖安装，也未重载已有MCP连接。",
+    "未执行提交、推送、Tag、npm发布、Cloudflare部署或修改两份参考仓库。",
+    "能力检索及前置条件、完整执行目录、专业完成度、正反依据、逐结果来源、生命周期专项与真实Agent评价仍按TODO推进。"
+  ]
+}

@@ -26,6 +26,42 @@ pub(super) fn installable_clients() -> Value {
     }
     json!(clients)
 }
+
+/// 机器连接独立于题材套件，复用同一官方安装、固定字节和未知恢复流程。
+pub(super) fn connection_package() -> Result<Value> {
+    let executable = std::env::current_exe()?;
+    let binary = executable.parent().ok_or_else(|| Error::new("missing_context", "无法定位随包机器入口。"))?
+        .join(if cfg!(windows) { "hetu-mcp.exe" } else { "hetu-mcp" });
+    ensure(binary.is_file(), "hetu.capability_unavailable", "当前制品缺少同目录的hetu-mcp，请使用完整河图安装包。")?;
+    let binary = binary.canonicalize()?;
+    let files = connection_files(&binary)?;
+    Ok(json!({"suite_id":"machine-connection","name":"hetu-workbench","version":env!("CARGO_PKG_VERSION"),"file_count":files.len(),
+        "package_sha256":fingerprint(&files)?,"mcp_binary":binary,"mcp_binary_sha256":domain::digest(std::fs::read(&binary)?)}))
+}
+
+fn connection_files(binary: &Path) -> Result<BTreeMap<String, Vec<u8>>> {
+    let manifest = json!({"name":"hetu-workbench","version":env!("CARGO_PKG_VERSION"),
+        "description":"河图洛书工作台：小说、剧本、视频、固定成果与意见","mcpServers":"./.mcp.json"});
+    let portable = json!({"$schema":"https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+        "name":"hetu-workbench","version":env!("CARGO_PKG_VERSION"),"description":manifest["description"]});
+    let mcp = json!({"mcpServers":{"hetu":{"type":"stdio","command":binary,"args":["--client","codex"]}}});
+    Ok(BTreeMap::from([
+        ("plugin.json".into(),serde_json::to_vec(&portable)?),
+        (".codex-plugin/plugin.json".into(),serde_json::to_vec(&manifest)?),
+        ("mcp.json".into(),serde_json::to_vec(&mcp)?),
+        (".mcp.json".into(),serde_json::to_vec(&mcp)?),
+    ]))
+}
+
+pub(super) fn inspect_connection(installation: &Value) -> Result<Value> {
+    if !installation["version"].is_string() { return Ok(json!({"client":"codex","state":"not_installed","registered":false,"session_loaded":false})); }
+    let mut fixed = installation.clone();
+    fixed["name"] = json!("hetu-workbench");
+    fixed["suite_id"] = json!("machine-connection");
+    let mut result = installed_codex(&fixed)?;
+    result["registered"] = json!(true);
+    Ok(result)
+}
 pub(super) fn integration_directory() -> Result<PathBuf> {
     if let Some(path) = std::env::var_os("HETU_INTEGRATIONS_DIR") {
         let path = PathBuf::from(path);
@@ -367,17 +403,23 @@ fn codex_market(fixed: &Value, registered: &Value) -> Result<PathBuf> {
     if let Some(record) = records.first() {
         let source = &record["marketplaceSource"];
         let candidate = PathBuf::from(text(source, "source")?);
+        // 官方 CLI 会规范化本机路径（例如 macOS 的 /var → /private/var）。
+        // 核对真实目录，既接受同一来源，也不让符号链接扩大受管范围。
+        let managed = base.canonicalize().map_err(|_| Error::new(
+            "revision_conflict", "受管市场来源无法核对，请保留原登记。"))?;
+        let actual = candidate.canonicalize().map_err(|_| Error::new(
+            "revision_conflict", "已有市场来源无法核对，请保留原登记。"))?;
         ensure(
             record["pluginId"] == format!("{name}@{market_name}")
                 && record["name"] == name
                 && record["marketplaceName"] == market_name
                 && source["sourceType"] == "local"
                 && candidate.is_absolute()
-                && (candidate == base || candidate.parent() == Some(base.as_path())),
+                && (actual == managed || actual.parent() == Some(managed.as_path())),
             "revision_conflict",
             "已有市场来源不属于本机受管套件。",
         )?;
-        return Ok(candidate);
+        return Ok(actual);
     }
     // 空目录不证明同名市场未登记；正式add仍由官方CLI核验来源冲突。
     Ok(base)
@@ -434,7 +476,11 @@ pub(super) fn install(
     if client == "codex" && recovering {
         return installed_codex(fixed);
     }
-    let mut files = bytes(&integration_directory()?.join("codex").join(name))?;
+    let mut files = if suite_id == "machine-connection" {
+        let actual = connection_package()?;
+        ensure(actual == *fixed, "revision_conflict", "机器入口或固定安装包已变化，请重新准备。")?;
+        connection_files(Path::new(text(fixed, "mcp_binary")?))?
+    } else { bytes(&integration_directory()?.join("codex").join(name))? };
     ensure(
         fingerprint(&files)? == fixed["package_sha256"],
         "revision_conflict",

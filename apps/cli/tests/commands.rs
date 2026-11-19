@@ -94,6 +94,91 @@ fn help_locale_and_version_work_without_author_or_user_context() {
 }
 
 #[test]
+fn cold_discovery_selects_contracts_and_reads_methods_without_workspace_state() {
+    let root = tempfile::tempdir().unwrap();
+    let directory = root.path().join("未创建的发现连接");
+    let doctor = ok(call(&directory, "hetu.runtime.inspect", json!({}), 0));
+    assert!(
+        doctor["schema_materialization"]["materialized"]
+            .as_u64()
+            .unwrap()
+            <= 2
+    );
+    assert!(doctor["schema_materialization"]["total"].as_u64().unwrap() > 100);
+    let found = ok(call(
+        &directory,
+        "hetu.collaboration.inspect",
+        json!({"query":"TASK_CHECKPOINT CAS","limit":1}),
+        0,
+    ));
+    assert_eq!(found["total"], 1);
+    let action = &found["actions"][0];
+    assert_eq!(action["name"], "hetu.task_checkpoint.save");
+    assert!(action.get("input_schema").is_none());
+    assert_eq!(
+        action["prerequisites"]["reference_alternatives"],
+        json!([["task_ref"]])
+    );
+    assert_eq!(action["readiness"]["status"], "not_checked");
+    assert_eq!(
+        call(
+            &directory,
+            "hetu.collaboration.inspect",
+            json!({"query":"feedback", "expected_selection_sha256":found["selection_sha256"]}),
+            4
+        )["error"]["code"],
+        "hetu.stale_evidence"
+    );
+    let exact = ok(call(
+        &directory,
+        "hetu.collaboration.inspect",
+        json!({"action":action["name"],"include_schema":true,"expected_catalog_sha256":found["catalog_sha256"]}),
+        0,
+    ));
+    assert!(exact["actions"][0]["input_schema"].is_object());
+    let methods = ok(call(
+        &directory,
+        "hetu.methods.list",
+        json!({"skill":"hetu-setup"}),
+        0,
+    ));
+    assert_eq!(methods["total"], 1);
+    let method = &methods["resources"][0];
+    let read = ok(call(
+        &directory,
+        "hetu.methods.read",
+        json!({"path":method["path"],"expected_sha256":method["sha256"],"max_bytes":16384}),
+        0,
+    ));
+    assert_eq!(read["page"]["sha256"], method["sha256"]);
+    assert!(
+        read["page"]["content"]
+            .as_str()
+            .unwrap()
+            .contains("hetu-setup")
+    );
+    assert_eq!(
+        call(
+            &directory,
+            "hetu.methods.read",
+            json!({"path":method["path"],"expected_sha256":"0".repeat(64)}),
+            4
+        )["error"]["code"],
+        "hetu.stale_evidence"
+    );
+    assert_eq!(
+        call(
+            &directory,
+            "hetu.methods.read",
+            json!({"path":"../../private.md","expected_sha256":"0".repeat(64)}),
+            5
+        )["error"]["code"],
+        "not_found"
+    );
+    assert!(!directory.exists());
+}
+
+#[test]
 fn malformed_or_oversized_inputs_have_one_private_axi_error() {
     let root = tempfile::tempdir().unwrap();
     let directory = root.path().join("独立授权");

@@ -370,7 +370,7 @@ impl PluginSession {
 }
 
 impl Kernel {
-    fn extension_object(
+    pub(in crate::application) fn extension_object(
         &self,
         work: &Value,
         owner: &str,
@@ -515,7 +515,7 @@ impl Kernel {
         result.unwrap_or_else(|e| domain::failure("hetu.extensions.request", self.scope(), &e))
     }
     /// 精确管理授权下的会话入口；不开放作者私有路由或跨作品授权。
-    pub(super) fn execute_plugin_access(&self, action: &str, input: &Value) -> Result<Value> {
+    pub(super) fn execute_plugin_access(&self, action: &str, input: &Value, cancelled: &dyn Fn()->bool) -> Result<Value> {
         let binding = self
             .management_grant
             .as_ref()
@@ -562,10 +562,11 @@ impl Kernel {
             runtime["plugin_id"] = inspected["data"]["plugin_id"].clone();
             runtime["workspace_directory"] = json!(self.workspace_path);
             runtime["access_directory"] = json!(directory);
-            return crate::plugin_settings::request(
+            return crate::plugin_settings::request_cancellable(
                 binding["client_adapter"].as_str().unwrap_or(""),
                 action,
                 &runtime,
+            cancelled,
             );
         }
         let mut params = input.clone();

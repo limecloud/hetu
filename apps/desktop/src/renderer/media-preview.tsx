@@ -5,9 +5,11 @@ import { desktop } from "./bridge.ts";
 export function MediaPreview({
   asset,
   sha256,
+  onPosition,
 }: {
   asset: any;
   sha256: string;
+  onPosition?: (seconds: number) => void;
 }) {
   const [url, setUrl] = useState(""),
     [error, setError] = useState(""),
@@ -87,6 +89,7 @@ export function MediaPreview({
             src={url}
             aria-label={asset.title}
             controls
+            onTimeUpdate={event => onPosition?.(event.currentTarget.currentTime)}
             preload="metadata"
             onLoadedMetadata={() => setReady(true)}
             onError={failed}
@@ -99,6 +102,7 @@ export function MediaPreview({
             src={url}
             aria-label={asset.title}
             controls
+            onTimeUpdate={event => onPosition?.(event.currentTarget.currentTime)}
             playsInline
             preload="metadata"
             onLoadedMetadata={() => setReady(true)}

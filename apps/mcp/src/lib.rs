@@ -1,3 +1,4 @@
+mod app;
 mod model_confirmation;
 mod resources;
 mod response;
@@ -261,13 +262,11 @@ impl HetuServer {
         // 取消尚未开始的操作；已开始的事务完成落盘后由原键查询，不能硬杀写入。
         let result = tokio::task::spawn_blocking(move || {
             let _permit = permit;
-            if cancellation.is_cancelled() { return None; }
-            Some(kernel.request(request))
+            kernel.request_cancellable(request, &||cancellation.is_cancelled())
         }).await.map_err(|_| ErrorData::internal_error(
             "内核任务未返回，请查询原操作，勿更换键重发。 / Kernel task did not return; query the original operation before retrying.", None,
         ))?;
-        let mut result = result
-            .ok_or_else(|| ErrorData::invalid_request("请求已取消 / Request cancelled", None))?;
+        let mut result = result;
         if action == "hetu.capabilities.get" && result.get("data").is_some() {
             result["data"]["actions"] = json!(self.actions);
         }
@@ -346,11 +345,7 @@ impl ServerHandler for HetuServer {
         response::read_input(action, &mut arguments);
         let result = self.execute(action, arguments.clone(), &context).await?;
         let result = response::bounded(result, action, &arguments, MAX_RESULT_BYTES);
-        let response = if result.get("error").is_some() {
-            CallToolResult::structured_error(result)
-        } else {
-            CallToolResult::structured(result)
-        };
+        let response = response::tool_result(result);
         Ok(response.into())
     }
 

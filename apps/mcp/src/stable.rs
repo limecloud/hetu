@@ -14,7 +14,7 @@ pub struct StableServer {
 impl StableServer {
     pub fn open(directory: &Path, client: &str) -> Result<Self, Box<dyn std::error::Error>> {
         let hub = CollaborationHub::open(directory, client)?;
-        let actions = hub.catalog();
+        let actions = hub.catalog_summary();
         let catalog: ToolCatalog =
             serde_json::from_str(include_str!("../../../contracts/tools/catalog.json"))?;
         let mappings = catalog
@@ -35,15 +35,7 @@ impl StableServer {
             tool.name = mapping.name.into();
             tool.title = Some(mapping.title);
             tool.description = Some(mapping.description.into());
-            tool.input_schema = Arc::new(
-                action["input_schema"]
-                    .as_object()
-                    .ok_or("invalid task schema")?
-                    .clone(),
-            );
-            if tool.name == model_confirmation::TOOL {
-                tool.input_schema = Arc::new(model_confirmation::input_schema(&tool.input_schema));
-            }
+            tool.input_schema = Arc::new(serde_json::Map::new());
             let mut output: Value = serde_json::from_str(include_str!(
                 "../../../contracts/schemas/result.schema.json"
             ))?;
@@ -104,13 +96,13 @@ impl ServerHandler for StableServer {
         context: RequestContext<RoleServer>,
     ) -> Result<ListToolsResult, ErrorData> {
         resources::no_cursor(request)?;
-        Ok(ListToolsResult::with_all_items(
-            self.tools
+        let apps = ui::supported(&context);
+        let mut tools: Vec<Tool> = self.tools
                 .iter()
                 .filter(|(tool, _)| {
                     (tool.name != model_confirmation::TOOL
                         || model_confirmation::available(&context))
-                        && (self.all_tools
+                        && (self.all_tools || apps
                             || matches!(
                                 tool.name.as_ref(),
                                 "hetu_inspect_collaboration"
@@ -128,21 +120,55 @@ impl ServerHandler for StableServer {
                                     | "hetu_request_model_confirmation"
                             ))
                 })
-                .map(|(tool, _)| {
-                    if ui::supported(&context) {
-                        ui::tool(tool.clone())
+                .map(|(tool, action)| {
+                    let mut tool = tool.clone();
+                    let descriptor = self
+                        .hub
+                        .action_descriptor(action)
+                        .expect("registered tool action");
+                    tool.input_schema = Arc::new(
+                        descriptor["input_schema"]
+                            .as_object()
+                            .expect("action schema")
+                            .clone(),
+                    );
+                    if tool.name == model_confirmation::TOOL {
+                        tool.input_schema =
+                            Arc::new(model_confirmation::input_schema(&tool.input_schema));
+                    }
+                    if apps {
+                        let mut result = ui::tool(tool);
+                        if !self.all_tools && !compact_tool(result.name.as_ref()) {
+                            let meta = result.meta.get_or_insert_with(Default::default);
+                            if let Some(ui) = meta.get_mut("ui").and_then(Value::as_object_mut) {
+                                ui.insert("visibility".into(), json!(["app"]));
+                            }
+                        }
+                        result
                     } else {
-                        tool.clone()
+                        tool
                     }
                 })
-                .collect(),
-        ))
+                .collect();
+        if apps { tools.push(app::tool()); }
+        Ok(ListToolsResult::with_all_items(tools))
     }
     async fn call_tool(
         &self,
         request: CallToolRequestParams,
         context: RequestContext<RoleServer>,
     ) -> Result<CallToolResponse, ErrorData> {
+        if request.name == app::TOOL {
+            if !ui::supported(&context) { return Err(ErrorData::invalid_params("客户端未声明MCP Apps能力 / MCP Apps capability required", None)); }
+            let _permit = self.gate.clone().try_acquire_owned().map_err(|_| ErrorData::internal_error("入口忙，请稍后读取 / App is busy", None))?;
+            let hub = self.hub.clone();
+            let cancellation = context.ct.clone();
+            let arguments = request.arguments.unwrap_or_default();
+            return tokio::task::spawn_blocking(move || {
+                let _permit = _permit;
+                app::open(&hub, arguments, &|| cancellation.is_cancelled())
+            }).await.map_err(|_| ErrorData::internal_error("App读取未完成 / App read interrupted", None))?.map(Into::into);
+        }
         let (_, action) = self
             .tools
             .iter()
@@ -169,13 +195,13 @@ impl ServerHandler for StableServer {
         let permit = match self.gate.clone().try_acquire_owned() {
             Ok(permit) => permit,
             Err(_) => {
-                return Ok(CallToolResult::structured_error(response::interrupted(
+                let result=response::interrupted(
                     actual,
                     &recovery_input,
                     "workspace_busy",
                     "本机入口忙；保留原输入与键，写入先查询原操作。",
-                ))
-                .into());
+                );
+                return Ok(response::tool_result(response::bounded(result,actual,&recovery_input,MAX_RESULT_BYTES)).into());
             }
         };
         if request.name == model_confirmation::TOOL {
@@ -192,20 +218,11 @@ impl ServerHandler for StableServer {
         let cancellation = context.ct.clone();
         let result = tokio::task::spawn_blocking(move || {
             let _permit = permit;
-            if cancellation.is_cancelled() {
-                return None;
-            }
-            Some(hub.request(input))
+            hub.request_cancellable(input, &|| cancellation.is_cancelled())
         })
         .await;
         let result = match result {
-            Ok(Some(result)) => result,
-            Ok(None) => response::interrupted(
-                actual,
-                &recovery_input,
-                "cancelled",
-                "请求在开始前取消，未执行本次操作。",
-            ),
+            Ok(result) => result,
             Err(_) => response::interrupted(
                 actual,
                 &recovery_input,
@@ -228,12 +245,7 @@ impl ServerHandler for StableServer {
                 None,
             ));
         }
-        Ok(if result.get("error").is_some() {
-            CallToolResult::structured_error(result)
-        } else {
-            CallToolResult::structured(result)
-        }
-        .into())
+        Ok(response::tool_result(result).into())
     }
     async fn list_resources(
         &self,
@@ -243,7 +255,7 @@ impl ServerHandler for StableServer {
         resources::no_cursor(request)?;
         Ok(ListResourcesResult::with_all_items(
             if ui::supported(&context) {
-                vec![ui::resource(), ui::operation_resource()]
+                vec![ui::resource(), ui::operation_resource(), ui::workbench_resource()]
             } else {
                 vec![]
             },
@@ -262,6 +274,9 @@ impl ServerHandler for StableServer {
         request: ReadResourceRequestParams,
         context: RequestContext<RoleServer>,
     ) -> Result<ReadResourceResponse, ErrorData> {
+        if request.uri == ui::WORKBENCH_URI && ui::supported(&context) {
+            return Ok(ui::read_workbench().into());
+        }
         if request.uri == ui::OPERATION_URI && ui::supported(&context) {
             return Ok(ui::read_operation().into());
         }
@@ -273,4 +288,11 @@ impl ServerHandler for StableServer {
             None,
         ))
     }
+}
+
+fn compact_tool(name: &str) -> bool {
+    matches!(name, "hetu_inspect_collaboration" | "hetu_get_capability_map" | "hetu_begin_creation"
+        | "hetu_open_collaboration_task" | "hetu_read_creative_task" | "hetu_read_task_operation"
+        | "hetu_get_task_checkpoint" | "hetu_save_task_checkpoint" | "hetu_inspect_runtime"
+        | "hetu_call_action" | "hetu_open_task_view" | "hetu_save_task_selection" | "hetu_request_model_confirmation")
 }

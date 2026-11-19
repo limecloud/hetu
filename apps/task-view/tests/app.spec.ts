@@ -31,11 +31,11 @@ test.beforeAll(async () => {
 });
 test.afterAll(async () => { await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve())); });
 
-async function open(page: Page, value = fixture(), theme: "light" | "dark" = "light", messages = false) {
+async function open(page: Page, value = fixture(), theme: "light" | "dark" = "light", messages = false, extensions = false, context = false) {
   const errors: string[] = [];
   page.on("pageerror", error => errors.push(error.message));
   const testLocale = (value.structuredContent as { data: { request: { prompt_language: string } } }).data.request.prompt_language;
-  await page.addInitScript(payload => { Object.assign(window, payload); }, { initialTask: value, viewHtml: html, testTheme: theme, testLocale, testMessages: messages });
+  await page.addInitScript(payload => { Object.assign(window, payload); }, { initialTask: value, viewHtml: html, testTheme: theme, testLocale, testMessages: messages, testExtensions: extensions, testContext: context });
   await page.goto(origin);
   const view = page.frameLocator("iframe");
   await expect(view.getByRole("heading", { level: 1 })).toBeVisible();
@@ -216,6 +216,44 @@ test("lost feedback receipt recovers the same feedback and a host without messag
   await expect(view.getByRole("button", { name: "发送给当前 Agent", exact: true })).toHaveCount(0);
   expect((await page.evaluate(() => window.harness.reads))[0]).toContain("action=hetu.task_feedback.save");
   expect((await page.evaluate(() => window.harness.calls)).filter(item => item.name === "hetu_save_task_feedback")).toHaveLength(1);
+});
+
+for (const target of ["active", "new"] as const) {
+  test(`OpenAI ${target} draft preserves metadata without sending or adopting`, async ({ page }) => {
+    const value = fixture();
+    (value.structuredContent as { data: Record<string, unknown> }).data.allowed_actions = ["hetu.task_feedback.save"];
+    const { view, errors } = await open(page, value, "light", true, true);
+    await view.getByLabel("补充要求或意见").fill("保留人物动机，调整节奏。");
+    await view.getByRole("button", { name: "按此修改", exact: true }).click();
+    await view.getByRole("button", { name: target === "active" ? "放入当前草稿" : "在新对话中准备", exact: true }).click();
+    await expect(view.getByText("已放入宿主草稿，尚未发送。", { exact: true })).toBeVisible();
+    const wire = await page.evaluate(() => window.harness.wireMessages);
+    expect(wire).toHaveLength(1);
+    expect(wire[0]).toMatchObject({ _meta: { "openai/message": { target, send: false } } });
+    expect(JSON.stringify(wire)).toContain("feedback_test");
+    expect(JSON.stringify(wire)).not.toContain("雾港听潮");
+    await expect(view.getByRole("button", { name: "发送给当前 Agent", exact: true })).toBeDisabled();
+    expect(errors).toEqual([]);
+  });
+}
+
+test("explicit model context attaches fixed references after revalidation without a message", async ({ page }) => {
+  const value = fixture();
+  const reference = { ...taskRef, sha256: "d".repeat(64) };
+  (value.structuredContent as { data: Record<string, unknown> }).data.task_ref = reference;
+  const { view, errors } = await open(page, value, "dark", true, true, true);
+  expect(await page.evaluate(() => window.harness.contexts)).toEqual([]);
+  await view.getByRole("checkbox").first().check();
+  await view.getByRole("button", { name: "附加当前任务", exact: true }).click();
+  await expect(view.getByRole("status")).toContainText("当前任务引用已附加");
+  const context = await page.evaluate(() => ({ contexts: window.harness.contexts, messages: window.harness.messages, calls: window.harness.calls }));
+  expect(context.contexts).toHaveLength(1);
+  expect(context.messages).toEqual([]);
+  expect(JSON.stringify(context.contexts)).toContain(reference.sha256);
+  expect(JSON.stringify(context.contexts)).toContain("candidate_one");
+  expect(JSON.stringify(context.contexts)).not.toContain("雾港听潮");
+  expect(context.calls.at(-1)).toMatchObject({ name: "hetu_open_task_view", arguments: { task_ref: reference } });
+  expect(errors).toEqual([]);
 });
 
 for (const mode of ["rejected", "lost"] as const) {

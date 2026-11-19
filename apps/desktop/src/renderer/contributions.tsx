@@ -1,3 +1,6 @@
+import { Outlines } from "./outlines.tsx";
+import { VideoReview as Video } from "./video-review.tsx";
+import { verifyBaselineSurfaces } from "../../../../packages/plugin-sdk/src/baseline.ts";
 import React, { useEffect, useRef, useState } from "react";
 import {
   EffectScope,
@@ -225,65 +228,15 @@ function Canon({ work, notify, ai }: SurfaceContext) {
     {removal && canon && <CanonRemoval snapshot={canon} entry={removal} onClose={() => setRemoval(undefined)} onSaved={refresh}/>}
   </section>;
 }
-function Video({ work, notify, ai }: SurfaceContext) {
-  const workKey = `${work.workspace_id}/${work.kind}/${work.object_id}`;
-  const [snapshot, setProject] = useState<{ workKey: string; value: any }>(),
-    [loading, setLoading] = useState(true),
-    [error, setError] = useState(""),
-    [reload, setReload] = useState(0);
-  useEffect(() => {
-    let active = true;
-    setLoading(true);
-    setError("");
-    desktop
-      .read("hetu.video.projects.get", { video_project_id: work.object_id })
-      .then((r) => {
-        if (active) setProject({ workKey, value: data(r) });
-      })
-      .catch((e) => {
-        if (active) {
-          setError(e.message);
-          notify(e.message);
-        }
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, [work, reload]);
-  const project = snapshot?.workKey === workKey ? snapshot.value : undefined;
-  return (
-    <section className="video-workbench" aria-label="视频作品">
-      <PageActions>
-        <IconButton icon="refresh" label="刷新视频作品" disabled={loading} onClick={() => setReload((value) => value + 1)}/>
-        <button onClick={() => ai()}><Icon name="sparkles"/>让 AI 继续制作</button>
-      </PageActions>
-      {loading && <p role="status">正在读取视频作品…</p>}
-      {error && <p role="alert">{error}</p>}
-      {project && <>
-        <h2>{project.project?.title}</h2>
-        {project.project?.brief && <p className="video-project-brief">{project.project.brief}</p>}
-        {!project.episodes?.length && !loading && <div className="canon-empty"><Icon name="film" size={20}/><h2>还没有视频分集</h2><button onClick={() => ai()}>让 AI 开始制作</button></div>}
-        {project.episodes?.map((item: any) => (
-          <section className="video-episode-summary" key={item.episode.video_episode_id}>
-            <h3>第{item.episode_number}集 {item.episode.title}</h3>
-            {item.episode.brief && <p>{item.episode.brief}</p>}
-          </section>
-        ))}
-      </>}
-    </section>
-  );
-}
 
-for (const contribution of [
+const baseContributions: SurfaceContribution[] = [
   {
     id: "novel.reader",
     title: "小说",
     kinds: ["novel"],
     component: Documents,
   },
+  { id: "novel.outlines", title: "作品大纲", kinds: ["novel"], component: Outlines },
   {
     id: "drama.reader",
     title: "剧本",
@@ -358,5 +311,7 @@ for (const contribution of [
     kinds: ["novel", "drama", "video"],
     component: Management,
   },
-] as SurfaceContribution[])
+];
+verifyBaselineSurfaces(baseContributions);
+for (const contribution of baseContributions)
   surfaces.register("org.hetu.authoring", contribution.id, contribution, scope);
