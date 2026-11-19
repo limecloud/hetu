@@ -5,7 +5,8 @@ import path from 'node:path';
 export interface ArtifactInput {
   suggested_name: string; media_type: string; base64: string; sha256: string;
 }
-const formats: Record<string, { extension: string; signature: (b: Buffer) => boolean }> = {
+const formats: Record<string, { extension: string | readonly string[]; signature: (b: Buffer) => boolean }> = {
+  'text/plain': { extension: ['.txt', '.lrc'], signature: b => textSignature(b, () => true) },
   'image/png': { extension: '.png', signature: b => b.subarray(0, 8).equals(Buffer.from('89504e470d0a1a0a', 'hex')) },
   'model/gltf-binary': { extension: '.glb', signature: b => b.length >= 20 && b.toString('ascii', 0, 4) === 'glTF' && b.readUInt32LE(4) === 2 && b.readUInt32LE(8) === b.length },
   'application/zip': { extension: '.zip', signature: b => ['504b0304', '504b0506'].includes(b.subarray(0, 4).toString('hex')) },
@@ -32,7 +33,7 @@ export async function savePluginArtifact(input: ArtifactInput, context: {
   const format = formats[input.media_type];
   if (!format || typeof input.suggested_name !== 'string' || !input.suggested_name.trim() ||
       input.suggested_name.length > 120 || /[\\/\u0000-\u001f]/.test(input.suggested_name) ||
-      !input.suggested_name.toLowerCase().endsWith(format.extension) ||
+      !(typeof format.extension === 'string' ? [format.extension] : format.extension).some(extension => input.suggested_name.toLowerCase().endsWith(extension)) ||
       typeof input.base64 !== 'string' || input.base64.length > Math.ceil(32 * 1024 * 1024 / 3) * 4 ||
       input.base64.length % 4 !== 0 || /[^A-Za-z0-9+/=]/.test(input.base64) ||
       !/^[a-f0-9]{64}$/.test(input.sha256)) throw new Error('派生文件格式、名称或预算无效。');

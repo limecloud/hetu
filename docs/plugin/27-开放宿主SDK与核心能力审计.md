@@ -8,7 +8,7 @@ C／D批次的声音核验、角色卡交换及书稿插图需要实际文件字
 
 CLI/MCP经既有稳定插件入口发现并调用，GUI继续使用宿主媒体服务。跨作品来源、错误摘要、缺失资产、非法范围和撤权均失败关闭。重组文件后须核对完整摘要；每块始终携带同一个固定来源。实施状态与证据归主20，本节不代替已发布证明。
 
-派生文件保存复用已有 `save_artifact` 服务，增加PDF、EPUB、PCM WAV、HTML和XLIFF格式；核验扩展名、预算、固定成果、完整字节摘要与格式签名后，由作者选择目标文件并原子写入。它不登记素材、不采纳正文、不认可声音或自动发布；专业完整性由插件负责，媒体播放仍只使用宿主固定素材服务。CLI/MCP直接回读同一固定二进制分块，无GUI前置。
+派生文件保存复用已有 `save_artifact` 服务，增加PDF、EPUB、PCM WAV、HTML、XLIFF和UTF-8纯文本TXT／LRC格式；核验扩展名、预算、固定成果、完整字节摘要与格式签名后，由作者选择目标文件并原子写入。它不登记素材、不采纳正文、不认可声音或自动发布；专业完整性由插件负责，媒体播放仍只使用宿主固定素材服务。CLI/MCP直接回读同一固定二进制分块，无GUI前置。
 
 ## 1. 产品决定
 
@@ -139,7 +139,7 @@ GUI通过`host.media_open`／`host.media_release`预览当前作品固定asset�
 
 `host.export_file`支持固定清单分段及固定对象UTF-8偏移分块两种只读返回。后者包含`project_ref`、`offset`、`next_offset`、`total_bytes`、`content_sha256`、`media_type`；所有块固定同一对象与总字节数，连续偏移并核验摘要后才原子替换作者选择的目标。固定对象可导出`text/markdown`、`application/json`和`text/html`；HTML按原字节保存，不在宿主执行，离线内容与转义由插件负责。视图提交`action,input,suggested_name`，不把任意内容或路径交给窄服务。
 
-`host.save_artifact`为通用二进制文件服务，核验当前作品固定对象及有限字节后，仅向作者在保存对话框选择的目标原子写入PNG、GLB、ZIP、WebM、MP4、WAV、PDF、EPUB、HTML或XLIFF。它不执行三维或媒体专业逻辑，不写Core业务状态，不开放任意路径读写。格式、预算及取消恢复合同归[插件20](20-首期可执行合同与开发入口.md)；专业插件负责派生与渲染，同一工作流可由CLI/MCP固定计划和独立脚本完成。
+`host.save_artifact`为通用二进制文件服务，核验当前作品固定对象及有限字节后，仅向作者在保存对话框选择的目标原子写入PNG、GLB、ZIP、WebM、MP4、WAV、PDF、EPUB、HTML、XLIFF或纯文本TXT／LRC。它不执行三维或媒体专业逻辑，不写Core业务状态，不开放任意路径读写。格式、预算及取消恢复合同归[插件20](20-首期可执行合同与开发入口.md)；专业插件负责派生与渲染，同一工作流可由CLI/MCP固定计划和独立脚本完成。
 
 ```mermaid
 sequenceDiagram
