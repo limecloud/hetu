@@ -33,6 +33,7 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
     [groups, setGroups] = useState<DocumentGroup[]>([]),
     [loading, setLoading] = useState(true),
     [loadError, setLoadError] = useState(""),
+    [readError, setReadError] = useState(""),
     [reload, setReload] = useState(0),
     [selected, setSelected] = useState<any>(),
     [manuscript, setManuscript] = useState<any>(),
@@ -53,6 +54,7 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
   const comparison = useRef<HTMLDialogElement>(null);
   useEffect(() => { if (compare !== undefined) comparison.current?.showModal(); }, [compare]);
   const current = useRef<any>(),
+    requested = useRef<any>(),
     text = useRef(""),
     pending = useRef<any>(),
     generation = useRef(0),
@@ -91,6 +93,8 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
       return;
     }
     const epoch = ++generation.current;
+    requested.current = document;
+    setReadError("");
     if (selectedByAuthor && floatingDirectory) shell.setDirectoryVisible(false);
     setBusy(true);
     try {
@@ -138,7 +142,10 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
       setHistory(data(historyResult).revisions ?? []);
       if (authorOperation?.status === "pending" || authorOperation?.status === "blocked") shell.setInspector(true);
     } catch (error) {
-      notify((error as Error).message);
+      if (epoch === generation.current) {
+        setReadError((error as Error).message);
+        notify((error as Error).message);
+      }
     } finally {
       if (epoch === generation.current) setBusy(false);
     }
@@ -297,6 +304,7 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
       words: displayedContent.match(/[A-Za-z]+(?:[’-][A-Za-z]+)*/g)?.length ?? 0, characters };
   }, [displayedContent]);
   const final = selected?.document.finalization_ref;
+  const readFailure = readError && <div className="manuscript-load-error" role="alert"><p>无法打开稿件：{readError}</p><button disabled={busy} onClick={() => void load(requested.current)}>重新读取稿件</button></div>;
   return (
     <div ref={layout} className={"document-layout" + (!shell.directoryVisible || shell.focus ? " directory-hidden" : "") + (floatingDirectory ? " directory-floating" : "") + (floatingInspector ? " inspector-floating" : "")}>
       {floatingDirectory && shell.directoryVisible && !shell.focus && <button className="pane-backdrop" aria-label="关闭目录浮层" onClick={() => shell.setDirectoryVisible(false)}/>}
@@ -313,6 +321,7 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
         {selected ? <>
           <div className="manuscript-stage">
             <section className="manuscript-paper">
+              {readFailure}
               <div className="paper-toolbar"><div className="paper-actions"><IconButton icon="refresh" label="刷新当前稿件" disabled={busy} onClick={() => void load({ ...selected.document, episode_id: selected.episode_id })}/><IconButton icon="search" label="搜索正文" disabled={!!reference} onClick={() => setShowSearch(!showSearch)}/><IconButton icon="comment" label="原文批注" disabled={!!reference} onClick={() => shell.setInspector(!shell.inspector)}/><details className="popover-menu"><summary aria-label="文稿操作" title="文稿操作"><Icon name="more"/></summary><div className="menu-panel">
                 <button disabled={!!reference} onClick={() => setEditing(true)}>编辑</button><button onClick={() => setEditing(false)}>阅读</button>
                 <button onClick={() => reference && reviewTask ? reviewTask(reference.task_ref.task_id) : ai({ document_id: selected.document.document_id, revision_id: selected.revision.revision_id, ...(quote ?? {}) })}>让 AI 处理本稿</button>
@@ -512,7 +521,7 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
                   />
                 )}
           </aside>}
-        </> : <div className="empty"><Icon name="book" size={42}/><h2>{documents.length ? "选择一章或一集" : "从成果开始创作"}</h2><p>让外部 Agent 围绕当前作品准备章节或分集，回来阅读、比较并提出意见。</p><button onClick={() => ai()}>让 AI 处理</button></div>}
+        </> : busy ? <div className="empty" role="status">正在读取稿件…</div> : readError ? <div className="empty">{readFailure}</div> : <div className="empty"><Icon name="book" size={42}/><h2>{documents.length ? "选择一章或一集" : "从成果开始创作"}</h2><p>让外部 Agent 围绕当前作品准备章节或分集，回来阅读、比较并提出意见。</p><button onClick={() => ai()}>让 AI 处理</button></div>}
       </section>
     </div>
   );

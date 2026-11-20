@@ -1,6 +1,6 @@
 {
   "name": "@limecloud/hetu",
-  "version": "0.13.9",
+  "version": "0.13.10",
   "description": "Hetu Luoshu native CLI and MCP server launcher for external AI agents",
   "type": "module",
   "license": "Apache-2.0",

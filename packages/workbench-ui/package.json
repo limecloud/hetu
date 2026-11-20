@@ -1,6 +1,6 @@
 {
   "name": "@hetu/workbench-ui",
-  "version": "0.13.9",
+  "version": "0.13.10",
   "private": true,
   "type": "module",
   "exports": {
@@ -8,7 +8,7 @@
     "./style.css": "./src/workbench.css"
   },
   "dependencies": {
-    "@hetu/plugin-sdk": "0.13.9",
+    "@hetu/plugin-sdk": "0.13.10",
     "react": "18.3.1"
   }
 }

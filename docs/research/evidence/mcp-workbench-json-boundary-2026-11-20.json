@@ -1,0 +1,526 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-11-20",
+  "version": "0.13.10",
+  "request": "修复Codex MCP App目录点击无法打开正文，并完整核对全部桌面共用功能。",
+  "root_cause": {
+    "observed_error": "Invalid MCP tool call params",
+    "code": -32602,
+    "validation_path": [
+      "arguments",
+      "args"
+    ],
+    "source": "安装版Codex Desktop实际日志，仅提取参数错误，不包含作者内容。",
+    "matching_log_records": 16,
+    "log_sha256": "eaf49e3b466b3b1d618f42d024f77ea7da53d95f44584745463c5ca9bfb3b19b",
+    "sample_time": "2026-11-19T23:19:57.798Z"
+  },
+  "implementation": {
+    "json_boundary": "shared-workbench.ts在postMessage调用前转换严格JSON，undefined_args保留顶层省略与显式null；插件buffer(undefined)归为空参数读取。",
+    "reading": "documents.tsx在阅读区显示实际错误与重试，快速切换抑制过时请求错误。",
+    "reuse": "同一桌面renderer和createWorkSession，无新增业务分支或授权入口。",
+    "static_resources": "稳定MCP可在未协商UI扩展时读取三份纯静态HTML；任务专用连接及实际任务／作者决定仍按原范围核验。"
+  },
+  "verification": {
+    "status": "all_preflight_gates_passed",
+    "strict_host": "AppBridge收到参数后、任何HTTP序列化前递归检查JSON类型。",
+    "journeys": [
+      "小说目录、连续切章、编辑保存、恢复稿读取与显式清空、读取中断重试",
+      "全部基础工作面和六类设置",
+      "剧本作者稿、已提交参考稿、未提交工作稿与刷新",
+      "视频实际播放、前版与固定区间意见",
+      "任务候选嵌套审阅、插件写入、恢复稿、返回与设置关闭保存",
+      "相同UI经实际官方Codex App Server转发，无模型轮次"
+    ],
+    "stdio_full_journey": {
+      "passed": 1,
+      "other_transport_failed": 1,
+      "log": "build/mcp-workbench-01310/shared-final.log",
+      "sha256": "bdeb370d09b29323b83c7db03f9138e7f222e3750b7ba14bb1cfe6ca05ff5bc2"
+    },
+    "codex_full_journey": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "log": "build/mcp-workbench-01310/codex-full-recheck.log",
+      "sha256": "f8ee4b50d41fd0609cf5d222835ecc5eca49a28e65f169497dce407fdb08e76b"
+    },
+    "legacy_resource_regression": {
+      "passed": 1,
+      "failed": 0,
+      "log": "build/mcp-workbench-01310/resource-regression-final.log",
+      "sha256": "74bff4b573a87abb407dcb609e9fe7d9b6b7c9297d2890edc917c28ed968c8e9"
+    },
+    "actual_library": {
+      "version": "0.13.10",
+      "desktop_registered": 18,
+      "mcp_total": 18,
+      "same_work_identities": true,
+      "authorized": 13,
+      "previously_without_agent_connection": 5,
+      "html_sha256": "165803012fb14d1c7f269201e619ca5f60749e1eafd19a2dc6265d25322fa7b7",
+      "catalog_identities_unchanged": true,
+      "real_drama_opened_without_authorization": true,
+      "reference_characters": 2128,
+      "all_drama_episodes": [
+        {
+          "characters": 2128,
+          "sha256": "a07769fe808acb1ed57467826fc1672d4ee259bbf3e2d16a21907d495fcd6007"
+        },
+        {
+          "characters": 2109,
+          "sha256": "227ade1b2203a14da68bce646b620bb0e1f563f012aa0bdfa1c9082591dd5f0e"
+        },
+        {
+          "characters": 1921,
+          "sha256": "c1c2613b0ccee89a509a9d60e5fe6ef56d692070c310c9ef8887104c5e486c49"
+        },
+        {
+          "characters": 1764,
+          "sha256": "42122e15c7f33400fe1c56f26f0e495d693e7dc6b60a8d4789367d716e8b276f"
+        },
+        {
+          "characters": 1912,
+          "sha256": "5d191b374e3d08ab128cd66c3e26ad8425eff41f2aca3772cd7421f4838cde9d"
+        },
+        {
+          "characters": 2389,
+          "sha256": "cac335db13faaaa428bc4525d130553e16636e4ca8a449c667b5fe332460bc25"
+        },
+        {
+          "characters": 1712,
+          "sha256": "61296598b1ec26ce1001e6050be2873d919074720b19f098a87ca6bea0b35d4b"
+        },
+        {
+          "characters": 1754,
+          "sha256": "05db8c19df867c7d2dd188a4b4dfe8973ed0dc9d9787b4238b1f38012b55d674"
+        },
+        {
+          "characters": 1965,
+          "sha256": "6fc800d64a1a1f055a24b65c8c2639bf51f8d3062b1e70c1eff9974b3c84bbce"
+        },
+        {
+          "characters": 1851,
+          "sha256": "348b1d69cd10b12f598c347e4f75735de61a7413cfee78132a95f6434dcfdca0"
+        },
+        {
+          "characters": 1656,
+          "sha256": "a09922279acee4c0aea6752219553cc02164f60c5019f0b9bed2a1563144e83e"
+        },
+        {
+          "characters": 1659,
+          "sha256": "81f2fcba47bf3473f8e22143944276a68e96c68dc84749f38d054a01fa5f5d78"
+        },
+        {
+          "characters": 1700,
+          "sha256": "bd70057cfe925b312e69b3c18910907585593a0e2fb21342f8820d4fc94d4ee8"
+        },
+        {
+          "characters": 1718,
+          "sha256": "569a214b81ea41208b3f79dfce6b9a2766202b1ca96d42e71e23e101775999c9"
+        },
+        {
+          "characters": 1745,
+          "sha256": "61252c47d0fae0f11751a74946f411bca9450abc4442435772fc54f36259caa0"
+        },
+        {
+          "characters": 1709,
+          "sha256": "d3e9c8227696ff82548a8d4f64a1263c962b101bd34f967476746e202a31a772"
+        },
+        {
+          "characters": 2064,
+          "sha256": "41d00283fc802b9bc2f22192ca9569c05c6a0d197bbebbba55e83f4db6929bbb"
+        },
+        {
+          "characters": 1632,
+          "sha256": "8702be9a8d5b2305e548883cde7c4087b5439f5c4da710723730e2ea4fa38b63"
+        },
+        {
+          "characters": 1726,
+          "sha256": "de44b65dfc52d38fe89c98979f57df206dafbe2bcc3b621ae77528b3cd329074"
+        },
+        {
+          "characters": 1577,
+          "sha256": "6acc176bdbadbd7f1d3bb8c3e353052eadd8fafa89edacdbc77f67d32abbfe77"
+        }
+      ],
+      "real_work_files_unchanged": true,
+      "previously_unconnected_works_opened": [
+        {
+          "kind": "drama",
+          "opened": true
+        },
+        {
+          "kind": "novel",
+          "opened": true
+        },
+        {
+          "kind": "novel",
+          "opened": true
+        },
+        {
+          "kind": "drama",
+          "opened": true
+        },
+        {
+          "kind": "novel",
+          "opened": true
+        }
+      ],
+      "browser_cards": 18,
+      "refresh_passed": true,
+      "screenshot": "本机私有证据，不公开作者内容",
+      "scope": "覆盖安装的开发签名0.13.10，同一严格AppBridge逐集核对20集完整正文；不冒充指定Codex GUI逐页观察。",
+      "runtime": "/Applications/Hetu.app/Contents/Resources/bin/hetu-mcp"
+    },
+    "rust_workspace": {
+      "passed": 389,
+      "failed": 0,
+      "log": "build/mcp-workbench-01310/rust-all.log",
+      "sha256": "c7b04f1ce52f27de39689a0a577a73dc55098fb3dcf0a85ef4f95910ebec9ff8"
+    },
+    "rust-all": {
+      "passed": 389,
+      "failed": 0,
+      "skipped": 0,
+      "log": "build/mcp-workbench-01310/rust-all.log",
+      "sha256": "c7b04f1ce52f27de39689a0a577a73dc55098fb3dcf0a85ef4f95910ebec9ff8"
+    },
+    "cli": {
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "log": "build/mcp-workbench-01310/cli.log",
+      "sha256": "df8526309156c2a34892503b9c5c1c73ec14b53183be5860a41885212c0d8df6"
+    },
+    "apps-all": {
+      "passed": 56,
+      "failed": 0,
+      "skipped": 0,
+      "log": "build/mcp-workbench-01310/apps-all.log",
+      "sha256": "77b384d360079687d39f3755853732dc8f04b3eed632997ad4d77c31ac86c647"
+    },
+    "plugins-all": {
+      "passed": 104,
+      "failed": 0,
+      "skipped": 0,
+      "log": "build/mcp-workbench-01310/plugins-all.log",
+      "sha256": "3a926f9c0ff62856ff32a3bfbc8cabc679f872cdba94a7aade6a4c91fce07feb"
+    },
+    "desktop-all": {
+      "passed": 50,
+      "failed": 0,
+      "skipped": 0,
+      "log": "build/mcp-workbench-01310/desktop-all.log",
+      "sha256": "75be68fbf6437ae1eed124e3f785040293fbf6f2c142ec06ef3f06b06d6665ea"
+    },
+    "tooling": {
+      "passed": 25,
+      "failed": 0,
+      "skipped": 0,
+      "log": "build/mcp-workbench-01310/tooling.log",
+      "sha256": "027e80c33db2ee593846367fd21a4ebc082df83179f25d793904ae1287d2080e"
+    },
+    "release-guards": {
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "log": "build/mcp-workbench-01310/release-guards.log",
+      "sha256": "360b574c830922c9e1efef4ab5e9a84417e5c8f81a5831c3fb96546bd1494c85"
+    },
+    "preflight_results": [
+      {
+        "name": "rust-all",
+        "exit_code": 0,
+        "seconds": 389.2,
+        "log": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-01310/rust-all.log"
+      },
+      {
+        "name": "cli",
+        "exit_code": 0,
+        "seconds": 0.9,
+        "log": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-01310/cli.log"
+      },
+      {
+        "name": "apps-all",
+        "exit_code": 0,
+        "seconds": 305.6,
+        "log": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-01310/apps-all.log"
+      },
+      {
+        "name": "plugins-all",
+        "exit_code": 0,
+        "seconds": 44.4,
+        "log": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-01310/plugins-all.log"
+      },
+      {
+        "name": "desktop-all",
+        "exit_code": 0,
+        "seconds": 493.2,
+        "log": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-01310/desktop-all.log"
+      },
+      {
+        "name": "tooling",
+        "exit_code": 0,
+        "seconds": 1.0,
+        "log": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-01310/tooling.log"
+      },
+      {
+        "name": "release-guards",
+        "exit_code": 0,
+        "seconds": 2.9,
+        "log": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-01310/release-guards.log"
+      },
+      {
+        "name": "versions",
+        "exit_code": 0,
+        "seconds": 0.1,
+        "log": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-01310/versions.log"
+      },
+      {
+        "name": "skills",
+        "exit_code": 0,
+        "seconds": 2.2,
+        "log": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-01310/skills.log"
+      },
+      {
+        "name": "methods",
+        "exit_code": 0,
+        "seconds": 0.3,
+        "log": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-01310/methods.log"
+      },
+      {
+        "name": "capability-map",
+        "exit_code": 0,
+        "seconds": 0.1,
+        "log": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-01310/capability-map.log"
+      },
+      {
+        "name": "docs",
+        "exit_code": 0,
+        "seconds": 1.0,
+        "log": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-01310/docs.log"
+      },
+      {
+        "name": "website-build",
+        "exit_code": 0,
+        "seconds": 28.4,
+        "log": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-01310/website-build.log"
+      }
+    ],
+    "scope": "同一冻结业务源码按发行门禁顺序完整通过；原生协议测试仅排版随后单独再通过，未改业务字节。",
+    "packaged": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "log": "build/mcp-workbench-01310/packaged.log",
+      "sha256": "0ae5b90add6fab4a77f31a66f2b571abd5733b161c9851a17222064483202fa2"
+    },
+    "official_installed": {
+      "version": "0.13.10",
+      "plugin_id": "hetu-workbench@hetu-luoshu-machine-connection",
+      "tools_error": null,
+      "entrypoints": [
+        {
+          "type": "global"
+        },
+        {
+          "type": "thread"
+        }
+      ],
+      "html_sha256": "165803012fb14d1c7f269201e619ca5f60749e1eafd19a2dc6265d25322fa7b7",
+      "html_bytes": 4139686,
+      "manual_mcp_configuration": false,
+      "gui_observed": false,
+      "app_only_bridge_called": true,
+      "private_session_preserved": true,
+      "registered_works": 18,
+      "same_desktop_work_refs": true,
+      "model_turn_started": false
+    },
+    "actual_library_development": {
+      "version": "0.13.10",
+      "desktop_registered": 18,
+      "mcp_total": 18,
+      "same_work_identities": true,
+      "authorized": 13,
+      "previously_without_agent_connection": 5,
+      "html_sha256": "6306eaf2c98586866f1d675a535d161f764c29cf69c953e34fe9fdd447de67c7",
+      "catalog_identities_unchanged": true,
+      "real_drama_opened_without_authorization": true,
+      "reference_characters": 2128,
+      "all_drama_episodes": [
+        {
+          "characters": 2128,
+          "sha256": "a07769fe808acb1ed57467826fc1672d4ee259bbf3e2d16a21907d495fcd6007"
+        },
+        {
+          "characters": 2109,
+          "sha256": "227ade1b2203a14da68bce646b620bb0e1f563f012aa0bdfa1c9082591dd5f0e"
+        },
+        {
+          "characters": 1921,
+          "sha256": "c1c2613b0ccee89a509a9d60e5fe6ef56d692070c310c9ef8887104c5e486c49"
+        },
+        {
+          "characters": 1764,
+          "sha256": "42122e15c7f33400fe1c56f26f0e495d693e7dc6b60a8d4789367d716e8b276f"
+        },
+        {
+          "characters": 1912,
+          "sha256": "5d191b374e3d08ab128cd66c3e26ad8425eff41f2aca3772cd7421f4838cde9d"
+        },
+        {
+          "characters": 2389,
+          "sha256": "cac335db13faaaa428bc4525d130553e16636e4ca8a449c667b5fe332460bc25"
+        },
+        {
+          "characters": 1712,
+          "sha256": "61296598b1ec26ce1001e6050be2873d919074720b19f098a87ca6bea0b35d4b"
+        },
+        {
+          "characters": 1754,
+          "sha256": "05db8c19df867c7d2dd188a4b4dfe8973ed0dc9d9787b4238b1f38012b55d674"
+        },
+        {
+          "characters": 1965,
+          "sha256": "6fc800d64a1a1f055a24b65c8c2639bf51f8d3062b1e70c1eff9974b3c84bbce"
+        },
+        {
+          "characters": 1851,
+          "sha256": "348b1d69cd10b12f598c347e4f75735de61a7413cfee78132a95f6434dcfdca0"
+        },
+        {
+          "characters": 1656,
+          "sha256": "a09922279acee4c0aea6752219553cc02164f60c5019f0b9bed2a1563144e83e"
+        },
+        {
+          "characters": 1659,
+          "sha256": "81f2fcba47bf3473f8e22143944276a68e96c68dc84749f38d054a01fa5f5d78"
+        },
+        {
+          "characters": 1700,
+          "sha256": "bd70057cfe925b312e69b3c18910907585593a0e2fb21342f8820d4fc94d4ee8"
+        },
+        {
+          "characters": 1718,
+          "sha256": "569a214b81ea41208b3f79dfce6b9a2766202b1ca96d42e71e23e101775999c9"
+        },
+        {
+          "characters": 1745,
+          "sha256": "61252c47d0fae0f11751a74946f411bca9450abc4442435772fc54f36259caa0"
+        },
+        {
+          "characters": 1709,
+          "sha256": "d3e9c8227696ff82548a8d4f64a1263c962b101bd34f967476746e202a31a772"
+        },
+        {
+          "characters": 2064,
+          "sha256": "41d00283fc802b9bc2f22192ca9569c05c6a0d197bbebbba55e83f4db6929bbb"
+        },
+        {
+          "characters": 1632,
+          "sha256": "8702be9a8d5b2305e548883cde7c4087b5439f5c4da710723730e2ea4fa38b63"
+        },
+        {
+          "characters": 1726,
+          "sha256": "de44b65dfc52d38fe89c98979f57df206dafbe2bcc3b621ae77528b3cd329074"
+        },
+        {
+          "characters": 1577,
+          "sha256": "6acc176bdbadbd7f1d3bb8c3e353052eadd8fafa89edacdbc77f67d32abbfe77"
+        }
+      ],
+      "real_work_files_unchanged": true,
+      "previously_unconnected_works_opened": [
+        {
+          "kind": "drama",
+          "opened": true
+        },
+        {
+          "kind": "novel",
+          "opened": true
+        },
+        {
+          "kind": "novel",
+          "opened": true
+        },
+        {
+          "kind": "drama",
+          "opened": true
+        },
+        {
+          "kind": "novel",
+          "opened": true
+        }
+      ],
+      "browser_cards": 18,
+      "refresh_passed": true,
+      "screenshot": "仅本机私有证据，不公开作者内容。",
+      "scope": "严格AppBridge中18项作品一致，20集逐集点击后与Core固定稿逐字核对，原文件摘要保持；不是指定Codex GUI窗口逐页观察。",
+      "runtime": "本机开发源码编译的CLI/MCP，尚未覆盖安装"
+    }
+  },
+  "scope_limits": [
+    "当前Computer Use原生管道与浏览器宿主不可用，未在指定Codex GUI窗口逐页直接观察；日志确证真实宿主拒绝。",
+    "真实作者作品仅只读验收；写入、清空、固定决定及恢复使用隔离样本。"
+  ],
+  "release": {
+    "status": "pending",
+    "tag": "v0.13.10"
+  },
+  "retained_failures": [
+    {
+      "log": "build/mcp-workbench-01310/strict-host-before-built.log",
+      "reason": "严格宿主转发前拒绝undefined，旧资源无法显示正文，复现实际故障。"
+    },
+    {
+      "log": "build/mcp-workbench-01310/strict-host-after-built.log",
+      "reason": "新增导航验收错误地在仅含作品名称的顶栏查找页面名称；改为检查选中导航及实际工作面。"
+    },
+    {
+      "log": "build/mcp-workbench-01310/shared-journey-versioned.log",
+      "reason": "测试折叠导航的has定位器被错误地限制在外层导航，未展开目标分组；改用组内目标定位。"
+    },
+    {
+      "log": "build/mcp-workbench-01310/shared-parity-recheck.log",
+      "reason": "打开管理审阅页后再断言无Agent管理记录，与既有桌面管理方案连接用例不符；无连接断言移回阅读、编辑与偏好操作之后。"
+    },
+    {
+      "log": "build/mcp-workbench-01310/shared-final.log",
+      "reason": "stdio完整旅程通过，官方转发的任务静态资源读取被UI协商门禁拒绝；补齐稳定连接的纯静态资源读取，保留任务专用连接权限。"
+    }
+  ],
+  "website": {
+    "build_pages": 219,
+    "build_log": "build/mcp-workbench-01310/website-build.log",
+    "deployment": "pending"
+  },
+  "package": {
+    "version": "0.13.10",
+    "manifest": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-01310/package/hetu-dev-6bF0Kw/manifest.json",
+    "source_sha256": "510d14e26d435ca28c049276cb0e6b06919306ce67a7fc29472107021265cbbb",
+    "source_files": 2814,
+    "artifacts": 3387,
+    "signing": "ad-hoc-development"
+  },
+  "installation": {
+    "installed_at": "2026-11-20T00:16:02.964438+00:00",
+    "version": "0.13.10",
+    "application": "/Applications/Hetu.app",
+    "backup": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-01310/replaced-0.13.9.app",
+    "manifest": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-workbench-01310/package/hetu-dev-6bF0Kw/manifest.json",
+    "source_sha256": "510d14e26d435ca28c049276cb0e6b06919306ce67a7fc29472107021265cbbb",
+    "artifacts_verified": 3387,
+    "signing": "ad-hoc-development",
+    "codesign_verified": true,
+    "cli_version": "hetu 0.13.10",
+    "author_content_modified": false
+  },
+  "connection": {
+    "version": "0.13.10",
+    "registered": true,
+    "session_loaded": false,
+    "version_differs": false
+  }
+}

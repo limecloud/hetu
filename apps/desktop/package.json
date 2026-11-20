@@ -1,6 +1,6 @@
 {
   "name": "@hetu/desktop",
-  "version": "0.13.9",
+  "version": "0.13.10",
   "private": true,
   "type": "module",
   "main": "dist/main.cjs",
@@ -16,12 +16,12 @@
     "@codemirror/commands": "6.11.1",
     "@codemirror/state": "6.7.6",
     "@codemirror/view": "6.43.15",
-    "@hetu/plugin-host": "0.13.9",
-    "@hetu/plugin-sdk": "0.13.9",
+    "@hetu/plugin-host": "0.13.10",
+    "@hetu/plugin-sdk": "0.13.10",
     "@modelcontextprotocol/ext-apps": "2.0.4",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "@hetu/workbench-ui": "0.13.9"
+    "@hetu/workbench-ui": "0.13.10"
   },
   "devDependencies": {
     "@electron/packager": "20.3.0",

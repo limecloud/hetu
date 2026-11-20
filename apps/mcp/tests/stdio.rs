@@ -2203,6 +2203,36 @@ async fn codex_legacy_initialize_lists_and_calls_both_connection_profiles() {
             "{called}"
         );
         assert!(called["result"].get("resultType").is_none(), "{called}");
+        if stable {
+            // 工作台会内嵌任务审核；纯静态页面不能因Codex未协商UI扩展而被拒绝。
+            for uri in [
+                "ui://hetu/workbench/2",
+                "ui://hetu/task-view/1",
+                "ui://hetu/operation-view/1",
+            ] {
+                let id = client
+                    .send("resources/read", json!({"uri":uri}), false)
+                    .await;
+                let resource = client.response(id).await;
+                assert!(resource.get("error").is_none(), "{resource}");
+                let content = &resource["result"]["contents"][0];
+                assert_eq!(content["mimeType"], "text/html;profile=mcp-app");
+                assert!(
+                    content["text"]
+                        .as_str()
+                        .unwrap()
+                        .starts_with("<!doctype html>")
+                );
+            }
+            let id = client
+                .send(
+                    "resources/read",
+                    json!({"uri":"hetu://task/workspace/unknown"}),
+                    false,
+                )
+                .await;
+            assert!(client.response(id).await.get("error").is_some());
+        }
         client.close().await;
     }
 }

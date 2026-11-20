@@ -220,7 +220,7 @@ export function TaskPanel({
           if (active) setError("审阅面板未能连接，请重试。");
         }, 10000);
       } catch (error) {
-        if (active) setError((error as Error).message);
+        if (active) setError(typeof (error as Error)?.message === "string" ? (error as Error).message : String(error));
       }
     })();
     return () => {

@@ -280,15 +280,15 @@ impl ServerHandler for StableServer {
     async fn read_resource(
         &self,
         request: ReadResourceRequestParams,
-        context: RequestContext<RoleServer>,
+        _context: RequestContext<RoleServer>,
     ) -> Result<ReadResourceResponse, ErrorData> {
         if request.uri == ui::WORKBENCH_URI {
             return Ok(ui::read_workbench().into());
         }
-        if request.uri == ui::OPERATION_URI && ui::supported(&context) {
+        if request.uri == ui::OPERATION_URI {
             return Ok(ui::read_operation().into());
         }
-        if request.uri == ui::URI && ui::supported(&context) {
+        if request.uri == ui::URI {
             return Ok(ui::read()?.into());
         }
         Err(ErrorData::invalid_params(

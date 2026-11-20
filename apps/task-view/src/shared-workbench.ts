@@ -30,7 +30,7 @@ addEventListener("message",async event=>{
  const value=event.data;
  if(value.flushed){const pending=flushes.get(value.flushed);flushes.delete(value.flushed);value.error?pending?.reject(new Error(value.error)):pending?.resolve();return;}
  if(!Number.isSafeInteger(value.id)||!["context","buffer","request","invoke","host"].includes(value.method)||!Array.isArray(value.args))return;
- try{let result=await call("pluginCall",[pluginChannel,value.method,value.args]);if(value.method==="host"&&value.args[0]==="media_open")result={...result,blob:await mediaFile(result)};pluginFrame?.contentWindow?.postMessage({hetuPlugin:pluginChannel,id:value.id,value:result},"*");}
+ try{const args=value.method==="buffer"&&value.args[0]===undefined?[]:value.args;let result=await call("pluginCall",[pluginChannel,value.method,args]);if(value.method==="host"&&value.args[0]==="media_open")result={...result,blob:await mediaFile(result)};pluginFrame?.contentWindow?.postMessage({hetuPlugin:pluginChannel,id:value.id,value:result},"*");}
  catch(error){pluginFrame?.contentWindow?.postMessage({hetuPlugin:pluginChannel,id:value.id,error:(error as Error).message},"*");}
 });
 async function releaseMedia(url:string){const entry=media.get(url);if(entry){URL.revokeObjectURL(url);media.delete(url);return call("media",["release",{url:entry.source}]);}}
@@ -41,7 +41,9 @@ async function mediaFile(opened:any){
 async function mediaBlob(opened:any){const blob=await mediaFile(opened),url=URL.createObjectURL(blob);media.set(url,{source:opened.url});return {...opened,url};}
 async function call(method:string,args:any[]=[]):Promise<any>{
  await ready;
- const response=await host.callServerTool({name:"hetu_app_request",arguments:{session,method,args,undefined_args:args.flatMap((value,index)=>value===undefined?[index]:[])}});
+ // postMessage保留undefined，Codex会在转发前拒绝非JSON值；省略与显式null仍须分别恢复。
+ const parameters=JSON.parse(JSON.stringify({session,method,args,undefined_args:Array.from(args).flatMap((value,index)=>value===undefined?[index]:[])}));
+ const response=await host.callServerTool({name:"hetu_app_request",arguments:parameters});
  if(response.isError)throw new Error(response.content?.find(value=>value.type==="text")?.text??"操作未完成，请沿原操作回读。");
  const result=(response.structuredContent??{}) as any;
  for(const event of result.events??[])emit(event.name,event.value);

@@ -17,6 +17,7 @@ declare global {
     operationInput?: Record<string, unknown>;
     harness: {
       calls: { name: string; arguments?: Record<string, unknown> }[];
+      invalidToolArguments: number;
       reads: string[];
       saveMode: "normal" | "lost" | "conflict" | "absent";
       messages: unknown[];
@@ -39,7 +40,7 @@ const bridge = new AppBridge(null, { name: "Hetu Apps contract host", version: "
 let current = structuredClone(window.initialTask);
 let original: CallToolResult | undefined;
 const harness: Window["harness"] = window.harness = {
-  calls: [], reads: [], saveMode: "normal", messages: [], wireMessages: [], contexts: [], messageMode: "accepted",
+  calls: [], invalidToolArguments: 0, reads: [], saveMode: "normal", messages: [], wireMessages: [], contexts: [], messageMode: "accepted",
   send: result => { current = structuredClone(result); bridge.sendToolResult(result); },
   teardown: () => bridge.teardownResource({}),
 };
@@ -48,6 +49,13 @@ window.addEventListener("message", event => {
 });
 bridge.onupdatemodelcontext = async params => { harness.contexts.push(structuredClone(params)); return {}; };
 bridge.oncalltool = async params => {
+  // Codex在转发前校验严格JSON；HTTP序列化会掩盖structured clone保留的undefined。
+  if (window.workbenchMode) {
+    const json = (value: unknown): boolean => value === null || typeof value === "string" || typeof value === "boolean" ||
+      (typeof value === "number" && Number.isFinite(value)) ||
+      (Array.isArray(value) ? Array.from(value).every(json) : typeof value === "object" && Object.values(value!).every(json));
+    if (!json(params.arguments)) { harness.invalidToolArguments++; throw new Error("Invalid MCP tool call params: arguments must contain only JSON values"); }
+  }
   harness.calls.push(structuredClone(params));
   if (window.realTask) {
     const response = await fetch("/rpc", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ method: "tools/call", params }) });
