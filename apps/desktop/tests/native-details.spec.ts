@@ -9,7 +9,7 @@ import { RecoveryStore } from "../src/main/recovery.ts";
 import { CoverReview } from "../src/main/covers.ts";
 import { CanonReview } from "../src/main/canon.ts";
 import { sampleImage } from "./fixtures/media.ts";
-import { navigate, openSettings, closeSettings } from "./navigation.ts";
+import { navigate, openSettings, closeSettings, closeApplication } from "./navigation.ts";
 
 const root = path.resolve(import.meta.dirname, "../../..");
 test("设定保存丢回执只查询原操作，切作品后旧编辑失效", async () => {
@@ -163,7 +163,7 @@ test("原生模型渠道与封面本地导入、文件变更拒绝及历史恢�
     await metadata.getByRole("button", { name: "保存资料", exact: true }).click();
     await expect(metadata).not.toBeVisible();
     expect((await page.evaluate(() => window.hetuDesktop.novel("get"))).novel.metadata.author_name).toBe("测试作者");
-    await page.locator(".profile-structure > summary").click();
+    await expect(page.locator(".profile-structure")).toHaveAttribute("open", "");
     await page.getByRole("button", { name: "整理卷章", exact: true }).click();
     const structure = page.getByRole("dialog", { name: "整理卷章结构", exact: true });
     await structure.getByRole("textbox", { name: "新卷标题", exact: true }).fill("第一卷 雾港");
@@ -250,5 +250,5 @@ test("原生模型渠道与封面本地导入、文件变更拒绝及历史恢�
     await expect(narrow).toBeInViewport(); expect(await narrow.evaluate(el => el.scrollWidth > el.clientWidth)).toBe(false);
     await page.screenshot({ path: path.join(root, "output/rea-mac-ui-20261116/canon-editor-dark.png") });
     await narrow.getByRole("button", { name: "关闭", exact: true }).click();
-  } finally { await application.close(); }
+  } finally { await closeApplication(application); }
 });

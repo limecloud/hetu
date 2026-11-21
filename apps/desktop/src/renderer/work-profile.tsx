@@ -13,7 +13,7 @@ const status: Record<string, string> = {
   archived: "已归档",
 };
 
-export function WorkProfile({ work, ai, notify }: SurfaceContext) {
+export function WorkProfile({ work, ai, notify, openDocument }: SurfaceContext) {
   const { agentStatus } = React.useContext(Workbench);
   const [value, setValue] =
       useState<Awaited<ReturnType<typeof readWorkContent>>>(),
@@ -87,7 +87,7 @@ export function WorkProfile({ work, ai, notify }: SurfaceContext) {
               <dd>{status[metadata.status] ?? metadata.status}</dd>
               </div><div>
               <dt>卷章</dt>
-              <dd>{value.record.volumes.length} 卷 {value.record.chapters.length} 章</dd>
+              <dd>{openDocument && value.groups[0]?.documents[0] ? <button type="button" className="profile-directory-link" aria-label="打开章节目录" onClick={() => openDocument(value.groups[0].documents[0].document_id)}>{value.record.volumes.length} 卷 {value.record.chapters.length} 章<Icon name="chevron" size={12}/></button> : <>{value.record.volumes.length} 卷 {value.record.chapters.length} 章</>}</dd>
               </div>
             </dl>
             </div></div>
@@ -100,14 +100,14 @@ export function WorkProfile({ work, ai, notify }: SurfaceContext) {
           )}
           {metadata && <section className="profile-synopsis"><h3>简介</h3><p>{metadata.synopsis || "暂无简介"}</p></section>}
           <div className="profile-details">
-            <details className="profile-structure"><summary>{work.kind === "novel" ? "卷章目录" : "分集目录"}</summary>
+            <details className="profile-structure" open><summary>{work.kind === "novel" ? "卷章目录" : "分集目录"}</summary>
             {metadata && <button onClick={() => setEditing("structure")}>整理卷章</button>}
             {value.groups.map((group) => (
               <section key={group.title}>
                 <h4>{group.title}</h4>
                 <ol>
                   {group.documents.map((document) => (
-                    <li key={document.document_id}>{document.title}</li>
+                    <li key={document.document_id}>{openDocument ? <button type="button" onClick={() => openDocument(document.document_id)}><Icon name="file" size={14}/><span>{document.title}</span></button> : document.title}</li>
                   ))}
                 </ol>
               </section>

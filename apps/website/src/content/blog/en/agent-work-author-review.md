@@ -45,7 +45,7 @@ This reduces the need to find buttons, move text between windows and reconstruct
 
 When an operation needs your decision, the Agent prepares the complete proposal. Hetu presents its effect so you can review that specific change. Approval stays tied to that proposal; it does not grant access to your whole library or approve the next revision.
 
-## Leave room for the author's craft
+## Leave room for the author's writing
 
 Project details, organization and delivery preparation can move through tools. Whether a character should stay silent, whether an ending says too much and whether a line sounds like your work remain decisions worth spending time on.
 

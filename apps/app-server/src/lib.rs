@@ -168,6 +168,15 @@ impl Server {
                     Err(e) => return Some(error(id.clone(), -32003, &e.message)),
                 }
             }
+            "execution/request" if self.state == State::Ready => {
+                if !params.is_object() || params.as_object().unwrap().len() != 2
+                    || !params["client_adapter"].is_string() || !params["request"].is_object()
+                {return Some(error(id.clone(), -32602, "工作区执行请求参数无效。"));}
+                match hetu_core::execution::WorkspaceExecution::open_default(params["client_adapter"].as_str().unwrap()) {
+                    Ok(execution) => execution.request(params["request"].clone()),
+                    Err(e) => return Some(error(id.clone(), -32003, &e.message)),
+                }
+            }
             "local_settings/host" if self.state == State::Ready => {
                 match hetu_core::local_settings::LocalSettings::open_default()
                     .and_then(|settings| settings.host(params))

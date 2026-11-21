@@ -12,6 +12,7 @@ MAP = ROOT / "contracts/capability-map.json"
 SKILL_MAP = ROOT / "tools/hetu-skills/base/references/capability-map.json"
 
 ROUTES = {
+    "execution": ("统一执行模式与集中确认", "hetu-setup"),
     "capabilities": ("能力导航与Review", "hetu-setup"),
     "baseline": ("随包基础能力", "hetu-setup"),
     "blueprints": ("设定与规则", "hetu-outline"),
@@ -128,6 +129,7 @@ def build():
                               for name in ["PROJECT_ACTIONS", "WORKSPACE_ACTIONS", "REVIEW_ACTIONS"]))
     tasks = rust_list("core/src/application/creative_tasks.rs", "TASK_ACTIONS")
     inputs = ["contracts/actions.json", "contracts/tools/catalog.json", "integrations/catalog.json",
+              "core/src/execution.rs", "core/src/local_settings.rs",
               "core/src/application/agent_operations.rs", "core/src/collaboration/authoring.rs",
               "core/src/application/creative_tasks.rs", "core/src/application/work_scope.rs"]
     evidence_path = "docs/research/evidence/2026-11-16-agent-capabilities.json"

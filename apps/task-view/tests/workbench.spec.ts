@@ -169,9 +169,8 @@ test("shared library filters intersect and clear without reading another work or
 for(const theme of ["light","dark"]) for(const width of [375,1440]) test(`shared library ${theme} ${width}px uses embedded artwork and readable controls`, async({page})=>{
   await page.setViewportSize({width,height:960});await page.emulateMedia({colorScheme:theme as "light"|"dark"});
   const view=await open(page);
-  await expect(view.locator(".library-intro-art img")).toBeVisible();
-  await expect.poll(()=>view.locator(".library-intro-art img").evaluate((node:HTMLImageElement)=>node.complete&&node.naturalWidth>0)).toBe(true);
-  expect(await view.locator(".library-intro-art img").evaluate((node:HTMLImageElement)=>node.currentSrc.startsWith("data:image/webp"))).toBe(true);
+  await expect(view.locator(".library-intro-art")).toHaveCount(0);
+  await expect(view.getByRole("heading",{name:"创作库",exact:true})).toBeVisible();
   await expect.poll(()=>view.locator(".work-cover img").evaluate((node:HTMLImageElement)=>node.complete&&node.naturalWidth>0)).toBe(true);
   expect(await view.locator("body").evaluate(node=>node.scrollWidth<=innerWidth)).toBe(true);
   const metrics=await view.locator(".library-topbar").evaluate(node=>({height:node.getBoundingClientRect().height,border:getComputedStyle(node).borderBottomWidth,font:getComputedStyle(node.querySelector("strong")!).fontSize}));

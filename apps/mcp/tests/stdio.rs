@@ -83,6 +83,41 @@ struct Client {
 }
 
 #[tokio::test]
+async fn unified_execution_shared_setting_applies_to_stable_and_bound_mcp_without_grants() {
+    let root = tempfile::tempdir().unwrap(); let settings = root.path().join("settings"); let workspace = root.path().join("work");
+    let author = Kernel::open(json!({"mode":"author","workspace_path":workspace,"create":{"title":"统一模式","locale":"zh-CN","operation_key":"create"}})).unwrap();
+    let spawn = |stable: bool| {
+        let mut command = Command::new(binary()); command.env("HETU_LOCAL_SETTINGS_DIR",&settings);
+        if stable {command.arg("--client").arg("codex").arg("--collaboration-dir").arg(root.path().join("hub")).arg("--all-tools");}
+        else {command.arg("--workspace").arg(&workspace);}
+        Client::spawn(command)
+    };
+    let mut stable = spawn(true); stable.rpc("server/discover",json!({})).await;
+    let before = stable.tool("hetu_get_execution_mode",json!({})).await; assert_eq!(before["data"]["execution_mode"],"auto");
+    let created = stable.tool("hetu_execute_workspace",json!({"workspace_path":workspace,"command":{"action":"hetu.documents.create","contract_revision":"1","input":{"kind":"novel_chapter","title":"直接新建","source_format":"markdown","content":"直接写入🌿","operation_key":"new"}}})).await;
+    assert_eq!(created["status"],"succeeded","{created}"); let document = created["data"]["result"]["data"].clone();
+    assert_eq!(document["revision"]["origin_kind"],"agent");
+    let mut bound = spawn(false); bound.rpc("server/discover",json!({})).await;
+    let policy = bound.tool("hetu_get_execution_mode",json!({})).await; assert_eq!(policy["data"],before["data"]);
+    let settings_service = hetu_core::local_settings::LocalSettings::open(&settings).unwrap(); let state=settings_service.host(json!({"method":"get","input":{}})).unwrap();
+    settings_service.host(json!({"method":"update","input":{"expected_revision":state["revision"],"patch":{"execution_mode":"confirm"},"operation_key":"confirm"}})).unwrap();
+    assert_eq!(stable.tool("hetu_get_execution_mode",json!({})).await["data"]["execution_mode"],"confirm");
+    assert_eq!(bound.tool("hetu_get_execution_mode",json!({})).await["data"]["execution_mode"],"confirm");
+    let fixed = json!({"action":"hetu.documents.rename","contract_revision":"1","input":{"document_id":document["document"]["document_id"],"base_revision_id":document["revision"]["revision_id"],"title":"集中改名","operation_key":"rename"}});
+    let denied = stable.tool("hetu_execute_workspace",json!({"workspace_path":workspace,"command":fixed})).await; assert_eq!(denied["error"]["code"],"hetu.execution_confirmation_required");
+    let read = bound.tool("hetu_execute_workspace",json!({"workspace_path":workspace,"command":{"action":"hetu.documents.get","contract_revision":"1","input":{"document_id":document["document"]["document_id"]}}})).await;
+    assert_eq!(read["data"]["result"]["data"]["content"],"直接写入🌿","{read}");
+    let prepared = stable.tool("hetu_prepare_execution",json!({"workspace_path":workspace,"commands":[fixed],"summary":"将当前章节改名","operation_key":"batch"})).await;
+    assert_eq!(prepared["status"],"succeeded","{prepared}"); let reference=json!({"plan_id":prepared["data"]["plan_id"],"sha256":prepared["data"]["sha256"]});
+    let confirmed = stable.tool("hetu_record_execution_confirmation",json!({"plan_ref":reference,"decision":"confirm","user_instruction":"确认这次章节改名","operation_key":"decision"})).await;
+    assert_eq!(confirmed["status"],"succeeded","{confirmed}");
+    let completed=stable.tool("hetu_execute_plan",json!({"plan_ref":reference})).await; assert_eq!(completed["data"]["state"],"completed","{completed}");
+    let result=author.request(json!({"action":"hetu.documents.get","contract_revision":"1","input":{"document_id":document["document"]["document_id"]}}));
+    assert_eq!(result["data"]["document"]["title"],"集中改名"); assert_eq!(result["data"]["content"],"直接写入🌿");
+    stable.close().await; bound.close().await;
+}
+
+#[tokio::test]
 async fn result_provenance_comes_from_the_same_contract_in_both_adapters() {
     let (root,k)=setup();
     let task=creative_task(&k,json!([]),None);
@@ -1183,7 +1218,7 @@ impl Client {
         let response = self
             .rpc("tools/call", json!({"name":name,"arguments":args}))
             .await;
-        assert!(response.get("error").is_none(), "{response}");
+        assert!(response.get("error").is_none(), "{name}: {response}");
         let result = &response["result"];
         let text: Value =
             serde_json::from_str(result["content"][0]["text"].as_str().unwrap()).unwrap();
@@ -1847,6 +1882,10 @@ fn draft_args(key: &str) -> Value {
 fn uri(k: &Kernel, path: &str) -> String {
     format!("hetu://workspace/{}/{path}", k.scope())
 }
+fn workbench_uri() -> String {
+    let manifest: Value = serde_json::from_str(include_str!("../resources/workbench.manifest.json")).unwrap();
+    manifest["resource_uri"].as_str().unwrap().to_owned()
+}
 
 #[tokio::test]
 async fn mcp_workbench_entry_is_discoverable_before_ui_negotiation_and_keeps_app_only_tools_scoped() {
@@ -1865,15 +1904,22 @@ async fn mcp_workbench_entry_is_discoverable_before_ui_negotiation_and_keeps_app
     assert_eq!(empty["data"]["works"], json!([]));
     let resources = client.rpc("resources/list", json!({})).await;
     assert_eq!(resources["result"]["resources"].as_array().unwrap().len(), 1);
-    assert_eq!(resources["result"]["resources"][0]["uri"], "ui://hetu/workbench/2");
-    let static_ui = client.rpc("resources/read", json!({"uri":"ui://hetu/workbench/2"})).await;
+    assert_eq!(resources["result"]["resources"][0]["uri"], workbench_uri());
+    let static_ui = client.rpc("resources/read", json!({"uri":workbench_uri()})).await;
     assert_eq!(static_ui["result"]["contents"][0]["mimeType"], "text/html;profile=mcp-app");
+    let html = static_ui["result"]["contents"][0]["text"].as_str().unwrap();
+    assert_eq!(workbench_uri(), format!("ui://hetu/workbench/2/{:x}", Sha256::digest(html.as_bytes())));
+    assert_eq!(static_ui["result"]["contents"][0]["uri"], workbench_uri());
+    for old_uri in ["ui://hetu/workbench/2".to_owned(), format!("ui://hetu/workbench/2/{}", "0".repeat(64))] {
+        let old = client.rpc("resources/read", json!({"uri":old_uri})).await;
+        assert!(old["error"]["message"].as_str().unwrap().contains("重新打开"), "{old}");
+    }
     client.apps = true;
     let listed = client.rpc("tools/list", json!({})).await;
     let tools = listed["result"]["tools"].as_array().unwrap();
     let app = tools.iter().find(|t| t["name"] == "hetu_open_app").unwrap();
     assert_eq!(app["_meta"]["openai/ui"]["entrypoints"], json!([{"type":"global"},{"type":"thread"}]));
-    assert_eq!(app["_meta"]["ui"]["resourceUri"], "ui://hetu/workbench/2");
+    assert_eq!(app["_meta"]["ui"]["resourceUri"], workbench_uri());
     let feedback = tools.iter().find(|t| t["name"] == "hetu_save_task_feedback").unwrap();
     assert_eq!(feedback["_meta"]["ui"]["visibility"], json!(["app"]));
     let operation = tools.iter().find(|t| t["name"] == "hetu_get_management_operation").unwrap();
@@ -1883,7 +1929,7 @@ async fn mcp_workbench_entry_is_discoverable_before_ui_negotiation_and_keeps_app
     assert_eq!(home["data"]["app"]["route"], "library");
     assert_eq!(home["data"]["works"], json!([]));
     assert!(!directory.exists(), "empty entry must not create or enumerate authorizations");
-    let resource = client.rpc("resources/read", json!({"uri":"ui://hetu/workbench/2"})).await;
+    let resource = client.rpc("resources/read", json!({"uri":workbench_uri()})).await;
     assert_eq!(resource["result"]["contents"][0]["mimeType"], "text/html;profile=mcp-app");
     assert!(resource["result"]["contents"][0]["text"].as_str().unwrap().contains("media-src blob:"));
     client.close().await;
@@ -1916,7 +1962,7 @@ async fn legacy_workbench_discovery_does_not_require_ui_and_normalizes_capabilit
         let home=client.tool("hetu_open_app", json!({})).await;
         assert_eq!(home["data"]["app"]["route"], "library");
         assert_eq!(home["data"]["works"], json!([]));
-        let resource = client.rpc("resources/read", json!({"uri":"ui://hetu/workbench/2"})).await;
+        let resource = client.rpc("resources/read", json!({"uri":workbench_uri()})).await;
         assert_eq!(resource["result"]["contents"][0]["mimeType"], "text/html;profile=mcp-app");
         assert!(!directory.exists(), "目录探测不得创建作品或授权");
         client.close().await;
@@ -2206,9 +2252,9 @@ async fn codex_legacy_initialize_lists_and_calls_both_connection_profiles() {
         if stable {
             // 工作台会内嵌任务审核；纯静态页面不能因Codex未协商UI扩展而被拒绝。
             for uri in [
-                "ui://hetu/workbench/2",
-                "ui://hetu/task-view/1",
-                "ui://hetu/operation-view/1",
+                workbench_uri(),
+                "ui://hetu/task-view/1".to_owned(),
+                "ui://hetu/operation-view/1".to_owned(),
             ] {
                 let id = client
                     .send("resources/read", json!({"uri":uri}), false)

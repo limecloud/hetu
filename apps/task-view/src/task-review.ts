@@ -1,11 +1,14 @@
 import type { AppHost } from "./host/bridge.ts";
 import { sameTask, continuationText, type TaskRef, type FeedbackRef } from "./task-reference.ts";
+import React from "react";
+import {createRoot, type Root} from "react-dom/client";
+import {ManuscriptReading, readingProfile, readingStyle} from "@hetu/workbench-ui";
 
 type CandidateRef = { task_ref: TaskRef; submission_id: string; candidate_id: string };
 type Candidate = { candidate_id: string; kind: string; title: string; content?: string; width?: number; height?: number; patches?: { quote: string; replacement: string; byte_start: number; byte_end: number }[] };
 type TaskData = {
   task_ref?: TaskRef;
-  request: TaskRef & { task_kind: string; brief: string; prompt_language: string; input_snapshot: { sources: { title?: string; content?: string; sha256?: string; blueprint?: Record<string, unknown> }[] } };
+  request: TaskRef & { task_kind: string; brief: string; prompt_language: string; input_snapshot: { scope_context?: {work_ref?: {kind: string}}; sources: { title?: string; content?: string; sha256?: string; blueprint?: Record<string, unknown> }[] } };
   observation: { state: string };
   expected: { revision: number; sha256: string };
   submission: { submission_id: string; candidates: Candidate[]; complete: boolean; missing_items: string[]; feedback_refs?: FeedbackRef[] } | null;
@@ -20,6 +23,28 @@ type Envelope = { status: string; data?: TaskData; error?: { code: string; messa
 type ToolResult = { structuredContent?: unknown; content?: { type: string; text?: string }[]; isError?: boolean };
 
 export function mountTaskReview(app: AppHost, root: HTMLElement) {
+const manuscriptRoots: {renderer: Root; content: string; title: string}[] = [];
+let readingPreferences: Record<string, any> = {}, readingKind: "novel" | "screenplay" = "novel";
+function syncReading(context = app.getHostContext()) {
+  const previousKind = readingKind;
+  const value = context?.["hetu/reading"] as {kind?: string; preferences?: Record<string, any>} | undefined;
+  if (value?.preferences) readingPreferences = value.preferences;
+  const kind = value?.kind ?? data?.request.input_snapshot.scope_context?.work_ref?.kind;
+  readingKind = kind === "screenplay" || kind === "drama" || (!kind && data?.request.task_kind === "drama_draft") ? "screenplay" : "novel";
+  root.classList.add("reading-surface"); root.dataset.documentTheme = readingPreferences.document_theme ?? "system";
+  for (const [key, value] of Object.entries(readingStyle(readingProfile(readingPreferences, readingKind)))) root.style.setProperty(key, value);
+  for (const item of manuscriptRoots) renderManuscript(item);
+  return previousKind !== readingKind;
+}
+function renderManuscript({renderer, content, title}: {renderer: Root; content: string; title: string}) {
+  renderer.render(React.createElement(ManuscriptReading, {text: content, title, label: title, format: readingKind === "screenplay" ? "fountain" : "markdown", kind: readingKind, preferences: readingPreferences, language: locale}));
+}
+function manuscript(content: string, title: string) {
+  const element = document.createElement("div"); element.className = "reference-content";
+  const item = {renderer: createRoot(element), content, title}; manuscriptRoots.push(item);
+  renderManuscript(item);
+  return element;
+}
 const messages = {
   "zh-CN": {
     draft: "放入当前草稿", newDraft: "在新对话中准备", drafted: "已放入宿主草稿，尚未发送。", attach: "附加当前任务", attached: "当前任务引用已附加，尚未请求执行。",
@@ -130,6 +155,8 @@ function receive(result: ToolResult, replace = false) {
   document.documentElement.lang = locale;
 }
 function render() {
+  for (const {renderer} of manuscriptRoots.splice(0)) renderer.unmount();
+  syncReading();
   root.replaceChildren();
   root.setAttribute("aria-busy", String(busy || (!connected && !data)));
   const top = element("div", undefined, "top");
@@ -161,7 +188,7 @@ function render() {
           details.append(load);
         }
       }
-      if (source.content !== undefined) details.append(element("pre", source.content));
+      if (source.content !== undefined) details.append(manuscript(source.content, source.title ?? t("source")));
       for (const section of source.sections ?? []) {
         details.append(button(t(section.section), () => readSource(index, { section: section.section })));
       }
@@ -287,7 +314,7 @@ function candidateCard(candidate: Candidate) {
       const diff = element("div", undefined, "patch");
       diff.append(element("span", `${t("change")} ${index + 1}`, "meta"), element("del", `${t("before")}: ${patch.quote}`), element("ins", `${t("after")}: ${patch.replacement}`)); card.append(diff);
     }
-  } else card.append(element("pre", candidate.content ?? "", "content"));
+  } else card.append(candidate.kind === "text" ? manuscript(candidate.content ?? "", candidate.title) : element("pre", candidate.content ?? "", "content"));
   return card;
 }
 async function refresh() {
@@ -413,7 +440,9 @@ app.ontoolinput = ({ arguments: input }) => {
 app.ontoolresult = result => { try { receive(result); } catch (error) { showError(error); } render(); };
 app.onhostcontextchanged = context => {
   if (context.theme) document.documentElement.dataset.theme = context.theme;
-  if (context.locale) { locale = context.locale.startsWith("en") ? "en" : "zh-CN"; document.documentElement.lang = locale; render(); }
+  let changed = syncReading(context);
+  if (context.locale) { const next = context.locale.startsWith("en") ? "en" : "zh-CN"; if (next !== locale) { locale = next; document.documentElement.lang = locale; changed = true; } }
+  if (changed) render();
 };
 app.ontoolcancelled = () => { status = t("unknown"); statusError = true; render(); };
 app.onteardown = async () => { connected = false; busy = false; data = undefined; sourcePreviews.clear(); feedbackReceipt = undefined; selected.clear(); comment = ""; status = t("disconnected"); statusError = false; render(); return {}; };
@@ -428,6 +457,6 @@ return {
     render();
   },
   failed(error?: unknown) { showError(error ?? new Error(t("unavailable"))); render(); },
-  dispose() { connected = false; data = undefined; sourcePreviews.clear(); pending = undefined; feedbackReceipt = undefined; selected.clear(); comment = ""; },
+  dispose() { connected = false; data = undefined; sourcePreviews.clear(); pending = undefined; feedbackReceipt = undefined; selected.clear(); comment = ""; for (const {renderer} of manuscriptRoots.splice(0)) renderer.unmount(); },
 };
 }

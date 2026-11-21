@@ -4,7 +4,7 @@ A daughter leaves a key on the kitchen table. One writer gives her a final accus
 
 Two writers can begin with the same event and make entirely different work. Their choices carry experience, taste and intent. A creative system should make room for those differences.
 
-Novelists and screenwriters practice distinct crafts, each deserving respect. Interior narration, voice and sustained worldbuilding are not lesser forms of visual storytelling. Neither is a screenplay a manuscript with shorter paragraphs. An adaptation is another interpretation, with its own creative responsibilities.
+Novelists and screenwriters practice distinct writing practices, each deserving respect. Interior narration, voice and sustained worldbuilding are not lesser forms of visual storytelling. Neither is a screenplay a manuscript with shorter paragraphs. An adaptation is another interpretation, with its own creative responsibilities.
 
 Hetu Luoshu does not advocate replacing human taste, judgment or creativity with AI. Working alone, collaborating with people and asking an external Agent for help are all valid choices. None of them automatically establishes artistic value.
 
@@ -35,7 +35,7 @@ That is why a reference, a working draft and a finalized revision have different
 
 MCP, CLI and Skills give compatible agents structured ways to participate. The native workspace gives people a place to inspect, edit, choose and finalize. Managed permissions do not replace operating-system access controls, and creators still decide what material they share with an external service.
 
-## Evidence can inform craft without grading it
+## Evidence can inform writing without grading it
 
 A tool can surface an age mismatch, a stale source or a reference to an older design. It cannot establish that a deliberately unreliable narrator is a mistake. Nor can a numerical score settle whether silence is more powerful than dialogue.
 

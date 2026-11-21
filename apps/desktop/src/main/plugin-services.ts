@@ -1,3 +1,4 @@
+import type { PluginPreferences } from "@hetu/plugin-sdk";
 import type {WorkRef,WorkSurface} from '@hetu/plugin-sdk';
 import {sameWork,unwrap} from '@hetu/plugin-sdk';
 
@@ -5,7 +6,7 @@ import {sameWork,unwrap} from '@hetu/plugin-sdk';
 export async function pluginService(action:string,input:Record<string,any>,context:{
   work:WorkRef;check():void;
   request(action:string,input:Record<string,unknown>):Promise<any>;
-  preferences():{theme:string;language:string};
+  preferences():PluginPreferences;
   handoff(input:Record<string,unknown>):Promise<void>;
   openDocument(id:string):Promise<void>;
   exportFile?(input:Record<string,unknown>):Promise<unknown>;

@@ -1,0 +1,997 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-11-21",
+  "status": "local_context_menu_execution_mode_installed",
+  "version": "0.13.10",
+  "published": false,
+  "installed_app_updated": true,
+  "scope": "安装版实机参考、共同排版与文字呈现、原生顶栏、设置和双入口本地装配",
+  "reference": {
+    "source_id": "installed-editor-reference-01",
+    "version": "3.7.1",
+    "build": "2801",
+    "metadata_evidence_id": "ev_cf1dfb10410b18ad9f2496038a4b063a0c96a6e9970abd6d51c6ccd3a81c19b6",
+    "metadata_sha256": "8985fa260788c95769e6195e35bce2d210da26f984669a73b3428033bad76c08",
+    "observation": "经作者明确许可，在隔离文档观察原生窗口、格式、页面样式、选区浮条、快速操作及浅暗设置。原外观恢复跟随系统。",
+    "screenshot_px": [
+      2880,
+      1750
+    ],
+    "geometry_boundary": "280px侧栏与面板、52px顶栏、16px正文为依照画面估量的实现参数；没有原生计算属性或像素认证。",
+    "raw_record": "output/reference-workbench.cany",
+    "runtime_capture_failures": "两次专用采集器在swiftc阶段超时，原回执保留；窗口观察会话成功，未伪造其ev记录。"
+  },
+  "implementation": [
+    "桌面与MCP App复用共享工作台和应用用例；侧栏、主工作面、轻量页头、格式及排版浮层共同实现。",
+    "新小说16px系统字、1.5倍行高、44字形行宽、0.5em段距及无缩进；保留已有阅读偏好。",
+    "普通Markdown编辑直接呈现格式、引用、列表、任务复选框、代码块与分隔线；原稿保持全部标记和字节。",
+    "菜单、浮条、快捷键和复选框进入同一撤销历史；未保存选区可格式编辑，固定修订意见和AI交接仍核验保存范围。",
+    "普通编辑复制可见文字，原稿复制保留混合换行及语法；查找随呈现模式投影，替换核对确切原文。",
+    "macOS原生按钮融入顶栏；缩放按物理尺寸避让，全屏释放占位，第三方插件拥有独立原生拖动区。MCP无原生占位。",
+    "创作库导航始终可重新展开；设置采用左侧分类和外观预览，并沿固定偏好及恢复规则保存。",
+    "卡片配置共享同一正文合同，支持五种布局、六类内文预览、无／纯色／渐变／有界内嵌图片背景；预览与套用分离，取消、Escape、过期源和单次撤销均有保护。",
+    "卡片配置弹窗复用桌面与MCP App工作台，宽窗双栏、窄窗重排，真实内容预览、背景切换与保存回读使用同一原文事务。"
+  ],
+  "package": {
+    "manifest": "output/r7-experience-20261121/local-package/hetu-dev-rFmKD0/manifest.json",
+    "kind": "electron-local-install-package",
+    "source_sha256": "558995c92325b5e7fbf2eee54fcf90b7c954cb8c4c6102b5d6d3d2f35f31f42b",
+    "signing": "ad-hoc-development",
+    "bytes": 706784556,
+    "source_binaries": {
+      "hetu-app-server": "1ff4a5897f6d8257f70b89517f2bf18443f6a2dca52a0947fe13074b2c63c2da",
+      "hetu": "ddee38bcc09f0953cc2efa07eae59100ae66bfa57c532675486f4ed76bfcd862",
+      "hetu-mcp": "cf2413b691e6019b68254184dd3c94ed788603c18da6aba9b8c27faee05e0b76",
+      "hetu-plugin": "ad6563a59230bc7cd0e3c1861ec8b15cfc39aae7c39cd10a40b4066a1da8f561",
+      "node": "3a0b47fda00d3d2daa2173695b91c065d5318780b5b79674a06274e00d7e4adf"
+    }
+  },
+  "mcp_resource": {
+    "resource_uri": "ui://hetu/workbench/2/492937929a961ece2cb7897db833290b1e0a961e1cbb5c345f30150d996d8bb4",
+    "sha256": "492937929a961ece2cb7897db833290b1e0a961e1cbb5c345f30150d996d8bb4",
+    "size_bytes": 4377991
+  },
+  "source_sha256": {
+    "contracts/reading-defaults.json": "6f65a64cbe9567a1c7b4c1a35d4ea26e8cfae00e4e660d189c5954e2ba31ef87",
+    "assets/styles/radix-workbench.css": "a8fe971fa2270dc03cdc1593f7f153e3499151bc8c6234515f8d38eee29b0faf",
+    "packages/workbench-ui/src/workbench.css": "da5a13b8a026d8d293a5a17465570399dba52f584ac36d6426a154c0f2a1d13a",
+    "packages/workbench-ui/src/reading.css": "a5f13f78e461ce72b64540cc09686e8a78a8d19a835ea9258af1ba6031c694c2",
+    "packages/workbench-ui/src/manuscript-format.ts": "f24263e5120e56add4377fd8d6041f6e49d1c7e326f252068968c6f5f8f0d628",
+    "packages/workbench-ui/src/library.tsx": "85af3a97f32fefe918658219006a8ae2347e05a56959819b5bbb2291b88b7594",
+    "packages/workbench-ui/src/popovers.ts": "ed79cf7e4d1114d731ef97bc85abb4e1d8ee489f40668f81a84e62e39b8bd625",
+    "apps/desktop/src/main/window-chrome.ts": "8319e967d3f01d9fcd69936f2daf6d79856e124c134ee75e53da978942ccf48e",
+    "apps/desktop/src/main/shell-preload.ts": "5edc7bef57142d04fe9e02691bc0d0ea81638b2b70f9ad3f4d58b9f63e1e277a",
+    "apps/desktop/src/main/main.ts": "c5853ab4b43ef52abf83d83cec69dacf7313b3a04e9a31b66fb8557ecfba19d2",
+    "apps/desktop/src/main/settings-window.ts": "afcaa30b730c24fa87297e60a951966f24bb7169955af74d198e5083a094908a",
+    "apps/desktop/src/renderer/index.tsx": "ddac5713b353bf8f0376129e0218c37511c84cb14642e0ec308259f63567605e",
+    "apps/desktop/src/renderer/documents.tsx": "5ba623a715533a09b3793b057fbe7b84a389dfff73c58ff94f6134782e556a06",
+    "apps/desktop/src/renderer/editor-format.ts": "ce940a28606ad55b15d3f1ba7e05b14563998d03bc843d06bcf632f74aad114c",
+    "apps/desktop/src/renderer/editor-source.ts": "8973958f23fccc70d6c2defe5ab5ba22e1f0c24607444a9ae6dd23b7e3013e6e",
+    "apps/desktop/src/renderer/editor.tsx": "59814a9ecb31efd04f674ee603055dd31c27746627edf78cf72bc0dc4f812928",
+    "apps/desktop/src/renderer/text-commands.ts": "f4e3c96cba572f467cbecdf13ad7a8df592cefff39b5364787382499153b2a81",
+    "apps/desktop/src/renderer/text-command-context.ts": "a2c98269d55b51137cc38f9dbbb034beebe33c6c9a6a3c9e01683d94ffd7ff05",
+    "apps/desktop/src/renderer/settings.tsx": "fe10956bfcb690ada8eb5a4296a7e0f4fc146a23c2ebaacfbaccb44d9c7894bf",
+    "apps/desktop/src/renderer/settings.css": "2d515418b8b86fa061d8b42697f040bd26198e5005cc60032be9567db4bd455d"
+  },
+  "validation": {
+    "desktop": {
+      "result": "passed",
+      "tests": 5,
+      "artifact": "随包桌面、App Server及CLI/MCP运行时",
+      "output": "output/r7-experience-20261121/package-desktop",
+      "coverage": [
+        "十万汉字输入、保存和完整字节回读",
+        "普通编辑与原稿、组合格式、剪贴板、任务复选框及单次撤销",
+        "阅读与编辑查找、后台正则、原稿投影、替换及旧修订拒绝",
+        "原生按钮缩放、全屏、浅暗和宽窄、导航恢复及无障碍实色降级",
+        "作品资料与正文浅暗宽窄、真实页面几何与正常退出"
+      ]
+    },
+    "mcp_app": {
+      "result": "passed",
+      "tests": 2,
+      "artifact": "随包hetu-mcp，经stdio与官方Codex CLI转发同一完整App旅程",
+      "output": "output/r7-experience-20261121/package-shared",
+      "coverage": [
+        "资源摘要URI与旧缓存隔离",
+        "同库目录与多作品独立面板",
+        "可见格式、原稿回读、编辑保存及固定引用",
+        "字体冷读失败重试、主题与排版偏好同步",
+        "设置延迟保存及关闭保护",
+        "小说、剧本、视频和插件同成果往返"
+      ]
+    },
+    "text_models": {
+      "result": "passed",
+      "tests": 11,
+      "command": "node --experimental-strip-types --test tests/editor-source.test.ts tests/text-commands.test.ts"
+    },
+    "plugin_native_chrome": {
+      "result": "passed",
+      "tests": 1,
+      "output": "output/r7-experience-20261121/window-verified"
+    },
+    "documentation": {
+      "result": "passed",
+      "documents": 91,
+      "errors": 0
+    },
+    "localization": {
+      "result": "passed",
+      "keys": 1779
+    },
+    "installed_native_window": {
+      "result": "observed",
+      "application": "/Applications/Hetu.app",
+      "isolation": "独立工作区和本机设置目录；未使用真实作品",
+      "viewport_css_px": [
+        1440,
+        875
+      ],
+      "observed": [
+        "原生窗口按钮与顶栏整合",
+        "普通编辑标题与字形、引用、复选框及无原始格式标记",
+        "格式面板与当前标题样式",
+        "设置加载、分类、外观缩略预览和关闭返回正文"
+      ],
+      "web_screenshot": "output/r7-experience-20261121/native-review/installed-editor.png",
+      "native_capture_boundary": "原生完整窗口由控制会话返回；本地图片仅为Web内容截图，不冒充原生窗口截图。"
+    },
+    "card_configuration": {
+      "result": "passed",
+      "tests": [
+        "桌面开发卡片旅程",
+        "桌面安装包卡片旅程",
+        "stdio MCP App完整工作台旅程",
+        "官方Codex CLI转发完整工作台旅程"
+      ],
+      "coverage": [
+        "五种布局和六类预览",
+        "取消与Escape不改正文",
+        "纯色、渐变、有效PNG转WebP内嵌背景",
+        "无效图片拒绝",
+        "套用后独立撤销、保存和Core回读",
+        "1440px与600px卡片配置窗口"
+      ],
+      "artifacts": [
+        "output/r7-presentation-20261121/card-development-final",
+        "output/r7-presentation-20261121/installed-card-tests",
+        "output/r7-presentation-20261121/installed-shared-card"
+      ],
+      "package": {
+        "manifest": "output/r7-presentation-20261121/local-package-card/hetu-dev-nQoamn/manifest.json",
+        "source_sha256": "496b4eef4db5f736f9048d094e31614d350365cd1d6f93ac6fb2ddb805efd4f5",
+        "version": "0.13.10",
+        "verified_source_files": 2880,
+        "verified_files": 2785,
+        "verified_symlinks": 14,
+        "signing": "ad-hoc-development"
+      }
+    },
+    "grid_alignment": {
+      "result": "passed",
+      "reference_geometry": {
+        "viewport_css": [
+          1440,
+          875
+        ],
+        "sidebar_css": 280,
+        "card_css": 256,
+        "gap_css": 16
+      },
+      "implementation": "创作库网格使用220至256px卡片轨道和16px间距，宽窗保持四列，窄窗自动减少列数。最终安装版实际作品库18项在1440px CSS宽窗口计算为4列×256px。",
+      "tests": [
+        "源代码网格计算：1440px CSS宽窗口4列×256px、16px间距",
+        "最终安装包实际作品库18项网格计算",
+        "安装包启动矩阵2项",
+        "安装包弹层旅程1项"
+      ],
+      "package": {
+        "manifest": "output/r7-grid-20261121/local-package/hetu-dev-Qq2XZX/manifest.json",
+        "source_sha256": "072c1474ee521e2eb408b8b401fc5f2f6a15cf35c0134fb58d4878c7ddfd1b63",
+        "version": "0.13.10",
+        "verified_source_files": 2880,
+        "verified_files": 2785,
+        "verified_symlinks": 14,
+        "signing": "ad-hoc-development"
+      },
+      "artifacts": [
+        "output/r7-presentation-20261121/grid-adjustment",
+        "output/r7-presentation-20261121/installed-grid-popovers",
+        "output/r7-presentation-20261121/installed-grid-startup"
+      ]
+    },
+    "accessibility_landmarks": {
+      "result": "passed",
+      "implementation": "作品库主区以library-title作为主区名称，文稿、插件和其他工作面提供明确main landmark，异步状态暴露aria-busy；保存状态、提示、搜索和错误继续使用status或alert。",
+      "tests": [
+        "源代码样式与结构测试",
+        "安装包启动与窄窗浅暗矩阵2项",
+        "安装包弹层旅程1项"
+      ],
+      "boundary": "DOM语义与键盘路径已验证；真实VoiceOver、系统中文输入法候选窗和其他平台辅助技术仍未验收。",
+      "package": {
+        "manifest": "output/r7-presentation-20261121/local-package-a11y/hetu-dev-kCD4BJ/manifest.json",
+        "source_sha256": "e5622610c6dc144f769635457464d7fa119ca540f434f09a8b9e5d114fac70a2",
+        "version": "0.13.10",
+        "verified_source_files": 2880,
+        "verified_files": 2785,
+        "verified_symlinks": 14,
+        "signing": "ad-hoc-development"
+      }
+    },
+    "transparency_accessibility": {
+      "result": "passed",
+      "implementation": "在减少透明度或增强对比度下，菜单、通知、阅读排版、选区浮条和文字操作面板关闭背景模糊并使用实色表面；媒体查询位于最终共享样式覆盖位置。",
+      "source_test": "apps/desktop/tests/reading-experience.spec.ts",
+      "tests": [
+        "减少透明度：阅读排版面板、文字操作面板为实色",
+        "增强对比度：阅读排版面板为实色",
+        "浅暗主题主按钮普通、悬停、按下对比度均不低于4.5:1"
+      ],
+      "source_test_output": "output/r7-presentation-20261121/transparency-a11y-fixed",
+      "installed_package_tests": {
+        "startup_layout": 2,
+        "transparency_smoke": 1,
+        "outputs": [
+          "output/r7-presentation-20261121/installed-startup",
+          "output/r7-presentation-20261121/installed-transparency-smoke"
+        ],
+        "boundary": "startup矩阵与补充smoke均用/Applications/Hetu.app实际启动；smoke夹具使用隔离工作区。"
+      },
+      "boundary": "测试通过的是Chromium媒体仿真和安装包实际旅程；真实macOS辅助功能偏好、VoiceOver、系统输入法候选窗及其他平台仍未验收。",
+      "package": {
+        "manifest": "output/r7-presentation-20261121/local-package-transparency/hetu-dev-dFwNj8/manifest.json",
+        "source_sha256": "284c49b348d75ef930bcb71507d14fcd482474900b53317a953ed83153d6863f",
+        "version": "0.13.10",
+        "verified_source_files": 2880,
+        "verified_files": 2785,
+        "verified_symlinks": 14,
+        "signing": "ad-hoc-development"
+      },
+      "source_package_dist_tests": {
+        "reading_experience": 1,
+        "popovers": 1,
+        "output": "output/r7-presentation-20261121/installed-reading-popovers",
+        "boundary": "当时测试默认启动源码dist，该目录名称不作为安装包运行证据。"
+      }
+    },
+    "search_sidebar_alignment": {
+      "result": "passed",
+      "reference_observation": "隔离文档实机中，文内搜索位于左侧栏，显示段落摘要、当前命中、前后定位和按需搜索选项；正文顶部不插入搜索横条。",
+      "implementation": "主文稿搜索移入项目侧栏，使用当前可见投影生成摘要和原文锚点；关闭恢复导航与阅读位置，窄窗选中后收起侧栏并把焦点交给正文。候选、历史和比较保留各自局部查找。",
+      "source_test": "apps/desktop/tests/manuscript-search.spec.ts",
+      "source_tests": [
+        "当前稿／固定选区／本作品查询",
+        "段落摘要与当前命中",
+        "100项有界摘要与前后定位",
+        "窄窗焦点恢复",
+        "浅暗截图",
+        "替换预览、单次撤销及旧修订拒绝"
+      ],
+      "desktop_unit_tests": "apps/desktop/tests/text-search.test.ts 与 editor-source.test.ts，共9项通过",
+      "mcp_app_tests": {
+        "stdio": "passed",
+        "codex": "passed",
+        "output": "output/r7-search-20261121/shared-final"
+      },
+      "installed_package_tests": {
+        "startup_layout": 2,
+        "manuscript_search": 1,
+        "popovers": 1,
+        "output": "output/r7-search-20261121/installed"
+      },
+      "package": {
+        "manifest": "output/r7-search-20261121/local-package/hetu-dev-719SkN/manifest.json",
+        "source_sha256": "6e8365be63d31c1bbde2709b2324e20eddbdf2288490854c13887245a57707c7",
+        "version": "0.13.10",
+        "verified_source_files": 2880,
+        "verified_files": 2785,
+        "verified_symlinks": 14,
+        "signing": "ad-hoc-development"
+      },
+      "boundary": "通过的是参考编辑器隔离窗口观察、Electron隔离资料、stdio／官方Codex CLI转发和安装版实际旅程；真实中文输入法候选窗、VoiceOver、其他平台、全页面逐项视觉和作者最终试用仍未验收。"
+    },
+    "settings_alignment": {
+      "result": "passed",
+      "reference_observation": "参考编辑器设置页使用约280px CSS分类侧栏，主内容保持宽阔连续工作面。",
+      "implementation": "河图独立设置窗口分类侧栏由184px调整为280px；窄窗媒体规则继续使用128px，六分类、外观预览、字体、模型和偏好合同保持。",
+      "source_test": "apps/desktop/tests/settings-visual.spec.ts",
+      "source_tests": 2,
+      "installed_package_tests": 2,
+      "output": "output/r7-settings-20261121/installed",
+      "package": {
+        "manifest": "output/r7-settings-20261121/local-package/hetu-dev-k1uqai/manifest.json",
+        "source_sha256": "d2867ae7f135fd48f1bae3083dd06ab0e28cd06d4f67a2476a102ca44719352d",
+        "version": "0.13.10",
+        "verified_source_files": 2880,
+        "verified_files": 2785,
+        "verified_symlinks": 14,
+        "signing": "ad-hoc-development"
+      },
+      "boundary": "实际设置窗口与隔离设置测试通过；完整页面逐项视觉、真实VoiceOver、系统中文输入法及其他平台仍未验收。"
+    }
+  },
+  "performance": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "cpu": "Apple M1",
+    "logical_cpus": 8,
+    "memory_bytes": 17179869184,
+    "viewport": {
+      "width": 1440,
+      "height": 940
+    },
+    "han_characters": 100000,
+    "source_utf8_bytes": 301998,
+    "paragraphs": 1000,
+    "opened_ms": 2272.446334,
+    "samples_ms": [
+      668.1999999992549,
+      15.199999999254942,
+      14.100000001490116,
+      15,
+      31.899999998509884,
+      8.300000000745058,
+      24.5,
+      8.5,
+      29.300000000745058,
+      7.899999998509884,
+      23.300000000745058,
+      9.900000002235174,
+      8.5,
+      28.199999999254942,
+      7.399999998509884,
+      23.200000002980232,
+      11.300000000745058,
+      8.699999999254942,
+      21.300000000745058,
+      7.600000001490116,
+      28.599999997764826,
+      7.800000000745058,
+      21.699999999254942,
+      7.300000000745058,
+      29,
+      17.400000002235174,
+      6.5,
+      28.600000001490116,
+      14.5,
+      10.699999999254942,
+      23.600000001490116,
+      11.800000000745058,
+      30.700000002980232,
+      7.800000000745058,
+      23.899999998509884
+    ],
+    "warmup_samples": 5,
+    "p95_ms": 29.300000000745058,
+    "rendered_lines": 23,
+    "method": "beforeinput到第二次requestAnimationFrame；真实Chromium文本输入，非真实输入法组合或屏幕光子测量"
+  },
+  "retained_failures": [
+    "字体目录冷读使用5秒断言失败；目录本身有10秒扫描预算，断言改为15秒后完整旅程复验。",
+    "界面缩放自动收起导航后宽窗无入口，已保持创作库导航切换可达并复验。",
+    "两次正常关闭进程等待超时；失败现场保留，退出专项与随包完整桌面旅程复验通过，未采用强制结束冒充通过。",
+    "普通编辑切换呈现后，旧测试仍要求看到源标记；改为实际字形、模式投影与公开原稿字节断言。"
+  ],
+  "remaining": [
+    "全页面和状态逐项视觉对照",
+    "真实系统中文输入法与读屏",
+    "其他桌面系统和原生客户端当前面板",
+    "作者试用和统一发行"
+  ],
+  "installation": {
+    "installed": true,
+    "application": "/Applications/Hetu.app",
+    "backup": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/r7-input-20261121/previous-input-install/Hetu.app",
+    "verified_files": 2785,
+    "verified_symlinks": 14,
+    "version": "0.13.10",
+    "signing": "ad-hoc-development",
+    "source_sha256": "f654d73af07b6ed69386f6a38ac5e77f421fc3ef729dcd2c4d76f816f2ea6e5d",
+    "real_workspace_changed": false
+  },
+  "latest_input_iteration": {
+    "status": "local_package_verified_and_installed_full_alignment_in_progress",
+    "scope": "光标输入格式、组合格式、空格式删除、换段与多行粘贴、列表键盘、组合输入和双端浮条尺寸",
+    "implementation": [
+      "格式开关只修改光标状态，不写正文、修订或撤销项；实际输入和格式共用原文事务。",
+      "行内序列化以共享呈现解析器核对整行文字与样式，范围外混合换行保持。",
+      "删除最后一个格式字清除空标记并保留输入样式；换段和多行粘贴分别编码，避免格式跨入新列表。",
+      "复用既有列表语法和回车命令，任务退格先核对真实语法节点，再同时取消列表与复选框；代码块不触发。",
+      "组合期间不写格式标记、不保存或交给AI，提交后一次撤销；顶栏区分正在输入与正在保存。",
+      "浮条按钮28px、文字16px、容器至少35px，分别处理继承行高与设备像素比边框舍入。"
+    ],
+    "package": {
+      "manifest": "output/r7-input-20261121/local-package-aligned/hetu-dev-krMfnE/manifest.json",
+      "source_sha256": "f654d73af07b6ed69386f6a38ac5e77f421fc3ef729dcd2c4d76f816f2ea6e5d",
+      "source_files_verified": 2864,
+      "signing": "ad-hoc-development",
+      "version": "0.13.10",
+      "source_binary_sha256": {
+        "hetu-app-server": "1ff4a5897f6d8257f70b89517f2bf18443f6a2dca52a0947fe13074b2c63c2da",
+        "hetu": "ddee38bcc09f0953cc2efa07eae59100ae66bfa57c532675486f4ed76bfcd862",
+        "hetu-mcp": "de21e485d727e11bd7399533840658815466a8ef1fdc1ede673e3d55f3779a38",
+        "hetu-plugin": "ad6563a59230bc7cd0e3c1861ec8b15cfc39aae7c39cd10a40b4066a1da8f561",
+        "node": "3a0b47fda00d3d2daa2173695b91c065d5318780b5b79674a06274e00d7e4adf"
+      }
+    },
+    "resource": {
+      "resource_uri": "ui://hetu/workbench/2/1cc535da9c861675be6f3eb7f0abbb2e684f2e6924c52f224c3f9ae3c701076e",
+      "sha256": "1cc535da9c861675be6f3eb7f0abbb2e684f2e6924c52f224c3f9ae3c701076e",
+      "size_bytes": 4386215
+    },
+    "source_sha256": {
+      "apps/desktop/src/renderer/inline-input.ts": "2b5e7d154c07f6b89c221b5291df52496cbf8b55833fde9fbdc66c675bd2878d",
+      "apps/desktop/src/renderer/markdown-input.ts": "ea0d23f757e58c110ddc1a9da07a4eca23f14e057d627d5472c6e895fdbdca81",
+      "apps/desktop/src/renderer/text-commands.ts": "2fe5edd5daa3db42c0691287b06e448e53840c6768abd38638c4e5f6f59a866a",
+      "apps/desktop/src/renderer/text-command-context.ts": "4cc6fe53c4c4dd358f2a6e70134727cefe2c67efb573be7e02319d5bec12fa83",
+      "apps/desktop/src/renderer/editor-format.ts": "a085cceaa9c1cf2009b1a2a4e67e132cd9766f00f6b438a9f801242c07cb58a2",
+      "apps/desktop/src/renderer/editor.tsx": "61efd1c8bb0f63e904e3ae1390895c673c366a5d018076ed70b4b2dc0184fecd",
+      "apps/desktop/src/renderer/documents.tsx": "ba97732560df60d2e44fc2f3403052a6f7e975bca55f9c18dd2f8aa91b9027b5",
+      "apps/desktop/src/renderer/index.tsx": "9e9653d6ef0b3f31c15a9627c9c8dd15713c90727c8aea0e47b5ade0344aa3a7",
+      "apps/desktop/src/renderer/workbench.tsx": "ae205c02264fe61bca3a558bba990f8e1500714e34366538709478927d88e626",
+      "packages/workbench-ui/src/workbench.css": "b12607650b767cb7abef12679168c6fc88c11d0bcfd0f87ffd0d79dab16fb820"
+    },
+    "validation": {
+      "text_models": {
+        "result": "passed",
+        "tests": 19,
+        "format_combinations": 132,
+        "output": "output/r7-input-20261121/text-models.log"
+      },
+      "initial_package_desktop": {
+        "result": "passed",
+        "tests": 6,
+        "source_sha256": "df049dd085575d7edac65989ef47c0e306083fe0e3a083b9d3d697a5e3d2926c",
+        "output": "output/r7-input-20261121/package-desktop"
+      },
+      "before_dpr_fix_desktop": {
+        "result": "passed",
+        "tests": 3,
+        "source_sha256": "c2e7902ff642ec93633b5b34686266add2c7bce941c8b555e8efecaddd73311e",
+        "output": "output/r7-input-20261121/package-final-desktop"
+      },
+      "current_package_desktop": {
+        "result": "passed",
+        "tests": 2,
+        "output": "output/r7-input-20261121/package-aligned-desktop",
+        "coverage": [
+          "空选区开关不改修改状态、组合文字实际字形、删除清理、换段和任务列表、保存回读",
+          "真实Chromium组合输入协议、期间暂停保存、提交单次撤销",
+          "35px浮条、剪贴板、固定批注范围、原稿混合换行和Fountain旅程"
+        ]
+      },
+      "current_mcp_app": {
+        "result": "passed",
+        "stdio": "passed",
+        "codex": "passed",
+        "output": "output/r7-input-20261121/package-aligned-shared",
+        "tests": 2,
+        "coverage": [
+          "两种传输均核对35px浮条及光标格式与列表保存回读",
+          "同库作品、固定批注、设置与偏好、剧本／视频／插件及原操作恢复完整旅程"
+        ]
+      },
+      "composition": {
+        "model": "passed",
+        "chromium_input_protocol": "passed",
+        "system_chinese_ime": "not_verified",
+        "boundary": "原生键盘测试得到拉丁文字，中文粘贴成功；没有取得系统候选窗证据。"
+      },
+      "geometry": {
+        "dpr1": 35,
+        "dpr2": 35,
+        "installed_window": 35,
+        "unit": "CSS px",
+        "boundary": "实际Chromium最小夹具、最终桌面、两种MCP传输及安装版原生窗口均核对35 CSS px；非参考软件自动像素认证。"
+      },
+      "native_window": {
+        "viewport": {
+          "width": 1440,
+          "height": 875
+        },
+        "source_sha256": "f654d73af07b6ed69386f6a38ac5e77f421fc3ef729dcd2c4d76f816f2ea6e5d",
+        "output": "output/r7-input-20261121/native-review-aligned",
+        "observed": "实际窗口复拍选区浮条、系统按钮和正文；使用独立profile与作品。",
+        "normal_exit": "passed"
+      },
+      "documentation": {
+        "documents": 91,
+        "local_links": 1344,
+        "errors": 0,
+        "localization_keys": 1779,
+        "diff_check": "passed"
+      }
+    },
+    "performance": {
+      "source_sha256": "c2e7902ff642ec93633b5b34686266add2c7bce941c8b555e8efecaddd73311e",
+      "data": {
+        "platform": "darwin",
+        "arch": "arm64",
+        "cpu": "Apple M1",
+        "logical_cpus": 8,
+        "memory_bytes": 17179869184,
+        "viewport": {
+          "width": 1440,
+          "height": 940
+        },
+        "han_characters": 100000,
+        "source_utf8_bytes": 301998,
+        "paragraphs": 1000,
+        "opened_ms": 2288.642417000001,
+        "samples_ms": [
+          591.7000000029802,
+          10.699999999254942,
+          22.300000000745058,
+          11.599999997764826,
+          27,
+          18,
+          24.399999998509884,
+          10.300000000745058,
+          24.199999999254942,
+          19.300000000745058,
+          10.800000000745058,
+          21.599999997764826,
+          14.400000002235174,
+          11.800000000745058,
+          12.099999997764826,
+          8.800000000745058,
+          23.700000002980232,
+          10.599999997764826,
+          8.099999997764826,
+          18.5,
+          11.5,
+          10,
+          29.800000000745058,
+          12,
+          10.399999998509884,
+          15.099999997764826,
+          14.300000000745058,
+          16.800000000745058,
+          12.699999999254942,
+          17,
+          18.299999997019768,
+          13.399999998509884,
+          10.100000001490116,
+          20.899999998509884,
+          10.800000000745058
+        ],
+        "warmup_samples": 5,
+        "p95_ms": 24.399999998509884,
+        "formatted_samples_ms": [
+          22.099999997764826,
+          24.800000000745058,
+          23,
+          9.199999999254942,
+          17.800000000745058,
+          10.200000002980232,
+          23.800000000745058,
+          13.900000002235174,
+          9.099999997764826,
+          18.600000001490116,
+          9.399999998509884,
+          27.199999999254942,
+          9.900000002235174,
+          25.199999999254942,
+          9.199999999254942,
+          18.5,
+          11,
+          18.600000001490116,
+          13,
+          9.300000000745058,
+          21.100000001490116,
+          15.899999998509884,
+          9.600000001490116,
+          24.300000000745058,
+          8.899999998509884,
+          27.600000001490116,
+          9.699999999254942,
+          28.799999997019768,
+          14.5,
+          13,
+          12.300000000745058,
+          14.5,
+          12.899999998509884,
+          12.5,
+          11.100000001490116
+        ],
+        "formatted_p95_ms": 27.600000001490116,
+        "rendered_lines": 49,
+        "method": "beforeinput到第二次requestAnimationFrame；真实Chromium文本输入，非真实输入法组合或屏幕光子测量"
+      },
+      "boundary": "修正设备像素比前的候选包测量；最终包仅再改浮条容器尺寸，输入源码一致，不冒充最终包重新测量。",
+      "renderer_input_sources_identical": true
+    },
+    "retained_failures": [
+      "组合格式初始序列化歧义，经实际解析核对修复。",
+      "真实窗口发现加粗末尾回车将后续列表包入格式，已按段编码修复。",
+      "任务开头退格只取消列表留下[ ]，已核对真实TaskMarker并完整取消结构。",
+      "测试夹具名称与实际登记名不同、选取到装饰span和保存按钮名称错误的断言分别保留并修正。",
+      "设备像素比不同导致同一浮条桌面35px而MCP36px，两种传输均保留原失败；共享最小高度布局修正，断言继续要求35px。"
+    ],
+    "installation": {
+      "installed": true,
+      "application": "/Applications/Hetu.app",
+      "backup": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/r7-input-20261121/previous-input-install/Hetu.app",
+      "verified_files": 2785,
+      "verified_symlinks": 14,
+      "version": "0.13.10",
+      "signing": "ad-hoc-development",
+      "source_sha256": "f654d73af07b6ed69386f6a38ac5e77f421fc3ef729dcd2c4d76f816f2ea6e5d",
+      "real_workspace_changed": false
+    },
+    "remaining": [
+      "片段颜色与字体、段落对齐和块分组的持久格式、编辑与导出合同及完整实现",
+      "全页面和状态逐项视觉对照",
+      "真实系统中文输入法与读屏",
+      "其他桌面系统和原生Codex Desktop当前面板",
+      "作者试用和统一发行"
+    ]
+  },
+  "installation_history": [
+    {
+      "installed": true,
+      "application": "/Applications/Hetu.app",
+      "backup": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/r7-experience-20261121/previous-install/Hetu.app",
+      "version": "0.13.10",
+      "source_sha256": "558995c92325b5e7fbf2eee54fcf90b7c954cb8c4c6102b5d6d3d2f35f31f42b",
+      "verified_files": 2799,
+      "signing": "ad-hoc-development",
+      "real_workspace_changed": false
+    },
+    {
+      "installed": true,
+      "application": "/Applications/Hetu.app",
+      "backup": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/r7-presentation-20261121/previous-install-card/Hetu.app",
+      "version": "0.13.10",
+      "source_sha256": "496b4eef4db5f736f9048d094e31614d350365cd1d6f93ac6fb2ddb805efd4f5",
+      "verified_files": 2785,
+      "verified_symlinks": 14,
+      "signing": "ad-hoc-development",
+      "real_workspace_changed": false
+    },
+    {
+      "installed": true,
+      "application": "/Applications/Hetu.app",
+      "backup": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/r7-presentation-20261121/previous-install-grid/Hetu.app",
+      "version": "0.13.10",
+      "source_sha256": "03938394f15af531c1cbeb86d35d78045a0bd2f43f4f603de82f66c9a7083e2a",
+      "verified_files": 2785,
+      "verified_symlinks": 14,
+      "signing": "ad-hoc-development",
+      "real_workspace_changed": false
+    },
+    {
+      "installed": true,
+      "application": "/Applications/Hetu.app",
+      "backup": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/r7-presentation-20261121/previous-install-a11y/Hetu.app",
+      "version": "0.13.10",
+      "source_sha256": "e5622610c6dc144f769635457464d7fa119ca540f434f09a8b9e5d114fac70a2",
+      "verified_files": 2785,
+      "verified_symlinks": 14,
+      "signing": "ad-hoc-development",
+      "real_workspace_changed": false
+    },
+    {
+      "installed": true,
+      "application": "/Applications/Hetu.app",
+      "backup": "output/r7-presentation-20261121/previous-install-transparency/Hetu.app",
+      "version": "0.13.10",
+      "source_sha256": "284c49b348d75ef930bcb71507d14fcd482474900b53317a953ed83153d6863f",
+      "manifest": "output/r7-presentation-20261121/local-package-transparency/hetu-dev-dFwNj8/manifest.json",
+      "verified_source_files": 2880,
+      "verified_files": 2785,
+      "verified_symlinks": 14,
+      "signing": "ad-hoc-development",
+      "real_workspace_changed": false
+    },
+    {
+      "installed": true,
+      "application": "/Applications/Hetu.app",
+      "backup": "output/r7-search-20261121/previous-install/Hetu.app",
+      "version": "0.13.10",
+      "source_sha256": "6e8365be63d31c1bbde2709b2324e20eddbdf2288490854c13887245a57707c7",
+      "manifest": "output/r7-search-20261121/local-package/hetu-dev-719SkN/manifest.json",
+      "verified_source_files": 2880,
+      "verified_files": 2785,
+      "verified_symlinks": 14,
+      "signing": "ad-hoc-development",
+      "real_workspace_changed": false
+    },
+    {
+      "installed": true,
+      "application": "/Applications/Hetu.app",
+      "backup": "output/r7-grid-20261121/previous-install/Hetu.app",
+      "version": "0.13.10",
+      "source_sha256": "072c1474ee521e2eb408b8b401fc5f2f6a15cf35c0134fb58d4878c7ddfd1b63",
+      "manifest": "output/r7-grid-20261121/local-package/hetu-dev-Qq2XZX/manifest.json",
+      "verified_source_files": 2880,
+      "verified_files": 2785,
+      "verified_symlinks": 14,
+      "signing": "ad-hoc-development",
+      "real_workspace_changed": false
+    },
+    {
+      "installed": true,
+      "application": "/Applications/Hetu.app",
+      "backup": "output/r7-settings-20261121/previous-install/Hetu.app",
+      "version": "0.13.10",
+      "source_sha256": "d2867ae7f135fd48f1bae3083dd06ab0e28cd06d4f67a2476a102ca44719352d",
+      "manifest": "output/r7-settings-20261121/local-package/hetu-dev-k1uqai/manifest.json",
+      "verified_source_files": 2880,
+      "verified_files": 2785,
+      "verified_symlinks": 14,
+      "signing": "ad-hoc-development",
+      "real_workspace_changed": false
+    }
+  ],
+  "latest_local_installation": {
+    "installed": true,
+    "application": "/Applications/Hetu.app",
+    "backup": "output/r7-settings-20261121/previous-install/Hetu.app",
+    "version": "0.13.10",
+    "source_sha256": "d2867ae7f135fd48f1bae3083dd06ab0e28cd06d4f67a2476a102ca44719352d",
+    "manifest": "output/r7-settings-20261121/local-package/hetu-dev-k1uqai/manifest.json",
+    "verified_source_files": 2880,
+    "verified_files": 2785,
+    "verified_symlinks": 14,
+    "signing": "ad-hoc-development",
+    "real_workspace_changed": false
+  },
+  "latest_installation": {
+    "installed": "/Applications/Hetu.app",
+    "version": "0.13.10",
+    "bundle_id": "run.limeai.hetu",
+    "source_sha256": "6b903cc47ee7e0bed8bdf80cc27d17dca2acf4b79835e60dd308a57da4849572",
+    "verified_artifacts": 2799,
+    "old_applications_removed": [
+      "/Applications/.Hetu-replaced-install.app",
+      "/Applications/Hetu Native 0.7.0 Backup 20261116.app"
+    ],
+    "protected_files_unchanged": 3,
+    "author_data_cleanup": false,
+    "published": false,
+    "manifest": "output/sidebar-local-20261121/hetu-dev-Bbur8q/manifest.json",
+    "mcp_resource_smoke": {
+      "resource_uri": "ui://hetu/workbench/2/713adb89babc8108539a9bfc63d8088cfbf82b59a7a5d5af907ab894d298fb54",
+      "sha256": "713adb89babc8108539a9bfc63d8088cfbf82b59a7a5d5af907ab894d298fb54",
+      "manifest_matches": true,
+      "sidebar": true,
+      "resize": true,
+      "open_tool": true
+    },
+    "native_observation": "安装后的正式应用正常启动并恢复原作品，目录显示511章、两层导航、四面板与可调宽分隔边；未编辑真实正文。",
+    "verification_boundary": [
+      "此前侧栏及查找两项源码旅程通过，见apps/desktop/output/sidebar-loop-7。",
+      "新增拖动上下限、取消、失焦、键盘、收起和宽度恢复断言通过；整项因阅读滚动600px到591px及调试退出超时失败，见sidebar-loop-9。",
+      "扩大回归两项恢复模型测试通过，设置与封面旅程在调试退出环节失败；其余回归中止，不能算完整通过。",
+      "最新真实stdio资源摘要及分段/分隔边资源检查通过；完整MCP UI旅程尚未重跑。",
+      "设置排版已补采实机，新增重构尚未实施。"
+    ],
+    "old_application_backup_retained": false
+  },
+  "settings_attachment_iteration": {
+    "date": "2026-11-21",
+    "version": "0.13.10",
+    "published": false,
+    "implementation": [
+      "设置六分类共用52px顶栏、280px分类、居中内容列、成组表单、外观预览和末端开关。",
+      "附件列表保留于侧栏，固定修订全文在主工作面打开；保留后台文稿、未保存稿、阅读位置和入口焦点。",
+      "正文已有一级标题时按原题阅读；固定来源折叠呈现，不修改资料正文、来源与修订。",
+      "阅读锚点取实际文字，跳过无稳定字形坐标的换行；隐藏工作面不覆盖阅读位置。",
+      "退出意图与窗口关闭分离，由正常close事件等待恢复稿落盘后接续退出。"
+    ],
+    "validation": {
+      "source_desktop": {
+        "result": "passed",
+        "tests": 10,
+        "artifact": "apps/desktop/output/attachment-settings-loop-5-report.log",
+        "boundary": "最终标题增量由三项模型和最终随包侧栏旅程覆盖；其余共享实现与这批回归一致。"
+      },
+      "resource_models": {
+        "result": "passed",
+        "tests": 3,
+        "test": "apps/desktop/tests/resource-source.test.ts"
+      },
+      "packaged_settings_and_sidebar": {
+        "result": "passed",
+        "tests": 3,
+        "artifact": "apps/desktop/output/attachment-packaged-loop-7.log",
+        "source_sha256": "c92b95959f2c5f8cb9a3d34faf8452abbcbfd15cc3e3cd14715592ab6afd03d1"
+      },
+      "final_packaged_sidebar": {
+        "result": "passed",
+        "tests": 1,
+        "artifact": "apps/desktop/output/attachment-final-package.log",
+        "screenshots": "apps/desktop/output/attachment-final-package",
+        "boundary": "覆盖正文标题与资料名不同、固定来源展开、浅暗窄窗、未保存稿、焦点和严格阅读位置断言。"
+      },
+      "final_mcp": {
+        "result": "running",
+        "tests": 2,
+        "artifact": "apps/task-view/attachment-final-serial.log",
+        "source_uri": "ui://hetu/workbench/2/b0af8b51e925f54e7b6c272340e52240ffff25fe5f4d4b5aea10af14c583ea95",
+        "status": "stdio_passed_codex_toolbar_failed_then_source_fixed_revalidation_pending",
+        "stdio": "passed",
+        "codex": "35px selection toolbar measured 64px; rounded-width feedback removed, desktop text-editing passed; shared-resource rebuild pending"
+      },
+      "documentation": {
+        "result": "passed",
+        "documents": 91,
+        "local_links": 1349,
+        "fragment_links": 300
+      }
+    },
+    "package": {
+      "manifest": "apps/desktop/output/execution-local-20261121/hetu-dev-N2Hts2/manifest.json",
+      "version": "0.13.10",
+      "source_sha256": "76e3ff8e2efe7191bb0740f454091f210b82c8bdc15bc76e88747d41b32ad8eb",
+      "source_files": 2895,
+      "verified_artifacts": 3387,
+      "signing": "ad-hoc-development",
+      "source_matches": true,
+      "app_matches": true
+    },
+    "mcp_resource": {
+      "resource_uri": "ui://hetu/workbench/2/b0af8b51e925f54e7b6c272340e52240ffff25fe5f4d4b5aea10af14c583ea95",
+      "sha256": "b0af8b51e925f54e7b6c272340e52240ffff25fe5f4d4b5aea10af14c583ea95",
+      "size_bytes": 4532273
+    },
+    "installation": {
+      "status": "installed",
+      "target": "/Applications/Hetu.app",
+      "installer": "output/execution-local-20261121/install-local.py",
+      "old_application_backup_retained": false,
+      "author_data_cleanup": false,
+      "protected_files_unchanged": 3,
+      "source_sha256": "76e3ff8e2efe7191bb0740f454091f210b82c8bdc15bc76e88747d41b32ad8eb",
+      "installed_at": "2026-11-21",
+      "note": "用户明确要求覆盖安装且不保留旧应用；正常进程已退出，原子替换后旧应用临时目录已删除。"
+    },
+    "failures_preserved": [
+      {
+        "artifact": "apps/desktop/output/settings-global-loop-3",
+        "reason": "退出事件中嵌套关窗导致调试进程无法正常结束；修复后严格关闭重开与十项回归通过。"
+      },
+      {
+        "artifact": "apps/task-view/attachment-settings-loop-5.log",
+        "reason": "共享App资源重建前启动，主动中止；不计为通过。"
+      },
+      {
+        "artifact": "apps/task-view/attachment-settings-loop-6.log",
+        "reason": "旧测试章名与真实三位章号不一致；保留失败，后续改为真实名称。"
+      },
+      {
+        "artifact": "apps/task-view/attachment-settings-loop-7.log",
+        "reason": "旧测试直接点击隐藏目录；改用可见的侧栏入口，不扩大隐藏查询或强制点击。"
+      },
+      {
+        "artifact": "apps/task-view/attachment-settings-loop-8.log",
+        "reason": "隔离测试宿主固定1400px工作台高度，底部设置在真实视口之外；宿主改为随可视窗口，文档型面板继续长页。"
+      },
+      {
+        "artifact": "apps/task-view/attachment-final-mcp.log",
+        "reason": "覆盖完整工作面后，并发两条旅程在剧本冷读取的默认5秒期内未就绪；HTTP 500发生在断言失败关闭连接后，不能将其当成根因。按仓库配置恢复串行复验，保持内容与时间断言。"
+      }
+    ],
+    "reference_boundary": {
+      "native_window_observation": "blocked",
+      "errors": [
+        "Sky Computer Use native pipe startup failed",
+        "failed to write kernel assets: No such file or directory (os error 2)"
+      ],
+      "screenshots": "使用隔离Electron与Chromium实际截图；参考软件未重新观察，不能据此宣称全部元素达到9分。",
+      "codex_desktop_gui": "未复验原生GUI当前面板。"
+    }
+  },
+  "context_menu_iteration": {
+    "status": "in_progress",
+    "implementation": [
+      "shared context-menu presenter and layered keyboard navigation",
+      "fixed editor target with original source, UTF8 quote and asynchronous clipboard validation",
+      "formatting, indentation, grouping, card configuration and block transactions",
+      "reader selection review actions, native text inputs and library entry menus",
+      "directory rename via shared author journal, fixed revision and Core CAS"
+    ],
+    "validation": {
+      "model": {
+        "passed": 5,
+        "command": "node --experimental-strip-types --test apps/desktop/tests/editor-context-target.test.ts"
+      },
+      "desktop": "model tests and installed Electron right-click/card journeys passed; full object command parity remains open",
+      "mcp": "stdio and Codex MCP App long journeys passed, including annotation and card configuration"
+    },
+    "remaining": [
+      "资料／设定／素材对象的完整命令清单复核",
+      "同版本原生参考窗口复拍",
+      "完整全页面视觉、真实中文输入法和读屏"
+    ]
+  },
+  "execution_mode_iteration": {
+    "status": "core_and_desktop_contract_implemented",
+    "default": "auto",
+    "modes": [
+      "auto",
+      "confirm"
+    ],
+    "shared_by": [
+      "desktop",
+      "independent_mcp",
+      "cli",
+      "skills"
+    ],
+    "core_contract": [
+      "CAS",
+      "transaction",
+      "idempotency",
+      "original_key_recovery",
+      "agent_identity"
+    ],
+    "actions": [
+      "hetu.execution.get_mode",
+      "hetu.execution.invoke",
+      "hetu.execution.initialize",
+      "hetu.execution.prepare",
+      "hetu.execution.record_confirmation",
+      "hetu.execution.execute",
+      "hetu.execution.get_plan"
+    ],
+    "settings_schema": "schema_version=3; preferences.execution_mode; execution_policy_revision",
+    "tests": {
+      "result": "passed",
+      "count": 6,
+      "artifact": "output/execution-final-core.log",
+      "cases": [
+        "auto direct create/edit and idempotency",
+        "confirm read-through and one fixed confirmation",
+        "policy switch invalidates old plan",
+        "partial batch resumes original plan",
+        "auto initialization replay",
+        "same path with a different workspace identity is rejected"
+      ]
+    },
+    "desktop_build": "passed; output/final-card-fix-package.log",
+    "mcp_cli_check": "passed; output/execution-refresh-mcp-retest.log and output/execution-refresh-cli.log",
+    "boundary": "统一执行模式、安装版桌面、CLI、稳定MCP、指定工作区MCP及两种MCP App长旅程均通过；全页面视觉、真实IME、VoiceOver、其他平台和参考窗口复拍仍未完成。",
+    "desktop_installed_acceptance": "passed; output/continued-installed-execution.log",
+    "mcp_app_ui": {
+      "stdio": {
+        "result": "passed",
+        "artifact": "output/continued-stdio-workbench-2.log"
+      },
+      "codex": {
+        "result": "passed",
+        "artifact": "output/continued-codex-workbench-6.log"
+      },
+      "coverage": [
+        "任务资源读取失败与重开",
+        "附件列表和正文主工作面",
+        "卡片配置与渐变",
+        "批注、剧本、视频、设置和退出重开",
+        "统一执行模式读取与写入边界"
+      ]
+    }
+  },
+  "latest_execution_installation": {
+    "installed": "/Applications/Hetu.app",
+    "version": "0.13.10",
+    "source_sha256": "36509e79688593ed48790e78cdb2ad21e64da9a8cfaf2a46aeb4e9e928f86296",
+    "manifest": "output/final-card-fix-package-20261121/hetu-dev-5xnsaU/manifest.json",
+    "verified_artifacts": 2844,
+    "signing": "ad-hoc-development",
+    "old_applications_retained": false,
+    "protected_files_unchanged": 3,
+    "author_data_cleanup": false,
+    "published": false,
+    "desktop_execution_test": {
+      "result": "passed",
+      "artifact": "output/continued-installed-execution.log"
+    },
+    "desktop_card_test": {
+      "result": "passed",
+      "artifact": "output/final-installed-card.log"
+    },
+    "embedded_mcp_resources": "rebuilt and verified in installed desktop package"
+  }
+}

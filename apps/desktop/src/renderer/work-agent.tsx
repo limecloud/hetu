@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import type { WorkRef } from "@hetu/plugin-sdk";
 import { desktop } from "./bridge.ts";
-import { Icon, IconButton, Workbench } from "./workbench.tsx";
+import { Icon, IconButton, Workbench, PageActions } from "./workbench.tsx";
 import "./work-agent.css";
 import { AgentAppInstall } from "./agent-app-install.tsx";
 
@@ -68,11 +68,12 @@ export function WorkAgent({ work, notify, changed }: { work?: WorkRef; notify(me
       setAdvice(items);
     } catch { setAdviceError("建议格式或套件ID无效，请让Agent按请求中的格式返回。"); }
   }
-  return <section className="work-agent" aria-label={work ? "作品AI协作" : "默认AI协作"} aria-busy={busy || checking}>
-    <header><h3><Icon name="plugin"/>AI 协作</h3><div className="actions">
+  const actions = <div className="actions">
       <button disabled={!state || busy} onClick={() => void desktop.settings("handoff", { section: "agent_suite", work_ref: work }).then(() => notify(work ? "已复制当前作品的协作设置请求。" : "已复制默认协作设置请求。")).catch(e => setError(e.message))}>让 AI 调整</button>
       <button disabled={!state || busy || checking} onClick={() => void refresh()}><Icon name="refresh"/>重新检查</button>
-    </div></header>
+    </div>;
+  return <section className="work-agent" aria-label={work ? "作品AI协作" : "默认AI协作"} aria-busy={busy || checking}>
+    {work ? <header><h3><Icon name="plugin"/>AI 协作</h3>{actions}</header> : <PageActions>{actions}</PageActions>}
     {error && <p role="alert">{error}</p>}
     {!state ? <p className="muted">正在读取协作设置…</p> : <>
       {(state.journal || state.other_pending) && <div className="work-agent-recovery" role="status"><p>{state.other_pending ? "有待确认的本机操作，请在设置中恢复。" : state.journal.status === "pending" ? "上次选择的结果尚未确认。" : "上次选择已有明确结果。"}</p>{!state.other_pending && <button disabled={busy} onClick={() => void run(async () => { await request(state.journal.status === "pending" ? "recover" : "acknowledge"); await refresh(); })}>{state.journal.status === "pending" ? "恢复原操作" : "收起已确认操作"}</button>}</div>}
@@ -91,15 +92,15 @@ export function WorkAgent({ work, notify, changed }: { work?: WorkRef; notify(me
           </section>
         </div></details>
       </div>
-      {checking ? <p className="work-agent-checking muted">正在检查所选客户端与套件…</p> : inspection && <div className="work-agent-inspection">
+      {checking ? <p className="work-agent-checking muted">正在检查所选客户端与套件…</p> : inspection && <details className="work-agent-inspection" open={!!work}><summary>安装状态<span>{states[inspection.state]}</span></summary>
         <dl><dt>套件检测</dt><dd>{states[inspection.state]}</dd><dt>本机包版本</dt><dd>{inspection.version ?? "未知"}</dd><dt>随附套件版本</dt><dd>{inspection.bundled.version}</dd>
           {association.client === "codex" && <><dt>Codex 本机启用配置</dt><dd>{registrations[inspection.registration]}</dd></>}
           {inspection.directory && <><dt>本机包目录</dt><dd className="work-agent-path">{inspection.directory}</dd></>}
           <dt>检查时间</dt><dd>{new Date(inspection.checked_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</dd><dt>当前会话加载</dt><dd>待在客户端验证</dd><dt>任务 MCP 连接</dt><dd>待在客户端验证</dd>
         </dl>{inspection.version_differs && <p className="work-agent-scope">本机包与随附套件的版本不同。</p>}
         <p className="work-agent-scope">安装状态不代表当前会话已加载。</p>
-      </div>}
-      <details className="work-agent-skills" open><summary>套件包含的 Skills</summary><ul>{state.skills.map((skill: any) => {
+      </details>}
+      <details className="work-agent-skills" open={!!work}><summary>套件包含的 Skills</summary><ul>{state.skills.map((skill: any) => {
         const found = inspection?.found_skills.includes(skill.id); return <li key={skill.id}><span className={found ? "work-agent-skill-check found" : "work-agent-skill-check"} aria-hidden="true">{found ? <Icon name="check"/> : <svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="2 2"/></svg>}</span><div><span>{skill.title}</span><small>{skill.id}</small></div><div className="work-agent-skill-state"><span>{checking ? "正在检查" : found ? "已找到方法文件" : "未验证安装"}</span>{found && <small>版本 {inspection.version}</small>}</div></li>;
       })}</ul></details>
       <div className="actions work-agent-package-actions">{association.client !== "codex" && <button disabled={disabled || !installable} onClick={() => void prepareInstall()}>安装 Skills 套件</button>}<button onClick={() => setModal("guide")}>安装与接入说明</button><button disabled={busy} onClick={() => void run(async () => { await request("reveal_bundle"); })}>查看随附套件</button><button disabled={disabled || association.client === "none"} onClick={() => void run(async () => { await request("choose_package"); await refresh(); })}>选择已安装目录</button>{inspection?.selected_directory && <button disabled={disabled} onClick={() => void run(async () => { await request("auto_detect"); await refresh(); })}>自动检测</button>}</div>

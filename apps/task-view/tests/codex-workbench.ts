@@ -37,6 +37,7 @@ export async function codexWorkbench(binary: string, command: string, env: Recor
     child.stdin.write('{"jsonrpc":"2.0","method":"initialized"}\n');
     const thread = (await call("thread/start", { cwd: directory, ephemeral: true })).thread.id;
     return {
+      listTools: async () => {const status=await call("mcpServerStatus/list",{limit:100});return {tools:Object.values(status.data.find((server:any)=>server.name==="hetu").tools)};},
       callTool: (params: { name: string; arguments?: Record<string, unknown> }): Promise<CallToolResult> =>
         call("mcpServer/tool/call", { threadId: thread, server: "hetu", tool: params.name, arguments: params.arguments }),
       readResource: (params: { uri: string }): Promise<ReadResourceResult> => call("mcpServer/resource/read", { server: "hetu", ...params }),

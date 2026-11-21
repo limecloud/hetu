@@ -24,17 +24,18 @@ export function creationHandoff(kind: string, environment: HandoffEnvironment) {
 }
 export async function workHandoff(page: string, object: Record<string,unknown>, context: {
   work: WorkRef; environment: HandoffEnvironment; authoring: Authoring;
-  access(): Promise<any>; summary(): Promise<any>; check(): void; pluginConnection?: unknown;
+  workspacePath: string; executionPolicy(): Promise<any>; summary(): Promise<any>; check(): void; pluginConnection?: unknown;
 }) {
-  const access=await context.access();context.check();
+  const policy=await context.executionPolicy();context.check();
   const summary=await context.summary();context.check();
   const pageKind=({"work.versions":"git","work.import":"import","work.delivery":"delivery","work.links":"related_works","work.resources":"resources","novel.outlines":"structure","work.media":"media","work.images":"artwork","work.canon":"bible"} as Record<string,string>)[page]??context.work.kind;
   const result=await context.authoring.handoff(pageKind,object);context.check();
   if(result.status!=="succeeded")throw new Error(result.error?.message??"无法准备固定页面交接。");
   const handoff=result.data;
-  return text("请通过河图的机器入口接续当前创作对象。使用所选客户端与确切 management_ref，先发现实际能力、读取固定修订与现有成果，再按我的目标处理本页。插件数据仅限以下精确范围；正文采纳、定稿及外部副作用须另行决定。保留原操作键，未知结果先回读。", {
-    work_ref:context.work,fixed_ref:summary.fixed_ref,page,management_ref:access.management_ref,...machine(context.environment),
-    fixed_refs:handoff.fixed_refs,direct_actions:handoff.direct_actions.map((a:any)=>a.name),proposal_actions:handoff.proposal_actions.map((a:any)=>a.name),limitations:handoff.limitations,
+  return text("请通过河图的机器入口接续当前工作区。先读取实际执行模式和领域Schema，再读取固定修订与现有成果。auto直接处理，不要求逐库或逐任务授权；confirm先读取，将本次写入集中准备为固定计划，获得本次确认后连续执行。保留真实Agent身份、CAS与原操作键，未知结果先回读原计划。", {
+    work_ref:context.work,workspace_path:context.workspacePath,fixed_ref:summary.fixed_ref,page,...machine(context.environment),
+    execution_mode:policy.preferences.execution_mode,policy_revision:policy.execution_policy_revision,first_action:"hetu.execution.get_mode",execution_action:"hetu.execution.invoke",
+    fixed_refs:handoff.fixed_refs,direct_actions:handoff.direct_actions.map((a:any)=>a.name),proposal_actions:handoff.proposal_actions.map((a:any)=>a.name),
     ...(context.pluginConnection?{plugin_connection:context.pluginConnection}:{}),
   });
 }

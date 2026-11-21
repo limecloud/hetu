@@ -65,6 +65,12 @@ test("作品插件按小说、剧本和视频筛选，管理保留全集，错�
     await expect.poll(() => application.windows().some(p => p.url().startsWith("hetu-plugin://"))).toBe(true);
     const pluginPage = application.windows().find(p => p.url().startsWith("hetu-plugin://"))!;
     await expect(pluginPage.getByRole("heading", { name: "小说专用", exact: true })).toBeVisible();
+    if (process.platform === "darwin") {
+      await expect(page.locator(".plugin-window-chrome")).toHaveCSS("height", "52px");
+      const surface = await page.locator(".surface").boundingBox();
+      expect(surface!.y).toBeGreaterThanOrEqual(88);
+      expect(await page.locator(".plugin-window-chrome").evaluate(node => getComputedStyle(node).getPropertyValue("-webkit-app-region"))).toBe("drag");
+    }
     const originalURL = pluginPage.url();
     expect(await page.evaluate(async () => {
       try { await (window as any).hetuDesktop.view("org.test.video", "main"); return "opened"; }

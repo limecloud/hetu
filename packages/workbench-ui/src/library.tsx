@@ -2,11 +2,10 @@ import React, { useState } from "react";
 import type { WorkRef } from "@hetu/plugin-sdk";
 import { Icon, IconButton, type IconName } from "./icons.tsx";
 import { WorkCoverPreview } from "./cover.tsx";
+import {useContextMenu, type ContextMenuItem} from "./context-menu.tsx";
 
 export interface LibraryAssets {
   brand: string;
-  light: string;
-  dark: string;
   covers: readonly string[];
 }
 export interface LibraryWork {
@@ -53,25 +52,27 @@ export function LibraryNavigation({ kind, active, busy, onKind, onPlugins }: {
 }
 
 /** 同一作品投影和表现组件；权限、读取及交接由各宿主回调执行。 */
-export function LibraryContent({ works, assets, appearance = "system", kind, busy = false, loading = false, error, initialListMode = true, emptyTitle = "还没有作品", emptyMessage, onKind, onOpen, onCreate, onSelect, onRefresh }: {
+export function LibraryContent({ works, assets, appearance = "system", kind, busy = false, loading = false, error, initialListMode = true, emptyTitle = "还没有作品", emptyMessage, onKind, onOpen, onCreate, onSelect, onRefresh, contextItems, onContextError }: {
   works: LibraryWork[]; assets: LibraryAssets; appearance?: string; kind: string; busy?: boolean; loading?: boolean;
   initialListMode?: boolean; emptyTitle?: string; emptyMessage?: string; onKind(kind: string): void;
   error?: string;
+  contextItems?: (work: LibraryWork) => ContextMenuItem[]; onContextError?: (error: Error) => void;
   onOpen(): void; onCreate(kind: WorkRef["kind"], title: string): void; onSelect(work: LibraryWork): void; onRefresh(): void;
 }) {
   const [search, setSearch] = useState(""), [status, setStatus] = useState("all"), [listChoice, setList] = useState<boolean>();
+  const showMenu = useContextMenu();
+  const menu = (event: React.MouseEvent | React.KeyboardEvent, item: LibraryWork) => {if (contextItems) showMenu(event, item.title, contextItems(item), {onError: onContextError});};
   const list=listChoice??initialListMode;
   const visible = works.filter(item => (kind === "all" || item.work_ref.kind === kind) &&
     (status === "all" || item.status === status || (status === "archived" && item.archived)) &&
     [item.title, item.author_name, item.genre].filter(Boolean).join(" ").toLocaleLowerCase().includes(search.toLocaleLowerCase()));
   return <div className="content library-content" aria-busy={loading || busy}>
-    <section className="library-intro" aria-labelledby="library-title"><picture className="library-intro-art" aria-hidden="true"><source media={appearance === "dark" ? "all" : appearance === "light" ? "not all" : "(prefers-color-scheme: dark)"} srcSet={assets.dark}/><img src={assets.light} alt="" draggable={false}/></picture><div className="library-intro-copy"><h1 id="library-title">创作库</h1></div></section>
-    <div className="library-search-row"><strong>{kinds.find(item => item[0] === kind)?.[1] ?? "全部作品"}<span className="muted">{visible.length}</span></strong><IconButton icon="refresh" label="刷新创作库" disabled={busy || loading} onClick={onRefresh}/>
+    <div className="library-search-row"><div className="library-page-heading"><details className="popover-menu"><summary aria-label="新建创作" title="新建创作"><Icon name="plus" size={18}/></summary><div className="menu-panel">{creations.map(([type,title]) => <button key={type} disabled={busy} onClick={() => onCreate(type,title)}>新建{title}</button>)}</div></details><h1 id="library-title">{kind === "all" ? "创作库" : kinds.find(item => item[0] === kind)?.[1] ?? "创作库"}</h1><span className="muted">{visible.length}</span></div><IconButton icon="refresh" label="刷新创作库" disabled={busy || loading} onClick={onRefresh}/>
       <select aria-label="创作状态筛选" value={status} onChange={event => setStatus(event.target.value)}>{states.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select>
       <label className="library-search"><Icon name="search"/><input aria-label="搜索作品" placeholder="搜索作品" value={search} onChange={event => setSearch(event.target.value)}/></label>
       <div className="segmented-control" aria-label="创作库布局"><IconButton icon="list" label="列表视图" aria-pressed={list} onClick={() => setList(true)}/><IconButton icon="grid" label="封面视图" aria-pressed={!list} onClick={() => setList(false)}/></div>
     </div>
-    {error ? <div className="empty" role="alert"><p>{error}</p><button onClick={onRefresh} disabled={busy}>重新读取创作库</button></div> : loading ? <p className="empty" role="status">正在连接河图…</p> : works.length ? <div className={"library-works" + (list ? "" : " library-grid")}>{visible.map(item => <button className="work" aria-label={`打开作品 ${item.title}`} data-work-kind={item.work_ref.kind} key={[item.work_ref.workspace_id, item.work_ref.kind, item.work_ref.object_id].join(":")} disabled={busy || item.unavailable} onClick={() => onSelect(item)}>
+    {error ? <div className="empty" role="alert"><p>{error}</p><button onClick={onRefresh} disabled={busy}>重新读取创作库</button></div> : loading ? <p className="empty" role="status">正在连接河图…</p> : works.length ? <div className={"library-works" + (list ? "" : " library-grid")}>{visible.map(item => <button onContextMenu={event => menu(event, item)} onKeyDown={event => {if (!event.nativeEvent.isComposing && (event.key === "ContextMenu" || event.shiftKey && event.key === "F10")) menu(event, item);}} className="work" aria-label={`打开作品 ${item.title}`} data-work-kind={item.work_ref.kind} key={[item.work_ref.workspace_id, item.work_ref.kind, item.work_ref.object_id].join(":")} disabled={busy || item.unavailable} onClick={() => onSelect(item)}>
       <div className="work-thumbnail"><WorkCoverPreview work={item.work_ref} title={item.title} author={item.author_name} compact={list || item.work_ref.kind !== "novel"} preview={item.cover_preview} error={item.unavailable ? item.error : ""} defaultCovers={assets.covers}/></div>
       <div className="library-work-description"><strong>{item.title}</strong>{(item.author_name || item.genre) && <small>{[item.author_name, item.genre].filter(Boolean).join(" ")}</small>}</div>
       {item.unavailable && <span>{item.error}</span>}<span className="pill">{{ novel: "小说", drama: "剧本", video: "视频" }[item.work_ref.kind]}</span>{item.authorized===false&&<small className="muted">需作品授权</small>}

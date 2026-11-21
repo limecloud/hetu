@@ -565,3 +565,32 @@ fn model_status_exposes_only_connection_projection_and_never_configuration() {
         );
     }
 }
+
+#[test]
+fn workspace_auto_and_stable_confirm_use_one_setting_without_management_or_task_grants() {
+    let directory = tempfile::tempdir().unwrap(); let settings = directory.path().join("settings"); let workspace = directory.path().join("work");
+    let _author = hetu_core::Kernel::open(json!({"mode":"author","workspace_path":workspace,"create":{"title":"CLI模式","locale":"zh-CN","operation_key":"create"}})).unwrap();
+    let invoke = |stable: bool, action: &str, input: Value| {
+        let mut command = Command::new(env!("CARGO_BIN_EXE_hetu")); command.env("HETU_LOCAL_SETTINGS_DIR",&settings);
+        if stable {command.args(["--client","generic"]);} else {command.arg("--workspace").arg(&workspace);}
+        command.args(["call",action,"--input","-"]).stdin(Stdio::piped()).stdout(Stdio::piped()).stderr(Stdio::piped());
+        let mut child=command.spawn().unwrap(); child.stdin.take().unwrap().write_all(&serde_json::to_vec(&input).unwrap()).unwrap();
+        let result=child.wait_with_output().unwrap(); assert!(result.stderr.is_empty(),"{}",String::from_utf8_lossy(&result.stderr));
+        serde_json::from_slice::<Value>(&result.stdout).unwrap()
+    };
+    let created=invoke(false,"hetu.documents.create",json!({"kind":"novel_chapter","title":"直接新建","source_format":"markdown","content":"Agent原文🌿","operation_key":"create"}));
+    assert_eq!(created["status"],"succeeded","{created}");
+    assert_eq!(created["data"]["revision"]["origin_kind"],"agent");
+    assert_eq!(invoke(true,"hetu.execution.get_mode",json!({}))["data"]["execution_mode"],"auto");
+    let service=hetu_core::local_settings::LocalSettings::open(&settings).unwrap();
+    service.host(json!({"method":"update","input":{"expected_revision":1,"patch":{"execution_mode":"confirm"},"operation_key":"confirm"}})).unwrap();
+    let document=created["data"]["document"]["document_id"].clone();
+    assert_eq!(invoke(false,"hetu.documents.get",json!({"document_id":document}))["status"],"succeeded");
+    let fixed=json!({"action":"hetu.documents.rename","contract_revision":"1","input":{"document_id":document,"base_revision_id":created["data"]["revision"]["revision_id"],"title":"集中改名","operation_key":"rename"}});
+    assert_eq!(invoke(false,"hetu.documents.rename",fixed["input"].clone())["error"]["code"],"hetu.execution_confirmation_required");
+    let plan=invoke(true,"hetu.execution.prepare",json!({"workspace_path":workspace,"commands":[fixed],"summary":"本次改名","operation_key":"batch"}));
+    assert_eq!(plan["status"],"succeeded","{plan}"); let reference=json!({"plan_id":plan["data"]["plan_id"],"sha256":plan["data"]["sha256"]});
+    assert_eq!(invoke(false,"hetu.execution.record_confirmation",json!({"plan_ref":reference,"decision":"confirm","user_instruction":"确认本次章节改名","operation_key":"decision"}))["status"],"succeeded");
+    let executed=invoke(true,"hetu.execution.execute",json!({"plan_ref":reference})); assert_eq!(executed["data"]["state"],"completed","{executed}");
+    assert_eq!(invoke(false,"hetu.documents.get",json!({"document_id":document}))["data"]["content"],"Agent原文🌿");
+}

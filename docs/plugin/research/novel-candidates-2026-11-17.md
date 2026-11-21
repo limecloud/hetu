@@ -28,7 +28,7 @@
 | [wanrenhuifu/NovelNovel](https://github.com/wanrenhuifu/NovelNovel/tree/c3b2862d1ae35ae9824453040e48c30cd3e249aa) | 仓库元数据 | 现有插件组合 |
 | [thus-zhou/dsh-chapter-whale](https://github.com/thus-zhou/dsh-chapter-whale/tree/4f218c0e88fcab890b3ca52ac8a7a139a95459a8) | 仓库元数据 | 现有插件组合 |
 | [shuaixiangzi/dsh-mojian](https://github.com/shuaixiangzi/dsh-mojian/tree/418cb55b178181376d221f84fd8092a0f9cfe5aa) | 仓库元数据 | 现有插件组合 |
-| [winston-hoo/dsh-novel-craft](https://github.com/winston-hoo/dsh-novel-craft/tree/34a272dd403887593412718a7e308303b02547d9) | 仓库元数据 | 现有插件组合 |
+| 外部参考（source-record:a3dffef4e71b658b787259e821da29f9f4ec8ca4ac86d973a7ae0945c65b89dd） | 仓库元数据 | 现有插件组合 |
 | [lyjsyyds/dsh-novel-studio](https://github.com/lyjsyyds/dsh-novel-studio/tree/b63743914662a02b20b6972624ef3dc8c731ec1c) | 仓库元数据 | 现有插件组合 |
 | [FengHuoLinShan/novelAssist-dsh](https://github.com/FengHuoLinShan/novelAssist-dsh/tree/4912bced7fd99dfb1d9e211563eb3ad689d97194) | 仓库元数据 | 现有插件组合 |
 | [Furry-wucheng/dsh-story-mode](https://github.com/Furry-wucheng/dsh-story-mode/tree/166283d48dcf6e696804da22ac6f4db3d0c1e6af) | 仓库元数据 | 现有插件组合 |
@@ -53,7 +53,7 @@
 
 | 参考仓库 | 研究层次 | 分流 |
 | --- | --- | --- |
-| [shiyan688/dsh-novel-craft](https://github.com/shiyan688/dsh-novel-craft/tree/8a52268b3d521e11fd78a3117c03c1f5a771a2cf) | 固定源码已取 | 现有插件升级 |
+| 外部参考（source-record:cff79ff8ea16c6f0e9e225321c6b367c573258fd821dfaf721f4b6cf035e8463） | 固定源码已取 | 现有插件升级 |
 | [hellogit2021/avoid-ai-writing-cn](https://github.com/hellogit2021/avoid-ai-writing-cn/tree/45f87c6fd3895af3543d6a23833dd8e7e9ee906a) | 仓库元数据 | 现有插件升级 |
 | [Anarcadia/chuanban-dsh-writingset](https://github.com/Anarcadia/chuanban-dsh-writingset/tree/1ce7cb4f010705d1c3b9348e5a287e61933dd6fb) | 仓库元数据 | 现有插件升级 |
 | [Adkid-Zephyr/Liltloom](https://github.com/Adkid-Zephyr/Liltloom/tree/514f853c8f072d892aee59b12f54b8ee56f5a6c5) | 定向源码已读 | 现有插件升级 |
@@ -328,7 +328,7 @@
 | [YesSanSan/dsh-conversation-outline](https://github.com/YesSanSan/dsh-conversation-outline/tree/ef681db824bcad0ccca99ec8346c59268c847ee0) | 仓库元数据 | 排除／保留技术参考 |
 | [AKS1st/dock-markdown](https://github.com/AKS1st/dock-markdown/tree/d050648f9f0ad4a868dab791e991bd4014b65299) | 仓库元数据 | 排除／保留技术参考 |
 | [ZelyStaric/dsh-council](https://github.com/ZelyStaric/dsh-council/tree/15a035ed3a4850aed3c9045b5bd09bc5aff92c20) | 仓库元数据 | 排除／保留技术参考 |
-| [Cryonnan/GateCraft-math-modeling-skills](https://github.com/Cryonnan/GateCraft-math-modeling-skills/tree/c6319820184d6f1106a18e200774b534a974c4cd) | 仓库元数据 | 排除／保留技术参考 |
+| 外部参考（source-record:23e4e8e2cf0736a876b35c1015434088f802657c0af42e52f16588cf997fe4b8） | 仓库元数据 | 排除／保留技术参考 |
 | [LyaxZ/dsh-quick-toc](https://github.com/LyaxZ/dsh-quick-toc/tree/7575fce9032306ba0c2aba3af7d60ee131e02005) | 仓库元数据 | 排除／保留技术参考 |
 | [Yourtsao/Offical-paper-Wrighting--Chinese--skill](https://github.com/Yourtsao/Offical-paper-Wrighting--Chinese--skill/tree/cae219ff1b05f82fba5e0534f71f8275a6361fb2) | 仓库元数据 | 排除／保留技术参考 |
 | [bettermen/xiashuo](https://github.com/bettermen/xiashuo/tree/ebfc4ba421ba657a17992a22515ac3ea885d6b2d) | 仓库元数据 | 排除／保留技术参考 |
@@ -361,7 +361,7 @@
 | [17861102832/hanlin-scholar-agent](https://github.com/17861102832/hanlin-scholar-agent/tree/326cdcf22ea8cc66a93bb7300b01b3a2ef907efd) | 仓库元数据 | 排除／保留技术参考 |
 | [wuyaomin248-stack/dsh-discord](https://github.com/wuyaomin248-stack/dsh-discord/tree/6597ab16341de271d90c921cdadc92b190eb8cc5) | 仓库元数据 | 排除／保留技术参考 |
 | [P3NN4L/Tribot](https://github.com/P3NN4L/Tribot/tree/03d38d8a167056b1f8eded13f7aa2cb606b16527) | 仓库元数据 | 排除／保留技术参考 |
-| [Rexray117/PRD-Craft-Skill](https://github.com/Rexray117/PRD-Craft-Skill/tree/5a7851a68396fcf458c166c9911e09dd2c01904a) | 仓库元数据 | 排除／保留技术参考 |
+| 外部参考（source-record:f6efa666bb42c9e120767ee3d28a4c5e97ba39dda76174bd22b962b50563c97c） | 仓库元数据 | 排除／保留技术参考 |
 | [MisakaGordon/whalestory](https://github.com/MisakaGordon/whalestory/tree/b9200e7bab836b3d19b1849ba00cb269c290768b) | 仓库元数据 | 排除／保留技术参考 |
 | [FallenWings27/dsh-provider-card-release](https://github.com/FallenWings27/dsh-provider-card-release/tree/80ec49a72063e6bfc8faec3d5561e91fc2c18136) | 仓库元数据 | 排除／保留技术参考 |
 | [xia0ne/anti-defensive-dsh](https://github.com/xia0ne/anti-defensive-dsh/tree/c8316a78ec92876a2ac32b391b3ba27186d061a6) | 仓库元数据 | 排除／保留技术参考 |

@@ -1,0 +1,262 @@
+{
+  "date": "2026-11-20",
+  "status": "local_installed_verified_pending_author_review",
+  "version": "0.13.10",
+  "published": false,
+  "committed_this_change": false,
+  "source_sha256": "aef712371544a8b64942e6637442ef544c1e58560e2476317b5a23992ed73d62",
+  "installation": {
+    "installed_at": "2026-11-20T04:27:37.338680+00:00",
+    "version": "0.13.10",
+    "application": "/Applications/Hetu.app",
+    "backup": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/manuscript-floats-20261120/replaced-0.13.10-screenplay-display.app",
+    "manifest": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/manuscript-floats-20261120/package-accepted/hetu-dev-jG4yDI/manifest.json",
+    "source_sha256": "aef712371544a8b64942e6637442ef544c1e58560e2476317b5a23992ed73d62",
+    "artifacts_verified": 3387,
+    "signing": "ad-hoc-development",
+    "codesign_verified": true,
+    "cli_version": "hetu 0.13.10",
+    "author_content_modified": false
+  },
+  "research": {
+    "captured_at": "2026-11-20T04:01:17.499448+00:00",
+    "url": "https://www.feishu.cn/hc/zh-CN/articles/360033768533",
+    "viewport": {
+      "width": 1360,
+      "height": 900
+    },
+    "text_sha256": "ecd48bb3cccffed1f51a86fc2e9ab6564defc302db93be4fc59dc3bb1d139652",
+    "official_findings": [
+      "选中原文后从工具栏发表评论",
+      "被评论原文有下划线，可点击查看评论",
+      "评论可编辑、标为解决，并能在历史中恢复"
+    ],
+    "hetu_adoption": [
+      "复用选区工具、原文高亮、可点击浮标、编辑及处理状态",
+      "按作者要求使用就地浮窗，不保留飞书文档说明中的右侧评论栏",
+      "不增加聊天、通知或团队权限模型；批注仍由原Core固定修订与CAS执行"
+    ],
+    "screenshot": "build/manuscript-floats-20261120/feishu-comments.png"
+  },
+  "checks": {
+    "unit_tests": 7,
+    "packaged_desktop": {
+      "passed": 2,
+      "scope": [
+        "小说选区浮层与当前／历史批注",
+        "意见编辑、处理与重开",
+        "键盘、浅暗窄窗、浮标滚动显隐",
+        "清空未保存稿、撤销与恢复高亮",
+        "保存成功后丢失回执，同键恢复且无重复",
+        "剧本紧凑页头、全工作区、阅读与编辑单层滚动、场次跳转",
+        "混合换行、原稿与保存、离开重开、位置保持"
+      ],
+      "log": "build/manuscript-floats-20261120/desktop-packaged-tests.log"
+    },
+    "packaged_mcp": {
+      "passed": 2,
+      "transports": [
+        "stdio",
+        "official_codex_app_server"
+      ],
+      "scope": [
+        "完整共享工作台旅程",
+        "MCP沙箱内浮动批注保存与固定UTF8回读",
+        "独立App私有会话与设置",
+        "未授权作品直接打开与普通机器范围分离"
+      ],
+      "log": "build/manuscript-floats-20261120/mcp-packaged-tests.log"
+    },
+    "installed_codex": {
+      "version": "0.13.10",
+      "plugin_id": "hetu-workbench@hetu-luoshu-machine-connection",
+      "tools_error": null,
+      "entrypoints": [
+        {
+          "type": "global"
+        },
+        {
+          "type": "thread"
+        }
+      ],
+      "html_sha256": "c357cbd2baae778ca0064b8e248c7e20b4002765163e14187f8a4ea7557713ff",
+      "html_bytes": 4176881,
+      "manual_mcp_configuration": false,
+      "gui_observed": false,
+      "app_only_bridge_called": true,
+      "private_session_preserved": true,
+      "registered_works": 18,
+      "same_desktop_work_refs": true,
+      "model_turn_started": false
+    },
+    "resource_source_manifest": "apps/mcp/resources/workbench.manifest.json",
+    "capability_map": "passed",
+    "docs": {
+      "documents": 89,
+      "local_links": 1309,
+      "fragment_links": 290,
+      "traceability": {
+        "FR": 40,
+        "US": 61,
+        "UC": 54,
+        "E2E": 30,
+        "AC": 65
+      },
+      "id_references": 1251,
+      "json_examples": 11,
+      "schemas": 2,
+      "mermaid": 104,
+      "errors": []
+    },
+    "diff_check": "passed",
+    "installed_artifacts": {
+      "installed_files_match_manifest": true,
+      "verified_file_entries": 3387,
+      "source_files_still_match": true,
+      "codesign": "verified_by_installer",
+      "version": "0.13.10"
+    }
+  },
+  "limitations": [
+    "Codex原生GUI受工具访问限制，未宣称直接逐页观察或作者认可",
+    "不发布；本机0.13.10开发签名覆盖包",
+    "真实作品仅只读预览，新增／编辑／处理批注使用隔离资料"
+  ],
+  "raw_evidence_directory": "build/manuscript-floats-20261120",
+  "retained_failures": [
+    "旧装配源码快照变化被门禁拒绝，未安装旧包",
+    "MCP沙箱表单提交被拒绝，保存改为普通按钮并在两种随包传输通过",
+    "早期测试在未等待滚轮结束或导航收起状态执行后续动作；测试显式定位与等待，最终随包通过",
+    "真实创作库复验初次未展开已收起导航、随后使用同名标题导致严格定位拒绝；按实际WorkRef核对同名项并完成安装版复验，未改写作品"
+  ],
+  "real_library_verification": {
+    "version": "0.13.10",
+    "desktop_registered": 18,
+    "mcp_total": 18,
+    "same_work_identities": true,
+    "authorized": 13,
+    "previously_without_agent_connection": 5,
+    "html_sha256": "c357cbd2baae778ca0064b8e248c7e20b4002765163e14187f8a4ea7557713ff",
+    "catalog_identities_unchanged": true,
+    "real_drama_opened_without_authorization": true,
+    "reference_characters": 1889,
+    "all_drama_episodes": [
+      {
+        "characters": 2128,
+        "sha256": "a07769fe808acb1ed57467826fc1672d4ee259bbf3e2d16a21907d495fcd6007"
+      },
+      {
+        "characters": 2109,
+        "sha256": "227ade1b2203a14da68bce646b620bb0e1f563f012aa0bdfa1c9082591dd5f0e"
+      },
+      {
+        "characters": 1921,
+        "sha256": "c1c2613b0ccee89a509a9d60e5fe6ef56d692070c310c9ef8887104c5e486c49"
+      },
+      {
+        "characters": 1764,
+        "sha256": "42122e15c7f33400fe1c56f26f0e495d693e7dc6b60a8d4789367d716e8b276f"
+      },
+      {
+        "characters": 1912,
+        "sha256": "5d191b374e3d08ab128cd66c3e26ad8425eff41f2aca3772cd7421f4838cde9d"
+      },
+      {
+        "characters": 2389,
+        "sha256": "cac335db13faaaa428bc4525d130553e16636e4ca8a449c667b5fe332460bc25"
+      },
+      {
+        "characters": 1712,
+        "sha256": "61296598b1ec26ce1001e6050be2873d919074720b19f098a87ca6bea0b35d4b"
+      },
+      {
+        "characters": 1754,
+        "sha256": "05db8c19df867c7d2dd188a4b4dfe8973ed0dc9d9787b4238b1f38012b55d674"
+      },
+      {
+        "characters": 1965,
+        "sha256": "6fc800d64a1a1f055a24b65c8c2639bf51f8d3062b1e70c1eff9974b3c84bbce"
+      },
+      {
+        "characters": 1851,
+        "sha256": "348b1d69cd10b12f598c347e4f75735de61a7413cfee78132a95f6434dcfdca0"
+      },
+      {
+        "characters": 1656,
+        "sha256": "a09922279acee4c0aea6752219553cc02164f60c5019f0b9bed2a1563144e83e"
+      },
+      {
+        "characters": 1659,
+        "sha256": "81f2fcba47bf3473f8e22143944276a68e96c68dc84749f38d054a01fa5f5d78"
+      },
+      {
+        "characters": 1700,
+        "sha256": "bd70057cfe925b312e69b3c18910907585593a0e2fb21342f8820d4fc94d4ee8"
+      },
+      {
+        "characters": 1718,
+        "sha256": "569a214b81ea41208b3f79dfce6b9a2766202b1ca96d42e71e23e101775999c9"
+      },
+      {
+        "characters": 1745,
+        "sha256": "61252c47d0fae0f11751a74946f411bca9450abc4442435772fc54f36259caa0"
+      },
+      {
+        "characters": 1709,
+        "sha256": "d3e9c8227696ff82548a8d4f64a1263c962b101bd34f967476746e202a31a772"
+      },
+      {
+        "characters": 2064,
+        "sha256": "41d00283fc802b9bc2f22192ca9569c05c6a0d197bbebbba55e83f4db6929bbb"
+      },
+      {
+        "characters": 1632,
+        "sha256": "8702be9a8d5b2305e548883cde7c4087b5439f5c4da710723730e2ea4fa38b63"
+      },
+      {
+        "characters": 1726,
+        "sha256": "de44b65dfc52d38fe89c98979f57df206dafbe2bcc3b621ae77528b3cd329074"
+      },
+      {
+        "characters": 1577,
+        "sha256": "6acc176bdbadbd7f1d3bb8c3e353052eadd8fafa89edacdbc77f67d32abbfe77"
+      }
+    ],
+    "real_work_files_unchanged": true,
+    "real_novel_files_unchanged": true,
+    "real_novel_floating_annotation_preview": true,
+    "screenplay_layout": {
+      "width": 1060,
+      "paper": 1060,
+      "outer": "auto",
+      "inner": "visible",
+      "header": 60.6875
+    },
+    "previously_unconnected_works_opened": [
+      {
+        "kind": "drama",
+        "opened": true
+      },
+      {
+        "kind": "novel",
+        "opened": true
+      },
+      {
+        "kind": "novel",
+        "opened": true
+      },
+      {
+        "kind": "drama",
+        "opened": true
+      },
+      {
+        "kind": "novel",
+        "opened": true
+      }
+    ],
+    "browser_cards": 18,
+    "refresh_passed": true,
+    "screenshot": "build/manuscript-floats-20261120/actual-library.png",
+    "scope": "安装版本机18作品一致、刷新与真实剧本只读打开；不代替指定Codex GUI逐页验收。"
+  }
+}

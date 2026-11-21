@@ -94,9 +94,9 @@
     "source_only": true,
     "records": [
       {
-        "repository": "shiyan688/dsh-novel-craft",
+        "repository": "source-record:923e03aa0559ad1e87cea176820539d27f9d931f44461be800c4948c33e6cee4",
         "fixed_commit": "8a52268b3d521e11fd78a3117c03c1f5a771a2cf",
-        "directory_name": "shiyan688__dsh-novel-craft",
+        "directory_name": "source-record:269a243da5f3599bde2b7c1aae4714128e5fa5b65884c0dc5b131af29a714566",
         "source_sparse": false,
         "upstream_code_executed": false
       },
@@ -1463,9 +1463,9 @@
       "full_upstream_parity_verified": false
     },
     {
-      "repository": "shiyan688/dsh-novel-craft",
-      "repository_url": "https://github.com/shiyan688/dsh-novel-craft",
-      "market_url": "https://www.dsh.so/zh/artifact/dsh-novel-craft-2/",
+      "repository": "source-record:923e03aa0559ad1e87cea176820539d27f9d931f44461be800c4948c33e6cee4",
+      "repository_url": "source-record:37983b535da6d912981adf4ce958f38ef18a6c79571e927d93d2eb959b526dea",
+      "market_url": "source-record:86e578983199bc5d9bedecffdc624a5562eb4d61716ef396a3f313dfa0aee13b",
       "fixed_commit": "8a52268b3d521e11fd78a3117c03c1f5a771a2cf",
       "default_branch": "main",
       "market_description_claim": "面向中文小说作者的开源 DSH 写作插件：点赞/点踩提炼可编辑的文风偏好，支持候选稿、章节管理与局部改稿。MIT；需 DeepSeek Harness 和自备模型。",
@@ -1490,12 +1490,12 @@
       "cloned_fixed": true,
       "inspected_files": [
         {
-          "repository": "shiyan688/dsh-novel-craft",
+          "repository": "source-record:923e03aa0559ad1e87cea176820539d27f9d931f44461be800c4948c33e6cee4",
           "commit": "8a52268b3d521e11fd78a3117c03c1f5a771a2cf",
           "path": "README.md",
           "sha256": "b5661e71186d8792776adf97ce2b4599362aaa5a995f01b9a1230dc4b7f50196",
           "bytes": 24473,
-          "url": "https://github.com/shiyan688/dsh-novel-craft/blob/8a52268b3d521e11fd78a3117c03c1f5a771a2cf/README.md",
+          "url": "source-record:39709c9fc80e0cfddca3fdc2074e1385e632d17d882cb223216f31e062b73240",
           "inspected_scope": "README相关功能段落；不是全部实现认证"
         }
       ],
@@ -3271,13 +3271,13 @@
       "full_upstream_parity_verified": false
     },
     {
-      "repository": "Cryonnan/GateCraft-math-modeling-skills",
-      "repository_url": "https://github.com/Cryonnan/GateCraft-math-modeling-skills",
-      "market_url": "https://www.dsh.so/zh/artifact/gatecraft-math-modeling-skills/",
+      "repository": "source-record:0f6d0879aa336f3dedcb4cfa5ca10e34feecf4fd5c89f9e2b2b7528ef6a14a1a",
+      "repository_url": "source-record:26c23208ca7401d68ba892d6d4cf665c0e4583fd19c0763438bbf1d812f84afa",
+      "market_url": "source-record:7ccc3db805e9d16a05708e385c273d69dcf3c71158da7ddbeca2f53883b923ad",
       "fixed_commit": "c6319820184d6f1106a18e200774b534a974c4cd",
       "default_branch": "main",
-      "market_description_claim": "GateCraft（门控工艺）：面向数学建模 C 题的 DeepSeek Harness 插件——五阶段流水线 + 阶段门 + 国奖写作范式 + 脚本化质检。agent 负责求解与质检，人在每个阶段门思考与决策，做出有自己的品味的建模结果。",
-      "github_description_claim": "GateCraft（门控工艺）：面向数学建模 C 题的 DeepSeek Harness 插件——五阶段流水线 + 阶段门 + 国奖写作范式 + 脚本化质检。agent 负责求解与质检，人在每个阶段门思考与决策，做出有自己的品味的建模结果。",
+      "market_description_claim": "source-record:2d226f4a2445d4b0b6330adba4d06f66094593e4beaa6fd1ac8e6b18b4e9ad79",
+      "github_description_claim": "source-record:2d226f4a2445d4b0b6330adba4d06f66094593e4beaa6fd1ac8e6b18b4e9ad79",
       "matched_terms": [
         "写作"
       ],
@@ -4463,9 +4463,9 @@
       "full_upstream_parity_verified": false
     },
     {
-      "repository": "winston-hoo/dsh-novel-craft",
-      "repository_url": "https://github.com/winston-hoo/dsh-novel-craft",
-      "market_url": "https://www.dsh.so/zh/artifact/dsh-novel-craft/",
+      "repository": "source-record:a27b31df8841715db45be1fd1ba3bf67dc7abf4caa3bbbd439fec13cec93fc2b",
+      "repository_url": "source-record:97dc2c8e858487ab15d0da6bd2fbb77bc5f4ba880916c63a6c01a765b95dd523",
+      "market_url": "source-record:c75cf609bdfafd751c6a9a475704091a8820feff1e472225f10e386bfa96babd",
       "fixed_commit": "34a272dd403887593412718a7e308303b02547d9",
       "default_branch": "main",
       "market_description_claim": "",
@@ -7008,13 +7008,13 @@
       "full_upstream_parity_verified": false
     },
     {
-      "repository": "Rexray117/PRD-Craft-Skill",
-      "repository_url": "https://github.com/Rexray117/PRD-Craft-Skill",
-      "market_url": "https://www.dsh.so/zh/artifact/prd-craft-skill/",
+      "repository": "source-record:10812e83da2a65e9b7eefac1a688ec20dd5ff884a02ece7f21d5c5663222295c",
+      "repository_url": "source-record:b013dcbd5f6461c756eedb225880f7cb2bbd2dd5b30f247bc3d28e4a4b547b3b",
+      "market_url": "source-record:152f72936452cc3a628c9f66071658bfa56a3935a7995af0c6cea378982f7bb1",
       "fixed_commit": "5a7851a68396fcf458c166c9911e09dd2c01904a",
       "default_branch": "main",
-      "market_description_claim": "PRD Craft · 产品需求文档写作｜Write product requirements documents (PRD) with two specializations — general software/systems (app, web, mini program, admin platform, SaaS, internal tool) and agent-type systems (agent, copilot, rule-engine automation, ops/inspection/scheduling automation). Use when the user wants to clarify a fuzzy product idea, st",
-      "github_description_claim": "PRD Craft · 产品需求文档写作｜Write product requirements documents (PRD) with two specializations — general software/systems (app, web, mini program, admin platform, SaaS, internal tool) and agent-type systems (agent, copilot, rule-engine automation, ops/inspection/scheduling automation). Use when the user wants to clarify a fuzzy product idea, st",
+      "market_description_claim": "source-record:98baae1c50a8fb0a06fcb89fe0f42b3d14695d62e3457e255d93d6a5bc2e4a49",
+      "github_description_claim": "source-record:98baae1c50a8fb0a06fcb89fe0f42b3d14695d62e3457e255d93d6a5bc2e4a49",
       "matched_terms": [
         "写作"
       ],
@@ -7887,8 +7887,8 @@
       "market_url": "https://www.dsh.so/zh/artifact/dsh-villager-widget/",
       "fixed_commit": "668f2bf0ac2b4655fe0d51642f0485e05414ed5e",
       "default_branch": "main",
-      "market_description_claim": "DSH balance widget fork with Minecraft villager skins rendered from your local Java Edition install (requires Minecraft Java Edition)",
-      "github_description_claim": "DSH balance widget fork with Minecraft villager skins rendered from your local Java Edition install (requires Minecraft Java Edition)",
+      "market_description_claim": "source-record:2cac0e503d0dc4f90f6b04f5b429f21939b9c3fb5e39346afbb1fd7d61b00f8a",
+      "github_description_claim": "source-record:2cac0e503d0dc4f90f6b04f5b429f21939b9c3fb5e39346afbb1fd7d61b00f8a",
       "matched_terms": [
         "fiction"
       ],

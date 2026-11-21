@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { desktop } from "./bridge.ts";
-import { IconButton } from "./workbench.tsx";
+import { IconButton, PageActions } from "./workbench.tsx";
 
 const kinds = [{ id: "text", title: "文字模型" }, { id: "image", title: "图片模型" }];
 const codes = (value: string) => value.split(/[,，\n]/).map(s => s.trim()).filter(Boolean);
@@ -85,7 +85,7 @@ export function ModelSettings() {
     </form>
   </section></dialog>;
   return <section className="model-settings" aria-label="模型服务">
-    <div className="model-settings-heading"><h2 className="settings-section-heading">模型服务</h2><IconButton icon="refresh" label="刷新模型服务" disabled={busy} onClick={() => void run(inspect)}/></div>
+    <PageActions><IconButton icon="refresh" label="刷新模型服务" disabled={busy} onClick={() => void run(inspect)}/></PageActions>
     {error && !editor && <p role="alert">{error}</p>}
     {!connection ? <p role="status">正在读取模型设置…</p> : <>
       <section className="settings-group"><h3>河图账号</h3><div className="model-account">

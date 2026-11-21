@@ -1352,6 +1352,76 @@
         "task",
         "stable"
       ]
+    },
+    {
+      "name": "hetu_get_execution_mode",
+      "action": "hetu.execution.get_mode",
+      "title": "执行模式",
+      "description": "读取桌面、MCP、CLI和Skills共用的auto或confirm模式。",
+      "profiles": [
+        "workspace",
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_execute_workspace",
+      "action": "hetu.execution.invoke",
+      "title": "执行工作区动作",
+      "description": "按当前统一模式执行明确工作区的领域动作，保留真实Agent身份。",
+      "profiles": [
+        "workspace",
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_initialize_workspace",
+      "action": "hetu.execution.initialize",
+      "title": "创建工作区",
+      "description": "auto直接创建；confirm先集中准备并确认同一变更计划。",
+      "profiles": [
+        "workspace",
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_prepare_execution",
+      "action": "hetu.execution.prepare",
+      "title": "准备集中变更",
+      "description": "固定本次工作区动作、输入、操作键和策略修订，不执行业务写入。",
+      "profiles": [
+        "workspace",
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_record_execution_confirmation",
+      "action": "hetu.execution.record_confirmation",
+      "title": "记录集中确认",
+      "description": "仅依据当前用户对确切计划的真实决定登记；不得自行确认。",
+      "profiles": [
+        "workspace",
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_execute_plan",
+      "action": "hetu.execution.execute",
+      "title": "执行或恢复计划",
+      "description": "auto直接执行固定计划；confirm仅在同一计划已集中确认后执行。",
+      "profiles": [
+        "workspace",
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_read_execution_plan",
+      "action": "hetu.execution.get_plan",
+      "title": "读取执行计划",
+      "description": "回读原计划和逐项真实回执，结果未知沿原键恢复。",
+      "profiles": [
+        "workspace",
+        "stable"
+      ]
     }
   ]
 }

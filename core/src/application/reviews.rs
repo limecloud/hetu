@@ -219,7 +219,7 @@ impl Kernel {
         let snapshot = self.review_snapshot(draft)?;
         let stale = Self::review_stale(&snapshot, draft);
         let mut history = self.review_history(draft)?;
-        if !self.author {
+        if !self.has_workspace_authority() {
             for item in &mut history {
                 item.as_object_mut().unwrap().remove("private_comments");
             }

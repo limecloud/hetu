@@ -1,4 +1,4 @@
-import { openDirectory } from "./navigation.ts";
+import { openDirectory, navigate, closeApplication } from "./navigation.ts";
 import { test, expect, _electron as electron } from "@playwright/test";
 import { mkdtemp } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
@@ -66,6 +66,10 @@ test(
       await expect(chapters.last()).toHaveText(
         "第一章 雾港",
       );
+      await expect(chapters.first()).toBeInViewport();
+      await expect(page.locator(".sidebar-project")).toBeHidden();
+      await expect(page.getByRole("tablist", {name: "作品侧栏"})).toBeVisible();
+      await expect(page.getByRole("tab", {name: "目录", exact: true})).toHaveAttribute("aria-selected", "true");
       await expect(
         directory.locator("summary", { hasText: "第一卷 海上" }),
       ).toBeVisible();
@@ -76,40 +80,52 @@ test(
       await expect(
         page.getByText("江岚在第102个清晨抵达雾港。", { exact: true }),
       ).toBeVisible();
-      await page
-        .getByRole("button", { name: "作品资料", exact: true })
-        .click();
+      await navigate(page, "作品资料");
       const structure = page.locator(".profile-structure");
-      await structure.locator("summary").click();
+      await expect(structure).toHaveAttribute("open", "");
+      await expect(page.getByRole("button", { name: "打开章节目录", exact: true })).toBeVisible();
       await expect(structure.getByRole("listitem")).toHaveCount(103);
       await expect(structure.getByRole("listitem").first()).toHaveText(
         "目录试读第102章",
       );
-      await page.getByRole("button", { name: "返回创作库", exact: true }).click();
+      await structure.getByRole("button", { name: "第一章 雾港", exact: true }).click();
+      await expect(page.locator(".manuscript-title h1")).toHaveText("第一章 雾港");
+      await expect(directory.getByRole("button", { name: "第一章 雾港", exact: true })).toHaveAttribute("aria-current", "page");
+      await navigate(page, "作品资料");
+      const first = structure.getByRole("button", { name: "目录试读第102章", exact: true });
+      await first.focus();
+      await first.press("Enter");
+      await expect(page.locator(".manuscript-title h1")).toHaveText("目录试读第102章");
+      await expect(page.getByText("江岚在第102个清晨抵达雾港。", { exact: true })).toBeVisible();
+      await navigate(page, "作品资料");
+      await page.getByRole("button", { name: "打开章节目录", exact: true }).click();
+      await expect(directory).toBeVisible();
+      await expect(chapters.first()).toBeInViewport();
+      await navigate(page, "返回创作库");
       await page.getByRole("button", { name: /独立剧本/ }).click();
       await expect(page.locator(".workspace-switcher .workspace-title")).toHaveText("独立剧本");
-      await expect(page.getByRole("button", { name: "剧本", exact: true })).toBeEnabled();
+      await expect(page.getByRole("button", { name: "分集目录", exact: true })).toBeEnabled();
       await expect(
         page.getByRole("complementary", { name: "项目导航", exact: true }),
       ).toBeVisible();
       await openDirectory(page);
       await expect(chapters).toHaveCount(1);
       await expect(
-        directory.locator(".chapter-group > summary"),
+        directory.locator(".episode-entry > button"),
       ).toHaveText(["第一集"]);
       await expect(
         directory.getByRole("button", { name: "第一章 雾港", exact: true }),
       ).toHaveCount(0);
-      await page
-        .getByRole("button", { name: "作品资料", exact: true })
-        .click();
-      await structure.locator("summary").click();
+      await navigate(page, "作品资料");
+      await expect(structure).toHaveAttribute("open", "");
       await expect(structure.getByRole("listitem")).toHaveCount(1);
+      await structure.getByRole("button", { name: "第一集", exact: true }).click();
+      await expect(page.locator(".manuscript-title h1")).toHaveText("第一集");
       await page.screenshot({
         path: path.join(root, "output/plugin-doc-qa/work-structure.png"),
       });
     } finally {
-      await application.close();
+      await closeApplication(application);
     }
   },
 );

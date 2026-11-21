@@ -2,7 +2,7 @@ import { test, expect as baseExpect, _electron as electron } from "@playwright/t
 import { mkdtemp, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
-import { openSettings, closeSettings } from "./navigation.ts";
+import { openSettings, closeSettings, closeApplication } from "./navigation.ts";
 
 const root = path.resolve(import.meta.dirname, "../../..");
 const expect = baseExpect.configure({ timeout: 30000 });
@@ -20,7 +20,7 @@ test("独立设置六分类截图、即时保存、浮层和窗口权限", async
     const main = await app.firstWindow();
     const page = await openSettings(app, main);
     page.on("pageerror", error => errors.push(error.message));
-    await expect(page.getByRole("combobox", { name: "外观", exact: true })).toBeVisible();
+    await expect(page.getByRole("radiogroup", { name: "外观", exact: true }).getByRole("radio").first()).toBeVisible();
     expect(await openSettings(app, main)).toBe(page);
     await expect(page.getByRole("tab")).toHaveCount(6);
     await expect(page.evaluate(() => window.hetuDesktop.read("hetu.works.list", {}))).rejects.toThrow();
@@ -37,7 +37,7 @@ test("独立设置六分类截图、即时保存、浮层和窗口权限", async
       const value = await page.evaluate(() => {
         const panel = document.querySelector(".settings-panel")!;
         const dialog = document.querySelector<HTMLDialogElement>("dialog[open]");
-        const fonts = [...new Set(Array.from(document.querySelectorAll<HTMLElement>("body *")).filter(el => el.checkVisibility() && [...el.childNodes].some(node => node.nodeType === Node.TEXT_NODE && node.textContent?.trim())).map(el => parseFloat(getComputedStyle(el).fontSize)))].sort((a, b) => a - b);
+        const fonts = [...new Set(Array.from(document.querySelectorAll<HTMLElement>("body *")).filter(el => el.checkVisibility() && !el.closest(".appearance-preview,.reading-style-preview,.reading-font-choices,.reading-preview,.settings-about") && [...el.childNodes].some(node => node.nodeType === Node.TEXT_NODE && node.textContent?.trim())).map(el => parseFloat(getComputedStyle(el).fontSize)))].sort((a, b) => a - b);
         return { width: innerWidth, height: innerHeight, fonts, horizontalOverflow: document.documentElement.scrollWidth > innerWidth || panel.scrollWidth > panel.clientWidth + 1,
           dialog: dialog && { width: dialog.clientWidth, height: dialog.clientHeight, overflow: dialog.scrollWidth > dialog.clientWidth, backdrop: getComputedStyle(dialog, "::backdrop").backgroundColor },
           tabs: Array.from(document.querySelectorAll('[role="tab"]')).map(el => ({ text: el.textContent, ...JSON.parse(JSON.stringify(el.getBoundingClientRect())), font: getComputedStyle(el).fontSize })),
@@ -53,10 +53,10 @@ test("独立设置六分类截图、即时保存、浮层和窗口权限", async
     await capture("initial-general");
     for (const appearance of ["light", "dark"]) {
       await page.getByRole("tab", { name: "通用", exact: true }).click();
-      await page.getByRole("combobox", { name: "外观", exact: true }).selectOption(appearance);
+      await page.getByRole("radio", { name: {system: "跟随系统", light: "浅色", dark: "深色"}[appearance], exact: true }).click();
       await expect.poll(() => page.evaluate(async () => (await window.hetuDesktop.settings("get")).preferences.appearance), { timeout: 30000 }).toBe(appearance);
-      await expect(page.getByRole("combobox", { name: "外观", exact: true })).toHaveValue(appearance, { timeout: 30000 });
-      await expect(page.getByRole("combobox", { name: "外观", exact: true })).toBeEnabled({ timeout: 30000 });
+      await expect(page.getByRole("radio", {name: {light: "浅色", dark: "深色"}[appearance], exact: true})).toHaveAttribute("aria-checked", "true", {timeout: 30000});
+      await expect(page.getByRole("radiogroup", { name: "外观", exact: true }).getByRole("radio").first()).toBeEnabled({ timeout: 30000 });
       for (const [label, id] of categories) {
         await page.getByRole("tab", { name: label, exact: true }).click();
         await ready(id);
@@ -75,10 +75,16 @@ test("独立设置六分类截图、即时保存、浮层和窗口权限", async
       }
     }
     await page.getByRole("tab", { name: "通用", exact: true }).click();
-    await page.getByRole("combobox", { name: "外观", exact: true }).selectOption("light");
+    await page.getByRole("radio", { name: "浅色", exact: true }).click();
     await page.getByRole("tab", { name: "写作", exact: true }).click();
-    await page.getByRole("button", { name: "增大字号", exact: true }).click();
-    await expect(page.getByLabel("字号当前值", { exact: true })).toHaveText("19 px", { timeout: 30000 });
+    await page.getByRole("button", { name: "增大文字大小", exact: true }).click();
+    await expect(page.getByRole("spinbutton", {name: "文字大小", exact: true})).toHaveValue("17", {timeout: 30000});
+    await page.getByRole("button", {name: "本机字体", exact: true}).click();
+    await page.getByRole("button", {name: "本机字体目录", exact: true}).click();
+    const localFonts = page.getByRole("region", {name: "本机字体目录", exact: true});
+    await localFonts.getByRole("searchbox", {name: "搜索本机字体", exact: true}).fill("PingFang SC");
+    await localFonts.getByRole("button", {name: "选择字体 PingFang SC", exact: true}).click();
+    await expect(page.locator(".reading-preview")).toHaveCSS("font-family", /PingFang SC/);
     await expect(page.getByRole("switch", { name: "自动保存正文", exact: true })).toBeEnabled();
     await page.getByRole("switch", { name: "自动保存正文", exact: true }).uncheck();
     await expect.poll(() => page.evaluate(async () => (await window.hetuDesktop.settings("get")).preferences.autosave), { timeout: 30000 }).toBe(false);
@@ -138,13 +144,15 @@ test("独立设置六分类截图、即时保存、浮层和窗口权限", async
     await page.getByLabel("姓名", { exact: true }).fill("关闭前的署名");
     await closeSettings(page);
     const reopened = await openSettings(app, main);
-    expect((await reopened.evaluate(() => window.hetuDesktop.settings("get"))).preferences.font_size).toBe(19);
+    const restoredReading = (await reopened.evaluate(() => window.hetuDesktop.settings("get"))).preferences.reading_profiles.novel;
+    expect(restoredReading.font_size).toBe(17);
+    expect(restoredReading.font_name).toBe("PingFang SC");
     expect((await reopened.evaluate(() => window.hetuDesktop.settings("get"))).preferences.git_author_name).toBe("关闭前的署名");
     await writeFile(path.join(output, "metrics.json"), JSON.stringify(metrics, null, 2));
   } finally {
     await writeFile(path.join(output, "metrics.json"), JSON.stringify(metrics, null, 2));
     await writeFile(path.join(output, "renderer-errors.json"), JSON.stringify(errors, null, 2));
-    await app.close();
+    await closeApplication(app);
   }
 });
 
@@ -160,7 +168,7 @@ test("模型渠道错误保留输入并先回读原保存", async () => {
   } });
   try {
     const page = await openSettings(app, await app.firstWindow());
-    await page.getByRole("combobox", { name: "外观", exact: true }).selectOption("dark");
+    await page.getByRole("radio", { name: "深色", exact: true }).click();
     await expect.poll(() => page.evaluate(async () => (await window.hetuDesktop.settings("get")).preferences.appearance)).toBe("dark");
     await page.getByRole("tab", { name: "模型服务", exact: true }).click();
     await page.getByRole("button", { name: "添加渠道", exact: true }).click();
@@ -188,5 +196,5 @@ test("模型渠道错误保留输入并先回读原保存", async () => {
     const state = await page.evaluate(() => window.hetuDesktop.models("inspect"));
     expect(Object.keys(state.custom_channels)).toHaveLength(1);
     expect(JSON.stringify(state)).not.toContain("isolated-error-secret");
-  } finally { await app.close(); }
+  } finally { await closeApplication(app); }
 });

@@ -130,6 +130,7 @@ impl Kernel {
             config: marker,
             config_sha: digest(marker_bytes),
             author,
+            workspace_execution: options.workspace_execution,
             workspace_path: path.canonicalize()?,
             authorization_path: options.authorization_path,
             collaboration_grant: options.collaboration_grant,

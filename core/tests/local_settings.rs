@@ -38,9 +38,10 @@ fn execute(service: &LocalSettings, plan: &Value, key: &str) -> Value {
 fn fixed_settings_require_author_decision_and_replay_the_original_transaction() {
     let folder = tempfile::tempdir().unwrap();
     let service = LocalSettings::open(folder.path()).unwrap();
+    service.host(json!({"method":"update","input":{"expected_revision":1,"patch":{"execution_mode":"confirm"},"operation_key":"confirm-mode"}})).unwrap();
     assert_eq!(
         data(call(&service, "codex", "get", json!({})))["preferences"]["font_size"],
-        18
+        16
     );
     let plan = prepare(
         &service,
@@ -86,7 +87,7 @@ fn fixed_settings_require_author_decision_and_replay_the_original_transaction() 
     assert_eq!(approved["state"], "approved");
     assert_eq!(
         data(call(&service, "codex", "get", json!({})))["preferences"]["font_size"],
-        18
+        16
     );
     let applied = data(execute(&service, &plan, "apply"));
     assert_eq!(applied["state"], "executed");
@@ -101,7 +102,7 @@ fn fixed_settings_require_author_decision_and_replay_the_original_transaction() 
     assert_eq!(service.host(decision).unwrap(), approved);
     assert_eq!(
         service.host(json!({"method":"get","input":{}})).unwrap()["revision"],
-        2
+        3
     );
     assert!(service.host(json!({"method":"decide","input":{"operation_id":plan["operation_id"],"sha256":plan["sha256"],"revision":2,"approve":false,"operation_key":"author-decision"}})).is_err());
     for patch in [
@@ -728,7 +729,7 @@ fn conversation_settings_decision_is_fixed_to_client_and_does_not_execute() {
     );
     assert_eq!(
         data(call(&service, "codex", "get", json!({})))["preferences"]["font_size"],
-        18
+        16
     );
     let mut changed = input.clone();
     changed["authorization_note"] = json!("不同的用户指令");

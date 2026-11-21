@@ -1,0 +1,73 @@
+import {test, expect, _electron as electron} from "@playwright/test";
+import {mkdtemp, mkdir, writeFile} from "node:fs/promises";
+import {tmpdir} from "node:os";
+import path from "node:path";
+import {spawnSync} from "node:child_process";
+import {AppServer} from "../src/main/rpc.ts";
+import {documentAction} from "./navigation.ts";
+
+test("固定修订比较共用排版、两侧查找、段落同步与窄窗完整上下文", async ({}, info) => {
+  const root = path.resolve("../.."), directory = await mkdtemp(path.join(tmpdir(), "hetu-manuscript-comparison-")), workspace = path.join(directory, "work"), profile = path.join(directory, "profile");
+  await mkdir(profile);
+  const made = spawnSync(path.join(root, "target/debug/examples/baseline_fixture"), [workspace, path.join(directory, "collaboration")], {encoding: "utf8"});
+  expect(made.status, made.stderr).toBe(0); const refs = JSON.parse(made.stdout), id = refs.document.document.document_id;
+  const before = "# 第一章 雾港\r\n\r\n" + Array.from({length: 60}, (_, index) => index === 20 ? "**旧灯塔**照亮海面🌿。" : `第${index + 1}段：江岚在海岸等待归来的船。`.repeat(4)).join("\r\n\r\n");
+  const after = before.replace("**旧灯塔**", "**新灯塔**");
+  const core = await AppServer.open(path.join(root, "target/debug/hetu-app-server"), workspace);
+  let baseline: any;
+  try {
+    const saved = await core.request("workspace/request", {action: "hetu.documents.save", input: {document_id: id, base_revision_id: refs.document.revision.revision_id, source_format: "markdown", content: before, operation_key: "comparison-before"}, contract_revision: "1"});
+    expect(saved.status).toBe("succeeded"); baseline = saved.data;
+    const next = await core.request("workspace/request", {action: "hetu.documents.save", input: {document_id: id, base_revision_id: baseline.revision.revision_id, source_format: "markdown", content: after, operation_key: "comparison-after"}, contract_revision: "1"});
+    expect(next.status).toBe("succeeded");
+  } finally {await core.close();}
+  await writeFile(path.join(profile, "creative-library.json"), JSON.stringify({schema_version: 1, roots: [{path: workspace, workspace_id: refs.novel.workspace_id, works: [{work_ref: refs.novel, title: "默认小说"}]}]}));
+  const app = await electron.launch({args: [path.join(root, "apps/desktop")], env: {...process.env, HETU_DESKTOP_PROFILE: profile, HETU_PLUGIN_STATE_DIR: profile, HETU_COLLABORATION_DIR: path.join(directory, "collaboration"), HETU_APP_SERVER: path.join(root, "target/debug/hetu-app-server")}});
+  try {
+    await app.evaluate(({dialog}) => {dialog.showMessageBoxSync = () => 1;});
+    const page = await app.firstWindow(), errors: string[] = []; page.on("pageerror", error => errors.push(error.message));
+    await page.setViewportSize({width: 1440, height: 940});
+    await page.getByRole("button", {name: "打开作品 默认小说", exact: true}).click();
+    await documentAction(page, "比较修订与定稿");
+    await page.getByRole("combobox", {name: "比较修订", exact: true}).selectOption(baseline.revision.revision_id);
+    const dialog = page.locator("dialog.revision-comparison"), compare = dialog.getByRole("region", {name: "正文比较", exact: true});
+    await expect(compare.getByRole("status")).toHaveText("1 组改动");
+    await expect(compare.locator(".comparison-pair")).toHaveCount(3);
+    await expect(compare.locator(".manuscript-strong").first()).toHaveText("旧灯塔");
+    await page.screenshot({path: info.outputPath("comparison-changes-wide.png")});
+    await compare.getByRole("button", {name: "全部正文", exact: true}).click();
+    const left = compare.getByRole("region", {name: "历史修订", exact: true}), right = compare.getByRole("region", {name: "当前内容", exact: true});
+    expect(await left.locator("article").evaluate(node => getComputedStyle(node).fontSize)).toBe("16px");
+    await left.getByRole("button", {name: "正文查找", exact: true}).click();
+    await left.getByRole("textbox", {name: "搜索正文内容", exact: true}).fill("旧灯塔");
+    await expect(left).toContainText("1 / 1 处");
+    await right.getByRole("button", {name: "正文查找", exact: true}).click();
+    await right.getByRole("textbox", {name: "搜索正文内容", exact: true}).fill("新灯塔");
+    await expect(right).toContainText("1 / 1 处");
+    await expect.poll(() => page.evaluate(() => [...(CSS.highlights.get("hetu-search-current") ?? [])].map(range => range.toString()).sort())).toEqual(["新灯塔", "旧灯塔"]);
+    await left.getByRole("button", {name: "关闭正文搜索", exact: true}).click();
+    await expect.poll(() => page.evaluate(() => [...(CSS.highlights.get("hetu-search-current") ?? [])].map(range => range.toString()))).toEqual(["新灯塔"]);
+    await right.getByRole("button", {name: "关闭正文搜索", exact: true}).click();
+    const leftScroll = left.locator(".manuscript-reading-scroll"), rightScroll = right.locator(".manuscript-reading-scroll");
+    await leftScroll.evaluate(node => {node.scrollTop = 800;});
+    await expect.poll(() => rightScroll.evaluate(node => node.scrollTop)).toBeGreaterThan(600);
+    await compare.getByRole("checkbox", {name: "同步滚动", exact: true}).uncheck();
+    const previous = await rightScroll.evaluate(node => node.scrollTop);
+    await leftScroll.evaluate(node => {node.scrollTop = 1600;});
+    await page.screenshot({path: info.outputPath("comparison-full-wide.png")});
+    expect(await rightScroll.evaluate(node => node.scrollTop)).toBeCloseTo(previous, 0);
+    await page.setViewportSize({width: 700, height: 900});
+    await expect(left).toBeVisible(); await expect(right).toBeHidden();
+    await compare.getByRole("group", {name: "全文显示", exact: true}).getByRole("button", {name: "当前内容", exact: true}).click();
+    await expect(right).toBeVisible(); await expect(left).toBeHidden();
+    await right.getByRole("button", {name: "正文查找", exact: true}).click();
+    await right.getByRole("textbox", {name: "搜索正文内容", exact: true}).fill("新灯塔");
+    await expect(right).toContainText("1 / 1 处");
+    expect(await dialog.evaluate(node => node.scrollWidth <= node.clientWidth + 1)).toBe(true);
+    await page.screenshot({path: info.outputPath("comparison-full-narrow.png")});
+    await page.keyboard.press("Escape"); await expect(right.getByRole("textbox", {name: "搜索正文内容", exact: true})).toHaveCount(0);
+    await page.keyboard.press("Escape"); await expect(dialog).toHaveCount(0);
+    expect((await page.evaluate(async id => (await (window as any).hetuDesktop.read("hetu.documents.get", {document_id: id})).data.content, id))).toBe(after);
+    expect(errors).toEqual([]);
+  } finally {await app.close();}
+});

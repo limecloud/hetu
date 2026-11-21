@@ -1,0 +1,177 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-11-20",
+  "status": "local_slice_verified_full_alignment_in_progress",
+  "scope": "共同窗口主体、整合侧栏、正文单一标题、浮层键盘与两入口设置读取",
+  "release_version_unchanged": "0.13.10",
+  "published": false,
+  "installed_app_updated": false,
+  "reference_boundary": {
+    "kind": "official_static_screenshot",
+    "images": [
+      {
+        "id": "window-reference-01",
+        "source_locator": "local-reference-record:window-reference-01",
+        "raw_file": "output/r7-experience-20261120/public-reference/style-preview-1.png",
+        "sha256": "339d1554208b99823e9d6d8fff1b77bbae66cd7ebb52066cfb5464be5123e9a0",
+        "size_bytes": 149699,
+        "image_size_px": [
+          1032,
+          820
+        ],
+        "representation": "official_static_screenshot",
+        "installed_app_observation": false
+      },
+      {
+        "id": "window-reference-02",
+        "source_locator": "local-reference-record:window-reference-02",
+        "raw_file": "output/r7-experience-20261120/public-reference/toc-view.png",
+        "sha256": "4d02d5e9cdced05da1cd34639084f90d3a5acb74c8808ca68b161c109f146307",
+        "size_bytes": 190458,
+        "image_size_px": [
+          1568,
+          839
+        ],
+        "representation": "official_static_screenshot",
+        "installed_app_observation": false
+      },
+      {
+        "id": "window-reference-03",
+        "source_locator": "local-reference-record:window-reference-03",
+        "raw_file": "output/r7-experience-20261120/public-reference/folders-view.png",
+        "sha256": "77cfbc59cb725fb7e4a19633148f7eb7a0c7ffde2a032e254f905d0ef6f2095e",
+        "size_bytes": 191101,
+        "image_size_px": [
+          1568,
+          839
+        ],
+        "representation": "official_static_screenshot",
+        "installed_app_observation": false
+      },
+      {
+        "id": "window-reference-04",
+        "source_locator": "local-reference-record:window-reference-04",
+        "raw_file": "output/r7-experience-20261120/public-reference/customize-sidebar-mac.png",
+        "sha256": "0950a81f19e40c27ead54978dd95a9558fbfda34e9ed256e77aed5673a7ab274",
+        "size_bytes": 378960,
+        "image_size_px": [
+          1568,
+          950
+        ],
+        "representation": "official_static_screenshot",
+        "installed_app_observation": false
+      },
+      {
+        "id": "window-reference-05",
+        "source_locator": "local-reference-record:window-reference-05",
+        "raw_file": "output/r7-experience-20261120/public-reference/formatting-toolbar.png",
+        "sha256": "1a594cebaf7f379c4632b12801d255982c3a09139d04b640af519e627bddb23d",
+        "size_bytes": 157986,
+        "image_size_px": [
+          1568,
+          936
+        ],
+        "representation": "official_static_screenshot",
+        "installed_app_observation": false
+      },
+      {
+        "id": "window-reference-06",
+        "source_locator": "local-reference-record:window-reference-06",
+        "raw_file": "output/r7-experience-20261120/public-reference/format-panel.png",
+        "sha256": "2cab443b2a6c486ff9adfec7c5fa479f38712edbb4d3b3d577abb8052be83c8a",
+        "size_bytes": 267397,
+        "image_size_px": [
+          1568,
+          1121
+        ],
+        "representation": "official_static_screenshot",
+        "installed_app_observation": false
+      },
+      {
+        "id": "window-reference-07",
+        "source_locator": "local-reference-record:window-reference-07",
+        "raw_file": "output/r7-experience-20261120/public-reference/app-style-disabled.png",
+        "sha256": "6afd4d1f2ca73bdf978bf8d7ef22d38681982cc1ff5bb0796c1d71d38a2acd3d",
+        "size_bytes": 297950,
+        "image_size_px": [
+          1471,
+          942
+        ],
+        "representation": "official_static_screenshot",
+        "installed_app_observation": false
+      }
+    ],
+    "raw_records": "output/r7-experience-20261120/public-reference/images.json",
+    "raw_records_sha256": "dd4d68b322c59ae76151f80741e97c0c2f453810adaea829cc143f0aa7b90bc0",
+    "installed_version_runtime_captured": false,
+    "runtime_blocker": "runtime_ui_read consent_required，等待本次窗口读取明确许可；未绕过或重试已拒绝调用。",
+    "pixel_fidelity_certified": false
+  },
+  "implementation": {
+    "sidebar_width_css_px": 264,
+    "topbar_height_css_px": 52,
+    "workspace_edge_css_px": 8,
+    "workspace_radius_css_px": 16,
+    "manuscript_heading_css_px": 28,
+    "directory": "原目录组件经React插槽进入同一侧栏，不复制作品或选中状态。",
+    "preferences": "保留作者既有文稿档案。",
+    "surfaces": "共同Radix Gray表面，取消创作库首屏插画与App内联引用。",
+    "keyboard": "逐层Escape、焦点返回、组合事件保护；检查器不覆盖页头。",
+    "settings": "已发布设置的打开和只读host使用可见性读锁；初始化、迁移、更新及CAS保持写锁。"
+  },
+  "verification": {
+    "core": {
+      "read_under_writer_and_write_exclusion": 1,
+      "local_settings": 8,
+      "reading_settings_and_migration": 3
+    },
+    "desktop_distinct_journeys": 7,
+    "desktop_results": [
+      "output/r7-experience-20261120/single-sidebar-final-lifecycle",
+      "output/r7-experience-20261120/single-sidebar-recheck",
+      "output/r7-experience-20261120/single-sidebar-verified"
+    ],
+    "full_app_transports": [
+      "stdio",
+      "official Codex CLI"
+    ],
+    "full_app_results": "output/r7-experience-20261120/single-sidebar-apps",
+    "full_app_resource_boundary": "两条完整旅程后，仅改变侧栏中性表面的透明度；最后材质差异以当前共同创作库渲染和资源合同另验，不冒充该细节的完整重拍。",
+    "current_library_app_render": 1,
+    "current_resource_and_authority_contract": 1,
+    "main_button_contrast_min": 5.917570593923599,
+    "capability_map": "一致"
+  },
+  "current_resource": {
+    "resource_uri": "ui://hetu/workbench/2/67059b4e3d55b5e899f38c7893366f659b5b758f3bac1445f04ab7b0533c6091",
+    "sha256": "67059b4e3d55b5e899f38c7893366f659b5b758f3bac1445f04ab7b0533c6091",
+    "size_bytes": 4341795,
+    "html_sha256_matches": true
+  },
+  "source_sha256": {
+    "assets/styles/radix-workbench.css": "9b8ebc09f4f7d48405b57b08de7a489b94610e70dcd367fec7f38aa54826f8f3",
+    "packages/workbench-ui/src/workbench.css": "987f9d9eb726a0f4a0a84d01fbb609b3a3076e2147a0ccdc4e9c5e9f5ab88dcd",
+    "packages/workbench-ui/src/reading.css": "9401d638c799935363f5cf4de8ac2f10a85fdb26079791b982e10c4565459ff7",
+    "packages/workbench-ui/src/library.tsx": "152fba3cf6121decf8e5d8bd169bb0c3db31aa74fe61679219062f9fc56a4fe4",
+    "packages/workbench-ui/src/popovers.ts": "4ef7c1fc75d00ecfb017e276093f92e8abdf5d1f9832654e52a5ad0841216e45",
+    "apps/desktop/src/renderer/index.tsx": "12dc021292d9f9cf1f7b9bf34b9e32d9ee93c79760fdb9ef158186394c8da3a9",
+    "apps/desktop/src/renderer/documents.tsx": "d9035e84504d073fa2349f0c825c7161fbbf0e29480c85e435899b2081bfa86d",
+    "apps/desktop/src/renderer/workbench.tsx": "83890b0e1f1f3f90e016bf3ac3896e45781dffa2675fe97b42b4a0b0bbc40e02",
+    "core/src/local_settings.rs": "8ee54b917e54e3003a9d64b5e283a510ca1d8df5d2329a3a33b641a6ec91b71d",
+    "core/src/local_settings/tests_concurrency.rs": "b9af98014e363e6008da9bbce69cc3e80fb54b49c982ed1a4f3dbe6a4be37179"
+  },
+  "retained_failures": [
+    "popovers-before和popovers-before-keyboard：详情遮挡及焦点丢失，修复后普通点击与键盘复验。",
+    "popovers-apps：本机设置读取争抢写锁，修复后stdio和Codex完整旅程通过。",
+    "single-sidebar-verified和single-sidebar-recheck：旧选择器、无障碍表面断言及测试工具退出超时均保留。",
+    "reading-close-probe：调试文件未生成，该探测已撤出，不支持产品完成结论。"
+  ],
+  "shutdown_boundary": "最终沿正常窗口关闭及app.quit等待进程正常退出，再核对同修订锚点与新修订隔离；不清除dirty、不跳过落盘、不杀进程当作通过。",
+  "remaining": [
+    "同版本安装版实机及同视口逐页对照",
+    "原生标题栏、完整格式与排版面板、选区浮条",
+    "全页面、专业插件及全部异步状态收口",
+    "真实IME、读屏、跨平台与原生Codex Desktop宿主",
+    "同版装配、覆盖安装及作者试用后统一发行"
+  ]
+}

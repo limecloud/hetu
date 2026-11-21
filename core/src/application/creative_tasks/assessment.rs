@@ -68,7 +68,7 @@ impl Kernel {
                 "forbidden",
                 "专业检查须属于任务的同一作品。",
             )?;
-            if !self.author && self.management_grant.is_none() {
+            if !self.has_workspace_authority() && self.management_grant.is_none() {
                 ensure(
                     request["input_refs"]
                         .as_array()

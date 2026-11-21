@@ -7,6 +7,11 @@ use std::{
 };
 
 pub(super) fn catalog() -> Value {
+    static CATALOG: std::sync::LazyLock<Value> = std::sync::LazyLock::new(build_catalog);
+    CATALOG.clone()
+}
+
+fn build_catalog() -> Value {
     let catalog: Value = serde_json::from_str(include_str!("../../../integrations/catalog.json"))
         .expect("embedded suite catalog");
     let labels: Value =

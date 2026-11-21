@@ -105,7 +105,7 @@ test("插件成果搜索分页、固定导出与精确AI交接，停用后可读
     await app.browserWindow(page).then(window=>window.evaluate(win=>win.setSize(960,740)));
     await expect.poll(()=>panel.evaluate(element=>element.scrollWidth<=element.clientWidth)).toBe(true);
     const sizes=await panel.evaluate(element=>[...new Set(Array.from(element.querySelectorAll("*"),node=>getComputedStyle(node).fontSize))]);
-    expect(sizes.every(size=>["12px","14px","18px","20px"].includes(size))).toBe(true);
+    expect(sizes.every(size=>["12px","14px","16px","18px","20px"].includes(size))).toBe(true);
     await page.emulateMedia({colorScheme:"light"});
     await page.screenshot({path:path.join(root,"output/plugin-doc-qa/transfer/plugin-results-narrow.png")});
     await page.emulateMedia({colorScheme:"dark"});

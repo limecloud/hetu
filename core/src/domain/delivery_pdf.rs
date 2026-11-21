@@ -120,7 +120,7 @@ pub fn render(sources: &[Source], profile: &str) -> Result<Converted> {
     let emphasis_count = paragraphs
         .iter()
         .flat_map(|paragraph| &paragraph.runs)
-        .filter(|run| run.bold || run.italic)
+        .filter(|run| run.bold || run.italic || run.strike)
         .count();
     for paragraph in &mut paragraphs {
         tab_count += paragraph.text.matches('\t').count();
@@ -136,14 +136,43 @@ pub fn render(sources: &[Source], profile: &str) -> Result<Converted> {
     }
     if emphasis_count > 0 {
         losses.push(json!({"code":"pdf_inline_emphasis_flattened","count":emphasis_count,
-            "message":"当前 PDF 单字重模板按正文显示行内粗体和斜体，文字保留；需要强调样式时可选择 DOCX。"}));
+            "message":"当前PDF单字重模板按正文显示行内粗体、斜体和删除线，文字保留；需要强调样式时可选择DOCX。"}));
+    }
+    let styled = paragraphs
+        .iter()
+        .flat_map(|paragraph| &paragraph.runs)
+        .filter(|run| run.presentation.color.is_some() || run.presentation.font.is_some())
+        .count();
+    if styled > 0 {
+        losses.push(json!({"code":"pdf_inline_presentation_flattened","count":styled,
+        "message":"当前PDF固定模板使用内嵌正文字体与正文色，片段颜色和字体类别未保留；需要片段样式时选择DOCX。"}));
+    }
+    if paragraphs
+        .iter()
+        .any(|paragraph| paragraph.presentation.block.is_some())
+    {
+        losses.push(json!({"code":"pdf_block_presentation_flattened","message":"固定PDF保留分组内文，不保留页面／卡片交互及焦点／面板装饰。"}));
+    }
+    if paragraphs
+        .iter()
+        .any(|paragraph| paragraph.presentation.alignment.as_deref() == Some("justify"))
+    {
+        losses.push(json!({"code":"pdf_justification_as_left","message":"当前PDF固定模板把两端对齐按左对齐交付，文字保留。"}));
     }
     let font = Font::new(&paragraphs)?;
     let mut forced_breaks = 0;
     let blocks = paragraphs
         .iter()
         .map(|paragraph| {
-            let style = style(&paragraph.style, profile);
+            let mut style = style(&paragraph.style, profile);
+            if let Some(alignment) = paragraph.presentation.alignment.as_deref() {
+                style.alignment = match alignment {
+                    "center" => Alignment::Center,
+                    "right" => Alignment::Right,
+                    _ => Alignment::Left,
+                };
+                style.indent = 0.0;
+            }
             let (lines, count) = wrap(&paragraph.text, style, &font)?;
             forced_breaks += count;
             Ok(Block { lines, style })
@@ -785,6 +814,7 @@ mod tests {
             style: ParagraphStyle::Body,
             text: "“风停了，”她说，“我们走吧。”山道转过河岸，雪光映亮了远处的石桥。".repeat(10),
             runs: vec![],
+            presentation: Default::default(),
         }];
         let font = Font::new(&paragraphs).unwrap();
         let style = style(&ParagraphStyle::Body, "hetu-novel-zh/1");
@@ -810,21 +840,25 @@ mod tests {
             style: ParagraphStyle::Body,
             text: "山道尽头是一座石桥。".into(),
             runs: vec![],
+            presentation: Default::default(),
         }];
         paragraphs.push(Paragraph {
             style: ParagraphStyle::Character,
             text: "林遥".into(),
             runs: vec![],
+            presentation: Default::default(),
         });
         paragraphs.push(Paragraph {
             style: ParagraphStyle::Parenthetical,
             text: "（压低声音）".into(),
             runs: vec![],
+            presentation: Default::default(),
         });
         paragraphs.push(Paragraph {
             style: ParagraphStyle::Dialogue,
             text: "等一等，桥上有人。我们必须先确认来者身份。".repeat(70),
             runs: vec![],
+            presentation: Default::default(),
         });
         let font = Font::new(&paragraphs).unwrap();
         // 先用等高段落填到页底，覆盖人物与对白即将分离的分页点。

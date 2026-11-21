@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import {ManuscriptReading} from "@hetu/workbench-ui";
+import {usePreferences} from "./preferences.tsx";
 import { desktop, data } from "./bridge.ts";
 
 export type TransferKind = "import" | "delivery";
@@ -20,6 +22,7 @@ const formats: Record<string, string> = {
 
 /** 固定管理方案的人类可读投影；不提供导入、执行或作者权限桥接。 */
 export function TransferDetails({ view }: { view: any }) {
+  const preferences = usePreferences();
   const kind = transferKind(view.action),
     input = view.input,
     fixed = input.preview,
@@ -66,10 +69,10 @@ export function TransferDetails({ view }: { view: any }) {
         </section>
       )}
       {texts.map((text, i) => (
-        <article className="reader" key={i} aria-label={`导入正文 ${i + 1}`}>
+        <section key={i} aria-label={`导入正文 ${i + 1}`}>
           <h3>{text.title}</h3>
-          <pre>{text.content}</pre>
-        </article>
+          <ManuscriptReading text={text.content} title={text.title} label={`导入正文 ${i + 1}`} format={input.source_format ?? (input.work_ref?.kind === "drama" ? "fountain" : "markdown")} kind={input.work_ref?.kind === "drama" ? "screenplay" : "novel"} preferences={preferences}/>
+        </section>
       ))}
       {!!files.length && (
         <details>

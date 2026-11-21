@@ -8,7 +8,7 @@
   "categories": 18,
   "fixed_research_bases": [
     {
-      "repository": "shiyan688/dsh-novel-craft",
+      "repository": "source-record:923e03aa0559ad1e87cea176820539d27f9d931f44461be800c4948c33e6cee4",
       "fixed_commit_matches": true,
       "clean_worktree": true
     },

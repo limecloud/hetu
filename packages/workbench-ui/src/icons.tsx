@@ -1,7 +1,10 @@
 import React from "react";
 
-export type IconName = "sidebar" | "inspector" | "book" | "file" | "shield" | "link" | "layers" | "image" | "branch" | "export" | "check" | "settings" | "expand" | "more" | "chevron" | "back" | "list" | "sparkles" | "search" | "comment" | "grid" | "refresh" | "plus" | "film" | "close" | "plugin" | "sliders" | "type" | "globe" | "info";
+export type IconName = "sidebar" | "inspector" | "book" | "file" | "shield" | "link" | "layers" | "image" | "branch" | "export" | "check" | "settings" | "expand" | "more" | "chevron" | "back" | "list" | "sparkles" | "search" | "comment" | "grid" | "refresh" | "plus" | "film" | "close" | "plugin" | "sliders" | "type" | "globe" | "info" | "brush" | "attachment" | "document-search";
 const paths: Record<IconName, React.ReactNode> = {
+  attachment: <path d="m9 13 7-7a3 3 0 0 1 4 4l-9 9a5 5 0 0 1-7-7l9-9m-6 10a1.5 1.5 0 0 0 2 2l8-8"/>,
+  "document-search": <><path d="M14 3H5v18h7M14 3v5h5V8l-5-5M8 8h3m-3 4h5"/><circle cx="16" cy="16" r="4"/><path d="m19 19 3 3"/></>,
+  brush: <><path d="m14 6 4 4M8 12l10-9a2.1 2.1 0 0 1 3 3L12 16"/><path d="M8 12a4 4 0 0 1 4 4c0 3-2 5-7 5 1-2-3-2-3-4 3 0 2-5 6-5Z"/></>,
   sliders: <><path d="M3 5h4m4 0h10M3 12h10m4 0h4M3 19h4m4 0h10"/><circle cx="9" cy="5" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="19" r="2"/></>,
   type: <><path d="M4 5h12M10 5v15M6 20h8M4 8V5m12 3V5m1 15 3-9 3 9m-5-3h4"/></>,
   globe: <><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18M5 6.5c4 2 10 2 14 0M5 17.5c4-2 10-2 14 0"/></>,

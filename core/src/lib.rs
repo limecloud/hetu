@@ -5,6 +5,7 @@ pub mod collaboration;
 mod domain;
 mod infrastructure;
 pub mod local_settings;
+pub mod execution;
 pub mod machine;
 pub mod methods;
 pub mod model_service;

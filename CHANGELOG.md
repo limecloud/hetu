@@ -1,5 +1,12 @@
 # 版本记录
 
+## v0.14.0 — 2026-11-21
+
+- 统一桌面、CLI、Skills、稳定 MCP、指定工作区 MCP 与 MCP App 的 `auto` / `confirm` 执行模式。
+- 增加集中执行计划、CAS、事务、幂等、原键恢复和工作区身份校验。
+- 完善共享工作台的卡片配置、批注稳定性、任务资源失败重开及两种 MCP App 传输验收。
+- 更新 Electron、MCP App、CLI、Skills 与 Rust workspace 版本合同。
+
 ## v0.13.10 — 2026-11-20
 
 - 修复 MCP App 将可选参数中的 `undefined` 交给 Codex 后被拒绝，导致目录可见但正文无法打开的问题。

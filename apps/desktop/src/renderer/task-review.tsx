@@ -8,6 +8,8 @@ import type { SurfaceContext } from "./contributions.tsx";
 import { AuthorAdoption } from "./author-review.tsx";
 import { Icon, IconButton, PageActions, Workbench } from "./workbench.tsx";
 import "./surface-pages.css";
+import { usePreferences } from "./preferences.tsx";
+import { readingProfile } from "@hetu/workbench-ui";
 
 export function TaskReview({ work, notify, ai }: SurfaceContext) {
   const { agentStatus, setAgentStatus } = React.useContext(Workbench);
@@ -101,6 +103,7 @@ export function TaskReview({ work, notify, ai }: SurfaceContext) {
             <TaskPanel
               key={selected.task_ref.task_id}
               task={selected}
+              workKind={work.kind}
               notify={notify}
             />
           )}
@@ -114,11 +117,15 @@ export function TaskPanel({
   task,
   notify,
   submissionId,
+  workKind,
 }: {
   task: any;
   notify: (message: string) => void;
   submissionId?: string;
+  workKind?: string;
 }) {
+  const preferences = usePreferences(), preferenceRef = useRef(preferences);
+  preferenceRef.current = preferences;
   const frame = useRef<HTMLIFrameElement>(null),
     [journal, setJournal] = useState<any>(),
     [refresh, setRefresh] = useState(0),
@@ -130,11 +137,12 @@ export function TaskPanel({
     const iframe = frame.current!;
     const root = document.documentElement;
     const systemTheme = matchMedia("(prefers-color-scheme: dark)");
-    const theme = (): "dark" | "light" =>
-      root.dataset.appearance === "dark" ||
-      (root.dataset.appearance !== "light" && systemTheme.matches)
-        ? "dark"
-        : "light";
+    const theme = (): "dark" | "light" => root.dataset.appearance === "dark" || root.dataset.effectiveAppearance === "dark" ? "dark" : "light";
+    const readingContext = () => ({ kind: workKind === "drama" ? "screenplay" : "novel", preferences: {
+      settings_revision: preferenceRef.current.settings_revision ?? 0,
+      document_theme: preferenceRef.current.document_theme ?? "system",
+      reading_profiles: {novel: readingProfile(preferenceRef.current, "novel"), screenplay: readingProfile(preferenceRef.current, "screenplay")},
+    } });
     const bridge = new AppBridge(
       null,
       { name: "Hetu Luoshu author review", version: "0.9.0" },
@@ -142,16 +150,17 @@ export function TaskPanel({
       {
         hostContext: {
           theme: theme(),
-          locale: "zh-CN",
+          locale: preferenceRef.current.language ?? "zh-CN",
+          "hetu/reading": readingContext(),
         },
       },
     );
     const syncTheme = () =>
-      bridge.setHostContext({ theme: theme(), locale: "zh-CN" });
+      bridge.setHostContext({ theme: theme(), locale: preferenceRef.current.language ?? "zh-CN", "hetu/reading": readingContext() });
     const appearanceObserver = new MutationObserver(syncTheme);
     appearanceObserver.observe(root, {
       attributes: true,
-      attributeFilter: ["data-appearance"],
+      attributeFilter: ["data-appearance", "data-effective-appearance", "data-document-theme", "style"],
     });
     systemTheme.addEventListener("change", syncTheme);
     const updateJournal = async () => {
@@ -194,6 +203,7 @@ export function TaskPanel({
             result.structuredContent?.error?.message ?? "当前任务不可用。",
           );
         await updateJournal();
+        if (!active) return;
         bridge.oninitialized = () => {
           if (!active) return;
           clearTimeout(timer);
@@ -214,11 +224,14 @@ export function TaskPanel({
           await bridge.close();
           return;
         }
-        if ((window as any).hetuTaskViewResource) iframe.srcdoc = await (window as any).hetuTaskViewResource();
-        else iframe.src = "hetu-app://shell/task-view.html";
+        const resource = (window as any).hetuTaskViewResource
+          ? await (window as any).hetuTaskViewResource() : undefined;
+        if (!active) return;
         timer = setTimeout(() => {
           if (active) setError("审阅面板未能连接，请重试。");
         }, 10000);
+        if (resource !== undefined) iframe.srcdoc = resource;
+        else iframe.src = "hetu-app://shell/task-view.html";
       } catch (error) {
         if (active) setError(typeof (error as Error)?.message === "string" ? (error as Error).message : String(error));
       }
@@ -228,10 +241,11 @@ export function TaskPanel({
       clearTimeout(timer);
       appearanceObserver.disconnect();
       systemTheme.removeEventListener("change", syncTheme);
+      iframe.removeAttribute("srcdoc");
       iframe.src = "about:blank";
       void bridge.close().catch(() => {});
     };
-  }, [task, refresh, submissionId]);
+  }, [task, refresh, submissionId, workKind]);
   return (
     <>
       {!submissionId && (

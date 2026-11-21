@@ -3,6 +3,9 @@ import { desktop, data } from "./bridge.ts";
 import type { SurfaceContext } from "./contributions.tsx";
 import { Icon, IconButton, PageActions } from "./workbench.tsx";
 import "./surface-pages.css";
+import {ResourceBody} from "./resource-reading.tsx";
+import {useObjectContextMenu} from "./text-context-menus.tsx";
+import {manuscriptVisibleText} from "@hetu/workbench-ui/manuscript-format";
 
 const categories: Record<string, string> = {
   character: "人物资料",
@@ -19,6 +22,7 @@ const states: Record<string, string> = {
 };
 
 export function Resources({ work, notify }: SurfaceContext) {
+  const context = useObjectContextMenu(notify);
   const [items, setItems] = useState<any[]>([]),
     [cursor, setCursor] = useState<string>(),
     [recoveries, setRecoveries] = useState<any[]>([]),
@@ -111,6 +115,7 @@ export function Resources({ work, notify }: SurfaceContext) {
     setUsages(positions.usages);
     setUsageCursor(positions.next_cursor ?? undefined);
     setPreview(undefined);
+    return result;
   }
   async function ai() {
     await desktop.handoff(
@@ -124,24 +129,24 @@ export function Resources({ work, notify }: SurfaceContext) {
     );
     notify("已复制资料整理请求，可向外部 Agent 说明要补充或调整的内容。");
   }
-  async function prepare(kind: string) {
+  async function prepare(kind: string, fixed = view, changes = edits) {
     setPreview(
       await desktop.resources("prepare", {
-        resource_id: view.resource.resource_id,
-        revision: view.resource.revision,
-        sha256: view.sha256,
+        resource_id: fixed.resource.resource_id,
+        revision: fixed.resource.revision,
+        sha256: fixed.sha256,
         kind,
-        ...(edits ? { edits } : {}),
+        ...(changes ? { edits: changes } : {}),
       }),
     );
   }
-  async function change(next: any) {
+  async function change(next: any, fixed = view) {
     setEdits(next);
     await desktop.dirty(true);
     await desktop.resources("draft", {
-      resource_id: view.resource.resource_id,
+      resource_id: fixed.resource.resource_id,
       value: {
-        base: { revision: view.resource.revision, sha256: view.sha256 },
+        base: { revision: fixed.resource.revision, sha256: fixed.sha256 },
         edits: next,
       },
     });
@@ -175,6 +180,22 @@ export function Resources({ work, notify }: SurfaceContext) {
     notify("资料决定已保存并回读。");
   }
   const resource = view?.resource;
+  const itemContext = (item: any) => context(item.title, [
+    {id: "open", label: "打开", disabled: busy || !!edits, action: () => run(async () => {await open(item.resource_id, item.revision);})},
+    {id: "edit", label: "编辑", disabled: busy || !!edits || item.state === "archived", action: () => run(async () => {
+      const fixed = await open(item.resource_id, item.revision); if (!fixed?.is_head || fixed.journal) throw new Error("请先确认当前资料版本与原操作。");
+      await change({title: fixed.resource.title, body: fixed.resource.body, source_notes: fixed.resource.source_notes}, fixed);
+    })},
+    {id: "copy-title", label: "复制名称", action: () => desktop.copy(item.title)},
+    {id: "copy-as", label: "复制为", children: [
+      {id: "plain", label: "纯文本", action: async () => {const fixed = await desktop.resources("get", {resource_id: item.resource_id, revision: item.revision}); await desktop.copy(manuscriptVisibleText(fixed.resource.body));}},
+      {id: "source", label: "完整原稿", action: async () => {const fixed = await desktop.resources("get", {resource_id: item.resource_id, revision: item.revision}); await desktop.copy(fixed.resource.body);}},
+    ]},
+    {id: "review", separator: true},
+    {id: "adopt", label: "采用此版资料", disabled: busy || !!edits || item.state !== "draft", action: () => run(async () => {const fixed = await open(item.resource_id, item.revision); if (fixed) await prepare("adopt", fixed, undefined);})},
+    {id: "archive", label: "归档此版资料", disabled: busy || !!edits || item.state === "archived", action: () => run(async () => {const fixed = await open(item.resource_id, item.revision); if (fixed) await prepare("archive", fixed, undefined);})},
+    {id: "ai", label: "让 AI 整理此资料", action: () => desktop.handoff("work.resources", {resource_id: item.resource_id, revision: item.revision})},
+  ]);
   return (
     <section className="resources surface-page" aria-label="作品资料与素材">
       <PageActions>
@@ -245,6 +266,7 @@ export function Resources({ work, notify }: SurfaceContext) {
           {items.map((item) => (
             <button
               key={item.resource_id}
+              {...itemContext(item)}
               aria-pressed={resource?.resource_id === item.resource_id}
               onClick={() => void run(() => open(item.resource_id))}
             >
@@ -351,7 +373,7 @@ export function Resources({ work, notify }: SurfaceContext) {
               ) : (
                 <>
                   <div className="resource-body" aria-label="资料全文">
-                    {resource.body || "此资料没有正文。"}
+                    <ResourceBody text={resource.body || "此资料没有正文。"} title={resource.title}/>
                   </div>
                   <h3>来源说明</h3>
                   <p className="resource-body">

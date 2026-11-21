@@ -14,7 +14,7 @@
 4. 首个情节单元如何改变局面，为什么还能继续产生故事？
 5. 作品承诺哪种阅读体验，结局方向如何回应这个承诺？
 
-需要人物细化时读[人物方法](../craft/characters.md)；核心问题不明确时读[结构与回收](../craft/structure.md)；长篇持续性不足时读[卷结构](../craft/structure.md)，只取适用的故事单元与期待链。
+需要人物细化时读[人物方法](../techniques/characters.md)；核心问题不明确时读[结构与回收](../techniques/structure.md)；长篇持续性不足时读[卷结构](../techniques/structure.md)，只取适用的故事单元与期待链。
 
 ## 可比较的方向卡
 

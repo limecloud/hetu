@@ -2,11 +2,22 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { EditorState, Transaction } from "@codemirror/state";
 import { history, redo, undo } from "@codemirror/commands";
-import { editorSource, editorSourceHistory, editorSourceSelection, restoreEditorSource } from "../src/renderer/editor-source.ts";
+import { editorSource, editorSourceHistory, editorSourceSelection, editorClipboardText, restoreEditorSource } from "../src/renderer/editor-source.ts";
 
 function state(source: string) {
   return EditorState.create({ doc: source, extensions: [editorSource.init(() => source), editorSourceHistory, history()] });
 }
+
+test("普通编辑复制跨格式和混合换行的可见文字，原稿及固定选区仍保留标记", () => {
+  const source = "前 **粗体🌿** 与 *斜体*。\r\n`**字面**`\n末段";
+  const initial = state(source), logical = initial.doc.toString();
+  assert.equal(editorClipboardText(initial, 0, initial.doc.length, true), "前 粗体🌿 与 斜体。\r\n**字面**\n末段");
+  assert.equal(editorClipboardText(initial, 0, initial.doc.length, false), source);
+  const from = logical.indexOf("粗体"), to = logical.indexOf("斜体") + 2;
+  assert.equal(editorClipboardText(initial, from, to, true), "粗体🌿 与 斜体");
+  assert.equal(editorSourceSelection(initial, from, to).quote, "粗体🌿** 与 *斜体");
+  assert.equal(initial.field(editorSource), source);
+});
 
 test("原始CRLF、LF、CR和混合换行保持，选区对应原文UTF8", () => {
   for (const source of ["前🌊\r\n甲\r\n末", "前🌊\n甲\n末", "前🌊\r甲\r末", "前🌊\r\n甲\n乙\r末"]) {

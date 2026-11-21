@@ -1,4 +1,5 @@
 //! 版本化交稿子集。格式转换不读写工作区，也不执行文档中的活动内容。
+use super::manuscript_styles::{CATALOG, Presentation, StyleMarkup, color_hex};
 use super::{Error, Result, digest, ensure};
 use pulldown_cmark::{Event as MarkdownEvent, Options, Parser, Tag, TagEnd};
 use quick_xml::{NsReader, events::Event, name::ResolveResult};
@@ -85,6 +86,8 @@ pub struct Run {
     pub text: String,
     pub bold: bool,
     pub italic: bool,
+    pub strike: bool,
+    pub presentation: Presentation,
 }
 
 #[derive(Clone, Debug)]
@@ -92,6 +95,7 @@ pub struct Paragraph {
     pub style: ParagraphStyle,
     pub text: String,
     pub runs: Vec<Run>,
+    pub presentation: Presentation,
 }
 
 impl Paragraph {
@@ -103,23 +107,39 @@ impl Paragraph {
                 text: text.clone(),
                 bold: false,
                 italic: false,
+                strike: false,
+                presentation: Presentation::default(),
             }],
             text,
+            presentation: Presentation::default(),
         }
     }
     fn push(&mut self, text: &str, bold: bool, italic: bool) {
+        self.push_styled(text, bold, italic, false, Presentation::default());
+    }
+    fn push_styled(
+        &mut self,
+        text: &str,
+        bold: bool,
+        italic: bool,
+        strike: bool,
+        presentation: Presentation,
+    ) {
         self.text.push_str(text);
-        if let Some(last) = self
-            .runs
-            .last_mut()
-            .filter(|run| run.bold == bold && run.italic == italic)
-        {
+        if let Some(last) = self.runs.last_mut().filter(|run| {
+            run.bold == bold
+                && run.italic == italic
+                && run.strike == strike
+                && run.presentation == presentation
+        }) {
             last.text.push_str(text);
         } else {
             self.runs.push(Run {
                 text: text.to_owned(),
                 bold,
                 italic,
+                strike,
+                presentation,
             });
         }
     }
@@ -172,9 +192,13 @@ fn printed_markdown(input: &str, losses: &mut Vec<Value>) -> Result<String> {
     let mut output = String::new();
     let mut cursor = 0;
     let mut spans: Vec<std::ops::Range<usize>> = Vec::new();
+    let presentation = StyleMarkup::parse(input);
     // 只移除解析器识别的注释，代码示例中的注释字样仍是可见正文。
     for (event, range) in Parser::new(input).into_offset_iter() {
         if matches!(event, MarkdownEvent::Html(_) | MarkdownEvent::InlineHtml(_)) {
+            if input[range.clone()].trim().is_empty() || presentation.is_marker(input, &range) {
+                continue;
+            }
             // pulldown-cmark 将块级 HTML 逐行返回，先合并才判断多行注释是否闭合。
             if let Some(previous) = spans
                 .last_mut()
@@ -253,15 +277,42 @@ fn printed_fountain(input: &str, losses: &mut Vec<Value>) -> Result<String> {
 
 fn markdown_paragraphs(content: &str, losses: &mut Vec<Value>) -> Result<Vec<Paragraph>> {
     let content = printed_markdown(content, losses)?;
+    let presentation = StyleMarkup::parse(&content);
+    if presentation
+        .spans
+        .iter()
+        .any(|span| matches!(span.attributes.block.as_deref(), Some("page" | "card")))
+    {
+        issue(
+            losses,
+            "markdown_group_navigation_flattened",
+            "页面和卡片按内部文字顺序交付，不保留应用内的进入与返回交互。",
+        );
+    }
+    if presentation.spans.iter().any(|span| {
+        span.attributes.card_layout.is_some()
+            || span.attributes.card_preview.is_some()
+            || span.attributes.card_color.is_some()
+            || span.attributes.card_gradient.is_some()
+            || span.attributes.card_image.is_some()
+    }) {
+        issue(
+            losses,
+            "markdown_card_presentation_omitted",
+            "卡片布局、缩略预览与背景未进入交稿，内部文字按原顺序保留。",
+        );
+    }
     let mut output = Vec::new();
     let mut current: Option<Paragraph> = None;
     let mut bold = 0;
     let mut italic = 0;
+    let mut strike = 0;
     let mut image = 0;
     let mut link = Vec::new();
     let options =
         Options::ENABLE_TABLES | Options::ENABLE_FOOTNOTES | Options::ENABLE_STRIKETHROUGH;
-    for event in Parser::new_ext(&content, options) {
+    for (event, range) in Parser::new_ext(&content, options).into_offset_iter() {
+        let attributes = presentation.at(range.start);
         match event {
             MarkdownEvent::Start(Tag::Paragraph) => {
                 current.get_or_insert_with(|| Paragraph::plain(ParagraphStyle::Body, ""));
@@ -292,6 +343,8 @@ fn markdown_paragraphs(content: &str, losses: &mut Vec<Value>) -> Result<Vec<Par
             MarkdownEvent::End(TagEnd::Strong) => bold -= 1,
             MarkdownEvent::Start(Tag::Emphasis) => italic += 1,
             MarkdownEvent::End(TagEnd::Emphasis) => italic -= 1,
+            MarkdownEvent::Start(Tag::Strikethrough) => strike += 1,
+            MarkdownEvent::End(TagEnd::Strikethrough) => strike -= 1,
             MarkdownEvent::Start(Tag::Image { .. }) => {
                 image += 1;
                 issue(
@@ -329,13 +382,21 @@ fn markdown_paragraphs(content: &str, losses: &mut Vec<Value>) -> Result<Vec<Par
                         .push(&format!(" ({url})"), false, false);
                 }
             }
-            MarkdownEvent::Text(text) if image == 0 => current
-                .get_or_insert_with(|| Paragraph::plain(ParagraphStyle::Body, ""))
-                .push(&text, bold > 0, italic > 0),
+            MarkdownEvent::Text(text) if image == 0 => {
+                let paragraph =
+                    current.get_or_insert_with(|| Paragraph::plain(ParagraphStyle::Body, ""));
+                if paragraph.text.is_empty() {
+                    paragraph.presentation = attributes.clone();
+                }
+                paragraph.push_styled(&text, bold > 0, italic > 0, strike > 0, attributes);
+            }
             MarkdownEvent::Code(text) if image == 0 => {
-                current
-                    .get_or_insert_with(|| Paragraph::plain(ParagraphStyle::Body, ""))
-                    .push(&text, false, false);
+                let paragraph =
+                    current.get_or_insert_with(|| Paragraph::plain(ParagraphStyle::Body, ""));
+                if paragraph.text.is_empty() {
+                    paragraph.presentation = attributes.clone();
+                }
+                paragraph.push_styled(&text, false, false, false, attributes);
                 issue(
                     losses,
                     "markdown_code_plaintext",
@@ -344,7 +405,7 @@ fn markdown_paragraphs(content: &str, losses: &mut Vec<Value>) -> Result<Vec<Par
             }
             MarkdownEvent::SoftBreak | MarkdownEvent::HardBreak if image == 0 => current
                 .get_or_insert_with(|| Paragraph::plain(ParagraphStyle::Body, ""))
-                .push("\n", bold > 0, italic > 0),
+                .push_styled("\n", bold > 0, italic > 0, strike > 0, attributes),
             MarkdownEvent::Rule => {
                 output.push(Paragraph::plain(ParagraphStyle::Separator, "* * *"))
             }
@@ -389,11 +450,6 @@ fn markdown_paragraphs(content: &str, losses: &mut Vec<Value>) -> Result<Vec<Par
                 losses,
                 "markdown_blockquote_plaintext",
                 "引用块按普通正文交付，不保留引用块版式。",
-            ),
-            MarkdownEvent::Start(Tag::Strikethrough) => issue(
-                losses,
-                "markdown_strikethrough_plaintext",
-                "删除线按可见文字交付，不据此删除内容。",
             ),
             _ => {}
         }
@@ -799,6 +855,21 @@ fn write_docx(paragraphs: &[Paragraph], sources: &[Source], profile: &str) -> Re
     for paragraph in paragraphs {
         document.push_str("<w:p><w:pPr>");
         document.push_str(&format!("<w:pStyle w:val=\"{}\"/>", paragraph.style.word()));
+        if let Some(alignment) = paragraph.presentation.alignment.as_deref() {
+            document.push_str(&format!(
+                "<w:jc w:val=\"{}\"/>",
+                if alignment == "justify" {
+                    "both"
+                } else {
+                    alignment
+                }
+            ));
+        }
+        match paragraph.presentation.block.as_deref() {
+            Some("focus") => document.push_str("<w:pBdr><w:left w:val=\"single\" w:sz=\"12\" w:space=\"8\" w:color=\"646464\"/></w:pBdr>"),
+            Some("panel") => document.push_str("<w:shd w:val=\"clear\" w:fill=\"F0F0F0\"/>"),
+            _ => {}
+        }
         if paragraph.style == ParagraphStyle::Title {
             if titles > 0 {
                 document.push_str("<w:pageBreakBefore/>");
@@ -818,6 +889,25 @@ fn write_docx(paragraphs: &[Paragraph], sources: &[Source], profile: &str) -> Re
             }
             if run.italic {
                 document.push_str("<w:i/>");
+            }
+            if run.strike {
+                document.push_str("<w:strike/>");
+            }
+            if let Some(color) = run.presentation.color.as_deref().and_then(color_hex) {
+                document.push_str(&format!("<w:color w:val=\"{color}\"/>"));
+            }
+            if let Some(font) = run
+                .presentation
+                .font
+                .as_deref()
+                .and_then(|name| CATALOG["fonts"].get(name))
+            {
+                document.push_str(&format!(
+                    "<w:rFonts w:ascii=\"{}\" w:hAnsi=\"{}\" w:eastAsia=\"{}\"/>",
+                    escape_xml(font["word"].as_str().unwrap()),
+                    escape_xml(font["word"].as_str().unwrap()),
+                    escape_xml(font["word_east_asia"].as_str().unwrap())
+                ));
             }
             document.push_str("</w:rPr>");
             for (index, line) in run.text.split('\n').enumerate() {
@@ -1226,6 +1316,8 @@ fn word_paragraphs(content: &[u8], losses: &mut Vec<Value>) -> Result<Vec<Paragr
     let mut result = Vec::new();
     let mut bold = false;
     let mut italic = false;
+    let mut strike = false;
+    let mut presentation = Presentation::default();
     let mut skipped = 0usize;
     loop {
         let (namespace, event) = reader.read_resolved_event().map_err(|_| package_error())?;
@@ -1268,6 +1360,8 @@ fn word_paragraphs(content: &[u8], losses: &mut Vec<Value>) -> Result<Vec<Paragr
                     b"r" => {
                         bold = false;
                         italic = false;
+                        strike = false;
+                        presentation = Presentation::default();
                     }
                     b"pStyle" => {
                         if let Some(value) =
@@ -1293,15 +1387,119 @@ fn word_paragraphs(content: &[u8], losses: &mut Vec<Value>) -> Result<Vec<Paragr
                         italic = !attribute_value(&reader, element, b"val", Some(WORD_NS))?
                             .is_some_and(|value| matches!(value.as_str(), "0" | "false" | "off"))
                     }
+                    b"strike" => {
+                        strike = !attribute_value(&reader, element, b"val", Some(WORD_NS))?
+                            .is_some_and(|value| matches!(value.as_str(), "0" | "false" | "off"))
+                    }
+                    b"color" => {
+                        if let Some(value) =
+                            attribute_value(&reader, element, b"val", Some(WORD_NS))?
+                        {
+                            let color = format!("#{}", value.to_ascii_lowercase());
+                            if super::manuscript_styles::valid_color(&color) {
+                                presentation.color = Some(color);
+                            } else if value != "auto" {
+                                issue(
+                                    losses,
+                                    "docx_color_omitted",
+                                    "DOCX动态或未知颜色未推测为固定色值，请核对原文。",
+                                );
+                            }
+                        }
+                    }
+                    b"rFonts" => {
+                        let latin = attribute_value(&reader, element, b"ascii", Some(WORD_NS))?
+                            .or(attribute_value(&reader, element, b"hAnsi", Some(WORD_NS))?);
+                        let asian = attribute_value(&reader, element, b"eastAsia", Some(WORD_NS))?;
+                        if latin.is_some() || asian.is_some() {
+                            presentation.font = CATALOG["fonts"]
+                                .as_object()
+                                .unwrap()
+                                .iter()
+                                .find(|(_, font)| {
+                                    latin
+                                        .as_deref()
+                                        .is_none_or(|value| font["word"].as_str() == Some(value))
+                                        && asian.as_deref().is_none_or(|value| {
+                                            font["word_east_asia"].as_str() == Some(value)
+                                        })
+                                })
+                                .map(|(name, _)| name.clone());
+                            if presentation.font.is_none() {
+                                issue(
+                                    losses,
+                                    "docx_font_omitted",
+                                    "DOCX片段字体不在支持的四种字体类别内，未猜测替换为其他类别。",
+                                );
+                            }
+                        }
+                    }
+                    b"jc" => {
+                        if let Some(value) =
+                            attribute_value(&reader, element, b"val", Some(WORD_NS))?
+                        {
+                            let value = if value == "both" {
+                                "justify".to_owned()
+                            } else {
+                                value
+                            };
+                            if ["left", "center", "right", "justify"].contains(&value.as_str()) {
+                                if let Some(paragraph) = paragraph.as_mut() {
+                                    paragraph.presentation.alignment = Some(value);
+                                }
+                            } else {
+                                issue(
+                                    losses,
+                                    "docx_alignment_omitted",
+                                    "DOCX段落对齐方式不在支持子集内，请核对原文。",
+                                );
+                            }
+                        }
+                    }
+                    b"shd" => {
+                        if let Some(value) =
+                            attribute_value(&reader, element, b"fill", Some(WORD_NS))?
+                        {
+                            if value.eq_ignore_ascii_case("F0F0F0") {
+                                if let Some(paragraph) = paragraph.as_mut() {
+                                    paragraph.presentation.block = Some("panel".into());
+                                }
+                            } else if value != "auto" {
+                                issue(
+                                    losses,
+                                    "docx_decoration_omitted",
+                                    "DOCX自定义底纹未映射为其他装饰，请核对原文。",
+                                );
+                            }
+                        }
+                    }
+                    b"left"
+                        if attribute_value(&reader, element, b"val", Some(WORD_NS))?.as_deref()
+                            == Some("single") =>
+                    {
+                        if attribute_value(&reader, element, b"color", Some(WORD_NS))?.as_deref()
+                            == Some("646464")
+                        {
+                            if let Some(paragraph) = paragraph.as_mut() {
+                                paragraph.presentation.block = Some("focus".into());
+                            }
+                        } else {
+                            issue(
+                                losses,
+                                "docx_decoration_omitted",
+                                "DOCX自定义段落边框未映射为其他装饰，请核对原文。",
+                            );
+                        }
+                    }
                     b"t" => in_text = true,
                     b"tab" => {
                         if let Some(p) = paragraph.as_mut() {
-                            p.push("\t", bold, italic);
+                            p.push_styled("\t", bold, italic, strike, presentation.clone());
                         }
                     }
                     b"br" | b"cr" => {
                         if let Some(p) = paragraph.as_mut() {
-                            p.push("\n", bold, italic);
+                            p.push_styled("\n", bold, italic, strike, presentation.clone());
                         }
                     }
                     b"tbl" => issue(
@@ -1360,6 +1558,8 @@ fn word_paragraphs(content: &[u8], losses: &mut Vec<Value>) -> Result<Vec<Paragr
                 b"r" => {
                     bold = false;
                     italic = false;
+                    strike = false;
+                    presentation = Presentation::default();
                 }
                 b"p" if body => {
                     if let Some(p) = paragraph.take() {
@@ -1372,13 +1572,13 @@ fn word_paragraphs(content: &[u8], losses: &mut Vec<Value>) -> Result<Vec<Paragr
             Event::Text(text) if body && in_text => {
                 let decoded = text.decode().map_err(|_| package_error())?;
                 if let Some(p) = paragraph.as_mut() {
-                    p.push(&decoded, bold, italic);
+                    p.push_styled(&decoded, bold, italic, strike, presentation.clone());
                 }
             }
             Event::CData(text) if body && in_text => {
                 let decoded = text.decode().map_err(|_| package_error())?;
                 if let Some(p) = paragraph.as_mut() {
-                    p.push(&decoded, bold, italic);
+                    p.push_styled(&decoded, bold, italic, strike, presentation.clone());
                 }
             }
             Event::GeneralRef(reference) if body && in_text => {
@@ -1386,7 +1586,7 @@ fn word_paragraphs(content: &[u8], losses: &mut Vec<Value>) -> Result<Vec<Paragr
                 let escaped = format!("&{name};");
                 let value = quick_xml::escape::unescape(&escaped).map_err(|_| package_error())?;
                 if let Some(p) = paragraph.as_mut() {
-                    p.push(&value, bold, italic);
+                    p.push_styled(&value, bold, italic, strike, presentation.clone());
                 }
             }
             Event::Start(_) if body => {
@@ -1479,36 +1679,68 @@ fn paragraphs_to_source(
                     content.push_str("\n\n");
                 }
             }
-            if paragraph.runs.iter().any(|run| run.bold || run.italic) {
+            if paragraph.runs.iter().any(|run| {
+                run.bold || run.italic || run.strike || run.presentation != Presentation::default()
+            }) || paragraph.presentation != Presentation::default()
+            {
                 issue(
                     losses,
                     "docx_fountain_emphasis_plaintext",
-                    "DOCX 强调按可见文字导入 Fountain，不生成推测的语法。",
+                    "DOCX片段格式及段落呈现按可见文字导入Fountain，不生成未声明的扩展语法。",
                 );
             }
         } else {
+            let block_tag = paragraph.presentation.block_tag();
+            if !block_tag.is_empty() {
+                content.push_str(&block_tag);
+                content.push_str("\n\n");
+            }
             match paragraph.style {
                 ParagraphStyle::Heading1 | ParagraphStyle::Title => content.push_str("# "),
                 ParagraphStyle::Heading2 => content.push_str("## "),
                 _ => {}
             }
             for run in &paragraph.runs {
-                let escaped = escape_markdown(&run.text);
-                if run.bold {
-                    content.push_str("**");
-                }
-                if run.italic {
-                    content.push('*');
-                }
-                content.push_str(&escaped);
-                if run.italic {
-                    content.push('*');
-                }
-                if run.bold {
-                    content.push_str("**");
+                for (index, part) in run.text.split('\n').enumerate() {
+                    if index > 0 {
+                        content.push('\n');
+                    }
+                    if part.is_empty() {
+                        continue;
+                    }
+                    let escaped = escape_markdown(part);
+                    let inline_tag = run.presentation.inline_tag();
+                    if !inline_tag.is_empty() {
+                        content.push_str(&inline_tag);
+                    }
+                    if run.bold {
+                        content.push_str("**");
+                    }
+                    if run.italic {
+                        content.push('*');
+                    }
+                    if run.strike {
+                        content.push_str("~~");
+                    }
+                    content.push_str(&escaped);
+                    if run.strike {
+                        content.push_str("~~");
+                    }
+                    if run.italic {
+                        content.push('*');
+                    }
+                    if run.bold {
+                        content.push_str("**");
+                    }
+                    if !inline_tag.is_empty() {
+                        content.push_str("</span>");
+                    }
                 }
             }
             content.push_str("\n\n");
+            if !block_tag.is_empty() {
+                content.push_str("</div>\n\n");
+            }
         }
     }
     if screenplay && !title.is_empty() {
@@ -1683,7 +1915,11 @@ mod tests {
         let native = render(&[source("markdown", text)], "markdown", "source/1").unwrap();
         assert_eq!(native.bytes, text.as_bytes());
         assert_eq!(native.report["newline"], "CRLF");
-        assert!(native.report["losses"].as_array().unwrap().is_empty());
+        assert!(
+            native.report["losses"].as_array().unwrap().is_empty(),
+            "{}",
+            native.report["losses"]
+        );
         let preview = render(&[source("markdown", text)], "txt", "source/1").unwrap();
         assert!(
             preview.report["losses"]
@@ -1833,6 +2069,94 @@ mod tests {
         assert!(content.contains("　　"));
         assert_eq!(restored["metadata"]["title"], "雾港 & 来信");
         assert_eq!(restored["metadata"]["author"], "示例作者");
+    }
+    #[test]
+    fn manuscript_presentation_roundtrips_through_docx_without_raw_tags_in_reading_copy() {
+        let content = "<div data-hetu-align=\"center\" data-hetu-block=\"panel\">\r\n\r\n<span data-hetu-color=\"red\" data-hetu-font=\"serif\">**红 & 中文**</span>与~~保留文字~~。\r\n\r\n</div>\r\n";
+        let s = source("markdown", content);
+        let output = render(&[s.clone()], "docx", "hetu-novel-zh/1").unwrap();
+        let files = checked_package(&output.bytes, &mut Vec::new()).unwrap();
+        let xml = std::str::from_utf8(&files["word/document.xml"]).unwrap();
+        for expected in [
+            "w:jc w:val=\"center\"",
+            "w:color w:val=\"CE2C31\"",
+            "w:ascii=\"Times New Roman\"",
+            "w:fill=\"F0F0F0\"",
+            "<w:strike/>",
+        ] {
+            assert!(xml.contains(expected), "{xml}");
+        }
+        let restored = import(&output.bytes, "docx", "hetu-novel-zh/1").unwrap();
+        let raw = restored["content"].as_str().unwrap();
+        let projected = markdown_paragraphs(raw, &mut Vec::new()).unwrap();
+        let paragraph = projected
+            .iter()
+            .find(|paragraph| paragraph.text.contains("红 & 中文"))
+            .unwrap();
+        assert_eq!(paragraph.presentation.alignment.as_deref(), Some("center"));
+        assert_eq!(paragraph.presentation.block.as_deref(), Some("panel"));
+        let red = paragraph
+            .runs
+            .iter()
+            .find(|run| run.text == "红 & 中文")
+            .unwrap();
+        assert!(red.bold);
+        assert_eq!(red.presentation.color.as_deref(), Some("#ce2c31"));
+        assert_eq!(red.presentation.font.as_deref(), Some("serif"));
+        assert!(
+            paragraph
+                .runs
+                .iter()
+                .any(|run| run.text == "保留文字" && run.strike)
+        );
+        let native = render(&[s.clone()], "markdown", "source/1").unwrap();
+        assert_eq!(std::str::from_utf8(&native.bytes).unwrap(), content);
+        assert!(
+            native.report["losses"].as_array().unwrap().is_empty(),
+            "{}",
+            native.report["losses"]
+        );
+        let text = render(&[s], "txt", "hetu-novel-zh/1").unwrap();
+        let text = std::str::from_utf8(&text.bytes).unwrap();
+        assert!(text.contains("红 & 中文与保留文字。"));
+        assert!(!text.contains("data-hetu-"));
+    }
+    #[test]
+    fn card_presentation_is_native_in_markdown_and_reports_delivery_losses() {
+        let text = "<div data-hetu-block=\"card\" data-hetu-card-layout=\"square\" data-hetu-card-preview=\"pages\" data-hetu-card-gradient=\"#112233,#ddeeff\">\n\n来信\n\n保留内文🌿。\n\n</div>";
+        let native = render(&[source("markdown", text)], "markdown", "source/1").unwrap();
+        assert_eq!(native.bytes, text.as_bytes());
+        for format in ["txt", "docx"] {
+            let output = render(&[source("markdown", text)], format, "source/1").unwrap();
+            assert!(
+                output.report["losses"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .any(|item| item["code"] == "markdown_card_presentation_omitted")
+            );
+            if format == "txt" {
+                let content = String::from_utf8(output.bytes).unwrap();
+                assert!(
+                    content.contains("来信")
+                        && content.contains("保留内文🌿。")
+                        && !content.contains("data-hetu-")
+                );
+            }
+        }
+    }
+    #[test]
+    fn malformed_or_unknown_presentation_never_becomes_allowed_html() {
+        for content in [
+            "<span data-hetu-color=\"red\" onclick=\"run()\">正文</span>",
+            "<span data-hetu-font=\"serif\">未闭合",
+            "<div data-hetu-align=\"center\"><script>原文</script></div>",
+        ] {
+            assert!(
+                render(&[source("markdown", content)], "docx", "source/1").is_err(),
+                "{content}"
+            );
+        }
     }
     #[test]
     fn fountain_title_page_survives_reading_copy_and_docx_roundtrip() {

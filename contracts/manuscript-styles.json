@@ -1,0 +1,125 @@
+{
+  "schema_version": "1.0.0",
+  "format": "hetu-markdown-style/1",
+  "attributes": {
+    "color": "data-hetu-color",
+    "font": "data-hetu-font",
+    "alignment": "data-hetu-align",
+    "block": "data-hetu-block",
+    "cardLayout": "data-hetu-card-layout",
+    "cardPreview": "data-hetu-card-preview",
+    "cardColor": "data-hetu-card-color",
+    "cardGradient": "data-hetu-card-gradient",
+    "cardImage": "data-hetu-card-image"
+  },
+  "max_depth": 16,
+  "colors": {
+    "muted": {
+      "light": "#646464",
+      "dark": "#b4b4b4"
+    },
+    "subtle": {
+      "light": "#8d8d8d",
+      "dark": "#6e6e6e"
+    },
+    "purple": {
+      "light": "#8145b5",
+      "dark": "#d19dff"
+    },
+    "blue": {
+      "light": "#0d74ce",
+      "dark": "#70b8ff"
+    },
+    "cyan": {
+      "light": "#107d98",
+      "dark": "#4ccce6"
+    },
+    "teal": {
+      "light": "#008573",
+      "dark": "#0bd8b6"
+    },
+    "green": {
+      "light": "#218358",
+      "dark": "#3dd68c"
+    },
+    "yellow": {
+      "light": "#9e6c00",
+      "dark": "#f5e147"
+    },
+    "orange": {
+      "light": "#cc4e00",
+      "dark": "#ffa057"
+    },
+    "red": {
+      "light": "#ce2c31",
+      "dark": "#ff9592"
+    }
+  },
+  "custom_color": "#RRGGBB",
+  "fonts": {
+    "system": {
+      "css": "system-ui, sans-serif",
+      "word": "Arial",
+      "word_east_asia": "微软雅黑"
+    },
+    "serif": {
+      "css": "\"Songti SC\", \"Noto Serif CJK SC\", \"Noto Serif SC\", SimSun, serif",
+      "word": "Times New Roman",
+      "word_east_asia": "宋体"
+    },
+    "mono": {
+      "css": "ui-monospace, \"Courier New\", monospace",
+      "word": "Courier New",
+      "word_east_asia": "等线"
+    },
+    "rounded": {
+      "css": "ui-rounded, \"Arial Rounded MT Bold\", system-ui, sans-serif",
+      "word": "Arial Rounded MT Bold",
+      "word_east_asia": "微软雅黑"
+    }
+  },
+  "alignments": [
+    "left",
+    "center",
+    "right",
+    "justify"
+  ],
+  "blocks": [
+    "focus",
+    "panel",
+    "page",
+    "card"
+  ],
+  "color_source": {
+    "package": "@radix-ui/colors",
+    "version": "3.0.0",
+    "url": "https://www.radix-ui.com/colors",
+    "license": "../assets/licenses/radix-colors-MIT.txt"
+  },
+  "card": {
+    "layouts": [
+      "compact",
+      "landscape",
+      "square",
+      "wide",
+      "large"
+    ],
+    "previews": [
+      "page",
+      "icon",
+      "pages",
+      "note",
+      "images",
+      "none"
+    ],
+    "default_layout": "landscape",
+    "default_preview": "page",
+    "max_image_bytes": 262144,
+    "image_types": [
+      "image/png",
+      "image/jpeg",
+      "image/webp"
+    ],
+    "max_image_dimension": 1280
+  }
+}

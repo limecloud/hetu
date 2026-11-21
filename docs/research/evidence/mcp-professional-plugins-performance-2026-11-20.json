@@ -1,0 +1,594 @@
+{
+  "date": "2026-11-20",
+  "status": "local_candidate_installed_verified_pending_author_codex_gui_review",
+  "version": "0.13.10",
+  "base_commit": "6ec987ed74af2da50e05f237bcd2f2ba89fb60e0",
+  "source_sha256": "182aa053e393ecd6f99672fa05ea89fc97f07d9b65e1fa2d8944d2d493ae387b",
+  "rust_profile": "release",
+  "signing": "ad-hoc-development",
+  "published": false,
+  "committed_this_fix": false,
+  "tag_changed": false,
+  "root_causes": [
+    {
+      "area": "plugin_html",
+      "trigger": "省略head的HTML入口，脚本内包含<head>字面量",
+      "observed": "已装剧本创作和视听制作包在Codex日志及浏览器复现Unexpected end of input；旧正则在脚本中插入桥接，破坏JavaScript",
+      "fix": "脚本保留为占位符时装配真实head，标签匹配使用边界，最后恢复脚本"
+    },
+    {
+      "area": "plugin_snapshot",
+      "observed": "打开后端时把已安装包重写到自身目录并重复编译专业Schema",
+      "fix": "已安装快照只重验实际字节与固定摘要；新快照复用已验证包Schema，篡改拒绝"
+    },
+    {
+      "area": "loading",
+      "observed": "独立工作区及固定包串行读取，设置写回重复读取约600KB目录",
+      "fix": "最多四路只读核验并保持注册/依赖顺序；设置写回已有偏好投影时不增加桥接回读"
+    }
+  ],
+  "validation": {
+    "plugin_host": {
+      "tests": 105,
+      "passed": 105,
+      "failed": 0,
+      "skipped": 0,
+      "log": "build/mcp-open-plugin-20261120/plugin-tests-final.log"
+    },
+    "shared_workbench": {
+      "tests": 6,
+      "passed": 6,
+      "transports": [
+        "stdio",
+        "official_codex_app_server"
+      ],
+      "uses_packaged_mcp": true,
+      "settings_get_after_save": 1,
+      "scope": "两种传输的完整工作台旅程及四种HTML回归；包括保存、设置、三类作品、任务审核、视频、示例插件与恢复",
+      "log": "build/mcp-open-plugin-20261120/shared-workbench-tests-final.log"
+    },
+    "library_state": {
+      "tests": 2,
+      "passed": 2,
+      "scope": "双端合并、四路上限、顺序及单项身份/读取失败隔离"
+    },
+    "installed_professional_plugins": {
+      "plugins": 43,
+      "views": 44,
+      "scope": "隔离样本中逐工作面打开、完成后端初始化、空状态及离开恢复；不代替每个专业动作的业务验收",
+      "transport": "official_codex_app_server_with_strict_appbridge",
+      "javascript_errors": 0,
+      "rpc_errors": 0,
+      "failed_views": 0,
+      "model_turn_started": false,
+      "log": "build/mcp-open-plugin-20261120/installed-codex-plugins.json"
+    },
+    "actual_library": {
+      "works": 18,
+      "same_work_identities": true,
+      "existing_agent_connections": 13,
+      "unconnected_works_opened": 5,
+      "drama_episodes_compared_to_core": 20,
+      "real_files_unchanged": true,
+      "author_content_in_public_evidence": false
+    },
+    "installed_codex_configuration": {
+      "plugin_id": "hetu-workbench@hetu-luoshu-machine-connection",
+      "tools_error": null,
+      "entrypoints": [
+        {
+          "type": "global"
+        },
+        {
+          "type": "thread"
+        }
+      ],
+      "html_sha256": "cf2f2ea35daa309d95778d807e7f18fb4a4948e56f6005f7d93e0e4eec936908",
+      "html_bytes": 4139715,
+      "app_only_bridge_called": true,
+      "same_desktop_work_refs": true,
+      "model_turn_started": false
+    },
+    "native_hetu": {
+      "observed": true,
+      "application": "/Applications/Hetu.app",
+      "library_works": 18,
+      "drama_directory_episodes": 20,
+      "first_reference_visible": true,
+      "left_open": "drama_reference_reader",
+      "author_content_edited": false
+    },
+    "native_codex_gui": {
+      "observed": false,
+      "limitation": "Computer Use禁止操作com.openai.codex；官方协议与AppBridge通过，不冒充原生GUI逐页点击验收。"
+    },
+    "static_checks": [
+      "TypeScript及MCP资源一致性",
+      "uv run tools/verify-docs.py",
+      "python3 tools/sync-capability-map.py --check",
+      "git diff --check"
+    ]
+  },
+  "performance": {
+    "paired_library": {
+      "binary": "同一release hetu-app-server",
+      "works": 18,
+      "same_order_and_work_refs": true,
+      "system_cache_cleared": false,
+      "samples": [
+        {
+          "mode": "before",
+          "ms": 3165,
+          "works": 18,
+          "concurrent": 1
+        },
+        {
+          "mode": "after",
+          "ms": 979,
+          "works": 18,
+          "concurrent": 4
+        },
+        {
+          "mode": "before",
+          "ms": 1873,
+          "works": 18,
+          "concurrent": 1
+        },
+        {
+          "mode": "after",
+          "ms": 1005,
+          "works": 18,
+          "concurrent": 4
+        }
+      ]
+    },
+    "paired_snapshots": {
+      "scope": "临时目录中的同一专业固定包，实际读写/摘要校验配对",
+      "samples": [
+        {
+          "plugin": "org.wordflowlab.screenplay",
+          "times": [
+            {
+              "mode": "before",
+              "ms": 995
+            },
+            {
+              "mode": "after",
+              "ms": 263
+            },
+            {
+              "mode": "before",
+              "ms": 280
+            },
+            {
+              "mode": "after",
+              "ms": 141
+            }
+          ]
+        },
+        {
+          "plugin": "org.wordflowlab.director-stage",
+          "times": [
+            {
+              "mode": "before",
+              "ms": 1215
+            },
+            {
+              "mode": "after",
+              "ms": 257
+            },
+            {
+              "mode": "before",
+              "ms": 405
+            },
+            {
+              "mode": "after",
+              "ms": 69
+            }
+          ]
+        }
+      ]
+    },
+    "fresh_mcp_process": {
+      "transport": "MCP stdio",
+      "works": 18,
+      "before_rust_profile": "dev",
+      "after_rust_profile": "release",
+      "system_cache_cleared": false,
+      "includes_html_rendering": false,
+      "before_ms": {
+        "open_app": 4232,
+        "state:": 1654,
+        "library:refresh": 6860
+      },
+      "after_ms": {
+        "open_app": 1033,
+        "state:": 2805,
+        "library:refresh": 1705
+      },
+      "before_total_ms": 12746,
+      "after_total_ms": 5543,
+      "reduction_percent": 56.5,
+      "scope": "同一本机按入口、首次状态、目录刷新顺序请求；包含构建优化与读取优化，不作为GUI首屏或延迟分位数"
+    },
+    "earlier_contention_runs": "并行优化编译期间的超时及噪声计时保留在build，不纳入最终通过结果；设置重复回读按真实trace修复后通过，未扩大测试超时。"
+  },
+  "installation": {
+    "application": "/Applications/Hetu.app",
+    "artifacts_verified": 3387,
+    "codesign_verified": true,
+    "backup": "build/mcp-open-plugin-20261120/replaced-0.13.10-dev.app",
+    "manifest": "build/mcp-open-plugin-20261120/package/hetu-dev-iKUq2c/manifest.json",
+    "frozen_source_matches": true,
+    "installed_binaries_match_signed_artifacts": true
+  },
+  "professional_packages": [
+    {
+      "id": "org.wordflowlab.screenplay",
+      "version": "0.1.0",
+      "package_sha256": "3db2b1f8b3577b6bd1806e8ca0b1a25b019b51299a4f6a3fea53fc821cecdf99",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 3463
+    },
+    {
+      "id": "org.wordflowlab.video-studio",
+      "version": "0.1.0",
+      "package_sha256": "549b654781dc4949ee4abc28a94be97bb3bb12df96aead7208eb0ca1b7c0db2a",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 3109
+    },
+    {
+      "id": "org.wordflowlab.story-research",
+      "version": "0.1.0",
+      "package_sha256": "5adeffdf4bfe4f71ac614204bfe77825747164fa4705f6b9ec52a1d908b5bf9f",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2312
+    },
+    {
+      "id": "org.wordflowlab.character-lab",
+      "version": "0.1.0",
+      "package_sha256": "d3404b533b5e8a03e45e84eb23f5d4a99209568a0d8e09e03b13a0b05d6a4944",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2229
+    },
+    {
+      "id": "org.wordflowlab.story-analysis",
+      "version": "0.1.0",
+      "package_sha256": "fb117ee372a4fce7cde8cb1afd997f3d0b168066af2b1334171e721dfcd21009",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2303
+    },
+    {
+      "id": "org.wordflowlab.lorebook-bridge",
+      "version": "0.1.0",
+      "package_sha256": "0620fb1c75dbedd1e76306e1be3445ab383f801cfe0eac5341623a9e05054402",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2556
+    },
+    {
+      "id": "org.wordflowlab.interactive-fiction",
+      "version": "0.1.0",
+      "package_sha256": "c777120519a56fd93d1e132c078ac99b5a65f19103070a088b1cedf8f74e0a00",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2358
+    },
+    {
+      "id": "org.wordflowlab.series-organizer",
+      "version": "0.1.0",
+      "package_sha256": "e51032102970d97f650165fdd2e17a3a6b5991e707ab3028dfc54422969663dc",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2270
+    },
+    {
+      "id": "org.wordflowlab.story-translation",
+      "version": "0.1.0",
+      "package_sha256": "59080c4c196a79bdd09c50ebbd2a99d46a43dc561575a785fb9b8eed78ec3148",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2296
+    },
+    {
+      "id": "org.wordflowlab.readthrough",
+      "version": "0.1.0",
+      "package_sha256": "5723789aa1a672cdf9d1fb2e3a0756e7f2b194a67e50815d6ea5e8543dce8bd1",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2372
+    },
+    {
+      "id": "org.wordflowlab.book-export",
+      "version": "0.1.0",
+      "package_sha256": "e9dfd676d26c6ec450f21cdce83599b921492ca46e1a29a414400433a09c3e68",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2364
+    },
+    {
+      "id": "org.wordflowlab.novel-review",
+      "version": "0.2.0",
+      "package_sha256": "f5eceea32772e9028ddaf36607ceb2c4eddd0a70eb17373e4c4bf871c21c18f4",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2026
+    },
+    {
+      "id": "org.wordflowlab.novel-atlas",
+      "version": "0.2.0",
+      "package_sha256": "3b0b6006069eb0b2c70c709ee9a3ed2bd006b4491946a161748389e77a46d298",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2023
+    },
+    {
+      "id": "org.wordflowlab.prose-studio",
+      "version": "0.2.0",
+      "package_sha256": "5005ec439334b5babd9d9bd35b3a7575185b55df67f3ea3623ed3c21226c3c7f",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2246
+    },
+    {
+      "id": "org.wordflowlab.novel-planner",
+      "version": "0.3.0",
+      "package_sha256": "a38c3204bbb35fb075690f4ff2c991c63a136e09b34b8c24d67c93115de5df0c",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2195
+    },
+    {
+      "id": "org.wordflowlab.novel-planner",
+      "version": "0.3.0",
+      "package_sha256": "a38c3204bbb35fb075690f4ff2c991c63a136e09b34b8c24d67c93115de5df0c",
+      "view": "continuity",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 1968
+    },
+    {
+      "id": "org.wordflowlab.adaptation-studio",
+      "version": "0.1.0",
+      "package_sha256": "354d2fb5e325828e0b189bac79eff50be3ee312466c0a437c73f3ca907b061e1",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2175
+    },
+    {
+      "id": "org.wordflowlab.audio-drama",
+      "version": "0.1.0",
+      "package_sha256": "95ab0357cce70a38643070f144a3b7a1c7a7d697b3573b1c0cc67c728584fa23",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2101
+    },
+    {
+      "id": "org.wordflowlab.reader-review",
+      "version": "0.1.0",
+      "package_sha256": "9b354d5494d2158da3431b67bd76ad326c617dc08c9908dc594d6b1a1fb454ab",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2290
+    },
+    {
+      "id": "org.wordflowlab.comic-studio",
+      "version": "0.1.0",
+      "package_sha256": "7e18dc9956a2678171c5692eef3c512315e0a40447d507c1bb292214fe284420",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2106
+    },
+    {
+      "id": "org.wordflowlab.world-studio",
+      "version": "0.1.0",
+      "package_sha256": "5050928ecd28c72b5be6eb227a39e09919ee8c12354967cc482f0b2011d364d5",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2344
+    },
+    {
+      "id": "org.wordflowlab.mystery-lab",
+      "version": "0.1.0",
+      "package_sha256": "2c93b9094f2660a96e5193224530bfbc078594f071b8c4b5057fd7df7147f606",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2137
+    },
+    {
+      "id": "org.wordflowlab.art-direction",
+      "version": "0.1.0",
+      "package_sha256": "54f05a084e642455f90defc9a2fc8da9c71b9d4204e8f51b176843d5f3673682",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2102
+    },
+    {
+      "id": "org.wordflowlab.subtitle-studio",
+      "version": "0.1.0",
+      "package_sha256": "5c9baeffe35b436d7504752db9fa5c2613fa65418fcbea921c4bfef9dd5a84d8",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2392
+    },
+    {
+      "id": "org.wordflowlab.picturebook",
+      "version": "0.1.0",
+      "package_sha256": "6125d3b3f303f441ffdcad1b4762c16858a3122e39015751219292aa60d758ed",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2614
+    },
+    {
+      "id": "org.wordflowlab.shanhai",
+      "version": "0.2.2",
+      "package_sha256": "a11d100054f4fce4e2560c33416221e87bdece3f534201484ee2b0a70d957bb8",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 3049
+    },
+    {
+      "id": "org.wordflowlab.production-planner",
+      "version": "0.1.0",
+      "package_sha256": "892e50ccb90398d5b67214bcb961c8dea70d335bf87b7b7112848cba0474540e",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2061
+    },
+    {
+      "id": "org.wordflowlab.director-stage",
+      "version": "0.2.1",
+      "package_sha256": "bf0544d37b1bc9c67cd0a93fa0297a720e7a46fc73dcb21596885e62cac0a8c6",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 3400
+    },
+    {
+      "id": "org.wordflowlab.lyric-studio",
+      "version": "0.1.0",
+      "package_sha256": "4cbfe60783400aecb99e2f98357f14a2be97fafffd86d6bf45808b131d7cb6a0",
+      "view": "lyric-studio",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2457
+    },
+    {
+      "id": "org.wordflowlab.poetry-studio",
+      "version": "0.1.0",
+      "package_sha256": "afa1c6acbde209b8c8f71c0e6d95f228101d3d5770ec8d1dacf2b5e5c99052c0",
+      "view": "poetry-studio",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2323
+    },
+    {
+      "id": "org.wordflowlab.nonfiction-studio",
+      "version": "0.1.0",
+      "package_sha256": "df2b61ca9d3fbf8cfc7692535461971c6a083bc85e5f145da8243282add4c4b4",
+      "view": "nonfiction-studio",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2564
+    },
+    {
+      "id": "org.wordflowlab.biography-studio",
+      "version": "0.1.0",
+      "package_sha256": "e6dd4d89c86b34109d2cc83f133d65b3abd0acacaed9293d701251a3a0600896",
+      "view": "biography-studio",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2118
+    },
+    {
+      "id": "org.wordflowlab.essay-studio",
+      "version": "0.1.0",
+      "package_sha256": "6c841162cbf4860cd7ff2ed91ffbee744c77f30de31485229ef4b3640695de76",
+      "view": "essay-studio",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2066
+    },
+    {
+      "id": "org.wordflowlab.criticism-studio",
+      "version": "0.1.0",
+      "package_sha256": "067da3af7390311455908ce6191c08ea1b26662e837c922e1649b47205d90f72",
+      "view": "criticism-studio",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2034
+    },
+    {
+      "id": "org.wordflowlab.documentary-studio",
+      "version": "0.1.0",
+      "package_sha256": "9c50bc5babcae0567b21c4081fea6950478f315f7aac5ce1b3047258357f2d43",
+      "view": "documentary-studio",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2038
+    },
+    {
+      "id": "org.wordflowlab.podcast-studio",
+      "version": "0.1.0",
+      "package_sha256": "3a58fe327df83001b35b4363a0edcf7b6149840fcce74ed7da92b13c17386c79",
+      "view": "podcast-studio",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2057
+    },
+    {
+      "id": "org.wordflowlab.stage-rehearsal",
+      "version": "0.1.0",
+      "package_sha256": "943aabdcbd8cd92c96aa8ce748fe3afb44e57ed6475071befae8d6a4067d4748",
+      "view": "stage-rehearsal",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2372
+    },
+    {
+      "id": "org.wordflowlab.standup-studio",
+      "version": "0.1.0",
+      "package_sha256": "4fe146a60d39ea2444a084d8576b952c4096049b9905ceb2d0425aaa7812bacb",
+      "view": "standup-studio",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2128
+    },
+    {
+      "id": "org.wordflowlab.science-studio",
+      "version": "0.1.0",
+      "package_sha256": "4bf88dca36aa8959e4e8559e431220865558e69f8b4fddaf410f8ac1f831f345",
+      "view": "science-studio",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2127
+    },
+    {
+      "id": "org.wordflowlab.quest-studio",
+      "version": "0.1.0",
+      "package_sha256": "c9392b643db2fbd9477d09a35cde6d5c09dc009fd8392e77f6fa28ebdaaa0f2e",
+      "view": "quest-studio",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2117
+    },
+    {
+      "id": "org.wordflowlab.script-supervisor",
+      "version": "0.1.0",
+      "package_sha256": "c7d2c3c11041ff19851d9fe85a48f28c74f972f965ed6547a3326e9a7431dfd0",
+      "view": "script-supervisor",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2142
+    },
+    {
+      "id": "org.wordflowlab.language-studio",
+      "version": "0.1.0",
+      "package_sha256": "c64913f4ace3eef524924e784b1e8f600a96173bedff08c2b107795cd9c54a12",
+      "view": "language-studio",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2362
+    },
+    {
+      "id": "org.wordflowlab.musical-studio",
+      "version": "0.1.0",
+      "package_sha256": "70f42fb31863b5be091c265d6415502573682e0c1cc52e13b510f7c58e2d6b85",
+      "view": "musical-studio",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2206
+    },
+    {
+      "id": "org.wordflowlab.murder-mystery",
+      "version": "0.2.0",
+      "package_sha256": "eb21aaae3b13a8f3c2b965e49ffae5ca52e6df22288b0b6edfff4d6218ce3f9e",
+      "view": "main",
+      "opened_initialized_closed": true,
+      "observed_open_ms": 2346
+    }
+  ],
+  "raw_receipts_sha256": {
+    "plugin-tests-final.log": "0b01ec8252acde045898c215a00efd6d2b6a29095322802297b7c7aa508a1c86",
+    "shared-workbench-tests-final.log": "9d9cf0c64bf24918f39a1e91c97e7b62b02d250269fe86774f9b27599851c54a",
+    "installed-codex-plugins.json": "f32bb3640cc48f848b6f73784433e21f759f7f804fbc8a084893381ab9a35986",
+    "actual-library-verification.json": "1fc61ce8dce96891ecc3be59411421354a586d4737135c7adf37d35595227164",
+    "codex-verification.json": "d90a1dc5864f808f17b5072c45353be91a220897522a254942d9638554042a96",
+    "installation.json": "65b31f46ab62bc088850375f84e812fd52caeac043d7650add749877cb888447",
+    "library-benchmark.json": "4e3a3850024120aedcd228f7f20cb09f0078e59a169cfa28175d49e4ff9b25bd",
+    "snapshot-benchmark.json": "57ef2a12fa8bcfb539f75c249cc28ab48474e5004dd8d213ed775fd06a9c60c7",
+    "before-quiet-timing.json": "1540f3be812623298c80d3213043e494477967aaf1050b3b7fb2aa4ed506d3b2",
+    "after-candidate-timing.json": "3af3245902dc1cb57b6e2268be3bbaf552628d9e7f72acb6ec0699e689a17d56",
+    "native-hetu-verification.json": "f1052c7fb27e6afca37c460d1efda18b72439f2b68ef56b8045c4edef9279c1f",
+    "final-verification.json": "395b2168bf55b071865dd7d8d7648c42d33fe7c042d9acb874a69fcae84bfd19",
+    "docs-final.log": "34d4515dfff556385677706a110e11ec8eaf37644325a1251f07e8b42f6560cd"
+  }
+}

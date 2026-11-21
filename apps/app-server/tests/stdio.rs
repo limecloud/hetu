@@ -95,7 +95,7 @@ fn local_agent_requests_share_host_state_without_inheriting_author_decisions() {
         }}}));
     assert_eq!(blocked["result"]["error"]["code"], "hetu.author_confirmation_required");
     let host = client.rpc("local_settings/host", json!({"method":"get","input":{}}));
-    assert_eq!(host["result"]["preferences"]["font_size"], 18);
+    assert_eq!(host["result"]["preferences"]["font_size"], 16);
     let forbidden = client.rpc("local_settings/request", json!({"client_adapter":"codex","request":{
         "action":"hetu.documents.save","contract_revision":"1","input":{}}}));
     assert_eq!(forbidden["result"]["error"]["code"], "hetu.capability_unavailable");

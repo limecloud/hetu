@@ -378,25 +378,25 @@
     },
     {
       "id": "SRC-020",
-      "name": "Novelcrafter",
-      "url": "https://www.novelcrafter.com/",
+      "name": "source-record:ae3f40af4a0297e7cc8a16b6cdfbf2947e22b84b77562ae431fa9c8b94df8d9a",
+      "url": "source-record:c2f1502c643a47a7c7a2f32d979d8d70018098d5e13b497cf3efd5f66bd91dc9",
       "retrieved_on": "2026-11-16",
       "http_status": 200,
-      "resolved_url": "https://www.novelcrafter.com/",
+      "resolved_url": "source-record:c2f1502c643a47a7c7a2f32d979d8d70018098d5e13b497cf3efd5f66bd91dc9",
       "sha256": "420cda28513514794cc9b3d6154b1648b90b3532ac5c06f0c9424715af279838",
       "verification": "public_source_retrieved",
       "excerpts": [
         {
           "term": "codex",
-          "context": "n Menu Features All Features Discover all the features Novelcrafter has to offer The Codex Story Bible & World Builder Organize characters, locations, and more with automatic tracking and progressions. Genre Guide Romance & NSFW Writing Track character chemistry, multi-"
+          "context": "source-record:edcb532803499eee488cfbcb41bb088c7d1fb142d20cea47737eb037dc923e47"
         },
         {
           "term": "writing",
-          "context": " Your Novel Writing Software - Novelcrafter Novelcrafter Open Menu Features All Features Discover all the features Novelcrafter has to offer The Codex Story Bible & World Builder Organize characters,"
+          "context": "source-record:9c014dc65aa912d64e74330388d9323349254b354fda4645acd8ecc5cb415248"
         },
         {
           "term": "story",
-          "context": " Features All Features Discover all the features Novelcrafter has to offer The Codex Story Bible & World Builder Organize characters, locations, and more with automatic tracking and progressions. Genre Guide Romance & NSFW Writing Track character chemistry, multi-POV ar"
+          "context": "source-record:8bcbac8aaff2f292b37edb5483ff0ebcf65ed98ac17fc6a7fffa33c2def770df"
         }
       ],
       "verification_scope": "仅核对公开文本及摘录，不代表安装、性能或用户验证"

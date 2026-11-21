@@ -5,6 +5,8 @@ description: "作者选择河图洛书都市种田套件时，作者通过河图
 
 # 河图洛书资料整理
 
+先按[统一执行模式](../../references/execution-modes.md)读取实际设置：默认auto直接处理当前工作区，confirm先读后集中确认本次写入。本规则优先于下文旧授权流程，任务引用继续用于定位、来源和恢复。
+
 先读[任务合同](../../references/task-contract.md)，确认固定任务的 `resource_scope`；需要题材约束时只读[本包题材方法](../../references/genre.md)的相关部分。
 
 用实际发现的 `hetu_list_resources` 和 `hetu_read_resource` 获取获权资料。固定参考与可改草稿分别处理；读取权限不代表可以修改。对既有资料保留来源、作者已确认的内容及不确定性，不把推测写成作品事实。

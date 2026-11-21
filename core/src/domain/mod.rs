@@ -7,6 +7,7 @@ pub mod delivery_pdf;
 pub mod drama;
 pub mod drama_comparison;
 pub mod media;
+pub mod manuscript_styles;
 pub mod novel;
 pub mod plot;
 pub(crate) mod schema;

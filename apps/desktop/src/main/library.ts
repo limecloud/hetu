@@ -44,7 +44,16 @@ export class CreativeLibrary {
       )
     )
       throw new Error("创作库位置登记无效，请保留本机记录检查。");
-    this.#roots = record.roots;
+    const normalized = await Promise.all((record.roots as Registration[]).map(async root => ({...root, path: await realpath(root.path).catch(() => root.path)})));
+    const roots = new Map<string, Registration>();
+    for (const root of normalized) {
+      const existing = roots.get(root.path);
+      if (existing && existing.workspace_id !== root.workspace_id) throw new Error("同一作品位置登记了不同工作区，请保留记录后检查。");
+      if (existing) {
+        for (const work of root.works) if (!existing.works.some(item => sameWork(item.work_ref, work.work_ref))) existing.works.push(work);
+      } else roots.set(root.path, root);
+    }
+    this.#roots = [...roots.values()];
     this.#views = this.#roots.flatMap((root) =>
       root.works.map((work) => ({
         ...previous.get(JSON.stringify(work.work_ref)),
@@ -124,26 +133,33 @@ export class CreativeLibrary {
         await this.#register(candidate.path, works);
       }
       const views: any[] = [];
-      for (const root of this.#roots) {
-        try {
-          const works = await this.read(root.path);
-          if (
-            !works.length ||
-            works.some(
-              (item) => item.work_ref.workspace_id !== root.workspace_id,
+      // 独立工作区只并发读取；身份核验、顺序和单次登记提交保持不变。
+      for (let offset = 0; offset < this.#roots.length; offset += 4) {
+        const batch = this.#roots.slice(offset, offset + 4);
+        const results = await Promise.allSettled(batch.map(root => this.read(root.path)));
+        for (const [index, result] of results.entries()) {
+          const root = batch[index];
+          try {
+            if (result.status === "rejected") throw result.reason;
+            const works = result.value;
+            if (
+              !works.length ||
+              works.some(
+                (item) => item.work_ref.workspace_id !== root.workspace_id,
+              )
             )
-          )
-            throw new Error("此位置的工作区身份已变化，不能沿旧登记打开。");
-          root.works = works.map(displayRecord);
-          views.push(...works.map((item) => ({ ...item, unavailable: false })));
-        } catch (e) {
-          views.push(
-            ...root.works.map((item) => ({
-              ...item,
-              unavailable: true,
-              error: (e as Error).message,
-            })),
-          );
+              throw new Error("此位置的工作区身份已变化，不能沿旧登记打开。");
+            root.works = works.map(displayRecord);
+            views.push(...works.map((item) => ({ ...item, unavailable: false })));
+          } catch (e) {
+            views.push(
+              ...root.works.map((item) => ({
+                ...item,
+                unavailable: true,
+                error: (e as Error).message,
+              })),
+            );
+          }
         }
       }
       this.#views = views;

@@ -4,14 +4,22 @@ use rmcp::{
     service::{RequestContext, RoleServer},
 };
 use serde_json::json;
+use sha2::{Digest, Sha256};
+use std::sync::OnceLock;
 
 pub const URI: &str = "ui://hetu/task-view/1";
 pub const MIME: &str = "text/html;profile=mcp-app";
 const HTML: &str = include_str!("../resources/task-view.html");
 pub const OPERATION_URI: &str = "ui://hetu/operation-view/1";
 const OPERATION_HTML: &str = include_str!("../resources/operation-view.html");
-pub const WORKBENCH_URI: &str = "ui://hetu/workbench/2";
+pub const WORKBENCH_URI_PREFIX: &str = "ui://hetu/workbench/2";
 const WORKBENCH_HTML: &str = include_str!("../resources/workbench.html");
+
+/// 页面身份随固定字节更新，包括同版本的本地覆盖构建。
+pub fn workbench_uri() -> &'static str {
+    static URI: OnceLock<String> = OnceLock::new();
+    URI.get_or_init(|| format!("{WORKBENCH_URI_PREFIX}/{:x}", Sha256::digest(WORKBENCH_HTML.as_bytes())))
+}
 
 pub fn supported(context: &RequestContext<RoleServer>) -> bool {
     context
@@ -53,13 +61,13 @@ pub fn tool(mut tool: Tool) -> Tool {
 }
 
 pub fn workbench_resource() -> Resource {
-    Resource::new(WORKBENCH_URI, "hetu-workbench")
+    Resource::new(workbench_uri(), "hetu-workbench")
         .with_title("河图洛书 / Hetu Luoshu")
         .with_mime_type(MIME)
         .with_size(WORKBENCH_HTML.len() as u64)
 }
 pub fn read_workbench() -> ReadResourceResult {
-    ReadResourceResult::new(vec![ResourceContents::text(WORKBENCH_HTML, WORKBENCH_URI).with_mime_type(MIME)
+    ReadResourceResult::new(vec![ResourceContents::text(WORKBENCH_HTML, workbench_uri()).with_mime_type(MIME)
         .with_meta(json!({"ui":{"csp":{"connectDomains":[],"resourceDomains":[],"frameDomains":[],"baseUriDomains":[]},"permissions":{},"prefersBorder":true}}).as_object().unwrap().clone().into())])
 }
 

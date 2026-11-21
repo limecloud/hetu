@@ -59,7 +59,7 @@ test("无权限声明插件安装即用核心、重开、无新增授权及停�
     await expect(page.locator(".project-navigation")).toHaveCount(0);
     const area = await page.locator(".surface").boundingBox();
     expect(area?.x).toBe(0);
-    expect(area?.y).toBe(36);
+    expect(area?.y).toBe(88);
     await expect.poll(() => view.evaluate(() => innerWidth)).toBe(Math.round(area!.width));
     await view.getByRole("textbox", { name: "输入文字" }).fill("灯塔🌿");
     await view.getByRole("button", { name: "统计", exact: true }).click();

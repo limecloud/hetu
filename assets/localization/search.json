@@ -1,0 +1,308 @@
+{
+  "search.placeholder": {
+    "zh-CN": "搜索当前正文",
+    "en": "Find in current manuscript",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.searching": {
+    "zh-CN": "正在查询…",
+    "en": "Searching…",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.none": {
+    "zh-CN": "无匹配",
+    "en": "No matches",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.previous": {
+    "zh-CN": "上一处",
+    "en": "Previous match",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.next": {
+    "zh-CN": "下一处",
+    "en": "Next match",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.close": {
+    "zh-CN": "关闭正文搜索",
+    "en": "Close manuscript search",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.document": {
+    "zh-CN": "当前稿件",
+    "en": "Current manuscript",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.selection": {
+    "zh-CN": "固定选区",
+    "en": "Fixed selection",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.advanced": {
+    "zh-CN": "查找选项",
+    "en": "Search options",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.caseSensitive": {
+    "zh-CN": "区分大小写",
+    "en": "Match case",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.wholeWord": {
+    "zh-CN": "西文整词",
+    "en": "Latin whole word",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.regex": {
+    "zh-CN": "正则表达式",
+    "en": "Regular expression",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.segmented": {
+    "zh-CN": "中文分词",
+    "en": "Chinese word segmentation",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.replace": {
+    "zh-CN": "替换",
+    "en": "Replace",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.preview": {
+    "zh-CN": "替换预览",
+    "en": "Replacement preview",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.cancel_preview": {
+    "zh-CN": "取消替换",
+    "en": "Cancel replacement",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.cancel": {
+    "zh-CN": "取消查询",
+    "en": "Cancel search",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.cancelled": {
+    "zh-CN": "查询已取消",
+    "en": "Search cancelled",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.wrapped": {
+    "zh-CN": "已回到另一端继续查找",
+    "en": "Search wrapped around",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.empty": {
+    "zh-CN": "删除",
+    "en": "Delete",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.preview_limited": {
+    "zh-CN": "仅展开前50处，应用范围为上述确切数量。",
+    "en": "The first 50 changes are expanded; all indicated matches will be replaced.",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.truncated": {
+    "zh-CN": "匹配过多，仅列前10000处；请缩小范围。",
+    "en": "Showing the first 10,000 matches. Narrow the search.",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.refine": {
+    "zh-CN": "匹配未完整列出，请缩小范围后替换。",
+    "en": "Narrow the search before replacing all matches.",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.query_limit": {
+    "zh-CN": "查询文字过长，请缩短后重试。",
+    "en": "Shorten the search query.",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.invalid_regex": {
+    "zh-CN": "正则表达式无效。",
+    "en": "Invalid regular expression.",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.replacement_limit": {
+    "zh-CN": "替换结果过大，请缩小范围。",
+    "en": "The replacement exceeds the text budget. Narrow the search.",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.timeout": {
+    "zh-CN": "查询耗时过长，已停止；请简化表达式。",
+    "en": "Search timed out and was stopped. Simplify the expression.",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.worker_unavailable": {
+    "zh-CN": "当前环境无法执行查询，请重新打开工作台。",
+    "en": "This host cannot start isolated search. Reopen the workbench.",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.selection_changed": {
+    "zh-CN": "选区原文已变化，请重新选择范围。",
+    "en": "The selected source changed. Select the range again.",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.format_boundary": {
+    "zh-CN": "匹配跨越隐藏格式标记，请在原稿中核对并替换。",
+    "en": "The match crosses hidden formatting. Review and replace it in source mode.",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.target_changed": {
+    "zh-CN": "正文或光标已变化，请重新查询。",
+    "en": "The manuscript changed. Search again.",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.work": {
+    "zh-CN": "本作品已保存正文",
+    "en": "Saved manuscripts in this work",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.work_results": {
+    "zh-CN": "作品正文查询结果",
+    "en": "Work manuscript results",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.coverage": {
+    "zh-CN": "已读取 {read}/{total} 篇，找到 {count} 处",
+    "en": "Read {read}/{total} manuscripts; {count} matches",
+    "purpose": "共享文稿查找替换",
+    "parameters": [
+      "read",
+      "total",
+      "count"
+    ]
+  },
+  "search.refresh": {
+    "zh-CN": "重新查询",
+    "en": "Search again",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.work_limited": {
+    "zh-CN": "结果已达显示上限，当前覆盖不完整；请缩小查询。",
+    "en": "The result limit was reached. Coverage is incomplete; narrow the query.",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.failed": {
+    "zh-CN": "{count} 篇未能读取",
+    "en": "{count} manuscripts could not be searched",
+    "purpose": "共享文稿查找替换",
+    "parameters": [
+      "count"
+    ]
+  },
+  "search.zero_width": {
+    "zh-CN": "表达式只匹配空位置，请查询实际文字。",
+    "en": "The expression only matches empty positions. Search for text instead.",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.composing": {
+    "zh-CN": "正在输入…",
+    "en": "Composing…",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.clear": {
+    "zh-CN": "清空搜索",
+    "en": "Clear search",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.results": {
+    "zh-CN": "当前稿件命中",
+    "en": "Current manuscript matches",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.result": {
+    "zh-CN": "定位第 {current} 处",
+    "en": "Reveal match {current}",
+    "purpose": "共享文稿查找替换",
+    "parameters": [
+      "current"
+    ]
+  },
+  "search.result_page": {
+    "zh-CN": "显示 {start}–{end} 处，共 {count} 处，可用上一处和下一处继续浏览。",
+    "en": "Showing {start}–{end} of {count} matches. Use previous and next to continue.",
+    "purpose": "共享文稿查找替换",
+    "parameters": [
+      "start",
+      "end",
+      "count"
+    ]
+  },
+  "search.find": {
+    "zh-CN": "查找",
+    "en": "Find",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.find_replace": {
+    "zh-CN": "查找和替换",
+    "en": "Find and replace",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.mode": {
+    "zh-CN": "查找模式",
+    "en": "Search mode",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.diacriticsInsensitive": {
+    "zh-CN": "忽略变音符号",
+    "en": "Ignore diacritics",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.plain_text": {
+    "zh-CN": "文本",
+    "en": "Text",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  },
+  "search.include_partial": {
+    "zh-CN": "包括部分匹配",
+    "en": "Include partial matches",
+    "purpose": "共享文稿查找替换",
+    "parameters": []
+  }
+}

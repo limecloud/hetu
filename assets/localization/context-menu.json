@@ -1,0 +1,254 @@
+{
+  "context.editor": {
+    "zh-CN": "文稿右键菜单",
+    "en": "Manuscript actions",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.input": {
+    "zh-CN": "文字编辑菜单",
+    "en": "Text editing",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.read_only": {
+    "zh-CN": "阅读右键菜单",
+    "en": "Reading actions",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.cut": {
+    "zh-CN": "剪切",
+    "en": "Cut",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.copy": {
+    "zh-CN": "复制",
+    "en": "Copy",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.paste": {
+    "zh-CN": "粘贴",
+    "en": "Paste",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.paste_plain": {
+    "zh-CN": "粘贴为纯文本",
+    "en": "Paste as Plain Text",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.copy_as": {
+    "zh-CN": "复制为",
+    "en": "Copy As",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.plain": {
+    "zh-CN": "纯文本",
+    "en": "Plain Text",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.markdown": {
+    "zh-CN": "Markdown",
+    "en": "Markdown",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.raw": {
+    "zh-CN": "完整原稿",
+    "en": "Source Text",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.select_all": {
+    "zh-CN": "全选",
+    "en": "Select All",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.select_block": {
+    "zh-CN": "选择当前段落",
+    "en": "Select Block",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.delete": {
+    "zh-CN": "删除",
+    "en": "Delete",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.delete_block": {
+    "zh-CN": "删除段落",
+    "en": "Delete Block",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.duplicate": {
+    "zh-CN": "创建副本",
+    "en": "Duplicate",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.above": {
+    "zh-CN": "在上方插入",
+    "en": "Insert Above",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.below": {
+    "zh-CN": "在下方插入",
+    "en": "Insert Below",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.group": {
+    "zh-CN": "分组",
+    "en": "Group",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.ungroup": {
+    "zh-CN": "取消分组",
+    "en": "Ungroup",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.format": {
+    "zh-CN": "样式",
+    "en": "Style",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.color": {
+    "zh-CN": "颜色",
+    "en": "Color",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.font": {
+    "zh-CN": "字体",
+    "en": "Font",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.alignment": {
+    "zh-CN": "对齐",
+    "en": "Alignment",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.comment": {
+    "zh-CN": "添加批注",
+    "en": "Add Comment",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.ai": {
+    "zh-CN": "让 AI 处理选区",
+    "en": "Ask AI About Selection",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.search": {
+    "zh-CN": "查找所选文字",
+    "en": "Find Selected Text",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.info": {
+    "zh-CN": "文稿信息与来源",
+    "en": "Document Information",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.open": {
+    "zh-CN": "打开",
+    "en": "Open",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.copy_title": {
+    "zh-CN": "复制名称",
+    "en": "Copy Name",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.rename": {
+    "zh-CN": "重命名",
+    "en": "Rename",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.history": {
+    "zh-CN": "版本历史",
+    "en": "Version History",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.export": {
+    "zh-CN": "导出为",
+    "en": "Export As",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.source": {
+    "zh-CN": "查看来源",
+    "en": "View Source",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.refresh": {
+    "zh-CN": "刷新",
+    "en": "Refresh",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.configure_card": {
+    "zh-CN": "配置卡片",
+    "en": "Configure Card",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.clipboard_changed": {
+    "zh-CN": "内容或选区已变化，请重新打开菜单。",
+    "en": "The content or selection changed. Open the menu again.",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.indent": {
+    "zh-CN": "缩进",
+    "en": "Indentation",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.indent_more": {
+    "zh-CN": "增加缩进",
+    "en": "Increase Indentation",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.indent_less": {
+    "zh-CN": "减少缩进",
+    "en": "Decrease Indentation",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.undo": {
+    "zh-CN": "撤销",
+    "en": "Undo",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.redo": {
+    "zh-CN": "重做",
+    "en": "Redo",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  }
+}

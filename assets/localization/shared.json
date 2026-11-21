@@ -7297,21 +7297,21 @@
     "parameters": []
   },
   "search.title": {
-    "zh-CN": "查找与替换",
-    "en": "Find and Replace",
-    "purpose": "作者编辑工作台：search.title",
+    "zh-CN": "正文查找",
+    "en": "Find in manuscript",
+    "purpose": "共享文稿查找替换",
     "parameters": []
   },
   "search.query": {
-    "zh-CN": "查找内容",
+    "zh-CN": "搜索正文内容",
     "en": "Find text",
-    "purpose": "作者编辑工作台：search.query",
+    "purpose": "共享文稿查找替换",
     "parameters": []
   },
   "search.scope": {
     "zh-CN": "查找范围",
     "en": "Search scope",
-    "purpose": "作者编辑工作台：search.scope",
+    "purpose": "共享文稿查找替换",
     "parameters": []
   },
   "search.current": {
@@ -7339,13 +7339,12 @@
     "parameters": []
   },
   "search.count": {
-    "zh-CN": "{count} 处，已查 {scanned}/{total} 篇",
-    "en": "{count} matches, {scanned}/{total} documents",
-    "purpose": "作者编辑工作台：search.count",
+    "zh-CN": "{current} / {count} 处",
+    "en": "{current} / {count} matches",
+    "purpose": "共享文稿查找替换",
     "parameters": [
-      "count",
-      "scanned",
-      "total"
+      "current",
+      "count"
     ]
   },
   "search.partial": {
@@ -7363,33 +7362,33 @@
   "search.replacement": {
     "zh-CN": "替换为",
     "en": "Replace with",
-    "purpose": "作者编辑工作台：search.replacement",
+    "purpose": "共享文稿查找替换",
     "parameters": []
   },
   "search.preview_one": {
-    "zh-CN": "预览替换此处",
-    "en": "Preview selected",
-    "purpose": "作者编辑工作台：search.preview_one",
+    "zh-CN": "预览当前替换",
+    "en": "Preview replacement",
+    "purpose": "共享文稿查找替换",
     "parameters": []
   },
   "search.preview_all": {
-    "zh-CN": "预览本章全部替换",
-    "en": "Preview all in document",
-    "purpose": "作者编辑工作台：search.preview_all",
+    "zh-CN": "预览全部替换",
+    "en": "Preview all replacements",
+    "purpose": "共享文稿查找替换",
     "parameters": []
   },
   "search.preview_count": {
-    "zh-CN": "将替换 {count} 处",
-    "en": "Replace {count} matches",
-    "purpose": "作者编辑工作台：search.preview_count",
+    "zh-CN": "当前稿件将替换 {count} 处，可一次撤销。",
+    "en": "Replace {count} matches in this manuscript. Undo restores them together.",
+    "purpose": "共享文稿查找替换",
     "parameters": [
       "count"
     ]
   },
   "search.apply": {
-    "zh-CN": "确认替换",
-    "en": "Apply replacement",
-    "purpose": "作者编辑工作台：search.apply",
+    "zh-CN": "应用替换",
+    "en": "Apply replacements",
+    "purpose": "共享文稿查找替换",
     "parameters": []
   },
   "search.stale": {
@@ -9917,5 +9916,29 @@
     "parameters": [],
     "zh-CN": "开始创作",
     "en": "Start writing"
+  },
+  "local.field.execution_mode": {
+    "zh-CN": "执行模式",
+    "en": "Execution mode",
+    "purpose": "统一工作区执行模式",
+    "parameters": []
+  },
+  "settings.execution_mode": {
+    "zh-CN": "执行模式",
+    "en": "Execution mode",
+    "purpose": "统一工作区执行模式",
+    "parameters": []
+  },
+  "local.value.auto": {
+    "zh-CN": "自动执行",
+    "en": "Automatic",
+    "purpose": "统一工作区执行模式",
+    "parameters": []
+  },
+  "local.value.confirm": {
+    "zh-CN": "确认后执行",
+    "en": "Confirm before writing",
+    "purpose": "统一工作区执行模式",
+    "parameters": []
   }
 }

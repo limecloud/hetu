@@ -79,7 +79,10 @@ test.afterAll(async () => {
 test("real workbench opens authorized novel, drama and video through portable tools and plays verified bytes", async ({ page }) => {
   test.setTimeout(120_000);
   const initial = await managementClient.callTool({ name: "hetu_open_app", arguments: { management_ref: managementRef } });
-  const resource = await managementClient.readResource({ uri: "ui://hetu/workbench/2" });
+  const tools = await managementClient.listTools();
+  const entry=tools.tools.find(tool=>tool.name==="hetu_open_app") as { _meta?: {ui?: {resourceUri?: string}} } | undefined;
+  const uri=entry?._meta?.ui?.resourceUri as string;
+  const resource = await managementClient.readResource({ uri });
   if (!("text" in resource.contents[0])) throw new Error("Missing workbench");
   const manifest = JSON.parse(await readFile("../mcp/resources/workbench.manifest.json", "utf8"));
   expect(createHash("sha256").update(resource.contents[0].text).digest("hex")).toBe(manifest.sha256);

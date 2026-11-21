@@ -26,6 +26,7 @@ declare global {
       messageMode: "accepted" | "rejected" | "lost";
       send: (result: CallToolResult) => void;
       teardown: () => Promise<unknown>;
+      context: (value: Record<string, unknown>) => void;
     };
   }
 }
@@ -33,7 +34,8 @@ declare global {
 const iframe = document.createElement("iframe");
 iframe.title = "Task view";
 iframe.setAttribute("sandbox", "allow-scripts");
-iframe.style.cssText = "width:100%;height:1400px;border:0;display:block";
+// 完整工作台跟随宿主可视高度；文档型审阅面板保留长页面验收。
+iframe.style.cssText = `width:100%;height:${window.workbenchMode ? "100dvh" : "1400px"};border:0;display:block`;
 document.body.style.margin = "0";
 document.body.append(iframe);
 const bridge = new AppBridge(null, { name: "Hetu Apps contract host", version: "1" }, { serverTools: {}, serverResources: {}, ...(window.testMessages ? { message: { text: {} } } : {}), ...(window.testContext ? { updateModelContext: { text: {} } } : {}), ...(window.testExtensions ? { experimental: { "openai/message": {} } } : {}) }, { hostContext: { theme: window.testTheme ?? "light", locale: window.testLocale ?? "zh-CN", ...(window.testDeepLink ? { "openai/deepLink": { url: window.testDeepLink } } : {}) } });
@@ -43,6 +45,7 @@ const harness: Window["harness"] = window.harness = {
   calls: [], invalidToolArguments: 0, reads: [], saveMode: "normal", messages: [], wireMessages: [], contexts: [], messageMode: "accepted",
   send: result => { current = structuredClone(result); bridge.sendToolResult(result); },
   teardown: () => bridge.teardownResource({}),
+  context: value => bridge.setHostContext(value),
 };
 window.addEventListener("message", event => {
   if (event.source === iframe.contentWindow && event.data?.method === "ui/message") harness.wireMessages.push(structuredClone(event.data.params));
@@ -59,7 +62,7 @@ bridge.oncalltool = async params => {
   harness.calls.push(structuredClone(params));
   if (window.realTask) {
     const response = await fetch("/rpc", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ method: "tools/call", params }) });
-    if (!response.ok) throw new Error("Real MCP tool call failed");
+    if (!response.ok) throw new Error("Real MCP tool call failed: " + await response.text());
     return await response.json();
   }
   if (params.name === "hetu_inspect_collaboration" && window.testActions) {

@@ -2,7 +2,7 @@
   "schema_version": "1.0.0",
   "date": "2026-11-18",
   "status": "source_review_and_slice_verified",
-  "scope": "作者指定REA与Craft Anything本地源码定向对照；河图任务接续增强及正式版与源码版分开验收",
+  "scope": "source-record:9de350e8c01be436ad453939d6d49a2783a764321e7f9be820acf439bffe3dff",
   "platform": "macOS arm64",
   "reference_review": {
     "rea": {
@@ -37,7 +37,7 @@
       "version": "6.9.0",
       "license": "MIT"
     },
-    "craft_anything": {
+    "reference_tool": {
       "commit": "788642e487c5d39a4a0f8823c07024c301761861",
       "working_tree_clean": true,
       "inspection": "focused_source_and_test_definition_review",
@@ -71,9 +71,9 @@
       "sources": [
         "rea:src/contracts/catalog/catalogDiscovery.ts",
         "rea:src/server/DeferredEvidenceMcpServer.ts",
-        "craft_anything:crates/mcp/src/lib.rs"
+        "source-record:958b0a90555b78268aec39a075f8cd4b4df518b8631e408466b2a2c25a68f53a"
       ],
-      "observed": "REA按关键词或确切名称加载小页Schema，并在首次实际调用时初始化运行时；Craft按工具组暴露。",
+      "observed": "source-record:c3bed700927c95411e55dbd1c961ce9d5da41ccf3765cbd4089cff44badff957",
       "hetu": "默认12工具、按组和确切动作读取Schema、通用路由已有；关键词筛选、结构化前置条件和冷启动成本尚需处理。",
       "decision": "扩展现有目录Owner，不把目录可见性当作授权。",
       "priority": "P0",
@@ -84,7 +84,7 @@
       "sources": [
         "rea:src/domain/evidence.ts",
         "rea:src/domain/evidenceRecordSummary.ts",
-        "craft_anything:crates/evidence/src/lib.rs"
+        "source-record:2ea56a30d4a162a2b63df8287a527b1f49450438ecae4275b445902294e31df6"
       ],
       "observed": "不可变语义身份、来源权威、覆盖和局限分别表达；引用保留闭合不等于分析完整。",
       "hetu": "固定任务、上下文、稿件、反馈和事务回执已有；本轮新增逐条依据。",
@@ -97,9 +97,9 @@
         "rea:src/server/retainedSummaryDelivery.ts",
         "rea:src/application/investigation/InvestigationRetention.ts",
         "rea:src/server/ToolResultDelivery.ts",
-        "craft_anything:crates/engine/src/session.rs"
+        "source-record:dbab874517a7d5792393255a93eda2523c68a8525ec8df755d1283c0bc850b2d"
       ],
-      "observed": "REA在执行前核对保留能力，区分完整、部分、已保存及未保存结果；Craft可从项目盘上按ID回读未加载的记录。",
+      "observed": "source-record:7fd5fa3ed4b135be1d7997e263eeaf43e53c9712cc8af4891be2034777ce0178",
       "hetu": "持久稿件与原操作可固定分页；普通只读投影明确retained=false，逐次重验摘要。",
       "decision": "只在实际历史观察用例需要时增加保留；避免将重新执行读取冒充固定留存。",
       "status": "partial_existing"
@@ -107,8 +107,8 @@
     {
       "mechanism": "durable_memory_hypotheses_and_unknowns",
       "sources": [
-        "craft_anything:crates/engine/src/tools/investigation_tools.rs",
-        "craft_anything:crates/evidence/src/unknown.rs",
+        "source-record:dea48ebd32d4b0f2499cab5b4c339d8e00f4d385eb2c2390737a20e5e90ef7b5",
+        "source-record:bb6f4413d85643981c3863b0a907eec7dd76d0d4cb20a57d6704f1c485809bf1",
         "rea:src/domain/residualUnknown.ts"
       ],
       "observed": "调查记忆有稳定假设和发现标识、支持与反证；Unknown有修订、状态、验证要求和消解依据。",
@@ -120,11 +120,11 @@
     {
       "mechanism": "execution_journal_and_uncertain_outcomes",
       "sources": [
-        "craft_anything:crates/engine/src/lib.rs",
-        "craft_anything:crates/engine/src/journal.rs",
+        "source-record:46e51e45ec342ded91c7f236ba5de0c03b109000ebbdda398e8ec8bd8b51a143",
+        "source-record:16525fc709d1fa800076be229bd8563e02e6a9b62880cf3c3f0af14972a3cda7",
         "rea:src/server/recoveryInstructions.ts"
       ],
-      "observed": "Craft记录成功及失败调用；REA明确宿主超时不证明执行或清理结束，不重放未知操作。",
+      "observed": "source-record:b3a2ff24d4532b4804b9390d4512e4b43fa42faac5ca0e3e13d14e589d831eb5",
       "hetu": "成功写入有原键回执和审计，模型计划可恢复；没有精确任务内统一可检索的失败、取消和未知执行目录。",
       "decision": "新增执行目录前定义状态Owner和隐私预算，不复制请求正文或模型对话日志。",
       "priority": "P0",
@@ -135,7 +135,7 @@
       "sources": [
         "rea:src/domain/evidenceCompletionLedger.ts",
         "rea:src/application/ReconstructionObligationLedgerEvaluation.ts",
-        "craft_anything:crates/analysis/src/js_ledger.rs"
+        "source-record:97ef74f97dc5dfca41a3eaf7e1f57bcff6f1a3a27bb568785fb9344026465a1a"
       ],
       "observed": "账本从具体义务、Owner、用例、验证强度及证据计算完成或缺项；弱证据和失败不能按已实现计为证明。",
       "hetu": "收到候选、选择和定稿分别存在；Agent的done/supported不等于专业检查通过。",
@@ -146,12 +146,12 @@
     {
       "mechanism": "tool_registry_and_optional_guided_workflows",
       "sources": [
-        "craft_anything:crates/engine/src/tool.rs",
-        "craft_anything:crates/engine/src/registry.rs",
+        "source-record:bc5dab095fc65e259d3ee3580cadbef104f8a529f3b64928c7971d641d2c32dd",
+        "source-record:9bcdd99c84d61af37887cba63eff906c5af9d4e79de0aba46460404436c00708",
         "rea:src/contracts/promptContracts.ts",
         "rea:src/application/GuidedWorkflowAccess.ts"
       ],
-      "observed": "Craft从共享ToolSpec派生各入口；REA将同一工作流从prompt及普通工具读取，render不执行业务。",
+      "observed": "source-record:0d27473d2fda38c0244fdb9160c4186b8bb101c1bbf9885b5cdc4e86b1f14bcb",
       "hetu": "Core动作、CLI/MCP及专业动态Skills已共享；方法安装与当前会话加载分别核验。",
       "decision": "重复的确定性组合在应用用例交付；生成、创作判断和工具选择留在外部Agent，不建内置Agent循环。",
       "status": "partial_existing"
@@ -160,7 +160,7 @@
       "mechanism": "result_content_provenance",
       "sources": [
         "rea:src/server/toolResultEncoding.ts",
-        "craft_anything:crates/mcp/src/lib.rs"
+        "source-record:958b0a90555b78268aec39a075f8cd4b4df518b8631e408466b2a2c25a68f53a"
       ],
       "observed": "具体MCP结果附带目标内容来源标记，和初始化说明同时存在。",
       "hetu": "初始化指令与Skills有数据及授权边界；缺少统一逐结果内容来源元数据。",
@@ -171,7 +171,7 @@
     {
       "mechanism": "process_lifecycle_and_cleanup_ownership",
       "sources": [
-        "craft_anything:crates/platform/src/process.rs",
+        "source-record:867e7e7b72e51ee2c2d2e2182cdba60eaf6b55cbcd02ed5cecb0a5ce603b5f40",
         "rea:src/process/RetainedCommandCleanup.ts",
         "rea:src/server/RequestTrackingMcpServer.ts"
       ],
@@ -732,5 +732,9 @@
     "开发源码仍使用0.12.0包版本，通过制品和输入摘要区分正式发行；增强方法0.3.11未发布、未覆盖安装，也未重载已有MCP连接。",
     "未执行提交、推送、Tag、npm发布、Cloudflare部署或修改两份参考仓库。",
     "能力检索及前置条件、完整执行目录、专业完成度、正反依据、逐结果来源、生命周期专项与真实Agent评价仍按TODO推进。"
-  ]
+  ],
+  "source_record_notice": {
+    "view": "名称已归一化的历史记录；原始回执、字节与摘要保存在本地原始记录，旧摘要对应原始记录。",
+    "original_sha256": "b77531c48aebb189fec58472666b659161f440363c3ea981e5213567341e4833"
+  }
 }

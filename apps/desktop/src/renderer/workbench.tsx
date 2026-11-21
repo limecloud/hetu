@@ -1,5 +1,6 @@
 import React, { createContext, useContext } from "react";
 import { createPortal } from "react-dom";
+import type {SidebarLayer, SidebarPanel} from "@hetu/workbench-ui";
 
 export const PageActionsTarget = createContext<HTMLDivElement | null>(null);
 export function PageActions({ children }: { children: React.ReactNode }) {
@@ -14,6 +15,7 @@ export interface DocumentTools {
   readOnly?: boolean;
   dirty: boolean;
   busy: boolean;
+  composing?: boolean;
   save: () => void;
   ai: () => void;
 }
@@ -25,6 +27,14 @@ export interface AgentStatus {
 }
 
 export const Workbench = createContext<{
+  sidebarLayer: SidebarLayer;
+  setSidebarLayer: React.Dispatch<React.SetStateAction<SidebarLayer>>;
+  sidebarPanel: SidebarPanel;
+  setSidebarPanel: React.Dispatch<React.SetStateAction<SidebarPanel>>;
+  directoryTarget: HTMLDivElement | null;
+  searchTarget: HTMLDivElement | null;
+  navigationVisible: boolean;
+  setNavigationVisible: React.Dispatch<React.SetStateAction<boolean>>;
   directoryVisible: boolean;
   setDirectoryVisible: React.Dispatch<React.SetStateAction<boolean>>;
   inspector: boolean;
@@ -35,6 +45,8 @@ export const Workbench = createContext<{
   agentStatus: AgentStatus;
   setAgentStatus: React.Dispatch<React.SetStateAction<AgentStatus>>;
 }>({
+  sidebarLayer: "document", setSidebarLayer: () => {}, sidebarPanel: "directory", setSidebarPanel: () => {},
+  directoryTarget: null, searchTarget: null, navigationVisible: true, setNavigationVisible: () => {},
   directoryVisible: true, setDirectoryVisible: () => {},
   inspector: false, setInspector: () => {},
   focus: false, setFocus: () => {},

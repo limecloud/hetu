@@ -1,5 +1,6 @@
 import { StateEffect, StateField, type ChangeSet, type EditorState, type Text } from "@codemirror/state";
 import { invertedEffects } from "@codemirror/commands";
+import {manuscriptFormat} from "@hetu/workbench-ui/manuscript-format";
 
 function positions(source: string, document: Text) {
   const starts = [0];
@@ -42,8 +43,26 @@ export const editorSourceHistory = invertedEffects.of(transaction => transaction
   ? [restoreEditorBreaks.of(transaction.startState.field(editorSource).match(/\r\n?|\n/g) ?? [])] : []);
 
 export function editorSourceSelection(state: EditorState, from: number, to: number) {
-  const source = state.field(editorSource), offset = positions(source, state.doc);
-  const start = offset(from), end = offset(to), encoder = new TextEncoder();
+  const source = state.field(editorSource), {from: start, to: end} = editorSourceRange(state, from, to), encoder = new TextEncoder();
   return { byte_start: encoder.encode(source.slice(0, start)).length,
     byte_end: encoder.encode(source.slice(0, end)).length, quote: source.slice(start, end) };
+}
+
+export function editorSourceRange(state: EditorState, from: number, to: number) {
+  const offset = positions(state.field(editorSource), state.doc);
+  return {from: offset(from), to: offset(to)};
+}
+
+/** 普通编辑复制可见文字，原稿模式与明确复制原稿继续保留全部源字节。 */
+export function editorClipboardText(state: EditorState, from: number, to: number, formatted: boolean) {
+  if (!formatted) return editorSourceSelection(state, from, to).quote;
+  const source = state.field(editorSource), offset = positions(source, state.doc), end = offset(to);
+  let cursor = offset(from), text = "";
+  for (const mark of manuscriptFormat(source).hidden) {
+    if (mark.to <= cursor) continue;
+    if (mark.from >= end) break;
+    text += source.slice(cursor, Math.max(cursor, mark.from));
+    cursor = Math.min(end, Math.max(cursor, mark.to));
+  }
+  return text + source.slice(cursor, end);
 }

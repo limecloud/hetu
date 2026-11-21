@@ -25,11 +25,13 @@ import { canonKinds, entityName, expectedCanon } from "./canon-model.ts";
 import { CanonEditor, CanonHistory, CanonLock, CanonRemoval } from "./canon-editors.tsx";
 import { artworkMatches, artworkPreview, mergeArtwork, readArtworkPage, type Artwork } from "./artwork-model.ts";
 import "./canon.css";
+import {useObjectContextMenu} from "./text-context-menus.tsx";
 export interface SurfaceContext {
   work: WorkRef;
   notify: (message: string) => void;
   ai: (object?: Record<string, unknown>) => void;
   reviewTask?: (taskId: string) => void;
+  openDocument?: (documentId: string) => void;
 }
 export interface SurfaceContribution {
   id: string;
@@ -52,6 +54,7 @@ function SourceEvidence({ sources }: { sources?: any[] }) {
   </div>)}</div>;
 }
 function Canon({ work, notify, ai }: SurfaceContext) {
+  const context = useObjectContextMenu(notify);
   const workKey = `${work.workspace_id}/${work.kind}/${work.object_id}`;
   const [snapshot, setCanon] = useState<{ workKey: string; value: any }>(),
     [kind, setKind] = useState("characters"),
@@ -141,6 +144,16 @@ function Canon({ work, notify, ai }: SurfaceContext) {
     return images.filter(image => image.category === (entry.kind === "character" ? "character" : "scene") && artworkMatches(image, { kind: "entity", entity_ref: entry.id }) && (entry.kind !== "character" || !image.candidate.image_view || ["portrait", "front"].includes(image.candidate.image_view)))
       .sort((a, b) => (["portrait", "front"].indexOf(a.candidate.image_view) < 0 ? 2 : ["portrait", "front"].indexOf(a.candidate.image_view)) - (["portrait", "front"].indexOf(b.candidate.image_view) < 0 ? 2 : ["portrait", "front"].indexOf(b.candidate.image_view)) || b.received_at.localeCompare(a.received_at))[0];
   }
+  const entryContext = (entry: CanonEntry) => context(entityName(entry), [
+    {id: "open", label: "打开", action: () => {setSelectedID(entry.id); setShowImages(false);}},
+    {id: "edit", label: "编辑", disabled: held || locked, action: () => setEditor({entity: entry.value})},
+    {id: "copy-title", label: "复制名称", action: () => desktop.copy(entityName(entry))},
+    {id: "history", label: "设定历史", action: () => setHistory(true)},
+    {id: "ai", label: "让 AI 处理此设定", action: () => ai({entity_ref: entry.id, blueprint_revision: revision})},
+    {id: "change", separator: true},
+    ...(["character", "faction", "location"].includes(entry.kind) ? [{id: "archive", label: entry.value.archived ? "取消归档" : "归档", disabled: held || locked, action: () => change(entry)}] : []),
+    {id: "remove", label: "移除", danger: true, disabled: held || locked, action: () => change(entry, true)},
+  ]);
   return <section className="canon-workbench" aria-label="作品设定">
     <PageActions>
       <IconButton icon="refresh" label="刷新作品设定" disabled={loading} onClick={() => setReload((value) => value + 1)}/>
@@ -173,7 +186,7 @@ function Canon({ work, notify, ai }: SurfaceContext) {
     </div>}
     {!!visible.length && <div className="canon-results"><div className={["character", "location"].includes(category.kind) ? "canon-grid" : "canon-rows"} aria-label={category.label + "条目"}>{visible.map(entry => {
       const image = primary(entry), preview = artworkPreview(image?.preview);
-      return <section key={entry.id} className={"canon-entity " + entry.kind}><button className="canon-entity-open" onClick={() => { setSelectedID(entry.id); setShowImages(false); }} aria-label={"查看" + entityName(entry)}>
+      return <section key={entry.id} className={"canon-entity " + entry.kind}><button {...entryContext(entry)} className="canon-entity-open" onClick={() => { setSelectedID(entry.id); setShowImages(false); }} aria-label={"查看" + entityName(entry)}>
         {["character", "location"].includes(entry.kind) && <span className="canon-entity-image">{preview ? <img src={preview} alt={entityName(entry)}/> : <Icon name={entry.kind === "character" ? "image" : "layers"} size={20}/>}</span>}
         <span className="canon-entity-text"><strong>{entityName(entry)}</strong>{entry.value.description && <span>{entry.value.description}</span>}{entry.value.archived && <small>已归档</small>}{entry.kind === "event" && entry.value.time_anchor && <small>{entry.value.time_anchor.calendar} {entry.value.time_anchor.tick}</small>}</span>
       </button>{entryActions(entry)}</section>;

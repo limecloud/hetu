@@ -30,7 +30,7 @@ hetu model-service <status|login|poll>\n\n\
 Calls return one AXI JSON result. Input is a UTF-8 JSON object, up to 16 MiB.\n\
 Start without a workspace: inspect, then use the discovered creation action.\n\
 Keep the management reference, reserved directory and operation key.\n\
-This entry stays an Agent. Discover fixed proposals, record real author decisions in the conversation, execute and read back. Model costs keep their own authorization.\n"
+This entry stays an Agent. Read hetu.execution.get_mode: auto runs workspace actions directly; confirm reads directly and confirms one fixed write plan. Keep CAS, original operation keys and recovery.\n"
     } else {
         "河图洛书命令行\n\n\
 hetu [--locale zh-CN|en] --help\n\
@@ -47,7 +47,7 @@ hetu model-service <status|login|poll>\n\n\
 调用返回单个AXI JSON结果，输入须为完整UTF-8 JSON对象，最多16MiB。\n\
 从零开始无需工作区：先inspect，再使用已发现的新建动作。\n\
 保留管理引用、预留目录与原操作键，按实际能力继续。\n\
-本入口保持Agent身份；发现固定方案，依据真实作者决定在当前会话登记、执行并回读。模型费用遵循独立授权合同。\n"
+本入口保持Agent身份。先读hetu.execution.get_mode：auto直接处理当前工作区；confirm读取直通，写入集中确认固定计划。保留CAS、原操作键及恢复。\n"
     }
 }
 
@@ -244,6 +244,16 @@ fn execute(call: Call) -> Value {
                 creation,
                 task,
             } => {
+                if !creation && task.is_none() {
+                    let execution = hetu_core::execution::WorkspaceExecution::open_default("generic")?;
+                    return Ok(if call.action.starts_with("hetu.execution.") {
+                        let mut request = request;
+                        if matches!(call.action.as_str(),"hetu.execution.invoke"|"hetu.execution.prepare"|"hetu.execution.initialize") && request["input"].get("workspace_path").is_none() {
+                            request["input"]["workspace_path"] = json!(path);
+                        }
+                        execution.request(request)
+                    } else {execution.request_workspace(&path,request)});
+                }
                 let mut config = json!({"mode":"agent"});
                 config[if creation {
                     "creation_project_path"

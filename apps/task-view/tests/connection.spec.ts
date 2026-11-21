@@ -143,11 +143,12 @@ test("official Codex loads the installed plugin and discovers the App before UI 
     expect(server.tools.hetu_app_request?._meta?.ui?.visibility).toEqual(["app"]);
     const entry = server.tools.hetu_open_app;
     expect(entry?._meta?.["openai/ui"]?.entrypoints).toEqual([{ type: "global" }, { type: "thread" }]);
-    expect(entry?._meta?.ui?.resourceUri).toBe("ui://hetu/workbench/2");
+    const uri=entry?._meta?.ui?.resourceUri;
+    expect(uri).toMatch(/^ui:\/\/hetu\/workbench\/2\/[a-f0-9]{64}$/);
     // Codex额外协商elicitation时会暴露固定模型确认工具。
     expect(Object.keys(server.tools).length).toBeLessThanOrEqual(15);
-    expect(server.resources.some((resource: any) => resource.uri === "ui://hetu/workbench/2")).toBe(true);
-    const resource = await call("mcpServer/resource/read", { server: "hetu", uri: "ui://hetu/workbench/2" });
+    expect(server.resources.some((resource: any) => resource.uri === uri)).toBe(true);
+    const resource = await call("mcpServer/resource/read", { server: "hetu", uri });
     expect(resource.contents[0].mimeType).toBe("text/html;profile=mcp-app");
     expect(resource.contents[0].text).toContain("<!doctype html>");
   } finally {

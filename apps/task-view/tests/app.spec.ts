@@ -59,6 +59,47 @@ test("Chinese preferences persist through the official Apps bridge without adopt
   expect(errors).toEqual([]);
 });
 
+test("只读候选共用语义排版和可终止查找，不产生业务写入", async ({page}) => {
+  const value = fixture();
+  const payload = value.structuredContent as any;
+  payload.data.submission.candidates = [{candidate_id: "reference", kind: "text", title: "固定参考稿", content: "# 固定参考稿\n\n**灯塔**照亮海面。\n\n灯塔回应🌿。"}];
+  const {view, errors} = await open(page, value);
+  const reader = view.getByRole("region", {name: "固定参考稿", exact: true});
+  await expect(reader.locator(".manuscript-strong")).toHaveText("灯塔");
+  await expect(reader.locator("article")).not.toContainText("# 固定参考稿");
+  await reader.getByRole("button", {name: "正文查找", exact: true}).click();
+  await reader.getByRole("textbox", {name: "搜索正文内容", exact: true}).fill("灯塔");
+  await expect(reader).toContainText("1 / 2 处");
+  await reader.getByRole("button", {name: "下一处", exact: true}).click();
+  await expect(reader).toContainText("2 / 2 处");
+  await expect(reader.getByRole("button", {name: "替换", exact: true})).toHaveCount(0);
+  await reader.getByRole("button", {name: "原稿", exact: true}).click();
+  await expect(reader.locator("article")).toContainText("**灯塔**");
+  await expect(reader.locator("article")).toHaveCSS("font-family", /Courier/);
+  expect(await page.evaluate(() => window.harness.calls)).toEqual([]);
+  expect(errors).toEqual([]);
+});
+
+test("文稿候选共用小说和剧本排版，表现更新保留未保存意见及原稿", async ({ page }) => {
+  const value = fixture(), source = ".INT. 灯塔 - NIGHT\r\n\r\n江岚合上日记。\r\n\r\n@江岚\r\n船来了吗？🌿";
+  (value.structuredContent as any).data.submission.candidates = [{candidate_id: "text_reference", kind: "text", title: "夜航", content: source}];
+  const {view, errors} = await open(page, value);
+  await expect(view.locator(".reader")).toHaveCSS("font-size", "20px");
+  await view.getByRole("checkbox").check();
+  await view.getByLabel("补充要求或意见").fill("保留这个动作，尚未提交。");
+  await page.evaluate(() => window.harness.context({theme: "dark", locale: "zh-CN", "hetu/reading": {kind: "screenplay", preferences: {
+    document_theme: "paper", reading_profiles: {screenplay: {font_size: 22, line_height: 1.8}},
+  }}}));
+  await expect(view.locator(".screenplay-reader")).toHaveCSS("font-size", "22px");
+  await expect(view.locator(".screenplay-character")).toHaveText("江岚");
+  await expect(view.locator(".screenplay-dialogue")).toHaveText("船来了吗？🌿");
+  await expect(view.getByRole("checkbox")).toBeChecked();
+  await expect(view.getByLabel("补充要求或意见")).toHaveValue("保留这个动作，尚未提交。");
+  expect(await view.locator("#app").evaluate(el => getComputedStyle(el).colorScheme)).toBe("light");
+  expect(await page.evaluate(() => window.harness.calls)).toEqual([]);
+  expect(errors).toEqual([]);
+});
+
 test("lost save receipts are queried by their original key, not resubmitted", async ({ page }) => {
   const { view } = await open(page);
   await page.evaluate(() => { window.harness.saveMode = "lost"; });

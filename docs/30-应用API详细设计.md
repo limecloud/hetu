@@ -1,5 +1,7 @@
 # 应用 API 详细设计
 
+统一执行入口由 Core 拥有，外部宿主只传递明确工作区和 Agent 客户端。`hetu.execution.get_mode` 读取当前策略；`hetu.execution.invoke` 在 auto 直接执行单个动作；`hetu.execution.prepare`、`hetu.execution.record_confirmation` 和 `hetu.execution.execute` 组成 confirm 的集中计划；`hetu.execution.get_plan` 回读状态。计划固定工作区、策略修订、动作顺序、输入和操作键，重复请求返回原回执，未知结果只沿原计划和原键恢复。CLI、MCP、Skills 与桌面适配器共用这些动作，不自行实现第二套审批。
+
 ## 默认基础能力与视频审阅入口
 
 `hetu.baseline.inspect`在无作品环境核对随包基础动作合同，不启动插件、不授予作品权限；CLI通过稳定call使用，MCP复用通用动作入口。基础清单由 `contracts/baseline.json` 唯一维护。
@@ -877,6 +879,8 @@ Git 读取动作 references、read_version、merge_preview 提供版本线、固
 ### 25.7 本机设置与安装方案
 
 `hetu.local_settings.get/prepare/get_operation/execute` 在 Electron 架构中由独立 Rust 本机服务持有，稳定 CLI/MCP 直接复用，无需窗口或子 CLI。旧原生 LocalAutomation 保留原偏好域与原方案，不和新宿主双写。公开 `hetu.local_settings.record_decision` 可依据当前会话的真实用户指令登记确切方案决定；桌面 `local_settings/host` 使用同一决定实现。登记不执行，执行仍核验原客户端、状态版本、摘要与基线。偏好白名单包括语言、主题、书库布局、自动保存、字体、字号、行距、缩进、Git 作者和默认客户端；密钥与私密模型配置不回读。
+
+阅读设置第二版在同一动作中增加`reading_profiles`字段级更新、文稿纸色和独立写作开关，完整存储与旧字段投影由29拥有。固定方案使用迁移后的完整基线，嵌套补丁只修改指定字段，禁止用省略字段清空另一个档案。旧操作回执原样恢复，不因升级重发；旧基线的未执行方案显示冲突。GUI排版沿可信`update`即时保存，普通Agent仍准备确切方案，不获得作者通道。
 
 桌面机器连接安装通过同一本机App Server的私有`local_settings/request`传递`{client_adapter, request}`；request仍是公开动作、合同修订及输入信封，经Core按Agent身份核验。它与`local_settings/host`共享顺序队列，避免本机设置回读与另起CLI竞争锁；不把安装执行变成作者身份，也不提供作品或通用Shell入口。设置窗口仅开放专用安装IPC，作品授权仍走原工作台通道。
 

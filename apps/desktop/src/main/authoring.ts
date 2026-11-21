@@ -20,6 +20,8 @@ type AdoptionContext = {
   title: string;
   destination?: string;
   source: string;
+  source_format: string;
+  target_format?: string;
   before: string;
   request: Record<string, any>;
 };
@@ -31,6 +33,7 @@ function scopeOf(decision: Decision): Scope {
   return scope;
 }
 const decisionActions = new Set([
+  "hetu.documents.rename",
   "hetu.drafts.adopt",
   "hetu.documents.validate",
   "hetu.documents.finalize",
@@ -49,6 +52,7 @@ function reference(value: any) {
   };
 }
 function decisionDocument(action: string, input: any): unknown {
+  if (action === "hetu.documents.rename") return input?.document_id;
   if (action === "hetu.drafts.adopt")
     return input?.preview?.request?.target_ref?.document_id;
   if (action === "hetu.documents.validate")
@@ -188,6 +192,14 @@ export class Authoring {
         throw new Error("视频归属与当前作品不符。");
     } else throw new Error("工作台用例不可用。");
     return this.#call(action, input);
+  }
+  async rename(id: string, revision: string, title: string) {
+    await this.#document(id);
+    const current = data(await this.#call("hetu.documents.get", {document_id: id}));
+    if (current.revision.revision_id !== revision) throw new Error("文稿已有新修订，请保留名称并重新比较。");
+    if (typeof title !== "string" || !title.trim() || title.length > 200) throw new Error("文稿名称须为1至200个字符。");
+    return this.#write({document_id: id, action: "hetu.documents.rename", title: "重命名文稿",
+      input: {document_id: id, base_revision_id: revision, title: title.trim(), operation_key: randomUUID()}});
   }
   async handoff(view_kind: string, object: Record<string, unknown> = {}) {
     if (
@@ -455,6 +467,7 @@ export class Authoring {
         title,
         destination,
         source: value.content,
+        source_format: draft.source_format,
         before: "",
         request: {
           draft_ref: candidate.draft_ref,
@@ -472,6 +485,8 @@ export class Authoring {
       document_id: id,
       title: current.document.title,
       source: value.content,
+      source_format: draft.source_format,
+      target_format: current.revision.source_format,
       before: current.content,
       request: {
         draft_ref: candidate.draft_ref,
@@ -512,6 +527,7 @@ export class Authoring {
         eligible: true,
         is_new: !context.document_id,
         kind: this.work.kind,
+        source_format: context.source_format,
         destination: context.destination,
       },
     );
@@ -549,6 +565,8 @@ export class Authoring {
       document_id: context.document_id,
       title: context.title,
       source: context.source,
+      source_format: context.source_format,
+      target_format: context.target_format,
       before: context.before,
     };
   }
@@ -616,6 +634,8 @@ export class Authoring {
       },
       {
         after: planned.content,
+        kind: this.work.kind,
+        source_format: value.revision.source_format,
         eligible: planned.preview.eligible,
         blocker: planned.preview.blocker,
       },
@@ -641,7 +661,7 @@ export class Authoring {
         },
         title: "撤回「" + value.document.title + "」的定稿决定",
       },
-      { eligible: true, after: value.content },
+      { eligible: true, after: value.content, kind: this.work.kind, source_format: value.revision.source_format },
     );
   }
   prepared(token: string) {

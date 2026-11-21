@@ -1,0 +1,155 @@
+{
+  "status": "local_installed_verified_pending_author_review",
+  "version": "0.13.10",
+  "published": false,
+  "request": "小说正文也应铺满可用工作区，不保留纸张卡片与内层滚动",
+  "scope_correction": "之前误把全工作区布局限定为剧本，小说未实施；本轮统一所有文稿工作面",
+  "implementation": [
+    "共用固定紧凑页头与工作区边缘滚动，小说阅读和编辑都铺满可用宽高",
+    "取消纸张外框、圆角和外边距，正文维持可读行宽",
+    "浮标跟随正文栏而非整页右端",
+    "恢复阅读与编辑切换位置，并将页头与滚动区分离，避免菜单聚焦改变正文位置",
+    "正文阅读保留原换行；不修改受管原文"
+  ],
+  "checks": {
+    "novel_desktop_journey": "passed",
+    "screenplay_desktop_journey": "passed_before_final_stack_isolation_only_fix",
+    "document_regressions": 2,
+    "unit_tests": 7,
+    "docs": "passed",
+    "resource_manifest": "passed",
+    "capability_map": "passed",
+    "packaged_desktop": {
+      "passed": 2,
+      "log": "build/novel-full-workspace-20261120/desktop-packaged-tests.log"
+    },
+    "installed_codex": {
+      "version": "0.13.10",
+      "plugin_id": "hetu-workbench@hetu-luoshu-machine-connection",
+      "tools_error": null,
+      "entrypoints": [
+        {
+          "type": "global"
+        },
+        {
+          "type": "thread"
+        }
+      ],
+      "resource_uri": "ui://hetu/workbench/2/e51206b767f208e45999a029fc49657727b7fee190f9569880e647adcc2da565",
+      "html_sha256": "e51206b767f208e45999a029fc49657727b7fee190f9569880e647adcc2da565",
+      "html_bytes": 4174388,
+      "manual_mcp_configuration": false,
+      "gui_observed": false,
+      "app_only_bridge_called": true,
+      "private_session_preserved": true,
+      "registered_works": 18,
+      "same_desktop_work_refs": true,
+      "model_turn_started": false
+    },
+    "source_still_matches": true,
+    "installed_binary_matches_manifest": true,
+    "packaged_workbench": {
+      "passed": 2,
+      "transports": [
+        "stdio",
+        "official_codex_app_server"
+      ],
+      "novel_full_workspace_geometry": true,
+      "log": "build/novel-full-workspace-20261120/mcp-packaged-tests.log"
+    }
+  },
+  "resource_uri": "ui://hetu/workbench/2/e51206b767f208e45999a029fc49657727b7fee190f9569880e647adcc2da565",
+  "retained_failures": [
+    "旧布局将阅读和编辑切换混入同一滚动层，菜单聚焦会改变阅读位置；最终改为固定页头和单独正文滚动区",
+    "新增几何断言最初混用offsetHeight整数与0.5px边框；改用实际边界尺寸",
+    "源码MCP试验先于嵌入HTML二进制更新启动；摘要断言拒绝陈旧构建，完整随包验收待执行"
+  ],
+  "installation": {
+    "installed_at": "2026-11-20T09:40:54.813632+00:00",
+    "version": "0.13.10",
+    "application": "/Applications/Hetu.app",
+    "backup": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/novel-full-workspace-20261120/replaced-0.13.10-resource-update.app",
+    "manifest": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/novel-full-workspace-20261120/package-final/hetu-dev-YCNW2z/manifest.json",
+    "source_sha256": "5f58f434f157c5b773ece3c3bd5e40669315a650d0fb83fe4f5c7a00be775402",
+    "artifacts_verified": 3387,
+    "signing": "ad-hoc-development",
+    "codesign_verified": true,
+    "cli_version": "hetu 0.13.10",
+    "author_content_modified": false
+  },
+  "source_sha256": "5f58f434f157c5b773ece3c3bd5e40669315a650d0fb83fe4f5c7a00be775402",
+  "real_library": {
+    "version": "0.13.10",
+    "desktop_registered": 18,
+    "mcp_total": 18,
+    "same_work_identities": true,
+    "authorized": 13,
+    "previously_without_agent_connection": 5,
+    "resource_uri": "ui://hetu/workbench/2/e51206b767f208e45999a029fc49657727b7fee190f9569880e647adcc2da565",
+    "html_sha256": "e51206b767f208e45999a029fc49657727b7fee190f9569880e647adcc2da565",
+    "catalog_identities_unchanged": true,
+    "real_drama_opened_without_authorization": true,
+    "reference_characters": 1889,
+    "verified_drama_episodes": [
+      {
+        "characters": 2128,
+        "sha256": "a07769fe808acb1ed57467826fc1672d4ee259bbf3e2d16a21907d495fcd6007"
+      }
+    ],
+    "real_work_files_unchanged": true,
+    "real_novel_files_unchanged": true,
+    "novel_full_workspace": {
+      "width": 2390,
+      "height": 1344,
+      "stageWidth": 2390,
+      "stageHeight": 1291,
+      "paperWidth": 2390,
+      "header": 53,
+      "radius": "0px",
+      "border": "0px",
+      "innerOverflow": "visible",
+      "editorOverflow": "visible"
+    },
+    "real_novel_floating_annotation_preview": true,
+    "screenplay_layout": {
+      "width": 1060,
+      "paper": 1060,
+      "outer": "auto",
+      "inner": "visible",
+      "header": 60.6875
+    },
+    "previously_unconnected_works_opened": [
+      {
+        "kind": "drama",
+        "opened": true
+      },
+      {
+        "kind": "novel",
+        "opened": true
+      },
+      {
+        "kind": "novel",
+        "opened": true
+      },
+      {
+        "kind": "drama",
+        "opened": true
+      },
+      {
+        "kind": "novel",
+        "opened": true
+      }
+    ],
+    "browser_cards": 18,
+    "refresh_passed": true,
+    "screenshot": "build/novel-full-workspace-20261120/actual-library.png",
+    "scope": "同包本机18作品身份一致，新资源核对真实首集原字节及小说全工作区布局和浮动批注只读预览；本轮未逐集复验20集页面，不代替Codex原生GUI观察。"
+  },
+  "limitations": [
+    "未直接自动操控当前Codex原生GUI；官方App Server与严格AppBridge的渲染和业务回读分别取证。",
+    "实际作品只读预览；写入、冲突与恢复使用隔离资料。"
+  ],
+  "raw_evidence_directory": "build/novel-full-workspace-20261120",
+  "committed_this_change": false,
+  "date": "2026-11-20"
+}

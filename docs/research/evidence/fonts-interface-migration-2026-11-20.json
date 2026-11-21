@@ -1,0 +1,196 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-11-20",
+  "status": "local_slice_verified_goal_in_progress",
+  "scope": "R7本机字体目录、独立窗口界面大小、迁移回退及十万汉字输入基准",
+  "release_version_unchanged": "0.13.10",
+  "published": false,
+  "installed_app_updated": false,
+  "verification": {
+    "models": 10,
+    "desktop_fonts_settings_and_actual_downgrade_artifact": 4,
+    "plugin_scaling_and_real_core_journey": 1,
+    "task_app_bridge": 20,
+    "real_stdio_workbench": 1,
+    "official_codex_cli_workbench": {
+      "count": 1,
+      "version": "0.169.0"
+    },
+    "resource_and_authority_contract": 1,
+    "input_and_long_text": 2
+  },
+  "font_inventory": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "cold_ms": 153.409875,
+    "cached_ms": 0.01191599999998516,
+    "font_names": 813,
+    "scanned": 429,
+    "skipped": 0,
+    "complete": true,
+    "known_fonts": [
+      "Arial",
+      "Courier New",
+      "PingFang SC",
+      "Songti SC"
+    ]
+  },
+  "input_performance": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "cpu": "Apple M1",
+    "logical_cpus": 8,
+    "memory_bytes": 17179869184,
+    "viewport": {
+      "width": 1440,
+      "height": 940
+    },
+    "han_characters": 100000,
+    "source_utf8_bytes": 301998,
+    "paragraphs": 1000,
+    "opened_ms": 1363.4245840000003,
+    "samples_ms": [
+      22.800000000745058,
+      8.200000001117587,
+      27,
+      14.700000001117587,
+      31.09999999962747,
+      13.699999999254942,
+      14.199999999254942,
+      15.799999998882413,
+      16.800000000745058,
+      31.300000000745058,
+      27.59999999962747,
+      8,
+      30.40000000037253,
+      12.599999999627471,
+      14.099999999627471,
+      6.900000000372529,
+      21.5,
+      8.099999999627471,
+      24.5,
+      12.299999998882413,
+      11.200000001117587,
+      12.100000001490116,
+      24.40000000037253,
+      7.599999999627471,
+      30.699999999254942,
+      5.900000000372529,
+      22.399999998509884,
+      8,
+      27.40000000037253,
+      15.899999998509884,
+      14.900000000372529,
+      6.099999999627471,
+      30.40000000037253,
+      7,
+      28.40000000037253
+    ],
+    "warmup_samples": 5,
+    "p95_ms": 30.699999999254942,
+    "rendered_lines": 19,
+    "method": "beforeinput到第二次requestAnimationFrame；真实Chromium文本输入，非真实输入法组合或屏幕光子测量"
+  },
+  "behaviors": [
+    "共用SFNT/TTC元数据读取器；平台标准目录和macOS按需字体，中文别名、链接去重、读取预算、部分覆盖与名称搜索",
+    "只返回字体家族名与覆盖，不读取任意请求路径或传输字体字节；不向普通Agent及插件新增字体目录能力",
+    "主工作台和设置同一控件，列表可见项才加载真实样句与字形检测；目录失败可重试，保存仍沿原偏好CAS",
+    "当前原生工作台界面比例80～200%，独立设置Origin不串缩放，插件比例和CSS／原生坐标同步",
+    "原稿等宽及CJK回退；正文档案、稿件、未保存修改与撤销保持",
+    "真实前版第一版设置→等效迁移／原字节备份→前版拒绝第二版且不覆盖→备份回退→再次升级",
+    "两条真实App旅程均覆盖目录读取中断、重试、实际名称选择和跨会话偏好回读；MCP界面大小由宿主控制"
+  ],
+  "findings": [
+    {
+      "finding": "字体搜索框被通用菜单按钮宽度挤窄",
+      "fix": "限定刷新按钮宽度与输入flex，真实尺寸断言通过"
+    },
+    {
+      "finding": "字体目录重试时错误按钮同步卸载，contains把点击误判菜单外",
+      "fix": "使用原始composedPath判断事件归属，stdio及Codex两条实际重试链通过"
+    },
+    {
+      "finding": "原始目录列表同时载入几十种字体样句",
+      "fix": "IntersectionObserver按可见项加载样句及检测，保留列表搜索与准确回退提示"
+    },
+    {
+      "finding": "macOS苹方位于系统按需字体目录",
+      "fix": "只发现并读取Font专用资产目录；实际苹方、宋体回读"
+    },
+    {
+      "finding": "高缩放时CDP截图裁切",
+      "fix": "保留原始截图并用BrowserWindow.capturePage和布局断言复核实际窗口，不修改产品来配合截图"
+    }
+  ],
+  "limitations": [
+    "Windows／Linux字体目录和实际字形未在相应系统运行；自定义注册目录及旧资源叉字体没有完整枚举证据",
+    "字形可用检测不保证覆盖所有字符；缺字沿CJK及系统回退",
+    "输入延迟为beforeinput到第二次requestAnimationFrame软件度量，非真实IME、读屏或光子测量；千章冷开和完整性能矩阵未完成",
+    "未执行本轮覆盖安装、原生Codex Desktop GUI与作者试用；整版goal仍进行中"
+  ],
+  "previous_app_server": {
+    "path": "/Applications/Hetu.app/Contents/Resources/bin/hetu-app-server",
+    "sha256": "61cf7fbe25b33d3a07c0db62c9a3e0fb233b2a4d86064b1546dda4c262bc1acc",
+    "settings_schema_version": 1,
+    "actual_readback_verified": true
+  },
+  "logs": {
+    "fonts-verified-models.log": {
+      "path": "output/r7-experience-20261120/fonts-verified-models.log",
+      "sha256": "a32f70e80919f68cd3c06ec7cbf6fad59bdd17d1be2a012c71aceea8164b7b4a"
+    },
+    "fonts-verified-desktop-r3.log": {
+      "path": "output/r7-experience-20261120/fonts-verified-desktop-r3.log",
+      "sha256": "db9278f19dc02b963ee5ed109987b63920c92d76cc2f2dee04a2e3750b58ecdc"
+    },
+    "fonts-plugin-verified.log": {
+      "path": "output/r7-experience-20261120/fonts-plugin-verified.log",
+      "sha256": "b6c5ecafb3948042d3ca51e851fdbab0bea9713607e73979431f2c9305044bc5"
+    },
+    "fonts-verified-apps.log": {
+      "path": "output/r7-experience-20261120/fonts-verified-apps.log",
+      "sha256": "190adcc5f74cd001a6a1de60c0f22b6e020f7d98d570abf6d85cd8959dfcd724"
+    },
+    "fonts-verified-apps-r3.log": {
+      "path": "output/r7-experience-20261120/fonts-verified-apps-r3.log",
+      "sha256": "e6e4fe5ad803fc8ae9b396666e15f89b452adf3516fefcb8230d8d2f70ab74ca"
+    },
+    "fonts-current-resource.log": {
+      "path": "output/r7-experience-20261120/fonts-current-resource.log",
+      "sha256": "c537db833bacc4611f45c960705bba596d160595c0b33a9f8cc3cdc3a570e087"
+    },
+    "editor-performance.log": {
+      "path": "output/r7-experience-20261120/editor-performance.log",
+      "sha256": "45fbe23464b6120017d499b67bbe2f736c85c78223cef82d510fdf34eb734e3c"
+    }
+  },
+  "original_failures": [
+    "output/r7-experience-20261120/fonts-interface-first.log",
+    "output/r7-experience-20261120/fonts-verified-apps.log",
+    "output/r7-experience-20261120/fonts-verified-apps-r2.log"
+  ],
+  "source_sha256": {
+    "apps/desktop/src/main/font-catalog.ts": "14786d46eea8a5b25cce15c7891e935c7ef3e6dacfd70c1cc355bc4e3626ce5e",
+    "apps/desktop/src/main/settings-window.ts": "2f734e5869a93685abac9dabf0245b8d6c2f9537df98595a4204ed7ac3f1fc17",
+    "apps/desktop/src/main/main.ts": "c4db34be3e2534499c8ff46c813f24b3fab6443832769450e0bfda138a45561c",
+    "apps/desktop/src/main/mcp-workbench.ts": "ea7ce9f8fabc0f992570f8eb854bbc5a767e88e00acef9e3043d77659e516add",
+    "apps/desktop/src/interface-scale.ts": "9ef28e5841527063482333473ba1521873d1434203d63c89b5c384358f1d6e74",
+    "apps/desktop/src/renderer/interface-scale.tsx": "d713a67355f4ed98a1e54c5ad17e4cf45529ccebe76e1ca781a7431f21bd3ad3",
+    "apps/desktop/src/renderer/index.tsx": "b9a07d92273de0fe09f727728895fd81f82a4dea4f8df422e9d48ce30ce65153",
+    "packages/workbench-ui/src/font-picker.tsx": "5e1f4afb8510ab3cb5cfa0ca6ddfc6e58110dd9899902dfe66e1d01340ebff81",
+    "packages/workbench-ui/src/reading-controls.tsx": "fccf2967200727d8ef3bb3c86c16bcf5856f555c8c73e8d9965dea6bebfcbac6",
+    "packages/workbench-ui/src/reading.ts": "f389c192bc0dd99239ae94939db40737b4b6509204867cacdbdfa03c1871a1f5",
+    "packages/workbench-ui/src/workbench.css": "a9d2ff9061708beea3babc448ca25bf9f49662cd699c2ac89063513bd79153c4",
+    "apps/desktop/src/renderer/settings.css": "3b635655c5610454ff7e21219a20ecb4b7492fdaa27482c63aa1448a3ee2dae7"
+  },
+  "resources": {
+    "task-view.manifest.json": "2245c506b8e024adea510bba7f3fd8cea987e92513ed9e450211052cf155e44e",
+    "workbench.manifest.json": "01facc7182584c752158c89c18ac8e2cb1d2a60e5b3cac32952a49e8f0bb0a8f"
+  },
+  "checks": {
+    "docs": "待最终检查",
+    "localization": "1766双语键通过",
+    "capability_map": "生成及--check通过",
+    "git_diff_check": "通过"
+  }
+}

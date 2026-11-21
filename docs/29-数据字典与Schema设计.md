@@ -1,5 +1,15 @@
 # 数据字典与 Schema 设计
 
+## 本机设置第三版
+
+本机设置存储`schema_version=3`，由`local_settings`唯一拥有。`preferences.reading_profiles.novel/screenplay`分别保存完整的`font_family`、`font_name`、`font_size`、`line_height`、`paragraph_spacing`、`line_width`及`first_line_indent`；`document_theme`为跟随／清纸／暖纸／夜墨，`focus_paragraph`、`typewriter_scroll`及`smart_pairs`是独立开关。具体枚举、长度和数值约束以`contracts/actions.json`为准，不将字体、滚动或主题写入作品。
+
+`preferences.execution_mode` 只接受 `auto|confirm`，新安装与旧设置迁移均默认 `auto`。执行策略与阅读档案同属本机设置，只有这一份事实源；CLI、MCP 和 Skills 读取实际值，不缓存另一套默认。第二版迁移保留原有全部偏好、关联及安装记录，将原字节备份到 `migrations/v2/settings.json` 后与第三版原子提交；第一版直接迁移至第三版，保留原第一版备份。未知版本、缺字段或损坏记录不得重置。
+
+更新档案使用字段级深合并，只改变本次明确字段，不替换另一类型或未指定字段；相同字段仍受整体修订CAS约束。修订1公开入口的旧字体／字号／额外行距／缩进字段在边界转为小说档案，读取投影按需计算旧字段，不持久化第二份值；旧字段与同次新档案字段混用时拒绝，避免优先级不明。
+
+旧存储迁移先校验完整原记录，原字节写入固定迁移备份，并与新设置通过同一可恢复事务提交。旧字号继续按px，小说行高以旧阅读视图为基线，采用`1.35+line_spacing/font_size`，原880px行宽转为相应字形宽度；剧本按原独立样式迁移。迁移推进本机设置修订，使未执行的旧基线方案明确过期；已执行回执和原操作仍保留。未知Schema不写入，格式错误不以默认值覆盖；旧Core拒绝新存储，不逆向降级。旧编辑器被底层固定1.4倍行高覆盖的表现作为缺陷修正；阅读与编辑共用迁移后的同一档案，不为保留这一差异双写偏好。
+
 ## 默认基础产品与视频审阅数据
 
 `contracts/baseline.json`拥有随包作品类型、核心动作和工作面要求，不属于作品数据或插件安装状态。视频基础合同由 `contracts/schemas/video-review.schema.json` 拥有：媒体记录固定work_ref、video_episode_id、asset_ref、purpose、stream_index、time_base、duration_ticks和previous_media_ref；区间采用同一流时基的半开区间start_tick至end_tick。时长与流信息标为提交方声明，Core不从文件签名推定解码或观看成功。

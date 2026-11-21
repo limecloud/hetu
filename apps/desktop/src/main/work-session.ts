@@ -22,9 +22,11 @@ export type WorkSessionPorts = {
   chooseFile(options: any): Promise<string | undefined>;
   saveFile(options: any): Promise<string | undefined>;
   agentClient(): string;
+  workspacePath: string;
   collaborationContext(client: string): any;
   coreCliBinary(): string;
   copy(text: string): void;
+  executionPolicy(): Promise<{preferences: {execution_mode: "auto" | "confirm"}}>;
 };
 
 /** 共享作品应用用例；Electron与MCP工作台只替换宿主IO，不复制审核和编辑规则。 */
@@ -32,7 +34,10 @@ export function createWorkSession(ref: WorkRef, selectedServer: AppServer, ports
   const { recovery, active, scopedReview, agentClient, collaborationContext, coreCliBinary } = ports;
   const work = ref;
   const clipboard = { writeText: (text: string) => ports.copy(text) };
-  const confirm = (options: any) => ports.confirm(options.message,options.detail,options.buttons?.[1]);
+  const confirm = async (options: any) => {
+    const policy = await ports.executionPolicy();
+    return policy.preferences.execution_mode === "auto" || ports.confirm(options.message,options.detail,options.buttons?.[1]);
+  };
   const handlers = new Map<string, (...args:any[])=>any>();
   const shellHandler = (name: string, handler: (...args:any[])=>any) => handlers.set(name.slice(8), handler);
   let taskReview: TaskReview, authoring: Authoring, management: ManagementReview, versions: VersionReview, resources: ResourceReview, media: MediaAccess;
@@ -134,13 +139,22 @@ export function createWorkSession(ref: WorkRef, selectedServer: AppServer, ports
         return authoring.read(action, input);
       },
     );
+    shellHandler("desktop:execution", async (request: any) => {
+      if (!active()) throw new Error("作品已切换，请重新打开执行计划。");
+      const fixed = structuredClone(request);
+      if (["hetu.execution.invoke", "hetu.execution.prepare"].includes(fixed?.action)) {
+        if (fixed.input?.workspace_path && fixed.input.workspace_path !== ports.workspacePath) throw new Error("执行请求不属于当前工作区。");
+        fixed.input = {...fixed.input, workspace_path: ports.workspacePath};
+      }
+      return selectedServer.request("execution/request", {client_adapter: agentClient(), request: fixed});
+    });
     shellHandler("desktop:canon", async (method: string, input: any = {}) => {
       const current = canon;
       if (!current) throw new Error("请选择当前作品。");
       if (method === "get") return current.get(input.revision);
       if (method === "preview") return current.preview(input);
-      if (method === "save") return current.save(input);
-      if (method === "lock") return current.lock(input);
+      if (method === "save") {return current.save(input);}
+      if (method === "lock") {return current.lock(input);}
       if (method === "recover") return current.recover();
       if (method === "acknowledge") return current.acknowledge();
       throw new Error("未知设定用例。");
@@ -149,7 +163,7 @@ export function createWorkSession(ref: WorkRef, selectedServer: AppServer, ports
       const current = novelDetails;
       if (!current) throw new Error("请选择当前小说。");
       if (method === "get") return current.get();
-      if (method === "save") return current.save(input);
+      if (method === "save") {return current.save(input);}
       if (method === "recover") return current.recover();
       if (method === "acknowledge") return current.acknowledge();
       throw new Error("未知小说编辑用例。");
@@ -160,7 +174,7 @@ export function createWorkSession(ref: WorkRef, selectedServer: AppServer, ports
       if (method === "get") return current.get(input.revision);
       if (method === "requests") return current.requests(input.cursor);
       if (method === "candidates") return current.candidates(input.request_id);
-      if (method === "prepare") return current.prepare(input);
+      if (method === "prepare") {return current.prepare(input);}
       if (method === "commit") return current.commit(input.token);
       if (method === "recover") return current.recover();
       if (method === "acknowledge") return current.acknowledge();
@@ -174,8 +188,8 @@ export function createWorkSession(ref: WorkRef, selectedServer: AppServer, ports
       const current = outlineReview;
       if (!current) throw new Error("请选择当前小说。");
       if (method === "get") return current.get();
-      if (method === "save") return current.save(input);
-      if (method === "draft") return current.draft(input.value);
+      if (method === "save") {return current.save(input);}
+      if (method === "draft") {return current.draft(input.value);}
       if (method === "recover") return current.recover();
       throw new Error("未知大纲用例。");
     });
@@ -183,10 +197,10 @@ export function createWorkSession(ref: WorkRef, selectedServer: AppServer, ports
       const current = videoReview;
       if (!current) throw new Error("请选择当前视频作品。");
       if (["list", "media", "feedback", "delivery"].includes(method)) return current.read(method, input);
-      if (method === "save_feedback") return current.saveFeedback(input);
+      if (method === "save_feedback") {return current.saveFeedback(input);}
       if (method === "journal") return current.journal();
       if (method === "recover") return current.recover();
-      if (method === "draft") return current.draft(input.media_ref, input.value);
+      if (method === "draft") {return current.draft(input.media_ref, input.value);}
       if (method === "export") return current.exportFile(input.media_ref, async name => {
         return ports.saveFile({ title: "导出本版视频", defaultPath: name });
       });
@@ -203,9 +217,9 @@ export function createWorkSession(ref: WorkRef, selectedServer: AppServer, ports
       if (!current) throw new Error("请选择当前作品。");
       if (method === "list") return current.list(input);
       if (method === "get") return current.get(input.resource_id, input.revision);
-      if (method === "draft") return current.draft(input.resource_id, input.value);
+      if (method === "draft") {return current.draft(input.resource_id, input.value);}
       if (method === "usages") return current.usages(input.resource_id, input.cursor);
-      if (method === "prepare") return current.prepare(input.resource_id, input.revision, input.sha256, input.kind, input.edits);
+      if (method === "prepare") {return current.prepare(input.resource_id, input.revision, input.sha256, input.kind, input.edits);}
       if (method === "recover") return current.recover(input.resource_id);
       if (method === "acknowledge") return current.acknowledge(input.resource_id, input.operation_key);
       if (method === "commit") {
@@ -259,34 +273,35 @@ export function createWorkSession(ref: WorkRef, selectedServer: AppServer, ports
       const current = authoring,
         tasks = taskReview;
       if (!current || !tasks) throw new Error("请选择当前作品。");
+      if (method === "rename") {return current.rename(input.document_id, input.base_revision_id, input.title);}
       if (method === "adoption_options")
         return current.adoptionOptions(
           await tasks.candidate(input.task_ref, input.candidate_id),
           input.task_ref,
         );
-      if (method === "adoption")
+      if (method === "adoption") {
         return current.adoption(
           await tasks.candidate(input.task_ref, input.candidate_id),
           input.task_ref,
           input.new_target,
-        );
+        );}
       if (method === "adoption_context")
         return current.adoptionContext(
           await tasks.candidate(input.task_ref, input.candidate_id),
           input.task_ref,
         );
-      if (method === "adoption_partial")
+      if (method === "adoption_partial") {
         return current.adoptionPartial(input.token, input.source, input.target);
+      }
       if (method === "check") return current.check(input.document_id);
-      if (method === "finalization")
+      if (method === "finalization") {
         return current.finalization(
           input.document_id,
           input.report_ref,
           input.comments,
           input.coverage,
-        );
-      if (method === "withdrawal")
-        return current.withdrawal(input.document_id, input.reason);
+        );}
+      if (method === "withdrawal") {return current.withdrawal(input.document_id, input.reason);}
       if (method === "journal") return current.journal(input.document_id);
       if (method === "acknowledge")
         return current.acknowledge(input.document_id, input.operation_key);

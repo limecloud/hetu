@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { desktop } from "./bridge.ts";
 import { domainText } from "./strings.ts";
+import {ManuscriptReading, ManuscriptComparison} from "@hetu/workbench-ui";
+import {usePreferences} from "./preferences.tsx";
 import { PartialAdoption } from "./partial-adoption.tsx";
 
 function resultData(result: any) {
@@ -26,6 +28,9 @@ export function DecisionPreview({
   confirm: () => void;
   cancel: () => void;
 }) {
+  const preferences = usePreferences();
+  const format = value.source_format ?? (value.kind === "drama" ? "fountain" : "markdown");
+  const kind = value.kind === "drama" ? "screenplay" : "novel";
   const compare = value.before !== undefined && !value.is_new;
   return (
     <section className="decision-preview" aria-label="作者决定预览">
@@ -37,22 +42,12 @@ export function DecisionPreview({
           ，采纳后仍需单独检查与定稿。
         </p>
       )}
-      <div className={compare ? "compare" : ""}>
-        {compare && (
-          <section>
-            <h4>当前正文</h4>
-            <pre>{value.before}</pre>
-          </section>
-        )}
-        <section>
-          <h4>{value.is_new || compare ? "采纳后正文" : "固定修订内容"}</h4>
-          <pre>{value.after}</pre>
-        </section>
-      </div>
+      {compare ? <ManuscriptComparison before={value.before} after={value.after} beforeLabel="当前正文" afterLabel="采纳后正文" title={value.title} format={format} kind={kind} preferences={preferences}/>
+        : <ManuscriptReading text={value.after ?? ""} title={value.title} label={value.is_new ? "采纳后正文" : "固定修订内容"} format={format} kind={kind} preferences={preferences}/>}
       {value.baseline !== undefined && value.baseline !== value.before && (
         <details>
           <summary>Agent 使用的原始基线</summary>
-          <pre>{value.baseline}</pre>
+          <ManuscriptReading text={value.baseline} title={value.title} label="Agent 使用的原始基线" format={format} kind={kind} preferences={preferences}/>
         </details>
       )}
       {value.blocker && <p role="alert">{value.blocker.message}</p>}
@@ -299,6 +294,7 @@ export function AuthorAdoption({
       {selected && options && !options.is_new && (
         <PartialAdoption
           key={selected}
+          kind={options.kind}
           task_ref={task_ref}
           candidate_id={selected}
           busy={busy}

@@ -650,7 +650,7 @@ impl Kernel {
     ) -> Result<Value> {
         (|| -> Result<Value> {
             ensure(
-                self.author || conversation,
+                self.has_workspace_authority() || conversation,
                 "forbidden",
                 "插件授权须通过可信作者入口或精确会话决定。",
             )?;

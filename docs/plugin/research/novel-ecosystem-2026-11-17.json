@@ -19,7 +19,7 @@
       "LiPu-jpg/Openwrite",
       "sailoumili/novel-writer",
       "KurohaneKaoruko/DSH-Creator",
-      "shiyan688/dsh-novel-craft"
+      "source-record:923e03aa0559ad1e87cea176820539d27f9d931f44461be800c4948c33e6cee4"
     ],
     "root_licenses_retrieved": 10,
     "upstream_installed": false,
@@ -138,9 +138,9 @@
       "hetu_assessment": "规则检查供审校参考；标点、文风偏好不作为通用保存硬门禁。"
     },
     {
-      "repository": "shiyan688/dsh-novel-craft",
-      "repository_url": "https://github.com/shiyan688/dsh-novel-craft",
-      "market_url": "https://www.dsh.so/zh/artifact/dsh-novel-craft-2/",
+      "repository": "source-record:923e03aa0559ad1e87cea176820539d27f9d931f44461be800c4948c33e6cee4",
+      "repository_url": "source-record:37983b535da6d912981adf4ce958f38ef18a6c79571e927d93d2eb959b526dea",
+      "market_url": "source-record:86e578983199bc5d9bedecffdc624a5562eb4d61716ef396a3f313dfa0aee13b",
       "fixed_commit": "8a52268b3d521e11fd78a3117c03c1f5a771a2cf",
       "description_claim": "面向中文小说作者的开源 DSH 写作插件：点赞/点踩提炼可编辑的文风偏好，支持候选稿、章节管理与局部改稿。MIT；需 DeepSeek Harness 和自备模型。",
       "category": "prose_preference",
@@ -662,12 +662,12 @@
       "kind": "readme"
     },
     {
-      "repository": "shiyan688/dsh-novel-craft",
+      "repository": "source-record:923e03aa0559ad1e87cea176820539d27f9d931f44461be800c4948c33e6cee4",
       "commit": "8a52268b3d521e11fd78a3117c03c1f5a771a2cf",
       "path": "README.md",
       "sha256": "b5661e71186d8792776adf97ce2b4599362aaa5a995f01b9a1230dc4b7f50196",
       "bytes": 24473,
-      "url": "https://github.com/shiyan688/dsh-novel-craft/blob/8a52268b3d521e11fd78a3117c03c1f5a771a2cf/README.md",
+      "url": "source-record:39709c9fc80e0cfddca3fdc2074e1385e632d17d882cb223216f31e062b73240",
       "kind": "readme"
     },
     {
@@ -815,12 +815,12 @@
       "kind": "license"
     },
     {
-      "repository": "shiyan688/dsh-novel-craft",
+      "repository": "source-record:923e03aa0559ad1e87cea176820539d27f9d931f44461be800c4948c33e6cee4",
       "commit": "8a52268b3d521e11fd78a3117c03c1f5a771a2cf",
       "path": "LICENSE",
       "sha256": "858f8cf87b60ff6f313ba93c1dd6ca97380ed7a09b78a175c8f80e95ebf1292d",
       "bytes": 1066,
-      "url": "https://github.com/shiyan688/dsh-novel-craft/blob/8a52268b3d521e11fd78a3117c03c1f5a771a2cf/LICENSE",
+      "url": "source-record:a07e1f6a6e58c9516478812f9f8cd56cf499198f73bae0e6021fa6a7f9988852",
       "kind": "license"
     },
     {
@@ -878,66 +878,66 @@
       "kind": "license"
     },
     {
-      "repository": "shiyan688/dsh-novel-craft",
+      "repository": "source-record:923e03aa0559ad1e87cea176820539d27f9d931f44461be800c4948c33e6cee4",
       "commit": "8a52268b3d521e11fd78a3117c03c1f5a771a2cf",
       "path": "lib/core/ledger.js",
       "sha256": "443fdcc69a3c211acbda1c7c72b4f1af840bf4bb55b7771a8b07a84bcab6d54f",
       "bytes": 32662,
-      "url": "https://github.com/shiyan688/dsh-novel-craft/blob/8a52268b3d521e11fd78a3117c03c1f5a771a2cf/lib/core/ledger.js",
+      "url": "source-record:e04506d0ea8ce2860a5bb32ad69527b6b6cb2362b35cc67fd515b7629a90442a",
       "kind": "focused_file"
     },
     {
-      "repository": "shiyan688/dsh-novel-craft",
+      "repository": "source-record:923e03aa0559ad1e87cea176820539d27f9d931f44461be800c4948c33e6cee4",
       "commit": "8a52268b3d521e11fd78a3117c03c1f5a771a2cf",
       "path": "lib/core/annotate.js",
       "sha256": "aaf43020ddd71432b51f2bb88dbdc59460af35bb9211d076bc0c2fa680578aba",
       "bytes": 16770,
-      "url": "https://github.com/shiyan688/dsh-novel-craft/blob/8a52268b3d521e11fd78a3117c03c1f5a771a2cf/lib/core/annotate.js",
+      "url": "source-record:36a0c626a988694c2493b1b8917956ee5b13a0f449deda87a21ba2551d5a4eaa",
       "kind": "focused_file"
     },
     {
-      "repository": "shiyan688/dsh-novel-craft",
+      "repository": "source-record:923e03aa0559ad1e87cea176820539d27f9d931f44461be800c4948c33e6cee4",
       "commit": "8a52268b3d521e11fd78a3117c03c1f5a771a2cf",
       "path": "lib/core/pack.js",
       "sha256": "a057a8e98811c1ef48568c9c04f042cb8cf529ef80065ccd5181d3123efbfdf4",
       "bytes": 20428,
-      "url": "https://github.com/shiyan688/dsh-novel-craft/blob/8a52268b3d521e11fd78a3117c03c1f5a771a2cf/lib/core/pack.js",
+      "url": "source-record:f701b8a6c58bf41a1e70bb0d8ccac7c9b1b5f0f5e49cdb9658b807fe3c248546",
       "kind": "focused_file"
     },
     {
-      "repository": "shiyan688/dsh-novel-craft",
+      "repository": "source-record:923e03aa0559ad1e87cea176820539d27f9d931f44461be800c4948c33e6cee4",
       "commit": "8a52268b3d521e11fd78a3117c03c1f5a771a2cf",
       "path": "lib/core/pipeline.js",
       "sha256": "8a07927f9c16f9a2089f099b83d1050c9f62c67e7d83e9315ce25635a8a2eaf5",
       "bytes": 47383,
-      "url": "https://github.com/shiyan688/dsh-novel-craft/blob/8a52268b3d521e11fd78a3117c03c1f5a771a2cf/lib/core/pipeline.js",
+      "url": "source-record:b2f1ea89aaea35fc338b4b6c88ef2c5a8eabf73501a317e5e964de6878570a4b",
       "kind": "focused_file"
     },
     {
-      "repository": "shiyan688/dsh-novel-craft",
+      "repository": "source-record:923e03aa0559ad1e87cea176820539d27f9d931f44461be800c4948c33e6cee4",
       "commit": "8a52268b3d521e11fd78a3117c03c1f5a771a2cf",
       "path": "skills/taste-calibration/SKILL.md",
       "sha256": "61ea2301c9cd5e84dddf0cf31d554aa90050e25031019e9b7c5d8fbbab688707",
       "bytes": 6662,
-      "url": "https://github.com/shiyan688/dsh-novel-craft/blob/8a52268b3d521e11fd78a3117c03c1f5a771a2cf/skills/taste-calibration/SKILL.md",
+      "url": "source-record:b836f62b80b988292df482b4dd26309f43fc96523292df1ea05ee5189badfeff",
       "kind": "focused_file"
     },
     {
-      "repository": "shiyan688/dsh-novel-craft",
+      "repository": "source-record:923e03aa0559ad1e87cea176820539d27f9d931f44461be800c4948c33e6cee4",
       "commit": "8a52268b3d521e11fd78a3117c03c1f5a771a2cf",
       "path": "THIRD_PARTY_NOTICES.md",
       "sha256": "1653c9e0e92aed2b86bd1f05aff397d3d33b6a773d6726da78434d385f112328",
       "bytes": 4093,
-      "url": "https://github.com/shiyan688/dsh-novel-craft/blob/8a52268b3d521e11fd78a3117c03c1f5a771a2cf/THIRD_PARTY_NOTICES.md",
+      "url": "source-record:5977f9e663df21dd86468514deccb647f5d039a4d3336475affc312319e971bd",
       "kind": "focused_file"
     },
     {
-      "repository": "shiyan688/dsh-novel-craft",
+      "repository": "source-record:923e03aa0559ad1e87cea176820539d27f9d931f44461be800c4948c33e6cee4",
       "commit": "8a52268b3d521e11fd78a3117c03c1f5a771a2cf",
       "path": "package.json",
       "sha256": "8afc830c79698510eee0554046e6f12c18e6f7e359919f8af83f14c1b6ed0e58",
       "bytes": 2067,
-      "url": "https://github.com/shiyan688/dsh-novel-craft/blob/8a52268b3d521e11fd78a3117c03c1f5a771a2cf/package.json",
+      "url": "source-record:6195f62d423dcaf7a493ab7a687143297e2cbc152ef3a953cb339bb12a9f66b1",
       "kind": "focused_file"
     },
     {

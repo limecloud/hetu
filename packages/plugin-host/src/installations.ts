@@ -1,5 +1,5 @@
 /** 桌面与机器入口共用插件安装状态、依赖解析和包快照。 */
-import { mkdir, readFile, writeFile, rename, unlink } from "node:fs/promises";
+import { mkdir, readFile, writeFile, rename, unlink, realpath } from "node:fs/promises";
 import { createHash, randomUUID } from "node:crypto";
 import path from "node:path";
 import { PluginPackage } from "./package.ts";
@@ -83,15 +83,21 @@ export class PluginInstallations {
       }
       packages=state.packages.filter(item=>item.manifest&&needed.has(item.manifest.id));
     }
-    for (const item of packages) {
-      if (item.removed) continue;
-      try {
-        const pkg = await PluginPackage.inspect(item.path,item.sha256);
-        if (pkg.sha256 !== item.sha256 || item.manifest && pkg.manifest.id !== item.manifest.id)
-          throw new Error("已安装插件的固定包摘要不一致。");
-        host.add(pkg);
-      } catch (error) {
-        host.loadErrors.set(item.manifest?.id ?? item.sha256, error instanceof Error ? error.message : "插件包无法读取。");
+    // 仅并发读取与核验；贡献注册和依赖生命周期保持原顺序。
+    for (let offset = 0; offset < packages.length; offset += 4) {
+      const batch = packages.slice(offset, offset + 4).filter(item => !item.removed);
+      const results = await Promise.allSettled(batch.map(item => PluginPackage.inspect(item.path, item.sha256)));
+      for (const [index, result] of results.entries()) {
+        const item = batch[index];
+        try {
+          if (result.status === "rejected") throw result.reason;
+          const pkg = result.value;
+          if (pkg.sha256 !== item.sha256 || item.manifest && pkg.manifest.id !== item.manifest.id)
+            throw new Error("已安装插件的固定包摘要不一致。");
+          host.add(pkg);
+        } catch (error) {
+          host.loadErrors.set(item.manifest?.id ?? item.sha256, error instanceof Error ? error.message : "插件包无法读取。");
+        }
       }
     }
     for (const item of packages)
@@ -105,13 +111,21 @@ export class PluginInstallations {
   }
   async snapshot(pkg: PluginPackage) {
     const directory = path.join(this.directory, "plugin-packages", pkg.sha256);
+    let existing: string | undefined;
+    try { existing = await realpath(directory); }
+    catch (error: any) { if (error.code !== "ENOENT") throw error; }
+    // 已安装包就是运行快照；重验固定字节，不在打开工作面时重写同一份安装文件。
+    if (existing === pkg.source) {
+      await PluginPackage.inspect(directory, pkg.sha256);
+      return directory;
+    }
     await mkdir(directory, { recursive: true });
     for (const [name, bytes] of pkg.entries()) {
       const target = path.join(directory, name);
       await mkdir(path.dirname(target), { recursive: true });
       await writeFile(target, bytes, { mode: 0o600 });
     }
-    if ((await PluginPackage.inspect(directory)).sha256 !== pkg.sha256) throw new Error("包快照校验失败。");
+    await PluginPackage.inspect(directory, pkg.sha256);
     return directory;
   }
   async inspect() {

@@ -1,6 +1,6 @@
 {
   "name": "@hetu/desktop",
-  "version": "0.13.10",
+  "version": "0.14.0",
   "private": true,
   "type": "module",
   "main": "dist/main.cjs",
@@ -13,15 +13,19 @@
     "build:workbench": "node scripts/build-workbench.mjs"
   },
   "dependencies": {
+    "@codemirror/autocomplete": "6.20.4",
     "@codemirror/commands": "6.11.1",
+    "@codemirror/lang-markdown": "6.5.2",
+    "@codemirror/language": "6.13.1",
     "@codemirror/state": "6.7.6",
     "@codemirror/view": "6.43.15",
-    "@hetu/plugin-host": "0.13.10",
-    "@hetu/plugin-sdk": "0.13.10",
+    "@hetu/plugin-host": "0.14.0",
+    "@hetu/plugin-sdk": "0.14.0",
+    "@hetu/workbench-ui": "0.14.0",
+    "@lezer/highlight": "1.2.5",
     "@modelcontextprotocol/ext-apps": "2.0.4",
     "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "@hetu/workbench-ui": "0.13.10"
+    "react-dom": "18.3.1"
   },
   "devDependencies": {
     "@electron/packager": "20.3.0",

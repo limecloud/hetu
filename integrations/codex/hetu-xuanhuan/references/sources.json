@@ -32,15 +32,15 @@
       "decision": "synthesis-reference",
       "reviewedFiles": [
         {
-          "path": "skills/scene-craft/references/deep-pov.md",
+          "path": "source-record:81718df42f3952b2529728120e6730077494aeae0460f83a3fb6a562dce0b213",
           "sha256": "5ff5924e63955504398ac2aa9ac9f6f957627ed1cfce0602200454ad8e3c7c32"
         },
         {
-          "path": "skills/scene-craft/references/dialogue-subtext.md",
+          "path": "source-record:6885002e460cc5818d93f23db089975594c118d90e77a3465ba3d2f930a3e610",
           "sha256": "5988bdb4ba9b596fe40125ece9a11c448a48fb3418d80a40eae1bbac12332514"
         },
         {
-          "path": "skills/scene-craft/references/exposition.md",
+          "path": "source-record:ad6d63e4f0eaedf76d027289e972bf21df254b65d92608837420ffd3c75bfcc1",
           "sha256": "d9676f2b54c58fa2d1ac02db1aa0991f4b03a5d63c0184a54b1c2d603d769796"
         }
       ],

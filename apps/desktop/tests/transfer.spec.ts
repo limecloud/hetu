@@ -106,7 +106,9 @@ for (const kind of ["novel", "drama"] as const) test(`${kind} CLI/MCP固定导�
     }, summary: "导入潮汐来信", operation_key: "import-plan" }));
     await navigate(page!, "原稿导入");
     await page!.getByRole("combobox", { name: "当前管理方案" }).selectOption(proposal.proposal_id);
-    await expect(page!.getByRole("region", { name: "固定导入内容" })).toContainText(text.trim());
+    const importView = page!.getByRole("region", {name: "固定导入内容", exact: true});
+    await importView.getByRole("button", {name: "原稿", exact: true}).click();
+    await expect(importView.locator(".manuscript-reading article")).toHaveText(text.trim());
     await page!.getByRole("button", { name: "让 AI 准备导入", exact: true }).click();
     await expect(page!.getByRole("status")).toContainText("已准备当前作品的协作请求");
     const handoff = await app!.evaluate(({ clipboard }) => JSON.parse(clipboard.readText().split("\n").slice(1).join("\n")));

@@ -1,0 +1,150 @@
+[
+  {
+    "name": "plain",
+    "source": "普通文字🌿",
+    "without_style": "普通文字🌿",
+    "attributes": []
+  },
+  {
+    "name": "inline",
+    "source": "前<span data-hetu-color=\"red\">红**字**🌿</span>后",
+    "without_style": "前红**字**🌿后",
+    "attributes": [
+      {
+        "color": "red"
+      }
+    ]
+  },
+  {
+    "name": "nested",
+    "source": "<span data-hetu-font=\"serif\">甲<span data-hetu-color=\"#12AB34\">乙</span>丙</span>",
+    "without_style": "甲乙丙",
+    "attributes": [
+      {
+        "font": "serif"
+      },
+      {
+        "color": "#12ab34"
+      }
+    ]
+  },
+  {
+    "name": "block",
+    "source": "<div data-hetu-align=\"center\" data-hetu-block=\"panel\">\r\n\r\n## 标题\r\n\r\n正文\r\n\r\n</div>\r\n",
+    "without_style": "\r\n\r\n## 标题\r\n\r\n正文\r\n\r\n\r\n",
+    "attributes": [
+      {
+        "alignment": "center",
+        "block": "panel"
+      }
+    ]
+  },
+  {
+    "name": "inline_code",
+    "source": "`<span data-hetu-color=\"red\">字面</span>`",
+    "attributes": [],
+    "without_style": "`<span data-hetu-color=\"red\">字面</span>`"
+  },
+  {
+    "name": "fenced_code",
+    "source": "```html\n<span data-hetu-color=\"red\">字面</span>\n```",
+    "attributes": [],
+    "without_style": "```html\n<span data-hetu-color=\"red\">字面</span>\n```"
+  },
+  {
+    "name": "unknown_attribute",
+    "source": "<span data-hetu-color=\"red\" onclick=\"run()\">原文</span>",
+    "attributes": [],
+    "without_style": "<span data-hetu-color=\"red\" onclick=\"run()\">原文</span>"
+  },
+  {
+    "name": "duplicate_attribute",
+    "source": "<span data-hetu-color=\"red\" data-hetu-color=\"blue\">原文</span>",
+    "attributes": [],
+    "without_style": "<span data-hetu-color=\"red\" data-hetu-color=\"blue\">原文</span>"
+  },
+  {
+    "name": "invalid_color",
+    "source": "<span data-hetu-color=\"url(remote)\">原文</span>",
+    "attributes": [],
+    "without_style": "<span data-hetu-color=\"url(remote)\">原文</span>"
+  },
+  {
+    "name": "crossed_tags",
+    "source": "<span data-hetu-color=\"red\">原文</div>",
+    "attributes": [],
+    "without_style": "<span data-hetu-color=\"red\">原文</div>"
+  },
+  {
+    "name": "unclosed",
+    "source": "<span data-hetu-font=\"serif\">原文",
+    "attributes": [],
+    "without_style": "<span data-hetu-font=\"serif\">原文"
+  },
+  {
+    "name": "link",
+    "source": "[<span data-hetu-color=\"red\">字面</span>](https://www.limeai.run)",
+    "attributes": [],
+    "without_style": "[<span data-hetu-color=\"red\">字面</span>](https://www.limeai.run)"
+  },
+  {
+    "name": "raw_html_block",
+    "source": "<script>\n<span data-hetu-color=\"red\">字面</span>\n</script>",
+    "attributes": [],
+    "without_style": "<script>\n<span data-hetu-color=\"red\">字面</span>\n</script>"
+  },
+  {
+    "name": "card-presentation",
+    "source": "<div data-hetu-block=\"card\" data-hetu-card-layout=\"square\" data-hetu-card-preview=\"pages\" data-hetu-card-gradient=\"#112233,#ddeeff\">\n\n卡片\n\n真实内文🌿。\n\n</div>",
+    "without_style": "\n\n卡片\n\n真实内文🌿。\n\n",
+    "attributes": [
+      {
+        "block": "card",
+        "cardLayout": "square",
+        "cardPreview": "pages",
+        "cardGradient": "#112233,#ddeeff"
+      }
+    ]
+  },
+  {
+    "name": "card-on-page",
+    "source": "<div data-hetu-block=\"page\" data-hetu-card-layout=\"square\">\n\n保持原文。\n\n</div>",
+    "without_style": "<div data-hetu-block=\"page\" data-hetu-card-layout=\"square\">\n\n保持原文。\n\n</div>",
+    "attributes": []
+  },
+  {
+    "name": "card-conflicting-background",
+    "source": "<div data-hetu-block=\"card\" data-hetu-card-color=\"red\" data-hetu-card-gradient=\"#112233,#ddeeff\">\n\n保持原文。\n\n</div>",
+    "without_style": "<div data-hetu-block=\"card\" data-hetu-card-color=\"red\" data-hetu-card-gradient=\"#112233,#ddeeff\">\n\n保持原文。\n\n</div>",
+    "attributes": []
+  },
+  {
+    "name": "card-remote-image",
+    "source": "<div data-hetu-block=\"card\" data-hetu-card-image=\"https://public.test/image.png\">\n\n保持原文。\n\n</div>",
+    "without_style": "<div data-hetu-block=\"card\" data-hetu-card-image=\"https://public.test/image.png\">\n\n保持原文。\n\n</div>",
+    "attributes": []
+  },
+  {
+    "name": "card-script-image",
+    "source": "<div data-hetu-block=\"card\" data-hetu-card-image=\"data:image/svg+xml;base64,PHN2Zz4=\">\n\n保持原文。\n\n</div>",
+    "without_style": "<div data-hetu-block=\"card\" data-hetu-card-image=\"data:image/svg+xml;base64,PHN2Zz4=\">\n\n保持原文。\n\n</div>",
+    "attributes": []
+  },
+  {
+    "name": "card-image-header-mismatch",
+    "source": "<div data-hetu-block=\"card\" data-hetu-card-image=\"data:image/png;base64,/9j/AA==\">\n\n保持原文。\n\n</div>",
+    "without_style": "<div data-hetu-block=\"card\" data-hetu-card-image=\"data:image/png;base64,/9j/AA==\">\n\n保持原文。\n\n</div>",
+    "attributes": []
+  },
+  {
+    "name": "card-embedded-image",
+    "source": "<div data-hetu-block=\"card\" data-hetu-card-image=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l9sAAAAASUVORK5CYII=\">\n\n图片卡片。\n\n</div>",
+    "without_style": "\n\n图片卡片。\n\n",
+    "attributes": [
+      {
+        "block": "card",
+        "cardImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l9sAAAAASUVORK5CYII="
+      }
+    ]
+  }
+]

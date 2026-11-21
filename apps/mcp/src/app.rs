@@ -12,7 +12,7 @@ pub fn tool() -> Tool {
         "properties":{"management_ref":{"type":"object"},"task_locator":{"type":"object"}},
         "not":{"required":["management_ref","task_locator"]}}).as_object().unwrap().clone());
     tool.annotations = Some(ToolAnnotations::from_raw(None, Some(true), Some(false), Some(true), Some(false)));
-    tool.meta = Some(json!({"ui":{"resourceUri":ui::WORKBENCH_URI,"visibility":["model","app"]},
+    tool.meta = Some(json!({"ui":{"resourceUri":ui::workbench_uri(),"visibility":["model","app"]},
         "openai/ui":{"entrypoints":[{"type":"global"},{"type":"thread"}]}}).as_object().unwrap().clone().into());
     tool
 }

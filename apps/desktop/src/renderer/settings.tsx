@@ -1,16 +1,19 @@
+import {InterfaceScale} from "./interface-scale.tsx";
 import React, { useEffect, useRef, useState } from "react";
 import { desktop } from "./bridge.ts";
-import { Icon, IconButton, type IconName } from "./workbench.tsx";
+import { Icon, IconButton, PageActionsTarget, type IconName } from "./workbench.tsx";
 import { version } from "../../package.json";
 import "./settings.css";
 import { ModelSettings } from "./model-settings.tsx";
 import { WorkAgent } from "./work-agent.tsx";
+import { ReadingControls, mergeReadingPreferences, readingProfile, type ReadingKind } from "@hetu/workbench-ui";
 
 const labels: Record<string, string> = {
   language: "界面语言",
   appearance: "外观",
   library_list: "创作库布局",
   autosave: "自动保存正文",
+  execution_mode: "执行模式",
   font_family: "字体",
   font_size: "字号",
   line_spacing: "行间距",
@@ -18,8 +21,18 @@ const labels: Record<string, string> = {
   git_author_name: "姓名",
   git_author_email: "邮箱",
   agent_client: "默认外部 Agent",
+  document_theme: "文稿纸色",
+  line_height: "行高",
+  paragraph_spacing: "段距",
+  line_width: "行宽",
+  font_name: "本机字体",
+  focus_paragraph: "聚焦当前段落",
+  typewriter_scroll: "打字机滚动",
+  smart_pairs: "智能配对括号与引号",
 };
 const values: Record<string, string> = {
+  auto: "自动执行",
+  confirm: "确认后执行",
   "zh-CN": "简体中文",
   en: "English",
   system: "跟随系统",
@@ -27,6 +40,11 @@ const values: Record<string, string> = {
   dark: "深色",
   songti: "宋体",
   pingfang: "苹方",
+  mono: "剧本等宽",
+  custom: "本机字体",
+  paper: "清纸",
+  warm: "暖纸",
+  night: "夜墨",
   codex: "Codex",
   workbuddy: "WorkBuddy",
   claudeCode: "Claude Code",
@@ -34,6 +52,7 @@ const values: Record<string, string> = {
   none: "未选择",
 };
 const choices: Record<string, string[]> = {
+  execution_mode: ["auto", "confirm"],
   language: ["zh-CN", "en"],
   appearance: ["system", "light", "dark"],
   font_family: ["songti", "pingfang", "system"],
@@ -55,6 +74,11 @@ const tabs: { id: Tab; title: string; icon: IconName }[] = [
   { id: "versions", title: "版本", icon: "branch" },
   { id: "about", title: "关于", icon: "info" },
 ];
+const categories = [
+  {title: "应用设置", ids: ["general", "writing"]},
+  {title: "创作与协作", ids: ["models", "agents", "versions"]},
+  {title: "河图洛书", ids: ["about"]},
+];
 function display(value: any) {
   return typeof value === "boolean"
     ? value
@@ -65,9 +89,19 @@ function display(value: any) {
 function preferenceValue(key: string, value: any) {
   if (key === "library_list") return value ? "列表" : "封面";
   if (["font_size", "line_spacing"].includes(key)) return `${value} px`;
+  if (key === "line_height") return `${Number(Number(value).toFixed(4))} 倍`;
+  if (key === "paragraph_spacing") return `${value} em`;
+  if (key === "line_width") return `${Number(Number(value).toFixed(2))} 字形`;
+  if (key === "document_theme" && value === "system") return "跟随应用";
   return display(value);
 }
 function Changes({ before, patch }: { before: any; patch: any }) {
+  const changes = Object.entries(patch).flatMap(([key, value]) => key === "reading_profiles"
+    ? Object.entries(value as Record<ReadingKind, any>).flatMap(([kind, fields]) => Object.entries(fields).map(([field, target]) => ({
+      key: kind + ":" + field, label: (kind === "novel" ? "小说 " : "剧本 ") + (labels[field] ?? field),
+      before: preferenceValue(field, readingProfile(before, kind as ReadingKind)[field as keyof ReturnType<typeof readingProfile>]), after: preferenceValue(field, target),
+    })))
+    : [{ key, label: labels[key] ?? key, before: preferenceValue(key, before[key]), after: preferenceValue(key, value) }]);
   return (
     <table className="settings-changes">
       <thead>
@@ -78,11 +112,11 @@ function Changes({ before, patch }: { before: any; patch: any }) {
         </tr>
       </thead>
       <tbody>
-        {Object.entries(patch).map(([key, value]) => (
-          <tr key={key}>
-            <th>{labels[key] ?? key}</th>
-            <td>{preferenceValue(key, before[key])}</td>
-            <td>{preferenceValue(key, value)}</td>
+        {changes.map(item => (
+          <tr key={item.key}>
+            <th>{item.label}</th>
+            <td>{item.before}</td>
+            <td>{item.after}</td>
           </tr>
         ))}
       </tbody>
@@ -107,6 +141,8 @@ export function LocalSettings({
     [pendingPreferences, setPendingPreferences] = useState<Record<string, unknown>>({}),
     [tab, setTab] = useState<Tab>("general");
   const panel = useRef<HTMLDivElement>(null);
+  const [pageActionsTarget, setPageActionsTarget] = useState<HTMLDivElement | null>(null);
+  const [readingKind, setReadingKind] = useState<ReadingKind>("novel");
   const returnTab = useRef<Tab>("general");
   const saves = useRef<Promise<void>>(Promise.resolve());
   const currentState = useRef<any>();
@@ -122,7 +158,7 @@ export function LocalSettings({
     ]);
     currentState.current = current;
     setState(current);
-    changed(current.preferences);
+    changed({ ...current.preferences, settings_revision: current.revision });
     setPlans(list.operations);
     setCursor(list.next_cursor ?? undefined);
     setSelected((previous) =>
@@ -162,9 +198,9 @@ export function LocalSettings({
     index: number,
   ) {
     const next =
-      event.key === "ArrowRight"
+      event.key === "ArrowRight" || event.key === "ArrowDown"
         ? (index + 1) % tabs.length
-        : event.key === "ArrowLeft"
+        : event.key === "ArrowLeft" || event.key === "ArrowUp"
           ? (index + tabs.length - 1) % tabs.length
           : event.key === "Home"
             ? 0
@@ -237,7 +273,7 @@ export function LocalSettings({
   function field(key: string) {
     const value = pendingPreferences[key] ?? state.preferences[key], disabled = busy || state.journal?.status === "pending";
     const label = labels[key];
-    return <label className="settings-field" key={key}>
+    return <label className={"settings-field" + (choices[key] || key === "library_list" ? " settings-choice" : "")} key={key}>
       <span>{label}</span>
       {key === "library_list" ? <select aria-label={label} value={value ? "list" : "grid"} disabled={disabled}
         onChange={e => void savePreference(key, e.target.value === "list")}><option value="grid">封面网格</option><option value="list">作品列表</option></select>
@@ -265,11 +301,16 @@ export function LocalSettings({
       </section>
     );
   }
-  const current = state && { ...state.preferences, ...pendingPreferences };
+  const current = state && mergeReadingPreferences(state.preferences, pendingPreferences);
   return (
-    <section className="local-settings" aria-label="本机设置">
-      <div className="settings-tabs" role="tablist" aria-label="设置分类">
-        {tabs.map((item, index) => (
+    <PageActionsTarget.Provider value={pageActionsTarget}><section className="local-settings" aria-label="本机设置">
+      <header className="settings-titlebar"><span className="settings-window-title">设置</span><div className="settings-global-actions">
+        {tab === "plans" ? <><button disabled={busy} onClick={() => void run(async () => { await desktop.settings("handoff", { section: returnTab.current }); notify("已复制本机设置协作请求。"); })}><Icon name="sparkles"/>让 AI 调整设置</button>
+          <IconButton icon="refresh" label="刷新本机设置" disabled={busy} onClick={() => void run(() => refresh())}/></>
+          : <button disabled={busy} onClick={() => { returnTab.current = tab; chooseTab("plans"); void run(() => refresh()); }}><Icon name="sparkles"/>让 AI 处理与审阅{plans.some(p => p.state === "pending") && <span className="settings-pending" aria-label="有待审方案"/>}</button>}
+      </div></header>
+      <div className="settings-tabs" role="tablist" aria-label="设置分类" aria-orientation="vertical">
+        {categories.map(category => <div className="settings-category" role="presentation" key={category.title}><span className="settings-category-title">{category.title}</span>{tabs.filter(item => category.ids.includes(item.id)).map(item => (
           <button
             key={item.id}
             id={"settings-tab-" + item.id}
@@ -279,18 +320,18 @@ export function LocalSettings({
             aria-controls={"settings-panel-" + item.id}
             tabIndex={tab === item.id ? 0 : -1}
             onClick={() => chooseTab(item.id)}
-            onKeyDown={(event) => tabKey(event, index)}
+            onKeyDown={(event) => tabKey(event, tabs.indexOf(item))}
           >
             <Icon name={item.icon} size={18} />
             <span>{item.title}</span>
           </button>
-        ))}
+        ))}</div>)}
       </div>
+      <div className="settings-body">
       <div className="settings-tools">
-        {tab === "plans" ? <><button onClick={() => chooseTab(returnTab.current)}>返回设置</button>
-          <button disabled={busy} onClick={() => void run(async () => { await desktop.settings("handoff", { section: returnTab.current }); notify("已复制本机设置协作请求。"); })}><Icon name="sparkles"/>让 AI 调整设置</button>
-          <IconButton icon="refresh" label="刷新本机设置" disabled={busy} onClick={() => void run(() => refresh())}/></>
-          : <button disabled={busy} onClick={() => { returnTab.current = tab; chooseTab("plans"); void run(() => refresh()); }}><Icon name="sparkles"/>让 AI 处理与审阅{plans.some(p => p.state === "pending") && <span className="settings-pending" aria-label="有待审方案"/>}</button>}
+        <IconButton icon={tab === "plans" ? "back" : "close"} label={tab === "plans" ? "返回设置" : "关闭设置"} onClick={() => tab === "plans" ? chooseTab(returnTab.current) : window.dispatchEvent(new Event("hetu:settings-close-request"))}/>
+        <h1>{tab === "plans" ? "本机操作审阅" : tabs.find(item => item.id === tab)?.title}</h1>
+        <div className="settings-page-actions" ref={setPageActionsTarget}/>
       </div>
       {error && (
         <p role="alert" className="settings-feedback">
@@ -352,6 +393,7 @@ export function LocalSettings({
             aria-labelledby={tab === "plans" ? undefined : "settings-tab-" + tab}
             tabIndex={0}
           >
+            <div className="settings-content">
             {preview ? (
               <section
                 className="author-preview"
@@ -392,40 +434,21 @@ export function LocalSettings({
                 {tab === "models" && <ModelSettings/>}
                 {tab === "general" && (
                   <>
-                    {fields("界面", ["language", "appearance"])}
+                    <fieldset className="settings-appearance"><legend>外观</legend><div role="radiogroup" aria-label="外观">{(["system", "light", "dark"] as const).map(appearance => <button key={appearance} type="button" role="radio" tabIndex={current.appearance === appearance ? 0 : -1} aria-checked={current.appearance === appearance} disabled={busy || state.journal?.status === "pending"}
+                      onClick={() => void savePreference("appearance", appearance)} onKeyDown={event => {if (!["ArrowLeft", "ArrowRight"].includes(event.key)) return; event.preventDefault(); const siblings = [...event.currentTarget.parentElement!.querySelectorAll<HTMLButtonElement>("button")], index = siblings.indexOf(event.currentTarget), next = (index + (event.key === "ArrowRight" ? 1 : 2)) % 3; siblings[next].focus(); siblings[next].click();}}><span className="appearance-preview" data-appearance={appearance} aria-hidden="true">{(appearance === "system" ? ["light", "dark"] : [appearance]).map(tone => <span className="appearance-window" data-tone={tone} key={tone}><span><i/><i/><i/><i/><i/></span><span><i/><i/><i/><i/></span><span><i/><i/><i/><i/></span></span>)}</span><span>{values[appearance]}</span></button>)}</div></fieldset>
+                    <section className="settings-group"><h3>界面</h3><div>{field("language")}<InterfaceScale language={current.language}/></div></section>
                     {fields("创作库", ["library_list"])}
-                    <p className="settings-note">设置自动保存，并立即应用到所有河图洛书窗口。</p>
+                    {fields("AI 执行", ["execution_mode"])}
+                    <p className="settings-note">自动执行可直接处理当前工作区；确认后执行会在写入前集中展示本次变更。此设置由桌面、MCP、CLI 和 Skills 共用。</p>
+                    <p className="settings-note">外观和创作偏好会同步到本机工作台。界面大小只影响当前窗口。</p>
                   </>
                 )}
                 {tab === "writing" && (
                   <>
-                    {fields("正文排版", [
-                      "autosave",
-                      "font_family",
-                      "font_size",
-                      "line_spacing",
-                      "first_line_indent",
-                    ])}
-                    <section className="settings-group">
-                      <h3>排版预览</h3>
-                      <div
-                        className="settings-reading-preview"
-                        style={{
-                          fontFamily: (
-                            {
-                              songti: '"Songti SC", serif',
-                              pingfang: '"PingFang SC", sans-serif',
-                              system: "system-ui, sans-serif",
-                            } as Record<string, string>
-                          )[current.font_family],
-                          fontSize: `${current.font_size}px`,
-                          lineHeight: `calc(1.35em + ${current.line_spacing}px)`,
-                          textIndent: current.first_line_indent ? "2em" : "0",
-                        }}
-                      >
-                        <p>雨落在窗边，故事从这一刻开始。</p><p>远处的灯亮了，有人正踏着夜色归来。</p>
-                      </div>
-                    </section>
+                    {fields("写作保存", ["autosave"])}
+                    <ReadingControls loadFonts={refresh => desktop.fonts(refresh)} preferences={current} kind={readingKind} onKindChange={setReadingKind} preview disabled={busy || state.journal?.status === "pending"}
+                      onChange={patch => { for (const [key, value] of Object.entries(patch)) void savePreference(key, value); }}/>
+                    {fields("写作习惯", ["focus_paragraph", "typewriter_scroll", "smart_pairs"])}
                     <p className="settings-note">排版只改变显示，不向正文添加空格。Fountain 剧本保持场次与对白的原有对齐。</p>
                   </>
                 )}
@@ -443,7 +466,6 @@ export function LocalSettings({
                 {tab === "agents" && <WorkAgent notify={notify} changed={() => refresh()}/>}
                 {tab === "plans" && (
                   <>
-                    <h2 className="settings-section-heading">本机操作审阅</h2>
                     {plans.length ? (
                       <>
                         <label className="settings-plan-picker">
@@ -631,9 +653,11 @@ export function LocalSettings({
                 )}
               </>
             )}
+            </div>
           </div>
         </>
       )}
-    </section>
+      </div>
+    </section></PageActionsTarget.Provider>
   );
 }

@@ -404,6 +404,7 @@ test(
       await page
         .getByRole("button", { name: "第二集 潮汐", exact: true })
         .click();
+      await page.getByRole("tab", { name: "编辑", exact: true }).click();
       await expect(page.getByRole("textbox", { name: "文稿编辑", exact: true })).toContainText("信是你写的？");
       await page.screenshot({
         path: path.join(root, "output/plugin-doc-qa/new-episode-recovered.png"),

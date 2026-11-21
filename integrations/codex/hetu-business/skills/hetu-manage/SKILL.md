@@ -1,9 +1,11 @@
 ---
 name: hetu-manage
-description: "作者选择河图洛书职场商战套件时，作者需要在河图洛书整理作品资料、卷章大纲、设定、短剧场次、资料关联、导入交付、版本或本机设置时使用。由 Agent 准备完整操作，作者审阅后执行；正文创作和改稿使用对应写作 Skill。"
+description: "作者选择河图洛书职场商战套件时，作者需要在河图洛书整理作品资料、卷章大纲、设定、短剧场次、资料关联、导入交付、版本或本机设置时使用。按共享auto或confirm模式执行；正文创作和改稿使用对应写作 Skill。"
 ---
 
 # 河图洛书作品与设置管理
+
+先按[统一执行模式](../../references/execution-modes.md)读取实际设置：默认auto直接处理当前工作区，confirm先读后集中确认本次写入。本规则优先于下文旧授权流程，任务引用继续用于定位、来源和恢复。
 
 先读[任务合同](../../references/task-contract.md)和[管理工作法](../../references/workflows/management.md)。涉及题材判断时仅结合[本包题材方法](../../references/genre.md)的当前环节，不叠加其他套件。
 

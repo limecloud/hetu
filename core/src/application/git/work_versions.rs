@@ -74,7 +74,7 @@ impl Kernel {
                 "此快照不属于所选作品，旧工作区快照须原范围授权。",
             )?;
         }
-        if input["phase"] == "execute" && !self.author {
+        if input["phase"] == "execute" && !self.has_workspace_authority() {
             if let Some(prepared) = snapshot.get("prepared_by") {
                 let binding = self
                     .management_grant

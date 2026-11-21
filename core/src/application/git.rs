@@ -951,6 +951,7 @@ impl Kernel {
         )
     }
     fn check_git_approval(&self, snapshot: &Value, sha: &str, fresh: bool) -> Result<()> {
+        if self.workspace_execution {return Ok(());}
         let store = self.authorizations(false)?;
         let path = self.approval_path(text(snapshot, "snapshot_id")?)?;
         ensure(

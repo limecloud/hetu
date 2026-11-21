@@ -1,6 +1,9 @@
 //! 新桌面的非敏感本机设置；公开机器入口与可信作者入口共享事务及恢复记录。
 mod inspection;
+mod reading;
 mod suites;
+#[cfg(test)]
+mod tests_concurrency;
 
 use crate::{
     Kernel,
@@ -56,9 +59,11 @@ fn client_valid(client: &str) -> Result<()> {
     )
 }
 fn defaults() -> Value {
-    json!({"schema_version":1,"revision":1,"preferences":{
+    json!({"schema_version":3,"revision":1,"execution_policy_revision":1,"preferences":{
         "language":"zh-CN","appearance":"system","library_list":false,"autosave":true,
-        "font_family":"songti","font_size":18,"line_spacing":5,"first_line_indent":true,
+        "execution_mode":"auto",
+        "reading_profiles":reading::profiles(),"document_theme":"system",
+        "focus_paragraph":false,"typewriter_scroll":false,"smart_pairs":false,
         "git_author_name":"","git_author_email":"","agent_client":"codex"
     },"associations":{},"installations":{}})
 }
@@ -139,6 +144,15 @@ impl LocalSettings {
         store.directory(".hetu/transactions")?;
         store.directory("plans")?;
         let service = Self { store };
+        {
+            let _reader = service.store.read_lock()?;
+            if service.store.exists("settings.json")?
+                && service.store.json("settings.json")?["schema_version"] == 3
+            {
+                service.state()?;
+                return Ok(service);
+            }
+        }
         let _lock = service.store.lock()?;
         service.store.recover()?;
         if !service.store.exists("settings.json")? {
@@ -146,27 +160,69 @@ impl LocalSettings {
                 .store
                 .install("settings.json", &serde_json::to_vec(&defaults())?, true)?;
         }
+        let original = service.store.read("settings.json")?;
+        let state: Value = serde_json::from_slice(&original)?;
+        if state["schema_version"] == 1 || state["schema_version"] == 2 {
+            let version = state["schema_version"].as_u64().unwrap();
+            let mut next = if version == 1 { reading::migrate(state, defaults())? } else {
+                ensure(state["revision"].as_u64().is_some_and(|n| n > 0) && state["associations"].is_object() && state["installations"].is_object(),
+                    "hetu.integrity_failure", "旧版本机设置记录无效，已保留原文件。")?;
+                validate_patch(&state["preferences"])?; reading::validate_complete(&state["preferences"])?;
+                let mut next = state;
+                ensure(next["preferences"].as_object().is_some_and(|fields| fields.len() + 1 == defaults()["preferences"].as_object().unwrap().len() && !fields.contains_key("execution_mode")
+                    && defaults()["preferences"].as_object().unwrap().keys().filter(|key| key.as_str() != "execution_mode").all(|key| fields.contains_key(key))),
+                    "hetu.integrity_failure", "旧版本机偏好字段不完整，已保留原文件。")?;
+                next["preferences"]["execution_mode"] = json!("auto");
+                next["revision"] = json!(next["revision"].as_u64().unwrap().checked_add(1).ok_or_else(|| Error::new("hetu.budget_exceeded", "设置修订已达上限。"))?);
+                next
+            };
+            next["schema_version"] = json!(3);
+            next["execution_policy_revision"] = json!(1);
+            let backup = format!("migrations/v{version}/settings.json");
+            ensure(!service.store.exists(&backup)? || service.store.read(&backup)? == original,
+                "revision_conflict", "旧版设置备份已存在不同内容，请保留原文件核对。")?;
+            service.store.transaction(&BTreeMap::from([
+                (backup, original),
+                ("settings.json".into(), serde_json::to_vec(&next)?),
+            ]))?;
+        }
         service.state()?;
         Ok(service)
     }
     fn state(&self) -> Result<Value> {
         let state = self.store.json("settings.json")?;
         ensure(
-            state["schema_version"] == 1
+            state["schema_version"] == 3
                 && state["revision"].as_u64().is_some_and(|n| n > 0)
+                && state["execution_policy_revision"].as_u64().is_some_and(|n| n > 0)
                 && state["associations"].is_object()
                 && state["installations"].is_object(),
             "hetu.integrity_failure",
             "本机设置记录无效。",
         )?;
         validate_patch(&state["preferences"])?;
+        reading::validate_complete(&state["preferences"])?;
         ensure(
             state["preferences"].as_object().unwrap().len()
-                == defaults()["preferences"].as_object().unwrap().len(),
+                == defaults()["preferences"].as_object().unwrap().len()
+                && defaults()["preferences"].as_object().unwrap().keys()
+                    .all(|key| state["preferences"].get(key).is_some()),
             "hetu.integrity_failure",
             "本机偏好字段不完整。",
         )?;
         Ok(state)
+    }
+    pub(crate) fn with_execution_policy<T>(&self, run: impl FnOnce(&str, u64) -> Result<T>) -> Result<T> {
+        let _lock = self.store.read_lock()?;
+        let state = self.state()?;
+        run(text(&state["preferences"], "execution_mode")?, state["execution_policy_revision"].as_u64().unwrap())
+    }
+    fn advance_execution_policy(before: &Value, next: &mut Value) -> Result<()> {
+        if before["preferences"]["execution_mode"] != next["preferences"]["execution_mode"] {
+            next["execution_policy_revision"] = json!(before["execution_policy_revision"].as_u64().unwrap().checked_add(1)
+                .ok_or_else(|| Error::new("hetu.budget_exceeded", "执行策略修订已达上限。"))?);
+        }
+        Ok(())
     }
     fn plan(&self, operation_id: &str) -> Result<Value> {
         let plan = self.store.json(&plan_path(operation_id)?)?;
@@ -198,7 +254,7 @@ impl LocalSettings {
             .unwrap_or("hetu.request.invalid")
             .to_owned();
         match self.execute(client, &request) {
-            Ok(data) => domain::success(&action, "collaboration", data),
+            Ok(data) => domain::success(&action, "collaboration", reading::projection(data)),
             Err(error) => {
                 let mut result = domain::failure(&action, "collaboration", &error);
                 if matches!(
@@ -289,6 +345,7 @@ impl LocalSettings {
         if input["kind"] == "preferences" {
             closed(input, &["kind", "patch", "summary", "operation_key"])?;
             validate_patch(&input["patch"])?;
+            reading::apply(&state["preferences"], &input["patch"])?;
             fixed["patch"] = input["patch"].clone();
         } else if input["kind"] == "agent_connection" {
             closed(input, &["kind", "agent_client", "summary", "operation_key"])?;
@@ -459,7 +516,7 @@ impl LocalSettings {
             }
         } else {
             ensure(
-                plan["state"] == "approved",
+                plan["state"] == "approved" || state["preferences"]["execution_mode"] == "auto" && plan["state"] == "pending",
                 "hetu.author_confirmation_required",
                 "本机方案尚未获得作者批准。",
             )?;
@@ -479,9 +536,7 @@ impl LocalSettings {
         if plan["fixed"]["kind"] == "preferences" {
             let patch = &plan["fixed"]["patch"];
             validate_patch(patch)?;
-            for (name, value) in patch.as_object().unwrap() {
-                next["preferences"][name] = value.clone();
-            }
+            next["preferences"] = reading::apply(&state["preferences"], patch)?;
         } else if plan["fixed"]["kind"] == "agent_connection" {
             let fixed = plan["fixed"].clone();
             let recovering = plan["state"] == "executing";
@@ -550,6 +605,7 @@ impl LocalSettings {
                 next["preferences"]["agent_client"] = fixed["agent_client"].clone();
             }
         }
+        Self::advance_execution_policy(state, &mut next)?;
         next["revision"] = json!(state["revision"].as_u64().unwrap() + 1);
         plan["state"] = json!("executed");
         plan["revision"] = json!(plan["revision"].as_u64().unwrap() + 1);
@@ -564,23 +620,37 @@ impl LocalSettings {
     }
     /// 仅私有 App Server 调用。不能从公开 CLI/MCP 转发到此入口。
     pub fn host(&self, input: Value) -> Result<Value> {
+        self.host_inner(input).map(reading::projection)
+    }
+    fn host_inner(&self, input: Value) -> Result<Value> {
         closed(&input, &["method", "input"])?;
         let params = &input["input"];
-        let _lock = self.store.lock()?;
-        self.store.recover()?;
+        let method = text(&input, "method")?;
+        let _lock = if matches!(method, "preferences" | "operation" | "get" | "inspect_suite" | "list") {
+            self.store.read_lock()?
+        } else {
+            let lock = self.store.lock()?;
+            self.store.recover()?;
+            lock
+        };
         let state = self.state()?;
-        match text(&input, "method")? {
+        match method {
+            "preferences" => {
+                ensure(params == &json!({}), "invalid_input", "偏好读取参数无效。")?;
+                Ok(json!({"revision":state["revision"],"preferences":state["preferences"]}))
+            }
             "operation" => {
                 closed(params, &["operation_id"])?;
                 Ok(self.view(self.plan(text(params, "operation_id")?)?, &state))
             }
             "get" => {
                 ensure(params == &json!({}), "invalid_input", "本机读取参数无效。")?;
+                let catalog = suites::catalog();
                 let mut result = state;
-                result["suites"] = suites::catalog()["suites"].clone();
+                result["suites"] = catalog["suites"].clone();
                 result["installable_clients"] = suites::installable_clients();
-                result["skills"] = suites::catalog()["skills"].clone();
-                result["categories"] = suites::catalog()["categories"].clone();
+                result["skills"] = catalog["skills"].clone();
+                result["categories"] = catalog["categories"].clone();
                 Ok(result)
             }
             "inspect_suite" => inspection::inspect(&state, params),
@@ -739,10 +809,9 @@ impl LocalSettings {
                     "revision_conflict",
                     "本机设置已变化，请刷新后修改。",
                 )?;
-                let mut next = state;
-                for (key, value) in params["patch"].as_object().unwrap() {
-                    next["preferences"][key] = value.clone();
-                }
+                let mut next = state.clone();
+                next["preferences"] = reading::apply(&next["preferences"], &params["patch"])?;
+                Self::advance_execution_policy(&state, &mut next)?;
                 next["revision"] = json!(next["revision"].as_u64().unwrap() + 1);
                 self.store.transaction(&BTreeMap::from([
                     ("settings.json".into(), serde_json::to_vec(&next)?),

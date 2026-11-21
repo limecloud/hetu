@@ -1,29 +1,31 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { desktop } from "./bridge.ts";
-import { selectedSource } from "./editor.tsx";
+import {ManuscriptReading} from "@hetu/workbench-ui";
+import {usePreferences} from "./preferences.tsx";
 
-type Span = NonNullable<ReturnType<typeof selectedSource>>;
+type Span = {byte_start: number; byte_end: number; quote: string};
 
 /** 在完整固定原文中选择片段；字节坐标只用于提交，不进入作者表单。 */
 export function PartialAdoption({
   task_ref,
   candidate_id,
+  kind,
   busy,
   notify,
   preview,
 }: {
   task_ref: any;
   candidate_id: string;
+  kind?: string;
   busy: boolean;
   notify: (text: string) => void;
   preview: (value: any) => void;
 }) {
+  const preferences = usePreferences();
   const [context, setContext] = useState<any>(),
     [source, setSource] = useState<Span>(),
     [target, setTarget] = useState<Span>(),
     [loading, setLoading] = useState(false);
-  const sourceNode = useRef<HTMLPreElement>(null),
-    targetNode = useRef<HTMLPreElement>(null);
   async function run(action: () => Promise<void>) {
     setLoading(true);
     try {
@@ -32,19 +34,6 @@ export function PartialAdoption({
       notify((error as Error).message);
     } finally {
       setLoading(false);
-    }
-  }
-  function select(kind: "source" | "target") {
-    if (loading || busy) return;
-    const element = kind === "source" ? sourceNode.current : targetNode.current;
-    if (!element) return;
-    const span = selectedSource(
-      element,
-      kind === "source" ? context.source : context.before,
-    );
-    if (span) {
-      (kind === "source" ? setSource : setTarget)(span);
-      preview(undefined);
     }
   }
   return (
@@ -80,15 +69,7 @@ export function PartialAdoption({
           <div className="compare">
             <section>
               <h4>参考稿 选中要采用的片段</h4>
-              <pre
-                ref={sourceNode}
-                tabIndex={0}
-                aria-label="局部采纳参考稿"
-                onMouseUp={() => select("source")}
-                onKeyUp={() => select("source")}
-              >
-                {context.source}
-              </pre>
+              <ManuscriptReading text={context.source} title={context.title} label="局部采纳参考稿" format={context.source_format ?? (kind === "drama" ? "fountain" : "markdown")} kind={kind === "drama" ? "screenplay" : "novel"} preferences={preferences} onSelection={value => {if (!loading && !busy) {setSource(value); preview(undefined);}}}/>
               <p aria-live="polite">
                 {source
                   ? `已选参考片段：${source.quote}`
@@ -97,15 +78,7 @@ export function PartialAdoption({
             </section>
             <section>
               <h4>当前正文 {context.title}</h4>
-              <pre
-                ref={targetNode}
-                tabIndex={0}
-                aria-label="局部采纳目标正文"
-                onMouseUp={() => select("target")}
-                onKeyUp={() => select("target")}
-              >
-                {context.before}
-              </pre>
+              <ManuscriptReading text={context.before} title={context.title} label="局部采纳目标正文" format={context.target_format ?? (kind === "drama" ? "fountain" : "markdown")} kind={kind === "drama" ? "screenplay" : "novel"} preferences={preferences} onSelection={value => {if (!loading && !busy) {setTarget(value); preview(undefined);}}}/>
               <p aria-live="polite">
                 {target
                   ? context.before

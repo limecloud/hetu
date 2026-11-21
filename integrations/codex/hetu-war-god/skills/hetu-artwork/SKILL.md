@@ -5,6 +5,8 @@ description: "作者选择河图洛书战神赘婿套件时，为河图洛书角
 
 # 河图洛书素材图
 
+先按[统一执行模式](../../references/execution-modes.md)读取实际设置：默认auto直接处理当前工作区，confirm先读后集中确认本次写入。本规则优先于下文旧授权流程，任务引用继续用于定位、来源和恢复。
+
 创作时结合[本包题材方法](../../references/genre.md)中对应环节的增量；只使用作者已选题材，不从其他已安装套件拼接规则。
 
 先读[任务合同](../../references/task-contract.md)，打开明确的 TaskLocator 并回读完整请求。`task_kind` 须为 `artwork`，输出合同须允许 `image`；小说封面使用 `hetu-cover`，资料文字整理使用 `hetu-resources`。缺少入口时报告缺口，不把角色图冒充封面或直接写受管记录。

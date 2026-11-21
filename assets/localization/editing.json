@@ -1,0 +1,716 @@
+{
+  "editing.title": {
+    "zh-CN": "文字操作",
+    "en": "Text commands",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.format": {
+    "zh-CN": "格式",
+    "en": "Format",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.undo": {
+    "zh-CN": "撤销",
+    "en": "Undo",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.redo": {
+    "zh-CN": "重做",
+    "en": "Redo",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.bold": {
+    "zh-CN": "加粗",
+    "en": "Bold",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.italic": {
+    "zh-CN": "斜体",
+    "en": "Italic",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.underline": {
+    "zh-CN": "下划线",
+    "en": "Underline",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.code": {
+    "zh-CN": "行内代码",
+    "en": "Inline code",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.heading1": {
+    "zh-CN": "一级标题",
+    "en": "Heading 1",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.heading2": {
+    "zh-CN": "二级标题",
+    "en": "Heading 2",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.quote": {
+    "zh-CN": "引用段落",
+    "en": "Block quote",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.paragraph": {
+    "zh-CN": "正文段落",
+    "en": "Body paragraph",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.separator": {
+    "zh-CN": "插入分隔",
+    "en": "Insert separator",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.previous_scene": {
+    "zh-CN": "上一场",
+    "en": "Previous scene",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.next_scene": {
+    "zh-CN": "下一场",
+    "en": "Next scene",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.element": {
+    "zh-CN": "剧本元素",
+    "en": "Screenplay element",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.raw_element": {
+    "zh-CN": "原稿元素",
+    "en": "Source element",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.scene": {
+    "zh-CN": "场景",
+    "en": "Scene",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.action": {
+    "zh-CN": "行动",
+    "en": "Action",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.character": {
+    "zh-CN": "人物",
+    "en": "Character",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.dialogue": {
+    "zh-CN": "对白",
+    "en": "Dialogue",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.parenthetical": {
+    "zh-CN": "括注",
+    "en": "Parenthetical",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.transition": {
+    "zh-CN": "转场",
+    "en": "Transition",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.paste_plain": {
+    "zh-CN": "粘贴为纯文本",
+    "en": "Paste as plain text",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.symbols": {
+    "zh-CN": "常用标点",
+    "en": "Punctuation",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.insert": {
+    "zh-CN": "插入",
+    "en": "Insert",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.target_changed": {
+    "zh-CN": "光标或内容已变化，请在目标位置重新粘贴。",
+    "en": "The cursor or content changed. Paste again at the intended position.",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.heading3": {
+    "zh-CN": "三级标题",
+    "en": "Heading 3",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.heading4": {
+    "zh-CN": "四级标题",
+    "en": "Heading 4",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.heading5": {
+    "zh-CN": "五级标题",
+    "en": "Heading 5",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.heading6": {
+    "zh-CN": "六级标题",
+    "en": "Heading 6",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.headings": {
+    "zh-CN": "标题",
+    "en": "Headings",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.content": {
+    "zh-CN": "内容",
+    "en": "Content",
+    "purpose": "共享文稿排版与编辑",
+    "parameters": []
+  },
+  "editing.strike": {
+    "zh-CN": "删除线",
+    "en": "Strikethrough",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.bullet_list": {
+    "zh-CN": "无序列表",
+    "en": "Bulleted list",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.ordered_list": {
+    "zh-CN": "有序列表",
+    "en": "Numbered list",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.task_list": {
+    "zh-CN": "任务列表",
+    "en": "Task list",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.lists": {
+    "zh-CN": "列表",
+    "en": "Lists",
+    "purpose": "共享文稿编辑命令",
+    "parameters": []
+  },
+  "editing.style_heading1": {
+    "zh-CN": "标题",
+    "en": "Title",
+    "purpose": "格式网格的简短可视名称，命令可访问名称保留级别",
+    "parameters": []
+  },
+  "editing.style_heading2": {
+    "zh-CN": "副标题",
+    "en": "Subtitle",
+    "purpose": "格式网格的简短可视名称，命令可访问名称保留级别",
+    "parameters": []
+  },
+  "editing.style_heading3": {
+    "zh-CN": "中标题",
+    "en": "Heading",
+    "purpose": "格式网格的简短可视名称，命令可访问名称保留级别",
+    "parameters": []
+  },
+  "editing.style_heading4": {
+    "zh-CN": "小标题",
+    "en": "Strong",
+    "purpose": "格式网格的简短可视名称，命令可访问名称保留级别",
+    "parameters": []
+  },
+  "editing.style_paragraph": {
+    "zh-CN": "正文",
+    "en": "Body",
+    "purpose": "格式网格的简短可视名称，命令可访问名称保留级别",
+    "parameters": []
+  },
+  "editing.style_quote": {
+    "zh-CN": "引用",
+    "en": "Quote",
+    "purpose": "格式网格的简短可视名称，命令可访问名称保留级别",
+    "parameters": []
+  },
+  "editing.grouping": {
+    "zh-CN": "分组",
+    "en": "Group",
+    "purpose": "文稿内页面与卡片导航",
+    "parameters": []
+  },
+  "editing.block_page": {
+    "zh-CN": "页面",
+    "en": "Page",
+    "purpose": "文稿内页面与卡片导航",
+    "parameters": []
+  },
+  "editing.block_card": {
+    "zh-CN": "卡片",
+    "en": "Card",
+    "purpose": "文稿内页面与卡片导航",
+    "parameters": []
+  },
+  "editing.untitled_page": {
+    "zh-CN": "未命名页面",
+    "en": "Untitled page",
+    "purpose": "文稿内页面与卡片导航",
+    "parameters": []
+  },
+  "editing.empty_page": {
+    "zh-CN": "打开页面添加内容",
+    "en": "Open page to add content",
+    "purpose": "文稿内页面与卡片导航",
+    "parameters": []
+  },
+  "editing.back_to_parent": {
+    "zh-CN": "返回上一级",
+    "en": "Back to parent",
+    "purpose": "文稿内页面与卡片导航",
+    "parameters": []
+  },
+  "editing.colors": {
+    "zh-CN": "颜色",
+    "en": "Color",
+    "purpose": "文稿片段格式的名称与反馈",
+    "parameters": []
+  },
+  "editing.default_color": {
+    "zh-CN": "默认颜色",
+    "en": "Default color",
+    "purpose": "文稿片段格式的名称与反馈",
+    "parameters": []
+  },
+  "editing.custom_color": {
+    "zh-CN": "自定义颜色",
+    "en": "Custom color",
+    "purpose": "文稿片段格式的名称与反馈",
+    "parameters": []
+  },
+  "editing.fonts": {
+    "zh-CN": "字体",
+    "en": "Font",
+    "purpose": "文稿片段格式的名称与反馈",
+    "parameters": []
+  },
+  "editing.reset_font": {
+    "zh-CN": "恢复默认字体",
+    "en": "Reset font",
+    "purpose": "文稿片段格式的名称与反馈",
+    "parameters": []
+  },
+  "editing.font_system": {
+    "zh-CN": "系统字体",
+    "en": "System font",
+    "purpose": "文稿片段格式的名称与反馈",
+    "parameters": []
+  },
+  "editing.font_serif": {
+    "zh-CN": "衬线字体",
+    "en": "Serif font",
+    "purpose": "文稿片段格式的名称与反馈",
+    "parameters": []
+  },
+  "editing.font_mono": {
+    "zh-CN": "等宽字体",
+    "en": "Monospaced font",
+    "purpose": "文稿片段格式的名称与反馈",
+    "parameters": []
+  },
+  "editing.font_rounded": {
+    "zh-CN": "圆体字体",
+    "en": "Rounded font",
+    "purpose": "文稿片段格式的名称与反馈",
+    "parameters": []
+  },
+  "editing.presentation_unavailable": {
+    "zh-CN": "当前选区无法设置格式，请重新选择正文。",
+    "en": "Select body text to apply this format.",
+    "purpose": "文稿片段格式的名称与反馈",
+    "parameters": []
+  },
+  "editing.color_muted": {
+    "zh-CN": "灰色",
+    "en": "Gray",
+    "purpose": "文稿片段格式的名称与反馈",
+    "parameters": []
+  },
+  "editing.color_subtle": {
+    "zh-CN": "浅灰",
+    "en": "Light gray",
+    "purpose": "文稿片段格式的名称与反馈",
+    "parameters": []
+  },
+  "editing.color_purple": {
+    "zh-CN": "紫色",
+    "en": "Purple",
+    "purpose": "文稿片段格式的名称与反馈",
+    "parameters": []
+  },
+  "editing.color_blue": {
+    "zh-CN": "蓝色",
+    "en": "Blue",
+    "purpose": "文稿片段格式的名称与反馈",
+    "parameters": []
+  },
+  "editing.color_cyan": {
+    "zh-CN": "青色",
+    "en": "Cyan",
+    "purpose": "文稿片段格式的名称与反馈",
+    "parameters": []
+  },
+  "editing.color_teal": {
+    "zh-CN": "蓝绿色",
+    "en": "Teal",
+    "purpose": "文稿片段格式的名称与反馈",
+    "parameters": []
+  },
+  "editing.color_green": {
+    "zh-CN": "绿色",
+    "en": "Green",
+    "purpose": "文稿片段格式的名称与反馈",
+    "parameters": []
+  },
+  "editing.color_yellow": {
+    "zh-CN": "黄色",
+    "en": "Yellow",
+    "purpose": "文稿片段格式的名称与反馈",
+    "parameters": []
+  },
+  "editing.color_orange": {
+    "zh-CN": "橙色",
+    "en": "Orange",
+    "purpose": "文稿片段格式的名称与反馈",
+    "parameters": []
+  },
+  "editing.color_red": {
+    "zh-CN": "红色",
+    "en": "Red",
+    "purpose": "文稿片段格式的名称与反馈",
+    "parameters": []
+  },
+  "editing.alignment": {
+    "zh-CN": "对齐",
+    "en": "Alignment",
+    "purpose": "文稿段落和分组格式的名称",
+    "parameters": []
+  },
+  "editing.align_left": {
+    "zh-CN": "左对齐",
+    "en": "Align left",
+    "purpose": "文稿段落和分组格式的名称",
+    "parameters": []
+  },
+  "editing.align_center": {
+    "zh-CN": "居中",
+    "en": "Center",
+    "purpose": "文稿段落和分组格式的名称",
+    "parameters": []
+  },
+  "editing.align_right": {
+    "zh-CN": "右对齐",
+    "en": "Align right",
+    "purpose": "文稿段落和分组格式的名称",
+    "parameters": []
+  },
+  "editing.align_justify": {
+    "zh-CN": "两端对齐",
+    "en": "Justify",
+    "purpose": "文稿段落和分组格式的名称",
+    "parameters": []
+  },
+  "editing.decorations": {
+    "zh-CN": "装饰",
+    "en": "Decoration",
+    "purpose": "文稿段落和分组格式的名称",
+    "parameters": []
+  },
+  "editing.block_focus": {
+    "zh-CN": "焦点",
+    "en": "Focus",
+    "purpose": "文稿段落和分组格式的名称",
+    "parameters": []
+  },
+  "editing.block_panel": {
+    "zh-CN": "面板",
+    "en": "Panel",
+    "purpose": "文稿段落和分组格式的名称",
+    "parameters": []
+  },
+  "editing.ungroup": {
+    "zh-CN": "取消分组",
+    "en": "Ungroup",
+    "purpose": "文稿段落和分组格式的名称",
+    "parameters": []
+  },
+  "editing.font_sample_system": {
+    "zh-CN": "系统",
+    "en": "System",
+    "purpose": "字体样张的简短可见名称",
+    "parameters": []
+  },
+  "editing.font_sample_serif": {
+    "zh-CN": "衬线",
+    "en": "Serif",
+    "purpose": "字体样张的简短可见名称",
+    "parameters": []
+  },
+  "editing.font_sample_mono": {
+    "zh-CN": "等宽",
+    "en": "Mono",
+    "purpose": "字体样张的简短可见名称",
+    "parameters": []
+  },
+  "editing.font_sample_rounded": {
+    "zh-CN": "圆体",
+    "en": "Round",
+    "purpose": "字体样张的简短可见名称",
+    "parameters": []
+  },
+  "editing.card_configure": {
+    "zh-CN": "配置卡片",
+    "en": "Configure card",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_close": {
+    "zh-CN": "关闭卡片配置",
+    "en": "Close card configuration",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_actual_preview": {
+    "zh-CN": "当前卡片预览",
+    "en": "Current card preview",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_previous_layout": {
+    "zh-CN": "上一个卡片布局",
+    "en": "Previous card layout",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_next_layout": {
+    "zh-CN": "下一个卡片布局",
+    "en": "Next card layout",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_layout": {
+    "zh-CN": "卡片布局",
+    "en": "Card layout",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_layout_compact": {
+    "zh-CN": "紧凑卡片",
+    "en": "Compact card",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_layout_landscape": {
+    "zh-CN": "横向卡片",
+    "en": "Landscape card",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_layout_square": {
+    "zh-CN": "方形卡片",
+    "en": "Square card",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_layout_wide": {
+    "zh-CN": "通栏卡片",
+    "en": "Full-width card",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_layout_large": {
+    "zh-CN": "大幅卡片",
+    "en": "Large card",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_apply": {
+    "zh-CN": "套用样式",
+    "en": "Apply style",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_source_changed": {
+    "zh-CN": "文稿已变化，请关闭后重新配置。",
+    "en": "The manuscript changed. Close and reopen the configuration.",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_previews": {
+    "zh-CN": "预览",
+    "en": "Previews",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_preview_page": {
+    "zh-CN": "页面缩略图",
+    "en": "Page thumbnail",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_preview_icon": {
+    "zh-CN": "图标",
+    "en": "Icon",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_preview_pages": {
+    "zh-CN": "双页预览",
+    "en": "Two-page preview",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_preview_note": {
+    "zh-CN": "便笺预览",
+    "en": "Note preview",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_preview_images": {
+    "zh-CN": "图片组",
+    "en": "Images",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_preview_none": {
+    "zh-CN": "不显示预览",
+    "en": "No preview",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_custom_background": {
+    "zh-CN": "自定义背景",
+    "en": "Custom background",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_custom": {
+    "zh-CN": "自定义",
+    "en": "Custom",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_background": {
+    "zh-CN": "卡片背景",
+    "en": "Card background",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_close_background": {
+    "zh-CN": "关闭背景选项",
+    "en": "Close background options",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_background_none": {
+    "zh-CN": "无",
+    "en": "None",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_background_color": {
+    "zh-CN": "纯色",
+    "en": "Color",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_background_gradient": {
+    "zh-CN": "渐变",
+    "en": "Gradient",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_background_image": {
+    "zh-CN": "图片背景",
+    "en": "Image background",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_custom_color": {
+    "zh-CN": "自定义颜色",
+    "en": "Custom color",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_gradient": {
+    "zh-CN": "渐变",
+    "en": "Gradient",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_start_color": {
+    "zh-CN": "开始颜色",
+    "en": "Start color",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_end_color": {
+    "zh-CN": "结束颜色",
+    "en": "End color",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_upload_image": {
+    "zh-CN": "上传图片",
+    "en": "Upload image",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_loading_image": {
+    "zh-CN": "正在读取图片",
+    "en": "Reading image",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_remove_image": {
+    "zh-CN": "移除图片",
+    "en": "Remove image",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  },
+  "editing.card_invalid_image": {
+    "zh-CN": "请选择可读取的 PNG、JPEG 或 WebP 图片（不超过20MB）。",
+    "en": "Choose a readable PNG, JPEG or WebP image up to 20 MB.",
+    "purpose": "共享卡片配置与真实内容预览",
+    "parameters": []
+  }
+}

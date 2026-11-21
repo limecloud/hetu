@@ -17,7 +17,7 @@
 | 角色、场景、道具与插图 | [素材图任务](../skills/hetu-artwork/SKILL.md) |
 | 作品整理、导入交付、版本和设置 | [作品管理](../skills/hetu-manage/SKILL.md) |
 
-卡点涉及人物、关系或知情边界时读[人物与视角](craft/characters.md)；长线、单元与伏笔读[结构与回收](craft/structure.md)；场景、对白与文风读[场景语言](craft/scenes.md)；资源、地理、时间与资料核验读[世界规则](craft/worldbuilding.md)。这些是跨题材的必要工艺，不是额外安装的题材库。
+卡点涉及人物、关系或知情边界时读[人物与视角](techniques/characters.md)；长线、单元与伏笔读[结构与回收](techniques/structure.md)；场景、对白与文风读[场景语言](techniques/scenes.md)；资源、地理、时间与资料核验读[世界规则](techniques/worldbuilding.md)。这些是跨题材的必要工艺，不是额外安装的题材库。
 
 作者的视角、篇幅、语言、关系、结局、基调和修改范围优先。方法不强制每章反转、失败或悬崖，不默认男频升级、女频恋爱。参考工程的外部CLI、文件写回、记忆库、自动发布与强制多Agent流程不在河图执行。作品事实归Core，结果始终为候选。
 

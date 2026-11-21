@@ -195,7 +195,7 @@ test(
       operation_key: "concurrent-author",
     });
     await page.getByRole("button", { name: "确认此预览", exact: true }).click();
-    await expect(page.getByRole("status")).toContainText("写作稿已变化");
+    await expect(page.locator(".notice[role='status']")).toContainText("写作稿已变化");
     expect(
       (
         await read("hetu.documents.get", {
@@ -210,7 +210,7 @@ test(
       preview.getByText("作者在另一个入口保留的修改。", { exact: true }),
     ).toBeVisible();
     await page.getByRole("button", { name: "确认此预览", exact: true }).click();
-    await expect(page.getByRole("status")).toContainText("尚未定稿");
+    await expect(page.locator(".notice[role='status']")).toContainText("尚未定稿");
     const adopted = await read("hetu.documents.get", {
       document_id: context.document.document_id,
     });
@@ -240,7 +240,7 @@ test(
     await page
       .getByRole("button", { name: "恢复原作者操作", exact: true })
       .click();
-    await expect(page.getByRole("status")).toContainText("原作者操作已确认");
+    await expect(page.locator(".notice[role='status']")).toContainText("原作者操作已确认");
     await page.getByText("检查与定稿 尚未定稿", { exact: true }).click();
     await page
       .getByRole("textbox", { name: "定稿理由", exact: true })
@@ -561,6 +561,13 @@ test(
     await expect(
       pluginPage.getByRole("heading", { name: "人物关系图" }),
     ).toBeVisible();
+    await page.evaluate(() => (window as any).hetuDesktop.interfaceScale("set", {value: 125}));
+    await expect.poll(() => application.evaluate(({webContents}) => webContents.getAllWebContents().find(view => view.getURL().startsWith("hetu-plugin://"))!.getZoomFactor())).toBe(1.25);
+    const cssBounds = await page.locator(".surface").boundingBox();
+    const nativeBounds = await application.evaluate(({BrowserWindow, WebContentsView}) => BrowserWindow.getAllWindows().find(win => !win.webContents.getURL().includes("?view=settings"))!.contentView.children.find(view => view instanceof WebContentsView && view.webContents.getURL().startsWith("hetu-plugin://"))!.getBounds());
+    expect(nativeBounds.width).toBeCloseTo(cssBounds!.width * 1.25, -1);
+    expect(nativeBounds.x).toBeCloseTo(cssBounds!.x * 1.25, -1);
+    await page.evaluate(() => (window as any).hetuDesktop.interfaceScale("set", {value: 100}));
     expect(
       await pluginPage.evaluate(() => ({
         node: typeof (window as any).require,
@@ -848,9 +855,9 @@ test(
       return page;
     }
     let page = await open();
-    const original = await page.locator(".reader").textContent();
+    const original = (await page.evaluate(async id => (window as any).hetuDesktop.read("hetu.documents.get", {document_id: id}), context.document.document_id)).data.content as string;
     await page.locator(".reader").evaluate((element) => {
-      const body = element.firstChild!,
+      const body = [...element.querySelectorAll("[data-source-from]")].find(line => line.textContent!.includes("江岚"))!.firstChild!,
         value = body.textContent!,
         start = value.indexOf("江岚"),
         range = document.createRange();
@@ -861,6 +868,7 @@ test(
       selection.addRange(range);
       element.dispatchEvent(new MouseEvent("mouseup", { bubbles: true }));
     });
+    await page.getByRole("button",{name:"添加批注",exact:true}).click();
     await page
       .getByRole("textbox", { name: "原文批注意见" })
       .fill("保留人物动作，补足日记的伏笔。");
@@ -881,7 +889,8 @@ test(
       Buffer.byteLength(original!.slice(0, original!.indexOf("江岚"))),
     );
     expect(source.byte_end).toBe(Buffer.byteLength(original!));
-    await page.getByRole("button", { name: "关闭检查器", exact: true }).click();
+    await page.getByRole("button", { name: "原文批注", exact: true }).click();
+    await page.getByRole("button", { name: "关闭批注", exact: true }).click();
     await page.locator("summary[aria-label='文稿操作']").click();
     await documentAction(page, "编辑");
     const editor = page.getByRole("textbox", { name: "文稿编辑", exact: true });
@@ -952,8 +961,7 @@ test(
     expect(recovered.data.revisions).toHaveLength(3);
     await page.locator("summary[aria-label='文稿操作']").click();
     await documentAction(page, "阅读");
-    await page.getByRole("button", { name: "检查器", exact: true }).click();
-    await page.getByText("原文批注 1", { exact: true }).click();
+    await page.getByRole("button", { name: "原文批注", exact: true }).click();
     await expect(
       page.getByText("历史修订，保留原位置", { exact: true }),
     ).toBeVisible();

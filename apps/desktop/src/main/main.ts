@@ -1,3 +1,6 @@
+import {localFontCatalog} from "./font-catalog.ts";
+import {interfaceScales, nextInterfaceScale} from "../interface-scale.ts";
+import { pluginPreferences } from "./plugin-preferences.ts";
 import { ensureWorkConnection } from "./work-connection.ts";
 import { creationHandoff, workHandoff, pluginResultText, pluginWorkText, migrationText, settingsHandoff } from "./workbench-handoff.ts";
 import { readLibraryWorks as listWorks } from "./library-works.ts";
@@ -21,6 +24,7 @@ import {
 import path from "node:path";
 import { readFile } from "node:fs/promises";
 import { randomUUID, createHash } from "node:crypto";
+import {ReadingStateStore} from "./reading-state.ts";
 import { RecoveryStore } from "./recovery.ts";
 import { pluginResultHandoff } from "./plugin-results.ts";
 import { pluginService } from "./plugin-services.ts";
@@ -29,12 +33,14 @@ import { savePluginArtifact } from "./plugin-artifact.ts";
 import { SettingsReview } from "./settings.ts";
 import { AgentConnectionInstall } from "./agent-connection-install.ts";
 import { SettingsWindow } from "./settings-window.ts";
+import {windowChromeOptions, trackWindowChrome, updateWindowChrome} from "./window-chrome.ts";
 import { workAssociation, workAgentRequest } from "./work-agent.ts";
 import { CoverReview } from "./covers.ts";
 import { NovelDetails } from "./novel-details.ts";
 import { CanonReview } from "./canon.ts";
 import { TaskReview, type TaskRef } from "./task-review.ts";
 import { Authoring } from "./authoring.ts";
+import {copyText, pasteText} from "./text-clipboard.ts";
 import { ManagementReview } from "./management.ts";
 import { VersionReview } from "./versions.ts";
 import { PluginMigrationReview } from "./plugin-migrations.ts";
@@ -114,12 +120,12 @@ function agentClient() {
   return ({ claudeCode: "claude-code", other: "generic", none: "generic" } as Record<string, string>)[selected] ?? selected;
 }
 function handoffEnvironment() { return {client:agentClient(),coreCli:coreCliBinary(),collaborationDirectory:process.env.HETU_COLLABORATION_DIR,localSettingsDirectory:process.env.HETU_LOCAL_SETTINGS_DIR}; }
-async function refreshSettings() {
-  localState = await settings.get();
+async function refreshSettings(committed?: any) {
+  localState = committed ? {...localState, ...committed} : await settings.get();
   nativeTheme.themeSource = localState.preferences.appearance;
-  if (window && !window.isDestroyed()) window.webContents.send("desktop:preferences", localState.preferences);
-  settingsWindow.preferences(localState.preferences);
-  if (surface && !surface.webContents.isDestroyed()) surface.webContents.send("plugin:preferences", {theme:localState.preferences.appearance,language:localState.preferences.language??"zh-CN"});
+  if (window && !window.isDestroyed()) window.webContents.send("desktop:preferences", { ...localState.preferences, settings_revision: localState.revision });
+  settingsWindow.preferences({ ...localState.preferences, settings_revision: localState.revision });
+  if (surface && !surface.webContents.isDestroyed()) surface.webContents.send("plugin:preferences", pluginPreferences(localState, nativeTheme.shouldUseDarkColors ? "dark" : "light"));
   return localState;
 }
 async function selectClient(client: string) {
@@ -294,12 +300,13 @@ function requestPluginReturn() {
 }
 function layout() {
   if (!surface) return;
-  const [width, height] = window.getContentSize();
+  const [width, height] = window.getContentSize(), scale = window.webContents.getZoomFactor();
+  const scaled = Object.fromEntries(Object.entries(bounds).map(([key, value]) => [key, Math.round(value * scale)])) as typeof bounds;
   surface.setBounds({
-    x: Math.min(bounds.x, width),
-    y: Math.min(bounds.y, height),
-    width: Math.max(0, Math.min(bounds.width, width - bounds.x)),
-    height: Math.max(0, Math.min(bounds.height, height - bounds.y)),
+    x: Math.min(scaled.x, width),
+    y: Math.min(scaled.y, height),
+    width: Math.max(0, Math.min(scaled.width, width - scaled.x)),
+    height: Math.max(0, Math.min(scaled.height, height - scaled.y)),
   });
 }
 async function pluginContext(owner: string) {
@@ -409,7 +416,7 @@ function overview() {
     work,
     epoch,
     agentClient: agentClient(),
-    preferences: localState?.preferences,
+    preferences: localState ? { ...localState.preferences, settings_revision: localState.revision } : undefined,
     plugins: [
       ...host.states().map((state) => ({
         ...state,
@@ -512,6 +519,15 @@ function collaborationContext(client: string) {
   return { client, work: selectedWork, call, check, base, status };
 }
 async function ensureConnection(client:string){return ensureWorkConnection(collaborationContext(client));}
+function applyInterfaceScale(target: Electron.WebContents, value: number) {
+  if (!interfaceScales.includes(value as any)) throw new Error("界面大小不在可用范围内。");
+  target.setZoomFactor(value / 100);
+  const owner = BrowserWindow.fromWebContents(target);
+  if (owner) updateWindowChrome(owner);
+  if (target === window.webContents && surface && !surface.webContents.isDestroyed()) {surface.webContents.setZoomFactor(value / 100); layout();}
+  target.send("desktop:interface-scale", value);
+  return value;
+}
 function shellHandler(name: string, fn: (...args: any[]) => unknown) {
   ipcMain.handle(name, (event, ...args) => {
     trusted(event, name);
@@ -565,7 +581,7 @@ app
     session.defaultSession.protocol.handle("hetu-app", async (request) => {
       try {
         const url = new URL(request.url);
-        if (url.host !== "shell") return new Response(null, { status: 403 });
+        if (!["shell", "settings"].includes(url.host)) return new Response(null, { status: 403 });
         const relative = resourcePath(
           decodeURIComponent(url.pathname.slice(1)),
         );
@@ -576,7 +592,7 @@ app
             "Content-Security-Policy": policy(
               relative === "task-view.html"
                 ? "default-src [none]; script-src [unsafe-inline]; style-src [unsafe-inline]; img-src data:; connect-src [none]; frame-src [none]; object-src [none]; base-uri [none]; form-action [none]"
-                : "default-src [self]; script-src [self]; style-src [self] [unsafe-inline]; img-src [self] data: hetu-media:; media-src hetu-media:; connect-src [none]; frame-src [self]; object-src [none]; base-uri [none]; form-action [none]",
+                : "default-src [self]; script-src [self]; worker-src blob:; style-src [self] [unsafe-inline]; img-src [self] data: hetu-media:; media-src hetu-media:; connect-src [none]; frame-src [self]; object-src [none]; base-uri [none]; form-action [none]",
             ),
           },
         });
@@ -613,6 +629,7 @@ app
     }, 1500);
     pluginWatcher.unref();
     window = new BrowserWindow({
+      ...windowChromeOptions,
       width: 1360,
       height: 900,
       minWidth: 940,
@@ -626,6 +643,7 @@ app
         webSecurity: true,
       },
     });
+    trackWindowChrome(window);
     window.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
     const settingsMenu = {
       label: "设置…",
@@ -644,14 +662,23 @@ app
       { label: "显示", submenu: [
         { label: "返回工作台", accelerator: "Alt+Left", click: requestPluginReturn },
         { role: "togglefullscreen", label: "切换全屏" },
+        { type: "separator" as const },
+        ...[["放大界面", "CmdOrCtrl+Plus", 1], ["缩小界面", "CmdOrCtrl+-", -1], ["恢复界面大小", "CmdOrCtrl+0", 0]].map(([label, accelerator, direction]) => ({label: String(label), accelerator: String(accelerator), click: () => {
+          const target = BrowserWindow.getFocusedWindow()?.webContents ?? window.webContents;
+          const current = target.getZoomFactor() * 100;
+          applyInterfaceScale(target, direction === 0 ? 100 : nextInterfaceScale(current, Number(direction)));
+        }})),
       ] },
       { role: "windowMenu", label: "窗口" },
     ]));
     window.webContents.on("will-navigate", (event) => event.preventDefault());
     window.on("resize", layout);
+    const updatePluginAppearance = () => { if (surface && !surface.webContents.isDestroyed()) surface.webContents.send("plugin:preferences", pluginPreferences(localState, nativeTheme.shouldUseDarkColors ? "dark" : "light")); };
+    nativeTheme.on("updated", updatePluginAppearance);
+    window.once("closed", () => nativeTheme.off("updated", updatePluginAppearance));
     window.on("focus", () => {
       void refreshSettings().then(() => {
-        if (!window.isDestroyed()) window.webContents.send("desktop:preferences", localState.preferences);
+        if (!window.isDestroyed()) window.webContents.send("desktop:preferences", { ...localState.preferences, settings_revision: localState.revision });
       }).catch(() => {});
     });
     window.on("close", (event) => {
@@ -691,6 +718,16 @@ app
       void server?.close();
       void settingsServer?.close();
     });
+    shellHandler("desktop:fonts", (refresh = false) => {
+      if (typeof refresh !== "boolean") throw new Error("字体目录请求无效。");
+      return localFontCatalog(refresh);
+    });
+    ipcMain.handle("desktop:interface-scale", (event, method: string, input: any = {}) => {
+      trusted(event, "desktop:interface-scale");
+      if (method === "get") return Math.round(event.sender.getZoomFactor() * 100);
+      if (method === "set") return applyInterfaceScale(event.sender, input.value);
+      throw new Error("未知界面大小操作。");
+    });
     shellHandler("desktop:zoom", () => {
       if (window.isMaximized()) window.unmaximize();
       else window.maximize();
@@ -715,6 +752,13 @@ app
       });
       if (selected.canceled) return null;
       return openWorkspace(selected.filePaths[0]);
+    });
+    shellHandler("desktop:reading-state", async (method: string, input: any = {}) => {
+      if (!work || !sameWork(input.work_ref, work)) throw new Error("阅读位置不属于当前作品。");
+      const store = new ReadingStateStore(path.join(app.getPath("userData"), "reading-state"), recovery);
+      if (method === "get") return store.get(work);
+      if (method === "save") return store.save(work, input.patch);
+      throw new Error("未知阅读位置操作。");
     });
     shellHandler("desktop:library", async (method: string, input: any = {}) => {
       if (method === "client") {
@@ -795,6 +839,11 @@ app
       reveal: directory => shell.showItemInFolder(directory),
     }));
     shellHandler("desktop:settings", async (method: string, input: any = {}) => {
+      if (method === "preferences") {
+        const snapshot = await settings.preferences();
+        if (snapshot.revision !== localState.revision) await refreshSettings();
+        return snapshot;
+      }
       if (method === "get") return { ...(await refreshSettings()), journal: await settings.journal() };
       if (method === "list") return settings.list(input.cursor);
       if (method === "operation") return settings.operation(input.operation_id);
@@ -804,7 +853,7 @@ app
         const preview = await settings.manual(input.expected_revision, input.patch);
         const result = await settings.commit(preview.token);
         await settings.acknowledge();
-        await refreshSettings();
+        await refreshSettings(result);
         return result;
       }
       if (method === "recover") { const result = await settings.recover(); await refreshSettings(); return result; }
@@ -901,8 +950,10 @@ app
         selectedServer = server!;
       workSession = createWorkSession(ref, selectedServer, {
         profile: app.getPath("userData"), recovery,
+        workspacePath: library.resolve(ref),
         active: () => epoch === selectedEpoch && server === selectedServer && !!work && sameWork(work, ref),
         scopedReview, agentClient, collaborationContext, coreCliBinary,
+        executionPolicy: () => settings.preferences(),
         confirm: async (message, detail, accept = "确认") => (await dialog.showMessageBox(window, {
           type: "question", buttons: ["取消", accept], defaultId: 0, cancelId: 0, message, detail,
         })).response === 1,
@@ -913,7 +964,7 @@ app
       ({ taskReview, authoring, management, versions, resources, media, videoReview, outlineReview, covers, novelDetails, canon } = workSession);
       return overview();
     });
-    for (const method of ["tasks", "read", "canon", "novel", "covers", "outlines", "video", "media", "resources", "versions", "author", "management", "buffer"]) {
+    for (const method of ["tasks", "read", "execution", "canon", "novel", "covers", "outlines", "video", "media", "resources", "versions", "author", "management", "buffer"]) {
       shellHandler("desktop:" + method, (...args: any[]) => {
         if (!workSession) throw new Error("请选择当前作品。");
         return workSession.call(method, args);
@@ -935,18 +986,15 @@ app
         if (!work || !authoring) throw new Error("请选择当前作品。");
         const selectedEpoch=epoch, selectedWork=work, currentAuthoring=authoring;
         clipboard.writeText(await workHandoff(pageId,object,{work:selectedWork,authoring:currentAuthoring,environment:handoffEnvironment(),
-          access:()=>ensureConnection(agentClient()),summary:async()=>unwrap(await core("hetu.works.get",{work_ref:selectedWork})).summary,
+          workspacePath:library.resolve(selectedWork),executionPolicy:()=>settings.get(),summary:async()=>unwrap(await core("hetu.works.get",{work_ref:selectedWork})).summary,
           check:()=>{if(selectedEpoch!==epoch)throw new Error("作品已变化，请重新交接。");},
           pluginConnection:binding?pluginMachineConnection(binding.owner,binding.work):undefined,
         }));
         return { copied: true };
       },
     );
-    shellHandler("desktop:copy", (text: string) => {
-      if (typeof text !== "string" || text.length > 100000)
-        throw new Error("复制内容无效。");
-      clipboard.writeText(text);
-    });
+    shellHandler("desktop:copy", copyText);
+    shellHandler("desktop:paste", pasteText);
     shellHandler("desktop:install", async () => {
       const selected = await dialog.showOpenDialog(window, {
         properties: ["openDirectory"],
@@ -1065,6 +1113,7 @@ app
       surface = new WebContentsView({
         webPreferences: {
           partition,
+          zoomFactor: window.webContents.getZoomFactor(),
           preload: path.join(dist, "plugin-preload.cjs"),
           contextIsolation: true,
           nodeIntegration: false,
@@ -1143,7 +1192,7 @@ app
       const check = () => { if(pluginCaller(event)!==current) throw new Error("插件上下文已变化。"); };
       return pluginService(action,input,{
         work:current.work,check,request:(action,input)=>pluginRequest(current,action,input),
-        preferences:()=>({theme:localState.preferences.appearance,language:localState.preferences.language??"zh-CN"}),
+        preferences:()=>(pluginPreferences(localState, nativeTheme.shouldUseDarkColors ? "dark" : "light")),
         closeView:()=>{check();requestPluginReturn();},
         mediaOpen:async(input)=>{
           check();if(!server)throw new Error("作品连接已关闭。");
@@ -1205,14 +1254,8 @@ app
     console.error(error instanceof Error ? error.message : "桌面启动失败。");
     app.quit();
   });
-// app.quit期间不保证触发window-all-closed，落盘后须接续原退出请求。
-app.on("before-quit", event => {
-  quitRequested = true;
-  if (!flushedClose && window && !window.isDestroyed()) {
-    event.preventDefault();
-    window.close();
-  }
-});
+// 由正常close事件等待落盘；before-quit内再次关窗会重入原退出流程。
+app.on("before-quit", () => { quitRequested = true; });
 // 普通关闭最后一个窗口时也在本轮事件结束后退出。
 app.on("window-all-closed", () => { setImmediate(() => app.quit()); });
 

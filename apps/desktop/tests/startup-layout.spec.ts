@@ -4,11 +4,11 @@ import path from "node:path";
 import os from "node:os";
 import { spawnSync } from "node:child_process";
 import { PluginPackage } from "../../../packages/plugin-host/src/package.ts";
-import { navigate, openDirectory, openSettings, closeSettings } from "./navigation.ts";
+import { navigate, openDirectory, openSettings, closeSettings, closeApplication } from "./navigation.ts";
 
 const root = path.resolve(import.meta.dirname, "../../..");
 
-test("启动页浅暗渐变、透明表面及无障碍实色降级", async ({}, testInfo) => {
+test("启动页浅暗中性表面、紧凑页头及无障碍实色降级", async ({}, testInfo) => {
   // 覆盖独立应用冷启动与退出，不与单页交互共用较短预算。
   test.setTimeout(240000);
   const profile = await mkdtemp(path.join(os.tmpdir(), "hetu-startup-layout-"));
@@ -23,11 +23,30 @@ test("启动页浅暗渐变、透明表面及无障碍实色降级", async ({}, 
     page.on("pageerror", error => errors.push(error.message));
     await expect(page.getByRole("button", { name: "刷新创作库", exact: true })).toBeEnabled({ timeout: 30000 });
     const settings = await openSettings(application, page);
-    await settings.getByRole("combobox", { name: "外观", exact: true }).selectOption("system");
+    await settings.getByRole("radio", { name: "跟随系统", exact: true }).click();
     await expect(page.locator("html")).toHaveAttribute("data-appearance", "system");
     await closeSettings(settings);
     if (process.platform === "darwin") {
       expect(await application.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0].isResizable())).toBe(true);
+      await expect(page.locator("html")).toHaveAttribute("data-window-chrome", "inset");
+      expect(await page.locator(".workbench-topbar").evaluate(node => getComputedStyle(node).getPropertyValue("-webkit-app-region"))).toBe("drag");
+      expect(await page.getByRole("button", {name: "本机设置", exact: true}).evaluate(node => getComputedStyle(node).getPropertyValue("-webkit-app-region"))).toBe("no-drag");
+      for (const value of [80, 200, 100]) {
+        await page.evaluate(value => (window as any).hetuDesktop.interfaceScale("set", {value}), value);
+        await expect.poll(() => page.locator(".workbench-topbar").evaluate(node => parseFloat(getComputedStyle(node).paddingLeft))).toBeCloseTo(84 / (value / 100), 1);
+        const chrome = await application.evaluate(({ BrowserWindow }) => {
+          const view = BrowserWindow.getAllWindows()[0];
+          return {buttons: view.getWindowButtonPosition(), outer: view.getBounds(), content: view.getContentBounds()};
+        });
+        expect(chrome.buttons).toEqual({x: 20, y: Math.round((52 * value / 100 - 14) / 2)});
+        expect(chrome.outer.height).toBe(chrome.content.height);
+      }
+      await application.evaluate(({BrowserWindow}) => BrowserWindow.getAllWindows()[0].setFullScreen(true));
+      await expect(page.locator("html")).toHaveAttribute("data-window-chrome", "fullscreen");
+      await expect(page.locator(".workbench-topbar")).toHaveCSS("padding-left", "16px");
+      await application.evaluate(({BrowserWindow}) => BrowserWindow.getAllWindows()[0].setFullScreen(false));
+      await expect(page.locator("html")).toHaveAttribute("data-window-chrome", "inset");
+      if (!await page.getByRole("complementary", {name: "创作库导航", exact: true}).isVisible()) await page.getByRole("button", {name: "创作库导航", exact: true}).click();
     }
     const cdp = await page.context().newCDPSession(page);
     const alpha = (color: string) => {
@@ -43,10 +62,11 @@ test("启动页浅暗渐变、透明表面及无障碍实色降级", async ({}, 
         { name: "prefers-reduced-transparency", value: "no-preference" },
         { name: "prefers-contrast", value: "no-preference" },
       ] });
-      await expect(page.locator("main")).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
-      await expect(page.locator("#root")).toHaveCSS("background-image", /radial-gradient.*linear-gradient/);
+      await expect(page.locator("main")).toHaveCSS("background-color", appearance === "dark" ? "rgb(34, 34, 34)" : "rgb(255, 255, 255)");
+      await expect(page.locator("#root")).toHaveCSS("background-image", "none");
+      await expect(page.locator("#root")).toHaveCSS("background-color", appearance === "dark" ? "rgb(25, 25, 25)" : "rgb(240, 240, 240)");
       await page.evaluate(() => document.fonts.ready);
-      await expect.poll(() => page.locator(".library-intro-art img").evaluate((image: HTMLImageElement, appearance) => image.complete && image.naturalWidth > 0 && image.currentSrc.endsWith(appearance === "dark" ? "river-night-v1.webp" : "river-dawn-v1.webp"), appearance)).toBe(true);
+      await expect(page.locator(".library-intro-art")).toHaveCount(0);
       await page.screenshot({ path: testInfo.outputPath(`startup-${appearance}-${width}.png`) });
       if (process.platform === "darwin" && process.env.HETU_CAPTURE_NATIVE_WINDOWS === "1") {
         const id = await application.evaluate(({ BrowserWindow }) => {
@@ -79,23 +99,21 @@ test("启动页浅暗渐变、透明表面及无障碍实色降级", async ({}, 
       expect(layout.decoded).toBe(true);
       expect(layout.icon.width).toBe(32);
       expect(layout.icon.height).toBe(32);
-      expect(layout.bar.height).toBe(60);
+      expect(layout.bar.height).toBe(52);
       expect(layout.icon.y).toBeGreaterThanOrEqual(0);
       expect(layout.icon.y + layout.icon.height).toBeLessThanOrEqual(layout.bar.height);
       expect(layout.nav.y).toBe(layout.bar.height);
-      expect(layout.nav.width).toBe(190);
+      expect(layout.nav.width).toBe(280);
       expect(layout.button.height).toBeGreaterThanOrEqual(32);
       expect(layout.button.x + layout.button.width).toBeLessThanOrEqual(width);
-      // 低像素密度屏幕会将0.5px边框量化到一个物理像素。
-      expect(Number.parseFloat(layout.border)).toBeGreaterThanOrEqual(0.5);
-      expect(Number.parseFloat(layout.border)).toBeLessThanOrEqual(1);
+      expect(Number.parseFloat(layout.border)).toBe(0);
       expect(alpha(layout.background)).toBeCloseTo(0.18, 2);
       expect(layout.overflow).toBe(false);
       await page.locator(".create-work-menu > summary").click();
       const menu = page.locator(".create-work-menu .menu-panel");
       await expect(menu).toBeVisible();
       await expect(menu).toHaveCSS("backdrop-filter", "blur(20px)");
-      expect(alpha(await menu.evaluate(el => getComputedStyle(el).backgroundColor))).toBeCloseTo(0.85, 2);
+      expect(alpha(await menu.evaluate(el => getComputedStyle(el).backgroundColor))).toBeCloseTo(0.97, 2);
       await page.screenshot({ path: testInfo.outputPath(`menu-${appearance}-${width}.png`) });
       for (const [feature, value] of [["prefers-reduced-transparency", "reduce"], ["prefers-contrast", "more"]]) {
         await cdp.send("Emulation.setEmulatedMedia", { features: [
@@ -107,29 +125,29 @@ test("启动页浅暗渐变、透明表面及无障碍实色降级", async ({}, 
         expect(alpha(await menu.evaluate(el => getComputedStyle(el).backgroundColor))).toBe(1);
         await expect(page.locator("#root")).toHaveCSS("background-image", "none");
         expect(alpha(await page.locator("html").evaluate(el => getComputedStyle(el).backgroundColor))).toBe(1);
-        await expect(page.locator(".project-navigation")).toHaveCSS("background-color", appearance === "dark" ? "rgb(23, 25, 24)" : "rgb(247, 249, 248)");
+        await expect(page.locator(".project-navigation")).toHaveCSS("background-color", appearance === "dark" ? "rgb(25, 25, 25)" : "rgb(249, 249, 249)");
         await page.screenshot({ path: testInfo.outputPath(`${feature}-${appearance}-${width}.png`) });
       }
       await page.keyboard.press("Escape");
       await expect(menu).toBeHidden();
     }
-    // 作者手动选择的外观优先于系统，插画与工作台同时切换。
+    // 作者手动选择的外观优先于系统。
     for (const appearance of ["dark", "light"] as const) {
       await cdp.send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-color-scheme", value: appearance === "dark" ? "light" : "dark" }] });
       const settings = await openSettings(application, page);
-      await settings.getByRole("combobox", { name: "外观", exact: true }).selectOption(appearance);
+      await settings.getByRole("radio", { name: {system: "跟随系统", light: "浅色", dark: "深色"}[appearance], exact: true }).click();
       await expect(page.locator("html")).toHaveAttribute("data-appearance", appearance);
       await closeSettings(settings);
-      await expect.poll(() => page.locator(".library-intro-art img").evaluate((image: HTMLImageElement, appearance) => image.complete && image.currentSrc.endsWith(appearance === "dark" ? "river-night-v1.webp" : "river-dawn-v1.webp"), appearance)).toBe(true);
+      await expect(page.locator("html")).toHaveAttribute("data-effective-appearance", appearance);
       await page.screenshot({ path: testInfo.outputPath(`manual-appearance-${appearance}.png`) });
     }
     expect(errors).toEqual([]);
   } finally {
-    await application.close();
+    await closeApplication(application);
   }
 });
 
-test("作品首页与文稿保留渐变背景和实色阅读纸面", async ({}, testInfo) => {
+test("作品首页与文稿共用中性窗口和连续阅读工作面", async ({}, testInfo) => {
   test.setTimeout(240000);
   const profile = await mkdtemp(path.join(os.tmpdir(), "hetu-gradient-work-"));
   const workspace = path.join(profile, "作品"), access = path.join(profile, "access");
@@ -152,7 +170,7 @@ test("作品首页与文稿保留渐变背景和实色阅读纸面", async ({}, 
     for (const [width, appearance] of [[1360, "light"], [960, "light"], [1360, "dark"], [960, "dark"]] as const) {
       await page.setViewportSize({ width, height: 850 });
       const settings = await openSettings(application, page);
-      await settings.getByRole("combobox", { name: "外观", exact: true }).selectOption(appearance);
+      await settings.getByRole("radio", { name: {system: "跟随系统", light: "浅色", dark: "深色"}[appearance], exact: true }).click();
       await expect(page.locator("html")).toHaveAttribute("data-appearance", appearance, { timeout: 30000 });
       await closeSettings(settings);
       await cdp.send("Emulation.setEmulatedMedia", { features: [
@@ -167,7 +185,7 @@ test("作品首页与文稿保留渐变背景和实色阅读纸面", async ({}, 
       await expect(profilePage.locator(".work-agent")).toHaveCount(0);
       await expect(profilePage.getByRole("region", { name: "封面候选", exact: true })).toHaveCount(0);
       await expect(profilePage.locator(".profile-timestamps")).toBeHidden();
-      await expect(page.locator("#root")).toHaveCSS("background-image", /radial-gradient.*linear-gradient/);
+      await expect(page.locator("#root")).toHaveCSS("background-image", "none");
       for (const position of ["top", "middle", "bottom"] as const) {
         await profilePage.evaluate((element, position) => {
           element.scrollTop = position === "top" ? 0 : position === "middle" ? element.scrollHeight / 2 : element.scrollHeight;
@@ -184,7 +202,7 @@ test("作品首页与文稿保留渐变背景和实色阅读纸面", async ({}, 
       await navigate(page, "小说");
       await openDirectory(page);
       await page.getByRole("button", { name: "第一章 雾港", exact: true }).click();
-      await expect(page.locator(".manuscript-paper")).toHaveCSS("background-color", appearance === "dark" ? "rgb(16, 18, 17)" : "rgb(251, 253, 252)");
+      await expect(page.locator(".manuscript-paper")).toHaveCSS("background-color", appearance === "dark" ? "rgb(34, 34, 34)" : "rgb(255, 255, 255)");
       await expect(page.locator(".manuscript-paper")).toContainText("雾港");
       await page.screenshot({ path: testInfo.outputPath(`manuscript-${appearance}-${width}.png`) });
       const metrics = await page.evaluate(() => {
@@ -194,10 +212,10 @@ test("作品首页与文稿保留渐变背景和实色阅读纸面", async ({}, 
       expect(metrics.fonts.length).toBeLessThanOrEqual(4);
       expect(metrics.fonts.every(size => size >= 12)).toBe(true);
       expect(metrics.overflow).toBe(false);
-      expect(metrics.bar).toBe(56);
+      expect(metrics.bar).toBe(52);
       await testInfo.attach(`manuscript-${appearance}-${width}`, { body: JSON.stringify(metrics), contentType: "application/json" });
     }
   } finally {
-    await application.close();
+    await closeApplication(application);
   }
 });

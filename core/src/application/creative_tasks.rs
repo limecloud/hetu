@@ -474,7 +474,7 @@ impl Kernel {
         )?;
         let task_id = checked_id(text(reference, "task_id")?, "task")?;
         ensure(
-            self.author
+            self.has_workspace_authority()
                 || self.management_grant.is_some()
                 || self.task_id.as_deref() == Some(&task_id),
             "forbidden",
@@ -482,7 +482,7 @@ impl Kernel {
         )?;
         let (request, sha) = self.task_request(&task_id)?;
         let (state, state_sha) = self.task_state(&task_id)?;
-        if !self.author {
+        if !self.has_workspace_authority() {
             ensure(
                 state["state"] != "closed",
                 "forbidden",
@@ -492,6 +492,7 @@ impl Kernel {
         Ok((request, sha, state, state_sha))
     }
     pub(super) fn check_task_session(&self) -> Result<()> {
+        if self.workspace_execution { return Ok(()); }
         if let Some(binding) = &self.management_grant {
             crate::collaboration::authoring::check_management(binding, &self.workspace_path, None)?;
         }
@@ -501,7 +502,7 @@ impl Kernel {
         if let Some(task) = &self.task_id {
             checked_id(task, "task")?;
             ensure(
-                !self.author,
+                !self.has_workspace_authority(),
                 "invalid_input",
                 "任务受限连接不能声明作者身份。",
             )?;
@@ -511,7 +512,7 @@ impl Kernel {
                 "forbidden",
                 "任务已关闭，不能继续访问。",
             )?;
-        } else if !self.author && self.management_grant.is_none() && self.is_creation_project() {
+        } else if !self.has_workspace_authority() && self.management_grant.is_none() && self.is_creation_project() {
             return Err(Error::new(
                 "forbidden",
                 "Agent 访问建书筹备必须绑定明确任务。",

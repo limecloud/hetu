@@ -1,0 +1,84 @@
+import {test, expect, _electron as electron} from "@playwright/test";
+import {mkdtemp, mkdir, writeFile} from "node:fs/promises";
+import {tmpdir} from "node:os";
+import path from "node:path";
+import {spawnSync} from "node:child_process";
+import {documentAction, openSettings, closeSettings, closeApplication} from "./navigation.ts";
+
+test("整合侧栏、文稿标题与浮层键盘保持编辑状态", async ({}, info) => {
+  const root = path.resolve("../.."), folder = await mkdtemp(path.join(tmpdir(), "hetu-popovers-"));
+  const workspace = path.join(folder, "work"), profile = path.join(folder, "profile"), collaboration = path.join(folder, "collaboration");
+  await mkdir(profile);
+  const fixture = spawnSync(path.join(root, "target/debug/examples/baseline_fixture"), [workspace, collaboration], {encoding: "utf8"});
+  expect(fixture.status, fixture.stderr).toBe(0);
+  const refs = JSON.parse(fixture.stdout);
+  await writeFile(path.join(profile, "creative-library.json"), JSON.stringify({schema_version: 1, roots: [{path: workspace, workspace_id: refs.novel.workspace_id, works: [{work_ref: refs.novel, title: "默认小说"}]}]}));
+  const executable = process.env.HETU_PACKAGED_APP;
+  const app = await electron.launch({...(executable ? {executablePath: executable} : {args: [path.join(root, "apps/desktop")]}), env: {...process.env,
+    HETU_DESKTOP_PROFILE: profile, HETU_PLUGIN_STATE_DIR: profile, HETU_COLLABORATION_DIR: collaboration,
+    HETU_APP_SERVER: executable ? undefined : path.join(root, "target/debug/hetu-app-server")}});
+  try {
+    await app.evaluate(({dialog}) => {dialog.showMessageBoxSync = () => 1;});
+    const page = await app.firstWindow();
+    await page.setViewportSize({width: 1440, height: 940});
+    await page.screenshot({path: info.outputPath("library-neutral-shell.png")});
+    await page.getByRole("button", {name: "打开作品 默认小说", exact: true}).click();
+    const editor = page.getByRole("textbox", {name: "文稿编辑", exact: true});
+    await expect(editor).toBeVisible();
+    const sidebar = page.getByRole("complementary", {name: "项目导航", exact: true});
+    await expect(sidebar.getByRole("navigation", {name: "文稿目录", exact: true})).toBeVisible();
+    expect((await sidebar.boundingBox())!.width).toBe(280);
+    await expect(page.locator(".document-layout > .manuscript-directory")).toHaveCount(0);
+    await expect(page.locator(".manuscript-header h1")).toHaveCount(0);
+    await expect(page.locator(".manuscript-scroll .manuscript-title h1")).toHaveText("第一章 雾港");
+    await page.evaluate(async () => {const api = (window as any).hetuDesktop, state = await api.settings("preferences"); await api.settings("update", {expected_revision: state.revision, patch: {autosave: false}});});
+    await editor.press("ControlOrMeta+End"); await page.keyboard.insertText("未保存的结尾。");
+    await documentAction(page, "文稿信息");
+    const inspector = page.getByRole("dialog", {name: "文稿详情", exact: true});
+    await expect(inspector).toBeVisible();
+    const trigger = page.locator('summary[aria-label="阅读排版"]'), paper = page.getByRole("group", {name: "纸色", exact: true}).getByRole("button").first();
+    await trigger.click(); await paper.focus();
+    await paper.press("Escape");
+    await expect(page.locator(".reading-menu")).not.toHaveAttribute("open", "");
+    await expect(trigger).toBeFocused();
+    await expect(inspector).toBeVisible();
+    await page.keyboard.press("Escape"); await expect(inspector).toHaveCount(0);
+    await trigger.click();
+    // 模拟组合键事件只核验不误关界面，不能作为真实输入法验收。
+    await paper.dispatchEvent("keydown", {key: "Escape", code: "Escape", isComposing: true, bubbles: true, cancelable: true});
+    await expect(page.locator(".reading-menu")).toHaveAttribute("open", "");
+    const size = page.getByRole("spinbutton", {name: "文字大小", exact: true});
+    const original = await size.inputValue(); await size.fill("31"); await size.press("Escape");
+    await expect(size).toHaveValue(original); await expect(page.locator(".reading-menu")).toHaveAttribute("open", "");
+    await trigger.focus(); await trigger.press("Escape");
+    const format = page.locator('summary[aria-label="文字操作"]');
+    await format.click();
+    await page.getByRole("button", {name: "撤销", exact: true}).focus();
+    await page.keyboard.press("Escape"); await expect(format).toBeFocused();
+    await expect(editor).toContainText("未保存的结尾。");
+    await editor.focus(); await editor.press("ControlOrMeta+z"); await expect(editor).not.toContainText("未保存的结尾。");
+    await page.screenshot({path: info.outputPath("popover-focus-restored.png")});
+    await page.emulateMedia({colorScheme: "dark"});
+    await expect(page.locator("html")).toHaveAttribute("data-effective-appearance", "dark");
+    await page.screenshot({path: info.outputPath("single-sidebar-dark.png")});
+    await page.setViewportSize({width: 760, height: 940});
+    await expect(sidebar).toBeHidden();
+    await page.getByRole("button", {name: "卷章目录", exact: true}).click();
+    await expect(sidebar).toBeVisible();
+    await sidebar.getByRole("button", {name: "第一章 雾港", exact: true}).click();
+    await expect(sidebar).toBeHidden(); await expect(editor).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.screenshot({path: info.outputPath("single-sidebar-narrow.png")});
+    await page.setViewportSize({width: 1440, height: 940});
+    const settings = await openSettings(app, page);
+    await settings.getByRole("tab", {name: "写作", exact: true}).click();
+    await settings.getByRole("button", {name: "本机字体", exact: true}).click();
+    const font = settings.getByRole("textbox", {name: "本机字体名称", exact: true});
+    await font.fill("还在输入");
+    await font.dispatchEvent("keydown", {key: "Escape", code: "Escape", isComposing: true, bubbles: true, cancelable: true});
+    expect(settings.isClosed()).toBe(false); await expect(font).toHaveValue("还在输入");
+    await font.press("Escape"); expect(settings.isClosed()).toBe(false);
+    await closeSettings(settings);
+    await expect(page.getByRole("button", {name: "保存修订", exact: true})).toBeDisabled();
+  } finally {await closeApplication(app);}
+});

@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-11-20",
+  "status": "local_slice_verified_goal_in_progress",
+  "scope": "R7候选／历史／导入／比较的统一阅读与查找、局部采纳及精确持久阅读位置",
+  "release_version_unchanged": "0.13.10",
+  "published": false,
+  "installed_app_updated": false,
+  "verification": {
+    "text_and_state_models": 11,
+    "desktop_journeys_and_contracts": 13,
+    "task_app_bridge": 20,
+    "real_stdio_workbench": 1,
+    "official_codex_cli_workbench": {
+      "count": 1,
+      "version": "0.169.0",
+      "model_turns_started": 0
+    },
+    "resource_and_authority_contract": 1
+  },
+  "behaviors": [
+    "小说按段落、剧本按场次；改动上下文／全文和未改动展开",
+    "对应段落同步可关闭；窄窗前后全文均可查找",
+    "关闭一侧查找保留另一侧命中；语义阅读／原稿源坐标共用",
+    "原Core精确选区采纳、并发拒绝、完整结果预览与回读",
+    "同WorkRef持久章节选择和固定修订锚点；不同窗口互不推送滚动",
+    "双实例位置合并、损坏保留、CRLF／Emoji、关闭重开及新修订位置隔离",
+    "旧目录／符号链接按规范路径去重；当前正文及正式版本不因阅读状态变化"
+  ],
+  "corrected_findings": [
+    {
+      "finding": "比较列最小高度阻止滚动容器收缩",
+      "fix": "列设置min-height:0，真实同步滚动重验"
+    },
+    {
+      "finding": "关闭查找时延迟恢复覆盖用户新滚动",
+      "fix": "核对捕获scrollTop后恢复；用户新滚动优先"
+    },
+    {
+      "finding": "同目录的系统路径别名产生重复登记",
+      "fix": "加载时规范路径并按同身份合并，冲突保留并报错"
+    },
+    {
+      "finding": "CRLF可被误分为两个段落分隔符",
+      "fix": "复用逻辑行模型，新增不拆CRLF断言"
+    },
+    {
+      "finding": "语义正文与旧纯文本／字号测试不符",
+      "fix": "测试读取源文并核对完整字节，更新实际20px三档基线；批准回执仍精确验证"
+    }
+  ],
+  "original_failures": [
+    "output/r7-experience-20261120/review-desktop-e2e.log",
+    "output/r7-experience-20261120/review-final-r2-desktop.log",
+    "output/r7-experience-20261120/review-native-r4.log"
+  ],
+  "limitations": [
+    "非原生Codex Desktop GUI验收；CLI转发仅证明相应协议与工作台旅程",
+    "未执行本轮覆盖安装、真实IME／读屏、全页面视觉／异步状态、字体目录、界面缩放、十万字输入性能及作者试用",
+    "当前改动视图精细高亮以段落／场次与共享前后缀为边界；大段重写明确整段核对，不声称语义改写推断",
+    "整版goal与工作包仍进行中，真实作品未作为写入夹具"
+  ],
+  "logs": {
+    "review-final-models.log": {
+      "path": "output/r7-experience-20261120/review-final-models.log",
+      "sha256": "1085752d71bf8bd98158f4ef64508dc61ba7a05b4c53b0342934162026955929"
+    },
+    "review-verified-desktop.log": {
+      "path": "output/r7-experience-20261120/review-verified-desktop.log",
+      "sha256": "013c43a35b404b8091a2c363d1373cefc6c8951a16da49473aa23f78a6709600"
+    },
+    "review-task-app-final.log": {
+      "path": "output/r7-experience-20261120/review-task-app-final.log",
+      "sha256": "5dc5b4a848176ceaae1cc52b3e0396d662922328da8524c31bb29e3aab486a30"
+    },
+    "review-verified-mcp.log": {
+      "path": "output/r7-experience-20261120/review-verified-mcp.log",
+      "sha256": "27430ba6bd2fa611e422c76fd697490f5ff63d5faac1773eb1b6c179fadca064"
+    },
+    "review-verified-codex.log": {
+      "path": "output/r7-experience-20261120/review-verified-codex.log",
+      "sha256": "48c7a914c72e5a52157e37823397271ccda55b687e042487dddf1597efafcbe6"
+    },
+    "review-current-resource.log": {
+      "path": "output/r7-experience-20261120/review-current-resource.log",
+      "sha256": "f64abd662854adc8ab7d2eebe0ee914a7a8885b3e08e1a29d56f705f5be5b16d"
+    }
+  },
+  "source_sha256": {
+    "packages/workbench-ui/src/manuscript-reading.tsx": "9d260d56c7cca0fec762bec4092a7e726a21310491cdbe5e7f84e2153195e878",
+    "packages/workbench-ui/src/manuscript-comparison.tsx": "1e26dc5c7c8a43953ec1fe692bdc852dca534b5529847400d632191799a94620",
+    "packages/workbench-ui/src/manuscript-diff.ts": "ffb097c4a12134fe98779fc61ac5cbe0ae13776b23231ef45442e8218df4514b",
+    "packages/workbench-ui/src/manuscript-search.tsx": "4c111a0de304b5bbe307ec25f7f60b596cb0a77d5f83ebe66926fdca33b6c580",
+    "packages/workbench-ui/src/manuscript-review.css": "32413d2b0875d053d4b10050109b95084d22a8328c015ef57439fec92e24bbcf",
+    "apps/desktop/src/main/reading-state.ts": "66dd37b224cc66495388a7fb60441518b34f9d86a608e5a00a19a5ac1dd13b3b",
+    "apps/desktop/src/renderer/reading-state.ts": "9e6b6e78c6aa92cf1ef1f4128a47a2927c49c8a7588ccb82b60c4ad2da724391",
+    "apps/desktop/src/renderer/reading-position.ts": "bdddb32e739ccd2291d837a64c9a285ed0001987d2c6ba0d010cd15cf259c89b",
+    "apps/desktop/src/main/library.ts": "f11c37fdfab43a274dd210fb158dfdf8b92c7bc73380624e8276da14ccc2efdc"
+  },
+  "resources": {
+    "task-view.manifest.json": "fb94cf9ac0ffaa5d9882acf7da65be16ca558db5a14a091fec060a9dba4f60d9",
+    "workbench.manifest.json": "6c9c2040d67bd8a81823039af741968fee3ab8716d8df0c9e53a872208e9d05f"
+  },
+  "checks": {
+    "docs": "91篇／本地链接及追踪检查通过",
+    "localization": "1750双语键通过",
+    "capability_map": "生成和--check通过",
+    "git_diff_check": "通过",
+    "excluded_name_scan": "正式源码、文档、内容及文件名零匹配"
+  }
+}

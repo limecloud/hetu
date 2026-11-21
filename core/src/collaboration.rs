@@ -365,6 +365,9 @@ impl CollaborationHub {
         if action.starts_with("hetu.local_settings.") {
             return self.execute_local(request);
         }
+        if action.starts_with("hetu.execution.") {
+            return Ok(crate::execution::WorkspaceExecution::open_default(&self.client)?.request(request.clone()));
+        }
         if action == "hetu.creation_projects.create"
             || request["input"].get("management_ref").is_some()
         {

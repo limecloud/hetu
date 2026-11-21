@@ -7,7 +7,13 @@ ROOT = Path(__file__).resolve().parent.parent
 
 
 def verify():
-    source = json.loads((ROOT / "assets/localization/shared.json").read_text(encoding="utf-8"))
+    source = {}
+    for path in sorted((ROOT / "assets/localization").glob("*.json")):
+        entries = json.loads(path.read_text(encoding="utf-8"))
+        duplicates = source.keys() & entries.keys()
+        if duplicates:
+            raise ValueError(f"共享文案键重复：{sorted(duplicates)}")
+        source.update(entries)
     for key, entry in source.items():
         expected = set(entry["parameters"])
         for locale in ["zh-CN", "en"]:

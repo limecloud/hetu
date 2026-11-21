@@ -1,0 +1,465 @@
+{
+  "reading.title": {
+    "zh-CN": "阅读排版",
+    "en": "Reading appearance",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.novel": {
+    "zh-CN": "小说",
+    "en": "Novel",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.screenplay": {
+    "zh-CN": "剧本",
+    "en": "Screenplay",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.paper": {
+    "zh-CN": "纸色",
+    "en": "Page tone",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.system": {
+    "zh-CN": "跟随应用",
+    "en": "Follow application",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.paper_clear": {
+    "zh-CN": "清纸",
+    "en": "Clear paper",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.warm": {
+    "zh-CN": "暖纸",
+    "en": "Warm paper",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.night": {
+    "zh-CN": "夜墨",
+    "en": "Night ink",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.font": {
+    "zh-CN": "字体",
+    "en": "Typeface",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.font_songti": {
+    "zh-CN": "阅读宋体",
+    "en": "Reading serif",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.font_pingfang": {
+    "zh-CN": "清晰黑体",
+    "en": "Readable sans",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.font_system": {
+    "zh-CN": "系统字体",
+    "en": "System font",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.font_mono": {
+    "zh-CN": "剧本等宽",
+    "en": "Screenplay mono",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.font_custom": {
+    "zh-CN": "本机字体",
+    "en": "Local typeface",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.font_name": {
+    "zh-CN": "本机字体名称",
+    "en": "Local font name",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.font_sample": {
+    "zh-CN": "雨落窗边，故事从这里开始。The story begins here.",
+    "en": "The story begins here. 雨落窗边，故事从这里开始。",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.size": {
+    "zh-CN": "文字大小",
+    "en": "Text size",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.width": {
+    "zh-CN": "行宽",
+    "en": "Line width",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.narrow": {
+    "zh-CN": "窄",
+    "en": "Narrow",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.standard": {
+    "zh-CN": "标准",
+    "en": "Standard",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.wide": {
+    "zh-CN": "宽",
+    "en": "Wide",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.custom": {
+    "zh-CN": "自定义",
+    "en": "Custom",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.paragraph": {
+    "zh-CN": "段落",
+    "en": "Paragraphs",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.book": {
+    "zh-CN": "书籍式",
+    "en": "Book",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.spacious": {
+    "zh-CN": "舒展式",
+    "en": "Spacious",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.more": {
+    "zh-CN": "更多排版",
+    "en": "More typography",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.line_height": {
+    "zh-CN": "行高",
+    "en": "Line height",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.paragraph_spacing": {
+    "zh-CN": "段距",
+    "en": "Paragraph spacing",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.indent": {
+    "zh-CN": "首行缩进两字",
+    "en": "Indent first line",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.reset": {
+    "zh-CN": "恢复本类默认",
+    "en": "Reset this profile",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.decrease": {
+    "zh-CN": "减小{field}",
+    "en": "Decrease {field}",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": [
+      "field"
+    ]
+  },
+  "reading.increase": {
+    "zh-CN": "增大{field}",
+    "en": "Increase {field}",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": [
+      "field"
+    ]
+  },
+  "reading.invalid": {
+    "zh-CN": "请输入{min}至{max}之间的数值。",
+    "en": "Enter a value from {min} to {max}.",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": [
+      "min",
+      "max"
+    ]
+  },
+  "reading.font_required": {
+    "zh-CN": "请输入本机字体名称。",
+    "en": "Enter a local typeface name.",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.focus_paragraph": {
+    "zh-CN": "聚焦当前段落",
+    "en": "Focus current paragraph",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.typewriter_scroll": {
+    "zh-CN": "打字机滚动",
+    "en": "Typewriter scrolling",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.smart_pairs": {
+    "zh-CN": "智能配对括号与引号",
+    "en": "Pair brackets and quotes",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.writing": {
+    "zh-CN": "写作习惯",
+    "en": "Writing behavior",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.saving": {
+    "zh-CN": "正在保存排版…",
+    "en": "Saving appearance…",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.saved": {
+    "zh-CN": "排版已保存",
+    "en": "Appearance saved",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.recover": {
+    "zh-CN": "恢复原本机操作",
+    "en": "Recover original operation",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.close": {
+    "zh-CN": "关闭阅读排版",
+    "en": "Close reading appearance",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.zoom": {
+    "zh-CN": "文稿缩放",
+    "en": "Document zoom",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.zoom_reset": {
+    "zh-CN": "恢复100%",
+    "en": "Reset to 100%",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.zoom_in": {
+    "zh-CN": "放大文稿",
+    "en": "Zoom in document",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.zoom_out": {
+    "zh-CN": "缩小文稿",
+    "en": "Zoom out document",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.discard_preview": {
+    "zh-CN": "放弃本次预览",
+    "en": "Discard preview",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.sample_second": {
+    "zh-CN": "脚步声在窗外停下，远处仍有一盏灯亮着。",
+    "en": "Footsteps pause beyond the window. A distant light is still on.",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.font_invalid": {
+    "zh-CN": "字体名称包含无效字符。",
+    "en": "The typeface name contains unsupported characters.",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.font_available": {
+    "zh-CN": "当前名称可用，缺字会使用回退字体。",
+    "en": "This name is available; missing glyphs use fallback fonts.",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.font_fallback": {
+    "zh-CN": "未检测到此字体，将使用系统回退。",
+    "en": "Typeface not detected; using system fallback.",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.sync_error": {
+    "zh-CN": "偏好同步暂不可用，当前显示已保留。",
+    "en": "Preference sync is unavailable. Your current appearance is retained.",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.sync_retry": {
+    "zh-CN": "重新同步偏好",
+    "en": "Retry preference sync",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.counting": {
+    "zh-CN": "统计中…",
+    "en": "Counting…",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.counting_title": {
+    "zh-CN": "正在统计当前稿件",
+    "en": "Counting the current manuscript",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": []
+  },
+  "reading.count": {
+    "zh-CN": "{count} 字",
+    "en": "{count} Han characters",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": [
+      "count"
+    ]
+  },
+  "reading.statistics": {
+    "zh-CN": "汉字 {count}、西文词语 {words}、总字符 {characters}",
+    "en": "Han characters {count}, Latin words {words}, graphemes {characters}",
+    "purpose": "共同工作台阅读与写作排版",
+    "parameters": [
+      "count",
+      "words",
+      "characters"
+    ]
+  },
+  "reading.local_fonts": {
+    "zh-CN": "本机字体目录",
+    "en": "Local fonts",
+    "purpose": "阅读排版与界面显示",
+    "parameters": []
+  },
+  "reading.font_search": {
+    "zh-CN": "搜索本机字体",
+    "en": "Search local fonts",
+    "purpose": "阅读排版与界面显示",
+    "parameters": []
+  },
+  "reading.font_refresh": {
+    "zh-CN": "刷新目录",
+    "en": "Refresh list",
+    "purpose": "阅读排版与界面显示",
+    "parameters": []
+  },
+  "reading.font_loading": {
+    "zh-CN": "正在读取本机字体…",
+    "en": "Loading local fonts…",
+    "purpose": "阅读排版与界面显示",
+    "parameters": []
+  },
+  "reading.font_error": {
+    "zh-CN": "字体目录未能读取，仍可填写字体名称。",
+    "en": "Could not load fonts. You can still enter a font name.",
+    "purpose": "阅读排版与界面显示",
+    "parameters": []
+  },
+  "reading.font_retry": {
+    "zh-CN": "重新读取字体",
+    "en": "Retry font list",
+    "purpose": "阅读排版与界面显示",
+    "parameters": []
+  },
+  "reading.font_partial": {
+    "zh-CN": "部分字体未能读取（{count}）。",
+    "en": "Some fonts could not be read ({count}).",
+    "purpose": "阅读排版与界面显示",
+    "parameters": [
+      "count"
+    ]
+  },
+  "reading.font_count": {
+    "zh-CN": "{count} 个字体家族",
+    "en": "{count} font families",
+    "purpose": "阅读排版与界面显示",
+    "parameters": [
+      "count"
+    ]
+  },
+  "reading.font_none": {
+    "zh-CN": "没有匹配字体。",
+    "en": "No matching fonts.",
+    "purpose": "阅读排版与界面显示",
+    "parameters": []
+  },
+  "reading.font_choose": {
+    "zh-CN": "选择字体 {name}",
+    "en": "Choose font {name}",
+    "purpose": "阅读排版与界面显示",
+    "parameters": [
+      "name"
+    ]
+  },
+  "reading.font_preview": {
+    "zh-CN": "雨落窗边，故事继续。 Writing 0123",
+    "en": "雨落窗边，故事继续。 Writing 0123",
+    "purpose": "阅读排版与界面显示",
+    "parameters": []
+  },
+  "reading.font_refine": {
+    "zh-CN": "先显示前60项，输入名称可继续筛选。",
+    "en": "Showing the first 60. Type a name to filter.",
+    "purpose": "阅读排版与界面显示",
+    "parameters": []
+  },
+  "reading.ui_scale": {
+    "zh-CN": "界面大小",
+    "en": "Interface size",
+    "purpose": "阅读排版与界面显示",
+    "parameters": []
+  },
+  "reading.ui_scale_reset": {
+    "zh-CN": "恢复界面大小",
+    "en": "Reset interface size",
+    "purpose": "阅读排版与界面显示",
+    "parameters": []
+  },
+  "reading.ui_scale_host": {
+    "zh-CN": "界面大小由当前宿主控制。",
+    "en": "Interface size is controlled by the host.",
+    "purpose": "阅读排版与界面显示",
+    "parameters": []
+  },
+  "reading.ui_scale_error": {
+    "zh-CN": "界面大小未能应用，请重试。",
+    "en": "Could not apply interface size. Try again.",
+    "purpose": "阅读排版与界面显示",
+    "parameters": []
+  },
+  "reading.preview": {
+    "zh-CN": "排版预览",
+    "en": "Page preview",
+    "purpose": "共享文稿排版与编辑",
+    "parameters": []
+  }
+}

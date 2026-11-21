@@ -12,7 +12,7 @@
         "en": "Screenplay"
       },
       "model": "gpt-image-2.5-flare",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Two expressive actors rehearse an intimate conversation across a small stage doorway, while a fountain pen and loosely folded script pages frame the foreground. One warm theatre spotlight reveals action and dialogue as a living dramatic scene.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Two expressive actors rehearse an intimate conversation across a small stage doorway, while a fountain pen and loosely folded script pages frame the foreground. One warm theatre spotlight reveals action and dialogue as a living dramatic scene.",
       "source_sha256": "450dbfe680552e01abb0eb28eea781a9d9d2968b9d670e7834d3d0012f8371a7",
       "source_dimensions": [
         1536,
@@ -48,7 +48,12 @@
           "sha256": "c0677abfc8e9292ffe11e3afafeb8cb8f3fee3e1433944e5b2cebd8529a7e1a4",
           "size_bytes": 234576
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:beeda5e02e9b9f749270745e3861943f1e1fa86b532479787989128b0311820e",
+        "original_sha256": "beeda5e02e9b9f749270745e3861943f1e1fa86b532479787989128b0311820e"
+      }
     },
     {
       "slug": "video-studio",
@@ -57,7 +62,7 @@
         "en": "Video Studio"
       },
       "model": "gpt-image-2.5-sunburst",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A film editor's hands join two physical strips of moving-picture film, showing one continuous cinematic action across the frames; a compact movie camera and soft studio light sit nearby. Instantly communicate crafting and editing a short film.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A film editor's hands join two physical strips of moving-picture film, showing one continuous cinematic action across the frames; a compact movie camera and soft studio light sit nearby. Instantly communicate forming and editing a short film.",
       "source_sha256": "9a6dc1bb33c249c9cc3b0213b0db53fc129439cbc11c3612a1dca276e50fdde5",
       "source_dimensions": [
         1536,
@@ -93,7 +98,12 @@
           "sha256": "6319bf3ec8a8c46c7e081a9e20922d61f901d5d667bb1a2a6ebd401d689ef439",
           "size_bytes": 314436
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:5f245f140a3431886edd7d4f26205f56417340098ebbc3c23dfeb12bdf65a26a",
+        "original_sha256": "5f245f140a3431886edd7d4f26205f56417340098ebbc3c23dfeb12bdf65a26a"
+      }
     },
     {
       "slug": "director-stage",
@@ -102,7 +112,7 @@
         "en": "Director Stage"
       },
       "model": "gpt-image-2.5-flare",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A miniature film set seen in three-quarter perspective: two actors, one doorway, a chair, a movie camera on a small dolly and one overhead spotlight. A director's hand positions the camera toward the actors; unmistakable blocking and set direction.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A miniature film set seen in three-quarter perspective: two actors, one doorway, a chair, a movie camera on a small dolly and one overhead spotlight. A director's hand positions the camera toward the actors; unmistakable blocking and set direction.",
       "source_sha256": "8f5ee18e0163e4412c27942c9f0e67fea7595fb889d9a5fc31610b3b065ce5b9",
       "source_dimensions": [
         1536,
@@ -138,7 +148,12 @@
           "sha256": "0851959c65d8697294cf371782ae7ca4b919a434bbdb80da23f2e1d98bf9d47d",
           "size_bytes": 320662
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:885f214d4f106d55cf45aa76a44c75a1100056f7b76be66fad09b9a7b9347083",
+        "original_sha256": "885f214d4f106d55cf45aa76a44c75a1100056f7b76be66fad09b9a7b9347083"
+      }
     },
     {
       "slug": "shanhai",
@@ -147,7 +162,7 @@
         "en": "Shanhai"
       },
       "model": "gpt-image-2.5-sunburst",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: An open illustrated field journal releases an elegant original mythical mountain creature, half deer and half flowing cloud, beside a layered jade mountain and a tiny brass compass. Evoke a Chinese mythological bestiary and exploratory world stories, not a generic landscape.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: An open illustrated field journal releases an elegant original mythical mountain creature, half deer and half flowing cloud, beside a layered jade mountain and a tiny brass compass. Evoke a Chinese mythological bestiary and exploratory world stories, not a generic landscape.",
       "source_sha256": "1c2b05d9dd79c5fb6bfeffc7e005358639440877a4a809a51ab7a9827b028274",
       "source_dimensions": [
         1536,
@@ -183,7 +198,12 @@
           "sha256": "14b8e908aac1b5f67f30bb03e56e0729afed70358a08e2fb7666b064735c9156",
           "size_bytes": 383192
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:858d5105e2c3e4a39435b59c0b6bbd4a7238197a5058bcf32eb571449855cb56",
+        "original_sha256": "858d5105e2c3e4a39435b59c0b6bbd4a7238197a5058bcf32eb571449855cb56"
+      }
     },
     {
       "slug": "prose-studio",
@@ -192,7 +212,7 @@
         "en": "Prose Studio"
       },
       "model": "gpt-image-2.5-flare",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A fountain pen draws one graceful sentence-like ribbon that changes from a crisp angular cut-paper form to a flowing painterly wave, beside two distinct manuscript leaves. Tangible act of refining a writer's voice, with no readable text.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A fountain pen draws one graceful sentence-like ribbon that changes from a crisp angular cut-paper form to a flowing painterly wave, beside two distinct manuscript leaves. Tangible act of refining a writer's voice, with no readable text.",
       "source_sha256": "e2547aea0f5b5235737acc553caa66ee5c1f87916309e2312d6d01055ff740c9",
       "source_dimensions": [
         1536,
@@ -228,7 +248,12 @@
           "sha256": "4cb1fe6ee9086d472830fcd6b7cab3a1fcbdb6e3ae248a06018f72f5d10963b2",
           "size_bytes": 263516
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:4002911384595b7919101b64440952d56dbc449f3fc8f36314af56113133607d",
+        "original_sha256": "4002911384595b7919101b64440952d56dbc449f3fc8f36314af56113133607d"
+      }
     },
     {
       "slug": "novel-review",
@@ -237,7 +262,7 @@
         "en": "Novel Review"
       },
       "model": "gpt-image-2.5-sunburst",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: An attentive editor examines a manuscript with a large magnifying glass; one tangled jade story thread is carefully untied with a pencil and paper markers. A clear visual of finding and correcting manuscript problems, warm and constructive.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: An attentive editor examines a manuscript with a large magnifying glass; one tangled jade story thread is carefully untied with a pencil and paper markers. A clear visual of finding and correcting manuscript problems, warm and constructive.",
       "source_sha256": "7e7d6f31c23e6fcfc2cc2e3e1c5205ab8155d3d397aa98a942e854a7a6a4a186",
       "source_dimensions": [
         1536,
@@ -273,7 +298,12 @@
           "sha256": "8cacbdc0e9ad2709e7085823dab6b4df4ba2cc111ca33289b6dc3449f3e2dbf0",
           "size_bytes": 343636
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:241d8aab4cd340af4dca173685c3d71ca02f4934c1f02e5dcd47e71f818a7ede",
+        "original_sha256": "241d8aab4cd340af4dca173685c3d71ca02f4934c1f02e5dcd47e71f818a7ede"
+      }
     },
     {
       "slug": "novel-atlas",
@@ -282,7 +312,7 @@
         "en": "Novel Atlas"
       },
       "model": "gpt-image-2.5-flare",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A story traveler walks through a tangible folded map with a walled town, river crossing and mountain pass, leaving a single clear trail. A large compass and little location pin are secondary; instantly a fictional world atlas and journeys.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A story traveler walks through a tangible folded map with a walled town, river crossing and mountain pass, leaving a single clear trail. A large compass and little location pin are secondary; instantly a fictional world atlas and journeys.",
       "source_sha256": "413bf500a8d6d606b4b2df5d1564301fd0628db8c1c4d1d88a14a7a5aa9f5a92",
       "source_dimensions": [
         1536,
@@ -318,7 +348,12 @@
           "sha256": "3c615f78c948a3cc13de023829d4583d28d9765b1f36c74b9d0a5320afb44bc2",
           "size_bytes": 406700
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:a129d64b8e8f1813516a78877cb89d55b1f965b62ab43252429e76a4a6e2f99f",
+        "original_sha256": "a129d64b8e8f1813516a78877cb89d55b1f965b62ab43252429e76a4a6e2f99f"
+      }
     },
     {
       "slug": "novel-planner",
@@ -327,7 +362,7 @@
         "en": "Novel Planner"
       },
       "model": "gpt-image-2.5-sunburst",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A writer shaping a novel: a curved procession of large folded manuscript leaves becomes three miniature story scenes, from a traveler leaving home to a confrontation at a bridge and a door opening onto sunrise. A fountain pen guides one visible jade narrative thread through these turning points. Instantly communicate planning a complete novel story arc, distinct from printing a book or generic reading.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A writer shaping a novel: a curved procession of large folded manuscript leaves becomes three miniature story scenes, from a traveler leaving home to a confrontation at a bridge and a door opening onto sunrise. A fountain pen guides one visible jade narrative thread through these turning points. Instantly communicate planning a complete novel story arc, distinct from printing a book or generic reading.",
       "source_sha256": "2771b899b9bbaf01c158e182dcde16a27ce3d89ffa730c9296e9de17b51aa2de",
       "source_dimensions": [
         1536,
@@ -363,7 +398,12 @@
           "sha256": "ba79bf7c578fa817d34438acb57c40e3d3f88482bf2e240ee6157d6627c476f5",
           "size_bytes": 350788
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:4f28a4970c1981958dafde948944e5a315056368f74dd8fd3b99f70a4acb485c",
+        "original_sha256": "4f28a4970c1981958dafde948944e5a315056368f74dd8fd3b99f70a4acb485c"
+      }
     },
     {
       "slug": "story-research",
@@ -372,7 +412,7 @@
         "en": "Story Research"
       },
       "model": "gpt-image-2.5-flare",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A writer's research desk with one magnifying glass over a historical photograph, an opened reference volume and a clipped source note. The objects form a focused evidence investigation; large recognizable research tools, no tiny illegible documents.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A writer's research desk with one magnifying glass over a historical photograph, an opened reference volume and a clipped source note. The objects form a focused evidence investigation; large recognizable research tools, no tiny illegible documents.",
       "source_sha256": "bda9afb7421a215ffefbdfda9bd097a5f3b158011fde5665b023d791092c9431",
       "source_dimensions": [
         1536,
@@ -408,7 +448,12 @@
           "sha256": "f2cf90434b7541e5b321651b8c8055f4106b770f13c510b45b4841d520809eac",
           "size_bytes": 317240
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:d3b995be7994a9a2d01269c253154f21a1c111801652f5fd5fa9c4a3162337c4",
+        "original_sha256": "d3b995be7994a9a2d01269c253154f21a1c111801652f5fd5fa9c4a3162337c4"
+      }
     },
     {
       "slug": "character-lab",
@@ -417,7 +462,7 @@
         "en": "Character Lab"
       },
       "model": "gpt-image-2.5-sunburst",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: One expressive protagonist stands in the center while three translucent sculpted silhouettes behind them reveal a brave choice, a concealed fear and a compassionate gesture. A portrait sketch and theatre mask are secondary; memorable character creation.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: One expressive protagonist stands in the center while three translucent sculpted silhouettes behind them reveal a brave choice, a concealed fear and a compassionate gesture. A portrait sketch and theatre mask are secondary; memorable character creation.",
       "source_sha256": "4a61b66fb0839105eff90ff95e001e8b32327905bbc98d729146309f7e275819",
       "source_dimensions": [
         1536,
@@ -453,7 +498,12 @@
           "sha256": "2a5cca2c8caa57dbb7db3bb80de7d27e3dc63bb30ebb07295d9f434e9ce5ca0c",
           "size_bytes": 376466
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:5e7e6725e85a3561be2e0436052f95170bb3685231c52f272eb84b18dba4beda",
+        "original_sha256": "5e7e6725e85a3561be2e0436052f95170bb3685231c52f272eb84b18dba4beda"
+      }
     },
     {
       "slug": "story-analysis",
@@ -462,7 +512,7 @@
         "en": "Story Analysis"
       },
       "model": "gpt-image-2.5-flare",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A manuscript is opened like a layered stage, revealing a hero pursuing a goal, an obstacle, and a decisive turn. A magnifying glass reveals how one scene connects to the next via a visible thread. Clearly story structure analysis rather than a graph UI.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A manuscript is opened like a layered stage, revealing a hero pursuing a goal, an obstacle, and a decisive turn. A magnifying glass reveals how one scene connects to the next via a visible thread. Clearly story structure analysis rather than a graph UI.",
       "source_sha256": "c569ee057dd6692ded51ccd1e45e5184b894864573324bc34084b68200497564",
       "source_dimensions": [
         1536,
@@ -498,7 +548,12 @@
           "sha256": "f81a47f14049f03f35db3f73fb0bec1528f026e4f185eec3d77f65a5d59985db",
           "size_bytes": 342456
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:ffefd562c0282cf023b4043f191403935b23ee9adc1a186b2cd89dc10e5a6d21",
+        "original_sha256": "ffefd562c0282cf023b4043f191403935b23ee9adc1a186b2cd89dc10e5a6d21"
+      }
     },
     {
       "slug": "lorebook-bridge",
@@ -507,7 +562,7 @@
         "en": "Lorebook Bridge"
       },
       "model": "gpt-image-2.5-sunburst",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Two beautiful world encyclopedias face each other with a small arched jade bridge carrying the same distinctive dragon, tower and flower between their pages. Emphasize preserving world lore while moving it between story collections.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Two beautiful world encyclopedias face each other with a small arched jade bridge carrying the same distinctive dragon, tower and flower between their pages. Emphasize preserving world lore while moving it between story collections.",
       "source_sha256": "55107922966775ad8e292ae440a86b1f38effa1c16318045b4c823307993ae4b",
       "source_dimensions": [
         1536,
@@ -543,7 +598,12 @@
           "sha256": "6bfd0ce005e91cb9389e8f6a35e3ce3b4d35d147c20c0560943eca3635f604d3",
           "size_bytes": 349658
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:754e1a086a5c0ebc7b7f2da4586e9cd7a46f2f5124803e99efddf672a89c7fb8",
+        "original_sha256": "754e1a086a5c0ebc7b7f2da4586e9cd7a46f2f5124803e99efddf672a89c7fb8"
+      }
     },
     {
       "slug": "interactive-fiction",
@@ -552,7 +612,7 @@
         "en": "Interactive Fiction"
       },
       "model": "gpt-image-2.5-flare",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A reader's hand chooses one of two physical doors emerging from a storybook, one revealing a moonlit forest and the other a lantern-lit city. A single hero waits at the fork. Immediate choose-your-own-story meaning.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A reader's hand chooses one of two physical doors emerging from a storybook, one revealing a moonlit forest and the other a lantern-lit city. A single hero waits at the fork. Immediate choose-your-own-story meaning.",
       "source_sha256": "f2a8b1c810c0a505c2e99a7c4be0afe549add0d5e644160aee6c8f1485007f04",
       "source_dimensions": [
         1536,
@@ -588,7 +648,12 @@
           "sha256": "b7632c5aacccaad7729554b524d0c359d282a22950f83177f39817f0bf5366ef",
           "size_bytes": 394522
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:1efd4924816094d84bdba34394da777f208d521242f2db5634ed11ff0be72aa3",
+        "original_sha256": "1efd4924816094d84bdba34394da777f208d521242f2db5634ed11ff0be72aa3"
+      }
     },
     {
       "slug": "series-organizer",
@@ -597,7 +662,7 @@
         "en": "Series Organizer"
       },
       "model": "gpt-image-2.5-sunburst",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Three visually related volumes of a saga stand in a rising arc around one shared miniature city and recurring protagonist. A jade thread binds all three adventures, making a coherent ongoing story series clear at thumbnail size.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Three visually related volumes of a saga stand in a rising arc around one shared miniature city and recurring protagonist. A jade thread binds all three adventures, making a coherent ongoing story series clear at thumbnail size.",
       "source_sha256": "300a77126a540c1e89d5b5b77c615094a331bae265adab7c41c5a39f06a6ff6c",
       "source_dimensions": [
         1536,
@@ -633,7 +698,12 @@
           "sha256": "a597743391c399d4d6bd633bd8bacc904051dcbca0515a56b2c4c6864eba42b7",
           "size_bytes": 426544
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:6a68aedb84d4391a4428ab724639d40c126e6501fd3d65f92b998134038a527b",
+        "original_sha256": "6a68aedb84d4391a4428ab724639d40c126e6501fd3d65f92b998134038a527b"
+      }
     },
     {
       "slug": "story-translation",
@@ -642,7 +712,7 @@
         "en": "Story Translation"
       },
       "model": "gpt-image-2.5-flare",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Two facing manuscript leaves form a bridge across a small river; the same tiny scene of two people meeting is faithfully reflected on each side. A translator with a pencil carefully carries a small speech-shaped ribbon across. No writing or alphabets.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Two facing manuscript leaves form a bridge across a small river; the same tiny scene of two people meeting is faithfully reflected on each side. A translator with a pencil carefully carries a small speech-shaped ribbon across. No writing or alphabets.",
       "source_sha256": "47705c6bfa572dc655aa2dde8a33d629e9ae0285ec18a275981d7a5f8005097c",
       "source_dimensions": [
         1536,
@@ -678,7 +748,12 @@
           "sha256": "a3f77d81fabde743082ef8789489bbbec780c8d61f736c4471df442db3b4b1d6",
           "size_bytes": 297918
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:939f4d045a72933df09eb516463fb3d0408bfb8fff67c40008b6a4c63ef1b3b1",
+        "original_sha256": "939f4d045a72933df09eb516463fb3d0408bfb8fff67c40008b6a4c63ef1b3b1"
+      }
     },
     {
       "slug": "readthrough",
@@ -687,7 +762,7 @@
         "en": "Readthrough"
       },
       "model": "gpt-image-2.5-sunburst",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A writer wearing simple headphones listens as a ribbon of spoken sound rises from a manuscript page, catches on one small knot and becomes smooth again. A pencil rests at the knot; immediately listening to a draft for revision.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A writer wearing simple headphones listens as a ribbon of spoken sound rises from a manuscript page, catches on one small knot and becomes smooth again. A pencil rests at the knot; immediately listening to a draft for revision.",
       "source_sha256": "85a43282bb91ddc836ff8a2a6dffde4873295742431d86a31866eb2518c93721",
       "source_dimensions": [
         1536,
@@ -723,7 +798,12 @@
           "sha256": "49b2b6cd94ef40a1c22355b23d082be65a105792746b2d440f3e17d9ce5c6962",
           "size_bytes": 259004
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:755429fe9381d1c57e054abe8d44dc80f95b63787b7af6d06907e1e1c33d54bb",
+        "original_sha256": "755429fe9381d1c57e054abe8d44dc80f95b63787b7af6d06907e1e1c33d54bb"
+      }
     },
     {
       "slug": "book-export",
@@ -732,7 +812,7 @@
         "en": "Book Export"
       },
       "model": "gpt-image-2.5-flare",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A completed manuscript transforms into a beautifully bound physical book, an e-reader slab with an illustrated page and a neatly tied delivery parcel. Clearly preparing and delivering a finished book in several formats, no interface or lettering.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A completed manuscript transforms into a beautifully bound physical book, an e-reader slab with an illustrated page and a neatly tied delivery parcel. Clearly preparing and delivering a finished book in several formats, no interface or lettering.",
       "source_sha256": "408682a65d76a6726b7036b597a49547ab41bba735fc77cee457c1c88020e6a5",
       "source_dimensions": [
         1536,
@@ -768,7 +848,12 @@
           "sha256": "07bc83a3d5b3a9d0058ef26ca55f198551677f6319814a56eb1cdac163ebf523",
           "size_bytes": 372382
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:b89b4502c888eb494f8e3a2b24bc83c76853edda9c71404c8b34407720240269",
+        "original_sha256": "b89b4502c888eb494f8e3a2b24bc83c76853edda9c71404c8b34407720240269"
+      }
     },
     {
       "slug": "adaptation-studio",
@@ -777,7 +862,7 @@
         "en": "Adaptation Studio"
       },
       "model": "gpt-image-2.5-sunburst",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A novel's pages unfold into a small theatrical stage and a strip of cinema film depicting the same heroine and doorway. A continuous jade ribbon connects all three, instantly showing adaptation from book to script and screen.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A novel's pages unfold into a small theatrical stage and a strip of cinema film depicting the same heroine and doorway. A continuous jade ribbon connects all three, instantly showing adaptation from book to script and screen.",
       "source_sha256": "f9b068b858df11449ece34ba1aeb1a15e1117f2675cb9d3def001d7d4a4b2c49",
       "source_dimensions": [
         1536,
@@ -813,7 +898,12 @@
           "sha256": "d35337ca95adbc0de13ecb025ecf261c737dc8c1b8b63f6677d96ceef42e9763",
           "size_bytes": 286738
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:e9739f311f3657816beadf51161be934b072c6c8079681427a8e00d690174550",
+        "original_sha256": "e9739f311f3657816beadf51161be934b072c6c8079681427a8e00d690174550"
+      }
     },
     {
       "slug": "reader-review",
@@ -822,7 +912,7 @@
         "en": "Reader Review"
       },
       "model": "gpt-image-2.5-flare",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: An author and two engaged readers gather around one open manuscript; readers offer two distinct small handwritten-note shapes and the author thoughtfully marks one passage. Friendly constructive audience feedback, no visible writing.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: An author and two engaged readers gather around one open manuscript; readers offer two distinct small handwritten-note shapes and the author thoughtfully marks one passage. Friendly constructive audience feedback, no visible writing.",
       "source_sha256": "19420bfa57ef789c15217d39532e10898406e88969048a1a9dc78ee49c00c80d",
       "source_dimensions": [
         1536,
@@ -858,7 +948,12 @@
           "sha256": "8305b0ba6432949c394d27da1055eaccfdee19a6f86007d68b0e38c9647d7f3d",
           "size_bytes": 344818
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:5ee48f1acac1d4889f701b2f781d49c8ffb1ade9491b21497e0cb05232d2b240",
+        "original_sha256": "5ee48f1acac1d4889f701b2f781d49c8ffb1ade9491b21497e0cb05232d2b240"
+      }
     },
     {
       "slug": "comic-studio",
@@ -867,7 +962,7 @@
         "en": "Comic Studio"
       },
       "model": "gpt-image-2.5-sunburst",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A comic artist's brush brings a bold heroine through three large hand-drawn comic panels: a wide action shot, an expressive close-up and a dramatic reveal. Visible paper gutters, dynamic movement, empty speech balloons without lettering.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A comic artist's brush brings a bold heroine through three large hand-drawn comic panels: a wide action shot, an expressive close-up and a dramatic reveal. Visible paper gutters, dynamic movement, empty speech balloons without lettering.",
       "source_sha256": "9808e13fe54f89e546b49024409738cac9c61baa92fb61aafa5e4a78100807eb",
       "source_dimensions": [
         1536,
@@ -903,7 +998,12 @@
           "sha256": "ffa4ec0f3982c2799adbf070c2bbd09ecea23779337eded8e3525a3b6604b555",
           "size_bytes": 360548
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:24401d2de599bd3dfbdbeff54b8776dbeaacce42bf374560f3e4a371bc3b695d",
+        "original_sha256": "24401d2de599bd3dfbdbeff54b8776dbeaacce42bf374560f3e4a371bc3b695d"
+      }
     },
     {
       "slug": "audio-drama",
@@ -912,7 +1012,7 @@
         "en": "Audio Drama"
       },
       "model": "gpt-image-2.5-flare",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Two voice actors perform opposite studio microphones, with headphones and a small physical sound-effect prop in the foreground. A moonlit fictional scene rises between them as flowing jade sound, unmistakably a performed audio drama.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Two voice actors perform opposite studio microphones, with headphones and a small physical sound-effect prop in the foreground. A moonlit fictional scene rises between them as flowing jade sound, unmistakably a performed audio drama.",
       "source_sha256": "b80fbdf02c77ed2546991e9160e84a8eefb1cfc007f5108c94b84cc7e11e6cf4",
       "source_dimensions": [
         1536,
@@ -948,7 +1048,12 @@
           "sha256": "beb5a79792ddfc83ae9cd104c20a19825945a8f3fa332106f144949c0f195fb1",
           "size_bytes": 431100
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:2cd3c9fb9666b7d4f3c9479884a981c79874e2881acb4852c3ab8d153d18d19a",
+        "original_sha256": "2cd3c9fb9666b7d4f3c9479884a981c79874e2881acb4852c3ab8d153d18d19a"
+      }
     },
     {
       "slug": "world-studio",
@@ -957,7 +1062,7 @@
         "en": "World Studio"
       },
       "model": "gpt-image-2.5-sunburst",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A world-builder's hand arranges a miniature fantasy civilization: an island city, a river, a small astronomical sphere and distinct cultural objects emerging from a sculpted paper world. Rich coherent world creation with a large clear focal city.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A world-builder's hand arranges a miniature fantasy civilization: an island city, a river, a small astronomical sphere and distinct cultural objects emerging from a sculpted paper world. Rich coherent world creation with a large clear focal city.",
       "source_sha256": "9f721fdb52f9fb33be87091e220997d1405d5d1ef46b3f7710e0273cb43eb022",
       "source_dimensions": [
         1536,
@@ -993,7 +1098,12 @@
           "sha256": "38551c886446773bc986c6f3700b1bc51ace9ace272a3fe2ddc048959a212996",
           "size_bytes": 422396
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:bf9bfd4e9a85fea59aa625f17c6cf8a16cd89742990c58c855213fd4677e483c",
+        "original_sha256": "bf9bfd4e9a85fea59aa625f17c6cf8a16cd89742990c58c855213fd4677e483c"
+      }
     },
     {
       "slug": "mystery-lab",
@@ -1002,7 +1112,7 @@
         "en": "Mystery Lab"
       },
       "model": "gpt-image-2.5-flare",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A detective-like author studies three large pieces of story evidence on a desk: a torn letter, a key and a stopped pocket watch, with a magnifying glass revealing one hidden connection. Moody but inviting, clear mystery plotting, no murder gore.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A detective-like author studies three large pieces of story evidence on a desk: a torn letter, a key and a stopped pocket watch, with a magnifying glass revealing one hidden connection. Moody but inviting, clear mystery plotting, no murder gore.",
       "source_sha256": "f610db95aded3eda042ebaf37994359c3398d4177e126d1684dd11b1c265b572",
       "source_dimensions": [
         1536,
@@ -1038,7 +1148,12 @@
           "sha256": "e94e234cb9feaa1bfa1ec73c461c29e28a4fe0c7f5fd8028956c7eb101b7e05b",
           "size_bytes": 293668
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:8012ddfc19d112a47c3aedbeae1575c17c754df47476e832df953470375950ea",
+        "original_sha256": "8012ddfc19d112a47c3aedbeae1575c17c754df47476e832df953470375950ea"
+      }
     },
     {
       "slug": "art-direction",
@@ -1047,7 +1162,7 @@
         "en": "Art Direction"
       },
       "model": "gpt-image-2.5-sunburst",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: An art director arranges a character costume mannequin, a painted miniature set facade and three harmonious pigment swatches. A broad brush connects them with one shared visual palette; unmistakable character-and-world visual design.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: An art director arranges a character costume mannequin, a painted miniature set facade and three harmonious pigment swatches. A broad brush connects them with one shared visual palette; unmistakable character-and-world visual design.",
       "source_sha256": "f8fbda80ea7dfcf0e217cfaacefaf02670bad3ce83c2e2372387b36d5fd55fc7",
       "source_dimensions": [
         1536,
@@ -1083,7 +1198,12 @@
           "sha256": "9e8df4ad2e316a1376661976ed81680db39d75dad839c2a68293e21c3edb63b4",
           "size_bytes": 365534
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:85da1eaddd002eaf3f8a50705f778a623c7a2cebb1726b27fe1ac047e878a37a",
+        "original_sha256": "85da1eaddd002eaf3f8a50705f778a623c7a2cebb1726b27fe1ac047e878a37a"
+      }
     },
     {
       "slug": "subtitle-studio",
@@ -1092,7 +1212,7 @@
         "en": "Subtitle Studio"
       },
       "model": "gpt-image-2.5-flare",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A cinematic scene on a physical strip of film is matched with two clean blank caption ribbons by a careful editor's hand; a dialogue waveform made of raised jade paper sits beneath. Clear film subtitle timing, no readable text or screen chrome.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A cinematic scene on a physical strip of film is matched with two clean blank caption ribbons by a careful editor's hand; a dialogue waveform made of raised jade paper sits beneath. Clear film subtitle timing, no readable text or screen chrome.",
       "source_sha256": "95bbc3c55322e63398636e7024f60a057b65db108791707a0d6f55fd1481d31d",
       "source_dimensions": [
         1536,
@@ -1128,7 +1248,12 @@
           "sha256": "19266ad5786ebf52aee1a70206fb2171902c4e98f0b04f8fa2360ad47ece2fe2",
           "size_bytes": 324356
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:997f9f8ee8acc085ca355e22b6be8f5ff4fd312fb71825bfa3e4374cb651b89f",
+        "original_sha256": "997f9f8ee8acc085ca355e22b6be8f5ff4fd312fb71825bfa3e4374cb651b89f"
+      }
     },
     {
       "slug": "picturebook",
@@ -1137,7 +1262,7 @@
         "en": "Picturebook Studio"
       },
       "model": "gpt-image-2.5-sunburst",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A parent-sized storyteller opens an enchanting children's picturebook; a curious small fox steps from the painted forest page toward a paper moon. Warm tactile illustrations, large joyful character, clear picturebook storytelling.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A parent-sized storyteller opens an enchanting children's picturebook; a curious small fox steps from the painted forest page toward a paper moon. Warm tactile illustrations, large joyful character, clear picturebook storytelling.",
       "source_sha256": "b7b7d4cefb0c4079ca17d1908ad5b645a23e5cc03192149d2af217134598a85d",
       "source_dimensions": [
         1536,
@@ -1173,7 +1298,12 @@
           "sha256": "6ae6c456075d43a49c40a7ec11c68ffe4e58080c18677ed3c79ef8a08ae88a69",
           "size_bytes": 349966
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:2846abdd4c6efa01702de481df1cfacfff3c6e7bf32a6209bf59ed2c95e75f27",
+        "original_sha256": "2846abdd4c6efa01702de481df1cfacfff3c6e7bf32a6209bf59ed2c95e75f27"
+      }
     },
     {
       "slug": "murder-mystery",
@@ -1182,7 +1312,7 @@
         "en": "Murder Mystery Studio"
       },
       "model": "gpt-image-2.5-flare",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Three players sit around an intimate mystery-game table, each holding a distinct character dossier. A central key, sealed clue envelope and theatre half-mask invite investigation. Recognizable social roleplay mystery, suspenseful and playful, no weapons or gore.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Three players sit around an intimate mystery-game table, each holding a distinct character dossier. A central key, sealed clue envelope and theatre half-mask invite investigation. Recognizable social roleplay mystery, suspenseful and playful, no weapons or gore.",
       "source_sha256": "0a164478a81d13e47abaa5b677d91820c7f54dcf088ca669e4b8e50dac63b60b",
       "source_dimensions": [
         1536,
@@ -1218,7 +1348,12 @@
           "sha256": "13b8555872af3db349d05d8ec7a114e4c74f0e1161a90a0fd25e737419cc579e",
           "size_bytes": 353758
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:1f245737455470c7fc18988f4142b5897a340c0487c09afef94dc0f8b8e22934",
+        "original_sha256": "1f245737455470c7fc18988f4142b5897a340c0487c09afef94dc0f8b8e22934"
+      }
     },
     {
       "slug": "production-planner",
@@ -1227,7 +1362,7 @@
         "en": "Production Planner"
       },
       "model": "gpt-image-2.5-sunburst",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A practical film producer organizes a compact location miniature, costume rack, camera case and physical shooting schedule sheets on one clear desk; a large clapperboard anchors the scene. Emphasize organizing the resources for a production, not editing film.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A practical film producer organizes a compact location miniature, costume rack, camera case and physical shooting schedule sheets on one clear desk; a large clapperboard anchors the scene. Emphasize organizing the resources for a production, not editing film.",
       "source_sha256": "7401766809530a5fe9a619499dc5f36358688c3ec0c13d9d4dea19095921c442",
       "source_dimensions": [
         1536,
@@ -1263,7 +1398,12 @@
           "sha256": "58eac6c3f64f62c5af4cf231f79ba96ccb5784c9bcc10c77b7b430da2803321c",
           "size_bytes": 285214
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:6ffd57d732a6235e56ff66d808845991a71fc133cc167672045a8f9ee56fa442",
+        "original_sha256": "6ffd57d732a6235e56ff66d808845991a71fc133cc167672045a8f9ee56fa442"
+      }
     },
     {
       "slug": "lyric-studio",
@@ -1272,7 +1412,7 @@
         "en": "Lyric Studio"
       },
       "model": "gpt-image-2.5-flare",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A songwriter writes beside a microphone as a flowing ribbon of verse becomes a simple melodic trail around an expressive singer. One folded lyric sheet and fountain pen anchor the image; words-to-song feeling without visible text or notation clutter.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A songwriter writes beside a microphone as a flowing ribbon of verse becomes a simple melodic trail around an expressive singer. One folded lyric sheet and fountain pen anchor the image; words-to-song feeling without visible text or notation clutter.",
       "source_sha256": "82a885b7361d60dc080b200bda75960702700098b55ca9af19f94b108346e029",
       "source_dimensions": [
         1536,
@@ -1308,7 +1448,12 @@
           "sha256": "1c666a737d1b0f12a194f506efbac86807686d276f512db95ca720a81039e489",
           "size_bytes": 368532
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:dc5bd159afda4bd3f73243ffb91bfac8fa58596d233ee7de854c19ef30d413c0",
+        "original_sha256": "dc5bd159afda4bd3f73243ffb91bfac8fa58596d233ee7de854c19ef30d413c0"
+      }
     },
     {
       "slug": "poetry-studio",
@@ -1317,7 +1462,7 @@
         "en": "Poetry Studio"
       },
       "model": "gpt-image-2.5-sunburst",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A poet's brush captures a single falling leaf, a crescent moon and a ripple of water in one spacious flowing ribbon over textured paper. Elegant restrained lyrical imagery and deliberate rhythm, with the brush and poem sheet clearly present.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A poet's brush captures a single falling leaf, a crescent moon and a ripple of water in one spacious flowing ribbon over textured paper. Elegant restrained lyrical imagery and deliberate rhythm, with the brush and poem sheet clearly present.",
       "source_sha256": "571307201060e5cf7f95c29d35e9b00d899fd5f2971140860b5f20c7ee706f68",
       "source_dimensions": [
         1536,
@@ -1353,7 +1498,12 @@
           "sha256": "55a8d3709ec6d324a062a5daf77ed33ccbdbdb15055603af5c8bd29cf441d900",
           "size_bytes": 260410
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:7882d7ad19806baa0983bedec2d6ec7f502612a9ba7073f6ad19ae982daeb52b",
+        "original_sha256": "7882d7ad19806baa0983bedec2d6ec7f502612a9ba7073f6ad19ae982daeb52b"
+      }
     },
     {
       "slug": "nonfiction-studio",
@@ -1362,7 +1512,7 @@
         "en": "Nonfiction Studio"
       },
       "model": "gpt-image-2.5-flare",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A nonfiction writer carefully compares a voice recorder, a documentary photograph and an open notebook while a real everyday street scene rises softly behind them. Grounded observation, evidence and human lives, no fantasy objects.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A nonfiction writer carefully compares a voice recorder, a documentary photograph and an open notebook while a real everyday street scene rises softly behind them. Grounded observation, evidence and human lives, no fantasy objects.",
       "source_sha256": "81e479ae07b43df2afec32b340cd20d26ec2272c08e457bb1a2c987e4ffb302e",
       "source_dimensions": [
         1536,
@@ -1398,7 +1548,12 @@
           "sha256": "ee7686e6d363bce0ae423b1d1d8cf63721093a57490774925f086f70eb016154",
           "size_bytes": 293330
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:e63d54a33ef740ecc0a39b4e8a287ea2886cd6b41b6e57e7bc641044a8a03a5d",
+        "original_sha256": "e63d54a33ef740ecc0a39b4e8a287ea2886cd6b41b6e57e7bc641044a8a03a5d"
+      }
     },
     {
       "slug": "biography-studio",
@@ -1407,7 +1562,7 @@
         "en": "Biography Studio"
       },
       "model": "gpt-image-2.5-sunburst",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: An intimate sculpted portrait of one person is surrounded by three large meaningful life moments: childhood at home, a decisive journey and a mature creative achievement. A gently winding thread joins them to an open memoir; clearly one life's story.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: An intimate sculpted portrait of one person is surrounded by three large meaningful life moments: childhood at home, a decisive journey and a mature creative achievement. A gently winding thread joins them to an open memoir; clearly one life's story.",
       "source_sha256": "2eee7ae867d586423e8df57b2e7b7401b8b68f9b1b6e4184207ed7918dc02587",
       "source_dimensions": [
         1536,
@@ -1443,7 +1598,12 @@
           "sha256": "2d127c44628b27cb32a783a869fd8025216cc563817e417131619ec2734acac5",
           "size_bytes": 409020
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:2c4d03a395456e5e148e49165fb5ce8ffb555d752c200f861fdb523c9182f6e3",
+        "original_sha256": "2c4d03a395456e5e148e49165fb5ce8ffb555d752c200f861fdb523c9182f6e3"
+      }
     },
     {
       "slug": "essay-studio",
@@ -1452,7 +1612,7 @@
         "en": "Essay Studio"
       },
       "model": "gpt-image-2.5-flare",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: An essayist sits beside a rainlit window with a tea cup and a loose manuscript, turning an ordinary fallen leaf into a thoughtful miniature memory of a street and home. Quiet personal observation and reflective prose, distinct from poetry brushwork.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: An essayist sits beside a rainlit window with a tea cup and a loose manuscript, turning an ordinary fallen leaf into a thoughtful miniature memory of a street and home. Quiet personal observation and reflective prose, distinct from poetry brushwork.",
       "source_sha256": "77b546a8fe2c35a0f2e37718b97504e3550c65b928fb14b75272464be2f5f956",
       "source_dimensions": [
         1536,
@@ -1488,7 +1648,12 @@
           "sha256": "a918a84836c15b6f8773e3e1b7b46bc350df03cbcd6e2ea666faba944f58912d",
           "size_bytes": 333420
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:e4ac8eae4966b18fe794c6107c10783f73d1221c403cd3fd94f6a35ed333e8ad",
+        "original_sha256": "e4ac8eae4966b18fe794c6107c10783f73d1221c403cd3fd94f6a35ed333e8ad"
+      }
     },
     {
       "slug": "criticism-studio",
@@ -1497,7 +1662,7 @@
         "en": "Literary Criticism"
       },
       "model": "gpt-image-2.5-sunburst",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A literary critic holds a magnifying glass over an open novel while comparing a marked passage and two small contrasting interpretations represented by theatre masks. Clear close reading, careful reasoning and literary discussion.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A literary critic holds a magnifying glass over an open novel while comparing a marked passage and two small contrasting interpretations represented by theatre masks. Clear close reading, careful reasoning and literary discussion.",
       "source_sha256": "8764c017d5261c3e7e6b00d51a00a296bd92d59718319a98271dfec7680d96b2",
       "source_dimensions": [
         1536,
@@ -1533,7 +1698,12 @@
           "sha256": "625b8f94646447cd1a4de04db65a949cd6350405f8ea36083af3ba4d397c2439",
           "size_bytes": 352428
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:c9cbd02da505c2ecaffb721c0a80cb5648e987ff2790e1626a4762b2bc4275de",
+        "original_sha256": "c9cbd02da505c2ecaffb721c0a80cb5648e987ff2790e1626a4762b2bc4275de"
+      }
     },
     {
       "slug": "documentary-studio",
@@ -1542,7 +1712,7 @@
         "en": "Documentary Studio"
       },
       "model": "gpt-image-2.5-flare",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A documentary filmmaker with a compact shoulder camera listens to an interviewee in a real everyday setting; one archival photograph and voice recorder form the foreground. Honest human observation and researched nonfiction filmmaking.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A documentary filmmaker with a compact shoulder camera listens to an interviewee in a real everyday setting; one archival photograph and voice recorder form the foreground. Honest human observation and researched nonfiction filmmaking.",
       "source_sha256": "8a2159dbff1ff54fb7fbe1173623aab30325bb5e5417d08bd09b40ac32b77b1d",
       "source_dimensions": [
         1536,
@@ -1578,7 +1748,12 @@
           "sha256": "adb5c6c22be76018ec1dd65c7616352d4a3dd06b833201a143bed91208282a81",
           "size_bytes": 266928
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:46e980ac951b3e7cc88b8aa38a833838535270254f8215565d6f00d490ab7dbb",
+        "original_sha256": "46e980ac951b3e7cc88b8aa38a833838535270254f8215565d6f00d490ab7dbb"
+      }
     },
     {
       "slug": "podcast-studio",
@@ -1587,7 +1762,7 @@
         "en": "Podcast Studio"
       },
       "model": "gpt-image-2.5-sunburst",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Two podcast hosts in a warm intimate recording corner speak into large studio microphones with headphones and a compact sound console. The spoken conversation forms a gentle jade sound ribbon; immediately a podcast recording.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Two podcast hosts in a warm intimate recording corner speak into large studio microphones with headphones and a compact sound console. The spoken conversation forms a gentle jade sound ribbon; immediately a podcast recording.",
       "source_sha256": "4f475bdc598ea91217c57a86c41460dcbfede6d0a6d7c2c2aeab54767dec3927",
       "source_dimensions": [
         1536,
@@ -1623,7 +1798,12 @@
           "sha256": "0a4505bc62c89c59feea517fd078e842aaa688e0c46cf91090972b5e0d0a1f99",
           "size_bytes": 375912
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:33033cf6c6a7cfd23cbe3d96a1c59b85c41742d0da89369f1316a97ccd150bc3",
+        "original_sha256": "33033cf6c6a7cfd23cbe3d96a1c59b85c41742d0da89369f1316a97ccd150bc3"
+      }
     },
     {
       "slug": "stage-rehearsal",
@@ -1632,7 +1812,7 @@
         "en": "Stage Rehearsal"
       },
       "model": "gpt-image-2.5-flare",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A stage manager at the wing holds an open prompt book while two actors rehearse beneath a visible theatre spotlight; a headset, light cue and curtain frame the action. Clear theatre rehearsal and coordinated backstage cues.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A stage manager at the wing holds an open prompt book while two actors rehearse beneath a visible theatre spotlight; a headset, light cue and curtain frame the action. Clear theatre rehearsal and coordinated backstage cues.",
       "source_sha256": "bfa95fec520a47ac7e9a7c1a6d971a6b436fd3cdba0123d250bb934683592195",
       "source_dimensions": [
         1536,
@@ -1668,7 +1848,12 @@
           "sha256": "419737d17a2b2a0ef223372b708ebf6dc24c7a3dde32c7b7f186291ac91b69d2",
           "size_bytes": 245044
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:de82acb60e20ef02da95aee77040cd0627148719f5c9d1fb2f76154b35c7c711",
+        "original_sha256": "de82acb60e20ef02da95aee77040cd0627148719f5c9d1fb2f76154b35c7c711"
+      }
     },
     {
       "slug": "standup-studio",
@@ -1677,7 +1862,7 @@
         "en": "Stand-up Studio"
       },
       "model": "gpt-image-2.5-sunburst",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A single expressive comedian stands at a simple microphone on a small warm spotlight stage, holding a tiny cue card, while three audience silhouettes lean forward in laughter. Immediate live stand-up comedy, not music performance.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A single expressive comedian stands at a simple microphone on a small warm spotlight stage, holding a tiny cue card, while three audience silhouettes lean forward in laughter. Immediate live stand-up comedy, not music performance.",
       "source_sha256": "660bf29ff269fc697a374718fa83e52ce280fc4c19e2dac071cf53ac11f13590",
       "source_dimensions": [
         1536,
@@ -1713,7 +1898,12 @@
           "sha256": "8064a941f05f49870cefade8b3c8c5741cec37c9791a70acc1b5902641e1ff9c",
           "size_bytes": 247030
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:0001fe464cbfa2b48bffff4191a7a519817e207c7d35b2de5946eed391ed6ee9",
+        "original_sha256": "0001fe464cbfa2b48bffff4191a7a519817e207c7d35b2de5946eed391ed6ee9"
+      }
     },
     {
       "slug": "science-studio",
@@ -1722,7 +1912,7 @@
         "en": "Science Writing Studio"
       },
       "model": "gpt-image-2.5-flare",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A science writer explains a small planetary orbit and a water experiment with a bright prism and a measured physical pendulum on a desk. An open explanatory book connects observation to understanding; inviting scientific explanation, no formulas.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A science writer explains a small planetary orbit and a water experiment with a bright prism and a measured physical pendulum on a desk. An open explanatory book connects observation to understanding; inviting scientific explanation, no formulas.",
       "source_sha256": "2f71ac9b4408dd257b8da566324bfd9d25ba2bf88df1e054139120b1fbb61a07",
       "source_dimensions": [
         1536,
@@ -1758,7 +1948,12 @@
           "sha256": "fa45f4ce36eef8b15008734634c06c15e4ecd1392f944a0536a17b01ab0d7ef2",
           "size_bytes": 340096
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:7ae4ed4018b9031f48aef885b6396af6a7b69dcf5bb5673b50abcbb7f77fedec",
+        "original_sha256": "7ae4ed4018b9031f48aef885b6396af6a7b69dcf5bb5673b50abcbb7f77fedec"
+      }
     },
     {
       "slug": "quest-studio",
@@ -1767,7 +1962,7 @@
         "en": "Quest Studio"
       },
       "model": "gpt-image-2.5-sunburst",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A game designer's miniature adventurer stands at a fork between a locked gate and a helpful villager, carrying one visible quest item and a single gold token. A clear path connects goal, choice and reward; unmistakable game quest design.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A game designer's miniature adventurer stands at a fork between a locked gate and a helpful villager, carrying one visible quest item and a single gold token. A clear path connects goal, choice and reward; unmistakable game quest design.",
       "source_sha256": "97f59fd2149ac1efd22d1961682441208eb1807f2bdcb47903715ddcbd3b1b88",
       "source_dimensions": [
         1536,
@@ -1803,7 +1998,12 @@
           "sha256": "6f5083e41ba0a8dc78b359482625bee9b5229c78b2119b8d845dd47ac2388ee5",
           "size_bytes": 367726
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:2cef6057ffa0664f0502da9f50844f471643d7fe428144889ce60f86b252e160",
+        "original_sha256": "2cef6057ffa0664f0502da9f50844f471643d7fe428144889ce60f86b252e160"
+      }
     },
     {
       "slug": "script-supervisor",
@@ -1812,7 +2012,7 @@
         "en": "Script Supervisor"
       },
       "model": "gpt-image-2.5-flare",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A script supervisor holds a large clapperboard beside two successive physical film frames showing the same actress carrying a red envelope; a pencil aligns the envelope position between takes. Strong continuity and take-recording concept, not a video editor UI.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A script supervisor holds a large clapperboard beside two successive physical film frames showing the same actress carrying a red envelope; a pencil aligns the envelope position between takes. Strong continuity and take-recording concept, not a video editor UI.",
       "source_sha256": "6ecc448d4f56ce20a0231d3646b60e888b338c70683f827816a6311fd53934c0",
       "source_dimensions": [
         1536,
@@ -1848,7 +2048,12 @@
           "sha256": "d9104ebbd9132294ee017ee86dc5cba83459f6c082a9b81f71f22fd9bc33bba2",
           "size_bytes": 231920
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:7f314abf8b535ed3cf75b8e3a2ac4b90b54a881c73b3514f87f63fd360cd3a39",
+        "original_sha256": "7f314abf8b535ed3cf75b8e3a2ac4b90b54a881c73b3514f87f63fd360cd3a39"
+      }
     },
     {
       "slug": "language-studio",
@@ -1857,7 +2062,7 @@
         "en": "Constructed Language Studio"
       },
       "model": "gpt-image-2.5-sunburst",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A conlang creator shapes three large tactile phonetic stone-like forms into a branching word tree; each root becomes a distinctly related place-name emblem and spoken sound ribbon. A mouth silhouette and notebook show invented language creation, no readable letters.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A conlang creator shapes three large tactile phonetic stone-like forms into a branching word tree; each root becomes a distinctly related place-name emblem and spoken sound ribbon. A mouth silhouette and notebook show invented language creation, no readable letters.",
       "source_sha256": "aa9452c58ec8102d0fe785778d5980016aadf95a1b730d72c11aeab4cef6c46c",
       "source_dimensions": [
         1536,
@@ -1893,7 +2098,12 @@
           "sha256": "a83bd282b0973655be1f5b7d8a613c9519a04b5d2c232c546918f36e02c2abaf",
           "size_bytes": 356138
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:91dd4bf2cc47e2cdd4f5c95e0f862f9f950a57394263c121e910986997fda7bb",
+        "original_sha256": "91dd4bf2cc47e2cdd4f5c95e0f862f9f950a57394263c121e910986997fda7bb"
+      }
     },
     {
       "slug": "musical-studio",
@@ -1902,7 +2112,7 @@
         "en": "Musical Theatre Studio"
       },
       "model": "gpt-image-2.5-flare",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Two expressive performers sing toward one another on a small theatre stage while a dialogue ribbon transforms into a graceful rising musical staff. One dancer's step and a warm spotlight show a story moving through song, unmistakable musical theatre rather than a recording studio.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Two expressive performers sing toward one another on a small theatre stage while a dialogue ribbon transforms into a graceful rising musical staff. One dancer's step and a warm spotlight show a story moving through song, unmistakable musical theatre rather than a recording studio.",
       "source_sha256": "da0bf375c9e0033545ed59a856362b7fb0a59c62731a0ad89428f1e318bd2abe",
       "source_dimensions": [
         1536,
@@ -1938,7 +2148,12 @@
           "sha256": "b2a0e17613a13e1ca30608259486432653b8883d858e7087e5f1ae9fcc1fe256",
           "size_bytes": 272712
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:f265078621f47b6152cd48996e3485a7709e134465693a1653de5178fc605d49",
+        "original_sha256": "f265078621f47b6152cd48996e3485a7709e134465693a1653de5178fc605d49"
+      }
     },
     {
       "slug": "relationships",
@@ -1947,7 +2162,7 @@
         "en": "Relationships"
       },
       "model": "gpt-image-2.5-flare",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Three distinct full-character portrait miniatures stand around a small circular storytelling table, connected by taut jade and red silk threads held visibly between their hands. One pair leans close in trust while a third holds a concealed folded letter behind their back. Instantly suggest complex character relationships and secrets; faces and connections large and clear.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: Three distinct full-character portrait miniatures stand around a small circular storytelling table, connected by taut jade and red silk threads held visibly between their hands. One pair leans close in trust while a third holds a concealed folded letter behind their back. Instantly suggest complex character relationships and secrets; faces and connections large and clear.",
       "source_sha256": "bee7cd548625f325f6947a1f89145fb139a39fe0235263a4f6eb59d81d8cb436",
       "source_dimensions": [
         1536,
@@ -1983,7 +2198,12 @@
           "sha256": "bf4c5292f0b9f1550adea9f585ae5cc33294770a1747342d0c1d74fded172539",
           "size_bytes": 400638
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:0ba82bbe30c540961937d21c7f23788338672043a41e7f2cff3ba051c2362843",
+        "original_sha256": "0ba82bbe30c540961937d21c7f23788338672043a41e7f2cff3ba051c2362843"
+      }
     },
     {
       "slug": "timeline",
@@ -1992,7 +2212,7 @@
         "en": "Timeline"
       },
       "model": "gpt-image-2.5-flare",
-      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely crafted, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A single winding path connects three large narrative moments in chronological order: a small boat arriving at dawn, a meeting beneath a noon arch, and a farewell under a moon. An elegant physical clock anchors the foreground; clear progression, not a data chart.",
+      "prompt": "Use case: ads-marketing. Asset type: official creative-software plugin promotional illustration, landscape 3:2, legible at 360px card size. Premium editorial illustration with tactile cut-paper depth, delicate ink contours and softly painted matte gouache surfaces. Warm ivory, jade and forest green palette, charcoal details and restrained warm brass accents; clear lighting and a strong focal silhouette. An inviting creative scene with tangible objects and narrative. Fill the frame confidently with a single unmistakable subject and 2-3 supporting details. Keep the key story in central 80 percent for safe card crops. Finely detailed, lively and professional. No words, glyph strings, numbers, titles, logos, watermark, screenshots, dashboards, cards, browser windows, UI buttons or app chrome. Do not repeat a generic book-and-mountain composition.  Subject and action: A single winding path connects three large narrative moments in chronological order: a small boat arriving at dawn, a meeting beneath a noon arch, and a farewell under a moon. An elegant physical clock anchors the foreground; clear progression, not a data chart.",
       "source_sha256": "2017e8f8ddcfe4e8509714d358da2a686c5e7af4a619518ff334d763de81d6aa",
       "source_dimensions": [
         1536,
@@ -2028,7 +2248,12 @@
           "sha256": "7358ea46a32b3a106fadffebe1b5a76cafd72f8bc425db4935a87d07be930398",
           "size_bytes": 406726
         }
-      ]
+      ],
+      "prompt_record": {
+        "display": "名称归一化后的展示摘要；原始输入由固定来源记录保留。",
+        "source_ref": "source-record:69ce45c648f5fae17800804f38633e561183e82d89a13245c96ffaa34ac00bdf",
+        "original_sha256": "69ce45c648f5fae17800804f38633e561183e82d89a13245c96ffaa34ac00bdf"
+      }
     }
   ]
 }

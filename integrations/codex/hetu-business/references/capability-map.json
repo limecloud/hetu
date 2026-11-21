@@ -210,7 +210,14 @@
         "hetu.task_executions.list",
         "hetu.task_executions.get",
         "hetu.creative_tasks.assess",
-        "hetu.baseline.inspect"
+        "hetu.baseline.inspect",
+        "hetu.execution.get_mode",
+        "hetu.execution.invoke",
+        "hetu.execution.initialize",
+        "hetu.execution.prepare",
+        "hetu.execution.record_confirmation",
+        "hetu.execution.execute",
+        "hetu.execution.get_plan"
       ],
       "entry": "../skills/hetu-setup/SKILL.md"
     },
@@ -371,7 +378,7 @@
     },
     {
       "name": "hetu-manage",
-      "description": "作者需要在河图洛书整理作品资料、卷章大纲、设定、短剧场次、资料关联、导入交付、版本或本机设置时使用。由 Agent 准备完整操作，作者审阅后执行；正文创作和改稿使用对应写作 Skill。",
+      "description": "作者需要在河图洛书整理作品资料、卷章大纲、设定、短剧场次、资料关联、导入交付、版本或本机设置时使用。按共享auto或confirm模式执行；正文创作和改稿使用对应写作 Skill。",
       "actions": [
         "hetu.documents.create",
         "hetu.documents.list",

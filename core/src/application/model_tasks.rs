@@ -58,7 +58,7 @@ impl Kernel {
             "hetu.model_tasks.list" => self.list_model_plans(&input["task_ref"]),
             "hetu.model_tasks.prepare" => self.prepare_model_plan(input, changes),
             "hetu.model_tasks.approve" => {
-                ensure(self.author, "forbidden", "只有作者可以批准内容外发和费用。")?;
+                ensure(self.has_workspace_authority(), "forbidden", "当前连接没有模型执行权限。")?;
                 self.approve_model_plan_record(input, changes)
             }
             _ => Err(Error::new("invalid_input", "模型计划动作无效。")),

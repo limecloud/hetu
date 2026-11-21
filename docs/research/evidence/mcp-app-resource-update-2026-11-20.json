@@ -1,0 +1,208 @@
+{
+  "date": "2026-11-20",
+  "status": "local_installed_verified_native_panel_reopen_pending",
+  "version": "0.13.10",
+  "published": false,
+  "committed_this_change": false,
+  "source_sha256": "3ee0597950509721a91ea81338991cb2d5bc9105e98af1c4605d1d460c486004",
+  "problem": "MCP工作台多个HTML构建共用固定资源地址，作者旧面板与新进程实际资源不一致；已有面板缓存场景此前未验收。",
+  "implementation": [
+    "资源URI包含固定HTML的完整SHA-256，同版本本地覆盖也区分页面身份",
+    "工具元数据、资源目录、manifest与返回内容URI及摘要一致",
+    "旧地址提示关闭面板并重新打开，不在旧URI返回不同字节",
+    "不强制刷新已有页面或重发任何业务操作"
+  ],
+  "research": {
+    "captured_at": "2026-11-20T05:26:09.273443+00:00",
+    "sources": [
+      {
+        "url": "https://developers.openai.com/plugins/build/mcp-server#plan-for-updates",
+        "sha256": "fff21fe583449beec8db8516584b8c3027c43ab9011fe88585371825eb1047c4",
+        "quote": "For optional UI, version resource identifiers when HTML, JavaScript, or CSS changes in a way that could break a cached component.",
+        "metadata_refresh": "If metadata changes, refresh the custom MCP server connection and rerun the evaluation set before submission."
+      },
+      {
+        "url": "https://learn.chatgpt.com/docs/extend/mcp?surface=cli",
+        "quote": "Save the server, then select Restart.",
+        "sha256": "19cc638aae2d2dfa747d685e4eef23ffd9196116eed02def0b23f19b088c7635"
+      }
+    ],
+    "observed": {
+      "user_screenshot": "old_card_layout_and_split_header",
+      "newly_started_gui_mcp_pid": 12195,
+      "installed_mcp_binary_matches_previous_accepted_package": true,
+      "new_official_app_server_html_sha256": "c357cbd2baae778ca0064b8e248c7e20b4002765163e14187f8a4ea7557713ff",
+      "old_resource_uri": "ui://hetu/workbench/2"
+    },
+    "limits": [
+      "source-record:ac3aaaf16282a0d3f7b9b50c35fd9e8d5318bb010c1a734340326309ce5eb108",
+      "Current MCP Apps browser host unavailable; no direct native GUI update observation."
+    ]
+  },
+  "installation": {
+    "installed_at": "2026-11-20T05:39:09.263383+00:00",
+    "version": "0.13.10",
+    "application": "/Applications/Hetu.app",
+    "backup": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-app-refresh-20261120/replaced-0.13.10-annotations.app",
+    "manifest": "/Users/coso/Documents/dev/ai/limecloud/hetu/build/mcp-app-refresh-20261120/package-final/hetu-dev-vZmsRP/manifest.json",
+    "source_sha256": "3ee0597950509721a91ea81338991cb2d5bc9105e98af1c4605d1d460c486004",
+    "artifacts_verified": 3387,
+    "signing": "ad-hoc-development",
+    "codesign_verified": true,
+    "cli_version": "hetu 0.13.10",
+    "author_content_modified": false
+  },
+  "source_delta": {
+    "source_sha256": "3ee0597950509721a91ea81338991cb2d5bc9105e98af1c4605d1d460c486004",
+    "changed_packaged_source_files": [
+      "apps/mcp/resources/operation-view.manifest.json",
+      "apps/mcp/resources/task-view.manifest.json",
+      "apps/mcp/resources/workbench.manifest.json",
+      "apps/mcp/src/app.rs",
+      "apps/mcp/src/stable.rs",
+      "apps/mcp/src/ui.rs"
+    ],
+    "ui_html_unchanged": true,
+    "core_source_unchanged": true,
+    "prior_20_episode_evidence": "docs/research/evidence/manuscript-annotation-layout-2026-11-20.json"
+  },
+  "checks": {
+    "rust_stdio": {
+      "passed": 37,
+      "failed": 0,
+      "ignored": 0,
+      "log": "build/mcp-app-refresh-20261120/rust-stdio-tests.log"
+    },
+    "source_workbench": {
+      "stdio": "passed",
+      "official_codex_app_server": "passed",
+      "warm_old_cache_case": true
+    },
+    "packaged_desktop": {
+      "passed": 2,
+      "log": "build/mcp-app-refresh-20261120/desktop-packaged-tests.log"
+    },
+    "packaged_workbench": {
+      "passed": 2,
+      "transports": [
+        "stdio",
+        "official_codex_app_server"
+      ],
+      "warm_old_cache_case": true,
+      "new_layout_asserted": true,
+      "log": "build/mcp-app-refresh-20261120/mcp-packaged-tests.log"
+    },
+    "installed_codex": {
+      "version": "0.13.10",
+      "plugin_id": "hetu-workbench@hetu-luoshu-machine-connection",
+      "tools_error": null,
+      "entrypoints": [
+        {
+          "type": "global"
+        },
+        {
+          "type": "thread"
+        }
+      ],
+      "resource_uri": "ui://hetu/workbench/2/c357cbd2baae778ca0064b8e248c7e20b4002765163e14187f8a4ea7557713ff",
+      "html_sha256": "c357cbd2baae778ca0064b8e248c7e20b4002765163e14187f8a4ea7557713ff",
+      "html_bytes": 4176881,
+      "manual_mcp_configuration": false,
+      "gui_observed": false,
+      "app_only_bridge_called": true,
+      "private_session_preserved": true,
+      "registered_works": 18,
+      "same_desktop_work_refs": true,
+      "model_turn_started": false
+    },
+    "real_library": {
+      "version": "0.13.10",
+      "desktop_registered": 18,
+      "mcp_total": 18,
+      "same_work_identities": true,
+      "authorized": 13,
+      "previously_without_agent_connection": 5,
+      "resource_uri": "ui://hetu/workbench/2/c357cbd2baae778ca0064b8e248c7e20b4002765163e14187f8a4ea7557713ff",
+      "html_sha256": "c357cbd2baae778ca0064b8e248c7e20b4002765163e14187f8a4ea7557713ff",
+      "catalog_identities_unchanged": true,
+      "real_drama_opened_without_authorization": true,
+      "reference_characters": 1889,
+      "verified_drama_episodes": [
+        {
+          "characters": 2128,
+          "sha256": "a07769fe808acb1ed57467826fc1672d4ee259bbf3e2d16a21907d495fcd6007"
+        }
+      ],
+      "real_work_files_unchanged": true,
+      "real_novel_files_unchanged": true,
+      "real_novel_floating_annotation_preview": true,
+      "screenplay_layout": {
+        "width": 1060,
+        "paper": 1060,
+        "outer": "auto",
+        "inner": "visible",
+        "header": 60.6875
+      },
+      "previously_unconnected_works_opened": [
+        {
+          "kind": "drama",
+          "opened": true
+        },
+        {
+          "kind": "novel",
+          "opened": true
+        },
+        {
+          "kind": "novel",
+          "opened": true
+        },
+        {
+          "kind": "drama",
+          "opened": true
+        },
+        {
+          "kind": "novel",
+          "opened": true
+        }
+      ],
+      "browser_cards": 18,
+      "refresh_passed": true,
+      "screenshot": "build/mcp-app-refresh-20261120/actual-library.png",
+      "scope": "安装版本机18作品一致、新资源打开真实首集与小说浮动批注只读预览；同HTML的20集全文核对证据沿用上一轮，不代替指定Codex GUI逐页验收。"
+    },
+    "capability_map": "passed",
+    "resource_manifest": "passed",
+    "diff": "passed",
+    "docs": {
+      "documents": 89,
+      "local_links": 1310,
+      "fragment_links": 290,
+      "traceability": {
+        "FR": 40,
+        "US": 61,
+        "UC": 54,
+        "E2E": 30,
+        "AC": 65
+      },
+      "id_references": 1251,
+      "json_examples": 11,
+      "schemas": 2,
+      "mermaid": 104,
+      "errors": []
+    },
+    "installed_binary_matches_manifest": true,
+    "source_still_matches_manifest": true
+  },
+  "limitations": [
+    "Codex当前面板测试接口不可用，未直接观察作者旧面板关闭重开后的画面。",
+    "source-record:8c62bd0293a5c0c59d60a364c4c1f690e9df325a412e79866b9d3f0db968a83b",
+    "只读真实作品；批注实际写入与恢复使用隔离资料。"
+  ],
+  "author_next_step": "重启河图MCP连接，关闭旧面板后重新打开河图，以重新取得工具元数据及带摘要的资源地址。",
+  "raw_evidence_directory": "build/mcp-app-refresh-20261120",
+  "source_record_notice": {
+    "view": "名称已归一化的历史记录；来源文本片段保存在本地原始记录，原摘要对应名称归一化前的记录，不用于证明当前改写视图的字节。",
+    "original_sha256": "447ad686fb66a238b26160b2f3ab9ab0942e48c7f16551075686766c87b02703",
+    "original_copy_status": "已保留来源片段；本地记录未持有完整原始文件。"
+  }
+}

@@ -9,6 +9,12 @@ const invoke =
 contextBridge.exposeInMainWorld(
   "hetuDesktop",
   Object.freeze({
+    windowControls: Object.freeze({zoom: true, interfaceScale: true, titlebarInset: process.platform === "darwin"}),
+    onWindowChrome: (listener: (value: {inset: boolean; scale: number}) => void) => {
+      const handler = (_event: unknown, value: {inset: boolean; scale: number}) => listener(value);
+      ipcRenderer.on("desktop:window-chrome", handler);
+      return () => ipcRenderer.removeListener("desktop:window-chrome", handler);
+    },
     open: invoke("desktop:open"),
     state: invoke("desktop:state"),
     select: invoke("desktop:select"),
@@ -17,10 +23,19 @@ contextBridge.exposeInMainWorld(
     migrations: invoke("desktop:migrations"),
     dirty: invoke("desktop:dirty"),
     buffer: invoke("desktop:buffer"),
+    execution: invoke("desktop:execution"),
     tasks: invoke("desktop:tasks"),
     author: invoke("desktop:author"),
     management: invoke("desktop:management"),
     settings: invoke("desktop:settings"),
+    readingState: invoke("desktop:reading-state"),
+    fonts: invoke("desktop:fonts"),
+    interfaceScale: invoke("desktop:interface-scale"),
+    onInterfaceScale: (listener: (value: number) => void) => {
+      const handler = (_event: unknown, value: number) => listener(value);
+      ipcRenderer.on("desktop:interface-scale", handler);
+      return () => ipcRenderer.removeListener("desktop:interface-scale", handler);
+    },
     settingsWindow: invoke("desktop:settings-window"),
     settingsAgent: invoke("desktop:settings-agent"),
     workAgent: invoke("desktop:work-agent"),
@@ -63,6 +78,7 @@ contextBridge.exposeInMainWorld(
     installConnection: invoke("desktop:install-connection"),
     installSuite: invoke("desktop:install-suite"),
     copy: invoke("desktop:copy"),
+    paste: invoke("desktop:paste"),
     handoff: invoke("desktop:handoff"),
     install: invoke("desktop:install"),
     toggle: invoke("desktop:toggle"),

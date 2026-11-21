@@ -1,6 +1,12 @@
 import type { WorkRef, WorkSurface } from "@hetu/plugin-sdk";
 export interface DesktopBridge {
-  readonly windowControls?: {zoom:boolean};
+  execution(request: {action: string; contract_revision: string; input: Record<string, unknown>}): Promise<any>;
+  fonts(refresh?: boolean): Promise<import("@hetu/workbench-ui").FontCatalog>;
+  interfaceScale(method: "get" | "set", input?: {value: number}): Promise<number>;
+  onInterfaceScale(listener: (value: number) => void): () => void;
+  readingState(method: "get" | "save", input: Record<string, unknown>): Promise<any>;
+  readonly windowControls?: {zoom:boolean; interfaceScale?: boolean; titlebarInset?: boolean};
+  onWindowChrome?(listener: (value: {inset: boolean; scale: number}) => void): () => void;
   outlines(method: "get" | "save" | "draft" | "recover", input?: Record<string, unknown>): Promise<any>;
   video(method: "list" | "media" | "feedback" | "delivery" | "draft" | "journal" | "save_feedback" | "recover" | "export", input?: Record<string, unknown>): Promise<any>;
   workAgent(method: "get" | "inspect" | "select" | "choose_package" | "auto_detect" | "reveal_bundle" | "prepare_install" | "recover" | "acknowledge", input?: Record<string, unknown>): Promise<any>;
@@ -10,7 +16,7 @@ export interface DesktopBridge {
   covers(method: "get" | "requests" | "candidates" | "choose_file" | "prepare" | "commit" | "recover" | "acknowledge", input?: Record<string, unknown>): Promise<any>;
   migrations(method: "preview" | "approve" | "continue", input: Record<string, unknown>): Promise<any>;
   versions(method: "status" | "snapshots" | "snapshot" | "diff" | "snapshot_diff" | "history" | "version" | "journal" | "prepare" | "commit" | "recover" | "acknowledge" | "continue", input?: Record<string, unknown>): Promise<any>;
-  settings(method: "get" | "list" | "operation" | "prepare" | "manual" | "update" | "commit" | "recover" | "acknowledge" | "handoff" | "continue" | "select_suite", input?: Record<string, unknown>): Promise<any>;
+  settings(method: "preferences" | "get" | "list" | "operation" | "prepare" | "manual" | "update" | "commit" | "recover" | "acknowledge" | "handoff" | "continue" | "select_suite", input?: Record<string, unknown>): Promise<any>;
   settingsWindow(method: "open" | "close"): Promise<void>;
   settingsAgent(method: string, input?: Record<string, unknown>): Promise<any>;
   onPreferences(listener: (value: any) => void): () => void;
@@ -34,6 +40,7 @@ export interface DesktopBridge {
   ): Promise<any>;
   author(
     method:
+      | "rename"
       | "adoption"
       | "adoption_options"
       | "new_adoption_journal"
@@ -80,7 +87,9 @@ export interface DesktopBridge {
     value?: unknown,
     kind?: "document" | "annotations",
   ): Promise<any>;
-  copy(text: string): Promise<void>;
+  copy(text: string, html?: string): Promise<void>;
+  paste(): Promise<string>;
+  paste(format: "rich"): Promise<{text: string; html: string}>;
   install(): Promise<any>;
   toggle(id: string, enabled: boolean): Promise<any>;
   uninstall(id: string): Promise<any>;

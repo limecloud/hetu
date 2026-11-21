@@ -1,0 +1,257 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-11-20",
+  "scope": "R7全局创作与审阅体验的共享排版底座及局部旅程；不代表R7整版完成",
+  "status": "in_progress",
+  "source_version": "0.13.10",
+  "release_target": "0.14.0",
+  "installed_app_updated": false,
+  "published": false,
+  "implemented": [
+    "小说与剧本独立档案、公共默认值与共享控件",
+    "偏好v1原字节备份、等效阅读迁移、CAS、部分深合并与原键恢复",
+    "有效应用外观、独立纸色、主按钮普通／悬停／按下颜色",
+    "正文真实预览、文稿缩放、原文锚点恢复与手动滚动优先",
+    "普通段落视觉缩进、原有缩进及特殊段落排除、混合换行保持",
+    "聚焦段落、打字机滚动、智能成对符号、异步分批计数",
+    "带修订的小型偏好同步、插件可选档案与有效主题",
+    "任务候选复用正文组件及样式，表现更新保留未提交意见"
+  ],
+  "tests": [
+    {
+      "name": "Core本机设置事务与迁移",
+      "passed": 11,
+      "log": "output/r7-experience-20261120/reading-core-tests-fixed.log"
+    },
+    {
+      "name": "原文映射、段落与统计模型",
+      "passed": 8,
+      "log": "output/r7-experience-20261120/text-model-tests.log"
+    },
+    {
+      "name": "Electron排版、剧本及中文编辑／批注旅程",
+      "passed": 3,
+      "log": "output/r7-experience-20261120/desktop-contrast-final.log",
+      "viewports": [
+        [
+          1440,
+          940
+        ],
+        [
+          800,
+          900
+        ]
+      ],
+      "ime": "仅模拟组合事件，不是真实输入法"
+    },
+    {
+      "name": "MCP任务面板标准桥接、偏好、反馈及恢复",
+      "passed": 19,
+      "log": "output/r7-experience-20261120/task-review-palette-final.log"
+    },
+    {
+      "name": "真实stdio及Codex CLI 0.169.0转发的完整App旅程",
+      "passed": 2,
+      "log": "output/r7-experience-20261120/apps-line-height-final.log",
+      "scope_note": "含实际编辑保存、批注、跨面板字号、宿主主题、插件、视频与恢复；在行高修复制品验证。随后公共按钮颜色改动由Electron实测及当前资源合同测试核验。"
+    },
+    {
+      "name": "当前Apps资源协商与任务权限合同",
+      "passed": 1,
+      "log": "output/r7-experience-20261120/mcp-resource-tests.log"
+    }
+  ],
+  "rendered_button_contrast": [
+    {
+      "theme": "light",
+      "state": "normal",
+      "ratio": 4.658560430132827,
+      "foreground": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "background": [
+        32,
+        131,
+        104,
+        255
+      ]
+    },
+    {
+      "theme": "light",
+      "state": "hover",
+      "ratio": 12.193859938155324,
+      "foreground": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "background": [
+        29,
+        59,
+        49,
+        255
+      ]
+    },
+    {
+      "theme": "light",
+      "state": "pressed",
+      "ratio": 12.193859938155324,
+      "foreground": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "background": [
+        29,
+        59,
+        49,
+        255
+      ]
+    },
+    {
+      "theme": "dark",
+      "state": "normal",
+      "ratio": 5.965081397156539,
+      "foreground": [
+        16,
+        18,
+        17,
+        255
+      ],
+      "background": [
+        41,
+        163,
+        131,
+        255
+      ]
+    },
+    {
+      "theme": "dark",
+      "state": "hover",
+      "ratio": 6.868066904917327,
+      "foreground": [
+        16,
+        18,
+        17,
+        255
+      ],
+      "background": [
+        39,
+        176,
+        139,
+        255
+      ]
+    },
+    {
+      "theme": "dark",
+      "state": "pressed",
+      "ratio": 10.22405453059173,
+      "foreground": [
+        16,
+        18,
+        17,
+        255
+      ],
+      "background": [
+        31,
+        216,
+        164,
+        255
+      ]
+    }
+  ],
+  "defects_found_and_fixed": [
+    "模式切换后的后台定位恢复覆盖新滚动",
+    "排版面板点增减按钮后被通用菜单规则关闭",
+    "新设置回执与完整读取混为同一投影的测试断言",
+    "CodeMirror底层1.4倍行高覆盖小说档案",
+    "通用悬停规则覆盖主按钮文字，实测对比度仅1.345"
+  ],
+  "source_name_check": {
+    "case_insensitive": true,
+    "content_matches": 0,
+    "filename_matches": 0,
+    "scope": [
+      "docs",
+      "tools",
+      "integrations",
+      "apps",
+      "packages",
+      "contracts",
+      "assets"
+    ],
+    "original_records": "本地output原始记录，不随包；原始来源编号全部可解析"
+  },
+  "asset_provenance": {
+    "images": 45,
+    "variants": 135,
+    "image_hashes_unchanged": true,
+    "prompt_display": "名称归一化的展示摘要与原始来源引用分别保留"
+  },
+  "artifacts": [
+    {
+      "manifest": "apps/mcp/resources/workbench.manifest.json",
+      "resource_uri": "ui://hetu/workbench/2/b3245d74c2fa3a66f31503a103b4bf1f4b999258793ecfddc653654ef5c2c7b5",
+      "sha256": "b3245d74c2fa3a66f31503a103b4bf1f4b999258793ecfddc653654ef5c2c7b5",
+      "size_bytes": 4217559
+    },
+    {
+      "manifest": "apps/mcp/resources/task-view.manifest.json",
+      "resource_uri": "ui://hetu/task-view/1",
+      "sha256": "747a19a0a99ab335516848f0fc705bfedb77b7272c9bce2d331b57465a3ec3b6",
+      "size_bytes": 803910
+    }
+  ],
+  "source_sha256": {
+    "contracts/reading-defaults.json": "0217b9fba29c710663912ec39c35646070f0f31414ccb6a2d1204e7b7e147e6c",
+    "core/src/local_settings.rs": "bfd5a0126aa4f1ef01394f4e6416605ea138093fca6d2e6b868a327ee9dac10d",
+    "core/src/local_settings/reading.rs": "d1cd1337cbd90cd4832366e16ca832b5a125c2c7190e804eda538bdbe58c1e32",
+    "core/tests/reading_settings.rs": "1c61460bd4dd8acd45ecdc380ce08c1046228cff84af1797f05de41a12391783",
+    "contracts/actions.json": "4e5542db308ac4198fe3e3d0b17a5d86677c011034fe92e01fe48c27a7e29f19",
+    "contracts/capability-map.json": "05a48c7b3221c57ba687e6cfd0fd203b14981a97c99ed6dbd489d905fce70a98",
+    "packages/plugin-sdk/src/index.ts": "76528846afb6e8e7192f3347f66e7fc3a90a68f1a5a0870261127c754002a446",
+    "packages/workbench-ui/src/reading.ts": "a4841dec5ba40ee8573b49c504898a2f400ff6b0b67e0133458508c8d9c43543",
+    "packages/workbench-ui/src/reading.css": "8103e5c9a15d03041a6e0fde54fcd85406b351c1ac7ac48f689d3d0a1da1be9c",
+    "packages/workbench-ui/src/reading-controls.tsx": "d228b488ec9e639567e0b0b7db2a56e6f2de5e2054d99962d36816a7eae49c2a",
+    "packages/workbench-ui/src/manuscript.tsx": "ba326577c6ec9365a9ecf79734d453cc540c72c03bfd0ed6fb7609d71ef4e41f",
+    "packages/workbench-ui/src/manuscript-lines.ts": "d088f398597b325cc3815b6b2f53798ec96b73cd5dd763620589eb5eec62c850",
+    "apps/desktop/src/renderer/reading-position.ts": "ce824b231a1eee833ab18b46383a0f143a750e24d81536d43116a8c058752324",
+    "apps/desktop/src/renderer/reading-options.tsx": "6f6664906a9d87942a52275c5bcde2e954704bc46997a9589d4c3504946024ce",
+    "apps/desktop/src/renderer/editor-behavior.ts": "176e5309abac035c1a640d1e29f512eea17cd4e65c0e2108b9fe2f2c625eda72",
+    "apps/desktop/src/renderer/manuscript-statistics.ts": "bd4b74167ce96a651903b76cd5a2e98b442dc6468a9f9145a9db6b0e07a2e08a",
+    "apps/desktop/src/renderer/documents.tsx": "e7c81bfed2c448fa448ee99b628303fa3922b4ec1e34a232afc1d5bf7d89ea89",
+    "apps/desktop/src/renderer/editor.tsx": "5c95ff79136129d502740949382a78fd0753d15d19f042a19e7c2e92354aeb58",
+    "apps/desktop/src/renderer/preferences.tsx": "38161975f0c9ac81b998bf0bb7794e21434c3b2a37df824ade4930dbed28d735",
+    "apps/desktop/src/main/plugin-preferences.ts": "07ba89532f10d5aff4f65871fd90f730f527f3283a5de884d96eb641357485b0",
+    "apps/task-view/src/shared-workbench.ts": "187dbb8e45d22307e56feabf6a44d0996268e64a54aebadd7ef0fcc9db77ef04",
+    "apps/task-view/src/task-review.ts": "9408f5a1df50938bfe77561f1a0c62d318fe86aa7012fc6e7228025d47f6a059",
+    "assets/styles/radix-workbench.css": "f8511439b0abd5256f5506c06dd270a8cdd32c5c58030877ee33a4ab3cfc5b6f"
+  },
+  "pending": [
+    "完整文字格式命令、剧本补全与有限Markdown语义阅读",
+    "阅读／参考／编辑统一查找替换及作品范围检索",
+    "完整意见与版本比较工作面、局部采用交互核对",
+    "历史、导入、媒体、资料、插件及全部异步状态逐页收口",
+    "界面缩放、关闭重开持久阅读位置、完整位置矩阵、字体目录与迁移回退",
+    "真实输入法、读屏、长文输入性能及跨平台",
+    "同版覆盖安装、原生Codex Desktop宿主及作者试用",
+    "参考编辑器实机通道恢复后的完整交互对照"
+  ],
+  "git": {
+    "base": "6ec987ed74af2da50e05f237bcd2f2ba89fb60e0",
+    "dirty": true,
+    "commit_created": false
+  },
+  "auxiliary_checks": {
+    "docs": "passed",
+    "localization": "1679双语键通过",
+    "capability_map": "passed",
+    "skills": "45套件离线重建与2475文件校验通过",
+    "website_types": "passed"
+  }
+}

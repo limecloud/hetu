@@ -33,7 +33,7 @@ test("本机决定发送前及提交后中断保留原键，确定冲突不冒�
     receipts = new Map<string, any>();
   const service = new SettingsReview(
     async (method, input: any) => {
-      if (method === "get") return structuredClone(current);
+      if (method === "get" || method === "preferences") return structuredClone(current);
       inputs.push(structuredClone(input));
       if (fail) throw new Error("发送前连接中断");
       if (receipts.has(input.operation_key))
@@ -182,7 +182,7 @@ test("CLI准备本机方案、Electron固定审阅与恢复、无窗口执行和
       .getByRole("button", { name: "确认本机决定", exact: true })
       .click();
     await expect(page.locator(".settings-window-notice[role='status']")).toContainText("批准本身不会执行");
-    expect(cli("hetu.local_settings.get", {}).preferences.font_size).toBe(18);
+    expect(cli("hetu.local_settings.get", {}).preferences.font_size).toBe(16);
     await app!.close();
     app = undefined;
     const file = path.join(profile, "local-settings-journal.json"),
@@ -246,7 +246,7 @@ test("CLI准备本机方案、Electron固定审阅与恢复、无窗口执行和
     expect(
       await app!.evaluate(({ nativeTheme }) => nativeTheme.shouldUseDarkColors),
     ).toBe(true);
-    await expect(page.locator("html")).toHaveCSS("background-color", "rgb(16, 18, 17)");
+    await expect(page.locator("html")).toHaveCSS("background-color", "rgb(34, 34, 34)");
     expect(
       await page.evaluate(() =>
         getComputedStyle(document.documentElement)

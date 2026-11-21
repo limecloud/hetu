@@ -1,0 +1,1023 @@
+{
+  "schema_version": "1.0.0",
+  "as_of": "2026-11-20",
+  "scope": "下一版全局创作与审阅体验的产品调研与方案；未实施或发行本轮新功能",
+  "digest_policy": "SHA-256标识采集响应、静态图片或源码字节，不是发布方签名或运行兼容证明。",
+  "artifacts": {
+    "research": "docs/research/14-编辑阅读与全局体验研究.md",
+    "proposal": "docs/41-创作与审阅体验迭代方案.md",
+    "tracking": "docs/38-创作工作台重构执行计划.md#下一版创作与审阅体验",
+    "raw_local_directory": "build/editor-practices-research-20261120"
+  },
+  "methods": {
+    "github": "网页搜索、固定提交README、novelWriter固定源码及测试；未使用Star作质量排名",
+    "official_docs": "实际读取官方正文；从官网导航与sitemap纠正失效链接；reference最终使用官方Markdown响应",
+    "visual": "目视检查5张官方静态图片，未伪造本机运行或计算样式",
+    "local": "代码与现有本地候选证据核对，未重新运行全部业务旅程"
+  },
+  "repository_versions": [
+    {
+      "repo": "saga-soft/novelWriter",
+      "url": "https://github.com/saga-soft/novelWriter",
+      "default_branch": "main",
+      "sha": "dc483f9c881dadbc847b90ccf8ecf67658dc30e2",
+      "commit_date": "2026-11-15T13:16:29Z",
+      "license": {
+        "key": "gpl-3.0",
+        "name": "GNU General Public License v3.0",
+        "spdx_id": "GPL-3.0",
+        "url": "https://api.github.com/licenses/gpl-3.0",
+        "node_id": "MDc6TGljZW5zZTk="
+      }
+    },
+    {
+      "repo": "Zettlr/Zettlr",
+      "url": "https://github.com/Zettlr/Zettlr",
+      "default_branch": "develop",
+      "sha": "450e040c893ef07f32d214c5f122c72bc324b429",
+      "commit_date": "2026-11-19T17:20:02Z",
+      "license": {
+        "key": "gpl-3.0",
+        "name": "GNU General Public License v3.0",
+        "spdx_id": "GPL-3.0",
+        "url": "https://api.github.com/licenses/gpl-3.0",
+        "node_id": "MDc6TGljZW5zZTk="
+      }
+    },
+    {
+      "repo": "marktext/marktext",
+      "url": "https://github.com/marktext/marktext",
+      "default_branch": "develop",
+      "sha": "e4ed4cf4a3deafb81817987e9b3653f57031f6c8",
+      "commit_date": "2026-11-17T15:34:03Z",
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "spdx_id": "MIT",
+        "url": "https://api.github.com/licenses/mit",
+        "node_id": "MDc6TGljZW5zZTEz"
+      }
+    },
+    {
+      "repo": "lmparppei/Beat",
+      "url": "https://github.com/lmparppei/Beat",
+      "default_branch": "main",
+      "sha": "ab2382184ca41e50440ff695373b17b4e57c915f",
+      "commit_date": "2026-11-02T15:15:08Z",
+      "license": {
+        "key": "other",
+        "name": "Other",
+        "spdx_id": "NOASSERTION",
+        "url": null,
+        "node_id": "MDc6TGljZW5zZTA="
+      }
+    },
+    {
+      "repo": "codemirror/view",
+      "url": "https://github.com/codemirror/view",
+      "default_branch": "main",
+      "sha": "fbff59ba004d80d8c914f64c42586387b08706ac",
+      "commit_date": "2026-04-15T08:44:48Z",
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "spdx_id": "MIT",
+        "url": "https://api.github.com/licenses/mit",
+        "node_id": "MDc6TGljZW5zZTEz"
+      }
+    },
+    {
+      "repo": "ueberdosis/tiptap",
+      "url": "https://github.com/ueberdosis/tiptap",
+      "default_branch": "main",
+      "sha": "99212a8feb8fd2924c1612d6a8e0b3719163ed54",
+      "commit_date": "2026-11-19T15:42:19Z",
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "spdx_id": "MIT",
+        "url": "https://api.github.com/licenses/mit",
+        "node_id": "MDc6TGljZW5zZTEz"
+      }
+    }
+  ],
+  "sources": [
+    {
+      "id": "codemirror-styling",
+      "url": "https://codemirror.net/examples/styling/",
+      "resolved": "https://codemirror.net/examples/styling/",
+      "status": 200,
+      "bytes": 28107,
+      "sha256": "9f956a9093d6648232191132b87b92fc63fecc957b760a509d25f2553b1ac6a1",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "主题／基础主题、非等宽字体和布局职责。",
+      "representation": "official_html_response"
+    },
+    {
+      "id": "codemirror-search",
+      "url": "https://codemirror.net/docs/ref/#search",
+      "resolved": "https://codemirror.net/docs/ref/#search",
+      "status": 200,
+      "bytes": 834749,
+      "sha256": "82b78f60b38e5e12c05e5a43944631a25c134ac242fc56afad5b0f683dd45f21",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "搜索、替换、选择、组合输入与滚动API；这是官方参考手册，不是本项目运行证据。",
+      "representation": "official_html_response"
+    },
+    {
+      "id": "typora-focus",
+      "url": "https://support.typora.io/Focus-and-Typewriter-Mode/",
+      "resolved": "https://support.typora.io/Focus-and-Typewriter-Mode/",
+      "status": 200,
+      "bytes": 12481,
+      "sha256": "081aa3dd4f83846964728483d90801a842df3ed216c84fb2375c8532919e4e7c",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "Focus与Typewriter分开；可调整是否始终保持光标居中。",
+      "representation": "official_html_response"
+    },
+    {
+      "id": "ia-focus",
+      "url": "https://ia.net/writer/support/editor/focus-mode",
+      "resolved": "https://ia.net/writer/support/editor/focus-mode",
+      "status": 200,
+      "bytes": 66485,
+      "sha256": "d83c47898328b86e150ac3bf48541fa69ed230ca9b75b777a9d21e8c8d0ec0d1",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "聚焦范围、打字机和修改阶段跳屏提示。",
+      "representation": "official_html_response"
+    },
+    {
+      "id": "wcag-resize",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/resize-text.html",
+      "resolved": "https://www.w3.org/WAI/WCAG22/Understanding/resize-text.html",
+      "status": 200,
+      "bytes": 56223,
+      "sha256": "fce0a64d79be9cc4e66f5979db41370ccfc5c0ca08b60c2d29f74c63e41e32d9",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "1.4.4 AA，文字可放大200%而不丢失内容与功能。",
+      "representation": "official_html_response"
+    },
+    {
+      "id": "wcag-visual",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/visual-presentation.html",
+      "resolved": "https://www.w3.org/WAI/WCAG22/Understanding/visual-presentation.html",
+      "status": 200,
+      "bytes": 59855,
+      "sha256": "ebd387913080d1223b5a6cc5cb3ac955c0343f722e76f04176e6a3d25ec78fdb",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "1.4.8 AAA，CJK40字形等视觉条件；不作为AA强制或默认值。",
+      "representation": "official_html_response"
+    },
+    {
+      "id": "clreq",
+      "url": "https://www.w3.org/TR/clreq/",
+      "resolved": "https://www.w3.org/TR/clreq/",
+      "status": 200,
+      "bytes": 768965,
+      "sha256": "94fca95d8d2dc1415411bd4666226bd86427a97202535dc17ad6db201f4887fb",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "中文排版问题：禁则、标点、缩进和中西文混排；浏览器支持另验。",
+      "representation": "official_html_response"
+    },
+    {
+      "id": "saga-soft-novelWriter-readme",
+      "url": "https://raw.githubusercontent.com/saga-soft/novelWriter/dc483f9c881dadbc847b90ccf8ecf67658dc30e2/README.md",
+      "resolved": "https://raw.githubusercontent.com/saga-soft/novelWriter/dc483f9c881dadbc847b90ccf8ecf67658dc30e2/README.md",
+      "status": 200,
+      "bytes": 4860,
+      "sha256": "7b78833d2ea28a1a94eb490b8cfc94d5aa20df030ac17be110cceb2e9c500be9",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "固定提交中的纯文本小说模型及官方文档入口。",
+      "representation": "repository_response"
+    },
+    {
+      "id": "Zettlr-Zettlr-readme",
+      "url": "https://raw.githubusercontent.com/Zettlr/Zettlr/450e040c893ef07f32d214c5f122c72bc324b429/README.md",
+      "resolved": "https://raw.githubusercontent.com/Zettlr/Zettlr/450e040c893ef07f32d214c5f122c72bc324b429/README.md",
+      "status": 200,
+      "bytes": 33215,
+      "sha256": "814dbabdab583a3ef104d2875553515b8461e068542a312f8b6a4bc0f02802e7",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "固定提交列出CodeMirror6、主题、全文检索和导出；未运行。",
+      "representation": "repository_response"
+    },
+    {
+      "id": "marktext-marktext-readme",
+      "url": "https://raw.githubusercontent.com/marktext/marktext/e4ed4cf4a3deafb81817987e9b3653f57031f6c8/README.md",
+      "resolved": "https://raw.githubusercontent.com/marktext/marktext/e4ed4cf4a3deafb81817987e9b3653f57031f6c8/README.md",
+      "status": 200,
+      "bytes": 9087,
+      "sha256": "017008626686f122a1c98121015669c965090823ea97b828538681ea52fa6223",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "固定提交列出主题、源码、聚焦与打字机模式；未运行。",
+      "representation": "repository_response"
+    },
+    {
+      "id": "lmparppei-Beat-readme",
+      "url": "https://raw.githubusercontent.com/lmparppei/Beat/ab2382184ca41e50440ff695373b17b4e57c915f/README.md",
+      "resolved": "https://raw.githubusercontent.com/lmparppei/Beat/ab2382184ca41e50440ff695373b17b4e57c915f/README.md",
+      "status": 200,
+      "bytes": 6269,
+      "sha256": "f8a2ad08ee9df7eff070ec8132e5251b3e0379912b0a2a2068c871179d080e7d",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "固定提交列出Fountain隐藏语法、人物补全、场号与修订；README明确GPLv3。",
+      "representation": "repository_response"
+    },
+    {
+      "id": "codemirror-view-readme",
+      "url": "https://raw.githubusercontent.com/codemirror/view/fbff59ba004d80d8c914f64c42586387b08706ac/README.md",
+      "resolved": "https://raw.githubusercontent.com/codemirror/view/fbff59ba004d80d8c914f64c42586387b08706ac/README.md",
+      "status": 200,
+      "bytes": 1596,
+      "sha256": "e63030c458c5eb80c0ad2044c17d6c4ca11ffa5b794dc551ac20722b91ac4962",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "固定GitHub镜像README及MIT说明；README提示仓库已迁移，不将其宣称为最新源码。",
+      "representation": "repository_response"
+    },
+    {
+      "id": "ueberdosis-tiptap-readme",
+      "url": "https://raw.githubusercontent.com/ueberdosis/tiptap/99212a8feb8fd2924c1612d6a8e0b3719163ed54/README.md",
+      "resolved": "https://raw.githubusercontent.com/ueberdosis/tiptap/99212a8feb8fd2924c1612d6a8e0b3719163ed54/README.md",
+      "status": 200,
+      "bytes": 8013,
+      "sha256": "8cd77367d0107be7325a3915847fda194416805b268bb1d1b993a8332b8a7448",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "富文本技术路线及核心／专业扩展的区分；未迁移或运行。",
+      "representation": "repository_response"
+    },
+    {
+      "id": "novelwriter-source",
+      "url": "https://codeload.github.com/saga-soft/novelWriter/zip/dc483f9c881dadbc847b90ccf8ecf67658dc30e2",
+      "resolved": "https://codeload.github.com/saga-soft/novelWriter/zip/dc483f9c881dadbc847b90ccf8ecf67658dc30e2",
+      "status": 200,
+      "content_type": "application/zip",
+      "bytes": 5853164,
+      "sha256": "b69a96031bfc55956c8bcbaec816defe94627e54f8e98ab86fa8753c87f86818",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "固定源码压缩包，进一步阅读preferences.py、config.py及相关测试。",
+      "representation": "fixed_repository_archive"
+    },
+    {
+      "id": "fountain-syntax",
+      "url": "https://fountain.io/syntax/",
+      "resolved": "https://fountain.io/syntax/",
+      "status": 200,
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 124184,
+      "sha256": "6bae645ca1cd3d63a396991d3b0ca91f69e06413feb1689cb4f9d97541f21879",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "剧本元素、同时对白、强调和有意空白。",
+      "representation": "official_html_response"
+    },
+    {
+      "id": "prosemirror-guide",
+      "url": "https://prosemirror.net/docs/guide/",
+      "resolved": "https://prosemirror.net/docs/guide/",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 182523,
+      "sha256": "7d9445edf1231624c0db10b4cdabeaebc0d5b6faf3e709117e98411a178fbdad",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "受Schema约束的结构化文档模型。",
+      "representation": "official_html_response"
+    },
+    {
+      "id": "wcag-reflow",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/reflow.html",
+      "resolved": "https://www.w3.org/WAI/WCAG22/Understanding/reflow.html",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 85764,
+      "sha256": "9c0d03521d14875c0ac64e8a089ad17b764ccc2a499813152118a93c5ef31ff7",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "1.4.10 AA，320CSSpx等效纵向重排及例外。",
+      "representation": "official_html_response"
+    },
+    {
+      "id": "wcag-spacing",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/text-spacing.html",
+      "resolved": "https://www.w3.org/WAI/WCAG22/Understanding/text-spacing.html",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 55290,
+      "sha256": "48d38892c50739b98b6d7c4d54b83d15152e9c9dbba2a550bc5dec5bead38df2",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "1.4.12 AA，用户调节间距后内容与功能保持；不是强制默认。",
+      "representation": "official_html_response"
+    },
+    {
+      "id": "wcag-contrast",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html",
+      "resolved": "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 80501,
+      "sha256": "80ecbe547e7e963560df5e62ed92305ce1af6f8965a7e48457fe38b0d76f8d1b",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "1.4.3 AA，普通文字4.5:1；不声称本项目已完整审计。",
+      "representation": "official_html_response"
+    },
+    {
+      "id": "obsidian-themes-raw",
+      "url": "https://raw.githubusercontent.com/obsidianmd/obsidian-help/master/en/Extending%20Obsidian/Themes.md",
+      "resolved": "https://raw.githubusercontent.com/obsidianmd/obsidian-help/master/en/Extending%20Obsidian/Themes.md",
+      "status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "bytes": 1719,
+      "sha256": "6eebd565dc60b01a4354e7c4054da6cbc344d330580fd136ee8546746541c937",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "主题安装、生效、恢复、更新分别处理；master响应固定以本次摘要标识。",
+      "representation": "repository_response"
+    },
+    {
+      "id": "codemirror-github-view-license",
+      "url": "https://raw.githubusercontent.com/codemirror/view/fbff59ba004d80d8c914f64c42586387b08706ac/LICENSE",
+      "resolved": "https://raw.githubusercontent.com/codemirror/view/fbff59ba004d80d8c914f64c42586387b08706ac/LICENSE",
+      "status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "bytes": 1118,
+      "sha256": "05c6130cda97e7600ca91427a41e8a065efcf82365fc0293e7de80faec494c07",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "MIT许可正文。",
+      "representation": "repository_response"
+    },
+    {
+      "id": "novelwriter-editor-guide",
+      "url": "https://novelwriter.io/docs/user_interface/editor_viewer.html",
+      "resolved": "https://novelwriter.io/docs/user_interface/editor_viewer.html",
+      "status": 200,
+      "content_type": "text/html",
+      "bytes": 37122,
+      "sha256": "3d21c304f69d972e1635336f2d56ab52772a195bb5c80751844c2821eb05d455",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "阅读与编辑、完整搜索及替换、统计后台更新和导航历史。",
+      "representation": "official_html_response"
+    },
+    {
+      "id": "ulysses-editor",
+      "url": "https://help.ulysses.app/en_US/dive-into-editing/editor-customization-guide",
+      "resolved": "https://help.ulysses.app/en_US/dive-into-editing/editor-customization-guide",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 72270,
+      "sha256": "15ec41d9701f9d04a0e1b45db2f2db5689bbf4f459ff60d5c421fc8543378765",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "字体、行高、段距、缩进、行宽、缩放、专注和编辑／导出分离。",
+      "representation": "official_html_response"
+    },
+    {
+      "id": "ulysses-editor-themes",
+      "url": "https://help.ulysses.app/en_US/styles-themes/editor-themes",
+      "resolved": "https://help.ulysses.app/en_US/styles-themes/editor-themes",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 57481,
+      "sha256": "e0d9c1a58569a15fbe7af2ff4ba98a28c568a2873175f2f05b9bcd7d841aa6cc",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "主题包含文字、背景、语法、浅暗与预览。",
+      "representation": "official_html_response"
+    },
+    {
+      "id": "ulysses-export-styles",
+      "url": "https://help.ulysses.app/en_US/styles-themes/pdf-docx-styles",
+      "resolved": "https://help.ulysses.app/en_US/styles-themes/pdf-docx-styles",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 67272,
+      "sha256": "cf09d655475417e14608760c58fbd7a355e9d33528561d9b83f334f6e4731a77",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "导出版式独立于编辑外观；只参考职责，不引入其ULSS格式。",
+      "representation": "official_html_response"
+    },
+    {
+      "id": "ia-settings-guide",
+      "url": "https://ia.net/writer/support/basics/settings",
+      "resolved": "https://ia.net/writer/support/basics/settings",
+      "status": 200,
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 78544,
+      "sha256": "106a5797d438c285f1d9230e4f429d6da1dce760a3ed30d6bf37b523f52df579",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "CJK排版、字体、字号、行宽、智能标点及打印设置分别控制。",
+      "representation": "official_html_response"
+    },
+    {
+      "id": "noto-serifsc-license",
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notoserifsc/OFL.txt",
+      "resolved": "https://raw.githubusercontent.com/google/fonts/main/ofl/notoserifsc/OFL.txt",
+      "status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "bytes": 4350,
+      "sha256": "5e0da210fb04058a8c0087985d2d456b931c2579811a49655721d3cf0c36b6d6",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "OFL1.1许可正文；未测量实际字体覆盖和包体。",
+      "representation": "repository_response"
+    },
+    {
+      "id": "noto-sanssc-license",
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanssc/OFL.txt",
+      "resolved": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanssc/OFL.txt",
+      "status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "bytes": 4388,
+      "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "OFL1.1许可正文；未承诺随包采用。",
+      "representation": "repository_response"
+    },
+    {
+      "id": "courier-prime-license",
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/courierprime/OFL.txt",
+      "resolved": "https://raw.githubusercontent.com/google/fonts/main/ofl/courierprime/OFL.txt",
+      "status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "bytes": 4403,
+      "sha256": "9a755af092b494944c99f471be6fddd19b006a448fefdc4717e4ee0aa09a97b0",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "OFL1.1许可正文；屏幕／交付度量另验。",
+      "representation": "repository_response"
+    },
+    {
+      "id": "github-novel-search",
+      "url": "https://github.com/search?q=topic%3Anovel-writing&type=repositories",
+      "resolved": "https://github.com/search?q=topic%3Anovel-writing&type=repositories",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 225941,
+      "sha256": "b0df3ec580eab053bec1195ec5244aa2ec882fef6df0c355e04855edbb74143b",
+      "retrieved_on": "2026-11-20",
+      "content_status": "discovery_only",
+      "supports": "GitHub网页真实检索topic:novel-writing；第一结果页用于发现，不作为穷尽排名。",
+      "representation": "official_html_response"
+    },
+    {
+      "id": "github-screenplay-search",
+      "url": "https://github.com/search?q=screenwriting&type=repositories",
+      "resolved": "https://github.com/search?q=screenwriting&type=repositories",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 219630,
+      "sha256": "5416ef713d4e6e7feb4baf92d5527ec17caee042776042558ccdb1268a0f6e7d",
+      "retrieved_on": "2026-11-20",
+      "content_status": "discovery_only",
+      "supports": "GitHub网页真实检索screenwriting；发现Beat、Scrite、Trelby、BetterFountain等，未全部运行。",
+      "representation": "official_html_response"
+    },
+    {
+      "id": "novelwriter-official-screenshot",
+      "url": "https://raw.githubusercontent.com/saga-soft/novelWriter/dc483f9c881dadbc847b90ccf8ecf67658dc30e2/setup/screenshot.png",
+      "resolved": "https://raw.githubusercontent.com/saga-soft/novelWriter/dc483f9c881dadbc847b90ccf8ecf67658dc30e2/setup/screenshot.png",
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 355213,
+      "sha256": "f359ba23941cb2415293f3e7c2199efd93d35d597e6656afc2662926ab93ac2f",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "已目视检查官方静态截图，未推断本次运行状态或计算样式。",
+      "representation": "official_static_screenshot",
+      "image_size_px": [
+        1748,
+        1010
+      ],
+      "viewport": "not_observed"
+    },
+    {
+      "id": "marktext-official-screenshot",
+      "url": "https://raw.githubusercontent.com/marktext/marktext/e4ed4cf4a3deafb81817987e9b3653f57031f6c8/docs/assets/marktext.png",
+      "resolved": "https://raw.githubusercontent.com/marktext/marktext/e4ed4cf4a3deafb81817987e9b3653f57031f6c8/docs/assets/marktext.png",
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 645833,
+      "sha256": "5ff3cf427089dac694e875e130bf1329f4f081ae80a83f1f2db463308410816d",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "已目视检查官方静态截图中的正文附近工具，未推断中文输入行为。",
+      "representation": "official_static_screenshot",
+      "image_size_px": [
+        2440,
+        1598
+      ],
+      "viewport": "not_observed"
+    },
+    {
+      "id": "novelwriter-typography",
+      "url": "https://novelwriter.io/docs/more/typography.html",
+      "resolved": "https://novelwriter.io/docs/more/typography.html",
+      "status": 200,
+      "content_type": "text/html",
+      "bytes": 31627,
+      "sha256": "e15b5c23b412b6b7a2fca66ddc5665d07d1584422530771973cfbc259ed14b22",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "显式符号、自动替换及可撤销规则。",
+      "representation": "official_html_response"
+    },
+    {
+      "id": "novelwriter-themes",
+      "url": "https://novelwriter.io/docs/more/customise.html",
+      "resolved": "https://novelwriter.io/docs/more/customise.html",
+      "status": 200,
+      "content_type": "text/html",
+      "bytes": 60783,
+      "sha256": "406a7d8581ef20dc268bc787b5cddad4eb8c6a383bdd10e0aea3ef08b1684086",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "语义颜色与主题配置职责。",
+      "representation": "official_html_response"
+    },
+    {
+      "status": 200,
+      "content_type": "text/markdown; charset=utf-8",
+      "bytes": 6811,
+      "sha256": "6b18449ccc6f0e120bcce2548f38903c83c3eb162b4537acead5443145528976",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "文字级与页面级样式、各平台入口；官方资料，不是本机实测。",
+      "representation": "official_markdown_response",
+      "id": "editor-reference-01",
+      "source_locator": "local-reference-record:editor-reference-01"
+    },
+    {
+      "status": 200,
+      "content_type": "text/markdown; charset=utf-8",
+      "bytes": 3728,
+      "sha256": "640d8fa942fc0a90e4721545d9cc4cf87a5bdb490a41987cf5f2e240e6debc17",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "文稿颜色可延伸到部分编辑界面，UI仍保留系统字体；平台范围明确。",
+      "representation": "official_markdown_response",
+      "id": "editor-reference-02",
+      "source_locator": "local-reference-record:editor-reference-02"
+    },
+    {
+      "status": 200,
+      "content_type": "text/markdown; charset=utf-8",
+      "bytes": 4014,
+      "sha256": "8aa0cf0ff609a36dc62cdde9072e6916d9bffc8c0dd8dbb028d6016d80f88631",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "按空间的默认样式、新文档继承、单文档覆盖和恢复。",
+      "representation": "official_markdown_response",
+      "id": "editor-reference-03",
+      "source_locator": "local-reference-record:editor-reference-03"
+    },
+    {
+      "status": 200,
+      "content_type": "text/markdown; charset=utf-8",
+      "bytes": 13241,
+      "sha256": "e6654cbdcdf6c3cd9cdb3d8aa9920fc04625a53c8f6a9d42490ac4fb9540d78e",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "样式预览、预设、分项颜色重置和对比提示。",
+      "representation": "official_markdown_response",
+      "id": "editor-reference-04",
+      "source_locator": "local-reference-record:editor-reference-04"
+    },
+    {
+      "status": 200,
+      "content_type": "text/markdown; charset=utf-8",
+      "bytes": 7283,
+      "sha256": "291561a900e59cb8b2b768958be9bc42023fb60f7cc9646445e545fc675935c9",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "文字、块和页面分层；选区浮条、格式面板及键盘等入口。",
+      "representation": "official_markdown_response",
+      "id": "editor-reference-05",
+      "source_locator": "local-reference-record:editor-reference-05"
+    },
+    {
+      "status": 200,
+      "content_type": "text/markdown; charset=utf-8",
+      "bytes": 2739,
+      "sha256": "a491e434628ab49942aff858f176107bd510c8c2a5c25876a35af3f9ddc5c3ea",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "明确macOS、Windows与Web不同的搜索范围；不将这些限制推成河图需求。",
+      "representation": "official_markdown_response",
+      "id": "editor-reference-06",
+      "source_locator": "local-reference-record:editor-reference-06"
+    },
+    {
+      "status": 200,
+      "content_type": "text/markdown; charset=utf-8",
+      "bytes": 2218,
+      "sha256": "c701f67ba66079560e9b621ecc31c0e48663ed4cf8bb15968a768c38dd4a6136",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "输入开括号包围选区；中文配对另验。",
+      "representation": "official_markdown_response",
+      "id": "editor-reference-07",
+      "source_locator": "local-reference-record:editor-reference-07"
+    },
+    {
+      "status": 200,
+      "content_type": "text/markdown; charset=utf-8",
+      "bytes": 4724,
+      "sha256": "fc7b056e6a8c932579160919b011f6d4da3689e693db15e94dc7bf8854142e20",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "共享文档块意见和行内回复；不据此扩展河图云协作。",
+      "representation": "official_markdown_response",
+      "id": "editor-reference-08",
+      "source_locator": "local-reference-record:editor-reference-08"
+    },
+    {
+      "status": 200,
+      "content_type": "text/markdown; charset=utf-8",
+      "bytes": 15504,
+      "sha256": "446db702de10fb4843d46de13bef556213fd689a14e52f80e0bb3ab4b5c4a81e",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "分别列出Zoom、ActualSize、Focus、文字大小和内容操作；宿主冲突另验。",
+      "representation": "official_markdown_response",
+      "id": "editor-reference-09",
+      "source_locator": "local-reference-record:editor-reference-09"
+    },
+    {
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 157986,
+      "sha256": "1a594cebaf7f379c4632b12801d255982c3a09139d04b640af519e627bddb23d",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "已目视检查官方选区浮动工具图；不是本机安装版窗口。",
+      "representation": "official_static_screenshot",
+      "image_size_px": [
+        1568,
+        936
+      ],
+      "viewport": "not_observed",
+      "id": "editor-reference-10",
+      "source_locator": "local-reference-record:editor-reference-10"
+    },
+    {
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 267397,
+      "sha256": "2cab443b2a6c486ff9adfec7c5fa479f38712edbb4d3b3d577abb8052be83c8a",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "已目视检查官方Aa格式面板图；不复制品牌、资产或精确尺寸。",
+      "representation": "official_static_screenshot",
+      "image_size_px": [
+        1568,
+        1121
+      ],
+      "viewport": "not_observed",
+      "id": "editor-reference-11",
+      "source_locator": "local-reference-record:editor-reference-11"
+    },
+    {
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 149699,
+      "sha256": "339d1554208b99823e9d6d8fff1b77bbae66cd7ebb52066cfb5464be5123e9a0",
+      "retrieved_on": "2026-11-20",
+      "content_status": "read",
+      "supports": "已目视检查官方样式预览图；不是新河图界面。",
+      "representation": "official_static_screenshot",
+      "image_size_px": [
+        1032,
+        820
+      ],
+      "viewport": "not_observed",
+      "id": "editor-reference-12",
+      "source_locator": "local-reference-record:editor-reference-12"
+    }
+  ],
+  "fixed_source_reads": [
+    {
+      "path": "novelwriter/config.py",
+      "sha256": "61d8a8f26b559bec524424c07e1258b17f9f27a6696797a7a58a1119ce0c5774",
+      "repository": "saga-soft/novelWriter",
+      "commit": "dc483f9c881dadbc847b90ccf8ecf67658dc30e2",
+      "status": "read_only_source_reference"
+    },
+    {
+      "path": "novelwriter/dialogs/preferences.py",
+      "sha256": "833882451aa91797acc1815149b9dcb5d56e3b100566ac78e18c8bf85ac4ab4f",
+      "repository": "saga-soft/novelWriter",
+      "commit": "dc483f9c881dadbc847b90ccf8ecf67658dc30e2",
+      "status": "read_only_source_reference"
+    },
+    {
+      "path": "tests/dialogs/test_preferences.py",
+      "sha256": "79eea7ae0e4e6cac45613b263ee6e6c55aa1dd37c9a195d888459e30e6c20661",
+      "repository": "saga-soft/novelWriter",
+      "commit": "dc483f9c881dadbc847b90ccf8ecf67658dc30e2",
+      "status": "read_only_source_reference"
+    },
+    {
+      "path": "tests/test_config.py",
+      "sha256": "d30276b096addb40535d72fd950d393a4576c2af97cc20be21e9cf8946e01120",
+      "repository": "saga-soft/novelWriter",
+      "commit": "dc483f9c881dadbc847b90ccf8ecf67658dc30e2",
+      "status": "read_only_source_reference"
+    }
+  ],
+  "local_baseline": {
+    "release_version": "0.13.10",
+    "files": [
+      {
+        "path": "package.json",
+        "sha256": "07f821dae2c75fd9c1a0e95975ede98f16eba77e21364cf737006a8be3124030"
+      },
+      {
+        "path": "Cargo.toml",
+        "sha256": "b05d3f5d032192ef32a658762a220e1e483d6daa0188878d311593ffb18f4e64"
+      },
+      {
+        "path": "apps/desktop/package.json",
+        "sha256": "090bd19a40217c370a419fc27f4c6e7a19e4d0e07b26d1bb847b87faf23bca90"
+      },
+      {
+        "path": "apps/desktop/src/renderer/preferences.tsx",
+        "sha256": "fb6327811bc39682b6ed54241a4d29ae012c88394f08384aaccca84a7e90f0d6"
+      },
+      {
+        "path": "apps/desktop/src/renderer/settings.tsx",
+        "sha256": "5ba059530f303b0935c93081e0a9e4c180734780d504664f54d5c0ff28dd16b5"
+      },
+      {
+        "path": "apps/desktop/src/renderer/editor.tsx",
+        "sha256": "883cdbe42fd002b1abfcc64439e530d93d97f8ae599303e6936c61c078196e8b"
+      },
+      {
+        "path": "apps/desktop/src/renderer/editor-source.ts",
+        "sha256": "36671790a6c494e8b067191fa8f150a60bf3e0b625c4e77d85376a57fb796179"
+      },
+      {
+        "path": "apps/desktop/src/renderer/documents.tsx",
+        "sha256": "014c3d0b72d8050c0561b6d349801e9e91e85fa36ab694da27cae7e678bb50f2"
+      },
+      {
+        "path": "apps/desktop/src/renderer/screenplay-editor.ts",
+        "sha256": "b8026fa1055815c242e79223fee42511fcf736f9552d87f25d04728d891204e0"
+      },
+      {
+        "path": "apps/desktop/src/renderer/manuscript-annotations.tsx",
+        "sha256": "9a1505f23b4f9fb2e1f08c64b9335912b4f562f490bfeecadc979eff42774b4a"
+      },
+      {
+        "path": "assets/styles/radix-workbench.css",
+        "sha256": "ccf9f4d25676a4225180128d05a3d0a9d26e92fa832fdccb7d80c4d52ee4b625"
+      },
+      {
+        "path": "packages/workbench-ui/src/workbench.css",
+        "sha256": "ce68d70ea792d35cf032861264e3e39ec6697c5908b51a2ea1f50c6ec59efc3a"
+      },
+      {
+        "path": "core/src/local_settings.rs",
+        "sha256": "8eb37d6f1104ece47e12f73a6656a7f68d3632664b1547af9dab501aa10f58b6"
+      },
+      {
+        "path": "contracts/actions.json",
+        "sha256": "92496ddea351bb87333e377b8de53c0e8e0d00c1216504551029d9128d9cc226"
+      },
+      {
+        "path": "apps/task-view/src/shared-workbench.ts",
+        "sha256": "b0264fdfc57f72be48aef346e386c4dc3226fe7b75942055a73e6ac0e1b79fb2"
+      },
+      {
+        "path": "apps/task-view/scripts/build.mjs",
+        "sha256": "74ab1473b37fdb2a8d4543af9d9f872b304ed5da9d8ef5597d17f89c2bf1ef0b"
+      },
+      {
+        "path": "packages/plugin-sdk/src/index.ts",
+        "sha256": "922bfb17f945ae4180de7e116d62ef20950f58602441c615eff859055ba158cb"
+      }
+    ],
+    "existing_evidence": [
+      "docs/research/evidence/novel-full-workspace-2026-11-20.json",
+      "docs/research/evidence/manuscript-annotation-layout-2026-11-20.json",
+      "docs/research/evidence/screenplay-display-2026-11-20.json"
+    ]
+  },
+  "derived_checks": [
+    {
+      "name": "primary_action_opaque_contrast",
+      "inputs": {
+        "background": "#29a383",
+        "text": "#ffffff"
+      },
+      "method": "WCAG sRGB线性化后相对亮度，(Lmax+0.05)/(Lmin+0.05)",
+      "result_ratio": 3.1527274843212023,
+      "scope": "源码共享变量的不透明组合；实际渲染另验，不能推广为全部页面审计"
+    },
+    {
+      "name": "legacy_default_equivalent_line_height",
+      "formula": "1.35 + 5 / 18",
+      "result": 1.6277777777777778,
+      "scope": "保留实际px显示的迁移推导，不是已经实现的迁移"
+    }
+  ],
+  "failed_or_excluded_sources": [
+    {
+      "id": "typora-font",
+      "url": "https://support.typora.io/Font/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "id": "ulysses-customize",
+      "url": "https://help.ulysses.app/en_US/customization/customizing-the-editor",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "id": "novelwriter-editor",
+      "url": "https://raw.githubusercontent.com/saga-soft/novelWriter/dc483f9c881dadbc847b90ccf8ecf67658dc30e2/docs/source/usage/editor.rst",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "id": "novelwriter-preferences",
+      "url": "https://raw.githubusercontent.com/saga-soft/novelWriter/dc483f9c881dadbc847b90ccf8ecf67658dc30e2/docs/source/more/preferences.rst",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "id": "novelwriter-userinterface",
+      "url": "https://raw.githubusercontent.com/saga-soft/novelWriter/dc483f9c881dadbc847b90ccf8ecf67658dc30e2/docs/source/usage/user_interface.rst",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "id": "obsidian-appearance-source",
+      "url": "https://raw.githubusercontent.com/obsidianmd/obsidian-help/master/en/Customization/Appearance.md",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "id": "typora-styles",
+      "url": "https://support.typora.io/Change-Styles/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "id": "ia-fonts",
+      "url": "https://ia.net/writer/support/editor/fonts",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "id": "novelwriter-doc-editor",
+      "url": "https://novelwriter.io/docs/usage/editor.html",
+      "error": "<urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1082)>"
+    },
+    {
+      "id": "typora-preferences",
+      "url": "https://support.typora.io/Preferences/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "id": "typora-home",
+      "url": "https://support.typora.io/",
+      "error": "<urlopen error [Errno 65] No route to host>"
+    },
+    {
+      "id": "ia-settings",
+      "url": "https://ia.net/writer/support/settings",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "id": "beat-home",
+      "url": "https://www.beat-app.fi/",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "id": "obsidian-appearance-raw",
+      "url": "https://raw.githubusercontent.com/obsidianmd/obsidian-help/master/en/Extending%20Obsidian/Appearance.md",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "id": "typora-themes",
+      "url": "https://support.typora.io/About-Themes/",
+      "error": "<urlopen error [Errno 65] No route to host>"
+    },
+    {
+      "id": "typora-typography",
+      "url": "https://support.typora.io/Typeset/",
+      "error": "<urlopen error [Errno 65] No route to host>"
+    },
+    {
+      "id": "zettlr-doc-home",
+      "url": "https://docs.zettlr.com/",
+      "error": "<urlopen error [Errno 65] No route to host>"
+    },
+    {
+      "id": "beat-license",
+      "url": "https://raw.githubusercontent.com/lmparppei/Beat/ab2382184ca41e50440ff695373b17b4e57c915f/LICENSE",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "id": "obsidian-appearance",
+      "status": 200,
+      "reason": "只有JS壳，26字符正文，不用作外观设置依据"
+    },
+    {
+      "id": "general-web-search",
+      "reason": "DuckDuckGo验证、Google访问检查、Yahoo错误、Bing无关结果；均不作为功能依据"
+    },
+    {
+      "id": "github-api-limits",
+      "reason": "CodeMirror/search及ProseMirror/view后续REST限流，未编造固定提交"
+    }
+  ],
+  "open_questions": [
+    "reference本机观察通道恢复后的实际菜单、交互、版本和尺寸",
+    "新默认字体、20px/1.75/36CJK等候选的真实中文阅读与输入原型",
+    "跨系统字形、可选字体包体、离线资源和App预算",
+    "外层单滚动下十万字虚拟化、查找和锚点恢复性能",
+    "真实IME、读屏、宿主快捷键与插件兼容完整矩阵"
+  ],
+  "verification": {
+    "documentation": {
+      "status": "passed",
+      "command": "uv run tools/verify-docs.py",
+      "documents": 91,
+      "local_links": 1330,
+      "fragment_links": 295,
+      "errors": []
+    },
+    "diff_whitespace": {
+      "status": "passed",
+      "command": "git diff --check"
+    },
+    "capability_map": {
+      "status": "passed",
+      "command": "python3 tools/sync-capability-map.py --check"
+    },
+    "new_runtime_features": "not_implemented_this_proposal",
+    "new_release": "not_performed"
+  },
+  "runtime_observation": {
+    "version": "0.6.1",
+    "analysis_mode": "clean-room",
+    "installed_app_confirmed": true,
+    "running_process_confirmed": true,
+    "target_internals_read": false,
+    "documents_modified": false,
+    "preferences_modified": false,
+    "runtime_attempts": [
+      {
+        "tool": "runtime_ui_read",
+        "accessibility": true,
+        "max_nodes": 320,
+        "result": "process_timeout",
+        "timeout_seconds": 30
+      },
+      {
+        "tool": "runtime_ui_read",
+        "accessibility": false,
+        "screenshot": true,
+        "result": "process_timeout",
+        "timeout_seconds": 35
+      },
+      {
+        "tool": "CUA getApp",
+        "result": "Sky Computer Use native pipe startup failed",
+        "completion_summary_recorded": true
+      },
+      {
+        "tool": "web_walkthrough_record",
+        "target": "public_official_formatting_documentation",
+        "script_check": {
+          "valid": true,
+          "errors": 0,
+          "warnings": 0
+        },
+        "result": "feature_missing",
+        "reason": "clean_room",
+        "deep_mode_enabled": false
+      }
+    ],
+    "unknown_id": "unk_326174c234e2dcbb",
+    "successful_runtime_evidence_ids": [],
+    "runtime_status": "blocked_by_observation_channel",
+    "static_target_status": "not_attempted_clean_room",
+    "boundary": "官网正文和官方图片支持公开交互研究，不能当成本机安装版观察；后续恢复通道再核验。"
+  },
+  "private_source_record_sha256": "1e993374e5ff01b60de9f56389e82db99e2d019118acfe03c1527b768ce4c7f6"
+}

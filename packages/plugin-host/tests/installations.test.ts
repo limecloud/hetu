@@ -1,11 +1,25 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, writeFile, cp } from "node:fs/promises";
+import { mkdtemp, readFile, writeFile, cp, stat } from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
 import { PluginInstallations } from "../src/installations.ts";
 import { PluginPackage } from "../src/package.ts";
 const root = path.resolve(import.meta.dirname, "../../..");
+
+test("运行已安装快照只重验字节，不重写文件，篡改后拒绝且不静默修补", async () => {
+  const directory = await mkdtemp(path.join(os.tmpdir(),"hetu-readonly-snapshot-"));
+  const store = new PluginInstallations(directory);
+  const original = await PluginPackage.inspect(path.join(root,"plugins/relationships/dist"));
+  const snapshot = await store.snapshot(original);
+  const installed = await PluginPackage.inspect(snapshot,original.sha256);
+  const entry = path.join(snapshot,"index.html"), before = await stat(entry,{bigint:true});
+  assert.equal(await store.snapshot(installed),snapshot);
+  assert.equal((await stat(entry,{bigint:true})).mtimeNs,before.mtimeNs);
+  await writeFile(entry,"篡改后的页面");
+  await assert.rejects(store.snapshot(installed),/摘要不一致/);
+  assert.equal(await readFile(entry,"utf8"),"篡改后的页面");
+});
 
 test("定向发现只核对目标与依赖，停用或替换依赖后不能继续", async () => {
   const directory=await mkdtemp(path.join(os.tmpdir(),"hetu-selected-host-"));

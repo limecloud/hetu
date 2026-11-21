@@ -4,6 +4,7 @@ import { desktop, data } from "./bridge.ts";
 import { MediaPreview } from "./media-preview.tsx";
 import { Icon, IconButton, PageActions } from "./workbench.tsx";
 import "./surface-pages.css";
+import {useObjectContextMenu} from "./text-context-menus.tsx";
 
 const rights: Record<string, string> = {
   author_owned: "作者所有",
@@ -14,7 +15,8 @@ const rights: Record<string, string> = {
 type Collection = "assets" | "cues";
 
 /** 素材元数据与线索共用固定修订阅读；不从记录中的路径加载任意文件。 */
-export function MediaLibrary({ work, ai }: SurfaceContext) {
+export function MediaLibrary({ work, ai, notify }: SurfaceContext) {
+  const context = useObjectContextMenu(notify);
   const [collection, setCollection] = useState<Collection>("assets"),
     [kind, setKind] = useState(""),
     [archived, setArchived] = useState(false),
@@ -183,6 +185,11 @@ export function MediaLibrary({ work, ai }: SurfaceContext) {
               return (
                 <button
                   key={itemId}
+                  {...context(item.title, [
+                    {id: "open", label: "打开", disabled: busy, action: () => open(collection, itemId, item.revision)},
+                    {id: "copy-title", label: "复制名称", action: () => desktop.copy(item.title)},
+                    {id: "ai", label: "让 AI 处理此版本", action: () => ai({[collection === "assets" ? "asset_id" : "cue_id"]: itemId, revision: item.revision})},
+                  ])}
                   disabled={busy}
                   aria-pressed={id === itemId && view?.type === collection}
                   onClick={() => void open(collection, itemId, item.revision)}

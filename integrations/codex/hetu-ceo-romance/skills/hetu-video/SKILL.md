@@ -5,6 +5,8 @@ description: "作者选择河图洛书豪门总裁套件时，在河图洛书复
 
 # 河图洛书视频制作与审片接续
 
+先按[统一执行模式](../../references/execution-modes.md)读取实际设置：默认auto直接处理当前工作区，confirm先读后集中确认本次写入。本规则优先于下文旧授权流程，任务引用继续用于定位、来源和恢复。
+
 先读[任务合同](../../references/task-contract.md)，结合[本包题材方法](../../references/genre.md)中适用的故事约定。视频制作不默认新建小说或剧本。
 
 基础分集、固定媒体、区间意见和文件交付使用随包宿主动作，无需额外河图插件；具体见[操作导航](../../references/workflows/video-operations.md#无额外插件的成果与意见)。专业制作方法仍按实际插件和外部工具发现。

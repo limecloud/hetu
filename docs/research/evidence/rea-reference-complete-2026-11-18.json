@@ -2,17 +2,17 @@
   "schema_version": "1.0.0",
   "date": "2026-11-18",
   "status": "complete",
-  "scope": "REA与Craft Anything源码对照六个工作包的完整实现及本会话验收",
+  "scope": "source-record:cceb8acd3d419273302ab27a3aa1b96b4572c62b393d68dc0f3dea0df0ca9b1e",
   "platform": {
     "system": "Darwin",
     "machine": "arm64",
     "runtime_verification": "macOS arm64"
   },
   "source_review": {
-    "evidence_path": "docs/research/evidence/rea-craft-session-acceptance-2026-11-18.json",
+    "evidence_path": "source-record:9cc084388b3858a3b5768c9a74e51b595e5b45faf9db25ff066eab3f0e2f5e74",
     "evidence_sha256": "b77531c48aebb189fec58472666b659161f440363c3ea981e5213567341e4833",
     "rea_commit": "b21db3f3293bcfaffa6793be2f09b1aaf35dcc69",
-    "craft_commit": "788642e487c5d39a4a0f8823c07024c301761861",
+    "reference_commit": "788642e487c5d39a4a0f8823c07024c301761861",
     "reviewed_files": 38,
     "rechecked_source_hashes_unchanged": true,
     "executed_upstream_tests": false
@@ -115,7 +115,7 @@
       ],
       "reports": {
         "novel": {
-          "report_path": "output/rea-craft-complete-20261118/agent-novel/evaluation.json",
+          "report_path": "source-record:a8f371ddd7261eb4854217d10aa09c73712013d9bcc88e9348f8a2c3f81ae971",
           "sha256": "4f2e696fa9925863a299d8074bd3a81a11dc539b09824c9f2246e7678d9c4455",
           "selection_owner": "current_external_agent",
           "automatic_workflow": false,
@@ -139,7 +139,7 @@
           "conclusion": "最终开发制品的简介关键词已命中真实任务入口；原任务两版、固定意见、重开与原操作回读通过，固定候选未重复，专业检查与作者决定保持独立待审。小说旅程未采纳或定稿。"
         },
         "drama": {
-          "report_path": "output/rea-craft-complete-20261118/agent-drama/evaluation.json",
+          "report_path": "source-record:30b64f5fd555bfd19f06296854a9d7e542806239278b62105ef781f1beabb82f",
           "sha256": "dbbff3e9a7237f613e27fcf984613438d8d073741d38a9068aa76f8d9afb2012",
           "selection_owner": "current_external_agent",
           "automatic_workflow": false,
@@ -163,7 +163,7 @@
           "conclusion": "首次按独立剧本关键词正确定位；独立原创剧本、Fountain稿、稳定接续、CLI重读、重开提交及分层回读通过。专业语义与作者取舍保留，未采纳或定稿。"
         },
         "video": {
-          "report_path": "output/rea-craft-complete-20261118/agent-video/evaluation.json",
+          "report_path": "source-record:f28011e1877274b887b08c3bcce629645048f3d71b87a282c82b13fa9fa49e12",
           "sha256": "2c5d6f7f880b54f4f9a438c3ccd2bce72a92872f0763bb33b765a35edf962d9c",
           "selection_owner": "current_external_agent",
           "automatic_workflow": false,
@@ -194,7 +194,7 @@
       "passed": 374,
       "failed": 0,
       "ignored": 0,
-      "log": "output/rea-craft-complete-20261118/workspace-final-regression.log"
+      "log": "source-record:514277fd06bf2ed2e3904804ea7b71b7b4401537cdfdda35d5596576d4f39f03"
     },
     "plugin_host": {
       "passed": 91,
@@ -212,7 +212,7 @@
     "managed_continuation_focus": {
       "passed": 13,
       "failed": 0,
-      "log": "output/rea-craft-complete-20261118/continuation-management-tests.log"
+      "log": "source-record:b9b50fe548e14b0f10976be4b6f6c5d4cca1f62434c2a875ec1e8b337c1a0d1e"
     },
     "windows_supervisor_cross_compile": "passed",
     "windows_full_core_cross_compile": "blocked_missing_windows_C_SDK_assert.h",
@@ -225,17 +225,17 @@
       "fixed_utf8_bytes": 132080,
       "pages": 32,
       "max_mcp_or_cli_result_bytes": 18519,
-      "report": "output/rea-craft-complete-20261118/final-contract-journey.json",
+      "report": "source-record:85ecb48fc5238ad9879ce49bebd3311120797179f405e25b874f22e8f8e1e7dd",
       "note": "确定性传输与事务回归，与真实Agent选路评价分开。",
       "replay_calls": 69,
-      "replay_report": "output/rea-craft-complete-20261118/final-contract-replay.json"
+      "replay_report": "source-record:b1254ee547f79f41a84d61a0e1a5f5909a806079301904cd66e02a6578ccd993"
     },
     "final_workspace": {
       "passed": 374,
       "failed": 0,
       "ignored": 0,
       "suites": 64,
-      "log": "output/rea-craft-complete-20261118/workspace-verified-final.log",
+      "log": "source-record:2fc49cbb59945c51bb35bc7199ad8b91f53062e46bbde7c47c02987fb045bac0",
       "build_profile_overrides": {
         "hetu-core.opt-level": 0,
         "hetu-core.debug": 0,
@@ -273,7 +273,7 @@
     "diff_whitespace": "passed",
     "same_source_plugin_readback": {
       "status": "passed",
-      "report": "output/rea-craft-complete-20261118/final-plugin-artifact-recovery.json",
+      "report": "source-record:11d39ef90a6685ffca1224105637e208843e0db2c5a6bfc6b50e442cf7fef304",
       "sha256": "f0dbb3bba6318b8a457b39820adf36672504b4fdcfffda8f825b7fdc4724b422",
       "checks": [
         "重新发现最终Core插件能力",
@@ -321,147 +321,147 @@
   ],
   "logs": {
     "workspace-acceptance-tests.log": {
-      "path": "output/rea-craft-complete-20261118/workspace-acceptance-tests.log",
+      "path": "source-record:49f3482dab1c50bf73e7c5ec393417a976e83445bf637617e321ef59d177063e",
       "sha256": "c87a1de589546cbf81304c49ee493830f412e94c2e955f82f8b5b9bc3d6a74e0"
     },
     "workspace-corrected-tests.log": {
-      "path": "output/rea-craft-complete-20261118/workspace-corrected-tests.log",
+      "path": "source-record:fcc580b7eb7f3a44c0a357e45e226215ed515d3ce2d4ae2f9054ab08005ce932",
       "sha256": "796d96103703f59f2e55893cf6e4e69eae0ca52f10a79f35e0c08cbeed254890"
     },
     "supervisor-focused-tests.log": {
-      "path": "output/rea-craft-complete-20261118/supervisor-focused-tests.log",
+      "path": "source-record:a35c107393ec7fed9110e3b7a5a0a20e8e1ea4412a30c9eb7bb9a36bcd311817",
       "sha256": "3ee309800f9051b094d6d596b01e0a606d910e46ca2df768e194d7b7925b4184"
     },
     "isolated-supervisor-tests.log": {
-      "path": "output/rea-craft-complete-20261118/isolated-supervisor-tests.log",
+      "path": "source-record:f1f886f9e2217f4fa8433045ca5d31da37c9cf4c6d6da7d5cbced8a363fba37e",
       "sha256": "de6032d4981a94d1fe49f52356bffc97081a2a39c2e375d5fccb05be524e8b98"
     },
     "isolated-supervisor-corrected-tests.log": {
-      "path": "output/rea-craft-complete-20261118/isolated-supervisor-corrected-tests.log",
+      "path": "source-record:fd82d35780917a1d565f41ef3188dbc84bb4d445f62ad460aba86b9e2b4b7db0",
       "sha256": "bedc3af7b4ae154bc640bddbb7f7451bbe064fef55f95c29b24bdb9b2f4c76b0"
     },
     "workspace-final-regression.log": {
-      "path": "output/rea-craft-complete-20261118/workspace-final-regression.log",
+      "path": "source-record:514277fd06bf2ed2e3904804ea7b71b7b4401537cdfdda35d5596576d4f39f03",
       "sha256": "5c591630ec73964d0174658fc22d48d667bbb2d0a9feccacdcc205a163eaebaa"
     },
     "continuation-final-tests.log": {
-      "path": "output/rea-craft-complete-20261118/continuation-final-tests.log",
+      "path": "source-record:df517149577ee34441f4ee4e846a1a1b8feb89ee180461056cecd67e0c354fa3",
       "sha256": "18c0df7995318ed6011c3e5d6ceb1920fed23c0c184cfac025e830fce45cb4d9"
     },
     "continuation-management-tests.log": {
-      "path": "output/rea-craft-complete-20261118/continuation-management-tests.log",
+      "path": "source-record:b9b50fe548e14b0f10976be4b6f6c5d4cca1f62434c2a875ec1e8b337c1a0d1e",
       "sha256": "1c763eb7647a0c6838c0fc71faf472efdb945bd9c6f1bece352acbd9e9a377d5"
     },
     "plugin-host-all-tests.log": {
-      "path": "output/rea-craft-complete-20261118/plugin-host-all-tests.log",
+      "path": "source-record:6ab82594448ad1af66626fbe9ec35460e4a5dfe9548a919903d3cb659d5e6a32",
       "sha256": "313f7c17589880fcaf7a2e56abac4b28e0c64692aa8f222b1155a4801ead8d6f"
     },
     "installations-tests.log": {
-      "path": "output/rea-craft-complete-20261118/installations-tests.log",
+      "path": "source-record:5f870f6c83125b595e696f48e520e05a33c7a12153771e522f52dc3553c6d2a6",
       "sha256": "e9247a666cd14b53eccfd3138f1c02ad1d244067afc2af80ff6d0abc4d602c02"
     },
     "backend-final-tests.log": {
-      "path": "output/rea-craft-complete-20261118/backend-final-tests.log",
+      "path": "source-record:e4e781520718d827e478f0b022a5de69afce51dcc6742c64261e6b9bd01ecf6c",
       "sha256": "6fb9ae24e92982f2dee3d1cb9175fd1e33add4c533cf6017448f59ddc4c15a1e"
     },
     "typescript-final.log": {
-      "path": "output/rea-craft-complete-20261118/typescript-final.log",
+      "path": "source-record:6157261125813ece8e8d243bcd4f360f815efddad97cdb122b41148c72a0129a",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     "windows-supervisor-final-check.log": {
-      "path": "output/rea-craft-complete-20261118/windows-supervisor-final-check.log",
+      "path": "source-record:c146fc02fd45cd8198f286c65fa01a26ac5166add8e7369a677a159c8dd311a5",
       "sha256": "6a35dfd38bbee3ba089bc836870e21248267eff21975171ed4ae1c3c4c46c693"
     },
     "windows-core-check.log": {
-      "path": "output/rea-craft-complete-20261118/windows-core-check.log",
+      "path": "source-record:c9394586694e5c1fde9598c048b99efc355e423e62ce5121aa36fbde97a60e5f",
       "sha256": "ccf7c7a03c5681466e5eea0f0b5b4fdf9c26f8e8ed8b348e6f3538d5c88338d4"
     },
     "docs-final-check.log": {
-      "path": "output/rea-craft-complete-20261118/docs-final-check.log",
+      "path": "source-record:a0402439b3b577014c92f5c0afe91efbdd840bec903d4736b93549d3c8a96efa",
       "sha256": "684e6d8dab7bb439f2844d8b91a69228a8a0a985d9c41f93bc743dd337ba843b"
     },
     "skills-check.log": {
-      "path": "output/rea-craft-complete-20261118/skills-check.log",
+      "path": "source-record:1af079c21681afac2eeb01b4cdd35adb10fd6190bebef281c76c51f8411c6e3b",
       "sha256": "d0bb4190b9f06238766364035d407a9801ce96a61a51d119be67424888ea04d9"
     },
     "method-check.log": {
-      "path": "output/rea-craft-complete-20261118/method-check.log",
+      "path": "source-record:0f6860f1b21f652cebb97e054a5bd07117488b51ac335970d2df823c28777f1c",
       "sha256": "42eb2486f223188d7d09cc7ee354ab642cd34bd81657ced128b00a3af4825c86"
     },
     "docs-check.log": {
-      "path": "output/rea-craft-complete-20261118/docs-check.log",
+      "path": "source-record:d176fd71bbfe84714abacb9bd1ff032c468a1c780a080f0de5e6198022b5b7fa",
       "sha256": "d4f2b3cc98c3221d8c73e5507c999eb68edee579bc040a2bb07aa855736b0163"
     },
     "final-contract-journey.log": {
-      "path": "output/rea-craft-complete-20261118/final-contract-journey.log",
+      "path": "source-record:fefa2f3996782bf07d9bd1659dedb78b1baaba19cce83ea2f5d2e275a096e0ad",
       "sha256": "edcbaebae91ca940099f96941587a2f174bf43cbd051ca473906ecd51ef77841"
     },
     "typescript.log": {
-      "path": "output/rea-craft-complete-20261118/typescript.log",
+      "path": "source-record:18759bb5ba597b57b18a1ffb38f17741e9ebcbe4d91840ced806615a18c3c30e",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     "workspace-verified-final.log": {
-      "path": "output/rea-craft-complete-20261118/workspace-verified-final.log",
+      "path": "source-record:2fc49cbb59945c51bb35bc7199ad8b91f53062e46bbde7c47c02987fb045bac0",
       "sha256": "79f0a49d699dede34782f014ff85c1ce66dbd75da15d532d377a1df47db445bd"
     },
     "map-check.log": {
-      "path": "output/rea-craft-complete-20261118/map-check.log",
+      "path": "source-record:ac598b7bc8e4bcbbbd2b9fbf032b74ebd10000e805406f4d0822273ef44631fa",
       "sha256": "0a290158f76b29bce06ee0505bff2ee5daced0e452e7f8c4d22e52abf0deba80"
     },
     "workspace-final-tests.log": {
-      "path": "output/rea-craft-complete-20261118/workspace-final-tests.log",
+      "path": "source-record:dd563ae16a15176ba1541b0a53a4c3a02e473dd8bbe15f81b11e17eadefa37ba",
       "sha256": "44c5d0b8ff9b28f18b2fb89537cae6c81ef6f375d1c7855a7da3e1e80c90b693"
     },
     "backend-tests.log": {
-      "path": "output/rea-craft-complete-20261118/backend-tests.log",
+      "path": "source-record:6abdab0c400fbfe09fa1c1983da27960288ba90021a5af5982aedfc4b926494b",
       "sha256": "36b7cead977b2595c37a84c18d74227c16bfe3864257f55f3a9b3340019a6238"
     },
     "windows-supervisor-check.log": {
-      "path": "output/rea-craft-complete-20261118/windows-supervisor-check.log",
+      "path": "source-record:1a77553d73994f38949613dfbf68eca960fdea7e7a1cf911a4524e62b33fb18a",
       "sha256": "713b7bed6f4accfe7c1e860f3f5d43ea86cc00d0ebfff6c576fb9f9ee9ef864a"
     },
     "final-binaries-build.log": {
-      "path": "output/rea-craft-complete-20261118/final-binaries-build.log",
+      "path": "source-record:6d5f59777e29e0e83b3eeb05d8712cd1a8d69fa200113adfc6374948aec65e91",
       "sha256": "6a6cdaa5ac39f79675e68a9c7a2d3a274b9df42a7b169f529acab5aa589aaa9d"
     },
     "method-generate.log": {
-      "path": "output/rea-craft-complete-20261118/method-generate.log",
+      "path": "source-record:27d37eb9bab4a9e96755ce8e83c383fb0b5ca7a9130bc4912c2f2302941b2482",
       "sha256": "b65d8de8f351ffb9d87541c944997e1738aa279995218042f711a62053138422"
     },
     "desktop-final-build.log": {
-      "path": "output/rea-craft-complete-20261118/desktop-final-build.log",
+      "path": "source-record:60ae5f9fca2258ff495a1241790bd0f8bfd0f459dfc05837e4e51f930faf483b",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     "desktop-build.log": {
-      "path": "output/rea-craft-complete-20261118/desktop-build.log",
+      "path": "source-record:4822f076816a8b1573ccb6c4dfa164b20fa4b6a96ed21b9f4a03d597271955cc",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     "final-contract-replay.log": {
-      "path": "output/rea-craft-complete-20261118/final-contract-replay.log",
+      "path": "source-record:229da2541d63c71d2e03879cb5fa21b6559090c49a538470b94ef3d8ee8e9242",
       "sha256": "edcbaebae91ca940099f96941587a2f174bf43cbd051ca473906ecd51ef77841"
     },
     "workspace-tests.log": {
-      "path": "output/rea-craft-complete-20261118/workspace-tests.log",
+      "path": "source-record:ee08ee8fa9dc1a47dd41292f2bc3eec9b594cdc545c4c42c3a6ee4b774d40bfd",
       "sha256": "2b3ee77dbc9742ae6dd0e435b8c9e0a6755adc276457b5fb039ae3cc193511de"
     },
     "method-verified-final.log": {
-      "path": "output/rea-craft-complete-20261118/method-verified-final.log",
+      "path": "source-record:46e1e8f360ef7c9379355e5d65f07bd549cae751c24ea84d1fece3b78ebec538",
       "sha256": "42eb2486f223188d7d09cc7ee354ab642cd34bd81657ced128b00a3af4825c86"
     },
     "skills-verified-final.log": {
-      "path": "output/rea-craft-complete-20261118/skills-verified-final.log",
+      "path": "source-record:9cda4c1d9917eb807813fe9c0ad19b9d104170f73ed9614a269f9906518de23a",
       "sha256": "d0bb4190b9f06238766364035d407a9801ce96a61a51d119be67424888ea04d9"
     },
     "verified-final-binaries.log": {
-      "path": "output/rea-craft-complete-20261118/verified-final-binaries.log",
+      "path": "source-record:729af228c55d2b38368b9a152cef00756e9e1e14bfa4ea23f619614901d33e7e",
       "sha256": "8624fabadfdfdaf4b4ec7eb4a3774d219da5ed3dc33c26bbf336e652bcc3371e"
     },
     "docs-verified-final.log": {
-      "path": "output/rea-craft-complete-20261118/docs-verified-final.log",
+      "path": "source-record:13417ba3a4449065127ff9e0b752a5e3a9dd77676ca75627c5248975838fe249",
       "sha256": "296f160559a4b94e2d074a410706224432238c1f591c29a186fd4598bf51c01e"
     },
     "final-plugin-artifact-recovery.log": {
-      "path": "output/rea-craft-complete-20261118/final-plugin-artifact-recovery.log",
+      "path": "source-record:9501cc6420e673c1252d217fbf48ae1b3c1cf4f2524c9421df5d59edd334bda3",
       "sha256": "d334a68046d2602ebff468e858f8dd847a6569b61469da3dd76eb9529f758095"
     }
   },
@@ -525,7 +525,7 @@
       "docs/30-应用API详细设计.md": "91bec1b292b189f8b6fa78449ce7c2223dff864deebecdf754b65aa16a959211",
       "docs/38-创作工作台重构执行计划.md": "d2fbb7cf7936562dfdc4e2e660f137388263a1c1829fd719a76fbe7c2f8f9b11",
       "docs/40-机器能力地图与Review清单.md": "9fc1c59cc0d3cee366ae32baa43a803d8e7fbd6062870f858003b7b3fd6d14c4",
-      "docs/research/evidence/rea-craft-session-acceptance-2026-11-18.json": "b77531c48aebb189fec58472666b659161f440363c3ea981e5213567341e4833",
+      "docs/research/evidence/rea-reference-session-acceptance-2026-11-18.json": "b77531c48aebb189fec58472666b659161f440363c3ea981e5213567341e4833",
       "integrations/codex/hetu/.codex-plugin/plugin.json": "2495f212ce7b7621bc176892498d2e8f4b34b714ccb96181d32ad5404f9cb847",
       "integrations/codex/hetu/plugin.json": "a0ad41a415b11dfbe9556b9e8bb30f5c9c30612a2002215d37df2239daefd4b7",
       "integrations/codex/hetu/references/capability-map.json": "be5fc0728b7d2db254067791ee1981e2b1ac6aa55b09cc65f27220caebb55545",
@@ -838,5 +838,9 @@
     "state": "保留未提交改动；未建分支、未推送、未发布",
     "source_snapshot_verified": true,
     "artifact_hashes_verified": true
+  },
+  "source_record_notice": {
+    "view": "名称已归一化的历史记录；原始回执、字节与摘要保存在本地原始记录，旧摘要对应原始记录。",
+    "original_sha256": "fadd026047d1e05ab7cd09b6892da9e2386bd8ffbc4a4434f32dc9d4150250a2"
   }
 }

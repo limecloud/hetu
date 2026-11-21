@@ -62,6 +62,8 @@ const AGENT: &str = "actor_00000000-0000-4000-8000-000000000002";
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 struct OpenConfig {
+    #[serde(skip)]
+    workspace_execution: bool,
     workspace_path: Option<String>,
     creation_project_path: Option<String>,
     mode: Mode,
@@ -96,6 +98,7 @@ pub struct Kernel {
     config: Value,
     config_sha: String,
     author: bool,
+    workspace_execution: bool,
     workspace_path: std::path::PathBuf,
     authorization_path: Option<std::path::PathBuf>,
     collaboration_grant: Option<Value>,
@@ -159,7 +162,7 @@ fn schema(value: &Value, schema: &Value) -> Result<()> {
     }
     Ok(())
 }
-fn validate_action_input(action: &str, input: &Value) -> Result<()> {
+pub(crate) fn validate_action_input(action: &str, input: &Value) -> Result<()> {
     static VALIDATORS: OnceLock<BTreeMap<String, OnceLock<jsonschema::Validator>>> =
         OnceLock::new();
     let validators = VALIDATORS.get_or_init(|| {
@@ -199,6 +202,16 @@ impl Kernel {
         let options: OpenConfig = serde_json::from_value(config)?;
         Self::open_options(options, None)
     }
+    pub(crate) fn open_execution(config: Value) -> Result<Self> {
+        let mut options: OpenConfig = serde_json::from_value(config)?;
+        ensure(options.mode == Mode::Agent, "invalid_input", "工作区执行保留 Agent 身份。")?;
+        options.workspace_execution = true;
+        Self::open_options(options, None)
+    }
+    pub(crate) fn has_workspace_authority(&self) -> bool {
+        self.author || self.workspace_execution
+    }
+    pub(crate) fn execution_descriptor(action: &str) -> Option<Value> { catalog::descriptor(action).cloned() }
     // 仅稳定入口可组装窄管理授权；公开 OpenConfig 不接受作者或权限提升字段。
     pub(crate) fn open_managed(config: Value, binding: Value) -> Result<Self> {
         let options: OpenConfig = serde_json::from_value(config)?;
@@ -239,7 +252,7 @@ impl Kernel {
         let author = options.mode == Mode::Author;
         if let Some(create) = &options.create {
             ensure(
-                author || management_grant.is_some(),
+                author || options.workspace_execution || management_grant.is_some(),
                 "forbidden",
                 "Agent 不能创建或任意选择工作区。",
             )?;
@@ -436,6 +449,7 @@ impl Kernel {
             config,
             config_sha: digest(config_bytes),
             author,
+            workspace_execution: options.workspace_execution,
             workspace_path: path.canonicalize()?,
             authorization_path: options.authorization_path,
             collaboration_grant: options.collaboration_grant,
@@ -524,6 +538,9 @@ impl Kernel {
         }
     }
     fn action_available(&self, action: &Value) -> bool {
+        if self.workspace_execution {
+            return action["scopes"].as_array().map_or(!self.is_creation_project(), |scopes| scopes.iter().any(|scope| scope == self.scope_kind()));
+        }
         if action["name"] == "hetu.creative_tasks.submit_result"
             && self.task_id.is_some()
             && self.resource_task_access().is_ok()
@@ -652,7 +669,7 @@ impl Kernel {
         self.check_work_access(action, input)?;
         ensure(
             !metadata["author_only"].as_bool().unwrap()
-                || self.author
+                || self.has_workspace_authority()
                 || self.management_allows(action),
             "forbidden",
             "此动作仅允许作者在可信本机入口操作。",

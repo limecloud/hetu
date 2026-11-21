@@ -466,8 +466,17 @@
     "真实作者作品仅只读验收；写入、清空、固定决定及恢复使用隔离样本。"
   ],
   "release": {
-    "status": "pending",
-    "tag": "v0.13.10"
+    "status": "deferred_by_user",
+    "tag": "v0.13.10",
+    "git_sha": "6ec987ed74af2da50e05f237bcd2f2ba89fb60e0",
+    "workflow_run": 44645099623,
+    "workflow_status": "completed",
+    "public_release": false,
+    "npm_latest": "0.13.9",
+    "reason": "作者要求本地验证OK后再统一发布，停止自动发行及官网部署。",
+    "workflow_conclusion": "cancelled",
+    "cancellation_receipt": "build/mcp-workbench-01310/release-cancellation.json",
+    "cancellation_sha256": "2f4b072a30a46351f75c2b49cc41e33547ae13505f23784a6a5c31d496ef3c12"
   },
   "retained_failures": [
     {
@@ -494,7 +503,7 @@
   "website": {
     "build_pages": 219,
     "build_log": "build/mcp-workbench-01310/website-build.log",
-    "deployment": "pending"
+    "deployment": "deferred_by_user"
   },
   "package": {
     "version": "0.13.10",

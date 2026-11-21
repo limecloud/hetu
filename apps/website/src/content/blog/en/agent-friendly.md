@@ -60,13 +60,13 @@ These entrances share project facts, permissions and revisions. Host support is 
 
 Hetu does not call model APIs, hold model keys or run an internal chat-and-generation loop. Its current genre-method packages are written in Chinese; the English catalog explains their scope rather than promising localization for every market.
 
-## Organization should leave room for craft
+## Organization should leave room for writing
 
 For a short standalone piece, a file and an Agent may be enough. A workspace earns its place as drafts, references, adaptation choices and handoffs become harder to keep straight.
 
 That is also a design constraint. Authors should not have to complete a database-shaped form before writing a scene. Structure should support continuity and revision, with details appearing where they help someone make a decision.
 
-An Agent can offer several openings, all of which the author may reject. Manual creation remains a complete workflow. Taste, voice and the choice of what to leave unsaid remain part of the author's craft.
+An Agent can offer several openings, all of which the author may reject. Manual creation remains a complete workflow. Taste, voice and the choice of what to leave unsaid remain part of the author's writing.
 
 ## Work you can keep developing
 

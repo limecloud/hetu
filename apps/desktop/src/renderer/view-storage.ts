@@ -1,3 +1,8 @@
+import type { WorkRef } from "@hetu/plugin-sdk";
+
+export const documentSelectionKey = (work: WorkRef) =>
+ "hetu-document:" + work.workspace_id + ":" + work.kind + ":" + work.object_id;
+
 /** 阅读位置属于当前视图会话；MCP沙箱无Web Storage时保留在同一视图内存。 */
 const positions=new Map<string,string>();
 export const viewStorage={

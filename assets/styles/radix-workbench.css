@@ -3,6 +3,25 @@
 :root {
   color-scheme: light dark;
   accent-color: var(--action);
+  --gray-1: light-dark(#fcfcfc, #111111);
+  --gray-2: light-dark(#f9f9f9, #191919);
+  --gray-3: light-dark(#f0f0f0, #222222);
+  --gray-4: light-dark(#e8e8e8, #2a2a2a);
+  --gray-5: light-dark(#e0e0e0, #313131);
+  --gray-6: light-dark(#d9d9d9, #3a3a3a);
+  --gray-7: light-dark(#cecece, #484848);
+  --gray-8: light-dark(#bbbbbb, #606060);
+  --gray-9: light-dark(#8d8d8d, #6e6e6e);
+  --gray-10: light-dark(#838383, #7b7b7b);
+  --gray-11: light-dark(#646464, #b4b4b4);
+  --gray-12: light-dark(#202020, #eeeeee);
+  --blue-9: #0090ff;
+  --blue-11: light-dark(#0d74ce, #70b8ff);
+  /* 外观缩略图须同时呈现固定浅暗表面，不随当前应用主题反转。 */
+  --preview-light-backdrop: #e8e8e8; --preview-dark-backdrop: #313131;
+  --preview-light-paper: #ffffff; --preview-dark-paper: #222222;
+  --preview-light-chrome: #f9f9f9; --preview-dark-chrome: #191919;
+  --preview-light-line: #d9d9d9; --preview-dark-line: #484848;
   --sage-1: light-dark(#fbfdfc, #101211);
   --sage-2: light-dark(#f7f9f8, #171918);
   --sage-3: light-dark(#eef1f0, #202221);
@@ -55,26 +74,23 @@
   --black-a3: #00000026;
   --black-a5: #0000004d;
   --white-a12: #ffffff;
-  --ink: var(--sage-12); --muted: var(--sage-11);
-  --page: var(--sage-1); --surface: var(--sage-1); --paper: var(--sage-2);
-  --hover: var(--sage-3); --pressed: var(--sage-4); --line: var(--sage-6);
-  /* 官网的纸色、玉色与山水灰，作为工作台连续底色。 */
-  --wash-paper: color-mix(in srgb, var(--amber-2) 42%, var(--sage-2));
-  --wash-jade: color-mix(in srgb, var(--jade-4) 35%, var(--sage-5));
-  --wash-gold: color-mix(in srgb, var(--amber-3) 30%, var(--sage-2));
-  --workbench-background:
-    radial-gradient(ellipse at 0% 100%, var(--wash-jade), transparent 65%),
-    radial-gradient(ellipse at 100% 0%, var(--wash-gold), transparent 60%),
-    linear-gradient(135deg, var(--wash-paper) 10%, var(--page) 52%, var(--sage-4) 100%);
+  --ink: var(--gray-12); --muted: var(--gray-11);
+  --page: light-dark(var(--white-a12), var(--gray-3)); --surface: var(--gray-2); --paper: var(--gray-2);
+  --hover: var(--gray-3); --pressed: var(--gray-4); --line: var(--gray-6);
+  /* 工作台用中性窗口表面；品牌插画与官网色板独立。 */
+  --workbench-background: light-dark(var(--gray-3), var(--gray-2));
   --chrome-surface: color-mix(in srgb, var(--surface) 18%, transparent);
-  --chrome-border: var(--sage-a6);
+  --chrome-border: var(--gray-6);
   --workbench-panel: color-mix(in srgb, var(--surface) 82%, transparent);
-  --floating-surface: color-mix(in srgb, var(--surface) 85%, transparent);
+  --floating-surface: color-mix(in srgb, var(--surface) 97%, transparent);
   --jade: var(--jade-11); --jade-soft: var(--jade-3);
-  --action: var(--jade-9); --action-hover: var(--jade-10); --action-ink: var(--white-a12);
+  --action: var(--gray-12);
+  --action-hover: var(--gray-11);
+  --action-pressed: var(--gray-12);
+  --action-ink: light-dark(var(--white-a12), var(--gray-1));
   --warning: var(--amber-3); --warning-ink: var(--amber-11);
   --danger: var(--red-3); --danger-ink: var(--red-11);
-  --focus: var(--jade-8);
+  --focus: var(--jade-11);
   --shadow-subtle: none;
   --shadow-card: none;
   --shadow-card-hover: none;
@@ -83,8 +99,8 @@
   --transition-fast: none;
   --transition-normal: none;
 }
-:root[data-appearance=light], :root[data-theme=light] { color-scheme: light; }
-:root[data-appearance=dark], :root[data-theme=dark] { color-scheme: dark; }
+:root[data-effective-appearance=light], :root:not([data-effective-appearance])[data-appearance=light], :root:not([data-effective-appearance])[data-theme=light] { color-scheme: light; }
+:root[data-effective-appearance=dark], :root:not([data-effective-appearance])[data-appearance=dark], :root:not([data-effective-appearance])[data-theme=dark] { color-scheme: dark; }
 
 a { color: var(--jade); }
 ::selection { background: var(--jade-4); color: var(--ink); }

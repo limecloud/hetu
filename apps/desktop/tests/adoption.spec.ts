@@ -73,16 +73,15 @@ test("局部采纳固定中文与emoji选区、拒绝伪造和旧坐标、保留
       await page
         .getByLabel(label, { exact: true })
         .evaluate((element, quote) => {
-          const text = element.firstChild!;
+          const text = [...element.querySelectorAll<HTMLElement>("[data-source-from]")].find(node => node.textContent?.includes(quote))?.firstChild;
+          if (!text) throw new Error("测试选区不存在。");
           const start = text.textContent!.indexOf(quote);
-          if (start < 0) throw new Error("测试选区不存在。");
           const range = document.createRange();
-          range.setStart(text, start);
-          range.setEnd(text, start + quote.length);
+          range.setStart(text, start); range.setEnd(text, start + quote.length);
           const selection = window.getSelection()!;
           selection.removeAllRanges();
           selection.addRange(range);
-          element.dispatchEvent(new MouseEvent("mouseup", { bubbles: true }));
+          text.parentElement!.closest("article")!.dispatchEvent(new MouseEvent("mouseup", { bubbles: true }));
         }, quote);
     }
     await select("局部采纳参考稿", "旧日记");
@@ -106,7 +105,7 @@ test("局部采纳固定中文与emoji选区、拒绝伪造和旧坐标、保留
     await page
       .getByRole("button", { name: "预览选中片段", exact: true })
       .click();
-    await expect(page.getByRole("status")).toContainText("写作稿已变化");
+    await expect(page.locator(".notice[role=status]")).toContainText("写作稿已变化");
     await page
       .getByRole("button", { name: "重新读取局部采纳对照", exact: true })
       .click();
@@ -116,11 +115,11 @@ test("局部采纳固定中文与emoji选区、拒绝伪造和旧坐标、保留
       .getByRole("button", { name: "预览选中片段", exact: true })
       .click();
     const expected = concurrent.replace("🌿", "旧日记");
-    await expect(
-      page
-        .getByRole("region", { name: "作者决定预览" })
-        .getByText(expected, { exact: true }),
-    ).toBeVisible();
+    const preview = page.getByRole("region", {name: "作者决定预览", exact: true});
+    await preview.getByRole("button", {name: "全部正文", exact: true}).click();
+    const resultText = preview.getByRole("region", {name: "采纳后正文", exact: true});
+    await resultText.getByRole("button", {name: "原稿", exact: true}).click();
+    await expect(resultText.locator("article")).toHaveText(expected);
     expect(
       (
         await read("hetu.documents.get", {
@@ -135,7 +134,7 @@ test("局部采纳固定中文与emoji选区、拒绝伪造和旧坐标、保留
       ),
     });
     await page.getByRole("button", { name: "确认此预览", exact: true }).click();
-    await expect(page.getByRole("status")).toContainText("尚未定稿");
+    await expect(page.locator(".notice[role=status]")).toContainText("尚未定稿");
     expect(
       (
         await read("hetu.documents.get", {

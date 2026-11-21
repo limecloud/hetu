@@ -1,0 +1,70 @@
+/* 小说、剧本及参考稿共用的文稿表现，不影响原文字节。 */
+:root[data-document-theme=paper], .reading-surface[data-document-theme=paper] { --document-color-scheme: light; --document-background: var(--page); }
+:root[data-document-theme=warm], .reading-surface[data-document-theme=warm] { --document-color-scheme: light; --document-background: color-mix(in srgb, var(--amber-2) 40%, var(--sage-1)); }
+:root[data-document-theme=night], .reading-surface[data-document-theme=night] { --document-color-scheme: dark; --document-background: var(--page); }
+:root[data-document-theme=system], .reading-surface[data-document-theme=system] { --document-color-scheme: var(--application-color-scheme, light dark); --document-background: var(--page); }
+.reading-surface, .manuscript-workspace, .comparison-columns { color-scheme: var(--document-color-scheme, inherit); color: var(--ink); background: var(--document-background, var(--page)); }
+
+.screenplay-reader, .screenplay-editor .cm-scroller { font-family: var(--reader-font, "Courier New", monospace); font-size: var(--reader-font-size,18px); line-height: var(--reader-line-height, 1.65); }
+.screenplay-reader { max-width: var(--reader-measure, 44ic); margin: 0 auto; padding: 8px 4px 40px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.screenplay-reader .screenplay-line { margin: 0; min-width: 0; font-size: inherit; line-height: inherit; }
+.screenplay-reader .screenplay-blank { height: .8em; }
+.screenplay-reader .screenplay-scene { position: relative; display: flex; gap: 1ch; font-weight: 600; margin-top: 1.4em; margin-bottom: .6em; }
+.screenplay-reader .screenplay-scene:first-child { margin-top: 0; }
+.screenplay-scene-number { flex: none; color: var(--muted); font-weight: 400; font-variant-numeric: tabular-nums; }
+.screenplay-dialogue-block { margin: .6em 14% .8em 22%; }
+.screenplay-character { font-weight: 600; padding-left: 18%; }
+.screenplay-parenthetical { padding: 0 10%; }
+.screenplay-transition { text-align: right; }
+.screenplay-centered { text-align: center; }
+.screenplay-reader .screenplay-section { font-weight: 600; margin-top: 1em; }
+.screenplay-note, .screenplay-synopsis { color: var(--muted); font-style: italic; }
+.screenplay-page_break { height: 0; border: 0; border-top: .5px dashed var(--line); margin: 1em 0 !important; }
+.screenplay-lyric { font-style: italic; }
+.screenplay-bold { font-weight: 700; }
+.screenplay-italic { font-style: italic; }
+.screenplay-bold-italic { font-weight: 700; font-style: italic; }
+.screenplay-underline { text-decoration: underline; }
+.screenplay-dual { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 4ch; margin: .6em 0 .8em 10%; }
+.screenplay-editor .cm-line.screenplay-line { padding: 0 4px; }
+.screenplay-editor .cm-line.screenplay-character { padding-left: 42%; }
+.screenplay-editor .cm-line.screenplay-dialogue, .screenplay-editor .cm-line.screenplay-lyric { padding-left: 22%; padding-right: 14%; }
+.screenplay-editor .cm-line.screenplay-parenthetical { padding-left: 30%; padding-right: 22%; }
+.screenplay-editor .cm-line.screenplay-scene { font-weight: 600; }
+.screenplay-editor .screenplay-syntax { color: var(--muted); }
+@media (max-width:760px) {
+  .screenplay-dual { grid-template-columns: minmax(0,1fr); gap: 1em; margin-left: 12%; margin-right: 8%; }
+  .screenplay-dialogue-block { margin-left: 12%; margin-right: 8%; }
+  .screenplay-editor .cm-line.screenplay-dialogue { padding-left: 12%; padding-right: 8%; }
+}
+
+.reader { max-width: var(--reader-measure, 880px); margin: 0 auto; padding: 8px 4px 32px; font-family: var(--reader-font, "Songti SC", serif); font-size: var(--reader-font-size, 20px); line-height: var(--reader-line-height, 1.75); white-space: pre-wrap; overflow-wrap: break-word; line-break: strict; }
+
+.novel-reader { text-indent: 0; }
+.manuscript-line { display: block; white-space: pre-wrap; }
+.manuscript-line:empty { min-height: 1lh; }
+.manuscript-break { display: none; }
+.novel-reader .manuscript-line[data-prose] { text-indent: var(--reader-indent, 0); margin-bottom: var(--reader-paragraph-spacing, 0); }
+.manuscript-strong { font-weight: 700; }
+.manuscript-emphasis { font-style: italic; }
+.manuscript-strike { text-decoration: line-through; }
+.manuscript-list { position: relative; padding-left: 1.6em; text-indent: 0; }
+.manuscript-list-marker { position: absolute; left: 0; width: 1.3em; text-align: right; color: var(--muted); }
+.manuscript-heading { margin-block: 1em .5em; font-weight: 600; text-indent: 0; }
+.manuscript-heading:first-child { margin-top: 0; }
+.manuscript-heading[aria-level="2"], .cm-line.cm-manuscript-heading[data-heading-level="1"] { font-size: 1.65em; line-height: 1.3; font-weight: 650; }
+.manuscript-heading[aria-level="3"], .cm-line.cm-manuscript-heading[data-heading-level="2"] { font-size: 1.4em; line-height: 1.35; font-weight: 650; }
+.manuscript-heading[aria-level="4"], .cm-line.cm-manuscript-heading[data-heading-level="3"] { font-size: 1.2em; line-height: 1.4; font-weight: 600; }
+.cm-line.cm-manuscript-heading { padding-top: .7em; padding-bottom: .35em; text-indent: 0; font-weight: 600; }
+.cm-line.cm-manuscript-heading:first-child { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; font-size: 1.25em; line-height: 1.4; padding-top: 0; padding-bottom: 16px; border-bottom: .5px solid var(--line); }
+.author-editor .cm-content:has(> .cm-manuscript-heading:first-child) { padding-top: 0; }
+.cm-line.cm-manuscript-code { background: var(--surface); font-family: ui-monospace, "Courier New", monospace; padding-inline: .5em; text-indent: 0; }
+.cm-line.cm-manuscript-marker-line { font-size: 0; line-height: .5rem; padding: 0; }
+.cm-line.cm-manuscript-rule { min-height: 1lh; background: linear-gradient(var(--line), var(--line)) center / 100% .5px no-repeat; }
+.cm-line.cm-manuscript-quote { border-left: .5px solid var(--line); padding-left: 1em; text-indent: 0; }
+.cm-manuscript-list-marker { display: inline-block; width: 1.5em; color: var(--muted); text-indent: 0; text-align: center; }
+.cm-manuscript-list-marker input { width: 14px; height: 14px; min-height: 0; padding: 0; margin: 0 6px 0 0; vertical-align: middle; accent-color: var(--ink); }
+.manuscript-quote { padding-inline: 1em; border-left: .5px solid var(--line); text-indent: 0; }
+.manuscript-code { font-family: ui-monospace, "Courier New", monospace; text-indent: 0; }
+.manuscript-line.manuscript-code { background: var(--surface); padding-inline: .5em; }
+.manuscript-rule { height: 1em; min-height: 0 !important; margin-block: 1em; border-top: .5px solid var(--line); }

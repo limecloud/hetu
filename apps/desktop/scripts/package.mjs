@@ -95,6 +95,7 @@ const sourceRoots = [
   "packages/workbench-ui/src",
   "plugins",
   "contracts",
+  "assets/localization",
   "integrations/codex",
 ];
 async function sourceSnapshot() {
@@ -114,7 +115,6 @@ async function sourceSnapshot() {
     "apps/mcp/Cargo.toml",
     "apps/app-server/Cargo.toml",
     "apps/plugin-cli/Cargo.toml",
-    "assets/localization/shared.json",
     "assets/styles/radix-workbench.css",
     "assets/licenses/radix-colors-MIT.txt",
     "assets/fonts/HetuExportSansSC-Regular.ttf",

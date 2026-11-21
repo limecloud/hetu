@@ -148,7 +148,7 @@ impl Kernel {
         }
     }
     fn resource_write_access(&self, record: Option<&Value>) -> Result<()> {
-        if self.author {
+        if self.has_workspace_authority() {
             return Ok(());
         }
         let access = self.resource_task_access()?;
@@ -176,7 +176,7 @@ impl Kernel {
     fn resource_for_read(&self, input: &Value) -> Result<(Value, String, Value)> {
         let resource_id = text(input, "resource_id")?;
         let mut revision = input["revision"].as_u64();
-        if !self.author && self.task_id.is_some() {
+        if !self.has_workspace_authority() && self.task_id.is_some() {
             let access = self.resource_task_access()?;
             let (current, _, _) = self.read_resource(resource_id, None)?;
             self.check_resource_task_owner(&current)?;
@@ -223,7 +223,7 @@ impl Kernel {
             self.work_record(work, None)?;
         }
         let task_owner = self.resource_task_owner()?;
-        let access = if !self.author && self.task_id.is_some() {
+        let access = if !self.has_workspace_authority() && self.task_id.is_some() {
             Some(self.resource_task_access()?)
         } else {
             None
@@ -287,7 +287,7 @@ impl Kernel {
         self.resource_write_access(None)?;
         let task_owner = self.resource_task_owner()?;
         ensure(
-            self.author
+            self.has_workspace_authority()
                 || self.task_id.is_none()
                 || task_owner.is_some()
                 || input.get("work_ref").is_none(),

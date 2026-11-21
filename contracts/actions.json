@@ -5270,7 +5270,7 @@
               "font_size": {
                 "type": "number",
                 "minimum": 14,
-                "maximum": 30
+                "maximum": 32
               },
               "line_spacing": {
                 "type": "number",
@@ -5295,6 +5295,124 @@
                   "workbuddy",
                   "claudeCode",
                   "other"
+                ]
+              },
+              "reading_profiles": {
+                "type": "object",
+                "additionalProperties": false,
+                "minProperties": 1,
+                "properties": {
+                  "novel": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "minProperties": 1,
+                    "properties": {
+                      "font_family": {
+                        "enum": [
+                          "songti",
+                          "pingfang",
+                          "system",
+                          "mono",
+                          "custom"
+                        ]
+                      },
+                      "font_name": {
+                        "type": "string",
+                        "maxLength": 128,
+                        "pattern": "^[^\\u0000-\\u001f\"\\\\;{}<>]*$"
+                      },
+                      "font_size": {
+                        "type": "number",
+                        "minimum": 14,
+                        "maximum": 32
+                      },
+                      "line_height": {
+                        "type": "number",
+                        "minimum": 1.25,
+                        "maximum": 2.5
+                      },
+                      "paragraph_spacing": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 2
+                      },
+                      "line_width": {
+                        "type": "number",
+                        "minimum": 24,
+                        "maximum": 64
+                      },
+                      "first_line_indent": {
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  "screenplay": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "minProperties": 1,
+                    "properties": {
+                      "font_family": {
+                        "enum": [
+                          "songti",
+                          "pingfang",
+                          "system",
+                          "mono",
+                          "custom"
+                        ]
+                      },
+                      "font_name": {
+                        "type": "string",
+                        "maxLength": 128,
+                        "pattern": "^[^\\u0000-\\u001f\"\\\\;{}<>]*$"
+                      },
+                      "font_size": {
+                        "type": "number",
+                        "minimum": 14,
+                        "maximum": 32
+                      },
+                      "line_height": {
+                        "type": "number",
+                        "minimum": 1.25,
+                        "maximum": 2.5
+                      },
+                      "paragraph_spacing": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 2
+                      },
+                      "line_width": {
+                        "type": "number",
+                        "minimum": 24,
+                        "maximum": 64
+                      },
+                      "first_line_indent": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              },
+              "document_theme": {
+                "enum": [
+                  "system",
+                  "paper",
+                  "warm",
+                  "night"
+                ]
+              },
+              "focus_paragraph": {
+                "type": "boolean"
+              },
+              "typewriter_scroll": {
+                "type": "boolean"
+              },
+              "smart_pairs": {
+                "type": "boolean"
+              },
+              "execution_mode": {
+                "enum": [
+                  "auto",
+                  "confirm"
                 ]
               }
             },
@@ -8450,6 +8568,391 @@
         "contract_revision": "1",
         "data_roles": [
           "core_receipt"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.execution.get_mode",
+      "purpose": "读取四入口共用的执行模式与策略修订",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {},
+        "required": []
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.execution.invoke",
+      "purpose": "按统一模式在明确当前工作区执行领域动作",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "workspace_path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          },
+          "command": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "action",
+              "contract_revision",
+              "input"
+            ],
+            "properties": {
+              "action": {
+                "type": "string",
+                "pattern": "^hetu\\.[a-z0-9_.]+$",
+                "maxLength": 128
+              },
+              "contract_revision": {
+                "const": "1"
+              },
+              "input": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "required": [
+          "workspace_path",
+          "command"
+        ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.execution.initialize",
+      "purpose": "按统一模式直接创建工作区并保留Agent身份",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "workspace_path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          },
+          "create": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "title",
+              "locale",
+              "operation_key"
+            ],
+            "properties": {
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "locale": {
+                "enum": [
+                  "zh-CN",
+                  "en"
+                ]
+              },
+              "operation_key": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "work_type": {
+                "enum": [
+                  "novel",
+                  "drama",
+                  "video"
+                ]
+              },
+              "metadata": {
+                "type": "object"
+              },
+              "creation_source": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "required": [
+          "workspace_path",
+          "create"
+        ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.execution.prepare",
+      "purpose": "集中固定本次工作区变更，不执行业务写入",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "workspace_path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          },
+          "commands": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "action",
+                "contract_revision",
+                "input"
+              ],
+              "properties": {
+                "action": {
+                  "type": "string",
+                  "pattern": "^hetu\\.[a-z0-9_.]+$",
+                  "maxLength": 128
+                },
+                "contract_revision": {
+                  "const": "1"
+                },
+                "input": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "workspace_path",
+          "commands",
+          "summary",
+          "operation_key"
+        ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.execution.record_confirmation",
+      "purpose": "登记当前用户对同一固定变更计划的集中决定",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "plan_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "plan_id",
+              "sha256"
+            ],
+            "properties": {
+              "plan_id": {
+                "type": "string",
+                "pattern": "^execution_[0-9a-f-]{36}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          },
+          "decision": {
+            "enum": [
+              "confirm",
+              "reject"
+            ]
+          },
+          "user_instruction": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "plan_ref",
+          "decision",
+          "user_instruction",
+          "operation_key"
+        ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.execution.execute",
+      "purpose": "执行或沿原操作恢复固定计划，不重复已完成动作",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "plan_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "plan_id",
+              "sha256"
+            ],
+            "properties": {
+              "plan_id": {
+                "type": "string",
+                "pattern": "^execution_[0-9a-f-]{36}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          }
+        },
+        "required": [
+          "plan_ref"
+        ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.execution.get_plan",
+      "purpose": "回读固定计划、集中决定和逐项真实回执",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "plan_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "plan_id",
+              "sha256"
+            ],
+            "properties": {
+              "plan_id": {
+                "type": "string",
+                "pattern": "^execution_[0-9a-f-]{36}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          }
+        },
+        "required": [
+          "plan_ref"
+        ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
         ],
         "instruction_authority": "none",
         "authorization_effect": "none"

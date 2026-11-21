@@ -282,8 +282,11 @@ impl ServerHandler for StableServer {
         request: ReadResourceRequestParams,
         _context: RequestContext<RoleServer>,
     ) -> Result<ReadResourceResponse, ErrorData> {
-        if request.uri == ui::WORKBENCH_URI {
+        if request.uri == ui::workbench_uri() {
             return Ok(ui::read_workbench().into());
+        }
+        if request.uri == ui::WORKBENCH_URI_PREFIX || request.uri.starts_with(&format!("{}/", ui::WORKBENCH_URI_PREFIX)) {
+            return Err(ErrorData::invalid_params("河图工作台已更新，请关闭旧面板并重新打开河图应用。 / Workbench updated; close this panel and reopen Hetu.", None));
         }
         if request.uri == ui::OPERATION_URI {
             return Ok(ui::read_operation().into());

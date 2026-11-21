@@ -1,3 +1,5 @@
+import {localFontCatalog} from "./font-catalog.ts";
+import { pluginPreferences } from "./plugin-preferences.ts";
 import { ensureWorkConnection } from "./work-connection.ts";
 import { creationHandoff, workHandoff, pluginResultText, pluginWorkText, migrationText, settingsHandoff } from "./workbench-handoff.ts";
 import { pluginResultHandoff } from "./plugin-results.ts";
@@ -13,6 +15,7 @@ import { createInterface } from "node:readline";
 import { randomUUID, createHash } from "node:crypto";
 import { AppServer } from "./rpc.ts";
 import { CreativeLibrary } from "./library.ts";
+import {ReadingStateStore} from "./reading-state.ts";
 import { RecoveryStore } from "./recovery.ts";
 import { createWorkSession, type WorkSession } from "./work-session.ts";
 import { SettingsReview } from "./settings.ts";
@@ -32,7 +35,7 @@ const binary = process.env.HETU_APP_SERVER ?? path.join(bin,"hetu-app-server"+su
 const cli = process.env.HETU_CLI ?? path.join(bin,"hetu"+suffix);
 const recovery = new RecoveryStore();
 const write = (value: unknown) => process.stdout.write(JSON.stringify(value)+"\n");
-async function ask(kind:string,value:any):Promise<any> { return nativeDialog(kind,["confirm","reveal","copy","external"].includes(kind)?value:value.options); }
+async function ask(kind:string,value:any):Promise<any> { return nativeDialog(kind,["confirm","reveal","copy","paste","external"].includes(kind)?value:value.options); }
 if(process.env.HETU_DESKTOP_PROFILE){process.env.HETU_LOCAL_SETTINGS_DIR??=path.join(profile,"local-settings");process.env.HETU_MODEL_SERVICE_DIR??=path.join(profile,"model-service");process.env.HETU_PLUGIN_STATE_DIR??=profile;}
 const local=await AppServer.open(binary);
 const settings=new SettingsReview((method,input)=>local.request("local_settings/host",{method,input}),recovery,path.join(profile,"local-settings-journal.json"));
@@ -66,8 +69,8 @@ async function refreshPlugins(){
 }
 async function overview(){
  const changed=await refreshPlugins();const state=await settings.get();localState=state;
- const snapshot=JSON.stringify(state.preferences);if(snapshot!==preferenceSnapshot){preferenceSnapshot=snapshot;events.push({name:"onPreferences",value:state.preferences});}
- const result={plugin_state_error:pluginError||undefined,works:library.rows(),work:selected,epoch,agentClient:agentClient(),preferences:state.preferences,
+ const snapshot=JSON.stringify(state.preferences);if(snapshot!==preferenceSnapshot){preferenceSnapshot=snapshot;events.push({name:"onPreferences",value:{...state.preferences,settings_revision:state.revision}});}
+ const result={plugin_state_error:pluginError||undefined,works:library.rows(),work:selected,epoch,agentClient:agentClient(),preferences:{...state.preferences,settings_revision:state.revision},
   plugins:pluginHost.states().map(state=>({...state,display:pluginHost.package(state.id).manifest.display,description:pluginHost.package(state.id).manifest.description,version:pluginHost.package(state.id).manifest.version,work_kinds:pluginHost.package(state.id).manifest.work_kinds})),views:pluginHost.views.list().filter(view=>selected&&supportsWork(pluginHost.package(view.owner).manifest,selected)).map(view=>({key:view.id,owner:view.owner,...view.value}))};
  if(changed)events.push({name:"onPluginsChanged",value:result});return result;
 }
@@ -84,10 +87,12 @@ async function select(work:WorkRef){if(dirty)throw new Error("请先保存当前
   try{const value=unwrap(await next.request("workspace/request",{action:"hetu.works.get",contract_revision:"1",input:{work_ref:work}}));if(!sameWork(value.summary.work_ref,work))throw new Error("作品身份与登记不一致。");}catch(error){await next.close();throw error;}
   epoch++;await closePlugin();await session?.dispose();await server?.close();server=next;selected=work;const ticket=epoch;
   session=createWorkSession(work,next,{profile,recovery,active:()=>epoch===ticket&&server===next,
+    workspacePath: directory,
     scopedReview:async(action,input)=>{const current=await context(agentClient()).status();if(!current.authorized&&current.management_ref)throw new Error("当前作品的 Agent 连接已断开，请重新连接或发起协作。");const access=await machineAccess();return scopedCli(cli,agentClient(),collaboration,action,{...input,management_ref:access.management_ref});},
     confirm:async(message,detail,accept)=>await ask("confirm",{message,detail,accept})===true,
     chooseFile:options=>ask("choose_file",{options}),saveFile:options=>ask("save_file",{options}),
     agentClient,collaborationContext:context,coreCliBinary:()=>cli,copy:text=>{copied=text;},
+    executionPolicy:()=>settings.preferences(),
   });return overview();
 }
 async function install(kind:"agent_connection"|"agent_suite",input:any={}){
@@ -125,7 +130,7 @@ async function pluginCall(channel:string,method:string,args:any[]){
  if(method==="request")return pluginRequest(args[0],args[1]);
  if(method==="invoke")return pluginInvoke(args[0],args[1]);
  if(method==="buffer"){const file=path.join(profile,"plugin-buffers",selected!.workspace_id,selected!.object_id,current.owner,current.view+".json");if(args[0]===undefined)return recovery.read(file);await recovery.write(file,args[0],8*1024*1024);return true;}
- if(method==="host")return pluginService(args[0],args[1]??{},{work:selected!,check,request:pluginRequest,preferences:()=>({theme:localState.preferences.appearance,language:localState.preferences.language??"zh-CN"}),
+ if(method==="host")return pluginService(args[0],args[1]??{},{work:selected!,check,request:pluginRequest,preferences:()=>(pluginPreferences(localState)),
   handoff:async input=>{const access=await machineAccess();check();copied=pluginWorkText(input,selected!,current.owner,access.management_ref,pluginConnection(current.owner,selected!),agentClient());},
   openDocument:async document_id=>{events.push({name:"onOpenDocument",value:{work_ref:selected,document_id}});},
   openWork:async target=>{events.push({name:"onOpenWork",value:{work_ref:selected,epoch,target}});},
@@ -148,6 +153,12 @@ async function applyPlugin(input:any){
  const value=await overview();events.push({name:"onPluginsChanged",value});return value;
 }
 async function dispatch(method:string,args:any[]){
+ if(method==="readingState") {
+  const [action,input={}]=args;check();if(!sameWork(input.work_ref,selected!))throw new Error("阅读位置不属于当前作品。");
+  const store=new ReadingStateStore(path.join(profile,"reading-state"),recovery);
+  if(action==="get")return store.get(selected!);if(action==="save")return store.save(selected!,input.patch);throw new Error("未知阅读位置操作。");
+ }
+ if(method==="fonts"){if(args.length>1||args[0]!==undefined&&typeof args[0]!=="boolean")throw new Error("字体目录请求无效。");return localFontCatalog(args[0]===true);}
  if(method==="state")return overview();
  if(method==="library") {const [kind,input={}]=args;if(kind==="refresh"){const discovered:any[]=[];let cursor;do{const value=unwrap(await scopedCli(cli,agentClient(),collaboration,"hetu.collaboration.created_works",{limit:100,...(cursor?{cursor}:{})}));discovered.push(...value.works);cursor=value.next_cursor;}while(cursor);await library.refresh(discovered);return overview();}if(kind==="open")return select(input.work_ref);if(kind==="bootstrap"){copied=creationHandoff(input.kind,handoffEnvironment());return {copied:true};}if(kind==="client"){
   const value=({codex:"codex","claude-code":"claudeCode",workbuddy:"workbuddy",generic:"other"} as Record<string,string>)[input.client];
@@ -167,7 +178,8 @@ async function dispatch(method:string,args:any[]){
  if(method==="migrations"){const [action,input]=args;if(action==="preview")return migrations.preview(input.owner,input.migration_id,input.plan_sha256);if(action==="approve")return migrations.approve(input.token);if(action==="continue"){const fixed=await migrations.handoff(input.owner,input.migration_id,input.plan_sha256);copied=migrationText(fixed,pluginConnection(input.owner,fixed.work_ref),agentClient());return {copied:true};}}
  if(method==="install"){const directory=await ask("choose_file",{options:{title:"选择河图插件包",properties:["openDirectory"]}});if(!directory)return overview();const pkg=await PluginPackage.inspect(directory);if(!await ask("confirm",{message:(pluginHost.has(pkg.manifest.id)?"替换":"安装")+pkg.manifest.display["zh-CN"]+" "+pkg.manifest.version+"？",detail:pkg.manifest.description["zh-CN"]+"\n许可："+pkg.manifest.license+"\n"+(pkg.manifest.runtime?"包含Node后端代码，仅安装可信来源。":"使用隔离Web界面。")+"\n启用后可使用宿主核心能力；现有成果和历史继续保留。"}))return overview();return applyPlugin({action:"install",package_directory:directory,package_sha256:pkg.sha256});}
  if(method==="toggle"||method==="uninstall"){const pkg=pluginHost.package(args[0]);if(method==="uninstall"&&!await ask("confirm",{message:"卸载"+pkg.manifest.display["zh-CN"]+"？",detail:"作品成果、历史修订和通用导出将继续保留。插件运行将停止，依赖插件会停用。"}))return overview();return applyPlugin({action:method==="uninstall"?"uninstall":args[1]?"enable":"disable",plugin_id:args[0],package_sha256:pkg.sha256});}
- if(method==="copy"){await ask("copy",{text:args[0]});return null;}
+ if(method==="paste"){return ask("paste",{format:args[0]});}
+ if(method==="copy"){await ask("copy",{text:args[0],html:args[1]});return null;}
  if(method==="installConnection")return install("agent_connection");
  if(method==="installSuite")return install("agent_suite",args[0]);
  if(method==="models"){
@@ -177,6 +189,7 @@ async function dispatch(method:string,args:any[]){
  if(method==="settings"){
  const [action,input={}]=args;
  if(action==="get"){localState=await settings.get();return {...localState,journal:await settings.journal()};}if(action==="list")return settings.list(input.cursor);if(action==="operation")return settings.operation(input.operation_id);
+ if(action==="preferences"){const snapshot=await settings.preferences();if(snapshot.revision!==localState.revision)localState=await settings.get();return snapshot;}
  if(action==="prepare")return settings.prepare(input.operation_id,input.sha256,input.revision,input.approve);
  if(action==="manual")return settings.manual(input.expected_revision,input.patch);
  if(action==="update"){const preview=await settings.manual(input.expected_revision,input.patch);const value=await settings.commit(preview.token);await settings.acknowledge();return value;}
@@ -190,7 +203,7 @@ async function dispatch(method:string,args:any[]){
  if(method==="handoff"){
   check();const [page,object={}]=args;
   if(page.startsWith("fallback:")){const owner=page.slice(9),ctx=await pluginContext(owner);const fixed=await pluginResultHandoff(ctx,owner,object);ctx.check();copied=pluginResultText(fixed,pluginConnection(owner,ctx.work),agentClient());}
-  else copied=await workHandoff(page,object,{work:selected!,authoring:session!.authoring,environment:handoffEnvironment(),access:()=>machineAccess(),summary:async()=>unwrap(await server!.request("workspace/request",{action:"hetu.works.get",contract_revision:"1",input:{work_ref:selected}})).summary,check:()=>{},pluginConnection:pluginView?pluginConnection(pluginView.owner,selected!):undefined});
+  else copied=await workHandoff(page,object,{work:selected!,authoring:session!.authoring,environment:handoffEnvironment(),workspacePath:library.resolve(selected!),executionPolicy:()=>settings.get(),summary:async()=>unwrap(await server!.request("workspace/request",{action:"hetu.works.get",contract_revision:"1",input:{work_ref:selected}})).summary,check:()=>{},pluginConnection:pluginView?pluginConnection(pluginView.owner,selected!):undefined});
   return {copied:true};
  }
  if(method==="mediaChunk"){check();const [url,offset,length]=args;if(!Number.isSafeInteger(offset)||!Number.isSafeInteger(length)||length<1||length>512*1024)throw new Error("媒体读取预算无效。");const response=await session!.media.handle(new Request(url,{headers:{range:`bytes=${offset}-${offset+length-1}`}}));if(response.status!==206)throw new Error("固定媒体读取失败。");return {base64:Buffer.from(await response.arrayBuffer()).toString("base64")};}

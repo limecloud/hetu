@@ -22,7 +22,7 @@ export async function nativeDialog(kind: string, options: any): Promise<any> {
     dialogs.add(child);
     let output=Buffer.alloc(0);
     const timer=setTimeout(()=>{child.kill();reject(new Error("原生确认未完成，原操作保留。"));},300000);
-    child.stdout.on("data",bytes=>{output=Buffer.concat([output,bytes]);if(output.length>65536){child.kill();}});
+    child.stdout.on("data",bytes=>{output=Buffer.concat([output,bytes]);if(output.length>2097152){child.kill();}});
     child.stderr.on("data",()=>{});child.stdin.on("error",()=>{});
     child.on("error",()=>{clearTimeout(timer);reject(new Error("无法打开原生文件选择或确认窗口。"));});
     child.on("close",()=>{dialogs.delete(child);clearTimeout(timer);try{const result=JSON.parse(output.toString());if(!result.ok)throw new Error(result.message??"原生交互未完成。");resolve(result.value);}catch(error){reject(error);}});

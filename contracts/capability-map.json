@@ -3,26 +3,28 @@
   "generated_by": "tools/sync-capability-map.py",
   "meaning": "source_wired仅表示源码合同和入口已连线；不证明安装、运行、跨平台或端到端通过。执行时先inspect实际能力。",
   "sources": {
-    "contracts/actions.json": "92496ddea351bb87333e377b8de53c0e8e0d00c1216504551029d9128d9cc226",
-    "contracts/tools/catalog.json": "290f98466f51aaa9f415c5d46c19a5894c171b53efda0fc749dc01e000773f0c",
-    "core/src/application/agent_operations.rs": "95db837e9183345e419df57e423b04b8fc85f8c509f892db21e3e40b0ea4893c",
-    "core/src/application/creative_tasks.rs": "b7a03b5fa753e7010851d7c157b8f211c3a9b5bfe8311fe22240fff98743d803",
+    "contracts/actions.json": "aa417093ea52b4d283a5210ed3785fbcbc596410652a2f1b933db732ed0d820f",
+    "contracts/tools/catalog.json": "c38f501e31a8a94998751651b2cbfc139cb0fcc5eed94c271358198a26004245",
+    "core/src/application/agent_operations.rs": "0bef1fb8cd676c25e126a4ad8ca52774ff7d2a9bd5b08e40600b3c36dbc4bb49",
+    "core/src/application/creative_tasks.rs": "07f16cfa634d5441646e9d8b39b0d750a12649bc521dd937c005855d804e02be",
     "core/src/application/work_scope.rs": "f98749b0f7db68274a69cb2be32e3ac1d962166843087e75da0a21ceebc97363",
     "core/src/collaboration/authoring.rs": "451bdbbff0ba59bc382599cba1c68fed8a7aefb284907652a138ad30072c652c",
-    "integrations/catalog.json": "d2193b2fe08a7a7571395905fa571f775dc3bf3988462fd0e020a3077e7a5825",
-    "tools/hetu-skills/base/skills/hetu-artwork/SKILL.md": "4dc578dbc319c7772d4b33fe35f99e987367e08da8abfeafb9897f5ff09ebe89",
-    "tools/hetu-skills/base/skills/hetu-book-create/SKILL.md": "54d61aa957d57cd19a395eea6a0ab544cfdd50ccbd7d93733dd5b6e5fdc57989",
-    "tools/hetu-skills/base/skills/hetu-book-profile/SKILL.md": "73078fbf0c5a3afb6c3c7bc00a93b2916659b3652d5bfd388f7324bab4975c8e",
-    "tools/hetu-skills/base/skills/hetu-cover/SKILL.md": "f731fc206fe638eef727935f21090e3b587c60e6bfd107d7f4eb9c66305e8ae0",
-    "tools/hetu-skills/base/skills/hetu-draft/SKILL.md": "d3266f52d8d349f65de7452e4a9ca2efeb898298bcae3cb415cc3246d3930dc2",
-    "tools/hetu-skills/base/skills/hetu-drama/SKILL.md": "3cf03e121b1129fc73818087f53dcb6d3badd610b019a6d560b8b356889eb8a5",
-    "tools/hetu-skills/base/skills/hetu-import/SKILL.md": "824ff4a5171a5a0fb32c5c49f54b17465e2632b0a2535870c9fa2bbddaee15b0",
-    "tools/hetu-skills/base/skills/hetu-manage/SKILL.md": "e04b62018d84b1abb3d0dcc41f1a9ee8df9132de5cb7eaca09a05f9828b488ec",
-    "tools/hetu-skills/base/skills/hetu-outline/SKILL.md": "ba07e47e0011600a4696446a5d39726acaf17ed1b430f67b5c02b443db830bf1",
-    "tools/hetu-skills/base/skills/hetu-resources/SKILL.md": "9e1abce08712cf9f85d1cd7ff563ba4dd618bb903fb3d9c6f8d8e2dcc93dadb2",
-    "tools/hetu-skills/base/skills/hetu-revise/SKILL.md": "4c47a91ea54d69815ba6d4bdc9c064797c5c7e10155ab827865ba5fa3bbeb813",
-    "tools/hetu-skills/base/skills/hetu-setup/SKILL.md": "97ba9ed3bf2019533ab9c0a67f3fa50f1097ef902899d05b6c50bbbb43c701c0",
-    "tools/hetu-skills/base/skills/hetu-video/SKILL.md": "49cd8e97a95e3e28be11b937bf6c360320b74beb4661c735540659cf4daeba41"
+    "core/src/execution.rs": "0b2ad6d3687264eefd328bd7529df0f9d06b08cea59f75907bec7bd24020cf9f",
+    "core/src/local_settings.rs": "5f3c6e303ebc247f7af1202f66da7b18aa89092b94d5485e1ea251ae69e5c662",
+    "integrations/catalog.json": "c3b605b329f352f881a7acbc84e12f1b548830e0b912ba0e1628924401f130af",
+    "tools/hetu-skills/base/skills/hetu-artwork/SKILL.md": "48ceeff17f63ab6f8214c2845d3cc213e7f99d4b71d9e10f55b0d78cafe932d4",
+    "tools/hetu-skills/base/skills/hetu-book-create/SKILL.md": "f0494c4741626653517c1091616d82cd7d05975bb6338f8a5c3a7175b2f27312",
+    "tools/hetu-skills/base/skills/hetu-book-profile/SKILL.md": "08f41058b9befdf5e477e8d8128356ad771978c3726551333c3432d4c53f43dc",
+    "tools/hetu-skills/base/skills/hetu-cover/SKILL.md": "aeb63c66f9560e0cb345cb0bc862a604f4628660c000917cfba7075b75effcbf",
+    "tools/hetu-skills/base/skills/hetu-draft/SKILL.md": "45dd17160551288ecebaaf016988e40976081a3a2aa6fe59d7e933d890ed8941",
+    "tools/hetu-skills/base/skills/hetu-drama/SKILL.md": "27269161bd9291a9781a530b6add4e03bb1f46f452450b241b2c267b3e70e036",
+    "tools/hetu-skills/base/skills/hetu-import/SKILL.md": "6bcd26c349bd4f68f65e754227b9a56a584aeffb40011edb1ac6cb3e5f146160",
+    "tools/hetu-skills/base/skills/hetu-manage/SKILL.md": "a28bd11841de819b4ebe32bfb1cccdbef545793d52d2ec6d0b9b91cd099fcc5f",
+    "tools/hetu-skills/base/skills/hetu-outline/SKILL.md": "b0bef168a1c26d43b958bd15058dcfe5e483e2f2992e511e8469c27e3097dac5",
+    "tools/hetu-skills/base/skills/hetu-resources/SKILL.md": "ef88a6acbb7836834f4faaf3ddb7481aec481d287e6f3596532a29e0659f0b12",
+    "tools/hetu-skills/base/skills/hetu-revise/SKILL.md": "dc085efddf381eec39694582bb5352a3505b730306bfff883be217a297d51915",
+    "tools/hetu-skills/base/skills/hetu-setup/SKILL.md": "6b6fddcbfe2947b3378550ec3986ca52195487e0b72a28cd2a075cb4121bccc0",
+    "tools/hetu-skills/base/skills/hetu-video/SKILL.md": "3c17631083d7678d89fbad6800c883ef622e80d329247b4c2c42d80965207f18"
   },
   "verification_evidence": "docs/research/evidence/2026-11-16-agent-capabilities.json",
   "skills": [
@@ -77,7 +79,14 @@
         "hetu.task_executions.list",
         "hetu.task_executions.get",
         "hetu.creative_tasks.assess",
-        "hetu.baseline.inspect"
+        "hetu.baseline.inspect",
+        "hetu.execution.get_mode",
+        "hetu.execution.invoke",
+        "hetu.execution.initialize",
+        "hetu.execution.prepare",
+        "hetu.execution.record_confirmation",
+        "hetu.execution.execute",
+        "hetu.execution.get_plan"
       ]
     },
     {
@@ -237,7 +246,7 @@
     },
     {
       "name": "hetu-manage",
-      "description": "作者需要在河图洛书整理作品资料、卷章大纲、设定、短剧场次、资料关联、导入交付、版本或本机设置时使用。由 Agent 准备完整操作，作者审阅后执行；正文创作和改稿使用对应写作 Skill。",
+      "description": "作者需要在河图洛书整理作品资料、卷章大纲、设定、短剧场次、资料关联、导入交付、版本或本机设置时使用。按共享auto或confirm模式执行；正文创作和改稿使用对应写作 Skill。",
       "source": "tools/hetu-skills/base/skills/hetu-manage/SKILL.md",
       "actions": [
         "hetu.documents.create",
@@ -7422,7 +7431,7 @@
               "font_size": {
                 "type": "number",
                 "minimum": 14,
-                "maximum": 30
+                "maximum": 32
               },
               "line_spacing": {
                 "type": "number",
@@ -7447,6 +7456,124 @@
                   "workbuddy",
                   "claudeCode",
                   "other"
+                ]
+              },
+              "reading_profiles": {
+                "type": "object",
+                "additionalProperties": false,
+                "minProperties": 1,
+                "properties": {
+                  "novel": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "minProperties": 1,
+                    "properties": {
+                      "font_family": {
+                        "enum": [
+                          "songti",
+                          "pingfang",
+                          "system",
+                          "mono",
+                          "custom"
+                        ]
+                      },
+                      "font_name": {
+                        "type": "string",
+                        "maxLength": 128,
+                        "pattern": "^[^\\u0000-\\u001f\"\\\\;{}<>]*$"
+                      },
+                      "font_size": {
+                        "type": "number",
+                        "minimum": 14,
+                        "maximum": 32
+                      },
+                      "line_height": {
+                        "type": "number",
+                        "minimum": 1.25,
+                        "maximum": 2.5
+                      },
+                      "paragraph_spacing": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 2
+                      },
+                      "line_width": {
+                        "type": "number",
+                        "minimum": 24,
+                        "maximum": 64
+                      },
+                      "first_line_indent": {
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  "screenplay": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "minProperties": 1,
+                    "properties": {
+                      "font_family": {
+                        "enum": [
+                          "songti",
+                          "pingfang",
+                          "system",
+                          "mono",
+                          "custom"
+                        ]
+                      },
+                      "font_name": {
+                        "type": "string",
+                        "maxLength": 128,
+                        "pattern": "^[^\\u0000-\\u001f\"\\\\;{}<>]*$"
+                      },
+                      "font_size": {
+                        "type": "number",
+                        "minimum": 14,
+                        "maximum": 32
+                      },
+                      "line_height": {
+                        "type": "number",
+                        "minimum": 1.25,
+                        "maximum": 2.5
+                      },
+                      "paragraph_spacing": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 2
+                      },
+                      "line_width": {
+                        "type": "number",
+                        "minimum": 24,
+                        "maximum": 64
+                      },
+                      "first_line_indent": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              },
+              "document_theme": {
+                "enum": [
+                  "system",
+                  "paper",
+                  "warm",
+                  "night"
+                ]
+              },
+              "focus_paragraph": {
+                "type": "boolean"
+              },
+              "typewriter_scroll": {
+                "type": "boolean"
+              },
+              "smart_pairs": {
+                "type": "boolean"
+              },
+              "execution_mode": {
+                "enum": [
+                  "auto",
+                  "confirm"
                 ]
               }
             },
@@ -11316,6 +11443,468 @@
         "additionalProperties": false,
         "properties": {},
         "required": []
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.execution.get_mode",
+      "purpose": "读取四入口共用的执行模式与策略修订",
+      "group": "统一执行模式与集中确认",
+      "effect": "read",
+      "routes": [
+        "client_local"
+      ],
+      "cli": "hetu --client <client> call hetu.execution.get_mode --input -",
+      "proposal_target": null,
+      "mcp": [
+        {
+          "name": "hetu_get_execution_mode",
+          "profiles": [
+            "workspace",
+            "stable"
+          ]
+        }
+      ],
+      "mcp_via_proposal": false,
+      "skill": "hetu-setup",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-setup/SKILL.md",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {},
+        "required": []
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.execution.invoke",
+      "purpose": "按统一模式在明确当前工作区执行领域动作",
+      "group": "统一执行模式与集中确认",
+      "effect": "submit",
+      "routes": [
+        "client_local"
+      ],
+      "cli": "hetu --client <client> call hetu.execution.invoke --input -",
+      "proposal_target": null,
+      "mcp": [
+        {
+          "name": "hetu_execute_workspace",
+          "profiles": [
+            "workspace",
+            "stable"
+          ]
+        }
+      ],
+      "mcp_via_proposal": false,
+      "skill": "hetu-setup",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-setup/SKILL.md",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "workspace_path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          },
+          "command": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "action",
+              "contract_revision",
+              "input"
+            ],
+            "properties": {
+              "action": {
+                "type": "string",
+                "pattern": "^hetu\\.[a-z0-9_.]+$",
+                "maxLength": 128
+              },
+              "contract_revision": {
+                "const": "1"
+              },
+              "input": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "required": [
+          "workspace_path",
+          "command"
+        ]
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.execution.initialize",
+      "purpose": "按统一模式直接创建工作区并保留Agent身份",
+      "group": "统一执行模式与集中确认",
+      "effect": "submit",
+      "routes": [
+        "client_local"
+      ],
+      "cli": "hetu --client <client> call hetu.execution.initialize --input -",
+      "proposal_target": null,
+      "mcp": [
+        {
+          "name": "hetu_initialize_workspace",
+          "profiles": [
+            "workspace",
+            "stable"
+          ]
+        }
+      ],
+      "mcp_via_proposal": false,
+      "skill": "hetu-setup",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-setup/SKILL.md",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "workspace_path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          },
+          "create": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "title",
+              "locale",
+              "operation_key"
+            ],
+            "properties": {
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "locale": {
+                "enum": [
+                  "zh-CN",
+                  "en"
+                ]
+              },
+              "operation_key": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "work_type": {
+                "enum": [
+                  "novel",
+                  "drama",
+                  "video"
+                ]
+              },
+              "metadata": {
+                "type": "object"
+              },
+              "creation_source": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "required": [
+          "workspace_path",
+          "create"
+        ]
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.execution.prepare",
+      "purpose": "集中固定本次工作区变更，不执行业务写入",
+      "group": "统一执行模式与集中确认",
+      "effect": "submit",
+      "routes": [
+        "client_local"
+      ],
+      "cli": "hetu --client <client> call hetu.execution.prepare --input -",
+      "proposal_target": null,
+      "mcp": [
+        {
+          "name": "hetu_prepare_execution",
+          "profiles": [
+            "workspace",
+            "stable"
+          ]
+        }
+      ],
+      "mcp_via_proposal": false,
+      "skill": "hetu-setup",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-setup/SKILL.md",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "workspace_path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          },
+          "commands": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "action",
+                "contract_revision",
+                "input"
+              ],
+              "properties": {
+                "action": {
+                  "type": "string",
+                  "pattern": "^hetu\\.[a-z0-9_.]+$",
+                  "maxLength": 128
+                },
+                "contract_revision": {
+                  "const": "1"
+                },
+                "input": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "workspace_path",
+          "commands",
+          "summary",
+          "operation_key"
+        ]
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.execution.record_confirmation",
+      "purpose": "登记当前用户对同一固定变更计划的集中决定",
+      "group": "统一执行模式与集中确认",
+      "effect": "submit",
+      "routes": [
+        "client_local"
+      ],
+      "cli": "hetu --client <client> call hetu.execution.record_confirmation --input -",
+      "proposal_target": null,
+      "mcp": [
+        {
+          "name": "hetu_record_execution_confirmation",
+          "profiles": [
+            "workspace",
+            "stable"
+          ]
+        }
+      ],
+      "mcp_via_proposal": false,
+      "skill": "hetu-setup",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-setup/SKILL.md",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "plan_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "plan_id",
+              "sha256"
+            ],
+            "properties": {
+              "plan_id": {
+                "type": "string",
+                "pattern": "^execution_[0-9a-f-]{36}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          },
+          "decision": {
+            "enum": [
+              "confirm",
+              "reject"
+            ]
+          },
+          "user_instruction": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "plan_ref",
+          "decision",
+          "user_instruction",
+          "operation_key"
+        ]
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.execution.execute",
+      "purpose": "执行或沿原操作恢复固定计划，不重复已完成动作",
+      "group": "统一执行模式与集中确认",
+      "effect": "submit",
+      "routes": [
+        "client_local"
+      ],
+      "cli": "hetu --client <client> call hetu.execution.execute --input -",
+      "proposal_target": null,
+      "mcp": [
+        {
+          "name": "hetu_execute_plan",
+          "profiles": [
+            "workspace",
+            "stable"
+          ]
+        }
+      ],
+      "mcp_via_proposal": false,
+      "skill": "hetu-setup",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-setup/SKILL.md",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "plan_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "plan_id",
+              "sha256"
+            ],
+            "properties": {
+              "plan_id": {
+                "type": "string",
+                "pattern": "^execution_[0-9a-f-]{36}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          }
+        },
+        "required": [
+          "plan_ref"
+        ]
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.execution.get_plan",
+      "purpose": "回读固定计划、集中决定和逐项真实回执",
+      "group": "统一执行模式与集中确认",
+      "effect": "read",
+      "routes": [
+        "client_local"
+      ],
+      "cli": "hetu --client <client> call hetu.execution.get_plan --input -",
+      "proposal_target": null,
+      "mcp": [
+        {
+          "name": "hetu_read_execution_plan",
+          "profiles": [
+            "workspace",
+            "stable"
+          ]
+        }
+      ],
+      "mcp_via_proposal": false,
+      "skill": "hetu-setup",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-setup/SKILL.md",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "plan_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "plan_id",
+              "sha256"
+            ],
+            "properties": {
+              "plan_id": {
+                "type": "string",
+                "pattern": "^execution_[0-9a-f-]{36}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          }
+        },
+        "required": [
+          "plan_ref"
+        ]
       },
       "decision": "按任务或读取范围执行",
       "recover": "hetu.operations.get",

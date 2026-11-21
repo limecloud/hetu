@@ -22,6 +22,9 @@ export class SettingsReview {
   get() {
     return this.host("get", {});
   }
+  preferences() {
+    return this.host("preferences", {});
+  }
   list(cursor?: string) {
     return this.host("list", { limit: 30, ...(cursor ? { cursor } : {}) });
   }
@@ -73,7 +76,7 @@ export class SettingsReview {
     );
   }
   async manual(expected_revision: number, patch: Record<string, unknown>) {
-    const view = await this.get();
+    const view = await this.preferences();
     if (view.revision !== expected_revision)
       throw new Error("本机设置已变化，请刷新后修改。");
     const input = structuredClone({

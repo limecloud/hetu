@@ -1,0 +1,28 @@
+{
+  "profiles": {
+    "novel": {
+      "font_family": "system",
+      "font_name": "",
+      "font_size": 16,
+      "line_height": 1.5,
+      "paragraph_spacing": 0.5,
+      "line_width": 44,
+      "first_line_indent": false
+    },
+    "screenplay": {
+      "font_family": "mono",
+      "font_name": "",
+      "font_size": 18,
+      "line_height": 1.65,
+      "paragraph_spacing": 0,
+      "line_width": 44,
+      "first_line_indent": false
+    }
+  },
+  "limits": {
+    "font_size": [14, 32],
+    "line_height": [1.25, 2.5],
+    "paragraph_spacing": [0, 2],
+    "line_width": [24, 64]
+  }
+}

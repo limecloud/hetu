@@ -98,6 +98,23 @@ export interface PluginContext {
   navigation?: "host" | "integrated";
 }
 export type WorkSurface = "profile" | "manuscript" | "canon";
+export interface ReadingProfile {
+  font_family: "songti" | "pingfang" | "system" | "mono" | "custom";
+  font_name: string;
+  font_size: number;
+  line_height: number;
+  paragraph_spacing: number;
+  line_width: number;
+  first_line_indent: boolean;
+}
+export interface PluginPreferences {
+  theme: string;
+  language: string;
+  appearance?: string;
+  settings_revision?: number;
+  document_theme?: "system" | "paper" | "warm" | "night";
+  reading_profiles?: { novel: ReadingProfile; screenplay: ReadingProfile };
+}
 export interface PluginBridge {
   context(): Promise<PluginContext>;
   /** 仅当前作品、插件与视图的本机恢复稿；不属于已保存作品。 */
@@ -106,7 +123,7 @@ export interface PluginBridge {
   onBeforeClose?(callback: () => void | Promise<void>): () => void;
   /** 桌面工作面服务；handoff只返回已复制，不返回私密授权。 */
   host?(action: "preferences" | "handoff" | "open_document" | "open_work" | "work_snapshot" | "export_file" | "save_artifact" | "media_open" | "media_release" | "close_view", input: Record<string, unknown>): Promise<unknown>;
-  onPreferences?(callback: (value: {theme:string;language:string}) => void): () => void;
+  onPreferences?(callback: (value: PluginPreferences) => void): () => void;
   invoke(action: string, input: Record<string, unknown>): Promise<unknown>;
   request<T = Record<string, unknown>>(
     action: string,

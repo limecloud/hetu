@@ -1,0 +1,190 @@
+{
+  "date": "2026-11-20",
+  "status": "local_installed_verified_pending_author_review",
+  "version": "0.13.10",
+  "published": false,
+  "committed_this_change": false,
+  "base_commit": "6ec987ed74af2da50e05f237bcd2f2ba89fb60e0",
+  "source_sha256": "cf6fa5f8aaad3c2c2e8ca2fe2ea8a881c634592d3cde166bee16b83fc5b25ba5",
+  "problem": [
+    "分集标题在目录组及唯一文件中重复",
+    "标题页/来源字段与Fountain原始标记以普通小说段落展示",
+    "剧本人物、括注、对白和场次缺少专有排版"
+  ],
+  "research": {
+    "sources": [
+      {
+        "url": "https://www.finaldraft.com/learn/how-to-format-a-screenplay/",
+        "kind": "official_format_guide",
+        "captured_date": "2026-11-20",
+        "sha256": "13faf2d5a3a1df174c4801900b8bbfc58764a0eabb7949a4296e0f00bee31d35",
+        "findings": [
+          "场景标题包含内外景、地点和时间",
+          "人物提示、对白、括注有不同的排版职责",
+          "印刷规范使用12pt Courier与页边距；本次屏幕阅读不宣称遵循制片分页"
+        ]
+      },
+      {
+        "url": "https://www.beat-app.fi/",
+        "kind": "official_product_page",
+        "captured_date": "2026-11-20",
+        "sha256": "5cc02879dad1c553d6439878c61165bce8f1310409606f95562ef5ec37cd2018",
+        "findings": [
+          "自动识别场景标题与对白并排版",
+          "大纲与场次导航独立于正文"
+        ]
+      },
+      {
+        "url": "https://raw.githubusercontent.com/nyousefi/Fountain/master/README.markdown",
+        "kind": "public_original_project_readme",
+        "captured_date": "2026-11-20",
+        "sha256": "2fd0e9a7c55562a9a5834c4a417fd8613f799ffe571008a51a526bc18bbe31cb",
+        "findings": [
+          "Fountain是可交换的纯文本剧本格式，不要求展示其原始语法"
+        ]
+      },
+      {
+        "url": "https://github.com/lmparppei/Beat/blob/master/README.md",
+        "kind": "official_public_repository_readme",
+        "findings": [
+          "支持隐藏Fountain标记、标题页编辑、场次编号、大纲和连续剧本工作面"
+        ],
+        "license_boundary": "仅参考公开产品行为，没有复制GPL实现"
+      }
+    ],
+    "unavailable": [
+      {
+        "url": "https://fountain.io/syntax/",
+        "result": "返回反自动访问页面，未将其当作已读取的正文"
+      },
+      {
+        "url": "https://highland2.app/",
+        "result": "返回反自动访问页面，未据此作产品比较"
+      },
+      {
+        "url": "https://www.writerduet.com/article/screenplay-format",
+        "result": "404，未采用"
+      }
+    ],
+    "adopted_for_hetu": [
+      "连续剧本阅读为默认",
+      "中文系统字体与英文等宽字体",
+      "分集单层与当前稿场次定位",
+      "来源按需展开",
+      "普通阅读/编辑隐藏语法，更多操作可查看原稿",
+      "原文、修订、选区及决定继续归Core"
+    ],
+    "not_claimed": [
+      "专业制片分页、页数推导时长、PDF排版、完整Fountain规范认证"
+    ]
+  },
+  "implementation": {
+    "owner": "packages/workbench-ui的纯显示解析与React组件，桌面和MCP App共用；CodeMirror适配留在桌面共享renderer",
+    "directory": "每集一个入口，当前稿的真实场次按原文位置跳转，原WorkRef/document_id/episode_id不变",
+    "reading": "场景标题与场号、动作、人物、括注、对白、转场、居中行、强调、提示和歌词分别呈现；双对白宽屏并排窄屏依次阅读",
+    "metadata": "标题页及来源按需展开；首个同名章节标记只从显示省略，不改原文；主界面无源码标签",
+    "editing": "元素样式与标记隐藏沿同一CodeMirror实例；更多操作可查看原稿；隐藏标题页不随正文全选误删",
+    "boundaries": "不改写作者正文、不将预览反序列化保存；未知文本原样显示，React转义HTML；显示偏好不改变固定修订和作者决定；未保存修改不可伪造固定批注"
+  },
+  "validation": {
+    "unit": {
+      "passed": 6,
+      "failed": 0,
+      "scope": "Fountain元素/未知文本/转义与混合换行、UTF8选区、局部编辑及撤销重做"
+    },
+    "episode_manuscripts": {
+      "passed": 1,
+      "scope": "作者正文/已提交参考稿/未提交工作稿、空稿、原任务意见、跨作品拒绝及重开保护",
+      "log": "build/screenplay-display-20261120/desktop-tests.log",
+      "note": "该次同批新增screenplay用例先因测试异步等待缺失失败，旧旅程通过；新增用例修正等待后以最终随包独立通过"
+    },
+    "packaged_desktop": {
+      "passed": 1,
+      "elapsed_seconds": 14.6,
+      "actual_release_application": true,
+      "isolated_profile": true,
+      "checks": [
+        "默认阅读与主界面无源码标签",
+        "目录集名不重复/正文同名标题不重复",
+        "场景/角色/括注/同时对白及未知文字显示",
+        "来源折叠",
+        "三个场次及末尾场次跳转",
+        "1360浅色与760暗色无横向溢出",
+        "宽窄同时对白列数",
+        "固定中文批注UTF8范围及Core回读",
+        "查看原稿与元素编辑",
+        "混合CRLF原稿撤销后字节一致",
+        "保存新修订与离开重开"
+      ]
+    },
+    "packaged_mcp": {
+      "passed": 2,
+      "transports": [
+        "stdio",
+        "official_codex_app_server"
+      ],
+      "strict_appbridge": true,
+      "model_turn_started": false,
+      "scope": "同一完整工作台旅程的剧本默认排版、参考稿只读、完整原稿回读及设置/小说保存/任务/视频/插件恢复回归"
+    },
+    "installed_actual_library": {
+      "works": 18,
+      "identities_match": true,
+      "drama_episodes": 20,
+      "every_episode_semantically_rendered": true,
+      "every_original_compared_to_core": true,
+      "real_files_unchanged": true,
+      "unconnected_works_opened": 5,
+      "existing_connections": 13,
+      "private_content_in_public_evidence": false
+    },
+    "installed_official_codex": {
+      "tools_error": null,
+      "entrypoints": [
+        {
+          "type": "global"
+        },
+        {
+          "type": "thread"
+        }
+      ],
+      "html_sha256": "117cee7d63c8aeb6c88d4ae4a4c7166526e11fc9cea8b95fb1b9454553959967",
+      "html_bytes": 4158017,
+      "private_bridge": true,
+      "same_desktop_work_refs": true
+    },
+    "limits": [
+      "当前安装应用的额外原生Computer Use观察因Sky Computer Use native pipe startup failed未完成；不替代最终候选包原生隔离测试",
+      "Codex原生窗口自动操作不可用；协议/AppBridge回归与作者实际GUI验收分别记录",
+      "不声明完整Fountain规范认证、制片分页、PDF导出或页数到时长换算"
+    ],
+    "static": [
+      "TypeScript与MCP资源生成",
+      "uv run tools/verify-docs.py",
+      "python3 tools/sync-capability-map.py --check",
+      "git diff --check"
+    ]
+  },
+  "installation": {
+    "application": "/Applications/Hetu.app",
+    "rust_profile": "release",
+    "signing": "ad-hoc-development",
+    "codesign_verified": true,
+    "artifacts_verified": 3387,
+    "source_matches": true,
+    "installed_matches_signed_manifest": true,
+    "backup": "build/screenplay-display-20261120/replaced-0.13.10-mcp-performance.app"
+  },
+  "reload": "已启动的MCP进程可能仍持有旧HTML；重新连接河图MCP或重启Codex后读取新资源。河图软件重新打开读取新UI。",
+  "raw_receipts_sha256": {
+    "research.json": "e3b956e5db359edfd80b73c8bb1f561a842d461ede7e2220a3b9b429e4095dee",
+    "unit-tests.log": "dbda9e7ca9e6c08301167e5b6e1eb77f4febeb85a97eda7029521ef416827d75",
+    "packaged-screenplay-test.log": "ce9e5dec336d7c310fad7f03096efabd2f6cb1a82efb3a3e081e4b1355f6f56f",
+    "shared-workbench-tests.log": "05247e092008aebce9960e6469e96f895b7f679890de69aa28fc1b89478651f5",
+    "actual-library-verification.json": "e4d7cfc8474ca8394a2c7cb74218c636b58f1b697eae15e3267a94b6d9096a6f",
+    "codex-verification.json": "0fb5611161dfd5ee84b2714455c0f177131db0ec08ea7f11ebcfc27c5f08db4c",
+    "installation.json": "9d86501ed5177cdb91e99248bd0ca50e98c16999fdb89b29a64e277d5728b4fb",
+    "final-verification.json": "313ca409400ab8d4b1be0077ab7d0f5342e6507f2a51a56ab85e0c766d2d5ae5",
+    "docs-final.log": "08c47a938b881110d6ff0fbfb1a094453605023d2b46fd5e5b660330ead412af"
+  }
+}

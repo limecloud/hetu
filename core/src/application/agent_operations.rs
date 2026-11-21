@@ -196,7 +196,7 @@ impl Kernel {
         let state = self.store.json(&path.replace(".json", ".state.json"))?;
         contract["$ref"] = json!("#/$defs/decision_record");
         schema(&state, &contract)?;
-        if state["conversation_decision"].is_object() && !self.author {
+        if state["conversation_decision"].is_object() && !self.has_workspace_authority() {
             ensure(
                 self.management_grant.as_ref()
                     == Some(&state["conversation_decision"]["management_binding"]),
@@ -455,16 +455,16 @@ impl Kernel {
                     if action.ends_with(".record_decision") {
                         ensure(
                             !text(input, "authorization_note")?.trim().is_empty()
-                                && self.management_grant.as_ref().is_some_and(|binding| {
+                                && (self.workspace_execution || self.management_grant.as_ref().is_some_and(|binding| {
                                     proposal["fixed"]["management_binding"] == *binding
-                                }),
+                                })),
                             "forbidden",
                             "会话决定须记录真实用户指令，并使用准备该固定方案的原客户端与授权修订。",
                         )?;
                         state["conversation_decision"] = json!({"confirmation_channel":"agent_conversation","authorization_note":input["authorization_note"],"management_binding":self.management_grant,"proposal_sha256":proposal["sha256"],"decision":input["decision"],"recorded_by":self.actor(),"recorded_at":now()});
                     } else {
                         ensure(
-                            self.author,
+                            self.has_workspace_authority(),
                             "forbidden",
                             "作者通道只接受可信本机决定；Agent 使用固定会话决定合同。",
                         )?;
@@ -501,6 +501,9 @@ impl Kernel {
                 } else {
                     if state["state"] == "executed" {
                         return self.proposal_view(&proposal, &state);
+                    }
+                    if self.workspace_execution && state["state"] == "pending" {
+                        state["state"] = json!("approved"); state["decided_by"] = json!(self.actor()); state["decided_at"] = json!(now());
                     }
                     if input.get("import_authorization_ref").is_some() {
                         ensure(
