@@ -25,3 +25,10 @@ This is an authoring and offline recording tool. Agent simulations are labeled c
 Export is one step in a continuing project. Ask your Agent to read page feedback or a playtest debrief and prepare a new candidate in the source work. Keep prior evidence; adoption and finalization remain author decisions.
 
 Install the tools that fit your task. Let specialized structures grow around your work while each revision retains a basis for the next.
+
+
+## Use only what this work needs
+
+A quick idea or read-only question can end with an answer. Keep sources, feedback and revisions for work you intend to continue, without turning every discussion into a project task. Delegate or write directly; consequential choices refer to concrete results.
+
+[Find the smallest useful starting point](/en/docs/when-to-use/).

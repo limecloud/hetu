@@ -49,7 +49,7 @@ impl Kernel {
         )?;
         Ok(project)
     }
-    fn stage_drama_project(&self, project: &Value, changes: &mut Changes) -> Result<String> {
+    pub(super) fn stage_drama_project(&self, project: &Value, changes: &mut Changes) -> Result<String> {
         schema(
             project,
             &serde_json::from_str(include_str!(
@@ -58,7 +58,7 @@ impl Kernel {
         )?;
         self.stage_versioned_record(PROJECTS, "project_id", project, changes)
     }
-    fn advance_project(&self, project: &mut Value) -> Result<()> {
+    pub(super) fn advance_project(&self, project: &mut Value) -> Result<()> {
         let sha = digest(bytes(project)?);
         self.advance_record(project, &sha)
     }
@@ -203,10 +203,21 @@ impl Kernel {
     }
     pub(super) fn add_episode_document(
         &self,
+        project: Value,
+        doc: Value,
+        title: &str,
+        plan: &str,
+        changes: &mut Changes,
+    ) -> Result<Value> {
+        self.add_episode_document_after(project, doc, title, plan, None, changes)
+    }
+    pub(super) fn add_episode_document_after(
+        &self,
         mut project: Value,
         mut doc: Value,
         title: &str,
         plan: &str,
+        after: Option<&str>,
         changes: &mut Changes,
     ) -> Result<Value> {
         ensure(
@@ -236,10 +247,13 @@ impl Kernel {
             "hetu.budget_exceeded",
             "分集数量超过项目上限。",
         )?;
-        project["episode_refs"]
-            .as_array_mut()
-            .unwrap()
-            .push(json!(episode_id));
+        let refs = project["episode_refs"].as_array_mut().unwrap();
+        let position = match after {
+            Some(source) => refs.iter().position(|reference| reference == source)
+                .ok_or_else(|| Error::new("forbidden", "来源不在当前分集目录中。"))? + 1,
+            None => refs.len(),
+        };
+        refs.insert(position, json!(episode_id));
         let sha = self.stage_drama_project(&project, changes)?;
         Ok(
             json!({"project":project,"sha256":sha,"episode":episode,"episode_sha256":episode_sha,"document":doc}),

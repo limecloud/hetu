@@ -15,13 +15,17 @@ export function useEditorContextMenu(props: {
   surface: React.RefObject<AuthorEditorHandle>; format: TextFormat; raw: boolean; disabled: boolean; saved: boolean; language?: string;
   notify(message: string): void; comment(quote: EditorContextTarget["quote"]): void; ai(quote: EditorContextTarget["quote"]): void;
   search(text: string): void; info(): void;
+  move?(target: EditorContextTarget): void | Promise<void>;
+  restoreMove?: () => void | Promise<void>;
 }) {
   const show = useContextMenu(), [card, setCard] = useState<CardEdit>();
   const colorInput = useRef<HTMLInputElement>(null), colorTarget = useRef<EditorContextTarget>();
   const t = (key: string) => contextText("context." + key as ContextKey, props.language);
   const e = (key: string) => editingText("editing." + key as EditingKey, props.language);
   function open(event: React.MouseEvent | React.KeyboardEvent) {
-    const target = props.surface.current?.contextMenu(event.type === "contextmenu" ? {x: (event as React.MouseEvent).clientX, y: (event as React.MouseEvent).clientY, target: event.target} : undefined);
+    let target: EditorContextTarget | undefined;
+    try {target = props.surface.current?.contextMenu(event.type === "contextmenu" ? {x: (event as React.MouseEvent).clientX, y: (event as React.MouseEvent).clientY, target: event.target} : undefined);}
+    catch (error) {event.preventDefault(); props.notify((error as Error).message); return;}
     if (!target) return;
     const unavailable = props.disabled || target.readOnly;
     const action = (id: string, label: string, run: () => void | Promise<void>, disabled = false, extra: {shortcut?: string; checked?: boolean; danger?: boolean} = {}): ContextMenuItem => ({id, label, disabled, action: run, ...extra, ...(extra.shortcut ? {shortcut: extra.shortcut.replace(/^(⇧)?⌘(.+)$/, (_all, shift, key) => contextShortcut(key, !!shift))} : {})});
@@ -62,6 +66,16 @@ export function useEditorContextMenu(props: {
     }
     items.push(action("above", t("above"), () => {target.editBlock("above");}, unavailable),
       action("below", t("below"), () => {target.editBlock("below");}, unavailable),
+      {id: "order", label: t("order"), children: [
+        action("move-up", t("move_up"), () => {target.editBlock("up");}, unavailable || !target.canMoveUp),
+        action("move-down", t("move_down"), () => {target.editBlock("down");}, unavailable || !target.canMoveDown),
+      ]},
+      {id: "sort", label: t("sort"), children: [
+        action("sort-ascending", t("sort_ascending"), () => {target.sortBlocks("ascending", props.language);}, unavailable || !target.canSort),
+        action("sort-descending", t("sort_descending"), () => {target.sortBlocks("descending", props.language);}, unavailable || !target.canSort),
+      ]},
+      ...(props.move ? [action("move-to", t("move_to"), () => props.move!(target), unavailable || !target.blockQuote.quote)] : []),
+      ...(props.restoreMove ? [action("restore-move", t("restore_move"), () => props.restoreMove!(), unavailable || !props.saved)] : []),
       action("duplicate", t("duplicate"), () => {target.editBlock("duplicate");}, unavailable),
       action("select-block", t("select_block"), target.selectBlock), action("select-all", t("select_all"), target.selectAll, false, {shortcut: "⌘A"}),
       action("delete", target.empty ? t("delete_block") : t("delete"), () => {target.cut();}, unavailable, {danger: true}), separator("review"),

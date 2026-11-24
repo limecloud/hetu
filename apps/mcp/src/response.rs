@@ -32,7 +32,8 @@ pub(crate) fn summary_read(mut result: Value, action: &str, input: &Value) -> Va
         let sha = projected["data"]["view"]["source_result_sha256"].clone();
         let mut fields = serde_json::Map::new();
         for (key, value) in result["data"].as_object().into_iter().flatten() {
-            if serde_json::to_vec(value).is_ok_and(|raw| raw.len() <= 1024) {
+            let limit = if action == "hetu.local_settings.get" && key == "preferences" { 8192 } else { 1024 };
+            if serde_json::to_vec(value).is_ok_and(|raw| raw.len() <= limit) {
                 fields.insert(key.clone(), value.clone());
             }
         }

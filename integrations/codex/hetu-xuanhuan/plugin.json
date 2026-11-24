@@ -1,6 +1,6 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "hetu-xuanhuan",
-  "version": "0.3.13",
+  "version": "0.3.14",
   "description": "河图洛书传统玄幻创作套件：任务流程与本题材方法，按作品选择安装"
 }

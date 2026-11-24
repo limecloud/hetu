@@ -3,28 +3,28 @@
   "generated_by": "tools/sync-capability-map.py",
   "meaning": "source_wired仅表示源码合同和入口已连线；不证明安装、运行、跨平台或端到端通过。执行时先inspect实际能力。",
   "sources": {
-    "contracts/actions.json": "aa417093ea52b4d283a5210ed3785fbcbc596410652a2f1b933db732ed0d820f",
+    "contracts/actions.json": "e1ef9898c28d4afa7372e4a339b45755bc2c371e450a6c5deec362247fff895e",
     "contracts/tools/catalog.json": "c38f501e31a8a94998751651b2cbfc139cb0fcc5eed94c271358198a26004245",
-    "core/src/application/agent_operations.rs": "0bef1fb8cd676c25e126a4ad8ca52774ff7d2a9bd5b08e40600b3c36dbc4bb49",
+    "core/src/application/agent_operations.rs": "e28c07b2cc18ee4e5b26e34f366fd573b607422caf694316456e48a3f18e0221",
     "core/src/application/creative_tasks.rs": "07f16cfa634d5441646e9d8b39b0d750a12649bc521dd937c005855d804e02be",
-    "core/src/application/work_scope.rs": "f98749b0f7db68274a69cb2be32e3ac1d962166843087e75da0a21ceebc97363",
-    "core/src/collaboration/authoring.rs": "451bdbbff0ba59bc382599cba1c68fed8a7aefb284907652a138ad30072c652c",
-    "core/src/execution.rs": "0b2ad6d3687264eefd328bd7529df0f9d06b08cea59f75907bec7bd24020cf9f",
-    "core/src/local_settings.rs": "5f3c6e303ebc247f7af1202f66da7b18aa89092b94d5485e1ea251ae69e5c662",
+    "core/src/application/work_scope.rs": "520df437f034eaa84f385f7c9f0685c252d5d4c86a83b56a39ef69e94823d675",
+    "core/src/collaboration/authoring.rs": "f55c06e6d2f475be51cf7b59c602d7e3ff6c0371672e024b4da13e29812db7bb",
+    "core/src/execution.rs": "e1b68aed480fc7e6c225663b92b1f63e77ccb2bbf67192c0d0350c7fdc059e02",
+    "core/src/local_settings.rs": "c6632e1b42412a5c8aa55a8c5f599469b28962395935a4de80fe53ad9114b94b",
     "integrations/catalog.json": "c3b605b329f352f881a7acbc84e12f1b548830e0b912ba0e1628924401f130af",
-    "tools/hetu-skills/base/skills/hetu-artwork/SKILL.md": "48ceeff17f63ab6f8214c2845d3cc213e7f99d4b71d9e10f55b0d78cafe932d4",
-    "tools/hetu-skills/base/skills/hetu-book-create/SKILL.md": "f0494c4741626653517c1091616d82cd7d05975bb6338f8a5c3a7175b2f27312",
-    "tools/hetu-skills/base/skills/hetu-book-profile/SKILL.md": "08f41058b9befdf5e477e8d8128356ad771978c3726551333c3432d4c53f43dc",
-    "tools/hetu-skills/base/skills/hetu-cover/SKILL.md": "aeb63c66f9560e0cb345cb0bc862a604f4628660c000917cfba7075b75effcbf",
-    "tools/hetu-skills/base/skills/hetu-draft/SKILL.md": "45dd17160551288ecebaaf016988e40976081a3a2aa6fe59d7e933d890ed8941",
-    "tools/hetu-skills/base/skills/hetu-drama/SKILL.md": "27269161bd9291a9781a530b6add4e03bb1f46f452450b241b2c267b3e70e036",
-    "tools/hetu-skills/base/skills/hetu-import/SKILL.md": "6bcd26c349bd4f68f65e754227b9a56a584aeffb40011edb1ac6cb3e5f146160",
-    "tools/hetu-skills/base/skills/hetu-manage/SKILL.md": "a28bd11841de819b4ebe32bfb1cccdbef545793d52d2ec6d0b9b91cd099fcc5f",
-    "tools/hetu-skills/base/skills/hetu-outline/SKILL.md": "b0bef168a1c26d43b958bd15058dcfe5e483e2f2992e511e8469c27e3097dac5",
-    "tools/hetu-skills/base/skills/hetu-resources/SKILL.md": "ef88a6acbb7836834f4faaf3ddb7481aec481d287e6f3596532a29e0659f0b12",
-    "tools/hetu-skills/base/skills/hetu-revise/SKILL.md": "dc085efddf381eec39694582bb5352a3505b730306bfff883be217a297d51915",
-    "tools/hetu-skills/base/skills/hetu-setup/SKILL.md": "6b6fddcbfe2947b3378550ec3986ca52195487e0b72a28cd2a075cb4121bccc0",
-    "tools/hetu-skills/base/skills/hetu-video/SKILL.md": "3c17631083d7678d89fbad6800c883ef622e80d329247b4c2c42d80965207f18"
+    "tools/hetu-skills/base/skills/hetu-artwork/SKILL.md": "c36083101e25c4d79945075920ed5b53b40a63c9d4fe731186f57ede831b5a2c",
+    "tools/hetu-skills/base/skills/hetu-book-create/SKILL.md": "7458c3f3b4a25c671e235a7c81f00ca6d61856c04b70adced108ed16f5c16f01",
+    "tools/hetu-skills/base/skills/hetu-book-profile/SKILL.md": "f8cd6765f34f775e1c55679a8a29f44b76ed7a356b6e7d5c09b27f361d911020",
+    "tools/hetu-skills/base/skills/hetu-cover/SKILL.md": "47ac69faa6573aec77b6bf3ac2c50039a11ecba54ba78a084db33f9f29da5b25",
+    "tools/hetu-skills/base/skills/hetu-draft/SKILL.md": "5512787ab6d8c5adcf3198ab9b86ac62dfa87f8493d975125040bc8743366bc6",
+    "tools/hetu-skills/base/skills/hetu-drama/SKILL.md": "4b6e9e54da4ad340135ed13be517592cff32e2618d6d4f2665f60761bf7d1227",
+    "tools/hetu-skills/base/skills/hetu-import/SKILL.md": "06b645d541d52c16ae0bbb3a3ba8e3502e54d015d0fdefb964ce777e7bd60cfd",
+    "tools/hetu-skills/base/skills/hetu-manage/SKILL.md": "6d98b20a3ddfcb5c05d448dab9d375954b8c12e924bf21651f4e7aea2e8263f4",
+    "tools/hetu-skills/base/skills/hetu-outline/SKILL.md": "bcbc5c66aee7ec6db81e99fb1c71ff3aeb3e63783ba326238666b2744fd05ecc",
+    "tools/hetu-skills/base/skills/hetu-resources/SKILL.md": "fe17742a95a99b45874f510609d41fdf83689070473e63489aba26447d1e2fde",
+    "tools/hetu-skills/base/skills/hetu-revise/SKILL.md": "ab4fbbe213941d5b278bf772743c15c138a229ec704f97bfcd36fda98bd57814",
+    "tools/hetu-skills/base/skills/hetu-setup/SKILL.md": "379cb048919507e41b976a98ef4a849fdd184e6ecb2db0cc7eea952a6e0b7824",
+    "tools/hetu-skills/base/skills/hetu-video/SKILL.md": "7055545351e28b2453124627169f15d3f12cb95f79d02ba62fb384ad02685817"
   },
   "verification_evidence": "docs/research/evidence/2026-11-16-agent-capabilities.json",
   "skills": [
@@ -319,6 +319,11 @@
         "hetu.plugin_access.capabilities",
         "hetu.plugin_access.invoke",
         "hetu.documents.rename",
+        "hetu.documents.duplicate",
+        "hetu.documents.move_range",
+        "hetu.documents.move_to_new",
+        "hetu.documents.get_move",
+        "hetu.documents.restore_move",
         "hetu.plugins.capabilities",
         "hetu.plugins.invoke"
       ]
@@ -5236,10 +5241,12 @@
       "group": "资料与来源",
       "effect": "write",
       "routes": [
-        "exact_task_ref"
+        "exact_management_ref",
+        "exact_task_ref",
+        "fixed_proposal"
       ],
-      "cli": "hetu --client <client> call hetu.resources.create --input -",
-      "proposal_target": null,
+      "cli": "hetu --client <client> call hetu.agent_operations.prepare --input -",
+      "proposal_target": "hetu.resources.create",
       "mcp": [
         {
           "name": "hetu_create_resource",
@@ -5248,13 +5255,13 @@
           ]
         }
       ],
-      "mcp_via_proposal": false,
+      "mcp_via_proposal": true,
       "skill": "hetu-resources",
       "skill_source": "tools/hetu-skills/base/skills/hetu-resources/SKILL.md",
       "input_schema": {
         "$ref": "schemas/resources.schema.json#/$defs/create_input"
       },
-      "decision": "按任务或读取范围执行",
+      "decision": "准备固定方案 → 会话或桌面记录作者决定 → 执行",
       "recover": "hetu.operations.get",
       "equivalent_machine_actions": [],
       "host_boundary": null,
@@ -5268,10 +5275,12 @@
       "group": "资料与来源",
       "effect": "write",
       "routes": [
-        "exact_task_ref"
+        "exact_management_ref",
+        "exact_task_ref",
+        "fixed_proposal"
       ],
-      "cli": "hetu --client <client> call hetu.resources.update --input -",
-      "proposal_target": null,
+      "cli": "hetu --client <client> call hetu.agent_operations.prepare --input -",
+      "proposal_target": "hetu.resources.update",
       "mcp": [
         {
           "name": "hetu_update_resource",
@@ -5280,13 +5289,13 @@
           ]
         }
       ],
-      "mcp_via_proposal": false,
+      "mcp_via_proposal": true,
       "skill": "hetu-resources",
       "skill_source": "tools/hetu-skills/base/skills/hetu-resources/SKILL.md",
       "input_schema": {
         "$ref": "schemas/resources.schema.json#/$defs/update_input"
       },
-      "decision": "按任务或读取范围执行",
+      "decision": "准备固定方案 → 会话或桌面记录作者决定 → 执行",
       "recover": "hetu.operations.get",
       "equivalent_machine_actions": [],
       "host_boundary": null,
@@ -7575,6 +7584,152 @@
                   "auto",
                   "confirm"
                 ]
+              },
+              "agent_session": {
+                "type": "object",
+                "additionalProperties": false,
+                "minProperties": 1,
+                "properties": {
+                  "default_surface": {
+                    "type": "string",
+                    "enum": [
+                      "tui",
+                      "gui"
+                    ]
+                  },
+                  "chat_font_family": {
+                    "type": "string",
+                    "maxLength": 300,
+                    "pattern": "^[^\\u0000\\r\\n]*$"
+                  },
+                  "chat_font_size": {
+                    "type": "integer",
+                    "minimum": 12,
+                    "maximum": 20
+                  },
+                  "code_font_size": {
+                    "type": "integer",
+                    "minimum": 10,
+                    "maximum": 18
+                  },
+                  "chat_width": {
+                    "type": "string",
+                    "enum": [
+                      "comfortable",
+                      "wide",
+                      "full"
+                    ]
+                  },
+                  "chat_contrast": {
+                    "type": "integer",
+                    "minimum": 50,
+                    "maximum": 150
+                  },
+                  "match_terminal": {
+                    "type": "boolean"
+                  },
+                  "scroll_on_send": {
+                    "type": "boolean"
+                  },
+                  "mark_new_messages": {
+                    "type": "boolean"
+                  },
+                  "show_changes": {
+                    "type": "boolean"
+                  },
+                  "enter_sends": {
+                    "type": "boolean"
+                  },
+                  "terminal_font_family": {
+                    "type": "string",
+                    "maxLength": 300,
+                    "pattern": "^[^\\u0000\\r\\n]*$"
+                  },
+                  "terminal_font_size": {
+                    "type": "integer",
+                    "minimum": 10,
+                    "maximum": 24
+                  },
+                  "terminal_font_weight": {
+                    "type": "integer",
+                    "minimum": 100,
+                    "maximum": 900
+                  },
+                  "terminal_bold_weight": {
+                    "type": "integer",
+                    "minimum": 100,
+                    "maximum": 900
+                  },
+                  "terminal_line_height": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 2
+                  },
+                  "terminal_cursor": {
+                    "type": "string",
+                    "enum": [
+                      "block",
+                      "bar",
+                      "underline"
+                    ]
+                  },
+                  "terminal_cursor_blink": {
+                    "type": "boolean"
+                  },
+                  "terminal_scrollback": {
+                    "type": "integer",
+                    "minimum": 1000,
+                    "maximum": 50000
+                  },
+                  "terminal_scroll_sensitivity": {
+                    "type": "number",
+                    "minimum": 0.1,
+                    "maximum": 10
+                  },
+                  "terminal_fast_scroll_sensitivity": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 20
+                  },
+                  "terminal_tui_scroll_sensitivity": {
+                    "type": "number",
+                    "minimum": 0.1,
+                    "maximum": 10
+                  },
+                  "terminal_gpu": {
+                    "type": "string",
+                    "enum": [
+                      "auto",
+                      "on",
+                      "off"
+                    ]
+                  },
+                  "terminal_ligatures": {
+                    "type": "string",
+                    "enum": [
+                      "auto",
+                      "on",
+                      "off"
+                    ]
+                  },
+                  "terminal_theme": {
+                    "type": "string",
+                    "enum": [
+                      "system",
+                      "light",
+                      "dark"
+                    ]
+                  },
+                  "terminal_scroll_on_input": {
+                    "type": "boolean"
+                  },
+                  "terminal_copy_on_select": {
+                    "type": "boolean"
+                  },
+                  "terminal_focus_on_hover": {
+                    "type": "boolean"
+                  }
+                }
               }
             },
             "required": [],
@@ -10642,6 +10797,441 @@
           "document_id",
           "base_revision_id",
           "title",
+          "operation_key"
+        ]
+      },
+      "decision": "准备固定方案 → 会话或桌面记录作者决定 → 执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.documents.duplicate",
+      "purpose": "按固定正文及目录基线在同一作品创建独立章节或分集副本",
+      "group": "章节、正文与定稿",
+      "effect": "submit",
+      "routes": [
+        "fixed_proposal"
+      ],
+      "cli": "hetu --client <client> call hetu.agent_operations.prepare --input -",
+      "proposal_target": "hetu.documents.duplicate",
+      "mcp": [],
+      "mcp_via_proposal": true,
+      "skill": "hetu-manage",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-manage/SKILL.md",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "source_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "document_id": {
+                "type": "string",
+                "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "revision_id": {
+                "type": "string",
+                "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "document_id",
+              "revision_id",
+              "sha256"
+            ]
+          },
+          "expected": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "revision",
+              "sha256"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "work_ref",
+          "source_ref",
+          "expected",
+          "title",
+          "operation_key"
+        ]
+      },
+      "decision": "准备固定方案 → 会话或桌面记录作者决定 → 执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.documents.move_range",
+      "purpose": "将固定原文范围在同作品两篇文稿间原子移动并登记恢复引用",
+      "group": "章节、正文与定稿",
+      "effect": "submit",
+      "routes": [
+        "fixed_proposal"
+      ],
+      "cli": "hetu --client <client> call hetu.agent_operations.prepare --input -",
+      "proposal_target": "hetu.documents.move_range",
+      "mcp": [],
+      "mcp_via_proposal": true,
+      "skill": "hetu-manage",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-manage/SKILL.md",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "source_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "document_id": {
+                "type": "string",
+                "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "revision_id": {
+                "type": "string",
+                "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "document_id",
+              "revision_id",
+              "sha256"
+            ]
+          },
+          "target_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "document_id": {
+                "type": "string",
+                "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "revision_id": {
+                "type": "string",
+                "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "document_id",
+              "revision_id",
+              "sha256"
+            ]
+          },
+          "byte_start": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "byte_end": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "quote": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000000
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "work_ref",
+          "source_ref",
+          "target_ref",
+          "byte_start",
+          "byte_end",
+          "quote",
+          "operation_key"
+        ]
+      },
+      "decision": "准备固定方案 → 会话或桌面记录作者决定 → 执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.documents.move_to_new",
+      "purpose": "将固定原文范围在同作品中原子移动到新建章节或分集并登记恢复引用",
+      "group": "章节、正文与定稿",
+      "effect": "submit",
+      "routes": [
+        "fixed_proposal"
+      ],
+      "cli": "hetu --client <client> call hetu.agent_operations.prepare --input -",
+      "proposal_target": "hetu.documents.move_to_new",
+      "mcp": [],
+      "mcp_via_proposal": true,
+      "skill": "hetu-manage",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-manage/SKILL.md",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "source_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "document_id": {
+                "type": "string",
+                "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "revision_id": {
+                "type": "string",
+                "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "document_id",
+              "revision_id",
+              "sha256"
+            ]
+          },
+          "expected": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "revision",
+              "sha256"
+            ]
+          },
+          "new_target": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "volume_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "plan": {
+                "type": "string",
+                "maxLength": 20000
+              }
+            },
+            "required": [
+              "title"
+            ]
+          },
+          "byte_start": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "byte_end": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "quote": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000000
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "work_ref",
+          "source_ref",
+          "expected",
+          "new_target",
+          "byte_start",
+          "byte_end",
+          "quote",
+          "operation_key"
+        ]
+      },
+      "decision": "准备固定方案 → 会话或桌面记录作者决定 → 执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.documents.get_move",
+      "purpose": "回读确切跨文稿移动记录的双端前后修订及范围",
+      "group": "章节、正文与定稿",
+      "effect": "read",
+      "routes": [
+        "workspace_agent"
+      ],
+      "cli": "hetu --client <client> call hetu.documents.get_move --input -",
+      "proposal_target": null,
+      "mcp": [],
+      "mcp_via_proposal": false,
+      "skill": "hetu-manage",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-manage/SKILL.md",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "move_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "move_id": {
+                "type": "string",
+                "pattern": "^move_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "move_id",
+              "sha256"
+            ]
+          }
+        },
+        "required": [
+          "work_ref",
+          "move_ref"
+        ]
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.documents.restore_move",
+      "purpose": "双端未变化时按固定移动记录原子恢复正文并保留修订历史",
+      "group": "章节、正文与定稿",
+      "effect": "submit",
+      "routes": [
+        "fixed_proposal"
+      ],
+      "cli": "hetu --client <client> call hetu.agent_operations.prepare --input -",
+      "proposal_target": "hetu.documents.restore_move",
+      "mcp": [],
+      "mcp_via_proposal": true,
+      "skill": "hetu-manage",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-manage/SKILL.md",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "move_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "move_id": {
+                "type": "string",
+                "pattern": "^move_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "move_id",
+              "sha256"
+            ]
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "work_ref",
+          "move_ref",
           "operation_key"
         ]
       },

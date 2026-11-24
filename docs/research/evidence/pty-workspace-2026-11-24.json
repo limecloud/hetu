@@ -1,0 +1,1427 @@
+{
+  "date": "2026-11-24",
+  "scope": "macOS arm64隔离开发版内嵌Codex PTY与正式内容旁览",
+  "version": "0.14.0",
+  "engine": "Codex 0.171.0",
+  "reference": {
+    "version": "1.4.263",
+    "static_extraction": {
+      "files": 5921,
+      "status": "complete",
+      "archive_sha256": "02f7070c49e00040eb35f19da1b5732951d9f3443317323816085a0cbc14ab72"
+    },
+    "evidence_ids": [
+      "ev_90f45d615a3ac6d0c1d293cb53de131d1162a4cc3aa5832673ef841d34389e5e",
+      "ev_69e6dde4f3f5c3f6608e2269c3169ef9fe14573f15c288e7e9e876279a818ef3",
+      "ev_9a05e952fbd1c6af30bf07c1bb79b6b7e5872c93405a693165cbebbd9ab4ebf9",
+      "ev_f680596b99fef691a91b423ee4cf622a3f2badae40e4cb160d8fcbb4ceb4249b",
+      "ev_eb46337002264a77612ff3d4da077aad6d2ac2e4c105e9f2c15d6bf5540d3f49",
+      "ev_05b5195971ecf4cf16bfe4943601f8b9d272fd2ca73c2cc1c813d4508eb65313",
+      "ev_3cf2ec605cd23818da5760c250c3d45b3dcf3aa79d2148ec855173899eae2194",
+      "ev_c287204a369067715aa76c0e27357710d8d5c19c17a010222c97496b37374e55",
+      "ev_f2e5ced94b70987d6eca66d0a98ba8c2974631792f8652103f7b1ac863d19ee1"
+    ],
+    "runtime_capture": {
+      "date": "2026-11-24",
+      "version": "1.4.263",
+      "consent": "用户明确确认，仅本次只读采集",
+      "mode": "read_only",
+      "capture_method": "CUA screenshot and accessibility tree",
+      "attempt_before_fallback": {
+        "method": "runtime-ui-read",
+        "status": "timed_out",
+        "reason": "Swift截图助手编译超过60秒；不是授权拒绝，未重复启动"
+      },
+      "captures": [
+        {
+          "capture": "terminal-settings",
+          "sha256": "d0e2899e09eadae47537b90dd410132537fe9b9640bbfac1c9cb809751f23e44",
+          "media_type": "image/jpeg",
+          "width": 2560,
+          "height": 1285,
+          "recorded_at": "2026-11-23T23:04:31.842840+00:00",
+          "tree_evidence_id": "ev_05b5195971ecf4cf16bfe4943601f8b9d272fd2ca73c2cc1c813d4508eb65313",
+          "original_storage": "仓库外调查项目，不随应用分发"
+        },
+        {
+          "capture": "appearance",
+          "sha256": "29951aa64a28b197fbb346006c1ad70d3edbc1c7fe12c5fb7b821fa7c4208901",
+          "media_type": "image/jpeg",
+          "width": 2560,
+          "height": 1285,
+          "recorded_at": "2026-11-23T23:07:34.739239+00:00",
+          "tree_evidence_id": "ev_3cf2ec605cd23818da5760c250c3d45b3dcf3aa79d2148ec855173899eae2194",
+          "original_storage": "仓库外调查项目，不随应用分发"
+        },
+        {
+          "capture": "terminal-tab-menu",
+          "sha256": "fd99793a9d3353d6d0d9971d575221da1d4db77482b9bdcc6684e94239ea47b4",
+          "media_type": "image/jpeg",
+          "width": 2560,
+          "height": 1285,
+          "recorded_at": "2026-11-23T23:08:12.705521+00:00",
+          "tree_evidence_id": "ev_c287204a369067715aa76c0e27357710d8d5c19c17a010222c97496b37374e55",
+          "original_storage": "仓库外调查项目，不随应用分发"
+        },
+        {
+          "capture": "restored-window",
+          "sha256": "4b6233ba487fea97e7c2e30d2d54c35631bc2062453fab3691ab636f9b02cecf",
+          "media_type": "image/jpeg",
+          "width": 2560,
+          "height": 1285,
+          "recorded_at": "2026-11-23T23:10:43.367222+00:00",
+          "tree_evidence_id": "ev_f2e5ced94b70987d6eca66d0a98ba8c2974631792f8652103f7b1ac863d19ee1",
+          "original_storage": "仓库外调查项目，不随应用分发"
+        }
+      ],
+      "restored_to_terminal": true,
+      "settings_changed": false,
+      "terminal_input_sent": false,
+      "limits": [
+        "观察当前偏好不等于出厂默认",
+        "目录预览行为本次未点击，继续引用先前静态证据",
+        "不声称全部状态1:1或逐项9分"
+      ]
+    },
+    "visual_score": null,
+    "supplied_screenshot": {
+      "sha256": "09a1d44daef463f010bcb4e6aa21a46c5ec2ac5a441c5b0ccf8e673de91f8485",
+      "width": 2560,
+      "height": 1285,
+      "source": "作者补充的实机图，原图仅保存在仓库外调查项目",
+      "layout_baseline": {
+        "topbar_px": 36,
+        "left_sidebar_px": 280,
+        "right_sidebar_px": 350
+      }
+    },
+    "observed_current_preferences": {
+      "terminal_font_size_px": 14,
+      "terminal_font_family": "SF Mono",
+      "terminal_theme": "Tango Light",
+      "gpu": "auto",
+      "scroll_speed": 1.15,
+      "fast_scroll_speed": 5,
+      "tui_scroll_speed": 1,
+      "focus_on_hover": false,
+      "right_click_paste": false,
+      "copy_on_select": false,
+      "trim_common_indentation": true,
+      "scrollback": 5000
+    },
+    "capture_manifest_evidence_id": "ev_107f1e50b6a9dd136354a0465c042f8065f0e72d93834800de69bab2d46e16b5"
+  },
+  "checks": [
+    {
+      "name": "Agent协议、草稿、回放、真实PTY及编辑键",
+      "passed": 37,
+      "skipped": 0,
+      "log": "output/pty-codex/agent-tests-final.log"
+    },
+    {
+      "name": "桌面私有沙箱、布局、小说与剧本目录、旧作品拒绝",
+      "passed": 3,
+      "repeat": true,
+      "log": "output/pty-codex/gui-draft-repeats.log"
+    },
+    {
+      "name": "真实TUI完整目录旅程与实际资料业务",
+      "passed": 1,
+      "log": "output/pty-codex/implementation-tui-business.log"
+    },
+    {
+      "name": "共享终端设置迁移、合并与执行策略保持",
+      "passed": 1,
+      "log": "output/pty-codex/implementation-settings-tests.log"
+    },
+    {
+      "name": "最终交接立即打开会话，小说与剧本桌面旅程",
+      "passed": 1,
+      "log": "output/pty-codex/final-gui-handoff.log"
+    },
+    {
+      "name": "最终Rust运行时与桌面构建",
+      "status": "passed",
+      "logs": [
+        "output/pty-codex/final-runtime-build.log",
+        "output/pty-codex/implementation-desktop-build.log"
+      ]
+    },
+    {
+      "name": "能力地图生成一致及最终CLI实际发现",
+      "status": "passed",
+      "cli_status": "succeeded",
+      "selected_actions": 1
+    },
+    {
+      "name": "文档链接、编号、Schema与差异空白",
+      "status": "passed",
+      "log": "output/pty-codex/docs-check.log"
+    },
+    {
+      "name": "最终Agent协议、PTY、草稿、游标、输入与原生窗口专项",
+      "passed": 40,
+      "skipped": 0,
+      "log": "output/pty-codex/final-agent-regression.log",
+      "log_sha256": "409d7ca250b01c2dcadd0623bf75ceae3e0a97973eb8e58d7e2c6144ebac5337"
+    },
+    {
+      "name": "预览菜单、桌面私有会话、真实TUI与普通页面浅暗布局",
+      "passed": 5,
+      "skipped": 0,
+      "log": "output/pty-codex/final-detail-regression.log",
+      "log_sha256": "9b5cc10500cc8879a7959df6355abc2d4511bdeab596d5dadabe9aedce8b4e69"
+    },
+    {
+      "name": "侧栏焦点修复后的预览与真实TUI",
+      "passed": 2,
+      "skipped": 0,
+      "log": "output/pty-codex/final-focus-regression.log",
+      "log_sha256": "efbbaf3ea101cf89119122457db69fad084880df397713ce77860c75cb8b7588"
+    },
+    {
+      "name": "最终字符画布边界、全高、最大化、全屏与预览回归",
+      "passed": 2,
+      "skipped": 0,
+      "log": "output/pty-codex/final-fit-regression.log",
+      "log_sha256": "5f3be4800594c265d24e710c00bb53b13362a0a4a69ff2bebef9e3d2daff90e3"
+    },
+    {
+      "name": "最终桌面TypeScript与制品构建",
+      "status": "passed",
+      "log": "output/pty-codex/final-fit-build.log",
+      "log_sha256": "84235c2bb0be576c686d0f0d5e7b244c5a5b40db237a35cc4a6baa1fc727141e"
+    },
+    {
+      "name": "最终文档、能力地图与差异检查",
+      "status": "passed",
+      "log": "output/pty-codex/final-docs-check.log",
+      "log_sha256": "3a705d128faef0ff3c97238df059edc7a16bb6e24a7e2f97541f4c31d4b1cf66",
+      "capability_map": "一致",
+      "git_diff_check": "passed"
+    },
+    {
+      "name": "修复后受管引擎与会话协议专项",
+      "passed": 40,
+      "skipped": 0,
+      "log": "output/pty-codex/engine-recovery-agent-final.log",
+      "log_sha256": "a10a0766c753cd108e2fc5822e32f585500e1e027cd3aefb445005bcb855ebb5"
+    },
+    {
+      "name": "同版应用包真实TUI、故障恢复、目录和普通页布局",
+      "passed": 5,
+      "skipped": 0,
+      "log": "output/pty-codex/packaged-engine-recovery-final.log",
+      "log_sha256": "b53e87df1bc561078029e1ded5788521a9996875aa13fe0b5247a4dd9bf48beb"
+    },
+    {
+      "name": "包内真实进程恢复及匹配实际窗口的Retina复拍",
+      "passed": 1,
+      "skipped": 0,
+      "log": "output/pty-codex/packaged-retina-recovery.log",
+      "log_sha256": "768d9a3abeaa459cbd620e0a95ab4108efd3e4ac438b3c6b935e0906183ea269"
+    },
+    {
+      "name": "应用包接续后的文档、地图和差异检查",
+      "status": "passed",
+      "log": "output/pty-codex/packaged-final-docs-check.log",
+      "log_sha256": "3a705d128faef0ff3c97238df059edc7a16bb6e24a7e2f97541f4c31d4b1cf66"
+    },
+    {
+      "name": "第五版共享设置迁移、CAS、原件与非法状态",
+      "passed": 11,
+      "skipped": 0,
+      "log": "output/pty-codex/hover-settings-tests.log"
+    },
+    {
+      "name": "跨入口设置读写并发",
+      "passed": 1,
+      "skipped": 0,
+      "log": "output/pty-codex/hover-settings-concurrency.log"
+    },
+    {
+      "name": "最终Agent协议、PTY与输入专项",
+      "passed": 40,
+      "skipped": 0,
+      "log": "output/pty-codex/interactions-final-agent.log"
+    },
+    {
+      "name": "最终应用包查找／设置／预览／真实进程恢复／全高全屏／普通页浅暗回归",
+      "passed": 6,
+      "skipped": 0,
+      "log": "output/pty-codex/packaged-interactions-final.log",
+      "log_sha256": "2d726d6709111d9ac837959e4a4b6c6d951c1d8ec262a065e23791c77ac4077d"
+    },
+    {
+      "name": "本轮最终源码／制品／开发签名／Info.plist图标",
+      "status": "passed",
+      "source_files": 2981,
+      "artifacts": 3719,
+      "errors": [],
+      "verification": "output/pty-codex/interactions-package-verification.json"
+    },
+    {
+      "name": "本轮最终文档／Schema／能力地图／差异空白",
+      "status": "passed",
+      "log": "output/pty-codex/interactions-final-docs.log",
+      "capability_map": "一致",
+      "git_diff_check": "passed"
+    }
+  ],
+  "runtime_result": {
+    "work": {
+      "kind": "novel",
+      "object_id": "novel_2d8e8020-565c-4010-9f12-37158c1e37b9",
+      "workspace_id": "workspace_c6c05e0e-6f65-41ce-a61d-ac8343573b7f"
+    },
+    "thread_id": "01a20a09-9877-7cf1-8fc7-67054e7169e4",
+    "before": {
+      "thread_id": "01a20a09-9877-7cf1-8fc7-67054e7169e4",
+      "generation": 1
+    },
+    "after": {
+      "thread_id": "01a20a09-9877-7cf1-8fc7-67054e7169e4",
+      "generation": 3
+    },
+    "geometry": {
+      "height": 667,
+      "width": 696,
+      "scrollHeight": 667,
+      "children": [
+        {
+          "class": "terminal xterm focus enable-mouse-events",
+          "height": 667.3046875,
+          "top": 176.6953125,
+          "position": "relative",
+          "padding": "0px"
+        },
+        {
+          "class": "xterm-viewport",
+          "height": 667.3046875,
+          "top": 176.6953125,
+          "position": "absolute",
+          "padding": "0px"
+        },
+        {
+          "class": "xterm-screen",
+          "height": 656,
+          "top": 176.6953125,
+          "position": "relative",
+          "padding": "0px"
+        },
+        {
+          "class": "xterm-helpers",
+          "height": 0,
+          "top": 176.6953125,
+          "position": "absolute",
+          "padding": "0px"
+        }
+      ]
+    },
+    "layout": {
+      "main": {
+        "x": 280,
+        "y": 96.1953125,
+        "width": 1152,
+        "height": 795.8046875,
+        "top": 96.1953125,
+        "right": 1432,
+        "bottom": 892,
+        "left": 280
+      },
+      "directory": {
+        "x": 1132,
+        "y": 96.1953125,
+        "width": 300,
+        "height": 795.8046875,
+        "top": 96.1953125,
+        "right": 1432,
+        "bottom": 892,
+        "left": 1132
+      },
+      "terminal": {
+        "x": 288,
+        "y": 176.6953125,
+        "width": 836,
+        "height": 707.3046875,
+        "top": 176.6953125,
+        "right": 1124,
+        "bottom": 884,
+        "left": 288
+      },
+      "entry": {
+        "x": 1138.5,
+        "y": 216.2890625,
+        "width": 287.5,
+        "height": 26,
+        "top": 216.2890625,
+        "right": 1426,
+        "bottom": 242.2890625,
+        "left": 1138.5
+      },
+      "border": "0.5px",
+      "font": "12px"
+    },
+    "business": {
+      "resource_id": "resource_791283f2-3160-465b-bd83-2bfd721eb1c9",
+      "revision": 1,
+      "sha256": "cebfef426af289b9a7bcb11cf2fe32eb3764d1d32cb84aa6de9abb2ef0215993",
+      "independent_cli": true,
+      "body": "江岚沿海岸寻找旧日的灯火。夜航需遵循潮汐。"
+    },
+    "errors": []
+  },
+  "implemented": [
+    "现有窗口内默认最大化并铺满主区，明确选择并排",
+    "右侧正式作品目录分页读取文稿与资料，不读取内部文件",
+    "固定修订临时预览、双击保留标签、有界缓存及阅读位置恢复",
+    "搜索、目录展开、右键、键盘、调宽和窄宽往返",
+    "文稿及资料固定引用插入与拖入，不附加Enter",
+    "预览、编辑与会话往返保持原PTY和线程",
+    "游标消重、缺段回读、旧代次及关闭后事件拒绝",
+    "固定局部会话、异步等待及草稿落盘后重复核验",
+    "GUI草稿保存先于表面切换，迟到保存拒绝",
+    "中文、组合字节、Shift+Enter、平台编辑键与单次宿主粘贴",
+    "36px单行会话栏和全高终端，左右独立折叠、最大化与原生全屏还原",
+    "目录分组键盘、标签菜单、旧修订提示和明确切换当前修订",
+    "同作品后台完成刷新，其他作品通知不重读",
+    "左栏名称与26px按钮分别占位，折叠后焦点恢复",
+    "全高工作面共享失败提示可见且可关闭",
+    "xterm自身内边距参与fit计算，末行与右列不被裁切",
+    "原生终端单独退出后并发启动共用一次重连，更新输入代次且保留原引擎与线程",
+    "受管引擎断开时终端关闭输入，显式恢复先确认旧PTY与进程组退出并释放旧线程占用",
+    "同版隔离应用包、实际图标、开发签名、全量源码和制品核验，Retina原生截图对应实际窗口"
+  ],
+  "failures_retained": [
+    {
+      "name": "首次回放测试无法执行",
+      "cause": "Node类型剥离不支持parameter property",
+      "fix": "显式声明字段与构造赋值"
+    },
+    {
+      "name": "原生new命令未生效",
+      "cause": "重开后尚未收到Codex输入就绪信号",
+      "fix": "等待公开OSC输入就绪后实际输入"
+    },
+    {
+      "name": "窄窗目录仍挤占终端",
+      "fix": "按终端600px与目录实际宽度判断覆盖模式"
+    },
+    {
+      "name": "偶发GUI草稿丢失",
+      "fix": "切换前完成保存，附表面与代次校验，拒绝迟到结果"
+    },
+    {
+      "name": "旧模拟审批测试偶发失败并遗留进程",
+      "cause": "固定40ms等待与80ms完成计时竞争",
+      "fix": "按实际审批信号等待，答复后完成，finally关闭宿主"
+    },
+    {
+      "name": "页面交接的可见性曾超时",
+      "fix": "加入宿主时序诊断；后续连续3次通过；固定引用准备完成后立即展示会话，不等待引擎接入才打开"
+    },
+    {
+      "name": "全屏退出后再次进入且截图空白",
+      "cause": "异步原生全屏与立即simple fullscreen回退竞争",
+      "fix": "按窗口串行等待原生转换；进入退出后核对实际状态",
+      "artifacts": "output/pty-codex/first-fullscreen-observation",
+      "log": "output/pty-codex/full-height-tui-tests.log"
+    },
+    {
+      "name": "普通页面全屏回归中断",
+      "cause": "旧测试本身重复调用原生与simple fullscreen；隔离进程被明确结束",
+      "fix": "测试改走实际共享全屏IPC",
+      "log": "output/pty-codex/final-layout-regression.log"
+    },
+    {
+      "name": "左栏名称被挤掉",
+      "cause": "通用导航按钮width:100%进入页头",
+      "fix": "页头与页尾图标按钮固定26px，验证文字宽度及无重叠"
+    },
+    {
+      "name": "全高工作面看不到操作失败提示",
+      "cause": "共享notice位于隐藏的文稿main中",
+      "fix": "共享提示移到两种工作面共同父级，注入一次错误验证可见及关闭"
+    },
+    {
+      "name": "末行与右列被裁切",
+      "cause": "FitAddon只扣除xterm元素内边距，容器内边距导致行列数偏大",
+      "fix": "内边距移到xterm自身，核对实际字符画布四边界",
+      "artifacts": "output/pty-codex/before-terminal-fit"
+    },
+    {
+      "name": "隔离装配漏工作区专属依赖",
+      "cause": "快照只带根依赖，遗漏apps/desktop/node_modules/ws 8.22.0",
+      "fix": "快照按锁文件补齐实际工作区依赖；保留失败日志",
+      "log": "output/pty-codex/packaged-layout-build.log"
+    },
+    {
+      "name": "终端客户端退出后两次重连超时",
+      "cause": "已连接引擎的快捷分支未进入共享启动Promise，两次调用互相关闭终端桥",
+      "fix": "启动和重连共用同一进行中Promise；重建PTY更新输入代次",
+      "log": "output/pty-codex/terminal-recovery-packaged-red-native.log"
+    },
+    {
+      "name": "引擎退出但PTY等待被误报可输入",
+      "cause": "terminal_connected只读取PTY存活，没有核对受管连接",
+      "fix": "终端在线状态同时核验PTY和受管连接；离线输入明确拒绝",
+      "log": "output/pty-codex/packaged-tui-final.log"
+    },
+    {
+      "name": "引擎崩溃恢复时误报自身旧线程锁占用",
+      "cause": "已确认旧进程退出后仍持有旧线程锁并再次取得相同锁",
+      "fix": "确认旧终端、桥和进程组退出后释放旧锁，再按原线程恢复",
+      "log": "output/pty-codex/engine-recovery-green.log"
+    },
+    {
+      "name": "旧协议夹具因固定等待未收到初始化",
+      "cause": "进程调度超出固定500ms等待",
+      "fix": "等待实际线程和完成结果，并在finally关闭夹具；产品适配器未改",
+      "log": "output/pty-codex/engine-recovery-final-agent.log"
+    },
+    {
+      "name": "最终包测试启动器目录错误",
+      "cause": "从apps/desktop到快照根多写一层相对目录，Node找不到测试启动器，未启动应用",
+      "fix": "改用../../node_modules实际目录后6项通过",
+      "log": "output/pty-codex/packaged-interactions-launcher-failure.log"
+    }
+  ],
+  "artifacts": {
+    "source_manifest": "output/pty-codex/implementation-manifest.json",
+    "tested_binary_manifest": "output/pty-codex/tested-artifact-manifest.json",
+    "screenshots": [
+      {
+        "path": "output/pty-codex/source/output/codex-tui-validation/desktop-tui-business.png",
+        "sha256": "6ad3b708c35474462d194378f85b1b48edc4fd0cdc1e93754c1f471b0b55704e"
+      },
+      {
+        "sha256": "486640bd32d00c5cef94954dc5e8445284b4cba08acc7c61944ab1f420a77644",
+        "historical_path": "output/pty-codex/source/output/codex-tui-validation/desktop-tui-dark.png",
+        "availability": "同名路径已由后续回归复拍替换；此摘要仅保留历史，最新截图见packaged_screenshots"
+      },
+      {
+        "sha256": "2b630f4fdc3cab215ebcc51194e6a1cce091c3342766532c9b1cdc89bb363672",
+        "historical_path": "output/pty-codex/source/output/codex-tui-validation/desktop-tui-directory.png",
+        "availability": "同名路径已由后续回归复拍替换；此摘要仅保留历史，最新截图见packaged_screenshots"
+      },
+      {
+        "sha256": "809ad381aab82fd19f97bda29652611e2371a116fac592d305548ec2637165b3",
+        "historical_path": "output/pty-codex/source/output/codex-tui-validation/desktop-tui-light.png",
+        "availability": "同名路径已由后续回归复拍替换；此摘要仅保留历史，最新截图见packaged_screenshots"
+      },
+      {
+        "sha256": "5959eb51d7ba676df12afd1c977f76b9450d1cfd930082b1d19e34d79d6c8129",
+        "historical_path": "output/pty-codex/source/output/codex-tui-validation/desktop-tui-narrow.png",
+        "availability": "同名路径已由后续回归复拍替换；此摘要仅保留历史，最新截图见packaged_screenshots"
+      },
+      {
+        "sha256": "6287c8686dadb6f0cb9c5e0edc3d9ce8ed73953fb558bf1de905016e999c25c3",
+        "historical_path": "output/pty-codex/source/output/codex-tui-validation/desktop-tui-preview.png",
+        "availability": "同名路径已由后续回归复拍替换；此摘要仅保留历史，最新截图见packaged_screenshots"
+      },
+      {
+        "sha256": "4e2df5d38c0dad300392892d7723ae2f9657e7970e46709b3fd639b2e68bf371",
+        "historical_path": "output/pty-codex/source/output/codex-tui-validation/desktop-tui-settings.png",
+        "availability": "同名路径已由后续回归复拍替换；此摘要仅保留历史，最新截图见packaged_screenshots"
+      },
+      {
+        "sha256": "140445b97f0f09cc027dc1f38d7f7837fa3b61f5165447766f0d279782e15abd",
+        "historical_path": "output/pty-codex/source/output/codex-tui-validation/desktop-tui-writing-draft.png",
+        "availability": "同名路径已由后续回归复拍替换；此摘要仅保留历史，最新截图见packaged_screenshots"
+      }
+    ],
+    "final_binary_manifest": "output/pty-codex/final-artifact-manifest.json",
+    "layout_binary_manifest": "output/pty-codex/layout-artifact-manifest.json",
+    "layout_screenshots": [
+      {
+        "sha256": "848fee067ca71cdcc73fb9767e72b42b288c9dc5918f7f9683f1729de097bea4",
+        "width": 2560,
+        "height": 1285,
+        "historical_path": "output/pty-codex/source/output/codex-tui-validation/desktop-tui-reference-size.png",
+        "availability": "同名路径已由后续回归复拍替换；此摘要仅保留历史，最新截图见packaged_screenshots"
+      },
+      {
+        "sha256": "19b7e1859bfe315be440a4504b3e6417c6c0dcc5f3b721477602b4ae6333a331",
+        "width": 1280,
+        "height": 860,
+        "historical_path": "output/pty-codex/source/output/codex-tui-validation/desktop-tui-maximized.png",
+        "availability": "同名路径已由后续回归复拍替换；此摘要仅保留历史，最新截图见packaged_screenshots"
+      },
+      {
+        "sha256": "fa99a8e06ca53ec081b4c4014fd9416d4886f5ef8afd3bb2edb6156e7b697d3a",
+        "width": 1280,
+        "height": 860,
+        "historical_path": "output/pty-codex/source/output/codex-tui-validation/desktop-tui-fullscreen.png",
+        "availability": "同名路径已由后续回归复拍替换；此摘要仅保留历史，最新截图见packaged_screenshots"
+      },
+      {
+        "sha256": "2836e035426993dc3c173525e973f59fca9e1869586d79056002862e09b42c75",
+        "width": 1280,
+        "height": 860,
+        "historical_path": "output/pty-codex/source/output/codex-tui-validation/desktop-tui-light.png",
+        "availability": "同名路径已由后续回归复拍替换；此摘要仅保留历史，最新截图见packaged_screenshots"
+      },
+      {
+        "sha256": "96790476cc26e139b38a8b4138940732e35ed7bc3de63d019a4dc212b8f02326",
+        "width": 980,
+        "height": 720,
+        "historical_path": "output/pty-codex/source/output/codex-tui-validation/desktop-tui-dark.png",
+        "availability": "同名路径已由后续回归复拍替换；此摘要仅保留历史，最新截图见packaged_screenshots"
+      },
+      {
+        "sha256": "3b083afb3bf4ed19c872b8cb07845d03b1a4be1527a4ddbe923bc6c5f16d8031",
+        "width": 1440,
+        "height": 900,
+        "historical_path": "output/pty-codex/source/output/codex-tui-validation/desktop-tui-directory.png",
+        "availability": "同名路径已由后续回归复拍替换；此摘要仅保留历史，最新截图见packaged_screenshots"
+      },
+      {
+        "sha256": "6fed39d8658cbc48e070304502877e9049678908b95658bb097712e4a01ef6cf",
+        "width": 1440,
+        "height": 900,
+        "historical_path": "output/pty-codex/source/output/codex-tui-validation/desktop-tui-preview.png",
+        "availability": "同名路径已由后续回归复拍替换；此摘要仅保留历史，最新截图见packaged_screenshots"
+      },
+      {
+        "sha256": "01005cb09fe92143688dc85e061e7918bc50eef6819e80dc1fff861cf99e9e1b",
+        "width": 980,
+        "height": 720,
+        "historical_path": "output/pty-codex/source/output/codex-tui-validation/desktop-tui-narrow.png",
+        "availability": "同名路径已由后续回归复拍替换；此摘要仅保留历史，最新截图见packaged_screenshots"
+      },
+      {
+        "sha256": "c0dda745f057e10e23305105e6f1800b1a299b81c8276221f6a01828045cda44",
+        "historical_path": "output/pty-codex/source/output/pty-codex-interactions/fixed-revision-preview.png",
+        "availability": "同名路径已由后续回归复拍替换；此摘要仅保留历史，最新截图见packaged_screenshots"
+      },
+      {
+        "sha256": "62eb46901db21391014112b33c4e5a4c965413928a729dac74c1fd736f92ff48",
+        "historical_path": "output/pty-codex/source/output/pty-codex-interactions/preview-tab-menu.png",
+        "availability": "同名路径已由后续回归复拍替换；此摘要仅保留历史，最新截图见packaged_screenshots"
+      },
+      {
+        "sha256": "d1b4620ab3b1541eaa9f863cc1fb44da75b129f3ee8eead0c14ba0995f534ad6",
+        "historical_path": "output/pty-codex/source/output/pty-codex-interactions/preview-keyboard-and-recovery.png",
+        "availability": "同名路径已由后续回归复拍替换；此摘要仅保留历史，最新截图见packaged_screenshots"
+      }
+    ],
+    "packaged_screenshots": [
+      {
+        "path": "output/pty-codex/validated-b8018907/desktop-tui-dark.png",
+        "sha256": "3dc6e775b249297ba5873e95769a5e47b3a9489f2c05383253295d77817de9e9",
+        "width": 980,
+        "height": 720
+      },
+      {
+        "path": "output/pty-codex/validated-b8018907/desktop-tui-directory.png",
+        "sha256": "4172c3fa1e1f40214a7a92d6f1f16a751c14ac1686bd4e110d2c8d6e245e220c",
+        "width": 1440,
+        "height": 900
+      },
+      {
+        "path": "output/pty-codex/validated-b8018907/desktop-tui-fullscreen.png",
+        "sha256": "9a914f290439b8a1084e71ca47bd289ca790df2fb154880b416647d2d67c407d",
+        "width": 1280,
+        "height": 860
+      },
+      {
+        "path": "output/pty-codex/validated-b8018907/desktop-tui-light.png",
+        "sha256": "9578cfb603c92561fca297047bd507346a1c71f9632c627100a8b194704a269e",
+        "width": 1280,
+        "height": 860
+      },
+      {
+        "path": "output/pty-codex/validated-b8018907/desktop-tui-maximized.png",
+        "sha256": "b38752f854b78a5b25be62bc26f6fcfe3af0c21ed7fb60ed2fa69c2d7407ca68",
+        "width": 1280,
+        "height": 860
+      },
+      {
+        "path": "output/pty-codex/validated-b8018907/desktop-tui-narrow.png",
+        "sha256": "a5bf120a06104b6d8012f0f19233016db0d086d41e2fcb4e7869204a9a7a499d",
+        "width": 980,
+        "height": 720
+      },
+      {
+        "path": "output/pty-codex/validated-b8018907/desktop-tui-preview.png",
+        "sha256": "5bf1d39fa8365c453f23ff8abdc19b543055b46b9442d88e53ca0fc1cc7816d5",
+        "width": 1440,
+        "height": 900
+      },
+      {
+        "path": "output/pty-codex/validated-b8018907/desktop-tui-reference-size.png",
+        "sha256": "dbf18c4c84f4af5a6cc318d667864a287249ce7fc25c20759fb0484d4a446f93",
+        "width": 2560,
+        "height": 1285
+      },
+      {
+        "path": "output/pty-codex/validated-b8018907/fixed-revision-preview.png",
+        "sha256": "9f308ff1fb2e0be0dbca166dd9fc7a572aa03b6f6d15b4a32733ad2ee0a4669c",
+        "width": 1440,
+        "height": 900
+      },
+      {
+        "path": "output/pty-codex/validated-b8018907/preview-keyboard-and-recovery.png",
+        "sha256": "146abc7da228b5b6513bd92d8ae8f00a000b18ae5c06c5b7d7733d2c257c92df",
+        "width": 1440,
+        "height": 900
+      },
+      {
+        "path": "output/pty-codex/validated-b8018907/preview-tab-menu.png",
+        "sha256": "e2e40dd86e34ad66d94647f3ab77a8913d83f7f28ff90127f039bccc8a1c6598",
+        "width": 1440,
+        "height": 900
+      },
+      {
+        "path": "output/pty-codex/validated-b8018907/recovery-reconnected-native-window.png",
+        "sha256": "62c56d727bf00d51a3d4cdf7158b67a5169f0b889e780c56fc5f580d61c975e4",
+        "width": 2880,
+        "height": 1750
+      },
+      {
+        "path": "output/pty-codex/validated-b8018907/recovery-reconnected-terminal.png",
+        "sha256": "9a4bc539b9ddc0c49bedbf4ddb3f7db49a1d83632293f1aa121ceb692e970389",
+        "width": 1440,
+        "height": 900
+      }
+    ],
+    "recovery_binary_manifest": "output/pty-codex/recovery-artifact-manifest.json"
+  },
+  "limits": [
+    "本次已采参考窗口、终端设置、外观和终端标签菜单；仍不声明完整1:1、逐项9分或其他未操作状态。",
+    "真实node-pty组合字符与浏览器键盘事件不能代替系统输入法候选窗验收",
+    "Windows和Linux未运行",
+    "前序开发包验证时未安装；2026-11-24经用户明确要求已覆盖安装并启动，未提交、推送、升版本或发布",
+    "完整GUI、confirm长旅程、无障碍及长篇内容另验",
+    "能力地图原有源摘要漂移已重新生成；测试时的原二进制摘要另存，最终元数据构建分别记录",
+    "早期同名截图有复拍替换；前序成功截图固定于validated-b8018907，本轮成功截图由validated-b58ac893/capture-manifest.json逐文件列明，historical目录不计为当前成功证据。"
+  ],
+  "latest_layout_result": {
+    "work": {
+      "kind": "novel",
+      "object_id": "novel_5a1c3a07-0636-4115-b1f3-2599f0e73865",
+      "workspace_id": "workspace_1f15eae5-799f-41a7-9c99-86f8cebb53b1"
+    },
+    "thread_id": "01a20a55-bde1-71d0-aa91-77e257f494bf",
+    "nativeNew": "01a20a55-df52-7e22-8b38-ebefcaa2c5ed",
+    "geometry": {
+      "height": 824,
+      "width": 650,
+      "scrollHeight": 824,
+      "children": [
+        {
+          "class": "terminal xterm focus enable-mouse-events",
+          "height": 824,
+          "top": 36,
+          "position": "relative",
+          "padding": "6px 12px"
+        },
+        {
+          "class": "xterm-viewport",
+          "height": 824,
+          "top": 36,
+          "position": "absolute",
+          "padding": "0px"
+        },
+        {
+          "class": "xterm-screen",
+          "height": 800,
+          "top": 42,
+          "position": "relative",
+          "padding": "0px"
+        },
+        {
+          "class": "xterm-helpers",
+          "height": 0,
+          "top": 42,
+          "position": "absolute",
+          "padding": "0px"
+        }
+      ]
+    },
+    "layout": {
+      "main": {
+        "x": 280,
+        "y": 36,
+        "width": 1160,
+        "height": 864,
+        "top": 36,
+        "right": 1440,
+        "bottom": 900,
+        "left": 280
+      },
+      "directory": {
+        "x": 1070,
+        "y": 36,
+        "width": 370,
+        "height": 864,
+        "top": 36,
+        "right": 1440,
+        "bottom": 900,
+        "left": 1070
+      },
+      "terminal": {
+        "x": 280,
+        "y": 36,
+        "width": 790,
+        "height": 864,
+        "top": 36,
+        "right": 1070,
+        "bottom": 900,
+        "left": 280
+      },
+      "entry": {
+        "x": 1076.5,
+        "y": 156.09375,
+        "width": 357.5,
+        "height": 26,
+        "top": 156.09375,
+        "right": 1434,
+        "bottom": 182.09375,
+        "left": 1076.5
+      },
+      "border": "0.5px",
+      "font": "12px"
+    },
+    "heightUsage": {
+      "normal": 0.958139534883721,
+      "header": 36,
+      "window_id": 1,
+      "maximized": {
+        "height": 0.958139534883721,
+        "width": 1
+      },
+      "fullscreen": {
+        "height": 0.958139534883721,
+        "width": 1,
+        "native": true
+      }
+    },
+    "before": {
+      "thread_id": "01a20a55-bde1-71d0-aa91-77e257f494bf",
+      "generation": 1
+    },
+    "after": {
+      "thread_id": "01a20a55-bde1-71d0-aa91-77e257f494bf",
+      "generation": 3
+    },
+    "business": {
+      "status": "not_requested"
+    },
+    "drafted": {
+      "thread_id": "01a20a55-bde1-71d0-aa91-77e257f494bf",
+      "state": "ready",
+      "messages": 0
+    },
+    "packaged": true,
+    "errors": []
+  },
+  "layout_result_before_recovery_fix": {
+    "work": {
+      "kind": "novel",
+      "object_id": "novel_251678cd-de97-4e78-8bf7-1de4f3810d0c",
+      "workspace_id": "workspace_32642358-b2d2-4459-bc77-6ea067953036"
+    },
+    "thread_id": "01a20a3d-871c-7b31-9687-0db7b46dcbb8",
+    "geometry": {
+      "height": 824,
+      "width": 650,
+      "scrollHeight": 824,
+      "children": [
+        {
+          "class": "terminal xterm focus enable-mouse-events",
+          "height": 824,
+          "top": 36,
+          "position": "relative",
+          "padding": "6px 12px"
+        },
+        {
+          "class": "xterm-viewport",
+          "height": 824,
+          "top": 36,
+          "position": "absolute",
+          "padding": "0px"
+        },
+        {
+          "class": "xterm-screen",
+          "height": 800,
+          "top": 42,
+          "position": "relative",
+          "padding": "0px"
+        },
+        {
+          "class": "xterm-helpers",
+          "height": 0,
+          "top": 42,
+          "position": "absolute",
+          "padding": "0px"
+        }
+      ]
+    },
+    "layout": {
+      "main": {
+        "x": 280,
+        "y": 36,
+        "width": 1160,
+        "height": 864,
+        "top": 36,
+        "right": 1440,
+        "bottom": 900,
+        "left": 280
+      },
+      "directory": {
+        "x": 1070,
+        "y": 36,
+        "width": 370,
+        "height": 864,
+        "top": 36,
+        "right": 1440,
+        "bottom": 900,
+        "left": 1070
+      },
+      "terminal": {
+        "x": 280,
+        "y": 36,
+        "width": 790,
+        "height": 864,
+        "top": 36,
+        "right": 1070,
+        "bottom": 900,
+        "left": 280
+      },
+      "entry": {
+        "x": 1076.5,
+        "y": 156.09375,
+        "width": 357.5,
+        "height": 26,
+        "top": 156.09375,
+        "right": 1434,
+        "bottom": 182.09375,
+        "left": 1076.5
+      },
+      "border": "0.5px",
+      "font": "12px"
+    },
+    "heightUsage": {
+      "normal": 0.958139534883721,
+      "header": 36,
+      "window_id": 1,
+      "maximized": {
+        "height": 0.958139534883721,
+        "width": 1
+      },
+      "fullscreen": {
+        "height": 0.958139534883721,
+        "width": 1,
+        "native": true
+      }
+    },
+    "before": {
+      "thread_id": "01a20a3d-871c-7b31-9687-0db7b46dcbb8",
+      "generation": 1
+    },
+    "after": {
+      "thread_id": "01a20a3d-871c-7b31-9687-0db7b46dcbb8",
+      "generation": 3
+    },
+    "business": {
+      "status": "not_requested"
+    },
+    "packaged": false,
+    "errors": [],
+    "observations": {
+      "layout_changes_keep_window_thread_and_generation": true,
+      "after_generation_increase_reason": "after是明确关闭并重开引擎后的记录；全屏与最大化期间代次不变由测试单独断言",
+      "independent_sidebars_and_restore_original_widths": true,
+      "collapsed_sidebar_focus_restored": true,
+      "failed_fullscreen_notice_visible_and_dismissible": true,
+      "character_screen_fits_viewport_at_normal_maximized_fullscreen_reference_size_and_18px": true,
+      "business_not_repeated": true
+    },
+    "evidence_id": "ev_7d954356305ceca50463c1d771c56e425e716af033152b072411e649b783a0ca"
+  },
+  "packaged_validation": {
+    "verification": {
+      "manifest": "output/pty-codex/packaged-layout/hetu-dev-NtZZOD/manifest.json",
+      "source_sha256": "b8018907b75cd59216048a3ff0679138f178fa4179dd87a16fb226bd85a9facb",
+      "source_files": 2981,
+      "artifacts": 3719,
+      "errors": [],
+      "codesign_exit": 0,
+      "icon": {
+        "plist_file": "electron.icns",
+        "matches_source": true
+      }
+    },
+    "recovery": {
+      "packaged": true,
+      "thread_id": "01a20a59-1da2-72b0-bd1e-b3619cf0dbcc",
+      "before_generation": 1,
+      "after_generation": 2,
+      "engine_restored_generation": 3,
+      "original": {
+        "terminals": [
+          72850
+        ],
+        "engines": [
+          72774
+        ]
+      },
+      "current": {
+        "terminals": [
+          72895
+        ],
+        "engines": [
+          72774
+        ]
+      },
+      "restarted": {
+        "terminals": [
+          72989
+        ],
+        "engines": [
+          72915
+        ]
+      },
+      "stale_rejections": 2,
+      "messages": 0,
+      "nativeGeometry": {
+        "width": 1440,
+        "height": 875,
+        "dpr": 2,
+        "terminal": {
+          "x": 280,
+          "y": 36,
+          "width": 1160,
+          "height": 839,
+          "top": 36,
+          "right": 1440,
+          "bottom": 875,
+          "left": 280
+        },
+        "screen": {
+          "x": 292,
+          "y": 42,
+          "width": 1120,
+          "height": 816,
+          "top": 42,
+          "right": 1412,
+          "bottom": 858,
+          "left": 292
+        },
+        "window": {
+          "content": {
+            "x": 0,
+            "y": 25,
+            "width": 1440,
+            "height": 875
+          },
+          "scale": 2
+        }
+      }
+    },
+    "result_path": "output/pty-codex/validated-b8018907/recovery-result.json",
+    "manifest_path": "output/pty-codex/validated-b8018907/package-manifest.json",
+    "installed": false,
+    "production_signed": false,
+    "real_model_business_repeated": false,
+    "native_capture_scope": "作者宿主自己的隔离应用；匹配实际1440×875窗口与屏幕DPR2，原生截图包含窗口按钮与完整终端末行。",
+    "recovery_evidence_id": "ev_d10431b8daa4fe5714d659d550935021c391de5d92d22b51d479a01daf1c309d"
+  },
+  "hover_machine_settings": {
+    "schema_exposed_by_mcp": true,
+    "cli_prepared": true,
+    "mcp_executed": true,
+    "cli_readback": true,
+    "before": false,
+    "after": true,
+    "execution_mode": "auto",
+    "operation_id": "localop_e5feb7ee-3dd4-43c1-aeb4-794861cce903",
+    "settings_revision": 2
+  },
+  "terminal_interaction_changes": [
+    "重复查找快捷键重新聚焦并全选查询",
+    "Enter／Shift+Enter前后查找",
+    "空查询禁用前后按钮，无匹配就地提示",
+    "Escape／关闭返回原生输入",
+    "预览关闭快捷键仅关闭当前预览",
+    "鼠标聚焦默认关，设置即时生效",
+    "仅TUI持有输入权时聚焦，保留查找／菜单／表单／弹窗焦点"
+  ],
+  "interaction_validation": {
+    "verification": {
+      "manifest": "output/pty-codex/packaged-layout/hetu-dev-gKTTKb/manifest.json",
+      "source_sha256": "b58ac893541dfe022ffbc25df6c0cb6764e9f40c31425d033187fa8ad79f3e60",
+      "source_files": 2981,
+      "artifacts": 3719,
+      "errors": [],
+      "codesign_exit": 0,
+      "icon": {
+        "plist_file": "electron.icns",
+        "matches_source": true
+      },
+      "installed": false,
+      "production_signed": false
+    },
+    "interactions": {
+      "packaged": true,
+      "thread_id": "01a20ab2-ab52-7a33-b413-532d7be3d62a",
+      "generation": 1,
+      "messages": 0,
+      "checks": [
+        "shortcut-refocus",
+        "query-selection",
+        "simulated-composition-escape-guard",
+        "escape-return",
+        "empty-query-disabled",
+        "no-match",
+        "button-return",
+        "toolbar-toggle-return",
+        "context-menu-focus",
+        "next-previous",
+        "native-input-after-close",
+        "hover-default-off",
+        "hover-enabled-live",
+        "hover-preserves-search-form-and-dialog",
+        "hover-disabled-live"
+      ],
+      "limits": [
+        "composition事件模拟只验证界面边界，不替代系统原生输入法实测"
+      ]
+    },
+    "recovery": {
+      "packaged": true,
+      "thread_id": "01a20ab2-f244-7b51-bc0b-d2df95e4a6ff",
+      "before_generation": 1,
+      "after_generation": 2,
+      "engine_restored_generation": 3,
+      "original": {
+        "terminals": [
+          10740
+        ],
+        "engines": [
+          10640
+        ]
+      },
+      "current": {
+        "terminals": [
+          10798
+        ],
+        "engines": [
+          10640
+        ]
+      },
+      "restarted": {
+        "terminals": [
+          11046
+        ],
+        "engines": [
+          10963
+        ]
+      },
+      "stale_rejections": 2,
+      "messages": 0,
+      "nativeGeometry": {
+        "width": 1440,
+        "height": 875,
+        "dpr": 2,
+        "terminal": {
+          "x": 280,
+          "y": 36,
+          "width": 1160,
+          "height": 839,
+          "top": 36,
+          "right": 1440,
+          "bottom": 875,
+          "left": 280
+        },
+        "screen": {
+          "x": 292,
+          "y": 42,
+          "width": 1120,
+          "height": 816,
+          "top": 42,
+          "right": 1412,
+          "bottom": 858,
+          "left": 292
+        },
+        "window": {
+          "content": {
+            "x": 0,
+            "y": 25,
+            "width": 1440,
+            "height": 875
+          },
+          "scale": 2
+        }
+      }
+    },
+    "layout": {
+      "work": {
+        "kind": "novel",
+        "object_id": "novel_00881acc-16d8-46c2-b248-88615949aeb7",
+        "workspace_id": "workspace_9bfece1b-42f9-41b0-a1e1-b43d6541dca9"
+      },
+      "thread_id": "01a20ab3-5871-7fc3-9003-49e884378aaf",
+      "nativeNew": "01a20ab3-90f0-7282-9458-a141ab79d9a0",
+      "geometry": {
+        "height": 824,
+        "width": 650,
+        "scrollHeight": 824,
+        "children": [
+          {
+            "class": "terminal xterm focus enable-mouse-events",
+            "height": 824,
+            "top": 36,
+            "position": "relative",
+            "padding": "6px 12px"
+          },
+          {
+            "class": "xterm-viewport",
+            "height": 824,
+            "top": 36,
+            "position": "absolute",
+            "padding": "0px"
+          },
+          {
+            "class": "xterm-screen",
+            "height": 800,
+            "top": 42,
+            "position": "relative",
+            "padding": "0px"
+          },
+          {
+            "class": "xterm-helpers",
+            "height": 0,
+            "top": 42,
+            "position": "absolute",
+            "padding": "0px"
+          }
+        ]
+      },
+      "layout": {
+        "main": {
+          "x": 280,
+          "y": 36,
+          "width": 1160,
+          "height": 864,
+          "top": 36,
+          "right": 1440,
+          "bottom": 900,
+          "left": 280
+        },
+        "directory": {
+          "x": 1070,
+          "y": 36,
+          "width": 370,
+          "height": 864,
+          "top": 36,
+          "right": 1440,
+          "bottom": 900,
+          "left": 1070
+        },
+        "terminal": {
+          "x": 280,
+          "y": 36,
+          "width": 790,
+          "height": 864,
+          "top": 36,
+          "right": 1070,
+          "bottom": 900,
+          "left": 280
+        },
+        "entry": {
+          "x": 1076.5,
+          "y": 156.09375,
+          "width": 357.5,
+          "height": 26,
+          "top": 156.09375,
+          "right": 1434,
+          "bottom": 182.09375,
+          "left": 1076.5
+        },
+        "border": "0.5px",
+        "font": "12px"
+      },
+      "heightUsage": {
+        "normal": 0.958139534883721,
+        "header": 36,
+        "window_id": 1,
+        "maximized": {
+          "height": 0.958139534883721,
+          "width": 1
+        },
+        "fullscreen": {
+          "height": 0.958139534883721,
+          "width": 1,
+          "native": true
+        }
+      },
+      "before": {
+        "thread_id": "01a20ab3-5871-7fc3-9003-49e884378aaf",
+        "generation": 1
+      },
+      "after": {
+        "thread_id": "01a20ab3-5871-7fc3-9003-49e884378aaf",
+        "generation": 3
+      },
+      "business": {
+        "status": "not_requested"
+      },
+      "drafted": {
+        "thread_id": "01a20ab3-5871-7fc3-9003-49e884378aaf",
+        "state": "ready",
+        "messages": 0
+      },
+      "packaged": true,
+      "errors": []
+    },
+    "source_manifest": "output/pty-codex/interactions-implementation-manifest.json",
+    "artifact_manifest": "output/pty-codex/interactions-artifact-manifest.json",
+    "capture_manifest": "output/pty-codex/validated-b58ac893/capture-manifest.json",
+    "screenshots": [
+      {
+        "path": "output/pty-codex/validated-b58ac893/desktop-tui-dark.png",
+        "sha256": "2c9b95e8042e57698429c203d86f394bdd14a64fceaad85f0cbddb475b603443",
+        "width": 980,
+        "height": 720
+      },
+      {
+        "path": "output/pty-codex/validated-b58ac893/desktop-tui-directory.png",
+        "sha256": "4b3aed0f9fefa050ed1b8be4679b71ec8a491f98b168e2c407c5e6e1b72d71ca",
+        "width": 1440,
+        "height": 900
+      },
+      {
+        "path": "output/pty-codex/validated-b58ac893/desktop-tui-fullscreen.png",
+        "sha256": "018e86356238adcf8130f97af806329a2db938ea5725483e7b05bc09d61ba1db",
+        "width": 1280,
+        "height": 860
+      },
+      {
+        "path": "output/pty-codex/validated-b58ac893/desktop-tui-light.png",
+        "sha256": "07c2527781b31180b34e8e0bca8cf2b48823e95873f1f22295b030a59f387493",
+        "width": 1280,
+        "height": 860
+      },
+      {
+        "path": "output/pty-codex/validated-b58ac893/desktop-tui-maximized.png",
+        "sha256": "d40e0e19fab82fb28367e7a0afa98e7dd9b02a6adca881bc885b440e14b2c9d7",
+        "width": 1280,
+        "height": 860
+      },
+      {
+        "path": "output/pty-codex/validated-b58ac893/desktop-tui-narrow.png",
+        "sha256": "9369f8311e45f216daf3217efabd79e294b35c9ac67e8ecd4c059de6b9490185",
+        "width": 980,
+        "height": 720
+      },
+      {
+        "path": "output/pty-codex/validated-b58ac893/desktop-tui-preview.png",
+        "sha256": "691fa99b014d9529fdc5941f58b6dbf6c97d08b6defc94fa9dabd63e4fed0497",
+        "width": 1440,
+        "height": 900
+      },
+      {
+        "path": "output/pty-codex/validated-b58ac893/desktop-tui-reference-size.png",
+        "sha256": "632e28c3cb0c7cf7b33ae54c4f78e66b4a822526ea1093db8052fce1253bcbb9",
+        "width": 2560,
+        "height": 1285
+      },
+      {
+        "path": "output/pty-codex/validated-b58ac893/desktop-tui-settings.png",
+        "sha256": "f766ef1a0cc6bb043a2ed4b0d2e78c04f6356603668e9a8ae89c56b4b5099b45",
+        "width": 2880,
+        "height": 1750
+      },
+      {
+        "path": "output/pty-codex/validated-b58ac893/desktop-tui-writing-draft.png",
+        "sha256": "c96d44d32fed43f4263d2a4f7814635531676a67224a94a732bf6f08266f48cb",
+        "width": 980,
+        "height": 720
+      },
+      {
+        "path": "output/pty-codex/validated-b58ac893/fixed-revision-preview.png",
+        "sha256": "9f308ff1fb2e0be0dbca166dd9fc7a572aa03b6f6d15b4a32733ad2ee0a4669c",
+        "width": 1440,
+        "height": 900
+      },
+      {
+        "path": "output/pty-codex/validated-b58ac893/preview-keyboard-and-recovery.png",
+        "sha256": "146abc7da228b5b6513bd92d8ae8f00a000b18ae5c06c5b7d7733d2c257c92df",
+        "width": 1440,
+        "height": 900
+      },
+      {
+        "path": "output/pty-codex/validated-b58ac893/preview-tab-menu.png",
+        "sha256": "e2e40dd86e34ad66d94647f3ab77a8913d83f7f28ff90127f039bccc8a1c6598",
+        "width": 1440,
+        "height": 900
+      },
+      {
+        "path": "output/pty-codex/validated-b58ac893/reconnected-native-window.png",
+        "sha256": "dab531f3e1324afd1105243bb0c60f41c45127728cb9f08283db99e86e4f6ce4",
+        "width": 2880,
+        "height": 1750
+      },
+      {
+        "path": "output/pty-codex/validated-b58ac893/reconnected-terminal.png",
+        "sha256": "700c3bd6e79d78c716eff449a90032b491a5864735424307de2457b15d9a9227",
+        "width": 1440,
+        "height": 900
+      },
+      {
+        "path": "output/pty-codex/validated-b58ac893/terminal-search-no-match.png",
+        "sha256": "5715353145d86d246307c280093422ec334e3973d659fdb5d2e1851e90ef0001",
+        "width": 1440,
+        "height": 900
+      },
+      {
+        "path": "output/pty-codex/validated-b58ac893/terminal-search.png",
+        "sha256": "e153433c538d889e7a27a4cb8fbc7c6184ddcf4eff0d9b0b42bcd03edec983e8",
+        "width": 1440,
+        "height": 900
+      }
+    ],
+    "installed": false,
+    "model_turns_submitted": 0
+  },
+  "latest_installation": {
+    "date": "2026-11-24",
+    "target": "/Applications/Hetu.app",
+    "version": "0.14.0",
+    "source_sha256": "b58ac893541dfe022ffbc25df6c0cb6764e9f40c31425d033187fa8ad79f3e60",
+    "receipt": "output/pty-codex/local-installation-2026-11-24.json",
+    "installed_verification": {
+      "files_and_links": 3131,
+      "codesign_exit": 0,
+      "errors": [],
+      "version": "0.14.0",
+      "bundle_id": "run.limeai.hetu"
+    },
+    "installed_test": {
+      "passed": 1,
+      "log": "output/pty-codex/installed-interactions-20261124.log",
+      "sha256": "c6785bb5d6727c3be27bae36dd53c7bde48b542481b027155976cb63feb19485",
+      "real_codex": true,
+      "isolated_profile": true,
+      "model_messages": 0
+    },
+    "normal_launch": {
+      "verified_at": "2026-11-23T23:36:53.086372+00:00",
+      "pid": 1502,
+      "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+      "ui_ready": true,
+      "creative_library_count": 19,
+      "original_library_index_unchanged": true,
+      "settings_schema_version": 5,
+      "settings_revision": 19,
+      "execution_policy_revision_unchanged": true,
+      "existing_preferences_and_associations_preserved": true,
+      "hover_default": false,
+      "migration_original_digest_matches": true
+    },
+    "old_app_backup_created": false,
+    "external_mcp_processes_terminated": false
+  }
+}

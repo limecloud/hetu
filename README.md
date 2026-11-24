@@ -1,12 +1,12 @@
 # 河图洛书 Hetu Luoshu
 
-> 免费开源的本地小说、剧本与视频创作工作台。MCP、CLI、Skills 与桌面界面并列为一等入口。
+> 让 AI 围绕你的作品持续创作。面向小说、剧本与叙事视频的本地创作工作台。
 
 [English](README.en.md) / [官网](https://hetu.limeai.run) / [在线体验](https://hetu.limeai.run/#prototype) / [使用指南](https://hetu.limeai.run/docs/)
 
 ## 简介
 
-从创作库分别进入小说、剧本和视频，也可以沿固定来源从原著继续改编、从剧本继续制作。河图洛书面向小说作者、编剧与短剧创作者，保存作品、设定、资料、修订和作者决定，让外部Agent的成果可阅读、观看、比较并继续创作。
+从一个片段、一部小说或一份剧本开始。你决定作品方向，熟悉的 AI 推进具体工作；稿件、设定、素材和修改意见围绕同一作品接续。河图洛书面向小说作者、编剧与短剧创作者，保存作品、设定、资料、修订和作者决定，让外部Agent的成果可阅读、观看、比较并继续创作。
 
 **让越来越强的 AI，围绕作者持续积累的作品工作；让每一次生成，都有机会成为可理解、可选择、可继续创作的成果。**
 
@@ -26,13 +26,19 @@
 | MCP App | 在支持的宿主内使用同一工作台阅读、编辑、比较和审核，直接打开本机登记作品 |
 | CLI | 按需发现能力、只读诊断版本、调用受限动作、分块回读原操作与恢复任务 |
 | Skills | 为作者选用的外部 Agent 提供题材方法与任务步骤 |
-| 桌面客户端 | 优先审阅成果、比较差异与确认决定；随时手动编辑优化 |
+| 桌面客户端 | 选择已安装引擎，在内嵌终端表达目标；在作品旁阅读、比较、提意见与作决定，随时手动编辑 |
+
+桌面终端在创建面板中选择本机Shell、Codex、Claude Code、Gemini CLI或OpenCode，创建后直接连接PTY。引擎使用各自本机安装与认证，模型按实际发现能力选择；Codex可在聊天和终端间切换并恢复原线程，其他原生CLI在终端中管理模型与会话。终端字体、字号、主题和滚动设置位于“设置 → AI协作”。具体交互见[会话工作面](docs/10-原生客户端与交互设计.md#codex-会话工作面与设置)。
 
 稳定 MCP 默认使用精简工具目录，通过 `hetu_call_action` 调用已发现动作；需要完整目录可使用 `hetu-mcp --client codex --all-tools`。CLI 使用 `hetu --client codex doctor` 查看运行与随包方法版本。接入、分块读取和任务接续见[机器合同](docs/13-内核ABI与CLI合同.md#机器发现诊断与有界恢复)。
 
 在河图的“设置 → AI协作”中，“安装到 Codex Desktop”分别提供“安装 MCP App”和“安装 Skills 套件”。确认固定安装方案后由河图完成安装，再刷新或重启 Codex Desktop。MCP App 与桌面使用同一创作库和工作台，点击已登记作品直接进入阅读与编辑，无需逐作品授权或复制接入请求。采纳、定稿等决定仍展示固定结果并确认；外部 Agent 的机器范围独立管理。安装登记与当前 GUI 已加载分别显示。
 
 这些入口共用内核、作品、权限与修订。通用 Agent 的推理、上下文管理、工具调度和执行恢复需要长期投入，Codex、Claude Code、WorkBuddy 等产品专注于此。河图提供它们可以操作的创作软件；可选文字与图片模型通过河图网站服务端连接 Lime Cloud，作者批准内容外发与任务费用范围。也可在本机配置自定义渠道，由 CLI／MCP 封装供外部 Agent 调用；密钥只保存在本机私密存储。推理与工具循环由所选Agent引擎负责，Core负责获权作品操作；外部MCP App与独立桌面的职责见[双入口设计](docs/27-Agent与Codex插件集成设计.md#11-双入口协作)。
+
+## 何时使用
+
+需要跨会话接续作品、固定修改依据、比较方案或组织交付时使用河图。临时问答、起名和试一句对白，当前 Agent 与普通文件足够时直接完成；查询已有作品只读即可。无需先建完整设定、大纲或导入全部资料。
 
 ## 角色分流
 
@@ -100,6 +106,8 @@ npm run start:desktop
 
 Electron 的非敏感偏好与所选创作方法通过“本机设置”审阅，CLI/MCP 复用独立本机服务。开发隔离可用 `HETU_LOCAL_SETTINGS_DIR` 指向绝对目录；模型渠道使用独立的 `HETU_MODEL_SERVICE_DIR`。桌面调试的 `HETU_DESKTOP_PROFILE` 同时隔离本机设置和模型渠道。套件资源来自 `integrations/catalog.json` 和 `integrations/codex/`，随开发应用装配；安装状态与当前外部 Agent 会话加载分别核对。
 
+“AI 协作”中的“焦点随鼠标移动”默认关闭，对应共享设置 `preferences.agent_session.terminal_focus_on_hover`；开启后鼠标进入在线终端时聚焦输入，查找、表单和弹窗保留焦点。
+
 ### 构建与测试
 
 独立 Rust CLI 与 MCP 共用 Core，可单独构建和运行：
@@ -124,6 +132,8 @@ cargo test --locked --workspace --jobs 2
 GitHub Actions 的 `CI` 执行 Electron、Rust 与网页测试；`Electron release` 从 `main` 手动构建三平台下载包，推送匹配版本的 `v*.*.*` 标签时，在全部平台验证通过后发布 GitHub Release，再发布同版本 `@limecloud/hetu` 到 npmjs。Mac 包执行签名与公证。发布凭据与制品下载方式见[构建规范](docs/21-构建分发与运维.md#61-github-actions)。
 
 ## 配置与接入
+
+终端自动查找已安装的客户端。需要指定入口时，可设置`HETU_CODEX_BIN`、`HETU_CLAUDE_CODE_BIN`、`HETU_GEMINI_BIN`、`HETU_OPENCODE_BIN`或`HETU_SHELL_BIN`，值为本机可执行文件路径。
 
 作品内容工作区与软件源码分开存放。外部 Agent 的客户端与题材 Skills 可在作品资料的“AI 协作”中选择，在“设置 → AI 协作”中管理默认客户端。
 

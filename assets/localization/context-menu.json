@@ -107,6 +107,24 @@
     "purpose": "共享上下文菜单",
     "parameters": []
   },
+  "context.order": {
+    "zh-CN": "段落顺序",
+    "en": "Block Order",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.move_up": {
+    "zh-CN": "上移",
+    "en": "Move Up",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.move_down": {
+    "zh-CN": "下移",
+    "en": "Move Down",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
   "context.group": {
     "zh-CN": "分组",
     "en": "Group",
@@ -248,6 +266,36 @@
   "context.redo": {
     "zh-CN": "重做",
     "en": "Redo",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.sort": {
+    "zh-CN": "排序",
+    "en": "Sort",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.sort_ascending": {
+    "zh-CN": "排序 A → Z",
+    "en": "Sort A → Z",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.sort_descending": {
+    "zh-CN": "排序 Z → A",
+    "en": "Sort Z → A",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.move_to": {
+    "zh-CN": "移至…",
+    "en": "Move to…",
+    "purpose": "共享上下文菜单",
+    "parameters": []
+  },
+  "context.restore_move": {
+    "zh-CN": "撤销跨文稿移动",
+    "en": "Undo document move",
     "purpose": "共享上下文菜单",
     "parameters": []
   }

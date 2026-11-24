@@ -5,6 +5,13 @@ description: "作者选择河图洛书体育赛事套件时，作者需要在河
 
 # 河图洛书作品与设置管理
 
+## 本次是否需要保存
+
+先区分只读、明确管理变更与作者关键决定。只读不准备写计划；auto在明确目标内连续操作，confirm集中确认，已在对话作出的确切决定不要求GUI重做。不要为组织完整性新建空任务。
+
+统一判断见[任务合同](../../references/task-contract.md#参与程度与停止条件)。
+
+
 先按[统一执行模式](../../references/execution-modes.md)读取实际设置：默认auto直接处理当前工作区，confirm先读后集中确认本次写入。本规则优先于下文旧授权流程，任务引用继续用于定位、来源和恢复。
 
 先读[任务合同](../../references/task-contract.md)和[管理工作法](../../references/workflows/management.md)。涉及题材判断时仅结合[本包题材方法](../../references/genre.md)的当前环节，不叠加其他套件。

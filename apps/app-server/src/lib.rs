@@ -189,6 +189,13 @@ impl Server {
                     }
                 }
             }
+            "collaboration/directory" if self.state == State::Ready => {
+                if !params.is_object() || !params.as_object().unwrap().is_empty() { return Some(error(id.clone(), -32602, "协作目录请求不接受参数。")); }
+                match hetu_core::collaboration::default_directory() {
+                    Ok(directory) => json!({"directory":directory}),
+                    Err(e) => return Some(error(id.clone(), -32602, &e.message)),
+                }
+            }
             "plugins/directory" if self.state == State::Ready => {
                 match hetu_core::plugin_settings::directory() {
                     Ok(directory) => json!({"directory":directory}),

@@ -60,6 +60,8 @@ async function call(method:string,args:any[]=[]):Promise<any>{
 }
 const bridge=new Proxy({} as DesktopBridge,{
  get(_target,method:string){
+  if(method==="promptDelivery")return host.features().messages ? {drafts:host.features().drafts,send:(text:string,mode:"send"|"draft")=>host.sendText(text,"active",mode==="send")} : undefined;
+  if(method==="agentSessionHost")return false;
   if(method==="windowControls"){const modes=host.getHostContext()?.availableDisplayModes;return {interfaceScale:false,zoom:!!(modes?.includes("fullscreen")&&modes.includes("inline"))};}
   if(method==="bounds")return async()=>{};
   if(method==="zoom")return async()=>{const context=host.getHostContext(),mode=context?.displayMode==="fullscreen"?"inline":"fullscreen";if(context?.availableDisplayModes?.includes(mode))await host.requestDisplayMode({mode});};

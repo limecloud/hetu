@@ -25,6 +25,7 @@ type ToolResult = { structuredContent?: unknown; content?: { type: string; text?
 export function mountTaskReview(app: AppHost, root: HTMLElement) {
 const manuscriptRoots: {renderer: Root; content: string; title: string}[] = [];
 let readingPreferences: Record<string, any> = {}, readingKind: "novel" | "screenplay" = "novel";
+let renderPreferences: Record<string, any> = {};
 function syncReading(context = app.getHostContext()) {
   const previousKind = readingKind;
   const value = context?.["hetu/reading"] as {kind?: string; preferences?: Record<string, any>} | undefined;
@@ -32,12 +33,15 @@ function syncReading(context = app.getHostContext()) {
   const kind = value?.kind ?? data?.request.input_snapshot.scope_context?.work_ref?.kind;
   readingKind = kind === "screenplay" || kind === "drama" || (!kind && data?.request.task_kind === "drama_draft") ? "screenplay" : "novel";
   root.classList.add("reading-surface"); root.dataset.documentTheme = readingPreferences.document_theme ?? "system";
-  for (const [key, value] of Object.entries(readingStyle(readingProfile(readingPreferences, readingKind)))) root.style.setProperty(key, value);
+  const profile = readingProfile(readingPreferences, readingKind);
+  if (!Object.keys(readingPreferences).length && readingKind === "novel") profile.font_size = 20;
+  renderPreferences = {...readingPreferences, reading_profiles: {...(readingPreferences.reading_profiles ?? {}), [readingKind]: profile}};
+  for (const [key, value] of Object.entries(readingStyle(profile))) root.style.setProperty(key, value);
   for (const item of manuscriptRoots) renderManuscript(item);
   return previousKind !== readingKind;
 }
 function renderManuscript({renderer, content, title}: {renderer: Root; content: string; title: string}) {
-  renderer.render(React.createElement(ManuscriptReading, {text: content, title, label: title, format: readingKind === "screenplay" ? "fountain" : "markdown", kind: readingKind, preferences: readingPreferences, language: locale}));
+  renderer.render(React.createElement(ManuscriptReading, {text: content, title, label: title, format: readingKind === "screenplay" ? "fountain" : "markdown", kind: readingKind, preferences: renderPreferences, language: locale}));
 }
 function manuscript(content: string, title: string) {
   const element = document.createElement("div"); element.className = "reference-content";
@@ -251,7 +255,7 @@ function render() {
       });
       copy.disabled ||= !connected || !!pending || stale;
       continuation.append(copy);
-      if (app.features().messages) {
+      if (app.features().messages && app.features().directSend) {
         const send = button(t("send"), () => sendContinuation());
         send.disabled ||= !connected || !!pending || stale || delivery !== "not_requested";
         continuation.append(send);

@@ -1,0 +1,530 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-11-22",
+  "status": "partial",
+  "scope": "完整块字母排序与共享右键菜单滚动时序；隔离资料开发制品",
+  "changes": [
+    "选区完整块A→Z／Z→A；按可见文字与当前界面语言比较，不按隐藏格式或自然数排序。",
+    "升序大小写折叠后等价项稳定，重音按语言比较，降序反转完整升序结果。",
+    "围栏、列表续行、引用、Setext标题、样式容器、卡片及内页作为完整范围处理；内页标题及外部范围不参与排序。",
+    "原块内字节及混合换行分隔槽保持，选择方向保持，整次排序一次撤销／重做，持久化沿现有documents.save。",
+    "右键先完成语法解析并使用返回树，避免长文末尾围栏被旧的局部树拆开；批量源位置索引只构建一次。",
+    "共享菜单记录打开时的滚动位置，忽略此前已完成滚动的延迟事件，之后真实滚动仍关闭菜单。"
+  ],
+  "reference_observation": {
+    "source": "macOS系统窗口截图及隔离文档鼠标键盘操作；非调研服务ev证据，未读取目标内部文件。",
+    "viewport": {
+      "width_points": 1440,
+      "height_points": 797,
+      "scale": 2,
+      "window_origin": [
+        0,
+        25
+      ]
+    },
+    "samples": [
+      {
+        "before": [
+          "zebra",
+          "Apple",
+          "apple",
+          "item 10",
+          "item 2",
+          "Éclair",
+          "éclair",
+          "ß",
+          "ss",
+          "🌿"
+        ],
+        "ascending": [
+          "🌿",
+          "Apple",
+          "apple",
+          "Éclair",
+          "éclair",
+          "item 10",
+          "item 2",
+          "ß",
+          "ss",
+          "zebra"
+        ]
+      },
+      {
+        "before": [
+          "apple",
+          "Apple",
+          "éclair",
+          "Eclair",
+          "Éclair",
+          "eclair",
+          "ss",
+          "ß",
+          "a 10",
+          "a 2",
+          "Zebra",
+          "zebra"
+        ],
+        "ascending": [
+          "a 10",
+          "a 2",
+          "apple",
+          "Apple",
+          "éclair",
+          "Éclair",
+          "Eclair",
+          "eclair",
+          "ss",
+          "ß",
+          "Zebra",
+          "zebra"
+        ],
+        "descending_from_ascending": [
+          "zebra",
+          "Zebra",
+          "ß",
+          "ss",
+          "eclair",
+          "Eclair",
+          "Éclair",
+          "éclair",
+          "Apple",
+          "apple",
+          "a 2",
+          "a 10"
+        ],
+        "undo_restores_ascending": true
+      }
+    ],
+    "screenshots": [
+      {
+        "path": "output/block-sort-review-20261122/hetu-reference-case-sample-ascending-20261122.png",
+        "sha256": "23c9dffa393c353a134e1bcea2c980da86e11659a03ee72c82aec83df8459aa7"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-reference-case-sample-before-20261122.png",
+        "sha256": "11c49130234c6a60b1f0193e8ff585543484e01dc4fb292860cb2db6f53f4079"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-reference-case-sample-descending-20261122.png",
+        "sha256": "9f42839c60dba43444dcf97786bfe1d8675c5c9fe8ba7ac7f8be2c390f0d8e49"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-reference-case-sample-descending-undone-20261122.png",
+        "sha256": "88b0b8afe6a0336d763d5d74c5bf144de3725fa41194f9e364893d37e89ca30d"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-reference-case-sample-sort-menu-20261122.png",
+        "sha256": "cb727437a9bbaaef52fdd2c40cb1d74c56a2bb8507329dd497ce501b3d5c026f"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-reference-case-sample-sort-menu-second-20261122.png",
+        "sha256": "ced6ef1c8a3c73d84fa76354eb997e8afd02295fa54900f8704b07ba16bd9590"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-reference-sort-sample-ascending-20261122.png",
+        "sha256": "adaf5aa00387c7d8649a8b22bdfdc21b7f61a1cd8395254e725d18c9d6dd12ad"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-reference-sort-sample-before-20261122.png",
+        "sha256": "2b283930893f957503835710abd43ac68869d76fae5d1cb8a953073ffad69ed4"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-reference-sort-sample-cases-20261122.png",
+        "sha256": "8559943f2909ad675b74db87623480d384057960e213a7d1b01c6ed333dd5e41"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-reference-sort-sample-menu-20261122.png",
+        "sha256": "f17232a0919024ff404e95c6c30844591f15e4a20dbc44c22aeda3ea20712131"
+      }
+    ],
+    "limit": "仅已采样字符与当前中文系统环境；不据样本声称全部语言或跨文稿移动已验证。"
+  },
+  "validation": {
+    "models": {
+      "passed": 31,
+      "failed": 0,
+      "report": {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-final-models-20261122.log",
+        "sha256": "d7d57c528c281c23f7ace37eedcf48cd44bda75482423314faa135c513f954a2"
+      }
+    },
+    "accepted_desktop": {
+      "path": "output/block-sort-review-20261122/hetu-block-sort-accepted-desktop-20261122.json",
+      "sha256": "9f2a2c44ecdff3ea2273fd1526cb6906f6dfe7975b01c8fb2ea12ef74745ce0a",
+      "stats": {
+        "startTime": "2026-11-22T00:13:17.365Z",
+        "duration": 15710.514,
+        "expected": 2,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    "accepted_mcp": {
+      "path": "output/block-sort-review-20261122/hetu-block-sort-accepted-mcp-20261122.json",
+      "sha256": "1366d101beb73f82aeed7ab97a09b9d1ed5e654d8815d547ee9be20dd23a0c7e",
+      "stats": {
+        "startTime": "2026-11-22T00:13:42.867Z",
+        "duration": 22557.506999999998,
+        "expected": 2,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    "mcp_transports": [
+      "stdio",
+      "官方Codex CLI 0.171.0 app-server工具及资源转发；不启动模型轮次"
+    ],
+    "mcp_sort_coverage": "混合换行12块大小写／重音样本、真实Core保存回读、浅色1440×797、暗色760×700、降序及一次撤销、严格JSON及pageerror。",
+    "earlier_complete_mcp_journey": {
+      "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122.json",
+      "sha256": "4dd3ecdbcceaedd53cd524997e297ce8d6c8ed1e88a144badc2f140d503c05bb",
+      "stats": {
+        "startTime": "2026-11-21T23:57:55.018Z",
+        "duration": 395160.079,
+        "expected": 2,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    "earlier_complete_mcp_boundary": "早于最终Unicode比较与菜单滚动修正；之后定向两端复验分别记录，不把旧资源称为最终制品。",
+    "initial_failures": [
+      {
+        "report": {
+          "path": "output/block-sort-review-20261122/hetu-block-sort-final-desktop-20261122.json",
+          "sha256": "808152455f96a9062b8c0f9df350a0b0cf75c5e1bdbe2362cf33bc1a8a564783",
+          "stats": {
+            "startTime": "2026-11-22T00:08:48.613Z",
+            "duration": 22256.902,
+            "expected": 1,
+            "skipped": 0,
+            "unexpected": 1,
+            "flaky": 0
+          }
+        },
+        "reason": "菜单打开前已完成的定位滚动延迟派发，原实现无条件关菜单。"
+      },
+      {
+        "report": {
+          "path": "output/block-sort-review-20261122/hetu-block-sort-menu-repeat-20261122.json",
+          "sha256": "1419574dfff4588150c850aac7212b58f23f29ddc82205d3919b64e245fb3d7a",
+          "stats": {
+            "startTime": "2026-11-22T00:10:59.590Z",
+            "duration": 12401.261,
+            "expected": 0,
+            "skipped": 0,
+            "unexpected": 1,
+            "flaky": 0
+          }
+        },
+        "reason": "重复缩窗及搜索确定性复现；menu-events附件保留focus、contextmenu、scroll次序。"
+      },
+      {
+        "report": {
+          "path": "output/block-sort-review-20261122/hetu-block-sort-menu-fixed-repeat-20261122.json",
+          "sha256": "304fd11f462b5b48e07d52e1ade167522ee5f7c2159476dfb93e0b3f45c8da41",
+          "stats": {
+            "startTime": "2026-11-22T00:12:34.300Z",
+            "duration": 8816.366,
+            "expected": 1,
+            "skipped": 0,
+            "unexpected": 0,
+            "flaky": 0
+          }
+        },
+        "reason": "修正后八轮缩窗及搜索通过；最终去掉诊断并新增真实滚动关闭断言。"
+      }
+    ],
+    "resource_manifest": {
+      "path": "apps/mcp/resources/workbench.manifest.json",
+      "sha256": "39185e5fa0ab46b58570499851ba1c4e762c8bb1fbcf8840226ca1634bb69c93"
+    },
+    "screenshots": [
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-accepted-desktop-20261122/context-menus-右键固定选区、格式子菜单、块事务、批注、目录改名与原生输入撤销/context-document-copy.png",
+        "sha256": "e1747aac88b4626f008417a471a74d95155b71de690b02fa376d01732eed0949"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-accepted-desktop-20261122/context-menus-右键固定选区、格式子菜单、块事务、批注、目录改名与原生输入撤销/context-input-light.png",
+        "sha256": "b37ee1eec5dd1b3f9fbb5e624e4ae9613642b54d492c2710da72c64d2f5d45d0"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-accepted-desktop-20261122/context-menus-右键固定选区、格式子菜单、块事务、批注、目录改名与原生输入撤销/context-library-narrow.png",
+        "sha256": "e97c14b62673bb8be579ef1fb5b8728245e159047ef511fa6dfe5620aee1add2"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-accepted-desktop-20261122/inline-editing-光标格式、组合文字、删除清理与列表键盘在实际编辑和保存后保持一致/inline-color-and-font-dark.png",
+        "sha256": "3ec9ce42c84df987e612d4b14826627e5a68c5b6bf536c452d612000ae28ee01"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-accepted-desktop-20261122/inline-editing-光标格式、组合文字、删除清理与列表键盘在实际编辑和保存后保持一致/inline-color-and-font.png",
+        "sha256": "fc713a7ba7e60291a950473e130a31d21950728247bf12716b496927fc662666"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-accepted-desktop-20261122/inline-editing-光标格式、组合文字、删除清理与列表键盘在实际编辑和保存后保持一致/inline-input-and-lists.png",
+        "sha256": "1fbed6ea1e9bb2507a1ac84d19f9f0c90da95962d41b48b1fc736722ac09cdab"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-accepted-mcp-20261122/editor-sort-codex-块字母排序、固定源保存、浅暗窄窗及单次撤销/codex-sort-dark-narrow.png",
+        "sha256": "9cb91cd263a41ab24c10d2ec76fa7984748e283b572a7ef3efbd7adc4ee88457"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-accepted-mcp-20261122/editor-sort-codex-块字母排序、固定源保存、浅暗窄窗及单次撤销/codex-sort-light.png",
+        "sha256": "8fab21ac8c4bf2364218202176b3b2cf7cd41c31ee584784fa9e707b7d76795b"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-accepted-mcp-20261122/editor-sort-stdio-块字母排序、固定源保存、浅暗窄窗及单次撤销/stdio-sort-dark-narrow.png",
+        "sha256": "9cb91cd263a41ab24c10d2ec76fa7984748e283b572a7ef3efbd7adc4ee88457"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-accepted-mcp-20261122/editor-sort-stdio-块字母排序、固定源保存、浅暗窄窗及单次撤销/stdio-sort-light.png",
+        "sha256": "c2d125dc949b1aae20ed417e6f198abccc347cad79da58f5355b36637cc958ae"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-desktop-20261122/context-menus-右键固定选区、格式子菜单、块事务、批注、目录改名与原生输入撤销/context-document-copy.png",
+        "sha256": "e1747aac88b4626f008417a471a74d95155b71de690b02fa376d01732eed0949"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-desktop-20261122/context-menus-右键固定选区、格式子菜单、块事务、批注、目录改名与原生输入撤销/context-input-light.png",
+        "sha256": "b37ee1eec5dd1b3f9fbb5e624e4ae9613642b54d492c2710da72c64d2f5d45d0"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-desktop-20261122/context-menus-右键固定选区、格式子菜单、块事务、批注、目录改名与原生输入撤销/context-library-narrow.png",
+        "sha256": "e97c14b62673bb8be579ef1fb5b8728245e159047ef511fa6dfe5620aee1add2"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-desktop-20261122/inline-editing-光标格式、组合文字、删除清理与列表键盘在实际编辑和保存后保持一致/inline-color-and-font-dark.png",
+        "sha256": "cfdc13d1dc1a9d6f6492eb85441205f2484b155a7b4cbb3dde52c7057856e6ec"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-desktop-20261122/inline-editing-光标格式、组合文字、删除清理与列表键盘在实际编辑和保存后保持一致/inline-color-and-font.png",
+        "sha256": "c1ea5c47d1a1112b23e5298a066c7f69fbf4d84fd80079c76de9b72f0eed7c32"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-desktop-20261122/inline-editing-光标格式、组合文字、删除清理与列表键盘在实际编辑和保存后保持一致/inline-input-and-lists.png",
+        "sha256": "f6035d05f3b27c0808a637dbbf0e6ecb58607e90271c140146fd942e2b2fde06"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-final-desktop-20261122/context-menus-右键固定选区、格式子菜单、块事务、批注、目录改名与原生输入撤销/context-document-copy.png",
+        "sha256": "e1747aac88b4626f008417a471a74d95155b71de690b02fa376d01732eed0949"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-final-desktop-20261122/context-menus-右键固定选区、格式子菜单、块事务、批注、目录改名与原生输入撤销/context-input-light.png",
+        "sha256": "b37ee1eec5dd1b3f9fbb5e624e4ae9613642b54d492c2710da72c64d2f5d45d0"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-final-desktop-20261122/inline-editing-光标格式、组合文字、删除清理与列表键盘在实际编辑和保存后保持一致/inline-color-and-font-dark.png",
+        "sha256": "66b394bfe55729b0334e806bbe2f07c66a0c57f7bca7a5a4fe5e9602a3b1c90f"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-final-desktop-20261122/inline-editing-光标格式、组合文字、删除清理与列表键盘在实际编辑和保存后保持一致/inline-color-and-font.png",
+        "sha256": "75ec048c29640fec0f90a5f97951c46f3a24e4f8982f70caa6475be90c5c7450"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-final-desktop-20261122/inline-editing-光标格式、组合文字、删除清理与列表键盘在实际编辑和保存后保持一致/inline-input-and-lists.png",
+        "sha256": "548a6bb1a7dba8822686b35b0fd1ae5a79146f15bfd452ca2f298673068824e7"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-final-mcp-ui-20261122/editor-sort-codex-块字母排序、固定源保存、浅暗窄窗及单次撤销/codex-sort-dark-narrow.png",
+        "sha256": "9cb91cd263a41ab24c10d2ec76fa7984748e283b572a7ef3efbd7adc4ee88457"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-final-mcp-ui-20261122/editor-sort-codex-块字母排序、固定源保存、浅暗窄窗及单次撤销/codex-sort-light.png",
+        "sha256": "8d1a1d8e3632919f389815ceb24ca06f1d72a93e68c497da8e29a04e8d6d5e30"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-final-mcp-ui-20261122/editor-sort-stdio-块字母排序、固定源保存、浅暗窄窗及单次撤销/stdio-sort-dark-narrow.png",
+        "sha256": "9cb91cd263a41ab24c10d2ec76fa7984748e283b572a7ef3efbd7adc4ee88457"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-final-mcp-ui-20261122/editor-sort-stdio-块字母排序、固定源保存、浅暗窄窗及单次撤销/stdio-sort-light.png",
+        "sha256": "c2d125dc949b1aae20ed417e6f198abccc347cad79da58f5355b36637cc958ae"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-codex-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/codex-alphabetical-sort.png",
+        "sha256": "0fab2b5798278324f8d944435ffa872e7d2a4c8a8c34d2894f5e220467bf8319"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-codex-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/codex-attachment-main.png",
+        "sha256": "2b7d8f54f398dd81c345796ca3ce864bcef03105150bb4ecfe0b05fcb0e0d6aa"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-codex-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/codex-drama-document-copy.png",
+        "sha256": "e860440bc7c08d79d73ec696383622312618145053f6d51af4fd97df02822172"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-codex-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/codex-execution-confirm.png",
+        "sha256": "5a5bc0c1cd9dab72faa2c44f2673e33dd6189aea3e846afe1a521af68e848796"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-codex-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/codex-floating-annotation.png",
+        "sha256": "6e125b49cca6a8c944d64e3a81e7d0c3bd9b0ef76a6335eb1b81888afe1fea21"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-codex-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/codex-font-picker.png",
+        "sha256": "bfde9efe75fb148d37371c7726b60dac18c2edd332295b4edf7643634953c1f5"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-codex-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/codex-group-and-inline-presentation.png",
+        "sha256": "86b73b7b64f1aad0ee2c384ed94f5196da6359ccd13c063c21f2304c748b9e4a"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-codex-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/codex-novel-document-copy.png",
+        "sha256": "1547e115d11745cfba7a6dc6a76e843eadf421d57bf5a7b1eb0fd10fc81c0036"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-codex-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/codex-novel-full-workspace.png",
+        "sha256": "9dd644554c21b941beb9b0e4cbb7e59cda75d32d4f6bd500f2209c577b48e9c1"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-codex-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/codex-paragraph-order.png",
+        "sha256": "b88b0025871c5c78d7ff16900a95f739564778a163188f6b156b03d89e7d13f5"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-codex-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/codex-search-sidebar.png",
+        "sha256": "ae9bbf8b5da089122977bdb110a21a4f86c958f040b8316575c8614fb96bf886"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-codex-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/codex-shared-workbench.png",
+        "sha256": "73926e1ad77bc6b9f751ef2f35c04ae76c30032324fcb2a39711bc346a591161"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-codex-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/codex-sidebar-attachments.png",
+        "sha256": "21733c9c689aaf5b8475a0e8296d953c41df0ef9c7829e2760a571cca5acd08d"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-codex-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/codex-sidebar-tasks.png",
+        "sha256": "ddcc9ad61827292e4ec8371c2106e7344d14b7fd2c4fb8f13e5aefc2300aa73a"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-codex-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/codex-text-format-panel.png",
+        "sha256": "84382f43f021123373ee621db10407cd35deb1c81acc9660e16b6aa31efd7bdf"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-codex-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/codex-updated-screenplay.png",
+        "sha256": "6281c7c9e6332785f187875975b366205addd1e76bb77ad33baa42adc94572e9"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-stdio-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/stdio-alphabetical-sort.png",
+        "sha256": "6cbe83f8a7848f2dbb2146bb6d679d902548c56255f38d503abc509c06b9b7d4"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-stdio-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/stdio-attachment-main.png",
+        "sha256": "e24636773d7f417c6998f30cc45e8c2b4c385e5fbef0720763fc7a94ecf7eaba"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-stdio-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/stdio-drama-document-copy.png",
+        "sha256": "e860440bc7c08d79d73ec696383622312618145053f6d51af4fd97df02822172"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-stdio-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/stdio-execution-confirm.png",
+        "sha256": "5a5bc0c1cd9dab72faa2c44f2673e33dd6189aea3e846afe1a521af68e848796"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-stdio-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/stdio-floating-annotation.png",
+        "sha256": "73e8fafefcd5fbe770034b305e90c1b36402510b613988971381a649bbf8d24f"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-stdio-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/stdio-font-picker.png",
+        "sha256": "609b712ed99d3a86dbfba42000e77fe466a0aee2fd0d710065b2a0abecf934f7"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-stdio-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/stdio-group-and-inline-presentation.png",
+        "sha256": "503871178249e6d628b5e3f27a3bdcb866be5d60807c7e36e1e0fc192ee7ab2a"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-stdio-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/stdio-novel-document-copy.png",
+        "sha256": "ff67d3f27b116865744284c31302b75835bf84ef8aca06a1c73bc37d24164d0e"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-stdio-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/stdio-novel-full-workspace.png",
+        "sha256": "c2ed53ad8b3e4b467e99be781ab7ddcd08f03175880a740f7a4cc896f6e847e2"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-stdio-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/stdio-paragraph-order.png",
+        "sha256": "4a4a5a4fc3f9b2ec93ea84a5e18088c3538da52da7a58c12b9e006562f78202f"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-stdio-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/stdio-search-sidebar.png",
+        "sha256": "45b25998f3b071c2d063dfa2c518ed62e14f7f48aa34b0da8d0892e22fc08ca0"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-stdio-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/stdio-shared-workbench.png",
+        "sha256": "73926e1ad77bc6b9f751ef2f35c04ae76c30032324fcb2a39711bc346a591161"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-stdio-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/stdio-sidebar-attachments.png",
+        "sha256": "0ea8bcad27083617e427173729106fbac2ff75c1a54ba33b9b67f8dd4ca81aab"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-stdio-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/stdio-sidebar-tasks.png",
+        "sha256": "19ae2b74a1a4c3f07dc787ff61c13dd553868ce4282983b21ca515040b39e428"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-stdio-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/stdio-text-format-panel.png",
+        "sha256": "ca95f6d24b78444e19f87ec4238161fbb7c87d4f5c8acef87b92933e026ba78a"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-mcp-20261122/shared-workbench-stdio-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/stdio-updated-screenplay.png",
+        "sha256": "c4d212d0517fb992253ca20f296699ab88c6443f0e80df2b9c449a31f7dda344"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-menu-diagnostic-20261122/context-menus-右键固定选区、格式子菜单、块事务、批注、目录改名与原生输入撤销/context-document-copy.png",
+        "sha256": "e1747aac88b4626f008417a471a74d95155b71de690b02fa376d01732eed0949"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-menu-diagnostic-20261122/context-menus-右键固定选区、格式子菜单、块事务、批注、目录改名与原生输入撤销/context-input-light.png",
+        "sha256": "b37ee1eec5dd1b3f9fbb5e624e4ae9613642b54d492c2710da72c64d2f5d45d0"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-menu-diagnostic-20261122/context-menus-右键固定选区、格式子菜单、块事务、批注、目录改名与原生输入撤销/context-library-narrow.png",
+        "sha256": "e97c14b62673bb8be579ef1fb5b8728245e159047ef511fa6dfe5620aee1add2"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-menu-fixed-repeat-20261122/context-menus-右键固定选区、格式子菜单、块事务、批注、目录改名与原生输入撤销/context-document-copy.png",
+        "sha256": "e1747aac88b4626f008417a471a74d95155b71de690b02fa376d01732eed0949"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-menu-fixed-repeat-20261122/context-menus-右键固定选区、格式子菜单、块事务、批注、目录改名与原生输入撤销/context-input-light.png",
+        "sha256": "b37ee1eec5dd1b3f9fbb5e624e4ae9613642b54d492c2710da72c64d2f5d45d0"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-menu-fixed-repeat-20261122/context-menus-右键固定选区、格式子菜单、块事务、批注、目录改名与原生输入撤销/context-library-narrow.png",
+        "sha256": "e97c14b62673bb8be579ef1fb5b8728245e159047ef511fa6dfe5620aee1add2"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-menu-repeat-20261122/context-menus-右键固定选区、格式子菜单、块事务、批注、目录改名与原生输入撤销/context-document-copy.png",
+        "sha256": "66d0d1cb1907f8b3515225bed6e3be09bdb7b4006d512135fa24f4abff461886"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-menu-repeat-20261122/context-menus-右键固定选区、格式子菜单、块事务、批注、目录改名与原生输入撤销/context-input-light.png",
+        "sha256": "b51bb4b85a5776690313580e199fdb70854cd9eaf561c062ef2e777bb3e8d907"
+      },
+      {
+        "path": "output/block-sort-review-20261122/hetu-block-sort-menu-repeat-20261122/context-menus-右键固定选区、格式子菜单、块事务、批注、目录改名与原生输入撤销/context-library-narrow.png",
+        "sha256": "614ab9f91a8cd2552a9ef84fe9bded04d4d5dbd30b9c681c8ab913e495e57fb5"
+      }
+    ],
+    "checks": [
+      "desktop build",
+      "task-view build and --check",
+      "hetu-mcp build",
+      "localization",
+      "capability map --check",
+      "git diff --check"
+    ],
+    "documentation_check": {
+      "path": "output/block-sort-review-20261122/hetu-block-sort-docs-check-20261122.log",
+      "sha256": "24815db62c107495bf8bf81feda927763a74583e32c2828d3ad95994630c6cb3",
+      "exit_code": 0
+    }
+  },
+  "limits": [
+    "未覆盖安装、提交、推送或发布。",
+    "未修改真实作者资料。",
+    "全页面9分视觉评审、真实VoiceOver、Windows/Linux、当前原生宿主与作者试用仍未完成。",
+    "跨文稿移动、作品复制、完整导出及可恢复删除继续实现，整体目标未完成。"
+  ]
+}

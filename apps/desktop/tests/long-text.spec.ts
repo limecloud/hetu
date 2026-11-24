@@ -55,6 +55,7 @@ test(
         .first()
         .click();
       await page.getByRole("button", { name: /插件集成测试/ }).click();
+      await page.getByRole("button", { name: "小说", exact: true }).click();
       await expect(
         page.getByRole("textbox", { name: "文稿编辑", exact: true }),
       ).toBeVisible();

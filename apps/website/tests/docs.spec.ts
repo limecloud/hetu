@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const sections = [
-  { id: 'start', guides: ['getting-started', 'install', 'creative-library', 'creative-paths', 'skills'], title: ['开始使用', 'Getting started'] },
+  { id: 'start', guides: ['when-to-use', 'getting-started', 'install', 'creative-library', 'creative-paths', 'skills'], title: ['开始使用', 'Getting started'] },
   { id: 'novel', guides: ['codex-first-task', 'import-manuscript', 'outlining', 'writing'], title: ['小说创作', 'Writing novels'] },
   { id: 'screen', guides: ['screenplays', 'adaptation', 'video'], title: ['剧本与视频', 'Scripts and video'] },
   { id: 'assets', guides: ['story-bible', 'characters-and-scenes', 'cover-art', 'illustrations', 'references'], title: ['设定与素材', 'Story and assets'] },

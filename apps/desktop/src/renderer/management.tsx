@@ -4,6 +4,8 @@ import type { SurfaceContext } from "./contributions.tsx";
 import { TransferDetails, transferKind, type TransferKind } from "./transfer-review.tsx";
 import { Icon, IconButton, PageActions } from "./workbench.tsx";
 import "./surface-pages.css";
+import {ResourceProposal} from "./resource-proposal.tsx";
+import {managementTitle} from "../management-title.ts";
 
 const states: Record<string, string> = {
   pending: "待审阅",
@@ -76,6 +78,7 @@ function fields(
 }
 function Changes({ view }: { view: any }) {
   if (transferKind(view.action)) return <TransferDetails key={view.proposal_id} view={view} />;
+  if(["hetu.resources.create","hetu.resources.update"].includes(view.action)&&view.preview?.resource)return <ResourceProposal key={view.proposal_id} view={view}/>;
   return (
     <section aria-label="方案具体变化">
       {view.changes.length ? (
@@ -269,7 +272,8 @@ export function Management({ work, notify, ai, workflow }: SurfaceContext & { wo
           )}
           {selected && (
             <section aria-label="固定管理方案">
-              <h2>{selected.summary}</h2>
+              <h2>{managementTitle(selected)}</h2>
+              {managementTitle(selected)!==selected.summary&&<details><summary>方案说明</summary><p>{selected.summary}</p></details>}
               <p>
                 {states[selected.state] ?? selected.state}
                 {selected.is_expired ? " 已过期" : ""}
@@ -330,7 +334,7 @@ export function Management({ work, notify, ai, workflow }: SurfaceContext & { wo
                 </div>
               )}
               {preview && (
-                <section className="recover" aria-label="管理方案决定预览">
+                <section className="recover management-decision" aria-label="管理方案决定预览">
                   <h3>{preview.title}</h3>
                   <p>确认后记录这份固定方案的审核决定。</p>
                   <button

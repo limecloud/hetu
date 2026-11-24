@@ -18,17 +18,17 @@ const faqGroups = [
 <div class:list={['container', 'subpage', `${page}-page`]}>
   {page === 'workflow' ? <WorkflowPage locale={locale}/> : page === 'integrations' ? <>
     <header class="page-hero page-hero-split">
-      <div><h1>{m.integrations.title}</h1><p>{m.integrations.intro}</p><a class="button primary" href="#skills-catalog">{en ? 'Find your Skills' : '为这本书选 Skills'} <span aria-hidden="true">↓</span></a></div>
+      <div><h1>{m.integrations.title}</h1><p>{m.integrations.intro}</p><a class="button primary" href="#agent-options">{en ? 'See connection options' : '查看接入方式'} <span aria-hidden="true">↓</span></a></div>
       <figure class="collaboration-map" aria-label={en ? 'How your Agent, Hetu Luoshu and you work together' : '外部 Agent、河图洛书与作者的协作关系'}>
         <div class="collaboration-party"><span>{en ? 'Your external Agent' : '你选用的外部 Agent'}</span><strong>{en ? 'Understand. Plan. Generate.' : '理解、规划、生成'}</strong><p>Codex / Claude Code / WorkBuddy / Cursor</p></div>
         <div class="collaboration-exchange"><span>{en ? 'Query and submit' : '查询与操作'}</span><span aria-hidden="true">↓ ↑</span><span>{en ? 'Results and feedback' : '结果与反馈'}</span></div>
-        <div class="collaboration-core"><img src={assetURL('/brand/icon-64.png')} width="48" height="48" alt=""/><div><strong>{en ? 'Hetu Luoshu' : '河图洛书'}</strong><span>{en ? 'Work, sources, tasks and revisions' : '作品、依据、任务、版本'}</span></div></div>
+        <div class="collaboration-core"><img src={assetURL('/brand/icon-64.png')} width="48" height="48" alt=""/><div><strong>{en ? 'Hetu Luoshu' : '河图洛书'}</strong><span>{en ? 'Drafts, sources, feedback and choices' : '稿件、依据、意见与选择'}</span></div></div>
         <div class="collaboration-exchange"><span>{en ? 'Compare and edit' : '查看与编辑'}</span><span aria-hidden="true">↓ ↑</span><span>{en ? 'Approve and finalize' : '验收与定稿'}</span></div>
         <div class="collaboration-party collaboration-human"><span>{en ? 'You, in the workspace' : '创作工作台里的你'}</span><strong>{en ? 'Taste. Judgment. Creative intent.' : '品味、判断、创意'}</strong></div>
         <figcaption>{en ? 'You choose what becomes part of the work.' : '哪些内容进入作品，由作者决定。'}</figcaption>
       </figure>
     </header>
-    <AgentEntrypoints locale={locale}/>
+    <div id="agent-options"><AgentEntrypoints locale={locale}/></div>
     <section class="integration-journey" aria-label={en ? 'A collaboration in three steps' : '一次协作的三个步骤'}>{m.integrations.layers.map((item, index) => <article><span class="path-number" aria-hidden="true">0{index + 1}</span><h2>{item.title}</h2><p>{item.body}</p></article>)}</section>
     <p class="image-caption integration-status">{m.integrations.status}</p>
     <section class="integration-plugins"><h2>{en ? 'Extend the workspace, too.' : '为工作台，添加合适的创作工具。'}</h2><p>{en ? 'Creative plugins add views and professional data inside Hetu. Install them in Hetu; your connected Agent discovers their scoped capabilities through the existing connection.' : '创作插件为河图添加视图与专业数据，安装在河图里。已接入的 Agent 通过原有连接发现获权能力；无需为每个河图插件再装一个 Codex 插件。'}</p><a class="text-link" href={route(locale, 'plugins')}>{en ? 'Explore creative plugins' : '浏览创作插件中心'} →</a></section>

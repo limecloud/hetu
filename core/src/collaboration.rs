@@ -19,6 +19,43 @@ pub struct CollaborationHub {
     client: String,
 }
 
+impl CollaborationHub {
+    /// 按受管连接中的精确作品引用解析当前客户端的有效管理授权。
+    /// 管理引用只留在本机授权目录，不进入 Agent 消息或普通结果。
+    pub fn management_ref_for_work(&self, work: &Value) -> Result<Option<Value>> {
+        if !work.is_object() || !self.directory.try_exists()? {
+            return Ok(None);
+        }
+        let store = Store::open(&self.directory)?;
+        let _guard = store.read_lock()?;
+        let folder = format!("management/{}", self.client);
+        if !store.entries("")?.iter().any(|name| name == "management")
+            || !store.entries("management")?.iter().any(|name| name == &self.client)
+        {
+            return Ok(None);
+        }
+        for name in store.entries(&folder)? {
+            let Some(grant_id) = name.strip_suffix(".json") else { continue; };
+            if grant_id.len() != 64 || !grant_id.bytes().all(|b| b.is_ascii_hexdigit() && !b.is_ascii_uppercase()) {
+                continue;
+            }
+            let grant = store.json(&format!("{folder}/{name}"))?;
+            if grant["revoked"] == false
+                && grant["client_adapter"] == self.client
+                && grant["work_ref"] == *work
+                && grant["expires_at"].as_i64().is_none_or(|at| at > time::OffsetDateTime::now_utc().unix_timestamp())
+            {
+                return Ok(Some(json!({
+                    "grant_id": grant_id,
+                    "grant_revision": grant["grant_revision"],
+                    "scope_ref": {"kind":"workspace", "id": work["workspace_id"]}
+                })));
+            }
+        }
+        Ok(None)
+    }
+}
+
 /// 本机适配器持有的固定确认上下文，不进入工具参数或通用业务路由。
 pub struct ModelPlanConfirmation {
     kernel: Kernel,
@@ -77,6 +114,16 @@ pub fn client_request(value: Value) -> Value {
 }
 
 pub fn default_directory() -> Result<PathBuf> {
+    if let Some(value) = std::env::var_os("HETU_COLLABORATION_DIR") {
+        let directory = PathBuf::from(value);
+        if directory.is_absolute() {
+            return Ok(directory);
+        }
+        return Err(Error::new(
+            "hetu.unsafe_path",
+            "HETU_COLLABORATION_DIR 必须是绝对路径。",
+        ));
+    }
     #[cfg(windows)]
     let (variable, suffix) = ("LOCALAPPDATA", "Hetu/Collaboration");
     #[cfg(target_os = "macos")]
@@ -239,6 +286,17 @@ impl CollaborationHub {
         };
         crate::machine::recovery(&mut result, &actual, recovery_input);
         result
+    }
+    /// 稳定管理／任务引用只确定范围，不代替共享执行模式或固定方案决定。
+    pub(super) fn with_business_policy<T>(&self, action: &str, input: &Value, run: impl FnOnce() -> Result<T>) -> Result<T> {
+        let descriptor = self.action_descriptor(action)
+            .ok_or_else(|| Error::new("hetu.capability_unavailable", "稳定入口未开放该动作。"))?;
+        crate::local_settings::LocalSettings::open_default()?.with_execution_policy(|mode, _revision| {
+            let preparation = matches!(action, "hetu.agent_operations.prepare" | "hetu.agent_operations.record_decision" | "hetu.agent_operations.execute");
+            ensure(mode == "auto" || crate::execution::read_only_effect(action, &descriptor["effect"], input) || preparation,
+                "hetu.execution_confirmation_required", "请将本次写入准备为固定执行计划，确认后连续执行；管理和任务引用不能代替本次确认。")?;
+            run()
+        })
     }
     fn execute(&self, request: &Value, cancelled: &dyn Fn() -> bool) -> Result<Value> {
         domain::ensure(
@@ -412,7 +470,7 @@ impl CollaborationHub {
         } else {
             routed["input"].as_object_mut().unwrap().remove("task_ref");
         }
-        let mut result = kernel.request_cancellable(routed, cancelled);
+        let mut result = self.with_business_policy(action, &request["input"], || Ok(kernel.request_cancellable(routed, cancelled)))?;
         if action == "hetu.capabilities.get" && result["data"].is_object() {
             result["data"]["actions"] = self.allowed_actions(&kernel);
         }

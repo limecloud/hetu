@@ -1,0 +1,48 @@
+{
+  "date": "2026-11-23",
+  "engine": "Codex 0.171.0",
+  "surface": "embedded TUI",
+  "work_ref": {
+    "workspace_id": "workspace_0e70ca7c-8ec8-451b-92ac-d543ac7af87e",
+    "kind": "novel",
+    "object_id": "novel_42bedadb-9a62-4c2d-8bf7-88f0229fe7d3"
+  },
+  "task_id": "task_539b08d9-c2b7-43d6-b82b-d21864c60e41",
+  "original_submission": {
+    "sha256": "0b3394580ce6f378b44dab5880c6923d529aa6ece3eab9958f8bfa46402e2147",
+    "submission_id": "submission_656f70cf-4ee3-40c9-9a9b-e90d5c4c7f52"
+  },
+  "revised_submission": "submission_bfea9b24-43bb-4cb5-b9de-f66bfae461e4",
+  "feedback_refs": [
+    {
+      "feedback_id": "feedback_f69e4c21-5f21-45e2-a856-f9c08b68470f",
+      "sha256": "12b33e9b03e6b370530de750a5aee866ec6dc74a4115e0e3daf92e1e267f17c2"
+    }
+  ],
+  "document_revision": {
+    "document_id": "doc_a8ed943a-9b1d-4397-bb80-1990886535ac",
+    "revision_id": "rev_9761f7b6-c3c6-442c-83a5-bb8357e3ed65",
+    "sha256": "d406efac0e55b3fa02971efccbc5b6cab8ebd14732f38ea1065d517ffffcd164"
+  },
+  "adoptions": 1,
+  "finalizations": 0,
+  "export": {
+    "bundle_id": "bundle_f7f55e4f-a39a-4ace-9b5d-f916d6f69aa8",
+    "sha256": "e23ecec2a72f69b57c8a74baef269836277d1193107ca83cf28ad6c69e9e99e0",
+    "verified": true
+  },
+  "checks": [
+    "original-work-and-task-reused",
+    "feedback-via-real-review-UI",
+    "draft-without-auto-enter",
+    "real-agent-working-copy-revision",
+    "old-submission-preserved",
+    "author-preview-before-adoption",
+    "exact-revision-export-verified"
+  ],
+  "limits": [
+    "isolated-short-text",
+    "macOS-development-build",
+    "not-author-creative-acceptance"
+  ]
+}

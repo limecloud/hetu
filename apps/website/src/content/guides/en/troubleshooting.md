@@ -1,5 +1,9 @@
 # Troubleshooting and recovery
 
+## Start with what you need
+
+Preserve drafts, operation identifiers and the exact error. Distinguish reading, saving, engine and generation failures. Do not hide them by recreating a work, changing retry keys or importing again.
+
 Preserve the current draft and original task before investigating. A working connection, saved feedback, finished generation and adopted result are different outcomes.
 
 Resume with the original work, task or plan. Creating an identical task rarely explains the old outcome and can introduce duplicates or additional costs.

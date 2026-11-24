@@ -45,3 +45,10 @@ The tools share fixed sources rather than forcing you to enter the same material
 [Novel Review](/en/plugins/novel-review/) checks fixed text against author dictionaries, finds exact repeated sentences and examines evidenced balances, objects, character states and knowledge. Missing premises remain inconclusive. [Novel Atlas](/en/plugins/novel-atlas/) presents maps, routes, numerical curves or qualitative stages, directional relationships and object transfers, with unread chapters and unknown positions visible.
 
 Ask your Agent to review earlier volumes, prepare the next chapter, revise a chosen passage, recheck knowledge and object changes, and update the atlas. Each handoff keeps its fixed version. Adoption and finalization remain your decisions.
+
+
+## Use only what this work needs
+
+A quick idea or read-only question can end with an answer. Keep sources, feedback and revisions for work you intend to continue, without turning every discussion into a project task. Delegate or write directly; consequential choices refer to concrete results.
+
+[Find the smallest useful starting point](/en/docs/when-to-use/).

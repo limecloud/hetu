@@ -1,0 +1,250 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-11-22",
+  "status": "partial",
+  "scope": "跨文稿移动的隔离参考观察、共享Core、CLI/MCP及作者用例；桌面编辑器已覆盖已有目标与新章节目标入口，完整视觉复刻仍未完成。",
+  "source": "macOS系统窗口截图和UI操作；非调研服务ev，未读取参考内部文件。",
+  "observed": [
+    "移至子菜单含每日笔记、新建文档、选择文档。",
+    "选择文档呈现居中搜索面板；输入隔离文档名称后仅显示匹配目标。",
+    "选择隔离目标后来源12块移除，目标末尾出现对应12块；两个文档均为本轮创建的隔离测试文档。"
+  ],
+  "unknown": [
+    "移动后目标中12块次序与来源当时的排序呈现不一致，尚未完成独立干净样例核验，不据此定义重排规则。",
+    "切回来源后Cmd+Z及系统编辑菜单撤销均未观测到来源恢复；目标端后续状态未完整复核，不能据此判定参考移动不可撤销。"
+  ],
+  "screenshots": [
+    {
+      "path": "output/document-move-review-20261122/hetu-reference-case-move-menu-20261122.png",
+      "sha256": "66eacf9c81cb2418e598eb692765ab127b74f59538574f2c77bb72eaa51adb66"
+    },
+    {
+      "path": "output/document-move-review-20261122/hetu-reference-case-move-submenu-20261122.png",
+      "sha256": "718fcdbcf3f3b89121c2a9634774526ff9a51d88e0bfe719418dd626b6048863"
+    },
+    {
+      "path": "output/document-move-review-20261122/hetu-reference-move-menu-20261122.png",
+      "sha256": "1f06e8f538949fc9bf2831f7f4f4d07b64ad425b4bb9ef862df6e3e40176fdf0"
+    },
+    {
+      "path": "output/document-move-review-20261122/hetu-reference-move-picker-20261122.png",
+      "sha256": "d16454b993f03b8a89c33331906631cb2a8fee56593cbb55b754d0284d405651"
+    },
+    {
+      "path": "output/document-move-review-20261122/hetu-reference-move-picker-search-20261122.png",
+      "sha256": "fb52624f46778d069102c6f22384ed64463d5561b4b27837c1f14423fafea8e6"
+    },
+    {
+      "path": "output/document-move-review-20261122/hetu-reference-move-source-after-20261122.png",
+      "sha256": "3cfd373ee35e06b3a9c13ae595c41f3ea7d72eff747d094426d81f8696489cc0"
+    },
+    {
+      "path": "output/document-move-review-20261122/hetu-reference-move-source-menu-undo-20261122.png",
+      "sha256": "002c5e54eb91b67812b90849d5dcb56d3f93eda784345fb5186ffc6f15061a02"
+    },
+    {
+      "path": "output/document-move-review-20261122/hetu-reference-move-source-undone-20261122.png",
+      "sha256": "45b2a76f392d4952b64c9af632977f263563da7821e3d6fc75ed9a531d5901a8"
+    },
+    {
+      "path": "output/document-move-review-20261122/hetu-reference-move-target-after-20261122.png",
+      "sha256": "433ace1624972f62507ec8cd2317738830b10f2e44eb447aa64773d5c03d3287"
+    },
+    {
+      "path": "output/document-move-review-20261122/hetu-reference-move-target-end-20261122.png",
+      "sha256": "fae837bb4aa09aa735fc560631b23b88783f77a286f46411bfef60a3fdeca24e"
+    }
+  ],
+  "constraints": [
+    "未触碰真实作者资料。",
+    "MCP App评审工作台为固定成果只读表面，编辑移动入口复用桌面编辑工作台；未把只读评审页伪装为正文可写编辑器。",
+    "没有执行覆盖安装、提交、推送或发布；版本继续为0.14.0。",
+    "完整页面9分、真实VoiceOver、Windows/Linux、当前原生宿主及作者最终试用仍未完成。"
+  ],
+  "implementation": [
+    "documents.move_range固定WorkRef、双端doc/rev/sha、来源UTF-8行范围及quote；来源移除、目标追加及不可变move_ref同事务落盘。",
+    "documents.get_move核验记录摘要及归属，回读双端前后修订和范围；restore_move仅在两端仍为移动后修订时创建新修订恢复。",
+    "Core复用现有documents.save字段及预算核验；目标合并超限时已暂存的来源修订也不落盘。",
+    "公共Schema、管理固定方案、CLI/MCP、能力地图及管理方法同步；作者用例固定双端预览，丢回执沿原键恢复，拒绝renderer范围对象覆盖WorkRef。",
+    "documents.move_to_new固定目录或项目expected、标题、来源完整行范围与quote；小说建立新章节，剧本建立新分集，目录插入、来源移除、目录前后快照及恢复引用同事务落盘；撤销时恢复来源、移除目录引用并归档新目标。"
+  ],
+  "validation": {
+    "core": {
+      "passed": 19,
+      "failed": 0,
+      "suites": {
+        "document_moves": 9,
+        "document_copy": 3,
+        "document_lifecycle": 7
+      },
+      "report": {
+        "path": "output/document-move-review-20261122/hetu-document-moves-core-accepted-20261122.log",
+        "sha256": "ae3d8451d0ab0afbcad92225ef9011db402ee9659ac2885be616c84514384e93"
+      }
+    },
+    "cli": {
+      "passed": 1,
+      "failed": 0,
+      "report": {
+        "path": "output/document-move-review-20261122/hetu-document-moves-cli-accepted-20261122.log",
+        "sha256": "e21e617e42e42af9649a0b4c627b1adcae218aefbf501f3cd295cce8a24a9d9f"
+      }
+    },
+    "mcp": {
+      "passed": 2,
+      "failed": 0,
+      "profiles": [
+        "stable",
+        "bound"
+      ],
+      "report": {
+        "path": "output/document-move-review-20261122/hetu-document-moves-mcp-accepted-20261122.log",
+        "sha256": "08c5a1d527d4b7cf97b56352676cd0645f341235661e887ff095b20df39173a0"
+      }
+    },
+    "author_recovery": {
+      "passed": 2,
+      "failed": 0,
+      "scope": "移动及恢复写后丢回执、重新打开、精确范围和目标、范围扩权字段投影、原键查询；包括已有副本恢复回归",
+      "report": {
+        "path": "output/document-move-review-20261122/hetu-document-moves-recovery-20261122.log",
+        "sha256": "8883dec102e6f12afd2c0ebcbd078ad4ad68a0fb0822caf5056bc6036d3bd214"
+      }
+    },
+    "checks": [
+      "desktop TypeScript build",
+      "task-view TypeScript build",
+      "capability map --check",
+      "writing methods generation",
+      "skills verification",
+      "documentation verification",
+      "git diff --check"
+    ],
+    "logs": [
+      {
+        "path": "output/document-move-review-20261122/hetu-document-moves-capability-check-20261122.log",
+        "sha256": "0a290158f76b29bce06ee0505bff2ee5daced0e452e7f8c4d22e52abf0deba80"
+      },
+      {
+        "path": "output/document-move-review-20261122/hetu-document-moves-capability-sync-20261122.log",
+        "sha256": "e38e21d43070b88fb387036679041e2ecdd852a3c58d5ff0563121ea054e117a"
+      },
+      {
+        "path": "output/document-move-review-20261122/hetu-document-moves-cli-20261122.log",
+        "sha256": "15672593cbaf2be134923ed64a3396191c84f986248c5a0c5e49d95cbb244ef8"
+      },
+      {
+        "path": "output/document-move-review-20261122/hetu-document-moves-cli-accepted-20261122.log",
+        "sha256": "e21e617e42e42af9649a0b4c627b1adcae218aefbf501f3cd295cce8a24a9d9f"
+      },
+      {
+        "path": "output/document-move-review-20261122/hetu-document-moves-core-20261122.log",
+        "sha256": "bba87f1348d76483133a99c1fc8cb229f14a7ec02d3ffbecca09cbea12b55e83"
+      },
+      {
+        "path": "output/document-move-review-20261122/hetu-document-moves-core-accepted-20261122.log",
+        "sha256": "ae3d8451d0ab0afbcad92225ef9011db402ee9659ac2885be616c84514384e93"
+      },
+      {
+        "path": "output/document-move-review-20261122/hetu-document-moves-core-final-20261122.log",
+        "sha256": "294d4d24a701b39f6b218c6a3108b33f1e7c28270a686680cbd0b5789b8ebd57"
+      },
+      {
+        "path": "output/document-move-review-20261122/hetu-document-moves-core-fixed-20261122.log",
+        "sha256": "228d8edcdb8af874b2c0294b34d9cea79cc0ee628844cdf3e9062837a5a8492b"
+      },
+      {
+        "path": "output/document-move-review-20261122/hetu-document-moves-core-regression-20261122.log",
+        "sha256": "08167b87c4dbc6d9e9ed3fd67a6d098f4934812fdd30726a7ee2e1bb31daf4f8"
+      },
+      {
+        "path": "output/document-move-review-20261122/hetu-document-moves-desktop-build-20261122.log",
+        "sha256": "f0616b3c15c578d5c9d33833463d8bf34bf2211aaa7e846da109226e434a865d"
+      },
+      {
+        "path": "output/document-move-review-20261122/hetu-document-moves-desktop-final-build-20261122.log",
+        "sha256": "f0616b3c15c578d5c9d33833463d8bf34bf2211aaa7e846da109226e434a865d"
+      },
+      {
+        "path": "output/document-move-review-20261122/hetu-document-moves-docs-check-20261122.log",
+        "sha256": "368b14e24a0ab1b2f41f1ee42ebc330aaa5587473d736a67babf1d9a35035184"
+      },
+      {
+        "path": "output/document-move-review-20261122/hetu-document-moves-docs-final-20261122.log",
+        "sha256": "368b14e24a0ab1b2f41f1ee42ebc330aaa5587473d736a67babf1d9a35035184"
+      },
+      {
+        "path": "output/document-move-review-20261122/hetu-document-moves-final-capability-sync-20261122.log",
+        "sha256": "e38e21d43070b88fb387036679041e2ecdd852a3c58d5ff0563121ea054e117a"
+      },
+      {
+        "path": "output/document-move-review-20261122/hetu-document-moves-final-method-sync-20261122.log",
+        "sha256": "b65d8de8f351ffb9d87541c944997e1738aa279995218042f711a62053138422"
+      },
+      {
+        "path": "output/document-move-review-20261122/hetu-document-moves-map-final-20261122.log",
+        "sha256": "0a290158f76b29bce06ee0505bff2ee5daced0e452e7f8c4d22e52abf0deba80"
+      },
+      {
+        "path": "output/document-move-review-20261122/hetu-document-moves-mcp-20261122.log",
+        "sha256": "19f4deeab9e2381101509bbc9703d7094fc26cb5a862b341ccd83c7854066e1e"
+      },
+      {
+        "path": "output/document-move-review-20261122/hetu-document-moves-mcp-accepted-20261122.log",
+        "sha256": "08c5a1d527d4b7cf97b56352676cd0645f341235661e887ff095b20df39173a0"
+      },
+      {
+        "path": "output/document-move-review-20261122/hetu-document-moves-method-sync-20261122.log",
+        "sha256": "b65d8de8f351ffb9d87541c944997e1738aa279995218042f711a62053138422"
+      },
+      {
+        "path": "output/document-move-review-20261122/hetu-document-moves-recovery-20261122.log",
+        "sha256": "8883dec102e6f12afd2c0ebcbd078ad4ad68a0fb0822caf5056bc6036d3bd214"
+      },
+      {
+        "path": "output/document-move-review-20261122/hetu-document-moves-skills-check-20261122.log",
+        "sha256": "2fe75b7a7d0f4c7b9936cdc095f793c07778910e13c74c32befe0f83c99632d6"
+      },
+      {
+        "path": "output/document-move-review-20261122/hetu-document-moves-task-build-20261122.log",
+        "sha256": "6ef3556966cc89d72a70d7a4d38bee27b8b447d1575a2b476e919496ec0bc1ed"
+      }
+    ],
+    "desktop_gui": {
+      "passed": 2,
+      "failed": 0,
+      "scope": "搜索已有目标、新建章节、双端保存、撤销、确认取消、并发来源拒绝；浅色与暗色窄窗截图",
+      "report": {
+        "path": "output/document-move-review-20261122/hetu-document-moves-desktop-final-ui-20261122.json",
+        "sha256": "93c46b982a7aa0976905975f1f319b0b0e47af81208d27e7543086d206cead94"
+      }
+    },
+    "desktop_regression": {
+      "passed": 2,
+      "failed": 0,
+      "scope": "移动专项及共享右键菜单回归",
+      "report": {
+        "path": "output/document-move-review-20261122/hetu-document-moves-desktop-accepted-20261122.json",
+        "sha256": "05f1277360f27081a6c47a7ffa1c431ae1ff39ae1d50a6e5a37b972ef180237f"
+      }
+    },
+    "mcp_resource_and_sort": {
+      "passed": 2,
+      "failed": 0,
+      "scope": "stdio／官方Codex转发；共享MCP工作台资源构建、资源check、排序浅暗窄窗专项保持通过",
+      "report": {
+        "path": "output/document-move-review-20261122/hetu-document-moves-mcp-accepted-20261122.json",
+        "sha256": "77a3b31d11422cbe80387b84b45fe40980902e3a9cbf0ba89bcf95223ed8ff1e"
+      }
+    },
+    "final_checks": [
+      "desktop build",
+      "task-view build and --check",
+      "hetu-mcp build",
+      "documentation verification",
+      "localization verification",
+      "capability map --check",
+      "git diff --check"
+    ]
+  }
+}

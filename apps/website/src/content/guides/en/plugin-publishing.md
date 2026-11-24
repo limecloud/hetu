@@ -1,5 +1,9 @@
 # Publish and list a plugin
 
+## Start with what you need
+
+Describe the actual task, adoption conditions and exit path. Separate distributions, illustrative pages and business evidence; installation is not task completion.
+
 GitHub provides source hosting, release notes, issue tracking and listing collaboration. The website catalog provides discovery. Hetu’s local manager validates, installs, enables and disables packages. Trusted enabled plugins reuse the public host SDK; external Agent work connections remain separate. Publishing source, listing a tool, installing it and completing a task require separate evidence.
 
 ## 1. Prepare a verifiable version

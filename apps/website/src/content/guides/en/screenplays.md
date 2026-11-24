@@ -1,5 +1,9 @@
 # Develop and review a screenplay
 
+## Start with what you need
+
+Start with a character, scene or existing episode. Trying a scene needs no novel or complete series plan. Save a draft when you want to continue it and keep deliberate adaptation choices explicit.
+
 An original script can begin with a conflict. An adaptation begins with material you have permission to use. A screenplay has its own place in the creative library, with episodes, text, revisions and author decisions.
 
 ## Tell your Agent what the scene needs to do

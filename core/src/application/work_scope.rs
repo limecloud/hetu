@@ -55,6 +55,15 @@ impl Kernel {
             "hetu.documents.create" => {
                 kind == "novel" && input["kind"] == "novel_chapter" && input["content"] == ""
             }
+            "hetu.documents.duplicate" => input["work_ref"] == reference
+                && self.document_in_work(&self.document(text(&input["source_ref"], "document_id")?)?, &reference)?,
+            "hetu.documents.move_range" => input["work_ref"] == reference
+                && self.document_in_work(&self.document(text(&input["source_ref"], "document_id")?)?, &reference)?
+                && self.document_in_work(&self.document(text(&input["target_ref"], "document_id")?)?, &reference)?,
+            "hetu.documents.move_to_new" => input["work_ref"] == reference
+                && self.document_in_work(&self.document(text(&input["source_ref"], "document_id")?)?, &reference)?
+                && matches!(kind.as_str(), Some("novel" | "drama")),
+            "hetu.documents.restore_move" | "hetu.documents.get_move" => input["work_ref"] == reference,
             "hetu.documents.get"
             | "hetu.documents.history"
             | "hetu.documents.save"
@@ -289,7 +298,7 @@ impl Kernel {
                 self.check_task_work_access(input, &reference)?;
                 true
             }
-            "hetu.resources.list" => input["work_ref"] == reference,
+            "hetu.resources.list" | "hetu.resources.create" => input["work_ref"] == reference,
             "hetu.assets.list" => input["work_ref"] == reference,
             "hetu.cues.list" => {
                 input["work_ref"] == reference
@@ -349,6 +358,7 @@ impl Kernel {
                 valid
             }
             "hetu.resources.get"
+            | "hetu.resources.update"
             | "hetu.resources.adopt"
             | "hetu.resources.archive"
             | "hetu.resource_usages.list" => self.resource_in_work(

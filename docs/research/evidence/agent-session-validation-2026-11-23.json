@@ -1,0 +1,142 @@
+{
+  "record_kind": "agent_session_validation",
+  "date": "2026-11-23",
+  "product_version": "0.14.0",
+  "implementation": [
+    {
+      "path": "apps/desktop/src/main/agent-session.ts",
+      "sha256": "563bb08db850bca06a4a33adfce5d4e7d6012ad85bbb8fa77ef186c000d33b42"
+    },
+    {
+      "path": "apps/desktop/src/main/main.ts",
+      "sha256": "21f2281a8de278b7683ef17cae4e34ed4a8bc052dab0de2ecb749220c5d23544"
+    },
+    {
+      "path": "apps/desktop/tests/agent-session.test.ts",
+      "sha256": "b259367bf6b84665b598be0b306a5b078f48f8acbccd2d1ac7136df47f07e367"
+    },
+    {
+      "path": "apps/mcp/src/stable.rs",
+      "sha256": "f41f57930a53d6505ca599e3bfe6cabbc72314b2e96214ef10a2547eb2a985a7"
+    },
+    {
+      "path": "apps/mcp/src/main.rs",
+      "sha256": "d6eac816e4072ac65bed51ceaa0265882c2d58a4143b64c27c1100c316095f22"
+    },
+    {
+      "path": "core/src/collaboration.rs",
+      "sha256": "f36f614748fdf8595795a442117ce26eae4ee552b6ee303b3b92f5ef76f19ccb"
+    },
+    {
+      "path": "core/src/collaboration/authoring.rs",
+      "sha256": "32527c5d64280ac6e2f094f4e78ec73b54d58f2d8cf2e8f5554fa247fe1e49aa"
+    },
+    {
+      "path": "core/src/application/work_scope.rs",
+      "sha256": "520df437f034eaa84f385f7c9f0685c252d5d4c86a83b56a39ef69e94823d675"
+    },
+    {
+      "path": "core/src/application/resources.rs",
+      "sha256": "6615326ec34b562ef96b005ecfcb6bbb83c3b538f0622fd75f8458a69ab8d7f7"
+    },
+    {
+      "path": "apps/mcp/tests/stdio.rs",
+      "sha256": "99b7508a3b7ae6adb61a4e24ea678b380b4869def869120f0d8ec6fb1c564673"
+    },
+    {
+      "path": "core/tests/resource_works.rs",
+      "sha256": "baea0c1de9ccb6541cfe9cd25c27183d959e72e559551eb1566867489e36e0bb"
+    },
+    {
+      "path": "apps/task-view/src/workbench.ts",
+      "sha256": "db08c88534211995277aeee46fc204b35ce6cd6fc063a27f35d0022338b4f0d8"
+    },
+    {
+      "path": "apps/mcp/resources/workbench.html",
+      "sha256": "d5e3bb23806f806e537e7196a0035f01217d09d226530be92da5d80552a77486"
+    },
+    {
+      "path": "apps/mcp/resources/workbench.manifest.json",
+      "sha256": "fa6545797cc8a7647d4a87084578a83dc3488fb6a993d78b28b6331e0d0e0ad5"
+    }
+  ],
+  "checks": [
+    {
+      "command": "node --experimental-strip-types --test apps/desktop/tests/agent-session.test.ts",
+      "result": "passed",
+      "scope": "Codex、Claude Code 与 ACP v1 隔离协议回归：WorkRef 上下文、线程／会话恢复、增量消息、并发启动、连接代次、权限回传、停止与私有投影；5 项通过。"
+    },
+    {
+      "command": "npm run build --prefix apps/desktop",
+      "result": "passed",
+      "scope": "Electron TypeScript、主进程与 renderer 构建。"
+    },
+    {
+      "command": "cargo test --locked --workspace",
+      "result": "passed",
+      "scope": "Rust workspace、Core、CLI、MCP、App Server 与集成测试。"
+    },
+    {
+      "command": "uv run tools/verify-docs.py; python3 tools/sync-capability-map.py --check",
+      "result": "passed",
+      "scope": "文档链接、锚点、追踪、Mermaid 与能力地图。"
+    },
+    {
+      "command": "npm run build --workspace @hetu/task-view; npm run check --workspace @hetu/task-view",
+      "result": "passed",
+      "scope": "MCP App 工作台、任务页及本地资源重新生成；HTML、manifest 和源摘要一致。"
+    },
+    {
+      "command": "cargo build --locked -p hetu-mcp -p hetu-app-server -p hetu-cli --bins --example plugin_fixture --example baseline_fixture --example task_view_fixture",
+      "result": "passed",
+      "scope": "重新装配编译期嵌入的 MCP App 资源。"
+    },
+    {
+      "command": "cd apps/task-view && npx playwright test tests/shared-workbench.spec.ts --grep \"stdio MCP App\"",
+      "result": "passed",
+      "scope": "stdio MCP App 完整共享工作台旅程；资源身份、作品资料、小说/剧本/视频切换、编辑保存、设置同步、任务与附件失败重试、插件边界、跨作品隔离通过。"
+    },
+    {
+      "command": "真实 Codex 0.171.0 + AgentSession + 隔离 baseline_fixture（只读河图业务工具请求）",
+      "result": "passed",
+      "scope": "受管 App Server 注入隔离 hetu-mcp 配置后，真实 Agent 通过已连接河图 MCP 完成只读能力发现与作品目录回读；隔离作品目录返回 0 个作品，未执行写入、导入导出、命令或外部访问。"
+    },
+    {
+      "command": "真实 Codex 0.171.0 + AgentSession + 隔离 baseline_fixture（auto 写入业务请求）",
+      "result": "not_run_successfully",
+      "scope": "隔离作品授权、受管 MCP 连接和 `hetu.resources.create` Schema 均已发现；Agent 在读取精确管理引用阶段超时，未执行写入，隔离作品未改变。"
+    },
+    {
+      "command": "cargo test --locked -p hetu-core --test resource_works management_scope_can_create_and_update_draft_resources_without_a_task",
+      "result": "passed",
+      "scope": "管理范围资料创建、更新、回放幂等；无 task_ref，动作经 management_ref 与当前 WorkRef 校验。"
+    },
+    {
+      "command": "cargo test --locked -p hetu-mcp --test stdio managed_work_ref_injects_private_grant_for_resource_write_without_echoing_grant",
+      "result": "passed",
+      "scope": "MCP 受管 `--work-ref` 入口自动解析私有 management_ref，真实 stdio 调用创建并列出资料；Agent 输入不携带管理引用。"
+    },
+    {
+      "command": "真实 stdio MCP Client + 受管 --work-ref + hetu.resources.create/list",
+      "result": "passed",
+      "scope": "隔离 baseline_fixture 作品中真实写入“Agent 写入验收”并回读同一资料；幂等 operation_key 保持。"
+    },
+    {
+      "command": "cd apps/desktop && npx playwright test tests/agent-session-e2e.spec.ts",
+      "result": "passed",
+      "scope": "Electron 独立桌面 Agent 会话 E2E；精确 WorkRef、私有 sandbox cwd、共享协作目录、增量消息和不泄露绝对作品路径通过。"
+    },
+    {
+      "command": "cargo test --locked -p hetu-mcp --test stdio",
+      "result": "passed",
+      "scope": "MCP stdio 41 项协议、App 资源协商、受管 WorkRef 写入、恢复与跨作品隔离回归。"
+    }
+  ],
+  "boundaries": [
+    "ACP 适配器只验证 ACP v1 wire 映射与隔离恢复；具体 ACP Agent 的认证、模型和真实工具调用尚未验证。",
+    "Claude Code 当前配置模型仍返回 404 model_not_found；隔离协议回归通过不等于真实模型通过。",
+    "真实 Codex 模型在本次完整 180 秒窗口内仍未主动发起写入工具调用；底层受管 MCP 写入合同已通过真实 stdio Client 和 Core 回归。",
+    "跨平台、读屏、作者完整试用及 Codex Desktop 逐页视觉验收仍单独取证。"
+  ],
+  "acceptance": "local_acceptance_verified_real_model_write_pending"
+}

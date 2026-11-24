@@ -1,0 +1,209 @@
+{
+  "record_kind": "research_evidence",
+  "collected_on": "2026-11-22",
+  "sources": [
+    {
+      "url": "https://xingyuexiezuo.com/",
+      "access": "public_and_signed_in_browser"
+    },
+    {
+      "url": "https://wawawriter.com/novel/center",
+      "access": "public_and_signed_in_browser"
+    }
+  ],
+  "method": "复用本轮已登录浏览器观察与展开菜单的固定截图，本次核对原始PNG字节、尺寸及摘要；选取设置和上下文菜单图再次目视复核。",
+  "artifact_storage": "原截图保留本机隔离研究包；包含登录态或作品内容，不复制到源码仓库或发行包。",
+  "viewport": "未独立记录CSS视口；image_size_px仅为截图像素，不推定计算样式。",
+  "artifacts": [
+    {
+      "artifact": "xingyue-editor-actual.png",
+      "sha256": "121c2106531a7cd28cc9e8873414be2895935505638d7b62735e2c5b6aea4deb",
+      "size_bytes": 676155,
+      "image_size_px": [
+        2560,
+        1283
+      ],
+      "observed_mechanisms": [
+        "章节目录",
+        "正文编辑",
+        "任务型AI工具入口"
+      ]
+    },
+    {
+      "artifact": "xingyue-editor-settings-expanded.png",
+      "sha256": "917bb763f6fea054cc680795644f669600b97c572c9a282629765ced0612d8d3",
+      "size_bytes": 747498,
+      "image_size_px": [
+        2560,
+        1283
+      ],
+      "observed_mechanisms": [
+        "字体字号",
+        "行高边距",
+        "资料栏位置",
+        "主题皮肤"
+      ]
+    },
+    {
+      "artifact": "xingyue-resources-loaded.png",
+      "sha256": "1051bae0ed53b3164b627507dddf1257da3dbfaa1cc9eb17ebd87d7ff0eefef7",
+      "size_bytes": 628982,
+      "image_size_px": [
+        2560,
+        1283
+      ],
+      "observed_mechanisms": [
+        "资料栏"
+      ]
+    },
+    {
+      "artifact": "xingyue-ai-writing.png",
+      "sha256": "4ffb717bce60bc3d54b0f89af1cb7527a1b5663bd0e447a31aa29d84279333e9",
+      "size_bytes": 702085,
+      "image_size_px": [
+        2560,
+        1283
+      ],
+      "observed_mechanisms": [
+        "AI写作面板"
+      ]
+    },
+    {
+      "artifact": "xingyue-selection-menu-config-actual.png",
+      "sha256": "ce139a043862a57b1535ac30450b656813848042cbf9af8a05028be37f508b16",
+      "size_bytes": 731414,
+      "image_size_px": [
+        2560,
+        1283
+      ],
+      "observed_mechanisms": [
+        "选区菜单配置"
+      ]
+    },
+    {
+      "artifact": "xingyue-edit-toolbox.png",
+      "sha256": "f83ae4f4e4477c239c4f74f60295c22ba58385f87ccde85a0592680db9a6325a",
+      "size_bytes": 660237,
+      "image_size_px": [
+        2560,
+        1283
+      ],
+      "observed_mechanisms": [
+        "编辑工具箱"
+      ]
+    },
+    {
+      "artifact": "xingyue-directory-menu.png",
+      "sha256": "4e32b6f6150810489158306ff23b84ad955d3342b8d49dfe543f23159cd39797",
+      "size_bytes": 645313,
+      "image_size_px": [
+        2560,
+        1283
+      ],
+      "observed_mechanisms": [
+        "章节操作菜单"
+      ]
+    },
+    {
+      "artifact": "wawa-workbench.png",
+      "sha256": "34afdc7003eac49d729432e0862b2cb1a36f36be804350cfbb9468291e39e44f",
+      "size_bytes": 437941,
+      "image_size_px": [
+        2560,
+        1283
+      ],
+      "observed_mechanisms": [
+        "作品信息",
+        "正文与草稿",
+        "细纲管理",
+        "Agent工作面"
+      ]
+    },
+    {
+      "artifact": "wawa-agent-skills.png",
+      "sha256": "8fb5cf6b4da25e31fd1083055e785aea8a8ef0494a8d39c751a72ab216b526b4",
+      "size_bytes": 514387,
+      "image_size_px": [
+        2560,
+        1283
+      ],
+      "observed_mechanisms": [
+        "技能分类搜索",
+        "推荐收藏最近",
+        "说明及使用入口"
+      ]
+    },
+    {
+      "artifact": "wawa-context-menu.png",
+      "sha256": "82df8a33e055a5851ad11836537fa216fd06997e4e29a9f851140db8c0e4e437",
+      "size_bytes": 459212,
+      "image_size_px": [
+        2560,
+        1283
+      ],
+      "observed_mechanisms": [
+        "标签",
+        "总纲",
+        "角色",
+        "设定",
+        "章节",
+        "纲要",
+        "草稿"
+      ]
+    },
+    {
+      "artifact": "wawa-work-info-expanded.png",
+      "sha256": "24c98810e53476b86ee3745d7c312c7b5ef7aece03fb3829e281e1e261ba217d",
+      "size_bytes": 557038,
+      "image_size_px": [
+        2560,
+        1283
+      ],
+      "observed_mechanisms": [
+        "作品资料与角色"
+      ]
+    },
+    {
+      "artifact": "wawa-directory-menu.png",
+      "sha256": "875bc45f351779fb5af40361298e235cf6595bb1b0ed372e50ebc6a02de38c1a",
+      "size_bytes": 442423,
+      "image_size_px": [
+        2560,
+        1283
+      ],
+      "observed_mechanisms": [
+        "目录菜单"
+      ]
+    }
+  ],
+  "evidence_limits": [
+    "可见界面与菜单不证明后端实现或机器API存在",
+    "未提交新的付费生成或商业订单",
+    "未穷举全部隐藏交互、跨设备同步、无障碍及长篇性能",
+    "未以观察结果评价生成品质或推断作者阅读效率",
+    "外部默认排版不直接成为河图默认值"
+  ],
+  "adopted_scope": [
+    "任务型能力分类",
+    "原Owner固定上下文",
+    "可配置编辑辅助",
+    "按需专业入口",
+    "共享工作台与排版",
+    "统一执行和原任务恢复"
+  ],
+  "excluded_scope": [
+    "人工表单主导的强制流程",
+    "全量AI工具平铺",
+    "内置通用Agent循环",
+    "社区积分和营销运营",
+    "逐提示词扩张Core模型"
+  ],
+  "design_owners": [
+    "docs/01-产品需求PRD.md",
+    "docs/28-领域设计与边界上下文.md",
+    "docs/29-数据字典与Schema设计.md",
+    "docs/30-应用API详细设计.md",
+    "docs/39-Electron与插件优先重构架构.md"
+  ],
+  "acceptance_status": "research_only_not_product_acceptance"
+}

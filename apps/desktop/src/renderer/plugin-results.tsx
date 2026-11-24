@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { data, desktop } from "./bridge.ts";
+import { data, desktop, requestAgent } from "./bridge.ts";
 import { IconButton } from "./workbench.tsx";
 import "./plugin-results.css";
 
@@ -50,10 +50,10 @@ export function PluginResults({ owner, title, enabled, back }: { owner: string; 
   }
   async function handoff() {
     const request = generation.current;
-    await desktop.handoff("fallback:" + owner, preview ? {
+    await requestAgent("fallback:" + owner, preview ? {
       object_id: preview.object.object_id, revision: preview.object.revision, sha256: preview.object.sha256,
     } : {});
-    if (request === generation.current) setNotice("已复制插件成果的协作请求。");
+    if (request === generation.current) setNotice(desktop.agentSessionHost ? "已放入Codex会话草稿，请核对后发送。" : "已复制插件成果的协作请求。");
   }
   return <section className="plugin-results" aria-label="插件成果">
     <div className="surface-heading"><h1>{title}成果</h1><div className="actions">

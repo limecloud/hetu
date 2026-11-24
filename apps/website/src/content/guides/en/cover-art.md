@@ -1,5 +1,9 @@
 # Create and choose a cover
 
+## Start with what you need
+
+Discuss temporary cover ideas first. Fix references and budget before generating; saving a candidate and choosing a cover are separate decisions.
+
 A cover can begin with a clear feeling. Ask your external Agent to prepare directions and candidates, then enlarge and compare the results in Hetu.
 
 Generating an image, receiving a candidate and choosing the current cover are separate steps. A new candidate does not automatically replace your cover.

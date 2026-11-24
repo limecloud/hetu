@@ -5414,6 +5414,152 @@
                   "auto",
                   "confirm"
                 ]
+              },
+              "agent_session": {
+                "type": "object",
+                "additionalProperties": false,
+                "minProperties": 1,
+                "properties": {
+                  "default_surface": {
+                    "type": "string",
+                    "enum": [
+                      "tui",
+                      "gui"
+                    ]
+                  },
+                  "chat_font_family": {
+                    "type": "string",
+                    "maxLength": 300,
+                    "pattern": "^[^\\u0000\\r\\n]*$"
+                  },
+                  "chat_font_size": {
+                    "type": "integer",
+                    "minimum": 12,
+                    "maximum": 20
+                  },
+                  "code_font_size": {
+                    "type": "integer",
+                    "minimum": 10,
+                    "maximum": 18
+                  },
+                  "chat_width": {
+                    "type": "string",
+                    "enum": [
+                      "comfortable",
+                      "wide",
+                      "full"
+                    ]
+                  },
+                  "chat_contrast": {
+                    "type": "integer",
+                    "minimum": 50,
+                    "maximum": 150
+                  },
+                  "match_terminal": {
+                    "type": "boolean"
+                  },
+                  "scroll_on_send": {
+                    "type": "boolean"
+                  },
+                  "mark_new_messages": {
+                    "type": "boolean"
+                  },
+                  "show_changes": {
+                    "type": "boolean"
+                  },
+                  "enter_sends": {
+                    "type": "boolean"
+                  },
+                  "terminal_font_family": {
+                    "type": "string",
+                    "maxLength": 300,
+                    "pattern": "^[^\\u0000\\r\\n]*$"
+                  },
+                  "terminal_font_size": {
+                    "type": "integer",
+                    "minimum": 10,
+                    "maximum": 24
+                  },
+                  "terminal_font_weight": {
+                    "type": "integer",
+                    "minimum": 100,
+                    "maximum": 900
+                  },
+                  "terminal_bold_weight": {
+                    "type": "integer",
+                    "minimum": 100,
+                    "maximum": 900
+                  },
+                  "terminal_line_height": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 2
+                  },
+                  "terminal_cursor": {
+                    "type": "string",
+                    "enum": [
+                      "block",
+                      "bar",
+                      "underline"
+                    ]
+                  },
+                  "terminal_cursor_blink": {
+                    "type": "boolean"
+                  },
+                  "terminal_scrollback": {
+                    "type": "integer",
+                    "minimum": 1000,
+                    "maximum": 50000
+                  },
+                  "terminal_scroll_sensitivity": {
+                    "type": "number",
+                    "minimum": 0.1,
+                    "maximum": 10
+                  },
+                  "terminal_fast_scroll_sensitivity": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 20
+                  },
+                  "terminal_tui_scroll_sensitivity": {
+                    "type": "number",
+                    "minimum": 0.1,
+                    "maximum": 10
+                  },
+                  "terminal_gpu": {
+                    "type": "string",
+                    "enum": [
+                      "auto",
+                      "on",
+                      "off"
+                    ]
+                  },
+                  "terminal_ligatures": {
+                    "type": "string",
+                    "enum": [
+                      "auto",
+                      "on",
+                      "off"
+                    ]
+                  },
+                  "terminal_theme": {
+                    "type": "string",
+                    "enum": [
+                      "system",
+                      "light",
+                      "dark"
+                    ]
+                  },
+                  "terminal_scroll_on_input": {
+                    "type": "boolean"
+                  },
+                  "terminal_copy_on_select": {
+                    "type": "boolean"
+                  },
+                  "terminal_focus_on_hover": {
+                    "type": "boolean"
+                  }
+                }
               }
             },
             "required": [],
@@ -7909,6 +8055,411 @@
           "document_id",
           "base_revision_id",
           "title",
+          "operation_key"
+        ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.documents.duplicate",
+      "purpose": "按固定正文及目录基线在同一作品创建独立章节或分集副本",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "source_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "document_id": {
+                "type": "string",
+                "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "revision_id": {
+                "type": "string",
+                "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "document_id",
+              "revision_id",
+              "sha256"
+            ]
+          },
+          "expected": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "revision",
+              "sha256"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "work_ref",
+          "source_ref",
+          "expected",
+          "title",
+          "operation_key"
+        ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.documents.move_range",
+      "purpose": "将固定原文范围在同作品两篇文稿间原子移动并登记恢复引用",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "source_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "document_id": {
+                "type": "string",
+                "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "revision_id": {
+                "type": "string",
+                "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "document_id",
+              "revision_id",
+              "sha256"
+            ]
+          },
+          "target_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "document_id": {
+                "type": "string",
+                "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "revision_id": {
+                "type": "string",
+                "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "document_id",
+              "revision_id",
+              "sha256"
+            ]
+          },
+          "byte_start": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "byte_end": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "quote": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000000
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "work_ref",
+          "source_ref",
+          "target_ref",
+          "byte_start",
+          "byte_end",
+          "quote",
+          "operation_key"
+        ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.documents.move_to_new",
+      "purpose": "将固定原文范围在同作品中原子移动到新建章节或分集并登记恢复引用",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "source_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "document_id": {
+                "type": "string",
+                "pattern": "^doc_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "revision_id": {
+                "type": "string",
+                "pattern": "^rev_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "document_id",
+              "revision_id",
+              "sha256"
+            ]
+          },
+          "expected": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "revision",
+              "sha256"
+            ]
+          },
+          "new_target": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "volume_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "plan": {
+                "type": "string",
+                "maxLength": 20000
+              }
+            },
+            "required": [
+              "title"
+            ]
+          },
+          "byte_start": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "byte_end": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "quote": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000000
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "work_ref",
+          "source_ref",
+          "expected",
+          "new_target",
+          "byte_start",
+          "byte_end",
+          "quote",
+          "operation_key"
+        ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.documents.get_move",
+      "purpose": "回读确切跨文稿移动记录的双端前后修订及范围",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "move_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "move_id": {
+                "type": "string",
+                "pattern": "^move_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "move_id",
+              "sha256"
+            ]
+          }
+        },
+        "required": [
+          "work_ref",
+          "move_ref"
+        ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.documents.restore_move",
+      "purpose": "双端未变化时按固定移动记录原子恢复正文并保留修订历史",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "move_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "move_id": {
+                "type": "string",
+                "pattern": "^move_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "move_id",
+              "sha256"
+            ]
+          },
+          "operation_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "work_ref",
+          "move_ref",
           "operation_key"
         ]
       },

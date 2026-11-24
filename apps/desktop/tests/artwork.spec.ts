@@ -1,4 +1,4 @@
-import { documentAction, navigate } from "./navigation.ts";
+import { documentAction, navigate, openDirectory, captureAgentDraft } from "./navigation.ts";
 import { test, expect, _electron as electron } from "@playwright/test";
 import { mkdtemp, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
@@ -152,13 +152,13 @@ test("图片库按固定人物与正文关联、原比例预览、历史批次�
     await expect(
       related.getByRole("img", { name: "黎明前的灯塔", exact: true }),
     ).toHaveCount(0);
+    const capturedDraft=await captureAgentDraft(application,page);
     await related
       .getByRole("button", { name: "让 AI 准备图片", exact: true })
       .click();
-    await expect(page.getByRole("status")).toContainText("已复制图片协作请求");
-    const handoff = await application.evaluate(({ clipboard }) =>
-      JSON.parse(clipboard.readText().split("\n").slice(1).join("\n")),
-    );
+    await expect(page.getByRole("status")).toContainText("已放入当前会话草稿");
+    const handoff = JSON.parse((await capturedDraft())!.split("\n").slice(1).join("\n"));
+    expect(handoff.management_ref).toBeUndefined();expect(handoff.workspace_path).toBeUndefined();
     expect(
       handoff.fixed_refs.some(
         (ref: any) => ref.entity_ref === context.artwork.character_id,
@@ -211,7 +211,8 @@ test("图片库按固定人物与正文关联、原比例预览、历史批次�
     expect((await page.evaluate(() => window.hetuDesktop.canon("get"))).blueprint.characters[0].description).toBe("另一个窗口的修改");
     await edit.getByRole("button", { name: "关闭", exact: true }).click();
     await edit.getByRole("button", { name: "放弃修改并关闭", exact: true }).click();
-    await page.getByRole("button", { name: "小说", exact: true }).click();
+    await page.getByRole("complementary", { name: "项目导航", exact: true }).getByRole("button", { name: "小说", exact: true }).click();
+    await openDirectory(page);
     await page
       .getByRole("button", { name: "第一章 雾港", exact: true })
       .click();

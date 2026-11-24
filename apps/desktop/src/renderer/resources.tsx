@@ -1,20 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import { desktop, data } from "./bridge.ts";
+import { desktop, data, requestAgent } from "./bridge.ts";
 import type { SurfaceContext } from "./contributions.tsx";
 import { Icon, IconButton, PageActions } from "./workbench.tsx";
 import "./surface-pages.css";
 import {ResourceBody} from "./resource-reading.tsx";
 import {useObjectContextMenu} from "./text-context-menus.tsx";
 import {manuscriptVisibleText} from "@hetu/workbench-ui/manuscript-format";
+import {resourceCategories as categories} from "./resource-source.ts";
 
-const categories: Record<string, string> = {
-  character: "人物资料",
-  location: "地点与场景",
-  prop: "物品与道具",
-  research: "灵感与考据",
-  artwork: "封面与插图",
-  media: "音视频与文件说明",
-};
 const states: Record<string, string> = {
   draft: "草稿",
   adopted: "已采用",
@@ -118,7 +111,7 @@ export function Resources({ work, notify }: SurfaceContext) {
     return result;
   }
   async function ai() {
-    await desktop.handoff(
+    await requestAgent(
       "work.resources",
       view
         ? {
@@ -127,7 +120,7 @@ export function Resources({ work, notify }: SurfaceContext) {
           }
         : {},
     );
-    notify("已复制资料整理请求，可向外部 Agent 说明要补充或调整的内容。");
+    notify(desktop.agentSessionHost ? "已放入Codex会话草稿，请核对后发送。" : "已复制资料整理请求，可向外部 Agent 说明要补充或调整的内容。");
   }
   async function prepare(kind: string, fixed = view, changes = edits) {
     setPreview(
@@ -194,7 +187,7 @@ export function Resources({ work, notify }: SurfaceContext) {
     {id: "review", separator: true},
     {id: "adopt", label: "采用此版资料", disabled: busy || !!edits || item.state !== "draft", action: () => run(async () => {const fixed = await open(item.resource_id, item.revision); if (fixed) await prepare("adopt", fixed, undefined);})},
     {id: "archive", label: "归档此版资料", disabled: busy || !!edits || item.state === "archived", action: () => run(async () => {const fixed = await open(item.resource_id, item.revision); if (fixed) await prepare("archive", fixed, undefined);})},
-    {id: "ai", label: "让 AI 整理此资料", action: () => desktop.handoff("work.resources", {resource_id: item.resource_id, revision: item.revision})},
+    {id: "ai", label: "让 AI 整理此资料", action: () => requestAgent("work.resources", {resource_id: item.resource_id, revision: item.revision})},
   ]);
   return (
     <section className="resources surface-page" aria-label="作品资料与素材">

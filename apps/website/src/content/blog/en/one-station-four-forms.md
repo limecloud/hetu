@@ -24,3 +24,10 @@ The same station can appear on stage, in a comedy bit, in an explanation or in a
 [Quest Studio](/en/plugins/quest-studio/) represents taking a letter, spending a ticket and entering the station as explicit state. Without the letter, a failed transition leaves the ticket intact. Replay a route with each before-and-after state, and preserve uncertainty when exploration is incomplete.
 
 Tell your Agent the goal, return to inspect the complete result and name what needs revision. Each professional project retains its own evidence while informing the same work. Authors retain the choices that shape the expression.
+
+
+## Use only what this work needs
+
+Choose tools for a concrete problem in the work. Try an expression in conversation first; add an extension when professional structures, comparisons or delivery need it. Ordinary manuscripts and selected exports should remain retrievable.
+
+[Find the smallest useful starting point](/en/docs/when-to-use/).

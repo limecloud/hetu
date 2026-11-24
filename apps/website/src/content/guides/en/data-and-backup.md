@@ -1,5 +1,9 @@
 # Your work, versions and backups
 
+## Start with what you need
+
+Work revisions, independent backups and engine chat history serve different purposes. Retrieve selected manuscripts and assets without requiring the full chat or a running plugin.
+
 The creative library registers novels, scripts and videos. Their content and permissions remain separate even when they share a workspace directory. The software’s open-source license does not automatically apply to your writing.
 
 ## Website preview

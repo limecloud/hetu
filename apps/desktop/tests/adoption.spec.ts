@@ -3,6 +3,7 @@ import { mkdtemp } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import os from "node:os";
+import { navigate } from "./navigation.ts";
 import { PluginPackage } from "../../../packages/plugin-host/src/package.ts";
 
 const root = path.resolve(import.meta.dirname, "../../..");
@@ -57,7 +58,7 @@ test("局部采纳固定中文与emoji选区、拒绝伪造和旧坐标、保留
         ({ action, input }) => (window as any).hetuDesktop.read(action, input),
         { action, input },
       );
-    await page.getByRole("button", { name: "参考稿审核", exact: true }).click();
+    await navigate(page, "参考稿审核");
     await page
       .getByRole("combobox", { name: "当前审阅任务" })
       .selectOption(context.task_ref.task_id);

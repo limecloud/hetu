@@ -1,5 +1,9 @@
 # Privacy and permissions
 
+## Start with what you need
+
+Permission, task necessity and lasting value are separate decisions. Auto supports continuous execution in scope, not saving every chat, approving every result or expanding transfer and cost.
+
 Your works are stored by default in local folders you choose. Hetu being open source does not make your novels, scripts, images or videos public.
 
 When using an Agent or generation service, check which works and materials it may process and which operations it may perform.

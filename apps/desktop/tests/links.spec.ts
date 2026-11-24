@@ -3,6 +3,7 @@ import { mkdtemp } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import os from "node:os";
+import { navigate } from "./navigation.ts";
 import { PluginPackage } from "../../../packages/plugin-host/src/package.ts";
 const root = path.resolve(import.meta.dirname, "../../..");
 test(
@@ -56,7 +57,7 @@ test(
         .first()
         .click();
       await page.getByRole("button", { name: /独立剧本/ }).click();
-      await page.getByRole("button", { name: "关联作品", exact: true }).click();
+      await navigate(page, "关联作品");
       await page
         .getByRole("button", { name: "查看固定依据", exact: true })
         .click();

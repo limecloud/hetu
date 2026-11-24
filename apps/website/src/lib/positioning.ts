@@ -1,7 +1,7 @@
 import type { Locale } from './site';
 
 const zh = {
-  title: '从故事到画面，让每次创作都接得上。',
+  title: '让下一次创作，接得上这一稿。',
   intro: '一部小说、一场原创戏，或一段已有视频，都可以成为起点。需要跨越表达方式时，把人物、场次与制作资料关联起来，保留当时的依据和选择。',
   gaps: [
     { from: '写得动人', to: '演得出来', question: '内心独白，怎么让观众看见？', answer: '把心理与叙述转成动作、对白和场景，保留原著依据，新增表达交给作者判断。' },
@@ -30,6 +30,7 @@ const zh = {
   ],
   questionsTitle: '从你真正想问的事开始。',
   questions: [
+    ['Agent和文件夹够用时怎么办？', '直接使用它们。临时构思不必建作品，查阅已有内容可以只读。河图需要用更轻松的接续、核对与交付证明价值。'],
     ['没有小说，也可以开始吗？', '可以直接构思原创剧本，也可以从创意、分镜或已有片段开始视频。小说、剧本与视频独立存在，需要时再关联固定来源。'],
     ['会不会把我的小说改得面目全非？', '改编与原著保留固定来源。新增、删减和重排可对照，参考稿独立保存，作者确认后才采纳。'],
     ['怎样从剧本继续到成片？', '向外部 Agent 说出目标，先审剧本与必要的预演，再核对实际片段、声音、字幕和剪辑。局部问题沿原任务返工，成片版本与可编辑工程分别核验后交付。'],
@@ -39,7 +40,7 @@ const zh = {
 };
 
 const en = {
-  title: 'From story to picture, keep the work connected.',
+  title: 'Return to the work, with what matters intact.',
   intro: 'Begin with a manuscript, an original scene or existing footage. When you move between forms, connect characters, scenes and production references while keeping the sources and choices behind each version.',
   gaps: [
     { from: 'Interior voice', to: 'Visible performance', question: 'How does an audience see what a character is thinking?', answer: 'Develop action, dialogue and setting around the original intent. Keep new adaptation choices visible and trace them to the manuscript.' },
@@ -68,6 +69,7 @@ const en = {
   ],
   questionsTitle: 'Questions an author should ask first.',
   questions: [
+    ['What if my Agent and folder are enough?', 'Keep using them. Quick ideas need no project; reading can be a complete task. Hetu should earn its place through easier continuation, comparison and delivery.'],
     ['Can I start without a novel?', 'Develop an original screenplay, or start a video from a brief, storyboards or existing clips. Novels, scripts and videos are independent works; connect fixed sources when needed.'],
     ['Will this rewrite or publish my book?', 'Adaptations keep fixed source references. Candidates stay separate; you choose what to adopt and finalize. Publishing is a separate action.'],
     ['How does a script continue to a finished video?', 'Ask your external Agent to develop the work. Review the script and any needed preview, then inspect real clips, sound, subtitles and an actual edit. Continue revisions on the same task, and verify the final video and editable project separately.'],

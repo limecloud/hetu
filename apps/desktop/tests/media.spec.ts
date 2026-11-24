@@ -1,4 +1,4 @@
-import { navigate } from "./navigation.ts";
+import { navigate, captureAgentDraft } from "./navigation.ts";
 import {
   test,
   expect,
@@ -226,15 +226,14 @@ test(
       await expect(
         page!.getByText("尚无再分发声明", { exact: true }),
       ).toBeVisible();
+      const capturedDraft=await captureAgentDraft(app!,page!);
       await page!
         .getByRole("button", { name: "让 AI 处理此版本", exact: true })
         .click();
       await expect
-        .poll(() => app!.evaluate(({ clipboard }) => clipboard.readText()))
+        .poll(capturedDraft)
         .toContain(asset.asset.asset_id);
-      const handoff = await app!.evaluate(({ clipboard }) =>
-        clipboard.readText(),
-      );
+      const handoff = (await capturedDraft())!;
       expect(handoff).toContain(asset.asset.asset_id);
       expect(handoff).toContain(asset.sha256);
       const updated = {

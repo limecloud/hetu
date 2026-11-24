@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-23",
+  "entry": "current_codex_conversation_mcp_tools",
+  "codex_thread_id": "01a1f176-db56-70d3-a76c-4535aa419e5f",
+  "runtime": {
+    "version": "0.14.0",
+    "bundled_skill": {
+      "name": "hetu",
+      "version": "0.3.13"
+    },
+    "catalog_sha256": "96f0b0770d3f3efba40b10c807637694a6bd8c9a03aae8c0c6c45f486c4dd6fb"
+  },
+  "connection": {
+    "initial_result": "Transport closed",
+    "recovery": "Codex app-server config/mcpServer/reload",
+    "same_thread_recovered": true,
+    "parallel_discovery_result": "workspace_busy",
+    "discovery_retry": "sequential_read_succeeded"
+  },
+  "execution_mode": {
+    "execution_mode": "auto",
+    "policy_revision": 1
+  },
+  "test_work": {
+    "title": "Codex会话验收 2026-11-23",
+    "work_ref": {
+      "workspace_id": "workspace_8289c310-bd35-4c58-85a2-02f9a521b556",
+      "kind": "novel",
+      "object_id": "novel_be7d62e9-6c99-4f2f-bed6-7cc296a5484e"
+    },
+    "storage": "persistent_managed_workspace",
+    "document_id": "doc_e173e519-996c-4169-9101-ed552fb08f3f"
+  },
+  "task_ref": {
+    "request_revision": 1,
+    "scope_ref": {
+      "id": "workspace_8289c310-bd35-4c58-85a2-02f9a521b556",
+      "kind": "workspace"
+    },
+    "sha256": "f9d53b12d559947df1002db643dc121209d5f469fa34e03fef62fb1512922cdd",
+    "task_id": "task_e081e05e-48ce-4a78-a497-d8c80ff5e51c"
+  },
+  "references": {
+    "v1": {
+      "sha256": "4b00e1b7aaf8fc8d2fe949e67b664695aca4b58eadd15ba60cc90125fa49d9cb",
+      "working_copy_id": "working_dfe222f4-45c2-4a68-9d18-36b0f2d59700",
+      "working_revision_id": "wrev_bb4f28d6-bc6e-4918-8e18-bfe0fee3115a"
+    },
+    "v2": {
+      "sha256": "93ba8f125e52ee0d98b392b0a05fce4def0b4a3b4074dbb5bd6b97626af03e36",
+      "working_copy_id": "working_dfe222f4-45c2-4a68-9d18-36b0f2d59700",
+      "working_revision_id": "wrev_ce723124-ad66-47ba-bdc4-8953fe48df08"
+    }
+  },
+  "assertions": {
+    "machine_creation_registered_in_desktop_library": true,
+    "generated_by_current_codex_conversation": true,
+    "v1_readback_equal": true,
+    "v2_readback_equal": true,
+    "replay_kept_original_working_ref": true,
+    "stale_write_rejected": true,
+    "wrong_request_digest_rejected": true,
+    "original_document_unchanged": true,
+    "task_reopened_same_ref": true,
+    "working_copy_count": 1,
+    "submission_count": 2,
+    "candidate_not_adopted_or_finalized": true,
+    "mcp_app_data_contains_v2": true
+  },
+  "desktop_observation": {
+    "application": "/Applications/Hetu.app",
+    "method": "Computer Use accessibility tree and screenshot",
+    "title": "Codex会话验收 2026-11-23",
+    "visible": [
+      "作品资料",
+      "第一章 灯塔来信",
+      "有成果待审阅 2 批成果",
+      "灯塔来信 开篇参考稿",
+      "录制时间，也是明天。"
+    ],
+    "left_open_on": "参考稿审核"
+  },
+  "limitations": [
+    {
+      "scope": "Codex Desktop side panel send/draft click",
+      "status": "not_verified",
+      "reason": "Computer Use is not allowed to use the app 'com.openai.codex' for safety reasons."
+    },
+    {
+      "scope": "MCP App browser control",
+      "status": "not_available",
+      "reason": "The browser access host is unavailable"
+    }
+  ],
+  "receipts": {
+    "creation": {
+      "action": "hetu.creation_projects.create",
+      "status": "succeeded",
+      "operation": {
+        "id": "op_64db021e-8add-4bf6-9179-633e2bd87464",
+        "input_digest": "sha256:19392404f9d289e4246cc9fb00f463321e7cce30433acabf53aae8f34cb758db",
+        "key": "live-codex-20261123-01a1f176-create-v1",
+        "recover_action": "hetu.operations.get"
+      }
+    },
+    "saved_creation": {
+      "action": "hetu.creation_projects.save",
+      "status": "succeeded",
+      "operation": {
+        "id": "op_6011d7b5-8478-41c4-bf22-3bcee0a66da0",
+        "input_digest": "sha256:448ea7b454817bb0f4f691225fdeaa54b6dfcd45391ad61bc041b0f946e95702",
+        "key": "live-codex-20261123-01a1f176-profile-v1",
+        "recover_action": "hetu.operations.get"
+      }
+    },
+    "novel": {
+      "action": "hetu.creation_projects.create_novel",
+      "status": "succeeded",
+      "operation": {
+        "id": "op_254ce647-0a93-4222-8c17-1f586b798a3c",
+        "input_digest": "sha256:4b61e05d7822efd64d806ee6f8077ede2e7721c359cc9cd45c0dda2bc6ebff35",
+        "key": "live-codex-20261123-01a1f176-novel-v1",
+        "recover_action": "hetu.operations.get"
+      }
+    },
+    "document": {
+      "action": "hetu.documents.create",
+      "status": "succeeded",
+      "operation": {
+        "id": "op_50c28d3d-d1dd-420c-b338-be2652ddc569",
+        "input_digest": "sha256:53c8619683868772787d727cfdf9c10673a466324154016d37dedc874af751e0",
+        "key": "live-codex-20261123-01a1f176-chapter-v1",
+        "recover_action": "hetu.operations.get"
+      }
+    },
+    "prepared": {
+      "action": "hetu.creative_tasks.prepare",
+      "status": "succeeded",
+      "operation": {
+        "id": "op_79afeef7-574a-400d-81c6-0da1f1b4309f",
+        "input_digest": "sha256:4c95302bead987d6abfa0f1c661c9b1301daca2fbd437e0a31ced603512fc039",
+        "key": "live-codex-20261123-01a1f176-task-v1",
+        "recover_action": "hetu.operations.get"
+      }
+    },
+    "copy_v1": {
+      "action": "hetu.working_copies.create",
+      "status": "succeeded",
+      "operation": {
+        "id": "op_235dc739-0e3f-4ede-b507-20e6401354b1",
+        "input_digest": "sha256:4f129e33b13d8ad8cd5a51a54bdbb4faa7c4798abb253adb6f73be8f67aa9a6d",
+        "key": "live-codex-20261123-01a1f176-draft-v1",
+        "recover_action": "hetu.operations.get"
+      }
+    },
+    "copy_v2": {
+      "action": "hetu.working_copies.save",
+      "status": "succeeded",
+      "operation": {
+        "id": "op_b0eb5b96-7edf-49d6-afa3-1ce650c504e9",
+        "input_digest": "sha256:47a1d38b37d1660b6108e048cffed1115e489242cad69b33724f8842449ff9ec",
+        "key": "live-codex-20261123-01a1f176-draft-v2",
+        "recover_action": "hetu.operations.get"
+      }
+    },
+    "submit_v1": {
+      "action": "hetu.creative_tasks.submit_result",
+      "status": "succeeded",
+      "operation": {
+        "id": "op_8b542663-9ab1-4061-bd5d-d30f946c21ba",
+        "input_digest": "sha256:bc2b147ac3562558ce1d9b85236f1387a6a287081571473859d657a1b07a104a",
+        "key": "live-codex-20261123-01a1f176-submit-v1",
+        "recover_action": "hetu.operations.get"
+      }
+    },
+    "submit_v2": {
+      "action": "hetu.creative_tasks.submit_result",
+      "status": "succeeded",
+      "operation": {
+        "id": "op_9ad78957-030f-4b39-b555-d00bfe683108",
+        "input_digest": "sha256:385b2bc388595b8e853ba61a45b54782d4a12c8cc6dbfd29c12d84ddebab5e72",
+        "key": "live-codex-20261123-01a1f176-submit-v2",
+        "recover_action": "hetu.operations.get"
+      }
+    }
+  }
+}

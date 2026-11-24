@@ -1,5 +1,9 @@
 # Plan a book with Codex
 
+## Start with what you need
+
+For a quick discussion, ask Codex to discuss without saving. Use the following save flow when you want to retain alternatives. Creating a work need not add an empty chapter or initial task.
+
 Start with one small task: ask Codex to prepare titles, a synopsis and an opening conflict, then save the alternatives in Hetu Luoshu. You review the direction without entering the same details again.
 
 Connect your external Codex using the [Agent guide](agents.md) and choose an appropriate [Skills suite](skills.md). Reuse that connection for later tasks. Hetu Luoshu does not send chat messages for you.

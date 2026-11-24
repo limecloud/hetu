@@ -13,7 +13,7 @@ export function button(text: string, click: () => void | Promise<void>) {
 }
 
 const labels: Record<string, string> = {
-  title: "名称", name: "名称", brief: "目标", synopsis: "简介", author_name: "作者", genre: "题材", status: "状态", state: "状态", content: "内容", body: "正文", description: "说明", summary: "概况", metadata: "作品资料", novel: "小说", record: "资料", project: "项目", episode: "分集", episodes: "分集", volumes: "卷", chapters: "章节", documents: "正文", tasks: "任务", resources: "资料", assets: "素材", cues: "线索", items: "成果", media: "媒体", feedback: "意见", public_comment: "公开意见", comment: "意见", candidates: "候选", submission: "已提交成果", submissions: "成果批次", request: "任务要求", working_copies: "参考稿", blueprint: "设定集", characters: "人物", locations: "地点", factions: "势力", timeline: "时间线", world: "世界观", rules: "规则", traits: "特征", facts: "事实", notes: "备注", before: "变更前", after: "变更后", changes: "变更", fixed: "固定方案", observations: "核对结果", findings: "发现", reports: "检查报告", reviews: "待审内容", draft: "待审稿", source_rights: "来源与权利", rights: "权利", purpose: "用途", excerpt: "摘要", outline: "大纲", outlines: "大纲", nodes: "节点", children: "内容", preferences: "偏好", appearance: "外观", language: "语言", font_size: "字号", agent_client: "Agent", packages: "已安装插件", plugins: "插件", enabled: "已启用", version: "版本", message: "说明", error: "读取问题", initialized: "已建立", complete: "完整性", missing_items: "缺项", archived: "已归档", source_format: "文本格式", position: "顺序", dirty: "存在修改", branch: "版本线", staged: "待保存", unstaged: "已有修改", untracked: "新增文件", operations: "操作方案", links: "关联", source: "来源", target: "目标", channels: "模型渠道", models: "模型", model: "型号", provider: "渠道", configured: "已配置", available: "可用", connected: "已连接", total: "总数", submission_count: "成果批次", created_at: "创建时间", updated_at: "更新时间", revision: "修订", is_current: "当前依据有效", is_expired: "已过期", label: "名称", reason: "原因", warning: "提示", warnings: "提示", action: "操作", effect: "影响", purpose_title: "用途",
+  title: "名称", name: "名称", brief: "目标", synopsis: "简介", author_name: "作者", genre: "题材", status: "状态", state: "状态", content: "内容", body: "正文", description: "说明", summary: "概况", metadata: "资料", novel: "小说", record: "资料", project: "项目", episode: "分集", episodes: "分集", volumes: "卷", chapters: "章节", documents: "正文", tasks: "任务", resources: "资料", assets: "素材", cues: "线索", items: "成果", media: "媒体", feedback: "意见", public_comment: "公开意见", comment: "意见", candidates: "候选", submission: "已提交成果", submissions: "成果批次", request: "任务要求", working_copies: "参考稿", blueprint: "设定集", characters: "人物", locations: "地点", factions: "势力", timeline: "时间线", world: "世界观", rules: "规则", traits: "特征", facts: "事实", notes: "备注", before: "变更前", after: "变更后", changes: "变更", fixed: "固定方案", observations: "核对结果", findings: "发现", reports: "检查报告", reviews: "待审内容", draft: "待审稿", source_rights: "来源与权利", rights: "权利", purpose: "用途", excerpt: "摘要", outline: "大纲", outlines: "大纲", nodes: "节点", children: "内容", preferences: "偏好", appearance: "外观", language: "语言", font_size: "字号", agent_client: "Agent", packages: "已安装插件", plugins: "插件", enabled: "已启用", version: "版本", message: "说明", error: "读取问题", initialized: "已建立", complete: "完整性", missing_items: "缺项", archived: "已归档", source_format: "文本格式", position: "顺序", dirty: "存在修改", branch: "版本线", staged: "待保存", unstaged: "已有修改", untracked: "新增文件", operations: "操作方案", links: "关联", source: "来源", target: "目标", channels: "模型渠道", models: "模型", model: "型号", provider: "渠道", configured: "已配置", available: "可用", connected: "已连接", total: "总数", submission_count: "成果批次", created_at: "创建时间", updated_at: "更新时间", revision: "修订", is_current: "当前依据有效", is_expired: "已过期", label: "名称", reason: "原因", warning: "提示", warnings: "提示", action: "操作", effect: "影响", purpose_title: "用途",
 };
 Object.assign(labels, { manuscript: "稿件", references: "参考稿", reference_content: "最新提交参考稿", author_state: "作者稿状态",
   text: "正文", plan: "创作计划", scenes: "场次", scene: "场次", episode_number: "集数", scene_number: "场次顺序", action: "行动", dialogue: "对白", speaker: "角色", beat: "节拍", beats: "节拍", target: "对象", response: "响应",
@@ -37,6 +37,9 @@ export function renderData(value: unknown, open: (link: DetailLink) => void, dep
     if (!value.length) container.append(element("p", "暂无内容", "muted"));
     for (const item of value) {
       const row = element("section", undefined, "record-row");
+      row.dataset.mcpContext = "record";
+      row.dataset.mcpContextLabel = "固定成果";
+      row.tabIndex = 0;
       row.append(renderData(item, open, depth + 1)); container.append(row);
     }
     return container;
@@ -53,17 +56,20 @@ export function renderData(value: unknown, open: (link: DetailLink) => void, dep
     if (privateField.test(key) || key === "next_cursor") continue;
     if (technical.test(key)) { tech[key] = child; continue; }
     const field = element("div", undefined, "record-field");
+    const fieldLabel = labels[key];
     if (key === "title" || key === "name") field.append(element("h3", String(child ?? "未命名")));
     else if (child !== null && child !== undefined) {
-      const label = labels[key];
-      if (!label) {
+      if (!fieldLabel) {
         // 未知专业字段保留为渐进详情，不能静默丢弃作者已有成果。
         const detail = element("details", undefined, "technical");
         detail.append(element("summary", key.replaceAll("_", " ")), renderData(child, open, depth + 1));
         container.append(detail); continue;
       }
-      field.append(element("h4", label), renderData(child, open, depth + 1));
+      field.append(element("h4", fieldLabel), renderData(child, open, depth + 1));
     }
+    field.dataset.mcpContext = "record";
+    field.dataset.mcpContextLabel = key === "title" || key === "name" ? String(child ?? "固定成果") : (fieldLabel ?? "固定成果");
+    field.tabIndex = 0;
     container.append(field);
   }
   if (links.length) {

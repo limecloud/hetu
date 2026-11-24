@@ -77,3 +77,10 @@ Open source and open interfaces are commitments, not proof of a useful product. 
 > As AI grows more capable, let it work with the body of work you build over time. Let every generated draft become something you can understand, choose from and continue developing.
 
 Try choosing a passage in the [homepage workspace](/en/#prototype), or follow [Review reference changes](/en/docs/references/) to compare the jacket's recorded and current versions in the Mac app.
+
+
+## Use only what this work needs
+
+A quick idea or read-only question can end with an answer. Keep sources, feedback and revisions for work you intend to continue, without turning every discussion into a project task. Delegate or write directly; consequential choices refer to concrete results.
+
+[Find the smallest useful starting point](/en/docs/when-to-use/).

@@ -29,3 +29,10 @@ Ask your Agent to perform the work through Hetu. Return to read, listen and name
 These tools work independently or pass fixed references within a work. They do not require four separate assistant plugins or merge novels, scripts and media into a record that overwrites itself.
 
 Choose a form in the [plugin center](/en/plugins/) and describe your goal with the [guide](/en/docs/plugins/). Each saved result gives the next revision a place to begin.
+
+
+## Use only what this work needs
+
+Develop only what needs testing now. Sources, scripts and assets retain their revisions. Trying one scene needs no whole-book conversion; existing clips need not be generated again. State what changes and what remains before continuing.
+
+[Find the smallest useful starting point](/en/docs/when-to-use/).

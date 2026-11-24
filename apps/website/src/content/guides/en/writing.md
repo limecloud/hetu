@@ -1,5 +1,9 @@
 # Chapters and writing
 
+## Start with what you need
+
+Write directly or delegate continued drafting. State what should change and what must remain. Fix the draft and relevant sources for sustained revision without completing every worldbuilding field.
+
 Each novel has its own details, covers and chapters. Write directly or ask your external Agent for a reference draft, then read it in context and decide what to keep.
 
 ## Continue the novel you already have

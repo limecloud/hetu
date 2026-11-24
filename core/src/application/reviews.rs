@@ -219,7 +219,8 @@ impl Kernel {
         let snapshot = self.review_snapshot(draft)?;
         let stale = Self::review_stale(&snapshot, draft);
         let mut history = self.review_history(draft)?;
-        if !self.has_workspace_authority() {
+        // Agent 的工作区授权只控制可执行范围，不授予作者私密批注读取权。
+        if !self.author {
             for item in &mut history {
                 item.as_object_mut().unwrap().remove("private_comments");
             }

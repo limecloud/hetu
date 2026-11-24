@@ -1,0 +1,242 @@
+{
+  "date": "2026-11-24",
+  "scope": "终端嵌入河图创作业务",
+  "version": "0.14.0",
+  "implementation": [
+    "创作库及创建面板选择确切作品，按WorkRef连接独立会话",
+    "小说、剧本、视频的领域任务入口复用原交接服务",
+    "任务固定当前作品和来源，交接使用当前引擎真实机器身份",
+    "Claude Code、Gemini CLI与OpenCode注入会话MCP和方法导航，保留原生认证",
+    "非Codex请求暂存，明确放入终端时拒绝旧草稿与旧代次，不自动发送",
+    "会话MCP中继只保存脱敏、有界的真实工具响应",
+    "成果复用Core独立回读，刷新正式目录，并打开对应阅读或审阅页面",
+    "修正资料成果跳转后仍停留终端，以及原生工具栏任务文字重叠"
+  ],
+  "validation": {
+    "agent_pty_tests": {
+      "passed": 48,
+      "failed": 0
+    },
+    "packaged_regressions": {
+      "passed": 3,
+      "cases": [
+        "真实MCP业务与作品切换",
+        "目录预览及固定修订恢复",
+        "六项写作工具固定交接"
+      ]
+    },
+    "final_delivery_business": {
+      "passed": 1,
+      "task_header_nonoverlap": true,
+      "all_work_kind_handoffs": true
+    },
+    "installed_business": {
+      "passed": 1,
+      "bundled_node_mcp_cli": true,
+      "packaged": true,
+      "client": "claude-code",
+      "work_types": [
+        "novel",
+        "drama",
+        "video"
+      ],
+      "resource": "resource_845d6774-0f21-4f1e-bf4a-e9a7925ebac0",
+      "core_reread": true,
+      "cross_work_refused": true,
+      "model_turns": 0,
+      "session_restored": true,
+      "writing_prompt_prepared": true,
+      "codex_task_drafted": true,
+      "creation_task_drafted": true
+    },
+    "docs": {
+      "documents": 91,
+      "local_links": 1444,
+      "fragment_links": 355,
+      "schemas": 2,
+      "errors": []
+    },
+    "capability_map": "passed",
+    "diff_check": "passed",
+    "native_ui": "安装版实际作品选择、任务菜单及正式目录已观察；任务按钮间距修正由最终包尺寸断言与截图核验"
+  },
+  "installation": {
+    "target": "/Applications/Hetu.app",
+    "source_sha256": "2a7989ed7c816495ec38abdc6d973b44fc4f48c9e9e8536ae65d7ea3553849fd",
+    "installed_files_verified": 3132,
+    "source_files": 2987,
+    "artifact_files": 3720,
+    "old_app_backup_created": false,
+    "profile_comparison": {
+      "creative-library.json": true,
+      "LocalSettings/settings.json": true,
+      "agent-sessions/index/selection.json": true
+    },
+    "version": "0.14.0",
+    "signing": "ad-hoc-development",
+    "production_verified": false
+  },
+  "principles": {
+    "domain_owner": "复用Core的作品事实、CAS、执行模式和原操作恢复",
+    "dry": "复用workHandoff、writingPrompt、正式目录与readSessionResults",
+    "host_boundary": "只增加桌面适配和回执投影，不增加领域数据库或生成循环"
+  },
+  "limits": [
+    "本轮模型轮次为0，真实工具写入与模型创作全旅程分别取证",
+    "Gemini CLI与OpenCode的配置注入和前轮真实PTY启动已验证，本轮未验证其完整模型业务",
+    "本轮为macOS arm64开发签名覆盖，Windows、Linux和正式发行未执行"
+  ],
+  "prior_failures": [
+    {
+      "log": "output/pty-codex/business-e2e.log",
+      "reason": "真实资料保存通过，成果打开停留在终端；已修正阅读导航"
+    },
+    {
+      "log": "output/pty-codex/business-packaged.log",
+      "reason": "测试辅助脚本使用不可用的require；改用Electron的app.getAppPath后最终通过"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "output/pty-codex/business-unit-final.log",
+      "sha256": "a62cf829df8ee7f0eea1c8be18914b4573cbbb1cb90fa8e1dc95dfbb025817d8"
+    },
+    {
+      "path": "output/pty-codex/business-final-packaged.log",
+      "sha256": "3f7985e8b8469c33dbd89d6fd52461f9ea3fd0c771ff3db219a84d0312a0e146"
+    },
+    {
+      "path": "output/pty-codex/business-delivery.log",
+      "sha256": "39bf425b7a10966048c6f2de738c3bd89b9522ad719814aed952800149b43155"
+    },
+    {
+      "path": "output/pty-codex/business-delivery-installed.log",
+      "sha256": "3ace1432dd70d15f5ce7d600b471f0da0a4a52f2e5cbc85051af0a302d0ed34f"
+    },
+    {
+      "path": "output/pty-codex/business-e2e2.log",
+      "sha256": "b2ce512de8cd25222b8eb8b900ac1c6be4d4007c4b6f73e9e19607904e92bff3"
+    },
+    {
+      "path": "output/pty-codex/business-docs-final.log",
+      "sha256": "95fed9a4c7f29244da4aee81b2395c1fad9b7f9f6ba7efbafc91b218c689487c"
+    },
+    {
+      "path": "output/pty-codex/business-capabilities-final.log",
+      "sha256": "0a290158f76b29bce06ee0505bff2ee5daced0e452e7f8c4d22e52abf0deba80"
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "output/pty-codex/source/output/business-delivery-installed/agent-business-从创作库选作品到原生终端，任务交接、真实MCP保存、成果审阅及类型切换/business-task.png",
+      "sha256": "b818f2d76c54d945489ef756bd008df82d5aa5896a2cfa72fbb6c608ec97d69c"
+    },
+    {
+      "path": "output/pty-codex/source/output/business-delivery-installed/agent-business-从创作库选作品到原生终端，任务交接、真实MCP保存、成果审阅及类型切换/creation-preparation.png",
+      "sha256": "bf2a843ca781d31635c5e995e452e003bb3da8022ac06c996f4c1cc52f48a85d"
+    },
+    {
+      "path": "output/pty-codex/source/output/business-delivery-installed/agent-business-从创作库选作品到原生终端，任务交接、真实MCP保存、成果审阅及类型切换/business-narrow.png",
+      "sha256": "a3b62d865c4181db8849b259fac41da5e1254290ca1dd8f83805be560703f823"
+    },
+    {
+      "path": "output/pty-codex/source/output/business-delivery-installed/agent-business-从创作库选作品到原生终端，任务交接、真实MCP保存、成果审阅及类型切换/business-results.png",
+      "sha256": "1ae9cd2c4ded62f231d0fff000027213183247db3e311d95c3f678c6ee8fae84"
+    },
+    {
+      "path": "output/pty-codex/source/output/business-delivery-installed/agent-business-从创作库选作品到原生终端，任务交接、真实MCP保存、成果审阅及类型切换/codex-business.png",
+      "sha256": "278a4ed5a892469522291ccc6a2468286f72d14b8c5464638877aa980845fcb9"
+    }
+  ],
+  "implementation_manifest": "output/pty-codex/business-implementation-manifest.json",
+  "source_files_changed": [
+    {
+      "path": "apps/desktop/package.json",
+      "sha256": "52e0c62942205ca99ffc82045794ca835bae2a11f642c1177065ade7650df00b"
+    },
+    {
+      "path": "apps/desktop/scripts/build.mjs",
+      "sha256": "3f899dd33a18131123a9130ffdede44b5d0e59a142b06fdea3807fc003ade161"
+    },
+    {
+      "path": "apps/desktop/src/main/workbench-handoff.ts",
+      "sha256": "5a2c720cc7d0607357fcfaa57bd2b2da0a3d9adec096b2d6c0651576baf85d9c"
+    },
+    {
+      "path": "apps/desktop/src/main/main.ts",
+      "sha256": "745c524f4f3e217923fcfe88fd2197bf09b6866e4ab89187f02e47b5f75a0c1d"
+    },
+    {
+      "path": "apps/desktop/src/main/shell-preload.ts",
+      "sha256": "6780bdd18a9a52c79f22b5916d507e8f6192d57806ac62c171301ccb46ffaee9"
+    },
+    {
+      "path": "apps/desktop/src/main/agent/process-session.ts",
+      "sha256": "20216de0beb87fee74ecb6321a910074a041cd37d59bc65de26aeb1080ef3ea9"
+    },
+    {
+      "path": "apps/desktop/src/main/agent/session-manager.ts",
+      "sha256": "a5add9b212428916b11bbd00c1300a5dced9083a5dfc604386dfdf0b43d3d397"
+    },
+    {
+      "path": "apps/desktop/src/main/agent/business-context.ts",
+      "sha256": "fee9e4dc37b486460f9c9b6df964be81f72139c1a49e84d70f0a765bb5a679b7"
+    },
+    {
+      "path": "apps/desktop/src/main/agent/mcp-relay.mjs",
+      "sha256": "61d72625d7d4b7a9564724cb463e5d331e518917951c156042e37c4ac82fd8e9"
+    },
+    {
+      "path": "apps/desktop/src/renderer/agent-business.tsx",
+      "sha256": "2ba06220c06e619f6bf77b5b0aac3e5a90a3211615406d97dae83f1e9932cdf5"
+    },
+    {
+      "path": "apps/desktop/src/renderer/agent-launch-dialog.tsx",
+      "sha256": "2544b27bbb879e4704bcd8c8b88078197724e3778acb6252c7dacefdac52a57e"
+    },
+    {
+      "path": "apps/desktop/src/renderer/agent-session.tsx",
+      "sha256": "6c63bde0ea64664611560ae314e7f87a2133bb370e25770ad754a50bebf7ca05"
+    },
+    {
+      "path": "apps/desktop/src/renderer/agent-workspace.tsx",
+      "sha256": "76f3a4d0a7f8be3e8b16aebcdfb86341830c525396ef56177cff586ba45804ef"
+    },
+    {
+      "path": "apps/desktop/src/renderer/index.tsx",
+      "sha256": "b04ca7a2fd72b28510c4e5dbd55eebdc7a2005f532df784f033730dc716e0523"
+    },
+    {
+      "path": "apps/desktop/src/renderer/agent-content.tsx",
+      "sha256": "a18d5106efe9462f76522445a0b05a5e2ffe59ca8700585bcf52cc17638c14a8"
+    },
+    {
+      "path": "apps/desktop/src/renderer/codex-results.tsx",
+      "sha256": "6dd9a7a0e63fc4bfacdb2bab477534f2010152a26a80569d12b5ea3e5f825ce9"
+    },
+    {
+      "path": "apps/desktop/src/renderer/codex-session.css",
+      "sha256": "33d6885f006f9b608d7198f8884bf332acc2c9304e6a2bcba5d49b154a164287"
+    },
+    {
+      "path": "apps/desktop/src/renderer/bridge.ts",
+      "sha256": "0cb31efa6120d87b2a5bb1ef9c4b925ba4b0b14443b704c20ef523f2bd0128b2"
+    },
+    {
+      "path": "apps/desktop/src/renderer/writing-tools.tsx",
+      "sha256": "6759309989102b0d939eb3b7c0a78c2ea54a24724c359a034d81a0f73ae7d652"
+    },
+    {
+      "path": "apps/desktop/tests/agent-business.test.ts",
+      "sha256": "cbca0c7d04be344599a6814de579b8bda50ee88750b075be4bf5c0d38b75ed5c"
+    },
+    {
+      "path": "apps/desktop/tests/codex-results-live.spec.ts",
+      "sha256": "9a423b0bcd8ea22861f2231edca2415bdd130c99d13f55a07be21626a7068311"
+    },
+    {
+      "path": "apps/desktop/tests/agent-business.spec.ts",
+      "sha256": "1e573430c6c41cec4a87c025337d3053b51584bb13304411dbaa26eddbf6f7bb"
+    }
+  ]
+}

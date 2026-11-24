@@ -69,6 +69,7 @@ export function createWorkSession(ref: WorkRef, selectedServer: AppServer, ports
           }),
         () =>
           active(),
+        id => recovery.read(path.join(ports.profile, "buffers", ref.workspace_id, ref.object_id, id + ".json")),
       );
       outlineReview = ref.kind === "novel" ? new OutlineReview(ref, path.join(ports.profile, "outline-review"), recovery,
         (action, input) => selectedServer.request("workspace/request", { action, input, contract_revision: "1" }),
@@ -274,6 +275,10 @@ export function createWorkSession(ref: WorkRef, selectedServer: AppServer, ports
         tasks = taskReview;
       if (!current || !tasks) throw new Error("请选择当前作品。");
       if (method === "rename") {return current.rename(input.document_id, input.base_revision_id, input.title);}
+      if (method === "duplicate") return current.duplicate(input.document_id, input.base_revision_id);
+      if (method === "move_range") return current.moveRange(input.document_id, input.base_revision_id, input.range, input.target_ref);
+      if (method === "move_to_new") return current.moveToNew(input.document_id, input.base_revision_id, input.range, input.target);
+      if (method === "restore_move") return current.restoreMove(input.document_id, input.move_ref);
       if (method === "adoption_options")
         return current.adoptionOptions(
           await tasks.candidate(input.task_ref, input.candidate_id),

@@ -1,0 +1,135 @@
+{
+  "date": "2026-11-23",
+  "scope": "source_and_official_protocol_research_only",
+  "reference": {
+    "repository": "https://github.com/stablyai/orca",
+    "version": "1.4.214",
+    "commit": "dabc8a3abe0eb5ac7934ba75a751e36d6cde9e88",
+    "license": "MIT",
+    "source_files": [
+      {
+        "path": "package.json",
+        "sha256": "3ef16dd15ce941ae7b2b81a65572f8f3a02fc09e40904aa0f432c211e40a4a36"
+      },
+      {
+        "path": "LICENSE",
+        "sha256": "ff1b611f80580d49f4b97e93a97b24eb050b0671b26b8afe16341fab699112f3"
+      },
+      {
+        "path": "docs/STYLEGUIDE.md",
+        "sha256": "40455db2d88adf48d737040bf7afaf97104aac6070a44f84d0a21facb559c1ce"
+      },
+      {
+        "path": "docs/styleguide/native-chat.md",
+        "sha256": "391949eb2684e72c20629257909f1d4dd6a5bf37cb818e90568a9d4f1ffccb42"
+      },
+      {
+        "path": "src/shared/native-chat/settings/native-chat-appearance-settings.ts",
+        "sha256": "40ac5c177bc9d515ee58f472ff374e9578eb997579a5833e9e7bf32a5d557e59"
+      },
+      {
+        "path": "src/renderer/src/components/native-chat/appearance/native-chat-appearance-style.ts",
+        "sha256": "8f18c79795a654cbf65117e3f83fe04ff8e45b86af5d83e999fd65ea2cb503c1"
+      },
+      {
+        "path": "src/renderer/src/components/settings/appearance/chat/AppearanceChatSection.tsx",
+        "sha256": "5ef9dc35e77a871b6ccf9d37dae5508c0aec5df2e7bc496f7b28fd317c8ad7f8"
+      },
+      {
+        "path": "src/renderer/src/components/settings/terminal/TerminalPane.tsx",
+        "sha256": "7083630496d17ddb1f3a6d7626242c0d365c9f95159f0943b9c7f6278ea0539a"
+      },
+      {
+        "path": "src/shared/settings/default-global-settings.ts",
+        "sha256": "1a2949acd44dbd78852b07d63cfdbb022034e0b34afba02c9b26fb1b82d8fb42"
+      },
+      {
+        "path": "src/shared/terminal/replay/terminal-scrollback-policy.ts",
+        "sha256": "c01f33c886d17c489001b84c9aff54880797086f7d4f7e05c95144ca59e7435c"
+      },
+      {
+        "path": "src/main/codex/structured/session-lifecycle/codex-structured-session-adapter.ts",
+        "sha256": "d5477a62e5b215a90bd450924a1a549c19713b440afbb9fdf9e05c14082fffc2"
+      },
+      {
+        "path": "src/main/codex/structured/launch/codex-structured-agent-definition.ts",
+        "sha256": "23325cfe021cffad986639792bdbfeec711473f92d403f56f7fa67f65aa0d618"
+      }
+    ]
+  },
+  "codex": {
+    "installed_version": "0.171.0",
+    "read_only_commands": [
+      "codex --version",
+      "codex --help",
+      "codex resume --help",
+      "codex app-server --help"
+    ],
+    "observed_parameters": {
+      "tui_remote": [
+        "ws://host:port",
+        "wss://host:port",
+        "unix://",
+        "unix://PATH"
+      ],
+      "resume": "explicit SESSION_ID and --remote supported",
+      "app_server_listen": [
+        "stdio://",
+        "unix://",
+        "unix://PATH",
+        "ws://IP:PORT",
+        "off"
+      ]
+    },
+    "official_pages": [
+      {
+        "requested": "https://developers.openai.com/codex/app-server",
+        "resolved": "https://learn.chatgpt.com/docs/app-server",
+        "observed": [
+          "initialize then initialized",
+          "thread/start and thread/resume",
+          "turn/start and turn/steer",
+          "turn/interrupt followed by turn/completed"
+        ]
+      },
+      {
+        "requested": "https://developers.openai.com/codex/cli/reference",
+        "resolved": "https://learn.chatgpt.com/docs/developer-commands?surface=cli",
+        "observed": [
+          "TUI --remote transport",
+          "resume --remote",
+          "sandbox and approval independent options"
+        ]
+      }
+    ]
+  },
+  "decisions": {
+    "priority": "Codex first; other embedded engines deferred",
+    "default_surface": "gui",
+    "tui": "first-class embedded CLI remote client",
+    "preferred_topology": "one managed App Server, GUI protocol client and PTY TUI remote client, one input owner per thread",
+    "fallback": "stop and verify old engine exit before explicit thread resume; never silently create a replacement thread",
+    "reference_scope": "session layout, transcript, composer, scrolling, chat and terminal appearance, settings grouping; preserve Hetu domain navigation"
+  },
+  "not_verified": [
+    "running Orca screenshot comparison",
+    "shared Codex clients and approval routing",
+    "GUI to TUI and TUI to GUI live switch",
+    "embedded PTY implementation",
+    "real model business flow for both embedded surfaces",
+    "packaged installation"
+  ],
+  "document_validation": {
+    "verify_docs": "passed",
+    "capability_map_check": "passed",
+    "git_diff_check": "passed",
+    "rendered_diagrams": [
+      "architecture",
+      "session-host",
+      "gui-send",
+      "surface-switch"
+    ],
+    "artifact_directory": "output/codex-dual-surface-design",
+    "runtime_verified": false
+  }
+}

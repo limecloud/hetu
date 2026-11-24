@@ -35,3 +35,10 @@ Before generation, agree on outgoing content, model mode, duration, sound and sp
 Before delivery, verify the confirmed video along with source media, subtitles, audio and an editable project. A useful preview helps you see the problem, choose a direction and continue the work.
 
 See [From preview to finished video](/en/docs/video/) for the workflow. The doorway example illustrates a method; it is not a completed production case or a promise of savings or generated quality.
+
+
+## Use only what this work needs
+
+Develop only what needs testing now. Sources, scripts and assets retain their revisions. Trying one scene needs no whole-book conversion; existing clips need not be generated again. State what changes and what remains before continuing.
+
+[Find the smallest useful starting point](/en/docs/when-to-use/).

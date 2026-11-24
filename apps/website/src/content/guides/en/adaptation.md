@@ -1,5 +1,9 @@
 # From novel to screenplay
 
+## Start with what you need
+
+To try one adapted scene, fix only the relevant source. Preserve source and adaptation revisions separately; deliberate changes do not rewrite the original.
+
 Keep the source novel and script separate, connected to the source revision you chose. Develop episodes and scenes around that material; new dialogue, events and adaptation choices stay visible for author review.
 
 ## Ask your Agent for an episode, then read the scene

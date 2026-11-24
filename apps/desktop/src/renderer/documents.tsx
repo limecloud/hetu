@@ -2,6 +2,7 @@ import {restoreReadingState, useReadingPersistence} from "./reading-state.ts";
 import { documentSelectionKey, viewStorage } from "./view-storage.ts";
 import { ManuscriptComparison, ManuscriptText, ScreenplayText, ScreenplayMetadata, parseFountain, selectedScreenplaySource, readingProfile, readingStyle, documentZooms, readingText } from "@hetu/workbench-ui";
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {flushSync} from "react-dom";
 import {createPortal} from "react-dom";
 import type { SurfaceContext } from "./contributions.tsx";
 import { desktop, data } from "./bridge.ts";
@@ -26,12 +27,18 @@ import {useEditorContextMenu} from "./editor-context-menu.tsx";
 import {useContextMenu} from "@hetu/workbench-ui";
 import {contextKey} from "./text-context-menus.tsx";
 import {DocumentRename} from "./document-rename.tsx";
+import {DocumentMove, type DocumentMoveSource} from "./document-move.tsx";
+import type {EditorContextTarget} from "./editor-context-target.ts";
 import {NovelEditor} from "./novel-editors.tsx";
 import {manuscriptVisibleText} from "@hetu/workbench-ui/manuscript-format";
+import {documentTitleInSource} from "./document-title.ts";
+import {WritingTools} from "./writing-tools.tsx";
 
-export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
+export function Documents({ work, documentId, notify, ai, reviewTask }: SurfaceContext) {
   const showMenu = useContextMenu();
   const [renaming, setRenaming] = useState<any>(), [structureOpen, setStructureOpen] = useState(false);
+  const [moving, setMoving] = useState<DocumentMoveSource>(), [moveRevision, setMoveRevision] = useState(0);
+  const [lastMove, setLastMove] = useState<{document_id: string; move_ref: any}>();
   const preferences = usePreferences();
   const shell = useWorkbench();
   const [showSearch, setShowSearch] = useState(false);
@@ -46,7 +53,7 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
   const saving = useRef(false);
   const [annotationList, setAnnotationList] = useState(0);
   const [annotationError, setAnnotationError] = useState("");
-  const [commentRequest, setCommentRequest] = useState<{quote: SourceQuote; nonce: number}>();
+  const [commentRequest, setCommentRequest] = useState<{documentId: string; revision: string; quote: SourceQuote; nonce: number}>();
   const [searchRequest, setSearchRequest] = useState<{query: string; nonce: number}>();
   const [workJump, setWorkJump] = useState<WorkTextMatch>();
   const [editorContext, setEditorContext] = useState<EditorContext>({canUndo: false, canRedo: false});
@@ -77,7 +84,7 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
     [sourceMode,setSourceMode]=useState(false),
     [sceneJump,setSceneJump]=useState<{offset:number;request:number}>(),
     [showImages, setShowImages] = useState(false),
-    [busy, setBusy] = useState(false),
+    [busyState, setBusy] = useState<false | "loading" | "saving">(false),
     [history, setHistory] = useState<any[]>([]),
     [compare, setCompare] = useState<string>(),
     [recovery, setRecovery] = useState<any>(),
@@ -85,6 +92,8 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
     [quote, setQuote] = useState<ReturnType<typeof selectedSource>>(null),
     [noteRecovery, setNoteRecovery] = useState<any>();
   const typography = readingStyle(profile, zoom, sourceMode);
+  const restoreReady = useRef(false);
+  const busy = busyState !== false, editorLocked = busyState === "loading" && !restoreReady.current;
   const reader = useRef<HTMLElement>(null);
   const comparison = useRef<HTMLDialogElement>(null);
   useEffect(() => { if (compare !== undefined) comparison.current?.showModal(); }, [compare]);
@@ -96,6 +105,7 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
     composition = useRef(false);
   useEffect(() => {
     let active = true;
+    const selectionGeneration = generation.current;
     setLoading(true);
     setLoadError("");
     Promise.all([readWorkContent(work), restoreReadingState(work, selectionKey, positionKey).catch(error => notify("阅读位置未能恢复：" + error.message))])
@@ -105,7 +115,9 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
           setGroups(result.groups);
           const previous = viewStorage.getItem(selectionKey);
           const document = result.documents.find((item) => item.document_id === previous) ?? result.groups[0]?.documents[0] ?? result.documents[0];
-          if (document) void load(document);
+          // 当前文稿仍在目录中时只更新目录，避免刷新回包重新加载正文并短暂锁住编辑器。
+          const currentId = current.current?.document.document_id;
+          if (document && currentId !== document.document_id && generation.current === selectionGeneration) void load(document);
         }
       })
       .catch((error) => {
@@ -131,7 +143,7 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
     requested.current = document;
     setReadError("");
     if (selectedByAuthor && shell.directoryTarget && window.matchMedia("(max-width: 760px)").matches) shell.setNavigationVisible(false);
-    setBusy(true);
+    restoreReady.current = false; setBusy("loading");
     try {
       const result = data(
         await desktop.read("hetu.documents.get", {
@@ -161,6 +173,10 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
       current.current = result;
       text.current = result.content;
       setSelected({ ...result, episode_id: document.episode_id });
+      try {
+        const move_ref = JSON.parse(viewStorage.getItem(selectionKey + ":move:" + document.document_id) ?? "null");
+        setLastMove(move_ref ? {document_id: document.document_id, move_ref} : undefined);
+      } catch {setLastMove(undefined);}
       setManuscript(episode?.manuscript);
       setReference(preferred);
       setReferenceContent(preferredContent);
@@ -173,6 +189,7 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
       setShowImages(false);
       setCompare(undefined);
       setQuote(null);
+      setCommentRequest(undefined); setAnnotationError("");
       setTextSelection(null); setShowSearch(false);
       setAnnotationList(0);
       setNotes(data(annotations));
@@ -191,16 +208,22 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
       if (epoch === generation.current) setBusy(false);
     }
   }
+  useEffect(() => {
+    if (!documentId || documentId === current.current?.document.document_id || !documents.length) return;
+    const target = documents.find(item => item.document_id === documentId);
+    if (target) void load(target, true);
+  }, [documentId, documents]);
   async function selectManuscript(key: string) {
     if (current.current && text.current !== current.current.content) {
       notify("请先保存当前修改。");
       return;
     }
+    setCommentRequest(undefined);
     if (key === "author") { setReference(undefined); setQuote(null); setSourceMode(false); setEditing(true); return; }
     const next = manuscript?.references.find((item: any) => manuscriptKey(item) === key);
     if (!next) return;
     const epoch = ++generation.current;
-    setBusy(true);
+    restoreReady.current = false; setBusy("loading");
     try {
       const value = await readEpisodeReference(selected.episode_id, next);
       if (epoch !== generation.current) return;
@@ -224,7 +247,7 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
   async function save() {
     if (!current.current || composition.current || reference || saving.current) return;
     saving.current = true;
-    setBusy(true);
+    restoreReady.current = false; setBusy("saving");
     const base = current.current;
     if (!pending.current)
       pending.current = {
@@ -270,7 +293,7 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
   }
   async function saveNote(fixed: any) {
     setAnnotationError("");
-    setBusy(true);
+    restoreReady.current = false; setBusy("loading");
     setNoteRecovery({ pending: fixed });
     try {
       await desktop.buffer(
@@ -303,6 +326,7 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
     capturePosition();
     setQuote(null);
     setTextSelection(null);
+    if (edit && selected) shell.pinDocumentTab(selected.document.document_id);
     setEditing(edit); setSourceMode(source);
   }
   useEffect(() => {
@@ -315,6 +339,9 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
       ai: () => reference && reviewTask ? reviewTask(reference.task_ref.task_id) : ai({ document_id: selected.document.document_id, revision_id: selected.revision.revision_id, ...(quote ?? {}) }),
     } : undefined);
   }, [selected, content, busy, composing, quote, recovery, reference]);
+  useEffect(() => {
+    shell.setDocumentTab(selected ? { id: selected.document.document_id, title: selected.document.title, preview: true } : undefined);
+  }, [selected?.document.document_id, selected?.document.title]);
   useEffect(() => () => shell.setDocumentTools(undefined), []);
   useEffect(() => {
     const close = (event: KeyboardEvent) => {
@@ -338,7 +365,10 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
     return () => window.removeEventListener("hetu:before-interface-scale", capture);
   }, [capturePosition]);
   const isScreenplay=work.kind==="drama"&&(reference?.source_format??selected?.revision.source_format)==="fountain";
-  const titleFromSource = editing && !sourceMode && !reference && selected?.revision.source_format === "markdown" && content.split(/\r\n?|\n/, 1)[0]?.trim() === "# " + selected.document.title;
+  const sourceFormat = reference?.source_format ?? selected?.revision.source_format ?? "plain";
+  const titleSource = selected?.document.title ? documentTitleInSource(displayedContent, selected.document.title, sourceFormat, isScreenplay) : {heading: false, plain: false};
+  const titleFromSource = !sourceMode && titleSource.heading;
+  const titleInBody = !sourceMode && !titleSource.heading && titleSource.plain;
   const screenplay=useMemo(()=>isScreenplay?parseFountain(displayedContent):undefined,[isScreenplay,displayedContent]);
   const scenes=screenplay?.lines.filter(line=>line.kind==="scene")??[];
   const currentNotes: DocumentNote[] = !reference && content === selected?.content ? notes.items.filter((note: DocumentNote) => !note.resolved && note.source_ref.revision_id === selected?.revision.revision_id) : [];
@@ -413,6 +443,61 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
     window.addEventListener("keydown", find); return () => window.removeEventListener("keydown", find);
   }, [displayedContent, editing, reference, searchVisible, shell.searchTarget, shell.navigationVisible, shell.focus]);
   const statistics = useManuscriptStatistics(displayedContent);
+  async function duplicate(doc: any) {
+    restoreReady.current = false; setBusy("loading");
+    try {
+      const prepared = await desktop.author("duplicate", {document_id: doc.document_id, base_revision_id: doc.current_revision_id});
+      const result = data(await desktop.author("commit", {token: prepared.token}));
+      const record = await desktop.author("journal", {document_id: doc.document_id});
+      if (record) await desktop.author("acknowledge", {document_id: doc.document_id, operation_key: record.input.operation_key});
+      viewStorage.setItem(selectionKey, result.document.document_id);
+      setReload(value => value + 1); window.dispatchEvent(new Event("hetu:work-changed"));
+      notify("文稿副本已创建。");
+    } catch (error) {
+      viewStorage.setItem(selectionKey, doc.document_id); setReload(value => value + 1);
+      throw error;
+    } finally {setBusy(false);}
+  }
+  async function openMove(target: EditorContextTarget) {
+    target.requireCurrent();
+    const fixed = target.blockQuote, id = current.current?.document.document_id, source = text.current;
+    if (!id || !fixed.quote) return;
+    if (current.current.content !== source) await save();
+    if (current.current?.document.document_id !== id || current.current.content !== source || text.current !== source)
+      throw new Error("请先完成当前保存，再重新选择移动内容。");
+    setMoving({document_id: id, revision_id: current.current.revision.revision_id, range: fixed});
+  }
+  async function receiveMove(result: any) {
+    const source = {...result.source, content: data(await desktop.read("hetu.documents.get", {document_id: result.source.document.document_id, revision_id: result.source.revision.revision_id})).content};
+    if (current.current?.document.document_id !== source.document.document_id || text.current !== current.current.content)
+      throw new Error("移动已提交，当前文稿上下文发生变化，请刷新两端核对。");
+    await desktop.buffer(source.document.document_id, null); await desktop.dirty(false);
+    current.current = source; text.current = source.content; pending.current = undefined;
+    setContent(source.content); setSelected({...source, episode_id: selected?.episode_id}); setMoveRevision(value => value + 1);
+    setQuote(null); setCommentRequest(undefined); setTextSelection(null);
+    viewStorage.setItem(selectionKey + ":move:" + source.document.document_id, JSON.stringify(result.move_ref ?? null));
+    if (result.move_ref) setLastMove({document_id: source.document.document_id, move_ref: result.move_ref});
+    else setLastMove(undefined);
+    setDocuments(items => items.map(item => item.document_id === source.document.document_id
+      ? {...item, ...source.document} : item.document_id === result.target.document.document_id ? {...item, ...result.target.document} : item));
+    if (result.target_created) setReload(value => value + 1);
+    setHistory(items => [source.revision, ...items]);
+    window.dispatchEvent(new Event("hetu:work-changed"));
+    notify(result.move_ref ? "所选内容已移至目标文稿。" : "已撤销跨文稿移动。");
+  }
+  async function restoreMove() {
+    if (!lastMove || content !== selected?.content) return;
+    restoreReady.current = false; setBusy("loading");
+    try {
+      const prepared = await desktop.author("restore_move", {document_id: lastMove.document_id, move_ref: lastMove.move_ref});
+      await receiveMove(data(await desktop.author("commit", {token: prepared.token})));
+      // 正文与目录已按提交回执回读完成；journal/ack 只确认原操作，不能继续锁住编辑器。
+      restoreReady.current = true;
+      flushSync(() => setBusy(false));
+      const record = await desktop.author("journal", {document_id: lastMove.document_id});
+      if (record) await desktop.author("acknowledge", {document_id: lastMove.document_id, operation_key: record.input.operation_key});
+    } finally {setBusy(false);}
+  }
   function documentMenu(event: React.MouseEvent | React.KeyboardEvent, doc: any) {
     if (doc.document_id === selected?.document.document_id) doc = {...doc, ...selected.document};
     const dirty = !!selected && content !== selected.content;
@@ -421,6 +506,7 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
       {id: "open", label: "打开", disabled: busy, action: async () => {await load(doc, true);}},
       {id: "rename", label: "重命名", disabled: busy || dirty, action: () => setRenaming({...doc})},
       {id: "structure", label: "整理卷章", disabled: busy || dirty || work.kind !== "novel", action: () => setStructureOpen(true)},
+      {id: "duplicate", label: "复制文稿", disabled: busy || dirty || !!reference, action: () => duplicate(doc)},
       {id: "clipboard", separator: true},
       {id: "copy-title", label: "复制名称", action: () => desktop.copy(doc.title)},
       {id: "copy-as", label: "复制为", children: [
@@ -449,7 +535,7 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
       if (!element.isConnected || reader.current !== element || current.current?.document.document_id !== selected.document.document_id || current.current?.revision.revision_id !== selected.revision.revision_id || text.current !== displayedContent)
         throw new Error("正文或修订已变化，请重新打开右键菜单。");
     };
-    const comment = () => {requireCurrent(); if (fixed) {setQuote(fixed); setTextSelection(fixed); setCommentRequest({quote: fixed, nonce: Date.now()});}};
+    const comment = () => {requireCurrent(); if (fixed) {setQuote(fixed); setTextSelection(fixed); setCommentRequest({documentId: selected.document.document_id, revision: selected.revision.revision_id, quote: fixed, nonce: Date.now()});}};
     showMenu(event, "阅读右键菜单", [
       {id: "copy", label: "复制", disabled: !plain, action: () => desktop.copy(plain)},
       {id: "copy-as", label: "复制为", children: [
@@ -466,10 +552,11 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
     ], {onDismiss: restore, onError: error => notify(error.message)});
   }
   const contextMenu = useEditorContextMenu({surface: editorSurface, format: selected?.revision.source_format === "fountain" ? "fountain" : selected?.revision.source_format === "markdown" ? "markdown" : "plain", raw: sourceMode,
-    disabled: busy || composing || !!reference, saved: !!selected && content === selected.content, language: readingPreferences.language, notify,
-    comment: quote => {setTextSelection(quote); setQuote(quote); setCommentRequest({quote, nonce: Date.now()});},
+    disabled: editorLocked || composing || !!reference, saved: !!selected && !busy && content === selected.content, language: readingPreferences.language, notify,
+    comment: quote => {setTextSelection(quote); setQuote(quote); setCommentRequest({documentId: selected.document.document_id, revision: selected.revision.revision_id, quote, nonce: Date.now()});},
     ai: quote => ai({document_id: selected.document.document_id, revision_id: selected.revision.revision_id, ...quote}),
-    search: query => {setSearchRequest({query, nonce: Date.now()}); openSearch();}, info: () => shell.setInspector(true)});
+    search: query => {setSearchRequest({query, nonce: Date.now()}); openSearch();}, info: () => shell.setInspector(true),
+    move: openMove, restoreMove: lastMove?.document_id === selected?.document.document_id ? restoreMove : undefined});
   const final = selected?.document.finalization_ref;
   const readFailure = readError && <div className="manuscript-load-error" role="alert"><p>无法打开稿件：{readError}</p><button disabled={busy} onClick={() => void load(requested.current)}>重新读取稿件</button></div>;
   const searchPanel = showSearch && selected && <ManuscriptSearch source={displayedContent} title={titleFromSource ? "" : selected.document.title} format={reference?.source_format ?? selected.revision.source_format}
@@ -478,15 +565,15 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
     presentation={shell.searchTarget ? "sidebar" : "inline"} raw={sourceMode} editing={editing && !reference} disabled={busy || composing} selection={textSelection} reader={reader} editor={editorSurface} scroll={scroll} language={readingPreferences.language} highlights={searchHighlights} close={closeSearch} documents={documents} openWorkMatch={openWorkMatch}
     onReveal={() => {if (shell.searchTarget && window.matchMedia("(max-width: 760px)").matches) shell.setNavigationVisible(false);}}/>;
   const directory = (
-      <nav className="documents manuscript-directory" aria-label="文稿目录">
+      <nav className="documents manuscript-directory" aria-label="文稿目录" aria-busy={loading}>
         <div className="directory-heading"><strong>目录</strong><details className="popover-menu"><summary aria-label="目录操作"><Icon name="more"/></summary><div className="menu-panel"><button onClick={() => ai()}>让 AI 整理目录</button><button onClick={() => setReload((value) => value + 1)}>刷新目录</button></div></details><IconButton icon="close" label="收起目录" onClick={() => shell.setNavigationVisible(false)}/></div>
         <div className="directory-scroll">
           {loading && <p className="muted directory-message">正在读取完整目录…</p>}
           {loadError && <div className="directory-message" role="alert"><p>{loadError}</p><button onClick={() => setReload((value) => value + 1)}>重新读取文稿目录</button><button onClick={() => ai()}>让 AI 检查目录</button></div>}
           {groups.map((group, index) => work.kind==="drama"&&group.documents.length===1?<div className="chapter-group episode-entry" key={group.documents[0].document_id}>
-            {group.documents.map(doc=><React.Fragment key={doc.document_id}><button {...documentContext(doc)} aria-label={doc.title} className={selected?.document.document_id===doc.document_id?"selected":""} aria-current={selected?.document.document_id===doc.document_id?"page":undefined} onClick={()=>void load(doc,true)}><Icon name="file" size={13}/><span>{group.title}</span></button>
+            {group.documents.map(doc=><React.Fragment key={doc.document_id}><button {...documentContext(doc)} aria-label={doc.title} className={selected?.document.document_id===doc.document_id?"selected":""} aria-current={selected?.document.document_id===doc.document_id?"page":undefined} onClick={()=>void load(doc,true)} onDoubleClick={()=>shell.pinDocumentTab(doc.document_id)}><Icon name="file" size={13}/><span>{group.title}</span></button>
             {selected?.document.document_id===doc.document_id&&!!scenes.length&&<div className="screenplay-scenes" aria-label="当前分集场次">{scenes.map((scene,sceneIndex)=><button key={scene.from} aria-label={"定位场次 "+(scene.number??sceneIndex+1)+" "+displayedContent.slice(scene.textFrom,scene.textTo).trim()} onClick={()=>jumpScene(scene.from)}><span className="scene-index">{scene.number??sceneIndex+1}</span><span>{displayedContent.slice(scene.textFrom,scene.textTo).trim()}</span></button>)}</div>}</React.Fragment>)}
-          </div>:<details key={index} open className="chapter-group"><summary>{group.title}</summary>{group.documents.map((doc) => <button {...documentContext(doc)} key={doc.document_id} className={selected?.document.document_id === doc.document_id ? "selected" : ""} aria-current={selected?.document.document_id === doc.document_id ? "page" : undefined} onClick={() => void load(doc, true)}><Icon name="file" size={13}/><span>{doc.title}</span></button>)}</details>)}
+          </div>:<details key={index} open className="chapter-group"><summary>{group.title}</summary>{group.documents.map((doc) => <button {...documentContext(doc)} key={doc.document_id} className={selected?.document.document_id === doc.document_id ? "selected" : ""} aria-current={selected?.document.document_id === doc.document_id ? "page" : undefined} onClick={() => void load(doc, true)} onDoubleClick={() => shell.pinDocumentTab(doc.document_id)}><Icon name="file" size={13}/><span>{doc.title}</span></button>)}</details>)}
         </div>
         <div className="directory-footer">{documents.length} {work.kind === "drama" ? "集" : "章"}</div>
       </nav>
@@ -504,6 +591,7 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
     <div ref={layout} className="document-layout">
       {contextMenu.dialogs}
       {renaming && <DocumentRename document={renaming} onClose={() => setRenaming(undefined)} onSaved={() => {setRenaming(undefined); setReload(value => value + 1); notify("文稿已更新。");}}/>}
+      {moving && <DocumentMove source={moving} documents={documents} workKind={work.kind as "novel" | "drama"} workId={work.object_id} onClose={() => {setMoving(undefined); editorSurface.current?.focus();}} onMoved={receiveMove}/>}
       {structureOpen && <NovelEditor kind="structure" documents={documents} onClose={() => setStructureOpen(false)} onSaved={() => setReload(value => value + 1)}/>}
       {shell.directoryTarget && createPortal(directory, shell.directoryTarget)}
       {shell.searchTarget && searchPanel && createPortal(searchPanel, shell.searchTarget)}
@@ -513,7 +601,7 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
                 {titleFromSource && <span className="manuscript-source-state">{final ? "已定稿" : "未定稿"}</span>}
                 {manuscript && <div className="episode-manuscript-selector"><select aria-label="分集稿件版本" title={reference?.title ?? "作者稿"} value={reference ? manuscriptKey(reference) : "author"} disabled={busy} onChange={(event) => void selectManuscript(event.target.value)}><option value="author">作者稿{manuscript.author_has_content ? "" : "（空）"}</option>{manuscript.references.map((item: any) => <option key={manuscriptKey(item)} value={manuscriptKey(item)} title={item.title}>{item.kind === "submitted" ? "参考稿" : "未提交工作稿"} {item.title}</option>)}</select>{reference && reviewTask && <button onClick={() => reviewTask(reference.task_ref.task_id)}>审阅与提意见</button>}</div>}
                 {isScreenplay && <div className="screenplay-controls"><div role="tablist" aria-label="稿件显示"><button role="tab" aria-selected={!sourceMode && !editing} onClick={() => display(false)}>阅读</button>{!reference && <button role="tab" aria-selected={!sourceMode && editing} onClick={() => display(true)}>编辑</button>}</div>{screenplay && <ScreenplayMetadata script={screenplay}/>}</div>}
-                <div className="paper-toolbar"><div className="paper-actions">{editing && !reference && <EditorControls surface={editorSurface} context={editorContext} format={selected.revision.source_format === "markdown" ? "markdown" : selected.revision.source_format === "fountain" ? "fountain" : "plain"} disabled={busy && !saving.current || composing} language={readingPreferences.language} notify={notify}/>}<ReadingOptions kind={work.kind === "drama" ? "screenplay" : "novel"} composing={composing} zoom={zoom} beforeChange={() => capturePosition()} onPreview={setReadingPreview} onZoom={value => { setZoom(value); viewStorage.setItem(selectionKey + ":zoom", String(value)); }}/><IconButton icon="refresh" label="刷新当前稿件" disabled={busy} onClick={() => void load({ ...selected.document, episode_id: selected.episode_id })}/><IconButton icon="search" label="搜索正文" onClick={() => searchVisible ? closeSearch() : openSearch()}/><IconButton icon="comment" label="原文批注" disabled={!!reference} onClick={() => setAnnotationList(value => value + 1)}/><details className="popover-menu"><summary aria-label="文稿操作" title="文稿操作"><Icon name="more"/></summary><div className="menu-panel">
+                <div className="paper-toolbar"><div className="paper-actions">{editing && !reference && <EditorControls surface={editorSurface} context={editorContext} format={selected.revision.source_format === "markdown" ? "markdown" : selected.revision.source_format === "fountain" ? "fountain" : "plain"} disabled={editorLocked || composing} language={readingPreferences.language} notify={notify}/>}<WritingTools key={selected.document.document_id + ":" + selected.revision.revision_id} work={work} documentId={selected.document.document_id} revisionId={selected.revision.revision_id} selection={quote} disabled={busy || !!reference} blocked={composing ? "请完成输入后生成提示词" : content !== selected.content || pending.current ? "请先保存正文，再生成提示词" : undefined}/><ReadingOptions kind={work.kind === "drama" ? "screenplay" : "novel"} composing={composing} zoom={zoom} beforeChange={() => capturePosition()} onPreview={setReadingPreview} onZoom={value => { setZoom(value); viewStorage.setItem(selectionKey + ":zoom", String(value)); }}/><IconButton icon="refresh" label="刷新当前稿件" disabled={busy} onClick={() => void load({ ...selected.document, episode_id: selected.episode_id })}/><IconButton icon="search" label="搜索正文" onClick={() => searchVisible ? closeSearch() : openSearch()}/><IconButton icon="comment" label="原文批注" disabled={!!reference} onClick={() => setAnnotationList(value => value + 1)}/><details className="popover-menu"><summary aria-label="文稿操作" title="文稿操作"><Icon name="more"/></summary><div className="menu-panel">
                   <button disabled={!!reference} onClick={() => display(true)}>编辑</button><button onClick={() => display(false)}>阅读</button>
                   <button onClick={() => display(!reference, true)}>查看原稿</button>
                   <button onClick={() => void desktop.copy(displayedContent).then(() => notify("已复制完整原稿。"), error => notify(error.message))}>复制原稿</button>
@@ -551,8 +639,8 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
                   )}
               <div className="manuscript-scroll" onContextMenu={event => {if (editing && !reference && (event.target as Element).closest(".author-editor")) contextMenu.open(event); else if (reader.current?.contains(event.target as Node)) readingMenu(event);}}
                 onKeyDown={event => {if (contextKey(event)) {if (editing && !reference) contextMenu.open(event); else readingMenu(event);}}}>
-                {!titleFromSource && <div className="manuscript-title"><h1>{selected.document.title}</h1><span>{reference ? "只读" : final ? "已定稿" : "未定稿"}</span></div>}
-                {reference ? isScreenplay&&!sourceMode?<ScreenplayText ref={reader} className="reference-reader" aria-label="剧本参考稿" text={referenceContent} title={selected.document.title} script={screenplay} onMouseUp={selectQuote} onKeyUp={selectQuote}/>:<ManuscriptText format={(reference?.source_format ?? selected.revision.source_format) === "markdown" && !sourceMode ? "markdown" : "plain"} title={selected.document.title} ref={reader} novel={work.kind === "novel"} className="reference-reader" aria-label="剧本参考稿" text={referenceContent} onMouseUp={selectQuote} onKeyUp={selectQuote}/> : editing ? <AuthorEditor ref={editorSurface} raw={sourceMode} annotations={currentNotes.map(note => note.source_ref)} externalScroll key={selected.document.document_id} content={content} disabled={busy && !saving.current} format={selected.revision.source_format === "markdown" ? "markdown" : selected.revision.source_format === "fountain" ? "fountain" : "plain"} onContext={updateEditorContext} behavior={{focusParagraph: stableReading.current.focus_paragraph, typewriter: stableReading.current.typewriter_scroll, smartPairs: stableReading.current.smart_pairs}} searchMatches={searchMatches} activeSearchMatch={activeSearchMatch} indent={work.kind === "novel"} screenplay={isScreenplay&&!sourceMode} screenplayTitle={selected.document.title} jumpTo={sceneJump}
+                {!titleInBody && <div className="manuscript-title"><h1>{selected.document.title}</h1><span>{reference ? "只读" : final ? "已定稿" : "未定稿"}</span></div>}
+                {reference ? isScreenplay&&!sourceMode?<ScreenplayText ref={reader} className="reference-reader" aria-label="剧本参考稿" text={referenceContent} title={selected.document.title} script={screenplay} onMouseUp={selectQuote} onKeyUp={selectQuote}/>:<ManuscriptText format={(reference?.source_format ?? selected.revision.source_format) === "markdown" && !sourceMode ? "markdown" : "plain"} title={selected.document.title} ref={reader} novel={work.kind === "novel"} className="reference-reader" aria-label="剧本参考稿" text={referenceContent} onMouseUp={selectQuote} onKeyUp={selectQuote}/> : editing ? <AuthorEditor ref={editorSurface} raw={sourceMode} annotations={currentNotes.map(note => note.source_ref)} externalScroll key={selected.document.document_id + ":" + moveRevision} content={content} disabled={editorLocked} format={selected.revision.source_format === "markdown" ? "markdown" : selected.revision.source_format === "fountain" ? "fountain" : "plain"} onContext={updateEditorContext} behavior={{focusParagraph: stableReading.current.focus_paragraph, typewriter: stableReading.current.typewriter_scroll, smartPairs: stableReading.current.smart_pairs}} searchMatches={searchMatches} activeSearchMatch={activeSearchMatch} indent={work.kind === "novel"} screenplay={isScreenplay&&!sourceMode} screenplayTitle={selected.document.title} jumpTo={sceneJump}
                   onChange={(value) => void change(value).catch((error) => notify(error.message))} onSave={() => void save()}
                   onCompositionChange={(active) => { composition.current = active; setComposing(active); }}
                   onSelectionChange={(selection) => { setTextSelection(selection); if (content === selected.content) setQuote(selection); }}/>
@@ -566,7 +654,7 @@ export function Documents({ work, notify, ai, reviewTask }: SurfaceContext) {
           {!reference && <ManuscriptAnnotations key={selected.document.document_id} container={workspace} surface={annotationSurface} quote={editing ? textSelection : quote} notes={notes.items} revision={selected.revision.revision_id} documentId={selected.document.document_id} current={content === selected.content} busy={busy} recovery={!!noteRecovery?.pending} listRequest={annotationList}
             saveError={annotationError}
             composeRequest={commentRequest}
-            formatting={editing && selected.revision.source_format !== "plain" ? <EditorInlineControls surface={editorSurface} context={editorContext} format={selected.revision.source_format === "fountain" ? "fountain" : "markdown"} disabled={busy && !saving.current || composing} language={readingPreferences.language} notify={notify}/> : undefined}
+            formatting={editing && selected.revision.source_format !== "plain" ? <EditorInlineControls surface={editorSurface} context={editorContext} format={selected.revision.source_format === "fountain" ? "fountain" : "markdown"} disabled={editorLocked || composing} language={readingPreferences.language} notify={notify}/> : undefined}
             save={items => saveNote({document_id: selected.document.document_id, expected: {revision: notes.revision, sha256: notes.sha256}, items, operation_key: crypto.randomUUID()})}
             recover={() => void saveNote(noteRecovery.pending)} ai={source => ai({document_id: selected.document.document_id, revision_id: selected.revision.revision_id, ...source})}/>}
           {shell.inspector && !reference && <div className="manuscript-details" role="dialog" aria-label="文稿详情">

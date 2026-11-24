@@ -3,7 +3,7 @@ import { build } from "esbuild";
 import { fileURLToPath } from "node:url";
 import { verifyBaseline } from "./baseline.mjs";
 const baseline = await verifyBaseline(fileURLToPath(new URL("../../../", import.meta.url)));
-import { mkdir, copyFile, writeFile, readFile } from "node:fs/promises";
+import { mkdir, copyFile, writeFile, readFile, chmod } from "node:fs/promises";
 import { createHash } from "node:crypto";
 const buildMain = (file, out) =>
   build({
@@ -13,14 +13,16 @@ const buildMain = (file, out) =>
     platform: "node",
     target: "node24",
     format: "cjs",
-    external: ["electron"],
+    external: ["electron", "node-pty"],
     sourcemap: true,
   });
+if (process.platform !== "win32") await chmod(`../../node_modules/node-pty/prebuilds/${process.platform}-${process.arch}/spawn-helper`, 0o755);
 await mkdir("dist/renderer", { recursive: true });
 await writeFile("dist/baseline.json", JSON.stringify(baseline, null, 2) + "\n");
 await buildMain("main", "main");
 await buildMain("shell-preload", "shell-preload");
 await buildMain("plugin-preload", "plugin-preload");
+await build({entryPoints:["src/main/agent/mcp-relay.mjs"],outfile:"dist/agent-mcp-relay.mjs",bundle:true,platform:"node",target:"node24",format:"esm"});
 await buildWorkbench();
 await copyFile(
   "../../packages/plugin-host/src/worker.mjs",

@@ -1,5 +1,9 @@
 # Develop a creative plugin
 
+## Start with what you need
+
+An extension solves a concrete professional problem without copying manuscript, decision or global task ownership. Use host capabilities and preserve retrievable results when disabled.
+
 A Hetu plugin is an independent JavaScript or TypeScript distribution, with React available for views. The host’s Rust core owns work identity, revisions, scoped transactions and author decisions. Plugin authors do not need Rust, FFI or a matching Codex plugin.
 
 This guide starts with the working scaffold. The repository’s [plugin documentation](https://github.com/limecloud/hetu/tree/main/docs/plugin) defines the full contract; documents 20, 21 and 22 cover the executable subset, discovery and development.

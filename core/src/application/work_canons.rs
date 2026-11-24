@@ -148,6 +148,9 @@ impl Kernel {
 
     /// 调用方已核验作品身份；目录筛选不为每一章重新读取和验证整部小说目录。
     pub(super) fn document_in_work(&self, document: &Value, reference: &Value) -> Result<bool> {
+        if document["archived"] == true {
+            return Ok(false);
+        }
         Ok(match reference["kind"].as_str() {
             Some("novel") => matches!(
                 document["kind"].as_str(),
@@ -155,8 +158,8 @@ impl Kernel {
             ),
             Some("drama") => {
                 if let Some(episode) = document["drama_episode_id"].as_str() {
-                    self.read_drama_episode(episode, None)?.0["project_id"]
-                        == reference["object_id"]
+                    let episode = self.read_drama_episode(episode, None)?.0;
+                    episode["archived"] != true && episode["project_id"] == reference["object_id"]
                 } else {
                     false
                 }

@@ -33,6 +33,9 @@ impl Session {
     }
     fn call(&self, action: &str, mut input: Value) -> Value {
         input["management_ref"] = self.grant.clone();
+        self.invoke(action,input)
+    }
+    fn invoke(&self, action: &str, input: Value) -> Value {
         let mut child = Command::new(env!("CARGO_BIN_EXE_hetu"))
             .args([
                 "--client",
@@ -45,6 +48,7 @@ impl Session {
                 "-",
             ])
             .env("HOME", self.root.path())
+            .env("HETU_LOCAL_SETTINGS_DIR",self.root.path().join("settings"))
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
@@ -69,6 +73,90 @@ impl Session {
         ok(self.call("agent_operations.record_decision",json!({"proposal_id":p["proposal_id"],"proposal_sha256":p["proposal_sha256"],"expected_state_revision":p["state_revision"],"decision":"approve","authorization_note":"测试用户明确确认所示方案。","operation_key":format!("d-{key}")})));
         ok(self.call("agent_operations.execute",json!({"proposal_id":p["proposal_id"],"proposal_sha256":p["proposal_sha256"],"operation_key":format!("e-{key}")})))["result"].clone()
     }
+}
+#[test]
+fn stable_task_ref_does_not_bypass_confirm_for_a_working_copy_write() {
+    let s=Session::new();
+    let author=Kernel::open(json!({"workspace_path":s.root.path().join("work"),"mode":"author"})).unwrap();
+    let document=ok(author.request(json!({"action":"hetu.documents.create","contract_revision":"1","input":{"kind":"novel_chapter","title":"任务原章","source_format":"markdown","content":"原章","operation_key":"task-source"}})));
+    let preview=ok(s.call("creative_tasks.preview_prompt",json!({"scope_ref":{"kind":"workspace","id":s.work["workspace_id"]},"work_ref":s.work,
+        "target_ref":{"document_id":document["document"]["document_id"],"revision_id":document["revision"]["revision_id"],"sha256":document["revision"]["sha256"]},
+        "task_kind":"chapter_draft","brief":"隔离任务","input_refs":[],"client_adapter":"codex","language_tag":"zh-CN","candidate_limit":1})));
+    let mut input=preview["prepare_input"].clone();input["operation_key"]=json!("prepare-task");
+    let task=s.apply("creative_tasks.prepare",input,"task-plan");
+    let opened=ok(s.invoke("collaboration.open",json!({"task_locator":{"scope_ref":task["task_ref"]["scope_ref"],"task_id":task["task_ref"]["task_id"]}})));
+    let settings=hetu_core::local_settings::LocalSettings::open(&s.root.path().join("settings")).unwrap();
+    let before=settings.host(json!({"method":"get","input":{}})).unwrap();
+    settings.host(json!({"method":"update","input":{"expected_revision":before["revision"],"patch":{"execution_mode":"confirm"},"operation_key":"task-confirm"}})).unwrap();
+    ok(s.invoke("creative_tasks.get",json!({"task_ref":opened["task_ref"]})));
+    let rejected=s.invoke("working_copies.create",json!({"task_ref":opened["task_ref"],"artifact_kind":"text","source_format":"markdown","title":"未确认参考稿","base_refs":[],"content":"不能直接保存","operation_key":"unconfirmed-working"}));
+    assert_eq!(rejected["error"]["code"],"hetu.execution_confirmation_required");
+    let copies=ok(s.invoke("working_copies.list",json!({"task_ref":opened["task_ref"]})));
+    assert!(copies["working_copies"].as_array().unwrap().is_empty());
+}
+#[test]
+fn stable_managed_confirm_reads_but_rejects_an_unconfirmed_resource_write() {
+    let s=Session::new();
+    let input=|key:&str|json!({"work_ref":s.work,"title":"执行模式隔离验收","category":"research","body":"固定资料","tags":[],"project_id":null,"entity_refs":[],"source_notes":"隔离测试","operation_key":key});
+    ok(s.call("resources.create",input("auto-resource")));
+    let settings=hetu_core::local_settings::LocalSettings::open(&s.root.path().join("settings")).unwrap();
+    let before=settings.host(json!({"method":"get","input":{}})).unwrap();
+    settings.host(json!({"method":"update","input":{"expected_revision":before["revision"],"patch":{"execution_mode":"confirm"},"operation_key":"switch-confirm"}})).unwrap();
+    ok(s.call("resources.list",json!({"work_ref":s.work})));
+    let rejected=s.call("resources.create",input("confirm-resource"));
+    assert_eq!(rejected["error"]["code"],"hetu.execution_confirmation_required");
+    let catalog=ok(s.call("agent_operations.catalog",json!({"action":"hetu.resources.create","include_schema":true})));
+    let schema=&catalog["actions"][0]["input_schema"];
+    assert_eq!(schema["properties"]["work_ref"]["const"],s.work);
+    assert!(schema["required"].as_array().unwrap().iter().any(|field|field=="work_ref"));
+    let created=s.apply("resources.create",input("confirmed-resource"),"confirmed-resource");
+    assert_eq!(created["resource"]["body"],"固定资料");
+    assert_eq!(created["resource"]["actor_ref"],"actor_00000000-0000-4000-8000-000000000002");
+    let resources=ok(s.call("resources.list",json!({"work_ref":s.work})));
+    assert_eq!(resources["resources"].as_array().unwrap().len(),2);
+}
+#[test]
+fn fixed_document_move_and_restore_use_public_cli_proposals() {
+    let s = Session::new();
+    let author = Kernel::open(json!({"workspace_path":s.root.path().join("work"),"mode":"author"})).unwrap();
+    let create = |title: &str, content: &str| ok(author.request(json!({"action":"hetu.documents.create","contract_revision":"1","input":{
+        "kind":"novel_chapter","title":title,"source_format":"markdown","content":content,"operation_key":title}})));
+    let source = create("来源", "保留\r\n\r\n移动🌿"); let target = create("目标", "目标原文");
+    let reference = |v: &Value| json!({"document_id":v["document"]["document_id"],"revision_id":v["revision"]["revision_id"],"sha256":v["revision"]["sha256"]});
+    let moved = s.apply("documents.move_range", json!({"work_ref":s.work,"source_ref":reference(&source),"target_ref":reference(&target),
+        "byte_start":"保留\r\n\r\n".len(),"byte_end":"保留\r\n\r\n移动🌿".len(),"quote":"移动🌿","operation_key":"move"}), "move");
+    let read = |doc: &Value| ok(s.call("documents.get", json!({"document_id":doc["document"]["document_id"]})));
+    assert_eq!(read(&source)["content"], "保留");
+    assert_eq!(read(&target)["content"], "目标原文\n\n移动🌿");
+    s.apply("documents.restore_move", json!({"work_ref":s.work,"move_ref":moved["move_ref"],"operation_key":"restore"}), "restore");
+    assert_eq!(read(&source)["content"], "保留\r\n\r\n移动🌿");
+    assert_eq!(read(&target)["content"], "目标原文");
+    let directory = ok(s.call("novels.get", json!({})));
+    let fresh_source = read(&source);
+    let moved_new = s.apply("documents.move_to_new", json!({"work_ref":s.work,"source_ref":reference(&fresh_source),
+        "expected":{"revision":directory["revision"],"sha256":directory["sha256"]},"new_target":{"title":"新章节","volume_id":null},
+        "byte_start":"保留\r\n\r\n".len(),"byte_end":"保留\r\n\r\n移动🌿".len(),"quote":"移动🌿","operation_key":"move-new"}), "move-new");
+    let new_target = read(&moved_new["target"]);
+    assert_eq!(new_target["content"], "移动🌿");
+    s.apply("documents.restore_move", json!({"work_ref":s.work,"move_ref":moved_new["move_ref"],"operation_key":"restore-new"}), "restore-new");
+    assert_eq!(read(&source)["content"], "保留\r\n\r\n移动🌿");
+    assert_eq!(ok(s.call("documents.list", json!({"work_ref":s.work}))) ["documents"].as_array().unwrap().len(), 2);
+}
+
+#[test]
+fn fixed_document_copy_uses_public_cli_proposal_and_original_operation() {
+    let s = Session::new();
+    let author = Kernel::open(json!({"workspace_path":s.root.path().join("work"),"mode":"author"})).unwrap();
+    let source = ok(author.request(json!({"action":"hetu.documents.create","contract_revision":"1","input":{"kind":"novel_chapter","title":"原章","source_format":"markdown","content":"原章🌿\r\n\n尾段。","operation_key":"source"}})));
+    let directory = ok(s.call("novels.get",json!({})));
+    let input = json!({"work_ref":s.work,"source_ref":{"document_id":source["document"]["document_id"],"revision_id":source["revision"]["revision_id"],"sha256":source["revision"]["sha256"]},"expected":{"revision":directory["revision"],"sha256":directory["sha256"]},"title":"原章 副本","operation_key":"copy"});
+    let copied = s.apply("documents.duplicate",input,"copy");
+    assert_ne!(copied["document"]["document_id"],source["document"]["document_id"]);
+    let actual = ok(s.call("documents.get",json!({"document_id":copied["document"]["document_id"]})));
+    assert_eq!(actual["content"],"原章🌿\r\n\n尾段。");
+    assert_eq!(actual["document"]["copy_source_ref"]["document_ref"]["revision_id"],source["revision"]["revision_id"]);
+    let documents = ok(s.call("documents.list",json!({"work_ref":s.work})));
+    assert_eq!(documents["documents"].as_array().unwrap().len(),2);
 }
 #[test]
 fn video_episode_metadata_and_order_are_managed_by_public_cli_without_gui() {

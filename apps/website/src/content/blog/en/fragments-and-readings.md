@@ -17,3 +17,10 @@ Exact quotation is a beginning. A revised opening may need new claims; a changed
 ## Continue from a specific passage
 
 Tell your Agent the goal, return to read the complete work, then name a fragment or interpretation to revise. Continue from the feedback and its evidence. The essay and response remain distinct works that can inform one another.
+
+
+## Use only what this work needs
+
+A quick idea or read-only question can end with an answer. Keep sources, feedback and revisions for work you intend to continue, without turning every discussion into a project task. Delegate or write directly; consequential choices refer to concrete results.
+
+[Find the smallest useful starting point](/en/docs/when-to-use/).

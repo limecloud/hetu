@@ -1,5 +1,9 @@
 # Choose and install Skills
 
+## Start with what you need
+
+Choose methods needed for this task rather than installing every genre. Skills should recognize direct answers, read-only work and when nothing needs saving.
+
 Think of Skills as writing method packs for your external assistant. A military suite helps with organizations, operations and battlefield conditions. An apocalypse suite focuses on resources, group relationships and disaster rules. Choose methods that fit the story you want to tell.
 
 ## 1. Find the installer

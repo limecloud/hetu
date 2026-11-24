@@ -1,4 +1,4 @@
-import { navigate } from "./navigation.ts";
+import { navigate, captureAgentDraft } from "./navigation.ts";
 import { test, expect, _electron as electron, type ElectronApplication, type Page } from "@playwright/test";
 import { mkdtemp, readFile, readdir, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
@@ -109,12 +109,13 @@ for (const kind of ["novel", "drama"] as const) test(`${kind} CLI/MCP固定导�
     const importView = page!.getByRole("region", {name: "固定导入内容", exact: true});
     await importView.getByRole("button", {name: "原稿", exact: true}).click();
     await expect(importView.locator(".manuscript-reading article")).toHaveText(text.trim());
+    const capturedDraft=await captureAgentDraft(app!,page!);
     await page!.getByRole("button", { name: "让 AI 准备导入", exact: true }).click();
-    await expect(page!.getByRole("status")).toContainText("已准备当前作品的协作请求");
-    const handoff = await app!.evaluate(({ clipboard }) => JSON.parse(clipboard.readText().split("\n").slice(1).join("\n")));
+    await expect(page!.getByRole("status")).toContainText("已放入当前会话草稿");
+    const handoff = JSON.parse((await capturedDraft())!.split("\n").slice(1).join("\n"));
     expect(handoff.page).toBe("work.import");
-    expect(handoff.management_ref).toEqual(grant);
-    expect(handoff.core_cli).toBe(binary("hetu"));
+    expect(handoff.management_ref).toBeUndefined();expect(handoff.workspace_path).toBeUndefined();
+    expect(handoff.machine_entrypoint).toBe("hetu CLI/MCP");
     expect(handoff.proposal_actions).toContain("hetu.documents.import");
     await approve(proposal, "原稿导入", true);
     expect(data(cli(grant, "hetu.documents.list", { work_ref: work })).documents).toHaveLength(before);

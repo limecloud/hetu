@@ -36,3 +36,4 @@ export function resourceReadingParts(text: string): ResourceReadingPart[] {
   if (start < text.length || !parts.length) parts.push({text: text.slice(start)});
   return parts;
 }
+export const resourceCategories:Record<string,string>={character:"人物资料",location:"地点与场景",prop:"物品与道具",research:"灵感与考据",artwork:"封面与插图",media:"音视频与文件说明"};

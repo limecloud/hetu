@@ -1,5 +1,62 @@
 # 业务流程与 MCP 时序
 
+## 任务分流与职责
+
+```mermaid
+flowchart LR
+  U[作者目标与取舍] --> A[外部Agent判断最简单路径]
+  A --> D[直接回答或原文件]
+  A --> R[只读作品与来源]
+  A --> E[探索方案]
+  E --> Q{需要保存或持续恢复}
+  Q -->|否| D
+  Q -->|是| W[固定参考稿与依据]
+  A --> W
+  R --> C[共享Core与原有领域Owner]
+  W --> C
+  C --> V[阅读 比较 编辑 反馈]
+  V --> U
+  C --> P[固定版本交付与取回]
+```
+
+```mermaid
+sequenceDiagram
+  actor Author as 作者
+  participant Agent as 所选Agent
+  participant Core as 河图Core
+  participant View as 作品工作面
+  Author->>Agent: 修改第二章，保留第三章与指定对白
+  Agent->>Core: 发现能力并按需读取固定修订
+  Core-->>Agent: 原文 来源 既有决定与覆盖
+  Agent->>Core: 沿原任务保存参考稿和依据
+  Core-->>View: 可读取的新成果与差异
+  Author->>View: 连续阅读并提出具体意见
+  Author->>Agent: 按这条意见继续，其他不动
+  Agent->>Core: 回读原稿与意见后保存新版
+  opt 作者明确选择当前结果
+    Author->>Agent: 采用此版的指定段落
+    Agent->>Core: 执行确切决定并回读
+    Core-->>View: 正式修订与历史
+  end
+```
+
+```mermaid
+flowchart TD
+  S[当前创作材料] --> F[现实来源与原著]
+  S --> X[探索方案与参考稿]
+  S --> K[作者已确定的设定]
+  F --> B[固定引用及覆盖]
+  X --> J{作者取舍}
+  J -->|采用| K
+  J -->|继续探索| X
+  J -->|放弃| H[保留必要历史]
+  K --> T[后续稿件和素材]
+  T --> I[变化及影响核对]
+  I --> X
+```
+
+只读分支在返回答案后停止；临时讨论不进入Core写入。图中表达作者意图与已有领域的关系，不声明自动识别或全书影响检查已实现。
+
 ## 默认基础旅程
 
 无额外创作插件的发现、保存、审阅、意见及接续共用原CLI/MCP与Core用例；架构和时序图见[39](39-Electron与插件优先重构架构.md#无额外插件的基础产品)。专业增强按需进入TS宿主，停用后不影响基础内容读取。视频先导入固定素材，再登记分集成果，意见固定媒体及其时间基准；返工登记新成果与前版引用，旧意见保持原目标。交付按确切媒体引用读取文件和清单，不自动选用或确认。
@@ -1625,3 +1682,219 @@ flowchart TD
     export --> recipient["接收方离线解包、播放与工程核验"]
     recipient --> result["记录本次结果与覆盖，止于交付"]
 ```
+
+## 54. Agent First的目标到成果流程
+
+适用于桌面内会话及外部Agent＋MCP App；入口不同，作品事实、任务及结果相同。对应FR-41～44、UC-55～58。
+
+```mermaid
+flowchart TD
+    Goal[作者表达目标] --> Work[明确工作区与作品]
+    Work --> Discover[发现实际能力与方法]
+    Discover --> Context[解析原Owner固定来源]
+    Context --> Inputs[固定任务输入与可改范围]
+    Inputs --> Mode{本机执行模式}
+    Mode -->|auto| Execute[Agent通过机器入口执行]
+    Mode -->|confirm| Plan[集中展示本次固定变更]
+    Plan --> Confirm{作者确认}
+    Confirm -->|继续| Execute
+    Confirm -->|取消| Preserve[保留输入及已完成结果]
+    Execute --> Result{实际结果}
+    Result -->|已完成| Review[阅读比较与位置反馈]
+    Result -->|未知| Recover[查询原计划及原操作]
+    Result -->|冲突或失败| Compare[保留输入并明确原因]
+    Recover --> Result
+    Compare --> Context
+    Review --> Choice{本次意图}
+    Choice -->|返工| Inputs
+    Choice -->|保留候选| End[持续持有可接续成果]
+    Choice -->|明确采纳或定稿| Decision[执行对应独立决定用例]
+    Decision --> End
+```
+
+按需更新输入不改变旧来源；“返工”沿原任务追加参考稿及意见，需要变更固定输入时发布新请求。执行模式不把候选自动提升为正式内容。
+
+## 55. 类型化上下文的双入口时序
+
+```mermaid
+sequenceDiagram
+    actor Author as 作者
+    participant View as 桌面或MCP App
+    participant Agent as 所选Agent
+    participant Core as 共享应用用例
+    participant Owner as 原资料Owner
+    Author->>View: 引用人物、章纲或当前原文
+    View->>Core: 当前WorkRef与明确目标
+    Core->>Owner: 读取固定对象及修订
+    Owner-->>Core: 身份、摘要与可读覆盖
+    Core-->>View: 类型化来源投影
+    Author->>Agent: 明确本次目标与引用
+    Agent->>Core: 按当前策略准备任务输入
+    Core->>Owner: 重验来源及归属
+    Core-->>Agent: 完整TaskRef与固定目录
+    Agent->>Core: list、search及分块read
+    Core-->>Agent: 固定ContextRef、原文与覆盖
+    Agent->>Core: 保存参考稿并固定提交
+    Core-->>View: 同一任务的固定候选
+    Author->>View: 比较并保存确切位置意见
+    View->>Core: 反馈固定成果版本
+    Core-->>Agent: 原任务公开反馈与接续引用
+```
+
+界面附加是可选入口，Agent也可完全通过机器接口选择来源；MCP宿主不支持消息时提供同一任务的继续请求，不将复制或送达记录当作已执行。切换作品后旧读取与反馈目标不得覆盖新工作面。
+
+## 56. 按任务发现专业能力时序
+
+```mermaid
+sequenceDiagram
+    participant Agent as Agent
+    participant Entry as 稳定CLI或MCP
+    participant Host as TS插件宿主
+    participant Owner as 专业插件
+    participant Core as 公开Core用例
+    Agent->>Entry: 按目标窄查能力摘要
+    Entry->>Host: 查询实际安装及启用状态
+    Host-->>Entry: 包身份、版本及贡献摘要
+    Entry-->>Agent: 可用能力与方法入口
+    Agent->>Entry: 读取确切Schema及方法
+    Entry->>Owner: 固定包与能力摘要
+    Owner-->>Agent: 输入、effect、恢复及方法
+    Agent->>Entry: 明确WorkRef和固定输入执行
+    Entry->>Host: 执行时重验贡献与目标
+    Host->>Owner: 受管调用
+    Owner->>Core: 读取共同事实或保存专业对象
+    Core-->>Owner: 固定来源与操作回执
+    Owner-->>Agent: 固定成果、覆盖及原键
+    Note over Agent,Core: 专业报告不改变正式正文或作者决定
+```
+
+无可用包时说明未安装／停用／不兼容，不能用目录名称冒充能力。安装或升级是独立生命周期操作，完成后重新发现，不将全部扩展常驻到正文旁。
+
+## 57. auto与confirm的集中执行时序
+
+```mermaid
+sequenceDiagram
+    actor Author as 作者
+    participant Agent as Agent
+    participant Exec as 共享执行服务
+    participant Domain as 领域用例
+    participant Store as 事务与原操作记录
+    Agent->>Exec: 读取实际模式及策略修订
+    Exec-->>Agent: auto或confirm
+    alt 读取请求
+        Agent->>Exec: 明确工作区与只读动作
+        Exec->>Domain: 直接读取
+        Domain-->>Agent: 固定结果及覆盖
+    else auto写入
+        Agent->>Exec: 固定输入、版本及原键
+        Exec->>Domain: 核验后执行
+        Domain->>Store: 单用例原子提交
+        Store-->>Agent: 确切结果回执
+    else confirm写入
+        Agent->>Exec: 准备本次固定变更计划
+        Exec-->>Author: 目标、差异、动作及影响
+        Author->>Exec: 确认确切计划
+        Agent->>Exec: 执行原计划
+        loop 未完成的固定步骤
+            Exec->>Domain: 原输入与子操作键
+            Domain->>Store: 核验CAS并提交
+            Store-->>Exec: 本步真实回执
+        end
+        Exec-->>Agent: 完成或部分结果
+    end
+    opt 结果未知或连接中断
+        Agent->>Exec: 查询原计划及原操作
+        Exec->>Store: 回读确切结果
+        Store-->>Agent: 完成、未开始或仍未知
+    end
+```
+
+确认后不逐步骤重复询问。计划改变或工作区身份不符时拒绝；策略变化按27的固定修订合同处理。多步骤与外部副作用不被本图表述为一个分布式原子事务；仍未知时不能换键重发。
+
+## 58. 专业规划与正式事实的生命周期
+
+```mermaid
+flowchart TB
+    Formal[唯一正式正文与设定] --> Fixed[固定身份修订与来源]
+    Fixed --> Plugin[插件专业规划或报告]
+    Plugin --> Candidate[Agent参考稿与候选]
+    Candidate --> Review[作者比较及明确取舍]
+    Review -->|确切决定用例| New[新的正式修订]
+    Plugin --> Disable[停用或升级插件]
+    Disable --> Revoke[撤销旧贡献与运行引用]
+    Revoke --> Retain[保留固定专业成果]
+    Retain --> Read[通用读取与导出]
+    Retain --> Reopen[重新发现兼容能力后接续]
+    Formal --> Basic[基础创作继续可用]
+```
+
+规划节点不自动成为正式章节；专业数据停用后不变成无归属JSON，也不因重新启用被自动迁移。具体字段仍由专业Owner负责解释，Core保留作品归属、固定修订及事务。
+
+## 59. Codex GUI 发送与成果回读
+
+```mermaid
+sequenceDiagram
+    actor Author as 作者
+    participant UI as 河图GUI
+    participant Session as 会话应用服务
+    participant Codex as Codex App Server
+    participant Machine as 河图CLI或MCP
+    participant Core as 共享Core
+    Author->>UI: 输入目标并选择固定上下文
+    UI->>Session: 会话、owner代次、消息尝试及引用
+    Session->>Session: 核验单执行者并保存出站尝试
+    Session->>Codex: turn/start
+    Codex-->>Session: 受理或明确拒绝
+    Session-->>UI: 投递状态及流事件
+    Codex->>Machine: 发现能力并执行固定业务
+    Machine->>Core: 当前工作区策略、固定输入及原键
+    alt auto
+        Core->>Core: 校验后执行事务
+    else confirm
+        Core-->>UI: 本次集中变更计划
+        Author->>UI: 确认确切计划
+        UI->>Core: 可信决定与计划摘要
+        Machine->>Core: 沿原计划执行
+    end
+    Core-->>Machine: 保存结果、固定成果及原操作
+    Machine-->>Codex: 真实业务回执
+    Codex-->>Session: 轮次终态
+    Session->>Core: 回读关联成果及原操作
+    Core-->>UI: 作品变更与可打开成果
+    Author->>UI: 比较、反馈或明确采纳
+    Note over Session,Core: 投递、引擎完成、成果保存和作者决定分别取证
+```
+
+写入后传输断开时保留unknown，先查原线程及Core原操作，不直接再次调用turn/start。TUI执行同一机器业务，但不伪造无法观察的消息受理回执。具体合同归[39](39-Electron与插件优先重构架构.md#43-agent-会话宿主)。
+
+## 60. Codex GUI 与 TUI 切换
+
+```mermaid
+sequenceDiagram
+    actor Author as 作者
+    participant UI as 河图工作面
+    participant Session as 会话与占用协调
+    participant Old as 原执行端
+    participant Core as 原操作Owner
+    participant New as 目标执行端
+    Author->>UI: 切换GUI或TUI
+    UI->>Session: 确切会话、目标表面及切换原键
+    Session->>Session: 保存草稿并冻结投递
+    Session->>Old: 查询原轮次及请求，等待结束或明确中断
+    Session->>Core: 核对在途原操作
+    Old-->>Session: 轮次边界及旧表面控制释放
+    alt 轮次或控制释放无法确认
+        Session-->>UI: 保留原表面和待核对状态
+    else 已确认且目标支持共享连接
+        Session->>Session: 释放旧占用并取得新owner代次
+        Session->>New: 连接同一App Server和明确thread
+        New-->>Session: 实际线程、历史及能力
+        Session-->>UI: 发布新表面并恢复输入
+    else 目标不支持共享连接或恢复
+        Session-->>UI: 保留原会话或以公开接续新建
+        Author->>UI: 明确选择可用接续方式
+    end
+    Note over Old,New: 任意时刻同线程最多一个受管执行者
+```
+
+共享引擎在切换时保持运行，非当前输入端只读观察。TUI客户端保留原生未发送稿，GUI私有草稿独立保存；桥接从协议层拒绝非当前端的投递、控制及审批答复，不靠隐藏界面实现互斥。不支持共享连接的独立进程回退必须先核验旧引擎退出。恢复失败不自动新建或重发；终端回放只代表历史画面。外部MCP App共享业务事实，不自动共享或接管Codex Desktop私有线程。单执行者和状态Owner归39／29，门禁归19。

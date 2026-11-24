@@ -48,3 +48,10 @@ Agents, models and production services change. A creator’s work should remain 
 Hetu is free and open source under Apache-2.0. Creative content retains its own rights; the software license does not grant anyone rights to your manuscript. Manual work is a complete and valid way to use the workspace. External generation is optional and subject to the provider’s own terms.
 
 **A good creative system makes the process easier to manage and leaves more room for an individual voice.**
+
+
+## Use only what this work needs
+
+A quick idea or read-only question can end with an answer. Keep sources, feedback and revisions for work you intend to continue, without turning every discussion into a project task. Delegate or write directly; consequential choices refer to concrete results.
+
+[Find the smallest useful starting point](/en/docs/when-to-use/).

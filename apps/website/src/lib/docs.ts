@@ -16,6 +16,7 @@ export const groups = [
   { id: 'developer', title: { 'zh-CN': '开发者', en: 'For developers' } },
 ] as const;
 export const docs = [
+  {id:'when-to-use',group:'start',title:{'zh-CN':'这次需要河图吗',en:'Does this task need Hetu?'},description:{'zh-CN':'从直接回答、只读查阅到持续返工，选择最简单的路径。',en:'Choose a direct answer, read-only lookup or sustained revision.'}},
   { id: 'getting-started', group: 'start', title: { 'zh-CN': '快速入门', en: 'Quick start' }, description: { 'zh-CN': '向 Agent 说出目标，回来读稿或看片，提意见并继续。', en: 'Give your Agent a goal, read or watch the result, then give feedback and continue.' } },
   { id: 'install', group: 'start', title: { 'zh-CN': '下载与安装', en: 'Download and install' }, description: { 'zh-CN': '获取 Mac、Windows 或 Linux 版，保留已有作品与任务继续。', en: 'Get Hetu for Mac, Windows or Linux and continue your existing works and tasks.' } },
   { id: 'creative-library', group: 'start', title: { 'zh-CN': "认识创作库", en: "Your creative library" }, description: { 'zh-CN': "分别组织小说、剧本与视频，保留各自版本和来源关联。", en: "Organize novels, scripts and videos with their own revisions and source links." } },

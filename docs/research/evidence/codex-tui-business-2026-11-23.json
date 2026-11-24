@@ -1,0 +1,26 @@
+{
+  "date": "2026-11-23",
+  "scope": "real_codex_tui_mcp_resource_write_and_independent_cli_readback",
+  "codex_version": "0.171.0",
+  "work_ref": {
+    "kind": "novel",
+    "object_id": "novel_f27eeb9a-ed41-40e6-b9a8-9c6701ec93a4",
+    "workspace_id": "workspace_d7c90c6b-cb86-422d-9329-c00503ef95ae"
+  },
+  "thread_id": "01a207ce-0672-7682-b2a8-cb52abac0ba2",
+  "resource_id": "resource_ff481571-c339-4390-9039-46d66f49287e",
+  "revision": 1,
+  "title": "TUI终端集成验收",
+  "body_sha256": "cddf3346b4d6c23f562998dca5ecc0836b1df6df388298f93329940485186c09",
+  "operation_key": "tui-live-resource-01",
+  "state": "draft",
+  "cli_readback": "succeeded",
+  "terminal_bytes": 98578,
+  "not_verified": [
+    "adoption and finalization",
+    "full novel lifecycle",
+    "packaged installation",
+    "Windows",
+    "GUI completeness"
+  ]
+}

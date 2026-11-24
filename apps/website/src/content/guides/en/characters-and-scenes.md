@@ -1,5 +1,9 @@
 # Characters, locations and props
 
+## Start with what you need
+
+Develop characters, locations and states as scenes need them. A temporary idea need not become a confirmed design or story fact.
+
 Assets should answer concrete creative questions: who a person is, where a scene happens and which objects must stay consistent. Organize confirmed facts before preparing text and pictures.
 
 Keep identity, costume, location and prop references clear about their purpose and source. That makes it easier to know which version to use during revisions.

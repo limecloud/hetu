@@ -114,7 +114,7 @@ export class ManagementReview {
       work_ref: this.work,
       proposal_id: id,
       title:
-        (decision === "approve" ? "批准" : "拒绝") + "「" + view.summary + "」",
+        (decision === "approve" ? "批准" : "拒绝") + (managementTitle(view)===view.summary?"「"+view.summary+"」":managementTitle(view)),
       action: "hetu.agent_operations.decide",
       input: {
         proposal_id: id,
@@ -210,3 +210,4 @@ export class ManagementReview {
     return this.#write(record);
   }
 }
+import {managementTitle} from "../management-title.ts";

@@ -25,6 +25,7 @@ test("右键固定选区、格式子菜单、块事务、批注、目录改名�
     await work.click({button: "right"});
     await expect(page.getByRole("menu", {name: "默认小说", exact: true})).toBeVisible();
     await page.getByRole("menuitem", {name: "打开", exact: true}).click();
+    await page.getByRole("button", {name: "小说", exact: true}).click();
     await page.evaluate(async () => {const state = await window.hetuDesktop.settings("preferences"); await window.hetuDesktop.settings("update", {expected_revision: state.revision, patch: {autosave: false}});});
     await documentAction(page, "编辑");
     const editor = page.getByRole("textbox", {name: "文稿编辑", exact: true}), line = editor.locator(".cm-line").filter({hasText: "普通"});
@@ -39,6 +40,18 @@ test("右键固定选区、格式子菜单、块事务、批注、目录改名�
     await page.getByRole("menu", {name: "样式", exact: true}).getByRole("menuitemcheckbox", {name: "加粗", exact: true}).click();
     await expect.poll(() => page.evaluate(() => getSelection()?.toString())).toBe("普通");
     await editor.press("ControlOrMeta+z");
+    await line.click({position: {x: 140, y: 10}, button: "right"});
+    await menu.getByRole("menuitem", {name: "段落顺序", exact: true}).hover();
+    await page.getByRole("menu", {name: "段落顺序", exact: true}).getByRole("menuitem", {name: "上移", exact: true}).click();
+    await expect(editor.locator(".cm-line").first()).toContainText("普通");
+    await editor.press("ControlOrMeta+z");
+    await expect(editor.locator(".cm-line").first()).toContainText("试读");
+    await editor.press("ControlOrMeta+a"); await editor.press("Shift+F10");
+    await menu.getByRole("menuitem", {name: "排序", exact: true}).hover();
+    await page.getByRole("menu", {name: "排序", exact: true}).getByRole("menuitem", {name: "排序 A → Z", exact: true}).click();
+    await expect(editor.locator(".cm-line").last()).toContainText("试读");
+    await editor.press("ControlOrMeta+z");
+    await expect(editor.locator(".cm-line").first()).toContainText("试读");
     await line.click({position: {x: 140, y: 10}, button: "right"});
     await menu.getByRole("menuitem", {name: "创建副本", exact: true}).click();
     await expect(editor.locator(".cm-line").filter({hasText: "普通"})).toHaveCount(2);
@@ -69,6 +82,33 @@ test("右键固定选区、格式子菜单、块事务、批注、目录改名�
     await page.getByRole("button", {name: "保存名称", exact: true}).click();
     await expect(page.getByRole("navigation", {name: "文稿目录", exact: true}).getByRole("button", {name: "右键改名后的章节", exact: true})).toBeVisible();
     expect((await page.evaluate(async id => window.hetuDesktop.read("hetu.documents.get", {document_id: id}), id)).data.content).toBe(source);
+    const renamedEntry = page.getByRole("navigation", {name: "文稿目录", exact: true}).getByRole("button", {name: "右键改名后的章节", exact: true});
+    await renamedEntry.click({button: "right"}); await page.getByRole("menuitem", {name: "复制文稿", exact: true}).click();
+    const copyEntry = page.getByRole("navigation", {name: "文稿目录", exact: true}).getByRole("button", {name: "右键改名后的章节 副本", exact: true});
+    await expect(copyEntry).toBeVisible();
+    await expect(page.getByRole("dialog", {name: "原文批注", exact: true})).toHaveCount(0);
+    const copy = await page.evaluate(async work => {
+      const result = await window.hetuDesktop.read("hetu.documents.list", {work_ref: work});
+      const doc = result.data.documents.find((item: any) => item.title === "右键改名后的章节 副本");
+      return (await window.hetuDesktop.read("hetu.documents.get", {document_id: doc.document_id})).data;
+    }, refs.novel);
+    expect(copy.content).toBe(source); expect(copy.document.document_id).not.toBe(id);
+    expect(copy.document.copy_source_ref.document_ref.document_id).toBe(id);
+    const copyNotes = await page.evaluate(async id => window.hetuDesktop.read("hetu.annotations.list", {document_id: id}), copy.document.document_id);
+    expect(copyNotes.data.items).toEqual([]);
+    await page.screenshot({path: info.outputPath("context-document-copy.png")});
+    await page.evaluate(async () => {const state = await window.hetuDesktop.settings("preferences"); await window.hetuDesktop.settings("update", {expected_revision: state.revision, patch: {execution_mode: "confirm"}});});
+    await app.evaluate(({dialog}) => {dialog.showMessageBox = async (...args: any[]) => {
+      (globalThis as any).__copyConfirmation = args.at(-1); return {response: 0, checkboxChecked: false};
+    };});
+    await copyEntry.click({button: "right"}); await page.getByRole("menuitem", {name: "复制文稿", exact: true}).click();
+    await expect.poll(() => app.evaluate(() => (globalThis as any).__copyConfirmation?.message)).toContain("右键改名后的章节 副本");
+    const afterCancel = await page.evaluate(async work => window.hetuDesktop.read("hetu.documents.list", {work_ref: work}), refs.novel);
+    expect(afterCancel.data.documents).toHaveLength(2);
+    await app.evaluate(({dialog}) => {dialog.showMessageBox = async () => ({response: 1, checkboxChecked: false});});
+    await copyEntry.click({button: "right"}); await page.getByRole("menuitem", {name: "复制文稿", exact: true}).click();
+    await expect(page.getByRole("navigation", {name: "文稿目录", exact: true}).getByRole("button", {name: "右键改名后的章节 副本 副本", exact: true})).toBeVisible();
+    await page.evaluate(async () => {const state = await window.hetuDesktop.settings("preferences"); await window.hetuDesktop.settings("update", {expected_revision: state.revision, patch: {execution_mode: "auto"}});});
     await navigate(page, "返回创作库");
     const input = page.getByRole("textbox", {name: "搜索作品", exact: true}); await input.fill("默认"); await input.press("ControlOrMeta+a"); await input.click({button: "right"});
     await page.getByRole("menu", {name: "文字编辑菜单", exact: true}).getByRole("menuitem", {name: "剪切", exact: true}).click();
@@ -79,9 +119,28 @@ test("右键固定选区、格式子菜单、块事务、批注、目录改名�
     await page.setViewportSize({width: 800, height: 700}); await resized;
     await input.press("ControlOrMeta+a"); await input.press("Backspace");
     await page.getByRole("button", {name: "打开作品 默认小说", exact: true}).click({button: "right"});
+    await page.getByRole("button", {name: "小说", exact: true}).click();
     await expect(page.getByRole("menuitem", {name: "版本历史", exact: true})).toBeVisible();
-    const bounds = await page.locator(".context-menu:visible").last().boundingBox(); expect(bounds).not.toBeNull(); expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(800); expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(700);
+    await page.getByRole("button", {name: "打开作品 默认小说", exact: true}).click({button: "right"});
+    await page.getByRole("button", {name: "小说", exact: true}).click();
+    const bounds = await page.getByRole("menu", {name: "默认小说", exact: true}).evaluate((element) => { const rect = element.getBoundingClientRect(); return {x: rect.x, y: rect.y, width: rect.width, height: rect.height}; }); expect(bounds.x + bounds.width).toBeLessThanOrEqual(800); expect(bounds.y + bounds.height).toBeLessThanOrEqual(700);
     await page.screenshot({path: info.outputPath("context-library-narrow.png")});
+    for (let attempt = 0; attempt < 8; attempt++) {
+      await page.keyboard.press("Escape");
+      const resized = page.evaluate(() => new Promise<void>(resolve => window.addEventListener("resize", () => requestAnimationFrame(() => resolve()), {once: true})));
+      await page.setViewportSize({width: attempt % 2 ? 800 : 1440, height: 700}); await resized;
+      await input.fill(attempt % 2 ? "" : "默认");
+      await page.getByRole("button", {name: "打开作品 默认小说", exact: true}).click({button: "right"});
+      await page.getByRole("button", {name: "小说", exact: true}).click();
+      await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+      await expect(page.getByRole("menuitem", {name: "版本历史", exact: true})).toBeVisible();
+    }
+    await page.locator(".library-content").evaluate(element => element.dispatchEvent(new Event("scroll")));
+    await expect(page.getByRole("menu", {name: "默认小说", exact: true})).toBeVisible();
+    expect(await page.locator(".library-content").evaluate(element => {
+      const previous = element.scrollTop; element.scrollTop = previous > 0 ? 0 : 1; return element.scrollTop !== previous;
+    })).toBe(true);
+    await expect(page.getByRole("menu", {name: "默认小说", exact: true})).toHaveCount(0);
     expect(errors).toEqual([]);
   } finally {await app.close();}
 });

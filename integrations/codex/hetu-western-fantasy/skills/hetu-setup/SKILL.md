@@ -5,6 +5,13 @@ description: "作者选择河图洛书西方奇幻套件时，在河图洛书任
 
 # 河图洛书接入与任务恢复
 
+## 本次是否需要保存
+
+先判断已有对话与原文件是否足够。不需要河图就直接完成，不运行接入诊断；只读作品按需定位与引用，不为接入或查询创建空任务。仅在作者明确保存或需持续恢复时进入持久创作路径。
+
+统一判断见[任务合同](../../references/task-contract.md#参与程度与停止条件)。
+
+
 先按[统一执行模式](../../references/execution-modes.md)读取实际设置：默认auto直接处理当前工作区，confirm先读后集中确认本次写入。本规则优先于下文旧授权流程，任务引用继续用于定位、来源和恢复。
 
 先读本包的 [任务合同](../../references/task-contract.md)，按固定任务和实际宿主能力继续。
@@ -41,7 +48,7 @@ description: "作者选择河图洛书西方奇幻套件时，在河图洛书任
 
 无任务时区分本次目标：仅检查接入就报告实际可见性；作者要开始小说、剧本或视频时，发现已发布的筹备与新建能力，准备必要资料和明确保存方案。视频交给[视频Skill](../hetu-video/SKILL.md)，不要求先建小说或剧本。不能要求先回 GUI 填表创建任务，不扫描书库。版本未开放所需动作时报告准确缺口，不用 Computer Use 或直接修改受管文件补齐。进入创作后使用相应任务 Skill；方法位置见[创作导航](../../references/writing-methods.md)，无需在接入阶段通读。
 
-发现 `hetu_begin_creation` 或 CLI 动作 `hetu.creation_projects.create` 时，可以直接开始独立筹备，无需预有任务。保留返回的 `management_ref` 和明确的 `target_path`；该路径仅用于本次全新受管作品，不扩大为任意目录权限。创建成功使用新的 `workspace_management_ref` 准备首任务，再以 `task_locator` 打开，后续创作切换到完整 `task_ref`。管理权不能替代作者采纳或定稿。
+发现 `hetu_begin_creation` 或 CLI 动作 `hetu.creation_projects.create` 时，可以直接开始独立筹备，无需预有任务。保留返回的 `management_ref` 和明确的 `target_path`；该路径仅用于本次全新受管作品，不扩大为任意目录权限。创建成功使用新的 `workspace_management_ref` 接续；确需持久任务时才准备，以真实 `task_locator` 打开并使用完整 `task_ref`。管理权不能替代作者采纳或定稿。
 
 
 ## 已有作品的页面交接与管理方案

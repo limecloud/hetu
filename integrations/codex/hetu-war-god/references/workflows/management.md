@@ -1,5 +1,7 @@
 # 作品与本机管理工作法
 
+只读查询得到答案后停止。连续管理沿当前执行模式推进，不为每步重复建计划或让作者转填表单。 统一分流见[任务合同](../task-contract.md#参与程度与停止条件)。
+
 以当前安装版本公布的 Schema 为准。下面是用例导航，不是可跳过发现和授权的固定调用脚本。
 
 ## 连接与原操作
@@ -55,6 +57,10 @@
 从获权的 `hetu.capabilities.get` 取得本次 WorkRef 及实际 Schema。`hetu.documents.list` 携带该 work_ref，使用 limit 和 next_cursor 分页，不把首屏当成完整目录；空结果与读取失败分别处理。章序以小说目录、集序以剧本项目为准，不按同名标题猜对应关系。
 
 读取正文沿返回的 document_id 和明确 revision_id 调用 `hetu.documents.get`；历史先用 `hetu.documents.history` 分页取得。固定旧版用于比较，不能用新正文配旧坐标。同根其他剧本、未明确归属的旧稿和视频不因文件在同一目录而可读；精确视频授权不提供小说／剧本正文能力。
+
+作者要求复制已保存章节或分集时，发现并使用`hetu.documents.duplicate`：固定当前WorkRef、原文document_id／revision_id／sha256和小说目录或剧本项目的expected修订／摘要。副本在原文之后，保留原卷或分集计划；返回新身份及copy_source_ref后回读正文和目录。沿统一执行模式处理本次写入；不以读出正文再调用create替代来源核验，不复制批注、任务或定稿，不用新操作键恢复结果未知的复制。
+
+作者要求把完整段落移至同作品另一篇文稿时，发现并使用`hetu.documents.move_range`：固定两端document_id／revision_id／sha256、当前WorkRef、来源UTF-8完整行范围及精确quote。Core一次事务移除来源并追加目标，回读两端新修订和move_ref；不分别调用两次save。需要撤销时用`hetu.documents.restore_move`及原move_ref，两端任一有后续改动时保留当前内容并比较，不强行单端恢复。执行模式、固定方案和结果未知的原键恢复继续复用现有合同。需要新章节或新分集时使用`hetu.documents.move_to_new`，同时固定目录或项目expected、标题、来源完整行范围和原文引句；Core在同一事务内建立目标、更新目录、移除来源并登记恢复引用，不能先创建空文稿再分别保存。撤销新目标移动时恢复来源并从目录移除目标，目标文件与历史保留为归档状态。
 
 `hetu.creative_tasks.list` 使用同一 work_ref，可按 target_document_id 与状态缩小范围；沿 task_locator 调用 `hetu_open_collaboration_task`，得到完整 task_ref 后再读取请求、工作稿和公开意见。任务列表只提供查找，不替作者授予任务操作权；未获任务授权时保留原引用并说明确切缺口，不换整根权限、不重建同义任务。游标过期重新查询；撤权和重新授权后不沿用旧引用或旧游标。
 

@@ -1,0 +1,64 @@
+{
+  "date": "2026-11-23",
+  "scope": "codex_tui_first_macOS_implementation_and_local_package_validation",
+  "version": "0.14.0",
+  "codex_version": "0.171.0",
+  "source_sha256": "c9b95df351f1929817c120be1d354e897476262d1ddbb0a6fc0a0c84df3230c4",
+  "tests": {
+    "session_and_bridge_unit": 16,
+    "desktop_session_writing_and_live_tui": 3,
+    "resource_artwork_plugin_import_and_version_regressions": 9,
+    "packaged_live_tui": "passed",
+    "installed_live_tui": "passed"
+  },
+  "tui_checks": [
+    "same_app_server_and_exact_thread",
+    "native_new_and_resume",
+    "close_and_resume_exact_thread",
+    "light_dark_and_narrow_layout",
+    "canvas_device_pixel_ratio",
+    "font_and_gpu_updates_preserve_thread",
+    "settings_window_live_font_update",
+    "writing_request_bracketed_paste_without_Enter",
+    "draft_does_not_start_model_turn",
+    "thread_ownership_across_records",
+    "foreign_thread_rejected_before_forwarding"
+  ],
+  "real_model": {
+    "thread_id": "01a2080c-c4d0-7bf2-830f-7b455c41e36d",
+    "work_ref": {
+      "kind": "novel",
+      "object_id": "novel_08c0e937-fc26-4457-98ba-9c20f4a48913",
+      "workspace_id": "workspace_1588e1d0-39ca-4d73-a360-7883a45c30a3"
+    },
+    "resource_id": "resource_dbc0ef54-9b8b-4001-9423-850446c42963",
+    "revision": 1,
+    "state": "draft",
+    "body_sha256": "cddf3346b4d6c23f562998dca5ecc0836b1df6df388298f93329940485186c09",
+    "operation_key": "tui-live-resource-01",
+    "mcp_create_and_readback": "succeeded",
+    "independent_workspace_cli_readback": "succeeded",
+    "initial_schema_probe": "one read-only discovery failed; corrected without repeating a write",
+    "native_tool_confirmation": "no_pending_request_at_completion"
+  },
+  "package": {
+    "kind": "electron-local-install-package",
+    "platform": "darwin",
+    "arch": "arm64",
+    "verified_artifacts": 3719,
+    "installed_application": "/Applications/Hetu.app",
+    "installed_artifacts": 3131,
+    "signature": "ad-hoc development verified",
+    "old_application_backup": false,
+    "author_data_directory": "not_a_copy_or_cleanup_target"
+  },
+  "not_verified": [
+    "GUI completeness and full bidirectional switch matrix",
+    "full novel draft feedback adoption finalization and delivery lifecycle",
+    "confirm-mode full TUI business journey",
+    "native operating-system IME matrix",
+    "reference application same-viewport pixel comparison",
+    "Windows and Linux",
+    "production signing notarization and public release"
+  ]
+}

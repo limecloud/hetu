@@ -22,6 +22,8 @@ const WORKSPACE_ACTIONS: &[&str] = &[
     "hetu.documents.list",
     "hetu.documents.get",
     "hetu.documents.create",
+    "hetu.resources.create",
+    "hetu.resources.update",
     "hetu.drama.projects.create",
     "hetu.drama.projects.get",
     "hetu.drama.projects.list",
@@ -82,6 +84,8 @@ const REVIEW_ACTIONS: &[&str] = &[
     "hetu.drama.compare",
     "hetu.resources.list",
     "hetu.resources.get",
+    "hetu.resources.create",
+    "hetu.resources.update",
     "hetu.resource_usages.list",
     "hetu.assets.list",
     "hetu.assets.get",
@@ -339,6 +343,8 @@ fn work_action_allowed(name: &str, reference: &Value) -> bool {
             | "hetu.creative_tasks.assess"
             | "hetu.resources.list"
             | "hetu.resources.get"
+            | "hetu.resources.create"
+            | "hetu.resources.update"
             | "hetu.resource_usages.list"
             | "hetu.assets.list"
             | "hetu.assets.get"
@@ -632,7 +638,7 @@ impl CollaborationHub {
     pub(super) fn execute_authoring(&self, request: &Value, cancelled: &dyn Fn()->bool) -> Result<Value> {
         let action = text(request, "action")?;
         if action == "hetu.creation_projects.create" {
-            return self.begin_creation(&request["input"]);
+            return self.with_business_policy(action, &request["input"], || self.begin_creation(&request["input"]));
         }
         let reference = &request["input"]["management_ref"];
         let (kernel, binding, grant) = self.open_management_reference(reference)?;
@@ -670,7 +676,7 @@ impl CollaborationHub {
         ) {
             workspace_binding(&binding, Path::new(text(&routed["input"], "target_path")?))?;
         }
-        let mut result = kernel.request_cancellable(routed,cancelled);
+        let mut result = self.with_business_policy(action, &request["input"], || Ok(kernel.request_cancellable(routed,cancelled)))?;
         if result["status"] != "succeeded" {
             return Ok(result);
         }

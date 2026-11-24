@@ -59,3 +59,10 @@ You now have something specific to discuss. One strong scene can be a better sta
 Hetu is free and open source. Bring an external Agent to prepare previews, actual clips and an edit using your chosen tools. Return to watch, give feedback and continue revisions; see [From preview to finished video](/en/docs/video/). Publishing and promotion are separate activities.
 
 [Try the workspace](/en/#prototype), [explore adaptation](/en/docs/adaptation/) or [choose a project starting point](/en/docs/creative-paths/).
+
+
+## Use only what this work needs
+
+Develop only what needs testing now. Sources, scripts and assets retain their revisions. Trying one scene needs no whole-book conversion; existing clips need not be generated again. State what changes and what remains before continuing.
+
+[Find the smallest useful starting point](/en/docs/when-to-use/).

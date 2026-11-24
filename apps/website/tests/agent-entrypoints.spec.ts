@@ -35,7 +35,7 @@ for (const prefix of ['', '/en']) {
   });
   test(`${prefix || 'zh-CN'} Agent 一等入口可达并保留作者决定`, async ({ page }) => {
     await page.goto(prefix + '/');
-    await expect(page.locator('.hero-agent-signal')).toContainText('MCP / CLI / Skills');
+    await expect(page.locator('#when-to-use')).toBeVisible();
     const entries = page.locator('.entrypoint-grid > a');
     await expect(entries).toHaveCount(3);
     await entries.nth(0).click();
@@ -78,7 +78,7 @@ for (const prefix of ['', '/en']) {
       expect(imageBounds!.y).toBeLessThan(760);
       const copyBounds = await page.locator('.hero-copy').boundingBox();
       expect(Math.abs(copyBounds!.x + copyBounds!.width / 2 - width / 2)).toBeLessThan(1);
-      await expect(page.locator('.hero-protocols a')).toHaveCount(3);
+      await expect(page.locator('.entrypoint-grid > a')).toHaveCount(3);
       await expect(page.locator('[data-story-thumbnail]')).toHaveCount(6);
       const resultBounds = await page.locator('.creative-results').boundingBox();
       expect(resultBounds!.y).toBeGreaterThanOrEqual(heroBounds!.y + heroBounds!.height);

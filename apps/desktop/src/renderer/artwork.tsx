@@ -1,16 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
-import { desktop, data } from "./bridge.ts";
+import { desktop, data, requestAgent } from "./bridge.ts";
 import type { SurfaceContext } from "./contributions.tsx";
 import { domainText } from "./strings.ts";
 import { Icon, IconButton, PageActions } from "./workbench.tsx";
 import { ArtworkDetail } from "./artwork-detail.tsx";
 import { artworkKey, artworkMatches, artworkPreview, mergeArtwork, readArtworkPage, type Artwork, type ArtworkSubject } from "./artwork-model.ts";
+import { useObjectContextMenu } from "./text-context-menus.tsx";
 import "./artwork.css";
 
 const categories = ["all", "cover", "character", "scene", "prop", "illustration", "costume", "other"];
 
 /** 图片库只投影 Core 的固定任务成果；没有任意路径或第二份素材事实。 */
 export function ArtworkLibrary({ work, notify, subject, embedded = false, filterCategory, onUseCover }: SurfaceContext & { subject?: ArtworkSubject; embedded?: boolean; filterCategory?: string; onUseCover?: (item: Artwork) => void }) {
+  const context = useObjectContextMenu(notify);
   const [items, setItems] = useState<Artwork[]>([]),
     [detail, setDetail] = useState<{ item: Artwork; group: Artwork[] }>(),
     [category, setCategory] = useState("all"),
@@ -46,11 +48,11 @@ export function ArtworkLibrary({ work, notify, subject, embedded = false, filter
   const scoped = items.filter(item => artworkMatches(item, subject) && (!filterCategory || item.category === filterCategory));
   const visible = scoped.filter(item => (category === "all" || category === item.category)
     && (!query.trim() || item.candidate.title?.normalize("NFKC").toLocaleLowerCase().includes(query.trim().normalize("NFKC").toLocaleLowerCase())));
-  async function handoff() {
+  async function handoff(item?: Artwork) {
     try {
       const object = subject ? Object.fromEntries(Object.entries(subject).filter(([key]) => key !== "kind")) : {};
-      await desktop.handoff("work.images", object);
-      notify("已复制图片协作请求。");
+      await requestAgent("work.images", item ? {...object, task_ref: item.task.task_ref, submission_id: item.submission_id, candidate_id: item.candidate.candidate_id} : object);
+      notify(desktop.agentSessionHost ? "已放入Codex会话草稿，请核对后发送。" : "已复制图片协作请求。");
     } catch (error) { notify((error as Error).message); }
   }
   const controls = <>
@@ -72,7 +74,13 @@ export function ArtworkLibrary({ work, notify, subject, embedded = false, filter
         {scoped.length ? <button onClick={() => { setCategory("all"); setQuery(""); }}>清除筛选</button>
           : errors.length ? <button onClick={() => void load()}>重新读取</button> : <button onClick={() => void handoff()}><Icon name="sparkles"/>让 AI 准备图片</button>}
       </div> : <div className="artwork-results"><div className="artwork-grid">
-        {visible.map(item => { const card = <button className="artwork-item" key={artworkKey(item)} onClick={() => setDetail({ item, group: items.filter(other => other.task.task_ref.task_id === item.task.task_ref.task_id && other.submission_id === item.submission_id) })}>
+        {visible.map(item => { const openDetail = () => setDetail({ item, group: items.filter(other => other.task.task_ref.task_id === item.task.task_ref.task_id && other.submission_id === item.submission_id) }); const card = <button {...context(item.candidate.title, [
+          {id: "open", label: "打开图片", action: openDetail},
+          {id: "copy-title", label: "复制名称", action: () => desktop.copy(item.candidate.title)},
+          {id: "source", label: "图片来源与意见", action: openDetail},
+          ...(onUseCover && item.category === "cover" ? [{id: "use-cover", label: "选用此封面", action: () => onUseCover(item)}] : []),
+          {id: "ai", label: "让 AI 处理此图片", action: () => void handoff(item)},
+        ])} className="artwork-item" key={artworkKey(item)} onClick={openDetail}>
           <span className="artwork-thumbnail">{artworkPreview(item.preview) ? <img loading="lazy" src={artworkPreview(item.preview)} alt={item.candidate.title}/> : <Icon name="image" size={24}/>}</span>
           <strong>{item.candidate.title}</strong><span className="artwork-caption"><span>{domainText(item.candidate.image_view ? `artwork.view.${item.candidate.image_view}` : `artwork.category.${item.category}`, item.category)}</span><span>{item.candidate.width} × {item.candidate.height}</span></span>
         </button>; return onUseCover && item.category === "cover" ? <div className="artwork-cover-cell" key={artworkKey(item)}>{card}<button onClick={() => onUseCover(item)}>选用此封面</button></div> : card; })}

@@ -1,5 +1,9 @@
 # Formats and delivery
 
+## Start with what you need
+
+Deliver selected drafts, necessary assets and sources in the recipient’s format. Exclude unrelated chats, temporary scripts and alternatives; export is separate from publication.
+
 Agree on templates, scope and revisions with the recipient. File formats, industry conventions and production templates need separate checks.
 
 ## Ask your Agent to prepare the exact handoff

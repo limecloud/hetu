@@ -18,7 +18,9 @@ pub(super) fn apply(current: &Value, patch: &Value) -> Result<Value> {
     let mut next = current.clone();
     for (key, value) in patch.as_object().unwrap() {
         if LEGACY_FIELDS.contains(&key.as_str()) { continue; }
-        if key == "reading_profiles" {
+        if key == "agent_session" {
+            for (field, value) in value.as_object().unwrap() { next[key][field] = value.clone(); }
+        } else if key == "reading_profiles" {
             for (kind, fields) in value.as_object().unwrap() {
                 for (field, value) in fields.as_object().unwrap() {
                     next[key][kind][field] = value.clone();

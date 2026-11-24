@@ -2,6 +2,7 @@ import {localFontCatalog} from "./font-catalog.ts";
 import { pluginPreferences } from "./plugin-preferences.ts";
 import { ensureWorkConnection } from "./work-connection.ts";
 import { creationHandoff, workHandoff, pluginResultText, pluginWorkText, migrationText, settingsHandoff } from "./workbench-handoff.ts";
+import { validateWritingPrompt, writingPrompt } from "./writing-prompt.ts";
 import { pluginResultHandoff } from "./plugin-results.ts";
 import { readLibraryWorks as readWorks } from "./library-works.ts";
 import { pluginViewHTML } from "./mcp-plugin-view.ts";
@@ -120,7 +121,7 @@ async function pluginRequest(action:string,input:any){
 }
 async function pluginInvoke(action:string,input:any){
  if(!pluginView)throw new Error("插件工作面已关闭。");const current=pluginView,pkg=pluginHost.package(current.owner);
- if(!pluginBackend){pluginBackend=new BackendSupervisor({node:process.execPath,bootstrap:path.join(import.meta.dirname,"plugin-worker.mjs"),snapshot:await installations.snapshot(pkg),pkg,work_ref:selected!,request:pluginRequest,core_actions:unwrap(await pluginRequest("hetu.capabilities.get",{})).actions});await pluginBackend.initialize();}
+ if(!pluginBackend){pluginBackend=new BackendSupervisor({node:process.execPath,electron:true,bootstrap:path.join(import.meta.dirname,"plugin-worker.mjs"),snapshot:await installations.snapshot(pkg),pkg,work_ref:selected!,request:pluginRequest,core_actions:unwrap(await pluginRequest("hetu.capabilities.get",{})).actions});await pluginBackend.initialize();}
  return pluginBackend.invoke(action,input);
 }
 async function pluginCall(channel:string,method:string,args:any[]){
@@ -200,10 +201,16 @@ async function dispatch(method:string,args:any[]){
  throw new Error("未知本机设置用例。");}
  if(method==="settingsAgent"||method==="workAgent")return workAgentRequest(args[0],args[1]??{},{work:method==="workAgent"?selected:undefined,directory:selected?library.resolve(selected):"",settings,check:()=>{},refresh:overview,inspect:input=>local.request("local_settings/host",{method:"inspect_suite",input}),prepare:input=>agentSettings("hetu.local_settings.prepare",input),choose:async()=>await ask("choose_file",{options:{properties:["openDirectory"]}})??undefined,reveal:directory=>{void ask("reveal",{directory});}});
  if(method==="connection"){const [action,adapter]=args;const ctx=context(adapter);if(action==="status")return ctx.status();if(action==="authorize")return machineAccess(adapter);if(action==="select")return dispatch("library",["client",{client:adapter}]);if(action==="revoke"){const value=await ctx.status();if(!value.authorized)return value;if(await ask("confirm",{message:"撤销当前作品的 Agent 协作连接？",detail:"旧管理引用及派生任务将失效，作品内容保留。"}))await ctx.call("hetu.collaboration.revoke_management",{...ctx.base,grant_id:value.management_ref.grant_id,operation_key:randomUUID()});return ctx.status();}}
+ if(method==="writingPrompt"){
+  check();const [input]=args,work=selected!,authoring=session!.authoring,currentServer=server!;
+  validateWritingPrompt(input,work);
+  const access=await machineAccess(client);access.check();
+  return writingPrompt(input,{work,authoring,environment:{...handoffEnvironment(),client},workspacePath:library.resolve(work),executionPolicy:()=>settings.get(),summary:async()=>unwrap(await currentServer.request("workspace/request",{action:"hetu.works.get",contract_revision:"1",input:{work_ref:work}})).summary,check:access.check,managementRef:access.management_ref});
+ }
  if(method==="handoff"){
   check();const [page,object={}]=args;
   if(page.startsWith("fallback:")){const owner=page.slice(9),ctx=await pluginContext(owner);const fixed=await pluginResultHandoff(ctx,owner,object);ctx.check();copied=pluginResultText(fixed,pluginConnection(owner,ctx.work),agentClient());}
-  else copied=await workHandoff(page,object,{work:selected!,authoring:session!.authoring,environment:handoffEnvironment(),workspacePath:library.resolve(selected!),executionPolicy:()=>settings.get(),summary:async()=>unwrap(await server!.request("workspace/request",{action:"hetu.works.get",contract_revision:"1",input:{work_ref:selected}})).summary,check:()=>{},pluginConnection:pluginView?pluginConnection(pluginView.owner,selected!):undefined});
+  else {const access=await machineAccess();copied=await workHandoff(page,object,{work:selected!,authoring:session!.authoring,environment:handoffEnvironment(),workspacePath:library.resolve(selected!),executionPolicy:()=>settings.get(),summary:async()=>unwrap(await server!.request("workspace/request",{action:"hetu.works.get",contract_revision:"1",input:{work_ref:selected}})).summary,check:access.check,managementRef:access.management_ref,pluginConnection:pluginView?pluginConnection(pluginView.owner,selected!):undefined});}
   return {copied:true};
  }
  if(method==="mediaChunk"){check();const [url,offset,length]=args;if(!Number.isSafeInteger(offset)||!Number.isSafeInteger(length)||length<1||length>512*1024)throw new Error("媒体读取预算无效。");const response=await session!.media.handle(new Request(url,{headers:{range:`bytes=${offset}-${offset+length-1}`}}));if(response.status!==206)throw new Error("固定媒体读取失败。");return {base64:Buffer.from(await response.arrayBuffer()).toString("base64")};}

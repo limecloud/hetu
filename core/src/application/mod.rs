@@ -15,6 +15,8 @@ mod catalog;
 use catalog::{catalog, raw_catalog};
 mod delivery;
 mod document_lifecycle;
+mod document_copy;
+mod document_moves;
 mod drafts;
 mod drama_projects;
 mod dramas;
@@ -998,15 +1000,19 @@ impl Kernel {
         match action {
             "hetu.capabilities.get" => {
                 let mut result = json!({"abi_version":1,"schema_version":"1.0.0","scope_ref":{"kind":self.scope_kind(),"id":self.scope()},"task_id":self.task_id,"entry_mode":if self.author { "author" } else { "agent" }});
-                result["actions"] = Value::Array(
-                    catalog()["actions"]
-                        .as_array()
-                        .unwrap()
-                        .iter()
-                        .filter(|a| self.action_available(a))
-                        .cloned()
-                        .collect(),
-                );
+                result["actions"] = Value::Array(catalog()["actions"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .filter(|a| self.action_available(a))
+                    .map(|action| {
+                        let mut action = action.clone();
+                        if self.workspace_execution {
+                            action["author_only"] = json!(false);
+                        }
+                        action
+                    })
+                    .collect());
                 Ok(result)
             }
             "hetu.creation_projects.get" => self.get_creation_project(input),
@@ -1185,6 +1191,11 @@ impl Kernel {
             ),
             "hetu.documents.save" => self.save_document(input, changes),
             "hetu.documents.rename" => self.rename_document(input, changes),
+            "hetu.documents.duplicate" => self.duplicate_document(input, changes),
+            "hetu.documents.move_range" => self.move_document_range(input, changes),
+            "hetu.documents.move_to_new" => self.move_document_to_new(input, changes),
+            "hetu.documents.get_move" => self.get_document_move(input),
+            "hetu.documents.restore_move" => self.restore_document_move(input, changes),
             "hetu.novels.snapshot" => self.novel_snapshot(input),
             "hetu.drafts.preview_adoption" => self.preview_adoption(input),
             "hetu.drafts.adopt" => self.adopt_draft(input, changes),

@@ -158,9 +158,7 @@ test(
       await expect(
         page.getByText("灯塔在黎明前亮起。", { exact: false }),
       ).toBeVisible();
-      await page
-        .getByRole("button", { name: "参考稿审核", exact: true })
-        .click();
+      await navigate(page, "参考稿审核");
       await page
         .getByRole("combobox", { name: "当前审阅任务" })
         .selectOption(context.task_ref.task_id);
@@ -435,6 +433,7 @@ test(
       );
       expect(cited.data.object.source_refs).toEqual(context.source_refs);
       page = await launch();
+      await navigate(page, "创作插件");
       await page
         .getByRole("button", { name: "人物关系图", exact: true })
         .click();

@@ -6,7 +6,7 @@ import os from "node:os";
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { PluginPackage } from "../../../packages/plugin-host/src/package.ts";
-import { navigate } from "./navigation.ts";
+import { navigate, captureAgentDraft } from "./navigation.ts";
 
 const root=path.resolve(import.meta.dirname,"../../..");
 function json(command: string,args: string[],input?: unknown,timeout=30000) {
@@ -84,8 +84,13 @@ test("插件成果搜索分页、固定导出与精确AI交接，停用后可读
     const preview=panel.getByRole("region",{name:"固定插件成果导出",exact:true});
     await expect(preview.getByRole("heading")).toHaveText("雾港成果22 第1版");
     update(21,"新版成果22");
+    const capturedDraft=await captureAgentDraft(app,page);
     await panel.getByRole("button",{name:"让 AI 处理",exact:true}).click();
-    await expect(panel.getByRole("status")).toHaveText("已复制插件成果的协作请求。");
+    await expect(panel.getByRole("status")).toHaveText("已放入Codex会话草稿，请核对后发送。");
+    const managed=JSON.parse((await capturedDraft())!.split("\n").slice(1).join("\n"));
+    expect(managed.plugin_id).toBe(pkg.manifest.id);expect(managed.plugin_connection).toBeUndefined();expect(managed.management_ref).toBeUndefined();expect(managed.work_ref).toEqual(fixture.work_ref);
+    // 显式复制的外部接续仍独立验证，保留原插件运行时合同。
+    await page.evaluate(({owner,object})=>window.hetuDesktop.handoff("fallback:"+owner,object),{owner:pkg.manifest.id,object:{object_id:fixture.plugin_objects[21].object.object_id,revision:1,sha256:fixture.plugin_objects[21].sha256}});
     const handoff=await app.evaluate(({clipboard})=>JSON.parse(clipboard.readText().split("\n").slice(1).join("\n")));
     expect(handoff.management_ref).toBeUndefined();
     expect(handoff.fixed_refs[0]).toMatchObject({kind:"plugin_object",owner_plugin_id:pkg.manifest.id,object_id:fixture.plugin_objects[21].object.object_id,revision:1,sha256:fixture.plugin_objects[21].sha256});

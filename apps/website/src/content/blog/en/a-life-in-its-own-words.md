@@ -15,3 +15,10 @@ One record gives Lin Xi's birth year as 1980; another says 1982. Accounts of the
 [Biography Studio](/en/plugins/biography-studio/) distinguishes namesakes and preserves date precision. A year remains a year rather than an invented day. Chapters retain the life events behind them, so new material identifies what deserves another reading.
 
 The three projects can continue around one work while retaining separate judgments. Ask your Agent to prepare the work, return to read and compare it, then name a specific line to revisit. The engineering preserves evidence; expression and judgment remain the author's.
+
+
+## Use only what this work needs
+
+A quick idea or read-only question can end with an answer. Keep sources, feedback and revisions for work you intend to continue, without turning every discussion into a project task. Delegate or write directly; consequential choices refer to concrete results.
+
+[Find the smallest useful starting point](/en/docs/when-to-use/).

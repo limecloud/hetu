@@ -117,6 +117,7 @@ async function sourceSnapshot() {
     "apps/plugin-cli/Cargo.toml",
     "assets/styles/radix-workbench.css",
     "assets/licenses/radix-colors-MIT.txt",
+    "assets/licenses/orca-MIT.txt",
     "assets/fonts/HetuExportSansSC-Regular.ttf",
     "assets/fonts/OFL-NotoSansSC.txt",
     "assets/fonts/NotoSansSC-source.json",
@@ -236,6 +237,8 @@ binaries["node" + extension] = digest(await readFile(runtime));
 await cp(path.join(desktop, "dist"), path.join(stageApp, "dist"), {
   recursive: true,
 });
+// node-pty使用N-API预构建与独立spawn-helper，保持相对资源布局。
+await cp(path.join(root, "node_modules/node-pty"), path.join(stageApp, "node_modules/node-pty"), { recursive: true });
 const integrations = path.join(stage, "integrations");
 await mkdir(integrations);
 await copyFile(path.join(root, "integrations/catalog.json"), path.join(integrations, "catalog.json"));
@@ -266,6 +269,7 @@ await copyFile(
   path.join(root, "assets/licenses/radix-colors-MIT.txt"),
   path.join(licenses, "Radix-Colors-MIT.txt"),
 );
+await copyFile(path.join(root, "assets/licenses/orca-MIT.txt"), path.join(licenses, "Orca-MIT.txt"));
 let runtimeLicense;
 for (const candidate of [
   path.join(path.dirname(runtime), "LICENSE"),
@@ -327,7 +331,7 @@ const lock = JSON.parse(
   await readFile(path.join(root, "package-lock.json"), "utf8"),
 );
 for (const [relative, info] of Object.entries(lock.packages)) {
-  if (!relative.startsWith("node_modules/") || info.link) continue;
+  if (!relative.includes("node_modules/") || info.link) continue;
   try {
     await lstat(path.join(root, relative));
   } catch (error) {

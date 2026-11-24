@@ -1,5 +1,9 @@
 # Maintain your story bible
 
+## Start with what you need
+
+Keep research, confirmed fictional facts and alternatives distinct. Lies, unreliable narration and deliberate differences need context; checks must not silently normalize them.
+
 A story bible records author-confirmed characters, places, rules and time relationships. Each book has its own canon; books do not automatically share it.
 
 ## Record confirmed facts
@@ -12,7 +16,7 @@ Discovered entities stay candidates. Resolve aliases, duplicate names and missin
 
 Open the local project’s story bible to read confirmed entries and their sources. Review changes and lock or unlock canon when needed. The [desktop preview](/en/#prototype) introduces the workspace without editing local records.
 
-The local client provides canon editing and revision history. Locks control author editing; managed interfaces never give Agents canon-write or unlock permission.
+The local client provides canon editing and revision history. Locks control author editing; Agents follow the current execution mode for unlocked material. Unlocking or changing adopted canon requires the author’s concrete decision.
 
 ## Recheck after changes
 

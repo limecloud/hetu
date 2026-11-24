@@ -2,12 +2,15 @@
 
 这份地图供产品逐项审阅，也供 AI 按目标定位 Skills、CLI 和 MCP。它由同一组源码合同生成，不依赖打开桌面。
 
-- 产品原则：所有业务应有机器操作路径；桌面承担阅读、比较和可选手动编辑。必要的作者决定可以在当前 Agent 会话完成。
+- 产品原则：先按[01任务分流](01-产品需求PRD.md#14-可以跳过的路径)判断是否需要河图；临时讨论可直接完成，只读不建任务，需要接续时才保存。所有业务有机器路径，作者决定可在当前Agent会话完成。
+- 桌面Codex终端：现有窗口内单行会话栏与全高主区，左右栏独立折叠，终端最大化及系统全屏保留原线程并恢复布局；右侧正式作品目录复用文稿与资料读取。固定修订预览、标签菜单、阅读位置、搜索及拖入引用共用当前作品和会话，引用不自动发送。布局、剪贴板和原生PTY属于桌面宿主，业务仍经下列CLI/MCP动作；外部MCP App不获得本机终端控制。源码、实测与视觉对照状态分别见10、19、20和38。
 - 执行前发现：`hetu --client codex collaboration inspect`，按返回的真实 Schema、精确 `management_ref` 或 `task_ref` 操作。
 - 无窗口查询：CLI 使用 `hetu --client codex call hetu.capabilities.map --input -`；MCP 使用 `hetu_get_capability_map`，支持 group、action、skill 筛选与分页。
 - AI 完整索引：[contracts/capability-map.json](../contracts/capability-map.json)。其中包含输入 Schema、MCP profile、Skill 源文件和恢复动作。
 - 默认产品：小说、剧本及视频基础能力随应用提供，无需额外创作插件；`hetu.baseline.inspect`核对合同，装配、业务及创作品质分别验收。
 - 维护边界：本清单只维护宿主能力及插件发现入口；各插件自行维护功能清单和 manifest，AI按安装包继续发现，不在宿主重复登记插件功能。
+- 文稿编排：文字格式、段落上下移动、选区块字母排序、复制块和分组复用同一原文、撤销及`hetu.documents.save`修订写入；桌面与MCP App共用命令，CLI／MCP读取固定修订后按执行模式提交同一写入，不另存界面专用正文。
+- 外部写作交接：桌面与MCP App提供写作、扩写润色、续写、章纲、审稿纠错及小说改编提示词预览；复用`hetu.handoffs.get`核验作品、文稿修订与选区。MCP App按能力向当前Agent发送或准备草稿，复制始终保留；Codex也可直接经`hetu_call_action`驱动固定任务。预览不执行Agent，发送受理不代表完成，结果未知不自动重发；实际写入仍经公开机器动作与原任务完成。
 - 插件公共服务：SDK提供受管项目适配、固定来源与原操作恢复；桌面提供固定素材预览、派生Blob媒体播放、Markdown／JSON／HTML固定对象分块导出，以及SRT／VTT／ASS／TXT／LRC派生文件保存。合同见[开放宿主SDK](plugin/27-开放宿主SDK与核心能力审计.md)，专业Schema仍由插件维护；定向机器调用仅核验本包与依赖闭包；已安装包始终核验实际字节摘要。
 - 插件选择：[官网插件中心](https://hetu.limeai.run/plugins/)展示来源、发行与包内功能清单；目录不代表本机安装状态，执行仍需重新发现。开发与上架见[插件23](plugin/23-插件发布与上架指南.md)。
 - 状态解释：**已验证**有专项证据；**源码已连线**需要运行验收；**机器替代入口**指向独立合同；**宿主边界**保留授权或私密性；**作者入口缺口**需继续处理。安装证据与功能验收分别记录。
@@ -37,7 +40,7 @@
 | 能力导航与Review | hetu-setup | 2 | 0 | 0 |
 | 接入与恢复 | hetu-setup | 8 | 0 | 0 |
 | 设定与规则 | hetu-outline | 6 | 0 | 0 |
-| 章节、正文与定稿 | hetu-import、hetu-manage | 16 | 0 | 0 |
+| 章节、正文与定稿 | hetu-import、hetu-manage | 21 | 0 | 0 |
 | 参考稿与采纳 | hetu-draft | 6 | 0 | 0 |
 | 剧情与一致性 | hetu-drama | 10 | 0 | 0 |
 | 剧本与改编 | hetu-drama | 18 | 0 | 0 |
@@ -161,6 +164,11 @@ MCP 对应调用 `hetu_get_capability_map`，参数同上。具体动作查询�
 | 固定一批小说原稿及目录基线，原子导入章节并保留逐章来源<br>`hetu.documents.import_batch` | 固定方案 | [hetu-import](../tools/hetu-skills/base/skills/hetu-import/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
 | 分页读取本作品正文修订历史<br>`hetu.documents.history` | `hetu_managed_documents_history` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 | 按当前正文修订改名，保持内容不变<br>`hetu.documents.rename` | 固定方案 | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
+| 按固定正文及目录基线在同一作品创建独立章节或分集副本<br>`hetu.documents.duplicate` | 固定方案 | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
+| 将固定原文范围在同作品两篇文稿间原子移动并登记恢复引用<br>`hetu.documents.move_range` | 固定方案 | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
+| 将固定原文范围在同作品中原子移动到新建章节或分集并登记恢复引用<br>`hetu.documents.move_to_new` | 固定方案 | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
+| 回读确切跨文稿移动记录的双端前后修订及范围<br>`hetu.documents.get_move` | 无直接工具映射 | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
+| 双端未变化时按固定移动记录原子恢复正文并保留修订历史<br>`hetu.documents.restore_move` | 固定方案 | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
 
 ### 参考稿与采纳
 
@@ -345,8 +353,8 @@ MCP 对应调用 `hetu_get_capability_map`，参数同上。具体动作查询�
 
 | 功能／CLI 动作 | MCP 入口 | Skill | 范围／决定 | 状态 |
 | --- | --- | --- | --- | --- |
-| 新建资料草稿<br>`hetu.resources.create` | `hetu_create_resource` (task) | [hetu-resources](../tools/hetu-skills/base/skills/hetu-resources/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
-| 维护获权资料<br>`hetu.resources.update` | `hetu_update_resource` (task) | [hetu-resources](../tools/hetu-skills/base/skills/hetu-resources/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
+| 新建资料草稿<br>`hetu.resources.create` | `hetu_create_resource` (task)<br>固定方案 | [hetu-resources](../tools/hetu-skills/base/skills/hetu-resources/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
+| 维护获权资料<br>`hetu.resources.update` | `hetu_update_resource` (task)<br>固定方案 | [hetu-resources](../tools/hetu-skills/base/skills/hetu-resources/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |
 | 读取固定资料修订<br>`hetu.resources.get` | `hetu_read_resource` (workspace/task/stable) | [hetu-resources](../tools/hetu-skills/base/skills/hetu-resources/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 | 查询资料摘要<br>`hetu.resources.list` | `hetu_list_resources` (workspace/task/stable) | [hetu-resources](../tools/hetu-skills/base/skills/hetu-resources/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 | 作者采用资料<br>`hetu.resources.adopt` | 固定方案 | [hetu-resources](../tools/hetu-skills/base/skills/hetu-resources/SKILL.md) | 准备固定方案 → 会话或桌面记录作者决定 → 执行 | 源码已连线；安装待核对 |

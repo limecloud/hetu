@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-11-22",
+  "status": "verified",
+  "scope": "创作库三类作品可恢复废纸篓入口；隔离Electron工作区",
+  "implementation": [
+    "小说归档写回metadata.status=archived，剧本和视频归档写回archived字段；恢复使用对应当前修订合同。",
+    "右键菜单按状态显示移入废纸篓或从废纸篓恢复，归档筛选保留对象，正文、历史、任务、关联和同根其他对象不受影响。",
+    "普通菜单不删除物理目录；登记移除、对象删除和工作区删除继续独立处理。"
+  ],
+  "validation": {
+    "desktop": {
+      "passed": 1,
+      "failed": 0,
+      "report": {
+        "path": "output/archive-review-20261122/hetu-archive-ui-final-20261122.json",
+        "sha256": "7c8af63381ac35b6d73d638424e0466fd821cb9fee5e06246aab49e4b94e8ca3"
+      }
+    },
+    "checks": [
+      "desktop build",
+      "desktop archive UI 1/1",
+      "desktop move UI 1/1",
+      "MCP sort/move UI 4/4",
+      "CLI move 1/1",
+      "CLI copy 1/1",
+      "documentation verification",
+      "capability map --check",
+      "localization verification",
+      "git diff --check"
+    ]
+  },
+  "limits": [
+    "仅隔离作品；未执行真实作者作品归档。",
+    "未覆盖Windows/Linux及VoiceOver。"
+  ]
+}

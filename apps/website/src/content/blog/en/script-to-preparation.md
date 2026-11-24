@@ -17,3 +17,10 @@ Pass fixed preparation references to [Art Direction](/en/plugins/art-direction/)
 Append revised scripts, preview affected scenes and tasks, then reread. Byte changes identify material to revisit; they do not establish complete semantic impact. Export the complete offline package and continue the same project next time.
 
 Preparation status, asset selection, cost authorization and final-film approval remain separate author decisions.
+
+
+## Use only what this work needs
+
+Develop only what needs testing now. Sources, scripts and assets retain their revisions. Trying one scene needs no whole-book conversion; existing clips need not be generated again. State what changes and what remains before continuing.
+
+[Find the smallest useful starting point](/en/docs/when-to-use/).

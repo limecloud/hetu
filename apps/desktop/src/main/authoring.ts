@@ -34,6 +34,10 @@ function scopeOf(decision: Decision): Scope {
 }
 const decisionActions = new Set([
   "hetu.documents.rename",
+  "hetu.documents.duplicate",
+  "hetu.documents.move_range",
+  "hetu.documents.move_to_new",
+  "hetu.documents.restore_move",
   "hetu.drafts.adopt",
   "hetu.documents.validate",
   "hetu.documents.finalize",
@@ -53,6 +57,9 @@ function reference(value: any) {
 }
 function decisionDocument(action: string, input: any): unknown {
   if (action === "hetu.documents.rename") return input?.document_id;
+  if (action === "hetu.documents.duplicate") return input?.source_ref?.document_id;
+  if (action === "hetu.documents.move_range") return input?.source_ref?.document_id;
+  if (action === "hetu.documents.move_to_new") return input?.source_ref?.document_id;
   if (action === "hetu.drafts.adopt")
     return input?.preview?.request?.target_ref?.document_id;
   if (action === "hetu.documents.validate")
@@ -81,7 +88,17 @@ export class Authoring {
     private recovery: RecoveryStore,
     private core: Call,
     private active: () => boolean,
+    private documentBuffer?: (id: string) => Promise<any>,
   ) {}
+  async #cleanDocuments(ids: string[]) {
+    if (!this.documentBuffer) return;
+    for (const id of ids) {
+      const buffer = await this.documentBuffer(id);
+      if (!buffer) continue;
+      const current = data(await this.#call("hetu.documents.get", {document_id: id}));
+      if (buffer.pending || buffer.content !== current.content) throw new Error("移动涉及的文稿存在未保存恢复稿，请先保存或比较。");
+    }
+  }
   #check() {
     if (!this.active())
       throw new Error("作品上下文已变化，请重新打开对应作品。");
@@ -151,6 +168,7 @@ export class Authoring {
     } else if (
       [
         "hetu.documents.list",
+        "hetu.documents.get_move",
         "hetu.blueprints.get",
         "hetu.works.get",
         "hetu.work_links.list",
@@ -200,6 +218,68 @@ export class Authoring {
     if (typeof title !== "string" || !title.trim() || title.length > 200) throw new Error("文稿名称须为1至200个字符。");
     return this.#write({document_id: id, action: "hetu.documents.rename", title: "重命名文稿",
       input: {document_id: id, base_revision_id: revision, title: title.trim(), operation_key: randomUUID()}});
+  }
+  async duplicate(id: string, revision: string) {
+    await this.#document(id);
+    const current = data(await this.#call("hetu.documents.get", {document_id: id}));
+    if (current.revision.revision_id !== revision) throw new Error("原文已有新修订，请重新读取后复制。");
+    const directory = this.work.kind === "novel"
+      ? data(await this.#call("hetu.novels.get", {}))
+      : data(await this.#call("hetu.drama.projects.get", {project_id: this.work.object_id}));
+    const expected = {revision: directory.revision ?? directory.project?.revision, sha256: directory.sha256};
+    const title = Array.from(current.document.title as string).slice(0, 195).join("") + " 副本";
+    return this.#prepare({document_id: id, action: "hetu.documents.duplicate", title: "复制「" + current.document.title + "」为「" + title + "」",
+      input: {work_ref: this.work, source_ref: reference(current), expected, title, operation_key: randomUUID()}},
+      {size_bytes: current.revision.size_bytes, source_format: current.revision.source_format});
+  }
+  async moveRange(id: string, revision: string, range: TextRange, target_ref: any) {
+    await this.#document(id); await this.#document(target_ref.document_id);
+    await this.#cleanDocuments([id, target_ref.document_id]);
+    const source = data(await this.#call("hetu.documents.get", {document_id: id}));
+    const target = data(await this.#call("hetu.documents.get", {document_id: target_ref.document_id}));
+    if (source.revision.revision_id !== revision || !isDeepStrictEqual(reference(target), target_ref))
+      throw new Error("移动涉及的正文已变化，请保留选区并重新读取。");
+    const raw = Buffer.from(source.content, "utf8");
+    if (!range || !Number.isSafeInteger(range.byte_start) || !Number.isSafeInteger(range.byte_end) ||
+        range.byte_start < 0 || range.byte_end <= range.byte_start || range.byte_end > raw.length ||
+        typeof range.quote !== "string" || !Buffer.from(range.quote, "utf8").equals(raw.subarray(range.byte_start, range.byte_end)))
+      throw new Error("移动选区与已保存原文不符，请重新选择完整段落。");
+    return this.#prepare({document_id: id, action: "hetu.documents.move_range", title: "将所选内容从「" + source.document.title + "」移至「" + target.document.title + "」",
+      input: {work_ref: this.work, source_ref: reference(source), target_ref, byte_start: range.byte_start, byte_end: range.byte_end, quote: range.quote, operation_key: randomUUID()}},
+      {size_bytes: Buffer.byteLength(range.quote), source_title: source.document.title, target_title: target.document.title});
+  }
+  async moveToNew(id: string, revision: string, range: TextRange, target: {title: string; volume_id?: string | null; plan?: string}) {
+    await this.#document(id);
+    await this.#cleanDocuments([id]);
+    const source = data(await this.#call("hetu.documents.get", {document_id: id}));
+    if (source.revision.revision_id !== revision) throw new Error("移动涉及的正文已变化，请保留选区并重新读取。");
+    const raw = Buffer.from(source.content, "utf8");
+    if (!range || !Number.isSafeInteger(range.byte_start) || !Number.isSafeInteger(range.byte_end) ||
+        range.byte_start < 0 || range.byte_end <= range.byte_start || range.byte_end > raw.length ||
+        typeof range.quote !== "string" || !Buffer.from(range.quote, "utf8").equals(raw.subarray(range.byte_start, range.byte_end)))
+      throw new Error("移动选区与已保存原文不符，请重新选择完整段落。");
+    const directory = this.work.kind === "novel"
+      ? data(await this.#call("hetu.novels.get", {}))
+      : data(await this.#call("hetu.drama.projects.get", {project_id: this.work.object_id}));
+    const expected = {revision: directory.revision ?? directory.project?.revision, sha256: directory.sha256};
+    const normalized = {title: String(target?.title ?? "").trim(), ...(this.work.kind === "novel" ? {volume_id: target?.volume_id ?? null} : {plan: String(target?.plan ?? "")})};
+    if (!normalized.title || normalized.title.length > 200) throw new Error("新文稿标题须为1至200个字符。");
+    return this.#prepare({document_id: id, action: "hetu.documents.move_to_new", title: "将所选内容移至新" + (this.work.kind === "drama" ? "分集" : "章节") + "「" + normalized.title + "」",
+      input: {work_ref: this.work, source_ref: reference(source), expected, new_target: normalized, byte_start: range.byte_start, byte_end: range.byte_end, quote: range.quote, operation_key: randomUUID()}},
+      {size_bytes: Buffer.byteLength(range.quote), source_title: source.document.title, target_title: normalized.title, is_new: true});
+  }
+  async restoreMove(id: string, move_ref: any) {
+    await this.#document(id);
+    const record = data(await this.#call("hetu.documents.get_move", {work_ref: this.work, move_ref})).move;
+    if (record.source_after.document_id !== id) throw new Error("此移动不属于当前来源文稿。");
+    await this.#document(record.target_after.document_id);
+    await this.#cleanDocuments([id, record.target_after.document_id]);
+    for (const fixed of [record.source_after, record.target_after]) {
+      const current = data(await this.#call("hetu.documents.get", {document_id: fixed.document_id}));
+      if (!isDeepStrictEqual(reference(current), fixed)) throw new Error("移动后已有新修订，请先比较两端内容。");
+    }
+    return this.#prepare({document_id: id, action: "hetu.documents.restore_move", title: "撤销本次跨文稿移动",
+      input: {work_ref: this.work, move_ref, operation_key: randomUUID()}}, {move_ref});
   }
   async handoff(view_kind: string, object: Record<string, unknown> = {}) {
     if (
@@ -293,12 +373,15 @@ export class Authoring {
     await this.#scope(id);
     const journal: any = await this.recovery.read(this.#file(id));
     this.#check();
+    const documentId = journal?.action === "hetu.documents.restore_move"
+      ? data(await this.#call("hetu.documents.get_move", {work_ref: this.work, move_ref: journal.input?.move_ref})).move.source_after.document_id
+      : journal && decisionDocument(journal.action, journal.input);
     if (
       journal &&
       (!isDeepStrictEqual(journal.work_ref, this.work) ||
         !isDeepStrictEqual(scopeOf(journal), id) ||
         (typeof id === "string"
-          ? decisionDocument(journal.action, journal.input) !== id
+          ? documentId !== id
           : journal.action !== "hetu.drafts.adopt" ||
             journal.input?.preview?.request?.target_ref !== null ||
             !isDeepStrictEqual(
@@ -325,6 +408,12 @@ export class Authoring {
       .then(async () => {
         const scope = scopeOf(decision);
         await this.#scope(scope);
+        if (decision.action === "hetu.documents.move_range") await this.#cleanDocuments([decision.input.source_ref.document_id, decision.input.target_ref.document_id]);
+        if (decision.action === "hetu.documents.move_to_new") await this.#cleanDocuments([decision.input.source_ref.document_id]);
+        if (decision.action === "hetu.documents.restore_move") {
+          const record = data(await this.#call("hetu.documents.get_move", {work_ref: this.work, move_ref: decision.input.move_ref})).move;
+          await this.#cleanDocuments([record.source_after.document_id, record.target_after.document_id]);
+        }
         const prior = await this.journal(scope);
         if (
           prior?.status === "pending" &&

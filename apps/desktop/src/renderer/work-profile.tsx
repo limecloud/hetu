@@ -13,7 +13,7 @@ const status: Record<string, string> = {
   archived: "已归档",
 };
 
-export function WorkProfile({ work, ai, notify, openDocument }: SurfaceContext) {
+export function WorkProfile({ work, ai, notify, openContent, plugins, openPlugin }: SurfaceContext) {
   const { agentStatus } = React.useContext(Workbench);
   const [value, setValue] =
       useState<Awaited<ReturnType<typeof readWorkContent>>>(),
@@ -26,7 +26,7 @@ export function WorkProfile({ work, ai, notify, openDocument }: SurfaceContext) 
     setBusy(true);
     setError("");
     try {
-      const next = await readWorkContent(work);
+      const next = await readWorkContent(work, {includeDocuments: false});
       if (epoch === generation.current) setValue(next);
     } catch (e) {
       if (epoch === generation.current) setError((e as Error).message);
@@ -43,6 +43,7 @@ export function WorkProfile({ work, ai, notify, openDocument }: SurfaceContext) 
     return () => { generation.current++; };
   }, [work.workspace_id, work.kind, work.object_id]);
   const metadata = work.kind === "novel" ? value?.record.metadata : undefined;
+  const contentLabel = work.kind === "novel" ? "打开章节" : work.kind === "drama" ? "打开分集" : "打开视频成果";
   function openCover(tab: "candidates" | "local" | "history") {
     setCoverTab(tab); setCoverOpen(true);
   }
@@ -86,8 +87,8 @@ export function WorkProfile({ work, ai, notify, openDocument }: SurfaceContext) 
               <dt>状态</dt>
               <dd>{status[metadata.status] ?? metadata.status}</dd>
               </div><div>
-              <dt>卷章</dt>
-              <dd>{openDocument && value.groups[0]?.documents[0] ? <button type="button" className="profile-directory-link" aria-label="打开章节目录" onClick={() => openDocument(value.groups[0].documents[0].document_id)}>{value.record.volumes.length} 卷 {value.record.chapters.length} 章<Icon name="chevron" size={12}/></button> : <>{value.record.volumes.length} 卷 {value.record.chapters.length} 章</>}</dd>
+              <dt>{work.kind === "novel" ? "卷章" : work.kind === "drama" ? "分集" : "成果"}</dt>
+              <dd><span>{value.record.volumes.length} 卷 {value.record.chapters.length} 章</span>{openContent && <button type="button" className="profile-directory-link" aria-label={work.kind === "novel" ? "打开章节目录" : work.kind === "drama" ? "打开分集目录" : "打开视频成果"} onClick={openContent}><Icon name="list" size={14}/>{contentLabel}</button>}{metadata && <button type="button" className="profile-directory-link profile-structure-edit" onClick={() => setEditing("structure")}>整理卷章</button>}</dd>
               </div>
             </dl>
             </div></div>
@@ -100,31 +101,6 @@ export function WorkProfile({ work, ai, notify, openDocument }: SurfaceContext) 
           )}
           {metadata && <section className="profile-synopsis"><h3>简介</h3><p>{metadata.synopsis || "暂无简介"}</p></section>}
           <div className="profile-details">
-            <details className="profile-structure" open><summary>{work.kind === "novel" ? "卷章目录" : "分集目录"}</summary>
-            {metadata && <button onClick={() => setEditing("structure")}>整理卷章</button>}
-            {value.groups.map((group) => (
-              <section key={group.title}>
-                <h4>{group.title}</h4>
-                <ol>
-                  {group.documents.map((document) => (
-                    <li key={document.document_id}>{openDocument ? <button type="button" onClick={() => openDocument(document.document_id)}><Icon name="file" size={14}/><span>{document.title}</span></button> : document.title}</li>
-                  ))}
-                </ol>
-              </section>
-            ))}
-            {work.kind === "video" &&
-              value.project.episodes.map((item: any) => (
-                <div className="row" key={item.episode.video_episode_id}>
-                  <strong>
-                    第{item.episode_number}集 {item.episode.title}
-                  </strong>
-                  <p>{item.episode.brief}</p>
-                </div>
-              ))}
-            {!value.groups.length && !value.project?.episodes?.length && (
-              <p>暂无{work.kind === "novel" ? "卷章" : "分集"}</p>
-            )}
-            </details>
           <details className="profile-collaboration" open={agentOpen} onToggle={event => setAgentOpen(event.currentTarget.open)}>
             <summary>协作设置</summary>
             {agentOpen && <WorkAgent key={`${work.workspace_id}/${work.kind}/${work.object_id}`} work={work} notify={notify}/>}
@@ -140,6 +116,11 @@ export function WorkProfile({ work, ai, notify, openDocument }: SurfaceContext) 
             </dl>
             <code>{value.summary.fixed_ref.sha256}</code>
           </details>
+          {!!plugins?.length && <details className="profile-plugins">
+            <summary>相关创作插件（{plugins.length}）</summary>
+            <p className="profile-plugin-hint">需要专业工作时再打开对应插件，入口会随当前作品类型筛选。</p>
+            <div className="profile-plugin-list">{plugins.map(view => <button key={view.key} type="button" onClick={() => openPlugin?.(view)}><Icon name="plugin" size={14}/>{view.title}<Icon name="chevron" size={12}/></button>)}</div>
+          </details>}
           </div>
         </>
       )}

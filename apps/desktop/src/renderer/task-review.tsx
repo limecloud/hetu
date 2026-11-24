@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   AppBridge,
   PostMessageTransport,
+  McpUiMessageRequestSchema,
+  McpUiMessageResultSchema,
 } from "@modelcontextprotocol/ext-apps/app-bridge";
 import { desktop, data } from "./bridge.ts";
 import type { SurfaceContext } from "./contributions.tsx";
@@ -10,6 +12,7 @@ import { Icon, IconButton, PageActions, Workbench } from "./workbench.tsx";
 import "./surface-pages.css";
 import { usePreferences } from "./preferences.tsx";
 import { readingProfile } from "@hetu/workbench-ui";
+import type {WorkRef} from "@hetu/plugin-sdk";
 
 export function TaskReview({ work, notify, ai }: SurfaceContext) {
   const { agentStatus, setAgentStatus } = React.useContext(Workbench);
@@ -37,7 +40,7 @@ export function TaskReview({ work, notify, ai }: SurfaceContext) {
       setTasks((old) => (next ? [...old, ...items] : items));
       setCursor(result.next_cursor ?? undefined);
       const reviewable = items.find((task: any) => task.task_ref.task_id === requested) ?? items.find((task: any) => task.submission_count > 0 && task.state !== "closed");
-      if (!next) setAgentStatus(reviewable ? { state: "waiting_for_audit", taskId: reviewable.task_ref.task_id, message: reviewable.brief } : { state: "idle" });
+      if (!next) setAgentStatus(previous=>reviewable?{state:"waiting_for_audit",taskId:reviewable.task_ref.task_id,message:reviewable.brief,...(previous.taskId===reviewable.task_ref.task_id?{submissionId:previous.submissionId}:{})}:{state:"idle"});
     } catch (error) {
       if (epoch !== generation.current) return;
       setFailed(true);
@@ -77,11 +80,7 @@ export function TaskReview({ work, notify, ai }: SurfaceContext) {
             <select
               aria-label="当前审阅任务"
               value={selected?.task_ref.task_id ?? ""}
-              onChange={(e) =>
-                setSelected(
-                  tasks.find((t) => t.task_ref.task_id === e.target.value),
-                )
-              }
+              onChange={(e) =>{setAgentStatus(previous=>({...previous,taskId:e.target.value,submissionId:undefined}));setSelected(tasks.find((t)=>t.task_ref.task_id===e.target.value));}}
             >
               <option value="">选择需要审阅的任务</option>
               {tasks.map((task) => (
@@ -100,12 +99,17 @@ export function TaskReview({ work, notify, ai }: SurfaceContext) {
             </button>
           )}
           {selected && (
+            <>
+            {agentStatus.submissionId&&<div className="actions"><span>正在查看固定成果批次</span><button onClick={()=>setAgentStatus(previous=>({...previous,submissionId:undefined}))}>查看最新成果</button></div>}
             <TaskPanel
-              key={selected.task_ref.task_id}
+              key={selected.task_ref.task_id+(agentStatus.submissionId??"")}
               task={selected}
               workKind={work.kind}
+              work={work}
               notify={notify}
+              submissionId={agentStatus.submissionId}
             />
+            </>
           )}
         </>
       )}
@@ -118,11 +122,13 @@ export function TaskPanel({
   notify,
   submissionId,
   workKind,
+  work,
 }: {
   task: any;
   notify: (message: string) => void;
   submissionId?: string;
   workKind?: string;
+  work: WorkRef;
 }) {
   const preferences = usePreferences(), preferenceRef = useRef(preferences);
   preferenceRef.current = preferences;
@@ -146,7 +152,7 @@ export function TaskPanel({
     const bridge = new AppBridge(
       null,
       { name: "Hetu Luoshu author review", version: "0.9.0" },
-      { serverTools: {}, serverResources: {} },
+      { serverTools: {}, serverResources: {},...(desktop.agentSessionHost&&desktop.promptDelivery?.drafts?{message:{text:{}},experimental:{"hetu/message":{drafts:true,directSend:false}}}:{}) },
       {
         hostContext: {
           theme: theme(),
@@ -155,6 +161,18 @@ export function TaskPanel({
         },
       },
     );
+    // 保留本机草稿扩展；标准onmessage参数Schema会丢弃_meta。
+    bridge.setRequestHandler("ui/message",{params:McpUiMessageRequestSchema.shape.params.passthrough(),result:McpUiMessageResultSchema},async params => {
+      if(!active||!desktop.agentSessionHost||!desktop.promptDelivery)throw new Error("当前审阅面板不可交接会话。");
+      const metadata=(params as typeof params&{_meta?:Record<string,unknown>})._meta?.["hetu/message"] as {target?:string;send?:boolean}|undefined;
+      if(params.role!=="user"||metadata?.send!==false||!["active","new"].includes(metadata.target??"")||params.content.some(part=>part.type!=="text"))throw new Error("此面板仅接受固定任务的文字草稿。");
+      const text=params.content.map(part=>part.type==="text"?part.text:"").join("\n");
+      if(metadata.target==="new")await desktop.agentSession("new",{work_ref:work});
+      if(!active)throw new Error("审阅面板已关闭，草稿未投递。");
+      const result=await desktop.promptDelivery.send(text,"draft",work);
+      if(active&&!result.isError)window.dispatchEvent(new CustomEvent("hetu:agent-open",{detail:{work_ref:work}}));
+      return {isError:result.isError??false};
+    });
     const syncTheme = () =>
       bridge.setHostContext({ theme: theme(), locale: preferenceRef.current.language ?? "zh-CN", "hetu/reading": readingContext() });
     const appearanceObserver = new MutationObserver(syncTheme);
@@ -245,7 +263,7 @@ export function TaskPanel({
       iframe.src = "about:blank";
       void bridge.close().catch(() => {});
     };
-  }, [task, refresh, submissionId, workKind]);
+  }, [task, refresh, submissionId, workKind,work]);
   return (
     <>
       {!submissionId && (

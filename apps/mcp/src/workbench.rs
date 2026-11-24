@@ -143,6 +143,7 @@ impl WorkbenchRuntime {
             "workAgent",
             "connection",
             "handoff",
+            "writingPrompt",
             "mediaChunk",
             "open",
             "tasks",

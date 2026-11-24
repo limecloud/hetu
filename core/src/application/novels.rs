@@ -116,7 +116,7 @@ impl Kernel {
         }
     }
 
-    fn expected_novel(&self, expected: &Value) -> Result<Value> {
+    pub(super) fn expected_novel(&self, expected: &Value) -> Result<Value> {
         let novel = self.novel()?.ok_or_else(|| {
             Error::new(
                 "hetu.novel_initialization_required",
@@ -133,7 +133,7 @@ impl Kernel {
     }
 
     // 卷与章节的显示顺序由数组表达；正文身份和来源范围不随重排改变。
-    fn validate_novel_structure(&self, novel: &Value, staged_documents: &[Value]) -> Result<()> {
+    pub(super) fn validate_novel_structure(&self, novel: &Value, staged_documents: &[Value]) -> Result<()> {
         let mut volumes = BTreeSet::new();
         for volume in novel["volumes"].as_array().unwrap() {
             ensure(
@@ -205,8 +205,14 @@ impl Kernel {
             )?;
         }
         for (name, document) in stored_documents {
+            let effective = staged_documents
+                .iter()
+                .find(|staged| staged["document_id"] == name)
+                .unwrap_or(&document);
             ensure(
-                document["kind"] != "novel_chapter" || documents.contains(name.as_str()),
+                effective["kind"] != "novel_chapter"
+                    || effective["archived"] == true
+                    || documents.contains(name.as_str()),
                 "invalid_input",
                 "目录必须保留全部小说章节，不能通过重排隐藏正文。",
             )?;
@@ -249,7 +255,7 @@ impl Kernel {
         Ok(json!({"initialized":true,"revision":1,"sha256":digest(bytes(&novel)?),"novel":novel}))
     }
 
-    fn save_novel(&self, mut novel: Value, changes: &mut Changes) -> Result<Value> {
+    pub(super) fn save_novel(&self, mut novel: Value, changes: &mut Changes) -> Result<Value> {
         novel["previous_sha256"] = json!(digest(self.store.read(NOVEL_PATH)?));
         novel["revision"] = json!(
             integer(&novel, "revision")?
@@ -315,12 +321,24 @@ impl Kernel {
         selected_volume: Option<&Value>,
         changes: &mut Changes,
     ) -> Result<()> {
-        let mut novel = self.novel()?.ok_or_else(|| {
+        let novel = self.novel()?.ok_or_else(|| {
             Error::new(
                 "hetu.novel_initialization_required",
                 "请先确认初始化小说目录，再创建章节。",
             )
         })?;
+        self.append_novel_chapter_to(novel, document, selected_volume, changes)
+            .map(|_| ())
+    }
+
+    /// 在已固定的小说目录上追加章节；调用方可以把目录与正文一起提交到同一事务。
+    pub(super) fn append_novel_chapter_to(
+        &self,
+        mut novel: Value,
+        document: &Value,
+        selected_volume: Option<&Value>,
+        changes: &mut Changes,
+    ) -> Result<Value> {
         // 新章追加到最后一个分组；作者可在目录管理中移动到其他卷。
         let volume = selected_volume.cloned().unwrap_or_else(|| {
             novel["chapters"]
@@ -351,8 +369,7 @@ impl Kernel {
             });
         }
         self.validate_novel_structure(&novel, std::slice::from_ref(document))?;
-        self.save_novel(novel, changes)?;
-        Ok(())
+        self.save_novel(novel, changes)
     }
 
     pub(super) fn append_imported_chapters(

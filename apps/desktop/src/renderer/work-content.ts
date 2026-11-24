@@ -5,6 +5,7 @@ export type DocumentGroup = { title: string; documents: any[] };
 /** 使用真实目录身份与顺序组织完整分页，未归入结构的稿件仍保留。 */
 export async function readWorkContent(
   work: WorkRef,
+  options: { includeDocuments?: boolean } = {},
 ): Promise<{
   summary: any;
   record: any;
@@ -12,10 +13,11 @@ export async function readWorkContent(
   groups: DocumentGroup[];
   project: any;
 }> {
+  const includeDocuments = options.includeDocuments !== false;
   const start = data(await desktop.read("hetu.works.get", { work_ref: work }));
   const documents: any[] = [];
   let cursor: string | undefined;
-  if (work.kind !== "video")
+  if (includeDocuments && work.kind !== "video")
     do {
       const page = data(
         await desktop.read("hetu.documents.list", {
@@ -56,34 +58,36 @@ export async function readWorkContent(
     items.forEach((item) => used.add(item.document_id));
     if (items.length) groups.push({ title, documents: items });
   }
-  if (work.kind === "novel") {
-    append(
-      end.record.volumes.length ? "未分卷" : "章节",
-      end.record.chapters
-        .filter((chapter: any) => chapter.volume_id === null)
-        .map((chapter: any) => chapter.document_id),
-    );
-    for (const volume of end.record.volumes)
+  if (includeDocuments) {
+    if (work.kind === "novel") {
       append(
-        volume.title,
+        end.record.volumes.length ? "未分卷" : "章节",
         end.record.chapters
-          .filter((chapter: any) => chapter.volume_id === volume.volume_id)
+          .filter((chapter: any) => chapter.volume_id === null)
           .map((chapter: any) => chapter.document_id),
       );
-  } else if (work.kind === "drama") {
-    for (const item of project.episodes) {
-      const document = index.get(item.episode.document_id);
-      if (document) document.episode_id = item.episode.episode_id;
-      append(/^第\s*[\d一二三四五六七八九十百零〇两]+\s*集/.test(item.episode.title) ? item.episode.title : "第" + item.episode_number + "集 " + item.episode.title, [
-        item.episode.document_id,
-      ]);
+      for (const volume of end.record.volumes)
+        append(
+          volume.title,
+          end.record.chapters
+            .filter((chapter: any) => chapter.volume_id === volume.volume_id)
+            .map((chapter: any) => chapter.document_id),
+        );
+    } else if (work.kind === "drama") {
+      for (const item of project.episodes) {
+        const document = index.get(item.episode.document_id);
+        if (document) document.episode_id = item.episode.episode_id;
+        append(/^第\s*[\d一二三四五六七八九十百零〇两]+\s*集/.test(item.episode.title) ? item.episode.title : "第" + item.episode_number + "集 " + item.episode.title, [
+          item.episode.document_id,
+        ]);
+      }
     }
+    append(
+      groups.length ? "其他稿件" : "文稿",
+      documents
+        .filter((item) => !used.has(item.document_id))
+        .map((item) => item.document_id),
+    );
   }
-  append(
-    groups.length ? "其他稿件" : "文稿",
-    documents
-      .filter((item) => !used.has(item.document_id))
-      .map((item) => item.document_id),
-  );
   return { ...end, documents, groups, project };
 }

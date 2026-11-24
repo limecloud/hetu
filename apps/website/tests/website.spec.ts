@@ -1,7 +1,30 @@
 import { test, expect } from '@playwright/test';
 import { createHash } from 'node:crypto';
+import { readdirSync } from 'node:fs';
 import manifest from '../../../assets/manifest.json' with { type: 'json' };
 import guideCaptures from '../assets/guides/captures.json' with { type: 'json' };
+const articles=readdirSync(new URL('../src/content/blog/zh-CN/',import.meta.url)).filter(name=>name.endsWith('.md')).map(name=>({id:name.slice(0,-3)}));
+
+test('全部博客采用独立主题封面，中英目录与文章引用同一固定资源', async ({page,request}) => {
+  test.setTimeout(90000);
+  for(const prefix of ['', '/en']) {
+    await page.goto(`${prefix}/blog/`);
+    const covers=page.locator('.journal-featured img, .journal-secondary .journal-cover');
+    await expect(covers).toHaveCount(articles.length);
+    const sources=await covers.evaluateAll(images=>images.map(image=>new URL((image as HTMLImageElement).src).pathname));
+    expect(new Set(sources).size).toBe(articles.length);
+    for(const article of articles) {
+      const path=`/images/journal-${article.id}.webp`;
+      expect(sources).toContain(path);
+      const image=await request.get(path);expect(image.status()).toBe(200);
+      const asset=manifest.assets.find(asset=>asset.path===`assets/marketing/journal-${article.id}.webp`)!;
+      expect(createHash('sha256').update(await image.body()).digest('hex')).toBe(asset.sha256);
+      await page.goto(`${prefix}/blog/${article.id}/`);
+      await expect(page.locator('.article-cover')).toHaveAttribute('src',new RegExp(path.replaceAll('.','\\.')+'\\?v='));
+      await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content',new RegExp('https://hetu\\.limeai\\.run'+path.replaceAll('.','\\.')+'\\?v='));
+    }
+  }
+});
 
 for (const prefix of ['', '/en']) for (const width of [375, 1440]) {
   test(`${prefix || 'zh-CN'} ${width}px 内页导航、阅读和资源布局完整`, async ({ page }) => {
@@ -9,7 +32,7 @@ for (const prefix of ['', '/en']) for (const width of [375, 1440]) {
     await page.setViewportSize({ width, height: 960 });
     const errors: string[] = [];
     page.on('pageerror', error => errors.push(error.message));
-    for (const path of ['workflow', 'integrations', 'docs', 'faq', 'brand', 'blog', 'blog/agent-work-author-review', 'blog/authors-at-the-center', 'blog/story-to-screen', 'blog/agent-friendly', 'docs/adaptation', 'docs/plugin-development']) {
+    for (const path of ['workflow', 'integrations', 'docs', 'faq', 'brand', 'blog', 'blog/when-hetu-helps', 'blog/return-to-the-work', 'blog/intentional-differences', 'blog/agent-work-author-review', 'blog/authors-at-the-center', 'blog/story-to-screen', 'blog/agent-friendly', 'docs/adaptation', 'docs/plugin-development']) {
       await page.goto(`${prefix}/${path}/`);
       await expect(page.locator('main h1'), path).toHaveCount(1);
       await expect(page.locator('main .eyebrow'), path).toHaveCount(0);
@@ -147,7 +170,7 @@ test('双语品牌展示、下载、分享卡与Electron截图使用当前资产
 
 test('使用指南完整双语，工程文档及源副本不对外发布', async ({ page, request }) => {
   test.setTimeout(120_000);
-  const slugs = ['getting-started', 'install', 'creative-paths', 'codex-first-task', 'skills', 'writing', 'story-bible', 'adaptation', 'screenplays', 'video', 'review', 'formats-and-delivery', 'agents', 'references', 'data-and-backup', 'creative-library', 'import-manuscript', 'outlining', 'characters-and-scenes', 'cover-art', 'illustrations', 'feedback', 'model-services', 'privacy-and-permissions', 'troubleshooting', 'plugins', 'plugin-development', 'plugin-publishing'];
+  const slugs = ['when-to-use', 'getting-started', 'install', 'creative-paths', 'codex-first-task', 'skills', 'writing', 'story-bible', 'adaptation', 'screenplays', 'video', 'review', 'formats-and-delivery', 'agents', 'references', 'data-and-backup', 'creative-library', 'import-manuscript', 'outlining', 'characters-and-scenes', 'cover-art', 'illustrations', 'feedback', 'model-services', 'privacy-and-permissions', 'troubleshooting', 'plugins', 'plugin-development', 'plugin-publishing'];
   for (const prefix of ['', '/en']) {
     await page.goto(`${prefix}/docs/`);
     await expect(page.locator('.doc-index a')).toHaveCount(slugs.length);

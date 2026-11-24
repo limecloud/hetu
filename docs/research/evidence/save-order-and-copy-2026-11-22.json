@@ -1,0 +1,295 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-11-22",
+  "status": "partial",
+  "scope": "保存输入、段落顺序及同作品文稿副本；隔离资料开发制品",
+  "changes": [
+    "保存状态区分loading和saving，保存收尾不短暂切换readOnly；右键格式在保存期间可用。",
+    "段落上移下移保留完整块、混合换行、选区和内页边界，支持一次撤销。",
+    "documents.duplicate按WorkRef、固定正文和目录基线，原子创建相邻章节或分集；保留原文字节、原卷或分集计划和copy_source_ref，使用新身份。",
+    "复制预览及原操作恢复复用Authoring；auto直接执行，confirm取消不写入。",
+    "批注composeRequest固定文稿及修订，切稿清理旧请求与错误，避免旧批注浮层串入新文稿。",
+    "公共Schema、CLI/MCP、能力地图及现有管理方法同步；共享GUI不另建正文事实。"
+  ],
+  "save_race": {
+    "root_cause": "saving.current先归零而旧busy仍为true，使disabled=busy&&!saving.current短暂锁住编辑器。",
+    "diagnostics": "output/save-order-review-20261122/readonly-transactions.json",
+    "repeated_input": {
+      "startTime": "2026-11-21T22:57:38.887Z",
+      "duration": 75877.53600000001,
+      "expected": 12,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "deterministic_check": "暂停保存收尾IPC回执，断言contenteditable=true及右键加粗启用；MutationObserver核对无只读切换。",
+    "closed": true
+  },
+  "validation": {
+    "reports": {
+      "hetu-save-order-final-desktop-20261122.json": {
+        "path": "output/document-copy-review-20261122/hetu-save-order-final-desktop-20261122.json",
+        "sha256": "63c5e94a5abaae4106b700d0631586ba24c01c8c5bfd711a0c2b03b85b0964e8",
+        "stats": {
+          "startTime": "2026-11-21T23:10:11.671Z",
+          "duration": 13213.158,
+          "expected": 2,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      },
+      "hetu-save-order-final-mcp-20261122.json": {
+        "path": "output/document-copy-review-20261122/hetu-save-order-final-mcp-20261122.json",
+        "sha256": "cb93f73faaafb0d7dfc3907e5234d81152123c999cf4732527d446fc54700f9b",
+        "stats": {
+          "startTime": "2026-11-21T23:11:19.987Z",
+          "duration": 374508.50899999996,
+          "expected": 2,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      },
+      "hetu-document-copy-final-desktop-20261122.json": {
+        "path": "output/document-copy-review-20261122/hetu-document-copy-final-desktop-20261122.json",
+        "sha256": "4ce06aeb92ffa094d558a7dd34b44f52036c986237d0ddc09c0ba3de909d5bab",
+        "stats": {
+          "startTime": "2026-11-21T23:25:15.033Z",
+          "duration": 16545.779,
+          "expected": 2,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      },
+      "hetu-document-copy-final-mcp-20261122.json": {
+        "path": "output/document-copy-review-20261122/hetu-document-copy-final-mcp-20261122.json",
+        "sha256": "2ca7dc502d5ada21d158d57ef8eccd5c679c67eb4f4ddf48d70d5f64cd2ac492",
+        "stats": {
+          "startTime": "2026-11-21T23:26:21.925Z",
+          "duration": 395864.36,
+          "expected": 2,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      },
+      "hetu-document-copy-compact-desktop-20261122.json": {
+        "path": "output/document-copy-review-20261122/hetu-document-copy-compact-desktop-20261122.json",
+        "sha256": "dc449f874ae3acd677cd05e9dffbdb560507bb88e8a205a075c328ea3852c8c6",
+        "stats": {
+          "startTime": "2026-11-21T23:35:30.159Z",
+          "duration": 7324.6449999999995,
+          "expected": 1,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      },
+      "hetu-document-copy-long-20261122.json": {
+        "path": "output/document-copy-review-20261122/hetu-document-copy-long-20261122.json",
+        "sha256": "3877c015a6ff443f562f6b848abe77f36af56af98dfcd3de4d08108da4e597e2",
+        "stats": {
+          "startTime": "2026-11-21T23:35:02.752Z",
+          "duration": 6204.414,
+          "expected": 2,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      }
+    },
+    "core_regression": {
+      "passed": 20,
+      "failed": 0,
+      "suites": [
+        "document_copy",
+        "novels",
+        "drama_projects",
+        "document_lifecycle",
+        "delivery_works"
+      ]
+    },
+    "cli_copy": {
+      "passed": 1,
+      "failed": 0
+    },
+    "mcp_protocol": {
+      "passed": 1,
+      "failed": 0,
+      "scope": "稳定及指定工作区MCP共用执行模式，固定来源复制、原键重放及确认流程。"
+    },
+    "author_recovery": {
+      "passed": 2,
+      "failed": 0,
+      "scope": "复制和改名：归属、旧修订、写后丢回执、重开及恢复不重复执行。"
+    },
+    "mcp_copy_ui": {
+      "passed": 2,
+      "failed": 0,
+      "transports": [
+        "stdio",
+        "official Codex CLI 0.171.0"
+      ],
+      "scope": "完整工作台含小说/剧本副本及来源回读；在压缩复制预览返回前运行。"
+    },
+    "checks": [
+      "desktop build",
+      "task-view build and resource check",
+      "hetu-mcp and app-server build",
+      "localization",
+      "capability map",
+      "skills",
+      "writing methods reproducibility",
+      "git diff --check",
+      "documentation after progress update",
+      "compact desktop build and recovery models"
+    ],
+    "compact_payload": {
+      "passed": 2,
+      "failed": 0,
+      "source_bytes": 2160000,
+      "preview_bytes_assertion": "<4096",
+      "full_source_returned": false,
+      "transports": [
+        "stdio",
+        "official Codex CLI 0.171.0"
+      ],
+      "scope": "最终后端不传整篇正文；保存与回读完整原文字节，摘要相同；桌面右键最终复验1项通过。"
+    }
+  },
+  "preserved_failures": [
+    {
+      "path": "output/document-copy-review-20261122/hetu-document-copy-tests-20261122.log",
+      "reason": "剧本相邻插入在同一事务暂存项目历史两次，Core拒绝覆盖。改为在分集创建的同一目录事务插入，复验通过。"
+    },
+    {
+      "path": "output/document-copy-review-20261122/hetu-document-copy-recovery-20261122.log",
+      "reason": "首次Node测试仅启用strip-types，无法运行现有parameter properties。使用transform-types后通过。"
+    },
+    {
+      "path": "output/document-copy-review-20261122/hetu-document-copy-desktop-20261122",
+      "reason": "首轮截图发现切稿后旧composeRequest重新打开空批注框；固定文稿及修订后增加无旧浮层断言并通过。"
+    }
+  ],
+  "resource_identities": [
+    {
+      "path": "output/document-copy-review-20261122/hetu-save-order-final-mcp-20261122/shared-workbench-stdio-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/resource-identity.json",
+      "sha256": "7d3a4b7e62d4f47ae8b46a371aa6f5cf999cbafa1bf40c723240ad33ed6a85c8",
+      "resource_uri": "ui://hetu/workbench/2/fe65d7c5c80877d99c91033374789b7af6357a689672cf559e7aa4d5b14be1a8"
+    },
+    {
+      "path": "output/document-copy-review-20261122/hetu-save-order-final-mcp-20261122/shared-workbench-codex-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/resource-identity.json",
+      "sha256": "7d3a4b7e62d4f47ae8b46a371aa6f5cf999cbafa1bf40c723240ad33ed6a85c8",
+      "resource_uri": "ui://hetu/workbench/2/fe65d7c5c80877d99c91033374789b7af6357a689672cf559e7aa4d5b14be1a8"
+    }
+  ],
+  "visual_review": {
+    "reference": {
+      "path": "output/document-copy-review-20261122/reference-window.png",
+      "sha256": "098e5f87614038b66d773e02f5dba97e6b900b35d1c99e71b4cecd8288183fec",
+      "capture": "系统窗口截图，只读观察已授权隔离文档；复用已有调研交接。",
+      "pixel_size": [
+        2880,
+        1594
+      ]
+    },
+    "desktop": "真实Electron隔离作品截图；发现并修复批注浮层跨文稿问题。",
+    "score": "未对所有元素评分；不同视口和内容不能作为同场景像素认证。",
+    "sort_menu_observation": {
+      "path": "output/document-copy-review-20261122/hetu-reference-sort-menu-20261122.png",
+      "sha256": "a5b8d08aea433d8655a1145a1862615884d8c7306b71f3f25aa7593074a4a6ca",
+      "observed": "隔离窗口的块菜单排序子项显示A→Z和Z→A，当前单块选中时禁用；未执行排序。",
+      "not_verified": "多块排序、中文顺序、混合块和撤销行为仍需实测；当前上移/下移不冒充此能力。",
+      "source": "系统鼠标事件与窗口截图，不是调研服务的运行证据。",
+      "multiple_blocks": {
+        "path": "output/document-copy-review-20261122/hetu-reference-multi-sort-20261122.png",
+        "sha256": "bba259dd21cd96d9dff20a43255325236a137f89d9e437b39af8b7eb8b89cf5d",
+        "observed": "隔离文档通过Escape及Shift+向下选中5块，菜单显示5 items，A→Z和Z→A均启用。"
+      },
+      "isolated_execution": {
+        "path": "output/document-copy-review-20261122/hetu-reference-sort-result-20261122.png",
+        "sha256": "d87a23107f2f4eb7591c65715d5fb436f75938f757dca2205573763d39a5acaf",
+        "observed": "选中5块执行A→Z后，两空块移至选区开头，非空块按粗体测试、灯塔、海面排序，粗体样式和选区外列表/卡片保留。",
+        "limits": "仅此中文样本；不推定数字、大小写、emoji或其他语言排序规则。",
+        "undo": {
+          "path": "output/document-copy-review-20261122/hetu-reference-sort-undone-20261122.png",
+          "sha256": "baaee2e2743f83a6587d9040726033adf63c44801ed41761fe1950632722a0a4",
+          "observed": "一次Command+Z后恢复空、灯塔、空、海面、粗体测试的原顺序，范围外列表及卡片仍在。"
+        }
+      }
+    },
+    "move_menu_observation": {
+      "path": "output/document-copy-review-20261122/hetu-reference-move-menu-20261122.png",
+      "sha256": "1f06e8f538949fc9bf2831f7f4f4d07b64ad425b4bb9ef862df6e3e40176fdf0",
+      "observed": "移至子菜单包含每日笔记、新建文档、选择文档；仅展开，未执行。",
+      "source": "系统鼠标事件与窗口截图，不是调研服务的运行证据。"
+    }
+  },
+  "limitations": [
+    "全部右键命令、作品复制、目录/作品导出和可恢复删除尚未全部完成。",
+    "全页面浅暗与宽窄、逐项9分、真实VoiceOver、Windows/Linux和当前原生宿主面板未全部验收。",
+    "当前源码尚未覆盖/Applications/Hetu.app；未提交、推送、发布，真实作者资料与设置未改。"
+  ],
+  "local_research": "output/document-copy-review-20261122/",
+  "final_source_sha256": {
+    "core/src/application/document_copy.rs": "4160d0c43802817feaccab02be4e8511c6acd2413307ddfd1fa9c98c9968baa0",
+    "core/src/application/drama_projects.rs": "61508dc67f4fafbfbe23420f0f60e42c28874cfe7344bc5961ac54ce88b76205",
+    "core/src/application/novels.rs": "74365b93f42291b88a3f0b0583043d81d691e76a5680eacfe15680b8ef538ac6",
+    "core/src/application/mod.rs": "500d9012c9dd426b31f0904e1cfb9e4b77619d6392810c78e33aa4823f5fdde9",
+    "core/src/application/work_scope.rs": "b6178ec208de6b41804148c35415a19ca8a8e995f0a0a26cbdb60c2d3dcb64fe",
+    "core/src/application/agent_operations.rs": "5cf612f54d756880212b236e15364765c1b2adca6f4701189a222e1d891d561b",
+    "apps/desktop/src/main/authoring.ts": "e79c630b4959adb117ff7aba962acaaa67820e6a47e6d7949d540fcb359a34fd",
+    "apps/desktop/src/main/work-session.ts": "5d77e96ed9ff6c5ea4c0d2d37cc8c3c2009d895a01319ddb564372ce0994fc71",
+    "apps/desktop/src/renderer/documents.tsx": "a7aace19aec84ff8f8b31cd3fa14cf25070fd8f5e268d486aaf259e1418cbb7c",
+    "apps/desktop/src/renderer/manuscript-annotations.tsx": "cb2f00ea24c68d17b75d1b39755b587c0d1bed01c8482ab03f0a5f99d459fc74",
+    "apps/desktop/src/renderer/author-review.tsx": "220e06ad5ad89f918c91ecd4f71d96ec821c6505d3ef256050fdecfb84c5b432",
+    "apps/desktop/src/renderer/editor-context-target.ts": "6863cc74ef4c6c1397001b98400ecd107b97907e28b9f63a95ea353b6a942799",
+    "apps/desktop/src/renderer/editor-context-menu.tsx": "9b4d22848bb2645516f2fab147658b069eef48b3e68640ce70a8c0af776e42ef",
+    "contracts/actions.json": "316a459f629dd63255ea7e0e3ad3621235a9c6c1df2920ad3d6bb053159e88d0",
+    "contracts/capability-map.json": "321fd657838bb06a301596ce480eb0acdf63d2a443d2196fad3afa37da5dc753",
+    "contracts/method-resources.json": "cd7f99588e71d3f36ac0cfe042ccddf63225a0be5d8c0cef895ebb07f3a06403",
+    "tools/hetu-skills/base/references/workflows/management.md": "79ed00310c990c40d621ec0a12002411720231b0ca3133a1feedf658beec7400"
+  },
+  "final_development_artifacts": {
+    "apps/desktop/dist/main.cjs": {
+      "sha256": "248184b0e59e1707a3014478fbd83836c25c77b0a3090c17e69241a46981bfd6",
+      "size_bytes": 621903
+    },
+    "apps/desktop/dist/mcp-workbench.mjs": {
+      "sha256": "6660334c78e1fe9595c143b8ef30dc6369214bd9a6b84e091bca22fbbeced088",
+      "size_bytes": 587335
+    },
+    "target/debug/hetu-mcp": {
+      "sha256": "528a18731d6f050874b6bfb3090b1e460cbe1f9d00f06376fea6b4a767caa1f0",
+      "size_bytes": 70862696
+    },
+    "target/debug/hetu-app-server": {
+      "sha256": "b12401b22a41ba61358128c6ae958ded749c322cc565367cfcd15eb1984fd9ea",
+      "size_bytes": 48537744
+    },
+    "apps/mcp/resources/workbench.html": {
+      "sha256": "34e78dd3f660e096ff0fb22fb19f8b9dd80f490be1e3bde4457f5d610a38780e",
+      "size_bytes": 4592097
+    }
+  },
+  "final_documentation_check": {
+    "documents": 91,
+    "local_links": 1366,
+    "fragment_links": 303,
+    "traceability": {
+      "FR": 40,
+      "US": 61,
+      "UC": 54,
+      "E2E": 30,
+      "AC": 65
+    },
+    "id_references": 1251,
+    "json_examples": 11,
+    "schemas": 2,
+    "mermaid": 104,
+    "errors": [],
+    "log_sha256": "68508a3b75dce9f49e519532c48682f96bfd4cf84ae218d8df3c587e25fc3b04"
+  }
+}

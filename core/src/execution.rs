@@ -27,9 +27,12 @@ fn is_read(command: &Value) -> Result<bool> {
         "invalid_input", "此动作不属于当前工作区。")?;
     ensure(command["contract_revision"] == descriptor["contract_revision"], "unsupported_version", "动作合同修订不一致。")?;
     crate::application::validate_action_input(action, &command["input"])?;
-    Ok(descriptor["effect"] == "read"
-        || matches!(action, "hetu.plot.extract" | "hetu.drama.compare") && command["input"]["save_result"] == false
-        || action == "hetu.validation.run" && command["input"]["save_report"] == false)
+    Ok(read_only_effect(action, &descriptor["effect"], &command["input"]))
+}
+pub(crate) fn read_only_effect(action: &str, effect: &Value, input: &Value) -> bool {
+    effect == "read"
+        || matches!(action, "hetu.plot.extract" | "hetu.drama.compare") && input["save_result"] == false
+        || action == "hetu.validation.run" && input["save_report"] == false
 }
 impl WorkspaceExecution {
     pub fn open_default(client: &str) -> Result<Self> {Self::open(&crate::local_settings::default_directory()?, client)}

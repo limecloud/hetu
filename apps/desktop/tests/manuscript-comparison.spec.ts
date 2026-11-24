@@ -28,6 +28,7 @@ test("固定修订比较共用排版、两侧查找、段落同步与窄窗完�
     const page = await app.firstWindow(), errors: string[] = []; page.on("pageerror", error => errors.push(error.message));
     await page.setViewportSize({width: 1440, height: 940});
     await page.getByRole("button", {name: "打开作品 默认小说", exact: true}).click();
+    await page.getByRole("button", {name: "小说", exact: true}).click();
     await documentAction(page, "比较修订与定稿");
     await page.getByRole("combobox", {name: "比较修订", exact: true}).selectOption(baseline.revision.revision_id);
     const dialog = page.locator("dialog.revision-comparison"), compare = dialog.getByRole("region", {name: "正文比较", exact: true});

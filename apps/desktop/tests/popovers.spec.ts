@@ -23,6 +23,7 @@ test("整合侧栏、文稿标题与浮层键盘保持编辑状态", async ({}, 
     await page.setViewportSize({width: 1440, height: 940});
     await page.screenshot({path: info.outputPath("library-neutral-shell.png")});
     await page.getByRole("button", {name: "打开作品 默认小说", exact: true}).click();
+    await page.getByRole("button", {name: "小说", exact: true}).click();
     const editor = page.getByRole("textbox", {name: "文稿编辑", exact: true});
     await expect(editor).toBeVisible();
     const sidebar = page.getByRole("complementary", {name: "项目导航", exact: true});

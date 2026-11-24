@@ -1,0 +1,32 @@
+{
+  "date": "2026-11-23",
+  "engine": "Codex 0.171.0",
+  "work_ref": {
+    "kind": "novel",
+    "object_id": "novel_42bedadb-9a62-4c2d-8bf7-88f0229fe7d3",
+    "workspace_id": "workspace_0e70ca7c-8ec8-451b-92ac-d543ac7af87e"
+  },
+  "proposal_id": "proposal_1ba8b3e5-927f-458a-a619-4ab042dabc93",
+  "proposal_sha256": "ee8dfe1e374ab29fd5122c7f25c49ed61c077f137a39222184de28eef1fb67b5",
+  "resource_ref": {
+    "resource_id": "resource_f88ee5e3-f453-49fc-a000-cfaa7570693f",
+    "revision": 1,
+    "sha256": "cdc67700a958cef0c9361f1e3bdc434a1cb305f1639bf38561fa261899420a0a"
+  },
+  "checks": [
+    "shared-confirm-mode",
+    "direct-managed-write-rejected",
+    "prepare-does-not-publish",
+    "real-author-preview",
+    "exact-author-decision",
+    "original-plan-execution",
+    "agent-identity-preserved",
+    "actual-core-readback"
+  ],
+  "limits": [
+    "isolated-automated-author-test",
+    "single-resource-plan",
+    "not-multi-action-batch",
+    "development-build"
+  ]
+}

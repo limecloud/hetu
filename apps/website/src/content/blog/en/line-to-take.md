@@ -21,3 +21,10 @@ Add an actual recording to inspect real duration and waveform, then play and loc
 Using an alternative creates a new professional revision. Old recordings, original LRC and feedback remain. Changed lyrics flag old marks for review; saving new words does not automatically resolve feedback.
 
 Deliver the complete review book and current valid LRC, then continue fixed lyrics and actual audio in [Audio Drama](/en/plugins/audio-drama/) or [Video Studio](/en/plugins/video-studio/). External tools create the performance. Hetu retains the project so the next iteration knows which line to continue.
+
+
+## Use only what this work needs
+
+Develop only what needs testing now. Sources, scripts and assets retain their revisions. Trying one scene needs no whole-book conversion; existing clips need not be generated again. State what changes and what remains before continuing.
+
+[Find the smallest useful starting point](/en/docs/when-to-use/).

@@ -438,6 +438,195 @@
       "height": 1024,
       "prompt_source": "assets/marketing/prompts/creative-workflow-20261117.jsonl",
       "reference_image": "output/imagegen/creative-workflow-20261117/ferry-arrival.png"
+    },
+    {
+      "path": "output/imagegen/creative-positioning/when-hetu-helps.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "ce76f9c2c93df70c1c21636bd0368c97d9764b8c11ad5d4906de0268bce48dcc",
+      "width": 1672,
+      "height": 941,
+      "prompt_job": "when-hetu-helps",
+      "prompt_source": "assets/illustrations/prompts/creative-positioning-20261124.jsonl"
+    },
+    {
+      "path": "output/imagegen/creative-positioning/return-to-the-work.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "9ea9965acf294fef326830ff3ec4fba95c20606949d013c6c615f2e08f359708",
+      "width": 1672,
+      "height": 941,
+      "prompt_job": "return-to-the-work",
+      "prompt_source": "assets/illustrations/prompts/creative-positioning-20261124.jsonl"
+    },
+    {
+      "path": "output/imagegen/creative-positioning/intentional-differences.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "9461fdf53c70bf26af6ddc0944dc6e52275c4097ae5e58f5aba4e3c188cc5f19",
+      "width": 1672,
+      "height": 941,
+      "prompt_job": "intentional-differences",
+      "prompt_source": "assets/illustrations/prompts/creative-positioning-20261124.jsonl"
+    },
+    {
+      "path": "output/imagegen/editorial-diversity-20261124/blog-letter-to-role-books.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "49b791b42381c02fec7c829360a542f7016776dcb787667544c58be619206674",
+      "width": 1536,
+      "height": 1024,
+      "prompt_job": "blog-letter-to-role-books",
+      "prompt_source": "assets/illustrations/prompts/editorial-diversity-20261124.jsonl"
+    },
+    {
+      "path": "output/imagegen/editorial-diversity-20261124/blog-one-station-four-forms.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "dce3d8017606b82cfbbe6de85c2b4a66b90eb668fca0781d68e819773edac0f4",
+      "width": 1536,
+      "height": 1024,
+      "prompt_job": "blog-one-station-four-forms",
+      "prompt_source": "assets/illustrations/prompts/editorial-diversity-20261124.jsonl"
+    },
+    {
+      "path": "output/imagegen/editorial-diversity-20261124/blog-accounts-and-listening.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "b63a8d6d5140afd3e2ea2535475fcc9593d10c2f0471404fe8ee8776ad857821",
+      "width": 1536,
+      "height": 1024,
+      "prompt_job": "blog-accounts-and-listening",
+      "prompt_source": "assets/illustrations/prompts/editorial-diversity-20261124.jsonl"
+    },
+    {
+      "path": "output/imagegen/editorial-diversity-20261124/blog-fragments-and-readings.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "d425d226d9ffc8a791ca8c33c1bf2b7b0bbd7795e8448c9f5f5f9e8e968f2abc",
+      "width": 1536,
+      "height": 1024,
+      "prompt_job": "blog-fragments-and-readings",
+      "prompt_source": "assets/illustrations/prompts/editorial-diversity-20261124.jsonl"
+    },
+    {
+      "path": "output/imagegen/editorial-diversity-20261124/blog-a-life-in-its-own-words.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "f862690ec69d544bc1b8151d8b620c3a3f6cc56c466dd1756068791978cd54eb",
+      "width": 1536,
+      "height": 1024,
+      "prompt_job": "blog-a-life-in-its-own-words",
+      "prompt_source": "assets/illustrations/prompts/editorial-diversity-20261124.jsonl"
+    },
+    {
+      "path": "output/imagegen/editorial-diversity-20261124/blog-line-to-take.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "a06d5d4758e035bbd0a08cdc960ea8ca093560b3279e84d08b740708353aa35d",
+      "width": 1536,
+      "height": 1024,
+      "prompt_job": "blog-line-to-take",
+      "prompt_source": "assets/illustrations/prompts/editorial-diversity-20261124.jsonl"
+    },
+    {
+      "path": "output/imagegen/editorial-diversity-20261124/blog-script-to-preparation.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "a9bbb5c7cde1d5acd2322ee20949dfb10cc5d8490e6b49e2bdae9b223d46731b",
+      "width": 1536,
+      "height": 1024,
+      "prompt_job": "blog-script-to-preparation",
+      "prompt_source": "assets/illustrations/prompts/editorial-diversity-20261124.jsonl"
+    },
+    {
+      "path": "output/imagegen/editorial-diversity-20261124/blog-pages-and-players.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "ff1c459509fd0de90e3fd1aa3c4109b7153c3395670c9f86869b8cd5e226e534",
+      "width": 1536,
+      "height": 1024,
+      "prompt_job": "blog-pages-and-players",
+      "prompt_source": "assets/illustrations/prompts/editorial-diversity-20261124.jsonl"
+    },
+    {
+      "path": "output/imagegen/editorial-diversity-20261124/blog-world-to-screen.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "db7de62c69e79fc5ae79afe9553b93826a7ec9628ae0b2dce6de170b8f8a68ad",
+      "width": 1536,
+      "height": 1024,
+      "prompt_job": "blog-world-to-screen",
+      "prompt_source": "assets/illustrations/prompts/editorial-diversity-20261124.jsonl"
+    },
+    {
+      "path": "output/imagegen/editorial-diversity-20261124/blog-story-across-media.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "f949979f9369fd81355e8d1a848a44c99c441b3a206e2eb959a637bab774405e",
+      "width": 1536,
+      "height": 1024,
+      "prompt_job": "blog-story-across-media",
+      "prompt_source": "assets/illustrations/prompts/editorial-diversity-20261124.jsonl"
+    },
+    {
+      "path": "output/imagegen/editorial-diversity-20261124/blog-novel-ecosystem.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "080cdd2cf9f18024fae18045ee1d99d918b9259791b50d2a80f46967cf1b6d0d",
+      "width": 1536,
+      "height": 1024,
+      "prompt_job": "blog-novel-ecosystem",
+      "prompt_source": "assets/illustrations/prompts/editorial-diversity-20261124.jsonl"
+    },
+    {
+      "path": "output/imagegen/editorial-diversity-20261124/blog-creative-plugins.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "fd70fc001b0be97f065bb90621d5a0417bdecc2defa08a40d0aba2469c1e851b",
+      "width": 1536,
+      "height": 1024,
+      "prompt_job": "blog-creative-plugins",
+      "prompt_source": "assets/illustrations/prompts/editorial-diversity-20261124.jsonl"
+    },
+    {
+      "path": "output/imagegen/editorial-diversity-20261124/blog-creative-library.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "1f806895286a70a72e7cb3cd49412245cd3ccd37ae5204ee7eaacf4914d3daa3",
+      "width": 1536,
+      "height": 1024,
+      "prompt_job": "blog-creative-library",
+      "prompt_source": "assets/illustrations/prompts/editorial-diversity-20261124.jsonl"
+    },
+    {
+      "path": "output/imagegen/editorial-diversity-20261124/blog-preview-before-production.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "feedd081a158310264079e0bd4151b8e39d2055718bd03b1c305ad69ff783cee",
+      "width": 1536,
+      "height": 1024,
+      "prompt_job": "blog-preview-before-production",
+      "prompt_source": "assets/illustrations/prompts/editorial-diversity-20261124.jsonl"
+    },
+    {
+      "path": "output/imagegen/editorial-diversity-20261124/blog-agent-work-author-review.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "1ce714ab0936cb884a58c434f512995cfa5b4524acf98e378a42aad3a5eb9659",
+      "width": 1536,
+      "height": 1024,
+      "prompt_job": "blog-agent-work-author-review",
+      "prompt_source": "assets/illustrations/prompts/editorial-diversity-20261124.jsonl"
+    },
+    {
+      "path": "output/imagegen/editorial-diversity-20261124/blog-authors-at-the-center.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "04b10c2ca1083451cc38c7c849309a6cf7ad94d71152ea3b2ac42a935eae4cf5",
+      "width": 1536,
+      "height": 1024,
+      "prompt_job": "blog-authors-at-the-center",
+      "prompt_source": "assets/illustrations/prompts/editorial-diversity-20261124.jsonl"
+    },
+    {
+      "path": "output/imagegen/editorial-diversity-20261124/blog-story-to-screen.png",
+      "requested_model": "gpt-image-2.5-flare",
+      "sha256": "d409a36d87d596b15cdbef0c2fafe876b13bbb4a9b46872c0bb91661566dd319",
+      "width": 1536,
+      "height": 1024,
+      "prompt_job": "blog-story-to-screen",
+      "prompt_source": "assets/illustrations/prompts/editorial-diversity-20261124.jsonl"
+    },
+    {
+      "path": "output/imagegen/editorial-diversity-20261124/blog-agent-friendly.png",
+      "requested_model": "gpt-image-2.5-sunburst",
+      "sha256": "5f32a1538fbe7ac178afce2ce06f03bb7dc7edf3d53aee64fd0eb2c4f8f1e072",
+      "width": 1536,
+      "height": 1024,
+      "prompt_job": "blog-agent-friendly",
+      "prompt_source": "assets/illustrations/prompts/editorial-diversity-20261124.jsonl"
     }
   ],
   "assets": [
@@ -1236,14 +1425,6 @@
       "derived_from": "output/design/prototype-website-en.png"
     },
     {
-      "path": "assets/marketing/social-og.png",
-      "width": 1200,
-      "height": 630,
-      "sha256": "262b336091f0e0b74f221862852a76c04957b358824b7b9f00a5cb42608234e2",
-      "locale": "zh-CN",
-      "derived_from": "assets/brand/mascot-master.png"
-    },
-    {
       "path": "assets/brand/icon-overview.png",
       "width": 1440,
       "height": 1040,
@@ -1278,14 +1459,6 @@
       "theme": "dark"
     },
     {
-      "path": "assets/marketing/social-og-en.png",
-      "width": 1200,
-      "height": 630,
-      "sha256": "7bb04476168bd4193a8c0817abc12bfdd09dde530af0032997c1b072acd042e8",
-      "locale": "en",
-      "derived_from": "assets/brand/mascot-master.png"
-    },
-    {
       "path": "assets/brand/icon-overview-en.png",
       "width": 1440,
       "height": 1040,
@@ -1318,16 +1491,6 @@
       "locale": "en",
       "derived_from": "assets/brand/mascot-master.png",
       "theme": "dark"
-    },
-    {
-      "path": "assets/brand/icons/web/manifest.webmanifest",
-      "sha256": "e49f554501580791c7ad667736eaa5f2e6e8e37d2e89d1cad1109f05a9e55579",
-      "size_bytes": 687
-    },
-    {
-      "path": "assets/brand/icons/web/manifest-en.webmanifest",
-      "sha256": "56f8cd748b564ac9ebec3990d42c984b3afeccaae86ba0713b56cd1b6ca4ec32",
-      "size_bytes": 670
     },
     {
       "path": "assets/marketing/hetu-luoshu-library-scene.webp",
@@ -1640,6 +1803,368 @@
       "height": 1200,
       "source": "output/imagegen/creative-workflow-20261117/refinements/harbor-cover.png",
       "transform": "proportional WebP export"
+    },
+    {
+      "path": "assets/marketing/journal-when-hetu-helps.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "0b8780620d16d15533de0470d430f14a061c05ca2c03c97147ed99735a0d31e9",
+      "derived_from": "output/imagegen/creative-positioning/when-hetu-helps.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/journal-return-to-the-work.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "dd9ec2b53806f3291807fa08d83945e7a8b702f2666f18cd56fbf7b9ca0c8524",
+      "derived_from": "output/imagegen/creative-positioning/return-to-the-work.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/journal-intentional-differences.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "25f021887b25ae4429ac2d2a3ccbacbe37944781cb73a3bb844e1b5527436669",
+      "derived_from": "output/imagegen/creative-positioning/intentional-differences.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/social-og.png",
+      "width": 1200,
+      "height": 630,
+      "sha256": "1fde75cac62dda4891859b49fa391e5c984f21e9bf3a6aa7d9341db9f2af58ee",
+      "locale": "zh-CN",
+      "derived_from": "assets/brand/mascot-master.png"
+    },
+    {
+      "path": "assets/marketing/social-og-en.png",
+      "width": 1200,
+      "height": 630,
+      "sha256": "f8617f2cb23708f66e2237fd1af5c1b9f33fe032a8085f13d1e2ee33a30263c1",
+      "locale": "en",
+      "derived_from": "assets/brand/mascot-master.png"
+    },
+    {
+      "path": "assets/brand/icons/web/manifest.webmanifest",
+      "sha256": "e49f554501580791c7ad667736eaa5f2e6e8e37d2e89d1cad1109f05a9e55579",
+      "size_bytes": 687
+    },
+    {
+      "path": "assets/brand/icons/web/manifest-en.webmanifest",
+      "sha256": "56f8cd748b564ac9ebec3990d42c984b3afeccaae86ba0713b56cd1b6ca4ec32",
+      "size_bytes": 670
+    },
+    {
+      "path": "assets/marketing/journal-letter-to-role-books.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "52dd2bf5f62f0641b388f4a60a9786197d64bcfe5713bead799f8c16393367fe",
+      "derived_from": "output/imagegen/editorial-diversity-20261124/blog-letter-to-role-books.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/journal-one-station-four-forms.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "40b21d6bd0715fd493e43c52e41a4899d3e8be0f5be3e6ed85a9c328099f179b",
+      "derived_from": "output/imagegen/editorial-diversity-20261124/blog-one-station-four-forms.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/journal-accounts-and-listening.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "4b541405f966857fdb87123c00ee9023168e8f87d4e385269b0ce68ca8f3c9e8",
+      "derived_from": "output/imagegen/editorial-diversity-20261124/blog-accounts-and-listening.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/journal-fragments-and-readings.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "4630f923fc5273a3f3e0efc0c4cebd6c8d10647d3515bd22bb3b6322b609b9fb",
+      "derived_from": "output/imagegen/editorial-diversity-20261124/blog-fragments-and-readings.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/journal-a-life-in-its-own-words.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "5b21305eeb367f2390ed494ec67f70eed8b8d18f6d161ee09b04713cf7a6aeee",
+      "derived_from": "output/imagegen/editorial-diversity-20261124/blog-a-life-in-its-own-words.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/journal-line-to-take.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "02704b2b330dc71f00b37ce26b82b009a5be107a63bdbdc73fdcb5a1115b58dd",
+      "derived_from": "output/imagegen/editorial-diversity-20261124/blog-line-to-take.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/journal-script-to-preparation.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "a9d7803a9f1ddb3187c70b78fa48528989de1febfd409109cfcd8f18da452546",
+      "derived_from": "output/imagegen/editorial-diversity-20261124/blog-script-to-preparation.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/journal-pages-and-players.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "c0d461a09373c35273b45ce637c1933f43ad1a1e41b5e4cb9eb3ec256649c67c",
+      "derived_from": "output/imagegen/editorial-diversity-20261124/blog-pages-and-players.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/journal-world-to-screen.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "04274528ef1cce793b89e3368c9d1037bac75ec7fbf0bbf7e7b9133b71aa0e8f",
+      "derived_from": "output/imagegen/editorial-diversity-20261124/blog-world-to-screen.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/journal-story-across-media.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "d9fe13dcb529e89d2ee4309fbccfea2b87c407d890a10bb343c5a3f6c1e155be",
+      "derived_from": "output/imagegen/editorial-diversity-20261124/blog-story-across-media.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/journal-novel-ecosystem.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "3300591c9b1a2ac3611f8702d4dc75ef5578402c240ac4316b6883eedb31e6b8",
+      "derived_from": "output/imagegen/editorial-diversity-20261124/blog-novel-ecosystem.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/journal-creative-plugins.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "40d46ef83b6099112d1c935e264215e47505065dde92e118fc3f19fd1d75fc94",
+      "derived_from": "output/imagegen/editorial-diversity-20261124/blog-creative-plugins.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/journal-creative-library.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "d00b7065cdc60cbce0a63a9492faf634e55b4f8254f60e2d49bf1f111db88cb3",
+      "derived_from": "output/imagegen/editorial-diversity-20261124/blog-creative-library.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/journal-preview-before-production.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "9d1f8e87397fb7561875d299b7bc0a291f70f9b1206dc5a8ead7a211b9d76ae3",
+      "derived_from": "output/imagegen/editorial-diversity-20261124/blog-preview-before-production.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/journal-agent-work-author-review.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "e18d52e4dd557a8ae2b06af31d525075166bb3f54a2cd2002c723bad994385ec",
+      "derived_from": "output/imagegen/editorial-diversity-20261124/blog-agent-work-author-review.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/journal-authors-at-the-center.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "805424a80c48803a4791f853b7a5acb588c9b0c0ae6ab2ee6b01389787a3988a",
+      "derived_from": "output/imagegen/editorial-diversity-20261124/blog-authors-at-the-center.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/journal-story-to-screen.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "72006af10f01515909023bde9d88ee2474318403161bdbfce2139e0dac007ef2",
+      "derived_from": "output/imagegen/editorial-diversity-20261124/blog-story-to-screen.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
+    },
+    {
+      "path": "assets/marketing/journal-agent-friendly.webp",
+      "width": 1536,
+      "height": 864,
+      "sha256": "2462395ff75d360b4fa00ba304c9b6d8ee5f1ac9ffd53d33529020acd3e2266d",
+      "derived_from": "output/imagegen/editorial-diversity-20261124/blog-agent-friendly.png",
+      "text_in_image": false,
+      "transform": {
+        "fit": [
+          1536,
+          864
+        ],
+        "format": "webp",
+        "quality": 90
+      }
     }
   ]
 }

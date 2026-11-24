@@ -1,5 +1,9 @@
 # Your creative library
 
+## Start with what you need
+
+The library holds works you intend to continue, not every experiment or conversation. Open a work to read; reading needs no generation task.
+
 The creative library is where you enter your work. Novels, screenplays and videos are independent projects. Begin with any one of them and link related works when you need to adapt or produce something.
 
 One novel can lead to several scripts. A script can have different video treatments. Each keeps its own content, revisions and author decisions; a link helps you trace the source.

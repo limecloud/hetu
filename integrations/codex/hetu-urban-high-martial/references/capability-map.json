@@ -450,6 +450,11 @@
         "hetu.plugin_access.capabilities",
         "hetu.plugin_access.invoke",
         "hetu.documents.rename",
+        "hetu.documents.duplicate",
+        "hetu.documents.move_range",
+        "hetu.documents.move_to_new",
+        "hetu.documents.get_move",
+        "hetu.documents.restore_move",
         "hetu.plugins.capabilities",
         "hetu.plugins.invoke"
       ],

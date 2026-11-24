@@ -28,7 +28,7 @@ test("两层侧栏、四面板、真实任务附件及未保存稿在宽窄浅�
   try {
     const page = await app.firstWindow(), errors: string[] = []; page.on("pageerror", error => errors.push(error.message));
     await page.setViewportSize({width:1440,height:875});
-    await page.getByRole("button", {name:"打开作品 插件集成测试",exact:true}).click(); await openDirectory(page);
+    await page.getByRole("button", {name:"打开作品 插件集成测试",exact:true}).click(); await navigate(page, "小说"); await openDirectory(page);
     const directory = page.getByRole("navigation",{name:"文稿目录",exact:true});
     await expect(directory.locator(".chapter-group button")).toHaveCount(61);
     const geometry=await page.locator(".sidebar-segments").evaluate(element=>({x:element.getBoundingClientRect().x,y:element.getBoundingClientRect().y,width:element.getBoundingClientRect().width,height:element.getBoundingClientRect().height}));

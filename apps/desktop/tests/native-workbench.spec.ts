@@ -34,7 +34,15 @@ test("Mac工作台布局、正文操作与阅读位置在真实Core中贯通", a
     await page.getByRole("button", { name: "打开作品", exact: true }).first().click();
     await page.screenshot({ path: path.join(root, "output/desktop-native-qa/library.png") });
     await page.getByRole("button", { name: /插件集成测试/ }).click();
+    await expect(page.getByRole("button", { name: "打开章节目录", exact: true })).toBeEnabled({ timeout: 30000 });
+    await page.getByRole("button", { name: "打开章节目录", exact: true }).click();
     await expect(page.getByRole("textbox", { name: "文稿编辑", exact: true })).toBeVisible({ timeout: 30000 });
+    await expect(page.locator('summary[aria-label="外部 Agent 写作工具"]')).toBeVisible();
+    await page.locator('summary[aria-label="外部 Agent 写作工具"]').click();
+    await expect(page.getByRole("menu", { name: "写作工具", exact: true })).toContainText("扩写润色");
+    await expect(page.getByRole("menu", { name: "写作工具", exact: true })).toContainText("章纲");
+    await expect(page.getByRole("menu", { name: "写作工具", exact: true }).getByRole("menuitem", { name: /章纲/ })).toBeVisible();
+    await page.keyboard.press("Escape");
     const maximized = () => application.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0]!.isMaximized());
     const initiallyMaximized = await maximized();
     await page.getByRole("button", { name: "缩放窗口", exact: true }).click();
@@ -50,6 +58,58 @@ test("Mac工作台布局、正文操作与阅读位置在真实Core中贯通", a
     await openDirectory(page);
     await page.getByRole("button", { name: "第一章 雾港", exact: true }).click();
     const editor = page.getByRole("textbox", { name: "文稿编辑", exact: true });
+    await expect(editor).toBeVisible();
+    await expect(page.getByRole("tab", { name: "打开文稿 第一章 雾港", exact: true })).toBeVisible();
+    await application.evaluate(({ipcMain}) => {
+      const handlers = (ipcMain as any)._invokeHandlers, read = handlers.get("desktop:read");
+      handlers.set("desktop:read", async (...args: any[]) => {
+        const value = await read(...args);
+        if (args[1] === "hetu.documents.list") {
+          handlers.set("desktop:read", read);
+          await new Promise<void>(resolve => {(globalThis as any).__resumeDirectoryRefresh = resolve;});
+        }
+        return value;
+      });
+    });
+    await page.locator('summary[aria-label="目录操作"]').click();
+    await page.getByRole("button", { name: "刷新目录", exact: true }).click();
+    await expect.poll(() => application.evaluate(() => !!(globalThis as any).__resumeDirectoryRefresh)).toBe(true);
+    await expect(page.getByRole("button", { name: "目录试读第001章", exact: true })).toBeVisible();
+    try {
+      await page.getByRole("button", { name: "目录试读第001章", exact: true }).click();
+      await expect(page.getByRole("tab", { name: "打开文稿 目录试读第001章", exact: true })).toHaveAttribute("aria-selected", "true");
+    } finally { await application.evaluate(() => (globalThis as any).__resumeDirectoryRefresh?.()); }
+    await expect(page.getByRole("navigation", {name: "文稿目录", exact: true})).toHaveAttribute("aria-busy", "false");
+    await expect(page.getByRole("tab", { name: "打开文稿 目录试读第001章", exact: true })).toHaveAttribute("aria-selected", "true");
+    await expect(page.getByRole("tab", { name: "打开文稿 目录试读第001章", exact: true }).locator(".." )).toHaveAttribute("data-preview", "true");
+    await page.getByRole("tab", { name: "打开文稿 目录试读第001章", exact: true }).dblclick();
+    await expect(page.getByRole("tab", { name: "打开文稿 目录试读第001章", exact: true }).locator(".." )).toHaveAttribute("data-preview", "false");
+    await page.getByRole("button", { name: "第一章 雾港", exact: true }).click();
+    await expect(page.getByRole("tab", { name: "打开文稿 第一章 雾港", exact: true })).toBeVisible();
+    await expect(page.getByRole("tab", { name: "打开文稿 第一章 雾港", exact: true }).locator(".." )).toHaveAttribute("data-preview", "true");
+    await expect(page.getByRole("tab", { name: "打开文稿 目录试读第001章", exact: true }).locator(".." )).toHaveAttribute("data-preview", "false");
+    await page.getByRole("tab", { name: "打开文稿 第一章 雾港", exact: true }).click();
+    await expect(page.getByRole("tab", { name: "打开文稿 第一章 雾港", exact: true })).toHaveAttribute("aria-selected", "true");
+    await expect(page.locator(".cm-line").first()).toContainText("第1段");
+    await page.getByRole("tab", { name: "打开文稿 第一章 雾港", exact: true }).press("ArrowRight");
+    await expect(page.getByRole("tab", { name: "打开文稿 目录试读第001章", exact: true })).toHaveAttribute("aria-selected", "true");
+    await expect(page.locator(".cm-line").first()).toContainText("江岚在第1个清晨抵达雾港");
+    await page.getByRole("tab", { name: "打开文稿 第一章 雾港", exact: true }).click();
+    await expect(page.getByRole("tab", { name: "打开文稿 第一章 雾港", exact: true })).toHaveAttribute("aria-selected", "true");
+    await expect(page.locator(".cm-line").first()).toContainText("第1段");
+    await page.locator('.document-tab[data-active="true"] .document-tab-close').click();
+    await expect(page.getByRole("tab", { name: "打开文稿 第一章 雾港", exact: true })).toHaveCount(0);
+    await expect(page.getByRole("tab", { name: "打开文稿 目录试读第001章", exact: true })).toHaveAttribute("aria-selected", "true");
+    await page.locator('.document-tab[data-active="true"] .document-tab-close').click();
+    for (let index = 0; index < 3; index++) {
+      const closes = page.locator(".document-tab-close");
+      if (!await closes.count()) break;
+      await closes.first().click();
+    }
+    await expect(page.getByRole("region", { name: "当前作品资料", exact: true })).toBeVisible();
+    await navigate(page, "小说");
+    await openDirectory(page);
+    await page.getByRole("button", { name: "第一章 雾港", exact: true }).click();
     await expect(editor).toBeVisible();
     await expect(page.locator(".cm-line").first()).toContainText("第1段");
     const size = async (selector: string) => page.locator(selector).evaluate((element) => ({ width: element.getBoundingClientRect().width, height: element.getBoundingClientRect().height }));
@@ -252,6 +312,8 @@ test("Mac工作台布局、正文操作与阅读位置在真实Core中贯通", a
     if(!await page.getByRole("button", { name: "显示项目导航", exact: true }).isVisible()) await page.getByRole("button",{name:"项目导航",exact:true}).click();
     await navigate(page, "返回创作库");
     await page.getByRole("button", { name: /独立剧本/ }).click();
+    await expect(page.getByRole("button", { name: "第一集", exact: true })).toBeEnabled({ timeout: 30000 });
+    await page.getByRole("button", { name: "第一集", exact: true }).click();
     await expect(page.getByRole("article", { name: "分集剧本", exact: true })).toBeVisible();
     expect(await page.evaluate(async () => { try { await (window as any).hetuDesktop.read("hetu.covers.get", {}); return false; } catch { return true; } })).toBe(true);
     expect(errors).toEqual([]);

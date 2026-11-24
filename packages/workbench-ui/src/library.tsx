@@ -52,7 +52,7 @@ export function LibraryNavigation({ kind, active, busy, onKind, onPlugins }: {
 }
 
 /** 同一作品投影和表现组件；权限、读取及交接由各宿主回调执行。 */
-export function LibraryContent({ works, assets, appearance = "system", kind, busy = false, loading = false, error, initialListMode = true, emptyTitle = "还没有作品", emptyMessage, onKind, onOpen, onCreate, onSelect, onRefresh, contextItems, onContextError }: {
+export function LibraryContent({ works, assets, appearance = "system", kind, busy = false, loading = false, error, initialListMode = true, emptyTitle = "还没有作品", emptyMessage="从准备继续的片段或旧稿开始，无需先填完整设定。", onKind, onOpen, onCreate, onSelect, onRefresh, contextItems, onContextError }: {
   works: LibraryWork[]; assets: LibraryAssets; appearance?: string; kind: string; busy?: boolean; loading?: boolean;
   initialListMode?: boolean; emptyTitle?: string; emptyMessage?: string; onKind(kind: string): void;
   error?: string;

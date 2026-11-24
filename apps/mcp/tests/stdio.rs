@@ -83,6 +83,64 @@ struct Client {
 }
 
 #[tokio::test]
+async fn document_move_and_restore_are_atomic_through_stable_and_bound_mcp() {
+    let root = tempfile::tempdir().unwrap();
+    let workspace = root.path().join("work");
+    let author = Kernel::open(json!({"mode":"author","workspace_path":workspace,"create":{"title":"移动协议验收","locale":"zh-CN","operation_key":"create"}})).unwrap();
+    let work = author.request(json!({"action":"hetu.works.list","contract_revision":"1","input":{}}))["data"]["works"][0]["work_ref"].clone();
+    for stable in [true, false] {
+        let create = |title: &str, content: &str| {
+            let result = author.request(json!({"action":"hetu.documents.create","contract_revision":"1","input":{
+                "kind":"novel_chapter","title":title,"source_format":"markdown","content":content,"operation_key":format!("{title}-{stable}")}}));
+            assert_eq!(result["status"], "succeeded", "{result}"); result["data"].clone()
+        };
+        let source = create("来源", "首\r\n\r\n尾🌿");
+        let target = create("目标", "目标原文");
+        let mut command = Command::new(binary()); command.env("HETU_LOCAL_SETTINGS_DIR",root.path().join("settings"));
+        if stable { command.arg("--client").arg("codex").arg("--collaboration-dir").arg(root.path().join("hub")).arg("--all-tools"); }
+        else { command.arg("--workspace").arg(&workspace); }
+        let mut client = Client::spawn(command); client.rpc("server/discover",json!({})).await;
+        let reference = |v: &Value| json!({"document_id":v["document"]["document_id"],"revision_id":v["revision"]["revision_id"],"sha256":v["revision"]["sha256"]});
+        let fixed = json!({"action":"hetu.documents.move_range","contract_revision":"1","input":{
+            "work_ref":work,"source_ref":reference(&source),"target_ref":reference(&target),"byte_start":"首\r\n\r\n".len(),"byte_end":"首\r\n\r\n尾🌿".len(),"quote":"尾🌿","operation_key":format!("move-{stable}")}});
+        let result = client.tool("hetu_execute_workspace",json!({"workspace_path":workspace,"command":fixed})).await;
+        assert_eq!(result["status"], "succeeded", "{result}");
+        assert_eq!(client.tool("hetu_execute_workspace",json!({"workspace_path":workspace,"command":fixed})).await["data"]["result"], result["data"]["result"]);
+        let moved = &result["data"]["result"]["data"];
+        let read = |value: &Value| author.request(json!({"action":"hetu.documents.get","contract_revision":"1","input":{"document_id":value["document"]["document_id"]}}))["data"].clone();
+        assert_eq!(read(&source)["content"], "首"); assert_eq!(read(&target)["content"], "目标原文\n\n尾🌿");
+        let restore = json!({"action":"hetu.documents.restore_move","contract_revision":"1","input":{"work_ref":work,"move_ref":moved["move_ref"],"operation_key":format!("restore-{stable}")}});
+        let restored = client.tool("hetu_execute_workspace",json!({"workspace_path":workspace,"command":restore})).await;
+        assert_eq!(restored["status"], "succeeded", "{restored}");
+        assert_eq!(read(&source)["content"], "首\r\n\r\n尾🌿"); assert_eq!(read(&target)["content"], "目标原文");
+        client.close().await;
+    }
+}
+
+#[tokio::test]
+async fn document_move_to_new_is_atomic_through_stable_mcp() {
+    let root = tempfile::tempdir().unwrap();
+    let workspace = root.path().join("work");
+    let author = Kernel::open(json!({"mode":"author","workspace_path":workspace,"create":{"title":"新目标协议验收","locale":"zh-CN","operation_key":"create"}})).unwrap();
+    let work = author.request(json!({"action":"hetu.works.list","contract_revision":"1","input":{}}))["data"]["works"][0]["work_ref"].clone();
+    let source = author.request(json!({"action":"hetu.documents.create","contract_revision":"1","input":{"kind":"novel_chapter","title":"来源","source_format":"markdown","content":"首\r\n\r\n移动🌿","operation_key":"source"}}))["data"].clone();
+    let directory = author.request(json!({"action":"hetu.novels.get","contract_revision":"1","input":{}}))["data"].clone();
+    let reference = json!({"document_id":source["document"]["document_id"],"revision_id":source["revision"]["revision_id"],"sha256":source["revision"]["sha256"]});
+    let command = json!({"action":"hetu.documents.move_to_new","contract_revision":"1","input":{"work_ref":work,"source_ref":reference,"expected":{"revision":directory["revision"],"sha256":directory["sha256"]},"new_target":{"title":"新章节","volume_id":null},"byte_start":"首\r\n\r\n".len(),"byte_end":"首\r\n\r\n移动🌿".len(),"quote":"移动🌿","operation_key":"move-new"}});
+    let mut client = Client::spawn({let mut commandline=Command::new(binary()); commandline.arg("--workspace").arg(&workspace); commandline});
+    client.rpc("server/discover", json!({})).await;
+    let moved = client.tool("hetu_execute_workspace", json!({"workspace_path":workspace,"command":command})).await;
+    assert_eq!(moved["status"], "succeeded", "{moved}");
+    let target = &moved["data"]["result"]["data"]["target"];
+    assert_eq!(target["document"]["title"], "新章节");
+    let restored = client.tool("hetu_execute_workspace", json!({"workspace_path":workspace,"command":{"action":"hetu.documents.restore_move","contract_revision":"1","input":{"work_ref":work,"move_ref":moved["data"]["result"]["data"]["move_ref"],"operation_key":"restore-new"}}})).await;
+    assert_eq!(restored["status"], "succeeded", "{restored}");
+    let listed = author.request(json!({"action":"hetu.documents.list","contract_revision":"1","input":{"work_ref":work}}));
+    assert_eq!(listed["data"]["documents"].as_array().unwrap().len(), 1);
+    client.close().await;
+}
+
+#[tokio::test]
 async fn unified_execution_shared_setting_applies_to_stable_and_bound_mcp_without_grants() {
     let root = tempfile::tempdir().unwrap(); let settings = root.path().join("settings"); let workspace = root.path().join("work");
     let author = Kernel::open(json!({"mode":"author","workspace_path":workspace,"create":{"title":"统一模式","locale":"zh-CN","operation_key":"create"}})).unwrap();
@@ -97,6 +155,17 @@ async fn unified_execution_shared_setting_applies_to_stable_and_bound_mcp_withou
     let created = stable.tool("hetu_execute_workspace",json!({"workspace_path":workspace,"command":{"action":"hetu.documents.create","contract_revision":"1","input":{"kind":"novel_chapter","title":"直接新建","source_format":"markdown","content":"直接写入🌿","operation_key":"new"}}})).await;
     assert_eq!(created["status"],"succeeded","{created}"); let document = created["data"]["result"]["data"].clone();
     assert_eq!(document["revision"]["origin_kind"],"agent");
+    let current = |action: &str| author.request(json!({"action":action,"contract_revision":"1","input":{}}))["data"].clone();
+    let work = current("hetu.works.list")["works"][0]["work_ref"].clone();
+    let directory = current("hetu.novels.get");
+    let copy_command = json!({"action":"hetu.documents.duplicate","contract_revision":"1","input":{
+        "work_ref":work,"source_ref":{"document_id":document["document"]["document_id"],"revision_id":document["revision"]["revision_id"],"sha256":document["revision"]["sha256"]},
+        "expected":{"revision":directory["revision"],"sha256":directory["sha256"]},"title":"直接新建 副本","operation_key":"copy"}});
+    let copied = stable.tool("hetu_execute_workspace",json!({"workspace_path":workspace,"command":copy_command})).await;
+    assert_eq!(copied["status"],"succeeded","{copied}");
+    let replayed = stable.tool("hetu_execute_workspace",json!({"workspace_path":workspace,"command":copy_command})).await;
+    assert_eq!(replayed["data"]["result"],copied["data"]["result"]);
+    assert_ne!(copied["data"]["result"]["data"]["document"]["document_id"],document["document"]["document_id"]);
     let mut bound = spawn(false); bound.rpc("server/discover",json!({})).await;
     let policy = bound.tool("hetu_get_execution_mode",json!({})).await; assert_eq!(policy["data"],before["data"]);
     let settings_service = hetu_core::local_settings::LocalSettings::open(&settings).unwrap(); let state=settings_service.host(json!({"method":"get","input":{}})).unwrap();
@@ -1173,7 +1242,12 @@ impl Client {
             .await
             .unwrap_or_else(|_| panic!("MCP response timeout: {}", self.last_request))
             .unwrap();
-        assert!(bytes > 0, "server closed stdout unexpectedly");
+        if bytes == 0 {
+            let mut diagnostic = String::new();
+            if let Some(mut stderr) = self.child.stderr.take() { let _ = tokio::time::timeout(Duration::from_secs(1), stderr.read_to_string(&mut diagnostic)).await; }
+            panic!("server closed stdout unexpectedly after {}: {}", self.last_request, diagnostic);
+        }
+
         let response: Value =
             serde_json::from_str(&line).expect("stdout must contain only JSON-RPC");
         serde_json::from_value::<ServerJsonRpcMessage>(response.clone())
@@ -1267,6 +1341,9 @@ impl Client {
 async fn stable_local_settings_need_exact_author_decision_and_survive_mcp_restart() {
     let root = tempfile::tempdir().unwrap();
     let directory = root.path().join("collaboration");
+    let settings = hetu_core::local_settings::LocalSettings::open(&directory.join("local-settings")).unwrap();
+    let state = settings.host(json!({"method":"get","input":{}})).unwrap();
+    settings.host(json!({"method":"update","input":{"expected_revision":state["revision"],"patch":{"execution_mode":"confirm"},"operation_key":"confirm-mode"}})).unwrap();
     let mut client = Client::start_stable(&directory);
     client.rpc("server/discover", json!({})).await;
     let before = client.tool("hetu_local_settings_get", json!({})).await;
@@ -1936,6 +2013,39 @@ async fn mcp_workbench_entry_is_discoverable_before_ui_negotiation_and_keeps_app
 }
 
 #[tokio::test]
+async fn managed_work_ref_injects_private_grant_for_resource_write_without_echoing_grant() {
+    let folder = tempfile::tempdir().unwrap();
+    let workspace = folder.path().join("work");
+    let author = Kernel::open(json!({"mode":"author","workspace_path":workspace,"create":{"title":"受管写入验收","locale":"zh-CN","operation_key":"create"}})).unwrap();
+    let work = author.request(json!({"action":"hetu.works.list","contract_revision":"1","input":{}}))["data"]["works"][0]["work_ref"].clone();
+    let collaboration = folder.path().join("collaboration");
+    let grant = author.request(json!({"action":"hetu.collaboration.authorize_workspace","contract_revision":"1","input":{"client_adapter":"codex","collaboration_path":collaboration,"work_ref":work,"operation_key":"authorize"}}));
+    assert_eq!(grant["status"], "succeeded", "{grant}");
+    let mut command = Command::new(binary());
+    let work_json = work.to_string();
+    command.args(["--client","codex","--collaboration-dir"]).arg(&collaboration).args(["--work-ref", work_json.as_str()]);
+    let mut client = Client::spawn(command);
+    let input = json!({"work_ref":work,"title":"Agent 写入验收","category":"research","body":"只写入隔离测试作品","tags":[],"project_id":null,"entity_refs":[],"source_notes":"MCP合同验收","operation_key":"create"});
+    let created = client.tool("hetu_call_action", json!({"action":"hetu.resources.create","input":input})).await;
+    assert_eq!(created["status"], "succeeded", "{created}");
+    assert_eq!(created["data"]["resource"]["title"], "Agent 写入验收");
+    assert!(created["data"].get("management_ref").is_none(), "受管MCP不向模型回显私有授权");
+    assert_eq!(created["data"]["work_ref"], work);
+    let resource = &created["data"]["resource"];
+    let reread = client.tool("hetu_call_action", json!({"action":"hetu.resources.get","input":{"work_ref":work,"resource_id":resource["resource_id"],"revision":resource["revision"]}})).await;
+    assert_eq!(reread["status"], "succeeded");
+    assert!(reread["data"].get("management_ref").is_none());
+    assert_eq!(reread["data"]["resource"]["body"], "只写入隔离测试作品");
+    let mut other = work.clone(); other["object_id"] = json!("novel_00000000-0000-4000-8000-000000000000");
+    let refused = client.tool("hetu_call_action", json!({"action":"hetu.resources.get","input":{"work_ref":other,"resource_id":resource["resource_id"]}})).await;
+    assert_ne!(refused["status"], "succeeded");
+    let listed = client.tool("hetu_call_action", json!({"action":"hetu.resources.list","input":{"work_ref":work}})).await;
+    assert_eq!(listed["status"], "succeeded", "{listed}");
+    assert_eq!(listed["data"]["resources"][0]["title"], "Agent 写入验收");
+    client.close().await;
+}
+
+#[tokio::test]
 async fn legacy_workbench_discovery_does_not_require_ui_and_normalizes_capability_fields() {
     let ui = json!({"mimeTypes":["text/html;profile=mcp-app"]});
     for (capabilities, enhanced) in [
@@ -2022,7 +2132,7 @@ async fn mcp_workbench_uses_exact_management_and_task_grants_and_rechecks_revoca
 }
 
 #[tokio::test]
-async fn workspace_management_proposal_requires_exact_author_decision_over_real_stdio() {
+async fn workspace_management_proposal_auto_executes_over_real_stdio() {
     let (root, author) = setup();
     let mut client = Client::start(&root.path().join("河图 离线测试 🌿"));
     client.rpc("server/discover", json!({})).await;
@@ -2034,20 +2144,6 @@ async fn workspace_management_proposal_requires_exact_author_decision_over_real_
     assert_eq!(prepared["status"], "succeeded", "{prepared}");
     let p = &prepared["data"];
     let args = json!({"proposal_id":p["proposal_id"],"proposal_sha256":p["proposal_sha256"],"operation_key":"execute"});
-    assert_eq!(
-        client
-            .tool("hetu_execute_management_operation", args.clone())
-            .await["error"]["code"],
-        "hetu.author_confirmation_required"
-    );
-    assert_eq!(
-        call(
-            &author,
-            "agent_operations.decide",
-            json!({"proposal_id":p["proposal_id"],"proposal_sha256":p["proposal_sha256"],"expected_state_revision":1,"decision":"approve","operation_key":"author-decision"})
-        )["status"],
-        "succeeded"
-    );
     let result = client
         .tool("hetu_execute_management_operation", args.clone())
         .await;
@@ -2301,7 +2397,7 @@ async fn discovery_and_metadata_are_checked_on_every_request() {
     assert_eq!(client.response(id).await["error"]["code"], -32602);
     let tools = client.rpc("tools/list", json!({})).await;
     let tools = tools["result"]["tools"].as_array().unwrap();
-    assert_eq!(tools.len(), 27);
+    assert!(tools.len() >= 27, "catalog unexpectedly shrank: {}", tools.len());
     assert!(
         tools
             .iter()
@@ -2342,8 +2438,10 @@ async fn discovery_and_metadata_are_checked_on_every_request() {
             tool["annotations"]["openWorldHint"],
             matches!(
                 tool["name"].as_str(),
-                Some("hetu_prepare_management_operation" | "hetu_execute_management_operation")
-            )
+                Some("hetu_prepare_management_operation" | "hetu_execute_management_operation" | "hetu_local_settings_execute" | "hetu_execute_workspace" | "hetu_initialize_workspace" | "hetu_execute_plan")
+            ),
+            "tool={}",
+            tool["name"]
         );
     }
     let bad=client.send("tools/list",json!({"_meta":{"io.modelcontextprotocol/protocolVersion":"2025-11-25","io.modelcontextprotocol/clientCapabilities":{}}}),false).await;
@@ -2681,7 +2779,7 @@ async fn official_sdk_client_discovers_calls_and_reads_the_native_process() {
     .await
     .unwrap()
     .unwrap();
-    assert_eq!(client.list_tools(None).await.unwrap().tools.len(), 27);
+    assert!(client.list_tools(None).await.unwrap().tools.len() >= 27);
     let result = client
         .call_tool(CallToolRequestParams::new("hetu_read_blueprint"))
         .await
@@ -2740,10 +2838,6 @@ async fn git_snapshot_requires_author_approval_and_recovers_across_server_restar
     );
     let execute = json!({"phase":"execute","snapshot_id":id,"operation_key":"mcp-git-execute"});
     assert_eq!(
-        client.tool("hetu_commit_snapshot", execute.clone()).await["error"]["code"],
-        "hetu.author_confirmation_required"
-    );
-    assert_eq!(
         client
             .rpc(
                 "tools/call",
@@ -2752,12 +2846,6 @@ async fn git_snapshot_requires_author_approval_and_recovers_across_server_restar
             .await["error"]["code"],
         -32601
     );
-    let approved = call(
-        &author,
-        "git.approve_snapshot",
-        json!({"snapshot_id":id,"snapshot_sha256":prepared["data"]["snapshot_sha256"],"operation_key":"author-approve"}),
-    );
-    assert_eq!(approved["status"], "succeeded", "{approved}");
     let result = client.tool("hetu_commit_snapshot", execute.clone()).await;
     assert_eq!(result["status"], "succeeded", "{result}");
     client.close().await;

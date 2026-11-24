@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "preferences": {
+    "default_surface": "tui",
+    "chat_font_family": "",
+    "chat_font_size": 13,
+    "code_font_size": 12,
+    "chat_width": "comfortable",
+    "chat_contrast": 100,
+    "match_terminal": false,
+    "scroll_on_send": true,
+    "mark_new_messages": true,
+    "show_changes": true,
+    "enter_sends": true,
+    "terminal_font_family": "",
+    "terminal_font_size": 14,
+    "terminal_font_weight": 300,
+    "terminal_bold_weight": 500,
+    "terminal_line_height": 1,
+    "terminal_cursor": "block",
+    "terminal_cursor_blink": true,
+    "terminal_scrollback": 5000,
+    "terminal_scroll_sensitivity": 1.15,
+    "terminal_fast_scroll_sensitivity": 5,
+    "terminal_tui_scroll_sensitivity": 1,
+    "terminal_gpu": "auto",
+    "terminal_ligatures": "auto",
+    "terminal_theme": "system",
+    "terminal_scroll_on_input": true,
+    "terminal_copy_on_select": false,
+    "terminal_focus_on_hover": false
+  }
+}

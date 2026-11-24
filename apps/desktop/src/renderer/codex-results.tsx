@@ -1,0 +1,38 @@
+import React,{useEffect,useRef,useState} from "react";
+import type {SessionSnapshot} from "../agent-session-contract.ts";
+import type {SessionResult,SessionResults} from "../session-results.ts";
+import {desktop} from "./bridge.ts";
+import {Icon} from "@hetu/workbench-ui";
+
+/** 两种表面共用真实成果回读；终端回显及模型文字均不触发保存提示。 */
+export function CodexResults({snapshot,compact=false}:{snapshot:SessionSnapshot;compact?:boolean}){
+ const [open,setOpen]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState("");
+ const [value,setValue]=useState<SessionResults>();
+ const root=useRef<HTMLDivElement>(null);
+ const key=[snapshot.session_id,snapshot.thread_id].join("/");
+ const epoch=useRef(0);
+ useEffect(()=>{epoch.current++;setValue(undefined);setError("");setOpen(false);setBusy(false);return()=>{epoch.current++;};},[key]);
+ useEffect(()=>{
+  if(!open)return;
+  const dismiss=(event:PointerEvent)=>{if(!root.current?.contains(event.target as Node))setOpen(false);};
+  const keyboard=(event:KeyboardEvent)=>{if(event.key==="Escape"&&!event.isComposing){setOpen(false);root.current?.querySelector<HTMLButtonElement>(":scope > button")?.focus();}};
+  document.addEventListener("pointerdown",dismiss);document.addEventListener("keydown",keyboard);
+  return()=>{document.removeEventListener("pointerdown",dismiss);document.removeEventListener("keydown",keyboard);};
+ },[open]);
+ async function refresh(){
+  const ticket=epoch.current;
+  setBusy(true);setError("");
+  try{const value=await desktop.agentSession("results",{session_id:snapshot.session_id,...(snapshot.work_ref?{work_ref:snapshot.work_ref}:{scope:"library"})});if(ticket===epoch.current)setValue(value);}
+  catch(error){if(ticket===epoch.current){setValue(undefined);setError((error as Error).message);}}finally{if(ticket===epoch.current)setBusy(false);}
+ }
+ function show(item:SessionResult){setOpen(false);window.dispatchEvent(new CustomEvent("hetu:session-result",{detail:item}));}
+ return <div ref={root} className="codex-results">
+  <button aria-label={busy?"正在回读成果…":"查看作品成果"} title="查看作品成果" aria-expanded={open} disabled={busy} onClick={()=>{setOpen(!open);if(!open)void refresh();}}>{compact?<Icon name="check"/>:busy?"正在回读成果…":"查看作品成果"}</button>
+  {open&&<section aria-label="作品成果" className="codex-results-panel"><header><strong>已保存成果</strong><button disabled={busy} onClick={()=>void refresh()}>重新回读</button></header>
+   {error&&<p role="alert">{error}</p>}
+   {value?.items.map(item=><div key={item.id} className="codex-result"><span>{item.state==="verified"?"已回读":"待核对"}</span><button disabled={item.state!=="verified"} onClick={()=>show(item)}>{item.title}</button>{item.message&&<small>{item.message}</small>}</div>)}
+   {!busy&&value&&!value.items.length&&<p>暂无可回读的保存成果。可在作品中核对其他变化。</p>}
+   {!!value?.unread&&<p>{value.unread}项结果未能完整回读，请查看过程并核对作品。</p>}
+  </section>}
+ </div>;
+}

@@ -49,8 +49,8 @@ fn migration_backs_up_original_bytes_once_and_keeps_actual_typography() {
     std::fs::write(directory.path().join("settings.json"), &bytes).unwrap();
     let service = LocalSettings::open(directory.path()).unwrap();
     let migrated = state(&service);
-    assert_eq!(migrated["schema_version"], 3);
-    assert_eq!(migrated["revision"], 8);
+    assert_eq!(migrated["schema_version"], 5);
+    assert_eq!(migrated["revision"], 9);
     assert_eq!(migrated["preferences"]["reading_profiles"]["novel"]["line_height"], json!(1.35 + 8.0 / 22.0));
     assert_eq!(migrated["preferences"]["reading_profiles"]["novel"]["line_width"], json!(40.0));
     assert_eq!(migrated["preferences"]["reading_profiles"]["screenplay"]["font_size"], 22);
@@ -70,12 +70,14 @@ fn second_version_migration_adds_auto_and_preserves_original_bytes_and_existing_
     let mut previous: Value = serde_json::from_slice(&original).unwrap();
     previous["schema_version"] = json!(2); previous["revision"] = json!(7);
     previous.as_object_mut().unwrap().remove("execution_policy_revision"); previous["preferences"].as_object_mut().unwrap().remove("execution_mode");
+    previous["preferences"].as_object_mut().unwrap().remove("agent_session");
     previous["preferences"]["appearance"] = json!("dark");
     let bytes = serde_json::to_vec_pretty(&previous).unwrap(); drop(service); std::fs::write(directory.path().join("settings.json"),&bytes).unwrap();
     let upgraded = LocalSettings::open(directory.path()).unwrap(); let value = state(&upgraded);
-    assert_eq!(value["preferences"]["execution_mode"],"auto"); assert_eq!(value["revision"],8); assert_eq!(value["execution_policy_revision"],1);
+    assert_eq!(value["schema_version"],5);
+    assert_eq!(value["preferences"]["execution_mode"],"auto"); assert_eq!(value["revision"],9); assert_eq!(value["execution_policy_revision"],1);
     let mut preferences = value["preferences"].clone();
-    for field in ["execution_mode","font_family","font_size","line_spacing","first_line_indent"] {preferences.as_object_mut().unwrap().remove(field);}
+    for field in ["execution_mode","agent_session","font_family","font_size","line_spacing","first_line_indent"] {preferences.as_object_mut().unwrap().remove(field);}
     assert_eq!(preferences,previous["preferences"]);
     assert_eq!(std::fs::read(directory.path().join("migrations/v2/settings.json")).unwrap(),bytes);
 }

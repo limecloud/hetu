@@ -14,7 +14,7 @@ export function ManuscriptAnnotations(props: {
   recovery: boolean;
   saveError?: string;
   listRequest: number;
-  composeRequest?: {quote: SourceQuote; nonce: number};
+  composeRequest?: {documentId: string; revision: string; quote: SourceQuote; nonce: number};
   save: (items: DocumentNote[]) => Promise<boolean>;
   recover: () => void;
   ai: (quote: SourceQuote) => void;
@@ -51,7 +51,7 @@ export function ManuscriptAnnotations(props: {
   }
   useEffect(() => {
     const request = props.composeRequest;
-    if (!request || !props.current || props.recovery || props.busy) return;
+    if (!request || request.documentId !== props.documentId || request.revision !== props.revision || !props.current || props.recovery || props.busy) return;
     setDraft({quote: request.quote, text: "", revision: props.revision}); setMode("compose");
   }, [props.composeRequest]);
   useLayoutEffect(() => {

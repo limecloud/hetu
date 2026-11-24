@@ -1,0 +1,84 @@
+import {test, expect, _electron as electron} from "@playwright/test";
+import {mkdtemp, mkdir, writeFile} from "node:fs/promises";
+import {tmpdir} from "node:os";
+import path from "node:path";
+import {spawnSync} from "node:child_process";
+import {AppServer} from "../src/main/rpc.ts";
+
+test("移至搜索、取消、双端保存、原子撤销与并发来源拒绝", async ({}, info) => {
+  test.setTimeout(120000);
+  const root = path.resolve("../.."), directory = await mkdtemp(path.join(tmpdir(), "hetu-move-ui-")), workspace = path.join(directory, "work"), profile = path.join(directory, "profile");
+  await mkdir(profile);
+  const fixture = spawnSync(path.join(root, "target/debug/examples/baseline_fixture"), [workspace, path.join(directory, "collaboration")], {encoding: "utf8"});
+  expect(fixture.status, fixture.stderr).toBe(0); const refs = JSON.parse(fixture.stdout);
+  const id = refs.document.document.document_id, source = "前\r\n\r\n移动🌿\r\n\r\n后";
+  const author = await AppServer.open(path.join(root, "target/debug/hetu-app-server"), workspace);
+  let target: any;
+  try {
+    const result = await author.request("workspace/request", {action: "hetu.documents.save", contract_revision: "1", input: {document_id: id, base_revision_id: refs.document.revision.revision_id, source_format: "markdown", content: source, operation_key: "source"}});
+    expect(result.status).toBe("succeeded");
+    const created = await author.request("workspace/request", {action: "hetu.documents.create", contract_revision: "1", input: {kind: "novel_chapter", title: "移动目标", source_format: "markdown", content: "目标原文", operation_key: "target"}});
+    expect(created.status).toBe("succeeded"); target = created.data;
+  } finally {await author.close();}
+  await writeFile(path.join(profile, "creative-library.json"), JSON.stringify({schema_version: 1, roots: [{path: workspace, workspace_id: refs.novel.workspace_id, works: [{work_ref: refs.novel, title: "默认小说"}]}]}));
+  const app = await electron.launch({args: [path.join(root, "apps/desktop")], env: {...process.env, HETU_DESKTOP_PROFILE: profile, HETU_PLUGIN_STATE_DIR: profile, HETU_COLLABORATION_DIR: path.join(directory, "collaboration"), HETU_APP_SERVER: path.join(root, "target/debug/hetu-app-server")}});
+  try {
+    const page = await app.firstWindow(), errors: string[] = []; page.on("pageerror", error => errors.push(error.message));
+    await page.setViewportSize({width: 1440, height: 797});
+    await page.getByRole("button", {name: "打开作品 默认小说", exact: true}).click();
+    await page.getByRole("button", {name: "小说", exact: true}).click();
+    const editor = page.getByRole("textbox", {name: "文稿编辑", exact: true}); await expect(editor).toBeVisible();
+    const read = (document_id: string) => page.evaluate(async document_id => (await window.hetuDesktop.read("hetu.documents.get", {document_id})).data, document_id);
+    const open = async () => {
+      const line = editor.locator(".cm-line").filter({hasText: "移动🌿"});
+      await expect(line).toBeVisible();
+      await line.click({button: "right", position: {x: 20, y: 10}});
+      await page.getByRole("menuitem", {name: "移至…", exact: true}).click();
+      await expect(page.getByRole("dialog", {name: "移至文稿", exact: true})).toBeVisible();
+    };
+    await open();
+    const search = page.getByRole("combobox", {name: "搜索目标文稿", exact: true});
+    await search.fill("不存在"); await expect(page.getByText("没有匹配的文稿。", {exact: true})).toBeVisible();
+    await search.press("Escape"); await expect(editor).toBeFocused();
+    expect((await read(id)).content).toBe(source); expect((await read(target.document.document_id)).content).toBe("目标原文");
+    await open(); await search.fill("移动目标");
+    await expect(page.getByRole("option", {name: "移动目标", exact: true})).toBeVisible();
+    await page.screenshot({path: info.outputPath("move-target-picker-light.png")});
+    await search.press("Enter"); await expect(page.getByRole("dialog", {name: "移至文稿", exact: true})).toHaveCount(0);
+    await expect(editor).not.toContainText("移动🌿");
+    expect((await read(id)).content).toBe("前\r\n\r\n后"); expect((await read(target.document.document_id)).content).toBe("目标原文\n\n移动🌿");
+    await editor.press("Shift+F10"); await page.getByRole("menuitem", {name: "撤销跨文稿移动", exact: true}).click();
+    await expect(editor).toContainText("移动🌿");
+    expect((await read(id)).content).toBe(source); expect((await read(target.document.document_id)).content).toBe("目标原文");
+    await page.evaluate(async () => {const value = await window.hetuDesktop.settings("preferences"); await window.hetuDesktop.settings("update", {expected_revision: value.revision, patch: {execution_mode: "auto"}});});
+    await open();
+    await page.getByRole("button", {name: "新建章节", exact: true}).click();
+    await page.getByLabel("标题", {exact: true}).fill("新章节");
+    await page.getByRole("button", {name: "创建并移动", exact: true}).click();
+    await expect(page.getByRole("dialog", {name: "移至文稿", exact: true})).toHaveCount(0);
+    await expect(editor).not.toContainText("移动🌿");
+    const afterNew = (await page.evaluate(async work_ref => (await window.hetuDesktop.read("hetu.documents.list", {work_ref})).data.documents, refs.novel));
+    const newDocument = afterNew.find((item: any) => item.title === "新章节");
+    expect(newDocument).toBeTruthy();
+    await editor.press("Shift+F10"); await page.getByRole("menuitem", {name: "撤销跨文稿移动", exact: true}).click();
+    await expect(editor).toContainText("移动🌿");
+    expect((await read(id)).content).toBe(source);
+    expect((await page.evaluate(async work_ref => (await window.hetuDesktop.read("hetu.documents.list", {work_ref})).data.documents, refs.novel)).length).toBe(2);
+    await page.evaluate(async () => {const value = await window.hetuDesktop.settings("preferences"); await window.hetuDesktop.settings("update", {expected_revision: value.revision, patch: {appearance: "dark", execution_mode: "confirm"}});});
+    await page.setViewportSize({width: 760, height: 700});
+    await app.evaluate(({dialog}) => {dialog.showMessageBox = async () => ({response: 0, checkboxChecked: false});});
+    await open(); await search.fill("移动目标"); await search.press("Enter");
+    await expect(page.getByRole("dialog", {name: "移至文稿", exact: true}).getByRole("alert")).toContainText("已取消");
+    expect((await read(id)).content).toBe(source); expect((await read(target.document.document_id)).content).toBe("目标原文");
+    await page.screenshot({path: info.outputPath("move-target-picker-dark-narrow.png")});
+    await page.getByRole("button", {name: "取消移动", exact: true}).click();
+    await app.evaluate(({dialog}) => {dialog.showMessageBox = async () => ({response: 1, checkboxChecked: false});});
+    await open();
+    const before = await read(id);
+    await page.evaluate(async input => window.hetuDesktop.read("hetu.documents.save", input), {document_id: id, base_revision_id: before.revision.revision_id, source_format: "markdown", content: "并发原文", operation_key: "external"});
+    await search.fill("移动目标"); await search.press("Enter");
+    await expect(page.getByRole("dialog", {name: "移至文稿", exact: true}).getByRole("alert")).toContainText("正文已变化");
+    expect((await read(id)).content).toBe("并发原文"); expect((await read(target.document.document_id)).content).toBe("目标原文");
+    expect(errors).toEqual([]);
+  } finally {await app.close();}
+});

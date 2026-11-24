@@ -1,5 +1,9 @@
 # Checks and draft review
 
+## Start with what you need
+
+Reading and saving reference drafts need no step-by-step review. Inspect concrete changes when adopting text or finalizing; a choice already made in conversation needs no duplicate click.
+
 Your Agent returns an effective confrontation, but its final line explains the secret too early. You want the tension, not the explanation. You can keep a passage, request another attempt or write your own version.
 
 Reference drafts, working manuscripts and author finals have separate roles. Review approval, adoption and finalization record different decisions.

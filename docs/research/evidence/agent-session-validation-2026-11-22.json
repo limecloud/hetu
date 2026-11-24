@@ -1,0 +1,192 @@
+{
+  "record_kind": "agent_session_validation",
+  "date": "2026-11-22",
+  "product_version": "0.14.0",
+  "implementation": [
+    {
+      "path": "apps/desktop/src/main/agent-session.ts",
+      "sha256": "243fc0069ccb95ec38e32d0c45a4b0c45f94d976eb5c51b701b35c350b01d3f7"
+    },
+    {
+      "path": "apps/desktop/src/renderer/agent-session.tsx",
+      "sha256": "f38d382bc983e92ec5c652fdc4621caf840019e866f71ad2e6dc7804db30af77"
+    },
+    {
+      "path": "apps/desktop/src/main/main.ts",
+      "sha256": "d93690921688b502e66a6d7bd7cd49220a90e632c70e671e1c2b02613783c7e8"
+    },
+    {
+      "path": "apps/desktop/src/main/shell-preload.ts",
+      "sha256": "a206345b402d880a96b4e72d5c7554375849a0f7a67bca3aa3921580f4bc795c"
+    },
+    {
+      "path": "apps/desktop/src/renderer/bridge.ts",
+      "sha256": "df8f4a659259ca3cec7c1638088323000fcb65aa9a0469898831dfcc1e5dfb69"
+    },
+    {
+      "path": "apps/desktop/src/renderer/contributions.tsx",
+      "sha256": "27cc3e3983cb4019a3070bf15e55dd38c24948cec3909e630d5bea03682196a7"
+    },
+    {
+      "path": "apps/desktop/src/renderer/surface-pages.css",
+      "sha256": "e7c668b2d88daabdd7bb442f668d7766aff58b1a76d4cab86f1a3cfd0122c59b"
+    },
+    {
+      "path": "apps/desktop/tests/agent-session.test.ts",
+      "sha256": "aa672eff17260e3d3234a2a5f8a541308cb4feb0d71f7b914eb491caf754e769"
+    },
+    {
+      "path": "apps/desktop/tests/agent-session-e2e.spec.ts",
+      "sha256": "93c5ae8a2a34864847f2ec0a723c4098452d22cd53009541f95591769984868d"
+    },
+    {
+      "path": "core/src/collaboration.rs",
+      "sha256": "d0af60fdf0936b41dd008a60d1bf9ba447823714369025e0f305409636f4258b"
+    }
+  ],
+  "checks": [
+    {
+      "command": "npm run build:desktop",
+      "result": "passed",
+      "scope": "Electron TypeScript、主进程、renderer、随包工作台"
+    },
+    {
+      "command": "npm run build:task-view",
+      "result": "passed",
+      "scope": "MCP App资源生成"
+    },
+    {
+      "command": "npm run check --workspace @hetu/task-view",
+      "result": "passed",
+      "scope": "MCP App资源与manifest一致性"
+    },
+    {
+      "command": "node --experimental-strip-types --test apps/desktop/tests/agent-session.test.ts",
+      "result": "passed",
+      "scope": "隔离 fake App Server：类型化 WorkRef/management_ref 上下文、并发启动合并、停止后重连、连接代次隔离旧进程迟到增量和完成事件；旧事件未污染新轮次。"
+    },
+    {
+      "command": "npx playwright test apps/desktop/tests/workbench.spec.ts --grep \"Electron作品授权\"",
+      "result": "passed",
+      "scope": "真实Electron工作台打开作品、Agent协作入口、精确授权、CLI读取、撤权、重新授权及文稿交接；新增会话宿主上下文路径未破坏授权合同。"
+    },
+    {
+      "command": "codex app-server --stdio",
+      "result": "passed",
+      "scope": "本机Codex CLI 0.171.0真实initialize、thread/start和stop协议探测，获得真实thread ID"
+    },
+    {
+      "command": "cargo test --locked --workspace",
+      "result": "passed",
+      "scope": "Rust全量workspace测试：App Server、CLI、Core、MCP、Plugin CLI、集成测试及文档测试；全量通过。"
+    },
+    {
+      "command": "uv run tools/verify-docs.py; python3 tools/sync-capability-map.py --check",
+      "result": "passed",
+      "scope": "91文档、1406链接、332锚点、FR/US/UC/E2E/AC追踪及能力地图"
+    },
+    {
+      "command": "npx playwright test apps/desktop/tests/workbench.spec.ts --grep \"Electron作品授权\"",
+      "result": "passed",
+      "scope": "真实Electron工作台打开作品、Agent协作入口、精确授权、CLI读取、撤权、重新授权及文稿交接；新增会话宿主上下文路径未破坏授权合同。"
+    },
+    {
+      "command": "codex app-server --stdio + AgentSession",
+      "result": "passed",
+      "scope": "本机Codex CLI 0.171.0真实initialize、thread/start、stop；适配器获得真实thread ID；未执行turn生成。"
+    },
+    {
+      "command": "真实Codex模型短回归",
+      "result": "passed",
+      "scope": "隔离临时cwd、私有会话目录；turn/start返回固定中文短句，收到增量与完成事件；未读取或修改河图作品。"
+    },
+    {
+      "command": "真实Codex工具审批拒绝回归",
+      "result": "passed",
+      "scope": "approvalPolicy=untrusted；模型请求echo命令时收到item/commandExecution/requestApproval，宿主返回decline，模型确认命令未运行。"
+    },
+    {
+      "command": "真实Codex工具审批允许回归",
+      "result": "passed",
+      "scope": "approvalPolicy=untrusted；宿主明确返回accept后仅执行隔离目录中的printf固定文本，未读取、写入或联网。"
+    },
+    {
+      "command": "npx playwright test apps/task-view/tests/shared-workbench.spec.ts (stdio)",
+      "result": "passed",
+      "scope": "MCP App共享工作台完整旅程：固定作品上下文、资源、正文保存、设置、插件边界和跨面板隔离。"
+    },
+    {
+      "command": "HETU_ACCEPT_CODEX_BINARY=codex npx playwright test apps/task-view/tests/shared-workbench.spec.ts --grep \"codex MCP App\"",
+      "result": "passed",
+      "scope": "真实Codex 0.171.0 App Server transport共享工作台完整旅程；不启动模型轮次。"
+    },
+    {
+      "command": "node --experimental-strip-types --test apps/desktop/tests/agent-session.test.ts",
+      "result": "passed",
+      "scope": "隔离 fake App Server：类型化 WorkRef/management_ref 上下文、并发启动合并、停止后重连、连接代次隔离旧进程迟到增量和完成事件；旧事件未污染新轮次。"
+    },
+    {
+      "command": "PATH=/Users/coso/.nvm/versions/node/v25.0.0/bin:$PATH npm run test:plugins",
+      "result": "passed",
+      "scope": "Node v25.0.0（满足仓库引擎约束）下桌面构建与插件宿主 105 项测试。"
+    },
+    {
+      "command": "PATH=/Users/coso/.nvm/versions/node/v25.0.0/bin:$PATH node --experimental-strip-types --test apps/desktop/tests/agent-session.test.ts",
+      "result": "passed",
+      "scope": "Node v25.0.0 下 Agent 会话上下文合同、线程恢复、并发启动、重连及迟到事件隔离 3 项回归。"
+    },
+    {
+      "command": "PATH=/Users/coso/.nvm/versions/node/v25.0.0/bin:$PATH npx playwright test tests/agent-session-e2e.spec.ts",
+      "result": "passed",
+      "scope": "Electron 隔离端到端：作品卡片、私有稳定连接目录、Prompt 仅含 WorkRef、私有会话沙箱、真实 IPC 会话工作面、增量消息与完成状态。"
+    },
+    {
+      "command": "HETU_CODEX_BIN=/Users/coso/Library/PhpWebStudy/env/node/bin/codex node --experimental-strip-types --input-type=module（AgentSession initialize/thread/start/stop）",
+      "result": "passed",
+      "scope": "本机 Codex CLI 0.171.0 真实 App Server；当前沙箱 cwd 位于本机私有 agent-sessions/sandbox，未启动模型轮次。"
+    },
+    {
+      "command": "cargo test --locked -p hetu-core -p hetu-mcp -p hetu-app-server",
+      "result": "passed",
+      "scope": "Core 78 项、App Server 6 项、MCP 7+40 项及相关文档测试；当前 HETU_COLLABORATION_DIR 私有连接目录实现通过。"
+    },
+    {
+      "command": "git diff --check; uv run tools/verify-docs.py; python3 tools/sync-capability-map.py --check",
+      "result": "passed",
+      "scope": "差异空白、91 份文档、1406 个链接、332 个锚点、112 张 Mermaid 图、能力地图一致。"
+    },
+    {
+      "command": "PATH=/Users/coso/.nvm/versions/node/v25.0.0/bin:$PATH npm run check --workspace @hetu/task-view",
+      "result": "passed",
+      "scope": "MCP App 资源与 manifest 哈希一致。"
+    },
+    {
+      "command": "HETU_CODEX_BIN=/Users/coso/Library/PhpWebStudy/env/node/bin/codex node --experimental-strip-types --input-type=module（真实命令审批回传 cancel）",
+      "result": "passed",
+      "scope": "本机 Codex CLI 0.171.0；收到 item/commandExecution/requestApproval，回传 cancel 后轮次进入 ready、待答请求清除，命令未执行。"
+    },
+    {
+      "command": "HETU_CODEX_BIN=/Users/coso/Library/PhpWebStudy/env/node/bin/codex + 当前认证配置 + AgentSession 真实短轮次",
+      "result": "passed",
+      "scope": "Codex 0.171.0 真实 turn；Prompt 仅含 WorkRef，不含 management_ref，收到 assistant 增量和 completed 状态。"
+    },
+    {
+      "command": "HETU_CODEX_BIN=/Users/coso/Library/PhpWebStudy/env/node/bin/codex + 当前认证配置 + AgentSession 真实命令审批 cancel",
+      "result": "passed",
+      "scope": "Codex 0.171.0 真实 item/commandExecution/requestApproval；回传 cancel 后轮次 ready、待答请求清除，隔离命令未执行。"
+    },
+    {
+      "command": "claude 2.1.310 --model sonnet --output-format stream-json",
+      "result": "not_run_successfully",
+      "scope": "CLI 可启动并完成协议初始化，但当前配置模型返回 HTTP 404 model_not_found；未把 CLI 可执行误报为真实模型通过。"
+    }
+  ],
+  "boundaries": [
+    "Claude Code CLI stream-json 适配器已通过隔离协议回归；本机 Claude Code 2.1.310 的当前模型返回 404，真实模型轮次未验证。",
+    "ACP 适配器仍未实现。",
+    "跨平台、读屏、作者完整试用、真实 Codex Desktop 逐页视觉和插件停用联合旅程未宣称通过。",
+    "真实写入型河图业务任务仍未执行；真实 Codex 工具允许回归仅限隔离目录中的固定 printf，未触及作品事实。",
+    "Electron 端到端已验证精确作品范围、私有稳定连接目录、Prompt 不含 management_ref、私有会话沙箱；真实 Codex 已验证短轮次和命令审批取消，尚未执行在线模型写入河图作品或证明模型主动调用河图业务工具。"
+  ],
+  "acceptance": "partial_implementation_verified"
+}

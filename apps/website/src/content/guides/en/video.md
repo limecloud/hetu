@@ -1,5 +1,9 @@
 # From preview to finished video
 
+## Start with what you need
+
+Identify the timing, movement or sound you need to test and use the simplest sufficient material. Existing clips can be used directly; not every shot needs a 3D preview or a full generated asset set.
+
 Start a video from an idea, a script, storyboards or existing clips. A video is an independent project. Connect a script or novel when useful, without creating empty upstream works.
 
 ## Describe the goal and the material you have

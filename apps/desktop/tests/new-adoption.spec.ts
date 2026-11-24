@@ -1,4 +1,4 @@
-import { openDirectory } from "./navigation.ts";
+import { navigate, openDirectory } from "./navigation.ts";
 import {
   test,
   expect,
@@ -171,9 +171,7 @@ test(
         { method, input },
       );
     async function openTask(target: any) {
-      await page
-        .getByRole("button", { name: "参考稿审核", exact: true })
-        .click();
+      await navigate(page, "参考稿审核");
       await page
         .getByRole("combobox", { name: "当前审阅任务" })
         .selectOption(target.task_ref.task_id);
@@ -218,6 +216,10 @@ test(
         (await read("hetu.documents.list", { work_ref: novel.work_ref })).data
           .documents,
       ).toHaveLength(before);
+      await page.evaluate(async () => {
+        const api = (window as any).hetuDesktop, settings = await api.settings("preferences");
+        await api.settings("update", {expected_revision: settings.revision, patch: {execution_mode: "confirm"}});
+      });
       await application!.evaluate(({ dialog }) => {
         dialog.showMessageBox = async () => ({
           response: 0,
@@ -281,7 +283,7 @@ test(
           }
         }, drama.task_ref),
       ).toBe(true);
-      await page.getByRole("button", { name: "返回创作库", exact: true }).click();
+      await navigate(page, "返回创作库");
       await page.getByRole("button", { name: /独立剧本/ }).click();
       await expect(
         page.locator(".workspace-switcher .workspace-title"),
@@ -397,9 +399,7 @@ test(
         drama.candidate.draft_ref,
       );
       expect(JSON.parse(await readFile(journalFile, "utf8"))).toBeNull();
-      await page
-        .getByRole("button", { name: "剧本", exact: true })
-        .click();
+      await navigate(page, "剧本");
       await openDirectory(page);
       await page
         .getByRole("button", { name: "第二集 潮汐", exact: true })

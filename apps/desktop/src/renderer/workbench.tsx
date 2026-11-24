@@ -1,6 +1,7 @@
 import React, { createContext, useContext } from "react";
 import { createPortal } from "react-dom";
 import type {SidebarLayer, SidebarPanel} from "@hetu/workbench-ui";
+import type {DocumentTab} from "@hetu/workbench-ui";
 
 export const PageActionsTarget = createContext<HTMLDivElement | null>(null);
 export function PageActions({ children }: { children: React.ReactNode }) {
@@ -24,6 +25,7 @@ export interface AgentStatus {
   state: "idle" | "running" | "waiting_for_audit" | "failed";
   message?: string;
   taskId?: string;
+  submissionId?:string;
 }
 
 export const Workbench = createContext<{
@@ -42,6 +44,8 @@ export const Workbench = createContext<{
   focus: boolean;
   setFocus: React.Dispatch<React.SetStateAction<boolean>>;
   setDocumentTools: React.Dispatch<React.SetStateAction<DocumentTools | undefined>>;
+  setDocumentTab: (tab: DocumentTab | undefined) => void;
+  pinDocumentTab: (id: string) => void;
   agentStatus: AgentStatus;
   setAgentStatus: React.Dispatch<React.SetStateAction<AgentStatus>>;
 }>({
@@ -51,6 +55,8 @@ export const Workbench = createContext<{
   inspector: false, setInspector: () => {},
   focus: false, setFocus: () => {},
   setDocumentTools: () => {},
+  setDocumentTab: () => {},
+  pinDocumentTab: () => {},
   agentStatus: { state: "idle" },
   setAgentStatus: () => {}
 });

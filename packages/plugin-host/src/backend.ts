@@ -1,4 +1,4 @@
-import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
+import { spawn, spawnSync, type ChildProcessWithoutNullStreams } from "node:child_process";
 import path from "node:path";
 import { realpathSync } from "node:fs";
 import Ajv from "ajv";
@@ -51,19 +51,26 @@ export class BackendSupervisor {
     this.#work = options.work_ref;
     this.#request = options.request;
     if (!options.pkg.manifest.runtime) throw new Error("此插件没有Node后端。");
-    const snapshot = realpathSync(options.snapshot),
-      bootstrap = realpathSync(options.bootstrap);
+    const snapshotInput = path.resolve(options.snapshot),
+      bootstrapInput = path.resolve(options.bootstrap),
+      snapshot = realpathSync(snapshotInput),
+      bootstrap = realpathSync(bootstrapInput),
+      readScopes = [...new Set([snapshotInput, bootstrapInput, snapshot, bootstrap])];
+    const permissionFlag = options.electron ? undefined : nodePermissionFlag(options.node);
+    const sandboxArgs = options.electron ? [] : [
+      ...(permissionFlag ? [permissionFlag] : []),
+      "--max-old-space-size=128",
+      "--no-addons",
+      "--disable-proto=throw",
+      "--preserve-symlinks",
+      ...readScopes.map(scope => "--allow-fs-read=" + scope),
+    ];
     this.#child = spawn(
       options.node,
       [
-        "--permission",
-        "--max-old-space-size=128",
-        "--no-addons",
-        "--disable-proto=throw",
-        "--allow-fs-read=" + snapshot,
-        "--allow-fs-read=" + bootstrap,
-        bootstrap,
-        path.join(snapshot, options.pkg.manifest.runtime.entry),
+        ...sandboxArgs,
+        bootstrapInput,
+        path.join(snapshotInput, options.pkg.manifest.runtime.entry),
       ],
       {
         stdio: "pipe",
@@ -266,4 +273,22 @@ export class BackendSupervisor {
     force.unref();
     void this.#exited.finally(() => clearTimeout(force));
   }
+}
+/** Node 24+ renamed the experimental flag; detect the actual runtime instead of
+ * assuming the host's Node version also applies to a bundled or selected runtime. */
+function nodePermissionFlag(node: string): "--permission" | "--experimental-permission" | undefined {
+  try {
+    const result = spawnSync(node, ["--help"], {
+      encoding: "utf8",
+      timeout: 2_000,
+      windowsHide: true,
+      env: { ...process.env, ELECTRON_RUN_AS_NODE: "1" },
+    });
+    const help = `${result.stdout ?? ""}\n${result.stderr ?? ""}`;
+    if (/--permission(?:[\s,]|$)/m.test(help)) return "--permission";
+    if (/--experimental-permission(?:[\s,]|$)/m.test(help)) return "--experimental-permission";
+  } catch {
+    // The worker will return unsupported_node_runtime with a precise reason.
+  }
+  return undefined;
 }

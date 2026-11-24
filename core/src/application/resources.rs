@@ -148,7 +148,7 @@ impl Kernel {
         }
     }
     fn resource_write_access(&self, record: Option<&Value>) -> Result<()> {
-        if self.has_workspace_authority() {
+        if self.has_workspace_authority() || self.management_binding().is_some() {
             return Ok(());
         }
         let access = self.resource_task_access()?;

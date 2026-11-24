@@ -1,0 +1,24 @@
+import React, { useEffect, useState } from "react";
+import { desktop } from "./bridge.ts";
+import { FontPicker, agentPreferences, agentSessionDefaults, type AgentPreferences } from "@hetu/workbench-ui";
+
+type Props = { preferences: any; disabled?: boolean; onChange: (patch: Partial<AgentPreferences>) => void };
+export function CodexSettings({ preferences, disabled, onChange }: Props) {
+  const values = agentPreferences(preferences);
+  const [font, setFont] = useState(values.terminal_font_family);
+  useEffect(() => setFont(values.terminal_font_family), [values.terminal_font_family]);
+  const numeric = (key: keyof AgentPreferences, label: string, min: number, max: number, step = 1) => <label className="setting-row" key={key}><span>{label}</span><input aria-label={label} type="number" min={min} max={max} step={step} value={Number(values[key])} disabled={disabled} onChange={event => { if (event.target.validity.valid && event.target.value) onChange({ [key]: Number(event.target.value) }); }}/></label>;
+  const select = (key: keyof AgentPreferences, label: string, options: [string, string][]) => <label className="setting-row" key={key}><span>{label}</span><select aria-label={label} value={String(values[key])} disabled={disabled} onChange={event => onChange({ [key]: event.target.value })}>{options.map(([value, title]) => <option value={value} key={value}>{title}</option>)}</select></label>;
+  const toggle = (key: keyof AgentPreferences, label: string) => <label className="setting-row" key={key}><span>{label}</span><input aria-label={label} type="checkbox" checked={Boolean(values[key])} disabled={disabled} onChange={event => onChange({ [key]: event.target.checked })}/></label>;
+  const rendering: [string, string][] = [["auto", "自动"], ["on", "开启"], ["off", "关闭"]];
+  return <div className="codex-settings">
+    <section className="settings-group"><h3>Codex会话</h3><div>{select("default_surface", "新会话默认界面", [["tui", "TUI 终端"], ["gui", "GUI 对话"]])}</div><p className="settings-note">只影响新会话；已打开会话可在轮次结束后切换。</p></section>
+    <section className="settings-group"><h3>终端文字</h3><div>
+      <label className="setting-row"><span>终端字体</span><input aria-label="终端字体" placeholder="系统等宽字体" maxLength={300} value={font} onChange={event => setFont(event.target.value)} disabled={disabled} onBlur={event => { if (event.target.value !== values.terminal_font_family) onChange({ terminal_font_family: event.target.value }); }}/></label>
+      {numeric("terminal_font_size", "终端字号", 10, 24)}{numeric("terminal_line_height", "终端行高", 1, 2, .05)}{numeric("terminal_font_weight", "终端常规字重", 100, 900, 100)}{numeric("terminal_bold_weight", "终端粗体字重", 100, 900, 100)}
+    </div><FontPicker load={refresh => desktop.fonts(refresh)} language={preferences.language ?? "zh-CN"} disabled={!!disabled} select={name => { setFont(name); onChange({ terminal_font_family:name }); }}/><div className="codex-font-preview" style={{ fontFamily: values.terminal_font_family || "monospace", fontSize: values.terminal_font_size, lineHeight: values.terminal_line_height, fontWeight: values.terminal_font_weight }}>河图洛书 Codex 0123456789<br/>人物、章节与固定成果 <strong style={{ fontWeight: values.terminal_bold_weight }}>正在接续</strong></div></section>
+    <section className="settings-group"><h3>终端外观</h3><div>{select("terminal_theme", "终端主题", [["system", "跟随应用"], ["light", "浅色"], ["dark", "深色"]])}{select("terminal_cursor", "终端光标", [["block", "方块"], ["bar", "竖线"], ["underline", "下划线"]])}{toggle("terminal_cursor_blink", "光标闪烁")}{select("terminal_gpu", "图形加速", rendering)}{select("terminal_ligatures", "字体连字", rendering)}</div></section>
+    <section className="settings-group"><h3>终端交互与历史</h3><div>{numeric("terminal_scrollback", "历史保留行数", 1000, 50000, 1000)}{numeric("terminal_scroll_sensitivity", "滚动速度", .1, 10, .05)}{numeric("terminal_fast_scroll_sensitivity", "快速滚动速度", 1, 20, .5)}{numeric("terminal_tui_scroll_sensitivity", "TUI滚动速度", .1, 10, .1)}{toggle("terminal_scroll_on_input", "输入时滚到最新")}{toggle("terminal_copy_on_select", "选中即复制")}{toggle("terminal_focus_on_hover", "焦点随鼠标移动")}</div></section>
+    <button disabled={disabled} onClick={() => onChange(Object.fromEntries(Object.entries(agentSessionDefaults).filter(([key]) => key.startsWith("terminal_"))) as Partial<AgentPreferences>)}>恢复终端默认设置</button>
+  </div>;
+}

@@ -1,5 +1,9 @@
 # Give feedback and revise
 
+## Start with what you need
+
+State the change and what must remain. Feedback belongs to the version read; a new conversation continues the same draft and feedback rather than starting an unrelated task.
+
 “She would not say this” and “this pause feels too short” are useful judgments. Point to the exact result and location, explain what to preserve and what to change, then continue the same task.
 
 You can comment anywhere, not only on issues the assistant has marked.

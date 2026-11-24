@@ -31,11 +31,11 @@ test.beforeAll(async () => {
 });
 test.afterAll(async () => { await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve())); });
 
-async function open(page: Page, value = fixture(), theme: "light" | "dark" = "light", messages = false, extensions = false, context = false) {
+async function open(page: Page, value = fixture(), theme: "light" | "dark" = "light", messages = false, extensions = false, context = false,localDrafts=false) {
   const errors: string[] = [];
   page.on("pageerror", error => errors.push(error.message));
   const testLocale = (value.structuredContent as { data: { request: { prompt_language: string } } }).data.request.prompt_language;
-  await page.addInitScript(payload => { Object.assign(window, payload); }, { initialTask: value, viewHtml: html, testTheme: theme, testLocale, testMessages: messages, testExtensions: extensions, testContext: context });
+  await page.addInitScript(payload => { Object.assign(window, payload); }, { initialTask: value, viewHtml: html, testTheme: theme, testLocale, testMessages: messages, testExtensions: extensions, testContext: context,testLocalDrafts:localDrafts });
   await page.goto(origin);
   const view = page.frameLocator("iframe");
   await expect(view.getByRole("heading", { level: 1 })).toBeVisible();
@@ -312,3 +312,16 @@ for (const mode of ["rejected", "lost"] as const) {
     await expect(view.getByRole("button", { name: "Send to current agent", exact: true })).toBeDisabled();
   });
 }
+
+for(const target of ["active","new"] as const)test(`本机${target}反馈交接仅建立草稿，不暴露直接发送`,async({page})=>{
+ const value=fixture();(value.structuredContent as any).data.allowed_actions=["hetu.task_feedback.save"];
+ const {view,errors}=await open(page,value,"light",true,false,false,true);
+ await view.getByLabel("补充要求或意见").fill("保留原任务，加入钟声。");
+ await view.getByRole("button",{name:"按此修改",exact:true}).click();
+ await expect(view.getByRole("button",{name:"发送给当前 Agent",exact:true})).toHaveCount(0);
+ await view.getByRole("button",{name:target==="active"?"放入当前草稿":"在新对话中准备",exact:true}).click();
+ await expect(view.getByText("已放入宿主草稿，尚未发送。",{exact:true})).toBeVisible();
+ const wire=await page.evaluate(()=>window.harness.wireMessages);
+ expect(wire).toHaveLength(1);expect(wire[0]).toMatchObject({_meta:{"hetu/message":{target,send:false}}});
+ expect(JSON.stringify(wire)).toContain("feedback_test");expect(errors).toEqual([]);
+});

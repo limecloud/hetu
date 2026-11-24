@@ -9,6 +9,7 @@ declare global {
     testLocale?: string;
     testMessages?: boolean;
     testExtensions?: boolean;
+    testLocalDrafts?: boolean;
     testContext?: boolean;
     testDeepLink?: string;
     testActions?: Record<string, Record<string, unknown>>;
@@ -38,7 +39,7 @@ iframe.setAttribute("sandbox", "allow-scripts");
 iframe.style.cssText = `width:100%;height:${window.workbenchMode ? "100dvh" : "1400px"};border:0;display:block`;
 document.body.style.margin = "0";
 document.body.append(iframe);
-const bridge = new AppBridge(null, { name: "Hetu Apps contract host", version: "1" }, { serverTools: {}, serverResources: {}, ...(window.testMessages ? { message: { text: {} } } : {}), ...(window.testContext ? { updateModelContext: { text: {} } } : {}), ...(window.testExtensions ? { experimental: { "openai/message": {} } } : {}) }, { hostContext: { theme: window.testTheme ?? "light", locale: window.testLocale ?? "zh-CN", ...(window.testDeepLink ? { "openai/deepLink": { url: window.testDeepLink } } : {}) } });
+const bridge = new AppBridge(null, { name: "Hetu Apps contract host", version: "1" }, { serverTools: {}, serverResources: {}, ...(window.testMessages ? { message: { text: {} } } : {}), ...(window.testContext ? { updateModelContext: { text: {} } } : {}), ...(window.testLocalDrafts ? {experimental:{"hetu/message":{drafts:true,directSend:false}}} : window.testExtensions ? { experimental: { "openai/message": {} } } : {}) }, { hostContext: { theme: window.testTheme ?? "light", locale: window.testLocale ?? "zh-CN", ...(window.testDeepLink ? { "openai/deepLink": { url: window.testDeepLink } } : {}) } });
 let current = structuredClone(window.initialTask);
 let original: CallToolResult | undefined;
 const harness: Window["harness"] = window.harness = {

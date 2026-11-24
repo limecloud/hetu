@@ -29,6 +29,7 @@ test("光标格式、组合文字、删除清理与列表键盘在实际编辑�
     const page = await app.firstWindow(), errors: string[] = []; page.on("pageerror", error => errors.push(error.message));
     await page.setViewportSize({width: 1440, height: 940});
     await page.getByRole("button", {name: "打开作品 默认小说", exact: true}).click();
+    await page.getByRole("button", {name: "小说", exact: true}).click();
     await page.evaluate(async () => {
       const api = (window as any).hetuDesktop, state = await api.settings("preferences");
       await api.settings("update", {expected_revision: state.revision, patch: {autosave: false}});
@@ -65,13 +66,42 @@ test("光标格式、组合文字、删除清理与列表键盘在实际编辑�
     expect(styles["普通"]).toEqual({weight: "400", italic: "normal"});
     await editor.press("ControlOrMeta+z"); expect(await editor.locator(".cm-line").last().textContent()).toBe("粗体粗斜斜体");
     await editor.press("ControlOrMeta+Shift+z");
-    await editor.press("ControlOrMeta+s"); const formatted = await copiedSource();
+    await editor.evaluate(element => {
+      const locks: string[] = []; (window as any).__saveInputLocks = locks;
+      const observer = new MutationObserver(records => {
+        if (records.some(record => record.oldValue === "false") || element.getAttribute("contenteditable") === "false") locks.push("保存期间编辑器进入只读");
+      });
+      observer.observe(element, {attributes: true, attributeOldValue: true, attributeFilter: ["contenteditable"]});
+      (window as any).__stopSaveInputObserver = () => {observer.disconnect(); return locks;};
+    });
+    await app.evaluate(({ipcMain}) => {
+      const handlers = (ipcMain as any)._invokeHandlers, buffer = handlers.get("desktop:buffer");
+      handlers.set("desktop:buffer", async (...args: any[]) => {
+        const value = await buffer(...args);
+        if (args[2] === null) {
+          handlers.set("desktop:buffer", buffer);
+          await new Promise<void>(resolve => {(globalThis as any).__resumeSaveFinalization = resolve;});
+        }
+        return value;
+      });
+    });
+    await editor.press("ControlOrMeta+s");
+    await expect.poll(() => app.evaluate(() => !!(globalThis as any).__resumeSaveFinalization)).toBe(true);
+    try {
+      await editor.press("Shift+F10");
+      await page.getByRole("menuitem", {name: "样式", exact: true}).hover();
+      await expect(page.getByRole("menu", {name: "样式", exact: true}).getByRole("menuitemcheckbox", {name: "加粗", exact: true})).toBeEnabled();
+      await page.keyboard.press("Escape"); await page.keyboard.press("Escape");
+      await expect(editor).toHaveAttribute("contenteditable", "true");
+    } finally {await app.evaluate(() => (globalThis as any).__resumeSaveFinalization?.());}
+    const formatted = await copiedSource();
     await expect.poll(async () => (await read()).data.content).toBe(formatted);
     await editor.press("ControlOrMeta+End"); await editor.press("Enter"); await editor.press("ControlOrMeta+b");
     await page.keyboard.insertText("字"); await editor.press("Backspace");
     expect(await copiedSource()).toBe(formatted + "\r\n");
     await page.keyboard.insertText("续");
     expect(await copiedSource()).toBe(formatted + "\r\n**续**");
+    expect(await page.evaluate(() => (window as any).__stopSaveInputObserver())).toEqual([]);
     expect(await editor.locator(".cm-line").last().evaluate(line => {
       const walker = document.createTreeWalker(line, NodeFilter.SHOW_TEXT);
       while (walker.nextNode()) if (walker.currentNode.textContent === "续") return getComputedStyle(walker.currentNode.parentElement!).fontWeight;

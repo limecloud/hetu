@@ -22,6 +22,7 @@ test("关闭重开恢复同一作品章节和固定锚点，新修订从头阅�
   const launch = () => electron.launch({args: [path.join(root, "apps/desktop")], env: {...process.env, HETU_DESKTOP_PROFILE: profile, HETU_PLUGIN_STATE_DIR: profile, HETU_COLLABORATION_DIR: path.join(directory, "collaboration"), HETU_APP_SERVER: path.join(root, "target/debug/hetu-app-server")}});
   let app = await launch();
   const open = async () => {const page = await app.firstWindow(); await page.setViewportSize({width: 1440, height: 940}); await page.getByRole("button", {name: "打开作品 默认小说", exact: true}).click(); return page;};
+  await page.getByRole("button", {name: "小说", exact: true}).click();
   try {
     let page = await open();
     await openDirectory(page); await page.getByRole("button", {name: "第二章 归航", exact: true}).click();

@@ -10,8 +10,8 @@ contextBridge.exposeInMainWorld(
   "hetuDesktop",
   Object.freeze({
     windowControls: Object.freeze({zoom: true, interfaceScale: true, titlebarInset: process.platform === "darwin"}),
-    onWindowChrome: (listener: (value: {inset: boolean; scale: number}) => void) => {
-      const handler = (_event: unknown, value: {inset: boolean; scale: number}) => listener(value);
+    onWindowChrome: (listener: (value: {inset: boolean; scale: number;fullscreen:boolean}) => void) => {
+      const handler = (_event: unknown, value: {inset: boolean; scale: number;fullscreen:boolean}) => listener(value);
       ipcRenderer.on("desktop:window-chrome", handler);
       return () => ipcRenderer.removeListener("desktop:window-chrome", handler);
     },
@@ -39,11 +39,22 @@ contextBridge.exposeInMainWorld(
     settingsWindow: invoke("desktop:settings-window"),
     settingsAgent: invoke("desktop:settings-agent"),
     workAgent: invoke("desktop:work-agent"),
+    promptDelivery: Object.freeze({ drafts:true, directSend:false, send: async (text: string, mode: string, workRef: unknown) => { if (mode !== "draft") throw new Error("请先在当前会话核对并发送请求。"); await invoke("desktop:agent-session")("insert", {text,...(workRef?{work_ref:workRef}:{scope:"library"})}); return {isError:false}; } }),
+    agentSessionHost: true,
+    agentSession: invoke("desktop:agent-session"),
+    onAgentSession: (listener: (value: unknown) => void) => {
+      const handler = (_event: unknown, value: unknown) => listener(value);
+      ipcRenderer.on("desktop:agent-session", handler);
+      return () => ipcRenderer.removeListener("desktop:agent-session", handler);
+    },
     models: invoke("desktop:models"),
     covers: invoke("desktop:covers"),
     novel: invoke("desktop:novel"),
     canon: invoke("desktop:canon"),
     zoom: invoke("desktop:zoom"),
+    maximize: invoke("desktop:maximize"),
+    fullscreen: invoke("desktop:fullscreen"),
+    windowLayout: invoke("desktop:window-layout"),
     onPreferences: (listener: (value: unknown) => void) => {
       const handler = (_event: unknown, value: unknown) => listener(value);
       ipcRenderer.on("desktop:preferences", handler);
@@ -80,6 +91,7 @@ contextBridge.exposeInMainWorld(
     copy: invoke("desktop:copy"),
     paste: invoke("desktop:paste"),
     handoff: invoke("desktop:handoff"),
+    writingPrompt: invoke("desktop:writing-prompt"),
     install: invoke("desktop:install"),
     toggle: invoke("desktop:toggle"),
     uninstall: invoke("desktop:uninstall"),

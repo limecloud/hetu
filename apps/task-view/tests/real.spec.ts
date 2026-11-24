@@ -8,6 +8,7 @@ import { resolve, join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { createServer, type Server } from "node:http";
 import { createHash } from "node:crypto";
+import { navigate } from "../../desktop/tests/navigation.ts";
 
 let client: Client;
 let server: Server;
@@ -91,7 +92,8 @@ test("real workbench opens authorized novel, drama and video through portable to
   const view = page.frameLocator("iframe");
   await view.getByRole("button", { name: "打开作品 河港视频", exact: true }).click();
   await expect(view.getByRole("alert")).toHaveCount(0);
-  await view.getByRole("button", { name: "视频", exact: true }).click();
+  await navigate(view, "视频");
+  await expect(view.getByRole("tablist", { name: "打开的文稿", exact: true })).toHaveCount(0);
   await expect(view.getByRole("combobox",{name:"视频分集",exact:true})).toBeVisible();
   await expect(view.getByRole("combobox",{name:"视频成果版本",exact:true})).toBeVisible();
   const player = view.locator("video");
@@ -99,10 +101,11 @@ test("real workbench opens authorized novel, drama and video through portable to
   await expect.poll(() => player.evaluate((node: HTMLVideoElement) => Number.isFinite(node.duration) && node.duration > 0)).toBe(true);
   await player.evaluate((node: HTMLVideoElement) => { node.muted = true; return node.play(); });
   await expect.poll(() => player.evaluate((node: HTMLVideoElement) => node.currentTime)).toBeGreaterThan(0);
-  await view.getByRole("button", { name: "返回创作库", exact: true }).click();
+  await navigate(view, "返回创作库");
   await view.getByRole("button", { name: "打开作品 河港剧本", exact: true }).click();
-  await view.getByRole("button", { name: "剧本", exact: true }).click();
-  await expect(view.getByText("河港剧本", { exact: true }).last()).toBeVisible();
+  await navigate(view, "剧本");
+  await expect(view.locator(".workspace-title")).toHaveText("河港剧本");
+  await expect(view.getByRole("tablist", { name: "打开的文稿", exact: true })).toHaveCount(0);
   await expect(view.getByRole("alert")).toHaveCount(0);
 });
 

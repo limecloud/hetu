@@ -9,6 +9,7 @@ import { spawnSync } from "node:child_process";
 import path from "node:path";
 import os from "node:os";
 import { PluginPackage } from "../../../packages/plugin-host/src/package.ts";
+import { captureAgentDraft, navigate } from "./navigation.ts";
 const root = path.resolve(import.meta.dirname, "../../..");
 
 test(
@@ -53,16 +54,19 @@ test(
     };
     try {
       let page = await launch();
+      const capturedDraft=await captureAgentDraft(application!,page);
       for (const [kind, label] of [["drama", "剧本"], ["video", "视频"], ["novel", "小说"]]) {
         await page.getByRole("button", { name: `新建${label}`, exact: true }).click();
-        await expect(page.getByRole("status")).toContainText("作品尚未创建");
-        const request = await application!.evaluate(({ clipboard }) =>
-          JSON.parse(clipboard.readText().split("\n").slice(1).join("\n")),
-        );
+        await expect(page.getByRole("status").filter({hasText:"作品尚未创建"})).toBeVisible();
+        const request = JSON.parse((await capturedDraft())!.split("\n").slice(1).join("\n"));
         expect(request.work_type).toBe(kind);
+        expect(request.collaboration_directory).toBeUndefined();expect(request.core_cli).toBeUndefined();
+        await expect(page.getByRole("region",{name:"独立 Agent 会话",exact:true})).toBeVisible();
+        await navigate(page,"全部作品");
         await expect(page.getByRole("heading", { name: "还没有作品", exact: true })).toBeVisible();
       }
-      await expect(page.getByRole("status")).toContainText("作品尚未创建");
+      // 外部复制入口保持可用；真正创建与自动接纳仍走公开CLI。
+      await page.evaluate(()=>window.hetuDesktop.library("bootstrap",{kind:"novel"}));
       const handoff = await application!.evaluate(({ clipboard }) =>
         JSON.parse(clipboard.readText().split("\n").slice(1).join("\n")),
       );
@@ -104,7 +108,7 @@ test(
         page.getByRole("complementary", { name: "项目导航", exact: true }),
       ).toBeVisible();
       await expect(
-        page.getByRole("heading", { name: "从成果开始创作", exact: true }),
+        page.getByRole("region", { name: "当前作品资料", exact: true }),
       ).toBeVisible();
       // 库的登记不授予另一个客户端管理权。
       const denied = spawnSync(

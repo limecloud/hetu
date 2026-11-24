@@ -744,3 +744,90 @@ fn conversation_settings_decision_is_fixed_to_client_and_does_not_execute() {
         "agent_conversation"
     );
 }
+
+#[test]
+fn codex_terminal_preferences_merge_and_migrate_without_changing_execution_policy() {
+    let directory = tempfile::tempdir().unwrap();
+    let service = LocalSettings::open(directory.path()).unwrap();
+    let initial = data(call(&service, "codex", "get", json!({})));
+    assert_eq!(initial["preferences"]["agent_session"]["default_surface"], "tui");
+    let changed = service.host(json!({"method":"update","input":{"expected_revision":initial["settings_revision"],"patch":{"agent_session":{"terminal_font_size":18}},"operation_key":"terminal-size"}})).unwrap();
+    assert_eq!(changed["preferences"]["agent_session"]["terminal_font_size"], 18);
+    assert_eq!(changed["preferences"]["agent_session"]["terminal_scrollback"], 5000);
+    assert!(service.host(json!({"method":"update","input":{"expected_revision":initial["settings_revision"],"patch":{"agent_session":{"terminal_scrollback":10000}},"operation_key":"stale-size"}})).is_err());
+    assert_eq!(call(&service, "codex", "prepare", json!({"kind":"preferences","patch":{"agent_session":{"terminal_font_size":100}},"summary":"非法字号","operation_key":"bad-terminal"}))["status"], "blocked");
+    let policy = service.host(json!({"method":"get","input":{}})).unwrap()["execution_policy_revision"].clone();
+    let file = directory.path().join("settings.json");
+    let mut legacy: Value = serde_json::from_slice(&std::fs::read(&file).unwrap()).unwrap();
+    legacy["schema_version"] = json!(3);
+    legacy["preferences"].as_object_mut().unwrap().remove("agent_session");
+    legacy["preferences"]["git_author_name"] = json!("保留署名");
+    let original = serde_json::to_vec(&legacy).unwrap();
+    std::fs::write(&file, &original).unwrap();
+    drop(service);
+    let service = LocalSettings::open(directory.path()).unwrap();
+    let migrated = data(call(&service, "codex", "get", json!({})));
+    assert_eq!(migrated["preferences"]["git_author_name"], "保留署名");
+    assert_eq!(migrated["preferences"]["agent_session"]["terminal_font_size"], 14);
+    assert_eq!(service.host(json!({"method":"get","input":{}})).unwrap()["execution_policy_revision"], policy);
+    assert_eq!(std::fs::read(directory.path().join("migrations/v3/settings.json")).unwrap(), original);
+    let stored: Value = serde_json::from_slice(&std::fs::read(&file).unwrap()).unwrap();
+    assert_eq!(stored["schema_version"], 5);
+    drop(service);
+    LocalSettings::open(directory.path()).unwrap();
+    assert_eq!(serde_json::from_slice::<Value>(&std::fs::read(&file).unwrap()).unwrap(), stored);
+}
+
+#[test]
+fn terminal_hover_migration_preserves_preferences_policy_and_original_bytes() {
+    let directory = tempfile::tempdir().unwrap();
+    let service = LocalSettings::open(directory.path()).unwrap();
+    let initial = service.host(json!({"method":"get","input":{}})).unwrap();
+    assert_eq!(initial["preferences"]["agent_session"]["terminal_focus_on_hover"], false);
+    service.host(json!({"method":"update","input":{"expected_revision":initial["revision"],"patch":{"execution_mode":"confirm","agent_session":{"terminal_font_size":19,"terminal_copy_on_select":true}},"operation_key":"hover-original"}})).unwrap();
+    let file = directory.path().join("settings.json");
+    let mut legacy: Value = serde_json::from_slice(&std::fs::read(&file).unwrap()).unwrap();
+    legacy["schema_version"] = json!(4);
+    legacy["preferences"]["agent_session"].as_object_mut().unwrap().remove("terminal_focus_on_hover");
+    let original = serde_json::to_vec(&legacy).unwrap();
+    drop(service);
+    std::fs::write(&file, &original).unwrap();
+    let service = LocalSettings::open(directory.path()).unwrap();
+    let migrated: Value = serde_json::from_slice(&std::fs::read(&file).unwrap()).unwrap();
+    let mut expected = legacy.clone();
+    expected["schema_version"] = json!(5);
+    expected["revision"] = json!(legacy["revision"].as_u64().unwrap() + 1);
+    expected["preferences"]["agent_session"]["terminal_focus_on_hover"] = json!(false);
+    assert_eq!(migrated, expected);
+    assert_eq!(std::fs::read(directory.path().join("migrations/v4/settings.json")).unwrap(), original);
+    assert!(service.host(json!({"method":"update","input":{"expected_revision":legacy["revision"],"patch":{"agent_session":{"terminal_focus_on_hover":true}},"operation_key":"hover-stale"}})).is_err());
+    drop(service);
+    let service = LocalSettings::open(directory.path()).unwrap();
+    assert_eq!(serde_json::from_slice::<Value>(&std::fs::read(&file).unwrap()).unwrap(), migrated);
+    service.host(json!({"method":"update","input":{"expected_revision":migrated["revision"],"patch":{"execution_mode":"auto"},"operation_key":"hover-auto"}})).unwrap();
+    let plan = prepare(&service, "hover-prepare", json!({"agent_session":{"terminal_focus_on_hover":true}}));
+    data(execute(&service, &plan, "hover-execute"));
+    assert_eq!(data(call(&service, "codex", "get", json!({})))["preferences"]["agent_session"]["terminal_focus_on_hover"], true);
+}
+
+#[test]
+fn invalid_terminal_hover_migration_preserves_the_old_settings() {
+    for case in ["missing-field", "invalid-value", "conflicting-original"] {
+        let directory = tempfile::tempdir().unwrap();
+        let service = LocalSettings::open(directory.path()).unwrap();
+        let file = directory.path().join("settings.json");
+        let mut legacy: Value = serde_json::from_slice(&std::fs::read(&file).unwrap()).unwrap();
+        legacy["schema_version"] = json!(4);
+        legacy["preferences"]["agent_session"].as_object_mut().unwrap().remove("terminal_focus_on_hover");
+        if case == "missing-field" { legacy["preferences"]["agent_session"].as_object_mut().unwrap().remove("terminal_font_size"); }
+        if case == "invalid-value" { legacy["preferences"]["agent_session"]["terminal_font_size"] = json!("wrong"); }
+        if case == "conflicting-original" {
+            std::fs::create_dir_all(directory.path().join("migrations/v4")).unwrap();
+            std::fs::write(directory.path().join("migrations/v4/settings.json"), b"different-original").unwrap();
+        }
+        let original = serde_json::to_vec(&legacy).unwrap();drop(service);
+        std::fs::write(&file, &original).unwrap();
+        assert!(LocalSettings::open(directory.path()).is_err(), "{case}");
+        assert_eq!(std::fs::read(&file).unwrap(), original, "{case}");
+    }
+}

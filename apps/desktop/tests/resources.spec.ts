@@ -1,4 +1,4 @@
-import { navigate } from "./navigation.ts";
+import { navigate, captureAgentDraft } from "./navigation.ts";
 import {
   test,
   expect,
@@ -400,15 +400,15 @@ test(
       await page
         .getByRole("button", { name: "读取最新资料", exact: true })
         .click();
+      const capturedDraft=await captureAgentDraft(app,page);
       await page
         .getByRole("button", { name: "让 AI 整理资料", exact: true })
         .click();
       await expect(page.getByRole("status")).toContainText(
-        "已复制资料整理请求",
+        "已放入当前会话草稿",
       );
-      const handoff = await app.evaluate(({ clipboard }) =>
-        JSON.parse(clipboard.readText().split("\n").slice(1).join("\n")),
-      );
+      const handoff = JSON.parse((await capturedDraft())!.split("\n").slice(1).join("\n"));
+      expect(handoff.management_ref).toBeUndefined();expect(handoff.workspace_path).toBeUndefined();
       expect(
         handoff.fixed_refs.some(
           (r: any) =>
@@ -424,6 +424,13 @@ test(
         data(cli(grant, "hetu.resources.get", { resource_id: id })).resource
           .state,
       ).toBe("draft");
+      await page.evaluate(async () => {
+        const current = await window.hetuDesktop.settings("preferences");
+        await window.hetuDesktop.settings("update", {
+          expected_revision: current.revision,
+          patch: { execution_mode: "confirm" },
+        });
+      });
       await app.evaluate(({ dialog }) => {
         dialog.showMessageBox = async () => ({
           response: 0,

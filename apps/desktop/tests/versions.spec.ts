@@ -8,7 +8,7 @@ import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { PluginPackage } from "../../../packages/plugin-host/src/package.ts";
 import { VersionReview } from "../src/main/versions.ts";
 import { RecoveryStore } from "../src/main/recovery.ts";
-import { navigate } from "./navigation.ts";
+import { navigate, captureAgentDraft } from "./navigation.ts";
 
 const root = path.resolve(import.meta.dirname, "../../..");
 function data(result: any) {
@@ -95,7 +95,7 @@ test("CLI准备独立文稿快照、Electron审阅批准、无窗口提交及真
     work = (await page.evaluate(() => (window as any).hetuDesktop.state())).work;
   }
   function cli(grant: any, action: string, input: any) {
-    const result = spawnSync(binary("hetu"), ["--client", "codex", "--collaboration-dir", collaboration, "call", action, "--input", "-"], { encoding: "utf8", timeout: 30000, maxBuffer: 8 * 1024 * 1024, input: JSON.stringify({ ...input, management_ref: grant }) });
+    const result = spawnSync(binary("hetu"), ["--client", "codex", "--collaboration-dir", collaboration, "call", action, "--input", "-"], { env:{...process.env,HETU_COLLABORATION_DIR:collaboration}, encoding: "utf8", timeout: 30000, maxBuffer: 8 * 1024 * 1024, input: JSON.stringify({ ...input, management_ref: grant }) });
     expect(result.error?.message ?? "", result.stderr).toBe("");
     return JSON.parse(result.stdout);
   }
@@ -130,8 +130,9 @@ test("CLI准备独立文稿快照、Electron审阅批准、无窗口提交及真
     await expect(page!.getByRole("region", { name: "固定文稿快照", exact: true })).toContainText("等待 Agent 执行");
     expect(data(cli(grant, "hetu.git.get_snapshot", { work_ref: work, snapshot_id: id })).approval_state).toBe("approved");
     expect(data(cli(grant, "hetu.git.status", { work_ref: work })).head.commit_id).toBeNull();
+    const capturedDraft=await captureAgentDraft(app!,page!);
     await page!.getByRole("button", { name: "让 AI 接续此版本", exact: true }).click();
-    await expect.poll(() => app!.evaluate(({ clipboard }) => clipboard.readText())).toContain(id);
+    await expect.poll(capturedDraft).toContain(id);
     await app!.close(); app = undefined;
     const dir = path.join(profile, "version-decisions"), file = path.join(dir, (await readdir(dir))[0]);
     const recovery = JSON.parse(await readFile(file, "utf8"));

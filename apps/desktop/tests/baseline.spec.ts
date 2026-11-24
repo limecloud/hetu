@@ -52,6 +52,7 @@ test("空插件目录的小说大纲、剧本阅读、视频播放与区间反�
     let page = await launch();
     await page.getByRole("button", { name: "打开作品", exact: true }).first().click();
     await page.getByRole("button", { name: /默认小说/ }).click();
+    await navigate(page, "小说");
     await expect(page.getByRole("button", { name: "卷章目录", exact: true })).toBeVisible();
     await navigate(page, "作品大纲");
     await page.getByRole("button", { name: "新增大纲", exact: true }).click();

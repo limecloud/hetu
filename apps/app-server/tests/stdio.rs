@@ -75,13 +75,19 @@ fn local_agent_requests_share_host_state_without_inheriting_author_decisions() {
     let mut child = Command::new(env!("CARGO_BIN_EXE_hetu-app-server"))
         .args(["--stdio", "--local"])
         .env("HETU_LOCAL_SETTINGS_DIR", directory.path())
+        .env("HETU_COLLABORATION_DIR", directory.path().join("collaboration"))
         .stdin(Stdio::piped()).stdout(Stdio::piped()).stderr(Stdio::null())
         .spawn().unwrap();
     let mut client = Client {
         input: child.stdin.take().unwrap(), output: BufReader::new(child.stdout.take().unwrap()), child, next: 0,
     };
     client.ready();
+    assert_eq!(client.rpc("collaboration/directory", json!({}))["result"]["directory"], json!(directory.path().join("collaboration")));
+    assert_eq!(client.rpc("collaboration/directory", json!({"path":"not-accepted"}))["error"]["code"], -32602);
+    assert!(!directory.path().join("collaboration").exists());
     assert_eq!(client.rpc("local_settings/request", json!({"client_adapter":"codex","request":{},"approved":true}))["error"]["code"], -32602);
+    let settings = client.rpc("local_settings/host", json!({"method":"get","input":{}}));
+    client.rpc("local_settings/host", json!({"method":"update","input":{"expected_revision":settings["result"]["revision"],"patch":{"execution_mode":"confirm"},"operation_key":"confirm-mode"}}));
     let prepared = client.rpc("local_settings/request", json!({"client_adapter":"codex","request":{
         "action":"hetu.local_settings.prepare","contract_revision":"1","input":{
             "kind":"preferences","patch":{"font_size":19},"summary":"私有传输保留Agent身份","operation_key":"prepare"

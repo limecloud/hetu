@@ -14,6 +14,7 @@ manifest_path = ROOT / "assets/manifest.json"
 manifest = json.loads(manifest_path.read_text())
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--brand-only", action="store_true", help="只导出双语品牌卡片与图标总览")
+parser.add_argument("--social-only", action="store_true", help="只更新双语分享卡")
 args = parser.parse_args()
 
 def record(relative, **metadata):
@@ -32,7 +33,7 @@ for source, target in [
     ("output/design/prototype-website.png", "assets/marketing/prototype-website.webp"),
     ("output/design/prototype-website-en.png", "assets/marketing/prototype-website-en.webp"),
 ]:
-    if not args.brand_only and (ROOT / source).exists():
+    if not (args.brand_only or args.social_only) and (ROOT / source).exists():
         Image.open(ROOT / source).convert("RGB").save(ROOT / target, "WEBP", quality=92, method=6)
         record(target, locale="en" if "-en." in target else "zh-CN", derived_from=source)
 
@@ -49,10 +50,10 @@ for locale in ("zh-CN", "en"):
     draw = ImageDraw.Draw(card)
     lines = [
         (74, 90, "Hetu Luoshu" if english else "河图洛书", 44, jade),
-        (72, 202, "A clear foundation." if english else "设定有据", 54, ink),
-        (72, 279, "Room to create." if english else "创作有序", 54, ink),
-        (76, 414, "Characters. Worlds. Novels. Screenplays." if english else "人物 · 世界 · 小说 · 剧本", 23, "#5f6f66"),
-        (76, 476, "Your local story workspace" if english else "属于作者的本地创作工作台", 25, "#5f6f66"),
+        (72, 202, "AI keeps creating." if english else "让 AI 围绕你的作品", 48, ink),
+        (72, 279, "Keep it yours." if english else "持续创作", 54, ink),
+        (76, 414, "Novels. Screenplays. Narrative video." if english else "小说、剧本与叙事视频", 23, "#5f6f66"),
+        (76, 476, "Return to your work. Keep creating." if english else "每次回来，都能接着这一稿继续", 25, "#5f6f66"),
     ]
     for x, y, text, size, color in lines:
         font = ImageFont.load_default(size=size) if english else ImageFont.truetype(str(chinese_font), size)
@@ -60,6 +61,8 @@ for locale in ("zh-CN", "en"):
     relative = "assets/marketing/social-og-en.png" if english else "assets/marketing/social-og.png"
     card.save(ROOT / relative)
     record(relative, locale=locale, derived_from="assets/brand/mascot-master.png")
+    if args.social_only:
+        continue
     board = Image.new("RGB", (1440, 1040), cream)
     draw = ImageDraw.Draw(board)
     label = "Hetu Luoshu · Cross-platform icons" if english else "河图洛书 Hetu Luoshu · 跨平台图标"
@@ -119,7 +122,7 @@ for relative in [web_manifest, english_manifest]:
     manifest["assets"] = [item for item in manifest["assets"] if item["path"] != relative]
     manifest["assets"].append({"path": relative, "sha256": hashlib.sha256(file.read_bytes()).hexdigest(), "size_bytes": file.stat().st_size})
 scene = "output/imagegen/hetu-luoshu-library-scene.png"
-if (ROOT / scene).exists():
+if not args.social_only and (ROOT / scene).exists():
     target = "assets/marketing/hetu-luoshu-library-scene.webp"
     scene_image = Image.open(ROOT / scene).convert("RGB")
     scene_image.save(ROOT / target, "WEBP", quality=93, method=6)
@@ -129,7 +132,7 @@ if (ROOT / scene).exists():
     scene_image.crop(crop).save(ROOT / target, "WEBP", quality=93, method=6)
     record(target, derived_from=scene, text_in_image=False, crop_box=list(crop), resize="proportional")
 mobile = ROOT / "output/imagegen/prototype-mobile-en.png"
-if not args.brand_only and mobile.exists() and not any(item["path"] == str(mobile.relative_to(ROOT)) for item in manifest["originals"]):
+if not (args.brand_only or args.social_only) and mobile.exists() and not any(item["path"] == str(mobile.relative_to(ROOT)) for item in manifest["originals"]):
     with Image.open(mobile) as image:
         manifest["originals"].append({"path": str(mobile.relative_to(ROOT)), "requested_model": "gpt-image-2.5-flare",
             "sha256": hashlib.sha256(mobile.read_bytes()).hexdigest(), "width": image.width, "height": image.height, "locale": "en"})

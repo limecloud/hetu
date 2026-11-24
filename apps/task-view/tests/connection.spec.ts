@@ -21,9 +21,7 @@ for (const lost of [false, true]) test(`fixed connection installation ${lost ? "
     const prepared = await invoke("prepare", { kind: "agent_connection", agent_client: "codex", summary: "隔离环境安装河图MCP App", operation_key: "prepare-connection" });
     expect(prepared.status).toBe("succeeded"); const plan = prepared.data;
     const execution = { operation_id: plan.operation_id, sha256: plan.sha256, operation_key: "execute-connection" };
-    expect((await invoke("execute", execution)).error?.code).toBe("hetu.author_confirmation_required");
-    const approved = await invoke("record_decision", { operation_id: plan.operation_id, sha256: plan.sha256, revision: plan.revision, decision: "approve", authorization_note: "用户要求在隔离测试环境验收本次固定连接安装；不触碰真实Codex配置。", operation_key: "approve-connection" });
-    expect(approved.status).toBe("succeeded");
+    expect((await invoke("get", {})).data.preferences.execution_mode).toBe("auto");
     if (lost) await writeFile(join(codexHome, "drop-receipt"), "lose the registration reply");
     const first = await invoke("execute", execution);
     if (lost) { expect(first.status).toBe("unknown"); expect(first.error).toBeDefined(); } else expect(first.data.state).toBe("executed");

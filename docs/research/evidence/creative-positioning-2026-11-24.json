@@ -1,0 +1,341 @@
+{
+  "date": "2026-11-24",
+  "scope": "持续创作定位、文档、官网博客、Skills与现有软件行为重构",
+  "version": "0.14.1",
+  "product_statement": "让AI围绕你的作品持续创作",
+  "principles": [
+    "最简单路径",
+    "从当前材料开始",
+    "选择性保存",
+    "保留表达空间",
+    "明确范围内充分委托",
+    "作品、来源、作者决定与恢复由共享Core拥有"
+  ],
+  "implementation": {
+    "documents": "01至41、插件规范、文档入口、研究15及三张任务分流／返工／生命周期图",
+    "skills": {
+      "base_skills": 13,
+      "suites": 45,
+      "version": "0.3.14",
+      "source": "tools/hetu-skills/base"
+    },
+    "website": "双语首屏、适用条件、分流、工作流、指南和博客",
+    "software": [
+      "讨论不准备领域交接",
+      "只读按引用回答",
+      "返工请求保留指定范围",
+      "创建允许先讨论，不默认建作品与空章节",
+      "新建及恢复会话注入同一参与规则",
+      "Codex启动更新检查仅限当前进程关闭，避免升级菜单阻断线程恢复"
+    ]
+  },
+  "installation": {
+    "target": "/Applications/Hetu.app",
+    "manifest": "output/positioning-refactor/package/hetu-dev-VcREsG/manifest.json",
+    "source_sha256": "900d1e9f328f1e1cf3a3cd585da143afcbba7af9052a24e952a9df0b40d3bcd7",
+    "source_files": 2988,
+    "artifact_files_and_links": 3720,
+    "installed_files_and_links": 3132,
+    "errors": [],
+    "extra": [],
+    "profile_unchanged": {
+      "creative-library.json": true,
+      "LocalSettings/settings.json": true,
+      "agent-sessions/index/selection.json": true
+    },
+    "old_app_backup_created": false,
+    "version": "0.14.1",
+    "signing": "ad-hoc-development",
+    "production_verified": false,
+    "final_adjustment": "移除一处源码末尾空行；业务运行逻辑保持与三项安装旅程同一实现"
+  },
+  "validation": {
+    "agent_pty_tests": {
+      "passed": 49,
+      "failed": 0
+    },
+    "plugin_host_tests": {
+      "passed": 105,
+      "failed": 0
+    },
+    "release_guards": {
+      "passed": 4
+    },
+    "tooling": {
+      "passed": 25
+    },
+    "cli_launcher": {
+      "passed": 6
+    },
+    "skills": "45套件、2520文件及908分类节点核验通过",
+    "website": {
+      "passed": 658,
+      "failed": 0,
+      "log": "output/positioning-refactor/website-v0.14.1-final-tests.log",
+      "coverage": [
+        "中英页面、指南和SEO",
+        "375／768／1440等视口",
+        "全部博客独立封面和分享图",
+        "全部插件图片摘要、加载、响应式和详情入口",
+        "工程文档不发布"
+      ]
+    },
+    "rust_workspace": {
+      "full_run": {
+        "passed": 427,
+        "failed": 2,
+        "ignored": 0
+      },
+      "corrected_migration_target": {
+        "passed": 4,
+        "failed": 0
+      },
+      "unique_cases_covered": 429,
+      "note": "427项全量通过，2项旧断言失败后在4项专项中全部通过；不是一次全量无失败记录"
+    },
+    "mcp_apps": {
+      "full_run": {
+        "passed": 70,
+        "failed": 6,
+        "cases": 76
+      },
+      "targeted_fixes": {
+        "document_move": 2,
+        "editor_sort_and_async_receipt": 3,
+        "codex_shared_workbench": 1
+      },
+      "unique_cases_covered": 76,
+      "transports": [
+        "stdio",
+        "official Codex CLI"
+      ],
+      "note": "70项全量通过，6项失败分别在定向回归通过；保留原失败，不表述为一次全量无失败"
+    },
+    "installed": {
+      "passed": 3,
+      "cases": [
+        "业务交接和真实MCP保存及随包CLI回读",
+        "正式目录、固定修订、键盘和迟到回包",
+        "六项写作工具预览与固定请求"
+      ],
+      "model_turns": 0
+    },
+    "diagrams": {
+      "rendered": 3,
+      "visual_review": true
+    },
+    "native_observation": "安装版隔离作品中已观察Codex恢复、讨论、只读与返工菜单及需保留字段；未发送模型轮次",
+    "artwork": {
+      "blog_covers": 21,
+      "plugin_illustrations": 45,
+      "generated_images": 66,
+      "requested_models": [
+        "gpt-image-2.5-flare",
+        "gpt-image-2.5-sunburst"
+      ],
+      "prompt_sets": [
+        "assets/illustrations/prompts/creative-positioning-20261124.jsonl",
+        "assets/illustrations/prompts/editorial-diversity-20261124.jsonl"
+      ],
+      "identity": "请求模型，供应商实际模型未独立核验",
+      "review": "全部缩图已检查，网页加载与线上字节分别验证"
+    },
+    "website_build": {
+      "pages": 227,
+      "local_references": 13993,
+      "bilingual_assets": "passed",
+      "functions_compile": "passed"
+    },
+    "mcp_move": {
+      "passed": 2,
+      "transports": [
+        "stdio",
+        "official Codex CLI"
+      ]
+    }
+  },
+  "limits": [
+    "模型轮次为0；真实机器保存回读不等同于文学质量验收",
+    "相对Agent＋文件夹的长期收益仍需作者试用",
+    "本机仅macOS arm64开发签名；Windows／Linux与正式签名由发行流水线分别验收",
+    "原生Codex Desktop当前宿主面板未操作；官方CLI转发与stdio分别取证"
+  ],
+  "prior_failures": [
+    {
+      "log": "output/positioning-refactor/mcp-app-tests.log",
+      "reason": "设置折叠区未展开的旧测试预期"
+    },
+    {
+      "log": "output/positioning-refactor/mcp-app-final2.log",
+      "reason": "MCP App不提供桌面专属终端工作面，旧测试继续寻找该入口；已增加明确负例"
+    },
+    {
+      "log": "output/positioning-refactor/mcp-app-final3.log",
+      "reason": "长旅程在末尾达到300秒总上限；单步未失败，扩至420秒后通过"
+    },
+    {
+      "log": "output/positioning-refactor/installed-test.log",
+      "reason": "Codex新出现的升级菜单阻断线程恢复；已修进程配置且最终安装版通过"
+    },
+    {
+      "log": "output/positioning-refactor/plugin-host-release.log",
+      "reason": "根测试目录缺少Rust助手；改用已构建的隔离源码回归，105项通过"
+    },
+    {
+      "log": "output/positioning-refactor/rust-v0.14.1.log",
+      "reason": "迁移夹具仍期待Schema3，并把新版agent_session带入旧Schema2；已按真实旧格式及Schema5更新测试"
+    },
+    {
+      "log": "output/positioning-refactor/task-view-v0.14.1-tests.log",
+      "reason": "跨文稿移动测试未从作品资料进入小说正文；已沿正式导航修正"
+    },
+    {
+      "log": "output/positioning-refactor/website-v0.14.1-tests.log",
+      "reason": "测试直接导入网站内容模块时遇到Node JSON属性要求；改为从实际文章文件发现验证范围，最终658项全部通过"
+    },
+    {
+      "log": "output/positioning-refactor/task-view-v0.14.1-tests.log",
+      "reason": "官方Codex长旅程于末尾关闭保存时达到420秒总时限；单步仍保持原时限，调整长旅程预算后独立复验"
+    },
+    {
+      "log": "output/positioning-refactor/task-view-v0.14.1-tests.log",
+      "reason": "排序专项仍假定打开即正文，另有草稿交接回执的立即断言竞态；改为正式导航和等待实际回执，定向3项通过"
+    }
+  ],
+  "release": {
+    "source": "本轮源码及同版安装验证通过，等待Git递交",
+    "website_deployment": "待按本次明确授权部署Cloudflare Pages生产main",
+    "desktop_distribution": "本机macOS arm64开发签名包已覆盖，正式跨平台安装包发行另行取证"
+  },
+  "evidence": [
+    {
+      "path": "output/positioning-refactor/website-v0.14.1-build.log",
+      "sha256": "180a9123038860aea12c977f49b044f666e2e26741f739a6fe36607874273f21"
+    },
+    {
+      "path": "output/positioning-refactor/website-v0.14.1-final-tests.log",
+      "sha256": "b06213221d8ace51ca0912e8a2a445d1b04aeb19d1cfa4ba967f0e7bf24bf5fe"
+    },
+    {
+      "path": "output/positioning-refactor/website-functions-release.log",
+      "sha256": "1a68e158f2f55b2e56d46d4a1a5f127e1726e9fdc217af956475c9635da2f45c"
+    },
+    {
+      "path": "output/positioning-refactor/agent-v0.14.1.log",
+      "sha256": "edbb2d18c4ffffe546aa377083be77b553eb37a47a6c99109d8dcd646423b39a"
+    },
+    {
+      "path": "output/positioning-refactor/plugin-host-v0.14.1.log",
+      "sha256": "fd9b0e9bb9ad6a99b693ef36efd278cd00816bc0ba13441079ecab2b82683d50"
+    },
+    {
+      "path": "output/positioning-refactor/cli-launcher-release.log",
+      "sha256": "c5686c79da28e3d3b0ae30b7bbc0e20b8f697d461de1cb8d461dad511efa4860"
+    },
+    {
+      "path": "output/positioning-refactor/release-guards.log",
+      "sha256": "6e5bfc2c54290d5a22aa94e0c5e56eb074b88e2246f538d18fba505250d95224"
+    },
+    {
+      "path": "output/positioning-refactor/tooling-tests.log",
+      "sha256": "76c50452aafc5e12e81abd35a07ae20835744cd63a1622592887e5173b7f6267"
+    },
+    {
+      "path": "output/positioning-refactor/skills-v0.3.14-check.log",
+      "sha256": "42eb2486f223188d7d09cc7ee354ab642cd34bd81657ced128b00a3af4825c86"
+    },
+    {
+      "path": "output/positioning-refactor/skills-v0.3.14-verify.log",
+      "sha256": "2657fcf8f716508a2388d902fe1c1d35a4a5f5f6ce5917c3410ff666f2f25521"
+    },
+    {
+      "path": "output/positioning-refactor/capability-release-check.log",
+      "sha256": "0a290158f76b29bce06ee0505bff2ee5daced0e452e7f8c4d22e52abf0deba80"
+    },
+    {
+      "path": "output/positioning-refactor/rust-v0.14.1-final.log",
+      "sha256": "bbc1ab5c9cb88769ee1d7cf6b2137a1bb6ff2ffadae33ec265038565d20bcde8"
+    },
+    {
+      "path": "output/positioning-refactor/reading-settings-v0.14.1-final.log",
+      "sha256": "890555421b36cce039bf7a4138269db730681a918aabd9ec66e0fe8f9228ec2e"
+    },
+    {
+      "path": "output/positioning-refactor/installed-v0.14.1-tests.log",
+      "sha256": "0484168d64ef7757c95ffe5ddfdb4029c07453b36ca7b5e5fff59452d0478c4c"
+    },
+    {
+      "path": "output/positioning-refactor/task-view-move-v0.14.1-final.log",
+      "sha256": "96377a4bbc454d99d7a47be2f2e2a7ba081d7f432f32251c7ca0f7e8cb558d94"
+    },
+    {
+      "path": "output/positioning-refactor/editorial-generation.log",
+      "sha256": "8f312b3f32af7bbbc113cc399e4c796da584d1e31a129a92d3fe06ed9b00b5bf"
+    },
+    {
+      "path": "output/positioning-refactor/generated-artwork.json",
+      "sha256": "b81a49480790ff7bde152c5d9f5fb8e7690bd6e70dd8b6508fd433d3eaca094a"
+    },
+    {
+      "path": "output/positioning-refactor/editorial-artwork.json",
+      "sha256": "fc907d9696ac941b83bec9882c22e1766bad404813a8d7c16071a8ab7714f603"
+    },
+    {
+      "path": "output/positioning-refactor/docs-release-final.log",
+      "sha256": "7dc32a4497dc6d51a107ad05b57315cba5b3e0ff7b2757077a999b5f098f7195"
+    },
+    {
+      "path": "output/positioning-refactor/task-view-v0.14.1-tests.log",
+      "sha256": "1443de0548d364c5f0dfe16a5bcfbb933caf3366cd14a86a4200a4e6f3d0c7a7"
+    },
+    {
+      "path": "output/positioning-refactor/task-view-codex-v0.14.1-final.log",
+      "sha256": "a37a3f4225494131960f89159829f8ba82313e0592eadcc7c3ffcfe88f5ccc79"
+    },
+    {
+      "path": "output/positioning-refactor/task-view-final-fixes.log",
+      "sha256": "b6bdf649605be3578274247bcaab4b0b566e81f564a0595a264ffe11dfa3456c"
+    },
+    {
+      "path": "output/positioning-refactor/installation-v0.14.1-final.json",
+      "sha256": "76148c3049e982e850f45aebcec5effabdaceb018393a2eb5fc12e1c30e9c6dd"
+    },
+    {
+      "path": "output/positioning-refactor/package-v0.14.1-final.log",
+      "sha256": "84961dcf88802f8436376f23cdad55c8b1b8f54ce77cc45620418977a6ca7385"
+    },
+    {
+      "path": "output/positioning-refactor/docs-publication-check.log",
+      "sha256": "7dc32a4497dc6d51a107ad05b57315cba5b3e0ff7b2757077a999b5f098f7195"
+    },
+    {
+      "path": "output/positioning-refactor/staged-diff-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "artwork": {
+    "blog_covers": 21,
+    "plugin_illustrations": 45,
+    "blog_assets": "assets/manifest.json",
+    "plugin_assets": "assets/marketing/plugin-artwork.json",
+    "prompt_sets": [
+      "assets/illustrations/prompts/creative-positioning-20261124.jsonl",
+      "assets/illustrations/prompts/editorial-diversity-20261124.jsonl"
+    ],
+    "generation_cli": "imagegen skill bundled CLI generate-batch",
+    "provider_origin": "https://img.aishenji.top",
+    "requested_models": [
+      "gpt-image-2.5-flare",
+      "gpt-image-2.5-sunburst"
+    ],
+    "source_identity": "请求模型；供应商实际模型身份未独立核验",
+    "review": "66张原图与全部发布裁切图已通过缩图及主题人工检查；无重复封面，按场景、媒介、构图与主色区分。设计判断不等于像素认证。",
+    "plugin_thumbnail_mean_kib": 40.5,
+    "contact_sheets": [
+      "output/positioning-refactor/editorial-final-1.jpg",
+      "output/positioning-refactor/editorial-final-2.jpg",
+      "output/positioning-refactor/editorial-final-3.jpg",
+      "output/positioning-refactor/editorial-final-4.jpg"
+    ]
+  }
+}

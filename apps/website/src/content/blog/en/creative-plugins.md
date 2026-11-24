@@ -74,3 +74,10 @@ Continue with [stage, stand-up, science and quests](/en/blog/one-station-four-fo
 
 
 Continue with [supervision, languages, musicals and complete mystery playtests](/en/blog/letter-to-role-books/).
+
+
+## Use only what this work needs
+
+Choose tools for a concrete problem in the work. Try an expression in conversation first; add an extension when professional structures, comparisons or delivery need it. Ordinary manuscripts and selected exports should remain retrievable.
+
+[Find the smallest useful starting point](/en/docs/when-to-use/).

@@ -35,3 +35,10 @@ Say “Develop an original episode without creating a novel,” or “Prepare a 
 A story may move between forms or stay in the one you prefer. The creative library keeps completed work understandable, so the next revision has somewhere to begin.
 
 Start with [Choose a project starting point](/en/docs/creative-paths/), [Screenplay review](/en/docs/screenplays/) or [From preview to finished video](/en/docs/video/). These examples explain a method; they are not completion records for an actual adaptation.
+
+
+## Use only what this work needs
+
+A quick idea or read-only question can end with an answer. Keep sources, feedback and revisions for work you intend to continue, without turning every discussion into a project task. Delegate or write directly; consequential choices refer to concrete results.
+
+[Find the smallest useful starting point](/en/docs/when-to-use/).

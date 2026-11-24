@@ -188,6 +188,9 @@ export function MediaLibrary({ work, ai, notify }: SurfaceContext) {
                   {...context(item.title, [
                     {id: "open", label: "打开", disabled: busy, action: () => open(collection, itemId, item.revision)},
                     {id: "copy-title", label: "复制名称", action: () => desktop.copy(item.title)},
+                    {id: "current", label: "查看当前版本", disabled: busy || typeof item.current_revision !== "number" || item.revision === item.current_revision, action: () => open(collection, itemId, item.current_revision)},
+                    {id: "source", label: collection === "assets" ? "查看来源与权利" : "查看正文依据", action: () => open(collection, itemId, item.revision)},
+                    {id: "history", label: "查看上一版", disabled: busy || item.revision <= 1, action: () => open(collection, itemId, item.revision - 1)},
                     {id: "ai", label: "让 AI 处理此版本", action: () => ai({[collection === "assets" ? "asset_id" : "cue_id"]: itemId, revision: item.revision})},
                   ])}
                   disabled={busy}

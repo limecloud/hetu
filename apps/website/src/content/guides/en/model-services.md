@@ -1,5 +1,9 @@
 # Model services and costs
 
+## Start with what you need
+
+Use suitable tools already available to your Agent. Choose Hetu model services only when needed; login does not generate, saving does not approve and spending follows the agreed scope.
+
 Hetu can provide optional text and image model capabilities to an external Agent. The Agent prepares a fixed plan. You review its material, purpose and budget in the conversation, authorize the scope, and receive results in your work for review.
 
 Local reading, editing and saving do not require a model connection. Keep the external Agent client's account and fees separate from those of a generation service.

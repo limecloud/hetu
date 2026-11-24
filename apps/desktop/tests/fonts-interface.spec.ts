@@ -24,6 +24,7 @@ test("真实字体目录、即时正文选用与独立窗口界面缩放保持�
     const page = await app.firstWindow(), errors: string[] = []; page.on("pageerror", error => errors.push(error.message));
     await page.setViewportSize({width: 1440, height: 940});
     await page.getByRole("button", {name: "打开作品 默认小说", exact: true}).click();
+    await page.getByRole("button", {name: "小说", exact: true}).click();
     await page.evaluate(async () => {const api = (window as any).hetuDesktop, state = await api.settings("preferences"); await api.settings("update", {expected_revision: state.revision, patch: {autosave: false}});});
     await documentAction(page, "编辑");
     const editor = page.getByRole("textbox", {name: "文稿编辑", exact: true});

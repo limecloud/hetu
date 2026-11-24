@@ -12,12 +12,13 @@ import {PluginPackage} from "../../../packages/plugin-host/src/package.ts";
 import {PluginInstallations} from "../../../packages/plugin-host/src/installations.ts";
 import {codexWorkbench} from "./codex-workbench.ts";
 import {AppServer} from "../../desktop/src/main/rpc.ts";
+import {navigate as navigateWorkbench} from "../../desktop/tests/navigation.ts";
 
 test.use({actionTimeout:15000});
 
 for (const transport of ["stdio", "codex"] as const) test(`${transport} MCP App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品`,async({page},testInfo)=>{
  test.skip(transport === "codex" && !process.env.HETU_ACCEPT_CODEX_BINARY, "需指定官方Codex CLI执行同一完整UI旅程");
- test.setTimeout(300000);
+ test.setTimeout(600000);
  const root=path.resolve("../.."),folder=await mkdtemp(path.join(tmpdir(),"hetu-shared-workbench-"));
  const mcp=process.env.HETU_ACCEPT_MCP_BINARY??path.join(root,"target/debug/hetu-mcp");
  const workspace=path.join(folder,"work"),profile=path.join(folder,"profile"),collaboration=path.join(folder,"collaboration");
@@ -127,14 +128,7 @@ for (const transport of ["stdio", "codex"] as const) test(`${transport} MCP App�
   await page.addInitScript(value=>Object.assign(window,value),{viewHtml:html,initialTask:initial,realTask:true,workbenchMode:true,testMessages:true,testExtensions:true});
   await page.goto("http://127.0.0.1:"+address.port);
   const view=page.frameLocator("iframe");
-  const navigate=async(label:string)=>{
-   const nav=view.getByRole("complementary",{name:"项目导航",exact:true});
-   await nav.getByRole("button",{name:"显示项目导航",exact:true}).click();
-   const button=nav.locator(".sidebar-project").getByRole("button",{name:label,exact:true,includeHidden:true});
-   const group=nav.locator("details.navigation-group").filter({has:view.getByRole("button",{name:label,exact:true,includeHidden:true})});
-   if(await group.count()&&!await group.evaluate(element=>(element as HTMLDetailsElement).open))await group.locator(":scope > summary").click();
-   await button.click();
-  };
+  const navigate=(label:string)=>navigateWorkbench(view,label);
   const card=view.getByRole("button",{name:"打开作品 插件集成测试",exact:true});
   await expect(card).toBeEnabled({timeout:60000});
   await expect.poll(async()=>{
@@ -148,6 +142,8 @@ for (const transport of ["stdio", "codex"] as const) test(`${transport} MCP App�
    const state=await (window as any).hetuDesktop.state();return state.works.every((row:any)=>ids.includes(row.work_ref.workspace_id));
   },[context.work_ref.workspace_id,baseline.novel.workspace_id])).toBe(true);
   await card.click();
+  await expect(view.getByRole("heading", {name:"作品资料", exact:true})).toBeVisible();
+  await navigate("小说");
   const editor=view.getByRole("textbox",{name:"文稿编辑",exact:true});
   await expect(editor).toBeVisible({timeout:30000});
   const sidebarTabs=view.getByRole("tablist",{name:"作品侧栏",exact:true});
@@ -274,6 +270,24 @@ for (const transport of ["stdio", "codex"] as const) test(`${transport} MCP App�
   await expect(view.getByText(/尚未授权|精确作品接入请求/)).toHaveCount(0);
   await expect(view.getByRole("button",{name:"放入当前草稿",exact:true})).toHaveCount(0);
   await editor.fill("灯塔在黎明前亮起。\n这是在 MCP App 中保存的新修订。");
+  await editor.press("Home"); await editor.press("Shift+F10");
+  await view.getByRole("menuitem",{name:"段落顺序",exact:true}).hover();
+  const orderMenu=view.getByRole("menu",{name:"段落顺序",exact:true});
+  await expect(orderMenu.getByRole("menuitem",{name:"下移",exact:true})).toBeDisabled();
+  await page.screenshot({path:testInfo.outputPath(`${transport}-paragraph-order.png`)});
+  await orderMenu.getByRole("menuitem",{name:"上移",exact:true}).click();
+  await expect(editor.locator(".cm-line").first()).toContainText("这是在 MCP App 中保存的新修订");
+  await editor.press("ControlOrMeta+z");
+  await expect(editor.locator(".cm-line").first()).toContainText("灯塔在黎明前亮起");
+  await editor.press("ControlOrMeta+a"); await editor.press("Shift+F10");
+  await view.getByRole("menuitem",{name:"排序",exact:true}).hover();
+  const sortingMenu=view.getByRole("menu",{name:"排序",exact:true});
+  await expect(sortingMenu.getByRole("menuitem",{name:"排序 A → Z",exact:true})).toBeEnabled();
+  await page.screenshot({path:testInfo.outputPath(`${transport}-alphabetical-sort.png`)});
+  await sortingMenu.getByRole("menuitem",{name:"排序 Z → A",exact:true}).click();
+  await expect(editor.locator(".cm-line").first()).toContainText("这是在 MCP App 中保存的新修订");
+  await editor.press("ControlOrMeta+z");
+  await expect(editor.locator(".cm-line").first()).toContainText("灯塔在黎明前亮起");
   await editor.press("ControlOrMeta+s");
   await expect(view.getByText("已保存新修订。",{exact:true})).toBeVisible({timeout:30000});
   const read=await client.callTool({name:"hetu_app_request",arguments:{session:token,method:"read",args:["hetu.documents.get",{document_id:context.document.document_id}]}});
@@ -391,6 +405,7 @@ for (const transport of ["stdio", "codex"] as const) test(`${transport} MCP App�
   await expect(view.locator("dialog.embedded-settings")).toBeVisible();
   await expect(view.getByRole("tab",{name:"AI 协作",exact:true})).toBeVisible();
   await view.getByRole("tab",{name:"AI 协作",exact:true}).click();
+  await view.getByText("外部客户端、MCP App与Skills接入",{exact:true}).click();
   await expect(view.getByRole("button",{name:"安装 MCP App",exact:true})).toBeVisible();
   await expect(view.getByRole("button",{name:"安装 Skills 套件",exact:true})).toBeVisible();
   await view.getByRole("tab",{name:"版本",exact:true}).click();
@@ -405,16 +420,18 @@ for (const transport of ["stdio", "codex"] as const) test(`${transport} MCP App�
   const preferencesAfterClose=await client.callTool({name:"hetu_app_request",arguments:{session:token,method:"settings",args:["get"]}});
   expect((preferencesAfterClose.structuredContent as any).value.preferences.git_author_name).toBe("共享工作台验收");
   expect(await readdir(path.join(collaboration,"management/codex")).catch(()=>[])).toEqual([]);
-  for(const [label,selector] of [["作品资料",'.work-profile'],["作品大纲",'section[aria-label="作品大纲"]'],["作品设定",'.canon-workbench'],["图片成果",'.artwork-library'],["资料与素材",'.resources'],["素材与线索",'.media-library'],["关联作品",'.work-links'],["原稿导入",'.management-review'],["作品交付",'.management-review'],["文稿版本",'.version-review'],["管理方案",'.management-review'],["Agent 协作",'.agent-connection']] as const){
+  // MCP App沿当前宿主会话协作，不显示桌面专属的内嵌引擎工作面。
+  await expect(view.getByRole("complementary",{name:"项目导航",exact:true}).getByRole("button",{name:"Agent 协作",exact:true,includeHidden:true})).toHaveCount(0);
+  for(const [label,selector] of [["作品资料",'.work-profile'],["作品大纲",'section[aria-label="作品大纲"]'],["作品设定",'.canon-workbench'],["图片成果",'.artwork-library'],["资料与素材",'.resources'],["素材与线索",'.media-library'],["关联作品",'.work-links'],["原稿导入",'.management-review'],["作品交付",'.management-review'],["文稿版本",'.version-review'],["管理方案",'.management-review']] as const){
    await test.step(`${transport}工作面：${label}`,async()=>{
     await navigate(label);await expect(view.locator(selector)).toBeVisible();
     await expect(view.getByRole("complementary",{name:"项目导航",exact:true}).getByRole("button",{name:label,exact:true})).toHaveClass(/selected/);
    });
   }
   await navigate("作品资料");
-  const profileDirectory=view.locator(".profile-structure");
-  await expect(profileDirectory).toHaveAttribute("open","");
-  const profileChapter=profileDirectory.getByRole("button",{name:"目录试读第003章",exact:true});
+  await expect(view.locator(".profile-structure")).toHaveCount(0);
+  await navigateWorkbench(view, "小说");
+  const profileChapter=view.getByRole("navigation",{name:"文稿目录",exact:true}).getByRole("button",{name:"目录试读第003章",exact:true});
   await profileChapter.click();
   await expect(view.locator(".manuscript-title h1")).toHaveText("目录试读第003章");
   await expect(view.getByRole("navigation",{name:"文稿目录",exact:true}).getByRole("button",{name:"目录试读第003章",exact:true})).toHaveAttribute("aria-current","page");
@@ -436,7 +453,10 @@ for (const transport of ["stdio", "codex"] as const) test(`${transport} MCP App�
   await expect(view.getByRole("alert")).toContainText(/审阅资源读取中断|Real MCP resource read failed/);
   await view.getByRole("button",{name:"重新打开面板",exact:true}).click();
   await expect(taskView.getByRole("heading").first()).toBeVisible({timeout:30000});
-  await navigate("人物关系图");
+  await navigate("作品资料");
+  const pluginSection=view.locator(".profile-plugins");
+  if(!await pluginSection.getByRole("button",{name:"人物关系图",exact:true}).isVisible()) await pluginSection.locator(":scope > summary").click();
+  await pluginSection.getByRole("button",{name:"人物关系图",exact:true}).click();
   const plugin=view.frameLocator('iframe[title="创作插件"]');
   await expect(plugin.getByRole("heading",{name:"人物关系图",exact:true})).toBeVisible({timeout:30000});
   await plugin.locator("body").evaluate(async()=>{await (window as any).hetu.buffer({note:"插件恢复稿"});});
@@ -448,7 +468,7 @@ for (const transport of ["stdio", "codex"] as const) test(`${transport} MCP App�
   await plugin.getByRole("button",{name:"添加并保存",exact:true}).click();
   await expect(plugin.getByText(/已保存修订/)).toBeVisible({timeout:30000});
   await view.getByRole("button",{name:"返回工作台",exact:true}).click();
-  await expect(view.getByRole("button",{name:"参考稿审核",exact:true})).toBeVisible();
+  await navigate("参考稿审核");
   await expect(taskView.getByText("旧日记里夹着一张通往雾港的船票。",{exact:true})).toBeVisible({timeout:30000});
   if (transport === "stdio") expect(taskResourceReads).toBe(2);
   await page.screenshot({path:testInfo.outputPath(`${transport}-shared-workbench.png`),fullPage:true});
@@ -468,7 +488,10 @@ for (const transport of ["stdio", "codex"] as const) test(`${transport} MCP App�
   expect(fixed.fixed_refs.some((item:any)=>item.kind==="document"&&item.document_id===context.document.document_id)).toBe(true);
   expect(fixed.direct_actions.length).toBeGreaterThan(0);
   expect(fixed.proposal_actions.length).toBeGreaterThan(0);
-  expect(fixed.management_ref).toBeUndefined();
+  expect(fixed.management_ref.grant_revision).toBeGreaterThan(0);
+  const machineRead=await client.callTool({name:"hetu_call_action",arguments:{action:"hetu.documents.list",input:{management_ref:fixed.management_ref,work_ref:context.work_ref}}});
+  expect(machineRead.isError,JSON.stringify(machineRead)).not.toBe(true);
+  expect((machineRead.structuredContent as any).data.documents.some((item:any)=>item.document_id===context.document.document_id)).toBe(true);
   expect(await realpath(fixed.workspace_path)).toBe(await realpath(workspace));
   expect(fixed.execution_mode).toBe("auto");
   expect(fixed.execution_action).toBe("hetu.execution.invoke");
@@ -484,6 +507,7 @@ for (const transport of ["stdio", "codex"] as const) test(`${transport} MCP App�
   expect(pluginFixed.management_ref).toBeUndefined();
   await navigate("返回创作库");
   await view.getByRole("button",{name:"打开作品 默认剧本",exact:true}).click();
+  await navigate("剧本");
   await expect(view.getByRole("article",{name:"分集剧本",exact:true})).toContainText("船还没来");
   await sidebarTabs.getByRole("tab",{name:"任务",exact:true}).click();
   await expect(view.getByRole("region",{name:"作品任务",exact:true})).toHaveAttribute("aria-busy","false");
@@ -511,6 +535,7 @@ for (const transport of ["stdio", "codex"] as const) test(`${transport} MCP App�
   await navigate("剧本");await expect(view.getByRole("article",{name:"分集剧本",exact:true})).toContainText("船还没来");
   await navigate("返回创作库");
   await view.getByRole("button",{name:"打开作品 默认视频",exact:true}).click();
+  await navigate("视频");
   await view.getByRole("combobox",{name:"视频成果版本"}).selectOption(baseline.second.media_id);
   const video=view.locator("article.video-review-content video").first();
   await expect.poll(()=>video.evaluate((element:HTMLVideoElement)=>element.readyState)).toBeGreaterThan(0);
@@ -525,6 +550,28 @@ for (const transport of ["stdio", "codex"] as const) test(`${transport} MCP App�
   await expect(view.getByText("保留脚步声，再切到门口。",{exact:true})).toBeVisible();
   await view.getByRole("button",{name:"查看前版",exact:true}).click();
   await expect.poll(()=>view.getByRole("region",{name:"前版视频"}).locator("video").evaluate((element:HTMLVideoElement)=>element.readyState)).toBeGreaterThan(0);
+  for (const [name, work] of [["默认小说",baseline.novel],["默认剧本",baseline.drama]] as const) {
+   await navigate("返回创作库"); await view.getByRole("button",{name:`打开作品 ${name}`,exact:true}).click();
+   await navigate(work.kind === "novel" ? "小说" : "剧本");
+   const source=await view.locator("#root").evaluate(async(_element,work)=>{
+    const api=(window as any).hetuDesktop, list=await api.read("hetu.documents.list",{work_ref:work});
+    return (await api.read("hetu.documents.get",{document_id:list.data.documents[0].document_id})).data;
+   },work);
+   const directory=view.getByRole("navigation",{name:"文稿目录",exact:true});
+   if(!await directory.isVisible())await view.getByRole("button",{name:"卷章目录",exact:true}).click();
+   await directory.getByRole("button",{name:source.document.title,exact:true}).click({button:"right"});
+   await view.getByRole("menuitem",{name:"复制文稿",exact:true}).click();
+   const title=source.document.title+" 副本";
+   await expect(directory.getByRole("button",{name:title,exact:true})).toBeVisible();
+   const copy=await view.locator("#root").evaluate(async(_element,{work,title})=>{
+    const api=(window as any).hetuDesktop,list=await api.read("hetu.documents.list",{work_ref:work});
+    const document=list.data.documents.find((item:any)=>item.title===title);
+    return (await api.read("hetu.documents.get",{document_id:document.document_id})).data;
+   },{work,title});
+   expect(copy.content).toBe(source.content);expect(copy.document.document_id).not.toBe(source.document.document_id);
+   expect(copy.document.copy_source_ref.document_ref).toEqual({document_id:source.document.document_id,revision_id:source.revision.revision_id,sha256:source.revision.sha256});
+   await page.screenshot({path:testInfo.outputPath(`${transport}-${work.kind}-document-copy.png`)});
+  }
   await view.getByRole("button",{name:"本机设置",exact:true}).first().click();
   for(const tab of ["通用","写作","AI 协作","模型服务","版本","关于"]){
    await view.getByRole("tab",{name:tab,exact:true}).click();

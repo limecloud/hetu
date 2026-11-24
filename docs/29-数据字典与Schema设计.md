@@ -1,10 +1,20 @@
 # 数据字典与 Schema 设计
 
-## 本机设置第三版
+## 字段与定位边界
 
-本机设置存储`schema_version=3`，由`local_settings`唯一拥有。`preferences.reading_profiles.novel/screenplay`分别保存完整的`font_family`、`font_name`、`font_size`、`line_height`、`paragraph_spacing`、`line_width`及`first_line_indent`；`document_theme`为跟随／清纸／暖纸／夜墨，`focus_paragraph`、`typewriter_scroll`及`smart_pairs`是独立开关。具体枚举、长度和数值约束以`contracts/actions.json`为准，不将字体、滚动或主题写入作品。
+本次定位调整不增加Schema字段。现实考据、探索稿和确认设定的区别由已有对象、来源、修订及决定承载；不足之处以真实用例提出合同变更，不以新文案虚构已实现状态。
 
-`preferences.execution_mode` 只接受 `auto|confirm`，新安装与旧设置迁移均默认 `auto`。执行策略与阅读档案同属本机设置，只有这一份事实源；CLI、MCP 和 Skills 读取实际值，不缓存另一套默认。第二版迁移保留原有全部偏好、关联及安装记录，将原字节备份到 `migrations/v2/settings.json` 后与第三版原子提交；第一版直接迁移至第三版，保留原第一版备份。未知版本、缺字段或损坏记录不得重置。
+产品定位与任务分流见[01](01-产品需求PRD.md#1-产品定义)。
+
+本体分类不另造统一对象存储；创作事实、专业对象、任务引用、本机偏好及可重建投影各自按本章所属合同保存。语义与准入归[28](28-领域设计与边界上下文.md#15-agent-first-的本体核心)。
+
+跨文稿移动记录保存在`.hetu/document-moves/<move_id>.json`，包含确切WorkRef、来源及目标的移动前后document_id／revision_id／sha256、原来源字节范围、引句摘要和原操作键；新目标另外记录`target_created`及目录或项目的前后修订摘要。`move_ref`固定move_id与整条记录摘要。正文继续属于原不可变修订，不在记录中另存全文。恢复只消费记录内的前后修订；已有目标或新目标的当前基线任一变化均整体拒绝，新目标撤销时从目录移除并归档目标，历史文件保留。不接受调用方提交任意回滚正文。该记录不是作者采纳或定稿，批注、任务及历史决定仍指向原修订。
+
+## 本机设置第五版
+
+本机设置存储`schema_version=5`，由`local_settings`唯一拥有。`preferences.reading_profiles.novel/screenplay`分别保存完整的`font_family`、`font_name`、`font_size`、`line_height`、`paragraph_spacing`、`line_width`及`first_line_indent`；`document_theme`为跟随／清纸／暖纸／夜墨，`focus_paragraph`、`typewriter_scroll`及`smart_pairs`是独立开关。`preferences.agent_session`保存独立会话偏好，默认值唯一来自`contracts/agent-session-defaults.json`。具体枚举、长度和数值约束以`contracts/actions.json`为准，不将字体、滚动或主题写入作品。
+
+`preferences.execution_mode` 只接受 `auto|confirm`，新安装与首次补入执行策略的旧设置默认 `auto`，已有显式选择保持。执行策略与阅读档案同属本机设置，只有这一份事实源；CLI、MCP 和 Skills 读取实际值，不缓存另一套默认。第一、二版先补齐执行策略，第三版补入完整会话偏好并到第五版；第四版只新增`terminal_focus_on_hover=false`，保留其他会话偏好、策略修订、关联及安装记录。迁移固定原字节到`migrations/v<原版本>/settings.json`，与新设置原子提交；推进设置修订使旧CAS过期，重开不重复迁移。未知版本、缺字段、非法值或不同迁移原件均拒绝并保留原文件。
 
 更新档案使用字段级深合并，只改变本次明确字段，不替换另一类型或未指定字段；相同字段仍受整体修订CAS约束。修订1公开入口的旧字体／字号／额外行距／缩进字段在边界转为小说档案，读取投影按需计算旧字段，不持久化第二份值；旧字段与同次新档案字段混用时拒绝，避免优先级不明。
 
@@ -481,16 +491,28 @@ TaskGrant、CheckoutRecord 和 ContinuationReceipt 留在本机私有存储或�
 
 ### 22.1 Agent 会话与双入口绑定
 
-本节定义双入口会话宿主的目标语义，不表示已发布Schema或动作。会话适配器合同归[39第4.3节](39-Electron与插件优先重构架构.md#43-agent-会话宿主)；实现时单独版本化本机记录，不向已有任务记录补字段后重算历史摘要。
+本节定义双入口会话宿主的本机记录语义；它不是作品领域事实，也不向已有任务记录补字段后重算历史摘要。会话适配器合同归[39第4.3节](39-Electron与插件优先重构架构.md#43-agent-会话宿主)。当前 Codex 桌面实现将版本化 WorkRef 放入消息上下文；精确 `management_ref` 留在宿主的稳定 CLI／MCP 连接目录，通过子进程环境传递给机器入口，不写入 Prompt、会话持久投影、作品或普通日志；引擎工作目录使用本机私有会话沙箱。
 
 | 本机记录 | 必需语义 | 不变量 |
 | --- | --- | --- |
 | 会话绑定 | 本机会话身份、入口、引擎及版本、引擎thread/session引用、能力声明、连接代次 | 引擎引用不是task_id，不证明作品授权；同一引擎会话只有一个受管写入者 |
 | 任务绑定 | 会话引用、精确WorkRef／task_ref／请求摘要、客户端主体及本机授权引用 | 每次业务调用重验权限；切换作品或入口不修改旧绑定，不向日志、Prompt或深链接输出授权材料 |
-| 消息尝试 | 本机消息身份、会话与连接代次、目标任务、投递回执、关联轮次 | 投递前持久记录；未发送、已写入、已受理、执行结束分别可观察，未知不自动重发 |
+| 消息尝试 | 本机消息身份、会话与连接代次、目标任务、投递回执、关联轮次、发送时草稿修订 | 投递前持久记录；未发送、已写入、已受理、执行结束分别可观察，未知不自动重发；旧回执只能消费对应草稿修订 |
 | 待答请求 | 引擎请求身份、所属会话／轮次／连接代次、请求类型、状态与答复回执 | 引擎拥有请求及有效期，宿主保存投影；引擎工具审批不替代Core作者决定，旧连接的请求不可回答新会话 |
+| 执行表面 | `gui`／`tui`、实际Codex版本、配置归属、账号身份引用及对应恢复能力 | 同一会话只有一个当前输入表面；默认表面偏好不修改运行中的绑定 |
+| 线程占用 | 会话、配置归属与thread ID、owner代次、进程身份及活性、取得／释放状态 | 进程间协调；PID复用和崩溃遗留单独核验，未知不强行接管；不能锁住外部非受管进程 |
+| 表面切换记录 | 原／目标表面、原线程、切换原键、轮次边界、输入权释放、只读观察／回退引擎退出、连接结果及代次 | 冻结投递后交接；非当前TUI只读保留原生草稿；失败保留原会话；新线程必须标为新建并保留接续来源 |
+| PTY运行投影 | 受管进程引用、cols／rows、连接状态、退出结果、有限scrollback及回放标识 | 终端输出和回放不证明消息受理、线程恢复或Core保存；不作为作品事实 |
+| 本机会话内线程投影 | 当前thread ID及`threads`中的历史thread ID、消息、工具、名称、未发送草稿与固定引用 | 仅同一WorkRef内原生新建／恢复；成功响应、占用与私有存储先完成再交输入权。线程历史不扩展作品权限，也不加载其他本机会话或外部线程 |
+| 会话草稿与阅读位置 | 会话ID、未发送文本、草稿修订、固定来源标签、消息锚点／终端视口 | 每次修改推进本机草稿修订；历史回读不清除新草稿，发送受理只消费原修订。切换作品不丢草稿、不将旧附件带入新会话；秘密授权不进入标签 |
+| 会话成果回读投影 | 原工具／轮次、Core动作、固定成果引用、回读状态、标题与导航目标 | 仅从受管河图MCP真实回执提取，使用当前Codex精确授权重新读取；不信聊天末句，不复制领域头。失败、旧版与未支持回读分别显示；投影不持久化成作品事实 |
+| 会话外观偏好 | 独立GUI字体／字号／代码字号／宽度／对比度、跟随终端；TUI字体／行高／光标／历史／渲染与行为 | 归共享local_settings；与文稿排版、窗口缩放及执行策略分离；字段默认和范围见10 |
 
-会话记录和经作者选择保留的对话留在本机私有存储，不进入作品Git、Bundle或普通支持日志；凭据由引擎或独立私密存储持有。作品只保存既有任务、工作修订、候选、公开反馈、作者决定与原操作。会话摘要不能成为另一份正文、设定或决定真值；作者显式公开的接续说明仍按既有任务接续合同保存。
+新增各行是本轮目标数据语义，不能据此推定安装版已输出对应字段。实现时进入已有本机设置或会话存储的版本化Schema，不向作品本体新增聊天实体，不让Skills直接改私有记录。会话外观偏好与默认表面沿同一设置修订CAS更新，缺省采用10的默认值；保留既有显式字体和字号，非法值有可见修复结果。迁移只执行一次并可沿原键恢复，不清理引擎认证、旧会话或作品。
+
+消息尝试的投递状态区分 `prepared`、`written`、`accepted`、`rejected`、`unknown`；`written`只表示本机传输写入，不能按超时推为拒绝或可重发。轮次终态与Core保存结果另行关联，原键由业务Owner核验。停止请求区分请求中、引擎确认、进程退出与业务待恢复，不能用一个ready布尔值覆盖全部含义。TUI缺乏结构化消息回执时保留不可观察状态，不从屏幕文字补写accepted。
+
+会话记录和经作者选择保留的对话留在本机私有存储，不进入作品Git、Bundle或普通支持日志；凭据由引擎或独立私密存储持有。作品只保存既有任务、工作修订、候选、公开反馈、作者决定与原操作。`management_ref` 不进入 Prompt 或会话投影；宿主为受管子进程设置私有 `HETU_COLLABORATION_DIR`，稳定 MCP 通过该连接目录发现当前客户端已有授权，Agent 只使用 WorkRef 选择当前作品。会话摘要不能成为另一份正文、设定或决定真值；作者显式公开的接续说明仍按既有任务接续合同保存。
 
 外部MCP App未必能获取宿主引擎会话标识，应允许其缺失；只能记录真实可观察的消息和面板回执，不能猜测线程、读取私有聊天或由打开面板推断执行中。跨入口恢复以Core固定事实为准，同引擎历史恢复还需独立验证版本、权限和会话归属。
 
@@ -594,6 +616,8 @@ AssetDesign与AssetSelection继续拥有资料设计和用途选用，MediaArtif
 
 `hetu.documents.rename`不修改正文字节，建立新文稿修订作为CAS边界，返回相同内容摘要和新的revision_id。历史revision当前不包含独立标题快照，因此文稿历史不能据此声称可恢复历次标题；标题变更由操作及当前文档记录。未来若需要标题历史，必须扩充版本化记录合同，不能在插件私建一份历史。
 
+`hetu.documents.duplicate`固定`work_ref`、`source_ref`（document_id、revision_id、sha256）、目录`expected`（revision、sha256）、副本`title`和`operation_key`。来源必须是该作品当前正式文稿，正文头和目录基线均核验；新文稿的`copy_source_ref`记录原WorkRef及固定文稿引用。小说在原章节后插入新chapter_id并保留volume_id；剧本在原分集后插入新episode_id并保留plan。新文稿拥有独立初始修订，复制来源不是采纳或定稿记录；新文稿、目录和原操作回执同事务落盘。
+
 ## 固定媒体分块的数据合同
 
 插件的固定媒体读取沿当前WorkRef与asset来源核验，Schema唯一Owner为 `contracts/extensions/actions.json`。分块返回原文件摘要、分块摘要、实际字节数和下一偏移；资产记录摘要与文件摘要各有原义，不互换。字段及边界见[插件27](plugin/27-开放宿主SDK与核心能力审计.md#固定媒体字节的公共读取)，专业声音与书稿数据仍由对应插件拥有。
@@ -619,3 +643,56 @@ statement_id和issue_id使用稳定UUID标识；已有标识和新结构不能�
 ### 第一方MCP工作台视图桥接
 
 完整工作台使用独立App视图会话：宿主从工具结果私有元数据获得会话引用，桥接只接受固定方法、参数数组及可选参数位置，不接收任意Core动作、作者模式或工作区路径。JSON的`null`与可选参数`undefined`分别传递，避免读取恢复稿被误解为清空。该私有表现协议不进入普通Agent领域动作目录；作品身份、CAS、固定决定与恢复仍由共享应用用例和Core执行。
+
+## 27. 类型化上下文与能力呈现
+
+本节复用现有WorkRef、领域固定引用、ContextManifest、WorkingCopyRef和TaskFeedback，不新增平行的“AI资料库”。界面选择器和Agent工具对同一Owner读取，选中状态、搜索词和面板宽度属于本机呈现。
+
+| 界面分类 | 解析后的权威数据 | 固定与隔离规则 |
+| --- | --- | --- |
+| 作品资料与标签 | 当前类型作品的资料修订 | 标签保留原维度与来源；不把营销分类变成Canon事实 |
+| 总纲、卷纲、章纲 | 正式大纲所属文稿／条目修订 | 正式大纲与插件规划分别标明；不存在的章纲不从正文猜写 |
+| 人物与设定 | 当前作品绑定的设定集修订及实体标识 | 实体字段按原Schema读取；未知、候选和确认不混合 |
+| 章节与分集 | 当前WorkRef中的目录和DocumentRevision | 名称仅用于显示；原文选区使用UTF-8字节边界和确切引句 |
+| 资料与素材 | 固定Resource修订或Asset引用及用途 | 图片描述不等于图像字节；文件接收、解码及选用分开 |
+| 参考稿与意见 | WorkingCopyRef、固定Candidate及TaskFeedback引用 | 参考稿和正文分别显示；私密意见不默认附给Agent |
+| 专业规划与检查 | owner_plugin_id、专业对象固定修订及来源 | 自有Schema解释专业字段；停用后保留通用固定对象读取／导出 |
+
+选择器只显示当前实际可读对象和覆盖状态；空集合、加载失败、不支持及读取不完整分别表达。摘要记录来源与覆盖，检索命中不是完整阅读证明。任务发布固定ContextManifest后，后续读取必须使用该请求的ContextRef及摘要；选择器中的“当前版本”不能在读取过程中静默跟随新头。
+
+未保存缓冲不创建虚构Revision。作者可先保存后引用，或使用已有明确支持的固定快照合同；没有该合同则说明需要保存。坐标从DOM或编辑器位置转换为原文UTF-8范围，Emoji、中文标点、组合输入和折叠块不能改变引用含义。
+
+能力列表来源为运行时发现：包身份、版本和摘要由安装Owner提供，动作的effect、Schema和恢复方式由能力Owner提供，方法文件由方法Owner提供。推荐、收藏、最近使用可保存本机偏好，不能改变实际安装、启用和兼容状态；不把文字匹配结果记录为Agent判断，不为每个写作方法生成一个同义Core动作。
+
+本节是已有合同的组合规则。若某来源当前没有可公开读取的固定引用，能力发现须说明缺口；先扩展原Owner合同及正负测试，再启用对应分类，禁止通过自由JSON或直接读内部文件补齐。
+
+### 27.1 固定上下文与协作成果关系
+
+```mermaid
+erDiagram
+    Work ||--o{ Document : owns
+    Document ||--|{ Revision : versions
+    CreativeTask ||--|{ TaskRequest : publishes
+    TaskRequest ||--o| ContextManifest : fixes
+    ContextManifest ||--o{ ContextEntry : lists
+    ContextEntry }o--|| FixedSource : selects
+    FixedSource }o--|| Work : belongs_to
+    TaskRequest ||--o{ WorkingCopy : scopes
+    WorkingCopy ||--|{ WorkingRevision : records
+    TaskRequest ||--o{ Candidate : receives
+    TaskRequest ||--o{ TaskFeedback : receives
+    Work ||--o{ ProfessionalObject : owns
+    ProfessionalObject }o--o{ FixedSource : cites
+```
+
+图中FixedSource表示各Owner已有的固定引用，不新增通用来源表。TaskRequest与ContextManifest的可选关系保留旧请求内联合同；新请求按实际Schema固定目录。Candidate可以固定已保存工作修订或按原合同接收内联候选；反馈目标另由TaskFeedback的精确引用约束，不能由本图推断所有意见都针对当前正文。
+
+
+### 终端会话创建配置
+
+会话投影增加client（shell／codex／claude-code／gemini／opencode）、capabilities.chat与launch选项。创建配置包含client、surface、title、model和reasoning_effort；模型值和推理档位只接受实际发现集合。旧Codex记录缺client时保持codex，原session_id、thread_id、输入代次和恢复规则不变；新原生终端使用独立terminal身份。原生PTY重开属于新进程，不能把旧屏幕回放标为原生模型线程恢复。
+
+
+### 终端业务投影
+
+作品选择使用已有WorkRef和创作库登记，不向SessionLaunch增加任意workspace_path或cwd。会话范围固定后不能原地换作品。非Codex回执文件仅保存AgentTool公开投影，记录本会话真实tools/call的ID、名称、完成状态与脱敏结果，限定条数与字节预算；management_ref、Token和密码不入投影。该文件不构成领域数据库或保存权威，成果展示必须重新验证归属、固定修订及摘要。

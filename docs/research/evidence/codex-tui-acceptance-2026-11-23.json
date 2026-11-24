@@ -1,0 +1,53 @@
+{
+  "date": "2026-11-23",
+  "scope": "Codex embedded TUI on macOS arm64",
+  "versions": {"hetu": "0.14.0", "codex": "0.171.0", "electron": "42.11.18", "node": "25.0.0"},
+  "package": {
+    "source_sha256": "73ca5b9fb52c55b156d8d5ac101275777219b9ff55fdadba2aedfa5d2b7a435f",
+    "manifest": "output/electron-packages/hetu-dev-5irpBn/manifest.json",
+    "source_files_verified": 2975,
+    "package_artifacts_verified": 3719,
+    "installed_artifacts_verified": 3131,
+    "installed_path": "/Applications/Hetu.app",
+    "signing": "ad-hoc-development",
+    "version_bumped": false,
+    "published": false,
+    "old_application_backup_created": false,
+    "author_data_preserved": true,
+    "independent_mcp_connections_preserved": true
+  },
+  "validation": [
+    {"suite": "desktop test:agent", "passed": 24, "scope": "protocol, leases, recovery, answer validation, receipt verification and redaction"},
+    {"suite": "codex-lifecycle-live.spec.ts", "passed": 1, "scope": "real model creation, revision feedback, same working copy, author adoption and exact revision delivery", "evidence": "codex-tui-lifecycle-2026-11-23.json"},
+    {"suite": "agent-session-e2e.spec.ts, codex-results-live.spec.ts, codex-tui-live.spec.ts", "passed": 3, "scope": "development Electron, real terminal, verified result navigation and typed handoff"},
+    {"suite": "library.spec.ts", "passed": 1, "scope": "creation handoff, library registration, reopen and path identity rejection"},
+    {"suite": "task-view app.spec.ts local and OpenAI drafts", "passed": 4, "scope": "independent metadata, fixed feedback and draft without submission"},
+    {"suite": "codex-results-live.spec.ts and codex-tui-live.spec.ts", "passed": 2, "scope": "packaged executable before installation"},
+    {"suite": "codex-results-live.spec.ts and codex-tui-live.spec.ts", "passed": 2, "scope": "actual /Applications/Hetu.app executable after replacement"}
+  ],
+  "observations": [
+    "TUI and GUI switches retain the same native remote client PID set, thread and separate unsent drafts",
+    "GUI ownership rejects native TUI writes and approval answers before forwarding",
+    "A saved feedback request reaches the work TUI composer without Enter",
+    "Fixed results are independently read through the Codex scoped CLI; unavailable or mismatched results remain unverified",
+    "Fixed submission navigation preserves the selected batch and provides an explicit latest-results action",
+    "Terminal viewport uses the actual terminal theme, including the remainder below complete rows",
+    "OSC hyperlinks and ordinary detected links use the same http/https host route"
+  ],
+  "screenshots": [
+    "output/codex-tui-validation/desktop-tui-light.png",
+    "output/codex-tui-validation/desktop-tui-dark.png",
+    "output/codex-tui-validation/desktop-tui-narrow.png",
+    "output/codex-tui-validation/desktop-tui-settings.png",
+    "output/codex-creation-validation/tui-results-packaged.png",
+    "output/codex-creation-validation/tui-revision-adoption.png"
+  ],
+  "remaining": [
+    "confirm mode business journey across stable and workspace routes",
+    "complete GUI message, input, context, settings and real model journey",
+    "real OS input method matrix",
+    "Orca same-viewport comparison",
+    "Windows and Linux validation",
+    "author creative acceptance and formal release"
+  ]
+}

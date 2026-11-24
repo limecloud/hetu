@@ -3,6 +3,8 @@ import {interfaceScales, nextInterfaceScale} from "../interface-scale.ts";
 import { pluginPreferences } from "./plugin-preferences.ts";
 import { ensureWorkConnection } from "./work-connection.ts";
 import { creationHandoff, workHandoff, pluginResultText, pluginWorkText, migrationText, settingsHandoff } from "./workbench-handoff.ts";
+import { validateWritingPrompt, writingPrompt } from "./writing-prompt.ts";
+import type { WritingPromptRequest } from "../writing-prompts.ts";
 import { readLibraryWorks as listWorks } from "./library-works.ts";
 import { runDialogUtility } from "./dialog-utility.ts";
 import { createWorkSession, type WorkSession } from "./work-session.ts";
@@ -33,7 +35,7 @@ import { savePluginArtifact } from "./plugin-artifact.ts";
 import { SettingsReview } from "./settings.ts";
 import { AgentConnectionInstall } from "./agent-connection-install.ts";
 import { SettingsWindow } from "./settings-window.ts";
-import {windowChromeOptions, trackWindowChrome, updateWindowChrome} from "./window-chrome.ts";
+import {windowChromeOptions, trackWindowChrome, updateWindowChrome, isWindowFullscreen,setWindowFullscreen,setWindowTitlebarHeight} from "./window-chrome.ts";
 import { workAssociation, workAgentRequest } from "./work-agent.ts";
 import { CoverReview } from "./covers.ts";
 import { NovelDetails } from "./novel-details.ts";
@@ -49,6 +51,7 @@ import { MediaAccess } from "./media.ts";
 import { VideoReview } from "./video-review.ts";
 import { OutlineReview } from "./outlines.ts";
 import { scopedCli } from "./cli.ts";
+import {readSessionResults,readLibrarySessionResults} from "./agent/session-results.ts";
 import { CreativeLibrary } from "./library.ts";
 import {
   PluginHost,
@@ -66,6 +69,10 @@ import {
   type PluginManifest,
 } from "@hetu/plugin-sdk";
 import { AppServer } from "./rpc.ts";
+import { AgentSessions } from "./agent/session-manager.ts";
+import {EngineCatalog,discoverEngines,machineClient} from "./agent/engines.ts";
+import { CodexSession } from "./agent/codex-session.ts";
+import { agentSessionSandbox, buildAgentSessionPrompt, createAgentSession, type AgentSessionAdapter, type AgentSessionContext, type AgentSessionEvent } from "./agent-session.ts";
 protocol.registerSchemesAsPrivileged([
   {
     scheme: "hetu-app",
@@ -109,6 +116,9 @@ let agentConnectionInstall: AgentConnectionInstall;
 let covers: CoverReview | undefined;
 let novelDetails: NovelDetails | undefined;
 let canon: CanonReview | undefined;
+let agentSession: AgentSessionAdapter | undefined;
+let agentSessions: AgentSessions | undefined;
+let engineCatalog:EngineCatalog|undefined;
 let localState: any;
 async function agentSettings(action: string, input: unknown, client = agentClient()) {
   return unwrap(await settingsServer.request("local_settings/request", {
@@ -119,6 +129,7 @@ function agentClient() {
   const selected = localState ? workAssociation(localState, work).client : "codex";
   return ({ claudeCode: "claude-code", other: "generic", none: "generic" } as Record<string, string>)[selected] ?? selected;
 }
+async function managedClient(){return machineClient((await agentSessions?.get(work,localState?.preferences?.agent_session?.default_surface??"tui"))?.snapshot(false).client??"codex");}
 function handoffEnvironment() { return {client:agentClient(),coreCli:coreCliBinary(),collaborationDirectory:process.env.HETU_COLLABORATION_DIR,localSettingsDirectory:process.env.HETU_LOCAL_SETTINGS_DIR}; }
 async function refreshSettings(committed?: any) {
   localState = committed ? {...localState, ...committed} : await settings.get();
@@ -130,6 +141,7 @@ async function refreshSettings(committed?: any) {
 }
 async function selectClient(client: string) {
   if (!["codex", "claude-code", "workbuddy", "generic"].includes(client)) throw new Error("请选择支持的外部 Agent 客户端。");
+  await agentSession?.stop(); agentSession = undefined;
   const state = await refreshSettings();
   const value = ({ "claude-code": "claudeCode", generic: "other" } as Record<string, string>)[client] ?? client;
   if (work) {
@@ -366,6 +378,16 @@ function coreCliBinary() {
       app.isPackaged ? process.resourcesPath : root,
       app.isPackaged ? "bin" : "target/debug",
       process.platform === "win32" ? "hetu.exe" : "hetu",
+    )
+  );
+}
+function mcpBinary() {
+  return (
+    process.env.HETU_MCP ??
+    path.join(
+      app.isPackaged ? process.resourcesPath : root,
+      app.isPackaged ? "bin" : "target/debug",
+      process.platform === "win32" ? "hetu-mcp.exe" : "hetu-mcp",
     )
   );
 }
@@ -661,7 +683,10 @@ app
       { role: "editMenu", label: "编辑" },
       { label: "显示", submenu: [
         { label: "返回工作台", accelerator: "Alt+Left", click: requestPluginReturn },
-        { role: "togglefullscreen", label: "切换全屏" },
+        { label: "切换全屏", accelerator:process.platform==="darwin"?"Ctrl+Command+F":"F11",click: () => {
+          const target = BrowserWindow.getFocusedWindow() ?? window;
+          void setWindowFullscreen(target,!isWindowFullscreen(target)).catch(error=>console.error("窗口全屏切换失败：",error.message));
+        } },
         { type: "separator" as const },
         ...[["放大界面", "CmdOrCtrl+Plus", 1], ["缩小界面", "CmdOrCtrl+-", -1], ["恢复界面大小", "CmdOrCtrl+0", 0]].map(([label, accelerator, direction]) => ({label: String(label), accelerator: String(accelerator), click: () => {
           const target = BrowserWindow.getFocusedWindow()?.webContents ?? window.webContents;
@@ -732,6 +757,16 @@ app
       if (window.isMaximized()) window.unmaximize();
       else window.maximize();
     });
+    shellHandler("desktop:maximize", () => {if (!window.isMaximized()) window.maximize();});
+    shellHandler("desktop:fullscreen",(method:string,value?:boolean)=>{
+      if(method==="get")return isWindowFullscreen(window);
+      if(method!=="set"||typeof value!=="boolean")throw new Error("全屏窗口请求无效。");
+      return setWindowFullscreen(window,value);
+    });
+    shellHandler("desktop:window-layout",(layout:string)=>{
+      if(!["terminal","default"].includes(layout))throw new Error("窗口布局请求无效。");
+      setWindowTitlebarHeight(window,layout==="terminal"?36:52);
+    });
     shellHandler("desktop:open", async () => {
       if (
         dirty &&
@@ -773,12 +808,13 @@ app
       }
       if (method === "refresh") {
         const discovered: any[] = [];
+        for(const client of new Set([agentClient(),"codex"])){
         let cursor: string | undefined;
         do {
           const result = unwrap(
             await scopedCli(
               coreCliBinary(),
-              agentClient(),
+              client,
               process.env.HETU_COLLABORATION_DIR,
               "hetu.collaboration.created_works",
               { limit: 100, ...(cursor ? { cursor } : {}) },
@@ -787,6 +823,7 @@ app
           discovered.push(...result.works);
           cursor = result.next_cursor ?? undefined;
         } while (cursor);
+        }
         await library.refresh(discovered);
         return overview();
       }
@@ -795,7 +832,33 @@ app
         if (dirty) throw new Error("请先保存当前修改，再打开另一作品。");
         return openWorkspace(directory, input.work_ref);
       }
-      if (method === "bootstrap") { clipboard.writeText(creationHandoff(input.kind,handoffEnvironment())); return {copied:true}; }
+      if (method === "archive") {
+        const reference = input.work_ref as WorkRef, directory = library.resolve(reference);
+        const next = await AppServer.open(serverBinary(), directory);
+        let adopted = false;
+        try {
+          let action: string, payload: any, title: string, archived = input.archived === true;
+          if (reference.kind === "novel") {
+            const current = unwrap(await next.request("workspace/request", {action: "hetu.novels.get", contract_revision: "1", input: {}}));
+            const metadata = {...current.novel.metadata, status: archived ? "archived" : (current.novel.metadata.status === "archived" ? "planning" : current.novel.metadata.status)};
+            action = "hetu.novels.update"; payload = {expected: {revision: current.revision, sha256: current.sha256}, metadata, operation_key: randomUUID()}; title = current.novel.metadata.title;
+          } else if (reference.kind === "drama") {
+            const current = unwrap(await next.request("workspace/request", {action: "hetu.drama.projects.get", contract_revision: "1", input: {project_id: reference.object_id}}));
+            action = "hetu.drama.projects.update"; payload = {project_ref: {project_id: current.project.project_id, revision: current.project.revision, sha256: current.sha256}, title: current.project.title, description: current.project.description ?? "", archived, source_refs: current.project.source_refs ?? [], operation_key: randomUUID()}; title = current.project.title;
+          } else {
+            const current = unwrap(await next.request("workspace/request", {action: "hetu.video.projects.get", contract_revision: "1", input: {video_project_id: reference.object_id}}));
+            action = "hetu.video.projects.update"; payload = {project_ref: {video_project_id: current.project.video_project_id, revision: current.project.revision, sha256: current.sha256}, title: current.project.title, brief: current.project.brief ?? "", archived, operation_key: randomUUID()}; title = current.project.title;
+          }
+          const answer = await dialog.showMessageBox(window, {type: "warning", buttons: ["取消", archived ? "移入废纸篓" : "恢复作品"], defaultId: 0, cancelId: 0, message: archived ? `将「${title}」移入废纸篓？` : `恢复「${title}」？`, detail: "作品正文、历史、任务和关联资料会保留；此操作可从创作库的已归档状态恢复。"});
+          if (answer.response !== 1) return overview();
+          unwrap(await next.request("workspace/request", {action, contract_revision: "1", input: payload}));
+          if (workspaceRoot === directory && server) {
+            const previous = server; server = next; adopted = true; await previous.close();
+          }
+          return overview();
+        } finally { if (!adopted) await next.close(); }
+      }
+      if (method === "bootstrap") { const prompt=creationHandoff(input.kind,{...handoffEnvironment(),client:input.delivery==="draft"?machineClient((await agentSessions?.get(undefined))?.snapshot(false).client??"codex"):agentClient()},input.delivery==="draft");if(input.delivery==="draft")return {prompt};clipboard.writeText(prompt);return {copied:true}; }
       throw new Error("未知创作库用例。");
     });
     shellHandler("desktop:state", async () => { await refreshSettings(); return overview(); });
@@ -830,6 +893,79 @@ app
         choose: async () => { const result = await dialog.showOpenDialog(window, { properties: ["openDirectory"], title: "选择已安装的创作套件" }); return result.canceled ? undefined : result.filePaths[0]; },
         reveal: directory => shell.showItemInFolder(directory),
       });
+    });
+    shellHandler("desktop:agent-session", async (method: string, input: any = {}) => {
+      if (method === "open_link") { if(typeof input.url!=="string"||input.url.length>8192)throw new Error("网页链接无效或超过预算。");const url = new URL(input.url); if (!["https:", "http:"].includes(url.protocol)) throw new Error("仅支持打开网页链接。"); await shell.openExternal(url.href); return; }
+      const selected = input.scope === "library" ? undefined : work && structuredClone(work), selectedEpoch = epoch;
+      if(input.work_ref&&(!selected||!sameWork(selected,input.work_ref)))throw new Error("作品已切换，请重新准备会话请求。");
+      const check = () => { if (selectedEpoch !== epoch || selected && (!work || !sameWork(work, selected))) throw new Error("作品已切换，请重新读取Codex会话。"); };
+      if (!agentSessions) {
+        const location = await settingsServer.request("collaboration/directory", {});
+        agentSessions ??= new AgentSessions({ profile: app.getPath("userData"), machineDirectory: location.directory, machineMcpBinary: mcpBinary(), machineNodeBinary:pluginNodeBinary(),machineRelay:path.join(dist,"agent-mcp-relay.mjs"), emit: event => { if (window && !window.isDestroyed()) window.webContents.send("desktop:agent-session", event); } });
+      }
+      const defaultSurface = localState?.preferences?.agent_session?.default_surface ?? "tui";
+      engineCatalog??=new EngineCatalog({directory:path.join(app.getPath("userData"),"agent-sessions","catalog"),runtimeDirectory:path.dirname(mcpBinary())});
+      if(method==="catalog")return discoverEngines(path.dirname(mcpBinary()));
+      if(method==="model_options")return engineCatalog.models(input.client);
+      if (method === "list") return agentSessions.list(selected);
+      if (method === "new") { const launch=input.launch?await engineCatalog.validate(input.launch):undefined;check();const created = await agentSessions.create(selected, launch?.surface??defaultSurface,launch); check();if(agentSessions.isSelected(created,selected))agentSession=created;if(launch){if(selected&&launch.client!=="shell")await ensureConnection(machineClient(launch.client));check();return created.start();}return created.snapshot(); }
+      const activeSession = await agentSessions.get(selected, defaultSurface);
+      if (input.session_id && input.session_id !== activeSession.snapshot().session_id && !["select", "get", "rename"].includes(method)) throw new Error("会话已经切换，旧输入未发送。");
+      const session = await agentSessions.get(selected, defaultSurface, input.session_id, method === "select");
+      check();
+      if(agentSessions.isSelected(session,selected))agentSession=session;
+      if (method === "get" || method === "select") return session.snapshot();
+      if (method === "rename") return session.rename(input.title);
+      const checkSession=()=>{check();if(!agentSessions!.isSelected(session,selected))throw new Error("会话已经切换，旧输入未发送。");if(input.generation!==undefined&&input.generation!==session.snapshot(false).generation)throw new Error("终端已重新连接，请重新准备输入。");};
+      checkSession();
+      if (method === "remove") { const created=await agentSessions.remove(selected, session.snapshot().session_id!, defaultSurface);check();if(agentSessions.isSelected(created,selected))agentSession=created;return created.snapshot(); }
+      if (method === "start") { if (selected&&session.snapshot().client!=="shell") await ensureConnection(machineClient(session.snapshot().client)); checkSession(); return session.start(); }
+      if (method === "surface") { checkSession(); return session.switchSurface!(input.surface); }
+      if (method === "terminal_input") { session.terminalInput!(input.data, input.generation); return; }
+      if (method === "terminal_resize") { session.terminalResize!(input.cols, input.rows, input.generation); return; }
+      if (method === "draft") return session.updateDraft(input.text, input.context_refs,{surface:input.surface,generation:input.generation});
+      if (method === "recover") return session.recover!();
+      if (method === "models") return session.models!();
+      if (method === "results") {
+        const client=machineClient(session.snapshot(false).client);
+        const tools="readTools" in session?await session.readTools():session.snapshot(false).tools??[];
+        if(!selected){
+          const discovered:any[]=[];let cursor:string|undefined;
+          do{const result=unwrap(await scopedCli(coreCliBinary(),client,process.env.HETU_COLLABORATION_DIR,"hetu.collaboration.created_works",{limit:100,...(cursor?{cursor}:{})}));discovered.push(...result.works);cursor=result.next_cursor??undefined;}while(cursor);
+          await library.refresh(discovered);check();
+          checkSession();window?.webContents.send("desktop:agent-session",{type:"notification",method:"results/verified",params:{},session_id:session.snapshot(false).session_id});
+          return readLibrarySessionResults(tools,library.rows(),new Set(discovered.map(item=>item.workspace_id)));
+        }
+        const context=collaborationContext(client),access=await context.status();
+        if(!access.authorized||!access.management_ref)throw new Error("当前作品的机器连接已断开，成果尚未回读。");
+        const results=await readSessionResults(tools,selected,async(action,input)=>{
+          context.check();
+          const data=unwrap(await scopedCli(coreCliBinary(),client,process.env.HETU_COLLABORATION_DIR,action,{...input,management_ref:access.management_ref}));
+          context.check();return data;
+        });
+        checkSession();
+        window?.webContents.send("desktop:agent-session",{type:"notification",method:"results/verified",params:{},session_id:session.snapshot(false).session_id,work_ref:selected});
+        return results;
+      }
+      if (method === "insert") { if (selected ? !input.work_ref || !sameWork(selected,input.work_ref) : input.scope!=="library" || input.work_ref) throw new Error("作品已切换，请重新准备请求。");if(selected)await ensureConnection(machineClient(session.snapshot().client));checkSession();return session.insertDraft(input.text,checkSession); }
+      if(method==="paste_draft"){if(!("pasteDraft" in session))throw new Error("此引擎请使用原生请求入口。");return session.pasteDraft(input.draft_version);}
+      if (method === "send") {
+        const text = typeof input.text === "string" ? input.text : "";
+        if (selected) { const access = await ensureConnection("codex"); if (!access.management_ref || typeof access.management_ref !== "object") throw new Error("当前作品的机器连接不可用。"); }
+        checkSession();
+        const context: AgentSessionContext = {
+          schema_version: "1",
+          work_ref: selected,
+          scope: selected ? "current_work_only" : "creation_preparation",
+          machine_entrypoint: "hetu CLI/MCP",
+          first_action: "先通过河图稳定CLI/MCP发现实际能力，再按当前作品范围执行",
+        };
+        return session.send(buildAgentSessionPrompt(context, text), text, { attempt_id: input.attempt_id, model: input.model, reasoning_effort: input.reasoning_effort });
+      }
+      if (method === "interrupt") return session.interrupt();
+      if (method === "respond") { await session.respond(input.id, input.result, input.generation); return session.snapshot(); }
+      if (method === "stop") { await session.stop(); return session.snapshot(); }
+      throw new Error("未知 Agent 会话操作。");
     });
     shellHandler("desktop:settings-agent", (method: string, input: any = {}) => workAgentRequest(method, input, {
       directory: "", settings, check: () => {}, refresh: refreshSettings,
@@ -909,6 +1045,7 @@ app
       async (method: string, client: string) => {
         const context = collaborationContext(client);
         if (method === "select") {
+          await agentSession?.stop(); agentSession = undefined;
           await selectClient(client);
           return overview();
         }
@@ -927,6 +1064,7 @@ app
               "旧管理连接及其派生任务将失效，已保存成果和作者意见保留。重新授权不会复活旧任务。",
           });
           if (decision.response !== 1) return status;
+          await agentSessions?.stopWork(work); agentSession = undefined;
           context.check();
           await context.call("hetu.collaboration.revoke_management", {
             ...context.base,
@@ -940,6 +1078,7 @@ app
     );
     shellHandler("desktop:select", async (ref: WorkRef) => {
       if (dirty) throw new Error("请先保存或明确放弃当前修改。");
+      agentSession = undefined;
       unwrap(await core("hetu.works.get", { work_ref: ref }));
       epoch++;
       await media?.dispose();
@@ -975,24 +1114,49 @@ app
     });
     shellHandler(
       "desktop:handoff",
-      async (pageId: string, object: Record<string, unknown> = {}) => {
+      async (pageId: string, object: Record<string, unknown> = {}, delivery?: string) => {
+        if (delivery !== undefined && delivery !== "draft") throw new Error("不支持的协作交接方式。");
+        const managed = delivery === "draft";
         if (pageId.startsWith("fallback:")) {
           const owner = pageId.slice(9), context = await pluginContext(owner);
           const fixed = await pluginResultHandoff(context, owner, object);
           context.check();
+          if (managed) {
+            await ensureConnection(await managedClient()); context.check();
+            return {work_ref:context.work,prompt:"请通过河图公开机器入口发现当前插件能力，读取固定成果后按我的目标准备和执行；保留CAS与原操作，未知先回读。采纳、定稿及费用决定独立处理。\n"+JSON.stringify({...fixed,page:"plugin.results",plugin_id:owner,package_sha256:context.packageSha,first_action:"hetu.plugins.capabilities",machine_entrypoint:"hetu CLI/MCP"},null,2)};
+          }
           clipboard.writeText(pluginResultText(fixed,pluginMachineConnection(owner,context.work),agentClient()));
           return { copied: true };
         }
         if (!work || !authoring) throw new Error("请选择当前作品。");
         const selectedEpoch=epoch, selectedWork=work, currentAuthoring=authoring;
-        clipboard.writeText(await workHandoff(pageId,object,{work:selectedWork,authoring:currentAuthoring,environment:handoffEnvironment(),
+        // 交接是作者明确发起的协作入口；沿现有连接或自动建立当前作品连接，
+        // 让 CLI、MCP 与桌面拿到同一精确 management_ref。
+        const client=managed?await managedClient():agentClient();
+        const access = await ensureConnection(client);
+        const prompt = await workHandoff(pageId,object,{work:selectedWork,managedSession:managed,authoring:currentAuthoring,environment:{...handoffEnvironment(),client},
           workspacePath:library.resolve(selectedWork),executionPolicy:()=>settings.get(),summary:async()=>unwrap(await core("hetu.works.get",{work_ref:selectedWork})).summary,
           check:()=>{if(selectedEpoch!==epoch)throw new Error("作品已变化，请重新交接。");},
+          managementRef: access.management_ref,
           pluginConnection:binding?pluginMachineConnection(binding.owner,binding.work):undefined,
-        }));
+        });
+        if (managed) return {prompt,work_ref:selectedWork};
+        clipboard.writeText(prompt);
         return { copied: true };
       },
     );
+    shellHandler("desktop:writing-prompt", async (input: WritingPromptRequest) => {
+      if (!work || !authoring) throw new Error("请选择当前作品。");
+      const selectedEpoch = epoch, selectedWork = work, currentAuthoring = authoring;
+      validateWritingPrompt(input, selectedWork);
+      const client=await managedClient(),access=await ensureConnection(client);
+      return writingPrompt(input, {work: selectedWork, managedSession:true, authoring: currentAuthoring, environment: {...handoffEnvironment(),client},
+        workspacePath: library.resolve(selectedWork), executionPolicy: () => settings.get(),
+        summary: async () => unwrap(await core("hetu.works.get", {work_ref: selectedWork})).summary,
+        check: () => {if (selectedEpoch !== epoch) throw new Error("作品已变化，请重新生成提示词。");},
+        managementRef: access.management_ref,
+      });
+    });
     shellHandler("desktop:copy", copyText);
     shellHandler("desktop:paste", pasteText);
     shellHandler("desktop:install", async () => {
@@ -1255,7 +1419,15 @@ app
     app.quit();
   });
 // 由正常close事件等待落盘；before-quit内再次关窗会重入原退出流程。
-app.on("before-quit", () => { quitRequested = true; });
+let enginesClosed = false, enginesClosing = false;
+app.on("before-quit", event => {
+  quitRequested = true;
+  if (enginesClosed || !agentSessions) return;
+  event.preventDefault();
+  if (enginesClosing) return;
+  enginesClosing = true;
+  void agentSessions.stopAll().then(() => { enginesClosed = true; app.quit(); }).catch(error => { enginesClosing = false; dialog.showErrorBox("Codex进程退出待核对", error.message); });
+});
 // 普通关闭最后一个窗口时也在本轮事件结束后退出。
 app.on("window-all-closed", () => { setImmediate(() => app.quit()); });
 

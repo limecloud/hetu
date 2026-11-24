@@ -54,3 +54,10 @@ Hetu does not put another conversational Agent inside the app. You keep working 
 > As AI grows more capable, let it work with the body of work you build over time. Let every generated draft become something you can understand, choose from and continue developing.
 
 Try adopting a single passage in the [homepage workspace](/en/#prototype), or read the [Agent guide](/en/docs/agents/) to bring your own assistant into the workflow.
+
+
+## Use only what this work needs
+
+A quick idea or read-only question can end with an answer. Keep sources, feedback and revisions for work you intend to continue, without turning every discussion into a project task. Delegate or write directly; consequential choices refer to concrete results.
+
+[Find the smallest useful starting point](/en/docs/when-to-use/).

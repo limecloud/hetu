@@ -24,6 +24,10 @@ pub(super) const PROPOSABLE: &[&str] = &[
     "hetu.blueprints.unlock",
     "hetu.documents.save",
     "hetu.documents.rename",
+    "hetu.documents.duplicate",
+    "hetu.documents.move_range",
+    "hetu.documents.move_to_new",
+    "hetu.documents.restore_move",
     "hetu.documents.validate",
     "hetu.documents.finalize",
     "hetu.documents.withdraw_finalization",
@@ -32,6 +36,8 @@ pub(super) const PROPOSABLE: &[&str] = &[
     "hetu.reviews.begin",
     "hetu.reviews.decide",
     "hetu.resources.adopt",
+    "hetu.resources.create",
+    "hetu.resources.update",
     "hetu.resources.archive",
     "hetu.findings.disposition",
     "hetu.covers.select",
@@ -266,6 +272,14 @@ impl Kernel {
                 if input["include_schema"] == true {
                     for item in page["actions"].as_array_mut().unwrap() {
                         *item = catalog::descriptor(item["name"].as_str().unwrap()).unwrap().clone();
+                        if let Some(reference)=self.granted_work()? {
+                            let schema=&mut item["input_schema"];
+                            if schema["properties"]["work_ref"].is_object() {
+                                schema["properties"]["work_ref"]["const"]=reference;
+                                let required=schema.as_object_mut().unwrap().entry("required").or_insert_with(||json!([])).as_array_mut().unwrap();
+                                if !required.iter().any(|field|field=="work_ref") {required.push(json!("work_ref"));}
+                            }
+                        }
                     }
                 }
                 page["schema_lookup"]["action"]=json!("hetu.agent_operations.catalog");
@@ -332,7 +346,7 @@ impl Kernel {
                     }
                 }
                 ensure(
-                    target != "hetu.documents.create" || arguments["content"] == "",
+                    !matches!(target, "hetu.documents.create") || arguments["content"] == "",
                     "forbidden",
                     "新建管理方案只建立空文档，正文通过参考稿交付。",
                 )?;

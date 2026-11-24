@@ -1,5 +1,9 @@
 # Use creative plugins
 
+## Start with what you need
+
+Add professional tools for a concrete problem. Basic writing and reading need no extra plugin; verify installation, available capabilities and actual task results separately.
+
 An ensemble cast becomes hard to follow. A series of flashbacks makes the true order of events unclear. Add a relationship graph or a story timeline when it helps you inspect the work.
 
 Browse the [creative plugin center](/en/plugins/). These tools extend the Hetu workspace. [Skills and client integration packages](skills.md) give your external Agent methods and a connection. Their installations are separate.

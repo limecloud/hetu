@@ -19,6 +19,7 @@ use std::{
 pub struct LocalSettings {
     store: Store,
 }
+const SETTINGS_VERSION: u64 = 5;
 
 pub fn default_directory() -> Result<PathBuf> {
     if let Some(path) = std::env::var_os("HETU_LOCAL_SETTINGS_DIR") {
@@ -58,10 +59,15 @@ fn client_valid(client: &str) -> Result<()> {
         "客户端标识无效。",
     )
 }
+fn agent_session_defaults() -> Value {
+    let catalog: Value = serde_json::from_str(include_str!("../../contracts/agent-session-defaults.json")).expect("会话默认档案必须是有效JSON");
+    catalog["preferences"].clone()
+}
 fn defaults() -> Value {
-    json!({"schema_version":3,"revision":1,"execution_policy_revision":1,"preferences":{
+    json!({"schema_version":SETTINGS_VERSION,"revision":1,"execution_policy_revision":1,"preferences":{
         "language":"zh-CN","appearance":"system","library_list":false,"autosave":true,
         "execution_mode":"auto",
+        "agent_session":agent_session_defaults(),
         "reading_profiles":reading::profiles(),"document_theme":"system",
         "focus_paragraph":false,"typewriter_scroll":false,"smart_pairs":false,
         "git_author_name":"","git_author_email":"","agent_client":"codex"
@@ -91,6 +97,24 @@ fn validate_patch(patch: &Value) -> Result<()> {
             )?;
         }
     }
+    Ok(())
+}
+fn validate_state(state: &Value, version: u64, expected_session: &Value) -> Result<()> {
+    ensure(
+        state["schema_version"] == version
+            && state["revision"].as_u64().is_some_and(|n| n > 0)
+            && state["execution_policy_revision"].as_u64().is_some_and(|n| n > 0)
+            && state["associations"].is_object()
+            && state["installations"].is_object(),
+        "hetu.integrity_failure", "本机设置记录无效。",
+    )?;
+    validate_patch(&state["preferences"])?;
+    reading::validate_complete(&state["preferences"])?;
+    ensure(state["preferences"]["agent_session"].as_object().is_some_and(|fields| fields.len() == expected_session.as_object().unwrap().len()
+        && expected_session.as_object().unwrap().keys().all(|key| fields.contains_key(key))), "hetu.integrity_failure", "会话偏好字段不完整。")?;
+    ensure(state["preferences"].as_object().unwrap().len() == defaults()["preferences"].as_object().unwrap().len()
+        && defaults()["preferences"].as_object().unwrap().keys().all(|key| state["preferences"].get(key).is_some()),
+        "hetu.integrity_failure", "本机偏好字段不完整。")?;
     Ok(())
 }
 fn plan_path(operation_id: &str) -> Result<String> {
@@ -147,7 +171,7 @@ impl LocalSettings {
         {
             let _reader = service.store.read_lock()?;
             if service.store.exists("settings.json")?
-                && service.store.json("settings.json")?["schema_version"] == 3
+                && service.store.json("settings.json")?["schema_version"] == SETTINGS_VERSION
             {
                 service.state()?;
                 return Ok(service);
@@ -164,13 +188,15 @@ impl LocalSettings {
         let state: Value = serde_json::from_slice(&original)?;
         if state["schema_version"] == 1 || state["schema_version"] == 2 {
             let version = state["schema_version"].as_u64().unwrap();
-            let mut next = if version == 1 { reading::migrate(state, defaults())? } else {
+            let mut legacy_defaults = defaults();
+            legacy_defaults["preferences"].as_object_mut().unwrap().remove("agent_session");
+            let mut next = if version == 1 { reading::migrate(state, legacy_defaults.clone())? } else {
                 ensure(state["revision"].as_u64().is_some_and(|n| n > 0) && state["associations"].is_object() && state["installations"].is_object(),
                     "hetu.integrity_failure", "旧版本机设置记录无效，已保留原文件。")?;
                 validate_patch(&state["preferences"])?; reading::validate_complete(&state["preferences"])?;
                 let mut next = state;
-                ensure(next["preferences"].as_object().is_some_and(|fields| fields.len() + 1 == defaults()["preferences"].as_object().unwrap().len() && !fields.contains_key("execution_mode")
-                    && defaults()["preferences"].as_object().unwrap().keys().filter(|key| key.as_str() != "execution_mode").all(|key| fields.contains_key(key))),
+                ensure(next["preferences"].as_object().is_some_and(|fields| fields.len() + 1 == legacy_defaults["preferences"].as_object().unwrap().len() && !fields.contains_key("execution_mode")
+                    && legacy_defaults["preferences"].as_object().unwrap().keys().filter(|key| key.as_str() != "execution_mode").all(|key| fields.contains_key(key))),
                     "hetu.integrity_failure", "旧版本机偏好字段不完整，已保留原文件。")?;
                 next["preferences"]["execution_mode"] = json!("auto");
                 next["revision"] = json!(next["revision"].as_u64().unwrap().checked_add(1).ok_or_else(|| Error::new("hetu.budget_exceeded", "设置修订已达上限。"))?);
@@ -186,30 +212,41 @@ impl LocalSettings {
                 ("settings.json".into(), serde_json::to_vec(&next)?),
             ]))?;
         }
+        let original = service.store.read("settings.json")?;
+        let mut next: Value = serde_json::from_slice(&original)?;
+        if next["schema_version"] == 3 {
+            validate_patch(&next["preferences"])?;
+            reading::validate_complete(&next["preferences"])?;
+            ensure(next["preferences"].as_object().is_some_and(|fields| fields.len() + 1 == defaults()["preferences"].as_object().unwrap().len()
+                && !fields.contains_key("agent_session") && defaults()["preferences"].as_object().unwrap().keys().filter(|key| key.as_str() != "agent_session").all(|key| fields.contains_key(key))),
+                "hetu.integrity_failure", "旧版设置字段不完整，已保留原文件。")?;
+            next["preferences"]["agent_session"] = agent_session_defaults();
+            next["schema_version"] = json!(SETTINGS_VERSION);
+            next["revision"] = json!(next["revision"].as_u64().ok_or_else(|| Error::new("hetu.integrity_failure", "旧版设置修订无效。"))?.checked_add(1).ok_or_else(|| Error::new("hetu.budget_exceeded", "设置修订已达上限。"))?);
+            let backup = "migrations/v3/settings.json";
+            ensure(!service.store.exists(backup)? || service.store.read(backup)? == original, "revision_conflict", "旧设置迁移记录已存在不同内容。")?;
+            service.store.transaction(&BTreeMap::from([(backup.into(), original), ("settings.json".into(), serde_json::to_vec(&next)?)]))?;
+        }
+        if next["schema_version"] == 4 {
+            let original = service.store.read("settings.json")?;
+            let mut expected_session = agent_session_defaults();
+            expected_session.as_object_mut().unwrap().remove("terminal_focus_on_hover");
+            validate_state(&next, 4, &expected_session)?;
+            next["preferences"]["agent_session"]["terminal_focus_on_hover"] = json!(false);
+            next["schema_version"] = json!(SETTINGS_VERSION);
+            next["revision"] = json!(next["revision"].as_u64().unwrap().checked_add(1)
+                .ok_or_else(|| Error::new("hetu.budget_exceeded", "设置修订已达上限。"))?);
+            let backup = "migrations/v4/settings.json";
+            ensure(!service.store.exists(backup)? || service.store.read(backup)? == original,
+                "revision_conflict", "旧设置迁移记录已存在不同内容。")?;
+            service.store.transaction(&BTreeMap::from([(backup.into(), original), ("settings.json".into(), serde_json::to_vec(&next)?)]))?;
+        }
         service.state()?;
         Ok(service)
     }
     fn state(&self) -> Result<Value> {
         let state = self.store.json("settings.json")?;
-        ensure(
-            state["schema_version"] == 3
-                && state["revision"].as_u64().is_some_and(|n| n > 0)
-                && state["execution_policy_revision"].as_u64().is_some_and(|n| n > 0)
-                && state["associations"].is_object()
-                && state["installations"].is_object(),
-            "hetu.integrity_failure",
-            "本机设置记录无效。",
-        )?;
-        validate_patch(&state["preferences"])?;
-        reading::validate_complete(&state["preferences"])?;
-        ensure(
-            state["preferences"].as_object().unwrap().len()
-                == defaults()["preferences"].as_object().unwrap().len()
-                && defaults()["preferences"].as_object().unwrap().keys()
-                    .all(|key| state["preferences"].get(key).is_some()),
-            "hetu.integrity_failure",
-            "本机偏好字段不完整。",
-        )?;
+        validate_state(&state, SETTINGS_VERSION, &agent_session_defaults())?;
         Ok(state)
     }
     pub(crate) fn with_execution_policy<T>(&self, run: impl FnOnce(&str, u64) -> Result<T>) -> Result<T> {

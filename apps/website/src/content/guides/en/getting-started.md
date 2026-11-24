@@ -1,5 +1,9 @@
 # Quick start
 
+## Start with what you need
+
+First decide whether this task needs saved work. Discuss quick ideas directly, or read existing material without changes. Use a project when continuation, comparison or delivery needs it.
+
 Start with a novel, screenplay or video. Give your familiar external Agent a goal, let it prepare the work, then return to read or watch, give feedback and continue the same task.
 
 ## What to ask your Agent

@@ -472,8 +472,11 @@ fn bootstrap_task_replay_fixed_submission_and_legacy_read_share_core_state() {
     for field in ["document", "revision", "content"] {
         assert_eq!(legacy["data"][field], read[field]);
     }
-    assert_eq!(value(run(&["--workspace",path,"call","hetu.documents.save","--input","-"],&serde_json::to_vec(&json!({
-        "document_id":document["document"]["document_id"],"base_revision_id":document["revision"]["revision_id"],"source_format":"markdown","content":"不得覆盖","operation_key":"deny"})).unwrap(),None),3)["error"]["code"],"forbidden");
+    let saved = value(run(&["--workspace",path,"call","hetu.documents.save","--input","-"],&serde_json::to_vec(&json!({
+        "document_id":document["document"]["document_id"],"base_revision_id":document["revision"]["revision_id"],"source_format":"markdown","content":"Agent自动保存","operation_key":"auto-save"})).unwrap(),None),0);
+    assert!(saved["data"]["revision"]["revision_id"].is_string());
+    let reread = value(run(&["--workspace",path,"call","hetu.documents.get","--input","-"],&serde_json::to_vec(&json!({"document_id":document["document"]["document_id"]})).unwrap(),None),0);
+    assert_eq!(reread["data"]["content"], "Agent自动保存");
 }
 
 #[test]
@@ -500,19 +503,8 @@ fn local_settings_share_core_without_a_window_or_recursive_cli() {
         value(child.wait_with_output().unwrap(), code)
     };
     let plan=run_local(&["--client","codex"],"hetu.local_settings.prepare",json!({"kind":"preferences","patch":{"font_size":21},"summary":"设置字号","operation_key":"prepare"}),0)["data"].clone();
-    let service = hetu_core::local_settings::LocalSettings::open(&path).unwrap();
-    assert_eq!(
-        run_local(
-            &["--local", "--client", "codex"],
-            "hetu.local_settings.execute",
-            json!({"operation_id":plan["operation_id"],"sha256":plan["sha256"],"operation_key":"execute"}),
-            3
-        )["error"]["code"],
-        "hetu.author_confirmation_required"
-    );
-    service.host(json!({"method":"decide","input":{"operation_id":plan["operation_id"],"sha256":plan["sha256"],"revision":1,"approve":true,"operation_key":"decide"}})).unwrap();
     let applied = run_local(
-        &["--client", "codex"],
+        &["--local", "--client", "codex"],
         "hetu.local_settings.execute",
         json!({"operation_id":plan["operation_id"],"sha256":plan["sha256"],"operation_key":"execute"}),
         0,

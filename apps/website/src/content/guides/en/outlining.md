@@ -1,5 +1,9 @@
 # Plan an outline and chapters
 
+## Start with what you need
+
+Outline the level needed for the current problem. A scene needs no complete book plan; drafting before outlining is valid. Keep alternatives distinct from settled events.
+
 An outline helps you discuss where a story could go and leaves decisions you can continue from later. It can begin with one question; every chapter does not need to be planned on the first day.
 
 Ask your Agent to compare directions and organize proposals. You decide which to pursue. Keep possible developments separate from facts already established in the manuscript.

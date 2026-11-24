@@ -132,7 +132,7 @@ test(
         }).code,
       ).not.toBe(0);
       // 同根的独立剧本也有方案，小说工作面不得读取或决定它。
-      await page.getByRole("button", { name: "返回创作库", exact: true }).click();
+      await navigate(page, "返回创作库");
       await page.getByRole("button", { name: /独立剧本/ }).click();
       await expect(
         page.getByRole("complementary", { name: "项目导航", exact: true }),
@@ -166,7 +166,7 @@ test(
           operation_key: "prepare-drama",
         }),
       );
-      await page.getByRole("button", { name: "返回创作库", exact: true }).click();
+      await navigate(page, "返回创作库");
       await page.getByRole("button", { name: /插件集成测试/ }).click();
       await expect(
         page.getByRole("complementary", { name: "项目导航", exact: true }),

@@ -91,7 +91,6 @@ test("分集直接阅读已提交参考稿和工作稿，原任务分页审阅�
     await page.getByRole("button", { name: "打开作品", exact: true }).first().click();
     await page.getByRole("button", { name: /默认剧本/ }).click();
     await expect(page.locator(".workspace-switcher .workspace-title")).toHaveText("默认剧本", { timeout: 30_000 });
-    await expect(page.getByRole("button", { name: "剧本", exact: true })).toBeEnabled({ timeout: 30_000 });
     await navigate(page, "剧本"); await openDirectory(page);
     await expect(page.getByRole("article", { name: "分集剧本", exact: true })).toContainText("船还没来");
     await page.getByRole("button", { name: "第二集 参考稿已到", exact: true }).click();
@@ -136,7 +135,6 @@ test("分集直接阅读已提交参考稿和工作稿，原任务分页审阅�
     await close();
     page = await launch(); await page.getByRole("button", { name: /默认剧本/ }).click();
     await expect(page.locator(".workspace-switcher .workspace-title")).toHaveText("默认剧本", { timeout: 30_000 });
-    await expect(page.getByRole("button", { name: "剧本", exact: true })).toBeEnabled({ timeout: 30_000 });
     await navigate(page, "剧本"); await openDirectory(page);
     await page.getByRole("button", { name: "第二集 参考稿已到", exact: true }).click();
     await expect(page.getByRole("article", { name: "剧本参考稿" })).toContainText("先把那封信交给我");

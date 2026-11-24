@@ -6,6 +6,7 @@ use std::path::Path;
 pub struct StableServer {
     hub: Arc<CollaborationHub>,
     workbench: workbench::WorkbenchRuntime,
+    current_work: Option<Value>,
     tools: Vec<(Tool, String)>,
     gate: Arc<Semaphore>,
     all_tools: bool,
@@ -14,6 +15,9 @@ pub struct StableServer {
 }
 impl StableServer {
     pub fn open(directory: &Path, client: &str) -> Result<Self, Box<dyn std::error::Error>> {
+        Self::open_with_work(directory, client, None)
+    }
+    pub fn open_with_work(directory: &Path, client: &str, current_work: Option<Value>) -> Result<Self, Box<dyn std::error::Error>> {
         let hub = CollaborationHub::open(directory, client)?;
         let actions = hub.catalog_summary();
         let catalog: ToolCatalog =
@@ -58,6 +62,7 @@ impl StableServer {
         Ok(Self {
             hub: Arc::new(hub),
             workbench,
+            current_work,
             tools,
             gate: Arc::new(Semaphore::new(1)),
             all_tools: false,
@@ -190,6 +195,18 @@ impl ServerHandler for StableServer {
             })?;
         let mut arguments = json!(request.arguments.clone().unwrap_or_default());
         response::read_input(action, &mut arguments);
+        let target_action = if action == "hetu.collaboration.invoke" {
+            arguments["action"].as_str().unwrap_or(action).to_owned()
+        } else {
+            action.to_owned()
+        };
+        if action == "hetu.collaboration.invoke" {
+            if let Some(target_input) = arguments.get_mut("input") {
+                self.inject_current_management(&target_action, target_input);
+            }
+        } else {
+            self.inject_current_management(&target_action, &mut arguments);
+        }
         let recovery_input = if action == "hetu.collaboration.invoke" {
             arguments["input"].clone()
         } else {
@@ -246,7 +263,12 @@ impl ServerHandler for StableServer {
         } else {
             result
         };
-        let result = response::bounded(result, action, &recovery_input, MAX_RESULT_BYTES);
+        let mut result = response::bounded(result, action, &recovery_input, MAX_RESULT_BYTES);
+        if let Some(work) = &self.current_work {
+            if remove_private_management_refs(&mut result) && result["data"].is_object() {
+                result["data"]["work_ref"] = work.clone();
+            }
+        }
         if !self.output_validator.is_valid(&result) {
             return Err(ErrorData::internal_error(
                 "内核结果违反机器合同 / Result violates contract",
@@ -255,6 +277,7 @@ impl ServerHandler for StableServer {
         }
         Ok(response::tool_result(result).into())
     }
+
     async fn list_resources(
         &self,
         request: Option<PaginatedRequestParams>,
@@ -301,9 +324,47 @@ impl ServerHandler for StableServer {
     }
 }
 
+impl StableServer {
+    /// 管理动作复用启动时绑定的 WorkRef，在私有授权目录解析管理引用。
+    /// 当前绑定可为无WorkRef字段的读取动作定位；显式不同作品仍由原Schema与范围核验拒绝。
+    fn inject_current_management(&self, action: &str, input: &mut Value) {
+        let Some(work) = self.current_work.as_ref() else { return; };
+        let Some(descriptor) = self.hub.action_descriptor(action) else { return; };
+        let authorization = descriptor["authorization"].as_str().unwrap_or("");
+        if input.get("work_ref") == Some(work) && !schema_declares_work_ref(&descriptor["input_schema"]) {
+            input.as_object_mut().unwrap().remove("work_ref");
+        }
+        if !matches!(authorization, "new_managed_scope" | "task_or_new_managed_scope") || input.get("management_ref").is_some() {
+            return;
+        }
+        if let Ok(Some(reference)) = self.hub.management_ref_for_work(work) {
+            input["management_ref"] = reference;
+        }
+    }
+}
+
 fn compact_tool(name: &str) -> bool {
     matches!(name, "hetu_inspect_collaboration" | "hetu_get_capability_map" | "hetu_begin_creation"
         | "hetu_open_collaboration_task" | "hetu_read_creative_task" | "hetu_read_task_operation"
         | "hetu_get_task_checkpoint" | "hetu_save_task_checkpoint" | "hetu_inspect_runtime"
         | "hetu_call_action" | "hetu_open_task_view" | "hetu_save_task_selection" | "hetu_request_model_confirmation")
+}
+
+/// 受管连接已持有私有范围；模型只需要公开WorkRef，后续请求仍由同一连接解析。
+fn remove_private_management_refs(value: &mut Value) -> bool {
+    let mut removed = false;
+    match value {
+        Value::Object(fields) => {
+            removed |= fields.remove("management_ref").is_some();
+            for child in fields.values_mut() { removed |= remove_private_management_refs(child); }
+        }
+        Value::Array(values) => for child in values { removed |= remove_private_management_refs(child); },
+        _ => {}
+    }
+    removed
+}
+
+fn schema_declares_work_ref(schema: &Value) -> bool {
+    schema["properties"].get("work_ref").is_some()
+        || ["oneOf", "anyOf", "allOf"].iter().any(|key| schema[key].as_array().is_some_and(|branches| branches.iter().any(schema_declares_work_ref)))
 }

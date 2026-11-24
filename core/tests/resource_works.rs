@@ -138,6 +138,33 @@ fn exact_work_reads_neither_siblings_nor_legacy_and_owner_never_changes() {
             .any(|r| r["kind"] == "resource" && r["work_ref"] == novel)
     );
 }
+
+#[test]
+fn management_scope_can_create_and_update_draft_resources_without_a_task() {
+    let (root, k, work) = setup();
+    let (hub, grant) = grant(&k, root.path(), &work);
+    let created = agent(&hub, &grant, "resources.create", {
+        let mut input = fields("managed-create");
+        input["work_ref"] = work.clone();
+        input
+    });
+    assert_eq!(created["status"], "succeeded", "{created}");
+    assert_eq!(created["data"]["resource"]["work_ref"], work);
+    let mut update = fields("managed-update");
+    update["resource_id"] = created["data"]["resource"]["resource_id"].clone();
+    update["expected"] = expected(&created["data"]);
+    update["work_ref"] = work.clone();
+    let updated = agent(&hub, &grant, "resources.update", update);
+    assert_eq!(updated["status"], "succeeded", "{updated}");
+    assert_eq!(updated["data"]["resource"]["title"], "managed-update");
+    let replay = agent(&hub, &grant, "resources.create", {
+        let mut input = fields("managed-create");
+        input["work_ref"] = work;
+        input
+    });
+    assert_eq!(replay["status"], "succeeded", "{replay}");
+    assert_eq!(replay["data"]["resource"]["resource_id"], created["data"]["resource"]["resource_id"]);
+}
 #[test]
 fn fixed_task_proposal_binds_created_drafts_and_rejects_foreign_input() {
     let (root, k, work) = setup();

@@ -41,10 +41,11 @@ test("启动页浅暗中性表面、紧凑页头及无障碍实色降级", async
         expect(chrome.buttons).toEqual({x: 20, y: Math.round((52 * value / 100 - 14) / 2)});
         expect(chrome.outer.height).toBe(chrome.content.height);
       }
-      await application.evaluate(({BrowserWindow}) => BrowserWindow.getAllWindows()[0].setFullScreen(true));
+      const enteredFullscreen = await page.evaluate(() => window.hetuDesktop.fullscreen!("set", true));
+      expect(enteredFullscreen).toBe(true);
       await expect(page.locator("html")).toHaveAttribute("data-window-chrome", "fullscreen");
       await expect(page.locator(".workbench-topbar")).toHaveCSS("padding-left", "16px");
-      await application.evaluate(({BrowserWindow}) => BrowserWindow.getAllWindows()[0].setFullScreen(false));
+      await page.evaluate(() => window.hetuDesktop.fullscreen!("set", false));
       await expect(page.locator("html")).toHaveAttribute("data-window-chrome", "inset");
       if (!await page.getByRole("complementary", {name: "创作库导航", exact: true}).isVisible()) await page.getByRole("button", {name: "创作库导航", exact: true}).click();
     }
@@ -166,6 +167,7 @@ test("作品首页与文稿共用中性窗口和连续阅读工作面", async ({
     await page.getByRole("button", { name: "打开作品", exact: true }).first().click();
     await page.getByRole("button", { name: /插件集成测试/ }).click();
     await expect(page.getByRole("complementary", { name: "项目导航", exact: true })).toBeVisible({ timeout: 30000 });
+    await expect(page.locator('.workbench-page[data-surface="work.profile"]')).toBeVisible();
     const cdp = await page.context().newCDPSession(page);
     for (const [width, appearance] of [[1360, "light"], [960, "light"], [1360, "dark"], [960, "dark"]] as const) {
       await page.setViewportSize({ width, height: 850 });
@@ -209,8 +211,9 @@ test("作品首页与文稿共用中性窗口和连续阅读工作面", async ({
         const fonts = [...new Set([...document.querySelectorAll<HTMLElement>("body *")].filter(el => el.checkVisibility() && [...el.childNodes].some(node => node.nodeType === Node.TEXT_NODE && node.textContent?.trim())).map(el => Number.parseFloat(getComputedStyle(el).fontSize)))];
         return { fonts, overflow: document.documentElement.scrollWidth > innerWidth, bar: document.querySelector(".workbench-topbar")!.getBoundingClientRect().height };
       });
-      expect(metrics.fonts.length).toBeLessThanOrEqual(4);
-      expect(metrics.fonts.every(size => size >= 12)).toBe(true);
+      // 界面、目录和文稿分别采用共享字号；正文不受旧的界面四档限制。
+      expect(metrics.fonts.every(size => [12, 13, 14, 16, 20].includes(size))).toBe(true);
+      await expect(page.locator(".reader, .author-editor")).toHaveCSS("font-size", "16px");
       expect(metrics.overflow).toBe(false);
       expect(metrics.bar).toBe(52);
       await testInfo.attach(`manuscript-${appearance}-${width}`, { body: JSON.stringify(metrics), contentType: "application/json" });

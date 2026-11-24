@@ -5,6 +5,10 @@ import type { Locale } from './site';
 import { evidence } from './market';
 
 export const articles = [
+  {id:'when-hetu-helps',titles:{'zh-CN':'什么时候，一个 Agent 和文件夹就够了',en:'When an Agent and a folder are enough'},descriptions:{'zh-CN':'从临时构思、只读查询到持续返工，判断河图何时值得加入。',en:'From quick ideas to sustained revision, find when Hetu earns its place.'}},
+  {id:'return-to-the-work',titles:{'zh-CN':'隔天回来，不必从头解释这部作品',en:'Return tomorrow without starting over'},descriptions:{'zh-CN':'保留当前稿件、需要留下的对白与修改意见，让新会话接得上。',en:'Keep the draft, chosen lines and feedback ready for the next conversation.'}},
+  {id:'intentional-differences',titles:{'zh-CN':'这处矛盾，也许正是故事',en:'That contradiction may be the story'},descriptions:{'zh-CN':'考据、确定设定、探索与有意差异，需要不同的判断。',en:'Research, canon, alternatives and deliberate differences need different judgments.'}},
+
   {"id": "letter-to-role-books", "titles": {"zh-CN": "一封信，从镜头走到角色本", "en": "One letter, from takes to role books"}, "descriptions": {"zh-CN": "从场记、构造语言和音乐剧，到完整剧本杀测本，让专业结构围绕作品积累。", "en": "Keep professional structures around a work, from supervision, languages and musicals to complete mystery playtests."}},
   {"id": "one-station-four-forms", "titles": {"zh-CN": "一个旧站，四种继续创作的方式", "en": "One station, four ways to keep creating"}, "descriptions": {"zh-CN": "从舞台提示和脱口秀段单，到科普解释与游戏任务，让不同结构围绕作品继续积累。", "en": "Keep the structures needed for another revision, from stage cues and comedy sets to science explanations and game quests."}},
   {"id": "accounts-and-listening", "titles": {"zh-CN": "两段证词，两种听法", "en": "Two accounts, two ways to listen"}, "descriptions": {"zh-CN": "从采访原片到纪录片纸剪和播客单集，让相反说法与实际声音各有位置。", "en": "Keep disagreement and actual sound in view, from interview media to documentary paper edits and podcast episodes."}},
@@ -27,9 +31,8 @@ export const articles = [
 ] as const;
 export type Article = typeof articles[number];
 
-export function articleImage(article: Article, locale: Locale): string {
-  if (article.id === 'story-to-screen' || article.id === 'preview-before-production') return `/images/journal-adaptation${locale === 'en' ? '-en' : ''}.webp`;
-  return `/images/${article.id === 'authors-at-the-center' || article.id === 'creative-library' ? 'journal-authors' : 'journal-workspace'}.webp`;
+export function articleImage(article: Article, _locale: Locale): string {
+  return `/images/journal-${article.id}.webp`;
 }
 
 export async function renderArticle(article: Article, locale: Locale) {

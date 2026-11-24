@@ -79,6 +79,7 @@ test("Electron作品授权、精确页面交接与无窗口Rust CLI在撤权后�
   expect(fixed.fixed_refs.find((r: any) => r.kind === "document").document_id).toBe(context.document.document_id);
   expect(fixed.management_ref).toEqual(current.management_ref);
 });
+
 test(
   "作者采纳预览防并发覆盖、独立定稿与撤回、作品范围及未知检查恢复", async () => {
     test.setTimeout(120000);
@@ -152,7 +153,7 @@ test(
         }
       }, context.other_document),
     ).toBe(true);
-    await page.getByRole("button", { name: "参考稿审核", exact: true }).click();
+    await navigate(page, "参考稿审核");
     await page
       .getByRole("combobox", { name: "当前审阅任务" })
       .selectOption(context.task_ref.task_id);
@@ -332,9 +333,7 @@ test(
         .first()
         .click();
       await page.getByRole("button", { name: /插件集成测试/ }).click();
-      await page
-        .getByRole("button", { name: "参考稿审核", exact: true })
-        .click();
+      await navigate(page, "参考稿审核");
       await page
         .getByRole("combobox", { name: "当前审阅任务" })
         .selectOption(context.task_ref.task_id);
@@ -548,7 +547,7 @@ test(
     await expect(
       page.getByRole("button", { name: "人物关系图", exact: true }),
     ).toBeVisible();
-    await page.getByRole("button", { name: "人物关系图", exact: true }).click();
+    await navigate(page, "人物关系图");
     const plugin = await expect
       .poll(async () => {
         const pages = application.windows();
@@ -705,7 +704,7 @@ test(
       })
       .toContain("插件集成测试");
     await page.getByRole("button", { name: "插件集成测试" }).click();
-    await page.getByRole("button", { name: "人物关系图", exact: true }).click();
+    await navigate(page, "人物关系图");
     await expect
       .poll(() =>
         application
@@ -755,7 +754,7 @@ test(
       },
     );
     expect(old.status).not.toBe(0);
-    await page.getByRole("button", { name: "人物关系图", exact: true }).click();
+    await navigate(page, "人物关系图");
     await expect
       .poll(() =>
         application

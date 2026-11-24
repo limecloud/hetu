@@ -49,8 +49,13 @@ export function editorSourceSelection(state: EditorState, from: number, to: numb
 }
 
 export function editorSourceRange(state: EditorState, from: number, to: number) {
-  const offset = positions(state.field(editorSource), state.doc);
+  const offset = editorSourcePositions(state);
   return {from: offset(from), to: offset(to)};
+}
+
+/** 批量块操作共用一次换行索引，避免逐块重新扫描整篇原稿。 */
+export function editorSourcePositions(state: EditorState) {
+  return positions(state.field(editorSource), state.doc);
 }
 
 /** 普通编辑复制可见文字，原稿模式与明确复制原稿继续保留全部源字节。 */

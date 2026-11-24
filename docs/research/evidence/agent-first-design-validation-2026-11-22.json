@@ -1,0 +1,214 @@
+{
+  "record_kind": "design_validation",
+  "date": "2026-11-22",
+  "base_commit": "b00f9dbb73d67a1fcc2ad8a022ef4e0a02e86d5d",
+  "working_tree": "已有源码和文档改动保留；此记录针对本轮设计文档，不认证其他改动。",
+  "design_documents": [
+    {
+      "path": "docs/01-产品需求PRD.md",
+      "sha256": "d083a89b2407022f1ad0252af64d1ce9ba2b687b7c658ea40b732b80f88054d9"
+    },
+    {
+      "path": "docs/02-架构选型与设计原则.md",
+      "sha256": "284670b7537d17ab34c5c5c406bb6b24a1e04d4e06bd5bcbe86f73f51f9f1cd0"
+    },
+    {
+      "path": "docs/03-总体技术架构.md",
+      "sha256": "35a783159209f7f8a8f34512f973f092bb3b935ec39fb3b283f42f7e2e8c42fb"
+    },
+    {
+      "path": "docs/05-领域模型与数据合同.md",
+      "sha256": "2de1643325625b054235dd2457776b11dca834b21df86db6d6f439d16f967ee3"
+    },
+    {
+      "path": "docs/10-原生客户端与交互设计.md",
+      "sha256": "e612ab550d6056464c945abc2c48feb3b8ce500c1dbf4c8a7106ff93f61e1b4c"
+    },
+    {
+      "path": "docs/19-测试策略与验收矩阵.md",
+      "sha256": "9ac56086164706b1ffae59b72f5c58651115a227fd11a8ef95e25dd4bf7c822d"
+    },
+    {
+      "path": "docs/20-实施路线与里程碑.md",
+      "sha256": "a1af0d749cc88937eadac48960dd3e531634f82e4c2f8e0ab376a0b885763173"
+    },
+    {
+      "path": "docs/23-业务流程与MCP时序.md",
+      "sha256": "9237adcb0fdfa5ac0f02cb6a8cd154f5d7d995d47591bc160322c76217443f0c"
+    },
+    {
+      "path": "docs/24-文档治理架构决策与风险.md",
+      "sha256": "8b36667bab8a3c9e753a981cdba1d732437b301097a7ed28f4a980aa1271bfc0"
+    },
+    {
+      "path": "docs/26-用户故事与用例.md",
+      "sha256": "82e1eec2725a8927e45bdb24450e089d66efd2d5a68f6c945dff2aec7043080e"
+    },
+    {
+      "path": "docs/27-Agent与Codex插件集成设计.md",
+      "sha256": "48af47f286e3f16898a77d30e639bafa948c4658bd126ffed8a4efa573fbea7a"
+    },
+    {
+      "path": "docs/28-领域设计与边界上下文.md",
+      "sha256": "5496b20d9eade35ae0ed13e36abda098750b5032b5db0af0b50211ff086cc23c"
+    },
+    {
+      "path": "docs/29-数据字典与Schema设计.md",
+      "sha256": "00edd1cfd3e114d9ae6c46a6934e4a9bb710ae0833fa43e3945c79116501de74"
+    },
+    {
+      "path": "docs/30-应用API详细设计.md",
+      "sha256": "783efdf029c0d3f95eeaa6e6eb1e1093fe80b6c349585411ad14adb5fbb518ab"
+    },
+    {
+      "path": "docs/38-创作工作台重构执行计划.md",
+      "sha256": "19c47ca076cc86e89152bbce28ced50f52a97be4f92fc9e8982c05225b90fcd3"
+    },
+    {
+      "path": "docs/39-Electron与插件优先重构架构.md",
+      "sha256": "af2cac3172af0a3f1258a68c874357bab886985893ae8db3a5a90f2aff3cb655"
+    },
+    {
+      "path": "docs/41-创作与审阅体验迭代方案.md",
+      "sha256": "5b72ea9e5efc6e720f913e3f345f4865dace81df745008d4151ac62c7135ffcf"
+    },
+    {
+      "path": "docs/plugin/27-开放宿主SDK与核心能力审计.md",
+      "sha256": "870a80382400aea2ba44a5c43454965e21647a281cdaae5ddddd6a02e664bb1a"
+    },
+    {
+      "path": "docs/research/14-编辑阅读与全局体验研究.md",
+      "sha256": "6c0dc110e59a5d291b994c172ddd28a4cd5836e2ce3ff2aa2f8facdee27aecf3"
+    }
+  ],
+  "checks": [
+    {
+      "command": "uv run tools/verify-docs.py",
+      "result": "passed",
+      "scope": "链接、锚点、需求／故事／用例／验收追踪、JSON示例与共享Schema；新增证据索引后再次核验。"
+    },
+    {
+      "command": "python3 tools/sync-capability-map.py --check",
+      "result": "passed"
+    },
+    {
+      "command": "git diff --check",
+      "result": "passed"
+    },
+    {
+      "check": "新增文档匿名参考名称及私密路径检查",
+      "result": "passed"
+    }
+  ],
+  "diagrams": {
+    "renderer": "apps/website/public/vendor/mermaid.min.js",
+    "renderer_sha256": "581ed7d74bd9048d0e3a91363927d72ef22942d7722546b27f7cc29e35390eb8",
+    "browser_channel": "chrome",
+    "browser_version": "158.0.8127.37",
+    "rendered_count": 8,
+    "results": [
+      {
+        "file": "docs/23-业务流程与MCP时序.md",
+        "index": 1,
+        "source_sha256": "935bb2be9b355a25a16ce0ee564b1d9d28c565e799c13d7f2f4323c3a18d3412",
+        "svg_sha256": "e3821739825eb1377ae33414b306441bb9a46d39dd3d164e266f882f46db721d",
+        "width": 866.1875,
+        "height": 1830,
+        "text_nodes": 38,
+        "status": "rendered",
+        "artifact": "diagram-1.svg"
+      },
+      {
+        "file": "docs/23-业务流程与MCP时序.md",
+        "index": 2,
+        "source_sha256": "3a5ee38ea0762bf9fed3d97b824e407f7f6e3f6ff25ef2e2b7333c1beca1fc79",
+        "svg_sha256": "0d6d09aebb26362e8fadd226258227a10aec08e7fa14e992d5962108b67db4e7",
+        "width": 1224,
+        "height": 939,
+        "text_nodes": 26,
+        "status": "rendered",
+        "artifact": "diagram-2.svg"
+      },
+      {
+        "file": "docs/23-业务流程与MCP时序.md",
+        "index": 3,
+        "source_sha256": "3f1a260b52812e7174fefbbfefa4511e7353717f7ec5c7effdad8356010494ff",
+        "svg_sha256": "fac5129c6fcccc546ee404f999fab0f474b22736a6d371d3559039f8fbb657a6",
+        "width": 1252,
+        "height": 825,
+        "text_nodes": 24,
+        "status": "rendered",
+        "artifact": "diagram-3.svg"
+      },
+      {
+        "file": "docs/23-业务流程与MCP时序.md",
+        "index": 4,
+        "source_sha256": "bd2cf82f136ad13b559ad63cc24957a4a3762070c218e133e5e8f1f606a34b48",
+        "svg_sha256": "74bcc28206afc5a165482ee2f09fa77c308b2aa91a92ff91dbf6d0c373d9f61f",
+        "width": 1096,
+        "height": 1362,
+        "text_nodes": 38,
+        "status": "rendered",
+        "artifact": "diagram-4.svg"
+      },
+      {
+        "file": "docs/23-业务流程与MCP时序.md",
+        "index": 5,
+        "source_sha256": "c8fbc4c88d9d0492cda5f3c872a574906d60aa5f555a2d9d34eb7b53693c0871",
+        "svg_sha256": "f9d357d5e90c2bd4a8cc45b2cae7769cb4efa779c2e941c6f65c7387d31c4bbc",
+        "width": 625,
+        "height": 718,
+        "text_nodes": 23,
+        "status": "rendered",
+        "artifact": "diagram-5.svg"
+      },
+      {
+        "file": "docs/28-领域设计与边界上下文.md",
+        "index": 6,
+        "source_sha256": "29da297cd1ac772dd3f82ce1ba05c845700a8f5c6b9730a651d02c20d223a369",
+        "svg_sha256": "cd719131dc4770d6c710518871919aeee557dd35417d29ec1efbf4fc2128b27f",
+        "width": 664,
+        "height": 1006,
+        "text_nodes": 29,
+        "status": "rendered",
+        "artifact": "diagram-6.svg"
+      },
+      {
+        "file": "docs/29-数据字典与Schema设计.md",
+        "index": 7,
+        "source_sha256": "fb91f3fd6aa3d79d4865f461b79743fa961f936384f2c8612ce31db84f784a8a",
+        "svg_sha256": "9ea680a6a8c77bb0b3e825f10527d9804676dad720957a7ed2be55e8786f18a2",
+        "width": 1552,
+        "height": 793.5,
+        "text_nodes": 26,
+        "status": "rendered",
+        "artifact": "diagram-7.svg"
+      },
+      {
+        "file": "docs/39-Electron与插件优先重构架构.md",
+        "index": 8,
+        "source_sha256": "46be031274dcf599fbe0c47876744303da7a5262309781f4a68f4ad9f8dc935e",
+        "svg_sha256": "b6dbe3fdbec0f715523f9a1daac8b8729c91753b0ce3f768af71be72592939da",
+        "width": 985.71875,
+        "height": 902,
+        "text_nodes": 38,
+        "status": "rendered",
+        "artifact": "diagram-8.svg"
+      }
+    ],
+    "failures_retained": [
+      "首次使用Playwright默认Chromium因本机无对应运行时失败，未记为渲染成功。",
+      "首版两张横向流程图过宽，改为纵向后重新渲染。"
+    ],
+    "visual_review": "实际查看架构、领域和ER图；修改过宽布局并复核，未将语法成功当作产品视觉验收。"
+  },
+  "product_acceptance": "not_executed_by_this_document_change",
+  "remaining_scope": "R8-01至R8-06，以及既有独立桌面会话宿主的实际实现与适用平台验收。",
+  "not_performed": [
+    "版本号变更",
+    "覆盖本机安装",
+    "git提交或推送",
+    "公开发布",
+    "真实付费模型调用"
+  ]
+}

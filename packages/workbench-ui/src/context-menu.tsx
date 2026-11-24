@@ -11,6 +11,11 @@ interface MenuRequest {
   keyboard?: boolean; onDismiss?: () => void; onError?: (error: Error) => void;
 }
 interface MenuLevel {items: ContextMenuItem[]; parent?: HTMLButtonElement; keyboard?: boolean}
+function scrollPosition(target: EventTarget) {
+  const element = target === document || target === window ? document.scrollingElement : target;
+  return element instanceof Element ? {left: element.scrollLeft, top: element.scrollTop} : {left: 0, top: 0};
+}
+interface OpenMenu extends MenuRequest {scrollPositions: Map<EventTarget, ReturnType<typeof scrollPosition>>}
 const Context = createContext<(request: MenuRequest) => void>(() => {});
 
 export function useContextMenu() {
@@ -26,12 +31,15 @@ export function useContextMenu() {
 
 /** 菜单只保存本次命令快照；对象与修订核验由命令所属用例执行。 */
 export function ContextMenuProvider({children}: {children: React.ReactNode}) {
-  const [request, setRequest] = useState<MenuRequest>(), [levels, setLevels] = useState<MenuLevel[]>([]);
+  const [request, setRequest] = useState<OpenMenu>(), [levels, setLevels] = useState<MenuLevel[]>([]);
   const holder = useRef<HTMLDivElement>(null), current = useRef(request); current.current = request;
   const show = useCallback((value: MenuRequest) => {
     if (!value.items.some(item => !("separator" in item))) return;
     document.querySelectorAll<HTMLDetailsElement>(".popover-menu[open]").forEach(menu => {menu.open = false;});
-    setRequest(value); setLevels([{items: value.items, keyboard: value.keyboard}]);
+    const scrollPositions = new Map<EventTarget, ReturnType<typeof scrollPosition>>();
+    for (let element = value.opener; element; element = element.parentElement) scrollPositions.set(element, scrollPosition(element));
+    scrollPositions.set(document, scrollPosition(document)); scrollPositions.set(window, scrollPosition(window));
+    setRequest({...value, scrollPositions}); setLevels([{items: value.items, keyboard: value.keyboard}]);
   }, []);
   const close = useCallback((restore: boolean) => {
     const value = current.current; setRequest(undefined); setLevels([]);
@@ -43,10 +51,16 @@ export function ContextMenuProvider({children}: {children: React.ReactNode}) {
   useEffect(() => {
     if (!request) return;
     const outside = (event: Event) => {if (!holder.current?.contains(event.target as Node)) close(false);};
+    const scroll = (event: Event) => {
+      if (!event.target || event.target instanceof Node && holder.current?.contains(event.target)) return;
+      const previous = request.scrollPositions.get(event.target), position = scrollPosition(event.target);
+      // 焦点或定位已完成的滚动可能延后派发；只在菜单打开后确实滚动时关闭。
+      if (previous && (previous.left !== position.left || previous.top !== position.top)) close(false);
+    };
     const blur = () => close(false);
     document.addEventListener("pointerdown", outside, true); document.addEventListener("focusin", outside);
-    window.addEventListener("scroll", outside, true); window.addEventListener("resize", blur); window.addEventListener("blur", blur);
-    return () => {document.removeEventListener("pointerdown", outside, true); document.removeEventListener("focusin", outside); window.removeEventListener("scroll", outside, true); window.removeEventListener("resize", blur); window.removeEventListener("blur", blur);};
+    window.addEventListener("scroll", scroll, true); window.addEventListener("resize", blur); window.addEventListener("blur", blur);
+    return () => {document.removeEventListener("pointerdown", outside, true); document.removeEventListener("focusin", outside); window.removeEventListener("scroll", scroll, true); window.removeEventListener("resize", blur); window.removeEventListener("blur", blur);};
   }, [request, close]);
   async function execute(item: Exclude<ContextMenuItem, {separator: true}>) {
     if (item.disabled || !item.action) return;
@@ -71,7 +85,10 @@ function Menu({request, level, depth, expanded, close, execute, open, trim, back
   trim(): void; back(): void;
 }) {
   const ref = useRef<HTMLDivElement>(null), search = useRef({text: "", time: 0});
-  const [position, setPosition] = useState({left: 0, top: 0, ready: false});
+  const hasIcons = level.items.some(item => !("separator" in item) && (item.icon || item.checked !== undefined));
+  // 先使用请求坐标渲染可见菜单，再在布局阶段夹到视口内。
+  // 初始隐藏会让辅助技术已经读到菜单项，但几何仍为空，窄窗下尤其明显。
+  const [position, setPosition] = useState({left: request.x, top: request.y, ready: true});
   const buttons = () => [...ref.current!.querySelectorAll<HTMLButtonElement>("button:not(:disabled)")];
   useLayoutEffect(() => {
     const menu = ref.current!, bounds = menu.getBoundingClientRect(), parent = level.parent?.getBoundingClientRect();
@@ -79,7 +96,7 @@ function Menu({request, level, depth, expanded, close, execute, open, trim, back
     const left = Math.max(8, Math.min(innerWidth - bounds.width - 8, parent && x + bounds.width > innerWidth - 8 ? parent.left - bounds.width - 3 : x));
     const top = Math.max(8, Math.min(innerHeight - bounds.height - 8, y));
     setPosition({left, top, ready: true});
-  }, [level, request.x, request.y]);
+  }, [level, request]);
   useLayoutEffect(() => {
     if (!position.ready) return;
     if (level.keyboard) buttons()[0]?.focus({preventScroll: true}); else if (!depth) ref.current?.focus({preventScroll: true});
@@ -106,13 +123,13 @@ function Menu({request, level, depth, expanded, close, execute, open, trim, back
       if (next) {event.preventDefault(); next.focus({preventScroll: true});}
     }
   }
-  return <div ref={ref} className="context-menu" role="menu" aria-label={depth ? level.parent?.dataset.contextLabel : request.label} tabIndex={-1}
-    style={{left: position.left, top: position.top, visibility: position.ready ? "visible" : "hidden"}} onKeyDown={key} onPointerDown={event => event.preventDefault()}>
+  return <div ref={ref} className="context-menu" data-icons={hasIcons} role="menu" aria-label={depth ? level.parent?.dataset.contextLabel : request.label} tabIndex={-1}
+    style={{left: position.left, top: position.top}} onKeyDown={key} onPointerDown={event => event.preventDefault()}>
     {level.items.map(item => "separator" in item ? <div role="separator" className="context-menu-separator" key={item.id}/> : <button type="button" key={item.id} role={item.checked === undefined ? "menuitem" : "menuitemcheckbox"}
       aria-label={item.label} aria-checked={item.checked} aria-haspopup={item.children?.length ? "menu" : undefined} aria-expanded={item.children?.length ? item.id === expanded : undefined} disabled={item.disabled} tabIndex={-1} data-context-key={item.id} data-context-label={item.label} data-danger={item.danger || undefined}
       onPointerMove={event => {if (item.disabled || !event.movementX && !event.movementY) return; event.currentTarget.focus({preventScroll: true}); item.children?.length ? item.id !== expanded && open(item, event.currentTarget, false) : trim();}}
       onClick={event => item.children?.length ? open(item, event.currentTarget, true) : execute(item)}>
-      <span className="context-menu-icon" aria-hidden="true">{item.checked ? "✓" : item.icon ? <Icon name={item.icon} size={14}/> : null}</span><span>{item.label}</span>
+      {hasIcons && <span className="context-menu-icon" aria-hidden="true">{item.checked ? "✓" : item.icon ? <Icon name={item.icon} size={14}/> : null}</span>}<span>{item.label}</span>
       {item.children?.length ? <span className="context-menu-arrow" aria-hidden="true">›</span> : item.shortcut ? <span className="context-menu-shortcut">{item.shortcut}</span> : null}
     </button>)}
   </div>;

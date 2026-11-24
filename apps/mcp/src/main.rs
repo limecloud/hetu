@@ -19,6 +19,7 @@ async fn main() -> ExitCode {
         };
         let mut directory = None;
         let mut all_tools = false;
+        let mut work_ref = None;
         while let Some(flag) = args.next() {
             if flag == "--all-tools" && !all_tools {
                 all_tools = true;
@@ -27,6 +28,14 @@ async fn main() -> ExitCode {
                 if directory.is_none() {
                     return ExitCode::from(2);
                 }
+            } else if flag == "--work-ref" && work_ref.is_none() {
+                let Some(raw) = args.next() else { return ExitCode::from(2); };
+                let Ok(raw) = raw.into_string() else { return ExitCode::from(2); };
+                let Ok(value) = serde_json::from_str::<serde_json::Value>(&raw) else { return ExitCode::from(2); };
+                if !value.is_object() || !value["workspace_id"].is_string() || !value["kind"].is_string() || !value["object_id"].is_string() {
+                    return ExitCode::from(2);
+                }
+                work_ref = Some(value);
             } else {
                 return ExitCode::from(2);
             }
@@ -35,7 +44,7 @@ async fn main() -> ExitCode {
             .map(Ok)
             .unwrap_or_else(hetu_core::collaboration::default_directory);
         let server = match directory.and_then(|directory| {
-            StableServer::open(&directory, &client)
+            StableServer::open_with_work(&directory, &client, work_ref)
                 .map(|server| server.with_all_tools(all_tools))
                 .map_err(|_| hetu_core::Error::new("invalid_input", "无法打开本机稳定入口。"))
         }) {
@@ -63,7 +72,7 @@ async fn main() -> ExitCode {
     ) && args.next().is_none()
     {
         println!(
-            "河图洛书 MCP Server / Hetu Luoshu MCP Server\n\nhetu-mcp --client <codex|claude-code|workbuddy|generic> [--collaboration-dir <absolute path>] [--all-tools]\nhetu-mcp --workspace <absolute path> [--task <task_id>]\nhetu-mcp --creation-project <absolute path> --task <task_id>\n\nstdio / MCP 2026-07-28, 2025-06-18 / Agent 权限"
+            "河图洛书 MCP Server / Hetu Luoshu MCP Server\n\nhetu-mcp --client <codex|claude-code|workbuddy|generic> [--collaboration-dir <absolute path>] [--work-ref <JSON>] [--all-tools]\nhetu-mcp --workspace <absolute path> [--task <task_id>]\nhetu-mcp --creation-project <absolute path> --task <task_id>\n\nstdio / MCP 2026-07-28, 2025-06-18 / Agent 权限"
         );
         return ExitCode::SUCCESS;
     }

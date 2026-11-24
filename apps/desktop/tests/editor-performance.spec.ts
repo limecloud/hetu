@@ -26,6 +26,7 @@ test("十万汉字章真实输入到绘制p95及保存字节回读", async ({}, 
   try {
     const page = await app.firstWindow(); await page.setViewportSize({width: 1440, height: 940});
     const start = performance.now(); await page.getByRole("button", {name: "打开作品 默认小说", exact: true}).click();
+    await page.getByRole("button", {name: "小说", exact: true}).click();
     const editor = page.getByRole("textbox", {name: "文稿编辑", exact: true}); await expect(editor).toBeVisible(); const openedMs = performance.now() - start;
     await page.evaluate(async () => {const api = (window as any).hetuDesktop, state = await api.settings("preferences"); await api.settings("update", {expected_revision: state.revision, patch: {autosave: false}});});
     await documentAction(page, "编辑");

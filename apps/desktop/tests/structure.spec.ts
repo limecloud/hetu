@@ -81,18 +81,17 @@ test(
         page.getByText("江岚在第102个清晨抵达雾港。", { exact: true }),
       ).toBeVisible();
       await navigate(page, "作品资料");
-      const structure = page.locator(".profile-structure");
-      await expect(structure).toHaveAttribute("open", "");
+      await expect(page.locator(".profile-structure")).toHaveCount(0);
       await expect(page.getByRole("button", { name: "打开章节目录", exact: true })).toBeVisible();
-      await expect(structure.getByRole("listitem")).toHaveCount(103);
-      await expect(structure.getByRole("listitem").first()).toHaveText(
-        "目录试读第102章",
-      );
-      await structure.getByRole("button", { name: "第一章 雾港", exact: true }).click();
+      await openDirectory(page);
+      const directoryAfterProfile = page.getByRole("navigation", { name: "文稿目录", exact: true });
+      await expect(directoryAfterProfile.getByRole("button", { name: "目录试读第102章", exact: true })).toBeVisible();
+      await directoryAfterProfile.getByRole("button", { name: "第一章 雾港", exact: true }).click();
       await expect(page.locator(".manuscript-title h1")).toHaveText("第一章 雾港");
       await expect(directory.getByRole("button", { name: "第一章 雾港", exact: true })).toHaveAttribute("aria-current", "page");
       await navigate(page, "作品资料");
-      const first = structure.getByRole("button", { name: "目录试读第102章", exact: true });
+      await openDirectory(page);
+      const first = page.getByRole("navigation", { name: "文稿目录", exact: true }).getByRole("button", { name: "目录试读第102章", exact: true });
       await first.focus();
       await first.press("Enter");
       await expect(page.locator(".manuscript-title h1")).toHaveText("目录试读第102章");
@@ -104,6 +103,7 @@ test(
       await navigate(page, "返回创作库");
       await page.getByRole("button", { name: /独立剧本/ }).click();
       await expect(page.locator(".workspace-switcher .workspace-title")).toHaveText("独立剧本");
+      await navigate(page, "剧本");
       await expect(page.getByRole("button", { name: "分集目录", exact: true })).toBeEnabled();
       await expect(
         page.getByRole("complementary", { name: "项目导航", exact: true }),
@@ -117,9 +117,9 @@ test(
         directory.getByRole("button", { name: "第一章 雾港", exact: true }),
       ).toHaveCount(0);
       await navigate(page, "作品资料");
-      await expect(structure).toHaveAttribute("open", "");
-      await expect(structure.getByRole("listitem")).toHaveCount(1);
-      await structure.getByRole("button", { name: "第一集", exact: true }).click();
+      await expect(page.locator(".profile-structure")).toHaveCount(0);
+      await openDirectory(page);
+      await page.getByRole("navigation", { name: "文稿目录", exact: true }).getByRole("button", { name: "第一集", exact: true }).click();
       await expect(page.locator(".manuscript-title h1")).toHaveText("第一集");
       await page.screenshot({
         path: path.join(root, "output/plugin-doc-qa/work-structure.png"),

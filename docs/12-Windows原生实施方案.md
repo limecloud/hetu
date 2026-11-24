@@ -1,5 +1,11 @@
 # Windows Electron实施方案
 
+## 平台一致性边界
+
+Windows沿用作品阅读、可选Agent入口和必要决定；不因系统差异增加前置表单。对话恢复、字体输入、长文和交付分别实机验证，共用源码不能代替平台证据。
+
+产品定位与任务分流见[01](01-产品需求PRD.md#1-产品定义)。
+
 v0.9.0的GitHub Actions按macOS arm64、Windows x64和Linux x64分别构建原生Rust助手及Electron包。Windows安全文件访问使用句柄相对目录适配，Linux复用Unix实现；每个平台分别核验构建、独立CLI、包体与启动。macOS继续使用Developer ID及Apple公证；Windows和Linux附件按实际签名状态标记，平台交互与干净系统验收独立记录。
 
 本文件路径保留以维持引用。新Windows桌面采用与macOS共同的Electron＋TypeScript/React工作台、Rust App Server及独立Rust CLI/MCP；目标为Windows 11 x64，支持声明以实机验收为准。总体决定见[39](39-Electron与插件优先重构架构.md)。旧WinUI／C#／WebView2方案保留在源码历史与[备选研究](plugin/17-原生宿主与插件渲染技术方案.md)，不与Electron并行建设第二套Windows产品。

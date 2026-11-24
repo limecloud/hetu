@@ -1,5 +1,9 @@
 # Download and install
 
+## Start with what you need
+
+Use the examples and scenarios before deciding to install. Local reading and editing work independently; Agent installation, authentication and model service are needed only when used.
+
 Try a review in the [homepage workspace](/en/#prototype) first if you prefer. The desktop client keeps your own novels, scripts and videos on your computer.
 
 ## Get an installer from the release page

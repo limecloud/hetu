@@ -26,3 +26,10 @@ One letter can appear in a shot, inspire a place name, be sung by two characters
 Agent simulation can expose conditions, blockers and revision needs. It cannot prove human experience or turn a conversation that has read host material into an isolated player. Read complete books, consider human feedback and start a new playtest after revision.
 
 Tell the Agent your goal, return to read the complete result and name a specific change. Professional projects keep their own evidence while continuing around the same work.
+
+
+## Use only what this work needs
+
+Choose tools for a concrete problem in the work. Try an expression in conversation first; add an extension when professional structures, comparisons or delivery need it. Ordinary manuscripts and selected exports should remain retrievable.
+
+[Find the smallest useful starting point](/en/docs/when-to-use/).

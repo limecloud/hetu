@@ -1,5 +1,9 @@
 # Choose a project starting point
 
+## Start with what you need
+
+Begin with a fragment even without a finished bible, outline or title. Keep ordinary file work in its original tool; import selectively when you want to develop it. Scripts and videos need no placeholder upstream work.
+
 An independent author, a screenwriter and a small production team may arrive with very different material. Begin with what you have. Your taste and creative judgment stay at the center; structure helps you manage the work.
 
 ## A new manuscript

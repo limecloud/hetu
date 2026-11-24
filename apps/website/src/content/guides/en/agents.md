@@ -1,5 +1,9 @@
 # Work with external agents
 
+## Start with what you need
+
+External conversations and an optional embedded terminal work with the same project. Use only needed capabilities: read for queries, answer quick ideas directly and verify actual saved results.
+
 Hetu Luoshu is an agent-friendly local creative workspace. External agents understand your goal, organize material, create and operate through MCP, CLI and Skills. The desktop workspace puts review first: compare results, give feedback and decide what to adopt or finalize. Direct editing is available whenever you want it.
 
 For your first connection, choose Codex, Claude Code, Cursor or WorkBuddy in the [creative project workflow](/en/workflow/#connect), then copy its installation prompt. Let your Agent check its current capabilities and guide installation, verifying installation, session discovery and connectivity separately. The same page follows novels, scripts and short videos through creation, revision and delivery.

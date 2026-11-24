@@ -22,7 +22,8 @@ export function TextContextMenus({children, language}: {children: React.ReactNod
   const t = (key: string) => contextText("context." + key as ContextKey, language);
   function open(event: React.MouseEvent | React.KeyboardEvent) {
     const element = event.target as HTMLElement;
-    if (event.defaultPrevented || composing.current || element.closest("[data-context-menu], .cm-editor, [contenteditable=true]")) return;
+    // 对象按钮拥有自己的上下文菜单；全局文字菜单不能在冒泡阶段覆盖它。
+    if (event.defaultPrevented || composing.current || element.closest("[data-context-menu], .cm-editor, [contenteditable=true], button, [role=button], summary, [role=menuitem]")) return;
     const input = element instanceof HTMLTextAreaElement || element instanceof HTMLInputElement && /^(text|search|email|url|tel|password|number)$/.test(element.type) ? element : undefined;
     const selection = getSelection(), snapshot = selection?.rangeCount ? selection.getRangeAt(0).cloneRange() : undefined;
     const container = element.closest("article, .resource-reading-body, .reader, .screenplay-reader, pre, .manuscript, main") as HTMLElement | null;

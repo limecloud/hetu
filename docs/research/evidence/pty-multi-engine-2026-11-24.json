@@ -1,0 +1,360 @@
+{
+  "date": "2026-11-24",
+  "scope": "多引擎终端创建与PTY宿主，macOS arm64",
+  "version": "0.14.0",
+  "reference": [
+    {
+      "sha256": "8a43bdc74ab6cefa1459d1a9827755a66db0291c547f261c31531920b425eb89",
+      "source": "作者提供的创建／模型选择截图",
+      "original_storage": "仓库外调查项目"
+    },
+    {
+      "sha256": "fba68bf3da410ea1e8695fd9376ae25a00964730dfde5701f5671c2f7ac2c84d",
+      "source": "作者提供的创建／模型选择截图",
+      "original_storage": "仓库外调查项目"
+    }
+  ],
+  "changes": [
+    "统一创建面板，创建即启动真实PTY",
+    "按实际安装显示Shell、Codex、Claude Code、Gemini CLI与OpenCode",
+    "Codex模型目录只读发现，搜索、更多模型、推理档位和失败重读",
+    "已有会话进入时直接连接，隐藏／切换不重启已有PTY",
+    "顶部移除固定Codex与常驻TUI／GUI按钮，支持的聊天切换归入菜单",
+    "旧Codex记录与精确线程恢复保留；原生CLI不伪造模型线程",
+    "终端进程与协议桥保持独立，复用同一Core和机器业务范围",
+    "显式恢复等待已断开native服务的CLI启动器退出，未退出时不另起引擎"
+  ],
+  "tests": [
+    {
+      "path": "output/pty-codex/multi-engine-delivery.log",
+      "sha256": "45a7bb49042cafd0a4b14a2f3d7b2ab83ef74480bcfa983281f957abc1ddd6f6",
+      "passed": 7
+    },
+    {
+      "path": "output/pty-codex/multi-engine-recovery-unit2.log",
+      "sha256": "699fb75575a9294aef3ce24bfc3c39775835273094c6c257b4dbe8cdd071cca7",
+      "passed": 44
+    },
+    {
+      "path": "output/pty-codex/multi-engine-recovery-green.log",
+      "sha256": "8b204cb6470e47549d69476fd3ccad037e90374f8012ed462e4446a22f70043f",
+      "passed": 2
+    }
+  ],
+  "package": {
+    "source_sha256": "95b101deee918c407ac0da01b84a4988e1179bd3194578c807e50ddf070d427d",
+    "source_files": 2984,
+    "artifacts": 3719,
+    "app_items": 3131,
+    "codesign_exit": 0,
+    "icon_match": true,
+    "errors": [],
+    "manifest": "output/pty-codex/packaged-layout/hetu-dev-g7s5LV/manifest.json"
+  },
+  "launch": {
+    "packaged": true,
+    "engines": [
+      "shell",
+      "codex",
+      "claude-code",
+      "gemini",
+      "opencode"
+    ],
+    "modelName": "GPT-6.2-Sol",
+    "codex_thread": "01a20b1b-2ab3-7472-b7e3-f9e1ad2fa150",
+    "model_messages": 0,
+    "switch_preserved_shell_generation": true,
+    "model_read_failure_retry": true
+  },
+  "interaction": {
+    "packaged": true,
+    "thread_id": "01a20b1b-67ee-76e3-9ad9-72cd59e8f447",
+    "generation": 1,
+    "messages": 0,
+    "checks": [
+      "shortcut-refocus",
+      "query-selection",
+      "simulated-composition-escape-guard",
+      "escape-return",
+      "empty-query-disabled",
+      "no-match",
+      "button-return",
+      "toolbar-toggle-return",
+      "context-menu-focus",
+      "next-previous",
+      "native-input-after-close",
+      "hover-default-off",
+      "hover-enabled-live",
+      "hover-preserves-search-form-and-dialog",
+      "hover-disabled-live"
+    ],
+    "limits": [
+      "composition事件模拟只验证界面边界，不替代系统原生输入法实测"
+    ]
+  },
+  "recovery": {
+    "packaged": true,
+    "thread_id": "01a20b1b-de44-76c1-943f-850948ba3dbc",
+    "before_generation": 1,
+    "after_generation": 2,
+    "engine_restored_generation": 3,
+    "original": {
+      "terminals": [
+        24682
+      ],
+      "engines": [
+        24602
+      ]
+    },
+    "current": {
+      "terminals": [
+        24823
+      ],
+      "engines": [
+        24602
+      ]
+    },
+    "restarted": {
+      "terminals": [
+        24927
+      ],
+      "engines": [
+        24854
+      ]
+    },
+    "stale_rejections": 2,
+    "messages": 0,
+    "nativeGeometry": {
+      "width": 1440,
+      "height": 875,
+      "dpr": 2,
+      "terminal": {
+        "x": 280,
+        "y": 36,
+        "width": 1160,
+        "height": 839,
+        "top": 36,
+        "right": 1440,
+        "bottom": 875,
+        "left": 280
+      },
+      "screen": {
+        "x": 292,
+        "y": 42,
+        "width": 1120,
+        "height": 816,
+        "top": 42,
+        "right": 1412,
+        "bottom": 858,
+        "left": 292
+      },
+      "window": {
+        "content": {
+          "x": 0,
+          "y": 25,
+          "width": 1440,
+          "height": 875
+        },
+        "scale": 2
+      }
+    }
+  },
+  "layout": {
+    "work": {
+      "kind": "novel",
+      "object_id": "novel_ac847f37-a1f7-4728-96e4-cfdde6fc772f",
+      "workspace_id": "workspace_b11a2f43-12e1-449f-bebf-5b5f06a7cc04"
+    },
+    "thread_id": "01a20b1c-19af-79d1-a32c-6c47eb3bf588",
+    "nativeNew": "01a20b1c-4118-7c03-82cc-b891670e0b3d",
+    "geometry": {
+      "height": 824,
+      "width": 650,
+      "scrollHeight": 824,
+      "children": [
+        {
+          "class": "terminal xterm focus enable-mouse-events",
+          "height": 824,
+          "top": 36,
+          "position": "relative",
+          "padding": "6px 12px"
+        },
+        {
+          "class": "xterm-viewport",
+          "height": 824,
+          "top": 36,
+          "position": "absolute",
+          "padding": "0px"
+        },
+        {
+          "class": "xterm-screen",
+          "height": 800,
+          "top": 42,
+          "position": "relative",
+          "padding": "0px"
+        },
+        {
+          "class": "xterm-helpers",
+          "height": 0,
+          "top": 42,
+          "position": "absolute",
+          "padding": "0px"
+        }
+      ]
+    },
+    "layout": {
+      "main": {
+        "x": 280,
+        "y": 36,
+        "width": 1160,
+        "height": 864,
+        "top": 36,
+        "right": 1440,
+        "bottom": 900,
+        "left": 280
+      },
+      "directory": {
+        "x": 1070,
+        "y": 36,
+        "width": 370,
+        "height": 864,
+        "top": 36,
+        "right": 1440,
+        "bottom": 900,
+        "left": 1070
+      },
+      "terminal": {
+        "x": 280,
+        "y": 36,
+        "width": 790,
+        "height": 864,
+        "top": 36,
+        "right": 1070,
+        "bottom": 900,
+        "left": 280
+      },
+      "entry": {
+        "x": 1076.5,
+        "y": 156.09375,
+        "width": 357.5,
+        "height": 26,
+        "top": 156.09375,
+        "right": 1434,
+        "bottom": 182.09375,
+        "left": 1076.5
+      },
+      "border": "0.5px",
+      "font": "12px"
+    },
+    "heightUsage": {
+      "normal": 0.958139534883721,
+      "header": 36,
+      "window_id": 1,
+      "maximized": {
+        "height": 0.958139534883721,
+        "width": 1
+      },
+      "fullscreen": {
+        "height": 0.958139534883721,
+        "width": 1,
+        "native": true
+      }
+    },
+    "before": {
+      "thread_id": "01a20b1c-19af-79d1-a32c-6c47eb3bf588",
+      "generation": 1
+    },
+    "after": {
+      "thread_id": "01a20b1c-19af-79d1-a32c-6c47eb3bf588",
+      "generation": 3
+    },
+    "business": {
+      "status": "not_requested"
+    },
+    "drafted": {
+      "thread_id": "01a20b1c-19af-79d1-a32c-6c47eb3bf588",
+      "state": "ready",
+      "messages": 0
+    },
+    "packaged": true,
+    "errors": []
+  },
+  "captures": {
+    "manifest": "output/pty-codex/validated-95b101de/capture-manifest.json",
+    "screenshots": 62,
+    "result_files": 4
+  },
+  "installation": {
+    "receipt": "output/pty-codex/multi-engine-local-installation.json",
+    "target": "/Applications/Hetu.app",
+    "backup_created": false,
+    "installed_test": {
+      "passed": 1,
+      "log": "output/pty-codex/multi-engine-installed.log",
+      "sha256": "c34cc1afe5ccad7de8c516dd8e68e2d4b00914e3b389d28006c34529bea70f87",
+      "engines": [
+        "shell",
+        "codex",
+        "claude-code",
+        "gemini",
+        "opencode"
+      ],
+      "model_messages": 0,
+      "isolated_profile": true
+    },
+    "normal_launch": {
+      "verified_at": "2026-11-24T01:17:19.955485+00:00",
+      "pid": 29358,
+      "app_items_verified": 3131,
+      "profile_hashes_unchanged": {
+        "creative-library.json": true,
+        "LocalSettings/settings.json": true,
+        "agent-sessions/index/selection.json": true
+      },
+      "library_count": 19,
+      "ui": "统一创建面板及引擎／模型选择",
+      "native_capture": "output/pty-codex/installed-multi-engine-window.jpg",
+      "native_capture_sha256": "a85f616c3c39b80e4db4fb8267935a3966f67a6010cca8465a3d2c1545591140",
+      "ax_tree": "output/pty-codex/installed-multi-engine-tree.txt",
+      "ax_tree_sha256": "47d8db4421c0e4cb64a8a6ebc9637420b0277e6b2472fadcbd5283b654fc4aa2",
+      "model_request_sent": false
+    }
+  },
+  "failures_retained": [
+    {
+      "log": "output/pty-codex/multi-engine-entry.log",
+      "reason": "按钮kbd混入可访问名称，补aria-hidden后修正"
+    },
+    {
+      "log": "output/pty-codex/multi-engine-entry2.log",
+      "reason": "模型弹层超出视口，改为按实际高度定位"
+    },
+    {
+      "log": "output/pty-codex/multi-engine-packaged.log",
+      "reason": "6项通过，真实恢复暴露socket先移除而启动器稍后退出竞态；确定性夹具与真实恢复分别复验"
+    },
+    {
+      "log": "output/pty-codex/multi-engine-package-final.log",
+      "reason": "装配中源码改变被摘要门禁拒绝，未安装该包"
+    },
+    {
+      "log": "output/pty-codex/multi-engine-recovered-packaged.log",
+      "reason": "旧测试定位打开Codex会话名称，按新中性入口更新后最终TUI通过"
+    },
+    {
+      "log": "output/pty-codex/multi-engine-recovery-unit.log",
+      "reason": "新夹具的CommonJS ws导入写法错误，修正后44项通过"
+    },
+    {
+      "log": "output/pty-codex/multi-engine-recovery-build.log",
+      "reason": "恢复互调缺显式Promise返回类型，补齐后编译通过"
+    }
+  ],
+  "limits": [
+    "本机真实CLI启动不等于每个引擎全部业务或GUI已验收",
+    "当前宿主模型目录选择为Codex；其他原生CLI沿用其配置，在原生终端管理模型",
+    "原生CLI的登录／信任提示由各客户端呈现，未自动接受或发送模型请求",
+    "系统输入法候选窗、Windows／Linux和完整视觉逐项1:1仍未验收",
+    "未提交、推送、升版本或发布"
+  ]
+}

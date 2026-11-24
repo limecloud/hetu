@@ -1,5 +1,6 @@
 import { App } from "@modelcontextprotocol/ext-apps/app-with-deps";
-import { messageMetadata, supportsMessageDrafts, taskDeepLink, type MessageTarget } from "./openai.ts";
+import {taskDeepLink, type MessageTarget} from "./openai.ts";
+import {canDraft,localMessageCapability,messageMetadata} from "./message.ts";
 
 // 同一标准桥接供任务、作品和操作审阅复用；供应商字段不会进入业务视图。
 export function createAppHost(name: string) {
@@ -11,7 +12,8 @@ export function createAppHost(name: string) {
         tools: !!capabilities?.serverTools,
         resources: !!capabilities?.serverResources,
         messages: !!capabilities?.message?.text,
-        drafts: supportsMessageDrafts(capabilities),
+        drafts: canDraft(capabilities),
+        directSend: localMessageCapability(capabilities)?.directSend!==false,
         context: !!capabilities?.updateModelContext?.text,
       };
     },

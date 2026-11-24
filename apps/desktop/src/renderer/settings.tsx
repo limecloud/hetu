@@ -5,6 +5,7 @@ import { Icon, IconButton, PageActionsTarget, type IconName } from "./workbench.
 import { version } from "../../package.json";
 import "./settings.css";
 import { ModelSettings } from "./model-settings.tsx";
+import { CodexSettings } from "./codex-settings.tsx";
 import { WorkAgent } from "./work-agent.tsx";
 import { ReadingControls, mergeReadingPreferences, readingProfile, type ReadingKind } from "@hetu/workbench-ui";
 
@@ -301,7 +302,7 @@ export function LocalSettings({
       </section>
     );
   }
-  const current = state && mergeReadingPreferences(state.preferences, pendingPreferences);
+  const current = state && { ...mergeReadingPreferences(state.preferences, pendingPreferences), agent_session: { ...state.preferences.agent_session, ...(pendingPreferences.agent_session as object ?? {}) } };
   return (
     <PageActionsTarget.Provider value={pageActionsTarget}><section className="local-settings" aria-label="本机设置">
       <header className="settings-titlebar"><span className="settings-window-title">设置</span><div className="settings-global-actions">
@@ -463,7 +464,7 @@ export function LocalSettings({
                     </p>
                   </>
                 )}
-                {tab === "agents" && <WorkAgent notify={notify} changed={() => refresh()}/>}
+                {tab === "agents" && <>{desktop.agentSessionHost !== false && <CodexSettings preferences={current} disabled={busy || state.journal?.status === "pending"} onChange={patch => void savePreference("agent_session", patch)}/>}<details><summary>外部客户端、MCP App与Skills接入</summary><WorkAgent notify={notify} changed={() => refresh()}/></details></>}
                 {tab === "plans" && (
                   <>
                     {plans.length ? (

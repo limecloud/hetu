@@ -27,3 +27,10 @@ A compatible hypothesis is not a unique solution. Future clues cannot silently s
 Ask your Agent: “Check the closure dates and rations without revealing the sender. Use my actual reference images for costumes, verify the dialogue subtitles, and carry the constraints into a chapter candidate.”
 
 Each tool owns its professional project and references fixed results. Novels, scripts and video keep independent identities. Upstream changes do not overwrite downstream work, and candidates do not imply adoption or final approval. Tools extend expression while authors retain the decisions.
+
+
+## Use only what this work needs
+
+Develop only what needs testing now. Sources, scripts and assets retain their revisions. Trying one scene needs no whole-book conversion; existing clips need not be generated again. State what changes and what remains before continuing.
+
+[Find the smallest useful starting point](/en/docs/when-to-use/).

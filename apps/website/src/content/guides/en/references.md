@@ -1,5 +1,9 @@
 # Review a changed reference without losing the earlier decision
 
+## Start with what you need
+
+A reference question can end with a read-only answer. Sources do not automatically become canon. Revisit explicit dependencies when a source changes without rewriting every work.
+
 A character's jacket is part of your continuity notes. During a script revision, you move a tear from the right sleeve to the left. The reference takes seconds to edit; the earlier scene where someone bandages that arm deserves another look.
 
 In the Mac app, a reference can be linked to the passage that uses it. That link records both versions, so a later revision gives you something concrete to compare.

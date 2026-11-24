@@ -2,11 +2,37 @@ import type { RecordValue, WorkRef } from "./gateway.ts";
 
 type Read = { action: string; input?: RecordValue };
 export type Section = { id: string; title: string; intent: string; read: (work?: WorkRef) => Read | undefined };
+export const WORK_PROFILE_SECTION_ID = "profile";
+export const WORK_CONTENT_SECTION_ID = "content";
+export const LOCAL_SETTINGS_SECTION_ID = "settings";
+export const LOCAL_PLUGINS_SECTION_ID = "plugins";
+export const WORK_SECTION_ORDER = [
+  WORK_PROFILE_SECTION_ID,
+  "outline", "canon", "assets", "resources", "cues",
+  "tasks", "links", "reviews", "operations",
+  WORK_CONTENT_SECTION_ID,
+  "versions", "delivery", "reports",
+] as const;
+export const LOCAL_SECTION_ORDER = [LOCAL_PLUGINS_SECTION_ID, LOCAL_SETTINGS_SECTION_ID, "models"] as const;
+
+export function sectionById(id: string, source: readonly Section[] = sections): Section | undefined {
+  return source.find(section => section.id === id);
+}
+
+export function sectionsInOrder(ids: readonly string[], source: readonly Section[] = sections): Section[] {
+  const wanted = new Set(ids);
+  return WORK_SECTION_ORDER.map(id => sectionById(id, source)).filter((section): section is Section => !!section && wanted.has(section.id));
+}
+
+export function localSectionsInOrder(source: readonly Section[] = localSections): Section[] {
+  return LOCAL_SECTION_ORDER.map(id => sectionById(id, source)).filter((section): section is Section => !!section);
+}
+
 const exact = (action: string) => () => ({ action });
 
 // 导航按作者任务组织。新增领域视图不需要修改Codex桥接。
 export const sections: Section[] = [
-  { id: "profile", title: "作品", intent: "完善作品资料与创作方向", read: work => work ? ({ action: "hetu.works.get", input: { work_ref: work } }) : undefined },
+  { id: "profile", title: "作品资料", intent: "完善作品资料与创作方向", read: work => work ? ({ action: "hetu.works.get", input: { work_ref: work } }) : undefined },
   { id: "content", title: "正文与分集", intent: "整理卷章或分集场次，起草或返工指定内容", read: work => !work ? undefined : work.kind === "novel" ? { action: "hetu.novels.get" } : work.kind === "drama" ? { action: "hetu.drama.projects.get", input: { project_id: work.object_id } } : { action: "hetu.video.projects.get", input: { video_project_id: work.object_id } } },
   { id: "outline", title: "大纲", intent: "复盘并完善总纲、卷纲与章纲，或剧本及视频计划", read: work => work?.kind === "novel" ? { action: "hetu.outlines.get" } : undefined },
   { id: "canon", title: "设定", intent: "整理人物、世界、时间与规则，准备有依据的变更", read: work => work ? { action: "hetu.blueprints.get" } : undefined },

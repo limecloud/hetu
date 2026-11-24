@@ -20,8 +20,8 @@ html[data-window-chrome] .settings-titlebar :is(button,a,input,select,summary) {
 .local-settings .settings-tools { display: flex; align-items: center; gap: 14px; flex: none; padding: 12px; min-height: 64px; }
 .settings-tools h1 { font-size: 16px; line-height: 22px; font-weight: 600; margin: 0; }
 .local-settings .settings-tools > button { width: 40px; height: 38px; min-height: 38px; padding: 8px; border: .5px solid var(--line); border-radius: 16px; background: transparent; }
-.local-settings .settings-panel { flex: 1; min-height: 0; padding: 34px clamp(24px, calc((100vw - 960px) / 4 + 32px), 120px) 48px; overflow: auto; scrollbar-width: thin; }
-.settings-content { width: 100%; max-width: 900px; margin-inline: auto; }
+.local-settings .settings-panel { flex: 1; min-height: 0; padding: 32px 32px 48px; overflow: auto; scrollbar-width: thin; }
+.settings-content { width: 100%; max-width: 720px; margin-inline: auto; }
 .settings-appearance { border: 0; padding: 0; margin: 0 0 32px; min-width: 0; }
 .settings-appearance legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .settings-appearance > div { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; padding: 24px 24px 18px; border-radius: 20px; background: var(--settings-group); }
@@ -44,7 +44,7 @@ html[data-window-chrome] .settings-titlebar :is(button,a,input,select,summary) {
 .local-settings button { font-size: 13px; font-weight: 400; }
 .local-settings h2.settings-section-heading { font-size: 14px; font-weight: 600; margin: 0 0 16px; }
 .local-settings .settings-group { margin-bottom: 32px; }
-.local-settings .settings-group > h3 { margin: 0 6px 10px; font-size: 13px; font-weight: 600; color: var(--ink); }
+.local-settings .settings-group > h3 { margin: 0 6px 10px; font-size: 15px; font-weight: 600; color: var(--ink); }
 .local-settings .settings-group > div:not(.settings-reading-preview) { border: 0; border-radius: 20px; background: var(--settings-group); padding: 0 14px; }
 .local-settings .settings-field { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 6px 18px; min-height: 40px; max-width: none; width: 100%; margin: 0; padding: 10px 0; border-bottom: .5px solid var(--line); }
 .local-settings .settings-field:last-child { border-bottom: 0; }
@@ -63,7 +63,7 @@ html[data-window-chrome] .settings-titlebar :is(button,a,input,select,summary) {
 .local-settings .settings-stepper > span { display: inline-flex; border: .5px solid var(--line); border-radius: 5px; overflow: hidden; }
 .local-settings .settings-stepper button { border: 0; border-radius: 0; min-width: 26px; min-height: 24px; padding: 0 5px; background: transparent; }
 .local-settings .settings-stepper button + button { border-left: .5px solid var(--line); }
-.local-settings .settings-note { margin: 10px 6px; font-size: 13px; color: var(--muted); line-height: 1.6; }
+.local-settings .settings-note { margin: 10px 6px; font-size: 12.5px; color: var(--muted); line-height: 1.6; }
 .local-settings .settings-reading-preview { padding: 14px; min-height: 150px; border: 0; border-radius: 20px; background: var(--page); }
 .local-settings .settings-reading-preview p { margin: 0; }
 .local-settings .interface-scale { padding: 10px 0; font-size: 13px; }
@@ -311,3 +311,12 @@ html[data-window-chrome] .settings-titlebar :is(button,a,input,select,summary) {
 .local-settings .work-agent-dialog h2 { font-size: 16px; }
 .local-settings .work-agent-dialog p { margin: 0; font-size: 13px; }
 @media(max-width:600px) { .settings-tools { flex-wrap: wrap; } .settings-page-actions { flex-wrap: wrap; } .local-settings .work-agent-inspection dl { grid-template-columns: minmax(0,1fr); gap: 3px; } .local-settings .work-agent-inspection dd { margin-bottom: 8px; } }
+
+.codex-settings { display:grid; gap:24px; }
+.codex-settings .settings-group { margin:0; }
+.local-settings .codex-settings .settings-group > .font-picker { margin-top:12px; padding:0; border-radius:0; background:transparent; }
+.local-settings .codex-settings .settings-group > .codex-font-preview { margin-top:12px; padding:16px; border-radius:8px; overflow-wrap:anywhere; border:.5px solid var(--line); }
+.codex-settings .settings-note { font-size:12.5px; line-height:1.5; }
+.codex-settings .setting-row { display:flex; align-items:center; justify-content:space-between; gap:20px; min-height:44px; padding:9px 0; font-size:14px; border-bottom:.5px solid var(--line); }
+.codex-settings .setting-row:last-child { border-bottom:0; }
+.codex-settings .setting-row input:not([type=checkbox]), .codex-settings .setting-row select { width:180px; max-width:50%; }

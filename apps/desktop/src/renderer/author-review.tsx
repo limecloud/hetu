@@ -376,7 +376,7 @@ export function AuthorLifecycle({
     return () => {
       active = false;
     };
-  }, [id]);
+  }, [value]);
   async function run(fn: () => Promise<void>) {
     setBusy(true);
     try {

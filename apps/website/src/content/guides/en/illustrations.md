@@ -1,5 +1,9 @@
 # Images and illustrations
 
+## Start with what you need
+
+Organize images needed for comparison, use or delivery. Discussing a direction need not generate a complete image set.
+
 Character images, costume references, locations and story illustrations serve different tasks. Explain the purpose, have your Agent fix the object and references, then compare the actual images in Hetu.
 
 You can prepare one important character image or a small set for a scene. You do not need a complete art library before beginning.

@@ -26,7 +26,9 @@ export async function pluginResultHandoff(context: ResultContext, owner: string,
     if (!sameWork(result.object.work_ref, context.work) || result.object.owner_plugin_id !== owner
       || result.object.object_id !== selected.object_id || result.object.revision !== selected.revision || result.sha256 !== selected.sha256)
       throw new Error("成果版本或作品不一致，请重新读取。");
-    fixed = [{ kind: "plugin_object", work_ref: context.work, owner_plugin_id: owner, ...selected }];
+    // 交接保留固定成果的可读标题，便于 Agent 在不再次猜测对象的情况下确认当前版本。
+    fixed = [{ kind: "plugin_object", work_ref: context.work, owner_plugin_id: owner,
+      ...(typeof result.object.title === "string" ? { title: result.object.title } : {}), ...selected }];
   }
   return { work_ref: context.work, fixed_refs: fixed };
 }

@@ -52,7 +52,7 @@ test("global library keeps desktop registrations visible and selects each exact 
   await expect(view.getByRole("status")).toContainText("尚未授权");
   expect((await page.evaluate(()=>window.harness.calls)).filter(call=>call.arguments?.action==="hetu.works.get")).toHaveLength(0);
   await view.getByRole("button",{name:"放入当前草稿",exact:true}).click();
-  expect(JSON.stringify(await page.evaluate(()=>window.harness.wireMessages))).toContain("drama_registered");
+  await expect.poll(async()=>JSON.stringify(await page.evaluate(()=>window.harness.wireMessages))).toContain("drama_registered");
   expect(JSON.stringify(await page.evaluate(()=>window.harness.wireMessages))).not.toContain("grant_id");
   await view.getByRole("button",{name:"打开作品 雾港",exact:true}).click();
   await expect(view.getByText("循着旧灯塔寻找失踪的人。",{exact:true})).toBeVisible();
@@ -78,11 +78,43 @@ test("a failed global catalog read shows recovery instead of reporting an empty 
 test("workbench follows exact work and fixed document references across domain views", async ({ page }) => {
   const view = await open(page);
   await view.getByRole("button", { name: "打开作品 雾港", exact: true }).click();
+  await expect(view.locator("h2", { hasText: "作品资料" })).toBeVisible();
+  await expect(view.getByRole("tablist", { name: "打开的文稿", exact: true })).toHaveCount(0);
   await expect(view.getByText("循着旧灯塔寻找失踪的人。", { exact: true })).toBeVisible();
+  const fixedRecord = view.locator("[data-mcp-context]").first();
+  await fixedRecord.click({button:"right"});
+  await expect(view.getByRole("menu", {name:"雾港", exact:true})).toBeVisible();
+  await page.keyboard.press("Escape");
+  await view.getByText("循着旧灯塔寻找失踪的人。", {exact: true}).evaluate(element => {
+    const range = document.createRange(); range.selectNodeContents(element);
+    const selection = window.getSelection(); selection?.removeAllRanges(); selection?.addRange(range);
+  });
+  const titleField = view.locator('.record-field[data-mcp-context-label="雾港"]').last();
+  await titleField.focus(); await titleField.press("Shift+F10");
+  await expect(view.getByRole("menuitem", {name:"让 AI 处理当前成果", exact:true})).toBeVisible();
+  await expect(view.getByRole("menuitem", {name:"让 AI 处理选区", exact:true})).toHaveCount(0);
+  await page.keyboard.press("Escape");
   await view.getByRole("button", { name: "小说", exact: true }).click();
   await expect(view.getByText("第一卷", { exact: true })).toBeVisible();
   await view.getByRole("button", { name: "阅读正文", exact: true }).click();
   await expect(view.getByText("潮水退后，石阶上留下了一盏灯。", { exact: true })).toBeVisible();
+  await expect(view.getByRole("tablist", { name: "打开的文稿", exact: true })).toBeVisible();
+  const tab = view.getByRole("tab", { name: "打开文稿 潮水", exact: true });
+  await expect(tab).toBeVisible();
+  await expect(tab.locator(".." )).toHaveAttribute("data-preview", "true");
+  await tab.dblclick();
+  await expect(tab.locator(".." )).toHaveAttribute("data-preview", "false");
+  const manuscript = view.getByRole("article", {name:"固定正文", exact:true});
+  await manuscript.click({button:"right"});
+  await expect(view.getByRole("menu", {name:"固定正文", exact:true})).toBeVisible();
+  await view.getByRole("menuitem", {name:"全选", exact:true}).click();
+  await manuscript.focus();
+  await manuscript.press("Shift+F10");
+  await expect(view.getByRole("menu", {name:"固定正文", exact:true})).toBeVisible();
+  await page.keyboard.press("Escape");
+  await view.locator('.document-tab[data-active="true"] .document-tab-close').click();
+  await expect(view.getByRole("tab", { name: "打开文稿 潮水", exact: true })).toHaveCount(0);
+  await expect(view.locator("h2", { hasText: "作品资料" })).toBeVisible();
   const calls = await page.evaluate(() => window.harness.calls);
   const read = calls.find(c => c.name === "hetu_call_action" && c.arguments?.action === "hetu.documents.get");
   expect(read?.arguments?.input).toMatchObject({ document_id: "doc_first", revision_id: "rev_first", management_ref: management, work_ref: work });
@@ -166,6 +198,15 @@ test("shared library filters intersect and clear without reading another work or
   await expect(view.locator(".library-works")).toHaveClass(/library-grid/);
   expect(await page.evaluate(()=>window.harness.calls)).toEqual([]);
 });
+
+test("MCP library objects expose the shared context menu", async ({page}) => {
+  const view = await open(page);
+  const workButton = view.getByRole("button", {name:"打开作品 雾港", exact:true});
+  await workButton.click({button:"right"});
+  await expect(view.getByRole("menu", {name:"雾港", exact:true})).toBeVisible();
+  await view.getByRole("menuitem", {name:"作品资料", exact:true}).click();
+  await expect(view.getByRole("heading", {name:"作品资料", exact:true})).toBeVisible();
+});
 for(const theme of ["light","dark"]) for(const width of [375,1440]) test(`shared library ${theme} ${width}px uses embedded artwork and readable controls`, async({page})=>{
   await page.setViewportSize({width,height:960});await page.emulateMedia({colorScheme:theme as "light"|"dark"});
   const view=await open(page);
@@ -174,7 +215,7 @@ for(const theme of ["light","dark"]) for(const width of [375,1440]) test(`shared
   await expect.poll(()=>view.locator(".work-cover img").evaluate((node:HTMLImageElement)=>node.complete&&node.naturalWidth>0)).toBe(true);
   expect(await view.locator("body").evaluate(node=>node.scrollWidth<=innerWidth)).toBe(true);
   const metrics=await view.locator(".library-topbar").evaluate(node=>({height:node.getBoundingClientRect().height,border:getComputedStyle(node).borderBottomWidth,font:getComputedStyle(node.querySelector("strong")!).fontSize}));
-  expect(metrics.height).toBe(60);expect(parseFloat(metrics.border)).toBeLessThanOrEqual(1);expect(parseFloat(metrics.font)).toBeGreaterThanOrEqual(12);
+  expect(metrics.height).toBe(52);expect(parseFloat(metrics.border)).toBeLessThanOrEqual(1);expect(parseFloat(metrics.font)).toBeGreaterThanOrEqual(12);
   await mkdir("../../build/task-view/acceptance",{recursive:true});await page.screenshot({path:`../../build/task-view/acceptance/shared-library-${theme}-${width}.png`,fullPage:true});
 });
 

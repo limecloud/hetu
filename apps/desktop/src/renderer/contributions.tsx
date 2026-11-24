@@ -9,7 +9,7 @@ import {
 import type { WorkRef } from "@hetu/plugin-sdk";
 import { desktop, data } from "./bridge.ts";
 import { TaskReview } from "./task-review.tsx";
-import { AgentConnection } from "./agent-connection.tsx";
+import { AgentSession } from "./agent-session.tsx";
 import { Management } from "./management.tsx";
 import { WorkProfile } from "./work-profile.tsx";
 import { WorkLinks } from "./work-links.tsx";
@@ -28,10 +28,15 @@ import "./canon.css";
 import {useObjectContextMenu} from "./text-context-menus.tsx";
 export interface SurfaceContext {
   work: WorkRef;
+  /** 阅读工作面当前明确选中的正文；同一路由切换标签时不重建整页。 */
+  documentId?: string;
   notify: (message: string) => void;
   ai: (object?: Record<string, unknown>) => void;
   reviewTask?: (taskId: string) => void;
   openDocument?: (documentId: string) => void;
+  openContent?: () => void;
+  plugins?: { key: string; owner: string; id: string; title: string }[];
+  openPlugin?: (view: { key: string; owner: string; id: string; title: string }) => void;
 }
 export interface SurfaceContribution {
   id: string;
@@ -317,7 +322,7 @@ const baseContributions: SurfaceContribution[] = [
     id: "work.agent",
     title: "Agent 协作",
     kinds: ["novel", "drama", "video"],
-    component: AgentConnection,
+    component: AgentSession,
   },
   {
     id: "work.management",

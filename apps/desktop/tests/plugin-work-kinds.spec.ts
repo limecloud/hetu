@@ -49,9 +49,14 @@ test("作品插件按小说、剧本和视频筛选，管理保留全集，错�
       await page.getByRole("button", { name: "安装插件包", exact: true }).click();
       await expect(page.locator(".plugin-content .row").filter({ has: page.getByText(pkg.title, { exact: true }) })).toBeVisible();
     }
-    const sidebar = page.getByRole("complementary", { name: "项目导航", exact: true });
     async function check(kind: string) {
-      for (const pkg of packages) await expect(sidebar.getByRole("button", { name: pkg.title, exact: true })).toHaveCount(!pkg.kinds || pkg.kinds.includes(kind) ? 1 : 0);
+      await navigate(page, "作品资料");
+      const hint = page.locator(".profile-plugins");
+      for (const pkg of packages) {
+        const relevant = !pkg.kinds || pkg.kinds.includes(kind);
+        if (relevant) await expect(hint).toContainText(pkg.title);
+        else await expect(hint).not.toContainText(pkg.title);
+      }
       const state = await page.evaluate(() => (window as any).hetuDesktop.state());
       expect(state.views.map((view: any) => view.title).sort()).toEqual(packages.filter(pkg => !pkg.kinds || pkg.kinds.includes(kind)).map(pkg => pkg.title).sort());
     }
@@ -61,7 +66,9 @@ test("作品插件按小说、剧本和视频筛选，管理保留全集，错�
       await expect(page.locator(".workspace-title")).toHaveText(title);
     }
     await check("novel");
-    await sidebar.getByRole("button", { name: "小说专用", exact: true }).click();
+    const pluginHint = page.locator(".profile-plugins");
+    await pluginHint.locator("summary").click();
+    await pluginHint.getByRole("button", { name: "小说专用", exact: true }).click();
     await expect.poll(() => application.windows().some(p => p.url().startsWith("hetu-plugin://"))).toBe(true);
     const pluginPage = application.windows().find(p => p.url().startsWith("hetu-plugin://"))!;
     await expect(pluginPage.getByRole("heading", { name: "小说专用", exact: true })).toBeVisible();

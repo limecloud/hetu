@@ -1,7 +1,13 @@
 import React from "react";
 
-export type IconName = "sidebar" | "inspector" | "book" | "file" | "shield" | "link" | "layers" | "image" | "branch" | "export" | "check" | "settings" | "expand" | "more" | "chevron" | "back" | "list" | "sparkles" | "search" | "comment" | "grid" | "refresh" | "plus" | "film" | "close" | "plugin" | "sliders" | "type" | "globe" | "info" | "brush" | "attachment" | "document-search";
+export type IconName = "terminal" | "folder" | "sidebar" | "inspector" | "book" | "file" | "shield" | "link" | "layers" | "image" | "branch" | "export" | "check" | "settings" | "expand" | "more" | "chevron" | "back" | "list" | "sparkles" | "search" | "comment" | "grid" | "refresh" | "plus" | "film" | "close" | "plugin" | "sliders" | "type" | "globe" | "info" | "brush" | "attachment" | "document-search" | "maximize" | "restore" | "fullscreen" | "fullscreen-exit";
 const paths: Record<IconName, React.ReactNode> = {
+  terminal:<><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m7 8 3 3-3 3m6 1h4"/></>,
+  folder:<path d="M3 7V5h7l2 2h9v13H3Z"/>,
+  maximize:<rect x="3" y="3" width="18" height="18" rx="1"/>,
+  restore:<><path d="M8 3h13v13M8 3v4m13 9h-4"/><rect x="3" y="8" width="13" height="13" rx="1"/></>,
+  fullscreen:<path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/>,
+  "fullscreen-exit":<path d="M3 8h5V3m8 0v5h5M8 21v-5H3m18 0h-5v5"/>,
   attachment: <path d="m9 13 7-7a3 3 0 0 1 4 4l-9 9a5 5 0 0 1-7-7l9-9m-6 10a1.5 1.5 0 0 0 2 2l8-8"/>,
   "document-search": <><path d="M14 3H5v18h7M14 3v5h5V8l-5-5M8 8h3m-3 4h5"/><circle cx="16" cy="16" r="4"/><path d="m19 19 3 3"/></>,
   brush: <><path d="m14 6 4 4M8 12l10-9a2.1 2.1 0 0 1 3 3L12 16"/><path d="M8 12a4 4 0 0 1 4 4c0 3-2 5-7 5 1-2-3-2-3-4 3 0 2-5 6-5Z"/></>,

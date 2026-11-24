@@ -11,10 +11,10 @@ const panels: {id: SidebarPanel; label: string; icon: IconName}[] = [
 ];
 
 /** 两层导航只改变侧栏，正文、编辑器与各面板保持挂载。 */
-export function WorkSidebar({layer, panel, onLayer, onPanel, title, subtitle, updatedAt, cover, onProfile, project, children}: {
+export function WorkSidebar({layer, panel, onLayer, onPanel, title, subtitle, updatedAt, cover, onProfile, profileActive, project, children}: {
   layer: SidebarLayer; panel: SidebarPanel;
   onLayer: (layer: SidebarLayer) => void; onPanel: (panel: SidebarPanel) => void;
-  title: string; subtitle: React.ReactNode; updatedAt?: string; cover: React.ReactNode; onProfile: () => void;
+  title: string; subtitle: React.ReactNode; updatedAt?: string; cover: React.ReactNode; onProfile: () => void; profileActive?: boolean;
   project: React.ReactNode; children: React.ReactNode;
 }) {
   const documentPanel = useRef<HTMLDivElement>(null);
@@ -26,7 +26,7 @@ export function WorkSidebar({layer, panel, onLayer, onPanel, title, subtitle, up
   return <>
     <div className="sidebar-project" hidden={layer !== "project"}>{project}</div>
     <div ref={documentPanel} className="sidebar-document" hidden={layer !== "document"}>
-      <button className="sidebar-work-heading" aria-label="作品资料" onClick={onProfile} title={title}>
+      <button className={"sidebar-work-heading" + (profileActive ? " selected" : "")} aria-label="作品资料" aria-current={profileActive ? "page" : undefined} onClick={onProfile} title={title}>
         {cover}<span><strong>{title}</strong><small title={updatedAt ? new Date(updatedAt).toLocaleString() : undefined}>{relative}</small></span>
       </button>
       <div className="sidebar-segments" role="tablist" aria-label="作品侧栏">
