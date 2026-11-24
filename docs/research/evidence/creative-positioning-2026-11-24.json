@@ -203,9 +203,31 @@
     }
   ],
   "release": {
-    "source": "本轮源码及同版安装验证通过，等待Git递交",
-    "website_deployment": "待按本次明确授权部署Cloudflare Pages生产main",
-    "desktop_distribution": "本机macOS arm64开发签名包已覆盖，正式跨平台安装包发行另行取证"
+    "source_commit": "f0d2a9192b02544fcd50e77cb1d451479a1e7e8d",
+    "repository": "https://github.com/limecloud/hetu",
+    "branch": "main",
+    "source_pushed": true,
+    "website": {
+      "project": "hetu-website",
+      "environment": "production",
+      "branch": "main",
+      "deployment_url": "https://05e6227b.hetu-website-3uu.pages.dev",
+      "origin": "https://hetu.limeai.run",
+      "commit": "f0d2a9192b02544fcd50e77cb1d451479a1e7e8d",
+      "verified_pages": 9,
+      "image_bytes_verified": 158,
+      "image_count": 158,
+      "bilingual_blog_covers": 21,
+      "preview_alias_verification": {
+        "matched": 155,
+        "total": 158,
+        "limit": "3个临时pages.dev图片请求先超时，单次重读返回403；正式自定义域名158项全部匹配，未修改边缘访问策略"
+      }
+    },
+    "local_installation": "0.14.1 macOS arm64 ad-hoc开发签名，直接覆盖、无旧应用备份、作者索引未变",
+    "desktop_distribution": "本轮未创建GitHub发行标签或公开安装包；其他平台与正式发行保持独立验收",
+    "github_ci": "实时状态归GitHub Actions；源码推送已触发，本轮未将排队或运行中状态计为通过",
+    "github_actions_url": "https://github.com/limecloud/hetu/actions"
   },
   "evidence": [
     {
@@ -311,6 +333,38 @@
     {
       "path": "output/positioning-refactor/staged-diff-check.log",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "output/positioning-refactor/production-verification.json",
+      "sha256": "601cc07734d3d40b4b557d08d5eb03cb3182345d5b7a5652e45f7707c81c2954"
+    },
+    {
+      "path": "output/positioning-refactor/cloudflare-v0.14.1-deploy.log",
+      "sha256": "78acf38c7052e058c7d836810fe85dcfc9be9963b66987269317c68e6fa0256a"
+    },
+    {
+      "path": "output/positioning-refactor/github-v0.14.1-runs.json",
+      "sha256": "5a7ab1d504a710ea06b2b74b5608e84e0a83dbe089928f1fbe0a0b764abecb36"
+    },
+    {
+      "path": "output/positioning-refactor/home-v0.14.1-top.png",
+      "sha256": "58997526330d2c6867515b02043754657585e89a13fadb6f3c6d0ec514047d23"
+    },
+    {
+      "path": "output/positioning-refactor/home-v0.14.1-bottom.png",
+      "sha256": "50ee22af951a455320cbdb49f43f41bfd2bf2cbb78ea69ffdc02c1586daab2b8"
+    },
+    {
+      "path": "output/positioning-refactor/deployment-verification.json",
+      "sha256": "9b5b4081fb1b43cd7076146adccdb59a3baa2ad19aac663c103852a031f21947"
+    },
+    {
+      "path": "output/positioning-refactor/deployment-verification-final.json",
+      "sha256": "463e8398ffbd8a47a2564cfb7e8baebe0c473f567e41d96fbac2fede29505c6e"
+    },
+    {
+      "path": "output/positioning-refactor/docs-after-deploy.log",
+      "sha256": "ac1ff70be3650adebe04de8c19d9880d53602b871345f743667e333f2d0ac1f4"
     }
   ],
   "artwork": {
