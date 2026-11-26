@@ -116,6 +116,65 @@ fn execute(service: &LocalSettings, plan: &Value, key: &str) -> Value {
         json!({"operation_id":plan["operation_id"],"sha256":plan["sha256"],"operation_key":key}),
     )
 }
+
+#[test]
+fn discovered_prepare_schema_matches_each_kind_and_rejects_mixed_plans_without_writes() {
+    let catalog = hetu_core::Kernel::collaboration_action_catalog();
+    let schema = &catalog.as_array().unwrap().iter()
+        .find(|action| action["name"] == "hetu.local_settings.prepare").unwrap()["input_schema"];
+    let validator = jsonschema::validator_for(schema).unwrap();
+    let base = json!({"summary":"本机方案合同验收","operation_key":"schema-rejected"});
+    let request = |fields: Value| {
+        let mut input = base.clone();
+        input.as_object_mut().unwrap().extend(fields.as_object().unwrap().clone());
+        input
+    };
+    let work = json!({"workspace_id":"workspace_00000000-0000-4000-8000-000000000001","kind":"novel","object_id":"novel-qa"});
+    for fields in [
+        json!({"kind":"preferences","patch":{"appearance":"dark"}}),
+        json!({"kind":"agent_connection","agent_client":"codex"}),
+        json!({"kind":"agent_suite","suite_id":"general","agent_client":"codex"}),
+        json!({"kind":"agent_suite","suite_id":"general","agent_client":"claudeCode","install":false,"work_ref":work}),
+        json!({"kind":"agent_suite","suite_id":"general","agent_client":"workbuddy","install":true,"workspace_id":work["workspace_id"]}),
+        json!({"kind":"storage_cleanup","selected_ids":["a".repeat(64)],"storage_snapshot":"b".repeat(64)}),
+    ] {
+        let input = request(fields);
+        assert!(validator.is_valid(&input), "合法方案未通过发现合同：{input}");
+    }
+    let folder = tempfile::tempdir().unwrap();
+    let service = LocalSettings::open(folder.path()).unwrap();
+    let settings = std::fs::read(folder.path().join("settings.json")).unwrap();
+    for fields in [
+        json!({"kind":"agent_connection","agent_client":"codex","install":true}),
+        json!({"kind":"agent_connection","agent_client":"codex","suite_id":"general"}),
+        json!({"kind":"agent_connection"}),
+        json!({"kind":"preferences"}),
+        json!({"kind":"preferences","patch":{"appearance":"dark"},"work_ref":work}),
+        json!({"kind":"agent_suite","agent_client":"codex"}),
+        json!({"kind":"agent_suite","suite_id":"general"}),
+        json!({"kind":"agent_suite","suite_id":"general","agent_client":"codex","selected_ids":["a".repeat(64)]}),
+        json!({"kind":"agent_suite","suite_id":"general","agent_client":"codex","work_ref":work,"workspace_id":work["workspace_id"]}),
+        json!({"kind":"storage_cleanup","selected_ids":["a".repeat(64)]}),
+        json!({"kind":"storage_cleanup","storage_snapshot":"b".repeat(64)}),
+        json!({"kind":"storage_cleanup","selected_ids":["a".repeat(64)],"storage_snapshot":"b".repeat(64),"patch":{"appearance":"dark"}}),
+    ] {
+        let input = request(fields);
+        assert!(!validator.is_valid(&input), "发现合同接受了无效组合：{input}");
+        let result = call(&service, "codex", "prepare", input);
+        assert_eq!(result["status"], "blocked", "{result}");
+        assert_eq!(result["error"]["code"], "invalid_input", "{result}");
+    }
+    assert_eq!(std::fs::read(folder.path().join("settings.json")).unwrap(), settings);
+    assert_eq!(std::fs::read_dir(folder.path().join("plans")).unwrap().count(), 0);
+    // 被参数校验拒绝的请求不占用准备键，修正后可按原键准备并回读。
+    let input = request(json!({"kind":"preferences","patch":{"appearance":"dark"}}));
+    let prepared = data(call(&service, "codex", "prepare", input.clone()));
+    let replayed = data(call(&service, "codex", "prepare", input));
+    assert_eq!(prepared["operation_id"], replayed["operation_id"]);
+    assert_eq!(std::fs::read_dir(folder.path().join("plans")).unwrap().count(), 1);
+    assert_eq!(std::fs::read(folder.path().join("settings.json")).unwrap(), settings);
+}
+
 #[test]
 fn fixed_settings_require_author_decision_and_replay_the_original_transaction() {
     let folder = tempfile::tempdir().unwrap();

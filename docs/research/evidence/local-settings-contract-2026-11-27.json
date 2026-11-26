@@ -1,0 +1,271 @@
+{
+  "recorded_at": "2026-11-26T19:28:13.952590+00:00",
+  "version": "0.15.2",
+  "source_base_commit": "23caaf9296026e91173ff812c291d6167e1bde59",
+  "scope": "源码、真实CLI／stdio MCP及隔离官方Codex解析；不代表当前原生GUI或正式安装。",
+  "schema_issue": {
+    "observed": "0.15.1原生连接升级时，发现Schema允许agent_connection带install:true，而实际prepare拒绝。",
+    "controlled_negative": {
+      "schema_sha256": "fc0ccf036c538c8e547efd52541057a675a90386647ad378ad3e70a737ab7f1f",
+      "invalid_connection_request_accepted": true,
+      "input": {
+        "kind": "agent_connection",
+        "agent_client": "codex",
+        "install": true,
+        "summary": "连接参数负例",
+        "operation_key": "rejected-connection"
+      }
+    },
+    "fix": "同一动作Schema按kind增加四个互斥闭合分支，共用已有字段定义，不复制设置Owner或改变固定方案存储。",
+    "coverage": {
+      "valid_combinations": 6,
+      "invalid_combinations": 12,
+      "invalid_requests_preserved_settings_bytes": true,
+      "invalid_requests_created_no_plans": true,
+      "original_prepare_key_reusable_after_rejection": true,
+      "valid_prepare_replays_original_plan": true
+    },
+    "before_version_cli": {
+      "cli_binary_sha256": "33c3ae11ccabf4733a8df0a641805c0e5688bc3a04f156a8b0cdab44e2f63c80",
+      "discovered_schema_equals_source": true,
+      "wrong_connection_fields_rejected": true,
+      "rejected_request_created_no_plan": true,
+      "same_prepare_key_reusable_after_rejection": true,
+      "original_plan_replayed": true,
+      "preferences_not_changed_by_prepare": true,
+      "branches": [
+        "preferences",
+        "agent_suite",
+        "agent_connection",
+        "storage_cleanup"
+      ],
+      "calls": [
+        {
+          "action": "hetu.collaboration.inspect",
+          "exit_code": 0,
+          "status": "succeeded"
+        },
+        {
+          "action": "hetu.local_settings.prepare",
+          "exit_code": 2,
+          "status": "blocked"
+        },
+        {
+          "action": "hetu.local_settings.prepare",
+          "exit_code": 0,
+          "status": "succeeded"
+        },
+        {
+          "action": "hetu.local_settings.prepare",
+          "exit_code": 0,
+          "status": "succeeded"
+        }
+      ],
+      "model_requests": 0
+    }
+  },
+  "branding": {
+    "official_sources": [
+      {
+        "requested_url": "https://developers.openai.com/codex/plugins/",
+        "final_url": "https://learn.chatgpt.com/docs/plugins",
+        "http_status": 200,
+        "retrieved_on": "2026-11-27",
+        "html_sha256": "f69673dcbc074ee494f61e3d5ef87b279f62a14013b841baf91e989c63586deb"
+      },
+      {
+        "requested_url": "https://developers.openai.com/plugins/build/plugins",
+        "final_url": "https://developers.openai.com/plugins/build/plugins",
+        "http_status": 200,
+        "retrieved_on": "2026-11-27",
+        "html_sha256": "b8a9e0f2a5e4a15123d99698688ce14a20e47750d4d1f67b3461ed52af9c1189"
+      }
+    ],
+    "source_reference": {
+      "path": "/Users/coso/Documents/dev/rust/codex/codex-rs/plugin/src/manifest.rs",
+      "git_sha": "0e8c7683c4a85f00667bd762265358a407124f2e",
+      "meaning": "仅作固定typed manifest参考，不推定为当前已安装CLI或原生宿主的源码。"
+    },
+    "native_compatibility_manifest_preserved": true,
+    "absolute_stdio_command_preserved": true,
+    "portable_manifest_added": false,
+    "existing_brand_asset_bytes": true,
+    "original_operation": {
+      "operation_id": "localop_8a787767-e589-4f2e-8dd3-09b7eaca9576",
+      "sha256": "416804e462d4df2bc8066386270e0af76b518bfed43cd7faa237f468e9753ed0",
+      "state": "executed",
+      "revision": 3,
+      "decision_scope": "独立测试目录的获权QA安装，不构成作者创作认可。"
+    },
+    "official_runtime": {
+      "version": "0.15.2",
+      "codex_version": "codex-cli 0.172.0",
+      "scope": "独立CODEX_HOME与本机设置目录，未改变真实用户配置。",
+      "protected_user_files_unchanged": true,
+      "operation_id": "localop_8a787767-e589-4f2e-8dd3-09b7eaca9576",
+      "package_sha256": "f2a757a129e508a6fa373afe6370e6583cb1e7b14da4aa218cdca2874f3a96a3",
+      "file_count": 5,
+      "source_assets_matched": {
+        "composerIcon": {
+          "relative_path": "assets/icon.png",
+          "sha256": "075b1999683c88dbd23c03f37ea1e6844c0a5ccfd1a1f21bd1567ce281f573c8"
+        },
+        "logo": {
+          "relative_path": "assets/logo.png",
+          "sha256": "6c555aac499a6e9c0186d78b109557069899d2ca3d06d6416eca26ddcafb44df"
+        }
+      },
+      "official_parser_interface": {
+        "displayName": "河图洛书工作台",
+        "shortDescription": "接续作品，阅读、比较和修改创作成果",
+        "developerName": "LimeCloud",
+        "category": "Productivity",
+        "websiteUrl": "https://hetu.limeai.run/"
+      },
+      "official_parser_resolved_local_images": true,
+      "registered": true,
+      "session_loaded": false,
+      "cli_actions": [
+        "get_operation",
+        "inspect_connection"
+      ],
+      "app_server_methods": [
+        "initialize",
+        "plugin/read"
+      ],
+      "app_server_normal_exit": true,
+      "model_requests": 0,
+      "native_gui_observation": "not_run_for_0.15.2"
+    },
+    "runtime_schema": {
+      "generated_by": "codex-cli 0.172.0 app-server generate-json-schema --experimental",
+      "plugin_read_params_sha256": "f15952a2828c90501cc32f347c1e1691ea65cd2d97f503ab40e7be08757de74d",
+      "plugin_read_response_sha256": "43fabc1c816d4ebd29de139142035341b954e6086b314e8c3c87485f304dbc00"
+    }
+  },
+  "validation": {
+    "rust": {
+      "groups": 71,
+      "passed": 482,
+      "failed": 0,
+      "ignored": 0,
+      "by_component": {
+        "core-v0152": {
+          "groups": 64,
+          "passed": 407,
+          "failed": 0,
+          "ignored": 0
+        },
+        "cli-v0152": {
+          "groups": 3,
+          "passed": 18,
+          "failed": 0,
+          "ignored": 0
+        },
+        "mcp-v0152": {
+          "groups": 4,
+          "passed": 57,
+          "failed": 0,
+          "ignored": 0
+        }
+      },
+      "commands": [
+        {
+          "name": "core-v0152",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "-p",
+            "hetu-core"
+          ],
+          "exit_code": 0
+        },
+        {
+          "name": "cli-v0152",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "-p",
+            "hetu-cli"
+          ],
+          "exit_code": 0
+        },
+        {
+          "name": "mcp-v0152",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "-p",
+            "hetu-mcp"
+          ],
+          "exit_code": 0
+        }
+      ],
+      "logs": [
+        {
+          "file": "core-v0152.log",
+          "sha256": "8ab9b6c79803dd24b02ac7f1b487c797bd00f1d384ad3788026fa8b5691dcdb9"
+        },
+        {
+          "file": "cli-v0152.log",
+          "sha256": "b208c0016b70898869da0c7149be494388ca859006216bae2e04b190c233261c"
+        },
+        {
+          "file": "mcp-v0152.log",
+          "sha256": "6dc0a190775297461ff379af71686065c9b58cca07f4bfc7b741cd2de17437b5"
+        }
+      ]
+    },
+    "desktop_build": "passed (TypeScript and bundle)",
+    "task_view_build_and_reproducibility": "passed",
+    "website_build": {
+      "pages": 227,
+      "local_references": 14003,
+      "bilingual_and_resource_checks": "passed"
+    },
+    "release_version_check": "passed",
+    "capability_map_check": "passed"
+  },
+  "source_input_sha256": {
+    "contracts/actions.json": "3a8dfc3050f9ce3ee6bac068e2ad3ece94cabd8f9a049af68a352915b0321537",
+    "core/src/local_settings/suites.rs": "661f77e65c04e3de221f56a7c6a8f5eb1607becc23c8e23351e3f2b30e60e6ed",
+    "core/tests/local_settings.rs": "3269025a1ab8d070c8e9362f6990483a17373ec46c9cbb748a75be5a85423f13",
+    "apps/mcp/tests/stdio.rs": "816aef451e53210239a5d0349b41321bde64b9a394b23228b524435612cfa948",
+    "package.json": "042aa8716e53c45d2316794499be0f1ac9153c350097e61af896be9fdc747d1a",
+    "Cargo.toml": "cd89c11fa10decb932105384498fd40709ea880b2eda135ac166dc3d8317e443",
+    "apps/mcp/resources/workbench.manifest.json": "d6e35799dcfa78cf7d516b0f70d1b9cf3bc40ddbc38095eddfbdf17004cb8384"
+  },
+  "first_failures": [
+    {
+      "kind": "test_precondition",
+      "observation": "显式CODEX_HOME指向尚不存在的隔离目录，官方CLI拒绝解析路径；所选市场查询尚未执行，业务安装尚未开始。",
+      "resolution": "创建确切测试目录后查询返回installed/available空数组，沿原批准方案继续，产品安装逻辑未改。",
+      "original_receipt_sha256": "dc2fdfefe92d7c696a67dea6d5c6b06136e3ca8905bb7a2256bbfaa0bb93d4a4"
+    },
+    {
+      "kind": "test_output_contract",
+      "observation": "官方清单使用websiteURL，但App Server规范化输出为websiteUrl；测试错误读取清单字段名，安装已成功。",
+      "resolution": "按实际运行时生成Schema核对websiteUrl，先get_operation读取原executed方案，仅做inspect及plugin/read，不重复安装。",
+      "evidence_sha256": "a2e93d617bab66a82b4e546ee9877ed81bd1930eca8342d92ef0e5f202310d7c"
+    }
+  ],
+  "delivery_boundaries": {
+    "currently_installed_main_application": "正式公证0.15.1",
+    "main_codex_registration": "0.15.1；本轮未改真实用户登记",
+    "v0152_official_release": "not_started_when_recorded",
+    "v0152_website_deployment": "not_started_when_recorded",
+    "native_v0152_gui": "not_run",
+    "model_requests": 0,
+    "not_closed": [
+      "原生MCP App编辑、意见、采纳及恢复完整旅程",
+      "全页面视觉与无障碍",
+      "跨平台用户实机",
+      "完整真实一集制作",
+      "作者试用与创作认可",
+      "间歇退出根因"
+    ]
+  }
+}

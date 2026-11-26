@@ -3,7 +3,7 @@
   "generated_by": "tools/sync-capability-map.py",
   "meaning": "source_wired仅表示源码合同和入口已连线；不证明安装、运行、跨平台或端到端通过。执行时先inspect实际能力。",
   "sources": {
-    "contracts/actions.json": "eaba3643295bd6b77e868e07ab175e2db9a954ec52af848f88941b55ef180506",
+    "contracts/actions.json": "3a8dfc3050f9ce3ee6bac068e2ad3ece94cabd8f9a049af68a352915b0321537",
     "contracts/tools/catalog.json": "b27cddc5c0f2434015d5e93b94a7751a26b0d3b2c0b15ffae27e610deeb742a7",
     "core/src/application/agent_operations.rs": "21cceeca50ce1e332223649a66fcbe971b3ad2a5ea7d27051655b723978ba247",
     "core/src/application/creative_tasks.rs": "101bbc0730f7947b04b9d923e8763e3d7d265fa4603140f31a90cc5c7af9970e",
@@ -8139,6 +8139,75 @@
             "pattern": "^[0-9a-f]{64}$"
           }
         },
+        "oneOf": [
+          {
+            "title": "修改本机偏好",
+            "properties": {
+              "kind": {
+                "const": "preferences"
+              },
+              "patch": {},
+              "summary": {},
+              "operation_key": {}
+            },
+            "additionalProperties": false,
+            "required": [
+              "patch"
+            ]
+          },
+          {
+            "title": "选择或安装创作套件",
+            "properties": {
+              "kind": {
+                "const": "agent_suite"
+              },
+              "agent_client": {},
+              "suite_id": {},
+              "workspace_id": {},
+              "work_ref": {},
+              "install": {},
+              "summary": {},
+              "operation_key": {}
+            },
+            "additionalProperties": false,
+            "required": [
+              "agent_client",
+              "suite_id"
+            ]
+          },
+          {
+            "title": "安装受管机器连接",
+            "properties": {
+              "kind": {
+                "const": "agent_connection"
+              },
+              "agent_client": {},
+              "summary": {},
+              "operation_key": {}
+            },
+            "additionalProperties": false,
+            "required": [
+              "agent_client"
+            ]
+          },
+          {
+            "title": "清理固定存储候选",
+            "properties": {
+              "kind": {
+                "const": "storage_cleanup"
+              },
+              "selected_ids": {},
+              "storage_snapshot": {},
+              "summary": {},
+              "operation_key": {}
+            },
+            "additionalProperties": false,
+            "required": [
+              "selected_ids",
+              "storage_snapshot"
+            ]
+          }
+        ],
         "required": [
           "kind",
           "summary",

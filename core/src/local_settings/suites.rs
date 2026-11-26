@@ -46,13 +46,18 @@ pub(super) fn connection_package() -> Result<Value> {
 
 fn connection_files(binary: &Path) -> Result<BTreeMap<String, Vec<u8>>> {
     let manifest = json!({"name":"hetu-workbench","version":env!("CARGO_PKG_VERSION"),
-        "description":"河图洛书工作台：小说、剧本、视频、固定成果与意见","mcpServers":"./.mcp.json"});
+        "description":"河图洛书工作台：小说、剧本、视频、固定成果与意见","mcpServers":"./.mcp.json",
+        "interface":{"displayName":"河图洛书工作台","shortDescription":"接续作品，阅读、比较和修改创作成果",
+            "developerName":"LimeCloud","category":"Productivity","websiteURL":"https://hetu.limeai.run/",
+            "composerIcon":"./assets/icon.png","logo":"./assets/logo.png"}});
     let mcp = json!({"mcpServers":{"hetu":{"type":"stdio","command":binary,"args":["--client","codex"]}}});
     // 此包是Codex对已安装应用的适配；通用plugin.json会切换到禁止绝对命令的便携解析器。
     Ok(BTreeMap::from([
         (".codex-plugin/plugin.json".into(),serde_json::to_vec(&manifest)?),
         ("mcp.json".into(),serde_json::to_vec(&mcp)?),
         (".mcp.json".into(),serde_json::to_vec(&mcp)?),
+        ("assets/icon.png".into(),include_bytes!("../../../assets/brand/icons/macos/icon-64.png").to_vec()),
+        ("assets/logo.png".into(),include_bytes!("../../../assets/brand/icons/macos/icon-256.png").to_vec()),
     ]))
 }
 
@@ -663,4 +668,27 @@ pub(super) fn install(
 fn market_manifest(market: &str, name: &str, path: &str) -> Value {
     json!({"name":market,"plugins":[{"name":name,"source":{"source":"local","path":path},
         "policy":{"installation":"AVAILABLE","authentication":"ON_INSTALL"},"category":"Productivity"}]})
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn connection_brand_resources_are_self_contained_and_preserve_the_native_mcp_command() {
+        let directory = tempfile::tempdir().unwrap();
+        let binary = directory.path().join(if cfg!(windows) { "hetu-mcp.exe" } else { "hetu-mcp" });
+        let files = connection_files(&binary).unwrap();
+        let manifest: Value = serde_json::from_slice(&files[".codex-plugin/plugin.json"]).unwrap();
+        for field in ["composerIcon", "logo"] {
+            let resource = manifest["interface"][field].as_str().unwrap().strip_prefix("./").unwrap();
+            let image = image::load_from_memory(&files[resource]).unwrap();
+            assert!(image.width() > 0 && image.width() == image.height());
+        }
+        let mcp: Value = serde_json::from_slice(&files[".mcp.json"]).unwrap();
+        assert_eq!(mcp["mcpServers"]["hetu"]["command"], json!(binary));
+        assert_eq!(files[".mcp.json"], files["mcp.json"]);
+        assert!(!files.contains_key("plugin.json"), "绝对命令仍须沿原生兼容解析器加载");
+        assert_eq!(fingerprint(&files).unwrap(), fingerprint(&connection_files(&binary).unwrap()).unwrap());
+    }
 }

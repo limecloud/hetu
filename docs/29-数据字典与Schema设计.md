@@ -14,6 +14,8 @@
 
 本机设置存储`schema_version=5`，由`local_settings`唯一拥有。`preferences.reading_profiles.novel/screenplay`分别保存完整的`font_family`、`font_name`、`font_size`、`line_height`、`paragraph_spacing`、`line_width`及`first_line_indent`；`document_theme`为跟随／清纸／暖纸／夜墨，`focus_paragraph`、`typewriter_scroll`及`smart_pairs`是独立开关。`preferences.agent_session`保存独立会话偏好，默认值唯一来自`contracts/agent-session-defaults.json`。具体枚举、长度和数值约束以`contracts/actions.json`为准，不将字体、滚动或主题写入作品。
 
+`hetu.local_settings.prepare`按`kind`使用互斥、闭合的输入分支：偏好要求`patch`，套件要求`agent_client/suite_id`并按需设置`install`及单一作品范围，机器连接只接收`agent_client`，存储清理要求`selected_ids/storage_snapshot`；各分支共用`summary/operation_key`。字段定义仍由同一Schema拥有，未指定必需项或混入其他类型字段在准备前拒绝，不创建方案、不占用原准备键或改变设置。客户端是否实际支持安装由运行时能力核验，不因Schema参数有效就保证安装可用；已有固定方案、存储版本和恢复身份不变。
+
 `preferences.execution_mode` 只接受 `auto|confirm`，新安装与首次补入执行策略的旧设置默认 `auto`，已有显式选择保持。执行策略与阅读档案同属本机设置，只有这一份事实源；CLI、MCP 和 Skills 读取实际值，不缓存另一套默认。第一、二版先补齐执行策略，第三版补入完整会话偏好并到第五版；第四版只新增`terminal_focus_on_hover=false`，保留其他会话偏好、策略修订、关联及安装记录。迁移固定原字节到`migrations/v<原版本>/settings.json`，与新设置原子提交；推进设置修订使旧CAS过期，重开不重复迁移。未知版本、缺字段、非法值或不同迁移原件均拒绝并保留原文件。
 
 更新档案使用字段级深合并，只改变本次明确字段，不替换另一类型或未指定字段；相同字段仍受整体修订CAS约束。修订1公开入口的旧字体／字号／额外行距／缩进字段在边界转为小说档案，读取投影按需计算旧字段，不持久化第二份值；旧字段与同次新档案字段混用时拒绝，避免优先级不明。

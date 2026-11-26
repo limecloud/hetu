@@ -1367,6 +1367,17 @@ async fn stable_local_settings_need_exact_author_decision_and_survive_mcp_restar
     settings.host(json!({"method":"update","input":{"expected_revision":state["revision"],"patch":{"execution_mode":"confirm"},"operation_key":"confirm-mode"}})).unwrap();
     let mut client = Client::start_stable(&directory);
     client.rpc("server/discover", json!({})).await;
+    let listed = client.rpc("tools/list", json!({})).await;
+    let schema = &listed["result"]["tools"].as_array().unwrap().iter()
+        .find(|tool| tool["name"] == "hetu_local_settings_prepare").unwrap()["inputSchema"];
+    let validator = jsonschema::validator_for(schema).unwrap();
+    let mixed = json!({"kind":"agent_connection","agent_client":"codex","install":true,"summary":"拒绝混合方案","operation_key":"prepare"});
+    assert!(!validator.is_valid(&mixed), "MCP仍公布不准确的准备合同");
+    let original = std::fs::read(directory.join("local-settings/settings.json")).unwrap();
+    let rejected = client.tool("hetu_local_settings_prepare", mixed).await;
+    assert_eq!(rejected["error"]["code"], "invalid_input", "{rejected}");
+    assert_eq!(std::fs::read(directory.join("local-settings/settings.json")).unwrap(), original);
+    assert_eq!(std::fs::read_dir(directory.join("local-settings/plans")).unwrap().count(), 0);
     let before = client.tool("hetu_local_settings_get", json!({})).await;
     assert_eq!(before["status"], "succeeded", "{before}");
     assert!(before["data"].get("categories").is_none());
@@ -1399,7 +1410,6 @@ async fn stable_local_settings_need_exact_author_decision_and_survive_mcp_restar
             .await["error"]["code"],
         "hetu.author_confirmation_required"
     );
-    let listed = client.rpc("tools/list", json!({})).await;
     assert!(
         !listed["result"]["tools"]
             .as_array()
