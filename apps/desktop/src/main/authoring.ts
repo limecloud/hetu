@@ -163,6 +163,10 @@ export class Authoring {
           !isDeepStrictEqual(value.draft.creative_task_ref, reference.task_ref)))
         throw new Error("参考稿已变化，请刷新分集后重新读取。");
       return result;
+    } else if (action === "hetu.documents.scene_index") {
+      if (this.work.kind !== "drama" || input.work_ref && !isDeepStrictEqual(input.work_ref, this.work))
+        throw new Error("场次目录不属于当前剧本。");
+      input = { ...input, work_ref: this.work };
     } else if (action === "hetu.outlines.get") {
       if (this.work.kind !== "novel" || input.work_ref && !isDeepStrictEqual(input.work_ref, this.work)) throw new Error("正式大纲不属于当前小说。");
       const {work_ref: _, ...request} = input; input = request;

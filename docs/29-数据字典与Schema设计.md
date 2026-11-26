@@ -703,6 +703,8 @@ statement_id和issue_id使用稳定UUID标识；已有标识和新结构不能�
 
 ### 27.1 固定上下文与协作成果关系
 
+会话场次使用`page="drama.scenes"`，`object_ref`固定`document_id,revision_id,sha256,scene_range`；`scene_range`为原稿Owner提供的完整场次UTF-8字节范围。宿主回读原场次投影后保存精简`document_scene`固定引用，不复制全文、标题或生成持久场次身份，也不改变既有骨架`scene`引用的含义。视频使用`page="video.sources"`，选择分集时固定`video_episode_id,revision,sha256`，选择媒体时固定原`media_ref`。原视频handoff核验作品及固定记录，只有相应`video_episode`／`video_media`进入会话引用；作品资料的新修订与后来的作者决定不改变该来源。上述为宿主引用投影，原事实仍归文稿和视频Owner。
+
 ```mermaid
 erDiagram
     Work ||--o{ Document : owns

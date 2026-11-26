@@ -28,6 +28,7 @@
 | GUI时间线、Markdown与历史窗口 | `apps/desktop/src/renderer/agent-chat.tsx`、`apps/desktop/src/session-transcript.ts` |
 | 可移除固定上下文及发送前核对 | `apps/desktop/src/main/agent/fixed-context.ts`、`apps/desktop/src/renderer/agent-context-list.tsx`、`apps/desktop/src/agent-context.ts` |
 | 参考稿、公开意见及专业来源 | `apps/desktop/src/main/agent/source-context.ts`、`apps/desktop/src/renderer/agent-context-picker.tsx`；专业固定读取复用Core `hetu.plugin_results.get` |
+| 原稿场次、视频分集及媒体来源 | `agent-structured-context-picker.tsx`复用Core场次／视频目录；`sceneSourceContext`、`videoSourceContext`核对旧修订、摘要与完整范围，发送前由原固定上下文用例再次验证 |
 | 原任务历史意见接续 | `apps/desktop/src/main/task-review.ts`的`continuation`、`packages/workbench-ui/src/task-reference.ts`和宿主`promptDelivery`；先核对公开固定引用，再投递草稿 |
 | 正式大纲及单个人物／设定 | `apps/desktop/src/renderer/agent-domain-context-picker.tsx`、`agent-context-dialog.tsx`；Core的`application/authoring.rs`、`application/handoffs.rs`与`creative_tasks/context.rs`拥有固定历史及读取范围 |
 | xterm渲染、输出游标和快捷键 | `apps/desktop/src/renderer/codex-terminal.tsx`、`terminal-stream.ts`、`terminal-keys.ts` |
@@ -88,6 +89,8 @@ Markdown采用现有安全渲染组件及受控网页链接入口，不启用原
 外部宿主的内容提及复用`apps/mcp/src/mentions.rs`及原领域读取；`openai/mentions`的只读App工具、固定资源链接和实际输入框支持分别核对，不能借此注册任意文件编辑器。千章实测曾因逐篇重开作品读摘要和目录重复分页达到5秒预算；现有`documents.list`提供按标题的`query`及按返回页核验的`include_revision_ref`，先取所需目录，选中后再读固定正文。需要类似GUI来源搜索时优先复用该Owner投影，不用加大超时或另建内容／授权索引掩盖调用放大；其他来源仍按各自真实Schema传参，大纲读取不接受多余的WorkRef字段。
 
 剧本场次使用`documents.scene_index`和原稿修订／完整字节范围，分集／场次序号只帮助区分同名项，不生成持久身份；旧稿范围不能套到新稿。专业目录优先用`plugin_results.list/get`读取Core保留记录，插件停用不妨碍历史查看；视频分集与媒体固定记录不混入后来变化的作者决定。`mentions/structured.rs`负责领域目录投影，`mentions/sources.rs`负责固定URI与回读，不把两者再次复制到新GUI适配器。无匹配与检索未完成分别显示，不能将损坏、超预算或来源不可用当成空结果。
+
+GUI选择器也沿这些Owner核验，长场次只附加固定范围，不把全文放进64KiB会话引用预算。宿主新增引用类型须核对既有语义：原稿范围使用`document_scene`，不复用已经表示骨架场次的`scene`。关闭时同步推进读取代次；视频项目回包后先检查代次，再发媒体目录请求，避免关闭后继续读取。长列表分页后搜索行保持可见；真实窗口同时核对旧引用在改稿／改分集名后可发送、坏摘要不发送且草稿保持，以及同名项的集序与场序。协议夹具验证这些边界，不冒充真实模型理解或原生外部宿主支持。
 
 任务与专业来源选择器区分只读加载和明确附加：前者允许关闭，工作稿分页中允许返回目录；后者暂时锁定本次选择。旧回包按视图代次隔离，不能清掉新读取的忙碌状态。插件目录、成果搜索、任务详情和工作稿分页沿各自失败步骤重试，分页失败保留已读行及原游标。曾出现把目录失败重试成空Owner搜索、将读取失败误作空集合的情况。长列表使用固定标题及关闭区、独立内容滚动，不能只在初次打开时验证退出入口可见。插件状态文案复用宿主目录，停用或卸载不等于保留成果不可读，也不意味着专业动作仍可执行。
 

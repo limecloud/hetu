@@ -5,7 +5,8 @@ import {validateContextRefs} from "../../agent-context.ts";
 import {handoffViewKind} from "../workbench-handoff.ts";
 
 type Handoff=(kind:string,object:Record<string,unknown>)=>Promise<{fixed_refs:Record<string,any>[]}>;
-const labels:Record<string,string>={"work.profile":"作品资料","novel.outlines":"作品大纲","work.canon":"人物与设定","work.resources":"资料","novel.reader":"章节","drama.reader":"剧本","work.images":"图片成果","work.media":"媒体成果","work.versions":"文稿版本","work.tasks":"参考稿与公开意见","plugin.results":"专业成果"};
+const labels:Record<string,string>={"work.profile":"作品资料","novel.outlines":"作品大纲","work.canon":"人物与设定","work.resources":"资料","novel.reader":"章节","drama.reader":"剧本","drama.scenes":"剧本场次","video.sources":"视频分集与成果","work.images":"图片成果","work.media":"媒体成果","work.versions":"文稿版本","work.tasks":"参考稿与公开意见","plugin.results":"专业成果"};
+const contextKind=(page:string,work:WorkRef)=>page==="drama.scenes"||page==="video.sources"?page:handoffViewKind(page,work);
 function refs(value:{fixed_refs:Record<string,any>[]},object:Record<string,unknown>,page?:string,excludeNovel=false){
  if(!Array.isArray(value.fixed_refs)||!value.fixed_refs.length)throw Error("当前内容没有可附加的固定来源。");
  // 明确对象不夹带可变的作品资料，旧文稿修订不因作品改名而失效。
@@ -35,7 +36,7 @@ export async function prepareAgentContext(input:{page:string;object?:Record<stri
  if(input.label!==undefined&&typeof input.label!=="string")throw Error("固定上下文名称无效。");
  const object=input.object??{};
  if(!object||typeof object!=="object"||Array.isArray(object))throw Error("请选择作品中的固定对象。");
- const sources=refs(await handoff(handoffViewKind(input.page,work),object),object,input.page,typeof object.document_id==="string");
+ const sources=refs(await handoff(contextKind(input.page,work),object),object,input.page,typeof object.document_id==="string");
  const result={label:input.label?.trim()||labels[input.page],reference:{schema_version:1,work_ref:work,page:input.page,object_ref:pinnedObject(object,sources),fixed_refs:sources}};
  return validateContextRefs([result])[0];
 }
@@ -47,7 +48,7 @@ export async function verifyAgentContexts(input:unknown,work:WorkRef|undefined,h
   try{
    // 先前附加的整个作品含作品资料；补充固定设定版本不改变当时的覆盖。
    const expected=fixed.fixed_refs as Record<string,any>[];
-   const actual=refs(await handoff(handoffViewKind(fixed.page,work),fixed.object_ref),fixed.object_ref,
+   const actual=refs(await handoff(contextKind(fixed.page,work),fixed.object_ref),fixed.object_ref,
     expected.some(ref=>ref.kind==="work")?undefined:fixed.page,!expected.some(ref=>ref.kind==="novel")&&typeof fixed.object_ref.document_id==="string");
    const relevant=expected.some(ref=>ref.kind==="work")?actual:actual.filter(ref=>ref.kind!=="work");
    if(!isDeepStrictEqual(relevant,expected))throw Error("固定来源已变化。");

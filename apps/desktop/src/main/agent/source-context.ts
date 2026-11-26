@@ -59,3 +59,31 @@ export async function pluginSourceContext(work: WorkRef, object: Record<string, 
     throw Error("专业成果版本、摘要或作品不一致。");
   return {fixed_refs: [{kind: "plugin_object", work_ref: work, ...object, read_action: "hetu.plugin_results.get"}]};
 }
+
+export async function sceneSourceContext(work: WorkRef, object: Record<string, any>, read: Read) {
+  fields(object, ["document_id", "revision_id", "sha256", "scene_range"]);
+  const range = object.scene_range;
+  if (work.kind !== "drama" || !digest(object.sha256) || !range
+    || !Number.isSafeInteger(range.byte_start) || !Number.isSafeInteger(range.byte_end)
+    || range.byte_start < 0 || range.byte_end <= range.byte_start) throw Error("请选择剧本中的固定场次。");
+  const value = await read("hetu.documents.scene_index", {work_ref: work, ...object, max_bytes: 1024});
+  if (!sameWork(value.work_ref, work) || !isDeepStrictEqual(value.document_ref,
+    {document_id: object.document_id, revision_id: object.revision_id, sha256: object.sha256})
+    || !isDeepStrictEqual(value.scene?.range, range)) throw Error("场次原稿、摘要或范围不一致。");
+  return {fixed_refs: [{kind: "document_scene", work_ref: work, ...object, read_action: "hetu.documents.scene_index"}]};
+}
+
+export async function videoSourceContext(work: WorkRef, object: Record<string, any>, read: Read) {
+  const media = Object.hasOwn(object, "media_ref");
+  fields(object, media ? ["media_ref"] : ["video_episode_id", "revision", "sha256"]);
+  if (work.kind !== "video" || (!media && (!Number.isSafeInteger(object.revision) || object.revision < 1 || !digest(object.sha256))))
+    throw Error("请选择当前视频的固定分集或成果。");
+  const selected = media ? {media_ref: object.media_ref} : {video_episode_id: object.video_episode_id, revision: object.revision};
+  const value = await read("hetu.handoffs.get", {view_kind: "video", object_ref: {work_ref: work, ...selected}});
+  const fixed = value.fixed_refs?.filter((item: any) => item.kind === (media ? "video_media" : "video_episode"));
+  if (!Array.isArray(fixed) || fixed.length !== 1 || !digest(fixed[0].sha256)
+    || (media ? !isDeepStrictEqual(fixed[0].media_ref, object.media_ref) || fixed[0].sha256 !== object.media_ref?.sha256
+      : fixed[0].video_episode_id !== object.video_episode_id || fixed[0].revision !== object.revision || fixed[0].sha256 !== object.sha256))
+    throw Error("视频来源的身份、修订或摘要不一致。");
+  return {fixed_refs: [{...fixed[0], work_ref: work, read_action: media ? "hetu.video.media.get" : "hetu.video.episodes.get"}]};
+}

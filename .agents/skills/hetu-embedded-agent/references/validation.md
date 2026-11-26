@@ -39,6 +39,7 @@ Node单元测试与Playwright E2E分别收集，后者使用`*.spec.ts`，避免
 | 新引擎与业务配置 | `agent-engines.test.ts`、`agent-business.test.ts`、`creative-request.test.ts` | 模型来自真实能力，配置只在私有沙箱，跨作品迟到交接拒绝，只读/讨论不隐式写入 |
 | 专业交接 | `professional-tools.test.ts`、`professional-tools.spec.ts`、MCP的`shared-workbench.spec.ts` | 方法只读不启动后端；目标变化拒绝迟到请求，包／能力摘要重新核对；实际专业动作经Core保存回读，unknown不重发且复制保留；仅草稿及无消息宿主准确降级 |
 | 固定来源 | `agent-context.test.ts`、`agent-chat.spec.ts`、Core的`retained_plugin_results.rs` | 工作修订／批次／公开意见推进后旧引用保持，插件停用后稳定MCP可读取；异作、摘要错误、关闭任务和撤权拒绝，草稿保留 |
+| 场次与视频来源 | `agent-structured-context.spec.ts`、`agent-context.test.ts` | 同名按集序／场序区分，长场次只附完整字节范围；搜索与分页、浅暗／窄窗、关闭后不继续读取、原失败步骤重试可用。改稿或改分集后重开保持旧引用，坏摘要零投递且保留草稿；协议夹具不等于真实模型或原生宿主验收 |
 | 已有任务接续 | `agent-context.test.ts`、Task View的`feedback-continuation.spec.ts`与`real.spec.ts`图片专项 | 并发意见重读保留原话与区域；关闭重开仍固定旧意见，实际草稿不追加Enter；宿主unknown按意见保留，切换历史不变成可重发 |
 | 工作稿与候选审阅 | Task View的`working-review.spec.ts`、`working-review-state.spec.ts`与`long-candidate.spec.ts` | 已保存而未提交的稿件仍可到达；固定历史、正文分页、原位置意见及同副本返工保持；目录重读保留选中名称，失败沿原游标／范围重试，关闭及切任务后迟到回包不复活旧阅读 |
 | 跨入口执行 | `execution-mode.spec.ts`、Core的`execution_modes.rs` | CLI／MCP／桌面共享策略；集中确认、部分成功与CAS冲突、原方案重连恢复、成功修订不重复、同键异输入与篡改摘要拒绝 |

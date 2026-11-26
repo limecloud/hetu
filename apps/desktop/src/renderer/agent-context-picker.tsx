@@ -3,11 +3,12 @@ import type {WorkRef} from "@hetu/plugin-sdk";
 import {desktop, data} from "./bridge.ts";
 import {ContextPickerDialog,type ContextSelection as Selection} from "./agent-context-dialog.tsx";
 import {AgentDomainContextPicker} from "./agent-domain-context-picker.tsx";
+import {AgentStructuredContextPicker} from "./agent-structured-context-picker.tsx";
 import {pluginStateLabels} from "./plugin-state.ts";
 
-export type AgentContextPickerKind="tasks"|"plugins"|"outlines"|"canon";
+export type AgentContextPickerKind="tasks"|"plugins"|"outlines"|"canon"|"scenes"|"video";
 export function AgentContextPicker(props:{kind:AgentContextPickerKind;work:WorkRef;onSelect(value:Selection):Promise<boolean>;onClose():void}){
-  return props.kind==="outlines"||props.kind==="canon"?<AgentDomainContextPicker {...props} kind={props.kind}/>:<TaskPluginContextPicker {...props} kind={props.kind}/>;
+  return props.kind==="scenes"||props.kind==="video"?<AgentStructuredContextPicker {...props} kind={props.kind}/>:props.kind==="outlines"||props.kind==="canon"?<AgentDomainContextPicker {...props} kind={props.kind}/>:<TaskPluginContextPicker {...props} kind={props.kind}/>;
 }
 function TaskPluginContextPicker({kind,onSelect,onClose}:{kind:"tasks"|"plugins";onSelect(value:Selection):Promise<boolean>;onClose():void}){
   const generation = useRef(0);

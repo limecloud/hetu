@@ -35,7 +35,9 @@ test("千章千万汉字作品冷进程首屏、完整目录和末章读取",asy
     await writeFile(info.outputPath("first-content-ipc-timings.json"),JSON.stringify(await app.evaluate(()=>(globalThis as any).__scaleTimings),null,2));
     await openDirectory(page);const directory=page.getByRole("navigation",{name:"文稿目录",exact:true});
     await expect(directory).toHaveAttribute("aria-busy","false");await expect(directory.locator(".chapter-group button")).toHaveCount(1000);
-    const directoryReady=performance.now(),last=directory.getByRole("button",{name:"第1000章 海港来信",exact:true});await last.click();
+    const directoryReady=performance.now(),last=directory.getByRole("button",{name:"第1000章 海港来信",exact:true});
+    await last.evaluate(element=>{(window as any).__scaleNavigation=[];for(const type of ["pointerdown","pointerup","click"])element.addEventListener(type,()=>{(window as any).__scaleNavigation.push({type,disabled:(element as HTMLButtonElement).disabled,focused:document.hasFocus()});});});
+    await last.click();
     await expect(page.locator(".manuscript-title h1")).toHaveText("第1000章 海港来信");
     await expect(page.getByText(fixture.content.slice(0,200),{exact:true}).first()).toBeVisible();
     const lastReady=performance.now();
@@ -70,5 +72,10 @@ test("千章千万汉字作品冷进程首屏、完整目录和末章读取",asy
     await writeFile(info.outputPath("project-scale.json"),JSON.stringify(result,null,2));await info.attach("project-scale",{body:JSON.stringify(result),contentType:"application/json"});await page.screenshot({path:info.outputPath("project-scale.png")});
     expect(result.work_to_content_ms).toBeLessThanOrEqual(5000);
     expect(cancelMs).toBeLessThanOrEqual(1000);
-  }finally{await app.evaluate(()=>(globalThis as any).__releaseScaleSearch?.()).catch(()=>{});await closeApplication(app);}
+  }finally{
+    try {
+      const diagnostics={ipc:await app.evaluate(()=>(globalThis as any).__scaleTimings).catch(()=>undefined),navigation:await app.firstWindow().then(page=>page.evaluate(()=>({events:(window as any).__scaleNavigation,title:document.querySelector(".manuscript-title h1")?.textContent,selected:document.querySelector('.chapter-group button[aria-current="page"]')?.textContent,focused:document.hasFocus()}))).catch(()=>undefined)};
+      await writeFile(info.outputPath("navigation-diagnostics.json"),JSON.stringify(diagnostics,null,2));
+    } finally {await app.evaluate(()=>(globalThis as any).__releaseScaleSearch?.()).catch(()=>{});await closeApplication(app);}
+  }
 });

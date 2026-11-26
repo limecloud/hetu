@@ -29,6 +29,8 @@
 
 `hetu.handoffs.get`的媒体对象交接在精确作品范围内核对`media_ref`归属及固定摘要；`workflow.author_decision`指向`hetu.agent_operations.record_decision`，与准备、执行及原操作恢复共用已有合同，不以返回桌面审核作为机器执行前置。
 
+GUI场次附加通过宿主`sceneSourceContext`调用原`documents.scene_index`，核对精确WorkRef、原文稿修订／摘要及完整场次范围，只将引用加入原会话。视频附加通过`videoSourceContext`复用`handoffs.get(view_kind="video")`核验固定分集或媒体，不混入当前作品资料及后来作者决定。两者发送前沿同一用例重验，客户端身份、会话代次、草稿保护及未知投递仍由原会话宿主管理，不新增Core动作或来源存储。
+
 MediaDecision使用同一`auto|confirm`、固定管理方案及原操作恢复。确认／撤回的输入必须来自真实作者意图，保留`author_statement`；Agent代为执行仍以实际Agent记录，不将通用执行授权当作创作认可。预览核对确切媒体用途与分集、当前头和固定摘要，保存拒绝伪预览、旧基线、跨用途及跨媒体撤回。新媒体仅关联前版，不转移认可；返回`author_decision`投影独立于文件完整性、解码、实际观看和当前交付权利。桌面及MCP基础工作面共用可信窄用例呈现同一状态、历史与恢复，不在专业插件保存第二套认可头。
 
 桌面文件导出复用既有私有媒体通道：打开时核对固定素材及完整摘要，分块沿同一只读句柄读取并检查文件变化，落盘后再次核对完整摘要和当前交付权利，成功才替换目标文件。公共 `hetu.assets.read_blob` 为独立有界读取，每次核验固定文件；私有句柄不进入renderer或插件。

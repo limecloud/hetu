@@ -54,7 +54,7 @@ import { OutlineReview } from "./outlines.ts";
 import { scopedCli } from "./cli.ts";
 import {readSessionResults,readLibrarySessionResults} from "./agent/session-results.ts";
 import {prepareAgentContext,verifyAgentContexts} from "./agent/fixed-context.ts";
-import {taskSourceContext,pluginSourceContext} from "./agent/source-context.ts";
+import {taskSourceContext,pluginSourceContext,sceneSourceContext,videoSourceContext} from "./agent/source-context.ts";
 import { CreativeLibrary } from "./library.ts";
 import {
   PluginHost,
@@ -919,6 +919,8 @@ app
         };
         if(kind==="reviews")return taskSourceContext(selected,object,read);
         if(kind==="plugin.results")return pluginSourceContext(selected,object,read);
+        if(kind==="drama.scenes")return sceneSourceContext(selected,object,read);
+        if(kind==="video.sources")return videoSourceContext(selected,object,read);
         const value=unwrap(await authoring.handoff(kind,object));checkSession();return value;
       };
       if (method === "remove") { const created=await agentSessions.remove(selected, session.snapshot().session_id!, defaultSurface);check();if(agentSessions.isSelected(created,selected))agentSession=created;return created.snapshot(); }

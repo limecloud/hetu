@@ -2,7 +2,7 @@ import React from "react";
 import {IconButton} from "@hetu/workbench-ui";
 import type {AgentContextRef} from "../agent-session-contract.ts";
 
-const sourceName:Record<string,string>={work:"作品资料",novel:"小说资料",outline:"正式大纲",document:"文稿",source_range:"原文选区",blueprint:"人物与设定",resource:"资料",asset:"素材",cue:"线索",video_episode:"视频分集",video_media:"媒体",git_snapshot:"文稿快照",git_difference:"版本差异",git_commit:"历史版本",plugin_object:"专业成果",skeleton:"分集与场次",scene:"场次",draft:"参考稿",report:"检查记录",task_request:"任务要求",task_submission:"已提交参考稿",working_copy:"参考稿工作修订",task_feedback:"公开意见"};
+const sourceName:Record<string,string>={work:"作品资料",novel:"小说资料",outline:"正式大纲",document:"文稿",source_range:"原文选区",document_scene:"原稿场次",blueprint:"人物与设定",resource:"资料",asset:"素材",cue:"线索",video_episode:"视频分集",video_media:"媒体",git_snapshot:"文稿快照",git_difference:"版本差异",git_commit:"历史版本",plugin_object:"专业成果",skeleton:"分集与场次",scene:"场次",draft:"参考稿",report:"检查记录",task_request:"任务要求",task_submission:"已提交参考稿",working_copy:"参考稿工作修订",task_feedback:"公开意见"};
 
 /** 标签只展示引用，展开内容与本次实际发送的固定上下文相同。 */
 export function AgentContextList({references,disabled,onRemove}:{references:AgentContextRef[];disabled?:boolean;onRemove?(reference:AgentContextRef):void}){

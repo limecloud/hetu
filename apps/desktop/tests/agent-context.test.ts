@@ -2,11 +2,52 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {prepareAgentContext,verifyAgentContexts} from "../src/main/agent/fixed-context.ts";
 import {validateContextRefs} from "../src/agent-context.ts";
-import {taskSourceContext,pluginSourceContext} from "../src/main/agent/source-context.ts";
+import {taskSourceContext,pluginSourceContext,sceneSourceContext,videoSourceContext} from "../src/main/agent/source-context.ts";
 import {TaskReview} from "../src/main/task-review.ts";
 import {RecoveryStore} from "../src/main/recovery.ts";
 import type {WorkRef} from "@hetu/plugin-sdk";
 const work:WorkRef={workspace_id:"workspace-context",kind:"novel",object_id:"novel-context"};
+
+test("场次上下文只固定原Owner字节范围，长场次不传全文且拒绝异作和伪摘要",async()=>{
+ const drama:WorkRef={...work,kind:"drama",object_id:"drama-context"};
+ const object={document_id:"doc-scene",revision_id:"rev-old",sha256:"a".repeat(64),scene_range:{byte_start:12,byte_end:900012}};
+ let damaged=false,unavailable=false;
+ const read=async(action:string,input:Record<string,any>)=>{
+  assert.equal(action,"hetu.documents.scene_index");assert.equal(input.max_bytes,1024);assert.deepEqual(input.work_ref,drama);
+  assert.equal(input.revision_id,"rev-old");
+  if(unavailable)throw Error("原作品已撤权");
+  return {work_ref:drama,document_ref:{document_id:object.document_id,revision_id:object.revision_id,sha256:damaged?"b".repeat(64):object.sha256},scene:{range:object.scene_range},content:"中文🌿".repeat(100),complete:false};
+ };
+ const handoff=(_:string,value:Record<string,unknown>)=>sceneSourceContext(drama,value,read);
+ const fixed=await prepareAgentContext({page:"drama.scenes",object,label:"第1集 同名场次"},drama,handoff);
+ assert(!JSON.stringify(fixed).includes("中文"));assert(JSON.stringify(fixed).length<1600);
+ assert.equal(fixed.reference.fixed_refs[0].kind,"document_scene");
+ assert.deepEqual(await verifyAgentContexts([fixed],drama,handoff),[fixed]);
+ assert.deepEqual(fixed.reference.object_ref,object);
+ damaged=true;await assert.rejects(verifyAgentContexts([fixed],drama,handoff),/摘要或范围不一致/);damaged=false;
+ unavailable=true;await assert.rejects(verifyAgentContexts([fixed],drama,handoff),/撤权/);
+ await assert.rejects(sceneSourceContext(work,object,read),/固定场次/);
+ await assert.rejects(sceneSourceContext(drama,{...object,work_ref:work},read),/不支持/);
+ await assert.rejects(sceneSourceContext(drama,{...object,scene_range:{byte_start:12,byte_end:12}},read),/固定场次/);
+});
+
+test("视频分集和媒体只保留原固定记录，不随作品资料和作者决定变化",async()=>{
+ const video:WorkRef={...work,kind:"video",object_id:"video-context"};
+ const episode={video_episode_id:"episode-first",revision:1,sha256:"a".repeat(64)},media={media_id:"media-first",revision:1,sha256:"b".repeat(64)};
+ let metadata=1,decision="pending",wrong=false;
+ const read=async(action:string,input:Record<string,any>)=>{
+  assert.equal(action,"hetu.handoffs.get");assert.equal(input.view_kind,"video");assert.deepEqual(input.object_ref.work_ref,video);
+  return {fixed_refs:[{kind:"work",fixed_ref:{revision:metadata}},{...(input.object_ref.media_ref?{kind:"video_media",media_ref:media,sha256:media.sha256,asset_ref:{asset_id:"original-asset"}}:{kind:"video_episode",...episode}),...(wrong?{sha256:"c".repeat(64)}:{})}],decision};
+ };
+ const handoff=(_:string,value:Record<string,unknown>)=>videoSourceContext(video,value,read);
+ const e=await prepareAgentContext({page:"video.sources",object:episode},video,handoff),m=await prepareAgentContext({page:"video.sources",object:{media_ref:media}},video,handoff);
+ metadata=2;decision="accepted";assert.deepEqual(await verifyAgentContexts([e,m],video,handoff),[e,m]);
+ assert.equal(e.reference.fixed_refs.length,1);assert.equal(m.reference.fixed_refs.length,1);assert(!JSON.stringify([e,m]).includes("decision"));
+ assert.deepEqual(e.reference.object_ref,episode);assert.deepEqual(m.reference.object_ref,{media_ref:media});
+ wrong=true;await assert.rejects(verifyAgentContexts([m],video,handoff),/摘要不一致/);
+ await assert.rejects(videoSourceContext(work,episode,read),/固定分集/);
+ await assert.rejects(videoSourceContext(video,{media_ref:media,video_episode_id:"other"},read),/不支持/);
+});
 
 test("上下文拒绝私有字段但不把小说里的password字样误判为凭据",()=>{
  const content={label:"固定原文",reference:{quote:"他将password写在纸上。"}};

@@ -43,7 +43,7 @@ export function AgentSession({ work, notify, controls,maximized=false,works=[],o
   function closeCreate(){setCreating(false);if(current.current.state==="idle")requestAnimationFrame(()=>panel.current?.querySelector<HTMLButtonElement>('button[aria-label="新建会话"]')?.focus());}
   function attach(page:string){
     const fixed=current.current;
-    const kind=({"work.tasks":"tasks","plugin.results":"plugins","novel.outlines":"outlines","work.canon":"canon"} as Record<string,AgentContextPickerKind>)[page];
+    const kind=({"work.tasks":"tasks","plugin.results":"plugins","novel.outlines":"outlines","work.canon":"canon","drama.scenes":"scenes","video.sources":"video"} as Record<string,AgentContextPickerKind>)[page];
     if(kind&&fixed.work_ref)setContextPicker({kind,work:fixed.work_ref,session_id:fixed.session_id,generation:fixed.generation});
     else void call("attach_context",{page,session_id:fixed.session_id,generation:fixed.generation});
   }

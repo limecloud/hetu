@@ -1,0 +1,265 @@
+{
+  "recorded_at": "2026-11-26T11:45:07.184901+00:00",
+  "scope": "内嵌GUI按作品类型选择固定原稿场次、视频分集及媒体来源；既有TUI与机器来源Owner保持",
+  "version": "0.15.0 development",
+  "validation": {
+    "unit": {
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0,
+      "log": "gui-context-resume-unit.log"
+    },
+    "electron": {
+      "stats": {
+        "startTime": "2026-11-26T11:17:38.492Z",
+        "duration": 58895.988000000005,
+        "expected": 3,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "log": "gui-context-resume.log",
+      "model_turns": 0,
+      "isolated_protocol_rounds": 2,
+      "covers": [
+        "同名22场分页、集序与场序区分",
+        "长场次超过会话预算仍只附固定字节范围",
+        "关闭暂挂读取后不复活列表，视频不继续媒体请求",
+        "目录错误、原步骤重试与无匹配区分",
+        "改稿或改分集名后重开保留旧引用",
+        "坏摘要零投递且保留草稿，恢复原引用后仅一次发送",
+        "浅色长列表和760px窄窗、暗色视频分集列表"
+      ]
+    },
+    "skill": {
+      "path": ".agents/skills/hetu-embedded-agent/SKILL.md",
+      "official_validator": "passed",
+      "local_references": 19,
+      "missing": 0
+    },
+    "documents": {
+      "status": "passed",
+      "log": "gui-context-final-docs.log"
+    },
+    "capability_map": {
+      "status": "consistent",
+      "new_core_actions": 0
+    },
+    "session_regression": {
+      "passed": 104,
+      "failed": 0,
+      "skipped": 0,
+      "log": "gui-context-final-agent.log",
+      "scope": "最终源码会话／PTY／输入／固定来源／业务回归"
+    }
+  },
+  "first_attempts": [
+    {
+      "log": "gui-structured-context-first.log",
+      "result": "夹具使用缓存作品标题定位失败，改为读取Core当前作品名称"
+    },
+    {
+      "log": "gui-structured-context-titles.log",
+      "result": "固定附加异步尚未结束即读取会话，改为等待弹窗关闭及引用数量"
+    },
+    {
+      "log": "gui-context-package-build.log",
+      "result": "共享资源与源码不一致，装配保护拒绝；未覆盖安装"
+    },
+    {
+      "log": "gui-context-resume-package-build.log",
+      "result": "编译期间其他进程修改事务缓存源码，一致性门禁拒绝；未安装，固定新输入重新装配通过"
+    },
+    {
+      "log": "gui-context-shared.log",
+      "result": "grep锚点未选中用例，未执行测试；按实际完整用例名执行后通过"
+    }
+  ],
+  "screenshots": {
+    "scene-picker-wide.png": {
+      "path": "docs/research/evidence/gui-structured-context-2026-11-26/scene-picker-wide.png",
+      "sha256": "f87a27c68d994fffb0d896b402f49bfd3d5edd11e74b4a503d2df88593ad597d"
+    },
+    "video-episode-picker-dark-narrow.png": {
+      "path": "docs/research/evidence/gui-structured-context-2026-11-26/video-episode-picker-dark-narrow.png",
+      "sha256": "377d94b5fe39e4fe4ed4fb27d0b93c6c9bcd5c4fd73289d74d0d265b4a547680"
+    },
+    "scene-picker-narrow.png": {
+      "path": "docs/research/evidence/gui-structured-context-2026-11-26/scene-picker-narrow.png",
+      "sha256": "f1dc4f23da8b51e5de8c5c2ba76da29aa0ef440e642ee10b413132ea3cccc530"
+    }
+  },
+  "raw_evidence_root": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-recovery-acceptance-7d8jelb6",
+  "not_verified": [
+    "该协议夹具不证明真实模型理解或新一轮创作质量",
+    "原生Codex Desktop输入框与MCP App宿主",
+    "本增量的Windows和Linux真实GUI",
+    "完整产品、专业一集制作、作者试用与正式发行",
+    "首次安装版末章切换失败的确定根因"
+  ],
+  "package": {
+    "version": "0.15.0",
+    "source_sha256": "a4838446f3060922f1af097a246b07a32655394a1dd3f645214b2744a1eb19d0",
+    "source_inputs": 3086,
+    "artifacts": 3133,
+    "signature_verified": true,
+    "icon_matches": true,
+    "manifest": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-recovery-acceptance-7d8jelb6/gui-context-packages/hetu-dev-uEHCO4/manifest.json",
+    "signing": "ad-hoc-development",
+    "log": "gui-context-final-package-build.log",
+    "desktop_stats": {
+      "startTime": "2026-11-26T11:34:54.219Z",
+      "duration": 79378.018,
+      "expected": 5,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "desktop_log": "gui-context-package.log",
+    "shared_workbench_stats": {
+      "startTime": "2026-11-26T11:38:13.095Z",
+      "duration": 369273.128,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "shared_workbench_log": "gui-context-shared-final.log"
+  },
+  "installed": {
+    "version": "0.15.0",
+    "source_sha256": "a4838446f3060922f1af097a246b07a32655394a1dd3f645214b2744a1eb19d0",
+    "source_inputs": 3086,
+    "artifacts": 3133,
+    "signature_verified": true,
+    "icon_matches": true,
+    "installed_path": "/Applications/Hetu.app",
+    "atomic_swap": true,
+    "backup_created": false,
+    "old_bundle_removed": true,
+    "desktop_stats": {
+      "startTime": "2026-11-26T11:39:04.361Z",
+      "duration": 65393.281,
+      "expected": 5,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "desktop_log": "gui-context-installed.log",
+    "normal_launch": {
+      "verified": true,
+      "library_works": 19,
+      "runtime": {
+        "version": "0.15.0",
+        "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+        "userData": "/Users/coso/Library/Application Support/Hetu"
+      },
+      "profile_indexes_unchanged": true
+    },
+    "final_complete_bundle_verification": "gui-context-installed-final-verified.json"
+  },
+  "performance": {
+    "packaged": {
+      "platform": "darwin",
+      "os_release": "24.6.0",
+      "os_version": "Darwin Kernel Version 24.6.0: Sun Oct 11 23:41:01 PDT 2026; root:xnu-11417.140.69.713.47~2/RELEASE_ARM64_T8103",
+      "architecture": "arm64",
+      "cpu": "Apple M1",
+      "logical_cpus": 8,
+      "memory_bytes": 17179869184,
+      "fixture_han_characters": 10000000,
+      "chapters": 1000,
+      "source_sha256": "a4838446f3060922f1af097a246b07a32655394a1dd3f645214b2744a1eb19d0",
+      "fixture_created_with_source": "224e6199d620ad58e629a5d50b866259c70624d600ee4fcca739fa9b356acf4f",
+      "executable": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-recovery-acceptance-7d8jelb6/gui-context-packages/hetu-dev-uEHCO4/package/Hetu-darwin-arm64/Hetu.app/Contents/MacOS/Hetu",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "launch_to_library_ms": 2624.526042,
+      "work_to_profile_ms": 1899.301625,
+      "work_to_content_ms": 4524.841333,
+      "launch_to_content_ms": 7149.367375000001,
+      "complete_directory_ms": 7957.214375,
+      "last_chapter_ms": 3983.3663749999996,
+      "background_cancel_ms": 45.784208999999464,
+      "background_read_started": true,
+      "input_during_background_read": true,
+      "no_additional_reads_after_cancel": true,
+      "formal_revision_unchanged": true,
+      "model_turns": 0,
+      "method": "全新应用进程和新资料偏好；OS文件缓存未清空，播种产生的磁盘缓存可能仍热；进程启动／作品点击分别计时，实际首段可见且完整目录和末章Core字节核对；后台取消另在真实读取完成暂扣回执时验证"
+    },
+    "installed_initial": {
+      "result": "failed",
+      "log": "gui-context-installed-scale.log",
+      "reason": "实际末章点击后5秒内标题仍为首章；首屏已可读；原日志保留，增加指针／焦点及完整IPC诊断后串行复验"
+    },
+    "installed_diagnostic": {
+      "result": "passed",
+      "report": {
+        "startTime": "2026-11-26T11:44:45.630Z",
+        "duration": 16596.260000000002,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "metrics": {
+        "platform": "darwin",
+        "os_release": "24.6.0",
+        "os_version": "Darwin Kernel Version 24.6.0: Sun Oct 11 23:41:01 PDT 2026; root:xnu-11417.140.69.713.47~2/RELEASE_ARM64_T8103",
+        "architecture": "arm64",
+        "cpu": "Apple M1",
+        "logical_cpus": 8,
+        "memory_bytes": 17179869184,
+        "fixture_han_characters": 10000000,
+        "chapters": 1000,
+        "source_sha256": "a4838446f3060922f1af097a246b07a32655394a1dd3f645214b2744a1eb19d0",
+        "fixture_created_with_source": "224e6199d620ad58e629a5d50b866259c70624d600ee4fcca739fa9b356acf4f",
+        "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+        "viewport": {
+          "width": 1440,
+          "height": 960
+        },
+        "launch_to_library_ms": 2537.5143749999997,
+        "work_to_profile_ms": 1883.0664160000001,
+        "work_to_content_ms": 4393.964416000001,
+        "launch_to_content_ms": 6931.4787910000005,
+        "complete_directory_ms": 7241.800625,
+        "last_chapter_ms": 4020.514833000001,
+        "background_cancel_ms": 41.47804200000064,
+        "background_read_started": true,
+        "input_during_background_read": true,
+        "no_additional_reads_after_cancel": true,
+        "formal_revision_unchanged": true,
+        "model_turns": 0,
+        "method": "全新应用进程和新资料偏好；OS文件缓存未清空，播种产生的磁盘缓存可能仍热；进程启动／作品点击分别计时，实际首段可见且完整目录和末章Core字节核对；后台取消另在真实读取完成暂扣回执时验证"
+      },
+      "navigation": {
+        "events": [
+          {
+            "type": "pointerdown",
+            "disabled": false,
+            "focused": true
+          },
+          {
+            "type": "pointerup",
+            "disabled": false,
+            "focused": true
+          },
+          {
+            "type": "click",
+            "disabled": false,
+            "focused": true
+          }
+        ],
+        "title": "第1000章 海港来信",
+        "selected": "第1000章 海港来信",
+        "focused": true
+      },
+      "log": "gui-context-installed-scale-diagnostic.log",
+      "limit": "首次末章点击失败根因未确认；串行复验只证明该次通过，保留指针与完整IPC诊断；未改产品或放宽断言"
+    }
+  }
+}
