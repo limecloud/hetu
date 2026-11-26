@@ -4,6 +4,7 @@ export default defineConfig({
   testDir: "./tests",
   workers: 1,
   timeout: 20000,
+  reporter: process.env.CI ? [["list"], ["github"]] : "list",
   outputDir: "../../build/task-view/test-results",
   use: {
     headless: true,
