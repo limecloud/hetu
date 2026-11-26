@@ -1,0 +1,79 @@
+{
+  "recorded_at": "2026-11-26T19:02:59.615332+00:00",
+  "scope": "实际原生宿主插件目录、详情版本、独立工作台首屏；不是完整业务旅程。",
+  "host": {
+    "path": "/Applications/ChatGPT.app",
+    "bundle_id": "com.openai.codex",
+    "version": "26.1117.41037",
+    "discovery": "本机应用元数据与实际AX窗口；不按Codex.app旧文件名猜测。",
+    "initially_running": false,
+    "normally_quit_after_observation": true
+  },
+  "application": {
+    "version": "0.15.1",
+    "git_sha": "af1bd0d6fd0de2876675f4ff46ef3bd411c1dc71",
+    "desktop_hetu_running": false,
+    "independent_native_mcp_app_opened": true,
+    "library_works_visible": 19
+  },
+  "connection": {
+    "client": "codex",
+    "suite_id": "machine-connection",
+    "registered": true,
+    "session_loaded": false,
+    "state": "registered",
+    "version": "0.15.1",
+    "version_differs": false,
+    "package_sha256": "916fb8a39d9b87760158c8147da3bbcf531f19867634ec3bf6578b228ad2f8ae",
+    "mcp_binary_sha256": "e97746a34f6ee834843276ac35d4380b92e01bec317ee17208c8be1b996e78ef"
+  },
+  "connection_operation": {
+    "operation_id": "localop_392bacba-02ac-4f75-9828-21f6731c9480",
+    "sha256": "52e8244008042717220402a5ca89f080bd277c91c33cc8bfc1fe25aeba7893ac",
+    "state": "executed",
+    "revision": 3,
+    "decision_basis": "沿当前会话已有安装及接入授权，经公开local_settings固定方案登记和执行，不伪造新的用户回复。"
+  },
+  "state_preservation": {
+    "state_revision_before": 23,
+    "state_revision_after": 24,
+    "only_connection_installation_and_revision_changed": true,
+    "preferences_unchanged": true,
+    "creative_library_and_session_selection_unchanged": true
+  },
+  "observations": [
+    "初次prepare带install:true被agent_connection分支拒绝；未创建操作，删除该不支持字段后沿原准备键成功。",
+    "原生插件列表可见Hetu与Hetu Workbench，详情实际显示0.15.1。",
+    "AX动作返回成功可能只显示菜单；后按确切PID、唯一role/title与实时位置核对后进行真实指针点击。",
+    "打开初帧空白，等待实际河图洛书WebArea后首屏显示创作库19；未向其他Codex会话发送模型消息。",
+    "初次立即重开被尚未结束的退出吞掉；等原PID实际消失后重开成功，观察完成正常退出。",
+    "插件详情网站不可用对应manifest缺homepage元数据，未据此判断官网故障。",
+    "当前常驻对话此前实际回执仍为0.14.0；新安装、新宿主可见不构成该常驻连接热加载。"
+  ],
+  "screenshots": [
+    {
+      "path": "native-host-launch-2026-11-27/workbench-header.png",
+      "sha256": "64325d9526d1149ac003862137ccce421422f4e845c2a85dddd67f026c75baf0",
+      "original_sha256": "1235b1d211f7c773503d4d17edf6e80f4156aea57261ad153c8a3b4e070fe471",
+      "crop_pixels": [
+        105,
+        90,
+        2545,
+        345
+      ],
+      "visually_verified": true
+    },
+    {
+      "path": "native-host-launch-2026-11-27/registered-plugin-detail.png",
+      "sha256": "b1eb64069b29d8c64f50a8dce0a158278c525e487420dd451f918806dcb621ec",
+      "original_sha256": "e1bff661f0b053ca54c0eb08e6f591cff863041b4027c1ea051004d69e2b20b1",
+      "crop_pixels": null,
+      "visually_verified": true
+    }
+  ],
+  "limitations": [
+    "本轮未完成原生宿主编辑、公开意见、采纳或原操作恢复，不关闭R7-03/R7-06。",
+    "CUA通道初始化失败仍保留；本轮沿已具备的系统AX、真实指针及原生像素验收，不称CUA执行成功。",
+    "原始全屏图仅在临时目录；入库裁图只保留必要顶部与插件详情，没有作品正文或其他会话。"
+  ]
+}

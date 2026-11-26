@@ -1,0 +1,265 @@
+{
+  "recorded_at": "2026-11-26T19:02:59.615332+00:00",
+  "tag": "v0.15.1",
+  "git_sha": "af1bd0d6fd0de2876675f4ff46ef3bd411c1dc71",
+  "release_url": "https://github.com/limecloud/hetu/releases/tag/v0.15.1",
+  "published_at": "2026-11-26T18:20:05Z",
+  "is_draft": false,
+  "is_prerelease": false,
+  "workflow": {
+    "id": 45863998814,
+    "url": "https://github.com/limecloud/hetu/actions/runs/45863998814",
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "Electron linux-x64",
+        "conclusion": "success",
+        "id": 140061999980,
+        "url": "https://github.com/limecloud/hetu/actions/runs/45863998814/job/140061999980"
+      },
+      {
+        "name": "Electron windows-x64",
+        "conclusion": "success",
+        "id": 140062000432,
+        "url": "https://github.com/limecloud/hetu/actions/runs/45863998814/job/140062000432"
+      },
+      {
+        "name": "Electron macOS arm64",
+        "conclusion": "success",
+        "id": 140062000552,
+        "url": "https://github.com/limecloud/hetu/actions/runs/45863998814/job/140062000552"
+      },
+      {
+        "name": "publish",
+        "conclusion": "success",
+        "id": 140099699853,
+        "url": "https://github.com/limecloud/hetu/actions/runs/45863998814/job/140099699853"
+      },
+      {
+        "name": "Publish npmjs launcher",
+        "conclusion": "success",
+        "id": 140099995911,
+        "url": "https://github.com/limecloud/hetu/actions/runs/45863998814/job/140099995911"
+      }
+    ]
+  },
+  "manifests": [
+    {
+      "version": "0.15.1",
+      "git_sha": "af1bd0d6fd0de2876675f4ff46ef3bd411c1dc71",
+      "platform": "macos",
+      "architecture": "arm64",
+      "kind": "electron-release-package",
+      "signing": "developer-id",
+      "notarization_status": "Accepted",
+      "notarization_id": "16c88468-05fa-4745-ada1-74df4be36b3d",
+      "dmg_notarization_id": "718ef116-e09b-4a2c-8d12-7a774e448200",
+      "files": {
+        "Hetu-0.15.1-macos-arm64.zip": "53c5ed3f6cd77116e301fb0a6a139930f3121472651b794a5391c57f56706c36",
+        "Hetu-0.15.1-macos-arm64.dmg": "e2c585b9caec508967acff4047134aaa77ae7aabf680fa20a810cd0e8003bdcb"
+      }
+    },
+    {
+      "version": "0.15.1",
+      "git_sha": "af1bd0d6fd0de2876675f4ff46ef3bd411c1dc71",
+      "platform": "linux",
+      "architecture": "x64",
+      "kind": "electron-release-package",
+      "signing": "unsigned",
+      "notarization_status": "not-applicable",
+      "notarization_id": null,
+      "dmg_notarization_id": null,
+      "files": {
+        "Hetu-0.15.1-linux-x64.tar.gz": "8cf1657eaff119ca598db309106f8292effee5368204e2314541365ead8b6c93"
+      }
+    },
+    {
+      "version": "0.15.1",
+      "git_sha": "af1bd0d6fd0de2876675f4ff46ef3bd411c1dc71",
+      "platform": "windows",
+      "architecture": "x64",
+      "kind": "electron-release-package",
+      "signing": "unsigned",
+      "notarization_status": "not-applicable",
+      "notarization_id": null,
+      "dmg_notarization_id": null,
+      "files": {
+        "Hetu-0.15.1-windows-x64.zip": "a938bb6d0a379f68a3d311ae47f12839616c5576fc5d81aff57794ea62650a50"
+      }
+    }
+  ],
+  "all_public_asset_digests_matched_manifests_and_sums": true,
+  "assets": [
+    {
+      "name": "Hetu-0.15.1-linux-x64.tar.gz",
+      "bytes": 258868530,
+      "github_digest": "sha256:8cf1657eaff119ca598db309106f8292effee5368204e2314541365ead8b6c93"
+    },
+    {
+      "name": "Hetu-0.15.1-macos-arm64.dmg",
+      "bytes": 300096777,
+      "github_digest": "sha256:e2c585b9caec508967acff4047134aaa77ae7aabf680fa20a810cd0e8003bdcb"
+    },
+    {
+      "name": "Hetu-0.15.1-macos-arm64.zip",
+      "bytes": 249269152,
+      "github_digest": "sha256:53c5ed3f6cd77116e301fb0a6a139930f3121472651b794a5391c57f56706c36"
+    },
+    {
+      "name": "Hetu-0.15.1-windows-x64.zip",
+      "bytes": 274142897,
+      "github_digest": "sha256:a938bb6d0a379f68a3d311ae47f12839616c5576fc5d81aff57794ea62650a50"
+    },
+    {
+      "name": "release-manifest-linux-x64.json",
+      "bytes": 1011149,
+      "github_digest": "sha256:34c689b2add64e3193aa72a0aaed131b473b9e30457b45daddcf05f6fc95cb5d"
+    },
+    {
+      "name": "release-manifest-windows-x64.json",
+      "bytes": 1010112,
+      "github_digest": "sha256:926d6613895867d7f60a9ae8cf5cf0e855dc79620bb94d6d66b58ef36e245a47"
+    },
+    {
+      "name": "release-manifest.json",
+      "bytes": 1113507,
+      "github_digest": "sha256:8bab02b217084a17329ca0575fe3d8280bcbd3df3685b315f003226713a9bff7"
+    },
+    {
+      "name": "SHA256SUMS",
+      "bytes": 276,
+      "github_digest": "sha256:08fbf444e26b8198843c141d338bced1cbad0ee8609bed0e930fe9939c57cfcc"
+    },
+    {
+      "name": "SHA256SUMS-linux-x64",
+      "bytes": 193,
+      "github_digest": "sha256:bf6932ede1f0a5602189324a4ac23538472cd0174acd8bdb6e05445a4cf34203"
+    },
+    {
+      "name": "SHA256SUMS-windows-x64",
+      "bytes": 194,
+      "github_digest": "sha256:0653602ca4bfa86aff472fbe596d8dcbb8f82299816f8fabcd38694cb422ab6e"
+    }
+  ],
+  "local_macos_zip_and_application_verification": {
+    "version": "0.15.1",
+    "git_sha": "af1bd0d6fd0de2876675f4ff46ef3bd411c1dc71",
+    "product_source_sha256": "b5fe3dd411f606df653d2b4a710e61004480983b06bcde30f2931b05df14e430",
+    "source_inputs": 3086,
+    "complete_application_entries": 3134,
+    "icon_matched": true,
+    "current_product_source_matched": true,
+    "notarization_status": "Accepted"
+  },
+  "signed_installation": {
+    "version": "0.15.1",
+    "git_sha": "af1bd0d6fd0de2876675f4ff46ef3bd411c1dc71",
+    "source_sha256": "b5fe3dd411f606df653d2b4a710e61004480983b06bcde30f2931b05df14e430",
+    "source_inputs": 3086,
+    "complete_application_entries": 3134,
+    "developer_id_verified": true,
+    "gatekeeper_accepted": true,
+    "stapled_ticket_valid": true,
+    "atomic_swap": true,
+    "backup_created": false,
+    "old_bundle_removed": true,
+    "profile_indexes_unchanged": true,
+    "connection_revision": 24
+  },
+  "normal_user_launch": {
+    "verified": true,
+    "library_works": 19,
+    "runtime": {
+      "version": "0.15.1",
+      "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+      "userData": "/Users/coso/Library/Application Support/Hetu"
+    },
+    "profile_indexes_unchanged": true
+  },
+  "npm": {
+    "name": "@limecloud/hetu",
+    "version": "0.15.1",
+    "latest": "0.15.1",
+    "integrity": "sha512-dXQkwlUiZ120XzdqrIf7mdYWPQj2ZUKTaCO4vKq1bQB+3n+pM8Nqh1QyQakJl5qnHTTPflun17miDq1ly5+TcA==",
+    "integrity_verified": true,
+    "bytes": 9218,
+    "bin": {
+      "hetu": "bin/hetu.mjs",
+      "hetu-mcp": "bin/hetu-mcp.mjs"
+    },
+    "engines": {
+      "node": ">=22.12.0"
+    }
+  },
+  "targeted_tests": {
+    "signed-package-desktop-report.json": {
+      "report_sha256": "3dea9fd1d4de5fb3a89f66597d5b43141cc3d2395201ef50638f163da782ceaf",
+      "stats": {
+        "startTime": "2026-11-26T18:25:10.130Z",
+        "duration": 42658.6,
+        "expected": 6,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "errors": []
+    },
+    "signed-package-stdio-report.json": {
+      "report_sha256": "e49fcedf49816f6af629de2340b5d74ac8ba175d3ce6e3e3da160690dd97920a",
+      "stats": {
+        "startTime": "2026-11-26T18:27:16.422Z",
+        "duration": 20496.029,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "errors": []
+    },
+    "signed-installed-desktop-report.json": {
+      "report_sha256": "666da860c00629187eaf166e9099519eb5fcf935af9ba55390b69333961df310",
+      "stats": {
+        "startTime": "2026-11-26T18:30:05.636Z",
+        "duration": 49436.666,
+        "expected": 6,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "errors": []
+    },
+    "signed-installed-stdio-report.json": {
+      "report_sha256": "2dd35f8125cd463d6a2d0c74a31c556af9a81da8b7e242d674a6ff6a5eeeef0b",
+      "stats": {
+        "startTime": "2026-11-26T18:31:36.901Z",
+        "duration": 19606.541,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "errors": []
+    }
+  },
+  "scope": {
+    "local_archives_downloaded": [
+      "Hetu-0.15.1-macos-arm64.zip"
+    ],
+    "not_downloaded_again": [
+      "Windows zip",
+      "Linux tar.gz",
+      "macOS dmg"
+    ],
+    "other_archives": "本轮核对公开Asset摘要、三份清单与SHA256SUMS；归档内容核验由正式发行CI执行，不写成全部归档均在本机解压。",
+    "profile_baseline": "先前获权连接升级已将LocalSettings修订23改为24；正式安装前后以24为基线核对，三个索引原字节保持。",
+    "not_closed": [
+      "全软件视觉与无障碍",
+      "跨平台用户实机",
+      "间歇退出根因",
+      "原生宿主完整业务",
+      "真实完整一集制作",
+      "作者创作认可"
+    ]
+  }
+}
