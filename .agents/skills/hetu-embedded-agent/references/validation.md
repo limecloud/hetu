@@ -48,6 +48,7 @@ Node单元测试与Playwright E2E分别收集，后者使用`*.spec.ts`，避免
 | 专业组合 | `packages/plugin-host/tests/creative-composition.test.ts`、`apps/task-view/tests/shared-workbench.spec.ts` | 两个实际包读取同一固定正文，规划不推进正式头；卸载后固定成果／原来源可读，基础写作继续，原MCP面板更新目录并保留导出 |
 | 真实窗口 | `agent-launch.spec.ts`、`agent-content.spec.ts`、`agent-business.spec.ts`、`tui-navigation.spec.ts` | 正常/窄窗创建、目录/预览切换保持执行端；从作品范围选择进入铺满会话后，直接导航须恢复实际可见的创作库及原文，不以选中项、DOM存在或非忙碌代替；重开保留线程／代次／草稿，并排和焦点正确；错误可恢复 |
 | MCP窄宽与可选宿主能力 | Task View的`workbench-reflow.spec.ts` | 320／480浅暗控件不被裁切，设置横纵Tab语义与键盘保持；嵌套Escape只关闭本层并返回原入口，未支持的原生窗口方法保持缺失且不发送RPC；固定原文与修订不变 |
+| 分组键盘与界面放大 | `settings-navigation.spec.ts`及Task View的`workbench-reflow.spec.ts` | 全部分类按实际视觉顺序双向循环、Home／End、唯一Tab入口及面板关联；独立设置窗口100%／200%实际界面和MCP横纵布局分别验证，不能仅测前两个标签 |
 | 表面失败恢复 | `agent-surface-recovery.spec.ts`、`codex-terminal-bridge.test.ts` | 双向失败恢复当前草稿且两端独立，关闭重开原线程；拒绝／断连／归属失败／关闭结束原就绪等待，不创建新轮次或重启原引擎 |
 | 真实TUI/双表面 | `codex-tui-live.spec.ts`、`codex-terminal-interactions-live.spec.ts`、`codex-terminal-recovery-live.spec.ts` | 同一原生线程、唯一输入者、GUI/TUI独立草稿、客户端退出与引擎退出分别恢复 |
 | 原生线程输入归属 | `codex-thread-ownership-live.spec.ts`、`codex-session.test.ts`及`fixtures/native-thread-engine.mjs` | 真实`/new`与`/resume`推进代次，旧页面草稿／输入／尺寸拒绝；挂起及拒绝目标恢复时冻结投递，失败保留原线程与独立草稿。原生PTY客户端不重建，恢复后实际输入可见且零模型轮次；终端重放完成后才开启输入 |
@@ -70,6 +71,7 @@ Node单元测试与Playwright E2E分别收集，后者使用`*.spec.ts`，避免
 - 同一版本、视口和内容对照；测量顶部占高、PTY字符画布、左右栏及浮层。10文档指定的大视口终端高度比例仅适用于无额外提示和搜索行的正常状态，不能用隐藏必要错误来达标。
 - 先确认页面由主WebContents、iframe还是独立WebContentsView承载。专业插件使用独立`hetu-plugin://`页面，沿`application.windows()`定位实际表面；主页面截图可能只有外壳，不能据此判定插件空白。分别核对主窗口布局、子表面真实内容和可见边界，保存各自截图，不用错误的iframe选择器补造通过。
 - 浅暗、窄窗、最大化、系统全屏、界面缩放和字体即时变化。布局切换后核对session/thread ID及输入代次，不能只比截图。
+- Electron以`setZoomFactor`改变界面时，核对截图实际尺寸与窗口／DPR。曾在200%时Playwright截图只保留原生画面的左上区域，页面边界断言却正确；此情形沿确切设置窗口的`webContents.capturePage()`取完整PNG，再与`innerWidth/innerHeight`及实际输入行为对照。不要按裁切截图缩小产品，也不把网页截图外推原生全屏。
 - 真实系统输入法、选择/复制/粘贴、搜索、菜单和弹窗焦点。模拟composition协议不能替代系统IME验收。
 - GUI历史向上阅读、加载更早、流式更新、新消息定位、返回位置及代码/表格/长URL。待答和失败不藏在折叠日志中，未知投递没有一键重发。
 

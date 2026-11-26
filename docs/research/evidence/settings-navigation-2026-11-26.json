@@ -1,0 +1,409 @@
+{
+  "recorded_at": "2026-11-26T13:36:25.620319+00:00",
+  "scope": "R7-04/08/09：设置分组键盘顺序、真实200%界面、展开接入设置与说明弹窗焦点",
+  "version": "0.15.0 development",
+  "changes": [
+    "分类原数组与实际分组顺序一致，方向键不跳过存储空间",
+    "接入说明沿原入口返回焦点，Escape与关闭按钮分别验证",
+    "说明弹窗有可访问名称，忙碌期间取消与原关闭按钮语义一致",
+    "创作库窄宽允许两行且控件不裁切，正常宽度仍严格52px"
+  ],
+  "validation": {
+    "package": {
+      "verified": {
+        "version": "0.15.0",
+        "source_sha256": "834039183ecc30d280d8db972343dd1359ba05b58a4843508ca1cd2e2305bffd",
+        "source_inputs": 3086,
+        "artifacts": 3133,
+        "signature_verified": true,
+        "icon_matches": true
+      },
+      "desktop": {
+        "startTime": "2026-11-26T13:13:31.360Z",
+        "duration": 74668.807,
+        "expected": 2,
+        "skipped": 1,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "business_followup": {
+        "startTime": "2026-11-26T13:15:33.715Z",
+        "duration": 72022.952,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "distinct_passed": 3,
+      "first_skip_reason": "首轮未传HETU_PACKAGE_MANIFEST，补齐确切清单后独立业务旅程通过"
+    },
+    "installed": {
+      "verified": {
+        "version": "0.15.0",
+        "source_sha256": "834039183ecc30d280d8db972343dd1359ba05b58a4843508ca1cd2e2305bffd",
+        "source_inputs": 3086,
+        "artifacts": 3133,
+        "signature_verified": true,
+        "icon_matches": true,
+        "installed_path": "/Applications/Hetu.app",
+        "atomic_swap": true,
+        "backup_created": false,
+        "old_bundle_removed": true
+      },
+      "final_bundle": {
+        "version": "0.15.0",
+        "source_sha256": "834039183ecc30d280d8db972343dd1359ba05b58a4843508ca1cd2e2305bffd",
+        "source_inputs": 3086,
+        "artifacts": 3133,
+        "signature_verified": true,
+        "icon_matches": true
+      },
+      "desktop": {
+        "startTime": "2026-11-26T13:19:59.516Z",
+        "duration": 32948.274,
+        "expected": 3,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "native_capture_followup": {
+        "startTime": "2026-11-26T13:35:13.587Z",
+        "duration": 15856.029999999999,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "mcp": {
+        "startTime": "2026-11-26T13:31:26.553Z",
+        "duration": 132436.775,
+        "expected": 2,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "views": [
+        {
+          "theme": "light",
+          "surfaces": 20,
+          "clipped_controls": 0,
+          "failed_rpc": [],
+          "stages": [
+            {
+              "stage": "library",
+              "width": 480
+            },
+            {
+              "stage": "library",
+              "width": 320
+            },
+            {
+              "stage": "reader",
+              "width": 480
+            },
+            {
+              "stage": "reader",
+              "width": 320
+            },
+            {
+              "stage": "settings-general",
+              "width": 480
+            },
+            {
+              "stage": "settings-general",
+              "width": 320
+            },
+            {
+              "stage": "settings-writing",
+              "width": 480
+            },
+            {
+              "stage": "settings-writing",
+              "width": 320
+            },
+            {
+              "stage": "settings-storage",
+              "width": 480
+            },
+            {
+              "stage": "settings-storage",
+              "width": 320
+            },
+            {
+              "stage": "settings-agents",
+              "width": 480
+            },
+            {
+              "stage": "settings-agents",
+              "width": 320
+            },
+            {
+              "stage": "settings-versions",
+              "width": 480
+            },
+            {
+              "stage": "settings-versions",
+              "width": 320
+            },
+            {
+              "stage": "settings-about",
+              "width": 480
+            },
+            {
+              "stage": "settings-about",
+              "width": 320
+            },
+            {
+              "stage": "settings-agents-expanded",
+              "width": 480
+            },
+            {
+              "stage": "settings-agents-expanded",
+              "width": 320
+            },
+            {
+              "stage": "settings-agents-guide",
+              "width": 320
+            },
+            {
+              "stage": "settings-model-dialog",
+              "width": 320
+            }
+          ]
+        },
+        {
+          "theme": "dark",
+          "surfaces": 20,
+          "clipped_controls": 0,
+          "failed_rpc": [],
+          "stages": [
+            {
+              "stage": "library",
+              "width": 480
+            },
+            {
+              "stage": "library",
+              "width": 320
+            },
+            {
+              "stage": "reader",
+              "width": 480
+            },
+            {
+              "stage": "reader",
+              "width": 320
+            },
+            {
+              "stage": "settings-general",
+              "width": 480
+            },
+            {
+              "stage": "settings-general",
+              "width": 320
+            },
+            {
+              "stage": "settings-writing",
+              "width": 480
+            },
+            {
+              "stage": "settings-writing",
+              "width": 320
+            },
+            {
+              "stage": "settings-storage",
+              "width": 480
+            },
+            {
+              "stage": "settings-storage",
+              "width": 320
+            },
+            {
+              "stage": "settings-agents",
+              "width": 480
+            },
+            {
+              "stage": "settings-agents",
+              "width": 320
+            },
+            {
+              "stage": "settings-versions",
+              "width": 480
+            },
+            {
+              "stage": "settings-versions",
+              "width": 320
+            },
+            {
+              "stage": "settings-about",
+              "width": 480
+            },
+            {
+              "stage": "settings-about",
+              "width": 320
+            },
+            {
+              "stage": "settings-agents-expanded",
+              "width": 480
+            },
+            {
+              "stage": "settings-agents-expanded",
+              "width": 320
+            },
+            {
+              "stage": "settings-agents-guide",
+              "width": 320
+            },
+            {
+              "stage": "settings-model-dialog",
+              "width": 320
+            }
+          ]
+        }
+      ],
+      "normal_launch": {
+        "verified": true,
+        "library_works": 19,
+        "runtime": {
+          "version": "0.15.0",
+          "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+          "userData": "/Users/coso/Library/Application Support/Hetu"
+        },
+        "profile_indexes_unchanged": true
+      },
+      "original_user_indexes_unchanged": 3
+    },
+    "library": {
+      "startTime": "2026-11-26T13:30:25.255Z",
+      "duration": 11410.384,
+      "expected": 4,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "browser": {
+      "version": "156.0.8078.4",
+      "sdk_revision": 1248,
+      "url": "https://storage.googleapis.com/chrome-for-testing-public/156.0.8078.4/mac-arm64/chrome-headless-shell-mac-arm64.zip",
+      "size": 103778487,
+      "md5": "DlFzouaq+2z7axsdckdo9w==",
+      "sha256": "94e4337b70cbc5638f0935fbc46b9f242bc7416f657e3fbe924baf348404b53d",
+      "executable": "/private/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-settings-navigation-q7dg9y4m/browser-extracted/chrome-headless-shell-mac-arm64/chrome-headless-shell"
+    },
+    "fixture": {
+      "baseline_fixture": "59d1defee77a20a703929dbda05f1934127b714d98b30c7253bc382703b09ac6"
+    },
+    "model_turns": 0,
+    "behavior": [
+      "全部分类按视觉顺序移动、首末循环、Home／End、当前面板及唯一Tab入口",
+      "独立桌面实际100%／200%界面，不以网页截图替代",
+      "MCP320／480浅暗展开搜索、筛选、输入与Skills清单，滚动到实际控件再核对边界",
+      "说明弹窗Escape及按钮关闭后外层仍可见，焦点返回原入口",
+      "正式文稿与修订逐字节保持，零失败RPC"
+    ]
+  },
+  "first_attempts": [
+    {
+      "log": "settings-navigation-desktop-before.log",
+      "result": "安装旧版确切键盘负例：写作之后未到存储空间"
+    },
+    {
+      "log": "reflow-expanded-before.log",
+      "result": "夹具路径指向不存在目录，业务开始前失败"
+    },
+    {
+      "log": "reflow-expanded-negative.log",
+      "result": "安装版键盘顺序失败；测试定位器未展开details，后续等待超时，修正实际点击及展开断言"
+    },
+    {
+      "log": "reflow-expanded-source.log",
+      "result": "顺序、展开与边界已通过，接入说明关闭焦点失败；继续修复"
+    },
+    {
+      "log": "mcp-installed.log",
+      "result": "开发target中的fixture被移除，两条均在业务开始前ENOENT；隔离重编并固定摘要后复验"
+    },
+    {
+      "log": "browser-install.log",
+      "result": "下载停滞后终止自己的安装进程；固定版本分段下载经历HTTP2及超时失败，按原范围接续并核对官方完整MD5与实际版本"
+    },
+    {
+      "log": "settings-native-capture.log",
+      "result": "200%时Playwright截图840×1000只截到原生1680×2000的左上区域；行为测量保持正确，改用实际窗口capturePage并复验通过。仓库图片使用原生完整截图"
+    }
+  ],
+  "ci_observation": {
+    "run_id": 45823424731,
+    "sha": "9413e85",
+    "conclusion": "failure",
+    "failures": [
+      "GUI并排顶栏高度固定71px但runner实际106px",
+      "字体替换后错误期待PingFang SC",
+      "Linux缺少Songti SC",
+      "窄窗排序子菜单超时",
+      "375px创作库仍断言52px"
+    ],
+    "own_followup": "本轮修正创作库375px断言，浅暗375／1440四条通过；其他进程的测试文件未覆盖，整轮CI未宣称通过"
+  },
+  "screenshots": {
+    "installed-settings-200.png": {
+      "path": "docs/research/evidence/settings-navigation-2026-11-26/installed-settings-200.png",
+      "sha256": "d55c48489c81d000d9230a37355a51e7d0db5c021cacdc80ae6519afb9e4e827"
+    },
+    "installed-settings-100.png": {
+      "path": "docs/research/evidence/settings-navigation-2026-11-26/installed-settings-100.png",
+      "sha256": "01a27c2a82eb869d0f7a4e2bb2a26046020d87731bacbceefb89bd1109e8c20c"
+    },
+    "installed-agents-light-320.png": {
+      "path": "docs/research/evidence/settings-navigation-2026-11-26/installed-agents-light-320.png",
+      "sha256": "f4e319804932d1b24b9707a1f69de50b47a8f1faeedb9da570c050407ce173f0"
+    },
+    "installed-guide-light-320.png": {
+      "path": "docs/research/evidence/settings-navigation-2026-11-26/installed-guide-light-320.png",
+      "sha256": "7c512c6c8f34bf791ef9ad0489553c42920859ef81cca79cdfb4883d0c5ef26a"
+    },
+    "installed-agents-dark-320.png": {
+      "path": "docs/research/evidence/settings-navigation-2026-11-26/installed-agents-dark-320.png",
+      "sha256": "1de058a9e4e2515a123fee0e6e6204602a3532cbf6c7cd532da555b09bb99e24"
+    },
+    "installed-guide-dark-320.png": {
+      "path": "docs/research/evidence/settings-navigation-2026-11-26/installed-guide-dark-320.png",
+      "sha256": "586dd82bab7eff9ea7019c5ee791c06ffefd2dac82fd00aceeb2f14581158d0f"
+    }
+  },
+  "source_sha256": {
+    "apps/desktop/src/renderer/settings.tsx": "d740d745035f814b33204bd980c30305cb018c2ca39b64abf214f426d9aa5d52",
+    "apps/desktop/src/renderer/work-agent.tsx": "310a40b90fec2eb8f7a9522a3a51d051c87e19e8f0cc2713ce702e521175672d",
+    "apps/desktop/tests/settings-navigation.spec.ts": "ff79f994c78da9e4730923d589c53276b7e261eb9d5281b6cf37b4460ea0e361",
+    "apps/task-view/tests/workbench-reflow.spec.ts": "c1895f35cf45ede4b3f5bde768f0030e055f5de1dd58cb8e1c0a7d3307ef0b0d",
+    "apps/task-view/tests/workbench.spec.ts": "2a035cf57215bf0a8ba0a2efa1cd34651cb6d4b73fc10b86226ab557de88d0f7"
+  },
+  "raw_evidence_root": "/private/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-settings-navigation-q7dg9y4m",
+  "not_verified": [
+    "实际Codex Desktop原生宿主",
+    "全页面与全部异步状态的视觉",
+    "VoiceOver及其他系统读屏",
+    "Windows／Linux本增量与DPI",
+    "作者试用、完整专业一集与正式发行",
+    "本包千章性能未重测，前轮301ebc9b证据保持原范围"
+  ],
+  "final_checks": {
+    "docs": {
+      "documents": 92,
+      "local_links": 1672,
+      "fragment_links": 431,
+      "errors": 0
+    },
+    "skill": {
+      "official_validator": "passed",
+      "local_links": 19,
+      "errors": 0
+    },
+    "evidence_hashes": {
+      "checked": 11,
+      "errors": 0
+    },
+    "capability_map": "consistent",
+    "shared_resource": "1392147 bytes verified",
+    "git_diff_check": "passed"
+  }
+}

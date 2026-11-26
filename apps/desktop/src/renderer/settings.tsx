@@ -71,10 +71,10 @@ type Tab = "storage" | "general" | "writing" | "agents" | "models" | "versions" 
 const tabs: { id: Tab; title: string; icon: IconName }[] = [
   { id: "general", title: "通用", icon: "sliders" },
   { id: "writing", title: "写作", icon: "type" },
+  { id: "storage", title: "存储空间", icon: "layers" },
   { id: "models", title: "模型服务", icon: "globe" },
   { id: "agents", title: "AI 协作", icon: "plugin" },
   { id: "versions", title: "版本", icon: "branch" },
-  { id: "storage", title: "存储空间", icon: "layers" },
   { id: "about", title: "关于", icon: "info" },
 ];
 const categories = [

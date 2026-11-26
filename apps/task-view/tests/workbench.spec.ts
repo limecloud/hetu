@@ -214,8 +214,14 @@ for(const theme of ["light","dark"]) for(const width of [375,1440]) test(`shared
   await expect(view.getByRole("heading",{name:"创作库",exact:true})).toBeVisible();
   await expect.poll(()=>view.locator(".work-cover img").evaluate((node:HTMLImageElement)=>node.complete&&node.naturalWidth>0)).toBe(true);
   expect(await view.locator("body").evaluate(node=>node.scrollWidth<=innerWidth)).toBe(true);
-  const metrics=await view.locator(".library-topbar").evaluate(node=>({height:node.getBoundingClientRect().height,border:getComputedStyle(node).borderBottomWidth,font:getComputedStyle(node.querySelector("strong")!).fontSize}));
-  expect(metrics.height).toBe(52);expect(parseFloat(metrics.border)).toBeLessThanOrEqual(1);expect(parseFloat(metrics.font)).toBeGreaterThanOrEqual(12);
+  const metrics=await view.locator(".library-topbar").evaluate(node=>{
+    const rect=node.getBoundingClientRect();
+    return {height:rect.height,border:getComputedStyle(node).borderBottomWidth,font:getComputedStyle(node.querySelector("strong")!).fontSize,
+      clipped:Array.from(node.querySelectorAll("button")).filter(button=>{const bounds=button.getBoundingClientRect();return button.checkVisibility()&&(bounds.left<0||bounds.right>innerWidth+1||bounds.top<rect.top-1||bounds.bottom>rect.bottom+1);}).map(button=>button.getAttribute("aria-label")??button.textContent)};
+  });
+  if(width>440)expect(metrics.height).toBe(52);
+  else {expect(metrics.height).toBeGreaterThanOrEqual(52);expect(metrics.height).toBeLessThanOrEqual(104);}
+  expect(metrics.clipped).toEqual([]);expect(parseFloat(metrics.border)).toBeLessThanOrEqual(1);expect(parseFloat(metrics.font)).toBeGreaterThanOrEqual(12);
   await mkdir("../../build/task-view/acceptance",{recursive:true});await page.screenshot({path:`../../build/task-view/acceptance/shared-library-${theme}-${width}.png`,fullPage:true});
 });
 

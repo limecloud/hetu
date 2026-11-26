@@ -22,9 +22,13 @@ export function WorkAgent({ work, notify, changed }: { work?: WorkRef; notify(me
   const [query, setQuery] = useState(""), [platform, setPlatform] = useState(""), [channel, setChannel] = useState("");
   const [brief, setBrief] = useState(""), [reply, setReply] = useState(""), [advice, setAdvice] = useState<any[]>([]), [adviceError, setAdviceError] = useState("");
   const [modal, setModal] = useState<"guide">();
-  const alive = useRef(true), generation = useRef(0), dialog = useRef<HTMLDialogElement>(null);
+  const alive = useRef(true), generation = useRef(0), dialog = useRef<HTMLDialogElement>(null), guideTrigger = useRef<HTMLButtonElement>(null), guideOpened = useRef(false);
+  const guideTitle = React.useId();
   useEffect(() => { alive.current = true; void refresh(); return () => { alive.current = false; generation.current++; }; }, [work?.workspace_id, work?.kind, work?.object_id]);
-  useEffect(() => { if (modal) dialog.current?.showModal(); else dialog.current?.close(); }, [modal]);
+  useEffect(() => {
+    if (modal) {guideOpened.current = true; if (!dialog.current?.open) dialog.current?.showModal();}
+    else if (guideOpened.current && !busy) {guideTrigger.current?.focus(); guideOpened.current = false;}
+  }, [modal, busy]);
   async function check() {
     const token = ++generation.current; setChecking(true); setInspection(undefined);
     try { const value = await request("inspect"); if (alive.current && token === generation.current) setInspection(value); }
@@ -103,10 +107,10 @@ export function WorkAgent({ work, notify, changed }: { work?: WorkRef; notify(me
       <details className="work-agent-skills" open={!!work}><summary>套件包含的 Skills</summary><ul>{state.skills.map((skill: any) => {
         const found = inspection?.found_skills.includes(skill.id); return <li key={skill.id}><span className={found ? "work-agent-skill-check found" : "work-agent-skill-check"} aria-hidden="true">{found ? <Icon name="check"/> : <svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="2 2"/></svg>}</span><div><span>{skill.title}</span><small>{skill.id}</small></div><div className="work-agent-skill-state"><span>{checking ? "正在检查" : found ? "已找到方法文件" : "未验证安装"}</span>{found && <small>版本 {inspection.version}</small>}</div></li>;
       })}</ul></details>
-      <div className="actions work-agent-package-actions">{association.client !== "codex" && <button disabled={disabled || !installable} onClick={() => void prepareInstall()}>安装 Skills 套件</button>}<button onClick={() => setModal("guide")}>安装与接入说明</button><button disabled={busy} onClick={() => void run(async () => { await request("reveal_bundle"); })}>查看随附套件</button><button disabled={disabled || association.client === "none"} onClick={() => void run(async () => { await request("choose_package"); await refresh(); })}>选择已安装目录</button>{inspection?.selected_directory && <button disabled={disabled} onClick={() => void run(async () => { await request("auto_detect"); await refresh(); })}>自动检测</button>}</div>
+      <div className="actions work-agent-package-actions">{association.client !== "codex" && <button disabled={disabled || !installable} onClick={() => void prepareInstall()}>安装 Skills 套件</button>}<button ref={guideTrigger} onClick={() => setModal("guide")}>安装与接入说明</button><button disabled={busy} onClick={() => void run(async () => { await request("reveal_bundle"); })}>查看随附套件</button><button disabled={disabled || association.client === "none"} onClick={() => void run(async () => { await request("choose_package"); await refresh(); })}>选择已安装目录</button>{inspection?.selected_directory && <button disabled={disabled} onClick={() => void run(async () => { await request("auto_detect"); await refresh(); })}>自动检测</button>}</div>
       {state.directory && <div className="work-agent-folder"><span>作品目录</span><span>{state.directory}</span></div>}
     </>}
-    {modal && <dialog className="work-agent-dialog" ref={dialog} onCancel={() => setModal(undefined)}><header><h2>安装与接入说明</h2><IconButton icon="close" label="关闭接入窗口" disabled={busy} onClick={() => setModal(undefined)}/></header>
+    {modal && <dialog className="work-agent-dialog" ref={dialog} aria-labelledby={guideTitle} onCancel={event => {if (busy) event.preventDefault(); else setModal(undefined);}}><header><h2 id={guideTitle}>安装与接入说明</h2><IconButton icon="close" label="关闭接入窗口" disabled={busy} onClick={() => setModal(undefined)}/></header>
       <p>将当前所选题材套件安装到{clientName(association?.client)}，再在新会话中验证。</p>
       <p>点击安装并确认固定版本后，河图直接完成安装。Codex Desktop 的 MCP App 与 Skills 分别安装，完成后刷新或重启客户端。</p>
       <p className="muted">安装不会修改正文、采纳候选或确认定稿。</p>

@@ -65,10 +65,46 @@ for (const appearance of ["light", "dark"] as const) test(`stdio ${appearance} �
     await generalTab.focus(); await generalTab.press("ArrowRight");
     await expect(settings.getByRole("tab", {name: "写作", exact: true})).toBeFocused();
     await settings.getByRole("tab", {name: "写作", exact: true}).press("Home"); await expect(generalTab).toBeFocused();
+    const visualTabs = ["通用", "写作", "存储空间", "模型服务", "AI 协作", "版本", "关于"];
+    for (const width of [1280, 320]) {
+      await page.setViewportSize({width, height: 900});
+      const tabList = settings.getByRole("tablist", {name: "设置分类", exact: true});
+      await expect(tabList.getByRole("tab")).toHaveText(visualTabs);
+      for (const [index, label] of visualTabs.entries()) {
+        const currentTab = tabList.getByRole("tab", {name: label, exact: true}); await currentTab.focus();
+        await currentTab.press(width <= 440 ? "ArrowRight" : "ArrowDown");
+        await expect.soft(tabList.getByRole("tab", {name: visualTabs[(index + 1) % visualTabs.length], exact: true}), `${width}: ${label} next visual tab`).toBeFocused();
+      }
+      await generalTab.press("End"); await expect(tabList.getByRole("tab", {name: "关于", exact: true})).toBeFocused();
+      await tabList.getByRole("tab", {name: "关于", exact: true}).press("Home"); await expect(generalTab).toBeFocused();
+    }
     for (const [label, id] of [["写作", "writing"], ["存储空间", "storage"], ["AI 协作", "agents"], ["版本", "versions"], ["关于", "about"]]) {
       await settings.getByRole("tab", {name: label, exact: true}).click();
       for (const width of [480, 320]) await measure("settings-" + id, width);
     }
+    await settings.getByRole("tab", {name: "AI 协作", exact: true}).click();
+    await settings.getByText("外部客户端、MCP App与Skills接入", {exact: true}).click();
+    const integration = settings.getByRole("region", {name: "默认AI协作", exact: true});
+    await expect(integration).toHaveAttribute("aria-busy", "false");
+    await expect(integration.getByRole("combobox", {name: "题材 Skills 套件", exact: true})).toBeVisible();
+    for (const summary of ["按分类查找或由外部 Agent 引导", "套件包含的 Skills", "安装状态"]) {
+      const trigger = integration.locator("summary").filter({hasText: summary});
+      await expect(trigger).toHaveCount(1);
+      if (!await trigger.evaluate(node => (node.parentElement as HTMLDetailsElement).open)) await trigger.click();
+    }
+    for (const width of [480, 320]) {
+      await measure("settings-agents-expanded", width);
+      for (const label of ["搜索题材套件", "题材平台", "题材频道", "套件选择目标", "Agent 套件建议"]) {
+        const control = integration.getByRole(label.includes("平台") || label.includes("频道") ? "combobox" : "textbox", {name: label, exact: true});
+        await control.scrollIntoViewIfNeeded();
+        const rect = await control.boundingBox(); expect.soft(rect?.x, label).toBeGreaterThanOrEqual(0); expect.soft(rect && rect.x + rect.width, label).toBeLessThanOrEqual(width + 1);
+      }
+    }
+    const guide = integration.getByRole("button", {name: "安装与接入说明", exact: true}); await guide.click();
+    await expect(integration.getByRole("dialog")).toBeVisible(); await measure("settings-agents-guide", 320);
+    await page.keyboard.press("Escape"); await expect(integration.getByRole("dialog")).toHaveCount(0); await expect(settings).toBeVisible(); await expect.soft(guide).toBeFocused();
+    await guide.press("Enter"); await expect(integration.getByRole("dialog", {name: "安装与接入说明", exact: true})).toBeVisible();
+    await integration.getByRole("button", {name: "关闭接入窗口", exact: true}).click(); await expect(integration.getByRole("dialog")).toHaveCount(0); await expect(guide).toBeFocused();
     await settings.getByRole("tab", {name: "模型服务", exact: true}).click(); await settings.getByRole("button", {name: "添加渠道", exact: true}).click();
     await expect(settings.getByRole("dialog", {name: "添加渠道", exact: true})).toBeVisible(); await measure("settings-model-dialog", 320);
     await page.keyboard.press("Escape"); await expect(settings.getByRole("dialog", {name: "添加渠道", exact: true})).toHaveCount(0);
