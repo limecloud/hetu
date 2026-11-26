@@ -1,10 +1,10 @@
 {
   "schema_version": "1.0.0",
-  "resource_uri": "ui://hetu/workbench/2/4ee426f5d19fc25d1643c2100c76b9c9afb3aff3ab3f5bf21e8e5cf30779a119",
+  "resource_uri": "ui://hetu/workbench/2/9b6721c6ab927bb744175a51b9a6828ee04553d43a89fe261bac16fee1518073",
   "mime_type": "text/html;profile=mcp-app",
   "sdk": "@modelcontextprotocol/ext-apps@2.0.4",
-  "sha256": "4ee426f5d19fc25d1643c2100c76b9c9afb3aff3ab3f5bf21e8e5cf30779a119",
-  "size_bytes": 5837784,
+  "sha256": "9b6721c6ab927bb744175a51b9a6828ee04553d43a89fe261bac16fee1518073",
+  "size_bytes": 5837803,
   "source_sha256": {
     "../../packages/workbench-ui/src/reading.css": "a5f13f78e461ce72b64540cc09686e8a78a8d19a835ea9258af1ba6031c694c2",
     "../../packages/workbench-ui/src/manuscript-review.css": "e5da924aefd29e7ca13c735939b8e749396dcedc25e2344dddfb4409fafd2cbc",
@@ -138,7 +138,7 @@
     "../desktop/src/renderer/outlines.tsx": "15fcecdd47872b37996a37e3b02f928d9045c19f5c0e8abdc2025949db89b205",
     "../desktop/src/renderer/media-captions.tsx": "28fe3fa52ca9089b58c81167ef0ce75296edac4d3872762ab4e0cb2f9cbcfd41",
     "../desktop/src/renderer/media-preview.tsx": "703f1ac479265f1df32ee3d16a7694712c04f74735d1890f222a9dc60c7868e5",
-    "../desktop/src/renderer/video-decision.tsx": "fa97721e0299f88fec274ce3ea1b6c1d7aea690feca6f355cb9c48da559f04e5",
+    "../desktop/src/renderer/video-decision.tsx": "4f21ccdccb91081b5f5e331c92adf56527482c4d57d4ae70af47abd8003e027c",
     "../desktop/src/renderer/video-review.tsx": "6bcad3fc4ce61cccb9306e92d8eb8011f626f7d85ca1f72eff760203aa1f4bb1",
     "../../contracts/baseline.json": "68724b58d2ee5e6f08302387b9345bbee650c841e80748800f4713868d8d2943",
     "../../packages/plugin-sdk/src/baseline.ts": "8584898e3acce2c1741211ce73c6d8d0d6b6233a8e71f1ebdccda2732ce94c27",

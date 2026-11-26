@@ -68,7 +68,7 @@ export function VideoDecision({view,changed,locked}:{view:any;changed():Promise<
     <label>决定说明<textarea aria-label="决定说明" maxLength={4000} value={statement} disabled={busy} onChange={event=>setStatement(event.target.value)}/></label>
     {error&&<div role="alert"><p>{error}</p>{!pending&&<button type="button" disabled={busy} onClick={()=>void run(async()=>{await refreshJournal();await changed();})}>重新读取认可状态</button>}</div>}
     {pending&&<p role="status">前次决定尚待核对。<button type="button" disabled={busy} onClick={()=>void run(recover)}>恢复原决定</button></p>}
-    <div className="surface-filters"><button type="button" disabled={busy} onClick={()=>setDecision(undefined)}>取消</button><button type="submit" disabled={busy||!statement.trim()||pending}>{decision==="confirmed"?"确认本版":"撤回本版"}</button></div>
+    <div className="surface-filters"><button type="button" disabled={busy} onClick={()=>setDecision(undefined)}>取消</button><button type="button" disabled={busy||!statement.trim()||pending} onClick={()=>void run(save)}>{decision==="confirmed"?"确认本版":"撤回本版"}</button></div>
    </form>
   </dialog>}
  </section>;

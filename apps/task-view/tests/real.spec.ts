@@ -292,7 +292,7 @@ test("正式来源按原修订读取，单实体不扩大范围，整份设定�
   sourceClients.set(task.task_ref.task_id,machine);
   const initial=await machine.callTool({name:"hetu_open_task_view",arguments:{task_ref:task.task_ref}});
   await page.addInitScript(value=>Object.assign(window,value),{initialTask:initial,viewHtml:html,realTask:true});await page.goto(origin);
-  const view=page.frameLocator("iframe");await expect(view.getByText("来信参考稿",{exact:true})).toBeVisible();
+  const view=page.frameLocator("iframe");await expect(view.getByRole("heading",{name:"来信参考稿",exact:true})).toBeVisible();
   await view.getByLabel("补充要求或意见",{exact:true}).fill("意见仍保留，不自动保存。");
   await view.getByText("查看固定参考资料（只读）",{exact:true}).click();
   const read=view.getByRole("button",{name:"读取原文",exact:true});

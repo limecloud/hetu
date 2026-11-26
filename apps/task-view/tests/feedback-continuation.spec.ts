@@ -1,5 +1,6 @@
 import {test,expect} from "@playwright/test";
-import {mkdtemp,mkdir,writeFile} from "node:fs/promises";
+import {mkdtemp,mkdir,writeFile,chmod} from "node:fs/promises";
+import {createRequire} from "node:module";
 import {tmpdir} from "node:os";
 import path from "node:path";
 import {createHash} from "node:crypto";
@@ -9,6 +10,8 @@ import {PluginPackage} from "../../../packages/plugin-host/src/package.ts";
 import {AppServer} from "../../desktop/src/main/rpc.ts";
 import {navigate} from "../../desktop/tests/navigation.ts";
 import {openWorkbenchHost,type WorkbenchSurface} from "./workbench-host.ts";
+import {defaultSessionId,recordPath} from "../../desktop/src/main/agent/session-storage.ts";
+import {agentSessionSandbox} from "../../desktop/src/main/agent/context.ts";
 
 for(const surface of ["desktop","stdio","codex"] as WorkbenchSurface[])test(`${surface} 图片意见冲突保留输入和区域，重开后沿确切旧意见接续`,async({page},info)=>{
  test.skip(surface==="codex"&&!process.env.HETU_ACCEPT_CODEX_BINARY,"需指定官方Codex CLI");test.setTimeout(180000);
@@ -18,6 +21,14 @@ for(const surface of ["desktop","stdio","codex"] as WorkbenchSurface[])test(`${s
  const refs=JSON.parse(seeded.stdout),task=refs.artwork.task_ref,batch=refs.artwork.submission_id;
  await mkdir(profile);await writeFile(path.join(profile,"creative-library.json"),JSON.stringify({schema_version:1,roots:[{path:workspace,workspace_id:refs.work_ref.workspace_id,works:[{work_ref:refs.work_ref,title:"意见接续验收"}]}]}));
  const env={...process.env,HETU_DESKTOP_PROFILE:profile,HETU_LOCAL_SETTINGS_DIR:path.join(profile,"local-settings"),HETU_PLUGIN_STATE_DIR:profile,HETU_PLUGIN_ACCESS_DIR:access,HETU_COLLABORATION_DIR:collaboration,...(!process.env.HETU_PACKAGED_APP?{HETU_PLUGIN_NODE:process.execPath}:{})};
+ if(surface==="desktop"){
+  const binary=path.join(folder,"codex"),quote=(value:string)=>"'"+value.replaceAll("'","'\\''")+"'";
+  await writeFile(path.join(folder,"identity.json"),JSON.stringify({account:{account:null,requiresOpenaiAuth:false},configuration:{config:{}}}));
+  await writeFile(binary,"#!/bin/sh\nexec "+[process.execPath,createRequire(import.meta.url).resolve("../../desktop/tests/fixtures/identity-engine.mjs"),folder].map(quote).join(" ")+" \"$@\"\n");await chmod(binary,0o755);
+  Object.assign(env,{HETU_CODEX_BIN:binary});
+  const record=recordPath(profile,refs.work_ref);await mkdir(path.dirname(record),{recursive:true});
+  await writeFile(record,JSON.stringify({schema_version:1,session_id:defaultSessionId(refs.work_ref),title:"意见接续",cwd:agentSessionSandbox(profile,refs.work_ref),work_ref:refs.work_ref,surface:"gui",messages:[],updated_at:"2026-11-26T00:00:00Z"}));
+ }
  const core=await AppServer.open(process.env.HETU_PACKAGED_APP?path.resolve(process.env.HETU_PACKAGED_APP,"../../Resources/bin/hetu-app-server"):path.join(root,"target/debug/hetu-app-server"),workspace);
  const call=async(action:string,input:any)=>{const result=await core.request("workspace/request",{action,input,contract_revision:"1"});expect(result.status,JSON.stringify(result)).toBe("succeeded");return result.data;};
  const original=await call("hetu.interactions.get",{task_ref:task,submission_id:batch}),candidate=original.submission.candidates[0];
