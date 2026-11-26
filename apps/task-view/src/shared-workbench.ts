@@ -67,6 +67,7 @@ const bridge=new Proxy({} as DesktopBridge,{
     return host.sendText(text,"active",mode==="send");
   }} : undefined;
   if(method==="agentSessionHost")return false;
+  if(["maximize","fullscreen","windowLayout"].includes(method))return undefined;
   if(method==="windowControls"){const modes=host.getHostContext()?.availableDisplayModes;return {interfaceScale:false,zoom:!!(modes?.includes("fullscreen")&&modes.includes("inline"))};}
   if(method==="bounds")return async()=>{};
   if(method==="zoom")return async()=>{const context=host.getHostContext(),mode=context?.displayMode==="fullscreen"?"inline":"fullscreen";if(context?.availableDisplayModes?.includes(mode))await host.requestDisplayMode({mode});};

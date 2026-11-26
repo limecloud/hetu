@@ -10,8 +10,11 @@ export function ModelSettings() {
   const [connection, setConnection] = useState<any>(), [catalogs, setCatalogs] = useState<Record<string, any>>({}),
     [busy, setBusy] = useState(false), [error, setError] = useState(""), [editor, setEditor] = useState<any>(),
     [apiKey, setApiKey] = useState(""), [unknown, setUnknown] = useState(false);
-  const live = useRef(true), dialog = useRef<HTMLDialogElement>(null);
-  useEffect(() => { if (editor) dialog.current?.showModal(); }, [!!editor]);
+  const live = useRef(true), dialog = useRef<HTMLDialogElement>(null), returnFocus = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    if (editor) {if (!dialog.current?.open) dialog.current?.showModal();}
+    else if (!busy && returnFocus.current) {returnFocus.current.focus(); returnFocus.current = null;}
+  }, [!!editor, busy]);
   function closeEditor() { setEditor(undefined); setApiKey(""); setError(""); }
   async function inspect() {
     const state = await desktop.models("inspect");
@@ -38,6 +41,7 @@ export function ModelSettings() {
     return () => { live.current = false; };
   }, []);
   function edit(id?: string) {
+    returnFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const profile = id ? connection.custom_channels[id] : undefined;
     setEditor({ channel_id: id ?? `channel_${crypto.randomUUID()}`, name: profile?.name ?? "", base_url: profile?.base_url ?? "",
       text: (profile?.models.text ?? []).join("\n"), image: (profile?.models.image ?? []).join("\n"), previous: profile });

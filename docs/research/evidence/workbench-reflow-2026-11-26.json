@@ -1,0 +1,675 @@
+{
+  "recorded_at": "2026-11-26T12:45:08.161400+00:00",
+  "scope": "R7-04/08/09及41第15节：实际MCP工作台320／480重排、设置分类语义、嵌套取消与焦点、可选宿主能力",
+  "version": "0.15.0 development",
+  "changes": [
+    "440及以下顶栏按空间换行；桌面正常宽度52px基线保持",
+    "横排设置Tab声明horizontal，宽排vertical",
+    "外层设置dialog仅处理自身cancel；内层Escape不关闭外层",
+    "模型渠道弹窗保存／取消后恢复原入口焦点，忙碌完成后再恢复",
+    "MCP桥不声明原生maximize/fullscreen/windowLayout，保留实际宿主显示模式适配"
+  ],
+  "validation": {
+    "source": {
+      "report": {
+        "startTime": "2026-11-26T12:36:47.947Z",
+        "duration": 54899.109000000004,
+        "expected": 2,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "views": [
+        {
+          "theme": "dark",
+          "views": [
+            {
+              "stage": "library",
+              "width": 480
+            },
+            {
+              "stage": "library",
+              "width": 320
+            },
+            {
+              "stage": "reader",
+              "width": 480
+            },
+            {
+              "stage": "reader",
+              "width": 320
+            },
+            {
+              "stage": "settings-general",
+              "width": 480
+            },
+            {
+              "stage": "settings-general",
+              "width": 320
+            },
+            {
+              "stage": "settings-writing",
+              "width": 480
+            },
+            {
+              "stage": "settings-writing",
+              "width": 320
+            },
+            {
+              "stage": "settings-storage",
+              "width": 480
+            },
+            {
+              "stage": "settings-storage",
+              "width": 320
+            },
+            {
+              "stage": "settings-agents",
+              "width": 480
+            },
+            {
+              "stage": "settings-agents",
+              "width": 320
+            },
+            {
+              "stage": "settings-versions",
+              "width": 480
+            },
+            {
+              "stage": "settings-versions",
+              "width": 320
+            },
+            {
+              "stage": "settings-about",
+              "width": 480
+            },
+            {
+              "stage": "settings-about",
+              "width": 320
+            },
+            {
+              "stage": "settings-model-dialog",
+              "width": 320
+            }
+          ],
+          "clipped_controls": 0,
+          "root_overflow": false,
+          "settings_overflow": false,
+          "failed_rpc": []
+        },
+        {
+          "theme": "light",
+          "views": [
+            {
+              "stage": "library",
+              "width": 480
+            },
+            {
+              "stage": "library",
+              "width": 320
+            },
+            {
+              "stage": "reader",
+              "width": 480
+            },
+            {
+              "stage": "reader",
+              "width": 320
+            },
+            {
+              "stage": "settings-general",
+              "width": 480
+            },
+            {
+              "stage": "settings-general",
+              "width": 320
+            },
+            {
+              "stage": "settings-writing",
+              "width": 480
+            },
+            {
+              "stage": "settings-writing",
+              "width": 320
+            },
+            {
+              "stage": "settings-storage",
+              "width": 480
+            },
+            {
+              "stage": "settings-storage",
+              "width": 320
+            },
+            {
+              "stage": "settings-agents",
+              "width": 480
+            },
+            {
+              "stage": "settings-agents",
+              "width": 320
+            },
+            {
+              "stage": "settings-versions",
+              "width": 480
+            },
+            {
+              "stage": "settings-versions",
+              "width": 320
+            },
+            {
+              "stage": "settings-about",
+              "width": 480
+            },
+            {
+              "stage": "settings-about",
+              "width": 320
+            },
+            {
+              "stage": "settings-model-dialog",
+              "width": 320
+            }
+          ],
+          "clipped_controls": 0,
+          "root_overflow": false,
+          "settings_overflow": false,
+          "failed_rpc": []
+        }
+      ],
+      "log": "reflow-ready.log"
+    },
+    "package": {
+      "verified": {
+        "version": "0.15.0",
+        "source_sha256": "aea399451fc0eee598ea56ebf30c595c60c92a4bc103d9529f8260cabdd8de5a",
+        "source_inputs": 3086,
+        "artifacts": 3133,
+        "signature_verified": true,
+        "icon_matches": true
+      },
+      "manifest": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-recovery-acceptance-7d8jelb6/reflow-packages/hetu-dev-tG1Uq5/manifest.json",
+      "mcp_stats": {
+        "startTime": "2026-11-26T12:39:40.235Z",
+        "duration": 58302.914,
+        "expected": 2,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "desktop_stats": {
+        "startTime": "2026-11-26T12:40:17.277Z",
+        "duration": 44479.939,
+        "expected": 7,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "views": [
+        {
+          "theme": "dark",
+          "views": [
+            {
+              "stage": "library",
+              "width": 480
+            },
+            {
+              "stage": "library",
+              "width": 320
+            },
+            {
+              "stage": "reader",
+              "width": 480
+            },
+            {
+              "stage": "reader",
+              "width": 320
+            },
+            {
+              "stage": "settings-general",
+              "width": 480
+            },
+            {
+              "stage": "settings-general",
+              "width": 320
+            },
+            {
+              "stage": "settings-writing",
+              "width": 480
+            },
+            {
+              "stage": "settings-writing",
+              "width": 320
+            },
+            {
+              "stage": "settings-storage",
+              "width": 480
+            },
+            {
+              "stage": "settings-storage",
+              "width": 320
+            },
+            {
+              "stage": "settings-agents",
+              "width": 480
+            },
+            {
+              "stage": "settings-agents",
+              "width": 320
+            },
+            {
+              "stage": "settings-versions",
+              "width": 480
+            },
+            {
+              "stage": "settings-versions",
+              "width": 320
+            },
+            {
+              "stage": "settings-about",
+              "width": 480
+            },
+            {
+              "stage": "settings-about",
+              "width": 320
+            },
+            {
+              "stage": "settings-model-dialog",
+              "width": 320
+            }
+          ],
+          "clipped_controls": 0,
+          "root_overflow": false,
+          "settings_overflow": false,
+          "failed_rpc": []
+        },
+        {
+          "theme": "light",
+          "views": [
+            {
+              "stage": "library",
+              "width": 480
+            },
+            {
+              "stage": "library",
+              "width": 320
+            },
+            {
+              "stage": "reader",
+              "width": 480
+            },
+            {
+              "stage": "reader",
+              "width": 320
+            },
+            {
+              "stage": "settings-general",
+              "width": 480
+            },
+            {
+              "stage": "settings-general",
+              "width": 320
+            },
+            {
+              "stage": "settings-writing",
+              "width": 480
+            },
+            {
+              "stage": "settings-writing",
+              "width": 320
+            },
+            {
+              "stage": "settings-storage",
+              "width": 480
+            },
+            {
+              "stage": "settings-storage",
+              "width": 320
+            },
+            {
+              "stage": "settings-agents",
+              "width": 480
+            },
+            {
+              "stage": "settings-agents",
+              "width": 320
+            },
+            {
+              "stage": "settings-versions",
+              "width": 480
+            },
+            {
+              "stage": "settings-versions",
+              "width": 320
+            },
+            {
+              "stage": "settings-about",
+              "width": 480
+            },
+            {
+              "stage": "settings-about",
+              "width": 320
+            },
+            {
+              "stage": "settings-model-dialog",
+              "width": 320
+            }
+          ],
+          "clipped_controls": 0,
+          "root_overflow": false,
+          "settings_overflow": false,
+          "failed_rpc": []
+        }
+      ],
+      "logs": [
+        "reflow-package.log",
+        "reflow-desktop-package.log"
+      ]
+    },
+    "installed": {
+      "verified": {
+        "version": "0.15.0",
+        "source_sha256": "aea399451fc0eee598ea56ebf30c595c60c92a4bc103d9529f8260cabdd8de5a",
+        "source_inputs": 3086,
+        "artifacts": 3133,
+        "signature_verified": true,
+        "icon_matches": true,
+        "installed_path": "/Applications/Hetu.app",
+        "atomic_swap": true,
+        "backup_created": false,
+        "old_bundle_removed": true
+      },
+      "mcp_stats": {
+        "startTime": "2026-11-26T12:42:14.931Z",
+        "duration": 59752.423,
+        "expected": 2,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "desktop_stats": {
+        "startTime": "2026-11-26T12:42:16.345Z",
+        "duration": 42812.192,
+        "expected": 7,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "views": [
+        {
+          "theme": "dark",
+          "views": [
+            {
+              "stage": "library",
+              "width": 480
+            },
+            {
+              "stage": "library",
+              "width": 320
+            },
+            {
+              "stage": "reader",
+              "width": 480
+            },
+            {
+              "stage": "reader",
+              "width": 320
+            },
+            {
+              "stage": "settings-general",
+              "width": 480
+            },
+            {
+              "stage": "settings-general",
+              "width": 320
+            },
+            {
+              "stage": "settings-writing",
+              "width": 480
+            },
+            {
+              "stage": "settings-writing",
+              "width": 320
+            },
+            {
+              "stage": "settings-storage",
+              "width": 480
+            },
+            {
+              "stage": "settings-storage",
+              "width": 320
+            },
+            {
+              "stage": "settings-agents",
+              "width": 480
+            },
+            {
+              "stage": "settings-agents",
+              "width": 320
+            },
+            {
+              "stage": "settings-versions",
+              "width": 480
+            },
+            {
+              "stage": "settings-versions",
+              "width": 320
+            },
+            {
+              "stage": "settings-about",
+              "width": 480
+            },
+            {
+              "stage": "settings-about",
+              "width": 320
+            },
+            {
+              "stage": "settings-model-dialog",
+              "width": 320
+            }
+          ],
+          "clipped_controls": 0,
+          "root_overflow": false,
+          "settings_overflow": false,
+          "failed_rpc": []
+        },
+        {
+          "theme": "light",
+          "views": [
+            {
+              "stage": "library",
+              "width": 480
+            },
+            {
+              "stage": "library",
+              "width": 320
+            },
+            {
+              "stage": "reader",
+              "width": 480
+            },
+            {
+              "stage": "reader",
+              "width": 320
+            },
+            {
+              "stage": "settings-general",
+              "width": 480
+            },
+            {
+              "stage": "settings-general",
+              "width": 320
+            },
+            {
+              "stage": "settings-writing",
+              "width": 480
+            },
+            {
+              "stage": "settings-writing",
+              "width": 320
+            },
+            {
+              "stage": "settings-storage",
+              "width": 480
+            },
+            {
+              "stage": "settings-storage",
+              "width": 320
+            },
+            {
+              "stage": "settings-agents",
+              "width": 480
+            },
+            {
+              "stage": "settings-agents",
+              "width": 320
+            },
+            {
+              "stage": "settings-versions",
+              "width": 480
+            },
+            {
+              "stage": "settings-versions",
+              "width": 320
+            },
+            {
+              "stage": "settings-about",
+              "width": 480
+            },
+            {
+              "stage": "settings-about",
+              "width": 320
+            },
+            {
+              "stage": "settings-model-dialog",
+              "width": 320
+            }
+          ],
+          "clipped_controls": 0,
+          "root_overflow": false,
+          "settings_overflow": false,
+          "failed_rpc": []
+        }
+      ],
+      "normal_launch": {
+        "verified": true,
+        "library_works": 19,
+        "runtime": {
+          "version": "0.15.0",
+          "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+          "userData": "/Users/coso/Library/Application Support/Hetu"
+        },
+        "profile_indexes_unchanged": true
+      },
+      "original_user_indexes_unchanged": 3,
+      "final_bundle_verified": {
+        "version": "0.15.0",
+        "source_sha256": "aea399451fc0eee598ea56ebf30c595c60c92a4bc103d9529f8260cabdd8de5a",
+        "source_inputs": 3086,
+        "artifacts": 3133,
+        "signature_verified": true,
+        "icon_matches": true
+      },
+      "logs": [
+        "reflow-installed.log",
+        "reflow-desktop-installed.log"
+      ]
+    },
+    "behavior": [
+      "同一正式文稿内容和修订回读不变",
+      "浅暗每条17个当前表面测量，含320／480及渠道弹窗",
+      "设置Tab键盘和方向语义",
+      "嵌套Escape后外层仍可见，添加渠道重新获得焦点",
+      "关闭外层设置返回原创作库",
+      "原生窗口可选方法typeof为undefined，零失败RPC"
+    ],
+    "model_turns": 0
+  },
+  "first_attempts": [
+    {
+      "log": "reflow-before.log",
+      "result": "两条失败；320顶栏控件被裁切，窗口专用RPC失败；宽窗恢复后测试须沿可见入口重新展开导航"
+    },
+    {
+      "log": "reflow-before-complete.log",
+      "result": "原嵌套Escape关闭外层设置，分类方向与布局不符；保留截图及失败调用"
+    },
+    {
+      "log": "reflow-after.log",
+      "result": "布局、宿主能力及外层保留已通过，焦点未回原入口，继续修复"
+    },
+    {
+      "log": "reflow-final.log",
+      "result": "全部视觉及焦点通过；夹具使用非标准资料名及独立release缺套件资源路径，按实际合同修正环境后通过"
+    }
+  ],
+  "screenshots": {
+    "installed-model-dialog-dark-320.png": {
+      "path": "docs/research/evidence/workbench-reflow-2026-11-26/installed-model-dialog-dark-320.png",
+      "sha256": "9057d71e9bcb440bf1648d1c3a08af9117df0a9199ecb407b7d52d6b7faa92dc"
+    },
+    "installed-library-320.png": {
+      "path": "docs/research/evidence/workbench-reflow-2026-11-26/installed-library-320.png",
+      "sha256": "57df84cd459886162d565f3e9aea6209b02e7f1c231f4e2be4c626d1e94af141"
+    },
+    "before-library-320.png": {
+      "path": "docs/research/evidence/workbench-reflow-2026-11-26/before-library-320.png",
+      "sha256": "dd74ca8b960060e9ea74f6489f31480ecfce35db6421e990d2f1d426fb4e33a8"
+    },
+    "installed-reader-320.png": {
+      "path": "docs/research/evidence/workbench-reflow-2026-11-26/installed-reader-320.png",
+      "sha256": "dae3f02481df650562a05cd4f90eb3800cbf60736a3576756fcef9ed5249cbf5"
+    },
+    "installed-settings-dark-320.png": {
+      "path": "docs/research/evidence/workbench-reflow-2026-11-26/installed-settings-dark-320.png",
+      "sha256": "7304d3e4136ae3942325ec8367e42e521e24a941e1c748ffb197391c81e79355"
+    }
+  },
+  "source_sha256": {
+    "packages/workbench-ui/src/workbench.css": "5223bd744e7cd9e1b7d7065bc406b717ea7f1a2ef03b75733aee8499da806b60",
+    "apps/desktop/src/renderer/index.tsx": "69026c9c60e3c58728e14263360c30850181b74e041c9112050f1d0cf53936b8",
+    "apps/desktop/src/renderer/model-settings.tsx": "460fa38df4f2a642872b3bbb950c25e9d25330dd1863a54d3c6b9472bfaa51c8",
+    "apps/desktop/src/renderer/settings.tsx": "37a05ad63be3149d936577ca37bc75b0ca07ad043c032ffb4a0c9a36ea3da12e",
+    "apps/task-view/src/shared-workbench.ts": "52d1dc3e6bf8de878636b4d913dfba0294914fc7610b97f28c3046343e67158c",
+    "apps/task-view/tests/workbench-reflow.spec.ts": "30a04fea2631c041fc4b0b9fdfbdd4af5e72528ad9dcaec9c2736a2f13914a38"
+  },
+  "raw_evidence_root": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-recovery-acceptance-7d8jelb6",
+  "not_verified": [
+    "实际Codex Desktop原生宿主",
+    "全页面／全部展开与异步状态的视觉",
+    "VoiceOver和其他系统读屏",
+    "Windows／Linux本增量与DPI",
+    "作者试用、专业一集及正式发行"
+  ],
+  "ci_observation": {
+    "run_id": 45817354505,
+    "sha": "24eda45",
+    "website_job": "failure",
+    "failures": [
+      "editor-sort narrow submenu click",
+      "shared workbench Songti SC not installed on Linux runner"
+    ],
+    "log": "ci-24eda45-website.log",
+    "limits": "该CI不含本轮增量，其他进程的测试修复独立递交，不在本轮覆盖"
+  },
+  "final_checks": {
+    "docs": {
+      "documents": 92,
+      "local_links": 1670,
+      "fragment_links": 431,
+      "errors": 0
+    },
+    "skill": {
+      "official_validator": "passed",
+      "local_links": 19,
+      "errors": 0
+    },
+    "evidence_hashes": {
+      "checked": 11,
+      "errors": 0
+    },
+    "capability_map": "consistent",
+    "desktop_types": "passed",
+    "task_view_types": "passed",
+    "shared_resource_bytes": 1392147,
+    "git_diff_check": "passed"
+  }
+}

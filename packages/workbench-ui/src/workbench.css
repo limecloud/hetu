@@ -690,6 +690,12 @@ main { flex: 1; min-width: 0; min-height: 0; overflow: hidden; background: trans
   .workbench-page[data-surface="work.profile"] { padding: 24px; }
   .profile-heading { align-items: flex-start; flex-wrap: wrap; }
 }
+@media (max-width: 440px) {
+  .workbench-topbar { height: auto; min-height: 52px; flex: 0 0 auto; flex-wrap: wrap; padding-block: 8px; }
+  .workbench-topbar .topbar-actions { flex: 0 0 auto; max-width: 100%; }
+  .workbench-topbar .topbar-actions > button { white-space: nowrap; }
+  .workbench-topbar .document-tabs { max-width: 32vw; }
+}
 @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
   :root {
     --workbench-background: var(--page);

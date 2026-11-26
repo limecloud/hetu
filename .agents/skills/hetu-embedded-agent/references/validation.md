@@ -47,6 +47,7 @@ Node单元测试与Playwright E2E分别收集，后者使用`*.spec.ts`，避免
 | 工作区专业执行 | `packages/plugin-host/tests/workspace-execution.test.ts`、Core的`execution_connection_tests` | auto无需管理授权；confirm动态只读／集中写入；嵌套原键及业务冲突不计完成；同根他作、错客户端／目录身份、旧能力及撤权拒绝 |
 | 专业组合 | `packages/plugin-host/tests/creative-composition.test.ts`、`apps/task-view/tests/shared-workbench.spec.ts` | 两个实际包读取同一固定正文，规划不推进正式头；卸载后固定成果／原来源可读，基础写作继续，原MCP面板更新目录并保留导出 |
 | 真实窗口 | `agent-launch.spec.ts`、`agent-content.spec.ts`、`agent-business.spec.ts`、`tui-navigation.spec.ts` | 正常/窄窗创建、目录/预览切换保持执行端；从作品范围选择进入铺满会话后，直接导航须恢复实际可见的创作库及原文，不以选中项、DOM存在或非忙碌代替；重开保留线程／代次／草稿，并排和焦点正确；错误可恢复 |
+| MCP窄宽与可选宿主能力 | Task View的`workbench-reflow.spec.ts` | 320／480浅暗控件不被裁切，设置横纵Tab语义与键盘保持；嵌套Escape只关闭本层并返回原入口，未支持的原生窗口方法保持缺失且不发送RPC；固定原文与修订不变 |
 | 表面失败恢复 | `agent-surface-recovery.spec.ts`、`codex-terminal-bridge.test.ts` | 双向失败恢复当前草稿且两端独立，关闭重开原线程；拒绝／断连／归属失败／关闭结束原就绪等待，不创建新轮次或重启原引擎 |
 | 真实TUI/双表面 | `codex-tui-live.spec.ts`、`codex-terminal-interactions-live.spec.ts`、`codex-terminal-recovery-live.spec.ts` | 同一原生线程、唯一输入者、GUI/TUI独立草稿、客户端退出与引擎退出分别恢复 |
 | 原生线程输入归属 | `codex-thread-ownership-live.spec.ts`、`codex-session.test.ts`及`fixtures/native-thread-engine.mjs` | 真实`/new`与`/resume`推进代次，旧页面草稿／输入／尺寸拒绝；挂起及拒绝目标恢复时冻结投递，失败保留原线程与独立草稿。原生PTY客户端不重建，恢复后实际输入可见且零模型轮次；终端重放完成后才开启输入 |

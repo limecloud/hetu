@@ -147,6 +147,12 @@ export function LocalSettings({
   const [pageActionsTarget, setPageActionsTarget] = useState<HTMLDivElement | null>(null);
   const [readingKind, setReadingKind] = useState<ReadingKind>("novel");
   const returnTab = useRef<Tab>("general");
+  const [horizontalTabs, setHorizontalTabs] = useState(() => matchMedia("(max-width:440px)").matches);
+  useEffect(() => {
+    const query = matchMedia("(max-width:440px)"), update = () => setHorizontalTabs(query.matches);
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
   const saves = useRef<Promise<void>>(Promise.resolve());
   const currentState = useRef<any>();
   const drafts = useRef(textDrafts), closing = useRef(false), closeReady = useRef(false);
@@ -313,7 +319,7 @@ export function LocalSettings({
           : tab === "storage" ? <button disabled={busy} onClick={() => void run(async () => { await desktop.settings("handoff", { section: "storage" }); notify("已复制存储整理请求。"); })}><Icon name="sparkles"/>让 AI 整理</button>
           : <button disabled={busy} onClick={() => { returnTab.current = tab; chooseTab("plans"); void run(() => refresh()); }}><Icon name="sparkles"/>让 AI 处理与审阅{plans.some(p => p.state === "pending") && <span className="settings-pending" aria-label="有待审方案"/>}</button>}
       </div></header>
-      <div className="settings-tabs" role="tablist" aria-label="设置分类" aria-orientation="vertical">
+      <div className="settings-tabs" role="tablist" aria-label="设置分类" aria-orientation={horizontalTabs ? "horizontal" : "vertical"}>
         {categories.map(category => <div className="settings-category" role="presentation" key={category.title}><span className="settings-category-title">{category.title}</span>{tabs.filter(item => category.ids.includes(item.id)).map(item => (
           <button
             key={item.id}
