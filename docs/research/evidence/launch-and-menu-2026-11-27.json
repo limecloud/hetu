@@ -1,0 +1,681 @@
+{
+  "recorded_at": "2026-11-26T17:02:50.159632+00:00",
+  "scope": "R7/CX会话创建可读性、零位移菜单与同版安装；工程Skill持续复用，不关闭完整项目",
+  "version": "0.15.1",
+  "code_commit": "af1bd0d6fd0de2876675f4ff46ef3bd411c1dc71",
+  "changes": [
+    "错误文字复用共享role=alert，不用red-3背景语义作字色",
+    "会话创建和打开终端复用共享primary全状态，普通快捷键用muted、主操作继承颜色，不使用opacity稀释",
+    "共享菜单响应真实零位移pointermove，保留原三角容错、键盘及固定命令",
+    "用户指定路径的已有内嵌TUI/GUI Skill补原生输入、包体重核与失败经验，未创建重复Skill"
+  ],
+  "negative": {
+    "installed_contrast": {
+      "startTime": "2026-11-26T16:32:05.524Z",
+      "duration": 7263.804,
+      "expected": 0,
+      "skipped": 0,
+      "unexpected": 2,
+      "flaky": 0
+    },
+    "minimum_error_contrast": {
+      "light": 1.1469941740487635,
+      "dark": 1.0259650406144014
+    },
+    "minimum_primary_hover": {
+      "light": 1.0656144985485811,
+      "dark": 1.1182177053423232
+    },
+    "pointer_focused": {
+      "startTime": "2026-11-26T16:39:24.800Z",
+      "duration": 28274.437,
+      "expected": 0,
+      "skipped": 0,
+      "unexpected": 4,
+      "flaky": 0
+    },
+    "initial_pointer_driver": {
+      "stats": {
+        "startTime": "2026-11-26T16:37:44.134Z",
+        "duration": 69495.733,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 4,
+        "flaky": 0
+      },
+      "limit": "第一轮重复Escape后焦点尚未恢复导致附加超时；修正为明确等待关闭与焦点，再取得四条相同真实菜单负例"
+    },
+    "event_capture_driver": {
+      "stats": {
+        "startTime": "2026-11-26T16:43:47.435Z",
+        "duration": 10136.71,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 4,
+        "flaky": 0
+      },
+      "limit": "初次把零位移检查放在首轮有实际移动的位置，四项断言失败；移至关闭后原位重开，不改产品条件"
+    }
+  },
+  "source_validation": {
+    "desktop_contrast": {
+      "startTime": "2026-11-26T16:34:54.544Z",
+      "duration": 6880.423,
+      "expected": 2,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "pointer_with_keyboard": {
+      "startTime": "2026-11-26T16:41:20.563Z",
+      "duration": 5421.911,
+      "expected": 4,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "pointer_with_actual_zero_delta": {
+      "startTime": "2026-11-26T16:44:27.308Z",
+      "duration": 9051.029999999999,
+      "expected": 4,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "stationary": [
+      {
+        "case": "context-menu-pointer-light多级菜单向right展开时，斜向进入子项不误切换相邻项",
+        "x": 112,
+        "y": 346.5899963378906,
+        "movementX": 0,
+        "movementY": 0,
+        "label": "格式"
+      },
+      {
+        "case": "context-menu-pointer-dark多级菜单向right展开时，斜向进入子项不误切换相邻项",
+        "x": 112,
+        "y": 346.5899963378906,
+        "movementX": 0,
+        "movementY": 0,
+        "label": "格式"
+      },
+      {
+        "case": "context-menu-pointer-light多级菜单向left展开时，斜向进入子项不误切换相邻项",
+        "x": 682,
+        "y": 346.5899963378906,
+        "movementX": 0,
+        "movementY": 0,
+        "label": "格式"
+      },
+      {
+        "case": "context-menu-pointer-dark多级菜单向left展开时，斜向进入子项不误切换相邻项",
+        "x": 682,
+        "y": 346.5899963378906,
+        "movementX": 0,
+        "movementY": 0,
+        "label": "格式"
+      }
+    ]
+  },
+  "installed_contrast": {
+    "light": {
+      "count": 22,
+      "minimum": 4.829595695600002,
+      "observations": [
+        {
+          "state": "model-read-error",
+          "text": "模型列表读取失败，请重试。重新读取模型",
+          "contrast": 5.21223041114476
+        },
+        {
+          "state": "create-dialog",
+          "text": "作品",
+          "contrast": 5.917570593923599
+        },
+        {
+          "state": "create-dialog",
+          "text": "运行于",
+          "contrast": 5.917570593923599
+        },
+        {
+          "state": "create-dialog",
+          "text": "可选",
+          "contrast": 5.917570593923599
+        },
+        {
+          "state": "normal-label",
+          "text": "创建\n↵",
+          "contrast": 16.29325535858735
+        },
+        {
+          "state": "normal-shortcut",
+          "text": "↵",
+          "contrast": 16.29325535858735
+        },
+        {
+          "state": "hover-label",
+          "text": "创建\n↵",
+          "contrast": 5.917570593923599
+        },
+        {
+          "state": "hover-shortcut",
+          "text": "↵",
+          "contrast": 5.917570593923599
+        },
+        {
+          "state": "pressed-label",
+          "text": "创建\n↵",
+          "contrast": 16.29325535858735
+        },
+        {
+          "state": "pressed-shortcut",
+          "text": "↵",
+          "contrast": 16.29325535858735
+        },
+        {
+          "state": "normal-label",
+          "text": "打开聊天\n⌘↵",
+          "contrast": 15.475590546459427
+        },
+        {
+          "state": "normal-shortcut",
+          "text": "⌘↵",
+          "contrast": 5.6206017475239705
+        },
+        {
+          "state": "hover-label",
+          "text": "打开聊天\n⌘↵",
+          "contrast": 14.297209287725707
+        },
+        {
+          "state": "hover-shortcut",
+          "text": "⌘↵",
+          "contrast": 5.192623781694192
+        },
+        {
+          "state": "pressed-label",
+          "text": "打开聊天\n⌘↵",
+          "contrast": 13.29765901364101
+        },
+        {
+          "state": "pressed-shortcut",
+          "text": "⌘↵",
+          "contrast": 4.829595695600002
+        },
+        {
+          "state": "normal-label",
+          "text": "打开终端\n↵",
+          "contrast": 16.29325535858735
+        },
+        {
+          "state": "normal-shortcut",
+          "text": "↵",
+          "contrast": 16.29325535858735
+        },
+        {
+          "state": "hover-label",
+          "text": "打开终端\n↵",
+          "contrast": 5.917570593923599
+        },
+        {
+          "state": "hover-shortcut",
+          "text": "↵",
+          "contrast": 5.917570593923599
+        },
+        {
+          "state": "pressed-label",
+          "text": "打开终端\n↵",
+          "contrast": 16.29325535858735
+        },
+        {
+          "state": "pressed-shortcut",
+          "text": "↵",
+          "contrast": 16.29325535858735
+        }
+      ],
+      "result": {
+        "appearance": "light",
+        "packaged": true,
+        "model_read_recovered": true,
+        "focus_restored": true,
+        "engine_creations": 0,
+        "model_messages": 0
+      }
+    },
+    "dark": {
+      "count": 22,
+      "minimum": 6.922593581646245,
+      "observations": [
+        {
+          "state": "model-read-error",
+          "text": "模型列表读取失败，请重试。重新读取模型",
+          "contrast": 7.5504566217118
+        },
+        {
+          "state": "create-dialog",
+          "text": "作品",
+          "contrast": 7.673325233217725
+        },
+        {
+          "state": "create-dialog",
+          "text": "运行于",
+          "contrast": 7.673325233217725
+        },
+        {
+          "state": "create-dialog",
+          "text": "可选",
+          "contrast": 7.673325233217725
+        },
+        {
+          "state": "normal-label",
+          "text": "创建\n↵",
+          "contrast": 16.275267230207366
+        },
+        {
+          "state": "normal-shortcut",
+          "text": "↵",
+          "contrast": 16.275267230207366
+        },
+        {
+          "state": "hover-label",
+          "text": "创建\n↵",
+          "contrast": 9.107228784627152
+        },
+        {
+          "state": "hover-shortcut",
+          "text": "↵",
+          "contrast": 9.107228784627152
+        },
+        {
+          "state": "pressed-label",
+          "text": "创建\n↵",
+          "contrast": 16.275267230207366
+        },
+        {
+          "state": "pressed-shortcut",
+          "text": "↵",
+          "contrast": 16.275267230207366
+        },
+        {
+          "state": "normal-label",
+          "text": "打开聊天\n⌘↵",
+          "contrast": 15.153619579980617
+        },
+        {
+          "state": "normal-shortcut",
+          "text": "⌘↵",
+          "contrast": 8.479583067855453
+        },
+        {
+          "state": "hover-label",
+          "text": "打开聊天\n⌘↵",
+          "contrast": 13.71277933916805
+        },
+        {
+          "state": "hover-shortcut",
+          "text": "⌘↵",
+          "contrast": 7.673325233217725
+        },
+        {
+          "state": "pressed-label",
+          "text": "打开聊天\n⌘↵",
+          "contrast": 12.371168346796235
+        },
+        {
+          "state": "pressed-shortcut",
+          "text": "⌘↵",
+          "contrast": 6.922593581646245
+        },
+        {
+          "state": "normal-label",
+          "text": "打开终端\n↵",
+          "contrast": 16.275267230207366
+        },
+        {
+          "state": "normal-shortcut",
+          "text": "↵",
+          "contrast": 16.275267230207366
+        },
+        {
+          "state": "hover-label",
+          "text": "打开终端\n↵",
+          "contrast": 9.107228784627152
+        },
+        {
+          "state": "hover-shortcut",
+          "text": "↵",
+          "contrast": 9.107228784627152
+        },
+        {
+          "state": "pressed-label",
+          "text": "打开终端\n↵",
+          "contrast": 16.275267230207366
+        },
+        {
+          "state": "pressed-shortcut",
+          "text": "↵",
+          "contrast": 16.275267230207366
+        }
+      ],
+      "result": {
+        "appearance": "dark",
+        "packaged": true,
+        "model_read_recovered": true,
+        "focus_restored": true,
+        "engine_creations": 0,
+        "model_messages": 0
+      }
+    }
+  },
+  "package": {
+    "manifest": "/private/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-launch-contrast-20261127/packages/hetu-dev-NhNHpm/manifest.json",
+    "verification": {
+      "version": "0.15.1",
+      "source_sha256": "b5fe3dd411f606df653d2b4a710e61004480983b06bcde30f2931b05df14e430",
+      "source_inputs": 3086,
+      "artifacts": 3133,
+      "signature_verified": true,
+      "icon_matches": true
+    },
+    "desktop": {
+      "startTime": "2026-11-26T16:53:48.798Z",
+      "duration": 37947.168,
+      "expected": 6,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "stdio": {
+      "startTime": "2026-11-26T16:55:13.107Z",
+      "duration": 18875.282,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "additional_launch_check": {
+      "startTime": "2026-11-26T16:52:37.069Z",
+      "duration": 15041.699,
+      "expected": 3,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    }
+  },
+  "installation": {
+    "baseline_mismatch_preserved": true,
+    "identified_previous_install": {
+      "version": "0.15.0",
+      "git_sha": "8fa2546adca1dc70550f033186fc716794349994",
+      "artifacts": 3134,
+      "complete_public_manifest_match": true,
+      "signature_verified": true,
+      "origin_of_replacement": "未从本轮证据确定，不把先前开发包假定为当前安装"
+    },
+    "difference_paths": 38,
+    "verification": {
+      "version": "0.15.1",
+      "source_sha256": "b5fe3dd411f606df653d2b4a710e61004480983b06bcde30f2931b05df14e430",
+      "source_inputs": 3086,
+      "artifacts": 3133,
+      "signature_verified": true,
+      "icon_matches": true,
+      "installed_path": "/Applications/Hetu.app",
+      "atomic_swap": true,
+      "backup_created": false,
+      "old_bundle_removed": true,
+      "profile_indexes_unchanged": true
+    },
+    "desktop": {
+      "startTime": "2026-11-26T16:58:44.026Z",
+      "duration": 44737.172,
+      "expected": 6,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "stdio": {
+      "startTime": "2026-11-26T16:59:29.377Z",
+      "duration": 20683.667999999998,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "normal_profile": {
+      "verified": true,
+      "library_works": 19,
+      "runtime": {
+        "version": "0.15.1",
+        "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+        "userData": "/Users/coso/Library/Application Support/Hetu"
+      },
+      "profile_indexes_unchanged": true
+    },
+    "earlier_ime_identity": "替换时点未确定，前四轮IME未逐轮核验包体，已在原证据增加身份审计，不将其归为a4e01d4d源码通过"
+  },
+  "website": {
+    "build": {
+      "pages": 227,
+      "local_references": 14003
+    },
+    "tests": {
+      "startTime": "2026-11-26T16:47:43.701Z",
+      "duration": 203313.095,
+      "expected": 658,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "deployment": {
+      "deployment": "7032db8d",
+      "source": "af1bd0d6fd0de2876675f4ff46ef3bd411c1dc71",
+      "version": "0.15.1",
+      "routes": [
+        {
+          "kind": "deployment",
+          "route": "/",
+          "status": 200,
+          "sha256": "05d4f492bf0a60534d72b3ec8e65bf9d43bc3bad8f5c7886f699f5f968045016",
+          "exact_match": true,
+          "recognized_beacon_count": 0,
+          "matches_after_recognized_beacon": true
+        },
+        {
+          "kind": "custom",
+          "route": "/",
+          "status": 200,
+          "sha256": "24d798d74a7dc5b30f766b0c023fae88bf1a9d2525cebf1cbab3d499c40c8573",
+          "exact_match": false,
+          "recognized_beacon_count": 1,
+          "matches_after_recognized_beacon": true
+        },
+        {
+          "kind": "deployment",
+          "route": "/en/",
+          "status": 200,
+          "sha256": "95239cb2624851810fd1bc7e544a17991cd0fad14cce8e5a342929d95c62f4b0",
+          "exact_match": true,
+          "recognized_beacon_count": 0,
+          "matches_after_recognized_beacon": true
+        },
+        {
+          "kind": "custom",
+          "route": "/en/",
+          "status": 200,
+          "sha256": "a6c1b592d1c712fe011780b57827e696df12b105a2fbec469b926485a452f886",
+          "exact_match": false,
+          "recognized_beacon_count": 1,
+          "matches_after_recognized_beacon": true
+        },
+        {
+          "kind": "deployment",
+          "route": "/docs/agents/",
+          "status": 200,
+          "sha256": "1cb7a0117bd8c8d328d3eb33af8a20563f81e93349449cd6479ce0d020585764",
+          "exact_match": true,
+          "recognized_beacon_count": 0,
+          "matches_after_recognized_beacon": true
+        },
+        {
+          "kind": "custom",
+          "route": "/docs/agents/",
+          "status": 200,
+          "sha256": "5e81aad392f8a08acbb667a840143a78e6f9c576a8202f6174098f6dd26a2dd4",
+          "exact_match": false,
+          "recognized_beacon_count": 1,
+          "matches_after_recognized_beacon": true
+        },
+        {
+          "kind": "deployment",
+          "route": "/en/docs/agents/",
+          "status": 200,
+          "sha256": "479631b61fcad5fdf28ee6c5aa98e0b23bd18a0ec86c6de79df3c6c7d49e7592",
+          "exact_match": true,
+          "recognized_beacon_count": 0,
+          "matches_after_recognized_beacon": true
+        },
+        {
+          "kind": "custom",
+          "route": "/en/docs/agents/",
+          "status": 200,
+          "sha256": "9702f07f008d12515d0abd7e873ff30b4dede9e36151b06d9dcd86c2cad7fce8",
+          "exact_match": false,
+          "recognized_beacon_count": 1,
+          "matches_after_recognized_beacon": true
+        }
+      ],
+      "normalization_boundary": "固定部署地址四页原字节一致；正式域名仅移除已识别Cloudflare beacon脚本和它追加的单个换行，其余原字节一致，不称原始字节相同。",
+      "initial_checks": [
+        "默认urllib User-Agent返回403，后续使用相同明确验证UA；未改WAF",
+        "首轮严格原字节核对失败，定位到正式域名新增beacon；首次移除脚本仍遗留一个新增换行，局部字节核对后明确归属"
+      ]
+    }
+  },
+  "ci": {
+    "previous": {
+      "run_id": 45855772269,
+      "sha": "1fe5803e974df31f635729dbfb80c2f0b7ba734a",
+      "status": "failure",
+      "optimized_core": "success",
+      "desktop": {
+        "passed": 94,
+        "skipped": 25,
+        "failed": 0
+      },
+      "website": {
+        "passed": 658
+      },
+      "task_view": {
+        "passed": 130,
+        "skipped": 19,
+        "failed": 1
+      },
+      "failure": "760px排序第二次Shift+F10后，hover返回、指针到父项但未展开，负例及同坐标重开验证指向零位移守卫；保留原trace"
+    },
+    "current": {
+      "run_id": 45862793013,
+      "sha": "af1bd0d6fd0de2876675f4ff46ef3bd411c1dc71",
+      "status": "in_progress_last_observed",
+      "optimized_core": "success",
+      "limits": "不以本机通过推定远端终态"
+    }
+  },
+  "release": {
+    "tag": "v0.15.1",
+    "sha": "af1bd0d6fd0de2876675f4ff46ef3bd411c1dc71",
+    "run_id": 45863998814,
+    "status": "in_progress_last_observed",
+    "limits": "旧v0.15.0公开标签保持，待三平台、签名公证、发布与npm实际终态"
+  },
+  "driver_failures": [
+    "系统python缺少yaml／markdown_it，复用uv隔离依赖后检查通过，未全局安装",
+    "误用仓库node_modules/npm路径及workspace内wrangler路径；改用实际已安装入口",
+    "源码首轮指定不存在debug制品，应用提前关闭，cleanup掩盖首错误；保留trace，配套release路径后通过并将新专项主错误与cleanup分开记录",
+    "包内stdio首轮grep锚定到整个测试标题首位，零用例并失败；修正筛选后真实1项通过，不把零测试计通过",
+    "覆盖门禁拒绝旧假定安装；实际公共清单完整核验后才按原授权覆盖",
+    "正式域名严格字节不一致及默认UA403；固定部署原字节一致，正式域名仅已识别beacon及新增换行后其余字节一致，不改WAF",
+    "一次全篇SequenceMatcher字节差异诊断较慢，改用首个不等字节直接定位新增换行；不影响产品或测试结果"
+  ],
+  "screenshots": {
+    "installed-light-error.png": {
+      "path": "docs/research/evidence/launch-and-menu-2026-11-27/installed-light-error.png",
+      "sha256": "2486e50ea366558579a45ba026c3e6e49a88e898c9869ae39bf855e3c6187ee1"
+    },
+    "installed-light-recovered.png": {
+      "path": "docs/research/evidence/launch-and-menu-2026-11-27/installed-light-recovered.png",
+      "sha256": "df52c39bc05c1ef7fcdab4cff933385e54b4544bcf62ab9652f01cecf9451948"
+    },
+    "negative-light-error.png": {
+      "path": "docs/research/evidence/launch-and-menu-2026-11-27/negative-light-error.png",
+      "sha256": "053e8e5064127c26ce208db5c4b0bd1de35f3e9289ede73af9c3bd965d94a9a6"
+    },
+    "installed-dark-error.png": {
+      "path": "docs/research/evidence/launch-and-menu-2026-11-27/installed-dark-error.png",
+      "sha256": "0bbf77210f33c8cfe8f9488622f65544b82e421cffac15372da4835659a2a9b4"
+    },
+    "installed-dark-recovered.png": {
+      "path": "docs/research/evidence/launch-and-menu-2026-11-27/installed-dark-recovered.png",
+      "sha256": "6ce17175368fb0f6ab80aa2b1c6de36249a1adf1f9932fca03075548b00463ad"
+    },
+    "negative-dark-error.png": {
+      "path": "docs/research/evidence/launch-and-menu-2026-11-27/negative-dark-error.png",
+      "sha256": "25c5360f7c128841f1ef2aa6ace04431f75bfc76d1a205bf97cb0928745ef794"
+    },
+    "ci-menu-not-open.png": {
+      "path": "docs/research/evidence/launch-and-menu-2026-11-27/ci-menu-not-open.png",
+      "sha256": "9b803dc5895014b0816d8079822b9f61e5a48d81f21aef1eaadf8f28023d93b0"
+    },
+    "fixed-dark-submenu.png": {
+      "path": "docs/research/evidence/launch-and-menu-2026-11-27/fixed-dark-submenu.png",
+      "sha256": "21c6a898a1c4992cdeee80b57e0a7c1bd126cc8fcef1d62f5fe4a8101d66c870"
+    }
+  },
+  "source_sha256": {
+    "apps/desktop/src/renderer/agent-launch-dialog.tsx": "150d266707c6e871712d0268b8cb20b7411de3be547011956c633fcb9605d703",
+    "apps/desktop/src/renderer/codex-session.css": "d8b13bd2545c37313d1438a20cb28c2bdb8abbb12d792032a377dc14511a00a4",
+    "packages/workbench-ui/src/context-menu.tsx": "901cc6f0c87160f3b91693175ba19374f2765347d3081ebb83eff9396f35ccef",
+    "apps/desktop/tests/agent-launch-contrast.spec.ts": "f418535450d5477e6e4208c400b8537db29738e648ab7ca5b1e0ee54b1fb42d6",
+    "apps/task-view/tests/context-menu-pointer.spec.ts": "1144988b2a872c33e16b05ab0dccada0786013c58097cf9e9870307dae068bbd",
+    ".agents/skills/hetu-embedded-agent/SKILL.md": "97d14f51df916bc66cfae4e47c9e90c97246793cb23d118927ad0d61e34d9fa9",
+    ".agents/skills/hetu-embedded-agent/references/validation.md": "a0322a80e157e680bf6245b19f25fedc32377e35f7f894a3687d49e7f384ff7b"
+  },
+  "model_turns": 0,
+  "raw_evidence_root": "/private/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-launch-contrast-20261127",
+  "logs_sha256": {
+    "ci-web-140033768231.log": "fcd8306a883d6c7be04fe77eaea2e279a671464a26543712f81f3d35eb6799ff",
+    "ci-electron-140033768401.log": "aca81e5ab6ec494f7567a61fac7d6361f3e1dfd7cf79eedd2ebd3cadb1562467",
+    "package.log": "51258415dfd781f3884bc6e90d1b476be9cc1098704af7481da9ac01f50a0c25",
+    "fixtures-build.log": "c4ddb0021a9e5ae63ed5fa60464f90fb6474cea70ebec93ace6e1146e6a2491b",
+    "website-build.log": "20f09f259837b4acd9b7ecb848cee0c58ea8db81e13aaf2d7211c819f6d35885",
+    "website-deploy.log": "2e92da7bbf77daae2df2467fe5e65f2ddcb7e831d384e6d27f172f509ec9350d"
+  },
+  "not_verified": [
+    "完整GUI/TUI真实系统输入法及VoiceOver",
+    "当前原生Codex Desktop MCP App完整宿主交互",
+    "全部界面／独立插件的视觉与可访问性",
+    "Windows/Linux真实IME、DPI及最新软件同版实机旅程",
+    "间歇退出根因",
+    "真实一集完整制作、返工、外部工程恢复及作者试用价值对照",
+    "本对话常驻MCP热加载；原连接未重启"
+  ],
+  "final_checks": {
+    "documents": 92,
+    "local_links": 1684,
+    "fragment_links": 431,
+    "errors": 0,
+    "skill": "valid",
+    "skill_links": 20,
+    "source_and_screenshots_match": true,
+    "release_versions": "0.15.1 verified",
+    "capability_map": "consistent",
+    "diff_check": "passed"
+  },
+  "native_host_probe": {
+    "surface": "mcp__cua_repl",
+    "action": "getState",
+    "result": "failed to write kernel assets: No such file or directory (os error 2)",
+    "native_desktop_status": "not verified",
+    "retry_policy": "本次初始化仍失败，保留原回执，不重复相同条件调用，不记作产品MCP失败或完整宿主通过"
+  }
+}

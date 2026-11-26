@@ -3,12 +3,13 @@
   "scope": "CX-04/06安装版系统IME补验，保留失败及中文候选就绪诊断，不关闭完整旅程",
   "application": {
     "version": "0.15.0 development",
-    "source_sha256": "a4e01d4d5add96d8f11959471eb2de270c6e95965205dcf6f3683dd90011935b",
     "installed_path": "/Applications/Hetu.app",
     "unchanged_product_code": true,
     "engine": "Codex CLI 0.172.0",
     "input_method": "Sogou Pinyin",
-    "platform": "macOS arm64"
+    "platform": "macOS arm64",
+    "previous_assumed_source_sha256": "a4e01d4d5add96d8f11959471eb2de270c6e95965205dcf6f3683dd90011935b",
+    "source_identity_status": "后续覆盖前完整核对发现实际安装为公开签名v0.15.0／8fa2546；替换时点未确定，本记录四轮IME没有逐轮完整包体核验，不能证明先前假定a4e01d4d源码的安装行为。保留观察与失败，不扩大版本归属。"
   },
   "attempts": {
     "foreground": {
@@ -219,6 +220,7 @@
   "model_turns": 0,
   "raw_evidence_root": "/private/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-native-install-20261127",
   "not_verified": [
+    "四轮IME的确切安装源码摘要；后续发现当前包与先前开发包基线不同",
     "完整安装版GUI/TUI系统输入法旅程；候选等待期间共享桌面切走，仍为失败",
     "空格按当前输入法选择的具体字词不固定，中文实际输入仍独立要求",
     "VoiceOver、Windows/Linux真实IME及跨平台字形",
@@ -239,5 +241,12 @@
     "diff_check": "passed",
     "full_ime_journey": "not passed, preserved",
     "runner": "文档与Skill检查通过uv隔离依赖执行；系统python缺少markdown_it／yaml的前置错误已保留，未全局安装"
+  },
+  "identity_audit": {
+    "date": "2026-11-27",
+    "reference": "docs/research/evidence/launch-and-menu-2026-11-27.json",
+    "later_installed_git_sha": "8fa2546adca1dc70550f033186fc716794349994",
+    "later_public_manifest_complete_match": true,
+    "replacement_time_known": false
   }
 }
