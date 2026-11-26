@@ -148,7 +148,8 @@ function Menu({request, level, depth, expanded, close, execute, open, trim, back
         pointerGrace.current = {until: Date.now() + 300, direction, origin: {x: event.clientX - direction * 5, y: event.clientY}, edge: direction > 0 ? bounds.left : bounds.right, top: bounds.top, bottom: bounds.bottom};
       }}
       onPointerMove={event => {
-        if (item.disabled || !event.movementX && !event.movementY) return;
+        // iframe重排或原坐标重开后真实hover可能零位移，仍须响应本次指针事件。
+        if (item.disabled) return;
         const previousX = pointerX.current; pointerX.current = event.clientX;
         if (pointerGrace.current && movingIntoSubmenu(event, previousX, pointerGrace.current)) return;
         pointerGrace.current = undefined;

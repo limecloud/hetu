@@ -14,7 +14,7 @@ for (const theme of ["light", "dark"] as const) for (const side of ["right", "le
       const items = [...Array.from({length: 8}, (_, index) => ({id: "before" + index, label: "前项" + index, shortcut: "⌘" + index, danger: index === 0, disabled: index === 7, action: () => choose("前项" + index)})),
         {id: "group", label: "格式", children: Array.from({length: 6}, (_, index) => ({id: "child" + index, label: "子项" + index, shortcut: "⌘" + index, action: () => choose("子项" + index)}))},
         ...Array.from({length: 8}, (_, index) => ({id: "after" + index, label: "后项" + index, action: () => choose("后项" + index)}))];
-      return <><button style={{position: "fixed", left: ${x}, top: 120}} onContextMenu={event => show(event, "指针验收", items)}>打开菜单</button><output aria-label="执行结果"/></>;
+      return <><button style={{position: "fixed", left: ${x}, top: 120}} onContextMenu={event => show(event, "指针验收", items)} onKeyDown={event => {if(event.key === "F10" && event.shiftKey) show(event, "指针验收", items);}}>打开菜单</button><output aria-label="执行结果"/></>;
     }
     createRoot(document.getElementById("root")).render(<ContextMenuProvider><Fixture/></ContextMenuProvider>);
   `}, bundle: true, write: false, format: "iife", platform: "browser", target: "es2022"});
@@ -24,6 +24,9 @@ for (const theme of ["light", "dark"] as const) for (const side of ["right", "le
   await page.addStyleTag({content: await readFile(path.join(root, "assets/styles/radix-workbench.css"), "utf8")});
   await page.addStyleTag({content: await readFile(path.join(root, "apps/desktop/dist/renderer/style.css"), "utf8")});
   await page.addScriptTag({content: compiled.outputFiles[0].text});
+  await page.evaluate(() => document.addEventListener("pointermove", event => {
+    (window as any).__lastMenuPointer = {x: event.clientX, y: event.clientY, movementX: event.movementX, movementY: event.movementY, label: (event.target as Element).closest('[role="menuitem"]')?.getAttribute("aria-label")};
+  }));
   const trigger = page.getByRole("button", {name: "打开菜单", exact: true});
   await trigger.click({button: "right", position: {x: 4, y: 31}});
   const parent = page.getByRole("menuitem", {name: "格式", exact: true}); await parent.hover();
@@ -73,5 +76,13 @@ for (const theme of ["light", "dark"] as const) for (const side of ["right", "le
   await page.screenshot({path: info.outputPath(`pointer-${side}-high-contrast.png`)}); await cdp.detach();
   await page.keyboard.press("Escape"); await expect(parent).toBeFocused();
   await page.keyboard.press("Escape"); await expect(trigger).toBeFocused();
+  // 键盘重开时指针已在父项中心，零位移hover仍应打开子菜单。
+  await trigger.press("Shift+F10"); await expect(danger).toBeFocused(); await parent.hover(); await expect(submenu).toBeVisible();
+  await page.keyboard.press("Escape"); await expect(page.getByRole("menu")).toHaveCount(0); await expect(trigger).toBeFocused();
+  await trigger.press("Shift+F10"); await expect(danger).toBeFocused(); await parent.hover(); await expect(submenu).toBeVisible();
+  const stationary = await page.evaluate(() => (window as any).__lastMenuPointer);
+  await writeFile(info.outputPath("stationary-hover.json"), JSON.stringify(stationary, null, 2) + "\n");
+  expect(stationary).toMatchObject({movementX: 0, movementY: 0, label: "格式"});
+  await page.keyboard.press("Escape"); await expect(page.getByRole("menu")).toHaveCount(0); await expect(trigger).toBeFocused();
   await page.screenshot({path: info.outputPath(`pointer-${side}.png`)});
 });

@@ -51,9 +51,9 @@ dialog.agent-launch-dialog { box-sizing:border-box; width:min(512px,calc(100vw -
 .agent-engine-picker footer { padding:8px; border-top:.5px solid var(--line); }
 .agent-engine-picker footer > button { flex:1; }
 .agent-launch-dialog footer button { display:flex; align-items:center; gap:8px; min-height:32px; padding:4px 12px; border:.5px solid var(--line); border-radius:7px; font-size:14px; }
-.agent-launch-dialog .agent-launch-primary { background:var(--gray-12); color:var(--gray-1); border-color:var(--gray-12); }
-.agent-launch-dialog kbd { color:inherit; opacity:.6; font-size:12px; margin-left:auto; }
-.agent-launch-error { font-size:12px; color:var(--danger); margin:0; overflow-wrap:anywhere; }
+.agent-launch-dialog kbd { color:var(--muted); font-size:12px; margin-left:auto; }
+.agent-launch-dialog .primary kbd { color:inherit; }
+.agent-launch-error { font-size:12px; margin:0; overflow-wrap:anywhere; }
 
 .codex-session-header { display:flex; flex-shrink:0; justify-content:space-between; align-items:center; gap:12px; padding-bottom:12px; border-bottom:.5px solid var(--line); }
 .codex-session-header > div:first-child { display:flex; align-items:baseline; gap:12px; }
