@@ -5,10 +5,11 @@ import os from "node:os";
 import path from "node:path";
 import {navigate,closeApplication,openDirectory} from "./navigation.ts";
 import {AppServer} from "../src/main/rpc.ts";
+import {fixtureBinary} from "./acceptance-paths.ts";
 const root=path.resolve(import.meta.dirname,"../../..");
 async function launch(){
  const folder=await mkdtemp(path.join(os.tmpdir(),"hetu-first-open-")),workspace=path.join(folder,"work"),profile=path.join(folder,"profile"),collaboration=path.join(folder,"collaboration");
- const fixture=spawnSync(path.join(root,"target/debug/examples/baseline_fixture"),[workspace,collaboration],{encoding:"utf8"});expect(fixture.status,fixture.stderr).toBe(0);
+ const fixture=spawnSync(fixtureBinary("baseline_fixture"),[workspace,collaboration],{encoding:"utf8"});expect(fixture.status,fixture.error?.message??fixture.stderr).toBe(0);
  const refs=JSON.parse(fixture.stdout);await mkdir(profile);await writeFile(path.join(profile,"creative-library.json"),JSON.stringify({schema_version:1,roots:[{path:workspace,workspace_id:refs.novel.workspace_id,works:[{work_ref:refs.novel,title:"默认小说"}]}]}));
  const executable=process.env.HETU_PACKAGED_APP;
  const app=await electron.launch({...(executable?{executablePath:executable,args:[]}:{args:[path.join(root,"apps/desktop")]}),env:{...process.env,HETU_DESKTOP_PROFILE:profile,HETU_COLLABORATION_DIR:collaboration,...(!executable?{HETU_APP_SERVER:path.join(root,"target/debug/hetu-app-server"),HETU_CLI:path.join(root,"target/debug/hetu"),HETU_MCP:path.join(root,"target/debug/hetu-mcp"),HETU_PLUGIN_NODE:process.execPath}:{})}});

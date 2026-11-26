@@ -4,18 +4,19 @@ import {tmpdir, cpus, totalmem} from "node:os";
 import path from "node:path";
 import {spawnSync} from "node:child_process";
 import {AppServer} from "../src/main/rpc.ts";
-import {documentAction, navigate} from "./navigation.ts";
+import {documentAction, navigate, closeApplication} from "./navigation.ts";
 import {manuscriptFormat, manuscriptVisibleText} from "../../../packages/workbench-ui/src/manuscript-format.ts";
+import {fixtureBinary,machineBinary} from "./acceptance-paths.ts";
 
 test("十万汉字章真实输入到绘制p95及保存字节回读", async ({}, info) => {
   test.setTimeout(120000);
   const root = path.resolve("../.."), directory = await mkdtemp(path.join(tmpdir(), "hetu-editor-performance-")), workspace = path.join(directory, "work"), profile = path.join(directory, "profile");
   await mkdir(profile);
-  const made = spawnSync(path.join(root, "target/debug/examples/baseline_fixture"), [workspace, path.join(directory, "collaboration")], {encoding: "utf8"});
-  expect(made.status, made.stderr).toBe(0); const refs = JSON.parse(made.stdout), id = refs.document.document.document_id;
+  const made = spawnSync(fixtureBinary("baseline_fixture"), [workspace, path.join(directory, "collaboration")], {encoding: "utf8"});
+  expect(made.status, made.error?.message??made.stderr).toBe(0); const refs = JSON.parse(made.stdout), id = refs.document.document.document_id;
   const paragraph = "江岚把旧日记放回书袋沿着海岸寻找灯塔每一封信都有自己的来处".repeat(4).slice(0, 100), source = Array.from({length: 1000}, () => paragraph).join("\n\n");
   expect((source.match(/\p{Script=Han}/gu) ?? []).length).toBe(100000);
-  const core = await AppServer.open(path.join(root, "target/debug/hetu-app-server"), workspace);
+  const core = await AppServer.open(machineBinary("hetu-app-server"), workspace);
   try {
     const saved = await core.request("workspace/request", {action: "hetu.documents.save", input: {document_id: id, base_revision_id: refs.document.revision.revision_id, source_format: "markdown", content: source, operation_key: "performance-source"}, contract_revision: "1"});
     expect(saved.status).toBe("succeeded");
@@ -66,5 +67,5 @@ test("十万汉字章真实输入到绘制p95及保存字节回读", async ({}, 
     await expect(page.locator(".notice")).toContainText("已保存新修订");
     const actual = await page.evaluate(async id => (await (window as any).hetuDesktop.read("hetu.documents.get", {document_id: id})).data.content, id);
     expect(actual).toBe(draft);
-  } finally {await app.close();}
+  } finally {await closeApplication(app);}
 });

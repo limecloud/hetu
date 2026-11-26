@@ -7,6 +7,7 @@ import {Client} from "@modelcontextprotocol/client";
 import {StdioClientTransport} from "@modelcontextprotocol/client/stdio";
 import {agentSessionSandbox} from "../src/main/agent/context.ts";
 import {discoverEngines} from "../src/main/agent/engines.ts";
+import {fixtureBinary} from "./acceptance-paths.ts";
 import {closeApplication} from "./navigation.ts";
 
 const root=path.resolve(import.meta.dirname,"../../..");
@@ -14,7 +15,7 @@ test("原会话真实MCP保存后打开确切历史视频与停用插件成果�
  test.setTimeout(240000);
  test.skip(!(await discoverEngines()).some(engine=>engine.id==="claude-code"&&engine.available),"需本机原生CLI验证PTY，不发送模型请求");
  const folder=await mkdtemp(path.join(os.tmpdir(),"hetu-session-media-")),workspace=path.join(folder,"作品"),profile=path.join(folder,"profile"),collaboration=path.join(folder,"collaboration");
- const seeded=spawnSync(path.join(root,"target/debug/examples/baseline_fixture"),[workspace,collaboration],{encoding:"utf8"});expect(seeded.status,seeded.stderr).toBe(0);const refs=JSON.parse(seeded.stdout),work=refs.video;
+ const seeded=spawnSync(fixtureBinary("baseline_fixture"),[workspace,collaboration],{encoding:"utf8"});expect(seeded.status,seeded.error?.message??seeded.stderr).toBe(0);const refs=JSON.parse(seeded.stdout),work=refs.video;
  await mkdir(profile);await writeFile(path.join(profile,"creative-library.json"),JSON.stringify({schema_version:1,roots:[{path:workspace,workspace_id:work.workspace_id,works:[{work_ref:work,title:"默认视频"}]}]}));
  const owner="org.hetu.session-review",pkg=path.join(folder,"review-plugin");await mkdir(pkg);
  await writeFile(path.join(pkg,"plugin.json"),JSON.stringify({manifest_version:1,host_api:"1",id:owner,version:"1.0.0",license:"MIT",dependencies:[],work_kinds:["video"],display:{"zh-CN":"视频审阅记录",en:"Video review notes"},description:{"zh-CN":"隔离会话成果验收",en:"Isolated session result acceptance"},runtime:{entry:"backend.mjs"},contributions:{views:[],skills:[],data:[{kind:"review_notes",schema_version:"1",schema:{type:"object",additionalProperties:false,required:["note"],properties:{note:{type:"string"}}}}],actions:[{id:"save_note",title:"保存审阅记录",effect:"managed_write",input_schema:{type:"object",additionalProperties:false,required:["title","note","expected_revision","expected_sha256","operation_key"],properties:{object_id:{type:"string"},title:{type:"string"},note:{type:"string"},expected_revision:{type:"integer"},expected_sha256:{type:"string"},operation_key:{type:"string"}}}}]}}));

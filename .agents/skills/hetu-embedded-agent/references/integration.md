@@ -159,6 +159,8 @@ MCP大结果可能只返回摘要，`core_actions`或`data_actions`省略不等�
 
 开发环境的Node、native addon与Electron运行时不能混为一谈。核对实际ABI、平台及架构，使用正式构建和打包脚本带齐 `node-pty` 原生模块与所需helper。helper路径以安装产物为准，不为不存在的目标盲目chmod。打包后验证实际二进制能启动PTY，再验证IPC、线程恢复和Core回读。
 
+先核对锁定版本的原生构建及调用分支，再决定哪些平台需要helper。当前`node-pty`的`binding.gyp`只在macOS构建`spawn-helper`，`src/unix/pty.cc`的Apple分支才使用它；Linux走`forkpty`，Windows沿自己的后端。源码编译与预构建路径都存在，不代表每个平台都有同一文件；只用临时目录造出Linux helper会让夹具通过，却无法证明真实依赖布局正确。现有`pty-helper.test.mjs`分别验证macOS所需文件与Linux／Windows无此要求，实际目标平台的PTY仍单独验收。
+
 开发验证也核对测试进程的`process.execPath`及版本。部分插件夹具直接以该进程作为受管Node；只为包体指定新运行时、却让Playwright由旧全局Node启动，仍会触发`unsupported_node_runtime`。使用已安装且满足当前宿主合同的Node执行测试CLI，无需修改作者的全局Node或系统设置。
 
 共享工作区在装配期间发生变化时，保留一致性检查的拒绝结果，不跳过源码摘要核验。可以固定隔离的构建输入，再在该输入中重新生成资源、编译和装配；不要把不同快照的桌面、MCP页面与Rust消费者拼成一个包。覆盖本机前对照当前已安装包包含的其他功能，避免用较早快照覆盖另一进程刚交付的修复；证据写明实际快照范围，原工作区后续改动继续保留。

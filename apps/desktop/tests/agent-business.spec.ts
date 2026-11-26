@@ -7,6 +7,7 @@ import os from "node:os";
 import {agentSessionSandbox} from "../src/main/agent/context.ts";
 import {scopedCli} from "../src/main/cli.ts";
 import {discoverEngines} from "../src/main/agent/engines.ts";
+import {fixtureBinary} from "./acceptance-paths.ts";
 
 const root=path.resolve(import.meta.dirname,"../../..");
 test("从创作库选作品到原生终端，任务交接、真实MCP保存、成果审阅及类型切换",async({},info)=>{
@@ -14,7 +15,7 @@ test("从创作库选作品到原生终端，任务交接、真实MCP保存、�
   const engines=await discoverEngines();
   test.skip(!["codex","claude-code"].every(id=>engines.some(engine=>engine.id===id&&engine.available)),"需本机已安装Codex与Claude Code以验证真实PTY和工具接入");
   const folder=await mkdtemp(path.join(os.tmpdir(),"hetu-business-e2e-")),workspace=path.join(folder,"作品"),profile=path.join(folder,"profile"),collaboration=path.join(folder,"collaboration");
-  const fixture=spawnSync(path.join(root,"target/debug/examples/baseline_fixture"),[workspace,collaboration],{encoding:"utf8"});expect(fixture.status,fixture.stderr).toBe(0);const context=JSON.parse(fixture.stdout);
+  const fixture=spawnSync(fixtureBinary("baseline_fixture"),[workspace,collaboration],{encoding:"utf8"});expect(fixture.status,fixture.error?.message??fixture.stderr).toBe(0);const context=JSON.parse(fixture.stdout);
   await mkdir(profile,{recursive:true});await writeFile(path.join(profile,"creative-library.json"),JSON.stringify({schema_version:1,roots:[{path:workspace,workspace_id:context.novel.workspace_id,works:[{work_ref:context.novel,title:"默认小说"},{work_ref:context.drama,title:"默认剧本"},{work_ref:context.video,title:"默认视频"}]}]}));
   const executable=process.env.HETU_PACKAGED_APP;
   const app=await electron.launch({...(executable?{executablePath:executable,args:[]}:{args:[path.join(root,"apps/desktop")]}),env:{...process.env,...(!executable?{HETU_PLUGIN_NODE:process.execPath}:{}),HETU_DESKTOP_PROFILE:profile,HETU_COLLABORATION_DIR:collaboration,...(!executable?{HETU_APP_SERVER:path.join(root,"target/debug/hetu-app-server"),HETU_CLI:path.join(root,"target/debug/hetu"),HETU_MCP:path.join(root,"target/debug/hetu-mcp")}: {})}});

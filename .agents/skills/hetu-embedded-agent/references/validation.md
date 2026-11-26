@@ -19,6 +19,8 @@ npm run test:e2e --workspace @hetu/desktop -- tests/agent-launch.spec.ts tests/a
 
 运行前核对测试使用的Core示例及二进制是否已构建。`shared-workbench.spec.ts`通过`HETU_ACCEPT_MCP_BINARY`选择机器制品，CLI和App Server从该二进制所在目录配套读取；隔离编译的两个示例可通过`HETU_ACCEPT_FIXTURE_DIRECTORY`指定，不能让安装版MCP混用另一份开发后端。`npm run test:plugins`会构建桌面、Rust助手并运行插件、Agent及视频意见恢复测试；视频恢复专项可用`npm run test:video --workspace @hetu/desktop`。根`npm run build`只构建官网。
 
+核对专项确实消费了这些路径，不能仅凭环境变量已设置认定同源。桌面业务、媒体成果、首次打开、输入性能和共享视频恢复沿`apps/desktop/tests/acceptance-paths.ts`选择示例及机器二进制，保留Windows后缀；新增专项复用该入口，避免仍硬编码默认target目录而混入另一进程的制品。
+
 Node单元测试与Playwright E2E分别收集，后者使用`*.spec.ts`，避免把`*.test.ts`当作桌面用例执行。运行中的Playwright可能已加载旧测试源码；修复前置后先保留该轮结果，再启动新的定向或完整回归，不能用改过的行号误判旧日志。每轮使用独立输出目录，桌面测试运行期间不替换其构建产物。
 
 共享React页面或样式变更时，冻结本轮源码后依次构建`npm run build:task-view`、嵌入资源的Rust消费者及用例所需fixture、桌面，再运行验收。只构建桌面不能证明独立MCP App资源已同步；也不能在MCP回归期间替换HTML或manifest，使旧二进制与新版磁盘资源混用。包内验收使用同一资源及源码摘要，旧包通过不覆盖后续增量。

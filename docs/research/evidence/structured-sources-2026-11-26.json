@@ -1,0 +1,1386 @@
+{
+  "recorded_at": "2026-11-26T10:20:36.422961+00:00",
+  "scope": "Structured fixed sources for scene, retained professional object, independent video episode and media; source and native stdio validation",
+  "test_build_version": "0.14.1",
+  "working_tree_version_at_recording": "0.15.0",
+  "implementation": {
+    "scene_identity": "Original document_id, revision_id, sha256 and UTF-8 byte range; sequence numbers are display labels; no persistent scene_id",
+    "retained_professional_objects": "Existing Core records and Owner projection; no plugin startup, reindexing or second authorization store",
+    "video": "Explicit immutable episode/media records; later author decisions are not mixed into fixed sources",
+    "shared_fountain_structure": "One prefix contract and three common fixtures consumed by Core and TypeScript display",
+    "empty_vs_incomplete": "Corrupt, unavailable or over-budget sources do not become a successful empty result"
+  },
+  "validation": {
+    "rust": {
+      "totals": {
+        "core": {
+          "passed": 405,
+          "failed": 0,
+          "ignored": 0
+        },
+        "cli": {
+          "passed": 18,
+          "failed": 0,
+          "ignored": 0
+        },
+        "mcp": {
+          "passed": 57,
+          "failed": 0,
+          "ignored": 0
+        }
+      },
+      "groups": [
+        {
+          "package": "cli",
+          "group": "Running unittests src/main.rs",
+          "status": "ok",
+          "passed": 0,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "cli",
+          "group": "Running tests/commands.rs",
+          "status": "ok",
+          "passed": 11,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "cli",
+          "group": "Running tests/conversation.rs",
+          "status": "ok",
+          "passed": 7,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running unittests src/lib.rs",
+          "status": "ok",
+          "passed": 83,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/adoption_targets.rs",
+          "status": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/agent_conversation.rs",
+          "status": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/agent_operations.rs",
+          "status": "ok",
+          "passed": 9,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/authoring.rs",
+          "status": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/blueprint.rs",
+          "status": "ok",
+          "passed": 6,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/bootstrap.rs",
+          "status": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/capability_map.rs",
+          "status": "ok",
+          "passed": 1,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/collaboration.rs",
+          "status": "ok",
+          "passed": 5,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/collaboration_library.rs",
+          "status": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/cover_preparations.rs",
+          "status": "ok",
+          "passed": 4,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/covers.rs",
+          "status": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/creative_tasks.rs",
+          "status": "ok",
+          "passed": 10,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/delivery.rs",
+          "status": "ok",
+          "passed": 9,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/delivery_works.rs",
+          "status": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/document_copy.rs",
+          "status": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/document_lifecycle.rs",
+          "status": "ok",
+          "passed": 7,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/document_moves.rs",
+          "status": "ok",
+          "passed": 9,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/drama.rs",
+          "status": "ok",
+          "passed": 10,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/drama_projects.rs",
+          "status": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/episode_reading.rs",
+          "status": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/execution_modes.rs",
+          "status": "ok",
+          "passed": 10,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/extension_index.rs",
+          "status": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/extension_index_scale.rs",
+          "status": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/extension_migrations.rs",
+          "status": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/extensions.rs",
+          "status": "ok",
+          "passed": 7,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/git.rs",
+          "status": "ok",
+          "passed": 14,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/git_collaboration.rs",
+          "status": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/git_work_versions.rs",
+          "status": "ok",
+          "passed": 4,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/import_authorization.rs",
+          "status": "ok",
+          "passed": 4,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/import_conversation.rs",
+          "status": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/local_settings.rs",
+          "status": "ok",
+          "passed": 12,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/machine_continuation.rs",
+          "status": "ok",
+          "passed": 14,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/managed_task_read.rs",
+          "status": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/media.rs",
+          "status": "ok",
+          "passed": 7,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/media_preview.rs",
+          "status": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/media_works.rs",
+          "status": "ok",
+          "passed": 4,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/model_settings_conversation.rs",
+          "status": "ok",
+          "passed": 1,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/novels.rs",
+          "status": "ok",
+          "passed": 4,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/open_plugins.rs",
+          "status": "ok",
+          "passed": 4,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/plot.rs",
+          "status": "ok",
+          "passed": 6,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/properties.rs",
+          "status": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/reading_settings.rs",
+          "status": "ok",
+          "passed": 4,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/resource_works.rs",
+          "status": "ok",
+          "passed": 5,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/resources.rs",
+          "status": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/retained_plugin_results.rs",
+          "status": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/review.rs",
+          "status": "ok",
+          "passed": 9,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/scene_index.rs",
+          "status": "ok",
+          "passed": 1,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/stable_task_preparation.rs",
+          "status": "ok",
+          "passed": 1,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/storage_cleanup.rs",
+          "status": "ok",
+          "passed": 5,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/task_context.rs",
+          "status": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/task_feedback_ranges.rs",
+          "status": "ok",
+          "passed": 9,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/task_resource_context.rs",
+          "status": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/typed_context_sources.rs",
+          "status": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/validation.rs",
+          "status": "ok",
+          "passed": 8,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/video_episodes.rs",
+          "status": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/video_review.rs",
+          "status": "ok",
+          "passed": 16,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/work_canons.rs",
+          "status": "ok",
+          "passed": 7,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/work_documents.rs",
+          "status": "ok",
+          "passed": 6,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/work_links.rs",
+          "status": "ok",
+          "passed": 8,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/working_copies.rs",
+          "status": "ok",
+          "passed": 6,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/works.rs",
+          "status": "ok",
+          "passed": 7,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Running tests/workspace.rs",
+          "status": "ok",
+          "passed": 9,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "mcp",
+          "group": "Running unittests src/lib.rs",
+          "status": "ok",
+          "passed": 9,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "mcp",
+          "group": "Running unittests src/main.rs",
+          "status": "ok",
+          "passed": 0,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "mcp",
+          "group": "Running tests/stdio.rs",
+          "status": "ok",
+          "passed": 48,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "core",
+          "group": "Doc-tests hetu_core",
+          "status": "ok",
+          "passed": 0,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "package": "mcp",
+          "group": "Doc-tests hetu_mcp",
+          "status": "ok",
+          "passed": 0,
+          "failed": 0,
+          "ignored": 0
+        }
+      ]
+    },
+    "structured_stdio": {
+      "journeys": 6,
+      "old_scenes_utf8_pagination": true,
+      "changed_manuscript_keeps_original_range": true,
+      "same_name_cross_owner_objects": true,
+      "disabled_plugin_history_after_restart": true,
+      "independent_video_sources": true,
+      "later_decisions_preserve_old_source": true,
+      "tampered_owner_digest_and_revocation_rejected": true,
+      "corrupt_record_reports_incomplete": true
+    },
+    "display_fixtures": {
+      "passed": 3,
+      "core_common_fixture_passed": 1
+    },
+    "skill": {
+      "official_quick_validate": "passed",
+      "local_links_checked": 25,
+      "missing_links": 0,
+      "latest_platform_and_package_experience": "official quick_validate passed"
+    },
+    "documentation": {
+      "documents": 92,
+      "local_links": 1655,
+      "mermaid": 123,
+      "errors": []
+    },
+    "capability_map": "consistent",
+    "writing_suites": {
+      "suites": 45,
+      "reproduced": true
+    },
+    "pty_platform": {
+      "fix_commit": "6a155eab75ea61ec9e780fd6f0f84847196b7bf0",
+      "native_source_checked": [
+        "node-pty/binding.gyp",
+        "node-pty/src/unix/pty.cc"
+      ],
+      "helper_required_only_on_macos": true,
+      "unit_tests_and_shared_fountain": 5,
+      "linux_runtime": "not verified by local unit tests"
+    },
+    "acceptance_input_selection": {
+      "shared_paths": "apps/desktop/tests/acceptance-paths.ts",
+      "scope": "Desktop business, media results, first-open, input performance and shared video recovery use explicit fixture and machine binary paths, with Windows suffix",
+      "e2e_discovery": 12,
+      "business_execution": "16 packaged workbench tests passed",
+      "packaged_path_without_mcp_override": "actual installed CLI 0.15.0 verified; explicit MCP sibling takes priority; source fallback preserved"
+    },
+    "release_mcp": {
+      "version": "0.15.0",
+      "source_sha256": "2ccb6d9d21ea71c988b61e007efa3fafe8c45d6c5bdd74005d845658739190c3",
+      "native_stdio_journeys": 5,
+      "official_sdk_journey": 1,
+      "failed": 0,
+      "ignored": 0,
+      "scope": "Actual optimized binary and identical packaged MCP; package SDK test uses application bundle path"
+    },
+    "packaged_workbench": {
+      "desktop": 10,
+      "shared_workbench": 6,
+      "failed": 0,
+      "skipped": 0,
+      "transports": [
+        "desktop",
+        "native stdio",
+        "official Codex CLI 0.172.0"
+      ],
+      "native_codex_desktop_gui": "not covered",
+      "business": [
+        "Native PTY and actual MCP resource save",
+        "Fixed historical video and disabled plugin object navigation",
+        "First content, cancelled directory pagination and unsaved changes preserved",
+        "Long version approval and private profile binding",
+        "Video read terminal states, late failures and original feedback receipt recovery"
+      ],
+      "fixture_directory": "Explicit current same-source debug examples; actual application Core, CLI and MCP from optimized application bundle"
+    },
+    "packaged_cli": {
+      "fixed_scenes_and_retained_objects": 1,
+      "failed": 0,
+      "ignored": 0,
+      "actual_bundle_binary": true
+    },
+    "visual_samples": {
+      "inspected": [
+        "codex-business.png",
+        "tools-520-light.png"
+      ],
+      "scope": "Two packaged workbench screenshots; full visual matrix not claimed"
+    },
+    "packaged_scale": {
+      "runs": [
+        {
+          "platform": "darwin",
+          "os_release": "24.6.0",
+          "os_version": "Darwin Kernel Version 24.6.0: Sun Oct 11 23:41:01 PDT 2026; root:xnu-11417.140.69.713.47~2/RELEASE_ARM64_T8103",
+          "architecture": "arm64",
+          "cpu": "Apple M1",
+          "logical_cpus": 8,
+          "memory_bytes": 17179869184,
+          "fixture_han_characters": 10000000,
+          "chapters": 1000,
+          "source_sha256": "2ccb6d9d21ea71c988b61e007efa3fafe8c45d6c5bdd74005d845658739190c3",
+          "fixture_created_with_source": "224e6199d620ad58e629a5d50b866259c70624d600ee4fcca739fa9b356acf4f",
+          "executable": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-recovery-acceptance-7d8jelb6/structured-source-packages/hetu-dev-zXHsz7/package/Hetu-darwin-arm64/Hetu.app/Contents/MacOS/Hetu",
+          "viewport": {
+            "width": 1440,
+            "height": 960
+          },
+          "launch_to_library_ms": 1746.08475,
+          "work_to_profile_ms": 1890.2047500000003,
+          "work_to_content_ms": 3865.8545,
+          "launch_to_content_ms": 5611.939249999999,
+          "complete_directory_ms": 5704.840208,
+          "last_chapter_ms": 2936.0892920000006,
+          "background_cancel_ms": 97.06487500000003,
+          "background_read_started": true,
+          "input_during_background_read": true,
+          "no_additional_reads_after_cancel": true,
+          "formal_revision_unchanged": true,
+          "model_turns": 0,
+          "method": "全新应用进程和新资料偏好；OS文件缓存未清空，播种产生的磁盘缓存可能仍热；进程启动／作品点击分别计时，实际首段可见且完整目录和末章Core字节核对；后台取消另在真实读取完成暂扣回执时验证"
+        },
+        {
+          "platform": "darwin",
+          "os_release": "24.6.0",
+          "os_version": "Darwin Kernel Version 24.6.0: Sun Oct 11 23:41:01 PDT 2026; root:xnu-11417.140.69.713.47~2/RELEASE_ARM64_T8103",
+          "architecture": "arm64",
+          "cpu": "Apple M1",
+          "logical_cpus": 8,
+          "memory_bytes": 17179869184,
+          "fixture_han_characters": 10000000,
+          "chapters": 1000,
+          "source_sha256": "2ccb6d9d21ea71c988b61e007efa3fafe8c45d6c5bdd74005d845658739190c3",
+          "fixture_created_with_source": "224e6199d620ad58e629a5d50b866259c70624d600ee4fcca739fa9b356acf4f",
+          "executable": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-recovery-acceptance-7d8jelb6/structured-source-packages/hetu-dev-zXHsz7/package/Hetu-darwin-arm64/Hetu.app/Contents/MacOS/Hetu",
+          "viewport": {
+            "width": 1440,
+            "height": 960
+          },
+          "launch_to_library_ms": 3951.898792,
+          "work_to_profile_ms": 1946.0142500000002,
+          "work_to_content_ms": 4574.176458000001,
+          "launch_to_content_ms": 8526.07525,
+          "complete_directory_ms": 7505.036832999999,
+          "last_chapter_ms": 4491.601542,
+          "background_cancel_ms": 55.00158300000112,
+          "background_read_started": true,
+          "input_during_background_read": true,
+          "no_additional_reads_after_cancel": true,
+          "formal_revision_unchanged": true,
+          "model_turns": 0,
+          "method": "全新应用进程和新资料偏好；OS文件缓存未清空，播种产生的磁盘缓存可能仍热；进程启动／作品点击分别计时，实际首段可见且完整目录和末章Core字节核对；后台取消另在真实读取完成暂扣回执时验证"
+        },
+        {
+          "platform": "darwin",
+          "os_release": "24.6.0",
+          "os_version": "Darwin Kernel Version 24.6.0: Sun Oct 11 23:41:01 PDT 2026; root:xnu-11417.140.69.713.47~2/RELEASE_ARM64_T8103",
+          "architecture": "arm64",
+          "cpu": "Apple M1",
+          "logical_cpus": 8,
+          "memory_bytes": 17179869184,
+          "fixture_han_characters": 10000000,
+          "chapters": 1000,
+          "source_sha256": "2ccb6d9d21ea71c988b61e007efa3fafe8c45d6c5bdd74005d845658739190c3",
+          "fixture_created_with_source": "224e6199d620ad58e629a5d50b866259c70624d600ee4fcca739fa9b356acf4f",
+          "executable": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-recovery-acceptance-7d8jelb6/structured-source-packages/hetu-dev-zXHsz7/package/Hetu-darwin-arm64/Hetu.app/Contents/MacOS/Hetu",
+          "viewport": {
+            "width": 1440,
+            "height": 960
+          },
+          "launch_to_library_ms": 1750.560375,
+          "work_to_profile_ms": 1363.160375,
+          "work_to_content_ms": 3326.996292,
+          "launch_to_content_ms": 5077.556667,
+          "complete_directory_ms": 5164.815209,
+          "last_chapter_ms": 2947.2093749999995,
+          "background_cancel_ms": 99.77595800000017,
+          "background_read_started": true,
+          "input_during_background_read": true,
+          "no_additional_reads_after_cancel": true,
+          "formal_revision_unchanged": true,
+          "model_turns": 0,
+          "method": "全新应用进程和新资料偏好；OS文件缓存未清空，播种产生的磁盘缓存可能仍热；进程启动／作品点击分别计时，实际首段可见且完整目录和末章Core字节核对；后台取消另在真实读取完成暂扣回执时验证"
+        }
+      ],
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "limits": "Fresh application process and profile per run; same M1 16GB machine; OS file cache not flushed; three observations do not establish a general p95."
+    },
+    "packaged_input": {
+      "platform": "darwin",
+      "arch": "arm64",
+      "cpu": "Apple M1",
+      "logical_cpus": 8,
+      "memory_bytes": 17179869184,
+      "viewport": {
+        "width": 1440,
+        "height": 940
+      },
+      "han_characters": 100000,
+      "source_utf8_bytes": 301998,
+      "paragraphs": 1000,
+      "opened_ms": 1405.4797080000003,
+      "samples_ms": [
+        25.399999976158142,
+        15.700000017881393,
+        16,
+        15.299999982118607,
+        8.099999994039536,
+        24.299999982118607,
+        29.099999994039536,
+        18.599999994039536,
+        9.300000011920929,
+        27.19999998807907,
+        9.5,
+        11.200000017881393,
+        12.899999976158142,
+        13.199999988079071,
+        17.69999998807907,
+        7.800000011920929,
+        28.19999998807907,
+        7.899999976158142,
+        25.900000005960464,
+        11.099999994039536,
+        17.69999998807907,
+        7.800000011920929,
+        25.80000001192093,
+        16.80000001192093,
+        8.400000005960464,
+        25.400000005960464,
+        10.5,
+        15.800000011920929,
+        7.300000011920929,
+        28.700000017881393,
+        10.300000011920929,
+        11.099999994039536,
+        13.800000011920929,
+        15.200000017881393,
+        20.19999998807907
+      ],
+      "warmup_samples": 5,
+      "p95_ms": 28.700000017881393,
+      "formatted_samples_ms": [
+        29.30000001192093,
+        14,
+        25.599999994039536,
+        9.5,
+        31.900000005960464,
+        16.69999998807907,
+        9.599999994039536,
+        24.69999998807907,
+        12.300000011920929,
+        15,
+        8.5,
+        26.30000001192093,
+        12.200000017881393,
+        15.900000005960464,
+        15.700000017881393,
+        9.200000017881393,
+        17,
+        9.599999994039536,
+        26.69999998807907,
+        9.400000005960464,
+        12.400000005960464,
+        8.900000005960464,
+        25.099999994039536,
+        10.300000011920929,
+        10.800000011920929,
+        12.599999994039536,
+        11.400000005960464,
+        15.099999994039536,
+        14.599999994039536,
+        17,
+        17.80000001192093,
+        17.899999976158142,
+        18.599999994039536,
+        11,
+        25.099999994039536
+      ],
+      "formatted_p95_ms": 26.30000001192093,
+      "styled_samples_ms": [
+        35.39999997615814,
+        23.69999998807907,
+        29.30000001192093,
+        20.69999998807907,
+        25.700000017881393,
+        20.80000001192093,
+        21.799999982118607,
+        23.900000005960464,
+        23.69999998807907,
+        25.5,
+        23.700000017881393,
+        24.400000005960464,
+        22.30000001192093,
+        26.30000001192093,
+        21,
+        18.299999982118607,
+        25.69999998807907,
+        19.80000001192093,
+        18.69999998807907,
+        24.400000005960464,
+        20.400000005960464,
+        17.599999994039536,
+        28.400000005960464,
+        18.400000005960464,
+        19.200000017881393,
+        32.29999998211861,
+        18.400000005960464,
+        19.599999994039536,
+        21.5,
+        25.099999994039536,
+        21.5,
+        23.599999994039536,
+        21.599999994039536,
+        28,
+        19.30000001192093
+      ],
+      "styled_p95_ms": 28.400000005960464,
+      "rendered_lines": 23,
+      "method": "beforeinput到第二次requestAnimationFrame；真实Chromium文本输入，非真实输入法组合或屏幕光子测量"
+    },
+    "installed_workbench": {
+      "desktop": 10,
+      "shared_workbench": 6,
+      "failed": 0,
+      "skipped": 0,
+      "actual_executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+      "native_mcp_mentions": 5,
+      "native_mcp_sdk": 1,
+      "cli_scene_professional": 1
+    },
+    "original_profile": {
+      "profile_indexes_unchanged_since_install_baseline": true,
+      "indices": 3
+    },
+    "installed_scale": {
+      "platform": "darwin",
+      "os_release": "24.6.0",
+      "os_version": "Darwin Kernel Version 24.6.0: Sun Oct 11 23:41:01 PDT 2026; root:xnu-11417.140.69.713.47~2/RELEASE_ARM64_T8103",
+      "architecture": "arm64",
+      "cpu": "Apple M1",
+      "logical_cpus": 8,
+      "memory_bytes": 17179869184,
+      "fixture_han_characters": 10000000,
+      "chapters": 1000,
+      "source_sha256": "2ccb6d9d21ea71c988b61e007efa3fafe8c45d6c5bdd74005d845658739190c3",
+      "fixture_created_with_source": "224e6199d620ad58e629a5d50b866259c70624d600ee4fcca739fa9b356acf4f",
+      "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "launch_to_library_ms": 3376.343167,
+      "work_to_profile_ms": 1357.9642080000003,
+      "work_to_content_ms": 3313.446291,
+      "launch_to_content_ms": 6689.789458,
+      "complete_directory_ms": 5653.596833,
+      "last_chapter_ms": 3442.020917,
+      "background_cancel_ms": 84.62579200000073,
+      "background_read_started": true,
+      "input_during_background_read": true,
+      "no_additional_reads_after_cancel": true,
+      "formal_revision_unchanged": true,
+      "model_turns": 0,
+      "method": "全新应用进程和新资料偏好；OS文件缓存未清空，播种产生的磁盘缓存可能仍热；进程启动／作品点击分别计时，实际首段可见且完整目录和末章Core字节核对；后台取消另在真实读取完成暂扣回执时验证"
+    },
+    "installed_input": {
+      "platform": "darwin",
+      "arch": "arm64",
+      "cpu": "Apple M1",
+      "logical_cpus": 8,
+      "memory_bytes": 17179869184,
+      "viewport": {
+        "width": 1440,
+        "height": 940
+      },
+      "han_characters": 100000,
+      "source_utf8_bytes": 301998,
+      "paragraphs": 1000,
+      "opened_ms": 850.2515410000001,
+      "samples_ms": [
+        19.400000005960464,
+        11.300000011920929,
+        27.5,
+        14,
+        14.300000011920929,
+        14,
+        29.299999982118607,
+        31.399999976158142,
+        18.399999976158142,
+        16.5,
+        17.799999982118607,
+        11.599999994039536,
+        20.5,
+        10.5,
+        23.69999998807907,
+        10.800000011920929,
+        30.69999998807907,
+        16.099999994039536,
+        16.5,
+        11.700000017881393,
+        18.400000005960464,
+        8.900000005960464,
+        27,
+        14.100000023841858,
+        15.199999988079071,
+        16.599999994039536,
+        11.299999982118607,
+        21.099999994039536,
+        10.900000005960464,
+        26.299999982118607,
+        9.900000005960464,
+        25.399999976158142,
+        14.099999994039536,
+        15,
+        9.600000023841858
+      ],
+      "warmup_samples": 5,
+      "p95_ms": 30.69999998807907,
+      "formatted_samples_ms": [
+        29.19999998807907,
+        23.19999998807907,
+        24.19999998807907,
+        11.199999988079071,
+        28.400000005960464,
+        15.800000011920929,
+        16.399999976158142,
+        17.30000001192093,
+        13.400000005960464,
+        16,
+        8.599999994039536,
+        26,
+        13.599999994039536,
+        8.599999994039536,
+        21.900000005960464,
+        8.300000011920929,
+        28,
+        17.099999994039536,
+        9.5,
+        25.19999998807907,
+        11.5,
+        15.199999988079071,
+        9.700000017881393,
+        23,
+        10.299999982118607,
+        10.400000005960464,
+        28,
+        13.900000005960464,
+        17.19999998807907,
+        7.5999999940395355,
+        28,
+        14.700000017881393,
+        16.5,
+        8.700000017881393,
+        25.5
+      ],
+      "formatted_p95_ms": 28,
+      "styled_samples_ms": [
+        29.099999994039536,
+        18.400000005960464,
+        28.099999994039536,
+        26.19999998807907,
+        19.69999998807907,
+        19.099999994039536,
+        28.099999994039536,
+        18.5,
+        19.400000005960464,
+        29.599999994039536,
+        19.30000001192093,
+        27.900000005960464,
+        19.599999994039536,
+        18,
+        27.599999994039536,
+        19.399999976158142,
+        17.5,
+        28,
+        18.30000001192093,
+        18.900000005960464,
+        18.19999998807907,
+        25,
+        17.900000005960464,
+        29,
+        18.700000017881393,
+        17.799999982118607,
+        31,
+        19.099999994039536,
+        17.80000001192093,
+        28.900000005960464,
+        19.19999998807907,
+        17.900000005960464,
+        29.900000005960464,
+        18.5,
+        17.899999976158142
+      ],
+      "styled_p95_ms": 29.900000005960464,
+      "rendered_lines": 23,
+      "method": "beforeinput到第二次requestAnimationFrame；真实Chromium文本输入，非真实输入法组合或屏幕光子测量"
+    },
+    "normal_user_launch": {
+      "verified": true,
+      "library_works": 19,
+      "runtime": {
+        "version": "0.15.0",
+        "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu"
+      },
+      "profile_indexes_unchanged": true
+    },
+    "test_types": "passed"
+  },
+  "first_attempts": [
+    {
+      "stage": "full Rust matrix",
+      "result": "CLI scenario fixture assumed initialized drama; corrected setup through drama.projects.create; original business assertions retained",
+      "log": "structured-final-rust.log"
+    },
+    {
+      "stage": "native host inspection",
+      "result": "CUA initialization failed: failed to write kernel assets: No such file or directory (os error 2)",
+      "native_codex_desktop": "not verified"
+    },
+    {
+      "stage": "0.15.0 package source consistency",
+      "result": "Rust release build completed in 24m14s; package gate rejected concurrent changes to package.mjs and pty-helper.mjs; no installation occurred",
+      "log": "structured-package-build.log"
+    }
+  ],
+  "logs": {
+    "structured-final-rust.log": {
+      "sha256": "8fae7900690fa361b72572664a05297e8b73944840da7a93a9d78428aa64459e",
+      "bytes": 2247
+    },
+    "structured-final-rust-retry.log": {
+      "sha256": "b559d89e80124f0e5da7cad121cbfa885a7891b391d508c8ef70b6970675568f",
+      "bytes": 63700
+    },
+    "structured-stdio-final.log": {
+      "sha256": "41647be460eba1c053197ef89b6e9abf6ce6803ee6c3f7aec6137a9a5976af84",
+      "bytes": 1192
+    },
+    "structured-fountain-display.log": {
+      "sha256": "dd0064ae7e7daf19ab5e0e941599dd0cd90b7b06763f2f7cff3d8098d780dd0f",
+      "bytes": 366
+    },
+    "structured-desktop-build.log": {
+      "sha256": "66bc0262617f696fc3e508a2374ec6edf3d6a915ff613bf9a99386ae8024132c",
+      "bytes": 144
+    },
+    "structured-shared-final-build.log": {
+      "sha256": "467b3cece77c22f07bec2ca85c377b2f2bcd3e10109b632ba338e277ec1edc04",
+      "bytes": 189
+    },
+    "structured-pty-fountain-check.log": {
+      "sha256": "04c356bb8862daddef474c25edf76e45d567d60d36e8960afe10e198278fcd3c",
+      "bytes": 582
+    },
+    "structured-pty-fountain-final.log": {
+      "sha256": "385bc5a91e94011d40b83a94265bca2111896b88e78753cf36a0137822639be8",
+      "bytes": 553
+    },
+    "structured-docs-final.log": {
+      "sha256": "363e1b5684be0caf31db87f80b18062fe1834808944c97e94ee8239eee8d91d4",
+      "bytes": 263
+    },
+    "structured-skills-final.log": {
+      "sha256": "deb1b25e10e1d5526a7210ef8eedd994e5cd72ae3ac9e5ea8f285f0550b2a6af",
+      "bytes": 118
+    },
+    "structured-capability-final.log": {
+      "sha256": "0a290158f76b29bce06ee0505bff2ee5daced0e452e7f8c4d22e52abf0deba80",
+      "bytes": 19
+    },
+    "structured-package-build.log": {
+      "sha256": "94aed025876ccbdf1aa94d243b02f21b50bfb36d88569a2610f44a337be4d11b",
+      "bytes": 1151
+    },
+    "structured-package-build-retry.log": {
+      "sha256": "d4d484bb7607ea1cd8d3d58aee2e7dd96647786a498fa9456ad2db7c7e886e28",
+      "bytes": 745
+    },
+    "structured-release-mentions.log": {
+      "sha256": "544bd0fdec3e35042ec86546363e6c7bc5fc2e32d3b837baac3b22f8af3f4300",
+      "bytes": 702
+    },
+    "structured-package-mentions-sdk.log": {
+      "sha256": "2294d48896ceaa1ff7c1e943ae3e8c0c8a2ae04a8d744fb9cea97381a0c51112",
+      "bytes": 200
+    },
+    "structured-sources-packaged-business-desktop.report.json": {
+      "sha256": "5000493da245108d615fdfc56119e127d392fb587d7f5ceae0c78b83dce39639",
+      "bytes": 14763,
+      "stats": {
+        "startTime": "2026-11-26T10:04:02.859Z",
+        "duration": 106590.36499999999,
+        "expected": 10,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    "structured-sources-packaged-business-task-view.report.json": {
+      "sha256": "45faab298f0808696c0ba1aad477bcb2d9bb848c4554a9b2a4e0489867c5ff16",
+      "bytes": 9846,
+      "stats": {
+        "startTime": "2026-11-26T10:05:50.069Z",
+        "duration": 182338.462,
+        "expected": 6,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    "structured-package-cli.log": {
+      "sha256": "8bcf90f4c98bda8e447c6248b927cac8be53e865c367e48801fceb1bd0a898e6",
+      "bytes": 209
+    },
+    "structured-sources-installed-business-desktop.report.json": {
+      "sha256": "542ec49a70563e164a3003cb4edb7a52f769835b00b032fa29941dba2a132c1a",
+      "bytes": 14757,
+      "stats": {
+        "startTime": "2026-11-26T10:12:47.028Z",
+        "duration": 96838.914,
+        "expected": 10,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    "structured-sources-installed-business-task-view.report.json": {
+      "sha256": "b1e489fbc76b4066eee0ca977c9fc31c91a411ce8e92f343583341b9bc2ac25e",
+      "bytes": 9848,
+      "stats": {
+        "startTime": "2026-11-26T10:14:24.969Z",
+        "duration": 187763.147,
+        "expected": 6,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    "structured-installed-mentions.log": {
+      "sha256": "c083fccf020eb14bf128de3457fd0a52d67252b052665d7e331f9a92cd1e5261",
+      "bytes": 702
+    },
+    "structured-installed-mentions-sdk.log": {
+      "sha256": "e0932f8f5806e647c579f80f68ab050a76bc376ec2bd4bc837c5706cf74236b7",
+      "bytes": 200
+    },
+    "structured-installed-cli.log": {
+      "sha256": "58a6644092c2c65f7aaf416bf4dddeac2b7449eaa8b47a0a331056aa417c6b0d",
+      "bytes": 209
+    },
+    "structured-sources-packaged-performance-desktop.report.json": {
+      "sha256": "a775760c525230f6f2e3e4810cbff39f4ffcc86f0bb90a1f2b49535ee372efaf",
+      "bytes": 22691
+    },
+    "structured-sources-packaged-input-desktop.report.json": {
+      "sha256": "b8adda521cd44c7ea721bee16b2f8479b133c181af5cefd2a497dc67f65678b9",
+      "bytes": 8138
+    },
+    "structured-sources-installed-performance-desktop.report.json": {
+      "sha256": "0a0f5b496ed1796795509d78657f82eb1480d1aaf673fc1c08246a8da35622f5",
+      "bytes": 8894
+    },
+    "structured-sources-installed-input-desktop.report.json": {
+      "sha256": "12d167f7990fa888df362943344e0fb395d548e408bb62524d58beeeab9d859e",
+      "bytes": 7888
+    },
+    "structured-normal-launch.log": {
+      "sha256": "9e893616cec6fed5e2cc7fc1c9be0efea7d54ab66462e85dccb207a6b2faaad0",
+      "bytes": 70
+    },
+    "structured-docs-installed-final.log": {
+      "sha256": "363e1b5684be0caf31db87f80b18062fe1834808944c97e94ee8239eee8d91d4",
+      "bytes": 263
+    },
+    "structured-test-types-final.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "structured-installed-final-verification.json": {
+      "sha256": "c7a8c04448fa8461eb1924111f7a128d764a45298b75831508ce1ec0e46fa455",
+      "bytes": 213
+    }
+  },
+  "source_at_recording": {
+    "files": {
+      "contracts/fountain-structure.json": "f65b1aeb8852e14b85d26d05ca6a625374abe9cfd509bbfaf2846d1e6b1c5d87",
+      "contracts/fixtures/fountain-scenes.json": "9bca698e6ef42217a98babf57f24f14b136857312f7cf3e845e80cc0d7ffd6f7",
+      "contracts/actions.json": "eaba3643295bd6b77e868e07ab175e2db9a954ec52af848f88941b55ef180506",
+      "core/src/domain/fountain.rs": "e4df9eaa1a98cffd635102a4f41151e8b88e2e8719d71356c230b5e960c37578",
+      "core/src/application/document_directory.rs": "a2c007d18939e0e294089837275c327afd1a4f02211ea636fd436aa312b00dc5",
+      "core/src/application/extensions/index.rs": "8ca4625b63b85fc6b78bdf90ab84ba599649506e4ae0f7fb341d3f34ca852558",
+      "core/tests/scene_index.rs": "98d44f6c981e20a7f9edd90c6c544902ce794e68f94aec2687b995e6d841848a",
+      "core/tests/retained_plugin_results.rs": "5a1c2e72c32763919dadd8bef9d13baf5c8b7fdd00ca71f0c1becd9a80081f8b",
+      "core/tests/video_review.rs": "c8cfd4968b09b054b044f0cf9c2833e195624082d5c59246b1f9886663554610",
+      "apps/mcp/src/mentions.rs": "093d763c14d71b88e0bab4153dc5c2907e164fa65b70a2177b1967b567093156",
+      "apps/mcp/src/mentions/structured.rs": "41f7da293f4317885b7b25913d1b23e56cbbb54850f19bc6489fedc21d996b59",
+      "apps/mcp/src/mentions/sources.rs": "bd2865d7e951f6820bd9e29bbfdd4b3aa0c7a00b1553e6bba0d40a78a2bde573",
+      "apps/mcp/tests/support/structured_mentions.rs": "d3d3b584750fbf38cd3ef42ed984c2dff3f26a5c525ae0d9905cd3db9a2a705f",
+      "apps/cli/tests/commands.rs": "71b066012ebb657d0a21efa6afea722ec582994254654e9e193475c89ff57d96",
+      "packages/workbench-ui/src/fountain.ts": "5dc66e52d983cb10073f0ed2c0f5d883d9a7c263eea6c280e3bf71d77ed7fae9"
+    },
+    "limitation": "Hashes describe recording-time files, not a frozen pre-test snapshot; concurrent release metadata has moved to 0.15.0. Package verification is separate."
+  },
+  "delivery": {
+    "package": {
+      "version": "0.15.0",
+      "source_sha256": "2ccb6d9d21ea71c988b61e007efa3fafe8c45d6c5bdd74005d845658739190c3",
+      "source_inputs": 3085,
+      "artifacts": 3133,
+      "signature_verified": true,
+      "icon_matches": true,
+      "manifest": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-recovery-acceptance-7d8jelb6/structured-source-packages/hetu-dev-zXHsz7/manifest.json",
+      "app": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-recovery-acceptance-7d8jelb6/structured-source-packages/hetu-dev-zXHsz7/package/Hetu-darwin-arm64/Hetu.app"
+    },
+    "installed": {
+      "version": "0.15.0",
+      "source_sha256": "2ccb6d9d21ea71c988b61e007efa3fafe8c45d6c5bdd74005d845658739190c3",
+      "source_inputs": 3085,
+      "artifacts": 3133,
+      "signature_verified": true,
+      "icon_matches": true,
+      "installed_path": "/Applications/Hetu.app",
+      "atomic_swap": true,
+      "backup_created": false,
+      "old_bundle_removed": true
+    },
+    "formal_release": "not claimed",
+    "installed_validation": "18 installed-path workbench, scale and input journeys plus 7 machine checks passed; normal user-profile launch and exit preserve three indices",
+    "installed_final_verification": {
+      "version": "0.15.0",
+      "source_sha256": "2ccb6d9d21ea71c988b61e007efa3fafe8c45d6c5bdd74005d845658739190c3",
+      "source_inputs": 3085,
+      "artifacts": 3133,
+      "signature_verified": true,
+      "icon_matches": true
+    }
+  },
+  "remaining": [
+    "Native Codex Desktop input field and panel behavior",
+    "Full visual/accessibility and applicable platform gates",
+    "Complete professional production and author trial",
+    "Final cross-platform signed release and distribution verification"
+  ],
+  "build_wait_environment": {
+    "observed_at_local": "2026-11-26 17:51:47 +08:00",
+    "running_processes": 69,
+    "load_average": [
+      168.4,
+      200.52,
+      187.73
+    ],
+    "cpu_idle_percent": 0.0,
+    "physical_memory_bytes": 17179869184,
+    "building_process_confirmed_live": true,
+    "performance_action": "Run functional package checks first; do not infer product latency from this contested build period. Fresh performance observations remain required."
+  },
+  "website_observation": {
+    "url": "https://hetu.limeai.run/docs/agents/",
+    "http_status": 200,
+    "matches_current_local_dist_bytes": true,
+    "login_and_fixed_context_sections_present": true,
+    "sha256": "bb3c4d24e866cf43e701b5605f0d24e4fe42dfb5548bc1f9e23533d402d69391",
+    "scope": "One actual production page; does not establish all-site verification",
+    "production_deployment": {
+      "id": "586a241f-2954-44d6-9cec-0ac720dcca2d",
+      "source": "6a155ea",
+      "branch": "main",
+      "environment": "Production",
+      "performed_by_this_increment": false
+    }
+  },
+  "remote_release_observation": {
+    "run": 45797142342,
+    "sha": "b1a6c269ad5f0409525447a8bcd48c68a9cafe55",
+    "linux": "success",
+    "windows": "in progress",
+    "macos": "in progress",
+    "completion_not_claimed": true
+  }
+}

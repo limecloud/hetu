@@ -6,13 +6,14 @@ import {spawnSync} from "node:child_process";
 import {AppServer} from "../../desktop/src/main/rpc.ts";
 import {navigate} from "../../desktop/tests/navigation.ts";
 import {openWorkbenchHost,type WorkbenchSurface} from "./workbench-host.ts";
+import {fixtureBinary,machineBinary} from "../../desktop/tests/acceptance-paths.ts";
 
 type Fault={action:string;mode:"fail"|"hold-error"|"lost";media_id?:string};
 for(const surface of ["desktop","stdio","codex"] as WorkbenchSurface[])test(`${surface} 视频读取有终态，迟到旧版本不覆盖，丢回执沿原意见恢复`,async({page},info)=>{
   test.skip(surface==="codex"&&!process.env.HETU_ACCEPT_CODEX_BINARY,"需指定官方Codex CLI");test.setTimeout(180000);
-  const root=path.resolve("../.."),folder=await mkdtemp(path.join(tmpdir(),"hetu-video-review-")),workspace=path.join(folder,"work"),profile=path.join(folder,"profile"),collaboration=path.join(folder,"collaboration");
-  const seeded=spawnSync(path.join(root,"target/debug/examples/baseline_fixture"),[workspace,collaboration],{encoding:"utf8"});expect(seeded.status,seeded.stderr).toBe(0);const refs=JSON.parse(seeded.stdout);
-  const core=await AppServer.open(path.join(root,"target/debug/hetu-app-server"),workspace);
+  const folder=await mkdtemp(path.join(tmpdir(),"hetu-video-review-")),workspace=path.join(folder,"work"),profile=path.join(folder,"profile"),collaboration=path.join(folder,"collaboration");
+  const seeded=spawnSync(fixtureBinary("baseline_fixture"),[workspace,collaboration],{encoding:"utf8"});expect(seeded.status,seeded.error?.message??seeded.stderr).toBe(0);const refs=JSON.parse(seeded.stdout);
+  const core=await AppServer.open(machineBinary("hetu-app-server"),workspace);
   let emptyEpisode:string;
   try {
     const read=await core.request("workspace/request",{action:"hetu.video.projects.get",contract_revision:"1",input:{video_project_id:refs.video.object_id}});expect(read.status).toBe("succeeded");
