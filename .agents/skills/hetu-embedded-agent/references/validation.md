@@ -88,7 +88,17 @@ rmcp 3.9.0会丢弃已取消请求的响应；验收不能继续等待该ID来�
 
 Electron重开和退出验收优先复用`apps/desktop/tests/navigation.ts`的`closeApplication`。走作者正常关窗／退出路径，等待恢复稿落盘和引擎清理，在`will-quit`释放测试调试器；此后不保证还会执行`setImmediate`。释放调试器可能早于关闭请求返回，不能只因该请求连接断开就判断失败，仍以隔离子进程实际`exitCode=0`为准；`quit`事件也不能代替进程退出。失败时可用`observeApplicationShutdown`记录事件与句柄类型，不记录请求、环境、凭据或作品正文；不能靠强制终止让用例通过。资料恢复已通过但最后关闭超时，应分别记录业务结果与退出问题。
 
-真实系统IME复用`agent-native-ime.spec.ts`并显式设置`HETU_LIVE_IME=1`。按隔离PID确认前台后才发送系统键盘，核对实际composition事件、原生TUI字符及GUI草稿，候选确认不产生模型消息。Sogou的Enter可能保留拼音，空格才选中文；原生Shift松开可能切换中英态，不能把该行为或驱动激活失败当成产品错误。已有英文态仅在隔离窗口临时切换，最后反向操作并核对实际键盘输入源未变；Emoji等非键盘辅助项由系统动态登记，不作为切换依据。不修改系统快捷键或偏好，恢复检查失败时仍在finally关闭隔离应用。浏览器注入的换行与真实系统组合输入分开记录。
+真实系统IME复用`agent-native-ime.spec.ts`并显式设置`HETU_LIVE_IME=1`。按隔离PID确认前台后才发送系统键盘，核对实际composition事件、原生TUI字符及GUI草稿，候选确认不产生模型消息。Sogou的Enter可能保留拼音，空格遵循实际选词；原生Shift松开可能切换中英态，不能把该行为或驱动激活失败当成产品错误。已有英文态仅在隔离窗口临时切换，最后反向操作并核对实际键盘输入源未变；Emoji等非键盘辅助项由系统动态登记，不作为切换依据。不修改系统快捷键或偏好，恢复检查失败时仍在finally关闭隔离应用。浏览器注入的换行与真实系统组合输入分开记录。
+
+组合输入开始不代表候选已就绪。曾在安装版Space和数字键都提交拼音，而只读观察到第1候选后数字选词得到中文；浏览器`compositionend`若已是拼音，不能直接归咎PTY。空格按实际提交核对零发送，中文链路明确选中文候选，保留真实CJK字形、双方草稿及原线程断言。使用[只读候选探针](../scripts/inspect-macos-ime-candidate.swift)等待确切前台PID、指定输入法自己的可见候选窗口及第1候选文字；macOS Vision只识别该测试窗口，临时图片随调用清理，不采集其他应用、不切输入源、不发键盘或调用网络。编译完成后才启动依赖它的测试，读取失败／前台变化不计就绪，也不靠sleep或再次输入掩盖。
+
+在已具备Swift命令行工具、现有屏幕读取权限且Sogou为当前输入源的macOS，从仓库根目录执行：
+
+```bash
+task_ime_dir="$(mktemp -d "${TMPDIR:-/tmp}/hetu-ime.XXXXXX")"
+swiftc -O ".agents/skills/hetu-embedded-agent/scripts/inspect-macos-ime-candidate.swift" -o "$task_ime_dir/inspect-macos-ime-candidate"
+HETU_NATIVE_IME_HELPER="$task_ime_dir/inspect-macos-ime-candidate" HETU_LIVE_IME=1 npm run test:e2e --workspace @hetu/desktop -- tests/agent-native-ime.spec.ts
+```
 
 共享桌面的其他程序改变前台或输入源时，保留本轮未完成结果，不循环抢焦点或强行改回输入法。只恢复本测试确已改变的临时状态，不能覆盖外部新的选择；源码、包内和实际安装的输入法结果分别记录。
 

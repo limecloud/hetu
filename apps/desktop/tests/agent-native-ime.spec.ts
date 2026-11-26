@@ -18,6 +18,7 @@ test("系统拼音确认不发送，GUI与原生TUI切换保持中文草稿和�
  test.skip(process.env.HETU_LIVE_IME!=="1"||process.platform!=="darwin","需显式启用macOS系统输入法验收");
  const sources=selectedKeyboardSources();
  test.skip(!sources.some((source:Record<string,string>)=>source["Bundle ID"]==="com.sogou.inputmethod.sogou"),"当前未选择Sogou拼音；不改系统输入法设置");
+ expect(process.env.HETU_NATIVE_IME_HELPER,"需编译只读候选探针并指定HETU_NATIVE_IME_HELPER").toBeTruthy();
  test.setTimeout(180000);
  const profile=await mkdtemp(path.join(os.tmpdir(),"hetu-agent-native-ime-")),executable=process.env.HETU_PACKAGED_APP;
  const env={...process.env,HETU_DESKTOP_PROFILE:profile,HETU_LOCAL_SETTINGS_DIR:path.join(profile,"LocalSettings"),HETU_COLLABORATION_DIR:path.join(profile,"collaboration"),HETU_PLUGIN_STATE_DIR:profile};delete env.ELECTRON_RUN_AS_NODE;
@@ -30,6 +31,8 @@ ${action}
 end tell`],{encoding:"utf8",timeout:10000});
  const get=()=>app.windows()[0].evaluate(()=>window.hetuDesktop.agentSession("get",{scope:"library"}));
  let report:Record<string,unknown>={packaged:!!executable,input_method:"Sogou Pinyin",system_settings_changed:false};
+ const confirmations:{stage:string;key:string;committed:string}[]=[];
+ const candidateChecks:unknown[]=[];
  let restoreLatinMode=false;
  try{
   await observeApplicationShutdown(app,info.outputPath("shutdown.jsonl"));
@@ -51,10 +54,10 @@ end tell`],{encoding:"utf8",timeout:10000});
    await app.evaluate(({app,BrowserWindow})=>{app.focus({steal:true});BrowserWindow.getAllWindows().find(window=>!window.webContents.getURL().endsWith("?view=settings"))?.focus();});
    await input.focus();await expect.poll(()=>Number(execFileSync("osascript",["-e",'tell application "System Events" to get unix id of first application process whose frontmost is true'],{encoding:"utf8"}).trim())).toBe(pid);
   };
-  const compose=async(input:Locator,confirm:"space"|"enter",stage:string)=>{
+  const compose=async(input:Locator,confirm:"space"|"enter"|"candidate",stage:string)=>{
    await activate(input);const previous=await page.evaluate(()=>(window as any).__nativeImeEvents.filter((event:any)=>event.event==="compositionend").length);
    native('keystroke "zhongwen"');
-   if(stage==="tui-space"){
+   if(stage==="tui-candidate"){
     const composing=()=>page.evaluate(()=>(window as any).__nativeImeEvents.filter((event:any)=>event.event==="compositionstart").length);
     await expect.poll(composing,{timeout:1000}).toBeGreaterThan(previous).catch(()=>{});
     if(await composing()===previous){
@@ -63,30 +66,39 @@ end tell`],{encoding:"utf8",timeout:10000});
     }
    }
    await expect.poll(()=>page.evaluate(()=>(window as any).__nativeImeEvents.filter((event:any)=>event.event==="compositionstart").length)).toBeGreaterThan(previous);
-   await page.screenshot({path:info.outputPath(stage+"-composing.png")});native("key code "+(confirm==="enter"?36:49));
+   if(confirm==="candidate")await expect.poll(()=>{
+    const check=JSON.parse(execFileSync(process.env.HETU_NATIVE_IME_HELPER!,[String(pid),"com.sogou.inputmethod.sogou","中文"],{encoding:"utf8",timeout:10000}));
+    candidateChecks.push({stage,...check});expect(check.frontmost_matches).toBe(true);
+    return check.first_candidate_ready;
+   },{timeout:15000}).toBe(true);
+   await page.screenshot({path:info.outputPath(stage+"-composing.png")});native("key code "+({enter:36,space:49,candidate:18}[confirm]));
    await expect.poll(()=>page.evaluate(()=>(window as any).__nativeImeEvents.filter((event:any)=>event.event==="compositionend").length)).toBeGreaterThan(previous);
+   const committed=await page.evaluate(()=>(window as any).__nativeImeEvents.filter((event:any)=>event.event==="compositionend").at(-1).data as string);
+   confirmations.push({stage,key:confirm,committed});expect(committed.length).toBeGreaterThan(0);
    expect((await get()).messages).toHaveLength(0);expect((await get()).tools??[]).toHaveLength(0);
+   return committed;
   };
-  const terminal=page.locator(".xterm-helper-textarea");await compose(terminal,"space","tui-space");
+  const terminal=page.locator(".xterm-helper-textarea");expect(await compose(terminal,"candidate","tui-candidate")).toBe("中文");
   await expect(page.locator(".xterm-accessibility-tree")).toContainText("中文");
   await page.screenshot({path:info.outputPath("tui-chinese-unsubmitted.png")});
   await switchAgentSurface(page,"gui");
   const chat=page.getByRole("textbox",{name:"发送给 Agent",exact:true});await expect(chat).toHaveValue("");await compose(chat,"enter","gui-enter");await expect(chat).toHaveValue("zhongwen");
-  // Sogou的Enter保留拼音，空格选择中文；两种原生确认都不能触发发送。
-  await chat.fill("");await compose(chat,"space","gui-space-first");await expect(chat).toHaveValue("中文");
+  // 空格遵循输入法实际选词；明确数字选词用于中文链路，两种确认都不能触发发送。
+  await chat.fill("");const spaceCommit=await compose(chat,"space","gui-space-native");await expect(chat).toHaveValue(spaceCommit);
+  await chat.fill("");expect(await compose(chat,"candidate","gui-candidate-first")).toBe("中文");await expect(chat).toHaveValue("中文");
   // 换行使用浏览器键盘链；真实Shift松开会触发部分Sogou配置的中英切换。
   await chat.press("Shift+Enter");await expect(chat).toHaveValue("中文\n");
-  await compose(chat,"space","gui-space");await expect(chat).toHaveValue("中文\n中文");await chat.blur();
+  expect(await compose(chat,"candidate","gui-candidate")).toBe("中文");await expect(chat).toHaveValue("中文\n中文");await chat.blur();
   await expect.poll(async()=>(await get()).gui_draft).toBe("中文\n中文");
   await switchAgentSurface(page,"tui");await expect(page.locator(".xterm-accessibility-tree")).toContainText("中文");
   await switchAgentSurface(page,"gui");await expect(chat).toHaveValue("中文\n中文");
   const after=await get();expect(after.thread_id).toBe(before.thread_id);expect(after.messages).toHaveLength(0);expect(after.tools??[]).toHaveLength(0);
   const events=await page.evaluate(()=>(window as any).__nativeImeEvents);
-  report={...report,thread_preserved:true,gui_draft:"中文\n中文",terminal_chinese_retained:true,model_requests:0,events};
+  report={...report,thread_preserved:true,gui_draft:"中文\n中文",terminal_chinese_retained:true,model_requests:0,confirmations,candidateChecks,events};
   await writeFile(info.outputPath("result.json"),JSON.stringify(report,null,2)+"\n");await page.screenshot({path:info.outputPath("gui-chinese-draft.png")});
  }catch(error){
   const page=app.windows()[0];await page?.screenshot({path:info.outputPath("failure.png")}).catch(()=>{});
-  report={...report,error:String(error),events:await page?.evaluate(()=>(window as any).__nativeImeEvents).catch(()=>undefined)};
+  report={...report,error:String(error),confirmations,candidateChecks,events:await page?.evaluate(()=>(window as any).__nativeImeEvents).catch(()=>undefined)};
   await writeFile(info.outputPath("failure.json"),JSON.stringify(report,null,2)+"\n");
   const current=await get().catch(()=>undefined);if(current?.state==="running")await page.evaluate(()=>window.hetuDesktop.agentSession("interrupt",{scope:"library"})).catch(()=>{});
   throw error;

@@ -1,0 +1,243 @@
+{
+  "recorded_at": "2026-11-26T16:22:41.302434+00:00",
+  "scope": "CX-04/06安装版系统IME补验，保留失败及中文候选就绪诊断，不关闭完整旅程",
+  "application": {
+    "version": "0.15.0 development",
+    "source_sha256": "a4e01d4d5add96d8f11959471eb2de270c6e95965205dcf6f3683dd90011935b",
+    "installed_path": "/Applications/Hetu.app",
+    "unchanged_product_code": true,
+    "engine": "Codex CLI 0.172.0",
+    "input_method": "Sogou Pinyin",
+    "platform": "macOS arm64"
+  },
+  "attempts": {
+    "foreground": {
+      "stats": {
+        "startTime": "2026-11-26T16:08:55.859Z",
+        "duration": 17327.484,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "confirmations": [],
+      "candidate_checks": [],
+      "composition_commits": [],
+      "model_requests": 0,
+      "input_method_restored": {
+        "selected_source_unchanged": true,
+        "temporary_language_toggle": false,
+        "temporary_toggle_reversed": false
+      }
+    },
+    "space_committed_phonetic": {
+      "stats": {
+        "startTime": "2026-11-26T16:12:00.440Z",
+        "duration": 22058.100000000002,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "confirmations": [],
+      "candidate_checks": [],
+      "composition_commits": [
+        {
+          "type": "tui",
+          "event": "compositionend",
+          "data": "zhongwen"
+        }
+      ],
+      "model_requests": 0,
+      "input_method_restored": {
+        "selected_source_unchanged": true,
+        "temporary_language_toggle": false,
+        "temporary_toggle_reversed": false
+      }
+    },
+    "number_before_candidate_ready": {
+      "stats": {
+        "startTime": "2026-11-26T16:17:08.620Z",
+        "duration": 8665.483,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "confirmations": [
+        {
+          "stage": "tui-candidate",
+          "key": "candidate",
+          "committed": "zhongwen"
+        }
+      ],
+      "candidate_checks": [],
+      "composition_commits": [
+        {
+          "type": "tui",
+          "event": "compositionend",
+          "data": "zhongwen"
+        }
+      ],
+      "model_requests": 0,
+      "input_method_restored": {
+        "selected_source_unchanged": true,
+        "temporary_language_toggle": false,
+        "temporary_toggle_reversed": false
+      }
+    },
+    "candidate_wait_interrupted": {
+      "stats": {
+        "startTime": "2026-11-26T16:19:59.933Z",
+        "duration": 10982.843,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "confirmations": [],
+      "candidate_checks": [
+        {
+          "stage": "tui-candidate",
+          "captured_candidate_windows": 1,
+          "first_candidate_ready": false,
+          "frontmost_matches": true,
+          "keyboard_input": false,
+          "read_failures": 0,
+          "settings_changed": false
+        },
+        {
+          "stage": "tui-candidate",
+          "captured_candidate_windows": 1,
+          "first_candidate_ready": false,
+          "frontmost_matches": true,
+          "keyboard_input": false,
+          "read_failures": 0,
+          "settings_changed": false
+        },
+        {
+          "stage": "tui-candidate",
+          "captured_candidate_windows": 0,
+          "first_candidate_ready": false,
+          "frontmost_matches": false,
+          "keyboard_input": false,
+          "read_failures": 0,
+          "settings_changed": false
+        }
+      ],
+      "composition_commits": [
+        {
+          "type": "tui",
+          "event": "compositionend",
+          "data": "zhong'wen"
+        }
+      ],
+      "model_requests": 0,
+      "input_method_restored": {
+        "selected_source_unchanged": true,
+        "temporary_language_toggle": false,
+        "temporary_toggle_reversed": false
+      }
+    }
+  },
+  "activation_probe": {
+    "target_foreground_verified": true,
+    "electron_focus_correct": true,
+    "native_activation_correct": true,
+    "keyboard_input": false,
+    "shutdown": "标准调试退出30秒超时，不计完整通过；进程后续已退出",
+    "log_sha256": "d8ea14dae27793339edf560672d860fab142d992719bd2f11241c73e28ef9e97"
+  },
+  "single_tui_candidate_probe": {
+    "status": "specific_observation_passed",
+    "visible_first_candidate": "1 中文",
+    "native_selection": "数字键1",
+    "composition_commit": "中文",
+    "screenshot_verified": true,
+    "messages": 0,
+    "settings_changed": false,
+    "shutdown": "正常关闭退出0",
+    "accessibility_boundary": "compositionend后立即读取的旧AX屏幕尚未刷新；截图随后已显示中文，不把旧快照冒充汉字AX回读通过"
+  },
+  "probe_failures": [
+    {
+      "stage": "只读CGWindow JXA桥接",
+      "outcome": "类型桥接错误，未发选词键；后续Swift探针替代",
+      "raw_sha256": "8d3370c526f1727cc609193857c053ffc968e4ba1d202b837b57dc84053e48d1"
+    },
+    {
+      "stage": "Swift helper构建未结束时调用",
+      "outcome": "助手尚未存在，保留错误；确认编译完成后才复验",
+      "raw_sha256": "1f85fb7158d926d7eba72fa083ba7a07bc112dc1055102fb9525bcd4ea14f070"
+    }
+  ],
+  "test_changes": [
+    "记录各确认键实际compositionend，不把空格一律等同中文",
+    "中文链路仍要求TUI与GUI中文及原线程和双方草稿；没有删掉汉字断言换通过",
+    "组合输入开始不等于候选就绪，数字选词前等待输入法第1中文候选",
+    "候选探针限隔离前台PID与所选输入法自身窗口，本机Vision只读，图片在调用后清理，不抓其他应用或改权限／偏好",
+    "前台变化立即失败，无输入法就绪保证时不继续发送选词键"
+  ],
+  "helper_validation": {
+    "swift_compile": "passed",
+    "non_foreground": {
+      "captured_candidate_windows": 0,
+      "first_candidate_ready": false,
+      "frontmost_matches": false,
+      "keyboard_input": false,
+      "read_failures": 0,
+      "settings_changed": false
+    },
+    "saved_candidate_ocr": [
+      "1中文",
+      "2 zhongwen",
+      "3中温 4钟文 5中闻"
+    ],
+    "saved_candidate_ocr_limits": "本机Vision对已固定样本可识别，不证明所有实时候选已就绪",
+    "foreground_recheck": "枚举候选、读取图像及返回就绪前复核精确PID；中途失去前台不计就绪。改动后仅编译及非前台零抓取复验，不冒充完整IME旅程通过"
+  },
+  "current_conversation_mcp": {
+    "action": "hetu.collaboration.inspect",
+    "observed_version": "0.14.0",
+    "catalog_sha256": "4acd859d3aadc9e755ac5daaece0216216fc3a4d73ad2ce98fc291e53f04854d",
+    "limits": "当前常驻进程未重载；新的安装测试不冒充本对话已加载0.15.0"
+  },
+  "source_sha256": {
+    "apps/desktop/tests/agent-native-ime.spec.ts": "6f79c6cab9808f5cadb7f5a2a21741543c5310014cbb53e1779e8c0d073923e0",
+    ".agents/skills/hetu-embedded-agent/scripts/inspect-macos-ime-candidate.swift": "c43ffa4873610023ba493bc12ddbb6019a6037bbfdffad57bdd80ab8701169dd"
+  },
+  "screenshots": {
+    "native-candidate-panel.png": {
+      "path": "docs/research/evidence/native-ime-installed-2026-11-27/native-candidate-panel.png",
+      "sha256": "c32adb7470015965c8f6628e79f463d47870d6410c689c9353338f8de12aba47"
+    },
+    "installed-tui-chinese.png": {
+      "path": "docs/research/evidence/native-ime-installed-2026-11-27/installed-tui-chinese.png",
+      "sha256": "b0cdc6f6a6413cd4987c1a1bf85e1ef5ca7d35bea6528e89e728c29345827dcf"
+    }
+  },
+  "model_turns": 0,
+  "raw_evidence_root": "/private/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-native-install-20261127",
+  "not_verified": [
+    "完整安装版GUI/TUI系统输入法旅程；候选等待期间共享桌面切走，仍为失败",
+    "空格按当前输入法选择的具体字词不固定，中文实际输入仍独立要求",
+    "VoiceOver、Windows/Linux真实IME及跨平台字形",
+    "间歇退出根因和当前会话MCP重载",
+    "完整创作质量、作者试用和整个项目"
+  ],
+  "final_checks": {
+    "documents": 92,
+    "local_links": 1683,
+    "fragment_links": 431,
+    "doc_errors": 0,
+    "skill_validation": "passed",
+    "skill_local_links": 20,
+    "swift_helper_compile": "passed",
+    "desktop_types": "passed",
+    "capability_map": "check passed",
+    "source_and_images_match": true,
+    "diff_check": "passed",
+    "full_ime_journey": "not passed, preserved",
+    "runner": "文档与Skill检查通过uv隔离依赖执行；系统python缺少markdown_it／yaml的前置错误已保留，未全局安装"
+  }
+}
