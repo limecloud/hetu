@@ -6,6 +6,7 @@ import {closeApplication} from "./navigation.ts";
 
 const root=path.resolve(import.meta.dirname,"../../..");
 test("多引擎创建直接进入PTY，模型发现、会话切换及重开保持原记录",async({},testInfo)=>{
+  test.skip(process.env.HETU_LIVE_ENGINES!=="1","需要显式启用，并已安装及认证 Codex、Claude Code、Gemini CLI 和 OpenCode。");
   test.setTimeout(180000);
   const profile=await mkdtemp(path.join(os.tmpdir(),"hetu-launch-")),executable=process.env.HETU_PACKAGED_APP;
   const app=await electron.launch({...(executable?{executablePath:executable,args:[]}:{args:[path.join(root,"apps/desktop")]}),env:{...process.env,HETU_DESKTOP_PROFILE:profile,HETU_COLLABORATION_DIR:path.join(profile,"collaboration"),...(!executable?{HETU_APP_SERVER:path.join(root,"target/debug/hetu-app-server"),HETU_CLI:path.join(root,"target/debug/hetu"),HETU_MCP:path.join(root,"target/debug/hetu-mcp")}: {})}});

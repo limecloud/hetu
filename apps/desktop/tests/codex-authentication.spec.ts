@@ -5,6 +5,7 @@ import path from "node:path";
 import {createRequire} from "node:module";
 import {closeApplication,observeApplicationShutdown} from "./navigation.ts";
 import {recordPath} from "../src/main/agent/session-storage.ts";
+import {machineBinary} from "./acceptance-paths.ts";
 
 const root=path.resolve(import.meta.dirname,"../../..");
 test("登录前保留草稿，原生登录接续原会话，账号或渠道变化拒绝投递",async({},info)=>{
@@ -15,9 +16,9 @@ test("登录前保留草稿，原生登录接续原会话，账号或渠道变�
  await writeFile(stateFile,JSON.stringify({account:{account:null,requiresOpenaiAuth:true},configuration}));
  const quote=(value:string)=>"'"+value.replaceAll("'","'\\''")+"'";
  await writeFile(binary,"#!/bin/sh\nexec "+[process.execPath,createRequire(import.meta.url).resolve("./fixtures/identity-engine.mjs"),directory].map(quote).join(" ")+" \"$@\"\n");await chmod(binary,0o755);
- const executable=process.env.HETU_PACKAGED_APP,bin=executable?path.resolve(executable,"../../Resources/bin"):"/Applications/Hetu.app/Contents/Resources/bin";
+ const executable=process.env.HETU_PACKAGED_APP;
  const args=executable?[]:[path.join(root,"apps/desktop")];
- const env={...process.env,HETU_DESKTOP_PROFILE:profile,HETU_COLLABORATION_DIR:path.join(directory,"collaboration"),HETU_LOCAL_SETTINGS_DIR:path.join(profile,"LocalSettings"),HETU_PLUGIN_STATE_DIR:profile,HETU_CODEX_BIN:binary,HETU_APP_SERVER:path.join(bin,"hetu-app-server"),HETU_CLI:path.join(bin,"hetu"),HETU_MCP:path.join(bin,"hetu-mcp"),HETU_PLUGIN_NODE:process.execPath};delete env.ELECTRON_RUN_AS_NODE;
+ const env={...process.env,HETU_DESKTOP_PROFILE:profile,HETU_COLLABORATION_DIR:path.join(directory,"collaboration"),HETU_LOCAL_SETTINGS_DIR:path.join(profile,"LocalSettings"),HETU_PLUGIN_STATE_DIR:profile,HETU_CODEX_BIN:binary,HETU_APP_SERVER:machineBinary("hetu-app-server"),HETU_CLI:machineBinary("hetu"),HETU_MCP:machineBinary("hetu-mcp"),HETU_PLUGIN_NODE:process.execPath};delete env.ELECTRON_RUN_AS_NODE;
  let app=await electron.launch({...(executable?{executablePath:executable}:{}),args,env});
  let opening=0;
  const observeLogin=async()=>{await observeApplicationShutdown(app,info.outputPath("shutdown-"+(++opening)+".jsonl"));await app.evaluate(({shell})=>{(globalThis as any).openedLogins=[];shell.openExternal=async url=>{(globalThis as any).openedLogins.push(url);};});};

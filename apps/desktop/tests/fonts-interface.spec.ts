@@ -4,7 +4,7 @@ import {tmpdir} from "node:os";
 import path from "node:path";
 import {spawnSync} from "node:child_process";
 import {AppServer} from "../src/main/rpc.ts";
-import {documentAction, openSettings, closeSettings, navigate} from "./navigation.ts";
+import {documentAction, openSettings, closeSettings, navigate, closeApplication} from "./navigation.ts";
 
 test("真实字体目录、即时正文选用与独立窗口界面缩放保持未保存稿和撤销", async ({}, info) => {
   test.setTimeout(120000);
@@ -35,13 +35,15 @@ test("真实字体目录、即时正文选用与独立窗口界面缩放保持�
     await page.getByRole("button", {name: "本机字体目录", exact: true}).click();
     const catalog = page.getByRole("region", {name: "本机字体目录", exact: true});
     await expect(catalog.getByRole("status").filter({hasText: "个字体家族"})).toBeVisible();
-    await catalog.getByRole("searchbox", {name: "搜索本机字体", exact: true}).fill("Songti SC");
+    const fonts=await page.evaluate(()=>(window as any).hetuDesktop.fonts());expect(fonts.families.length).toBeGreaterThan(0);
+    const family=fonts.families.includes("Songti SC")?"Songti SC":fonts.families[0];
+    await catalog.getByRole("searchbox", {name: "搜索本机字体", exact: true}).fill(family);
     expect((await catalog.getByRole("searchbox", {name: "搜索本机字体", exact: true}).boundingBox())!.width).toBeGreaterThan(120);
-    await expect(catalog.getByRole("button", {name: "选择字体 Songti SC", exact: true})).toBeVisible();
+    await expect(catalog.getByRole("button", {name: "选择字体 "+family, exact: true})).toBeVisible();
     await page.screenshot({path: info.outputPath("local-fonts.png")});
-    await catalog.getByRole("button", {name: "选择字体 Songti SC", exact: true}).click();
-    await expect.poll(() => page.evaluate(async () => (await (window as any).hetuDesktop.settings("preferences")).preferences.reading_profiles.novel.font_name)).toBe("Songti SC");
-    await expect(page.locator(".author-editor")).toHaveCSS("font-family", /Songti SC/);
+    await catalog.getByRole("button", {name: "选择字体 "+family, exact: true}).click();
+    await expect.poll(() => page.evaluate(async () => (await (window as any).hetuDesktop.settings("preferences")).preferences.reading_profiles.novel.font_name)).toBe(family);
+    await expect.poll(()=>page.locator(".author-editor").evaluate(node=>getComputedStyle(node).fontFamily)).toContain(family);
     await page.locator('summary[aria-label="阅读排版"]').click();
     await page.getByLabel("更多操作", {exact: true}).click();
     await page.getByRole("combobox", {name: "界面大小", exact: true}).selectOption("125");
@@ -77,5 +79,5 @@ test("真实字体目录、即时正文选用与独立窗口界面缩放保持�
     await expect.poll(() => app.evaluate(({BrowserWindow}) => BrowserWindow.getAllWindows()[0]!.webContents.getZoomFactor())).toBe(1);
     const actual = await page.evaluate(async id => (await (window as any).hetuDesktop.read("hetu.documents.get", {document_id: id})).data.content, id);
     expect(actual).toBe(source); expect(errors).toEqual([]);
-  } finally {await app.close();}
+  } finally {await closeApplication(app);}
 });
