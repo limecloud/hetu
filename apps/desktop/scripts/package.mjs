@@ -248,7 +248,7 @@ binaries["node" + extension] = digest(await readFile(runtime));
 await cp(path.join(desktop, "dist"), path.join(stageApp, "dist"), {
   recursive: true,
 });
-// node-pty使用N-API预构建与独立spawn-helper，保持相对资源布局。
+// node-pty保留原生模块及macOS专用spawn-helper的相对资源布局。
 await cp(path.join(root, "node_modules/node-pty"), path.join(stageApp, "node_modules/node-pty"), { recursive: true });
 const integrations = path.join(stage, "integrations");
 await mkdir(integrations);
