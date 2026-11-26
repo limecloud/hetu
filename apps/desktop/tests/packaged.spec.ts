@@ -17,6 +17,95 @@ import { AppServer } from "../src/main/rpc.ts";
 import { sampleImage, sampleAudio } from "./fixtures/media.ts";
 
 const root = path.resolve(import.meta.dirname, "../../..");
+test("随包原生PTY执行命令、响应尺寸变化并在隐藏后保留同一执行端", async ({}, info) => {
+  test.skip(!process.env.HETU_PACKAGED_APP, "需要实际打包应用。");
+  test.setTimeout(120000);
+  const profile = await mkdtemp(path.join(os.tmpdir(), "hetu-packaged-pty-"));
+  const app = await electron.launch({
+    executablePath: process.env.HETU_PACKAGED_APP!, args: [],
+    env: { ...process.env, HETU_DESKTOP_PROFILE: profile,
+      HETU_COLLABORATION_DIR: path.join(profile, "collaboration"),
+      HETU_LOCAL_SETTINGS_DIR: path.join(profile, "local-settings"),
+      HETU_PLUGIN_STATE_DIR: profile, HETU_CODEX_BIN: path.join(profile, "no-model-engine") },
+  });
+  try {
+    const page = await app.firstWindow(); await page.setViewportSize({ width: 1440, height: 900 });
+    await app.evaluate(({ ipcMain }) => {
+      const handlers = (ipcMain as any)._invokeHandlers, original = handlers.get("desktop:agent-session");
+      handlers.set("desktop:agent-session", async (...args: any[]) => {
+        const result = await original(...args);
+        if (args[1] === "terminal_resize") (globalThis as any).__packagedPtySize = args[2];
+        return result;
+      });
+    });
+    await expect(page.getByRole("button", { name: "刷新创作库", exact: true })).toBeEnabled();
+    const open = async () => {
+      await page.getByLabel("更多操作", { exact: true }).click();
+      await page.getByRole("button", { name: "打开终端工作区", exact: true }).click();
+    };
+    await open();
+    const dialog = page.getByRole("dialog", { name: "创建会话", exact: true });
+    await dialog.getByRole("button", { name: /^引擎(?: |$)/ }).click();
+    await dialog.getByRole("tab", { name: "终端", exact: true }).click();
+    await dialog.getByRole("button", { name: "打开终端", exact: true }).click();
+    await expect(dialog).toHaveCount(0);
+    const get = () => page.evaluate(() => window.hetuDesktop.agentSession("get", { scope: "library" }));
+    await expect.poll(async () => (await get()).terminal_connected).toBe(true);
+    const original = await get(); expect(original.client).toBe("shell");
+    const identity = (value: typeof original) => ({ session_id: value.session_id, generation: value.generation });
+    const node = await app.evaluate(() => process.resourcesPath + "/bin/node" + (process.platform === "win32" ? ".exe" : ""));
+    const quotedNode = process.platform === "win32" ? '"' + node + '"' : "'" + node.replaceAll("'", "'\\''") + "'";
+    const sizes: { cols: number; rows: number; shell_pid: number }[] = [];
+    const runSize = async (marker: string) => {
+      await expect(page.locator(".codex-terminal")).toHaveAttribute("data-terminal-generation", String(original.generation));
+      await expect(page.locator(".codex-terminal")).toHaveAttribute("data-terminal-input-ready", "true");
+      await page.locator(".xterm-helper-textarea").focus();
+      // 结果由随包Node在原Shell PTY内输出，不能用命令行回显证明执行成功。
+      await page.keyboard.type(quotedNode + ' -p "\'' + marker + "=' + process.stdout.columns + 'x' + process.stdout.rows + '@' + process.ppid\"");
+      await page.keyboard.press("Enter");
+      const pattern = new RegExp(marker + "=([0-9]+)x([0-9]+)@([0-9]+)");
+      const output = async () => (await get()).terminal_replay?.match(pattern);
+      await expect.poll(async () => (await output())?.slice(1)).toBeTruthy();
+      const match = (await output())!;
+      const value = { cols: Number(match[1]), rows: Number(match[2]), shell_pid: Number(match[3]) };
+      expect(value.cols).toBeGreaterThan(10); expect(value.rows).toBeGreaterThan(5); sizes.push(value);
+      expect(value.shell_pid).toBeGreaterThan(0);
+      await expect(page.locator(".xterm-accessibility-tree")).toContainText(marker + "=" + value.cols + "x" + value.rows + "@" + value.shell_pid);
+      return value;
+    };
+    const before = await runSize("HETU_PACKAGE_PTY_FIRST");
+    await page.setViewportSize({ width: 980, height: 720 });
+    await expect.poll(() => app.evaluate(() => (globalThis as any).__packagedPtySize?.cols)).toBeLessThan(before.cols);
+    await expect.poll(() => app.evaluate(() => (globalThis as any).__packagedPtySize?.rows)).toBeLessThan(before.rows);
+    const after = await runSize("HETU_PACKAGE_PTY_RESIZED");
+    expect(after.cols).toBeLessThan(before.cols); expect(after.rows).toBeLessThan(before.rows);
+    expect(after.shell_pid).toBe(before.shell_pid);
+    await page.getByRole("button", { name: "关闭终端面板", exact: true }).click();
+    await open(); await expect(dialog).toHaveCount(0);
+    expect(identity(await get())).toEqual(identity(original));
+    await expect(page.locator(".xterm-accessibility-tree")).toContainText("HETU_PACKAGE_PTY_FIRST=");
+    expect((await runSize("HETU_PACKAGE_PTY_RESTORED")).shell_pid).toBe(before.shell_pid);
+    await page.screenshot({ path: info.outputPath("packaged-pty.png") });
+    await page.evaluate(input => window.hetuDesktop.agentSession("stop", input), { scope: "library", session_id: original.session_id });
+    expect((await get()).terminal_connected).toBe(false);
+    const rejected = await page.evaluate(async input => {
+      try { await window.hetuDesktop.agentSession("terminal_input", input); return false; } catch { return true; }
+    }, { scope: "library", session_id: original.session_id, generation: original.generation, data: "echo HETU_STALE_INPUT\r" });
+    expect(rejected).toBe(true); expect((await get()).terminal_replay).not.toContain("HETU_STALE_INPUT");
+    await info.attach("packaged-pty", { contentType: "application/json", body: JSON.stringify({
+      platform: process.platform, arch: process.arch, executable: process.env.HETU_PACKAGED_APP,
+      real_pty: true, bundled_node: true, sizes, hidden_keeps_original_session: true,
+      stop_rejects_old_input: true, model_turns: 0,
+    }) });
+  } catch (error) {
+    const snapshot = await app.windows()[0]?.evaluate(() => window.hetuDesktop.agentSession("get", { scope: "library" })).catch(() => undefined);
+    await info.attach("isolated-terminal-diagnostic", { contentType: "application/json", body: JSON.stringify({
+      state: snapshot?.state, generation: snapshot?.generation, terminal_connected: snapshot?.terminal_connected,
+      replay_tail: snapshot?.terminal_replay?.slice(-4000),
+    }) });
+    throw error;
+  } finally { await closeApplication(app); }
+});
 test(
   "独立开发应用使用随包Rust、Node及CLI/MCP完成作者与插件旅程", async () => {
     test.setTimeout(300000);

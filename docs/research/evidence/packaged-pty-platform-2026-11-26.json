@@ -1,0 +1,152 @@
+{
+  "recorded_at": "2026-11-26T10:35:42.282681+00:00",
+  "scope": "Real native PTY in the actual installed 0.15.0 application; portable package gate added to existing packaged.spec.ts",
+  "product_code_changed": false,
+  "validation": {
+    "installed": {
+      "platform": "darwin",
+      "arch": "arm64",
+      "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+      "real_pty": true,
+      "bundled_node": true,
+      "sizes": [
+        {
+          "cols": 140,
+          "rows": 53,
+          "shell_pid": 89847
+        },
+        {
+          "cols": 82,
+          "rows": 42,
+          "shell_pid": 89847
+        },
+        {
+          "cols": 82,
+          "rows": 42,
+          "shell_pid": 89847
+        }
+      ],
+      "hidden_keeps_original_session": true,
+      "stop_rejects_old_input": true,
+      "model_turns": 0
+    },
+    "stats": {
+      "startTime": "2026-11-26T10:34:39.606Z",
+      "duration": 8219.605,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "workbench_rendered_probe": true,
+    "real_native_dimensions_changed": true,
+    "same_session_and_generation_after_hide": true,
+    "stopped_input_rejected": true,
+    "combined_packaged_business_and_pty": {
+      "startTime": "2026-11-26T10:37:54.136Z",
+      "duration": 30106.899,
+      "expected": 2,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "final_parent_process_probe": {
+      "startTime": "2026-11-26T10:39:43.463Z",
+      "duration": 18185.346999999998,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "same_shell_parent_pid_after_resize_and_hide": true,
+    "combined_packaged_business_and_pty_scope": "Two tests passed before adding the parent-PID equality assertion; strengthened PTY case subsequently passed on the same installed artifact."
+  },
+  "first_attempts": [
+    {
+      "log": "packaged-pty-installed.log",
+      "result": "No probe output; browser insertText did not deliver the command to xterm; no product conclusion."
+    },
+    {
+      "log": "packaged-pty-installed-ready.log",
+      "result": "Explicit renderer readiness alone did not supply the omitted text."
+    },
+    {
+      "log": "packaged-pty-installed-keys.log",
+      "result": "Real key events executed bundled Node and returned 140x53; assertion overescaped digits and incorrectly required a raw newline before OSC-framed output."
+    },
+    {
+      "log": "packaged-pty-installed-final.log",
+      "result": "Terminal escape removal did not fix the incorrectly escaped assertion; actual probe result preserved. Replaced with numeric probe matching, retaining rendered output and actual resize checks."
+    }
+  ],
+  "platforms": {
+    "darwin_arm64": "installed application passed",
+    "linux_x64": "new PTY gate not run yet",
+    "windows_x64": "new PTY gate not run yet"
+  },
+  "integration": {
+    "test_file": "apps/desktop/tests/packaged.spec.ts",
+    "workflows": [
+      "CI complete desktop regression skips package-only case without artifact",
+      "Electron release uses packaged.spec.ts for macOS, Windows and Linux artifacts"
+    ],
+    "previous_remote_success_not_reused": "Windows/Linux success in run 45797142342 preceded this new PTY test."
+  },
+  "build": {
+    "version": "0.15.0",
+    "source_sha256": "2ccb6d9d21ea71c988b61e007efa3fafe8c45d6c5bdd74005d845658739190c3",
+    "signature": "ad-hoc-development",
+    "signature_not_formal_notarization": true
+  },
+  "logs": {
+    "packaged-pty-installed.log": {
+      "sha256": "259d45791c64b75c515a1d4c08ab17f5effaaf6b8a9eb42aefa49e6522710977",
+      "bytes": 3326
+    },
+    "packaged-pty-installed-ready.log": {
+      "sha256": "da912a35a7aaca8661743791d0a8e859e31a0050985ee09f46449c75ee4a9079",
+      "bytes": 3344
+    },
+    "packaged-pty-installed-keys.log": {
+      "sha256": "d32bf1fcc157cf1d3dc59a42164f1311e655d26fb23cbefb6cb9194c0bd3d33a",
+      "bytes": 3335
+    },
+    "packaged-pty-installed-final.log": {
+      "sha256": "3518923582a11dd9a7c1ae3869718a701b9ebb3bab3bb6c8f45b46d96d130dfb",
+      "bytes": 3097
+    },
+    "packaged-pty-installed-probe.log": {
+      "sha256": "b0a8368c14435c05d68fe9bd9050a4a3f38ea3c613a4b71f828ce015af7a3d2b",
+      "bytes": 348
+    },
+    "packaged-pty-installed-probe.report.json": {
+      "sha256": "3ea4c86912f2eb8a5608a13dd1d0752ec067ad44f911fbfba175bfcf86dfe4e1",
+      "bytes": 4559
+    },
+    "packaged-pty-and-business.log": {
+      "sha256": "68f08fa7f87b193cbb195c60397dadbfcc4a03082e48fe7c0f06fe97aee0235c",
+      "bytes": 479
+    },
+    "packaged-pty-and-business.report.json": {
+      "sha256": "7c8555ddc21beca2b42275ea5f1f4d39f787104d160e0b2169c970c15fd40c4c",
+      "bytes": 5576
+    },
+    "packaged-pty-docs.log": {
+      "sha256": "6a3f39d735b0018b1d880fa4058e169f380856ef0ceadc6e83c593575ccc09ad",
+      "bytes": 263
+    },
+    "packaged-pty-parent.log": {
+      "sha256": "c943d61d1754160c9b55b3b5b01d192564855b4ee0e3c3ffbadb635ecf4b4472",
+      "bytes": 350
+    },
+    "packaged-pty-parent.report.json": {
+      "sha256": "a2ce751e10023929718c1257b423b365c5926fa23057f718a80e3c06042e98c3",
+      "bytes": 4615
+    }
+  },
+  "test_source_sha256": "8b0650e88dde1ce9f892d8725b997df581c69d4510868de64c5a780a8848c9b1",
+  "remaining": [
+    "Actual Windows and Linux artifact PTY run",
+    "Native Codex Desktop, accessibility, full professional production and author trial remain separate"
+  ]
+}

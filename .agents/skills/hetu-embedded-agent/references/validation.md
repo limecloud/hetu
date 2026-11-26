@@ -35,6 +35,7 @@ Node单元测试与Playwright E2E分别收集，后者使用`*.spec.ts`，避免
 | --- | --- | --- |
 | 协议与会话 | `agent-session.test.ts`、`codex-session.test.ts`、`codex-terminal-bridge.test.ts` | 重复attempt不建第二轮，unknown不重发，错误线程/旧代次/并发占用拒绝，停止失败不显示完成 |
 | 输出与输入 | `terminal-stream.test.ts`、`terminal-keys.test.ts`、`terminal-pty.test.ts` | 输出游标消重和缺段处理；原生PTY输入/尺寸；选择、粘贴、搜索不额外提交 |
+| 随包原生PTY | `packaged.spec.ts`的Shell专项 | 从实际应用创建PTY，在原Shell内运行随包Node并回读真实行列；缩窗后行列变化，隐藏恢复保持原会话及代次，停止后旧输入拒绝。此测试不需要模型账号；每个平台分别运行，普通包体测试通过不替代本项 |
 | 新引擎与业务配置 | `agent-engines.test.ts`、`agent-business.test.ts`、`creative-request.test.ts` | 模型来自真实能力，配置只在私有沙箱，跨作品迟到交接拒绝，只读/讨论不隐式写入 |
 | 专业交接 | `professional-tools.test.ts`、`professional-tools.spec.ts`、MCP的`shared-workbench.spec.ts` | 方法只读不启动后端；目标变化拒绝迟到请求，包／能力摘要重新核对；实际专业动作经Core保存回读，unknown不重发且复制保留；仅草稿及无消息宿主准确降级 |
 | 固定来源 | `agent-context.test.ts`、`agent-chat.spec.ts`、Core的`retained_plugin_results.rs` | 工作修订／批次／公开意见推进后旧引用保持，插件停用后稳定MCP可读取；异作、摘要错误、关闭任务和撤权拒绝，草稿保留 |
@@ -124,6 +125,8 @@ Skills升级若因旧缓存摘要不同而拒绝，先比较固定市场包与�
 加载状态须有明确终态，不能以“未连接且无数据”推断仍在加载。初始失败、断开和面板关闭后核对`aria-busy=false`，挂起真实读取再关闭并释放回包，确认内容和加载状态都不复活。键盘翻页实际触发原控件，返回后焦点仍可继续操作；载入覆盖不成为作者或Agent已阅读、理解或验证的证明。桌面和独立MCP需各自经过真实宿主桥接，不能用共享组件单测替代两条入口。
 
 会话夹具使用隔离的原生线程标识，并在finally退出执行端。验证旧进程迟到事件时，从明确的退出／断连边界触发迟到输出；不能假设“发送后等待15ms”必然早于夹具的60ms定时器。等待真实消息或状态并设置有界期限，避免机器负载让已经合法到达的消息被误判为代次隔离失败。
+
+终端专项先等renderer的确切代次和`data-terminal-input-ready=true`，进程已连接不等于屏幕回放完成。通过实际键盘链发送命令，浏览器`insertText`返回不证明xterm已投递；需要粘贴时验证原剪贴板入口。命令行回显也不证明命令已执行，采用确定性探针的独立数值输出并核对可见终端。Shell会在换行后插入OSC标题等控制序列，不要求原始字节中的结果紧挨换行；正则先用实际诊断核对转义，不能靠重复命令或延长等待掩盖断言错误。故障回放只留隔离测试输出，不采集用户其他终端。
 
 原生线程接管拒绝后，错误状态可能先于占用及记录清理完成。核对“清理完成后的旧代次拒绝”时，等待原生客户端收到桥接拒绝回执；仅看到`uncertain`仍可能合法地处于交接冻结期，不能据此要求另一种错误文案或放开输入。
 
