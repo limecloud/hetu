@@ -26,5 +26,5 @@
     "package:desktop": "npm run package:dev --workspace @hetu/desktop --",
     "test:plugins": "npm run test --workspace @hetu/desktop"
   },
-  "version": "0.15.2"
+  "version": "0.15.3"
 }

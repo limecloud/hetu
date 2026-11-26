@@ -6,6 +6,7 @@ import {createServer,type Server} from "node:http";
 import path from "node:path";
 import {codexWorkbench} from "./codex-workbench.ts";
 import {closeApplication} from "../../desktop/tests/navigation.ts";
+import {machineBinary} from "../../desktop/tests/acceptance-paths.ts";
 
 export type WorkbenchSurface="desktop"|"stdio"|"codex";
 export type WorkbenchObserver=(method:string,args:any[],run:()=>Promise<any>)=>Promise<any>;
@@ -15,21 +16,33 @@ export async function openWorkbenchHost(surface:WorkbenchSurface,page:Page,envir
   const root=path.resolve("../..");
   const env=Object.fromEntries(Object.entries(environment).filter((entry):entry is [string,string]=>entry[1]!==undefined));
   let app:ElectronApplication|undefined,client:any,server:Server|undefined,view:Page|FrameLocator;
-  async function close(via: "window" | "app" = "window") {
+  let closing:Promise<void>|undefined;
+  function close(via: "window" | "app" = "window") {
+    return closing??=(async()=>{
     if(app) {
       // 隔离夹具即使断言失败也保留恢复稿，沿正常关闭路径退出。
       await app.evaluate(({dialog})=>{dialog.showMessageBox=async()=>({response:1,checkboxChecked:false});}).catch(()=>{});
       await closeApplication(app,via);
     }
-    await client?.close();
-    if(server)await new Promise<void>(resolve=>server!.close(()=>resolve()));
+    if(client) {
+      try {
+        // 宿主先请求资源保存与释放，再移除页面，最后断开仍供清理使用的MCP。
+        if(!page.isClosed())await page.evaluate(async()=>{if(window.harness)await window.harness.teardown();});
+      } finally {
+        try {if(!page.isClosed())await page.goto("about:blank");}
+        finally {try {await client.close();} finally {
+          if(server)await new Promise<void>((resolve,reject)=>server!.close(error=>error?reject(error):resolve()));
+        }}
+      }
+    }
+    })();
   }
   try {
     if(surface==="desktop") {
-      app=await electron.launch(process.env.HETU_PACKAGED_APP?{executablePath:process.env.HETU_PACKAGED_APP,args:[],env}:{args:[path.join(root,"apps/desktop")],env:{...env,HETU_APP_SERVER:env.HETU_APP_SERVER??path.join(root,"target/debug/hetu-app-server")}});
+      app=await electron.launch(process.env.HETU_PACKAGED_APP?{executablePath:process.env.HETU_PACKAGED_APP,args:[],env}:{args:[path.join(root,"apps/desktop")],env:{...env,HETU_APP_SERVER:env.HETU_APP_SERVER??machineBinary("hetu-app-server")}});
       page=await app.firstWindow();view=page;
     } else {
-      const binary=process.env.HETU_ACCEPT_MCP_BINARY??path.join(root,"target/debug/hetu-mcp");
+      const binary=machineBinary("hetu-mcp");
       if(surface==="codex")client=await codexWorkbench(process.env.HETU_ACCEPT_CODEX_BINARY!,binary,env);
       else {
         client=new Client({name:"hetu-workbench-business",version:"1"},{capabilities:{extensions:{"io.modelcontextprotocol/ui":{mimeTypes:["text/html;profile=mcp-app"]}}}});

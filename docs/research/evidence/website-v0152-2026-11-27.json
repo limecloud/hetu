@@ -1,0 +1,111 @@
+{
+  "recorded_at": "2026-11-26T19:32:11.796333+00:00",
+  "version": "0.15.2",
+  "git_sha": "eb87f0c2f688f2b8592b99947e248b87f1298e1c",
+  "deployment_id": "3ebb0d90",
+  "fixed_origin": "https://3ebb0d90.hetu-website-3uu.pages.dev",
+  "pages": [
+    {
+      "path": "/",
+      "target": "fixed",
+      "url": "https://3ebb0d90.hetu-website-3uu.pages.dev/",
+      "http_status": 200,
+      "bytes": 133005,
+      "sha256": "6f1d82d70efe032dd5d1168ee6d84ea98643209eca1d1d5a7d65e7805263496a",
+      "source_sha256": "6f1d82d70efe032dd5d1168ee6d84ea98643209eca1d1d5a7d65e7805263496a",
+      "exact_bytes_equal": true,
+      "known_beacon_scripts": 0,
+      "after_known_beacon_removal_equal": true
+    },
+    {
+      "path": "/",
+      "target": "production",
+      "url": "https://hetu.limeai.run/",
+      "http_status": 200,
+      "bytes": 133372,
+      "sha256": "ce17158fa7215b1670b4ef1083a84e8f03ceb83867a7a6650e884a3945981998",
+      "source_sha256": "6f1d82d70efe032dd5d1168ee6d84ea98643209eca1d1d5a7d65e7805263496a",
+      "exact_bytes_equal": false,
+      "known_beacon_scripts": 1,
+      "after_known_beacon_removal_equal": true
+    },
+    {
+      "path": "/en/",
+      "target": "fixed",
+      "url": "https://3ebb0d90.hetu-website-3uu.pages.dev/en/",
+      "http_status": 200,
+      "bytes": 135746,
+      "sha256": "56026ab6a4a0a55561f1639147ce4fb2a9d09bc7f65161bcba1aeeae58701b88",
+      "source_sha256": "56026ab6a4a0a55561f1639147ce4fb2a9d09bc7f65161bcba1aeeae58701b88",
+      "exact_bytes_equal": true,
+      "known_beacon_scripts": 0,
+      "after_known_beacon_removal_equal": true
+    },
+    {
+      "path": "/en/",
+      "target": "production",
+      "url": "https://hetu.limeai.run/en/",
+      "http_status": 200,
+      "bytes": 136113,
+      "sha256": "95210a6112be90fdc47e58e09e6e265bfda76cf174aa92cbb786ea4d8b089872",
+      "source_sha256": "56026ab6a4a0a55561f1639147ce4fb2a9d09bc7f65161bcba1aeeae58701b88",
+      "exact_bytes_equal": false,
+      "known_beacon_scripts": 1,
+      "after_known_beacon_removal_equal": true
+    },
+    {
+      "path": "/docs/agents/",
+      "target": "fixed",
+      "url": "https://3ebb0d90.hetu-website-3uu.pages.dev/docs/agents/",
+      "http_status": 200,
+      "bytes": 142008,
+      "sha256": "a1bf826dae2a2f8758f2d6e6b7dfaa797b2c54d3cd0a94e22e7be94be6bd91b8",
+      "source_sha256": "a1bf826dae2a2f8758f2d6e6b7dfaa797b2c54d3cd0a94e22e7be94be6bd91b8",
+      "exact_bytes_equal": true,
+      "known_beacon_scripts": 0,
+      "after_known_beacon_removal_equal": true
+    },
+    {
+      "path": "/docs/agents/",
+      "target": "production",
+      "url": "https://hetu.limeai.run/docs/agents/",
+      "http_status": 200,
+      "bytes": 142375,
+      "sha256": "9a511e72bf4a6de7c9b0de772c9e20170af9fda60ce8b6798a34adde54882c8a",
+      "source_sha256": "a1bf826dae2a2f8758f2d6e6b7dfaa797b2c54d3cd0a94e22e7be94be6bd91b8",
+      "exact_bytes_equal": false,
+      "known_beacon_scripts": 1,
+      "after_known_beacon_removal_equal": true
+    },
+    {
+      "path": "/en/docs/agents/",
+      "target": "fixed",
+      "url": "https://3ebb0d90.hetu-website-3uu.pages.dev/en/docs/agents/",
+      "http_status": 200,
+      "bytes": 152286,
+      "sha256": "a4fff6ab5c68627da2f3a527bb97932d7d9745fde7f504cdf3339fd0237135e6",
+      "source_sha256": "a4fff6ab5c68627da2f3a527bb97932d7d9745fde7f504cdf3339fd0237135e6",
+      "exact_bytes_equal": true,
+      "known_beacon_scripts": 0,
+      "after_known_beacon_removal_equal": true
+    },
+    {
+      "path": "/en/docs/agents/",
+      "target": "production",
+      "url": "https://hetu.limeai.run/en/docs/agents/",
+      "http_status": 200,
+      "bytes": 152653,
+      "sha256": "790455bda20b5267d7bdc7ab0502840adb918fc866fd1b545c9386a0ace01c5d",
+      "source_sha256": "a4fff6ab5c68627da2f3a527bb97932d7d9745fde7f504cdf3339fd0237135e6",
+      "exact_bytes_equal": false,
+      "known_beacon_scripts": 1,
+      "after_known_beacon_removal_equal": true
+    }
+  ],
+  "validation_scope": "四页真实HTTP字节，非完整浏览器视觉或全部链接验收。",
+  "strict_public_equality": "正式域名原字节不等；仅移除唯一已识别统计脚本及紧邻换行后相同。",
+  "prior_driver_failures": [
+    "首次将Agent指南路由猜为agent-setup，实际源文件与目录为agents；没有访问不存在的线上指南，保留首次前置失败。",
+    "第一次统计脚本规则假定defer，而本轮实际type=module；现严格限定既有Cloudflare脚本源，不做全HTML模糊清理。"
+  ]
+}

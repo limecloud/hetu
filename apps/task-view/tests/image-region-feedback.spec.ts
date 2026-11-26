@@ -9,12 +9,13 @@ import {PluginPackage} from "../../../packages/plugin-host/src/package.ts";
 import {AppServer} from "../../desktop/src/main/rpc.ts";
 import {navigate} from "../../desktop/tests/navigation.ts";
 import {openWorkbenchHost,type WorkbenchSurface} from "./workbench-host.ts";
+import {fixtureBinary,machineBinary} from "../../desktop/tests/acceptance-paths.ts";
 
 for(const surface of ["desktop","stdio","codex"] as WorkbenchSurface[])test(`${surface} 图片区域固定原像素，旧批次意见恢复后沿原任务返工`,async({page},info)=>{
  test.skip(surface==="codex"&&!process.env.HETU_ACCEPT_CODEX_BINARY,"需指定官方Codex CLI");test.setTimeout(150000);
  const root=path.resolve("../.."),folder=await mkdtemp(path.join(tmpdir(),"hetu-image-region-")),workspace=path.join(folder,"work"),profile=path.join(folder,"profile"),collaboration=path.join(folder,"collaboration"),access=path.join(folder,"access"),source=path.join(folder,"source.png");
  const image=sampleImage(),pkg=await PluginPackage.inspect(path.join(root,"plugins/relationships/dist"));await writeFile(source,image);
- const seeded=spawnSync(path.join(root,"target/debug/examples/plugin_fixture"),[workspace,access,path.join(pkg.source,"plugin.json"),pkg.sha256,"0","--artwork",source,createHash("sha256").update(image).digest("hex")],{encoding:"utf8"});expect(seeded.status,seeded.error?.message??seeded.stderr).toBe(0);
+ const seeded=spawnSync(fixtureBinary("plugin_fixture"),[workspace,access,path.join(pkg.source,"plugin.json"),pkg.sha256,"0","--artwork",source,createHash("sha256").update(image).digest("hex")],{encoding:"utf8"});expect(seeded.status,seeded.error?.message??seeded.stderr).toBe(0);
  const refs=JSON.parse(seeded.stdout),task=refs.artwork.task_ref;
  await mkdir(profile);await writeFile(path.join(profile,"creative-library.json"),JSON.stringify({schema_version:1,roots:[{path:workspace,workspace_id:refs.work_ref.workspace_id,works:[{work_ref:refs.work_ref,title:"图片区域验收"}]}]}));
  const env={...process.env,HETU_DESKTOP_PROFILE:profile,HETU_LOCAL_SETTINGS_DIR:path.join(profile,"local-settings"),HETU_PLUGIN_STATE_DIR:profile,HETU_PLUGIN_ACCESS_DIR:access,HETU_COLLABORATION_DIR:collaboration,HETU_PLUGIN_NODE:process.execPath};
@@ -25,7 +26,7 @@ for(const surface of ["desktop","stdio","codex"] as WorkbenchSurface[])test(`${s
   }
   return run();
  });page=host.page;const view=host.view;
- const core=await AppServer.open(process.env.HETU_PACKAGED_APP?path.resolve(process.env.HETU_PACKAGED_APP,"../../Resources/bin/hetu-app-server"):path.join(root,"target/debug/hetu-app-server"),workspace);
+ const core=await AppServer.open(machineBinary("hetu-app-server"),workspace);
  const call=async(action:string,input:any)=>{const result=await core.request("workspace/request",{action,input,contract_revision:"1"});expect(result.status,JSON.stringify(result)).toBe("succeeded");return result.data;};
  try{
   if(host.app)await host.app.evaluate(({ipcMain})=>{

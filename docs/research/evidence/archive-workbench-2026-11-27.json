@@ -1,0 +1,230 @@
+{
+  "recorded_at": "2026-11-26T21:59:46.233646+00:00",
+  "version": "0.15.3",
+  "source_base_commit": "eb87f0c2f688f2b8592b99947e248b87f1298e1c",
+  "scope": "共享归档源码、真实Core及三入口定向验证；完整0.15.3回归和正式发行沿后续记录，不由定向通过推断。",
+  "prior_runtime_negative": {
+    "application_version": "0.15.1",
+    "entry": "安装包mcp-workbench.mjs的真实library调用",
+    "isolated_profile": true,
+    "method": "library",
+    "operation": "archive",
+    "reply": {
+      "id": 1,
+      "ok": false,
+      "message": "未知创作库操作。"
+    },
+    "normal_exit": true,
+    "domain_write_executed": false,
+    "model_requests": 0,
+    "scope": "实际共享运行时缺分支；不将回退页缺菜单冒充当前原生UI证据。"
+  },
+  "release_0152": {
+    "run_id": 45884120841,
+    "conclusion": "failure",
+    "source_ci_run_id": 45884070356,
+    "source_ci_conclusion": "success",
+    "mac_tests": {
+      "passed": 130,
+      "skipped": 19,
+      "failed": 1
+    },
+    "windows": "success",
+    "linux": "success",
+    "publish": "skipped",
+    "npm": "skipped",
+    "tag_preserved": true,
+    "failure_trace_sha256": "c322577509d1f22e7c643414127d7251448b7f0f738a9d072fee8f79b21d25ed",
+    "business_result": {
+      "surface": "stdio",
+      "region": {
+        "x": 31,
+        "y": 45,
+        "width": 60,
+        "height": 91
+      },
+      "feedback_count": 1,
+      "save_calls": 1,
+      "fixed_old_batch": true,
+      "keyboard": true,
+      "drag_cancel": true,
+      "resize_preserved": true,
+      "original_operation_recovered": true,
+      "same_task_returned": true,
+      "model_turns": 0
+    },
+    "http_500": {
+      "expected_feedback_fault": 1,
+      "settings_after_disconnect": 42
+    },
+    "finding": "图片业务断言和result.json完成后，旧测试先关闭MCP，页面仍继续轮询preferences；HTTP关闭阶段超时。"
+  },
+  "fixes": [
+    "两宿主共用原领域update及固定WorkRef／CAS，不新增归档存储或移动目录。",
+    "桌面归档使用短连接，不替换当前作品会话。",
+    "测试先执行资源teardown并移除页面，再断MCP与HTTP；幂等关闭，错误不吞并继续释放。"
+  ],
+  "checks": {
+    "typescript": "passed",
+    "desktop_build": "passed",
+    "work_archive_domain": "passed",
+    "authoring_and_archive_tests": {
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0
+    },
+    "domain_coverage": [
+      "小说／剧本／视频取消零写",
+      "归档恢复只推进目标修订",
+      "同根兄弟完整记录保持",
+      "确认期间CAS冲突只保留并发写入",
+      "错误工作区身份在确认前拒绝",
+      "原正式文稿完整保持"
+    ],
+    "focused_surfaces": {
+      "passed": 6,
+      "failed": 0,
+      "model_turns": 0,
+      "build_version": "0.15.2 + 本轮源码增量，升版前定向结果"
+    },
+    "full_0153_workbench": "running; authoritative report kept in current run; not counted passed"
+  },
+  "focused_results": [
+    {
+      "test": "image-region-feedback-codex-图片区域固定原像素，旧批次意见恢复后沿原任务返工",
+      "result": {
+        "surface": "codex",
+        "region": {
+          "x": 31,
+          "y": 45,
+          "width": 60,
+          "height": 91
+        },
+        "feedback_count": 1,
+        "save_calls": 1,
+        "fixed_old_batch": true,
+        "keyboard": true,
+        "drag_cancel": true,
+        "resize_preserved": true,
+        "original_operation_recovered": true,
+        "same_task_returned": true,
+        "model_turns": 0
+      },
+      "result_sha256": "dd9c2770e8f2e58f986030292dbb594aa6e994c9e34c3c58c4010a0ef92271b2"
+    },
+    {
+      "test": "image-region-feedback-desktop-图片区域固定原像素，旧批次意见恢复后沿原任务返工",
+      "result": {
+        "surface": "desktop",
+        "region": {
+          "x": 31,
+          "y": 45,
+          "width": 60,
+          "height": 91
+        },
+        "feedback_count": 1,
+        "save_calls": 1,
+        "fixed_old_batch": true,
+        "keyboard": true,
+        "drag_cancel": true,
+        "resize_preserved": true,
+        "original_operation_recovered": true,
+        "same_task_returned": true,
+        "model_turns": 0
+      },
+      "result_sha256": "8c205dc11a589f556be30bb3a83cb1fc8efcd1b16453cb0b179f708a72a7ce4e"
+    },
+    {
+      "test": "image-region-feedback-stdio-图片区域固定原像素，旧批次意见恢复后沿原任务返工",
+      "result": {
+        "surface": "stdio",
+        "region": {
+          "x": 31,
+          "y": 45,
+          "width": 60,
+          "height": 91
+        },
+        "feedback_count": 1,
+        "save_calls": 1,
+        "fixed_old_batch": true,
+        "keyboard": true,
+        "drag_cancel": true,
+        "resize_preserved": true,
+        "original_operation_recovered": true,
+        "same_task_returned": true,
+        "model_turns": 0
+      },
+      "result_sha256": "58a4655d971e84325072ae4e6d41ecfcc1c23859a76eb74fbbfab9d9c010b568"
+    },
+    {
+      "test": "work-archive-codex-创作库右键归档与恢复三类作品，取消零写且同根资料保持",
+      "result": {
+        "surface": "codex",
+        "kinds": [
+          "novel",
+          "drama",
+          "video"
+        ],
+        "cancel_zero_write": true,
+        "same_root_siblings_preserved": true,
+        "formal_document_unchanged": true,
+        "restored_work_opened": true,
+        "model_turns": 0
+      },
+      "result_sha256": "5219f7ef27cf1509e1ab2b75b9688ab10db1b5e11af2a8d2f74864f1d063ac1a"
+    },
+    {
+      "test": "work-archive-desktop-创作库右键归档与恢复三类作品，取消零写且同根资料保持",
+      "result": {
+        "surface": "desktop",
+        "kinds": [
+          "novel",
+          "drama",
+          "video"
+        ],
+        "cancel_zero_write": true,
+        "same_root_siblings_preserved": true,
+        "formal_document_unchanged": true,
+        "restored_work_opened": true,
+        "model_turns": 0
+      },
+      "result_sha256": "b77c6c235f4314bdbfc3ff71f82ad654358bb0c0b92543a5c11295670b4e7927"
+    },
+    {
+      "test": "work-archive-stdio-创作库右键归档与恢复三类作品，取消零写且同根资料保持",
+      "result": {
+        "surface": "stdio",
+        "kinds": [
+          "novel",
+          "drama",
+          "video"
+        ],
+        "cancel_zero_write": true,
+        "same_root_siblings_preserved": true,
+        "formal_document_unchanged": true,
+        "restored_work_opened": true,
+        "model_turns": 0
+      },
+      "result_sha256": "cfc71dce0e0aadb628ceb59d9088230fdb58ddf7cbe5de6f652160d2e9d1eaa1"
+    }
+  ],
+  "test_authoring_failures": [
+    "首轮完整资料比较包含previous_sha256，修正为分别核对修订链元数据及完整业务资料。",
+    "消息正则未覆盖短剧冲突文案，改为保留并断言原Core revision_conflict代码。"
+  ],
+  "source_files": {
+    "apps/desktop/src/main/work-archive.ts": "888d879b96abc3abd9ee1804228798f430246ae3b64bc48ea2c426c5230e4825",
+    "apps/desktop/src/main/main.ts": "9a29e22e0b5e5af2c7ebb71656d65506e81afa39978b310f5b1ef422ba703a17",
+    "apps/desktop/src/main/mcp-workbench.ts": "341ff9abb0cc2a5b832dad941f98b32547b7bed6ef7deabf2e1951e798d77f5c",
+    "apps/desktop/tests/work-archive.test.ts": "b7a14e629845710d25526d7af6e4defaf8b72110e83ccd59bd491244945f8411",
+    "apps/task-view/tests/work-archive.spec.ts": "99e177a04821a99c3139a406603080b63fda73b6aba45e1c989032c77700c0fa",
+    "apps/task-view/tests/workbench-host.ts": "acec16bed6f13b99608944425db3ef90fe6bf609f083f62b6e858921ce97c8e2"
+  },
+  "not_verified": [
+    "本轮新版正式公证安装",
+    "新版原生Codex宿主归档／恢复",
+    "全部页面视觉与读屏",
+    "Windows／Linux用户实机",
+    "作者真实试用及完整一集制作"
+  ]
+}

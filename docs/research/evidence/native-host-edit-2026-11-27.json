@@ -1,0 +1,140 @@
+{
+  "recorded_at": "2026-11-26T19:50:44.379699+00:00",
+  "host": {
+    "bundle_id": "com.openai.codex",
+    "version": "26.1117.41037",
+    "path": "/Applications/ChatGPT.app",
+    "initially_running": false,
+    "both_owned_instances_normally_exited": true
+  },
+  "application": {
+    "desktop_bundle": "正式公证0.15.1",
+    "mcp_connection": "已登记0.15.1",
+    "desktop_gui_required": false
+  },
+  "scope": "本对话公开CLI准备隔离小说，原生MCP App阅读、真实键盘编辑、保存、独立CLI回读与正常退出重开。",
+  "qa_work": {
+    "workspace_id": "workspace_901e2b1f-2590-439f-b997-bfa79be29d03",
+    "work_ref": {
+      "kind": "novel",
+      "object_id": "novel_c2fb5c76-e2dd-48c9-b7f5-f367b0f62b1a",
+      "workspace_id": "workspace_901e2b1f-2590-439f-b997-bfa79be29d03"
+    },
+    "document_id": "doc_baf2a7a4-6c87-42f0-adb5-6851a26d4ae3",
+    "original_revision": {
+      "actor_ref": "actor_00000000-0000-4000-8000-000000000002",
+      "content_path": "packages/novel/documents/doc_baf2a7a4-6c87-42f0-adb5-6851a26d4ae3/revisions/rev_4790cc60-2bd6-484a-9710-ba972d9aa372.md",
+      "created_at": "2026-11-26T19:33:46.501095Z",
+      "document_id": "doc_baf2a7a4-6c87-42f0-adb5-6851a26d4ae3",
+      "origin_kind": "agent",
+      "revision_id": "rev_4790cc60-2bd6-484a-9710-ba972d9aa372",
+      "schema_version": "1.0.0",
+      "sha256": "83e20eb8e988774c4bd85d3c1ce9df8ac144e87daf41d75a0e1d8272599490ee",
+      "size_bytes": 100,
+      "source_format": "markdown"
+    },
+    "edited_revision": {
+      "actor_ref": "actor_00000000-0000-4000-8000-000000000001",
+      "content_path": "packages/novel/documents/doc_baf2a7a4-6c87-42f0-adb5-6851a26d4ae3/revisions/rev_e88c589d-c9d7-4b33-9f74-462ad4465067.md",
+      "created_at": "2026-11-26T19:40:27.304888Z",
+      "document_id": "doc_baf2a7a4-6c87-42f0-adb5-6851a26d4ae3",
+      "origin_kind": "author",
+      "parent_revision_id": "rev_4790cc60-2bd6-484a-9710-ba972d9aa372",
+      "revision_id": "rev_e88c589d-c9d7-4b33-9f74-462ad4465067",
+      "schema_version": "1.0.0",
+      "sha256": "fef00f0ab6c427f272266e6312fd2b8e8ea8e20a2ec546e6e1bd1cacab9854ca",
+      "size_bytes": 124,
+      "source_format": "markdown"
+    },
+    "content_recorded_in_public_evidence": false,
+    "content_bytes": 124,
+    "same_revision_after_native_restart": true,
+    "original_bytes_preserved": true,
+    "temporary_path_purpose": "独立QA工作区；归档后保留原事务、修订和接续数据，不删除验收资料或写入旧作品。",
+    "archived_via": "hetu.execution.invoke → hetu.novels.update",
+    "archive_status": "archived"
+  },
+  "journey": [
+    "本对话发现当前execution策略为auto，以公开initialize创建独立小说，并通过execution.invoke创建唯一章节。",
+    "原生插件目录打开工作台，搜索确切QA标题并打开作品和第一章；AX及真实像素显示完整QA原文。",
+    "实际指针聚焦文稿编辑，在核对确切前台PID与焦点后通过系统键盘追加中文，点击保存修订。",
+    "独立CLI读回完整124字节及新修订，原空行和原文保持。",
+    "正常退出并确认原PID消失后重开，重新打开同一作品和文稿；原生AX可读追加文字，CLI确认修订未再推进、原始不可变修订仍可读。",
+    "返回创作库后通过本对话公开事务归档该QA作品，未删除原作者资料；本轮宿主正常退出。"
+  ],
+  "protected_state": {
+    "creative-library.json": {
+      "unchanged": false
+    },
+    "LocalSettings/settings.json": {
+      "unchanged": true
+    },
+    "creative_library_original_entries_preserved": true
+  },
+  "screenshots": [
+    {
+      "path": "native-host-edit-2026-11-27/saved-document.png",
+      "sha256": "79a34460479092c3a0ec94f153042709b27e5df9fbfdf6a0b4675112a99da09e",
+      "original_sha256": "7664f31e420d7995fa1367da86f6e10bf8bb9875442a7082035da01ae75fde97",
+      "crop_pixels": [
+        216,
+        166,
+        2672,
+        1658
+      ],
+      "visually_verified": true
+    },
+    {
+      "path": "native-host-edit-2026-11-27/reopened-document.png",
+      "sha256": "0ec045124189b050165c6495b7cceb4f36ce75ec65c8b8caa906c9dcfae5dacb",
+      "original_sha256": "9846a0ef2ced07c6dc76f6955ef6dc8b2732d7d098ff8a01bf6fbc3298849f8b",
+      "crop_pixels": [
+        216,
+        166,
+        2672,
+        1658
+      ],
+      "visually_verified": true
+    }
+  ],
+  "model_requests": 0,
+  "first_failures": [
+    {
+      "kind": "driver_compile",
+      "observation": "Swift临时探针中 ==.success 缺词法空格，编译失败，未发送UI操作。",
+      "resolution": "修正编译并等完成，不将前置失败记为产品问题。"
+    },
+    {
+      "kind": "offscreen_action",
+      "observation": "完整20条目录中QA按钮在AX可见但尺寸为0，指针驱动拒绝点击。",
+      "resolution": "使用搜索作品筛选到当前可见卡片，再核对实际几何点击。"
+    },
+    {
+      "kind": "keyboard_driver",
+      "observation": "首次合成中文按键未清除上一条Cmd导航事件的modifier，正文没有变化。",
+      "resolution": "先核对原文未变，明确清除文本事件flags后追加一次；未通过重复发送来掩盖未知写入。"
+    },
+    {
+      "kind": "readback_assertion",
+      "observation": "QA脚本错误假定documents.create回执含content，独立documents.get已成功读回；原创建回执只含document/revision。",
+      "resolution": "按明确QA原输入字节核对，未再次保存。"
+    },
+    {
+      "kind": "native_ax_readiness",
+      "observation": "重开后树只返回12个外层节点，截图显示插件页；20秒52次只读观察未就绪。后请求实例的无障碍属性返回unsupported/notImplemented，随后的实际树为471节点。",
+      "resolution": "只记录实际就绪及前后观察，不由错误返回或时间先后推定原因；没有更改系统权限／偏好。通过确切节点完成后续重开验收。"
+    }
+  ],
+  "found_gap": {
+    "location": "apps/desktop/src/main/mcp-workbench.ts dispatch library分支",
+    "desktop_location": "apps/desktop/src/main/main.ts desktop:library archive分支",
+    "observation": "当前共享React工作台已有桌面的归档／恢复菜单，但MCP runtime未实现library archive；实际安装0.15.1的隔离调用返回未知创作库操作。旧workbench.ts属于无session回退页，不能将其菜单当作当前原生UI。",
+    "status": "待抽出既有小说／剧本／视频归档用例供两宿主共用。"
+  },
+  "limitations": [
+    "未测试原生公开意见、候选采纳、未知写入恢复、输入框内容提及或完整专业制作。",
+    "实际AX命名、可见截图和此次中文编辑不等于全页面无障碍或全部输入法通过。",
+    "0.15.2连接品牌由独立官方parser核验；本次原生旅程仍运行0.15.1，不混用版本。",
+    "未删除全部QA登记；当前原生库读到20作品，包含本次随后已归档样本，不能声称仍为原19作品。"
+  ]
+}

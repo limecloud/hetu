@@ -2,6 +2,7 @@ import { storageRequest, storageAction } from "./storage-review.ts";
 import {localFontCatalog} from "./font-catalog.ts";
 import { pluginPreferences } from "./plugin-preferences.ts";
 import { ensureWorkConnection } from "./work-connection.ts";
+import { archiveWork } from "./work-archive.ts";
 import { creationHandoff, workHandoff, pluginResultText, pluginWorkText, migrationText, settingsHandoff } from "./workbench-handoff.ts";
 import { validateWritingPrompt, writingPrompt } from "./writing-prompt.ts";
 import { pluginResultHandoff } from "./plugin-results.ts";
@@ -176,6 +177,10 @@ async function dispatch(method:string,args:any[]){
  if(method==="library") {const [kind,input={}]=args;if(kind==="refresh"){
   if(input.work_ref){check();if(!sameWork(input.work_ref,selected!))throw new Error("作品已切换，请重新读取当前作品。");await library.refresh([],selected);return overview();}
   const discovered:any[]=[];let cursor;do{const value=unwrap(await scopedCli(cli,agentClient(),collaboration,"hetu.collaboration.created_works",{limit:100,...(cursor?{cursor}:{})}));discovered.push(...value.works);cursor=value.next_cursor;}while(cursor);await library.refresh(discovered);return overview();
+ }if(kind==="archive"){
+  const directory=library.resolve(input.work_ref),connection=await AppServer.open(binary,directory,path.join(profile,"git-authorizations"));
+  try{await archiveWork(connection,input.work_ref,input.archived===true,value=>ask("confirm",value));return overview();}
+  finally{await connection.close();}
  }if(kind==="open")return select(input.work_ref);if(kind==="bootstrap"){copied=creationHandoff(input.kind,handoffEnvironment());return {copied:true};}if(kind==="client"){
   const value=({codex:"codex","claude-code":"claudeCode",workbuddy:"workbuddy",generic:"other"} as Record<string,string>)[input.client];
   if(!value)throw new Error("请选择支持的外部 Agent 客户端。");

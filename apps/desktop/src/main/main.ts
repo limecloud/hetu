@@ -3,6 +3,7 @@ import {localFontCatalog} from "./font-catalog.ts";
 import {interfaceScales, nextInterfaceScale} from "../interface-scale.ts";
 import { pluginPreferences } from "./plugin-preferences.ts";
 import { ensureWorkConnection } from "./work-connection.ts";
+import { archiveWork } from "./work-archive.ts";
 import { creationHandoff, workHandoff, pluginResultText, pluginWorkText, migrationText, settingsHandoff } from "./workbench-handoff.ts";
 import { validateWritingPrompt, writingPrompt } from "./writing-prompt.ts";
 import type { WritingPromptRequest } from "../writing-prompts.ts";
@@ -825,28 +826,11 @@ app
       if (method === "archive") {
         const reference = input.work_ref as WorkRef, directory = library.resolve(reference);
         const next = await AppServer.open(serverBinary(), directory, path.join(app.getPath("userData"), "git-authorizations"));
-        let adopted = false;
         try {
-          let action: string, payload: any, title: string, archived = input.archived === true;
-          if (reference.kind === "novel") {
-            const current = unwrap(await next.request("workspace/request", {action: "hetu.novels.get", contract_revision: "1", input: {}}));
-            const metadata = {...current.novel.metadata, status: archived ? "archived" : (current.novel.metadata.status === "archived" ? "planning" : current.novel.metadata.status)};
-            action = "hetu.novels.update"; payload = {expected: {revision: current.revision, sha256: current.sha256}, metadata, operation_key: randomUUID()}; title = current.novel.metadata.title;
-          } else if (reference.kind === "drama") {
-            const current = unwrap(await next.request("workspace/request", {action: "hetu.drama.projects.get", contract_revision: "1", input: {project_id: reference.object_id}}));
-            action = "hetu.drama.projects.update"; payload = {project_ref: {project_id: current.project.project_id, revision: current.project.revision, sha256: current.sha256}, title: current.project.title, description: current.project.description ?? "", archived, source_refs: current.project.source_refs ?? [], operation_key: randomUUID()}; title = current.project.title;
-          } else {
-            const current = unwrap(await next.request("workspace/request", {action: "hetu.video.projects.get", contract_revision: "1", input: {video_project_id: reference.object_id}}));
-            action = "hetu.video.projects.update"; payload = {project_ref: {video_project_id: current.project.video_project_id, revision: current.project.revision, sha256: current.sha256}, title: current.project.title, brief: current.project.brief ?? "", archived, operation_key: randomUUID()}; title = current.project.title;
-          }
-          const answer = await dialog.showMessageBox(window, {type: "warning", buttons: ["取消", archived ? "移入废纸篓" : "恢复作品"], defaultId: 0, cancelId: 0, message: archived ? `将「${title}」移入废纸篓？` : `恢复「${title}」？`, detail: "作品正文、历史、任务和关联资料会保留；此操作可从创作库的已归档状态恢复。"});
-          if (answer.response !== 1) return overview();
-          unwrap(await next.request("workspace/request", {action, contract_revision: "1", input: payload}));
-          if (workspaceRoot === directory && server) {
-            const previous = server; server = next; adopted = true; await previous.close();
-          }
+          await archiveWork(next, reference, input.archived === true, async ({message, detail, accept}) =>
+            (await dialog.showMessageBox(window, {type: "warning", buttons: ["取消", accept], defaultId: 0, cancelId: 0, message, detail})).response === 1);
           return overview();
-        } finally { if (!adopted) await next.close(); }
+        } finally { await next.close(); }
       }
       if (method === "bootstrap") { const prompt=creationHandoff(input.kind,{...handoffEnvironment(),client:input.delivery==="draft"?machineClient((await agentSessions?.get(undefined))?.snapshot(false).client??"codex"):agentClient()},input.delivery==="draft");if(input.delivery==="draft")return {prompt};clipboard.writeText(prompt);return {copied:true}; }
       throw new Error("未知创作库用例。");
