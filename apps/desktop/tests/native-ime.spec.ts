@@ -7,6 +7,7 @@ import {AppServer} from "../src/main/rpc.ts";
 import {documentAction, navigate} from "./navigation.ts";
 
 test("macOS Sogou 拼音真实组合输入写入隔离作品", async () => {
+  test.skip(process.env.HETU_LIVE_IME !== "1", "需要显式启用并具备实际系统输入法和辅助功能权限");
   test.skip(process.platform !== "darwin", "仅在 macOS 验收系统输入法");
   const sources = execFileSync("defaults", ["read", "com.apple.HIToolbox", "AppleSelectedInputSources"], {encoding:"utf8"});
   test.skip(!sources.includes("com.sogou.inputmethod.sogou"), "当前没有选择 Sogou 输入法");

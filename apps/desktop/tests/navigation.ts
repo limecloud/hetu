@@ -41,6 +41,11 @@ export async function observeApplicationShutdown(application:ElectronApplication
 export async function closeApplication(application: ElectronApplication, via: "window" | "app" = "app") {
   const child = application.process();
   if (child.exitCode !== null) {expect(child.exitCode).toBe(0); return;}
+  await application.evaluate(({dialog})=>{
+    const original=dialog.showMessageBoxSync;
+    // 隔离验收关闭时明确选择保留恢复稿；其他作者决定继续走原确认。
+    dialog.showMessageBoxSync=((...args:any[])=>args.some(value=>value?.message==="修改尚未保存到作品。")?1:(original as any)(...args)) as typeof original;
+  });
   let requestError:unknown;
   let nativeState:unknown;
   if(process.env.HETU_TEST_NATIVE_CLOSE==="1"){

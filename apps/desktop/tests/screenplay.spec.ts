@@ -51,8 +51,8 @@ test("剧本默认排版、单层目录、场次跳转、源码无损、批注�
    await page.screenshot({path:info.outputPath(`screenplay-${theme}-${width}.png`)});
   }
   await page.setViewportSize({width:1360,height:900});
-  const metrics=await page.locator(".screenplay-workspace").evaluate(el=>{const stage=el.querySelector<HTMLElement>(".manuscript-stage")!,paper=el.querySelector<HTMLElement>(".manuscript-paper")!,inner=el.querySelector<HTMLElement>(".manuscript-scroll")!,header=el.querySelector<HTMLElement>(".manuscript-header")!;return {workspace:el.clientWidth,paper:paper.getBoundingClientRect().width,header:header.offsetHeight,innerOverflow:getComputedStyle(inner).overflowY,overflow:stage.scrollHeight>stage.clientHeight,border:getComputedStyle(paper).borderTopWidth};});
-  expect(metrics.paper).toBe(metrics.workspace);expect(metrics.header).toBeLessThan(120);expect(metrics.innerOverflow).toBe("visible");expect(metrics.overflow).toBe(true);expect(metrics.border).toBe("0px");
+  const metrics=await page.locator(".screenplay-workspace").evaluate(el=>{const stage=el.querySelector<HTMLElement>(".manuscript-stage")!,paper=el.querySelector<HTMLElement>(".manuscript-paper")!,inner=el.querySelector<HTMLElement>(".manuscript-scroll")!,header=el.querySelector<HTMLElement>(".manuscript-header")!;return {workspace:el.clientWidth,contentWidth:stage.clientWidth,paper:paper.getBoundingClientRect().width,header:header.offsetHeight,innerOverflow:getComputedStyle(inner).overflowY,overflow:stage.scrollHeight>stage.clientHeight,border:getComputedStyle(paper).borderTopWidth};});
+  expect(metrics.paper).toBe(metrics.contentWidth);expect(metrics.header).toBeLessThan(120);expect(metrics.innerOverflow).toBe("visible");expect(metrics.overflow).toBe(true);expect(metrics.border).toBe("0px");
   const stage=page.locator(".manuscript-stage");await stage.focus();await stage.press("PageDown");await expect.poll(()=>stage.evaluate(el=>el.scrollTop)).toBeGreaterThan(300);
   await openDirectory(page);await directory.getByRole("button",{name:"定位场次 1-1 EXT. 渡口 - NIGHT",exact:true}).click();
   await expect(reader.locator(".screenplay-scene").first()).toBeInViewport();

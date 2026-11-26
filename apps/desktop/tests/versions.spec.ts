@@ -154,6 +154,7 @@ test("CLI准备独立文稿快照、Electron审阅批准、无窗口提交及真
     await navigate(page!, "文稿版本");
     await page!.getByRole("button", { name: "恢复原版本批准", exact: true }).click();
     await expect(page!.getByRole("status")).toContainText("原版本批准已核对");
+    await page!.getByRole("button", {name:"关闭提示",exact:true}).click();
     await page!.getByRole("region", { name: "文稿版本历史", exact: true }).getByRole("button", { name: "雾港开篇定点", exact: true }).click();
     const fixed = await page!.evaluate((commit) => (window as any).hetuDesktop.versions("version", { commit_id: commit }), done.commit_id);
     const bodyFiles = fixed.files.filter((item: any) => /\.(md|fountain)$/.test(item.path));
