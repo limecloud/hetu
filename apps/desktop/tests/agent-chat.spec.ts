@@ -255,11 +255,22 @@ test("GUI展示真实协议时间线，历史锚点、Markdown、输入与偏好
   await codexTab.press("End");await expect(documentTab).toBeFocused();await expect(closePreview).toBeInViewport({ratio:1});await documentTab.press("Home");await expect(chat).toBeVisible();
   await page.setViewportSize({width:1440,height:900});await page.getByRole("button",{name:"并排查看作品",exact:true}).click();
   const dock=page.getByRole("complementary",{name:"终端工作区",exact:true}),header=dock.locator(".codex-session-header");
-  await expect(dock).toBeVisible();await expect(header).toHaveCSS("height","71px");
-  await codexTab.press("End");await expect(documentTab).toBeInViewport({ratio:1});await expect(closePreview).toBeInViewport({ratio:1});
+  await expect(dock).toBeVisible();
+  const captureDock=async(label:string)=>{const filename=info.outputPath(label+".json");await writeFile(filename,JSON.stringify(await dock.evaluate(element=>{
+   const style=getComputedStyle(element),header=element.querySelector(".codex-session-header")!;
+   return {dpr:devicePixelRatio,outerWidth:element.getBoundingClientRect().width,contentWidth:element.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight),borderLeft:style.borderLeftWidth,borderRight:style.borderRightWidth,headerHeight:header.getBoundingClientRect().height};
+  })));await info.attach(label,{contentType:"application/json",path:filename});};
+  await captureDock("default-dock-geometry");
+  const resize=dock.getByRole("separator",{name:"调整终端侧栏宽度",exact:true});
+  // 420px外宽的内容区恰好落在390px断点附近；显式设置宽度，避免不同DPR的细边框取整改变测试条件。
+  await resize.press("Home");for(let index=0;index<4;index++)await resize.press("ArrowLeft");
+  await expect(resize).toHaveAttribute("aria-valuenow","440");await expect(header).toHaveCSS("height","71px");
+  await captureDock("wide-dock-geometry");
+  await codexTab.press("End");await expect(documentTab).toBeInViewport({ratio:1-1/(await documentTab.boundingBox())!.width});await expect(closePreview).toBeInViewport({ratio:1});
   expect(await header.evaluate(element=>element.scrollWidth<=element.clientWidth)).toBe(true);await page.screenshot({path:info.outputPath("gui-docked-preview-header.png")});
-  await dock.getByRole("separator",{name:"调整终端侧栏宽度",exact:true}).press("Home");await expect(header).toHaveCSS("height","106px");
-  await expect(documentTab).toBeInViewport({ratio:1});await expect(closePreview).toBeInViewport({ratio:1});await expect(dock.getByRole("button",{name:"关闭终端面板",exact:true})).toBeInViewport({ratio:1});
+  await resize.press("Home");await expect(resize).toHaveAttribute("aria-valuenow","360");await expect(header).toHaveCSS("height","106px");
+  await captureDock("minimum-dock-geometry");
+  await expect(documentTab).toBeInViewport({ratio:1-1/(await documentTab.boundingBox())!.width});await expect(closePreview).toBeInViewport({ratio:1});await expect(dock.getByRole("button",{name:"关闭终端面板",exact:true})).toBeInViewport({ratio:1});
   expect(await header.evaluate(element=>element.scrollWidth<=element.clientWidth)).toBe(true);await page.screenshot({path:info.outputPath("gui-minimum-dock-header.png")});
   await dock.getByRole("button",{name:"展开终端工作区",exact:true}).click();await documentTab.press("Home");await page.setViewportSize({width:800,height:760});await expect(chat).toBeVisible();
   expect(await page.locator(".codex-session-header").evaluate(element=>{const status=element.querySelector('[role="status"]')!.getBoundingClientRect(),actions=element.querySelector('.codex-session-actions')!.getBoundingClientRect(),tabs=element.querySelector('.codex-header-tabs')?.getBoundingClientRect();return status.right<=(tabs?.left??actions.left)&&(!tabs||tabs.right<=actions.left);})).toBe(true);

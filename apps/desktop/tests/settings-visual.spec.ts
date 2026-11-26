@@ -93,7 +93,7 @@ test("独立设置分类截图、即时保存、浮层和窗口权限", async ()
     await page.getByRole("button", {name: "本机字体目录", exact: true}).click();
     const localFonts = page.getByRole("region", {name: "本机字体目录", exact: true});
     const fonts=await page.evaluate(()=>window.hetuDesktop.fonts());expect(fonts.families.length).toBeGreaterThan(0);
-    const family=fonts.families.includes("PingFang SC")?"PingFang SC":fonts.families[0];
+    const family=fonts.families[0];
     await localFonts.getByRole("searchbox", {name: "搜索本机字体", exact: true}).fill(family);
     await localFonts.getByRole("button", {name: "选择字体 "+family, exact: true}).click();
     await expect.poll(()=>page.locator(".reading-preview").evaluate(node=>getComputedStyle(node).fontFamily)).toContain(family);
@@ -161,7 +161,7 @@ test("独立设置分类截图、即时保存、浮层和窗口权限", async ()
     const reopened = await openSettings(app, main);
     const restoredReading = (await reopened.evaluate(() => window.hetuDesktop.settings("get"))).preferences.reading_profiles.novel;
     expect(restoredReading.font_size).toBe(17);
-    expect(restoredReading.font_name).toBe("PingFang SC");
+    expect(restoredReading.font_name).toBe(family);
     expect((await reopened.evaluate(() => window.hetuDesktop.settings("get"))).preferences.git_author_name).toBe("关闭前的署名");
     await writeFile(path.join(output, "metrics.json"), JSON.stringify(metrics, null, 2));
   } finally {
