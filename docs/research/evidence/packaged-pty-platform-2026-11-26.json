@@ -148,5 +148,56 @@
   "remaining": [
     "Actual Windows and Linux artifact PTY run",
     "Native Codex Desktop, accessibility, full professional production and author trial remain separate"
-  ]
+  ],
+  "subsequent_remote_platforms": {
+    "recorded_at": "2026-11-26T12:09:46.661005+00:00",
+    "runs": [
+      {
+        "platform": "windows-x64",
+        "version": "0.15.0",
+        "run_id": 45811224659,
+        "job_id": 139879685566,
+        "commit": "dfc22faee552f25f5c7964ebc522aafee9c263a8",
+        "job_conclusion": "success",
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0,
+        "actual_native_pty_case_passed": true,
+        "tests": [
+          "packaged.spec.ts:20 actual native PTY and same process",
+          "packaged.spec.ts:109 packaged author/plugin/CLI/MCP",
+          "startup-layout.spec.ts:11 startup surfaces",
+          "startup-layout.spec.ts:151 work profile and manuscript"
+        ],
+        "log": "release-dfc22fa-windows.log",
+        "log_sha256": "d0224e66d0085846430135829421ac054dfbf97fb0086e3987c41f139dbe939d",
+        "job_url": "https://github.com/limecloud/hetu/actions/runs/45811224659/job/139879685566",
+        "limits": "These artifacts precede846bb48 GUI sources and301ebc9b document lookup optimization; do not establish those increments on this platform."
+      },
+      {
+        "platform": "linux-x64",
+        "version": "0.15.0",
+        "run_id": 45811224659,
+        "job_id": 139879685712,
+        "commit": "dfc22faee552f25f5c7964ebc522aafee9c263a8",
+        "job_conclusion": "success",
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0,
+        "actual_native_pty_case_passed": true,
+        "tests": [
+          "packaged.spec.ts:20 actual native PTY and same process",
+          "packaged.spec.ts:109 packaged author/plugin/CLI/MCP",
+          "startup-layout.spec.ts:11 startup surfaces",
+          "startup-layout.spec.ts:151 work profile and manuscript"
+        ],
+        "log": "release-dfc22fa-linux.log",
+        "log_sha256": "98dd87029bcd3485705bd4cb031bee6082820f53be19e9b98142e4da2fb24138",
+        "job_url": "https://github.com/limecloud/hetu/actions/runs/45811224659/job/139879685712",
+        "limits": "These artifacts precede846bb48 GUI sources and301ebc9b document lookup optimization; do not establish those increments on this platform."
+      }
+    ],
+    "macos_release": "still_in_progress_at_observation",
+    "complete_release_proven": false
+  }
 }

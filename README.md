@@ -124,6 +124,7 @@ CLI 参数与本机设置接入边界见[CLI 合同](docs/13-内核ABI与CLI合�
 npm run check
 npm run build
 npm run test --workspace @hetu/website
+npm run test:authoring --workspace @hetu/desktop
 cargo test --locked --workspace --jobs 2
 ```
 

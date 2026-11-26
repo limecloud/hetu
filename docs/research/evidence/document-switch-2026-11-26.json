@@ -1,0 +1,318 @@
+{
+  "recorded_at": "2026-11-26T12:08:35.993602+00:00",
+  "scope": "可信工作台复用Core已核验的目录页，消除首次打开末章的重复归属扫描",
+  "version": "0.15.0 development",
+  "diagnosis": {
+    "before": "Authoring.read返回按WorkRef核验的目录页，但未加入已有#owned集合；随后打开末章再次从第一页扫描",
+    "deterministic_before": {
+      "log": "owned-directory-before-transformed.log",
+      "passed": 1,
+      "failed": 1,
+      "assertion": "read two directory pages then open last document: actual backend list calls4 vs expected2"
+    },
+    "implementation": "Only successful Core directory pages after current surface check populate the existing set; no new index, source copy, Core action or persistent format",
+    "initial_native_click_timeout": "Prior installed-scale sample timed out after click; complete backend diagnostics were not yet retained. This change proves removal of duplicate lookup, and does not prove the cause of that earlier click timeout."
+  },
+  "validation": {
+    "authoring": {
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "log": "owned-directory-after.log",
+      "covers": [
+        "已核验页不再扫描",
+        "错误作品零Core请求",
+        "失败页与迟到回包不增加归属",
+        "未知文稿拒绝",
+        "改名与副本／双端移动的CAS和未知回执原键恢复"
+      ]
+    },
+    "package": {
+      "verified": {
+        "version": "0.15.0",
+        "source_sha256": "301ebc9b4c812ad6fd4671155afa22cb8eec5987246f5731ee2295ddc6b86a1f",
+        "source_inputs": 3086,
+        "artifacts": 3133,
+        "signature_verified": true,
+        "icon_matches": true
+      },
+      "manifest": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-recovery-acceptance-7d8jelb6/owned-directory-packages/hetu-dev-WaRxkc/manifest.json",
+      "desktop_stats": {
+        "startTime": "2026-11-26T12:01:45.226Z",
+        "duration": 43420.119,
+        "expected": 5,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "desktop_log": "owned-directory-package.log",
+      "shared_stats": {
+        "startTime": "2026-11-26T12:01:26.644Z",
+        "duration": 332780.815,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "shared_log": "owned-directory-shared.log"
+    },
+    "scale": {
+      "stats": {
+        "startTime": "2026-11-26T12:00:26.599Z",
+        "duration": 32469.568,
+        "expected": 3,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "before_installed_sample": {
+        "platform": "darwin",
+        "os_release": "24.6.0",
+        "os_version": "Darwin Kernel Version 24.6.0: Sun Oct 11 23:41:01 PDT 2026; root:xnu-11417.140.69.713.47~2/RELEASE_ARM64_T8103",
+        "architecture": "arm64",
+        "cpu": "Apple M1",
+        "logical_cpus": 8,
+        "memory_bytes": 17179869184,
+        "fixture_han_characters": 10000000,
+        "chapters": 1000,
+        "source_sha256": "a4838446f3060922f1af097a246b07a32655394a1dd3f645214b2744a1eb19d0",
+        "fixture_created_with_source": "224e6199d620ad58e629a5d50b866259c70624d600ee4fcca739fa9b356acf4f",
+        "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+        "viewport": {
+          "width": 1440,
+          "height": 960
+        },
+        "launch_to_library_ms": 2537.5143749999997,
+        "work_to_profile_ms": 1883.0664160000001,
+        "work_to_content_ms": 4393.964416000001,
+        "launch_to_content_ms": 6931.4787910000005,
+        "complete_directory_ms": 7241.800625,
+        "last_chapter_ms": 4020.514833000001,
+        "background_cancel_ms": 41.47804200000064,
+        "background_read_started": true,
+        "input_during_background_read": true,
+        "no_additional_reads_after_cancel": true,
+        "formal_revision_unchanged": true,
+        "model_turns": 0,
+        "method": "全新应用进程和新资料偏好；OS文件缓存未清空，播种产生的磁盘缓存可能仍热；进程启动／作品点击分别计时，实际首段可见且完整目录和末章Core字节核对；后台取消另在真实读取完成暂扣回执时验证"
+      },
+      "packaged_samples": [
+        {
+          "platform": "darwin",
+          "os_release": "24.6.0",
+          "os_version": "Darwin Kernel Version 24.6.0: Sun Oct 11 23:41:01 PDT 2026; root:xnu-11417.140.69.713.47~2/RELEASE_ARM64_T8103",
+          "architecture": "arm64",
+          "cpu": "Apple M1",
+          "logical_cpus": 8,
+          "memory_bytes": 17179869184,
+          "fixture_han_characters": 10000000,
+          "chapters": 1000,
+          "source_sha256": "301ebc9b4c812ad6fd4671155afa22cb8eec5987246f5731ee2295ddc6b86a1f",
+          "fixture_created_with_source": "224e6199d620ad58e629a5d50b866259c70624d600ee4fcca739fa9b356acf4f",
+          "executable": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-recovery-acceptance-7d8jelb6/owned-directory-packages/hetu-dev-WaRxkc/package/Hetu-darwin-arm64/Hetu.app/Contents/MacOS/Hetu",
+          "viewport": {
+            "width": 1440,
+            "height": 960
+          },
+          "launch_to_library_ms": 4314.7855,
+          "work_to_profile_ms": 1852.7123329999995,
+          "work_to_content_ms": 3820.056958,
+          "launch_to_content_ms": 8134.842458000001,
+          "complete_directory_ms": 5661.793208,
+          "last_chapter_ms": 356.2943749999995,
+          "background_cancel_ms": 50.98725000000013,
+          "background_read_started": true,
+          "input_during_background_read": true,
+          "no_additional_reads_after_cancel": true,
+          "formal_revision_unchanged": true,
+          "model_turns": 0,
+          "method": "全新应用进程和新资料偏好；OS文件缓存未清空，播种产生的磁盘缓存可能仍热；进程启动／作品点击分别计时，实际首段可见且完整目录和末章Core字节核对；后台取消另在真实读取完成暂扣回执时验证"
+        },
+        {
+          "platform": "darwin",
+          "os_release": "24.6.0",
+          "os_version": "Darwin Kernel Version 24.6.0: Sun Oct 11 23:41:01 PDT 2026; root:xnu-11417.140.69.713.47~2/RELEASE_ARM64_T8103",
+          "architecture": "arm64",
+          "cpu": "Apple M1",
+          "logical_cpus": 8,
+          "memory_bytes": 17179869184,
+          "fixture_han_characters": 10000000,
+          "chapters": 1000,
+          "source_sha256": "301ebc9b4c812ad6fd4671155afa22cb8eec5987246f5731ee2295ddc6b86a1f",
+          "fixture_created_with_source": "224e6199d620ad58e629a5d50b866259c70624d600ee4fcca739fa9b356acf4f",
+          "executable": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-recovery-acceptance-7d8jelb6/owned-directory-packages/hetu-dev-WaRxkc/package/Hetu-darwin-arm64/Hetu.app/Contents/MacOS/Hetu",
+          "viewport": {
+            "width": 1440,
+            "height": 960
+          },
+          "launch_to_library_ms": 2069.510167,
+          "work_to_profile_ms": 1348.0236670000004,
+          "work_to_content_ms": 2802.839958,
+          "launch_to_content_ms": 4872.350125,
+          "complete_directory_ms": 5135.353042000001,
+          "last_chapter_ms": 360.4512080000004,
+          "background_cancel_ms": 47.86566700000003,
+          "background_read_started": true,
+          "input_during_background_read": true,
+          "no_additional_reads_after_cancel": true,
+          "formal_revision_unchanged": true,
+          "model_turns": 0,
+          "method": "全新应用进程和新资料偏好；OS文件缓存未清空，播种产生的磁盘缓存可能仍热；进程启动／作品点击分别计时，实际首段可见且完整目录和末章Core字节核对；后台取消另在真实读取完成暂扣回执时验证"
+        },
+        {
+          "platform": "darwin",
+          "os_release": "24.6.0",
+          "os_version": "Darwin Kernel Version 24.6.0: Sun Oct 11 23:41:01 PDT 2026; root:xnu-11417.140.69.713.47~2/RELEASE_ARM64_T8103",
+          "architecture": "arm64",
+          "cpu": "Apple M1",
+          "logical_cpus": 8,
+          "memory_bytes": 17179869184,
+          "fixture_han_characters": 10000000,
+          "chapters": 1000,
+          "source_sha256": "301ebc9b4c812ad6fd4671155afa22cb8eec5987246f5731ee2295ddc6b86a1f",
+          "fixture_created_with_source": "224e6199d620ad58e629a5d50b866259c70624d600ee4fcca739fa9b356acf4f",
+          "executable": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-recovery-acceptance-7d8jelb6/owned-directory-packages/hetu-dev-WaRxkc/package/Hetu-darwin-arm64/Hetu.app/Contents/MacOS/Hetu",
+          "viewport": {
+            "width": 1440,
+            "height": 960
+          },
+          "launch_to_library_ms": 1513.452084,
+          "work_to_profile_ms": 1346.845458,
+          "work_to_content_ms": 2775.8857499999995,
+          "launch_to_content_ms": 4289.337834,
+          "complete_directory_ms": 5108.113,
+          "last_chapter_ms": 384.08116599999994,
+          "background_cancel_ms": 55.032499999999345,
+          "background_read_started": true,
+          "input_during_background_read": true,
+          "no_additional_reads_after_cancel": true,
+          "formal_revision_unchanged": true,
+          "model_turns": 0,
+          "method": "全新应用进程和新资料偏好；OS文件缓存未清空，播种产生的磁盘缓存可能仍热；进程启动／作品点击分别计时，实际首段可见且完整目录和末章Core字节核对；后台取消另在真实读取完成暂扣回执时验证"
+        }
+      ],
+      "method_limits": "同一公开Core生成的1000章／一千万汉字资料、本机M1／16GB、优化包；每次新进程及新偏好，系统文件缓存未清空；前版只有单个诊断样本，不外推一般p95或所有负载"
+    },
+    "installed": {
+      "verified": {
+        "version": "0.15.0",
+        "source_sha256": "301ebc9b4c812ad6fd4671155afa22cb8eec5987246f5731ee2295ddc6b86a1f",
+        "source_inputs": 3086,
+        "artifacts": 3133,
+        "signature_verified": true,
+        "icon_matches": true,
+        "installed_path": "/Applications/Hetu.app",
+        "atomic_swap": true,
+        "backup_created": false,
+        "old_bundle_removed": true
+      },
+      "desktop_stats": {
+        "startTime": "2026-11-26T12:03:38.119Z",
+        "duration": 76541.887,
+        "expected": 9,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "desktop_log": "owned-directory-installed.log",
+      "scale_stats": {
+        "startTime": "2026-11-26T12:05:17.567Z",
+        "duration": 9875.986,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "scale": {
+        "platform": "darwin",
+        "os_release": "24.6.0",
+        "os_version": "Darwin Kernel Version 24.6.0: Sun Oct 11 23:41:01 PDT 2026; root:xnu-11417.140.69.713.47~2/RELEASE_ARM64_T8103",
+        "architecture": "arm64",
+        "cpu": "Apple M1",
+        "logical_cpus": 8,
+        "memory_bytes": 17179869184,
+        "fixture_han_characters": 10000000,
+        "chapters": 1000,
+        "source_sha256": "301ebc9b4c812ad6fd4671155afa22cb8eec5987246f5731ee2295ddc6b86a1f",
+        "fixture_created_with_source": "224e6199d620ad58e629a5d50b866259c70624d600ee4fcca739fa9b356acf4f",
+        "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+        "viewport": {
+          "width": 1440,
+          "height": 960
+        },
+        "launch_to_library_ms": 2011.2156249999998,
+        "work_to_profile_ms": 1362.305417,
+        "work_to_content_ms": 2816.9642500000004,
+        "launch_to_content_ms": 4828.179875000001,
+        "complete_directory_ms": 5151.346208999999,
+        "last_chapter_ms": 348.5325410000005,
+        "background_cancel_ms": 46.261500000000524,
+        "background_read_started": true,
+        "input_during_background_read": true,
+        "no_additional_reads_after_cancel": true,
+        "formal_revision_unchanged": true,
+        "model_turns": 0,
+        "method": "全新应用进程和新资料偏好；OS文件缓存未清空，播种产生的磁盘缓存可能仍热；进程启动／作品点击分别计时，实际首段可见且完整目录和末章Core字节核对；后台取消另在真实读取完成暂扣回执时验证"
+      },
+      "normal_launch": {
+        "verified": true,
+        "library_works": 19,
+        "runtime": {
+          "version": "0.15.0",
+          "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+          "userData": "/Users/coso/Library/Application Support/Hetu"
+        },
+        "profile_indexes_unchanged": true
+      },
+      "final_bundle_verified": {
+        "version": "0.15.0",
+        "source_sha256": "301ebc9b4c812ad6fd4671155afa22cb8eec5987246f5731ee2295ddc6b86a1f",
+        "source_inputs": 3086,
+        "artifacts": 3133,
+        "signature_verified": true,
+        "icon_matches": true
+      },
+      "profile_indexes_from_before_install_unchanged": 3
+    },
+    "skill": {
+      "path": ".agents/skills/hetu-embedded-agent",
+      "format": "passed",
+      "new_experience": "Inspect internal ownership lookup amplification, reuse trusted Core catalog pages only; verify backend reads and actual fixed-fixture switching."
+    },
+    "docs": {
+      "result": "passed",
+      "log": "owned-directory-final-docs.log"
+    },
+    "capability_map": "consistent, no Core action changes"
+  },
+  "earlier_attempts": [
+    {
+      "log": "owned-directory-before.log",
+      "result": "Node strip-types拒绝Authoring参数属性；使用项目所需transform-types后复现真实4vs2断言失败，新增正式test:authoring入口"
+    },
+    {
+      "log": "owned-directory-package-build.log",
+      "result": "测试命令修改后共享manifest未更新，装配检查拒绝；重建共享资源后通过，未绕过"
+    }
+  ],
+  "native_host_attempt": {
+    "tool": "unified-computer-use",
+    "action": "cua.getApp Codex",
+    "result": "failed to write kernel assets: No such file or directory (os error 2)",
+    "window_accessed": false,
+    "product_result": "not_verified"
+  },
+  "source_sha256": {
+    "apps/desktop/src/main/authoring.ts": "fc8ec94730cb79ee3c69c54490365546b5cc27019115f7648e365713d057fb37",
+    "apps/desktop/tests/authoring-read.test.ts": "18dc19b0af37586d1be666fc829cd3962dbdd26feb5415b1b7191ebb51c1e7e9",
+    "apps/desktop/tests/project-scale.spec.ts": "56e8d8b6fbbe7dd81b01781c1c16b7acadb3e57d4df168cc29a72505ec7de43d",
+    "apps/desktop/package.json": "b879e47e4f706fbb35dcd4e96836d46390a019b0637df45bb94a4cd27f818435"
+  },
+  "raw_evidence_root": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-recovery-acceptance-7d8jelb6",
+  "not_verified": [
+    "本增量的Windows和Linux运行",
+    "真实原生Codex Desktop交互",
+    "先前点击超时的唯一根因",
+    "完整产品、专业一集、作者试用与正式发行"
+  ]
+}

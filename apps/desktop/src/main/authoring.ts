@@ -218,7 +218,11 @@ export class Authoring {
       )
         throw new Error("视频归属与当前作品不符。");
     } else throw new Error("工作台用例不可用。");
-    return this.#call(action, input);
+    const result = await this.#call(action, input);
+    // 目录页已由Core按当前作品核验，打开其中的文稿沿用同一归属集合。
+    if (action === "hetu.documents.list" && result.status === "succeeded")
+      for (const document of result.data.documents) this.#owned.add(document.document_id);
+    return result;
   }
   async rename(id: string, revision: string, title: string) {
     await this.#document(id);

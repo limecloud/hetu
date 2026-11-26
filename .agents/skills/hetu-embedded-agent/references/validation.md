@@ -9,6 +9,7 @@
 ```bash
 npm run build:desktop
 npm run test:agent --workspace @hetu/desktop
+npm run test:authoring --workspace @hetu/desktop
 ```
 
 针对桌面用例，例如：

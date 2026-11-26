@@ -214,7 +214,7 @@
     "../desktop/src/renderer/contributions.tsx": "accd00312449a27c73e597bdeec82f5bf65dfdf12e619a3b9204eb4e133976e9",
     "../desktop/src/renderer/storage-settings.css": "ba373ff9309801739cd9597960df744092e89e40a2efd9199a5a90eb65f0eac1",
     "../desktop/src/renderer/storage-settings.tsx": "a43ccd61428907668f220acd1da64eb351694893f83fb2986d3506e9476051a3",
-    "../desktop/package.json": "07a483d997588b03f6a246aecd54bf352e2760c326f0c4292fa8c682725311c5",
+    "../desktop/package.json": "b879e47e4f706fbb35dcd4e96836d46390a019b0637df45bb94a4cd27f818435",
     "../desktop/src/renderer/settings.css": "dc293bf454c1ffb3d050a5ab1efb2543c526ee583f943c090dd7de154f00c227",
     "../desktop/src/renderer/model-settings.tsx": "658f81bed4f747e4086eccc07e82a585f50e4152bf1310661ef8c3fa838be0c8",
     "../desktop/src/renderer/codex-settings.tsx": "ee2f8879aa540f4b54ec57cc295b0c7bf7b1d3a4a697b82ce78ee52447263295",
