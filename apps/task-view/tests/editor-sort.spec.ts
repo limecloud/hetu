@@ -7,6 +7,7 @@ import {AppServer} from "../../desktop/src/main/rpc.ts";
 import {navigate} from "../../desktop/tests/navigation.ts";
 import {fixtureBinary, machineBinary} from "../../desktop/tests/acceptance-paths.ts";
 import {openWorkbenchHost} from "./workbench-host.ts";
+import {renderedContrast} from "../../desktop/tests/fixtures/rendered-contrast.ts";
 
 for (const transport of ["stdio", "codex"] as const) test(`${transport} 块字母排序、固定源保存、浅暗窄窗及单次撤销`, async ({page}, info) => {
   test.skip(transport === "codex" && !process.env.HETU_ACCEPT_CODEX_BINARY, "需指定官方Codex CLI"); test.setTimeout(120000);
@@ -28,6 +29,7 @@ for (const transport of ["stdio", "codex"] as const) test(`${transport} 块字�
   const env = {HETU_DESKTOP_PROFILE: profile, HETU_LOCAL_SETTINGS_DIR: path.join(profile, "local-settings"), HETU_PLUGIN_STATE_DIR: profile, HETU_PLUGIN_NODE: process.execPath, HETU_COLLABORATION_DIR: collaboration};
   const host = await openWorkbenchHost(transport, page, {...process.env, ...env, HETU_APP_SERVER: machineBinary("hetu-app-server"), HETU_CLI: machineBinary("hetu"), ...(!process.env.HETU_PACKAGED_APP ? {HETU_INTEGRATIONS_DIR: path.join(root, "integrations")} : {})});
   const view = host.view, errors: string[] = []; page.on("pageerror", error => errors.push(error.message));
+  const menuColors: unknown[] = [];
   try {
     await page.setViewportSize({width: 1440, height: 797});
     await view.locator("#root").evaluate(() => {
@@ -52,7 +54,12 @@ for (const transport of ["stdio", "codex"] as const) test(`${transport} 块字�
       await writeFile(info.outputPath(`${label}-menu-geometry.json`), JSON.stringify(await view.locator('[role="menu"]').evaluateAll(elements => elements.map(element => ({label: element.getAttribute("aria-label"), bounds: element.getBoundingClientRect().toJSON(), items: Array.from(element.querySelectorAll("button")).map(button => ({label: button.getAttribute("aria-label"), bounds: button.getBoundingClientRect().toJSON()}))}))), null, 2) + "\n");
       const choice = submenu.getByRole("menuitem", {name: label, exact: true}), bounds = (await choice.boundingBox())!;
       await page.mouse.move(bounds.x + bounds.width / 2, bounds.y + bounds.height - 3, {steps: 24});
-      await expect(choice).toBeVisible(); await choice.click({timeout: 10000});
+      await expect(choice).toBeVisible();
+      const palette = await choice.evaluate(renderedContrast); menuColors.push({label, ...palette});
+      await writeFile(info.outputPath("menu-colors.json"), JSON.stringify(menuColors, null, 2) + "\n");
+      expect(palette.unresolved).toEqual([]); expect(palette.background[3]).toBe(255); expect(palette.contrast).toBeGreaterThanOrEqual(4.5);
+      await page.screenshot({path: info.outputPath(`${transport}-${label}-selected.png`)});
+      await choice.click({timeout: 10000});
     };
     await sort("排序 A → Z"); await expect(editor.locator(".cm-line")).toHaveText(ordered);
     await page.screenshot({path: info.outputPath(`${transport}-sort-light.png`)});

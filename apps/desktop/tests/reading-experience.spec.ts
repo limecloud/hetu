@@ -4,18 +4,20 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { AppServer } from "../src/main/rpc.ts";
-import { documentAction, navigate } from "./navigation.ts";
+import { documentAction, navigate, closeApplication } from "./navigation.ts";
+import {renderedContrast} from "./fixtures/rendered-contrast.ts";
+import {fixtureBinary, machineBinary} from "./acceptance-paths.ts";
 
 test("两类排版、即时正文预览、纸色、缩放和重排锚点保持原稿及撤销", async ({}, info) => {
   test.setTimeout(180000);
   const root = path.resolve("../.."), directory = await mkdtemp(path.join(tmpdir(), "hetu-reading-experience-"));
   const workspace = path.join(directory, "work"), profile = path.join(directory, "profile");
   await mkdir(profile);
-  const fixture = spawnSync(path.join(root, "target/debug/examples/baseline_fixture"), [workspace, path.join(directory, "collaboration")], { encoding: "utf8" });
+  const fixture = spawnSync(fixtureBinary("baseline_fixture"), [workspace, path.join(directory, "collaboration")], { encoding: "utf8" });
   expect(fixture.status, fixture.stderr).toBe(0);
   const refs = JSON.parse(fixture.stdout), documentId = refs.document.document.document_id;
   const source = Array.from({ length: 180 }, (_, i) => `第${i + 1}段：清晨的雾气沿着山谷缓缓流动。江岚把旧日记放回书袋，沿海岸寻找灯塔。每一封信，都有自己的来处。🌿`).join("\r\n");
-  const core = await AppServer.open(path.join(root, "target/debug/hetu-app-server"), workspace);
+  const core = await AppServer.open(machineBinary("hetu-app-server"), workspace);
   try {
     const result = await core.request("workspace/request", { action: "hetu.documents.save", contract_revision: "1", input: {
       document_id: documentId, base_revision_id: refs.document.revision.revision_id, source_format: "markdown", content: source, operation_key: "reading-fixture",
@@ -28,7 +30,8 @@ test("两类排版、即时正文预览、纸色、缩放和重排锚点保持�
   const executable = process.env.HETU_PACKAGED_APP;
   const app = await electron.launch({ ...(executable ? {executablePath: executable} : {args: [path.join(root, "apps/desktop")]}), env: {
     ...process.env, HETU_DESKTOP_PROFILE: profile, HETU_PLUGIN_STATE_DIR: profile,
-    HETU_COLLABORATION_DIR: path.join(directory, "collaboration"), HETU_APP_SERVER: executable ? undefined : path.join(root, "target/debug/hetu-app-server"),
+    HETU_COLLABORATION_DIR: path.join(directory, "collaboration"), HETU_APP_SERVER: executable ? undefined : machineBinary("hetu-app-server"),
+    HETU_CLI: executable ? undefined : machineBinary("hetu"), HETU_MCP: executable ? undefined : machineBinary("hetu-mcp"),
   } });
   try {
     await app.evaluate(({dialog}) => { dialog.showMessageBoxSync = () => 1; dialog.showMessageBox = async () => ({response: 1, checkboxChecked: false}); });
@@ -54,17 +57,10 @@ test("两类排版、即时正文预览、纸色、缩放和重排锚点保持�
       for (const state of ["normal", "hover", "pressed"] as const) {
         if (state === "normal") await page.mouse.move(0, 0); else await primary.hover();
         if (state === "pressed") await page.mouse.down();
-        const palette = await primary.evaluate(element => {
-          const style = getComputedStyle(element), context = document.createElement("canvas").getContext("2d")!;
-          function rgb(value: string) { context.clearRect(0, 0, 1, 1); context.fillStyle = value; context.fillRect(0, 0, 1, 1); return [...context.getImageData(0, 0, 1, 1).data]; }
-          const background = rgb(style.backgroundColor), foreground = rgb(style.color);
-          const luminance = (channels: number[]) => channels.slice(0, 3).map(value => { const n = value / 255; return n <= .04045 ? n / 12.92 : ((n + .055) / 1.055) ** 2.4; }).reduce((sum, value, index) => sum + value * [.2126, .7152, .0722][index], 0);
-          const [a, b] = [luminance(background), luminance(foreground)].sort((a, b) => a - b);
-          return {raw: {background: style.backgroundColor, foreground: style.color}, background, foreground, contrast: (b + .05) / (a + .05), opacity: style.opacity};
-        });
+        const palette = await primary.evaluate(renderedContrast);
         console.log("button-contrast", JSON.stringify({theme, state, ...palette}));
         if (state === "pressed") { await page.mouse.move(0, 0); await page.mouse.up(); }
-        expect(palette.background[3]).toBe(255); expect(palette.foreground[3]).toBe(255); expect(palette.opacity).toBe("1");
+        expect(palette.unresolved).toEqual([]); expect(palette.background[3]).toBe(255); expect(palette.foreground[3]).toBe(255); expect(palette.opacity).toBe("1");
         expect(palette.contrast).toBeGreaterThanOrEqual(4.5); contrasts.push({theme, state, ...palette});
       }
     }
@@ -162,5 +158,5 @@ test("两类排版、即时正文预览、纸色、缩放和重排锚点保持�
     await page.locator('summary[aria-label="阅读排版"]').click();
     expect(errors).toEqual([]);
     await info.attach("profile-location", { body: directory, contentType: "text/plain" });
-  } finally { await app.close(); }
+  } finally { await closeApplication(app); }
 });

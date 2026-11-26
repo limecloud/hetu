@@ -1,0 +1,168 @@
+{
+  "recorded_at": "2026-11-26T16:03:12.897702+00:00",
+  "tag": "v0.15.0",
+  "tag_object": "b408971b9ea2012aef77b95daf9ad78462975b85",
+  "git_sha": "8fa2546adca1dc70550f033186fc716794349994",
+  "release_url": "https://github.com/limecloud/hetu/releases/tag/v0.15.0",
+  "published_at": "2026-11-26T15:55:29Z",
+  "is_draft": false,
+  "is_prerelease": false,
+  "workflow": {
+    "id": 45841150392,
+    "url": "https://github.com/limecloud/hetu/actions/runs/45841150392",
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "Electron macOS arm64",
+        "conclusion": "success"
+      },
+      {
+        "name": "Electron windows-x64",
+        "conclusion": "success"
+      },
+      {
+        "name": "Electron linux-x64",
+        "conclusion": "success"
+      },
+      {
+        "name": "publish",
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish npmjs launcher",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "manifests": [
+    {
+      "version": "0.15.0",
+      "git_sha": "8fa2546adca1dc70550f033186fc716794349994",
+      "platform": "macos",
+      "architecture": "arm64",
+      "kind": "electron-release-package",
+      "signing": "developer-id",
+      "notarization_status": "Accepted",
+      "dmg_notarization_id": "80205e93-f0ab-4eed-8f25-d8de89b3e36b",
+      "files": {
+        "Hetu-0.15.0-macos-arm64.zip": "c1467650c2aacdb995e2a05fb4dcf16bd8beffb3de7e657f27ef03602fc580cf",
+        "Hetu-0.15.0-macos-arm64.dmg": "7f5ec04a9f8dfd9bd3c8090ee102d83a39f7146320f82f0a97d61291468fc86f"
+      }
+    },
+    {
+      "version": "0.15.0",
+      "git_sha": "8fa2546adca1dc70550f033186fc716794349994",
+      "platform": "linux",
+      "architecture": "x64",
+      "kind": "electron-release-package",
+      "signing": "unsigned",
+      "notarization_status": "not-applicable",
+      "dmg_notarization_id": null,
+      "files": {
+        "Hetu-0.15.0-linux-x64.tar.gz": "0e1ccc58f4c8582caada07b694870b5694087dcfb06dda4df206d198e25907fc"
+      }
+    },
+    {
+      "version": "0.15.0",
+      "git_sha": "8fa2546adca1dc70550f033186fc716794349994",
+      "platform": "windows",
+      "architecture": "x64",
+      "kind": "electron-release-package",
+      "signing": "unsigned",
+      "notarization_status": "not-applicable",
+      "dmg_notarization_id": null,
+      "files": {
+        "Hetu-0.15.0-windows-x64.zip": "38da37787576a8c26553af98cc233c277f207bb8afd9eb502c936c0a4bdde2ae"
+      }
+    }
+  ],
+  "assets": [
+    {
+      "name": "Hetu-0.15.0-linux-x64.tar.gz",
+      "bytes": 258870377,
+      "sha256": "0e1ccc58f4c8582caada07b694870b5694087dcfb06dda4df206d198e25907fc",
+      "github_digest_verified": true
+    },
+    {
+      "name": "Hetu-0.15.0-macos-arm64.dmg",
+      "bytes": 298854921,
+      "sha256": "7f5ec04a9f8dfd9bd3c8090ee102d83a39f7146320f82f0a97d61291468fc86f",
+      "github_digest_verified": true
+    },
+    {
+      "name": "Hetu-0.15.0-macos-arm64.zip",
+      "bytes": 249251462,
+      "sha256": "c1467650c2aacdb995e2a05fb4dcf16bd8beffb3de7e657f27ef03602fc580cf",
+      "github_digest_verified": true
+    },
+    {
+      "name": "Hetu-0.15.0-windows-x64.zip",
+      "bytes": 274129706,
+      "sha256": "38da37787576a8c26553af98cc233c277f207bb8afd9eb502c936c0a4bdde2ae",
+      "github_digest_verified": true
+    },
+    {
+      "name": "release-manifest-linux-x64.json",
+      "bytes": 1011010,
+      "sha256": "a8b99cf826e7d40329446363f92643087d01af8b80e48e5764cce102d2628065",
+      "github_digest_verified": true
+    },
+    {
+      "name": "release-manifest-windows-x64.json",
+      "bytes": 1009973,
+      "sha256": "a6cb97f9bfd54789f0265e0cad0d6331e21727a1fc0cb8b8e298493087f7589c",
+      "github_digest_verified": true
+    },
+    {
+      "name": "release-manifest.json",
+      "bytes": 1113368,
+      "sha256": "4f6927e9bc89d0823392f1a50e02b81bbb72465989238238d2989d1832ca5dba",
+      "github_digest_verified": true
+    },
+    {
+      "name": "SHA256SUMS",
+      "bytes": 276,
+      "sha256": "5c2c08bfde3b0110ad0d71e778bc65db04d97ebdbb1f577f06041990360fe81b",
+      "github_digest_verified": true
+    },
+    {
+      "name": "SHA256SUMS-linux-x64",
+      "bytes": 193,
+      "sha256": "1d2ee2faa0272b7b2e00ec430a7e6995ef21f45efe89fdcd967ed2d154650edb",
+      "github_digest_verified": true
+    },
+    {
+      "name": "SHA256SUMS-windows-x64",
+      "bytes": 194,
+      "sha256": "f4b7f79b6c473623c0162bc3d751e05f9f99d070e2e01c4b49fbaf6b4794edc6",
+      "github_digest_verified": true
+    }
+  ],
+  "archive_validation": "发布CI以固定源码的verify-electron-downloads.py逐字节核验全部四个归档及三份清单；本次独立下载清单核对SHA256SUMS，并核对全部十个公开Asset API的服务端SHA-256。未在本次再次下载归档。",
+  "npm": {
+    "package": "@limecloud/hetu",
+    "version": "0.15.0",
+    "latest": "0.15.0",
+    "integrity_verified": true,
+    "integrity": "sha512-IXzonCoL955Fv9fnQQE73MJo0C3BsRYyZcLi5tNW4+3RDTeszC3bzvTW/WyDrSWq0O7/5SVzTES4KSj30j4fOA==",
+    "bytes": 9218,
+    "bin": {
+      "hetu": "bin/hetu.mjs",
+      "hetu-mcp": "bin/hetu-mcp.mjs"
+    },
+    "engines": {
+      "node": ">=22.12.0"
+    }
+  },
+  "logs_sha256": {
+    "publish.log": "3c7d5cdb4fd5ed6ab6769eab66e138168ca52c95bc6527ce681825bf69877074",
+    "npm.log": "c2edf2951bbf272ae267ec71fc6a9215e18acd0313adc9e88e985edeb11d2643"
+  },
+  "limits": [
+    "发行源码为8fa2546，不包含后续3d3c2cc菜单／字体及本轮对比度修复",
+    "Windows／Linux runner通过不替代干净实机、DPI、读屏或作者试用",
+    "本机a4e01d4d仍为开发签名包，与本正式公证发行分开",
+    "未据本发行关闭完整项目工作包"
+  ]
+}

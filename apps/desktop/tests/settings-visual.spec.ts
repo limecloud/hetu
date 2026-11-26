@@ -3,6 +3,7 @@ import { mkdtemp, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
 import { openSettings, closeSettings, closeApplication } from "./navigation.ts";
+import {machineBinary} from "./acceptance-paths.ts";
 
 const root = path.resolve(import.meta.dirname, "../../..");
 const expect = baseExpect.configure({ timeout: 30000 });
@@ -11,9 +12,12 @@ test("独立设置分类截图、即时保存、浮层和窗口权限", async ()
   const profile = await mkdtemp(path.join(os.tmpdir(), "hetu-settings-visual-"));
   const output = path.join(root, "output/settings-native-20261116", process.env.HETU_SETTINGS_ROUND ?? "round-1");
   await mkdir(output, { recursive: true });
-  const app = await electron.launch({ args: [path.join(root, "apps/desktop")], env: {
+  const executable = process.env.HETU_PACKAGED_APP;
+  const app = await electron.launch({ ...(executable ? {executablePath: executable, args: []} : {args: [path.join(root, "apps/desktop")]}), env: {
     ...process.env, HETU_DESKTOP_PROFILE: profile, HETU_LOCAL_SETTINGS_DIR: path.join(profile, "local-settings"),
     HETU_MODEL_SERVICE_DIR: path.join(profile, "models"), HETU_COLLABORATION_DIR: path.join(profile, "collaboration"),
+    HETU_APP_SERVER: executable ? undefined : machineBinary("hetu-app-server"),
+    HETU_CLI: executable ? undefined : machineBinary("hetu"), HETU_MCP: executable ? undefined : machineBinary("hetu-mcp"),
   } });
   const errors: string[] = [], metrics: unknown[] = [];
   try {
@@ -162,7 +166,7 @@ test("独立设置分类截图、即时保存、浮层和窗口权限", async ()
     const reopened = await openSettings(app, main);
     const restoredReading = (await reopened.evaluate(() => window.hetuDesktop.settings("get"))).preferences.reading_profiles.novel;
     expect(restoredReading.font_size).toBe(17);
-    expect(restoredReading.font_name).toBe(family);
+    expect(restoredReading.font_name).toBe(cssFamily);
     expect((await reopened.evaluate(() => window.hetuDesktop.settings("get"))).preferences.git_author_name).toBe("关闭前的署名");
     await writeFile(path.join(output, "metrics.json"), JSON.stringify(metrics, null, 2));
   } finally {
