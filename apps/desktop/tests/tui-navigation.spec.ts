@@ -8,6 +8,7 @@ import {AppServer} from "../src/main/rpc.ts";
 
 const root=path.resolve(import.meta.dirname,"../../..");
 for(const [client,width] of [["codex",2560],["shell",980]] as const)test(`${client}铺满时导航恢复真实小说页面，重开及并排保持原执行端 ${width}px`,async({},info)=>{
+ test.skip(client==="codex"&&process.env.HETU_LIVE_ENGINES!=="1","真实Codex需要显式启用及已安装认证，Shell导航始终验收");
  test.setTimeout(150000);
  const folder=await mkdtemp(path.join(os.tmpdir(),"hetu-tui-navigation-")),workspace=path.join(folder,"work"),profile=path.join(folder,"profile"),collaboration=path.join(folder,"collaboration");
  const executable=process.env.HETU_PACKAGED_APP;

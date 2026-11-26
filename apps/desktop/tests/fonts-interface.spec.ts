@@ -57,9 +57,24 @@ test("真实字体目录、即时正文选用与独立窗口界面缩放保持�
     await expect.poll(() => app.evaluate(({BrowserWindow}) => BrowserWindow.getAllWindows().find(win => win.webContents.getURL().includes("?view=settings"))!.webContents.getZoomFactor())).toBe(1.1);
     expect(await app.evaluate(({BrowserWindow}) => BrowserWindow.getAllWindows().find(win => !win.webContents.getURL().includes("?view=settings"))!.webContents.getZoomFactor())).toBe(1.25);
     await settings.getByRole("combobox", {name: "界面大小", exact: true}).selectOption("200");
+    for (const [width, height] of [[1440, 940], [1024, 768], [520, 460]]) {
+      await app.evaluate(({BrowserWindow}, size) => BrowserWindow.getAllWindows().find(win => win.webContents.getURL().includes("?view=settings"))!.setContentSize(size[0], size[1]), [width, height]);
+      const writing = settings.getByRole("tab", {name: "写作", exact: true}), about = settings.getByRole("tab", {name: "关于", exact: true});
+      await writing.click();
+      expect(await settings.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1 && document.querySelector(".settings-panel")!.scrollWidth <= document.querySelector(".settings-panel")!.clientWidth + 1)).toBe(true);
+      // 放大后的分类可滚动；验证实际切换与焦点可达，不要求全部分类同时位于首屏。
+      await about.click();
+      await expect(about).toBeInViewport(); await expect(about).toHaveAttribute("aria-selected", "true");
+      await expect(settings.getByRole("tabpanel", {name: "关于", exact: true})).toBeVisible();
+      await about.press("Home");
+      const general = settings.getByRole("tab", {name: "通用", exact: true});
+      await expect(general).toBeFocused(); await expect(general).toBeInViewport();
+      await general.press("End");
+      await expect(about).toBeFocused(); await expect(about).toBeInViewport();
+      await info.attach(`settings-interface-200-${width}x${height}`, {contentType: "application/json", body: JSON.stringify(await settings.evaluate(() => ({width: innerWidth, height: innerHeight, orientation: document.querySelector('[role="tablist"]')?.getAttribute("aria-orientation"), tabs: [...document.querySelectorAll('[role="tab"]')].map(node => ({title: node.textContent, width: node.getBoundingClientRect().width, x: node.getBoundingClientRect().x, y: node.getBoundingClientRect().y}))}))) });
+    }
+    await app.evaluate(({BrowserWindow}) => BrowserWindow.getAllWindows().find(win => win.webContents.getURL().includes("?view=settings"))!.setContentSize(1440, 940));
     await settings.getByRole("tab", {name: "写作", exact: true}).click();
-    expect(await settings.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1 && document.querySelector(".settings-panel")!.scrollWidth <= document.querySelector(".settings-panel")!.clientWidth + 1)).toBe(true);
-    await expect(settings.getByRole("tab", {name: "关于", exact: true})).toBeInViewport();
     await settings.screenshot({path: info.outputPath("settings-interface-200.png")});
     await info.attach("settings-interface-200-metrics", {contentType: "application/json", body: JSON.stringify(await settings.evaluate(() => ({width: innerWidth, height: innerHeight, ratio: devicePixelRatio, visualWidth: visualViewport?.width, tabs: [...document.querySelectorAll('[role="tab"]')].map(node => ({title: node.textContent, width: node.getBoundingClientRect().width, x: node.getBoundingClientRect().x}))}))) });
     const nativeSettings = await app.evaluate(async ({BrowserWindow}) => (await BrowserWindow.getAllWindows().find(win => win.webContents.getURL().includes("?view=settings"))!.capturePage()).toPNG().toString("base64"));

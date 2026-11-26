@@ -92,9 +92,11 @@ test("独立设置分类截图、即时保存、浮层和窗口权限", async ()
     await page.getByRole("button", {name: "本机字体", exact: true}).click();
     await page.getByRole("button", {name: "本机字体目录", exact: true}).click();
     const localFonts = page.getByRole("region", {name: "本机字体目录", exact: true});
-    await localFonts.getByRole("searchbox", {name: "搜索本机字体", exact: true}).fill("PingFang SC");
-    await localFonts.getByRole("button", {name: "选择字体 PingFang SC", exact: true}).click();
-    await expect(page.locator(".reading-preview")).toHaveCSS("font-family", /PingFang SC/);
+    const fonts=await page.evaluate(()=>window.hetuDesktop.fonts());expect(fonts.families.length).toBeGreaterThan(0);
+    const family=fonts.families.includes("PingFang SC")?"PingFang SC":fonts.families[0];
+    await localFonts.getByRole("searchbox", {name: "搜索本机字体", exact: true}).fill(family);
+    await localFonts.getByRole("button", {name: "选择字体 "+family, exact: true}).click();
+    await expect.poll(()=>page.locator(".reading-preview").evaluate(node=>getComputedStyle(node).fontFamily)).toContain(family);
     await expect(page.getByRole("switch", { name: "自动保存正文", exact: true })).toBeEnabled();
     await page.getByRole("switch", { name: "自动保存正文", exact: true }).uncheck();
     await expect.poll(() => page.evaluate(async () => (await window.hetuDesktop.settings("get")).preferences.autosave), { timeout: 30000 }).toBe(false);

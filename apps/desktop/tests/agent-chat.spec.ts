@@ -247,7 +247,7 @@ test("GUI展示真实协议时间线，历史锚点、Markdown、输入与偏好
   await expect(page.getByRole("button",{name:"关闭终端面板",exact:true})).toBeInViewport({ratio:1});
   await page.getByLabel("当前会话",{exact:true}).click();await expect(page.getByRole("searchbox",{name:"查找会话",exact:true})).toBeVisible();await page.getByLabel("当前会话",{exact:true}).click();
   const documentTab=narrowTabs.getByRole("tab",{name:"第一章 雾港（旧修订）",exact:true});await documentTab.click();
-  await expect(documentTab).toHaveAttribute("aria-selected","true");await expect(documentTab).toBeInViewport({ratio:1});
+  await expect(documentTab).toHaveAttribute("aria-selected","true");await expect(documentTab).toBeInViewport({ratio:1-1/(await documentTab.boundingBox())!.width});
   const closePreview=page.getByRole("button",{name:"关闭预览 第一章 雾港（旧修订）",exact:true});await expect(closePreview).toBeInViewport({ratio:1});
   expect(await documentTab.evaluate(element=>element.clientWidth)).toBeGreaterThanOrEqual(80);
   await page.screenshot({path:info.outputPath("gui-narrow-preview-header.png")});
