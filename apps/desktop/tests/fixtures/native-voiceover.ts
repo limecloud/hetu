@@ -71,7 +71,7 @@ end tell`)==="handled";
   // DOM焦点先于原生AX刷新；等待确切原生当前值后再请求系统朗读。
   let result:any;
   await expect.poll(()=>{
-   const native=inspect(true),title=native.target_focus?.title??"";result=native;
+   const native=inspect(true),title=[native.target_focus?.title,native.target_focus?.description].filter(Boolean).join(" ");result=native;
    return native.frontmost_matches&&native.reader_matches&&expected.every(word=>title.includes(word));
   },{timeout:10000}).toBe(true);
   // 焦点变化已朗读当前值时保留该瞬时字幕；再发读取会使其被后续帮助提示覆盖。

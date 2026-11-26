@@ -40,7 +40,7 @@ if foregroundMatches() && AXIsProcessTrusted() {
     if AXUIElementCopyAttributeValue(application, kAXFocusedUIElementAttribute as CFString, &value) == .success,
        let value, CFGetTypeID(value) == AXUIElementGetTypeID() {
         let element = unsafeBitCast(value, to: AXUIElement.self)
-        for (name, key) in ["title": kAXTitleAttribute, "role": kAXRoleAttribute] {
+        for (name, key) in ["title": kAXTitleAttribute, "description": kAXDescriptionAttribute, "role": kAXRoleAttribute] {
             var attribute: CFTypeRef?
             if AXUIElementCopyAttributeValue(element, key as CFString, &attribute) == .success,
                let text = attribute as? String {focused[name] = text}

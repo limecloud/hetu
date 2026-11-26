@@ -1209,6 +1209,36 @@
       "path": "docs/research/evidence/native-voiceover-2026-11-27/help-replaced-caption.png",
       "sha256": "e4b93aabdd7f1e924ed479548d23a057175fc3f84c4f5ea4c3fa90ab43a85b3e",
       "bytes": 92418
+    },
+    {
+      "path": "docs/research/evidence/native-voiceover-2026-11-27/final-voiceover-0.png",
+      "sha256": "087a50d039132d59d328a1f2716adc9e9897ee37e33a411d5ae74be2d1ba8e3d",
+      "bytes": 40662
+    },
+    {
+      "path": "docs/research/evidence/native-voiceover-2026-11-27/final-voiceover-1.png",
+      "sha256": "3f5f197bc9a9dfbabfdb9e09a1166269942462c42b4dee1f22afa0fd351083a0",
+      "bytes": 47062
+    },
+    {
+      "path": "docs/research/evidence/native-voiceover-2026-11-27/final-gui-composer-voiceover-0.png",
+      "sha256": "26301dd7ab60ddcffdb1902eb3e195a082f8a3c8ce34817ccfb720fda26b69cb",
+      "bytes": 65546
+    },
+    {
+      "path": "docs/research/evidence/native-voiceover-2026-11-27/final-tui-search-voiceover-0.png",
+      "sha256": "e06b22144525f18429946bb413bcc02caf59868b7495d88d32407759f1be6a24",
+      "bytes": 49691
+    },
+    {
+      "path": "docs/research/evidence/native-voiceover-2026-11-27/final-gui-composer-workbench.png",
+      "sha256": "ae79a5b357fb95e75753b980c729745ec04468e34872b1ffbadcc5e146a870c7",
+      "bytes": 30618
+    },
+    {
+      "path": "docs/research/evidence/native-voiceover-2026-11-27/final-tui-search-workbench.png",
+      "sha256": "e7fdc680c2d3b9c387ec1ea4a731d368548a2ce491783285c1f0b29daa5e10f7",
+      "bytes": 54986
     }
   ],
   "checks": {
@@ -1246,7 +1276,7 @@
   },
   "limits": [
     "actual output was observed from VoiceOver caption pixels; audio quality was not recorded or judged",
-    "selector only, not all pages or full VoiceOver navigation",
+    "selector, GUI composer and TUI search input only; not all pages, all terminal output or full VoiceOver navigation",
     "macOS 15.8.3 only; no other reader or Windows/Linux claim",
     "screen and AX permissions were already available; no request, permission change or script-control enablement",
     "caption selection uses one bounded reader-owned panel; ambiguous or unsupported geometry fails closed",
@@ -1265,5 +1295,751 @@
     "macos_current_step": "Sign, notarize and package Electron",
     "status": "in_progress",
     "public_release_and_npm": "not_yet_verified"
+  },
+  "gui_and_tui_followup": {
+    "base_git_sha": "994328a3b55e42a95751530d56bf60d96150141c",
+    "files": {
+      ".agents/skills/hetu-embedded-agent/scripts/inspect-macos-voiceover.swift": "c42b9d9bdd354623803c246e32a88b6ffdc866c1c30d07cc8bd6ef6604f1d63e",
+      "apps/desktop/tests/fixtures/native-voiceover.ts": "33bb9087bd8178e45f9b0129e62b7c53f061f29e2827adc7ac900a5f19b29099",
+      "apps/desktop/tests/agent-native-voiceover.spec.ts": "b094cb2a13ec1d76c67597906da7d7a30564b82088b844053c2b4bd3a3cfaf2b",
+      "apps/desktop/tests/agent-launch-accessibility.spec.ts": "e67fb84af8ebbbb5b3e21b59e7c946db925efed9ded7d39bdf37fd173ce88d78"
+    },
+    "first_gui_search_journey": {
+      "stats": {
+        "startTime": "2026-11-26T18:07:07.012Z",
+        "duration": 30652.823,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "failed_attempts": 0
+    },
+    "final_combined_journeys": {
+      "stats": {
+        "startTime": "2026-11-26T18:09:22.330Z",
+        "duration": 44910.392,
+        "expected": 2,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "checks": [
+        {
+          "packaged": true,
+          "current_value_in_accessible_name": true,
+          "roving_engine_tabs": true,
+          "search_editing_preserved": true,
+          "nested_escape_restores_focus": true,
+          "no_engine_or_model_started": true
+        },
+        {
+          "packaged": true,
+          "actual_voiceover_caption_values": true,
+          "gui_draft_preserved": true,
+          "search_value_preserved": true,
+          "escape_restores_terminal_focus": true,
+          "original_session_and_thread": true,
+          "model_requests": 0,
+          "reader_restored": true
+        }
+      ],
+      "audits": {
+        "voiceover.json": {
+          "initial": [],
+          "observations": [
+            [],
+            [],
+            [],
+            [],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 9688
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOverQuickstart",
+                "executable": "/System/Library/PrivateFrameworks/ScreenReader.framework/Versions/A/Resources/VoiceOver Quickstart.app/Contents/MacOS/VoiceOver Quickstart",
+                "name": "旁白快速入门",
+                "pid": 9702
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 9736
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 9736
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 9736
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 9736
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 9736
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 9736
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 9736
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 9736
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 9736
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 9736
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 9736
+              }
+            ],
+            []
+          ],
+          "startup": [
+            {
+              "candidate_windows": 0,
+              "captured_windows": 0,
+              "diagnostic_files": [],
+              "frontmost_matches": true,
+              "keyboard_input": false,
+              "read_failures": 0,
+              "reader_matches": true,
+              "recognized_lines": [],
+              "screen_capture_permission": true,
+              "settings_changed": false,
+              "source": "VoiceOver caption window pixels",
+              "target_focus": {
+                "description": "",
+                "role": "AXPopUpButton",
+                "title": "引擎 Codex（CLI）"
+              }
+            },
+            {
+              "candidate_windows": 0,
+              "captured_windows": 0,
+              "diagnostic_files": [],
+              "frontmost_matches": true,
+              "keyboard_input": false,
+              "read_failures": 0,
+              "reader_matches": true,
+              "recognized_lines": [],
+              "screen_capture_permission": true,
+              "settings_changed": false,
+              "source": "VoiceOver caption window pixels",
+              "target_focus": {
+                "description": "",
+                "role": "AXPopUpButton",
+                "title": "引擎 Codex（CLI）"
+              }
+            },
+            {
+              "candidate_windows": 1,
+              "captured_windows": 1,
+              "diagnostic_files": [],
+              "frontmost_matches": true,
+              "keyboard_input": false,
+              "read_failures": 0,
+              "reader_matches": true,
+              "recognized_lines": [],
+              "screen_capture_permission": true,
+              "settings_changed": false,
+              "source": "VoiceOver caption window pixels",
+              "target_focus": {
+                "description": "",
+                "role": "AXPopUpButton",
+                "title": "引擎 Codex（CLI）"
+              }
+            },
+            {
+              "candidate_windows": 1,
+              "captured_windows": 1,
+              "diagnostic_files": [],
+              "frontmost_matches": true,
+              "keyboard_input": false,
+              "read_failures": 0,
+              "reader_matches": true,
+              "recognized_lines": [
+                "X 旁白打开 Hetu，河图洛书，窗口，引擎 Codex（CLI），对",
+                "话框弹出 已折叠，按钮，有键盘焦点"
+              ],
+              "screen_capture_permission": true,
+              "settings_changed": false,
+              "source": "VoiceOver caption window pixels",
+              "target_focus": {
+                "description": "",
+                "role": "AXPopUpButton",
+                "title": "引擎 Codex（CLI）"
+              }
+            }
+          ],
+          "captions": [
+            {
+              "candidate_windows": 1,
+              "captured_windows": 1,
+              "diagnostic_files": [
+                "docs/research/evidence/native-voiceover-2026-11-27/final-voiceover-0.png"
+              ],
+              "frontmost_matches": true,
+              "keyboard_input": false,
+              "read_failures": 0,
+              "reader_matches": true,
+              "recognized_lines": [
+                "X 旁白打开 Hetu，河图洛书，窗口，引擎 Codex（CLI），对",
+                "话框弹出 已折叠，按钮，有键盘焦点"
+              ],
+              "screen_capture_permission": true,
+              "settings_changed": false,
+              "source": "VoiceOver caption window pixels",
+              "target_focus": {
+                "description": "",
+                "role": "AXPopUpButton",
+                "title": "引擎 Codex（CLI）"
+              }
+            },
+            {
+              "candidate_windows": 1,
+              "captured_windows": 1,
+              "diagnostic_files": [
+                "docs/research/evidence/native-voiceover-2026-11-27/final-voiceover-1.png"
+              ],
+              "frontmost_matches": true,
+              "keyboard_input": false,
+              "read_failures": 0,
+              "reader_matches": true,
+              "recognized_lines": [
+                "X引擎 Codex （CLI）测试模型1高，对话框弹出 已折叠，按钮"
+              ],
+              "screen_capture_permission": true,
+              "settings_changed": false,
+              "source": "VoiceOver caption window pixels",
+              "target_focus": {
+                "description": "",
+                "role": "AXPopUpButton",
+                "title": "引擎 Codex（CLI） 测试模型1 高"
+              }
+            }
+          ],
+          "readings": [
+            {
+              "expected": [
+                "引擎",
+                "Codex"
+              ],
+              "source": "focus_announcement",
+              "sample": 0
+            },
+            {
+              "expected": [
+                "引擎",
+                "测试模型1",
+                "高"
+              ],
+              "source": "focus_announcement",
+              "sample": 1
+            }
+          ],
+          "started": true,
+          "restored": true,
+          "script_permissions_changed": false
+        },
+        "gui-composer-voiceover.json": {
+          "initial": [],
+          "observations": [
+            [],
+            [],
+            [],
+            [],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 10021
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOverQuickstart",
+                "executable": "/System/Library/PrivateFrameworks/ScreenReader.framework/Versions/A/Resources/VoiceOver Quickstart.app/Contents/MacOS/VoiceOver Quickstart",
+                "name": "旁白快速入门",
+                "pid": 10084
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 10142
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 10142
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 10142
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 10142
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 10142
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 10142
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 10142
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 10142
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 10142
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 10142
+              }
+            ],
+            []
+          ],
+          "startup": [
+            {
+              "candidate_windows": 0,
+              "captured_windows": 0,
+              "diagnostic_files": [],
+              "frontmost_matches": true,
+              "keyboard_input": false,
+              "read_failures": 0,
+              "reader_matches": true,
+              "recognized_lines": [],
+              "screen_capture_permission": true,
+              "settings_changed": false,
+              "source": "VoiceOver caption window pixels",
+              "target_focus": {
+                "description": "发送给 Agent",
+                "role": "AXTextArea",
+                "title": ""
+              }
+            },
+            {
+              "candidate_windows": 0,
+              "captured_windows": 0,
+              "diagnostic_files": [],
+              "frontmost_matches": true,
+              "keyboard_input": false,
+              "read_failures": 0,
+              "reader_matches": true,
+              "recognized_lines": [],
+              "screen_capture_permission": true,
+              "settings_changed": false,
+              "source": "VoiceOver caption window pixels",
+              "target_focus": {
+                "description": "发送给 Agent",
+                "role": "AXTextArea",
+                "title": ""
+              }
+            },
+            {
+              "candidate_windows": 1,
+              "captured_windows": 1,
+              "diagnostic_files": [],
+              "frontmost_matches": true,
+              "keyboard_input": false,
+              "read_failures": 0,
+              "reader_matches": true,
+              "recognized_lines": [],
+              "screen_capture_permission": true,
+              "settings_changed": false,
+              "source": "VoiceOver caption window pixels",
+              "target_focus": {
+                "description": "发送给 Agent",
+                "role": "AXTextArea",
+                "title": ""
+              }
+            },
+            {
+              "candidate_windows": 1,
+              "captured_windows": 1,
+              "diagnostic_files": [],
+              "frontmost_matches": true,
+              "keyboard_input": false,
+              "read_failures": 0,
+              "reader_matches": true,
+              "recognized_lines": [
+                "X旁白打开 Hetu，河图洛书描述创作目标，窗口，发送给",
+                "Agent，编辑文本 这段文字仅保留在草稿，不发起模型请",
+                "求。，在文本的结尾插入的内容。，有键盘焦点"
+              ],
+              "screen_capture_permission": true,
+              "settings_changed": false,
+              "source": "VoiceOver caption window pixels",
+              "target_focus": {
+                "description": "发送给 Agent",
+                "role": "AXTextArea",
+                "title": ""
+              }
+            }
+          ],
+          "captions": [
+            {
+              "candidate_windows": 1,
+              "captured_windows": 1,
+              "diagnostic_files": [
+                "docs/research/evidence/native-voiceover-2026-11-27/final-gui-composer-voiceover-0.png"
+              ],
+              "frontmost_matches": true,
+              "keyboard_input": false,
+              "read_failures": 0,
+              "reader_matches": true,
+              "recognized_lines": [
+                "X旁白打开 Hetu，河图洛书描述创作目标，窗口，发送给",
+                "Agent，编辑文本 这段文字仅保留在草稿，不发起模型请",
+                "求。，在文本的结尾插入的内容。，有键盘焦点"
+              ],
+              "screen_capture_permission": true,
+              "settings_changed": false,
+              "source": "VoiceOver caption window pixels",
+              "target_focus": {
+                "description": "发送给 Agent",
+                "role": "AXTextArea",
+                "title": ""
+              }
+            }
+          ],
+          "readings": [
+            {
+              "expected": [
+                "发送给",
+                "Agent"
+              ],
+              "source": "focus_announcement",
+              "sample": 0
+            }
+          ],
+          "started": true,
+          "restored": true,
+          "script_permissions_changed": false
+        },
+        "tui-search-voiceover.json": {
+          "initial": [],
+          "observations": [
+            [],
+            [],
+            [],
+            [],
+            [],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 10315
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOverQuickstart",
+                "executable": "/System/Library/PrivateFrameworks/ScreenReader.framework/Versions/A/Resources/VoiceOver Quickstart.app/Contents/MacOS/VoiceOver Quickstart",
+                "name": "旁白快速入门",
+                "pid": 10331
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 10368
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 10368
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 10368
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 10368
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 10368
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 10368
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 10368
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 10368
+              }
+            ],
+            [
+              {
+                "bundle": "com.apple.VoiceOver",
+                "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+                "name": "旁白",
+                "pid": 10368
+              }
+            ],
+            []
+          ],
+          "startup": [
+            {
+              "candidate_windows": 0,
+              "captured_windows": 0,
+              "diagnostic_files": [],
+              "frontmost_matches": true,
+              "keyboard_input": false,
+              "read_failures": 0,
+              "reader_matches": false,
+              "recognized_lines": [],
+              "screen_capture_permission": true,
+              "settings_changed": false,
+              "source": "VoiceOver caption window pixels",
+              "target_focus": {
+                "description": "查找终端内容",
+                "role": "AXTextField",
+                "title": ""
+              }
+            },
+            {
+              "candidate_windows": 0,
+              "captured_windows": 0,
+              "diagnostic_files": [],
+              "frontmost_matches": true,
+              "keyboard_input": false,
+              "read_failures": 0,
+              "reader_matches": true,
+              "recognized_lines": [],
+              "screen_capture_permission": true,
+              "settings_changed": false,
+              "source": "VoiceOver caption window pixels",
+              "target_focus": {
+                "description": "查找终端内容",
+                "role": "AXTextField",
+                "title": ""
+              }
+            },
+            {
+              "candidate_windows": 1,
+              "captured_windows": 1,
+              "diagnostic_files": [],
+              "frontmost_matches": true,
+              "keyboard_input": false,
+              "read_failures": 0,
+              "reader_matches": true,
+              "recognized_lines": [
+                "X 旁白打开 Hetu，河图洛书，窗口 未提交的查询，在文本的",
+                "结尾插入的内容。，查找终端内容，编辑文本，有键盘焦点"
+              ],
+              "screen_capture_permission": true,
+              "settings_changed": false,
+              "source": "VoiceOver caption window pixels",
+              "target_focus": {
+                "description": "查找终端内容",
+                "role": "AXTextField",
+                "title": ""
+              }
+            }
+          ],
+          "captions": [
+            {
+              "candidate_windows": 1,
+              "captured_windows": 1,
+              "diagnostic_files": [
+                "docs/research/evidence/native-voiceover-2026-11-27/final-tui-search-voiceover-0.png"
+              ],
+              "frontmost_matches": true,
+              "keyboard_input": false,
+              "read_failures": 0,
+              "reader_matches": true,
+              "recognized_lines": [
+                "X 旁白打开 Hetu，河图洛书，窗口 未提交的查询，在文本的",
+                "结尾插入的内容。，查找终端内容，编辑文本，有键盘焦点"
+              ],
+              "screen_capture_permission": true,
+              "settings_changed": false,
+              "source": "VoiceOver caption window pixels",
+              "target_focus": {
+                "description": "查找终端内容",
+                "role": "AXTextField",
+                "title": ""
+              }
+            }
+          ],
+          "readings": [
+            {
+              "expected": [
+                "查找终端内容"
+              ],
+              "source": "focus_announcement",
+              "sample": 0
+            }
+          ],
+          "started": true,
+          "restored": true,
+          "script_permissions_changed": false
+        }
+      },
+      "normal_application_exits": 2,
+      "model_requests": 0
+    },
+    "without_live_flag": {
+      "stats": {
+        "startTime": "2026-11-26T18:08:11.567Z",
+        "duration": 458.561,
+        "expected": 0,
+        "skipped": 1,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "reader_audit_created": false
+    },
+    "finding": "AXTextArea and AXTextField expose accessible names in AXDescription while AXTitle is empty. The probe preserves both fields and verifies actual speech caption pixels independently.",
+    "final_processes": [],
+    "scope": "GUI composer and native TUI search input, values, Escape focus, GUI draft, original session/thread; not all TUI output or all-page reader navigation"
   }
 }
