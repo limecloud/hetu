@@ -38,7 +38,13 @@ func visit(_ element: AXUIElement, _ depth: Int) {
         "role": kAXRoleAttribute, "title": kAXTitleAttribute,
         "description": kAXDescriptionAttribute, "help": kAXHelpAttribute,
         "value": kAXValueAttribute,
-    ].mapValues { read(element, $0) as? String ?? "" }
+    ].mapValues { key -> String in
+        guard let value = read(element, key) else {return ""}
+        if let text = value as? String {return text}
+        // 复选框和开关的AXValue为数值，不能把关闭状态误报为空值。
+        if let number = value as? NSNumber {return number.stringValue}
+        return ""
+    }
     if fields.values.contains(where: { $0.contains(query) }) { matches.append(fields) }
     for child in read(element, kAXChildrenAttribute) as? [AXUIElement] ?? [] {
         if Date() >= deadline || visited >= 1500 { truncated = true; break }

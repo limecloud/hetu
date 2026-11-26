@@ -1,9 +1,10 @@
 import {test,expect,_electron as electron} from "@playwright/test";
-import {mkdtemp,writeFile} from "node:fs/promises";
+import {mkdir,mkdtemp,writeFile} from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
 import {execFileSync} from "node:child_process";
 import {closeApplication} from "./navigation.ts";
+import {NativeVoiceOver} from "./fixtures/native-voiceover.ts";
 
 const root=path.resolve(import.meta.dirname,"../../..");
 test("引擎选择朗读当前值，单一Tab入口、候选导航与Escape焦点保持一致",async({},info)=>{
@@ -11,8 +12,7 @@ test("引擎选择朗读当前值，单一Tab入口、候选导航与Escape焦�
  const profile=await mkdtemp(path.join(os.tmpdir(),"hetu-agent-accessibility-")),executable=process.env.HETU_PACKAGED_APP;
  const env={...process.env,HETU_DESKTOP_PROFILE:profile,HETU_LOCAL_SETTINGS_DIR:path.join(profile,"LocalSettings"),HETU_COLLABORATION_DIR:path.join(profile,"collaboration"),HETU_PLUGIN_STATE_DIR:profile};delete env.ELECTRON_RUN_AS_NODE;
  const app=await electron.launch({...(executable?{executablePath:executable,args:[]}:{args:[path.join(root,"apps/desktop")]}),env});
- let failed=false,voiceOverStarted=false;
- const script=(source:string)=>execFileSync("osascript",["-e",source],{encoding:"utf8",timeout:10000}).trim();
+ let failed=false,reader:NativeVoiceOver|undefined;
  try{
   const page=await app.firstWindow();await page.setViewportSize({width:1280,height:900});await expect(page.getByRole("button",{name:"刷新创作库",exact:true})).toBeEnabled();
   await app.evaluate(({ipcMain,app})=>{
@@ -36,14 +36,10 @@ test("引擎选择朗读当前值，单一Tab入口、候选导航与Escape焦�
    expect(native.trusted).toBe(true);expect(native.matches.some((row:any)=>row.role==="AXPopUpButton"&&row.title==="引擎 Codex（CLI）")).toBe(true);
   }
   if(process.env.HETU_LIVE_VOICEOVER==="1"){
-   expect(process.platform).toBe("darwin");
-   const running=()=>script('tell application "System Events" to get exists application process "VoiceOver"')==="true";
-   if(!running()){execFileSync("open",["-a","VoiceOver"]);voiceOverStarted=true;await expect.poll(running).toBe(true);}
+   const diagnostics=info.outputPath("voiceover-captions");await mkdir(diagnostics,{recursive:true});
+   reader=new NativeVoiceOver(app.process().pid!,diagnostics);await reader.start();
    await app.evaluate(({app,BrowserWindow})=>{app.focus({steal:true});BrowserWindow.getAllWindows()[0]?.focus();});await trigger.focus();
-   const phrase=()=>execFileSync("osascript",["-e",'tell application "VoiceOver" to get content of last phrase'],{encoding:"utf8",timeout:3000}).trim();
-   const phrases:string[]=[];
-   await expect.poll(()=>{const current=phrase();phrases.push(current);return current;},{timeout:10000}).toContain("引擎");
-   await writeFile(info.outputPath("voiceover.json"),JSON.stringify({actual_system_reader:true,phrases,started_by_test:voiceOverStarted},null,2)+"\n");
+   await reader.read(["引擎","Codex"]);
   }
   await trigger.focus();await trigger.press("Enter");
   const picker=dialog.getByRole("dialog",{name:"选择引擎与模型",exact:true}),search=picker.getByRole("searchbox",{name:"搜索模型",exact:true});await expect(search).toBeFocused();
@@ -54,6 +50,7 @@ test("引擎选择朗读当前值，单一Tab入口、候选导航与Escape焦�
   const defaultModel=picker.getByRole("option",{name:"使用已配置的默认模型",exact:true});await expect(defaultModel).toBeFocused();
   await defaultModel.press("ArrowDown");const first=picker.getByRole("option",{name:"测试模型1",exact:true});await expect(first).toBeFocused();await first.press("Enter");await expect(first).toHaveAttribute("aria-selected","true");
   await first.press("Escape");await expect(picker).toHaveCount(0);await expect(trigger).toBeFocused();await expect(trigger).toHaveAccessibleName(/引擎.*测试模型1.*高/);
+  if(reader){await reader.read(["引擎","测试模型1","高"]);await reader.restore();}
   await page.screenshot({path:info.outputPath("selected-engine-value.png")});
   await trigger.press("Enter");await codex.focus();await codex.press("Home");await expect(shell).toBeFocused();await expect(shell).toHaveAttribute("aria-selected","true");await expect(picker.getByRole("tabpanel",{name:"终端",exact:true})).toBeVisible();
   await shell.press("End");await expect(codex).toBeFocused();await expect(codex).toHaveAttribute("aria-selected","true");
@@ -66,12 +63,7 @@ test("引擎选择朗读当前值，单一Tab入口、候选导航与Escape焦�
  }catch(error){failed=true;await writeFile(info.outputPath("failure.json"),JSON.stringify({error:String(error)},null,2)+"\n");await app.windows()[0]?.screenshot({path:info.outputPath("failure.png")}).catch(()=>{});throw error;}
  finally{
   try{
-   if(voiceOverStarted){
-    try{execFileSync("osascript",["-e",'tell application "VoiceOver" to quit'],{encoding:"utf8",timeout:3000});}
-    catch{script('tell application "System Events" to key code 96 using command down');}
-    await expect.poll(()=>script('tell application "System Events" to get exists application process "VoiceOver"'),{timeout:15000}).toBe("false");
-    await writeFile(info.outputPath("voiceover-restored.json"),JSON.stringify({original_running:false,final_running:false})+"\n");
-   }
+   if(reader){try{await reader.restore();}catch(error){await writeFile(info.outputPath("voiceover-restoration-error.json"),JSON.stringify({error:String(error)})+"\n");if(!failed)throw error;}finally{await writeFile(info.outputPath("voiceover.json"),JSON.stringify(reader.audit,null,2)+"\n");}}
   }finally{try{await closeApplication(app);}catch(error){if(!failed)throw error;await writeFile(info.outputPath("shutdown-failure.json"),JSON.stringify({error:String(error)},null,2)+"\n");}}
  }
 });

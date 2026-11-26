@@ -1,0 +1,1269 @@
+{
+  "date": "2026-11-27",
+  "product": {
+    "version": "0.15.1",
+    "source_sha256": "b5fe3dd411f606df653d2b4a710e61004480983b06bcde30f2931b05df14e430",
+    "source_inputs": 3086,
+    "artifacts": 3133,
+    "signature_verified": true,
+    "icon_matches": true,
+    "profile_indexes_unchanged": true,
+    "product_source_unchanged": true,
+    "product_rebuilt": false
+  },
+  "scope": "installed macOS session engine selector and reusable embedding validation; product source unchanged",
+  "environment": {
+    "macOS": "15.8.3",
+    "build": "24H241",
+    "architecture": "arm64",
+    "isolated_profile": true,
+    "normal_user_profile_modified": false
+  },
+  "implementation": {
+    "base_git_sha": "ceb66c938fa32d9b61e88264488ece8b2c868ab7",
+    "changed": "test lifecycle, real caption output and engineering Skill; no app rebuild, reinstallation or redeployment",
+    "files": {
+      ".agents/skills/hetu-embedded-agent/scripts/inspect-macos-voiceover.swift": "01ffcd246ab16cbc201e8f87574a8cf5904a2de12402e4b3ffe1ea0902376df5",
+      ".agents/skills/hetu-embedded-agent/scripts/inspect-macos-ax.swift": "9ee6b9b42ad32f173d3b89fa45653ffd6675ed6491ab374da67e5a71a81327ff",
+      "apps/desktop/tests/fixtures/native-voiceover.ts": "2d8a60ac22c219b52530991853d0d7e51d899cfcdc363894c1e9f39c991e3087",
+      "apps/desktop/tests/agent-launch-accessibility.spec.ts": "e67fb84af8ebbbb5b3e21b59e7c946db925efed9ded7d39bdf37fd173ce88d78"
+    }
+  },
+  "official_source": {
+    "url": "https://support.apple.com/guide/voiceover/unac078/10/mac/15.0",
+    "html_sha256": "5ace3093035efa89919c6243f12bc64d3f8370817f1af55af87fb6d87493909f",
+    "excerpt": "The caption panel shows what VoiceOver is speaking, and can be helpful when sharing your Mac with sighted users. Note: VO represents the VoiceOver modifier that you press with additional keys to enter VoiceOver commands. By default, you can press Control and Option together or just press Caps Lock. Show or hide the panel Do one of the following: Open VoiceOver Utility (press VO-Fn-F8 when VoiceOver is on), click the Visuals category, click Panels and Menus, then select the “Show caption panel” checkbox. Open VoiceOver Utility for me Press VO-Fn-Command-F10 to show or hide the panel. To show or hide the caption panel, the braille panel, and the VoiceOver cursor, press VO-Fn-Command-F11. Move or resize the panel Press VO-Shift-Fn-F10 until you hear the action you want to perform. For example, if you hear “resizing” but you want to move the caption panel, press the keys again to hear “moving.” Press the VoiceOver modifier with the arrow keys to move or resize the caption panel. When you’re done, press the Escape key or Fn-Tab. See also Tile visuals to focus on the VoiceOver cursor on Mac Use the VoiceOver braille panel on Mac Change VoiceOver Visuals settings (Panels and Menus tab) in VoiceOver Utility on Mac Download this guide in Braille Ready Format: BRF (English) Previous Use the trackpad gestures rotor Next Use the screen curtain Helpful? Yes No Character limit: 250 Please don’t include any personal information in your comment. Maximum character limit is 250. Submit Thanks for your feedback. Apple Footer  Apple Support VoiceOver User Guide Use the VoiceOver caption panel on Mac United States Copyright © 2026 Apple Inc. All rights reserved. Privacy Policy Terms of Use Sales and Refunds Site Map"
+  },
+  "prior_script_path": {
+    "last_phrase_and_announcement_history": "timed out or missing phrase when AppleScript control was disabled",
+    "script_checkbox_initial": {
+      "matches": [
+        {
+          "description": "",
+          "help": "",
+          "role": "AXCheckBox",
+          "title": "允许使用AppleScript来控制旁白",
+          "value": "0"
+        }
+      ],
+      "read_errors": 0,
+      "source": "macOS AXUIElement",
+      "truncated": false,
+      "trusted": true,
+      "visited": 253
+    },
+    "script_checkbox_final": {
+      "matches": [
+        {
+          "description": "",
+          "help": "",
+          "role": "AXCheckBox",
+          "title": "允许使用AppleScript来控制旁白",
+          "value": "0"
+        }
+      ],
+      "read_errors": 0,
+      "source": "macOS AXUIElement",
+      "truncated": false,
+      "trusted": true,
+      "visited": 253
+    },
+    "setting_changed": false,
+    "caption_checkbox_initial": {
+      "matches": [
+        {
+          "description": "",
+          "help": "在字幕面板中显示所朗读的文本。",
+          "role": "AXCheckBox",
+          "title": "显示字幕面板",
+          "value": "1"
+        }
+      ],
+      "read_errors": 0,
+      "source": "macOS AXUIElement",
+      "truncated": false,
+      "trusted": true,
+      "visited": 257
+    },
+    "caption_setting_changed": false,
+    "caption_ax_text": "reader AX traversal returned one node and six read errors; not treated as absence of speech"
+  },
+  "failed_attempts": [
+    {
+      "attempt": "voiceover-installed",
+      "stats": {
+        "startTime": "2026-11-26T17:48:12.743Z",
+        "duration": 7927.835000000001,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "error": "Error: 读屏归属已改变。",
+      "finding": "reader bundle check returned before first-use transition",
+      "audit": {
+        "initial": [],
+        "observations": [
+          [],
+          [],
+          [],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 89875,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver Quickstart",
+              "pid": 89926,
+              "bundle": "com.apple.VoiceOverQuickstart"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver Quickstart",
+              "pid": 89926,
+              "bundle": "com.apple.VoiceOverQuickstart"
+            }
+          ]
+        ],
+        "captions": [],
+        "started": true,
+        "restored": false,
+        "script_permissions_changed": false
+      },
+      "followup_restoration": {
+        "exact_first_use_pid": 89926,
+        "bundle": "com.apple.VoiceOverQuickstart",
+        "action": "normal Close VoiceOver button on exact first-use window",
+        "final_system_events_processes": [],
+        "forced_termination": false
+      }
+    },
+    {
+      "attempt": "voiceover-installed-reader",
+      "stats": {
+        "startTime": "2026-11-26T17:49:21.915Z",
+        "duration": 27678.674,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\nCall Log:\n- Timeout 12000ms exceeded while waiting on the predicate",
+      "finding": "default value was spoken; selected-value read observed help text instead",
+      "audit": {
+        "initial": [],
+        "observations": [
+          [],
+          [],
+          [],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 91271,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver Quickstart",
+              "pid": 91297,
+              "bundle": "com.apple.VoiceOverQuickstart"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 91351,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 91351,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 91351,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 91351,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 91351,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 91351,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 91351,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 91351,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 91351,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 91351,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 91351,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 91351,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          []
+        ],
+        "startup": [
+          {
+            "candidate_windows": 0,
+            "captured_windows": 0,
+            "diagnostic_files": [],
+            "frontmost_matches": true,
+            "keyboard_input": false,
+            "read_failures": 0,
+            "reader_matches": false,
+            "recognized_lines": [],
+            "screen_capture_permission": true,
+            "settings_changed": false,
+            "source": "VoiceOver caption window pixels"
+          },
+          {
+            "candidate_windows": 0,
+            "captured_windows": 0,
+            "diagnostic_files": [],
+            "frontmost_matches": true,
+            "keyboard_input": false,
+            "read_failures": 0,
+            "reader_matches": true,
+            "recognized_lines": [],
+            "screen_capture_permission": true,
+            "settings_changed": false,
+            "source": "VoiceOver caption window pixels"
+          }
+        ],
+        "captions": [
+          {
+            "candidate_windows": 1,
+            "captured_windows": 1,
+            "frontmost_matches": true,
+            "keyboard_input": false,
+            "read_failures": 0,
+            "reader_matches": true,
+            "recognized_lines": [],
+            "screen_capture_permission": true,
+            "settings_changed": false,
+            "source": "VoiceOver caption window pixels"
+          },
+          {
+            "candidate_windows": 1,
+            "captured_windows": 1,
+            "frontmost_matches": true,
+            "keyboard_input": false,
+            "read_failures": 0,
+            "reader_matches": true,
+            "recognized_lines": [
+              "X 旁白打开 Hetu，河图洛书，窗口，引擎 Codex（CLI），对",
+              "话框弹出 已折叠，按钮，有键盘焦点"
+            ],
+            "screen_capture_permission": true,
+            "settings_changed": false,
+            "source": "VoiceOver caption window pixels"
+          },
+          {
+            "candidate_windows": 1,
+            "captured_windows": 1,
+            "frontmost_matches": true,
+            "keyboard_input": false,
+            "read_failures": 0,
+            "reader_matches": true,
+            "recognized_lines": [
+              "×你当前在对话框内部的按钮上。若要显示选项列表，请按下",
+              "Control-Option-空格键。若要退出此群组，请按下",
+              "Control-Option-Shift-上箭头。"
+            ],
+            "screen_capture_permission": true,
+            "settings_changed": false,
+            "source": "VoiceOver caption window pixels"
+          },
+          {
+            "candidate_windows": 1,
+            "captured_windows": 1,
+            "frontmost_matches": true,
+            "keyboard_input": false,
+            "read_failures": 0,
+            "reader_matches": true,
+            "recognized_lines": [
+              "×你当前在对话框内部的按钮上。若要显示选项列表，请按下",
+              "Control-Option-空格键。若要退出此群组，请按下",
+              "Control-Option-Shift-上箭头。"
+            ],
+            "screen_capture_permission": true,
+            "settings_changed": false,
+            "source": "VoiceOver caption window pixels"
+          },
+          {
+            "candidate_windows": 1,
+            "captured_windows": 1,
+            "frontmost_matches": true,
+            "keyboard_input": false,
+            "read_failures": 0,
+            "reader_matches": true,
+            "recognized_lines": [
+              "×你当前在对话框内部的按钮上。若要显示选项列表，请按下",
+              "Control-Option-空格键。若要退出此群组，请按下",
+              "Control-Option-Shift-上箭头。"
+            ],
+            "screen_capture_permission": true,
+            "settings_changed": false,
+            "source": "VoiceOver caption window pixels"
+          },
+          {
+            "candidate_windows": 1,
+            "captured_windows": 1,
+            "frontmost_matches": true,
+            "keyboard_input": false,
+            "read_failures": 0,
+            "reader_matches": true,
+            "recognized_lines": [
+              "×你当前在对话框内部的按钮上。若要显示选项列表，请按下",
+              "Control-Option-空格键。若要退出此群组，请按下",
+              "Control-Option-Shift-上箭头。"
+            ],
+            "screen_capture_permission": true,
+            "settings_changed": false,
+            "source": "VoiceOver caption window pixels"
+          },
+          {
+            "candidate_windows": 1,
+            "captured_windows": 1,
+            "frontmost_matches": true,
+            "keyboard_input": false,
+            "read_failures": 0,
+            "reader_matches": true,
+            "recognized_lines": [
+              "×你当前在对话框内部的按钮上。若要显示选项列表，请按下",
+              "Control-Option-空格键。若要退出此群组，请按下",
+              "Control-Option-Shift-上箭头。"
+            ],
+            "screen_capture_permission": true,
+            "settings_changed": false,
+            "source": "VoiceOver caption window pixels"
+          }
+        ],
+        "started": true,
+        "restored": true,
+        "script_permissions_changed": false
+      }
+    },
+    {
+      "attempt": "voiceover-installed-focus",
+      "stats": {
+        "startTime": "2026-11-26T17:50:56.996Z",
+        "duration": 27192.555,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\nCall Log:\n- Timeout 12000ms exceeded while waiting on the predicate",
+      "finding": "native focus and transient selected-value caption matched, but test discarded the caption before requesting another read",
+      "audit": {
+        "initial": [],
+        "observations": [
+          [],
+          [],
+          [],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 92756,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver Quickstart",
+              "pid": 92818,
+              "bundle": "com.apple.VoiceOverQuickstart"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 92867,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 92867,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 92867,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 92867,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 92867,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 92867,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 92867,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 92867,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 92867,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 92867,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 92867,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 92867,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 92867,
+              "bundle": "com.apple.VoiceOver"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 92867,
+              "bundle": "com.apple.accessibility.AXVisualSupportAgent"
+            }
+          ],
+          []
+        ],
+        "startup": [
+          {
+            "candidate_windows": 0,
+            "captured_windows": 0,
+            "diagnostic_files": [],
+            "frontmost_matches": true,
+            "keyboard_input": false,
+            "read_failures": 0,
+            "reader_matches": false,
+            "recognized_lines": [],
+            "screen_capture_permission": true,
+            "settings_changed": false,
+            "source": "VoiceOver caption window pixels",
+            "target_focus": {
+              "role": "AXPopUpButton",
+              "title": "引擎 Codex（CLI）"
+            }
+          },
+          {
+            "candidate_windows": 0,
+            "captured_windows": 0,
+            "diagnostic_files": [],
+            "frontmost_matches": true,
+            "keyboard_input": false,
+            "read_failures": 0,
+            "reader_matches": true,
+            "recognized_lines": [],
+            "screen_capture_permission": true,
+            "settings_changed": false,
+            "source": "VoiceOver caption window pixels",
+            "target_focus": {
+              "role": "AXPopUpButton",
+              "title": "引擎 Codex（CLI）"
+            }
+          }
+        ],
+        "captions": [
+          {
+            "candidate_windows": 1,
+            "captured_windows": 1,
+            "frontmost_matches": true,
+            "keyboard_input": false,
+            "read_failures": 0,
+            "reader_matches": true,
+            "recognized_lines": [],
+            "screen_capture_permission": true,
+            "settings_changed": false,
+            "source": "VoiceOver caption window pixels",
+            "target_focus": {
+              "role": "AXPopUpButton",
+              "title": "引擎 Codex（CLI）"
+            }
+          },
+          {
+            "candidate_windows": 1,
+            "captured_windows": 1,
+            "frontmost_matches": true,
+            "keyboard_input": false,
+            "read_failures": 0,
+            "reader_matches": true,
+            "recognized_lines": [
+              "X引擎 Codex （CLI），对话框弹出 已折叠，按钮，有键盘焦点"
+            ],
+            "screen_capture_permission": true,
+            "settings_changed": false,
+            "source": "VoiceOver caption window pixels",
+            "target_focus": {
+              "role": "AXPopUpButton",
+              "title": "引擎 Codex（CLI）"
+            }
+          },
+          {
+            "candidate_windows": 1,
+            "captured_windows": 1,
+            "frontmost_matches": true,
+            "keyboard_input": false,
+            "read_failures": 0,
+            "reader_matches": true,
+            "recognized_lines": [
+              "X引擎 Codex （CLI）测试模型1高，对话框弹出 已折叠，按钮"
+            ],
+            "screen_capture_permission": true,
+            "settings_changed": false,
+            "source": "VoiceOver caption window pixels",
+            "target_focus": {
+              "role": "AXPopUpButton",
+              "title": "引擎 Codex（CLI） 测试模型1 高"
+            }
+          },
+          {
+            "candidate_windows": 1,
+            "captured_windows": 1,
+            "frontmost_matches": true,
+            "keyboard_input": false,
+            "read_failures": 0,
+            "reader_matches": true,
+            "recognized_lines": [
+              "×你当前在对话框内部的按钮上。若要显示选项列表，请按下",
+              "Control-Option-空格键。若要退出此群组，请按下",
+              "Control-Option-Shift-上箭头。"
+            ],
+            "screen_capture_permission": true,
+            "settings_changed": false,
+            "source": "VoiceOver caption window pixels",
+            "target_focus": {
+              "role": "AXPopUpButton",
+              "title": "引擎 Codex（CLI） 测试模型1 高"
+            }
+          },
+          {
+            "candidate_windows": 1,
+            "captured_windows": 1,
+            "frontmost_matches": true,
+            "keyboard_input": false,
+            "read_failures": 0,
+            "reader_matches": true,
+            "recognized_lines": [
+              "×你当前在对话框内部的按钮上。若要显示选项列表，请按下",
+              "Control-Option-空格键。若要退出此群组，请按下",
+              "Control-Option-Shift-上箭头。"
+            ],
+            "screen_capture_permission": true,
+            "settings_changed": false,
+            "source": "VoiceOver caption window pixels",
+            "target_focus": {
+              "role": "AXPopUpButton",
+              "title": "引擎 Codex（CLI） 测试模型1 高"
+            }
+          },
+          {
+            "candidate_windows": 1,
+            "captured_windows": 1,
+            "frontmost_matches": true,
+            "keyboard_input": false,
+            "read_failures": 0,
+            "reader_matches": true,
+            "recognized_lines": [
+              "×你当前在对话框内部的按钮上。若要显示选项列表，请按下",
+              "Control-Option-空格键。若要退出此群组，请按下",
+              "Control-Option-Shift-上箭头。"
+            ],
+            "screen_capture_permission": true,
+            "settings_changed": false,
+            "source": "VoiceOver caption window pixels",
+            "target_focus": {
+              "role": "AXPopUpButton",
+              "title": "引擎 Codex（CLI） 测试模型1 高"
+            }
+          },
+          {
+            "candidate_windows": 1,
+            "captured_windows": 1,
+            "frontmost_matches": true,
+            "keyboard_input": false,
+            "read_failures": 0,
+            "reader_matches": true,
+            "recognized_lines": [
+              "×你当前在对话框内部的按钮上。若要显示选项列表，请按下",
+              "Control-Option-空格键。若要退出此群组，请按下",
+              "Control-Option-Shift-上箭头。"
+            ],
+            "screen_capture_permission": true,
+            "settings_changed": false,
+            "source": "VoiceOver caption window pixels",
+            "target_focus": {
+              "role": "AXPopUpButton",
+              "title": "引擎 Codex（CLI） 测试模型1 高"
+            }
+          },
+          {
+            "candidate_windows": 1,
+            "captured_windows": 1,
+            "frontmost_matches": true,
+            "keyboard_input": false,
+            "read_failures": 0,
+            "reader_matches": true,
+            "recognized_lines": [
+              "×你当前在对话框内部的按钮上。若要显示选项列表，请按下",
+              "Control-Option-空格键。若要退出此群组，请按下",
+              "Control-Option-Shift-上箭头。"
+            ],
+            "screen_capture_permission": true,
+            "settings_changed": false,
+            "source": "VoiceOver caption window pixels",
+            "target_focus": {
+              "role": "AXPopUpButton",
+              "title": "引擎 Codex（CLI） 测试模型1 高"
+            }
+          }
+        ],
+        "started": true,
+        "restored": true,
+        "script_permissions_changed": false
+      }
+    },
+    {
+      "attempt": "voiceover-installed-announcement",
+      "stats": {
+        "startTime": "2026-11-26T17:51:58.691Z",
+        "duration": 5271.45,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "error": "Error: 出现非预期的VoiceOver宿主。",
+      "finding": "System Events saw a startup process before bundle registration",
+      "audit": {
+        "initial": [],
+        "observations": [
+          [],
+          [],
+          [],
+          [
+            {
+              "name": "VoiceOver",
+              "pid": 94058,
+              "bundle": "missing value"
+            }
+          ],
+          [
+            {
+              "name": "VoiceOver Quickstart",
+              "pid": 94083,
+              "bundle": "com.apple.VoiceOverQuickstart"
+            }
+          ]
+        ],
+        "startup": [],
+        "captions": [],
+        "readings": [],
+        "started": true,
+        "restored": false,
+        "script_permissions_changed": false
+      },
+      "followup_restoration": {
+        "exact_first_use_pid": 94083,
+        "bundle": "com.apple.VoiceOverQuickstart",
+        "action": "normal Close VoiceOver button on exact first-use window",
+        "final_system_events_processes": [],
+        "forced_termination": false
+      }
+    },
+    {
+      "attempt": "voiceover-installed-ready",
+      "stats": {
+        "startTime": "2026-11-26T17:52:53.798Z",
+        "duration": 5342.116,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "error": "Error: 无法核对VoiceOver进程身份。",
+      "finding": "System Events process disappeared between sequential property reads",
+      "audit": {
+        "initial": [],
+        "observations": [
+          [],
+          [],
+          [],
+          [
+            {
+              "name": "VoiceOver Quickstart",
+              "pid": 94847,
+              "bundle": "com.apple.VoiceOverQuickstart"
+            }
+          ]
+        ],
+        "startup": [],
+        "captions": [],
+        "readings": [],
+        "started": true,
+        "restored": false,
+        "script_permissions_changed": false
+      },
+      "followup_restoration": {
+        "exact_first_use_pid": 94847,
+        "bundle": "com.apple.VoiceOverQuickstart",
+        "action": "normal Close VoiceOver button on exact first-use window",
+        "final_system_events_processes": [],
+        "forced_termination": false
+      }
+    },
+    {
+      "attempt": "voiceover-installed-native-host",
+      "stats": {
+        "startTime": "2026-11-26T17:54:47.289Z",
+        "duration": 5009.753,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "error": "Error: 读屏归属已改变。",
+      "finding": "actual reader executable appeared before the first-use window; process presence was still insufficient",
+      "audit": {
+        "initial": [],
+        "observations": [
+          [],
+          [],
+          [],
+          [],
+          [
+            {
+              "bundle": "com.apple.VoiceOver",
+              "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+              "name": "旁白",
+              "pid": 96092
+            }
+          ],
+          [
+            {
+              "bundle": "com.apple.VoiceOver",
+              "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+              "name": "旁白",
+              "pid": 96092
+            }
+          ],
+          [
+            {
+              "bundle": "com.apple.VoiceOverQuickstart",
+              "executable": "/System/Library/PrivateFrameworks/ScreenReader.framework/Versions/A/Resources/VoiceOver Quickstart.app/Contents/MacOS/VoiceOver Quickstart",
+              "name": "旁白快速入门",
+              "pid": 96121
+            }
+          ],
+          [
+            {
+              "bundle": "com.apple.VoiceOverQuickstart",
+              "executable": "/System/Library/PrivateFrameworks/ScreenReader.framework/Versions/A/Resources/VoiceOver Quickstart.app/Contents/MacOS/VoiceOver Quickstart",
+              "name": "旁白快速入门",
+              "pid": 96121
+            }
+          ]
+        ],
+        "captions": [
+          {
+            "candidate_windows": 0,
+            "captured_windows": 0,
+            "frontmost_matches": true,
+            "keyboard_input": false,
+            "read_failures": 0,
+            "reader_matches": true,
+            "recognized_lines": [],
+            "screen_capture_permission": true,
+            "settings_changed": false,
+            "source": "VoiceOver caption window pixels",
+            "target_focus": {
+              "role": "AXPopUpButton",
+              "title": "引擎 Codex（CLI）"
+            }
+          }
+        ],
+        "readings": [],
+        "started": true,
+        "restored": false,
+        "script_permissions_changed": false
+      },
+      "followup_restoration": {
+        "exact_first_use_pid": 96121,
+        "bundle": "com.apple.VoiceOverQuickstart",
+        "action": "normal Close VoiceOver button on exact first-use window",
+        "final_system_events_processes": [],
+        "forced_termination": false
+      }
+    }
+  ],
+  "installed_complete_journey": {
+    "stats": {
+      "startTime": "2026-11-26T17:57:29.514Z",
+      "duration": 18448.127,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "ui_checks": {
+      "packaged": true,
+      "current_value_in_accessible_name": true,
+      "roving_engine_tabs": true,
+      "search_editing_preserved": true,
+      "nested_escape_restores_focus": true,
+      "no_engine_or_model_started": true
+    },
+    "voiceover": {
+      "initial": [],
+      "observations": [
+        [],
+        [],
+        [],
+        [],
+        [
+          {
+            "bundle": "com.apple.VoiceOver",
+            "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+            "name": "旁白",
+            "pid": 99030
+          }
+        ],
+        [
+          {
+            "bundle": "com.apple.VoiceOverQuickstart",
+            "executable": "/System/Library/PrivateFrameworks/ScreenReader.framework/Versions/A/Resources/VoiceOver Quickstart.app/Contents/MacOS/VoiceOver Quickstart",
+            "name": "旁白快速入门",
+            "pid": 99057
+          }
+        ],
+        [
+          {
+            "bundle": "com.apple.VoiceOver",
+            "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+            "name": "旁白",
+            "pid": 99092
+          }
+        ],
+        [
+          {
+            "bundle": "com.apple.VoiceOver",
+            "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+            "name": "旁白",
+            "pid": 99092
+          }
+        ],
+        [
+          {
+            "bundle": "com.apple.VoiceOver",
+            "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+            "name": "旁白",
+            "pid": 99092
+          }
+        ],
+        [
+          {
+            "bundle": "com.apple.VoiceOver",
+            "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+            "name": "旁白",
+            "pid": 99092
+          }
+        ],
+        [
+          {
+            "bundle": "com.apple.VoiceOver",
+            "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+            "name": "旁白",
+            "pid": 99092
+          }
+        ],
+        [
+          {
+            "bundle": "com.apple.VoiceOver",
+            "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+            "name": "旁白",
+            "pid": 99092
+          }
+        ],
+        [
+          {
+            "bundle": "com.apple.VoiceOver",
+            "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+            "name": "旁白",
+            "pid": 99092
+          }
+        ],
+        [
+          {
+            "bundle": "com.apple.VoiceOver",
+            "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+            "name": "旁白",
+            "pid": 99092
+          }
+        ],
+        [
+          {
+            "bundle": "com.apple.VoiceOver",
+            "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+            "name": "旁白",
+            "pid": 99092
+          }
+        ],
+        [
+          {
+            "bundle": "com.apple.VoiceOver",
+            "executable": "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOver",
+            "name": "旁白",
+            "pid": 99092
+          }
+        ],
+        []
+      ],
+      "startup": [
+        {
+          "candidate_windows": 0,
+          "captured_windows": 0,
+          "diagnostic_files": [],
+          "frontmost_matches": true,
+          "keyboard_input": false,
+          "read_failures": 0,
+          "reader_matches": true,
+          "recognized_lines": [],
+          "screen_capture_permission": true,
+          "settings_changed": false,
+          "source": "VoiceOver caption window pixels",
+          "target_focus": {
+            "role": "AXPopUpButton",
+            "title": "引擎 Codex（CLI）"
+          }
+        },
+        {
+          "candidate_windows": 0,
+          "captured_windows": 0,
+          "diagnostic_files": [],
+          "frontmost_matches": true,
+          "keyboard_input": false,
+          "read_failures": 0,
+          "reader_matches": true,
+          "recognized_lines": [],
+          "screen_capture_permission": true,
+          "settings_changed": false,
+          "source": "VoiceOver caption window pixels",
+          "target_focus": {
+            "role": "AXPopUpButton",
+            "title": "引擎 Codex（CLI）"
+          }
+        },
+        {
+          "candidate_windows": 1,
+          "captured_windows": 1,
+          "diagnostic_files": [],
+          "frontmost_matches": true,
+          "keyboard_input": false,
+          "read_failures": 0,
+          "reader_matches": true,
+          "recognized_lines": [],
+          "screen_capture_permission": true,
+          "settings_changed": false,
+          "source": "VoiceOver caption window pixels",
+          "target_focus": {
+            "role": "AXPopUpButton",
+            "title": "引擎 Codex（CLI）"
+          }
+        },
+        {
+          "candidate_windows": 1,
+          "captured_windows": 1,
+          "diagnostic_files": [],
+          "frontmost_matches": true,
+          "keyboard_input": false,
+          "read_failures": 0,
+          "reader_matches": true,
+          "recognized_lines": [
+            "X 旁白打开 Hetu，河图洛书，窗口，引擎 Codex（CLI），对",
+            "话框弹出 已折叠，按钮，有键盘焦点"
+          ],
+          "screen_capture_permission": true,
+          "settings_changed": false,
+          "source": "VoiceOver caption window pixels",
+          "target_focus": {
+            "role": "AXPopUpButton",
+            "title": "引擎 Codex（CLI）"
+          }
+        }
+      ],
+      "captions": [
+        {
+          "candidate_windows": 1,
+          "captured_windows": 1,
+          "diagnostic_files": [
+            "docs/research/evidence/native-voiceover-2026-11-27/default-engine-caption.png"
+          ],
+          "frontmost_matches": true,
+          "keyboard_input": false,
+          "read_failures": 0,
+          "reader_matches": true,
+          "recognized_lines": [
+            "X 旁白打开 Hetu，河图洛书，窗口，引擎 Codex（CLI），对",
+            "话框弹出 已折叠，按钮，有键盘焦点"
+          ],
+          "screen_capture_permission": true,
+          "settings_changed": false,
+          "source": "VoiceOver caption window pixels",
+          "target_focus": {
+            "role": "AXPopUpButton",
+            "title": "引擎 Codex（CLI）"
+          }
+        },
+        {
+          "candidate_windows": 1,
+          "captured_windows": 1,
+          "diagnostic_files": [
+            "docs/research/evidence/native-voiceover-2026-11-27/selected-model-caption.png"
+          ],
+          "frontmost_matches": true,
+          "keyboard_input": false,
+          "read_failures": 0,
+          "reader_matches": true,
+          "recognized_lines": [
+            "X引擎 Codex （CLI）测试模型1高，对话框弹出 已折叠，按钮"
+          ],
+          "screen_capture_permission": true,
+          "settings_changed": false,
+          "source": "VoiceOver caption window pixels",
+          "target_focus": {
+            "role": "AXPopUpButton",
+            "title": "引擎 Codex（CLI） 测试模型1 高"
+          }
+        }
+      ],
+      "readings": [
+        {
+          "expected": [
+            "引擎",
+            "Codex"
+          ],
+          "source": "focus_announcement",
+          "sample": 0,
+          "image": "docs/research/evidence/native-voiceover-2026-11-27/default-engine-caption.png"
+        },
+        {
+          "expected": [
+            "引擎",
+            "测试模型1",
+            "高"
+          ],
+          "source": "focus_announcement",
+          "sample": 1,
+          "image": "docs/research/evidence/native-voiceover-2026-11-27/selected-model-caption.png"
+        }
+      ],
+      "started": true,
+      "restored": true,
+      "script_permissions_changed": false
+    },
+    "model_turns": 0,
+    "engine_started": false,
+    "normal_application_exit": true
+  },
+  "without_live_flag": {
+    "stats": {
+      "startTime": "2026-11-26T17:58:01.712Z",
+      "duration": 4884.662,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "voiceover_audit_created": false,
+    "system_keyboard_or_reader_start_requested": false
+  },
+  "final_reader_processes": [],
+  "images": [
+    {
+      "path": "docs/research/evidence/native-voiceover-2026-11-27/default-engine-caption.png",
+      "sha256": "087a50d039132d59d328a1f2716adc9e9897ee37e33a411d5ae74be2d1ba8e3d",
+      "bytes": 40662
+    },
+    {
+      "path": "docs/research/evidence/native-voiceover-2026-11-27/selected-model-caption.png",
+      "sha256": "3f5f197bc9a9dfbabfdb9e09a1166269942462c42b4dee1f22afa0fd351083a0",
+      "bytes": 47062
+    },
+    {
+      "path": "docs/research/evidence/native-voiceover-2026-11-27/selected-engine-value.png",
+      "sha256": "44766a90f01f270250e2bc71df3916b443dd781e56d93b677b0715f9d6579cbd",
+      "bytes": 41020
+    },
+    {
+      "path": "docs/research/evidence/native-voiceover-2026-11-27/engine-picker-narrow.png",
+      "sha256": "fb9b38cc7003f4042724afabcbed34138fa4768d0f0b0f9014c9c4e03808533c",
+      "bytes": 43542
+    },
+    {
+      "path": "docs/research/evidence/native-voiceover-2026-11-27/help-replaced-caption.png",
+      "sha256": "e4b93aabdd7f1e924ed479548d23a057175fc3f84c4f5ea4c3fa90ab43a85b3e",
+      "bytes": 92418
+    }
+  ],
+  "checks": {
+    "swift_compile": true,
+    "desktop_typescript": true,
+    "skill_validator": true,
+    "skill_local_links": 29,
+    "skill_anchors": 15,
+    "missing_links": 0,
+    "full_bundle_and_original_product_inputs": true,
+    "profile_indexes": 3,
+    "documents": {
+      "documents": 92,
+      "local_links": 1690,
+      "fragment_links": 431,
+      "errors": []
+    }
+  },
+  "ci": {
+    "run": 45867370692,
+    "sha": "ceb66c938fa32d9b61e88264488ece8b2c868ab7",
+    "status": "success",
+    "desktop": {
+      "passed": 96,
+      "prerequisite_skipped": 25
+    },
+    "website": {
+      "passed": 658
+    },
+    "task_view": {
+      "passed": 131,
+      "prerequisite_skipped": 19
+    },
+    "boundary": "prior source CI; opt-in real VoiceOver journey ran locally after this revision"
+  },
+  "limits": [
+    "actual output was observed from VoiceOver caption pixels; audio quality was not recorded or judged",
+    "selector only, not all pages or full VoiceOver navigation",
+    "macOS 15.8.3 only; no other reader or Windows/Linux claim",
+    "screen and AX permissions were already available; no request, permission change or script-control enablement",
+    "caption selection uses one bounded reader-owned panel; ambiguous or unsupported geometry fails closed",
+    "earlier first-use restoration assertions using VoiceOverQuickStart were insufficient; original records retained and annotated",
+    "first bundle audit incorrectly expected test files in product source manifest; full product inputs were unchanged and original verifier passed",
+    "full software, professional production, author evaluation and release gates remain open"
+  ],
+  "release_observed": {
+    "run": 45863998814,
+    "sha": "af1bd0d6fd0de2876675f4ff46ef3bd411c1dc71",
+    "tag": "v0.15.1",
+    "observed_at": "2026-11-26T18:03:41.465994+00:00",
+    "linux": "success",
+    "windows": "success",
+    "macos_source_tests": "success",
+    "macos_current_step": "Sign, notarize and package Electron",
+    "status": "in_progress",
+    "public_release_and_npm": "not_yet_verified"
+  }
+}

@@ -26,6 +26,7 @@ description: 开发或排查河图内嵌 Agent 的真实 PTY/TUI 与结构化 GU
 | 启动、断连、重复输出、焦点或字符裁切 | [PTY 与恢复](references/integration.md#pty与恢复已遇到的问题) |
 | GUI 消息、固定来源、作品成果或跨入口执行 | [业务与 GUI 适配](references/integration.md#业务与gui适配)中对应小节 |
 | 开发可用但安装后启动失败 | [包体与跨平台](references/integration.md#包体与跨平台) |
+| 原生输入法、可访问名称或实际读屏 | [系统输入与真实读屏](references/validation.md#系统输入与真实读屏) |
 | 选择回归与真实业务验收 | [验证方法](references/validation.md) |
 
 UI 实施同时遵循[界面风格Skill](../hetu-ui-style/SKILL.md)与当前领域页面合同，不把终端布局套到小说阅读页。只修复已有终端或来源选择器时，无需扩大为新适配器。

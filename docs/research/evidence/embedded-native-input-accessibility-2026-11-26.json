@@ -77,7 +77,12 @@
     "final_reader_running": false,
     "final_first_use_window_running": false,
     "restoration": "system Command+F5 after script quit timed out; both processes verified absent",
-    "boundary": "process startup and Chromium accessibility support do not prove speech or full VoiceOver navigation"
+    "boundary": "process startup and Chromium accessibility support do not prove speech or full VoiceOver navigation",
+    "followup_audit_2026_11_27": {
+      "evidence": "native-voiceover-2026-11-27.json",
+      "historical_claim_limit": "旧脚本以VoiceOver进程名判断reader，并以不含空格的VoiceOverQuickStart检查首次使用窗口；原actual_process_started及final_first_use_window_running不单独证明真实reader或完整恢复。历史字段保留，不能据其宣称读屏通过。",
+      "current_result": "本轮独立安装旅程沿NSWorkspace、实际可执行文件、字幕输出及确切PID完成；所有本轮进程已正常退出。"
+    }
   },
   "failed_attempts": [
     {

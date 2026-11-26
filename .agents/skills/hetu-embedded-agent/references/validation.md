@@ -92,6 +92,8 @@ rmcp 3.9.0会丢弃已取消请求的响应；验收不能继续等待该ID来�
 
 Electron重开和退出验收优先复用`apps/desktop/tests/navigation.ts`的`closeApplication`。走作者正常关窗／退出路径，等待恢复稿落盘和引擎清理，在`will-quit`释放测试调试器；此后不保证还会执行`setImmediate`。释放调试器可能早于关闭请求返回，不能只因该请求连接断开就判断失败，仍以隔离子进程实际`exitCode=0`为准；`quit`事件也不能代替进程退出。失败时可用`observeApplicationShutdown`记录事件与句柄类型，不记录请求、环境、凭据或作品正文；不能靠强制终止让用例通过。资料恢复已通过但最后关闭超时，应分别记录业务结果与退出问题。
 
+## 系统输入与真实读屏
+
 真实系统IME复用`agent-native-ime.spec.ts`并显式设置`HETU_LIVE_IME=1`。按隔离PID确认前台后才发送系统键盘，核对实际composition事件、原生TUI字符及GUI草稿，候选确认不产生模型消息。Sogou的Enter可能保留拼音，空格遵循实际选词；原生Shift松开可能切换中英态，不能把该行为或驱动激活失败当成产品错误。已有英文态仅在隔离窗口临时切换，最后反向操作并核对实际键盘输入源未变；Emoji等非键盘辅助项由系统动态登记，不作为切换依据。不修改系统快捷键或偏好，恢复检查失败时仍在finally关闭隔离应用。浏览器注入的换行与真实系统组合输入分开记录。
 
 组合输入开始不代表目标候选已就绪。曾在安装版Space和数字键都提交拼音，而早先单次观察到第1候选后数字选词得到中文；后续固定包截图实际是第1项拼音、第2项中文，候选序号不能写死。浏览器`compositionend`若已是拼音，不能直接归咎PTY。空格按实际提交核对零发送，中文链路明确选中文候选，保留真实CJK字形、双方草稿及原线程断言。使用[只读候选探针](../scripts/inspect-macos-ime-candidate.swift)核对确切前台PID、指定输入法自己的可见窗口，以及目标词完整匹配且唯一的1～9序号；缺失或有歧义不选词。测试通过共享`fixtures/native-ime.ts`逐次核对前台后按实际序号发送物理数字键；`keystroke`数字曾追加进拼音，没有触发compositionend，不能作为物理选词替身。不修改用户词典或输入法设置。
@@ -108,9 +110,9 @@ HETU_NATIVE_IME_HELPER="$task_ime_dir/inspect-macos-ime-candidate" HETU_LIVE_IME
 
 共享桌面的其他程序改变前台或输入源时，保留本轮未完成结果，不循环抢焦点或强行改回输入法。只恢复本测试确已改变的临时状态，不能覆盖外部新的选择；源码、包内和实际安装的输入法结果分别记录。
 
-选择器的无障碍检查沿`agent-launch-accessibility.spec.ts`，核对可访问名称中的当前值、单一Tab入口、标签与面板关联、搜索文本编辑及嵌套Escape焦点返回。曾出现Chromium的`aria-describedby`断言通过，但macOS原生`AXPopUpButton`仍只有“引擎”；当前值改为参与`aria-labelledby`后，原生`AXTitle`才包含确切选择。原生探针按隔离PID读取实际控件，不能用旁边静态文字存在代替按钮本身有名称。Chromium语义、原生AX和键盘通过仍不等于VoiceOver已通过。真实读屏仅以`HETU_LIVE_VOICEOVER=1`显式运行，记录启动前状态并在finally恢复；脚本读取超时或首次使用窗口未完成时保留失败，不把进程启动当成朗读证据，不为此静默开启系统脚本权限。启动应用后先等待真实页面就绪，再启用测试实例的辅助功能支持和IPC观察，避免初始化前修改造成假失败。
+选择器的无障碍检查沿`agent-launch-accessibility.spec.ts`，核对可访问名称中的当前值、单一Tab入口、标签与面板关联、搜索文本编辑及嵌套Escape焦点返回。曾出现Chromium的`aria-describedby`断言通过，但macOS原生`AXPopUpButton`仍只有“引擎”；当前值改为参与`aria-labelledby`后，原生`AXTitle`才包含确切选择。原生探针按隔离PID读取实际控件，不能用旁边静态文字存在代替按钮本身有名称。Chromium语义、原生AX和键盘通过仍不等于VoiceOver已通过。真实读屏按下述字幕取证方法显式运行，记录启动前状态并在finally恢复；旧脚本超时、首次使用与恢复检查失败保留，不静默开启系统脚本权限。启动应用后先等待真实页面就绪，再启用测试实例的辅助功能支持和IPC观察，避免初始化前修改造成假失败。
 
-复用[只读macOS AX探针](../scripts/inspect-macos-ax.swift)：以`swiftc`编译到任务临时目录，将所得程序路径作为`HETU_NATIVE_AX_HELPER`传给选择器专项。程序接受确切隔离PID及可选匹配文字，默认“引擎”；按节点数、深度和读取期限限制遍历，仅输出匹配项。`trusted=false`、读取错误或遍历截断均须保留，空匹配不证明控件不存在；不申请权限、不启动读屏，也不把输出用于真实作品内容采集。
+复用[只读macOS AX探针](../scripts/inspect-macos-ax.swift)：以`swiftc`编译到任务临时目录，将所得程序路径作为`HETU_NATIVE_AX_HELPER`传给选择器专项。程序接受确切隔离PID及可选匹配文字，默认“引擎”；按节点数、深度和读取期限限制遍历，仅输出匹配项。复选框的AXValue可能是数值0／1，不能将关闭状态误报为空；系统窗口也须先等待控件就绪。`trusted=false`、读取错误或遍历截断均须保留，空匹配不证明控件不存在；不申请权限、不启动读屏，也不把输出用于真实作品内容采集。
 
 在已具备Swift命令行工具的macOS，从仓库根目录执行：
 
@@ -161,3 +163,24 @@ Skills升级若因旧缓存摘要不同而拒绝，先比较固定市场包与�
 打包使用仓库 `npm run package:desktop -- ...` 的实际参数与返回制品路径。macOS从实际包的`Contents/Info.plist`读取`CFBundleExecutable`，不从应用显示名猜启动文件名；先构建所选用例需要的fixture。核对源码输入、随包及安装资源摘要、实际运行路径和签名；开发签名不冒充正式公证。macOS通过不推导Windows/Linux通过，未运行的平台明确记录。
 
 成果证据记录引擎/版本/平台、会话与作品范围、执行过的动作、真实回读、恢复结果、截图和未测项。删去Token、私有授权、账号信息、正文或不必要的本机路径。业务完成与文学质量、作者认可分别说明。
+
+
+### VoiceOver实际朗读
+
+复用`fixtures/native-voiceover.ts`及[只读字幕探针](../scripts/inspect-macos-voiceover.swift)。要求当前macOS已有辅助功能和屏幕读取权限、字幕面板已启用；缺少条件、候选窗口不唯一或共享桌面被切走时保留未完成，不改系统设置或循环抢焦点。字幕窗口显示实际朗读内容的依据见[Apple官方指南](https://support.apple.com/guide/voiceover/unac078/10/mac/15.0)，实际窗口和本机系统版本仍须核对。
+
+- `--processes`沿NSWorkspace读取系统宿主及实际可执行文件。AppleScript逐字段查询会遇到进程退出后的missing value；`VoiceOverStarter`与reader也共用bundle ID。真实reader可先于欢迎窗口短暂出现，需等首次使用完成且字幕实际输出，不能看到一次进程就算启动成功。
+- 测试用系统Command-F5启动；首次使用进程实际为`VoiceOver Quickstart`／`com.apple.VoiceOverQuickstart`。只处理本次启动并核对PID的窗口，已有读屏不接管；finally核对本次进程归属并正常关闭，原失败和恢复失败分别记录，不强制终止或盲切开关。
+- 字幕面板本机不暴露AX文字。探针只抓实际reader自己的唯一有界小面板，排除全屏光标层，并核对隔离前台、reader可执行文件和原生当前焦点。保留目标值的真实字幕图片与本地OCR；OCR和普通应用的AX名称分别取证，不能互相替代，也不外推所有版本的面板尺寸。
+- 焦点变化可能已经朗读新值，随后被帮助提示覆盖。先等待原生当前名称，再保存当时匹配的字幕；尚未读出才用VO-F4请求键盘焦点。不要丢掉实际匹配的瞬时字幕后反复读帮助提示。安装专项同时核对默认引擎和模型／强度更新，并在普通键盘回归前恢复读屏。
+
+从仓库根目录执行；探针本身不输入键盘、不联网、不申请权限或切换偏好，默认临时图清理。测试的隔离输出目录明确传入后才保留诊断图片：
+
+```bash
+task_vo_dir="$(mktemp -d "${TMPDIR:-/tmp}/hetu-voiceover.XXXXXX")"
+swiftc -O ".agents/skills/hetu-embedded-agent/scripts/inspect-macos-voiceover.swift" -o "$task_vo_dir/inspect-macos-voiceover"
+"$task_vo_dir/inspect-macos-voiceover" --processes
+HETU_LIVE_VOICEOVER=1 HETU_VOICEOVER_CAPTION_HELPER="$task_vo_dir/inspect-macos-voiceover" npm run test:e2e --workspace @hetu/desktop -- tests/agent-launch-accessibility.spec.ts
+```
+
+不开启live标志时只运行原页面语义和键盘测试，不能称真实读屏通过。字幕取证不证明音频品质、所有页面、其他读屏器或跨平台覆盖。
