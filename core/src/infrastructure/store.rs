@@ -53,6 +53,14 @@ struct JournalFingerprint {
     changed: (i64, i64),
 }
 impl JournalFingerprint {
+    fn cacheable(&self) -> bool {
+        let Ok(now) = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH) else {
+            return false;
+        };
+        // 部分文件系统同一时钟粒度内的原地写入不会推进时间戳；近期日志仍逐次读验。
+        let stable_before = i128::from(now.as_secs()).saturating_sub(2);
+        i128::from(self.modified.0) < stable_before && i128::from(self.changed.0) < stable_before
+    }
     fn read(file: &File) -> Result<Self> {
         let meta = platform::metadata(file)?;
         ensure(
@@ -260,7 +268,7 @@ impl Store {
             "unsupported_version",
             "不支持此事务日志版本。",
         )?;
-        if tx.completed {
+        if tx.completed && before.cacheable() {
             if completed.len() >= COMPLETED_TRANSACTION_CACHE_LIMIT {
                 completed.pop_first();
             }
