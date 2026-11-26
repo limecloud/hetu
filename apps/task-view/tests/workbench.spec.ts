@@ -76,6 +76,7 @@ test("a failed global catalog read shows recovery instead of reporting an empty 
   await expect(view.getByRole("button",{name:"重新读取创作库",exact:true})).toBeVisible();
 });
 test("workbench follows exact work and fixed document references across domain views", async ({ page }) => {
+  test.setTimeout(60_000); // 本例连续核对作品、正文、固定引用及多次鼠标与键盘菜单交互。
   const view = await open(page);
   await view.getByRole("button", { name: "打开作品 雾港", exact: true }).click();
   await expect(view.locator("h2", { hasText: "作品资料" })).toBeVisible();

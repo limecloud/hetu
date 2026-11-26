@@ -94,7 +94,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: electron-release-test-results
-          path: apps/desktop/test-results/
+          path: |
+            apps/desktop/test-results/
+            build/task-view/test-results/
           if-no-files-found: ignore
           retention-days: 7
       - name: Upload verified Electron downloads
