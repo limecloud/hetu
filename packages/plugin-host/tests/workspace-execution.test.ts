@@ -1,6 +1,7 @@
 import {test} from "node:test";
 import assert from "node:assert/strict";
-import {mkdtemp,readdir} from "node:fs/promises";
+import {mkdtemp,readdir,readFile} from "node:fs/promises";
+import {createHash} from "node:crypto";
 import {spawnSync} from "node:child_process";
 import {tmpdir} from "node:os";
 import path from "node:path";
@@ -35,6 +36,10 @@ test("当前工作区无需管理授权使用插件，confirm按实际动作分�
   ok(call("hetu.plugins.apply",{action:"install",package_directory:path.join(root,"plugins/relationships/dist"),package_sha256:pkg.package_sha256,
     expected_sha256:ok(call("hetu.plugins.inspect")).state_sha256,authorization_note:"隔离测试明确选择随包关系图",operation_key:"install"}));
   const binding={work_ref:work,plugin_id:pkg.manifest.id,package_sha256:pkg.package_sha256};
+  const managementDirectory=path.join(env.HETU_COLLABORATION_DIR,"management","codex");
+  const managementSnapshot=async()=>Promise.all((await readdir(managementDirectory).catch(()=>[])).sort().map(async name=>[name,createHash("sha256").update(await readFile(path.join(managementDirectory,name))).digest("hex")]));
+  // 初始化会登记新建作品；插件调用不得新增或改写既有管理映射。
+  const beforePlugin=await managementSnapshot();
   const cap=data("hetu.plugins.capabilities",binding);
   const invocation=(action:string,input:any)=>({...binding,capabilities_sha256:cap.capabilities_sha256,action,arguments:input});
   const source=invocation("hetu.documents.get",{document_id:document.document.document_id,revision_id:document.revision.revision_id});
@@ -83,7 +88,7 @@ test("当前工作区无需管理授权使用插件，confirm按实际动作分�
     assert.equal(stale.error.code,"hetu.stale_evidence");
     const otherRead=execute("hetu.plugins.invoke",{...source,work_ref:otherWork});
     assert.notEqual(otherRead.status,"succeeded");
-    assert.deepEqual((await readdir(path.join(env.HETU_COLLABORATION_DIR,"management","codex")).catch(()=>[])),[]);
+    assert.deepEqual(await managementSnapshot(),beforePlugin);
     assert.equal((data("hetu.documents.get",{document_id:document.document.document_id})).revision.revision_id,document.revision.revision_id);
     // 既有精确连接独立验收：confirm动态读取直通，写入仍拒绝，撤权立即失效。
     const author=await AppServer.open(binary("hetu-app-server"),workspace);

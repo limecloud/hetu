@@ -61,7 +61,7 @@ test("视频导出核对完整摘要，坏块保留作者目标文件并清理�
   let corrupt = true, opens = 0, closes = 0, reads = 0;
   const instance = new VideoReview(work, dir, new RecoveryStore(), async action => {
     assert.equal(action, "hetu.video.delivery.preview");
-    return success({ manifest_sha256: "fixed", items: [{ filename: "视频.mp4", asset_ref: asset, blob: { size_bytes: bytes.length, sha256: sha, media_type: "video/mp4" } }] });
+    return success({ manifest_sha256: "fixed", items: [{ media_ref: media, filename: "视频.mp4", asset_ref: asset, blob: { size_bytes: bytes.length, sha256: sha, media_type: "video/mp4" } }] });
   }, () => true, async (method, input) => {
     if (method === "media/open") { opens++; assert.deepEqual(input, { ...asset, work_ref: work }); return { token: "fixed-reader", asset_ref: { ...asset, work_ref: work }, size_bytes: bytes.length, media_type: "video/mp4" }; }
     assert.equal(input.token, "fixed-reader");
