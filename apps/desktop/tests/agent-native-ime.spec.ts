@@ -4,15 +4,9 @@ import {execFileSync} from "node:child_process";
 import path from "node:path";
 import os from "node:os";
 import {createTerminal,switchAgentSurface,closeApplication,observeApplicationShutdown} from "./navigation.ts";
+import {selectedKeyboardSources,nativeImeInput,inspectImeCandidate,selectImeCandidate} from "./fixtures/native-ime.ts";
 
 const root=path.resolve(import.meta.dirname,"../../..");
-const selectedKeyboardSources=()=>{
- const preferences=execFileSync("defaults",["export","com.apple.HIToolbox","-"]);
- const selected=execFileSync("plutil",["-extract","AppleSelectedInputSources","xml1","-o","-","--","-"],{input:preferences});
- const sources=JSON.parse(execFileSync("plutil",["-convert","json","-o","-","--","-"],{input:selected,encoding:"utf8"}));
- // Emoji等非键盘辅助项由系统动态登记；核对实际键盘源，不比较这些派生状态。
- return sources.filter((source:Record<string,string>)=>["Input Mode","Keyboard Layout"].includes(source.InputSourceKind));
-};
 
 test("系统拼音确认不发送，GUI与原生TUI切换保持中文草稿和原线程",async({},info)=>{
  test.skip(process.env.HETU_LIVE_IME!=="1"||process.platform!=="darwin","需显式启用macOS系统输入法验收");
@@ -24,11 +18,7 @@ test("系统拼音确认不发送，GUI与原生TUI切换保持中文草稿和�
  const env={...process.env,HETU_DESKTOP_PROFILE:profile,HETU_LOCAL_SETTINGS_DIR:path.join(profile,"LocalSettings"),HETU_COLLABORATION_DIR:path.join(profile,"collaboration"),HETU_PLUGIN_STATE_DIR:profile};delete env.ELECTRON_RUN_AS_NODE;
  const app=await electron.launch({...(executable?{executablePath:executable,args:[]}:{args:[path.join(root,"apps/desktop")]}),env});
  const pid=app.process().pid!;
- const native=(action:string)=>execFileSync("osascript",["-e",`tell application "System Events"
-set frontPid to unix id of (first application process whose frontmost is true)
-if frontPid is not ${pid} then error "隔离验收应用未在前台，未发送键盘输入"
-${action}
-end tell`],{encoding:"utf8",timeout:10000});
+ const native=(action:string)=>nativeImeInput(pid,action);
  const get=()=>app.windows()[0].evaluate(()=>window.hetuDesktop.agentSession("get",{scope:"library"}));
  let report:Record<string,unknown>={packaged:!!executable,input_method:"Sogou Pinyin",system_settings_changed:false};
  const confirmations:{stage:string;key:string;committed:string}[]=[];
@@ -66,12 +56,14 @@ end tell`],{encoding:"utf8",timeout:10000});
     }
    }
    await expect.poll(()=>page.evaluate(()=>(window as any).__nativeImeEvents.filter((event:any)=>event.event==="compositionstart").length)).toBeGreaterThan(previous);
+   let candidateIndex:number|null=null;
    if(confirm==="candidate")await expect.poll(()=>{
-    const check=JSON.parse(execFileSync(process.env.HETU_NATIVE_IME_HELPER!,[String(pid),"com.sogou.inputmethod.sogou","中文"],{encoding:"utf8",timeout:10000}));
+    const check=inspectImeCandidate(pid,"中文");
     candidateChecks.push({stage,...check});expect(check.frontmost_matches).toBe(true);
-    return check.first_candidate_ready;
+    candidateIndex=check.candidate_index;return check.candidate_ready;
    },{timeout:15000}).toBe(true);
-   await page.screenshot({path:info.outputPath(stage+"-composing.png")});native("key code "+({enter:36,space:49,candidate:18}[confirm]));
+   await page.screenshot({path:info.outputPath(stage+"-composing.png")});
+   if(confirm==="candidate")selectImeCandidate(pid,candidateIndex!);else native("key code "+({enter:36,space:49}[confirm]));
    await expect.poll(()=>page.evaluate(()=>(window as any).__nativeImeEvents.filter((event:any)=>event.event==="compositionend").length)).toBeGreaterThan(previous);
    const committed=await page.evaluate(()=>(window as any).__nativeImeEvents.filter((event:any)=>event.event==="compositionend").at(-1).data as string);
    confirmations.push({stage,key:confirm,committed});expect(committed.length).toBeGreaterThan(0);

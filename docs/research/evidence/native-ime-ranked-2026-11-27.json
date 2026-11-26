@@ -1,0 +1,1166 @@
+{
+  "recorded_at": "2026-11-26T17:18:47.507012+00:00",
+  "scope": "macOS arm64/Sogou/Codex0.172.0在已完整核验的0.15.1安装包，编辑器和GUI/TUI两条实际系统IME旅程；不外推其他输入法／平台或全部无障碍",
+  "application": {
+    "version": "0.15.1",
+    "source_sha256": "b5fe3dd411f606df653d2b4a710e61004480983b06bcde30f2931b05df14e430",
+    "source_inputs": 3086,
+    "artifacts": 3133,
+    "signature_verified": true,
+    "icon_matches": true,
+    "installed_path": "/Applications/Hetu.app",
+    "atomic_swap": true,
+    "backup_created": false,
+    "old_bundle_removed": true,
+    "profile_indexes_unchanged": true
+  },
+  "stats": {
+    "startTime": "2026-11-26T17:17:02.243Z",
+    "duration": 21814.233,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "results": {
+    "agent": {
+      "packaged": true,
+      "input_method": "Sogou Pinyin",
+      "system_settings_changed": false,
+      "thread_preserved": true,
+      "gui_draft": "中文\n中文",
+      "terminal_chinese_retained": true,
+      "model_requests": 0,
+      "confirmations": [
+        {
+          "stage": "tui-candidate",
+          "key": "candidate",
+          "committed": "中文"
+        },
+        {
+          "stage": "gui-enter",
+          "key": "enter",
+          "committed": "zhongwen"
+        },
+        {
+          "stage": "gui-space-native",
+          "key": "space",
+          "committed": "中文"
+        },
+        {
+          "stage": "gui-candidate-first",
+          "key": "candidate",
+          "committed": "中文"
+        },
+        {
+          "stage": "gui-candidate",
+          "key": "candidate",
+          "committed": "中文"
+        }
+      ],
+      "candidateChecks": [
+        {
+          "stage": "tui-candidate",
+          "candidate_index": 2,
+          "candidate_ready": true,
+          "captured_candidate_windows": 1,
+          "frontmost_matches": true,
+          "keyboard_input": false,
+          "read_failures": 0,
+          "settings_changed": false
+        },
+        {
+          "stage": "gui-candidate-first",
+          "candidate_index": 1,
+          "candidate_ready": true,
+          "captured_candidate_windows": 1,
+          "frontmost_matches": true,
+          "keyboard_input": false,
+          "read_failures": 0,
+          "settings_changed": false
+        },
+        {
+          "stage": "gui-candidate",
+          "candidate_index": 1,
+          "candidate_ready": true,
+          "captured_candidate_windows": 1,
+          "frontmost_matches": true,
+          "keyboard_input": false,
+          "read_failures": 0,
+          "settings_changed": false
+        }
+      ],
+      "events": [
+        {
+          "type": "tui",
+          "event": "keydown",
+          "key": "z",
+          "keyCode": 229,
+          "isComposing": false
+        },
+        {
+          "type": "tui",
+          "event": "compositionstart",
+          "data": ""
+        },
+        {
+          "type": "tui",
+          "event": "compositionupdate",
+          "data": "z"
+        },
+        {
+          "type": "tui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "tui",
+          "event": "keydown",
+          "key": "h",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "tui",
+          "event": "compositionupdate",
+          "data": "zh"
+        },
+        {
+          "type": "tui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "tui",
+          "event": "keydown",
+          "key": "o",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "tui",
+          "event": "compositionupdate",
+          "data": "zho"
+        },
+        {
+          "type": "tui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "tui",
+          "event": "keydown",
+          "key": "n",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "tui",
+          "event": "compositionupdate",
+          "data": "zhon"
+        },
+        {
+          "type": "tui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "tui",
+          "event": "keydown",
+          "key": "g",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "tui",
+          "event": "compositionupdate",
+          "data": "zhong"
+        },
+        {
+          "type": "tui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "tui",
+          "event": "keydown",
+          "key": "w",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "tui",
+          "event": "compositionupdate",
+          "data": "zhong'w"
+        },
+        {
+          "type": "tui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "tui",
+          "event": "keydown",
+          "key": "e",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "tui",
+          "event": "compositionupdate",
+          "data": "zhong'we"
+        },
+        {
+          "type": "tui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "tui",
+          "event": "keydown",
+          "key": "n",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "tui",
+          "event": "compositionupdate",
+          "data": "zhong'wen"
+        },
+        {
+          "type": "tui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "tui",
+          "event": "keydown",
+          "key": "2",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "tui",
+          "event": "compositionupdate",
+          "data": "中文"
+        },
+        {
+          "type": "tui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "tui",
+          "event": "compositionend",
+          "data": "中文"
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "z",
+          "keyCode": 229,
+          "isComposing": false
+        },
+        {
+          "type": "gui",
+          "event": "compositionstart",
+          "data": ""
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "z"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "h",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zh"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "o",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zho"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "n",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zhon"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "g",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zhong"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "w",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zhong'w"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "e",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zhong'we"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "n",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zhong'wen"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "Enter",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zhongwen"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionend",
+          "data": "zhongwen"
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "Delete",
+          "keyCode": 46,
+          "isComposing": false
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": false
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "z",
+          "keyCode": 229,
+          "isComposing": false
+        },
+        {
+          "type": "gui",
+          "event": "compositionstart",
+          "data": ""
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "z"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "h",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zh"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "o",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zho"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "n",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zhon"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "g",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zhong"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "w",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zhong'w"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "e",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zhong'we"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "n",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zhong'wen"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": " ",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "中文"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionend",
+          "data": "中文"
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "Delete",
+          "keyCode": 46,
+          "isComposing": false
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": false
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "z",
+          "keyCode": 229,
+          "isComposing": false
+        },
+        {
+          "type": "gui",
+          "event": "compositionstart",
+          "data": ""
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "z"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "h",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zh"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "o",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zho"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "n",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zhon"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "g",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zhong"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "w",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zhong'w"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "e",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zhong'we"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "n",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zhong'wen"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "1",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "中文"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionend",
+          "data": "中文"
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "Shift",
+          "keyCode": 16,
+          "isComposing": false
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "Enter",
+          "keyCode": 13,
+          "isComposing": false
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": false
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "z",
+          "keyCode": 229,
+          "isComposing": false
+        },
+        {
+          "type": "gui",
+          "event": "compositionstart",
+          "data": ""
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "z"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "h",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zh"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "o",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zho"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "n",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zhon"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "g",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zhong"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "w",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zhong'w"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "e",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zhong'we"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "n",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "zhong'wen"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "keydown",
+          "key": "1",
+          "keyCode": 229,
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionupdate",
+          "data": "中文"
+        },
+        {
+          "type": "gui",
+          "event": "input",
+          "isComposing": true
+        },
+        {
+          "type": "gui",
+          "event": "compositionend",
+          "data": "中文"
+        }
+      ]
+    },
+    "editor": {
+      "packaged": true,
+      "runtime": {
+        "version": "0.15.1",
+        "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu"
+      },
+      "committed": "中文",
+      "undo_redo_preserved": true,
+      "saved_and_reopened": true,
+      "model_requests": 0,
+      "settings_changed": false,
+      "candidateChecks": [
+        {
+          "candidate_index": 2,
+          "candidate_ready": true,
+          "captured_candidate_windows": 1,
+          "frontmost_matches": true,
+          "keyboard_input": false,
+          "read_failures": 0,
+          "settings_changed": false
+        }
+      ],
+      "events": [
+        {
+          "type": "compositionstart",
+          "data": ""
+        },
+        {
+          "type": "compositionupdate",
+          "data": "z"
+        },
+        {
+          "type": "compositionupdate",
+          "data": "zh"
+        },
+        {
+          "type": "compositionupdate",
+          "data": "zho"
+        },
+        {
+          "type": "compositionupdate",
+          "data": "zhon"
+        },
+        {
+          "type": "compositionupdate",
+          "data": "zhong"
+        },
+        {
+          "type": "compositionupdate",
+          "data": "zhong'w"
+        },
+        {
+          "type": "compositionupdate",
+          "data": "zhong'we"
+        },
+        {
+          "type": "compositionupdate",
+          "data": "zhong'wen"
+        },
+        {
+          "type": "compositionupdate",
+          "data": "中文"
+        },
+        {
+          "type": "compositionend",
+          "data": "中文"
+        }
+      ]
+    }
+  },
+  "input_sources": {
+    "agent": {
+      "selected_source_unchanged": true,
+      "temporary_language_toggle": false,
+      "temporary_toggle_reversed": false
+    },
+    "editor": {
+      "keyboard_source_unchanged": true,
+      "temporary_language_toggle": false
+    }
+  },
+  "root_cause": "测试驱动把目标词固定为第1项；诊断图片实际1zhongwen、2中文，随后字符keystroke数字仍追加拼音。探针按目标完整匹配且唯一的序号返回，选择改为物理数字键后两条真实完整旅程通过，产品代码未修改。",
+  "observed_ranks": {
+    "tui": 2,
+    "gui": [
+      1,
+      1
+    ],
+    "editor": 2
+  },
+  "helper_contract": {
+    "foreground_rechecked": true,
+    "window_owner": "当前Sogou自身窗口",
+    "candidate_indices": "1..9唯一目标，缺失／歧义不发送",
+    "default_images": "调用后清理",
+    "diagnostics": "显式指定已存在隔离目录才保留该候选窗口首张图和本地OCR；不截图其他应用或调用网络",
+    "non_foreground": {
+      "candidate_ready": false,
+      "candidate_index": null,
+      "captured_candidate_windows": 0,
+      "keyboard_input": false,
+      "settings_changed": false
+    }
+  },
+  "failures_preserved": [
+    {
+      "report": "native-reader-report.json",
+      "stats": {
+        "startTime": "2026-11-26T17:11:34.792Z",
+        "duration": 21348.251,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "reason": "稳定前台和12次候选读取均成功，但强求目标在第1项，完整测试失败",
+      "sha256": "c8c7d340dd162c94f13ed8f14929910128f79eb4482deeb8dac0bec39141e6f7"
+    },
+    {
+      "report": "native-reader-diagnostic-report.json",
+      "stats": {
+        "startTime": "2026-11-26T17:13:25.669Z",
+        "duration": 19808.385000000002,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "reason": "只读图片与OCR确认第1项是拼音、第2项是中文；没有发送选词键",
+      "sha256": "96fdd5225f22cdd2a83f43fbff0897eafa635a83139c07f9f54ced6b783f8345"
+    },
+    {
+      "report": "native-ranked-report.json",
+      "stats": {
+        "startTime": "2026-11-26T17:15:30.238Z",
+        "duration": 23857.912,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 2,
+        "flaky": 0
+      },
+      "reason": "两条完整测试失败；已定位实际第2候选，但keystroke数字追加为zhongwen2，没有compositionend",
+      "sha256": "0a4a282c6380aeb1ec0ed61d54421649e6a0698b54ae7544697e10d147cd5314"
+    }
+  ],
+  "assertions": [
+    "编辑器真实composition提交中文，未保存时Core原文保持",
+    "中文组合单次撤销／重做，确切字节保存，重开读取原修订",
+    "TUI原生输入及可见CJK，GUI Enter保留实际拼音且零发送，Space核对实际提交",
+    "GUI中文多行草稿与TUI原中文独立，双向切换原线程保持",
+    "零模型消息／工具，输入源保持且无临时语言态切换，正常退出"
+  ],
+  "historical_boundary": "不抹去此前四轮完整失败；旧安装源码身份未逐轮核验的限制保持。本轮前后重新核验完整3133项、签名、图标及b5fe3dd4源码摘要。",
+  "screenshots": {
+    "candidate-chinese-at-two.png": {
+      "path": "docs/research/evidence/native-ime-ranked-2026-11-27/candidate-chinese-at-two.png",
+      "sha256": "c4a9278e62f12bc0bcb75bb97a2750079db52241a6add09d1c3c89c364fa425d"
+    },
+    "installed-tui-chinese.png": {
+      "path": "docs/research/evidence/native-ime-ranked-2026-11-27/installed-tui-chinese.png",
+      "sha256": "f17985c86eb2ba57df898623f2075529f4ec5fb105e9f8ae482b7e3ed0f2f281"
+    },
+    "installed-gui-chinese.png": {
+      "path": "docs/research/evidence/native-ime-ranked-2026-11-27/installed-gui-chinese.png",
+      "sha256": "352ae38630cea6eed445f0c60cd9aa2651c2abbbffdaca4e232090ab0e846d9b"
+    },
+    "installed-editor-chinese.png": {
+      "path": "docs/research/evidence/native-ime-ranked-2026-11-27/installed-editor-chinese.png",
+      "sha256": "5c46bd49fd7eabedd58e39d83d84abb3441ea2eb8bc59bc177e39074f52ce5ba"
+    }
+  },
+  "source_sha256": {
+    "apps/desktop/tests/fixtures/native-ime.ts": "bf773eb27624915274d56154953398d20688d5d11be5b0f5e8715a542a3d8eb1",
+    "apps/desktop/tests/agent-native-ime.spec.ts": "887dd6f163a43dff746536dfab0cac87a3b86f269c61d4d9950e3a9c337ba959",
+    "apps/desktop/tests/native-ime.spec.ts": "3984b0aa47432ee2c65bc694f8c039587694831c867eb9908fa2783e4a7a9642",
+    ".agents/skills/hetu-embedded-agent/scripts/inspect-macos-ime-candidate.swift": "8f98f499a050a8cd90685bbb7bbd0ba755e5c68bc2debfbe91a37e7af1c9f654",
+    ".agents/skills/hetu-embedded-agent/references/validation.md": "319d0a5cd250a717b0cd22692faa259fbb38f568a76288351586d55c6a006d66"
+  },
+  "raw_evidence_root": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-launch-contrast-20261127",
+  "model_requests": 0,
+  "product_code_changed": false,
+  "not_verified": [
+    "VoiceOver及当前原生Codex Desktop MCP App",
+    "Windows/Linux真实IME、DPI与字形",
+    "所有输入法、词典、混合语言、全部控制字符及全软件场景",
+    "间歇退出根因、完整专业制作及作者试用"
+  ],
+  "final_checks": {
+    "swift_compile": "passed",
+    "desktop_types": "passed",
+    "skill": "valid",
+    "skill_links": 20,
+    "documentation": {
+      "documents": 92,
+      "local_links": 1687,
+      "fragment_links": 431,
+      "errors": 0
+    },
+    "default_without_live_flag": {
+      "startTime": "2026-11-26T17:20:16.420Z",
+      "duration": 771.678,
+      "expected": 0,
+      "skipped": 2,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "native_passed": 2,
+    "original_profile_indexes_unchanged": 3,
+    "bundle_rechecked_after_test": true,
+    "source_and_images_match": true,
+    "diff_check": "passed"
+  }
+}

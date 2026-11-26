@@ -578,7 +578,14 @@
       "sha": "af1bd0d6fd0de2876675f4ff46ef3bd411c1dc71",
       "status": "in_progress_last_observed",
       "optimized_core": "success",
-      "limits": "不以本机通过推定远端终态"
+      "limits": "不以本机通过推定远端终态",
+      "desktop": {
+        "status": "success",
+        "passed": 96,
+        "skipped": 25,
+        "failed": 0,
+        "log_sha256": "a8dbc4af576927a90b4b3d89b70f0ea8179081752789dfeb562f7efec2852c1d"
+      }
     }
   },
   "release": {
@@ -586,7 +593,13 @@
     "sha": "af1bd0d6fd0de2876675f4ff46ef3bd411c1dc71",
     "run_id": 45863998814,
     "status": "in_progress_last_observed",
-    "limits": "旧v0.15.0公开标签保持，待三平台、签名公证、发布与npm实际终态"
+    "limits": "旧v0.15.0公开标签保持，待三平台、签名公证、发布与npm实际终态",
+    "linux": {
+      "status": "success",
+      "job_id": 140061999980,
+      "packaged_checks_passed": 4,
+      "log_sha256": "3525ac01d9d3023626e3587dd542ac46774d6b6d94856b1871abc5e0f7e30932"
+    }
   },
   "driver_failures": [
     "系统python缺少yaml／markdown_it，复用uv隔离依赖后检查通过，未全局安装",
@@ -683,5 +696,11 @@
       "observed_bundle": "com.google.Chrome",
       "limits": "首轮错误中的loginwindow不是成功查询结果，不据此判断屏幕锁定，也不能倒推此前IME前台变化原因"
     }
+  },
+  "followup_native_ime": {
+    "reference": "docs/research/evidence/native-ime-ranked-2026-11-27.json",
+    "installed_source_sha256": "b5fe3dd411f606df653d2b4a710e61004480983b06bcde30f2931b05df14e430",
+    "passed_journeys": 2,
+    "scope": "本机Sogou正文及GUI/TUI原生中文闭环；先前失败保持，读屏与其他平台另验"
   }
 }
