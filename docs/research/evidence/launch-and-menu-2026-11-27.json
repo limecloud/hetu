@@ -576,15 +576,25 @@
     "current": {
       "run_id": 45862793013,
       "sha": "af1bd0d6fd0de2876675f4ff46ef3bd411c1dc71",
-      "status": "in_progress_last_observed",
+      "status": "success",
       "optimized_core": "success",
-      "limits": "不以本机通过推定远端终态",
+      "limits": "固定af1bd0d的三个作业终态success；25项桌面与19项工作台专用前置跳过保留。后续测试/文档不冒充已在此run执行。",
       "desktop": {
         "status": "success",
         "passed": 96,
         "skipped": 25,
         "failed": 0,
         "log_sha256": "a8dbc4af576927a90b4b3d89b70f0ea8179081752789dfeb562f7efec2852c1d"
+      },
+      "website": {
+        "passed": 658,
+        "failed": 0
+      },
+      "task_view": {
+        "passed": 131,
+        "skipped": 19,
+        "failed": 0,
+        "log_sha256": "7e5362173f03fed8125997c9cc72d3a9fd7d6f4cb3a8e524cb00b01293f09130"
       }
     }
   },
@@ -599,6 +609,17 @@
       "job_id": 140061999980,
       "packaged_checks_passed": 4,
       "log_sha256": "3525ac01d9d3023626e3587dd542ac46774d6b6d94856b1871abc5e0f7e30932"
+    },
+    "windows": {
+      "status": "success",
+      "job_id": 140062000432,
+      "packaged_checks_passed": 4,
+      "log_sha256": "8c99382c474e3ac722d711d00faa09b3d7ada67177e408f06cbbc9fef9227d82"
+    },
+    "macos": {
+      "job_id": 140062000552,
+      "status": "in_progress",
+      "step": "Test CLI launcher, plugins and Electron workbench"
     }
   },
   "driver_failures": [
