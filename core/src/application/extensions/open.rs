@@ -3,10 +3,6 @@ use super::*;
 
 impl Kernel {
     pub(crate) fn execute_open_plugin(&self, action: &str, input: &Value, cancelled: &dyn Fn()->bool) -> Result<Value> {
-        let binding = self
-            .management_grant
-            .as_ref()
-            .ok_or_else(|| Error::new("forbidden", "机器入口须沿当前作品连接。"))?;
         self.work_record(&input["work_ref"], None)?;
         if let Some(work) = self.granted_work()? {
             ensure(
@@ -17,10 +13,17 @@ impl Kernel {
         }
         let mut runtime = input.clone();
         runtime["workspace_directory"] = json!(self.workspace_path);
-        runtime["management_binding"] = binding.clone();
+        if self.workspace_execution {
+            let identity = crate::infrastructure::platform::identity(&self.workspace_path)?;
+            runtime["execution_binding"] = json!({"client_adapter":self.execution_client.as_deref().unwrap_or("generic"),
+                "work_ref":input["work_ref"],"workspace_id":self.scope(),"root_identity":{"device":identity.0,"inode":identity.1}});
+        } else {
+            runtime["management_binding"] = self.management_grant.as_ref()
+                .ok_or_else(|| Error::new("forbidden", "机器入口须沿当前作品连接。"))?.clone();
+        }
         if action == "hetu.plugins.invoke" && input.get("view").is_some() {
             let capabilities = crate::plugin_settings::request_cancellable(
-                binding["client_adapter"].as_str().unwrap_or(""),
+                runtime.get("execution_binding").unwrap_or(&runtime["management_binding"])["client_adapter"].as_str().unwrap_or(""),
                 "hetu.plugins.capabilities", &runtime, cancelled,
             )?;
             ensure(capabilities["invocation_projection_version"] == 1,
@@ -34,11 +37,40 @@ impl Kernel {
                 "invalid_input", "结果投影只允许只读动作，不能重新执行写入。")?;
         }
         crate::plugin_settings::request_cancellable(
-            binding["client_adapter"].as_str().unwrap_or(""),
+            runtime.get("execution_binding").unwrap_or(&runtime["management_binding"])["client_adapter"].as_str().unwrap_or(""),
             action,
             &runtime,
             cancelled,
         )
+    }
+
+    pub(crate) fn plugin_invocation_is_read(&self, input: &Value) -> Result<bool> {
+        let capability = self.execute_open_plugin("hetu.plugins.capabilities", &json!({
+            "work_ref":input["work_ref"],"plugin_id":input["plugin_id"],"package_sha256":input["package_sha256"]}), &|| false)?;
+        ensure(capability["capabilities_sha256"] == input["capabilities_sha256"],
+            "hetu.stale_evidence", "插件能力已变化，请重新发现。")?;
+        for group in ["actions", "data_actions", "core_actions", "resource_actions"] {
+            if let Some(action) = capability[group].as_array().and_then(|items| items.iter()
+                .find(|item| item["id"] == input["action"] || item["name"] == input["action"])) {
+                return Ok(action["effect"] == "read");
+            }
+        }
+        Err(Error::new("hetu.capability_unavailable", "插件未声明该动作。"))
+    }
+
+    /// 私有宿主连接继承当前执行范围，不能变为作者或同根其他作品。
+    pub fn open_plugin_execution(workspace: &Path, binding: &Value) -> Result<Self> {
+        closed(binding, &["client_adapter", "work_ref", "workspace_id", "root_identity"], &[])?;
+        closed(&binding["root_identity"], &["device", "inode"], &[])?;
+        schema(&binding["work_ref"], &works::definition("work_ref"))?;
+        let mut kernel = Self::open_execution_as(json!({"workspace_path":workspace,"mode":"agent"}), text(binding,"client_adapter")?)?;
+        let identity = crate::infrastructure::platform::identity(&kernel.workspace_path)?;
+        ensure(binding["workspace_id"] == kernel.scope()
+            && binding["root_identity"] == json!({"device":identity.0,"inode":identity.1}),
+            "forbidden", "插件执行连接不属于当前工作区身份。")?;
+        kernel.work_record(&binding["work_ref"], None)?;
+        kernel.execution_work = Some(binding["work_ref"].clone());
+        Ok(kernel)
     }
 
     /// 上下文是宿主装配的数据合同，不是单独的插件授权。
@@ -177,5 +209,47 @@ impl Kernel {
             }
             None => Self::open(json!({"workspace_path":workspace,"mode":"author"})),
         }
+    }
+}
+
+#[cfg(test)]
+mod execution_connection_tests {
+    use super::*;
+
+    fn ok(result: Value) -> Value {
+        assert_eq!(result["status"], "succeeded", "{result}");
+        result["data"].clone()
+    }
+
+    #[test]
+    fn private_execution_connection_keeps_agent_and_exact_work_without_management_records() {
+        let directory = tempfile::tempdir().unwrap();
+        let kernel = Kernel::open(json!({"mode":"author","workspace_path":directory.path(),
+            "create":{"title":"执行连接","locale":"zh-CN","operation_key":"create"}})).unwrap();
+        let work = ok(kernel.request(json!({"action":"hetu.works.list","contract_revision":"1","input":{}})))["works"][0]["work_ref"].clone();
+        let identity = crate::infrastructure::platform::identity(directory.path()).unwrap();
+        let binding = json!({"client_adapter":"codex","work_ref":work,"workspace_id":kernel.scope(),
+            "root_identity":{"device":identity.0,"inode":identity.1}});
+        let plugin = Kernel::open_plugin_execution(directory.path(), &binding).unwrap();
+        assert!(!plugin.is_author());
+        assert!(plugin.management_binding().is_none());
+        let context = json!({"plugin_id":"org.hetu.execution-test","package_sha256":"a".repeat(64),"work_ref":work,"types":[]});
+        let request = |action: &str, input: Value| plugin.open_plugin_request(json!({"context":context,
+            "request":{"action":action,"contract_revision":"1","input":input}}));
+        let document = ok(request("hetu.documents.create",json!({"kind":"novel_chapter","title":"正文", "source_format":"markdown",
+            "content":"保持Agent身份。","operation_key":"document"})));
+        assert_eq!(document["revision"]["actor_ref"], AGENT);
+        let other = ok(kernel.request(json!({"action":"hetu.drama.projects.create","contract_revision":"1",
+            "input":{"title":"同根剧本","mode":"original","operation_key":"drama"}})));
+        let denied = request("hetu.drama.projects.get", json!({"project_id":other["project"]["project_id"]}));
+        assert_eq!(denied["error"]["code"], "forbidden");
+        for (field, value) in [("workspace_id",json!("workspace_wrong")),("client_adapter",json!("author")),
+            ("root_identity",json!({"device":identity.0,"inode":identity.1.saturating_add(1)}))] {
+            let mut changed = binding.clone(); changed[field] = value;
+            assert!(Kernel::open_plugin_execution(directory.path(), &changed).is_err(), "{field}");
+        }
+        let mut changed = binding;
+        changed["work_ref"]["object_id"] = json!("novel_00000000-0000-4000-8000-000000000000");
+        assert!(Kernel::open_plugin_execution(directory.path(), &changed).is_err());
     }
 }

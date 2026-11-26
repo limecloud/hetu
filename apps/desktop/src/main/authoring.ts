@@ -163,6 +163,9 @@ export class Authoring {
           !isDeepStrictEqual(value.draft.creative_task_ref, reference.task_ref)))
         throw new Error("参考稿已变化，请刷新分集后重新读取。");
       return result;
+    } else if (action === "hetu.outlines.get") {
+      if (this.work.kind !== "novel" || input.work_ref && !isDeepStrictEqual(input.work_ref, this.work)) throw new Error("正式大纲不属于当前小说。");
+      const {work_ref: _, ...request} = input; input = request;
     } else if (documentActions.has(action)) {
       await this.#document(input.document_id);
     } else if (
@@ -180,6 +183,8 @@ export class Authoring {
       if (input.work_ref && !isDeepStrictEqual(input.work_ref, this.work))
         throw new Error("不能在当前工作面切换作品。");
       input = { ...input, work_ref: this.work };
+    } else if (action === "hetu.assets.read_blob") {
+      if (!isDeepStrictEqual(input.work_ref, this.work)) throw new Error("素材不属于当前作品。");
     } else if (action === "hetu.assets.get" || action === "hetu.cues.get") {
       const result = await this.#call(action, input);
       if (result.status === "succeeded") {
@@ -300,6 +305,9 @@ export class Authoring {
             "link_revision",
             "entity_ref",
             "blueprint_revision",
+            "outline_id",
+            "outline_revision",
+            "outline_sha256",
             "resource_id",
             "asset_id",
             "cue_id",

@@ -2,9 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { data, desktop, requestAgent } from "./bridge.ts";
 import { IconButton } from "./workbench.tsx";
 import "./plugin-results.css";
+import type {PluginResultReference} from "../session-results.ts";
 
 type Summary = { object_id: string; title: string; revision: number; sha256: string };
-export function PluginResults({ owner, title, enabled, back }: { owner: string; title: string; enabled: boolean; back(): void }) {
+export function PluginResults({ owner, title, enabled, back, selection }: { owner: string; title: string; enabled: boolean; back(): void; selection?:PluginResultReference }) {
   const [query, setQuery] = useState(""), [items, setItems] = useState<Summary[]>(),
     [cursor, setCursor] = useState<string>(), [busy, setBusy] = useState(false),
     [error, setError] = useState(""), [notice, setNotice] = useState(""),
@@ -14,11 +15,17 @@ export function PluginResults({ owner, title, enabled, back }: { owner: string; 
     generation.current++; setItems(undefined); setCursor(undefined); setPreview(undefined);
     setBusy(false); setError(""); setNotice("");
   }
-  async function load(more = false, term = query) {
+  async function load(more = false, term = query, fixed?:PluginResultReference) {
     const request = ++generation.current;
     setBusy(true); setError(""); setNotice("");
     if (!more) { setItems(undefined); setCursor(undefined); setPreview(undefined); }
     try {
+      if(fixed){
+        if(fixed.owner_plugin_id!==owner)throw Error("专业成果归属不一致，请核对原版本。");
+        const original=await readExport(fixed);
+        if(request!==generation.current)return;
+        setPreview(original);
+      }
       const result = data(await desktop.fallback(owner, "hetu.extensions.objects.search", {
         query: term, limit: 20, ...(more && cursor ? { cursor } : {}),
       }));
@@ -30,7 +37,7 @@ export function PluginResults({ owner, title, enabled, back }: { owner: string; 
       setCursor(undefined); setError((e as Error).message);
     } finally { if (request === generation.current) setBusy(false); }
   }
-  useEffect(() => { void load(); return () => { generation.current++; }; }, [owner]);
+  useEffect(() => { void load(false,"",selection); return () => { generation.current++; }; }, [owner,selection?.object_id,selection?.revision,selection?.sha256]);
   async function act(action: () => Promise<void>) {
     const request = ++generation.current;
     setBusy(true); setError(""); setNotice("");
@@ -38,22 +45,25 @@ export function PluginResults({ owner, title, enabled, back }: { owner: string; 
     catch (e) { if (request === generation.current) setError((e as Error).message); }
     finally { if (request === generation.current) setBusy(false); }
   }
-  async function show(object: Summary) {
-    setPreview(undefined);
-    const request = generation.current;
+  async function readExport(object: Pick<Summary,"object_id"|"revision"|"sha256">) {
     const result = data(await desktop.fallback(owner, "hetu.extensions.objects.export", {
       object_id: object.object_id, revision: object.revision, format: "markdown",
     }));
-    if (request !== generation.current) return;
-    if (result.sha256 !== object.sha256) throw new Error("成果摘要不一致，请刷新后重新读取。");
-    setPreview({ object, content: result.content });
+    if (result.sha256 !== object.sha256||result.object?.object_id!==object.object_id||result.object?.revision!==object.revision||result.object?.owner_plugin_id!==owner) throw new Error("成果归属或版本不一致，请重新读取原成果。");
+    return {object:{...object,title:result.object.title},content:result.content};
+  }
+  async function show(object: Summary) {
+    setPreview(undefined);
+    const request = generation.current;
+    const original=await readExport(object);
+    if (request === generation.current) setPreview(original);
   }
   async function handoff() {
     const request = generation.current;
     await requestAgent("fallback:" + owner, preview ? {
       object_id: preview.object.object_id, revision: preview.object.revision, sha256: preview.object.sha256,
     } : {});
-    if (request === generation.current) setNotice(desktop.agentSessionHost ? "已放入Codex会话草稿，请核对后发送。" : "已复制插件成果的协作请求。");
+    if (request === generation.current) setNotice(desktop.agentSessionHost ? "已放入当前会话草稿，请核对后发送。" : "已复制插件成果的协作请求。");
   }
   return <section className="plugin-results" aria-label="插件成果">
     <div className="surface-heading"><h1>{title}成果</h1><div className="actions">
@@ -69,7 +79,7 @@ export function PluginResults({ owner, title, enabled, back }: { owner: string; 
       {query && <button type="button" onClick={() => { invalidate(); setQuery(""); void load(false, ""); }}>清除搜索</button>}
     </form>
     {busy && <p role="status">正在读取插件成果…</p>}
-    {error && <div role="alert"><p>{error}</p><button disabled={busy} onClick={() => void load()}>重新读取成果</button></div>}
+    {error && <div role="alert"><p>{error}</p><button disabled={busy} onClick={() => void load(false,query,preview?{owner_plugin_id:owner,...preview.object}:selection)}>重新读取成果</button></div>}
     {!busy && !error && items === undefined && <p className="muted">输入标题后搜索，或刷新读取全部成果。</p>}
     {items?.length === 0 && <p className="muted">{query ? "没有匹配的成果。" : "还没有保存的插件成果。"}</p>}
     {!!items?.length && <div aria-label="插件成果列表">{items.map(object => <div className="row" key={object.object_id}>

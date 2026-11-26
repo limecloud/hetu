@@ -1422,6 +1422,30 @@
         "workspace",
         "stable"
       ]
+    },
+    {
+      "name": "hetu_read_scene_index",
+      "action": "hetu.documents.scene_index",
+      "title": "检索固定场次 / Find fixed scenes",
+      "description": "在确切剧本作品中按标题检索场次，或按原修订和范围读取原文。不创建场次身份或更改剧本。Find scene ranges in an exact script revision without writing or creating scene identities.",
+      "profiles": ["workspace", "stable"]
+    },
+    {
+      "name": "hetu_list_plugin_results",
+      "action": "hetu.plugin_results.list",
+      "title": "查找保留专业成果 / Find retained plugin results",
+      "description": "在当前作品按名称或Owner读取固定专业成果目录，不启动插件。Find retained result metadata in the current work without starting a plugin.",
+      "profiles": ["workspace", "stable"]
+    },
+    {
+      "name": "hetu_read_plugin_result",
+      "action": "hetu.plugin_results.get",
+      "title": "读取保留专业成果 / Read retained plugin result",
+      "description": "按当前作品、Owner和确切修订读取保留成果及摘要；不启动插件，不授予执行或写入权。Read a retained result at its exact owner and revision in the current work, without starting the plugin or granting execution or write access.",
+      "profiles": [
+        "workspace",
+        "stable"
+      ]
     }
   ]
 }

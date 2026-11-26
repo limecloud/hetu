@@ -16,6 +16,7 @@ impl Kernel {
         )
     }
     pub(super) fn granted_work(&self) -> Result<Option<Value>> {
+        if let Some(reference) = &self.execution_work { return Ok(Some(reference.clone())); }
         self.management_grant
             .as_ref()
             .map(crate::collaboration::authoring::granted_work)
@@ -45,15 +46,18 @@ impl Kernel {
             | "hetu.plugin_access.capabilities"
             | "hetu.plugin_access.invoke"
             | "hetu.plugin_access.revoke" => input["work_ref"] == reference,
-            "hetu.works.get"
+            "hetu.plugin_results.list"
+            | "hetu.plugin_results.get"
+            | "hetu.works.get"
             | "hetu.work_links.list"
             | "hetu.work_links.get"
             | "hetu.work_links.set_archived" => input["work_ref"] == reference,
             "hetu.documents.list" => {
                 input["work_ref"] == reference && matches!(kind.as_str(), Some("novel" | "drama"))
             }
+            "hetu.documents.scene_index" => input["work_ref"]==reference&&kind=="drama",
             "hetu.documents.create" => {
-                kind == "novel" && input["kind"] == "novel_chapter" && input["content"] == ""
+                kind == "novel" && input["kind"] == "novel_chapter" && (self.workspace_execution || input["content"] == "")
             }
             "hetu.documents.duplicate" => input["work_ref"] == reference
                 && self.document_in_work(&self.document(text(&input["source_ref"], "document_id")?)?, &reference)?,
@@ -436,6 +440,8 @@ impl Kernel {
             }
             "hetu.video.media.save" | "hetu.video.media.get" | "hetu.video.media.list"
             | "hetu.video.feedback.save" | "hetu.video.feedback.list" | "hetu.video.delivery.preview"
+            | "hetu.video.decisions.preview" | "hetu.video.decisions.save"
+            | "hetu.video.decisions.get" | "hetu.video.decisions.history"
             | "hetu.assets.read_blob" => input["work_ref"] == reference,
             "hetu.video.projects.get" => kind == "video" && input["video_project_id"] == *object_id,
             "hetu.video.projects.update"

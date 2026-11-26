@@ -1,5 +1,6 @@
 import React from "react";
 import { mountPlugin } from "../../shared/workbench.tsx";
+import {labelLines,relationshipGeometry} from "./geometry.mts";
 mountPlugin({
   title: "人物关系图",
   kind: "relationships",
@@ -17,12 +18,14 @@ mountPlugin({
       },
     ],
   }),
-  render: (content) => (
+  render: (content) => {
+    const geometry=relationshipGeometry(content);
+    return (
     <>
       <svg
         aria-label="人物关系图"
         role="img"
-        viewBox="0 0 1100 650"
+        viewBox={geometry.viewBox}
         style={{
           width: "100%",
           minHeight: 420,
@@ -30,35 +33,27 @@ mountPlugin({
           borderRadius: 6,
         }}
       >
-        {content.edges.map((edge: any, index: number) => {
-          const from = content.nodes.find(
-              (node: any) => node.id === edge.source,
-            ),
-            to = content.nodes.find((node: any) => node.id === edge.target);
-          return from && to ? (
-            <g key={index}>
-              <line
-                x1={from.x}
-                y1={from.y}
-                x2={to.x}
-                y2={to.y}
-                stroke="var(--sage-8)"
-              />
+        <g aria-hidden="true">{geometry.edges.map((edge,index)=><path key={index} d={edge.path} fill="none" stroke="var(--sage-8)" strokeWidth={0.5} vectorEffect="non-scaling-stroke"/>)}</g>
+        {geometry.edges.map((edge, index) => (
+            <g key={index} data-relationship-label>
+              <rect aria-hidden="true" x={edge.position.x-92} y={edge.position.y-edge.lines.length*8-4} width={184} height={edge.lines.length*16+8} fill="var(--page)"/>
               <text
-                x={(from.x + to.x) / 2}
-                y={(from.y + to.y) / 2 - 8}
+                x={edge.position.x}
+                y={edge.position.y-(edge.lines.length-1)*8}
                 textAnchor="middle"
+                dominantBaseline="middle"
                 fill="var(--muted)"
                 fontSize={12}
               >
-                {edge.label}
+                <title>{edge.label}</title>
+                {edge.lines.map((line,index)=><tspan key={index} x={edge.position.x} dy={index?16:0}>{line}</tspan>)}
               </text>
             </g>
-          ) : null;
-        })}
+        ))}
         {content.nodes.map((node: any) => (
           <g
             key={node.id}
+            data-relationship-node
             transform={"translate(" + node.x + "," + node.y + ")"}
           >
             <rect
@@ -76,7 +71,8 @@ mountPlugin({
               fill="var(--jade)"
               fontSize={14}
             >
-              {node.label}
+              <title>{node.label}</title>
+              {labelLines(node.label,8).map((line,index,lines)=><tspan key={index} x={0} dy={index?16:-(lines.length-1)*8}>{line}</tspan>)}
             </text>
           </g>
         ))}
@@ -99,5 +95,5 @@ mountPlugin({
         </ul>
       </details>
     </>
-  ),
+  );},
 });

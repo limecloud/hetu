@@ -85,6 +85,14 @@
 .video-review-content .media-preview { margin-bottom: 12px; }
 .video-review-content label { display: inline-flex; gap: 8px; align-items: center; }
 .video-review-content blockquote { margin: 16px 0; padding: 0; }
+.caption-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin-top: 8px; font-size: 12px; }
+.video-decision { border-top: .5px solid var(--line); padding-top: 12px; }
+.video-decision > dialog { box-sizing: border-box; width: min(480px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); padding: 20px; overflow: auto; border: .5px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--surface); }
+.video-decision > dialog::backdrop { background: var(--black-a5); }
+.video-decision > dialog form, .video-decision > dialog label { display: grid; gap: 12px; }
+.video-decision > dialog h2, .video-decision > dialog p { margin: 0; overflow-wrap: anywhere; }
+.video-decision > dialog textarea { box-sizing: border-box; width: 100%; min-height: 88px; resize: vertical; }
+.caption-preview pre { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 480px; overflow: auto; font-size: 12px; }
 .baseline-editor-fields { border: 0; padding: 0; margin: 0; min-width: 0; }
 .document-rename { width: min(420px, calc(100vw - 32px)); padding: 20px; border: .5px solid var(--line); border-radius: 12px; background: var(--floating-surface); color: var(--ink); }
 .document-rename header, .document-rename footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; }

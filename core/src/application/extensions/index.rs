@@ -101,15 +101,70 @@ impl Kernel {
 
     fn extension_index_rows(&self, work: &Value, owner: &str, kinds: &Value,
         heads: &BTreeMap<String, Value>) -> Result<Vec<Value>> {
+        self.extension_index_rows_budgeted(work,owner,kinds,heads,&mut 0)
+    }
+
+    fn extension_index_rows_budgeted(&self, work: &Value, owner: &str, kinds: &Value,
+        heads: &BTreeMap<String, Value>, scanned: &mut usize) -> Result<Vec<Value>> {
         let mut rows = Vec::new();
-        let mut scanned = 0;
         for object in heads.keys() {
             let (record, sha) = self.extension_object(work, owner, object, None)?;
-            scanned += bytes(&record)?.len();
-            ensure(scanned <= SCAN_BYTES, "hetu.budget_exceeded", "插件索引核验超过32MiB预算。")?;
+            *scanned = scanned.saturating_add(bytes(&record)?.len());
+            ensure(*scanned <= SCAN_BYTES, "hetu.budget_exceeded", "插件索引核验超过32MiB预算。")?;
             if visible(kinds, &record["kind"]) { rows.push(summary(&record, &sha)); }
         }
         Ok(rows)
+    }
+
+    pub(super) fn retained_result_index(&self, input: &Value) -> Result<Value> {
+        let work=&input["work_ref"];
+        self.work_record(work,None)?;
+        let mut owners=std::collections::BTreeSet::new();
+        let mut scanned=0;
+        if let Some(owner)=input["owner_plugin_id"].as_str(){
+            plugin_id(owner)?;owners.insert(owner.to_owned());
+        } else {
+            let collections=match self.store.entries("extensions/objects"){
+                Ok(entries)=>entries,Err(error) if error.code=="not_found"=>Vec::new(),Err(error)=>return Err(error),
+            };
+            ensure(collections.len()<=1000,"hetu.budget_exceeded","专业成果集合超过本次检索预算，请指定Owner。")?;
+            for name in collections {
+                sha(&name)?;
+                let root=format!("extensions/objects/{name}");
+                let ids=self.record_ids(&root,"ext")?;
+                let Some(first)=ids.first() else{continue;};
+                let (record,_,_)=self.versioned_record(&root,first,"object_id",None)?;
+                scanned+=bytes(&record)?.len();
+                ensure(scanned<=SCAN_BYTES,"hetu.budget_exceeded","专业成果集合核验超过32MiB预算，请指定Owner。")?;
+                let owner=text(&record,"owner_plugin_id")?;
+                plugin_id(owner)?;
+                schema(&record["work_ref"],&works::definition("work_ref"))?;
+                ensure(collection(&record["work_ref"],owner)?==root,"hetu.integrity_failure","专业成果集合身份与原记录不一致。")?;
+                if record["work_ref"]==*work { owners.insert(owner.to_owned()); }
+            }
+        }
+        let query=input["query"].as_str().unwrap_or("").trim().to_lowercase();
+        let mut rows=Vec::new();let mut objects=0;
+        for owner in owners {
+            let (heads,snapshot)=self.extension_heads(work,&owner)?;
+            objects+=heads.len();
+            ensure(objects<=MAX_OBJECTS,"hetu.budget_exceeded","专业成果超过本次检索预算，请指定Owner。")?;
+            let projection=self.extension_projection(work,&owner,&Value::Null,&heads,&snapshot)?;
+            let indexed=match projection.rows {Some(rows)=>rows,None=>self.extension_index_rows_budgeted(work,&owner,&Value::Null,&heads,&mut scanned)?};
+            rows.extend(indexed
+                .into_iter().filter(|row|row["title"].as_str().is_some_and(|title|title.to_lowercase().contains(&query))));
+        }
+        rows.sort_by(|a,b|a["owner_plugin_id"].as_str().cmp(&b["owner_plugin_id"].as_str())
+            .then_with(||a["object_id"].as_str().cmp(&b["object_id"].as_str())));
+        let mut page=self.ordered_record_page(input,rows,"objects")?;
+        for row in page["objects"].as_array().unwrap(){
+            let (record,sha)=self.extension_object(work,text(row,"owner_plugin_id")?,text(row,"object_id")?,None)?;
+            scanned=scanned.saturating_add(bytes(&record)?.len());
+            ensure(scanned<=SCAN_BYTES,"hetu.budget_exceeded","保留成果回读超过32MiB预算，请缩小名称或Owner范围。")?;
+            ensure(summary(&record,&sha)==*row,"hetu.integrity_failure","保留成果目录与权威记录不一致，请核对派生索引。")?;
+        }
+        page["coverage"]=json!({"scope":"retained_work_results","complete":true});
+        Ok(page)
     }
 
     pub(super) fn extension_index(&self, work: &Value, owner: &str, action: &str,

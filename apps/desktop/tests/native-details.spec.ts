@@ -228,6 +228,10 @@ test("原生模型渠道与封面本地导入、文件变更拒绝及历史恢�
     expect(allCanon.blueprint.locations[0].interior_exterior).toBe("exterior");
     expect(allCanon.blueprint.timeline[0].time_anchor).toEqual({ calendar: "通用历", tick: 100 });
     expect(allCanon.blueprint.rules[0].parameters).toEqual({ text: "灯塔使用煤油灯" });
+    await canon.getByRole("button",{name:"查看江岚",exact:true}).click();
+    const details=page.getByRole("dialog",{name:"设定详情",exact:true});await expect(details.getByRole("heading",{name:"江岚",exact:true})).toHaveCount(1);
+    await expect(details).toContainText("寡言、敏锐");await expect(details.getByRole("heading",{name:"人物事实",exact:true})).toBeVisible();await expect(details).toContainText("雾港会");await expect(details).toContainText("抵达雾港");
+    await page.screenshot({path:path.join(root,"output/source-review-20261125/canon-details-desktop.png")});await details.getByRole("button",{name:"关闭设定详情",exact:true}).click();
     await page.locator('summary[aria-label="江岚操作"]').click(); await page.getByRole("button", { name: "归档", exact: true }).click();
     await expect(canon.getByRole("button", { name: "查看江岚", exact: true })).toHaveCount(0);
     await canon.getByLabel("显示已归档", { exact: true }).check();

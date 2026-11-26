@@ -6,7 +6,7 @@ import {spawnSync} from "node:child_process";
 import {AppServer} from "../src/main/rpc.ts";
 import {documentAction, openDirectory, closeApplication} from "./navigation.ts";
 
-test("关闭重开恢复同一作品章节和固定锚点，新修订从头阅读", async () => {
+test("改名及关闭重开保留固定锚点，正文新修订从头阅读", async () => {
   const root = path.resolve("../.."), directory = await mkdtemp(path.join(tmpdir(), "hetu-reading-restart-")), workspace = path.join(directory, "work"), profile = path.join(directory, "profile");
   await mkdir(profile);
   const made = spawnSync(path.join(root, "target/debug/examples/baseline_fixture"), [workspace, path.join(directory, "collaboration")], {encoding: "utf8"});
@@ -21,8 +21,7 @@ test("关闭重开恢复同一作品章节和固定锚点，新修订从头阅�
   await writeFile(path.join(profile, "creative-library.json"), JSON.stringify({schema_version: 1, roots: [{path: workspace, workspace_id: refs.novel.workspace_id, works: [{work_ref: refs.novel, title: "默认小说"}]}]}));
   const launch = () => electron.launch({args: [path.join(root, "apps/desktop")], env: {...process.env, HETU_DESKTOP_PROFILE: profile, HETU_PLUGIN_STATE_DIR: profile, HETU_COLLABORATION_DIR: path.join(directory, "collaboration"), HETU_APP_SERVER: path.join(root, "target/debug/hetu-app-server")}});
   let app = await launch();
-  const open = async () => {const page = await app.firstWindow(); await page.setViewportSize({width: 1440, height: 940}); await page.getByRole("button", {name: "打开作品 默认小说", exact: true}).click(); return page;};
-  await page.getByRole("button", {name: "小说", exact: true}).click();
+  const open = async () => {const page = await app.firstWindow(); await page.setViewportSize({width: 1440, height: 940}); await page.getByRole("button", {name: "打开作品 默认小说", exact: true}).click(); await openDirectory(page); return page;};
   try {
     let page = await open();
     await openDirectory(page); await page.getByRole("button", {name: "第二章 归航", exact: true}).click();
@@ -31,8 +30,17 @@ test("关闭重开恢复同一作品章节和固定锚点，新修订从头阅�
     const read = () => page.evaluate(async work => (window as any).hetuDesktop.readingState("get", {work_ref: work}), refs.novel);
     await expect.poll(async () => Object.values((await read()).positions).some((position: any) => position.top > 1500 && position.quote?.quote)).toBe(true);
     const initial = await read(); expect(initial.selected_document_id).toBe(second.document.document_id);
+    const top = await page.locator(".manuscript-stage").evaluate(node => node.scrollTop);
+    await page.getByRole("navigation", {name: "文稿目录", exact: true}).getByRole("button", {name: "第二章 归航", exact: true}).click({button:"right"});
+    await page.getByRole("menuitem", {name:"重命名",exact:true}).click();
+    await page.getByRole("textbox", {name:"文稿名称",exact:true}).fill("第二章 归航校订");
+    await page.getByRole("button", {name:"保存名称",exact:true}).click();
+    await expect(page.locator(".manuscript-title h1")).toHaveText("第二章 归航校订");
+    await expect.poll(async()=>Math.abs(await page.locator(".manuscript-stage").evaluate(node=>node.scrollTop)-top)).toBeLessThan(4);
+    second = (await page.evaluate(async id=>window.hetuDesktop.read("hetu.documents.get",{document_id:id}),second.document.document_id)).data;
+    await expect.poll(async()=>Object.values((await read()).positions).some((position:any)=>position.identity===JSON.stringify([second.document.document_id,second.revision.revision_id])&&position.top>1500)).toBe(true);
     await closeApplication(app); app = await launch(); page = await open();
-    await expect(page.locator(".manuscript-title h1")).toHaveText("第二章 归航");
+    await expect(page.locator(".manuscript-title h1")).toHaveText("第二章 归航校订");
     await documentAction(page, "阅读");
     await expect.poll(() => page.locator(".manuscript-stage").evaluate(node => node.scrollTop)).toBeGreaterThan(1500);
     await closeApplication(app, "app");
@@ -42,7 +50,7 @@ test("关闭重开恢复同一作品章节和固定锚点，新修订从头阅�
       expect(saved.status).toBe("succeeded");
     } finally {await update.close();}
     app = await launch(); page = await open();
-    await expect(page.locator(".manuscript-title h1")).toHaveText("第二章 归航");
+    await expect(page.locator(".manuscript-title h1")).toHaveText("第二章 归航校订");
     await documentAction(page, "阅读");
     await expect.poll(() => page.locator(".manuscript-stage").evaluate(node => node.scrollTop)).toBeLessThan(100);
   } finally {await closeApplication(app);}

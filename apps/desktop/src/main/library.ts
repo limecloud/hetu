@@ -115,8 +115,9 @@ export class CreativeLibrary {
   register(directory: string, works: any[]) {
     return this.#serial(() => this.#register(directory, works));
   }
-  refresh(discovered: { path: string; workspace_id: string }[]) {
+  refresh(discovered: { path: string; workspace_id: string }[], reference?: WorkRef) {
     return this.#serial(async () => {
+      const selectedPath = reference ? this.resolve(reference) : undefined;
       for (const candidate of discovered) {
         if (
           this.#roots.some(
@@ -132,10 +133,11 @@ export class CreativeLibrary {
           throw new Error("Agent 新建作品的真实身份与交接不符。");
         await this.#register(candidate.path, works);
       }
-      const views: any[] = [];
+      const refreshed = new Map<string, any[]>();
+      const roots = selectedPath ? this.#roots.filter(root => root.path === selectedPath) : this.#roots;
       // 独立工作区只并发读取；身份核验、顺序和单次登记提交保持不变。
-      for (let offset = 0; offset < this.#roots.length; offset += 4) {
-        const batch = this.#roots.slice(offset, offset + 4);
+      for (let offset = 0; offset < roots.length; offset += 4) {
+        const batch = roots.slice(offset, offset + 4);
         const results = await Promise.allSettled(batch.map(root => this.read(root.path)));
         for (const [index, result] of results.entries()) {
           const root = batch[index];
@@ -150,10 +152,10 @@ export class CreativeLibrary {
             )
               throw new Error("此位置的工作区身份已变化，不能沿旧登记打开。");
             root.works = works.map(displayRecord);
-            views.push(...works.map((item) => ({ ...item, unavailable: false })));
+            refreshed.set(root.path, works.map((item) => ({ ...item, unavailable: false })));
           } catch (e) {
-            views.push(
-              ...root.works.map((item) => ({
+            refreshed.set(root.path,
+              root.works.map((item) => ({
                 ...item,
                 unavailable: true,
                 error: (e as Error).message,
@@ -162,9 +164,10 @@ export class CreativeLibrary {
           }
         }
       }
-      this.#views = views;
+      // 局部刷新保留其他位置的既有核验结果；登记文件仍在同一跨进程锁中合并。
+      this.#views = this.#roots.flatMap(root => refreshed.get(root.path) ?? this.#views.filter(item => item.work_ref.workspace_id === root.workspace_id));
       await this.#persist();
-      return views;
+      return this.#views;
     });
   }
   resolve(reference: WorkRef) {

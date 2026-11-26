@@ -27,10 +27,11 @@ export type WorkHandoffContext = {
   work: WorkRef; environment: HandoffEnvironment; authoring: Authoring;
   workspacePath: string; managedSession?: boolean; executionPolicy(): Promise<any>; summary(): Promise<any>; check(): void; managementRef?: unknown; pluginConnection?: unknown;
 };
+export const handoffViewKind=(page:string,work:WorkRef)=>({"work.versions":"git","work.import":"import","work.delivery":"delivery","work.links":"related_works","work.resources":"resources","novel.outlines":"structure","work.media":"media","work.images":"artwork","work.canon":"bible","work.tasks":"reviews","plugin.results":"plugin.results"} as Record<string,string>)[page]??work.kind;
 export async function workHandoff(page: string, object: Record<string,unknown>, context: WorkHandoffContext) {
   const policy=await context.executionPolicy();context.check();
   const summary=await context.summary();context.check();
-  const pageKind=({"work.versions":"git","work.import":"import","work.delivery":"delivery","work.links":"related_works","work.resources":"resources","novel.outlines":"structure","work.media":"media","work.images":"artwork","work.canon":"bible"} as Record<string,string>)[page]??context.work.kind;
+  const pageKind=handoffViewKind(page,context.work);
   const result=await context.authoring.handoff(pageKind,object);context.check();
   if(result.status!=="succeeded")throw new Error(result.error?.message??"无法准备固定页面交接。");
   const handoff=result.data;
@@ -64,8 +65,9 @@ export async function settingsHandoff(method: string, input: any, context: {work
   if(input.work_ref&&(!context.work||!sameWork(context.work,input.work_ref)))throw new Error("作品已切换，请重新交接。");
   const operation=method==="continue"?await context.settings.operation(input.operation_id):undefined;context.check();
   if(operation&&(operation.state!=="approved"||operation.is_expired||!operation.is_current))throw new Error("请选择当前仍有效的已批准方案。");
-  return text("请通过河图的独立机器入口处理本机设置。先读取实际偏好与套件目录，再按我的目标准备完整固定方案；我审阅后由你执行原方案。不要读密钥、改账号或声称安装代表本会话已加载。结果未知保留原操作及原键回读。", {
+  const storage = input.section === "storage" || operation?.fixed.kind === "storage_cleanup";
+  return text(storage ? "请核对河图当前本机资料的分类占用和可清理项目，使用inspect_storage快照与selected_ids准备storage_cleanup固定方案。只清理已核验缓存及已移除且无待恢复内容的会话。展示确切清单、大小和不可恢复影响；即使auto也按我的真实决定登记后执行。变化项保留，未知结果沿原方案及原执行键恢复；文件大小不冒充实际磁盘回收量。" : "请通过河图的独立机器入口处理本机设置。先读取实际偏好与套件目录，再按我的目标准备完整固定方案；我审阅后由你执行原方案。不要读密钥、改账号或声称安装代表本会话已加载。结果未知保留原操作及原键回读。", {
     ...machine({...context.environment,client:operation?.fixed.client_adapter??context.environment.client}),local_settings_directory:context.environment.localSettingsDirectory,
-    ...(operation?{action:"hetu.local_settings.execute",input:{operation_id:operation.operation_id,sha256:operation.sha256,operation_key:"execute-"+operation.operation_id}}:{action:"hetu.local_settings.get",input:input.work_ref?{work_ref:input.work_ref}:{},section:input.section??"preferences"}),
+    ...(operation?{action:"hetu.local_settings.execute",input:{operation_id:operation.operation_id,sha256:operation.sha256,operation_key:"execute-"+operation.operation_id}}:{action:storage?"hetu.local_settings.inspect_storage":"hetu.local_settings.get",input:!storage&&input.work_ref?{work_ref:input.work_ref}:{},section:input.section??"preferences"}),
   });
 }

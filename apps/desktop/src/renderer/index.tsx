@@ -18,8 +18,11 @@ import {TextContextMenus} from "./text-context-menus.tsx";
 const libraryAssets: LibraryAssets = (window as any).hetuWorkbenchAssets ?? {brand:"app-icon.png",covers:["cover-river-jade.jpg","cover-cloud-rose.jpg","cover-stars-ink.jpg"]};
 import { PluginMigrations } from "./plugin-migrations.tsx";
 import { PluginResults } from "./plugin-results.tsx";
+import {pluginStateLabels} from "./plugin-state.ts";
+import {ProfessionalToolsDialog} from "./professional-tools.tsx";
 import { AuditStatus } from "./audit-status.tsx";
-import { sameWork } from "@hetu/plugin-sdk";
+import { sameWork, type WorkRef } from "@hetu/plugin-sdk";
+import type {SessionResult,DocumentResultReference,VideoResultReference,PluginResultReference} from "../session-results.ts";
 
 /** 作品入口固定先到资料页；正文、分集及视频成果由资料页明确进入。 */
 const workNavigationOrder = {
@@ -31,6 +34,7 @@ const workNavigationOrder = {
 function workEntrySurface(): string { return workNavigationOrder.profile[0]; }
 
 function App() {
+  const [professional,setProfessional]=useState(false);
   const [settingsOpen,setSettingsOpen]=useState(false);
   const embeddedSettings=useRef<HTMLDialogElement>(null);
   useEffect(()=>{if(settingsOpen)embeddedSettings.current?.showModal();},[settingsOpen]);
@@ -45,6 +49,8 @@ function App() {
     const value = typeof next === "function" ? next(current) : next;
     return {...value, preferences: newerPreferences(current.preferences ?? {}, value.preferences ?? current.preferences ?? {})};
   }), []);
+  const currentState = useRef(state);
+  currentState.current = state;
   const [initializing, setInitializing] = useState(true);
   const [agentOpen,setAgentOpen]=useState(false),[agentExpanded,setAgentExpanded]=useState(true);
   const [agentMaximized,setAgentMaximized]=useState(false),[agentMaximizedNavigation,setAgentMaximizedNavigation]=useState(false);
@@ -89,6 +95,9 @@ function App() {
   const [documentTools, setDocumentTools] = useState<DocumentTools>();
   const [documentTabs, setDocumentTabs] = useState<DocumentTab[]>([]);
   const [activeDocumentId, setActiveDocumentId] = useState<string>();
+  const [sessionResult,setSessionResult]=useState<SessionResult>();
+  useEffect(()=>setProfessional(false),[state.work?.workspace_id,state.work?.kind,state.work?.object_id,active]);
+  useEffect(()=>{const show=()=>{setProfessional(false);void run(()=>navigate("plugins"));};window.addEventListener("hetu:show-plugins",show);return()=>window.removeEventListener("hetu:show-plugins",show);});
   const [pageActionsTarget, setPageActionsTarget] = useState<HTMLDivElement | null>(null);
   useEffect(() => {
     const narrow = window.matchMedia("(max-width: 760px)");
@@ -101,10 +110,21 @@ function App() {
       document.querySelector<HTMLElement>("main .manuscript-stage")?.focus({preventScroll: true});
   }, [navigationVisible, focus]);
   useEffect(() => {
-    const refresh = () => { void desktop.library("refresh").then(value => { setState(value); setWorks(value.works ?? []); }).catch(error => setNotice(error.message)); };
-    window.addEventListener("hetu:work-changed", refresh);
-    const unsubscribe=desktop.onAgentSession(event=>{if(event.type==="notification"&&["turn/completed","results/verified"].includes(event.method))refresh();});
-    return () => {window.removeEventListener("hetu:work-changed", refresh);unsubscribe();};
+    const refresh = (target?: WorkRef, preserveWork = false) => {
+      const initial = currentState.current;
+      if (target && (!initial.work || !sameWork(initial.work, target))) return;
+      void desktop.library("refresh", target ? {work_ref: target} : undefined).then(value => {
+        const current = currentState.current;
+        if (value.epoch !== initial.epoch || current.epoch !== initial.epoch || target && (!current.work || !sameWork(current.work, target) || !sameWork(value.work, target))) return;
+        // 本地页面已消费原变更回执；同一工作面只更新创作库投影，不以新对象重载正文。
+        setState(preserveWork && target ? {...value, work: current.work} : value);
+        setWorks(value.works ?? []);
+      }).catch(error => {if (currentState.current.epoch === initial.epoch) setNotice(error.message);});
+    };
+    const changed = (event: Event) => refresh((event as CustomEvent).detail?.work_ref, true);
+    window.addEventListener("hetu:work-changed", changed);
+    const unsubscribe=desktop.onAgentSession(event=>{if(event.type==="notification"&&["turn/completed","results/verified"].includes(event.method))refresh(event.work_ref);});
+    return () => {window.removeEventListener("hetu:work-changed", changed);unsubscribe();};
   }, []);
   const surface = useRef<HTMLDivElement>(null);
   const pluginReturn = useRef("plugins");
@@ -177,12 +197,14 @@ function App() {
       window.removeEventListener("resize", report);
     };
   }, [active]);
-  const navigate = async (id: string, documentId?: string) => {
+  const navigate = async (id: string, documentId?: string, result?:SessionResult, keepAgentOpen = false) => {
     if (documentTools?.dirty && id !== active) throw new Error("请先保存当前修改，再切换工作面。");
     await desktop.closeSurface();
+    setSessionResult(result);
     setAttachment(undefined);
     if (documentId && state.work) viewStorage.setItem(documentSelectionKey(state.work), documentId);
     if (state.work) setSidebarLayer(id === "novel.reader" || id === "drama.reader" || id === "work.profile" ? "document" : "project");
+    if (agentFull && !keepAgentOpen && id !== "work.agent" && id !== "codex.library") setAgentOpen(false);
     setActive(id);
   };
   const registerDocumentTab = useCallback((tab: DocumentTab | undefined) => {
@@ -200,10 +222,10 @@ function App() {
   const pinDocumentTab = useCallback((documentId: string) => {
     setDocumentTabs(current => current.map(tab => tab.id === documentId ? {...tab, preview: false} : tab));
   }, []);
-  const openDocument = async (documentId: string) => {
+  const openDocument = async (documentId: string, result?:SessionResult) => {
     if (!state.work || state.work.kind === "video") return;
     if (documentTools?.dirty) throw new Error("请先保存当前修改，再打开关联正文。");
-    await navigate(state.work.kind === "novel" ? "novel.reader" : "drama.reader", documentId);
+    await navigate(state.work.kind === "novel" ? "novel.reader" : "drama.reader", documentId, result);
     setActiveDocumentId(documentId);
     setDirectoryVisible(true);
     setSidebarLayer("document"); setSidebarPanel("directory");
@@ -233,6 +255,7 @@ function App() {
     }
   };
   async function selectLibraryWork(item: {work_ref: import("@hetu/plugin-sdk").WorkRef}, target?: string) {
+    if (documentTools?.dirty) throw new Error("请先保存当前修改，再切换作品。");
     await desktop.library("open", {work_ref: item.work_ref});
     const next = await desktop.select(item.work_ref); setState(next);
     const surface = target ?? workEntrySurface();
@@ -240,6 +263,7 @@ function App() {
     setSidebarLayer(surface === "novel.reader" || surface === "drama.reader" || surface === "work.profile" ? "document" : "project");
     setSidebarPanel("directory");
     setFocus(false);
+    setAgentOpen(false);
     setActive(surface);
   }
   async function selectAgentWork(target?:import("@hetu/plugin-sdk").WorkRef,launch?:import("../agent-session-contract.ts").SessionLaunch){
@@ -279,10 +303,12 @@ function App() {
       void run(async()=>{
         if(documentTools?.dirty)throw new Error("请先保存当前修改，再打开会话成果。");
         if(result.kind==="work"){await selectLibraryWork({work_ref:result.work_ref});const next=await desktop.library("refresh");setState(next);setWorks(next.works??[]);}
-        else if(result.kind==="document")await openDocument(result.reference.document_id);
+        else if(result.kind==="document")await openDocument(result.reference.document_id,result);
         else if(result.kind==="resource"){await navigate("work.resources");setAttachment({resource_id:result.reference.resource_id,revision:result.reference.revision,title:result.title});}
         else if(result.kind==="submission"){await navigate("work.tasks");setAgentStatus({state:"waiting_for_audit",taskId:result.reference.task_ref.task_id,submissionId:result.reference.submission_ref.submission_id});}
         else if(result.kind==="bundle")await navigate("work.delivery");
+        else if(result.kind==="video")await navigate("video.review",undefined,result);
+        else if(result.kind==="plugin")await navigate("fallback:"+result.reference.owner_plugin_id,undefined,result);
         setAgentOpen(false);setAgentExpanded(false);
       });
     };
@@ -332,7 +358,7 @@ function App() {
   const agentMaximum=Math.max(360,agentAvailable-600);
   const agentDockWidth=Math.max(360,Math.min(agentWidth,agentMaximum));
   const closeAgent=()=>{setAgentOpen(false);setAgentExpanded(false);if(agentRoute)void run(()=>navigate(workMode?agentReturn.current==="library"?"work.profile":agentReturn.current:"library"));};
-  const expandAgent=()=>{if(agentRoute){setAgentOpen(true);setAgentExpanded(false);void run(()=>navigate(workMode?agentReturn.current==="library"?"work.profile":agentReturn.current:"library"));}else setAgentExpanded(value=>!value);};
+  const expandAgent=()=>{if(agentRoute){setAgentOpen(true);setAgentExpanded(false);void run(()=>navigate(workMode?agentReturn.current==="library"?"work.profile":agentReturn.current:"library",undefined,undefined,true));}else setAgentExpanded(value=>!value);};
   useEffect(() => { setDocumentTabs([]); setActiveDocumentId(undefined); }, [state.work?.workspace_id, state.work?.kind, state.work?.object_id]);
   useEffect(() => { document.title = workMode ? selected?.title ?? "河图洛书" : "河图洛书"; }, [workMode, selected?.title]);
   const labels: Record<string, [string, IconName]> = {
@@ -357,7 +383,7 @@ function App() {
     onClick={() => void run(() => navigate(id))}><Icon name={icon}/><span>{label}</span></button>;
   const openWorkspace = () => run(async () => {
     const next = await desktop.open();
-    if (next) { setState(next); setWorks(next.works); setActive("library"); }
+    if (next) { setState(next); setWorks(next.works); setAgentOpen(false); setActive("library"); }
   });
   const createWork = (type: string, name: string) => run(async () => {
     if(desktop.agentSessionHost && desktop.promptDelivery){const request=await desktop.library("bootstrap",{kind:type,delivery:"draft"});await desktop.promptDelivery.send(request.prompt,"draft");setActive("codex.library");}
@@ -403,13 +429,7 @@ function App() {
             <div className="menu-panel">
               <button disabled={busy} onClick={() => void run(() => navigate("library"))}>返回创作库</button>
               <button disabled={busy} onClick={() => void openWorkspace()}>打开作品</button>
-              {works.filter((item) => !item.unavailable).map((item) => <button key={item.work_ref.object_id} disabled={busy} onClick={() => void run(async () => {
-                if (documentTools?.dirty) throw new Error("请先保存当前修改。");
-                await desktop.library("open", { work_ref: item.work_ref });
-                setState(await desktop.select(item.work_ref));
-                setActive(workEntrySurface());
-                setSidebarLayer("document");
-              })}>{item.title}</button>)}
+              {works.filter((item) => !item.unavailable).map((item) => <button key={item.work_ref.object_id} disabled={busy} onClick={() => void run(() => selectLibraryWork(item))}>{item.title}</button>)}
             </div>
           </details>}>
           {readerActive && !agentFull && <IconButton icon="list" label={state.work.kind === "drama" ? "分集目录" : "卷章目录"} aria-pressed={sidebarLayer === "document" && sidebarPanel === "directory" && navigationVisible && !focus} onClick={() => { const open = sidebarLayer !== "document" || sidebarPanel !== "directory" || !navigationVisible || focus; setSidebarLayer("document"); setSidebarPanel("directory"); setDirectoryVisible(true); setNavigationVisible(open); setFocus(false); }}/ >}
@@ -421,7 +441,7 @@ function App() {
               <Icon name="sparkles"/><span>让 AI 处理</span>
             </button>
           }
-          {readerActive && !agentFull && !attachment && documentTools && <span className="save-state" aria-live="polite"><Icon name="check" size={13}/>{documentTools.readOnly ? documentTools.busy ? "正在读取…" : "参考稿 只读" : documentTools.composing ? "正在输入…" : documentTools.busy ? "正在保存…" : documentTools.dirty ? "有未保存修改" : "修订已保存"}</span>}
+          {readerActive && !agentFull && !attachment && documentTools && <span className="save-state" aria-live="polite"><Icon name="check" size={13}/>{documentTools.readOnly ? documentTools.busy ? "正在读取…" : documentTools.readOnlyLabel??"参考稿 只读" : documentTools.composing ? "正在输入…" : documentTools.busy ? "正在保存…" : documentTools.dirty ? "有未保存修改" : "修订已保存"}</span>}
           <IconButton icon="settings" label="本机设置" onClick={() => void desktop.settingsWindow("open")}/>
           {workMode && desktop.windowControls?.zoom !== false && <IconButton icon="expand" label="缩放窗口" onClick={() => void desktop.zoom()}/>}
           {readerActive && !agentFull && !attachment && documentTools && <>
@@ -429,6 +449,7 @@ function App() {
           </>}
           <details className="popover-menu topbar-more"><summary aria-label="更多操作" title="更多操作"><Icon name="more"/></summary><div className="menu-panel">
             <button disabled={busy} onClick={() => void openWorkspace()}>打开作品</button>
+            {workMode&&!readerActive&&<button disabled={busy} onClick={event=>{event.currentTarget.closest("details")!.open=false;setProfessional(true);}}>专业工具</button>}
             {readerActive && <button aria-pressed={focus} onClick={() => setFocus(!focus)}>{focus ? "退出专注" : "专注阅读"}</button>}
 
 
@@ -517,18 +538,7 @@ function App() {
                     <strong>{plugin.display["zh-CN"]}</strong>
                     <p className="muted">{plugin.description["zh-CN"]}</p>
                     <span className="pill">
-                      {plugin.reason ??
-                        (
-                          {
-                            active: "已启用",
-                            disabled: "已停用",
-                            blocked: "依赖未就绪",
-                            installed: "已安装",
-                            uninstalled: "已卸载",
-                            unavailable: "插件包不可用",
-                            failed: "清理失败",
-                          } as Record<string, string>
-                        )[plugin.state]}{" "}
+                      {plugin.reason ?? pluginStateLabels[plugin.state]}{" "}
                       {plugin.version}
                     </span>
                     <span className="muted"> {plugin.work_kinds?.map((kind: string) => ({ novel: "小说", drama: "剧本", video: "视频" })[kind as "novel"]).join("、") ?? "全部作品"}</span>
@@ -580,6 +590,7 @@ function App() {
             </div>
           ) : active.startsWith("fallback:") ? (
             <div className="content workbench-page"><PluginResults key={active + state.epoch} owner={active.slice(9)}
+              selection={sessionResult?.kind==="plugin"&&sameWork(sessionResult.work_ref,state.work)?sessionResult.reference as PluginResultReference:undefined}
               title={state.plugins.find((plugin: any) => plugin.id === active.slice(9))?.display["zh-CN"] ?? "插件"}
               enabled={state.plugins.some((plugin: any) => plugin.id === active.slice(9) && plugin.state === "active")}
               back={() => void run(() => navigate("plugins"))}/></div>
@@ -587,9 +598,11 @@ function App() {
             <div className={readerActive ? "content manuscript-content" : "content workbench-page"} data-surface={active}>
               {!readerActive && active !== "work.agent" && <div className="surface-heading"><h1>{title}</h1><div className="surface-heading-actions" ref={setPageActionsTarget}/></div>}
               <Component
-                key={active + state.epoch}
+                key={active + state.epoch + (sessionResult?.id??"")}
                 work={state.work}
                 documentId={readerActive ? activeDocumentId : undefined}
+                documentResult={readerActive&&sessionResult?.kind==="document"&&sameWork(sessionResult.work_ref,state.work)?sessionResult.reference as DocumentResultReference:undefined}
+                videoResult={sessionResult?.kind==="video"&&sameWork(sessionResult.work_ref,state.work)?sessionResult.reference as VideoResultReference:undefined}
                 notify={setNotice}
                 ai={(object) => void run(() => ai(object))}
                 reviewTask={(taskId) => { setAgentStatus({ state: "waiting_for_audit", taskId }); setActive("work.tasks"); }}
@@ -609,6 +622,7 @@ function App() {
         {desktop.agentSessionHost!==false && <AgentWorkspace works={works} onScope={target=>selectAgentWork(target)} onLaunch={async(launch,target)=>{try{await selectAgentWork(target,launch);return true;}catch(error){setNotice((error as Error).message);return false;}}} key={workMode?JSON.stringify(state.work):"library"} work={workMode?state.work:undefined} visible={agentVisible} full={agentFull} width={agentDockWidth} maxWidth={agentMaximum} onWidth={setAgentWidth} onClose={closeAgent} onExpand={expandAgent} notify={setNotice} maximized={agentMaximized&&agentFull} fullscreen={windowFullscreen} onMaximize={()=>{setAgentExpanded(true);setAgentMaximized(value=>!value);}} onFullscreen={desktop.fullscreen?()=>{void desktop.fullscreen!("set",!windowFullscreen).catch(error=>setNotice(error.message));}:undefined} navigationVisible={shellNavigationVisible&&!shellFocus} onNavigation={toggleAgentNavigation}/ >}
       </div>
       {settingsOpen && <dialog ref={embeddedSettings} className="embedded-settings" aria-label="设置" onCancel={event=>{event.preventDefault();window.dispatchEvent(new Event("hetu:settings-close-request"));}}><SettingsApp embedded/></dialog>}
+      {professional&&state.work&&<ProfessionalToolsDialog key={JSON.stringify(state.work)} work={state.work} target={{page:["work.profile","work.canon","novel.outlines","work.resources","work.tasks","work.images","work.media"].includes(active)?active:"work.profile",object:{}}} onClose={()=>setProfessional(false)}/>}
       {notice && <div className="notice" role="status">{notice}<IconButton icon="close" label="关闭提示" onClick={()=>setNotice("")}/></div>}
     </Workbench.Provider>
     </PageActionsTarget.Provider>

@@ -15,6 +15,88 @@ fn data(result: Value) -> Value {
     assert_eq!(result["status"], "succeeded", "{result}");
     result["data"].clone()
 }
+
+#[cfg(unix)]
+#[test]
+fn codex_discovery_skips_broken_interpreters_but_respects_explicit_selection() {
+    use std::{os::unix::fs::PermissionsExt, process::Command};
+    let mode = std::env::var("HETU_TEST_CODEX_DISCOVERY");
+    if mode.is_err() {
+        let folder = tempfile::tempdir().unwrap();
+        let broken = folder.path().join("broken");
+        let valid = folder.path().join("valid");
+        std::fs::create_dir_all(&broken).unwrap();
+        std::fs::create_dir_all(&valid).unwrap();
+        std::fs::write(broken.join("codex"), "#!/removed/node\n").unwrap();
+        std::fs::write(valid.join("codex"), "#!/bin/sh\nexit 0\n").unwrap();
+        for path in [broken.join("codex"), valid.join("codex")] {
+            std::fs::set_permissions(path, std::fs::Permissions::from_mode(0o700)).unwrap();
+        }
+        for mode in ["path", "explicit"] {
+            let mut command = Command::new(std::env::current_exe().unwrap());
+            command
+                .args([
+                    "--exact",
+                    "codex_discovery_skips_broken_interpreters_but_respects_explicit_selection",
+                    "--nocapture",
+                ])
+                .env("HETU_TEST_CODEX_DISCOVERY", mode)
+                .env("HETU_TEST_CODEX_VALID", valid.join("codex"))
+                .env(
+                    "HETU_INTEGRATIONS_DIR",
+                    std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../integrations"),
+                )
+                .env("HETU_LOCAL_SETTINGS_DIR", folder.path().join(mode))
+                .env("CODEX_HOME", folder.path().join("codex-home"))
+                .env("PATH", std::env::join_paths([&broken, &valid]).unwrap())
+                .env_remove("HETU_CODEX_BINARY");
+            if mode == "explicit" {
+                command.env("HETU_CODEX_BINARY", broken.join("codex"));
+            }
+            let output = command.output().unwrap();
+            assert!(
+                output.status.success(),
+                "{}\n{}",
+                String::from_utf8_lossy(&output.stdout),
+                String::from_utf8_lossy(&output.stderr)
+            );
+        }
+        return;
+    }
+    let folder = tempfile::tempdir().unwrap();
+    let service = LocalSettings::open(folder.path()).unwrap();
+    let state = data(call(&service, "codex", "get", json!({})));
+    let plan = call(
+        &service,
+        "codex",
+        "prepare",
+        json!({"kind":"agent_suite","suite_id":"general","agent_client":"codex","install":true,"summary":"核对可启动的Codex入口","operation_key":"codex-path"}),
+    );
+    if mode.unwrap() == "explicit" {
+        assert!(
+            !state["installable_clients"]
+                .as_array()
+                .unwrap()
+                .contains(&json!("codex"))
+        );
+        assert_eq!(
+            plan["error"]["code"], "hetu.capability_unavailable",
+            "{plan}"
+        );
+    } else {
+        assert!(
+            state["installable_clients"]
+                .as_array()
+                .unwrap()
+                .contains(&json!("codex"))
+        );
+        assert_eq!(
+            data(plan)["fixed"]["install_target"]["executable"],
+            std::env::var("HETU_TEST_CODEX_VALID").unwrap()
+        );
+    }
+}
+
 fn prepare(service: &LocalSettings, key: &str, patch: Value) -> Value {
     data(call(
         service,

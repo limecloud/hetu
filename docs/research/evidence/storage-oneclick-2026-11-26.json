@@ -1,0 +1,82 @@
+{
+  "date": "2026-11-26",
+  "scope": "存储概览一键清理，刷新并固定全部可清理项目，确认一次后执行",
+  "state": "verified_macos_local_install",
+  "checks": {
+    "shared_storage_review": {
+      "passed": 4
+    },
+    "desktop_e2e": {
+      "passed": 3,
+      "coverage": [
+        "概览不经明细选择",
+        "点击后刷新并纳入新增缓存",
+        "固定清单覆盖最新全部候选",
+        "一次点击仅一次原生确认",
+        "取消零删除",
+        "批准后缓存及已移除会话实际删除",
+        "草稿、unknown会话与恢复稿字节保持",
+        "无候选时禁用",
+        "原明细清理和CLI／MCP回归"
+      ]
+    },
+    "visual": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "widths": [
+        1000,
+        560
+      ],
+      "overflow": false,
+      "screenshots": "output/storage-oneclick-20261126/"
+    },
+    "packaged_e2e": {
+      "passed": 3,
+      "scope": "隔离资料，使用最终优化包内程序"
+    },
+    "installed_e2e": {
+      "passed": 1,
+      "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+      "scope": "隔离profile一键清理、取消、草稿与未知请求保护、浅暗窄窗及空候选禁用"
+    },
+    "protected_user_indexes_unchanged_after_tests": true
+  },
+  "prior_failure": "新测试夹具在主进程初始化前注册同名IPC，导致应用启动退出；改为等待设置入口就绪后安装观察器，最终3项全部通过。",
+  "limits": [
+    "未执行真实个人资料清理",
+    "主进程调试连接下正常退出由既有生命周期专项跟踪，本专项只终止隔离测试实例",
+    "macOS本机包，其他平台未验收"
+  ],
+  "packaging_note": "首轮签名期间并行开发更新工作区源码，装配器在最终一致性检查拒绝，未安装。已用APFS克隆固定所需源码、依赖及独立target，在output/storage-oneclick-20261126/frozen重建。 隔离装配最初缺少apps/desktop/node_modules/ws，已从原工作区按package-lock补齐；相同源码优化编译复用成功，最终同源与签名核验通过。",
+  "installation": {
+    "target": "/Applications/Hetu.app",
+    "backup_created": false,
+    "atomic_swap": true,
+    "verification": {
+      "source_sha256": "6c78ec7e4d775cbd06e8f7840513b3b9694496cb5d5037a247d5a46b76ee4b81",
+      "source_files": 3078,
+      "artifacts": 3133,
+      "package_artifacts": 3721,
+      "signing": "ad-hoc-development",
+      "rust_profile": "release"
+    },
+    "profile_before": {
+      "creative-library.json": "54e815e47efa39ccc9778e916d3ba543ce77b9a6539c50206d18946af7edb316",
+      "LocalSettings/settings.json": "b5b432db6545532e1aff8c8bce0d0489625e941c122725df43a00a0a57e86205",
+      "agent-sessions/index/selection.json": "fe09c8432a546b4ca4abbf4c9a54bd00c851a28f3acc4c3b6e572c9c0f95bbb4"
+    },
+    "profile_after": {
+      "creative-library.json": "54e815e47efa39ccc9778e916d3ba543ce77b9a6539c50206d18946af7edb316",
+      "LocalSettings/settings.json": "b5b432db6545532e1aff8c8bce0d0489625e941c122725df43a00a0a57e86205",
+      "agent-sessions/index/selection.json": "fe09c8432a546b4ca4abbf4c9a54bd00c851a28f3acc4c3b6e572c9c0f95bbb4"
+    },
+    "user_data_cleanup_executed": false
+  },
+  "native_window_probe": {
+    "status": "unavailable",
+    "error": "CUA内核failed to write kernel assets: No such file or directory；重置后相同错误，未操作真实清理。",
+    "fallback": "使用项目Playwright测试从实际/Applications/Hetu.app启动隔离profile验证"
+  }
+}

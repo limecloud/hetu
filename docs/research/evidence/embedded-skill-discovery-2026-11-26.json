@@ -1,0 +1,241 @@
+{
+  "date": "2026-11-26",
+  "scope": "embedded_agent_skill_and_connection_discovery",
+  "skill": {
+    "name": "hetu-embedded-agent",
+    "directory": ".agents/skills/hetu-embedded-agent",
+    "validation": "passed",
+    "local_links_verified": 18,
+    "files": {
+      ".agents/skills/hetu-embedded-agent/SKILL.md": "c06ac459de5bd5673a15008823908ca3c190043aac6744a021474057010d6cea",
+      ".agents/skills/hetu-embedded-agent/agents/openai.yaml": "2f918af983f709b21638337025aa3d62cf82fb759698b3485fca7b83c5384af9",
+      ".agents/skills/hetu-embedded-agent/references/extension.md": "47805ab7806d11f93c753628aee052773e2f39094a360f897e65e643e519a0e8",
+      ".agents/skills/hetu-embedded-agent/references/integration.md": "cec0d4dd08e5702abd4c9544dd690ee8a8583b87aab1f5b445a33dc7c08ca777",
+      ".agents/skills/hetu-embedded-agent/references/validation.md": "3c66ffe62668a317cbd9d08c01ac723f40ece3bbedd9e5f3dafaec452046be67",
+      ".agents/skills/hetu-embedded-agent/scripts/inspect-macos-ax.swift": "5cfa0c5262d36fb567a1e223757a69da7ba591fb0819e0d6f489a2aa5da463e5"
+    },
+    "additional_reusable_probe": "compiled and executed in real isolated packaged application; trusted=true, read_errors=0, truncated=false; exact native engine button value verified",
+    "source_code_paths_verified": 47
+  },
+  "source_fix": {
+    "trigger": "PATH first entry is an existing Codex script whose absolute Node interpreter no longer exists",
+    "owner": "core/src/local_settings/suites.rs",
+    "behavior": "Skip invalid auto-discovered executables; reject invalid explicit selection without fallback",
+    "tests": {
+      "local_settings": 12,
+      "failed": 0
+    },
+    "typecheck": "passed",
+    "packaged_installation": "passed source and installed CLI default discovery; same-package desktop and installed journeys verified",
+    "real_cli_discovery": {
+      "status": "passed",
+      "explicit_override": false,
+      "registered_suite_version": "0.3.18",
+      "settings_written": false
+    }
+  },
+  "shutdown": {
+    "package_source_sha256": "6c78ec7e4d775cbd06e8f7840513b3b9694496cb5d5037a247d5a46b76ee4b81",
+    "chat_business_and_exit": 4,
+    "normal_exit_code": 0,
+    "runs": [
+      {
+        "run": "agent-chat-GUI展示真实协议时间线，历史锚点、Markdown、输入与偏好保持一致",
+        "events": [
+          "observing",
+          "before-quit",
+          "before-quit",
+          "before-quit",
+          "will-quit",
+          "quit"
+        ],
+        "window_count_at_quit": 0
+      },
+      {
+        "run": "agent-chat-GUI展示真实协议时间线，历史锚点、Markdown、输入与偏好保持一致",
+        "events": [
+          "observing",
+          "before-quit",
+          "before-quit",
+          "before-quit",
+          "will-quit",
+          "quit"
+        ],
+        "window_count_at_quit": 0
+      },
+      {
+        "run": "agent-chat-GUI展示真实协议时间线，历史锚点、Markdown、输入与偏好保持一致-repeat1",
+        "events": [
+          "observing",
+          "before-quit",
+          "before-quit",
+          "before-quit",
+          "will-quit",
+          "quit"
+        ],
+        "window_count_at_quit": 0
+      },
+      {
+        "run": "agent-chat-GUI展示真实协议时间线，历史锚点、Markdown、输入与偏好保持一致-repeat2",
+        "events": [
+          "observing",
+          "before-quit",
+          "before-quit",
+          "before-quit",
+          "will-quit",
+          "quit"
+        ],
+        "window_count_at_quit": 0
+      }
+    ],
+    "prior_failures": "preserved in embedded-authentication-2026-11-26.json",
+    "root_cause": "unresolved; additional successful runs do not prove an intermittent failure fixed",
+    "production_lifecycle_change": false
+  },
+  "connection": {
+    "version": "0.14.1",
+    "registered": true,
+    "package_sha256": "5ef835a1ae3719c0d210428f7d1684b9001629469cd5602f6153d7919d64eb0b",
+    "version_differs": false,
+    "current_conversation_reloaded": false
+  },
+  "suite": {
+    "version": "0.3.18",
+    "registered": true,
+    "package_sha256": "1fcd3c4b1a44191800e2730b05437aff416e218c9f1e30ed8036fd349c89683e",
+    "first_attempt": "blocked before execution: one generated Python bytecode file in old cache",
+    "reconciliation": {
+      "original_operation_state": "pending",
+      "source_files_unchanged": true,
+      "removed_generated_file": "skills/hetu-drama/scripts/__pycache__/verify_delivery.cpython-314.pyc",
+      "sha256": "28a09ffbd10b8ed9061047b9eca698e9430817d6187dece863b7c42c48e64240",
+      "bytes": 6621
+    },
+    "retry": "original pending plan and original execute key; one workspace_busy rejection before success",
+    "current_conversation_skill_catalog": "still the supplied 0.3.12 catalog"
+  },
+  "fresh_owned_codex_host": {
+    "engine": "Codex CLI 0.172.0",
+    "project_skill_found": true,
+    "enabled_suite_skills": 13,
+    "suite_version": "0.3.18",
+    "mcp_tool_count": 15,
+    "runtime": {
+      "version": "0.14.1",
+      "bundled_skill_version": "0.3.18",
+      "catalog_sha256": "ad78bcf092e5a8d80379307d3f29220da749766893906ce97620f71234c6c381"
+    },
+    "model_requests": 0,
+    "scope": "new isolated ephemeral thread using officially registered machine connection; no business document access",
+    "normal_host_exit": true,
+    "runtime_after_final_install": {
+      "version": "0.14.1",
+      "bundled_skill_version": "0.3.18",
+      "catalog_sha256": "ad78bcf092e5a8d80379307d3f29220da749766893906ce97620f71234c6c381"
+    }
+  },
+  "current_conversation": {
+    "runtime_version": "0.14.0",
+    "bundled_skill_version": "0.3.13",
+    "updated_registration_does_not_refresh_existing_process": true
+  },
+  "limits": [
+    "long-chat intermittent shutdown cause remains unknown",
+    "system IME and accessibility coverage still separate",
+    "native Codex Desktop visual, cross-platform, professional production and full release gates remain open"
+  ],
+  "references": {
+    "official_protocol": "https://learn.chatgpt.com/docs/app-server.md",
+    "history": "embedded-authentication-2026-11-26.json",
+    "state_owner": "docs/38-创作工作台重构执行计划.md"
+  },
+  "header_source": {
+    "state": "passed final packaged journey",
+    "views": [
+      "800px full window with 280px project navigation",
+      "420px default dock",
+      "360px minimum dock"
+    ],
+    "invariants": [
+      "readable selected document and visible close action",
+      "Home/End focus and reveal",
+      "no header overflow",
+      "original thread and draft preserved"
+    ],
+    "source_failed_iterations": 3,
+    "source_core_and_ui_not_yet_installed": false,
+    "screenshots": {
+      "embedded-session-header-2026-11-26.png": "5088c95876aafaca7e7e735804df0aeba9e5e1536a2524a9ad6b81aae3773e3b",
+      "embedded-session-dock-2026-11-26.png": "799f3c4c5a78ce1c79638c4b1310a46c218cfeff7b184dc3b8158fcef0f4d011",
+      "embedded-session-minimum-2026-11-26.png": "74458f1f763bd81162cd1ece4a52e7b934e0a9284b6d0feba5a0a0cfba836a99"
+    }
+  },
+  "package": {
+    "version": "0.14.1",
+    "source_sha256": "8d21347222fe8e0e236685673e65f3e29901c61895233815330178d9fe87e9a0",
+    "source_inputs": 3078,
+    "artifacts": 3133,
+    "signature_verified": true,
+    "icon_matches": true,
+    "source_file_sets_match": true,
+    "scope": "macOS arm64 optimized development-signed local package; not formal notarized distribution",
+    "first_build_rejected": "shared workbench resource had not yet been regenerated",
+    "intermediate_package": "preserved before dock layout extension, not installed",
+    "installed": true
+  },
+  "packaged_journeys": {
+    "passed": 6,
+    "failed": 0,
+    "cases": [
+      "GUI history, fixed sources, input, 800px full view, 420/360px dock and normal exit",
+      "directory and preview keyboard/context menus, failure recovery and fixed history",
+      "multi-engine PTY, model discovery and retained sessions",
+      "protocol authentication and account/channel input protection",
+      "storage loading, failure retry and stable layout",
+      "independent CLI and MCP storage snapshot and original-key recovery"
+    ],
+    "normal_exit_scope": "chat, preview, engine and authentication journeys; storage loading uses isolated-instance cleanup and is not shutdown evidence",
+    "mcp_workbench": {
+      "passed": true,
+      "duration_minutes": 9.3,
+      "first_attempt": "browser executable missing before business started",
+      "browser": "isolated Playwright Chromium Headless Shell 156.0.8078.4 (1248)"
+    }
+  },
+  "installation": {
+    "version": "0.14.1",
+    "source_sha256": "8d21347222fe8e0e236685673e65f3e29901c61895233815330178d9fe87e9a0",
+    "source_inputs": 3078,
+    "artifacts": 3133,
+    "signature_verified": true,
+    "icon_matches": true,
+    "installed_path": "/Applications/Hetu.app",
+    "backup_created": false,
+    "atomic_swap": true,
+    "three_indexes_unchanged": true,
+    "previous_parallel_storage_delivery_preserved": true,
+    "scope": "local development-signed installation; no formal release",
+    "parallel_previous_source": "d5585655664cca03d0b6f80e1f7ae9497b1a9683e6efc0649ea85c21326f04c9",
+    "first_baseline_rejection": "old expected source 6c78ec7e correctly rejected newer parallel storage installation; no mutation"
+  },
+  "installed_journeys": {
+    "passed": 2,
+    "cases": [
+      "GUI history, fixed source, responsive dock, preview keyboard and normal exit",
+      "native authentication, account/channel input protection and recovery"
+    ]
+  },
+  "installed_default_cli_discovery": {
+    "connection_version": "0.14.1",
+    "suite_version": "0.3.18",
+    "version_differs": false,
+    "explicit_command_override": false,
+    "registered": true
+  },
+  "normal_profile": {
+    "works_visible": 19,
+    "normal_exit_code": 0,
+    "three_user_indexes_unchanged": true,
+    "scope": "current installed application with normal user profile; no work opened or modified"
+  }
+}

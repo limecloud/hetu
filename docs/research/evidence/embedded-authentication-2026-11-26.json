@@ -1,0 +1,346 @@
+{
+  "date": "2026-11-26",
+  "scope": "embedded Codex native authentication and original identity recovery",
+  "status": "authentication_installed_with_explicit_automation_and_session_loading_limits",
+  "source_files_sha256": {
+    "apps/desktop/src/main/agent/codex-identity.ts": "7e34cf25b486f28e7fd822af89ef2ac367f0212578ce4135911102ef0f11e626",
+    "apps/desktop/src/main/agent/codex-session.ts": "8ccf33295cd973190520f4e025a67892ddba025109760bacf5e62ca76d48766a",
+    "apps/desktop/src/renderer/agent-session.tsx": "13c7cef39dfb67cb42b877972b32f56e2b7d31846bec6b60325157b9dd546694",
+    "apps/desktop/src/renderer/agent-chat.tsx": "c3e93289ed1d5e0f71a73aa463efcc6a9a9c2485354eb433f15a3bb577c238f3",
+    "apps/desktop/tests/codex-authentication.spec.ts": "cd34bed4601b60f115bf8b374413e0d150f9caea886e1afe72600aaf8869280c",
+    "apps/desktop/tests/navigation.ts": "8271808e473b010dc77cbfb7c6852306b4d070cbf6e942423770dbf276850a78"
+  },
+  "implemented": [
+    "Native account/read and config/read projection; no credential copying",
+    "Salted per-session hashes for home, provider and observable account identity",
+    "Provider mode without OpenAI account when requiresOpenaiAuth=false",
+    "Native browser OAuth, concurrent login start coalescing and original URL reuse",
+    "Initialization and identity-change races rechecked before input forwarding",
+    "Authentication failure blocks input, answers and late completion readiness",
+    "Unauthenticated session reopening retains session ID and draft",
+    "Single local authentication notice; no duplicate toast over the draft",
+    "Delayed thread responses verify original identity before reconciling readiness; thread lease uses initialized codexHome"
+  ],
+  "verification": {
+    "agent_unit": {
+      "passed": 98,
+      "failed": 0,
+      "log": "authentication-reconcile-unit.log",
+      "thread_read_identity_race_covered": true
+    },
+    "capability_map_check": true,
+    "skill_format_check": true,
+    "earlier_source_authentication_journey_passed": true,
+    "final_source_journey_complete": true,
+    "packaged_acceptance_complete": false,
+    "installed_acceptance_complete": false,
+    "typescript_check": {
+      "desktop": true,
+      "shared_task_view": true
+    },
+    "documentation_check": {
+      "documents": 92,
+      "mermaid": 121,
+      "errors": []
+    },
+    "skill_local_links": 17,
+    "frozen_frontend_authentication_journey": {
+      "passed": 1,
+      "failed": 0,
+      "source_map_matches": 5,
+      "normal_window_closes": 3,
+      "unauthenticated_session_reopened": true,
+      "original_thread_reopened": true,
+      "model_requests": 0,
+      "core": "previous verified installed package; no domain changes exercised"
+    },
+    "default_app_quit_driver_regression_complete": true,
+    "frozen_surface_recovery": {
+      "passed": 1,
+      "failed": 0,
+      "default_app_quit_reopen": true
+    },
+    "screenshot": {
+      "file": "embedded-authentication-2026-11-26.png",
+      "sha256": "90a9a963a986cd4397c642468bdf94a5471843d7dc8f81994d6d103a67e65bb9",
+      "local_notice_only": true,
+      "reconnect_not_duplicated_during_login": true,
+      "source": "actual installed application; isolated authentication fixture"
+    },
+    "real_provider_and_native_threads": {
+      "account_state": "ready",
+      "account_mode": "provider",
+      "openai_login_required": false,
+      "native_new_resume_and_generation_verified": true,
+      "native_client_preserved": true,
+      "chinese_multiline_paste_verified": true,
+      "model_requests": 0,
+      "full_test_passed": true,
+      "remaining_failure": null,
+      "engine_version": "codex-cli 0.172.0",
+      "platform": "darwin",
+      "arch": "arm64"
+    },
+    "authentication_sequence_diagram": {
+      "source_document": "docs/39-Electron与插件优先重构架构.md",
+      "mermaid_version": "12.3.0",
+      "source_sha256": "52f6d6b49d18c53861b883896f65827edb15c958b1b27ee9d325cd65de47cf22",
+      "svg_sha256": "24cab1ffb24988a9d42b0bd1da34d7afa296f37f2852776c329a4f0a7f51dd7e",
+      "rendered": true,
+      "png_visually_inspected": true
+    },
+    "website_guides": {
+      "local_build_passed": true,
+      "pages": 227,
+      "local_references": 14003,
+      "published": false,
+      "browser_regression_pending": false,
+      "browser_regression": {
+        "passed": 3,
+        "failed": 0,
+        "current_guides_confirmed_by_http": 4,
+        "internal_engineering_routes_remain_404": true
+      }
+    },
+    "first_frozen_package": {
+      "version": "0.14.1",
+      "source_sha256": "2637c7f4eb288951d1b1c400824959e3f198d9ca9030e575965bed90fecc3e92",
+      "source_inputs": 3078,
+      "artifacts": 3133,
+      "signature_verified": true,
+      "icon_matches": true,
+      "frozen_source_verified": true,
+      "current_workspace_changed_paths": [],
+      "current_workspace_new_paths": [],
+      "private_package_paths_excluded": true
+    },
+    "first_frozen_package_journeys": {
+      "native_provider_and_thread_ownership": {
+        "passed": 1,
+        "failed": 0
+      },
+      "fixture_authentication_and_surface_recovery": {
+        "initial_passed": 0,
+        "initial_failed": 2,
+        "diagnostic_followup_passed": 2,
+        "diagnostic_followup_failed": 0
+      },
+      "will_quit_driver_authentication": {
+        "passed": 1,
+        "failed": 0
+      },
+      "latest_reconcile_change_included": false
+    },
+    "latest_identity_reconcile_package_complete": true,
+    "latest_package": {
+      "version": "0.14.1",
+      "source_sha256": "6c78ec7e4d775cbd06e8f7840513b3b9694496cb5d5037a247d5a46b76ee4b81",
+      "source_inputs": 3078,
+      "artifacts": 3133,
+      "signature_verified": true,
+      "icon_matches": true,
+      "current_workspace_changed_paths": []
+    },
+    "latest_package_journeys": {
+      "authentication": {
+        "passed": 1,
+        "failed": 0
+      },
+      "real_provider_and_native_threads": {
+        "passed": 1,
+        "failed": 0
+      },
+      "chat": {
+        "content_assertions_completed": true,
+        "test_failed_at_normal_automated_shutdown": true,
+        "native_close_driver": {
+          "content_assertions_completed": true,
+          "normal_exit_timeout": true
+        }
+      },
+      "surface_recovery": {
+        "recovery_assertions_completed": true,
+        "test_failed_at_normal_automated_shutdown": true,
+        "native_close_driver": {
+          "passed": 1,
+          "failed": 0,
+          "drafts_and_original_thread_reopened": true
+        }
+      },
+      "stdio_workbench": {
+        "complete": true,
+        "passed": 1,
+        "failed": 0,
+        "duration_minutes": 7.2,
+        "all_three_work_types": true,
+        "document_copy_and_reopen_verified": true
+      }
+    },
+    "native_undebugged_shutdown": {
+      "pid": 12214,
+      "exit_code": 0,
+      "debugger_attached": false,
+      "closed_by_native_window_control": true
+    },
+    "native_undebugged_failed_chat_profile_reopen": {
+      "pid": 49070,
+      "exit_code": 0,
+      "debugger_attached": false,
+      "closed_by_native_window_control": true
+    },
+    "detached_debugger_native_probe": {
+      "exit_code": 0,
+      "events": [
+        "before-quit",
+        "will-quit",
+        "quit"
+      ],
+      "used_native_close_button": true
+    },
+    "installed": {
+      "version": "0.14.1",
+      "source_sha256": "6c78ec7e4d775cbd06e8f7840513b3b9694496cb5d5037a247d5a46b76ee4b81",
+      "source_inputs": 3078,
+      "artifacts": 3133,
+      "signature_verified": true,
+      "icon_matches": true,
+      "installed_path": "/Applications/Hetu.app",
+      "installation_actor": "parallel authorized process; actual files independently verified",
+      "backup_created": false,
+      "atomic_swap": true,
+      "three_indexes_unchanged": true,
+      "own_outdated_install_attempt_refused": true
+    },
+    "this_conversation_mcp": {
+      "runtime_version": "0.14.0",
+      "bundled_skill_version": "0.3.13",
+      "execution_mode": "auto",
+      "policy_revision": 1,
+      "catalog_sha256": "4acd859d3aadc9e755ac5daaece0216216fc3a4d73ad2ce98fc291e53f04854d",
+      "source": "actual connected inspect_runtime, narrow inspect_collaboration and execution.get_mode tools",
+      "new_package_session_reloaded": false,
+      "work_content_read_or_modified": false
+    },
+    "installed_path_journeys": {
+      "authentication": {
+        "passed": 1,
+        "failed": 0
+      },
+      "real_native_threads": {
+        "passed": 1,
+        "failed": 0
+      },
+      "source_sha256": "6c78ec7e4d775cbd06e8f7840513b3b9694496cb5d5037a247d5a46b76ee4b81"
+    },
+    "normal_user_profile": {
+      "library_works": 19,
+      "three_indexes_unchanged": true,
+      "actual_installed_executable_verified": true,
+      "version": "0.14.1",
+      "native_close_driver": true,
+      "exit_code": 0
+    },
+    "installed_application_left_running": true
+  },
+  "failures_preserved": [
+    "Initial GUI test launched default TUI; corrected to the actual Open Chat entry",
+    "One transient guard probe EPERM; signal-zero EPERM now means group exists and remains bounded",
+    "Native thread rejection test observed error before transition cleanup; now waits for native rejection receipt",
+    "Later authentication assertions passed but normal desktop shutdown did not complete",
+    "No-session source and previous installed package also showed native shutdown stalls",
+    "One isolated macOS persistence-disabled probe exited normally; this did not establish a product fix",
+    "First package refused stale shared workbench resources; resources regenerated",
+    "Second package refused source changes during compilation; no consistency check bypassed",
+    "Real Codex provider/native thread assertions completed, but normal exit timed out; test remains failed",
+    "Third active-workspace package refused source changes; isolated full build input established",
+    "Full isolated build passed source consistency but lacked workspace-local ws dependencies; cloned local dependencies after verifying unchanged lockfiles, then resumed cached compilation",
+    "Refresh validation found latest parallel storage changes; refused restricted refresh",
+    "A chained shell continued packaging after preparation failed; later snapshot change caused final consistency refusal. This artifact is excluded from installation. Sequential tool calls are now used.",
+    "Task View npm wrapper started redundant build and consumed grep/output flags; stopped own wrapper and invoked Playwright directly",
+    "Direct invocation first used wrong cwd; test root now resolves from import.meta.dirname",
+    "Chat content assertions completed but an old app.close teardown timed out; shared helper trial still had intermittent automated shutdown stalls",
+    "Native UI connection tool could not initialize; PID-specific macOS accessibility closed the isolated undebugged window, supervised exit code was zero",
+    "Public Browser CDP probe is unavailable for Electron persistent context; no product shutdown bypass introduced",
+    "Complete MCP flow exhausted global budget with the copy menu visible; increased only total journey budget to 900 seconds, preserving per-action timeout",
+    "Install baseline changed because parallel process installed same source6c78ec7e; guarded replacement refused before mutation. Verified actual installation against its own manifest and original profile hashes."
+  ],
+  "privacy": {
+    "real_oauth_or_account_change_performed": false,
+    "model_requests": 0,
+    "account_and_provider_changes_tested_with_isolated_fixture": true,
+    "api_key_stable_account_id_limitation": "Only the public mode and provider can be checked when the protocol exposes no stable account identifier."
+  },
+  "raw_artifacts_locator": "/private/tmp/hetu-active-recovery-acceptance.json",
+  "raw_logs": [
+    "identity-unit-stable.log",
+    "authentication-source.log",
+    "authentication-source-second.log",
+    "authentication-source-final.log",
+    "authentication-source-window.log",
+    "authentication-source-isolated.log",
+    "source-exit-probe.log",
+    "installed-old-exit-probe.log",
+    "installed-old-normal-exit-recheck.log",
+    "installed-native-resume-exit-probe.log",
+    "identity-package.log",
+    "identity-package-second.log",
+    "authentication-frozen-acceptance.log",
+    "identity-package-final.log",
+    "authentication-frozen-surface.log",
+    "authentication-frozen-native.log",
+    "identity-frozen-package.log",
+    "authentication-website-build.log",
+    "authentication-sequence-render.log",
+    "authentication-website-tests.log",
+    "identity-frozen-package-final.log",
+    "authentication-packaged.log",
+    "authentication-packaged-diagnostics.log",
+    "authentication-packaged-quit-event.log",
+    "authentication-reconcile-unit.log",
+    "identity-current-package.log",
+    "authentication-final-desktop-types.log",
+    "authentication-final-task-view-types.log",
+    "identity-ready-package.log",
+    "authentication-final-desktop.log",
+    "authentication-final-chat.log",
+    "authentication-final-workbench-direct.log",
+    "authentication-final-workbench-cwd.log",
+    "authentication-final-workbench-budget.log",
+    "native-quit-probe-runtime.log",
+    "cdp-quit-probe.log",
+    "authentication-installed.log",
+    "detached-native-quit-probe-ready.log",
+    "native-chat-quit-probe-runtime.log",
+    "authentication-final-native-close.log",
+    "normal-launch-authentication.log",
+    "authentication-sequence-final-render.log",
+    "authentication-final-docs.log",
+    "authentication-complete-docs.log"
+  ],
+  "remaining": [
+    "Long GUI automated shutdown timeout remains unresolved; content assertions completed, native undebugged window exit and same-bundle real TUI exit separately passed",
+    "This conversation still uses long-running MCP runtime0.14.0 and bundled methods0.3.13; new-session loading not proven",
+    "Actual native OAuth, system IME, complete visual/accessibility and other platforms remain separately gated",
+    "Version commit and deployment of new guides remain outside this completed incremental acceptance"
+  ],
+  "release": {
+    "version": "0.14.1",
+    "new_authentication_package_installed_by_this_task": false,
+    "committed": false,
+    "pushed": false,
+    "website_deployed": false,
+    "same_source_installed_by_parallel_process_and_independently_verified": true
+  },
+  "frozen_full_build": {
+    "source_files": 4457,
+    "node_modules_cloned": true,
+    "workspace_dependency_targets_verified": true,
+    "status": "building",
+    "canonical_path_check": "Normalize /var and /private/var aliases before comparing ownership.",
+    "workspace_local_dependencies_cloned": [
+      "apps/website",
+      "apps/desktop",
+      "packages/plugin-host"
+    ]
+  }
+}

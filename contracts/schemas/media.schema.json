@@ -65,11 +65,15 @@
             "application/ogg",
             "audio/mp4",
             "video/mp4",
-            "video/quicktime"
+            "video/quicktime",
+            "text/vtt"
           ]
         },
         "validation": {
-          "const": "signature_only"
+          "enum": [
+            "signature_only",
+            "utf8_webvtt"
+          ]
         }
       },
       "required": [
@@ -87,7 +91,8 @@
         "schema_version": {
           "enum": [
             "1.0.0",
-            "2.0.0"
+            "2.0.0",
+            "3.0.0"
           ]
         },
         "revision": {
@@ -109,7 +114,8 @@
         "kind": {
           "enum": [
             "music",
-            "visual"
+            "visual",
+            "caption"
           ]
         },
         "created_at": {
@@ -185,7 +191,10 @@
           "if": {
             "properties": {
               "schema_version": {
-                "const": "2.0.0"
+                "enum": [
+                  "2.0.0",
+                  "3.0.0"
+                ]
               }
             }
           },
@@ -199,6 +208,57 @@
               "required": [
                 "work_ref"
               ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "schema_version": {
+                "const": "3.0.0"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "kind": {
+                "const": "caption"
+              },
+              "blob": {
+                "properties": {
+                  "media_type": {
+                    "const": "text/vtt"
+                  },
+                  "validation": {
+                    "const": "utf8_webvtt"
+                  },
+                  "size_bytes": {
+                    "maximum": 1048576
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "music",
+                  "visual"
+                ]
+              },
+              "blob": {
+                "properties": {
+                  "media_type": {
+                    "not": {
+                      "const": "text/vtt"
+                    }
+                  },
+                  "validation": {
+                    "const": "signature_only"
+                  }
+                }
+              }
             }
           }
         }
@@ -684,7 +744,8 @@
         "kind": {
           "enum": [
             "music",
-            "visual"
+            "visual",
+            "caption"
           ]
         },
         "cursor": {

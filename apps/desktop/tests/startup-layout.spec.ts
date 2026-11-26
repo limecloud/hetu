@@ -212,8 +212,9 @@ test("作品首页与文稿共用中性窗口和连续阅读工作面", async ({
         return { fonts, overflow: document.documentElement.scrollWidth > innerWidth, bar: document.querySelector(".workbench-topbar")!.getBoundingClientRect().height };
       });
       // 界面、目录和文稿分别采用共享字号；正文不受旧的界面四档限制。
-      expect(metrics.fonts.every(size => [12, 13, 14, 16, 20].includes(size))).toBe(true);
+      expect(metrics.fonts.every(size => [12, 13, 14, 16, 20, 24].includes(size))).toBe(true);
       await expect(page.locator(".reader, .author-editor")).toHaveCSS("font-size", "16px");
+      await expect(page.locator(".manuscript-title h1")).toHaveCSS("font-size", "24px");
       expect(metrics.overflow).toBe(false);
       expect(metrics.bar).toBe(52);
       await testInfo.attach(`manuscript-${appearance}-${width}`, { body: JSON.stringify(metrics), contentType: "application/json" });

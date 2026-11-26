@@ -18,20 +18,21 @@ export class ProcessSession {
     this.#snapshot={session_id:options.id,client:options.launch.client,title:options.launch.title??engineName(options.launch.client),work_ref:options.work,surface:"tui",state:"idle",messages:[],updated_at:new Date().toISOString(),capabilities:{terminal:true,steer:false,models:false,chat:false}};
   }
   snapshot(includeReplay=true):SessionSnapshot{return {...structuredClone(this.#snapshot),generation:this.#generation,terminal_connected:this.#terminal.connected,terminal_sequence:this.#terminal.sequence,...(includeReplay?{terminal_replay:this.#terminal.replay}:{})};}
-  async load(){if(this.#loaded)return this.snapshot();const saved=await loadRecord(recordPath(this.options.profile,this.options.work,this.options.id),this.options.work,this.options.cwd);if(saved){if(saved.client!==this.options.launch.client)throw Error("终端引擎与原记录不一致。");this.#snapshot={...this.#snapshot,...saved,client:saved.client,state:"idle"};}this.#loaded=true;return this.snapshot();}
+  async load(){if(this.#loaded)return this.snapshot();const saved=await loadRecord(recordPath(this.options.profile,this.options.work,this.options.id),this.options.work,this.options.cwd);if(saved){if(saved.client!==this.options.launch.client)throw Error("终端引擎与原记录不一致。");const {input_generation,request_generation,...projection}=saved;this.#generation=input_generation??Date.now();this.#snapshot={...this.#snapshot,...projection,client:saved.client,state:"idle"};}this.#loaded=true;return this.snapshot();}
   async start(){if(this.#starting)return this.#starting;this.#starting=this.#start();try{return await this.#starting;}finally{this.#starting=undefined;}}
   async #start(){
     if(this.#terminal.connected)return this.snapshot();await this.load();
+    if(!Number.isSafeInteger(this.#generation+1))throw Error("终端输入代次已达上限，已保留原记录。");
     if(!this.#held){await this.#lease.acquire();this.#held=true;}
-    this.#set({state:"starting",error:undefined});++this.#generation;
     try{
+      this.#generation=Math.max(this.#generation+1,Date.now());await this.#save();this.#set({state:"starting",error:undefined});
       const command=await resolveEngine(this.options.launch.client,this.options.machineMcpBinary?path.dirname(this.options.machineMcpBinary):undefined);
       await mkdir(this.options.cwd,{recursive:true,mode:0o700});
       const args:string[]=[];const client=this.options.launch.client;
       if(client==="shell"&&process.platform!=="win32")args.push("-i");
       if(client==="opencode")args.push("--standalone");
       if(client!=="shell"&&this.options.machineMcpBinary&&this.options.machineDirectory&&this.options.machineNodeBinary&&this.options.machineRelay){
-        const business=await prepareBusinessContext({client,cwd:this.options.cwd,binary:this.options.machineMcpBinary,directory:this.options.machineDirectory,work:this.options.work,node:this.options.machineNodeBinary,relay:this.options.machineRelay});
+        const business=await prepareBusinessContext({client,cwd:this.options.cwd,binary:this.options.machineMcpBinary,directory:this.options.machineDirectory,work:this.options.work,node:this.options.machineNodeBinary,relay:this.options.machineRelay,environment:command.env});
         args.push(...business.args);Object.assign(command.env,business.env);
       }
       const generation=this.#generation;
@@ -54,11 +55,11 @@ export class ProcessSession {
     if(Buffer.byteLength(text)>60_000||/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(text))throw Error("创作请求超过预算或包含控制字符。");
     this.#terminal.write("\u001b[200~"+text+"\u001b[201~");return this.updateDraft("");
   }
-  async updateDraft(text:string,refs?:AgentContextRef[],expected?:{surface?:AgentSurface;generation?:number}){if(typeof text!=="string"||text.length>512_000)throw Error("草稿超过保存预算。");if(expected?.generation!==undefined&&expected.generation!==this.#generation)throw Error("旧终端草稿未覆盖当前输入。");this.#set({draft:text,tui_draft:text,draft_version:(this.#snapshot.draft_version??0)+1,...(refs?{context_refs:validateContextRefs(refs)}:{})});await this.#save();return this.snapshot();}
+  async updateDraft(text:string,refs?:AgentContextRef[],expected?:{surface?:AgentSurface;generation?:number}){if(typeof text!=="string"||text.length>512_000)throw Error("草稿超过保存预算。");if(expected?.generation!==undefined&&expected.generation!==this.#generation)throw Error("旧终端草稿未覆盖当前输入。");const contexts=refs===undefined?undefined:validateContextRefs(refs);this.#set({draft:text,tui_draft:text,draft_version:(this.#snapshot.draft_version??0)+1,...(contexts?{context_refs:contexts}:{})});await this.#save();return this.snapshot();}
   async rename(title:string){if(typeof title!=="string"||!title.trim()||title.length>100)throw Error("会话名称需为1～100字。");this.#set({title:title.trim()});await this.#save();return this.snapshot();}
   async switchSurface(surface:AgentSurface){if(surface!=="tui")throw Error("此引擎使用原生终端。");return this.snapshot();}
   async interrupt(){this.#terminal.write("\u0003");return this.snapshot();}
-  async stop(){if(this.#starting)await this.#starting.catch(()=>{});await this.#terminal.close();++this.#generation;if(this.#held){await this.#lease.release();this.#held=false;}this.#set({state:"stopped"});await this.#save();return this.snapshot();}
+  async stop(){if(this.#starting)await this.#starting.catch(()=>{});if(!this.#held&&!this.#terminal.connected&&this.#snapshot.state==="stopped")return this.snapshot();await this.#terminal.close();if(Number.isSafeInteger(this.#generation+1))++this.#generation;this.#set({state:"stopped"});await this.#save();if(this.#held){await this.#lease.release();this.#held=false;}return this.snapshot();}
   async recover(){return this.snapshot();}
   async readTools(){
     const file=path.join(this.options.cwd,"receipts.json");
@@ -69,5 +70,5 @@ export class ProcessSession {
   async send():Promise<SessionSnapshot>{throw Error("请在原生终端中发送。");}
   async respond():Promise<void>{throw Error("请在原生终端中处理请求。");}
   #set(value:Partial<SessionSnapshot>){this.#snapshot={...this.#snapshot,...value,updated_at:new Date().toISOString()};this.options.emit({type:"snapshot",snapshot:this.snapshot()});}
-  async #save(){const record={...this.#snapshot,schema_version:1,cwd:this.options.cwd};this.#saving=this.#saving.then(()=>atomicJson(recordPath(this.options.profile,this.options.work,this.options.id),record));await this.#saving;}
+  async #save(){const record={...this.#snapshot,input_generation:this.#generation,schema_version:1,cwd:this.options.cwd};this.#saving=this.#saving.then(()=>atomicJson(recordPath(this.options.profile,this.options.work,this.options.id),record));await this.#saving;}
 }

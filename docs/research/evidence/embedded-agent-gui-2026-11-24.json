@@ -1,0 +1,708 @@
+{
+  "date": "2026-11-24",
+  "scope": "内嵌GUI会话与可复用TUI/GUI接入经验",
+  "version": "0.14.1",
+  "distribution": "development-source",
+  "skill": {
+    "path": ".agents/skills/hetu-embedded-agent",
+    "files": 4,
+    "validation": "official quick_validate passed; relative links and referenced implementation paths verified",
+    "registered_in": "AGENTS.md"
+  },
+  "implementation": [
+    "native message/tool timeline",
+    "Markdown/GFM with controlled links and no remote image fetching",
+    "copy message/code/tool details",
+    "visible tool failure/unknown and pending requests",
+    "Core-verified result summary",
+    "shared GUI typography/input/scroll preferences",
+    "history batch 60 and DOM window at most 240",
+    "420-message history anchor and stream preservation",
+    "batch history projection without per-item persistence",
+    "skip launcher with missing absolute shebang interpreter",
+    "Windows executable suffix preservation",
+    "PTY helper discovery for source-build and prebuilt layouts",
+    "removable fixed context attachments from Core handoff",
+    "historical revision and sha verification before send",
+    "draft version race protection and message context history",
+    "context errors remain next to input without clearing draft",
+    "existing exact-work task preparation obeys shared auto/confirm",
+    "task working revisions, fixed submissions and public feedback context picker",
+    "retained professional results context picker and stable read action",
+    "empty submission/feedback coverage fixed explicitly instead of expanding at send"
+  ],
+  "validation": {
+    "desktop_build": "passed",
+    "agent_tests": {
+      "passed": 62,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/embedded-agent-20261124/agent-tests-final.log"
+    },
+    "gui_protocol_electron": {
+      "passed": 1,
+      "history_messages": 420,
+      "max_rendered_items": 240,
+      "log": "output/embedded-agent-20261124/gui-window-final.log"
+    },
+    "desktop_handoff_targeted": {
+      "passed": 1,
+      "log": "output/embedded-agent-20261124/gui-window-final.log"
+    },
+    "real_multi_engine_creation": {
+      "passed": 1,
+      "model_turns": 0,
+      "log": "output/embedded-agent-20261124/gui-regression-final.log"
+    },
+    "gui_context_electron": {
+      "passed": 1,
+      "checks": [
+        "fixed source attached and removable",
+        "historical document remains fixed after head change",
+        "actual send prompt uses original revision",
+        "invalid source blocks send and preserves draft",
+        "narrow header with document tabs"
+      ],
+      "log": "output/embedded-agent-20261124/context-e2e-final.log"
+    },
+    "core_machine_routes": {
+      "passed": 12,
+      "log": "output/embedded-agent-20261124/machine-map-tests.log",
+      "coverage": "workspace task close, cover preparation import/list, policy and map"
+    },
+    "existing_work_task": {
+      "passed": 1,
+      "includes_isolated_confirm_child": true,
+      "log": "output/embedded-agent-20261124/stable-task-auto-confirm.log"
+    },
+    "real_gui": {
+      "state": "passed-isolated-short-reference-lifecycle",
+      "source": "output/gui-lifecycle-20261125/private-state.json",
+      "original_failure": "existing exact-work connection cannot prepare creative task",
+      "runtime_fix": "allow fixed creative task preparation for existing precise WorkRef, retain with_business_policy and ownership checks",
+      "evidence": "docs/research/evidence/embedded-gui-business-2026-11-25.json"
+    },
+    "core_full": {
+      "passed": 361,
+      "failed": 0,
+      "skipped": 0,
+      "suites": 59,
+      "log": "output/embedded-agent-20261124/core-full.log"
+    },
+    "core_map_final": {
+      "passed": 1,
+      "log": "output/embedded-agent-20261124/capability-map-final.log"
+    },
+    "electron_final": {
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/embedded-agent-20261124/electron-final.log"
+    },
+    "plugin_host": {
+      "passed": 105,
+      "failed": 0,
+      "skipped": 0,
+      "node": "25.0.0",
+      "log": "output/embedded-agent-20261124/plugin-host-final.log"
+    },
+    "cli_launcher": {
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/embedded-agent-20261124/cli-launcher-final.log"
+    },
+    "packaged_agent_slices": {
+      "passed": 4,
+      "coverage": "business, GUI fixed context/history, directory, five-engine creation",
+      "log": "output/embedded-agent-20261124/package-e2e-final.log",
+      "other_test_in_same_run": "obsolete author/plugin workflow failed; current workflow verified separately"
+    },
+    "packaged_author_plugin": {
+      "passed": 1,
+      "log": "output/embedded-agent-20261124/package-smoke-final.log",
+      "coverage": [
+        "bundled artifact hashes and development signature",
+        "fixed manuscript and candidate",
+        "stable CLI/MCP reread",
+        "image audio video decoding and playback",
+        "plugin author save and arrange",
+        "headless plugin reread and fixed sources",
+        "application reopen"
+      ]
+    },
+    "desktop_debug_full": {
+      "passed": 58,
+      "failed": 18,
+      "skipped": 12,
+      "node": "25.0.0",
+      "log": "output/embedded-agent-20261124/full-node25.log",
+      "scope": "debug run loaded tests before navigation and visual fixes; not final verification"
+    },
+    "desktop_failure_followup": {
+      "passed": 19,
+      "failed": 2,
+      "log": "output/embedded-agent-20261124/failures-current.log",
+      "remaining": "management async completion and settings visual; fixed and verified in later targeted runs"
+    },
+    "management_followup": {
+      "passed": 1,
+      "failed": 0,
+      "log": "output/embedded-agent-20261124/settings-detail.log",
+      "scope": "confirm decision, cross-work isolation, stale state rejection, original operation recovery, headless exact Agent execution and revocation"
+    },
+    "settings_visual_followup": {
+      "passed": 2,
+      "failed": 0,
+      "log": "output/embedded-agent-20261124/settings-verified.log",
+      "metrics": "output/settings-native-20261116/round-20261125-final/metrics.json",
+      "scope": "six categories, light/dark, narrow, dialogs, keyboard, immediate save, reopen, settings window restrictions and original save recovery",
+      "control_font_sizes": [
+        12.5,
+        13,
+        14,
+        15
+      ],
+      "font_previews": "independent reading/chat/code/terminal sizes are checked against their actual preferences"
+    },
+    "rename_anchor": {
+      "regression_log": "output/embedded-agent-20261124/failures-current.log",
+      "before_log": "output/embedded-agent-20261124/rename-before.log",
+      "before_delta_px": 2000,
+      "after": "same-content rename preserves exact position under the real new revision; reopen restores it; changed-content revision starts at top",
+      "state": "passed"
+    },
+    "shared_resources": {
+      "build": "passed",
+      "log": "output/embedded-agent-20261124/task-view-build.log",
+      "rust_binaries": "output/embedded-agent-20261124/bins-current.log",
+      "desktop": "output/embedded-agent-20261124/desktop-synced-build.log",
+      "scope": "generated shared resources and rebuilt consumers; MCP runtime regression tracked separately"
+    },
+    "desktop_clean_full": {
+      "state": "finished-baseline",
+      "node": "25.0.0",
+      "log": "output/embedded-agent-20261124/full-clean.log",
+      "output": "output/embedded-agent-20261124/full-clean-results",
+      "passed": 76,
+      "failed": 1,
+      "skipped": 11,
+      "scope": "before task/professional context increment; native IME test stopped on obsolete profile navigation"
+    },
+    "native_ime_followup": {
+      "state": "passed",
+      "log": "output/embedded-agent-20261124/source-context-e2e.log",
+      "checks": [
+        "actual Sogou composition",
+        "foreground application PID",
+        "saved Core text readback"
+      ],
+      "model_turns": 0
+    },
+    "agent_with_source_context": {
+      "passed": 64,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/embedded-agent-20261124/agent-with-source-context.log"
+    },
+    "core_with_retained_results": {
+      "passed": 362,
+      "failed": 0,
+      "ignored": 0,
+      "suites": 60,
+      "log": "output/embedded-agent-20261124/core-with-retained-results.log"
+    },
+    "full_source_context_gui": {
+      "passed": 1,
+      "failed": 0,
+      "log": "output/embedded-agent-20261124/source-context-final.log",
+      "scope": [
+        "working revision and public feedback attached through visible picker",
+        "submission/working/feedback heads advanced without changing original attachment",
+        "professional result attached then plugin disabled",
+        "stable MCP reads original professional result without active plugin",
+        "old source hashes in sent message; no replacement with newest heads",
+        "draft/input/history regressions preserved"
+      ]
+    },
+    "source_context_followup": {
+      "passed": 8,
+      "failed": 1,
+      "log": "output/embedded-agent-20261124/source-context-e2e.log",
+      "failure": "test fixture saved plugin objects without installing corresponding package; fixed and GUI retest passed"
+    },
+    "retained_result_contract": {
+      "action": "hetu.plugin_results.get",
+      "state": "passed",
+      "log": "output/embedded-agent-20261124/source-context-core-fixed.log",
+      "checks": [
+        "no plugin runtime required",
+        "fixed historical revision",
+        "precise work connection",
+        "cross-work denial",
+        "wrong Owner denial",
+        "missing revision denial",
+        "revocation denial"
+      ]
+    },
+    "source_context_unit": {
+      "passed": 5,
+      "failed": 0,
+      "log": "output/embedded-agent-20261124/source-context-unit-final.log",
+      "includes_empty_coverage_pin": true
+    }
+  },
+  "prior_failures": [
+    {
+      "kind": "history-anchor",
+      "delta_px": 276,
+      "resolution": "fixed window end and stable anchor; Electron regression passed",
+      "record": "output/embedded-agent-20261124/gui-transcript-first-failure.json"
+    },
+    {
+      "kind": "invalid-launcher",
+      "resolution": "skip executable script with missing absolute interpreter; real creation and unit regressions passed",
+      "trace": "output/embedded-agent-20261124/launch-first-trace.zip"
+    },
+    {
+      "kind": "resource-handoff-click",
+      "status": "fixed-deterministic-delayed-list-regression-passed",
+      "observation": "pointerdown/up target disabled; no click or host IPC; background list shares action busy state",
+      "trace": "output/embedded-agent-20261124/session-handoff-first-trace.zip",
+      "reproduction": "output/embedded-agent-20261124/handoff-loading-before.log",
+      "fix": "separate list loading/error from action busy/error while retaining data refresh",
+      "regression_log": "output/embedded-agent-20261124/recovery-node25.log"
+    },
+    {
+      "kind": "gui-context-fixture",
+      "observation": "test attempted replacing an unsaved local draft through IPC; local edit protection retained user input",
+      "resolution": "save via the actual input before injecting the damaged reference; regression passed"
+    },
+    {
+      "kind": "existing-work-prepare",
+      "state": "fixed-and-real-gui-retest-passed",
+      "action": "hetu.creative_tasks.prepare",
+      "error": "forbidden",
+      "log": "output/embedded-agent-20261124/gui-live-stage5.log",
+      "note": "real GUI readonly succeeded; no task or candidate was written by the failed request"
+    },
+    {
+      "kind": "adoption-test-async-observation",
+      "observation": "test read old document immediately after confirmation; original operation completed successfully afterward",
+      "resolution": "wait for completion receipt; resume by matching existing adoption and candidate without repeating the decision",
+      "first_log": "output/embedded-agent-20261124/gui-live-lifecycle.log",
+      "resume_log": "output/embedded-agent-20261124/gui-live-lifecycle-resume.log"
+    },
+    {
+      "kind": "package-test-prerequisites",
+      "category": "test-harness",
+      "resolution": "resolved executable from CFBundleExecutable; built app-server plugin_fixture",
+      "log": "output/embedded-agent-20261124/package-e2e-first.log"
+    },
+    {
+      "kind": "package-test-obsolete-entry",
+      "category": "test-harness",
+      "resolution": "current exact-work handoff service and actual profile plugin entry; author/plugin journey passed",
+      "logs": [
+        "output/embedded-agent-20261124/package-e2e-obsolete-flow.log",
+        "output/embedded-agent-20261124/package-smoke-navigation-first.log",
+        "output/embedded-agent-20261124/package-smoke-profile-entry.log"
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "output/embedded-agent-20261124/window-final-gui-light.png",
+      "sha256": "800dcbcf7dab13c7afa3e5d476d86eea814712746fa9bcbf1c95c44ff3b79cd9"
+    },
+    {
+      "path": "output/embedded-agent-20261124/window-final-gui-dark-narrow.png",
+      "sha256": "ba7a2a3f148ce339c77ac5b81e2eed2e79419d81710f01b72dc5660e014a9ae1"
+    },
+    {
+      "path": "output/embedded-agent-20261124/packaged-relationships.png",
+      "sha256": "cbb366c2853b9edb5a9c79079b93c317d3d75fed6523c4f4c3a88e6deb243d9b",
+      "scope": "isolated bundled plugin reopen"
+    }
+  ],
+  "source_files": [
+    {
+      "path": "apps/desktop/src/renderer/agent-chat.tsx",
+      "sha256": "8bad8f5d1943994e24dc66e159764832d7f3f1fd619f789c202cdc8ac7e35e0e"
+    },
+    {
+      "path": "apps/desktop/src/renderer/agent-chat.css",
+      "sha256": "bdf31211000b9dbb4511e9b5a7bc622fa7fe56ac3d7a44ae0ab6a0b2b360fe3c"
+    },
+    {
+      "path": "apps/desktop/src/session-transcript.ts",
+      "sha256": "039d9e9b8e6b179b24c47e72a542c2a334cd72c452bc27547428b6d7cb590631"
+    },
+    {
+      "path": "apps/desktop/src/main/agent/codex-session.ts",
+      "sha256": "a514992e02b40d6cce794c24883e5fdf338eb8486f6b0fd3cf87be7e452497b3"
+    },
+    {
+      "path": "apps/desktop/src/main/agent/command-resolution.ts",
+      "sha256": "9beb373c25d2605d5830c38e5c83baf1ac353bd1b0c70a88ae7ea7301536ec5b"
+    },
+    {
+      "path": "apps/desktop/scripts/pty-helper.mjs",
+      "sha256": "46d486fcefac1fe1b0e1a9edc5b9b421da9f9cefbe71beebe6b92ba885013249"
+    }
+  ],
+  "limits": [
+    "GUI protocol fixture is not a real model creativity or tool execution validation",
+    "multi-engine creation submits no model turns",
+    "no installation or public release in this slice",
+    "Linux helper layout and Windows suffix checks are simulated on macOS, not native platform E2E",
+    "full visual reference, system IME and VoiceOver remain independent requirements",
+    "real GUI lifecycle covers one isolated short Chinese chapter, with QA adoption rather than actual author approval",
+    "task and retained professional sources verified locally; full professional composition and cross-entry long journeys remain separate"
+  ],
+  "followup_date": "2026-11-25",
+  "followup_source_files": [
+    {
+      "path": "apps/desktop/src/renderer/agent-chat.tsx",
+      "sha256": "dff9237e27baca7b232fa29fa63473127c369c20dbaf3a020f9c1595e6ee9a00"
+    },
+    {
+      "path": "apps/desktop/src/renderer/agent-chat.css",
+      "sha256": "2e438b160909e5742f1b456b0c8ed108675d330888d6cdc3cf4cd0f87466a1e1"
+    },
+    {
+      "path": "apps/desktop/src/main/agent/fixed-context.ts",
+      "sha256": "af37c42a7a8f422357fb7d868ef924956d7c9bfabc683b9a68ea4ce661ccf2d1"
+    },
+    {
+      "path": "apps/desktop/src/main/agent/codex-session.ts",
+      "sha256": "7c87b8d202c4e996309f1fb824724e663d7a7c03132fd0eb739d1f12a12c949b"
+    },
+    {
+      "path": "apps/desktop/src/main/main.ts",
+      "sha256": "20b38dc1bb11098aa1e9dad7bd98e40c51d8b1a726bf2f28f92fdd511a1488ab"
+    },
+    {
+      "path": "apps/desktop/tests/agent-gui-live.spec.ts",
+      "sha256": "467f4db88c9735a70de456eda0ad1b7fcadef2806f82174b9a154253da9a8dce"
+    },
+    {
+      "path": "core/src/collaboration/authoring.rs",
+      "sha256": "b16c23dc0fc9053db347a800240c54f42dbba6cccb9a3378806253a823bca2ad"
+    },
+    {
+      "path": "core/tests/stable_task_preparation.rs",
+      "sha256": "3a7464208f3576d1d320a68b5fec05c8fcdf46c814bb4e4d0e2ec17e07c351cb"
+    }
+  ],
+  "followup_package": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "version": "0.14.1",
+    "source_sha256": "321e56e9f6c9df035647c8b25242b080920d9516e17aa71d0c48993372714d90",
+    "source_inputs": 2996,
+    "artifact_entries": 3135,
+    "manifest": "output/embedded-agent-20261124/package/hetu-dev-f7JRmN/manifest.json",
+    "manifest_sha256": "7309bab2803c6fab1981244b5702256633886c85ae8c884f95144d66eb5d28bc",
+    "source_matches_current": false,
+    "signing": "ad-hoc-development",
+    "installed": false,
+    "production_verified": false,
+    "source_verified_at_packaging": true,
+    "later_source_changes": [
+      "apps/desktop/src/renderer/resources.tsx",
+      "apps/desktop/src/renderer/artwork.tsx",
+      "apps/desktop/src/renderer/plugin-results.tsx",
+      "apps/desktop/src/renderer/versions.tsx",
+      "apps/desktop/src/renderer/document-rename.tsx",
+      "apps/desktop/src/renderer/documents.tsx",
+      "apps/desktop/src/renderer/settings.css"
+    ]
+  },
+  "resource_followup": {
+    "source_files": [
+      {
+        "path": "apps/desktop/src/renderer/resources.tsx",
+        "sha256": "76a0edd394591475af214b48ef3a312222df5a4646e1cbe5d46a7da39975a45d"
+      },
+      {
+        "path": "apps/desktop/src/renderer/artwork.tsx",
+        "sha256": "091b007121b07fc8f6adb4aa6e8cbf0d667bd9ab3feac4e03349e677c643c37d"
+      },
+      {
+        "path": "apps/desktop/src/renderer/plugin-results.tsx",
+        "sha256": "c9cb4250f75131e89b92a46fd6d00bfb565039837bd753a3284a8cb963d42dd1"
+      },
+      {
+        "path": "apps/desktop/src/renderer/versions.tsx",
+        "sha256": "c96c35bded1cd11a3ee7e14ebd1d7f826baff46d3a01ace9d740e261bd6adeeb"
+      },
+      {
+        "path": "apps/desktop/src/renderer/document-rename.tsx",
+        "sha256": "12d66bb413c9cda9de8301bb2eeeccd3b27a95995f9bd49ac0ae0502c9a6af8d"
+      },
+      {
+        "path": "apps/desktop/src/renderer/documents.tsx",
+        "sha256": "223d6b37afa4d87c5827283f21d0371c2334c9ca571bdc78cd9bef11a8123a48"
+      }
+    ],
+    "build_log": "output/embedded-agent-20261124/desktop-build-resource-fix.log",
+    "negative_reproduction": "output/embedded-agent-20261124/handoff-loading-before.log",
+    "full_desktop_run": {
+      "state": "interrupted-for-failure-investigation",
+      "log": "output/embedded-agent-20261124/full-desktop.log",
+      "note": "not a full-suite pass; known failures are being investigated"
+    },
+    "regression_state": "passed-delay-independent-handoff",
+    "regression_log": "output/embedded-agent-20261124/recovery-node25.log",
+    "other_tests": "7 of 8 passed; context menu later assertion investigated separately; not a full suite pass"
+  },
+  "document_rename_followup": {
+    "cause": "rename creates revision; loaded selected document retained pre-rename metadata and overrode current directory reference",
+    "fix": "consume exact rename receipt only when loaded identity and base revision match; preserve text and reading position",
+    "regression": "rename, updated visible heading and immediate copy passed; same test later library-menu assertion remains separate",
+    "log": "output/embedded-agent-20261124/recovery-node25.log",
+    "reading_position": {
+      "state": "passed-negative-reproduction-and-long-document-regression",
+      "source": "apps/desktop/src/renderer/documents.tsx",
+      "test": "apps/desktop/tests/reading-state.spec.ts",
+      "contract": "docs/10-原生客户端与交互设计.md",
+      "reason": "new revision identity requires exact same-content anchor capture; different content remains isolated",
+      "negative_log": "output/embedded-agent-20261124/rename-before.log",
+      "regression_log": "output/embedded-agent-20261124/failures-current.log"
+    }
+  },
+  "full_node25": {
+    "state": "finished-debug-run",
+    "log": "output/embedded-agent-20261124/full-node25.log",
+    "cases": 88,
+    "note": "runtime includes resource and rename metadata fixes; exact rename anchor followup has not been rebuilt; legacy navigation preconditions being corrected before final clean run",
+    "passed": 58,
+    "failed": 18,
+    "skipped": 12
+  },
+  "frozen_baseline_20261125": {
+    "desktop": {
+      "passed": 76,
+      "failed": 1,
+      "skipped": 11,
+      "cases": 88,
+      "log": "output/embedded-agent-20261124/desktop-frozen.log",
+      "failure": "new-adoption: edit tab accepted while episode read was in flight; load default restored reading mode",
+      "scope": "before catalog, engine-label and loading-boundary followup"
+    },
+    "mcp": {
+      "passed": 76,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/embedded-agent-20261124/mcp-frozen.log",
+      "transports": [
+        "stdio",
+        "official Codex CLI 0.172.0 App Server"
+      ],
+      "workbench_sha256": "033f9dddd6b4d479b4c9fc6bb393fd2facb9671ce2719e527d5aa2b9ba975c2d",
+      "model_turns": 0
+    },
+    "source_context_and_native_ime": {
+      "passed": 2,
+      "failed": 0,
+      "log": "output/embedded-agent-20261124/source-frozen.log"
+    },
+    "plugin_host": {
+      "passed": 105,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/embedded-agent-20261124/plugin-catalog-followup.log"
+    },
+    "episode_loading_negative": {
+      "state": "reproduced-enabled-control-during-delayed-read",
+      "log": "output/embedded-agent-20261124/episode-loading-negative-2.log",
+      "first_harness_failure": "output/embedded-agent-20261124/episode-loading-negative.log"
+    },
+    "performance": {
+      "han_characters": 100000,
+      "opened_ms": 2658.606291,
+      "p95_ms": 29.2,
+      "formatted_p95_ms": 27.9,
+      "styled_p95_ms": 30,
+      "rendered_lines": 23,
+      "scope": "local Electron, concurrent test workload, not cross-device commitment"
+    }
+  },
+  "catalog_and_loading_followup": {
+    "date": "2026-11-25",
+    "desktop": {
+      "passed": 6,
+      "failed": 0,
+      "log": "output/embedded-agent-20261124/catalog-desktop.log",
+      "scope": [
+        "actual engine preview label",
+        "fixed GUI contexts and ready-state screenshot",
+        "plugin lifecycle",
+        "delayed episode load controls",
+        "original new-adoption recovery",
+        "screenplay edit/save"
+      ]
+    },
+    "partial_execution": {
+      "passed": 1,
+      "failed": 0,
+      "log": "output/embedded-agent-20261124/execution-partial-final.log",
+      "first_harness_failure": "output/embedded-agent-20261124/execution-partial.log",
+      "checks": [
+        "shared confirm policy",
+        "two-step batch",
+        "first action succeeded",
+        "second action revision conflict",
+        "stable MCP reopened",
+        "CLI plan reread",
+        "bound MCP reread",
+        "desktop same-plan recovery",
+        "successful revision unchanged",
+        "changed plan sha rejected",
+        "same key different input rejected"
+      ]
+    },
+    "mcp_first": {
+      "failed": 1,
+      "interrupted": 1,
+      "log": "output/embedded-agent-20261124/catalog-mcp.log",
+      "cause": "open MCP workbench did not refresh external installation changes before subsequent UI requests",
+      "fix": "metadata-gated projection refresh at dispatch, original package cleanup and shared retained Owner inventory"
+    },
+    "mcp_final": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/embedded-agent-20261124/catalog-live-mcp.log",
+      "transports": [
+        "stdio",
+        "official Codex CLI 0.172.0"
+      ],
+      "checks": [
+        "external uninstall reflected in original panel on next request",
+        "shared retained Owner inventory",
+        "no enable/disable controls for removed package",
+        "fixed object read and generic export after uninstall",
+        "old contributions removed",
+        "full original shared-workbench checks retained"
+      ]
+    },
+    "professional_composition": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/embedded-agent-20261124/professional-composition-final.log",
+      "test": "packages/plugin-host/tests/creative-composition.test.ts",
+      "checks": [
+        "actual capability discovery with fixed summary pagination",
+        "same formal document through two packages",
+        "independent planning objects with same source revision",
+        "actual professional arrange action",
+        "formal directory and manuscript unchanged by planning",
+        "uninstalled capability invocation rejected",
+        "historical result and source preserved after uninstall",
+        "basic writing through shared execution continues",
+        "old manuscript revision remains readable",
+        "stable client tool catalog unchanged"
+      ],
+      "harness_failures": [
+        "output/embedded-agent-20261124/professional-composition.log",
+        "output/embedded-agent-20261124/professional-composition-schema.log",
+        "output/embedded-agent-20261124/professional-composition-projection.log",
+        "output/embedded-agent-20261124/professional-composition-fixed.log"
+      ],
+      "scope": "two bundled example packages; no model creativity or all professional plugins claim"
+    },
+    "source_files": [
+      {
+        "path": "packages/plugin-host/src/installations.ts",
+        "sha256": "b43b10d68bfd1402bec208b8d88a907d79c7495455e7b6ff2bdb222e800dd3c1"
+      },
+      {
+        "path": "apps/desktop/src/main/mcp-workbench.ts",
+        "sha256": "34776535930e5c4f92cf0a921f27074efd2a0cca82b37e0ea3711d154ff1d182"
+      },
+      {
+        "path": "apps/desktop/src/renderer/agent-preview-tabs.tsx",
+        "sha256": "b242bd8739c8eb52e7b8d9c19e2b8a75a01341e08ff6d991250cdd39aa4fe81c"
+      },
+      {
+        "path": "apps/desktop/src/renderer/documents.tsx",
+        "sha256": "e86719263b90eb86de678b5b43a7ee36dcec17ed6c7e426d81cf8be2c4307992"
+      },
+      {
+        "path": "apps/desktop/tests/execution-mode.spec.ts",
+        "sha256": "0b25d4293b65dcb4df923327e6a0601b3bea86fe7a7764d76c93ca98a5f1043b"
+      },
+      {
+        "path": "packages/plugin-host/tests/creative-composition.test.ts",
+        "sha256": "3fb349b93dde657d2fe27d28cec48b651f046ba5d2d4a0b3190a28ca3710dbe7"
+      }
+    ]
+  },
+  "latest_package": {
+    "version": "0.14.1",
+    "source_sha256": "d1604658bb9c38abc8fca0dcd03b7e289e7c7fb79e7e108547dc5122dc8cb4c9",
+    "source_inputs": 2998,
+    "artifact_entries": 3720,
+    "manifest": "output/embedded-agent-20261124/package-final/hetu-dev-BhXrEa/manifest.json",
+    "source_matches_current": false,
+    "rust_profile": "release",
+    "signing": "ad-hoc-development",
+    "platform": "darwin",
+    "arch": "arm64",
+    "qa": {
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/embedded-agent-20261124/package-final-qa.log"
+    },
+    "installation": {
+      "target": "/Applications/Hetu.app",
+      "version": "0.14.1",
+      "source_sha256": "d1604658bb9c38abc8fca0dcd03b7e289e7c7fb79e7e108547dc5122dc8cb4c9",
+      "manifest": "output/embedded-agent-20261124/package-final/hetu-dev-BhXrEa/manifest.json",
+      "source_items": 2998,
+      "artifact_items": 3720,
+      "installed_items_verified": 3132,
+      "signing": "ad-hoc-development",
+      "rust_profile": "release",
+      "atomic_swap": true,
+      "old_app_backup_created": false,
+      "profile_unchanged": {
+        "creative-library.json": true,
+        "LocalSettings/settings.json": true,
+        "agent-sessions/index/selection.json": true
+      },
+      "external_mcp_processes_terminated": false,
+      "production_verified": false
+    },
+    "public_release": false,
+    "installed_qa": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "isolated_profile": true,
+      "log": "output/embedded-agent-20261124/installed-final-qa.log"
+    },
+    "normal_launch": {
+      "runtime": {
+        "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+        "app": "/Applications/Hetu.app/Contents/Resources/app",
+        "profile": "/Users/coso/Library/Application Support/Hetu",
+        "version": "0.14.1",
+        "resources": "/Applications/Hetu.app/Contents/Resources"
+      },
+      "library_works": 19,
+      "profile_unchanged": {
+        "creative-library.json": true,
+        "LocalSettings/settings.json": true,
+        "agent-sessions/index/selection.json": true
+      },
+      "model_turn_started": false,
+      "screenshot": "output/embedded-agent-20261124/installed-normal-library.png"
+    },
+    "superseded_by": "docs/research/evidence/workspace-plugin-execution-2026-11-25.json"
+  }
+}

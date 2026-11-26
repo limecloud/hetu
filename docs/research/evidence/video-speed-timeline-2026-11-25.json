@@ -1,0 +1,141 @@
+{
+  "scope": "固定剪辑的MLT原生变速工程、真实渲染及稳定MCP新成果接续",
+  "owner_repository": "wordflowlab/hetu-video-studio",
+  "owner_progress": "docs/08-实施计划与验收记录.md",
+  "owner_evidence": "docs/research/speed-timeline-2026-11-25.json",
+  "owner_evidence_sha256": "577ed105c4c339f06eaa1e746aa9a1b4876b95eb52035f6d05641195b6112315",
+  "runtime": {
+    "core_version": "hetu 0.14.1",
+    "host": "/Applications/Hetu.app",
+    "platform": "macOS arm64",
+    "node": "25.0.0",
+    "shotcut": "26.11.15",
+    "mlt": "7.43.0",
+    "model_turns": 0
+  },
+  "architecture": {
+    "owner": "org.wordflowlab.video-studio",
+    "new_core_actions": 0,
+    "new_professional_actions": 0,
+    "new_storage": false,
+    "native_target": "chain + timeremap",
+    "otio_constant_speed_preserved": true,
+    "output_profile_fixed": true,
+    "original_rational_timing_preserved": true,
+    "new_render_uses_original_media_owner": true
+  },
+  "package": {
+    "version": "0.1.0",
+    "sha256": "9a8c07b253a78e7a1d4004a51421cde4be5e763012cc6d0957fdf63413043ad3",
+    "development_only": true,
+    "global_install_changed": false,
+    "published": false,
+    "archive": {
+      "path": "output/speed-timeline-20261125/video-studio-speed-development.tgz",
+      "sha256": "5676884d4d685bbe33338f104a79b8565a9f27e70cfc6f2332109ace439c2a26",
+      "files": 96,
+      "matches_tested_package_bytes": true
+    }
+  },
+  "validation": {
+    "mlt": {
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0,
+      "checks": [
+        "严格快慢放源帧号",
+        "首中尾空隙与总帧数",
+        "变频音频与音高补偿",
+        "有理数NTSC帧率及速度",
+        "相对媒体迁移和原路径不可用",
+        "接收方修改原生时间映射后再次渲染",
+        "0.1及10倍音频无静音帧",
+        "不支持音频速度及帧格和整数边界拒绝"
+      ]
+    },
+    "typescript_unit": {
+      "passed": 36,
+      "failed": 0
+    },
+    "typecheck": "passed",
+    "build": "passed",
+    "otio_regression": {
+      "passed": 20,
+      "failed": 0
+    },
+    "media_tools": {
+      "passed": 12,
+      "failed": 0
+    },
+    "installed_mcp_speed": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "render": {
+        "frames": 110,
+        "duration_seconds": 4.416,
+        "fast_frequency": 443.3333333333333,
+        "slow_frequency": 220,
+        "source_bytes_verified": true,
+        "fixed_refs_verified": true,
+        "relative_media_verified": true,
+        "mlt_render_verified": true,
+        "gui_verified": false
+      },
+      "archive_sha256": "3d8f12dbd1d1420c81c05760781ed7e3ba5f3735d49ae5657265e3f206633d7a",
+      "rendered_media_sha256": "b7f1171bf25ff48c03061fcef7e0702c52c54d1e310afa3c4655d1b1bd905fa7",
+      "same_key_verified": true,
+      "original_edit_preserved": true,
+      "original_revision_preserved": true,
+      "cli_reread_verified": true,
+      "lifecycle_verified": true
+    },
+    "installed_mcp_regression": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "professional_actions": 22,
+      "package_sha256": "9a8c07b253a78e7a1d4004a51421cde4be5e763012cc6d0957fdf63413043ad3"
+    },
+    "gui": {
+      "status": "not_verified",
+      "application_log_recorded_open": true,
+      "computer_use_errors": [
+        "timeoutReached",
+        "cgWindowNotFound"
+      ],
+      "edited_or_saved_by_ui": false,
+      "read_only_mount_ejected": true,
+      "isolated_processes_stopped": true,
+      "last_process_cleanup_exit": 137,
+      "normal_ui_exit_verified": false
+    }
+  },
+  "boundaries": [
+    "原生工程GUI打开、编辑和另存未验收",
+    "音频0.1～10倍之外目标明确拒绝，完整音频制作目标保留",
+    "当前MCP常驻进程未重载，不声称已发现开发包",
+    "原生字幕轨、真实对白听审、影片质量和完整一集仍需独立验收",
+    "Windows／Linux与正式发行未执行",
+    "未改作者全局插件、覆盖宿主、提交推送或公开部署"
+  ],
+  "complete_product": false,
+  "documentation_check": {
+    "documents": 92,
+    "local_links": 1575,
+    "fragment_links": 426,
+    "traceability": {
+      "FR": 44,
+      "US": 65,
+      "UC": 58,
+      "E2E": 34,
+      "AC": 74
+    },
+    "id_references": 1391,
+    "json_examples": 11,
+    "schemas": 2,
+    "mermaid": 118,
+    "errors": []
+  },
+  "documentation_check_log_sha256": "8fbfdf812b97fed8297a7d233c461f2481b62fb437adc3e528853b55374329ff"
+}

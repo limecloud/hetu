@@ -185,7 +185,7 @@ impl Kernel {
             return Ok(false);
         }
         for source in input["input_refs"].as_array().into_iter().flatten() {
-            if source["kind"] == "blueprint" || source["kind"] == "plugin_object" {
+            if matches!(source["kind"].as_str(), Some("blueprint" | "plugin_object" | "outline")) {
                 if source["work_ref"] != *reference {
                     return Ok(false);
                 }

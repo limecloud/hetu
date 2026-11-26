@@ -1,0 +1,156 @@
+{
+  "date": "2026-11-26",
+  "thread_id": "01a214be-17fe-7b52-9792-302034576f6c",
+  "plan_ref": {
+    "plan_id": "execution_93603bb9-38f2-4b61-8ac2-b258d5339db1",
+    "sha256": "cff3efd327f71dca5d3ee3c88097d164a4b80d599f07aa9059850883084b2de0"
+  },
+  "executions": 1,
+  "model_rounds": 4,
+  "resource_id": "resource_5675b2d6-0f70-4561-b8ba-b30bdb90bc42",
+  "resource_revision": 1,
+  "sha256": "a4335a12026b06a827e5892f8a2d9be09ad8d32fdc4f7d428171d8c22c544a81",
+  "unknown_tool_preserved": true,
+  "draft_preserved": true,
+  "desktop_reopened": true,
+  "stale_draft_rejected": true,
+  "original_documents_unchanged": true,
+  "no_task_created": true,
+  "result_opened": true,
+  "verifications": [
+    {
+      "stage": "source",
+      "runtime": {
+        "version": "0.14.1",
+        "electron": "42.11.18"
+      },
+      "passed": true,
+      "disconnected_send_guard": true
+    },
+    {
+      "stage": "packaged",
+      "runtime": {
+        "version": "0.14.1",
+        "electron": "42.11.18"
+      },
+      "passed": true,
+      "disconnected_send_guard": true
+    },
+    {
+      "stage": "installed",
+      "runtime": {
+        "version": "0.14.1",
+        "electron": "42.11.18"
+      },
+      "passed": true,
+      "disconnected_send_guard": true
+    }
+  ],
+  "limits": [
+    "isolated real model and engine process-group crash after committed Core plan",
+    "desktop was closed normally and reopened after engine recovery; whole-desktop crash is separate",
+    "not authentication, system IME, creative quality or cross-platform validation"
+  ],
+  "original_operation_reread": true,
+  "initial_installed_baseline": {
+    "version": "0.14.1",
+    "source_sha256": "699b154bdaf1aeeea9594aa39e1b6bdfba80b50a1eea75f5fe39a47f22182022",
+    "inflight_engine_crash_recovery": true,
+    "disconnected_send_still_enabled": true,
+    "screenshot": "output/gui-crash-20261126/engine-crashed-unknown.png"
+  },
+  "first_failures": [
+    "test resource reader supplied unsupported work_ref; actual first save completed, engine closed normally before crash injection; preserved as prior case",
+    "independent fault sample then exercised actual SIGKILL after committed Core success with receipt held",
+    "initial model queried execution-owned operation through legacy management namespace and was refused; later read-only round used original execution route and verified full receipt"
+  ],
+  "checks": {
+    "agent_unit": {
+      "passed": 86,
+      "failed": 0
+    },
+    "source_chat_creation": {
+      "passed": 2,
+      "failed": 0
+    },
+    "source_surface_guard": {
+      "passed": 1,
+      "failed": 0
+    },
+    "source_live_guard": {
+      "passed": 1,
+      "failed": 0,
+      "model_requests": 0
+    },
+    "mcp_stdio": {
+      "passed": 42,
+      "failed": 0
+    },
+    "packaged_desktop": {
+      "passed": 3,
+      "failed": 0
+    },
+    "packaged_mcp": {
+      "passed": 1,
+      "failed": 0
+    },
+    "installed_desktop": {
+      "passed": 3,
+      "failed": 0
+    },
+    "installed_confirm_compatibility": {
+      "passed": 1,
+      "failed": 0,
+      "new_model_requests": 0
+    },
+    "diagram": {
+      "rendered": true,
+      "visual_checked": true
+    }
+  },
+  "package": {
+    "source_sha256": "fbee9b1c29f4333f595b84bef48ccc48b817b7aad4dc11ab79286d59db5cf225",
+    "source_inputs": 3071,
+    "artifacts_verified": 3132,
+    "version": "0.14.1",
+    "optimized": true,
+    "signature": "ad-hoc-development-verified",
+    "icon_matches": true
+  },
+  "installation": {
+    "installed_path": "/Applications/Hetu.app",
+    "atomic_swap": true,
+    "backup_created": false,
+    "old_bundle_removed": true,
+    "normal_library_works": 19,
+    "three_indexes_unchanged_since_preinstall": true
+  },
+  "model_rounds_detail": {
+    "first_sample": 1,
+    "actual_fault_sample": 1,
+    "recovery_plan_and_resource": 1,
+    "original_operation_read_only_correction": 1,
+    "deterministic_reverification_new_requests": 0
+  },
+  "fault_scope": {
+    "held_real_success_receipt": true,
+    "actual_engine_group_sigkill": true,
+    "normal_desktop_reopen": true,
+    "whole_desktop_sigkill": false,
+    "first_pre_fault_case_preserved": true,
+    "no_reexecution": true
+  },
+  "diagram": {
+    "source": "docs/23-业务流程与MCP时序.md#59",
+    "svg": "output/gui-crash-20261126/recovery-sequence.svg",
+    "png": "output/gui-crash-20261126/recovery-sequence.png"
+  },
+  "release": {
+    "version_bumped": false,
+    "committed": false,
+    "pushed": false,
+    "website_deployed": false,
+    "existing_external_mcp_restarted": false,
+    "formal_distribution": false
+  }
+}

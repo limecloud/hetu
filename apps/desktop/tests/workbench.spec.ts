@@ -1,4 +1,4 @@
-import { documentAction, navigate, openDirectory } from "./navigation.ts";
+import { documentAction, navigate, openDirectory, openCreativePlugin } from "./navigation.ts";
 import {
   test,
   expect,
@@ -46,12 +46,9 @@ test("Electron作品授权、精确页面交接与无窗口Rust CLI在撤权后�
   } finally {
     await application.evaluate(() => (globalThis as any).__resumeWorkSelection?.());
   }
-  await navigate(page, "Agent 协作");
-  await expect(page.getByText("发起协作时自动连接当前作品。", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "复制作品协作请求", exact: true }).click();
-  await expect(page.getByRole("status")).toContainText("已准备当前作品");
-  await page.getByRole("button", { name: "刷新连接状态", exact: true }).click();
-  await expect(page.getByText("已连接当前作品。", { exact: true })).toBeVisible();
+  await expect.poll(() => page.evaluate(async () => (await window.hetuDesktop.state()).work)).toEqual(context.work_ref);
+  // 精确连接和交接沿现行工作台服务，不依赖已由内嵌会话取代的旧连接页面。
+  await page.evaluate(() => window.hetuDesktop.handoff("work.profile"));
   const handoff = await application.evaluate(({ clipboard }) => JSON.parse(clipboard.readText().split("\n").slice(1).join("\n")));
   expect(handoff.work_ref).toEqual(context.work_ref);
   expect(handoff.management_ref.grant_revision).toBe(1);
@@ -60,21 +57,19 @@ test("Electron作品授权、精确页面交接与无窗口Rust CLI在撤权后�
   expect(listed.status, listed.stderr).toBe(0);
   expect(JSON.parse(listed.stdout).data.documents.map((d: any) => d.document_id)).toEqual([context.document.document_id]);
   expect(cli("hetu.documents.get", { document_id: context.other_document }).status).not.toBe(0);
-  await page.getByRole("button", { name: "断开当前作品连接", exact: true }).click();
-  await expect(page.getByText("发起协作时自动连接当前作品。", { exact: true })).toBeVisible();
+  await page.evaluate(() => window.hetuDesktop.connection("revoke", "codex"));
+  expect((await page.evaluate(() => window.hetuDesktop.connection("status", "codex"))).authorized).toBe(false);
   expect(cli("hetu.documents.list", { work_ref: context.work_ref }).status).not.toBe(0);
-  await page.getByRole("button", { name: "连接当前作品", exact: true }).click();
-  await expect(page.getByText("已连接当前作品。", { exact: true })).toBeVisible();
+  await page.evaluate(() => window.hetuDesktop.connection("authorize", "codex"));
   const current = await page.evaluate(() => (window as any).hetuDesktop.connection("status", "codex"));
   expect(current.management_ref.grant_revision).toBeGreaterThan(handoff.management_ref.grant_revision);
   expect(cli("hetu.documents.list", { work_ref: context.work_ref }).status).not.toBe(0);
   expect(cli("hetu.documents.list", { work_ref: context.work_ref }, current.management_ref).status).toBe(0);
-  await page.getByRole("button", { name: "小说", exact: true }).click();
+  await navigate(page, "小说");
   await openDirectory(page);
   await page.getByRole("button", { name: "第一章 雾港", exact: true }).click();
-  await page.locator("summary[aria-label='文稿操作']").click();
-  await documentAction(page, "让 AI 处理本稿");
-  await expect(page.getByRole("status")).toContainText("已准备当前作品");
+  const document = await page.evaluate(async id => (await window.hetuDesktop.read("hetu.documents.get", {document_id:id})).data, context.document.document_id);
+  await page.evaluate(fixed => window.hetuDesktop.handoff("novel.reader", fixed), {document_id:document.document.document_id, revision_id:document.revision.revision_id});
   const fixed = await application.evaluate(({ clipboard }) => JSON.parse(clipboard.readText().split("\n").slice(1).join("\n")));
   expect(fixed.fixed_refs.find((r: any) => r.kind === "document").document_id).toBe(context.document.document_id);
   expect(fixed.management_ref).toEqual(current.management_ref);
@@ -292,7 +287,7 @@ test(
   },
 );
 test(
-  "当前作品的真实候选比较、固定任务意见、隔离和重开恢复", async () => {
+  "当前作品的真实候选比较、固定任务意见、隔离和重开恢复", async ({}, info) => {
     test.setTimeout(120000);
     const folder = await mkdtemp(path.join(os.tmpdir(), "hetu-task-review-")),
       workspace = path.join(folder, "雾港"),
@@ -371,9 +366,16 @@ test(
       author: "undefined",
     });
     await panel.getByRole("checkbox", { name: /从旧日记开始/ }).check();
+    const feedbackInput=panel.getByRole("textbox", { name: "补充要求或意见", exact: true });
+    await feedbackInput.evaluate(element=>{
+      const events:unknown[]=[];(window as any).__fixtureFeedbackInputEvents=events;
+      for(const type of ["focus","keydown","beforeinput","input","compositionstart","compositionupdate","compositionend","blur"])
+        element.addEventListener(type,event=>{const input=event as InputEvent,key=event as KeyboardEvent;events.push({type,at:performance.now(),trusted:event.isTrusted,key:key.key,data:input.data,input_type:input.inputType,composing:input.isComposing,value:(element as HTMLTextAreaElement).value});});
+    });
     await panel
       .getByRole("textbox", { name: "补充要求或意见", exact: true })
       .fill("保留船票的悬念，补足人物动作。");
+    await expect(feedbackInput).toHaveValue("保留船票的悬念，补足人物动作。");
     await panel.getByRole("button", { name: "按此修改", exact: true }).click();
     await expect(panel.getByRole("status")).toContainText(
       "修改意见已保存，尚未发送给 Agent",
@@ -389,6 +391,7 @@ test(
         }),
       context.task_ref,
     );
+    await info.attach("fixture-feedback-input-events",{body:JSON.stringify(await page.frames().find(frame=>frame.url().endsWith("task-view.html"))!.evaluate(()=>(window as any).__fixtureFeedbackInputEvents)),contentType:"application/json"});
     expect(read.structuredContent.data.last_feedback.public_comment).toBe(
       "保留船票的悬念，补足人物动作。",
     );
@@ -544,10 +547,7 @@ test(
       });
     }, pkg.source);
     await page.getByRole("button", { name: "安装插件包" }).click();
-    await expect(
-      page.getByRole("button", { name: "人物关系图", exact: true }),
-    ).toBeVisible();
-    await navigate(page, "人物关系图");
+    await openCreativePlugin(page, "人物关系图");
     const plugin = await expect
       .poll(async () => {
         const pages = application.windows();
@@ -587,7 +587,7 @@ test(
     await pluginPage.getByRole("textbox", { name: "新增条目" }).fill("江岚");
     await pluginPage.getByRole("button", { name: "添加并保存" }).click();
     await expect(pluginPage.getByRole("status")).toContainText("已保存修订 1");
-    await expect(pluginPage.getByText("江岚").first()).toBeVisible();
+    await expect(pluginPage.locator("svg text tspan").filter({hasText:"江岚"})).toBeVisible();
     await page.evaluate(() => (window as any).hetuDesktop.handoff("plugin"));
     const connection = await application.evaluate(({ clipboard }) =>
       JSON.parse(clipboard.readText().split("\n").slice(1).join("\n")).plugin_connection,
@@ -704,7 +704,7 @@ test(
       })
       .toContain("插件集成测试");
     await page.getByRole("button", { name: "插件集成测试" }).click();
-    await navigate(page, "人物关系图");
+    await openCreativePlugin(page, "人物关系图");
     await expect
       .poll(() =>
         application
@@ -716,10 +716,10 @@ test(
     const reopened = application
       .windows()
       .find((p) => p.url().startsWith("hetu-plugin://"))!;
-    await expect(reopened.getByText("江岚").first()).toBeVisible();
+    await expect(reopened.locator("svg text tspan").filter({hasText:"江岚"})).toBeVisible();
     await reopened.getByRole("button", { name: "查询并恢复原操作" }).click();
     await expect(reopened.getByRole("status")).toContainText("已保存修订 3");
-    await expect(reopened.getByText("待恢复人物").first()).toBeVisible();
+    await expect(reopened.locator("svg text tspan").filter({hasText:"待恢复人物"})).toBeVisible();
     const verify = spawnSync(
       process.execPath,
       cliArgs,
@@ -754,7 +754,7 @@ test(
       },
     );
     expect(old.status).not.toBe(0);
-    await navigate(page, "人物关系图");
+    await openCreativePlugin(page, "人物关系图");
     await expect
       .poll(() =>
         application
@@ -767,15 +767,12 @@ test(
       application
         .windows()
         .find((p) => p.url().startsWith("hetu-plugin://"))!
-        .getByText("待恢复人物")
-        .first(),
+        .locator("svg text tspan").filter({hasText:"待恢复人物"}),
     ).toBeVisible();
 
     await navigate(page, "创作插件");
     await page.getByRole("button", { name: "停用", exact: true }).click();
-    await expect(
-      page.getByRole("button", { name: "人物关系图", exact: true }),
-    ).toHaveCount(0);
+    await expect.poll(async () => (await page.evaluate(() => window.hetuDesktop.state())).views.some((view: any) => view.owner === pkg.manifest.id)).toBe(false);
     await page.getByRole("button", { name: "读取成果" }).click();
     await page.getByRole("button", { name: "查看导出" }).click();
     await expect(page.locator("pre")).toContainText("江岚");

@@ -10,7 +10,7 @@ fn call(k: &Kernel, action: &str, input: Value) -> Value {
 }
 fn main() {
     let args: Vec<_> = std::env::args().skip(1).collect();
-    assert_eq!(args.len(), 2);
+    assert!(args.len() == 2 || args.len() == 3 && args[2] == "--captions");
     let kernel=Kernel::open(json!({"workspace_path":args[0],"mode":"author","create":{"title":"默认小说","locale":"zh-CN","operation_key":"init"}})).unwrap();
     let novel = call(&kernel, "works.list", json!({}))["works"][0]["work_ref"].clone();
     let doc = call(
@@ -23,7 +23,8 @@ fn main() {
         "drama.projects.create",
         json!({"title":"默认剧本","mode":"original","operation_key":"drama"}),
     );
-    let drama_work = call(&kernel, "works.list", json!({"kind":"drama"}))["works"][0]["work_ref"].clone();
+    let drama_work =
+        call(&kernel, "works.list", json!({"kind":"drama"}))["works"][0]["work_ref"].clone();
     let ep = call(
         &kernel,
         "drama.episodes.create",
@@ -58,6 +59,33 @@ fn main() {
     input["title"] = json!("雨夜第二版");
     input["previous_media_ref"] = first["media_ref"].clone();
     input["operation_key"] = json!("media-v2");
+    if args.get(2).is_some() {
+        let mut tracks = Vec::new();
+        for (id, label, language, text) in [
+            ("zh", "简体中文", "zh-CN", "渡口的灯亮了。🌿"),
+            ("en", "English", "en", "The ferry light is on."),
+        ] {
+            let file = std::path::Path::new(&args[0])
+                .parent()
+                .unwrap()
+                .join(format!("{id}.vtt"));
+            std::fs::write(
+                &file,
+                format!(
+                    "WEBVTT\n\n00:00.100 --> 00:01.500\n{text}\n\n00:01.500 --> 00:03.900\n{text}\n"
+                ),
+            )
+            .unwrap();
+            let scan = call(&kernel, "assets.inspect", json!({"file_path":file}));
+            let caption = call(
+                &kernel,
+                "assets.import",
+                json!({"work_ref":video["work_ref"],"file_path":file,"expected_file":{"sha256":scan["sha256"],"size_bytes":scan["size_bytes"]},"title":label,"source":{"source_type":"author_supplied","creator_statement":"程序隔离字幕"},"rights_status":"author_owned","redistribution_allowed":true,"rights_statement":"允许交付隔离字幕","operation_key":format!("caption-{id}")}),
+            );
+            tracks.push(json!({"id":id,"label":label,"language":language,"asset_ref":{"asset_id":caption["asset"]["asset_id"],"revision":1,"sha256":caption["sha256"]}}));
+        }
+        input["caption_tracks"] = json!(tracks);
+    }
     let second = call(&kernel, "video.media.save", input);
     let mut grants = json!({});
     for (name, work) in [

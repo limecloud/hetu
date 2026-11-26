@@ -1,4 +1,4 @@
-use hetu_core::{Kernel, execution::WorkspaceExecution, local_settings::LocalSettings};
+use hetu_core::{Kernel, collaboration::CollaborationHub, execution::WorkspaceExecution, local_settings::LocalSettings};
 use serde_json::{Value, json};
 
 fn request(action: &str, input: Value) -> Value {json!({"action":format!("hetu.{action}"),"contract_revision":"1","input":input})}
@@ -34,6 +34,17 @@ fn default_auto_writes_without_task_or_management_grant_and_keeps_agent_identity
     assert_eq!(execution.request_workspace(&work,command("documents.save",input.clone())),saved);
     let mut different = input; different["content"] = json!("不能复用键");
     assert_eq!(execution.request_workspace(&work,command("documents.save",different))["error"]["code"],"idempotency_conflict");
+}
+#[test]
+fn current_workspace_execution_closes_fixed_task_without_author_identity() {
+    let folder=tempfile::tempdir().unwrap();let(author,work,_,execution)=setup(folder.path());
+    let preview=ok(author.request(command("creative_tasks.preview_prompt",json!({"scope_ref":{"kind":"workspace","id":author.scope()},"task_kind":"chapter_draft","brief":"固定任务关闭","input_refs":[],"client_adapter":"codex","language_tag":"zh-CN","candidate_limit":1}))));
+    let mut input=preview["prepare_input"].clone();input["operation_key"]=json!("prepare-close");
+    let task=ok(author.request(command("creative_tasks.prepare",input)));
+    let before=ok(author.request(command("creative_tasks.get",json!({"task_ref":task["task_ref"]}))));
+    let closed=ok(execution.request(request("execution.invoke",json!({"workspace_path":work,"command":command("creative_tasks.close",json!({"task_ref":task["task_ref"],"expected":before["expected"],"reason":"本次完成","operation_key":"close-agent"}))}))));
+    assert_eq!(ok(closed["result"].clone())["state"],"closed");
+    assert!(Kernel::open(json!({"workspace_path":work,"mode":"agent","task_id":task["task_ref"]["task_id"]})).is_err());
 }
 #[test]
 fn confirm_reads_directly_and_one_fixed_confirmation_executes_two_writes_once() {
@@ -85,6 +96,66 @@ fn auto_initialization_uses_same_policy_and_replays_original_creation() {
     let result = execution.request(request("execution.initialize",input.clone())); let data = ok(result.clone()); assert_eq!(data["result"]["status"],"succeeded");
     assert_eq!(execution.request(request("execution.initialize",input)),result);
     assert_eq!(ok(execution.request(request("execution.get_mode",json!({}))))["execution_mode"],"auto");
+}
+
+#[test]
+fn execution_creation_is_discoverable_without_reviving_a_revoked_registration() {
+    let folder = tempfile::tempdir().unwrap();
+    let work = folder.path().join("new"); let settings = folder.path().join("settings"); let directory = folder.path().join("connection");
+    let execution = WorkspaceExecution::open(&settings,"codex").unwrap().with_collaboration_directory(&directory);
+    let hub = CollaborationHub::open(&directory,"codex").unwrap();
+    let initialization = request("execution.initialize",json!({"workspace_path":work,"create":{"title":"新建发现","locale":"zh-CN","work_type":"novel","operation_key":"create"}}));
+    let first = execution.request(initialization.clone()); ok(first.clone());
+    assert_eq!(execution.request(initialization.clone()),first);
+    let works = ok(hub.request(request("collaboration.created_works",json!({}))));
+    assert_eq!(works["works"].as_array().unwrap().len(),1);
+    let created = &works["works"][0];
+    assert_eq!(created["path"],json!(work.canonicalize().unwrap())); assert_eq!(created["work_ref"]["kind"],"novel");
+    let author = Kernel::open(json!({"workspace_path":work,"mode":"author"})).unwrap();
+    let reference = &created["management_ref"];
+    ok(hub.request(request("documents.list",json!({"management_ref":reference,"work_ref":created["work_ref"]}))));
+    let other = CollaborationHub::open(&directory,"claude-code").unwrap();
+    assert!(ok(other.request(request("collaboration.created_works",json!({}))))["works"].as_array().unwrap().is_empty());
+    assert_eq!(other.request(request("documents.list",json!({"management_ref":reference,"work_ref":created["work_ref"]})))["error"]["code"],"forbidden");
+    ok(author.request(request("collaboration.revoke_management",json!({"grant_id":reference["grant_id"],"client_adapter":"codex","collaboration_path":directory,"operation_key":"revoke"}))));
+    ok(execution.request(initialization));
+    assert!(ok(hub.request(request("collaboration.created_works",json!({}))))["works"].as_array().unwrap().is_empty());
+    assert_eq!(hub.request(request("documents.list",json!({"management_ref":reference,"work_ref":created["work_ref"]})))["error"]["code"],"forbidden");
+}
+
+#[test]
+fn execution_prepared_task_opens_in_stable_connection_and_replay_does_not_reauthorize() {
+    let folder = tempfile::tempdir().unwrap(); let (author,work,settings,_) = setup(folder.path()); let directory = folder.path().join("connection");
+    let execution = WorkspaceExecution::open(&settings,"codex").unwrap().with_collaboration_directory(&directory);
+    let hub = CollaborationHub::open(&directory,"codex").unwrap();
+    let preview = ok(execution.request_workspace(&work,request("creative_tasks.preview_prompt",json!({"scope_ref":{"kind":"workspace","id":author.scope()},"task_kind":"chapter_draft","brief":"统一执行任务接续","input_refs":[],"client_adapter":"codex","language_tag":"zh-CN","candidate_limit":1}))));
+    let mut input = preview["prepare_input"].clone(); input["operation_key"] = json!("prepare-stable");
+    let prepare = request("creative_tasks.prepare",input);
+    let first = execution.request_workspace(&work,prepare.clone()); let prepared = ok(first.clone());
+    assert!(prepared["task_locator"].is_object()); assert_eq!(execution.request_workspace(&work,prepare.clone()),first);
+    let opened = ok(hub.request(request("collaboration.open",json!({"task_locator":prepared["task_locator"]}))));
+    ok(hub.request(request("creative_tasks.get",json!({"task_ref":opened["task_ref"]}))));
+    let other = CollaborationHub::open(&directory,"claude-code").unwrap();
+    assert_eq!(other.request(request("collaboration.open",json!({"task_locator":prepared["task_locator"]})))["error"]["code"],"forbidden");
+    assert!(ok(hub.request(request("collaboration.created_works",json!({}))))["works"].as_array().unwrap().is_empty(),"打开已有工作区和准备任务不冒充新建");
+    ok(author.request(request("collaboration.revoke",json!({"task_ref":prepared["task_ref"],"client_adapter":"codex","collaboration_path":directory,"operation_key":"revoke-task"}))));
+    ok(execution.request_workspace(&work,prepare));
+    assert_eq!(hub.request(request("collaboration.open",json!({"task_locator":prepared["task_locator"]})))["error"]["code"],"forbidden");
+}
+
+#[test]
+fn confirm_preparation_registers_only_after_the_fixed_plan_executes() {
+    let folder = tempfile::tempdir().unwrap(); let (author,work,settings,_) = setup(folder.path()); let directory = folder.path().join("connection");
+    let execution = WorkspaceExecution::open(&settings,"codex").unwrap().with_collaboration_directory(&directory);
+    let preview = ok(author.request(request("creative_tasks.preview_prompt",json!({"scope_ref":{"kind":"workspace","id":author.scope()},"task_kind":"chapter_draft","brief":"集中计划任务接续","input_refs":[],"client_adapter":"codex","language_tag":"zh-CN"}))));
+    let mut input = preview["prepare_input"].clone(); input["operation_key"] = json!("prepare-confirm"); let prepare = request("creative_tasks.prepare",input);
+    mode(&settings,"confirm","confirm-mode");
+    assert_eq!(execution.request_workspace(&work,prepare.clone())["error"]["code"],"hetu.execution_confirmation_required");
+    assert!(!directory.exists());
+    let reference = plan(&execution,&work,json!([prepare]),"prepare-plan"); assert!(!directory.exists()); ok(confirm(&execution,&reference));
+    let done = ok(execution.request(request("execution.execute",json!({"plan_ref":reference}))));
+    let prepared = ok(done["results"][0].clone()); assert!(prepared["task_locator"].is_object());
+    let hub = CollaborationHub::open(&directory,"codex").unwrap(); ok(hub.request(request("collaboration.open",json!({"task_locator":prepared["task_locator"]}))));
 }
 
 #[test]

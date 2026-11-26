@@ -131,6 +131,8 @@ impl Kernel {
             config_sha: digest(marker_bytes),
             author,
             workspace_execution: options.workspace_execution,
+            execution_client: None,
+            execution_work: None,
             workspace_path: path.canonicalize()?,
             authorization_path: options.authorization_path,
             collaboration_grant: options.collaboration_grant,

@@ -25,7 +25,7 @@ test("从创作库选作品到原生终端，任务交接、真实MCP保存、�
     await page.getByLabel("更多操作",{exact:true}).click();await page.getByRole("button",{name:"打开终端工作区",exact:true}).click();
     const launch=page.getByRole("dialog",{name:"创建会话",exact:true});await expect(launch).toBeVisible();
     await launch.getByRole("combobox",{name:"会话作品",exact:true}).selectOption({label:"默认小说"});
-    await launch.getByRole("button",{name:"引擎",exact:true}).click();await launch.getByRole("tab",{name:"Claude Code",exact:true}).click();await launch.getByRole("button",{name:"打开终端",exact:true}).click();
+    await launch.getByRole("button",{name:/^引擎(?: |$)/}).click();await launch.getByRole("tab",{name:"Claude Code",exact:true}).click();await launch.getByRole("button",{name:"打开终端",exact:true}).click();
     await expect(launch).toHaveCount(0,{timeout:45000});
     const get=()=>page.evaluate(()=>window.hetuDesktop.agentSession("get"));
     await expect.poll(async()=>(await get()).client).toBe("claude-code");const original=await get();expect(original.work_ref).toEqual(context.novel);expect(original.terminal_connected).toBe(true);
@@ -39,6 +39,9 @@ test("从创作库选作品到原生终端，任务交接、真实MCP保存、�
     await page.getByLabel("创作任务",{exact:true}).click();await page.getByRole("button",{name:"查阅作品",exact:true}).click();const reading=page.getByRole("dialog",{name:"查阅作品",exact:true});await reading.getByRole("button",{name:"准备请求",exact:true}).click();await expect(reading).toHaveCount(0);expect((await get()).draft).toContain("本次只读查阅");
     await page.getByLabel("创作任务",{exact:true}).click();await page.getByRole("button",{name:"按意见返工",exact:true}).click();const revising=page.getByRole("dialog",{name:"按意见返工",exact:true});await revising.getByRole("textbox",{name:"需要保留的内容",exact:true}).fill("第三章的和解与昨天的对白不动。");await revising.getByRole("button",{name:"准备请求",exact:true}).click();await expect(revising).toHaveCount(0);expect((await get()).draft).toContain("第三章的和解与昨天的对白不动。");await page.screenshot({path:info.outputPath("positioning-request.png")});
     const directory=page.getByRole("complementary",{name:"作品目录",exact:true});await expect(directory.getByRole("button",{name:"第一章 雾港",exact:true})).toBeVisible();
+    await directory.getByRole("button",{name:"第一章 雾港",exact:true}).click();
+    const sessionTab=page.getByRole("tab",{name:"Claude Code",exact:true});await expect(sessionTab).toBeVisible();await expect(page.getByRole("tab",{name:"Codex",exact:true})).toHaveCount(0);
+    await sessionTab.click();expect((await get()).session_id).toBe(original.session_id);expect((await get()).generation).toBe(original.generation);
     const handoff=await page.evaluate(()=>window.hetuDesktop.handoff("work.resources",{},"draft"));expect(handoff?.prompt).toContain('"client_adapter": "claude-code"');expect(handoff?.prompt).not.toContain("management_ref");
     const writing=await page.evaluate(input=>window.hetuDesktop.writingPrompt(input),{work_ref:context.novel,tool_id:"continue",object_ref:{document_id:context.document.document.document_id,revision_id:context.document.revision.revision_id}});expect(writing.prompt).toContain('"client_adapter": "claude-code"');
     // 具体文稿固定引用由正式目录的引用入口验证，不依赖模型理解。
@@ -59,7 +62,9 @@ test("从创作库选作品到原生终端，任务交接、真实MCP保存、�
     const refused=await rpc("tools/call",{name:"hetu_call_action",arguments:{action:"hetu.resources.get",input:{work_ref:context.drama,resource_id:resource.resource_id}}});expect(refused.structuredContent.status).not.toBe("succeeded");
     const fixed=await page.evaluate(()=>window.hetuDesktop.connection("status","claude-code"));
     const reread=await scopedCli(executable?path.join(path.dirname(appPath),"bin/hetu"):path.join(root,"target/debug/hetu"),"claude-code",collaboration,"hetu.resources.get",{management_ref:fixed.management_ref,resource_id:resource.resource_id,revision:resource.revision});expect(reread.data.resource.body).toBe("港口夜航应按潮汐安排行程。");
-    await page.getByRole("button",{name:"查看作品成果",exact:true}).click();const results=page.getByRole("region",{name:"作品成果",exact:true});await expect(results.getByRole("button",{name:"业务接入考据",exact:true})).toBeEnabled();await expect(directory.getByRole("button",{name:"业务接入考据",exact:true})).toBeVisible();
+    await page.getByRole("button",{name:"查看作品成果",exact:true}).click();const results=page.getByRole("region",{name:"作品成果",exact:true});
+    await expect(results.getByRole("button",{name:"重新回读",exact:true})).toBeEnabled({timeout:30000});
+    await expect(results.getByRole("button",{name:"业务接入考据",exact:true})).toBeEnabled();await expect(directory.getByRole("button",{name:"业务接入考据",exact:true})).toBeVisible();
     await page.screenshot({path:info.outputPath("business-results.png")});await results.getByRole("button",{name:"业务接入考据",exact:true}).click();await expect(page.getByRole("main",{name:"附件工作区",exact:true})).toContainText("港口夜航应按潮汐安排行程。");
     await page.evaluate(work_ref=>window.dispatchEvent(new CustomEvent("hetu:agent-open",{detail:{work_ref}})),context.novel);await expect(choose).toBeVisible();await choose.selectOption({label:"默认剧本"});await expect(launch).toBeVisible();await launch.getByRole("button",{name:"关闭创建会话",exact:true}).click();
     await page.getByLabel("创作任务",{exact:true}).click();await expect(page.getByRole("button",{name:"整理分集大纲",exact:true})).toBeVisible();await expect(page.getByRole("button",{name:"整理卷章大纲",exact:true})).toHaveCount(0);await page.keyboard.press("Escape");
@@ -69,7 +74,7 @@ test("从创作库选作品到原生终端，任务交接、真实MCP保存、�
     for(const pageId of ["work.profile","work.canon","work.resources","work.media","work.delivery"]){const request=await page.evaluate(pageId=>window.hetuDesktop.handoff(pageId,{},"draft"),pageId);expect(request?.work_ref).toEqual(context.video);}
     await choose.selectOption({label:"默认小说"});await expect.poll(async()=>(await get()).session_id).toBe(original.session_id);expect((await get()).generation).toBe(original.generation);
     // 同版Codex接收当前小说的固定任务，只放入草稿，不发模型轮次。
-    await page.getByRole("button",{name:"新建会话",exact:true}).click();await launch.getByRole("button",{name:"引擎",exact:true}).click();await launch.getByRole("tab",{name:"Codex",exact:true}).click();await launch.getByRole("button",{name:"打开终端",exact:true}).click();await expect(launch).toHaveCount(0,{timeout:45000});
+    await page.getByRole("button",{name:"新建会话",exact:true}).click();await launch.getByRole("button",{name:/^引擎(?: |$)/}).click();await launch.getByRole("tab",{name:"Codex",exact:true}).click();await launch.getByRole("button",{name:"打开终端",exact:true}).click();await expect(launch).toHaveCount(0,{timeout:45000});
     await expect.poll(async()=>{const value=await get();return value.client==="codex"&&value.terminal_connected&&value.terminal_replay?.includes("]7501;state=idle");},{timeout:45000}).toBe(true);
     for(const pageId of ["work.profile","novel.outlines","work.canon","work.resources","work.images","work.delivery"]){
       const request=await page.evaluate(pageId=>window.hetuDesktop.handoff(pageId,{},"draft"),pageId);expect(request?.prompt).toContain('"client_adapter": "codex"');expect(request?.work_ref).toEqual(context.novel);

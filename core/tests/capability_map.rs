@@ -28,4 +28,11 @@ fn capability_map_is_available_without_work_and_navigates_exact_machine_contract
     );
     assert_eq!(denied["error"]["code"], "invalid_input");
     validator.validate(&denied).unwrap();
+    for name in ["hetu.creative_tasks.close","hetu.covers.import_preparation","hetu.covers.list_preparations"] {
+        let result=hub.request(json!({"action":"hetu.capabilities.map","contract_revision":"1","input":{"action":name}}));
+        validator.validate(&result).unwrap();assert_eq!(result["status"],"succeeded","{result}");
+        let action=&result["data"]["actions"][0];assert_eq!(action["routes"],json!(["workspace_execution"]));
+        assert_eq!(action["workspace_execution"]["action"],"hetu.execution.invoke");assert_eq!(action["workspace_execution"]["input_template"]["command"]["action"],name);
+        assert_eq!(action["mcp"][0]["name"],"hetu_call_action");assert_eq!(action["status"],"source_wired");
+    }
 }

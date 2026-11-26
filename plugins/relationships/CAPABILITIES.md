@@ -3,9 +3,10 @@
 | 功能 | 入口 | 数据 |
 | --- | --- | --- |
 | 阅读、编辑人物及关系 | 视图 main | relationships |
+| 自适应关系图 | 视图 main | 跨节点弧线、平行关系分层、长标签折行和完整可访问列表 |
 | 自动排列人物 | 动作 arrange | 固定对象 ID 与原操作键 |
 | 保存、历史、检索及导出 | 当前授权的共享专业数据动作 | 本插件、本作品的固定修订 |
 
-机器合同见本包 `plugin.json`。河图安装及作品授权后，经稳定 `hetu.plugin_access.capabilities/invoke` 发现和调用；独立插件运行时也提供 `capabilities` 与 MCP。数据权限为 `objects.read`、`objects.write`，不获得正文修改或其他作品权限。
+机器合同见本包 `plugin.json`。安装并启用后，经稳定 `hetu.plugins.capabilities/invoke` 沿当前明确工作区发现和调用，复用共享 `auto/confirm`；独立插件运行时也提供 `capabilities` 与 MCP。专业数据归本插件、本作品，读取和保存继续核对来源、版本及原操作键，不自动修改正式正文。
 
 变更功能时同步更新本文件和包清单。运行验证由本插件维护，宿主清单只提供发现入口。

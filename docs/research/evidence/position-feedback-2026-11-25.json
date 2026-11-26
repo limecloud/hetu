@@ -1,0 +1,315 @@
+{
+  "date": "2026-11-25",
+  "version": "0.14.1",
+  "scope": "R8-01/05 fixed text position feedback via existing TaskFeedback",
+  "state": "local-installed-validated",
+  "implementation": [
+    "optional UTF-8 range for fixed candidate and working revision targets",
+    "context target bound to original task context_ref and mandatory UTF-8 quote range",
+    "Core rejects empty, wrong quote, non-boundary, oversized, foreign or non-text source references",
+    "same feedback history, CAS, idempotency and original-operation recovery; no second annotation store",
+    "source selection offsets relative to current page convert to fixed full-source offsets",
+    "explicit passage comment action near selection, quote next to existing comment, selection alone does not write",
+    "saved passage and public request shown on same-task reopen",
+    "revise method and common contract explain original fixed version and no source edit permission",
+    "whole-target feedback remains schema 1.0.0; ranged feedback persists as 1.1.0, both readable without rewriting old records"
+  ],
+  "validation": {
+    "core_continuation_and_working_first": {
+      "passed": 21,
+      "failed": 0,
+      "log": "output/position-feedback-20261125/core-second.log"
+    },
+    "core_range_final": {
+      "passed": 3,
+      "failed": 0,
+      "log": "output/position-feedback-20261125/core-third.log"
+    },
+    "range_and_source_units": {
+      "passed": 6,
+      "failed": 0,
+      "log": "output/position-feedback-20261125/units.log"
+    },
+    "real_mcp_source_candidate_first": {
+      "passed": 1,
+      "failed": 0,
+      "log": "output/position-feedback-20261125/real-fourth.log",
+      "scope": "before final saved-passage projection increment"
+    },
+    "desktop": {
+      "passed": 2,
+      "failed": 0,
+      "log": "output/position-feedback-20261125/desktop-frozen-tests.log",
+      "checks": [
+        "desktop original fixed source range saved as public feedback",
+        "Core readback verifies original context SHA and nonzero source offset",
+        "same task reopen shows original quote and comment",
+        "formal document remains unchanged",
+        "late source response discarded after navigation"
+      ]
+    },
+    "installation": {
+      "version": "0.14.1",
+      "source_sha256": "6fc22cb89c489ccd4bb36fad5113ba355edf6eb8c8fd76c7a2137592bd1e2999",
+      "installed_items_verified": 3132,
+      "profile_unchanged": {
+        "creative-library.json": true,
+        "LocalSettings/settings.json": true,
+        "agent-sessions/index/selection.json": true
+      },
+      "atomic_swap": true,
+      "old_app_backup_created": false,
+      "external_mcp_processes_terminated": false,
+      "signing": "ad-hoc-development",
+      "log": "output/position-feedback-20261125/install.log"
+    },
+    "shared_task_view_regression": {
+      "passed": 34,
+      "failed": 0,
+      "log": "output/position-feedback-20261125/task-view-regression.log",
+      "scope": "final frontend with saved-passage projection before feedback record version discriminator rebuild"
+    },
+    "website_build": {
+      "state": "passed",
+      "pages": 227,
+      "log": "output/position-feedback-20261125/website-build.log"
+    },
+    "website_guides": {
+      "passed": 2,
+      "failed": 0,
+      "log": "output/position-feedback-20261125/website-guides-second.log"
+    },
+    "core_workspace": {
+      "passed": 439,
+      "failed": 0,
+      "result_groups": 74,
+      "log": "output/position-feedback-20261125/core-workspace.log",
+      "limits": "binary-level integration consumers rebuilt separately after final resource generation"
+    },
+    "methods": {
+      "version": "0.3.16",
+      "suites": 45,
+      "check": "passed"
+    },
+    "full_task_view_matrix": {
+      "passed": 90,
+      "failed": 1,
+      "skipped": 0,
+      "log": "output/position-feedback-20261125/full-task-view.log",
+      "failure": "official Codex copy directory visibility reached default 5-second assertion deadline; original commit and unique copy were present in failure screenshot/trace",
+      "targeted_retest": {
+        "state": "passed",
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "log": "output/position-feedback-20261125/codex-workbench-final.log",
+        "scope": "full official Codex shared-workbench journey after test-only readiness correction; same frozen runtime; model turns 0"
+      }
+    },
+    "frozen_artifacts": {
+      "items": 35,
+      "record": "output/position-feedback-20261125/frozen-artifacts.json"
+    },
+    "flows": {
+      "rendered": 2,
+      "source": "docs/23-业务流程与MCP时序.md sections 42 and 55",
+      "record": "output/position-feedback-20261125/flow-rendering.json",
+      "svg_and_png_saved": true,
+      "visual_review": "labels, source identity, feedback persistence, handoff and author decision boundaries inspected; no overlap observed"
+    },
+    "engineering_skill": {
+      "path": ".agents/skills/hetu-embedded-agent",
+      "files": 5,
+      "validator": "official skill-creator quick_validate.py via isolated uv pyyaml",
+      "state": "passed",
+      "relative_links_checked": 12,
+      "registered_in": "AGENTS.md",
+      "scope": "engineering workflow for adding real TUI and structured GUI adapters, preserving lifecycle/input ownership/business and package evidence; separate from author methods"
+    },
+    "docs_final": {
+      "state": "passed",
+      "documents": 92,
+      "local_links": 1548,
+      "mermaid": 118,
+      "log": "output/position-feedback-20261125/docs-installed-final.log",
+      "capability_map": "passed",
+      "methods_reproducibility": "passed",
+      "diff_whitespace": "passed"
+    },
+    "current_conversation_mcp": {
+      "verified_via": "hetu_inspect_runtime in this conversation",
+      "runtime_version": "0.14.0",
+      "bundled_skill_version": "0.3.13",
+      "repairs_performed": false,
+      "process_restarted": false,
+      "limits": "resident process remains old; packaged and installed CLI/new stdio verification recorded separately"
+    },
+    "package": {
+      "manifest": "output/position-feedback-20261125/package/hetu-dev-EQDmhY/manifest.json",
+      "source_sha256": "6fc22cb89c489ccd4bb36fad5113ba355edf6eb8c8fd76c7a2137592bd1e2999",
+      "source_inputs": 3053,
+      "artifacts": 3720,
+      "signing": "ad-hoc-development",
+      "icon": "actual Info.plist icon SHA matches repository brand; .icon optional-format warning does not mean .icns was omitted",
+      "ui": {
+        "passed": 3,
+        "failed": 0,
+        "log": "output/position-feedback-20261125/package-ui.log"
+      },
+      "workspace_and_geometry": {
+        "passed": 3,
+        "failed": 0,
+        "log": "output/position-feedback-20261125/package-workspace.log"
+      }
+    },
+    "conversation_cli": {
+      "state": "passed",
+      "record": "output/position-feedback-20261125/conversation-result.json",
+      "original_task_reused": true,
+      "original_operation_key": "conversation-fixed-position-feedback-20261125",
+      "feedback_schema_version": "1.1.0",
+      "range": [
+        30,
+        98
+      ],
+      "formal_unchanged": true,
+      "request_unchanged": true,
+      "professional_status": "inconclusive",
+      "duplicate_feedback": false,
+      "model_turns": 0,
+      "initial_write": "succeeded before verification-script assertion; receipt deliberately not consumed",
+      "subsequent_invocations": "original operation queries, no repeated write",
+      "limits": "package and installed CLI each queried the same original operation; current resident MCP is still old",
+      "installed_log": "output/position-feedback-20261125/conversation-installed.log"
+    },
+    "installed_original_ui": {
+      "state": "passed",
+      "record": "output/professional-composition-20261125/original-ui-position-installed.json",
+      "position_feedback": true,
+      "source_coverage": true,
+      "same_original_task": true,
+      "formal_unchanged": true,
+      "professional_status": "inconclusive"
+    },
+    "installed_new_stdio_mcp": {
+      "runtime_version": "0.14.1",
+      "formal_unchanged": true,
+      "report_sha256": "56ce237f82f5d0ed02e1c08cb96bc155f94918e8d9b16be2c1fa67ba838be5a6",
+      "report_status": "inconclusive",
+      "candidates_read": 3,
+      "adoptions": 0,
+      "finalizations": 0,
+      "model_turns": 0,
+      "report_content_sha256": "7ae4ef429182692f42b3c49972b290f5859f8c010d19b8846cb6005bbcd3f947",
+      "transport": "new installed stdio MCP process; current conversation's original MCP unchanged"
+    },
+    "normal_profile": {
+      "runtime": {
+        "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+        "app": "/Applications/Hetu.app/Contents/Resources/app",
+        "profile": "/Users/coso/Library/Application Support/Hetu",
+        "version": "0.14.1",
+        "resources": "/Applications/Hetu.app/Contents/Resources"
+      },
+      "library_works": 19,
+      "profile_unchanged": {
+        "creative-library.json": true,
+        "LocalSettings/settings.json": true,
+        "agent-sessions/index/selection.json": true
+      },
+      "model_turn_started": false,
+      "screenshot": "output/conversation-composition-20261125/installed-normal-library-position-feedback-ready.png",
+      "waited_for": "library aria-busy=false and actual work-card count",
+      "visual_review": "ready screenshot shows work cards after connecting state; work count 19 and three original profile indexes unchanged"
+    }
+  },
+  "prior_failures": [
+    {
+      "log": "output/position-feedback-20261125/core-baseline.log",
+      "cause": "test expected create response to contain full document text; corrected to actual get projection"
+    },
+    {
+      "log": "output/position-feedback-20261125/core-baseline-second.log",
+      "cause": "valid context position target rejected by old feedback schema; product gap reproduced"
+    },
+    {
+      "log": "output/position-feedback-20261125/core-first.log",
+      "cause": "working content is nested in revision; fixed runtime mapping; separate negative test retained TempDir for lifetime"
+    },
+    {
+      "log": "output/position-feedback-20261125/real-first.log",
+      "cause": "closed details innerText was empty; test now reads DOM textContent without changing disclosure state"
+    },
+    {
+      "log": "output/position-feedback-20261125/real-second.log",
+      "cause": "test HTTP bridge routed task operation resource to default fixture instead of source task; resolve actual URI task id"
+    },
+    {
+      "log": "output/position-feedback-20261125/real-third.log",
+      "cause": "bound-task client exposes dedicated tools; test now discovers actual catalog tool instead of calling unavailable generic tool"
+    },
+    {
+      "log": "output/position-feedback-20261125/website-guides.log",
+      "cause": "test invocation omitted the existing isolated browser cache setting; browser executable not found",
+      "resolution": "reran with verified per-task cache; both guide journeys passed"
+    },
+    {
+      "log": "output/position-feedback-20261125/full-task-view.log",
+      "cause": "Codex copy operation committed successfully; subsequent library refresh and directory read consumed 3.2 seconds before further remount reads, exceeding the 5-second visible assertion",
+      "evidence": "failure screenshot shows the copied screenplay; trace includes commit/journal/acknowledge and exact copy button; no duplicate write performed",
+      "resolution": "wait for directory loading terminal and target with 15-second bounded assertion, then verify unique copy and original fixed content; runtime unchanged"
+    },
+    {
+      "log": "output/position-feedback-20261125/codex-workbench-retest.log",
+      "cause": "anchored grep excluded fully qualified Playwright title; no tests selected",
+      "resolution": "rerun with actual test title match; no runtime or business action occurred"
+    },
+    {
+      "log": "output/position-feedback-20261125/conversation-package.log",
+      "cause": "verification script compared serialized JSON field order; saved range values were unchanged",
+      "resolution": "compare byte_start, byte_end and quote semantically; query original key, no write replay"
+    },
+    {
+      "log": "output/position-feedback-20261125/conversation-package-recovered.log",
+      "cause": "task-scoped connection correctly rejected generic formal-document read",
+      "resolution": "formal-head integrity check uses explicit current-workspace read; task write scope unchanged"
+    },
+    {
+      "log": "output/position-feedback-20261125/conversation-package-final.log",
+      "cause": "task-scoped assessment correctly rejected professional report not fixed in original request",
+      "resolution": "read existing professional report assessment through explicit current workspace; original request and permissions unchanged"
+    },
+    {
+      "log": "output/position-feedback-20261125/normal-launch.log",
+      "cause": "normal-profile screenshot waited only for refresh button and captured connecting state although state read had 19 registered works",
+      "resolution": "wait library aria-busy=false and actual work-card count before separate ready screenshot; original screenshot preserved"
+    }
+  ],
+  "limits": [
+    "source feedback does not grant source writes or expand edit_scope",
+    "loaded/selected text is not proof of reading comprehension or author acceptance",
+    "this increment does not close whole project or native-host/cross-platform gates",
+    "local 0.14.1 development signature; not Developer ID/notarized/public release",
+    "no new website deployment in this increment",
+    "original resident MCP still 0.14.0/method 0.3.13; installation does not refresh that process"
+  ],
+  "methods_version": "0.3.16",
+  "follow_up": {
+    "post_copy_refresh_latency": {
+      "observed_ms": 3209,
+      "trace": "output/position-feedback-20261125/full-task-view/shared-workbench-codex-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/trace.zip",
+      "observed_path": [
+        "renderer/index.tsx work-changed listener invokes library refresh",
+        "CreativeLibrary.refresh scans registered roots",
+        "mcp-workbench.ts dispatch uses ordered queue"
+      ],
+      "not_yet_proven": "whether full refresh is avoidable for this mutation and whether WorkRef object churn causes extra generation cancellation",
+      "state": "investigate with delayed real bridge and fixed-work identity; no runtime change in this increment",
+      "limits": "test readiness correction is not a performance fix; do not remove source/permission/ordering checks or replay the write"
+    }
+  },
+  "next_work": [
+    "investigate post-copy whole-library refresh latency with real delayed bridge and fixed WorkRef identity",
+    "continue R8/R7 full native-host, accessibility, professional production and applicable platform gates; goal remains active"
+  ]
+}

@@ -263,6 +263,7 @@ test("CLI准备本机方案、Electron固定审阅与恢复、无窗口执行和
     });
     await page.getByRole("button", { name: "返回设置", exact: true }).click();
     await page.getByRole("tab", { name: "AI 协作", exact: true }).click();
+    await page.getByText("外部客户端、MCP App与Skills接入", {exact:true}).click();
     const before = await page.evaluate(() => window.hetuDesktop.settings("get"));
     await page.getByRole("combobox", { name: "题材 Skills 套件" }).selectOption("military");
     await expect(page.getByRole("region", { name: "默认AI协作", exact: true })).toHaveAttribute("aria-busy", "false");

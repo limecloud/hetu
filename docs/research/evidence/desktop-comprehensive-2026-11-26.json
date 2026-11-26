@@ -1,0 +1,213 @@
+{
+  "date": "2026-11-26",
+  "scope": "current development desktop default suite;113 tests collected; dedicated live gates recorded as skipped",
+  "source_installation_base": "8f897fdc private approval increment candidate",
+  "state": "default desktop and same-source package/installed increment verified",
+  "failures": {
+    "execution-mode": "normal-close test helper chose settings window; actual work not failed",
+    "native-workbench": "old expected sizes omit adopted24px chapter title",
+    "session-media-results": "fixed historical video lost after Agent notification refresh; deterministic actual library/media reread reproduced; selection intent now retained until author changes selection or episode",
+    "settings-visual": "same native test close-helper issue, two cases with driver teardown timeout",
+    "startup-layout": "same stale font-size allowlist omits24px chapter title",
+    "workbench": "saved fixture feedback had an unexpected trailing u; original trace lacks native input events, cause remains unconfirmed; exact assertion retained and fixture input diagnostics added"
+  },
+  "normal_quit_probe": {
+    "exact_pid": true,
+    "settings_window_open": true,
+    "api": "NSRunningApplication.terminate",
+    "force_terminate": false,
+    "normal_exit_code": 0,
+    "native": "normal quit requested\n"
+  },
+  "corrections": {
+    "native_close": "app path requests normal terminate on exact NSRunningApplication PID; window path closes exact main window by PID and title; no forceTerminate or bundle-wide quit; normal exit code remains required",
+    "typography": "24px included under adopted chapter title contract; actual h1 size asserted without changing product styles",
+    "video_selection": "persistent fixed selection across results/verified and turn/completed refreshes; explicit user selection replaces intent and episode change clears old intent",
+    "negative_video_log": "media-notification-before.log; deterministic test failed at exact historical heading after completed library and media list reread",
+    "input_diagnostics": "fixture-only focus, keyboard, beforeinput/input and composition events recorded; feedback equality remains exact"
+  },
+  "remaining": "Full project remains active: current native Codex Desktop visual/mentions, full visual matrix and VoiceOver, cross-platform, complete professional episode/engineering delivery and author trial, final version/commit/deployment remain separate; current conversation MCP refresh not claimed.",
+  "passed": 88,
+  "failed": 7,
+  "skipped": 18,
+  "worker_teardown_timeouts": 2,
+  "targeted": {
+    "cases": 12,
+    "passed": 12,
+    "failed": 0,
+    "duration_minutes": 2.0,
+    "log": "desktop-regression-fixed.log",
+    "video_business": {
+      "packaged": false,
+      "model_turns": 0,
+      "actual_mcp": true,
+      "video_reference": {
+        "media_id": "vmedia_86fe0368-af0b-4f06-b34f-ad698c0fc8d0",
+        "revision": 1,
+        "sha256": "ca54389de15a960213d55f25764fd2ebe0212d538e0a4f899412188d97a6f7a0"
+      },
+      "second_episode": true,
+      "not_on_first_page": true,
+      "refresh_retained": true,
+      "agent_notification_retained": true,
+      "explicit_selection_retained": true,
+      "explicit_episode_retained": true,
+      "decoded_and_played": true,
+      "plugin_revision": 1,
+      "disabled_plugin_read": true,
+      "fixed_read_retry": true,
+      "duplicate_saved_once": true,
+      "same_session": true,
+      "draft_retained": true
+    },
+    "video_unit_passed": 16
+  },
+  "corrected_full": {
+    "state": "passed",
+    "stats": {
+      "startTime": "2026-11-26T06:00:54.976Z",
+      "duration": 1092197.9090000002,
+      "expected": 95,
+      "skipped": 18,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "errors": [],
+    "log": "desktop-comprehensive-fixed.log",
+    "report": "desktop-comprehensive-fixed-report.json",
+    "native_close": true,
+    "model_live_gates": "skipped unless explicit original per-test activation and environment; previous dedicated evidence remains separate"
+  },
+  "skill": {
+    "path": ".agents/skills/hetu-embedded-agent",
+    "official_validator": "passed",
+    "local_links": 18,
+    "distinct_explicit_source_paths": 46,
+    "broken": 0,
+    "root_registration": true
+  },
+  "packaging": {
+    "first_attempt": "rejected before Rust build: shared MCP workbench resource no longer matched video component source",
+    "first_log": "desktop-comprehensive-package.log",
+    "correction": "rebuilt shared Task View resources in isolated fixed source before optimized packaging; source worktree resources remain untouched until running desktop suite finishes",
+    "source_delta_before_root_sync": [
+      "apps/mcp/resources/workbench.html",
+      "apps/mcp/resources/workbench.manifest.json"
+    ],
+    "optimized_package": "verified",
+    "log": "desktop-comprehensive-final-package.log",
+    "package": {
+      "version": "0.14.1",
+      "source_sha256": "224e6199d620ad58e629a5d50b866259c70624d600ee4fcca739fa9b356acf4f",
+      "source_inputs": 3078,
+      "artifacts": 3133,
+      "signature_verified": true,
+      "icon_matches": true,
+      "manifest": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-recovery-acceptance-7d8jelb6/desktop-comprehensive-final-packages/hetu-dev-C21iqX/manifest.json",
+      "app": "/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-recovery-acceptance-7d8jelb6/desktop-comprehensive-final-packages/hetu-dev-C21iqX/package/Hetu-darwin-arm64/Hetu.app"
+    },
+    "root_resources_synced_after_full_suite": true
+  },
+  "screenshot": {
+    "path": "video-history-refresh-2026-11-26.png",
+    "scope": "development desktop exact historical video after Agent notifications and four manual refreshes; short deterministic codec fixture, not production footage"
+  },
+  "packaged_acceptance": {
+    "desktop": {
+      "startTime": "2026-11-26T06:20:15.849Z",
+      "duration": 80125.14600000001,
+      "expected": 6,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "task-view": {
+      "startTime": "2026-11-26T06:21:36.762Z",
+      "duration": 191444.369,
+      "expected": 6,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    }
+  },
+  "installation": {
+    "version": "0.14.1",
+    "source_sha256": "224e6199d620ad58e629a5d50b866259c70624d600ee4fcca739fa9b356acf4f",
+    "source_inputs": 3078,
+    "artifacts": 3133,
+    "signature_verified": true,
+    "icon_matches": true,
+    "installed_path": "/Applications/Hetu.app",
+    "atomic_swap": true,
+    "backup_created": false,
+    "old_bundle_removed": true
+  },
+  "installed_acceptance": {
+    "state": "all12 distinct cases passed across first and corrected targeted runs",
+    "passed": 12,
+    "failed_remaining": 0,
+    "first_5_business_passed": true,
+    "corrected_package_fixture_passed": 1,
+    "three_surface_video_and_versions_passed": 6,
+    "reports": {
+      "desktop-comprehensive-installed-desktop.report.json": {
+        "startTime": "2026-11-26T06:25:29.050Z",
+        "duration": 47893.496,
+        "expected": 5,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "desktop-comprehensive-installed-remaining-desktop.report.json": {
+        "startTime": "2026-11-26T06:27:05.144Z",
+        "duration": 14775.24,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "desktop-comprehensive-installed-remaining-task-view.report.json": {
+        "startTime": "2026-11-26T06:27:20.475Z",
+        "duration": 172534.835,
+        "expected": 6,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    "no_model_turns_started": true
+  },
+  "installed_first_attempt": {
+    "stats": {
+      "startTime": "2026-11-26T06:25:29.050Z",
+      "duration": 47893.496,
+      "expected": 5,
+      "skipped": 0,
+      "unexpected": 1,
+      "flaky": 0
+    },
+    "failure": "package fixture tried to validate extraction-directory AppleDouble metadata under /Applications; application not launched in that case",
+    "correction": "verify actual.app subtree and nonempty manifest; bundle itself still fully byte-checked including all3133 entries, icon and signature",
+    "log": "desktop-comprehensive-installed-desktop.log",
+    "five_business_cases": "passed"
+  },
+  "normal_profile": {
+    "verified": true,
+    "library_works": 19,
+    "runtime": {
+      "version": "0.14.1",
+      "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+      "userData": "/Users/coso/Library/Application Support/Hetu"
+    },
+    "profile_indexes_unchanged": true,
+    "indexes_match_pre_install_baseline": true
+  },
+  "final_installation_check": {
+    "version": "0.14.1",
+    "source_sha256": "224e6199d620ad58e629a5d50b866259c70624d600ee4fcca739fa9b356acf4f",
+    "source_inputs": 3078,
+    "artifacts": 3133,
+    "signature_verified": true,
+    "icon_matches": true
+  }
+}

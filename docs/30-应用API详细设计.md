@@ -19,11 +19,17 @@
 | `hetu.video.media.list` | 在当前分集分页列出固定成果；集合变化拒绝旧游标 |
 | `hetu.video.feedback.save` | 保存确切媒体上的公开意见与可选半开区间，不代作者认可 |
 | `hetu.video.feedback.list` | 分页读取该固定媒体的意见，新版本不继承旧坐标 |
+| `hetu.video.decisions.preview` | 固定视频用途、确认／撤回、作者原话与前一决定，返回可核对预览，不写入 |
+| `hetu.video.decisions.save` | 再核对原预览及CAS，记录确切认可或撤回；原操作恢复，不重写视频或文稿 |
+| `hetu.video.decisions.get` | 读取确切作品／分集／用途的当前或指定历史决定，缺省明确为未记录 |
+| `hetu.video.decisions.history` | 有界分页读取该槽位历史；头变化拒绝旧游标，不混合其他分集与用途 |
 | `hetu.video.delivery.preview` | 核对明确选择的固定媒体，返回基础文件清单与读取依据，不宣称专业工程完整 |
 
 写动作经现有管理方案准备、真实会话决定、原Agent执行；作者基础工作面使用独立可信窄通道。当前WorkRef、分集和素材须同属一个视频作品，错误摘要及前版跨集拒绝。固定字节读取通过 `hetu.assets.read_blob`；签名核验、技术解码、实际观看和作者认可分开表达。输入Schema为执行时唯一字段合同。
 
 `hetu.handoffs.get`的媒体对象交接在精确作品范围内核对`media_ref`归属及固定摘要；`workflow.author_decision`指向`hetu.agent_operations.record_decision`，与准备、执行及原操作恢复共用已有合同，不以返回桌面审核作为机器执行前置。
+
+MediaDecision使用同一`auto|confirm`、固定管理方案及原操作恢复。确认／撤回的输入必须来自真实作者意图，保留`author_statement`；Agent代为执行仍以实际Agent记录，不将通用执行授权当作创作认可。预览核对确切媒体用途与分集、当前头和固定摘要，保存拒绝伪预览、旧基线、跨用途及跨媒体撤回。新媒体仅关联前版，不转移认可；返回`author_decision`投影独立于文件完整性、解码、实际观看和当前交付权利。桌面及MCP基础工作面共用可信窄用例呈现同一状态、历史与恢复，不在专业插件保存第二套认可头。
 
 桌面文件导出复用既有私有媒体通道：打开时核对固定素材及完整摘要，分块沿同一只读句柄读取并检查文件变化，落盘后再次核对完整摘要和当前交付权利，成功才替换目标文件。公共 `hetu.assets.read_blob` 为独立有界读取，每次核验固定文件；私有句柄不进入renderer或插件。
 
@@ -122,8 +128,8 @@ typed_changes 是受限的实体新增、字段更新、归档、引用迁移和
 | 动作 | 输入 | 结果 | 限制与失败 |
 | --- | --- | --- | --- |
 | `hetu.documents.create` | kind、title、source_format、content、language_tag?、operation_key | 新文档与首个不可变修订 | 仅作者；普通新稿不自动批准 |
-| `hetu.documents.list` | work_ref?、kind?、limit?、cursor? | 文档摘要与修订指针、next_cursor | 精确作品授权必须指定获权 work_ref，默认50条、最多200条；显式分页绑定授权、对象、过滤条件与目录快照。既有作者入口未传分页参数时保留完整目录 |
-| `hetu.documents.get` | document_id、revision_id? | 元数据、格式、内容或有界范围 | 默认当前修订必须在结果明确，固定引用优先 |
+| `hetu.documents.list` | work_ref?、kind?、query?、include_revision_ref?、limit?、cursor? | 文档摘要与修订指针、next_cursor；按需包含current_revision_ref | 精确作品授权必须指定获权 work_ref，默认50条、最多200条；query只按标题忽略大小写匹配，空值不过滤。include_revision_ref仅为返回页核验当前正文并给出修订／摘要／字节数，不返回正文。显式分页绑定授权、对象、过滤条件与目录快照。既有作者入口未传分页参数时保留完整目录 |
+| `hetu.documents.get` | document_id、revision_id? | document、revision、content、顶层派生work_ref | 默认当前修订必须在结果明确，固定引用优先；work_ref沿Core已有小说／分集归属解析，无归属为null，不改持久记录或历史摘要 |
 | `hetu.documents.save` | document_id、base_revision_id、source_format、content、operation_key | 新 revision_id、sha256、当前指针 | 作者编辑入口；不自动批准；基线冲突不覆盖 |
 | `hetu.documents.preview_import` | inline_source 或作者选择的 file_path、format、profile | 固定文件摘要、转换预览与损失报告 | 机器提交文件字节，作品授权不能读取任意本机路径；不执行宏 |
 | `hetu.documents.import` | preview、kind、title、language_tag、volume_id?、acknowledgement、operation_key | ImportRecord、文档及修订 | 作者确认或获批固定管理方案；核验原字节，保留非定稿状态与原键恢复 |
@@ -258,6 +264,8 @@ Git 的外部观察、确认范围与未知核对按16执行；没有手工批�
 `contracts/tools/catalog.json` 映射已开放工具与内核动作；MCP tools/call 外层工具名与内层 AXI action 名分开。inputSchema 复用内核展开后的机器合同，outputSchema 为绑定准确 action 的 `contracts/schemas/result.schema.json`。文档、审核、报告和 operations 以白名单资源读取适配查询用例，分页和恢复见[14](14-MCP与Agent接入.md)。CLI 命令、GUI ViewModel 与 MCP 不重新实现审核、CAS 或 Git 策略。
 
 MCP 的标准工具描述必须静态且如实反映其写入可能性；实际权限依请求上下文重验。长任务先返回持久原操作，再通过可用资源／窄查询继续。核心报告有错误发现时工具可以执行成功，不能将JSON-RPC成功误读为草稿定稿。
+
+稳定MCP连接中的并行只读发现与读取按原输入排队，取消时停止等待，不返回正常并发导致的`workspace_busy`；写入仍保留忙碌拒绝与原操作恢复规则，不在排队后自动重发未知写入。
 
 ## 10. 错误、分页与任务
 
@@ -720,17 +728,23 @@ Agent 需要协作时，先发现当前能力与作品摘要，读取固定项�
 
 工作副本保存的 expected 为完整 WorkingCopyRef，字段定义见[29第22节](29-数据字典与Schema设计.md#22-持续协作上下文与反馈)。`base_refs` 与提交候选的 `source_refs` 均最多100项，创建、持久化、重开和提交保持同一清单，每项逐一核验属于固定任务；不能以缩减来源清单绕过保存限制。create／save／import 与新修订、head、原操作和审计同事务。提交固定一个已保存修订，后续 save 不能改旧候选。工作副本尚未正式提交时可供作者查看，不显示为待采纳候选或定稿；正式采纳仍只接收已提交且核验过的 Draft。请求升级、任务关闭、撤权、工作副本冲突或已采用资料均不能被 checkout 路径绕过。
 
+共享审阅面板直接使用`working_copies.list/get`读取工作稿与旧修订。`get detail:page`只返回当前固定内容页及必要归属引用，不随每页重复传输历史；`detail:summary`的长历史通过既有JSON字段分页展开，`working_page_sha256`参与快照核验。任务目录提供原状态计算的`working_copy_count`，没有提交但有工作稿也可定位审阅。桌面任务桥接映射正式`hetu_read_working_copy`工具，不开放任意Core动作。阅读与原位意见复用候选分页和TaskFeedback，整稿意见同样固定确切WorkingCopyRef；历史查看不写正文、不提交成果或采纳。
+
 ### 23.4 公开反馈与继续修改
 
 | 动作或步骤 | 输入 | 结果与边界 |
 | --- | --- | --- |
 | `hetu.task_feedback.save` | task_ref、固定 target_refs、expected_feedback_head、intent、public_comment、selected_refs、operation_key | 不可变 TaskFeedback；intent 为 preference 或 request_changes，仅表达任务内意图，不采纳或授权 |
-| `hetu.task_feedback.list` | task_ref、after_cursor?、limit? | 按序公开反馈、所指成果、作者可见处理状态及下一页；不含私密批注 |
+| `hetu.task_feedback.list` | task_ref、candidate_ref?、after_cursor?、limit?；大结果可按result_path／offset／max_bytes与expected_result_sha256读取 | 按序公开反馈、所指成果、作者可见返稿及下一页；可按本任务固定候选筛选，保留原sequence；显式JSON分页返回feedback_page及feedback_page_sha256，每次重验同一列表快照，不含私密批注 |
 | 预览继续内容 | 已保存 feedback_ref、task_ref、成果引用 | 本地组装精简继续提示词；不含全文聊天、授权秘密或未公开批注，无业务写入 |
 | 宿主消息桥接 | 用户显式点击、当前会话、精确继续内容 | 协商能力可用才请求；响应只证明消息请求结果，不证明生成或返工完成 |
 | 新成果确认反馈处理 | save／submit 的 feedback_refs 与实际结果 | 记录 Agent 声明已处理及对应成果；作者仍可判断未满足，不自动把反馈改为“作者已验收” |
 
 InteractionDecision 保留 preference_only 语义。作者对既有选择点“按此修改”时，TaskFeedback 引用该决定及确切成果；单纯保存偏好不自动生成返工指令。反馈保存成功、发送成功与收到后续成果使用独立回执；发送失败可重用同一反馈复制继续提示词，不能换键重复保存或对付费生成自动重试。页面会话只可写本任务公开反馈，正式审核决定继续走第7节。
+
+任务绑定MCP读取长意见超出单次预算时，恢复说明直接提供原`task_feedback.list`的任务、候选筛选、原游标及固定JSON分页输入，不要求切换到更大的管理范围。展开返回摘要后沿同一`feedback_page_sha256`核对；不重做保存或将截断内容视为完整意见。
+
+位置反馈沿同一`target_refs`保存：candidate／working_copy可附`range={byte_start,byte_end,quote}`，context使用`context_ref`和必填range。偏移相对确切候选／工作修订内容或固定ContextEntry文本，从0开始、UTF-8半开且不超过16 KiB。Core核对原字节、摘要及本任务范围，不接受空范围、非字符边界、错引句、跨任务或结构化对象伪装文本。来源意见只要求本任务如何使用依据，不授予修改资料、正式正文或扩大编辑范围的权限；旧意见不随来源或候选头推进。
 
 MCP Apps 仅在真实宿主能力、用户同意和当前会话范围内使用标准消息／模型上下文桥接。普通浏览器页面没有该能力，不伪造桥接。失权、任务关闭或请求过期时停止发送并清理显示；原生端仍可查看历史。网络／宿主消息的未知结果独立记录，Core 不宣称可以事务回滚外部消息。
 
@@ -771,6 +785,12 @@ MCP Apps 仅在真实宿主能力、用户同意和当前会话范围内使用�
 | --- | --- | --- |
 | 建立／恢复会话 | 明确表面、Codex可执行文件与配置归属、固定WorkRef或无作品筹备、确切线程 | 会话身份、实际能力及owner代次；恢复失败保留原绑定 |
 | GUI投递 | 会话与owner代次、本机消息尝试ID、固定上下文、明确目标及支持的模型参数 | 先保存尝试再发送；written、accepted、rejected和unknown分开，轮次完成不证明Core保存 |
+
+内嵌会话附加来源复用既有读取用例，不新增聊天领域对象：任务通过`creative_tasks.get`、`working_copies.get`及`task_feedback.list`核对请求所属WorkRef和固定批次／工作修订／公开意见；任务消息提供locator及请求摘要，机器客户端仍先沿原任务连接取得准确TaskRef。专业对象通过`plugin_results.get`复用`extensions/host`的只读存储能力，读取固定Owner和修订，停用后继续可读；后续执行仍发现当前插件能力。附加与发送分别核对作品、会话及代次，旧回包不得替换当前草稿；已有固定引用只读原版本，不跟随头推进。
+
+`creative_tasks.get`和`interactions.get`支持`detail:review`的审阅元数据投影，固定原请求、所选submission_ref、来源目录、候选摘要、意见头与决定；正文和完整来源沿现有读取动作展开。任务面板的大结果或摘要回执按原task_ref及submission_id读取该投影，不扩大权限或退回最新批次；正文用`creative_tasks.read_candidate`按需翻页。桌面任务桥接显式映射同一候选读取动作。会话附加与接续只需要身份时直接使用审阅投影和工作修订摘要，不传输全文验证引用。MCP超预算恢复保留原任务、批次和筛选条件，不能只返回通用能力发现。
+
+`hetu.plugin_results.get`提供与桌面降级读取相同的机器能力：按当前精确作品、`owner_plugin_id`、`object_id`和必填`revision`读取已保留专业对象，返回原对象及摘要。它复用插件对象存储和完整性核验，不启动插件、不依赖包仍启用，不授予写入、正文采纳或插件执行权；撤销作品连接后仍拒绝。调用方核对已固定摘要；需要继续专业处理时另行发现当前兼容插件，不把只读成功当作可执行。
 | TUI输入／调整大小 | 受管终端引用、owner代次、有界输入及合理cols／rows | 仅向绑定PTY传输；不接受调用方任意命令、cwd或环境变量，不从回显推断成功 |
 | 查询／订阅 | 会话身份、投影游标和连接代次 | 分页历史与有界事件；迟到事件不能修改新owner，原操作另由Core查询 |
 | 答复引擎请求 | 原请求／轮次／连接代次、允许的答复枚举 | 过期或重复答复拒绝；不生成采纳、定稿或费用批准 |
@@ -875,7 +895,11 @@ GUI 路由和定位引用帮助人审阅相同对象；CLI/MCP 不依赖页面�
 
 精确作品连接读取管理方案目录时，存在`work_ref`字段的动作Schema将其设为当前固定作品并列为必填；该字段属于待准备动作的`input`。外层方案的归属不能代替内层领域输入，也不能以缺字段错误要求作者扩大授权。
 
-已有作品的 `hetu.collaboration.authorize_workspace` 与 `workspace_access` 仅可信作者可用，返回带 grant_revision 的 management_ref。私有授权绑定客户端、作品身份、目录 dev/ino、修订和期限；每次读取、执行及重放都核验。撤权后再授权推进修订，不能复活旧管理引用或旧派生任务。`hetu.collaboration.created_works` 分页列本客户端有限新建的有效作品，由原生书库核验并接纳，不公开整库目录。
+已有作品的 `hetu.collaboration.authorize_workspace` 与 `workspace_access` 仅可信作者可用，返回带 grant_revision 的 management_ref。私有授权绑定客户端、作品身份、目录 dev/ino、修订和期限；每次读取、执行及重放都核验。状态查询使用相同目录身份规则，身份变化时返回未授权；作者从当前已打开作品发起会话或固定交接时，宿主沿原连接用例重新核验并绑定当前目录，不能继续使用旧引用或让Agent绕过校验。撤权后再授权推进修订，不能复活旧管理引用或旧派生任务。`hetu.collaboration.created_works` 分页列本客户端有限新建的有效作品，由原生书库核验并接纳，不公开整库目录。
+
+`workspace_access.git_authorization_current`比较当前可信宿主私密批准目录与既有管理绑定，只返回布尔值，不回显路径。查询不更新绑定；作者明确发起协作时沿`authorize_workspace`更新，目录变化使管理修订推进，旧管理引用及原快照执行范围继续按原合同核验。
+
+`execution.initialize`的成功初始化沿同一客户端新建登记接入`created_works`，身份及类型由实际工作区作品目录读取，位置和目录身份只保存在原本机映射。重放只补缺失记录，已有撤销／过期／身份变化不自动再授权；普通读取和已有目录打开不产生新建登记。统一执行成功的`creative_tasks.prepare`与创建任务的`agent_operations.execute`同样派生原TaskGrant，并在原结果提供`task_locator`；外层执行或工具成功不代替内层成功。跨客户端、confirm未确认、错作品及旧任务撤销保持拒绝。本机映射提交失败后沿原业务键恢复，不重复创建作品或任务。
 
 两动作可显式携带 `work_ref` 收窄到单个创作对象，授权标识按工作区、类型、对象和客户端分别生成。该范围的能力发现及列表只反映获权对象；同名、同根和关联不扩权。关联可回读固定关系元数据，另一端正文需独立授权；不能确认另一端当前修订时返回未知，不伪报没有新版。操作按授权隔离原键与回执，不能通过 `operation_id` 绕过范围读取。旧的工作区授权仍按其原明确范围解释，不能当作单对象隔离的证据。
 
@@ -962,9 +986,15 @@ Git 读取动作 references、read_version、merge_preview 提供版本线、固
 | 认可／选用／确认成片 | 确切成果及用途、前一决定expected、可信作者能力 | 独立MediaDecision；预演认可不确认成片，片段选用不确认剪辑，撤回不能撤别的新版 |
 | 导出文稿／成片／工程 | 固定对象与修订、profile、实际依赖、权利及排除、原键 | 包清单、产物摘要、技术核验及接收方可恢复说明，无发布副作用 |
 
+图片区域复用`hetu.task_feedback.save/list`及原任务接续：`target_refs`中的图片候选可带原图整数像素`image_region`，Core先核验任务／批次／候选身份与实际图片类型，再核验矩形边界；`selected_refs`仍须是本次目标中的确切引用。CAS、原operation_key、未知恢复与公开意见读取保持，保存意见不创建新图片或改变当前封面。机器端读取原批次后才能处理区域，不把旧坐标套到新版。
+
+`task_feedback.list`可用`feedback_ref`精确筛选原意见并沿既有JSON分页返回必要字段；不新增意见读取事实源。图片历史继续经共享`TaskReview`只读用例准备，复用`taskSourceContext`核对当前作品、原请求与反馈，返回公开固定引用及继续提示词。宿主投递沿原草稿能力处理，业务读取、草稿接收、模型返稿和作者决定分别取证。并发冲突恢复只重读当前固定批次和最新意见头，保留作者未保存内容；未知保存仍沿原journal恢复。
+
 媒体检查至少区分文件存在、摘要匹配、完整解码、实际画幅／时长／音轨、内容观看范围和作者决定。任何失败保留原调用及错误；有部分可用结果时分别返回，不把缺声音或缺片段隐去。播放器只读取已核验受管引用，不访问供应商临时URL或任意本机路径。
 
 ### 26.3 固定输入、恢复和预算
+
+`hetu.video.media.save`可附带`caption_tracks`，字段以[视频审阅Schema](../contracts/schemas/video-review.schema.json)为准。Core核验轨ID唯一、标签与语言、同作品固定WebVTT及可选保留专业来源；不执行字幕插件或复制其解析器。带字幕保存为新成果，`previous_media_ref`只关联前版，不继承旧反馈。`video.media.get`回读固定轨引用；字幕资产通过`assets.import/get/read_blob`共用现有来源、权利、分块和原键恢复。交付预览列出固定字幕文件并重新核对当前权利，单个视频文件导出不能冒充已交付字幕或专业工程。
 
 所有变更先授权和查原键，再核对expected及输入摘要，最后执行本次可恢复事务。费用副作用与本机登记分别保存；提交超时或回传丢失为unknown时，仅查询提供方原任务。若提供方无法查询，保持未知并告知人工处理，不自动创建新计划“试一次”。超范围、超额度或型号模式不支持在联网前阻断。
 
@@ -1049,7 +1079,7 @@ task_checkpoint.get/save只在精确任务内读取和维护接续记录，首�
 
 creative_tasks.get可选detail=summary；working_copies.get、候选读取和operations.get提供固定结果的有界读取。默认新旅程先摘要，旧直接读取保留原结果语义。超限回执保留原操作与恢复输入，恢复始终重新核验授权。
 
-发现入口支持query和有界分页，返回动作的结构化前置条件及未核验的readiness；完整输入Schema只在确切查询或执行时构造。共同方法由methods.list/read发现和按固定摘要分块读取，CLI、MCP与所选Skills消费同一方法源。task_executions.list/get读取精确任务的执行尝试，不允许Agent提交自报执行结果。creative_tasks.assess组合固定交付、专业检查与作者决定，报告各项状态和缺失依据，不自动调用模型、采纳或定稿。
+发现入口支持query和有界分页，返回动作的结构化前置条件及未核验的readiness；完整输入Schema只在确切查询或执行时构造。共同方法由methods.list/read发现和按固定摘要分块读取，CLI、MCP与所选Skills消费同一方法源。task_executions.list/get读取精确任务的执行尝试，不允许Agent提交自报执行结果。creative_tasks.assess组合固定交付、专业检查与作者决定，报告各项状态和缺失依据，不自动调用模型、采纳或定稿。显式candidate_refs核对各自原批次的完成声明及未完成项，不套用最新提交；省略professional_refs读取原任务固定的专业来源，显式空数组表示本次不查看专业报告，均不修改任务。
 
 assess在任务授权下只能读取已固定的专业来源；交付后新产生的检查使用该作品的精确management_ref和同任务完整TaskRef读取，管理授权分支同样核对请求摘要，并在候选及专业覆盖回读中保留完整引用，不能借TaskRef读取任意插件对象。专业报告未实现适配时返回unsupported_owner，目标修订不匹配返回wrong_target，部分覆盖、反证和不确定分别表达；不将已有候选或Agent的complete当作验收通过。两种MCP适配器使用相同生产合同标记结果来源，元数据计入最终传输预算。插件调用的取消可能留下已执行结果，回执明确unknown并沿原键查询。
 
@@ -1078,6 +1108,10 @@ assess在任务授权下只能读取已固定的专业来源；交付后新产�
 
 本节和27的统一执行合同适用于当前工作区默认旅程；本文旧管理／任务授权接口保留其精确合同及历史恢复含义，不能再将旧式逐对象授权作为新旅程前置。auto的执行记录保留真实Agent身份。confirm固定本次全部变更，批准后连续执行，计划变化后重新确认；取消后不执行剩余写入，已有完成结果保留。
 
+`hetu.plugins.capabilities/invoke`可作为当前工作区执行命令，使用原公开插件Schema，连接由可信入口私有装配，无需新增management_ref。插件调用按固定包、能力摘要及实际动作effect分类；只读专业动作在confirm直通，写入进入集中计划并沿`arguments.operation_key`恢复。不同客户端、同根他作、错误工作区身份、旧包／能力及错误键仍拒绝；外部精确管理连接保持原独立范围，不因工作区执行模式而扩权。
+
+插件分派成功与内层Core业务成功分别核对；统一执行计划消费真实Core回执，业务拒绝、冲突、未知或待完成不能写成已完成步骤。专业对象保留插件Owner，正式Core修订保留实际Agent身份，二者都不冒充作者决定。
+
 批准执行计划表示允许相应操作，不凭空产生创作认可。采纳、定稿、资产选用与成片确认仍需真实用户意图并绑定确切结果；对话已明确作出决定时由机器执行同一用例，不能要求再回桌面重做一遍。默认auto不关闭领域约束、CAS、输入摘要、权利及费用合同。
 
 多操作计划是受管编排，不承诺所有文件、Git远端和生成服务组成一个分布式原子事务。单个领域事务原子提交；外部结果未知保持unknown，只查询原调用。结果回读必须能区分未开始、已完成、冲突、部分完成和未知，不能把超时改写为失败后自动重发。
@@ -1087,3 +1121,19 @@ assess在任务授权下只能读取已固定的专业来源；交付后新产�
 宿主从当前WorkRef、工作面、固定选区及已发现能力生成可用入口。格式、复制、查找和批注使用共同文稿命令；专业审校、伏笔、节奏、改编及制作通过对应插件和方法进入。菜单不存在相应执行能力时，显示可继续的安装／发现入口或明确不可用原因，不绘制会返回空成功的按钮。
 
 命令打开专业工作面不代表已经运行分析；方法选择不代表安装；安装不代表当前会话加载。任务推荐由Agent根据明确目标和能力说明作出，宿主只能执行兼容性过滤及显示来源，不以内置关键词匹配冒充AI推荐。
+
+### 31.3 正式大纲的固定读取
+
+`hetu.outlines.get`复用原Owner，接受可选revision、sha256和outline_id，读取确切历史及条目；sha256须与revision成组。未指定版本的原读取保持当前集合语义。选择器以detail=summary、query、limit及cursor读取有界目录，条目正文由固定版本读取，目录变化使旧游标明确失效。不存在的版本／条目、错误摘要及非小说作品拒绝，不回退当前头。
+
+任务source_ref接受正式outline引用，准备时核对当前任务WorkRef、集合摘要与条目身份；task_context的list/read/search复用原ContextManifest和UTF-8读取合同。页面交接使用outline_id、outline_revision和outline_sha256固定同一来源，具体章纲不附带可变小说资料。附加、预览和发送前复核保持原引用；读取与引用不授予正式大纲修改权。
+
+### 31.4 场次、视频与保留专业来源
+
+`hetu.documents.scene_index`读取确切剧本作品当前或指定修订的Fountain原稿，只生成可丢弃的场次投影。目录可按分集document_id缩小范围，按标题query及固定游标分页；指定scene_range时必须同时提供document_id、revision_id与sha256，重验确切场次起止，再以相对场次起点的offset和max_bytes分块读取原文。范围以UTF-8字节计，不替代原剧本、分集、骨架或持久场次身份；旧范围不迁移到新修订，标题页及省略注释不成为场次。场次以接续标题或分节为边界；非剧本、错作品、伪摘要、非场次边界及无效字节游标拒绝。选中读取不混入后来改名的分集标题，原文仍保留原始字节与格式。
+
+`hetu.video.media.list`接受可选video_episode_id和query；省略分集时只检索确切work_ref的视频媒体，query按媒体标题过滤。原分集调用和快照分页保持；固定媒体读取仍验证原分集、素材及摘要。视频分集来源只保留原分集记录，媒体来源只保留原媒体记录，当前认可、播放与交付状态分别查询。
+
+`hetu.plugin_results.list`为既有专业成果提供只读目录，接受work_ref、可选owner_plugin_id、query、limit和cursor，返回固定Owner／对象／修订／摘要。未指定Owner时从已保留记录核对所属作品与集合身份，按有界字节预算复用现有专业元数据投影；损坏和超预算明确失败，不能冒充空目录。分页绑定查询、对象快照及现有授权。既有`plugin_results.get`仍负责固定正文读取；安装目录、插件启停、任意路径及专业写入均不由该目录授权。
+
+hetu.local_settings.inspect_storage读取固定本机资料目录的分类占用及候选；hetu.local_settings.prepare的storage_cleanup类型接收selected_ids与storage_snapshot，不接受任意路径。record_decision绑定固定方案后，原execute执行并保留逐文件结果，即使auto也须先批准此清理方案。桌面及MCP工作台的存储空间入口调用同一Core用例并确认确切选择。

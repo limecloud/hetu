@@ -370,6 +370,21 @@ impl PluginSession {
 }
 
 impl Kernel {
+    pub(super) fn retained_plugin_results(&self, input: &Value) -> Result<Value> {
+        self.retained_result_index(input)
+    }
+    pub(super) fn retained_plugin_result(&self, input: &Value) -> Result<Value> {
+        let result = self.extension_data(
+            &input["work_ref"],
+            text(input, "owner_plugin_id")?,
+            "hetu.extensions.objects.get",
+            &json!({"work_ref":input["work_ref"],"object_id":input["object_id"],"revision":input["revision"]}),
+            None,
+            None,
+        )?;
+        Ok(result["data"].clone())
+    }
+
     pub(in crate::application) fn extension_object(
         &self,
         work: &Value,
@@ -439,7 +454,7 @@ impl Kernel {
                     closed(
                         source,
                         &["kind", "work_ref", "blueprint_id", "revision", "sha256"],
-                        &[],
+                        &["entity_ref"],
                     )?;
                     let (fixed, actual) = self.source_blueprint(source)?;
                     ensure(
@@ -448,6 +463,11 @@ impl Kernel {
                         "hetu.stale_evidence",
                         "插件设定来源身份或摘要不一致。",
                     )?;
+                    if let Some(id) = source["entity_ref"].as_str() { blueprint::entity(&fixed, id)?; }
+                }
+                "outline" => {
+                    closed(source, &["kind", "work_ref", "outline_id", "revision", "sha256"], &[])?;
+                    self.fixed_outline_source(source)?;
                 }
                 "resource" => {
                     closed(
@@ -933,7 +953,8 @@ impl Kernel {
                 self.validate_extension_sources(work, &json!([source]))?;
                 if source["kind"] == "blueprint" {
                     let (blueprint, _) = self.source_blueprint(source)?;
-                    if let Some(entity) = input["entity_ref"].as_str() {
+                    if let Some(entity) = source["entity_ref"].as_str().or_else(|| input["entity_ref"].as_str()) {
+                        ensure(input.get("entity_ref").is_none_or(|id| *id == entity), "forbidden", "固定来源只包含所选设定实体。")?;
                         let mut found = None;
                         for (collection, field) in [("characters","character_id"),("factions","faction_id"),("locations","location_id"),("timeline","event_id"),("world","entry_id"),("rules","rule_id")] {
                             if let Some(items) = blueprint[collection].as_array() {
@@ -948,6 +969,10 @@ impl Kernel {
                     ensure(input.get("entity_ref").is_none(), "invalid_input", "正文来源不包含设定实体。")?;
                     let fixed = self.document_content(text(source,"document_id")?,Some(text(source,"revision_id")?))?;
                     json!({"source_ref":source,"document":fixed["document"],"content":fixed["content"]})
+                } else if source["kind"] == "outline" {
+                    ensure(input.get("entity_ref").is_none(), "invalid_input", "正式大纲来源不包含设定实体参数。")?;
+                    let (item, sha) = self.fixed_outline_source(source)?;
+                    json!({"source_ref":source,"outline":item,"sha256":sha})
                 } else if source["kind"] == "resource" {
                     ensure(input.get("entity_ref").is_none(), "invalid_input", "资料来源不包含设定实体。")?;
                     let (record, sha) = self.source_resource(source)?;

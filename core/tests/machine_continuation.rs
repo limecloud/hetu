@@ -743,6 +743,24 @@ fn assessment_separates_delivery_agent_claims_and_author_decisions() {
     let reopened = ok(hub(&h,"collaboration.open",json!({"task_locator":{
         "scope_ref":t["scope_ref"],"task_id":t["task_id"]}})));
     assert_eq!(reopened["candidate_refs"][0]["task_ref"],t);
+    let partial = ok(hub(&h, "creative_tasks.submit_result", json!({
+        "task_ref":t,"request_sha256":task["request_sha256"],
+        "working_copy_refs":[working["working_copy_ref"]],"complete":false,
+        "missing_items":["尚未核对全书设定。"],
+        "provenance":{"client":"acceptance","skill_version":"test","model":"fixture"},
+        "operation_key":"assessment-partial"})));
+    let latest = ok(hub(&h,"creative_tasks.assess",json!({"task_ref":t})));
+    assert_eq!(latest["delivery"]["agent_reported_complete"],false);
+    assert_eq!(latest["delivery"]["agent_reported_missing_items"],json!(["尚未核对全书设定。"]));
+    let historical = ok(hub(&h,"creative_tasks.assess",json!({"task_ref":t,"candidate_refs":submission["candidate_refs"]})));
+    assert_eq!(historical["delivery"]["agent_reported_complete"],true);
+    assert_eq!(historical["delivery"]["agent_reported_missing_items"],json!([]));
+    let mixed = ok(hub(&h,"creative_tasks.assess",json!({"task_ref":t,"candidate_refs":[submission["candidate_refs"][0],partial["candidate_refs"][0]]})));
+    assert_eq!(mixed["delivery"]["agent_reported_complete"],false);
+    assert_eq!(mixed["delivery"]["agent_reported_missing_items"],json!(["尚未核对全书设定。"]));
+    let none = ok(hub(&h,"creative_tasks.assess",json!({"task_ref":t,"candidate_refs":[]})));
+    assert!(none["delivery"]["agent_reported_complete"].is_null());
+    assert_eq!(none["delivery"]["agent_reported_missing_items"],json!([]));
     ok(call(&k,"documents.save",json!({"document_id":document["document"]["document_id"],
         "base_revision_id":document["revision"]["revision_id"],"source_format":"markdown","content":"作者的新原文。","operation_key":"assessment-target-advance"})));
     let stale=ok(hub(&h,"creative_tasks.assess",json!({"task_ref":t})));
@@ -896,6 +914,7 @@ fn professional_reports_bind_candidate_sources_and_task_authorization() {
     let fixed = save(content, json!([source]), "professional-open-issue");
     let open=ok(hub(&managed_hub,"creative_tasks.assess",json!({"management_ref":managed["management_ref"],"task_ref":t,"professional_refs":[fixed]})));
     assert_eq!(open["professional"]["reports"][0]["candidate_coverage"][0]["counterevidence"][0]["id"],"owner-issue-1");
+    assert!(open["professional"]["reports"][0]["title"].is_string());
     let preview = ok(call(
         &k,
         "creative_tasks.preview_prompt",
@@ -912,6 +931,10 @@ fn professional_reports_bind_candidate_sources_and_task_authorization() {
         "collaboration_path":root.path().join("connection"),"operation_key":"professional-context-grant"}),
     ));
     let exact=ok(hub(&h,"collaboration.open",json!({"task_locator":{"scope_ref":prepared["task_ref"]["scope_ref"],"task_id":prepared["task_ref"]["task_id"]}})))["task_ref"].clone();
+    let default_report=ok(hub(&h,"creative_tasks.assess",json!({"task_ref":exact})));
+    assert_eq!(default_report["professional"]["reports"].as_array().unwrap().len(),1);
+    let removed=ok(hub(&h,"creative_tasks.assess",json!({"task_ref":exact,"professional_refs":[]})));
+    assert_eq!(removed["professional"]["reports"],json!([]));
     let context =
         ok(hub(&h, "task_context.list", json!({"task_ref":exact})))["entries"][0]["context_ref"]
             .clone();

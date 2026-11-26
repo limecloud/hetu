@@ -1,0 +1,107 @@
+{
+  "date": "2026-11-25",
+  "version": "0.14.1",
+  "scope": "R7-08/09 duplicate task notification during pointer input; embedded-agent engineering skill",
+  "state": "local-installed-validated",
+  "cause": "TaskReview.receive ignored a same-revision projection while preserving dirty or pending feedback, but the outer notification handler still replaced the entire DOM. A notification between pointerdown and pointerup detached the save button and prevented click and the tool call.",
+  "implementation": [
+    "receive reports whether the projection needs rendering; an ignored notification preserves the controls",
+    "different expected SHA still marks the view stale and blocks saving",
+    "writes still start on click and keep the original feedback targets, CAS and operation recovery",
+    "engineering skill documents extension layers, unique input ownership, fixed business readback and meaningful pointer/notification regression"
+  ],
+  "validation": {
+    "before": {
+      "failed": 2,
+      "log": "output/review-notification-before.log",
+      "traces": "output/review-notification-20261125/before",
+      "scope": "preference and passage feedback; same projection delivered through official AppBridge between real mouse down and up"
+    },
+    "after": {
+      "passed": 25,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/review-notification-after.log",
+      "scope": "entire app.spec.ts; both pointer journeys save exactly once, original quote/comment retained, changed revision and original-operation recovery guards continue passing"
+    },
+    "build": "task-view TypeScript, deterministic resource build, native consumers and desktop package passed",
+    "real_source": {
+      "passed": 1,
+      "failed": 0,
+      "log": "output/review-notification-real-source.log",
+      "scope": "real MCP and Core; fixed passage feedback, lost receipt recovery, same working copy and unchanged formal source"
+    },
+    "package": {
+      "manifest": "output/review-notification-20261125/package/hetu-dev-D27Cyp/manifest.json",
+      "source_sha256": "ae01caa9596f2d6134c6577cba8ae522553a72e9b95781588005ffeb9ba350c1",
+      "source_inputs": 3053,
+      "artifacts": 3720,
+      "source_matches": true,
+      "icon_matches": true,
+      "signing": "ad-hoc-development",
+      "verification": "output/review-notification-20261125/package-verified.json"
+    },
+    "package_desktop": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/review-notification-desktop.log",
+      "scope": "packaged author/plugin journey, task assessment, paginated fixed source and passage feedback"
+    },
+    "package_workspace": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/review-notification-workspace.log",
+      "scope": "installed package resources; unified execution and relationship geometry"
+    },
+    "installed_source": {
+      "passed": 1,
+      "failed": 0,
+      "log": "output/review-notification-installed-source.log",
+      "scope": "actual /Applications/Hetu.app; passage feedback, source coverage, retry, closed view isolation and Core readback"
+    },
+    "installation": {
+      "path": "/Applications/Hetu.app",
+      "items_verified": 3132,
+      "profile_indexes_unchanged": true,
+      "atomic_swap": true,
+      "backup_created": false,
+      "external_mcp_terminated": false,
+      "log": "output/review-notification-install.log"
+    },
+    "normal_launch": {
+      "library_works": 19,
+      "profile_indexes_unchanged": true,
+      "log": "output/review-notification-normal.log",
+      "record": "output/conversation-composition-20261125/installed-normal-launch-review-notification.json"
+    },
+    "installed_original_task": {
+      "record": "output/review-notification-20261125/installed-machine.json",
+      "runtime_version": "0.14.1",
+      "formal_unchanged": true,
+      "candidates_read": 3,
+      "professional_status": "inconclusive",
+      "report_sha256": "56ce237f82f5d0ed02e1c08cb96bc155f94918e8d9b16be2c1fa67ba838be5a6",
+      "model_turns": 0
+    },
+    "current_conversation_mcp": {
+      "runtime_version": "0.14.0",
+      "method_version": "0.3.13",
+      "source": "actual hetu_inspect_runtime call in this conversation",
+      "hot_reload_claimed": false
+    },
+    "skill": {
+      "path": ".agents/skills/hetu-embedded-agent",
+      "files": 5,
+      "relative_links": 12,
+      "official_validator": "passed using isolated uv environment with pyyaml",
+      "entry_registered": "AGENTS.md"
+    }
+  },
+  "limits": [
+    "The initial structure-labels package failure had no event diagnostics; the demonstrated duplicate-notification race does not establish its cause.",
+    "No new model turn was sent; automated QA decisions in isolated fixtures do not represent the author's acceptance of real creative work.",
+    "Native Codex Desktop host, full visual/accessibility, professional video production, other platforms and formal release remain independent gates."
+  ]
+}

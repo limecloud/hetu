@@ -1,5 +1,56 @@
 use super::*;
 
+fn check_text_range(content: &str, range: &Value) -> Result<()> {
+    let start = range["byte_start"]
+        .as_u64()
+        .and_then(|value| usize::try_from(value).ok());
+    let end = range["byte_end"]
+        .as_u64()
+        .and_then(|value| usize::try_from(value).ok());
+    let quote = range["quote"].as_str();
+    ensure(
+        start
+            .zip(end)
+            .zip(quote)
+            .is_some_and(|((start, end), quote)| {
+                end > start
+                    && end - start <= 16 * 1024
+                    && quote.len() == end - start
+                    && content.get(start..end) == Some(quote)
+            }),
+        "hetu.invalid_source_ref",
+        "意见选区必须位于原文UTF-8边界，与原句一致且不超过16 KiB。",
+    )
+}
+
+fn check_image_region(candidate: &Value, region: &Value) -> Result<()> {
+    ensure(
+        candidate["kind"] == "image",
+        "hetu.invalid_source_ref",
+        "图片区域只能指向固定图片候选。",
+    )?;
+    let x = region["x"].as_u64();
+    let y = region["y"].as_u64();
+    let width = region["width"].as_u64();
+    let height = region["height"].as_u64();
+    ensure(
+        x.zip(y)
+            .zip(width.zip(height))
+            .is_some_and(|((x, y), (width, height))| {
+                width > 0
+                    && height > 0
+                    && x.checked_add(width)
+                        .zip(candidate["width"].as_u64())
+                        .is_some_and(|(end, limit)| end <= limit)
+                    && y.checked_add(height)
+                        .zip(candidate["height"].as_u64())
+                        .is_some_and(|(end, limit)| end <= limit)
+            }),
+        "hetu.invalid_source_ref",
+        "图片区域必须位于原图像素边界内，且宽高为正整数。",
+    )
+}
+
 impl Kernel {
     pub(super) fn read_task_feedback(&self, task_ref: &Value, reference: &Value) -> Result<Value> {
         let (_, request_sha, state, _) = self.task_for_reference(task_ref)?;
@@ -52,10 +103,42 @@ impl Kernel {
                     "forbidden",
                     "意见只能指向本任务的固定成果。",
                 )?;
-                self.task_candidate(&target["candidate_ref"])?;
+                let candidate = self.task_candidate(&target["candidate_ref"])?;
+                if let Some(region) = target.get("image_region") {
+                    check_image_region(&candidate, region)?;
+                }
+                if let Some(range) = target.get("range") {
+                    check_text_range(text(&candidate, "content")?, range)?;
+                }
             }
             Some("working_copy") => {
-                self.working_revision(task_ref, &target["working_copy_ref"])?;
+                let revision = self.working_revision(task_ref, &target["working_copy_ref"])?;
+                if let Some(range) = target.get("range") {
+                    check_text_range(text(&revision["revision"], "content")?, range)?;
+                }
+            }
+            Some("context") => {
+                let range = &target["range"];
+                let quote = text(range, "quote")?;
+                ensure(
+                    !quote.is_empty() && quote.len() <= 16 * 1024,
+                    "hetu.budget_exceeded",
+                    "意见原句不能为空或超过16 KiB。",
+                )?;
+                let source = self.read_task_context(&json!({"task_ref":task_ref,"context_ref":target["context_ref"],
+                    "range":{"byte_start":range["byte_start"],"byte_end":range["byte_end"]},"max_bytes":16*1024}))?;
+                ensure(
+                    source["complete"] == true && source["content"] == quote,
+                    "hetu.invalid_source_ref",
+                    "意见选区与本任务固定的文本来源不一致。",
+                )?;
+                let start = range["byte_start"].as_u64().unwrap_or(u64::MAX);
+                let end = range["byte_end"].as_u64().unwrap_or(0);
+                ensure(
+                    end > start && end - start == quote.len() as u64,
+                    "hetu.invalid_source_ref",
+                    "意见选区与原句的UTF-8长度不一致。",
+                )?;
             }
             _ => return Err(Error::new("invalid_input", "意见目标类型无效。")),
         }
@@ -126,7 +209,23 @@ impl Kernel {
                 "局部选择不属于本任务。",
             )?;
         }
-        let record = json!({"schema_version":"1.0.0","feedback_id":id("feedback"),"task_ref":input["task_ref"],"request_sha256":sha,"sequence":refs.len()+1,"previous_ref":head,"target_refs":input["target_refs"],"intent":input["intent"],"public_comment":input["public_comment"],"selected_refs":input["selected_refs"],"interaction_decision_ref":decision,"origin":if self.author {"native_author"} else {"task_interaction"},"created_at":now()});
+        let targets = input["target_refs"].as_array().unwrap();
+        let version = if targets
+            .iter()
+            .any(|target| target.get("image_region").is_some())
+        {
+            "1.2.0"
+        } else if input["target_refs"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|target| target.get("range").is_some())
+        {
+            "1.1.0"
+        } else {
+            "1.0.0"
+        };
+        let record = json!({"schema_version":version,"feedback_id":id("feedback"),"task_ref":input["task_ref"],"request_sha256":sha,"sequence":refs.len()+1,"previous_ref":head,"target_refs":input["target_refs"],"intent":input["intent"],"public_comment":input["public_comment"],"selected_refs":input["selected_refs"],"interaction_decision_ref":decision,"origin":if self.author {"native_author"} else {"task_interaction"},"created_at":now()});
         record_schema(&record, "feedback_record")?;
         let raw = bytes(&record)?;
         let reference = json!({"feedback_id":record["feedback_id"],"sha256":digest(&raw)});
@@ -149,6 +248,27 @@ impl Kernel {
     }
     pub(in crate::application) fn list_task_feedback(&self, input: &Value) -> Result<Value> {
         let (task, _, state, _) = self.task_for_reference(&input["task_ref"])?;
+        if let Some(reference) = input.get("feedback_ref") {
+            self.read_task_feedback(&input["task_ref"], reference)?;
+        }
+        if let Some(candidate) = input.get("candidate_ref") {
+            ensure(
+                candidate["task_ref"] == input["task_ref"],
+                "forbidden",
+                "意见筛选只能读取本任务的固定候选。",
+            )?;
+            let submission =
+                self.read_submission(&task, &state, text(candidate, "submission_id")?, false)?;
+            ensure(
+                submission["candidates"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .any(|item| item["candidate_id"] == candidate["candidate_id"]),
+                "not_found",
+                "此批次没有指定的意见候选。",
+            )?;
+        }
         let mut handlings: Vec<(Value, Value)> = Vec::new();
         for reference in state["working_copy_refs"].as_array().into_iter().flatten() {
             let (copy, _, _) =
@@ -172,7 +292,24 @@ impl Kernel {
         }
         let mut records = Vec::new();
         for r in state["feedback_refs"].as_array().into_iter().flatten() {
+            if input
+                .get("feedback_ref")
+                .is_some_and(|reference| reference != r)
+            {
+                continue;
+            }
             let record = self.read_task_feedback(&input["task_ref"], r)?;
+            if let Some(candidate) = input.get("candidate_ref")
+                && !record["target_refs"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .any(|target| {
+                        target["kind"] == "candidate" && target["candidate_ref"] == *candidate
+                    })
+            {
+                continue;
+            }
             let results: Vec<_> = handlings
                 .iter()
                 .filter(|(f, _)| f == r)
@@ -182,6 +319,14 @@ impl Kernel {
         }
         // 通用游标绑定主体、完整输入和快照；反馈按 sequence 的生成顺序返回。
         let mut page_input = input.clone();
+        for field in [
+            "result_path",
+            "offset",
+            "max_bytes",
+            "expected_result_sha256",
+        ] {
+            page_input.as_object_mut().unwrap().remove(field);
+        }
         if let Some(cursor) = page_input.as_object_mut().unwrap().remove("after_cursor") {
             page_input["cursor"] = cursor;
         }
@@ -194,6 +339,18 @@ impl Kernel {
             .and_then(|r| r.last())
             .cloned()
             .unwrap_or(Value::Null);
+        if input.get("result_path").is_some() {
+            let sha = digest(bytes(&result)?);
+            ensure(
+                input
+                    .get("expected_result_sha256")
+                    .is_none_or(|expected| expected == &sha),
+                "hetu.stale_evidence",
+                "意见或返稿已变化，请重新读取，不拼接不同快照。",
+            )?;
+            let page = crate::machine::value_page(&result, input)?;
+            return Ok(json!({"feedback_page":page,"feedback_page_sha256":sha}));
+        }
         Ok(result)
     }
 }

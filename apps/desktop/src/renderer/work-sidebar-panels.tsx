@@ -7,23 +7,23 @@ import {readArtworkPage, mergeArtwork, artworkKey, artworkPreview, type Artwork}
 import type {ResourceSelection} from "./resource-reading.tsx";
 import {useObjectContextMenu} from "./text-context-menus.tsx";
 import {manuscriptVisibleText} from "@hetu/workbench-ui/manuscript-format";
-import {readWorkContent} from "./work-content.ts";
+import {readWorkContent, type DocumentGroup} from "./work-content.ts";
 
-export function SidebarDirectory({work, onOpen}: {work: WorkRef; onOpen: (documentId: string) => void}) {
-  const [groups, setGroups] = useState<{title: string; documents: {document_id: string; title: string}[]}[]>([]);
+export function SidebarDirectory({work, onOpen, heading=true}: {work: WorkRef; onOpen: (documentId: string) => void; heading?:boolean}) {
+  const [groups, setGroups] = useState<DocumentGroup[]>([]);
   const [busy, setBusy] = useState(true), [error, setError] = useState("");
   useEffect(() => {
     let active = true;
     setBusy(true); setError("");
-    void readWorkContent(work).then(value => { if (active) setGroups(value.groups); }).catch(value => { if (active) setError(value instanceof Error ? value.message : String(value)); }).finally(() => { if (active) setBusy(false); });
+    void readWorkContent(work,{active:()=>active}).then(value => { if (active) setGroups(value.groups); }).catch(value => { if (active) setError(value instanceof Error ? value.message : String(value)); }).finally(() => { if (active) setBusy(false); });
     return () => { active = false; };
   }, [work.workspace_id, work.kind, work.object_id]);
   return <section className="sidebar-directory-summary" aria-label={work.kind === "drama" ? "分集目录" : "卷章目录"}>
-    <div className="sidebar-panel-heading"><strong>{work.kind === "drama" ? "分集" : "章节"}</strong></div>
+    {heading&&<div className="sidebar-panel-heading"><strong>{work.kind === "drama" ? "分集" : "章节"}</strong></div>}
     {busy && <p className="sidebar-empty" role="status">正在读取目录…</p>}
     {error && <p className="sidebar-empty" role="alert">目录未能读取：{error}</p>}
     {!busy && !error && !groups.some(group => group.documents.length) && <p className="sidebar-empty">暂无可阅读内容。</p>}
-    {!busy && !error && <div className="sidebar-directory-items">{groups.map(group => <section key={group.title}><h4>{group.title}</h4><ol>{group.documents.map(document => <li key={document.document_id}><button type="button" onClick={() => onOpen(document.document_id)}><Icon name="file" size={14}/><span>{document.title}</span></button></li>)}</ol></section>)}</div>}
+    {!busy && !error && <div className="sidebar-directory-items">{groups.map(group => <section key={group.episode_id ?? group.title} className={group.episode_id ? "sidebar-episode" : undefined}>{!group.episode_id && <h4>{group.title}</h4>}<ol>{group.documents.map(document => <li key={document.document_id}><button type="button" onClick={() => onOpen(document.document_id)}><Icon name="file" size={14}/><span>{group.episode_id ? group.title : document.title}</span></button></li>)}</ol></section>)}</div>}
   </section>;
 }
 

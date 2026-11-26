@@ -7,11 +7,13 @@ export type AgentModel = { id: string; name: string; efforts: string[]; default_
 export type AgentEngine = { id: AgentEngineId; name: string; available: boolean; chat: boolean; models: boolean };
 export type SessionState = "idle" | "starting" | "ready" | "running" | "stopping" | "switching" | "uncertain" | "disconnected" | "stopped" | "failed";
 export type DeliveryState = "prepared" | "written" | "accepted" | "rejected" | "unknown";
+export type CodexAuthentication={state:"ready"|"required"|"changed"|"unavailable"|"signing_in";mode?:string};
 export type SessionMessage = {
   id?: string; role: "user" | "assistant" | "system"; text: string; at: string;
   input_sha256?: string; delivery?: DeliveryState; turn_id?: string; item_id?: string; error?: string;
   sequence?:number;
   draft_version?:number;
+  context_refs?:AgentContextRef[];
 };
 export type AgentTool = {
   id: string; turn_id: string; kind: string; title: string;
@@ -30,6 +32,7 @@ export type SessionSnapshot = {
   draft_version?:number;
   terminal_replay?: string; terminal_sequence?: number; model?: string; reasoning_effort?: string;
   capabilities?: { terminal: boolean; steer: boolean; models: boolean; chat?: boolean };
+  authentication?:CodexAuthentication;
 };
 export type AgentSessionEvent =
   | { type: "snapshot"; snapshot: SessionSnapshot }
@@ -39,7 +42,7 @@ export type AgentSessionEvent =
   | { type: "terminal"; session_id: string; data: string; generation: number; sequence: number };
 export interface AgentSessionAdapter {
   start(): Promise<SessionSnapshot>;
-  send(text: string, displayText?: string, options?: { attempt_id?: string; model?: string; reasoning_effort?: string }): Promise<SessionSnapshot>;
+  send(text: string, displayText?: string, options?: { attempt_id?: string; model?: string; reasoning_effort?: string; draft_version?:number; context_refs?:AgentContextRef[] }): Promise<SessionSnapshot>;
   interrupt(): Promise<SessionSnapshot>;
   respond(id: number | string, result: unknown, generation?: number): Promise<void>;
   stop(): Promise<SessionSnapshot>;

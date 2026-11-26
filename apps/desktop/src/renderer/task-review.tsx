@@ -13,6 +13,7 @@ import "./surface-pages.css";
 import { usePreferences } from "./preferences.tsx";
 import { readingProfile } from "@hetu/workbench-ui";
 import type {WorkRef} from "@hetu/plugin-sdk";
+import {TaskAssessment} from "./task-assessment.tsx";
 
 export function TaskReview({ work, notify, ai }: SurfaceContext) {
   const { agentStatus, setAgentStatus } = React.useContext(Workbench);
@@ -39,7 +40,7 @@ export function TaskReview({ work, notify, ai }: SurfaceContext) {
       if (epoch !== generation.current) return;
       setTasks((old) => (next ? [...old, ...items] : items));
       setCursor(result.next_cursor ?? undefined);
-      const reviewable = items.find((task: any) => task.task_ref.task_id === requested) ?? items.find((task: any) => task.submission_count > 0 && task.state !== "closed");
+      const reviewable = items.find((task: any) => task.task_ref.task_id === requested) ?? items.find((task: any) => (task.submission_count > 0 || task.working_copy_count > 0) && task.state !== "closed");
       if (!next) setAgentStatus(previous=>reviewable?{state:"waiting_for_audit",taskId:reviewable.task_ref.task_id,message:reviewable.brief,...(previous.taskId===reviewable.task_ref.task_id?{submissionId:previous.submissionId}:{})}:{state:"idle"});
     } catch (error) {
       if (epoch !== generation.current) return;
@@ -88,7 +89,7 @@ export function TaskReview({ work, notify, ai }: SurfaceContext) {
                   key={task.task_ref.task_id}
                   value={task.task_ref.task_id}
                 >
-                  {task.brief} {task.submission_count} 批成果
+                  {task.brief} {task.submission_count} 批成果{task.working_copy_count ? ` ${task.working_copy_count} 份工作稿` : ""}
                 </option>
               ))}
             </select>
@@ -225,7 +226,7 @@ export function TaskPanel({
         bridge.oninitialized = () => {
           if (!active) return;
           clearTimeout(timer);
-          bridge.sendToolInput({ arguments: { task_ref: task.task_ref } });
+          bridge.sendToolInput({ arguments: { task_ref: task.task_ref,...(submissionId?{submission_id:submissionId}:{}) } });
           bridge.sendToolResult(result);
         };
         bridge.onsizechange = (size) => {
@@ -269,12 +270,12 @@ export function TaskPanel({
       {!submissionId && (
         <AuthorAdoption task_ref={task.task_ref} notify={notify} />
       )}
-      {journal && (
+      {journal && journal.status !== "succeeded" && (
         <div className="recover">
           <span>
             {journal.status === "pending"
               ? "发现未确认的保存操作"
-              : "上次保存记录可核验"}
+              : "上次保存未完成"}
           </span>
           <button
             disabled={busy}
@@ -304,6 +305,7 @@ export function TaskPanel({
           <button onClick={() => setRefresh((v) => v + 1)}>重新打开面板</button>
         </div>
       )}
+      <TaskAssessment key={task.task_ref.task_id+(submissionId??"")} work={work} taskRef={task.task_ref} submissionId={submissionId} language={preferences.language}/>
       <iframe
         ref={frame}
         title="任务候选审阅"

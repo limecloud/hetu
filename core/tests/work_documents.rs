@@ -39,6 +39,36 @@ fn chapter(kernel: &Kernel, key: &str) -> Value {
         json!({"kind":"novel_chapter","title":"雨夜","content":"雨落在旧站，阿青仍在等车。\r\n", "source_format":"markdown","operation_key":key}),
     ))
 }
+
+#[test]
+fn title_search_returns_fixed_revision_refs_for_only_the_selected_authorized_page() {
+    let root=tempfile::tempdir().unwrap();
+    let (k,hub,work,grant)=setup(root.path());
+    for (index,title) in ["灯塔 Codex","旧站 codex","另一份原稿"].iter().enumerate(){
+        ok(call(&k,"documents.create",json!({"kind":"novel_chapter","title":title,"source_format":"markdown",
+            "content":format!("原文{index}🌿\r\n"),"operation_key":format!("search-{index}")})));
+    }
+    let query=json!({"work_ref":work,"query":" coDEX ","include_revision_ref":true,"limit":1});
+    let first=ok(agent(&hub,&grant,"documents.list",query.clone()));
+    assert_eq!(first["documents"].as_array().unwrap().len(),1);
+    let row=&first["documents"][0];
+    let content=ok(agent(&hub,&grant,"documents.get",json!({"document_id":row["document_id"],"revision_id":row["current_revision_id"]})));
+    assert_eq!(row["current_revision_ref"],json!({"revision_id":content["revision"]["revision_id"],
+        "sha256":content["revision"]["sha256"],"size_bytes":content["revision"]["size_bytes"]}));
+    assert!(row.get("content").is_none());
+    let mut next=query.clone();next["cursor"]=first["next_cursor"].clone();
+    let second=ok(agent(&hub,&grant,"documents.list",next.clone()));
+    assert_ne!(second["documents"][0]["document_id"],row["document_id"]);
+    assert!(second["next_cursor"].is_null());
+    next["query"]=json!("另一份");
+    assert_eq!(agent(&hub,&grant,"documents.list",next)["error"]["code"],"cursor_invalid");
+    let plain=ok(agent(&hub,&grant,"documents.list",json!({"work_ref":work,"query":"","limit":10})));
+    assert_eq!(plain["documents"].as_array().unwrap().len(),3);
+    assert!(plain["documents"].as_array().unwrap().iter().all(|row|row.get("current_revision_ref").is_none()));
+    let foreign=episode(&k,"other").0;
+    let mut bad=query;bad["work_ref"]=foreign;
+    assert_eq!(agent(&hub,&grant,"documents.list",bad)["error"]["code"],"forbidden");
+}
 fn episode(kernel: &Kernel, key: &str) -> (Value, Value) {
     let project = ok(call(
         kernel,
@@ -127,6 +157,10 @@ fn exact_novel_reads_directory_and_fixed_history_but_never_sibling_scripts_or_wr
         json!({"document_id":first["document"]["document_id"],"revision_id":original}),
     ));
     assert_eq!(old["content"], "雨落在旧站，阿青仍在等车。\r\n");
+    assert_eq!(old["work_ref"], reference);
+    assert!(old["document"].get("work_ref").is_none());
+    assert_eq!(old["revision"], first["revision"]);
+    assert_ne!(old["document"]["current_revision_id"], *original);
     for action in ["documents.get", "documents.history"] {
         assert_eq!(
             agent(
@@ -152,6 +186,7 @@ fn exact_novel_reads_directory_and_fixed_history_but_never_sibling_scripts_or_wr
         json!({"document_id":first["document"]["document_id"]}),
     ));
     assert_eq!(current["content"], "车站改名了，旧稿仍保留。");
+    assert_eq!(current["work_ref"], reference);
 }
 
 #[test]
@@ -205,15 +240,28 @@ fn exact_drama_filters_same_title_projects_and_legacy_unowned_scripts() {
             "forbidden"
         );
     }
-    assert_eq!(
-        ok(agent(
-            &hub,
-            &grant,
-            "documents.get",
-            json!({"document_id":owned["episode"]["document_id"]})
-        ))["content"],
-        ""
-    );
+    let script = ok(agent(
+        &hub,
+        &grant,
+        "documents.get",
+        json!({"document_id":owned["episode"]["document_id"]}),
+    ));
+    assert_eq!(script["content"], "");
+    assert_eq!(script["work_ref"], reference);
+    assert!(script["document"].get("work_ref").is_none());
+    let sibling_script = ok(call(
+        &k,
+        "documents.get",
+        json!({"document_id":other["episode"]["document_id"]}),
+    ));
+    assert_eq!(sibling_script["work_ref"], sibling);
+    let legacy_script = ok(call(
+        &k,
+        "documents.get",
+        json!({"document_id":unowned["document"]["document_id"]}),
+    ));
+    assert_eq!(legacy_script["work_ref"], Value::Null);
+    assert_eq!(legacy_script["revision"], unowned["revision"]);
     let caps = ok(agent(&hub, &grant, "capabilities.get", json!({})));
     assert_eq!(caps["work_ref"], reference);
     for name in ["hetu.documents.list", "hetu.creative_tasks.list"] {

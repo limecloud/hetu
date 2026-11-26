@@ -1,4 +1,4 @@
-use hetu_core::Kernel;
+use hetu_core::{Kernel,execution::WorkspaceExecution};
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use std::{fs, io::Cursor, path::Path};
@@ -72,6 +72,20 @@ fn create(project: &Kernel, parent: &Path) -> Kernel {
 }
 fn select(reference: &Value, expected: Value, key: &str) -> Value {
     json!({"source":{"kind":"preparation","reference":reference},"expected_cover":expected,"presentation":{"crop_rect":{"x":0,"y":0,"width":1,"height":1},"title_overlay":"雾港","author_overlay":"南山"},"operation_key":key})
+}
+#[test]
+fn current_workspace_execution_imports_and_reads_preparation_cover_as_agent() {
+    let root=tempfile::tempdir().unwrap();let(project,candidate_ref,_,_)=prepared(root.path());let _book=create(&project,root.path());
+    let execution=WorkspaceExecution::open(&root.path().join("settings"),"codex").unwrap();
+    let command=json!({"action":"hetu.covers.import_preparation","contract_revision":"1","input":{"project_path":root.path().join("筹备"),"candidate_ref":candidate_ref,"operation_key":"machine-cover-import"}});
+    let request=json!({"action":"hetu.execution.invoke","contract_revision":"1","input":{"workspace_path":root.path().join("小说"),"command":command}});
+    let imported=ok(ok(execution.request(request.clone()))["result"].clone());
+    assert_eq!(ok(ok(execution.request(request))["result"].clone()),imported);
+    let list=ok(ok(execution.request(json!({"action":"hetu.execution.invoke","contract_revision":"1","input":{"workspace_path":root.path().join("小说"),"command":{"action":"hetu.covers.list_preparations","contract_revision":"1","input":{}}}})))["result"].clone());
+    assert_eq!(list["imports"].as_array().unwrap().len(),1);assert_eq!(list["imports"][0]["preview"]["width"],128);
+    let asset=&imported["record"]["asset_ref"];
+    let actual=ok(execution.request_workspace(&root.path().join("小说"),json!({"action":"hetu.assets.get","contract_revision":"1","input":{"asset_id":asset["asset_id"],"revision":asset["revision"]}})));
+    assert_eq!(actual["asset"]["actor_ref"],"actor_00000000-0000-4000-8000-000000000002");
 }
 
 #[test]

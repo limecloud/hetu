@@ -1,0 +1,159 @@
+{
+  "scope": "内嵌会话成果固定回读与视频／专业历史导航，以及可复用TUI／GUI工程Skill",
+  "date": "2026-11-25",
+  "runtime": {
+    "platform": "macOS arm64",
+    "node": "25.0.0",
+    "electron": "42.11.18",
+    "native_terminal": "Claude Code 2.1.330",
+    "core": "0.14.1 source development build",
+    "model_turns": 0
+  },
+  "architecture": {
+    "core_actions_added": 0,
+    "storage_added": false,
+    "agent_added": false,
+    "result_store": "existing Core media and extension objects",
+    "session_receipts": "existing MCP relay and structured tool events",
+    "plugin_runtime_required_for_read": false,
+    "adoption_implied": false
+  },
+  "implementation": [
+    "Known succeeded execution.invoke/execute and plugin invocation receipts only; original action, effect, status and plugin Owner preserved",
+    "Fixed WorkRef, media/object identity, episode, revision and digest reread via existing Core actions",
+    "Distinct keys for multiple results from one tool; duplicate fixed references merged; bounded twelve result window",
+    "Video navigation retains exact episode/media; supplements a fixed result beyond first page; refresh retains explicit selection",
+    "Plugin history uses fixed Core export even when disabled; failed original export retries same revision",
+    "Same original PTY, generation and unsent draft retained after results review"
+  ],
+  "skill": {
+    "directory": ".agents/skills/hetu-embedded-agent",
+    "entry": "SKILL.md",
+    "references": [
+      "references/integration.md",
+      "references/extension.md",
+      "references/validation.md"
+    ],
+    "metadata": "agents/openai.yaml",
+    "registered_in": "AGENTS.md",
+    "official_validator": "passed via isolated uv PyYAML environment",
+    "local_links": 12,
+    "broken_links": 0,
+    "global_install": false
+  },
+  "checks": {
+    "unit": {
+      "passed": 14,
+      "failed": 0,
+      "log": "output/session-media-results-20261125/final-unit.log"
+    },
+    "desktop_final": {
+      "passed": 3,
+      "failed": 0,
+      "log": "output/session-media-results-20261125/final-desktop.log",
+      "result": "output/session-media-results-20261125/final/session-media-results-原会话真实MCP保存后打开确切历史视频与停用插件成果，返回仍沿原PTY/result.json"
+    },
+    "video_regression": {
+      "passed": 3,
+      "failed": 0,
+      "surfaces": [
+        "desktop",
+        "stdio",
+        "official Codex CLI MCP forwarding"
+      ],
+      "log": "output/session-media-results-20261125/final-video-regression.log",
+      "model_turns": 0
+    },
+    "types_and_builds": [
+      "task-view build",
+      "Rust app-server/CLI/MCP and baseline/plugin fixtures",
+      "desktop TypeScript and build",
+      "task-view source resource reproducibility"
+    ],
+    "docs": {
+      "documents": 92,
+      "links": 1579,
+      "mermaid": 118,
+      "errors": 0
+    },
+    "capability_map": "consistent",
+    "post_test_source_artifact_hashes": "all recorded inputs and artifacts unchanged"
+  },
+  "business_observation": {
+    "packaged": false,
+    "model_turns": 0,
+    "actual_mcp": true,
+    "video_reference": {
+      "media_id": "vmedia_c2e2c95f-8aa0-407e-9741-4d7c95f0ab5a",
+      "revision": 1,
+      "sha256": "5a4ed85e14223eb5418484a13666561be26d154c85e45863a891f1014e9f1201"
+    },
+    "second_episode": true,
+    "not_on_first_page": true,
+    "refresh_retained": true,
+    "decoded_and_played": true,
+    "plugin_revision": 1,
+    "disabled_plugin_read": true,
+    "fixed_read_retry": true,
+    "duplicate_saved_once": true,
+    "same_session": true,
+    "draft_retained": true
+  },
+  "earlier_runs": [
+    {
+      "run": "first",
+      "result": "failed during complete plugin capabilities MCP read: connection result budget exceeded; video was already saved, plugin save had not started",
+      "resolution": "test fixture prepares capability digest with existing desktop execution read; actual writes remain on original session MCP, no budget expansion",
+      "evidence": "output/session-media-results-20261125/first"
+    },
+    {
+      "run": "second",
+      "result": "original real MCP history navigation passed before refresh/decoder/retry assertions were added",
+      "evidence": "output/session-media-results-20261125/second"
+    },
+    {
+      "run": "regression",
+      "result": "existing Agent business passed; plugin results failed before application launch because plugin_fixture binary was absent",
+      "resolution": "built fixture from its actual owner hetu-app-server and reran final three desktop journeys",
+      "evidence": "output/session-media-results-20261125/regression"
+    }
+  ],
+  "source_sha256": {
+    "apps/desktop/src/main/agent/session-results.ts": "5e77aaa1434f309efa9075fc1f98bfb470bab265ef031dea86239b6e6ca887d4",
+    "apps/desktop/src/session-results.ts": "759f2fa0787924cbcae6d1e7b288cf72a82dc4504e07288b5b9303f0f1420cfc",
+    "apps/desktop/src/renderer/index.tsx": "249bd13f2d21c4ca1d49d757c0223966d010befa2b781dd500d4ad1e9ab68ae3",
+    "apps/desktop/src/renderer/contributions.tsx": "9f98efadbe4ae71a1102f34bd65a4a8d996d35654d8fb827416f7e147b6e1509",
+    "apps/desktop/src/renderer/video-review.tsx": "e6a5ff626e29690169fcdb7b2674014ec9942dbcb8bc7fe1156b9d0eb552956b",
+    "apps/desktop/src/renderer/plugin-results.tsx": "45bcda13d2a85e39f1d70a193f4af03837ff494578038fc7dff5171b140854e4",
+    "apps/desktop/tests/session-results.test.ts": "780ef1a52b62b1540dd7212c9a981bae84aa3c578940666d8ba49cca0cf9bd5d",
+    "apps/desktop/tests/session-media-results.spec.ts": "57d4bea18e4918b89e1b074884144238346be0290a60c1524090157c186bf6e2",
+    ".agents/skills/hetu-embedded-agent/SKILL.md": "5c4e12e5853d23a5eba8c53d99cf3491b17a6d54066fffd5747d333ff73292cc",
+    ".agents/skills/hetu-embedded-agent/agents/openai.yaml": "2f918af983f709b21638337025aa3d62cf82fb759698b3485fca7b83c5384af9",
+    ".agents/skills/hetu-embedded-agent/references/extension.md": "7c66114e660122b48292c8f9b9494c1db578bd4bd016854f9716cd5395556ddb",
+    ".agents/skills/hetu-embedded-agent/references/integration.md": "d48f886ef328bff321d73096840d1d2236b70201839dbaedefd1fbc7c1824ea3",
+    ".agents/skills/hetu-embedded-agent/references/validation.md": "482e44212e560d5b7d0e6b5fc748cab795d6577ac6d60ddb928e3085aceba845"
+  },
+  "artifacts_sha256": {
+    "apps/desktop/dist/main.cjs": "95eefc4faf48a747a06f0eba8582a865dba07f4ec958ffd54046b5d9bb46b3c9",
+    "apps/desktop/dist/renderer/app.js": "41351db2e26b928ee150b9fca44133198815f1bd1ec430052118189229ad2fb4",
+    "apps/mcp/resources/workbench.html": "6ef9dda631171689a53c725d049cfd4674037ebb9887011b181b2456a730ee0a",
+    "apps/mcp/resources/workbench.manifest.json": "7f1bcceb00be8987de580f42560941f932b4a2e0c520bd6a0f8b27b0c85d7ed3",
+    "target/debug/hetu": "82fd43ee74f280cad7113e284cb3b3f0ff57346d0413b0448807cfaebc9f2035",
+    "target/debug/hetu-mcp": "0f77bfb1f763d122413dc44630de121301d962add598e450f2dc0eb5488a22b3",
+    "target/debug/hetu-app-server": "78e69d7a69af7048e1906c6ab24fe9d1a6b7a8ffa0e6b1972516276658d0ef60"
+  },
+  "boundaries": {
+    "packaged_tested": false,
+    "installed_app_changed": false,
+    "global_plugins_changed": false,
+    "published": false,
+    "website_deployed": false,
+    "cross_platform_verified": false,
+    "native_codex_desktop_verified": false,
+    "real_model_quality_verified": false,
+    "complete_episode_verified": false,
+    "gui_full_visual_or_accessibility_audit": false,
+    "film_fixture": "short deterministic timecode test video only",
+    "goal_complete": false
+  }
+}

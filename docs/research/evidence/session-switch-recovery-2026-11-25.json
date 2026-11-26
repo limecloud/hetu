@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-25",
+  "platform": "macOS arm64",
+  "kind": "embedded-agent-surface-failure-recovery",
+  "state": "installed-validated",
+  "root_causes": [
+    "切换失败只回退surface，当前draft仍指向目标表面，随后保存可串用两端草稿。",
+    "终端协议桥只在成功时结束ready，恢复拒绝、归属失败、断连或关闭仍等待通用30秒超时。"
+  ],
+  "changes": [
+    "切换失败恢复原表面的当前草稿并持久保存，保留原线程及两端草稿，不回退输入代次。",
+    "明确恢复错误、线程归属失败、连接断开和关闭结束原就绪等待，成功后的观察连接断开不撤销已完成恢复。",
+    "启动失败清理新建终端及协议桥，保留原受管引擎和线程。"
+  ],
+  "before": [
+    {
+      "log": "output/session-switch-recovery-20261125/before.log",
+      "result": "failed-as-expected",
+      "actual_draft": "TUI尚未发送的请求",
+      "expected_draft": "GUI尚未发送的意见"
+    },
+    {
+      "log": "output/session-switch-recovery-20261125/bridge-before.log",
+      "result": "failed-as-expected",
+      "duration_ms": 30068.226833,
+      "actual_error": "通用终端恢复超时，原明确拒绝原因丢失"
+    }
+  ],
+  "validation": {
+    "unit": {
+      "passed": 80,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/session-switch-recovery-20261125/final-agent-suite.log"
+    },
+    "recovery": {
+      "passed": 27,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/session-switch-recovery-20261125/recovery-suite.log",
+      "scope": "协议和会话夹具；拒绝、断连、归属错误、关闭、草稿、原尝试及输入代次"
+    },
+    "desktop": {
+      "passed": 1,
+      "failed": 0,
+      "log": "output/session-switch-recovery-20261125/desktop-recheck.log",
+      "scope": "真实Electron与PTY、本地协议夹具；双向失败、可见草稿、原终端保持、零模型轮次、原线程关闭重开"
+    },
+    "real_codex": {
+      "passed": 1,
+      "failed": 0,
+      "codex_version": "0.172.0",
+      "log": "output/session-switch-recovery-20261125/native.log",
+      "result": "output/session-switch-recovery-20261125/native-result.json",
+      "scope": "真实本机Codex；终端客户端退出、受管引擎退出、原线程恢复、旧代次拒绝，零模型轮次"
+    },
+    "types": {
+      "status": "passed",
+      "log": "output/session-switch-recovery-20261125/types.log"
+    },
+    "build": {
+      "status": "passed",
+      "log": "output/session-switch-recovery-20261125/build.log"
+    },
+    "docs": {
+      "status": "passed",
+      "log": "output/session-switch-recovery-20261125/docs.log"
+    },
+    "package": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/session-switch-recovery-20261125/package-e2e.log",
+      "scope": "同版包内双向故障恢复、真实Codex退出恢复、随包Rust/Node/CLI/MCP的作者和插件长旅程"
+    },
+    "installed": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/session-switch-recovery-20261125/installed-e2e.log",
+      "scope": "实际安装路径运行双向失败恢复及真实Codex退出恢复，隔离资料，零模型轮次"
+    }
+  },
+  "first_desktop_failure": {
+    "log": "output/session-switch-recovery-20261125/desktop.log",
+    "reason": "旧输入已经被公开IPC外层拒绝；夹具预期了内层错误文案。核对真实入口后更正预期，保留原业务断言和trace。"
+  },
+  "source_sha256": {
+    "apps/desktop/src/main/agent/codex-session.ts": "147f3faadf124ce11ac530dc55a001dedc1b65e665edf22363986cd04471a5b2",
+    "apps/desktop/src/main/agent/codex-terminal-bridge.ts": "bb760319c4efa1b0bf71e3915aed4dc65eb69c24e2de32cb50509977d6046e4f",
+    "apps/desktop/tests/codex-session.test.ts": "5946938743871f60357a55868e361197db8f7cc00b165e5cbeedbbbacd15a82f",
+    "apps/desktop/tests/codex-terminal-bridge.test.ts": "ba050393a2fef0f84b351674848db774135e2fba08524636c4767f71c0d5fc70",
+    "apps/desktop/tests/agent-surface-recovery.spec.ts": "58453de4189527ba95f58dc56ff41771684ab8a5f53f31d7accac855f8976581"
+  },
+  "limits": [
+    "故障注入依靠本地协议夹具，不将其称作真实Codex服务拒绝；真实Codex退出恢复单独验证。",
+    "未发起模型生成或写入作者作品；不证明创作质量、原生外部MCP App宿主、VoiceOver或完整视觉已完成。",
+    "Windows和Linux尚未运行本项新恢复旅程；不据macOS源码通过推导跨平台。",
+    "当前公开发行版本未更新，本项不关闭38的完整软件工作包。"
+  ],
+  "installation": {
+    "source_sha256": "a8ee721b8da422fb25e448fb25810b7de9074663a50470146261547740c84cdc",
+    "source_inputs": 3057,
+    "artifacts_verified": 3132,
+    "version": "0.14.1",
+    "optimized": true,
+    "signature": "ad-hoc-development-verified",
+    "icon_matches": true,
+    "installed_path": "macOS Applications/Hetu.app",
+    "atomic_swap": true,
+    "backup_created": false,
+    "old_bundle_removed": true,
+    "manifest": "output/session-switch-recovery-20261125/packages/hetu-dev-2YI3xs/manifest.json",
+    "total_package_artifacts": 3720,
+    "profile_indexes_unchanged": {
+      "creative-library.json": true,
+      "LocalSettings/settings.json": true,
+      "agent-sessions/index/selection.json": true
+    },
+    "normal_launch": {
+      "version": "0.14.1",
+      "library_works": 19,
+      "running_from_installed_path": true
+    },
+    "log": "output/session-switch-recovery-20261125/install.log"
+  },
+  "artifacts": {
+    "output/session-switch-recovery-20261125/desktop-recheck/agent-surface-recovery-双向界面切换失败保留各自草稿，原终端与原线程可继续并关闭重开/gui-after-terminal-failure.png": "494f3d12fd0d50adf0bedd2d2e1361752737b0105a4f526c09a715d2114207a3",
+    "output/session-switch-recovery-20261125/desktop-recheck/agent-surface-recovery-双向界面切换失败保留各自草稿，原终端与原线程可继续并关闭重开/result.json": "a9f9b022bbe72812cad8542832b0e3d1189b8acbdc60ace840831a499a1312ee",
+    "output/session-switch-recovery-20261125/desktop-recheck/agent-surface-recovery-双向界面切换失败保留各自草稿，原终端与原线程可继续并关闭重开/terminal-after-gui-failure.png": "a380da72b81f3a4499822fe44890df64b35eaa3367d44a35f232a4b28404b74c",
+    "output/session-switch-recovery-20261125/package-e2e/agent-surface-recovery-双向界面切换失败保留各自草稿，原终端与原线程可继续并关闭重开/gui-after-terminal-failure.png": "674f48589bb8dea73ee619f517c93220a2b6f1903f9a59e3c235bda5a27c233e",
+    "output/session-switch-recovery-20261125/package-e2e/agent-surface-recovery-双向界面切换失败保留各自草稿，原终端与原线程可继续并关闭重开/result.json": "b1dd4e5a9e35be4b40ffb6cb10dcfe18f7331c58df3eae3b9b384407a60aa02f",
+    "output/session-switch-recovery-20261125/package-e2e/agent-surface-recovery-双向界面切换失败保留各自草稿，原终端与原线程可继续并关闭重开/terminal-after-gui-failure.png": "328600f829d251cdaa7451ce58be9e7f0bf0b6fd77bbaf29d252e28f22c71455",
+    "output/session-switch-recovery-20261125/installed-e2e/agent-surface-recovery-双向界面切换失败保留各自草稿，原终端与原线程可继续并关闭重开/gui-after-terminal-failure.png": "674f48589bb8dea73ee619f517c93220a2b6f1903f9a59e3c235bda5a27c233e",
+    "output/session-switch-recovery-20261125/installed-e2e/agent-surface-recovery-双向界面切换失败保留各自草稿，原终端与原线程可继续并关闭重开/result.json": "b1dd4e5a9e35be4b40ffb6cb10dcfe18f7331c58df3eae3b9b384407a60aa02f",
+    "output/session-switch-recovery-20261125/installed-e2e/agent-surface-recovery-双向界面切换失败保留各自草稿，原终端与原线程可继续并关闭重开/terminal-after-gui-failure.png": "caf056be93e53c135c26449ff5f5be0f3f852b357e406a74d7e560131d98d473",
+    "output/session-switch-recovery-20261125/normal-installed-library.png": "4b8b6c6f5aabe6ff04bd2e17742bd8924538d005a3525505d5690b328a98f601"
+  }
+}

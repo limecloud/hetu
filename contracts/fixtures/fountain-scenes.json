@@ -1,0 +1,100 @@
+[
+  {
+    "name": "标题页、混合换行、省略注释与分节",
+    "source": "Title: 海港\r\nAuthor: 作者\n  INT. 这是标题页续行\r\n\r\n# 第一集\n\n.河岸🌿 #一#\r\n\r\n风过旧站。\r\n\r\n/*\r\nEXT. 注释中的假场景\r\n# 注释中的假分节\r\n*/\r\n\r\nINT. 老屋 - NIGHT #2#\n\n@江岚\r\n灯还亮着。\r\n\r\n# 下一节\r\n\r\n[[.这不是场景]]\r\n\r\n.尾声\r\n\r\n保持原文。\r\n",
+    "expected": [
+      {
+        "heading": "河岸🌿",
+        "number": "一"
+      },
+      {
+        "heading": "INT. 老屋 - NIGHT",
+        "number": "2"
+      },
+      {
+        "heading": "尾声",
+        "number": null
+      }
+    ]
+  },
+  {
+    "name": "强制场景、动作与非空前行",
+    "source": "普通动作\nINT. 紧接动作不是标题\n.强制标题\n\n!INT. 强制动作\n\n...省略号\n\nINT.. 错误前缀\n\nI/E 没有句点\n\nınt. 不按ASCII前缀识别\n\n﻿ EXT. 有空白标题\n\n\nINT. 前行NEL不是空行\n",
+    "expected": [
+      {
+        "heading": "强制标题",
+        "number": null
+      },
+      {
+        "heading": "EXT. 有空白标题",
+        "number": null
+      }
+    ]
+  },
+  {
+    "name": "所有共享自然场景前缀",
+    "source": "int./ext. 河岸🌿 #1#\n\n动作。\n\nint/ext. 河岸🌿 #2#\n\n动作。\n\nint./ext 河岸🌿 #3#\n\n动作。\n\nint/ext 河岸🌿 #4#\n\n动作。\n\next./int. 河岸🌿 #5#\n\n动作。\n\next/int. 河岸🌿 #6#\n\n动作。\n\next./int 河岸🌿 #7#\n\n动作。\n\next/int 河岸🌿 #8#\n\n动作。\n\nint. 河岸🌿 #9#\n\n动作。\n\nint 河岸🌿 #10#\n\n动作。\n\next. 河岸🌿 #11#\n\n动作。\n\next 河岸🌿 #12#\n\n动作。\n\nest. 河岸🌿 #13#\n\n动作。\n\nest 河岸🌿 #14#\n\n动作。\n\ni/e. 河岸🌿 #15#\n\n动作。\n",
+    "expected": [
+      {
+        "heading": "int./ext. 河岸🌿",
+        "number": "1"
+      },
+      {
+        "heading": "int/ext. 河岸🌿",
+        "number": "2"
+      },
+      {
+        "heading": "int./ext 河岸🌿",
+        "number": "3"
+      },
+      {
+        "heading": "int/ext 河岸🌿",
+        "number": "4"
+      },
+      {
+        "heading": "ext./int. 河岸🌿",
+        "number": "5"
+      },
+      {
+        "heading": "ext/int. 河岸🌿",
+        "number": "6"
+      },
+      {
+        "heading": "ext./int 河岸🌿",
+        "number": "7"
+      },
+      {
+        "heading": "ext/int 河岸🌿",
+        "number": "8"
+      },
+      {
+        "heading": "int. 河岸🌿",
+        "number": "9"
+      },
+      {
+        "heading": "int 河岸🌿",
+        "number": "10"
+      },
+      {
+        "heading": "ext. 河岸🌿",
+        "number": "11"
+      },
+      {
+        "heading": "ext 河岸🌿",
+        "number": "12"
+      },
+      {
+        "heading": "est. 河岸🌿",
+        "number": "13"
+      },
+      {
+        "heading": "est 河岸🌿",
+        "number": "14"
+      },
+      {
+        "heading": "i/e. 河岸🌿",
+        "number": "15"
+      }
+    ]
+  }
+]

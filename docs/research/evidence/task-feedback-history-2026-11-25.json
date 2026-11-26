@@ -1,0 +1,363 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-25",
+  "kind": "public-task-feedback-history",
+  "state": "installed-validated",
+  "owner": "existing Creation TaskFeedback; no new store or domain action",
+  "scope": [
+    "desktop and shared MCP artwork dialog",
+    "standalone MCP task panel",
+    "read-only list and fixed JSON page expansion"
+  ],
+  "initial_failure": {
+    "log": "output/feedback-history-20261125/before.log",
+    "reason": "installed version has no All feedback control; original Core history remains intact"
+  },
+  "validation": {
+    "source_projection": {
+      "passed": 5,
+      "failed": 0,
+      "log": "output/feedback-history-20261125/projection-model-final.log"
+    },
+    "website": {
+      "pages": 227,
+      "local_references": 13993,
+      "deployed": false,
+      "log": "output/feedback-history-20261125/website.log"
+    },
+    "docs": {
+      "status": "passed",
+      "log": "output/feedback-history-20261125/docs-contract.log"
+    },
+    "core": {
+      "passed": 7,
+      "failed": 0,
+      "ignored": 0,
+      "log": "output/feedback-history-20261125/core.log",
+      "scope": "original image/text range feedback plus >128 KiB multi-target records, complete UTF-8 field pages, unchanged cursor semantics and stale snapshot rejection"
+    },
+    "first_shared": {
+      "passed": 0,
+      "failed": 3,
+      "log": "output/feedback-history-20261125/source.log",
+      "scope": "version-switch old control, unfiltered large unrelated opinions and assertions before read terminal; Codex cleanup then reached total test timeout. Original traces retained."
+    },
+    "candidate_filter": {
+      "passed": 1,
+      "failed": 0,
+      "log": "output/feedback-history-20261125/core-filter.log",
+      "scope": "same task fixed old/new candidate, original sparse sequence, query-bound cursor and foreign-task rejection"
+    },
+    "mcp_budget": {
+      "passed": 1,
+      "failed": 0,
+      "log": "output/feedback-history-20261125/mcp-budget.log",
+      "scope": "over-budget read keeps original task, fixed candidate and cursor, returns direct bounded JSON-page recovery without feedback body"
+    },
+    "desktop_intermediate": {
+      "passed": 1,
+      "failed": 0,
+      "log": "output/feedback-history-20261125/desktop-close-fixed.log",
+      "scope": "complete filtered history, 23 opinions, status filter, retry original cursor, concurrent rejection, no post-close field request and original pixel position; before final metadata-only candidate validation rebuild"
+    },
+    "task_panel_intermediate": {
+      "passed": 1,
+      "failed": 0,
+      "log": "output/feedback-history-20261125/task-panel-final.log",
+      "scope": "same-task image-region recovery, two public opinions and returned/pending distinction on reopened English dark narrow panel; zero additional UI writes"
+    },
+    "final_core": {
+      "passed": 9,
+      "failed": 0,
+      "ignored": 0,
+      "log": "output/feedback-history-20261125/core-final.log",
+      "scope": "eight feedback tests including long UTF-8 field pages, original cursor, metadata-only fixed candidate and missing-media read plus capability-map contract"
+    },
+    "stdio": {
+      "passed": 42,
+      "failed": 0,
+      "ignored": 0,
+      "log": "output/feedback-history-20261125/mcp-stdio.log"
+    },
+    "resource_reproduction": {
+      "status": "passed",
+      "log": "output/feedback-history-20261125/resources-final.log"
+    },
+    "final_shared": {
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/feedback-history-20261125/final-shared.log",
+      "scope": "desktop, stdio and official Codex forwarding plus independent task panel on frozen source; 23 feedback records, fixed image filter, original pixels, long Chinese, cursor retry/concurrent rejection, closed read stopped and no UI writes; before final refresh-retry-start correction, which is revalidated in the accepted package"
+    },
+    "shared_regression": {
+      "passed": 32,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/feedback-history-20261125/shared-regression.log",
+      "scope": "task panel normal/host capability/unknown write/message recovery, same-projection click, text/image models and fixed object projection"
+    },
+    "skill": {
+      "status": "passed",
+      "validator_log": "output/feedback-history-20261125/skill-validator.log",
+      "links": 17,
+      "broken": 0,
+      "scope": "embedded GUI async close and retry-stage lessons added to existing repository development skill"
+    },
+    "package_verification": {
+      "status": "passed",
+      "manifest": "output/feedback-history-20261125/final-packages/hetu-dev-vejnr7/manifest.json",
+      "source_sha256": "a418159300511a726c3aca67f529bf0a16bb110b254498e2d36492bdf00bc4a8",
+      "source_inputs": 3064,
+      "package_artifacts": 3720,
+      "bundle_files_and_links": 3132,
+      "signature": "ad-hoc-development-verified",
+      "icon_matches": true,
+      "previous_navigation_and_directory_sources_preserved": 5,
+      "report": "output/feedback-history-20261125/package-verified.json"
+    },
+    "package_ui": {
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/feedback-history-20261125/package-ui.log",
+      "scope": "final packaged Electron, stdio, official Codex forwarding and task panel; fixed original candidate, long feedback, status filtering, original-cursor retry, initial refresh retry from the beginning, concurrent rejection, closed-read stop and no extra save; before final select theme-only correction"
+    },
+    "packaged_baseline": {
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/feedback-history-20261125/package-baseline.log",
+      "scope": "same pre-final-style package: author/plugin/CLI/MCP, episode-directory and real Codex/Shell full-surface navigation; no model turns"
+    },
+    "accepted_package": {
+      "status": "passed",
+      "manifest": "output/feedback-history-20261125/themed-packages/hetu-dev-1cdRk3/manifest.json",
+      "source_sha256": "f64924cf0ed81e8aa479bfa12fecbda62db0511122db914dcd8151ed79462695",
+      "source_inputs": 3064,
+      "package_artifacts": 3720,
+      "bundle_files_and_links": 3132,
+      "signature": "ad-hoc-development-verified",
+      "icon_matches": true,
+      "verification": "output/feedback-history-20261125/package-themed-verified.json",
+      "change_from_previous_tested_package": "task-feedback-history.css and six derived resource/manifest inputs only; all runtime source and navigation unchanged"
+    },
+    "accepted_package_ui": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/feedback-history-20261125/package-themed-ui.log",
+      "scope": "actual themed bundle desktop full history and standalone MCP panel, dark English narrow selector actual Radix paper/ink and 12px font, keyboard focus"
+    },
+    "governance": {
+      "docs": "passed",
+      "docs_log": "output/feedback-history-20261125/docs-final.log",
+      "capability_map": "passed",
+      "writing_methods": "passed",
+      "skill_validator": "passed",
+      "skill_links": 17
+    },
+    "installed": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/feedback-history-20261125/installed.log",
+      "scope": "actual installed desktop and installed stdio MCP, all 23 opinions, candidate filter, original pixels, long Unicode, failed refresh retry from beginning, original page retry, concurrent rejection, stop reads on close, no UI writes"
+    }
+  },
+  "first_runs": [
+    {
+      "log": "output/feedback-history-20261125/projection-model.log",
+      "reason": "runtime barrel import loaded JSON UI defaults under the pure Node test loader; changed pure projection import to its module without loading unrelated UI"
+    },
+    {
+      "log": "output/feedback-history-20261125/desktop-filter.log",
+      "reason": "status selector options were included in unscoped text count; scoped counts to actual feedback articles"
+    },
+    {
+      "log": "output/feedback-history-20261125/desktop-filter-final.log",
+      "reason": "hidden region was excluded by the default ARIA locator during close validation; included hidden region explicitly"
+    },
+    {
+      "log": "output/feedback-history-20261125/desktop-complete.log",
+      "reason": "close click preceded queued toggle notification; released response started one extra field request. Added synchronous read cancellation in close action, preserving the no-additional-read assertion"
+    },
+    {
+      "log": "output/feedback-history-20261125/task-panel.log",
+      "reason": "newly opened task panel correctly had zero save calls; test incorrectly reused original panel count. Original save-once check remains before reopening"
+    },
+    {
+      "log": "output/feedback-history-20261125/package.log",
+      "reason": "Late refresh-retry-start correction changed source while optimized compilation was live. After release compilation, source consistency check rejected the attempt as designed. Reassembled frozen current inputs using existing compiled binaries; original log retained.",
+      "result": "rejected-before-package; optimized binaries built; no installation"
+    },
+    {
+      "log": "output/feedback-history-20261125/package-ui.log",
+      "reason": "Functional journeys passed; rendered narrow English history showed native select styling, so final CSS explicitly uses Radix paper/ink/line and keyboard focus. Accepted final package will revalidate affected surfaces."
+    }
+  ],
+  "source_sha256": {
+    "contracts/schemas/creative-task.schema.json": "a2933c1b237a046874bdd80ca068a45e9d48e51aa5b87d10dadbaec394a91ba5",
+    "core/src/application/creative_tasks/feedback.rs": "2283c10e17e0601bfee32725ee4456ec57d4a4bf008d33a3f7380a4f2cc1abd3",
+    "packages/workbench-ui/src/task-feedback-history.tsx": "15a21657e9b284d69f40387dd577c327936dc531928c0c918af8f63e9c2834fb",
+    "packages/workbench-ui/src/task-feedback-history.css": "0e0940167699c5a8aa10f4d3e85f43aaf455251de0b37195c9a59852cd83f96d",
+    "packages/workbench-ui/src/task-feedback-reader.ts": "b28862bb471882d826af9d1bdb5bb73a7903fda4efb5868f940a5b7c20107ba7",
+    "packages/workbench-ui/src/json-projection.ts": "a8d99c2cc4a9b81ce0d518a0394dcbf6466667f843556aca6c20a2f504e03493",
+    "apps/task-view/src/source-json.ts": "f23fb579f21eea67842feb56ad703c20f06b2f775200581c97b1ac03c0a12744",
+    "apps/task-view/src/task-review.ts": "1f0b32e010b56b8ca96a04cc3b357247692d3e6c62bed395de6e445da14d2978",
+    "apps/desktop/src/main/task-review.ts": "a550d6d6f5e83f4beba4ba5e98152032d1ec0693c5984044683644a9f4b481d5",
+    "apps/desktop/src/renderer/artwork-detail.tsx": "e15cab1702d5a2e4ce42f3342c56a9516cdcda58e0bc07c7a9effbcd18bb13c5",
+    "apps/mcp/src/response.rs": "546115a81cc3fcf6a5248b038aa738566d10f5974779ebf7ee89f2701ab07988"
+  },
+  "limits": [
+    "No model turns, adoption or finalization intended in isolated history validation.",
+    "Original and handled results remain separate from author acceptance.",
+    "Other platforms, native Codex Desktop and full visual/accessibility/production gates remain independent."
+  ],
+  "screenshots": {
+    "output/feedback-history-20261125/final-shared/real-图片候选区域经独立MCP按原键恢复，新批次不继承旧像素/task-image-region-dark-narrow.png": "556966a2379fba6799567ba0e4bd5101e16d100ad3afed92f52ecc4cefa5f6b7",
+    "output/feedback-history-20261125/final-shared/real-图片候选区域经独立MCP按原键恢复，新批次不继承旧像素/task-feedback-history-dark-narrow.png": "658aa341d5e24f9985b7ffb2b7d1bfc583b0969cb7ef5e0e908a2aeb19b569f8",
+    "output/feedback-history-20261125/final-shared/feedback-history-codex-全部公开意见保留原图片位置，分页失败和并发不混合历史/dialog-history-dark-narrow.png": "57878282f192e2a21837120023c370c09806881b295d14d211d6e89c0438e4a9",
+    "output/feedback-history-20261125/final-shared/feedback-history-codex-全部公开意见保留原图片位置，分页失败和并发不混合历史/history-dark-narrow.png": "340207b0aa3cbbc9b6e835d349019b29609495c1aeba909ce896ea185462b02b",
+    "output/feedback-history-20261125/final-shared/feedback-history-stdio-全部公开意见保留原图片位置，分页失败和并发不混合历史/dialog-history-dark-narrow.png": "57878282f192e2a21837120023c370c09806881b295d14d211d6e89c0438e4a9",
+    "output/feedback-history-20261125/final-shared/feedback-history-stdio-全部公开意见保留原图片位置，分页失败和并发不混合历史/history-dark-narrow.png": "340207b0aa3cbbc9b6e835d349019b29609495c1aeba909ce896ea185462b02b",
+    "output/feedback-history-20261125/final-shared/feedback-history-desktop-全部公开意见保留原图片位置，分页失败和并发不混合历史/dialog-history-dark-narrow.png": "d426ec2c05dd7694de9c96de21b3fd009cf9f47a212175a6a1da72100091144a",
+    "output/feedback-history-20261125/final-shared/feedback-history-desktop-全部公开意见保留原图片位置，分页失败和并发不混合历史/history-dark-narrow.png": "362d0f6cf249fbcdb89d55fbb62748b76a03c288442e9ca8f6119f2dad9e9f73",
+    "output/feedback-history-20261125/package-themed-ui/real-图片候选区域经独立MCP按原键恢复，新批次不继承旧像素/task-image-region-dark-narrow.png": "556966a2379fba6799567ba0e4bd5101e16d100ad3afed92f52ecc4cefa5f6b7",
+    "output/feedback-history-20261125/package-themed-ui/real-图片候选区域经独立MCP按原键恢复，新批次不继承旧像素/task-feedback-history-dark-narrow.png": "ed189e59c3f79fa28eab778952f3fc98ef160c08a27f284bfeffc1be8b83c444",
+    "output/feedback-history-20261125/package-themed-ui/real-图片候选区域经独立MCP按原键恢复，新批次不继承旧像素/task-feedback-history-detail-dark-narrow.png": "a14b6ff6cbb5bd9aa35fec8d7da7852781dc32f41dee12799fd750bba980f371",
+    "output/feedback-history-20261125/package-themed-ui/feedback-history-desktop-全部公开意见保留原图片位置，分页失败和并发不混合历史/dialog-history-dark-narrow.png": "9daab612fea89a539855801e0575752fe2423278d543c7a7d913a0c124afbf20",
+    "output/feedback-history-20261125/package-themed-ui/feedback-history-desktop-全部公开意见保留原图片位置，分页失败和并发不混合历史/history-dark-narrow.png": "2a8e9adadbe045cd3fd6a71534853708f6a37e9792664a3dc6327c67bc1124b5",
+    "output/feedback-history-20261125/package-ui/real-图片候选区域经独立MCP按原键恢复，新批次不继承旧像素/task-image-region-dark-narrow.png": "556966a2379fba6799567ba0e4bd5101e16d100ad3afed92f52ecc4cefa5f6b7",
+    "output/feedback-history-20261125/package-ui/real-图片候选区域经独立MCP按原键恢复，新批次不继承旧像素/task-feedback-history-dark-narrow.png": "658aa341d5e24f9985b7ffb2b7d1bfc583b0969cb7ef5e0e908a2aeb19b569f8",
+    "output/feedback-history-20261125/package-ui/real-图片候选区域经独立MCP按原键恢复，新批次不继承旧像素/task-feedback-history-detail-dark-narrow.png": "bdef2a2364157edb403260e3e4314ba234fa6b3967cb12a78c7f3912526977e8",
+    "output/feedback-history-20261125/package-ui/feedback-history-codex-全部公开意见保留原图片位置，分页失败和并发不混合历史/dialog-history-dark-narrow.png": "57878282f192e2a21837120023c370c09806881b295d14d211d6e89c0438e4a9",
+    "output/feedback-history-20261125/package-ui/feedback-history-codex-全部公开意见保留原图片位置，分页失败和并发不混合历史/history-dark-narrow.png": "340207b0aa3cbbc9b6e835d349019b29609495c1aeba909ce896ea185462b02b",
+    "output/feedback-history-20261125/package-ui/feedback-history-stdio-全部公开意见保留原图片位置，分页失败和并发不混合历史/dialog-history-dark-narrow.png": "57878282f192e2a21837120023c370c09806881b295d14d211d6e89c0438e4a9",
+    "output/feedback-history-20261125/package-ui/feedback-history-stdio-全部公开意见保留原图片位置，分页失败和并发不混合历史/history-dark-narrow.png": "340207b0aa3cbbc9b6e835d349019b29609495c1aeba909ce896ea185462b02b",
+    "output/feedback-history-20261125/package-ui/feedback-history-desktop-全部公开意见保留原图片位置，分页失败和并发不混合历史/dialog-history-dark-narrow.png": "c52004ffede31d638d8e5ed49b8e2d3b0d3be44bea17d7bad63062169afe6fe1",
+    "output/feedback-history-20261125/package-ui/feedback-history-desktop-全部公开意见保留原图片位置，分页失败和并发不混合历史/history-dark-narrow.png": "882785ef48e237ae147f8494ab48d1d3d8d95ad8b1c7864a94fb49d2aeb1fddf",
+    "output/feedback-history-20261125/installed/feedback-history-stdio-全部公开意见保留原图片位置，分页失败和并发不混合历史/dialog-history-dark-narrow.png": "2ad8b7be18cae98959f4ae445814a1e0f69cbb9e86fbcf45c24ffd04a426760f",
+    "output/feedback-history-20261125/installed/feedback-history-stdio-全部公开意见保留原图片位置，分页失败和并发不混合历史/history-dark-narrow.png": "169ae0beef10d7e84134514181be37ac169bcb0a557c3170d9d0f240601a5c19",
+    "output/feedback-history-20261125/installed/feedback-history-desktop-全部公开意见保留原图片位置，分页失败和并发不混合历史/dialog-history-dark-narrow.png": "9daab612fea89a539855801e0575752fe2423278d543c7a7d913a0c124afbf20",
+    "output/feedback-history-20261125/installed/feedback-history-desktop-全部公开意见保留原图片位置，分页失败和并发不混合历史/history-dark-narrow.png": "2a8e9adadbe045cd3fd6a71534853708f6a37e9792664a3dc6327c67bc1124b5",
+    "output/feedback-history-20261125/normal-launch.png": "4b8b6c6f5aabe6ff04bd2e17742bd8924538d005a3525505d5690b328a98f601"
+  },
+  "results": {
+    "output/feedback-history-20261125/final-shared/feedback-history-codex-全部公开意见保留原图片位置，分页失败和并发不混合历史/result.json": {
+      "surface": "codex",
+      "feedback_count": 23,
+      "original_feedback_preserved": true,
+      "current_image_only": true,
+      "old_batch": true,
+      "original_position": true,
+      "page_failure_retry": true,
+      "concurrent_change_rejected": true,
+      "closed_read_stopped": true,
+      "read_only_ui": true,
+      "author_acceptance": "not_implied",
+      "reads": 83,
+      "model_turns": 0
+    },
+    "output/feedback-history-20261125/final-shared/feedback-history-stdio-全部公开意见保留原图片位置，分页失败和并发不混合历史/result.json": {
+      "surface": "stdio",
+      "feedback_count": 23,
+      "original_feedback_preserved": true,
+      "current_image_only": true,
+      "old_batch": true,
+      "original_position": true,
+      "page_failure_retry": true,
+      "concurrent_change_rejected": true,
+      "closed_read_stopped": true,
+      "read_only_ui": true,
+      "author_acceptance": "not_implied",
+      "reads": 83,
+      "model_turns": 0
+    },
+    "output/feedback-history-20261125/final-shared/feedback-history-desktop-全部公开意见保留原图片位置，分页失败和并发不混合历史/result.json": {
+      "surface": "desktop",
+      "feedback_count": 23,
+      "original_feedback_preserved": true,
+      "current_image_only": true,
+      "old_batch": true,
+      "original_position": true,
+      "page_failure_retry": true,
+      "concurrent_change_rejected": true,
+      "closed_read_stopped": true,
+      "read_only_ui": true,
+      "author_acceptance": "not_implied",
+      "reads": 83,
+      "model_turns": 0
+    },
+    "output/feedback-history-20261125/installed/feedback-history-stdio-全部公开意见保留原图片位置，分页失败和并发不混合历史/result.json": {
+      "surface": "stdio",
+      "feedback_count": 23,
+      "original_feedback_preserved": true,
+      "current_image_only": true,
+      "old_batch": true,
+      "original_position": true,
+      "page_failure_retry": true,
+      "concurrent_change_rejected": true,
+      "closed_read_stopped": true,
+      "read_only_ui": true,
+      "author_acceptance": "not_implied",
+      "reads": 110,
+      "model_turns": 0
+    },
+    "output/feedback-history-20261125/installed/feedback-history-desktop-全部公开意见保留原图片位置，分页失败和并发不混合历史/result.json": {
+      "surface": "desktop",
+      "feedback_count": 23,
+      "original_feedback_preserved": true,
+      "current_image_only": true,
+      "old_batch": true,
+      "original_position": true,
+      "page_failure_retry": true,
+      "concurrent_change_rejected": true,
+      "closed_read_stopped": true,
+      "read_only_ui": true,
+      "author_acceptance": "not_implied",
+      "reads": 110,
+      "model_turns": 0
+    }
+  },
+  "installation": {
+    "source_sha256": "f64924cf0ed81e8aa479bfa12fecbda62db0511122db914dcd8151ed79462695",
+    "source_inputs": 3064,
+    "artifacts_verified": 3132,
+    "version": "0.14.1",
+    "optimized": true,
+    "signature": "ad-hoc-development-verified",
+    "icon_matches": true,
+    "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+    "installed_path": "/Applications/Hetu.app",
+    "atomic_swap": true,
+    "backup_created": false,
+    "old_bundle_removed": true,
+    "profile_indexes_unchanged": {
+      "creative-library.json": true,
+      "LocalSettings/settings.json": true,
+      "agent-sessions/index/selection.json": true
+    },
+    "previous_navigation_and_episode_directory_preserved": true,
+    "normal_launch": {
+      "verified": true,
+      "library_works": 19,
+      "runtime": {
+        "version": "0.14.1",
+        "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+        "resources": "/Applications/Hetu.app/Contents/Resources",
+        "userData": "/Users/coso/Library/Application Support/Hetu"
+      },
+      "screenshot": "output/feedback-history-20261125/normal-launch.png",
+      "profile_indexes_unchanged": {
+        "creative-library.json": true,
+        "LocalSettings/settings.json": true,
+        "agent-sessions/index/selection.json": true
+      }
+    },
+    "final_verification": "output/feedback-history-20261125/installed-final-verified.json",
+    "reopened_normally_after_validation": true,
+    "final_source_and_bundle_verification": "passed"
+  },
+  "completed_date": "2026-11-26"
+}

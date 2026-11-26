@@ -6,7 +6,7 @@ import { openSettings, closeSettings, closeApplication } from "./navigation.ts";
 
 const root = path.resolve(import.meta.dirname, "../../..");
 const expect = baseExpect.configure({ timeout: 30000 });
-test("独立设置六分类截图、即时保存、浮层和窗口权限", async () => {
+test("独立设置分类截图、即时保存、浮层和窗口权限", async () => {
   test.setTimeout(600000);
   const profile = await mkdtemp(path.join(os.tmpdir(), "hetu-settings-visual-"));
   const output = path.join(root, "output/settings-native-20261116", process.env.HETU_SETTINGS_ROUND ?? "round-1");
@@ -22,14 +22,21 @@ test("独立设置六分类截图、即时保存、浮层和窗口权限", async
     page.on("pageerror", error => errors.push(error.message));
     await expect(page.getByRole("radiogroup", { name: "外观", exact: true }).getByRole("radio").first()).toBeVisible();
     expect(await openSettings(app, main)).toBe(page);
-    await expect(page.getByRole("tab")).toHaveCount(6);
+    await expect(page.getByRole("tab")).toHaveCount(7);
     await expect(page.evaluate(() => window.hetuDesktop.read("hetu.works.list", {}))).rejects.toThrow();
     await expect(page.evaluate(() => window.hetuDesktop.author("journal", {}))).rejects.toThrow();
     await expect(page.evaluate(() => window.hetuDesktop.install())).rejects.toThrow();
     const categories = [["通用", "general"], ["写作", "writing"], ["模型服务", "models"], ["AI 协作", "agents"], ["版本", "versions"], ["关于", "about"]];
     async function ready(id: string) {
       if (id === "models") await expect(page.getByRole("button", { name: "添加渠道", exact: true })).toBeEnabled();
-      if (id === "agents") await expect(page.locator(".work-agent-inspection")).toBeVisible();
+      if (id === "agents") {
+        const summary = page.getByText("外部客户端、MCP App与Skills接入", {exact:true});
+        if (!await summary.evaluate(element => (element.parentElement as HTMLDetailsElement).open)) await summary.click();
+        await expect(page.locator(".work-agent-inspection")).toBeVisible();
+        const value = (await page.evaluate(() => window.hetuDesktop.settings("get"))).preferences.agent_session;
+        await expect(page.locator(".codex-font-preview").first()).toHaveCSS("font-size", `${value.match_terminal ? value.terminal_font_size : value.chat_font_size}px`);
+        await expect(page.locator(".codex-font-preview code")).toHaveCSS("font-size", `${value.code_font_size}px`);
+      }
       await expect(page.getByRole("button", { name: "让 AI 处理与审阅", exact: true })).toBeEnabled();
     }
     async function capture(name: string) {
@@ -37,8 +44,10 @@ test("独立设置六分类截图、即时保存、浮层和窗口权限", async
       const value = await page.evaluate(() => {
         const panel = document.querySelector(".settings-panel")!;
         const dialog = document.querySelector<HTMLDialogElement>("dialog[open]");
-        const fonts = [...new Set(Array.from(document.querySelectorAll<HTMLElement>("body *")).filter(el => el.checkVisibility() && !el.closest(".appearance-preview,.reading-style-preview,.reading-font-choices,.reading-preview,.settings-about") && [...el.childNodes].some(node => node.nodeType === Node.TEXT_NODE && node.textContent?.trim())).map(el => parseFloat(getComputedStyle(el).fontSize)))].sort((a, b) => a - b);
+        const fontElements = Array.from(document.querySelectorAll<HTMLElement>("body *")).filter(el => el.checkVisibility() && !el.closest(".appearance-preview,.reading-style-preview,.reading-font-choices,.reading-preview,.settings-about,.codex-font-preview") && [...el.childNodes].some(node => node.nodeType === Node.TEXT_NODE && node.textContent?.trim())).map(el => ({tag: el.tagName, class: el.className, text: el.textContent?.slice(0, 80), size: getComputedStyle(el).fontSize}));
+        const fonts = [...new Set(fontElements.map(el => parseFloat(el.size)))].sort((a, b) => a - b);
         return { width: innerWidth, height: innerHeight, fonts, horizontalOverflow: document.documentElement.scrollWidth > innerWidth || panel.scrollWidth > panel.clientWidth + 1,
+          fontElements,
           dialog: dialog && { width: dialog.clientWidth, height: dialog.clientHeight, overflow: dialog.scrollWidth > dialog.clientWidth, backdrop: getComputedStyle(dialog, "::backdrop").backgroundColor },
           tabs: Array.from(document.querySelectorAll('[role="tab"]')).map(el => ({ text: el.textContent, ...JSON.parse(JSON.stringify(el.getBoundingClientRect())), font: getComputedStyle(el).fontSize })),
           groups: Array.from(document.querySelectorAll(".settings-group")).map(el => ({ text: el.querySelector("h3")?.textContent, x: el.getBoundingClientRect().x, y: el.getBoundingClientRect().y, width: el.getBoundingClientRect().width })),
@@ -60,6 +69,7 @@ test("独立设置六分类截图、即时保存、浮层和窗口权限", async
       for (const [label, id] of categories) {
         await page.getByRole("tab", { name: label, exact: true }).click();
         await ready(id);
+        await page.locator(".settings-panel").evaluate(el => { el.scrollTop = 0; });
         await capture(id + "-" + appearance);
         if (id === "models") {
           await page.getByRole("button", { name: "添加渠道", exact: true }).click();
@@ -114,6 +124,7 @@ test("独立设置六分类截图、即时保存、浮层和窗口权限", async
     await page.keyboard.press("Escape");
     expect(page.isClosed()).toBe(false);
     await page.getByRole("tab", { name: "AI 协作", exact: true }).click();
+    await ready("agents");
     await page.locator(".work-agent-finder summary").click();
     await page.getByRole("textbox", { name: "搜索题材套件", exact: true }).fill("历史");
     await capture("agents-finder");
@@ -126,7 +137,9 @@ test("独立设置六分类截图、即时保存、浮层和窗口权限", async
     await page.getByRole("button", { name: "返回设置", exact: true }).click();
     await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows().find(view => view.webContents.getURL().endsWith("?view=settings"))!.setContentSize(520, 588));
     for (const [label, id] of categories) {
-      await page.getByRole("tab", { name: label, exact: true }).click(); await ready(id); await capture(id + "-narrow");
+      await page.getByRole("tab", { name: label, exact: true }).click(); await ready(id);
+      await page.locator(".settings-panel").evaluate(el => { el.scrollTop = 0; });
+      await capture(id + "-narrow");
       if (id === "models") {
         await page.getByRole("button", { name: "添加渠道", exact: true }).click();
         await expect(page.getByRole("dialog", { name: "添加渠道", exact: true })).toBeVisible();

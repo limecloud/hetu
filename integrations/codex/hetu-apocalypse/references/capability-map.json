@@ -90,6 +90,18 @@
       ]
     },
     {
+      "goal": "查看存储占用与清理缓存、已移除会话",
+      "skill": "hetu-manage",
+      "entry": "hetu.local_settings.inspect_storage",
+      "path": [
+        "读取分类与候选快照",
+        "选择确切项目并准备storage_cleanup方案",
+        "展示清单并登记真实清理决定",
+        "原键执行并回读逐文件结果",
+        "变化项保留，未知沿原方案恢复"
+      ]
+    },
+    {
       "goal": "配置模型渠道",
       "skill": "hetu-manage",
       "entry": "hetu.model_settings.inspect",
@@ -382,6 +394,7 @@
       "actions": [
         "hetu.documents.create",
         "hetu.documents.list",
+        "hetu.documents.scene_index",
         "hetu.documents.get",
         "hetu.documents.save",
         "hetu.git.status",
@@ -412,6 +425,7 @@
         "hetu.local_settings.get",
         "hetu.local_settings.inspect_suite",
         "hetu.local_settings.inspect_connection",
+        "hetu.local_settings.inspect_storage",
         "hetu.local_settings.prepare",
         "hetu.local_settings.get_operation",
         "hetu.local_settings.execute",
@@ -455,6 +469,8 @@
         "hetu.documents.move_to_new",
         "hetu.documents.get_move",
         "hetu.documents.restore_move",
+        "hetu.plugin_results.list",
+        "hetu.plugin_results.get",
         "hetu.plugins.capabilities",
         "hetu.plugins.invoke"
       ],
@@ -491,6 +507,10 @@
         "hetu.video.media.list",
         "hetu.video.feedback.save",
         "hetu.video.feedback.list",
+        "hetu.video.decisions.preview",
+        "hetu.video.decisions.save",
+        "hetu.video.decisions.get",
+        "hetu.video.decisions.history",
         "hetu.video.delivery.preview"
       ],
       "entry": "../skills/hetu-video/SKILL.md"
@@ -513,12 +533,6 @@
       "equivalent_machine_actions": [
         "hetu.creative_tasks.submit_result"
       ]
-    },
-    {
-      "action": "hetu.creative_tasks.close",
-      "status": "author_only_gap",
-      "decision": "仅作者入口；机器路径缺口须逐项处理",
-      "equivalent_machine_actions": []
     },
     {
       "action": "hetu.creative_tasks.mark_copied",
@@ -558,18 +572,6 @@
         "hetu.creative_tasks.get",
         "hetu.assets.list"
       ]
-    },
-    {
-      "action": "hetu.covers.import_preparation",
-      "status": "author_only_gap",
-      "decision": "仅作者入口；机器路径缺口须逐项处理",
-      "equivalent_machine_actions": []
-    },
-    {
-      "action": "hetu.covers.list_preparations",
-      "status": "author_only_gap",
-      "decision": "仅作者入口；机器路径缺口须逐项处理",
-      "equivalent_machine_actions": []
     },
     {
       "action": "hetu.covers.inspect_file",

@@ -47,6 +47,7 @@ ROUTES = {
     "local_settings": ("本机设置与套件安装", "hetu-manage"),
     "plugin_access": ("插件授权", "hetu-manage"),
     "plugins": ("插件安装与生命周期", "hetu-manage"),
+    "plugin_results": ("保留专业成果读取", "hetu-manage"),
     "video": ("视频工程", "hetu-video"),
     "works": ("作品读取与关联", "hetu-manage"),
     "work_links": ("作品读取与关联", "hetu-manage"),
@@ -92,6 +93,8 @@ WORKFLOWS = [
      "path": ["独立筹备或恢复确切项目与原操作", "复盘剧本、已选素材、旧工程及实际观看覆盖", "全季→分集→分镜与资产；专业数据按实际插件合同保存", "按问题预演并固定代表性生成与预算，未知查原提供方任务", "剪辑音画→固定区间意见→局部返工→逐集成片与可恢复工程"]},
     {"goal": "设置偏好或安装所选Skills套件", "skill": "hetu-manage", "entry": "hetu.local_settings.get",
      "path": ["读取本机基线", "准备固定设置方案", "记录真实选择", "精确市场预检后执行；未知沿原键只读恢复", "分别核对安装和本会话加载状态"]},
+    {"goal": "查看存储占用与清理缓存、已移除会话", "skill": "hetu-manage", "entry": "hetu.local_settings.inspect_storage",
+     "path": ["读取分类与候选快照", "选择确切项目并准备storage_cleanup方案", "展示清单并登记真实清理决定", "原键执行并回读逐文件结果", "变化项保留，未知沿原方案恢复"]},
     {"goal": "配置模型渠道", "skill": "hetu-manage", "entry": "hetu.model_settings.inspect",
      "path": ["读取非敏感设置及摘要", "按真实指令提交固定设置", "凭据仅进入私密存储", "回读非敏感结果；生成与费用另行授权"]},
     {"goal": "安装、启停或卸载插件", "skill": "hetu-manage", "entry": "hetu.plugins.inspect",
@@ -129,7 +132,7 @@ def build():
                               for name in ["PROJECT_ACTIONS", "WORKSPACE_ACTIONS", "REVIEW_ACTIONS"]))
     tasks = rust_list("core/src/application/creative_tasks.rs", "TASK_ACTIONS")
     inputs = ["contracts/actions.json", "contracts/tools/catalog.json", "integrations/catalog.json",
-              "core/src/execution.rs", "core/src/local_settings.rs",
+              "core/src/execution.rs", "core/src/application/mod.rs", "core/src/local_settings.rs",
               "core/src/application/agent_operations.rs", "core/src/collaboration/authoring.rs",
               "core/src/application/creative_tasks.rs", "core/src/application/work_scope.rs"]
     evidence_path = "docs/research/evidence/2026-11-16-agent-capabilities.json"
@@ -181,10 +184,14 @@ def build():
         elif module == "model_tasks":
             decision = "独立任务与费用授权；不能用通用方案代替"
             recover = "hetu.model_tasks.get"
-        if not routes:
-            decision = "仅作者入口；机器路径缺口须逐项处理"
         alternatives = ALTERNATIVES.get(name, [])
         boundary = HOST_BOUNDARIES.get(name)
+        # 当前工作区执行策略可达旧作者动作；独立替代合同和宿主私密边界保持原分类。
+        if not routes and not alternatives and not boundary and "workspace" in action.get("scopes", ["workspace"]):
+            routes.append("workspace_execution")
+            decision = "当前工作区通过 execution.invoke；auto直接执行，confirm集中准备并确认；执行前发现实际领域Schema"
+        if not routes:
+            decision = "仅作者入口；机器路径缺口须逐项处理"
         if alternatives:
             decision = "机器使用独立合同：" + "、".join(alternatives)
         elif boundary:
@@ -195,9 +202,10 @@ def build():
         inputs.append(skill_path)
         entries.append({"action": name, "purpose": action["purpose"], "group": group,
                         "effect": action["effect"], "routes": routes,
-                        "cli": "hetu --client <client> call " + ("hetu.agent_operations.prepare" if name in proposals else name) + " --input -",
+                        **({"workspace_execution": {"action": "hetu.execution.invoke", "scope": "workspace", "input_template": {"workspace_path": "<当前工作区绝对路径>", "command": {"action": name, "contract_revision": action["contract_revision"], "input": {}}}, "command_input": "按本动作input_schema填写，不直接执行模板"}} if "workspace_execution" in routes else {}),
+                        "cli": "hetu --client <client> call " + ("hetu.execution.invoke" if "workspace_execution" in routes else "hetu.agent_operations.prepare" if name in proposals else name) + " --input -",
                         "proposal_target": name if name in proposals else None,
-                        "mcp": [{"name": t["name"], "profiles": t["profiles"]} for t in mapped],
+                        "mcp": [{"name": t["name"], "profiles": t["profiles"]} for t in mapped] + ([{"name":"hetu_call_action","profiles":["stable"]}] if "workspace_execution" in routes else []),
                         "mcp_via_proposal": name in proposals,
                         "skill": skill, "skill_source": skill_path,
                         "input_schema": action.get("input_schema", {"$ref": action.get("input_schema_ref")}),
@@ -233,6 +241,7 @@ def build():
              "- 维护边界：本清单只维护宿主能力及插件发现入口；各插件自行维护功能清单和 manifest，AI按安装包继续发现，不在宿主重复登记插件功能。",
              "- 文稿编排：文字格式、段落上下移动、选区块字母排序、复制块和分组复用同一原文、撤销及`hetu.documents.save`修订写入；桌面与MCP App共用命令，CLI／MCP读取固定修订后按执行模式提交同一写入，不另存界面专用正文。",
              "- 外部写作交接：桌面与MCP App提供写作、扩写润色、续写、章纲、审稿纠错及小说改编提示词预览；复用`hetu.handoffs.get`核验作品、文稿修订与选区。MCP App按能力向当前Agent发送或准备草稿，复制始终保留；Codex也可直接经`hetu_call_action`驱动固定任务。预览不执行Agent，发送受理不代表完成，结果未知不自动重发；实际写入仍经公开机器动作与原任务完成。",
+             "- 宿主内容提及：`openai/mentions`连接`hetu_search_mentions`，属于只读App适配，不是新领域写入动作。稳定连接按已有精确作品范围投影名称，固定任务连接只列原任务来源；资源按原修订、摘要及当前权限回读。源码、协议、安装与真实宿主状态分别归27、19和38；不注册任意文件编辑器。",
              "- 插件公共服务：SDK提供受管项目适配、固定来源与原操作恢复；桌面提供固定素材预览、派生Blob媒体播放、Markdown／JSON／HTML固定对象分块导出，以及SRT／VTT／ASS／TXT／LRC派生文件保存。合同见[开放宿主SDK](plugin/27-开放宿主SDK与核心能力审计.md)，专业Schema仍由插件维护；定向机器调用仅核验本包与依赖闭包；已安装包始终核验实际字节摘要。",
              "- 插件选择：[官网插件中心](https://hetu.limeai.run/plugins/)展示来源、发行与包内功能清单；目录不代表本机安装状态，执行仍需重新发现。开发与上架见[插件23](plugin/23-插件发布与上架指南.md)。",
              "- 状态解释：**已验证**有专项证据；**源码已连线**需要运行验收；**机器替代入口**指向独立合同；**宿主边界**保留授权或私密性；**作者入口缺口**需继续处理。安装证据与功能验收分别记录。",
@@ -257,6 +266,7 @@ def build():
     lines += ["", "## Review 方法", "",
               "每个领域逐项检查：目标是否可从当前对话开始；实际能力是否可发现；作者是否需要重复填表或进入桌面；决定是否固定结果与版本；执行是否仍为 Agent；成功是否可回读；未知结果是否可沿原键恢复；越权、撤权、冲突是否拒绝。", "",
               "表中 MCP 的“固定方案”表示该领域动作通过共享 prepare／record_decision／execute 工具执行，并非直接暴露作者函数。`workspace` profile 不能等同于稳定连接，也不能等同于获权作品。Skills 是方法层，不凭文件存在获得执行权限。", "",
+              "标记`workspace_execution`的旧作者动作经`hetu.execution.invoke`进入当前明确工作区；CLI与稳定MCP使用地图中的包装输入，不能把原领域输入直接交给稳定连接。该路由只证明workspace范围连线，不推导creation_project范围、安装或完整业务已验收；执行模式、真实Agent身份和领域来源核验继续保留。", "",
               "纯视图状态（窗口尺寸、滚动位置、浏览器布局）不作为创作领域业务接口。私密批注和凭据不能因机器可操作而成为普通读取内容。仅作者入口行表示实现缺口或受限旧入口，不能由 Agent 自设作者身份绕过。", "",
               "## 完整动作清单", ""]
     states = {"verified": "已验证", "source_wired": "源码已连线", "machine_alternative": "机器替代入口", "host_boundary": "宿主边界", "author_only_gap": "作者入口缺口"}

@@ -1,4 +1,4 @@
-import { navigate, openDirectory } from "./navigation.ts";
+import { navigate, openDirectory, openCreativePlugin, closeApplication } from "./navigation.ts";
 import {
   test,
   expect,
@@ -34,7 +34,10 @@ test(
     const packageDirectory =
       process.platform === "darwin" ? path.dirname(bundle) : bundle;
     const artifactErrors: string[] = [];
-    for (const [relative, expected] of Object.entries(manifest.artifacts) as [
+    // macOS实际安装仅复制.app；运行时解压目录的AppleDouble和同级文件不属于安装制品。
+    const artifacts=Object.entries(manifest.artifacts).filter(([relative])=>process.platform!=="darwin"||relative.startsWith(path.basename(bundle)+"/"));
+    expect(artifacts.length).toBeGreaterThan(0);
+    for (const [relative, expected] of artifacts as [
       string,
       any,
     ][]) {
@@ -167,14 +170,12 @@ test(
           .frameLocator('iframe[title="任务候选审阅"]')
           .getByText("旧日记里夹着一张通往雾港的船票。", { exact: true }),
       ).toBeVisible();
-      await navigate(page, "Agent 协作");
-      await page
-        .getByRole("button", { name: "连接当前作品", exact: true })
-        .click();
-      await page
-        .getByRole("button", { name: "复制作品协作请求", exact: true })
-        .click();
-      await expect(page.getByRole("status")).toContainText("已准备当前作品");
+      // 随包验证使用现行交接服务；Agent工作面现在直接进入内嵌会话。
+      // 交接自动建立精确作品连接，不再依赖已移除的逐作品连接页面。
+      const prepared = await page.evaluate(() => window.hetuDesktop.handoff("work.profile"));
+      expect(prepared.copied).toBe(true);
+      const connectionState = await page.evaluate(() => window.hetuDesktop.connection("status", "codex"));
+      expect(connectionState.authorized).toBe(true);
       const handoff = await application!.evaluate(({ clipboard }) =>
         JSON.parse(clipboard.readText().split("\n").slice(1).join("\n")),
       );
@@ -335,9 +336,7 @@ test(
       await page
         .getByRole("button", { name: "安装插件包", exact: true })
         .click();
-      await page
-        .getByRole("button", { name: "人物关系图", exact: true })
-        .click();
+      await openCreativePlugin(page, "人物关系图");
       await expect
         .poll(() =>
           application!
@@ -406,7 +405,7 @@ test(
           { object_id: objectId, operation_key: "packaged-headless" },
         ).status,
       ).toBe("succeeded");
-      await application!.close();
+      await closeApplication(application!);
       application = undefined;
       // 没有桌面窗口时，随包 CLI 仍可回读同一作品与插件成果。
       const readback = json(
@@ -434,9 +433,7 @@ test(
       expect(cited.data.object.source_refs).toEqual(context.source_refs);
       page = await launch();
       await navigate(page, "创作插件");
-      await page
-        .getByRole("button", { name: "人物关系图", exact: true })
-        .click();
+      await openCreativePlugin(page, "人物关系图");
       await expect
         .poll(() =>
           application!
@@ -449,7 +446,7 @@ test(
         .windows()
         .find((p) => p.url().startsWith("hetu-plugin://"))!;
       await expect(
-        plugin.getByText("独立应用人物", { exact: true }).first(),
+        plugin.locator("svg [data-relationship-node] text tspan").getByText("独立应用人物", { exact: true }),
       ).toBeVisible();
       await plugin.screenshot({
         path: path.join(
@@ -457,8 +454,11 @@ test(
           "output/plugin-doc-qa/packaged-relationships.png",
         ),
       });
+    } catch (error) {
+      await application?.windows()[0]?.screenshot({path:test.info().outputPath("failure.png")}).catch(()=>{});
+      throw error;
     } finally {
-      await application?.close();
+      if(application)await closeApplication(application);
     }
   },
 );

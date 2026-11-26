@@ -32,6 +32,7 @@ test("无作品的设置窗口确认Codex连接安装，回读登记且重复点
     const page = await application.firstWindow();
     const settings = await openSettings(application, page);
     await settings.getByRole("tab", { name: "AI 协作", exact: true }).click();
+    await settings.getByText("外部客户端、MCP App与Skills接入", {exact: true}).click();
     const install = settings.getByRole("button", { name: "安装 MCP App", exact: true });
     await install.click();
     await expect(settings.getByRole("status")).toContainText("已取消 Codex 接入");

@@ -36,23 +36,7 @@
 .canon-detail-heading p { margin: 6px 0 0; color: var(--muted); font-size: 12px; }
 .canon-detail-heading button { flex: none; }
 .canon-detail-heading > div { flex: 1; min-width: 0; }
-.canon-description { white-space: pre-wrap; overflow-wrap: anywhere; margin: 0 0 24px; line-height: 1.8; }
-.canon-fields { display: grid; grid-template-columns: minmax(72px, 110px) minmax(0, 1fr); gap: 12px 20px; margin: 0; font-size: 14px; }
-.canon-fields:empty { display: none; }
-.canon-fields dt { color: var(--muted); }
-.canon-fields dd { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
-.canon-fields code { font-size: 12px; }
-.canon-section { margin-top: 24px; padding-top: 20px; border-top: .5px solid var(--line); }
-.canon-section h3 { margin: 0 0 16px; font-size: 14px; font-weight: 600; }
-.canon-facts > div + div { margin-top: 18px; padding-top: 18px; border-top: .5px solid var(--line); }
-.canon-facts p { margin: 6px 0; white-space: pre-wrap; overflow-wrap: anywhere; }
-.canon-validity { font-size: 12px; color: var(--muted); }
-.canon-sources { margin-top: 10px; }
-.canon-sources > div + div { margin-top: 12px; }
-.canon-sources blockquote { margin: 0 0 8px; padding: 0; color: var(--muted); font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
-.canon-sources details { font-size: 12px; }
-.canon-sources summary, .canon-raw summary { cursor: pointer; color: var(--muted); }
-.canon-sources .canon-fields { margin-top: 12px; font-size: 12px; }
+.canon-raw summary { cursor: pointer; color: var(--muted); }
 .canon-raw { margin-top: 28px; padding-top: 18px; border-top: .5px solid var(--line); font-size: 12px; }
 .canon-images { margin-top: 16px; }
 .canon-empty { flex: 1; min-height: 260px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 32px; color: var(--muted); text-align: center; }

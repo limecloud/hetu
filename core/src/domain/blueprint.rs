@@ -14,6 +14,15 @@ pub const SECTIONS: [(&str, &str, &str); 6] = [
     ("rule", "rules", "rule_id"),
 ];
 
+pub fn entity<'a>(blueprint: &'a Value, reference: &str) -> Result<(&'static str, &'a Value)> {
+    for (_, section, field) in SECTIONS {
+        if let Some(item) = blueprint[section].as_array().and_then(|items| items.iter().find(|item| item[field] == reference)) {
+            return Ok((section, item));
+        }
+    }
+    Err(Error::new("not_found", "固定设定集中没有此实体标识。"))
+}
+
 pub fn schema() -> &'static Value {
     static SCHEMA: OnceLock<Value> = OnceLock::new();
     SCHEMA.get_or_init(|| {

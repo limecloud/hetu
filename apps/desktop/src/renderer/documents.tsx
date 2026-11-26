@@ -33,8 +33,13 @@ import {NovelEditor} from "./novel-editors.tsx";
 import {manuscriptVisibleText} from "@hetu/workbench-ui/manuscript-format";
 import {documentTitleInSource} from "./document-title.ts";
 import {WritingTools} from "./writing-tools.tsx";
+import {SavedDocument} from "./saved-document.tsx";
 
-export function Documents({ work, documentId, notify, ai, reviewTask }: SurfaceContext) {
+export function Documents(props:SurfaceContext) {
+  return props.documentResult ? <SavedDocument {...props} reference={props.documentResult}/> : <CurrentDocuments {...props}/>;
+}
+
+function CurrentDocuments({ work, documentId, notify, ai, reviewTask }: SurfaceContext) {
   const showMenu = useContextMenu();
   const [renaming, setRenaming] = useState<any>(), [structureOpen, setStructureOpen] = useState(false);
   const [moving, setMoving] = useState<DocumentMoveSource>(), [moveRevision, setMoveRevision] = useState(0);
@@ -103,12 +108,22 @@ export function Documents({ work, documentId, notify, ai, reviewTask }: SurfaceC
     pending = useRef<any>(),
     generation = useRef(0),
     composition = useRef(false);
+  useEffect(()=>()=>{generation.current++;},[work.workspace_id,work.kind,work.object_id]);
   useEffect(() => {
     let active = true;
     const selectionGeneration = generation.current;
     setLoading(true);
     setLoadError("");
-    Promise.all([readWorkContent(work), restoreReadingState(work, selectionKey, positionKey).catch(error => notify("阅读位置未能恢复：" + error.message))])
+    const restored=restoreReadingState(work, selectionKey, positionKey).catch(error=>{if(active)notify("阅读位置未能恢复："+error.message);});
+    Promise.all([readWorkContent(work,{active:()=>active,onSnapshot:snapshot=>{
+      // 已核验的小说结构可定位首稿；完整目录在后台继续，不阻止阅读与输入。
+      void restored.then(()=>{
+        if(!active||generation.current!==selectionGeneration||work.kind!=="novel"||current.current||requested.current)return;
+        const chapters=snapshot.record.chapters,previous=documentId??viewStorage.getItem(selectionKey);
+        const chapter=chapters.find((item:any)=>item.document_id===previous)??chapters[0];
+        if(chapter)void load({document_id:chapter.document_id});
+      });
+    }}), restored])
       .then(([result]) => {
         if (active) {
           setDocuments(result.documents);
@@ -117,7 +132,7 @@ export function Documents({ work, documentId, notify, ai, reviewTask }: SurfaceC
           const document = result.documents.find((item) => item.document_id === previous) ?? result.groups[0]?.documents[0] ?? result.documents[0];
           // 当前文稿仍在目录中时只更新目录，避免刷新回包重新加载正文并短暂锁住编辑器。
           const currentId = current.current?.document.document_id;
-          if (document && currentId !== document.document_id && generation.current === selectionGeneration) void load(document);
+          if (document && currentId !== document.document_id && requested.current?.document_id!==document.document_id && generation.current === selectionGeneration) void load(document);
         }
       })
       .catch((error) => {
@@ -131,7 +146,6 @@ export function Documents({ work, documentId, notify, ai, reviewTask }: SurfaceC
       });
     return () => {
       active = false;
-      generation.current++;
     };
   }, [work, reload]);
   async function load(document: any, selectedByAuthor = false, expectedRevision?: string) {
@@ -322,6 +336,7 @@ export function Documents({ work, documentId, notify, ai, reviewTask }: SurfaceC
     return () => clearTimeout(timer);
   }, [preferences.autosave, editing, busy, composing, content, reference]);
   function display(edit: boolean, source = false) {
+    if (busyState === "loading") return;
     if (edit === editing && source === sourceMode) return;
     capturePosition();
     setQuote(null);
@@ -451,7 +466,7 @@ export function Documents({ work, documentId, notify, ai, reviewTask }: SurfaceC
       const record = await desktop.author("journal", {document_id: doc.document_id});
       if (record) await desktop.author("acknowledge", {document_id: doc.document_id, operation_key: record.input.operation_key});
       viewStorage.setItem(selectionKey, result.document.document_id);
-      setReload(value => value + 1); window.dispatchEvent(new Event("hetu:work-changed"));
+      setReload(value => value + 1); window.dispatchEvent(new CustomEvent("hetu:work-changed", {detail: {work_ref: work}}));
       notify("文稿副本已创建。");
     } catch (error) {
       viewStorage.setItem(selectionKey, doc.document_id); setReload(value => value + 1);
@@ -482,7 +497,7 @@ export function Documents({ work, documentId, notify, ai, reviewTask }: SurfaceC
       ? {...item, ...source.document} : item.document_id === result.target.document.document_id ? {...item, ...result.target.document} : item));
     if (result.target_created) setReload(value => value + 1);
     setHistory(items => [source.revision, ...items]);
-    window.dispatchEvent(new Event("hetu:work-changed"));
+    window.dispatchEvent(new CustomEvent("hetu:work-changed", {detail: {work_ref: work}}));
     notify(result.move_ref ? "所选内容已移至目标文稿。" : "已撤销跨文稿移动。");
   }
   async function restoreMove() {
@@ -570,12 +585,12 @@ export function Documents({ work, documentId, notify, ai, reviewTask }: SurfaceC
         <div className="directory-scroll">
           {loading && <p className="muted directory-message">正在读取完整目录…</p>}
           {loadError && <div className="directory-message" role="alert"><p>{loadError}</p><button onClick={() => setReload((value) => value + 1)}>重新读取文稿目录</button><button onClick={() => ai()}>让 AI 检查目录</button></div>}
-          {groups.map((group, index) => work.kind==="drama"&&group.documents.length===1?<div className="chapter-group episode-entry" key={group.documents[0].document_id}>
+          {groups.map((group, index) => group.episode_id&&group.documents.length===1?<div className="chapter-group episode-entry" key={group.episode_id}>
             {group.documents.map(doc=><React.Fragment key={doc.document_id}><button {...documentContext(doc)} aria-label={doc.title} className={selected?.document.document_id===doc.document_id?"selected":""} aria-current={selected?.document.document_id===doc.document_id?"page":undefined} onClick={()=>void load(doc,true)} onDoubleClick={()=>shell.pinDocumentTab(doc.document_id)}><Icon name="file" size={13}/><span>{group.title}</span></button>
             {selected?.document.document_id===doc.document_id&&!!scenes.length&&<div className="screenplay-scenes" aria-label="当前分集场次">{scenes.map((scene,sceneIndex)=><button key={scene.from} aria-label={"定位场次 "+(scene.number??sceneIndex+1)+" "+displayedContent.slice(scene.textFrom,scene.textTo).trim()} onClick={()=>jumpScene(scene.from)}><span className="scene-index">{scene.number??sceneIndex+1}</span><span>{displayedContent.slice(scene.textFrom,scene.textTo).trim()}</span></button>)}</div>}</React.Fragment>)}
           </div>:<details key={index} open className="chapter-group"><summary>{group.title}</summary>{group.documents.map((doc) => <button {...documentContext(doc)} key={doc.document_id} className={selected?.document.document_id === doc.document_id ? "selected" : ""} aria-current={selected?.document.document_id === doc.document_id ? "page" : undefined} onClick={() => void load(doc, true)} onDoubleClick={() => shell.pinDocumentTab(doc.document_id)}><Icon name="file" size={13}/><span>{doc.title}</span></button>)}</details>)}
         </div>
-        <div className="directory-footer">{documents.length} {work.kind === "drama" ? "集" : "章"}</div>
+        {!loading && !loadError && <div className="directory-footer">{documents.length} {work.kind === "drama" ? "集" : "章"}</div>}
       </nav>
   );
   useLayoutEffect(() => {
@@ -590,20 +605,30 @@ export function Documents({ work, documentId, notify, ai, reviewTask }: SurfaceC
   return (
     <div ref={layout} className="document-layout">
       {contextMenu.dialogs}
-      {renaming && <DocumentRename document={renaming} onClose={() => setRenaming(undefined)} onSaved={() => {setRenaming(undefined); setReload(value => value + 1); notify("文稿已更新。");}}/>}
+      {renaming && <DocumentRename document={renaming} onClose={() => setRenaming(undefined)} onSaved={result => {
+        const loaded = current.current;
+        if (loaded?.document.document_id === result.document.document_id && loaded.revision.revision_id === renaming.current_revision_id) {
+          // 改名也会创建修订；按实际回执更新当前稿，保留正文、输入和阅读位置。
+          if (!reference && loaded.revision.sha256 === result.revision.sha256)
+            capturePosition(JSON.stringify([result.document.document_id, result.revision.revision_id]));
+          current.current = {...loaded, document: result.document, revision: result.revision};
+          setSelected({...current.current, episode_id: selected?.episode_id});
+        }
+        setRenaming(undefined); setReload(value => value + 1); notify("文稿已更新。");
+      }}/>}
       {moving && <DocumentMove source={moving} documents={documents} workKind={work.kind as "novel" | "drama"} workId={work.object_id} onClose={() => {setMoving(undefined); editorSurface.current?.focus();}} onMoved={receiveMove}/>}
-      {structureOpen && <NovelEditor kind="structure" documents={documents} onClose={() => setStructureOpen(false)} onSaved={() => setReload(value => value + 1)}/>}
+      {structureOpen && <NovelEditor work={work} kind="structure" documents={documents} onClose={() => setStructureOpen(false)} onSaved={() => setReload(value => value + 1)}/>}
       {shell.directoryTarget && createPortal(directory, shell.directoryTarget)}
       {shell.searchTarget && searchPanel && createPortal(searchPanel, shell.searchTarget)}
-      <section ref={workspace} style={typography as React.CSSProperties} data-document-theme={readingPreferences.document_theme ?? "system"} className={"manuscript-workspace reading-surface"+(isScreenplay?" screenplay-workspace":"")} aria-label="正文工作区">
+      <section ref={workspace} style={typography as React.CSSProperties} data-document-theme={readingPreferences.document_theme ?? "system"} className={"manuscript-workspace reading-surface"+(isScreenplay?" screenplay-workspace":"")} aria-label="正文工作区" aria-busy={loading || busyState === "loading"}>
         {selected ? <>
               <header className="manuscript-header" aria-label="稿件页头">
                 {titleFromSource && <span className="manuscript-source-state">{final ? "已定稿" : "未定稿"}</span>}
                 {manuscript && <div className="episode-manuscript-selector"><select aria-label="分集稿件版本" title={reference?.title ?? "作者稿"} value={reference ? manuscriptKey(reference) : "author"} disabled={busy} onChange={(event) => void selectManuscript(event.target.value)}><option value="author">作者稿{manuscript.author_has_content ? "" : "（空）"}</option>{manuscript.references.map((item: any) => <option key={manuscriptKey(item)} value={manuscriptKey(item)} title={item.title}>{item.kind === "submitted" ? "参考稿" : "未提交工作稿"} {item.title}</option>)}</select>{reference && reviewTask && <button onClick={() => reviewTask(reference.task_ref.task_id)}>审阅与提意见</button>}</div>}
-                {isScreenplay && <div className="screenplay-controls"><div role="tablist" aria-label="稿件显示"><button role="tab" aria-selected={!sourceMode && !editing} onClick={() => display(false)}>阅读</button>{!reference && <button role="tab" aria-selected={!sourceMode && editing} onClick={() => display(true)}>编辑</button>}</div>{screenplay && <ScreenplayMetadata script={screenplay}/>}</div>}
+                {isScreenplay && <div className="screenplay-controls"><div role="tablist" aria-label="稿件显示"><button role="tab" disabled={busyState === "loading"} aria-selected={!sourceMode && !editing} onClick={() => display(false)}>阅读</button>{!reference && <button role="tab" disabled={busyState === "loading"} aria-selected={!sourceMode && editing} onClick={() => display(true)}>编辑</button>}</div>{screenplay && <ScreenplayMetadata script={screenplay}/>}</div>}
                 <div className="paper-toolbar"><div className="paper-actions">{editing && !reference && <EditorControls surface={editorSurface} context={editorContext} format={selected.revision.source_format === "markdown" ? "markdown" : selected.revision.source_format === "fountain" ? "fountain" : "plain"} disabled={editorLocked || composing} language={readingPreferences.language} notify={notify}/>}<WritingTools key={selected.document.document_id + ":" + selected.revision.revision_id} work={work} documentId={selected.document.document_id} revisionId={selected.revision.revision_id} selection={quote} disabled={busy || !!reference} blocked={composing ? "请完成输入后生成提示词" : content !== selected.content || pending.current ? "请先保存正文，再生成提示词" : undefined}/><ReadingOptions kind={work.kind === "drama" ? "screenplay" : "novel"} composing={composing} zoom={zoom} beforeChange={() => capturePosition()} onPreview={setReadingPreview} onZoom={value => { setZoom(value); viewStorage.setItem(selectionKey + ":zoom", String(value)); }}/><IconButton icon="refresh" label="刷新当前稿件" disabled={busy} onClick={() => void load({ ...selected.document, episode_id: selected.episode_id })}/><IconButton icon="search" label="搜索正文" onClick={() => searchVisible ? closeSearch() : openSearch()}/><IconButton icon="comment" label="原文批注" disabled={!!reference} onClick={() => setAnnotationList(value => value + 1)}/><details className="popover-menu"><summary aria-label="文稿操作" title="文稿操作"><Icon name="more"/></summary><div className="menu-panel">
-                  <button disabled={!!reference} onClick={() => display(true)}>编辑</button><button onClick={() => display(false)}>阅读</button>
-                  <button onClick={() => display(!reference, true)}>查看原稿</button>
+                  <button disabled={!!reference || busyState === "loading"} onClick={() => display(true)}>编辑</button><button disabled={busyState === "loading"} onClick={() => display(false)}>阅读</button>
+                  <button disabled={busyState === "loading"} onClick={() => display(!reference, true)}>查看原稿</button>
                   <button onClick={() => void desktop.copy(displayedContent).then(() => notify("已复制完整原稿。"), error => notify(error.message))}>复制原稿</button>
                   <button onClick={() => reference && reviewTask ? reviewTask(reference.task_ref.task_id) : ai({document_id: selected.document.document_id, revision_id: selected.revision.revision_id, ...(quote ?? {})})}>让 AI 处理本稿</button>
                   <button disabled={!!reference} onClick={() => {setShowImages(!showImages); shell.setInspector(true);}}>{showImages ? "收起本稿图片" : "本稿图片"}</button>
@@ -637,7 +662,7 @@ export function Documents({ work, documentId, notify, ai, reviewTask }: SurfaceC
                       </button>
                     </div>
                   )}
-              <div className="manuscript-scroll" onContextMenu={event => {if (editing && !reference && (event.target as Element).closest(".author-editor")) contextMenu.open(event); else if (reader.current?.contains(event.target as Node)) readingMenu(event);}}
+              <div className="manuscript-scroll" data-source-title={titleInBody || undefined} onContextMenu={event => {if (editing && !reference && (event.target as Element).closest(".author-editor")) contextMenu.open(event); else if (reader.current?.contains(event.target as Node)) readingMenu(event);}}
                 onKeyDown={event => {if (contextKey(event)) {if (editing && !reference) contextMenu.open(event); else readingMenu(event);}}}>
                 {!titleInBody && <div className="manuscript-title"><h1>{selected.document.title}</h1><span>{reference ? "只读" : final ? "已定稿" : "未定稿"}</span></div>}
                 {reference ? isScreenplay&&!sourceMode?<ScreenplayText ref={reader} className="reference-reader" aria-label="剧本参考稿" text={referenceContent} title={selected.document.title} script={screenplay} onMouseUp={selectQuote} onKeyUp={selectQuote}/>:<ManuscriptText format={(reference?.source_format ?? selected.revision.source_format) === "markdown" && !sourceMode ? "markdown" : "plain"} title={selected.document.title} ref={reader} novel={work.kind === "novel"} className="reference-reader" aria-label="剧本参考稿" text={referenceContent} onMouseUp={selectQuote} onKeyUp={selectQuote}/> : editing ? <AuthorEditor ref={editorSurface} raw={sourceMode} annotations={currentNotes.map(note => note.source_ref)} externalScroll key={selected.document.document_id + ":" + moveRevision} content={content} disabled={editorLocked} format={selected.revision.source_format === "markdown" ? "markdown" : selected.revision.source_format === "fountain" ? "fountain" : "plain"} onContext={updateEditorContext} behavior={{focusParagraph: stableReading.current.focus_paragraph, typewriter: stableReading.current.typewriter_scroll, smartPairs: stableReading.current.smart_pairs}} searchMatches={searchMatches} activeSearchMatch={activeSearchMatch} indent={work.kind === "novel"} screenplay={isScreenplay&&!sourceMode} screenplayTitle={selected.document.title} jumpTo={sceneJump}
@@ -731,7 +756,7 @@ export function Documents({ work, documentId, notify, ai, reviewTask }: SurfaceC
                   />
                 )}
           </div>}
-        </> : busy ? <div className="empty" role="status">正在读取稿件…</div> : readError ? <div className="empty">{readFailure}</div> : <div className="empty"><Icon name="book" size={42}/><h2>{documents.length ? "选择一章或一集" : "从成果开始创作"}</h2><p>让外部 Agent 围绕当前作品准备章节或分集，回来阅读、比较并提出意见。</p><button onClick={() => ai()}>让 AI 处理</button></div>}
+        </> : loading ? <div className="empty" role="status">正在读取文稿目录…</div> : loadError ? <div className="empty" role="alert"><p>无法读取文稿目录：{loadError}</p><button onClick={() => setReload(value => value + 1)}>重新读取目录</button></div> : busy ? <div className="empty" role="status">正在读取稿件…</div> : readError ? <div className="empty">{readFailure}</div> : <div className="empty"><Icon name="book" size={42}/><h2>{documents.length ? "选择一章或一集" : "从成果开始创作"}</h2><p>让外部 Agent 围绕当前作品准备章节或分集，回来阅读、比较并提出意见。</p><button onClick={() => ai()}>让 AI 处理</button></div>}
       </section>
     </div>
   );

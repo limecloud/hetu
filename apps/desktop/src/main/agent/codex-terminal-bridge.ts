@@ -16,11 +16,12 @@ export class CodexTerminalBridge {
   #websockets?: WebSocketServer;
   #peers = new Set<WebSocket>();
   #ready?: Promise<void>;
+  #rejectReady?: (error: Error) => void;
   endpoint = "";
   token?: string;
   async open(options: {
     endpoint: string; token?: string;
-    check(message: CodexWireMessage): void;
+    check(message: CodexWireMessage): void|Promise<void>;
     thread(thread: any): Promise<void>;
     list(result: any): any;
   }) {
@@ -33,7 +34,12 @@ export class CodexTerminalBridge {
       websockets.handleUpgrade(request, socket, head, peer => websockets.emit("connection", peer));
     });
     let ready: () => void;
-    this.#ready = new Promise(resolve => { ready = resolve; });
+    this.#ready = new Promise((resolve, reject) => {
+      ready = () => { this.#rejectReady = undefined; resolve(); };
+      this.#rejectReady = reject;
+    });
+    // 原生客户端可能先回报失败，再由会话宿主等待；保留拒绝供原等待读取。
+    void this.#ready.catch(() => {});
     websockets.on("connection", (downstream: WebSocket) => {
       const url = options.endpoint.startsWith("unix://") ? "ws+unix://" + options.endpoint.slice(7) + ":/" : options.endpoint;
       const upstream = new WebSocket(url, { maxPayload: 8 * 1024 * 1024, perMessageDeflate: false, ...(options.token ? { headers: { Authorization: "Bearer " + options.token } } : {}) });
@@ -42,13 +48,16 @@ export class CodexTerminalBridge {
       let incoming = Promise.resolve(), outgoing = Promise.resolve();
       const connected = new Promise<void>((resolve, reject) => { upstream.once("open", resolve); upstream.once("error", reject); });
       const send = (peer: WebSocket, message: unknown) => { if (peer.readyState === WebSocket.OPEN) peer.send(JSON.stringify(message)); };
-      const fail = () => { downstream.close(); upstream.close(); };
+      const fail = () => {
+        this.#failReady(new Error("Codex终端连接已断开，请重新连接原会话。"));
+        downstream.close(); upstream.close();
+      };
       void connected.catch(fail);
       downstream.on("message", raw => {
         incoming = incoming.then(async () => {
           await connected;
           const message = JSON.parse(raw.toString()) as CodexWireMessage;
-          try { options.check(message); }
+          try { await options.check(message); }
           catch (error) { if(message.method && message.id!==undefined)send(downstream, { id: message.id, error: { code: -32602, message: (error as Error).message } });return; }
           if (message.method && message.id !== undefined) {
             pending.set(message.id, message.method);
@@ -64,16 +73,21 @@ export class CodexTerminalBridge {
             pending.delete(message.id!);
             if (message.result && ["thread/start", "thread/resume", "thread/fork"].includes(method)) {
               try { await options.thread(message.result.thread); }
-              catch (error) { send(downstream, { id: message.id, error: { code: -32603, message: (error as Error).message } }); return; }
+              catch (error) {
+                this.#failReady(error as Error);
+                send(downstream, { id: message.id, error: { code: -32603, message: (error as Error).message } }); return;
+              }
               send(downstream, message); ready(); return;
             }
+            if (message.error && ["thread/start", "thread/resume", "thread/fork"].includes(method))
+              this.#failReady(new Error(message.error.message || "Codex拒绝恢复原线程。"));
             if (method === "thread/list" && message.result) message.result = options.list(message.result);
           }
           send(downstream, message);
         }).catch(fail);
       });
-      downstream.on("close", () => { this.#peers.delete(downstream); upstream.close(); });
-      upstream.on("close", () => { this.#peers.delete(upstream); downstream.close(); });
+      downstream.on("close", () => { this.#peers.delete(downstream); fail(); });
+      upstream.on("close", () => { this.#peers.delete(upstream); fail(); });
       downstream.on("error", fail); upstream.on("error", fail);
     });
     await new Promise<void>((resolve, reject) => {
@@ -83,12 +97,14 @@ export class CodexTerminalBridge {
     });
     this.endpoint = process.platform === "win32" ? "ws://127.0.0.1:" + (server.address() as { port: number }).port : "unix://" + path.join(this.#directory, "terminal.sock");
   }
+  #failReady(error: Error) { this.#rejectReady?.(error); this.#rejectReady = undefined; }
   async ready() {
     let timer: NodeJS.Timeout | undefined;
     try { await Promise.race([this.#ready, new Promise((_, reject) => { timer = setTimeout(() => reject(new Error("Codex终端尚未恢复确切线程，请查看终端后继续。")), 30_000); })]); }
     finally { clearTimeout(timer); }
   }
   async close() {
+    this.#failReady(new Error("Codex终端连接已关闭。"));
     for (const peer of this.#peers) peer.terminate(); this.#peers.clear();
     this.#websockets?.close();
     if (this.#server) await new Promise<void>(resolve => this.#server!.close(() => resolve()));

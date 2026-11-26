@@ -4,7 +4,7 @@ import {tmpdir} from "node:os";
 import path from "node:path";
 import {spawnSync} from "node:child_process";
 import {AppServer} from "../src/main/rpc.ts";
-import {documentAction, closeApplication} from "./navigation.ts";
+import {documentAction, closeApplication, navigate} from "./navigation.ts";
 
 test("阅读查找、后台正则、精确替换及本作品固定修订查询", async ({}, info) => {
   test.setTimeout(120000);
@@ -28,7 +28,7 @@ test("阅读查找、后台正则、精确替换及本作品固定修订查询",
     const page = await app.firstWindow(), errors: string[] = []; page.on("pageerror", error => errors.push(error.message));
     await page.setViewportSize({width: 1440, height: 940});
     await page.getByRole("button", {name: "打开作品 默认小说", exact: true}).click();
-    await page.getByRole("button", {name: "小说", exact: true}).click();
+    await navigate(page, "小说");
     await page.evaluate(async () => {const state = await (window as any).hetuDesktop.settings("preferences"); await (window as any).hetuDesktop.settings("update", {expected_revision: state.revision, patch: {autosave: false}});});
     await documentAction(page, "阅读");
     const manuscriptTop = (await page.locator(".manuscript-stage").boundingBox())!.y;

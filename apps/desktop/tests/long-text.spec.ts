@@ -1,4 +1,4 @@
-import { openDirectory } from "./navigation.ts";
+import { navigate, openDirectory } from "./navigation.ts";
 import { test, expect, _electron as electron } from "@playwright/test";
 import { mkdtemp } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
@@ -55,7 +55,7 @@ test(
         .first()
         .click();
       await page.getByRole("button", { name: /插件集成测试/ }).click();
-      await page.getByRole("button", { name: "小说", exact: true }).click();
+      await navigate(page, "小说");
       await expect(
         page.getByRole("textbox", { name: "文稿编辑", exact: true }),
       ).toBeVisible();

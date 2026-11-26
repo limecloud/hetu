@@ -133,6 +133,7 @@ impl WorkbenchRuntime {
             "copy",
             "paste",
             "execution",
+            "professional",
             "installConnection",
             "installSuite",
             "models",

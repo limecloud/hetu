@@ -6,7 +6,7 @@ import os from "node:os";
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { PluginPackage } from "../../../packages/plugin-host/src/package.ts";
-import { navigate } from "./navigation.ts";
+import { navigate, openCreativePlugin } from "./navigation.ts";
 
 const root = path.resolve(import.meta.dirname, "../../..");
 test("插件Schema升级经CLI准备、固定审阅执行、关窗MCP原键回读", async () => {
@@ -70,7 +70,7 @@ test("插件Schema升级经CLI准备、固定审阅执行、关窗MCP原键回�
     await navigate(page, "创作插件");
     await app.evaluate(({ dialog }, directory) => { dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [directory] }); }, newPackage.source);
     await page.getByRole("button", { name: "安装插件包", exact: true }).click();
-    await page.getByRole("button", { name: "人物关系样本", exact: true }).click();
+    await openCreativePlugin(page, "人物关系样本");
     await expect.poll(() => app.windows().some(view => view.url().startsWith("hetu-plugin://"))).toBe(true);
     await page.evaluate(() => (window as any).hetuDesktop.handoff("plugin"));
     const connection = await app.evaluate(({ clipboard }) => JSON.parse(clipboard.readText().split("\n").slice(1).join("\n")).plugin_connection);

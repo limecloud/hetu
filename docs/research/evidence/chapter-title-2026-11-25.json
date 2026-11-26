@@ -1,0 +1,497 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-25",
+  "scope": "章节标题与正文层级",
+  "state": "local-installed-validated",
+  "root_cause": "已有首行章名只参与页头去重，仍以普通正文的字体、字重和首行缩进呈现。",
+  "implementation": {
+    "owner": "共享workbench.css与现有Documents首行标题识别",
+    "title_font": "系统无衬线650字重，字号为正文1.5倍且至少24px，1.3倍行高",
+    "spacing": "零首行缩进、0.65em标题下留白、0.5px分隔线",
+    "data_integrity": "仅添加显示属性与共享样式，不改写标题原文、格式、正文或修订。"
+  },
+  "render_verification": {
+    "before": {
+      "measurements": [
+        {
+          "name": "edit-light-20",
+          "title": {
+            "fontSize": 20,
+            "fontFamily": "\"Songti SC\", \"Noto Serif CJK SC\", \"Noto Serif SC\", SimSun, serif",
+            "fontWeight": "400",
+            "lineHeight": "34px",
+            "textIndent": "40px",
+            "paddingBottom": "10px",
+            "borderBottomWidth": "0px",
+            "width": 880,
+            "height": 44,
+            "scrollWidth": 880,
+            "clientWidth": 880
+          },
+          "body": {
+            "fontSize": 20,
+            "fontFamily": "\"Songti SC\", \"Noto Serif CJK SC\", \"Noto Serif SC\", SimSun, serif",
+            "fontWeight": "400",
+            "lineHeight": "34px",
+            "textIndent": "40px",
+            "paddingBottom": "10px",
+            "borderBottomWidth": "0px",
+            "width": 880,
+            "height": 44,
+            "scrollWidth": 880,
+            "clientWidth": 880
+          }
+        },
+        {
+          "name": "read-light-20",
+          "title": {
+            "fontSize": 20,
+            "fontFamily": "\"Songti SC\", \"Noto Serif CJK SC\", \"Noto Serif SC\", SimSun, serif",
+            "fontWeight": "400",
+            "lineHeight": "34px",
+            "textIndent": "40px",
+            "paddingBottom": "0px",
+            "borderBottomWidth": "0px",
+            "width": 872,
+            "height": 34,
+            "scrollWidth": 872,
+            "clientWidth": 872
+          },
+          "body": {
+            "fontSize": 20,
+            "fontFamily": "\"Songti SC\", \"Noto Serif CJK SC\", \"Noto Serif SC\", SimSun, serif",
+            "fontWeight": "400",
+            "lineHeight": "34px",
+            "textIndent": "40px",
+            "paddingBottom": "0px",
+            "borderBottomWidth": "0px",
+            "width": 872,
+            "height": 34,
+            "scrollWidth": 872,
+            "clientWidth": 872
+          }
+        }
+      ],
+      "original_source_unchanged": true
+    },
+    "after": {
+      "measurements": [
+        {
+          "name": "edit-light-20",
+          "title": {
+            "fontSize": 30,
+            "fontFamily": "-apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", sans-serif",
+            "fontWeight": "650",
+            "lineHeight": "39px",
+            "textIndent": "0px",
+            "paddingBottom": "19.5px",
+            "borderBottomWidth": "0.5px",
+            "width": 880,
+            "height": 59,
+            "scrollWidth": 880,
+            "clientWidth": 880
+          },
+          "body": {
+            "fontSize": 20,
+            "fontFamily": "\"Songti SC\", \"Noto Serif CJK SC\", \"Noto Serif SC\", SimSun, serif",
+            "fontWeight": "400",
+            "lineHeight": "34px",
+            "textIndent": "40px",
+            "paddingBottom": "10px",
+            "borderBottomWidth": "0px",
+            "width": 880,
+            "height": 44,
+            "scrollWidth": 880,
+            "clientWidth": 880
+          }
+        },
+        {
+          "name": "read-light-20",
+          "title": {
+            "fontSize": 30,
+            "fontFamily": "-apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", sans-serif",
+            "fontWeight": "650",
+            "lineHeight": "39px",
+            "textIndent": "0px",
+            "paddingBottom": "19.5px",
+            "borderBottomWidth": "0.5px",
+            "width": 872,
+            "height": 59,
+            "scrollWidth": 872,
+            "clientWidth": 872
+          },
+          "body": {
+            "fontSize": 20,
+            "fontFamily": "\"Songti SC\", \"Noto Serif CJK SC\", \"Noto Serif SC\", SimSun, serif",
+            "fontWeight": "400",
+            "lineHeight": "34px",
+            "textIndent": "40px",
+            "paddingBottom": "0px",
+            "borderBottomWidth": "0px",
+            "width": 872,
+            "height": 34,
+            "scrollWidth": 872,
+            "clientWidth": 872
+          }
+        },
+        {
+          "name": "read-dark-20",
+          "title": {
+            "fontSize": 30,
+            "fontFamily": "-apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", sans-serif",
+            "fontWeight": "650",
+            "lineHeight": "39px",
+            "textIndent": "0px",
+            "paddingBottom": "19.5px",
+            "borderBottomWidth": "0.5px",
+            "width": 872,
+            "height": 59,
+            "scrollWidth": 872,
+            "clientWidth": 872
+          },
+          "body": {
+            "fontSize": 20,
+            "fontFamily": "\"Songti SC\", \"Noto Serif CJK SC\", \"Noto Serif SC\", SimSun, serif",
+            "fontWeight": "400",
+            "lineHeight": "34px",
+            "textIndent": "40px",
+            "paddingBottom": "0px",
+            "borderBottomWidth": "0px",
+            "width": 872,
+            "height": 34,
+            "scrollWidth": 872,
+            "clientWidth": 872
+          }
+        },
+        {
+          "name": "read-narrow-26",
+          "title": {
+            "fontSize": 39,
+            "fontFamily": "-apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", sans-serif",
+            "fontWeight": "650",
+            "lineHeight": "50.7px",
+            "textIndent": "0px",
+            "paddingBottom": "25.35px",
+            "borderBottomWidth": "0.5px",
+            "width": 660,
+            "height": 76.5390625,
+            "scrollWidth": 660,
+            "clientWidth": 660
+          },
+          "body": {
+            "fontSize": 26,
+            "fontFamily": "\"Songti SC\", \"Noto Serif CJK SC\", \"Noto Serif SC\", SimSun, serif",
+            "fontWeight": "400",
+            "lineHeight": "44.2px",
+            "textIndent": "52px",
+            "paddingBottom": "0px",
+            "borderBottomWidth": "0px",
+            "width": 660,
+            "height": 44.1953125,
+            "scrollWidth": 660,
+            "clientWidth": 660
+          }
+        }
+      ],
+      "original_source_unchanged": true
+    },
+    "screenshots": [
+      "output/chapter-title-20261125/after-edit-light-20.png",
+      "output/chapter-title-20261125/after-read-dark-20.png",
+      "output/chapter-title-20261125/after-read-light-20.png",
+      "output/chapter-title-20261125/after-read-narrow-26.png"
+    ],
+    "package": {
+      "measurements": [
+        {
+          "name": "edit-light-20",
+          "title": {
+            "fontSize": 30,
+            "fontFamily": "-apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", sans-serif",
+            "fontWeight": "650",
+            "lineHeight": "39px",
+            "textIndent": "0px",
+            "paddingBottom": "19.5px",
+            "borderBottomWidth": "0.5px",
+            "width": 880,
+            "height": 59,
+            "scrollWidth": 880,
+            "clientWidth": 880
+          },
+          "body": {
+            "fontSize": 20,
+            "fontFamily": "\"Songti SC\", \"Noto Serif CJK SC\", \"Noto Serif SC\", SimSun, serif",
+            "fontWeight": "400",
+            "lineHeight": "34px",
+            "textIndent": "40px",
+            "paddingBottom": "10px",
+            "borderBottomWidth": "0px",
+            "width": 880,
+            "height": 44,
+            "scrollWidth": 880,
+            "clientWidth": 880
+          }
+        },
+        {
+          "name": "read-light-20",
+          "title": {
+            "fontSize": 30,
+            "fontFamily": "-apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", sans-serif",
+            "fontWeight": "650",
+            "lineHeight": "39px",
+            "textIndent": "0px",
+            "paddingBottom": "19.5px",
+            "borderBottomWidth": "0.5px",
+            "width": 872,
+            "height": 59,
+            "scrollWidth": 872,
+            "clientWidth": 872
+          },
+          "body": {
+            "fontSize": 20,
+            "fontFamily": "\"Songti SC\", \"Noto Serif CJK SC\", \"Noto Serif SC\", SimSun, serif",
+            "fontWeight": "400",
+            "lineHeight": "34px",
+            "textIndent": "40px",
+            "paddingBottom": "0px",
+            "borderBottomWidth": "0px",
+            "width": 872,
+            "height": 34,
+            "scrollWidth": 872,
+            "clientWidth": 872
+          }
+        },
+        {
+          "name": "read-dark-20",
+          "title": {
+            "fontSize": 30,
+            "fontFamily": "-apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", sans-serif",
+            "fontWeight": "650",
+            "lineHeight": "39px",
+            "textIndent": "0px",
+            "paddingBottom": "19.5px",
+            "borderBottomWidth": "0.5px",
+            "width": 872,
+            "height": 59,
+            "scrollWidth": 872,
+            "clientWidth": 872
+          },
+          "body": {
+            "fontSize": 20,
+            "fontFamily": "\"Songti SC\", \"Noto Serif CJK SC\", \"Noto Serif SC\", SimSun, serif",
+            "fontWeight": "400",
+            "lineHeight": "34px",
+            "textIndent": "40px",
+            "paddingBottom": "0px",
+            "borderBottomWidth": "0px",
+            "width": 872,
+            "height": 34,
+            "scrollWidth": 872,
+            "clientWidth": 872
+          }
+        },
+        {
+          "name": "read-narrow-26",
+          "title": {
+            "fontSize": 39,
+            "fontFamily": "-apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", sans-serif",
+            "fontWeight": "650",
+            "lineHeight": "50.7px",
+            "textIndent": "0px",
+            "paddingBottom": "25.35px",
+            "borderBottomWidth": "0.5px",
+            "width": 660,
+            "height": 76.5390625,
+            "scrollWidth": 660,
+            "clientWidth": 660
+          },
+          "body": {
+            "fontSize": 26,
+            "fontFamily": "\"Songti SC\", \"Noto Serif CJK SC\", \"Noto Serif SC\", SimSun, serif",
+            "fontWeight": "400",
+            "lineHeight": "44.2px",
+            "textIndent": "52px",
+            "paddingBottom": "0px",
+            "borderBottomWidth": "0px",
+            "width": 660,
+            "height": 44.1953125,
+            "scrollWidth": 660,
+            "clientWidth": 660
+          }
+        }
+      ],
+      "original_source_unchanged": true
+    },
+    "installed": {
+      "measurements": [
+        {
+          "name": "edit-light-20",
+          "title": {
+            "fontSize": 30,
+            "fontFamily": "-apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", sans-serif",
+            "fontWeight": "650",
+            "lineHeight": "39px",
+            "textIndent": "0px",
+            "paddingBottom": "19.5px",
+            "borderBottomWidth": "0.5px",
+            "width": 880,
+            "height": 59,
+            "scrollWidth": 880,
+            "clientWidth": 880
+          },
+          "body": {
+            "fontSize": 20,
+            "fontFamily": "\"Songti SC\", \"Noto Serif CJK SC\", \"Noto Serif SC\", SimSun, serif",
+            "fontWeight": "400",
+            "lineHeight": "34px",
+            "textIndent": "40px",
+            "paddingBottom": "10px",
+            "borderBottomWidth": "0px",
+            "width": 880,
+            "height": 44,
+            "scrollWidth": 880,
+            "clientWidth": 880
+          }
+        },
+        {
+          "name": "read-light-20",
+          "title": {
+            "fontSize": 30,
+            "fontFamily": "-apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", sans-serif",
+            "fontWeight": "650",
+            "lineHeight": "39px",
+            "textIndent": "0px",
+            "paddingBottom": "19.5px",
+            "borderBottomWidth": "0.5px",
+            "width": 872,
+            "height": 59,
+            "scrollWidth": 872,
+            "clientWidth": 872
+          },
+          "body": {
+            "fontSize": 20,
+            "fontFamily": "\"Songti SC\", \"Noto Serif CJK SC\", \"Noto Serif SC\", SimSun, serif",
+            "fontWeight": "400",
+            "lineHeight": "34px",
+            "textIndent": "40px",
+            "paddingBottom": "0px",
+            "borderBottomWidth": "0px",
+            "width": 872,
+            "height": 34,
+            "scrollWidth": 872,
+            "clientWidth": 872
+          }
+        },
+        {
+          "name": "read-dark-20",
+          "title": {
+            "fontSize": 30,
+            "fontFamily": "-apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", sans-serif",
+            "fontWeight": "650",
+            "lineHeight": "39px",
+            "textIndent": "0px",
+            "paddingBottom": "19.5px",
+            "borderBottomWidth": "0.5px",
+            "width": 872,
+            "height": 59,
+            "scrollWidth": 872,
+            "clientWidth": 872
+          },
+          "body": {
+            "fontSize": 20,
+            "fontFamily": "\"Songti SC\", \"Noto Serif CJK SC\", \"Noto Serif SC\", SimSun, serif",
+            "fontWeight": "400",
+            "lineHeight": "34px",
+            "textIndent": "40px",
+            "paddingBottom": "0px",
+            "borderBottomWidth": "0px",
+            "width": 872,
+            "height": 34,
+            "scrollWidth": 872,
+            "clientWidth": 872
+          }
+        },
+        {
+          "name": "read-narrow-26",
+          "title": {
+            "fontSize": 39,
+            "fontFamily": "-apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", sans-serif",
+            "fontWeight": "650",
+            "lineHeight": "50.7px",
+            "textIndent": "0px",
+            "paddingBottom": "25.35px",
+            "borderBottomWidth": "0.5px",
+            "width": 660,
+            "height": 76.5390625,
+            "scrollWidth": 660,
+            "clientWidth": 660
+          },
+          "body": {
+            "fontSize": 26,
+            "fontFamily": "\"Songti SC\", \"Noto Serif CJK SC\", \"Noto Serif SC\", SimSun, serif",
+            "fontWeight": "400",
+            "lineHeight": "44.2px",
+            "textIndent": "52px",
+            "paddingBottom": "0px",
+            "borderBottomWidth": "0px",
+            "width": 660,
+            "height": 44.1953125,
+            "scrollWidth": 660,
+            "clientWidth": 660
+          }
+        }
+      ],
+      "original_source_unchanged": true
+    },
+    "installed_screenshots": [
+      "output/chapter-title-20261125/installed-edit-light-20.png",
+      "output/chapter-title-20261125/installed-read-dark-20.png",
+      "output/chapter-title-20261125/installed-read-light-20.png",
+      "output/chapter-title-20261125/installed-read-narrow-26.png"
+    ]
+  },
+  "validation": {
+    "desktop_build": "passed",
+    "shared_mcp_resources": "rebuilt and verified",
+    "debug_consumers": "built",
+    "reading_experience_and_reading_state": {
+      "passed": 2,
+      "log": "output/chapter-title-20261125/reading-regression.log"
+    },
+    "documents": {
+      "status": "passed",
+      "log": "output/chapter-title-20261125/docs-check.log"
+    }
+  },
+  "source_sha256": {
+    "packages/workbench-ui/src/workbench.css": "fa3d48b397265894f8537551d75938bd963249a6467733d5834160fe256ea111",
+    "apps/desktop/src/renderer/documents.tsx": "1484348426d4c1d1a5b5be0da46b5a28bee88310730cab642da21a3fdcf96fa7"
+  },
+  "limits": [
+    "原生CUA在旧应用返回cgWindowNotFound，重新打开新版超时；未用这些失败宣称正常用户窗口的视觉验收完成。旧主进程使用SIGTERM退出。",
+    "实际安装程序在隔离资料中的阅读、编辑、深色和窄窗四种显示与截图均通过，原文字节和修订不变。",
+    "未在真实作者作品创建测试输入，未发起模型轮次、跨平台验证或公开发行。"
+  ],
+  "installation": {
+    "source_sha256": "ac638b7f7f6b202e7de8b55cc8184fd50c3bb9f673d50f27a5fdccd303b16dca",
+    "source_inputs": 3055,
+    "artifacts_verified": 3132,
+    "version": "0.14.1",
+    "optimized": true,
+    "signature": "ad-hoc-development-verified",
+    "icon_matches": true,
+    "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+    "installed_path": "/Applications/Hetu.app",
+    "atomic_swap": true,
+    "backup_created": false,
+    "old_bundle_removed": true,
+    "manifest": "output/chapter-title-20261125/packages/hetu-dev-DsBgf5/manifest.json",
+    "profile_indexes_unchanged": {
+      "creative-library.json": true,
+      "LocalSettings/settings.json": true,
+      "agent-sessions/index/selection.json": true
+    },
+    "temporary_install_directories_remaining": 0,
+    "main_process_running": true
+  }
+}

@@ -23,3 +23,13 @@ export { ManuscriptReading, type ManuscriptReadingHandle } from "./manuscript-re
 export { ManuscriptComparison } from "./manuscript-comparison.tsx";
 export { agentSessionDefaults, agentPreferences, type AgentPreferences } from "./agent-preferences.ts";
 export { FontPicker } from "./font-picker.tsx";
+export { CanonEntityDetails, CanonSourceEvidence } from "./canon-details.tsx";
+export { domainText } from "./domain-text.ts";
+export { readFixedAssetBytes, type FixedAssetRef } from "./asset-bytes.ts";
+export { ImageRegionPreview } from "./image-region.tsx";
+export { type ImageRegion, validImageRegion, imageRegionFromDrag, adjustImageRegion } from "./image-region.ts";
+export {TaskFeedbackHistory,type TaskFeedbackTarget,type TaskFeedbackEntry,type TaskFeedbackPage} from "./task-feedback-history.tsx";
+export {readObjectProjection,type JsonProjection} from "./json-projection.ts";
+export {readTaskFeedbackPage} from "./task-feedback-reader.ts";
+export {continuationText,type FeedbackRef} from "./task-reference.ts";
+export {readTaskReview,readWorkingCopyReview} from "./task-review-reader.ts";

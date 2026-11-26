@@ -221,6 +221,7 @@ fn feedback_targets_head_conflicts_pagination_and_foreign_references_are_checked
     ));
     let target = json!({"kind":"working_copy","working_copy_ref":w["working_copy_ref"]});
     let f1 = feedback(&author, &t, target.clone(), Value::Null, "feedback-first");
+    assert_eq!(f1["feedback"]["schema_version"], "1.0.0");
     let wrong = call(
         &author,
         "task_feedback.save",
@@ -405,4 +406,50 @@ fn tampered_revisions_fail_and_closed_tasks_preserve_author_history() {
         call(&author, "working_copies.create", working_input(&t, "新稿"))["error"]["code"],
         "forbidden"
     );
+}
+
+#[test]
+fn review_metadata_is_fixed_and_content_pages_do_not_repeat_history() {
+    let (_folder, k) = setup();
+    let t = task(&k, "chapter_draft", json!([]), None);
+    let original = "旧稿来信🌿\r\n".repeat(4000);
+    let first = ok(call(
+        &k,
+        "working_copies.create",
+        working_input(&t, &original),
+    ));
+    let reference = &first["working_copy_ref"];
+    let read = json!({"task_ref":t["task_ref"],"working_copy_ref":reference,"detail":"summary","result_path":"","max_bytes":256});
+    let projection = ok(call(&k, "working_copies.get", read.clone()));
+    assert!(projection["working_page_sha256"].is_string());
+    let page = ok(call(
+        &k,
+        "working_copies.get",
+        json!({"task_ref":t["task_ref"],"working_copy_ref":reference,"detail":"page","max_bytes":256}),
+    ));
+    assert_eq!(page["task_ref"], t["task_ref"]);
+    assert_eq!(page["working_copy_ref"], *reference);
+    assert!(page.get("history").is_none());
+    assert!(page.get("working_copy").is_none());
+    let content = page["content_page"]["content"].as_str().unwrap();
+    assert!(original.starts_with(content));
+    assert_eq!(page["content_page"]["range"]["byte_end"], content.len());
+    assert_eq!(page["content_page"]["size_bytes"], original.len());
+    assert_eq!(page["content_page"]["complete"], false);
+    ok(call(
+        &k,
+        "working_copies.save",
+        json!({"task_ref":t["task_ref"],"working_copy_id":reference["working_copy_id"],"expected":reference,"content":"新稿不能替换旧页。","feedback_refs":[],"operation_key":"advance-review-head"}),
+    ));
+    let mut continuation = read;
+    continuation["result_path"] = json!("/history");
+    continuation["expected_result_sha256"] = projection["working_page_sha256"].clone();
+    assert_eq!(
+        call(&k, "working_copies.get", continuation)["error"]["code"],
+        "hetu.stale_evidence"
+    );
+    assert_eq!(get(&k, &t, reference)["revision"]["content"], original);
+    let tasks = ok(call(&k, "creative_tasks.list", json!({})));
+    assert_eq!(tasks["tasks"][0]["working_copy_count"], 1);
+    assert_eq!(tasks["tasks"][0]["submission_count"], 0);
 }

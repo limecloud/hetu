@@ -20,24 +20,82 @@ impl Kernel {
     pub(super) fn authoring_get(&self, kind: &str, input: &Value) -> Result<Value> {
         let (path, key) = self.authoring_path(kind, input["document_id"].as_str())?;
         if !self.store.exists(&path)? {
+            ensure(input.get("revision").is_none() && input.get("outline_id").is_none(),
+                "not_found", "尚未保存这份大纲修订或条目。")?;
             return Ok(json!({"revision":0,"sha256":null,"items":[]}));
         }
-        let content = self.store.read(&path)?;
-        let value: Value = serde_json::from_slice(&content)?;
+        let mut content = self.store.read(&path)?;
+        let mut value: Value = serde_json::from_slice(&content)?;
         ensure(
             value["workspace_id"] == self.scope(),
             "hetu.integrity_failure",
             "笔记所属作品不一致。",
         )?;
-        let revision = integer(&value, "revision")?;
+        let head = integer(&value, "revision")?;
         ensure(
             self.store
-                .read(&format!(".hetu/authoring/{key}/{revision}.json"))?
+                .read(&format!(".hetu/authoring/{key}/{head}.json"))?
                 == content,
             "hetu.integrity_failure",
             "笔记与历史记录不一致，请保留文件并检查。",
         )?;
-        Ok(json!({"revision":revision,"sha256":digest(&content),"items":value["items"]}))
+        let revision = input["revision"].as_u64().unwrap_or(head);
+        ensure(revision <= head, "not_found", "没有这份大纲修订。")?;
+        if revision != head {
+            content = self.store.read(&format!(".hetu/authoring/{key}/{revision}.json"))?;
+            value = serde_json::from_slice(&content)?;
+            ensure(value["workspace_id"] == self.scope() && value["revision"] == revision,
+                "hetu.integrity_failure", "大纲历史身份或所属作品不一致。")?;
+            let next = self.store.json(&format!(".hetu/authoring/{key}/{}.json", revision + 1))?;
+            ensure(next["workspace_id"] == self.scope() && next["revision"] == revision + 1
+                && next["previous_sha256"] == digest(&content),
+                "hetu.integrity_failure", "大纲历史链与固定修订不一致。")?;
+        }
+        let sha = digest(&content);
+        ensure(input.get("sha256").is_none_or(|expected| *expected == sha),
+            "hetu.integrity_failure", "大纲固定修订的摘要不一致。")?;
+        let mut items = value["items"].as_array()
+            .ok_or_else(|| Error::new("hetu.integrity_failure", "笔记条目列表损坏。"))?.clone();
+        if kind == "outlines" {
+            let definitions = catalog();
+            let item_schema = &definitions["actions"].as_array().unwrap().iter()
+                .find(|action| action["name"] == "hetu.outlines.save").unwrap()["input_schema"]["properties"]["items"];
+            schema(&json!(items), item_schema)?;
+        }
+        let total = items.len();
+        if let Some(id) = input["outline_id"].as_str() {
+            items.retain(|item| item["id"] == id);
+            ensure(items.len() == 1, "not_found", "固定大纲修订中没有此条目。")?;
+        }
+        if let Some(query) = input["query"].as_str() {
+            let query = query.to_lowercase();
+            items.retain(|item| item["title"].as_str().unwrap_or("").to_lowercase().contains(&query)
+                || item["text"].as_str().unwrap_or("").to_lowercase().contains(&query));
+        }
+        if input["detail"] == "summary" {
+            items = items.into_iter().map(|item| json!({"id":item["id"],"title":item["title"],
+                "level":item["level"],"target_id":item["target_id"],"excerpt":item["text"].as_str().unwrap_or("").chars().take(100).collect::<String>(),
+                "size_bytes":item["text"].as_str().unwrap_or("").len()})).collect();
+        }
+        let mut result = if input.get("limit").is_some() || input.get("cursor").is_some() {
+            let mut page_input = input.clone();
+            page_input["revision"] = json!(revision); page_input["sha256"] = json!(sha);
+            self.ordered_record_page(&page_input, items, "items")?
+        } else { json!({"items":items}) };
+        result["revision"] = json!(revision); result["sha256"] = json!(sha);
+        if input.get("outline_id").is_some() || input["detail"] == "summary" || input.get("query").is_some() {
+            result["coverage"] = json!({"total_items":total,"returned_items":result["items"].as_array().unwrap().len(),
+                "outline_id":input["outline_id"],"detail":input.get("detail").cloned().unwrap_or(json!("full"))});
+        }
+        Ok(result)
+    }
+
+    pub(super) fn fixed_outline_source(&self, reference: &Value) -> Result<(Value, String)> {
+        ensure(reference["work_ref"]["kind"] == "novel", "forbidden", "正式大纲来源须属于小说作品。")?;
+        self.work_record(&reference["work_ref"], None)?;
+        let value = self.authoring_get("outlines", &json!({"revision":reference["revision"],
+            "sha256":reference["sha256"],"outline_id":reference["outline_id"]}))?;
+        Ok((value["items"][0].clone(), text(&value,"sha256")?.to_owned()))
     }
 
     pub(super) fn authoring_save(

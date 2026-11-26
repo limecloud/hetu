@@ -4,6 +4,8 @@ import type { WorkRef } from "@hetu/plugin-sdk";
 import { toolsForWork, type WritingTool, type WritingPromptRequest } from "../writing-prompts.ts";
 import { desktop } from "./bridge.ts";
 import { Icon, IconButton } from "./workbench.tsx";
+import {ProfessionalToolsDialog} from "./professional-tools.tsx";
+import type {ProfessionalTarget} from "../professional-contract.ts";
 
 function PromptPreview({ tool, request, close }: { tool: WritingTool; request: WritingPromptRequest; close(): void }) {
   const dialog = useRef<HTMLDialogElement>(null), attempt = useRef(0);
@@ -69,6 +71,8 @@ export function WritingTools({ work, documentId, revisionId, selection, disabled
 }) {
   const menu = useRef<HTMLDetailsElement>(null);
   const [preview, setPreview] = useState<{tool: WritingTool; request: WritingPromptRequest}>();
+  const [professional,setProfessional]=useState<ProfessionalTarget>();
+  useEffect(()=>{setProfessional(undefined);},[work.workspace_id,work.kind,work.object_id,documentId]);
   return <><details ref={menu} className="popover-menu writing-tools">
     <summary aria-label="外部 Agent 写作工具" title="外部 Agent 写作工具"><Icon name="sparkles"/></summary>
     <div className="menu-panel writing-tools-panel" role="menu" aria-label="写作工具">
@@ -77,6 +81,7 @@ export function WritingTools({ work, documentId, revisionId, selection, disabled
         if (menu.current) menu.current.open = false;
         setPreview({tool, request: {work_ref: work, tool_id: tool.id, object_ref: {document_id: documentId, revision_id: revisionId, ...(selection ?? {})}}});
       }}><strong>{tool.label}</strong><span>{tool.description}</span></button>)}
+      <button type="button" role="menuitem" disabled={disabled||!!blocked} onClick={()=>{if(menu.current)menu.current.open=false;setProfessional({page:work.kind==="drama"?"drama.reader":"novel.reader",object:{document_id:documentId,revision_id:revisionId,...(selection??{})}});}}>专业工具</button>
     </div>
-  </details>{preview && <PromptPreview {...preview} close={() => setPreview(undefined)}/>}</>;
+  </details>{preview && <PromptPreview {...preview} close={() => setPreview(undefined)}/>} {professional&&<ProfessionalToolsDialog work={work} target={professional} onClose={()=>setProfessional(undefined)}/>}</>;
 }

@@ -36,7 +36,7 @@ test("两类排版、即时正文预览、纸色、缩放和重排锚点保持�
     page.on("pageerror", error => errors.push(error.message));
     await page.setViewportSize({ width: 1440, height: 940 });
     await page.getByRole("button", { name: "打开作品 默认小说", exact: true }).click();
-    await page.getByRole("button", { name: "小说", exact: true }).click();
+    await navigate(page, "小说");
     const editor = page.getByRole("textbox", { name: "文稿编辑", exact: true });
     await expect(editor).toBeVisible();
     await expect(page.locator(".author-editor")).toHaveCSS("font-size", "16px");
@@ -154,7 +154,7 @@ test("两类排版、即时正文预览、纸色、缩放和重排锚点保持�
     expect(await stage.evaluate(el => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
     await navigate(page, "返回创作库");
     await page.getByRole("button", { name: "打开作品 默认剧本", exact: true }).click();
-    await page.getByRole("button", { name: "剧本", exact: true }).click();
+    await navigate(page, "剧本");
     await expect(page.locator(".screenplay-reader")).toHaveCSS("font-size", "18px");
     await page.locator('summary[aria-label="阅读排版"]').click();
     await expect(page.getByRole("spinbutton", { name: "文字大小", exact: true })).toHaveValue("18");

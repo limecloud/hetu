@@ -8,7 +8,7 @@ import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { PluginPackage } from "../../../packages/plugin-host/src/package.ts";
 import { VersionReview } from "../src/main/versions.ts";
 import { RecoveryStore } from "../src/main/recovery.ts";
-import { navigate, captureAgentDraft } from "./navigation.ts";
+import { navigate, captureAgentDraft, closeApplication } from "./navigation.ts";
 
 const root = path.resolve(import.meta.dirname, "../../..");
 function data(result: any) {
@@ -67,14 +67,15 @@ test("版本批准发送前及提交后中断沿原键恢复，不重复批准�
   expect(await reopened.journal()).toBeNull();
 });
 
-test("CLI准备独立文稿快照、Electron审阅批准、无窗口提交及真实MCP历史回读", async () => {
+test("CLI准备独立文稿快照、Electron审阅批准、无窗口提交及真实MCP历史回读", async ({}, info) => {
   test.setTimeout(180000);
   const folder = await mkdtemp(path.join(os.tmpdir(), "hetu-work-versions-")), workspace = path.join(folder, "作品"), profile = path.join(folder, "desktop"), collaboration = path.join(folder, "collaboration"), access = path.join(folder, "access");
   const pkg = await PluginPackage.inspect(path.join(root, "plugins/relationships/dist"));
-  const fixture = spawnSync(path.join(root, "target/debug/examples/plugin_fixture"), [workspace, access, path.join(pkg.source, "plugin.json"), pkg.sha256], { encoding: "utf8", timeout: 30000 });
-  expect(fixture.status, fixture.stderr).toBe(0);
+  const fixtures = process.env.HETU_ACCEPT_FIXTURE_DIRECTORY ?? path.join(root, "target/debug/examples");
+  const fixture = spawnSync(path.join(fixtures, "plugin_fixture" + (process.platform === "win32" ? ".exe" : "")), [workspace, access, path.join(pkg.source, "plugin.json"), pkg.sha256], { encoding: "utf8", timeout: 30000 });
+  expect(fixture.status, fixture.error?.message ?? fixture.stderr).toBe(0);
   const context = JSON.parse(fixture.stdout), executable = process.env.HETU_PACKAGED_APP;
-  let app: ElectronApplication | undefined, page: Page, client: Client | undefined, machine = path.join(root, "target/debug"), work: any;
+  let app: ElectronApplication | undefined, page: Page, client: Client | undefined, machine = process.env.HETU_ACCEPT_MCP_BINARY ? path.dirname(process.env.HETU_ACCEPT_MCP_BINARY) : path.join(root, "target/debug"), work: any;
   const binary = (name: string) => path.join(machine, name + (process.platform === "win32" ? ".exe" : ""));
   async function launch() {
     const env = { ...process.env };
@@ -115,7 +116,8 @@ test("CLI准备独立文稿快照、Electron审阅批准、无窗口提交及真
     await page!.getByRole("combobox", { name: "当前管理方案" }).selectOption(init.proposal_id);
     await page!.getByRole("button", { name: "批准此方案", exact: true }).click();
     await page!.getByRole("button", { name: "确认此审核决定", exact: true }).click();
-    await expect(page!.getByRole("status")).toContainText("方案已批准");
+    await expect(page!.getByRole("status")).toContainText("方案已批准",{timeout:30000});
+    await expect(page!.locator(".management-review")).toHaveAttribute("aria-busy","false");
     data(cli(grant, "hetu.agent_operations.execute", { proposal_id: init.proposal_id, proposal_sha256: init.proposal_sha256, operation_key: "execute-init" }));
     const status = data(cli(grant, "hetu.git.status", { work_ref: work }));
     expect(status.head.commit_id).toBeNull();
@@ -128,12 +130,14 @@ test("CLI准备独立文稿快照、Electron审阅批准、无窗口提交及真
     await expect(page!.getByRole("region", { name: "版本批准预览", exact: true })).toContainText("分页长文结束。");
     await page!.getByRole("button", { name: "确认批准此快照", exact: true }).click();
     await expect(page!.getByRole("region", { name: "固定文稿快照", exact: true })).toContainText("等待 Agent 执行");
+    const privateApprovals = await readdir(path.join(profile, "git-authorizations"), { recursive: true }).catch(() => []);
+    expect(privateApprovals.some(name => name.endsWith(id + ".json")), "快照批准须进入当前宿主私密目录，不能回退到全局目录").toBe(true);
     expect(data(cli(grant, "hetu.git.get_snapshot", { work_ref: work, snapshot_id: id })).approval_state).toBe("approved");
     expect(data(cli(grant, "hetu.git.status", { work_ref: work })).head.commit_id).toBeNull();
     const capturedDraft=await captureAgentDraft(app!,page!);
     await page!.getByRole("button", { name: "让 AI 接续此版本", exact: true }).click();
     await expect.poll(capturedDraft).toContain(id);
-    await app!.close(); app = undefined;
+    await closeApplication(app!); app = undefined;
     const dir = path.join(profile, "version-decisions"), file = path.join(dir, (await readdir(dir))[0]);
     const recovery = JSON.parse(await readFile(file, "utf8"));
     await writeFile(file, JSON.stringify({ ...recovery, status: "pending" }));
@@ -164,6 +168,6 @@ test("CLI准备独立文稿快照、Electron审阅批准、无窗口提交及真
     await expect(page!.getByRole("article", { name: "历史正文", exact: true })).toContainText("分页长文结束。");
     const current = data(await page!.evaluate((doc) => (window as any).hetuDesktop.read("hetu.documents.get", { document_id: doc }), context.document.document_id));
     expect(current.content).toContain("灯塔在黎明前亮起");
-    await page!.screenshot({ path: path.join(root, "output/plugin-doc-qa/electron-versions.png") });
-  } finally { await client?.close(); await app?.close(); }
+    await page!.screenshot({ path: info.outputPath("electron-versions.png") });
+  } finally { await client?.close(); if (app) await closeApplication(app); }
 });

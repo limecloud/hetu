@@ -6,7 +6,8 @@ use std::{
 };
 
 fn run(args: &[&str], bytes: &[u8], home: Option<&Path>) -> Output {
-    let mut command = Command::new(env!("CARGO_BIN_EXE_hetu"));
+    let mut command = Command::new(std::env::var_os("HETU_CLI_TEST_BINARY")
+        .unwrap_or_else(||env!("CARGO_BIN_EXE_hetu").into()));
     command
         .args(args)
         .stdin(Stdio::piped())
@@ -65,6 +66,36 @@ fn ok(result: Value) -> Value {
 fn managed(directory: &Path, grant: &Value, action: &str, mut input: Value, code: i32) -> Value {
     input["management_ref"] = grant.clone();
     call(directory, action, input, code)
+}
+
+#[test]
+fn fixed_scene_and_retained_result_readers_work_through_the_stable_cli_without_desktop(){
+    use hetu_core::Kernel;
+    let root=tempfile::tempdir().unwrap();let directory=root.path().join("hub");
+    let author=Kernel::open(json!({"mode":"author","workspace_path":root.path().join("work"),"create":{"title":"机器场次","locale":"zh-CN","operation_key":"init"}})).unwrap();
+    let core=|action:&str,input:Value|ok(author.request(json!({"action":action,"contract_revision":"1","input":input})));
+    let project=core("hetu.drama.projects.create",json!({"title":"独立剧本","mode":"original","operation_key":"drama"}));
+    let work=json!({"workspace_id":author.scope(),"kind":"drama","object_id":project["project"]["project_id"]});
+    let episode=core("hetu.drama.episodes.create",json!({"project_ref":{"project_id":work["object_id"],"revision":project["project"]["revision"],"sha256":project["sha256"]},"title":"第一集","language_tag":"zh-CN","operation_key":"episode"}));
+    let source="Title: 雨夜\r\n\r\nINT. 渡口 - NIGHT\r\n\r\n灯还亮着🌿。\r\n\r\n.尾声\r\n\r\n结束。";
+    core("hetu.documents.save",json!({"document_id":episode["document"]["document_id"],"base_revision_id":episode["document"]["current_revision_id"],"source_format":"fountain","content":source,"operation_key":"save"}));
+    let result=ok(author.open_plugin_request(json!({"context":{"plugin_id":"org.hetu.cli-source","package_sha256":"a".repeat(64),"work_ref":work,
+        "types":[{"kind":"notes","schema_version":"1","schema":{"type":"object"}}]},"request":{"action":"hetu.extensions.objects.save","contract_revision":"1","input":{
+        "work_ref":work,"kind":"notes","title":"渡口专业方案","schema_version":"1","content":{"note":"原Owner保存"},"expected_revision":0,"expected_sha256":"","operation_key":"professional"}}})));
+    let grant=core("hetu.collaboration.authorize_workspace",json!({"work_ref":work,"client_adapter":"codex","collaboration_path":directory,"operation_key":"grant"}))["management_ref"].clone();
+    let scenes=ok(managed(&directory,&grant,"hetu.documents.scene_index",json!({"work_ref":work,"query":"渡口"}),0));
+    assert_eq!(scenes["scenes"].as_array().unwrap().len(),1);let row=&scenes["scenes"][0];
+    let selected=json!({"work_ref":work,"document_id":row["document_ref"]["document_id"],"revision_id":row["document_ref"]["revision_id"],
+        "sha256":row["document_ref"]["sha256"],"scene_range":row["range"]});
+    let scene=ok(managed(&directory,&grant,"hetu.documents.scene_index",selected.clone(),0));
+    assert!(scene["content"].as_str().unwrap().contains("灯还亮着🌿"));assert!(!scene["content"].as_str().unwrap().contains("尾声"));
+    let found=ok(managed(&directory,&grant,"hetu.plugin_results.list",json!({"work_ref":work,"query":"渡口"}),0));
+    assert_eq!(found["objects"].as_array().unwrap().len(),1);
+    assert_eq!(found["objects"][0]["sha256"],result["sha256"]);
+    let read=ok(managed(&directory,&grant,"hetu.plugin_results.get",json!({"work_ref":work,"owner_plugin_id":"org.hetu.cli-source","object_id":result["object"]["object_id"],"revision":1}),0));
+    assert_eq!(read["object"],result["object"]);
+    core("hetu.collaboration.revoke_management",json!({"grant_id":grant["grant_id"],"client_adapter":"codex","collaboration_path":directory,"operation_key":"revoke"}));
+    assert_eq!(managed(&directory,&grant,"hetu.documents.scene_index",selected,3)["error"]["code"],"forbidden");
 }
 
 #[test]

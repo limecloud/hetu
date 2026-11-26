@@ -37,6 +37,7 @@ while (args[0]?.startsWith("--") && args[0] !== "--mcp") {
       "--work-ref",
       "--state-dir",
       "--management-context-file",
+      "--execution-context-file",
     ].includes(key) ||
     flags.has(key)
   )
@@ -52,6 +53,8 @@ const pkg = await PluginPackage.inspect(required("--package"));
 if (pkg.sha256 !== required("--package-sha256"))
   throw new Error("插件包摘要与授权不一致。");
 const openMode = flags.has("--work-ref");
+if (flags.has("--management-context-file") && flags.has("--execution-context-file"))
+  throw new Error("插件连接类型必须二选一。");
 let sessionDirectory: string | undefined;
 const installed = openMode ? new PluginInstallations(required("--state-dir")) : undefined;
 async function checkInstalled() {
@@ -65,10 +68,15 @@ if (openMode) {
   sessionDirectory = await mkdtemp(path.join(os.tmpdir(), "hetu-plugin-context-"));
   const management = flags.has("--management-context-file")
     ? JSON.parse(await readFile(required("--management-context-file"), "utf8")) : undefined;
+  const execution = flags.has("--execution-context-file")
+    ? JSON.parse(await readFile(required("--execution-context-file"), "utf8")) : undefined;
+  if (flags.has("--execution-context-file") && (!execution || !sameWork(execution.work_ref, JSON.parse(required("--work-ref")))))
+    throw new Error("插件执行连接与当前作品不一致。");
   await writeFile(path.join(sessionDirectory,"context.json"), JSON.stringify({
     context: {plugin_id:pkg.manifest.id,package_sha256:pkg.sha256,
       work_ref:JSON.parse(required("--work-ref")),types:pkg.manifest.contributions.data},
     ...(management ? {management_binding:management} : {}),
+    ...(execution ? {execution_binding:execution} : {}),
   }), {mode:0o600});
 }
 const coreArgs = [

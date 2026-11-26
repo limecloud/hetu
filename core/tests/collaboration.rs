@@ -250,6 +250,45 @@ fn stable_working_and_feedback_keep_full_task_refs_and_original_operation_recove
 }
 
 #[test]
+fn workspace_access_rechecks_directory_identity_before_an_author_reconnects() {
+    let temp = tempfile::tempdir().unwrap();
+    let work = temp.path().join("作品");
+    let author = Kernel::open(json!({"workspace_path":work,"mode":"author","create":{"title":"渡口","locale":"zh-CN","operation_key":"init"}})).unwrap();
+    let directory = temp.path().join("接入");
+    let hub = CollaborationHub::open(&directory, "codex").unwrap();
+    let reference = ok(call(&author, "works.list", json!({})))["works"][0]["work_ref"].clone();
+    let document = ok(call(&author, "documents.create", json!({"kind":"novel_chapter","title":"第一章","source_format":"markdown","content":"固定原文。","operation_key":"document"})));
+    let access = json!({"client_adapter":"codex","collaboration_path":directory,"work_ref":reference});
+    let mut grant_input = access.clone();
+    grant_input["operation_key"] = json!("grant");
+    let mut grant = ok(call(&author, "collaboration.authorize_workspace", grant_input))["management_ref"].clone();
+    let file = directory.join("management/codex").join(format!("{}.json", grant["grant_id"].as_str().unwrap()));
+    let read = json!({"document_id":document["document"]["document_id"],"revision_id":document["revision"]["revision_id"]});
+    // 设备号可随重新挂载变化；inode替换也必须使状态与实际读取同时失效。
+    for field in ["device", "inode"] {
+        assert_eq!(ok(call(&author, "collaboration.workspace_access", access.clone()))["authorized"], true);
+        let mut record: Value = serde_json::from_slice(&std::fs::read(&file).unwrap()).unwrap();
+        record["root_identity"][field] = json!(record["root_identity"][field].as_u64().unwrap() + 1);
+        std::fs::write(&file, serde_json::to_vec(&record).unwrap()).unwrap();
+        let state = ok(call(&author, "collaboration.workspace_access", access.clone()));
+        assert_eq!(state["authorized"], false, "{field}: {state}");
+        let mut input = read.clone();
+        input["management_ref"] = grant.clone();
+        assert_eq!(hub_call(&hub, "documents.get", input.clone())["error"]["code"], "forbidden");
+        let mut reconnect = access.clone();
+        reconnect["operation_key"] = json!(format!("reconnect-{field}"));
+        let renewed = ok(call(&author, "collaboration.authorize_workspace", reconnect))["management_ref"].clone();
+        assert_ne!(renewed["grant_revision"], grant["grant_revision"]);
+        assert_eq!(hub_call(&hub, "documents.get", input.clone())["error"]["code"], "forbidden");
+        input["management_ref"] = renewed.clone();
+        let content = ok(hub_call(&hub, "documents.get", input));
+        assert_eq!(content["content"], "固定原文。");
+        assert_eq!(content["revision"], document["revision"]);
+        grant = renewed;
+    }
+}
+
+#[test]
 fn workspace_management_is_explicit_fixed_and_revocation_does_not_revive_old_tasks() {
     let temp = tempfile::tempdir().unwrap();
     let work = temp.path().join("作品");

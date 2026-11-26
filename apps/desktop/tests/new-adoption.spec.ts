@@ -401,15 +401,29 @@ test(
       expect(JSON.parse(await readFile(journalFile, "utf8"))).toBeNull();
       await navigate(page, "剧本");
       await openDirectory(page);
+      await expect(page.getByRole("tab", { name: "阅读", exact: true })).toBeVisible();
+      await application!.evaluate(({ipcMain},documentId) => {
+        const handlers=(ipcMain as any)._invokeHandlers, original=handlers.get("desktop:read");
+        handlers.set("desktop:read",async(...args:any[])=>{
+          const result=await original(...args);
+          if(args[1]==="hetu.documents.get"&&args[2].document_id===documentId)
+            await new Promise<void>(resolve=>{(globalThis as any).__releaseEpisodeRead=resolve;});
+          return result;
+        });
+      },documentId);
       await page
         .getByRole("button", { name: "第二集 潮汐", exact: true })
         .click();
+      await expect.poll(()=>application!.evaluate(()=>!!(globalThis as any).__releaseEpisodeRead)).toBe(true);
+      await expect(page.getByRole("tab", { name: "阅读", exact: true })).toBeDisabled();
+      await application!.evaluate(()=>(globalThis as any).__releaseEpisodeRead());
       await page.getByRole("tab", { name: "编辑", exact: true }).click();
       await expect(page.getByRole("textbox", { name: "文稿编辑", exact: true })).toContainText("信是你写的？");
       await page.screenshot({
         path: path.join(root, "output/plugin-doc-qa/new-episode-recovered.png"),
       });
     } finally {
+      await application?.evaluate(()=>(globalThis as any).__releaseEpisodeRead?.()).catch(()=>{});
       await application?.close();
     }
   },

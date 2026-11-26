@@ -1,0 +1,215 @@
+{
+  "date": "2026-11-26",
+  "surface": "embedded GUI",
+  "source": false,
+  "executable": "source desktop",
+  "empty_library": true,
+  "discussion_without_creation": true,
+  "work": {
+    "kind": "novel",
+    "object_id": "novel_fe9bc3ca-da54-4896-ae6b-56035e8843d2",
+    "workspace_id": "workspace_8a1bbb08-9a05-4bba-b706-4f9472dde204"
+  },
+  "thread_id": "01a2148d-4bfb-7b62-9af0-f4ca36e00cbf",
+  "model_rounds": 5,
+  "documents": 1,
+  "resources": 1,
+  "tasks": 1,
+  "task_ref": {
+    "request_revision": 1,
+    "scope_ref": {
+      "id": "workspace_8a1bbb08-9a05-4bba-b706-4f9472dde204",
+      "kind": "workspace"
+    },
+    "task_id": "task_d3f7478b-672f-4730-8d55-40f314bddef4"
+  },
+  "first_submission": {
+    "sha256": "38bcb4774e967eb839aaa3b854142597daebd2c64c2cb333683ea1ffa4631117",
+    "submission_id": "submission_3a19e69c-5627-4416-98e8-58ec1e571fb6"
+  },
+  "latest_submission_id": "submission_eba7fd42-89c5-4edc-b293-530cf1e79463",
+  "same_working_copy": true,
+  "document_revision": {
+    "actor_ref": "actor_00000000-0000-4000-8000-000000000001",
+    "content_path": "packages/novel/documents/doc_2c62d6bb-e04c-40f3-a288-7593c99de9ed/revisions/rev_785fd38a-f98f-4f33-a1da-5c562791b253.md",
+    "contribution_refs": [
+      {
+        "adoption_id": "adoption_da6b34ae-8a0b-4c46-896d-0109662e4470",
+        "sha256": "fc20df185481398f637a432c11b93e727cea44776712ebe641b53af5eb1800fc"
+      }
+    ],
+    "created_at": "2026-11-25T21:36:35.496321Z",
+    "document_id": "doc_2c62d6bb-e04c-40f3-a288-7593c99de9ed",
+    "origin_kind": "author",
+    "parent_revision_id": "rev_2df4f58d-8a17-4e24-a8ff-7d03d746e8a2",
+    "revision_id": "rev_785fd38a-f98f-4f33-a1da-5c562791b253",
+    "schema_version": "1.0.0",
+    "sha256": "61023f579bf7fab19c5c0fa4ce48eb3c416382e2ee022b3182900c84e8bdbf51",
+    "size_bytes": 273,
+    "source_format": "markdown"
+  },
+  "adoptions": 1,
+  "finalizations": 0,
+  "bundle_id": "bundle_6ae77f30-fc24-4550-be7b-45a7af1b229e",
+  "bundle_sha256": "f246f9ed6d84457ca0f0c8554a02a38989dc9d5abe013debf29edf0591a5187a",
+  "independent_cli_reread": true,
+  "original_thread_reopened": true,
+  "library_result_verified": true,
+  "confirmed_save_without_warning": true,
+  "limits": [
+    "isolated short Chinese novel, not full-length author production",
+    "automation records an exact QA decision, not the real author's creative approval",
+    "not literary quality, full visual, accessibility or other platform validation"
+  ],
+  "verifications": [
+    {
+      "stage": "installed",
+      "runtime": {
+        "version": "0.14.1",
+        "electron": "42.11.18"
+      },
+      "original_thread_reopened": true,
+      "new_model_rounds": 0,
+      "library_result_verified": true,
+      "confirmed_save_without_warning": true,
+      "adoptions": 1,
+      "finalizations": 0
+    },
+    {
+      "stage": "source",
+      "runtime": {
+        "version": "0.14.1",
+        "electron": "42.11.18"
+      },
+      "original_thread_reopened": true,
+      "new_model_rounds": 0,
+      "library_result_verified": true,
+      "confirmed_save_without_warning": true,
+      "adoptions": 1,
+      "finalizations": 0
+    },
+    {
+      "stage": "packaged",
+      "runtime": {
+        "version": "0.14.1",
+        "electron": "42.11.18"
+      },
+      "original_thread_reopened": true,
+      "new_model_rounds": 0,
+      "library_result_verified": true,
+      "confirmed_save_without_warning": true,
+      "adoptions": 1,
+      "finalizations": 0
+    },
+    {
+      "stage": "crash-regression-installed",
+      "runtime": {
+        "version": "0.14.1",
+        "electron": "42.11.18"
+      },
+      "original_thread_reopened": true,
+      "new_model_rounds": 0,
+      "library_result_verified": true,
+      "confirmed_save_without_warning": true,
+      "adoptions": 1,
+      "finalizations": 0
+    }
+  ],
+  "first_failures": [
+    "installed baseline: initialization saved actual work but creation discovery and stable task mapping were missing",
+    "source test used unsupported generic resources.read bridge and expected task_ref on submit receipt; corrected to actual Owner contracts",
+    "repeated deterministic verification initially missed project sidebar layer before returning to library",
+    "first package rejected stale derived MCP workbench resource before assembly"
+  ],
+  "implementation": {
+    "registration": "existing per-client workspace creation records and independent TaskGrant",
+    "facts": "original Core workspace, task, working copy, submissions and document history",
+    "recovery": "replayed the exact original initialization and prepare inputs and keys; no repeated creation or submission",
+    "guards": [
+      "different client rejected",
+      "initialization replay does not revive revoked workspace registration",
+      "task prepare replay does not revive revoked task grant",
+      "confirm registers task only after fixed plan executes",
+      "ordinary existing-workspace reads do not create a new-work registration",
+      "initialization registers only its actual initial novel; later drama/video objects are not inferred"
+    ]
+  },
+  "checks": {
+    "final_core": {
+      "groups": 62,
+      "passed": 389,
+      "failed": 0
+    },
+    "agent_unit": {
+      "passed": 86,
+      "failed": 0
+    },
+    "mcp_stdio": {
+      "passed": 42,
+      "failed": 0
+    },
+    "execution_modes": {
+      "passed": 10,
+      "failed": 0
+    },
+    "packaged_desktop": {
+      "passed": 2,
+      "failed": 0
+    },
+    "packaged_shared": {
+      "passed": 3,
+      "failed": 0,
+      "surfaces": [
+        "desktop",
+        "stdio",
+        "official Codex forwarding"
+      ]
+    },
+    "installed_desktop": {
+      "passed": 2,
+      "failed": 0
+    },
+    "installed_stdio": {
+      "passed": 1,
+      "failed": 0
+    },
+    "skill": {
+      "files": 5,
+      "relative_links": 24,
+      "official_format_validation": true
+    }
+  },
+  "package": {
+    "source_sha256": "699b154bdaf1aeeea9594aa39e1b6bdfba80b50a1eea75f5fe39a47f22182022",
+    "source_inputs": 3071,
+    "artifacts_verified": 3132,
+    "version": "0.14.1",
+    "optimized": true,
+    "signature": "ad-hoc-development-verified",
+    "icon_matches": true
+  },
+  "installation": {
+    "installed_path": "/Applications/Hetu.app",
+    "atomic_swap": true,
+    "backup_created": false,
+    "old_bundle_removed": true,
+    "normal_library_works": 19,
+    "normal_user_indexes_unchanged_since_preinstall": true
+  },
+  "trace_paths": {
+    "initial_installed_failure": "output/gui-creation-20261126/installed-first-run",
+    "source_continuation": "output/gui-creation-20261126/source-continuation-run",
+    "packaged": "output/gui-creation-20261126/packaged-run",
+    "installed": "output/gui-creation-20261126/installed-run",
+    "shared": "output/gui-creation-20261126/shared-review-run",
+    "installed_shared": "output/gui-creation-20261126/installed-shared-selected-run"
+  },
+  "release": {
+    "version_bumped": false,
+    "committed": false,
+    "pushed": false,
+    "website_deployed": false,
+    "existing_external_mcp_restarted": false,
+    "formal_distribution": false
+  }
+}

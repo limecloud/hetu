@@ -1,4 +1,5 @@
 import { expect, type Page, type FrameLocator, type ElectronApplication } from "@playwright/test";
+import {execFile} from "node:child_process";
 
 export async function createTerminal(page:Page){
   const dialog=page.getByRole("dialog",{name:"创建会话",exact:true});await expect(dialog).toBeVisible();
@@ -23,31 +24,68 @@ export async function captureAgentDraft(application: ElectronApplication, page: 
   return () => application.evaluate(() => (globalThis as any).__capturedAgentDraft?.text as string | undefined);
 }
 
+/** 仅记录生命周期与句柄类型，不记录环境、正文、请求或进程参数。 */
+export async function observeApplicationShutdown(application:ElectronApplication,file:string){
+  await application.evaluate(({app,BrowserWindow},file)=>{
+    const fs=process.getBuiltinModule("node:fs");
+    const record=(event:string)=>fs.appendFileSync(file,JSON.stringify({event,at:Date.now(),pid:process.pid,windows:BrowserWindow.getAllWindows().length,active_handles:(process as any)._getActiveHandles().map((handle:any)=>({type:handle.constructor?.name??"unknown",...(handle.constructor?.name==="ChildProcess"?{pid:handle.pid,exit_code:handle.exitCode,signal:handle.signalCode,killed:handle.killed}: {})}))})+"\n");
+    record("observing");
+    let timer:ReturnType<typeof setInterval>|undefined;
+    app.once("before-quit",()=>{timer=setInterval(()=>record("shutdown-pending"),1000);timer.unref();});
+    app.on("before-quit",()=>record("before-quit"));app.on("will-quit",()=>record("will-quit"));app.on("quit",()=>record("quit"));app.on("window-all-closed",()=>record("window-all-closed"));
+    for(const window of BrowserWindow.getAllWindows())window.once("closed",()=>record("window-closed"));
+  },file);
+}
+
 /** 走作者关闭窗口的路径，保留恢复稿落盘期间的调试连接。 */
 export async function closeApplication(application: ElectronApplication, via: "window" | "app" = "app") {
   const child = application.process();
   if (child.exitCode !== null) {expect(child.exitCode).toBe(0); return;}
-  if (via === "app") {
-    // 官方关闭路径在quit被恢复稿落盘暂缓后释放调试连接，再等待真实进程退出。
-    await application.close(); expect(child.exitCode).toBe(0); return;
-  }
-  await application.evaluate(({BrowserWindow}) => {
+  let requestError:unknown;
+  let nativeState:unknown;
+  if(process.env.HETU_TEST_NATIVE_CLOSE==="1"){
+    if(process.platform!=="darwin"||!Number.isSafeInteger(child.pid)||child.pid!<2)throw Error("原生窗口关闭专项需要macOS及确切的隔离应用PID。");
+    const title=await application.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows().find(window=>!window.webContents.getURL().includes("?view=settings"))?.getTitle());
+    nativeState={via,pid:child.pid,main_window:title};
+    // 本机调试器可能妨碍退出；先断开，再向确切PID请求正常退出或关闭主窗口。
+    await application.evaluate(()=>{setImmediate(()=>process.getBuiltinModule("node:inspector").close());}).catch(error=>{if(!String(error).includes("closed"))throw error;});
+    const script=via==="app"?`ObjC.import("AppKit");
+function run(argv){
+const target=$.NSRunningApplication.runningApplicationWithProcessIdentifier(Number(argv[0]));
+if(target.isNil())throw Error("隔离应用已不在运行。");
+if(!target.terminate)throw Error("隔离应用拒绝正常退出请求。");
+}`:`on run argv
+tell application "System Events" to tell (first application process whose unix id is (item 1 of argv as integer))
+repeat 100 times
+if exists window (item 2 of argv) then exit repeat
+delay 0.1
+end repeat
+perform action "AXPress" of (first button of window (item 2 of argv) whose subrole is "AXCloseButton")
+end tell
+end run`;
+    if(via==="window"&&!title)throw Error("找不到隔离应用主窗口，未关闭其他窗口。");
+    await new Promise<void>((resolve,reject)=>execFile("osascript",[...(via==="app"?["-l","JavaScript"]:[]),"-e",script,String(child.pid),...(via==="window"?[title!]:[])],{timeout:15000},error=>error?reject(error):resolve())).catch(error=>{requestError=error;});
+  }else{
+  await application.evaluate(({BrowserWindow,app},via) => {
     const window = BrowserWindow.getAllWindows().find(window => !window.webContents.getURL().includes("?view=settings"));
-    // closed在恢复稿落盘后触发；随后释放Node调试器，不改变应用退出路径。
-    window?.once("closed", () => setImmediate(() => process.getBuiltinModule("node:inspector").close()));
-    window?.close();
-  }).catch(error => {if (child.exitCode !== 0) throw error;});
+    // will-quit在恢复稿与引擎清理完成后触发；此后不保证再运行setImmediate。
+    app.once("will-quit",()=>process.getBuiltinModule("node:inspector").close());
+    if(via==="app")app.quit();else window?.close();
+  },via).catch(error => {requestError=error;});
+  }
   try {await expect.poll(() => child.exitCode, {timeout: 30000}).toBe(0);}
   catch (error) {
-    const state = await application.evaluate(({BrowserWindow, app}) => ({ready: app.isReady(), windows: BrowserWindow.getAllWindows().map(window => ({url: window.webContents.getURL(), visible: window.isVisible(), modal: window.isModal(), destroyed: window.isDestroyed()}))})).catch(() => ({disconnected: true}));
-    throw new Error(`${(error as Error).message}\n关闭状态：${JSON.stringify(state)}`);
+    const state = nativeState??await application.evaluate(({BrowserWindow, app}) => ({ready: app.isReady(), windows: BrowserWindow.getAllWindows().map(window => ({url: window.webContents.getURL(), visible: window.isVisible(), modal: window.isModal(), destroyed: window.isDestroyed()}))})).catch(() => ({disconnected: true}));
+    throw new Error(`${(error as Error).message}\n关闭状态：${JSON.stringify({state,pid:child.pid,exit_code:child.exitCode,signal:child.signalCode,killed:child.killed,...(requestError?{request_error:(requestError as Error).message}:{})})}`);
   }
 }
 
 /** 设置使用独立窗口，重复打开复用同一窗口。 */
 export async function openSettings(application: ElectronApplication, page: Page) {
   let trigger=page.getByRole("button",{name:"本机设置",exact:true}).first();
-  if(!await trigger.isVisible()){await page.getByLabel("会话操作",{exact:true}).click();trigger=page.getByRole("button",{name:"本机设置",exact:true}).first();}
+  const menu=page.getByLabel("会话操作",{exact:true});
+  await expect.poll(async()=>await trigger.isVisible()||await menu.isVisible(),{timeout:30000}).toBe(true);
+  if(!await trigger.isVisible()){await menu.click();trigger=page.getByRole("button",{name:"本机设置",exact:true}).first();}
   await trigger.click();
   await expect.poll(() => application.windows().some(window => window.url().endsWith("?view=settings"))).toBe(true);
   const settings = application.windows().find(window => window.url().endsWith("?view=settings"))!;
@@ -106,10 +144,22 @@ export async function navigate(page: Page | FrameLocator, label: string) {
     await group.locator(":scope > summary").click();
   await button.click();
   await expect(page.locator("main:not([hidden])")).not.toHaveAttribute("aria-busy", "true");
+  if (label === "Agent 协作") await expect(page.getByRole("main", {name: "终端工作区", exact: true})).toBeVisible();
+  else await expect(page.locator(".layout > main:not([hidden])")).toBeVisible();
 }
 
 export async function documentAction(page: Page, label: string) {
   const menu = page.locator("details").filter({ has: page.locator('summary[aria-label="文稿操作"]') });
   if (!(await menu.evaluate(element => (element as HTMLDetailsElement).open))) await menu.locator("summary").click();
   await menu.getByRole("button", { name: label, exact: true }).click();
+}
+
+/** 专业工作面按当前作品呈现在资料页，插件管理页只负责生命周期。 */
+export async function openCreativePlugin(page: Page, title: string) {
+  await navigate(page, "作品资料");
+  const group = page.locator("details.profile-plugins");
+  await expect(group).toBeVisible();
+  if (!await group.evaluate(element => (element as HTMLDetailsElement).open))
+    await group.locator(":scope > summary").click();
+  await group.getByRole("button", {name: title, exact: true}).click();
 }

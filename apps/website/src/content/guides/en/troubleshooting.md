@@ -16,6 +16,10 @@ If Hetu shows an installation but the assistant cannot find the methods, check t
 
 See [Choose and install Skills](skills.md) and [Work with external agents](agents.md).
 
+## Codex reports a changed account or configuration
+
+Restore the original account or configuration, then choose “Reconnect”. You can also create a separate conversation; the original conversation and unsent drafts remain available. Do not recreate the work. If sign-in is required, choose “Sign in to Codex” in the original conversation. See [Work with external agents](agents.md).
+
 ## The assistant answered, but no draft appears
 
 A conversational answer does not establish that a result was saved to the work. Have the Agent check whether it returned the result through the tools, which object and task it belongs to, and read it back.

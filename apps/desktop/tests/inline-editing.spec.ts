@@ -4,7 +4,7 @@ import {tmpdir} from "node:os";
 import path from "node:path";
 import {spawnSync} from "node:child_process";
 import {AppServer} from "../src/main/rpc.ts";
-import {documentAction} from "./navigation.ts";
+import {documentAction, navigate} from "./navigation.ts";
 
 test("光标格式、组合文字、删除清理与列表键盘在实际编辑和保存后保持一致", async ({}, info) => {
   test.setTimeout(120000);
@@ -29,7 +29,7 @@ test("光标格式、组合文字、删除清理与列表键盘在实际编辑�
     const page = await app.firstWindow(), errors: string[] = []; page.on("pageerror", error => errors.push(error.message));
     await page.setViewportSize({width: 1440, height: 940});
     await page.getByRole("button", {name: "打开作品 默认小说", exact: true}).click();
-    await page.getByRole("button", {name: "小说", exact: true}).click();
+    await navigate(page, "小说");
     await page.evaluate(async () => {
       const api = (window as any).hetuDesktop, state = await api.settings("preferences");
       await api.settings("update", {expected_revision: state.revision, patch: {autosave: false}});

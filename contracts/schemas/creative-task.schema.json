@@ -402,6 +402,11 @@
             "sha256": {
               "type": "string",
               "pattern": "^[0-9a-f]{64}$"
+            },
+            "entity_ref": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
             }
           },
           "required": [
@@ -414,11 +419,19 @@
             ],
             "blueprint_id": [
               "work_ref"
+            ],
+            "entity_ref": [
+              "work_ref",
+              "blueprint_id",
+              "sha256"
             ]
           }
         },
         {
           "$ref": "#/$defs/professional_ref"
+        },
+        {
+          "$ref": "#/$defs/outline_ref"
         }
       ]
     },
@@ -679,6 +692,9 @@
         "task_ref": {
           "$ref": "#/$defs/task_ref"
         },
+        "result_path": {"type":"string","maxLength":512},
+        "offset": {"type":"integer","minimum":0},
+        "expected_result_sha256": {"type":"string","pattern":"^[0-9a-f]{64}$"},
         "submission_id": {
           "type": "string",
           "pattern": "^submission_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
@@ -686,7 +702,8 @@
         "detail": {
           "enum": [
             "full",
-            "summary"
+            "summary",
+            "review"
           ]
         },
         "request_field": {
@@ -1113,6 +1130,11 @@
         "task_ref": {
           "$ref": "#/$defs/task_ref"
         },
+        "detail": {"$ref":"#/$defs/get_input/properties/detail"},
+        "result_path": {"$ref":"#/$defs/get_input/properties/result_path"},
+        "offset": {"$ref":"#/$defs/get_input/properties/offset"},
+        "max_bytes": {"$ref":"#/$defs/get_input/properties/max_bytes"},
+        "expected_result_sha256": {"$ref":"#/$defs/get_input/properties/expected_result_sha256"},
         "submission_id": {
           "type": "string",
           "pattern": "^submission_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
@@ -2277,6 +2299,9 @@
             },
             "working_copy_ref": {
               "$ref": "#/$defs/working_ref"
+            },
+            "range": {
+              "$ref": "#/$defs/feedback_text_range"
             }
           },
           "required": [
@@ -2293,11 +2318,43 @@
             },
             "candidate_ref": {
               "$ref": "#/$defs/candidate_ref"
+            },
+            "range": {
+              "$ref": "#/$defs/feedback_text_range"
+            },
+            "image_region": {
+              "$ref": "#/$defs/feedback_image_region"
             }
           },
           "required": [
             "kind",
             "candidate_ref"
+          ],
+          "not": {
+            "required": [
+              "range",
+              "image_region"
+            ]
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "context"
+            },
+            "context_ref": {
+              "$ref": "#/$defs/context_ref"
+            },
+            "range": {
+              "$ref": "#/$defs/feedback_text_range"
+            }
+          },
+          "required": [
+            "kind",
+            "context_ref",
+            "range"
           ]
         }
       ]
@@ -2492,6 +2549,9 @@
         "working_copy_ref": {
           "$ref": "#/$defs/working_ref"
         },
+        "result_path": {"$ref":"#/$defs/get_input/properties/result_path"},
+        "offset": {"$ref":"#/$defs/get_input/properties/offset"},
+        "expected_result_sha256": {"$ref":"#/$defs/get_input/properties/expected_result_sha256"},
         "range": {
           "type": "object",
           "additionalProperties": false,
@@ -2518,7 +2578,8 @@
         "detail": {
           "enum": [
             "full",
-            "summary"
+            "summary",
+            "page"
           ]
         }
       },
@@ -2807,6 +2868,9 @@
         "task_ref": {
           "$ref": "#/$defs/task_ref"
         },
+        "feedback_ref": {
+          "$ref": "#/$defs/feedback_ref"
+        },
         "after_cursor": {
           "type": "string",
           "minLength": 1,
@@ -2816,6 +2880,26 @@
           "type": "integer",
           "minimum": 1,
           "maximum": 100
+        },
+        "result_path": {
+          "type": "string",
+          "maxLength": 512
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_bytes": {
+          "type": "integer",
+          "minimum": 4,
+          "maximum": 16384
+        },
+        "expected_result_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "candidate_ref": {
+          "$ref": "#/$defs/candidate_ref"
         }
       },
       "required": [
@@ -2827,7 +2911,11 @@
       "additionalProperties": false,
       "properties": {
         "schema_version": {
-          "const": "1.0.0"
+          "enum": [
+            "1.0.0",
+            "1.1.0",
+            "1.2.0"
+          ]
         },
         "feedback_id": {
           "type": "string",
@@ -2920,6 +3008,73 @@
         "interaction_decision_ref",
         "origin",
         "created_at"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "schema_version": {
+                "const": "1.0.0"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "target_refs": {
+                "items": {
+                  "not": {
+                    "required": [
+                      "range"
+                    ]
+                  }
+                }
+              },
+              "selected_refs": {
+                "items": {
+                  "not": {
+                    "required": [
+                      "range"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "schema_version": {
+                "enum": [
+                  "1.0.0",
+                  "1.1.0"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "target_refs": {
+                "items": {
+                  "not": {
+                    "required": [
+                      "image_region"
+                    ]
+                  }
+                }
+              },
+              "selected_refs": {
+                "items": {
+                  "not": {
+                    "required": [
+                      "image_region"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "context_ref": {
@@ -2961,7 +3116,8 @@
             "document",
             "blueprint",
             "resource",
-            "plugin_object"
+            "plugin_object",
+            "outline"
           ]
         }
       },
@@ -3059,7 +3215,8 @@
             "document",
             "blueprint",
             "resource",
-            "plugin_object"
+            "plugin_object",
+            "outline"
           ]
         },
         "query": {
@@ -3118,7 +3275,8 @@
                   "document",
                   "blueprint",
                   "resource",
-                  "plugin_object"
+                  "plugin_object",
+                  "outline"
                 ]
               },
               "fixed_ref": {
@@ -4441,6 +4599,94 @@
       },
       "required": [
         "task_ref"
+      ]
+    },
+    "outline_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "outline"
+        },
+        "work_ref": {
+          "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+        },
+        "outline_id": {
+          "type": "string",
+          "pattern": "^outline_[0-9a-f-]{36}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "kind",
+        "work_ref",
+        "outline_id",
+        "revision",
+        "sha256"
+      ]
+    },
+    "feedback_text_range": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "byte_start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "byte_end": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "quote": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16384
+        }
+      },
+      "required": [
+        "byte_start",
+        "byte_end",
+        "quote"
+      ]
+    },
+    "feedback_image_region": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "y": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "width",
+        "height"
       ]
     }
   }

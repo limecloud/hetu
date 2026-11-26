@@ -1,6 +1,7 @@
 import { createAppHost } from "./host/bridge.ts";
 import { libraryAssets } from "./workbench/assets.ts";
 import type { DesktopBridge } from "../../desktop/src/renderer/bridge.ts";
+import {sameWork,type WorkRef} from "@hetu/plugin-sdk";
 
 const host=createAppHost("Hetu Luoshu shared workbench");
 const listeners=new Map<string,Set<(value:any)=>void>>();
@@ -11,7 +12,7 @@ const emit=(name:string,value:any)=>{
  listeners.get(name)?.forEach(listener=>listener(value));
  if(name==="onPreferences")pluginFrame?.contentWindow?.postMessage({hetuPlugin:pluginChannel,preferences:projectPreferences(value)},"*");
 };
-let session="",started=false;
+let session="",started=false,closing=false;
 const ready:Promise<void>=new Promise(resolve=>{
  host.ontoolresult=async result=>{
   const token=(result as any)._meta?.["hetu/workbenchSession"];
@@ -60,7 +61,11 @@ async function call(method:string,args:any[]=[]):Promise<any>{
 }
 const bridge=new Proxy({} as DesktopBridge,{
  get(_target,method:string){
-  if(method==="promptDelivery")return host.features().messages ? {drafts:host.features().drafts,send:(text:string,mode:"send"|"draft")=>host.sendText(text,"active",mode==="send")} : undefined;
+  if(method==="promptDelivery")return host.features().messages ? {drafts:host.features().drafts,directSend:host.features().directSend,send:async(text:string,mode:"send"|"draft",work?:WorkRef)=>{
+    if(closing)throw Error("当前工作台连接已结束。");
+    if(work){const state=await call("state");if(closing||!state.work||!sameWork(state.work,work))throw Error("作品已切换，请重新准备当前作品的请求。");}
+    return host.sendText(text,"active",mode==="send");
+  }} : undefined;
   if(method==="agentSessionHost")return false;
   if(method==="windowControls"){const modes=host.getHostContext()?.availableDisplayModes;return {interfaceScale:false,zoom:!!(modes?.includes("fullscreen")&&modes.includes("inline"))};}
   if(method==="bounds")return async()=>{};
@@ -93,7 +98,7 @@ async function closeSettings(){
   window.dispatchEvent(new Event("hetu:settings-close-request"));
  });
 }
-host.onteardown=async()=>{await closeSettings();await releasePlugin();if(session)await call("close");for(const url of media.keys())URL.revokeObjectURL(url);media.clear();return {};};
+host.onteardown=async()=>{closing=true;try{await closeSettings();await releasePlugin();if(session)await call("close");for(const url of media.keys())URL.revokeObjectURL(url);media.clear();return {};}catch(error){closing=false;throw error;}};
 await host.connect();
 await ready;
 window.hetuWorkbenchHostTheme=host.getHostContext()?.theme;

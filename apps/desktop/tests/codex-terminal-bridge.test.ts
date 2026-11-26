@@ -36,3 +36,32 @@ test("原生TUI透传精确线程，归属持久化后才答复，外部线程�
   assert.deepEqual(received.slice(count),["thread/read"]);
  }finally{peer.terminate();await bridge.close();for(const client of upstream.clients)client.terminate();upstream.close();await new Promise<void>(resolve=>server.close(()=>resolve()));}
 });
+
+for(const failure of ["rejected","disconnected","ownership"] as const){
+ test("原生TUI恢复失败立即结束就绪等待："+failure,async()=>{
+  const server=http.createServer(),upstream=new WebSocketServer({server});
+  await new Promise<void>(resolve=>server.listen(0,"127.0.0.1",resolve));
+  upstream.on("connection",peer=>peer.on("message",raw=>{
+   const message=JSON.parse(raw.toString());
+   if(failure==="disconnected"){peer.close();return;}
+   peer.send(JSON.stringify({id:message.id,...(failure==="rejected"?{error:{code:-32000,message:"原线程暂不可恢复"}}:{result:{thread:{id:"foreign"}}})}));
+  }));
+  const bridge=new CodexTerminalBridge();
+  await bridge.open({endpoint:"ws://127.0.0.1:"+(server.address() as {port:number}).port,check:()=>{},thread:async()=>{throw Error("恢复线程不属于当前作品");},list:result=>result});
+  const peer=new WebSocket(bridge.endpoint.startsWith("unix://")?"ws+unix://"+bridge.endpoint.slice(7)+":/":bridge.endpoint,{...(bridge.token?{headers:{Authorization:"Bearer "+bridge.token}}:{})});
+  try{
+   await new Promise<void>((resolve,reject)=>{peer.once("open",resolve);peer.once("error",reject);});
+   const waiting=bridge.ready();
+   const rejected=assert.rejects(waiting,failure==="rejected"?/原线程暂不可恢复/:failure==="ownership"?/恢复线程不属于当前作品/:/终端连接已断开/);
+   peer.send(JSON.stringify({id:1,method:"thread/resume",params:{threadId:"owned"}}));
+   await rejected;
+  }finally{peer.terminate();await bridge.close();for(const client of upstream.clients)client.terminate();upstream.close();await new Promise<void>(resolve=>server.close(()=>resolve()));}
+ });
+}
+
+test("终端尚未接入时关闭协议桥会结束原就绪等待",async()=>{
+ const bridge=new CodexTerminalBridge();
+ await bridge.open({endpoint:"ws://127.0.0.1:1",check:()=>{},thread:async()=>{},list:result=>result});
+ const waiting=assert.rejects(bridge.ready(),/终端连接已关闭/);
+ await bridge.close();await waiting;
+});

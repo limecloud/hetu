@@ -293,7 +293,10 @@ impl CollaborationHub {
             .ok_or_else(|| Error::new("hetu.capability_unavailable", "稳定入口未开放该动作。"))?;
         crate::local_settings::LocalSettings::open_default()?.with_execution_policy(|mode, _revision| {
             let preparation = matches!(action, "hetu.agent_operations.prepare" | "hetu.agent_operations.record_decision" | "hetu.agent_operations.execute");
-            ensure(mode == "auto" || crate::execution::read_only_effect(action, &descriptor["effect"], input) || preparation,
+            let read = if mode != "auto" && action == "hetu.plugins.invoke" {
+                self.open_management_reference(&input["management_ref"])?.0.plugin_invocation_is_read(input)?
+            } else { crate::execution::read_only_effect(action, &descriptor["effect"], input) };
+            ensure(mode == "auto" || read || preparation,
                 "hetu.execution_confirmation_required", "请将本次写入准备为固定执行计划，确认后连续执行；管理和任务引用不能代替本次确认。")?;
             run()
         })
@@ -424,7 +427,8 @@ impl CollaborationHub {
             return self.execute_local(request);
         }
         if action.starts_with("hetu.execution.") {
-            return Ok(crate::execution::WorkspaceExecution::open_default(&self.client)?.request(request.clone()));
+            return Ok(crate::execution::WorkspaceExecution::open_default(&self.client)?
+                .with_collaboration_directory(&self.directory).request(request.clone()));
         }
         if action == "hetu.creation_projects.create"
             || request["input"].get("management_ref").is_some()
@@ -684,6 +688,15 @@ impl Kernel {
             "forbidden",
             "只有作者可以登记或撤销任务授权。",
         )?;
+        self.persist_collaboration_grant(input, revoke)
+    }
+    /// 仅在统一执行成功准备任务后交接原任务，不开放通用登记或撤销能力。
+    pub(crate) fn register_execution_task(&self, reference: &Value, directory: &Path) -> Result<Value> {
+        let client = self.execution_client().ok_or_else(|| Error::new("forbidden", "缺少统一执行客户端身份。"))?;
+        self.persist_collaboration_grant(&json!({"task_ref":reference,"client_adapter":client,
+            "collaboration_path":directory,"operation_key":format!("execution-task-{}",text(reference,"task_id")?)}), false)
+    }
+    fn persist_collaboration_grant(&self, input: &Value, revoke: bool) -> Result<Value> {
         let client = text(input, "client_adapter")?;
         client_valid(client)?;
         let reference = &input["task_ref"];

@@ -14,20 +14,24 @@ import {codexWorkbench} from "./codex-workbench.ts";
 import {AppServer} from "../../desktop/src/main/rpc.ts";
 import {navigate as navigateWorkbench} from "../../desktop/tests/navigation.ts";
 
-test.use({actionTimeout:15000});
+test.use({actionTimeout:15000,viewport:{width:1440,height:1000}});
 
 for (const transport of ["stdio", "codex"] as const) test(`${transport} MCP App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品`,async({page},testInfo)=>{
  test.skip(transport === "codex" && !process.env.HETU_ACCEPT_CODEX_BINARY, "需指定官方Codex CLI执行同一完整UI旅程");
- test.setTimeout(600000);
- const root=path.resolve("../.."),folder=await mkdtemp(path.join(tmpdir(),"hetu-shared-workbench-"));
- const mcp=process.env.HETU_ACCEPT_MCP_BINARY??path.join(root,"target/debug/hetu-mcp");
+ // 完整旅程含多作品、插件、媒体及恢复，逐动作仍保留15秒上限。
+ test.setTimeout(900000);
+ const root=path.resolve(import.meta.dirname,"../../.."),folder=await mkdtemp(path.join(tmpdir(),"hetu-shared-workbench-"));
+ const extension=process.platform==="win32"?".exe":"";
+ const mcp=process.env.HETU_ACCEPT_MCP_BINARY??path.join(root,"target/debug/hetu-mcp"+extension);
+ const appServer=path.join(path.dirname(mcp),"hetu-app-server"+extension),cli=path.join(path.dirname(mcp),"hetu"+extension);
+ const fixtures=process.env.HETU_ACCEPT_FIXTURE_DIRECTORY??path.join(root,"target/debug/examples");
  const workspace=path.join(folder,"work"),profile=path.join(folder,"profile"),collaboration=path.join(folder,"collaboration");
  await mkdir(profile);
  const pkg=await PluginPackage.inspect(path.join(root,"plugins/relationships/dist"));
- const fixture=spawnSync(path.join(root,"target/debug/examples/plugin_fixture"),[workspace,path.join(folder,"access"),path.join(pkg.source,"plugin.json"),pkg.sha256,"3"],{encoding:"utf8"});
- expect(fixture.status,fixture.stderr).toBe(0);
+ const fixture=spawnSync(path.join(fixtures,"plugin_fixture"+extension),[workspace,path.join(folder,"access"),path.join(pkg.source,"plugin.json"),pkg.sha256,"3"],{encoding:"utf8"});
+ expect(fixture.status,fixture.error?.message??fixture.stderr).toBe(0);
  const context=JSON.parse(fixture.stdout);
- const resourceAuthor=await AppServer.open(path.join(root,"target/debug/hetu-app-server"),workspace);
+ const resourceAuthor=await AppServer.open(appServer,workspace);
  try {
   for (const title of ["渡口参考资料","另一份航海记录"]) {
    const result=await resourceAuthor.request("workspace/request",{action:"hetu.resources.create",contract_revision:"1",input:{work_ref:context.work_ref,project_id:null,title,category:"research",body:`# ${title}\n\n${title}的完整内容。\n\n`+"这段参考资料应在主工作面阅读。\n\n".repeat(30),tags:[],entity_refs:[],source_notes:"隔离验收",operation_key:title}});
@@ -35,10 +39,10 @@ for (const transport of ["stdio", "codex"] as const) test(`${transport} MCP App�
   }
  } finally {await resourceAuthor.close();}
  const baselineWorkspace=path.join(folder,"three-kinds");
- const baselineFixture=spawnSync(path.join(root,"target/debug/examples/baseline_fixture"),[baselineWorkspace,path.join(folder,"baseline-access")],{encoding:"utf8"});
- expect(baselineFixture.status,baselineFixture.stderr).toBe(0);
+ const baselineFixture=spawnSync(path.join(fixtures,"baseline_fixture"+extension),[baselineWorkspace,path.join(folder,"baseline-access")],{encoding:"utf8"});
+ expect(baselineFixture.status,baselineFixture.error?.message??baselineFixture.stderr).toBe(0);
  const baseline=JSON.parse(baselineFixture.stdout);
- const author=await AppServer.open(path.join(root,"target/debug/hetu-app-server"),baselineWorkspace);
+ const author=await AppServer.open(appServer,baselineWorkspace);
  const drafts:{title:string;content:string;submitted:boolean}[]=[];
  try{
   const call=async(action:string,input:any)=>{const result=await author.request("workspace/request",{action,input,contract_revision:"1"});expect(result.status,JSON.stringify(result)).toBe("succeeded");return result.data;};
@@ -48,7 +52,7 @@ for (const transport of ["stdio", "codex"] as const) test(`${transport} MCP App�
    const document=await call("hetu.documents.get",{document_id:episode.document.document_id});
    const preview=await call("hetu.creative_tasks.preview_prompt",{scope_ref:{kind:"workspace",id:baseline.drama.workspace_id},work_ref:baseline.drama,target_ref:{document_id:document.document.document_id,revision_id:document.revision.revision_id,sha256:document.revision.sha256},task_kind:"drama_draft",brief:title,input_refs:[],client_adapter:"codex",language_tag:"zh-CN",candidate_limit:2});
    const task=await call("hetu.creative_tasks.prepare",{...preview.prepare_input,operation_key:title});
-   const agent=(action:string,input:any)=>{const result=spawnSync(path.join(root,"target/debug/hetu"),["--workspace",baselineWorkspace,"--task",task.task_ref.task_id,"call",action,"--input","-"],{input:JSON.stringify({task_ref:task.task_ref,...input}),encoding:"utf8"});expect(result.status,result.stdout+result.stderr).toBe(0);return JSON.parse(result.stdout).data;};
+   const agent=(action:string,input:any)=>{const result=spawnSync(cli,["--workspace",baselineWorkspace,"--task",task.task_ref.task_id,"call",action,"--input","-"],{input:JSON.stringify({task_ref:task.task_ref,...input}),encoding:"utf8"});expect(result.status,result.stdout+result.stderr).toBe(0);return JSON.parse(result.stdout).data;};
    const copy=agent("hetu.working_copies.create",{artifact_kind:"text",title,source_format:"fountain",base_refs:[],feedback_refs:[],content,operation_key:title});
    if(submitted)agent("hetu.creative_tasks.submit_result",{request_sha256:task.request_sha256,working_copy_refs:[copy.working_copy_ref],complete:true,missing_items:[],feedback_refs:[],provenance:{client:"acceptance",skill_version:"1"},operation_key:title+"-submit"});
    drafts.push({title,content,submitted});
@@ -59,9 +63,17 @@ for (const transport of ["stdio", "codex"] as const) test(`${transport} MCP App�
 
  await writeFile(path.join(profile,"creative-library.json"),JSON.stringify({schema_version:1,roots:[{path:workspace,workspace_id:context.work_ref.workspace_id,works:[{work_ref:context.work_ref,title:"插件集成测试"}]},{path:baselineWorkspace,workspace_id:baseline.novel.workspace_id,works:[{work_ref:baseline.novel,title:"默认小说"},{work_ref:baseline.drama,title:"默认剧本"},{work_ref:baseline.video,title:"默认视频"}]}]}));
  const env={HETU_DESKTOP_PROFILE:profile,HETU_LOCAL_SETTINGS_DIR:path.join(profile,"local-settings"),HETU_PLUGIN_STATE_DIR:profile,HETU_PLUGIN_NODE:process.execPath,HETU_PLUGIN_ACCESS_DIR:path.join(folder,"access"),HETU_COLLABORATION_DIR:collaboration};
+ const diagnostics:{event:string;at:string;message?:string;expected_close?:boolean}[]=[];
+ let closing=false,stderr="";
  const direct=new Client({name:"hetu-shared-workbench-acceptance",version:"1"},{capabilities:{extensions:{"io.modelcontextprotocol/ui":{mimeTypes:["text/html;profile=mcp-app"]}}}});
+ direct.onerror=error=>diagnostics.push({event:"client-error",at:new Date().toISOString(),message:error.message.slice(0,500)});
+ direct.onclose=()=>diagnostics.push({event:"client-close",at:new Date().toISOString(),expected_close:closing});
  const client=transport === "codex" ? await codexWorkbench(process.env.HETU_ACCEPT_CODEX_BINARY!,mcp,env) : direct;
- if(transport === "stdio")await direct.connect(new StdioClientTransport({command:mcp,args:["--client","codex","--collaboration-dir",collaboration],stderr:"pipe",env:{...process.env,...env}}));
+ if(transport === "stdio"){
+  const stdio=new StdioClientTransport({command:mcp,args:["--client","codex","--collaboration-dir",collaboration],stderr:"pipe",env:{...process.env,...env}});
+  stdio.stderr?.on("data",chunk=>{stderr=(stderr+String(chunk)).slice(-16000);});
+  await direct.connect(stdio);
+ }
  const initial=await client.callTool({name:"hetu_open_app",arguments:{}});
  const token=initial._meta?.["hetu/workbenchSession"] as string;
  expect(token).toBeTruthy();
@@ -143,6 +155,49 @@ for (const transport of ["stdio", "codex"] as const) test(`${transport} MCP App�
   },[context.work_ref.workspace_id,baseline.novel.workspace_id])).toBe(true);
   await card.click();
   await expect(view.getByRole("heading", {name:"作品资料", exact:true})).toBeVisible();
+  // 两种真实机器传输共用专业发现；宿主接收与作品执行分别验证。
+  for(const mode of ["rejected","lost","accepted"] as const){
+   await page.evaluate(mode=>{window.harness.messageMode=mode;},mode);
+   const count=await page.evaluate(()=>window.harness.messages.length);
+   await view.getByLabel("更多操作",{exact:true}).click();await view.getByRole("button",{name:"专业工具",exact:true}).click();
+   const professional=view.getByRole("dialog",{name:"专业工具",exact:true});
+   await professional.getByRole("button",{name:/人物关系图/}).click();
+   await professional.getByRole("combobox",{name:"专业处理方式",exact:true}).selectOption("action:arrange");
+   await professional.getByRole("textbox",{name:"专业处理目标",exact:true}).fill("核对当前人物关系布局，保留正式原文。");
+   await professional.getByRole("button",{name:"准备请求",exact:true}).click();
+   await expect(professional.getByRole("region",{name:"专业请求预览",exact:true})).toBeVisible({timeout:60000});
+   await professional.getByRole("button",{name:"发送给当前 Agent",exact:true}).click();
+   await expect(professional.getByRole("status")).toContainText(mode==="lost"?"发送结果尚未确认":mode==="rejected"?"宿主未接收请求":"宿主已接收请求",{timeout:30000});
+   await expect(professional.getByRole("button",{name:"发送给当前 Agent",exact:true})).toBeDisabled();
+   await expect(professional.getByRole("button",{name:"复制请求",exact:true})).toBeEnabled();
+   expect(await page.evaluate(()=>window.harness.messages.length)).toBe(count+1);
+   const text=await page.evaluate(()=>JSON.stringify(window.harness.messages.at(-1)));expect(text).toContain("arrange");expect(text).toContain(pkg.sha256);expect(text).not.toContain("management_ref");
+   await professional.getByRole("button",{name:"关闭上下文选择",exact:true}).click();
+  }
+  await page.evaluate(()=>{window.harness.messageMode="accepted";});
+  for(const mode of ["draft","copy"] as const){
+   const hostPage=await page.context().newPage();
+   try{
+    const hostInitial=await client.callTool({name:"hetu_open_app",arguments:{}});
+    await hostPage.addInitScript(value=>Object.assign(window,value),{viewHtml:html,initialTask:hostInitial,realTask:true,workbenchMode:true,testMessages:mode==="draft",testLocalDrafts:mode==="draft"});
+    await hostPage.goto("http://127.0.0.1:"+address.port);
+    const hostView=hostPage.frameLocator("iframe");await hostView.getByRole("button",{name:"打开作品 插件集成测试",exact:true}).click();
+    await expect(hostView.getByRole("heading",{name:"作品资料",exact:true})).toBeVisible();
+    await expect(hostView.locator("main:not([hidden])")).not.toHaveAttribute("aria-busy","true");
+    await hostView.getByLabel("更多操作",{exact:true}).click();await hostView.getByRole("button",{name:"专业工具",exact:true}).click();
+    const professional=hostView.getByRole("dialog",{name:"专业工具",exact:true});await professional.getByRole("button",{name:/人物关系图/}).click();
+    await professional.getByRole("textbox",{name:"专业处理目标",exact:true}).fill("只准备当前人物关系检查。");await professional.getByRole("button",{name:"准备请求",exact:true}).click();
+    await expect(professional.getByRole("button",{name:"发送给当前 Agent",exact:true})).toHaveCount(0);await expect(professional.getByRole("button",{name:"复制请求",exact:true})).toBeEnabled({timeout:30000});
+    if(mode==="draft"){
+     await professional.getByRole("button",{name:"放入对话草稿",exact:true}).click();await expect(professional.getByRole("status")).toContainText("已放入草稿，尚未发送",{timeout:30000});
+     expect(await hostPage.evaluate(()=>window.harness.wireMessages)).toEqual([expect.objectContaining({_meta:{"hetu/message":{target:"active",send:false}}})]);
+    }else{
+     await expect(professional.getByRole("button",{name:"放入对话草稿",exact:true})).toHaveCount(0);expect(await hostPage.evaluate(()=>window.harness.messages.length)).toBe(0);
+    }
+   }catch(error){await hostPage.screenshot({path:testInfo.outputPath("professional-"+mode+"-failure.png")});await writeFile(testInfo.outputPath("professional-"+mode+"-failure.txt"),await hostPage.frameLocator("iframe").locator("body").innerText());throw error;}
+   finally{await hostPage.close();}
+  }
+  await page.bringToFront();
   await navigate("小说");
   const editor=view.getByRole("textbox",{name:"文稿编辑",exact:true});
   await expect(editor).toBeVisible({timeout:30000});
@@ -448,6 +503,12 @@ for (const transport of ["stdio", "codex"] as const) test(`${transport} MCP App�
   await expect(editor).toContainText("这是在 MCP App 中保存的新修订");
   await navigate("参考稿审核");
   await view.getByRole("combobox",{name:"当前审阅任务",exact:true}).selectOption(context.task_ref.task_id);
+  await view.locator(".task-assessment > summary").click();
+  const assessment=view.getByRole("region",{name:"交付与检查",exact:true});
+  await expect(assessment).toContainText("2 份固定候选",{timeout:30000});await expect(assessment).toContainText("尚未采纳");await expect(assessment).toContainText("未附加专业报告");
+  await assessment.getByRole("button",{name:"选择专业报告",exact:true}).click();
+  const reports=view.getByRole("dialog",{name:"专业成果",exact:true});await expect(reports.getByRole("combobox",{name:"成果所属插件",exact:true})).toBeEnabled();await reports.getByRole("button",{name:"关闭上下文选择",exact:true}).click();
+  await view.locator(".task-assessment > summary").click();
   const taskView=view.frameLocator('iframe[title="任务候选审阅"]');
   // 两种传输都必须显示可重开的资源读取错误；宿主可能会包装底层失败文案。
   await expect(view.getByRole("alert")).toContainText(/审阅资源读取中断|Real MCP resource read failed/);
@@ -505,6 +566,26 @@ for (const transport of ["stdio", "codex"] as const) test(`${transport} MCP App�
   expect(pluginFixed.fixed_refs[0].owner_plugin_id).toBe(pkg.manifest.id);
   expect(pluginFixed.plugin_connection.runtime).toMatch(/plugin-runtime\.mjs$/);
   expect(pluginFixed.management_ref).toBeUndefined();
+  const inventory=await client.callTool({name:"hetu_plugins_inspect",arguments:{}});
+  const removed=await client.callTool({name:"hetu_plugins_apply",arguments:{action:"uninstall",plugin_id:pkg.manifest.id,package_sha256:pkg.sha256,
+    expected_sha256:(inventory.structuredContent as any).data.state_sha256,authorization_note:"隔离验收卸载原插件并保留固定成果",operation_key:"uninstall-retain-results"}});
+  expect((removed.structuredContent as any).status,JSON.stringify(removed)).toBe("succeeded");
+  await navigate("创作插件");
+  const retainedRow=view.locator(".plugin-content .row").filter({has:view.getByText("人物关系图",{exact:true})});
+  await expect(retainedRow.getByText("已卸载 "+pkg.manifest.version,{exact:true})).toBeVisible();
+  await expect(retainedRow.getByRole("button",{name:/^(启用|停用)$/})).toHaveCount(0);
+  await retainedRow.getByRole("button",{name:"读取成果",exact:true}).click();
+  const retainedResults=view.getByRole("region",{name:"插件成果",exact:true});
+  await expect(retainedResults.getByRole("button",{name:"让 AI 处理",exact:true})).toBeDisabled();
+  await retainedResults.getByRole("button",{name:"查看导出",exact:true}).first().click();
+  await expect(retainedResults.getByRole("region",{name:"固定插件成果导出",exact:true})).toContainText(object.object.title);
+  const retained=await client.callTool({name:"hetu_read_plugin_result",arguments:{management_ref:fixed.management_ref,work_ref:context.work_ref,
+    owner_plugin_id:pkg.manifest.id,object_id:object.object.object_id,revision:object.object.revision}});
+  expect((retained.structuredContent as any).status,JSON.stringify(retained)).toBe("succeeded");
+  expect((retained.structuredContent as any).data.sha256).toBe(object.sha256);
+  const retainedState=(await request("state",[])).value;
+  expect(retainedState.views.some((view:any)=>view.owner===pkg.manifest.id)).toBe(false);
+  await page.screenshot({path:testInfo.outputPath(`${transport}-uninstalled-plugin-results.png`)});
   await navigate("返回创作库");
   await view.getByRole("button",{name:"打开作品 默认剧本",exact:true}).click();
   await navigate("剧本");
@@ -562,10 +643,14 @@ for (const transport of ["stdio", "codex"] as const) test(`${transport} MCP App�
    await directory.getByRole("button",{name:source.document.title,exact:true}).click({button:"right"});
    await view.getByRole("menuitem",{name:"复制文稿",exact:true}).click();
    const title=source.document.title+" 副本";
-   await expect(directory.getByRole("button",{name:title,exact:true})).toBeVisible();
+   // 官方宿主还需完成原提交后的目录重读；已提交的复制不能靠再次点击恢复。
+   await expect(directory).toHaveAttribute("aria-busy","false",{timeout:15000});
+   await expect(directory.getByRole("button",{name:title,exact:true})).toBeVisible({timeout:15000});
    const copy=await view.locator("#root").evaluate(async(_element,{work,title})=>{
     const api=(window as any).hetuDesktop,list=await api.read("hetu.documents.list",{work_ref:work});
-    const document=list.data.documents.find((item:any)=>item.title===title);
+    const copies=list.data.documents.filter((item:any)=>item.title===title);
+    if(copies.length!==1)throw new Error("原复制操作未产生唯一副本");
+    const document=copies[0];
     return (await api.read("hetu.documents.get",{document_id:document.document_id})).data;
    },{work,title});
    expect(copy.content).toBe(source.content);expect(copy.document.document_id).not.toBe(source.document.document_id);
@@ -590,5 +675,8 @@ for (const transport of ["stdio", "codex"] as const) test(`${transport} MCP App�
   expect(await page.evaluate(()=>window.harness.invalidToolArguments)).toBe(0);
   const calls=await page.evaluate(()=>window.harness.calls.map(item=>({method:item.arguments?.method,action:(item.arguments?.args as any[])?.[0]})).filter(item=>typeof item.method==="string").map(item=>({method:item.method,action:typeof item.action==="string"?item.action:undefined})));
   await testInfo.attach("严格宿主交互覆盖",{body:JSON.stringify({transport,calls,invalidToolArguments:0,modelTurnsStarted:0}),contentType:"application/json"});
- }finally{await client.close();await new Promise<void>(resolve=>server.close(()=>resolve()));}
+ }finally{
+  closing=true;await client.close();await new Promise<void>(resolve=>server.close(()=>resolve()));
+  await writeFile(testInfo.outputPath("transport-diagnostics.json"),JSON.stringify({transport,workspace:folder,diagnostics,stderr:stderr.replace(/(Bearer\s+)[\w.-]+/gi,"$1<redacted>")},null,2));
+ }
 });

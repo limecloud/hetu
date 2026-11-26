@@ -59,7 +59,7 @@ impl Kernel {
     pub(super) fn inspect_asset(&self, input: &Value) -> Result<Value> {
         self.media_owner(input, None)?;
         if let Some((filename, content)) = self.inline_import_source(input)? {
-            let mut result = media::signature(&content[..content.len().min(64)])?;
+            let mut result = media::inspect_content(&content)?;
             result["original_filename"] = json!(filename);
             result["sha256"] = json!(digest(&content));
             result["size_bytes"] = json!(content.len());
@@ -77,9 +77,17 @@ impl Kernel {
     }
     fn media_root(&self, object: &str, id: &str) -> Result<String> {
         checked_id(id, object)?;
-        for package in ["music-cue", "visual-prompt"] {
+        for package in ["music-cue", "visual-prompt", "video"] {
+            if package == "video" && object != "asset" {
+                continue;
+            }
             let folder = format!("packages/{package}/{}", collection(object));
-            if self.store.entries(&folder)?.iter().any(|name| name == id) {
+            let entries = match self.store.entries(&folder) {
+                Ok(entries) => entries,
+                Err(error) if package == "video" && error.code == "not_found" => continue,
+                Err(error) => return Err(error),
+            };
+            if entries.iter().any(|name| name == id) {
                 return Ok(format!("{folder}/{id}"));
             }
         }
@@ -208,16 +216,21 @@ impl Kernel {
         )?;
         let asset_id = id("asset");
         let kind = text(&inspection, "kind")?;
+        ensure(
+            kind != "caption" || owner.is_some(),
+            "invalid_input",
+            "字幕导入须指定所属作品。",
+        )?;
         let path = format!(
             "packages/{}/assets/{asset_id}/source.{}",
             media::package(kind),
             text(&inspection, "extension")?
         );
         let mut record = json!({"schema_version":"1.0.0","asset_id":asset_id,"revision":1,"previous_sha256":null,"kind":kind,
-            "original_filename":inspection["original_filename"],"blob":{"path":path,"sha256":inspection["sha256"],"size_bytes":inspection["size_bytes"],"media_type":inspection["media_type"],"validation":"signature_only"},
+            "original_filename":inspection["original_filename"],"blob":{"path":path,"sha256":inspection["sha256"],"size_bytes":inspection["size_bytes"],"media_type":inspection["media_type"],"validation":inspection["validation"]},
             "created_at":now(),"updated_at":now(),"actor_ref":self.actor()});
         if let Some(owner) = owner {
-            record["schema_version"] = json!("2.0.0");
+            record["schema_version"] = json!(if kind == "caption" { "3.0.0" } else { "2.0.0" });
             record["work_ref"] = owner;
         }
         Self::asset_metadata(input, &mut record);
@@ -409,17 +422,25 @@ impl Kernel {
             self.work_record(owner, None)?;
         }
         let mut records = Vec::new();
-        for package in ["music-cue", "visual-prompt"] {
+        for package in ["music-cue", "visual-prompt", "video"] {
+            if package == "video" && object != "asset" {
+                continue;
+            }
             if input["kind"]
                 .as_str()
                 .is_some_and(|kind| media::package(kind) != package)
             {
                 continue;
             }
-            for id in self
+            let entries = match self
                 .store
-                .entries(&format!("packages/{package}/{}", collection(object)))?
+                .entries(&format!("packages/{package}/{}", collection(object)))
             {
+                Ok(entries) => entries,
+                Err(error) if package == "video" && error.code == "not_found" => continue,
+                Err(error) => return Err(error),
+            };
+            for id in entries {
                 // 中断导入可能只留下未登记的原字节；不将其冒充登记成功。
                 if !id.starts_with(&format!("{object}_")) {
                     continue;

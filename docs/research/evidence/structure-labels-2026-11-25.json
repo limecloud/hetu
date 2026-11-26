@@ -1,0 +1,228 @@
+{
+  "date": "2026-11-25",
+  "version": "0.14.1",
+  "scope": "R7-08/09 on-demand chapter names in structure editor",
+  "state": "local-installed-validated",
+  "cause": "WorkProfile intentionally calls readWorkContent(includeDocuments:false), then passes an empty documents array to NovelEditor; group labels previously fell back to 未命名章节 for all 103 chapters",
+  "implementation": [
+    "structure editor reads missing names only when opened; complete names passed by document workspace are reused",
+    "reuse readWorkContent fixed structure and full pagination; compare original novel revision and SHA before allowing edit",
+    "loading allows closing; inactive reads stop before subsequent page calls and late replies cannot reopen dialog",
+    "read failure terminates loading and offers explicit retry before any saveable draft exists",
+    "original NovelDetails CAS, operation recovery and scoped work-changed event remain",
+    "actual concurrent metadata revision during a held directory read is rejected; retry takes a new consistent structure baseline"
+  ],
+  "validation": {
+    "design_docs": "passed docs/10 and docs/19 additions via tools/verify-docs.py",
+    "typecheck_build": "task-view and desktop passed",
+    "three_surface_regression": "running current final source with structure and scoped-refresh journeys",
+    "structure_three_surfaces": {
+      "passed": 3,
+      "failed": 0,
+      "log": "output/structure-labels-active-final.log",
+      "scope": "first three cases in combined six-case run; same runtime; desktop/stdio/official Codex",
+      "formal_unchanged": true,
+      "concurrent_structure_change_rejected": true,
+      "close_failure_retry_and_103_titles": true
+    },
+    "combined_regression": {
+      "passed": 5,
+      "failed": 1,
+      "cleanup_errors": 1,
+      "log": "output/structure-labels-active-final.log",
+      "limits": "not an all-green run; failed desktop save/readback case handled separately"
+    },
+    "refresh_three_surfaces": {
+      "passed": 3,
+      "failed": 0,
+      "log": "output/structure-labels-refresh-receipt.log",
+      "scope": "same final runtime; corrected test completion wait; all three original refresh journeys"
+    },
+    "frozen_artifacts": {
+      "items": 35,
+      "record": "output/structure-labels-20261125/frozen-artifacts.json"
+    },
+    "package": {
+      "manifest": "output/structure-labels-20261125/package/hetu-dev-4hVktU/manifest.json",
+      "source_sha256": "8f5fda802c2aed279af9d8863610728e5956205567d426352aeef26bd29fc710",
+      "source_inputs": 3053,
+      "artifacts": 3720,
+      "source_delta": [
+        "apps/desktop/src/renderer/novel-editors.tsx",
+        "apps/desktop/src/renderer/work-content.ts",
+        "apps/mcp/resources/workbench.html",
+        "apps/mcp/resources/workbench.manifest.json"
+      ],
+      "signing": "ad-hoc-development",
+      "icon_matches": true
+    },
+    "package_workspace_and_geometry": {
+      "passed": 3,
+      "failed": 0,
+      "log": "output/structure-labels-package-workspace.log"
+    },
+    "package_task_view": {
+      "passed": 19,
+      "failed": 0,
+      "skipped": 0,
+      "minutes": 15.4,
+      "log": "output/structure-labels-package-task-view.log",
+      "stdio_shared_workbench": "passed 5.9 minutes",
+      "official_codex_shared_workbench": "passed 5.2 minutes",
+      "scope": "final package native MCP, package desktop for structure/refresh; actual three-surface journeys, formal readbacks and original-operation checks; model turns 0"
+    },
+    "desktop_affected": {
+      "passed": 7,
+      "failed": 1,
+      "log": "output/structure-labels-package-desktop.log",
+      "scope": "8 affected package cases; failed source-feedback click verified zero saved feedback in original fixture; no retry write performed"
+    },
+    "author_affected_retest": {
+      "passed": 3,
+      "failed": 0,
+      "log": "output/structure-labels-author-verified.log",
+      "scope": "same package after test-only event instrumentation and explicit save-enabled assertion; package/task-assessment/task-source",
+      "limits": "subsequent pass does not prove initial click failure cause"
+    },
+    "source_click_diagnostics": {
+      "passed": 2,
+      "failed": 0,
+      "log": "output/structure-labels-source-diagnostics.log",
+      "records": "output/structure-labels-20261125/source-diagnostics/*/position-feedback-events.json",
+      "each": "pointerdown/pointerup/click and exactly one hetu_save_task_feedback call; original source and same task reopen passed",
+      "limits": "initial failure not reproduced; original cause remains unproven"
+    },
+    "installation": {
+      "version": "0.14.1",
+      "source_sha256": "8f5fda802c2aed279af9d8863610728e5956205567d426352aeef26bd29fc710",
+      "installed_items_verified": 3132,
+      "profile_unchanged": {
+        "creative-library.json": true,
+        "LocalSettings/settings.json": true,
+        "agent-sessions/index/selection.json": true
+      },
+      "atomic_swap": true,
+      "old_app_backup_created": false,
+      "external_mcp_processes_terminated": false,
+      "signing": "ad-hoc-development",
+      "author_tests": {
+        "passed": 3
+      }
+    },
+    "docs": {
+      "state": "passed",
+      "log": "output/structure-labels-installed-docs.log",
+      "capability_map": "passed",
+      "methods_reproducibility": "passed",
+      "skill": "passed official skill-creator validator",
+      "diff_whitespace": "passed",
+      "documents": 92,
+      "local_links": 1552,
+      "mermaid": 118,
+      "engineering_skill_relative_links": 12
+    },
+    "installed_structure": {
+      "passed": 1,
+      "failed": 0,
+      "log": "output/structure-labels-installed.log",
+      "scope": "actual /Applications/Hetu.app; isolated 103-chapter fixture, close/read-failure/concurrent baseline and one structure save"
+    },
+    "normal_profile": {
+      "runtime": {
+        "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+        "app": "/Applications/Hetu.app/Contents/Resources/app",
+        "profile": "/Users/coso/Library/Application Support/Hetu",
+        "version": "0.14.1",
+        "resources": "/Applications/Hetu.app/Contents/Resources"
+      },
+      "library_works": 19,
+      "profile_unchanged": {
+        "creative-library.json": true,
+        "LocalSettings/settings.json": true,
+        "agent-sessions/index/selection.json": true
+      },
+      "model_turn_started": false,
+      "screenshot": "output/conversation-composition-20261125/installed-normal-library-structure-labels-ready.png"
+    },
+    "installed_new_stdio": {
+      "runtime_version": "0.14.1",
+      "formal_unchanged": true,
+      "report_sha256": "56ce237f82f5d0ed02e1c08cb96bc155f94918e8d9b16be2c1fa67ba838be5a6",
+      "report_status": "inconclusive",
+      "candidates_read": 3,
+      "adoptions": 0,
+      "finalizations": 0,
+      "model_turns": 0,
+      "report_content_sha256": "7ae4ef429182692f42b3c49972b290f5859f8c010d19b8846cb6005bbcd3f947",
+      "transport": "new installed stdio MCP process; current conversation's original MCP unchanged"
+    },
+    "installed_original_ui": {
+      "surface": "structure-labels-installed",
+      "runtime": {
+        "version": "0.14.1",
+        "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu"
+      },
+      "same_task": true,
+      "third_candidate_visible": true,
+      "source_coverage_checked": true,
+      "position_feedback_checked": true,
+      "report_sha256": "56ce237f82f5d0ed02e1c08cb96bc155f94918e8d9b16be2c1fa67ba838be5a6",
+      "professional_status": "inconclusive",
+      "formal_unchanged": true,
+      "author_decision": "not_adopted",
+      "model_turns": 0
+    },
+    "prior_full_regressions": {
+      "reference": "docs/research/evidence/local-refresh-2026-11-25.json",
+      "runtime_scope": "prior 2cca127e package",
+      "task_view_passed": 94,
+      "desktop_passed": 82,
+      "desktop_skipped": 10,
+      "failed": 0,
+      "not_relabelled_as_new_increment": true
+    },
+    "installed_visual_review": "actual installed 103-chapter dialog shows real original chapter names and fixed header/footer; original-profile ready capture verifies 19 cards after loading completes"
+  },
+  "prior_failures": [
+    {
+      "log": "output/structure-labels-baseline.log",
+      "cause": "initial test expected manuscript directory navigation while on profile; corrected to current profile chapter count"
+    },
+    {
+      "log": "output/structure-labels-baseline-real.log",
+      "cause": "old structure editor did not request missing chapter names; delayed read was never reached"
+    },
+    {
+      "log": "output/structure-labels-installed-baseline.log",
+      "cause": "installed 2cca127e reproduces 103 unnamed chapter labels",
+      "screenshot": "output/structure-labels-20261125/installed-baseline/structure-labels-desktop-资料页按需读取103章真实名称，卷章失败可重试、关闭隔离迟到回包/actual-surface-failure.png"
+    },
+    {
+      "log": "output/structure-labels-first.log",
+      "cause": "desktop first passed; stdio and Codex delayed closed read continued into next page and consumed next explicit read failure",
+      "resolution": "readWorkContent accepts active lifecycle guard, checked before and after every existing read; structure editor supplies current lifetime"
+    },
+    {
+      "log": "output/structure-labels-active-final.log",
+      "cause": "desktop refresh test treated disabled save button as completion and read source before async save finished; failure cleanup then opened a native unsaved prompt",
+      "resolution": "test waits explicit saved-revision receipt and enabled refresh before readback; isolated cleanup chooses keep-recovery close, no write replay or force kill; rerunning three refresh surfaces"
+    },
+    {
+      "log": "output/structure-labels-package-desktop.log",
+      "cause": "source passage-save click returned without saved status; original fixture feedback count 0; first trace lacks pointer and host-call timing to establish cause",
+      "resolution": "test records pointerdown/pointerup/click and redacted task method/tool names; same-package author regression passed; diagnostic source repeat running; runtime unchanged",
+      "limits": "initial cause remains unproven, do not label fixed solely from retest"
+    }
+  ],
+  "limits": [
+    "Core and formal document semantics unchanged; new labels are display projection, never persisted as replacement titles",
+    "does not close full project, native-host, professional production or cross-platform gates",
+    "installed package is ad-hoc development 0.14.1; no public release or new website deployment",
+    "resident conversation MCP remains prior process; package install does not prove hot reload",
+    "first source-feedback click failure remains unexplained; diagnostics added and same-package retests passed, not a claimed runtime fix"
+  ],
+  "next_work": [
+    "investigate initial non-reproduced source passage-feedback click with recorded event/host-call timing if it recurs; do not claim fixed",
+    "continue remaining R7/R8 native-host, all-page accessibility and professional production gates; goal remains active"
+  ]
+}

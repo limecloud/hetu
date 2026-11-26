@@ -162,6 +162,7 @@ export function Management({ work, notify, ai, workflow }: SurfaceContext & { wo
     [selected, setSelected] = useState<any>(),
     [preview, setPreview] = useState<any>(),
     [busy, setBusy] = useState(false),
+    [recovering, setRecovering] = useState(false),
     [error, setError] = useState("");
   async function run(fn: () => Promise<void>) {
     setBusy(true);
@@ -201,6 +202,8 @@ export function Management({ work, notify, ai, workflow }: SurfaceContext & { wo
     });
   }, [work, workflow]);
   async function recover() {
+    setRecovering(true);
+    try {
     data(
       await desktop.management("recover", {
         proposal_id: selected.proposal_id,
@@ -215,12 +218,16 @@ export function Management({ work, notify, ai, workflow }: SurfaceContext & { wo
         proposal_id: current.proposal_id,
         operation_key: current.journal.input.operation_key,
       });
-    await load(current);
-    await list();
+    setSelected({...current,journal:current.journal?.status === "succeeded"?null:current.journal});
+    setPreview(undefined);
     notify("原审核决定已确认。");
+    await list();
+    } finally {
+      setRecovering(false);
+    }
   }
   return (
-    <div className="management-review surface-page">
+    <div className="management-review surface-page" aria-busy={busy}>
       <PageActions>
         <IconButton icon="refresh" label="刷新管理方案" disabled={busy} onClick={() =>
             void run(async () => {
@@ -282,7 +289,7 @@ export function Management({ work, notify, ai, workflow }: SurfaceContext & { wo
               <Changes view={selected} />
               {selected.journal && (
                 <div className="recover">
-                  <p>发现待核对的原审核决定。</p>
+                  <p aria-live="polite">{recovering?"正在核对原审核决定…":"发现待核对的原审核决定。"}</p>
                   <button disabled={busy} onClick={() => void run(recover)}>
                     恢复原审核决定
                   </button>
@@ -355,13 +362,14 @@ export function Management({ work, notify, ai, workflow }: SurfaceContext & { wo
                           proposal_id: current.proposal_id,
                           operation_key: current.journal.input.operation_key,
                         });
-                        await load(current);
-                        await list();
+                        setSelected({...current,journal:null});
+                        setPreview(undefined);
                         notify(
                           current.state === "approved"
                             ? "方案已批准，尚未执行。"
                             : "方案已拒绝。",
                         );
+                        await list();
                       })
                     }
                   >

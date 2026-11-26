@@ -2,6 +2,7 @@
 mod inspection;
 mod reading;
 mod suites;
+mod storage;
 #[cfg(test)]
 mod tests_concurrency;
 
@@ -18,6 +19,7 @@ use std::{
 
 pub struct LocalSettings {
     store: Store,
+    directory: PathBuf,
 }
 const SETTINGS_VERSION: u64 = 5;
 
@@ -167,7 +169,7 @@ impl LocalSettings {
         let store = Store::open(directory)?;
         store.directory(".hetu/transactions")?;
         store.directory("plans")?;
-        let service = Self { store };
+        let service = Self { store, directory: directory.canonicalize()? };
         {
             let _reader = service.store.read_lock()?;
             if service.store.exists("settings.json")?
@@ -340,6 +342,7 @@ impl LocalSettings {
                 "installable_clients":suites::installable_clients(),"installations":state["installations"]}),
             ),
             "hetu.local_settings.inspect_suite" => inspection::inspect(&state, input),
+            "hetu.local_settings.inspect_storage" => self.inspect_storage(),
             "hetu.local_settings.inspect_connection" => {
                 ensure(input["agent_client"] == "codex", "hetu.capability_unavailable", "当前只提供Codex连接核对。")?;
                 suites::inspect_connection(&state["installations"]["codex:machine-connection"])
@@ -379,7 +382,10 @@ impl LocalSettings {
         }
         let mut fixed = json!({"owner":"hetu.local-settings.v1","client_adapter":client,"kind":input["kind"],
             "summary":input["summary"],"before":state,"expires_at":time::OffsetDateTime::now_utc().unix_timestamp()+86400});
-        if input["kind"] == "preferences" {
+        if input["kind"] == "storage_cleanup" {
+            closed(input, &["kind", "selected_ids", "storage_snapshot", "summary", "operation_key"])?;
+            fixed["storage"] = self.prepare_storage(input)?;
+        } else if input["kind"] == "preferences" {
             closed(input, &["kind", "patch", "summary", "operation_key"])?;
             validate_patch(&input["patch"])?;
             reading::apply(&state["preferences"], &input["patch"])?;
@@ -553,7 +559,7 @@ impl LocalSettings {
             }
         } else {
             ensure(
-                plan["state"] == "approved" || state["preferences"]["execution_mode"] == "auto" && plan["state"] == "pending",
+                plan["state"] == "approved" || plan["fixed"]["kind"] != "storage_cleanup" && state["preferences"]["execution_mode"] == "auto" && plan["state"] == "pending",
                 "hetu.author_confirmation_required",
                 "本机方案尚未获得作者批准。",
             )?;
@@ -563,6 +569,9 @@ impl LocalSettings {
                 "hetu.author_confirmation_required",
                 "本机方案已过期。",
             )?;
+        }
+        if plan["fixed"]["kind"] == "storage_cleanup" {
+            return self.commit_storage(plan, input, state);
         }
         ensure(
             plan["fixed"]["before"] == *state,

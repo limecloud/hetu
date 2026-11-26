@@ -1,0 +1,12 @@
+.image-region-preview { width: 100%; min-width: 0; }
+.image-region-picture { position: relative; width: 100%; }
+.image-region-image { display: block; width: 100%; height: auto; max-height: 580px; object-fit: contain; margin: 0; }
+.image-region-surface { position: absolute; pointer-events: none; }
+.image-region-surface[data-active=true] { pointer-events: auto; cursor: crosshair; touch-action: none; }
+.image-region-surface:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.image-region-selection { position: absolute; border: .5px solid var(--focus); background: var(--blue-a3); pointer-events: none; }
+.image-region-tools { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.image-region-tools button { font-size: 12px; }
+.image-region-tools button[aria-pressed=true] { color: var(--focus); background: var(--blue-a3); }
+.image-region-position { min-height: 20px; margin: 6px 0 0; font-size: 12px; color: var(--muted); }
+.image-region-help { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }

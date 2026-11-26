@@ -26,7 +26,7 @@ export function WorkProfile({ work, ai, notify, openContent, plugins, openPlugin
     setBusy(true);
     setError("");
     try {
-      const next = await readWorkContent(work, {includeDocuments: false});
+      const next = await readWorkContent(work, {includeDocuments: false,active:()=>epoch===generation.current});
       if (epoch === generation.current) setValue(next);
     } catch (e) {
       if (epoch === generation.current) setError((e as Error).message);
@@ -125,7 +125,7 @@ export function WorkProfile({ work, ai, notify, openContent, plugins, openPlugin
         </>
       )}
       {coverOpen && value && <CoverWorkbench work={work} ai={ai} notify={notify} title={value.summary.title} author={metadata?.author_name ?? ""} initialTab={coverTab} onClose={() => setCoverOpen(false)}/>}
-      {editing && value && <NovelEditor key={editing} kind={editing} documents={value.documents} onClose={() => setEditing(undefined)} onSaved={() => { void load(); notify("已保存作品修改。"); }}/ >}
+      {editing && value && <NovelEditor work={work} key={editing} kind={editing} documents={value.documents} onClose={() => setEditing(undefined)} onSaved={() => { void load(); notify("已保存作品修改。"); }}/ >}
       {!busy && !value && (
         <button onClick={() => ai()}>让 AI 检查当前作品</button>
       )}

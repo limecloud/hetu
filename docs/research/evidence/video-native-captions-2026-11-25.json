@@ -1,0 +1,317 @@
+{
+  "scope": "默认视频审阅的固定WebVTT字幕：Core、Electron及共享MCP App",
+  "created_at": "2026-11-25T10:13:46.920222+00:00",
+  "owners": {
+    "bytes_and_fixed_refs": "Hetu Core既有Asset与VideoMedia",
+    "professional_cues_alignment_and_export": "原字幕插件Owner",
+    "caption_display": "浏览器原生WebVTT轨，不复制专业解析器"
+  },
+  "runtime": {
+    "node": "25.0.0",
+    "electron": "42.11.18",
+    "browser": "Chrome for Testing 151.0.7922.34, existing isolated Playwright browser",
+    "codex": "0.172.0; protocol forwarding only",
+    "model_turns": 0,
+    "native_codex_desktop_host_tested": false,
+    "current_conversation_connection": {
+      "runtime_version": "0.14.0",
+      "bundled_skill": "0.3.13",
+      "source": "actual hetu.runtime.inspect in this conversation after installation",
+      "hot_reloaded": false,
+      "restarted": false
+    }
+  },
+  "contracts": {
+    "asset": "schema_version=3.0.0, kind=caption, text/vtt, utf8_webvtt, WorkRef required, <=1MiB",
+    "media": "schema_version=2.0.0 only when caption_tracks supplied; existing 1.0.0 unchanged",
+    "tracks": "<=16, unique id, label, language, same-work fixed VTT asset, optional fixed original Owner object",
+    "transport": "existing assets.get/read_blob, 12000 byte chunks, complete SHA verification, local Blob URL, no new CORS or network access",
+    "delivery": "preview includes sidecar captions with current rights rechecked; single-video export remains video only"
+  },
+  "validation": {
+    "core": {
+      "groups": 62,
+      "passed": 371,
+      "failed": 0,
+      "ignored": 0,
+      "log": "output/video-captions-20261125/core-final.log"
+    },
+    "asset_bytes": {
+      "passed": 3,
+      "failed": 0
+    },
+    "existing_video_recovery": {
+      "passed": 3,
+      "failed": 0,
+      "log": "output/video-captions-20261125/ui-final.log",
+      "note": "same run also had one new-caption Codex readiness failure; not an all-green full matrix"
+    },
+    "native_captions": {
+      "desktop": {
+        "result": {
+          "surface": "desktop",
+          "model_turns": 0,
+          "real_core": true,
+          "native_active_cues": true,
+          "english_chinese_switch": true,
+          "native_screenshots": true,
+          "seek": true,
+          "video_identity_preserved": true,
+          "position_preserved": true,
+          "draft_preserved": true,
+          "read_failure_retry": true,
+          "late_response_after_off_ignored": true,
+          "late_response_after_media_switch_ignored": true,
+          "old_media_without_captions": true,
+          "reopened_media_same_fixed_tracks": true,
+          "dark_narrow": true
+        },
+        "result_file": "output/video-captions-20261125/desktop-exit-final/video-captions-desktop-固定字幕原生播放、语言切换、关闭和重试保持原视频/caption-review.json",
+        "result_sha256": "1448141fe78bf7b3e6ffdb2fa91636bd815bfadb178d0577184b4993359c1723"
+      },
+      "stdio": {
+        "result": {
+          "surface": "stdio",
+          "model_turns": 0,
+          "real_core": true,
+          "native_active_cues": true,
+          "english_chinese_switch": true,
+          "native_screenshots": true,
+          "seek": true,
+          "video_identity_preserved": true,
+          "position_preserved": true,
+          "draft_preserved": true,
+          "read_failure_retry": true,
+          "late_response_after_off_ignored": true,
+          "late_response_after_media_switch_ignored": true,
+          "old_media_without_captions": true,
+          "reopened_media_same_fixed_tracks": true,
+          "dark_narrow": true
+        },
+        "result_file": "output/video-captions-20261125/caption-final/video-captions-stdio-固定字幕原生播放、语言切换、关闭和重试保持原视频/caption-review.json",
+        "result_sha256": "1d02db2442f801f3a505e34304f334459b49cb1b1b582be108b327e1a58b455f"
+      },
+      "codex": {
+        "result": {
+          "surface": "codex",
+          "model_turns": 0,
+          "real_core": true,
+          "native_active_cues": true,
+          "english_chinese_switch": true,
+          "native_screenshots": true,
+          "seek": true,
+          "video_identity_preserved": true,
+          "position_preserved": true,
+          "draft_preserved": true,
+          "read_failure_retry": true,
+          "late_response_after_off_ignored": true,
+          "late_response_after_media_switch_ignored": true,
+          "old_media_without_captions": true,
+          "reopened_media_same_fixed_tracks": true,
+          "dark_narrow": true
+        },
+        "result_file": "output/video-captions-20261125/caption-final/video-captions-codex-固定字幕原生播放、语言切换、关闭和重试保持原视频/caption-review.json",
+        "result_sha256": "5712bd595e88f334a9b59dbe1d0be04baf79b1dc6307645866586797e54f07ef"
+      }
+    },
+    "desktop_exit": {
+      "event": {
+        "code": 0,
+        "signal": null
+      },
+      "exit_code": 0,
+      "signal": null,
+      "killed": false
+    },
+    "types_builds_and_resource_reproduction": "passed",
+    "docs": "92 documents,1569 local links,426 fragment links,118 Mermaid,zero errors",
+    "methods": "0.3.17,45 suites,offline reproduction and skill verification passed",
+    "capability_map": "check passed",
+    "unchanged_runtime_entries": 30
+  },
+  "runtime_input_sha256": {
+    "contracts/schemas/media.schema.json": "1ac479f163968d41c05a829df5fc949f2ab31eba5b5f4e3df1898f8f0e055cb4",
+    "contracts/schemas/video-review.schema.json": "c4ebeade4463bb5aff652b4769fec6d9147af3706c5602795c0976ecca5935ee",
+    "core/src/domain/media.rs": "544f64fd911674ba6f5a486c2f1f9406910a582fef63abc1343ca69415a2010d",
+    "core/src/infrastructure/media.rs": "8670175a580246992f6b9c253530cf03da0fa76f8ef547f9910c0971b5645431",
+    "core/src/application/media.rs": "f38089430a49a583f5f8ba1c66689a7d431fba888368a88f867b7d06fb52de7b",
+    "core/src/application/video_review.rs": "c74317154b44a7344c9ee6a20393f95c2b19c4d11ac965eafd6d59f65840484e",
+    "apps/desktop/src/main/authoring.ts": "ee996f9288fd216635ec0905a6ceabc66437f46adb10fdcfb7c1c83e58303cc4",
+    "apps/desktop/src/main/main.ts": "c7219bdc7ca3e34857b5d3648852564893ae1c73fd9287c1dbf5f3e701ada1aa",
+    "apps/desktop/src/renderer/media-preview.tsx": "e7d5aaacf684f0d30f614b79115a5caef3b743970703385d2a4f6526ecab76b5",
+    "apps/desktop/src/renderer/media-captions.tsx": "bfbea700dcce7cb9d1f5fd7b8bca9e059c3b0151ec69595a1da525890f365690",
+    "apps/desktop/src/renderer/media.tsx": "2bb735d35112f4085eb9e581cb0156352ff9ec1b9815f97b05269621436d95dc",
+    "apps/desktop/src/renderer/video-review.tsx": "26a6c2f681d32bac11d0b54c9b5b390ad9a4eadaed3ef0d05e64b6d0729f708b",
+    "apps/desktop/src/renderer/surface-pages.css": "0ff0f8eb35969240e377425544a1d3641a9ca527533c3a7a136e6a1b7a0a2b6f",
+    "packages/workbench-ui/src/asset-bytes.ts": "2f05d9fa6f6a5a74ffa3b023b551df4b4465df24b5393041c076c3e41eea09f7",
+    "packages/workbench-ui/src/index.ts": "edd9f5a7ff2c06a6f64d0a1047293785d5274fdb63fdb68c32d9d3d78bd73973",
+    "apps/task-view/src/workbench/media.ts": "144ad643378ddf1b3bf3c154f2d32b861c9473054d54eb2bc587c56b26c9dae5",
+    "apps/app-server/examples/baseline_fixture.rs": "45639c4eb0a3cac80fe7e8a9865713157c9c8cafd188e23e627fb4c032151682",
+    "apps/mcp/resources/workbench.html": "acaefc72ee58cfadf93af093ce698d97b8bee0c4d1aa207b33eea762b3b10790",
+    "apps/mcp/resources/workbench.manifest.json": "93eaf1f1a9314dcb620869fad06aca3415985d85ac08171ad11fbc2b2fda2f85",
+    "apps/task-view/resources/local/task-view.html": "cee07d689ebec68845ea0dde9190a6b464b54cdad8c2e40cf7665f6ec43d7f87",
+    "apps/desktop/dist/main.cjs": "78e0ef3f08e8aeceff77f635f1f160cf61da2ed1e78786c7dc5758a531034dd5",
+    "target/debug/hetu-app-server": "78e69d7a69af7048e1906c6ab24fe9d1a6b7a8ffa0e6b1972516276658d0ef60",
+    "target/debug/hetu-mcp": "abd772e6fc7a177bc4a45264c2758c3e2aa7f3440bb0a840bef00c60e29e77e4",
+    "target/debug/hetu": "82fd43ee74f280cad7113e284cb3b3f0ff57346d0413b0448807cfaebc9f2035",
+    "target/debug/hetu-plugin": "f8a93cc16698559819c57b8779132e0fbf407bd46a1d96f58add360df4097731",
+    "apps/desktop/dist/renderer/app.js": "3de3d80d3ae42e0f1bc3922af020374cbd6188cb46fb812d13fd3376cf889bdb",
+    "apps/desktop/dist/renderer/app.css": "aff9824ca6cc8bb3231f07537f5e33111328a5348cbcda0d576b7fed9acf2db3",
+    "apps/desktop/dist/renderer/index.html": "b90b79b0ebded0907f76d95e452983f7079c4e0052538900344803b2ab7c369c",
+    "apps/desktop/dist/renderer/style.css": "66a04a412b00590124d87a2e213ad971d95e99cc20382384635187bdb5b07f43",
+    "apps/desktop/dist/renderer/radix-workbench.css": "cb2bcd3bd323a046449c347d3c94e1f974a23c68f0be0a8c93e2cbf158d54505"
+  },
+  "screenshots": {
+    "output/video-captions-20261125/desktop-exit-final/video-captions-desktop-固定字幕原生播放、语言切换、关闭和重试保持原视频/native-caption-dark-narrow.png": "f7751c5b05137ba96292aef3a82e6a95292f8b4faf6fe75f1d34999378927193",
+    "output/video-captions-20261125/desktop-exit-final/video-captions-desktop-固定字幕原生播放、语言切换、关闭和重试保持原视频/native-caption-chinese.png": "d253908543719b08df10270ce83f93d61987060a668c54bd1eb57dec84c28e08",
+    "output/video-captions-20261125/desktop-exit-final/video-captions-desktop-固定字幕原生播放、语言切换、关闭和重试保持原视频/native-caption-english.png": "4b36ca8dc6defaba48da030dfe08f9de5585dd29da4309da9c8674999315e58f",
+    "output/video-captions-20261125/caption-final/video-captions-stdio-固定字幕原生播放、语言切换、关闭和重试保持原视频/native-caption-dark-narrow.png": "60ab2f28e35a360320ed5e3a98aa2610d7ad23378f42f7e4002a5c2a84867fd7",
+    "output/video-captions-20261125/caption-final/video-captions-stdio-固定字幕原生播放、语言切换、关闭和重试保持原视频/native-caption-chinese.png": "6ae44f21aa0cdad3bd8df7c796d932af019122ad9ef0e2b6065508456e25b71a",
+    "output/video-captions-20261125/caption-final/video-captions-stdio-固定字幕原生播放、语言切换、关闭和重试保持原视频/native-caption-english.png": "458d1cf421390b0139daa261f0ae313c731175c6819306188bd6c5cdbc4210e0",
+    "output/video-captions-20261125/caption-final/video-captions-codex-固定字幕原生播放、语言切换、关闭和重试保持原视频/native-caption-dark-narrow.png": "60ab2f28e35a360320ed5e3a98aa2610d7ad23378f42f7e4002a5c2a84867fd7",
+    "output/video-captions-20261125/caption-final/video-captions-codex-固定字幕原生播放、语言切换、关闭和重试保持原视频/native-caption-chinese.png": "067c7d3c1ce6fbe143563f647c89a1cb4fecc03df8ffcda28ac15539e9844927",
+    "output/video-captions-20261125/caption-final/video-captions-codex-固定字幕原生播放、语言切换、关闭和重试保持原视频/native-caption-english.png": "a9031572d805951214cc4025208f92b83cad516dedcc630786f9b95be7e952b7"
+  },
+  "failures_and_limits": [
+    "Legacy workspace media listing initially failed on absent video asset directory; optional-directory lookup corrected and original media tests passed.",
+    "React track load handler did not terminate caption loading even after activeCues; native node event listeners and explicit aria-busy assertions corrected it.",
+    "Default Playwright browser 1248 was absent; Chrome158 iframe pointer events were not observed. Existing Chrome151 completed journeys. Chrome158 cause remains unproven.",
+    "Codex new-caption test navigated before target work completed opening; now waits for actual target profile and loading terminal, preserving all business checks.",
+    "One desktop run completed all caption assertions but exit observation timed out with disconnected debugger. Cause remains unproven; final scoped rerun exited normally with code0, no force kill.",
+    "Initial exit diagnostic queried disposed Playwright application; changed to capture original ChildProcess before close. Product logic unchanged."
+  ],
+  "package": {
+    "status": "verified, installed without backup and normal application launched",
+    "source_sha256": "9094b5556536b3a023614db975b93930f265743f838747150af79ceab8613073",
+    "source_entries": 3055,
+    "artifact_entries": 3720,
+    "icon_matches": true,
+    "version": "0.14.1",
+    "rust_profile": "release",
+    "signing": "ad-hoc-development",
+    "installed": true,
+    "published": false,
+    "package_journeys": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/video-captions-20261125/package-journeys.log"
+    },
+    "installation": {
+      "installed_files_and_links": 3132,
+      "exact_match": true,
+      "indices_unchanged": {
+        "creative-library.json": true,
+        "LocalSettings/settings.json": true,
+        "agent-sessions/index/selection.json": true
+      },
+      "source_sha256": "9094b5556536b3a023614db975b93930f265743f838747150af79ceab8613073",
+      "no_backup_created": true
+    },
+    "signature_verified": true,
+    "installed_core_version": "hetu 0.14.1",
+    "installed_journeys": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/video-captions-20261125/installed-journeys.log",
+      "surfaces": {
+        "desktop": {
+          "result": {
+            "surface": "desktop",
+            "model_turns": 0,
+            "real_core": true,
+            "native_active_cues": true,
+            "english_chinese_switch": true,
+            "native_screenshots": true,
+            "seek": true,
+            "video_identity_preserved": true,
+            "position_preserved": true,
+            "draft_preserved": true,
+            "read_failure_retry": true,
+            "late_response_after_off_ignored": true,
+            "late_response_after_media_switch_ignored": true,
+            "old_media_without_captions": true,
+            "reopened_media_same_fixed_tracks": true,
+            "dark_narrow": true
+          },
+          "result_file": "output/video-captions-20261125/installed-journeys/video-captions-desktop-固定字幕原生播放、语言切换、关闭和重试保持原视频/caption-review.json",
+          "result_sha256": "1448141fe78bf7b3e6ffdb2fa91636bd815bfadb178d0577184b4993359c1723"
+        },
+        "stdio": {
+          "result": {
+            "surface": "stdio",
+            "model_turns": 0,
+            "real_core": true,
+            "native_active_cues": true,
+            "english_chinese_switch": true,
+            "native_screenshots": true,
+            "seek": true,
+            "video_identity_preserved": true,
+            "position_preserved": true,
+            "draft_preserved": true,
+            "read_failure_retry": true,
+            "late_response_after_off_ignored": true,
+            "late_response_after_media_switch_ignored": true,
+            "old_media_without_captions": true,
+            "reopened_media_same_fixed_tracks": true,
+            "dark_narrow": true
+          },
+          "result_file": "output/video-captions-20261125/installed-journeys/video-captions-stdio-固定字幕原生播放、语言切换、关闭和重试保持原视频/caption-review.json",
+          "result_sha256": "1d02db2442f801f3a505e34304f334459b49cb1b1b582be108b327e1a58b455f"
+        },
+        "codex": {
+          "result": {
+            "surface": "codex",
+            "model_turns": 0,
+            "real_core": true,
+            "native_active_cues": true,
+            "english_chinese_switch": true,
+            "native_screenshots": true,
+            "seek": true,
+            "video_identity_preserved": true,
+            "position_preserved": true,
+            "draft_preserved": true,
+            "read_failure_retry": true,
+            "late_response_after_off_ignored": true,
+            "late_response_after_media_switch_ignored": true,
+            "old_media_without_captions": true,
+            "reopened_media_same_fixed_tracks": true,
+            "dark_narrow": true
+          },
+          "result_file": "output/video-captions-20261125/installed-journeys/video-captions-codex-固定字幕原生播放、语言切换、关闭和重试保持原视频/caption-review.json",
+          "result_sha256": "5712bd595e88f334a9b59dbe1d0be04baf79b1dc6307645866586797e54f07ef"
+        }
+      },
+      "desktop_exit": {
+        "event": {
+          "code": 0,
+          "signal": null
+        },
+        "exit_code": 0,
+        "signal": null,
+        "killed": false
+      }
+    },
+    "normal_launch": {
+      "process_at_installed_path": true,
+      "registered_works": 19,
+      "indices_unchanged": {
+        "creative-library.json": true,
+        "LocalSettings/settings.json": true,
+        "agent-sessions/index/selection.json": true
+      }
+    }
+  },
+  "remaining": [
+    "real dialogue/listening and subtitle alignment",
+    "complete real episode",
+    "speed changes and concrete NLE interoperability",
+    "native Codex Desktop host",
+    "full VoiceOver/system IME/visual matrix",
+    "Windows/Linux and signed public release",
+    "original intermittent desktop exit observation and Chrome158 iframe pointer issue remain without proven root cause"
+  ],
+  "published": false,
+  "global_plugin_installations_changed": false
+}

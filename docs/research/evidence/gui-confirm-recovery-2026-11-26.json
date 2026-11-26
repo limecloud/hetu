@@ -1,0 +1,154 @@
+{
+  "date": "2026-11-26",
+  "surface": "embedded GUI",
+  "work_ref": {
+    "kind": "novel",
+    "object_id": "novel_cf7c9068-a421-45ec-a095-8986b1ddca9d",
+    "workspace_id": "workspace_66341a2f-f984-4241-91b0-80a8e2012c42"
+  },
+  "thread_id": "01a2141a-d9e1-7ea0-a038-08d908472650",
+  "plan_ref": {
+    "plan_id": "execution_f05d5045-2422-4bf6-9b8e-6dd8fae8a229",
+    "sha256": "610d4fc86bbacf2e899470fc0f887a24b198b3bf096b6707ba24a88ce341d37a"
+  },
+  "followup_ref": {
+    "plan_id": "execution_4267377d-fb7f-424e-b86f-1a1bc0d2f504",
+    "sha256": "89736f74431f9d9a3983928c4489246c2b044bab99b636100712046938ac35e3"
+  },
+  "partial_steps": 2,
+  "followup_steps": 1,
+  "fault": {
+    "execute_count": 1,
+    "queries_after_drop": 1
+  },
+  "same_thread_after_reopen": true,
+  "old_revision_preserved": true,
+  "no_new_creative_tasks": true,
+  "core_results_verified": true,
+  "limits": [
+    "isolated automatic QA decisions, not real creative approval",
+    "one successful receipt replaced by an unknown-result tool response",
+    "not whole-transport crash or cross-platform validation"
+  ],
+  "runs": {
+    "packaged": {
+      "passed": true,
+      "fixed_document_opened": true,
+      "reused_original_rounds": true
+    },
+    "source": {
+      "passed": true,
+      "fixed_document_opened": true,
+      "reused_original_rounds": true
+    },
+    "installed": {
+      "passed": true,
+      "fixed_document_opened": true,
+      "reused_original_rounds": true
+    }
+  },
+  "validation": {
+    "core": {
+      "passed": 386,
+      "failed": 0,
+      "groups": 62
+    },
+    "agent": {
+      "passed": 84,
+      "failed": 0
+    },
+    "mcp_stdio": {
+      "passed": 42,
+      "failed": 0
+    },
+    "final_source_journeys": {
+      "passed": 3,
+      "failed": 0,
+      "log": "output/confirm-video-refresh-source.log"
+    },
+    "final_packaged_journeys": {
+      "passed": 3,
+      "failed": 0,
+      "log": "output/confirm-recovery-final-packaged-e2e.log"
+    },
+    "final_installed_journeys": {
+      "passed": 3,
+      "failed": 0,
+      "log": "output/confirm-recovery-final-installed-e2e.log"
+    },
+    "video_read_recovery_surfaces": {
+      "passed": 3,
+      "failed": 0,
+      "surfaces": [
+        "desktop",
+        "stdio",
+        "official Codex forwarding"
+      ],
+      "log": "output/confirm-recovery-final-video-surfaces.log"
+    },
+    "formatting": {
+      "scoped_diff_check": true,
+      "work_documents_rustfmt": true,
+      "application_mod_full_rustfmt": "existing unrelated formatting differences retained; new projection block had no formatter changes"
+    }
+  },
+  "skill": {
+    "directory": ".agents/skills/hetu-embedded-agent",
+    "files": 5,
+    "relative_links": 24,
+    "official_validation": true
+  },
+  "failure_history": [
+    {
+      "log": "output/gui-confirm-live-diagnostic.log",
+      "boundary": "文稿归属假夹具与实际Core输出不一致；真实四轮模型执行保留，未重复写入"
+    },
+    {
+      "log": "output/confirm-recovery-source-e2e.log",
+      "boundary": "外观设置测试使用错误字段，修正为实际appearance合同"
+    },
+    {
+      "log": "output/confirm-recovery-packaged-e2e.log",
+      "boundary": "媒体播放检查时播放器消失；原计划与固定文稿两项通过"
+    },
+    {
+      "log": "output/confirm-recovery-packaged-media-repeat.log",
+      "boundary": "重复检查一项失败一项通过；快速同引用刷新可清空预览，修正实际媒体读取刷新依赖"
+    }
+  ],
+  "package": {
+    "version": "0.14.1",
+    "source_sha256": "fee0f7cb895a2f3b0b583a4d2b9753da825ad363f8cb18566bbf9c025f9d3f6d",
+    "source_inputs": 3070,
+    "artifacts_verified": 3132,
+    "optimized": true,
+    "signature": "ad-hoc-development-verified",
+    "icon_matches": true,
+    "manifest": "output/gui-confirm-20261126/final-packages/hetu-dev-lR5atk/manifest.json"
+  },
+  "installation": {
+    "path": "/Applications/Hetu.app",
+    "atomic_swap": true,
+    "backup_created": false,
+    "old_bundle_removed": true,
+    "normal_library_works": 19,
+    "profile_indexes_unchanged_since_start": true,
+    "original_external_mcp_restarted": false
+  },
+  "fixed_document": {
+    "same_revision_retry": true,
+    "same_revision_refresh": true,
+    "compared_with_current": true,
+    "explicit_current_edit": true,
+    "dark_narrow": true,
+    "core_head_unchanged": true,
+    "same_pty_and_draft": true
+  },
+  "video_refresh": {
+    "issue": "快速同引用目录刷新可清空预览而不触发媒体回读",
+    "change": "媒体读取沿现有刷新代次重新执行，不依赖临时空选择渲染",
+    "consecutive_refreshes_per_journey": 4,
+    "source_packaged_installed_passed": true,
+    "prior_intermittent_failures_preserved": true
+  }
+}

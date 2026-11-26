@@ -1,6 +1,6 @@
-import {access,constants,readdir,mkdir} from "node:fs/promises";
+import {mkdir} from "node:fs/promises";
 import path from "node:path";
-import os from "node:os";
+import {engineSearchPaths,runnableCommand,executableCandidates} from "./command-resolution.ts";
 import type {AgentEngine,AgentEngineId,AgentModel,SessionLaunch} from "../../agent-session-contract.ts";
 import {resolveCodexCommand} from "./codex-command.ts";
 import {CodexRpc} from "./codex-rpc.ts";
@@ -20,14 +20,11 @@ export const machineClient=(id:string)=>id==="codex"?"codex":id==="claude-code"?
 export async function resolveEngine(id:AgentEngineId,runtimeDirectory?:string){
   if(!definitions.some(item=>item.id===id))throw Error("请选择有效的终端引擎。");
   if(id==="codex")return resolveCodexCommand(runtimeDirectory);
-  let nodePaths:string[]=[];
-  try{nodePaths=(await readdir(path.join(os.homedir(),".nvm/versions/node"))).sort((a,b)=>b.localeCompare(a,undefined,{numeric:true})).map(version=>path.join(os.homedir(),".nvm/versions/node",version,"bin"));}catch(error){if((error as NodeJS.ErrnoException).code!=="ENOENT")throw error;}
-  const paths=[...new Set([...(process.env.PATH??"").split(path.delimiter),...(runtimeDirectory?[runtimeDirectory]:[]),path.join(os.homedir(),".local/bin"),"/opt/homebrew/bin","/usr/local/bin",...nodePaths].filter(Boolean))];
+  const paths=await engineSearchPaths(runtimeDirectory);
   const command=id==="shell"?(process.platform==="win32"?process.env.COMSPEC??"powershell.exe":process.env.SHELL??"/bin/zsh"):id==="claude-code"?"claude":id;
   const override=process.env["HETU_"+id.replaceAll("-","_").toUpperCase()+"_BIN"];
-  const names=override?[override]:[command];
-  for(const name of names)for(const candidate of path.isAbsolute(name)?[name]:paths.flatMap(directory=>process.platform==="win32"?[path.join(directory,name+".exe"),path.join(directory,name+".cmd")]:[path.join(directory,name)])){
-    try{await access(candidate,process.platform==="win32"?constants.F_OK:constants.X_OK);return {binary:candidate,env:{...process.env,PATH:[path.dirname(candidate),...paths].join(path.delimiter)}};}catch{}
+  for(const candidate of executableCandidates(override??command,paths)){
+    if(await runnableCommand(candidate))return {binary:candidate,env:{...process.env,PATH:[path.dirname(candidate),...paths].join(path.delimiter)}};
   }
   throw Error("未找到"+engineName(id)+"，请先安装对应客户端。");
 }

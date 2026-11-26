@@ -8,6 +8,9 @@ use tokio::{
     process::{Child, ChildStdin, ChildStdout, Command},
 };
 
+#[path = "support/mentions.rs"]
+mod mention_tests;
+
 #[test]
 fn tool_catalog_has_unique_names_across_connection_profiles() {
     let catalog: Value =
@@ -80,6 +83,24 @@ struct Client {
     apps: bool,
     legacy: bool,
     last_request: String,
+}
+
+#[tokio::test]
+async fn stable_parallel_schema_discovery_queues_reads_without_workspace_busy() {
+    let root = tempfile::tempdir().unwrap();
+    let mut client = Client::start_stable(root.path());
+    client.rpc("server/discover", json!({})).await;
+    let mut requests = Vec::new();
+    for action in ["hetu.documents.get", "hetu.handoffs.get", "hetu.novels.get", "hetu.outlines.get"] {
+        requests.push(client.send("tools/call", json!({"name":"hetu_inspect_collaboration","arguments":{"action":action,"include_schema":true,"limit":1}}), true).await);
+    }
+    for id in requests {
+        let response = client.response(id).await;
+        let result = &response["result"]["structuredContent"];
+        assert_eq!(result["status"], "succeeded", "{response}");
+        assert!(!result["data"]["actions"].as_array().unwrap().is_empty());
+    }
+    client.close().await;
 }
 
 #[tokio::test]
@@ -1752,7 +1773,8 @@ async fn task_connection_exposes_only_fixed_task_and_rejects_overwrite_and_revok
             "hetu_collect_model_task",
             "hetu_get_task_checkpoint",
             "hetu_save_task_checkpoint",
-            "hetu_read_task_candidate"
+            "hetu_read_task_candidate",
+            "hetu_search_mentions"
         ]
     );
     assert!(
@@ -2042,6 +2064,26 @@ async fn managed_work_ref_injects_private_grant_for_resource_write_without_echoi
     let listed = client.tool("hetu_call_action", json!({"action":"hetu.resources.list","input":{"work_ref":work}})).await;
     assert_eq!(listed["status"], "succeeded", "{listed}");
     assert_eq!(listed["data"]["resources"][0]["title"], "Agent 写入验收");
+    let document = author.request(json!({"action":"hetu.documents.create","contract_revision":"1","input":{"kind":"novel_chapter","title":"固定章节","source_format":"markdown","content":"这段固定原文可在重新连接后读取。","operation_key":"document"}}));
+    assert_eq!(document["status"], "succeeded", "{document}");
+    let fixed_read = json!({"action":"hetu.documents.get","input":{"work_ref":work,"document_id":document["data"]["document"]["document_id"],"revision_id":document["data"]["revision"]["revision_id"]}});
+    let before = client.tool("hetu_call_action", fixed_read.clone()).await;
+    assert_eq!(before["status"], "succeeded", "{before}");
+    let grant_file = collaboration.join("management/codex").join(format!("{}.json", grant["data"]["management_ref"]["grant_id"].as_str().unwrap()));
+    let mut record: Value = serde_json::from_slice(&std::fs::read(&grant_file).unwrap()).unwrap();
+    record["root_identity"]["device"] = json!(record["root_identity"]["device"].as_u64().unwrap() + 1);
+    std::fs::write(&grant_file, serde_json::to_vec(&record).unwrap()).unwrap();
+    let rejected = client.tool("hetu_call_action", fixed_read.clone()).await;
+    assert_eq!(rejected["error"]["code"], "forbidden", "{rejected}");
+    let status = author.request(json!({"action":"hetu.collaboration.workspace_access","contract_revision":"1","input":{"client_adapter":"codex","collaboration_path":collaboration,"work_ref":work}}));
+    assert_eq!(status["data"]["authorized"], false, "{status}");
+    let renewed = author.request(json!({"action":"hetu.collaboration.authorize_workspace","contract_revision":"1","input":{"client_adapter":"codex","collaboration_path":collaboration,"work_ref":work,"operation_key":"reconnect"}}));
+    assert_eq!(renewed["status"], "succeeded", "{renewed}");
+    // 原MCP进程沿WorkRef解析新连接，正文修订不变，不重启引擎或回显私有授权。
+    let restored = client.tool("hetu_call_action", fixed_read).await;
+    assert_eq!(restored["status"], "succeeded", "{restored}");
+    assert_eq!(restored["data"], before["data"]);
+    assert!(!restored.to_string().contains("management_ref"));
     client.close().await;
 }
 

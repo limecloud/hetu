@@ -2,20 +2,29 @@ import type { AppHost } from "./host/bridge.ts";
 import { sameTask, continuationText, type TaskRef, type FeedbackRef } from "./task-reference.ts";
 import React from "react";
 import {createRoot, type Root} from "react-dom/client";
-import {ManuscriptReading, readingProfile, readingStyle} from "@hetu/workbench-ui";
+import {CanonEntityDetails,ManuscriptReading, readingProfile, readingStyle,type MappedSelection} from "@hetu/workbench-ui";
+import {readSourceEntity,readSourceProfessional,type EntityProjection,type ProfessionalProjection} from "./source-json.ts";
+import {ProfessionalSourceDetails} from "./source-details.tsx";
+import {acceptTextSourcePage,nextTextSourceRange,previousTextSourceRange,type TextSourcePage,type TextSourceReading,type SourceRange} from "./source-text.ts";
+import {feedbackTextSelection,type FeedbackTarget} from "./feedback-target.ts";
+import {ImageRegionPreview,TaskFeedbackHistory,readTaskFeedbackPage,readTaskReview,type ImageRegion} from "@hetu/workbench-ui";
+import {WorkingCopyReview,type WorkingCopy} from "./working-review.ts";
+import type {ReferenceText} from "./reference-reading.ts";
 
 type CandidateRef = { task_ref: TaskRef; submission_id: string; candidate_id: string };
-type Candidate = { candidate_id: string; kind: string; title: string; content?: string; width?: number; height?: number; patches?: { quote: string; replacement: string; byte_start: number; byte_end: number }[] };
+type Candidate = { candidate_id: string; kind: string; title: string; content?: string; sha256?:string;size_bytes?:number;content_read_action?:string;width?: number; height?: number; patches?: { quote: string; replacement: string; byte_start: number; byte_end: number }[] };
 type TaskData = {
   task_ref?: TaskRef;
-  request: TaskRef & { task_kind: string; brief: string; prompt_language: string; input_snapshot: { scope_context?: {work_ref?: {kind: string}}; sources: { title?: string; content?: string; sha256?: string; blueprint?: Record<string, unknown> }[] } };
+  request: TaskRef & { task_kind: string; brief: string; prompt_language: string; input_snapshot: { scope_context?: {work_ref?: {kind: string}}; sources: { title?: string; content?: string; size_bytes?:number; sha256?: string; blueprint?: Record<string, unknown>; reference?:{kind?:string;entity_ref?:string} }[] } };
   observation: { state: string };
   expected: { revision: number; sha256: string };
   submission: { submission_id: string; candidates: Candidate[]; complete: boolean; missing_items: string[]; feedback_refs?: FeedbackRef[] } | null;
   decision: { candidate_refs: CandidateRef[]; comment: string } | null;
   feedback_head?: FeedbackRef | null;
-  last_feedback?: { intent: string; public_comment: string } | null;
+  last_feedback?: { intent: string; public_comment: string;target_refs?:FeedbackTarget[] } | null;
   feedback_ref?: FeedbackRef;
+  working_copies?:WorkingCopy[];
+  working_copies_next_cursor?:string|null;
   allowed_actions?: string[];
   image_previews?: { candidate_id: string; media_type: string; base64: string; width: number; height: number }[];
 };
@@ -23,11 +32,17 @@ type Envelope = { status: string; data?: TaskData; error?: { code: string; messa
 type ToolResult = { structuredContent?: unknown; content?: { type: string; text?: string }[]; isError?: boolean };
 
 export function mountTaskReview(app: AppHost, root: HTMLElement) {
-const manuscriptRoots: {renderer: Root; content: string; title: string}[] = [];
+type ReadingItem={renderer:Root;content:string;title:string;label:string;selectionHost:HTMLDivElement;feedback?:{target:FeedbackTarget;offset:number}};
+const manuscriptRoots: ReadingItem[] = [];
+const imageRegions=new Map<string,ImageRegion|undefined>();
+let feedbackSelection:{target:FeedbackTarget;title:string}|undefined;
+const detailRoots=new Map<string,{element:HTMLDivElement;renderer:Root}>();
 let readingPreferences: Record<string, any> = {}, readingKind: "novel" | "screenplay" = "novel";
 let renderPreferences: Record<string, any> = {};
 function syncReading(context = app.getHostContext()) {
   const previousKind = readingKind;
+  const appearance=context?.theme??document.documentElement.dataset.theme;
+  root.style.setProperty("--application-color-scheme",appearance==="light"||appearance==="dark"?appearance:"light dark");
   const value = context?.["hetu/reading"] as {kind?: string; preferences?: Record<string, any>} | undefined;
   if (value?.preferences) readingPreferences = value.preferences;
   const kind = value?.kind ?? data?.request.input_snapshot.scope_context?.work_ref?.kind;
@@ -40,17 +55,36 @@ function syncReading(context = app.getHostContext()) {
   for (const item of manuscriptRoots) renderManuscript(item);
   return previousKind !== readingKind;
 }
-function renderManuscript({renderer, content, title}: {renderer: Root; content: string; title: string}) {
-  renderer.render(React.createElement(ManuscriptReading, {text: content, title, label: title, format: readingKind === "screenplay" ? "fountain" : "markdown", kind: readingKind, preferences: renderPreferences, language: locale}));
+function renderManuscript(item:ReadingItem) {
+  const {renderer,content,title,label}=item;
+  renderer.render(React.createElement(ManuscriptReading, {text: content, title, label, format: readingKind === "screenplay" ? "fountain" : "markdown", kind: readingKind, preferences: renderPreferences, language: locale,
+    ...(item.feedback?{onSelection:(selection:MappedSelection)=>{
+      for(const reading of manuscriptRoots)reading.selectionHost.replaceChildren();
+      if(!connected||busy||pending||stale||!data?.allowed_actions?.includes("hetu.task_feedback.save")||data.observation.state==="closed"||!manuscriptRoots.includes(item))return;
+      try{
+        const target=feedbackTextSelection(item.feedback!.target,content,selection,item.feedback!.offset);
+        const action=button(t("quoteFeedback"),()=>{feedbackSelection={target,title};dirty=true;render();document.getElementById("comment")?.focus();});
+        action.addEventListener("mousedown",event=>event.preventDefault());item.selectionHost.append(action);
+        const selected=window.getSelection(),bounds=item.selectionHost.parentElement!.getBoundingClientRect();
+        if(selected?.rangeCount){const rect=selected.getRangeAt(0).getBoundingClientRect();item.selectionHost.style.top=`${Math.max(0,rect.bottom-bounds.top+6)}px`;item.selectionHost.style.left=`${Math.max(0,Math.min(rect.left-bounds.left,bounds.width-item.selectionHost.offsetWidth))}px`;}
+      }catch(error){const note=element("p",error instanceof Error?error.message:String(error),"source-read-error");note.setAttribute("role","alert");item.selectionHost.append(note);}
+    }}:{}),
+  }));
 }
-function manuscript(content: string, title: string) {
+function manuscript(content: string, title: string,label=title,feedback?:ReadingItem["feedback"]) {
   const element = document.createElement("div"); element.className = "reference-content";
-  const item = {renderer: createRoot(element), content, title}; manuscriptRoots.push(item);
+  const reader=document.createElement("div"),selectionHost=document.createElement("div");selectionHost.className="selection-feedback-action";element.append(reader,selectionHost);
+  const item = {renderer: createRoot(reader), content, title,label,selectionHost,feedback}; manuscriptRoots.push(item);
   renderManuscript(item);
   return element;
 }
+function clearCollapsedSelection(){if(!window.getSelection()?.isCollapsed)return;for(const item of manuscriptRoots)if(!item.selectionHost.contains(document.activeElement))item.selectionHost.replaceChildren();}
+document.addEventListener("selectionchange",clearCollapsedSelection);
 const messages = {
   "zh-CN": {
+    wholeWorkingFeedback:"意见所指工作稿",removeWorkingFeedback:"移除工作稿引用",saveWorkingFeedback:"保存工作稿意见",
+    quoteFeedback:"对此处提意见",feedbackQuote:"意见所指原文",removeFeedbackQuote:"移除原文引用",saveFeedbackQuote:"保存位置意见",savedFeedbackQuote:"已保存的位置意见",imageRegion:"原图区域",imageFeedback:"意见所指图片区域",removeImageRegion:"移除图片区域",
+    readCandidate:"读取参考稿",retryCandidate:"重新读取参考稿",candidateCoverage:"参考稿读取范围",candidateLoading:"正在读取参考稿…",continueCandidate:"继续阅读下一页",
     draft: "放入当前草稿", newDraft: "在新对话中准备", drafted: "已放入宿主草稿，尚未发送。", attach: "附加当前任务", attached: "当前任务引用已附加，尚未请求执行。",
     title: "比较参考方案", boundary: "此处保存偏好，采纳与定稿需在河图确认。",
     empty: "暂未收到参考方案。你可以回到外部 AI 客户端继续创作，再读取最新结果。",
@@ -60,12 +94,15 @@ const messages = {
     unknown: "保存结果尚未确认。请查询原操作，勿重复提交。", recover: "查询原保存结果", noOperation: "尚未找到原操作。可以沿原键重试保存。", retry: "沿原键重试保存",
     dirty: "有未保存的选择或意见。", changed: "任务收到新结果，当前选择尚未覆盖；请读取最新结果后重新比较。",
     connecting: "正在连接任务…", disconnected: "面板连接已结束。已保存的意见仍保留在原任务中。", waiting: "等待宿主提供任务结果。", unavailable: "此页面需要支持 MCP Apps 的宿主。请在河图洛书查看原任务。",
-    error: "任务操作未完成：", source: "查看固定参考资料（只读）", readSource: "读取原文", nextSource: "下一段", sourceIndex: "返回设定目录", moreSourceEntries: "更多设定", characters: "人物", factions: "势力", locations: "地点", timeline: "时间线", world: "世界观", rules: "规则", imageMissing: "此候选没有可显示的缩略图，请回桌面端核对原图。",
+    error: "任务操作未完成：", source: "查看固定参考资料（只读）", readSource: "读取原文", nextSource: "下一页", previousSource:"上一页",firstSource:"回到开头",retrySource:"重新读取原文",sourceCoverage:"原文读取范围",sourcePage:"第{page}页",sourceLoaded:"已载入 {percent}%",sourceFull:"全文已载入",sourceEmpty:"原文为空",sourceLoading:"正在读取原文…",sourceReference:"原文位置与引用", sourceIndex: "返回设定目录", moreSourceEntries: "更多设定", characters: "人物", factions: "势力", locations: "地点", timeline: "时间线", world: "世界观", rules: "规则", imageMissing: "此候选没有可显示的缩略图，请回桌面端核对原图。",
     partial: "部分结果", missing: "缺少的结果", select: "选择这个方案", selected: "已记录的意见", closed: "任务已关闭，请回桌面端查看历史。",
     scopeChanged: "此面板绑定原任务，不能切换作品或任务。请重新打开对应任务面板。",
     concept: "故事方向", titleKind: "书名", synopsis: "简介", outline: "大纲", text: "参考稿", image: "图片候选", before: "原文", after: "建议", change: "改动", bible: "设定集", noSources: "这个任务没有附加参考资料。", readonly: "宿主未提供工具交互能力，请回桌面端保存意见。",
   },
   en: {
+    wholeWorkingFeedback:"Working copy for this feedback",removeWorkingFeedback:"Remove working copy reference",saveWorkingFeedback:"Save working copy feedback",
+    quoteFeedback:"Comment on this passage",feedbackQuote:"Passage for this feedback",removeFeedbackQuote:"Remove passage reference",saveFeedbackQuote:"Save passage feedback",savedFeedbackQuote:"Saved position feedback",imageRegion:"Original image region",imageFeedback:"Image region for this feedback",removeImageRegion:"Remove image region",
+    readCandidate:"Read reference",retryCandidate:"Retry reading reference",candidateCoverage:"Reference reading range",candidateLoading:"Loading reference…",continueCandidate:"Continue to next page",
     draft: "Add to current draft", newDraft: "Prepare in new conversation", drafted: "Added to the host draft; not sent.", attach: "Attach current task", attached: "Task references attached; execution has not been requested.",
     title: "Compare references", boundary: "Preferences only. Adopt and finalize in Hetu Luoshu.",
     empty: "No references received yet. Continue in your external AI client, then load the latest results.",
@@ -75,7 +112,7 @@ const messages = {
     unknown: "The save result is unconfirmed. Check the original operation before submitting again.", recover: "Check original save", noOperation: "The original operation was not found. You can retry with the same key.", retry: "Retry original save",
     dirty: "You have unsaved choices or feedback.", changed: "New results are available. Your choices have been preserved; load the latest results before comparing again.",
     connecting: "Connecting to task…", disconnected: "This view has disconnected. Saved preferences remain in the original task.", waiting: "Waiting for the host to supply task results.", unavailable: "This page requires an MCP Apps host. Open the original task in Hetu Luoshu.",
-    error: "Task operation did not complete: ", source: "View fixed reference material (read-only)", readSource: "Read source", nextSource: "Next passage", sourceIndex: "Back to story bible index", moreSourceEntries: "More entries", characters: "Characters", factions: "Factions", locations: "Locations", timeline: "Timeline", world: "World", rules: "Rules", imageMissing: "A preview is unavailable. Inspect the original image in the desktop app.",
+    error: "Task operation did not complete: ", source: "View fixed reference material (read-only)", readSource: "Read source", nextSource: "Next page",previousSource:"Previous page",firstSource:"Back to start",retrySource:"Retry source read",sourceCoverage:"Source reading coverage",sourcePage:"Page {page}",sourceLoaded:"{percent}% loaded",sourceFull:"Full source loaded",sourceEmpty:"Source is empty",sourceLoading:"Reading source…",sourceReference:"Source position and reference", sourceIndex: "Back to story bible index", moreSourceEntries: "More entries", characters: "Characters", factions: "Factions", locations: "Locations", timeline: "Timeline", world: "World", rules: "Rules", imageMissing: "A preview is unavailable. Inspect the original image in the desktop app.",
     partial: "Partial results", missing: "Missing results", select: "Choose this option", selected: "Recorded feedback", closed: "This task is closed. Open its history in the desktop app.",
     scopeChanged: "This view is bound to its original task. Open a new panel to change tasks or books.",
     concept: "Story direction", titleKind: "Book title", synopsis: "Synopsis", outline: "Outline", text: "Reference draft", image: "Image candidate", before: "Original", after: "Suggestion", change: "Change", bible: "Story bible", noSources: "No additional reference material is attached to this task.", readonly: "The host has not enabled tool interactions. Save feedback in the desktop app.",
@@ -85,12 +122,20 @@ const messages = {
 let locale: keyof typeof messages = "zh-CN";
 let data: TaskData | undefined;
 type SourceSection = "characters" | "factions" | "locations" | "timeline" | "world" | "rules";
-type SourceSelector = { section?: SourceSection; entity_id?: string; cursor?: string };
-type SourcePreview = { content?: string; blueprint?: Record<string, unknown>; entity?: Record<string, unknown>; section?: SourceSection; sections?: { section: SourceSection; count: number }[]; entities?: { entity_id: string; title: string }[]; next_cursor?: string | null; next_range?: { byte_start: number; byte_end: number } | null };
+type SourceSelector = { section?: SourceSection; entity_id?: string; cursor?: string;range?:SourceRange };
+type SourcePreview = { content?: string; blueprint?: Record<string, unknown>; entity?: Record<string, unknown>; professional?:Record<string,unknown>; fixed_ref?:{entity_ref?:string};coverage?:{kind?:string};section?: SourceSection; sections?: { section: SourceSection; count: number }[]; entities?: { entity_id: string; title: string }[]; next_cursor?: string | null; next_range?: { byte_start: number; byte_end: number } | null };
 const sourcePreviews = new Map<number, SourcePreview>();
+const textReadings=new Map<number,TextSourceReading>(),sourceReadFailures=new Map<number,{selector:SourceSelector;message:string}>(),sourceReferencesOpen=new Set<number>();
+let sourceReadGeneration=0,sourceReadingIndex:number|undefined;
+function clearSourcePreviews(){sourceReadGeneration++;sourceReadingIndex=undefined;sourcePreviews.clear();textReadings.clear();sourceReadFailures.clear();sourceReferencesOpen.clear();}
 let sourcesOpen = false;
 let boundRef: TaskRef | undefined;
+let boundSubmission:string|undefined,pinnedSubmission:string|undefined,reviewReading:AbortController|undefined;
+let candidateGeneration=0,candidateLoading:string|undefined;
+const candidateReadings=new Map<string,TextSourceReading>(),candidateFailures=new Map<string,{range?:SourceRange;message:string}>();
+const candidateKey=(candidate:Candidate)=>JSON.stringify([boundRef,data?.submission?.submission_id,candidate.candidate_id,candidate.sha256]);
 let connected = false;
+let connecting = true;
 let busy = false;
 let dirty = false;
 let stale = false;
@@ -99,12 +144,22 @@ let statusError = false;
 let pending: Record<string, unknown> | undefined;
 let pendingAction = "hetu.interactions.save_selection";
 let feedbackReceipt: { feedback_ref: FeedbackRef; task_ref: TaskRef } | undefined;
-let delivery: "not_requested" | "accepted" | "drafted" | "rejected" | "unknown" = "not_requested";
+type DeliveryState="not_requested" | "accepted" | "drafted" | "rejected" | "unknown";
+let delivery: DeliveryState = "not_requested";
+let deliverySubmission:string|undefined;
+const deliveries=new Map<string,{state:DeliveryState;submission_id?:string}>();
+const feedbackKey=(ref:FeedbackRef)=>JSON.stringify([ref.feedback_id,ref.sha256]);
 let canRetry = false;
 let selected = new Set<string>();
 let comment = "";
 const t = (key: keyof typeof messages["en"]) => messages[locale][key];
 const taskRef = (value: TaskData): TaskRef => value.task_ref ?? ({ scope_ref: value.request.scope_ref, task_id: value.request.task_id, request_revision: value.request.request_revision });
+const workingReview=new WorkingCopyReview({
+ call:async(name,input)=>{const result=envelope(await app.callServerTool({name,arguments:input}));if(result.error)throw Object.assign(Error(result.error.message),{code:result.error.code});return result.data;},
+ changed:()=>render(),available:()=>connected&&!busy&&!pending,language:()=>locale,
+ feedback:(target,title)=>{if(stale||!data?.allowed_actions?.includes("hetu.task_feedback.save")||data.observation.state==="closed")return;feedbackSelection={target,title};dirty=true;render();document.getElementById("comment")?.focus();},
+ text:pagedReference,readText:readReference,
+});
 
 function element<K extends keyof HTMLElementTagNameMap>(name: K, text?: string, className?: string): HTMLElementTagNameMap[K] {
   const node = document.createElement(name);
@@ -119,6 +174,10 @@ function button(label: string, handler: () => void | Promise<void>, primary = fa
   node.addEventListener("click", () => { void handler(); });
   return node;
 }
+function feedbackPosition(target:FeedbackTarget){
+ const region=target.kind==="candidate"?target.image_region:undefined;
+ return region?`${t("imageRegion")} ${region.x}, ${region.y}　${region.width} × ${region.height} px`:target.range?.quote??"";
+}
 function envelope(result: ToolResult): Envelope {
   const value = (result.structuredContent ?? JSON.parse(result.content?.find(item => item.type === "text")?.text ?? "null")) as Record<string, unknown> | null;
   if (!value || typeof value !== "object" || typeof value.status !== "string") throw new Error("Invalid task response");
@@ -130,9 +189,16 @@ function showError(error: unknown) {
 }
 function receive(result: ToolResult, replace = false) {
   const value = envelope(result);
+  const partial=(value.data as any)?.response?.complete===false||(value.data as any)?.detail==="summary"||value.error?.code==="hetu.budget_exceeded";
+  if(partial&&boundRef){
+    if(dirty||pending){stale=true;status=t("changed");statusError=true;return true;}
+    void hydrateReview((value.data as any)?.submission_ref?.submission_id??boundSubmission);return false;
+  }
+  if((value.data as any)?.task_page||(value.data as any)?.candidate_ref||(value.data as any)?.working_page||(value.data as any)?.working_copy_ref||Array.isArray((value.data as any)?.working_copies)&&!(value.data as any)?.request)return false;
   if (value.error) {
     if (["forbidden", "hetu.stale_request", "task_closed"].includes(value.error.code)) {
-      data = undefined; sourcePreviews.clear(); selected.clear(); comment = ""; feedbackReceipt = undefined; pending = undefined; stale = true;
+      data = undefined; busy=false; workingReview.close();clearSourcePreviews(); selected.clear(); comment = ""; feedbackSelection=undefined;feedbackReceipt = undefined; pending = undefined; stale = true;
+      status=`${t("error")}${value.error.message}`;statusError=true;
     }
     throw new Error(`${value.error.code}: ${value.error.message}`);
   }
@@ -141,28 +207,56 @@ function receive(result: ToolResult, replace = false) {
   const ref = taskRef(next);
   if (boundRef && !sameTask(boundRef, ref)) throw new Error(t("scopeChanged"));
   boundRef = ref;
+  boundSubmission=next.submission?.submission_id??undefined;
   if (!data && next.last_feedback?.intent === "request_changes" && next.feedback_head) feedbackReceipt = { feedback_ref: next.feedback_head, task_ref: ref };
   if (!replace && data && (dirty || pending)) {
-    if (data.expected.sha256 !== next.expected.sha256) { stale = true; status = t("changed"); }
-    return;
+    if (data.expected.sha256 !== next.expected.sha256) { stale = true; status = t("changed"); return true; }
+    // 保留本地意见时，相同通知也要保留控件，避免吞掉按下与抬起之间的点击。
+    return false;
   }
   if (!data) {
     const hostLocale = app.getHostContext()?.locale;
     locale = hostLocale ? hostLocale.startsWith("en") ? "en" : "zh-CN" : next.request.prompt_language === "en" ? "en" : "zh-CN";
   }
+  if(data?.submission?.submission_id!==next.submission?.submission_id){candidateGeneration++;candidateLoading=undefined;for(const map of [candidateReadings,candidateFailures])for(const key of map.keys())if(!key.startsWith("working:"))map.delete(key);}
   data = next;
+  workingReview.update(ref,next.working_copies??[],next.working_copies_next_cursor);
+  if(replace){feedbackSelection=undefined;imageRegions.clear();}
   stale = false;
   dirty = false;
   const currentSubmission = next.submission?.submission_id;
   selected = new Set(next.decision?.candidate_refs.filter(item => item.submission_id === currentSubmission).map(item => item.candidate_id) ?? []);
   comment = next.decision?.comment ?? "";
   document.documentElement.lang = locale;
+  return true;
+}
+async function fixedReview(ref:TaskRef,submission?:string,signal?:AbortSignal){
+ const object=await readTaskReview(async input=>{
+  const response=envelope(await app.callServerTool({name:"hetu_open_task_view",arguments:{task_ref:ref,...(submission?{submission_id:submission}:{}),...input}}));
+  if(response.error)throw Error(response.error.message);return response.data as any;
+ },signal);
+ return {structuredContent:{status:"succeeded",data:object}};
+}
+async function loadView(ref:TaskRef,submission?:string,detail?:"review"){
+ submission??=pinnedSubmission;
+ const result=await app.callServerTool({name:"hetu_open_task_view",arguments:{task_ref:ref,...(submission?{submission_id:submission}:{}),...(detail?{detail}:{})}});
+ const value=envelope(result);
+ return (value.data as any)?.response?.complete===false||value.error?.code==="hetu.budget_exceeded"?fixedReview(ref,submission):result;
+}
+async function hydrateReview(submission?:string){
+ if(!boundRef)return;
+ reviewReading?.abort();const controller=new AbortController();reviewReading=controller;const ref=boundRef;
+ busy=true;render();
+ try{const result=await fixedReview(ref,submission,controller.signal);if(!controller.signal.aborted&&boundRef&&sameTask(ref,boundRef))receive(result,true);}
+ catch(error){if(!controller.signal.aborted)showError(error);}
+ finally{if(reviewReading===controller){reviewReading=undefined;busy=false;render();}}
 }
 function render() {
   for (const {renderer} of manuscriptRoots.splice(0)) renderer.unmount();
+  const activeEntities=new Set<string>();
   syncReading();
   root.replaceChildren();
-  root.setAttribute("aria-busy", String(busy || (!connected && !data)));
+  root.setAttribute("aria-busy", String(busy || connecting));
   const top = element("div", undefined, "top");
   top.append(element("h1", t("title")), button(locale === "en" ? "中文" : "English", () => {
     locale = locale === "en" ? "zh-CN" : "en"; document.documentElement.lang = locale; render();
@@ -175,43 +269,68 @@ function render() {
       root.append(element("p", `${t("missing")}: ${data.submission.missing_items.join("; ")}`, "muted"));
     }
     const cards = element("div", undefined, "candidates");
-    for (const candidate of data.submission?.candidates ?? []) cards.append(candidateCard(candidate));
-    if (!cards.childElementCount) root.append(element("p", t("empty"), "empty")); else root.append(cards);
+    for (const candidate of data.submission?.candidates ?? []) cards.append(candidateCard(candidate,activeEntities));
+    if (!cards.childElementCount&&!workingReview.count) root.append(element("p", t("empty"), "empty")); else if(cards.childElementCount)root.append(cards);
+    if(workingReview.count)root.append(workingReview.render(!data.submission,!stale&&!!data.allowed_actions?.includes("hetu.task_feedback.save")&&data.observation.state!=="closed"));
     const details = element("details", undefined, "detail");
     details.open = sourcesOpen;
     details.addEventListener("toggle", () => { sourcesOpen = details.open; });
     details.append(element("summary", t("source")));
     for (const [index, fixed] of data.request.input_snapshot.sources.entries()) {
       const source = { ...fixed, ...sourcePreviews.get(index) };
-      details.append(element("h2", source.title?.trim() || t("bible")));
+      const title=source.title?.trim()||t("bible"),panel=element("section",undefined,"task-source");panel.setAttribute("aria-label",title);details.append(panel);
+      const selectedEntity=!!(fixed.reference?.entity_ref||source.fixed_ref?.entity_ref||source.coverage?.kind==="entity");
+      panel.append(element("h2",title));
+      const reading=textReadings.get(index),failed=sourceReadFailures.get(index);
+      if(reading){
+        const coverage=element("div",undefined,"source-text-coverage");coverage.setAttribute("role","group");coverage.setAttribute("aria-label",t("sourceCoverage"));coverage.setAttribute("aria-live","polite");
+        coverage.append(element("span",t("sourcePage").replace("{page}",String(reading.page_index+1))),document.createTextNode(" "),element("span",reading.page.size_bytes===0?t("sourceEmpty"):reading.complete?t("sourceFull"):t("sourceLoaded").replace("{percent}",String(reading.percentage))));panel.append(coverage);
+        const actions=element("div",undefined,"source-text-actions"),previous=previousTextSourceRange(reading),next=nextTextSourceRange(reading);
+        const control=(key:string,label:string,range?:SourceRange)=>{const item=button(label,()=>readSource(index,{range}));item.disabled||=!connected||!!pending||!range;item.dataset.sourceTextControl=`${index}:${key}`;return item;};
+        if(reading.pages.length>1)actions.append(control("previous",t("previousSource"),previous));
+        if(next)actions.append(control("next",t("nextSource"),next));
+        if(reading.page.range.byte_start>0&&(reading.page_index>1||!previous))actions.append(control("first",t("firstSource"),{byte_start:0,byte_end:reading.page.size_bytes}));
+        panel.append(actions);
+        const reference=element("details",undefined,"source-text-reference");reference.open=sourceReferencesOpen.has(index);reference.addEventListener("toggle",()=>{if(reference.open)sourceReferencesOpen.add(index);else sourceReferencesOpen.delete(index);});
+        reference.append(element("summary",t("sourceReference")));const raw=element("pre",JSON.stringify({reference:reading.page.fixed_ref,sha256:reading.page.sha256,range:reading.page.range,size_bytes:reading.page.size_bytes},null,2));raw.tabIndex=0;reference.append(raw);panel.append(reference);
+      }
+      if(sourceReadingIndex===index)panel.append(element("p",t("sourceLoading"),"source-reading"));
+      if(failed){const error=element("p",failed.message,"source-read-error");error.setAttribute("role","alert");const retry=button(t("retrySource"),()=>readSource(index,failed.selector));retry.disabled||=!connected||!!pending;retry.dataset.sourceTextControl=`${index}:retry`;panel.append(error,retry);}
       if (fixed.content === undefined && fixed.blueprint === undefined && data.allowed_actions?.includes("hetu.task_context.read")) {
         const preview = sourcePreviews.get(index);
-        if (!preview || preview.next_range) {
+        if (!reading&&!failed&&(!preview || preview.next_range)) {
           const load = button(t(preview ? "nextSource" : "readSource"), () => readSource(index));
           load.disabled ||= !connected || !!pending;
-          details.append(load);
+          panel.append(load);
         }
       }
-      if (source.content !== undefined) details.append(manuscript(source.content, source.title ?? t("source")));
+      if (source.content !== undefined) panel.append(manuscript(source.content, title,`${locale==="en"?"Source text":"来源原文"}: ${title}`,
+        source.sha256?{target:{kind:"context",context_ref:{context_id:`context_${index}`,sha256:source.sha256}},offset:reading?.page.range.byte_start??0}:undefined));
+      if(source.professional){
+        const key=JSON.stringify([index,source.sha256,"professional"]);activeEntities.add(key);
+        let content=detailRoots.get(key);if(!content){const node=element('div');content={element:node,renderer:createRoot(node)};detailRoots.set(key,content);}panel.append(content.element);
+        content.renderer.render(React.createElement(ProfessionalSourceDetails,{record:source.professional,language:locale}));
+      }
       for (const section of source.sections ?? []) {
-        details.append(button(t(section.section), () => readSource(index, { section: section.section })));
+        panel.append(button(t(section.section), () => readSource(index, { section: section.section })));
       }
       for (const entity of source.entities ?? []) {
-        details.append(button(entity.title, () => readSource(index, { section: source.section, entity_id: entity.entity_id })));
+        panel.append(button(entity.title, () => readSource(index, { section: source.section, entity_id: entity.entity_id })));
       }
-      if (source.next_cursor) details.append(button(t("moreSourceEntries"), () => readSource(index, { section: source.section, cursor: source.next_cursor! })));
-      if (source.section) details.append(button(t("sourceIndex"), () => readSource(index, {})));
+      if (source.next_cursor) panel.append(button(t("moreSourceEntries"), () => readSource(index, { section: source.section, cursor: source.next_cursor! })));
+      if (source.section&&!selectedEntity) panel.append(button(t("sourceIndex"), () => readSource(index, {})));
       if (source.blueprint || source.entity) {
-        for (const group of source.entity ? [[source.entity]] : Object.values(source.blueprint!).filter(Array.isArray)) {
-          for (const entry of group) {
-            if (entry && typeof entry === "object") {
-              const fields = entry as Record<string, unknown>;
-              if (typeof (fields.name ?? fields.title) === "string") details.append(element("h3", (fields.name ?? fields.title) as string));
-              for (const key of ["description", "summary", "identity", "notes", "content", "rationale"]) {
-                if (typeof fields[key] === "string") details.append(element("p", fields[key]));
-              }
-            }
-          }
+        const kinds=[['characters','character','character_id'],['factions','faction','faction_id'],['locations','location','location_id'],['timeline','event','event_id'],['world','world','entry_id'],['rules','rule','rule_id']];
+        const entries=source.entity?[source.entity]:kinds.flatMap(([section])=>(source.blueprint?.[section]??[]) as Record<string,unknown>[]);
+        const name=(id:string)=>{const entry=entries.find(item=>kinds.some(([, ,key])=>item[key]===id));return (entry?.name??entry?.title??entry?.rationale) as string|undefined ?? (selectedEntity?(locale==='en'?'Referenced entry not attached':'所引设定未附加'):(locale==='en'?'Referenced entry not loaded':'所引设定尚未读取'));};
+        for(const [entryIndex,entry] of entries.entries()){
+          if(!entry||typeof entry!=='object')continue;
+          const entityTitle=entry.name??entry.title;
+          if(typeof entityTitle==='string'&&(!source.entity||entityTitle!==title))panel.append(element('h3',entityTitle));
+          if(entry.archived)panel.append(element('p',locale==='en'?'Archived':'已归档','meta'));
+          const category=kinds.find(([, ,key])=>typeof entry[key]==='string'),key=JSON.stringify([index,source.sha256,category?entry[category[2]]:entryIndex]);activeEntities.add(key);
+          let content=detailRoots.get(key);if(!content){const node=element('div');content={element:node,renderer:createRoot(node)};detailRoots.set(key,content);}panel.append(content.element);
+          content.renderer.render(React.createElement(CanonEntityDetails,{entity:entry,kind:category?.[1],name,language:locale}));
         }
       }
     }
@@ -226,10 +345,21 @@ function render() {
       const revise = document.getElementById("request-changes") as HTMLButtonElement | null;
       if (revise) revise.disabled = !connected || busy || !!pending || stale || !comment.trim() || data?.observation.state === "closed";
     });
-    root.append(label, field, count);
+    root.append(label);
+    if(feedbackSelection){
+      const image=feedbackSelection.target.kind==="candidate"&&!!feedbackSelection.target.image_region;
+      const whole=feedbackSelection.target.kind==="working_copy"&&!feedbackSelection.target.range;
+      const quote=element("section",undefined,"feedback-quote");quote.setAttribute("aria-label",t(image?"imageFeedback":whole?"wholeWorkingFeedback":"feedbackQuote"));
+      quote.append(element("strong",feedbackSelection.title));if(!whole)quote.append(element("blockquote",feedbackPosition(feedbackSelection.target)));
+      const remove=button(t(image?"removeImageRegion":whole?"removeWorkingFeedback":"removeFeedbackQuote"),()=>{feedbackSelection=undefined;dirty=true;render();document.getElementById("comment")?.focus();});remove.disabled||=!connected||!!pending;quote.append(remove);root.append(quote);
+    }
+    root.append(field, count);
     const actions = element("div", undefined, "actions");
-    const saveButton = button(busy ? t("saving") : pending ? canRetry ? t("retry") : t("recover") : t("save"), pending ? canRetry ? savePending : recover : save, true);
+    const wholeWorking=feedbackSelection?.target.kind==="working_copy"&&!feedbackSelection.target.range;
+    const saveButton = button(busy ? t("saving") : pending ? canRetry ? t("retry") : t("recover") : feedbackSelection?t(wholeWorking?"saveWorkingFeedback":"saveFeedbackQuote"):t("save"), pending ? canRetry ? savePending : recover : feedbackSelection?requestChanges:save, true);
     saveButton.disabled ||= !connected || !app.getHostCapabilities()?.serverTools || data.observation.state === "closed" || (stale && !pending);
+    if(!data.submission&&!feedbackSelection&&!pending)saveButton.disabled=true;
+    if(feedbackSelection&&!pending){saveButton.id="request-changes";saveButton.disabled||=!comment.trim();}
     const refreshButton = button(dirty ? t("discard") : t("refresh"), refresh);
     refreshButton.disabled ||= !connected || !!pending;
     actions.append(saveButton, refreshButton); root.append(actions, element("p", t("boundary"), "boundary"));
@@ -238,11 +368,39 @@ function render() {
       attach.disabled ||= !connected || !!pending || stale || data.observation.state === "closed";
       actions.append(attach);
     }
-    if (data.allowed_actions?.includes("hetu.task_feedback.save") && data.submission?.candidates.length) {
+    if (data.allowed_actions?.includes("hetu.task_feedback.save") && data.submission?.candidates.length&&!feedbackSelection) {
       const revise = button(t("revise"), requestChanges);
       revise.id = "request-changes";
       revise.disabled ||= !connected || !!pending || stale || !comment.trim() || data.observation.state === "closed";
       actions.append(revise);
+    }
+    const anchored=data.last_feedback?.target_refs?.filter(target=>target.range||target.kind==="candidate"&&target.image_region);
+      if(anchored?.length){
+        const saved=element("section",undefined,"feedback-quote");saved.setAttribute("aria-label",t("savedFeedbackQuote"));saved.append(element("h2",t("savedFeedbackQuote")));
+        for(const target of anchored)saved.append(element("blockquote",feedbackPosition(target)));
+        saved.append(element("p",data.last_feedback!.public_comment));
+        const reference=element("details",undefined,"source-text-reference");reference.append(element("summary",t("sourceReference")),element("pre",JSON.stringify(anchored,null,2)));saved.append(reference);root.append(saved);
+      }
+    if(boundRef){
+      const ref=boundRef,key=JSON.stringify(["feedback-history",ref]);activeEntities.add(key);
+      let history=detailRoots.get(key);if(!history){const node=element("div");history={element:node,renderer:createRoot(node)};detailRoots.set(key,history);}root.append(history.element);
+      history.renderer.render(React.createElement(TaskFeedbackHistory,{task:ref,revision:data.expected.sha256,language:locale,available:connected&&!!app.getHostCapabilities()?.serverTools,
+        disabled:busy||!!pending||stale||dirty||data.observation.state==="closed",
+        onContinue:data.observation.state==="closed"?undefined:entry=>{
+          if(!connected||busy||pending||stale||dirty)return;
+          if(feedbackReceipt?.feedback_ref.feedback_id!==entry.feedback_ref.feedback_id||feedbackReceipt.feedback_ref.sha256!==entry.feedback_ref.sha256){
+            feedbackReceipt={task_ref:ref,feedback_ref:entry.feedback_ref};const previous=deliveries.get(feedbackKey(entry.feedback_ref));delivery=previous?.state??"not_requested";deliverySubmission=previous?.submission_id;
+          }
+          render();root.querySelector<HTMLTextAreaElement>(`textarea[aria-label="${t("copyPrompt")}"]`)?.focus();
+        },
+        read:(after?:string,signal?:AbortSignal)=>readTaskFeedbackPage(async input=>{
+          if(!connected||!boundRef||!sameTask(ref,boundRef))throw Error(t("disconnected"));
+          const raw=await app.callServerTool({name:"hetu_list_task_feedback",arguments:{task_ref:ref,...input}});
+          if(!connected||!boundRef||!sameTask(ref,boundRef))throw Error(t("disconnected"));
+          const response=envelope(raw);if(response.error){if(["forbidden","hetu.stale_request","task_closed"].includes(response.error.code)){receive(raw);render();}throw Error(response.error.message);}
+          return response.data as any;
+        },after,signal),
+      }));
     }
     if (feedbackReceipt && data.observation.state !== "closed") {
       const continuation = element("div", undefined, "detail");
@@ -267,39 +425,127 @@ function render() {
           continuation.append(draft);
         }
       }
-      const followup = data.submission?.feedback_refs?.some(ref => ref.feedback_id === feedbackReceipt!.feedback_ref.feedback_id && ref.sha256 === feedbackReceipt!.feedback_ref.sha256);
+      const followup = data.submission?.feedback_refs?.some(ref => ref.feedback_id === feedbackReceipt!.feedback_ref.feedback_id && ref.sha256 === feedbackReceipt!.feedback_ref.sha256)
+        && (delivery==="not_requested"||deliverySubmission!==data.submission.submission_id);
       continuation.append(element("p", t(followup ? "followup" : delivery === "drafted" ? "drafted" : delivery === "accepted" ? "accepted" : delivery === "rejected" ? "rejected" : delivery === "unknown" ? "deliveryUnknown" : "feedbackSaved"), "meta"));
       root.append(continuation);
     }
     if (!app.getHostCapabilities()?.serverTools) root.append(element("p", t("readonly"), "muted"));
     if (data.observation.state === "closed") status = t("closed");
-  } else root.append(element("p", connected ? t("waiting") : t("connecting"), "empty"));
+  } else {root.append(element("p", connected ? t("waiting") : t("connecting"), "empty"));if(boundRef&&connected&&statusError){const retry=button(t("refresh"),()=>hydrateReview(boundSubmission));retry.disabled||=busy;root.append(retry);}}
   const note = element("p", status, "status"); note.id = "status"; note.setAttribute("role", "status"); note.dataset.error = String(statusError); root.append(note);
+  for(const [key,value] of detailRoots)if(!activeEntities.has(key)){value.renderer.unmount();detailRoots.delete(key);}
 }
 async function readSource(index: number, selector?: SourceSelector) {
   if (!boundRef || !connected || busy || pending) return;
   const ref = boundRef;
   const source = data?.request.input_snapshot.sources[index];
   if (!source?.sha256) return;
-  busy = true; render();
+  const generation=++sourceReadGeneration;
+  const active=()=>generation===sourceReadGeneration&&connected&&boundRef&&sameTask(ref,boundRef)&&data?.request.input_snapshot.sources[index]?.sha256===source.sha256;
+  const isText=["document","resource","outline"].includes(source.reference?.kind??"");
+  const reading=textReadings.get(index),next=reading?nextTextSourceRange(reading):sourcePreviews.get(index)?.next_range;
+  const input = { task_ref: ref, context_ref: { context_id: `context_${index}`, sha256: source.sha256 }, max_bytes: 16 * 1024,...(selector??(next?{range:next}:{})) };
+  const focus=(document.activeElement as HTMLElement|null)?.dataset.sourceTextControl;
+  const remember=(preview:SourcePreview)=>{sourcePreviews.set(index,preview);sourceReadFailures.delete(index);status=dirty?t("dirty"):"";statusError=false;};
+  busy = true; sourceReadingIndex=index; render();
   try {
-    const input = { task_ref: ref, context_ref: { context_id: `context_${index}`, sha256: source.sha256 }, max_bytes: 16 * 1024,
-      ...(selector ?? (sourcePreviews.get(index)?.next_range ? { range: sourcePreviews.get(index)!.next_range } : {})) };
     const result = await app.callServerTool({ name: "hetu_read_task_context", arguments: input });
-    if (!connected || !boundRef || !sameTask(ref, boundRef) || !data) return;
+    if (!active()) return;
     const value = envelope(result);
+    if(value.error?.code==='hetu.budget_exceeded'&&(source.reference?.entity_ref||selector?.entity_id)){
+      const entity=await readSourceEntity(async(result_path,offset)=>{
+        if(!active())throw Error('固定来源已关闭。');
+        const raw=await app.callServerTool({name:'hetu_read_task_context',arguments:{task_ref:ref,context_ref:input.context_ref,...(selector?.entity_id?{section:selector.section,entity_id:selector.entity_id}:{}),result_path,offset,max_bytes:16384}});
+        if(!active())throw Error('固定来源已关闭。');
+        const response=envelope(raw);if(response.error){receive(raw);throw Error(response.error.message);}
+        return response.data as unknown as EntityProjection;
+      });
+      if(active())remember(entity as SourcePreview);return;
+    }
     if (value.error) { receive(result); return; }
-    sourcePreviews.set(index, value.data as unknown as SourcePreview);
-  } catch (error) { showError(error); }
-  finally { busy = false; render(); }
+    if(source.reference?.kind==="plugin_object"){
+      const professional=await readSourceProfessional(async(result_path,offset)=>{
+        if(!active())throw Error('固定来源已关闭。');
+        const raw=await app.callServerTool({name:'hetu_read_task_context',arguments:{...input,result_path,offset}});
+        if(!active())throw Error('固定来源已关闭。');
+        const response=envelope(raw);if(response.error){receive(raw);throw Error(response.error.message);}
+        return response.data as unknown as ProfessionalProjection;
+      },{context_ref:input.context_ref,fixed_ref:source.reference,sha256:source.sha256},value.data as unknown as ProfessionalProjection);
+      if(active())remember(professional);return;
+    }
+    if(isText){
+      const received=acceptTextSourcePage(reading,{context_ref:input.context_ref,fixed_ref:source.reference!,sha256:source.sha256,size_bytes:source.size_bytes},value.data as unknown as TextSourcePage,input.range);
+      textReadings.set(index,received);remember(received.page);
+    }else remember(value.data as unknown as SourcePreview);
+  } catch (error) { if(active()){if(isText)sourceReadFailures.set(index,{selector:input.range?{range:input.range}:{},message:error instanceof Error?error.message:String(error)});showError(error);} }
+  finally { const current=generation===sourceReadGeneration;
+    if(current){busy = false;sourceReadingIndex=undefined;}
+    if(current||!data&&connected)render();
+    if(focus&&active()&&document.hasFocus()){
+      const controls=Array.from(root.querySelectorAll<HTMLButtonElement>("[data-source-text-control]"));
+      const target=controls.find(item=>item.dataset.sourceTextControl===focus&&!item.disabled)??controls.find(item=>item.dataset.sourceTextControl?.startsWith(`${index}:`)&&!item.disabled);target?.focus({preventScroll:true});
+    }
+  }
 }
 function updateStatus(value: string, error: boolean) {
   status = value; statusError = error;
   const note = document.getElementById("status");
   if (note) { note.textContent = value; note.dataset.error = String(error); }
 }
-function candidateCard(candidate: Candidate) {
+async function readReference(reference:ReferenceText,range?:SourceRange){
+ if(!boundRef||!connected||busy||pending)return;
+ const key=reference.key,ref=boundRef,generation=++candidateGeneration;
+ const active=()=>generation===candidateGeneration&&connected&&boundRef&&sameTask(ref,boundRef);
+ const focus=(document.activeElement as HTMLElement|null)?.dataset.candidateTextControl;
+ const expected=reference.expected;
+ busy=true;candidateLoading=key;render();
+ try{
+  const page=await reference.read(range);
+  if(!active())return;
+  if(page?.sha256!==expected.sha256)throw Error("参考稿正文与固定修订摘要不一致。");
+  const fixed={...expected,...page,source_ref:{...expected.fixed_ref,byte_start:page.range.byte_start,byte_end:page.range.byte_end,quote:page.content}};
+  const accepted=acceptTextSourcePage(candidateReadings.get(key),expected,fixed,range);
+  candidateReadings.set(key,accepted);candidateFailures.delete(key);status=dirty?t("dirty"):"";statusError=false;
+ }catch(error){if(active()){candidateFailures.set(key,{range,message:error instanceof Error?error.message:String(error)});showError(error);}}
+ finally{if(generation===candidateGeneration){busy=false;candidateLoading=undefined;render();}
+  if(focus&&active()&&document.hasFocus()){
+   const footer=focus===key+":footer",controls=Array.from(root.querySelectorAll<HTMLElement>("[data-candidate-text-control]"));
+   const target=controls.find(item=>item.dataset.candidateTextControl===(footer?key+":next":focus)&&!(item as HTMLButtonElement).disabled)??(footer?controls.find(item=>item.dataset.candidateTextControl===key+":coverage"):undefined);
+   target?.focus({preventScroll:!footer});if(footer)target?.closest(".candidate,.working-review")?.scrollIntoView({block:"start"});
+  }
+ }
+}
+function pagedReference(card:HTMLElement,reference:ReferenceText){
+ const key=reference.key,reading=candidateReadings.get(key),failed=candidateFailures.get(key);
+ if(candidateLoading===key)card.append(element("p",t("candidateLoading"),"source-reading"));
+ if(failed){const error=element("p",failed.message,"source-read-error");error.setAttribute("role","alert");const retry=button(t("retryCandidate"),()=>readReference(reference,failed.range));retry.disabled||=!connected||!!pending;card.append(error,retry);}
+ if(!reading){if(!failed){const load=button(t("readCandidate"),()=>readReference(reference));load.disabled||=!connected||!!pending;card.append(load);}return;}
+ const coverage=element("div",undefined,"source-text-coverage");coverage.setAttribute("role","group");coverage.setAttribute("aria-label",t("candidateCoverage"));coverage.setAttribute("aria-live","polite");coverage.tabIndex=-1;coverage.dataset.candidateTextControl=key+":coverage";
+ coverage.append(element("span",t("sourcePage").replace("{page}",String(reading.page_index+1))),element("span",reading.complete?t("sourceFull"):t("sourceLoaded").replace("{percent}",String(reading.percentage))));card.append(coverage);
+ const actions=element("div",undefined,"source-text-actions");
+ const control=(name:string,label:string,range?:SourceRange)=>{const item=button(label,()=>readReference(reference,range));item.disabled||=!connected||!!pending||!range;item.dataset.candidateTextControl=key+":"+name;return item;};
+ if(reading.pages.length>1)actions.append(control("previous",t("previousSource"),previousTextSourceRange(reading)));
+ const next=nextTextSourceRange(reading);if(next)actions.append(control("next",t("nextSource"),next));
+ if(reading.page_index>1)actions.append(control("first",t("firstSource"),{byte_start:0,byte_end:reading.page.size_bytes}));card.append(actions);
+ const content=reading.page.content;
+ card.append(reference.kind==="text"?manuscript(content,reference.title,reference.title,{target:reference.target,offset:reading.page.range.byte_start}):element("pre",content,"content"));
+ if(next){const footer=control("footer",t("continueCandidate"),next);card.append(footer);}
+}
+function pagedCandidate(card:HTMLElement,candidate:Candidate){
+ const ref=boundRef!,submission=data!.submission!.submission_id,candidate_ref={task_ref:ref,submission_id:submission,candidate_id:candidate.candidate_id};
+ pagedReference(card,{key:candidateKey(candidate),title:candidate.title,kind:candidate.kind,target:{kind:"candidate",candidate_ref},
+  expected:{context_ref:{context_id:candidate.candidate_id,sha256:candidate.sha256!},fixed_ref:candidate_ref,sha256:candidate.sha256!,size_bytes:candidate.size_bytes},
+  read:async range=>{
+   const value=envelope(await app.callServerTool({name:"hetu_read_task_candidate",arguments:{task_ref:ref,candidate_ref,...(range?{range}:{}),max_bytes:16384}}));
+   if(value.error)throw Error(value.error.message);const received=value.data as any;
+   if(!received?.candidate_ref||received.candidate_ref.candidate_id!==candidate_ref.candidate_id||received.candidate_ref.submission_id!==submission||!sameTask(received.candidate_ref.task_ref,ref))throw Error("参考稿与固定批次不一致。");
+   return received.page;
+  }});
+}
+function candidateCard(candidate: Candidate,activeEntities:Set<string>) {
   const card = element("section", undefined, "candidate");
+  card.setAttribute("aria-label",`${locale==="en"?"Candidate":"候选"} ${candidate.title}`);
   const heading = element("div", undefined, "candidate-heading");
   const input = element("input"); input.type = "checkbox"; input.id = candidate.candidate_id; input.checked = selected.has(candidate.candidate_id); input.disabled = !connected || busy || !!pending || data?.observation.state === "closed";
   input.addEventListener("change", () => { if (input.checked) selected.add(candidate.candidate_id); else selected.delete(candidate.candidate_id); dirty = true; updateStatus(t("dirty"), false); });
@@ -310,21 +556,38 @@ function candidateCard(candidate: Candidate) {
   if (candidate.kind === "image") {
     const preview = data?.image_previews?.find(item => item.candidate_id === candidate.candidate_id);
     if (preview?.media_type === "image/jpeg" && /^[A-Za-z0-9+/]*={0,2}$/.test(preview.base64) && preview.base64.length <= 350000) {
-      const image = element("img"); image.className = "cover"; image.alt = candidate.title; image.src = `data:image/jpeg;base64,${preview.base64}`; image.width = preview.width; image.height = preview.height; card.append(image);
+      const key=JSON.stringify(["image",data!.submission!.submission_id,candidate.candidate_id]),submission=data!.submission!.submission_id;
+      activeEntities.add(key);
+      let content=detailRoots.get(key);if(!content){const node=element("div");content={element:node,renderer:createRoot(node)};detailRoots.set(key,content);}
+      card.append(content.element);
+      const saved=data?.last_feedback?.target_refs?.find(target=>target.kind==="candidate"&&target.candidate_ref.submission_id===submission&&target.candidate_ref.candidate_id===candidate.candidate_id);
+      const renderPreview=()=>content!.renderer.render(React.createElement(ImageRegionPreview,{src:`data:image/jpeg;base64,${preview.base64}`,title:candidate.title,width:candidate.width!,height:candidate.height!,value:imageRegions.has(key)?imageRegions.get(key):saved?.kind==="candidate"?saved.image_region:undefined,language:locale,disabled:!connected||busy||!!pending||stale||!data?.allowed_actions?.includes("hetu.task_feedback.save")||data.observation.state==="closed",
+        onChange:(region:ImageRegion|undefined)=>{
+          if(!connected||busy||pending||stale||data?.submission?.submission_id!==submission)return;
+          imageRegions.set(key,region);
+          if(feedbackSelection?.target.kind==="candidate"&&feedbackSelection.target.candidate_ref.candidate_id===candidate.candidate_id&&feedbackSelection.target.image_region){
+            feedbackSelection=region?{...feedbackSelection,target:{...feedbackSelection.target,image_region:region}}:undefined;dirty=true;render();
+          }else renderPreview();
+        },
+        onSelect:(region:ImageRegion)=>{if(!connected||busy||pending||stale||!boundRef||data?.submission?.submission_id!==submission)return;feedbackSelection={title:candidate.title,target:{kind:"candidate",candidate_ref:{task_ref:boundRef,submission_id:submission,candidate_id:candidate.candidate_id},image_region:region}};dirty=true;render();document.getElementById("comment")?.focus();},
+      }));
+      renderPreview();
     } else card.append(element("p", t("imageMissing"), "unavailable"));
     card.append(element("p", `${candidate.width} × ${candidate.height}`, "meta"));
+  } else if(candidate.content_read_action){pagedCandidate(card,candidate);
   } else if (candidate.patches?.length) {
     for (const [index, patch] of candidate.patches.entries()) {
       const diff = element("div", undefined, "patch");
       diff.append(element("span", `${t("change")} ${index + 1}`, "meta"), element("del", `${t("before")}: ${patch.quote}`), element("ins", `${t("after")}: ${patch.replacement}`)); card.append(diff);
     }
-  } else card.append(candidate.kind === "text" ? manuscript(candidate.content ?? "", candidate.title) : element("pre", candidate.content ?? "", "content"));
+  } else card.append(candidate.kind === "text" ? manuscript(candidate.content ?? "", candidate.title,candidate.title,
+    boundRef&&data?.submission?{target:{kind:"candidate",candidate_ref:{task_ref:boundRef,submission_id:data.submission.submission_id,candidate_id:candidate.candidate_id}},offset:0}:undefined) : element("pre", candidate.content ?? "", "content"));
   return card;
 }
 async function refresh() {
   if (!boundRef || pending) return;
   busy = true; render();
-  try { receive(await app.callServerTool({ name: "hetu_open_task_view", arguments: { task_ref: boundRef } }), true); status = ""; statusError = false; }
+    try { receive(await loadView(boundRef), true); status = ""; statusError = false; }
   catch (error) { showError(error); }
   finally { busy = false; render(); }
 }
@@ -339,11 +602,11 @@ async function save() {
   await savePending();
 }
 async function requestChanges() {
-  if (!data?.submission || !boundRef || stale || pending || !comment.trim()) return;
-  const targets = data.submission.candidates.map(item => ({ kind: "candidate", candidate_ref: { task_ref: boundRef, submission_id: data!.submission!.submission_id, candidate_id: item.candidate_id } }));
+  if (!data || (!data.submission&&!feedbackSelection) || !boundRef || stale || pending || !comment.trim()) return;
+  const targets:FeedbackTarget[] = feedbackSelection?[feedbackSelection.target]:(data.submission?.candidates??[]).map(item => ({ kind: "candidate", candidate_ref: { task_ref: boundRef, submission_id: data!.submission!.submission_id, candidate_id: item.candidate_id } }));
   pendingAction = "hetu.task_feedback.save";
   pending = { task_ref: boundRef, target_refs: targets, expected_feedback_head: data.feedback_head ?? null,
-    intent: "request_changes", public_comment: comment, selected_refs: targets.filter(item => selected.has(item.candidate_ref.candidate_id)), operation_key: `app-feedback-${crypto.randomUUID()}` };
+    intent: "request_changes", public_comment: comment, selected_refs: targets.filter(item => item.kind==="candidate"&&selected.has(String(item.candidate_ref.candidate_id))), operation_key: `app-feedback-${crypto.randomUUID()}` };
   await savePending();
 }
 function continuationPrompt() {
@@ -352,24 +615,32 @@ function continuationPrompt() {
 }
 async function validateContinuation() {
   if (!feedbackReceipt || !boundRef || !connected || pending || stale) return false;
+  const original=feedbackReceipt,ref=boundRef;
   try {
-    const result = await app.callServerTool({ name: "hetu_open_task_view", arguments: { task_ref: boundRef } });
+    const feedback=envelope(await app.callServerTool({name:"hetu_list_task_feedback",arguments:{task_ref:ref,feedback_ref:original.feedback_ref,limit:1,result_path:"/feedback/0/feedback_ref",max_bytes:1024}}));
+    if(!connected||feedbackReceipt!==original||!boundRef||!sameTask(ref,boundRef))return false;
+    if(feedback.error)throw Error(feedback.error.message);
+    const fixed=(feedback.data as any)?.feedback_page?.value;
+    if(fixed?.feedback_id!==original.feedback_ref.feedback_id||fixed?.sha256!==original.feedback_ref.sha256)throw Error(t("scopeChanged"));
+    const result = await loadView(ref,undefined,"review");
     const value = envelope(result);
+    if(!connected||feedbackReceipt!==original||!boundRef||!sameTask(ref,boundRef))return false;
     if (value.error) { receive(result); return false; }
     if (!value.data || !sameTask(boundRef, taskRef(value.data)) || value.data.observation.state === "closed") throw new Error(t("closed"));
-    return connected && !!feedbackReceipt && !stale;
-  } catch (error) { feedbackReceipt = undefined; showError(error); render(); return false; }
+    return connected && feedbackReceipt===original && !stale;
+  } catch (error) { if(connected&&feedbackReceipt===original){showError(error);render();} return false; }
 }
 async function sendContinuation(target: "active" | "new" = "active", send = true) {
   if (busy || delivery !== "not_requested" || !app.features().messages) return;
   busy = true; render();
   if (!await validateContinuation()) { busy = false; render(); return; }
   const original = feedbackReceipt;
-  delivery = "unknown"; render();
+  delivery = "unknown"; deliverySubmission=data?.submission?.submission_id;deliveries.set(feedbackKey(original!.feedback_ref),{state:delivery,submission_id:deliverySubmission}); render();
   try {
     const result = await app.sendText(continuationPrompt(), target, send);
     if (!connected || feedbackReceipt !== original) return;
     delivery = result.isError ? "rejected" : send ? "accepted" : "drafted";
+    deliveries.set(feedbackKey(original!.feedback_ref),{state:delivery,submission_id:deliverySubmission});
   } catch { if (connected && feedbackReceipt === original) delivery = "unknown"; }
   finally { busy = false; render(); }
 }
@@ -406,13 +677,13 @@ async function savePending() {
   finally { busy = false; render(); }
 }
 async function refreshAfterSave() {
-  try { receive(await app.callServerTool({ name: "hetu_open_task_view", arguments: { task_ref: boundRef } }), true); }
+  try { if(boundRef)receive(await loadView(boundRef), true); }
   catch { stale = true; }
   status = t(pendingAction === "hetu.task_feedback.save" ? "feedbackSaved" : "saved"); statusError = false;
 }
 function captureFeedback(result: Envelope) {
   if (pendingAction === "hetu.task_feedback.save" && result.data?.feedback_ref && boundRef) {
-    feedbackReceipt = { feedback_ref: result.data.feedback_ref, task_ref: boundRef }; delivery = "not_requested";
+    feedbackReceipt = { feedback_ref: result.data.feedback_ref, task_ref: boundRef }; delivery = "not_requested";deliverySubmission=undefined;
   }
 }
 async function recover() {
@@ -440,8 +711,9 @@ app.ontoolinput = ({ arguments: input }) => {
   if (!ref?.scope_ref || !ref.task_id) return;
   if (boundRef && !sameTask(boundRef, ref)) { showError(new Error(t("scopeChanged"))); render(); return; }
   boundRef = ref;
+  if(typeof input?.submission_id==="string"){boundSubmission=input.submission_id;pinnedSubmission=input.submission_id;}
 };
-app.ontoolresult = result => { try { receive(result); } catch (error) { showError(error); } render(); };
+app.ontoolresult = result => { try { if (receive(result)) render(); } catch (error) { showError(error); render(); } };
 app.onhostcontextchanged = context => {
   if (context.theme) document.documentElement.dataset.theme = context.theme;
   let changed = syncReading(context);
@@ -449,18 +721,19 @@ app.onhostcontextchanged = context => {
   if (changed) render();
 };
 app.ontoolcancelled = () => { status = t("unknown"); statusError = true; render(); };
-app.onteardown = async () => { connected = false; busy = false; data = undefined; sourcePreviews.clear(); feedbackReceipt = undefined; selected.clear(); comment = ""; status = t("disconnected"); statusError = false; render(); return {}; };
+app.onteardown = async () => { workingReview.close();reviewReading?.abort();candidateGeneration++;candidateLoading=undefined;candidateReadings.clear();candidateFailures.clear();connected = false; connecting = false; busy = false; data = undefined; clearSourcePreviews(); feedbackSelection=undefined;feedbackReceipt = undefined; selected.clear(); comment = ""; status = t("disconnected"); statusError = false; render(); return {}; };
 render();
 return {
-  receive(result: ToolResult) { receive(result); render(); },
-  canLeave() { return !dirty && !pending && !busy; },
+  receive(result: ToolResult) { if (receive(result)) render(); },
+  canLeave() { return !dirty && !pending && !busy && !workingReview.busy; },
   ready() {
     connected = true;
+    connecting = false;
     const theme = app.getHostContext()?.theme;
     if (theme) document.documentElement.dataset.theme = theme;
     render();
   },
-  failed(error?: unknown) { showError(error ?? new Error(t("unavailable"))); render(); },
-  dispose() { connected = false; data = undefined; sourcePreviews.clear(); pending = undefined; feedbackReceipt = undefined; selected.clear(); comment = ""; for (const {renderer} of manuscriptRoots.splice(0)) renderer.unmount(); },
+  failed(error?: unknown) { workingReview.close();connected = false; connecting = false; busy = false; showError(error ?? new Error(t("unavailable"))); render(); },
+  dispose() { workingReview.close();reviewReading?.abort();candidateGeneration++;candidateLoading=undefined;candidateReadings.clear();candidateFailures.clear();connected = false; connecting = false; data = undefined; clearSourcePreviews(); pending = undefined; feedbackSelection=undefined;feedbackReceipt = undefined; selected.clear(); comment = "";document.removeEventListener("selectionchange",clearCollapsedSelection);for (const {renderer} of manuscriptRoots.splice(0)) renderer.unmount();for(const value of detailRoots.values())value.renderer.unmount();detailRoots.clear(); },
 };
 }

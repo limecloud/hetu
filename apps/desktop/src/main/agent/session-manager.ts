@@ -15,8 +15,8 @@ export class AgentSessions {
   #loaded?: Promise<void>;
   #loading = new Map<string, Promise<CodexSession|ProcessSession>>();
   #saving = Promise.resolve();
-  constructor(privateOptions: { profile: string; machineDirectory?: string; machineMcpBinary?: string; machineNodeBinary?:string;machineRelay?:string; emit: (event: AgentSessionEvent) => void }) { this.options = privateOptions; }
-  private options: { profile: string; machineDirectory?: string; machineMcpBinary?: string; machineNodeBinary?:string;machineRelay?:string; emit: (event: AgentSessionEvent) => void };
+  constructor(privateOptions: { profile: string; machineDirectory?: string; machineMcpBinary?: string; machineNodeBinary?:string;machineRelay?:string;engineGuard?:string; emit: (event: AgentSessionEvent) => void }) { this.options = privateOptions; }
+  private options: { profile: string; machineDirectory?: string; machineMcpBinary?: string; machineNodeBinary?:string;machineRelay?:string;engineGuard?:string; emit: (event: AgentSessionEvent) => void };
   isSelected(session:CodexSession|ProcessSession,work?:WorkRef) {return this.#selected.get(scopeKey(work))===session.snapshot(false).session_id;}
   async get(work?: WorkRef, defaultSurface: AgentSurface = "tui", selectedId?: string, choose = false, launch?:SessionLaunch) {
     await this.#load();

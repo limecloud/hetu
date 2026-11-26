@@ -1,0 +1,322 @@
+{
+  "date": "2026-11-25",
+  "version": "0.14.1",
+  "scope": "本对话接续原任务的文风与审校组合、分层交付检查及工程Skill",
+  "state": "passed-development-slice-installed",
+  "business": {
+    "operator": "current Codex conversation",
+    "transports": [
+      "installed CLI",
+      "new installed stdio MCP process"
+    ],
+    "additional_engine_model_turns": 0,
+    "original_persistent_mcp_restarted": false,
+    "original_persistent_mcp_version": "0.14.0",
+    "original_persistent_mcp_skills_version": "0.3.13",
+    "workspace": "original isolated conversation-composition workspace, not author default profile",
+    "new_work_created": false,
+    "original_task_id": "task_75883a9f-a554-4d33-9a6d-84037776ae81",
+    "formal_sha256": "7922cd66726c0adcde220b72b779baa70f849299c19068c4352a8248340227ce",
+    "formal_unchanged": true,
+    "outside_range_unchanged": true,
+    "candidate_history_count": 3,
+    "adoptions": 0,
+    "finalizations": 0,
+    "packages": [
+      {
+        "id": "org.wordflowlab.prose-studio",
+        "version": "0.2.0",
+        "sha256": "5005ec439334b5babd9d9bd35b3a7575185b55df67f3ea3623ed3c21226c3c7f"
+      },
+      {
+        "id": "org.wordflowlab.novel-review",
+        "version": "0.2.0",
+        "sha256": "f5eceea32772e9028ddaf36607ceb2c4eddd0a70eb17373e4c4bf871c21c18f4"
+      }
+    ],
+    "actions_verified": [
+      "discover exact capabilities and schemas; read both packages' actual Skills and supporting resources",
+      "create separate professional projects using the original fixed candidate and formal source",
+      "publish two Agent suggestions, revise the same working copy and submit the third candidate in the original task",
+      "prose preview and fixed-source verification preserve all bytes outside the original range",
+      "retain earlier review and rule reports; read fixed rule run and recheck results",
+      "Core assessment remains inconclusive for incomplete canon and promise coverage",
+      "new stdio MCP process reads all three original candidates and the same fixed report"
+    ],
+    "report_sha256": "56ce237f82f5d0ed02e1c08cb96bc155f94918e8d9b16be2c1fa67ba838be5a6",
+    "report_semantic_status": "inconclusive",
+    "unknown_recovery": {
+      "injection": "consumer deliberately discarded the receipt after the actual once-sample write",
+      "operation_key": "composition-once-sample-unknown",
+      "original_operation_readback_count": 2,
+      "duplicate_write": false,
+      "usage": "once",
+      "rule_status": "proposed",
+      "long_term_rule_enabled": false,
+      "actual_model_disconnect": false
+    },
+    "logs": [
+      "output/professional-composition-20261125/prepare-projects.log",
+      "output/professional-composition-20261125/revise.log",
+      "output/professional-composition-20261125/verify-projects.log",
+      "output/professional-composition-20261125/recover-once.log",
+      "output/professional-composition-20261125/verify-machine.log"
+    ],
+    "allowed_utf8_range": [
+      411,
+      684
+    ]
+  },
+  "implementation": [
+    "shared lazy TaskReview assessment for desktop and full MCP workbench",
+    "candidate delivery, professional claims and actual manuscript adoption displayed separately",
+    "fixed professional report selection reads retained Core objects without running plugin code or changing task facts",
+    "explicit empty report selection does not restore default task sources",
+    "historical candidate completion and missing items follow original submission, not the latest batch",
+    "failed reads preserve selection; request generations reject removed-report and old-task responses",
+    "management recovery presents progress and avoids rereading the already verified view",
+    "professional retained sources use original object titles; non-review planning objects are not shown as failed semantic reviews"
+  ],
+  "skill": {
+    "path": ".agents/skills/hetu-embedded-agent",
+    "official_validation": "passed",
+    "local_links_verified": 12,
+    "registered_in_agents_md": true,
+    "author_method_distribution_changed": false
+  },
+  "validation": {
+    "desktop_types": "passed",
+    "core_historical_batch_regression": "passed",
+    "core_continuation_final": {
+      "passed": 14,
+      "failed": 0,
+      "log": "output/professional-composition-20261125/core-continuation-final.log"
+    },
+    "shared_resource_build": "passed",
+    "new_task_assessment_ui": {
+      "state": "passed",
+      "log": "output/professional-composition-20261125/desktop-recheck.log",
+      "checks": [
+        "fixed retained report after plugin disable",
+        "delivery and adoption separate",
+        "historical candidate refs",
+        "light wide and dark narrow computed layout",
+        "English labels",
+        "failed read retry",
+        "removed-report late response isolation",
+        "wrong report digest rejected",
+        "unopened task rejected",
+        "formal document unchanged"
+      ],
+      "subsequent_change": "final source-title wording and unsupported-source clarity increment passed in exact package; 3 UI journeys and original task verified"
+    },
+    "mcp_workbench_both_transports": "not_run",
+    "package": "passed development slice and installed without backup",
+    "shared_resource_reproduction": "passed",
+    "docs": "passed",
+    "capability_map": "passed",
+    "writing_method_reproduction": "passed",
+    "rust_consumers": "passed",
+    "desktop_build": {
+      "state": "passed",
+      "log": "output/professional-composition-20261125/desktop-build-final.log"
+    },
+    "desktop_targeted_initial": {
+      "log": "output/professional-composition-20261125/desktop-targeted.log",
+      "state": "finished",
+      "known_failures": [
+        "retry fixture enabled held response before prior retry completed",
+        "novel transfer reached final cleanup within its 120-second test budget and timed out during close; new bounded test budget prepared"
+      ],
+      "passed": 9,
+      "failed": 3,
+      "skipped": 0
+    },
+    "mcp_shared_initial": {
+      "passed": 0,
+      "failed": 2,
+      "log": "output/professional-composition-20261125/mcp-shared.log",
+      "cause": "15-second locator wait ended before professional fixed request preparation; teardown closed the in-flight machine connection",
+      "resolution_state": "second full run passed both transports after waiting for actual prepared-request boundary"
+    },
+    "desktop_recheck": {
+      "passed": 2,
+      "failed": 1,
+      "log": "output/professional-composition-20261125/desktop-recheck.log",
+      "checks": [
+        "new task assessment",
+        "novel transfer completed"
+      ],
+      "failure": "another post-upgrade SVG label selector still selected hidden title; all occurrences corrected"
+    },
+    "plugin_lifecycle_final": {
+      "passed": 1,
+      "failed": 0,
+      "log": "output/professional-composition-20261125/plugin-final.log"
+    },
+    "original_business_ui": {
+      "state": "passed",
+      "log": "output/professional-composition-20261125/original-ui-source-second.log",
+      "checks": [
+        "original task and third candidate visible",
+        "same fixed review report inconclusive",
+        "formal revision unchanged"
+      ]
+    },
+    "mcp_shared_both_transports": {
+      "state": "passed",
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "transports": [
+        "stdio",
+        "official Codex 0.172.0"
+      ],
+      "model_turns": 0,
+      "log": "output/professional-composition-20261125/mcp-shared-second.log",
+      "scope": "full shared workspace with task assessment before final retained-source title wording increment; final resources and package tested separately"
+    },
+    "skill_final": "official quick_validate, 12 links, credential scan and integration registration passed",
+    "core_title_increment": {
+      "passed": 14,
+      "failed": 0,
+      "log": "output/professional-composition-20261125/core-assessment-titles.log"
+    },
+    "website_check": {
+      "state": "passed",
+      "errors": 0,
+      "warnings": 0,
+      "hints": 1,
+      "log": "output/professional-composition-20261125/website-check.log"
+    },
+    "website_build": {
+      "state": "passed",
+      "pages": 227,
+      "log": "output/professional-composition-20261125/website-build.log",
+      "public_deployment": "not_performed_in_this_slice"
+    },
+    "website_guides": {
+      "passed": 13,
+      "failed": 0,
+      "log": "output/professional-composition-20261125/website-guides.log",
+      "viewports": [
+        375,
+        768,
+        1440
+      ],
+      "locales": [
+        "zh-CN",
+        "en"
+      ]
+    },
+    "release_core": {
+      "state": "passed",
+      "log": "output/professional-composition-20261125/release-core.log"
+    },
+    "final_rust_consumers": {
+      "state": "passed",
+      "log": "output/professional-composition-20261125/final-rust-consumers.log"
+    },
+    "final_shared_resources": {
+      "state": "passed",
+      "build_log": "output/professional-composition-20261125/task-view-final-build.log",
+      "reproduction_log": "output/professional-composition-20261125/task-view-final-check.log"
+    },
+    "installed_machine_final": {
+      "state": "passed",
+      "log": "output/professional-composition-20261125/installed-machine-final.log",
+      "candidates_read": 3,
+      "professional_status": "inconclusive",
+      "formal_unchanged": true,
+      "adoptions": 0,
+      "finalizations": 0
+    }
+  },
+  "prior_failures": [
+    {
+      "scope": "professional review preparation",
+      "cause": "scope_indices referenced only the candidate while check evidence also used original source index zero",
+      "recovery": "original operation returned not_found; corrected fixed input saved once under a new key; original prose project retained"
+    },
+    {
+      "scope": "frozen previous desktop build",
+      "passed": 73,
+      "failed": 5,
+      "skipped": 11,
+      "log": "output/professional-composition-desktop-full.log",
+      "causes": [
+        "management recovery and approval assertions ended at five seconds before asynchronous completion in management, transfer and version journeys",
+        "SVG title matched before visible character label in plugin lifecycle journey"
+      ],
+      "resolution_state": "duplicate management read removed, progress visible, real completion awaited, visible SVG tspan selected; new build revalidation pending"
+    },
+    {
+      "scope": "desktop build command",
+      "cause": "called cwd-relative build script from repository root",
+      "log": "output/professional-composition-20261125/desktop-build.log",
+      "resolution_state": "passed after running in apps/desktop; no product contract changed"
+    },
+    {
+      "scope": "new task assessment test fixture",
+      "log": "output/professional-composition-20261125/desktop-targeted.log",
+      "cause": "held-response flag was set before prior retry actually completed; next click waited on deliberately held prior request",
+      "resolution": "wait for refresh control to be enabled before installing next latency injection; task assessment passed"
+    },
+    {
+      "scope": "original-task UI verification script",
+      "log": "output/professional-composition-20261125/original-ui-source.log",
+      "cause": "unscoped article locator matched two original planning sources and the added review report",
+      "resolution": "select exact original review report; passed without changing original task"
+    }
+  ],
+  "limits": [
+    "current conversation's Agent suggestions are not author acceptance or a semantic-quality certification",
+    "deliberate consumer receipt loss is not evidence of actual model disconnection",
+    "original default author profile and its plugins were not changed by isolated professional tests",
+    "new task assessment is implemented in desktop and full MCP workbench, not claimed for the legacy standalone task resource",
+    "native Codex Desktop panel, Windows, Linux, accessibility and full professional video production remain separate gates",
+    "this slice does not close the complete project goal or constitute public release"
+  ],
+  "package": {
+    "manifest": "output/professional-composition-20261125/package/hetu-dev-Lix1NR/manifest.json",
+    "source_sha256": "7eb6090f7a380347980c0af072fd55b63e20abe133975f0c12a9c23392d93ce3",
+    "source_inputs": 3050,
+    "artifact_entries": 3720,
+    "signing": "ad-hoc-development",
+    "platform": "darwin",
+    "arch": "arm64",
+    "validation": {
+      "ui": {
+        "passed": 3,
+        "failed": 0,
+        "log": "output/professional-composition-20261125/package-ui.log"
+      },
+      "workspace_geometry": {
+        "passed": 3,
+        "failed": 0,
+        "log": "output/professional-composition-20261125/package-workspace.log"
+      },
+      "original_task": "passed original-ui-package.log"
+    },
+    "installation": {
+      "version": "0.14.1",
+      "source_sha256": "7eb6090f7a380347980c0af072fd55b63e20abe133975f0c12a9c23392d93ce3",
+      "installed_items_verified": 3132,
+      "profile_unchanged": {
+        "creative-library.json": true,
+        "LocalSettings/settings.json": true,
+        "agent-sessions/index/selection.json": true
+      },
+      "atomic_swap": true,
+      "old_app_backup_created": false,
+      "external_mcp_processes_terminated": false,
+      "signing": "ad-hoc-development"
+    },
+    "normal_launch": {
+      "version": "0.14.1",
+      "works": 19,
+      "indexes_unchanged": true,
+      "log": "output/professional-composition-20261125/installed-normal.log"
+    }
+  }
+}

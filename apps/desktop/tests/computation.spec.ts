@@ -4,7 +4,7 @@ import { spawnSync } from "node:child_process";
 import path from "node:path";
 import os from "node:os";
 import { PluginPackage } from "../../../packages/plugin-host/src/package.ts";
-import { navigate } from "./navigation.ts";
+import { navigate, openCreativePlugin } from "./navigation.ts";
 
 const root = path.resolve(import.meta.dirname, "../../..");
 test("无权限声明插件安装即用核心、重开、无新增授权及停用释放", async () => {
@@ -52,8 +52,7 @@ test("无权限声明插件安装即用核心、重开、无新增授权及停�
     await navigate(page, "创作插件");
     await app!.evaluate(({ dialog }, directory) => { dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [directory] }); }, packageDirectory);
     await page.getByRole("button", { name: "安装插件包", exact: true }).click();
-    await expect(page.getByRole("button", { name: "字符统计", exact: true })).toBeVisible();
-    await page.getByRole("button", { name: "字符统计", exact: true }).click();
+    await openCreativePlugin(page, "字符统计");
     let view = await pluginPage();
     await expect(page.locator(".workbench-topbar")).toHaveCount(0);
     await expect(page.locator(".project-navigation")).toHaveCount(0);
@@ -65,10 +64,10 @@ test("无权限声明插件安装即用核心、重开、无新增授权及停�
     await view.getByRole("button", { name: "统计", exact: true }).click();
     await expect(view.getByRole("status")).toHaveText("3 个字符");
     await page.getByRole("button", { name: "返回工作台", exact: true }).click();
-    await expect(page.getByRole("heading", { name: "创作插件", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "作品资料", exact: true })).toBeVisible();
     await expect(page.locator(".workbench-topbar")).toBeVisible();
     await expect(page.locator(".project-navigation")).toBeVisible();
-    await page.getByRole("button", { name: "字符统计", exact: true }).click();
+    await openCreativePlugin(page, "字符统计");
     view = await pluginPage();
     const snapshot = await view.evaluate(() => (window as any).hetu.request("hetu.novels.snapshot", {}));
     expect(snapshot.status).toBe("succeeded");
@@ -79,7 +78,7 @@ test("无权限声明插件安装即用核心、重开、无新增授权及停�
     expect(JSON.parse(await app!.evaluate(() => JSON.stringify((globalThis as any).permissionPrompts)))).toHaveLength(1); // 只有安装选择。
     await app!.close(); app = undefined;
     page = await launch();
-    await navigate(page, "字符统计");
+    await openCreativePlugin(page, "字符统计");
     view = await pluginPage();
     expect(await app!.evaluate(() => JSON.stringify((globalThis as any).permissionPrompts))).toBe("[]");
     await view.getByRole("textbox", { name: "输入文字" }).fill("雾港");
@@ -93,6 +92,7 @@ test("无权限声明插件安装即用核心、重开、无新增授权及停�
     await navigate(page, "创作插件");
     await page.getByRole("button", { name: "停用", exact: true }).click();
     await expect(page.getByRole("button", { name: "启用", exact: true })).toBeVisible();
+    await navigate(page, "作品资料");
     await expect(page.getByRole("button", { name: "字符统计", exact: true })).toHaveCount(0);
   } finally { await app?.close(); }
 });

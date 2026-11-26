@@ -1,0 +1,266 @@
+{
+  "date": "2026-11-25",
+  "scope": "当前工作区的专业插件执行及本对话组合旅程",
+  "version": "0.14.1",
+  "observed_defect": {
+    "entry": "installed CLI, hetu.execution.invoke -> hetu.plugins.capabilities",
+    "error": "forbidden: 机器入口须沿当前作品连接。",
+    "cause": "插件运行时只接受旧精确管理连接，未接当前工作区统一执行范围。",
+    "log_directory": "output/conversation-composition-20261125",
+    "private_journal_committed": false
+  },
+  "implementation": [
+    "私有执行连接固定客户端、WorkRef、工作区和目录身份，保留Agent，不创建持久管理授权。",
+    "执行与管理连接互斥，错误连接不能降为作者；同根其他作品拒绝。",
+    "confirm按固定包的实际动作effect和能力摘要分类，允许只读，写入进入集中计划。",
+    "专业写入保留嵌套原操作键；插件分派成功后仍检查Core业务回执，CAS冲突不记为计划完成。"
+  ],
+  "verification": {
+    "workspace_rust": {
+      "passed": 434,
+      "failed": 0,
+      "ignored": 0,
+      "groups": 72,
+      "log": "output/conversation-composition-20261125/workspace-final.log"
+    },
+    "plugin_host": {
+      "passed": 107,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/conversation-composition-20261125/plugin-host-final.log"
+    },
+    "workspace_plugin": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/conversation-composition-20261125/workspace-plugin-verified.log"
+    },
+    "desktop_types": "passed after final relationships change",
+    "documents": "passed",
+    "capability_map": "passed",
+    "writing_methods": "passed",
+    "embedded_agent_skill": "passed",
+    "relationship_geometry": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/conversation-composition-20261125/relationships-geometry-final.log"
+    },
+    "installed_workspace_plugin": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/conversation-composition-20261125/installed-workspace-execution.log"
+    },
+    "package_author_plugin": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/conversation-composition-20261125/package-author-plugin.log"
+    },
+    "relationship_plugin_version": "0.1.1",
+    "installed_cli_and_fresh_mcp": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/conversation-composition-20261125/installed-mcp-final.log",
+      "scope": "Fresh installed stdio MCP auto plugin write, confirm plugin read and write rejection; CLI plan and geometry."
+    },
+    "documents_log": "output/conversation-composition-20261125/docs-verified.log"
+  },
+  "package": {
+    "state": "verified_and_installed",
+    "version": "0.14.1",
+    "source_sha256": "529b230d96216429172a617d2a5b9d9345084c74f8e3337107726b577179cbd8",
+    "source_inputs": 2999,
+    "artifact_entries": 3720,
+    "source_matches_current": false,
+    "manifest": "output/conversation-composition-20261125/package-layered/hetu-dev-dHFCnB/manifest.json",
+    "signing": "ad-hoc-development",
+    "platform": "darwin",
+    "arch": "arm64",
+    "qa": [
+      {
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0,
+        "log": "output/conversation-composition-20261125/package-layered-workspace.log"
+      },
+      {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "log": "output/conversation-composition-20261125/package-layered-author-final.log"
+      }
+    ],
+    "installation": {
+      "version": "0.14.1",
+      "source_sha256": "529b230d96216429172a617d2a5b9d9345084c74f8e3337107726b577179cbd8",
+      "installed_items_verified": 3132,
+      "profile_unchanged": {
+        "creative-library.json": true,
+        "LocalSettings/settings.json": true,
+        "agent-sessions/index/selection.json": true
+      },
+      "atomic_swap": true,
+      "old_app_backup_created": false,
+      "external_mcp_processes_terminated": false,
+      "signing": "ad-hoc-development"
+    },
+    "public_release": false,
+    "installed_qa": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/conversation-composition-20261125/installed-mcp-final.log"
+    },
+    "normal_launch": {
+      "version": "0.14.1",
+      "library_works": 19,
+      "profile_unchanged": {
+        "creative-library.json": true,
+        "LocalSettings/settings.json": true,
+        "agent-sessions/index/selection.json": true
+      },
+      "model_turn_started": false,
+      "screenshot": {
+        "path": "output/conversation-composition-20261125/installed-normal-library.png",
+        "sha256": "e8ea47d86384626bf8a7151b1f95bf6598b1d4f1fb3232a8d9e6fcf6f034b6cb"
+      }
+    },
+    "source_match_scope": "verified at installation; subsequent typed-context changes are not in this package"
+  },
+  "conversation": {
+    "state": "passed",
+    "entry": "current conversation -> installed CLI",
+    "external_codex_worker": false,
+    "summary": {
+      "fixed_sources": 3,
+      "professional_objects": 2,
+      "working_revisions": 2,
+      "submissions": 2,
+      "public_agent_self_reviews": 1,
+      "adoptions": 0,
+      "finalizations": 0,
+      "selected_range_only": true,
+      "formal_revision_unchanged": true,
+      "retained_after_plugin_uninstall": true
+    },
+    "source_revision_after_professional_update": 1,
+    "professional_current_revision": 2,
+    "feedback_authority": "Agent self-review, not author decision",
+    "scope": "isolated original short text; not a full novel or production episode",
+    "private_journal_committed": false
+  },
+  "limits": [
+    "当前本对话常驻MCP仍为0.14.0，安装CLI与其版本分别报告；未终止常驻MCP。",
+    "本轮未进行Windows、Linux或原生Codex宿主视觉验收。",
+    "不以插件执行回归关闭完整专业制作、全界面及正式发行门槛。"
+  ],
+  "ui": {
+    "state": "passed",
+    "runtime": "installed 0.14.1 with explicitly installed relationships 0.1.1",
+    "business": {
+      "runtime": {
+        "version": "0.14.1",
+        "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+        "resources": "/Applications/Hetu.app/Contents/Resources"
+      },
+      "checks": {
+        "formal_visible": true,
+        "relationship_labels_clear": true,
+        "人物关系图": true,
+        "故事时间线": true,
+        "revised_candidate_visible": true,
+        "review_receipt": true,
+        "formal_revision_unchanged": true
+      },
+      "screenshots": [
+        {
+          "path": "output/conversation-composition-20261125/conversation-installed-formal-layered.png",
+          "sha256": "edcb54ab1ce9442011a02d5d277d6d7cf4bdb5c5d33d6fd6b7d004a37a4aaa24"
+        },
+        {
+          "path": "output/conversation-composition-20261125/conversation-installed-relationships-layered.png",
+          "sha256": "0588bc63a692324a0c4b1129b945d252b199c3df09d2b57a9e3ee19f268ef181"
+        },
+        {
+          "path": "output/conversation-composition-20261125/conversation-installed-timeline-layered.png",
+          "sha256": "e78fe83b55a27f425d678003b405df241c0f3ad98202c6035696d208cdad9b1c"
+        },
+        {
+          "path": "output/conversation-composition-20261125/conversation-installed-revised-review-layered.png",
+          "sha256": "5ae9e05a32d5d27d0f9de7bc563d1cc2c416791830c6436227ec0810aa969e44"
+        }
+      ]
+    },
+    "after_uninstall": {
+      "runtime": {
+        "version": "0.14.1",
+        "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+        "resources": "/Applications/Hetu.app/Contents/Resources"
+      },
+      "checks": {
+        "formal_visible": true,
+        "retained_result_visible_after_uninstall": true,
+        "revised_candidate_visible": true,
+        "review_receipt": true,
+        "formal_revision_unchanged": true
+      },
+      "screenshots": [
+        {
+          "path": "output/conversation-composition-20261125/conversation-installed-formal-retained.png",
+          "sha256": "f9348edd8f791aa992cf925cce5899c27cd28059b0a48f45e8fb51b98826f3c1"
+        },
+        {
+          "path": "output/conversation-composition-20261125/conversation-installed-retained-retained.png",
+          "sha256": "9c8eff9ce482ff92570c4c34e16c1abc859c9acb6d17a4ebf2ace2dd0adfe3b6"
+        },
+        {
+          "path": "output/conversation-composition-20261125/conversation-installed-revised-review-retained.png",
+          "sha256": "5150033c6cbe5d043b0eedc397a4e3a1926feb3d36630dd0f7d459d3a72f58d8"
+        }
+      ]
+    },
+    "visual_changes": [
+      "跨节点弧线与平行关系分层",
+      "标签折行，保留完整title及可访问列表",
+      "连线与标签分层绘制，原坐标及专业事实不变",
+      "动态边界覆盖远端节点和零距离关系"
+    ],
+    "pixel_equivalence_claimed": false
+  },
+  "preserved_failures": [
+    {
+      "kind": "wrong UI test surface",
+      "log": "output/conversation-composition-20261125/conversation-ui.log",
+      "resolution": "Use actual hetu-plugin WebContentsView, not a nonexistent iframe."
+    },
+    {
+      "kind": "observed label overlap",
+      "screenshot": "output/conversation-composition-20261125/conversation-installed-relationships.png",
+      "resolution": "Curved routes, layered label masks and DOM geometry assertion."
+    },
+    {
+      "kind": "layout type error rejected before installation",
+      "log": "output/conversation-composition-20261125/package-visual.log",
+      "resolution": "Keep label text and label position in separate fields; type check passed."
+    },
+    {
+      "kind": "hidden accessible SVG title matched by old package test",
+      "log": "output/conversation-composition-20261125/package-layered-author.log",
+      "trace": "output/conversation-composition-20261125/package-layered-first-trace.zip",
+      "resolution": "Assert visible node tspan, preserve accessible title; final package journey passed."
+    }
+  ],
+  "handoff": {
+    "progress_owner": "docs/38-创作工作台重构执行计划.md",
+    "continue": [
+      "完整视觉及无障碍退出条件",
+      "适用原生宿主与跨平台实际旅程",
+      "完整专业制作及正式发行门槛"
+    ],
+    "current_scope_complete": true,
+    "overall_project_complete": false
+  }
+}

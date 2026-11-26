@@ -1,6 +1,6 @@
 # 视频功能操作导航
 
-从实际能力地图按`hetu-video`窄查，再读取获权目录和当前插件Schema。CLI使用领域动作；MCP使用已发现工具或共享固定方案，不从领域名猜工具。每步保留确切`management_ref`、完整任务引用、修订、摘要和原操作键。
+先读[统一执行模式](../execution-modes.md)：auto在明确当前工作区直接执行，confirm写入使用集中固定方案；下表的旧管理方案仅适用于仍使用精确管理连接的入口。从实际能力地图按`hetu-video`窄查，再读取当前插件Schema。CLI使用领域动作，MCP使用已发现工具，不从领域名猜工具。保留实际入口需要的作品或任务引用、修订、摘要和原操作键。
 
 ## 宿主项目与目录
 
@@ -23,13 +23,15 @@
 
 | 目标 | 已发布动作 | 固定与恢复 |
 | --- | --- | --- |
-| 接收预演、片段或成片候选 | `hetu.video.media.save` | 固定work_ref、分集、asset_ref、用途、流索引、有理数time_base与实际工具报告的duration_ticks；有前版时带previous_media_ref。经管理方案登记真实决定后执行，不表示正式选用 |
-| 查询成果与前版 | `hetu.video.media.list/get` | 返回固定media_ref；分页沿原游标，目录变化重新读取；不能以文件名或最新顺序猜前版 |
+| 接收预演、片段或成片候选 | `hetu.video.media.save` | 固定work_ref、分集、asset_ref、用途、流索引、有理数time_base与实际工具报告的duration_ticks；有前版时带previous_media_ref。auto在当前工作区直接保存，confirm经集中固定方案确认后执行；保存不表示正式选用 |
+| 查询成果与前版 | `hetu.video.media.list`、`hetu.video.media.get` | 返回固定media_ref；分页沿原游标，目录变化重新读取；不能以文件名或最新顺序猜前版 |
 | 保存公开意见 | `hetu.video.feedback.save` | 固定media_ref和原话；局部范围按同一流时基传start_tick/end_tick半开区间，整版意见无需区间。作者确切意见经固定方案执行 |
 | 继续返工 | `hetu.video.feedback.list` | 回读固定旧成果及意见，修改后登记新成果和前版；不把旧意见坐标套到新版 |
+| 认可、选用或确认成片 | `hetu.video.decisions.get`、`hetu.video.decisions.preview`、`hetu.video.decisions.save` | 先读取本集用途当前决定，按作者确切原话固定media_ref、purpose、confirmed／withdrawn及expected_decision_ref；预览后保存同一版本，unknown查原键，不因auto或生成成功自作认可 |
+| 查看认可历史 | `hetu.video.decisions.history` | 固定作品、分集、用途，按原游标读取；旧媒体认可与被替换决定保留，不能撤回另一当前媒体 |
 | 基础文件交付 | `hetu.video.delivery.preview` | 明确选择media_refs，核对清单及当前权利；`hetu.assets.read_blob`按固定asset_ref连续读取，重组后核对完整blob_sha256 |
 
-Core核验固定字节与引用；提交方声明的流时基、技术解码、实际观看和作者认可分别取证。默认工作面能播放、查看前版、保存意见和导出本版固定文件。完整剪辑工程、分镜规划和提供方适配继续使用专业插件或外部工具，不为基础审阅要求作者先安装插件。
+Core核验固定字节与引用；提交方声明的流时基、技术解码、实际观看和作者认可分别取证。默认工作面能播放、查看前版、保存意见、读取认可历史和分别导出本版视频与字幕原文件。认可按previsualization／clip／final分开，分别对应预演认可、片段选用和成片确认；一个分集用途只有一个当前头，新版不继承旧决定，当前权利仍独立核对。完整剪辑工程、分镜规划和提供方适配继续使用专业插件或外部工具，不为基础审阅要求作者先安装插件。
 
 ## 专业插件与外部制作
 
@@ -45,4 +47,4 @@ Core核验固定字节与引用；提交方声明的流时基、技术解码、�
 
 专业插件先通过稳定`hetu.plugins.capabilities`发现，再用`hetu.plugins.invoke`的`skills.read`按需读同包方法及资源。启停升级后重新发现，不安装同名Codex插件来代替。每个插件自维护功能清单，不向宿主清单复制专业动作。
 
-固定方案由`hetu.agent_operations.catalog`发现可用动作，再准备完整差异、登记真实决定及执行。作品管理权不含采纳、成片确认、付费外发或任意文件读取。共用[任务合同](../task-contract.md)与[管理工作法](management.md)，完整旅程见[全季推进](video-planning.md)。
+confirm集中方案经`hetu.execution.prepare`固定完整变更并按真实指令确认、执行；仍使用旧管理连接时，固定方案由`hetu.agent_operations.catalog`发现。作品管理权不含采纳、成片确认、付费外发或任意文件读取。共用[任务合同](../task-contract.md)与[管理工作法](management.md)，完整旅程见[全季推进](video-planning.md)。

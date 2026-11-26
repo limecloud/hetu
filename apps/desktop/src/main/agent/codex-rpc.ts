@@ -1,4 +1,4 @@
-import { execFile, spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
+import { execFile, spawn, fork, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { mkdtemp, writeFile, rm } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -15,6 +15,7 @@ export type CodexRpcOptions = {
   binary: string; args: string[]; cwd: string; env: NodeJS.ProcessEnv;
   transport?: "socket" | "stdio"; timeout?: number;
   message: (value: CodexWireMessage) => void; disconnected: (reason: string) => void;
+  guardian?: {node:string;script:string}; spawned?: (pid:number)=>Promise<void>;
 };
 const MAX_MESSAGE_BYTES = 8 * 1024 * 1024;
 
@@ -62,7 +63,8 @@ export class CodexRpc {
       } else this.#endpoint = "unix://" + path.join(this.#directory, "rpc.sock");
       args.push("--listen", this.#endpoint);
     }
-    const child = spawn(this.options.binary, args, { cwd: this.options.cwd, env: this.options.env, stdio: "pipe", windowsHide: true, shell: false, detached: process.platform !== "win32" });
+    const guardian=this.options.guardian;
+    const child = (guardian?fork(guardian.script,[this.options.binary,...args],{execPath:guardian.node,execArgv:[],cwd:this.options.cwd,env:this.options.env,stdio:["pipe","pipe","pipe","ipc"],windowsHide:true,detached:process.platform!=="win32"}):spawn(this.options.binary, args, { cwd: this.options.cwd, env: this.options.env, stdio: "pipe", windowsHide: true, shell: false, detached: process.platform !== "win32" })) as ChildProcessWithoutNullStreams;
     this.#child = child;
     this.#exit = new Promise(resolve => child.once("exit", () => resolve()));
     child.once("error", error => this.#disconnect(error.message));
@@ -80,6 +82,9 @@ export class CodexRpc {
       }
       if (this.#buffer.length > MAX_MESSAGE_BYTES) this.#disconnect("Codex消息超过传输预算。");
     });
+    if(!child.pid)throw new CodexRpcError("无法启动受管Codex执行端。","not_sent");
+    await this.options.spawned?.(child.pid);
+    if(guardian)await new Promise<void>((resolve,reject)=>child.send({type:"start"},error=>error?reject(error):resolve()));
     if (this.options.transport === "stdio") return;
     const deadline = Date.now() + (this.options.timeout ?? 30_000);
     while (!this.#closed && Date.now() < deadline) {

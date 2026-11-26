@@ -30,6 +30,12 @@ Text and Git on the same disk cannot protect against device loss. Arrange a trus
 
 Before choosing a remote such as GitHub or Gitee, check visibility, rights and scope, then authorize synchronization. Local snapshot implementation does not prove full remote collaboration is verified.
 
+## Storage and cleanup
+
+Open Settings → Storage to review local application data. Click “Clean up all” and confirm once to clean every currently eligible item. To choose individual items, open a category, filter by name or date, sort by size, and select items. Review the cleanup list before confirming; cancelling keeps the files. “Let AI organize” gives your Agent the current storage inspection entry.
+
+Cleanup covers rebuildable interface caches and removed sessions without drafts or pending recovery. Removed session records cannot be restored after cleanup. Manuscripts, versions, assets, unsaved text, permissions and plugins remain protected. External work folders are excluded from this total. Results distinguish deleted, already absent and retained items; file sizes may differ from disk space actually reclaimed.
+
 ## When something goes wrong
 
 Preserve files, unsaved text, the latest valid version and sanitized evidence before inspecting recovery or conflicts. Never overwrite your only copy. After a demo refresh there is no disk history to recover.

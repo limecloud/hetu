@@ -1,0 +1,337 @@
+{
+  "date": "2026-11-26",
+  "installed": true,
+  "work_ref": {
+    "kind": "novel",
+    "object_id": "novel_fe01a8bc-b50c-4114-b019-3d20100da412",
+    "workspace_id": "workspace_21e47cab-31f4-4e75-97d4-1f539b85d482"
+  },
+  "task_ref": {
+    "request_revision": 1,
+    "scope_ref": {
+      "id": "workspace_21e47cab-31f4-4e75-97d4-1f539b85d482",
+      "kind": "workspace"
+    },
+    "sha256": "b289c00f2a9e59f7854d6d4337a517493b39e1f0e3778e778e1142d511c09584",
+    "task_id": "task_7f552f6e-2079-4bf3-8177-efa386d6b7ce"
+  },
+  "thread_id": "01a21462-4bce-7591-abd5-73a1fe9b3fb5",
+  "original_submission": {
+    "sha256": "9ae49d4073401c127c98c0bd20683fbd8667b0e520f556a27e1e29eae78d6296",
+    "submission_id": "submission_0a09e564-b7a0-47a0-84ac-8020c7ed40f2"
+  },
+  "latest_submission": "submission_5e62b0e4-4136-4b8d-8d82-22dd949aa135",
+  "review_ref": {
+    "owner_plugin_id": "org.wordflowlab.novel-review",
+    "object_id": "ext_3e2b34c0-7a90-48b1-bc07-035853b6fb19",
+    "revision": 1,
+    "sha256": "c9088f9bc0327a787c628770660b611af8cc4f1fd6ee75917ec54c021e2832d7"
+  },
+  "packages": [
+    {
+      "id": "org.wordflowlab.novel-review",
+      "version": "0.2.0",
+      "sha256": "f5eceea32772e9028ddaf36607ceb2c4eddd0a70eb17373e4c4bf871c21c18f4"
+    },
+    {
+      "id": "org.wordflowlab.prose-studio",
+      "version": "0.2.0",
+      "sha256": "5005ec439334b5babd9d9bd35b3a7575185b55df67f3ea3623ed3c21226c3c7f"
+    }
+  ],
+  "rounds": [
+    "draft",
+    "draft-after-host-environment",
+    "review",
+    "revise",
+    "retained",
+    "installed-owner-check"
+  ],
+  "fixed_outside_bytes_preserved": true,
+  "formal_unchanged": true,
+  "same_working_copy": true,
+  "old_candidate_preserved": true,
+  "old_report_read_after_disable": true,
+  "adoptions": 0,
+  "finalizations": 0,
+  "limits": [
+    "isolated QA source and explicit QA feedback; not real author creative approval",
+    "actual professional operations and fixed readback; not literary-quality certification",
+    "macOS arm64 optimized development build; no Windows/Linux or native Codex Desktop host certification",
+    "other engine configurations covered by unit and PTY regressions; professional model used Codex",
+    "full accessibility, visual parity, professional episode and public release remain separate gates"
+  ],
+  "model": {
+    "completed_rounds": 6,
+    "same_thread": true,
+    "initial_missing_plugin_round_preserved": true,
+    "bundled_method_reads": 6,
+    "plugin_calls": [
+      {
+        "round": "draft-after-host-environment",
+        "plugin": "org.wordflowlab.prose-studio",
+        "action": "list_projects",
+        "status": "succeeded"
+      },
+      {
+        "round": "draft-after-host-environment",
+        "plugin": "org.wordflowlab.prose-studio",
+        "action": "save_project",
+        "status": "succeeded"
+      },
+      {
+        "round": "draft-after-host-environment",
+        "plugin": "org.wordflowlab.prose-studio",
+        "action": "get_project",
+        "status": "succeeded"
+      },
+      {
+        "round": "draft-after-host-environment",
+        "plugin": "org.wordflowlab.prose-studio",
+        "action": "preview_refinement",
+        "status": "succeeded"
+      },
+      {
+        "round": "draft-after-host-environment",
+        "plugin": "org.wordflowlab.prose-studio",
+        "action": "get_project",
+        "status": "succeeded"
+      },
+      {
+        "round": "draft-after-host-environment",
+        "plugin": "org.wordflowlab.prose-studio",
+        "action": "save_project",
+        "status": "succeeded"
+      },
+      {
+        "round": "draft-after-host-environment",
+        "plugin": "org.wordflowlab.prose-studio",
+        "action": "verify_refinement",
+        "status": "succeeded"
+      },
+      {
+        "round": "draft-after-host-environment",
+        "plugin": "org.wordflowlab.prose-studio",
+        "action": "put_refinement",
+        "status": "succeeded"
+      },
+      {
+        "round": "draft-after-host-environment",
+        "plugin": "org.wordflowlab.prose-studio",
+        "action": "get_project",
+        "status": "succeeded"
+      },
+      {
+        "round": "review",
+        "plugin": "org.wordflowlab.novel-review",
+        "action": "list_projects",
+        "status": "succeeded"
+      },
+      {
+        "round": "review",
+        "plugin": "org.wordflowlab.novel-review",
+        "action": "save_project",
+        "status": "failed"
+      },
+      {
+        "round": "review",
+        "plugin": "org.wordflowlab.novel-review",
+        "action": "save_project",
+        "status": "succeeded"
+      },
+      {
+        "round": "review",
+        "plugin": "org.wordflowlab.novel-review",
+        "action": "get_project",
+        "status": "succeeded"
+      },
+      {
+        "round": "review",
+        "plugin": "org.wordflowlab.novel-review",
+        "action": "export_project",
+        "status": "succeeded"
+      },
+      {
+        "round": "review",
+        "plugin": "org.wordflowlab.novel-review",
+        "action": "get_coverage",
+        "status": "succeeded"
+      },
+      {
+        "round": "revise",
+        "plugin": "org.wordflowlab.novel-review",
+        "action": "get_project",
+        "status": "succeeded"
+      },
+      {
+        "round": "revise",
+        "plugin": "org.wordflowlab.prose-studio",
+        "action": "get_project",
+        "status": "succeeded"
+      },
+      {
+        "round": "revise",
+        "plugin": "org.wordflowlab.prose-studio",
+        "action": "preview_refinement",
+        "status": "succeeded"
+      },
+      {
+        "round": "revise",
+        "plugin": "org.wordflowlab.prose-studio",
+        "action": "save_project",
+        "status": "succeeded"
+      },
+      {
+        "round": "revise",
+        "plugin": "org.wordflowlab.prose-studio",
+        "action": "verify_refinement",
+        "status": "succeeded"
+      },
+      {
+        "round": "revise",
+        "plugin": "org.wordflowlab.prose-studio",
+        "action": "put_refinement",
+        "status": "succeeded"
+      },
+      {
+        "round": "revise",
+        "plugin": "org.wordflowlab.novel-review",
+        "action": "save_project",
+        "status": "succeeded"
+      },
+      {
+        "round": "revise",
+        "plugin": "org.wordflowlab.novel-review",
+        "action": "get_coverage",
+        "status": "succeeded"
+      },
+      {
+        "round": "revise",
+        "plugin": "org.wordflowlab.novel-review",
+        "action": "get_project",
+        "status": "succeeded"
+      },
+      {
+        "round": "revise",
+        "plugin": "org.wordflowlab.prose-studio",
+        "action": "get_project",
+        "status": "succeeded"
+      },
+      {
+        "round": "revise",
+        "plugin": "org.wordflowlab.novel-review",
+        "action": "get_project",
+        "status": "succeeded"
+      }
+    ],
+    "core_rejections": [
+      {
+        "round": "draft-after-host-environment",
+        "action": "hetu.working_copies.create",
+        "status": "blocked",
+        "code": "forbidden"
+      },
+      {
+        "round": "draft-after-host-environment",
+        "action": "hetu.creative_tasks.get",
+        "status": "blocked",
+        "code": "invalid_input"
+      }
+    ],
+    "installed_owner_probe": "actual new read-only model round in exact package; later rechecks reuse completed rounds"
+  },
+  "validation": {
+    "agent": {
+      "passed": 85,
+      "failed": 0,
+      "log": "output/professional-gui-env-agent.log"
+    },
+    "source_journey": {
+      "passed": 1,
+      "log": "output/professional-gui-live-retained-ui.log"
+    },
+    "package_journey": {
+      "passed": 1,
+      "log": "output/professional-gui-packaged-projections.log"
+    },
+    "package_terminal_regressions": {
+      "passed": 2,
+      "log": "output/professional-gui-final-packaged.log",
+      "other_failure": "professional test projection assertions; fixed same stored results without repeating model round"
+    },
+    "installed_journeys": {
+      "passed": 3,
+      "log": "output/professional-gui-installed-e2e.log"
+    },
+    "final_guards": {
+      "passed": 1,
+      "log": "output/professional-gui-final-guards.log"
+    },
+    "normal_profile": {
+      "works": 19,
+      "indexes_unchanged": true,
+      "log": "output/professional-gui-normal-launch.log"
+    },
+    "docs": "passed",
+    "capability_map": "passed",
+    "skill": {
+      "official_validation": "passed",
+      "local_links": 24
+    },
+    "installed_source_and_artifacts": "verified after all tests"
+  },
+  "implementation": {
+    "owner_environment": "explicit narrow projection shared by Codex and native CLI MCP configurations",
+    "paths_only": true,
+    "arbitrary_environment_and_credentials_excluded": true,
+    "same_plugin_store": true,
+    "new_agent_loop": false,
+    "domain_owner_changed": false,
+    "global_agent_config_changed": false
+  },
+  "package": {
+    "manifest": "output/professional-gui-20261126/packages/hetu-dev-4UBPTS/manifest.json",
+    "source_sha256": "547eb8bb4d025506e926cbeada97a0f1164d2ef8b706945edeb2a91d61cfdc6f",
+    "source_inputs": 3071,
+    "installed_artifacts": 3132,
+    "version": "0.14.1",
+    "platform": "darwin",
+    "arch": "arm64",
+    "signature": "ad-hoc development, not notarized distribution"
+  },
+  "installation": {
+    "path": "/Applications/Hetu.app",
+    "atomic_swap": true,
+    "backup_created": false,
+    "old_bundle_removed": true,
+    "normal_works": 19,
+    "original_user_indexes_unchanged": true,
+    "persistent_external_mcp_restarted": false,
+    "normal_user_plugin_mutations_by_this_run": false
+  },
+  "retained_report_opened_in_ui": true,
+  "long_term_active_rule_created": false,
+  "formal_documents": 1,
+  "failure_history": [
+    {
+      "log": "output/professional-gui-live-first.log",
+      "cause": "installed embedded MCP lacked explicit host plugin state directory; model read empty fallback and stopped with no business writes"
+    },
+    {
+      "log": "output/professional-gui-live-owner-fixed.log",
+      "cause": "test report read used desktop generic bridge which does not route all machine actions; completed rounds retained"
+    },
+    {
+      "log": "output/professional-gui-live-feedback.log",
+      "cause": "test supplied sha256 to strict retained-result input; corrected exact revision read and returned digest comparison"
+    },
+    {
+      "log": "output/professional-gui-live-packaged.log",
+      "cause": "test expected full packages from field projection; model actually read state summary and exact IDs/digests"
+    },
+    {
+      "log": "output/professional-gui-final-packaged.log",
+      "cause": "test read projected full report as direct object; corrected view.value interpretation without repeating request"
+    }
+  ]
+}

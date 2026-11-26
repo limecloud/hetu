@@ -55,3 +55,30 @@ test("创作库最多四路读取，完成顺序不改目录，错误和身份�
  expect(library.rows()[5].error).toBe("位置无法读取");
  expect(JSON.parse(await readFile(file,"utf8")).roots.map((row:any)=>row.works[0].work_ref)).toEqual(works.map(row=>row.work_ref));
 });
+
+test("已知作品只刷新原位置，同根作品和其他实例的新登记保持，无关位置不参与读取",async()=>{
+ const folder=await mkdtemp(path.join(tmpdir(),"hetu-library-local-")),file=path.join(folder,"profile/creative-library.json");
+ const paths=await Promise.all(["当前","无关","新增"].map(async name=>{const directory=path.join(folder,name);await mkdir(directory);return realpath(directory);}));
+ const novel={work_ref:{workspace_id:"workspace_current",kind:"novel" as const,object_id:"novel_current"},title:"当前小说",chapter_count:1};
+ const drama={work_ref:{workspace_id:"workspace_current",kind:"drama" as const,object_id:"drama_current"},title:"同根剧本"};
+ const other={work_ref:{workspace_id:"workspace_other",kind:"novel" as const,object_id:"novel_other"},title:"无关小说"};
+ const added={work_ref:{workspace_id:"workspace_added",kind:"novel" as const,object_id:"novel_added"},title:"另一实例新登记"};
+ const records=new Map([[paths[0],[novel,drama]],[paths[1],[other]],[paths[2],[added]]]);
+ const reads:string[]=[];let localOnly=false,wrongIdentity=false;
+ const read=async(directory:string)=>{reads.push(directory);if(localOnly&&directory!==paths[0])throw Error("无关位置被读取");return wrongIdentity?[other]:records.get(directory)!;};
+ const library=new CreativeLibrary(file,new RecoveryStore(),read),peer=new CreativeLibrary(file,new RecoveryStore(),read);
+ await library.register(paths[0],[novel,drama]);await library.register(paths[1],[other]);await library.refresh([]);
+ await peer.register(paths[2],[added]);
+ records.set(paths[0],[{...novel,chapter_count:2},{...drama,title:"同根剧本已更新"}]);reads.length=0;localOnly=true;
+ await library.refresh([],novel.work_ref);
+ expect(reads).toEqual([paths[0]]);
+ expect(library.rows().map(row=>row.title)).toEqual(["当前小说","同根剧本已更新","无关小说","另一实例新登记"]);
+ expect(library.rows()[0].chapter_count).toBe(2);expect(library.rows()[2].unavailable).toBe(false);
+ expect(JSON.parse(await readFile(file,"utf8")).roots).toHaveLength(3);
+ reads.length=0;
+ await expect(library.refresh([],{...novel.work_ref,object_id:"novel_not_registered"})).rejects.toThrow("尚未登记");
+ expect(reads).toEqual([]);
+ wrongIdentity=true;await library.refresh([],novel.work_ref);
+ expect(library.rows().filter(row=>row.unavailable&&row.work_ref.workspace_id===novel.work_ref.workspace_id)).toHaveLength(2);
+ expect(library.rows()[0].error).toContain("身份已变化");expect(library.rows()[2].unavailable).toBe(false);
+});

@@ -89,7 +89,7 @@ test("图片库按固定人物与正文关联、原比例预览、历史批次�
     await gallery.getByRole("button", { name: /雾中的旅人/ }).click();
     const detail = page.getByRole("dialog", { name: "固定图片详情", exact: true });
     const size = await detail
-      .locator(".artwork-preview")
+      .locator(".image-region-image")
       .evaluate((img: HTMLImageElement) => ({
         width: img.naturalWidth,
         height: img.naturalHeight,

@@ -110,6 +110,7 @@ impl Kernel {
     pub(in crate::application) fn get_working_copy(&self, input: &Value) -> Result<Value> {
         let mut result = self.working_revision(&input["task_ref"], &input["working_copy_ref"])?;
         if input["detail"] == "summary"
+            || input["detail"] == "page"
             || input.get("range").is_some()
             || input.get("max_bytes").is_some()
         {
@@ -122,7 +123,10 @@ impl Kernel {
                 .unwrap()
                 .remove("content");
         }
-        Ok(result)
+        if input["detail"] == "page" {
+            result = json!({"task_ref":result["working_copy"]["task_ref"],"working_copy_ref":result["working_copy_ref"],"current_revision_ref":result["current_revision_ref"],"content_page":result["content_page"]});
+        }
+        self.fixed_review_projection(result, input, "working")
     }
     pub(in crate::application) fn list_working_copies(&self, input: &Value) -> Result<Value> {
         let (_, _, state, _) = self.task_for_reference(&input["task_ref"])?;

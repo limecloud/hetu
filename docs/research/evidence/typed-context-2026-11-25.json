@@ -1,0 +1,232 @@
+{
+  "date": "2026-11-25",
+  "scope": "R8-01 formal outline and selected blueprint entity sources; embedded TUI/GUI integration skill",
+  "version": "0.14.1",
+  "implementation": {
+    "source_owner": "Existing outline history, blueprint revisions and task ContextManifest in Core",
+    "outline": [
+      "exact revision and collection sha256",
+      "bounded summary, query and snapshot-bound cursor",
+      "selected entry as task and plugin source",
+      "historical UTF-8 read and search"
+    ],
+    "blueprint": [
+      "entity_ref uses original schema primary key",
+      "task and plugin reads cannot expand selected entity",
+      "whole blueprint remains explicit"
+    ],
+    "desktop": [
+      "outline and entity selectors",
+      "same-name summaries",
+      "original session, WorkRef and generation",
+      "cancel and late-response isolation",
+      "source verification before send"
+    ],
+    "skill": ".agents/skills/hetu-embedded-agent/SKILL.md",
+    "methods_version": "0.3.15"
+  },
+  "validation": {
+    "workspace": {
+      "status": "passed",
+      "groups": 73,
+      "passed": 436,
+      "failed": 0,
+      "ignored": 0,
+      "log": "output/typed-context-20261125/workspace-tests.log",
+      "scope_note": "All current Core logic; compiled before the subsequent video method navigation correction. Final method consumers are verified separately."
+    },
+    "gui": {
+      "status": "passed",
+      "passed": 1,
+      "log": "output/typed-context-20261125/agent-chat-boundaries.log",
+      "covers": [
+        "420 historical messages",
+        "23 outlines with bounded pages",
+        "same-name outline and character selection",
+        "five fixed source contexts",
+        "source heads advance without replacing old references",
+        "cancelled read arrives at another selector",
+        "session switches while attach is pending",
+        "invalid source preserves draft and prevents turn",
+        "light and narrow dark layout"
+      ],
+      "screenshots": "output/typed-context-20261125/screenshots-source"
+    },
+    "typescript": {
+      "status": "passed",
+      "log": "output/typed-context-20261125/typecheck-final.log"
+    },
+    "documents": {
+      "status": "passed",
+      "log": "output/typed-context-20261125/design-docs-recorded.log"
+    },
+    "skill": {
+      "status": "passed",
+      "validator": "skill-creator quick_validate.py",
+      "local_links_verified": 7
+    },
+    "methods": {
+      "status": "passed",
+      "passed": 8,
+      "log": "output/typed-context-20261125/methods-final-corrected.log",
+      "suites": 45,
+      "generated_reproduction": "passed",
+      "source_integrity": "passed",
+      "integrity_log": "output/typed-context-20261125/skills-final-corrected.log"
+    },
+    "final_method_consumers": {
+      "status": "passed",
+      "continuation": 14,
+      "cli": 10,
+      "mcp_stdio": 41,
+      "logs": [
+        "output/typed-context-20261125/machine-methods-final.log",
+        "output/typed-context-20261125/cli-methods-final.log",
+        "output/typed-context-20261125/mcp-methods-final.log"
+      ]
+    },
+    "agent_units": {
+      "status": "passed",
+      "passed": 66,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/typed-context-20261125/agent-units-final.log"
+    },
+    "plugin_host": {
+      "status": "passed",
+      "passed": 109,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/typed-context-20261125/plugin-host-final.log"
+    }
+  },
+  "failures_preserved": [
+    {
+      "log": "output/typed-context-20261125/core-context-tests.log",
+      "reason": "New test tuple declaration used invalid Rust syntax; corrected before execution."
+    },
+    {
+      "log": "output/typed-context-20261125/methods-final.log",
+      "reason": "Video save method still described an old management decision route; corrected to auto or concentrated confirm."
+    },
+    {
+      "log": "output/typed-context-20261125/methods-corrected.log",
+      "reason": "Combined list/get shorthand was not an actual discoverable action; replaced by two exact action identifiers."
+    },
+    {
+      "log": "output/typed-context-20261125/package-gui.log",
+      "reason": "Author journey skipped because the first invocation omitted its required manifest environment argument; rerun separately with the same package and explicit manifest."
+    },
+    {
+      "log": "output/typed-context-20261125/installed-conversation.log",
+      "reason": "Test caller passed plugin document reference fields into task input; contract correctly rejected. Corrected from actual source_ref schema; existing work and saved blueprint reused."
+    },
+    {
+      "log": "output/typed-context-20261125/installed-conversation-corrected.log",
+      "reason": "Expected forbidden returned at outer execution envelope; test helper initially raised instead of asserting that envelope. Original task and sources preserved."
+    },
+    {
+      "log": "output/typed-context-20261125/installed-conversation-recovered.log",
+      "reason": "Test caller used working_copy_id instead of the required complete working_copy_ref. Corrected read without another write or submission."
+    },
+    {
+      "log": "output/typed-context-20261125/installed-conversation-final.log",
+      "reason": "Test assertion expected content at top level; actual working revision owns content. Corrected against response contract; original saved copy reused."
+    },
+    {
+      "log": "output/typed-context-20261125/installed-mcp.log",
+      "reason": "Method reassembly test expected page.text instead of page.content. CLI/MCP source equality had passed; corrected method assertion and repeated only read operations."
+    }
+  ],
+  "package": {
+    "status": "installed_and_verified",
+    "version": "0.14.1",
+    "platform": "darwin-arm64",
+    "signing": "development ad-hoc; not distribution notarization",
+    "manifest": "output/conversation-composition-20261125/package-typed-context/hetu-dev-EQ9dw9/manifest.json",
+    "source_sha256": "6146d26acb4eecd7deb655ce35513c147c9e76c06d2620426a5644b3e899f9bb",
+    "source_files": 3001,
+    "artifacts": 3720,
+    "source_matches_current": false,
+    "log": "output/typed-context-20261125/package.log",
+    "gui_fixed_context": {
+      "status": "passed",
+      "log": "output/typed-context-20261125/package-gui.log",
+      "screenshots": "output/typed-context-20261125/screenshots-package"
+    },
+    "author_journey": {
+      "status": "passed",
+      "passed": 1,
+      "log": "output/typed-context-20261125/package-author.log"
+    },
+    "workspace_and_geometry": {
+      "status": "passed",
+      "passed": 3,
+      "log": "output/typed-context-20261125/package-workspace.log"
+    },
+    "installation": {
+      "version": "0.14.1",
+      "source_sha256": "6146d26acb4eecd7deb655ce35513c147c9e76c06d2620426a5644b3e899f9bb",
+      "installed_items_verified": 3132,
+      "profile_unchanged": {
+        "creative-library.json": true,
+        "LocalSettings/settings.json": true,
+        "agent-sessions/index/selection.json": true
+      },
+      "atomic_swap": true,
+      "old_app_backup_created": false,
+      "external_mcp_processes_terminated": false,
+      "signing": "ad-hoc-development"
+    },
+    "normal_profile": {
+      "status": "passed",
+      "works": 19,
+      "indexes_unchanged": true,
+      "log": "output/typed-context-20261125/installed-normal.log"
+    },
+    "source_match_scope": "Verified at installation; subsequent shared source presentation changes are not in this package."
+  },
+  "installed_conversation": {
+    "status": "passed",
+    "same_original_isolated_work": true,
+    "new_task_reason": "Exercise newly supported formal outline and selected entity sources; original composition task preserved",
+    "task_id": "task_cc086aa9-4070-40af-b176-d438d2a7673d",
+    "sources": 3,
+    "outline_revision": 1,
+    "blueprint_revision": 2,
+    "source_heads_advanced": true,
+    "old_sources_exact": true,
+    "other_entity_rejected": true,
+    "wrong_sha_rejected": true,
+    "candidate_saved_and_read": true,
+    "formal_document_unchanged": true,
+    "accepted": false,
+    "finalized": false,
+    "external_model_invoked": false,
+    "cli_log": "output/typed-context-20261125/installed-conversation-verified.log",
+    "mcp_log": "output/typed-context-20261125/installed-mcp-corrected.log",
+    "ui_log": "output/typed-context-20261125/installed-ui.log",
+    "ui_receipt": "output/conversation-composition-20261125/installed-typed-ui.json",
+    "new_stdio_process": true,
+    "persistent_registered_mcp_restarted": false
+  },
+  "not_claimed": [
+    "overall R8 or project completion",
+    "literary quality or author approval",
+    "current persistent MCP hot update",
+    "current native Codex Desktop host",
+    "Windows or Linux execution",
+    "VoiceOver",
+    "formal signed and notarized release"
+  ],
+  "remaining_source_presentation": {
+    "status": "observed",
+    "surface": "shared task review",
+    "items": [
+      "Single entity still displays a return-to-directory button although its source scope cannot expand",
+      "Selected entity title repeats the source heading"
+    ],
+    "screenshot": "output/conversation-composition-20261125/installed-typed-sources.png",
+    "next": "Refine shared source presentation and cover selected-entity and whole-blueprint navigation separately; rebuild consumers after resource changes."
+  }
+}

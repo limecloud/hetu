@@ -1,0 +1,138 @@
+{
+  "scope": "固定剪辑的OpenTimelineIO交付与独立目录恢复",
+  "owner_repository": "wordflowlab/hetu-video-studio",
+  "owner_progress": "docs/08-实施计划与验收记录.md",
+  "owner_evidence": "docs/research/editable-timeline-2026-11-25.json",
+  "owner_evidence_sha256": "25d2c10b368c2ced28d9c2a16572ca12210933b00b7cb1329a7f7f2696790918",
+  "implementation": {
+    "owner": "原视听制作插件",
+    "entry": "同包scripts/assemble-delivery.py --timeline <edit_id>",
+    "new_core_actions": 0,
+    "new_professional_actions": 0,
+    "new_storage": false,
+    "default_archive_requires_otio": false
+  },
+  "runtime": {
+    "core_version": "hetu 0.14.1",
+    "platform": "macOS arm64",
+    "otio_version": "0.18.1",
+    "model_turns": 0,
+    "desktop_started": false
+  },
+  "package": {
+    "version": "0.1.0",
+    "sha256": "17b5d63396f37601c25abbf321ee4a30b6ffff3e606dfc94d20fbd3975879097",
+    "development_only": true,
+    "global_install_changed": false,
+    "published": false,
+    "archive": {
+      "archive": "video-studio-development.tgz",
+      "sha256": "6f4eeabcba6af3a7b75a7c7ef43da83689cabbe2e7ef12b812c7f04f1b8c8572",
+      "files": 96,
+      "matches_tested_package_bytes": true,
+      "published": false
+    }
+  },
+  "validation": {
+    "timeline": {
+      "passed": 16,
+      "failed": 0,
+      "real_media_seconds": 4,
+      "real_media_clips": 3,
+      "checks": [
+        "官方库时间线读回",
+        "音画轨和源截取",
+        "头中尾间隔与总时长",
+        "有理数时基",
+        "固定意见与修订",
+        "重定位后的相对媒体",
+        "真实音画分别解码",
+        "接收方继续编辑后读回",
+        "缺依赖与错误引用拒绝",
+        "已知无音频的声音轨拒绝",
+        "变速和字幕明确拒绝",
+        "不支持效果不生成归档"
+      ]
+    },
+    "media_tools": {
+      "passed": 12,
+      "failed": 0
+    },
+    "typescript_unit": {
+      "passed": 35,
+      "failed": 0
+    },
+    "typecheck": "passed",
+    "build": "passed",
+    "machine": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "professional_actions": 22,
+      "skill_and_scripts_match": true,
+      "cli_readback": true,
+      "same_key_recovery": true,
+      "lifecycle_history_preserved": true,
+      "delivery": {
+        "archive_sha256": "f05edf774e9072e7b0f286b3a9b908bbea1c5b204556787a66aed6be5115f8ab",
+        "rejected_paths": [
+          "文件不能作为父目录",
+          "顺序不改变父目录冲突",
+          "父目录冲突核对大小写",
+          "清单文件不能作为目录",
+          "清单目录冲突核对大小写",
+          "Unicode规范等价文件不能重复",
+          "Unicode规范等价父目录冲突",
+          "大小写展开后的同名文件",
+          "Windows问号不可用",
+          "Windows星号不可用",
+          "Windows竖线不可用",
+          "Windows双引号不可用",
+          "Windows尖括号不可用"
+        ],
+        "restored_bytes_verified": true,
+        "project_snapshot_verified": true,
+        "timeline": {
+          "otio_version": "0.18.1",
+          "clips": 2,
+          "decoded_media": 1,
+          "decoded_stream_kinds": [
+            "Audio",
+            "Video"
+          ],
+          "duration_seconds": 2,
+          "relative_media_verified": true,
+          "fixed_refs_verified": true,
+          "continued_edit_verified": true
+        }
+      }
+    }
+  },
+  "boundaries": [
+    "仅准确支持当前常速音画时间线，变速与字幕仍需适配，不删除原效果或片段来缩小完整目标",
+    "未验证具体NLE／DCC接收工具",
+    "程序媒体不证明生成模型、影片质量、内容观看或作者认可",
+    "完整一集、全剧及Windows／Linux未验收",
+    "未重装宿主、改变全局插件选择、提交推送或公开发行",
+    "未重测GUI或原生Codex Desktop MCP App"
+  ],
+  "complete_product": false,
+  "documentation_check": {
+    "documents": 92,
+    "local_links": 1560,
+    "fragment_links": 426,
+    "traceability": {
+      "FR": 44,
+      "US": 65,
+      "UC": 58,
+      "E2E": 34,
+      "AC": 74
+    },
+    "id_references": 1391,
+    "json_examples": 11,
+    "schemas": 2,
+    "mermaid": 118,
+    "errors": []
+  },
+  "documentation_check_log_sha256": "fcbe6865b803c81530a6242c5a34f5aa9f4376376241161d52c65a7101083379"
+}

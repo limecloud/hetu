@@ -1,0 +1,320 @@
+{
+  "date": "2026-11-25",
+  "version": "0.14.1",
+  "scope": "R8-01固定文本来源的分页、实际载入覆盖、原范围重试及返回",
+  "state": "passed-development-slice-installed",
+  "implementation": [
+    "reuse existing Core context read, original fixed reference, UTF-8 ranges and total source bytes",
+    "merge only successfully verified loaded ranges; repeated pages do not increase coverage",
+    "a complete local page or last page does not imply complete source coverage",
+    "back and forward navigation retain original page ranges without persisting a second source copy",
+    "failed reads retain the current page and feedback, and retry the exact failed read range",
+    "text and professional pages share fixed source identity matching",
+    "successful text and structured reads clear stale read errors",
+    "source position and references remain in optional details; main reader shows page and loaded coverage",
+    "view-only state does not become an author or Agent read receipt, task progress, adoption or quality claim",
+    "source loading and failures appear beside the current text, with the original failed range retained",
+    "a read generation isolates teardown and later responses without clearing another read state",
+    "empty source is distinct from unloaded or incomplete source",
+    "connection failure and teardown end aria-busy; a missing connection is not treated as continuing loading",
+    "keyboard page changes retain an actionable source control after rerender"
+  ],
+  "baseline": [
+    {
+      "log": "output/professional-composition-20261125/source-coverage-baseline.log",
+      "state": "invalid-test-input",
+      "cause": "document input_ref contained an unsupported sha256 field; corrected to the actual Schema before UI baseline"
+    },
+    {
+      "log": "output/professional-composition-20261125/source-coverage-baseline-second.log",
+      "state": "product-gap-reproduced",
+      "observed": "actual fixed source text loaded, but the source reading coverage group and page position were absent"
+    }
+  ],
+  "validation": {
+    "source_text_and_structured_units": {
+      "passed": 7,
+      "failed": 0,
+      "log": "output/source-coverage-unit.log"
+    },
+    "task_view_types": "passed",
+    "task_view_build_and_reproduction": "passed",
+    "rust_consumers": "passed",
+    "desktop_build": "passed",
+    "actual_fixed_text_ui": {
+      "passed": 1,
+      "failed": 0,
+      "log": "output/source-coverage-20261125/full-task-view.log",
+      "scope": "final long text source, real delayed teardown response, empty source, original revision, bilingual themes and narrow viewport"
+    },
+    "desktop_fixed_text_ui": {
+      "passed": 1,
+      "failed": 0,
+      "log": "output/source-coverage-20261125/desktop-source-second.log",
+      "checks": [
+        "original revision retained after formal head advances",
+        "failed range retried with identical input",
+        "deduplicated coverage",
+        "keyboard focus",
+        "light and dark narrow layout",
+        "navigation discards late source response",
+        "formal head unchanged"
+      ]
+    },
+    "connection_terminal_states": {
+      "passed": 2,
+      "failed": 0,
+      "log": "output/source-coverage-20261125/loading-final.log"
+    },
+    "full_task_view_matrix": {
+      "passed": 86,
+      "failed": 1,
+      "skipped": 0,
+      "duration_minutes": 32.8,
+      "log": "output/source-coverage-20261125/full-task-view.log",
+      "codex_full_workbench": "passed",
+      "stdio_full_workbench": "connection closed after acknowledged drama copy; diagnostic replay pending",
+      "additional_model_turns": 0
+    },
+    "full_desktop_matrix": {
+      "passed": 76,
+      "failed": 4,
+      "skipped": 11,
+      "cleanup_errors": 2,
+      "duration_minutes": 32.7,
+      "log": "output/source-coverage-20261125/full-desktop.log",
+      "targeted_recheck": "passed 5 tests; original full result and cleanup errors retained",
+      "scope_note": "native IME activation, delayed professional prepare, and two final test application closes failed; original test result is preserved"
+    },
+    "frozen_regression_artifacts": {
+      "items": 33,
+      "record": "output/source-coverage-20261125/regression-artifacts.json",
+      "unchanged_during_regression": true
+    },
+    "installation": "passed; 3132 items and three original profile indexes unchanged",
+    "docs": "passed",
+    "performance_regression": {
+      "han_characters": 100000,
+      "source_utf8_bytes": 301998,
+      "open_ms": 2514.64,
+      "input_p95_ms": 30.1,
+      "formatted_p95_ms": 23.0,
+      "styled_p95_ms": 29.7,
+      "rendered_lines": 23,
+      "method": "beforeinput to second requestAnimationFrame; real Chromium input, not system IME latency",
+      "record": "output/source-coverage-20261125/full-desktop/editor-performance-十万汉字章真实输入到绘制p95及保存字节回读/editor-input-performance.json"
+    },
+    "engineering_skill": {
+      "files": 5,
+      "relative_links": 12,
+      "code_paths_verified": true,
+      "official_validation": "passed",
+      "secret_and_disallowed_product_name_scan": "passed"
+    },
+    "professional_and_entity_regression": {
+      "passed": 2,
+      "failed": 0,
+      "log": "output/source-coverage-20261125/full-task-view.log"
+    },
+    "host_load_observation": {
+      "load_averages": [
+        240.61,
+        125.53,
+        78.89
+      ],
+      "effect": "not used to waive assertions or determine unobserved failure causes; next checks run serially",
+      "unrelated_processes_changed": false
+    },
+    "desktop_targeted_recheck": {
+      "passed": 5,
+      "failed": 0,
+      "duration_minutes": 1.6,
+      "log": "output/source-coverage-20261125/desktop-recheck.log",
+      "scope": [
+        "real system IME",
+        "professional discovery and stale handoff",
+        "resource conflict and original operation recovery",
+        "resource task lifecycle and normal close/reopen",
+        "fixed text source reading and normal close"
+      ]
+    },
+    "stdio_diagnostic_recheck": {
+      "passed": 1,
+      "failed": 0,
+      "duration_minutes": 9.3,
+      "log": "output/source-coverage-20261125/stdio-diagnostic.log",
+      "diagnostics": "output/source-coverage-20261125/stdio-diagnostic/shared-workbench-stdio-MCP-App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品/transport-diagnostics.json",
+      "unexpected_close": false,
+      "client_errors": 0,
+      "stderr_bytes": 0,
+      "scope": "full original journey including post-copy refresh, retained plugin export, reading state and normal teardown",
+      "first_failure_cause": "not determined; successful diagnostic replay does not prove intermittent cause fixed"
+    },
+    "installed_resource_outline_sources": {
+      "passed": 1,
+      "failed": 0,
+      "log": "output/source-coverage-20261125/installed-typed-sources-second.log",
+      "mcp_binary": "/Applications/Hetu.app/Contents/Resources/bin/hetu-mcp",
+      "ui_resource": "read from the installed MCP advertised resource, not local source HTML",
+      "checks": [
+        "multi-page resource UTF-8 bytes equal original body",
+        "multi-page formal outline UTF-8 bytes equal original text",
+        "source heads advanced before reading, old references unchanged",
+        "coverage complete only after all bytes displayed",
+        "original fixed reference and size match",
+        "no source, task or feedback writes from UI",
+        "source and task heads unchanged"
+      ],
+      "runtime_code_changed": false
+    }
+  },
+  "limits": [
+    "installed source a8aafa32 includes this source-reading increment; 0.14.1 macOS arm64 development signature, not a public release",
+    "loaded coverage does not prove human or Agent reading, comprehension or semantic validation",
+    "native Codex host, cross-platform and accessibility gates remain independent",
+    "this increment does not close the complete project goal"
+  ],
+  "prior_failures": [
+    {
+      "log": "output/source-coverage-20261125/real-first.log",
+      "passed": 2,
+      "failed": 1,
+      "cause": "test compared flex-layout innerText newlines with normalized textContent; position and 15-percent coverage were already rendered",
+      "resolution": "compare the same DOM text representation; repeat real source regression after final local errors and loading states"
+    },
+    {
+      "scope": "TypeScript check",
+      "cause": "DOM textContent returns string or null; test asserted non-null after checking coverage exists",
+      "resolution": "nullable type narrowed for the expected text"
+    },
+    {
+      "log": "output/source-coverage-20261125/real-second.log",
+      "cause": "outer source and inner manuscript regions had the same accessible name",
+      "resolution": "inner manuscript region now identifies itself as source text; original outer source title remains"
+    },
+    {
+      "log": "output/source-coverage-20261125/loading-baseline.log",
+      "cause": "default Playwright cache did not contain the required browser executable",
+      "resolution": "used the already verified isolated browser cache; no dependency or global configuration changes"
+    },
+    {
+      "log": "output/source-coverage-20261125/loading-baseline-second.log",
+      "cause": "missing host rendered a completed connection error while aria-busy remained true",
+      "resolution": "explicit connection lifecycle ends loading on failure and teardown; two targeted regressions pass"
+    },
+    {
+      "log": "output/source-coverage-20261125/desktop-source.log",
+      "passed": 1,
+      "failed": 1,
+      "cause": "new test expected an index display title instead of the actual fixture work title",
+      "resolution": "opened the actual fixture work by its real title; desktop source journey passed without product workaround"
+    },
+    {
+      "log": "output/source-coverage-20261125/full-task-view.log",
+      "scope": "stdio shared-workbench full journey",
+      "cause": "MCP transport closed after the drama copy was saved and its author journal acknowledged; source of disconnection not yet determined",
+      "readback": "original failed fixture contains exactly one novel copy and one drama copy, both author journals acknowledged; no copy was replayed",
+      "resolution": "one full serial diagnostic replay passed; only expected final client close, zero stderr; initial disconnection cause remains undetermined"
+    },
+    {
+      "log": "output/source-coverage-20261125/full-desktop.log",
+      "scope": "native IME",
+      "cause": "frontmost PID had not become the test application immediately after activation; assertion stopped before system keystrokes",
+      "resolution": "actual foreground activation awaited; real Sogou Chinese composition and Core readback passed in serial recheck"
+    },
+    {
+      "log": "output/source-coverage-20261125/full-desktop.log",
+      "scope": "resources journey",
+      "cause": "all business assertions and revision-5 recovery completed, but final Playwright application close did not finish and worker teardown exceeded its budget",
+      "resolution": "normal window-close helper verifies flush and process exit; complete resource journey and close/reopen passed in serial recheck"
+    },
+    {
+      "log": "output/source-coverage-20261125/full-desktop.log",
+      "scope": "professional prepare",
+      "cause": "delayed-response injection waited five seconds for original preparation without recording its completion or error",
+      "resolution": "capture actual duration and errors and wait for original preparation before delayed response injection; serial complete professional journey passed"
+    },
+    {
+      "log": "output/source-coverage-20261125/full-desktop.log",
+      "scope": "new source journey in full desktop matrix",
+      "cause": "all reading, retry, keyboard, late response and formal-head assertions passed; final Playwright app.close hung",
+      "resolution": "normal window-close helper verifies flush and process exit; full source journey passed in serial recheck"
+    },
+    {
+      "log": "output/source-coverage-20261125/installed-typed-sources.log",
+      "scope": "new installed resource/outline test setup",
+      "cause": "test client did not declare MCP Apps capability, so resource metadata was correctly absent",
+      "resolution": "declare actual io.modelcontextprotocol/ui capability before discovering resource; installed-source regression passed"
+    }
+  ],
+  "package": {
+    "manifest": "output/source-coverage-20261125/package/hetu-dev-ZXKgv0/manifest.json",
+    "version": "0.14.1",
+    "source_sha256": "a8aafa3230584b7427d3644998a1a44d6384feef794c9898b5d0c0876e6eab4a",
+    "source_items": 3052,
+    "artifacts": 3720,
+    "signing": "ad-hoc-development",
+    "brand_icon_sha256_matches": true,
+    "ui_validation": {
+      "passed": 3,
+      "failed": 0,
+      "log": "output/source-coverage-20261125/package-ui.log"
+    },
+    "installation": {
+      "version": "0.14.1",
+      "source_sha256": "a8aafa3230584b7427d3644998a1a44d6384feef794c9898b5d0c0876e6eab4a",
+      "installed_items_verified": 3132,
+      "profile_unchanged": {
+        "creative-library.json": true,
+        "LocalSettings/settings.json": true,
+        "agent-sessions/index/selection.json": true
+      },
+      "atomic_swap": true,
+      "old_app_backup_created": false,
+      "external_mcp_processes_terminated": false,
+      "signing": "ad-hoc-development"
+    },
+    "execution_and_geometry": {
+      "passed": 3,
+      "failed": 0,
+      "log": "output/source-coverage-20261125/package-workspace.log"
+    },
+    "original_task_ui": {
+      "state": "passed",
+      "log": "output/source-coverage-20261125/original-package-ui.log"
+    }
+  },
+  "installed_readback": {
+    "machine": {
+      "runtime_version": "0.14.1",
+      "formal_unchanged": true,
+      "report_sha256": "56ce237f82f5d0ed02e1c08cb96bc155f94918e8d9b16be2c1fa67ba838be5a6",
+      "report_status": "inconclusive",
+      "candidates_read": 3,
+      "adoptions": 0,
+      "finalizations": 0,
+      "model_turns": 0,
+      "report_content_sha256": "7ae4ef429182692f42b3c49972b290f5859f8c010d19b8846cb6005bbcd3f947",
+      "transport": "new installed stdio MCP process; current conversation's original MCP unchanged"
+    },
+    "original_task_ui": "output/professional-composition-20261125/original-ui-source-coverage-installed.json",
+    "original_task_ui_log": "output/source-coverage-20261125/original-installed-ui.log",
+    "formal_unchanged": true,
+    "original_persistent_mcp_restarted": false,
+    "normal_profile_launch": {
+      "state": "passed",
+      "library_works": 19,
+      "profile_unchanged": {
+        "creative-library.json": true,
+        "LocalSettings/settings.json": true,
+        "agent-sessions/index/selection.json": true
+      },
+      "record": "output/conversation-composition-20261125/installed-normal-launch-source-coverage.json"
+    }
+  },
+  "public_release": {
+    "committed": false,
+    "website_deployed_in_this_increment": false,
+    "version_changed_in_this_increment": false
+  }
+}

@@ -6,6 +6,7 @@ pub mod delivery_formats;
 pub mod delivery_pdf;
 pub mod drama;
 pub mod drama_comparison;
+pub mod fountain;
 pub mod media;
 pub mod manuscript_styles;
 pub mod novel;

@@ -1,0 +1,167 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-25",
+  "kind": "current-chapter-machine-access-regression",
+  "platform": "macOS arm64",
+  "root_causes": [
+    "workspace_access未核验目录dev/ino，失效私有连接仍返回authorized=true，桌面交接因此跳过重连。",
+    "稳定MCP对并行只读发现使用try_acquire，正常Schema并发被拒绝为workspace_busy。"
+  ],
+  "implementation": {
+    "directory_validation": "状态查询与实际访问共用check_management_root；保留旧引用与旧任务失效规则。",
+    "read_queue": "只读等待现有semaphore并响应取消；写入保留原忙碌拒绝与原键恢复。",
+    "desktop": "复用现有ensureWorkConnection与固定章节交接，未新增授权表面或作品数据副本。"
+  },
+  "before": {
+    "identity_regression": "旧实现状态查询在设备号不匹配时仍返回authorized=true，针对性断言失败。",
+    "installed_parallel_regression": {
+      "status": "failed_as_expected",
+      "error": "workspace_busy",
+      "log": "output/chapter-access-fix-20261125/installed-before-parallel.log"
+    }
+  },
+  "validation": [
+    {
+      "command": "cargo test --locked -p hetu-core --test collaboration --test collaboration_library --test stable_task_preparation",
+      "passed": 7
+    },
+    {
+      "command": "cargo test --locked -p hetu-mcp --test stdio stable_parallel_schema_discovery_queues_reads_without_workspace_busy -- --exact",
+      "passed": 1
+    },
+    {
+      "command": "cargo test --locked -p hetu-mcp --test stdio managed_work_ref_injects_private_grant_for_resource_write_without_echoing_grant -- --exact",
+      "passed": 1,
+      "covers": [
+        "同一MCP进程中固定原文读取",
+        "失效连接拒绝",
+        "作者沿原用例重连",
+        "无需重启MCP即可读取同一修订",
+        "私有授权不回显",
+        "异作拒绝"
+      ]
+    },
+    {
+      "command": "Node 25 Playwright tests/agent-content.spec.ts",
+      "passed": 1,
+      "duration_seconds": 13.4,
+      "covers": [
+        "真实桌面固定章节交接修复失效连接",
+        "独立CLI核对原修订与正文",
+        "目录键盘菜单与旧修订",
+        "迟到回包与会话保持"
+      ]
+    },
+    {
+      "command": "npx tsc --noEmit (apps/desktop)",
+      "status": "passed"
+    },
+    {
+      "command": "python3 tools/sync-capability-map.py --check",
+      "status": "passed"
+    }
+  ],
+  "current_installed_work_repair": {
+    "method": "使用已安装App Server的既有authorize_workspace对原客户端、原作品重新连接，再经已安装独立CLI读取固定旧修订。",
+    "before": "forbidden: 作品目录身份已变化，请重新授权。",
+    "after": "succeeded",
+    "content_bytes": 9445,
+    "declared_size_matches": true,
+    "declared_content_sha256_matches": true,
+    "manuscript_writes": 0,
+    "note": "首次人工抄录摘要校验失败；改为与Core原修订声明直接比较，摘要和字节数均一致。未重复写入正文。"
+  },
+  "directory_check": {
+    "registered_chapters": 511,
+    "unique_document_ids": 511,
+    "unique_titles": 511,
+    "current_native_window": "未观察到重复条目，不据截图现象改写作品目录。"
+  },
+  "source_sha256": {
+    "core/src/collaboration/authoring.rs": "67dd019480069b2aa474ec4fdc97ea1d8c7302b29d7505f919b05460d70707fa",
+    "core/tests/collaboration.rs": "e7246b8fabee6c07aac500617eea6c8419098b7d61b93e20e92daf4f58abdd25",
+    "apps/mcp/src/stable.rs": "8328451adaa70b718a7b1bdddcbd19a0dba6c695f97d474020123cbe1f6b18e7",
+    "apps/mcp/tests/stdio.rs": "de4e7e1dfd0915134067422bf088d4a03a3ee6d43c82d1ab7cbdfac3716a50f4",
+    "apps/desktop/tests/agent-content.spec.ts": "1e50bc7692bf3a2d77dc678057dbc23a7c1334dafbffc64e569a9c9f2bf8723e"
+  },
+  "limits": [
+    "已按本轮明确授权无备份覆盖本机macOS arm64安装；开发签名不冒充正式公证发行。",
+    "桌面自动截图在视频及章节预览出现超时，保留失败trace，未声明完整视觉或全部桌面用例通过。",
+    "未发起模型轮次，未声称文学评价或所有Agent完整旅程通过。",
+    "未覆盖其他平台、整库操作或正式发行。",
+    "未终止或重载其他客户端常驻MCP，不以应用替换宣称那些进程已更新。"
+  ],
+  "state": "local-installed-validated",
+  "installation": {
+    "source_sha256": "9094b5556536b3a023614db975b93930f265743f838747150af79ceab8613073",
+    "source_inputs": 3055,
+    "artifacts_verified": 3132,
+    "version": "0.14.1",
+    "optimized": true,
+    "signature": "ad-hoc-development-verified",
+    "icon_matches": true,
+    "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+    "installed_path": "/Applications/Hetu.app",
+    "atomic_swap": true,
+    "backup_created": false,
+    "old_bundle_removed": true,
+    "profile_indexes_unchanged": {
+      "creative-library.json": true,
+      "LocalSettings/settings.json": true,
+      "agent-sessions/index/selection.json": true
+    },
+    "normal_launch": {
+      "running_from_installed_path": true,
+      "pid": 24128,
+      "library_works": 19,
+      "native_ui_observed": true
+    },
+    "temporary_install_directories_remaining": 0,
+    "manifest": "apps/desktop/output/chapter-access-fix-20261125/packages/hetu-dev-FKEIwl/manifest.json",
+    "verification": "output/chapter-access-fix-20261125/installed-verified.json",
+    "log": "output/chapter-access-fix-20261125/install.log"
+  },
+  "installed_validation": {
+    "mcp": {
+      "passed": 2,
+      "failed": 0,
+      "log": "output/chapter-access-fix-20261125/installed-mcp.log",
+      "scope": "实际安装二进制的并行Schema查询与同一MCP进程固定读取、失效拒绝及重新连接。"
+    },
+    "original_chapter": {
+      "runtime": "/Applications/Hetu.app/Contents/Resources/bin/hetu-mcp",
+      "status": "succeeded",
+      "fixed_revision_matches": true,
+      "content_bytes": 9445,
+      "content_sha256_matches": true,
+      "private_authorization_echoed": false,
+      "manuscript_writes": 0,
+      "model_turns": 0
+    },
+    "package_desktop": {
+      "chapter_directory_passed": 1,
+      "baseline_failed": 1,
+      "failure": "视频页page.screenshot超时；此前视频播放、固定反馈及Core回读断言通过，后续导出与重开未执行。",
+      "log": "output/chapter-access-fix-20261125/package-desktop.log"
+    },
+    "baseline_independent_recheck": {
+      "failed": 1,
+      "failure": "同一视频页截图超时；保留trace，未将独立复验计为通过。",
+      "log": "output/chapter-access-fix-20261125/package-baseline-recheck.log"
+    },
+    "installed_desktop": {
+      "status": "partial",
+      "failure": "固定旧修订预览的page.screenshot超时；此前失效连接、桌面固定交接、独立CLI正文回读、菜单和迟到回包断言通过，后续预览切换与最终会话核对未执行。",
+      "log": "output/chapter-access-fix-20261125/installed-desktop.log"
+    },
+    "normal_native_window": {
+      "status": "passed",
+      "method": "CUA正常启动实际安装路径，创作库19个作品及截图可见。",
+      "whole_visual_suite_claimed": false
+    }
+  },
+  "verification_notes": [
+    "包体核验首先校验3720项完整装配清单，再校验3132项App文件和链接；装配目录的__MACOSX、LICENSE等不复制到应用内部。首次辅助脚本的范围假设已纠正，未修改包体来跳过校验。",
+    "源码与包内主要章节回归在本轮装配前已通过；实际安装后的自动截图超时单独保留，不能合并为全量无失败。"
+  ]
+}

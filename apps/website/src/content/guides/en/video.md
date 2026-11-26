@@ -45,6 +45,8 @@ Story problems return to the script; staging problems to the preview; appearance
 
 Watch the complete picture, listen to dialogue, music and effects, and check subtitles, timing and continuity. A download link or a few stills cannot replace viewing. Successful playback cannot replace your creative judgment.
 
+In the video workspace, select the result version and export its video file. For subtitles, choose a language below the player and use the subtitle export beside it to save that track’s original `.vtt` file. Video and subtitles are saved separately; use the relevant production plugin for SRT, ASS or an editable project.
+
 Preview approval, asset selection, clip selection, final-cut confirmation and project delivery are separate decisions. Deliver selected video, subtitles, audio and an editable project. Check source media, fonts, relative paths and other dependencies by actually opening them in the recipient’s environment.
 
 See [Formats and delivery](formats-and-delivery.md). Publishing, promotion and subsequent operations are separate activities; confirming a cut does not start them.

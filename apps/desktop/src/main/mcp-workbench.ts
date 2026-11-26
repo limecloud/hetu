@@ -1,3 +1,4 @@
+import { storageRequest, storageAction } from "./storage-review.ts";
 import {localFontCatalog} from "./font-catalog.ts";
 import { pluginPreferences } from "./plugin-preferences.ts";
 import { ensureWorkConnection } from "./work-connection.ts";
@@ -14,6 +15,7 @@ import { nativeDialog, cancelNativeDialogs } from "./native-dialog.ts";
 import path from "node:path";
 import { createInterface } from "node:readline";
 import { randomUUID, createHash } from "node:crypto";
+import { stat } from "node:fs/promises";
 import { AppServer } from "./rpc.ts";
 import { CreativeLibrary } from "./library.ts";
 import {ReadingStateStore} from "./reading-state.ts";
@@ -24,7 +26,7 @@ import { workAgentRequest, workAssociation } from "./work-agent.ts";
 import { AgentConnectionInstall } from "./agent-connection-install.ts";
 import { scopedCli } from "./cli.ts";
 import { sameWork, supportsWork, type WorkRef } from "@hetu/plugin-sdk";
-import { PluginInstallations, PluginPackage, BackendSupervisor, PluginHost } from "@hetu/plugin-host";
+import { PluginInstallations, PluginPackage, BackendSupervisor, PluginHost, pluginSummaries, type InstallationState } from "@hetu/plugin-host";
 
 const bin = process.env.HETU_WORKBENCH_BIN!;
 const profile = process.env.HETU_WORKBENCH_PROFILE!;
@@ -44,7 +46,7 @@ function unwrap(value:any){if(value.status!=="succeeded")throw new Error(value.e
 let localState=await settings.get();
 function agentClient(){const value=workAssociation(localState,selected).client;return ({claudeCode:"claude-code",other:"generic",none:"generic"} as Record<string,string>)[value]??value;}
 const agentSettings=async(action:string,input:any,adapter=agentClient())=>unwrap(await local.request("local_settings/request",{client_adapter:adapter,request:{action,contract_revision:"1",input}}));
-const library=new CreativeLibrary(path.join(profile,"creative-library.json"),recovery,async directory=>{const server=await AppServer.open(binary,directory);try{return await readWorks(server);}finally{await server.close();}});
+const library=new CreativeLibrary(path.join(profile,"creative-library.json"),recovery,async directory=>{const server=await AppServer.open(binary,directory,path.join(profile,"git-authorizations"));try{return await readWorks(server);}finally{await server.close();}});
 await library.load();
 let selected:WorkRef|undefined,server:AppServer|undefined,session:WorkSession|undefined,epoch=0,dirty=false;
 let copied:string|undefined;
@@ -55,24 +57,33 @@ const pluginMedia=new Set<string>();
 const installations=new PluginInstallations((await local.request("plugins/directory",{})).directory);
 let pluginError="",installationSha="",preferenceSnapshot="";
 let pluginHost:PluginHost;
-try{const record=await installations.read();installationSha=record.sha256;pluginHost=await installations.host(record.state);}catch(error){pluginError=(error as Error).message;pluginHost=new PluginHost();}
+let pluginState:InstallationState={packages:[],grants:{}};
+let pluginFileIdentity="";
+try{const record=await installations.read();installationSha=record.sha256;pluginState=record.state;pluginHost=await installations.host(record.state);}catch(error){pluginError=(error as Error).message;pluginHost=new PluginHost();}
 function handoffEnvironment(){return {client:agentClient(),coreCli:cli,collaborationDirectory:collaboration,localSettingsDirectory:process.env.HETU_LOCAL_SETTINGS_DIR};}
 function pluginConnection(owner:string,work:WorkRef){const pkg=pluginHost.package(owner);return {plugin_id:owner,package_sha256:pkg.sha256,access_mode:"open",work_ref:work,workspace_path:library.resolve(work),package_path:pkg.source,state_directory:installations.directory,access_directory:process.env.HETU_PLUGIN_ACCESS_DIR??null,core_cli:process.env.HETU_PLUGIN_CLI??path.join(bin,"hetu-plugin"+suffix),runtime:path.join(import.meta.dirname,"plugin-runtime.mjs"),node_executable:process.execPath};}
 async function refreshPlugins(){
  let record:Awaited<ReturnType<PluginInstallations["read"]>>;
- try{record=await installations.read();}catch(error){
+ try{
+  const identity=await stat(installations.file,{bigint:true}).then(value=>[value.dev,value.ino,value.size,value.mtimeNs,value.ctimeNs].join(":"),error=>{if(error.code==="ENOENT")return "missing";throw error;});
+  // 安装Owner原子替换文件；元数据只控制展示投影的刷新，不参与授权或业务执行。
+  if(identity===pluginFileIdentity)return false;
+  record=await installations.read();pluginFileIdentity=identity;
+ }catch(error){
+  pluginFileIdentity="";
   const message=(error as Error).message;if(pluginError===message)return false;
   await closePlugin();for(const state of pluginHost.states())await pluginHost.disable(state.id);
-  pluginHost=new PluginHost();installationSha="";pluginError=message;return true;
+  pluginHost=new PluginHost();pluginState={packages:[],grants:{}};installationSha="";pluginError=message;return true;
  }
  if(record.sha256===installationSha)return false;
- await closePlugin();pluginHost=await installations.host(record.state);installationSha=record.sha256;pluginError="";return true;
+ await closePlugin();for(const state of pluginHost.states())await pluginHost.disable(state.id);
+ pluginHost=await installations.host(record.state);pluginState=record.state;installationSha=record.sha256;pluginError="";return true;
 }
 async function overview(){
  const changed=await refreshPlugins();const state=await settings.get();localState=state;
  const snapshot=JSON.stringify(state.preferences);if(snapshot!==preferenceSnapshot){preferenceSnapshot=snapshot;events.push({name:"onPreferences",value:{...state.preferences,settings_revision:state.revision}});}
  const result={plugin_state_error:pluginError||undefined,works:library.rows(),work:selected,epoch,agentClient:agentClient(),preferences:{...state.preferences,settings_revision:state.revision},
-  plugins:pluginHost.states().map(state=>({...state,display:pluginHost.package(state.id).manifest.display,description:pluginHost.package(state.id).manifest.description,version:pluginHost.package(state.id).manifest.version,work_kinds:pluginHost.package(state.id).manifest.work_kinds})),views:pluginHost.views.list().filter(view=>selected&&supportsWork(pluginHost.package(view.owner).manifest,selected)).map(view=>({key:view.id,owner:view.owner,...view.value}))};
+  plugins:pluginSummaries(pluginHost,pluginState),views:pluginHost.views.list().filter(view=>selected&&supportsWork(pluginHost.package(view.owner).manifest,selected)).map(view=>({key:view.id,owner:view.owner,...view.value}))};
  if(changed)events.push({name:"onPluginsChanged",value:result});return result;
 }
 function check(){if(!server||!selected)throw new Error("请选择当前作品。");}
@@ -84,7 +95,7 @@ function context(adapter:string){check();const current=server!,work=selected!,ti
 }
 async function machineAccess(adapter=agentClient()){const ctx=context(adapter),status=await ensureWorkConnection(ctx);return {...ctx,management_ref:status.management_ref};}
 async function select(work:WorkRef){if(dirty)throw new Error("请先保存当前修改，再切换作品。");const directory=library.resolve(work);
-  const next=await AppServer.open(binary,directory);
+  const next=await AppServer.open(binary,directory,path.join(profile,"git-authorizations"));
   try{const value=unwrap(await next.request("workspace/request",{action:"hetu.works.get",contract_revision:"1",input:{work_ref:work}}));if(!sameWork(value.summary.work_ref,work))throw new Error("作品身份与登记不一致。");}catch(error){await next.close();throw error;}
   epoch++;await closePlugin();await session?.dispose();await server?.close();server=next;selected=work;const ticket=epoch;
   session=createWorkSession(work,next,{profile,recovery,active:()=>epoch===ticket&&server===next,
@@ -94,6 +105,7 @@ async function select(work:WorkRef){if(dirty)throw new Error("请先保存当前
     chooseFile:options=>ask("choose_file",{options}),saveFile:options=>ask("save_file",{options}),
     agentClient,collaborationContext:context,coreCliBinary:()=>cli,copy:text=>{copied=text;},
     executionPolicy:()=>settings.preferences(),
+    professionalPlugins:async()=>{await refreshPlugins();return {plugins:pluginSummaries(pluginHost,pluginState),plugin_state_error:pluginError||undefined};},
   });return overview();
 }
 async function install(kind:"agent_connection"|"agent_suite",input:any={}){
@@ -150,10 +162,10 @@ async function applyPlugin(input:any){
  const previous=await installations.read();
  await closePlugin();
  await installations.apply({...input,client_adapter:"desktop",expected_sha256:previous.sha256,operation_key:randomUUID(),authorization_note:"作者在河图工作台选择此固定插件操作"},async pkg=>{const connection=server??local;await connection.request("extensions/disable",{plugin_id:pkg.manifest.id,package_sha256:pkg.sha256});});
- pluginHost=await installations.host((await installations.read()).state);
- const value=await overview();events.push({name:"onPluginsChanged",value});return value;
+ return overview();
 }
 async function dispatch(method:string,args:any[]){
+ if(method!=="state"&&await refreshPlugins())events.push({name:"onPluginsChanged",value:await overview()});
  if(method==="readingState") {
   const [action,input={}]=args;check();if(!sameWork(input.work_ref,selected!))throw new Error("阅读位置不属于当前作品。");
   const store=new ReadingStateStore(path.join(profile,"reading-state"),recovery);
@@ -161,7 +173,10 @@ async function dispatch(method:string,args:any[]){
  }
  if(method==="fonts"){if(args.length>1||args[0]!==undefined&&typeof args[0]!=="boolean")throw new Error("字体目录请求无效。");return localFontCatalog(args[0]===true);}
  if(method==="state")return overview();
- if(method==="library") {const [kind,input={}]=args;if(kind==="refresh"){const discovered:any[]=[];let cursor;do{const value=unwrap(await scopedCli(cli,agentClient(),collaboration,"hetu.collaboration.created_works",{limit:100,...(cursor?{cursor}:{})}));discovered.push(...value.works);cursor=value.next_cursor;}while(cursor);await library.refresh(discovered);return overview();}if(kind==="open")return select(input.work_ref);if(kind==="bootstrap"){copied=creationHandoff(input.kind,handoffEnvironment());return {copied:true};}if(kind==="client"){
+ if(method==="library") {const [kind,input={}]=args;if(kind==="refresh"){
+  if(input.work_ref){check();if(!sameWork(input.work_ref,selected!))throw new Error("作品已切换，请重新读取当前作品。");await library.refresh([],selected);return overview();}
+  const discovered:any[]=[];let cursor;do{const value=unwrap(await scopedCli(cli,agentClient(),collaboration,"hetu.collaboration.created_works",{limit:100,...(cursor?{cursor}:{})}));discovered.push(...value.works);cursor=value.next_cursor;}while(cursor);await library.refresh(discovered);return overview();
+ }if(kind==="open")return select(input.work_ref);if(kind==="bootstrap"){copied=creationHandoff(input.kind,handoffEnvironment());return {copied:true};}if(kind==="client"){
   const value=({codex:"codex","claude-code":"claudeCode",workbuddy:"workbuddy",generic:"other"} as Record<string,string>)[input.client];
   if(!value)throw new Error("请选择支持的外部 Agent 客户端。");
   const state=await settings.get();
@@ -189,6 +204,7 @@ async function dispatch(method:string,args:any[]){
  }
  if(method==="settings"){
  const [action,input={}]=args;
+ if(action.startsWith("storage_"))return storageRequest(action,input,(action,params)=>storageAction(params=>local.request("local_settings/request",params),action,params),(message,detail)=>ask("confirm",{message,detail}));
  if(action==="get"){localState=await settings.get();return {...localState,journal:await settings.journal()};}if(action==="list")return settings.list(input.cursor);if(action==="operation")return settings.operation(input.operation_id);
  if(action==="preferences"){const snapshot=await settings.preferences();if(snapshot.revision!==localState.revision)localState=await settings.get();return snapshot;}
  if(action==="prepare")return settings.prepare(input.operation_id,input.sha256,input.revision,input.approve);
@@ -217,7 +233,7 @@ async function dispatch(method:string,args:any[]){
  if(method==="open"){
   if(dirty&&!await ask("confirm",{message:"当前修改尚未保存。",accept:"保留恢复稿并打开"}))return null;
   const directory=await ask("choose_file",{options:{properties:["openDirectory"],title:"打开河图作品目录"}});if(!directory)return null;
-  const connection=await AppServer.open(binary,directory);try{await library.register(directory,await readWorks(connection));}finally{await connection.close();}
+  const connection=await AppServer.open(binary,directory,path.join(profile,"git-authorizations"));try{await library.register(directory,await readWorks(connection));}finally{await connection.close();}
   await closePlugin();await session?.dispose();await server?.close();session=undefined;server=undefined;selected=undefined;epoch++;dirty=false;return overview();
  }
  check();return session!.call(method,args);

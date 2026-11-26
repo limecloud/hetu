@@ -246,7 +246,8 @@
                     "work",
                     "asset",
                     "cue",
-                    "resource"
+                    "resource",
+                    "outline"
                   ]
                 },
                 "work_ref": {
@@ -299,6 +300,15 @@
                 "resource_id": {
                   "type": "string",
                   "pattern": "^resource_[0-9a-f-]{36}$"
+                },
+                "outline_id": {
+                  "type": "string",
+                  "pattern": "^outline_[0-9a-f-]{36}$"
+                },
+                "entity_ref": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100
                 }
               },
               "oneOf": [
@@ -338,7 +348,8 @@
                       "work_ref",
                       "sha256",
                       "blueprint_id",
-                      "revision"
+                      "revision",
+                      "entity_ref"
                     ]
                   }
                 },
@@ -416,6 +427,26 @@
                       "work_ref",
                       "sha256",
                       "resource_id",
+                      "revision"
+                    ]
+                  }
+                },
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "outline"
+                    }
+                  },
+                  "required": [
+                    "outline_id",
+                    "revision"
+                  ],
+                  "propertyNames": {
+                    "enum": [
+                      "kind",
+                      "work_ref",
+                      "sha256",
+                      "outline_id",
                       "revision"
                     ]
                   }
@@ -695,7 +726,8 @@
                   "work",
                   "asset",
                   "cue",
-                  "resource"
+                  "resource",
+                  "outline"
                 ]
               },
               "work_ref": {
@@ -748,6 +780,15 @@
               "resource_id": {
                 "type": "string",
                 "pattern": "^resource_[0-9a-f-]{36}$"
+              },
+              "outline_id": {
+                "type": "string",
+                "pattern": "^outline_[0-9a-f-]{36}$"
+              },
+              "entity_ref": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
               }
             },
             "oneOf": [
@@ -787,7 +828,8 @@
                     "work_ref",
                     "sha256",
                     "blueprint_id",
-                    "revision"
+                    "revision",
+                    "entity_ref"
                   ]
                 }
               },
@@ -865,6 +907,26 @@
                     "work_ref",
                     "sha256",
                     "resource_id",
+                    "revision"
+                  ]
+                }
+              },
+              {
+                "properties": {
+                  "kind": {
+                    "const": "outline"
+                  }
+                },
+                "required": [
+                  "outline_id",
+                  "revision"
+                ],
+                "propertyNames": {
+                  "enum": [
+                    "kind",
+                    "work_ref",
+                    "sha256",
+                    "outline_id",
                     "revision"
                   ]
                 }

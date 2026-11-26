@@ -1,5 +1,6 @@
 import type { WorkRef, WorkSurface } from "@hetu/plugin-sdk";
 export interface DesktopBridge {
+  professional(method:"catalog"|"capabilities"|"method"|"prepare",input:import("../professional-contract.ts").ProfessionalInput):Promise<any>;
   execution(request: {action: string; contract_revision: string; input: Record<string, unknown>}): Promise<any>;
   fonts(refresh?: boolean): Promise<import("@hetu/workbench-ui").FontCatalog>;
   interfaceScale(method: "get" | "set", input?: {value: number}): Promise<number>;
@@ -8,10 +9,10 @@ export interface DesktopBridge {
   readonly windowControls?: {zoom:boolean; interfaceScale?: boolean; titlebarInset?: boolean};
   onWindowChrome?(listener: (value: {inset: boolean; scale: number;fullscreen?:boolean}) => void): () => void;
   outlines(method: "get" | "save" | "draft" | "recover", input?: Record<string, unknown>): Promise<any>;
-  video(method: "list" | "media" | "feedback" | "delivery" | "draft" | "journal" | "save_feedback" | "recover" | "export", input?: Record<string, unknown>): Promise<any>;
+  video(method: "list" | "media" | "feedback" | "delivery" | "draft" | "journal" | "save_feedback" | "recover" | "export" | "export_caption" | "decision_history" | "decision_journal" | "prepare_decision" | "save_decision" | "recover_decision" | "acknowledge_decision", input?: Record<string, unknown>): Promise<any>;
   workAgent(method: "get" | "inspect" | "select" | "choose_package" | "auto_detect" | "reveal_bundle" | "prepare_install" | "recover" | "acknowledge", input?: Record<string, unknown>): Promise<any>;
   agentSessionHost?: boolean;
-  agentSession(method: "get" | "start" | "send" | "interrupt" | "respond" | "stop" | "surface" | "terminal_input" | "terminal_resize" | "draft" | "recover" | "models" | "open_link" | "list" | "new" | "select" | "rename" | "remove" | "insert" | "results" | "catalog" | "model_options" | "paste_draft", input?: Record<string, unknown>): Promise<any>;
+  agentSession(method: "get" | "start" | "login" | "send" | "interrupt" | "respond" | "stop" | "surface" | "terminal_input" | "terminal_resize" | "draft" | "recover" | "models" | "open_link" | "list" | "new" | "select" | "rename" | "remove" | "insert" | "results" | "catalog" | "model_options" | "paste_draft" | "attach_context" | "remove_context", input?: Record<string, unknown>): Promise<any>;
   onAgentSession(listener: (value: any) => void): () => void;
   canon(method: "get" | "preview" | "save" | "lock" | "recover" | "acknowledge", input?: Record<string, unknown>): Promise<any>;
   novel(method: "get" | "save" | "recover" | "acknowledge", input?: Record<string, unknown>): Promise<any>;
@@ -19,7 +20,7 @@ export interface DesktopBridge {
   covers(method: "get" | "requests" | "candidates" | "choose_file" | "prepare" | "commit" | "recover" | "acknowledge", input?: Record<string, unknown>): Promise<any>;
   migrations(method: "preview" | "approve" | "continue", input: Record<string, unknown>): Promise<any>;
   versions(method: "status" | "snapshots" | "snapshot" | "diff" | "snapshot_diff" | "history" | "version" | "journal" | "prepare" | "commit" | "recover" | "acknowledge" | "continue", input?: Record<string, unknown>): Promise<any>;
-  settings(method: "preferences" | "get" | "list" | "operation" | "prepare" | "manual" | "update" | "commit" | "recover" | "acknowledge" | "handoff" | "continue" | "select_suite", input?: Record<string, unknown>): Promise<any>;
+  settings(method: "storage_cancel" | "storage_inspect" | "storage_prepare" | "storage_operation" | "storage_execute" | "preferences" | "get" | "list" | "operation" | "prepare" | "manual" | "update" | "commit" | "recover" | "acknowledge" | "handoff" | "continue" | "select_suite", input?: Record<string, unknown>): Promise<any>;
   settingsWindow(method: "open" | "close"): Promise<void>;
   settingsAgent(method: string, input?: Record<string, unknown>): Promise<any>;
   onPreferences(listener: (value: any) => void): () => void;
@@ -80,7 +81,7 @@ export interface DesktopBridge {
     input?: Record<string, unknown>,
   ): Promise<any>;
   tasks(
-    method: "list" | "journal" | "recover" | "call" | "resource",
+    method: "list" | "journal" | "recover" | "call" | "resource" | "assessment" | "continuation",
     ref?: unknown,
     params?: unknown,
   ): Promise<any>;

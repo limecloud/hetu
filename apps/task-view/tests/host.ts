@@ -12,6 +12,8 @@ declare global {
     testLocalDrafts?: boolean;
     testContext?: boolean;
     testDeepLink?: string;
+    testTaskRef?: Record<string, unknown>;
+    testSubmissionId?: string;
     testActions?: Record<string, Record<string, unknown>>;
     realTask?: boolean;
     workbenchMode?: boolean;
@@ -77,6 +79,12 @@ bridge.oncalltool = async params => {
   }
   if (params.name === "hetu_open_app") return current;
   if (params.name === "hetu_open_task_view") return current;
+  if (params.name === "hetu_list_task_feedback" && params.arguments?.result_path === "/feedback/0/feedback_ref") {
+    const ref=(current.structuredContent as any).data.feedback_head;
+    return ref && JSON.stringify(ref) === JSON.stringify(params.arguments.feedback_ref)
+      ? {content:[],structuredContent:{status:"succeeded",data:{feedback_page:{value:ref}}}}
+      : {content:[],isError:true,structuredContent:{status:"blocked",error:{code:"not_found",message:"Fixed feedback not found"}}};
+  }
   if (["hetu_get_management_operation", "hetu_local_settings_get_operation"].includes(params.name)) return current;
   if (params.name === "hetu_read_task_operation") {
     return { content: [], structuredContent: original
@@ -124,9 +132,10 @@ bridge.oninitialized = () => {
   if (window.operationInput) {
     bridge.sendToolInput({ arguments: window.operationInput }); bridge.sendToolResult(current); return;
   }
-  const data = (current.structuredContent as { data: { request: Record<string, unknown>; task_ref?: Record<string, unknown> } }).data;
-  const task = data.request;
-  bridge.sendToolInput({ arguments: { task_ref: data.task_ref ?? { task_id: task.task_id, scope_ref: task.scope_ref, request_revision: task.request_revision } } });
+  const data = (current.structuredContent as { data?: { request?: Record<string, unknown>; task_ref?: Record<string, unknown> } }).data??{};
+  const task = window.testTaskRef ?? data.request;
+  if(!task)throw Error("Task host requires a fixed task input.");
+  bridge.sendToolInput({ arguments: { task_ref: data.task_ref ?? { task_id: task.task_id, scope_ref: task.scope_ref, request_revision: task.request_revision },...(window.testSubmissionId?{submission_id:window.testSubmissionId}:{}) } });
   bridge.sendToolResult(current);
 };
 await bridge.connect(new PostMessageTransport(iframe.contentWindow!, iframe.contentWindow!));

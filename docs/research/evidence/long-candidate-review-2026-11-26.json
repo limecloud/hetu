@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-26",
+  "kind": "bounded-fixed-candidate-review",
+  "state": "installed-validated",
+  "owner": "原创作任务、候选字节、TaskFeedback与共享审阅面板；无新增内容存储",
+  "scope": [
+    "任务审阅元数据及字段分页",
+    "固定长候选UTF-8分页",
+    "桌面及两种共享MCP工作台",
+    "独立MCP任务面板",
+    "会话来源只读引用核验"
+  ],
+  "initial_failures": [
+    {
+      "log": "output/long-candidate-before.log",
+      "reason": "旧安装MCP对合法长候选返回摘要，面板按完整任务解析而没有显示候选"
+    },
+    {
+      "log": "output/long-candidate-core.log",
+      "reason": "首轮只扩展get_input，interaction_get_input未同步；补齐同源字段引用后9项通过"
+    },
+    {
+      "log": "output/long-candidate-source.log",
+      "passed": 1,
+      "failed": 3,
+      "reason": "桌面再次翻页后过早选文，其他入口误把16KiB请求当作实际回执页长；改为等待就绪及按真实字节核对"
+    },
+    {
+      "log": "output/long-candidate-summary-pages.log",
+      "reason": "更大说明返回预算错误，测试提前读取缺失data；面板支持预算恢复，夹具改为固定工具输入并接受两种合法摘要回执"
+    },
+    {
+      "log": "output/long-candidate-summary-pages-2.log",
+      "reason": "遗漏本机已安装浏览器路径，未执行业务；恢复显式Playwright路径，不另装浏览器"
+    }
+  ],
+  "validation": {
+    "core": {
+      "groups": 61,
+      "passed": 385,
+      "failed": 0,
+      "ignored": 0,
+      "log": "output/long-candidate-core-all.log"
+    },
+    "core_feedback": {
+      "passed": 9,
+      "failed": 0,
+      "log": "output/long-candidate-core-2.log",
+      "scope": "固定旧批次元数据、候选摘要与字节、显式字段投影及变化拒绝，原文字／图片反馈与原键恢复"
+    },
+    "agent": {
+      "passed": 81,
+      "failed": 0,
+      "log": "output/long-candidate-agents.log",
+      "scope": "审阅投影与工作修订摘要的来源核验及原会话回归"
+    },
+    "mcp_stdio": {
+      "passed": 42,
+      "failed": 0,
+      "log": "output/long-candidate-mcp-stdio.log"
+    },
+    "mcp_budget": {
+      "passed": 2,
+      "failed": 0,
+      "log": "output/long-candidate-mcp-budget.log",
+      "scope": "保留确切反馈筛选、任务及批次的预算恢复"
+    },
+    "shared_ui": {
+      "passed": 33,
+      "failed": 0,
+      "log": "output/long-candidate-final.log",
+      "scope": "完整任务面板25项、三入口历史意见接续、三入口长候选选择与意见保留、独立MCP原文位置／关闭隔离及图片原键恢复；在单候选全宽与页末入口修正前"
+    },
+    "projection": {
+      "passed": 9,
+      "failed": 0,
+      "log": "output/long-candidate-projection.log"
+    },
+    "website": {
+      "pages": 227,
+      "local_references": 13993,
+      "deployed": false,
+      "log": "output/long-candidate-website.log"
+    },
+    "final_layout_and_summary": {
+      "passed": 4,
+      "failed": 0,
+      "log": "output/long-candidate-layout-final.log",
+      "scope": "三入口单候选全宽／页末键盘翻页及新页焦点，独立MCP大说明预算恢复／字段展开／原批次及全文选区／关闭迟到隔离"
+    },
+    "package_ui": {
+      "passed": 5,
+      "failed": 0,
+      "log": "output/long-candidate-package-ui.log",
+      "scope": "同包桌面／stdio／官方Codex转发，页末键盘操作及焦点、全宽／暗色760px无横向溢出，独立MCP大任务说明恢复、字段展开、原批次翻页和位置保存、关闭隔离及原图片恢复"
+    },
+    "docs": {
+      "status": "passed",
+      "log": "output/long-candidate-docs-final.log"
+    },
+    "resources": {
+      "status": "passed",
+      "log": "output/long-candidate-resources-final.log"
+    },
+    "format": {
+      "status": "passed",
+      "log": "output/long-candidate-rustfmt-final.log"
+    },
+    "capability_map": {
+      "status": "passed",
+      "log": "output/long-candidate-capability-final.log"
+    },
+    "methods": {
+      "status": "passed",
+      "log": "output/long-candidate-methods-final.log"
+    },
+    "installed_ui": {
+      "passed": 3,
+      "failed": 0,
+      "log": "output/long-candidate-installed.log",
+      "scope": "实际安装位置桌面／stdio长候选、原选区与意见、全宽／暗色窄窗、页末键盘翻页，独立MCP大说明投影恢复及固定批次／关闭隔离"
+    },
+    "normal_user_profile": {
+      "verified": true,
+      "library_works": 19,
+      "indexes_unchanged": {
+        "creative-library.json": true,
+        "LocalSettings/settings.json": true,
+        "agent-sessions/index/selection.json": true
+      },
+      "log": "output/long-candidate-normal-launch.log",
+      "receipt": "output/long-candidate-20261126/normal-launch.json",
+      "original_indexes": "output/long-candidate-20261126/profile-indexes-verified.json"
+    }
+  },
+  "limitations": [
+    "界面载入范围不代表作者或Agent已经阅读理解",
+    "实际模型轮次为零，不据本项确认创作质量或作者采纳",
+    "不关闭完整视觉、无障碍、原生Codex Desktop、真实一集、跨平台或发行门槛",
+    "未升版、提交、公开发行、部署本轮指南或重启原常驻MCP；当前开发签名不代表正式公证"
+  ],
+  "package": {
+    "manifest": "output/long-candidate-20261126/packages/hetu-dev-1iaqli/manifest.json",
+    "source_sha256": "b7ba7a04d2cfcb383123c97e38cbe7716ceeaa96f4f96d8de3ae5f07cb6142a8",
+    "source_inputs": 3066,
+    "artifacts": 3720,
+    "app_files_and_links": 3132,
+    "version": "0.14.1",
+    "rust_profile": "release",
+    "signature": "ad-hoc-development-verified",
+    "icon_matches": true,
+    "verification": "output/long-candidate-20261126/package-verified.json",
+    "installed_verification": "output/long-candidate-install.log",
+    "backup_created": false,
+    "old_bundle_removed": true
+  },
+  "completed_date": "2026-11-26"
+}

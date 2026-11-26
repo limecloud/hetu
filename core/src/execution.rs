@@ -7,6 +7,7 @@ pub struct WorkspaceExecution {
     settings: LocalSettings,
     directory: PathBuf,
     client: String,
+    collaboration_directory: Option<PathBuf>,
 }
 fn text<'a>(value: &'a Value, key: &str) -> Result<&'a str> {
     value[key].as_str().ok_or_else(|| Error::new("invalid_input", format!("缺少或无效字段：{key}")))
@@ -35,10 +36,16 @@ pub(crate) fn read_only_effect(action: &str, effect: &Value, input: &Value) -> b
         || action == "hetu.validation.run" && input["save_report"] == false
 }
 impl WorkspaceExecution {
-    pub fn open_default(client: &str) -> Result<Self> {Self::open(&crate::local_settings::default_directory()?, client)}
+    pub fn open_default(client: &str) -> Result<Self> {
+        Ok(Self::open(&crate::local_settings::default_directory()?, client)?
+            .with_collaboration_directory(&crate::collaboration::default_directory()?))
+    }
     pub fn open(settings_directory: &Path, client: &str) -> Result<Self> {
         ensure(matches!(client, "codex" | "claude-code" | "workbuddy" | "generic"), "invalid_input", "客户端标识无效。")?;
-        Ok(Self {settings: LocalSettings::open(settings_directory)?, directory: settings_directory.join("execution"), client: client.into()})
+        Ok(Self {settings: LocalSettings::open(settings_directory)?, directory: settings_directory.join("execution"), client: client.into(), collaboration_directory: None})
+    }
+    pub fn with_collaboration_directory(mut self, directory: &Path) -> Self {
+        self.collaboration_directory = Some(directory.to_owned()); self
     }
     fn store(&self) -> Result<Store> {
         std::fs::create_dir_all(&self.directory)?;
@@ -48,11 +55,43 @@ impl WorkspaceExecution {
     }
     fn apply(&self, path: &Path, command: Value) -> Result<Value> {
         if command["action"] == "hetu.execution.initialize" {
-            let kernel = Kernel::open_execution(json!({"mode":"agent","workspace_path":path,"create":command["input"]["create"]}))?;
+            let kernel = Kernel::open_execution_as(json!({"mode":"agent","workspace_path":path,"create":command["input"]["create"]}), &self.client)?;
+            if let Some(directory) = &self.collaboration_directory { kernel.register_execution_creation(directory)?; }
             return Ok(kernel.request(json!({"action":"hetu.workspaces.get","contract_revision":"1","input":{}})));
         }
-        let kernel = Kernel::open_execution(json!({"mode":"agent","workspace_path":path}))?;
-        Ok(kernel.request(command))
+        let kernel = Kernel::open_execution_as(json!({"mode":"agent","workspace_path":path}), &self.client)?;
+        let mut result = kernel.request(command.clone());
+        if result["status"] == "succeeded" && let Some(directory) = &self.collaboration_directory {
+            let reference = match command["action"].as_str() {
+                Some("hetu.creative_tasks.prepare") => result["data"]["task_ref"].clone(),
+                Some("hetu.agent_operations.execute") if result["data"]["result"]["task_ref"].is_object() => result["data"]["result"]["task_ref"].clone(),
+                _ => Value::Null,
+            };
+            if reference.is_object() {
+                let grant = kernel.register_execution_task(&reference, directory)?;
+                result["data"]["task_locator"] = grant["task_locator"].clone();
+            }
+        }
+        let professional = &result["data"]["result"];
+        if command["action"] == "hetu.plugins.invoke" && result["status"] == "succeeded"
+            && professional["kind"] == "result" && professional["spec_version"] == "0.2.1"
+            && !matches!(professional["status"].as_str(), Some("succeeded" | "partial"))
+        {
+            let mut failure = if professional["status"] == "pending" {
+                domain::failure("hetu.plugins.invoke", kernel.scope(), &Error::new("hetu.operation_pending", "专业操作仍待完成，请沿原调用和操作键查询。"))
+            } else { professional.clone() };
+            failure["action"] = json!("hetu.plugins.invoke");
+            return Ok(failure);
+        }
+        Ok(result)
+    }
+    fn command_is_read(&self, path: &Path, command: &Value) -> Result<bool> {
+        let read = is_read(command)?;
+        if command["action"] == "hetu.plugins.invoke" {
+            let kernel = Kernel::open_execution_as(json!({"mode":"agent","workspace_path":path}), &self.client)?;
+            return kernel.plugin_invocation_is_read(&command["input"]);
+        }
+        Ok(read)
     }
     fn workspace_identity(path: &Path) -> Result<Value> {
         if !path.exists() || std::fs::read_dir(path)?.next().is_none() {return Ok(Value::Null);}
@@ -63,9 +102,10 @@ impl WorkspaceExecution {
     pub fn request_workspace(&self, path: &Path, command: Value) -> Value {
         let action = command["action"].as_str().unwrap_or("hetu.request.invalid").to_owned();
         let result = self.settings.with_execution_policy(|mode, _revision| {
-            let read = is_read(&command)?;
+            let path = root(path)?;
+            let read = self.command_is_read(&path, &command)?;
             ensure(read || mode == "auto", "hetu.execution_confirmation_required", "请将本次写入集中准备为执行计划，确认后连续执行。")?;
-            self.apply(&root(path)?, command.clone())
+            self.apply(&path, command.clone())
         });
         result.unwrap_or_else(|error| domain::failure(&action, "collaboration", &error))
     }
@@ -102,9 +142,10 @@ impl WorkspaceExecution {
         if action == "hetu.execution.get_mode" {return Ok(json!({"execution_mode":mode,"policy_revision":revision}));}
         if matches!(action, "hetu.execution.invoke" | "hetu.execution.initialize") {
             let command = if action.ends_with("initialize") {json!({"action":action,"contract_revision":"1","input":{"create":input["create"]}})} else {input["command"].clone()};
-            let read = is_read(&command)?;
+            let path = root(Path::new(text(input,"workspace_path")?))?;
+            let read = self.command_is_read(&path, &command)?;
             ensure(read || mode == "auto", "hetu.execution_confirmation_required", "请集中准备本次写入，确认固定计划后执行。")?;
-            return Ok(json!({"execution_mode":mode,"policy_revision":revision,"result":self.apply(&root(Path::new(text(input,"workspace_path")?))?,command)?}));
+            return Ok(json!({"execution_mode":mode,"policy_revision":revision,"result":self.apply(&path,command)?}));
         }
         let store = self.store()?;
         let _lock = if action == "hetu.execution.get_plan" {store.read_lock()?} else {store.lock()?};
@@ -115,8 +156,10 @@ impl WorkspaceExecution {
             ensure(!commands.is_empty() && commands.len() <= 100 && bytes(input)?.len() <= 8 * 1024 * 1024, "invalid_input", "执行计划动作数量或大小无效。")?;
             let mut keys = std::collections::BTreeSet::new();
             for command in commands {
-                if !is_read(command)? {
-                    let key = if command["action"] == "hetu.execution.initialize" {text(&command["input"]["create"], "operation_key")?} else {text(&command["input"], "operation_key")?};
+                if !self.command_is_read(&path, command)? {
+                    let key = if command["action"] == "hetu.execution.initialize" {text(&command["input"]["create"], "operation_key")?}
+                        else if command["action"] == "hetu.plugins.invoke" {text(&command["input"]["arguments"], "operation_key")?}
+                        else {text(&command["input"], "operation_key")?};
                     ensure(keys.insert(format!("{}:{key}",text(command,"action")?)), "invalid_input", "同一计划不能重复同一动作与操作键。")?;
                 }
             }

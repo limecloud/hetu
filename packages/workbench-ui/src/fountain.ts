@@ -1,10 +1,12 @@
 /** Fountain的显示投影；所有范围指向原始UTF-16字符串，不修改或重新序列化原稿。 */
+import structure from "../../../contracts/fountain-structure.json" with {type:"json"};
 export type FountainKind = "blank" | "action" | "scene" | "character" | "dialogue" | "parenthetical" | "transition" | "centered" | "section" | "synopsis" | "note" | "page_break" | "lyric";
 export type FountainLine = {kind:FountainKind;from:number;to:number;textFrom:number;textTo:number;number?:string;level?:number;dual?:boolean};
 export type FountainMetadata = {key:string;value:string};
 export type FountainScript = {lines:FountainLine[];metadata:FountainMetadata[]};
 
-const scenePattern=/^(?:INT\.?\/EXT\.?|EXT\.?\/INT\.?|INT\.?|EXT\.?|EST\.?|I\/E\.)(?:\s|$)/i;
+const scenePrefixes=structure.scene_prefixes.map(value=>value.toLowerCase());
+const naturalScene=(text:string)=>scenePrefixes.some(prefix=>text.toLowerCase().startsWith(prefix)&&(text.length===prefix.length||/^\s/.test(text.slice(prefix.length))));
 const titleKey=/^([A-Za-z][A-Za-z -]*):[ \t]*(.*)$/;
 
 export function parseFountain(source:string):FountainScript {
@@ -41,7 +43,7 @@ export function parseFountain(source:string):FountainScript {
     }else if(/^={3,}$/.test(text)){line.kind="page_break";dialogue=false;}
     else if(/^=(?!=)/.test(text)){line.kind="synopsis";line.textFrom++;dialogue=false;}
     else if(text.startsWith("!")&&!text.startsWith("!!")){line.textFrom++;dialogue=false;}
-    else if(text.startsWith(".")&&!text.startsWith("..")||previousBlank&&scenePattern.test(text)){
+    else if(text.startsWith(".")&&!text.startsWith("..")||previousBlank&&naturalScene(text)){
       line.kind="scene";if(text.startsWith("."))line.textFrom++;
       const number=/\s+#([^#\r\n]+)#\s*$/.exec(text);
       if(number){line.number=number[1];line.textTo=row.from+leading+number.index;}

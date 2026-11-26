@@ -1,0 +1,19 @@
+.task-feedback-history { margin-top: 12px; padding-top: 10px; border-top: .5px solid var(--line); min-width: 0; }
+.task-feedback-history > summary { cursor: pointer; font-size: 14px; }
+.task-feedback-history > section { padding-top: 10px; min-width: 0; }
+.feedback-history-tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.task-feedback-history .feedback-history-tools label { display: flex; flex-direction: row; align-items: center; gap: 8px; font-size: 12px; }
+.feedback-history-tools select { max-width: 100%; padding: 4px 6px; font: inherit; color: var(--ink); background: var(--paper); border: .5px solid var(--line); border-radius: 6px; }
+.feedback-history-tools select:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.feedback-history-list { max-height: 360px; overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.feedback-history-list article { padding: 12px 0; min-width: 0; }
+.feedback-history-list article + article { border-top: .5px solid var(--line); }
+.feedback-history-list header { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
+.feedback-history-list h4 { margin: 0; font-size: 14px; }
+.feedback-history-list header span, .feedback-history-target, .task-feedback-history button { font-size: 12px; }
+.feedback-history-comment { margin: 8px 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.feedback-history-target p { margin: 6px 0; overflow-wrap: anywhere; }
+.feedback-history-target blockquote { margin: 6px 0; padding-left: 10px; border-left: .5px solid var(--line); max-height: 120px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+.feedback-history-target + .feedback-history-target { margin-top: 8px; }
+.feedback-history-reference { margin-top: 8px; font-size: 12px; }
+.feedback-history-reference pre { max-height: 180px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }

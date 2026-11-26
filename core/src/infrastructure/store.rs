@@ -1,5 +1,5 @@
 use super::platform::{
-    self, OwnedFd,
+    self, FileMetadataExt, OwnedFd,
     fs::{self, FlockOperation, Mode, OFlags},
 };
 use crate::domain::{Error, Result, digest, ensure, id};
@@ -8,13 +8,16 @@ use std::collections::BTreeMap;
 use std::fs::File;
 use std::io::{Read, Write};
 use std::path::Path;
+use std::sync::Mutex;
 
 const READ_LIMIT: u64 = 16 * 1024 * 1024;
+const COMPLETED_TRANSACTION_CACHE_LIMIT: usize = 4096;
 #[cfg(test)]
 mod tests_platform;
 pub struct Store {
     root: OwnedFd,
     root_path: std::path::PathBuf,
+    completed_transactions: Mutex<BTreeMap<String, JournalFingerprint>>,
 }
 pub struct Lock {
     fd: OwnedFd,
@@ -41,6 +44,37 @@ struct Transaction {
     changes: Vec<Change>,
 }
 
+#[derive(PartialEq, Eq)]
+struct JournalFingerprint {
+    device: u64,
+    inode: u64,
+    bytes: u64,
+    modified: (i64, i64),
+    changed: (i64, i64),
+}
+impl JournalFingerprint {
+    fn read(file: &File) -> Result<Self> {
+        let meta = platform::metadata(file)?;
+        ensure(
+            meta.is_file() && meta.nlink() == 1,
+            "hetu.unsafe_path",
+            "事务日志必须是独立普通文件。",
+        )?;
+        ensure(
+            meta.len() <= READ_LIMIT,
+            "hetu.budget_exceeded",
+            "事务日志超过读取上限。",
+        )?;
+        Ok(Self {
+            device: meta.dev(),
+            inode: meta.ino(),
+            bytes: meta.len(),
+            modified: (meta.mtime(), meta.mtime_nsec()),
+            changed: (meta.ctime(), meta.ctime_nsec()),
+        })
+    }
+}
+
 impl Store {
     pub fn open(path: &Path) -> Result<Self> {
         // 根目录由可信入口选择并解析一次；所有后代访问固定在此描述符下。
@@ -53,6 +87,7 @@ impl Store {
         Ok(Self {
             root,
             root_path: path,
+            completed_transactions: Mutex::new(BTreeMap::new()),
         })
     }
     pub(super) fn parent(&self, path: &str, create: bool) -> Result<(OwnedFd, String)> {
@@ -161,22 +196,77 @@ impl Store {
         Ok(visible)
     }
     fn has_pending_transaction(&self) -> Result<bool> {
-        for entry in self.entries(".hetu/transactions")? {
-            crate::domain::checked_id(&entry, "txn")?;
-            let journal = format!(".hetu/transactions/{entry}/journal.json");
-            if self.exists(&journal)? {
-                let tx: Transaction = serde_json::from_slice(&self.read(&journal)?)?;
-                ensure(
-                    tx.version == 1,
-                    "unsupported_version",
-                    "不支持此事务日志版本。",
-                )?;
-                if !tx.completed {
-                    return Ok(true);
-                }
+        let (transactions, _) = self.parent(".hetu/transactions/.probe", false)?;
+        let mut entries = fs::names(&transactions)?;
+        entries.sort();
+        for entry in entries {
+            if self
+                .transaction_state(&transactions, &entry)?
+                .is_some_and(|tx| !tx.completed)
+            {
+                return Ok(true);
             }
         }
         Ok(false)
+    }
+    // 仅缓存已完成状态；每次仍重新打开日志并核对实际文件，不能隐藏外部写入或新增事务。
+    fn transaction_state(
+        &self,
+        transactions: &OwnedFd,
+        entry: &str,
+    ) -> Result<Option<Transaction>> {
+        crate::domain::checked_id(entry, "txn")?;
+        let directory = fs::openat(
+            transactions,
+            entry,
+            OFlags::RDONLY | OFlags::DIRECTORY | OFlags::CLOEXEC | OFlags::NOFOLLOW,
+            Mode::empty(),
+        )?;
+        let fd = match fs::openat(
+            &directory,
+            "journal.json",
+            OFlags::RDONLY | OFlags::CLOEXEC | OFlags::NOFOLLOW | OFlags::NONBLOCK,
+            Mode::empty(),
+        ) {
+            Ok(fd) => fd,
+            Err(platform::Errno::NOENT) => return Ok(None),
+            Err(error) => return Err(error.into()),
+        };
+        let mut file = File::from(fd);
+        let before = JournalFingerprint::read(&file)?;
+        let mut completed = self.completed_transactions.lock().map_err(|_| {
+            Error::new(
+                "hetu.recovery_required",
+                "事务检查状态不可用，请重新打开作品。",
+            )
+        })?;
+        if completed.get(entry) == Some(&before) {
+            return Ok(None);
+        }
+        completed.remove(entry);
+        let mut bytes = Vec::new();
+        Read::by_ref(&mut file)
+            .take(READ_LIMIT + 1)
+            .read_to_end(&mut bytes)?;
+        ensure(
+            bytes.len() as u64 <= READ_LIMIT && before == JournalFingerprint::read(&file)?,
+            "hetu.recovery_required",
+            "事务日志在读取期间发生变化，请保留原文件检查。",
+        )?;
+        let tx: Transaction = serde_json::from_slice(&bytes)
+            .map_err(|_| Error::new("hetu.recovery_required", "事务日志损坏，需要人工恢复。"))?;
+        ensure(
+            tx.version == 1,
+            "unsupported_version",
+            "不支持此事务日志版本。",
+        )?;
+        if tx.completed {
+            if completed.len() >= COMPLETED_TRANSACTION_CACHE_LIMIT {
+                completed.pop_first();
+            }
+            completed.insert(entry.to_owned(), before);
+        }
+        Ok(Some(tx))
     }
     pub fn exists(&self, path: &str) -> Result<bool> {
         let Some((parent, leaf)) = self.find_parent(path, false)? else {
@@ -365,11 +455,15 @@ impl Store {
         self.recover_locked()
     }
     fn recover_locked(&self) -> Result<()> {
-        for entry in self.entries(".hetu/transactions")? {
-            crate::domain::checked_id(&entry, "txn")?;
-            let journal = format!(".hetu/transactions/{entry}/journal.json");
-            if self.exists(&journal)? {
-                self.recover_transaction(&journal)?;
+        let (transactions, _) = self.parent(".hetu/transactions/.probe", false)?;
+        let mut entries = fs::names(&transactions)?;
+        entries.sort();
+        for entry in entries {
+            if self
+                .transaction_state(&transactions, &entry)?
+                .is_some_and(|tx| !tx.completed)
+            {
+                self.recover_transaction(&format!(".hetu/transactions/{entry}/journal.json"))?;
             }
         }
         Ok(())
@@ -446,6 +540,88 @@ impl Store {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn warm_completed_journals_do_not_hide_another_context_pending_publication() {
+        let root = tempfile::tempdir().unwrap();
+        let store = Store::open(root.path()).unwrap();
+        store.directory(".hetu/transactions").unwrap();
+        store
+            .transaction(&BTreeMap::from([(
+                "old.json".into(),
+                b"unchanged".to_vec(),
+            )]))
+            .unwrap();
+        drop(store.read_lock().unwrap());
+        let other = Store::open(root.path()).unwrap();
+        let writer = other.lock().unwrap();
+        prepared(&other);
+        other.install("first.json", b"new-first", false).unwrap();
+        assert_eq!(
+            store.read_lock().err().unwrap().code,
+            "hetu.recovery_required"
+        );
+        drop(writer);
+        let _read = store.read_lock().unwrap();
+        assert_eq!(store.read("second.json").unwrap(), b"new-second");
+        assert_eq!(store.read("old.json").unwrap(), b"unchanged");
+    }
+
+    #[test]
+    fn cached_completed_journal_is_revalidated_after_same_size_in_place_edit() {
+        let root = tempfile::tempdir().unwrap();
+        let store = Store::open(root.path()).unwrap();
+        store.directory(".hetu/transactions").unwrap();
+        store
+            .transaction(&BTreeMap::from([(
+                "record.json".into(),
+                b"original".to_vec(),
+            )]))
+            .unwrap();
+        drop(store.read_lock().unwrap());
+        let entry = store.entries(".hetu/transactions").unwrap().pop().unwrap();
+        let journal = format!(".hetu/transactions/{entry}/journal.json");
+        let original = store.read(&journal).unwrap();
+        let modified = String::from_utf8(original.clone()).unwrap().replacen(
+            "\"version\":1",
+            "\"version\":2",
+            1,
+        );
+        assert_eq!(original.len(), modified.len());
+        assert_ne!(original, modified.as_bytes());
+        let mut file = std::fs::OpenOptions::new()
+            .write(true)
+            .open(root.path().join(&journal))
+            .unwrap();
+        file.write_all(modified.as_bytes()).unwrap();
+        file.sync_all().unwrap();
+        assert_eq!(store.read_lock().err().unwrap().code, "unsupported_version");
+        assert_eq!(store.read("record.json").unwrap(), b"original");
+    }
+
+    #[test]
+    fn completed_journal_replacement_and_hard_links_cannot_reuse_cached_state() {
+        let root = tempfile::tempdir().unwrap();
+        let store = Store::open(root.path()).unwrap();
+        let journal = prepared(&store);
+        store.recover().unwrap();
+        drop(store.read_lock().unwrap());
+        let mut tx: Transaction = serde_json::from_slice(&store.read(&journal).unwrap()).unwrap();
+        tx.completed = false;
+        store
+            .install(&journal, &serde_json::to_vec(&tx).unwrap(), false)
+            .unwrap();
+        drop(store.read_lock().unwrap());
+        let recovered: Transaction =
+            serde_json::from_slice(&store.read(&journal).unwrap()).unwrap();
+        assert!(recovered.completed);
+        std::fs::hard_link(
+            root.path().join(&journal),
+            root.path().join("copied-journal.json"),
+        )
+        .unwrap();
+        assert_eq!(store.read_lock().err().unwrap().code, "hetu.unsafe_path");
+    }
+
     #[test]
     fn readers_never_observe_half_of_a_multifile_publication() {
         use std::sync::mpsc;

@@ -1,6 +1,6 @@
 import type {AgentSessionEvent,SessionSnapshot} from "../agent-session-contract.ts";
 type OutputEvent=Extract<AgentSessionEvent,{type:"terminal"}>;
-type Options={read():Promise<SessionSnapshot>;reset(replay:string):Promise<void>;write(data:string):void;error(error:Error):void};
+type Options={read():Promise<SessionSnapshot>;reset(replay:string):Promise<void>;write(data:string):void;error(error:Error):void;inputStatus?(ready:boolean):void};
 
 /** 固定输入代次，回放与实时数据按游标消重；缺段只回读原宿主。 */
 export class TerminalStream {
@@ -13,7 +13,7 @@ export class TerminalStream {
   private options:Options;
   constructor(options:Options){this.options=options;}
   get acceptsInput(){return !this.#closed&&this.#synced&&!!this.#current?.terminal_connected&&!this.#sync;}
-  dispose(){this.#closed=true;this.#pending=[];}
+  dispose(){this.#closed=true;this.#pending=[];this.options.inputStatus?.(false);}
   receive(event:OutputEvent){
     if(this.#closed)return;
     if(this.#sync||!this.#current){this.#pending.push(event);return;}
@@ -29,6 +29,7 @@ export class TerminalStream {
     if(this.#closed)return Promise.resolve();
     if(this.#sync)return this.#sync;
     this.#synced=false;
+    this.options.inputStatus?.(false);
     this.#sync=Promise.resolve().then(async()=>{
       for(let attempt=0;attempt<3;attempt++){
         const snapshot=await this.options.read();
@@ -42,7 +43,7 @@ export class TerminalStream {
         if(!this.#pending.length){this.#synced=true;return;}
       }
       throw Error("终端输出尚未同步，请核对原线程后再输入。");
-    }).finally(()=>{this.#sync=undefined;});
+    }).finally(()=>{this.#sync=undefined;this.options.inputStatus?.(this.acceptsInput);});
     return this.#sync;
   }
 }

@@ -1,0 +1,84 @@
+{
+  "date": "2026-11-26",
+  "scope": "存储页面先显示，统计数字和数量使用loading占位；保留分类、返回和一键清理位置",
+  "state": "verified_macos_local_install",
+  "checks": {
+    "desktop_e2e": {
+      "passed": 4,
+      "coverage": [
+        "延迟统计返回前完整页面可见",
+        "数字不冒充0或空结果",
+        "分类进入及返回可用",
+        "统计中切换设置页可用",
+        "初次统计失败保留页面并可重试",
+        "重新统计仅数字loading",
+        "完成后数字更新且清理按钮纵向位置差不超过1px",
+        "一键清理、原明细清理与CLI／MCP回归"
+      ]
+    },
+    "visual": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "viewports": [
+        1000,
+        560
+      ],
+      "color_scheme_asserted": true,
+      "horizontal_overflow": false,
+      "screenshots": "output/storage-loading-20261126/loading-{light-1000|dark-560}.png"
+    },
+    "packaged_e2e": {
+      "passed": 4,
+      "scope": "最终优化包的延迟统计／loading／导航／错误恢复、清理与CLI／MCP"
+    },
+    "installed_e2e": {
+      "passed": 1,
+      "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+      "scope": "隔离profile延迟返回前页面显示、数字loading、分类与设置导航、首次失败重试、刷新布局稳定"
+    }
+  },
+  "build": "复用上一份已验安装版的隔离源码和优化构建目录，核对旧manifest后仅同步storage-settings.tsx与storage-settings.css，共享MCP资源沿同一源码重新生成。",
+  "limits": [
+    "所有清理测试使用隔离资料，未清理真实个人数据",
+    "其他平台未验收",
+    "独立原生窗口工具此前内核不可用，实际安装验证使用项目Electron测试"
+  ],
+  "package": {
+    "app": "output/storage-loading-20261126/packages/hetu-dev-owc1VG/package/Hetu-darwin-arm64/Hetu.app",
+    "manifest": "output/storage-loading-20261126/packages/hetu-dev-owc1VG/manifest.json",
+    "source_sha256": "d5585655664cca03d0b6f80e1f7ae9497b1a9683e6efc0649ea85c21326f04c9",
+    "source_files": 3078,
+    "application_artifacts": 3133,
+    "signing": "ad-hoc-development",
+    "rust_profile": "release"
+  },
+  "installation": {
+    "target": "/Applications/Hetu.app",
+    "backup_created": false,
+    "atomic_swap": true,
+    "verification": {
+      "source_sha256": "d5585655664cca03d0b6f80e1f7ae9497b1a9683e6efc0649ea85c21326f04c9",
+      "source_files": 3078,
+      "artifacts": 3133,
+      "package_artifacts": 3721,
+      "signing": "ad-hoc-development",
+      "rust_profile": "release"
+    },
+    "profile_before": {
+      "creative-library.json": "54e815e47efa39ccc9778e916d3ba543ce77b9a6539c50206d18946af7edb316",
+      "LocalSettings/settings.json": "f8cfaca4f940fb3947bbdf9417ce919bbd096e6bdf64c067e85686ea57bcbb68",
+      "agent-sessions/index/selection.json": "fe09c8432a546b4ca4abbf4c9a54bd00c851a28f3acc4c3b6e572c9c0f95bbb4"
+    },
+    "profile_after": {
+      "creative-library.json": "54e815e47efa39ccc9778e916d3ba543ce77b9a6539c50206d18946af7edb316",
+      "LocalSettings/settings.json": "f8cfaca4f940fb3947bbdf9417ce919bbd096e6bdf64c067e85686ea57bcbb68",
+      "agent-sessions/index/selection.json": "fe09c8432a546b4ca4abbf4c9a54bd00c851a28f3acc4c3b6e572c9c0f95bbb4"
+    },
+    "user_data_cleanup_executed": false,
+    "status": "installed",
+    "user_confirmed_normal_exit": true,
+    "protected_indexes_unchanged_after_tests": true
+  }
+}

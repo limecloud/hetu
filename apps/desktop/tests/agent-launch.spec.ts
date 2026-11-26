@@ -2,6 +2,7 @@ import {test,expect,_electron as electron} from "@playwright/test";
 import {mkdtemp,writeFile} from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
+import {closeApplication} from "./navigation.ts";
 
 const root=path.resolve(import.meta.dirname,"../../..");
 test("多引擎创建直接进入PTY，模型发现、会话切换及重开保持原记录",async({},testInfo)=>{
@@ -18,10 +19,10 @@ test("多引擎创建直接进入PTY，模型发现、会话切换及重开保�
     await expect(dialog.getByRole("alert")).toContainText("隔离模型读取失败");await dialog.getByRole("button",{name:"重新读取模型",exact:true}).click();await expect(dialog.getByRole("alert")).toHaveCount(0);
     await expect(dialog.getByRole("button",{name:"创建",exact:true})).toBeEnabled();
     await page.screenshot({path:testInfo.outputPath("create-session.png")});
-    await dialog.getByRole("button",{name:"引擎",exact:true}).click();
+    await dialog.getByRole("button",{name:/^引擎(?: |$)/}).click();
     await expect(dialog.getByRole("tab",{name:"Codex",exact:true})).toBeEnabled();
-    await expect(dialog.getByRole("option").filter({hasText:"GPT"}).first()).toBeVisible({timeout:45000});
-    const firstModel=dialog.getByRole("option").filter({hasText:"GPT"}).first();const modelName=await firstModel.innerText();await firstModel.click();
+    const models=await page.evaluate(()=>window.hetuDesktop.agentSession("model_options",{client:"codex"}));expect(models.length).toBeGreaterThan(0);
+    const firstModel=dialog.getByRole("option",{name:models[0].name,exact:true});await expect(firstModel).toBeVisible({timeout:45000});const modelName=await firstModel.innerText();await firstModel.click();
     await expect(dialog.getByRole("group",{name:"推理强度",exact:true})).toBeVisible();
     await dialog.getByRole("searchbox",{name:"搜索模型",exact:true}).fill("not-a-real-model");await expect(dialog.getByRole("status")).toHaveText("没有匹配的模型");
     await dialog.getByRole("searchbox",{name:"搜索模型",exact:true}).fill("");
@@ -35,7 +36,7 @@ test("多引擎创建直接进入PTY，模型发现、会话切换及重开保�
     await expect.poll(async()=>(await get()).terminal_connected).toBe(true);const shell=await get();expect(shell.client).toBe("shell");
     const input=page.locator(".xterm-helper-textarea");await input.focus();await page.keyboard.type("printf 'HETU-PTY-OK\\n'");await page.keyboard.press("Enter");await expect(page.locator(".xterm-accessibility-tree")).toContainText("HETU-PTY-OK");
     await page.screenshot({path:testInfo.outputPath("shell-pty.png")});
-    await page.getByRole("button",{name:"新建会话",exact:true}).click();await expect(dialog).toBeVisible();await dialog.getByRole("button",{name:"引擎",exact:true}).click();
+    await page.getByRole("button",{name:"新建会话",exact:true}).click();await expect(dialog).toBeVisible();await dialog.getByRole("button",{name:/^引擎(?: |$)/}).click();
     await dialog.getByRole("tab",{name:"Codex",exact:true}).click();await dialog.getByRole("option",{name:modelName,exact:true}).click();await dialog.getByRole("button",{name:"打开终端",exact:false}).click();await expect(dialog).toHaveCount(0,{timeout:45000});
     await expect.poll(async()=>{const value=await get();return value.client==="codex"&&value.terminal_connected&&value.terminal_replay?.includes("]7501;state=idle");},{timeout:45000}).toBe(true);
     const codex=await get();expect(codex.messages).toHaveLength(0);expect(codex.model).toBeTruthy();expect(codex.reasoning_effort).toBeTruthy();
@@ -43,17 +44,17 @@ test("多引擎创建直接进入PTY，模型发现、会话切换及重开保�
     await expect(page.getByRole("dialog",{name:"创建会话",exact:true})).toHaveCount(0);expect((await get()).thread_id).toBe(codex.thread_id);expect((await get()).generation).toBe(codex.generation);
     await page.getByLabel("当前会话",{exact:true}).click();await page.getByRole("button",{name:"终端",exact:true}).click();
     await expect.poll(async()=>(await get()).session_id).toBe(shell.session_id);expect((await get()).generation).toBe(shell.generation);await expect(page.locator(".xterm-accessibility-tree")).toContainText("HETU-PTY-OK");
-    await page.getByRole("button",{name:"新建会话",exact:true}).click();await dialog.getByRole("button",{name:"引擎",exact:true}).click();
+    await page.getByRole("button",{name:"新建会话",exact:true}).click();await dialog.getByRole("button",{name:/^引擎(?: |$)/}).click();
     await dialog.getByRole("tab",{name:"Claude Code",exact:true}).click();await dialog.getByRole("button",{name:"打开终端",exact:false}).click();await expect(dialog).toHaveCount(0,{timeout:45000});
     await expect.poll(async()=>{const value=await get();return value.client==="claude-code"&&value.terminal_connected&&value.terminal_replay.length>0;},{timeout:45000}).toBe(true);
     await page.screenshot({path:testInfo.outputPath("other-cli-pty.png")});
     for(const client of [{id:"gemini",name:"Gemini CLI"},{id:"opencode",name:"OpenCode"}]){
-      await page.getByRole("button",{name:"新建会话",exact:true}).click();await dialog.getByRole("button",{name:"引擎",exact:true}).click();await dialog.getByRole("tab",{name:client.name,exact:true}).click();await dialog.getByRole("button",{name:"打开终端",exact:true}).click();await expect(dialog).toHaveCount(0,{timeout:45000});
+      await page.getByRole("button",{name:"新建会话",exact:true}).click();await dialog.getByRole("button",{name:/^引擎(?: |$)/}).click();await dialog.getByRole("tab",{name:client.name,exact:true}).click();await dialog.getByRole("button",{name:"打开终端",exact:true}).click();await expect(dialog).toHaveCount(0,{timeout:45000});
       await expect.poll(async()=>{const value=await get();return value.client===client.id&&value.terminal_connected&&value.terminal_replay.length>0;},{timeout:45000}).toBe(true);
       await page.screenshot({path:testInfo.outputPath(client.id+"-pty.png")});
     }
     await page.setViewportSize({width:980,height:720});await page.getByRole("button",{name:"新建会话",exact:true}).click();await expect(dialog).toBeVisible();
     expect(await dialog.evaluate(element=>element.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:testInfo.outputPath("create-session-narrow.png")});await dialog.getByRole("button",{name:"关闭创建会话",exact:true}).click();
     await writeFile(testInfo.outputPath("result.json"),JSON.stringify({packaged:!!executable,engines:["shell","codex","claude-code","gemini","opencode"],modelName,codex_thread:codex.thread_id,model_messages:0,switch_preserved_shell_generation:true,model_read_failure_retry:true},null,2));
-  }catch(error){await app.windows()[0]?.screenshot({path:testInfo.outputPath("failure.png")}).catch(()=>{});throw error;}finally{await app.close();}
+  }catch(error){await app.windows()[0]?.screenshot({path:testInfo.outputPath("failure.png")}).catch(()=>{});throw error;}finally{await closeApplication(app);}
 });

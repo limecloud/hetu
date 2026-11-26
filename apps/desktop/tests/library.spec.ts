@@ -62,6 +62,9 @@ test(
         expect(request.work_type).toBe(kind);
         expect(request.collaboration_directory).toBeUndefined();expect(request.core_cli).toBeUndefined();
         await expect(page.getByRole("region",{name:"独立 Agent 会话",exact:true})).toBeVisible();
+        const launch = page.getByRole("dialog", {name:"创建会话",exact:true});
+        if (await launch.isVisible()) await launch.getByRole("button", {name:"关闭创建会话",exact:true}).click();
+        await page.getByRole("button", {name:"关闭终端面板",exact:true}).click();
         await navigate(page,"全部作品");
         await expect(page.getByRole("heading", { name: "还没有作品", exact: true })).toBeVisible();
       }

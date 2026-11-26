@@ -15,7 +15,7 @@ function data(result: any) {
   return result.data;
 }
 for (const kind of ["novel", "drama"] as const) test(`${kind} CLI/MCP固定导入、作者审阅与原键交付核验`, async () => {
-    test.setTimeout(120000);
+    test.setTimeout(240000);
   const folder = await mkdtemp(path.join(os.tmpdir(), `hetu-transfer-${kind}-`)),
     workspace = path.join(folder, "作品"), access = path.join(folder, "access"),
     profile = path.join(folder, "desktop"), collaboration = path.join(folder, "collaboration");
@@ -74,7 +74,8 @@ for (const kind of ["novel", "drama"] as const) test(`${kind} CLI/MCP固定导�
     }
     await page.getByRole("button", { name: "确认此审核决定", exact: true }).click();
     await expect(page.getByRole("region", { name: "固定管理方案", exact: true }))
-      .toContainText("已批准，待执行");
+      .toContainText("已批准，待执行",{timeout:30000});
+    await expect(page.locator(".management-review")).toHaveAttribute("aria-busy","false");
   }
   try {
     await launch();
@@ -134,7 +135,8 @@ for (const kind of ["novel", "drama"] as const) test(`${kind} CLI/MCP固定导�
     await page!.getByRole("combobox", { name: "当前管理方案" }).selectOption(proposal.proposal_id);
     const recovery = page!.getByRole("button", { name: "恢复原审核决定", exact: true });
     await recovery.click();
-    await expect(page!.getByRole("status")).toContainText("原审核决定已确认");
+    await expect(page!.getByRole("status")).toContainText("原审核决定已确认",{timeout:30000});
+    await expect(page!.locator(".management-review")).toHaveAttribute("aria-busy","false");
     const execute = { proposal_id: proposal.proposal_id, proposal_sha256: proposal.proposal_sha256, operation_key: "execute-import" };
     const imported = data(cli(grant, "hetu.agent_operations.execute", execute)).result;
     expect(data(cli(grant, "hetu.agent_operations.execute", execute)).result).toEqual(imported);

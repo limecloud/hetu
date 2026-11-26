@@ -1,0 +1,85 @@
+{
+  "date": "2026-11-26",
+  "scope": "本机存储计量与固定清理；真实个人资料未用于删除测试",
+  "state": "verified_macos_local_install",
+  "checks": {
+    "core_storage": {
+      "passed": 5
+    },
+    "core_local_settings": {
+      "passed": 11
+    },
+    "storage_review": {
+      "passed": 4
+    },
+    "cli_mcp": "passed",
+    "desktop_base_journey": "passed",
+    "stale_selection_refresh": "passed",
+    "package_install": {
+      "passed": true,
+      "source_sha256": "2637c7f4eb288951d1b1c400824959e3f198d9ca9030e575965bed90fecc3e92",
+      "source_files": 3078,
+      "artifacts": 3133,
+      "package_artifacts": 3721,
+      "signing": "ad-hoc-development",
+      "rust_profile": "release",
+      "target": "/Applications/Hetu.app",
+      "backup_created": false,
+      "protected_indexes_unchanged": true
+    },
+    "desktop_e2e": {
+      "passed": 2,
+      "coverage": [
+        "分类与返回",
+        "名称搜索与时间筛选",
+        "默认不勾选",
+        "快照变化拒绝后刷新重选",
+        "取消不删除",
+        "固定确认删除",
+        "关闭重开恢复原方案",
+        "同路径新文件保护",
+        "AI提示词绑定本机目录",
+        "已批准但未执行方案撤回，重新准备后清理"
+      ]
+    },
+    "visual": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "widths": [
+        1000,
+        560
+      ],
+      "horizontal_overflow": false,
+      "screenshots": "output/storage-management-20261126/storage-{light|dark}-{1000|560}.png"
+    },
+    "main_process_shutdown": {
+      "automatic": "未计为通过：调试连接下正常退出仍有既有超时，清理断言完成后仅终止隔离测试进程",
+      "native_installed": "真实窗口Cmd+Q退出并重新打开通过；完整恢复19个作品登记"
+    },
+    "packaged_e2e": {
+      "passed": 2,
+      "coverage": "包内CLI、真实MCP与桌面隔离完整清理旅程"
+    }
+  },
+  "prior_failures": [
+    "测试脚本首次使用错误的CLI参数和文本选择器，均已修正",
+    "window关闭助手曾超时并遮住业务错误；官方app关闭路径的桌面专项通过",
+    "截图曾抢在异步统计完成前采集；初始busy与统计完成断言已修正，最终截图已复核",
+    "优化装配两次因验收期间源码变化被拒绝，均未安装；最终按固定源码重新装配"
+  ],
+  "limits": [
+    "外部作品目录不纳入计量",
+    "仅核验macOS；其他平台未验证",
+    "未执行真实资料清理"
+  ],
+  "installed_storage": {
+    "total_bytes": 1510181627,
+    "cleanable_bytes": 6966664,
+    "partial": false,
+    "candidates": 21,
+    "issues": 0
+  },
+  "user_data_cleanup_executed": false
+}

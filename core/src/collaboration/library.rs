@@ -91,6 +91,13 @@ impl CollaborationHub {
                         if grant_id.len() != 64 {
                             continue;
                         }
+                        // 未运行过桌面时，精确已获权作品仍应能由稳定机器入口发现。
+                        // 名称只在下方原领域读取核验通过后补齐，不能由目录代替授权。
+                        if !registered && check_work(&grant["work_ref"]).is_ok()
+                            && seen.insert(key(&grant["work_ref"]))
+                        {
+                            rows.push(json!({"work_ref":grant["work_ref"],"title":"未命名作品"}));
+                        }
                         let reference = json!({"scope_ref":{"kind":"workspace","id":grant["workspace_id"]},
                             "grant_id":grant_id,"grant_revision":grant["grant_revision"]});
                         references.push((reference, grant.get("work_ref").cloned()));

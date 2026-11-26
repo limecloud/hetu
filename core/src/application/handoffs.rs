@@ -86,6 +86,17 @@ impl Kernel {
                 fixed.push(json!({"kind":"source_range","document_id":document,"revision_id":value["revision"]["revision_id"],"byte_start":start,"byte_end":end,"quote":object["quote"]}));
             }
         }
+        if let Some(id) = object["outline_id"].as_str() {
+            let value = self.authoring_get("outlines", &{
+                let mut input = json!({"outline_id":id});
+                if let Some(revision) = object.get("outline_revision") { input["revision"] = revision.clone(); }
+                if let Some(sha) = object.get("outline_sha256") { input["sha256"] = sha.clone(); }
+                input
+            })?;
+            ensure(object["work_ref"]["kind"] == "novel", "forbidden", "正式大纲交接须属于小说作品。")?;
+            fixed.push(json!({"kind":"outline","work_ref":object["work_ref"],"outline_id":id,
+                "revision":value["revision"],"sha256":value["sha256"]}));
+        }
         ensure(
             ["byte_start", "byte_end", "quote"]
                 .iter()
@@ -184,27 +195,7 @@ impl Kernel {
                     "此作品尚未建立自身设定。",
                 )
             })?;
-            ensure(
-                [
-                    "characters",
-                    "factions",
-                    "locations",
-                    "timeline",
-                    "world",
-                    "rules",
-                ]
-                .iter()
-                .any(|key| {
-                    blueprint[key].as_array().is_some_and(|items| {
-                        items.iter().any(|item| {
-                            item.as_object()
-                                .is_some_and(|fields| fields.values().any(|v| v == entity))
-                        })
-                    })
-                }),
-                "not_found",
-                "设定对象不属于该固定版本。",
-            )?;
+            blueprint::entity(&blueprint, entity)?;
             fixed.push(json!({"kind":"blueprint","work_ref":object["work_ref"],"blueprint_id":blueprint["blueprint_id"],"revision":blueprint["revision"],"sha256":sha,"entity_ref":entity}));
         }
         if let Some(project) = object["project_id"].as_str() {
@@ -484,7 +475,8 @@ impl Kernel {
                 }
             }
         }
-        if matches!(page, "novel" | "structure" | "book" | "document" | "notes") {
+        if matches!(page, "novel" | "structure" | "book" | "document" | "notes")
+            && object["outline_id"].is_null() {
             let novel = self.get_novel()?;
             if novel["initialized"] == true {
                 fixed.push(

@@ -26,7 +26,7 @@ impl Kernel {
             "视频审阅需要确切视频作品。",
         )
     }
-    fn video_review_episode(&self, work: &Value, episode: &str) -> Result<Value> {
+    pub(super) fn video_review_episode(&self, work: &Value, episode: &str) -> Result<Value> {
         self.video_review_work(work)?;
         let value = self.get_video_episode(&json!({"video_episode_id":episode}))?;
         ensure(
@@ -109,6 +109,35 @@ impl Kernel {
                 "前版须属于同一视频分集。",
             )?;
         }
+        if let Some(tracks) = input["caption_tracks"].as_array() {
+            let mut ids = std::collections::BTreeSet::new();
+            for track in tracks {
+                ensure(
+                    ids.insert(text(track, "id")?) && !text(track, "label")?.trim().is_empty(),
+                    "invalid_input",
+                    "字幕轨标识不能重复，名称不能为空。",
+                )?;
+                let (caption, _) = self.fixed_asset(&input["work_ref"], &track["asset_ref"])?;
+                ensure(
+                    caption["kind"] == "caption" && caption["blob"]["media_type"] == "text/vtt",
+                    "invalid_input",
+                    "字幕轨需要固定WebVTT素材。",
+                )?;
+                if let Some(source) = track.get("source_object_ref") {
+                    let (_, sha) = self.extension_object(
+                        &input["work_ref"],
+                        text(source, "owner_plugin_id")?,
+                        text(source, "object_id")?,
+                        Some(integer(source, "revision")?),
+                    )?;
+                    ensure(
+                        source["sha256"] == sha,
+                        "hetu.stale_evidence",
+                        "字幕专业来源摘要不一致。",
+                    )?;
+                }
+            }
+        }
         let mut record = json!({"schema_version":"1.0.0","workspace_id":self.scope(),"media_id":id("vmedia"),
             "revision":1,"previous_sha256":null,"created_at":now(),"updated_at":now(),"actor_ref":self.actor(),
             "timing_authority":"submitter_reported","adoption":"not_recorded"});
@@ -125,6 +154,10 @@ impl Kernel {
         ] {
             record[key] = input[key].clone();
         }
+        if let Some(tracks) = input.get("caption_tracks") {
+            record["schema_version"] = json!("2.0.0");
+            record["caption_tracks"] = tracks.clone();
+        }
         let sha = self.stage_versioned_record(MEDIA, "media_id", &record, changes)?;
         Ok(
             json!({"media":record,"sha256":sha,"media_ref":{"media_id":record["media_id"],"revision":1,"sha256":sha}}),
@@ -135,9 +168,12 @@ impl Kernel {
         let (mut asset, _) = self.fixed_asset(&input["work_ref"], &record["asset_ref"])?;
         // 原字节只通过受管分块或媒体服务提供，列表和renderer不消费存储路径。
         asset["blob"].as_object_mut().unwrap().remove("path");
+        let decision=self.video_media_decision(&record,&input["media_ref"])?;
+        let approval=if decision["state"] == "confirmed" {"confirmed"} else {"not_recorded"};
         Ok(
             json!({"media":record,"sha256":sha,"media_ref":input["media_ref"],"asset":asset,
-            "verification":{"bytes":"verified","decoding":"not_checked","viewing":"not_checked","author_approval":"not_recorded"}}),
+            "author_decision":decision,
+            "verification":{"bytes":"verified","decoding":"not_checked","viewing":"not_checked","author_approval":approval}}),
         )
     }
     fn video_review_page(
@@ -172,7 +208,8 @@ impl Kernel {
         )
     }
     pub(super) fn list_video_media(&self, input: &Value) -> Result<Value> {
-        self.video_review_episode(&input["work_ref"], text(input, "video_episode_id")?)?;
+        self.video_review_work(&input["work_ref"])?;
+        if let Some(episode)=input["video_episode_id"].as_str(){self.video_review_episode(&input["work_ref"],episode)?;}
         let ids = self.record_ids(MEDIA, "vmedia")?;
         ensure(
             ids.len() <= 10000,
@@ -180,11 +217,22 @@ impl Kernel {
             "视频成果目录超过单次扫描预算。",
         )?;
         let mut records = Vec::new();
+        let query=input["query"].as_str().unwrap_or("").trim().to_lowercase();
+        let mut active_episodes=BTreeMap::new();
         for id in ids {
             let (record, sha, _) = self.versioned_record(MEDIA, &id, "media_id", None)?;
             if record["work_ref"] == input["work_ref"]
-                && record["video_episode_id"] == input["video_episode_id"]
+                && input.get("video_episode_id").is_none_or(|episode|record["video_episode_id"]==*episode)
+                && record["title"].as_str().unwrap_or("").to_lowercase().contains(&query)
             {
+                if input.get("video_episode_id").is_none(){
+                    let episode=text(&record,"video_episode_id")?;
+                    let active=if let Some(active)=active_episodes.get(episode){*active}else{
+                        let active=self.video_review_episode(&input["work_ref"],episode)?["episode"]["archived"]!=true;
+                        active_episodes.insert(episode.to_owned(),active);active
+                    };
+                    if !active{continue;}
+                }
                 records.push(json!({"media_ref":{"media_id":id,"revision":record["revision"],"sha256":sha},"media":record}));
             }
         }
@@ -198,10 +246,12 @@ impl Kernel {
                         .cmp(&b["media"]["media_id"].as_str())
                 })
         });
+        let mut identity=json!({"work_ref":input["work_ref"],"episode":input["video_episode_id"]});
+        if input.get("query").is_some(){identity["query"]=json!(query);}
         self.video_review_page(
             input,
             records,
-            json!({"work_ref":input["work_ref"],"episode":input["video_episode_id"]}),
+            identity,
         )
     }
     pub(super) fn save_video_feedback(
@@ -278,13 +328,31 @@ impl Kernel {
                 "forbidden",
                 "素材权利未允许交付，请核对权利声明。",
             )?;
+            let mut captions = Vec::new();
+            if let Some(tracks) = view["media"]["caption_tracks"].as_array() {
+                for track in tracks {
+                    let (caption, _) = self.fixed_asset(&input["work_ref"], &track["asset_ref"])?;
+                    let current = self.asset_delivery_metadata(
+                        &json!({"asset_id":caption["asset_id"],"revision":caption["revision"]}),
+                    )?;
+                    ensure(
+                        current["delivery_eligible"] == true,
+                        "forbidden",
+                        "字幕权利未允许交付，请核对权利声明。",
+                    )?;
+                    let mut blob = caption["blob"].clone();
+                    blob.as_object_mut().unwrap().remove("path");
+                    captions.push(json!({"track":track,"blob":blob,"filename":caption["original_filename"],"read_action":"hetu.assets.read_blob"}));
+                }
+            }
             items.push(json!({"media_ref":reference,"title":view["media"]["title"],"purpose":view["media"]["purpose"],
                 "asset_ref":view["media"]["asset_ref"],"blob":asset["blob"],"filename":asset["original_filename"],
-                "read_action":"hetu.assets.read_blob"}));
+                "caption_files":captions,"author_decision":view["author_decision"],"read_action":"hetu.assets.read_blob"}));
         }
+        let approval=if items.iter().all(|item|item["author_decision"]["state"] == "confirmed") {"confirmed"} else {"not_recorded"};
         Ok(
             json!({"work_ref":input["work_ref"],"manifest_sha256":digest(serde_json::to_vec(&items)?),"items":items,
-            "profile":"fixed_media_files","professional_project":"not_included","author_approval":"not_recorded"}),
+            "profile":"fixed_media_files","professional_project":"not_included","author_approval":approval}),
         )
     }
     pub(super) fn read_asset_blob(&self, input: &Value) -> Result<Value> {

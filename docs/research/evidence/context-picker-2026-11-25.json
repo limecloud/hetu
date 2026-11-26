@@ -1,0 +1,128 @@
+{
+  "date": "2026-11-25",
+  "scope": "R8-01 / R8-02 fixed context selection and recovery",
+  "version": "0.14.1 development",
+  "changes": [
+    "Separate read-only loading from explicit source attachment",
+    "Allow closing during catalog or task read and returning during working-copy paging",
+    "Invalidate canceled list/detail requests and preserve original paging cursors on retry",
+    "Retry plugin inventory, result search, task detail and working-copy paging at the failed step",
+    "Share plugin installation state labels between management and source selection",
+    "Keep dialog title and close control outside the scrolling source body"
+  ],
+  "validation": {
+    "initial_flow": {
+      "status": "passed",
+      "log": "output/context-picker-verified.log",
+      "covers": [
+        "21 working copies over two pages",
+        "directory failure retry",
+        "cancel delayed task catalog",
+        "switch two actual plugin Owners while old response is delayed",
+        "return during real working-copy page read",
+        "working-copy failure retry preserves first page",
+        "disabled plugin retained objects remain readable",
+        "draft and original source references retained"
+      ]
+    },
+    "desktop": {
+      "status": "passed",
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/context-picker-desktop-verified.log",
+      "scope": [
+        "native PTY and real MCP save/readback without model inference",
+        "GUI history, fixed context, source recovery, 21-copy paging and fixed header",
+        "retained plugin result and exact handoff"
+      ]
+    },
+    "apps": {
+      "status": "passed",
+      "passed": 24,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/context-picker-apps-final.log",
+      "browser": "Chrome Headless Shell 156.0.8078.4 / Playwright revision 1248, task-local cache",
+      "scope": "Affected shared workbench presentation and real stdio source journeys; prior 81-case full baseline remains separately versioned."
+    },
+    "package": {
+      "status": "passed",
+      "manifest": "output/context-picker-20261125/package/hetu-dev-FAyxYs/manifest.json",
+      "source_sha256": "afc2fd6d93242f38511ba1b6427af8c9a99fb31f35e7c1991fb4a62ccfad556b",
+      "source_inputs": 3044,
+      "artifacts": 3720,
+      "signing": "ad-hoc-development",
+      "logs": [
+        "output/context-picker-package-ui.log",
+        "output/context-picker-package-workspace.log"
+      ],
+      "gui_passed": 4,
+      "workspace_passed": 3
+    },
+    "initial_desktop_regression": {
+      "passed": 3,
+      "failed": 0,
+      "log": "output/context-picker-desktop-regression.log",
+      "scope": "Before the subsequently verified fixed dialog header correction"
+    },
+    "typescript": {
+      "status": "passed",
+      "logs": [
+        "output/context-picker-desktop-types-final.log",
+        "output/context-picker-apps-types-final.log"
+      ]
+    },
+    "skill": {
+      "status": "passed",
+      "path": ".agents/skills/hetu-embedded-agent/SKILL.md"
+    },
+    "documents": {
+      "status": "passed",
+      "log": "output/context-picker-docs-final.log"
+    },
+    "installed": {
+      "status": "passed",
+      "log": "output/context-picker-install.log",
+      "source_sha256": "afc2fd6d93242f38511ba1b6427af8c9a99fb31f35e7c1991fb4a62ccfad556b",
+      "verified_items": 3132,
+      "old_app_backup_created": false,
+      "profile_indexes_unchanged": 3,
+      "external_mcp_processes_terminated": false,
+      "normal_works": 19,
+      "normal_log": "output/context-picker-installed-normal.log",
+      "model_turns": 0
+    },
+    "resource_reproduction": {
+      "status": "passed",
+      "log": "output/context-picker-resources-final.log"
+    }
+  },
+  "preserved_failures": [
+    {
+      "log": "output/context-picker-before.log",
+      "observation": "Real Electron task catalog read disabled close and Escape."
+    },
+    {
+      "log": "output/context-picker-header-before.log",
+      "observation": "Long source list scrolled the close control completely out of the viewport."
+    },
+    {
+      "log": "output/context-picker-owner-diagnostic-2.log",
+      "observation": "Test fixture supplied custom data as the first Electron app.evaluate argument, which is the Electron module. Corrected fixture signature; no product workaround."
+    },
+    {
+      "log": "output/context-picker-apps-regression.log",
+      "observation": "17 tests passed; seven could not launch after the shared Playwright browser cache disappeared during the run. Reinstalled the pinned browser into a task-local cache and ran final source regression."
+    },
+    {
+      "log": "output/context-picker-desktop-final.log",
+      "observation": "Business check searched for a saved item while the result panel was still reading. Updated the test to await the existing read completion state; no product timeout changed."
+    }
+  ],
+  "limitations": [
+    "This slice does not close R8, full native host, cross-platform or accessibility gates.",
+    "No model inference semantics or domain ownership changed.",
+    "Installed artifact state recorded separately from source verification."
+  ]
+}

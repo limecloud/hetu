@@ -124,6 +124,13 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 200
+        },
+        "caption_tracks": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "$ref": "#/$defs/caption_track"
+          }
         }
       },
       "required": [
@@ -161,6 +168,7 @@
         "work_ref": {
           "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
         },
+        "query": {"type": "string", "maxLength": 200},
         "video_episode_id": {
           "type": "string",
           "pattern": "^vepisode_[0-9a-f-]{36}$"
@@ -177,8 +185,7 @@
         }
       },
       "required": [
-        "work_ref",
-        "video_episode_id"
+        "work_ref"
       ]
     },
     "feedback_save_input": {
@@ -310,6 +317,338 @@
         "asset_ref",
         "offset",
         "length"
+      ]
+    },
+    "caption_track": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]{1,80}$"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "language": {
+          "type": "string",
+          "pattern": "^[a-zA-Z]{2,8}(?:-[a-zA-Z0-9]{1,8})*$",
+          "maxLength": 80
+        },
+        "asset_ref": {
+          "$ref": "#/$defs/asset_ref"
+        },
+        "source_object_ref": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "owner_plugin_id": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]+(?:\\.[a-z0-9-]+)+$",
+              "maxLength": 120
+            },
+            "object_id": {
+              "type": "string",
+              "pattern": "^ext_[0-9a-f-]{36}$"
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "owner_plugin_id",
+            "object_id",
+            "revision",
+            "sha256"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "language",
+        "asset_ref"
+      ]
+    },
+    "decision_purpose": {
+      "enum": [
+        "previsualization",
+        "clip",
+        "final"
+      ]
+    },
+    "decision_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "decision_id": {
+          "type": "string",
+          "pattern": "^vdecision_[0-9a-f-]{36}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "decision_id",
+        "revision",
+        "sha256"
+      ]
+    },
+    "decision_preview_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "work_ref": {
+          "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+        },
+        "media_ref": {
+          "$ref": "#/$defs/media_ref"
+        },
+        "purpose": {
+          "$ref": "#/$defs/decision_purpose"
+        },
+        "decision": {
+          "enum": [
+            "confirmed",
+            "withdrawn"
+          ]
+        },
+        "expected_decision_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/decision_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "author_statement": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        }
+      },
+      "required": [
+        "work_ref",
+        "media_ref",
+        "purpose",
+        "decision",
+        "expected_decision_ref",
+        "author_statement"
+      ]
+    },
+    "decision_preview": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "request": {
+          "$ref": "#/$defs/decision_preview_input"
+        },
+        "snapshot": {
+          "type": "object"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "request",
+        "snapshot",
+        "sha256"
+      ]
+    },
+    "decision_save_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "work_ref": {
+          "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+        },
+        "preview": {
+          "$ref": "#/$defs/decision_preview"
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": [
+        "work_ref",
+        "preview",
+        "operation_key"
+      ]
+    },
+    "decision_get_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "work_ref": {
+          "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+        },
+        "video_episode_id": {
+          "type": "string",
+          "pattern": "^vepisode_[0-9a-f-]{36}$"
+        },
+        "purpose": {
+          "$ref": "#/$defs/decision_purpose"
+        },
+        "decision_ref": {
+          "$ref": "#/$defs/decision_ref"
+        }
+      },
+      "required": [
+        "work_ref",
+        "video_episode_id",
+        "purpose"
+      ]
+    },
+    "decision_history_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "work_ref": {
+          "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+        },
+        "video_episode_id": {
+          "type": "string",
+          "pattern": "^vepisode_[0-9a-f-]{36}$"
+        },
+        "purpose": {
+          "$ref": "#/$defs/decision_purpose"
+        },
+        "cursor": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20
+        }
+      },
+      "required": [
+        "work_ref",
+        "video_episode_id",
+        "purpose"
+      ]
+    },
+    "decision_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "workspace_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "decision_id": {
+          "type": "string",
+          "pattern": "^vdecision_[0-9a-f-]{36}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "previous_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "created_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "updated_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "actor_ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "work_ref": {
+          "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+        },
+        "video_episode_id": {
+          "type": "string",
+          "pattern": "^vepisode_[0-9a-f-]{36}$"
+        },
+        "purpose": {
+          "$ref": "#/$defs/decision_purpose"
+        },
+        "media_ref": {
+          "$ref": "#/$defs/media_ref"
+        },
+        "decision": {
+          "enum": [
+            "confirmed",
+            "withdrawn"
+          ]
+        },
+        "author_statement": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "previous_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/decision_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "schema_version",
+        "workspace_id",
+        "decision_id",
+        "revision",
+        "previous_sha256",
+        "created_at",
+        "updated_at",
+        "actor_ref",
+        "work_ref",
+        "video_episode_id",
+        "purpose",
+        "media_ref",
+        "decision",
+        "author_statement",
+        "previous_ref"
       ]
     }
   }

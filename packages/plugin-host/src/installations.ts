@@ -18,6 +18,25 @@ export interface InstallationState {
   grants: Record<string, string>;
   operations?: Record<string, { input_sha256: string; result: unknown; authorization_note: string; client_adapter: string }>;
 }
+
+/** 展示目录保留已卸载及不可用包，读取既有成果不需要加载其代码。 */
+export function pluginSummaries(host: PluginHost, state: InstallationState) {
+  const describe = (manifest: PluginPackage["manifest"]) => ({
+    display: manifest.display, description: manifest.description,
+    version: manifest.version, work_kinds: manifest.work_kinds,
+  });
+  return [
+    ...host.states().map(status => ({...status, package_sha256:host.package(status.id).sha256, ...describe(host.package(status.id).manifest)})),
+    ...state.packages.flatMap(entry => {
+      const manifest = entry.manifest;
+      return !manifest || host.has(manifest.id) ? [] : [{
+        id: manifest.id, installed: false, selected: false, package_sha256:entry.sha256,
+        state: entry.removed ? "uninstalled" : "unavailable",
+        reason: host.loadErrors.get(manifest.id), ...describe(manifest),
+      }];
+    }),
+  ];
+}
 const digest = (value: unknown) => createHash("sha256").update(JSON.stringify(value)).digest("hex");
 export class PluginInstallations {
   readonly directory: string;

@@ -217,6 +217,8 @@ pub fn scan(file: &mut File, mut target: Option<&mut File>) -> Result<Value> {
     file.seek(SeekFrom::Start(0))?;
     let mut hasher = Sha256::new();
     let mut prefix = Vec::new();
+    // 有界保留文本候选以核验完整UTF-8；大媒体仍以流式摘要处理。
+    let mut caption_bytes = Vec::new();
     let mut count = 0u64;
     let mut buffer = vec![0u8; 256 * 1024];
     loop {
@@ -232,6 +234,10 @@ pub fn scan(file: &mut File, mut target: Option<&mut File>) -> Result<Value> {
         )?;
         if prefix.len() < 64 {
             prefix.extend_from_slice(&buffer[..size.min(64 - prefix.len())]);
+        }
+        if caption_bytes.len() <= media::CAPTION_LIMIT {
+            let remaining = media::CAPTION_LIMIT + 1 - caption_bytes.len();
+            caption_bytes.extend_from_slice(&buffer[..size.min(remaining)]);
         }
         hasher.update(&buffer[..size]);
         if let Some(target) = &mut target {
@@ -252,6 +258,9 @@ pub fn scan(file: &mut File, mut target: Option<&mut File>) -> Result<Value> {
         "读取过程中原素材发生变化，请重新选择并核对。",
     )?;
     let mut result = media::signature(&prefix)?;
+    if result["kind"] == "caption" {
+        result = media::inspect_content(&caption_bytes)?;
+    }
     result["size_bytes"] = json!(count);
     result["sha256"] = json!(format!("{:x}", hasher.finalize()));
     Ok(result)

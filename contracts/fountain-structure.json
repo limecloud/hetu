@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0.0",
+  "scene_prefixes": [
+    "INT./EXT.", "INT/EXT.", "INT./EXT", "INT/EXT",
+    "EXT./INT.", "EXT/INT.", "EXT./INT", "EXT/INT",
+    "INT.", "INT", "EXT.", "EXT", "EST.", "EST", "I/E."
+  ]
+}

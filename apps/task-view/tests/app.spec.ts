@@ -152,6 +152,52 @@ test("unsaved choices survive new results and cannot be applied against a stale 
   await expect(view.getByRole("button", { name: "保存选择与意见", exact: true })).toBeEnabled();
 });
 
+for (const passage of [false, true]) test(`${passage ? "位置意见" : "方案偏好"}在指针按下后收到相同任务投影，抬起仍只保存一次`, async ({ page }) => {
+  const value = fixture(), payload = value.structuredContent as any;
+  payload.data.allowed_actions = ["hetu.task_feedback.save"];
+  payload.data.submission.candidates = [{candidate_id: "reference", kind: "text", title: "固定参考稿", content: "江岚核对来信🌿，保留原句。"}];
+  const {view, errors} = await open(page, value);
+  const opinion = view.getByLabel("补充要求或意见", {exact: true});
+  if (passage) {
+    const candidate = view.locator(".candidate");
+    await candidate.locator(".reader").evaluate(reader => {
+      const span = Array.from(reader.querySelectorAll<HTMLElement>("[data-source-from]")).find(item => item.textContent?.includes("来信🌿"))!;
+      const start = span.textContent!.indexOf("来信🌿"), range = document.createRange();
+      range.setStart(span.firstChild!, start); range.setEnd(span.firstChild!, start + "来信🌿".length);
+      window.getSelection()!.removeAllRanges(); window.getSelection()!.addRange(range);
+      reader.dispatchEvent(new MouseEvent("mouseup", {bubbles: true}));
+    });
+    await candidate.getByRole("button", {name: "对此处提意见", exact: true}).click();
+    await expect(view.getByRole("region", {name: "意见所指原文", exact: true})).toContainText("来信🌿");
+  }
+  await opinion.fill("保留原句与意见，不重复保存。");
+  const save = view.getByRole("button", {name: passage ? "保存位置意见" : "保存选择与意见", exact: true});
+  await expect(save).toBeEnabled(); await save.scrollIntoViewIfNeeded();
+  const bounds = await save.boundingBox(); expect(bounds).not.toBeNull();
+  await page.mouse.move(bounds!.x + bounds!.width / 2, bounds!.y + bounds!.height / 2);
+  await page.mouse.down();
+  await view.locator("body").evaluate(() => {
+    const state = window as any; state.__projectionDelivered = false;
+    const received = (event: MessageEvent) => {
+      if (event.data?.method !== "ui/notifications/tool-result") return;
+      window.removeEventListener("message", received);
+      requestAnimationFrame(() => { state.__projectionDelivered = true; });
+    };
+    window.addEventListener("message", received);
+  });
+  await page.evaluate(value => window.harness.send(value), value);
+  await expect.poll(() => view.locator("body").evaluate(() => (window as any).__projectionDelivered)).toBe(true);
+  expect(await page.evaluate(() => window.harness.calls)).toEqual([]);
+  await page.mouse.up();
+  await expect(view.getByRole("status")).toContainText(passage ? "修改意见已保存" : "已记录偏好");
+  const calls = await page.evaluate(() => window.harness.calls);
+  const writes = calls.filter(item => item.name === (passage ? "hetu_save_task_feedback" : "hetu_save_task_selection"));
+  expect(writes).toHaveLength(1);
+  expect(writes[0].arguments?.[passage ? "public_comment" : "comment"]).toBe("保留原句与意见，不重复保存。");
+  if (passage) expect((writes[0].arguments?.target_refs as any[])[0].range.quote).toBe("来信🌿");
+  expect(errors).toEqual([]);
+});
+
 test("missing receipts retry with the same operation key, and conflicts preserve feedback", async ({ page }) => {
   const { view } = await open(page);
   await page.evaluate(() => { window.harness.saveMode = "absent"; });
@@ -185,8 +231,16 @@ test("cover previews decode locally and preserve the original aspect ratio", asy
   await expect(view.getByText("缺少的结果: 第二张参考封面")).toBeVisible();
   await page.evaluate(async () => { await window.harness.teardown(); });
   await expect(view.getByRole("status")).toContainText("面板连接已结束");
+  await expect(view.locator("#app")).toHaveAttribute("aria-busy", "false");
   await expect(view.getByRole("button", { name: "保存选择与意见", exact: true })).toHaveCount(0);
   await expect(view.locator("img")).toHaveCount(0);
+});
+
+test("a missing host ends loading and explains how to reopen the task", async ({ page }) => {
+  await page.route(`${origin}/standalone`, route => route.fulfill({ contentType: "text/html", body: html }));
+  await page.goto(`${origin}/standalone`);
+  await expect(page.getByRole("status")).toContainText("MCP Apps");
+  await expect(page.locator("#app")).toHaveAttribute("aria-busy", "false");
 });
 
 test("task changes and untrusted candidate markup cannot escape the bound view", async ({ page }) => {
@@ -210,6 +264,7 @@ for (const locale of ["zh-CN", "en"]) for (const width of [375, 1180]) {
     await page.setViewportSize({ width, height: 1000 });
     const { view, errors } = await open(page, fixture(locale), width === 375 ? "light" : "dark");
     await expect(view.getByRole("heading", { level: 1 })).toHaveText(locale === "en" ? "Compare references" : "比较参考方案");
+    await expect(view.locator("#app")).toHaveCSS("color-scheme",width===375?"light":"dark");
     expect(await view.locator("body").evaluate(body => body.scrollWidth > innerWidth)).toBe(false);
     expect(errors).toEqual([]);
     await mkdir("../../build/task-view/screenshots", { recursive: true });

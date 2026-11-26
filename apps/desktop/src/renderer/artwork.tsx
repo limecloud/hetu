@@ -52,7 +52,7 @@ export function ArtworkLibrary({ work, notify, subject, embedded = false, filter
     try {
       const object = subject ? Object.fromEntries(Object.entries(subject).filter(([key]) => key !== "kind")) : {};
       await requestAgent("work.images", item ? {...object, task_ref: item.task.task_ref, submission_id: item.submission_id, candidate_id: item.candidate.candidate_id} : object);
-      notify(desktop.agentSessionHost ? "已放入Codex会话草稿，请核对后发送。" : "已复制图片协作请求。");
+      notify(desktop.agentSessionHost ? "已放入当前会话草稿，请核对后发送。" : "已复制图片协作请求。");
     } catch (error) { notify((error as Error).message); }
   }
   const controls = <>

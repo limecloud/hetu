@@ -18,6 +18,7 @@ test("引擎发现不启动会话，拒绝未知引擎、表面和伪造模型",
 test("原生PTY并发启动一次、拒绝旧代次，关闭重开不伪造模型线程",async()=>{
   const profile=await mkdtemp(path.join(os.tmpdir(),"hetu-engine-process-"));let replay="";
   const session=new ProcessSession({id:"terminal-12345678-1234-1234",launch:{client:"shell",surface:"tui"},profile,cwd:path.join(profile,"sandbox"),emit:event=>{if(event.type==="terminal")replay+=event.data;}});
+  let reopened:ProcessSession|undefined;
   try{
     const [first,second]=await Promise.all([session.start(),session.start()]);assert.equal(first.generation,second.generation);assert.equal(first.terminal_connected,true);
     session.terminalInput("printf 'ENGINE-PTY-READY\\n'\r",first.generation!);
@@ -25,7 +26,9 @@ test("原生PTY并发启动一次、拒绝旧代次，关闭重开不伪造模�
     session.terminalResize(90,24,first.generation!);await assert.rejects(session.insertDraft("never execute this"),/Agent终端/);
     await session.stop();assert.throws(()=>session.terminalInput("old",first.generation!),/旧输入/);
     const next=await session.start();assert.ok(next.generation!>first.generation!);assert.equal(next.thread_id,undefined);assert.deepEqual(next.messages,[]);
-  }finally{await session.stop();}
+    await session.stop();reopened=new ProcessSession({id:"terminal-12345678-1234-1234",launch:{client:"shell",surface:"tui"},profile,cwd:path.join(profile,"sandbox"),emit:()=>{}});const restarted=await reopened.start();assert(restarted.generation!>next.generation!);assert.throws(()=>reopened!.terminalInput("重启前输入",next.generation!),/旧输入/);assert.throws(()=>reopened!.terminalResize(90,24,next.generation!),/执行权/);
+    await session.stop();assert.equal(reopened.snapshot().generation,restarted.generation);
+  }finally{await reopened?.stop();await session.stop();}
 });
 test("会话选择按真实引擎重开，保留旧Codex记录及跨进程执行权",async()=>{
   const profile=await mkdtemp(path.join(os.tmpdir(),"hetu-engine-selection-")),sessions=new AgentSessions({profile,emit:()=>{}});

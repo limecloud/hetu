@@ -49,8 +49,10 @@ export function CodexTerminal({ snapshot, preferences, notify,actions,toolbarTar
   };
   useEffect(() => {
     if (!host.current) return;
+    host.current.dataset.terminalInputReady="false";
+    host.current.dataset.terminalGeneration=String(snapshot.generation);
     const activate=(event:MouseEvent,url:string)=>{event.preventDefault();void desktop.agentSession("open_link",{url}).catch(error=>notify(error.message));};
-    const instance = new Terminal({ allowProposedApi: true, convertEol: false, scrollback: settings.current.terminal_scrollback, screenReaderMode: true,minimumContrastRatio:4.5,macOptionIsMeta:false,macOptionClickForcesSelection:true,linkHandler:{activate} });
+    const instance = new Terminal({ allowProposedApi: true,disableStdin:true, convertEol: false, scrollback: settings.current.terminal_scrollback, screenReaderMode: true,minimumContrastRatio:4.5,macOptionIsMeta:false,macOptionClickForcesSelection:true,linkHandler:{activate} });
     terminal.current = instance;
     const bufferChange = instance.buffer.onBufferChange(buffer => { instance.options.scrollSensitivity = buffer.type === "alternate" ? settings.current.terminal_tui_scroll_sensitivity : settings.current.terminal_scroll_sensitivity; });
     const fit = new FitAddon(), find = new SearchAddon();
@@ -74,10 +76,14 @@ export function CodexTerminal({ snapshot, preferences, notify,actions,toolbarTar
     instance.focus();
     instance.parser.registerOscHandler(52, () => true);
     const scope=snapshot.work_ref?{work_ref:snapshot.work_ref}:{scope:"library"};
-    const output=new TerminalStream({read:()=>desktop.agentSession("get",{...scope,session_id:snapshot.session_id}),reset:replay=>new Promise(resolve=>{instance.reset();instance.write(replay,resolve);}),write:data=>instance.write(data),error:error=>setStreamError(error.message)});stream.current=output;
+    const output=new TerminalStream({read:()=>desktop.agentSession("get",{...scope,session_id:snapshot.session_id}),reset:replay=>new Promise(resolve=>{instance.reset();instance.write(replay,resolve);}),write:data=>instance.write(data),error:error=>setStreamError(error.message),inputStatus:ready=>{
+      if(terminal.current!==instance)return;
+      instance.options.disableStdin=!ready||!current.current.terminal_connected||current.current.state==="switching";
+      if(host.current){host.current.dataset.terminalInputReady=String(!instance.options.disableStdin);host.current.setAttribute("aria-busy",String(!ready));}
+    }});stream.current=output;
     const input = instance.onData(data => {
       const active = current.current;
-      if (!output.acceptsInput || !active.terminal_connected) return;
+      if (!output.acceptsInput || !active.terminal_connected || active.generation!==snapshot.generation || active.state==="switching") return;
       void desktop.agentSession("terminal_input", { ...(active.work_ref ? {} : { scope: "library" }), session_id: active.session_id, generation: active.generation, data }).catch(error => notify(error.message));
     });
     const selection = instance.onSelectionChange(() => {
@@ -101,6 +107,11 @@ export function CodexTerminal({ snapshot, preferences, notify,actions,toolbarTar
     const timer = requestAnimationFrame(resize);
     return () => { output.dispose();cancelAnimationFrame(timer); observer.disconnect(); scaleObserver.disconnect(); bufferChange.dispose();rendered.dispose(); window.removeEventListener("resize", resize); unsubscribe(); input.dispose(); selection.dispose(); instance.dispose(); terminal.current = undefined;stream.current=undefined; };
   }, [snapshot.session_id, snapshot.generation, snapshot.terminal_connected]);
+  useEffect(()=>{
+    const instance=terminal.current;if(!instance)return;
+    instance.options.disableStdin=!stream.current?.acceptsInput||!snapshot.terminal_connected||snapshot.state==="switching";
+    if(host.current)host.current.dataset.terminalInputReady=String(!instance.options.disableStdin);
+  },[snapshot.state,snapshot.generation,snapshot.terminal_connected]);
   useEffect(() => {
     const instance = terminal.current; if (!instance) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

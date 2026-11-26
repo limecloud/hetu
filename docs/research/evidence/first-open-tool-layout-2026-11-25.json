@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-25",
+  "scope": [
+    "首次打开文稿的真实加载状态",
+    "专业工具目录排版"
+  ],
+  "state": "local-installed-validated",
+  "findings": [
+    "目录读取中selected为空且busyState为false，主区错误显示空作品引导；目录页脚同步显示0章。",
+    "专业目录使用12px间距的按钮卡片，长说明换行且名称受按钮布局影响，导致不齐与超长弹窗。"
+  ],
+  "implementation": [
+    "主区分别显示目录读取、稿件读取及目录错误重试；完整目录成功返回后才允许显示空作品，既有稿件保留。",
+    "目录未就绪或读取失败时不显示误导的数量；主区aria-busy反映真实读取。",
+    "专业目录复用原弹窗，标题、查找及管理入口固定；行内名称与一行说明左对齐，完整说明留在工具详情。",
+    "专业能力发现、权限、固定来源及投递恢复规则保持原用例。"
+  ],
+  "validation": {
+    "installed_before": {
+      "result": "failed_as_expected",
+      "log": "output/loading-tool-layout-20261125/installed-before.log",
+      "scope": "旧安装缺少主区加载状态，挂起真实目录时仍呈现错误空状态。"
+    },
+    "first_source": {
+      "passed": 1,
+      "failed": 1,
+      "log": "output/loading-tool-layout-20261125/source-tests.log",
+      "note": "布局与搜索断言已通过；Escape在非空原生search中先清空查询，测试改为先清空并聚焦关闭入口后验证Esc，未修改产品退出语义。"
+    },
+    "source_final": {
+      "passed": 3,
+      "failed": 0,
+      "log": "output/loading-tool-layout-20261125/source-final.log",
+      "scopes": [
+        "真实目录与稿件分别暂挂，目录失败及原入口重试，首次文稿自动就绪。",
+        "16项目录投影，1280／800暗色／520窄窗、行高及左边界、长说明省略、滚动后查找／管理／关闭可见、搜索和Esc。",
+        "真实插件静态方法、固定原文、只读准备、Core成果回读、过期拒绝与未知投递不重发。"
+      ]
+    },
+    "type_and_build": {
+      "desktop": "passed",
+      "shared_mcp_resources": "built",
+      "rust_consumers": "built",
+      "capability_map": "passed",
+      "docs": "passed"
+    },
+    "package_attempt": {
+      "status": "rejected",
+      "log": "output/loading-tool-layout-20261125/package.log",
+      "reason": "构建期间另一个会话修改codex-session.ts与codex-terminal-bridge.ts，源码一致性检查拒绝。旧安装未在这一步替换。"
+    },
+    "accepted_package": {
+      "manifest": "output/session-switch-recovery-20261125/packages/hetu-dev-2YI3xs/manifest.json",
+      "reuse": "复用并行会话完成的同一工作区完整包；核验3057项当前源码及3132项应用文件／链接，四份本次界面源码摘要全部匹配。",
+      "verification": "output/loading-tool-layout-20261125/package-verified.json",
+      "source_sha256": "a8ee721b8da422fb25e448fb25810b7de9074663a50470146261547740c84cdc"
+    },
+    "package_ui": {
+      "passed": 2,
+      "failed": 0,
+      "log": "output/loading-tool-layout-20261125/package-tests.log"
+    },
+    "installed_ui": {
+      "passed": 2,
+      "failed": 0,
+      "log": "output/loading-tool-layout-20261125/installed-tests.log",
+      "scope": "实际/Applications/Hetu.app；首次目录／稿件与失败恢复，工具长目录的浅暗／窄窗、滚动、查找与关闭。"
+    }
+  },
+  "screenshots": [
+    "output/loading-tool-layout-20261125/source-final/first-open-layout-专业工具长目录的名称说明对齐，查找及管理入口保持可见/tools-1280-light.png",
+    "output/loading-tool-layout-20261125/source-final/first-open-layout-专业工具长目录的名称说明对齐，查找及管理入口保持可见/tools-520-light.png",
+    "output/loading-tool-layout-20261125/source-final/first-open-layout-专业工具长目录的名称说明对齐，查找及管理入口保持可见/tools-800-dark.png",
+    "output/loading-tool-layout-20261125/source-final/first-open-layout-专业工具长目录的名称说明对齐，查找及管理入口保持可见/tools-first-screen.png",
+    "output/loading-tool-layout-20261125/source-final/first-open-layout-首次目录和稿件加载分别显示真实状态，失败可恢复且不闪现空作品/directory-loading.png",
+    "output/loading-tool-layout-20261125/source-final/first-open-layout-首次目录和稿件加载分别显示真实状态，失败可恢复且不闪现空作品/first-document-ready.png",
+    "output/loading-tool-layout-20261125/source-final/professional-tools-专业入口读取真实包与方法，固定文稿且只读准备，过期及未知交接不重发/static-method.png",
+    "output/loading-tool-layout-20261125/source-final/professional-tools-专业入口读取真实包与方法，固定文稿且只读准备，过期及未知交接不重发/unknown-delivery-narrow.png"
+  ],
+  "source_sha256": {
+    "apps/desktop/src/renderer/documents.tsx": "f44c0c8ca5135608d4f9b5cd5a58970b119abd489085edaf3dcac33435fbee23",
+    "apps/desktop/src/renderer/professional-tools.tsx": "5f99d86d9e657b6953c240e942e3c0b6ab8348ac26dec3fa4c58ad4d1b1c8bb5",
+    "apps/desktop/src/renderer/professional-tools.css": "b9de1421dbd584ba7952d02296c16354e28821924aac9d213213a7120a047b1a",
+    "apps/desktop/src/renderer/agent-context-dialog.tsx": "5982a37e3641d8bcb256da268dc28e5427fded4c4def5f99745e54163ff38f9e",
+    "apps/desktop/tests/first-open-layout.spec.ts": "9baf1c9df64542c7eb5edcc28340cbd289851ca2606d390dc559fdc477e0fcef"
+  },
+  "limits": [
+    "大规模工具目录使用展示投影，不能据此宣称16款插件业务已验收；真实专业业务另用既有两包旅程验证。",
+    "未发起模型轮次、公开发行或跨平台验证。"
+  ],
+  "installation": {
+    "source_sha256": "a8ee721b8da422fb25e448fb25810b7de9074663a50470146261547740c84cdc",
+    "source_inputs": 3057,
+    "artifacts_verified": 3132,
+    "version": "0.14.1",
+    "optimized": true,
+    "signature": "ad-hoc-development-verified",
+    "icon_matches": true,
+    "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+    "installed_path": "/Applications/Hetu.app",
+    "atomic_swap": true,
+    "backup_created": false,
+    "old_bundle_removed": true,
+    "profile_indexes_unchanged": {
+      "creative-library.json": true,
+      "LocalSettings/settings.json": true,
+      "agent-sessions/index/selection.json": true
+    },
+    "temporary_install_directories_remaining": 0,
+    "normal_native_launch": {
+      "verified": true,
+      "library_works": 19,
+      "controls_enabled": true
+    }
+  },
+  "installed_screenshots": [
+    "output/loading-tool-layout-20261125/installed-tests/first-open-layout-专业工具长目录的名称说明对齐，查找及管理入口保持可见/tools-1280-light.png",
+    "output/loading-tool-layout-20261125/installed-tests/first-open-layout-专业工具长目录的名称说明对齐，查找及管理入口保持可见/tools-520-light.png",
+    "output/loading-tool-layout-20261125/installed-tests/first-open-layout-专业工具长目录的名称说明对齐，查找及管理入口保持可见/tools-800-dark.png",
+    "output/loading-tool-layout-20261125/installed-tests/first-open-layout-专业工具长目录的名称说明对齐，查找及管理入口保持可见/tools-first-screen.png",
+    "output/loading-tool-layout-20261125/installed-tests/first-open-layout-首次目录和稿件加载分别显示真实状态，失败可恢复且不闪现空作品/directory-loading.png",
+    "output/loading-tool-layout-20261125/installed-tests/first-open-layout-首次目录和稿件加载分别显示真实状态，失败可恢复且不闪现空作品/first-document-ready.png"
+  ]
+}

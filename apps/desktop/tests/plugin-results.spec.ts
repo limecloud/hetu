@@ -86,7 +86,7 @@ test("插件成果搜索分页、固定导出与精确AI交接，停用后可读
     update(21,"新版成果22");
     const capturedDraft=await captureAgentDraft(app,page);
     await panel.getByRole("button",{name:"让 AI 处理",exact:true}).click();
-    await expect(panel.getByRole("status")).toHaveText("已放入Codex会话草稿，请核对后发送。");
+    await expect(panel.getByRole("status")).toHaveText("已放入当前会话草稿，请核对后发送。");
     const managed=JSON.parse((await capturedDraft())!.split("\n").slice(1).join("\n"));
     expect(managed.plugin_id).toBe(pkg.manifest.id);expect(managed.plugin_connection).toBeUndefined();expect(managed.management_ref).toBeUndefined();expect(managed.work_ref).toEqual(fixture.work_ref);
     // 显式复制的外部接续仍独立验证，保留原插件运行时合同。

@@ -1,0 +1,107 @@
+{
+  "scope": "原字幕Owner与视听工程的固定导出接续",
+  "owners": {
+    "subtitle_domain": "wordflowlab/hetu-subtitle-studio",
+    "delivery_domain": "wordflowlab/hetu-video-studio",
+    "host": "limecloud/hetu Core；未修改宿主代码"
+  },
+  "owner_evidence": "wordflowlab/hetu-video-studio/docs/research/subtitle-delivery-2026-11-25.json",
+  "owner_evidence_sha256": "8fa581d272fbf1cd755e31d9b7f3f2d4d8135272ff123bb33537b394aaa520f1",
+  "runtime": {
+    "core_version": "hetu 0.14.1",
+    "platform": "macOS arm64",
+    "model_turns": 0,
+    "global_installs_changed": false,
+    "published": false
+  },
+  "validation": {
+    "subtitle_unit": {
+      "passed": 34,
+      "failed": 0
+    },
+    "timeline_and_delivery": {
+      "passed": 20,
+      "failed": 0
+    },
+    "media_tools": {
+      "passed": 12,
+      "failed": 0
+    },
+    "types": "both passed",
+    "builds": "both passed",
+    "installed_mcp": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "formats": [
+        "srt",
+        "vtt",
+        "ass"
+      ],
+      "read_chunks": 11,
+      "methods_and_script_from_same_mcp": true,
+      "fixed_source_preserved": true,
+      "subtitle_head_advanced": true,
+      "uninstalled_owner_files_packaged": true,
+      "relocated_bytes_verified": true,
+      "srt_muxed_to_mp4_and_extracted_by_owner": true,
+      "archive_sha256": "860920ad7392980de4a76bf0b8b39262714230df1018522669e971eaaecf0d01",
+      "muxed_sha256": "abba3255f46f1408e9e51e7796a78c85693b488abc144fd786099bc3dbbc9f35"
+    },
+    "documentation": {
+      "video": {
+        "documents": 17,
+        "links": 29,
+        "missing": []
+      },
+      "subtitles": {
+        "documents": 16,
+        "local_links": 38
+      }
+    }
+  },
+  "packages": {
+    "video": {
+      "filename": "video-development.tgz",
+      "sha256": "04a0942560659c390a21505971d186a5cadc4f37fda303218fbc00c7436b8a62",
+      "files": 96,
+      "runtime_package_sha256": "1ebe6d619a7b3549ec5adaefce3bfc68c34a2559c1b878387ff540d821ce723b",
+      "matches_frozen_package": true,
+      "published": false
+    },
+    "subtitles": {
+      "filename": "subtitles-development.tgz",
+      "sha256": "c0459b5ef8796fc2a98d4113d70291a29d7bdb94c2aa0bbd7bcc79ffc162a924",
+      "files": 18,
+      "runtime_package_sha256": "aa0de60c1cc247aced59425eb24f4adcf534fe0e0fba6b74d5c56c8595c67056",
+      "matches_frozen_package": true,
+      "published": false
+    }
+  },
+  "boundaries": [
+    "程序音画与estimated字幕不代表对白听审、翻译质量、影片质量或作者认可",
+    "字幕侧文件与OTIO元数据不代表具体NLE／桌面原生字幕显示",
+    "字幕合入与抽取已验证，成片认可和正文采纳未执行",
+    "变速、完整一集、全剧、Windows／Linux、正式签名发行未关闭",
+    "未覆盖全局插件、重装宿主、提交推送或公开发布"
+  ],
+  "complete_product": false,
+  "host_documentation_check": {
+    "documents": 92,
+    "local_links": 1562,
+    "fragment_links": 426,
+    "traceability": {
+      "FR": 44,
+      "US": 65,
+      "UC": 58,
+      "E2E": 34,
+      "AC": 74
+    },
+    "id_references": 1391,
+    "json_examples": 11,
+    "schemas": 2,
+    "mermaid": 118,
+    "errors": []
+  },
+  "host_capability_map_check": "passed"
+}

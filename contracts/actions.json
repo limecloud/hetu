@@ -368,6 +368,13 @@
           },
           "work_ref": {
             "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "query": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "include_revision_ref": {
+            "type": "boolean"
           }
         },
         "required": []
@@ -380,6 +387,40 @@
         ],
         "instruction_authority": "none",
         "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.documents.scene_index",
+      "purpose": "检索剧本原稿的固定场次范围并按需读取原文，不创建持久场次身份",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": ["workspace"],
+      "input_schema": {
+        "type": "object", "additionalProperties": false,
+        "properties": {
+          "work_ref": {"$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"},
+          "document_id": {"type": "string", "pattern": "^doc_[0-9a-f-]{36}$"},
+          "revision_id": {"type": "string", "pattern": "^rev_[0-9a-f-]{36}$"},
+          "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "query": {"type": "string", "maxLength": 200},
+          "limit": {"type": "integer", "minimum": 1, "maximum": 100},
+          "cursor": {"type": "string", "maxLength": 256},
+          "scene_range": {
+            "type": "object", "additionalProperties": false,
+            "description": "索引返回的完整场次原文范围，必须与固定修订逐字节一致；不是持久scene_id。",
+            "properties": {"byte_start": {"type": "integer", "minimum": 0, "maximum": 9007199254740991}, "byte_end": {"type": "integer", "minimum": 0, "maximum": 9007199254740991}},
+            "required": ["byte_start", "byte_end"]
+          },
+          "offset": {"type": "integer", "minimum": 0, "maximum": 9007199254740991, "description": "相对scene_range.byte_start的UTF-8字节偏移，必须位于字符边界。"},
+          "max_bytes": {"type": "integer", "minimum": 4, "maximum": 65536}
+        },
+        "required": ["work_ref"],
+        "dependentRequired": {"revision_id": ["document_id"], "sha256": ["document_id", "revision_id"], "scene_range": ["document_id", "revision_id", "sha256"], "offset": ["scene_range"], "max_bytes": ["scene_range"]},
+        "allOf": [{"if": {"required": ["scene_range"]}, "then": {"not": {"anyOf": [{"required": ["query"]}, {"required": ["cursor"]}, {"required": ["limit"]}]}}}]
+      },
+      "result_provenance": {
+        "contract_revision": "1", "data_roles": ["core_receipt", "author_content"], "instruction_authority": "none", "authorization_effect": "none"
       }
     },
     {
@@ -2756,15 +2797,54 @@
     },
     {
       "name": "hetu.outlines.get",
-      "purpose": "读取总纲、卷纲与章纲",
+      "purpose": "读取正式大纲的当前集合、确切修订或条目目录",
       "contract_revision": "1",
       "effect": "read",
       "author_only": false,
       "input_schema": {
         "type": "object",
         "additionalProperties": false,
-        "properties": {},
-        "required": []
+        "properties": {
+          "revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "outline_id": {
+            "type": "string",
+            "pattern": "^outline_[0-9a-f-]{36}$"
+          },
+          "detail": {
+            "enum": [
+              "full",
+              "summary"
+            ]
+          },
+          "query": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "cursor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "required": [],
+        "dependentRequired": {
+          "sha256": [
+            "revision"
+          ]
+        }
       },
       "result_provenance": {
         "contract_revision": "1",
@@ -4910,7 +4990,29 @@
                   "revision",
                   "sha256"
                 ]
+              },
+              "outline_id": {
+                "type": "string",
+                "pattern": "^outline_[0-9a-f-]{36}$"
+              },
+              "outline_revision": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "outline_sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
               }
+            },
+            "dependentRequired": {
+              "outline_revision": [
+                "outline_id"
+              ],
+              "outline_sha256": [
+                "outline_id",
+                "outline_revision"
+              ]
             }
           }
         },
@@ -5218,6 +5320,30 @@
       }
     },
     {
+      "name": "hetu.local_settings.inspect_storage",
+      "purpose": "读取本机河图资料分类占用与可清理明细",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "local_configuration"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
       "name": "hetu.local_settings.prepare",
       "purpose": "准备本机设置或套件选择安装方案",
       "contract_revision": "1",
@@ -5234,7 +5360,8 @@
             "enum": [
               "preferences",
               "agent_suite",
-              "agent_connection"
+              "agent_connection",
+              "storage_cleanup"
             ]
           },
           "patch": {
@@ -5621,6 +5748,20 @@
               "kind",
               "object_id"
             ]
+          },
+          "selected_ids": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2000,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "storage_snapshot": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
           }
         },
         "required": [
@@ -8506,6 +8647,77 @@
       }
     },
     {
+      "name": "hetu.plugin_results.list",
+      "purpose": "检索当前作品保留的专业成果目录，不启动或启用插件",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": ["workspace"],
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {"$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"},
+          "owner_plugin_id": {"type": "string", "maxLength": 120, "pattern": "^[a-z0-9-]+(?:\\.[a-z0-9-]+)+$"},
+          "query": {"type": "string", "maxLength": 200},
+          "limit": {"type": "integer", "minimum": 1, "maximum": 100},
+          "cursor": {"type": "string", "maxLength": 256}
+        },
+        "required": ["work_ref"]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": ["core_receipt", "professional_content"],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.plugin_results.get",
+      "purpose": "读取当前作品已保留的固定专业成果，不启动或启用插件",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "object_id": {
+            "type": "string",
+            "pattern": "^ext_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "owner_plugin_id": {
+            "type": "string",
+            "maxLength": 120,
+            "pattern": "^[a-z0-9-]+(?:\\.[a-z0-9-]+)+$"
+          },
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          }
+        },
+        "required": [
+          "work_ref",
+          "owner_plugin_id",
+          "object_id",
+          "revision"
+        ]
+      },
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
       "name": "hetu.plugins.capabilities",
       "purpose": "发现当前已启用河图插件的公开动作与实时Schema",
       "contract_revision": "1",
@@ -9049,6 +9261,86 @@
         "workspace"
       ],
       "input_schema_ref": "schemas/video-review.schema.json#/$defs/feedback_list_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.video.decisions.preview",
+      "purpose": "核对确切媒体认可或撤回的固定预览",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/video-review.schema.json#/$defs/decision_preview_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.video.decisions.save",
+      "purpose": "记录确切预演认可、片段选用或成片确认及撤回",
+      "contract_revision": "1",
+      "effect": "submit",
+      "author_only": true,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/video-review.schema.json#/$defs/decision_save_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.video.decisions.get",
+      "purpose": "读取分集用途的当前或固定历史媒体决定",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/video-review.schema.json#/$defs/decision_get_input",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "core_receipt",
+          "work_content"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.video.decisions.history",
+      "purpose": "分页读取原分集用途的不可变决定链",
+      "contract_revision": "1",
+      "effect": "read",
+      "author_only": false,
+      "scopes": [
+        "workspace"
+      ],
+      "input_schema_ref": "schemas/video-review.schema.json#/$defs/decision_history_input",
       "result_provenance": {
         "contract_revision": "1",
         "data_roles": [

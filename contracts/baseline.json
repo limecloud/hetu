@@ -193,6 +193,10 @@
         "hetu.video.media.list",
         "hetu.video.feedback.save",
         "hetu.video.feedback.list",
+        "hetu.video.decisions.preview",
+        "hetu.video.decisions.save",
+        "hetu.video.decisions.get",
+        "hetu.video.decisions.history",
         "hetu.video.delivery.preview",
         "hetu.assets.read_blob"
       ]

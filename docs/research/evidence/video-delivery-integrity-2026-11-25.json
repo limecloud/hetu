@@ -1,0 +1,107 @@
+{
+  "recorded_at": "2026-11-25T08:32:12.209780+00:00",
+  "scope": "专业工程交付路径可靠性",
+  "owner_repository": "wordflowlab/hetu-video-studio",
+  "owner_progress": "docs/08-实施计划与验收记录.md",
+  "owner_evidence": "docs/research/delivery-integrity-2026-11-25.json",
+  "owner_evidence_sha256": "8ad6011e5f0cebef7de5a377b3a700ff35d27abccdec48a952f1261158226783",
+  "implementation": "由原专业插件维护校验、打包与Skill；宿主未增加第二套存储或专业动作",
+  "verification": {
+    "typescript_unit": {
+      "passed": 35,
+      "failed": 0
+    },
+    "python_media_methods": {
+      "passed": 12,
+      "failed": 0
+    },
+    "typecheck": "passed",
+    "build": "passed",
+    "machine": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "professional_actions": 22,
+      "skills_resources_read": true,
+      "cli_readback": true,
+      "fixed_revision_after_rejection": true,
+      "same_key_recovery": true,
+      "disable_enable_uninstall_reinstall_history": true,
+      "delivery": {
+        "archive_sha256": "6893bf62fc053369244c0f7ebb211aee4d02caa73b666239e64988dc21e50131",
+        "rejected_paths": [
+          "文件不能作为父目录",
+          "顺序不改变父目录冲突",
+          "父目录冲突核对大小写",
+          "清单文件不能作为目录",
+          "清单目录冲突核对大小写",
+          "Unicode规范等价文件不能重复",
+          "Unicode规范等价父目录冲突",
+          "大小写展开后的同名文件",
+          "Windows问号不可用",
+          "Windows星号不可用",
+          "Windows竖线不可用",
+          "Windows双引号不可用",
+          "Windows尖括号不可用"
+        ],
+        "restored_bytes_verified": true,
+        "project_snapshot_verified": true
+      }
+    },
+    "docs_and_resources": {
+      "documents": 16,
+      "local_links": 22,
+      "missing": [],
+      "packaged_resources_match": true
+    },
+    "development_archive": {
+      "archive": "video-studio-development.tgz",
+      "sha256": "10d26c961b0036a9f2c9e25a873c15821cd45180133c767be301711e398c55fa",
+      "files": 96,
+      "all_bytes_match_dist": true,
+      "published": false
+    },
+    "intermediate_machine_run": {
+      "log": "machine-installed-final.log",
+      "passed": 1,
+      "failed": 0,
+      "note": "同包13类路径及全部动作通过；最终夹具进一步收敛为只读取实际需要的能力摘要"
+    }
+  },
+  "host_changes": "仅实施状态与证据导航；本轮没有重装宿主",
+  "boundaries": [
+    "程序生成媒体只证明技术导入、解码、区间与打包，不代表真实模型、完整一集或内容质量",
+    "固定JSON方案与媒体解压一致不代表外部剪辑器可编辑工程恢复",
+    "本轮未重测GUI或原生Codex Desktop MCP App",
+    "Windows与Linux尚未实机验收",
+    "未采纳、定稿、认可成片、付费生成或公开发行",
+    "保留既有work_kinds改动，未修改其他专业插件或宿主领域实现"
+  ],
+  "engineering_skill": {
+    "path": ".agents/skills/hetu-embedded-agent/SKILL.md",
+    "files": 5,
+    "relative_links": 12,
+    "format_validation": "skill-creator quick_validate passed",
+    "registered_in_agents": true,
+    "validation_sha256": "81e829cb0eb75657d84cd735fd126bbe609dfbe2af5e5a870fa00831970acb9a"
+  },
+  "complete_product": false,
+  "documentation_check": {
+    "documents": 92,
+    "local_links": 1558,
+    "fragment_links": 426,
+    "traceability": {
+      "FR": 44,
+      "US": 65,
+      "UC": 58,
+      "E2E": 34,
+      "AC": 74
+    },
+    "id_references": 1390,
+    "json_examples": 11,
+    "schemas": 2,
+    "mermaid": 118,
+    "errors": []
+  },
+  "documentation_check_log_sha256": "07c1b44ecb19a157a1b9e469eeded51ec67b4d1bf5d7360d7bc66d50ae8ca1b0"
+}

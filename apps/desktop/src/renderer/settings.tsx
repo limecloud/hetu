@@ -1,3 +1,4 @@
+import { StorageSettings, StoragePlan } from "./storage-settings.tsx";
 import {InterfaceScale} from "./interface-scale.tsx";
 import React, { useEffect, useRef, useState } from "react";
 import { desktop } from "./bridge.ts";
@@ -66,17 +67,18 @@ const planStates: Record<string, string> = {
   executing: "结果待确认",
   executed: "已执行",
 };
-type Tab = "general" | "writing" | "agents" | "models" | "versions" | "plans" | "about";
+type Tab = "storage" | "general" | "writing" | "agents" | "models" | "versions" | "plans" | "about";
 const tabs: { id: Tab; title: string; icon: IconName }[] = [
   { id: "general", title: "通用", icon: "sliders" },
   { id: "writing", title: "写作", icon: "type" },
   { id: "models", title: "模型服务", icon: "globe" },
   { id: "agents", title: "AI 协作", icon: "plugin" },
   { id: "versions", title: "版本", icon: "branch" },
+  { id: "storage", title: "存储空间", icon: "layers" },
   { id: "about", title: "关于", icon: "info" },
 ];
 const categories = [
-  {title: "应用设置", ids: ["general", "writing"]},
+  {title: "应用设置", ids: ["general", "writing", "storage"]},
   {title: "创作与协作", ids: ["models", "agents", "versions"]},
   {title: "河图洛书", ids: ["about"]},
 ];
@@ -308,6 +310,7 @@ export function LocalSettings({
       <header className="settings-titlebar"><span className="settings-window-title">设置</span><div className="settings-global-actions">
         {tab === "plans" ? <><button disabled={busy} onClick={() => void run(async () => { await desktop.settings("handoff", { section: returnTab.current }); notify("已复制本机设置协作请求。"); })}><Icon name="sparkles"/>让 AI 调整设置</button>
           <IconButton icon="refresh" label="刷新本机设置" disabled={busy} onClick={() => void run(() => refresh())}/></>
+          : tab === "storage" ? <button disabled={busy} onClick={() => void run(async () => { await desktop.settings("handoff", { section: "storage" }); notify("已复制存储整理请求。"); })}><Icon name="sparkles"/>让 AI 整理</button>
           : <button disabled={busy} onClick={() => { returnTab.current = tab; chooseTab("plans"); void run(() => refresh()); }}><Icon name="sparkles"/>让 AI 处理与审阅{plans.some(p => p.state === "pending") && <span className="settings-pending" aria-label="有待审方案"/>}</button>}
       </div></header>
       <div className="settings-tabs" role="tablist" aria-label="设置分类" aria-orientation="vertical">
@@ -433,6 +436,7 @@ export function LocalSettings({
             ) : (
               <>
                 {tab === "models" && <ModelSettings/>}
+                {tab === "storage" && <StorageSettings notify={notify}/>}
                 {tab === "general" && (
                   <>
                     <fieldset className="settings-appearance"><legend>外观</legend><div role="radiogroup" aria-label="外观">{(["system", "light", "dark"] as const).map(appearance => <button key={appearance} type="button" role="radio" tabIndex={current.appearance === appearance ? 0 : -1} aria-checked={current.appearance === appearance} disabled={busy || state.journal?.status === "pending"}
@@ -504,7 +508,7 @@ export function LocalSettings({
                                     approved: "已批准，等待外部 Agent 执行",
                                     rejected: "已拒绝",
                                     executing:
-                                      "安装结果待确认，请让原 Agent 回读原方案",
+                                      "操作结果待确认，请让原 Agent 回读原方案",
                                     executed: "已执行，结果保留在原方案",
                                   } as Record<string, string>
                                 )[plan.state]
@@ -515,7 +519,7 @@ export function LocalSettings({
                                 before={plan.fixed.before.preferences}
                                 patch={plan.fixed.patch}
                               />
-                            ) : (
+                            ) : plan.fixed.kind === "storage_cleanup" ? <StoragePlan plan={plan}/> : (
                               <dl className="settings-plan-metadata">
                                 <dt>套件</dt>
                                 <dd>

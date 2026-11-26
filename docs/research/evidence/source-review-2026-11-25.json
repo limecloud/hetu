@@ -1,0 +1,251 @@
+{
+  "date": "2026-11-25",
+  "scope": "R8-01 and R8-05 shared fixed-source presentation",
+  "version": "0.14.1 development",
+  "source_owner": "Existing Core outline history, blueprint revisions and task context",
+  "changes": [
+    "Read-only canonical details, source evidence, domain translations and styles shared by desktop and task review",
+    "Single-entity title rendered once; no directory navigation beyond selected source scope",
+    "Aliases, traits, facts, evidence, faction relations, locations, time anchors and rule scope rendered from returned data",
+    "Large entity reconstruction through original JSON field projections with stable entity digest, UTF-8 ranges and forward progress",
+    "Expanded evidence retained when other sources are read; unknown references do not fetch additional objects"
+  ],
+  "validation": {
+    "typescript": {
+      "status": "passed",
+      "logs": [
+        "output/source-review-20261125/task-view-types-frozen.log",
+        "output/source-review-20261125/desktop-types-frozen.log"
+      ]
+    },
+    "projection_guards": {
+      "status": "passed",
+      "passed": 2,
+      "log": "output/source-review-20261125/source-json-tests.log",
+      "covers": [
+        "Emoji and UTF-8 reconstruction",
+        "changed entity digest",
+        "wrong JSON pointer",
+        "wrong byte range",
+        "non-progressing array pages",
+        "missing array members"
+      ]
+    },
+    "apps_contract": {
+      "status": "passed",
+      "passed": 22,
+      "log": "output/source-review-20261125/task-app-contract.log"
+    },
+    "real_sources": {
+      "status": "passed",
+      "log": "output/source-review-20261125/real-source-corrected.log",
+      "covers": [
+        "five fixed sources",
+        "old outline and blueprint after head changes",
+        "single entity scope",
+        "six category directories",
+        "25 KiB entity with Emoji",
+        "whole and selected entity field paging",
+        "comments and expanded evidence retained",
+        "language change",
+        "narrow layout without horizontal overflow"
+      ],
+      "screenshots": "output/source-review-20261125/verified-source-run"
+    },
+    "desktop": {
+      "status": "passed",
+      "passed": 2,
+      "log": "output/source-review-20261125/desktop-shared-source.log",
+      "screenshot": "output/source-review-20261125/canon-details-desktop.png"
+    },
+    "full_apps": {
+      "status": "passed_with_prerequisite_skips",
+      "passed": 72,
+      "skipped": 7,
+      "failed": 0,
+      "log": "output/source-review-20261125/task-view-full.log",
+      "scope": "Before the subsequently observed host-theme propagation correction; explicit official Codex binary was not supplied.",
+      "skipped_cases": [
+        {
+          "file": "tests/agent-writing.spec.ts",
+          "title": "codex Agent经公开机器入口准备写作任务、保存参考稿并回读"
+        },
+        {
+          "file": "tests/connection.spec.ts",
+          "title": "installed official Codex CLI accepts the connection package in an isolated home"
+        },
+        {
+          "file": "tests/connection.spec.ts",
+          "title": "official Codex loads the installed plugin and discovers the App before UI negotiation"
+        },
+        {
+          "file": "tests/document-copy.spec.ts",
+          "title": "codex 长文复制只传固定引用，完整源字节留在共享事务中"
+        },
+        {
+          "file": "tests/document-move.spec.ts",
+          "title": "codex 跨文稿移动、目标搜索、双端保存及原子撤销"
+        },
+        {
+          "file": "tests/editor-sort.spec.ts",
+          "title": "codex 块字母排序、固定源保存、浅暗窄窗及单次撤销"
+        },
+        {
+          "file": "tests/shared-workbench.spec.ts",
+          "title": "codex MCP App直接打开未授权作品，复用桌面编辑保存及设置，独立面板不串作品"
+        }
+      ]
+    },
+    "resource_reproduction": {
+      "status": "passed",
+      "log": "output/source-review-20261125/resource-check-final.log"
+    },
+    "documents": {
+      "status": "passed",
+      "log": "output/source-review-20261125/design-docs-final.log"
+    },
+    "official_codex": {
+      "status": "passed",
+      "passed": 7,
+      "skipped": 0,
+      "version": "0.172.0",
+      "model_turns": 0,
+      "log": "output/source-review-20261125/official-codex-regression.log",
+      "scope": "Previously skipped protocol, discovery, public writing, copy, move, sort and shared workbench cases; isolated homes and no delegated model task."
+    },
+    "post_theme": {
+      "status": "passed_after_correcting_test_palette",
+      "covered": 29,
+      "initial_run": {
+        "passed": 28,
+        "failed": 1,
+        "log": "output/source-review-20261125/theme-source-regression.log"
+      },
+      "final_source": {
+        "passed": 1,
+        "log": "output/source-review-20261125/theme-source-final.log"
+      },
+      "covers": [
+        "host light/dark computed color scheme",
+        "explicit paper remains light in a dark host",
+        "source dark background uses shared Radix Gray 3",
+        "five fixed sources and large entity field pages",
+        "zero timeline position",
+        "retained comments and evidence disclosures"
+      ]
+    },
+    "skill": {
+      "status": "passed",
+      "validator": "skill-creator quick_validate.py",
+      "scope": "Embedded agent integration index and validation experience updated for fixed-source details, field paging and host theme."
+    }
+  },
+  "observed_issues": [
+    {
+      "status": "fixed_and_verified_in_installation",
+      "issue": "Standalone task review chooses a light paper in a dark host because its reading surface does not receive the application color scheme",
+      "evidence": "output/source-review-20261125/verified-source-run/fixed-source-dark-narrow.png",
+      "fix": "Reading surface receives the actual host application color scheme; explicit document paper selection remains separate.",
+      "verified_screenshot": "output/source-review-20261125/theme-final-results/real-正式来源按原修订读取，单实体不扩大范围，整份设定保持六类导航与完整字段/fixed-source-dark-narrow.png",
+      "installed_receipt": "output/conversation-composition-20261125/installed-typed-ui-source-review.json"
+    }
+  ],
+  "failures_preserved": [
+    {
+      "log": "output/source-review-20261125/real-source-first.log",
+      "trace": "output/source-review-20261125/first-source-run/trace.zip",
+      "reason": "After switching to English, the test still located the whole source by its Chinese fallback title. Corrected locator; product title translation retained."
+    },
+    {
+      "log": "output/source-review-20261125/dark-regression-before-fix.log",
+      "trace": "output/source-review-20261125/dark-before-fix/trace.zip",
+      "reason": "Computed color scheme was light dark instead of the explicit dark host. Fixed propagation and retained explicit paper override."
+    },
+    {
+      "log": "output/source-review-20261125/theme-source-regression.log",
+      "trace": "output/source-review-20261125/theme-results/real-正式来源按原修订读取，单实体不扩大范围，整份设定保持六类导航与完整字段/trace.zip",
+      "reason": "New test expected Gray 1; shared --page contract uses Radix Gray 3. Corrected expected color from authoritative shared stylesheet; actual color scheme fix already passed."
+    }
+  ],
+  "installation": {
+    "version": "0.14.1",
+    "source_sha256": "afc13a710f01ea0fffb28e4c62851c24f47f02bc861c2bf748323b1b9a2420ee",
+    "installed_items_verified": 3132,
+    "profile_unchanged": {
+      "creative-library.json": true,
+      "LocalSettings/settings.json": true,
+      "agent-sessions/index/selection.json": true
+    },
+    "atomic_swap": true,
+    "old_app_backup_created": false,
+    "external_mcp_processes_terminated": false,
+    "signing": "ad-hoc-development",
+    "status": "passed",
+    "log": "output/source-review-20261125/install.log",
+    "normal_profile": {
+      "status": "passed",
+      "works": 19,
+      "profile_unchanged": true,
+      "log": "output/source-review-20261125/installed-normal.log",
+      "receipt": "output/conversation-composition-20261125/installed-normal-launch-source-review.json"
+    }
+  },
+  "model_turns": 0,
+  "not_claimed": [
+    "overall R8 completion",
+    "formal release",
+    "current native Codex Desktop host",
+    "Windows or Linux"
+  ],
+  "package": {
+    "status": "installed_and_verified",
+    "manifest": "output/conversation-composition-20261125/package-source-review/hetu-dev-btMWCp/manifest.json",
+    "source_sha256": "afc13a710f01ea0fffb28e4c62851c24f47f02bc861c2bf748323b1b9a2420ee",
+    "source_inputs": 3042,
+    "artifacts": 3720,
+    "source_matches_current": true,
+    "log": "output/source-review-20261125/package.log",
+    "gui": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/source-review-20261125/package-gui.log"
+    },
+    "workspace_and_geometry": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/source-review-20261125/package-workspace.log"
+    },
+    "new_gate": "Task View raw source, scripts, local outputs and configuration included in source snapshot; type and resource checks run inside snapshot drift boundary before consumer build."
+  },
+  "installed_conversation": {
+    "status": "passed",
+    "same_original_task": "task_cc086aa9-4070-40af-b176-d438d2a7673d",
+    "new_business_writes": false,
+    "formal_document_unchanged": true,
+    "cli_log": "output/source-review-20261125/installed-conversation.log",
+    "mcp_log": "output/source-review-20261125/installed-mcp.log",
+    "ui_log": "output/source-review-20261125/installed-ui.log",
+    "ui_receipt": "output/conversation-composition-20261125/installed-typed-ui-source-review.json",
+    "single_entity_heading_once": true,
+    "no_expanding_navigation": true,
+    "host_dark_inherited": true,
+    "explicit_paper_light": true,
+    "isolated_test_preferences_restored": true,
+    "persistent_registered_mcp_restarted": false,
+    "model_turns": 0
+  },
+  "follow_up": [
+    {
+      "status": "requires_real_ui_test",
+      "scope": "professional source projection",
+      "observation": "Core task_context.read returns plugin_object via source_kind=plugin and page. The current task-review renderer handles text and blueprint/entity branches; professional page presentation needs an explicit narrow-task regression and implementation.",
+      "paths": [
+        "core/src/application/creative_tasks/context.rs",
+        "apps/task-view/src/task-review.ts"
+      ],
+      "next": "Verify the actual empty display, then preserve unknown professional fields through fixed-source projection and read-only export without executing disabled plugin code."
+    }
+  ]
+}

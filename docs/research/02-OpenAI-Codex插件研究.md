@@ -33,6 +33,12 @@ Codex接入包负责“交接任务引用 → 打开获权任务 → 按需读�
 
 ## 验证计划
 
+### 内容提及协议复核（2026-11-26）
+
+本次直接读取[官方扩展协议](https://github.com/openai/mcp-extensions/blob/main/docs/spec.md)的Server Capabilities与Composer At-Mentions。当前协议通过`extensions["openai/mentions"]:{searchTool:"工具名"}`登记；对应工具必须只读并对App可见，接收可为空的query，返回标准resource_link数组。旧`openai/extensions.mentions/search`已弃用，河图不新增该旧入口。规范列出的Desktop／Web指Work表面，不证明Codex CLI或当前Codex桌面支持。SDK README没有同名示例时以实际协议为准，不根据普通名称匹配编造Schema。
+
+采纳边界归[27第6.2节](../27-Agent与Codex插件集成设计.md#62-首条实现与验证范围)：沿已有Core目录和固定读取适配，不建第二套授权或持久搜索事实；正文、人物／设定、大纲、资料及任务固定来源按实际覆盖分别取证。真实原生宿主尚未验证时只登记协议／stdio结果。
+
 固定宿主版本与插件摘要，核验 manifest、native 二进制、授权目录、stdio、八工具、只读恢复、新会话与卸载。Apps 按桥接能力协商测试，无支持时原生审核继续。公共目录发布须独立满足渠道资格与审核，本机安装不构成上架资格。
 
 ## 持续协作的官方依据与产品选择

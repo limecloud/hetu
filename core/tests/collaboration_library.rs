@@ -13,6 +13,30 @@ fn read(hub: &CollaborationHub, input: Value) -> Value {
 }
 
 #[test]
+fn exact_authorized_work_is_discoverable_without_a_desktop_catalog() {
+    let temp=tempfile::tempdir().unwrap();
+    let directory=temp.path().join("hub");
+    let author=Kernel::open(json!({"workspace_path":temp.path().join("work"),"mode":"author",
+        "create":{"title":"机器创建的长期作品","locale":"zh-CN","operation_key":"init"}})).unwrap();
+    let work=call(&author,"hetu.works.list",json!({}))["works"][0]["work_ref"].clone();
+    let hub=CollaborationHub::open(&directory,"codex").unwrap();
+    assert_eq!(read(&hub,json!({}))["data"]["works"],json!([]));
+    let grant=call(&author,"hetu.collaboration.authorize_workspace",json!({"work_ref":work,"client_adapter":"codex",
+        "collaboration_path":directory,"operation_key":"authorize"}));
+    let page=read(&hub,json!({}));
+    assert_eq!(page["data"]["works"].as_array().unwrap().len(),1);
+    assert_eq!(page["data"]["works"][0]["work_ref"],work);
+    assert_eq!(page["data"]["works"][0]["title"],"机器创建的长期作品");
+    assert_eq!(page["data"]["works"][0]["authorized"],true);
+    assert!(!temp.path().join("creative-library.json").exists());
+    let other=CollaborationHub::open(&directory,"claude-code").unwrap();
+    assert_eq!(read(&other,json!({}))["data"]["works"],json!([]));
+    call(&author,"hetu.collaboration.revoke_management",json!({"grant_id":grant["management_ref"]["grant_id"],
+        "client_adapter":"codex","collaboration_path":directory,"operation_key":"revoke"}));
+    assert_eq!(read(&hub,json!({}))["data"]["works"],json!([]));
+}
+
+#[test]
 fn shared_library_lists_registered_works_without_granting_content_and_rechecks_each_grant() {
     let temp = tempfile::tempdir().unwrap();
     let directory = temp.path().join("Collaboration");

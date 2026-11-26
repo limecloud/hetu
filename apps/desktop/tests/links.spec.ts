@@ -3,7 +3,7 @@ import { mkdtemp } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import os from "node:os";
-import { navigate } from "./navigation.ts";
+import { captureAgentDraft, navigate } from "./navigation.ts";
 import { PluginPackage } from "../../../packages/plugin-host/src/package.ts";
 const root = path.resolve(import.meta.dirname, "../../..");
 test(
@@ -42,6 +42,7 @@ test(
     });
     try {
       const page = await application.firstWindow();
+      const capturedDraft = await captureAgentDraft(application, page);
       await application.evaluate(({ dialog }, directory) => {
         dialog.showOpenDialog = async () => ({
           canceled: false,
@@ -91,10 +92,9 @@ test(
       await page
         .getByRole("button", { name: "让 AI 处理此关联", exact: true })
         .click();
-      await expect(page.getByRole("status")).toContainText("已准备当前作品");
-      const handoff = await application.evaluate(({ clipboard }) =>
-        JSON.parse(clipboard.readText().split("\n").slice(1).join("\n")),
-      );
+      await expect(page.locator(".notice[role=status]")).toContainText("已放入当前会话草稿");
+      const handoff = JSON.parse((await capturedDraft())!.split("\n").slice(1).join("\n"));
+      expect(handoff.management_ref).toBeUndefined();
       expect(
         handoff.fixed_refs.find((item: any) => item.kind === "work_link")
           .revision,

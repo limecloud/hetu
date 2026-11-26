@@ -24,6 +24,7 @@ contextBridge.exposeInMainWorld(
     dirty: invoke("desktop:dirty"),
     buffer: invoke("desktop:buffer"),
     execution: invoke("desktop:execution"),
+    professional: invoke("desktop:professional"),
     tasks: invoke("desktop:tasks"),
     author: invoke("desktop:author"),
     management: invoke("desktop:management"),

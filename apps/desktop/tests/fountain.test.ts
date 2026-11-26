@@ -1,6 +1,15 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {parseFountain,screenplayBody,fountainRuns} from "../../../packages/workbench-ui/src/fountain.ts";
+import sceneCases from "../../../contracts/fixtures/fountain-scenes.json" with {type:"json"};
+
+test("共享场次样本与Core标题投影保持一致",()=>{
+ for(const entry of sceneCases){
+  const headings=parseFountain(entry.source).lines.filter(line=>line.kind==="scene")
+   .map(line=>({heading:entry.source.slice(line.textFrom,line.textTo),number:line.number??null}));
+  assert.deepEqual(headings,entry.expected,entry.name);
+ }
+});
 
 test("Fountain元素、中文显式人物和原始混合换行范围",()=>{
  const source="Title: 雾港\r\nSource: 固定原著\nLanguage: zh-CN\r\n\r\n# 第一集\r\n\r\n.EXT. 渡口 - NIGHT #1-1#\r\n\r\n江岚走进雨中。\r\n\r\n@江岚 (O.S.)\r\n(压低声音)\r\n船来了吗？🌿\r\n\r\n> CUT TO:\r\n\r\n.未知地点 #1-2#\r\n\r\n> 尾声 <\r\n\r\n= 场景概要\r\n\r\n[[作者备注]]\r\n\r\n===\r\n";

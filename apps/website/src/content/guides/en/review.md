@@ -23,11 +23,25 @@ In your project’s reference review, read the fixed source and original text be
 
 The [desktop preview](/en/#prototype) shows the current Electron review screen with original sample projects. The website’s revision examples are prepared content and do not analyze or save your work.
 
+Expand “Delivery and checks” to see submitted candidates, professional checks and manuscript adoption separately. Choose a professional report when useful, then inspect which candidate revision it covers and what remains unchecked or inconclusive. Historical batches retain their own delivery claims. A reported pass still needs to be considered against the text.
+
 ## Save specific feedback and continue the task
 
-Select the candidate you want to discuss, write a precise comment, then save the selection and feedback. For example:
+For a long reference, choose “Read reference” and use the page controls. Paging preserves your selection and unsaved comment. A failed read can retry the same page, and passage feedback stays with that original revision.
+
+Open “Working copies” to read drafts before submission. Choose a saved copy and revision, then comment on the whole copy or a selected passage. A newer revision does not replace the original text behind earlier feedback. Compare and adopt it after it is submitted as a candidate.
+
+Select the candidate you want to discuss, write a precise comment, then choose “Request changes.” Use “Save preferences” when you only want to record a preference. For example:
 
 > Keep the last question. Rewrite only the three lines after he recognizes the letter. Do not add family history or change the ending.
+
+To discuss a specific passage, select text in a candidate or fixed source and choose “Comment on this passage.” Write your request, then save the passage feedback. The quote and its original revision stay with the feedback across pages and later revisions. Feedback on a source explains how to use it; it does not edit the source.
+
+For an image, choose “Mark region” in the fixed preview and draw around the part to change. In a task panel, choose “Comment on this region” before saving your request. The region stays with the original image revision; a newer image does not inherit it. Remove the region to comment on the whole image. If the save receipt is uncertain, query the original save instead of submitting again.
+
+Expand “All feedback” to revisit earlier requests and filter by awaiting revision, revision returned, or preference recorded. Image details show feedback for that fixed image; “View original position” displays its marker. A returned revision means a result cites the feedback. You still decide whether it meets your request.
+
+If image feedback has changed while you were writing, reload the current batch. Your comment and marked region stay in place; save after the reload succeeds. After reopening an image, choose an earlier comment to add its continuation to the current draft or copy the prompt. Adding a draft does not send it.
 
 Use the task’s continuation handoff to return to your chosen Agent. Earlier results and feedback stay with the same task. Saved feedback does not prove the Agent has acted; refresh and read the actual returned revision.
 

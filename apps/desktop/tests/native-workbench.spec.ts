@@ -148,7 +148,8 @@ test("Mac工作台布局、正文操作与阅读位置在真实Core中贯通", a
     const typography = await page.evaluate(() => [...new Set([...document.querySelectorAll<HTMLElement>("body *")]
       .filter(element => element.checkVisibility() && [...element.childNodes].some(node => node.nodeType === Node.TEXT_NODE && node.textContent?.trim()))
       .map(element => parseFloat(getComputedStyle(element).fontSize)))].sort((a, b) => a - b));
-    expect(typography).toEqual([12, 13, 14, 16, 20]);
+    expect(typography).toEqual([12, 13, 14, 16, 20, 24]);
+    await expect(page.locator(".manuscript-title h1")).toHaveCSS("font-size", "24px");
     expect(await page.locator('.sidebar-project button').filter({hasText:"小说"}).evaluate(element => getComputedStyle(element, "::before").content)).toBe("none");
     expect(await page.locator(".manuscript-paper").evaluate(element => getComputedStyle(element).boxShadow)).toBe("none");
     expect(await page.locator(".workbench-topbar").innerText()).not.toContain("·");

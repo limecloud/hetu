@@ -1,10 +1,10 @@
 use super::*;
 use std::collections::BTreeSet;
 
-mod checkpoint;
-mod executions;
 mod assessment;
+mod checkpoint;
 mod context;
+mod executions;
 use context::entries;
 mod feedback;
 mod targets;
@@ -243,6 +243,23 @@ impl Kernel {
                     "单篇上下文超过 1 MiB，请缩小范围。",
                 )?;
                 sources.push(json!({"reference":reference,"title":doc["document"]["title"],"source_format":doc["document"]["source_format"],"sha256":doc["revision"]["sha256"],"size_bytes":text(&doc,"content")?.len()}));
+            } else if reference["kind"] == "outline" {
+                ensure(
+                    self.task_work_reference(input)?.as_ref() == Some(&reference["work_ref"]),
+                    "forbidden",
+                    "正式大纲来源须属于当前明确作品。",
+                )?;
+                let (item, sha) = self.fixed_outline_source(reference)?;
+                let content = text(&item, "text")?;
+                ensure(
+                    content.len() <= TEXT_LIMIT,
+                    "hetu.budget_exceeded",
+                    "正式大纲条目超过任务上下文预算。",
+                )?;
+                sources.push(
+                    json!({"reference":reference,"title":item["title"],"source_format":"markdown",
+                    "sha256":sha,"size_bytes":content.len()}),
+                );
             } else if reference["kind"] == "resource" {
                 ensure(
                     self.task_work_reference(input)?.as_ref() == Some(&reference["work_ref"]),
@@ -258,22 +275,58 @@ impl Kernel {
                 )?;
                 sources.push(json!({"reference":reference,"title":record["title"],"source_format":"markdown","sha256":sha,"size_bytes":content.len()}));
             } else if reference["kind"] == "plugin_object" {
-                ensure(self.task_work_reference(input)?.as_ref() == Some(&reference["work_ref"]),
-                    "forbidden", "专业来源须属于当前明确作品。")?;
+                ensure(
+                    self.task_work_reference(input)?.as_ref() == Some(&reference["work_ref"]),
+                    "forbidden",
+                    "专业来源须属于当前明确作品。",
+                )?;
                 let (record, sha) = self.fixed_professional_object(reference)?;
                 let content = bytes(&record)?;
-                ensure(content.len() <= TEXT_LIMIT, "hetu.budget_exceeded", "专业来源超过任务上下文预算。")?;
+                ensure(
+                    content.len() <= TEXT_LIMIT,
+                    "hetu.budget_exceeded",
+                    "专业来源超过任务上下文预算。",
+                )?;
                 sources.push(json!({"reference":reference,"title":record["title"],"source_format":"json","sha256":sha,"size_bytes":content.len()}));
             } else {
+                if reference["work_ref"].is_object()
+                    && (self.task_work_reference(input)?.is_some()
+                        || reference["entity_ref"].is_string())
+                {
+                    ensure(
+                        self.task_work_reference(input)?.as_ref() == Some(&reference["work_ref"]),
+                        "forbidden",
+                        "所选设定来源须属于当前明确作品。",
+                    )?;
+                }
                 let (bp, sha) = self.source_blueprint(reference)?;
                 ensure(
                     reference["sha256"].is_null() || reference["sha256"] == sha,
                     "hetu.stale_evidence",
                     "任务设定摘要不一致。",
                 )?;
-                sources.push(
-                    json!({"reference":reference,"sha256":sha,"size_bytes":bytes(&bp)?.len()}),
-                );
+                if let Some(id) = reference["entity_ref"].as_str() {
+                    let (_, entity) = blueprint::entity(&bp, id)?;
+                    let title = entity
+                        .get("name")
+                        .or_else(|| entity.get("title"))
+                        .or_else(|| entity.get("rationale"))
+                        .and_then(Value::as_str)
+                        .unwrap_or(id)
+                        .chars()
+                        .take(200)
+                        .collect::<String>();
+                    ensure(
+                        bytes(entity)?.len() <= TEXT_LIMIT,
+                        "hetu.budget_exceeded",
+                        "固定设定实体超过任务上下文预算。",
+                    )?;
+                    sources.push(json!({"reference":reference,"sha256":sha,"title":title,"source_format":"json","size_bytes":bytes(entity)?.len()}));
+                } else {
+                    sources.push(
+                        json!({"reference":reference,"sha256":sha,"size_bytes":bytes(&bp)?.len()}),
+                    );
+                }
             }
         }
         if input["task_kind"] == "revision" {
@@ -492,7 +545,9 @@ impl Kernel {
         Ok((request, sha, state, state_sha))
     }
     pub(super) fn check_task_session(&self) -> Result<()> {
-        if self.workspace_execution { return Ok(()); }
+        if self.workspace_execution {
+            return Ok(());
+        }
         if let Some(binding) = &self.management_grant {
             crate::collaboration::authoring::check_management(binding, &self.workspace_path, None)?;
         }
@@ -512,7 +567,10 @@ impl Kernel {
                 "forbidden",
                 "任务已关闭，不能继续访问。",
             )?;
-        } else if !self.has_workspace_authority() && self.management_grant.is_none() && self.is_creation_project() {
+        } else if !self.has_workspace_authority()
+            && self.management_grant.is_none()
+            && self.is_creation_project()
+        {
             return Err(Error::new(
                 "forbidden",
                 "Agent 访问建书筹备必须绑定明确任务。",
@@ -808,6 +866,29 @@ impl Kernel {
             .ok_or_else(|| Error::new("not_found", "此批次没有该候选。"))
     }
     pub(super) fn get_creative_task(&self, input: &Value) -> Result<Value> {
+        self.task_read_projection(self.creative_task_data(input)?, input)
+    }
+    fn task_read_projection(&self, result: Value, input: &Value) -> Result<Value> {
+        self.fixed_review_projection(result, input, "task")
+    }
+    fn fixed_review_projection(&self, result: Value, input: &Value, kind: &str) -> Result<Value> {
+        if input.get("result_path").is_none() {
+            return Ok(result);
+        }
+        let sha = digest(bytes(&result)?);
+        ensure(
+            input
+                .get("expected_result_sha256")
+                .is_none_or(|expected| expected == &sha),
+            "hetu.stale_evidence",
+            "审阅内容已变化，请重新读取，不拼接不同快照。",
+        )?;
+        Ok(
+            json!({format!("{kind}_page"):crate::machine::value_page(&result,input)?,format!("{kind}_page_sha256"):sha}),
+        )
+    }
+    fn creative_task_data(&self, input: &Value) -> Result<Value> {
+        let review = input["detail"] == "review";
         let (mut request, sha, mut state, state_sha) =
             self.task_for_reference(&input["task_ref"])?;
         if let Some(field) = input["request_field"].as_str() {
@@ -821,8 +902,22 @@ impl Kernel {
                 .last()
                 .and_then(|r| r["submission_id"].as_str())
         });
-        let submission = submission_id
-            .map(|id| self.read_submission(&request, &state, id, input["detail"] != "summary"))
+        let submission_ref = state["submission_refs"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|reference| reference["submission_id"].as_str() == submission_id)
+            .cloned()
+            .unwrap_or(Value::Null);
+        let mut submission = submission_id
+            .map(|id| {
+                self.read_submission(
+                    &request,
+                    &state,
+                    id,
+                    input["detail"] != "summary" && !review,
+                )
+            })
             .transpose()?
             .unwrap_or(Value::Null);
         let decision = if state["last_decision_ref"].is_null() {
@@ -855,11 +950,29 @@ impl Kernel {
             .and_then(|refs| refs.last())
             .cloned()
             .unwrap_or(Value::Null);
-        let last_feedback = if feedback_head.is_null() {
+        let last_feedback = if feedback_head.is_null() || review {
             Value::Null
         } else {
             self.read_task_feedback(&input["task_ref"], &feedback_head)?
         };
+        if review {
+            // 审阅目录保留固定身份；正文沿原读取动作展开，不修改持久请求或摘要。
+            let sources = context::entries(&request).into_iter().map(|entry| json!({
+                "reference":entry["fixed_ref"],"title":entry["title"],"sha256":entry["sha256"],
+                "size_bytes":entry["size_bytes"],"source_kind":entry["source_kind"]
+            })).collect::<Vec<_>>();
+            request["input_snapshot"] = json!({"scope_context":{"work_ref":request["input_snapshot"]["scope_context"]["work_ref"]},"sources":sources});
+            request.as_object_mut().unwrap().remove("prompt");
+            if let Some(candidates) = submission["candidates"].as_array_mut() {
+                for candidate in candidates {
+                    if candidate["kind"] != "image" {
+                        candidate.as_object_mut().unwrap().remove("patches");
+                        candidate["content_read_action"] =
+                            json!("hetu.creative_tasks.read_candidate");
+                    }
+                }
+            }
+        }
         if input["detail"] == "summary" {
             request.as_object_mut().unwrap().remove("input_snapshot");
             request["input_ref_count"] =
@@ -882,12 +995,12 @@ impl Kernel {
             request["brief"] = json!(preview);
         }
         let mut checkpoint = self.get_task_checkpoint(input)?;
-        if input["detail"] == "summary" {
+        if input["detail"] == "summary" || review {
             checkpoint = json!({"expected":checkpoint["expected"],"phase":checkpoint["checkpoint"]["phase"],"authority":"agent_notes",
                 "read_action":"hetu.task_checkpoint.get"});
         }
         Ok(
-            json!({"request":request,"request_sha256":sha,"observation":state,"expected":{"revision":state["revision"],"sha256":state_sha},"submission":submission,"candidate_refs":candidate_references(&submission,&input["task_ref"]),"decision":decision,"working_copies":working["working_copies"],"working_copies_next_cursor":working["next_cursor"],"feedback_head":feedback_head,"last_feedback":last_feedback,"checkpoint":checkpoint,"detail":input["detail"].as_str().unwrap_or("full"),"working_limits":{"copies_per_task":100,"revisions_per_copy":100,"feedback_per_task":100,"text_bytes":TEXT_LIMIT}}),
+            json!({"request":request,"request_sha256":sha,"observation":state,"expected":{"revision":state["revision"],"sha256":state_sha},"submission":submission,"submission_ref":submission_ref,"candidate_refs":candidate_references(&submission,&input["task_ref"]),"decision":decision,"working_copies":working["working_copies"],"working_copies_next_cursor":working["next_cursor"],"feedback_head":feedback_head,"last_feedback":last_feedback,"last_feedback_omitted":review&&!feedback_head.is_null(),"checkpoint":checkpoint,"detail":input["detail"].as_str().unwrap_or("full"),"working_limits":{"copies_per_task":100,"revisions_per_copy":100,"feedback_per_task":100,"text_bytes":TEXT_LIMIT}}),
         )
     }
     pub(in crate::application) fn read_task_candidate(&self, input: &Value) -> Result<Value> {
@@ -937,7 +1050,7 @@ impl Kernel {
                 let (state, _) = self.task_state(&task_id)?;
                 if input.get("state").is_none_or(|v| *v == state["state"]) {
                     let locator = json!({"scope_ref":self.scope_ref(),"task_id":task_id});
-                    records.push(json!({"task_ref":{"scope_ref":self.scope_ref(),"task_id":task_id,"request_revision":1},"task_locator":locator,"work_ref":owner,"task_kind":request["task_kind"],"brief":request["brief"],"request_sha256":sha,"state":state["state"],"submission_count":state["submission_refs"].as_array().unwrap().len(),"created_at":request["created_at"],"target_document_id":target}));
+                    records.push(json!({"task_ref":{"scope_ref":self.scope_ref(),"task_id":task_id,"request_revision":1},"task_locator":locator,"work_ref":owner,"task_kind":request["task_kind"],"brief":request["brief"],"request_sha256":sha,"state":state["state"],"submission_count":state["submission_refs"].as_array().unwrap().len(),"working_copy_count":state["working_copy_refs"].as_array().map_or(0,Vec::len),"created_at":request["created_at"],"target_document_id":target}));
                 }
             }
         }
@@ -1410,7 +1523,12 @@ impl Kernel {
         )
     }
     pub(super) fn get_task_interaction(&self, input: &Value) -> Result<Value> {
-        let mut result = self.get_creative_task(input)?;
+        let mut result = self.creative_task_data(input)?;
+        if input.get("detail").is_none() && bytes(&result)?.len() > 32 * 1024 {
+            let mut review = input.clone();
+            review["detail"] = json!("review");
+            result = self.creative_task_data(&review)?;
+        }
         result["allowed_actions"] = json!([
             "hetu.interactions.save_selection",
             "hetu.task_feedback.save",
@@ -1432,7 +1550,7 @@ impl Kernel {
             }
         }
         result["image_previews"] = json!(previews);
-        Ok(result)
+        self.task_read_projection(result, input)
     }
     pub(super) fn save_task_selection(
         &self,

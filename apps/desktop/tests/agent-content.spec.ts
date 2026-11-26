@@ -1,29 +1,41 @@
 import {createTerminal,switchAgentSurface} from "./navigation.ts";
 import {test,expect,_electron as electron} from "@playwright/test";
-import {mkdtemp,mkdir,writeFile} from "node:fs/promises";
+import {mkdtemp,mkdir,writeFile,readFile} from "node:fs/promises";
 import {spawnSync} from "node:child_process";
 import path from "node:path";
 import os from "node:os";
 import {AppServer} from "../src/main/rpc.ts";
-import {navigate} from "./navigation.ts";
+import {navigate,closeApplication} from "./navigation.ts";
+import {scopedCli} from "../src/main/cli.ts";
 
 const root=path.resolve(import.meta.dirname,"../../..");
-test("目录和预览完整键盘菜单、读取恢复、旧修订及迟到回包保持原会话",async()=>{
+test("目录和预览完整键盘菜单、读取恢复、旧修订及迟到回包保持原会话",async({},info)=>{
   test.setTimeout(120000);
   const folder=await mkdtemp(path.join(os.tmpdir(),"hetu-agent-content-")),workspace=path.join(folder,"作品"),profile=path.join(folder,"profile"),collaboration=path.join(folder,"collaboration");
-  const fixture=spawnSync(path.join(root,"target/debug/examples/baseline_fixture"),[workspace,collaboration],{encoding:"utf8"});expect(fixture.status,fixture.stderr).toBe(0);
-  const context=JSON.parse(fixture.stdout),core=await AppServer.open(path.join(root,"target/debug/hetu-app-server"),workspace);
+  const fixture=spawnSync(path.join(process.env.HETU_ACCEPT_FIXTURE_DIRECTORY??path.join(root,"target/debug/examples"),"baseline_fixture"),[workspace,collaboration],{encoding:"utf8"});expect(fixture.status,fixture.stderr).toBe(0);
+  const executable=process.env.HETU_PACKAGED_APP;
+  const context=JSON.parse(fixture.stdout),core=await AppServer.open(executable?path.resolve(executable,"../../Resources/bin/hetu-app-server"):path.join(root,"target/debug/hetu-app-server"),workspace);
   const call=async(action:string,input:any)=>{const result=await core.request("workspace/request",{action,contract_revision:"1",input});expect(result.status,JSON.stringify(result)).toBe("succeeded");return result.data;};
   const documents:any[]=[];
   for(const [index,title] of ["第二章 潮声","第三章 夜航","第四章 风雨","第五章 来信"].entries())documents.push(await call("hetu.documents.create",{kind:"novel_chapter",title,source_format:"markdown",content:title+"的固定原文。"+"\n\n海风从远方吹来。".repeat(80),operation_key:"content-"+index}));
   await mkdir(profile,{recursive:true});await writeFile(path.join(profile,"creative-library.json"),JSON.stringify({schema_version:1,roots:[{path:workspace,workspace_id:context.novel.workspace_id,works:[{work_ref:context.novel,title:"默认小说"}]}]}));
-  const executable=process.env.HETU_PACKAGED_APP,env={...process.env,HETU_DESKTOP_PROFILE:profile,HETU_COLLABORATION_DIR:collaboration};
+  const env={...process.env,HETU_DESKTOP_PROFILE:profile,HETU_COLLABORATION_DIR:collaboration};
   for(const key of ["HETU_APP_SERVER","HETU_CLI","HETU_MCP","HETU_PLUGIN_NODE","ELECTRON_RUN_AS_NODE"])delete (env as Record<string,string|undefined>)[key];
   const app=await electron.launch({...(executable?{executablePath:executable,args:[]}:{args:[path.join(root,"apps/desktop")]}),env:{...env,...(!executable?{HETU_APP_SERVER:path.join(root,"target/debug/hetu-app-server"),HETU_CLI:path.join(root,"target/debug/hetu"),HETU_MCP:path.join(root,"target/debug/hetu-mcp")}: {})}});
   try{
-    const screenshots=path.join(root,"output/pty-codex-interactions");await mkdir(screenshots,{recursive:true});
+    const screenshots=info.outputPath("previews");await mkdir(screenshots,{recursive:true});
     const page=await app.firstWindow();await page.setViewportSize({width:1440,height:900});
     await page.getByRole("button",{name:"刷新创作库",exact:true}).click();await page.getByRole("button",{name:"打开作品 默认小说",exact:true}).click();await navigate(page,"Agent 协作");await page.getByRole("button",{name:"关闭创建会话",exact:true}).click();
+    // 当前章节交接必须修复失效的私有连接，不能让作者再复制正文或手工授权。
+    const access=await call("hetu.collaboration.authorize_workspace",{work_ref:context.novel,client_adapter:"codex",collaboration_path:collaboration,operation_key:"initial-connection"});
+    const grantFile=path.join(collaboration,"management/codex",access.management_ref.grant_id+".json");
+    const grant=JSON.parse(await readFile(grantFile,"utf8"));grant.root_identity.device+=1;await writeFile(grantFile,JSON.stringify(grant));
+    expect((await page.evaluate(()=>window.hetuDesktop.connection("status","codex"))).authorized).toBe(false);
+    const request=await page.evaluate(object=>window.hetuDesktop.handoff("novel.reader",object,"draft"),{document_id:documents[0].document.document_id,revision_id:documents[0].revision.revision_id});
+    expect(request.prompt).toContain(documents[0].revision.revision_id);expect(request.prompt).not.toContain("management_ref");
+    const connected=await page.evaluate(()=>window.hetuDesktop.connection("status","codex"));expect(connected.authorized).toBe(true);expect(connected.management_ref.grant_revision).toBeGreaterThan(access.management_ref.grant_revision);
+    const machine=await scopedCli(executable?path.resolve(executable,"../../Resources/bin/hetu"):path.join(root,"target/debug/hetu"),"codex",collaboration,"hetu.documents.get",{management_ref:connected.management_ref,document_id:documents[0].document.document_id,revision_id:documents[0].revision.revision_id});
+    expect(machine.status,JSON.stringify(machine)).toBe("succeeded");expect(machine.data.revision.revision_id).toBe(documents[0].revision.revision_id);expect(machine.data.content).toContain("第二章 潮声的固定原文");
     const before=await page.evaluate(()=>window.hetuDesktop.agentSession("get"));
     const directory=page.getByRole("complementary",{name:"作品目录",exact:true}),preview=page.getByRole("region",{name:"作品内容预览",exact:true});
     const row=(title:string)=>directory.getByRole("button",{name:title,exact:true});
@@ -84,5 +96,5 @@ test("目录和预览完整键盘菜单、读取恢复、旧修订及迟到回�
     await page.getByRole("tab",{name:"第二章 潮声",exact:true}).last().click({button:"right"});await page.screenshot({path:path.join(screenshots,"preview-tab-menu.png")});await page.getByRole("menuitem",{name:"关闭所有预览",exact:true}).click();await expect(page.getByRole("tab")).toHaveCount(0);await expect(page.locator(".agent-content-terminal")).toBeVisible();await expect(page.locator(".xterm-helper-textarea")).toBeFocused();
     const after=await page.evaluate(()=>window.hetuDesktop.agentSession("get"));expect(after.session_id).toBe(before.session_id);expect(after.thread_id).toBe(before.thread_id);expect(after.state).toBe("idle");
     await page.screenshot({path:path.join(screenshots,"preview-keyboard-and-recovery.png")});
-  }finally{await app.evaluate(()=>(globalThis as any).__releasePreview?.()).catch(()=>{});await app.close();await core.close();}
+  }finally{await app.evaluate(()=>(globalThis as any).__releasePreview?.()).catch(()=>{});await closeApplication(app);await core.close();}
 });

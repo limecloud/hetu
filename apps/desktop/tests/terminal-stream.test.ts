@@ -13,8 +13,8 @@ test("回放期间实时输出仅呈现一次，缺段回读原宿主，旧代�
   snapshot={...initial,generation:2,terminal_sequence:1,terminal_replay:"NEW"};await stream.sync();stream.receive({type:"terminal",session_id:"session-one",generation:1,sequence:100,data:"OLD"});assert.equal(output,"NEW");assert.equal(reads,3);
 });
 test("回读失败或元数据不完整时关闭输入，核对成功才恢复",async()=>{
-  let snapshot={...initial};const stream=new TerminalStream({read:async()=>snapshot,reset:async()=>{},write:()=>{},error:()=>{}});
-  await stream.sync();assert(stream.acceptsInput);snapshot={...initial,terminal_sequence:undefined};await assert.rejects(stream.sync(),/不完整/);assert(!stream.acceptsInput);snapshot={...initial};await stream.sync();assert(stream.acceptsInput);
+  let snapshot={...initial};const inputStates:boolean[]=[];const stream=new TerminalStream({read:async()=>snapshot,reset:async()=>{},write:()=>{},error:()=>{},inputStatus:value=>inputStates.push(value)});
+  await stream.sync();assert(stream.acceptsInput);assert.deepEqual(inputStates,[false,true]);snapshot={...initial,terminal_sequence:undefined};await assert.rejects(stream.sync(),/不完整/);assert(!stream.acceptsInput);assert.deepEqual(inputStates.slice(-2),[false,false]);snapshot={...initial};await stream.sync();assert(stream.acceptsInput);assert.deepEqual(inputStates.slice(-2),[false,true]);stream.dispose();assert.equal(inputStates.at(-1),false);
 });
 test("旧页面关闭后迟到回放不再写入已释放终端",async()=>{
   let release:(value:SessionSnapshot)=>void=()=>{},resets=0;

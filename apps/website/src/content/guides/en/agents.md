@@ -16,13 +16,15 @@ General agents require sustained work on reasoning, context management, tool orc
 
 Cursor, Grok Build, DeepSeek Harness and Doubao are also developing their own Agent and extension ecosystems. Skills, MCP, CLI, MCP Apps and plugins provide methods, actions, interaction and distribution. Support depends on the exact client version and surface; one supported capability does not imply all the others.
 
+When a Codex session inside Hetu needs sign-in, choose “Sign in to Codex” and complete the browser flow, then return to the same conversation. If you close the browser page, use “Open sign-in page” to continue the same sign-in. Unsent drafts remain available. If no sign-in prompt appears, continue with your existing configuration.
+
 ## MCP: connect books and tasks
 
 <span id="mcp"></span>
 
 External agents use MCP to discover capabilities, create authorized projects, organize chapters and references, submit candidates, prepare delivery and retrieve feedback. Your chosen client manages the connection, so the native window need not stay open. Configure the stable connection once; each explicit work and task identifies its authorized material. Novels, related scripts and videos keep separate access scopes, even in the same folder. A connection does not grant library-wide access, and reauthorization does not revive revoked tasks.
 
-In Settings → AI Collaboration → Install to Codex Desktop, choose “Install MCP App” and “Install Skills Suite” separately. Confirm the installation target and Hetu completes the installation, then refresh or restart Codex as prompted. Only the selected genre suite is installed. Verify registration and current-session loading separately.
+In Settings → AI Collaboration, expand the section for external clients, MCP Apps and Skills. Under “Install to Codex Desktop”, choose “Install MCP App” and “Install Skills Suite” separately. Confirm the installation target and Hetu completes the installation, then refresh or restart Codex as prompted. Only the selected genre suite is installed. Verify registration and current-session loading separately.
 
 Hosts that support MCP Apps open the same workspace as the desktop application. Open registered local works directly to read, edit, review references and tasks, preview images and audiovisual material, compare candidates and save feedback, without a separate authorization step for each work. Use the contextual AI handoff to continue from the fixed manuscript. Message drafts, accepted messages and returned results have separate states. Adoption, finalization and costs still require reviewing the exact result. Other hosts continue with tool results and the desktop workspace.
 
@@ -46,7 +48,7 @@ Plugins distribute methods and connection definitions together. Installation, se
 
 ## 1. Choose your usual assistant
 
-In the Mac app, open Settings → AI Collaboration to choose the default client for new books. For an existing book, choose its client in book details.
+In the Mac app, open Settings → AI Collaboration and expand the section for external clients, MCP Apps and Skills to choose the default client for new books. For an existing book, choose its client in book details.
 
 For example, you can use Codex for a military novel and WorkBuddy for an urban story. Changing the default leaves existing book choices intact.
 
@@ -66,6 +68,8 @@ A task may include authorized resource organization, candidate submission, check
 ## 3. Read the brief before sending it
 
 Use the current page's contextual handoff to review the goal and material, then paste the prompt into your external Agent conversation. You can also give the goal directly to an already connected Agent and let it prepare the task.
+
+In the embedded chat, use Attach context beside the composer to choose reference drafts, public feedback or professional results. Insert manuscripts and resources from the project directory on the right. Each attachment keeps its selected revision and can be inspected or removed; later updates do not replace it. Retained results remain readable after disabling a plugin. Continuing professional work requires an available plugin.
 
 Share only what this task needs. When using the native copy-and-paste path, send the prompt in your chosen external client. Manage accounts, sign-in and service costs there.
 

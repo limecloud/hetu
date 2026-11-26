@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import type { SurfaceContext } from "./contributions.tsx";
 import { desktop, data } from "./bridge.ts";
 import { MediaPreview } from "./media-preview.tsx";
+import { CaptionAssetPreview } from "./media-captions.tsx";
 import { Icon, IconButton, PageActions } from "./workbench.tsx";
 import "./surface-pages.css";
 import {useObjectContextMenu} from "./text-context-menus.tsx";
@@ -135,6 +136,7 @@ export function MediaLibrary({ work, ai, notify }: SurfaceContext) {
           aria-pressed={collection === "cues"}
           onClick={() => {
             setCollection("cues");
+            if (kind === "caption") setKind("");
             setCursor(undefined);
           }}
         >
@@ -154,6 +156,7 @@ export function MediaLibrary({ work, ai, notify }: SurfaceContext) {
             <option value="">全部类型</option>
             <option value="visual">图片与视频</option>
             <option value="music">声音与配乐</option>
+            {collection === "assets" && <option value="caption">字幕</option>}
           </select>
         </label>
         {collection === "cues" && (
@@ -226,7 +229,7 @@ export function MediaLibrary({ work, ai, notify }: SurfaceContext) {
                 </p>
                 {view.type === "assets" ? (
                   <>
-                    <MediaPreview key={id + ":" + record.revision} asset={record} sha256={view.sha256} />
+                    {record.kind === "caption" ? <CaptionAssetPreview key={id + ":" + record.revision} asset={record} sha256={view.sha256}/> : <MediaPreview key={id + ":" + record.revision} asset={record} sha256={view.sha256} />}
                     <dl>
                       <dt>文件</dt>
                       <dd>{record.original_filename}</dd>

@@ -1,0 +1,121 @@
+{
+  "date": "2026-11-25",
+  "surface": "embedded GUI",
+  "work_ref": {
+    "kind": "novel",
+    "object_id": "novel_0865f2d2-9545-4ede-8c62-f7c27e42383e",
+    "workspace_id": "workspace_a8d9e2e9-ff6c-4ecd-8ff2-3edaeb5c388c"
+  },
+  "thread_id": "01a20e59-7267-7fc0-b821-bfa5cdcbeaa3",
+  "readonly_task_count_unchanged": true,
+  "task_ref": {
+    "request_revision": 1,
+    "scope_ref": {
+      "id": "workspace_a8d9e2e9-ff6c-4ecd-8ff2-3edaeb5c388c",
+      "kind": "workspace"
+    },
+    "sha256": "f83f9764b28d6f8e2ca2e233ed50c22692ce15979a8d2d3c57866474d2ef5b36",
+    "task_id": "task_7b916700-c3be-49e9-a28a-bf7224d6be38"
+  },
+  "submission_ref": {
+    "sha256": "d6ef03fd2b44b2f8ae32451761c2bf1a56e61b73c7ddec8ab222f43113bafc57",
+    "submission_id": "submission_1ca8a88b-ef34-44dd-86c1-667dd7ac8ab9"
+  },
+  "core_verified_result": true,
+  "reference_sha256": "a81d0e8ab04f6825d75c081aa485ef2d5afe6365344bf47fbf8e3964f59698f4",
+  "limits": [
+    "isolated short Chinese reference",
+    "macOS source build, not installed release",
+    "not creative quality approval",
+    "isolated automation records an exact author QA decision; not the real author's creative approval"
+  ],
+  "lifecycle": {
+    "original_submission": {
+      "sha256": "d6ef03fd2b44b2f8ae32451761c2bf1a56e61b73c7ddec8ab222f43113bafc57",
+      "submission_id": "submission_1ca8a88b-ef34-44dd-86c1-667dd7ac8ab9"
+    },
+    "revised_submission": "submission_2b590947-e61d-4fde-ade6-e27081407440",
+    "feedback_refs": [
+      {
+        "feedback_id": "feedback_11381ea3-f0de-46e2-a923-da88b2720fa1",
+        "sha256": "19a8d24095fea06ae02e9fe3dbff8a34c986a3caada2940e1a08ea2ab43fc56a"
+      }
+    ],
+    "document_revision": {
+      "actor_ref": "actor_00000000-0000-4000-8000-000000000001",
+      "content_path": "packages/novel/documents/doc_ce1f95a4-645a-4a56-9215-d801b1d87064/revisions/rev_c6225203-6856-45e0-97e7-e19086b09594.md",
+      "contribution_refs": [
+        {
+          "adoption_id": "adoption_71a3f780-b515-48ac-859b-aba74a167bce",
+          "sha256": "024d8212d6e18cd3aeca4d5fc7e9710ddf6d2ca0049e3157c4a692eb206c0839"
+        }
+      ],
+      "created_at": "2026-11-24T16:38:05.353334Z",
+      "document_id": "doc_ce1f95a4-645a-4a56-9215-d801b1d87064",
+      "origin_kind": "author",
+      "parent_revision_id": "rev_42db0d06-028d-4a54-ae72-88680b9133db",
+      "revision_id": "rev_c6225203-6856-45e0-97e7-e19086b09594",
+      "schema_version": "1.0.0",
+      "sha256": "aef1e18715ffa86e156888dd07b4564c30222ec350730b381029b225cfcf37a1",
+      "size_bytes": 120,
+      "source_format": "markdown"
+    },
+    "adoptions": 1,
+    "finalizations": 0,
+    "bundle_id": "bundle_4e321021-dfad-4e5b-9766-3582c0649bb2",
+    "bundle_sha256": "06bc54eb0a19cad7519f3679354df1e439b09c5c210cb5a42cb1b098f18cd98a",
+    "thread_id": "01a20e59-7267-7fc0-b821-bfa5cdcbeaa3"
+  },
+  "logs": {
+    "readonly_and_draft": "output/embedded-agent-20261124/gui-live-fixed-route.log",
+    "lifecycle_first": "output/embedded-agent-20261124/gui-live-lifecycle.log",
+    "lifecycle_resumed": "output/embedded-agent-20261124/gui-live-lifecycle-resume.log"
+  },
+  "checks": [
+    "readonly-no-task-or-write",
+    "precise-existing-work-task-prepare",
+    "same-thread-task-and-working-copy",
+    "feedback-bound-to-original-candidate",
+    "old-submission-preserved",
+    "author-preview-before-adoption",
+    "one-adoption-zero-finalizations",
+    "exact-revision-export-and-file-hash",
+    "asynchronous-commit-recovery-without-repeat"
+  ],
+  "source_files": [
+    {
+      "path": "apps/desktop/src/renderer/agent-chat.tsx",
+      "sha256": "dff9237e27baca7b232fa29fa63473127c369c20dbaf3a020f9c1595e6ee9a00"
+    },
+    {
+      "path": "apps/desktop/src/renderer/agent-chat.css",
+      "sha256": "2e438b160909e5742f1b456b0c8ed108675d330888d6cdc3cf4cd0f87466a1e1"
+    },
+    {
+      "path": "apps/desktop/src/main/agent/fixed-context.ts",
+      "sha256": "af37c42a7a8f422357fb7d868ef924956d7c9bfabc683b9a68ea4ce661ccf2d1"
+    },
+    {
+      "path": "apps/desktop/src/main/agent/codex-session.ts",
+      "sha256": "7c87b8d202c4e996309f1fb824724e663d7a7c03132fd0eb739d1f12a12c949b"
+    },
+    {
+      "path": "apps/desktop/src/main/main.ts",
+      "sha256": "20b38dc1bb11098aa1e9dad7bd98e40c51d8b1a726bf2f28f92fdd511a1488ab"
+    },
+    {
+      "path": "apps/desktop/tests/agent-gui-live.spec.ts",
+      "sha256": "467f4db88c9735a70de456eda0ad1b7fcadef2806f82174b9a154253da9a8dce"
+    },
+    {
+      "path": "core/src/collaboration/authoring.rs",
+      "sha256": "b16c23dc0fc9053db347a800240c54f42dbba6cccb9a3378806253a823bca2ad"
+    },
+    {
+      "path": "core/tests/stable_task_preparation.rs",
+      "sha256": "3a7464208f3576d1d320a68b5fec05c8fcdf46c814bb4e4d0e2ec17e07c351cb"
+    }
+  ],
+  "author_document_unchanged_before_adoption": true,
+  "initial_stage_model_rounds": 3
+}

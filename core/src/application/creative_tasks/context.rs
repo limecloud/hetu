@@ -29,7 +29,7 @@ fn before_boundary(content: &str, mut at: usize) -> usize {
 }
 
 fn text_source_ref(entry: &Value, content: &str, start: usize, end: usize) -> Value {
-    let mut reference = if entry["kind"] == "resource" {
+    let mut reference = if entry["kind"] == "resource" || entry["kind"] == "outline" {
         entry["fixed_ref"].clone()
     } else {
         json!({"document_id":entry["fixed_ref"]["document_id"],"revision_id":entry["fixed_ref"]["revision_id"]})
@@ -213,6 +213,14 @@ impl Kernel {
                 )?;
             }
             Ok(json!({"content":document["content"]}))
+        } else if reference["kind"] == "outline" {
+            let (item, sha) = self.fixed_outline_source(reference)?;
+            ensure(
+                source["sha256"] == sha,
+                "hetu.integrity_failure",
+                "固定正式大纲摘要不一致。",
+            )?;
+            Ok(json!({"content":item["text"]}))
         } else if reference["kind"] == "resource" {
             let (record, sha) = self.source_resource(reference)?;
             ensure(
@@ -223,7 +231,11 @@ impl Kernel {
             Ok(json!({"content":record["body"]}))
         } else if reference["kind"] == "plugin_object" {
             let (record, sha) = self.fixed_professional_object(reference)?;
-            ensure(source["sha256"] == sha, "hetu.integrity_failure", "固定专业来源摘要不一致。")?;
+            ensure(
+                source["sha256"] == sha,
+                "hetu.integrity_failure",
+                "固定专业来源摘要不一致。",
+            )?;
             Ok(json!({"plugin_object":record}))
         } else {
             let (blueprint, sha) = self.source_blueprint(reference)?;
@@ -268,15 +280,38 @@ impl Kernel {
             .as_u64()
             .unwrap_or(DEFAULT_READ_BYTES as u64) as usize;
         if entry["kind"] == "blueprint" {
+            if let Some(id) = entry["fixed_ref"]["entity_ref"].as_str() {
+                let (section, _) = blueprint::entity(&source["blueprint"], id)?;
+                ensure(
+                    input.get("section").is_none_or(|value| *value == section)
+                        && input.get("entity_id").is_none_or(|value| *value == id),
+                    "forbidden",
+                    "本条固定来源只包含所选设定实体。",
+                )?;
+                let mut selected = input.clone();
+                selected["section"] = json!(section);
+                selected["entity_id"] = json!(id);
+                let mut result =
+                    self.read_structured_context(&selected, entry, &source["blueprint"], budget)?;
+                result["coverage"] = json!({"kind":"entity","entity_ref":id,"section":section});
+                return Ok(result);
+            }
             return self.read_structured_context(input, entry, &source["blueprint"], budget);
         }
         if entry["kind"] == "plugin_object" {
-            ensure(["range","section","entity_id","cursor","limit"].iter().all(|key|input.get(*key).is_none()),
-                "invalid_input","专业对象使用字段投影与字节分页读取。")?;
-            let mut page_input=input.clone();
-            page_input["max_bytes"]=json!(budget);
-            return Ok(json!({"context_ref":input["context_ref"],"fixed_ref":entry["fixed_ref"],
-                "sha256":entry["sha256"],"source_kind":"plugin","page":crate::machine::value_page(&source["plugin_object"],&page_input)?}));
+            ensure(
+                ["range", "section", "entity_id", "cursor", "limit"]
+                    .iter()
+                    .all(|key| input.get(*key).is_none()),
+                "invalid_input",
+                "专业对象使用字段投影与字节分页读取。",
+            )?;
+            let mut page_input = input.clone();
+            page_input["max_bytes"] = json!(budget);
+            return Ok(
+                json!({"context_ref":input["context_ref"],"fixed_ref":entry["fixed_ref"],
+                "sha256":entry["sha256"],"source_kind":"plugin","page":crate::machine::value_page(&source["plugin_object"],&page_input)?}),
+            );
         }
         ensure(
             [

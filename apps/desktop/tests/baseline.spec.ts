@@ -5,7 +5,7 @@ import path from "node:path";
 import os from "node:os";
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
-import { navigate, openDirectory } from "./navigation.ts";
+import { navigate, openDirectory, closeApplication } from "./navigation.ts";
 
 const root = path.resolve(import.meta.dirname, "../../..");
 test("空插件目录的小说大纲、剧本阅读、视频播放与区间反馈，经CLI/MCP回读并重开", async () => {
@@ -15,6 +15,9 @@ test("空插件目录的小说大纲、剧本阅读、视频播放与区间反�
   const fixture = spawnSync(path.join(root, "target/debug/examples/baseline_fixture"), [workspace, collaboration], { encoding: "utf8", timeout: 30000 });
   expect(fixture.status, fixture.stderr).toBe(0);
   const context = JSON.parse(fixture.stdout);
+  const executable = process.env.HETU_PACKAGED_APP;
+  const resources = executable ? path.resolve(executable, process.platform === "darwin" ? "../../Resources" : "../resources") : undefined;
+  const binary = (name: string) => path.join(resources ? path.join(resources, "bin") : path.join(root, "target/debug"), name + (process.platform === "win32" ? ".exe" : ""));
   let app: ElectronApplication | undefined, client: Client | undefined;
   const exported = path.join(folder, "导出视频.mp4");
   const screenshots = path.join(root, "output/baseline-qa");
@@ -32,12 +35,12 @@ test("空插件目录的小说大纲、剧本阅读、视频播放与区间反�
     await page.evaluate(() => { document.documentElement.dataset.appearance = "light"; document.documentElement.style.colorScheme = "light"; });
   }
   const cli = (action: string, input: any) => {
-    const result = spawnSync(path.join(root, "target/debug/hetu"), ["--client", "codex", "--collaboration-dir", collaboration, "call", action, "--input", "-"], { input: JSON.stringify(input), encoding: "utf8", timeout: 30000, env: { ...process.env, HETU_PLUGIN_STATE_DIR: plugins } });
+    const result = spawnSync(binary("hetu"), ["--client", "codex", "--collaboration-dir", collaboration, "call", action, "--input", "-"], { input: JSON.stringify(input), encoding: "utf8", timeout: 30000, env: { ...process.env, HETU_PLUGIN_STATE_DIR: plugins } });
     expect(result.status, result.stdout + result.stderr).toBe(0);
     return JSON.parse(result.stdout).data;
   };
   async function launch() {
-    app = await electron.launch({ args: [path.join(root, "apps/desktop")], env: { ...process.env, HETU_DESKTOP_PROFILE: profile, HETU_COLLABORATION_DIR: collaboration, HETU_PLUGIN_STATE_DIR: plugins, HETU_PLUGIN_ACCESS_DIR: path.join(folder, "access"), HETU_APP_SERVER: path.join(root, "target/debug/hetu-app-server"), HETU_CLI: path.join(root, "target/debug/hetu") } });
+    app = await electron.launch({ ...(executable ? {executablePath: executable, args: []} : {args: [path.join(root, "apps/desktop")]}), env: { ...process.env, HETU_DESKTOP_PROFILE: profile, HETU_COLLABORATION_DIR: collaboration, HETU_PLUGIN_STATE_DIR: plugins, HETU_PLUGIN_ACCESS_DIR: path.join(folder, "access"), ...(!executable ? {HETU_APP_SERVER: binary("hetu-app-server"), HETU_CLI: binary("hetu")} : {}) } });
     await app.evaluate(({ dialog }, input) => {
       dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [input.workspace] });
       dialog.showSaveDialog = async () => ({ canceled: false, filePath: input.exported });
@@ -99,14 +102,14 @@ test("空插件目录的小说大纲、剧本阅读、视频播放与区间反�
     await expect.poll(async () => (await readFile(exported).catch(() => Buffer.alloc(0))).length).toBe((await readFile(path.join(root, "apps/desktop/tests/fixtures/preview.mp4"))).length);
     expect(await readFile(exported)).toEqual(await readFile(path.join(root, "apps/desktop/tests/fixtures/preview.mp4")));
     client = new Client({ name: "baseline-e2e", version: "1.0.0" });
-    await client.connect(new StdioClientTransport({ command: path.join(root, "target/debug/hetu-mcp"), args: ["--client", "codex", "--collaboration-dir", collaboration], env: { ...process.env, HETU_PLUGIN_STATE_DIR: plugins } as Record<string, string> }));
+    await client.connect(new StdioClientTransport({ command: binary("hetu-mcp"), args: ["--client", "codex", "--collaboration-dir", collaboration], env: { ...process.env, HETU_PLUGIN_STATE_DIR: plugins } as Record<string, string> }));
     const result: any = await client.callTool({ name: "hetu_call_action", arguments: { action: "hetu.video.media.get", input: { management_ref: context.grants.video, work_ref: context.video, media_ref: context.second } } });
     expect(result.isError, JSON.stringify(result)).not.toBe(true);
     const structured = result.structuredContent ?? JSON.parse(result.content[0].text);
     expect(structured.data.media.previous_media_ref).toEqual(context.first);
     expect((await page.evaluate(() => (window as any).hetuDesktop.state())).plugins).toEqual([]);
     await page.screenshot({ path: path.join(root, "output/baseline-video-review.png"), fullPage: true });
-    await app.close(); app = undefined;
+    await closeApplication(app, "window"); app = undefined;
     await mkdir(plugins, { recursive: true });
     await writeFile(path.join(plugins, "plugin-state.json"), "损坏的可选插件登记");
     page = await launch();
@@ -117,5 +120,5 @@ test("空插件目录的小说大纲、剧本阅读、视频播放与区间反�
     expect((await page.evaluate(() => (window as any).hetuDesktop.state())).plugin_state_error).toBeTruthy();
     expect(await readFile(path.join(plugins, "plugin-state.json"), "utf8")).toBe("损坏的可选插件登记");
     expect((await readdir(plugins).catch(() => [])).filter(name => name.endsWith(".plugin"))).toEqual([]);
-  } finally { await client?.close(); await app?.close(); }
+  } finally { await client?.close(); if (app) await closeApplication(app, "window"); }
 });

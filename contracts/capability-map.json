@@ -3,14 +3,15 @@
   "generated_by": "tools/sync-capability-map.py",
   "meaning": "source_wired仅表示源码合同和入口已连线；不证明安装、运行、跨平台或端到端通过。执行时先inspect实际能力。",
   "sources": {
-    "contracts/actions.json": "e1ef9898c28d4afa7372e4a339b45755bc2c371e450a6c5deec362247fff895e",
-    "contracts/tools/catalog.json": "c38f501e31a8a94998751651b2cbfc139cb0fcc5eed94c271358198a26004245",
-    "core/src/application/agent_operations.rs": "e28c07b2cc18ee4e5b26e34f366fd573b607422caf694316456e48a3f18e0221",
-    "core/src/application/creative_tasks.rs": "07f16cfa634d5441646e9d8b39b0d750a12649bc521dd937c005855d804e02be",
-    "core/src/application/work_scope.rs": "520df437f034eaa84f385f7c9f0685c252d5d4c86a83b56a39ef69e94823d675",
-    "core/src/collaboration/authoring.rs": "f55c06e6d2f475be51cf7b59c602d7e3ff6c0371672e024b4da13e29812db7bb",
-    "core/src/execution.rs": "e1b68aed480fc7e6c225663b92b1f63e77ccb2bbf67192c0d0350c7fdc059e02",
-    "core/src/local_settings.rs": "c6632e1b42412a5c8aa55a8c5f599469b28962395935a4de80fe53ad9114b94b",
+    "contracts/actions.json": "eaba3643295bd6b77e868e07ab175e2db9a954ec52af848f88941b55ef180506",
+    "contracts/tools/catalog.json": "b27cddc5c0f2434015d5e93b94a7751a26b0d3b2c0b15ffae27e610deeb742a7",
+    "core/src/application/agent_operations.rs": "21cceeca50ce1e332223649a66fcbe971b3ad2a5ea7d27051655b723978ba247",
+    "core/src/application/creative_tasks.rs": "101bbc0730f7947b04b9d923e8763e3d7d265fa4603140f31a90cc5c7af9970e",
+    "core/src/application/mod.rs": "6a8bde3196c0231089bbbcb2fd5f8a6087739e4f8b9787c188f91fb4cf61ba57",
+    "core/src/application/work_scope.rs": "4184101402f5ebb61719c7ae437222e30f24cee89a1e49f38f7b1b71738d257e",
+    "core/src/collaboration/authoring.rs": "afc6c66720fd6b4b5a89572a0546a6853a4fcc2982bcac35ac979b5e3bae571a",
+    "core/src/execution.rs": "92c0f3f9b0f5b8bd20f233e7330b8159a441a9cb21bc3f8eda2054e41dca6a3e",
+    "core/src/local_settings.rs": "379e7f5fc570901cd97fdb8be745c49a1765cdab6f753801b6526c7a896e6616",
     "integrations/catalog.json": "c3b605b329f352f881a7acbc84e12f1b548830e0b912ba0e1628924401f130af",
     "tools/hetu-skills/base/skills/hetu-artwork/SKILL.md": "c36083101e25c4d79945075920ed5b53b40a63c9d4fe731186f57ede831b5a2c",
     "tools/hetu-skills/base/skills/hetu-book-create/SKILL.md": "7458c3f3b4a25c671e235a7c81f00ca6d61856c04b70adced108ed16f5c16f01",
@@ -19,12 +20,12 @@
     "tools/hetu-skills/base/skills/hetu-draft/SKILL.md": "5512787ab6d8c5adcf3198ab9b86ac62dfa87f8493d975125040bc8743366bc6",
     "tools/hetu-skills/base/skills/hetu-drama/SKILL.md": "4b6e9e54da4ad340135ed13be517592cff32e2618d6d4f2665f60761bf7d1227",
     "tools/hetu-skills/base/skills/hetu-import/SKILL.md": "06b645d541d52c16ae0bbb3a3ba8e3502e54d015d0fdefb964ce777e7bd60cfd",
-    "tools/hetu-skills/base/skills/hetu-manage/SKILL.md": "6d98b20a3ddfcb5c05d448dab9d375954b8c12e924bf21651f4e7aea2e8263f4",
+    "tools/hetu-skills/base/skills/hetu-manage/SKILL.md": "aeac59b920835feef7561486e5083a7f7b69716f5f8f70ddd676c8e7e789b6e2",
     "tools/hetu-skills/base/skills/hetu-outline/SKILL.md": "bcbc5c66aee7ec6db81e99fb1c71ff3aeb3e63783ba326238666b2744fd05ecc",
     "tools/hetu-skills/base/skills/hetu-resources/SKILL.md": "fe17742a95a99b45874f510609d41fdf83689070473e63489aba26447d1e2fde",
-    "tools/hetu-skills/base/skills/hetu-revise/SKILL.md": "ab4fbbe213941d5b278bf772743c15c138a229ec704f97bfcd36fda98bd57814",
+    "tools/hetu-skills/base/skills/hetu-revise/SKILL.md": "8ff54e108036c68d84eed37c342268810828d2091ec1f46ebd1522738fa9a5e1",
     "tools/hetu-skills/base/skills/hetu-setup/SKILL.md": "379cb048919507e41b976a98ef4a849fdd184e6ecb2db0cc7eea952a6e0b7824",
-    "tools/hetu-skills/base/skills/hetu-video/SKILL.md": "7055545351e28b2453124627169f15d3f12cb95f79d02ba62fb384ad02685817"
+    "tools/hetu-skills/base/skills/hetu-video/SKILL.md": "ef85e1d8e4531325e2a32f639d53f0954c452770971cadb460d821fa05128717"
   },
   "verification_evidence": "docs/research/evidence/2026-11-16-agent-capabilities.json",
   "skills": [
@@ -251,6 +252,7 @@
       "actions": [
         "hetu.documents.create",
         "hetu.documents.list",
+        "hetu.documents.scene_index",
         "hetu.documents.get",
         "hetu.documents.save",
         "hetu.git.status",
@@ -281,6 +283,7 @@
         "hetu.local_settings.get",
         "hetu.local_settings.inspect_suite",
         "hetu.local_settings.inspect_connection",
+        "hetu.local_settings.inspect_storage",
         "hetu.local_settings.prepare",
         "hetu.local_settings.get_operation",
         "hetu.local_settings.execute",
@@ -324,6 +327,8 @@
         "hetu.documents.move_to_new",
         "hetu.documents.get_move",
         "hetu.documents.restore_move",
+        "hetu.plugin_results.list",
+        "hetu.plugin_results.get",
         "hetu.plugins.capabilities",
         "hetu.plugins.invoke"
       ]
@@ -360,6 +365,10 @@
         "hetu.video.media.list",
         "hetu.video.feedback.save",
         "hetu.video.feedback.list",
+        "hetu.video.decisions.preview",
+        "hetu.video.decisions.save",
+        "hetu.video.decisions.get",
+        "hetu.video.decisions.history",
         "hetu.video.delivery.preview"
       ]
     }
@@ -435,6 +444,18 @@
         "记录真实选择",
         "精确市场预检后执行；未知沿原键只读恢复",
         "分别核对安装和本会话加载状态"
+      ]
+    },
+    {
+      "goal": "查看存储占用与清理缓存、已移除会话",
+      "skill": "hetu-manage",
+      "entry": "hetu.local_settings.inspect_storage",
+      "path": [
+        "读取分类与候选快照",
+        "选择确切项目并准备storage_cleanup方案",
+        "展示清单并登记真实清理决定",
+        "原键执行并回读逐文件结果",
+        "变化项保留，未知沿原方案恢复"
       ]
     },
     {
@@ -990,9 +1011,165 @@
           },
           "work_ref": {
             "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "query": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "include_revision_ref": {
+            "type": "boolean"
           }
         },
         "required": []
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.documents.scene_index",
+      "purpose": "检索剧本原稿的固定场次范围并按需读取原文，不创建持久场次身份",
+      "group": "章节、正文与定稿",
+      "effect": "read",
+      "routes": [
+        "exact_management_ref"
+      ],
+      "cli": "hetu --client <client> call hetu.documents.scene_index --input -",
+      "proposal_target": null,
+      "mcp": [
+        {
+          "name": "hetu_read_scene_index",
+          "profiles": [
+            "workspace",
+            "stable"
+          ]
+        }
+      ],
+      "mcp_via_proposal": false,
+      "skill": "hetu-manage",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-manage/SKILL.md",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "document_id": {
+            "type": "string",
+            "pattern": "^doc_[0-9a-f-]{36}$"
+          },
+          "revision_id": {
+            "type": "string",
+            "pattern": "^rev_[0-9a-f-]{36}$"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "query": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "scene_range": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "索引返回的完整场次原文范围，必须与固定修订逐字节一致；不是持久scene_id。",
+            "properties": {
+              "byte_start": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "byte_end": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "byte_start",
+              "byte_end"
+            ]
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991,
+            "description": "相对scene_range.byte_start的UTF-8字节偏移，必须位于字符边界。"
+          },
+          "max_bytes": {
+            "type": "integer",
+            "minimum": 4,
+            "maximum": 65536
+          }
+        },
+        "required": [
+          "work_ref"
+        ],
+        "dependentRequired": {
+          "revision_id": [
+            "document_id"
+          ],
+          "sha256": [
+            "document_id",
+            "revision_id"
+          ],
+          "scene_range": [
+            "document_id",
+            "revision_id",
+            "sha256"
+          ],
+          "offset": [
+            "scene_range"
+          ],
+          "max_bytes": [
+            "scene_range"
+          ]
+        },
+        "allOf": [
+          {
+            "if": {
+              "required": [
+                "scene_range"
+              ]
+            },
+            "then": {
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "query"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "cursor"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "limit"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        ]
       },
       "decision": "按任务或读取范围执行",
       "recover": "hetu.operations.get",
@@ -3575,23 +3752,45 @@
       "purpose": "关闭本机任务跟踪并撤销后续任务访问",
       "group": "创作任务与接续",
       "effect": "submit",
-      "routes": [],
-      "cli": "hetu --client <client> call hetu.creative_tasks.close --input -",
+      "routes": [
+        "workspace_execution"
+      ],
+      "workspace_execution": {
+        "action": "hetu.execution.invoke",
+        "scope": "workspace",
+        "input_template": {
+          "workspace_path": "<当前工作区绝对路径>",
+          "command": {
+            "action": "hetu.creative_tasks.close",
+            "contract_revision": "1",
+            "input": {}
+          }
+        },
+        "command_input": "按本动作input_schema填写，不直接执行模板"
+      },
+      "cli": "hetu --client <client> call hetu.execution.invoke --input -",
       "proposal_target": null,
-      "mcp": [],
+      "mcp": [
+        {
+          "name": "hetu_call_action",
+          "profiles": [
+            "stable"
+          ]
+        }
+      ],
       "mcp_via_proposal": false,
       "skill": "hetu-setup",
       "skill_source": "tools/hetu-skills/base/skills/hetu-setup/SKILL.md",
       "input_schema": {
         "$ref": "schemas/creative-task.schema.json#/$defs/close_input"
       },
-      "decision": "仅作者入口；机器路径缺口须逐项处理",
+      "decision": "当前工作区通过 execution.invoke；auto直接执行，confirm集中准备并确认；执行前发现实际领域Schema",
       "recover": "hetu.operations.get",
       "equivalent_machine_actions": [],
       "host_boundary": null,
       "installed_evidence": false,
       "verification": [],
-      "status": "author_only_gap"
+      "status": "source_wired"
     },
     {
       "action": "hetu.creative_tasks.mark_copied",
@@ -3843,46 +4042,90 @@
       "purpose": "将本书建书筹备中的封面候选复制为受管素材并保留来源",
       "group": "封面",
       "effect": "submit",
-      "routes": [],
-      "cli": "hetu --client <client> call hetu.covers.import_preparation --input -",
+      "routes": [
+        "workspace_execution"
+      ],
+      "workspace_execution": {
+        "action": "hetu.execution.invoke",
+        "scope": "workspace",
+        "input_template": {
+          "workspace_path": "<当前工作区绝对路径>",
+          "command": {
+            "action": "hetu.covers.import_preparation",
+            "contract_revision": "1",
+            "input": {}
+          }
+        },
+        "command_input": "按本动作input_schema填写，不直接执行模板"
+      },
+      "cli": "hetu --client <client> call hetu.execution.invoke --input -",
       "proposal_target": null,
-      "mcp": [],
+      "mcp": [
+        {
+          "name": "hetu_call_action",
+          "profiles": [
+            "stable"
+          ]
+        }
+      ],
       "mcp_via_proposal": false,
       "skill": "hetu-import",
       "skill_source": "tools/hetu-skills/base/skills/hetu-import/SKILL.md",
       "input_schema": {
         "$ref": "schemas/book-cover.schema.json#/$defs/import_preparation_input"
       },
-      "decision": "仅作者入口；机器路径缺口须逐项处理",
+      "decision": "当前工作区通过 execution.invoke；auto直接执行，confirm集中准备并确认；执行前发现实际领域Schema",
       "recover": "hetu.operations.get",
       "equivalent_machine_actions": [],
       "host_boundary": null,
       "installed_evidence": false,
       "verification": [],
-      "status": "author_only_gap"
+      "status": "source_wired"
     },
     {
       "action": "hetu.covers.list_preparations",
       "purpose": "核验并预览已转入本书的筹备封面",
       "group": "封面",
       "effect": "read",
-      "routes": [],
-      "cli": "hetu --client <client> call hetu.covers.list_preparations --input -",
+      "routes": [
+        "workspace_execution"
+      ],
+      "workspace_execution": {
+        "action": "hetu.execution.invoke",
+        "scope": "workspace",
+        "input_template": {
+          "workspace_path": "<当前工作区绝对路径>",
+          "command": {
+            "action": "hetu.covers.list_preparations",
+            "contract_revision": "1",
+            "input": {}
+          }
+        },
+        "command_input": "按本动作input_schema填写，不直接执行模板"
+      },
+      "cli": "hetu --client <client> call hetu.execution.invoke --input -",
       "proposal_target": null,
-      "mcp": [],
+      "mcp": [
+        {
+          "name": "hetu_call_action",
+          "profiles": [
+            "stable"
+          ]
+        }
+      ],
       "mcp_via_proposal": false,
       "skill": "hetu-cover",
       "skill_source": "tools/hetu-skills/base/skills/hetu-cover/SKILL.md",
       "input_schema": {
         "$ref": "schemas/book-cover.schema.json#/$defs/list_preparations_input"
       },
-      "decision": "仅作者入口；机器路径缺口须逐项处理",
+      "decision": "当前工作区通过 execution.invoke；auto直接执行，confirm集中准备并确认；执行前发现实际领域Schema",
       "recover": "hetu.operations.get",
       "equivalent_machine_actions": [],
       "host_boundary": null,
       "installed_evidence": false,
       "verification": [],
-      "status": "author_only_gap"
+      "status": "source_wired"
     },
     {
       "action": "hetu.covers.inspect_file",
@@ -4345,7 +4588,7 @@
     },
     {
       "action": "hetu.outlines.get",
-      "purpose": "读取总纲、卷纲与章纲",
+      "purpose": "读取正式大纲的当前集合、确切修订或条目目录",
       "group": "大纲",
       "effect": "read",
       "routes": [
@@ -4368,8 +4611,47 @@
       "input_schema": {
         "type": "object",
         "additionalProperties": false,
-        "properties": {},
-        "required": []
+        "properties": {
+          "revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "outline_id": {
+            "type": "string",
+            "pattern": "^outline_[0-9a-f-]{36}$"
+          },
+          "detail": {
+            "enum": [
+              "full",
+              "summary"
+            ]
+          },
+          "query": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "cursor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "required": [],
+        "dependentRequired": {
+          "sha256": [
+            "revision"
+          ]
+        }
       },
       "decision": "按任务或读取范围执行",
       "recover": "hetu.operations.get",
@@ -7025,7 +7307,29 @@
                   "revision",
                   "sha256"
                 ]
+              },
+              "outline_id": {
+                "type": "string",
+                "pattern": "^outline_[0-9a-f-]{36}$"
+              },
+              "outline_revision": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "outline_sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
               }
+            },
+            "dependentRequired": {
+              "outline_revision": [
+                "outline_id"
+              ],
+              "outline_sha256": [
+                "outline_id",
+                "outline_revision"
+              ]
             }
           }
         },
@@ -7376,6 +7680,33 @@
       "status": "source_wired"
     },
     {
+      "action": "hetu.local_settings.inspect_storage",
+      "purpose": "读取本机河图资料分类占用与可清理明细",
+      "group": "本机设置与套件安装",
+      "effect": "read",
+      "routes": [
+        "client_local"
+      ],
+      "cli": "hetu --client <client> call hetu.local_settings.inspect_storage --input -",
+      "proposal_target": null,
+      "mcp": [],
+      "mcp_via_proposal": false,
+      "skill": "hetu-manage",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-manage/SKILL.md",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      },
+      "decision": "独立本机固定方案；record_decision 后 execute",
+      "recover": "hetu.local_settings.get_operation",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
       "action": "hetu.local_settings.prepare",
       "purpose": "准备本机设置或套件选择安装方案",
       "group": "本机设置与套件安装",
@@ -7404,7 +7735,8 @@
             "enum": [
               "preferences",
               "agent_suite",
-              "agent_connection"
+              "agent_connection",
+              "storage_cleanup"
             ]
           },
           "patch": {
@@ -7791,6 +8123,20 @@
               "kind",
               "object_id"
             ]
+          },
+          "selected_ids": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2000,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "storage_snapshot": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
           }
         },
         "required": [
@@ -11289,6 +11635,125 @@
       "status": "source_wired"
     },
     {
+      "action": "hetu.plugin_results.list",
+      "purpose": "检索当前作品保留的专业成果目录，不启动或启用插件",
+      "group": "保留专业成果读取",
+      "effect": "read",
+      "routes": [
+        "exact_management_ref"
+      ],
+      "cli": "hetu --client <client> call hetu.plugin_results.list --input -",
+      "proposal_target": null,
+      "mcp": [
+        {
+          "name": "hetu_list_plugin_results",
+          "profiles": [
+            "workspace",
+            "stable"
+          ]
+        }
+      ],
+      "mcp_via_proposal": false,
+      "skill": "hetu-manage",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-manage/SKILL.md",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          },
+          "owner_plugin_id": {
+            "type": "string",
+            "maxLength": 120,
+            "pattern": "^[a-z0-9-]+(?:\\.[a-z0-9-]+)+$"
+          },
+          "query": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 256
+          }
+        },
+        "required": [
+          "work_ref"
+        ]
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.plugin_results.get",
+      "purpose": "读取当前作品已保留的固定专业成果，不启动或启用插件",
+      "group": "保留专业成果读取",
+      "effect": "read",
+      "routes": [
+        "exact_management_ref"
+      ],
+      "cli": "hetu --client <client> call hetu.plugin_results.get --input -",
+      "proposal_target": null,
+      "mcp": [
+        {
+          "name": "hetu_read_plugin_result",
+          "profiles": [
+            "workspace",
+            "stable"
+          ]
+        }
+      ],
+      "mcp_via_proposal": false,
+      "skill": "hetu-manage",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-manage/SKILL.md",
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "object_id": {
+            "type": "string",
+            "pattern": "^ext_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "owner_plugin_id": {
+            "type": "string",
+            "maxLength": 120,
+            "pattern": "^[a-z0-9-]+(?:\\.[a-z0-9-]+)+$"
+          },
+          "work_ref": {
+            "$ref": "https://hetu.limeai.run/schemas/work.schema.json#/$defs/work_ref"
+          }
+        },
+        "required": [
+          "work_ref",
+          "owner_plugin_id",
+          "object_id",
+          "revision"
+        ]
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
       "action": "hetu.plugins.capabilities",
       "purpose": "发现当前已启用河图插件的公开动作与实时Schema",
       "group": "插件安装与生命周期",
@@ -11955,6 +12420,106 @@
       "skill_source": "tools/hetu-skills/base/skills/hetu-video/SKILL.md",
       "input_schema": {
         "$ref": "schemas/video-review.schema.json#/$defs/feedback_list_input"
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.video.decisions.preview",
+      "purpose": "核对确切媒体认可或撤回的固定预览",
+      "group": "视频工程",
+      "effect": "read",
+      "routes": [
+        "exact_management_ref"
+      ],
+      "cli": "hetu --client <client> call hetu.video.decisions.preview --input -",
+      "proposal_target": null,
+      "mcp": [],
+      "mcp_via_proposal": false,
+      "skill": "hetu-video",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-video/SKILL.md",
+      "input_schema": {
+        "$ref": "schemas/video-review.schema.json#/$defs/decision_preview_input"
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.video.decisions.save",
+      "purpose": "记录确切预演认可、片段选用或成片确认及撤回",
+      "group": "视频工程",
+      "effect": "submit",
+      "routes": [
+        "fixed_proposal"
+      ],
+      "cli": "hetu --client <client> call hetu.agent_operations.prepare --input -",
+      "proposal_target": "hetu.video.decisions.save",
+      "mcp": [],
+      "mcp_via_proposal": true,
+      "skill": "hetu-video",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-video/SKILL.md",
+      "input_schema": {
+        "$ref": "schemas/video-review.schema.json#/$defs/decision_save_input"
+      },
+      "decision": "准备固定方案 → 会话或桌面记录作者决定 → 执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.video.decisions.get",
+      "purpose": "读取分集用途的当前或固定历史媒体决定",
+      "group": "视频工程",
+      "effect": "read",
+      "routes": [
+        "exact_management_ref"
+      ],
+      "cli": "hetu --client <client> call hetu.video.decisions.get --input -",
+      "proposal_target": null,
+      "mcp": [],
+      "mcp_via_proposal": false,
+      "skill": "hetu-video",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-video/SKILL.md",
+      "input_schema": {
+        "$ref": "schemas/video-review.schema.json#/$defs/decision_get_input"
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.video.decisions.history",
+      "purpose": "分页读取原分集用途的不可变决定链",
+      "group": "视频工程",
+      "effect": "read",
+      "routes": [
+        "exact_management_ref"
+      ],
+      "cli": "hetu --client <client> call hetu.video.decisions.history --input -",
+      "proposal_target": null,
+      "mcp": [],
+      "mcp_via_proposal": false,
+      "skill": "hetu-video",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-video/SKILL.md",
+      "input_schema": {
+        "$ref": "schemas/video-review.schema.json#/$defs/decision_history_input"
       },
       "decision": "按任务或读取范围执行",
       "recover": "hetu.operations.get",

@@ -4,12 +4,13 @@ import {Icon,IconButton} from "@hetu/workbench-ui";
 import type {SessionSnapshot} from "../agent-session-contract.ts";
 import {desktop} from "./bridge.ts";
 import {creativeRequest,type CreativeIntent} from "../creative-request.ts";
+import {ProfessionalToolsDialog} from "./professional-tools.tsx";
 
 export type AgentWorkChoice={work_ref:WorkRef;title:string;unavailable?:boolean;archived?:boolean};
 export const workChoiceKey=(work?:WorkRef)=>work?JSON.stringify([work.workspace_id,work.kind,work.object_id]):"library";
 export function WorkChoice({work,works,disabled,onChange}:{work?:WorkRef;works:AgentWorkChoice[];disabled?:boolean;onChange(work?:WorkRef):void}){
   const choices=works.filter(item=>!item.archived&&(!item.unavailable||work&&sameWork(item.work_ref,work)));
-  return <select className="agent-work-choice" aria-label="会话作品" value={workChoiceKey(work)} disabled={disabled} onChange={event=>onChange(choices.find(item=>workChoiceKey(item.work_ref)===event.target.value)?.work_ref)}>
+  return <select className="agent-work-choice" aria-label="会话作品" title={choices.find(item=>work&&sameWork(item.work_ref,work))?.title??"创作库"} value={workChoiceKey(work)} disabled={disabled} onChange={event=>onChange(choices.find(item=>workChoiceKey(item.work_ref)===event.target.value)?.work_ref)}>
     <option value="library">创作库</option>{choices.map(item=><option key={workChoiceKey(item.work_ref)} value={workChoiceKey(item.work_ref)} disabled={item.unavailable}>{item.title}</option>)}
   </select>;
 }
@@ -33,10 +34,12 @@ const tasks=(work?:WorkRef):Task[]=>!work?[
 /** 任务只固定上下文并递送意图，领域执行仍经过已有CLI/MCP。 */
 export function AgentBusiness({snapshot,notify}:{snapshot:SessionSnapshot;notify(message:string):void}){
   const [task,setTask]=useState<Task>(),[goal,setGoal]=useState(""),[preserve,setPreserve]=useState(""),[busy,setBusy]=useState(false),[error,setError]=useState("");
+  const [professional,setProfessional]=useState<SessionSnapshot>();
   const dialog=useRef<HTMLDialogElement>(null),current=useRef(snapshot);current.current=snapshot;
   const fixed=useRef(snapshot);
   useEffect(()=>{if(task)dialog.current?.showModal();},[task]);
   useEffect(()=>{setTask(undefined);setError("");},[snapshot.session_id]);
+  useEffect(()=>setProfessional(undefined),[snapshot.session_id,snapshot.generation]);
   const open=(value:Task)=>{fixed.current=current.current;setTask(value);setGoal(value.goal);setPreserve("");setError("");};
   async function prepare(){
     if(!task||busy)return;setBusy(true);setError("");
@@ -52,7 +55,11 @@ export function AgentBusiness({snapshot,notify}:{snapshot:SessionSnapshot;notify
     }catch(error){setError((error as Error).message);}finally{setBusy(false);}
   }
   return <>
-    <details className="popover-menu"><summary aria-label="创作任务" title="创作任务"><Icon name="sparkles"/><span>创作任务</span></summary><div className="menu-panel">{tasks(snapshot.work_ref).map(item=><button key={item.label} disabled={snapshot.client==="shell"} onClick={event=>{event.currentTarget.closest("details")!.open=false;open(item);}}>{item.label}</button>)}</div></details>
+    <details className="popover-menu"><summary aria-label="创作任务" title="创作任务"><Icon name="sparkles"/><span>创作任务</span></summary><div className="menu-panel">{tasks(snapshot.work_ref).map(item=><button key={item.label} disabled={snapshot.client==="shell"} onClick={event=>{event.currentTarget.closest("details")!.open=false;open(item);}}>{item.label}</button>)}{snapshot.work_ref&&<button disabled={snapshot.client==="shell"} onClick={event=>{event.currentTarget.closest("details")!.open=false;setProfessional(snapshot);}}>专业工具</button>}</div></details>
+    {professional?.work_ref&&<ProfessionalToolsDialog work={professional.work_ref} target={{page:"work.profile",object:{}}} onClose={()=>setProfessional(undefined)} deliver={async text=>{
+      if(current.current.session_id!==professional.session_id||current.current.generation!==professional.generation)throw Error("会话已变化，请重新准备专业请求。");
+      await desktop.agentSession("insert",{work_ref:professional.work_ref,session_id:professional.session_id,generation:professional.generation,text});
+    }}/>}
     {task&&<dialog ref={dialog} className="agent-business-dialog" aria-label={task.label} onCancel={event=>{event.preventDefault();if(!busy)setTask(undefined);}}><form onSubmit={event=>{event.preventDefault();void prepare();}}>
       <header><h2>{task.label}</h2><IconButton icon="close" label="关闭创作任务" disabled={busy} onClick={()=>setTask(undefined)}/></header>
       <label>创作目标<textarea autoFocus aria-label="创作目标" value={goal} maxLength={6000} onChange={event=>setGoal(event.target.value)}/></label>

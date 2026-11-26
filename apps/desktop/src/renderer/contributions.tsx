@@ -7,6 +7,7 @@ import {
   SlotRegistry,
 } from "../../../../packages/plugin-host/src/registry.ts";
 import type { WorkRef } from "@hetu/plugin-sdk";
+import type { DocumentResultReference, VideoResultReference } from "../session-results.ts";
 import { desktop, data } from "./bridge.ts";
 import { TaskReview } from "./task-review.tsx";
 import { AgentSession } from "./agent-session.tsx";
@@ -20,7 +21,7 @@ import { MediaLibrary } from "./media.tsx";
 import { Versions } from "./versions.tsx";
 import { Documents } from "./documents.tsx";
 import { Icon, IconButton, PageActions } from "./workbench.tsx";
-import { domainText } from "./strings.ts";
+import { CanonEntityDetails } from "@hetu/workbench-ui";
 import { canonKinds, entityName, expectedCanon } from "./canon-model.ts";
 import { CanonEditor, CanonHistory, CanonLock, CanonRemoval } from "./canon-editors.tsx";
 import { artworkMatches, artworkPreview, mergeArtwork, readArtworkPage, type Artwork } from "./artwork-model.ts";
@@ -30,6 +31,8 @@ export interface SurfaceContext {
   work: WorkRef;
   /** 阅读工作面当前明确选中的正文；同一路由切换标签时不重建整页。 */
   documentId?: string;
+  documentResult?: DocumentResultReference;
+  videoResult?: VideoResultReference;
   notify: (message: string) => void;
   ai: (object?: Record<string, unknown>) => void;
   reviewTask?: (taskId: string) => void;
@@ -47,17 +50,6 @@ export interface SurfaceContribution {
 export const surfaces = new SlotRegistry<SurfaceContribution>();
 const scope = new EffectScope();
 type CanonEntry = { section: string; kind: string; id: string; label: string; value: any };
-function SourceEvidence({ sources }: { sources?: any[] }) {
-  if (!sources?.length) return null;
-  return <div className="canon-sources">{sources.map((source, index) => <div key={index}>
-    {source.quote && <blockquote>{source.quote}</blockquote>}
-    <details><summary>原文依据 {index + 1}</summary><dl className="canon-fields">
-      <dt>文稿</dt><dd><code>{source.document_id}</code></dd>
-      <dt>修订</dt><dd><code>{source.revision_id}</code></dd>
-      <dt>原文位置</dt><dd>{source.byte_start}–{source.byte_end} 字节</dd>
-    </dl></details>
-  </div>)}</div>;
-}
 function Canon({ work, notify, ai }: SurfaceContext) {
   const context = useObjectContextMenu(notify);
   const workKey = `${work.workspace_id}/${work.kind}/${work.object_id}`;
@@ -118,13 +110,8 @@ function Canon({ work, notify, ai }: SurfaceContext) {
   const entity = selected?.value;
   const name = (reference?: string) => entries.find((entry) => entry.id === reference)
     ? entityName(entries.find((entry) => entry.id === reference)!) : "所引设定不可用";
-  const references = (values?: string[]) => (values ?? []).map(name).join("、");
   const revision = blueprint?.revision ?? canon?.revision;
   const entityAI = () => ai(selected ? { entity_ref: selected.id, blueprint_revision: revision } : undefined);
-  const field = (label: string, value: React.ReactNode) => value === undefined || value === null || value === "" ? null :
-    <React.Fragment key={label}><dt>{label}</dt><dd>{value}</dd></React.Fragment>;
-  const factValue = (fact: any) => fact.predicate === "primary_faction" ? name(fact.value) :
-    fact.predicate === "life_state" ? domainText("fact.life." + fact.value, fact.value) : String(fact.value ?? "");
   const locked = blueprint?.lock?.locked === true, held = busy || loading || canon?.journal?.status === "pending";
   const refresh = () => setReload(value => value + 1);
   async function change(entry: CanonEntry, remove = false) {
@@ -202,37 +189,7 @@ function Canon({ work, notify, ai }: SurfaceContext) {
           <button onClick={entityAI}><Icon name="sparkles"/>让 AI 处理</button>
           <button disabled={held || locked} onClick={() => setEditor({ entity })}>编辑</button><IconButton icon="close" label="关闭设定详情" onClick={() => detailDialog.current?.close()}/>
         </header>
-        {entity.description && <p className="canon-description">{entity.description}</p>}
-        <dl className="canon-fields">
-          {field("别名", entity.aliases?.join("、"))}
-          {field("特征", entity.traits?.join("、"))}
-          {selected.kind === "location" && <>{field("所属地点", entity.parent_ref ? name(entity.parent_ref) : "无")}{field("内外景", domainText("location." + entity.interior_exterior, "未标明"))}</>}
-          {selected.kind === "event" && <>{field("历法", entity.time_anchor?.calendar)}{field("时间位置", entity.time_anchor?.tick)}{field(domainText("timeline.before", "前置关系"), references(entity.before_refs))}{field(domainText("timeline.after", "后置关系"), references(entity.after_refs))}</>}
-          {selected.kind === "rule" && <>
-            {field("规则类型", domainText("rule.type." + entity.type, entity.type))}
-            {field("严重程度", domainText("rule.severity." + entity.severity, entity.severity))}
-            {field("例外处理", domainText("rule.exception." + entity.exception_policy, entity.exception_policy))}
-            {field("说明", entity.rationale)}
-            {field("适用作品", entity.scope?.packages?.map((value: string) => domainText("package." + value, value)).join("、"))}
-            {field("适用设定", references(entity.scope?.entity_refs))}
-            {field("补充说明", entity.parameters?.text)}
-            {field("禁止用语", entity.parameters?.terms?.join("、"))}
-            {field("用语例外", entity.parameters?.exceptions?.join("、"))}
-            {field("较早事件", entity.parameters?.before_event_id ? name(entity.parameters.before_event_id) : undefined)}
-            {field("较晚事件", entity.parameters?.after_event_id ? name(entity.parameters.after_event_id) : undefined)}
-            {field("地点限制", entity.parameters?.location_ref ? name(entity.parameters.location_ref) : undefined)}
-            {field("禁止能力", entity.parameters?.forbidden_capability)}
-          </>}
-        </dl>
-        {!!entity.facts?.length && <section className="canon-section"><h3>人物事实</h3><div className="canon-facts">{entity.facts.map((fact: any) => <div key={fact.fact_id}>
-          <strong>{domainText("fact.predicate." + fact.predicate, fact.predicate)}</strong><p>{factValue(fact)}</p>
-          <p className="canon-validity">从{name(fact.valid_from)}起{fact.valid_to ? `，至${name(fact.valid_to)}` : "，持续有效"}</p>
-          <SourceEvidence sources={fact.source_refs}/>
-        </div>)}</div></section>}
-        {!!entity.relations?.length && <section className="canon-section"><h3>势力关系</h3><dl className="canon-fields">{entity.relations.map((relation: any, index: number) => <React.Fragment key={index}>
-          <dt>{name(relation.target_ref)}</dt><dd>{domainText("faction.relation." + relation.type, relation.type)}</dd>
-        </React.Fragment>)}</dl></section>}
-        {!!entity.source_refs?.length && <section className="canon-section"><h3>来源依据</h3><SourceEvidence sources={entity.source_refs}/></section>}
+        <CanonEntityDetails entity={entity} kind={selected.kind} name={name}/>
         {["character", "location"].includes(selected.kind) && <section className="canon-section">
           <button onClick={() => setShowImages(!showImages)}>{showImages ? "收起关联图片" : "查看关联图片"}</button>
           {showImages && <div className="canon-images"><ArtworkLibrary work={work} notify={notify} ai={ai}

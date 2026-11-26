@@ -77,8 +77,14 @@ fn run() -> Result<Value, String> {
         if context["context"]["package_sha256"] != required("--package-sha256")? {
             return Err("插件上下文与包摘要不一致。".into());
         }
-        let kernel = Kernel::open_plugin_kernel(&path, context.get("management_binding").cloned())
-            .map_err(|e| e.to_string())?;
+        if context.get("management_binding").is_some() && context.get("execution_binding").is_some() {
+            return Err("插件连接类型必须二选一。".into());
+        }
+        let kernel = if let Some(binding) = context.get("execution_binding") {
+            Kernel::open_plugin_execution(&path, binding)
+        } else {
+            Kernel::open_plugin_kernel(&path, context.get("management_binding").cloned())
+        }.map_err(|e| e.to_string())?;
         let request = if tail == ["inspect"] {
             json!({"action":"hetu.plugins.catalog","contract_revision":"1","input":{}})
         } else {

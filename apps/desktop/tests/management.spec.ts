@@ -13,7 +13,7 @@ import { PluginPackage } from "../../../packages/plugin-host/src/package.ts";
 
 const root = path.resolve(import.meta.dirname, "../../..");
 test(
-  "管理方案按作品隔离、固定审核冲突、未知恢复与Agent独立执行", async () => {
+  "confirm管理方案按作品隔离、固定审核冲突、未知恢复与Agent独立执行", async ({},info) => {
     test.setTimeout(120000);
     const folder = await mkdtemp(path.join(os.tmpdir(), "hetu-management-")),
       workspace = path.join(folder, "作品"),
@@ -90,13 +90,16 @@ test(
     };
     try {
       let page = await launch();
+      await page.evaluate(async () => {
+        const settings = await window.hetuDesktop.settings("preferences");
+        await window.hetuDesktop.settings("update", {expected_revision:settings.revision, patch:{execution_mode:"confirm"}});
+      });
       await navigate(page, "管理方案");
       await expect(page.getByRole("alert")).toHaveCount(0);
-      await navigate(page, "Agent 协作");
-      await expect(page.getByText("已连接当前作品。", {exact:true})).toBeVisible();
       const connection = await page.evaluate(() =>
-        (window as any).hetuDesktop.connection("status", "codex"),
+        window.hetuDesktop.connection("authorize", "codex"),
       );
+      expect(connection.authorized).toBe(true);
       const ref = connection.management_ref;
       const before = ok(cli(ref, "hetu.novels.get", {}));
       const metadata = {
@@ -259,10 +262,23 @@ test(
       await page
         .getByRole("combobox", { name: "当前管理方案" })
         .selectOption(proposal.proposal_id);
+      await application!.evaluate(({ipcMain})=>{
+        const handlers=(ipcMain as any)._invokeHandlers,original=handlers.get("desktop:management"),state=globalThis as any;
+        state.__managementRecoveryTimings=[];
+        handlers.set("desktop:management",async(event:any,method:string,...args:any[])=>{
+          const started=performance.now();
+          try{return await original(event,method,...args);}
+          finally{state.__managementRecoveryTimings.push({method,duration_ms:Math.round(performance.now()-started)});}
+        });
+      });
       await page
         .getByRole("button", { name: "恢复原审核决定", exact: true })
         .click();
-      await expect(page.getByRole("status")).toContainText("原审核决定已确认");
+      await expect(page.getByRole("status")).toContainText("原审核决定已确认",{timeout:30000});
+      await expect(page.locator(".management-review")).toHaveAttribute("aria-busy","false");
+      const timings=JSON.stringify(await application!.evaluate(()=>(globalThis as any).__managementRecoveryTimings));
+      await writeFile(info.outputPath("management-recovery-timings.json"),timings+"\n");
+      await info.attach("management-recovery-timings",{contentType:"application/json",body:timings});
       const current = ok(
         cli(ref, "hetu.agent_operations.get", {
           proposal_id: proposal.proposal_id,
@@ -286,6 +302,7 @@ test(
       await page
         .getByRole("button", { name: "刷新管理方案", exact: true })
         .click();
+      await expect(page.getByRole("button", {name: "刷新管理方案", exact: true})).toBeEnabled({timeout: 30000});
       await expect(
         page.getByText(
           "方案已执行。返回对应工作面回读成果；正文采纳与定稿另行决定。",
@@ -295,11 +312,8 @@ test(
       await page.screenshot({
         path: path.join(root, "output/plugin-doc-qa/management-review.png"),
       });
-      await navigate(page, "Agent 协作");
-      await page
-        .getByRole("button", { name: "断开当前作品连接", exact: true })
-        .click();
-      await navigate(page, "管理方案");
+      await page.evaluate(() => window.hetuDesktop.connection("revoke", "codex"));
+      await page.getByRole("button", {name: "刷新管理方案", exact: true}).click();
       await expect(page.getByRole("alert")).toContainText(
         "当前作品的 Agent 连接已断开",
       );

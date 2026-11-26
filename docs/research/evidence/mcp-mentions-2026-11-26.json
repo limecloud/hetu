@@ -1,0 +1,860 @@
+{
+  "recorded_at": "2026-11-26T08:24:10.632161+00:00",
+  "scope": "Read-only MCP mention search and fixed source resources; development source validation",
+  "version": "0.14.1",
+  "official_source": {
+    "repository_commit": "39f91ad0bdf1435aadb879172ab2467d0e97cead",
+    "url": "https://raw.githubusercontent.com/openai/mcp-extensions/39f91ad0bdf1435aadb879172ab2467d0e97cead/docs/spec.md",
+    "bytes": 53257,
+    "sha256": "35cbb9c0ab1156a74f2d0c190f25b28569f26943596222a532d09d406936242d",
+    "matches_initial_fetch": true
+  },
+  "implementation": {
+    "capability": "openai/mentions",
+    "search_tool": "hetu_search_mentions",
+    "visibility": [
+      "app"
+    ],
+    "stable_supported_kinds": [
+      "document",
+      "entity",
+      "outline",
+      "resource"
+    ],
+    "task_supported_kinds": [
+      "task_context"
+    ],
+    "limits": {
+      "items": 20,
+      "calls": 48,
+      "scanned_entries": 4000,
+      "search_seconds": 5,
+      "resource_content_bytes": 16384
+    },
+    "fixed_resources": "Public identities, immutable revisions, SHA-256 and UTF-8 offsets; no management references, app sessions or file paths",
+    "core_projection": "documents.list(query,include_revision_ref) filters names and validates revision refs for only the returned page; existing scope, cursor and content validation retained"
+  },
+  "validation": {
+    "core": {
+      "passed": 401,
+      "failed": 0,
+      "ignored": 0,
+      "groups": [
+        {
+          "group": "Running unittests src/lib.rs",
+          "status": "ok",
+          "passed": 82,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/adoption_targets.rs",
+          "status": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/agent_conversation.rs",
+          "status": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/agent_operations.rs",
+          "status": "ok",
+          "passed": 9,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/authoring.rs",
+          "status": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/blueprint.rs",
+          "status": "ok",
+          "passed": 6,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/bootstrap.rs",
+          "status": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/capability_map.rs",
+          "status": "ok",
+          "passed": 1,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/collaboration.rs",
+          "status": "ok",
+          "passed": 5,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/collaboration_library.rs",
+          "status": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/cover_preparations.rs",
+          "status": "ok",
+          "passed": 4,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/covers.rs",
+          "status": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/creative_tasks.rs",
+          "status": "ok",
+          "passed": 10,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/delivery.rs",
+          "status": "ok",
+          "passed": 9,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/delivery_works.rs",
+          "status": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/document_copy.rs",
+          "status": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/document_lifecycle.rs",
+          "status": "ok",
+          "passed": 7,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/document_moves.rs",
+          "status": "ok",
+          "passed": 9,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/drama.rs",
+          "status": "ok",
+          "passed": 10,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/drama_projects.rs",
+          "status": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/episode_reading.rs",
+          "status": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/execution_modes.rs",
+          "status": "ok",
+          "passed": 10,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/extension_index.rs",
+          "status": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/extension_index_scale.rs",
+          "status": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/extension_migrations.rs",
+          "status": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/extensions.rs",
+          "status": "ok",
+          "passed": 7,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/git.rs",
+          "status": "ok",
+          "passed": 14,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/git_collaboration.rs",
+          "status": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/git_work_versions.rs",
+          "status": "ok",
+          "passed": 4,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/import_authorization.rs",
+          "status": "ok",
+          "passed": 4,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/import_conversation.rs",
+          "status": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/local_settings.rs",
+          "status": "ok",
+          "passed": 12,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/machine_continuation.rs",
+          "status": "ok",
+          "passed": 14,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/managed_task_read.rs",
+          "status": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/media.rs",
+          "status": "ok",
+          "passed": 7,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/media_preview.rs",
+          "status": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/media_works.rs",
+          "status": "ok",
+          "passed": 4,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/model_settings_conversation.rs",
+          "status": "ok",
+          "passed": 1,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/novels.rs",
+          "status": "ok",
+          "passed": 4,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/open_plugins.rs",
+          "status": "ok",
+          "passed": 4,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/plot.rs",
+          "status": "ok",
+          "passed": 6,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/properties.rs",
+          "status": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/reading_settings.rs",
+          "status": "ok",
+          "passed": 4,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/resource_works.rs",
+          "status": "ok",
+          "passed": 5,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/resources.rs",
+          "status": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/retained_plugin_results.rs",
+          "status": "ok",
+          "passed": 1,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/review.rs",
+          "status": "ok",
+          "passed": 9,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/stable_task_preparation.rs",
+          "status": "ok",
+          "passed": 1,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/storage_cleanup.rs",
+          "status": "ok",
+          "passed": 5,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/task_context.rs",
+          "status": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/task_feedback_ranges.rs",
+          "status": "ok",
+          "passed": 9,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/task_resource_context.rs",
+          "status": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/typed_context_sources.rs",
+          "status": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/validation.rs",
+          "status": "ok",
+          "passed": 8,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/video_episodes.rs",
+          "status": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/video_review.rs",
+          "status": "ok",
+          "passed": 15,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/work_canons.rs",
+          "status": "ok",
+          "passed": 7,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/work_documents.rs",
+          "status": "ok",
+          "passed": 6,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/work_links.rs",
+          "status": "ok",
+          "passed": 8,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/working_copies.rs",
+          "status": "ok",
+          "passed": 6,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/works.rs",
+          "status": "ok",
+          "passed": 7,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/workspace.rs",
+          "status": "ok",
+          "passed": 9,
+          "failed": 0,
+          "ignored": 0
+        }
+      ]
+    },
+    "mcp_final": {
+      "passed": 55,
+      "failed": 0,
+      "ignored": 0,
+      "groups": [
+        {
+          "group": "Running unittests src/lib.rs",
+          "status": "ok",
+          "passed": 9,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running unittests src/main.rs",
+          "status": "ok",
+          "passed": 0,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Running tests/stdio.rs",
+          "status": "ok",
+          "passed": 46,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "group": "Doc-tests hetu_mcp",
+          "status": "ok",
+          "passed": 0,
+          "failed": 0,
+          "ignored": 0
+        }
+      ]
+    },
+    "distinct_checks": [
+      "Native stdio and official rmcp 3.9.0 discovery, tool and resources/read",
+      "Unregistered desktop catalog with exact authorization",
+      "No unauthorized catalog names or secret grant/path leakage",
+      "Identical document and character names with different immutable links",
+      "Document, entity, resource and outline updates retain old content",
+      "Reopened MCP process retains fixed URI semantics",
+      "Revocation, wrong client, cross-work, forged digest, extra fields and invalid UTF-8 offsets rejected",
+      "Fixed task rejects a different authorized work source URI",
+      "Long document and fixed task source pages reconstruct exact CRLF and Chinese/emoji bytes",
+      "Search creates no tasks; result limit reports incomplete coverage"
+    ],
+    "cancellation_initial_probe": {
+      "elapsed_after_cancel_ms": 15098.85,
+      "response": {
+        "observation_timeout": true
+      },
+      "exit_code": 0,
+      "stderr_empty": true
+    },
+    "cancellation_follow_up": {
+      "follow_up_elapsed_ms": 2114.34,
+      "cancelled_response_received": false,
+      "follow_up_matches": 1,
+      "follow_up_coverage": {
+        "complete": true,
+        "scanned_entries": 1,
+        "scope": "authorized_source_titles",
+        "supported_kinds": [
+          "document",
+          "entity",
+          "outline",
+          "resource"
+        ],
+        "unavailable_categories": []
+      },
+      "exit_code": 0,
+      "stderr_empty": true
+    },
+    "cancellation_interpretation": "rmcp 3.9.0 drops responses for cancelled requests; waiting for the cancelled ID was an invalid test expectation. The next search on the same connection completed, no cancelled result was delivered, and the process exited normally. Follow-up elapsed time is not an interrupt latency measurement."
+  },
+  "performance": {
+    "fixture": {
+      "chapters": 1000,
+      "han_characters": 10000000
+    },
+    "environment": {
+      "platform": "macOS-15.8.3-arm64-arm-64bit-Mach-O",
+      "architecture": "arm64",
+      "hardware": "Apple M1, 16 GB, internal APFS SSD; same fixture as project-scale-2026-11-26.json"
+    },
+    "baseline": [
+      {
+        "query": "第1000章",
+        "elapsed_ms": 5404.88,
+        "matches": 0,
+        "coverage": {
+          "complete": false,
+          "scanned_entries": 700,
+          "scope": "authorized_source_titles",
+          "unavailable_categories": []
+        },
+        "error": null
+      },
+      {
+        "query": "第1章",
+        "elapsed_ms": 5524.05,
+        "matches": 0,
+        "coverage": {
+          "complete": false,
+          "scanned_entries": 700,
+          "scope": "authorized_source_titles",
+          "unavailable_categories": []
+        },
+        "error": null
+      },
+      {
+        "query": "",
+        "elapsed_ms": 5432.36,
+        "matches": 6,
+        "coverage": {
+          "complete": false,
+          "scanned_entries": 7,
+          "scope": "authorized_source_titles",
+          "unavailable_categories": []
+        },
+        "error": null
+      }
+    ],
+    "metadata_first_probe": [
+      {
+        "query": "第1000章",
+        "elapsed_ms": 2226.04,
+        "matches": 1,
+        "coverage": {
+          "complete": true,
+          "scanned_entries": 1,
+          "scope": "authorized_source_titles",
+          "unavailable_categories": []
+        },
+        "error": null
+      },
+      {
+        "query": "第0001章",
+        "elapsed_ms": 1549.06,
+        "matches": 0,
+        "coverage": {
+          "complete": true,
+          "scanned_entries": 0,
+          "scope": "authorized_source_titles",
+          "unavailable_categories": []
+        },
+        "error": null
+      },
+      {
+        "query": "",
+        "elapsed_ms": 970.84,
+        "matches": 20,
+        "coverage": {
+          "complete": false,
+          "scanned_entries": 20,
+          "scope": "authorized_source_titles",
+          "unavailable_categories": []
+        },
+        "error": null
+      }
+    ],
+    "final_new_process_runs": [
+      [
+        {
+          "query": "第1000章",
+          "elapsed_ms": 2040.2,
+          "matches": 1,
+          "coverage": {
+            "complete": true,
+            "scanned_entries": 1,
+            "scope": "authorized_source_titles",
+            "supported_kinds": [
+              "document",
+              "entity",
+              "outline",
+              "resource"
+            ],
+            "unavailable_categories": []
+          },
+          "error": null
+        },
+        {
+          "query": "第一章 雾港",
+          "elapsed_ms": 1518.64,
+          "matches": 1,
+          "coverage": {
+            "complete": true,
+            "scanned_entries": 1,
+            "scope": "authorized_source_titles",
+            "supported_kinds": [
+              "document",
+              "entity",
+              "outline",
+              "resource"
+            ],
+            "unavailable_categories": []
+          },
+          "error": null
+        },
+        {
+          "query": "",
+          "elapsed_ms": 964.71,
+          "matches": 20,
+          "coverage": {
+            "complete": false,
+            "scanned_entries": 20,
+            "scope": "authorized_source_titles",
+            "supported_kinds": [
+              "document",
+              "entity",
+              "outline",
+              "resource"
+            ],
+            "unavailable_categories": []
+          },
+          "error": null
+        }
+      ],
+      [
+        {
+          "query": "第1000章",
+          "elapsed_ms": 1628.55,
+          "matches": 1,
+          "coverage": {
+            "complete": true,
+            "scanned_entries": 1,
+            "scope": "authorized_source_titles",
+            "supported_kinds": [
+              "document",
+              "entity",
+              "outline",
+              "resource"
+            ],
+            "unavailable_categories": []
+          },
+          "error": null
+        },
+        {
+          "query": "第一章 雾港",
+          "elapsed_ms": 1509.35,
+          "matches": 1,
+          "coverage": {
+            "complete": true,
+            "scanned_entries": 1,
+            "scope": "authorized_source_titles",
+            "supported_kinds": [
+              "document",
+              "entity",
+              "outline",
+              "resource"
+            ],
+            "unavailable_categories": []
+          },
+          "error": null
+        },
+        {
+          "query": "",
+          "elapsed_ms": 973.87,
+          "matches": 20,
+          "coverage": {
+            "complete": false,
+            "scanned_entries": 20,
+            "scope": "authorized_source_titles",
+            "supported_kinds": [
+              "document",
+              "entity",
+              "outline",
+              "resource"
+            ],
+            "unavailable_categories": []
+          },
+          "error": null
+        }
+      ],
+      [
+        {
+          "query": "第1000章",
+          "elapsed_ms": 1628.36,
+          "matches": 1,
+          "coverage": {
+            "complete": true,
+            "scanned_entries": 1,
+            "scope": "authorized_source_titles",
+            "supported_kinds": [
+              "document",
+              "entity",
+              "outline",
+              "resource"
+            ],
+            "unavailable_categories": []
+          },
+          "error": null
+        },
+        {
+          "query": "第一章 雾港",
+          "elapsed_ms": 1510.0,
+          "matches": 1,
+          "coverage": {
+            "complete": true,
+            "scanned_entries": 1,
+            "scope": "authorized_source_titles",
+            "supported_kinds": [
+              "document",
+              "entity",
+              "outline",
+              "resource"
+            ],
+            "unavailable_categories": []
+          },
+          "error": null
+        },
+        {
+          "query": "",
+          "elapsed_ms": 962.24,
+          "matches": 20,
+          "coverage": {
+            "complete": false,
+            "scanned_entries": 20,
+            "scope": "authorized_source_titles",
+            "supported_kinds": [
+              "document",
+              "entity",
+              "outline",
+              "resource"
+            ],
+            "unavailable_categories": []
+          },
+          "error": null
+        }
+      ]
+    ],
+    "median_ms": {
+      "第1000章": 1628.55,
+      "第一章 雾港": 1510.0,
+      "": 964.71
+    },
+    "notes": [
+      "Each final run starts a new MCP process; process spawn/discovery is excluded from query timing.",
+      "OS filesystem cache was not cleared; these are local samples, not cross-platform or p95 claims.",
+      "The first document is titled 第一章 雾港; the intermediate 第0001章 probe correctly returned zero and is not treated as a product failure.",
+      "The baseline predates query and page revision projection; its executable was overwritten during development and no baseline binary digest was retained."
+    ]
+  },
+  "initial_failure": {
+    "stdio_passed": 1,
+    "stdio_failed": 1,
+    "cause": "outlines.get does not accept work_ref; scope is already fixed by the private management connection",
+    "correction": "Retained work in the URI and connection, omitted the unsupported field from the domain input; fixed outline read and update/reopen behavior verified."
+  },
+  "source_sha256": {
+    "apps/mcp/src/mentions.rs": "66f4e98d50ea50f82b3fc7af404ed7384966ec5dc7b9dcfb1a39e81ff8ba7012",
+    "apps/mcp/src/lib.rs": "c6834d5a71f81c7aafd98e6ee885368114f6217c2c772f7a627ed4940788bdd5",
+    "apps/mcp/src/stable.rs": "93a779af7b532aecc3841f85ec58c6c273064502be7b2c53afecb0f2399a55cd",
+    "core/src/collaboration/library.rs": "51b8fbd2c39e309bf98c6c34a7b758b852ff56f946151f94b3c6619817293181",
+    "core/src/application/mod.rs": "c4fc586a8cc4f865c2813a4453dee247cc63a254374c8d798acea547d8bb7d8f",
+    "contracts/actions.json": "0134b41764514ef0c5cb8488792dc5ce2b88d0a1aa8264ce20e7435930221065",
+    "apps/mcp/tests/support/mentions.rs": "386e5701aa61b39f06bcc459311c1b30df28275bf0029fca4694a55dbda843c0",
+    "core/tests/collaboration_library.rs": "33c1892ae5bb64b901a1328d1ea8d578d5908e5f373bf031f102ee37cfc497e0",
+    "core/tests/work_documents.rs": "fe2fef0a647fae2e49b945db8475992423319098a221a3355ad0b1d0745a1a52",
+    "Cargo.lock": "deb009444289a89b548c1fd6fbf5ab74dc897d619c476ef11c3c7bf4f530b4bb"
+  },
+  "verified_mcp_binary_sha256": "81127cee09274bbf28a3f4b0977ec8591f1b342e2dd8a5d107d29bd7c28228b3",
+  "sequence": {
+    "source": "docs/23-业务流程与MCP时序.md#63-宿主提及与固定来源读取",
+    "render_evidence": "mcp-mentions-sequence-2026-11-26.json",
+    "visually_reviewed": true
+  },
+  "this_increment_delivery": {
+    "packaged": false,
+    "installed": false,
+    "version_bumped": false,
+    "committed": false,
+    "deployed": false
+  },
+  "remaining": [
+    "Structured drama scenes and standalone video/professional result search projections",
+    "Actual native external host mention picker, selection, send and model readback",
+    "Same-source package and installation for this increment",
+    "Full visual/accessibility and platform matrix, complete professional production, author evaluation and formal release remain governed by docs/38"
+  ]
+}

@@ -1,0 +1,23 @@
+.professional-tools { display:grid; gap:12px; min-width:0; }
+.professional-tools :is(p,h3) { margin:0; }
+.professional-tools label { display:grid; gap:6px; }
+.professional-tools :is(select,input,textarea) { min-width:0; width:100%; }
+.professional-tools textarea { min-height:100px; resize:vertical; }
+.professional-picker { width:min(600px,calc(100vw - 32px)); max-height:min(640px,calc(100dvh - 48px)); }
+.professional-picker .agent-context-picker-body { display:flex; overflow:hidden; }
+.professional-catalog { display:flex; flex-direction:column; width:100%; min-height:0; }
+.professional-catalog > input { flex:none; }
+.professional-tool-list { min-height:0; overflow:auto; overscroll-behavior:contain; }
+.professional-tool-list > div + div { border-top:.5px solid var(--line); }
+.professional-tool-list > div > button { display:flex; align-items:center; justify-content:space-between; gap:16px; width:100%; min-height:64px; padding:10px 8px; border:0; border-radius:4px; background:transparent; text-align:left; }
+.professional-tool-list > div > button:hover { background:var(--hover); }
+.professional-tool-copy { display:grid; gap:4px; min-width:0; }
+.professional-tool-copy strong { font-size:14px; font-weight:600; line-height:20px; }
+.professional-tool-copy > :is(strong,span) { overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+.professional-tool-copy > span,.professional-tool-list small { color:var(--muted); font-size:12px; line-height:18px; }
+.professional-tool-list small { display:block; margin:0 8px 10px; white-space:normal; overflow-wrap:anywhere; }
+.professional-tool-list > div > button > svg { flex:none; color:var(--muted); }
+.professional-catalog-footer { display:flex; flex:none; padding-top:10px; border-top:.5px solid var(--line); }
+.professional-catalog-footer > button { padding:4px 0; min-height:28px; border:0; background:transparent; color:var(--muted); font-size:12px; }
+.professional-tools pre { max-height:300px; overflow:auto; font:12px/1.6 var(--font-mono,monospace); white-space:pre-wrap; overflow-wrap:anywhere; }
+.professional-tools .professional-method { font:14px/1.65 var(--font-sans,system-ui); padding:12px; border:.5px solid var(--line); }

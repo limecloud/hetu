@@ -26,6 +26,8 @@
 
 媒体及意见是不可变版本化记录，保存使用共同事务和原操作键。列表使用固定集合摘要游标，新增内容后拒绝拼接旧分页。意见保存不改变正式选用、预演认可或成片决定。基础文件交付保留固定资产摘要、完整字节及用途，不包含未声明的专业工程。归属见[28](28-领域设计与边界上下文.md#默认基础与专业扩展归属)。
 
+基础媒体决定保存在`packages/video/decisions/<decision_id>/revisions/<revision>.json`，复用版本化摘要链和共同事务；`head.json`属于该链，`packages/video/decision-slots/<video_episode_id>/<purpose>.json`仅指向本分集用途的当前固定决定。`decision_ref={decision_id,revision,sha256}`，不可跨作品、分集或用途使用。记录包含`schema_version,workspace_id,decision_id,revision,previous_sha256,created_at,updated_at,actor_ref,work_ref,video_episode_id,purpose,media_ref,decision,author_statement,previous_ref`，`decision=confirmed|withdrawn`；`previous_ref`为空仅适用于第一条确认，撤回必须精确匹配当前已确认的媒体。预览固定请求、媒体及分集修订和前一决定，保存再次核对。媒体读取与交付分别呈现所选固定媒体和当前决定的关系，不改旧媒体记录中的历史`adoption`字段，也不声称视频已经解码或被观看。历史分页绑定确切槽位及当前头，头变化拒绝旧游标。
+
 
 本章定义字段语义与约束；`contracts/schemas/` 负责已发布的机器校验合同，两者变更须同步评审。现有格式基线为 `1.0.0`，新增记录独立版本化；采纳与定稿拆分涉及的接口不得沿用旧语义版本。设计结构不自动成为运行时可接收字段，调用以能力目录公布的精确 Schema 为准。
 
@@ -100,6 +102,8 @@ Blueprint 必需字段：`schema_version, blueprint_id, revision, lock, characte
 | ImportRecord | `import_id, source_format, source_digest, parser_version, losses[], result_refs` | 原文件附件、作者确认、编码与 profile |
 
 `kind` 至少区分 novel_chapter、novel_outline、drama_script、adaptation_note；source_format 为 markdown／fountain。中文章节号与集号是 order／展示元数据，不作为 document ID。正文路径由服务端构造，调用方不能指定任意磁盘路径。
+
+公开`documents.get`结果的顶层`work_ref`为派生只读投影：小说文稿沿当前小说身份，剧本文稿沿已核验的分集与项目关系解析；没有作品归属或仅为草稿虚拟证据时为`null`。它不属于持久Document，不写入旧记录或改变修订摘要；固定历史正文仍返回同一不可变修订。会话成果核对该投影、文稿身份、修订及摘要，不能假设`document.work_ref`存在或通过名称推断归属。
 
 ## 5. Draft 与审核
 
@@ -187,6 +191,10 @@ DispositionRecord 包含 `schema_version, report_id, finding_id, revision, expec
 素材与线索采用共同 [Media Schema](../contracts/schemas/media.schema.json)，其 `$defs` 同时提供持久记录和各动作输入合同。`blob={path,sha256,size_bytes,media_type,validation}` 不可随元数据修订改变；`source={source_type,creator_statement,source_uri?}` 只保存脱敏的来源声明。`asset_refs` 每项为 `{asset_id,revision,sha256}`，绑定素材元数据修订；正文关联遵循 SourceRef。首次 `previous_sha256=null`，后续指向上条修订的原始字节摘要。元数据读写重新校验 Schema、归属、路径与摘要，素材单项读取额外流式核对媒体原字节。
 
 素材和线索列表返回摘要投影及 `next_cursor`，不批量加载媒体。列表的 `media_verified=false` 表明未在本次列表查询重新读完媒体；单项核验成功为 true。`delivery_eligible` 只表达权利声明是否允许默认嵌入，不替代导出时完整性核验。线索读取返回固定记录、`stale_sources` 以及关联素材的 `metadata_stale` 和当前权利状态，保留旧引用并要求作者核对。
+
+字幕资产采用`schema_version=3.0.0,kind=caption,blob.media_type=text/vtt,blob.validation=utf8_webvtt`，必须有不可变`work_ref`；WebVTT原字节不超过1MiB，完整UTF-8、文件头及控制字符核验不等于专业字幕解析或音画对齐。旧1.0／2.0素材与music／visual线索保持原义，不能将旧记录改成字幕。
+
+视频成果带字幕时采用`schema_version=2.0.0,caption_tracks[]`，每轨为`id,label,language,asset_ref,source_object_ref?`，最多16轨且ID唯一。`asset_ref`固定同作品的WebVTT资产；可选专业来源为`owner_plugin_id,object_id,revision,sha256`，只核验保留记录及摘要，不把来源声明当作字幕对声证明。新增或更换字幕创建新成果，旧成果、旧字幕及位置意见不改写。字幕字节按既有`hetu.assets.read_blob`读取；专业原工程及SRT／ASS仍归原插件。
 
 ## 9. 操作、审计与本机授权
 
@@ -392,6 +400,8 @@ TaskSubmission 的文件清单由 Agent 最后原子提交，内核核验实际�
 
 ## 18. 局部交互会话
 
+宿主提及URI为可丢弃的来源定位。SceneRange由`work_ref, document_id, revision_id, sha256, byte_start, byte_end`组成，offset相对场次起点且处于UTF-8边界；范围须是该固定原稿中的完整场次。分集与场次序号、显示名和当前目录均不参与身份。PluginObject引用使用`work_ref, owner_plugin_id, object_id, revision, sha256`；VideoEpisode使用固定分集修订，VideoMedia使用原media_ref，当前作者认可状态独立查询。字段及校验规则以[公开动作](../contracts/actions.json)与[视频合同](../contracts/schemas/video-review.schema.json)为准，不新增持久来源表或授权记录。
+
 BrowserSession 在本机授权存储或内存保存 `session_id, task_ref, scope_ref, allowed_actions, issued_at, expires_at, revoked_at` 及受保护会话材料。配对状态为 pending／paired／expired／revoked。UI 可见的 session_id 和配对请求 ID 不是访问凭据。
 
 会话只允许任务投影、候选预览、选择和意见，不能扩展为所有作品访问或定稿能力。Cookie／IPC 凭据不进入任务 JSON、普通结果、URL、Prompt、Git 或 Bundle。资源及页面版本独立记录；切换任务清空旧数据，迟到结果按任务与修订校验。
@@ -471,17 +481,31 @@ Agent 的可修改范围由服务器发出的任务授权决定：明确对象�
 | WorkingRevision | `working_revision_id,working_copy_id,parent_revision_ref,previous_sha256,content_ref,sha256,size_bytes,feedback_refs,actor_ref,created_at,patches?` | 内容不可变，head 可推进；revision 类型保存合法 patches，普通稿保存 Markdown／Fountain；固定请求不得偷换 |
 | WorkingCopyRef | `working_copy_id,working_revision_id,sha256` | 绑定确切工作修订及内容摘要；保存的 expected 使用该完整引用，不能仅传副本 ID 或“最新” |
 | TaskSubmission 扩展 | `working_copy_refs,feedback_refs` | 可空；非空引用确切已保存修订，提交后原字节和来源不随工作副本变化 |
-| TaskFeedback | `feedback_id,task_ref,request_sha256,sequence,previous_ref,target_refs,intent,public_comment,selected_refs,interaction_decision_ref,origin,created_at` | sequence 递增；目标是确切成果；intent 为 preference／request_changes；只表达意见，不产生采纳或授权；私密批注不进入投影 |
+| TaskFeedback | `feedback_id,task_ref,request_sha256,sequence,previous_ref,target_refs,intent,public_comment,selected_refs,interaction_decision_ref,origin,created_at` | sequence 递增；目标是确切候选、工作修订或本任务清单中的文本来源；候选／工作修订可带range，context目标必须带range，固定UTF-8半开范围及原句，单项最多16 KiB；intent 为 preference／request_changes；只表达意见，不产生采纳或授权；私密批注不进入投影 |
 | FeedbackHandling | `feedback_ref,result_refs,reported_at,reporter_ref` | 由实际保存成果引用推导或记录 Agent 声明；不等于作者认可，未满足可继续返工 |
 | TaskGrant | `grant_id,grant_revision,principal_ref,task_ref,allowed_actions,object_refs,editable_fields,context_manifest_ref,limits,expires_at,revoked_at` | 本机私有授权；可信作者入口创建，不进 Prompt／Git／Bundle；已知 ID 不能换取权限 |
 | CheckoutRecord | `checkout_id,task_ref,working_copy_ref,base_sha256,relative_path,state,expires_at` | 本机临时检出记录，不是作品事实；导入后才能得到受管新修订，过期后不能写回 |
 | ContinuationReceipt | `feedback_ref,session_ref,delivery_state,observed_at,result_ref` | 本机消息尝试记录，delivery_state 为 not_requested／requested／accepted／rejected／unknown；无聊天或凭据，不代表 Agent running |
+
+TaskFeedback整份成果意见继续写1.0.0，带文本range或context目标的位置意见写1.1.0；读取按原记录版本核验，1.0.0不接受位置字段。旧记录不补写、不重算摘要。
+
+图片候选目标可带`image_region={x,y,width,height}`，均为原图整数像素：原点为左上角，宽高为正，完整矩形必须落在固定候选的实际解码宽高内。目标仍使用原`candidate_ref`固定任务、批次与图片身份，不能同时带文本`range`，也不能用于文字候选或工作稿。含图片区域的反馈写1.2.0；1.0.0／1.1.0不接受该字段。缩略图、界面缩放、换主题或收到新批次均不重算已保存坐标，也不裁切或修改原图。
+
+`feedback_list_input`的可选`candidate_ref`只筛选本任务固定候选，验证原批次、原候选归属，保留原意见sequence而不重新编号；筛选进入游标身份。可选`result_path`、`offset`、`max_bytes`及`expected_result_sha256`复用原JSON分页语义。显式展开返回`feedback_page`和`feedback_page_sha256`；摘要固定本次逻辑意见页及其返稿引用。字段分页参数不参与原意见列表游标身份，列表或返稿变化仍使旧游标或摘要失效；长原句和多目标意见可完整读取，不以截断引文冒充全部历史。
+
+可选`feedback_ref`读取本任务的确切公开意见，核验原摘要、归属及前序；不存在或摘要不符时失败，不退回最新意见。与`candidate_ref`同时使用时取交集，筛选参与游标身份并保留原sequence。会话来源核对可以仅展开`/feedback/0/feedback_ref`，避免为验证一个固定引用传输整段原句和全部历史。
 
 TaskGrant、CheckoutRecord 和 ContinuationReceipt 留在本机私有存储或会话中；作品可持有请求、公开反馈、工作修订及候选来源。不同主体的私密注释不因反馈共享而变为公开；origin 区分可信原生操作、局部交互会话及调用方声明，不能把自动化点击升级为作者批准。
 
 请求版本链追加而不改旧记录。普通返工追加 TaskFeedback 与 WorkingRevision；补充上下文／变更基线由作者生成新请求及授权版本。新请求发布后旧工作副本只读；显式创建后继副本保留 parent_ref。旧提交、历史反馈与原操作仍引用原请求，持有当前权限的作者始终能查看；失权 Agent 不凭旧引用读取。
 
 `creative-task.schema.json` 的1.0.0记录以 task_ref 加 request_sha256 共同固定请求；稳定 MCP／CLI 业务输入携带合并后的完整 task_ref。两种表示必须核验一致，不能省略请求摘要。WorkingCopy 的 `base_refs` 在创建输入和持久化记录中、候选的 `source_refs` 在提交记录中均最多100项，且每项必须属于固定任务的 `input_refs`；来源数量不扩大作品授权。工作副本头的记录摘要由任务状态锚定，current_revision_sha256 固定当前修订记录，previous_sha256 串联不可变历史；WorkingCopyRef 的 sha256 固定内容字节。
+
+任务`get_input.detail`可取`review`：固定请求和批次身份、候选元数据、来源目录、意见头及作者选择保留；Prompt、候选正文／大段patch、来源正文及完整设定按需读取。投影显式标记正文读取动作与省略的最新意见，不改原持久记录或摘要。`submission_ref`始终对应本次选择的确切批次，旧批次不能误用当前头。候选正文沿原`creative_tasks.read_candidate`的UTF-8分页回读，页摘要及总字节与原候选核对；历史工作修订核对用原`working_copies.get detail:summary`。
+
+`working_get_input`增加`detail:page`，返回固定`working_copy_ref`、当前头、任务归属及`content_page`，避免正文分页重复传输全部历史。`detail:summary`继续返回不含正文的修订及历史；可沿`result_path/offset/max_bytes/expected_result_sha256`读取`working_page/working_page_sha256`字段投影，摘要绑定同次逻辑结果，当前头变化时拒绝混拼。工作稿与提交候选共用分页位置模型，选区仍绑定原WorkingCopyRef；不复制工作稿或产生新持久化类型。任务目录的`working_copy_count`由原任务状态计算，仅用于定位已有保存稿。
+
+`get_input`及`interaction_get_input`可用`result_path/offset/max_bytes/expected_result_sha256`分段读取同一审阅投影，返回`task_page/task_page_sha256`。摘要绑定完整逻辑投影，期间任务、意见或决定变化时拒绝拼接。界面投影重组上限4 MiB，覆盖同批受管图片预览；候选正文仍逐页读取。未指定detail且原任务读取超过32 KiB时，`interactions.get`自动改用`review`，明确请求`full`仍保留完整读取语义。
 
 请求记录1.1.0通过 context_manifest_ref 固定目录摘要；ContextRef 为 `{context_id,sha256}`，必须在该请求已授权清单中解析。原文从固定 DocumentRef／设定集修订回读并重验摘要，不在任务中复制整书。目录、范围和请求的字节身份相互核验；读取不会改旧任务或跟随正文当前头。正文片段的 SourceRef 保持既有字段，内容摘要单列为 sha256，不往既有 SourceRef 偷加字段。
 
@@ -501,6 +525,7 @@ TaskGrant、CheckoutRecord 和 ContinuationReceipt 留在本机私有存储或�
 | 待答请求 | 引擎请求身份、所属会话／轮次／连接代次、请求类型、状态与答复回执 | 引擎拥有请求及有效期，宿主保存投影；引擎工具审批不替代Core作者决定，旧连接的请求不可回答新会话 |
 | 执行表面 | `gui`／`tui`、实际Codex版本、配置归属、账号身份引用及对应恢复能力 | 同一会话只有一个当前输入表面；默认表面偏好不修改运行中的绑定 |
 | 线程占用 | 会话、配置归属与thread ID、owner代次、进程身份及活性、取得／释放状态 | 进程间协调；PID复用和崩溃遗留单独核验，未知不强行接管；不能锁住外部非受管进程 |
+| 受管引擎生命周期 | 桌面与守护进程私有IPC、原进程组／子树、启动许可及退出阶段 | 进程组身份先写原占用再启动引擎；父连接断开只清理自身组，确认退出后才沿原线程重建；不保存另一份业务或聊天事实 |
 | 表面切换记录 | 原／目标表面、原线程、切换原键、轮次边界、输入权释放、只读观察／回退引擎退出、连接结果及代次 | 冻结投递后交接；非当前TUI只读保留原生草稿；失败保留原会话；新线程必须标为新建并保留接续来源 |
 | PTY运行投影 | 受管进程引用、cols／rows、连接状态、退出结果、有限scrollback及回放标识 | 终端输出和回放不证明消息受理、线程恢复或Core保存；不作为作品事实 |
 | 本机会话内线程投影 | 当前thread ID及`threads`中的历史thread ID、消息、工具、名称、未发送草稿与固定引用 | 仅同一WorkRef内原生新建／恢复；成功响应、占用与私有存储先完成再交输入权。线程历史不扩展作品权限，也不加载其他本机会话或外部线程 |
@@ -509,6 +534,12 @@ TaskGrant、CheckoutRecord 和 ContinuationReceipt 留在本机私有存储或�
 | 会话外观偏好 | 独立GUI字体／字号／代码字号／宽度／对比度、跟随终端；TUI字体／行高／光标／历史／渲染与行为 | 归共享local_settings；与文稿排版、窗口缩放及执行策略分离；字段默认和范围见10 |
 
 新增各行是本轮目标数据语义，不能据此推定安装版已输出对应字段。实现时进入已有本机设置或会话存储的版本化Schema，不向作品本体新增聊天实体，不让Skills直接改私有记录。会话外观偏好与默认表面沿同一设置修订CAS更新，缺省采用10的默认值；保留既有显式字体和字号，非法值有可见修复结果。迁移只执行一次并可沿原键恢复，不清理引擎认证、旧会话或作品。
+
+现有本机会话记录保存可选安全整数`input_generation`与`request_generation`，分别作为输入和待答请求代次的高水位。新进程、执行端及输入表面交接前先推进并原子保存，再公开新代次或启动引擎；重启不从零复用旧值。旧记录缺字段时保留原线程和内容，用本机时点起始的新代次迁入，不改历史消息或作品摘要；非法或溢出拒绝继续。进程内协议连接代次仍与这两个对外代次分离。
+
+原生`/new`、`/resume`及分叉改变thread身份时也属于输入权交接。进入交接即冻结输入、草稿与其他表面切换，先推进并保存高水位，再核对目标线程及其占用，保存双方投影后公布目标可输入状态；不能仅在重建PTY或切换GUI时推进。接管失败恢复原线程和独立草稿，已失效代次保持失效并落盘，不通过回退计数恢复旧页面。相同线程的只读恢复不因名称或重复响应另推进代次。
+
+Codex认证状态只来自公开`account/read`，有效渠道只从`config/read`取必要的非凭据投影。`requiresOpenaiAuth=false`且无账号表示使用渠道自身配置，不强制ChatGPT登录。私有会话可保存带随机盐的配置目录、渠道及可识别账号摘要；账号稳定标识优先，接口仅提供类型时不能宣称核验了同一账号。摘要不进入renderer、Prompt或作品；不保存邮箱、原账号对象、完整配置及任何凭据。旧会话首次建立摘要只固定本次观察，不能补证历史账号。恢复及新投递前核对，变化或读取失败保留原线程与草稿并阻止新投递；原账号／配置恢复后沿原线程继续，不静默绑定新身份。登录委托引擎公开流程，浏览器地址和login ID仅在内存中使用。
 
 消息尝试的投递状态区分 `prepared`、`written`、`accepted`、`rejected`、`unknown`；`written`只表示本机传输写入，不能按超时推为拒绝或可重发。轮次终态与Core保存结果另行关联，原键由业务Owner核验。停止请求区分请求中、引擎确认、进程退出与业务待恢复，不能用一个ready布尔值覆盖全部含义。TUI缺乏结构化消息回执时保留不可观察状态，不从屏幕文字补写accepted。
 
@@ -634,7 +665,7 @@ creative-task.schema.json维护任务接续记录及输入；记录包含schema_
 
 执行记录使用phase区分started／finished，status另记实际结果；未观察终态的started按unknown读取，原操作可证明已经提交。查询绑定客户端当前授权摘要，最多返回50项、扫描200项；成员游标不冒充异步终态快照。原操作只保存摘要索引，Agent不能提交自报执行记录。
 
-专业只读来源plugin_object固定work_ref、owner_plugin_id、object_id、revision及sha256，任务准备时核验同作品归属；读取按确切对象投影，不扩大TaskRef权限。creative_tasks.assess分别返回delivery、professional、author_decision，不产生总质量通过值。小说审校适配读取其已发布novel_review合同，报告固定候选的六域覆盖、未检查、反证及错误目标；其他Owner明确unsupported_owner。reported_pass只表示Owner声明，语义正确性仍未由宿主核实。
+专业只读来源plugin_object固定work_ref、owner_plugin_id、object_id、revision及sha256，任务准备时核验同作品归属；读取按确切对象投影，不扩大TaskRef权限。creative_tasks.assess分别返回delivery、professional、author_decision，不产生总质量通过值。交付声明随所选候选的原提交批次读取；跨批次选择按各批次合并未完成项，只有所有所选批次均声明完成时才返回agent_reported_complete=true，显式空候选不借用最新声明。小说审校适配读取其已发布novel_review合同，报告固定候选的六域覆盖、未检查、反证及错误目标；其他Owner明确unsupported_owner。reported_pass只表示Owner声明，语义正确性仍未由宿主核实。
 
 statement_id和issue_id使用稳定UUID标识；已有标识和新结构不能被旧客户端裁掉。supporting／contradicting逐项核验任务内固定来源、工作稿或公开反馈，同一依据不同时列入两边。任务问题resolved须有消解依据；专业问题以referred、owner_context_ref及原生owner_item_id引用任务固定的原Owner与具体问题；小说审校适配核验原问题存在，专业状态仍由原Owner维护。result_provenance由actions.json声明，通过MCP的_meta.provenance传递，不授予指令权或业务权限。
 
@@ -666,6 +697,10 @@ statement_id和issue_id使用稳定UUID标识；已有标识和新结构不能�
 
 本节是已有合同的组合规则。若某来源当前没有可公开读取的固定引用，能力发现须说明缺口；先扩展原Owner合同及正负测试，再启用对应分类，禁止通过自由JSON或直接读内部文件补齐。
 
+正式大纲的任务来源为`{kind:"outline",work_ref,outline_id,revision,sha256}`。revision和sha256固定原大纲集合的不可变记录，outline_id选择该记录中的确切条目；不得用同名章纲或当前正文反推条目身份。任务快照的size_bytes计量所选条目的text，source_format为markdown，ContextRef的摘要仍固定集合记录。分块读取及检索选区沿所选条目的UTF-8字节返回，修改大纲当前头不改变旧任务和旧消息。数据继续由现有大纲记录及历史拥有，不新增会话副本或第二套大纲表。
+
+设定来源可在完整work_ref、blueprint_id、revision及sha256上附加entity_ref，固定一个按原Schema主键查到的实体。任务目录的size_bytes只计该实体，读取默认返回它并标注entity覆盖；指定另一实体或分类拒绝，不能通过同名或某个普通字段值代替主键。未附entity_ref的历史整份设定引用保持原覆盖。专业SDK复用同一outline与单实体来源，来源核验、保存依据和读取分别沿原Owner执行。
+
 ### 27.1 固定上下文与协作成果关系
 
 ```mermaid
@@ -696,3 +731,5 @@ erDiagram
 ### 终端业务投影
 
 作品选择使用已有WorkRef和创作库登记，不向SessionLaunch增加任意workspace_path或cwd。会话范围固定后不能原地换作品。非Codex回执文件仅保存AgentTool公开投影，记录本会话真实tools/call的ID、名称、完成状态与脱敏结果，限定条数与字节预算；management_ref、Token和密码不入投影。该文件不构成领域数据库或保存权威，成果展示必须重新验证归属、固定修订及摘要。
+
+存储空间复用本机设置方案，新增storage_cleanup类型，固定profile身份、候选相对路径、文件身份／大小／SHA-256和选择摘要。只认宿主固定缓存目录与removed会话，拒绝链接、硬链接、待恢复投递及有草稿记录。执行结果逐文件持久化，已完成项不再次删除新文件，丢回执沿原方案和执行键恢复。

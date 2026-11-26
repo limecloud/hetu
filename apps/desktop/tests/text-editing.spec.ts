@@ -39,7 +39,7 @@ test("语义阅读、确切原文选区、格式撤销、纯文本粘贴与剧�
     const page = await app.firstWindow(), errors: string[] = []; page.on("pageerror", error => errors.push(error.message));
     await page.setViewportSize({width: 1440, height: 940});
     await page.getByRole("button", {name: "打开作品 默认小说", exact: true}).click();
-    await page.getByRole("button", {name: "小说", exact: true}).click();
+    await navigate(page, "小说");
     await page.evaluate(async () => { const state = await (window as any).hetuDesktop.settings("preferences"); await (window as any).hetuDesktop.settings("update", {expected_revision: state.revision, patch: {autosave: false}}); });
     await documentAction(page, "阅读");
     const reader = page.locator(".reader");
@@ -126,7 +126,7 @@ test("语义阅读、确切原文选区、格式撤销、纯文本粘贴与剧�
     await page.screenshot({path: info.outputPath("markdown-editing.png")});
     await navigate(page, "返回创作库");
     await page.getByRole("button", {name: "打开作品 默认剧本", exact: true}).click();
-    await page.getByRole("button", {name: "剧本", exact: true}).click();
+    await navigate(page, "剧本");
     await page.getByRole("tab", {name: "编辑", exact: true}).click();
     await editor.press("ControlOrMeta+End"); await editor.press("Control+Space");
     await expect(page.getByRole("option", {name: "江岚", exact: true})).toBeVisible();

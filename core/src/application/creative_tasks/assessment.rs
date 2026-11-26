@@ -33,6 +33,13 @@ impl Kernel {
             .get("candidate_refs")
             .cloned()
             .unwrap_or_else(|| candidate_references(&submission, &input["task_ref"]));
+        // 显式历史候选的交付声明只来自原批次，不借用最新批次的完成状态。
+        let mut assessed_submissions =
+            if input.get("candidate_refs").is_none() && submission.is_object() {
+                vec![submission.clone()]
+            } else {
+                Vec::new()
+            };
         let mut candidates = Vec::new();
         for reference in references.as_array().unwrap() {
             ensure(
@@ -41,12 +48,23 @@ impl Kernel {
                 "评估候选须属于本次精确任务。",
             )?;
             let candidate = self.task_candidate(reference)?;
+            if !assessed_submissions
+                .iter()
+                .any(|s| s["submission_id"] == reference["submission_id"])
+            {
+                assessed_submissions.push(self.read_submission(
+                    &request,
+                    &state,
+                    text(reference, "submission_id")?,
+                    false,
+                )?);
+            }
             let draft = if let Some(id) = candidate["draft_ref"]["draft_id"].as_str() {
                 self.draft_content(id)?["draft"].clone()
             } else {
                 Value::Null
             };
-            candidates.push(json!({"candidate_ref":reference,"sha256":candidate["sha256"],"size_bytes":candidate["size_bytes"],
+            candidates.push(json!({"candidate_ref":reference,"title":candidate["title"],"sha256":candidate["sha256"],"size_bytes":candidate["size_bytes"],
                 "kind":candidate["kind"],"evidence_source":if draft.is_object() {json!({"kind":"document","document_id":draft["evidence_document_id"],"revision_id":draft["evidence_revision_id"],"sha256":candidate["sha256"]})} else {Value::Null},
                 "adoption":if draft.is_null() {"not_applicable"} else if draft["approved_revision_id"].is_null() {"awaiting_author"} else {"recorded"}}));
         }
@@ -79,7 +97,7 @@ impl Kernel {
                 )?;
             }
             let (record, _) = self.fixed_professional_object(reference)?;
-            let mut report = json!({"reference":reference,"authority":"professional_owner_reported",
+            let mut report = json!({"reference":reference,"title":record["title"],"authority":"professional_owner_reported",
                 "semantic_correctness":"not_verified_by_host","status":"unsupported_owner","candidate_coverage":[]});
             // 此适配只读取已发布Owner的覆盖合同，规则执行仍由原插件负责。
             if record["owner_plugin_id"] == "org.wordflowlab.novel-review"
@@ -193,10 +211,23 @@ impl Kernel {
         } else {
             json!({"status":"no_existing_target"})
         };
+        let complete = if assessed_submissions.is_empty() {
+            Value::Null
+        } else {
+            json!(assessed_submissions.iter().all(|s| s["complete"] == true))
+        };
+        let mut missing_items = Vec::new();
+        for batch in &assessed_submissions {
+            for item in batch["missing_items"].as_array().unwrap() {
+                if !missing_items.contains(item) {
+                    missing_items.push(item.clone());
+                }
+            }
+        }
         Ok(
             json!({"task_ref":input["task_ref"],"request_sha256":request_sha,"observation":{"revision":state["revision"],"sha256":state_sha},
             "delivery":{"status":if candidates.is_empty(){"missing"}else{"fixed_candidates_verified"},"candidates":candidates,
-                "agent_reported_complete":submission["complete"],"agent_reported_missing_items":submission["missing_items"],"target":target},
+                "agent_reported_complete":complete,"agent_reported_missing_items":missing_items,"target":target},
             "professional":{"status":if reports.is_empty(){"no_checks"}else{"fixed_reports_read"},"reports":reports},
             "author_decision":{"status":if task["decision"].is_null(){"awaiting_author"}else{"preference_recorded"},
                 "decision":task["decision"],"effect":"preference_only"},"completion":"requires_layer_review",

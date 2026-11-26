@@ -25,7 +25,7 @@ test("右键固定选区、格式子菜单、块事务、批注、目录改名�
     await work.click({button: "right"});
     await expect(page.getByRole("menu", {name: "默认小说", exact: true})).toBeVisible();
     await page.getByRole("menuitem", {name: "打开", exact: true}).click();
-    await page.getByRole("button", {name: "小说", exact: true}).click();
+    await navigate(page, "小说");
     await page.evaluate(async () => {const state = await window.hetuDesktop.settings("preferences"); await window.hetuDesktop.settings("update", {expected_revision: state.revision, patch: {autosave: false}});});
     await documentAction(page, "编辑");
     const editor = page.getByRole("textbox", {name: "文稿编辑", exact: true}), line = editor.locator(".cm-line").filter({hasText: "普通"});
@@ -81,6 +81,7 @@ test("右键固定选区、格式子菜单、块事务、批注、目录改名�
     await page.getByRole("textbox", {name: "文稿名称", exact: true}).fill("右键改名后的章节");
     await page.getByRole("button", {name: "保存名称", exact: true}).click();
     await expect(page.getByRole("navigation", {name: "文稿目录", exact: true}).getByRole("button", {name: "右键改名后的章节", exact: true})).toBeVisible();
+    await expect(page.getByRole("heading", {name: "右键改名后的章节", exact: true})).toBeVisible();
     expect((await page.evaluate(async id => window.hetuDesktop.read("hetu.documents.get", {document_id: id}), id)).data.content).toBe(source);
     const renamedEntry = page.getByRole("navigation", {name: "文稿目录", exact: true}).getByRole("button", {name: "右键改名后的章节", exact: true});
     await renamedEntry.click({button: "right"}); await page.getByRole("menuitem", {name: "复制文稿", exact: true}).click();
@@ -119,10 +120,8 @@ test("右键固定选区、格式子菜单、块事务、批注、目录改名�
     await page.setViewportSize({width: 800, height: 700}); await resized;
     await input.press("ControlOrMeta+a"); await input.press("Backspace");
     await page.getByRole("button", {name: "打开作品 默认小说", exact: true}).click({button: "right"});
-    await page.getByRole("button", {name: "小说", exact: true}).click();
     await expect(page.getByRole("menuitem", {name: "版本历史", exact: true})).toBeVisible();
     await page.getByRole("button", {name: "打开作品 默认小说", exact: true}).click({button: "right"});
-    await page.getByRole("button", {name: "小说", exact: true}).click();
     const bounds = await page.getByRole("menu", {name: "默认小说", exact: true}).evaluate((element) => { const rect = element.getBoundingClientRect(); return {x: rect.x, y: rect.y, width: rect.width, height: rect.height}; }); expect(bounds.x + bounds.width).toBeLessThanOrEqual(800); expect(bounds.y + bounds.height).toBeLessThanOrEqual(700);
     await page.screenshot({path: info.outputPath("context-library-narrow.png")});
     for (let attempt = 0; attempt < 8; attempt++) {
@@ -131,7 +130,6 @@ test("右键固定选区、格式子菜单、块事务、批注、目录改名�
       await page.setViewportSize({width: attempt % 2 ? 800 : 1440, height: 700}); await resized;
       await input.fill(attempt % 2 ? "" : "默认");
       await page.getByRole("button", {name: "打开作品 默认小说", exact: true}).click({button: "right"});
-      await page.getByRole("button", {name: "小说", exact: true}).click();
       await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
       await expect(page.getByRole("menuitem", {name: "版本历史", exact: true})).toBeVisible();
     }

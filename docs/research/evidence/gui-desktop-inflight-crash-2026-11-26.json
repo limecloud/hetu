@@ -1,0 +1,199 @@
+{
+  "date": "2026-11-26",
+  "thread_id": "01a214e1-ba52-78f1-ab25-b3a2512204d6",
+  "plan_ref": {
+    "plan_id": "execution_1e546f43-4f76-48ca-b263-39ea5f5d58a6",
+    "sha256": "a393d6b32da0b38fa91cef9fce5f73a654755716567ba7ed73c403b6f835b59b"
+  },
+  "executions": 1,
+  "model_rounds": 3,
+  "resource_id": "resource_d9784abc-b15f-41b8-9c42-f2aaccb306f3",
+  "resource_revision": 1,
+  "sha256": "33128d441c50af28f18b053b715b7d7c2edaf936237b29aa251336d23092eda1",
+  "unknown_tool_preserved": true,
+  "draft_preserved": true,
+  "desktop_reopened": true,
+  "stale_draft_rejected": true,
+  "original_operation_reread": true,
+  "original_documents_unchanged": true,
+  "no_task_created": true,
+  "result_opened": true,
+  "whole_desktop_crash": true,
+  "verifications": [
+    {
+      "stage": "source",
+      "runtime": {
+        "version": "0.14.1",
+        "electron": "42.11.18"
+      },
+      "passed": true,
+      "disconnected_send_guard": false
+    },
+    {
+      "stage": "packaged",
+      "runtime": {
+        "version": "0.14.1",
+        "electron": "42.11.18"
+      },
+      "passed": true,
+      "fault_injected_this_run": false,
+      "original_operation_reverified": true,
+      "stale_draft_probe": true,
+      "new_model_rounds": 0,
+      "disconnected_send_guard": true
+    },
+    {
+      "stage": "installed",
+      "runtime": {
+        "version": "0.14.1",
+        "electron": "42.11.18"
+      },
+      "passed": true,
+      "fault_injected_this_run": false,
+      "original_operation_reverified": true,
+      "stale_draft_probe": true,
+      "new_model_rounds": 0,
+      "disconnected_send_guard": true
+    }
+  ],
+  "limits": [
+    "isolated actual desktop main-process SIGKILL after committed Core plan with receipt held",
+    "guardian exits original engine group before resuming the original thread",
+    "this stage reverified the preserved original fault sample; no new in-flight fault was injected",
+    "not authentication, system IME, creative quality or cross-platform validation"
+  ],
+  "first_failures": [
+    "actual desktop SIGKILL recovered the original thread but reused an in-memory generation; an old draft was accepted, preserved in source-first.log",
+    "package consistency gate rejected stale generated MCP workbench resources; resources were rebuilt before a new complete package",
+    "first complete stdio workbench test could not reveal project navigation after auxiliary panels closed; trace retained and focused diagnosis in progress"
+  ],
+  "recovery_fix": {
+    "guardian_before_engine": true,
+    "lease_before_start_permission": true,
+    "persisted_input_and_request_generation": true,
+    "generation_saved_before_engine_start": true,
+    "codex_and_generic_pty": true,
+    "new_model_requests_during_package_and_install_reverification": 0
+  },
+  "checks": {
+    "agent_unit": {
+      "passed": 92,
+      "failed": 0
+    },
+    "desktop_build": {
+      "passed": true
+    },
+    "packaged_desktop": {
+      "passed": 5,
+      "failed": 0
+    },
+    "installed_desktop": {
+      "passed": 3,
+      "failed": 0
+    },
+    "shared_workbench": {
+      "status": "passed",
+      "first_failed": true,
+      "original_failure_input_events": 0,
+      "single_panel_control_passed": true,
+      "explicit_focus_alone_insufficient": true,
+      "context_viewport_alone_insufficient": true,
+      "test_browser_initial": "Chrome 158.0.8127.38",
+      "playwright_browser": "156.0.8078.4",
+      "matching_browser_prepared": true,
+      "standalone_iframe_input_control": {
+        "system_and_bundled_browsers": true,
+        "with_and_without_auxiliary_page": true,
+        "context_viewport_and_main_activation": true,
+        "pointerdown_pointerup_click_observed": true
+      },
+      "actual_mcp_multipanel_minimal": {
+        "passed": true,
+        "pointerdown_pointerup_click_observed": true,
+        "context_viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "main_page_explicitly_activated": true,
+        "matching_browser": true,
+        "same_installed_mcp_cli_app_server": true
+      },
+      "complete_stdio_journey": true,
+      "native_pointer_events_observed": true,
+      "all_panels_context_viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "main_panel_activated_after_auxiliary_close": true,
+      "browser_version": "156.0.8078.4",
+      "mcp_cli_app_server_from_same_installed_bundle": true,
+      "resource_uri": "ui://hetu/workbench/2/13ec63775fe6a1f7d22a237b71edbf36773047e280ce23d7d2a2ac1b782204a2",
+      "resource_sha256": "13ec63775fe6a1f7d22a237b71edbf36773047e280ce23d7d2a2ac1b782204a2",
+      "independent_panel_sessions": true,
+      "plugin_disable_uninstall_retained_results": true,
+      "reading_and_settings_recovery": true,
+      "retained_log": "docs/research/evidence/shared-workbench-recovery-2026-11-26.log"
+    },
+    "docs": {
+      "passed": true,
+      "mermaid_count": 120,
+      "final_diff_check": true
+    }
+  },
+  "package": {
+    "source_sha256": "de091563c8f1158b8e257fcd48642bcd53f52b3e65ee1f43bd22a2dc7f8f8a5b",
+    "source_inputs": 3072,
+    "artifacts_verified": 3133,
+    "version": "0.14.1",
+    "optimized": true,
+    "signature": "ad-hoc-development-verified",
+    "icon_matches": true
+  },
+  "installation": {
+    "installed_path": "/Applications/Hetu.app",
+    "atomic_swap": true,
+    "backup_created": false,
+    "old_bundle_removed": true
+  },
+  "normal_profile": {
+    "works": 19,
+    "indexes_unchanged_since_preinstall": true
+  },
+  "diagram": {
+    "source": "docs/23-业务流程与MCP时序.md#591",
+    "svg": "docs/research/evidence/desktop-recovery-2026-11-26.svg",
+    "png": "docs/research/evidence/desktop-recovery-2026-11-26.png",
+    "rendered": true,
+    "visual_checked": true,
+    "sha256": "d5dc52c6856c006bbb6f37dc03c4e9cc9470e39f059478b2582a557a228de9af"
+  },
+  "release": {
+    "version_bumped": false,
+    "committed": false,
+    "pushed": false,
+    "website_deployed": false,
+    "existing_external_mcp_restarted": false,
+    "formal_distribution": false
+  },
+  "verification_interruption": {
+    "workspace_target_and_output_removed_during_validation": true,
+    "fixture_rebuild_in_workspace_exited": 101,
+    "prior_raw_output_available": false,
+    "source_snapshot_rechecked": true,
+    "source_sha256": "de091563c8f1158b8e257fcd48642bcd53f52b3e65ee1f43bd22a2dc7f8f8a5b",
+    "installed_artifacts_reinventoried": 3133,
+    "installed_signature_reverified": true,
+    "continuation_storage": "isolated system temporary directory",
+    "isolated_fixture_rebuild_succeeded": true,
+    "normal_profile_rechecked": {
+      "works": 19,
+      "three_indexes_unchanged_during_recheck": true
+    },
+    "continuation_complete": true
+  },
+  "final_integrity": {
+    "artifacts_verified": 3133,
+    "same_during_complete_workbench": true,
+    "signature_verified": true
+  }
+}

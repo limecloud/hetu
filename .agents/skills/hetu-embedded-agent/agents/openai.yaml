@@ -1,0 +1,4 @@
+interface:
+  display_name: "河图内嵌 Agent 接入"
+  short_description: "复用真实 PTY、会话恢复和作品业务接入更多 TUI 与结构化 GUI"
+  default_prompt: "使用 $hetu-embedded-agent 接入或完善当前引擎的 TUI/GUI，复用既有会话与作品业务，并验证输入权、恢复及真实成果回读。"

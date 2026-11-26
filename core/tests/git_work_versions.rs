@@ -17,6 +17,70 @@ fn agent(h: &CollaborationHub, grant: &Value, a: &str, mut i: Value) -> Value {
 }
 
 #[test]
+fn host_private_approvals_stay_isolated_and_connection_rebinding_is_explicit() {
+    let root = tempfile::tempdir().unwrap();
+    let workspace = root.path().join("作品");
+    let access = root.path().join("连接");
+    let first_directory = root.path().join("第一资料/git-authorizations");
+    let second_directory = root.path().join("第二资料/git-authorizations");
+    let first = Kernel::open(json!({"workspace_path":workspace,"mode":"author","authorization_path":first_directory,
+        "create":{"title":"私密版本验收","locale":"zh-CN","operation_key":"create"}})).unwrap();
+    let work = ok(call(&first, "works.list", json!({})))["works"][0]["work_ref"].clone();
+    let content = "江岚保留原来的决定。🌿\r\n这份正文不随批准位置改变。";
+    let document = ok(call(&first, "documents.create", json!({"kind":"novel_chapter","title":"渡口",
+        "source_format":"markdown","content":content,"operation_key":"document"})));
+    ok(call(&first, "git.init", json!({"work_ref":work,"branch":"main","operation_key":"git"})));
+    let connection = json!({"work_ref":work,"client_adapter":"codex","collaboration_path":access});
+    let authorize = |kernel: &Kernel, key: &str| {
+        let mut input = connection.clone(); input["operation_key"] = json!(key);
+        ok(call(kernel, "collaboration.authorize_workspace", input))["management_ref"].clone()
+    };
+    let first_grant = authorize(&first, "first-grant");
+    let hub = CollaborationHub::open(&access, "codex").unwrap();
+    let prepare = |grant: &Value, key: &str| {
+        let head = ok(agent(&hub, grant, "git.status", json!({"work_ref":work})))["head"].clone();
+        ok(agent(&hub, grant, "git.snapshot", json!({"work_ref":work,"phase":"prepare","expected_head":head,
+            "message":"保留创作节点","author":{"name":"验收作者","email":"author@hetu.test"},"operation_key":key})))
+    };
+    let approve = |kernel: &Kernel, snapshot: &Value, key: &str| ok(call(kernel, "git.approve_snapshot",
+        json!({"work_ref":work,"snapshot_id":snapshot["snapshot"]["snapshot_id"],"snapshot_sha256":snapshot["snapshot_sha256"],"operation_key":key})));
+    let read = |grant: &Value, snapshot: &Value| ok(agent(&hub, grant, "git.get_snapshot",
+        json!({"work_ref":work,"snapshot_id":snapshot["snapshot"]["snapshot_id"]})));
+    let execution = |snapshot: &Value, key: &str| json!({"work_ref":work,"phase":"execute",
+        "snapshot_id":snapshot["snapshot"]["snapshot_id"],"operation_key":key});
+    let original = prepare(&first_grant, "first-snapshot");
+    approve(&first, &original, "first-approval");
+    let approval_file = first_directory.join(original["snapshot"]["repository_instance"].as_str().unwrap())
+        .join(format!("{}.json", original["snapshot"]["snapshot_id"].as_str().unwrap()));
+    let original_approval = std::fs::read(&approval_file).unwrap();
+    assert_eq!(read(&first_grant, &original)["approval_state"], "approved");
+    assert_eq!(ok(call(&first, "collaboration.workspace_access", connection.clone()))["git_authorization_current"], true);
+
+    let second = Kernel::open(json!({"workspace_path":workspace,"mode":"author","authorization_path":second_directory})).unwrap();
+    let status = ok(call(&second, "collaboration.workspace_access", connection.clone()));
+    assert_eq!(status["authorized"], true);
+    assert_eq!(status["git_authorization_current"], false);
+    assert!(!status.to_string().contains(root.path().to_str().unwrap()));
+    assert_eq!(read(&first_grant, &original)["approval_state"], "approved");
+    let second_grant = authorize(&second, "second-grant");
+    assert_ne!(first_grant, second_grant);
+    assert_eq!(ok(call(&second, "collaboration.workspace_access", connection))["git_authorization_current"], true);
+    assert_eq!(agent(&hub, &first_grant, "git.snapshot", execution(&original, "old-grant"))["error"]["code"], "forbidden");
+    assert_eq!(agent(&hub, &second_grant, "git.snapshot", execution(&original, "old-snapshot"))["error"]["code"], "forbidden");
+    let current = prepare(&second_grant, "second-snapshot");
+    // 在另一个资料目录批准同一快照，不能成为当前连接的批准。
+    approve(&first, &current, "wrong-profile-approval");
+    assert_eq!(read(&second_grant, &current)["approval_state"], "pending_approval");
+    assert_eq!(agent(&hub, &second_grant, "git.snapshot", execution(&current, "missing-approval"))["error"]["code"], "hetu.author_confirmation_required");
+    approve(&second, &current, "current-profile-approval");
+    let input = execution(&current, "save-current");
+    let done = ok(agent(&hub, &second_grant, "git.snapshot", input.clone()));
+    assert_eq!(ok(agent(&hub, &second_grant, "git.snapshot", input)), done);
+    assert_eq!(ok(call(&second, "documents.get", json!({"document_id":document["document"]["document_id"]})))["content"], content);
+    assert_eq!(std::fs::read(approval_file).unwrap(), original_approval);
+}
+
+#[test]
 fn long_fixed_versions_page_utf8_without_truncation_or_weakening_scope() {
     let root = tempfile::tempdir().unwrap();
     let workspace = root.path().join("长篇");

@@ -1,5 +1,6 @@
 mod app;
 mod model_confirmation;
+mod mentions;
 mod resources;
 mod response;
 mod stable;
@@ -317,12 +318,12 @@ impl ServerHandler for HetuServer {
     }
 
     fn get_info(&self) -> ServerConfig {
-        ServerConfig::new(
+        let capabilities =
             ServerCapabilities::builder()
                 .enable_tools()
                 .enable_resources()
-                .build(),
-        )
+                .build();
+        ServerConfig::new(if self.kernel.bound_task().is_some() { mentions::capabilities(capabilities) } else { capabilities })
         .with_protocol_version(ProtocolVersion::V_2026_07_28)
         .with_server_info(Implementation::new("hetu-mcp", env!("CARGO_PKG_VERSION")))
         .with_instructions(MACHINE_INSTRUCTIONS)
@@ -334,8 +335,7 @@ impl ServerHandler for HetuServer {
         context: RequestContext<RoleServer>,
     ) -> Result<ListToolsResult, ErrorData> {
         resources::no_cursor(request)?;
-        Ok(ListToolsResult::with_all_items(
-            self.tools
+        let mut tools: Vec<_> = self.tools
                 .iter()
                 .map(|(tool, _)| {
                     if self.kernel.bound_task().is_some() && ui::supported(&context) {
@@ -344,8 +344,9 @@ impl ServerHandler for HetuServer {
                         tool.clone()
                     }
                 })
-                .collect(),
-        ))
+                .collect();
+        if self.kernel.bound_task().is_some() { tools.push(mentions::tool()); }
+        Ok(ListToolsResult::with_all_items(tools))
     }
 
     async fn call_tool(
@@ -353,6 +354,21 @@ impl ServerHandler for HetuServer {
         request: CallToolRequestParams,
         context: RequestContext<RoleServer>,
     ) -> Result<CallToolResponse, ErrorData> {
+        if request.name == mentions::TOOL && self.kernel.bound_task().is_some() {
+            let permit = tokio::select! {
+                _ = context.ct.cancelled() => return Err(ErrorData::internal_error("读取已取消 / Read cancelled",None)),
+                permit = self.gate.clone().acquire_owned() => permit.map_err(|_|ErrorData::internal_error("本机入口已关闭 / Local entry closed",None))?,
+            };
+            let kernel=self.kernel.clone();
+            let task=self.task_ref();
+            let cancellation=context.ct.clone();
+            return tokio::task::spawn_blocking(move || {
+                let _permit=permit;
+                mentions::search_task(request.arguments.unwrap_or_default(),&task,&mut |action,input| {
+                    mentions::data(kernel.request_cancellable(json!({"action":action,"contract_revision":"1","input":input}),&||cancellation.is_cancelled()))
+                })
+            }).await.map_err(|_|ErrorData::internal_error("来源搜索未完成 / Source search interrupted",None))?;
+        }
         let (_, action) = self
             .tools
             .iter()
@@ -432,6 +448,19 @@ impl ServerHandler for HetuServer {
         request: ReadResourceRequestParams,
         context: RequestContext<RoleServer>,
     ) -> Result<ReadResourceResponse, ErrorData> {
+        if request.uri.starts_with(mentions::URI_PREFIX) && self.kernel.bound_task().is_some() {
+            let permit = tokio::select! {
+                _ = context.ct.cancelled() => return Err(ErrorData::internal_error("读取已取消 / Read cancelled",None)),
+                permit = self.gate.clone().acquire_owned() => permit.map_err(|_|ErrorData::internal_error("本机入口已关闭 / Local entry closed",None))?,
+            };
+            let kernel=self.kernel.clone();
+            let cancellation=context.ct.clone();
+            return tokio::task::spawn_blocking(move || {
+                let _permit=permit;
+                mentions::read(&request.uri,&mut |action,input|mentions::data(kernel.request_cancellable(
+                    json!({"action":action,"contract_revision":"1","input":input}),&||cancellation.is_cancelled())))
+            }).await.map_err(|_|ErrorData::internal_error("来源读取未完成 / Source read interrupted",None))?;
+        }
         if request.uri == ui::URI {
             if self.kernel.bound_task().is_none() || !ui::supported(&context) {
                 return Err(ErrorData::invalid_params(

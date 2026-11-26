@@ -1,0 +1,122 @@
+{
+  "date": "2026-11-25",
+  "version": "0.14.1",
+  "scope": "R3-04 and R7-08/09 fixed video review, ordered recovery drafts and lost-receipt recovery",
+  "state": "local-installed-validated",
+  "findings": [
+    "Draft writes entered RecoveryStore only after asynchronous media validation; an older validation could return late and overwrite newer input or revive cleared feedback.",
+    "The view exposed list loading but had no terminal state for fixed-media reads, local retry or protection from a late rejected read of a prior selection.",
+    "When feedback was saved but its UI receipt was lost, a succeeded local journal did not expose recovery and the unchanged draft could be submitted again."
+  ],
+  "implementation": [
+    "Reuse VideoReview's existing per-work queue from input arrival through media validation and draft write, with rejection isolated from subsequent queued work.",
+    "Project, episode-list and media loading are separate and compose the actual aria-busy state; media failures retry in place and stale read failures are ignored.",
+    "Empty episodes clear previous media and feedback projections; list failures are not displayed as empty results.",
+    "Unknown feedback receipts lock duplicate submission and expose original-operation recovery; matching persisted drafts also recover after reopening. Definitively blocked operations remain editable rather than being mislabeled unknown.",
+    "Reuse the same React video surface, Core fixed media, time base, feedback and private recovery store for desktop and MCP Apps."
+  ],
+  "validation": {
+    "draft_negative": {"failed": 2, "passed": 1, "log": "output/video-review-order-before.log"},
+    "draft_and_recovery": {"passed": 4, "failed": 0, "skipped": 0, "log": "output/video-review-order-recovery.log"},
+    "core": {"passed": 8, "failed": 0, "skipped": 0, "log": "output/video-review-core.log", "scope": "video_review and video_episodes"},
+    "installed_baseline_negative": {"failed": 1, "log": "output/video-review-before-runtime.log", "scope": "held fixed-media read does not expose aria-busy in the prior installed version"},
+    "intermediate_desktop_negative": {"failed": 1, "log": "output/video-review-desktop.log", "scope": "Core saved feedback but UI receipt was deliberately lost; no recovery button; original fixture and recovery draft retained"},
+    "desktop_recovery": {"passed": 1, "failed": 0, "log": "output/video-review-desktop-recovery.log", "scope": "real media play/seek, fixed range feedback, original operation recovery and empty episode"},
+    "first_three_surface_regression": {"passed": 1, "failed": 1, "interrupted": 1, "log": "output/video-review-three-surfaces.log", "scope": "desktop passed; stdio reopening was blocked by the unhandled native preserve-draft confirmation; official Codex repetition stopped normally after the same missing fixture was identified"},
+    "mcp_recovery": {"passed": 2, "failed": 0, "skipped": 0, "log": "output/video-review-mcp-confirmed.log", "scope": "stdio and official Codex protocol forwarding; real media, delayed errors, list failures, reopening unknown feedback and original-operation recovery; zero model turns", "dialog_fixture": "only accepts the exact preserve-recovery-draft-and-leave prompt; no business decisions"},
+    "package": {
+      "manifest": "output/video-review-20261125/package/hetu-dev-PJJcu3/manifest.json",
+      "source_sha256": "049e9950c1afbf83d1d7a38086089f0ba10590761e7b75d6036e96a2a83580f5",
+      "source_inputs": 3053,
+      "artifacts": 3720,
+      "icon_matches": true,
+      "signing": "ad-hoc-development",
+      "verification": "output/video-review-20261125/package-verified.json",
+      "log": "output/video-review-package.log"
+    },
+    "affected_desktop": {
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/video-review-package-desktop.log",
+      "scope": "three packaged tests: author/plugin, fixed source, task assessment; the first baseline test still launched source and is not counted as installed-package baseline evidence"
+    },
+    "package_video_first": {
+      "passed": 2,
+      "failed": 1,
+      "log": "output/video-review-package-video.log",
+      "scope": "stdio and official Codex forwarding passed including definitive invalid-range correction; desktop reopening was blocked by the preserve-draft dialog missing from its fixture; corrected desktop fixture is revalidated separately"
+    },
+    "package_video_desktop_corrected": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/video-review-package-video-confirmed.log",
+      "scope": "same package; only the exact preserve-recovery-draft leave choice is fixed by the desktop fixture; full video journey, definitive invalid range, reopening and Core feedback count are still verified"
+    },
+    "package_baseline": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/video-review-package-baseline.log",
+      "scope": "test now honors the package executable and bundled Core, CLI and MCP; empty/broken optional plugin directory, novel outline, screenplay reading, video play/seek and fixed feedback, byte-identical media export and normal reopen"
+    },
+    "workspace_and_drafts": {
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/video-review-package-workspace.log",
+      "scope": "one unified execution journey using final package resources, two relationship geometry checks and four source-level video draft/recovery tests"
+    },
+    "typechecks": {"desktop": "passed", "task_view_including_tests": "passed"},
+    "codex_version": "0.172.0",
+    "frozen_artifacts": {
+      "items": 49,
+      "record": "output/video-review-20261125/frozen-artifacts.json"
+    },
+    "documentation": {
+      "log": "output/video-review-docs-installed.log",
+      "errors": 0,
+      "engineering_skill_validator": "passed"
+    },
+    "installation": {
+      "path": "/Applications/Hetu.app",
+      "source_sha256": "049e9950c1afbf83d1d7a38086089f0ba10590761e7b75d6036e96a2a83580f5",
+      "items_verified": 3132,
+      "profile_indexes_unchanged": true,
+      "atomic_swap": true,
+      "backup_created": false,
+      "external_mcp_terminated": false,
+      "log": "output/video-review-install.log"
+    },
+    "installed_video": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/video-review-installed-video.log",
+      "screenshots_and_readbacks": "output/video-review-20261125/installed-video",
+      "scope": "actual installed application; real media, invalid range, lost receipt, reopening, original-operation recovery, one fixed feedback and unchanged prior version"
+    },
+    "original_task_readback": {
+      "record": "output/video-review-20261125/installed-original-task.json",
+      "log": "output/video-review-installed-machine.log",
+      "runtime_version": "0.14.1",
+      "formal_unchanged": true,
+      "candidates_read": 3,
+      "professional_status": "inconclusive",
+      "model_turns": 0,
+      "current_conversation_mcp_hot_reload_claimed": false
+    },
+    "normal_launch": {
+      "library_works": 19,
+      "profile_indexes_unchanged": true,
+      "log": "output/video-review-normal.log",
+      "record": "output/conversation-composition-20261125/installed-normal-launch-video-review.json"
+    }
+  },
+  "limits": [
+    "The four-second color-bar video is a deterministic media fixture, not a produced episode or proof of creative quality.",
+    "MCP App protocol forwarding is not native Codex Desktop host validation.",
+    "No completion claim for generated video, a full episode, audiovisual quality, recoverable editing project, accessibility, other platforms or formal distribution."
+  ]
+}

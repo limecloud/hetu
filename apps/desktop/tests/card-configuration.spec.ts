@@ -4,7 +4,7 @@ import {tmpdir} from "node:os";
 import path from "node:path";
 import {spawnSync} from "node:child_process";
 import {AppServer} from "../src/main/rpc.ts";
-import {documentAction} from "./navigation.ts";
+import {documentAction, navigate} from "./navigation.ts";
 
 test("卡片真实预览、取消、五种布局、背景、独立撤销和保存阅读保持同一原稿", async ({}, info) => {
   test.setTimeout(120000);
@@ -26,7 +26,7 @@ test("卡片真实预览、取消、五种布局、背景、独立撤销和保�
     const page = await app.firstWindow(), errors: string[] = []; page.on("pageerror", error => errors.push(error.message));
     await page.setViewportSize({width: 1440, height: 875});
     await page.getByRole("button", {name: "打开作品 默认小说", exact: true}).click();
-    await page.getByRole("button", {name: "小说", exact: true}).click();
+    await navigate(page, "小说");
     await page.evaluate(async () => {const api = (window as any).hetuDesktop, state = await api.settings("preferences"); await api.settings("update", {expected_revision: state.revision, patch: {autosave: false}});});
     await documentAction(page, "编辑");
     const editor = page.getByRole("textbox", {name: "文稿编辑", exact: true}), card = page.locator(".cm-card-preview > .manuscript-group-link"), dialog = page.getByRole("dialog", {name: "配置卡片", exact: true});

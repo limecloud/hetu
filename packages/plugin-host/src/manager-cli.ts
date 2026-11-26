@@ -24,11 +24,12 @@ async function runtime() {
   if (pkg.sha256 !== input.package_sha256) throw new PluginInvocationRejected("插件包已更新，旧能力引用不可继续使用。");
   const openMode = request.action.startsWith("hetu.plugins.");
   const privateDirectory = openMode ? await mkdtemp(path.join(os.tmpdir(),"hetu-plugin-connection-")) : undefined;
-  if (privateDirectory) await writeFile(path.join(privateDirectory,"management.json"),JSON.stringify(input.management_binding),{mode:0o600});
+  const execution = input.execution_binding !== undefined;
+  if (privateDirectory) await writeFile(path.join(privateDirectory,"connection.json"),JSON.stringify(execution ? input.execution_binding : input.management_binding),{mode:0o600});
   try {
   const connection = [path.join(path.dirname(fileURLToPath(import.meta.url)), "plugin-runtime.mjs"),
     "--package", pkg.source, "--workspace", input.workspace_directory,
-    ...(openMode ? ["--work-ref",JSON.stringify(input.work_ref),"--state-dir",store.directory,"--management-context-file",path.join(privateDirectory!,"management.json")]
+    ...(openMode ? ["--work-ref",JSON.stringify(input.work_ref),"--state-dir",store.directory,execution?"--execution-context-file":"--management-context-file",path.join(privateDirectory!,"connection.json")]
       : ["--access-dir",input.access_directory,"--grant",input.grant_id]),
     "--package-sha256", pkg.sha256, "--core-cli", flags[3]];
   const run = (args: string[], value?: unknown) => new Promise<any>((resolve, reject) => {

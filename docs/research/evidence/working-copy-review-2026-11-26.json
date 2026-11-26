@@ -1,0 +1,231 @@
+{
+  "date": "2026-11-26",
+  "scope": "工作稿目录、固定历史阅读、整稿与原位意见、同任务返工",
+  "status": "installed-and-verified",
+  "reuse": [
+    "WorkingCopy",
+    "WorkingRevision",
+    "TaskFeedback",
+    "原JSON字段分页",
+    "候选与工作稿共用正文分页及UTF-8选区"
+  ],
+  "negative": {
+    "installed_source_sha256": "b7ba7a04d2cfcb383123c97e38cbe7716ceeaa96f4f96d8de3ae5f07cb6142a8",
+    "log": "output/working-review-before.log",
+    "result": "真实安装版没有工作稿区域，已保存但无提交的稿件不可审阅"
+  },
+  "checks": [
+    {
+      "name": "工作稿Core",
+      "passed": 6,
+      "log": "output/working-review-core.log"
+    },
+    {
+      "name": "首轮桌面故障与恢复旅程",
+      "passed": 1,
+      "log": "output/working-review-desktop-first.log"
+    },
+    {
+      "name": "共享审阅与三入口中间构建",
+      "passed": 31,
+      "log": "output/working-review-source.log",
+      "limits": "早于最终选中名称、样式及关闭隔离增量"
+    },
+    {
+      "name": "关闭切任务后的迟到成功与错误",
+      "passed": 2,
+      "log": "output/working-review-state.log"
+    },
+    {
+      "name": "官网构建",
+      "pages": 227,
+      "local_references": 13993,
+      "log": "output/working-review-website.log",
+      "deployed": false
+    },
+    {
+      "name": "Skill校验",
+      "valid": true,
+      "skill": ".agents/skills/hetu-embedded-agent/SKILL.md"
+    },
+    {
+      "name": "Core全量",
+      "groups_including_empty_doc_tests": 62,
+      "passed": 386,
+      "failed": 0,
+      "ignored": 0,
+      "log": "output/working-review-core-all.log"
+    },
+    {
+      "name": "中间独立任务与选区、关闭隔离",
+      "passed": 8,
+      "failed": 2,
+      "log": "output/working-review-final-ui.log",
+      "limits": "stdio与Codex首读5秒断言失败；Codex清理最终180秒超时，后续同版复验独立登记"
+    },
+    {
+      "name": "小元数据直接读取与预算分页、关闭隔离",
+      "passed": 4,
+      "log": "output/working-review-state-final.log"
+    },
+    {
+      "name": "最终源码的三入口与独立任务面板",
+      "passed": 4,
+      "failed": 0,
+      "log": "output/working-review-ready-ui.log",
+      "covers": [
+        "21份工作稿",
+        "原游标目录重试",
+        "正文原页重试",
+        "原意见丢回执恢复",
+        "历史原位置反馈",
+        "同副本返工",
+        "旧字节与正式正文保持",
+        "选中名称",
+        "暗色窄窗",
+        "关闭迟到隔离"
+      ]
+    },
+    {
+      "name": "最终同版包内三入口",
+      "passed": 3,
+      "failed": 0,
+      "log": "output/working-review-packaged-ui.log"
+    },
+    {
+      "name": "实际安装路径的桌面与新stdio旅程",
+      "passed": 2,
+      "failed": 0,
+      "log": "output/working-review-installed-ui.log"
+    }
+  ],
+  "failures_preserved": [
+    {
+      "log": "output/working-review-before.log",
+      "reason": "安装版工作稿未展示"
+    },
+    {
+      "log": "output/working-review-final-task-build.log",
+      "reason": "新增状态测试的夹具类型缺字段，已补显式测试类型"
+    },
+    {
+      "log": "output/working-review-final-ui.log",
+      "reason": "stdio普通工作稿逐字段加载超过5秒断言，失败截图与网络证明正文随后已载入；小元数据改为一次读取，大结果仍走字段分页，待同版复验"
+    },
+    {
+      "log": "output/working-review-final-ui.log",
+      "reason": "Codex工作稿初读同样超过5秒，trace有47次工作稿读取，末次正文HTTP500；清理最终超时，不以stdio原因推定所有清理根因"
+    }
+  ],
+  "model_turns": 0,
+  "installation": {
+    "source_sha256": "d8a2bea730951cbfb33fb1b1ffe34a9aa2fcdc558fc76972fc5b747bc3e49dba",
+    "source_inputs": 3068,
+    "artifacts_verified": 3132,
+    "version": "0.14.1",
+    "optimized": true,
+    "signature": "ad-hoc-development-verified",
+    "icon_matches": true,
+    "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+    "installed_path": "/Applications/Hetu.app",
+    "atomic_swap": true,
+    "backup_created": false,
+    "old_bundle_removed": true,
+    "log": "output/working-review-install.log"
+  },
+  "remaining": [
+    "完整视觉与无障碍",
+    "真实原生Codex Desktop宿主",
+    "真实专业制作与模型质量",
+    "跨平台与正式发行"
+  ],
+  "first_read_observations": [
+    {
+      "surface": "codex",
+      "working_copies": 21,
+      "feedback": 2,
+      "first_read_ms": 1405,
+      "first_read_calls": 2,
+      "pagination_retry_same_cursor": true,
+      "read_failure_keeps_page": true,
+      "unknown_save_recovered_once": true,
+      "old_working_ref": true,
+      "selected_copy_visible_after_save": true,
+      "narrow_no_overflow": true,
+      "same_working_copy": true,
+      "author_document_unchanged": true,
+      "model_turns": 0
+    },
+    {
+      "surface": "desktop",
+      "working_copies": 21,
+      "feedback": 2,
+      "first_read_ms": 149,
+      "first_read_calls": 2,
+      "pagination_retry_same_cursor": true,
+      "read_failure_keeps_page": true,
+      "unknown_save_recovered_once": true,
+      "old_working_ref": true,
+      "selected_copy_visible_after_save": true,
+      "narrow_no_overflow": true,
+      "same_working_copy": true,
+      "author_document_unchanged": true,
+      "model_turns": 0
+    },
+    {
+      "surface": "stdio",
+      "working_copies": 21,
+      "feedback": 2,
+      "first_read_ms": 1789,
+      "first_read_calls": 2,
+      "pagination_retry_same_cursor": true,
+      "read_failure_keeps_page": true,
+      "unknown_save_recovered_once": true,
+      "old_working_ref": true,
+      "selected_copy_visible_after_save": true,
+      "narrow_no_overflow": true,
+      "same_working_copy": true,
+      "author_document_unchanged": true,
+      "model_turns": 0
+    }
+  ],
+  "package": {
+    "source_sha256": "d8a2bea730951cbfb33fb1b1ffe34a9aa2fcdc558fc76972fc5b747bc3e49dba",
+    "source_inputs": 3068,
+    "artifacts_verified": 3132,
+    "version": "0.14.1",
+    "optimized": true,
+    "signature": "ad-hoc-development-verified",
+    "icon_matches": true,
+    "executable": "output/working-review-20261126/packages/hetu-dev-CXj7Qo/package/Hetu-darwin-arm64/Hetu.app/Contents/MacOS/Hetu",
+    "manifest": "output/working-review-20261126/packages/hetu-dev-CXj7Qo/manifest.json",
+    "log": "output/working-review-package.log"
+  },
+  "normal_profile": {
+    "verified": true,
+    "library_works": 19,
+    "runtime": {
+      "version": "0.14.1",
+      "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+      "resources": "/Applications/Hetu.app/Contents/Resources",
+      "userData": "/Users/coso/Library/Application Support/Hetu"
+    },
+    "screenshot": "output/working-review-20261126/normal-launch.png",
+    "profile_indexes_unchanged": {
+      "creative-library.json": true,
+      "LocalSettings/settings.json": true,
+      "agent-sessions/index/selection.json": true
+    },
+    "indexes_unchanged_from_slice_start": true,
+    "left_running": true
+  },
+  "release": {
+    "version": "0.14.1",
+    "method_version": "0.3.18",
+    "version_bumped": false,
+    "committed": false,
+    "public_release": false,
+    "website_redeployed": false,
+    "resident_external_mcp_restarted": false
+  }
+}

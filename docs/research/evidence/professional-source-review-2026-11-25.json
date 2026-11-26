@@ -1,0 +1,134 @@
+{
+  "date": "2026-11-25",
+  "scope": "R8-01 / R8-05 retained professional source review",
+  "version": "0.14.1 development",
+  "source_owner": "Existing Core extension object revisions and task context; no plugin runtime needed",
+  "changes": [
+    "Professional task source page projections reconstructed with the existing entity projection reader",
+    "Each page bound to the original context, work, Owner, object, revision and digest",
+    "Unknown fields and null/false/zero preserved; nested fields and collections expanded on demand",
+    "Raw fixed record available in a closed-by-default read-only detail",
+    "Read failure preserves review feedback and retry; teardown rejects late data"
+  ],
+  "validation": {
+    "typescript": {
+      "status": "passed",
+      "scope": [
+        "task-view",
+        "desktop"
+      ],
+      "desktop_log": "output/professional-source-desktop-types.log"
+    },
+    "projection_guards": {
+      "status": "passed",
+      "passed": 3,
+      "log": "output/professional-source-reader.log"
+    },
+    "real_sources": {
+      "status": "passed",
+      "passed": 2,
+      "log": "output/professional-source-fixed.log",
+      "scope": [
+        "retained professional source without an installed runtime",
+        "source head advances while task retains revision one",
+        "large Emoji text and 26-item nested array including an oversized member",
+        "raw record equals Core original including escaped names and prototype-like key",
+        "feedback preserved after failure and successful retry",
+        "light/dark, narrow layout, language changes and teardown",
+        "existing outline and six-category / single-entity source journey"
+      ],
+      "final_file_regression": {
+        "passed": 6,
+        "log": "output/professional-source-real-final.log"
+      }
+    },
+    "full_apps": {
+      "status": "passed",
+      "log": "output/professional-source-full-final.log",
+      "official_codex": "0.172.0",
+      "model_turns": 0,
+      "passed": 81,
+      "failed": 0,
+      "skipped": 0,
+      "transports": [
+        "stdio",
+        "official Codex App Server 0.172.0"
+      ],
+      "duration_minutes": 17.8,
+      "test_harness_note": "Final full run loaded an explicit closeAllConnections cleanup in real.spec.ts, reverted after confirming there was no teardown defect. The final unchanged production resources and original cleanup then passed all 6 real.spec.ts cases separately."
+    },
+    "package": {
+      "status": "passed",
+      "manifest": "output/professional-source-20261125/package/hetu-dev-cj55wR/manifest.json",
+      "source_sha256": "e0486b1c21b4406565dee95607e205b64e703b66912466ddedd376bea31d838c",
+      "source_inputs": 3043,
+      "artifacts": 3720,
+      "signing": "ad-hoc-development",
+      "gui_passed": 5,
+      "workspace_passed": 3,
+      "logs": [
+        "output/professional-source-package-ui.log",
+        "output/professional-source-package-workspace.log"
+      ]
+    },
+    "skill": {
+      "status": "passed",
+      "path": ".agents/skills/hetu-embedded-agent/SKILL.md",
+      "local_links_checked": 7,
+      "implementation_paths_checked": true
+    },
+    "documents": {
+      "status": "passed",
+      "log": "output/professional-source-docs-final.log"
+    },
+    "installed": {
+      "status": "passed",
+      "log": "output/professional-source-install.log",
+      "verified_items": 3132,
+      "old_app_backup_created": false,
+      "profile_indexes_unchanged": 3,
+      "normal_works": 19,
+      "normal_log": "output/professional-source-installed-normal.log",
+      "ui_log": "output/professional-source-installed-ui-final.log",
+      "original_task": true,
+      "professional_sources": 2,
+      "model_turns": 0,
+      "formal_unchanged": true,
+      "plugin_installation_unchanged": true,
+      "canon_and_theme_log": "output/professional-source-installed-canon.log"
+    },
+    "resource_reproduction": {
+      "status": "passed",
+      "log": "output/professional-source-resources-final.log",
+      "source_inputs_match_package": 3043
+    },
+    "capabilities_and_methods": {
+      "status": "passed",
+      "method_suites": 45,
+      "source_method_version": "0.3.15"
+    }
+  },
+  "preserved_failures": [
+    {
+      "kind": "product regression before correction",
+      "log": "output/professional-source-before.log",
+      "artifacts": "output/professional-source-20261125/before",
+      "observation": "MCP source read succeeded but no professional source content was mounted."
+    },
+    {
+      "kind": "operator interruption",
+      "log": "output/professional-source-full.log",
+      "observation": "55 tests passed; shared-workbench stdio long journey was mistakenly treated as stalled and interrupted. 25 tests were not run. Historical same journey duration is 4-6 minutes; no product defect inferred."
+    },
+    {
+      "kind": "verification script used wrong surface",
+      "log": "output/professional-source-installed-ui.log",
+      "observation": "Professional source UI read succeeded, but verification attempted desktop authoring.read for an unsupported action. Corrected verification uses installed public CLI execution route; no product route expanded."
+    }
+  ],
+  "limitations": [
+    "This slice does not close the complete R8/CX work packages.",
+    "Native Codex Desktop host, cross-platform execution, full professional model production and accessibility remain separately tracked.",
+    "Existing resident MCP process has not been restarted; a new process is required to consume new bundled resources."
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "date": "2026-11-26",
+  "scope": "native Codex thread adoption and input ownership",
+  "initial_installed_failure": {
+    "same_generation_after_new": true,
+    "stale_draft_accepted": true,
+    "new_thread_draft_overwritten": true,
+    "model_requests": 0
+  },
+  "source": {
+    "passed": true,
+    "new_thread_generation_advanced": true,
+    "resume_generation_advanced": true,
+    "old_draft_input_resize_rejected": true,
+    "drafts_independent": true,
+    "generation_persisted": true,
+    "original_native_client_preserved": true,
+    "resumed_input_verified": true,
+    "model_requests": 0,
+    "renderer_generation_checked_before_native_input": true,
+    "screenshot": "docs/research/evidence/native-thread-input-2026-11-26.png",
+    "screenshot_sha256": "e4f7a93f0bbe484e56f7e29150f55f991263088322845961d351f0880a0a06bc",
+    "screenshot_visual_checked": true
+  },
+  "unit": {
+    "thread_adoption_hold_and_reject": true,
+    "rejected_adoption_keeps_original_thread_draft_and_invalidated_generation": true,
+    "reopened_thread_and_draft_preserved": true,
+    "passed": 93,
+    "failed": 0,
+    "input_readiness_false_until_replay_completed": true,
+    "replay_failure_keeps_input_disabled": true,
+    "dispose_disables_input": true
+  },
+  "intermediate_failures": [
+    "first source test required a new OSC idle marker after resume; original thread and draft already recovered, native CLI did not repeat this marker",
+    "immediate input after host recovery occurred before renderer generation replay settled; renderer now exposes generation-specific input readiness and disables stdin during replay"
+  ],
+  "package": {
+    "status": "verified",
+    "version": "0.14.1",
+    "source_sha256": "26021d5b64f2b5d4460ddad910b1849ecb3bb02990539a72df773b4074f6611c",
+    "source_inputs": 3072,
+    "artifacts": 3133,
+    "signature_verified": true,
+    "icon_matches": true,
+    "desktop_tests": {
+      "passed": 5,
+      "failed": 0
+    }
+  },
+  "limits": [
+    "source desktop used installed matching Core binaries; package and installation are separately verified",
+    "no real model task, author acceptance, authentication, system IME or cross-platform claim"
+  ],
+  "release": {
+    "version_bumped": false,
+    "committed": false,
+    "pushed": false,
+    "website_deployed": false,
+    "version": "0.14.1"
+  },
+  "checks": {
+    "docs": {
+      "passed": true,
+      "documents": 92,
+      "local_links": 1625,
+      "fragment_links": 429,
+      "traceability": {
+        "FR": 44,
+        "US": 65,
+        "UC": 58,
+        "E2E": 34,
+        "AC": 74
+      },
+      "id_references": 1391,
+      "json_examples": 11,
+      "schemas": 2,
+      "mermaid": 120,
+      "errors": []
+    },
+    "diff_check": true,
+    "skill_valid": true,
+    "skill_links": 17
+  },
+  "installation": {
+    "version": "0.14.1",
+    "source_sha256": "26021d5b64f2b5d4460ddad910b1849ecb3bb02990539a72df773b4074f6611c",
+    "source_inputs": 3072,
+    "artifacts": 3133,
+    "signature_verified": true,
+    "icon_matches": true,
+    "installed_path": "/Applications/Hetu.app",
+    "atomic_swap": true,
+    "backup_created": false,
+    "old_bundle_removed": true,
+    "tests": {
+      "passed": 3,
+      "failed": 0
+    },
+    "normal_works": 19,
+    "three_indexes_unchanged_since_preinstall": true,
+    "resumed_chinese_multiline_paste": true,
+    "chinese_paste_model_requests": 0
+  },
+  "final_integrity": {
+    "version": "0.14.1",
+    "source_sha256": "26021d5b64f2b5d4460ddad910b1849ecb3bb02990539a72df773b4074f6611c",
+    "source_inputs": 3072,
+    "artifacts": 3133,
+    "signature_verified": true,
+    "icon_matches": true
+  },
+  "mcp_workbench": {
+    "complete_stdio_journey": true,
+    "same_package": true,
+    "resource_uri": "ui://hetu/workbench/2/9c49f02bfccec9eaca341ddc2bcd4227587fdc0d4523de134ae46677b7b64bde",
+    "resource_sha256": "9c49f02bfccec9eaca341ddc2bcd4227587fdc0d4523de134ae46677b7b64bde",
+    "model_requests": 0,
+    "native_counters_and_author_data_unchanged": true
+  }
+}

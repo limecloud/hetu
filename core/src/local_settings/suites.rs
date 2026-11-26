@@ -242,7 +242,7 @@ fn codex_binary() -> Result<PathBuf> {
     if let Some(path) = std::env::var_os("HETU_CODEX_BINARY") {
         let path = PathBuf::from(path);
         ensure(
-            path.is_absolute() && path.is_file(),
+            path.is_absolute() && runnable_command(&path),
             "hetu.capability_unavailable",
             "Codex 入口不可用。",
         )?;
@@ -256,13 +256,55 @@ fn codex_binary() -> Result<PathBuf> {
                 .collect::<Vec<_>>()
         })
         .unwrap_or_default();
-    candidates.into_iter().find(|p| p.is_file()).ok_or_else(|| {
+    candidates.into_iter().find(|p| runnable_command(p)).ok_or_else(|| {
         Error::new(
             "hetu.capability_unavailable",
             "未找到 Codex 官方 CLI，请先安装或手动接入所选套件。",
         )
     })
 }
+/// 旧安装脚本可能仍存在，但执行位或绝对解释器已失效；此时继续探测PATH。
+fn runnable_command(path: &Path) -> bool {
+    let Ok(metadata) = path.metadata() else {
+        return false;
+    };
+    if !metadata.is_file() {
+        return false;
+    }
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        if metadata.permissions().mode() & 0o111 == 0 {
+            return false;
+        }
+        let Ok(file) = std::fs::File::open(path) else {
+            return false;
+        };
+        let mut header = Vec::new();
+        if file.take(512).read_to_end(&mut header).is_err() {
+            return false;
+        }
+        if header.starts_with(b"#!") {
+            let first_line = header.split(|byte| *byte == b'\n').next().unwrap();
+            let Ok(line) = std::str::from_utf8(&first_line[2..]) else {
+                return false;
+            };
+            let Some(interpreter) = line.split_whitespace().next() else {
+                return false;
+            };
+            let interpreter = Path::new(interpreter);
+            if !interpreter.is_absolute()
+                || !interpreter.metadata().is_ok_and(|metadata| {
+                    metadata.is_file() && metadata.permissions().mode() & 0o111 != 0
+                })
+            {
+                return false;
+            }
+        }
+    }
+    true
+}
+
 pub(super) fn workbuddy_directory() -> Result<PathBuf> {
     let config = std::env::var_os("WORKBUDDY_CONFIG_DIR")
         .map(PathBuf::from)

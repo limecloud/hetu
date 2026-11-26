@@ -89,10 +89,10 @@ impl ServerHandler for StableServer {
     }
     fn get_info(&self) -> ServerConfig {
         ServerConfig::new(
-            ServerCapabilities::builder()
+            mentions::capabilities(ServerCapabilities::builder()
                 .enable_tools()
                 .enable_resources()
-                .build(),
+                .build()),
         )
         .with_protocol_version(ProtocolVersion::V_2026_07_28)
         .with_server_info(Implementation::new("hetu-mcp", env!("CARGO_PKG_VERSION")))
@@ -161,6 +161,7 @@ impl ServerHandler for StableServer {
         // 全局目录探测尚未协商UI；静态入口必须先可发现，才能打开界面。
         tools.push(app::tool());
         tools.push(workbench::tool());
+        tools.push(mentions::tool());
         Ok(ListToolsResult::with_all_items(tools))
     }
     async fn call_tool(
@@ -168,6 +169,19 @@ impl ServerHandler for StableServer {
         request: CallToolRequestParams,
         context: RequestContext<RoleServer>,
     ) -> Result<CallToolResponse, ErrorData> {
+        if request.name == mentions::TOOL {
+            let permit = tokio::select! {
+                _ = context.ct.cancelled() => return Err(ErrorData::internal_error("读取已取消 / Read cancelled",None)),
+                permit = self.gate.clone().acquire_owned() => permit.map_err(|_|ErrorData::internal_error("本机入口已关闭 / Local entry closed",None))?,
+            };
+            let hub=self.hub.clone();
+            let work=self.current_work.clone();
+            let cancellation=context.ct.clone();
+            return tokio::task::spawn_blocking(move || {
+                let _permit=permit;
+                mentions::search_stable(request.arguments.unwrap_or_default(),&hub,work.as_ref(),&||cancellation.is_cancelled())
+            }).await.map_err(|_|ErrorData::internal_error("来源搜索未完成 / Source search interrupted",None))?;
+        }
         if request.name == workbench::TOOL { return self.workbench.call(request.arguments.unwrap_or_default()).await; }
         if request.name == app::TOOL {
             let _permit = self.gate.clone().try_acquire_owned().map_err(|_| ErrorData::internal_error("入口忙，请稍后读取 / App is busy", None))?;
@@ -217,7 +231,13 @@ impl ServerHandler for StableServer {
         } else {
             action
         };
-        let permit = match self.gate.clone().try_acquire_owned() {
+        // 引擎会并行发现领域Schema；只读排队，不把同一连接内的正常并发当作失败。
+        let permit = if self.read_actions.iter().any(|name| name == actual) && request.name != model_confirmation::TOOL {
+            tokio::select! {
+                _ = context.ct.cancelled() => return Err(ErrorData::internal_error("读取已取消 / Read cancelled", None)),
+                permit = self.gate.clone().acquire_owned() => permit.map_err(|_| ErrorData::internal_error("本机入口已关闭 / Local entry closed", None))?,
+            }
+        } else { match self.gate.clone().try_acquire_owned() {
             Ok(permit) => permit,
             Err(_) => {
                 let result=response::interrupted(
@@ -228,7 +248,7 @@ impl ServerHandler for StableServer {
                 );
                 return Ok(response::tool_result(response::bounded(result,actual,&recovery_input,MAX_RESULT_BYTES)).into());
             }
-        };
+        }};
         if request.name == model_confirmation::TOOL {
             return model_confirmation::request(
                 self.hub.clone(),
@@ -303,8 +323,24 @@ impl ServerHandler for StableServer {
     async fn read_resource(
         &self,
         request: ReadResourceRequestParams,
-        _context: RequestContext<RoleServer>,
+        context: RequestContext<RoleServer>,
     ) -> Result<ReadResourceResponse, ErrorData> {
+        if request.uri.starts_with(mentions::URI_PREFIX) {
+            let work=mentions::work_for_uri(&request.uri)?;
+            if self.current_work.as_ref().is_some_and(|current|Some(current)!=work.as_ref()) {
+                return Err(ErrorData::invalid_params("来源不属于当前作品 / Source outside the current work",None));
+            }
+            let permit = tokio::select! {
+                _ = context.ct.cancelled() => return Err(ErrorData::internal_error("读取已取消 / Read cancelled",None)),
+                permit = self.gate.clone().acquire_owned() => permit.map_err(|_|ErrorData::internal_error("本机入口已关闭 / Local entry closed",None))?,
+            };
+            let hub=self.hub.clone();
+            let cancellation=context.ct.clone();
+            return tokio::task::spawn_blocking(move || {
+                let _permit=permit;
+                mentions::read(&request.uri,&mut |action,input|mentions::read_stable(&hub,work.as_ref(),action,input,&||cancellation.is_cancelled()))
+            }).await.map_err(|_|ErrorData::internal_error("来源读取未完成 / Source read interrupted",None))?;
+        }
         if request.uri == ui::workbench_uri() {
             return Ok(ui::read_workbench().into());
         }

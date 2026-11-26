@@ -4,7 +4,7 @@ import {execFileSync, spawnSync} from "node:child_process";
 import {tmpdir} from "node:os";
 import path from "node:path";
 import {AppServer} from "../src/main/rpc.ts";
-import {documentAction} from "./navigation.ts";
+import {documentAction, navigate} from "./navigation.ts";
 
 test("macOS Sogou 拼音真实组合输入写入隔离作品", async () => {
   test.skip(process.platform !== "darwin", "仅在 macOS 验收系统输入法");
@@ -32,11 +32,15 @@ test("macOS Sogou 拼音真实组合输入写入隔离作品", async () => {
     const novel = page.getByRole("button", {name:/打开作品 .*小说/}).first();
     await expect(novel).toBeVisible({timeout:30000});
     await novel.click();
+    await navigate(page, "小说");
     await expect(page.getByRole("textbox", {name:"文稿编辑", exact:true})).toBeVisible({timeout:30000});
     await documentAction(page, "编辑");
     const editor = page.getByRole("textbox", {name:"文稿编辑", exact:true});
     await editor.focus();
     await editor.press("ControlOrMeta+End");
+    await app.evaluate(({app, BrowserWindow}) => {app.focus({steal:true}); BrowserWindow.getAllWindows()[0]?.focus();});
+    // macOS的前台激活异步完成，确认真实进程后才投递系统键盘输入。
+    await expect.poll(() => Number(execFileSync("osascript", ["-e", 'tell application "System Events" to get unix id of first application process whose frontmost is true'], {encoding:"utf8"}).trim())).toBe(app.process().pid);
     execFileSync("osascript", ["-e", 'tell application "System Events" to keystroke "zhongwen"']);
     execFileSync("osascript", ["-e", 'tell application "System Events" to key code 49']);
     await expect(editor.locator(".cm-line").last()).toContainText("中文");

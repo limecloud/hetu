@@ -17,6 +17,7 @@ mod delivery;
 mod document_lifecycle;
 mod document_copy;
 mod document_moves;
+mod document_directory;
 mod drafts;
 mod drama_projects;
 mod dramas;
@@ -42,6 +43,7 @@ mod reviews;
 mod scripts;
 mod videos;
 mod video_review;
+mod video_decisions;
 mod work_activity;
 mod work_canons;
 mod work_links;
@@ -101,6 +103,8 @@ pub struct Kernel {
     config_sha: String,
     author: bool,
     workspace_execution: bool,
+    execution_client: Option<String>,
+    execution_work: Option<Value>,
     workspace_path: std::path::PathBuf,
     authorization_path: Option<std::path::PathBuf>,
     collaboration_grant: Option<Value>,
@@ -209,6 +213,15 @@ impl Kernel {
         ensure(options.mode == Mode::Agent, "invalid_input", "工作区执行保留 Agent 身份。")?;
         options.workspace_execution = true;
         Self::open_options(options, None)
+    }
+    pub(crate) fn open_execution_as(config: Value, client: &str) -> Result<Self> {
+        ensure(matches!(client, "codex" | "claude-code" | "workbuddy" | "generic"), "invalid_input", "客户端标识无效。")?;
+        let mut kernel = Self::open_execution(config)?;
+        kernel.execution_client = Some(client.to_owned());
+        Ok(kernel)
+    }
+    pub(crate) fn execution_client(&self) -> Option<&str> {
+        self.execution_client.as_deref()
     }
     pub(crate) fn has_workspace_authority(&self) -> bool {
         self.author || self.workspace_execution
@@ -452,6 +465,8 @@ impl Kernel {
             config_sha: digest(config_bytes),
             author,
             workspace_execution: options.workspace_execution,
+            execution_client: None,
+            execution_work: None,
             workspace_path: path.canonicalize()?,
             authorization_path: options.authorization_path,
             collaboration_grant: options.collaboration_grant,
@@ -682,19 +697,12 @@ impl Kernel {
                 "forbidden",
                 "管理授权只能创建空章节，正文须经过参考稿与作者采纳。",
             )?;
-            if matches!(
-                action,
-                "hetu.creative_tasks.preview_prompt" | "hetu.creative_tasks.prepare"
-            ) {
-                let client = self.management_grant.as_ref().unwrap()["client_adapter"]
-                    .as_str()
-                    .unwrap_or("");
-                ensure(
-                    input["client_adapter"] == if client == "generic" { "other" } else { client },
-                    "forbidden",
-                    "管理授权不能替其他 Agent 准备任务。",
-                )?;
-            }
+        }
+        if matches!(action, "hetu.creative_tasks.preview_prompt" | "hetu.creative_tasks.prepare")
+            && let Some(client) = self.execution_client.as_deref().or_else(|| self.management_grant.as_ref().and_then(|binding| binding["client_adapter"].as_str()))
+        {
+            ensure(input["client_adapter"] == if client == "generic" { "other" } else { client },
+                "forbidden", "当前连接不能替其他 Agent 准备任务。")?;
         }
         if action == "hetu.agent_operations.execute" {
             if let Some(result) = self.execute_proposal_effect(input, metadata)? {
@@ -955,6 +963,8 @@ impl Kernel {
             return self.dispatch_work_blueprint(action, input, changes);
         }
         match action {
+            "hetu.plugin_results.list" => return self.retained_plugin_results(input),
+            "hetu.plugin_results.get" => return self.retained_plugin_result(input),
             "hetu.works.list" => return self.list_works(input),
             "hetu.works.get" => return self.get_work(input),
             "hetu.work_links.create" => return self.create_work_link(input, changes),
@@ -968,6 +978,10 @@ impl Kernel {
             "hetu.video.media.list" => return self.list_video_media(input),
             "hetu.video.feedback.save" => return self.save_video_feedback(input, changes),
             "hetu.video.feedback.list" => return self.list_video_feedback(input),
+            "hetu.video.decisions.preview" => return self.preview_video_decision(input),
+            "hetu.video.decisions.save" => return self.save_video_decision(input, changes),
+            "hetu.video.decisions.get" => return self.get_video_decision(input),
+            "hetu.video.decisions.history" => return self.video_decision_history(input),
             "hetu.video.delivery.preview" => return self.preview_video_delivery(input),
             "hetu.assets.read_blob" => return self.read_asset_blob(input),
             "hetu.video.projects.create" => return self.create_video_project(input, changes),
@@ -1149,46 +1163,22 @@ impl Kernel {
                 Ok(json!({"blueprint":bp,"revision":bp["revision"],"sha256":digest(bytes(&bp)?)}))
             }
             "hetu.documents.create" => self.create_document(input, changes),
-            "hetu.documents.list" => {
-                if input["work_ref"].is_object() {
-                    self.work_record(&input["work_ref"], None)?;
-                }
-                let mut documents = Vec::new();
-                for package in ["novel", "drama"] {
-                    for name in self
-                        .store
-                        .entries(&format!("packages/{package}/documents"))?
-                    {
-                        checked_id(&name, "doc")?;
-                        let doc = self.document(&name)?;
-                        if input["work_ref"].is_object()
-                            && !self.document_in_work(&doc, &input["work_ref"])?
-                        {
-                            continue;
-                        }
-                        if input.get("kind").is_none_or(|kind| *kind == doc["kind"]) {
-                            documents.push(doc);
-                        }
-                    }
-                }
-                documents.sort_by(|a, b| {
-                    a["created_at"]
-                        .as_str()
-                        .cmp(&b["created_at"].as_str())
-                        .then_with(|| a["document_id"].as_str().cmp(&b["document_id"].as_str()))
-                });
-                if self.granted_work()?.is_some()
-                    || input["limit"].is_number()
-                    || input["cursor"].is_string()
-                {
-                    return self.ordered_record_page(input, documents, "documents");
-                }
-                Ok(json!({"documents":documents,"next_cursor":null}))
+            "hetu.documents.list" => self.list_documents(input),
+            "hetu.documents.scene_index" => self.document_scene_index(input),
+            "hetu.documents.get" => {
+                let mut value = self.document_content(
+                    text(input, "document_id")?,
+                    input.get("revision_id").and_then(Value::as_str),
+                )?;
+                // 归属为公开读取投影，不改变持久文档、内部快照或历史摘要。
+                value["work_ref"] = if value["document"]["draft_source_id"].is_string() {
+                    Value::Null
+                } else {
+                    self.document_work_ref(&value["document"])?
+                        .unwrap_or(Value::Null)
+                };
+                Ok(value)
             }
-            "hetu.documents.get" => self.document_content(
-                text(input, "document_id")?,
-                input.get("revision_id").and_then(Value::as_str),
-            ),
             "hetu.documents.save" => self.save_document(input, changes),
             "hetu.documents.rename" => self.rename_document(input, changes),
             "hetu.documents.duplicate" => self.duplicate_document(input, changes),

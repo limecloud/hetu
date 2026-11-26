@@ -1,0 +1,86 @@
+{
+  "date": "2026-11-25",
+  "scope": "专业动作与方法就近发现、固定交接及内嵌TUI/GUI工程Skill",
+  "version": "0.14.1",
+  "distribution": "development-source",
+  "state": "passed-development-slice",
+  "skill": {
+    "path": ".agents/skills/hetu-embedded-agent",
+    "files": 5,
+    "validation": "official quick_validate passed with isolated PyYAML dependency; 12 local links, invocation metadata and AGENTS registration verified",
+    "author_method_distribution_changed": false
+  },
+  "implementation": [
+    "one shared read-only work application use case for desktop and MCP App",
+    "real installation summaries with package identity",
+    "lazy capabilities, exact schema and static method resource read",
+    "work, manuscript and session entry points",
+    "fixed original handoff sources and plugin/capability/method hashes",
+    "goal-change generation isolation and pre-delivery revalidation",
+    "unknown and rejected delivery preserve copy without repeat send",
+    "host messages, drafts and directSend capabilities kept separate",
+    "no implicit task creation, professional action or model turn during preparation"
+  ],
+  "validation": {
+    "application_unit": {"passed": 4, "failed": 0, "log": "output/professional-tools-unit.log"},
+    "agent_pty_final": {"passed": 70, "failed": 0, "skipped": 0, "log": "output/professional-tools-agent-final.log"},
+    "desktop": {
+      "passed": 1,
+      "failed": 0,
+      "log": "output/professional-tools-desktop-verified.log",
+      "checks": ["static backend trap not executed", "catalog failure retry", "goal-change late-response isolation", "fixed manuscript reference", "preparation did not create tasks", "public professional save and arrange", "Core reread", "formal document unchanged", "unknown delivery not repeated and copy preserved", "old disabled plugin rejected"]
+    },
+    "writing_tools_regression": {"passed": 1, "log": "output/professional-tools-desktop-first.log", "scope": "existing writing tool preview, copy and source checks; professional test in the same initial run failed"},
+    "mcp_shared_workbench": {"state": "passed", "passed": 2, "failed": 0, "skipped": 0, "log": "output/professional-tools-mcp-fourth.log", "transports": ["stdio", "official Codex 0.172.0"], "model_turns": 0},
+    "desktop_types": "passed",
+    "task_view_types": "passed",
+    "task_view_resource_reproduction": "passed",
+    "rust_consumers": "passed",
+    "desktop_build": "passed",
+    "capability_map": "passed",
+    "writing_methods_reproduction": "passed"
+  },
+  "prior_failures": [
+    {"log": "output/professional-tools-desktop-first.log", "cause": "clipboard assertion did not wait for copy completion and shared OS clipboard was unrelated"},
+    {"log": "output/professional-tools-desktop-second.log", "cause": "clipboard fixture intercepted writeText while the actual copy use case uses clipboard.write"},
+    {"log": "output/professional-tools-desktop-third.log", "cause": "test called restricted desktop read instead of the existing public workspace execution read"},
+    {"log": "output/professional-tools-desktop-final.log", "cause": "five-second assertion ended while the actual static method read remained loading; test now waits within the machine request bound"},
+    {"log": "output/professional-tools-mcp-first.log", "cause": "system browser cache did not contain the required executable; subsequent runs use the existing project-local cache"},
+    {"log": "output/professional-tools-mcp-second.log", "cause": "host variants reused a panel session and did not wait for the exact work/response boundary"},
+    {"log": "output/professional-tools-mcp-third.log", "cause": "new panels clicked the work menu before work selection completed; subsequent run waits for the actual profile work surface"},
+    {"log": "output/professional-tools-agent.log", "passed": 69, "failed": 1, "cause": "timer-based fixture emitted late-1 before the stop boundary; failed test leaked a fake engine", "resolution": "terminated only that identified fake child; unique thread, deterministic stop signal and finally cleanup; 70-test final run passed"}
+  ],
+  "package": {
+    "manifest": "output/professional-tools-20261125/package/hetu-dev-rP3GgJ/manifest.json",
+    "source_sha256": "fdb94577c2402edb2d0b48a7e005591fabf2944f58cb10f49f19e57054e54d39",
+    "source_inputs": 3048,
+    "artifact_entries": 3720,
+    "signing": "ad-hoc-development",
+    "platform": "darwin",
+    "arch": "arm64",
+    "ui_qa": {"passed": 2, "failed": 0, "log": "output/professional-tools-package-ui.log"},
+    "execution_geometry_qa": {"passed": 3, "failed": 0, "log": "output/professional-tools-package-workspace.log"},
+    "installation": {
+      "target": "/Applications/Hetu.app",
+      "installed_items_verified": 3132,
+      "atomic_swap": true,
+      "old_app_backup_created": false,
+      "profile_indexes_unchanged": true,
+      "external_mcp_processes_terminated": false,
+      "log": "output/professional-tools-install.log"
+    },
+    "normal_launch": {
+      "version": "0.14.1",
+      "library_works": 19,
+      "profile_indexes_unchanged": true,
+      "model_turn_started": false,
+      "log": "output/professional-tools-installed-normal.log"
+    }
+  },
+  "limits": [
+    "original persistent MCP connection was not restarted or asserted to hot-update",
+    "no new model turn or author creative acceptance",
+    "native Codex Desktop panel, Windows and Linux not verified by these tests",
+    "does not close R8 or the full project goal"
+  ]
+}

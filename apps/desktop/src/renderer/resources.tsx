@@ -29,6 +29,8 @@ export function Resources({ work, notify }: SurfaceContext) {
       [],
     ),
     [busy, setBusy] = useState(false),
+    [loading, setLoading] = useState(true),
+    [listError, setListError] = useState(""),
     [error, setError] = useState(""),
     [preview, setPreview] = useState<any>(),
     [edits, setEdits] = useState<any>();
@@ -47,16 +49,22 @@ export function Resources({ work, notify }: SurfaceContext) {
   }
   async function load(next?: string) {
     const token = ++epoch.current;
-    const result = data(
-      await desktop.resources("list", { category, state, tag, cursor: next }),
-    );
-    if (token !== epoch.current) return;
-    setItems(result.resources);
-    setRecoveries(result.recoveries ?? []);
-    setCursor(result.next_cursor ?? undefined);
+    setLoading(true);
+    setListError("");
+    try {
+      const result = data(await desktop.resources("list", { category, state, tag, cursor: next }));
+      if (token !== epoch.current) return;
+      setItems(result.resources);
+      setRecoveries(result.recoveries ?? []);
+      setCursor(result.next_cursor ?? undefined);
+    } catch (error) {
+      if (token === epoch.current) setListError((error as Error).message);
+    } finally {
+      if (token === epoch.current) setLoading(false);
+    }
   }
   useEffect(() => {
-    void run(() => load());
+    void load();
     return () => {
       epoch.current++;
       selectedEpoch.current++;
@@ -120,7 +128,7 @@ export function Resources({ work, notify }: SurfaceContext) {
           }
         : {},
     );
-    notify(desktop.agentSessionHost ? "已放入Codex会话草稿，请核对后发送。" : "已复制资料整理请求，可向外部 Agent 说明要补充或调整的内容。");
+    notify(desktop.agentSessionHost ? "已放入当前会话草稿，请核对后发送。" : "已复制资料整理请求，可向外部 Agent 说明要补充或调整的内容。");
   }
   async function prepare(kind: string, fixed = view, changes = edits) {
     setPreview(
@@ -192,7 +200,7 @@ export function Resources({ work, notify }: SurfaceContext) {
   return (
     <section className="resources surface-page" aria-label="作品资料与素材">
       <PageActions>
-        <IconButton icon="refresh" label="筛选与刷新资料" disabled={busy} onClick={() => void run(() => load())}/>
+        <IconButton icon="refresh" label="筛选与刷新资料" disabled={busy || loading} onClick={() => void load()}/>
         <button disabled={busy} onClick={() => void run(ai)}>
           <Icon name="sparkles"/>
           让 AI 整理资料
@@ -237,9 +245,10 @@ export function Resources({ work, notify }: SurfaceContext) {
             onChange={(e) => setTag(e.target.value)}
           />
         </label>
-        <button disabled={busy} onClick={() => void run(() => load())}>应用标签</button>
+        <button disabled={busy || loading} onClick={() => void load()}>应用标签</button>
       </div>
-      {busy && <p role="status">正在核对资料版本…</p>}
+      {(busy || loading) && <p role="status">正在核对资料版本…</p>}
+      {listError && <p role="alert">{listError}</p>}
       {error && <p role="alert">{error}</p>}
       {recoveries.length > 0 && (
         <section aria-label="待核对的资料操作">
@@ -269,13 +278,13 @@ export function Resources({ work, notify }: SurfaceContext) {
               </span>
             </button>
           ))}
-          {!busy && !items.length && !error && (
+          {!busy && !loading && !items.length && !error && !listError && (
             <p>当前筛选没有资料。可让 AI 根据作品整理。</p>
           )}
           {cursor && (
             <button
-              disabled={busy}
-              onClick={() => void run(() => load(cursor))}
+              disabled={busy || loading}
+              onClick={() => void load(cursor)}
             >
               下一批资料
             </button>

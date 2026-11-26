@@ -1,13 +1,26 @@
-import React, {useRef} from "react";
+import React, {useLayoutEffect,useRef} from "react";
 import {IconButton, type DocumentTab} from "@hetu/workbench-ui";
 import {useObjectContextMenu} from "./text-context-menus.tsx";
 
-/** 标签只管理视图；Codex主标签始终保留，关闭预览不触及线程或内容。 */
-export function AgentPreviewTabs({tabs,activeId,onSelect,onClose,onKeep,onReveal,notify,children}:{
+/** 标签只管理视图；当前引擎主标签始终保留，关闭预览不触及线程或内容。 */
+export function AgentPreviewTabs({sessionTitle,tabs,activeId,onSelect,onClose,onKeep,onReveal,notify,children}:{
+  sessionTitle:string;
   tabs:DocumentTab[];activeId?:string;onSelect(id?:string):void;onClose(ids:string[]):string|undefined;onKeep(id:string):void;onReveal(id:string):void;
   notify(message:string):void;children?:React.ReactNode;
 }) {
   const host=useRef<HTMLDivElement>(null),context=useObjectContextMenu(notify);
+  const tabLayout=JSON.stringify(tabs.map(({id,title})=>[id,title]));
+  useLayoutEffect(()=>{
+    const element=host.current;if(!element)return;
+    const reveal=()=>{
+      const selected=element.querySelector<HTMLElement>('[role="tab"][aria-selected="true"]');if(!selected)return;
+      const target=selected.parentElement===element?selected:selected.parentElement!;
+      const bounds=element.getBoundingClientRect(),item=target.getBoundingClientRect();
+      if(item.right>bounds.right)element.scrollLeft+=item.right-bounds.right;
+      if(item.left<bounds.left)element.scrollLeft-=bounds.left-item.left;
+    };
+    reveal();const observer=new ResizeObserver(reveal);observer.observe(element);return()=>observer.disconnect();
+  },[activeId,tabLayout]);
   const focus=(id?:string)=>requestAnimationFrame(()=>[...host.current?.querySelectorAll<HTMLButtonElement>("[role=tab]")??[]].find(button=>button.dataset.previewId===(id??""))?.focus({preventScroll:true}));
   const close=(ids:string[])=>focus(onClose(ids));
   function key(event:React.KeyboardEvent,id?:string){
@@ -21,7 +34,7 @@ export function AgentPreviewTabs({tabs,activeId,onSelect,onClose,onKeep,onReveal
     }
   }
   return <div className="agent-content-tabs" ref={host} role="tablist" aria-label="会话与预览">
-    <button type="button" role="tab" data-preview-id="" tabIndex={activeId?-1:0} aria-selected={!activeId} onClick={()=>onSelect()} onKeyDown={event=>key(event)}>Codex</button>
+    <button type="button" role="tab" data-preview-id="" tabIndex={activeId?-1:0} aria-selected={!activeId} onClick={()=>onSelect()} onKeyDown={event=>key(event)}>{sessionTitle}</button>
     {tabs.map((tab,index)=><div key={tab.id} className={tab.preview?"agent-content-temporary":""}
       {...context(tab.title,[
         {id:"keep",label:"保留标签",disabled:!tab.preview,action:()=>onKeep(tab.id)},

@@ -30,8 +30,12 @@ description: "作者选择河图洛书豪门总裁套件时，作者需要在河
 
 本机偏好与安装选择使用独立的 `hetu.local_settings.*` 方案，不借作品授权扩权。安装后分别核对来源、版本、启用和本会话发现；不能把已安装说成当前会话已加载。凭据不进入作品或普通回读。采纳、定稿、解锁等按作者在当前会话的真实决定登记确切方案后执行；作品删除和模型费用分别遵循各自决定合同。不能将作者决定权实现为强制回桌面点击。
 
+存储清理先发现 `hetu.local_settings.inspect_storage`，按当前快照展示占用与候选，再以 `storage_cleanup`、`selected_ids` 和 `storage_snapshot` 准备固定方案。只清理已核验缓存和已移除且无待恢复内容的会话；不传任意路径。即使 auto，也须展示确切清单、大小和不可恢复影响，按作者真实决定登记 `record_decision` 后执行。未知结果沿原 `get_operation` 与原执行键恢复；已删除、已不存在和保留分别报告，文件大小不冒充实际磁盘回收量。
+
 文稿版本显式固定 `work_ref`，先查本作品状态，再准备所选文稿快照。在当前会话展示完整差异与提交身份，作者决定后用 `hetu.git.record_snapshot_decision` 登记，再执行；沿原 `snapshot_id` 和原执行键回读未知结果。作品历史从独立空树开始，不能借此访问旧工作区、他作品、分支合并或网络同步。恢复历史内容时准备为参考稿，不直接 checkout 覆盖当前正文。
 
 先发现 `hetu.agent_operations.catalog`，按返回的领域Schema准备方案。展示结果／差异后，依据真实用户指令调用 `record_decision`，再执行并回读；决定登记不执行领域变更。不要凭方案标题推断用户已认可内容，不能把另一版本的决定套到当前方案。
 
-插件安装使用 `hetu.plugins.inspect/inspect_package/apply/get_operation`，固定包摘要、依赖影响及安装状态基线。作品数据授权另用 `hetu.plugin_access.*` 固定 WorkRef、包摘要、权限和类型，不因安装获得正文或其他作品权限。模型渠道使用 `hetu.model_settings.*`；密钥只经已授权私密输入交给本机存储，不在聊天、日志或普通回读重复展示。纯模型设置不执行付费生成。
+插件安装使用 `hetu.plugins.inspect/inspect_package/apply/get_operation`，固定包摘要、依赖影响及安装状态基线。启用后沿当前精确作品连接发现`hetu.plugins.capabilities/invoke`，不再增加独立插件授权；`hetu.plugin_access.*`仅接续实际旧连接，不能扩大正文或其他作品范围。模型渠道使用 `hetu.model_settings.*`；密钥只经已授权私密输入交给本机存储，不在聊天、日志或普通回读重复展示。纯模型设置不执行付费生成。
+
+收到固定专业成果时，发现实际`hetu.plugin_results.get`，以当前作品连接、Owner、对象和确切修订读取并核对摘要。此读取不启动插件，包停用或移除后可继续回读保留成果；不要为了读取而启用或重装。要继续专业处理时另行发现当前兼容包和准确Schema，固定成果可读不代表旧插件方法仍能执行。

@@ -13,6 +13,8 @@ import { ResourceReview } from "./resources.ts";
 import { MediaAccess } from "./media.ts";
 import { VideoReview } from "./video-review.ts";
 import { OutlineReview } from "./outlines.ts";
+import {ProfessionalTools} from "./professional-tools.ts";
+import type {ProfessionalPlugin} from "../professional-contract.ts";
 
 export type WorkSessionPorts = {
   profile: string; recovery: RecoveryStore;
@@ -27,6 +29,7 @@ export type WorkSessionPorts = {
   coreCliBinary(): string;
   copy(text: string): void;
   executionPolicy(): Promise<{preferences: {execution_mode: "auto" | "confirm"}}>;
+  professionalPlugins():Promise<{plugins:ProfessionalPlugin[];plugin_state_error?:string}>;
 };
 
 /** 共享作品应用用例；Electron与MCP工作台只替换宿主IO，不复制审核和编辑规则。 */
@@ -125,6 +128,8 @@ export function createWorkSession(ref: WorkRef, selectedServer: AppServer, ports
         if (!taskReview) throw new Error("请先选择当前作品。");
         if (method === "list") return taskReview.list(params?.cursor);
         if (!ref) throw new Error("缺少确切任务引用。");
+        if (method === "assessment") return taskReview.assess(ref,params);
+        if (method === "continuation") return taskReview.continuation(ref,params);
         if (method === "journal") return taskReview.journal(ref);
         if (method === "recover") return taskReview.recover(ref);
         if (method === "call")
@@ -149,6 +154,17 @@ export function createWorkSession(ref: WorkRef, selectedServer: AppServer, ports
       }
       return selectedServer.request("execution/request", {client_adapter: agentClient(), request: fixed});
     });
+    const professional=new ProfessionalTools(work,{
+      check:()=>{if(!active())throw Error("作品已切换，请重新打开专业工具。");},
+      plugins:ports.professionalPlugins,client:agentClient,workspacePath:ports.workspacePath,
+      handoff:(kind,object)=>authoring.handoff(kind,object),
+      read:async(action,input)=>{
+        const envelope=await selectedServer.request("execution/request",{client_adapter:agentClient(),request:{action:"hetu.execution.invoke",contract_revision:"1",input:{workspace_path:ports.workspacePath,command:{action,contract_revision:"1",input}}}});
+        if(envelope.status!=="succeeded")throw Error(envelope.error?.message??"专业能力读取失败。");
+        const result=envelope.data.result;if(result.status!=="succeeded")throw Error(result.error?.message??"专业能力读取失败。");return result.data;
+      },
+    });
+    shellHandler("desktop:professional",(method:string,input:any)=>professional.call(method,input));
     shellHandler("desktop:canon", async (method: string, input: any = {}) => {
       const current = canon;
       if (!current) throw new Error("请选择当前作品。");
@@ -197,13 +213,21 @@ export function createWorkSession(ref: WorkRef, selectedServer: AppServer, ports
     shellHandler("desktop:video", async (method: string, input: any = {}) => {
       const current = videoReview;
       if (!current) throw new Error("请选择当前视频作品。");
-      if (["list", "media", "feedback", "delivery"].includes(method)) return current.read(method, input);
+      if (["list", "media", "feedback", "delivery", "decision_history"].includes(method)) return current.read(method, input);
       if (method === "save_feedback") {return current.saveFeedback(input);}
       if (method === "journal") return current.journal();
       if (method === "recover") return current.recover();
+      if (method === "decision_journal") return current.decisionJournal();
+      if (method === "prepare_decision") return current.prepareDecision(input);
+      if (method === "save_decision") return current.saveDecision(input.token);
+      if (method === "recover_decision") return current.recoverDecision();
+      if (method === "acknowledge_decision") return current.acknowledgeDecision(input);
       if (method === "draft") {return current.draft(input.media_ref, input.value);}
       if (method === "export") return current.exportFile(input.media_ref, async name => {
         return ports.saveFile({ title: "导出本版视频", defaultPath: name });
+      });
+      if (method === "export_caption") return current.exportCaption(input.media_ref, input.caption_ref, async name => {
+        return ports.saveFile({ title: "导出本版字幕", defaultPath: name, filters: [{ name: "WebVTT字幕", extensions: ["vtt"] }] });
       });
       throw new Error("未知视频审阅用例。");
     });

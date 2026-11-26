@@ -37,7 +37,10 @@
 .artwork-detail-columns { display: grid; flex: 1; min-height: 0; grid-template-columns: minmax(0, 1fr) minmax(290px, 330px); }
 .artwork-detail-visual { display: flex; flex-direction: column; min-width: 0; min-height: 0; padding-right: 16px; gap: 16px; overflow-y: auto; }
 .artwork-preview-stage { display: flex; flex: 1; min-height: 180px; justify-content: center; align-items: center; background: var(--page); border-radius: 6px; overflow: hidden; }
-.artwork-sheet .artwork-preview { display: block; width: 100%; height: 100%; max-width: 100%; max-height: 580px; object-fit: contain; margin: 0; }
+.artwork-preview-stage .image-region-preview { display: flex; flex-direction: column; align-self: stretch; height: 100%; min-height: 0; }
+.artwork-preview-stage .image-region-picture { flex: 1; min-height: 0; }
+.artwork-preview-stage .image-region-image { height: 100%; max-height: none; }
+.artwork-preview-stage .image-region-tools, .artwork-preview-stage .image-region-position { flex: none; }
 .artwork-filmstrip { display: flex; flex: none; gap: 12px; overflow-x: auto; padding: 4px 2px; }
 .artwork-filmstrip button { display: flex; flex-direction: column; flex: 0 0 88px; align-items: stretch; border: 0; border-radius: 0; padding: 0; background: transparent; gap: 6px; }
 .artwork-filmstrip button > span { display: flex; align-items: center; justify-content: center; height: 100px; padding: 4px; border: .5px solid var(--line); border-radius: 6px; background: var(--page); }

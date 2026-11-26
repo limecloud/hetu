@@ -41,8 +41,12 @@ const WORKSPACE_ACTIONS: &[&str] = &[
     "hetu.creative_tasks.prepare",
     "hetu.creative_tasks.assess",
 ];
-// 已有作品授权只开放读取、方案和有界检查；具体变更仍须作者批准固定方案。
+// 已有作品开放读取、固定参考任务、方案和有界检查；写入遵循共享auto/confirm策略。
 const REVIEW_ACTIONS: &[&str] = &[
+    "hetu.documents.scene_index",
+    "hetu.plugin_results.list",
+    "hetu.plugin_results.get",
+    "hetu.creative_tasks.prepare",
     "hetu.plugins.capabilities",
     "hetu.plugins.invoke",
     "hetu.novels.snapshot",
@@ -62,6 +66,9 @@ const REVIEW_ACTIONS: &[&str] = &[
     "hetu.video.media.list",
     "hetu.video.feedback.list",
     "hetu.video.delivery.preview",
+    "hetu.video.decisions.preview",
+    "hetu.video.decisions.get",
+    "hetu.video.decisions.history",
     "hetu.assets.read_blob",
     "hetu.capabilities.get",
     "hetu.operations.get",
@@ -286,7 +293,9 @@ fn work_action_allowed(name: &str, reference: &Value) -> bool {
     }
     matches!(
         name,
-        "hetu.plugins.capabilities"
+        "hetu.plugin_results.list"
+            | "hetu.plugin_results.get"
+            | "hetu.plugins.capabilities"
             | "hetu.plugins.invoke"
             | "hetu.novels.snapshot"
             | "hetu.drafts.list"
@@ -332,6 +341,7 @@ fn work_action_allowed(name: &str, reference: &Value) -> bool {
             | "hetu.documents.list"
             | "hetu.documents.get"
             | "hetu.documents.history"
+            | "hetu.documents.scene_index"
             | "hetu.documents.preview_finalization"
             | "hetu.documents.lifecycle"
             | "hetu.drafts.get"
@@ -357,6 +367,9 @@ fn work_action_allowed(name: &str, reference: &Value) -> bool {
             | "hetu.video.media.list"
             | "hetu.video.feedback.list"
             | "hetu.video.delivery.preview"
+            | "hetu.video.decisions.preview"
+            | "hetu.video.decisions.get"
+            | "hetu.video.decisions.history"
             | "hetu.assets.read_blob"
             | "hetu.blueprints.get"
             | "hetu.blueprints.preview_change"
@@ -374,6 +387,7 @@ fn work_action_allowed(name: &str, reference: &Value) -> bool {
             | "hetu.git.snapshot"
             | "hetu.git.record_snapshot_decision"
             | "hetu.creative_tasks.preview_prompt"
+            | "hetu.creative_tasks.prepare"
             | "hetu.image_tasks.preview_prompt"
             | "hetu.agent_operations.prepare"
             | "hetu.agent_operations.catalog"
@@ -391,8 +405,36 @@ pub(crate) fn check_management(binding: &Value, root: &Path, action: Option<&str
         "forbidden",
         "管理范围无效。",
     )?;
+    check_management_root(&grant, root, project)?;
+    if let Some(name) = action {
+        ensure(
+            !grant["work_ref"].is_object() || work_action_allowed(name, &grant["work_ref"]),
+            "forbidden",
+            "此对象授权不包含工作区级能力。",
+        )?;
+        ensure(
+            if project {
+                PROJECT_ACTIONS
+            } else if grant["authorized_workspace"] == true {
+                REVIEW_ACTIONS
+            } else {
+                WORKSPACE_ACTIONS
+            }
+            .contains(&name)
+                || !project
+                    && grant["authorized_workspace"] != true
+                    && REVIEW_ACTIONS.contains(&name),
+            "forbidden",
+            "该授权不允许此动作。",
+        )?;
+    }
+    Ok(())
+}
+
+/// 状态查询与实际业务访问共用目录校验，避免失效连接仍报告已授权。
+fn check_management_root(grant: &Value, root: &Path, project: bool) -> Result<()> {
     let expected = Path::new(text(
-        &grant,
+        grant,
         if project {
             "project_path"
         } else {
@@ -422,28 +464,6 @@ pub(crate) fn check_management(binding: &Value, root: &Path, action: Option<&str
                 "作品目录身份已变化，请重新授权。",
             )?;
         }
-    }
-    if let Some(name) = action {
-        ensure(
-            !grant["work_ref"].is_object() || work_action_allowed(name, &grant["work_ref"]),
-            "forbidden",
-            "此对象授权不包含工作区级能力。",
-        )?;
-        ensure(
-            if project {
-                PROJECT_ACTIONS
-            } else if grant["authorized_workspace"] == true {
-                REVIEW_ACTIONS
-            } else {
-                WORKSPACE_ACTIONS
-            }
-            .contains(&name)
-                || !project
-                    && grant["authorized_workspace"] != true
-                    && REVIEW_ACTIONS.contains(&name),
-            "forbidden",
-            "该授权不允许此动作。",
-        )?;
     }
     Ok(())
 }
@@ -542,7 +562,7 @@ impl CollaborationHub {
         store.transaction(&BTreeMap::from([(path, encoded(&grant)?)]))?;
         Ok(receipt)
     }
-    fn open_management_reference(&self, reference: &Value) -> Result<(Kernel, Value, Value)> {
+    pub(super) fn open_management_reference(&self, reference: &Value) -> Result<(Kernel, Value, Value)> {
         let mut binding = json!({"directory":self.directory.canonicalize()?,"client_adapter":self.client,"grant_id":reference["grant_id"],"grant_revision":reference["grant_revision"],"kind":reference["scope_ref"]["kind"]});
         let grant = record(&binding)?;
         if grant["work_ref"].is_object() {
@@ -711,6 +731,8 @@ impl CollaborationHub {
                                 item["name"].as_str(),
                                 Some(
                                     "hetu.documents.list"
+                                        | "hetu.documents.scene_index"
+                                        | "hetu.plugin_results.list"
                                         | "hetu.creative_tasks.list"
                                         | "hetu.resources.list"
                                         | "hetu.assets.list"
@@ -734,10 +756,8 @@ impl CollaborationHub {
                         {
                             item["input_schema"]["properties"]["work_ref"]["const"] =
                                 grant["work_ref"].clone();
-                            item["input_schema"]["required"]
-                                .as_array_mut()
-                                .unwrap()
-                                .push(json!("work_ref"));
+                            let required=item["input_schema"]["required"].as_array_mut().unwrap();
+                            if !required.contains(&json!("work_ref")){required.push(json!("work_ref"));}
                         }
                         if grant["work_ref"].is_object()
                             && matches!(
@@ -894,13 +914,17 @@ impl Kernel {
         let mut reference = reference;
         reference["grant_revision"] = grant["grant_revision"].clone();
         let current = grant["revoked"] == false
+            && grant["client_adapter"] == client
+            && grant.get("work_ref") == input.get("work_ref")
             && grant["target_path"] == json!(self.root_path())
             && grant["workspace_id"] == self.scope()
+            && check_management_root(&grant, self.root_path(), false).is_ok()
             && grant["expires_at"]
                 .as_i64()
                 .is_none_or(|at| at > time::OffsetDateTime::now_utc().unix_timestamp());
         Ok(
-            json!({"authorized":current,"management_ref":reference,"client_adapter":client,"expires_at":grant["expires_at"]}),
+            json!({"authorized":current,"management_ref":reference,"client_adapter":client,"expires_at":grant["expires_at"],
+                "git_authorization_current":grant["git_authorization_path"] == json!(self.custom_git_authorization_path())}),
         )
     }
     pub(crate) fn authorize_workspace(&self, input: &Value) -> Result<Value> {
@@ -909,6 +933,23 @@ impl Kernel {
             "forbidden",
             "只有可信作者入口可以授权当前作品。",
         )?;
+        self.persist_workspace_grant(input, false)
+    }
+    /// 显式初始化的作品沿原新建映射进入创作库；普通工作区读取不调用此入口。
+    pub(crate) fn register_execution_creation(&self, directory: &Path) -> Result<()> {
+        let client = self.execution_client().ok_or_else(|| Error::new("forbidden", "缺少统一执行客户端身份。"))?;
+        let workspace = self.request(json!({"action":"hetu.workspaces.get","contract_revision":"1","input":{}}));
+        // 初始化只有小说会同时创建作品；剧本／视频此时仍是空容器，后续对象不属于原初始化。
+        if workspace["data"]["workspace"]["work_type"] != "novel" { return Ok(()); }
+        let works = self.request(json!({"action":"hetu.works.list","contract_revision":"1","input":{}}));
+        ensure(works["status"] == "succeeded", "hetu.integrity_failure", "无法核验新建作品目录。")?;
+        for work in works["data"]["works"].as_array().ok_or_else(|| Error::new("hetu.integrity_failure", "新建作品目录无效。"))? {
+            if work["work_ref"]["kind"] != "novel" { continue; }
+            self.persist_workspace_grant(&json!({"client_adapter":client,"collaboration_path":directory,"work_ref":work["work_ref"]}), true)?;
+        }
+        Ok(())
+    }
+    fn persist_workspace_grant(&self, input: &Value, creation: bool) -> Result<Value> {
         let client = text(input, "client_adapter")?;
         client_valid(client)?;
         let directory = input["collaboration_path"]
@@ -949,6 +990,14 @@ impl Kernel {
         };
         let identity = crate::infrastructure::platform::identity(self.root_path())?;
         let identity = json!({"device":identity.0,"inode":identity.1});
+        if creation && !previous.is_null() {
+            ensure(previous["workspace_id"] == self.scope() && previous["target_path"] == json!(self.root_path())
+                && previous["root_identity"] == identity && previous.get("work_ref") == input.get("work_ref"),
+                "forbidden", "原新建登记的作品或目录身份已变化。")?;
+            // 重放仅修复尚未写入的映射，不能通过重新初始化复活撤销或过期授权。
+            return Ok(json!({"management_ref":{"grant_id":grant_id,"grant_revision":previous["grant_revision"],
+                "scope_ref":{"kind":"workspace","id":self.scope()}},"client_adapter":client,"revoked":previous["revoked"]}));
+        }
         let revision = if previous["revoked"] == false
             && previous["expires_at"] == expires
             && previous["target_path"] == json!(self.root_path())
@@ -972,9 +1021,17 @@ impl Kernel {
         if let Some(reference) = input.get("work_ref") {
             grant["work_ref"] = reference.clone();
         }
+        let management_ref = json!({"grant_id":grant_id,"grant_revision":revision,"scope_ref":{"kind":"workspace","id":self.scope()}});
+        if creation {
+            grant["created_workspace"] = json!({"workspace_id":self.scope(),"path":self.root_path(),
+                "work_ref":input["work_ref"],"management_ref":management_ref});
+        } else if previous["created_workspace"].is_object() {
+            grant["created_workspace"] = previous["created_workspace"].clone();
+            grant["created_workspace"]["management_ref"] = management_ref.clone();
+        }
         store.transaction(&BTreeMap::from([(path, encoded(&grant)?)]))?;
         Ok(
-            json!({"management_ref":{"grant_id":grant_id,"grant_revision":revision,"scope_ref":{"kind":"workspace","id":self.scope()}},
+            json!({"management_ref":management_ref,
             "client_adapter":client,"revoked":false,"allowed_actions":REVIEW_ACTIONS.iter().filter(|name| !input["work_ref"].is_object() || work_action_allowed(name, &input["work_ref"])).collect::<Vec<_>>()}),
         )
     }

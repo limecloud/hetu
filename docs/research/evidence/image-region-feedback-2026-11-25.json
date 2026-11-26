@@ -1,0 +1,287 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-25",
+  "kind": "fixed-image-region-feedback",
+  "platform": "macOS arm64",
+  "state": "installed-validated",
+  "contract": {
+    "owner": "Creation TaskFeedback",
+    "schema_version": "1.2.0 for image regions",
+    "anchor": "candidate_ref plus image_region{x,y,width,height} in original decoded integer pixels",
+    "old_records": "1.0.0 whole result and 1.1.0 text remain unchanged",
+    "domain_actions": "existing task_feedback.save/list and original task continuation"
+  },
+  "implementation": [
+    "Core checks fixed candidate identity, image type, positive integer dimensions and pixel boundaries; range and image_region are exclusive.",
+    "Shared React selection uses actual contained image bounds, pointer capture, outward pixel coverage and keyboard move/resize; no image cropping or copying.",
+    "Desktop and MCP share original task feedback, CAS and recovery. Old coordinates stay on the original submission.",
+    "Receipt loss after a successful host save is queried by the same operation, without a duplicate comment.",
+    "Narrow dialog reserves height for tools and coordinates; only the explicitly marked image is targeted by a region comment."
+  ],
+  "validation": {
+    "core_targeted": {
+      "passed": 5,
+      "failed": 0,
+      "log": "output/image-region-feedback-20261125/core.log"
+    },
+    "ui_model": {
+      "passed": 4,
+      "failed": 0,
+      "log": "output/image-region-feedback-20261125/model-tests.log"
+    },
+    "shared_initial": {
+      "passed": 3,
+      "failed": 0,
+      "log": "output/image-region-feedback-20261125/shared-diagnostic.log",
+      "scope": "desktop, stdio and official Codex forwarding before final narrow-layout/target-scope correction"
+    },
+    "expanded_ui": {
+      "passed": 40,
+      "failed": 2,
+      "log": "output/image-region-feedback-20261125/final-ui.log",
+      "failures": [
+        "desktop business completed but normal-close observation timed out; cause not yet established",
+        "new panel fixture reloaded the old initial projection; fixed to fetch the task and create a fresh panel"
+      ]
+    },
+    "standalone_task": {
+      "status": "passed",
+      "log": "output/image-region-feedback-20261125/task-final.log",
+      "scope": "real stdio MCP saved region, lost receipt recovery, same task return, newly opened panel and dark English narrow view"
+    },
+    "rust_workspace": {
+      "passed": 453,
+      "failed": 0,
+      "ignored": 0,
+      "groups": 74,
+      "log": "output/image-region-feedback-20261125/workspace-tests.log"
+    },
+    "final_shared": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/image-region-feedback-20261125/geometry-final.log",
+      "scope": "frozen source: desktop, stdio and official Codex forwarding, single fixed region target, stable geometry while dragging, dark narrow layout, same operation and same task return"
+    },
+    "website": {
+      "status": "passed",
+      "pages": 227,
+      "local_references": 13993,
+      "log": "output/image-region-feedback-20261125/website-build.log",
+      "deployed": false
+    },
+    "package_verification": {
+      "status": "passed",
+      "source_sha256": "9fb1ae991381984b153492353f4615abc6aaa4a5d8aec03e701b20d0b6f9d6f7",
+      "source_inputs": 3060,
+      "package_artifacts": 3720,
+      "bundle_files_and_links": 3132,
+      "version": "0.14.1",
+      "signature": "ad-hoc-development-verified",
+      "icon_matches": true,
+      "report": "output/image-region-feedback-20261125/package-verified.json",
+      "directory_fix_sources_preserved": 5
+    },
+    "repository_skill": {
+      "name": "hetu-embedded-agent",
+      "path": ".agents/skills/hetu-embedded-agent/SKILL.md",
+      "official_validator": "passed",
+      "local_links": 17,
+      "broken_links": 0,
+      "agents_entry": true,
+      "report": "output/image-region-feedback-20261125/embedded-agent-skill-validated.json"
+    },
+    "package_ui": {
+      "passed": 3,
+      "failed": 1,
+      "additional_teardown_errors": 1,
+      "log": "output/image-region-feedback-20261125/package-final.log",
+      "scope": "stdio and official Codex forwarding plus standalone task passed; desktop wrote full business result but window-close observation timed out; retained trace."
+    },
+    "package_source_snapshot": {
+      "report": "output/image-region-feedback-20261125/verified-package-source.json",
+      "files": 3060,
+      "source_sha256": "9fb1ae991381984b153492353f4615abc6aaa4a5d8aec03e701b20d0b6f9d6f7",
+      "note": "Later index.tsx navigation changes remain in shared working tree. Package source recovered from its verified source map only for that changed file; every frozen input matches manifest."
+    },
+    "fixtures_rebuild": {
+      "status": "passed",
+      "log": "output/image-region-feedback-20261125/rebuild-fixtures.log",
+      "scope": "workspace examples and binaries after target cache absent; package remains unchanged"
+    },
+    "desktop_package_recheck": {
+      "passed": 1,
+      "failed": 0,
+      "log": "output/image-region-feedback-20261125/package-desktop-app-close.log",
+      "scope": "unchanged package business plus official Playwright application.close; no forced process termination",
+      "note": "window-close observation failure remains recorded and is not claimed fixed by changing the validation exit path"
+    },
+    "packaged_baseline": {
+      "passed": 2,
+      "failed": 0,
+      "log": "output/image-region-feedback-20261125/package-baseline.log",
+      "scope": "packaged author/plugin/CLI/MCP business, close/reopen and episode-directory regression; normal close took longer but completed"
+    },
+    "close_diagnostic": {
+      "report": "output/image-region-feedback-20261125/packaged-close-diagnostic.json",
+      "scope": "Read-only local inspector fetch did not return state, then socket closed; no engine or author data read and no application killed. Later full packaged journey completed."
+    },
+    "installed": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/image-region-feedback-20261125/installed.log",
+      "scope": "actual /Applications/Hetu.app desktop and installed stdio MCP; fixed region, old batch, same operation recovery, same task return, dark narrow layout"
+    },
+    "governance": {
+      "docs": "passed",
+      "capability_map": "passed",
+      "writing_methods": "passed",
+      "skill_validator": "passed",
+      "skill_local_links": 17,
+      "docs_log": "output/image-region-feedback-20261125/docs-final.log"
+    }
+  },
+  "first_runs": [
+    {
+      "log": "output/image-region-feedback-20261125/shared-desktop.log",
+      "reason": "test name filter matched no tests; no business executed"
+    },
+    {
+      "log": "output/image-region-feedback-20261125/shared-desktop-recheck.log",
+      "reason": "default Playwright browser absent; no business executed"
+    },
+    {
+      "log": "output/image-region-feedback-20261125/shared.log",
+      "reason": "fractional mouse pixels and insufficient old selector expectation; Google Chrome host navigation did not switch. Original trace retained; later cached Chromium run completed the same navigation."
+    },
+    {
+      "log": "output/image-region-feedback-20261125/task-recheck.log",
+      "reason": "two distinct status regions made the old unscoped locator ambiguous"
+    },
+    {
+      "log": "output/image-region-feedback-20261125/shared-final.log",
+      "result": "two passed, one failed",
+      "reason": "Coordinate status appeared during drag and reduced the image height; original pixel y moved beyond the allowed one-pixel quantization. Reserved status height and added geometry stability assertions; no tolerance relaxation."
+    },
+    {
+      "log": "output/image-region-feedback-20261125/package-ui.log",
+      "result": "four failed before business",
+      "reason": "target/debug fixtures were absent at package validation time. Rebuild fixtures and binaries; final package is unchanged. Test setup diagnostics now include spawn errors."
+    },
+    {
+      "log": "output/image-region-feedback-20261125/package-desktop-recheck.log",
+      "reason": "anchored name filter matched no tests; no business executed"
+    }
+  ],
+  "source_sha256": {
+    "contracts/schemas/creative-task.schema.json": "24642602ffdd2ceaee96a571e480a3151e63c6b5d20d9a73edd871d01576b320",
+    "core/src/application/creative_tasks/feedback.rs": "854d8d641202722b08006e091696f8a23ac90681e90ecc12243bee7a344559c6",
+    "core/tests/task_feedback_ranges.rs": "344b1aad7b1a74fcfac1d2484afac94955f57601cb59ed31207881d51d33b262",
+    "packages/workbench-ui/src/image-region.ts": "7fc3c5f181759c2d17e12b50902f5ae18de88837f18a3df47aef274fffdded67",
+    "packages/workbench-ui/src/image-region.tsx": "47fa1bd84a9627c0cf5546057ffe2fbb43c96342290b9e41ce1f984d1bd51dd0",
+    "packages/workbench-ui/src/image-region.css": "75cdf2dfb351adea96c88338329f8f3c4d2a6d4446037cd605570a34941d245c",
+    "apps/desktop/src/renderer/artwork-detail.tsx": "528c15e1f4f3513674dc82d4996e89bcf54d9ca0572f04ab51bb4aaadcb5c67b",
+    "apps/desktop/src/renderer/artwork.css": "2ef57a39dc1fbcc89dca2a225d4bf9b219bf1e03aff62c833595e3be29d2a58e",
+    "apps/task-view/src/task-review.ts": "200435fb9178455aa7252695de7a6d8f64872d9e21f9b614358f4baf94a945f9",
+    "apps/task-view/src/feedback-target.ts": "6837af6eabf72817ee2c08394797a56fa2f23f4c038899195afa441d73cc7c0b",
+    "apps/task-view/tests/image-region-feedback.spec.ts": "a4dc007c6df151f761e932e5c96fb3304d9970e8030bc1a8706c3ac10c31fdf6"
+  },
+  "limits": [
+    "Synthetic local image proves geometry, persistence and recovery, not model image quality or identity consistency.",
+    "Official Codex CLI forwarding does not prove the native Codex Desktop panel.",
+    "No model generation, image API calls, author adoption or finalization in this validation.",
+    "Windows, Linux, real screen reader, full visual reproduction and complete episode production remain separate.",
+    "Original window-close observation timeouts remain recorded. Official application-close retest passed; no root cause claimed for all intermittent close observations."
+  ],
+  "test_runtime": {
+    "node": "25.0.0",
+    "browser": "Google Chrome for Testing 151.0.7922.34",
+    "browser_source": "existing cached headless shell",
+    "model_turns": 0
+  },
+  "installation": {
+    "source_sha256": "9fb1ae991381984b153492353f4615abc6aaa4a5d8aec03e701b20d0b6f9d6f7",
+    "source_inputs": 3060,
+    "artifacts_verified": 3132,
+    "version": "0.14.1",
+    "optimized": true,
+    "signature": "ad-hoc-development-verified",
+    "icon_matches": true,
+    "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+    "installed_path": "/Applications/Hetu.app",
+    "atomic_swap": true,
+    "backup_created": false,
+    "old_bundle_removed": true,
+    "profile_indexes_unchanged": {
+      "creative-library.json": true,
+      "LocalSettings/settings.json": true,
+      "agent-sessions/index/selection.json": true
+    },
+    "source_snapshot": "output/image-region-feedback-20261125/verified-package-source.json",
+    "earlier_installed_directory_fix_preserved": true,
+    "later_navigation_source_included": false,
+    "note": "Source was verified at assembly, then one navigation source changed in shared working tree. That later change is preserved there; this package installs the verified earlier navigation plus final image-region geometry. Installation checked expected previous bundle immediately before atomic replacement.",
+    "normal_launch": {
+      "verified": true,
+      "library_works": 19,
+      "runtime": {
+        "version": "0.14.1",
+        "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+        "resources": "/Applications/Hetu.app/Contents/Resources",
+        "userData": "/Users/coso/Library/Application Support/Hetu"
+      },
+      "screenshot": "output/image-region-feedback-20261125/normal-launch.png",
+      "profile_indexes_unchanged": {
+        "creative-library.json": true,
+        "LocalSettings/settings.json": true,
+        "agent-sessions/index/selection.json": true
+      }
+    },
+    "final_verification": "output/image-region-feedback-20261125/installed-final-verified.json",
+    "reopened_normally_after_validation": true
+  },
+  "screenshots": {
+    "output/image-region-feedback-20261125/installed/image-region-feedback-stdio-图片区域固定原像素，旧批次意见恢复后沿原任务返工/fixed-region-narrow.png": "dcc4b7477afe4349ef51b5ca8bef18af1a3b399877e4f525b54acffb93e3852f",
+    "output/image-region-feedback-20261125/installed/image-region-feedback-desktop-图片区域固定原像素，旧批次意见恢复后沿原任务返工/fixed-region-narrow.png": "abd9705f8ba1ba4ff22136cd567f134f8e2025b6d8dfc967377c808f3c3db19b",
+    "output/image-region-feedback-20261125/normal-launch.png": "83890fa311088c0e36f7ab0df80e0b6696af2f85b4ade7d70442a7a7704397b2"
+  },
+  "results": {
+    "output/image-region-feedback-20261125/installed/image-region-feedback-stdio-图片区域固定原像素，旧批次意见恢复后沿原任务返工/result.json": {
+      "surface": "stdio",
+      "region": {
+        "x": 31,
+        "y": 45,
+        "width": 60,
+        "height": 91
+      },
+      "feedback_count": 1,
+      "save_calls": 1,
+      "fixed_old_batch": true,
+      "keyboard": true,
+      "drag_cancel": true,
+      "resize_preserved": true,
+      "original_operation_recovered": true,
+      "same_task_returned": true,
+      "model_turns": 0
+    },
+    "output/image-region-feedback-20261125/installed/image-region-feedback-desktop-图片区域固定原像素，旧批次意见恢复后沿原任务返工/result.json": {
+      "surface": "desktop",
+      "region": {
+        "x": 31,
+        "y": 45,
+        "width": 60,
+        "height": 91
+      },
+      "feedback_count": 1,
+      "save_calls": 1,
+      "fixed_old_batch": true,
+      "keyboard": true,
+      "drag_cancel": true,
+      "resize_preserved": true,
+      "original_operation_recovered": true,
+      "same_task_returned": true,
+      "model_turns": 0
+    }
+  }
+}

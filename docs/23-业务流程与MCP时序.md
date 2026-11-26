@@ -1342,9 +1342,10 @@ sequenceDiagram
     participant C as Core
     participant H as 当前 Agent 宿主
     participant A as Agent 与专用 Skill
-    U->>V: 对确切参考稿填写公开意见
-    U->>V: 按此修改
-    V->>C: 保存反馈、成果引用、expected 和原键
+    U->>V: 对固定参考稿或来源原句填写公开意见
+    U->>V: 按此修改或保存位置意见
+    V->>C: 原目标引用、可选UTF-8范围、expected 和原键
+    C->>C: 核对本任务原版本、边界、原句和预算
     C-->>V: 已保存 feedback_ref
     V-->>U: 预览本次继续内容
     alt Apps 宿主支持消息且用户确认
@@ -1357,7 +1358,7 @@ sequenceDiagram
     end
     H->>A: 用户要求继续
     A->>C: 经获权入口回读任务、成果及公开反馈
-    C-->>A: 当前请求和确切稿件，不含私密批注
+    C-->>A: 当前请求、固定稿件或来源选区，不含私密批注
     A->>A: 按反馈修改已有参考稿
     A->>C: 经获权入口保存并提交新批次，关联 feedback_ref
     C-->>V: 可查询的新成果及保存回执
@@ -1365,7 +1366,9 @@ sequenceDiagram
     Note over U,C: Agent 声明已处理不等于作者已验收
 ```
 
-保存偏好可独立结束；只有明确“按此修改”才产生返工意图。消息失败重用原反馈复制提示词，不重复写意见或重复付费生成。对应 UC-18／19／41。
+保存偏好可独立结束；明确“按此修改”或“保存位置意见”才登记本次返工意图。消息失败重用原反馈复制提示词，不重复写意见或重复付费生成。对应 UC-18／19／41。
+
+位置意见的明确保存同样登记返工意图，发送仍独立；选择文字和引用到未保存意见均不写TaskFeedback。来源尚无候选时也可指明本任务如何使用依据，但来源引用不授予资料写权或扩大原edit_scope。翻页将页内选区转换为固定文本的全文UTF-8偏移，不以显示字符数量或新修订位置替代。
 
 ## 43. 按需上下文与补充资料流程
 
@@ -1737,7 +1740,7 @@ sequenceDiagram
     Agent->>Core: 保存参考稿并固定提交
     Core-->>View: 同一任务的固定候选
     Author->>View: 比较并保存确切位置意见
-    View->>Core: 反馈固定成果版本
+    View->>Core: 固定成果或ContextRef、原句及UTF-8范围
     Core-->>Agent: 原任务公开反馈与接续引用
 ```
 
@@ -1842,7 +1845,14 @@ sequenceDiagram
     participant Core as 共享Core
     Author->>UI: 输入目标并选择固定上下文
     UI->>Session: 会话、owner代次、消息尝试及引用
-    Session->>Session: 核验单执行者并保存出站尝试
+    alt 原连接中断或结果待核对
+        Session-->>UI: 拒绝新投递，保留草稿
+        Author->>UI: 明确重新连接或核对原线程
+        UI->>Session: 原会话恢复请求
+        Session->>Codex: 恢复原线程并读取状态
+        Codex-->>Session: 原历史及真实轮次状态
+    end
+    Session->>Session: 就绪后核验单执行者并保存出站尝试
     Session->>Codex: turn/start
     Codex-->>Session: 受理或明确拒绝
     Session-->>UI: 投递状态及流事件
@@ -1857,15 +1867,55 @@ sequenceDiagram
         Machine->>Core: 沿原计划执行
     end
     Core-->>Machine: 保存结果、固定成果及原操作
-    Machine-->>Codex: 真实业务回执
-    Codex-->>Session: 轮次终态
+    alt 回执正常返回
+        Machine-->>Codex: 真实业务回执
+        Codex-->>Session: 轮次终态
+    else Core已提交但引擎在回执返回前退出
+        Codex--xSession: 连接中断
+        Session-->>UI: 工具待核对，草稿保留，发送停用
+        Author->>UI: 明确恢复原线程
+        UI->>Session: 重新连接并核对原轮次
+        Session->>Codex: 恢复同一线程，不重发turn/start
+        Codex->>Machine: 查询原计划及相同执行入口的原操作
+        Machine->>Core: 原plan_ref及原操作身份，只读核验
+        Core-->>Machine: 原成功步骤及固定成果
+        Machine-->>Codex: 原结果，不重复执行
+    end
     Session->>Core: 回读关联成果及原操作
     Core-->>UI: 作品变更与可打开成果
     Author->>UI: 比较、反馈或明确采纳
     Note over Session,Core: 投递、引擎完成、成果保存和作者决定分别取证
 ```
 
-写入后传输断开时保留unknown，先查原线程及Core原操作，不直接再次调用turn/start。TUI执行同一机器业务，但不伪造无法观察的消息受理回执。具体合同归[39](39-Electron与插件优先重构架构.md#43-agent-会话宿主)。
+写入后传输断开时保留unknown，先查原线程及Core原操作，不直接再次调用turn/start。断开期间仍可编辑草稿，发送按钮、Enter和宿主send均不隐式重连并投递；明确恢复且ready后才接收新请求。统一执行的原操作沿相同工作区及执行入口读取，不切到旧management／task命名空间。TUI执行同一机器业务，但不伪造无法观察的消息受理回执。具体合同归[39](39-Electron与插件优先重构架构.md#43-agent-会话宿主)。
+
+### 59.1 整桌面崩溃与输入代次
+
+```mermaid
+sequenceDiagram
+    participant Desktop as 桌面会话宿主
+    participant Record as 原会话记录与占用
+    participant Guard as 受管生命周期守护
+    participant Engine as 原生引擎组
+    participant Core as 原操作与作品事实
+    Desktop->>Record: 读取原线程、草稿及输入与待答代次
+    Desktop->>Record: 推进代次并原子保存
+    Desktop->>Guard: 创建受管组，暂不启动引擎
+    Desktop->>Record: 保存原会话与线程占用及组身份
+    Desktop->>Guard: 私有IPC交接启动许可
+    Guard->>Engine: 启动原生引擎并透传stdio
+    Note over Desktop,Guard: 桌面主进程实际崩溃，私有IPC断开
+    Guard->>Engine: 结束原组，宽限后核对剩余成员
+    Note over Desktop,Engine: 重开不得抢占仍活着或无法核对的旧执行端
+    Desktop->>Record: 确认旧组退出，取得原范围占用
+    Desktop->>Record: 再次推进并保存代次，恢复原线程与草稿
+    Desktop->>Engine: 沿原线程重连，不重发模型请求
+    Desktop->>Core: 只读查询原计划、原操作与固定成果
+    Core-->>Desktop: 原成功步骤与真实作品状态
+    Desktop->>Desktop: 拒绝旧代次草稿、输入、尺寸及审批答复
+```
+
+记录字段归[29第22.1节](29-数据字典与Schema设计.md#221-agent-会话与双入口绑定)，进程生命周期归[39第4.3.3节](39-Electron与插件优先重构架构.md#433-单执行者与界面切换)。草稿保存成功不表示模型请求已投递，原操作成功不表示丢失的工具回执已被引擎接收。空闲崩溃、在途提交、安装包恢复与平台进程清理分别验收。
 
 ## 60. Codex GUI 与 TUI 切换
 
@@ -1898,3 +1948,95 @@ sequenceDiagram
 ```
 
 共享引擎在切换时保持运行，非当前输入端只读观察。TUI客户端保留原生未发送稿，GUI私有草稿独立保存；桥接从协议层拒绝非当前端的投递、控制及审批答复，不靠隐藏界面实现互斥。不支持共享连接的独立进程回退必须先核验旧引擎退出。恢复失败不自动新建或重发；终端回放只代表历史画面。外部MCP App共享业务事实，不自动共享或接管Codex Desktop私有线程。单执行者和状态Owner归39／29，门禁归19。
+
+## 61. 固定视频认可与撤回
+
+```mermaid
+sequenceDiagram
+    participant Author as 作者
+    participant Entry as 当前对话或工作台
+    participant Core as 视频决定用例
+    participant Store as 同一作品事务
+    Author->>Entry: 对确切预演、片段或成片作出决定
+    Entry->>Core: get原分集用途的当前头
+    Core-->>Entry: 固定决定引用或未记录
+    Entry->>Core: preview固定媒体、原话、确认或撤回及前一决定
+    Core-->>Entry: 同一媒体与分集的固定预览
+    Entry->>Core: save原预览与operation_key
+    Core->>Core: 重验作品、媒体用途、摘要与当前头
+    alt 基线或预览变化
+        Core-->>Entry: 冲突，保留本次输入
+    else 确切决定仍有效
+        Core->>Store: 原子保存不可变修订、槽位头及原操作
+        Store-->>Core: 实际决定引用
+        Core-->>Entry: 回读当前状态与历史
+    end
+    Note over Entry,Core: 回执未知沿原操作恢复，不换键再次确认
+    Note over Core,Store: 决定不改媒体、字幕、文稿或其他用途
+```
+
+auto与confirm沿共享执行策略，管理连接沿固定方案，不另建确认栈。作者已在对话对确切版本作出决定时由机器执行；工作台提供人工预览及恢复。确认新媒体保留旧记录，撤回只针对当前已认可的确切媒体；文件完整性、播放覆盖和交付权利继续独立核对。
+
+## 62. 长篇首稿与完整目录读取
+
+```mermaid
+sequenceDiagram
+    participant Author as 作者
+    participant Reader as 正文工作面
+    participant Local as 本机阅读状态
+    participant Core as 同一作品Core
+    Author->>Reader: 打开当前小说
+    Reader->>Local: 恢复原选择与阅读位置
+    Reader->>Core: works.get核对作品结构
+    Core-->>Reader: 当前WorkRef与固定结构
+    Local-->>Reader: 已保存的选择与位置
+    par 首稿独立读取
+        Reader->>Core: documents.get当前章或首章
+        Core-->>Reader: 核验正文及固定修订
+        Reader->>Core: 批注、历史、恢复稿及原操作
+        Core-->>Reader: 原稿与恢复状态
+        Reader-->>Author: 可阅读和编辑首稿
+    and 完整目录后台读取
+        loop 页面仍有效且有后续页
+            Reader->>Core: documents.list原游标
+            Core-->>Reader: 本页元数据与下一游标
+        end
+        Reader->>Core: works.get复核首尾结构
+        Core-->>Reader: 同一结构或变化冲突
+        Reader-->>Author: 完整目录或原起点重试
+    end
+    Note over Reader,Core: 目录重试不取消在途首稿，不覆盖输入与撤销
+    Note over Author,Reader: 离开页面停止旧分页；换作品作废旧正文回包
+```
+
+首稿位置仍先恢复，目录保留完整性核验及独立错误；重试目录不重读同一在途正文。图中并行是界面异步编排，共用受管Core仍按原请求队列处理。Core持久化、读锁与未完成事务恢复规则归07，性能与失败注入归19；早开首稿不把部分目录或系统热缓存记成完整冷读认证。
+
+## 63. 宿主提及与固定来源读取
+
+```mermaid
+sequenceDiagram
+    participant Author as 作者
+    participant Host as 外部宿主输入框
+    participant MCP as 河图MCP
+    participant Core as 原作品或任务用例
+    Host->>MCP: discover内容提及能力及只读搜索工具
+    Author->>Host: 输入来源名称或打开来源列表
+    Host->>MCP: search_mentions(query)
+    MCP->>Core: 核对当前客户端范围并读取有界目录
+    Core-->>MCP: 已获权名称、固定修订与摘要
+    MCP-->>Host: resource_link及实际搜索覆盖
+    Author->>Host: 选择本次需要的来源
+    Host->>MCP: resources/read固定URI
+    MCP->>Core: 重验权限、对象、原修订及摘要
+    alt 已撤权、错作品或摘要不一致
+        Core-->>MCP: 拒绝读取
+        MCP-->>Host: 原来源不可用，不替换为新版
+    else 固定来源仍可读取
+        Core-->>MCP: 原文或固定结构化来源
+        MCP-->>Host: 有界内容及同一来源的下一页
+    end
+    Note over MCP,Core: 搜索及读取不创建任务，不写正文或复制授权
+    Note over Author,Host: 提及选择不等于发送、执行、采纳或定稿
+```
+
+无作品范围时不返回整库名称；固定任务连接只搜索原任务来源。文稿目录的名称过滤与按需修订摘要归原`documents.list`，不逐篇重新打开作品取得搜索摘要。正文和结构化资料沿原领域读取；资源URI不含私有路径或管理授权。结构化任务来源保留原分类／字段展开和覆盖状态，不把目录当全文。真实宿主是否支持输入框提及、何时读取及附加上下文单独实测，不能从stdio协议成功推定。

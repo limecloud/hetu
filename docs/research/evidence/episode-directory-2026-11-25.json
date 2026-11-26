@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-25",
+  "scope": [
+    "剧本作品资料侧栏重复分集",
+    "正文与会话目录一致性"
+  ],
+  "state": "local-installed-validated",
+  "findings": [
+    "旧安装作品资料侧栏对每集同时显示h4分组标题及同名稿件按钮。",
+    "旧安装隔离三集专项在无重复标题断言收到3个h4；本机现有作品的原生可访问树也确认同样重复。"
+  ],
+  "implementation": [
+    "共用目录投影携带真实episode_id；资料侧栏、正文及会话目录每集一个入口，点击保留原document_id及固定修订。",
+    "同名分集仍独立显示真实集号、稿件和场次；小说卷章及未归入分集的稿件保留原层级。",
+    "移除分组标题后同步收敛分集间距；未改变Core数据、领域动作或权限。"
+  ],
+  "validation": {
+    "installed_before": {
+      "status": "failed-as-expected",
+      "log": "output/episode-directory-20261125/before.log",
+      "expected_h4": 0,
+      "actual_h4": 3
+    },
+    "source_initial": {
+      "passed": 2,
+      "failed": 1,
+      "log": "output/episode-directory-20261125/source.log",
+      "note": "小说目录键盘／恢复／旧修订与剧本排版回归通过；新专项未等待窄窗自动收起导航，在恢复宽窗后找不到已隐藏按钮。按现有导航行为先等待收起并显式打开，未修改产品导航。"
+    },
+    "source_final": {
+      "passed": 1,
+      "failed": 0,
+      "log": "output/episode-directory-20261125/source-final.log",
+      "scope": "资料侧栏、正文与会话目录；两集同名稿件独立回读、真实场次、键盘进入、浅色1360及暗色760无溢出。"
+    },
+    "build": {
+      "desktop": "passed",
+      "shared_mcp_resources": "built",
+      "rust_consumers": "built",
+      "capability_map": "passed",
+      "docs": "passed"
+    },
+    "package_attempt": {
+      "status": "rejected",
+      "log": "output/episode-directory-20261125/package.log",
+      "reason": "优化编译成功后，一致性检查发现构建期间源码改变；同期变动为task-review.ts及生成的MCP／插件资源，未覆盖旧安装。"
+    },
+    "package_retry": {
+      "status": "rejected",
+      "log": "output/episode-directory-20261125/package-final.log",
+      "reason": "优化编译完成，但装配／签名期间共享工作区再次改变，未安装。同期源码包括feedback.rs、task-review.ts及对应生成资源。"
+    },
+    "isolated_build": {
+      "source_root": "output/episode-directory-20261125/isolated",
+      "frozen_inputs": "output/episode-directory-20261125/frozen-source.json",
+      "strategy": "固定与当前工作区一致的构建输入；复制Node依赖并以APFS克隆复用独立Rust缓存，隔离后重新生成共享资源并完整优化装配。原工作区后续改动保持。",
+      "directory_sources": "与通过源码专项的五份产品源码摘要相同；专项测试文件另行固定。",
+      "package_log": "output/episode-directory-20261125/package-frozen.log"
+    },
+    "accepted_package": {
+      "manifest": "output/episode-directory-20261125/frozen-packages/hetu-dev-Uwr0Ow/manifest.json",
+      "verification": "output/episode-directory-20261125/package-verified.json",
+      "source_sha256": "952c4cfede6a923c196680b180881110a6929482ac4ffbf5e0af01d3b32943fd",
+      "source_inputs": 3060,
+      "source_root": "output/episode-directory-20261125/isolated",
+      "note": "隔离构建目录固定源码，重新生成资源并完整优化装配；原工作区后续变动保留，不宣称包内包含后续修改。"
+    },
+    "package_ui": {
+      "passed": 3,
+      "failed": 0,
+      "log": "output/episode-directory-20261125/package-tests.log",
+      "scope": "分集目录、剧本场次／排版／批注／保存、小说目录键盘／恢复／固定旧修订。"
+    },
+    "installed_ui": {
+      "passed": 1,
+      "failed": 0,
+      "log": "output/episode-directory-20261125/installed-tests.log",
+      "scope": "实际安装路径的资料、正文、会话单层分集及同名分集独立正文回读，浅暗宽窄及键盘。"
+    }
+  },
+  "source_sha256": {
+    "apps/desktop/src/renderer/work-content.ts": "d0bad01c53bcc79a1d1be7dffd9dc5d298bf38871911f7f50c80856010864429",
+    "apps/desktop/src/renderer/work-sidebar-panels.tsx": "ec3533fa889481a88fdc11a159507a48eb052ebb5c6bd6e12b44cab5b6f032dc",
+    "apps/desktop/src/renderer/documents.tsx": "d8a19c143b43ab05769665d75f9213ad0fd361cffddedb147c4b67fb530a3ad9",
+    "apps/desktop/src/renderer/agent-content.tsx": "d2e48154bddc175a1062c2c15280015acaa3168516aec4f2afd7f5ccbf6f8b53",
+    "packages/workbench-ui/src/workbench.css": "4a9044c564f17064dace1e61d618728e82b054c7ba617b2d2cc15cb3d7eda467",
+    "apps/desktop/tests/episode-directory.spec.ts": "011bd5c84d1e090ca16548ccfd2f9cab3936e811832edd47784ee55fcd05e36b"
+  },
+  "screenshots": [
+    "output/episode-directory-20261125/source-final/episode-directory-作品资料、正文及会话目录每集只显示一个入口，保留独立稿件和场次/profile-episode-directory.png",
+    "output/episode-directory-20261125/source-final/episode-directory-作品资料、正文及会话目录每集只显示一个入口，保留独立稿件和场次/session-episode-directory.png",
+    "output/episode-directory-20261125/source-final/episode-directory-作品资料、正文及会话目录每集只显示一个入口，保留独立稿件和场次/profile-episode-directory-dark-760.png"
+  ],
+  "limits": [
+    "隔离fixture验证，未改写真实作品。",
+    "未发起模型轮次、公开发行或跨平台验证；本项不关闭全软件视觉及无障碍门槛。"
+  ],
+  "installation": {
+    "source_sha256": "952c4cfede6a923c196680b180881110a6929482ac4ffbf5e0af01d3b32943fd",
+    "source_inputs": 3060,
+    "artifacts_verified": 3132,
+    "version": "0.14.1",
+    "optimized": true,
+    "signature": "ad-hoc-development-verified",
+    "icon_matches": true,
+    "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+    "installed_path": "/Applications/Hetu.app",
+    "atomic_swap": true,
+    "backup_created": false,
+    "old_bundle_removed": true,
+    "profile_indexes_unchanged": {
+      "creative-library.json": true,
+      "LocalSettings/settings.json": true,
+      "agent-sessions/index/selection.json": true
+    },
+    "temporary_install_directories_remaining": 0,
+    "normal_native_launch": {
+      "verified": true,
+      "library_works": 19,
+      "original_work_opened": true,
+      "episode_buttons": 20,
+      "duplicate_episode_headings": 0,
+      "note": "原生CUA确认原有作品资料页20集各一个按钮；打开和回读未改写作品。"
+    }
+  },
+  "installed_screenshots": [
+    "output/episode-directory-20261125/installed-tests/episode-directory-作品资料、正文及会话目录每集只显示一个入口，保留独立稿件和场次/profile-episode-directory.png",
+    "output/episode-directory-20261125/installed-tests/episode-directory-作品资料、正文及会话目录每集只显示一个入口，保留独立稿件和场次/session-episode-directory.png",
+    "output/episode-directory-20261125/installed-tests/episode-directory-作品资料、正文及会话目录每集只显示一个入口，保留独立稿件和场次/profile-episode-directory-dark-760.png"
+  ]
+}

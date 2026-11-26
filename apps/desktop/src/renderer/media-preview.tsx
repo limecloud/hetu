@@ -1,21 +1,27 @@
 import React, { useEffect, useRef, useState } from "react";
 import { desktop } from "./bridge.ts";
+import { useMediaCaptions, type CaptionTrack, type CaptionExport } from "./media-captions.tsx";
 
 /** 只接收固定素材身份，原文件路径与Rust句柄不进入renderer。 */
 export function MediaPreview({
   asset,
   sha256,
   onPosition,
+  captionTracks = [],
+  exportCaption,
 }: {
   asset: any;
   sha256: string;
   onPosition?: (seconds: number) => void;
+  captionTracks?: CaptionTrack[];
+  exportCaption?: CaptionExport;
 }) {
   const [url, setUrl] = useState(""),
     [error, setError] = useState(""),
     [ready, setReady] = useState(false),
     [reload, setReload] = useState(0);
   const element = useRef<HTMLMediaElement | null>(null);
+  const captions = useMediaCaptions(asset.work_ref, captionTracks, element, exportCaption);
   useEffect(() => {
     let active = true,
       address = "";
@@ -107,9 +113,10 @@ export function MediaPreview({
             preload="metadata"
             onLoadedMetadata={() => setReady(true)}
             onError={failed}
-          />
+          >{captions.caption}</video>
         ))
       )}
+      {captions.controls}
     </section>
   );
 }

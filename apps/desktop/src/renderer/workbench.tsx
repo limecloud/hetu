@@ -14,6 +14,7 @@ export { Icon, IconButton, type IconName } from "@hetu/workbench-ui";
 export interface DocumentTools {
   title: string;
   readOnly?: boolean;
+  readOnlyLabel?: string;
   dirty: boolean;
   busy: boolean;
   composing?: boolean;

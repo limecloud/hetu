@@ -1,0 +1,276 @@
+{
+  "date": "2026-11-25",
+  "version": "0.14.1",
+  "scope": "R7-08/09 current-workspace refresh after local authoring changes",
+  "state": "local-installed-validated",
+  "cause": [
+    "local document/structure events omitted WorkRef and requested a full library scan",
+    "MCP workbench serial queue held later reads behind that scan",
+    "fresh serialized WorkRef after local mutation retriggered the current document directory effect"
+  ],
+  "implementation": [
+    "known local events carry the existing fixed WorkRef",
+    "CreativeLibrary refresh checks registration under the same cross-process lock and reads only that location; same-root work projections update and other locations preserve their last actual status",
+    "desktop and MCP verify current selected work; desktop also checks epoch after async refresh",
+    "same-epoch local refresh keeps the current WorkRef object, avoiding a second directory/body load",
+    "late response after a work switch is discarded",
+    "full manual refresh and unknown-target discovery retain their existing path",
+    "response work and epoch must also match original request; malformed or concurrently switched snapshot is ignored as a whole"
+  ],
+  "validation": {
+    "library_state": {
+      "passed": 4,
+      "failed": 0,
+      "log": "output/local-refresh-20261125/library-state.log"
+    },
+    "three_surfaces": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/local-refresh-20261125/three-surfaces-guarded.log",
+      "surfaces": [
+        "real Electron",
+        "stdio MCP with real workbench",
+        "official Codex 0.172.0 App Server transfer"
+      ],
+      "injection": "delay reply after actual refresh completed; type into copied document; release and save; second delayed response after work switch",
+      "checks": [
+        "one scoped refresh and one directory read",
+        "new input persists and saves",
+        "one copy only; original formal source SHA unchanged",
+        "library novel chapter count updates",
+        "late reply does not return to old work",
+        "wrong-work refresh rejects",
+        "response with another work and epoch is ignored even before a UI work switch"
+      ],
+      "model_turns": 0,
+      "scope": "final runtime with both current-page and response-context checks; counts before explicit verifier readback"
+    },
+    "frozen_artifacts": {
+      "items": 35,
+      "record": "output/local-refresh-20261125/frozen-artifacts.json"
+    },
+    "typecheck_and_build": "passed task-view and desktop",
+    "performance": {
+      "record": "output/local-refresh-20261125/refresh-benchmark.json",
+      "native_comparison": "same installed release MCP/Core and same Node for both workbench implementations",
+      "workspaces": 6,
+      "works": 18,
+      "iterations_per_mode": 3,
+      "medians_ms": {
+        "installed_before": {
+          "known_work": 377.8217089999998,
+          "explicit_full": 330.3485419999997
+        },
+        "source_same_native": {
+          "known_work": 179.63095799999792,
+          "explicit_full": 476.7573340000017
+        }
+      },
+      "formal_unchanged": true,
+      "model_turns": 0,
+      "limits": "isolated small works on this machine; a known-work refresh is ignored by pre-change runtime and performs a full refresh; no claim about cross-platform or large-library cold startup"
+    },
+    "prior_core_result": {
+      "passed": 439,
+      "log": "output/position-feedback-20261125/core-workspace.log",
+      "scope": "reuse unchanged prior Core verification; not a new run",
+      "inputs_compared": 177,
+      "changed": [],
+      "comparison_manifest": "output/position-feedback-20261125/package/hetu-dev-EQDmhY/manifest.json"
+    },
+    "first_package": {
+      "manifest": "output/local-refresh-20261125/package/hetu-dev-SiSItc/manifest.json",
+      "source_sha256": "49f909f5969db12cfc949f9f1c3839e4f465eca1db01b28166572080a9431ca8",
+      "installed": false,
+      "scope": "intermediate package before final response-scope rejection; not final delivery"
+    },
+    "engineering_skill": {
+      "path": ".agents/skills/hetu-embedded-agent",
+      "state": "passed official skill-creator validation",
+      "update": "scoped refresh, WorkRef reference stability, and comparable runtime measurements",
+      "capability_map": "passed",
+      "author_methods_reproducibility": "45 suites passed; no author-method version change for private UI refresh"
+    },
+    "final_package": {
+      "manifest": "output/local-refresh-20261125/package-final/hetu-dev-hAU3vf/manifest.json",
+      "source_sha256": "2cca127ed5a7e4a49b218a1ada56dd4f76b163cb7c4dc8040b0c3aa67059c0c5",
+      "source_inputs": 3053,
+      "artifacts": 3720,
+      "source_delta": [
+        "apps/desktop/src/main/library.ts",
+        "apps/desktop/src/main/main.ts",
+        "apps/desktop/src/main/mcp-workbench.ts",
+        "apps/desktop/src/renderer/documents.tsx",
+        "apps/desktop/src/renderer/index.tsx",
+        "apps/desktop/src/renderer/novel-editors.tsx",
+        "apps/desktop/src/renderer/work-profile.tsx",
+        "apps/mcp/resources/workbench.html",
+        "apps/mcp/resources/workbench.manifest.json"
+      ],
+      "icon_matches": true,
+      "signing": "ad-hoc-development"
+    },
+    "full_task_view_matrix": {
+      "state": "passed",
+      "passed": 94,
+      "failed": 0,
+      "skipped": 0,
+      "minutes": 24.4,
+      "log": "output/local-refresh-20261125/full-task-view.log",
+      "artifact": "final 2cca127e package native MCP and packaged desktop where supported; browser fixture cases keep their stated scope",
+      "stdio_shared_workbench": "passed full journey 6.5 minutes",
+      "official_codex_shared_workbench": "passed full journey 5.6 minutes",
+      "model_turns_started": 0
+    },
+    "package_workspace_and_geometry": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/local-refresh-20261125/package-workspace.log"
+    },
+    "resident_mcp": {
+      "runtime_version": "0.14.0",
+      "bundled_skill": "0.3.13",
+      "verified_via": "hetu_inspect_runtime in this conversation during package matrix",
+      "repairs_performed": false,
+      "restarted": false
+    },
+    "full_desktop_matrix": {
+      "passed": 82,
+      "failed": 0,
+      "skipped": 10,
+      "minutes": 11.0,
+      "log": "output/local-refresh-20261125/full-desktop.log",
+      "skipped_cases": [
+        "tests/agent-gui-live.spec.ts:13:1 › 真实GUI按固定章节只读，再保存参考稿并核对Core成果",
+        "tests/agent-gui-live.spec.ts:71:1 › 真实GUI沿原任务反馈返工、比较采纳并交付固定文稿",
+        "tests/codex-confirm-live.spec.ts:7:1 › 真实TUI遵守confirm：先准备固定资料，经作者审阅后沿原方案执行",
+        "tests/codex-creation-live.spec.ts:7:1 › 真实TUI从空创作库创建小说、章节和固定参考稿",
+        "tests/codex-lifecycle-live.spec.ts:12:1 › 真实TUI接续原作品的反馈、返工、比较、确切采纳与固定交付",
+        "tests/codex-results-live.spec.ts:6:1 › 真实TUI保存回执回读Core，直接打开固定参考稿批次及交付页面",
+        "tests/codex-terminal-interactions-live.spec.ts:9:1 › 终端查找的快捷键、菜单、无匹配和关闭保持输入焦点与原会话",
+        "tests/codex-terminal-recovery-live.spec.ts:9:1 › 真实终端客户端意外退出后重连原引擎，拒绝旧代次且不重复启动",
+        "tests/codex-tui-live.spec.ts:10:1 › 真实Codex TUI在Electron中保持连接、调整尺寸及恢复确切线程",
+        "tests/reading-migration-rollback.spec.ts:7:1 › 旧安装制品、第二版迁移及发行回退保留确切设置原字节"
+      ],
+      "scope": "final source plus final package where test supports HETU_PACKAGED_APP; real macOS Sogou test passed; model-specific live and previous-release migration conditions not enabled"
+    },
+    "installation": {
+      "version": "0.14.1",
+      "source_sha256": "2cca127ed5a7e4a49b218a1ada56dd4f76b163cb7c4dc8040b0c3aa67059c0c5",
+      "installed_items_verified": 3132,
+      "profile_unchanged": {
+        "creative-library.json": true,
+        "LocalSettings/settings.json": true,
+        "agent-sessions/index/selection.json": true
+      },
+      "atomic_swap": true,
+      "old_app_backup_created": false,
+      "external_mcp_processes_terminated": false,
+      "signing": "ad-hoc-development",
+      "author_tests": [
+        "packaged.spec.ts",
+        "task-source.spec.ts",
+        "task-assessment.spec.ts"
+      ]
+    },
+    "normal_profile": {
+      "runtime": {
+        "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+        "app": "/Applications/Hetu.app/Contents/Resources/app",
+        "profile": "/Users/coso/Library/Application Support/Hetu",
+        "version": "0.14.1",
+        "resources": "/Applications/Hetu.app/Contents/Resources"
+      },
+      "library_works": 19,
+      "profile_unchanged": {
+        "creative-library.json": true,
+        "LocalSettings/settings.json": true,
+        "agent-sessions/index/selection.json": true
+      },
+      "model_turn_started": false,
+      "screenshot": "output/conversation-composition-20261125/installed-normal-library-local-refresh-ready.png"
+    },
+    "installed_new_stdio": {
+      "runtime_version": "0.14.1",
+      "formal_unchanged": true,
+      "report_sha256": "56ce237f82f5d0ed02e1c08cb96bc155f94918e8d9b16be2c1fa67ba838be5a6",
+      "report_status": "inconclusive",
+      "candidates_read": 3,
+      "adoptions": 0,
+      "finalizations": 0,
+      "model_turns": 0,
+      "report_content_sha256": "7ae4ef429182692f42b3c49972b290f5859f8c010d19b8846cb6005bbcd3f947",
+      "transport": "new installed stdio MCP process; current conversation's original MCP unchanged"
+    },
+    "installed_position_feedback": {
+      "state": "passed",
+      "log": "output/local-refresh-20261125/installed-position-feedback.log",
+      "original_operation_reused": true,
+      "repeated_write": false
+    },
+    "installed_original_ui": {
+      "surface": "local-refresh-installed",
+      "runtime": {
+        "version": "0.14.1",
+        "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu"
+      },
+      "same_task": true,
+      "third_candidate_visible": true,
+      "source_coverage_checked": true,
+      "position_feedback_checked": true,
+      "report_sha256": "56ce237f82f5d0ed02e1c08cb96bc155f94918e8d9b16be2c1fa67ba838be5a6",
+      "professional_status": "inconclusive",
+      "formal_unchanged": true,
+      "author_decision": "not_adopted",
+      "model_turns": 0
+    }
+  },
+  "prior_failures": [
+    {
+      "log": "output/local-refresh-baseline.log",
+      "cause": "old targeted refresh read all three registered positions, including unrelated and newly registered position"
+    },
+    {
+      "log": "output/local-refresh-20261125/desktop-baseline.log",
+      "cause": "old document copy emitted unscoped refresh"
+    },
+    {
+      "log": "output/local-refresh-20261125/three-surfaces-first.log",
+      "cause": "test locator.evaluate treated the DOM element as the argument WorkRef in the late-response branch; first copy/input/unique-source assertions passed",
+      "resolution": "use explicit second evaluate argument; all three complete journeys rerun without runtime changes"
+    },
+    {
+      "log": "output/local-refresh-20261125/benchmark.log",
+      "cause": "first exploratory comparison mixed optimized installed native binaries and new debug binaries; not valid before/after speed comparison",
+      "resolution": "retain exploratory record at output/local-refresh-20261125/refresh-benchmark-debug-comparison.json; rerun both workbench implementations using the same installed native binaries and Node"
+    },
+    {
+      "log": "output/local-refresh-20261125/result-scope-baseline.log",
+      "cause": "page applied a local refresh snapshot carrying a different work and epoch while current page was still on original work",
+      "resolution": "check response epoch and response WorkRef as well as current page context; rerunning the complete three-surface journey with injected mismatched result"
+    }
+  ],
+  "limits": [
+    "Core source, authorization, business CAS, operation key and author decisions unchanged",
+    "timings use isolated fixtures and do not certify cold startup, full-library, all-page, native-host or cross-platform gates",
+    "targeted refresh still reads and normalizes the local registration file under its lock; it avoids unrelated Core/workspace metadata scans, not every filesystem operation",
+    "current resident MCP remains 0.14.0/0.3.13; separately spawned installed process is 0.14.1",
+    "development ad-hoc signature, no public release or new website deployment",
+    "source discovery of structure-editor missing titles remains separate follow-up; full project not complete"
+  ],
+  "follow_up": {
+    "profile_structure_titles": {
+      "state": "source finding; runtime reproduction pending",
+      "paths": [
+        "apps/desktop/src/renderer/work-profile.tsx",
+        "apps/desktop/src/renderer/novel-editors.tsx",
+        "apps/desktop/tests/native-details.spec.ts"
+      ],
+      "finding": "WorkProfile loads readWorkContent(includeDocuments:false), then passes its empty documents array to the structure editor; editor labels resolve via documents.find and otherwise use 未命名章节",
+      "test_gap": "existing native-details structure test selects first combobox and verifies persisted volume, but does not assert displayed chapter titles",
+      "next": "reproduce in an isolated actual structure dialog, then load names on demand without making profile first load enumerate all chapters; preserve original structure CAS and local refresh contract"
+    }
+  }
+}

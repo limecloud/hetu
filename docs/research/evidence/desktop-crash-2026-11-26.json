@@ -1,0 +1,37 @@
+{
+  "date": "2026-11-26",
+  "original_thread_recovered": true,
+  "draft_preserved": true,
+  "old_engine_group_exited": true,
+  "model_requests": 0,
+  "verifications": [
+    {
+      "stage": "source",
+      "runtime": {
+        "version": "0.14.1",
+        "electron": "42.11.18"
+      },
+      "passed": true
+    },
+    {
+      "stage": "packaged",
+      "runtime": {
+        "version": "0.14.1",
+        "electron": "42.11.18"
+      },
+      "passed": true
+    },
+    {
+      "stage": "installed",
+      "runtime": {
+        "version": "0.14.1",
+        "electron": "42.11.18"
+      },
+      "passed": true
+    }
+  ],
+  "limits": [
+    "idle real engine and actual SIGKILL of desktop main process",
+    "not in-flight Core write, model quality, authentication or other platforms"
+  ]
+}

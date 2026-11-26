@@ -1,4 +1,4 @@
-import { navigate, captureAgentDraft } from "./navigation.ts";
+import { navigate, captureAgentDraft, closeApplication } from "./navigation.ts";
 import {
   test,
   expect,
@@ -464,7 +464,7 @@ test(
         data(cli(grant, "hetu.resources.get", { resource_id: id })).resource
           .revision,
       ).toBe(3);
-      await app.close();
+      await closeApplication(app,"window");
       app = undefined;
       const buffers = path.join(profile, "resource-buffers");
       const dir = path.join(buffers, (await readdir(buffers))[0]),
@@ -557,7 +557,7 @@ test(
         expected: { revision: 5, sha256: final.sha256 },
       });
       expect(forbidden.error.code).toBe("forbidden");
-      await app.close();
+      await closeApplication(app,"window");
       app = undefined;
       const archivedJournal = JSON.parse(
         await readFile(path.join(dir, file), "utf8"),
@@ -584,7 +584,7 @@ test(
       ).toBe(5);
     } finally {
       await client?.close();
-      await app?.close();
+      if(app)await closeApplication(app,"window");
     }
   },
 );

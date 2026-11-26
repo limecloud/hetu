@@ -11,6 +11,7 @@ type Call = (action: string, input: any) => Promise<any>;
 export class VideoReview {
   #queue: Promise<unknown> = Promise.resolve();
   #file: string;
+  #decisionPreviews = new Map<string, any>();
   private work: WorkRef;
   private recovery: RecoveryStore;
   private core: Call;
@@ -22,6 +23,11 @@ export class VideoReview {
     this.#file = path.join(directory, createHash("sha256").update(JSON.stringify([work.workspace_id, work.kind, work.object_id])).digest("hex") + ".json");
   }
   #check() { if (!this.active() || this.work.kind !== "video") throw new Error("视频作品已切换，请重新打开。"); }
+  #enqueue<T>(action: () => Promise<T>) {
+    const run = this.#queue.then(action);
+    this.#queue = run.catch(() => {});
+    return run;
+  }
   async #call(action: string, input: any) {
     this.#check();
     const result = await this.core(action, { ...input, work_ref: this.work });
@@ -34,7 +40,7 @@ export class VideoReview {
     return result.data;
   }
   async read(method: string, input: any) {
-    const action = ({ media: "hetu.video.media.get", list: "hetu.video.media.list", feedback: "hetu.video.feedback.list", delivery: "hetu.video.delivery.preview" } as Record<string, string>)[method];
+    const action = ({ media: "hetu.video.media.get", list: "hetu.video.media.list", feedback: "hetu.video.feedback.list", delivery: "hetu.video.delivery.preview", decision_history: "hetu.video.decisions.history" } as Record<string, string>)[method];
     if (!action) throw new Error("未知视频读取用例。");
     return this.#call(action, input);
   }
@@ -47,7 +53,7 @@ export class VideoReview {
     return journal;
   }
   saveFeedback(input: any) {
-    const run = this.#queue.then(async () => {
+    return this.#enqueue(async () => {
       const prior = await this.journal();
       if (prior?.status === "pending") throw new Error("前次意见尚待恢复，请先查询原操作。");
       if (Object.keys(input).some(key => !["media_ref", "comment", "range"].includes(key))) throw new Error("视频意见含有不支持的字段。");
@@ -63,11 +69,9 @@ export class VideoReview {
       await this.recovery.write(this.#file, journal, 65536);
       return journal.result;
     });
-    this.#queue = run.catch(() => {});
-    return run;
   }
   recover() {
-    const run = this.#queue.then(async () => {
+    return this.#enqueue(async () => {
       const journal = await this.journal();
       if (!journal || journal.status !== "pending") return journal;
       // 相同固定输入和原键交给Core查询或重放，不重新生成反馈身份。
@@ -80,52 +84,115 @@ export class VideoReview {
       await this.recovery.write(this.#file, journal, 65536);
       return journal;
     });
-    this.#queue = run.catch(() => {});
-    return run;
   }
-  async draft(mediaRef: any, value?: any) {
-    await this.#call("hetu.video.media.get", { media_ref: mediaRef });
-    const file = this.#file + "." + createHash("sha256").update(JSON.stringify([mediaRef.media_id, mediaRef.revision, mediaRef.sha256])).digest("hex") + ".draft";
-    if (value !== undefined) {
-      if (value !== null && (typeof value.comment !== "string" || Object.keys(value).some(key => !["comment", "start", "end", "ranged"].includes(key)))) throw new Error("视频意见恢复稿无效。");
-      await this.recovery.write(file, value, 65536);
-    }
+  draft(mediaRef: any, value?: any) {
+    // 从收到输入时排队，媒体核对的返回顺序不能改写草稿顺序。
+    return this.#enqueue(async () => {
+      await this.#call("hetu.video.media.get", { media_ref: mediaRef });
+      const file = this.#file + "." + createHash("sha256").update(JSON.stringify([mediaRef.media_id, mediaRef.revision, mediaRef.sha256])).digest("hex") + ".draft";
+      if (value !== undefined) {
+        if (value !== null && (typeof value.comment !== "string" || Object.keys(value).some(key => !["comment", "start", "end", "ranged"].includes(key)))) throw new Error("视频意见恢复稿无效。");
+        await this.recovery.write(file, value, 65536);
+      }
+      this.#check();
+      return this.recovery.read(file);
+    });
+  }
+  async decisionJournal() {
     this.#check();
-    return this.recovery.read(file);
+    const record:any=await this.recovery.read(this.#file+".decision");this.#check();
+    if(record&&(!isDeepStrictEqual(record.work_ref,this.work)||record.action!=="hetu.video.decisions.save"||!isDeepStrictEqual(record.input?.work_ref,this.work)||typeof record.input?.operation_key!=="string"||!["pending","succeeded","blocked"].includes(record.status)))throw Error("视频决定恢复记录无效，请保留记录检查。");
+    return record;
   }
-  async exportFile(mediaRef: any, choose: (name: string) => Promise<string | undefined>) {
-    if (!this.stream) throw new Error("视频文件通道尚未连接。");
+  async prepareDecision(input:any) {
+    if(Object.keys(input).some(key=>!["media_ref","purpose","decision","expected_decision_ref","author_statement"].includes(key)))throw Error("视频决定含有不支持的字段。");
+    const prior=await this.decisionJournal();
+    if(prior?.status==="pending"||prior?.status==="succeeded"&&prior.acknowledged!==true)throw Error("前次决定尚待核对，请先恢复原决定。");
+    const value=await this.#call("hetu.video.decisions.preview",input);
+    const token=randomUUID();
+    if(this.#decisionPreviews.size>=8)this.#decisionPreviews.delete(this.#decisionPreviews.keys().next().value!);
+    this.#decisionPreviews.set(token,{work_ref:this.work,action:"hetu.video.decisions.save",input:{work_ref:this.work,preview:value.preview,operation_key:"video-decision-"+randomUUID()},status:"pending",acknowledged:false});
+    return {token,preview:value.preview};
+  }
+  async #writeDecision(record:any) {
+    await this.recovery.write(this.#file+".decision",record,65536);
+    try {record.result=await this.#call(record.action,record.input);}
+    catch(error){if((error as any).definitive){record.status="blocked";await this.recovery.write(this.#file+".decision",record,65536);}throw error;}
+    record.status="succeeded";await this.recovery.write(this.#file+".decision",record,65536);
+    return record;
+  }
+  saveDecision(token:string) {
+    return this.#enqueue(async()=>{
+      const record=this.#decisionPreviews.get(token);if(!record)throw Error("决定预览已失效，请重新核对。");
+      const prior=await this.decisionJournal();
+      if(prior?.status==="pending"||prior?.status==="succeeded"&&prior.acknowledged!==true)throw Error("前次决定尚待核对，请先恢复原决定。");
+      this.#check();return this.#writeDecision(structuredClone(record));
+    });
+  }
+  recoverDecision() {
+    return this.#enqueue(async()=>{
+      const record=await this.decisionJournal();
+      if(!record||record.status!=="pending")return record;
+      return this.#writeDecision(record);
+    });
+  }
+  acknowledgeDecision(input:any) {
+    return this.#enqueue(async()=>{
+      const record=await this.decisionJournal();
+      if(!record||record.status!=="succeeded"||record.input.operation_key!==input.operation_key||!isDeepStrictEqual(record.result?.decision_ref,input.decision_ref))throw Error("请先回读原视频决定，再确认收到结果。");
+      record.acknowledged=true;await this.recovery.write(this.#file+".decision",record,65536);return record;
+    });
+  }
+  exportFile(mediaRef: any, choose: (name: string) => Promise<string | undefined>) {
+    return this.#exportFixedFile(mediaRef, choose);
+  }
+  exportCaption(mediaRef: any, captionRef: any, choose: (name: string) => Promise<string | undefined>) {
+    if (!captionRef || typeof captionRef !== "object") throw new Error("请选择当前视频的固定字幕。");
+    return this.#exportFixedFile(mediaRef, choose, captionRef);
+  }
+  async #exportFixedFile(mediaRef: any, choose: (name: string) => Promise<string | undefined>, captionRef?: any) {
+    const label = captionRef ? "字幕" : "视频";
+    if (!this.stream) throw new Error(label + "文件通道尚未连接。");
     const stream = this.stream;
     const preview = await this.#call("hetu.video.delivery.preview", { media_refs: [mediaRef] });
-    const item = preview.items[0];
+    if (preview.items?.length !== 1 || !isDeepStrictEqual(preview.items[0].media_ref, mediaRef)) throw new Error("视频交付清单与所选版本不一致。");
+    const video = preview.items[0];
+    let item = video;
+    if (captionRef) {
+      const caption = video.caption_files?.find((file: any) => isDeepStrictEqual(file.track.asset_ref, captionRef));
+      if (!caption) throw new Error("所选字幕不属于本版视频，请重新核对。");
+      if (caption.blob.media_type !== "text/vtt" || caption.blob.size_bytes > 1024 * 1024) throw new Error("固定字幕类型或大小不符。");
+      item = { asset_ref: caption.track.asset_ref, filename: caption.filename, blob: caption.blob };
+    }
     const target = await choose(path.basename(item.filename));
     if (!target) return { saved: false, cancelled: true };
     this.#check();
-    const temp = path.join(path.dirname(target), ".hetu-video-" + randomUUID() + ".tmp");
+    if (captionRef && path.extname(target).toLowerCase() !== ".vtt") throw new Error("字幕为WebVTT，请使用.vtt扩展名。");
+    const temp = path.join(path.dirname(target), ".hetu-export-" + randomUUID() + ".tmp");
     const file = await open(temp, "wx", 0o600);
     const hash = createHash("sha256");
     let offset = 0, complete = false, source: any;
     try {
-      // 复用Core已经核验完整摘要的同一只读句柄，不为每个分块重新扫描整个视频。
+      // 视频与字幕复用Core核验过的同一只读句柄，不逐块重新扫描原文件。
       source = await stream("media/open", { ...item.asset_ref, work_ref: this.work });
       this.#check();
-      if (!isDeepStrictEqual(source.asset_ref, { ...item.asset_ref, work_ref: this.work }) || source.size_bytes !== item.blob.size_bytes || source.media_type !== item.blob.media_type) throw new Error("视频文件与固定交付清单不一致。");
+      if (!isDeepStrictEqual(source.asset_ref, { ...item.asset_ref, work_ref: this.work }) || source.size_bytes !== item.blob.size_bytes || source.media_type !== item.blob.media_type) throw new Error(label + "文件与固定交付清单不一致。");
       while (offset < item.blob.size_bytes) {
         this.#check();
         const length = Math.min(524288, item.blob.size_bytes - offset);
         const chunk = await stream("media/read", { token: source.token, offset, length });
         this.#check();
         const bytes = Buffer.from(chunk.base64, "base64");
-        if (chunk.offset !== offset || chunk.size_bytes !== length || bytes.length !== length) throw new Error("视频交付分块与固定清单不一致。");
+        if (chunk.offset !== offset || chunk.size_bytes !== length || bytes.length !== length) throw new Error(label + "交付分块与固定清单不一致。");
         offset += bytes.length;
         hash.update(bytes);
         await file.writeFile(bytes);
       }
-      if (hash.digest("hex") !== item.blob.sha256) throw new Error("视频交付完整摘要不一致。");
+      if (hash.digest("hex") !== item.blob.sha256) throw new Error(label + "交付完整摘要不一致。");
       const latest = await this.#call("hetu.video.delivery.preview", { media_refs: [mediaRef] });
       if (latest.manifest_sha256 !== preview.manifest_sha256) throw new Error("视频交付依据已有变化，请重新核对。");
       await file.sync(); await file.close(); this.#check(); await rename(temp, target); complete = true;
-      return { saved: true, bytes: offset, manifest: preview };
+      return { saved: true, bytes: offset, manifest: preview, ...(captionRef ? {caption_ref: captionRef} : {}) };
     } finally {
       if (source?.token) await stream("media/close", { token: source.token }).catch(() => {});
       if (!complete) { await file.close().catch(() => {}); await rm(temp, { force: true }); }

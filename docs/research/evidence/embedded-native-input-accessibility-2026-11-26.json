@@ -1,0 +1,293 @@
+{
+  "date": "2026-11-26",
+  "scope": "CX-03/04/05 and R7 input/accessibility increment",
+  "platform": {
+    "system": "macOS",
+    "architecture": "arm64",
+    "engine": "Codex CLI 0.172.0",
+    "input_method": "Sogou Pinyin",
+    "node": "25.0.0"
+  },
+  "native_input": {
+    "source_journey": "passed",
+    "native_keyboard_scope": "System Events guarded by exact isolated foreground PID",
+    "composition": [
+      {
+        "surface": "gui",
+        "native_composition_commits": [
+          "zhongwen",
+          "中文",
+          "中文"
+        ],
+        "enter_during_composition": true
+      },
+      {
+        "surface": "tui",
+        "native_composition_commits": [
+          "中文"
+        ],
+        "enter_during_composition": false
+      }
+    ],
+    "thread_preserved": true,
+    "gui_draft_preserved_across_surface_switch": true,
+    "tui_native_draft_retained": true,
+    "recorded_model_messages": 0,
+    "newline": "browser keyboard Shift+Enter; separate from native system composition",
+    "input_source_restoration": {
+      "selected_source_unchanged": true,
+      "temporary_language_toggle": false,
+      "temporary_toggle_reversed": false
+    },
+    "shutdown": "explicit native close after debugger detachment; actual exit code0",
+    "does_not_prove": [
+      "Windows or Linux IME",
+      "all input methods",
+      "physical input latency",
+      "all screen reader behavior"
+    ]
+  },
+  "accessibility": {
+    "source_journey": "passed",
+    "installed_old_negative": "current engine accessible description was empty",
+    "changes": [
+      "include selected engine/model/effort in accessible name",
+      "roving engine tabs and labelled panel",
+      "only options inside model listbox",
+      "search Home/End retains text editing",
+      "nested Escape restores engine trigger; outer cancel restores visible new-session button"
+    ],
+    "checks": {
+      "packaged": false,
+      "current_value_in_accessible_name": true,
+      "roving_engine_tabs": true,
+      "search_editing_preserved": true,
+      "nested_escape_restores_focus": true,
+      "no_engine_or_model_started": true
+    },
+    "real_engine_regression": "five installed engines created and connected via PTY; model discovery and original session retention passed; zero model turns"
+  },
+  "voiceover": {
+    "state": "not_verified",
+    "actual_process_started": true,
+    "scripting_read": "timed_out",
+    "first_use_window_observed": true,
+    "scripting_permission_modified": false,
+    "initial_reader_running": false,
+    "final_reader_running": false,
+    "final_first_use_window_running": false,
+    "restoration": "system Command+F5 after script quit timed out; both processes verified absent",
+    "boundary": "process startup and Chromium accessibility support do not prove speech or full VoiceOver navigation"
+  },
+  "failed_attempts": [
+    {
+      "stage": "native input guard",
+      "cause": "test AppleScript foreground predicate parsed incorrectly; no keyboard was sent"
+    },
+    {
+      "stage": "native composition expectation",
+      "cause": "Enter committed literal phonetic text in the selected input method; space commits Chinese; product did not send"
+    },
+    {
+      "stage": "native newline",
+      "cause": "physical Shift release switched input-method language; separate browser newline and restore temporary language state"
+    },
+    {
+      "stage": "native input activation",
+      "cause": "input-method mode switch temporarily changed foreground; guarded input rejected; explicitly reactivated before next keys"
+    },
+    {
+      "stage": "default automated shutdown",
+      "cause": "one test emitted quit but exit observation timed out; previous intermittent debugger-related issue remains unresolved"
+    },
+    {
+      "stage": "accessibility setup",
+      "cause": "test support initialized before page ready; moved setup after real ready state"
+    },
+    {
+      "stage": "accessibility no-write assertion",
+      "cause": "UI creates an idle record on opening; corrected assertion to original record, idle state, no thread and no messages"
+    },
+    {
+      "stage": "VoiceOver",
+      "cause": "native script read and quit timed out; restored reader off; no pass claim"
+    },
+    {
+      "stage": "native AX",
+      "cause": "System Events traversal returned empty; direct trusted AXUIElement probe found engine control but its selected value missing"
+    },
+    {
+      "stage": "final source IME cleanup",
+      "cause": "dynamic Emoji non-keyboard input item disappeared; full raw preference comparison failed after all business assertions; compare actual keyboard sources and always close in nested finally"
+    },
+    {
+      "stage": "keyboard-source parser",
+      "cause": "whole HIToolbox preference contains non-JSON plist values; extract only selected input sources before conversion; failure occurred before application launch"
+    },
+    {
+      "stage": "first optimized package",
+      "cause": "fixed build input changed before signing completed; source-consistency gate rejected intermediate package; not installed"
+    },
+    {
+      "stage": "same-package MCP test selection",
+      "cause": "anchored grep did not match Playwright full test title; no business started; original output retained, corrected only runner selection"
+    },
+    {
+      "stage": "packaged native IME",
+      "cause": "shared desktop foreground changed to Notes before native keystrokes; exact PID guard stopped input; cleanup observed ABC instead of Sogou and preserved external selection; all other package cases passed"
+    }
+  ],
+  "screenshots": {
+    "embedded-native-ime-2026-11-26.png": "352ae38630cea6eed445f0c60cd9aa2651c2abbbffdaca4e232090ab0e846d9b",
+    "embedded-engine-picker-2026-11-26.png": "96e27e596487c535429a3acaa723193dbdd77d55990e7810ab4b41b33f39724d"
+  },
+  "artifact_state": {
+    "source_types": "passed",
+    "shared_resources": "regenerated and checked",
+    "optimized_package": "verified and exercised: four desktop cases passed, real IME blocked by shared desktop before first native key, full same-package stdio workbench passed",
+    "installed": "passed protected no-backup atomic overwrite and actual installed-path verification"
+  },
+  "references": {
+    "status_owner": "docs/38-创作工作台重构执行计划.md",
+    "design": "docs/10-原生客户端与交互设计.md",
+    "acceptance": "docs/19-测试策略与验收矩阵.md",
+    "skill": ".agents/skills/hetu-embedded-agent/SKILL.md"
+  },
+  "remaining": [
+    "same-package real IME after shared desktop contention resolves",
+    "actual VoiceOver speech and full keyboard path",
+    "complete visual matrix",
+    "current native Codex Desktop host",
+    "other platforms",
+    "professional production",
+    "author trial and formal version/release/deployment"
+  ],
+  "native_ax_initial": {
+    "scope": "direct AXUIElement API under trusted existing local permissions",
+    "visited": 218,
+    "engine": {
+      "role": "AXPopUpButton",
+      "title": "引擎",
+      "description": "",
+      "help": "",
+      "value": ""
+    },
+    "finding": "Chromium aria-describedby assertion did not prove current value reached the native engine control",
+    "followup": "selection included in aria-labelledby; exact native control title verified"
+  },
+  "native_ax_final_source": {
+    "matches": [
+      {
+        "description": "",
+        "help": "",
+        "role": "AXPopUpButton",
+        "title": "引擎 Codex（CLI）",
+        "value": ""
+      },
+      {
+        "description": "",
+        "help": "",
+        "role": "AXStaticText",
+        "title": "",
+        "value": "Codex"
+      }
+    ],
+    "source": "macOS AXUIElement",
+    "trusted": true,
+    "visited": 217,
+    "assertion": "exact AXPopUpButton title contains engine and selected value; not adjacent static text"
+  },
+  "source_rechecks": {
+    "native_ax_accessibility": "passed",
+    "system_ime": "passed after input-source observer correction",
+    "five_engines": "passed; no change to runtime after this test",
+    "model_requests": 0
+  },
+  "package": {
+    "version": "0.14.1",
+    "source_sha256": "c0bb109191efc4ab33a1808dac5d4bd87c96e8c18b2942e06764bce8cced48ec",
+    "source_inputs": 3078,
+    "artifacts": 3133,
+    "signature_verified": true,
+    "icon_matches": true,
+    "scope": "macOS arm64 optimized local development-signed bundle; not notarized distribution"
+  },
+  "native_ax_packaged": {
+    "matches": [
+      {
+        "description": "",
+        "help": "",
+        "role": "AXStaticText",
+        "title": "",
+        "value": "引擎"
+      },
+      {
+        "description": "",
+        "help": "",
+        "role": "AXPopUpButton",
+        "title": "引擎 Codex（CLI）",
+        "value": ""
+      }
+    ],
+    "read_errors": 0,
+    "source": "macOS AXUIElement",
+    "truncated": false,
+    "trusted": true,
+    "visited": 218,
+    "helper_source": ".agents/skills/hetu-embedded-agent/scripts/inspect-macos-ax.swift"
+  },
+  "packaged_journeys": {
+    "passed": 4,
+    "failed": 1,
+    "passed_cases": [
+      "GUI history and fixed source navigation",
+      "native accessible name and keyboard chooser",
+      "five engines PTY startup",
+      "authentication and input protection"
+    ],
+    "native_input": "not_completed; isolated foreground PID lost to Notes before first composition; zero test keyboard sent; selected input source changed to ABC; no forced source reset",
+    "mcp": {
+      "transport": "stdio",
+      "passed": true,
+      "duration_minutes": 7.4,
+      "screenshots": 17,
+      "model_turns_started": 0,
+      "invalid_tool_arguments": 0,
+      "scope": "same package MCP, CLI and App Server; full shared-workbench test; native Codex Desktop visual journey separate"
+    }
+  },
+  "installation": {
+    "version": "0.14.1",
+    "source_sha256": "c0bb109191efc4ab33a1808dac5d4bd87c96e8c18b2942e06764bce8cced48ec",
+    "source_inputs": 3078,
+    "artifacts": 3133,
+    "signature_verified": true,
+    "icon_matches": true,
+    "installed_path": "/Applications/Hetu.app",
+    "atomic_swap": true,
+    "backup_created": false,
+    "old_bundle_removed": true,
+    "three_user_indexes_unchanged": true,
+    "parallel_storage_delivery_preserved": true
+  },
+  "installed_journeys": {
+    "passed": 3,
+    "failed": 0,
+    "cases": [
+      "native accessible name and keyboard chooser",
+      "five engines PTY startup and restored session records",
+      "authentication and input protection"
+    ],
+    "native_ime": "not_run; selected source externally changed and shared desktop contention remains"
+  },
+  "normal_profile": {
+    "works_visible": 19,
+    "normal_exit_code": 0,
+    "three_user_indexes_unchanged": true,
+    "scope": "normal profile library read only; no work opened or edited"
+  },
+  "screenshot_scopes": {
+    "embedded-engine-picker-2026-11-26.png": "same-source packaged chooser test",
+    "embedded-native-ime-2026-11-26.png": "source real IME journey; not a package IME pass"
+  }
+}

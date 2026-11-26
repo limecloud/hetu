@@ -85,6 +85,9 @@ const sourceRoots = [
   "apps/cli/src",
   "apps/mcp/src",
   "apps/mcp/resources",
+  "apps/task-view/src",
+  "apps/task-view/scripts",
+  "apps/task-view/resources",
   "apps/app-server/src",
   "apps/app-server/examples",
   "apps/plugin-cli/src",
@@ -106,6 +109,9 @@ async function sourceSnapshot() {
     "package-lock.json",
     "apps/desktop/package.json",
     "apps/desktop/tsconfig.json",
+    "apps/task-view/package.json",
+    "apps/task-view/tsconfig.json",
+    "apps/task-view/THIRD-PARTY-NOTICES.txt",
     "packages/plugin-host/package.json",
     "packages/plugin-sdk/package.json",
     "packages/workbench-ui/package.json",
@@ -170,6 +176,8 @@ if (
 )
   throw new Error("Node 运行时与当前装配目标不一致。");
 const before = await sourceSnapshot();
+await run(process.execPath,[path.join(root,"node_modules/typescript/bin/tsc"),"--noEmit"],path.join(root,"apps/task-view"));
+await run(process.execPath,[path.join(root,"apps/task-view/scripts/build.mjs"),"--check"],path.join(root,"apps/task-view"));
 // Electron 42 按需安装二进制，直接装配也必须先取得同版运行时和许可。
 await run(process.execPath, [path.join(root, "node_modules/electron/install.js")]);
 // 本机覆盖复用已安装的锁定版本，避免装配器再次联网下载同一运行时。
@@ -216,8 +224,11 @@ const metadata = JSON.parse(
   ),
 );
 const after = await sourceSnapshot();
-if (before.sha256 !== after.sha256)
-  throw new Error("构建期间相关源码发生变化，请保留本次产物并重新装配。");
+if (before.sha256 !== after.sha256) {
+  const changes=[...new Set([...Object.keys(before.files),...Object.keys(after.files)])].sort().filter(name=>before.files[name]!==after.files[name]).map(name=>({path:name,before_sha256:before.files[name]??null,after_sha256:after.files[name]??null}));
+  await writeFile(path.join(stage,"source-changes.json"),JSON.stringify({before_source_sha256:before.sha256,after_source_sha256:after.sha256,changes},null,2)+"\n");
+  throw new Error("构建期间相关源码发生变化，请保留本次产物并重新装配："+changes.slice(0,12).map(item=>item.path).join("、")+(changes.length>12?"。完整清单见source-changes.json。":"。"));
+}
 const manifest = JSON.parse(
   await readFile(path.join(desktop, "package.json"), "utf8"),
 );

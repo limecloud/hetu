@@ -1,0 +1,179 @@
+{
+  "date": "2026-11-26",
+  "scope": "R6-05/R7-09 fixed document version host-private approval wiring",
+  "trigger": "Installed0.14.1 version approval succeeded but no approval file existed under the selected host profile; backend launch omitted existing private-directory argument",
+  "changes": [
+    "pass existing git-authorizations directory in every desktop/MCP workspace App Server launch",
+    "expose binding-current boolean without private path",
+    "explicit collaboration updates stale binding via existing authorization action; original references remain bounded"
+  ],
+  "source_sha256": {
+    "apps/desktop/src/main/main.ts": "129799d18a344ef231937ba2db8cb7377481e50b6e30e7387f8f7c7c1dd08706",
+    "apps/desktop/src/main/mcp-workbench.ts": "73c498f25c23131da0fa5caebe0bf6015cdd2dfdf3dcc821737b7d4d93d5ad31",
+    "apps/desktop/src/main/work-connection.ts": "9663f4d99f896e5ef56c023e13d4dff1124324e75528026b905255d9a02982dd",
+    "core/src/collaboration/authoring.rs": "fc736f4fc150ffc70d9e0b5f13074e9612fae7c7187936982fe7a76a7c208fc2"
+  },
+  "tests": {
+    "core_version": 4,
+    "core_git_and_collaboration": 21,
+    "agent_and_connection": 102,
+    "desktop_long_version": 3,
+    "three_surface_journey": {
+      "passed": 3,
+      "surfaces": [
+        "desktop",
+        "stdio",
+        "official Codex CLI 0.172.0"
+      ],
+      "scope": "actual desktop, stdio and official Codex CLI transfer; same-profile mixed desktop/MCP shared approval, other profile read-only isolation, window closed execute and original journal recovery"
+    },
+    "mixed_surface_journeys": [
+      {
+        "surface": "desktop",
+        "private_approval_verified": true,
+        "same_profile_cross_surface_shared": true,
+        "other_profile_not_inherited": true,
+        "read_only_does_not_rebind": true,
+        "window_closed_before_execution": true,
+        "original_execution_key_preserved": true,
+        "original_approval_unchanged": true,
+        "formal_revision_unchanged": true,
+        "model_turns": 0
+      },
+      {
+        "surface": "stdio",
+        "private_approval_verified": true,
+        "same_profile_cross_surface_shared": true,
+        "other_profile_not_inherited": true,
+        "read_only_does_not_rebind": true,
+        "window_closed_before_execution": true,
+        "original_execution_key_preserved": true,
+        "original_approval_unchanged": true,
+        "formal_revision_unchanged": true,
+        "model_turns": 0
+      },
+      {
+        "surface": "codex",
+        "private_approval_verified": true,
+        "same_profile_cross_surface_shared": true,
+        "other_profile_not_inherited": true,
+        "read_only_does_not_rebind": true,
+        "window_closed_before_execution": true,
+        "original_execution_key_preserved": true,
+        "original_approval_unchanged": true,
+        "formal_revision_unchanged": true,
+        "model_turns": 0
+      }
+    ]
+  },
+  "failed_attempts": [
+    {
+      "stage": "old version test setup",
+      "cause": "default fixture binary absent; use existing acceptance fixture-directory option and normal-close helper"
+    },
+    {
+      "stage": "installed negative",
+      "cause": "approval file missing under actual isolated host private directory; confirmed product wiring defect"
+    },
+    {
+      "stage": "new test CLI result",
+      "cause": "snapshot prepare is pending with exit5; test incorrectly required succeeded/exit0; no product rejection"
+    },
+    {
+      "stage": "new test reading preview",
+      "cause": "paragraph DOM omits literal source newlines; check each paragraph and retain exact Core bytes comparison"
+    },
+    {
+      "stage": "new test reopen screenshot",
+      "cause": "held old Electron page after reopen; all business assertions completed, screenshot failed; assign actual reopened page"
+    },
+    {
+      "stage": "resource reproduction",
+      "cause": "current package metadata changed source manifest; regenerated shared resources and rebuilt Rust consumer after prior build ended"
+    },
+    {
+      "stage": "first combined runner",
+      "cause": "npm test wrapper rebuilt sources while another test was running; keep result and verify final stable outputs directly with Playwright"
+    },
+    {
+      "stage": "frozen package business setup",
+      "cause": "older test read default fixture path in frozen clone; no application launched; linked existing exact fixtures and same package business passed"
+    }
+  ],
+  "artifact_state": {
+    "installed": "passed protected no-backup install, seven installed-path tests and read-only normal profile startup/exit",
+    "source_types": "passed",
+    "shared_resources": "regenerated and checked",
+    "optimized_package": "verified all3078 source inputs and3133 installed artifacts, icon and development signature"
+  },
+  "limits": [
+    "current source and optimized macOS arm64 development-signed package verified; formal notarized distribution separate",
+    "no author creative content changed; zero new model turns",
+    "native Codex Desktop visual and other platforms unverified",
+    "full default suite revealed unrelated shutdown-helper, old font assertions and historical video selection issue; open comprehensive evidence"
+  ],
+  "status_owner": "docs/38-创作工作台重构执行计划.md",
+  "freeze": {
+    "base_installed_source": "c0bb109191efc4ab33a1808dac5d4bd87c96e8c18b2942e06764bce8cced48ec",
+    "source_file_count": 3078,
+    "changed_inputs": [
+      "apps/desktop/package.json",
+      "apps/desktop/src/main/main.ts",
+      "apps/desktop/src/main/mcp-workbench.ts",
+      "apps/desktop/src/main/work-connection.ts",
+      "apps/mcp/resources/workbench.manifest.json",
+      "contracts/capability-map.json",
+      "core/src/collaboration/authoring.rs"
+    ],
+    "workspace_dependencies_local": true
+  },
+  "screenshots": {
+    "version-private-approval-2026-11-26.png": "f517818ffc39e2a2e012666b19adc4a5ede8c019e55f807ae7d5557810cf770c"
+  },
+  "native_host_inspection": {
+    "tool": "cua.getState",
+    "result": "failed before UI state",
+    "error": "failed to write kernel assets: No such file or directory (os error 2)",
+    "native_host_verified": false
+  },
+  "package": {
+    "version": "0.14.1",
+    "source_sha256": "8f897fdc74503cc28bc7f01a1581414d2e520735b900ad5398a99e94ba79735a",
+    "source_inputs": 3078,
+    "artifacts": 3133,
+    "signature_verified": true,
+    "icon_matches": true
+  },
+  "installation": {
+    "version": "0.14.1",
+    "source_sha256": "8f897fdc74503cc28bc7f01a1581414d2e520735b900ad5398a99e94ba79735a",
+    "source_inputs": 3078,
+    "artifacts": 3133,
+    "signature_verified": true,
+    "icon_matches": true,
+    "installed_path": "/Applications/Hetu.app",
+    "atomic_swap": true,
+    "backup_created": false,
+    "old_bundle_removed": true,
+    "three_user_indexes_unchanged": true
+  },
+  "packaged_tests": {
+    "three_mixed_interfaces": 3,
+    "long_version_and_recovery": 3,
+    "business_pty": 1,
+    "failed_fixture_setup": 1,
+    "model_turns": 0
+  },
+  "installed_tests": {
+    "three_mixed_interfaces": 3,
+    "long_version_and_recovery": 3,
+    "business_pty": 1,
+    "failed": 0,
+    "model_turns": 0
+  },
+  "normal_profile": {
+    "works_visible": 19,
+    "normal_exit_code": 0,
+    "three_user_indexes_unchanged": true
+  }
+}

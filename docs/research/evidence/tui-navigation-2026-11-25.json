@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-25",
+  "scope": "铺满TUI的作品与创作库导航",
+  "state": "local-installed-navigation-validated",
+  "findings": [
+    "selectAgentWork及跨范围创建将agentOpen置为true；普通navigate只改变active，agentExpanded继续让agentFull隐藏主区。",
+    "此前测试助手只检查main的aria-busy，不能证明目标页面可见；现补可见主区与真实正文断言。"
+  ],
+  "implementation": [
+    "导航离开铺满会话时隐藏会话，保留原执行端；明确并排查看单独保持会话可见。",
+    "作品选择复用同一打开用例及未保存稿保护，显式打开作品恢复目标主区。",
+    "真实Codex与Shell分别检查创作库类型、范围切换、小说正文、返回库、重开及并排；原session_id、thread_id、generation和原生未发送文字保持，零模型消息。"
+  ],
+  "validation": {
+    "initial_fixture": {
+      "status": "failed-before-test",
+      "log": "output/tui-navigation-20261125/before.log",
+      "reason": "共享调试目录被重新构建，baseline_fixture暂不可用；最终专项改用安装CLI初始化及AppServer的真实公开动作建立隔离作品，无需编译专用fixture。"
+    },
+    "installed_before": {
+      "codex": "failed-as-expected",
+      "shell": "test-setup-failed",
+      "log": "output/tui-navigation-20261125/before-final.log",
+      "codex_failure": "点击小说后终端工作区仍可见，重现用户故障。",
+      "shell_note": "引擎浮层打开时测试点击了被遮挡的后方创建按钮；修正为浮层内打开终端，不更改产品点击行为。"
+    },
+    "source_initial": {
+      "codex": "passed",
+      "shell": "test-setup-failed",
+      "log": "output/tui-navigation-20261125/source.log",
+      "codex_scope": "2560px真实Codex全旅程通过，正文可见、原线程／输入代次和两份未发送文字保持；未发起模型轮次。"
+    },
+    "package_attempt": {
+      "status": "failed-before-build",
+      "log": "output/tui-navigation-20261125/package.log",
+      "reason": "Node运行时检查收到空stdout而无法解析JSON；同命令独立执行返回完整有效JSON后重新装配，保留首次失败，不作为TUI行为结果。"
+    },
+    "filtered_test_attempt": {
+      "status": "not-run",
+      "log": "output/tui-navigation-20261125/source-shell-final.log",
+      "reason": "Playwright完整测试名含文件名，起始锚点未匹配；按测试名重新选择。"
+    },
+    "source_shell_final": {
+      "passed": 1,
+      "failed": 0,
+      "log": "output/tui-navigation-20261125/source-shell-complete.log",
+      "scope": "980px真实Shell；四种创作库类型、同一原执行端、两份原生未发送文字、小说正文／返回／并排。"
+    },
+    "existing_regression": {
+      "passed": 1,
+      "failed": 1,
+      "log": "output/tui-navigation-20261125/regression.log",
+      "passed_scope": "分集目录去重、独立同名稿件及场次",
+      "failure_scope": "既有会话业务断言在37秒内全部完成，trace停在finally的app.close；120秒结束时未观察到进程退出，不计整条通过。"
+    },
+    "exit_followup": {
+      "status": "failed-teardown",
+      "log": "output/tui-navigation-20261125/agent-regression-final.log",
+      "note": "尝试现有正常窗口关闭助手后，调试连接关闭但进程未在30秒内退出；未解决根因，恢复原测试退出方式，不把测试退出问题冒称导航问题或已修复。"
+    },
+    "accepted_package": {
+      "manifest": "output/tui-navigation-20261125/packages/hetu-dev-iKaH2t/manifest.json",
+      "verification": "output/tui-navigation-20261125/package-verified.json",
+      "source_sha256": "28f7baa4cf447f8225f00876e434bb43a551d1174ed35b675f5e81e053d753f1",
+      "source_inputs": 3060,
+      "application_entries": 3132,
+      "optimized": true,
+      "signature": "ad-hoc-development-verified",
+      "source_scope": "基于当前安装版固定源码，只更新index.tsx的导航修复；工作区其他未安装修改保持。"
+    },
+    "package_ui": {
+      "passed": 1,
+      "failed": 1,
+      "log": "output/tui-navigation-20261125/package-tests.log",
+      "codex": "真实Codex全程通过且正常完成；保持原线程、输入代次及两份未发送文字。",
+      "shell": "导航／正文／范围往返／并排断言均完成，app.close阶段超时，整条不记通过。"
+    },
+    "package_shell_followup": {
+      "status": "failed-teardown",
+      "log": "output/tui-navigation-20261125/package-shell-final.log",
+      "scope": "按正常窗口关闭助手复验，原行为断言全部完成但仍未在30秒内观察进程退出；未据此修改产品生命周期。"
+    },
+    "installed_ui": {
+      "passed": 1,
+      "failed": 0,
+      "log": "output/tui-navigation-20261125/installed-tests.log",
+      "scope": "实际/Applications安装位置，真实Codex：创作库／作品范围往返、小说正文、回到原线程／输入代次／两份未发送文字及并排；零模型消息。"
+    }
+  },
+  "build_baseline": {
+    "base_manifest": "output/episode-directory-20261125/frozen-packages/hetu-dev-Uwr0Ow/manifest.json",
+    "source_root": "/Users/coso/Documents/dev/ai/limecloud/hetu/output/episode-directory-20261125/isolated",
+    "updated_inputs": [
+      "apps/desktop/src/renderer/index.tsx"
+    ],
+    "updated_sha256": "8efbea71c1eb44c59d907ca82c47a680247c5ac25934ee34ae983e0ec5eaf7fd",
+    "note": "基于当前实际安装版固定源码，只纳入本次导航修复；共享工作区其他未安装增量不混入。"
+  },
+  "source_sha256": {
+    "apps/desktop/src/renderer/index.tsx": "8efbea71c1eb44c59d907ca82c47a680247c5ac25934ee34ae983e0ec5eaf7fd",
+    "apps/desktop/tests/tui-navigation.spec.ts": "00e4594b2705e1cb80f5877c0f9a3115647b4cabcfb8f6b875847b09650dbd53",
+    "apps/desktop/tests/navigation.ts": "f8323cff6b1047708ee53bce9aba61405a51ba3d8cb1ce786b391592b6eafed9"
+  },
+  "limits": [
+    "隔离作品；不改写用户小说。",
+    "真实CLI／PTY和零消息旅程不代表模型文学质量、跨平台或全部界面验收。",
+    "既有模拟引擎会话回归的退出阶段仍超时，行为断言与进程退出结果分别记录；真实Codex／Shell专项正常完成。"
+  ],
+  "installation": {
+    "source_sha256": "28f7baa4cf447f8225f00876e434bb43a551d1174ed35b675f5e81e053d753f1",
+    "source_inputs": 3060,
+    "artifacts_verified": 3132,
+    "version": "0.14.1",
+    "optimized": true,
+    "signature": "ad-hoc-development-verified",
+    "icon_matches": true,
+    "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+    "installed_path": "/Applications/Hetu.app",
+    "atomic_swap": true,
+    "backup_created": false,
+    "old_bundle_removed": true,
+    "profile_indexes_unchanged": {
+      "creative-library.json": true,
+      "LocalSettings/settings.json": true,
+      "agent-sessions/index/selection.json": true
+    },
+    "temporary_install_directories_remaining": 0,
+    "normal_native_launch": {
+      "verified": true,
+      "library_works": 19,
+      "tui_opened_original_session": true,
+      "direct_novel_navigation": true,
+      "novels_visible": 13,
+      "original_novel_opened": true,
+      "chapter_visible": "第1章 被扔进的世界",
+      "chapters_in_directory": 511,
+      "saved_state": true,
+      "note": "原生CUA从已连接TUI直接点击小说恢复书库，打开原小说及第一章，停留在正文；未输入、保存或改写正文。"
+    }
+  },
+  "screenshots": [
+    "output/tui-navigation-20261125/source/tui-navigation-codex铺满时导航恢复真实小说页面，重开及并排保持原执行端-2560px/novel-and-original-terminal.png",
+    "output/tui-navigation-20261125/source/tui-navigation-codex铺满时导航恢复真实小说页面，重开及并排保持原执行端-2560px/library-restored.png",
+    "output/tui-navigation-20261125/source-shell-complete/tui-navigation-shell铺满时导航恢复真实小说页面，重开及并排保持原执行端-980px/novel-and-original-terminal.png",
+    "output/tui-navigation-20261125/source-shell-complete/tui-navigation-shell铺满时导航恢复真实小说页面，重开及并排保持原执行端-980px/library-restored.png",
+    "output/tui-navigation-20261125/package-tests/tui-navigation-codex铺满时导航恢复真实小说页面，重开及并排保持原执行端-2560px/novel-and-original-terminal.png",
+    "output/tui-navigation-20261125/package-tests/tui-navigation-codex铺满时导航恢复真实小说页面，重开及并排保持原执行端-2560px/library-restored.png",
+    "output/tui-navigation-20261125/package-tests/tui-navigation-shell铺满时导航恢复真实小说页面，重开及并排保持原执行端-980px/novel-and-original-terminal.png",
+    "output/tui-navigation-20261125/package-tests/tui-navigation-shell铺满时导航恢复真实小说页面，重开及并排保持原执行端-980px/library-restored.png",
+    "output/tui-navigation-20261125/package-shell-final/tui-navigation-shell铺满时导航恢复真实小说页面，重开及并排保持原执行端-980px/novel-and-original-terminal.png",
+    "output/tui-navigation-20261125/package-shell-final/tui-navigation-shell铺满时导航恢复真实小说页面，重开及并排保持原执行端-980px/library-restored.png",
+    "output/tui-navigation-20261125/installed-tests/tui-navigation-codex铺满时导航恢复真实小说页面，重开及并排保持原执行端-2560px/novel-and-original-terminal.png",
+    "output/tui-navigation-20261125/installed-tests/tui-navigation-codex铺满时导航恢复真实小说页面，重开及并排保持原执行端-2560px/library-restored.png"
+  ]
+}

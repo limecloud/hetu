@@ -11,12 +11,12 @@ import {AgentPreviewTabs} from "./agent-preview-tabs.tsx";
 
 type Entry={kind:"document"|"resource";id:string;revision:string|number;title:string};
 type Preview={entry:Entry;text:string;format:string;pinned:boolean};
-type Group={title:string;entries:Entry[]};
+type Group={title:string;entries:Entry[];episode_id?:string};
 const referenceType="application/x-hetu-work-reference";
 const entryKey=(entry:Entry)=>JSON.stringify([entry.kind,entry.id,entry.revision]);
 
 /** 只呈现Core正式内容；临时预览和目录状态不拥有作品数据。 */
-export function AgentContent({work,snapshot,children,notify,header,maximized=false}:{work?:WorkRef;snapshot:SessionSnapshot;children:React.ReactNode;notify(message:string):void;header?(controls:React.ReactNode,tabs:React.ReactNode):React.ReactNode;maximized?:boolean}) {
+export function AgentContent({work,snapshot,sessionTitle,children,notify,header,maximized=false}:{work?:WorkRef;snapshot:SessionSnapshot;sessionTitle:string;children:React.ReactNode;notify(message:string):void;header?(controls:React.ReactNode,tabs:React.ReactNode):React.ReactNode;maximized?:boolean}) {
   const [groups,setGroups]=useState<Group[]>([]),[errors,setErrors]=useState<string[]>([]),[busy,setBusy]=useState(false);
   const [query,setQuery]=useState(""),[collapsed,setCollapsed]=useState<Set<string>>(new Set());
   const [visible,setVisible]=useState(()=>viewStorage.getItem("hetu-agent-directory-visible")!=="false"),[narrow,setNarrow]=useState(false),[overlay,setOverlay]=useState(false),[width,setWidth]=useState(()=>Math.max(220,Math.min(440,Number(viewStorage.getItem("hetu-agent-directory-width"))||350)));
@@ -49,8 +49,8 @@ export function AgentContent({work,snapshot,children,notify,header,maximized=fal
     if(!work)return;
     const token=++generation.current;setBusy(true);setErrors([]);
     const results=await Promise.allSettled([
-      readWorkContent(work).then(value=>value.groups.map(group=>({title:group.title,entries:group.documents.map(item=>({kind:"document" as const,id:item.document_id,revision:item.current_revision_id,title:item.title}))}))),
-      (async()=>{const entries:Entry[]=[];let cursor:string|undefined;do{const page=data(await desktop.resources("list",{cursor}));entries.push(...page.resources.map((item:any)=>({kind:"resource" as const,id:item.resource_id,revision:item.revision,title:item.title})));cursor=page.next_cursor??undefined;}while(cursor);return {title:"资料与素材",entries};})(),
+      readWorkContent(work,{active:()=>token===generation.current}).then(value=>value.groups.map(group=>({title:group.title,episode_id:group.episode_id,entries:group.documents.map(item=>({kind:"document" as const,id:item.document_id,revision:item.current_revision_id,title:group.episode_id?group.title:item.title}))}))),
+      (async()=>{const entries:Entry[]=[];let cursor:string|undefined;do{if(token!==generation.current)return {title:"资料与素材",entries};const page=data(await desktop.resources("list",{cursor}));if(token!==generation.current)return {title:"资料与素材",entries};entries.push(...page.resources.map((item:any)=>({kind:"resource" as const,id:item.resource_id,revision:item.revision,title:item.title})));cursor=page.next_cursor??undefined;}while(cursor);return {title:"资料与素材",entries};})(),
     ]);
     if(token!==generation.current)return;
     const next:Group[]=[],failures:string[]=[];
@@ -87,6 +87,11 @@ export function AgentContent({work,snapshot,children,notify,header,maximized=fal
   async function insert(entry:Entry){
     if(!work)throw Error("请先打开作品。");
     const fixed=current.current;
+    if(fixed.surface==="gui"){
+      await desktop.agentSession("attach_context",{session_id:fixed.session_id,generation:fixed.generation,work_ref:work,page:entry.kind==="document"?(work.kind==="drama"?"drama.reader":"novel.reader"):"work.resources",object:entry.kind==="document"?{document_id:entry.id,revision_id:entry.revision}:{resource_id:entry.id,revision:entry.revision},label:entry.title});
+      if(current.current.session_id!==fixed.session_id||current.current.generation!==fixed.generation)throw Error("会话已切换，请在原会话核对所附来源。");
+      terminal();return;
+    }
     const request=await desktop.handoff(entry.kind==="document"?(work.kind==="drama"?"drama.reader":"novel.reader"):"work.resources",entry.kind==="document"?{document_id:entry.id,revision_id:entry.revision}:{resource_id:entry.id,revision:entry.revision},"draft");
     if(!request?.work_ref||!sameWork(work,request.work_ref)||current.current.session_id!==fixed.session_id||current.current.generation!==fixed.generation)throw Error("作品或会话已切换，引用未插入。");
     await desktop.agentSession("insert",{session_id:fixed.session_id,...(fixed.terminal_connected?{generation:fixed.generation}:{}),work_ref:work,text:request.prompt});terminal();
@@ -128,7 +133,7 @@ export function AgentContent({work,snapshot,children,notify,header,maximized=fal
     onKeyDownCapture={event=>{if(event.nativeEvent.isComposing)return;if(event.key==="Enter"&&(event.ctrlKey||event.metaKey)){event.preventDefault();void open(entry,true);}}}>
     <Icon name="file" size={14}/><span>{entry.title}</span></button>;}
   const directoryControl=work&&<IconButton icon="inspector" label="作品目录" aria-pressed={directoryVisible} onClick={()=>showDirectory(!directoryVisible)}/>;
-  const tabs=work&&!!previews.length&&<AgentPreviewTabs tabs={previews.map(item=>({id:entryKey(item.entry),title:item.entry.title+(outdated(item.entry)?"（旧修订）":""),preview:!item.pinned}))} activeId={active} onSelect={select} onClose={close} onKeep={key=>setPreviews(previous=>previous.map(item=>entryKey(item.entry)===key?{...item,pinned:true}:item))} onReveal={reveal} notify={notify}/>;
+  const tabs=work&&!!previews.length&&<AgentPreviewTabs sessionTitle={sessionTitle} tabs={previews.map(item=>({id:entryKey(item.entry),title:item.entry.title+(outdated(item.entry)?"（旧修订）":""),preview:!item.pinned}))} activeId={active} onSelect={select} onClose={close} onKeep={key=>setPreviews(previous=>previous.map(item=>entryKey(item.entry)===key?{...item,pinned:true}:item))} onReveal={reveal} notify={notify}/>;
   return <>{header?.(directoryControl,tabs)}<div className="agent-content" ref={panel}>
     <div className="agent-content-main">
       {!header&&tabs}
@@ -151,7 +156,7 @@ export function AgentContent({work,snapshot,children,notify,header,maximized=fal
         {busy&&!groups.length&&<p role="status">正在读取目录…</p>}
         {errors.map(error=><p role="alert" key={error}>{error}</p>)}
         {!!errors.length&&<button onClick={()=>void load()}>重新读取目录</button>}
-        {groups.map((group,index)=>{const entries=group.entries.filter(entry=>entry.title.toLocaleLowerCase().includes(query.toLocaleLowerCase()));if(!entries.length)return null;const key=String(index)+group.title;const open=!!query||!collapsed.has(key);return <section key={key}><button className="agent-content-group" aria-expanded={open} onClick={()=>setCollapsed(previous=>{const next=new Set(previous);if(open)next.add(key);else next.delete(key);return next;})}><Icon name="chevron" size={12}/><span>{group.title}</span><small>{entries.length}</small></button>{open&&entries.map(row)}</section>;})}
+        {groups.map((group,index)=>{const entries=group.entries.filter(entry=>entry.title.toLocaleLowerCase().includes(query.toLocaleLowerCase()));if(!entries.length)return null;const key=String(index)+group.title;if(group.episode_id)return <section key={group.episode_id}>{entries.map(row)}</section>;const open=!!query||!collapsed.has(key);return <section key={key}><button className="agent-content-group" aria-expanded={open} onClick={()=>setCollapsed(previous=>{const next=new Set(previous);if(open)next.add(key);else next.delete(key);return next;})}><Icon name="chevron" size={12}/><span>{group.title}</span><small>{entries.length}</small></button>{open&&entries.map(row)}</section>;})}
         {!busy&&!errors.length&&!groups.some(group=>group.entries.some(entry=>entry.title.toLocaleLowerCase().includes(query.toLocaleLowerCase())))&&<p>{query?"没有匹配的内容。":"暂无文稿和资料。"}</p>}
       </nav>
     </aside>}

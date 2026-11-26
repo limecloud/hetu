@@ -31,6 +31,15 @@ test("Agent会话上下文是类型化作品引用，不暴露工作区绝对路
   assert.doesNotMatch(args.join(" "), /management_ref|workspace_path/);
 });
 
+test("Codex子MCP显式复用宿主Owner目录，清理无关环境和凭据",()=>{
+  const environment={HETU_PLUGIN_STATE_DIR:"/private/插件目录",HETU_PLUGIN_NODE:"/runtime/node",HETU_PLUGIN_MANAGER:"/runtime/plugin-manager.mjs",HETU_PLUGIN_CLI:"/runtime/hetu-plugin",HETU_DESKTOP_PROFILE:"/private/profile",HETU_COLLABORATION_DIR:"/wrong/directory",HETU_LOCAL_SETTINGS_DIR:"/wrong/settings",OPENAI_API_KEY:"private-key",OTHER_TOKEN:"private-token",PATH:"/unrelated",HETU_MODEL_SERVICE_DIR:"/unrequested/service"};
+  const args=buildCodexAppServerArgs("/runtime/hetu-mcp","/private/collaboration",undefined,"/private/settings",environment);
+  const configuration=Object.fromEntries(args.filter(value=>value.startsWith("mcp_servers.hetu.env.")).map(value=>{const index=value.indexOf("=");return [value.slice("mcp_servers.hetu.env.".length,index),JSON.parse(value.slice(index+1))];}));
+  assert.deepEqual(configuration,{HETU_COLLABORATION_DIR:"/private/collaboration",HETU_LOCAL_SETTINGS_DIR:"/private/settings",HETU_PLUGIN_STATE_DIR:"/private/插件目录",HETU_PLUGIN_NODE:"/runtime/node",HETU_PLUGIN_MANAGER:"/runtime/plugin-manager.mjs",HETU_PLUGIN_CLI:"/runtime/hetu-plugin",HETU_DESKTOP_PROFILE:"/private/profile"});
+  assert.doesNotMatch(args.join(" "),/private-key|private-token|unrelated|unrequested/);
+  assert.deepEqual(buildCodexAppServerArgs(undefined,undefined,undefined,undefined,environment),["app-server"]);
+});
+
 test("独立 Agent 会话建立线程、接收增量并沿线程持久化", async () => {
   const directory = await mkdtemp("/tmp/hetu-agent-session-test-");
   const binary = path.join(directory, "fake-codex");
@@ -47,6 +56,8 @@ exec ${process.execPath} "$0.mjs"
       if (message.id === 77 && message.result) {writeFileSync(${JSON.stringify(responsePath)}, JSON.stringify(message.result));notify("turn/completed", { turnId: "turn-test" });}
       if (message.id === undefined) return;
       if (message.method === "initialize") reply(message.id, { serverInfo: { name: "fake", version: "test" } });
+      else if(message.method==="account/read")reply(message.id,{account:null,requiresOpenaiAuth:false});
+      else if(message.method==="config/read")reply(message.id,{config:{}});
       else if (message.method === "thread/start" || message.method === "thread/resume") reply(message.id, { thread: { id: "thread-test" } });
       else if (message.method === "turn/start") {
         reply(message.id, { turn: { id: "turn-test" } });
@@ -99,6 +110,7 @@ test("重连隔离旧进程迟到事件，并合并并发启动请求", async ()
   const directory = await mkdtemp("/tmp/hetu-agent-session-generation-");
   const binary = path.join(directory, "fake-codex");
   const marker = path.join(directory, "instances");
+  const thread = "thread-" + path.basename(directory);
   await writeFile(binary, `#!/bin/sh
 exec ${process.execPath} ${JSON.stringify(binary + ".mjs")} ${JSON.stringify(marker)}
 `);
@@ -108,18 +120,22 @@ exec ${process.execPath} ${JSON.stringify(binary + ".mjs")} ${JSON.stringify(mar
     const marker = process.argv[2];
     const instance = (existsSync(marker) ? Number(readFileSync(marker, "utf8")) : 0) + 1;
     writeFileSync(marker, String(instance));
-    process.on("SIGTERM", () => {});
+    process.on("SIGTERM", () => {
+      setTimeout(() => notify("item/agentMessage/delta", { turnId: "turn-" + instance, delta: "late-" + instance }), 10);
+      setTimeout(() => process.exit(0), 40);
+    });
     const rl = readline.createInterface({ input: process.stdin });
     rl.on("line", line => {
       const message = JSON.parse(line);
       if (message.id === undefined) return;
       if (message.method === "initialize") reply(message.id, { serverInfo: { name: "generation-fake", version: "test" } });
-      else if (message.method === "thread/start" || message.method === "thread/resume") reply(message.id, { thread: { id: "thread-generation" } });
+      else if(message.method==="account/read")reply(message.id,{account:null,requiresOpenaiAuth:false});
+      else if(message.method==="config/read")reply(message.id,{config:{}});
+      else if (message.method === "thread/start" || message.method === "thread/resume") reply(message.id, { thread: { id: ${JSON.stringify(thread)} } });
       else if (message.method === "turn/start") {
         const turnId = "turn-" + instance;
         reply(message.id, { turn: { id: turnId } });
         setTimeout(() => notify("item/agentMessage/delta", { turnId, delta: "current-" + instance }), 5);
-        setTimeout(() => notify("item/agentMessage/delta", { turnId, delta: "late-" + instance }), 60);
         setTimeout(() => notify("turn/completed", { turnId }), 80);
       } else if (message.method === "shutdown") {
         setTimeout(() => process.exit(0), 150);
@@ -132,27 +148,30 @@ exec ${process.execPath} ${JSON.stringify(binary + ".mjs")} ${JSON.stringify(mar
   await chmod(binary, 0o755);
   const previous = process.env.HETU_CODEX_BIN;
   process.env.HETU_CODEX_BIN = binary;
+  const profile = await mkdtemp("/tmp/hetu-agent-session-generation-profile-");
+  let session:AgentSession|undefined;
   try {
-    const profile = await mkdtemp("/tmp/hetu-agent-session-generation-profile-");
     const work = { workspace_id: "ws-generation", kind: "novel" as const, object_id: "novel-generation" };
-    const session = new AgentSession({ transport: "stdio", client: "codex", work, cwd: "/tmp", profile, emit: () => undefined });
+    session = new AgentSession({ transport: "stdio", client: "codex", work, cwd: "/tmp", profile, emit: () => undefined });
     const [first, second] = await Promise.all([session.start(), session.start()]);
-    assert.equal(first.thread_id, "thread-generation");
-    assert.equal(second.thread_id, "thread-generation");
+    assert.equal(first.thread_id, thread);
+    assert.equal(second.thread_id, thread);
     await session.send("第一轮");
-    await new Promise(resolve => setTimeout(resolve, 15));
     await session.stop();
     await session.start();
     await session.send("第二轮");
-    await new Promise(resolve => setTimeout(resolve, 105));
+    const deadline=Date.now()+5000;
+    while(!session.snapshot().messages.some(message=>message.text.includes("current-2"))){
+      assert(Date.now()<deadline,"未收到新执行端的消息。");await new Promise(resolve=>setTimeout(resolve,10));
+    }
     const text = session.snapshot().messages.map(message => message.text).join("|");
     assert.match(text, /current-2/);
     assert.doesNotMatch(text, /late-1/);
     await session.stop();
-    await rm(profile, { recursive: true, force: true });
   } finally {
+    await session?.stop();
     if (previous === undefined) delete process.env.HETU_CODEX_BIN; else process.env.HETU_CODEX_BIN = previous;
-    await new Promise(resolve => setTimeout(resolve, 180));
+    await rm(profile, { recursive: true, force: true });
     await rm(directory, { recursive: true, force: true });
   }
 });

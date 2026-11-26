@@ -1,0 +1,424 @@
+{
+  "scope": "默认视频固定字幕原文件导出、就地成功状态及同版装配与本地覆盖",
+  "date": "2026-11-25",
+  "runtime": {
+    "platform": "macOS arm64",
+    "node": "25.0.0",
+    "electron": "42.11.18",
+    "core_version": "0.14.1",
+    "model_turns": 0,
+    "native_dialog": "deterministic path selection adapter; actual Core, file stream and filesystem"
+  },
+  "architecture": {
+    "new_core_actions": 0,
+    "new_public_file_write_channel": false,
+    "new_storage": false,
+    "new_parser": false,
+    "new_dependencies": false,
+    "shared_use_case": "VideoReview fixed export via existing delivery.preview and private media stream",
+    "fixed_relationship": "only an exact caption asset_ref in the selected fixed media delivery preview",
+    "recheck_before_replace": true,
+    "video_and_caption_files_separate": true,
+    "professional_project_not_included": true,
+    "author_decisions_unchanged": true
+  },
+  "implementation": [
+    "Export current subtitle next to the existing language selector; no duplicate language choice",
+    "Preserve original VTT bytes and extension; same filename never determines track identity",
+    "Reuse fixed video export streaming and atomic replacement, current delivery rights and full digest checks",
+    "Cancel, unrelated refs, bad extension, stream/chunk/digest errors, changed rights or changed work preserve existing destination",
+    "Success status belongs to the selected track and media; a different language does not inherit it",
+    "Local status replaces a global success notice that intercepted the Clear draft button at a narrow viewport"
+  ],
+  "checks": {
+    "unit": {
+      "passed": 24,
+      "failed": 0,
+      "video_tests": 14,
+      "session_results_tests": 10,
+      "log": "output/video-caption-export-20261125/unit.log"
+    },
+    "source_journeys": {
+      "passed": 9,
+      "failed": 0,
+      "log": "output/video-caption-export-20261125/final.log",
+      "coverage": [
+        "export x3",
+        "native captions x3",
+        "video feedback and recovery x3"
+      ]
+    },
+    "package_journeys": {
+      "passed": 5,
+      "failed": 0,
+      "logs": [
+        "output/video-caption-export-20261125/package-desktop.log",
+        "output/video-caption-export-20261125/package-caption-export.log"
+      ]
+    },
+    "installed_journeys": {
+      "passed": 4,
+      "failed": 0,
+      "logs": [
+        "output/video-caption-export-20261125/installed-caption-export.log",
+        "output/video-caption-export-20261125/installed-session.log"
+      ],
+      "session_result_file": "output/video-caption-export-20261125/installed-session/session-media-results-原会话真实MCP保存后打开确切历史视频与停用插件成果，返回仍沿原PTY/result.json",
+      "session_result_sha256": "1cedf2d6c6c679f7fd7375b243e76446a4605645a56a425cbcf5e482294f8ca4"
+    },
+    "builds": [
+      "shared task-view TypeScript and resources",
+      "Rust consumers and baseline fixture",
+      "desktop TypeScript and build",
+      "source resource reproducibility",
+      "optimized local package"
+    ],
+    "post_test_frozen_hashes": "all recorded source and artifact hashes unchanged",
+    "website": {
+      "build": "passed",
+      "pages": 227,
+      "local_references": 13993,
+      "diagnostics": {
+        "errors": 0,
+        "warnings": 0,
+        "hints": 1
+      },
+      "existing_hint": "unused prototype import in Home.astro",
+      "built_guide_paragraphs_verified": true,
+      "deployed": false
+    },
+    "capability_map": "consistent",
+    "docs": {
+      "documents": 92,
+      "local_links": 1581,
+      "mermaid": 118,
+      "errors": 0
+    }
+  },
+  "surfaces": {
+    "source": {
+      "codex": {
+        "result": {
+          "surface": "codex",
+          "model_turns": 0,
+          "real_core": true,
+          "zh_sha256": "a841f3ab1eaa44cb1468bdac66368c4f065a43f7c1569cfd13c3753a97f91224",
+          "en_sha256": "c4432e6dcc691d3e4f3d32df6d771cdd7185f4e0b7c49682e42cc7a5e518c211",
+          "exact_original_bytes": true,
+          "cancel_preserves_file": true,
+          "wrong_extension_preserves_file": true,
+          "unrelated_track_refused": true,
+          "current_rights_denied": true,
+          "restored_rights_exports_same_fixed_track": true,
+          "video_identity_and_position_retained": true,
+          "draft_retained": true,
+          "off_and_old_video_hide_export": true,
+          "native_io": "deterministic path choice only",
+          "dark_narrow": true,
+          "temporary_files_removed": true
+        },
+        "file": "output/video-caption-export-20261125/final/video-caption-export-codex-字幕按当前轨导出原字节，取消与撤权保持文件和意见/caption-export.json",
+        "sha256": "31edd2114829d34b5b4140482ed88aab903c0a4ad70aa5e4b4873455efb839c1"
+      },
+      "desktop": {
+        "result": {
+          "surface": "desktop",
+          "model_turns": 0,
+          "real_core": true,
+          "zh_sha256": "a841f3ab1eaa44cb1468bdac66368c4f065a43f7c1569cfd13c3753a97f91224",
+          "en_sha256": "c4432e6dcc691d3e4f3d32df6d771cdd7185f4e0b7c49682e42cc7a5e518c211",
+          "exact_original_bytes": true,
+          "cancel_preserves_file": true,
+          "wrong_extension_preserves_file": true,
+          "unrelated_track_refused": true,
+          "current_rights_denied": true,
+          "restored_rights_exports_same_fixed_track": true,
+          "video_identity_and_position_retained": true,
+          "draft_retained": true,
+          "off_and_old_video_hide_export": true,
+          "native_io": "deterministic path choice only",
+          "dark_narrow": true,
+          "temporary_files_removed": true
+        },
+        "file": "output/video-caption-export-20261125/final/video-caption-export-desktop-字幕按当前轨导出原字节，取消与撤权保持文件和意见/caption-export.json",
+        "sha256": "94689c1edc869b117ab5b457130ee8e37ea4956b03780859030a24e7544a9510"
+      },
+      "stdio": {
+        "result": {
+          "surface": "stdio",
+          "model_turns": 0,
+          "real_core": true,
+          "zh_sha256": "a841f3ab1eaa44cb1468bdac66368c4f065a43f7c1569cfd13c3753a97f91224",
+          "en_sha256": "c4432e6dcc691d3e4f3d32df6d771cdd7185f4e0b7c49682e42cc7a5e518c211",
+          "exact_original_bytes": true,
+          "cancel_preserves_file": true,
+          "wrong_extension_preserves_file": true,
+          "unrelated_track_refused": true,
+          "current_rights_denied": true,
+          "restored_rights_exports_same_fixed_track": true,
+          "video_identity_and_position_retained": true,
+          "draft_retained": true,
+          "off_and_old_video_hide_export": true,
+          "native_io": "deterministic path choice only",
+          "dark_narrow": true,
+          "temporary_files_removed": true
+        },
+        "file": "output/video-caption-export-20261125/final/video-caption-export-stdio-字幕按当前轨导出原字节，取消与撤权保持文件和意见/caption-export.json",
+        "sha256": "94212496968910b904b6b9f77b6783dbc23fafcd58c35b9195c34a5183a711e4"
+      }
+    },
+    "package": {
+      "codex": {
+        "result": {
+          "surface": "codex",
+          "model_turns": 0,
+          "real_core": true,
+          "zh_sha256": "a841f3ab1eaa44cb1468bdac66368c4f065a43f7c1569cfd13c3753a97f91224",
+          "en_sha256": "c4432e6dcc691d3e4f3d32df6d771cdd7185f4e0b7c49682e42cc7a5e518c211",
+          "exact_original_bytes": true,
+          "cancel_preserves_file": true,
+          "wrong_extension_preserves_file": true,
+          "unrelated_track_refused": true,
+          "current_rights_denied": true,
+          "restored_rights_exports_same_fixed_track": true,
+          "video_identity_and_position_retained": true,
+          "draft_retained": true,
+          "off_and_old_video_hide_export": true,
+          "native_io": "deterministic path choice only",
+          "dark_narrow": true,
+          "temporary_files_removed": true
+        },
+        "file": "output/video-caption-export-20261125/package-caption-export/video-caption-export-codex-字幕按当前轨导出原字节，取消与撤权保持文件和意见/caption-export.json",
+        "sha256": "31edd2114829d34b5b4140482ed88aab903c0a4ad70aa5e4b4873455efb839c1"
+      },
+      "desktop": {
+        "result": {
+          "surface": "desktop",
+          "model_turns": 0,
+          "real_core": true,
+          "zh_sha256": "a841f3ab1eaa44cb1468bdac66368c4f065a43f7c1569cfd13c3753a97f91224",
+          "en_sha256": "c4432e6dcc691d3e4f3d32df6d771cdd7185f4e0b7c49682e42cc7a5e518c211",
+          "exact_original_bytes": true,
+          "cancel_preserves_file": true,
+          "wrong_extension_preserves_file": true,
+          "unrelated_track_refused": true,
+          "current_rights_denied": true,
+          "restored_rights_exports_same_fixed_track": true,
+          "video_identity_and_position_retained": true,
+          "draft_retained": true,
+          "off_and_old_video_hide_export": true,
+          "native_io": "deterministic path choice only",
+          "dark_narrow": true,
+          "temporary_files_removed": true
+        },
+        "file": "output/video-caption-export-20261125/package-caption-export/video-caption-export-desktop-字幕按当前轨导出原字节，取消与撤权保持文件和意见/caption-export.json",
+        "sha256": "94689c1edc869b117ab5b457130ee8e37ea4956b03780859030a24e7544a9510"
+      },
+      "stdio": {
+        "result": {
+          "surface": "stdio",
+          "model_turns": 0,
+          "real_core": true,
+          "zh_sha256": "a841f3ab1eaa44cb1468bdac66368c4f065a43f7c1569cfd13c3753a97f91224",
+          "en_sha256": "c4432e6dcc691d3e4f3d32df6d771cdd7185f4e0b7c49682e42cc7a5e518c211",
+          "exact_original_bytes": true,
+          "cancel_preserves_file": true,
+          "wrong_extension_preserves_file": true,
+          "unrelated_track_refused": true,
+          "current_rights_denied": true,
+          "restored_rights_exports_same_fixed_track": true,
+          "video_identity_and_position_retained": true,
+          "draft_retained": true,
+          "off_and_old_video_hide_export": true,
+          "native_io": "deterministic path choice only",
+          "dark_narrow": true,
+          "temporary_files_removed": true
+        },
+        "file": "output/video-caption-export-20261125/package-caption-export/video-caption-export-stdio-字幕按当前轨导出原字节，取消与撤权保持文件和意见/caption-export.json",
+        "sha256": "94212496968910b904b6b9f77b6783dbc23fafcd58c35b9195c34a5183a711e4"
+      }
+    },
+    "installed": {
+      "codex": {
+        "result": {
+          "surface": "codex",
+          "model_turns": 0,
+          "real_core": true,
+          "zh_sha256": "a841f3ab1eaa44cb1468bdac66368c4f065a43f7c1569cfd13c3753a97f91224",
+          "en_sha256": "c4432e6dcc691d3e4f3d32df6d771cdd7185f4e0b7c49682e42cc7a5e518c211",
+          "exact_original_bytes": true,
+          "cancel_preserves_file": true,
+          "wrong_extension_preserves_file": true,
+          "unrelated_track_refused": true,
+          "current_rights_denied": true,
+          "restored_rights_exports_same_fixed_track": true,
+          "video_identity_and_position_retained": true,
+          "draft_retained": true,
+          "off_and_old_video_hide_export": true,
+          "native_io": "deterministic path choice only",
+          "dark_narrow": true,
+          "temporary_files_removed": true
+        },
+        "file": "output/video-caption-export-20261125/installed-caption-export/video-caption-export-codex-字幕按当前轨导出原字节，取消与撤权保持文件和意见/caption-export.json",
+        "sha256": "31edd2114829d34b5b4140482ed88aab903c0a4ad70aa5e4b4873455efb839c1"
+      },
+      "desktop": {
+        "result": {
+          "surface": "desktop",
+          "model_turns": 0,
+          "real_core": true,
+          "zh_sha256": "a841f3ab1eaa44cb1468bdac66368c4f065a43f7c1569cfd13c3753a97f91224",
+          "en_sha256": "c4432e6dcc691d3e4f3d32df6d771cdd7185f4e0b7c49682e42cc7a5e518c211",
+          "exact_original_bytes": true,
+          "cancel_preserves_file": true,
+          "wrong_extension_preserves_file": true,
+          "unrelated_track_refused": true,
+          "current_rights_denied": true,
+          "restored_rights_exports_same_fixed_track": true,
+          "video_identity_and_position_retained": true,
+          "draft_retained": true,
+          "off_and_old_video_hide_export": true,
+          "native_io": "deterministic path choice only",
+          "dark_narrow": true,
+          "temporary_files_removed": true
+        },
+        "file": "output/video-caption-export-20261125/installed-caption-export/video-caption-export-desktop-字幕按当前轨导出原字节，取消与撤权保持文件和意见/caption-export.json",
+        "sha256": "94689c1edc869b117ab5b457130ee8e37ea4956b03780859030a24e7544a9510"
+      },
+      "stdio": {
+        "result": {
+          "surface": "stdio",
+          "model_turns": 0,
+          "real_core": true,
+          "zh_sha256": "a841f3ab1eaa44cb1468bdac66368c4f065a43f7c1569cfd13c3753a97f91224",
+          "en_sha256": "c4432e6dcc691d3e4f3d32df6d771cdd7185f4e0b7c49682e42cc7a5e518c211",
+          "exact_original_bytes": true,
+          "cancel_preserves_file": true,
+          "wrong_extension_preserves_file": true,
+          "unrelated_track_refused": true,
+          "current_rights_denied": true,
+          "restored_rights_exports_same_fixed_track": true,
+          "video_identity_and_position_retained": true,
+          "draft_retained": true,
+          "off_and_old_video_hide_export": true,
+          "native_io": "deterministic path choice only",
+          "dark_narrow": true,
+          "temporary_files_removed": true
+        },
+        "file": "output/video-caption-export-20261125/installed-caption-export/video-caption-export-stdio-字幕按当前轨导出原字节，取消与撤权保持文件和意见/caption-export.json",
+        "sha256": "94212496968910b904b6b9f77b6783dbc23fafcd58c35b9195c34a5183a711e4"
+      }
+    }
+  },
+  "installed_session_observation": {
+    "packaged": true,
+    "model_turns": 0,
+    "actual_mcp": true,
+    "video_reference": {
+      "media_id": "vmedia_4134130c-0b35-45a1-ac43-37ce1af53869",
+      "revision": 1,
+      "sha256": "99d15703877e65ec7ae06318dd66e7e9e243e1a564f6fd794f1a1ed6410c9032"
+    },
+    "second_episode": true,
+    "not_on_first_page": true,
+    "refresh_retained": true,
+    "decoded_and_played": true,
+    "plugin_revision": 1,
+    "disabled_plugin_read": true,
+    "fixed_read_retry": true,
+    "duplicate_saved_once": true,
+    "same_session": true,
+    "draft_retained": true
+  },
+  "first_attempt": {
+    "desktop": "failed: global notice intercepted Clear draft pointer events; test timeout and worker teardown timeout retained",
+    "stdio": "interrupted on old artifacts after confirmed desktop defect; not counted as a passing run",
+    "codex": "not run in the interrupted first attempt",
+    "exit_code": 130,
+    "log": "output/video-caption-export-20261125/first.log",
+    "diagnosis": "output/video-caption-export-20261125/first-diagnosis.json",
+    "fix": "local success state beside the original subtitle operation; real click and old-video switch pass in final runs",
+    "typing_gate": "new private bridge method was added to the declared video method union before final builds"
+  },
+  "package": {
+    "package_directory": "apps/desktop/output/video-caption-export-20261125/package/hetu-dev-iwlRhl/package/Hetu-darwin-arm64",
+    "manifest": "apps/desktop/output/video-caption-export-20261125/package/hetu-dev-iwlRhl/manifest.json",
+    "source_sha256": "5e61a89d467a364b1aa60e095506c4c6553d6bed33a22dcfcbd45d524e9811a8",
+    "app": "apps/desktop/output/video-caption-export-20261125/package/hetu-dev-iwlRhl/package/Hetu-darwin-arm64/Hetu.app",
+    "executable": "apps/desktop/output/video-caption-export-20261125/package/hetu-dev-iwlRhl/package/Hetu-darwin-arm64/Hetu.app/Contents/MacOS/Hetu",
+    "resources": "apps/desktop/output/video-caption-export-20261125/package/hetu-dev-iwlRhl/package/Hetu-darwin-arm64/Hetu.app/Contents/Resources",
+    "source_entries": 3055,
+    "artifact_entries": 3720,
+    "signature_verified": true,
+    "icon_matches": true,
+    "rust_profile": "release",
+    "signing": "ad-hoc-development",
+    "installation": {
+      "installed_files_and_links": 3132,
+      "exact_match": true,
+      "source_sha256": "5e61a89d467a364b1aa60e095506c4c6553d6bed33a22dcfcbd45d524e9811a8",
+      "signature_verified": true,
+      "indices_unchanged": {
+        "creative-library.json": true,
+        "LocalSettings/settings.json": true,
+        "agent-sessions/index/selection.json": true
+      },
+      "no_backup_created": true,
+      "existing_mcp_processes_restarted": false,
+      "desktop_normal_exit_confirmed": true
+    },
+    "normal_launch": {
+      "process_at_installed_path": true,
+      "registered_works": 19,
+      "indices_unchanged": {
+        "creative-library.json": true,
+        "LocalSettings/settings.json": true,
+        "agent-sessions/index/selection.json": true
+      },
+      "native_window_inspected": false
+    },
+    "version": "0.14.1",
+    "published": false,
+    "global_plugins_changed": false
+  },
+  "operational_notes": [
+    "Native window inspection tool timed out; no native window inspection claim",
+    "Quit liveness check initially counted independent MCP services; corrected to desktop graphical processes, desktop exited normally and machine connections were retained",
+    "No backup of the installed application was created",
+    "Fresh installed MCP processes were tested; existing registered MCP processes were not restarted"
+  ],
+  "source_sha256": {
+    "apps/desktop/src/main/video-review.ts": "70e3b4c8269d1fde38b62b3b7122b0d94b01e14d82b815392d8c494cdf4fe51a",
+    "apps/desktop/src/main/work-session.ts": "8eb9dc0525b016304270fea50ba41dbbcd0dccd79c0aec008660a9e3017323b8",
+    "apps/desktop/src/renderer/bridge.ts": "332933773a388c894bd6cdd53f7d6e8fb87626f7417cecedbae379dfcf86b350",
+    "apps/desktop/src/renderer/video-review.tsx": "632293d4a3fb2f433d7bf7e6f38c236a9e3eae3889c3e2f9aff9fc82a0ac4a23",
+    "apps/desktop/src/renderer/media-preview.tsx": "703f1ac479265f1df32ee3d16a7694712c04f74735d1890f222a9dc60c7868e5",
+    "apps/desktop/src/renderer/media-captions.tsx": "28fe3fa52ca9089b58c81167ef0ce75296edac4d3872762ab4e0cb2f9cbcfd41",
+    "apps/desktop/tests/video-review.test.ts": "85e758e7eaac266d9e129e201a50313149fae2ffb09895969c6306da51ef9c17",
+    "apps/task-view/tests/video-caption-export.spec.ts": "62c86d699f3c1ff4393c472671dfffd45f050d8a944b2d00e4c8f9fc55cde1f5"
+  },
+  "artifact_sha256": {
+    "apps/desktop/dist/main.cjs": "59dcfa312ad86b9d2e38785db6010e8a8714bba210ee797863336456a7ee283c",
+    "apps/desktop/dist/renderer/app.js": "072c4c9d35a24cc1d53698dede11cbef3b490e59c53772ac6dce3f598c82aa80",
+    "apps/mcp/resources/workbench.html": "0e077244c909495fbe913da7fa6bd6ab82c247bc5ab709c4941f1ea1102d3e8d",
+    "apps/mcp/resources/workbench.manifest.json": "1a9865d5522cdc36b1ec989807844d0e8964ca6b0ddaf603cd3682d84042de71",
+    "target/debug/hetu-mcp": "544be8030bf6e225e7cb9c32b233cbaba42203a042c7743b33f5180adf9b19fa",
+    "target/debug/hetu-app-server": "78e69d7a69af7048e1906c6ab24fe9d1a6b7a8ffa0e6b1972516276658d0ef60"
+  },
+  "guides_sha256": {
+    "apps/website/src/content/guides/zh-CN/video.md": "ce27314fcf9b9c9d27184976c03fb092243826f5c64536257262b3ec664b4df1",
+    "apps/website/src/content/guides/en/video.md": "1178de1c32bf42bd5034bcc68b29e9843b10bd6666d18d432dadf5ed946ee9d7"
+  },
+  "boundaries": {
+    "full_project_complete": false,
+    "full_visual_replication": false,
+    "full_accessibility_or_system_ime_coverage": false,
+    "windows_linux_verified": false,
+    "native_codex_desktop_host_verified": false,
+    "real_episode_quality_verified": false,
+    "sample_media": "short deterministic timecode fixture",
+    "formal_release_published": false,
+    "website_deployed_this_increment": false,
+    "live_mcp_hot_update_claimed": false
+  }
+}

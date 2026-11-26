@@ -1,0 +1,183 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-26",
+  "kind": "fixed-feedback-continuation-and-conflict-recovery",
+  "state": "installed-validated",
+  "owner": "原TaskFeedback与共享TaskReview；无新增意见存储或Agent循环",
+  "scope": [
+    "图片意见CAS冲突后的原批次重读",
+    "历史意见的确切引用核对",
+    "桌面草稿、MCP草稿及无消息复制",
+    "独立任务面板投递未知与返稿区分"
+  ],
+  "initial_failures": [
+    {
+      "log": "output/feedback-continuation-old-installed-2.log",
+      "reason": "旧安装版保存冲突后缺少重新读取当前批次入口；原输入和固定图片仍在"
+    },
+    {
+      "log": "output/feedback-continuation-task-view-build.log",
+      "reason": "首轮类型检查发现桥接方法联合缺项及投递状态Map类型过窄，已补齐"
+    },
+    {
+      "log": "output/feedback-continuation-unit.log",
+      "reason": "新单测触达原TaskReview的参数属性，Node strip-only不支持；改为普通字段赋值后通过"
+    },
+    {
+      "log": "output/feedback-continuation-ui.log",
+      "passed": 26,
+      "failed": 2,
+      "reason": "复制夹具返回不合法工具结果，另一个断言误用草稿协议字段；更正夹具，不修改产品语义"
+    },
+    {
+      "log": "output/feedback-continuation-final-ui.log",
+      "passed": 9,
+      "failed": 1,
+      "reason": "独立面板的旧返稿提示覆盖本次投递未知；按本次投递时批次区分，并保留逐意见状态"
+    },
+    {
+      "log": "output/feedback-continuation-rustfmt.log",
+      "reason": "末轮格式检查发现新增Rust条件与断言未格式化；已按rustfmt修正并重新装配，不改业务语义"
+    }
+  ],
+  "validation": {
+    "core": {
+      "passed": 8,
+      "failed": 0,
+      "log": "output/feedback-continuation-core.log",
+      "scope": "长UTF-8意见精确字段读取、错摘要／错任务、候选交集与游标身份，原像素及原键恢复"
+    },
+    "agent_context": {
+      "passed": 8,
+      "failed": 0,
+      "log": "output/feedback-continuation-unit-2.log"
+    },
+    "agent_regression": {
+      "passed": 81,
+      "failed": 0,
+      "log": "output/feedback-continuation-agents.log"
+    },
+    "mcp_stdio": {
+      "passed": 42,
+      "failed": 0,
+      "log": "output/feedback-continuation-mcp.log"
+    },
+    "three_surface_continuation": {
+      "passed": 3,
+      "failed": 0,
+      "log": "output/feedback-continuation-final-ui.log",
+      "scope": "实际桌面、stdio及官方Codex转发；冲突与读取失败保留原输入和区域，重开选择旧意见，原生草稿或send:false或复制，四条意见且无模型轮次"
+    },
+    "history_and_image_regression": {
+      "passed": 6,
+      "failed": 0,
+      "log": "output/feedback-continuation-final-ui.log",
+      "scope": "三入口23条历史、分页／重读／并发／关闭隔离及三入口原像素保存、丢回执恢复和返稿；在独立面板状态修正前执行"
+    },
+    "final_task_panel": {
+      "passed": 26,
+      "failed": 0,
+      "log": "output/feedback-continuation-status-final.log",
+      "scope": "状态修正后的完整任务面板回归及真实独立MCP历史意见接续；原反馈／批次固定，投递未知可见且切换历史不恢复发送"
+    },
+    "website": {
+      "pages": 227,
+      "local_references": 13993,
+      "deployed": false,
+      "log": "output/feedback-continuation-website.log"
+    },
+    "skill": {
+      "status": "passed",
+      "local_references": 17,
+      "path": ".agents/skills/hetu-embedded-agent/SKILL.md",
+      "log": "output/feedback-continuation-skill.log"
+    },
+    "final_core": {
+      "passed": 8,
+      "failed": 0,
+      "log": "output/feedback-continuation-core-formatted.log"
+    },
+    "final_package": {
+      "passed": 2,
+      "failed": 0,
+      "log": "output/feedback-continuation-formatted-package-ui.log",
+      "scope": "最终排版包的桌面冲突恢复／原意见草稿，独立MCP原键恢复／历史选择／投递未知隔离"
+    },
+    "format": {
+      "status": "passed",
+      "log": "output/feedback-continuation-rustfmt-final.log"
+    },
+    "final_installed": {
+      "passed": 2,
+      "failed": 0,
+      "log": "output/feedback-continuation-final-installed.log",
+      "scope": "最终应用路径桌面／stdio；固定意见、CAS冲突恢复、原图区域保留、原生草稿或无消息复制、四条意见无重复"
+    },
+    "normal_user_profile": {
+      "verified": true,
+      "library_works": 19,
+      "indexes_unchanged": {
+        "creative-library.json": true,
+        "LocalSettings/settings.json": true,
+        "agent-sessions/index/selection.json": true
+      },
+      "log": "output/feedback-continuation-normal-launch.log",
+      "receipt": "output/feedback-continuation-20261126/normal-launch.json",
+      "original_indexes": "output/feedback-continuation-20261126/profile-indexes-verified.json"
+    },
+    "docs": {
+      "status": "passed",
+      "log": "output/feedback-continuation-docs-final.log"
+    },
+    "resource_reproduction": {
+      "status": "passed",
+      "log": "output/feedback-continuation-resources.log"
+    },
+    "capability_map": {
+      "passed": 1,
+      "failed": 0,
+      "log": "output/feedback-continuation-capability.log",
+      "reproduction": "output/feedback-continuation-capability-check-final.log"
+    },
+    "methods": {
+      "status": "passed",
+      "log": "output/feedback-continuation-methods-check-final.log"
+    }
+  },
+  "limitations": [
+    "不以本专项关闭完整R3／R8、真实模型质量、完整视频、原生Codex Desktop、无障碍或跨平台门槛",
+    "未升版、提交、公开发行、部署官网或重启原常驻MCP",
+    "源码、包体和实际安装分别记录，不以旧包通过覆盖新源码",
+    "无消息复制旅程的复制回执由隔离宿主接收；未据此验收所有系统剪贴板或原生宿主"
+  ],
+  "intermediate_package": {
+    "manifest": "apps/desktop/output/feedback-continuation-20261126/packages/hetu-dev-QgWYbY/manifest.json",
+    "source_sha256": "53368a85a6f5c16735fc68eff3f75cbb207da9c2de5f7ea0e523730b253dd37e",
+    "source_inputs": 3065,
+    "artifacts": 3720,
+    "app_files_and_links": 3132,
+    "package_ui_passed": 4,
+    "package_ui_log": "output/feedback-continuation-package-ui.log",
+    "installed_ui_passed": 2,
+    "installed_ui_log": "output/feedback-continuation-installed.log",
+    "installed_log": "output/feedback-continuation-install.log",
+    "backup_created": false,
+    "scope": "语义完整包；其后仅Rust排版变化，重新装配最终源码，不用此包覆盖后续摘要"
+  },
+  "package": {
+    "manifest": "output/feedback-continuation-20261126/formatted-packages/hetu-dev-xxCxu2/manifest.json",
+    "source_sha256": "ca993a32aafedfdf65acac3d42fd8a9d3bb67c308a9faa643cf2129ab173e393",
+    "source_inputs": 3065,
+    "artifacts": 3720,
+    "app_files_and_links": 3132,
+    "version": "0.14.1",
+    "rust_profile": "release",
+    "signature": "ad-hoc-development-verified",
+    "icon_matches": true,
+    "verification": "output/feedback-continuation-20261126/final-package-verified.json",
+    "installed_verification": "output/feedback-continuation-final-install.log",
+    "backup_created": false,
+    "old_bundle_removed": true
+  },
+  "completed_date": "2026-11-26"
+}

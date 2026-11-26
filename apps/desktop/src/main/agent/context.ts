@@ -1,5 +1,7 @@
 import path from "node:path";
 import type { WorkRef } from "@hetu/plugin-sdk";
+import type {AgentContextRef} from "../../agent-session-contract.ts";
+import {machineEnvironment} from "./machine-environment.ts";
 
 export type AgentSessionContext = {
   schema_version: "1";
@@ -7,6 +9,7 @@ export type AgentSessionContext = {
   scope: "current_work_only" | "creation_preparation";
   machine_entrypoint: "hetu CLI/MCP";
   first_action: string;
+  fixed_context?:AgentContextRef[];
 };
 
 export function serializeAgentSessionContext(context: AgentSessionContext): string {
@@ -31,7 +34,7 @@ export function agentSessionPersistPath(profile: string, work: WorkRef): string 
 }
 
 /** 为 Codex App Server 注入本机会话专用的河图 MCP；认证仍由用户全局 Codex 配置管理。 */
-export function buildCodexAppServerArgs(machineMcpBinary?: string, machineDirectory?: string, workRef?: WorkRef,localSettingsDirectory?:string): string[] {
+export function buildCodexAppServerArgs(machineMcpBinary?: string, machineDirectory?: string, workRef?: WorkRef,localSettingsDirectory?:string,environment:Record<string,string|undefined>={}): string[] {
   const args = ["app-server"];
   if (!machineMcpBinary || !machineDirectory) return args;
   const mcpArgs = ["--client", "codex", "--collaboration-dir", machineDirectory, ...(workRef ? ["--work-ref", JSON.stringify(workRef)] : [])];
@@ -41,8 +44,7 @@ export function buildCodexAppServerArgs(machineMcpBinary?: string, machineDirect
     "-c", 'mcp_servers.hetu.default_tools_approval_mode="approve"',
     "-c", "mcp_servers.hetu.startup_timeout_sec=45",
     "-c", "mcp_servers.hetu.tool_timeout_sec=360",
-    "-c", `mcp_servers.hetu.env.HETU_COLLABORATION_DIR=${JSON.stringify(machineDirectory)}`,
   );
-  if(localSettingsDirectory)args.push("-c",`mcp_servers.hetu.env.HETU_LOCAL_SETTINGS_DIR=${JSON.stringify(localSettingsDirectory)}`);
+  for(const [key,value]of Object.entries(machineEnvironment({...environment,HETU_COLLABORATION_DIR:machineDirectory,...(localSettingsDirectory?{HETU_LOCAL_SETTINGS_DIR:localSettingsDirectory}:{})})))args.push("-c",`mcp_servers.hetu.env.${key}=${JSON.stringify(value)}`);
   return args;
 }

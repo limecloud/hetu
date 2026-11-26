@@ -24,7 +24,7 @@ test("剧本默认排版、单层目录、场次跳转、源码无损、批注�
  try{
   const page=await app.firstWindow();await page.setViewportSize({width:1360,height:900});
   await page.getByRole("button",{name:"打开作品 默认剧本",exact:true}).click();
-  await page.getByRole("button",{name:"剧本",exact:true}).click();
+  await navigate(page,"剧本");
   const reader=page.getByRole("article",{name:"分集剧本",exact:true});await expect(reader).toBeVisible();
   await openDirectory(page);
   const directory=page.getByRole("navigation",{name:"文稿目录",exact:true});
@@ -92,7 +92,7 @@ test("剧本默认排版、单层目录、场次跳转、源码无损、批注�
   expect(saved.data.content).toBe(source+"新增动作。");
   await page.getByRole("tab",{name:"阅读",exact:true}).click();await expect(reader).toContainText("新增动作。");
   if(!await page.getByRole("complementary",{name:"项目导航",exact:true}).isVisible())await page.getByRole("button",{name:"项目导航",exact:true}).click();
-  await navigate(page,"返回创作库");await page.getByRole("button",{name:"打开作品 默认剧本",exact:true}).click();await page.getByRole("button",{name:"剧本",exact:true}).click();await expect(reader).toContainText("新增动作。");
+  await navigate(page,"返回创作库");await page.getByRole("button",{name:"打开作品 默认剧本",exact:true}).click();await navigate(page,"剧本");await expect(reader).toContainText("新增动作。");
   await expect.poll(()=>stage.evaluate(el=>el.scrollTop)).toBeGreaterThan(300);
  }finally{await app.close();}
 });

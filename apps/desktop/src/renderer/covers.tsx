@@ -11,7 +11,7 @@ export function ImagesWorkbench(context: SurfaceContext) {
   const [selection, setSelection] = useState<{ item: Artwork; title: string; author: string }>();
   async function select(item: Artwork) {
     try {
-      const value = await readWorkContent(context.work);
+      const value = await readWorkContent(context.work,{includeDocuments:false});
       setSelection({ item, title: value.summary.title, author: value.record.metadata?.author_name ?? "" });
     } catch (error) { context.notify((error as Error).message); }
   }

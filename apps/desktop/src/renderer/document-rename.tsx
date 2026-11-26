@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import {desktop, data} from "./bridge.ts";
 import {IconButton} from "./workbench.tsx";
 
-export function DocumentRename({document, onClose, onSaved}: {document: {document_id: string; title: string; current_revision_id: string}; onClose(): void; onSaved(): void}) {
+export function DocumentRename({document, onClose, onSaved}: {document: {document_id: string; title: string; current_revision_id: string}; onClose(): void; onSaved(result: any): void}) {
   const dialog = useRef<HTMLDialogElement>(null), live = useRef(true);
   const [title, setTitle] = useState(document.title), [busy, setBusy] = useState(true), [error, setError] = useState(""), [journal, setJournal] = useState<any>();
   useEffect(() => {
@@ -14,10 +14,10 @@ export function DocumentRename({document, onClose, onSaved}: {document: {documen
     setBusy(true); setError("");
     try {
       const result = recover ? await desktop.author("recover", {document_id: document.document_id}) : await desktop.author("rename", {document_id: document.document_id, base_revision_id: document.current_revision_id, title});
-      data(result);
+      const value = data(result);
       const record = await desktop.author("journal", {document_id: document.document_id});
       if (record) await desktop.author("acknowledge", {document_id: document.document_id, operation_key: record.input.operation_key});
-      onSaved(); dialog.current?.close();
+      onSaved(value); dialog.current?.close();
     } catch (error) {
       if (live.current) {setError((error as Error).message); try {setJournal(await desktop.author("journal", {document_id: document.document_id}));} catch {/* 保留原错误和名称。 */}}
     } finally {if (live.current) setBusy(false);}

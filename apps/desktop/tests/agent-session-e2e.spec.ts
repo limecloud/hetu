@@ -34,6 +34,8 @@ test("独立桌面 Agent 会话通过精确作品引用运行在私有沙箱", a
       current=socket;const message = JSON.parse(line.toString());
       if (message.id === undefined) return;
       if (message.method === "initialize") reply(message.id, { serverInfo: { name: "desktop-e2e", version: "1" } });
+      else if(message.method==="account/read")reply(message.id,{account:null,requiresOpenaiAuth:false});
+      else if(message.method==="config/read")reply(message.id,{config:{}});
       else if (message.method === "thread/start" || message.method === "thread/resume") {
         appendFileSync(log, JSON.stringify({ method: message.method, params: message.params, collaboration: process.env.HETU_COLLABORATION_DIR }) + "\\n");
         reply(message.id, { thread: { id: "thread-desktop-e2e" } });
@@ -65,7 +67,7 @@ test("独立桌面 Agent 会话通过精确作品引用运行在私有沙箱", a
     await page.getByRole("button", { name: "打开作品 默认小说", exact: true }).click();
     await page.evaluate(async()=>{const api=(window as any).hetuDesktop;const state=await api.settings("preferences");await api.settings("update",{expected_revision:state.revision,patch:{agent_session:{default_surface:"gui"}}});});
     await navigate(page, "Agent 协作");
-    await page.getByRole("dialog",{name:"创建会话",exact:true}).getByRole("button",{name:"引擎",exact:true}).click();await page.getByRole("button",{name:"打开聊天",exact:true}).click();
+    await page.getByRole("dialog",{name:"创建会话",exact:true}).getByRole("button",{name:/^引擎(?: |$)/}).click();await page.getByRole("button",{name:"打开聊天",exact:true}).click();
     await expect(page.getByText("已连接", { exact: true })).toBeVisible({ timeout: 30000 });
     await page.getByRole("textbox", { name: "发送给 Agent", exact: true }).fill("请读取当前章节的固定来源并返回确认。");
     await page.getByRole("button", { name: "发送", exact: true }).click();
@@ -87,10 +89,26 @@ test("独立桌面 Agent 会话通过精确作品引用运行在私有沙箱", a
       expect(failure).toContain("仅支持打开网页链接");
     }
     await expect(page.getByText("已连接", {exact:true})).toBeVisible();
+    await app.evaluate(({ipcMain})=>{
+      const handlers=(ipcMain as any)._invokeHandlers,resources=handlers.get("desktop:resources"),library=handlers.get("desktop:library");
+      (globalThis as any).__resourceLoads=0;(globalThis as any).__libraryRefreshes=0;(globalThis as any).__heldResourceLists=[];
+      handlers.set("desktop:resources",async(...args:any[])=>{if(args[1]==="list"){(globalThis as any).__resourceLoads++;if((globalThis as any).__holdResourceLists)await new Promise<void>(resolve=>(globalThis as any).__heldResourceLists.push(resolve));}return resources(...args);});
+      handlers.set("desktop:library",async(...args:any[])=>{const result=await library(...args);if(args[1]==="refresh")(globalThis as any).__libraryRefreshes++;return result;});
+    });
     await navigate(page,"资料与素材");
+    await expect(page.getByRole("region",{name:"作品资料与素材",exact:true})).toBeVisible();
+    await expect(page.getByRole("button",{name:"让 AI 整理资料",exact:true})).toBeEnabled();
+    const loads=await app.evaluate(()=>(globalThis as any).__resourceLoads),refreshes=await app.evaluate(()=>(globalThis as any).__libraryRefreshes);
+    await app.evaluate(()=>(globalThis as any).__holdResourceLists=true);
+    await page.evaluate(()=>window.dispatchEvent(new CustomEvent("hetu:work-changed")));
+    await expect.poll(()=>app.evaluate(()=>(globalThis as any).__libraryRefreshes)).toBeGreaterThan(refreshes);
+    await expect.poll(()=>app.evaluate(()=>(globalThis as any).__resourceLoads)).toBeGreaterThan(loads);
+    await expect(page.getByRole("button",{name:"让 AI 整理资料",exact:true})).toBeEnabled();
+    await page.evaluate(()=>{const target=window as any;target.__handoffEvents=[];for(const type of ["pointerdown","pointerup","click"]){document.addEventListener(type,event=>{const node=event.target as HTMLElement;if(node.closest("button")?.textContent?.includes("整理资料"))target.__handoffEvents.push({type,focused:document.hasFocus(),target:node.tagName,disabled:node.closest("button")?.disabled});},true);}});
     await app.evaluate(({ipcMain})=>{const handlers=(ipcMain as any)._invokeHandlers;(globalThis as any).__agentTimings=[];for(const channel of ["desktop:handoff","desktop:agent-session"]){const handler=handlers.get(channel);if(!handler)continue;handlers.set(channel,async(...args:any[])=>{const entry:any={channel,method:args[1],started:Date.now()};(globalThis as any).__agentTimings.push(entry);try{const value=await handler(...args);entry.elapsed=Date.now()-entry.started;return value;}catch(error){entry.elapsed=Date.now()-entry.started;entry.error=(error as Error).message;throw error;}});}});
     await page.getByRole("button",{name:"让 AI 整理资料",exact:true}).click();
-    try{await expect(page.getByRole("region",{name:"独立 Agent 会话",exact:true})).toBeVisible();}catch(error){throw Error(String(error)+"\n宿主时序："+JSON.stringify(await app.evaluate(()=>(globalThis as any).__agentTimings))+"\n会话："+JSON.stringify(await page.evaluate(async()=>{const s=await window.hetuDesktop.agentSession("get");return {state:s.state,surface:s.surface,error:s.error};})));}
+    try{await expect(page.getByRole("region",{name:"独立 Agent 会话",exact:true})).toBeVisible();}catch(error){throw Error(String(error)+"\n宿主时序："+JSON.stringify(await app.evaluate(()=>(globalThis as any).__agentTimings))+"\n会话："+JSON.stringify(await page.evaluate(async()=>{const s=await window.hetuDesktop.agentSession("get");return {state:s.state,surface:s.surface,error:s.error};}))+"\n点击事件："+JSON.stringify(await page.evaluate(()=>(window as any).__handoffEvents)));}
+    await app.evaluate(()=>{(globalThis as any).__holdResourceLists=false;for(const release of (globalThis as any).__heldResourceLists)release();(globalThis as any).__heldResourceLists=[];});
     await expect(page.getByRole("textbox",{name:"发送给 Agent",exact:true})).toHaveValue(/hetu.resources/);
     const draft=await page.getByRole("textbox",{name:"发送给 Agent",exact:true}).inputValue();
     expect(draft).not.toContain("management_ref");expect(draft).not.toContain(workspace);
@@ -126,6 +144,7 @@ test("独立桌面 Agent 会话通过精确作品引用运行在私有沙箱", a
     const rejected=await page.evaluate(async work=>{try{await window.hetuDesktop.agentSession("insert",{work_ref:work,text:"旧作品请求"});return "sent";}catch(error){return (error as Error).message;}},context.novel);
     expect(rejected).toContain("作品已切换");
   } finally {
+    await app.evaluate(()=>{(globalThis as any).__holdResourceLists=false;for(const release of (globalThis as any).__heldResourceLists??[])release();}).catch(()=>{});
     await app.close();
   }
 });

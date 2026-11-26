@@ -23,15 +23,18 @@ test("原生提示前只保存业务请求，明确放入拒绝旧草稿且不�
 });
 test("三种原生引擎注入确切作品MCP，不改认证或全局配置",async()=>{
   const root=await mkdtemp(path.join(os.tmpdir(),"hetu-business-config-"));
+  const environment={HETU_PLUGIN_STATE_DIR:"/private/plugins",HETU_LOCAL_SETTINGS_DIR:"/private/settings",HETU_PLUGIN_NODE:"/runtime/node",HETU_PLUGIN_MANAGER:"/runtime/plugin-manager.mjs",HETU_DESKTOP_PROFILE:"/private/profile",OPENAI_API_KEY:"private-key",OTHER_TOKEN:"private-token"};
   for(const client of ["claude-code","gemini","opencode"] as const){
     const cwd=path.join(root,client);await import("node:fs/promises").then(fs=>fs.mkdir(cwd));
-    const value=await prepareBusinessContext({client,cwd,binary:"/runtime/hetu-mcp",directory:"/private/collaboration",work,node:"/runtime/node",relay:"/runtime/relay.mjs"});
+    const value=await prepareBusinessContext({client,cwd,binary:"/runtime/hetu-mcp",directory:"/private/collaboration",work,node:"/runtime/node",relay:"/runtime/relay.mjs",environment});
     const actual=JSON.parse(await readFile(path.join(cwd,"hetu-mcp.json"),"utf8"));
     assert.deepEqual(JSON.parse(actual.args.at(-1)),work);assert.equal(actual.args[1],client==="claude-code"?"claude-code":"generic");
-    assert.doesNotMatch(JSON.stringify(value),/GEMINI_CLI_HOME|HOME|api_key|authorization/);
+    assert.doesNotMatch(JSON.stringify(value),/GEMINI_CLI_HOME|HOME|api_key|authorization|private-key|private-token/);
     if(client==="claude-code")assert.equal(JSON.parse(value.args[1]).mcpServers.hetu.command,"/runtime/node");
     if(client==="gemini")assert.equal(JSON.parse(await readFile(path.join(cwd,".gemini/settings.json"),"utf8")).mcpServers.hetu.args[1],path.join(cwd,"hetu-mcp.json"));
-    if(client==="opencode")assert.equal(JSON.parse(value.env.OPENCODE_CONFIG_CONTENT!).mcp.hetu.enabled,true);
+    const mcp=client==="claude-code"?JSON.parse(value.args[1]).mcpServers.hetu:client==="gemini"?JSON.parse(await readFile(path.join(cwd,".gemini/settings.json"),"utf8")).mcpServers.hetu:JSON.parse(value.env.OPENCODE_CONFIG_CONTENT!).mcp.hetu;
+    assert.deepEqual(client==="opencode"?mcp.environment:mcp.env,{HETU_COLLABORATION_DIR:"/private/collaboration",HETU_LOCAL_SETTINGS_DIR:environment.HETU_LOCAL_SETTINGS_DIR,HETU_PLUGIN_STATE_DIR:environment.HETU_PLUGIN_STATE_DIR,HETU_PLUGIN_NODE:environment.HETU_PLUGIN_NODE,HETU_PLUGIN_MANAGER:environment.HETU_PLUGIN_MANAGER,HETU_DESKTOP_PROFILE:environment.HETU_DESKTOP_PROFILE});
+    if(client==="opencode")assert.equal(mcp.enabled,true);
   }
 });
 test("受管领域交接使用实际客户端且不向请求暴露授权材料",async()=>{
