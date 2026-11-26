@@ -4,21 +4,23 @@ import {tmpdir} from "node:os";
 import path from "node:path";
 import {spawnSync} from "node:child_process";
 import {AppServer} from "../src/main/rpc.ts";
-import {documentAction, navigate} from "./navigation.ts";
+import {documentAction, navigate, closeApplication, observeApplicationShutdown} from "./navigation.ts";
+import {fixtureBinary, machineBinary} from "./acceptance-paths.ts";
 
 test("右键固定选区、格式子菜单、块事务、批注、目录改名与原生输入撤销", async ({}, info) => {
   test.setTimeout(180000);
   const root = path.resolve("../.."), directory = await mkdtemp(path.join(tmpdir(), "hetu-context-")), workspace = path.join(directory, "work"), profile = path.join(directory, "profile");
   await mkdir(profile);
-  const fixture = spawnSync(path.join(root, "target/debug/examples/baseline_fixture"), [workspace, path.join(directory, "collaboration")], {encoding: "utf8"});
+  const fixture = spawnSync(fixtureBinary("baseline_fixture"), [workspace, path.join(directory, "collaboration")], {encoding: "utf8"});
   expect(fixture.status, fixture.stderr).toBe(0); const refs = JSON.parse(fixture.stdout);
   const id = refs.document.document.document_id, source = "# 试读\r\n\r\n普通 **粗体** 与 🌿。\n\n末段。";
-  const core = await AppServer.open(path.join(root, "target/debug/hetu-app-server"), workspace);
+  const core = await AppServer.open(machineBinary("hetu-app-server"), workspace);
   try {const result = await core.request("workspace/request", {action: "hetu.documents.save", input: {document_id: id, base_revision_id: refs.document.revision.revision_id, content: source, source_format: "markdown", operation_key: "context-fixture"}, contract_revision: "1"}); expect(result.status).toBe("succeeded");} finally {await core.close();}
   await writeFile(path.join(profile, "creative-library.json"), JSON.stringify({schema_version: 1, roots: [{path: workspace, workspace_id: refs.novel.workspace_id, works: [{work_ref: refs.novel, title: "右键验收"}]}]}));
   const executable = process.env.HETU_PACKAGED_APP;
-  const app = await electron.launch({...executable ? {executablePath: executable, args: []} : {args: [path.join(root, "apps/desktop")]}, env: {...process.env, HETU_DESKTOP_PROFILE: profile, HETU_PLUGIN_STATE_DIR: profile, HETU_COLLABORATION_DIR: path.join(directory, "collaboration"), HETU_APP_SERVER: executable ? undefined : path.join(root, "target/debug/hetu-app-server")}});
+  const app = await electron.launch({...executable ? {executablePath: executable, args: []} : {args: [path.join(root, "apps/desktop")]}, env: {...process.env, HETU_DESKTOP_PROFILE: profile, HETU_PLUGIN_STATE_DIR: profile, HETU_COLLABORATION_DIR: path.join(directory, "collaboration"), HETU_APP_SERVER: executable ? undefined : machineBinary("hetu-app-server"), HETU_CLI: executable ? undefined : machineBinary("hetu"), HETU_MCP: executable ? undefined : machineBinary("hetu-mcp")}});
   try {
+    await observeApplicationShutdown(app, info.outputPath("shutdown.jsonl"));
     const page = await app.firstWindow(), errors: string[] = []; page.on("pageerror", error => errors.push(error.message));
     await page.setViewportSize({width: 1440, height: 940});
     const work = page.getByRole("button", {name: "打开作品 默认小说", exact: true});
@@ -140,5 +142,9 @@ test("右键固定选区、格式子菜单、块事务、批注、目录改名�
     })).toBe(true);
     await expect(page.getByRole("menu", {name: "默认小说", exact: true})).toHaveCount(0);
     expect(errors).toEqual([]);
-  } finally {await app.close();}
+  } catch (error) {
+    await writeFile(info.outputPath("business-error.txt"), String(error));
+    await app.windows()[0]?.screenshot({path: info.outputPath("business-error.png")}).catch(() => {});
+    throw error;
+  } finally {await closeApplication(app, "window");}
 });

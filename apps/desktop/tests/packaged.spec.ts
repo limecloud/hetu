@@ -15,6 +15,7 @@ import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { PluginPackage } from "../../../packages/plugin-host/src/package.ts";
 import { AppServer } from "../src/main/rpc.ts";
 import { sampleImage, sampleAudio } from "./fixtures/media.ts";
+import {fixtureBinary} from "./acceptance-paths.ts";
 
 const root = path.resolve(import.meta.dirname, "../../..");
 test("随包原生PTY执行命令、响应尺寸变化并在隐藏后保留同一执行端", async ({}, info) => {
@@ -164,7 +165,7 @@ test(
     });
     const pkg = await PluginPackage.inspect(pluginDir);
     const fixture = spawnSync(
-      path.join(root, "target/debug/examples/plugin_fixture" + (process.platform === "win32" ? ".exe" : "")),
+      fixtureBinary("plugin_fixture"),
       [workspace, access, path.join(pluginDir, "plugin.json"), pkg.sha256],
       { encoding: "utf8", timeout: 30000 },
     );

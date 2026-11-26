@@ -5,21 +5,23 @@ import path from "node:path";
 import {spawnSync} from "node:child_process";
 import {AppServer} from "../src/main/rpc.ts";
 import {documentAction, openSettings, closeSettings, navigate, closeApplication} from "./navigation.ts";
+import {fixtureBinary, machineBinary} from "./acceptance-paths.ts";
 
 test("真实字体目录、即时正文选用与独立窗口界面缩放保持未保存稿和撤销", async ({}, info) => {
   test.setTimeout(120000);
   const root = path.resolve("../.."), directory = await mkdtemp(path.join(tmpdir(), "hetu-fonts-interface-")), workspace = path.join(directory, "work"), profile = path.join(directory, "profile");
   await mkdir(profile);
-  const made = spawnSync(path.join(root, "target/debug/examples/baseline_fixture"), [workspace, path.join(directory, "collaboration")], {encoding: "utf8"});
+  const made = spawnSync(fixtureBinary("baseline_fixture"), [workspace, path.join(directory, "collaboration")], {encoding: "utf8"});
   expect(made.status, made.stderr).toBe(0); const refs = JSON.parse(made.stdout), id = refs.document.document.document_id;
   const source = Array.from({length: 120}, (_, index) => `第${index + 1}段：江岚把旧日记放回书袋，沿海岸寻找灯塔。`).join("\n\n");
-  const core = await AppServer.open(path.join(root, "target/debug/hetu-app-server"), workspace);
+  const core = await AppServer.open(machineBinary("hetu-app-server"), workspace);
   try {
     const saved = await core.request("workspace/request", {action: "hetu.documents.save", input: {document_id: id, base_revision_id: refs.document.revision.revision_id, source_format: "markdown", content: source, operation_key: "fonts-scale-source"}, contract_revision: "1"});
     expect(saved.status).toBe("succeeded");
   } finally {await core.close();}
   await writeFile(path.join(profile, "creative-library.json"), JSON.stringify({schema_version: 1, roots: [{path: workspace, workspace_id: refs.novel.workspace_id, works: [{work_ref: refs.novel, title: "默认小说"}]}]}));
-  const app = await electron.launch({args: [path.join(root, "apps/desktop")], env: {...process.env, HETU_DESKTOP_PROFILE: profile, HETU_PLUGIN_STATE_DIR: profile, HETU_COLLABORATION_DIR: path.join(directory, "collaboration"), HETU_APP_SERVER: path.join(root, "target/debug/hetu-app-server")}});
+  const executable = process.env.HETU_PACKAGED_APP;
+  const app = await electron.launch({...executable ? {executablePath: executable, args: []} : {args: [path.join(root, "apps/desktop")]}, env: {...process.env, HETU_DESKTOP_PROFILE: profile, HETU_PLUGIN_STATE_DIR: profile, HETU_COLLABORATION_DIR: path.join(directory, "collaboration"), HETU_APP_SERVER: executable ? undefined : machineBinary("hetu-app-server"), HETU_CLI: executable ? undefined : machineBinary("hetu"), HETU_MCP: executable ? undefined : machineBinary("hetu-mcp")}});
   try {
     const page = await app.firstWindow(), errors: string[] = []; page.on("pageerror", error => errors.push(error.message));
     await page.setViewportSize({width: 1440, height: 940});
@@ -36,14 +38,24 @@ test("真实字体目录、即时正文选用与独立窗口界面缩放保持�
     const catalog = page.getByRole("region", {name: "本机字体目录", exact: true});
     await expect(catalog.getByRole("status").filter({hasText: "个字体家族"})).toBeVisible();
     const fonts=await page.evaluate(()=>(window as any).hetuDesktop.fonts());expect(fonts.families.length).toBeGreaterThan(0);
-    const family=fonts.families.includes("Songti SC")?"Songti SC":fonts.families[0];
+    const family=fonts.families.find((name:string)=>fonts.cssNames?.[name]!==undefined&&fonts.cssNames[name]!==name)??fonts.families[0];
+    const cssFamily=fonts.cssNames?.[family]??family;
     await catalog.getByRole("searchbox", {name: "搜索本机字体", exact: true}).fill(family);
     expect((await catalog.getByRole("searchbox", {name: "搜索本机字体", exact: true}).boundingBox())!.width).toBeGreaterThan(120);
     await expect(catalog.getByRole("button", {name: "选择字体 "+family, exact: true})).toBeVisible();
     await page.screenshot({path: info.outputPath("local-fonts.png")});
     await catalog.getByRole("button", {name: "选择字体 "+family, exact: true}).click();
-    await expect.poll(() => page.evaluate(async () => (await (window as any).hetuDesktop.settings("preferences")).preferences.reading_profiles.novel.font_name)).toBe(family);
-    await expect.poll(()=>page.locator(".author-editor").evaluate(node=>getComputedStyle(node).fontFamily)).toContain(family);
+    await expect.poll(() => page.evaluate(async () => (await (window as any).hetuDesktop.settings("preferences")).preferences.reading_profiles.novel.font_name)).toBe(cssFamily);
+    await expect.poll(()=>page.locator(".author-editor").evaluate(node=>getComputedStyle(node).fontFamily)).toContain(cssFamily);
+    if(process.platform==="darwin"&&cssFamily!==family){
+      const cdp=await page.context().newCDPSession(page);await cdp.send("DOM.enable");await cdp.send("CSS.enable");
+      const {root}=await cdp.send("DOM.getDocument"),{nodeId}=await cdp.send("DOM.querySelector",{nodeId:root.nodeId,selector:".reading-style-page p"});
+      const rendered=(await cdp.send("CSS.getPlatformFontsForNode",{nodeId})).fonts;
+      expect(rendered.some(font=>font.familyName===cssFamily&&font.glyphCount>0)).toBe(true);
+      await info.attach("font-alias-rendered",{contentType:"application/json",body:JSON.stringify({family,cssFamily,rendered})});
+      await cdp.detach();
+      await page.screenshot({path:info.outputPath("font-alias-rendered.png")});
+    }
     await page.locator('summary[aria-label="阅读排版"]').click();
     await page.getByLabel("更多操作", {exact: true}).click();
     await page.getByRole("combobox", {name: "界面大小", exact: true}).selectOption("125");

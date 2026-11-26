@@ -94,9 +94,10 @@ test("独立设置分类截图、即时保存、浮层和窗口权限", async ()
     const localFonts = page.getByRole("region", {name: "本机字体目录", exact: true});
     const fonts=await page.evaluate(()=>window.hetuDesktop.fonts());expect(fonts.families.length).toBeGreaterThan(0);
     const family=fonts.families[0];
+    const cssFamily=fonts.cssNames?.[family]??family;
     await localFonts.getByRole("searchbox", {name: "搜索本机字体", exact: true}).fill(family);
     await localFonts.getByRole("button", {name: "选择字体 "+family, exact: true}).click();
-    await expect.poll(()=>page.locator(".reading-preview").evaluate(node=>getComputedStyle(node).fontFamily)).toContain(family);
+    await expect.poll(()=>page.locator(".reading-preview").evaluate(node=>getComputedStyle(node).fontFamily)).toContain(cssFamily);
     await expect(page.getByRole("switch", { name: "自动保存正文", exact: true })).toBeEnabled();
     await page.getByRole("switch", { name: "自动保存正文", exact: true }).uncheck();
     await expect.poll(() => page.evaluate(async () => (await window.hetuDesktop.settings("get")).preferences.autosave), { timeout: 30000 }).toBe(false);

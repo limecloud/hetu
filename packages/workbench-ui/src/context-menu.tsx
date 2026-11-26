@@ -11,6 +11,15 @@ interface MenuRequest {
   keyboard?: boolean; onDismiss?: () => void; onError?: (error: Error) => void;
 }
 interface MenuLevel {items: ContextMenuItem[]; parent?: HTMLButtonElement; keyboard?: boolean}
+interface PointerGrace {until: number; direction: number; origin: {x: number; y: number}; edge: number; top: number; bottom: number}
+function movingIntoSubmenu(event: React.PointerEvent, previousX: number, grace: PointerGrace) {
+  if (Date.now() > grace.until || (event.clientX - previousX) * grace.direction < 0) return false;
+  const distance = (event.clientX - grace.origin.x) * grace.direction, span = (grace.edge - grace.origin.x) * grace.direction;
+  if (span <= 0 || distance < 0 || distance > span) return false;
+  const ratio = distance / span;
+  return event.clientY >= grace.origin.y + (grace.top - grace.origin.y) * ratio
+    && event.clientY <= grace.origin.y + (grace.bottom - grace.origin.y) * ratio;
+}
 function scrollPosition(target: EventTarget) {
   const element = target === document || target === window ? document.scrollingElement : target;
   return element instanceof Element ? {left: element.scrollLeft, top: element.scrollTop} : {left: 0, top: 0};
@@ -85,6 +94,8 @@ function Menu({request, level, depth, expanded, close, execute, open, trim, back
   trim(): void; back(): void;
 }) {
   const ref = useRef<HTMLDivElement>(null), search = useRef({text: "", time: 0});
+  const pointerGrace = useRef<PointerGrace>(), pointerX = useRef(0);
+  useEffect(() => {pointerGrace.current = undefined;}, [expanded, level]);
   const hasIcons = level.items.some(item => !("separator" in item) && (item.icon || item.checked !== undefined));
   // 先使用请求坐标渲染可见菜单，再在布局阶段夹到视口内。
   // 初始隐藏会让辅助技术已经读到菜单项，但几何仍为空，窄窗下尤其明显。
@@ -103,6 +114,7 @@ function Menu({request, level, depth, expanded, close, execute, open, trim, back
   }, [position.ready, level]);
   function key(event: React.KeyboardEvent) {
     if (event.nativeEvent.isComposing) return;
+    pointerGrace.current = undefined;
     event.stopPropagation();
     const items = buttons(), selected = items.indexOf(document.activeElement as HTMLButtonElement);
     const button = items[selected], item = level.items.find(item => item.id === button?.dataset.contextKey);
@@ -127,7 +139,21 @@ function Menu({request, level, depth, expanded, close, execute, open, trim, back
     style={{left: position.left, top: position.top}} onKeyDown={key} onPointerDown={event => event.preventDefault()}>
     {level.items.map(item => "separator" in item ? <div role="separator" className="context-menu-separator" key={item.id}/> : <button type="button" key={item.id} role={item.checked === undefined ? "menuitem" : "menuitemcheckbox"}
       aria-label={item.label} aria-checked={item.checked} aria-haspopup={item.children?.length ? "menu" : undefined} aria-expanded={item.children?.length ? item.id === expanded : undefined} disabled={item.disabled} tabIndex={-1} data-context-key={item.id} data-context-label={item.label} data-danger={item.danger || undefined}
-      onPointerMove={event => {if (item.disabled || !event.movementX && !event.movementY) return; event.currentTarget.focus({preventScroll: true}); item.children?.length ? item.id !== expanded && open(item, event.currentTarget, false) : trim();}}
+      onPointerLeave={event => {
+        if (event.pointerType !== "mouse" || item.id !== expanded) return;
+        const submenu = ref.current?.nextElementSibling;
+        if (!(submenu instanceof HTMLElement)) return;
+        const bounds = submenu.getBoundingClientRect(), parent = event.currentTarget.getBoundingClientRect();
+        const direction = bounds.left >= parent.left ? 1 : -1;
+        pointerGrace.current = {until: Date.now() + 300, direction, origin: {x: event.clientX - direction * 5, y: event.clientY}, edge: direction > 0 ? bounds.left : bounds.right, top: bounds.top, bottom: bounds.bottom};
+      }}
+      onPointerMove={event => {
+        if (item.disabled || !event.movementX && !event.movementY) return;
+        const previousX = pointerX.current; pointerX.current = event.clientX;
+        if (pointerGrace.current && movingIntoSubmenu(event, previousX, pointerGrace.current)) return;
+        pointerGrace.current = undefined;
+        event.currentTarget.focus({preventScroll: true}); item.children?.length ? item.id !== expanded && open(item, event.currentTarget, false) : trim();
+      }}
       onClick={event => item.children?.length ? open(item, event.currentTarget, true) : execute(item)}>
       {hasIcons && <span className="context-menu-icon" aria-hidden="true">{item.checked ? "✓" : item.icon ? <Icon name={item.icon} size={14}/> : null}</span>}<span>{item.label}</span>
       {item.children?.length ? <span className="context-menu-arrow" aria-hidden="true">›</span> : item.shortcut ? <span className="context-menu-shortcut">{item.shortcut}</span> : null}

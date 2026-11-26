@@ -1,0 +1,634 @@
+{
+  "recorded_at": "2026-11-26T14:33:56.941826+00:00",
+  "scope": "R7-08/09/11：多级菜单连续斜向指针、左右翻转及原文业务；字体验收不假定macOS家族",
+  "version": "0.15.0 development",
+  "problem": "中心点点击通过，斜向进入第二子项下部时经过移至相邻父项，排序子菜单消失",
+  "changes": [
+    "共享菜单沿实际父子边界提供最多300ms方向三角容错",
+    "反向移动、明确点击和键盘接管仍立即响应，不改排序或原文事务",
+    "排序及桌面菜单用例复用实际制品路径；MCP用例复用正式工作台宿主",
+    "本机字体目录选取实际返回家族，CSS及偏好回读核对同一选择"
+  ],
+  "reference": {
+    "url": "https://github.com/radix-ui/primitives/blob/1e3759dff0504268072fb94656b118fa6e531408/packages/react/menu/src/menu.tsx",
+    "commit": "1e3759dff0504268072fb94656b118fa6e531408",
+    "source_sha256": "b2b62344227208e3424863a8dd15df4a5149906f7833c3a7ea581d9505bd98f1",
+    "adopted": "方向和边界约束的短时指针容错",
+    "limits": "公开源码研究，不构成外部软件视觉认证；实现保留河图自己的菜单及领域命令"
+  },
+  "validation": {
+    "component": {
+      "startTime": "2026-11-26T14:04:32.306Z",
+      "duration": 4259.274,
+      "expected": 2,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "package": {
+      "verified": {
+        "version": "0.15.0",
+        "source_sha256": "a5df5516123ca913d2a25c769b0044b838d34cc258c1fbc081895c184cddb6e3",
+        "source_inputs": 3086,
+        "artifacts": 3133,
+        "signature_verified": true,
+        "icon_matches": true
+      },
+      "desktop_first": {
+        "startTime": "2026-11-26T14:10:09.718Z",
+        "duration": 320666.532,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 3,
+        "flaky": 0
+      },
+      "desktop_followup": {
+        "startTime": "2026-11-26T14:16:09.133Z",
+        "duration": 183020.492,
+        "expected": 3,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "desktop_distinct_passed": 4,
+      "desktop_limits": "首轮原生退出两项失败和夹具路径失败；后续右键／业务／设置通过，PTY再次在退出失败。四项不同旅程分别通过，不是单次全量无失败",
+      "mcp_sort": {
+        "startTime": "2026-11-26T14:10:09.716Z",
+        "duration": 38612.92999999999,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    "installed": {
+      "verified": {
+        "version": "0.15.0",
+        "source_sha256": "a5df5516123ca913d2a25c769b0044b838d34cc258c1fbc081895c184cddb6e3",
+        "source_inputs": 3086,
+        "artifacts": 3133,
+        "signature_verified": true,
+        "icon_matches": true,
+        "installed_path": "/Applications/Hetu.app",
+        "atomic_swap": true,
+        "backup_created": false,
+        "old_bundle_removed": true
+      },
+      "desktop": {
+        "startTime": "2026-11-26T14:20:50.573Z",
+        "duration": 426373.233,
+        "expected": 2,
+        "skipped": 0,
+        "unexpected": 2,
+        "flaky": 0
+      },
+      "business_shutdown_followup": {
+        "startTime": "2026-11-26T14:29:21.026Z",
+        "duration": 64645.959,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "desktop_limits": "首轮PTY及设置通过；右键业务未失败但退出超时，业务项调试连接关闭后退出助手再次evaluate失败；修正助手后业务项独立通过。右键整条仍不计通过",
+      "native_no_debug_quit": {
+        "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+        "no_debugger": true,
+        "native_window_observed": true,
+        "native_terminate": true,
+        "result": {
+          "code": 0,
+          "signal": null
+        },
+        "model_turns": 0
+      },
+      "mcp_sort": {
+        "startTime": "2026-11-26T14:20:50.514Z",
+        "duration": 48482.875,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "shared_workbench": {
+        "startTime": "2026-11-26T14:21:24.610Z",
+        "duration": 647260.822,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "normal_launch": {
+        "verified": true,
+        "library_works": 19,
+        "runtime": {
+          "version": "0.15.0",
+          "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+          "userData": "/Users/coso/Library/Application Support/Hetu"
+        },
+        "profile_indexes_unchanged": true
+      },
+      "final_bundle": {
+        "version": "0.15.0",
+        "source_sha256": "a5df5516123ca913d2a25c769b0044b838d34cc258c1fbc081895c184cddb6e3",
+        "source_inputs": 3086,
+        "artifacts": 3133,
+        "signature_verified": true,
+        "icon_matches": true
+      },
+      "original_user_indexes_unchanged": 3
+    },
+    "model_turns": 0,
+    "business": [
+      "真实stdio→官方AppBridge→Core升序保存，混合换行与字节保持",
+      "暗色760px连续斜向选择降序，单次撤销恢复已保存升序且不产生额外修订",
+      "桌面完整右键：格式、段落、复制／粘贴、批注、文稿副本、确认取消与原文回读",
+      "左右翻转、反向离开、键盘ArrowRight／End／Escape及原入口焦点",
+      "完整共享工作台读取实际本机字体、选择后CSS与偏好回读，不依赖Songti SC存在"
+    ]
+  },
+  "first_attempts": [
+    {
+      "log": "sort-before.log",
+      "result": "grep错误导致未选择用例；纠正为实际完整标题，原记录保留"
+    },
+    {
+      "log": "sort-baseline.log",
+      "result": "旧安装中心点击通过，不能据此关闭CI失败"
+    },
+    {
+      "log": "sort-smooth-before.log",
+      "result": "旧安装到子项中心的连续移动通过"
+    },
+    {
+      "log": "sort-diagonal-before.log",
+      "result": "同一旧安装斜向进入第二项下部失败；指针记录实际经过移至父项，排序菜单消失"
+    },
+    {
+      "log": "pointer-final.log",
+      "result": "行为通过，复看发现组件夹具遗漏Radix变量；补齐实际样式后pointer-styled两项复验通过"
+    },
+    {
+      "log": "desktop-package.log",
+      "result": "首轮PTY通过，右键／设置停在原生退出，业务项硬编码开发fixture已被移除；清理超时保留。尝试清理旧PID前其已由原worker退出，未向不存在或其他进程发送信号"
+    },
+    {
+      "log": "desktop-package-final.log",
+      "result": "修正fixture选择、补退出观察和正常关窗后，右键、完整业务及设置通过；PTY在标准退出再次失败。未放宽退出断言或将quit事件当进程退出"
+    },
+    {
+      "log": "desktop-installed.log",
+      "result": "真实安装路径PTY及设置通过；右键业务无断言失败，已发生window-all-closed／before-quit／will-quit／quit但进程仍未在期限内退出。完整业务项关闭调试连接后再次evaluate导致退出助手失败，原失败及清理超时保留"
+    },
+    {
+      "log": "business-shutdown-followup.log",
+      "result": "关闭助手只对确切Target closed情况等待真实子进程exit=0，非零退出仍拒绝；完整业务复验通过，未重发原任务或修改产品退出策略"
+    },
+    {
+      "log": "native-no-debug-quit.log",
+      "result": "隔离安装版不挂调试器，按确切PID观察窗口后请求正常原生退出，exit=0；只代表空库原生退出，不关闭长旅程调试退出问题"
+    }
+  ],
+  "screenshots": {
+    "component-menu-right.png": {
+      "path": "docs/research/evidence/context-menu-pointer-2026-11-26/component-menu-right.png",
+      "sha256": "0c7fdd9513534fb8d32811f4b80880ba6e85bd2bceff2939491bd886c3abc6c8"
+    },
+    "component-menu-left.png": {
+      "path": "docs/research/evidence/context-menu-pointer-2026-11-26/component-menu-left.png",
+      "sha256": "32b1b0318fd5f1d4619ae581e542ea5ad47b7be811deb6185ffb29c51ace59f5"
+    },
+    "installed-sort-dark-narrow.png": {
+      "path": "docs/research/evidence/context-menu-pointer-2026-11-26/installed-sort-dark-narrow.png",
+      "sha256": "d0aa8b27635460079ddb7dfdaf59699d3ac72269a3a6bf881f238cbf931d36c7"
+    },
+    "installed-context-copy.png": {
+      "path": "docs/research/evidence/context-menu-pointer-2026-11-26/installed-context-copy.png",
+      "sha256": "1344cf1753579ff777528a8fc5f0f5a0af0f039caad2dd024b020824d2b6ed82"
+    },
+    "installed-font-picker.png": {
+      "path": "docs/research/evidence/context-menu-pointer-2026-11-26/installed-font-picker.png",
+      "sha256": "98999f701dd16388e12016821d1d4e84b4b122128c9238ba384d9cf1c8abaa2c"
+    },
+    "final-menu-light-left.png": {
+      "path": "docs/research/evidence/context-menu-pointer-2026-11-26/final-menu-light-left.png",
+      "sha256": "f63af2cd448846971692149e7c54cd4eb39425de5f703ba0fab8ae6ba435dbbc"
+    },
+    "final-menu-light-right.png": {
+      "path": "docs/research/evidence/context-menu-pointer-2026-11-26/final-menu-light-right.png",
+      "sha256": "de28da7f9f5c037d7989b40e66820e83e10f9d898dce6365046866e46893ea6e"
+    },
+    "final-menu-dark-left.png": {
+      "path": "docs/research/evidence/context-menu-pointer-2026-11-26/final-menu-dark-left.png",
+      "sha256": "99e2d49737a0a140cacce71ac6672e8af73a36fad95a16d6f4ceddcdc4776e6c"
+    },
+    "final-menu-dark-right.png": {
+      "path": "docs/research/evidence/context-menu-pointer-2026-11-26/final-menu-dark-right.png",
+      "sha256": "77394355a30a99d18d36264920238d3c1d8ee66a5e45e6ca0d4936076fdd24f0"
+    },
+    "package-font-alias-rendered.png": {
+      "path": "docs/research/evidence/context-menu-pointer-2026-11-26/package-font-alias-rendered.png",
+      "sha256": "b833342eed86f750053ca208fe71b25254738231533145e169eae6cdf4280896"
+    },
+    "installed-font-alias-rendered.png": {
+      "path": "docs/research/evidence/context-menu-pointer-2026-11-26/installed-font-alias-rendered.png",
+      "sha256": "55b3aaa8876f4840860de8f58b89ef60ff092b5830255788395c2552fb6e69fb"
+    },
+    "installed-mcp-font-alias.png": {
+      "path": "docs/research/evidence/context-menu-pointer-2026-11-26/installed-mcp-font-alias.png",
+      "sha256": "f65ccf6d6c19d3132d46e70ba6165ef2fc2047dad3b46856ddb0029ae052ca69"
+    }
+  },
+  "source_sha256": {
+    "packages/workbench-ui/src/context-menu.tsx": "70bf56416034500072aada25fa0113c95594e71b372b89b3f64e8ead566d2827",
+    "apps/task-view/tests/context-menu-pointer.spec.ts": "33ec79aacf39fc0b6be2d814ca39562bcd19b8dd31417b6faec51932c59b18b2",
+    "apps/task-view/tests/editor-sort.spec.ts": "f7a71ae7effb5e1236036ac2c928c36506170b4ca75a4e56ba8f4420f6203fd8",
+    "apps/desktop/tests/context-menus.spec.ts": "36b1c55ee6674d87a7ff05502ce71c7d2307cf4dd2f034df9e2c2b4f98e26eae",
+    "apps/task-view/tests/shared-workbench.spec.ts": "661496ba1dc2b2bf23a27df689560b9cea60b19514462478bb8a78ef7abf2769",
+    "apps/desktop/tests/navigation.ts": "3f72abd2d319c7682c4ab71da750c75a102cb756ed4061b7aa940e304f8d47de",
+    "apps/desktop/tests/packaged.spec.ts": "d4e6766aff0ac52b3c1389b54bdcba99cbe924fc44282b54710c842eb18a8af4"
+  },
+  "raw_evidence_root": "/private/var/folders/87/s6cpr7hd1_v43cs833x4s_900000gn/T/hetu-release-convergence-vhiaqvno",
+  "not_verified": [
+    "原CI窄窗排序超时的单一根因未从Linux事件证实，不能将本机反例扩大为原CI首因",
+    "调试环境的间歇退出未解决，不因业务或quit事件通过而关闭",
+    "实际Codex Desktop原生宿主、读屏及全页面视觉",
+    "本增量Windows／Linux与DPI",
+    "专业完整一集、作者试用及正式发行",
+    "本包千章性能未重测，保留前版范围"
+  ],
+  "followup_menu_font": {
+    "recorded_at": "2026-11-26T15:31:37.042383+00:00",
+    "scope": "共享菜单hover级联与唯一选中；本机字体中文别名到规范CSS家族映射",
+    "first_color_negative": {
+      "startTime": "2026-11-26T14:39:47.861Z",
+      "duration": 13624.86,
+      "expected": 0,
+      "skipped": 0,
+      "unexpected": 2,
+      "flaky": 0
+    },
+    "component_final": {
+      "startTime": "2026-11-26T14:54:46.999Z",
+      "duration": 21581.126,
+      "expected": 5,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "font_parser": {
+      "passed": 5,
+      "failed": 0
+    },
+    "font_probe_before": {
+      "version": "0.15.0",
+      "catalog_count": 813,
+      "metrics": [
+        {
+          "name": "报隶-繁",
+          "widths": [
+            {
+              "fallback": "monospace",
+              "baseline": 1139.51953125,
+              "selected": 1139.51953125,
+              "font": "72px 报隶-繁, monospace"
+            },
+            {
+              "fallback": "serif",
+              "baseline": 1052.1358642578125,
+              "selected": 1052.1358642578125,
+              "font": "72px 报隶-繁, serif"
+            },
+            {
+              "fallback": "sans-serif",
+              "baseline": 1142.35205078125,
+              "selected": 1142.35205078125,
+              "font": "72px 报隶-繁, sans-serif"
+            }
+          ],
+          "rendered": [
+            {
+              "familyName": "PingFang SC",
+              "postScriptName": "PingFangSC-Regular",
+              "isCustomFont": false,
+              "glyphCount": 21
+            }
+          ]
+        },
+        {
+          "name": "Baoli TC",
+          "widths": [
+            {
+              "fallback": "monospace",
+              "baseline": 1139.51953125,
+              "selected": 1115.56787109375,
+              "font": "72px \"Baoli TC\", monospace"
+            },
+            {
+              "fallback": "serif",
+              "baseline": 1052.1358642578125,
+              "selected": 1115.56787109375,
+              "font": "72px \"Baoli TC\", serif"
+            },
+            {
+              "fallback": "sans-serif",
+              "baseline": 1142.35205078125,
+              "selected": 1115.56787109375,
+              "font": "72px \"Baoli TC\", sans-serif"
+            }
+          ],
+          "rendered": [
+            {
+              "familyName": "Baoli TC",
+              "postScriptName": "STBaoliTC-Regular",
+              "isCustomFont": false,
+              "glyphCount": 21
+            }
+          ]
+        },
+        {
+          "name": "Songti SC",
+          "widths": [
+            {
+              "fallback": "monospace",
+              "baseline": 1139.51953125,
+              "selected": 1052.1358642578125,
+              "font": "72px \"Songti SC\", monospace"
+            },
+            {
+              "fallback": "serif",
+              "baseline": 1052.1358642578125,
+              "selected": 1052.1358642578125,
+              "font": "72px \"Songti SC\", serif"
+            },
+            {
+              "fallback": "sans-serif",
+              "baseline": 1142.35205078125,
+              "selected": 1052.1358642578125,
+              "font": "72px \"Songti SC\", sans-serif"
+            }
+          ],
+          "rendered": [
+            {
+              "familyName": "Songti SC",
+              "postScriptName": "STSongti-SC-Regular",
+              "isCustomFont": false,
+              "glyphCount": 21
+            }
+          ]
+        },
+        {
+          "name": "Hetu Missing Typeface Probe",
+          "widths": [
+            {
+              "fallback": "monospace",
+              "baseline": 1139.51953125,
+              "selected": 1139.51953125,
+              "font": "72px \"Hetu Missing Typeface Probe\", monospace"
+            },
+            {
+              "fallback": "serif",
+              "baseline": 1052.1358642578125,
+              "selected": 1052.1358642578125,
+              "font": "72px \"Hetu Missing Typeface Probe\", serif"
+            },
+            {
+              "fallback": "sans-serif",
+              "baseline": 1142.35205078125,
+              "selected": 1142.35205078125,
+              "font": "72px \"Hetu Missing Typeface Probe\", sans-serif"
+            }
+          ],
+          "rendered": [
+            {
+              "familyName": "PingFang SC",
+              "postScriptName": "PingFangSC-Regular",
+              "isCustomFont": false,
+              "glyphCount": 20
+            }
+          ]
+        }
+      ]
+    },
+    "source_first": {
+      "startTime": "2026-11-26T15:02:38.826Z",
+      "duration": 41074.862,
+      "expected": 0,
+      "skipped": 0,
+      "unexpected": 1,
+      "flaky": 0
+    },
+    "source_followup": {
+      "startTime": "2026-11-26T15:04:55.704Z",
+      "duration": 150687.17,
+      "expected": 0,
+      "skipped": 0,
+      "unexpected": 1,
+      "flaky": 0
+    },
+    "source_followup_rendered": [
+      {
+        "family": "报隶-繁",
+        "cssFamily": "Baoli TC",
+        "rendered": [
+          {
+            "familyName": "Baoli TC",
+            "postScriptName": "STBaoliTC-Regular",
+            "isCustomFont": false,
+            "glyphCount": 34
+          }
+        ]
+      }
+    ],
+    "source_native_close": {
+      "startTime": "2026-11-26T15:08:29.439Z",
+      "duration": 155896.995,
+      "expected": 0,
+      "skipped": 0,
+      "unexpected": 1,
+      "flaky": 0
+    },
+    "source_native_close_rendered": [
+      {
+        "family": "报隶-繁",
+        "cssFamily": "Baoli TC",
+        "rendered": [
+          {
+            "familyName": "Baoli TC",
+            "postScriptName": "STBaoliTC-Regular",
+            "isCustomFont": false,
+            "glyphCount": 34
+          }
+        ]
+      }
+    ],
+    "source_limits": "初次未配套CLI导致作品入口禁用，字体尚未测试；补齐后全部业务及平台字体断言完成，但标准与原生退出均超时，不计整条通过",
+    "shutdown_sample": {
+      "sha256": "5d87459678eb9296e89e463ab684fc52ecb624bdc8710cc2128e1a51e5711b13",
+      "observation": "确切隔离PID 98258，2秒采样；NSPersistentUIManager与CFPrefs同步等待，仅为该时点观察，根因未关闭；公开记录不包含原始栈及本机路径"
+    },
+    "source_changed_package_rejected": {
+      "before_source_sha256": "b7fbfa7a4fc31668689b2b1f31c9d2b38b54b70ed1b38ef9b931637f8d542a61",
+      "after_source_sha256": "8fcedc315dcf53a74ad986b91fec3b07a56dd5cebec9d6c671c7145057ff7e95",
+      "changes": [
+        {
+          "path": "apps/mcp/resources/workbench.html",
+          "before_sha256": "86194ba1b2934e92682c64323e7b8a8bfd282c52e797c97e7c196bc8ad2ebca8",
+          "after_sha256": "fef0ce126a508765bf6c38e4d092d6fca885d22425c9886175e692c85df3fbd1"
+        },
+        {
+          "path": "apps/mcp/resources/workbench.manifest.json",
+          "before_sha256": "9e3d888b6b0efaf1207d2a58207d489d4c79824f4201cffbf52b6f0c252425c2",
+          "after_sha256": "913d888e451ad2a3dcb4d2332bf656bfc541309569bf9abf3b4401e8bbe04f3f"
+        },
+        {
+          "path": "packages/workbench-ui/src/workbench.css",
+          "before_sha256": "d61f5b578682c6ba09e92d5a50264131d5dfbf2e2057bfa2b543089fbdba910b",
+          "after_sha256": "af9e398f21a57f028ee187271c0ea2e7deed6574aa4ca707124402b245519aa2"
+        }
+      ]
+    },
+    "package_verified": {
+      "version": "0.15.0",
+      "source_sha256": "8fcedc315dcf53a74ad986b91fec3b07a56dd5cebec9d6c671c7145057ff7e95",
+      "source_inputs": 3086,
+      "artifacts": 3133,
+      "signature_verified": true,
+      "icon_matches": true
+    },
+    "package_desktop": {
+      "startTime": "2026-11-26T15:21:46.297Z",
+      "duration": 54333.66,
+      "expected": 2,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "package_rendered": [
+      {
+        "family": "报隶-繁",
+        "cssFamily": "Baoli TC",
+        "rendered": [
+          {
+            "familyName": "Baoli TC",
+            "postScriptName": "STBaoliTC-Regular",
+            "isCustomFont": false,
+            "glyphCount": 34
+          }
+        ]
+      }
+    ],
+    "package_mcp_sort": {
+      "startTime": "2026-11-26T15:21:46.385Z",
+      "duration": 35508.26,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "installed_verified": {
+      "version": "0.15.0",
+      "source_sha256": "8fcedc315dcf53a74ad986b91fec3b07a56dd5cebec9d6c671c7145057ff7e95",
+      "source_inputs": 3086,
+      "artifacts": 3133,
+      "signature_verified": true,
+      "icon_matches": true,
+      "installed_path": "/Applications/Hetu.app",
+      "atomic_swap": true,
+      "backup_created": false,
+      "old_bundle_removed": true
+    },
+    "installed_desktop": {
+      "startTime": "2026-11-26T15:23:47.894Z",
+      "duration": 73633.787,
+      "expected": 2,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "installed_rendered": [
+      {
+        "family": "报隶-繁",
+        "cssFamily": "Baoli TC",
+        "rendered": [
+          {
+            "familyName": "Baoli TC",
+            "postScriptName": "STBaoliTC-Regular",
+            "isCustomFont": false,
+            "glyphCount": 34
+          }
+        ]
+      }
+    ],
+    "installed_mcp_sort": {
+      "startTime": "2026-11-26T15:23:47.811Z",
+      "duration": 42481.324,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "installed_shared_workbench": {
+      "startTime": "2026-11-26T15:23:47.942Z",
+      "duration": 427282.04600000003,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "installed_normal_launch": {
+      "verified": true,
+      "library_works": 19,
+      "runtime": {
+        "version": "0.15.0",
+        "executable": "/Applications/Hetu.app/Contents/MacOS/Hetu",
+        "userData": "/Users/coso/Library/Application Support/Hetu"
+      },
+      "profile_indexes_unchanged": true
+    },
+    "source_sha256": {
+      "packages/workbench-ui/src/context-menu.tsx": "70bf56416034500072aada25fa0113c95594e71b372b89b3f64e8ead566d2827",
+      "packages/workbench-ui/src/workbench.css": "af9e398f21a57f028ee187271c0ea2e7deed6574aa4ca707124402b245519aa2",
+      "packages/workbench-ui/src/font-picker.tsx": "be1c19d7eb8c02c77d725af69a2827898d4acf707f020b1a7bbe890157d9654e",
+      "apps/desktop/src/main/font-catalog.ts": "ca4c39cebff152a50888a20f44e9b374958eebcf72be0300d090577d6cb55d54",
+      "apps/desktop/tests/font-catalog.test.ts": "61ecfa58f9292a450e01a3b01ea57afc0a2600d09e31a89200fcc77946b8d7cb",
+      "apps/desktop/tests/fonts-interface.spec.ts": "d0d2c3a2da68216c8f9a64ee89b336e8e7c551c69160997526c7f0286ea4e4a2",
+      "apps/desktop/tests/settings-visual.spec.ts": "cfefd2e9687a0470322058d6cef470a279acab41440aa6ac6923b9cfbdb81682",
+      "apps/desktop/tests/navigation.ts": "3b524d87b44f63d6cb1a0c8294e74d535353005493e4b4b33cd981bf84346bb5",
+      "apps/desktop/tests/context-menus.spec.ts": "ecac237c224f9068a044512166a24f010534d5f2983a6b05dc9163b170f8af35",
+      "apps/desktop/tests/packaged.spec.ts": "d4e6766aff0ac52b3c1389b54bdcba99cbe924fc44282b54710c842eb18a8af4",
+      "apps/task-view/tests/context-menu-pointer.spec.ts": "000ee7b26d028663a496b8f53703417b81382ce740626139c96d3e80cae68784",
+      "apps/task-view/tests/font-picker-alias.spec.ts": "73f026441c43d61a7e0be6901243dbed6c97b5d03ba5a65fef8992d4f99d7cd4",
+      "apps/task-view/tests/editor-sort.spec.ts": "f7a71ae7effb5e1236036ac2c928c36506170b4ca75a4e56ba8f4420f6203fd8",
+      "apps/task-view/tests/shared-workbench.spec.ts": "01e917275ded14ed3ecd7c6cea7bd5224c0a866967e95cf732f7aeb66e4e9658"
+    },
+    "model_turns": 0,
+    "limits": [
+      "macOS实际字形仅为该家族及样句，不证明全部字体或缺字覆盖",
+      "标准调试退出与原生专项均有失败，后续通过不构成根因修复",
+      "恢复菜单既定Radix选中颜色不代表完整无障碍对比验收",
+      "原生Codex Desktop、全页面视觉、读屏、专业完整一集、作者试用及最终正式发行继续独立验收"
+    ],
+    "installed_final_verified": {
+      "version": "0.15.0",
+      "source_sha256": "8fcedc315dcf53a74ad986b91fec3b07a56dd5cebec9d6c671c7145057ff7e95",
+      "source_inputs": 3086,
+      "artifacts": 3133,
+      "signature_verified": true,
+      "icon_matches": true
+    },
+    "final_checks": {
+      "documents": 92,
+      "local_links": 1676,
+      "fragment_links": 431,
+      "doc_errors": 0,
+      "skill_local_links": 19,
+      "skill_validation": "official quick_validate passed",
+      "capability_map": "check passed",
+      "current_source_hashes": 14,
+      "screenshots": 12,
+      "source_and_images_match": true,
+      "diff_check": "passed"
+    }
+  }
+}

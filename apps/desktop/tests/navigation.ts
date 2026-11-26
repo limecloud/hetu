@@ -40,12 +40,18 @@ export async function observeApplicationShutdown(application:ElectronApplication
 /** 走作者关闭窗口的路径，保留恢复稿落盘期间的调试连接。 */
 export async function closeApplication(application: ElectronApplication, via: "window" | "app" = "app") {
   const child = application.process();
-  if (child.exitCode !== null) {expect(child.exitCode).toBe(0); return;}
+  const exitCode = () => child.exitCode;
+  if (exitCode() !== null) {expect(exitCode()).toBe(0); return;}
   await application.evaluate(({dialog})=>{
     const original=dialog.showMessageBoxSync;
     // 隔离验收关闭时明确选择保留恢复稿；其他作者决定继续走原确认。
     dialog.showMessageBoxSync=((...args:any[])=>args.some(value=>value?.message==="修改尚未保存到作品。")?1:(original as any)(...args)) as typeof original;
+  }).catch(async error=>{
+    // 正常关窗可能先断开调试连接，再派发子进程exit；仍须核对真实退出码。
+    if(!String(error).includes("Target page, context or browser has been closed"))throw error;
+    await expect.poll(()=>child.exitCode,{timeout:30000}).toBe(0);
   });
+  if(exitCode()!==null){expect(exitCode()).toBe(0);return;}
   let requestError:unknown;
   let nativeState:unknown;
   if(process.env.HETU_TEST_NATIVE_CLOSE==="1"){

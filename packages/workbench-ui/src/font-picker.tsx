@@ -2,10 +2,10 @@ import React, {useEffect, useMemo, useRef, useState} from "react";
 import {availableTypeface, defaultReadingProfile, readingFont} from "./reading.ts";
 import {readingText} from "./reading-labels.ts";
 
-export interface FontCatalog {families: string[]; scanned: number; skipped: number; complete: boolean}
+export interface FontCatalog {families: string[]; cssNames?: Record<string, string>; scanned: number; skipped: number; complete: boolean}
 export type LoadFontCatalog = (refresh?: boolean) => Promise<FontCatalog>;
 
-function FontOption({name, language, disabled, select, root}: {name: string; language: string; disabled: boolean; select: (name: string) => void; root: React.RefObject<HTMLUListElement>}) {
+function FontOption({name, cssName, language, disabled, select, root}: {name: string; cssName: string; language: string; disabled: boolean; select: (name: string) => void; root: React.RefObject<HTMLUListElement>}) {
   const element = useRef<HTMLLIElement>(null), [visible, setVisible] = useState(false), [available, setAvailable] = useState<boolean>();
   useEffect(() => {
     const observer = new IntersectionObserver(entries => {if (entries.some(entry => entry.isIntersecting)) {setVisible(true); observer.disconnect();}}, {root: root.current});
@@ -14,11 +14,11 @@ function FontOption({name, language, disabled, select, root}: {name: string; lan
   }, []);
   useEffect(() => {
     if (!visible) return;
-    const frame = requestAnimationFrame(() => setAvailable(availableTypeface(name)));
+    const frame = requestAnimationFrame(() => setAvailable(availableTypeface(cssName)));
     return () => cancelAnimationFrame(frame);
-  }, [visible, name]);
-  return <li ref={element}><button type="button" disabled={disabled} aria-label={readingText("reading.font_choose", language, {name})} onClick={() => select(name)}>
-    <strong>{name}</strong><span style={visible ? {fontFamily: readingFont({...defaultReadingProfile("novel"), font_family: "custom", font_name: name})} : undefined}>{readingText("reading.font_preview", language)}</span>
+  }, [visible, cssName]);
+  return <li ref={element}><button type="button" disabled={disabled} aria-label={readingText("reading.font_choose", language, {name})} onClick={() => select(cssName)}>
+    <strong>{name}</strong><span style={visible ? {fontFamily: readingFont({...defaultReadingProfile("novel"), font_family: "custom", font_name: cssName})} : undefined}>{readingText("reading.font_preview", language)}</span>
     {available !== undefined && <small>{readingText(available ? "reading.font_available" : "reading.font_fallback", language)}</small>}
   </button></li>;
 }
@@ -46,7 +46,7 @@ export function FontPicker({load, select, language, disabled}: {load: LoadFontCa
       {!busy && catalog && <>
         {!catalog.complete && <p role="status">{t("reading.font_partial", {count: catalog.skipped})}</p>}
         <p role="status">{t(names.length ? "reading.font_count" : "reading.font_none", {count: names.length})}</p>
-        <ul ref={list}>{names.slice(0, 60).map(name => <FontOption key={name} name={name} root={list} select={select} disabled={disabled} language={language}/>)}</ul>
+        <ul ref={list}>{names.slice(0, 60).map(name => <FontOption key={name} name={name} cssName={catalog.cssNames?.[name] ?? name} root={list} select={select} disabled={disabled} language={language}/>)}</ul>
         {names.length > 60 && <p>{t("reading.font_refine")}</p>}
       </>}
     </section>}

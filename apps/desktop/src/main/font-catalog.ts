@@ -6,7 +6,7 @@ import type {FontCatalog} from "@hetu/workbench-ui";
 type ReadBytes = (offset: number, length: number) => Promise<Buffer>;
 
 /** 只解析SFNT名称表；不加载字形、不执行字体代码，也不把文件交给视图。 */
-export async function readFontFamilies(read: ReadBytes): Promise<string[]> {
+export async function readFontFamilies(read: ReadBytes) {
   const header = await read(0, 12), offsets = [0];
   if (header.toString("ascii", 0, 4) === "ttcf") {
     const count = header.readUInt32BE(8);
@@ -14,13 +14,14 @@ export async function readFontFamilies(read: ReadBytes): Promise<string[]> {
     const table = await read(12, count * 4);
     offsets.splice(0, 1, ...Array.from({length: count}, (_, i) => table.readUInt32BE(i * 4)));
   }
-  const families = new Set<string>();
+  const families = new Set<string>(), cssNames: Record<string, string> = Object.create(null);
   for (const offset of offsets) {
     const face = await read(offset, 12), signature = face.toString("ascii", 0, 4);
     if (face.readUInt32BE(0) !== 0x00010000 && !["OTTO", "true", "typ1"].includes(signature)) continue;
     const count = face.readUInt16BE(4);
     if (count < 1 || count > 256) throw new Error("字体表数量超出预算。");
     const tables = await read(offset + 12, count * 16);
+    const aliases: {name: string; id: number; english: boolean}[] = [];
     for (let i = 0; i < count; i++) {
       if (tables.toString("ascii", i * 16, i * 16 + 4) !== "name") continue;
       const start = tables.readUInt32BE(i * 16 + 8), size = tables.readUInt32BE(i * 16 + 12);
@@ -40,11 +41,18 @@ export async function readFontFamilies(read: ReadBytes): Promise<string[]> {
         } else if (platform === 1 && names.readUInt16BE(record + 2) === 0) value = new TextDecoder("macintosh").decode(bytes);
         else continue;
         const family = value.trim();
-        if (family && family.length <= 128 && !/[\x00-\x1f\x7f"\\;{}<>]|[\uD800-\uDFFF]/u.test(family) && !family.startsWith(".")) families.add(family);
+        if (family && family.length <= 128 && !/[\x00-\x1f\x7f"\\;{}<>]|[\uD800-\uDFFF]/u.test(family) && !family.startsWith(".")) {
+          const language = names.readUInt16BE(record + 4);
+          aliases.push({name: family, id, english: platform === 3 && (language & 0x3ff) === 9 || platform === 1 && language === 0});
+        }
       }
     }
+    // CSS家族匹配优先使用名称表的英文家族；本地化别名仍用于目录与搜索。
+    const canonical = aliases.find(alias => alias.id === 16 && alias.english) ?? aliases.find(alias => alias.english)
+      ?? aliases.find(alias => alias.id === 16) ?? aliases[0];
+    if (canonical) for (const alias of aliases) {families.add(alias.name); cssNames[alias.name] ??= canonical.name;}
   }
-  return [...families];
+  return {families: [...families], cssNames};
 }
 
 async function fontDirectories() {
@@ -65,7 +73,7 @@ export function localFontCatalog(refresh = false): Promise<FontCatalog> {
 }
 
 export async function scanFontDirectories(directories: string[]): Promise<FontCatalog> {
-  const files: string[] = [], seenFiles = new Set<string>(), visited = new Set<string>(), families = new Set<string>(), deadline = Date.now() + 10000;
+  const files: string[] = [], seenFiles = new Set<string>(), visited = new Set<string>(), families = new Set<string>(), cssNames: Record<string, string> = Object.create(null), deadline = Date.now() + 10000;
   let skipped = 0, complete = true;
   async function walk(directory: string, depth = 0) {
     if (depth > 12 || files.length >= 5000 || visited.size >= 2000 || Date.now() >= deadline) {complete = false; return;}
@@ -101,7 +109,9 @@ export async function scanFontDirectories(directories: string[]): Promise<FontCa
         });
       } finally {await handle.close();}
     }));
-    for (const result of results) if (result.status === "fulfilled") result.value.forEach(value => families.add(value)); else {skipped++; complete = false;}
+    for (const result of results) if (result.status === "fulfilled") {
+      result.value.families.forEach(value => {families.add(value); cssNames[value] ??= result.value.cssNames[value];});
+    } else {skipped++; complete = false;}
   }
-  return {families: [...families].sort((a, b) => a.localeCompare(b, "zh-CN")), scanned: files.length, skipped, complete};
+  return {families: [...families].sort((a, b) => a.localeCompare(b, "zh-CN")), cssNames, scanned: files.length, skipped, complete};
 }
