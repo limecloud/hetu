@@ -676,6 +676,12 @@
     "action": "getState",
     "result": "failed to write kernel assets: No such file or directory (os error 2)",
     "native_desktop_status": "not verified",
-    "retry_policy": "本次初始化仍失败，保留原回执，不重复相同条件调用，不记作产品MCP失败或完整宿主通过"
+    "retry_policy": "本次初始化仍失败，保留原回执，不重复相同条件调用，不记作产品MCP失败或完整宿主通过",
+    "current_foreground_probe": {
+      "result": "初次System Events属性列表查询语法失败；随后固定进程查询成功，前台为com.google.Chrome。未发送键盘或改系统设置。",
+      "observed_pid": 91375,
+      "observed_bundle": "com.google.Chrome",
+      "limits": "首轮错误中的loginwindow不是成功查询结果，不据此判断屏幕锁定，也不能倒推此前IME前台变化原因"
+    }
   }
 }
