@@ -22,7 +22,7 @@ test("随包原生PTY执行命令、响应尺寸变化并在隐藏后保留同�
   test.setTimeout(120000);
   const profile = await mkdtemp(path.join(os.tmpdir(), "hetu-packaged-pty-"));
   const app = await electron.launch({
-    executablePath: process.env.HETU_PACKAGED_APP!, args: [],
+    executablePath: process.env.HETU_PACKAGED_APP!, args: process.platform === "linux" && process.env.CI ? ["--no-sandbox"] : [],
     env: { ...process.env, HETU_DESKTOP_PROFILE: profile,
       HETU_COLLABORATION_DIR: path.join(profile, "collaboration"),
       HETU_LOCAL_SETTINGS_DIR: path.join(profile, "local-settings"),
