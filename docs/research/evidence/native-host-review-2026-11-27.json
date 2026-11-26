@@ -1,0 +1,70 @@
+{
+  "recorded_at": "2026-11-26T22:42:41.193579+00:00",
+  "application_version": "0.15.1",
+  "host": {
+    "bundle": "com.openai.codex",
+    "version": "26.1117.41037"
+  },
+  "scope": "本对话公开CLI准备QA固定任务；真实原生MCP界面保存公开意见、预览并确认采纳，独立CLI回读。不是0.15.3安装或unknown恢复验收。",
+  "work_ref": {
+    "kind": "novel",
+    "object_id": "novel_c2fb5c76-e2dd-48c9-b7f5-f367b0f62b1a",
+    "workspace_id": "workspace_901e2b1f-2590-439f-b997-bfa79be29d03"
+  },
+  "task_ref": {
+    "request_revision": 1,
+    "scope_ref": {
+      "id": "workspace_901e2b1f-2590-439f-b997-bfa79be29d03",
+      "kind": "workspace"
+    },
+    "task_id": "task_4ba1a591-afc0-4f59-9647-3c72251676a2"
+  },
+  "feedback_ref": {
+    "feedback_id": "feedback_595baa74-870d-4a43-8485-76e115a3f9ae",
+    "sha256": "89338de217ce3fb559be23f1b11b1cea64e02d24cbcb06b56ef81bbc44037d03"
+  },
+  "feedback": {
+    "count": 1,
+    "intent": "request_changes",
+    "public_comment": "仅核对这条独立参考稿，保留车票意象。",
+    "sent_to_model": false
+  },
+  "adoption": {
+    "new_document_id": "doc_0b1d58c7-fcbe-4a96-91a2-6746aa6344af",
+    "revision_id": "rev_0f037a32-5a35-446b-a37e-6bb00bed867e",
+    "content_sha256": "a625f9d1d2a61c6cd9e73fd3ba88411c2013f0bec28697f15ab420083f852d91",
+    "preview_full_content_verified": true,
+    "before_confirm_formal_count": 1,
+    "after_confirm_formal_count": 2,
+    "original_document_and_revision_unchanged": true
+  },
+  "cleanup": {
+    "host_started_by_this_task": true,
+    "normal_termination_requested": true,
+    "pid_absent_after_exit": true,
+    "qa_work_archived_through_public_domain_action": true,
+    "model_requests": 0
+  },
+  "driver_observations": [
+    "CUA初始化返回failed to write kernel assets，未由其操作应用；复用本机AX探针。",
+    "宿主首轮AX仅11节点，随后真实界面树就绪；请求两个可访问属性分别返回unsupported／notImplemented，不推定根因。",
+    "本机桌面测试取得焦点时保护拒绝点击，待空闲后恢复确切宿主。",
+    "意见控件在视口外时尺寸0；实际滚动后才点击。",
+    "CGEvent驱动报告投递但意见仍空，回读确认零输入后改用系统AXSetValue，未重复追加；本项不计真实键盘中文验收。",
+    "Disclosure原生点击没有产生预期展开，AXPress后读取新控件与实际预览再继续；动作成功本身不计业务通过。"
+  ],
+  "checks": {
+    "native_fixed_opinion_saved": true,
+    "one_feedback_read_back": true,
+    "adoption_preview_before_write": true,
+    "adoption_new_chapter_exact_bytes": true,
+    "original_document_preserved": true,
+    "desktop_app_not_required": true
+  },
+  "not_verified": [
+    "本轮原生关闭重开后的意见／采纳复验",
+    "本轮原生unknown恢复",
+    "新版品牌GUI和0.15.3实际安装",
+    "完整原生页面及其他平台"
+  ]
+}

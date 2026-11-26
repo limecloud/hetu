@@ -1,8 +1,8 @@
 {
-  "recorded_at": "2026-11-26T21:59:46.233646+00:00",
+  "recorded_at": "2026-11-26T22:43:19.569435+00:00",
   "version": "0.15.3",
   "source_base_commit": "eb87f0c2f688f2b8592b99947e248b87f1298e1c",
-  "scope": "共享归档源码、真实Core及三入口定向验证；完整0.15.3回归和正式发行沿后续记录，不由定向通过推断。",
+  "scope": "共享归档源码、真实Core、三入口定向和完整回归；保留本机152通过／1失败与远端132通过／20前置跳过／1失败，三条定向修正后通过，后续CI及发行分别跟踪。",
   "prior_runtime_negative": {
     "application_version": "0.15.1",
     "entry": "安装包mcp-workbench.mjs的真实library调用",
@@ -87,7 +87,20 @@
       "model_turns": 0,
       "build_version": "0.15.2 + 本轮源码增量，升版前定向结果"
     },
-    "full_0153_workbench": "running; authoritative report kept in current run; not counted passed"
+    "full_0153_workbench": {
+      "passed": 152,
+      "failed": 1,
+      "skipped": 0,
+      "duration_ms": 2303629.05,
+      "report_sha256": "b0ee06f8592d18b734001b7ab2f407a81beb8d9ee6b0b989d6591a97bdc4ee24",
+      "failure": "connection.spec.ts旧断言将两项App专用工具计入模型预算；全部其余152项通过。",
+      "rerun": {
+        "official_connection_tests": 2,
+        "position_feedback_with_held_refresh": 1,
+        "failed": 0,
+        "not_a_clean_full_rerun": true
+      }
+    }
   },
   "focused_results": [
     {
@@ -210,7 +223,9 @@
   ],
   "test_authoring_failures": [
     "首轮完整资料比较包含previous_sha256，修正为分别核对修订链元数据及完整业务资料。",
-    "消息正则未覆盖短剧冲突文案，改为保留并断言原Core revision_conflict代码。"
+    "消息正则未覆盖短剧冲突文案，改为保留并断言原Core revision_conflict代码。",
+    "本机官方Codex目录工具总数断言15失败；实际14模型可见（含协商确认）与2 App专用，改为分开核对精简预算及精确App专用集合，未放宽模型预算。",
+    "远端刷新后选择旧DOM导致操作不存在；挂起回包确定性复验，等待实际新候选而非增加超时。"
   ],
   "source_files": {
     "apps/desktop/src/main/work-archive.ts": "888d879b96abc3abd9ee1804228798f430246ae3b64bc48ea2c426c5230e4825",
@@ -226,5 +241,96 @@
     "全部页面视觉与读屏",
     "Windows／Linux用户实机",
     "作者真实试用及完整一集制作"
-  ]
+  ],
+  "official_catalog": {
+    "plugin_id": "hetu-workbench@hetu-luoshu-machine-connection",
+    "tools": [
+      {
+        "name": "hetu_inspect_runtime",
+        "visibility": null
+      },
+      {
+        "name": "hetu_save_task_checkpoint",
+        "visibility": null
+      },
+      {
+        "name": "hetu_get_capability_map",
+        "visibility": null
+      },
+      {
+        "name": "hetu_read_creative_task",
+        "visibility": null
+      },
+      {
+        "name": "hetu_read_task_operation",
+        "visibility": null
+      },
+      {
+        "name": "hetu_open_task_view",
+        "visibility": null
+      },
+      {
+        "name": "hetu_open_collaboration_task",
+        "visibility": null
+      },
+      {
+        "name": "hetu_save_task_selection",
+        "visibility": null
+      },
+      {
+        "name": "hetu_begin_creation",
+        "visibility": null
+      },
+      {
+        "name": "hetu_call_action",
+        "visibility": null
+      },
+      {
+        "name": "hetu_search_mentions",
+        "visibility": [
+          "app"
+        ]
+      },
+      {
+        "name": "hetu_request_model_confirmation",
+        "visibility": null
+      },
+      {
+        "name": "hetu_inspect_collaboration",
+        "visibility": null
+      },
+      {
+        "name": "hetu_app_request",
+        "visibility": [
+          "app"
+        ]
+      },
+      {
+        "name": "hetu_open_app",
+        "visibility": [
+          "model",
+          "app"
+        ]
+      },
+      {
+        "name": "hetu_get_task_checkpoint",
+        "visibility": null
+      }
+    ]
+  },
+  "source_ci_6493064": {
+    "run_id": 45902016097,
+    "conclusion": "failure",
+    "core": "success",
+    "desktop": "success",
+    "website_task_view": "failure",
+    "task_view": {
+      "passed": 132,
+      "failed": 1,
+      "skipped": 20
+    },
+    "failed_test": "real.spec.ts:208固定选区意见",
+    "failure_trace": "刷新请求334289.4ms开始、约163ms返回；测试334302ms即选择旧DOM，busy阻止旧来源意见。",
+    "fix": "只改测试：挂起真实刷新回包核对禁用及旧选区不生成操作，释放后等待新候选可见和刷新按钮启用再选择；原任务、固定范围和unknown恢复业务断言保持。"
+  }
 }

@@ -241,7 +241,23 @@ test("固定原文选区意见沿原键恢复，候选选区接续同一工作�
   const agent=async(action:string,input:any)=>{const tool=catalog.tools.find((tool:any)=>tool.action===action);expect(offered.tools.some(item=>item.name===tool?.name),action).toBe(true);const result=await machine!.callTool({name:tool.name,arguments:{task_ref:task.task_ref,...input}});expect((result.structuredContent as any).status,JSON.stringify(result)).toBe("succeeded");return (result.structuredContent as any).data;};
   const copy=await agent("hetu.working_copies.create",{artifact_kind:"text",source_format:"markdown",title:"来信参考稿",base_refs:[],feedback_refs:[first.feedback_ref],content:"江岚重读来信🌿，仍不敢确信。",operation_key:"feedback-working"});
   const submitted=await agent("hetu.creative_tasks.submit_result",{request_sha256:task.request_sha256,working_copy_refs:[copy.working_copy_ref],feedback_refs:[first.feedback_ref],complete:true,missing_items:[],provenance:{client:"position-test",skill_version:"1"},operation_key:"feedback-submit"});
-  await view.getByRole("button",{name:"读取最新结果",exact:true}).click();const candidate=view.locator(".candidate").filter({has:view.getByText("来信参考稿",{exact:true})});
+  let releaseRefresh!:()=>void,refreshEntered!:()=>void,holdRefresh=true;
+  const refreshHeld=new Promise<void>(resolve=>{releaseRefresh=resolve;}),refreshStarted=new Promise<void>(resolve=>{refreshEntered=resolve;});
+  const holdRefreshReply=async(route:import("@playwright/test").Route)=>{
+   if(holdRefresh&&route.request().postDataJSON().params?.name==="hetu_open_task_view"){
+    holdRefresh=false;const response=await route.fetch();refreshEntered();await refreshHeld;await route.fulfill({response});return;
+   }
+   await route.fallback();
+  };
+  await page.route("**/rpc",holdRefreshReply);
+  const refresh=view.getByRole("button",{name:"读取最新结果",exact:true});
+  try{
+   await refresh.click();await refreshStarted;await expect(refresh).toBeDisabled();
+   // 刷新期间旧原文仍可见，但不能把旧DOM当成本次新批次已就绪。
+   await select(source.locator(".reader"),"来信🌿");await expect(source.getByRole("button",{name:"对此处提意见",exact:true})).toHaveCount(0);
+  }finally{releaseRefresh();}
+  const candidate=view.locator(".candidate").filter({has:view.getByText("来信参考稿",{exact:true})});
+  await expect(candidate).toBeVisible();await expect(refresh).toBeEnabled();await page.unroute("**/rpc",holdRefreshReply);
   await select(source.locator(".reader"),"来信🌿");await expect(source.getByRole("button",{name:"对此处提意见",exact:true})).toBeVisible();await select(candidate.locator(".reader"),"来信🌿");await expect(source.getByRole("button",{name:"对此处提意见",exact:true})).toHaveCount(0);
   await candidate.getByRole("button",{name:"对此处提意见",exact:true}).click();await opinion.fill("保留这句，下一版只调整结尾。");await view.getByRole("button",{name:"保存位置意见",exact:true}).click();await expect(view.getByRole("status")).toContainText("修改意见已保存");
   const history=await agent("hetu.task_feedback.list",{});expect(history.feedback).toHaveLength(2);const second=history.feedback[1];expect(second.feedback.target_refs[0].candidate_ref).toEqual(submitted.candidate_refs[0]);expect(second.feedback.target_refs[0].range.quote).toBe("来信🌿");

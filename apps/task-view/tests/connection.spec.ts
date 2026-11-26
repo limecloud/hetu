@@ -99,7 +99,7 @@ test("installed official Codex CLI accepts the connection package in an isolated
   } finally { await client.close(); }
 });
 
-test("official Codex loads the installed plugin and discovers the App before UI negotiation", async () => {
+test("official Codex loads the installed plugin and discovers the App before UI negotiation", async ({},info) => {
   const binary = process.env.HETU_ACCEPT_CODEX_BINARY;
   test.skip(!binary, "指定HETU_ACCEPT_CODEX_BINARY才验收真实Codex App Server的目录发现。");
   test.setTimeout(60_000);
@@ -143,12 +143,19 @@ test("official Codex loads the installed plugin and discovers the App before UI 
     expect(entry?._meta?.["openai/ui"]?.entrypoints).toEqual([{ type: "global" }, { type: "thread" }]);
     const uri=entry?._meta?.ui?.resourceUri;
     expect(uri).toMatch(/^ui:\/\/hetu\/workbench\/2\/[a-f0-9]{64}$/);
-    // Codex额外协商elicitation时会暴露固定模型确认工具。
-    expect(Object.keys(server.tools).length).toBeLessThanOrEqual(15);
+    // App专用桥接及内容提及不进入模型工具预算；elicitation只增加固定模型确认。
+    const tools=Object.values(server.tools) as any[];
+    const appOnly=Object.entries(server.tools).filter(([,tool]:any)=>JSON.stringify(tool._meta?.ui?.visibility)===JSON.stringify(["app"])).map(([name])=>name).sort();
+    expect(appOnly).toEqual(["hetu_app_request","hetu_search_mentions"]);
+    const modelTools=tools.filter(tool=>!tool._meta?.ui?.visibility||tool._meta.ui.visibility.includes("model"));
+    const confirmation=server.tools.hetu_request_model_confirmation?1:0;
+    expect(modelTools.length).toBeLessThanOrEqual(13+confirmation);
+    expect(tools.length).toBe(modelTools.length+appOnly.length);
     expect(server.resources.some((resource: any) => resource.uri === uri)).toBe(true);
     const resource = await call("mcpServer/resource/read", { server: "hetu", uri });
     expect(resource.contents[0].mimeType).toBe("text/html;profile=mcp-app");
     expect(resource.contents[0].text).toContain("<!doctype html>");
+    await writeFile(info.outputPath("catalog.json"),JSON.stringify({plugin_id:server.pluginId,total_tools:tools.length,model_tools:modelTools.length,app_only:appOnly,confirmation,app_resource_read:true,model_turns:0},null,2));
   } finally {
     for (const request of pending.values()) clearTimeout(request.timer);
     lines.close(); child.stdin.end(); child.kill();
